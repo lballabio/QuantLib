@@ -65,7 +65,7 @@ namespace QuantLib {
             NullCalendar as its fixing calendar.
         */
         Calendar fixingCalendar() const;
-        bool isValidFixingDate(const Date& fixingDate) const;
+        bool isValidFixingDate(const Date& fixingDate) const { return true; }
 
         /*! Forecasting index values requires an inflation term
             structure.  The inflation term structure (ITS) defines the
@@ -78,8 +78,8 @@ namespace QuantLib {
             publication but the inflation swaps may take as their base
             the index 3 months before.
         */
-        virtual Rate fixing(const Date& fixingDate,
-                            bool forecastTodaysFixing = false) const = 0;
+        Rate fixing(const Date& fixingDate,
+                    bool forecastTodaysFixing = false) const = 0;
 
         /*! this method creates all the "fixings" for the relevant
             period of the index.  E.g. for monthly indices it will put
@@ -128,6 +128,8 @@ namespace QuantLib {
         Frequency frequency_;
         Period availabilityLag_;
         Currency currency_;
+      private:
+        std::string name_;
     };
 
 
@@ -145,16 +147,20 @@ namespace QuantLib {
                            const Handle<ZeroInflationTermStructure>& ts =
                                         Handle<ZeroInflationTermStructure>());
 
+        //! \name Index interface
+        //@{
         /*! \warning the forecastTodaysFixing parameter (required by
                      the Index interface) is currently ignored.
         */
         Rate fixing(const Date& fixingDate,
                     bool forecastTodaysFixing = false) const;
-
+        //@}
+        //! \name Other methods
+        //@{
         Handle<ZeroInflationTermStructure> zeroInflationTermStructure() const;
-
         boost::shared_ptr<ZeroInflationIndex> clone(
                            const Handle<ZeroInflationTermStructure>& h) const;
+        //@}
       private:
         Rate forecastFixing(const Date& fixingDate) const;
         Handle<ZeroInflationTermStructure> zeroInflation_;
@@ -177,26 +183,80 @@ namespace QuantLib {
                           const Currency& currency,
                           const Handle<YoYInflationTermStructure>& ts =
                                 Handle<YoYInflationTermStructure>());
-
+        //! \name Index interface
+        //@{
         /*! \warning the forecastTodaysFixing parameter (required by
                      the Index interface) is currently ignored.
         */
         Rate fixing(const Date& fixingDate,
                     bool forecastTodaysFixing = false) const;
 
+        //@}
+        //! \name Other methods
+        //@{
         bool ratio() const;
         Handle<YoYInflationTermStructure> yoyInflationTermStructure() const;
 
         boost::shared_ptr<YoYInflationIndex> clone(
                             const Handle<YoYInflationTermStructure>& h) const;
+        //@}
       private:
         Rate forecastFixing(const Date& fixingDate) const;
         bool ratio_;
         Handle<YoYInflationTermStructure> yoyInflation_;
     };
 
+    // inline
+
+    inline std::string InflationIndex::name() const {
+        return name_;
+    }
+
+    inline void InflationIndex::update() {
+        notifyObservers();
+    }
+
+    inline std::string InflationIndex::familyName() const {
+        return familyName_;
+    }
+
+    inline Region InflationIndex::region() const {
+        return region_;
+    }
+
+    inline bool InflationIndex::revised() const {
+        return revised_;
+    }
+
+    inline bool InflationIndex::interpolated() const {
+        return interpolated_;
+    }
+
+    inline Frequency InflationIndex::frequency() const {
+        return frequency_;
+    }
+
+    inline Period InflationIndex::availabilityLag() const {
+        return availabilityLag_;
+    }
+
+    inline Currency InflationIndex::currency() const {
+        return currency_;
+    }
+
+    inline Handle<ZeroInflationTermStructure>
+    ZeroInflationIndex::zeroInflationTermStructure() const {
+        return zeroInflation_;
+    }
+
+    inline bool YoYInflationIndex::ratio() const {
+        return ratio_;
+    }
+
+    inline Handle<YoYInflationTermStructure>
+    YoYInflationIndex::yoyInflationTermStructure() const {
+        return yoyInflation_;
+    }
 }
 
-
 #endif
-

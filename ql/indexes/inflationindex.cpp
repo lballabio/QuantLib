@@ -34,24 +34,16 @@ namespace QuantLib {
       revised_(revised), interpolated_(interpolated),
       frequency_(frequency), availabilityLag_(availabilityLag),
       currency_(currency) {
+        name_ = region_.name() + " " + familyName_;
         registerWith(Settings::instance().evaluationDate());
         registerWith(IndexManager::instance().notifier(name()));
     }
 
 
-    std::string InflationIndex::name() const {
-        return region_.name() + " " + familyName_;
-    }
-
     Calendar InflationIndex::fixingCalendar() const {
         static NullCalendar c;
         return c;
     }
-
-    bool InflationIndex::isValidFixingDate(const Date&) const {
-        return true;
-    }
-
 
     void InflationIndex::addFixing(const Date& fixingDate,
                                    Real fixing,
@@ -69,42 +61,6 @@ namespace QuantLib {
         Index::addFixings(dates.begin(), dates.end(),
                           rates.begin(), forceOverwrite);
     }
-
-
-    void InflationIndex::update() {
-        notifyObservers();
-    }
-
-    std::string InflationIndex::familyName() const {
-        return familyName_;
-    }
-
-    Region InflationIndex::region() const {
-        return region_;
-    }
-
-    bool InflationIndex::revised() const {
-        return revised_;
-    }
-
-    bool InflationIndex::interpolated() const {
-        return interpolated_;
-    }
-
-    Frequency InflationIndex::frequency() const {
-        return frequency_;
-    }
-
-    Period InflationIndex::availabilityLag() const {
-        return availabilityLag_;
-    }
-
-    Currency InflationIndex::currency() const {
-        return currency_;
-    }
-
-
-
 
     ZeroInflationIndex::ZeroInflationIndex(
                       const std::string& familyName,
@@ -192,12 +148,6 @@ namespace QuantLib {
         Rate zero = zeroInflation_->zeroRate(fixingDate, Period(0,Days), forceLinearInterpolation);
         // Annual compounding is the convention for zero inflation rates (or quotes)
         return baseFixing * std::pow(1.0 + zero, t);
-    }
-
-
-    Handle<ZeroInflationTermStructure>
-    ZeroInflationIndex::zeroInflationTermStructure() const {
-        return zeroInflation_;
     }
 
 
@@ -353,16 +303,6 @@ namespace QuantLib {
         return yoyInflation_->yoyRate(d,0*Days);
     }
 
-
-    bool YoYInflationIndex::ratio() const {
-        return ratio_;
-    }
-
-    Handle<YoYInflationTermStructure>
-    YoYInflationIndex::yoyInflationTermStructure() const {
-        return yoyInflation_;
-    }
-
     boost::shared_ptr<YoYInflationIndex> YoYInflationIndex::clone(
                            const Handle<YoYInflationTermStructure>& h) const {
         return boost::shared_ptr<YoYInflationIndex>(
@@ -372,4 +312,3 @@ namespace QuantLib {
     }
 
 }
-
