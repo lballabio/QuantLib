@@ -36,54 +36,31 @@ namespace QuantLib {
 //===========================================================================//
 
     void BlackIborCouponPricer::initialize(const FloatingRateCoupon& coupon) {
-        coupon_ = dynamic_cast<const IborCoupon*>(&coupon);
-        QL_REQUIRE(coupon_, "Libor coupon required");
-        gearing_ = coupon_->gearing();
-        spread_ = coupon_->spread();
-        Date paymentDate = coupon_->date();
+
+        gearing_ = coupon.gearing();
+        spread_ = coupon.spread();
+        accrualPeriod_ = coupon.accrualPeriod();
+
         boost::shared_ptr<IborIndex> index =
-            boost::dynamic_pointer_cast<IborIndex>(coupon_->index());
+            boost::dynamic_pointer_cast<IborIndex>(coupon.index());
+        if (!index) {
+            // check if the coupon was right
+            const IborCoupon* c = dynamic_cast<const IborCoupon*>(&coupon);
+            QL_REQUIRE(c, "IborCoupon required");
+            // coupon was right, index is not
+            QL_FAIL("IborIndex required");
+        }
         Handle<YieldTermStructure> rateCurve = index->forwardingTermStructure();
 
-        Date today = Settings::instance().evaluationDate();
-
+        Date paymentDate = coupon.date();
         if (paymentDate > rateCurve->referenceDate())
             discount_ = rateCurve->discount(paymentDate);
         else
             discount_ = 1.0;
 
-        spreadLegValue_ = spread_ * coupon_->accrualPeriod()* discount_;
-    }
+        spreadLegValue_ = spread_ * accrualPeriod_ * discount_;
 
-    Real BlackIborCouponPricer::swapletPrice() const {
-        // past or future fixing is managed in InterestRateIndex::fixing()
-
-        Real swapletPrice =
-           adjustedFixing()* coupon_->accrualPeriod() * discount_;
-        return gearing_ * swapletPrice + spreadLegValue_;
-    }
-
-    Rate BlackIborCouponPricer::swapletRate() const {
-        return swapletPrice()/(coupon_->accrualPeriod()*discount_);
-    }
-
-    Real BlackIborCouponPricer::capletPrice(Rate effectiveCap) const {
-        Real capletPrice = optionletPrice(Option::Call, effectiveCap);
-        return gearing_ * capletPrice;
-    }
-
-    Rate BlackIborCouponPricer::capletRate(Rate effectiveCap) const {
-        return capletPrice(effectiveCap)/(coupon_->accrualPeriod()*discount_);
-    }
-
-    Real BlackIborCouponPricer::floorletPrice(Rate effectiveFloor) const {
-        Real floorletPrice = optionletPrice(Option::Put, effectiveFloor);
-        return gearing_ * floorletPrice;
-    }
-
-    Rate BlackIborCouponPricer::floorletRate(Rate effectiveFloor) const {
-        return floorletPrice(effectiveFloor)/
-            (coupon_->accrualPeriod()*discount_);
+        coupon_ = &coupon;
     }
 
     Real BlackIborCouponPricer::optionletPrice(Option::Type optionType,
@@ -99,7 +76,7 @@ namespace QuantLib {
                 a = effStrike;
                 b = coupon_->indexFixing();
             }
-            return std::max(a - b, 0.0)* coupon_->accrualPeriod()*discount_;
+            return std::max(a - b, 0.0)* accrualPeriod_*discount_;
         } else {
             // not yet determined, use Black model
             QL_REQUIRE(!capletVolatility().empty(),
@@ -111,34 +88,30 @@ namespace QuantLib {
                                        effStrike,
                                        adjustedFixing(),
                                        stdDev);
-            return fixing * coupon_->accrualPeriod() * discount_;
+            return fixing * accrualPeriod_ * discount_;
         }
     }
 
     Rate BlackIborCouponPricer::adjustedFixing(Rate fixing) const {
 
-        Real adjustement = 0.0;
-
         if (fixing == Null<Rate>())
             fixing = coupon_->indexFixing();
 
-        if (!coupon_->isInArrears()) {
-            adjustement = 0.0;
-        } else {
-            // see Hull, 4th ed., page 550
-            QL_REQUIRE(!capletVolatility().empty(),
-                       "missing optionlet volatility");
-            Date d1 = coupon_->fixingDate(),
-                 referenceDate = capletVolatility()->referenceDate();
-            if (d1 <= referenceDate) {
-                adjustement = 0.0;
-            } else {
-                Date d2 = coupon_->index()->maturityDate(d1);
-                Time tau = coupon_->index()->dayCounter().yearFraction(d1, d2);
-                Real variance = capletVolatility()->blackVariance(d1, fixing);
-                adjustement = fixing*fixing*variance*tau/(1.0+fixing*tau);
-            }
-        }
+        if (!coupon_->isInArrears())
+            return fixing;
+
+        QL_REQUIRE(!capletVolatility().empty(),
+                   "missing optionlet volatility");
+        Date d1 = coupon_->fixingDate();
+        Date referenceDate = capletVolatility()->referenceDate();
+        if (d1 <= referenceDate)
+            return fixing;
+
+        // see Hull, 4th ed., page 550
+        Date d2 = coupon_->index()->maturityDate(d1);
+        Time tau = coupon_->index()->dayCounter().yearFraction(d1, d2);
+        Real variance = capletVolatility()->blackVariance(d1, fixing);
+        Spread adjustement = fixing*fixing*variance*tau/(1.0+fixing*tau);
         return fixing + adjustement;
     }
 

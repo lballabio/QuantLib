@@ -99,11 +99,13 @@ namespace QuantLib {
 
         virtual Rate adjustedFixing(Rate fixing = Null<Rate>()) const;
 
-        const IborCoupon* coupon_;
-        Real discount_;
         Real gearing_;
         Spread spread_;
+        Time accrualPeriod_;
+        Real discount_;
         Real spreadLegValue_;
+
+        const FloatingRateCoupon* coupon_;
     };
 
     //! base pricer for vanilla CMS coupons
@@ -134,6 +136,39 @@ namespace QuantLib {
     void setCouponPricers(
             const Leg& leg,
             const std::vector<boost::shared_ptr<FloatingRateCouponPricer> >&);
+
+    // inline
+
+    inline Real BlackIborCouponPricer::swapletPrice() const {
+        // past or future fixing is managed in InterestRateIndex::fixing()
+
+        Real swapletPrice = adjustedFixing() * accrualPeriod_ * discount_;
+        return gearing_ * swapletPrice + spreadLegValue_;
+    }
+
+    inline Rate BlackIborCouponPricer::swapletRate() const {
+        return swapletPrice()/(accrualPeriod_*discount_);
+    }
+
+    inline Real BlackIborCouponPricer::capletPrice(Rate effectiveCap) const {
+        Real capletPrice = optionletPrice(Option::Call, effectiveCap);
+        return gearing_ * capletPrice;
+    }
+
+    inline Rate BlackIborCouponPricer::capletRate(Rate effectiveCap) const {
+        return capletPrice(effectiveCap) / (accrualPeriod_*discount_);
+    }
+
+    inline
+    Real BlackIborCouponPricer::floorletPrice(Rate effectiveFloor) const {
+        Real floorletPrice = optionletPrice(Option::Put, effectiveFloor);
+        return gearing_ * floorletPrice;
+    }
+
+    inline
+    Rate BlackIborCouponPricer::floorletRate(Rate effectiveFloor) const {
+        return floorletPrice(effectiveFloor) / (accrualPeriod_*discount_);
+    }
 
 }
 
