@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2007 Cristina Duminuco
+ Copyright (C) 2011 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +28,7 @@
 
 #include <ql/termstructures/volatility/optionlet/optionletvolatilitystructure.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolstructure.hpp>
+#include <ql/indexes/iborindex.hpp>
 #include <ql/cashflow.hpp>
 #include <ql/option.hpp>
 
@@ -102,6 +104,7 @@ namespace QuantLib {
         Real gearing_;
         Spread spread_;
         Time accrualPeriod_;
+        boost::shared_ptr<IborIndex> index_;
         Real discount_;
         Real spreadLegValue_;
 

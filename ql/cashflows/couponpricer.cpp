@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2007 Cristina Duminuco
+ Copyright (C) 2011 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,8 +27,9 @@
 #include <ql/cashflows/rangeaccrual.hpp>
 #include <ql/experimental/coupons/subperiodcoupons.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/indexes/interestrateindex.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+
+using boost::dynamic_pointer_cast;
 
 namespace QuantLib {
 
@@ -41,16 +43,16 @@ namespace QuantLib {
         spread_ = coupon.spread();
         accrualPeriod_ = coupon.accrualPeriod();
 
-        boost::shared_ptr<IborIndex> index =
-            boost::dynamic_pointer_cast<IborIndex>(coupon.index());
-        if (!index) {
+        index_ = dynamic_pointer_cast<IborIndex>(coupon.index());
+        if (!index_) {
             // check if the coupon was right
             const IborCoupon* c = dynamic_cast<const IborCoupon*>(&coupon);
             QL_REQUIRE(c, "IborCoupon required");
             // coupon was right, index is not
             QL_FAIL("IborIndex required");
         }
-        Handle<YieldTermStructure> rateCurve = index->forwardingTermStructure();
+        Handle<YieldTermStructure> rateCurve =
+                                            index_->forwardingTermStructure();
 
         Date paymentDate = coupon.date();
         if (paymentDate > rateCurve->referenceDate())
@@ -108,8 +110,8 @@ namespace QuantLib {
             return fixing;
 
         // see Hull, 4th ed., page 550
-        Date d2 = coupon_->index()->maturityDate(d1);
-        Time tau = coupon_->index()->dayCounter().yearFraction(d1, d2);
+        Date d2 = index_->maturityDate(d1);
+        Time tau = index_->dayCounter().yearFraction(d1, d2);
         Real variance = capletVolatility()->blackVariance(d1, fixing);
         Spread adjustement = fixing*fixing*variance*tau/(1.0+fixing*tau);
         return fixing + adjustement;
