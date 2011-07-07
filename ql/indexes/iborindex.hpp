@@ -95,7 +95,7 @@ namespace QuantLib {
                                           const Date& d2,
                                           Time t) const {
         QL_REQUIRE(!termStructure_.empty(),
-                   "null term structure set to this instance of " << name_);
+                   "null term structure set to this instance of " << name());
         DiscountFactor disc1 = termStructure_->discount(d1);
         DiscountFactor disc2 = termStructure_->discount(d2);
         return (disc1/disc2 - 1.0) / t;
