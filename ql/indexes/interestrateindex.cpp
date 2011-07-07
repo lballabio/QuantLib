@@ -55,7 +55,7 @@ namespace QuantLib {
         name_ = out.str();
 
         registerWith(Settings::instance().evaluationDate());
-        registerWith(IndexManager::instance().notifier(name_));
+        registerWith(IndexManager::instance().notifier(name()));
     }
 
     Rate InterestRateIndex::fixing(const Date& fixingDate,
@@ -76,7 +76,7 @@ namespace QuantLib {
             // do not catch exceptions
             Rate result = pastFixing(fixingDate);
             QL_REQUIRE(result != Null<Real>(),
-                       "Missing " << name_ << " fixing for " << fixingDate);
+                       "Missing " << name() << " fixing for " << fixingDate);
             return result;
         }
 
