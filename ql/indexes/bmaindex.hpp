@@ -45,7 +45,7 @@ namespace QuantLib {
         //@{
         /*! BMA is fixed weekly on Wednesdays.
         */
-        std::string name() const;
+        std::string name() const { return "BMA"; }
         bool isValidFixingDate(const Date& fixingDate) const;
         //@}
         //! \name Inspectors
@@ -67,6 +67,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif

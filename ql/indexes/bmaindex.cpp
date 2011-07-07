@@ -40,7 +40,6 @@ namespace QuantLib {
 
     }
 
-
     BMAIndex::BMAIndex(const Handle<YieldTermStructure>& h)
     : InterestRateIndex("BMA",
                         1 * Weeks,
@@ -52,20 +51,17 @@ namespace QuantLib {
         registerWith (h);
     }
 
-    std::string BMAIndex::name() const {
-        return "BMA";
-    }
-
-    bool BMAIndex::isValidFixingDate(const Date& fixingDate) const {
+    bool BMAIndex::isValidFixingDate(const Date& date) const {
+        Calendar cal = fixingCalendar();
         // either the fixing date is last Wednesday, or all days
         // between last Wednesday included and the fixing date are
         // holidays
-        for (Date d = previousWednesday(fixingDate); d < fixingDate; ++d) {
-            if (fixingCalendar_.isBusinessDay(d))
+        for (Date d = previousWednesday(date); d<date; ++d) {
+            if (cal.isBusinessDay(d))
                 return false;
         }
         // also, the fixing date itself must be a business day
-        return fixingCalendar_.isBusinessDay(fixingDate);
+        return cal.isBusinessDay(date);
     }
 
     Handle<YieldTermStructure> BMAIndex::forwardingTermStructure() const {
@@ -73,16 +69,17 @@ namespace QuantLib {
     }
 
     Date BMAIndex::maturityDate(const Date& valueDate) const {
-        Date fixingDate = fixingCalendar_.advance(valueDate,-1,Days);
+        Calendar cal = fixingCalendar();
+        Date fixingDate = cal.advance(valueDate, -1, Days);
         Date nextWednesday = previousWednesday(fixingDate+7);
-        return fixingCalendar_.advance(nextWednesday,1,Days);
+        return cal.advance(nextWednesday, 1, Days);
     }
 
     Schedule BMAIndex::fixingSchedule(const Date& start, const Date& end) {
         return MakeSchedule().from(previousWednesday(start))
                              .to(nextWednesday(end))
                              .withFrequency(Weekly)
-                             .withCalendar(fixingCalendar_)
+                             .withCalendar(fixingCalendar())
                              .withConvention(Following)
                              .forwards();
     }
@@ -90,7 +87,7 @@ namespace QuantLib {
     Rate BMAIndex::forecastFixing(const Date& fixingDate) const {
         QL_REQUIRE(!termStructure_.empty(),
                    "null term structure set to this instance of " << name());
-        Date start = fixingCalendar_.advance(fixingDate,1,Days);
+        Date start = fixingCalendar().advance(fixingDate, 1, Days);
         Date end = maturityDate(start);
         return termStructure_->forwardRate(start, end,
                                            dayCounter_,
@@ -98,4 +95,3 @@ namespace QuantLib {
     }
 
 }
-
