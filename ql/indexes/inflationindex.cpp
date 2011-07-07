@@ -143,8 +143,8 @@ namespace QuantLib {
 
         if (fixingDateNeeded <= historicalFixingKnown) {
 
-            Real pastFixing =
-                IndexManager::instance().getHistory(name())[aFixingDate];
+            const TimeSeries<Real>& ts = timeSeries();
+            Real pastFixing = ts[aFixingDate];
             QL_REQUIRE(pastFixing != Null<Real>(),
                        "Missing " << name() << " fixing for " << aFixingDate);
             Real theFixing = pastFixing;
@@ -152,8 +152,7 @@ namespace QuantLib {
             if (interpolated_) {
                 // fixings stored flat & for every day
                 Date fixingDate2 = aFixingDate + Period(frequency_);
-                Real pastFixing2 =
-                    IndexManager::instance().getHistory(name())[fixingDate2];
+                Real pastFixing2 = ts[fixingDate2];
                 QL_REQUIRE(pastFixing2 != Null<Real>(),
                            "Missing " << name() << " fixing for " << fixingDate2);
                 // now linearly interpolate
@@ -251,6 +250,7 @@ namespace QuantLib {
 
         // four cases with ratio() and interpolated()
 
+        const TimeSeries<Real>& ts = timeSeries();
         if (ratio()) {
 
             if(interpolated()){ // IS ratio, IS interpolated
@@ -265,18 +265,15 @@ namespace QuantLib {
                 Real dlBef = fixMinus1Y - limBef.first;
                 // get the four relevant fixings
                 // recall that they are stored flat for every day
-                Rate limFirstFix =
-                IndexManager::instance().getHistory(name())[lim.first];
+                Rate limFirstFix = ts[lim.first];
                 QL_REQUIRE(limFirstFix != Null<Rate>(),
                             "Missing " << name() << " fixing for "
                             << lim.first );
-                Rate limSecondFix =
-                IndexManager::instance().getHistory(name())[lim.second+1];
+                Rate limSecondFix = ts[lim.second+1];
                 QL_REQUIRE(limSecondFix != Null<Rate>(),
                             "Missing " << name() << " fixing for "
                             << lim.second+1 );
-                Rate limBefFirstFix =
-                IndexManager::instance().getHistory(name())[limBef.first];
+                Rate limBefFirstFix = ts[limBef.first];
                 QL_REQUIRE(limBefFirstFix != Null<Rate>(),
                             "Missing " << name() << " fixing for "
                             << limBef.first );
@@ -293,14 +290,12 @@ namespace QuantLib {
                 return wasYES;
 
             } else {    // IS ratio, NOT interpolated
-                Rate pastFixing =
-                    IndexManager::instance().getHistory(name())[fixingDate];
+                Rate pastFixing = ts[fixingDate];
                 QL_REQUIRE(pastFixing != Null<Rate>(),
                             "Missing " << name() << " fixing for "
                             << fixingDate);
                 Date previousDate = fixingDate - 1*Years;
-                Rate previousFixing =
-                IndexManager::instance().getHistory(name())[previousDate];
+                Rate previousFixing = ts[previousDate];
                 QL_REQUIRE(previousFixing != Null<Rate>(),
                            "Missing " << name() << " fixing for "
                            << previousDate );
@@ -315,13 +310,11 @@ namespace QuantLib {
                 std::pair<Date,Date> lim = inflationPeriod(fixingDate, frequency_);
                 Real dp= lim.second + 1 - lim.first;
                 Real dl = fixingDate-lim.first;
-                Rate limFirstFix =
-                IndexManager::instance().getHistory(name())[lim.first];
+                Rate limFirstFix = ts[lim.first];
                 QL_REQUIRE(limFirstFix != Null<Rate>(),
                             "Missing " << name() << " fixing for "
                             << lim.first );
-                Rate limSecondFix =
-                IndexManager::instance().getHistory(name())[lim.second+1];
+                Rate limSecondFix = ts[lim.second+1];
                 QL_REQUIRE(limSecondFix != Null<Rate>(),
                             "Missing " << name() << " fixing for "
                             << lim.second+1 );
@@ -332,8 +325,7 @@ namespace QuantLib {
             } else { // NOT ratio, NOT interpolated
                     // so just flat
 
-                Rate pastFixing =
-                    IndexManager::instance().getHistory(name())[fixingDate];
+                Rate pastFixing = ts[fixingDate];
                 QL_REQUIRE(pastFixing != Null<Rate>(),
                            "Missing " << name() << " fixing for "
                            << fixingDate);
