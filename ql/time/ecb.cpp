@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2009 Ferdinando Ametrano
+ Copyright (C) 2009, 2011 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -41,6 +41,9 @@ namespace QuantLib {
             , 39834, 39855, 39883, 39911, 39946, 39974, 40002, 40037, 40065, 40100, 40128, 40155 // 2009
             , 40198, 40219, 40247, 40282, 40310, 40345, 40373, 40401, 40429, 40464, 40492, 40520 // 2010
             , 40562, 40583, 40611, 40646, 40674, 40709, 40737, 40765, 40800, 40828, 40856, 40891 // 2011
+            // http://www.ecb.europa.eu/press/pr/date/2011/html/pr110520.en.html
+            , 40926, 40954, 40982, 41010, 41038, 41073, 41101, 41129, 41164, 41192, 41227, 41255 // 2012
+            , 41290, 41318, 41346, 41374, 41402, 41437, 41465, 41493, 41528, 41556, 41591, 41619 // 2013
         };
         if (knownDateSet.empty()) {
             Size n = sizeof(knownDatesArray)/sizeof(BigInteger);
