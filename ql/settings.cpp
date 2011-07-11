@@ -24,13 +24,7 @@
 namespace QuantLib {
 
     Settings::DateProxy::DateProxy()
-    : ObservableValue<Date>(
-                            #ifdef QL_TODAY_AS_STICKY_EVALDATE
-                            Date::todaysDate())
-                            #else
-                            Date())
-                            #endif
-    {}
+    : ObservableValue<Date>(Date()) {}
 
     std::ostream& operator<<(std::ostream& out,
                              const Settings::DateProxy& p) {
@@ -40,6 +34,17 @@ namespace QuantLib {
     Settings::Settings()
     : includeReferenceDateCashFlows_(false),
       enforcesTodaysHistoricFixings_(false) {}
+
+    void Settings::anchorEvaluationDate() {
+        // set to today's date if not already set.
+        if (evaluationDate_.value() == Date())
+            evaluationDate_ = Date::todaysDate();
+        // If set, no-op since the date is already anchored.
+    }
+
+    void Settings::resetEvaluationDate() {
+        evaluationDate_ = Date();
+    }
 
     SavedSettings::SavedSettings()
     : evaluationDate_(Settings::instance().evaluationDate()),

@@ -71,6 +71,22 @@ namespace QuantLib {
         DateProxy& evaluationDate();
         const DateProxy& evaluationDate() const;
 
+        /*! Call this to prevent the evaluation date to change at
+            midnight (and, incidentally, to gain quite a bit of
+            performance.)  If no evaluation date was previously set,
+            it is equivalent to setting the evaluation date to
+            Date::todaysDate(); if an evaluation date other than
+            Date() was already set, it has no effect.
+        */
+        void anchorEvaluationDate();
+        /*! Call this to reset the evaluation date to
+            Date::todaysDate() and allow it to change at midnight.  It
+            is equivalent to setting the evaluation date to Date().
+            This comes at the price of losing some performance, since
+            the evaluation date is re-evaluated each time it is read.
+        */
+        void resetEvaluationDate();
+
         /*! This flag specifies whether or not cashflows occurring on
             the NPV date should, by default, enter the NPV.  It can be
             overridden locally when calling the NPV-related

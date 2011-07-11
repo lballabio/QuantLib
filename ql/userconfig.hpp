@@ -70,13 +70,6 @@
 //#   define QL_USE_INDEXED_COUPON
 #endif
 
-/* Define this to have today's date as sticky evaluation date in Settings.
-   This prevents the midnight change, and it is equivalent to set todays's
-   date to Settings. It can be reverted setting Null<Date>() to Settings. */
-#ifndef QL_TODAY_AS_STICKY_EVALDATE
-//#   define QL_TODAY_AS_STICKY_EVALDATE
-#endif
-
 /* Define this to have singletons return different instances for
    different sessions. You will have to provide and link with the
    library a sessionId() function in namespace QuantLib, returning a
