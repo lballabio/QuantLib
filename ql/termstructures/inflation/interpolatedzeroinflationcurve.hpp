@@ -189,7 +189,7 @@ namespace QuantLib {
     template <class T>
     Date InterpolatedZeroInflationCurve<T>::maxDate() const {
         Date d;
-        if (indexIsInterpolated_) {
+        if (indexIsInterpolated()) {
             d = dates_.back();
         } else {
             d = inflationPeriod(dates_.back(), frequency()).second;

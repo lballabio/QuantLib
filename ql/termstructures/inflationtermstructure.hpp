@@ -91,17 +91,12 @@ namespace QuantLib {
         /*! Calling setSeasonality with no arguments means unsetting
             as the default is used to choose unsetting.
         */
-        void setSeasonality(const boost::shared_ptr<Seasonality> &seasonality = boost::shared_ptr<Seasonality>());
+        void setSeasonality(const boost::shared_ptr<Seasonality>& seasonality =
+                                            boost::shared_ptr<Seasonality>());
         boost::shared_ptr<Seasonality> seasonality() const;
         bool hasSeasonality() const;
 
       protected:
-        Handle<YieldTermStructure> nominalTermStructure_;
-
-        Period observationLag_;
-        Frequency frequency_;
-        bool indexIsInterpolated_;
-        mutable Rate baseRate_;
 
         // This next part is required for piecewise- constructors
         // because, for inflation, they need more than just the
@@ -118,6 +113,12 @@ namespace QuantLib {
                         bool extrapolate) const;
 
         boost::shared_ptr<Seasonality> seasonality_;
+      private:
+        Period observationLag_;
+        Frequency frequency_;
+        bool indexIsInterpolated_;
+        mutable Rate baseRate_;
+        Handle<YieldTermStructure> nominalTermStructure_;
     };
 
 
@@ -261,7 +262,37 @@ namespace QuantLib {
                                const Date &, const Date &);
 
 
-}
+    // inline
 
+    inline Period InflationTermStructure::observationLag() const {
+        return observationLag_;
+    }
+
+    inline Frequency InflationTermStructure::frequency() const {
+        return frequency_;
+    }
+
+    inline bool InflationTermStructure::indexIsInterpolated() const {
+        return indexIsInterpolated_;
+    }
+
+    inline Rate InflationTermStructure::baseRate() const {
+        return baseRate_;
+    }
+
+    inline Handle<YieldTermStructure>
+    InflationTermStructure::nominalTermStructure() const {
+        return nominalTermStructure_;
+    }
+
+    inline boost::shared_ptr<Seasonality> InflationTermStructure::seasonality() const {
+        return seasonality_;
+    }
+
+    inline bool InflationTermStructure::hasSeasonality() const {
+        return seasonality_;
+    }
+
+}
 
 #endif

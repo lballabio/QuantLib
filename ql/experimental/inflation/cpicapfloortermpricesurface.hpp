@@ -68,9 +68,9 @@ namespace QuantLib {
     class CPICapFloorTermPriceSurface : public InflationTermStructure {
       public:
         CPICapFloorTermPriceSurface(Real nominal, 
-									Real baseRate,					// avoids an uncontrolled crash if index has no TS
+									Real baseRate,	// avoids an uncontrolled crash if index has no TS
 									const Period &observationLag,	
-									const Calendar &cal,				// calendar in index may not be useful
+									const Calendar &cal, // calendar in index may not be useful
 									const BusinessDayConvention &bdc,
 									const DayCounter &dc,
 									const Handle<ZeroInflationIndex>& zii,
@@ -81,19 +81,24 @@ namespace QuantLib {
                                     const Matrix &cPrice,
                                     const Matrix &fPrice);
  
+        //! \name InflationTermStructure interface
+        //@{
+		Period observationLag() const;
+		Date baseDate() const;
+        //@}
+
         //! is based on
         Handle<ZeroInflationIndex> zeroInflationIndex() const { return zii_; }
+
 
         //! inspectors
         /*! \note you don't know if price() is a cap or a floor
                   without checking the ZeroInflation ATM level.
         */
         //@{
-		virtual Real nominal() const { return nominal_; }
-		virtual Date baseDate() const { return zeroInflationIndex()->zeroInflationTermStructure()->baseDate(); }
-		virtual Rate baseRate() const { return baseRate_; }
-		virtual Period observationLag() const { return zeroInflationIndex()->zeroInflationTermStructure()->observationLag(); }
-		virtual BusinessDayConvention businessDayConvention() const { return bdc_; }
+		virtual Real nominal() const;
+		virtual BusinessDayConvention businessDayConvention() const;
+        //@}
 
 		//! \warning you MUST remind the compiler in any descendants with the using:: mechanism 
 		//!          because you overload the names
@@ -134,8 +139,6 @@ namespace QuantLib {
 		
 		
 
-        Real nominal_;
-        BusinessDayConvention bdc_;
         Handle<ZeroInflationIndex> zii_;
         // data
         std::vector<Rate> cStrikes_;
@@ -146,6 +149,9 @@ namespace QuantLib {
         Matrix fPrice_;
         // constructed
         mutable std::vector<Rate> cfStrikes_;
+      private:
+        Real nominal_;
+        BusinessDayConvention bdc_;
     };
 
 		
@@ -352,10 +358,26 @@ namespace QuantLib {
         Time t = timeFromReference(d);
         return floorPrice_(t,k);
     }
- 
- 
+
+    // inline
+
+    inline Period CPICapFloorTermPriceSurface::observationLag() const {
+        return zeroInflationIndex()->zeroInflationTermStructure()->observationLag();
+    }
+
+    inline Date CPICapFloorTermPriceSurface::baseDate() const {
+        return zeroInflationIndex()->zeroInflationTermStructure()->baseDate();
+    }
+
+    inline Real CPICapFloorTermPriceSurface::nominal() const {
+        return nominal_;
+    }
+
+    inline BusinessDayConvention
+    CPICapFloorTermPriceSurface::businessDayConvention() const {
+        return bdc_;
+    }
+
 }
 
-
 #endif
-

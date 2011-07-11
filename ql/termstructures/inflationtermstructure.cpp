@@ -74,18 +74,6 @@ namespace QuantLib {
     }
 
 
-    Period InflationTermStructure::observationLag() const {
-        return observationLag_;
-    }
-
-    Frequency InflationTermStructure::frequency() const {
-        return frequency_;
-    }
-
-    bool InflationTermStructure::indexIsInterpolated() const {
-        return indexIsInterpolated_;
-    }
-
     void InflationTermStructure::setSeasonality(
                           const boost::shared_ptr<Seasonality>& seasonality) {
         // always reset, whether with null or new pointer
@@ -98,24 +86,6 @@ namespace QuantLib {
         notifyObservers();
     }
 
-
-    boost::shared_ptr<Seasonality> InflationTermStructure::seasonality() const {
-        return seasonality_;
-    }
-
-    bool InflationTermStructure::hasSeasonality() const {
-        return seasonality_;
-    }
-
-
-    Handle<YieldTermStructure>
-    InflationTermStructure::nominalTermStructure() const {
-        return nominalTermStructure_;
-    }
-
-    Rate InflationTermStructure::baseRate() const {
-        return baseRate_;
-    }
 
     void InflationTermStructure::checkRange(const Date& d,
                                             bool extrapolate) const {
@@ -369,4 +339,3 @@ namespace QuantLib {
 
 
 }
-

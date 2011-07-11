@@ -375,7 +375,7 @@ namespace QuantLib {
             Size numYears = (Size)(t + 0.5);
             Real sumDiscount = 0.0;
             for (Size j=0; j<numYears; ++j)
-                sumDiscount += nominalTermStructure_->discount(j + 1.0);
+                sumDiscount += nominalTermStructure()->discount(j + 1.0);
             // determine the minimum value of the ATM swap point
             Real tmpMinSwapRateIntersection = -1.e10;
             Real tmpMaxSwapRateIntersection = 1.e10;
@@ -512,13 +512,13 @@ namespace QuantLib {
 
         std::vector<boost::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > > YYhelpers;
         for (Size i=1; i<=nYears; i++) {
-            Date maturity = nominalTermStructure_->referenceDate() + Period(i,Years);
+            Date maturity = nominalTermStructure()->referenceDate() + Period(i,Years);
             Handle<Quote> quote(boost::shared_ptr<Quote>(
                                new SimpleQuote( atmYoYSwapRate( maturity ) )));//!
             boost::shared_ptr<BootstrapHelper<YoYInflationTermStructure> >
             anInstrument(
                 new YearOnYearInflationSwapHelper(
-                                quote, observationLag_, maturity,
+                                quote, observationLag(), maturity,
                                 calendar(), bdc_, dayCounter(),
                                 yoyIndex()));
             YYhelpers.push_back (anInstrument);
@@ -529,12 +529,12 @@ namespace QuantLib {
         // we pick this as the end of the curve
         Rate baseYoYRate = atmYoYSwapRate( referenceDate() );//!
 
-        Handle<YieldTermStructure> nominalH( nominalTermStructure_ );
+        Handle<YieldTermStructure> nominalH( nominalTermStructure() );
         // Linear is OK because we have every year
         boost::shared_ptr<PiecewiseYoYInflationCurve<Linear> >   pYITS(
               new PiecewiseYoYInflationCurve<Linear>(
-                      nominalTermStructure_->referenceDate(),
-                      calendar(), dayCounter(), observationLag_, yoyIndex()->frequency(),
+                      nominalTermStructure()->referenceDate(),
+                      calendar(), dayCounter(), observationLag(), yoyIndex()->frequency(),
                       yoyIndex()->interpolated(), baseYoYRate,
                       nominalH, YYhelpers));
         pYITS->recalculate();
