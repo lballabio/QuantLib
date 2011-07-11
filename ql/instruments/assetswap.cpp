@@ -210,6 +210,13 @@ namespace QuantLib {
         return legBPS_[1];
     }
 
+    Real AssetSwap::floatingLegNPV() const {
+        calculate();
+        QL_REQUIRE(legNPV_.size() > 1 && legNPV_[1] != Null<Real>(),
+                   "floating-leg NPV not available");
+        return legNPV_[1];
+    }
+
     Real AssetSwap::fairCleanPrice() const {
         calculate();
         if (fairCleanPrice_ != Null<Real>()) {

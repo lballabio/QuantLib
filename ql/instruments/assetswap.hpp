@@ -64,6 +64,7 @@ namespace QuantLib {
         // results
         Spread fairSpread() const;
         Real floatingLegBPS() const;
+        Real floatingLegNPV() const;
         Real fairCleanPrice() const;
         // inspectors
         bool parSwap() const { return parSwap_; }
