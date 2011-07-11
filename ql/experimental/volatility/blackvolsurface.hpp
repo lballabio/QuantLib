@@ -46,13 +46,21 @@ namespace QuantLib {
             constructors.
         */
         //@{
+#ifndef QL_DISABLE_DEPRECATED
+        /*! \warning term structures initialized by means of this
+                     constructor must manage their own reference date
+                     by overriding the referenceDate() method.
+        */
+        BlackVolSurface(const Calendar& cal,
+                        BusinessDayConvention bdc = Following,
+                        const DayCounter& dc = DayCounter());
+#endif
         //! default constructor
         /*! \warning term structures initialized by means of this
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        BlackVolSurface(const Calendar& cal = Calendar(),
-                        BusinessDayConvention bdc = Following,
+        BlackVolSurface(BusinessDayConvention bdc = Following,
                         const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
         BlackVolSurface(const Date& referenceDate,

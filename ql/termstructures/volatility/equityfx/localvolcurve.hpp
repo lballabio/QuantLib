@@ -33,8 +33,7 @@ namespace QuantLib {
     class LocalVolCurve : public LocalVolTermStructure {
       public:
         LocalVolCurve(const Handle<BlackVarianceCurve>& curve)
-        : LocalVolTermStructure(curve->calendar(),
-                                curve->businessDayConvention(),
+        : LocalVolTermStructure(curve->businessDayConvention(),
                                 curve->dayCounter()),
           blackVarianceCurve_(curve) {
             registerWith(blackVarianceCurve_);
@@ -43,6 +42,9 @@ namespace QuantLib {
         //@{
         const Date& referenceDate() const {
             return blackVarianceCurve_->referenceDate();
+        }
+        Calendar calendar() const {
+            return blackVarianceCurve_->calendar();
         }
         DayCounter dayCounter() const {
             return blackVarianceCurve_->dayCounter();

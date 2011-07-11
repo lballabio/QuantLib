@@ -44,12 +44,21 @@ namespace QuantLib {
             constructors.
         */
         //@{
+#ifndef QL_DISABLE_DEPRECATED
         /*! \warning term structures initialized by means of this
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
         InterestRateVolSurface(const boost::shared_ptr<InterestRateIndex>&,
                                const Calendar& cal = Calendar(),
+                               BusinessDayConvention bdc = Following,
+                               const DayCounter& dc = DayCounter());
+#endif
+        /*! \warning term structures initialized by means of this
+                     constructor must manage their own reference date
+                     by overriding the referenceDate() method.
+        */
+        InterestRateVolSurface(const boost::shared_ptr<InterestRateIndex>&,
                                BusinessDayConvention bdc = Following,
                                const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date

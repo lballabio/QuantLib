@@ -40,13 +40,20 @@ namespace QuantLib {
             constructors.
         */
         //@{
-        //! default constructor
+#ifndef QL_DISABLE_DEPRECATED
         /*! \warning term structures initialized by means of this
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
         VolatilityTermStructure(const Calendar& cal,
                                 BusinessDayConvention bdc,
+                                const DayCounter& dc = DayCounter());
+#endif
+        /*! \warning term structures initialized by means of this
+                     constructor must manage their own reference date
+                     by overriding the referenceDate() method.
+        */
+        VolatilityTermStructure(BusinessDayConvention bdc,
                                 const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
         VolatilityTermStructure(const Date& referenceDate,

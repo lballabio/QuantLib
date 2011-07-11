@@ -21,10 +21,16 @@
 
 namespace QuantLib {
 
+#ifndef QL_DISABLE_DEPRECATED
     BlackAtmVolCurve::BlackAtmVolCurve(const Calendar& cal,
                                        BusinessDayConvention bdc,
                                        const DayCounter& dc)
     : VolatilityTermStructure(cal, bdc, dc) {}
+#endif
+
+    BlackAtmVolCurve::BlackAtmVolCurve(BusinessDayConvention bdc,
+                                       const DayCounter& dc)
+    : VolatilityTermStructure(bdc, dc) {}
 
     BlackAtmVolCurve::BlackAtmVolCurve(const Date& refDate,
                                        const Calendar& cal,

@@ -105,8 +105,13 @@ namespace QuantLib {
                         bool extrapolate) const;
         bool moving_;
         mutable bool updated_;
+#ifndef QL_DISABLE_DEPRECATED
         Calendar calendar_;
       private:
+#else
+      private:
+        Calendar calendar_;
+#endif
         mutable Date referenceDate_;
         Natural settlementDays_;
         DayCounter dayCounter_;

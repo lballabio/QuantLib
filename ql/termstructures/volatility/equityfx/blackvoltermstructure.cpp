@@ -23,10 +23,16 @@ namespace QuantLib {
 
     const Time BlackVolTermStructure::dT = 1.0/365.0;
 
+#ifndef QL_DISABLE_DEPRECATED
     BlackVolTermStructure::BlackVolTermStructure(const Calendar& cal,
                                                  BusinessDayConvention bdc,
                                                  const DayCounter& dc)
     : VolatilityTermStructure(cal, bdc, dc) {}
+#endif
+
+    BlackVolTermStructure::BlackVolTermStructure(BusinessDayConvention bdc,
+                                                 const DayCounter& dc)
+    : VolatilityTermStructure(bdc, dc) {}
 
     BlackVolTermStructure::BlackVolTermStructure(const Date& refDate,
                                                  const Calendar& cal,
@@ -116,11 +122,18 @@ namespace QuantLib {
         return v2-v1;
     }
 
+#ifndef QL_DISABLE_DEPRECATED
     BlackVolatilityTermStructure::BlackVolatilityTermStructure(
                                                     const Calendar& cal,
                                                     BusinessDayConvention bdc,
                                                     const DayCounter& dc)
     : BlackVolTermStructure(cal, bdc, dc) {}
+#endif
+
+    BlackVolatilityTermStructure::BlackVolatilityTermStructure(
+                                                    BusinessDayConvention bdc,
+                                                    const DayCounter& dc)
+    : BlackVolTermStructure(bdc, dc) {}
 
     BlackVolatilityTermStructure::BlackVolatilityTermStructure(
                                                     const Date& refDate,
@@ -136,11 +149,18 @@ namespace QuantLib {
                                                     const DayCounter& dc)
     : BlackVolTermStructure(settlementDays, cal, bdc, dc) {}
 
+#ifndef QL_DISABLE_DEPRECATED
     BlackVarianceTermStructure::BlackVarianceTermStructure(
                                                     const Calendar& cal,
                                                     BusinessDayConvention bdc,
                                                     const DayCounter& dc)
     : BlackVolTermStructure(cal, bdc, dc) {}
+#endif
+
+    BlackVarianceTermStructure::BlackVarianceTermStructure(
+                                                    BusinessDayConvention bdc,
+                                                    const DayCounter& dc)
+    : BlackVolTermStructure(bdc, dc) {}
 
     BlackVarianceTermStructure::BlackVarianceTermStructure(
                                                     const Date& refDate,

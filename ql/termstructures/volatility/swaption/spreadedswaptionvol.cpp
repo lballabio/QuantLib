@@ -27,8 +27,7 @@ namespace QuantLib {
     SpreadedSwaptionVolatility::SpreadedSwaptionVolatility(
                             const Handle<SwaptionVolatilityStructure>& baseVol,
                             const Handle<Quote>& spread)
-    : SwaptionVolatilityStructure(baseVol->calendar(),
-                                  baseVol->businessDayConvention(),
+    : SwaptionVolatilityStructure(baseVol->businessDayConvention(),
                                   baseVol->dayCounter()),
       baseVol_(baseVol), spread_(spread) {
           registerWith(baseVol_);

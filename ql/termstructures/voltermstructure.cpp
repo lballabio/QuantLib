@@ -21,12 +21,18 @@
 
 namespace QuantLib {
 
+#ifndef QL_DISABLE_DEPRECATED
     VolatilityTermStructure::VolatilityTermStructure(const Calendar& cal,
                                                      BusinessDayConvention bdc,
                                                      const DayCounter& dc)
     : TermStructure(dc), bdc_(bdc) {
         calendar_ = cal;
     }
+#endif
+
+    VolatilityTermStructure::VolatilityTermStructure(BusinessDayConvention bdc,
+                                                     const DayCounter& dc)
+    : TermStructure(dc), bdc_(bdc) {}
 
     VolatilityTermStructure::VolatilityTermStructure(const Date& referenceDate,
                                                      const Calendar& cal,
