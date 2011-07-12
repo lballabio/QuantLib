@@ -19,7 +19,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/experimental/finitedifferences/fdmmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonop.hpp>
+#include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/secondderivativeop.hpp>
 #include <ql/experimental/finitedifferences/secondordermixedderivativeop.hpp>
 

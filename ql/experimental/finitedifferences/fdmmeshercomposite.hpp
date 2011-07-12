@@ -36,8 +36,7 @@ namespace QuantLib {
       public:
         FdmMesherComposite(
             const boost::shared_ptr<FdmLinearOpLayout>& layout,
-            const std::vector<boost::shared_ptr<Fdm1dMesher> > & mesher)
-        : FdmMesher(layout), mesher_(mesher) {}
+            const std::vector<boost::shared_ptr<Fdm1dMesher> > & mesher);
 
         Real dplus(const FdmLinearOpIterator& iter, Size direction) const;
         Real dminus(const FdmLinearOpIterator& iter, Size direction) const;

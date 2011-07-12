@@ -22,6 +22,7 @@
 #include <ql/math/functional.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/experimental/finitedifferences/fdmmesher.hpp>
+#include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesop.hpp>
 #include <ql/experimental/finitedifferences/secondderivativeop.hpp>
 

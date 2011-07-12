@@ -22,6 +22,7 @@
 */
 
 #include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdmarithmeticaveragecondition.hpp>
 
 namespace QuantLib {

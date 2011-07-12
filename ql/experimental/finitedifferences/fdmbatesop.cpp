@@ -24,8 +24,10 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/experimental/finitedifferences/fdmmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmbatesop.hpp>
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
+#include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 
 namespace QuantLib {
 

@@ -18,7 +18,8 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-
+#include <ql/experimental/finitedifferences/fdmmesher.hpp>
+#include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/secondordermixedderivativeop.hpp>
 
 namespace QuantLib {

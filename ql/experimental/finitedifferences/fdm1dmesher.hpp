@@ -36,6 +36,7 @@ namespace QuantLib {
         Fdm1dMesher(Size size)
         : locations_(size), dplus_(size), dminus_(size) {}
 
+        Size size() const { return locations_.size(); }
         Real dplus(Size index) const {return dplus_[index];}
         Real dminus(Size index) const {return dminus_[index];}
         Real location(Size index) const {return locations_[index];}

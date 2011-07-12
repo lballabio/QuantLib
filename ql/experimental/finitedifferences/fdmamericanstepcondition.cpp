@@ -19,6 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
 
 namespace QuantLib {
@@ -34,14 +35,8 @@ namespace QuantLib {
         boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
         const FdmLinearOpIterator endIter = layout->end();
 
-        const Size dims = layout->dim().size();
-        Array locations(dims);
-
         for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
             ++iter) {
-            for (Size i=0; i < dims; ++i)
-                locations[i] = mesher_->location(iter, i);
-
             const Real innerValue = calculator_->innerValue(iter, t);
             if (innerValue > a[iter.index()]) {
                 a[iter.index()] = innerValue;

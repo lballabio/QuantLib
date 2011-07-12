@@ -70,6 +70,7 @@ this_include_HEADERS = \
 	fdmsnapshotcondition.hpp \
 	fdmsolverdesc.hpp \
 	fdmstepconditioncomposite.hpp \
+	fdmvppstepcondition.hpp \
     fdsimplebsswingengine.hpp \
 	fdsimpleextoujumpswingengine.hpp \
 	firstderivativeop.hpp \
@@ -140,6 +141,7 @@ libMultiDimFDM_la_SOURCES = \
     fdmsimpleswingcondition.cpp \
 	fdmsnapshotcondition.cpp \
 	fdmstepconditioncomposite.cpp \
+	fdmvppstepcondition.cpp \
     fdsimplebsswingengine.cpp \
 	fdsimpleextoujumpswingengine.cpp \
     fdsimpleextoustorageengine.cpp \

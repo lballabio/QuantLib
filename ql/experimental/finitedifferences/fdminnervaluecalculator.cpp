@@ -28,6 +28,7 @@
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/instruments/basketoption.hpp>
 #include <ql/experimental/finitedifferences/fdmmesher.hpp>
+#include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 
 #include <deque>

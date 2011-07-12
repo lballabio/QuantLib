@@ -21,6 +21,7 @@
 
 #include <ql/experimental/finitedifferences/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/tridiagonaloperator.hpp>
+#include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/triplebandlinearop.hpp>
 
 namespace QuantLib {

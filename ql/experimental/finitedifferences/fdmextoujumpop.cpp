@@ -25,10 +25,12 @@
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/experimental/finitedifferences/fdmmesher.hpp>
 #include <ql/experimental/processes/extouwithjumpsprocess.hpp>
+#include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
 #include <ql/experimental/finitedifferences/fdmextoujumpop.hpp>
-#include <ql/experimental/finitedifferences/fdmextendedornsteinuhlenbeckop.hpp>
+#include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/secondderivativeop.hpp>
+#include <ql/experimental/finitedifferences/fdmextendedornsteinuhlenbeckop.hpp>
 
 namespace QuantLib {
 

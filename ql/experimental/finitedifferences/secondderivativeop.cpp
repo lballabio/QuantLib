@@ -20,6 +20,7 @@
 */
 
 #include <ql/experimental/finitedifferences/fdmmesher.hpp>
+#include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/secondderivativeop.hpp>
 
 namespace QuantLib {

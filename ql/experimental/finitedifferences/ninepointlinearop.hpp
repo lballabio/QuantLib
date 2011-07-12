@@ -26,11 +26,11 @@
 #ifndef quantlib_nine_point_linear_op_hpp
 #define quantlib_nine_point_linear_op_hpp
 
-#include <ql/experimental/finitedifferences/fdmmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearop.hpp>
 #include <boost/shared_array.hpp>
 
 namespace QuantLib {
+    class FdmMesher;
 
     class NinePointLinearOp : public FdmLinearOp {
       public:

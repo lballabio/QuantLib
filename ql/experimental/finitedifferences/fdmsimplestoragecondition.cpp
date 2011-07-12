@@ -18,6 +18,7 @@
 */
 
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
+#include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdmsimplestoragecondition.hpp>
 
 namespace QuantLib {

@@ -67,6 +67,7 @@
 #include <ql/experimental/finitedifferences/fdmsnapshotcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmsolverdesc.hpp>
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
+#include <ql/experimental/finitedifferences/fdmvppstepcondition.hpp>
 #include <ql/experimental/finitedifferences/fdsimplebsswingengine.hpp>
 #include <ql/experimental/finitedifferences/fdsimpleextoujumpswingengine.hpp>
 #include <ql/experimental/finitedifferences/firstderivativeop.hpp>

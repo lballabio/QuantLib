@@ -21,6 +21,7 @@
 
 #include <ql/time/daycounter.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdmdividendhandler.hpp>
 
 namespace QuantLib {

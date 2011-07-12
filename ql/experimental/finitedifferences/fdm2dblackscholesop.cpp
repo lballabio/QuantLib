@@ -23,6 +23,7 @@
 
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/experimental/finitedifferences/fdmmesher.hpp>
+#include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdm2dblackscholesop.hpp>
 #include <ql/experimental/finitedifferences/secondordermixedderivativeop.hpp>
 

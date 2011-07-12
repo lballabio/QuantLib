@@ -19,9 +19,21 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdmmeshercomposite.hpp>
 
 namespace QuantLib {
+
+FdmMesherComposite::FdmMesherComposite(
+        const boost::shared_ptr<FdmLinearOpLayout>& layout,
+        const std::vector<boost::shared_ptr<Fdm1dMesher> > & mesher)
+    : FdmMesher(layout), mesher_(mesher) {
+        for (Size i=0; i < mesher.size(); ++i) {
+            QL_REQUIRE(mesher[i]->size() == layout->dim()[i],
+                       "size of 1d mesher " << i << " does not fit to layout");
+        }
+    }
+
 
     Real FdmMesherComposite::dplus(const FdmLinearOpIterator& iter,
                                    Size direction) const {

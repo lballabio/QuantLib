@@ -26,11 +26,12 @@
 #define quantlib_fdm_mesher_hpp
 
 #include <ql/math/array.hpp>
-#include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <boost/shared_ptr.hpp>
 #include <vector>
 
 namespace QuantLib {
+    class FdmLinearOpLayout;
+    class FdmLinearOpIterator;
 
     class FdmMesher {
       public:
