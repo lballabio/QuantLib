@@ -3429,6 +3429,24 @@
     <ClInclude Include="ql\experimental\inflation\cpioptionletvolatilitystructure.hpp">
       <Filter>experimental\inflation</Filter>
     </ClInclude>
+    <ClInclude Include="ql\processes\defaultable.hpp">
+      <Filter>processes</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdklugeextouspreadengine.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdmklugeextouop.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdmklugeextousolver.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdmklugeextouspreadinnervalue.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdmndimsolver.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -5477,6 +5495,15 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\inflation\cpioptionletvolatilitystructure.cpp">
       <Filter>experimental\inflation</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdklugeextouspreadengine.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdmklugeextouop.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdmklugeextousolver.cpp">
+      <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

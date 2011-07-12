@@ -335,9 +335,6 @@
     <ClCompile Include="volatilitymodels.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="quantlibtestsuite.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="inflationcpicapfloor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -347,6 +344,7 @@
     <ClCompile Include="swingoption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="americanoption.hpp">
