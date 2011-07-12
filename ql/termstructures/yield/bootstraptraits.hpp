@@ -84,7 +84,8 @@ namespace QuantLib {
         {
             if (validData) {
                 #if defined(QL_NEGATIVE_RATES)
-                return *(std::min_element(c->data().begin(), c->data().end()))/2.0;
+                return *(std::min_element(c->data().begin(),
+                                          c->data().end()))/2.0;
                 #else
                 return c->data().back()/2.0;
                 #endif

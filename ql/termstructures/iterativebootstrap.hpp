@@ -51,7 +51,7 @@ namespace QuantLib {
         Brent firstSolver_;
         FiniteDifferenceNewtonSafe solver_;
         mutable bool initialized_, validCurve_;
-        mutable Size firstHelper_, alive_;
+        mutable Size firstAliveHelper_, alive_;
         mutable std::vector<Real> previousData_;
         mutable std::vector<boost::shared_ptr<BootstrapError<Curve> > > errors_;
     };
@@ -85,10 +85,10 @@ namespace QuantLib {
         Date firstDate = Traits::initialDate(ts_);
         QL_REQUIRE(ts_->instruments_[n_-1]->latestDate()>firstDate,
                    "all instruments expired");
-        firstHelper_ = 0;
-        while (ts_->instruments_[firstHelper_]->latestDate() <= firstDate)
-            ++firstHelper_;
-        alive_ = n_-firstHelper_;
+        firstAliveHelper_ = 0;
+        while (ts_->instruments_[firstAliveHelper_]->latestDate() <= firstDate)
+            ++firstAliveHelper_;
+        alive_ = n_-firstAliveHelper_;
         QL_REQUIRE(alive_>=Interpolator::requiredPoints-1,
                    "not enough alive instruments: " << alive_ <<
                    " provided, " << Interpolator::requiredPoints-1 <<
@@ -104,7 +104,7 @@ namespace QuantLib {
         times[0] = ts_->timeFromReference(dates[0]);
         // pillar counter: i
         // helper counter: j
-        for (Size i=1, j=firstHelper_; j<n_; ++i, ++j) {
+        for (Size i=1, j=firstAliveHelper_; j<n_; ++i, ++j) {
             const boost::shared_ptr<typename Traits::helper>& helper =
                                                         ts_->instruments_[j];
             dates[i] = helper->latestDate();
@@ -139,7 +139,7 @@ namespace QuantLib {
             initialize();
 
         // setup helpers
-        for (Size j=firstHelper_; j<n_; ++j) {
+        for (Size j=firstAliveHelper_; j<n_; ++j) {
             const boost::shared_ptr<typename Traits::helper>& helper =
                                                         ts_->instruments_[j];
             // check for valid quote
@@ -166,9 +166,12 @@ namespace QuantLib {
                 bool validData = validCurve_ || iteration>0;
 
                 // bracket root and calculate guess
-                Real min = Traits::minValueAfter(i,ts_,validData,firstHelper_);
-                Real max = Traits::maxValueAfter(i,ts_,validData,firstHelper_);
-                Real guess = Traits::guess(i, ts_, validData, firstHelper_);
+                Real min = Traits::minValueAfter(i, ts_, validData,
+                                                            firstAliveHelper_);
+                Real max = Traits::maxValueAfter(i, ts_, validData,
+                                                            firstAliveHelper_);
+                Real guess = Traits::guess(i, ts_, validData,
+                                                            firstAliveHelper_);
                 // adjust guess if needed
                 if (guess>=max)
                     guess = max - (max-min)/5.0;
