@@ -35,6 +35,7 @@ class SwingOptionTest {
 	static void testExtOUJumpVanillaEngine();
     static void testSimpleExtOUStorageEngine();
     static void testKlugeExtOUSpreadOption();
+    static void testVPPStepCondition();
     static boost::unit_test_framework::test_suite* suite();
 };
 
