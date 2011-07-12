@@ -41,6 +41,9 @@ namespace QuantLib {
                  const boost::shared_ptr<typename Traits::helper>& instrument,
                  Size segment);
         Real operator()(Rate guess) const;
+        const boost::shared_ptr<typename Traits::helper>& helper() {
+            return helper_;
+        }
       private:
         const Curve* curve_;
         const boost::shared_ptr<typename Traits::helper> helper_;
@@ -67,6 +70,5 @@ namespace QuantLib {
     #endif
 
 }
-
 
 #endif

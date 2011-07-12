@@ -49,10 +49,11 @@ namespace QuantLib {
         mutable bool initialized_, validCurve_;
         Curve* ts_;
         Size n_;
-        mutable Size firstInstrument_, alive_;
-        mutable std::vector<Real> previousData_;
         Brent firstSolver_;
         FiniteDifferenceNewtonSafe solver_;
+        mutable Size firstHelper_, alive_;
+        mutable std::vector<Real> previousData_;
+        mutable std::vector<boost::shared_ptr<BootstrapError<Curve> > > errors_;
     };
 
 
@@ -67,8 +68,19 @@ namespace QuantLib {
 
         ts_ = ts;
         n_ = ts_->instruments_.size();
-        for (Size j=0; j<n_; ++j)
-            ts_->registerWith(ts_->instruments_[j]);
+        if (ts_->moving_) {
+            for (Size j=0; j<n_; ++j)
+                ts_->registerWith(ts_->instruments_[j]);
+        } else {
+            for (Size j=0; j<n_; ++j) {
+                ts_->registerWith(ts_->instruments_[j]);
+                boost::shared_ptr<RelativeDateBootstrapHelper<Curve> > rdbh = 
+                    boost::dynamic_pointer_cast<RelativeDateBootstrapHelper<Curve> >(
+                        ts_->instruments_[j]);
+                QL_REQUIRE(!rdbh, "RelativeDateBootstrapHelper not allowed "
+                           "with non-moving curve");
+            }
+        }
 
         // do not initialize yet: instruments could be invalid here
         // but valid later when bootstrapping is actually required
@@ -76,47 +88,52 @@ namespace QuantLib {
 
     template <class Curve>
     void IterativeBootstrap<Curve>::initialize() const {
-        // ensure rate helpers are sorted
+        // ensure helpers are sorted
         std::sort(ts_->instruments_.begin(), ts_->instruments_.end(),
                   detail::BootstrapHelperSorter());
 
-        // skip expired instruments
+        // skip expired helpers
         Date firstDate = Traits::initialDate(ts_);
         QL_REQUIRE(ts_->instruments_[n_-1]->latestDate()>firstDate,
                    "all instruments expired");
-        firstInstrument_ = 0;
-        while (ts_->instruments_[firstInstrument_]->latestDate() <= firstDate)
-            ++firstInstrument_;
-        alive_ = n_-firstInstrument_;
+        firstHelper_ = 0;
+        while (ts_->instruments_[firstHelper_]->latestDate() <= firstDate)
+            ++firstHelper_;
+        alive_ = n_-firstHelper_;
         QL_REQUIRE(alive_>=Interpolator::requiredPoints-1,
                    "not enough alive instruments: " << alive_ <<
                    " provided, " << Interpolator::requiredPoints-1 <<
                    " required");
 
-        // calculate dates and times
-        ts_->dates_.resize(alive_+1);
-        ts_->times_.resize(alive_+1);
-        ts_->dates_[0] = firstDate;
-        ts_->times_[0] = ts_->timeFromReference(firstDate);
-        //     pillar counter: i
-        // instrument counter: j
-        for (Size i=1, j=firstInstrument_; j<n_; ++i, ++j) {
+        // calculate dates and times, create errors_
+        std::vector<Date>& dates = ts_->dates_;
+        std::vector<Time>& times = ts_->times_;
+        dates.resize(alive_+1);
+        times.resize(alive_+1);
+        errors_.resize(alive_+1);
+        dates[0] = firstDate;
+        times[0] = ts_->timeFromReference(firstDate);
+        // pillar counter: i
+        // helper counter: j
+        for (Size i=1, j=firstHelper_; j<n_; ++i, ++j) {
+            const boost::shared_ptr<typename Traits::helper>& helper =
+                                                        ts_->instruments_[j];
+            dates[i] = helper->latestDate();
+            times[i] = ts_->timeFromReference(dates[i]);
             // check for duplicated maturity
-            QL_REQUIRE(ts_->dates_[i-1] != ts_->instruments_[j]->latestDate(),
-                       "two instruments have the same maturity (" <<
-                       ts_->dates_[i-1] << ")");
-            ts_->dates_[i] = ts_->instruments_[j]->latestDate();
-            ts_->times_[i] = ts_->timeFromReference(ts_->dates_[i]);
+            QL_REQUIRE(dates[i-1]!=dates[i],
+                       "more than one instrument with maturity " << dates[i]);
+            errors_[i] = boost::shared_ptr<BootstrapError<Curve> >(new
+                BootstrapError<Curve>(ts_, helper, i));
         }
 
         // set initial guess only if the current curve cannot be used as guess
         if (!validCurve_ || ts_->data_.size()!=alive_+1) {
-            ts_->data_.resize(alive_+1);
+            // ts_->data_[0] is the only relevant item,
+            // but reasonable numbers might be needed for the whole data vector
+            // because, e.g., of interpolation's early checks
+            ts_->data_ = std::vector<Real>(alive_+1, Traits::initialValue(ts_));
             previousData_.resize(alive_+1);
-            ts_->data_[0] = Traits::initialValue(ts_);
-            // reasonable numbers needed for the starting interpolation
-            for (Size i=1; i<alive_+1; ++i)
-                ts_->data_[i] = Traits::guess(1, ts_, false);
         }
         initialized_ = true;
     }
@@ -124,28 +141,38 @@ namespace QuantLib {
     template <class Curve>
     void IterativeBootstrap<Curve>::calculate() const {
 
+        // we might have to call initialize even if the curve is initialized
+        // and not moving, just because helpers might be date relative and change
+        // with evaluation date change.
+        // anyway it makes little sense to use date relative helpers with a
+        // non-moving curve if the evaluation date changes
         if (!initialized_ || ts_->moving_)
             initialize();
 
-        // setup instruments
-        for (Size j=firstInstrument_; j<n_; ++j) {
+        // setup helpers
+        for (Size j=firstHelper_; j<n_; ++j) {
+            const boost::shared_ptr<typename Traits::helper>& helper =
+                                                        ts_->instruments_[j];
             // check for valid quote
-            QL_REQUIRE(ts_->instruments_[j]->quote()->isValid(),
+            QL_REQUIRE(helper->quote()->isValid(),
                        io::ordinal(j+1) << " instrument (maturity: " <<
-                       ts_->instruments_[j]->latestDate() <<
-                       ") has an invalid quote");
+                       helper->latestDate() << ") has an invalid quote");
             // don't try this at home!
-            // This call creates instruments, and removes "const".
+            // This call creates helpers, and removes "const".
             // There is a significant interaction with observability.
-            ts_->instruments_[j]->setTermStructure(const_cast<Curve*>(ts_));
+            helper->setTermStructure(const_cast<Curve*>(ts_));
         }
 
-        Size maxIterations = Traits::maxIterations();
+        const std::vector<Time>& times = ts_->times_;
+        const std::vector<Real>& data = ts_->data_;
+        Real accuracy = ts_->accuracy_;
+
+        Size maxIterations = Traits::maxIterations()-1;
 
         for (Size iteration=0; ; ++iteration) {
             previousData_ = ts_->data_;
 
-            for (Size i=1; i<alive_+1; ++i) { // pillar loop
+            for (Size i=1; i<=alive_; ++i) { // pillar loop
 
                 bool validData = validCurve_ || iteration>0;
 
@@ -164,9 +191,7 @@ namespace QuantLib {
                     try { // extend interpolation a point at a time
                           // including the pillar to be boostrapped
                         ts_->interpolation_ = ts_->interpolator_.interpolate(
-                            ts_->times_.begin(), ts_->times_.begin()+i+1,
-                            ts_->data_.begin());
-                        ts_->interpolation_.update();
+                            times.begin(), times.begin()+i+1, data.begin());
                     } catch (...) {
                         if (!Interpolator::global)
                             throw; // no chance to fix it in a later iteration
@@ -174,49 +199,42 @@ namespace QuantLib {
                         // otherwise use Linear while the target
                         // interpolation is not usable yet
                         ts_->interpolation_ = Linear().interpolate(
-                            ts_->times_.begin(), ts_->times_.begin()+i+1,
-                            ts_->data_.begin());
-                        ts_->interpolation_.update();
+                            times.begin(), times.begin()+i+1, data.begin());
                     }
+                    ts_->interpolation_.update();
                 }
 
-                // the actual instrument used for the current pillar
-                boost::shared_ptr<typename Traits::helper> instrument =
-                    ts_->instruments_[i-1+firstInstrument_];
                 try {
-                    BootstrapError<Curve> error(ts_, instrument, i);
                     if (validData)
-                        solver_.solve(error, ts_->accuracy_, guess, min, max);
+                        solver_.solve(*errors_[i], accuracy, guess, min, max);
                     else
-                        firstSolver_.solve(error,ts_->accuracy_,guess,min,max);
+                        firstSolver_.solve(*errors_[i], accuracy,guess,min,max);
                 } catch (std::exception &e) {
                     validCurve_ = false;
-                    QL_FAIL(io::ordinal(iteration+1) << " iteration: "
-                            "failed at " << io::ordinal(i) <<
-                            " alive instrument, maturity " <<
-                            instrument->latestDate() << ", reference date " <<
-                            ts_->dates_[0] << ": " << e.what());
+                    QL_FAIL(io::ordinal(iteration+1) << " iteration: failed "
+                            "at " << io::ordinal(i) << " alive instrument, "
+                            "maturity " << errors_[i]->helper()->latestDate()<<
+                            ", reference date " << ts_->dates_[0] <<
+                            ": " << e.what());
                 }
             }
 
             if (!Interpolator::global)
                 break;     // no need for convergence loop
-            else if (iteration == 0)
+            else if (iteration==0)
                 continue; // at least one more iteration to convergence check
 
             // exit condition
-            Real change = 0.0;
-            for (Size i=1; i<alive_+1; ++i)
-                change = std::max(change,
-                                  std::fabs(ts_->data_[i]-previousData_[i]));
-            if (change<=ts_->accuracy_)  // convergence reached
+            Real change = std::fabs(data[1]-previousData_[1]);
+            for (Size i=2; i<=alive_; ++i)
+                change = std::max(change, std::fabs(data[i]-previousData_[i]));
+            if (change<=accuracy)  // convergence reached
                 break;
 
-            QL_REQUIRE(iteration+1<maxIterations,
-                       "convergence not reached after " <<
-                       iteration+1 << " iterations; last improvement " <<
-                       change << ", required accuracy " <<
-                       ts_->accuracy_);
+            QL_REQUIRE(iteration<maxIterations,
+                       "convergence not reached after " << iteration <<
+                       " iterations; last improvement " << change <<
+                       ", required accuracy " << accuracy);
         }
         validCurve_ = true;
     }
