@@ -68,19 +68,8 @@ namespace QuantLib {
 
         ts_ = ts;
         n_ = ts_->instruments_.size();
-        if (ts_->moving_) {
-            for (Size j=0; j<n_; ++j)
-                ts_->registerWith(ts_->instruments_[j]);
-        } else {
-            for (Size j=0; j<n_; ++j) {
-                ts_->registerWith(ts_->instruments_[j]);
-                boost::shared_ptr<RelativeDateBootstrapHelper<Curve> > rdbh = 
-                    boost::dynamic_pointer_cast<RelativeDateBootstrapHelper<Curve> >(
-                        ts_->instruments_[j]);
-                QL_REQUIRE(!rdbh, "RelativeDateBootstrapHelper not allowed "
-                           "with non-moving curve");
-            }
-        }
+        for (Size j=0; j<n_; ++j)
+            ts_->registerWith(ts_->instruments_[j]);
 
         // do not initialize yet: instruments could be invalid here
         // but valid later when bootstrapping is actually required
