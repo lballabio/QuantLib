@@ -41,7 +41,7 @@ namespace QuantLib {
             return s->baseDate();
         }
         // value at reference date
-        static Volatility initialValue(const YoYOptionletVolatilitySurface *s) {
+        static Real initialValue(const YoYOptionletVolatilitySurface *s) {
             return s->baseLevel();  // REALLLYYYY important because
                                     // generally don't have a clue
                                     // what this should be - embodies
@@ -51,9 +51,11 @@ namespace QuantLib {
 
         // guesses
         template <class C>
-        static Volatility guess(Size i,
-                                const C* c,
-                                bool validData) {
+        static Real guess(Size i,
+                          const C* c,
+                          bool validData,
+                          Size) // firstAliveHelper
+        {
             if (validData) // previous iteration value
                 return c->data()[i];
 
@@ -66,21 +68,25 @@ namespace QuantLib {
 
         // constraints
         template <class C>
-        static Volatility minValueAfter(Size i,
-                                        const C* c,
-                                        bool) {
+        static Real minValueAfter(Size i,
+                                  const C* c,
+                                  bool,
+                                  Size) // firstAliveHelper
+        {
             return std::max(0.0, c->data()[i-1] - 0.02); // vol cannot be negative
         }
         template <class C>
-        static Volatility maxValueAfter(Size i,
-                                        const C* c,
-                                        bool) {
+        static Real maxValueAfter(Size i,
+                                  const C* c,
+                                  bool,
+                                  Size) // firstAliveHelper
+        {
             return c->data()[i-1] + 0.02;
         }
 
         // root-finding update
-        static void updateGuess(std::vector<Volatility> &vols,
-                                Volatility level,
+        static void updateGuess(std::vector<Real> &vols,
+                                Real level,
                                 Size i) {
             vols[i] = level;
         }

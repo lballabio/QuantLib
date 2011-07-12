@@ -46,11 +46,11 @@ namespace QuantLib {
         void calculate() const;
       private:
         void initialize() const;
-        mutable bool initialized_, validCurve_;
         Curve* ts_;
         Size n_;
         Brent firstSolver_;
         FiniteDifferenceNewtonSafe solver_;
+        mutable bool initialized_, validCurve_;
         mutable Size firstHelper_, alive_;
         mutable std::vector<Real> previousData_;
         mutable std::vector<boost::shared_ptr<BootstrapError<Curve> > > errors_;
@@ -101,7 +101,7 @@ namespace QuantLib {
         times.resize(alive_+1);
         errors_.resize(alive_+1);
         dates[0] = firstDate;
-        times[0] = ts_->timeFromReference(firstDate);
+        times[0] = ts_->timeFromReference(dates[0]);
         // pillar counter: i
         // helper counter: j
         for (Size i=1, j=firstHelper_; j<n_; ++i, ++j) {
@@ -166,9 +166,9 @@ namespace QuantLib {
                 bool validData = validCurve_ || iteration>0;
 
                 // bracket root and calculate guess
-                Real min = Traits::minValueAfter(i, ts_, validData);
-                Real max = Traits::maxValueAfter(i, ts_, validData);
-                Real guess = Traits::guess(i, ts_, validData);
+                Real min = Traits::minValueAfter(i,ts_,validData,firstHelper_);
+                Real max = Traits::maxValueAfter(i,ts_,validData,firstHelper_);
+                Real guess = Traits::guess(i, ts_, validData, firstHelper_);
                 // adjust guess if needed
                 if (guess>=max)
                     guess = max - (max-min)/5.0;

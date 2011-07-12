@@ -34,8 +34,8 @@
 namespace QuantLib {
 
     namespace detail {
-        const Rate avgRate = 0.05;
-        const Rate maxRate = 1.0;
+        const Real avgRate = 0.05;
+        const Real maxRate = 1.0;
     }
 
     //! Discount-curve traits
@@ -53,15 +53,17 @@ namespace QuantLib {
             return c->referenceDate();
         }
         // value at reference date
-        static DiscountFactor initialValue(const YieldTermStructure*) {
+        static Real initialValue(const YieldTermStructure*) {
             return 1.0;
         }
 
         // guesses
         template <class C>
-        static DiscountFactor guess(Size i, 
-                                    const C* c,
-                                    bool validData) {
+        static Real guess(Size i,
+                          const C* c,
+                          bool validData,
+                          Size) // firstAliveHelper
+        {
             if (validData) // previous iteration value
                 return c->data()[i];
 
@@ -69,15 +71,17 @@ namespace QuantLib {
                 return 1.0/(1.0+detail::avgRate*c->times()[1]);
 
             // flat rate extrapolation
-            Rate r = -std::log(c->data()[i-1])/c->times()[i-1];
+            Real r = -std::log(c->data()[i-1])/c->times()[i-1];
             return std::exp(-r * c->times()[i]);
         }
 
         // possible constraints based on previous values
         template <class C>
-        static DiscountFactor minValueAfter(Size i,
-                                            const C* c,
-                                            bool validData) {
+        static Real minValueAfter(Size i,
+                                  const C* c,
+                                  bool validData,
+                                  Size) // firstAliveHelper
+        {
             if (validData) {
                 #if defined(QL_NEGATIVE_RATES)
                 return *(std::min_element(c->data().begin(), c->data().end()))/2.0;
@@ -89,9 +93,11 @@ namespace QuantLib {
             return c->data()[i-1] * std::exp(- detail::maxRate * dt);
         }
         template <class C>
-        static DiscountFactor maxValueAfter(Size i,
-                                            const C* c,
-                                            bool validData) {
+        static Real maxValueAfter(Size i,
+                                  const C* c,
+                                  bool validData,
+                                  Size) // firstAliveHelper
+        {
             #if defined(QL_NEGATIVE_RATES)
             Time dt = c->times()[i] - c->times()[i-1];
             return c->data()[i-1] * std::exp(detail::maxRate * dt);
@@ -102,8 +108,8 @@ namespace QuantLib {
         }
 
         // root-finding update
-        static void updateGuess(std::vector<DiscountFactor>& data,
-                                DiscountFactor discount,
+        static void updateGuess(std::vector<Real>& data,
+                                Real discount,
                                 Size i) {
             data[i] = discount;
         }
@@ -127,15 +133,17 @@ namespace QuantLib {
             return c->referenceDate();
         }
         // dummy value at reference date
-        static Rate initialValue(const YieldTermStructure*) {
+        static Real initialValue(const YieldTermStructure*) {
             return detail::avgRate;
         }
 
         // guesses
         template <class C>
-        static Rate guess(Size i,
+        static Real guess(Size i,
                           const C* c,
-                          bool validData) {
+                          bool validData,
+                          Size) // firstAliveHelper
+        {
             if (validData) // previous iteration value
                 return c->data()[i];
 
@@ -150,11 +158,13 @@ namespace QuantLib {
 
         // possible constraints based on previous values
         template <class C>
-        static Rate minValueAfter(Size,
+        static Real minValueAfter(Size,
                                   const C* c,
-                                  bool validData) {
+                                  bool validData,
+                                  Size) // firstAliveHelper
+        {
             if (validData) {
-                Rate r = *(std::min_element(c->data().begin(), c->data().end()));
+                Real r = *(std::min_element(c->data().begin(), c->data().end()));
                 #if defined(QL_NEGATIVE_RATES)
                 return r<0.0 ? r*2.0 : r/2.0;
                 #else
@@ -170,11 +180,13 @@ namespace QuantLib {
             #endif
         }
         template <class C>
-        static Rate maxValueAfter(Size,
+        static Real maxValueAfter(Size,
                                   const C* c,
-                                  bool validData) {
+                                  bool validData,
+                                  Size) // firstAliveHelper
+        {
             if (validData) {
-                Rate r = *(std::max_element(c->data().begin(), c->data().end()));
+                Real r = *(std::max_element(c->data().begin(), c->data().end()));
                 #if defined(QL_NEGATIVE_RATES)
                 return r<0.0 ? r/2.0 : r*2.0;
                 #else
@@ -187,8 +199,8 @@ namespace QuantLib {
         }
 
         // root-finding update
-        static void updateGuess(std::vector<Rate>& data,
-                                Rate rate,
+        static void updateGuess(std::vector<Real>& data,
+                                Real rate,
                                 Size i) {
             data[i] = rate;
             if (i==1)
@@ -214,15 +226,17 @@ namespace QuantLib {
             return c->referenceDate();
         }
         // dummy value at reference date
-        static Rate initialValue(const YieldTermStructure*) {
+        static Real initialValue(const YieldTermStructure*) {
             return detail::avgRate;
         }
 
         // guesses
         template <class C>
-        static Rate guess(Size i,
+        static Real guess(Size i,
                           const C* c,
-                          bool validData) {
+                          bool validData,
+                          Size) // firstAliveHelper
+        {
             if (validData) // previous iteration value
                 return c->data()[i];
 
@@ -237,11 +251,13 @@ namespace QuantLib {
 
         // possible constraints based on previous values
         template <class C>
-        static Rate minValueAfter(Size,
+        static Real minValueAfter(Size,
                                   const C* c,
-                                  bool validData) {
+                                  bool validData,
+                                  Size) // firstAliveHelper
+        {
             if (validData) {
-                Rate r = *(std::min_element(c->data().begin(), c->data().end()));
+                Real r = *(std::min_element(c->data().begin(), c->data().end()));
                 #if defined(QL_NEGATIVE_RATES)
                 return r<0.0 ? r*2.0 : r/2.0;
                 #else
@@ -257,11 +273,13 @@ namespace QuantLib {
             #endif
         }
         template <class C>
-        static Rate maxValueAfter(Size,
+        static Real maxValueAfter(Size,
                                   const C* c,
-                                  bool validData) {
+                                  bool validData,
+                                  Size) // firstAliveHelper
+        {
             if (validData) {
-                Rate r = *(std::max_element(c->data().begin(), c->data().end()));
+                Real r = *(std::max_element(c->data().begin(), c->data().end()));
                 #if defined(QL_NEGATIVE_RATES)
                 return r<0.0 ? r/2.0 : r*2.0;
                 #else
@@ -274,8 +292,8 @@ namespace QuantLib {
         }
 
         // root-finding update
-        static void updateGuess(std::vector<Rate>& data,
-                                Rate forward,
+        static void updateGuess(std::vector<Real>& data,
+                                Real forward,
                                 Size i) {
             data[i] = forward;
             if (i==1)

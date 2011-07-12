@@ -36,8 +36,8 @@
 namespace QuantLib {
 
     namespace detail {
-        const Rate avgHazardRate = 0.01;
-        const Rate maxHazardRate = 1.0;
+        const Real avgHazardRate = 0.01;
+        const Real maxHazardRate = 1.0;
     }
 
     //! Survival-Probability-curve traits
@@ -63,7 +63,9 @@ namespace QuantLib {
         template <class C>
         static Real guess(Size i,
                           const C* c,
-                          bool validData) {
+                          bool validData,
+                          Size) // firstAliveHelper
+        {
             if (validData) // previous iteration value
                 return c->data()[i];
 
@@ -78,7 +80,9 @@ namespace QuantLib {
         template <class C>
         static Real minValueAfter(Size i,
                                   const C* c,
-                                  bool validData) {
+                                  bool validData,
+                                  Size) // firstAliveHelper
+        {
             if (validData) {
                 return c->data().back()/2.0;
             }
@@ -88,7 +92,9 @@ namespace QuantLib {
         template <class C>
         static Real maxValueAfter(Size i,
                                   const C* c,
-                                  bool validData) {
+                                  bool validData,
+                                  Size) // firstAliveHelper
+        {
             // survival probability cannot increase
             return c->data()[i-1];
         }
@@ -128,7 +134,9 @@ namespace QuantLib {
         template <class C>
         static Real guess(Size i,
                           const C* c,
-                          bool validData) {
+                          bool validData,
+                          Size) // firstAliveHelper
+        {
             if (validData) // previous iteration value
                 return c->data()[i];
 
@@ -144,7 +152,9 @@ namespace QuantLib {
         template <class C>
         static Real minValueAfter(Size i,
                                   const C* c,
-                                  bool validData) {
+                                  bool validData,
+                                  Size) // firstAliveHelper
+        {
             if (validData) {
                 Real r = *(std::min_element(c->data().begin(), c->data().end()));
                 return r/2.0;
@@ -154,9 +164,11 @@ namespace QuantLib {
         template <class C>
         static Real maxValueAfter(Size i,
                                   const C* c,
-                                  bool validData) {
+                                  bool validData,
+                                  Size) // firstAliveHelper
+        {
             if (validData) {
-                Rate r = *(std::max_element(c->data().begin(), c->data().end()));
+                Real r = *(std::max_element(c->data().begin(), c->data().end()));
                 return r*2.0;
             }
             // no constraints.
@@ -198,7 +210,9 @@ namespace QuantLib {
         template <class C>
         static Real guess(Size i,
                           const C* c,
-                          bool validData) {
+                          bool validData,
+                          Size) // firstAliveHelper
+        {
             if (validData) // previous iteration value
                 return c->data()[i];
 
@@ -214,9 +228,11 @@ namespace QuantLib {
         template <class C>
         static Real minValueAfter(Size i,
                                   const C* c,
-                                  bool validData) {
+                                  bool validData,
+                                  Size) // firstAliveHelper
+        {
             if (validData) {
-                Rate r = *(std::min_element(c->data().begin(), c->data().end()));
+                Real r = *(std::min_element(c->data().begin(), c->data().end()));
                 return r/2.0;
             }
             return QL_EPSILON;
@@ -224,9 +240,11 @@ namespace QuantLib {
         template <class C>
         static Real maxValueAfter(Size i,
                                   const C* c,
-                                  bool validData) {
+                                  bool validData,
+                                  Size) // firstAliveHelper
+        {
             if (validData) {
-                Rate r = *(std::max_element(c->data().begin(), c->data().end()));
+                Real r = *(std::max_element(c->data().begin(), c->data().end()));
                 return r*2.0;
             }
             // no constraints.

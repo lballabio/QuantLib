@@ -60,7 +60,9 @@ namespace QuantLib {
         template <class C>
         static Rate guess(Size i,
                           const C* c,
-                          bool validData) {
+                          bool validData,
+                          Size) // firstAliveHelper
+        {
             if (validData) // previous iteration value
                 return c->data()[i];
 
@@ -75,7 +77,9 @@ namespace QuantLib {
         template <class C>
         static Rate minValueAfter(Size i,
                                   const C* c,
-                                  bool validData) {
+                                  bool validData,
+                                  Size) // firstAliveHelper
+        {
             if (validData) {
                 Rate r = *(std::min_element(c->data().begin(), c->data().end()));
                 return r<0.0 ? r*2.0 : r/2.0;
@@ -85,7 +89,9 @@ namespace QuantLib {
         template <class C>
         static Rate maxValueAfter(Size i,
                                   const C* c,
-                                  bool validData) {
+                                  bool validData,
+                                  Size) // firstAliveHelper
+        {
             if (validData) {
                 Rate r = *(std::max_element(c->data().begin(), c->data().end()));
                 return r<0.0 ? r/2.0 : r*2.0;
@@ -130,7 +136,9 @@ namespace QuantLib {
         template <class C>
         static Rate guess(Size i,
                           const C* c,
-                          bool validData) {
+                          bool validData,
+                          Size) // firstAliveHelper
+        {
             if (validData) // previous iteration value
                 return c->data()[i];
 
@@ -145,7 +153,9 @@ namespace QuantLib {
         template <class C>
         static Rate minValueAfter(Size i,
                                   const C* c,
-                                  bool validData) {
+                                  bool validData,
+                                  Size) // firstAliveHelper
+        {
             if (validData) {
                 Rate r = *(std::min_element(c->data().begin(), c->data().end()));
                 return r<0.0 ? r*2.0 : r/2.0;
@@ -155,7 +165,9 @@ namespace QuantLib {
         template <class C>
         static Rate maxValueAfter(Size i,
                                   const C* c,
-                                  bool validData) {
+                                  bool validData,
+                                  Size) // firstAliveHelper
+        {
             if (validData) {
                 Rate r = *(std::max_element(c->data().begin(), c->data().end()));
                 return r<0.0 ? r/2.0 : r*2.0;
