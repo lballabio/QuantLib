@@ -3447,6 +3447,9 @@
     <ClInclude Include="ql\experimental\finitedifferences\fdmndimsolver.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdmvppstepcondition.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -5503,6 +5506,9 @@
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\finitedifferences\fdmklugeextousolver.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdmvppstepcondition.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
   </ItemGroup>
