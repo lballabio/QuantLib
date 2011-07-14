@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006, 2007 Ferdinando Ametrano
+ Copyright (C) 2006, 2007, 2011 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2009 StatPro Italia srl
 
@@ -42,6 +42,8 @@ namespace QuantLib {
         Schedule(const std::vector<Date>&,
                  const Calendar& calendar = NullCalendar(),
                  BusinessDayConvention convention = Unadjusted);
+        Schedule(const Schedule& originalSchedule,
+                 const Date& truncationDate);
         Schedule(Date effectiveDate,
                  const Date& terminationDate,
                  const Period& tenor,
@@ -91,7 +93,6 @@ namespace QuantLib {
         DateGeneration::Rule rule_;
         bool endOfMonth_;
         Date firstDate_, nextToLastDate_;
-        bool finalIsRegular_;
         std::vector<Date> dates_;
         std::vector<bool> isRegular_;
     };

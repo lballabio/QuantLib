@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006, 2007, 2008, 2010 Ferdinando Ametrano
+ Copyright (C) 2006, 2007, 2008, 2010, 2011 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2009 StatPro Italia srl
 
@@ -69,8 +69,36 @@ namespace QuantLib {
       convention_(convention),
       terminationDateConvention_(convention),
       rule_(DateGeneration::Forward), endOfMonth_(false),
-      finalIsRegular_(true),
       dates_(dates) {}
+
+    Schedule::Schedule(const Schedule& originalSchedule,
+                       const Date& truncationDate)
+    {
+        *this = originalSchedule;
+
+        if (truncationDate<dates_.back()) {
+            // remove later dates
+            while (dates_.back()>truncationDate) {
+                dates_.pop_back();
+                isRegular_.pop_back();
+            }
+
+            // add truncationDate if missing
+            if (truncationDate!=dates_.back()) {
+                dates_.push_back(truncationDate);
+                isRegular_.push_back(false);
+                terminationDateConvention_ = Unadjusted;
+            } else {
+                terminationDateConvention_ = convention_;
+            }
+
+            if (nextToLastDate_>=truncationDate)
+                nextToLastDate_ = Date();
+            if (firstDate_>=truncationDate)
+                firstDate_ = Date();
+        }
+
+    }
 
     Schedule::Schedule(Date effectiveDate,
                        const Date& terminationDate,
@@ -88,8 +116,7 @@ namespace QuantLib {
       terminationDateConvention_(terminationDateConvention),
       rule_(rule), endOfMonth_(endOfMonth),
       firstDate_(first==effectiveDate ? Date() : first),
-      nextToLastDate_(nextToLast==terminationDate ? Date() : nextToLast),
-      finalIsRegular_(true)
+      nextToLastDate_(nextToLast==terminationDate ? Date() : nextToLast)
     {
         // sanity checks
         QL_REQUIRE(terminationDate != Date(), "null termination date");
