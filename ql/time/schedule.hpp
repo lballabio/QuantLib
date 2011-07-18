@@ -42,8 +42,6 @@ namespace QuantLib {
         Schedule(const std::vector<Date>&,
                  const Calendar& calendar = NullCalendar(),
                  BusinessDayConvention convention = Unadjusted);
-        Schedule(const Schedule& originalSchedule,
-                 const Date& truncationDate);
         Schedule(Date effectiveDate,
                  const Date& terminationDate,
                  const Period& tenor,
@@ -84,6 +82,11 @@ namespace QuantLib {
         const_iterator begin() const { return dates_.begin(); }
         const_iterator end() const { return dates_.end(); }
         const_iterator lower_bound(const Date& d = Date()) const;
+        //@}
+        //! \name Utilities
+        //@{
+        //! truncated schedule
+        Schedule until(const Date& truncationDate) const;
         //@}
       private:
         bool fullInterface_;

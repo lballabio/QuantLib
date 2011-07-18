@@ -71,35 +71,6 @@ namespace QuantLib {
       rule_(DateGeneration::Forward), endOfMonth_(false),
       dates_(dates) {}
 
-    Schedule::Schedule(const Schedule& originalSchedule,
-                       const Date& truncationDate)
-    {
-        *this = originalSchedule;
-
-        if (truncationDate<dates_.back()) {
-            // remove later dates
-            while (dates_.back()>truncationDate) {
-                dates_.pop_back();
-                isRegular_.pop_back();
-            }
-
-            // add truncationDate if missing
-            if (truncationDate!=dates_.back()) {
-                dates_.push_back(truncationDate);
-                isRegular_.push_back(false);
-                terminationDateConvention_ = Unadjusted;
-            } else {
-                terminationDateConvention_ = convention_;
-            }
-
-            if (nextToLastDate_>=truncationDate)
-                nextToLastDate_ = Date();
-            if (firstDate_>=truncationDate)
-                firstDate_ = Date();
-        }
-
-    }
-
     Schedule::Schedule(Date effectiveDate,
                        const Date& terminationDate,
                        const Period& tenor,
@@ -404,6 +375,35 @@ namespace QuantLib {
             isRegular_.pop_back();
         }
 
+    }
+
+
+    Schedule Schedule::until(const Date& truncationDate) const {
+        Schedule result = *this;
+
+        if (truncationDate<result.dates_.back()) {
+            // remove later dates
+            while (result.dates_.back()>truncationDate) {
+                result.dates_.pop_back();
+                result.isRegular_.pop_back();
+            }
+
+            // add truncationDate if missing
+            if (truncationDate!=result.dates_.back()) {
+                result.dates_.push_back(truncationDate);
+                result.isRegular_.push_back(false);
+                result.terminationDateConvention_ = Unadjusted;
+            } else {
+                result.terminationDateConvention_ = convention_;
+            }
+
+            if (result.nextToLastDate_>=truncationDate)
+                result.nextToLastDate_ = Date();
+            if (result.firstDate_>=truncationDate)
+                result.firstDate_ = Date();
+        }
+
+        return result;
     }
 
     std::vector<Date>::const_iterator
