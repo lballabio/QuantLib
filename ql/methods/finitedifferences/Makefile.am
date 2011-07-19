@@ -27,6 +27,7 @@ this_include_HEADERS = \
 	pdeshortrate.hpp \
 	shoutcondition.hpp \
 	stepcondition.hpp \
+	trbdf2.hpp \
 	tridiagonaloperator.hpp \
 	zerocondition.hpp
 

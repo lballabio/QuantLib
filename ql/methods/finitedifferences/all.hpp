@@ -24,6 +24,7 @@
 #include <ql/methods/finitedifferences/pdeshortrate.hpp>
 #include <ql/methods/finitedifferences/shoutcondition.hpp>
 #include <ql/methods/finitedifferences/stepcondition.hpp>
+#include <ql/methods/finitedifferences/trbdf2.hpp>
 #include <ql/methods/finitedifferences/tridiagonaloperator.hpp>
 #include <ql/methods/finitedifferences/zerocondition.hpp>
 

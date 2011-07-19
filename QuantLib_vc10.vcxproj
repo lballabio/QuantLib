@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (static runtime)|Win32">
@@ -325,6 +325,7 @@
     <ClInclude Include="ql\methods\finitedifferences\pdeshortrate.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\shoutcondition.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\stepcondition.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\trbdf2.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\tridiagonaloperator.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\zerocondition.hpp" />
     <ClInclude Include="ql\methods\lattices\all.hpp" />

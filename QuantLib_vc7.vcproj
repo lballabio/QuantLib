@@ -3130,6 +3130,9 @@
 					RelativePath=".\ql\methods\finitedifferences\stepcondition.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\methods\finitedifferences\trbdf2.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\methods\finitedifferences\tridiagonaloperator.cpp">
 				</File>
 				<File
