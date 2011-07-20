@@ -29,12 +29,16 @@
 #include <ql/indexes/iborindex.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 
+using boost::shared_ptr;
+using boost::dynamic_pointer_cast;
+using std::vector;
+
 namespace QuantLib {
 
     AssetSwap::AssetSwap(bool payFixedRate,
-                         const boost::shared_ptr<Bond>& bond,
+                         const shared_ptr<Bond>& bond,
                          Real bondCleanPrice,
-                         const boost::shared_ptr<IborIndex>& index,
+                         const shared_ptr<IborIndex>& index,
                          Spread spread,
                          const Schedule& floatSch,
                          const DayCounter& floatingDayCounter,
@@ -113,18 +117,18 @@ namespace QuantLib {
         if (parSwap_) {
             // upfront on the floating leg
             Real upfront = (dirtyPrice-100.0)/100.0*notional;
-            boost::shared_ptr<CashFlow> upfrontCashFlow (new
+            shared_ptr<CashFlow> upfrontCashFlow(new
                 SimpleCashFlow(upfront, upfrontDate_));
             legs_[1].insert(legs_[1].begin(), upfrontCashFlow);
             // backpayment on the floating leg
             // (accounts for non-par redemption, if any)
             Real backPayment = notional;
-            boost::shared_ptr<CashFlow> backPaymentCashFlow (new
+            shared_ptr<CashFlow> backPaymentCashFlow (new
                 SimpleCashFlow(backPayment, finalDate));
             legs_[1].push_back(backPaymentCashFlow);
         } else {
             // final notional exchange
-            boost::shared_ptr<CashFlow> finalCashFlow (new
+            shared_ptr<CashFlow> finalCashFlow (new
                 SimpleCashFlow(notional, finalDate));
             legs_[1].push_back(finalCashFlow);
         }
@@ -155,12 +159,12 @@ namespace QuantLib {
         const Leg& fixedCoupons = bondLeg();
 
         arguments->fixedResetDates = arguments->fixedPayDates =
-            std::vector<Date>(fixedCoupons.size());
-        arguments->fixedCoupons = std::vector<Real>(fixedCoupons.size());
+            vector<Date>(fixedCoupons.size());
+        arguments->fixedCoupons = vector<Real>(fixedCoupons.size());
 
         for (Size i=0; i<fixedCoupons.size(); ++i) {
-            boost::shared_ptr<FixedRateCoupon> coupon =
-                boost::dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
+            shared_ptr<FixedRateCoupon> coupon =
+                dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
 
             arguments->fixedPayDates[i] = coupon->date();
             arguments->fixedResetDates[i] = coupon->accrualStartDate();
@@ -171,16 +175,15 @@ namespace QuantLib {
 
         arguments->floatingResetDates = arguments->floatingPayDates =
             arguments->floatingFixingDates =
-            std::vector<Date>(floatingCoupons.size());
+            vector<Date>(floatingCoupons.size());
         arguments->floatingAccrualTimes =
-            std::vector<Time>(floatingCoupons.size());
+            vector<Time>(floatingCoupons.size());
         arguments->floatingSpreads =
-            std::vector<Spread>(floatingCoupons.size());
+            vector<Spread>(floatingCoupons.size());
 
         for (Size i=0; i<floatingCoupons.size(); ++i) {
-            boost::shared_ptr<FloatingRateCoupon> coupon =
-                boost::dynamic_pointer_cast<FloatingRateCoupon>(
-                                                          floatingCoupons[i]);
+            shared_ptr<FloatingRateCoupon> coupon =
+                dynamic_pointer_cast<FloatingRateCoupon>(floatingCoupons[i]);
 
             arguments->floatingResetDates[i] = coupon->accrualStartDate();
             arguments->floatingPayDates[i] = coupon->date();
