@@ -19,14 +19,14 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/time/schedule.hpp>
+#include <ql/instruments/assetswap.hpp>
+
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
-#include <ql/instruments/assetswap.hpp>
 #include <ql/cashflows/couponpricer.hpp>
-#include <ql/indexes/iborindex.hpp>
+#include <ql/time/schedule.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 
 using boost::shared_ptr;
