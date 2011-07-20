@@ -28,12 +28,12 @@
 
 #include <ql/instruments/swap.hpp>
 #include <ql/instruments/bond.hpp>
+#include <ql/time/schedule.hpp>
 #include <ql/time/daycounter.hpp>
 
 namespace QuantLib {
 
     class IborIndex;
-    class Schedule;
 
     //! Bullet bond vs %Libor swap
     /*! for mechanics of par asset swap and market asset swap, refer to
