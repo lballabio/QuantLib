@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2010 Ferdinando Ametrano
+ Copyright (C) 2010, 2011 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,9 +24,44 @@
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 namespace QuantLib {
+
+    CCTEU::CCTEU(const Date& maturityDate,
+                 Spread spread,
+                 const Date& startDate,
+                 const Date& issueDate)
+    : FloatingRateBond(3, 100.0,
+                       Schedule(startDate,
+                                maturityDate, 6*Months,
+                                NullCalendar(), Unadjusted, Unadjusted,
+                                DateGeneration::Backward, true),
+                       boost::shared_ptr<IborIndex>(new Euribor6M()),
+                       Actual360(),
+                       Following,
+                       Euribor6M().fixingDays(),
+                       std::vector<Real>(1, 1.0), // gearing
+                       std::vector<Spread>(1, spread),
+                       std::vector<Rate>(), // caps
+                       std::vector<Rate>(), // floors
+                       false, // in arrears
+                       100.0, // redemption
+                       issueDate) {}
+
+    BTP::BTP(const Date& maturityDate,
+             Rate fixedRate,
+             const Date& startDate,
+             const Date& issueDate)
+    : FixedRateBond(3, 100.0,
+                    Schedule(startDate,
+                             maturityDate, 6*Months,
+                             NullCalendar(), Unadjusted, Unadjusted,
+                             DateGeneration::Backward, true),
+                    std::vector<Rate>(1, fixedRate),
+                    ActualActual(ActualActual::ISMA),
+                    ModifiedFollowing, 100.0, issueDate, TARGET()) {}
 
     BTP::BTP(const Date& maturityDate,
              Rate fixedRate,

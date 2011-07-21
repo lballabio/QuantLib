@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2010 Ferdinando Ametrano
+ Copyright (C) 2010, 2011 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,6 +25,7 @@
 #define quantlib_btp_hpp
 
 #include <ql/instruments/bonds/fixedratebond.hpp>
+#include <ql/instruments/bonds/floatingratebond.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/instruments/vanillaswap.hpp>
 
@@ -32,7 +33,21 @@
 
 namespace QuantLib {
 
-    //! Italian BTP (Buoni Poliennali del Tesoro) fixed rate bond
+    /*! Italian CCTEU (Certificato di credito del tesoro)
+        Euribor6M indexed floating rate bond
+    
+        \ingroup instruments
+
+    */
+    class CCTEU : public FloatingRateBond {
+      public:
+        CCTEU(const Date& maturityDate,
+              Spread spread,
+              const Date& startDate = Date(),
+              const Date& issueDate = Date());
+    };
+
+    //! Italian BTP (Buono Poliennali del Tesoro) fixed rate bond
     /*! \ingroup instruments
 
     */
@@ -40,7 +55,14 @@ namespace QuantLib {
       public:
         BTP(const Date& maturityDate,
             Rate fixedRate,
-            Real redemption = 100.0,
+            const Date& startDate = Date(),
+            const Date& issueDate = Date());
+        /*! constructor needed for legacy non-par redemption BTPs.
+            As of today the only remaining one is IT123456789012
+            that will redeem 99.999 on xx-may-2037 */
+        BTP(const Date& maturityDate,
+            Rate fixedRate,
+            Real redemption,
             const Date& startDate = Date(),
             const Date& issueDate = Date());
         //! BTP yield given a (clean) price and settlement date
