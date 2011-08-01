@@ -110,7 +110,7 @@ namespace QuantLib {
                         (1.0 - std::exp(-kappa*t))/
                         ((kappa+QL_EPSILON)*(t+QL_EPSILON)) -
                         (x[2])*std::exp(-kappa*t) +
-                        x[3]* (((1.0 - std::exp(-kappa*t))/((kappa_1+QL_EPSILON)*(t+QL_EPSILON)))- std::exp(-kappa_1*t));
+                        x[3]* (((1.0 - std::exp(-kappa_1*t))/((kappa_1+QL_EPSILON)*(t+QL_EPSILON)))- std::exp(-kappa_1*t));
         DiscountFactor d = std::exp(-zeroRate * t) ;
         return d;
     }

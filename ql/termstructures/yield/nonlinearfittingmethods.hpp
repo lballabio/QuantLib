@@ -78,9 +78,9 @@ namespace QuantLib {
     /*! Fits a discount function to the form
         \f$ d(t) = \exp^{-r t}, \f$ where the zero rate \f$r\f$ is defined as
         \f[
-        r \equiv c_0 + (c_0 + c_1)*(1 - exp^{-\kappa*t}/(\kappa t)
-        - c_2 exp^{ - \kappa t}
-        + c_3*{(1 - exp^{-\kappa*t}/(\kappa_1 t)) -exp^{-\kappa_1*t}}.
+        r \equiv c_0 + (c_0 + c_1)(\frac {1 - exp^{-\kappa t}}{\kappa t})
+        - c_2exp^{ - \kappa t}
+        + c_3{(\frac{1 - exp^{-\kappa_1 t}}{\kappa_1 t} -exp^{-\kappa_1 t})}.
         \f]
         See: Svensson, L. (1994). Estimating and interpreting forward
         interest rates: Sweden 1992-4.
