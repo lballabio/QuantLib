@@ -59,9 +59,12 @@ namespace QuantLib {
                 Continuous,
                 NoFrequency,
                 batesProcess->dividendYield()->dayCounter()))),
-          batesProcess->s0(),    batesProcess->v0(),
-          batesProcess->kappa(), batesProcess->theta(),
-          batesProcess->sigma(), batesProcess->rho())),
+          batesProcess->s0(),
+          batesProcess->v0(),
+          batesProcess->kappa(),
+          batesProcess->theta(),
+          batesProcess->sigma(),
+          batesProcess->rho())),
         quantoHelper)) {}
 
     FdmBatesOp::IntegroIntegrand::IntegroIntegrand(
