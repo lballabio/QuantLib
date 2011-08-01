@@ -73,9 +73,13 @@ namespace QuantLib {
         */
         //@{
         explicit Handle(const boost::shared_ptr<T>& p = boost::shared_ptr<T>(),
-                        bool registerAsObserver = true);
+                        bool registerAsObserver = true)
+        : link_(new Link(p,registerAsObserver)) {}
+#ifndef QL_DISABLE_DEPRECATED
         explicit Handle(T* p,
-                        bool registerAsObserver = true);
+                        bool registerAsObserver = true)
+        : link_(new Link(boost::shared_ptr<T>(p),registerAsObserver)) {}
+#endif
         //@}
         //! dereferencing
         const boost::shared_ptr<T>& currentLink() const;
@@ -87,19 +91,13 @@ namespace QuantLib {
         operator boost::shared_ptr<Observable>() const;
         //! equality test
         template <class U>
-        bool operator==(const Handle<U>& other) {
-            return link_ == other.link_;
-        }
+        bool operator==(const Handle<U>& other) { return link_==other.link_; }
         //! disequality test
         template <class U>
-        bool operator!=(const Handle<U>& other) {
-            return link_ != other.link_;
-        }
+        bool operator!=(const Handle<U>& other) { return link_!=other.link_; }
         //! strict weak ordering
         template <class U>
-        bool operator<(const Handle<U>& other) {
-            return link_ < other.link_;
-        }
+        bool operator<(const Handle<U>& other) { return link_ < other.link_; }
     };
 
     //! Relinkable handle to an observable
@@ -151,16 +149,6 @@ namespace QuantLib {
 
 
     template <class T>
-    inline Handle<T>::Handle(const boost::shared_ptr<T>& p,
-                             bool registerAsObserver)
-    : link_(new Link(p,registerAsObserver)) {}
-
-    template <class T>
-    inline Handle<T>::Handle(T* p,
-                             bool registerAsObserver)
-    : link_(new Link(boost::shared_ptr<T>(p),registerAsObserver)) {}
-
-    template <class T>
     inline const boost::shared_ptr<T>& Handle<T>::currentLink() const {
         QL_REQUIRE(!empty(), "empty Handle cannot be dereferenced");
         return link_->currentLink();
@@ -206,6 +194,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif
