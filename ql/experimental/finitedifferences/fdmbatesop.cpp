@@ -21,22 +21,25 @@
     \brief Bates linear operator
 */
 
+#include <ql/experimental/finitedifferences/fdmbatesop.hpp>
+
+#include <ql/processes/batesprocess.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/experimental/finitedifferences/fdmmesher.hpp>
-#include <ql/experimental/finitedifferences/fdmbatesop.hpp>
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 
+using boost::shared_ptr;
+
 namespace QuantLib {
 
-    FdmBatesOp::FdmBatesOp(
-                    const boost::shared_ptr<FdmMesher>& mesher,
-                    const boost::shared_ptr<BatesProcess>& batesProcess,
-                    const FdmBoundaryConditionSet& bcSet,
-                    const Size integroIntegrationOrder, 
-                    const boost::shared_ptr<FdmQuantoHelper>& quantoHelper)
+    FdmBatesOp::FdmBatesOp(const shared_ptr<FdmMesher>& mesher,
+                           const shared_ptr<BatesProcess>& batesProcess,
+                           const FdmBoundaryConditionSet& bcSet,
+                           const Size integroIntegrationOrder, 
+                           const shared_ptr<FdmQuantoHelper>& quantoHelper)
     : lambda_(batesProcess->lambda()), 
       delta_ (batesProcess->delta()), 
       nu_    (batesProcess->nu()),
@@ -44,54 +47,25 @@ namespace QuantLib {
       gaussHermiteIntegration_(integroIntegrationOrder),
       mesher_(mesher),
       bcSet_(bcSet),
-      hestonOp_(new FdmHestonOp(mesher, 
-           boost::shared_ptr<HestonProcess>(new HestonProcess(
-               batesProcess->riskFreeRate(),  
-               Handle<YieldTermStructure>(
-                   new ZeroSpreadedTermStructure(
-                           batesProcess->dividendYield(),
-                           Handle<Quote>(new SimpleQuote(lambda_*m_)),
-                           Continuous, NoFrequency, 
-                           batesProcess->dividendYield()->dayCounter())),
-               batesProcess->s0(),    batesProcess->v0(),
-               batesProcess->kappa(), batesProcess->theta(),
-               batesProcess->sigma(), batesProcess->rho())), 
-           quantoHelper)) {                        
-    }
+      hestonOp_(new FdmHestonOp(
+        mesher,
+        shared_ptr<HestonProcess>(new HestonProcess(
+          batesProcess->riskFreeRate(),
+          Handle<YieldTermStructure>(
+            shared_ptr<ZeroSpreadedTermStructure>(new
+              ZeroSpreadedTermStructure(
+                batesProcess->dividendYield(),
+                Handle<Quote>(shared_ptr<Quote>(new SimpleQuote(lambda_*m_))),
+                Continuous,
+                NoFrequency,
+                batesProcess->dividendYield()->dayCounter()))),
+          batesProcess->s0(),    batesProcess->v0(),
+          batesProcess->kappa(), batesProcess->theta(),
+          batesProcess->sigma(), batesProcess->rho())),
+        quantoHelper)) {}
 
-    Size FdmBatesOp::size() const {
-        return hestonOp_->size();
-    }
-    
-    void FdmBatesOp::setTime(Time t1, Time t2) {
-        hestonOp_->setTime(t1, t2);
-    }
-    
-    Disposable<Array> FdmBatesOp::apply(const Array& r) const {
-        return hestonOp_->apply(r) + integro(r);
-    }
-    
-    Disposable<Array> FdmBatesOp::apply_mixed(const Array& r) const {
-        return hestonOp_->apply_mixed(r) + integro(r);
-    }
-
-    Disposable<Array> FdmBatesOp::apply_direction(Size direction,
-                                                  const Array& r) const {
-        return hestonOp_->apply_direction(direction, r);
-    }
-
-    Disposable<Array> FdmBatesOp::solve_splitting(Size direction,
-                                                  const Array& r, Real s) const{
-        return hestonOp_->solve_splitting(direction, r, s);
-    }
- 
-    Disposable<Array> FdmBatesOp::preconditioner(const Array& r, Real s) const {
-        return hestonOp_->preconditioner(r, s);
-    }
-    
-    
     FdmBatesOp::IntegroIntegrand::IntegroIntegrand(
-                    const boost::shared_ptr<LinearInterpolation>& interpl,
+                    const shared_ptr<LinearInterpolation>& interpl,
                     const FdmBoundaryConditionSet& bcSet,
                     Real x, Real delta, Real nu)
     : x_(x), delta_(delta), nu_(nu), 
@@ -110,7 +84,7 @@ namespace QuantLib {
     }
     
     Disposable<Array> FdmBatesOp::integro(const Array& r) const {
-        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+        const shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
         
         QL_REQUIRE(layout->dim().size() == 2, "invalid layout dimension");
 
@@ -127,9 +101,9 @@ namespace QuantLib {
             f[j][i] = r[iter.index()];
             
         }
-        std::vector<boost::shared_ptr<LinearInterpolation> > interpl(f.rows());
+        std::vector<shared_ptr<LinearInterpolation> > interpl(f.rows());
         for (Size i=0; i < f.rows(); ++i) {
-            interpl[i] = boost::shared_ptr<LinearInterpolation>(
+            interpl[i] = shared_ptr<LinearInterpolation>(
                 new LinearInterpolation(x.begin(), x.end(), f.row_begin(i)));
         }
         
@@ -145,4 +119,5 @@ namespace QuantLib {
 
         return lambda_*(integral-r);
     }
+
 }

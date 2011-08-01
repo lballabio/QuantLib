@@ -24,14 +24,14 @@
 #ifndef quantlib_fdm_bates_op_hpp
 #define quantlib_fdm_bates_op_hpp
 
-#include <ql/processes/batesprocess.hpp>
-#include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonop.hpp>
 #include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
+#include <ql/math/integrals/gaussianquadratures.hpp>
 
 namespace QuantLib {
 
     class LinearInterpolation;
+    class BatesProcess;
     
     class FdmBatesOp : public FdmLinearOpComposite {
       public:
@@ -80,6 +80,42 @@ namespace QuantLib {
         const FdmBoundaryConditionSet bcSet_;
         const boost::shared_ptr<FdmHestonOp> hestonOp_;
     };
+
+    // inline    
+    
+    inline Size FdmBatesOp::size() const {
+        return hestonOp_->size();
+    }
+    
+    inline void FdmBatesOp::setTime(Time t1, Time t2) {
+        hestonOp_->setTime(t1, t2);
+    }
+    
+    inline Disposable<Array> FdmBatesOp::apply(const Array& r) const {
+        return hestonOp_->apply(r) + integro(r);
+    }
+    
+    inline Disposable<Array> FdmBatesOp::apply_mixed(const Array& r) const {
+        return hestonOp_->apply_mixed(r) + integro(r);
+    }
+
+    inline
+    Disposable<Array> FdmBatesOp::apply_direction(Size direction,
+                                                  const Array& r) const {
+        return hestonOp_->apply_direction(direction, r);
+    }
+
+    inline Disposable<Array> FdmBatesOp::solve_splitting(Size direction,
+                                                         const Array& r,
+                                                         Real s) const{
+        return hestonOp_->solve_splitting(direction, r, s);
+    }
+ 
+    inline Disposable<Array> FdmBatesOp::preconditioner(const Array& r,
+                                                 Real s) const {
+        return hestonOp_->preconditioner(r, s);
+    }
+    
 }
 
 #endif
