@@ -85,16 +85,16 @@ namespace QuantLib {
                                   results_.legBPS[i]);
                 results_.legNPV[i] *= arguments_.payer[i];
                 results_.legBPS[i] *= arguments_.payer[i];
+
+                const Date& d = CashFlows::startDate(arguments_.legs[i]);
+                if (d>=refDate)
+                   results_.startDiscounts[i] = discountCurve_->discount(d);
+                else
+                   results_.startDiscounts[i] = Null<DiscountFactor>();
             } catch (std::exception &e) {
                 QL_FAIL(io::ordinal(i+1) << " leg: " << e.what());
             }
             results_.value += results_.legNPV[i];
-            try {
-                Date d = CashFlows::startDate(arguments_.legs[i]);
-                results_.startDiscounts[i] = discountCurve_->discount(d);
-            } catch (...) {
-                results_.startDiscounts[i] = Null<DiscountFactor>();
-            }
         }
     }
 
