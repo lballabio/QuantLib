@@ -101,6 +101,11 @@ namespace QuantLib {
         return *this;
     }
 
+    MakeSwaption& MakeSwaption::withExerciseDate(const Date& date) {
+        exerciseDate_ = date;
+        return *this;
+    }
+
     MakeSwaption& MakeSwaption::withPricingEngine(
                              const boost::shared_ptr<PricingEngine>& engine) {
         engine_ = engine;
