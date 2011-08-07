@@ -33,8 +33,7 @@ namespace QuantLib {
 
     class FdmMesher;
     class YieldTermStructure;
-    class ExtOUWithJumpsProcess;
-    class ExtendedOrnsteinUhlenbeckProcess;
+    class KlugeExtOUProcess;
     class FdmExtOUJumpOp;
     class FdmExtendedOrnsteinUhlenbackOp;
 
@@ -64,9 +63,7 @@ namespace QuantLib {
       public:
         FdmKlugeExtOUOp(
             const boost::shared_ptr<FdmMesher>& mesher,
-            Real rho,
-            const boost::shared_ptr<ExtOUWithJumpsProcess>& kluge,
-            const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& extOU,
+            const boost::shared_ptr<KlugeExtOUProcess>& klugeOUProcess,
             const boost::shared_ptr<YieldTermStructure>& rTS,
             const FdmBoundaryConditionSet& bcSet,
             Size integroIntegrationOrder);

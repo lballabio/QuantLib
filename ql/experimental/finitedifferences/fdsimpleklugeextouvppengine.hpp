@@ -21,41 +21,48 @@
     \brief Finite Differences engine for simple swing options
 */
 
-#ifndef quantlib_fd_simple_ext_ou_jump_swing_engine_hpp
-#define quantlib_fd_simple_ext_ou_jump_swing_engine_hpp
+#ifndef quantlib_fd_simple_kluge_ou_vpp_engine_hpp
+#define quantlib_fd_simple_kluge_ou_vpp_engine_hpp
 
 #include <ql/pricingengine.hpp>
-#include <ql/instruments/vanillaswingoption.hpp>
+#include <ql/experimental/finitedifferences/vanillavppoption.hpp>
 #include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmextoujumpmodelinnervalue.hpp>
 
 namespace QuantLib {
 
-    //! Finite-Differences engine for simple swing options
+    //! Finite-Differences engine for simple vpp options
 
     class YieldTermStructure;
-    class ExtOUWithJumpsProcess;
+    class KlugeExtOUProcess;
 
-    class FdSimpleExtOUJumpSwingEngine
-        : public GenericEngine<VanillaSwingOption::arguments,
-                               VanillaSwingOption::results> {
+    class FdSimpleKlugeExtOUVPPEngine
+        : public GenericEngine<VanillaVPPOption::arguments,
+                               VanillaVPPOption::results> {
       public:
         typedef FdmExtOUJumpModelInnerValue::Shape Shape;
 
-        FdSimpleExtOUJumpSwingEngine(
-            const boost::shared_ptr<ExtOUWithJumpsProcess>& p,
+        FdSimpleKlugeExtOUVPPEngine(
+            const boost::shared_ptr<KlugeExtOUProcess>& process,
             const boost::shared_ptr<YieldTermStructure>& rTS,
-            Size tGrid = 50, Size xGrid = 200, Size yGrid=50,
-            const boost::shared_ptr<Shape>& shape = boost::shared_ptr<Shape>(),
+            Real carbonPrice,
+            Size tGrid = 1 , Size xGrid = 50,
+            Size yGrid = 10, Size gGrid = 20,
+            const boost::shared_ptr<Shape>& gasShape
+                                                = boost::shared_ptr<Shape>(),
+            const boost::shared_ptr<Shape>& powerShape
+                                                = boost::shared_ptr<Shape>(),
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
         void calculate() const;
 
       private:
-        const boost::shared_ptr<ExtOUWithJumpsProcess> process_;
+        const boost::shared_ptr<KlugeExtOUProcess> process_;
         const boost::shared_ptr<YieldTermStructure> rTS_;
-        const boost::shared_ptr<Shape> shape_;
-        const Size tGrid_, xGrid_, yGrid_;
+        const Real carbonPrice_;
+        const boost::shared_ptr<Shape> gasShape_;
+        const boost::shared_ptr<Shape> powerShape_;
+        const Size tGrid_, xGrid_, yGrid_, gGrid_;
         const FdmSchemeDesc schemeDesc_;
     };
 }

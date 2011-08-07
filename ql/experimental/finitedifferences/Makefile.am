@@ -40,6 +40,7 @@ this_include_HEADERS = \
 	fdmblackscholessolver.hpp \
 	fdmdirichletboundary.hpp \
 	fdmdividendhandler.hpp \
+	fdmexpextouinnervaluecalculator.hpp \
 	fdmextendedornsteinuhlenbeckop.hpp \
 	fdmextoujumpmodelinnervalue.hpp \
 	fdmextoujumpop.hpp \
@@ -52,7 +53,6 @@ this_include_HEADERS = \
 	fdminnervaluecalculator.hpp \
 	fdmklugeextouop.hpp \
 	fdmklugeextousolver.hpp \
-	fdmklugeextouspreadinnervalue.hpp \
 	fdmlinearop.hpp \
 	fdmlinearopcomposite.hpp \
 	fdmlinearopiterator.hpp \
@@ -69,10 +69,12 @@ this_include_HEADERS = \
     fdmsimpleswingcondition.hpp \
 	fdmsnapshotcondition.hpp \
 	fdmsolverdesc.hpp \
+	fdmspreadpayoffinnervalue.hpp \
 	fdmstepconditioncomposite.hpp \
 	fdmvppstepcondition.hpp \
     fdsimplebsswingengine.hpp \
 	fdsimpleextoujumpswingengine.hpp \
+	fdsimpleklugeextouvppengine.hpp \
 	firstderivativeop.hpp \
 	hundsdorferscheme.hpp \
 	impliciteulerscheme.hpp \
@@ -83,7 +85,8 @@ this_include_HEADERS = \
 	sparseilupreconditioner.hpp \
 	triplebandlinearop.hpp \
 	uniform1dmesher.hpp \
-	uniformgridmesher.hpp
+	uniformgridmesher.hpp \
+	vanillavppoption.hpp
 
 libMultiDimFDM_la_SOURCES = \
     bicgstab.cpp \
@@ -131,7 +134,6 @@ libMultiDimFDM_la_SOURCES = \
 	fdmhestonvariancemesher.cpp \
 	fdminnervaluecalculator.cpp \
 	fdmklugeextouop.cpp \
-	fdmklugeextousolver.cpp \
 	fdmlinearoplayout.cpp \
 	fdmmeshercomposite.cpp \
 	fdmquantohelper.cpp \
@@ -145,6 +147,7 @@ libMultiDimFDM_la_SOURCES = \
     fdsimplebsswingengine.cpp \
 	fdsimpleextoujumpswingengine.cpp \
     fdsimpleextoustorageengine.cpp \
+    fdsimpleklugeextouvppengine.cpp \
 	firstderivativeop.cpp \
 	hundsdorferscheme.cpp \
 	impliciteulerscheme.cpp \
@@ -154,7 +157,9 @@ libMultiDimFDM_la_SOURCES = \
 	secondordermixedderivativeop.cpp \
 	sparseilupreconditioner.cpp \
 	triplebandlinearop.cpp \
-	uniformgridmesher.cpp
+	uniformgridmesher.cpp \
+	vanillavppoption.cpp
+	
 
 noinst_LTLIBRARIES = libMultiDimFDM.la
 

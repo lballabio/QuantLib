@@ -21,10 +21,10 @@
 #include <ql/exercise.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/experimental/processes/extouwithjumpsprocess.hpp>
+#include <ql/experimental/processes/klugeextouprocess.hpp>
 #include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdmmeshercomposite.hpp>
-#include <ql/experimental/finitedifferences/fdmklugeextouspreadinnervalue.hpp>
 #include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmbermudanstepcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
@@ -32,25 +32,25 @@
 #include <ql/experimental/finitedifferences/fdmklugeextousolver.hpp>
 #include <ql/experimental/finitedifferences/fdmsimpleprocess1dmesher.hpp>
 #include <ql/experimental/finitedifferences/fdklugeextouspreadengine.hpp>
+#include <ql/experimental/finitedifferences/fdmspreadpayoffinnervalue.hpp>
 
 namespace QuantLib {
 
     FdKlugeExtOUSpreadEngine::FdKlugeExtOUSpreadEngine(
-        Real rho,
-        const boost::shared_ptr<ExtOUWithJumpsProcess>& kluge,
-        const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& extOU,
+        const boost::shared_ptr<KlugeExtOUProcess>& klugeOUProcess,
         const boost::shared_ptr<YieldTermStructure>& rTS,
-        Size tGrid,
-        Size xGrid, Size yGrid, Size uGrid,
+        Size tGrid, Size xGrid, Size yGrid, Size uGrid,
+        const boost::shared_ptr<GasShape>& gasShape,
+        const boost::shared_ptr<PowerShape>& powerShape,
         const FdmSchemeDesc& schemeDesc)
-    : rho_  (rho),
-      kluge_(kluge),
-      extOU_(extOU),
+    : klugeOUProcess_(klugeOUProcess),
       rTS_  (rTS),
       tGrid_(tGrid),
       xGrid_(xGrid),
       yGrid_(yGrid),
       uGrid_(uGrid),
+      gasShape_(gasShape),
+      powerShape_(powerShape),
       schemeDesc_(schemeDesc) {
     }
 
@@ -67,19 +67,23 @@ namespace QuantLib {
         const Time maturity
             = rTS_->dayCounter().yearFraction(rTS_->referenceDate(),
                                               arguments_.exercise->lastDate());
-        const boost::shared_ptr<StochasticProcess1D> ouProcess(
-                              kluge_->getExtendedOrnsteinUhlenbeckProcess());
+        const boost::shared_ptr<ExtOUWithJumpsProcess> klugeProcess
+                                          = klugeOUProcess_->getKlugeProcess();
+        const boost::shared_ptr<StochasticProcess1D> ouProcess
+                        = klugeProcess->getExtendedOrnsteinUhlenbeckProcess();
         const boost::shared_ptr<Fdm1dMesher> xMesher(
             new FdmSimpleProcess1dMesher(xGrid_, ouProcess,maturity));
 
         const boost::shared_ptr<Fdm1dMesher> yMesher(
             new ExponentialJump1dMesher(yGrid_,
-                                        kluge_->beta(),
-                                        kluge_->jumpIntensity(),
-                                        kluge_->eta()));
+                                        klugeProcess->beta(),
+                                        klugeProcess->jumpIntensity(),
+                                        klugeProcess->eta()));
 
         const boost::shared_ptr<Fdm1dMesher> uMesher(
-            new FdmSimpleProcess1dMesher(uGrid_, extOU_, maturity));
+            new FdmSimpleProcess1dMesher(uGrid_,
+                                         klugeOUProcess_->getExtOUProcess(),
+                                         maturity));
 
         std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
         meshers.push_back(xMesher);
@@ -93,8 +97,18 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff);
         QL_REQUIRE(basketPayoff," basket payoff expected");
 
+        const boost::shared_ptr<Payoff> zeroStrikeCall(
+            new PlainVanillaPayoff(Option::Call, 0.0));
+
+        const boost::shared_ptr<FdmInnerValueCalculator> gasPrice(
+            new FdmExpExtOUInnerValueCalculator(zeroStrikeCall,
+                                                mesher, gasShape_, 2));
+
+        const boost::shared_ptr<FdmInnerValueCalculator> powerPrice(
+            new FdmExtOUJumpModelInnerValue(zeroStrikeCall,mesher,powerShape_));
+
         const boost::shared_ptr<FdmInnerValueCalculator> calculator(
-            new FdmKlugeExtOUSpreadInnerValue(basketPayoff, mesher));
+            new FdmSpreadPayoffInnerValue(basketPayoff, powerPrice, gasPrice));
 
         // 4. Step conditions
         const boost::shared_ptr<FdmStepConditionComposite> conditions =
@@ -110,17 +124,16 @@ namespace QuantLib {
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions,
                                      calculator, maturity, tGrid_, 0 };
 
-        const boost::shared_ptr<FdmKlugeExtOUSolver> solver(
-            new FdmKlugeExtOUSolver(
-                        rho_,
-                        Handle<ExtOUWithJumpsProcess>(kluge_),
-                        Handle<ExtendedOrnsteinUhlenbeckProcess>(extOU_),
-                        rTS_, solverDesc, schemeDesc_));
+        const boost::shared_ptr<FdmKlugeExtOUSolver<3> > solver(
+            new FdmKlugeExtOUSolver<3>(
+                Handle<KlugeExtOUProcess>(klugeOUProcess_),
+                rTS_, solverDesc, schemeDesc_));
 
-        const Real x = kluge_->initialValues()[0];
-        const Real y = kluge_->initialValues()[1];
-        const Real u = extOU_->x0();
+        std::vector<Real> x(3);
+        x[0] = klugeOUProcess_->initialValues()[0];
+        x[1] = klugeOUProcess_->initialValues()[1];
+        x[2] = klugeOUProcess_->initialValues()[2];
 
-        results_.value = solver->valueAt(x, y, u);
+        results_.value = solver->valueAt(x);
     }
 }

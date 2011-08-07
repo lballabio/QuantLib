@@ -69,20 +69,9 @@ namespace QuantLib {
                                             new FdmLinearOpLayout(dim));
 
         // 2. Mesher
-        std::vector<Time> exerciseTimes;
-        for (Size i=0; i<swingExercise->dates().size(); ++i) {
-            Time t = rTS_->dayCounter().yearFraction(rTS_->referenceDate(),
-                                                     swingExercise->dates()[i]);
-
-            const Time dt = rTS_->dayCounter()
-                .yearFraction(rTS_->referenceDate(),
-                              swingExercise->dates()[i]+Period(1u, Days)) - t;
-
-            t += dt*swingExercise->seconds()[i]/(24*3600.);
-
-            QL_REQUIRE(t >= 0, "exercise dates must not contain past date");
-            exerciseTimes.push_back(t);
-        }
+        const std::vector<Time> exerciseTimes
+            = swingExercise->exerciseTimes(rTS_->dayCounter(),
+                                           rTS_->referenceDate());
 
         const Time maturity = exerciseTimes.back();
         const boost::shared_ptr<StochasticProcess1D> ouProcess(

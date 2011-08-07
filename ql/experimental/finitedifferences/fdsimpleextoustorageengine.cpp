@@ -35,26 +35,12 @@
 #include <ql/experimental/finitedifferences/fdmsolverdesc.hpp>
 #include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmsimple2dextousolver.hpp>
+#include <ql/experimental/finitedifferences/fdmexpextouinnervaluecalculator.hpp>
 
 
 namespace QuantLib {
 
     namespace {
-        class FdmUnderlyingValue : public FdmInnerValueCalculator {
-          public:
-            FdmUnderlyingValue(const boost::shared_ptr<FdmMesher>& mesher)
-            : mesher_(mesher) { }
-
-            Real innerValue(const FdmLinearOpIterator& iter, Time) {
-                return std::exp(mesher_->location(iter, 0));
-            }
-            Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
-                return innerValue(iter, t);
-            }
-          private:
-            const boost::shared_ptr<FdmMesher> mesher_;
-        };
-
         class FdmStorageValue : public FdmInnerValueCalculator {
           public:
             FdmStorageValue(const boost::shared_ptr<FdmMesher>& mesher)
@@ -137,8 +123,11 @@ namespace QuantLib {
         }
         stoppingTimes.push_back(exerciseTimes);
 
+        boost::shared_ptr<Payoff> payoff(
+                                    new PlainVanillaPayoff(Option::Call, 0.0));
+
         boost::shared_ptr<FdmInnerValueCalculator> underlyingCalculator(
-                                               new FdmUnderlyingValue(mesher));
+            new FdmExpExtOUInnerValueCalculator(payoff, mesher));
 
         stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
             new FdmSimpleStorageCondition(exerciseTimes,

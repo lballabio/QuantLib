@@ -150,6 +150,7 @@
 #include "varianceoption.hpp"
 #include "varianceswaps.hpp"
 #include "volatilitymodels.hpp"
+#include "vpp.hpp"
 #include "swaptionvolatilitymatrix.hpp"
 
 #include <iostream>
@@ -350,6 +351,8 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(VarianceOptionTest::suite());
     test->add(VarianceSwapTest::suite());
     test->add(VolatilityModelsTest::suite());
+    test->add(VPPTest::suite());
+
 
     //tests for deprecated classes
     test->add(LiborMarketModelTest::suite());

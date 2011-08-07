@@ -28,6 +28,8 @@
 #include <ql/pricingengine.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
+#include <ql/experimental/finitedifferences/fdmextoujumpmodelinnervalue.hpp>
+#include <ql/experimental/finitedifferences/fdmexpextouinnervaluecalculator.hpp>
 
 namespace QuantLib {
 
@@ -39,23 +41,27 @@ namespace QuantLib {
         : public GenericEngine<VanillaOption::arguments,
                                VanillaOption::results> {
       public:
+          typedef FdmExtOUJumpModelInnerValue::Shape GasShape;
+          typedef FdmExtOUJumpModelInnerValue::Shape PowerShape;
+
           FdKlugeExtOUSpreadEngine(
-              Real rho,
-              const boost::shared_ptr<ExtOUWithJumpsProcess>& kluge,
-              const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& extOU,
+              const boost::shared_ptr<KlugeExtOUProcess>& klugeOUProcess,
               const boost::shared_ptr<YieldTermStructure>& rTS,
-              Size tGrid = 25,
-              Size xGrid = 50, Size yGrid = 10, Size uGrid=25,
+              Size tGrid = 25, Size xGrid = 50, Size yGrid = 10, Size uGrid=25,
+              const boost::shared_ptr<GasShape>& gasShape
+                  = boost::shared_ptr<GasShape>(),
+              const boost::shared_ptr<PowerShape>& powerShape
+                  = boost::shared_ptr<PowerShape>(),
               const FdmSchemeDesc& schemeDesc=FdmSchemeDesc::Hundsdorfer());
 
         void calculate() const;
 
       private:
-        const Real rho_;
-        const boost::shared_ptr<ExtOUWithJumpsProcess> kluge_;
-        const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> extOU_;
+        const boost::shared_ptr<KlugeExtOUProcess> klugeOUProcess_;
         const boost::shared_ptr<YieldTermStructure> rTS_;
         const Size tGrid_, xGrid_, yGrid_, uGrid_;
+        const boost::shared_ptr<GasShape> gasShape_;
+        const boost::shared_ptr<PowerShape> powerShape_;
         const FdmSchemeDesc schemeDesc_;
     };
 }

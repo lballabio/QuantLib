@@ -25,40 +25,58 @@
 
 #include <ql/handle.hpp>
 #include <ql/patterns/lazyobject.hpp>
+#include <ql/experimental/processes/klugeextouprocess.hpp>
 #include <ql/experimental/finitedifferences/fdmsolverdesc.hpp>
+#include <ql/experimental/finitedifferences/fdmklugeextouop.hpp>
+#include <ql/experimental/finitedifferences/fdmndimsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 
 namespace QuantLib {
 
-    template <Size N> class FdmNdimSolver;
     class ExtOUWithJumpsProcess;
     class ExtendedOrnsteinUhlenbeckProcess;
 
+    template <Size N=3>
     class FdmKlugeExtOUSolver : public LazyObject {
       public:
-          FdmKlugeExtOUSolver(
-            Real correlation,
-            const Handle<ExtOUWithJumpsProcess>& klugeProcess,
-            const Handle<ExtendedOrnsteinUhlenbeckProcess>& ouProcess,
-            const boost::shared_ptr<YieldTermStructure>& rTS,
-            const FdmSolverDesc& solverDesc,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
+        FdmKlugeExtOUSolver(
+          const Handle<KlugeExtOUProcess>& klugeOUProcess,
+          const boost::shared_ptr<YieldTermStructure>& rTS,
+          const FdmSolverDesc& solverDesc,
+          const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer())
+        : klugeOUProcess_(klugeOUProcess),
+          rTS_           (rTS),
+          solverDesc_    (solverDesc),
+          schemeDesc_    (schemeDesc) {
+            QL_REQUIRE(N >= 3, "KlugeExtOU solver can't be applied on meshes "
+                               "with less than three dimensions");
+            registerWith(klugeOUProcess_);
+        }
 
-        Real valueAt(Real x, Real y, Real z) const;
+        Real valueAt(const std::vector<Real>& x) const {
+            calculate();
+            return solver_->interpolateAt(x);
+        }
 
       protected:
-        void performCalculations() const;
+        void performCalculations() const {
+            boost::shared_ptr<FdmLinearOpComposite>op(
+                new FdmKlugeExtOUOp(solverDesc_.mesher,
+                                    klugeOUProcess_.currentLink(),
+                                    rTS_, solverDesc_.bcSet, 16));
+
+            solver_ = boost::shared_ptr<FdmNdimSolver<N> >(
+                          new FdmNdimSolver<N>(solverDesc_, schemeDesc_, op));
+        }
 
       private:
-        const Handle<ExtOUWithJumpsProcess> klugeProcess_;
-        const Handle<ExtendedOrnsteinUhlenbeckProcess> ouProcess_;
-        const Real correlation_;
+        const Handle<KlugeExtOUProcess> klugeOUProcess_;
         const boost::shared_ptr<YieldTermStructure> rTS_;
 
         const FdmSolverDesc solverDesc_;
         const FdmSchemeDesc schemeDesc_;
 
-        mutable boost::shared_ptr<FdmNdimSolver<3> > solver_;
+        mutable boost::shared_ptr<FdmNdimSolver<N> > solver_;
     };
 }
 

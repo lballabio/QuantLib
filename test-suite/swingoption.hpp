@@ -28,14 +28,10 @@
 class SwingOptionTest {
   public:
     static void testExtendedOrnsteinUhlenbeckProcess();
-	static void testGemanRoncoroniProcess();
 	static void testFdBSSwingOption();
     static void testExtOUJumpSwingOption();
 	static void testFdmExponentialJump1dMesher();
 	static void testExtOUJumpVanillaEngine();
-    static void testSimpleExtOUStorageEngine();
-    static void testKlugeExtOUSpreadOption();
-    static void testVPPStepCondition();
     static boost::unit_test_framework::test_suite* suite();
 };
 

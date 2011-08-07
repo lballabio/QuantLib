@@ -57,6 +57,9 @@ namespace QuantLib {
 
         QL_REQUIRE(tMinUp_ > 1,   "minimum up time must be greater than one");
         QL_REQUIRE(tMinDown_ > 1, "minimum down time must be greater than one");
+        QL_REQUIRE(stateEvolveFcts_.size() ==
+                   mesher_->layout()->dim()[stateDirection_],
+                   "mesher does not fit to vpp arguments");
 
         for (Size i=0; i < 2*tMinUp; ++i) {
             if (i < tMinUp) {
@@ -90,7 +93,10 @@ namespace QuantLib {
                 }
 
                 const Real gasPrice = gasPrice_->innerValue(iter, t);
-                a = changeState(gasPrice, x, t);
+                x = changeState(gasPrice, x, t);
+                for (Size i=0; i < nStates; ++i) {
+                    a[layout->neighbourhood(iter, stateDirection_, i)] = x[i];
+                }
             }
         }
     }

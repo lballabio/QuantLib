@@ -37,6 +37,7 @@
 #include <ql/experimental/finitedifferences/fdmblackscholessolver.hpp>
 #include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
 #include <ql/experimental/finitedifferences/fdmdividendhandler.hpp>
+#include <ql/experimental/finitedifferences/fdmexpextouinnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmextendedornsteinuhlenbeckop.hpp>
 #include <ql/experimental/finitedifferences/fdmextoujumpmodelinnervalue.hpp>
 #include <ql/experimental/finitedifferences/fdmextoujumpop.hpp>
@@ -49,7 +50,6 @@
 #include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmklugeextouop.hpp>
 #include <ql/experimental/finitedifferences/fdmklugeextousolver.hpp>
-#include <ql/experimental/finitedifferences/fdmklugeextouspreadinnervalue.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearop.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearopcomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmlinearopiterator.hpp>
@@ -66,10 +66,12 @@
 #include <ql/experimental/finitedifferences/fdmsimpleswingcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmsnapshotcondition.hpp>
 #include <ql/experimental/finitedifferences/fdmsolverdesc.hpp>
+#include <ql/experimental/finitedifferences/fdmspreadpayoffinnervalue.hpp>
 #include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
 #include <ql/experimental/finitedifferences/fdmvppstepcondition.hpp>
 #include <ql/experimental/finitedifferences/fdsimplebsswingengine.hpp>
 #include <ql/experimental/finitedifferences/fdsimpleextoujumpswingengine.hpp>
+#include <ql/experimental/finitedifferences/fdsimpleklugeextouvppengine.hpp>
 #include <ql/experimental/finitedifferences/firstderivativeop.hpp>
 #include <ql/experimental/finitedifferences/hundsdorferscheme.hpp>
 #include <ql/experimental/finitedifferences/impliciteulerscheme.hpp>
@@ -81,4 +83,5 @@
 #include <ql/experimental/finitedifferences/triplebandlinearop.hpp>
 #include <ql/experimental/finitedifferences/uniform1dmesher.hpp>
 #include <ql/experimental/finitedifferences/uniformgridmesher.hpp>
+#include <ql/experimental/finitedifferences/vanillavppoption.hpp>
 

@@ -132,7 +132,8 @@ namespace QuantLib {
         const {
 
         const boost::shared_ptr<FdmLinearOpLayout> index=mesher_->layout();
-        QL_REQUIRE(u.size() == index->size(), "inconsistent length of r");
+        QL_REQUIRE(u.size() == index->size(),"inconsistent length of r "
+                    << u.size() << " vs " << index->size());
 
         Array retVal(u.size());
         // direct access to make the following code faster.

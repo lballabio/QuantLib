@@ -26,6 +26,7 @@
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/experimental/finitedifferences/fdmmesher.hpp>
+#include <ql/experimental/processes/klugeextouprocess.hpp>
 #include <ql/experimental/processes/extouwithjumpsprocess.hpp>
 #include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
 #include <ql/experimental/finitedifferences/fdmextoujumpop.hpp>
@@ -38,21 +39,19 @@ namespace QuantLib {
 
     FdmKlugeExtOUOp::FdmKlugeExtOUOp(
         const boost::shared_ptr<FdmMesher>& mesher,
-        Real rho,
-        const boost::shared_ptr<ExtOUWithJumpsProcess>& kluge,
-        const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& extOU,
+        const boost::shared_ptr<KlugeExtOUProcess>& klugeOUProcess,
         const boost::shared_ptr<YieldTermStructure>& rTS,
         const FdmBoundaryConditionSet& bcSet,
         Size integroIntegrationOrder)
     : mesher_ (mesher),
-      kluge_  (kluge),
-      extOU_  (extOU),
+      kluge_  (klugeOUProcess->getKlugeProcess()),
+      extOU_  (klugeOUProcess->getExtOUProcess()),
       rTS_    (rTS),
       bcSet_  (bcSet),
-      klugeOp_(new FdmExtOUJumpOp(mesher, kluge, rTS, bcSet,
+      klugeOp_(new FdmExtOUJumpOp(mesher, kluge_, rTS, bcSet,
                                   integroIntegrationOrder)),
       ouOp_   (new FdmExtendedOrnsteinUhlenbackOp(
-                  mesher, extOU,
+                  mesher, extOU_,
                   boost::shared_ptr<YieldTermStructure>(
                       new FlatForward(rTS->referenceDate(),
                               Handle<Quote>(boost::shared_ptr<Quote>(
@@ -60,8 +59,10 @@ namespace QuantLib {
                                       rTS->dayCounter())),
                   bcSet, 2)),
       corrMap_(SecondOrderMixedDerivativeOp(0, 2, mesher).mult(
-          Array(mesher->layout()->size(), rho*extOU->volatility()
-                *kluge->getExtendedOrnsteinUhlenbeckProcess()->volatility())))
+          Array(mesher->layout()->size(),
+                 klugeOUProcess->rho()*extOU_->volatility()
+                *kluge_->getExtendedOrnsteinUhlenbeckProcess()
+                       ->volatility())))
     { }
 
     Size FdmKlugeExtOUOp::size() const {
