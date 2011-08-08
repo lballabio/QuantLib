@@ -7138,10 +7138,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmklugeextouspreadinnervalue.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmlinearop.hpp"
 					>
 				</File>
