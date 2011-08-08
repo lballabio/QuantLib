@@ -1299,6 +1299,10 @@
 				RelativePath=".\volatilitymodels.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\vpp.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -1750,6 +1754,10 @@
 			</File>
 			<File
 				RelativePath=".\volatilitymodels.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\vpp.hpp"
 				>
 			</File>
 		</Filter>

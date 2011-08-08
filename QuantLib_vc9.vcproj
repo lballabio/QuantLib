@@ -1823,6 +1823,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\instruments\vanillaswingoption.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\instruments\vanillaswingoption.hpp"
 				>
 			</File>
@@ -7042,6 +7046,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmexpextouinnervaluecalculator.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmextendedornsteinuhlenbeckop.cpp"
 					>
 				</File>
@@ -7123,10 +7131,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmklugeextouop.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmklugeextousolver.cpp"
 					>
 				</File>
 				<File
@@ -7234,6 +7238,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmspreadpayoffinnervalue.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmstepconditioncomposite.cpp"
 					>
 				</File>
@@ -7271,6 +7279,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdsimpleextoustorageengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdsimpleklugeextouvppengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdsimpleklugeextouvppengine.hpp"
 					>
 				</File>
 				<File
@@ -7355,6 +7371,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\uniformgridmesher.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\vanillavppoption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\vanillavppoption.hpp"
 					>
 				</File>
 			</Filter>
@@ -7447,6 +7471,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\processes\gemanroncoroniprocess.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\processes\klugeextouprocess.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\processes\klugeextouprocess.hpp"
 					>
 				</File>
 				<File
