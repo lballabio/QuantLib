@@ -30,6 +30,7 @@
 #include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmextoujumpmodelinnervalue.hpp>
 #include <ql/experimental/finitedifferences/fdmexpextouinnervaluecalculator.hpp>
+#include <ql/experimental/processes/klugeextouprocess.hpp>
 
 namespace QuantLib {
 
