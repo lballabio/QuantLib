@@ -434,6 +434,7 @@
     <ClCompile Include="varianceswaps.cpp" />
     <ClCompile Include="volatilitymodels.cpp" />
     <ClCompile Include="quantlibtestsuite.cpp" />
+    <ClCompile Include="vpp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="americanoption.hpp" />
@@ -548,6 +549,7 @@
     <ClInclude Include="varianceoption.hpp" />
     <ClInclude Include="varianceswaps.hpp" />
     <ClInclude Include="volatilitymodels.hpp" />
+    <ClInclude Include="vpp.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QuantLib_vc10.vcxproj">

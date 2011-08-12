@@ -478,7 +478,7 @@ namespace {
         : path_(path),
           shape_(shape) {}
         Real innerValue(const FdmLinearOpIterator&, Time t) {
-            const Size i = t*365u*24u;
+            const Size i = Size(t*365u*24u);
             const Real f = std::lower_bound(shape_->begin(), shape_->end(),
                 std::pair<Time, Real>(t-std::sqrt(QL_EPSILON), 0.0))->second;
 
@@ -507,7 +507,7 @@ namespace {
           powerShape_(powerShape) {}
 
         Real innerValue(const FdmLinearOpIterator&, Time t) {
-            const Size i = t*365u*24u;
+            const Size i = Size(t*365u*24u);
             const Real f = std::lower_bound(
                 powerShape_->begin(), powerShape_->end(),
                 std::pair<Time, Real>(t-std::sqrt(QL_EPSILON), 0.0))->second;
@@ -530,7 +530,7 @@ namespace {
 }
 
 void VPPTest::testVPPPricing() {
-    BOOST_MESSAGE("Testing VPP step condition");
+    BOOST_MESSAGE("Testing VPP pricing using perfect foresight or FDM");
 
     SavedSettings backup;
 

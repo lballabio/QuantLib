@@ -3453,6 +3453,15 @@
     <ClInclude Include="ql\experimental\finitedifferences\fdmvppstepcondition.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\processes\klugeextouprocess.hpp">
+      <Filter>experimental\processes</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdsimpleklugeextouvppengine.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\vanillavppoption.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -5508,10 +5517,19 @@
     <ClCompile Include="ql\experimental\finitedifferences\fdmklugeextouop.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\finitedifferences\fdmklugeextousolver.cpp">
+    <ClCompile Include="ql\experimental\finitedifferences\fdmvppstepcondition.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\finitedifferences\fdmvppstepcondition.cpp">
+    <ClCompile Include="ql\experimental\processes\klugeextouprocess.cpp">
+      <Filter>experimental\processes</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\instruments\vanillaswingoption.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdsimpleklugeextouvppengine.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\vanillavppoption.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
   </ItemGroup>
