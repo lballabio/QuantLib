@@ -141,6 +141,7 @@
 #include "swapforwardmappings.hpp"
 #include "swaption.hpp"
 #include "swaptionvolatilitycube.hpp"
+#include "swaptionvolatilitymatrix.hpp"
 #include "termstructures.hpp"
 #include "timeseries.hpp"
 #include "tqreigendecomposition.hpp"
@@ -151,7 +152,7 @@
 #include "varianceswaps.hpp"
 #include "volatilitymodels.hpp"
 #include "vpp.hpp"
-#include "swaptionvolatilitymatrix.hpp"
+#include "writerextensibleoption.hpp"
 
 #include <iostream>
 #include <iomanip>
@@ -352,7 +353,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(VarianceSwapTest::suite());
     test->add(VolatilityModelsTest::suite());
     test->add(VPPTest::suite());
-
+    test->add(WriterExtensibleOptionTest::suite());
 
     //tests for deprecated classes
     test->add(LiborMarketModelTest::suite());

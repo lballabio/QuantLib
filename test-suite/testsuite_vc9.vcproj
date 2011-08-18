@@ -1303,6 +1303,10 @@
 				RelativePath=".\vpp.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\writerextensibleoption.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -1758,6 +1762,10 @@
 			</File>
 			<File
 				RelativePath=".\vpp.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\writerextensibleoption.hpp"
 				>
 			</File>
 		</Filter>

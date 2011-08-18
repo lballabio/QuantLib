@@ -1046,6 +1046,12 @@
 					RelativePath=".\ql\experimental\exoticoptions\analyticsimplechooserengine.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticwriterextensibleoptionengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticwriterextensibleoptionengine.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\experimental\exoticoptions\continuousarithmeticasianlevyengine.cpp">
 				</File>
 				<File
@@ -1098,6 +1104,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\exoticoptions\simplechooseroption.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\writerextensibleoption.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\writerextensibleoption.hpp">
 				</File>
 			</Filter>
 			<Filter

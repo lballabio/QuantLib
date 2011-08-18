@@ -7,6 +7,7 @@ this_include_HEADERS = \
     analyticamericanmargrabeengine.hpp \
     analyticeuropeanmargrabeengine.hpp \
     analyticsimplechooserengine.hpp \
+    analyticwriterextensibleoptionengine.hpp \
     continuousarithmeticasianlevyengine.hpp \
     everestoption.hpp \
     himalayaoption.hpp \
@@ -15,12 +16,14 @@ this_include_HEADERS = \
     mchimalayaengine.hpp \
     mcpagodaengine.hpp \
     pagodaoption.hpp \
-    simplechooseroption.hpp
+    simplechooseroption.hpp \
+    writerextensibleoption.hpp
 
 libExoticOptions_la_SOURCES = \
     analyticamericanmargrabeengine.cpp \
     analyticeuropeanmargrabeengine.cpp \
     analyticsimplechooserengine.cpp \
+    analyticwriterextensibleoptionengine.cpp \
     continuousarithmeticasianlevyengine.cpp \
     everestoption.cpp \
     himalayaoption.cpp \
@@ -29,7 +32,8 @@ libExoticOptions_la_SOURCES = \
     mchimalayaengine.cpp \
     mcpagodaengine.cpp \
     pagodaoption.cpp \
-    simplechooseroption.cpp
+    simplechooseroption.cpp \
+    writerextensibleoption.cpp
 
 noinst_LTLIBRARIES = libExoticOptions.la
 

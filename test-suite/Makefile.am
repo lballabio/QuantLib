@@ -113,7 +113,8 @@ QL_TESTS = \
 	varianceoption.hpp varianceoption.cpp \
 	varianceswaps.hpp varianceswaps.cpp \
 	volatilitymodels.hpp volatilitymodels.cpp \
-	vpp.hpp vpp.cpp
+	vpp.hpp vpp.cpp \
+	writerextensibleoption.hpp writerextensibleoption.cpp
 
 QL_BENCHMARKS = \
 	quantlibbenchmark.cpp \

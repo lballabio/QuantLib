@@ -882,6 +882,10 @@
 				RelativePath=".\volatilitymodels.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\writerextensibleoption.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -1333,6 +1337,10 @@
 			</File>
 			<File
 				RelativePath=".\volatilitymodels.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\writerextensibleoption.hpp"
 				>
 			</File>
 		</Filter>

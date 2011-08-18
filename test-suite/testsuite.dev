@@ -1,7 +1,7 @@
 [Project]
 FileName=testsuite.dev
 Name=QuantLib-test-suite
-UnitCount=218
+UnitCount=220
 Type=1
 Ver=1
 ObjFiles=
@@ -2219,6 +2219,26 @@ BuildCmd=
 
 [Unit218]
 FileName=commodityunitofmeasure.hpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit219]
+FileName=writerextensibleoption.cpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit220]
+FileName=writerextensibleoption.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1

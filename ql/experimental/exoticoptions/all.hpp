@@ -4,6 +4,7 @@
 #include <ql/experimental/exoticoptions/analyticamericanmargrabeengine.hpp>
 #include <ql/experimental/exoticoptions/analyticeuropeanmargrabeengine.hpp>
 #include <ql/experimental/exoticoptions/analyticsimplechooserengine.hpp>
+#include <ql/experimental/exoticoptions/analyticwriterextensibleoptionengine.hpp>
 #include <ql/experimental/exoticoptions/continuousarithmeticasianlevyengine.hpp>
 #include <ql/experimental/exoticoptions/everestoption.hpp>
 #include <ql/experimental/exoticoptions/himalayaoption.hpp>
@@ -13,4 +14,5 @@
 #include <ql/experimental/exoticoptions/mcpagodaengine.hpp>
 #include <ql/experimental/exoticoptions/pagodaoption.hpp>
 #include <ql/experimental/exoticoptions/simplechooseroption.hpp>
+#include <ql/experimental/exoticoptions/writerextensibleoption.hpp>
 
