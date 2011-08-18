@@ -8,11 +8,13 @@
 #include <ql/experimental/exoticoptions/continuousarithmeticasianlevyengine.hpp>
 #include <ql/experimental/exoticoptions/everestoption.hpp>
 #include <ql/experimental/exoticoptions/himalayaoption.hpp>
+#include <ql/experimental/exoticoptions/kirkspreadoptionengine.hpp>
 #include <ql/experimental/exoticoptions/margrabeoption.hpp>
 #include <ql/experimental/exoticoptions/mceverestengine.hpp>
 #include <ql/experimental/exoticoptions/mchimalayaengine.hpp>
 #include <ql/experimental/exoticoptions/mcpagodaengine.hpp>
 #include <ql/experimental/exoticoptions/pagodaoption.hpp>
 #include <ql/experimental/exoticoptions/simplechooseroption.hpp>
+#include <ql/experimental/exoticoptions/spreadoption.hpp>
 #include <ql/experimental/exoticoptions/writerextensibleoption.hpp>
 

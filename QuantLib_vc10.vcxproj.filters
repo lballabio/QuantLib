@@ -2781,6 +2781,9 @@
     <ClInclude Include="ql\experimental\exoticoptions\himalayaoption.hpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\exoticoptions\kirkspreadoptionengine.hpp">
+      <Filter>experimental\exoticoptions</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\exoticoptions\margrabeoption.hpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClInclude>
@@ -2797,6 +2800,9 @@
       <Filter>experimental\exoticoptions</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\exoticoptions\simplechooseroption.hpp">
+      <Filter>experimental\exoticoptions</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\exoticoptions\spreadoption.hpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\exoticoptions\writerextensibleoption.hpp">
@@ -5046,6 +5052,9 @@
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\himalayaoption.cpp">
+      <Filter>experimental\exoticoptions</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\exoticoptions\kirkspreadoptionengine.cpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\margrabeoption.cpp">

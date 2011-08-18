@@ -415,6 +415,7 @@
     <ClCompile Include="sampledcurve.cpp" />
     <ClCompile Include="shortratemodels.cpp" />
     <ClCompile Include="solvers.cpp" />
+    <ClCompile Include="spreadoption.cpp" />
     <ClCompile Include="stats.cpp" />
     <ClCompile Include="surface.cpp" />
     <ClCompile Include="swap.cpp" />
@@ -531,6 +532,7 @@
     <ClInclude Include="sampledcurve.hpp" />
     <ClInclude Include="shortratemodels.hpp" />
     <ClInclude Include="solvers.hpp" />
+    <ClInclude Include="spreadoption.hpp" />
     <ClInclude Include="stats.hpp" />
     <ClInclude Include="surface.hpp" />
     <ClInclude Include="swap.hpp" />

@@ -284,6 +284,9 @@
     <ClCompile Include="solvers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="spreadoption.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="stats.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -624,6 +627,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="solvers.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="spreadoption.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stats.hpp">

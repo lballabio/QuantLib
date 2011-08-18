@@ -1,7 +1,7 @@
 [Project]
 FileName=testsuite.dev
 Name=QuantLib-test-suite
-UnitCount=220
+UnitCount=222
 Type=1
 Ver=1
 ObjFiles=
@@ -2239,6 +2239,26 @@ BuildCmd=
 
 [Unit220]
 FileName=writerextensibleoption.hpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit221]
+FileName=spreadoption.cpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit222]
+FileName=spreadoption.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1

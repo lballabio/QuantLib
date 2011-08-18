@@ -6636,6 +6636,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\exoticoptions\kirkspreadoptionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\kirkspreadoptionengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\exoticoptions\margrabeoption.cpp"
 					>
 				</File>
@@ -6681,6 +6689,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\exoticoptions\simplechooseroption.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\spreadoption.hpp"
 					>
 				</File>
 				<File

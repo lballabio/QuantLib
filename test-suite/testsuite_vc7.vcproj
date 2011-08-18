@@ -720,6 +720,9 @@
 				RelativePath="solvers.cpp">
 			</File>
 			<File
+				RelativePath="spreadoption.cpp">
+			</File>
+			<File
 				RelativePath="stats.cpp">
 			</File>
 			<File
@@ -1049,6 +1052,9 @@
 			</File>
 			<File
 				RelativePath="solvers.hpp">
+			</File>
+			<File
+				RelativePath="spreadoption.hpp">
 			</File>
 			<File
 				RelativePath="stats.hpp">

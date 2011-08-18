@@ -94,6 +94,7 @@ QL_TESTS = \
 	sampledcurve.hpp sampledcurve.cpp \
 	shortratemodels.hpp shortratemodels.cpp \
 	solvers.hpp solvers.cpp \
+	spreadoption.hpp spreadoption.cpp \
 	stats.hpp stats.cpp \
 	surface.hpp surface.cpp \
 	swap.hpp swap.cpp \

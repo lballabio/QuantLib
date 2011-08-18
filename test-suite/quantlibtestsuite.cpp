@@ -134,6 +134,7 @@
 #include "sampledcurve.hpp"
 #include "shortratemodels.hpp"
 #include "solvers.hpp"
+#include "spreadoption.hpp"
 #include "swingoption.hpp"
 #include "surface.hpp"
 #include "stats.hpp"
@@ -335,6 +336,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(SampledCurveTest::suite());
     test->add(ShortRateModelTest::suite()); // fails with QL_USE_INDEXED_COUPON
     test->add(Solver1DTest::suite());
+    test->add(SpreadOptionTest::suite());
     test->add(SwingOptionTest::suite());
     test->add(StatisticsTest::suite());
     test->add(SurfaceTest::suite());

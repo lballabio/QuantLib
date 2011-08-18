@@ -11,12 +11,14 @@ this_include_HEADERS = \
     continuousarithmeticasianlevyengine.hpp \
     everestoption.hpp \
     himalayaoption.hpp \
+    kirkspreadoptionengine.hpp \
     margrabeoption.hpp \
     mceverestengine.hpp \
     mchimalayaengine.hpp \
     mcpagodaengine.hpp \
     pagodaoption.hpp \
     simplechooseroption.hpp \
+    spreadoption.hpp \
     writerextensibleoption.hpp
 
 libExoticOptions_la_SOURCES = \
@@ -27,6 +29,7 @@ libExoticOptions_la_SOURCES = \
     continuousarithmeticasianlevyengine.cpp \
     everestoption.cpp \
     himalayaoption.cpp \
+    kirkspreadoptionengine.cpp \
     margrabeoption.cpp \
     mceverestengine.cpp \
     mchimalayaengine.cpp \
