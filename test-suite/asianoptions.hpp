@@ -38,6 +38,7 @@ class AsianOptionTest {
     static void testMCDiscreteArithmeticAverageStrike();
     static void testAnalyticDiscreteGeometricAveragePriceGreeks();
     static void testPastFixings();
+    static void testLevyEngine();
     static boost::unit_test_framework::test_suite* suite();
 };
 

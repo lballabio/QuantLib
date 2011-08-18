@@ -7,6 +7,7 @@ this_include_HEADERS = \
     analyticamericanmargrabeengine.hpp \
     analyticeuropeanmargrabeengine.hpp \
     analyticsimplechooserengine.hpp \
+    continuousarithmeticasianlevyengine.hpp \
     everestoption.hpp \
     himalayaoption.hpp \
     margrabeoption.hpp \
@@ -20,6 +21,7 @@ libExoticOptions_la_SOURCES = \
     analyticamericanmargrabeengine.cpp \
     analyticeuropeanmargrabeengine.cpp \
     analyticsimplechooserengine.cpp \
+    continuousarithmeticasianlevyengine.cpp \
     everestoption.cpp \
     himalayaoption.cpp \
     margrabeoption.cpp \

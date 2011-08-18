@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2005, 2007, 2008 StatPro Italia srl
- Copyright (C) 2009 Master IMAFA - Polytech'Nice Sophia - Université de Nice Sophia Antipolis
+ Copyright (C) 2009, 2011 Master IMAFA - Polytech'Nice Sophia - Université de Nice Sophia Antipolis
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,6 +30,7 @@
 #include <ql/pricingengines/asian/mc_discr_arith_av_price.hpp>
 #include <ql/pricingengines/asian/mc_discr_arith_av_strike.hpp>
 #include <ql/experimental/finitedifferences/fdblackscholesasianengine.hpp>
+#include <ql/experimental/exoticoptions/continuousarithmeticasianlevyengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -1125,6 +1126,112 @@ void AsianOptionTest::testPastFixings() {
 
 }
 
+namespace {
+
+    struct ContinuousAverageData {
+        Option::Type type;
+        Real spot;
+        Real currentAverage;
+        Real strike;
+        Rate dividendYield;
+        Rate riskFreeRate;
+        Volatility volatility;
+        Natural length;
+        Natural elapsed;
+        Real result;
+    };
+
+}
+
+void AsianOptionTest::testLevyEngine() {
+
+    BOOST_MESSAGE("Testing Levy engine for Asians options...");
+
+    // data from Haug, "Option Pricing Formulas", p.99-100
+    ContinuousAverageData cases[] = {
+      { Option::Call, 6.80, 6.80, 6.90, 0.09, 0.07, 0.14, 180, 0, 0.0944 },
+      { Option::Put,  6.80, 6.80, 6.90, 0.09, 0.07, 0.14, 180, 0, 0.2237 },
+      { Option::Call, 100.0, 100.0, 95.0, 0.05, 0.1, 0.15, 270, 0, 7.0544 },
+      { Option::Call, 100.0, 100.0, 95.0, 0.05, 0.1, 0.15, 270, 90, 5.6731 },
+      { Option::Call, 100.0, 100.0, 95.0, 0.05, 0.1, 0.15, 270, 180, 5.0806 },
+      { Option::Call, 100.0, 100.0, 95.0, 0.05, 0.1, 0.35, 270, 0, 10.1213 },
+      { Option::Call, 100.0, 100.0, 95.0, 0.05, 0.1, 0.35, 270, 90, 6.9705 },
+      { Option::Call, 100.0, 100.0, 95.0, 0.05, 0.1, 0.35, 270, 180, 5.1411 },
+      { Option::Call, 100.0, 100.0, 100.0, 0.05, 0.1, 0.15, 270, 0, 3.7845 },
+      { Option::Call, 100.0, 100.0, 100.0, 0.05, 0.1, 0.15, 270, 90, 1.9964 },
+      { Option::Call, 100.0, 100.0, 100.0, 0.05, 0.1, 0.15, 270, 180, 0.6722 },
+      { Option::Call, 100.0, 100.0, 100.0, 0.05, 0.1, 0.35, 270, 0, 7.5038 },
+      { Option::Call, 100.0, 100.0, 100.0, 0.05, 0.1, 0.35, 270, 90, 4.0687 },
+      { Option::Call, 100.0, 100.0, 100.0, 0.05, 0.1, 0.35, 270, 180, 1.4222 },
+      { Option::Call, 100.0, 100.0, 105.0, 0.05, 0.1, 0.15, 270, 0, 1.6729 },
+      { Option::Call, 100.0, 100.0, 105.0, 0.05, 0.1, 0.15, 270, 90, 0.3565 },
+      { Option::Call, 100.0, 100.0, 105.0, 0.05, 0.1, 0.15, 270, 180, 0.0004 },
+      { Option::Call, 100.0, 100.0, 105.0, 0.05, 0.1, 0.35, 270, 0, 5.4071 },
+      { Option::Call, 100.0, 100.0, 105.0, 0.05, 0.1, 0.35, 270, 90, 2.1359 },
+      { Option::Call, 100.0, 100.0, 105.0, 0.05, 0.1, 0.35, 270, 180, 0.1552 }
+    };
+
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
+    for (Size l=0; l<LENGTH(cases); l++) {
+
+        boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(cases[l].spot));
+        boost::shared_ptr<YieldTermStructure> qTS =
+            flatRate(today, cases[l].dividendYield, dc);
+        boost::shared_ptr<YieldTermStructure> rTS =
+            flatRate(today, cases[l].riskFreeRate, dc);
+        boost::shared_ptr<BlackVolTermStructure> volTS =
+            flatVol(today, cases[l].volatility, dc);
+
+        Average::Type averageType = Average::Arithmetic;
+        boost::shared_ptr<Quote> average(
+                                    new SimpleQuote(cases[l].currentAverage));
+
+        boost::shared_ptr<StrikedTypePayoff> payoff(
+                      new PlainVanillaPayoff(cases[l].type, cases[l].strike));
+
+        Date startDate = today - cases[l].elapsed;
+        Date maturity = startDate + cases[l].length;
+
+        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(maturity));
+
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
+            BlackScholesMertonProcess(Handle<Quote>(spot),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS)));
+
+        boost::shared_ptr<PricingEngine> engine(
+            new ContinuousArithmeticAsianLevyEngine(
+                     stochProcess, Handle<Quote>(average), startDate));
+
+        ContinuousAveragingAsianOption option(averageType,
+                                              payoff, exercise);
+        option.setPricingEngine(engine);
+
+        Real calculated = option.NPV();
+        Real expected = cases[l].result;
+        Real tolerance = 1.0e-4;
+        Real error = std::fabs(expected-calculated);
+        if (error > tolerance) {
+            BOOST_ERROR("Asian option with Levy engine:"
+                        << "\n    spot:            " << cases[l].spot
+                        << "\n    current average: " << cases[l].currentAverage
+                        << "\n    strike:          " << cases[l].strike
+                        << "\n    dividend yield:  " << cases[l].dividendYield
+                        << "\n    risk-free rate:  " << cases[l].riskFreeRate
+                        << "\n    volatility:      " << cases[l].volatility
+                        << "\n    reference date:  " << today
+                        << "\n    length:          " << cases[l].length
+                        << "\n    elapsed:         " << cases[l].elapsed
+                        << "\n    expected value:  " << expected
+                        << "\n    calculated:      " << calculated
+                        << "\n    error:           " << error);
+        }
+    }
+}
+
 test_suite* AsianOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Asian option tests");
 
@@ -1146,6 +1253,8 @@ test_suite* AsianOptionTest::suite() {
         &AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks));
     suite->add(QUANTLIB_TEST_CASE(
         &AsianOptionTest::testPastFixings));
+    suite->add(QUANTLIB_TEST_CASE(
+        &AsianOptionTest::testLevyEngine));
 
     return suite;
 }
