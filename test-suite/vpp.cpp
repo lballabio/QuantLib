@@ -237,7 +237,7 @@ void VPPTest::testSimpleExtOUStorageEngine() {
 
     storageOption.setPricingEngine(storageEngine);
 
-    const Real expected = 69.6572;
+    const Real expected = 69.6307;
     const Real calculated = storageOption.NPV();
 
     if (std::fabs(expected - calculated) > 2e-2) {
