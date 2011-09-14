@@ -102,9 +102,6 @@ rm -rf %{buildroot}
 %{docdir}/Readme.txt
 %{docdir}/News.txt
 %{docdir}/Contributors.txt
-%{docdir}/History.txt
-%{docdir}/INSTALL.txt
-%{docdir}/TODO.txt
 %{_libdir}/libQuantLib.la
 %{_libdir}/libQuantLib.so
 %{_libdir}/libQuantLib-%{version}.so
