@@ -69,11 +69,13 @@ namespace QuantLib {
         /*! \brief returns the drift part of the equation, i.e.,
                    \f$ \mu(t, \mathrm{x}_t) \f$
         */
-        virtual Disposable<Array> drift(Time t, const Array& x) const = 0;
+        virtual Disposable<Array> drift(Time t,
+                                        const Array& x) const = 0;
         /*! \brief returns the diffusion part of the equation, i.e.
                    \f$ \sigma(t, \mathrm{x}_t) \f$
         */
-        virtual Disposable<Matrix> diffusion(Time t, const Array& x) const = 0;
+        virtual Disposable<Matrix> diffusion(Time t,
+                                             const Array& x) const = 0;
         /*! returns the expectation
             \f$ E(\mathrm{x}_{t_0 + \Delta t}
                 | \mathrm{x}_{t_0} = \mathrm{x}_0) \f$
@@ -82,7 +84,8 @@ namespace QuantLib {
             overridden in derived classes which want to hard-code a
             particular discretization.
         */
-        virtual Disposable<Array> expectation(Time t0, const Array& x0,
+        virtual Disposable<Array> expectation(Time t0,
+                                              const Array& x0,
                                               Time dt) const;
         /*! returns the standard deviation
             \f$ S(\mathrm{x}_{t_0 + \Delta t}
@@ -92,7 +95,8 @@ namespace QuantLib {
             overridden in derived classes which want to hard-code a
             particular discretization.
         */
-        virtual Disposable<Matrix> stdDeviation(Time t0, const Array& x0,
+        virtual Disposable<Matrix> stdDeviation(Time t0,
+                                                const Array& x0,
                                                 Time dt) const;
         /*! returns the covariance
             \f$ V(\mathrm{x}_{t_0 + \Delta t}
@@ -102,7 +106,8 @@ namespace QuantLib {
             overridden in derived classes which want to hard-code a
             particular discretization.
         */
-        virtual Disposable<Matrix> covariance(Time t0, const Array& x0,
+        virtual Disposable<Matrix> covariance(Time t0,
+                                              const Array& x0,
                                               Time dt) const;
         /*! returns the asset value after a time interval \f$ \Delta t
             \f$ according to the given discretization. By default, it
@@ -114,8 +119,10 @@ namespace QuantLib {
             where \f$ E \f$ is the expectation and \f$ S \f$ the
             standard deviation.
         */
-        virtual Disposable<Array> evolve(Time t0, const Array& x0,
-                                         Time dt, const Array& dw) const;
+        virtual Disposable<Array> evolve(Time t0,
+                                         const Array& x0,
+                                         Time dt,
+                                         const Array& dw) const;
         /*! applies a change to the asset value. By default, it
             returns \f$ \mathrm{x} + \Delta \mathrm{x} \f$.
         */
