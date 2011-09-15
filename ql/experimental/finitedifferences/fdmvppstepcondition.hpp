@@ -17,7 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdmvppstatetransitionmatrix.hpp
+/*! \file fdmvppstepcondition.hpp
+    \brief VPP step condition for FD models
 */
 
 #ifndef quantlib_fdm_vpp_step_condition_hpp

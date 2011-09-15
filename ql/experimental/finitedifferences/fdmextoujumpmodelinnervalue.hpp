@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdoujumpmodelinnervalue.hpp
+/*! \file fdmextoujumpmodelinnervalue.hpp
     \brief inner value calculator for the Ornstein Uhlenbeck
            plus exponential jumps model (Kluge Model)
 */

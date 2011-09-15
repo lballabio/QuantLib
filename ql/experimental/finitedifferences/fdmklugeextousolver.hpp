@@ -17,7 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdmklugeousolver.hpp
+/*! \file fdmklugeextousolver.hpp
+    \brief Kluge/extended Ornstein-Uhlenbeck FDM solver
 */
 
 #ifndef quantlib_fdm_kluge_ou_solver_hpp

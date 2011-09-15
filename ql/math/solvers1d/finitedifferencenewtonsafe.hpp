@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file newtonsafefinitedifferences.hpp
+/*! \file finitedifferencenewtonsafe.hpp
     \brief Safe (bracketed) Newton 1-D solver with finite difference derivatives
 */
 

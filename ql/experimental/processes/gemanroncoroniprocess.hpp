@@ -35,7 +35,7 @@ namespace QuantLib {
         \begin{array}{rcl}
             dE(t) &=& \left[ \frac{\partial}{\partial t} \mu(t)
                 +\theta_1 \left(\mu(t)-E(t^-)\right)\right]dt
-                +\sigma dW(t) + h(E(t^-))dJ(t) 
+                +\sigma dW(t) + h(E(t^-))dJ(t) \\
             \mu(t)&=& \alpha + \beta t +\gamma \cos(\epsilon+2\pi t)
                 +\delta \cos(\zeta + 4\pi t)
         \end{array}

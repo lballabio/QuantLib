@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-/*! \file zeroinflationcouponpricer.hpp
- \brief zero inflation-coupon pricer
+/*! \file cpicouponpricer.hpp
+    \brief zero inflation-coupon pricer
  */
 
 #ifndef quantlib_cpicouponpricer_hpp

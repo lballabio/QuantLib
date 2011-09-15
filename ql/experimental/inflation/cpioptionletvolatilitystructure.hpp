@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-/*! \file zeroinflationoptionletvolatilitystructure.hpp
+/*! \file cpioptionletvolatilitystructure.hpp
     \brief zero inflation (i.e. CPI/RPI/HICP/etc.) volatility structures
  */
 
@@ -37,8 +37,8 @@ namespace QuantLib {
         totalVariance.  Also deal with lagged observations of an index
         with a (usually different) availability lag.
 	 
-		\FIXME so far is exact copy of yoy inflation vol code
-		- at least for the constant version.
+		\todo so far is exact copy of yoy inflation vol code
+		      - at least for the constant version.
     */
     class CPIOptionletVolatilitySurface : public VolatilityTermStructure {
     public:

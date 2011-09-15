@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdmexpoujumpop.hpp
+/*! \file fdmextendedornsteinuhlenbeckop.hpp
     \brief Ornstein Uhlenbeck process plus jumps (Kluge Model)
 */
 

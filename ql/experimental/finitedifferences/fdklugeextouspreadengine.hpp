@@ -17,9 +17,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdklugeextoutspreadengine.hpp
-    \brief Finite Differences for a simple power-gas spread option
-           Kluge process vs. extended Ornstein-Uhlenbeck process
+/*! \file fdklugeextouspreadengine.hpp
+    \brief FD Kluge/extended Ornstein-Uhlenbeck engine
+           for a simple power-gas spread option
 */
 
 #ifndef quantlib_fd_kluge_extou_spread_engine_hpp

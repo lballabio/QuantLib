@@ -76,7 +76,7 @@ namespace QuantLib {
         Rate adjustedFixing() const;
 		//! you may want a different interpolation from the index, so reimplement here
 		Rate indexFixing() const;
-		//! \wrning make sure that the interpolation used to create this is what you 
+		//! \warning make sure that the interpolation used to create this is what you 
 		//! are using for the fixing, i.e. the observationInterpolation.
 		Rate baseCPI() const;
 		//! how do you observe the index?  as-is, flat, linear?

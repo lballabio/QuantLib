@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file expouwithjumpsprocess.hpp
+/*! \file extouwithjumpsprocess.hpp
     \brief Ornstein Uhlenbeck process plus exp jumps (Kluge Model)
 */
 
