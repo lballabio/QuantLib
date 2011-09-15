@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2007, 2008, 2009, 2010 StatPro Italia srl
+ Copyright (C) 2005, 2007, 2008, 2009, 2010, 2011 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -187,6 +187,31 @@ namespace QuantLib {
                 || (d == 17 && m == November)
                 // Moharram
                 || (d == 17 && m == December)
+                )
+                return false;
+        }
+
+        if (y == 2011) {
+            if (// Mahashivratri
+                (d == 2 && m == March)
+                // Ram Navmi
+                || (d == 12 && m == April)
+                // Ramzan Id
+                || (d == 31 && m == August)
+                // Ganesh Chaturthi
+                || (d == 1 && m == September)
+                // Dasara
+                || (d == 6 && m == October)
+                // Laxmi Puja
+                || (d == 26 && m == October)
+                // Diwali - Balipratipada
+                || (d == 27 && m == October)
+                // Bakri Id
+                || (d == 7 && m == November)
+                // Gurunanak Jayanti
+                || (d == 10 && m == November)
+                // Moharram
+                || (d == 6 && m == December)
                 )
                 return false;
         }

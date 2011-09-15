@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 FIMAT Group
- Copyright (C) 2007, 2009, 2010 StatPro Italia srl
+ Copyright (C) 2007, 2009, 2010, 2011 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -38,7 +38,7 @@ namespace QuantLib {
         <li>Ching Ming Festival, April 5th </li>
         <li>Good Friday</li>
         <li>Easter Monday</li>
-        <li>Labor Day, May 1st</li>
+        <li>Labor Day, May 1st (possibly moved to Monday)</li>
         <li>SAR Establishment Day, July 1st (possibly moved to Monday)</li>
         <li>National Day, October 1st (possibly moved to Monday)</li>
         <li>Christmas, December 25th</li>
@@ -46,7 +46,7 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2004-2010 only:)
+        (data available for 2004-2012 only:)
         <ul>
         <li>Lunar New Year</li>
         <li>Chinese New Year</li>

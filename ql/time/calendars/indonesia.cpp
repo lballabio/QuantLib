@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2007, 2008, 2009, 2010 StatPro Italia srl
+ Copyright (C) 2005, 2007, 2008, 2009, 2010, 2011 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -189,6 +189,24 @@ namespace QuantLib {
                 || (d == 24 && m == December)
                 // Trading holiday
                 || (d == 31 && m == December)
+                )
+                return false;
+        }
+
+        if (y == 2011) {
+            if (// Chinese New Year
+                   (d == 3 && m == February)
+                // Birthday of the prophet Muhammad SAW
+                || (d == 15 && m == February)
+                // Birth of Buddha
+                || (d == 17 && m == May)
+                // Isra' Mi'raj of the prophet Muhammad SAW
+                || (d == 29 && m == June)
+                // Ied Fitr
+                || (d >= 29 && m == August)
+                || (d <= 2 && m == September)
+                // Public Holiday
+                || (d == 26 && m == December)
                 )
                 return false;
         }

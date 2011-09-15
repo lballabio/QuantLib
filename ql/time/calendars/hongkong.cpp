@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 FIMAT Group
- Copyright (C) 2007, 2009, 2010 StatPro Italia srl
+ Copyright (C) 2007, 2009, 2010, 2011 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -53,7 +53,7 @@ namespace QuantLib {
             // Easter Monday
             || (dd == em)
             // Labor Day
-            || (d == 1 && m == May)
+            || ((d == 1 || ((d == 2 || d == 3) && w == Monday)) && m == May)
             // SAR Establishment Day
             || ((d == 1 || ((d == 2 || d == 3) && w == Monday)) && m == July)
             // National Day
@@ -165,6 +165,38 @@ namespace QuantLib {
                 || (d == 16 && m == June)
                 // Mid-autumn festival
                 || (d == 23 && m == September))
+            return false;
+        }
+
+        if (y == 2011) {
+            if (// Lunar New Year
+                ((d == 3 || d == 4) && m == February)
+                // Ching Ming Festival
+                || (d == 5 && m == April)
+                // Buddha's birthday
+                || (d == 10 && m == May)
+                // Tuen NG festival
+                || (d == 6 && m == June)
+                // Mid-autumn festival
+                || (d == 13 && m == September)
+                // Chung Yeung festival
+                || (d == 5 && m == October)
+                // Second day after Christmas
+                || (d == 27 && m == December))
+            return false;
+        }
+
+        if (y == 2012) {
+            if (// Lunar New Year
+                (d >= 23 && d <= 25 && m == January)
+                // Ching Ming Festival
+                || (d == 4 && m == April)
+                // Buddha's birthday
+                || (d == 10 && m == May)
+                // Mid-autumn festival
+                || (d == 1 && m == October)
+                // Chung Yeung festival
+                || (d == 23 && m == October))
             return false;
         }
 

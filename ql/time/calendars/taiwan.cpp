@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 FIMAT Group
- Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010 StatPro Italia srl
+ Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -161,6 +161,23 @@ namespace QuantLib {
                 || (d == 16 && m == May)
                 // Moon Festival
                 || (d == 22 && m == September)
+                )
+                return false;
+        }
+
+        if (y == 2011) {
+            if (// Spring Festival
+                   (d >= 2 && d <= 7 && m == February)
+                // Children's Day
+                || (d == 4 && m == April)
+                // Tomb Sweeping Day
+                || (d == 5 && m == April)
+                // Labour Day
+                || (d == 2 && m == May)
+                // Dragon Boat Festival
+                || (d == 6 && m == June)
+                // Mid-Autumn Festival
+                || (d == 12 && m == September)
                 )
                 return false;
         }

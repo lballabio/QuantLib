@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 FIMAT Group
- Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2007, 2011 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -52,9 +52,17 @@ namespace QuantLib {
             // Eid Al-Adha
             || (d >= 1 && d <= 6 && m == February && y==2004)
             || (d >= 21 && d <= 25 && m == January && y==2005)
+            || (d >= 26 && m == November && y==2009)
+            || (d <= 4 && m == December && y==2009)
+            || (d >= 11 && d <= 19 && m == November && y==2010)
             // Eid Al-Fitr
             || (d >= 25 && d <= 29 && m == November && y==2004)
             || (d >= 14 && d <= 18 && m == November && y==2005)
+            || (d >= 25 && m == August && y==2011)
+            || (d <= 2 && m == September && y==2011)
+            // other one-shot holidays
+            || (d == 26 && m == February && y==2011)
+            || (d == 19 && m == March && y==2011)
             )
             return false;
         return true;
