@@ -31,6 +31,18 @@ namespace QuantLib {
 
     class SwaptionVolCube2 : public SwaptionVolatilityCube{
       public:
+          /*! The swaption vol cube is made up of ordered swaption vol surface
+              layers, each layer referring to a swap index of a given length
+              (in years), all indexes belonging to the same family. In order
+              to identify the family (and its market conventions) an index of
+              whatever length from that family must be passed in as
+              swapIndexBase.
+
+              Often for short swap length the swap index family is different,
+              e.g. the EUR case: swap vs 6M Euribor is used for length>1Y,
+              while swap vs 3M Euribor is used for the 1Y length. The
+              shortSwapIndexBase is used to identify this second family.
+        */
         SwaptionVolCube2(
             const Handle<SwaptionVolatilityStructure>& atmVolStructure,
             const std::vector<Period>& optionTenors,
