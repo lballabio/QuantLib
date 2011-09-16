@@ -29,7 +29,8 @@ namespace QuantLib {
     Swap::Swap(const Leg& firstLeg,
                const Leg& secondLeg)
     : legs_(2), payer_(2),
-      legNPV_(2, 0.0), legBPS_(2, 0.0), startDiscounts_(2, 0.0),
+      legNPV_(2, 0.0), legBPS_(2, 0.0),
+      startDiscounts_(2, 0.0), endDiscounts_(2, 0.0),
       npvDateDiscount_(0.0) {
         legs_[0] = firstLeg;
         legs_[1] = secondLeg;
@@ -45,7 +46,8 @@ namespace QuantLib {
                const std::vector<bool>& payer)
     : legs_(legs), payer_(legs.size(), 1.0),
       legNPV_(legs.size(), 0.0), legBPS_(legs.size(), 0.0),
-      startDiscounts_(legs.size(), 0.0), npvDateDiscount_(0.0) {
+      startDiscounts_(legs.size(), 0.0), endDiscounts_(legs.size(), 0.0),
+      npvDateDiscount_(0.0) {
         QL_REQUIRE(payer.size()==legs_.size(),
                    "size mismatch between payer (" << payer.size() <<
                    ") and legs (" << legs_.size() << ")");
@@ -58,7 +60,8 @@ namespace QuantLib {
 
     Swap::Swap(Size legs)
     : legs_(legs), payer_(legs),
-      legNPV_(legs, 0.0), legBPS_(legs, 0.0), startDiscounts_(legs, 0.0),
+      legNPV_(legs, 0.0), legBPS_(legs, 0.0),
+      startDiscounts_(legs, 0.0), endDiscounts_(legs, 0.0),
       npvDateDiscount_(0.0) {}
 
 
@@ -77,6 +80,7 @@ namespace QuantLib {
         std::fill(legBPS_.begin(), legBPS_.end(), 0.0);
         std::fill(legNPV_.begin(), legNPV_.end(), 0.0);
         std::fill(startDiscounts_.begin(), startDiscounts_.end(), 0.0);
+        std::fill(endDiscounts_.begin(), endDiscounts_.end(), 0.0);
         npvDateDiscount_ = 0.0;
     }
 
@@ -119,6 +123,15 @@ namespace QuantLib {
                                                     Null<DiscountFactor>());
         }
 
+        if (!results->endDiscounts.empty()) {
+            QL_REQUIRE(results->endDiscounts.size() == endDiscounts_.size(),
+                       "wrong number of leg end discounts returned");
+            endDiscounts_ = results->endDiscounts;
+        } else {
+            std::fill(endDiscounts_.begin(), endDiscounts_.end(),
+                                                    Null<DiscountFactor>());
+        }
+
         if (results->npvDateDiscount != Null<DiscountFactor>()) {
             npvDateDiscount_ = results->npvDateDiscount;
         } else {
@@ -154,6 +167,7 @@ namespace QuantLib {
         legNPV.clear();
         legBPS.clear();
         startDiscounts.clear();
+        endDiscounts.clear();
         npvDateDiscount = Null<DiscountFactor>();
     }
 

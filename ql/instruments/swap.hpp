@@ -78,6 +78,11 @@ namespace QuantLib {
             calculate();
             return startDiscounts_[j];
         }
+        DiscountFactor endDiscounts(Size j) const {
+            QL_REQUIRE(j<legs_.size(), "leg #" << j << " doesn't exist!");
+            calculate();
+            return endDiscounts_[j];
+        }
         DiscountFactor npvDateDiscount() const {
             calculate();
             return npvDateDiscount_;
@@ -104,7 +109,7 @@ namespace QuantLib {
         std::vector<Real> payer_;
         mutable std::vector<Real> legNPV_;
         mutable std::vector<Real> legBPS_;
-        mutable std::vector<DiscountFactor> startDiscounts_;
+        mutable std::vector<DiscountFactor> startDiscounts_, endDiscounts_;
         mutable DiscountFactor npvDateDiscount_;
     };
 
@@ -120,7 +125,7 @@ namespace QuantLib {
       public:
         std::vector<Real> legNPV;
         std::vector<Real> legBPS;
-        std::vector<DiscountFactor> startDiscounts;
+        std::vector<DiscountFactor> startDiscounts, endDiscounts;
         DiscountFactor npvDateDiscount;
         void reset();
     };

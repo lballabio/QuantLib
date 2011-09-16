@@ -67,6 +67,7 @@ namespace QuantLib {
         results_.legNPV.resize(n);
         results_.legBPS.resize(n);
         results_.startDiscounts.resize(n);
+        results_.endDiscounts.resize(n);
 
         bool includeRefDateFlows =
             includeSettlementDateFlows_ ?
@@ -86,11 +87,18 @@ namespace QuantLib {
                 results_.legNPV[i] *= arguments_.payer[i];
                 results_.legBPS[i] *= arguments_.payer[i];
 
-                const Date& d = CashFlows::startDate(arguments_.legs[i]);
-                if (d>=refDate)
-                   results_.startDiscounts[i] = discountCurve_->discount(d);
+                Date d1 = CashFlows::startDate(arguments_.legs[i]);
+                if (d1>=refDate)
+                   results_.startDiscounts[i] = discountCurve_->discount(d1);
                 else
                    results_.startDiscounts[i] = Null<DiscountFactor>();
+
+                Date d2 = CashFlows::maturityDate(arguments_.legs[i]);
+                if (d2>=refDate)
+                   results_.endDiscounts[i] = discountCurve_->discount(d2);
+                else
+                   results_.endDiscounts[i] = Null<DiscountFactor>();
+
             } catch (std::exception &e) {
                 QL_FAIL(io::ordinal(i+1) << " leg: " << e.what());
             }
