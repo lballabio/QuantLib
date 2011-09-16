@@ -38,6 +38,7 @@ namespace QuantLib {
                          const boost::shared_ptr<Bond>& bond,
                          Real bondCleanPrice,
                          Real nonParRepayment,
+                         Real gearing,
                          const boost::shared_ptr<IborIndex>& iborIndex,
                          Spread spread,
                          const DayCounter& floatingDayCounter,
@@ -85,12 +86,14 @@ namespace QuantLib {
             legs_[1] = IborLeg(schedule, iborIndex)
                 .withNotionals(notional)
                 .withPaymentAdjustment(paymentAdjustment)
+                .withGearings(gearing)
                 .withSpreads(spread);
         else
             legs_[1] = IborLeg(schedule, iborIndex)
                 .withNotionals(notional)
                 .withPaymentDayCounter(floatingDayCounter)
                 .withPaymentAdjustment(paymentAdjustment)
+                .withGearings(gearing)
                 .withSpreads(spread);
 
         for (Leg::const_iterator i=legs_[1].begin(); i<legs_[1].end(); ++i)
@@ -370,7 +373,7 @@ namespace QuantLib {
             QL_REQUIRE(endDiscounts_[1]!=Null<DiscountFactor>(),
                        "fair non par repayment not available for expired leg");
             Real notional = bond_->notional(upfrontDate_);
-            fairNonParRepayment_ = nonParRepayment_ + payer_[0] * 
+            fairNonParRepayment_ = nonParRepayment_ - payer_[0] * 
                 NPV_*npvDateDiscount_/endDiscounts_[1]/(notional/100.0);
             return fairNonParRepayment_;
         }

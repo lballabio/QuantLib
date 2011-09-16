@@ -66,6 +66,7 @@ namespace QuantLib {
                   const boost::shared_ptr<Bond>& bond,
                   Real bondCleanPrice,
                   Real nonParRepayment,
+                  Real gearing,
                   const boost::shared_ptr<IborIndex>& iborIndex,
                   Spread spread = 0.0,
                   const DayCounter& floatingDayCount = DayCounter(),
