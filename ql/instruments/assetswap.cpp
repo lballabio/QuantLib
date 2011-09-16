@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2006, 2007 Chiara Fornarola
- Copyright (C) 2007, 2009 Ferdinando Ametrano
+ Copyright (C) 2007, 2009, 2011 Ferdinando Ametrano
  Copyright (C) 2007, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -34,29 +34,150 @@ using std::vector;
 
 namespace QuantLib {
 
+    AssetSwap::AssetSwap(bool parSwap,
+                         const boost::shared_ptr<Bond>& bond,
+                         Real bondCleanPrice,
+                         Real nonParRepayment,
+                         const boost::shared_ptr<IborIndex>& iborIndex,
+                         Spread spread,
+                         const DayCounter& floatingDayCounter,
+                         Date dealMaturity,
+                         bool payFixedRate)
+    : Swap(2), bond_(bond), bondCleanPrice_(bondCleanPrice),
+      nonParRepayment_(nonParRepayment), spread_(spread), parSwap_(parSwap)
+    {
+        Schedule tempSch(bond_->settlementDate(),
+                         bond_->maturityDate(),
+                         iborIndex->tenor(),
+                         iborIndex->fixingCalendar(),
+                         iborIndex->businessDayConvention(),
+                         iborIndex->businessDayConvention(),
+                         DateGeneration::Backward,
+                         false); // endOfMonth
+        if (dealMaturity==Date())
+            dealMaturity = bond_->maturityDate();
+        QL_REQUIRE(dealMaturity <= tempSch.dates().back(),
+                   "deal maturity " << dealMaturity <<
+                   " cannot be later than (adjusted) bond maturity " <<
+                   tempSch.dates().back());
+
+        // the following might become an input parameter
+        BusinessDayConvention paymentAdjustment = Following;
+
+        Date finalDate = tempSch.calendar().adjust(
+            dealMaturity, paymentAdjustment);
+        Schedule schedule = tempSch.until(finalDate);
+
+        // bondCleanPrice must be the (forward) clean price
+        // at the floating schedule start date
+        upfrontDate_ = schedule.startDate();
+        Real dirtyPrice = bondCleanPrice_ +
+                          bond_->accruedAmount(upfrontDate_);
+
+        Real notional = bond_->notional(upfrontDate_);
+        /* In the market asset swap, the bond is purchased in return for
+           payment of the full price. The notional of the floating leg is
+           then scaled by the full price. */
+        if (!parSwap_)
+            notional *= dirtyPrice/100.0;
+
+        if (floatingDayCounter==DayCounter())
+            legs_[1] = IborLeg(schedule, iborIndex)
+                .withNotionals(notional)
+                .withPaymentAdjustment(paymentAdjustment)
+                .withSpreads(spread);
+        else
+            legs_[1] = IborLeg(schedule, iborIndex)
+                .withNotionals(notional)
+                .withPaymentDayCounter(floatingDayCounter)
+                .withPaymentAdjustment(paymentAdjustment)
+                .withSpreads(spread);
+
+        for (Leg::const_iterator i=legs_[1].begin(); i<legs_[1].end(); ++i)
+            registerWith(*i);
+
+        const Leg& bondLeg = bond_->cashflows();
+        Leg::const_iterator i = bondLeg.begin();
+        // skip bond redemption
+        for (; i<bondLeg.end()-1 && (*i)->date()<=dealMaturity; ++i) {
+            // whatever might be the choice for the discounting engine
+            // bond flows on upfrontDate_ must be discarded
+            bool upfrontDateBondFlows = false;
+            if (!(*i)->hasOccurred(upfrontDate_, upfrontDateBondFlows))
+                legs_[0].push_back(*i);
+        }
+        // if the first skipped cashflow is not the redemption
+        // and it is a coupon then add the accrued coupon
+        if (i<bondLeg.end()-1) {
+            shared_ptr<Coupon> c = boost::dynamic_pointer_cast<Coupon>(*i);
+            if (c) {
+                shared_ptr<CashFlow> accruedCoupon(new
+                    SimpleCashFlow(c->accruedAmount(dealMaturity), finalDate));
+                legs_[0].push_back(accruedCoupon);
+            }
+        }
+        // add the nonParRepayment_
+        shared_ptr<CashFlow> nonParRepaymentFlow(new
+            SimpleCashFlow(nonParRepayment_, finalDate));
+        legs_[0].push_back(nonParRepaymentFlow);
+
+        QL_REQUIRE(!legs_[0].empty(),
+                   "empty bond leg to start with");
+
+        // special flows
+        if (parSwap_) {
+            // upfront on the floating leg
+            Real upfront = (dirtyPrice-100.0)/100.0*notional;
+            shared_ptr<CashFlow> upfrontCashFlow(new
+                SimpleCashFlow(upfront, upfrontDate_));
+            legs_[1].insert(legs_[1].begin(), upfrontCashFlow);
+            // backpayment on the floating leg
+            // (accounts for non-par redemption, if any)
+            Real backPayment = notional;
+            shared_ptr<CashFlow> backPaymentCashFlow(new
+                SimpleCashFlow(backPayment, finalDate));
+            legs_[1].push_back(backPaymentCashFlow);
+        } else {
+            // final notional exchange
+            shared_ptr<CashFlow> finalCashFlow (new
+                SimpleCashFlow(notional, finalDate));
+            legs_[1].push_back(finalCashFlow);
+        }
+
+        QL_REQUIRE(!legs_[0].empty(), "empty bond leg");
+        for (Leg::const_iterator i=legs_[0].begin(); i<legs_[0].end(); ++i)
+            registerWith(*i);
+
+        if (payFixedRate) {
+            payer_[0]=-1.0;
+            payer_[1]=+1.0;
+        } else {
+            payer_[0]=+1.0;
+            payer_[1]=-1.0;
+        }
+    }
+
     AssetSwap::AssetSwap(bool payFixedRate,
                          const shared_ptr<Bond>& bond,
                          Real bondCleanPrice,
-                         const shared_ptr<IborIndex>& index,
+                         const shared_ptr<IborIndex>& iborIndex,
                          Spread spread,
-                         const Schedule& floatSch,
+                         const Schedule& floatSchedule,
                          const DayCounter& floatingDayCounter,
                          bool parSwap)
     : Swap(2), bond_(bond), bondCleanPrice_(bondCleanPrice),
-      spread_(spread), parSwap_(parSwap) {
-
-        Schedule schedule = floatSch;
-        if (floatSch.empty()) {
-            bool endOfMonth = false;
+      nonParRepayment_(100), spread_(spread), parSwap_(parSwap)
+    {
+        Schedule schedule = floatSchedule;
+        if (floatSchedule.empty())
             schedule = Schedule(bond_->settlementDate(),
                                 bond_->maturityDate(),
-                                index->tenor(),
-                                index->fixingCalendar(),
-                                index->businessDayConvention(),
-                                index->businessDayConvention(),
+                                iborIndex->tenor(),
+                                iborIndex->fixingCalendar(),
+                                iborIndex->businessDayConvention(),
+                                iborIndex->businessDayConvention(),
                                 DateGeneration::Backward,
-                                endOfMonth);
-        }
+                                false); // endOfMonth
 
         // the following might become an input parameter
         BusinessDayConvention paymentAdjustment = Following;
@@ -86,12 +207,12 @@ namespace QuantLib {
             notional *= dirtyPrice/100.0;
 
         if (floatingDayCounter==DayCounter())
-            legs_[1] = IborLeg(schedule, index)
+            legs_[1] = IborLeg(schedule, iborIndex)
                 .withNotionals(notional)
                 .withPaymentAdjustment(paymentAdjustment)
                 .withSpreads(spread);
         else
-            legs_[1] = IborLeg(schedule, index)
+            legs_[1] = IborLeg(schedule, iborIndex)
                 .withNotionals(notional)
                 .withPaymentDayCounter(floatingDayCounter)
                 .withPaymentAdjustment(paymentAdjustment)
@@ -241,10 +362,26 @@ namespace QuantLib {
         }
     }
 
+    Real AssetSwap::fairNonParRepayment() const {
+        calculate();
+        if (fairNonParRepayment_ != Null<Real>()) {
+            return fairNonParRepayment_;
+        } else {
+            DiscountFactor df = startDiscounts_.back();
+            QL_REQUIRE(df!=Null<DiscountFactor>(),
+                       "unable to calculate fair non-par rapayment");
+            Real notional = bond_->notional(upfrontDate_);
+            fairNonParRepayment_ = nonParRepayment_ - 
+                NPV_*npvDateDiscount_/df/(notional/100.0);
+            return fairNonParRepayment_;
+        }
+    }
+
     void AssetSwap::setupExpired() const {
         Swap::setupExpired();
         fairSpread_ = Null<Spread>();
-        fairCleanPrice_= Null<Real>();
+        fairCleanPrice_ = Null<Real>();
+        fairNonParRepayment_ = Null<Real>();
     }
 
     void AssetSwap::fetchResults(const PricingEngine::results* r) const {
@@ -254,9 +391,11 @@ namespace QuantLib {
         if (results) {
             fairSpread_ = results->fairSpread;
             fairCleanPrice_= results->fairCleanPrice;
+            fairNonParRepayment_= results->fairNonParRepayment;
         } else {
             fairSpread_ = Null<Spread>();
-            fairCleanPrice_= Null<Real>();
+            fairCleanPrice_ = Null<Real>();
+            fairNonParRepayment_ = Null<Real>();
         }
     }
 
@@ -285,6 +424,7 @@ namespace QuantLib {
         Swap::results::reset();
         fairSpread = Null<Spread>();
         fairCleanPrice = Null<Real>();
+        fairNonParRepayment = Null<Real>();
     }
 
 }

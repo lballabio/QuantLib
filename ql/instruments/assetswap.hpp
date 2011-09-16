@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2006, 2007 Chiara Fornarola
- Copyright (C) 2007, 2009 Ferdinando Ametrano
+ Copyright (C) 2007, 2009, 2011 Ferdinando Ametrano
  Copyright (C) 2007, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -52,19 +52,31 @@ namespace QuantLib {
       public:
         class arguments;
         class results;
+
         AssetSwap(bool payFixedRate,
                   const boost::shared_ptr<Bond>& bond,
                   Real bondCleanPrice,
-                  const boost::shared_ptr<IborIndex>& index,
+                  const boost::shared_ptr<IborIndex>& iborIndex,
                   Spread spread,
                   const Schedule& floatSchedule = Schedule(),
                   const DayCounter& floatingDayCount = DayCounter(),
                   bool parAssetSwap = true);
+
+        AssetSwap(bool parAssetSwap,
+                  const boost::shared_ptr<Bond>& bond,
+                  Real bondCleanPrice,
+                  Real nonParRepayment,
+                  const boost::shared_ptr<IborIndex>& iborIndex,
+                  Spread spread = 0.0,
+                  const DayCounter& floatingDayCount = DayCounter(),
+                  Date dealMaturity = Date(),
+                  bool payFixedRate = false);
         // results
         Spread fairSpread() const;
         Real floatingLegBPS() const;
         Real floatingLegNPV() const;
         Real fairCleanPrice() const;
+        Real fairNonParRepayment() const;
         // inspectors
         bool parSwap() const { return parSwap_; }
         Spread spread() const { return spread_; }
@@ -78,13 +90,14 @@ namespace QuantLib {
       private:
         void setupExpired() const;
         boost::shared_ptr<Bond> bond_;
-        Real bondCleanPrice_;
+        Real bondCleanPrice_, nonParRepayment_;
         Spread spread_;
         bool parSwap_;
         Date upfrontDate_;
         // results
         mutable Spread fairSpread_;
         mutable Real fairCleanPrice_;
+        mutable Real fairNonParRepayment_;
     };
 
 
@@ -108,6 +121,7 @@ namespace QuantLib {
       public:
         Spread fairSpread;
         Real fairCleanPrice;
+        Real fairNonParRepayment;
         void reset();
     };
 
