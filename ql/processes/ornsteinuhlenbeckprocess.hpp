@@ -46,22 +46,65 @@ namespace QuantLib {
                                  Real level = 0.0);
         //! \name StochasticProcess interface
         //@{
+        Real drift(Time t,
+                   Real x) const;
+        Real diffusion(Time t,
+                       Real x) const;
+        Real expectation(Time t0,
+                         Real x0,
+                         Time dt) const;
+        Real stdDeviation(Time t0,
+                          Real x0,
+                          Time dt) const;
+        //@}
         Real x0() const;
         Real speed() const;
         Real volatility() const;
         Real level() const;
-        Real drift(Time t, Real x) const;
-        Real diffusion(Time t, Real x) const;
-        Real expectation(Time t0, Real x0, Time dt) const;
-        Real stdDeviation(Time t0, Real x0, Time dt) const;
-        Real variance(Time t0, Real x0, Time dt) const;
-        //@}
+        Real variance(Time t0,
+                      Real x0,
+                      Time dt) const;
       private:
         Real x0_, speed_, level_;
         Volatility volatility_;
     };
 
-}
+    // inline
 
+    inline Real OrnsteinUhlenbeckProcess::x0() const {
+        return x0_;
+    }
+
+    inline Real OrnsteinUhlenbeckProcess::speed() const {
+        return speed_;
+    }
+
+    inline Real OrnsteinUhlenbeckProcess::volatility() const {
+        return volatility_;
+    }
+
+    inline Real OrnsteinUhlenbeckProcess::level() const {
+        return level_;
+    }
+
+    inline Real OrnsteinUhlenbeckProcess::drift(Time, Real x) const {
+        return speed_ * (level_ - x);
+    }
+
+    inline Real OrnsteinUhlenbeckProcess::diffusion(Time, Real) const {
+        return volatility_;
+    }
+
+    inline Real OrnsteinUhlenbeckProcess::expectation(Time, Real x0,
+                                               Time dt) const {
+        return level_ + (x0 - level_) * std::exp(-speed_*dt);
+    }
+
+    inline Real OrnsteinUhlenbeckProcess::stdDeviation(Time t, Real x0,
+                                                Time dt) const {
+        return std::sqrt(variance(t,x0,dt));
+    }
+
+}
 
 #endif

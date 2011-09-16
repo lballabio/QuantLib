@@ -32,40 +32,6 @@ namespace QuantLib {
         QL_REQUIRE(volatility_ >= 0.0, "negative volatility given");
     }
 
-    Real OrnsteinUhlenbeckProcess::x0() const {
-        return x0_;
-    }
-
-    Real OrnsteinUhlenbeckProcess::speed() const {
-        return speed_;
-    }
-
-    Real OrnsteinUhlenbeckProcess::volatility() const {
-        return volatility_;
-    }
-
-    Real OrnsteinUhlenbeckProcess::level() const {
-        return level_;
-    }
-
-    Real OrnsteinUhlenbeckProcess::drift(Time, Real x) const {
-        return speed_ * (level_ - x);
-    }
-
-    Real OrnsteinUhlenbeckProcess::diffusion(Time, Real) const {
-        return volatility_;
-    }
-
-    Real OrnsteinUhlenbeckProcess::expectation(Time, Real x0,
-                                               Time dt) const {
-        return level_ + (x0 - level_) * std::exp(-speed_*dt);
-    }
-
-    Real OrnsteinUhlenbeckProcess::stdDeviation(Time t, Real x0,
-                                                Time dt) const {
-        return std::sqrt(variance(t,x0,dt));
-    }
-
     Real OrnsteinUhlenbeckProcess::variance(Time, Real, Time dt) const {
         if (speed_ < std::sqrt(QL_EPSILON)) {
              // algebraic limit for small speed
