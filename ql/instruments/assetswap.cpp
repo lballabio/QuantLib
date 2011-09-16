@@ -243,12 +243,12 @@ namespace QuantLib {
             // backpayment on the floating leg
             // (accounts for non-par redemption, if any)
             Real backPayment = notional;
-            shared_ptr<CashFlow> backPaymentCashFlow (new
+            shared_ptr<CashFlow> backPaymentCashFlow(new
                 SimpleCashFlow(backPayment, finalDate));
             legs_[1].push_back(backPaymentCashFlow);
         } else {
             // final notional exchange
-            shared_ptr<CashFlow> finalCashFlow (new
+            shared_ptr<CashFlow> finalCashFlow(new
                 SimpleCashFlow(notional, finalDate));
             legs_[1].push_back(finalCashFlow);
         }
@@ -349,12 +349,12 @@ namespace QuantLib {
                        "fair clean price not available for seasoned deal");
             Real notional = bond_->notional(upfrontDate_);
             if (parSwap_) {
-                fairCleanPrice_ = bondCleanPrice_ - 
+                fairCleanPrice_ = bondCleanPrice_ - payer_[0] *
                     NPV_*npvDateDiscount_/startDiscounts_[1]/(notional/100.0);
             } else {
                 Real accruedAmount = bond_->accruedAmount(upfrontDate_);
                 Real dirtyPrice = bondCleanPrice_ + accruedAmount;
-                Real fairDirtyPrice = - legNPV_[0]/legNPV_[1] * dirtyPrice;
+                Real fairDirtyPrice = - payer_[0] * legNPV_[0]/legNPV_[1] * dirtyPrice;
                 fairCleanPrice_ = fairDirtyPrice - accruedAmount;
             }
 
@@ -370,7 +370,7 @@ namespace QuantLib {
             QL_REQUIRE(endDiscounts_[1]!=Null<DiscountFactor>(),
                        "fair non par repayment not available for expired leg");
             Real notional = bond_->notional(upfrontDate_);
-            fairNonParRepayment_ = nonParRepayment_ - 
+            fairNonParRepayment_ = nonParRepayment_ + payer_[0] * 
                 NPV_*npvDateDiscount_/endDiscounts_[1]/(notional/100.0);
             return fairNonParRepayment_;
         }
