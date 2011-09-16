@@ -367,12 +367,11 @@ namespace QuantLib {
         if (fairNonParRepayment_ != Null<Real>()) {
             return fairNonParRepayment_;
         } else {
-            DiscountFactor df = startDiscounts_.back();
-            QL_REQUIRE(df!=Null<DiscountFactor>(),
-                       "unable to calculate fair non-par rapayment");
+            QL_REQUIRE(endDiscounts_[1]!=Null<DiscountFactor>(),
+                       "fair non par repayment not available for expired leg");
             Real notional = bond_->notional(upfrontDate_);
             fairNonParRepayment_ = nonParRepayment_ - 
-                NPV_*npvDateDiscount_/df/(notional/100.0);
+                NPV_*npvDateDiscount_/endDiscounts_[1]/(notional/100.0);
             return fairNonParRepayment_;
         }
     }

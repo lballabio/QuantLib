@@ -80,6 +80,8 @@ namespace QuantLib {
         // inspectors
         bool parSwap() const { return parSwap_; }
         Spread spread() const { return spread_; }
+        Real cleanPrice() const { return bondCleanPrice_; }
+        Real nonParRepayment() const { return nonParRepayment_; }
         const boost::shared_ptr<Bond>& bond() const { return bond_; }
         bool payFixedRate() const { return (payer_[0] == -1.0); }
         const Leg& bondLeg() const { return legs_[0]; }
@@ -96,8 +98,7 @@ namespace QuantLib {
         Date upfrontDate_;
         // results
         mutable Spread fairSpread_;
-        mutable Real fairCleanPrice_;
-        mutable Real fairNonParRepayment_;
+        mutable Real fairCleanPrice_, fairNonParRepayment_;
     };
 
 
@@ -120,8 +121,7 @@ namespace QuantLib {
     class AssetSwap::results : public Swap::results {
       public:
         Spread fairSpread;
-        Real fairCleanPrice;
-        Real fairNonParRepayment;
+        Real fairCleanPrice, fairNonParRepayment;
         void reset();
     };
 
