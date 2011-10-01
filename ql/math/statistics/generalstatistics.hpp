@@ -171,6 +171,9 @@ namespace QuantLib {
         //! resets the data to a null set
         void reset();
 
+        //! informs the internal storage of a planned increase in size
+        void reserve(Size n) const;
+
         //! sort the data set in increasing order
         void sort() const;
         //@}
@@ -225,6 +228,10 @@ namespace QuantLib {
     inline void GeneralStatistics::reset() {
         samples_ = std::vector<std::pair<Real,Real> >();
         sorted_ = true;
+    }
+
+    inline void GeneralStatistics::reserve(Size n) const {
+        samples_.reserve(n);
     }
 
     inline void GeneralStatistics::sort() const {
