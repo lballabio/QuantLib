@@ -13,7 +13,15 @@ Packager: Liguo Song (Leo) <liguo.song@vanderbilt.edu>
 Vendor: QuantLib.org
 Source0: http://prdownloads.sourceforge.net/quantlib/QuantLib-%{version}.tar.gz
 URL: http://quantlib.org/
-Buildroot: %{_tmppath}/%{name}-%{version}-root
+BuildRoot:%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
+
+BuildRequires: autoconf
+BuildRequires: automake
+BuildRequires: libtool
+BuildRequires: gcc
+BuildRequires: gcc-c++
+BuildRequires: rpmlib(FileDigests)
+BuildRequires: rpmlib(CompressedFileNames)
 
 %description
 QuantLib is an open source C++ library for financial quantitative analysts
@@ -68,17 +76,19 @@ You'll want to install this package if you need a reference to QuantLib.
 CFLAGS="${CFLAGS:-%optflags}" ; export CFLAGS ; \
 CXXFLAGS="${CXXFLAGS:-%optflags}" ; export CXXFLAGS ; \
 FFLAGS="${FFLAGS:-%optflags}" ; export FFLAGS ; \
-./configure --prefix=%{_prefix}
-make
+%configure --prefix=%{_prefix}
+make %{?_smp_mflags}
 # make documentations
 cd Docs
 make docs-all
 
 %install
-rm -rf %{buildroot}
-make prefix=%{buildroot}%{_prefix} install
+rm -rf $RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
+
 # install the documentation
 mkdir -p %{buildroot}%{docdir}
+mkdir -p %{buildroot}%{_mandir}
 cp -p Authors.txt LICENSE.TXT ChangeLog.txt Readme.txt %{buildroot}%{docdir}
 cp -p Contributors.txt %{buildroot}%{docdir}
 cp -p News.txt  %{buildroot}%{docdir}
@@ -88,7 +98,7 @@ rm -f %{buildroot}%{docdir}/html/*.dot
 cp -pr Docs/man/man3 %{buildroot}%{_mandir}/
 
 %clean
-rm -rf %{buildroot}
+rm -rf $RPM_BUILD_ROOT
 
 %post -p /sbin/ldconfig
 
@@ -102,29 +112,20 @@ rm -rf %{buildroot}
 %{docdir}/Readme.txt
 %{docdir}/News.txt
 %{docdir}/Contributors.txt
-%{_libdir}/libQuantLib.la
-%{_libdir}/libQuantLib.so
-%{_libdir}/libQuantLib-%{version}.so
-%{_libdir}/libQuantLibFunctions.la
-%{_libdir}/libQuantLibFunctions.so
-%{_libdir}/libQuantLibFunctions-%{version}.so
+%{_libdir}/*
 
 %files devel
 %defattr(-,root,root)
 %{docdir}/Examples
 %{_includedir}/ql/
-%{_libdir}/libQuantLib.a
-%{_libdir}/libQuantLib.so
-%{_libdir}/libQuantLibFunctions.a
-%{_libdir}/libQuantLibFunctions.so
+%{_libdir}/*
 %{_datadir}/aclocal/*
-%{_datadir}/emacs/site-lisp/*
 %{_bindir}/quantlib-config
-%{_mandir}/man1/quantlib-config.1
+%{_mandir}/man1/quantlib-config.1.gz
 
 %files test-suite
 %defattr(-,root,root)
-%{_mandir}/man1/quantlib-test-suite.1
+%{_mandir}/man1/quantlib-test-suite.1.gz
 %{_bindir}/quantlib-test-suite
 
 %files docs
