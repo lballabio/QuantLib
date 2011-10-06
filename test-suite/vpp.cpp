@@ -241,9 +241,9 @@ void VPPTest::testSimpleExtOUStorageEngine() {
     const Real calculated = storageOption.NPV();
 
     if (std::fabs(expected - calculated) > 2e-2) {
-        BOOST_ERROR("Failed to reproduce cached values"
-                   << "\n    calculated: " << calculated
-                   << "\n    expected:   " << expected);
+        BOOST_ERROR("Failed to reproduce cached values" <<
+                    "\n calculated: " << calculated <<
+                    "\n   expected: " << expected);
     }
 }
 
