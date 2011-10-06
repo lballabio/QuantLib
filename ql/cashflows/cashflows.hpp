@@ -92,6 +92,11 @@ namespace QuantLib {
         nextCouponRate(const Leg& leg,
                        bool includeSettlementDateFlows,
                        Date settlementDate = Date());
+
+        static Real
+        nominal(const Leg& leg,
+                bool includeSettlementDateFlows,
+                Date settlDate = Date());
         static Date
         accrualStartDate(const Leg& leg,
                          bool includeSettlementDateFlows,

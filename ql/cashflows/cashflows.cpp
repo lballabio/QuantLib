@@ -230,6 +230,23 @@ namespace QuantLib {
         return aggregateRate<Leg::const_iterator>(leg, cf, leg.end());
     }
 
+    Real CashFlows::nominal(const Leg& leg,
+                            bool includeSettlementDateFlows,
+                            Date settlementDate) {
+        Leg::const_iterator cf = nextCashFlow(leg,
+                                              includeSettlementDateFlows,
+                                              settlementDate);
+        if (cf==leg.end()) return 0.0;
+
+        Date paymentDate = (*cf)->date();
+        for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
+            shared_ptr<Coupon> cp = dynamic_pointer_cast<Coupon>(*cf);
+            if (cp)
+                return cp->nominal();
+        }
+        return 0.0;
+    }
+
     Date CashFlows::accrualStartDate(const Leg& leg,
                                      bool includeSettlementDateFlows,
                                      Date settlementDate) {
