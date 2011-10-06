@@ -352,12 +352,12 @@ namespace QuantLib {
                        "fair clean price not available for seasoned deal");
             Real notional = bond_->notional(upfrontDate_);
             if (parSwap_) {
-                fairCleanPrice_ = bondCleanPrice_ - payer_[0] *
+                fairCleanPrice_ = bondCleanPrice_ - payer_[1] *
                     NPV_*npvDateDiscount_/startDiscounts_[1]/(notional/100.0);
             } else {
                 Real accruedAmount = bond_->accruedAmount(upfrontDate_);
                 Real dirtyPrice = bondCleanPrice_ + accruedAmount;
-                Real fairDirtyPrice = - payer_[0] * legNPV_[0]/legNPV_[1] * dirtyPrice;
+                Real fairDirtyPrice = - payer_[1] * legNPV_[0]/legNPV_[1] * dirtyPrice;
                 fairCleanPrice_ = fairDirtyPrice - accruedAmount;
             }
 
