@@ -22,6 +22,7 @@
     \brief bi-conjugated gradient stableized algorithm
 */
 
+
 #include <ql/experimental/finitedifferences/bicgstab.hpp>
 
 namespace QuantLib {
