@@ -31,7 +31,7 @@
 #include <ql/processes/stochasticprocessarray.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
-#include <ql/experimental/finitedifferences/fd2dblackscholesvanillaengine.hpp>
+#include <ql/pricingengines/basket/fd2dblackscholesvanillaengine.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <boost/progress.hpp>
 

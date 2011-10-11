@@ -23,14 +23,14 @@
 #include <ql/experimental/processes/extouwithjumpsprocess.hpp>
 #include <ql/experimental/processes/klugeextouprocess.hpp>
 #include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
-#include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
-#include <ql/experimental/finitedifferences/fdmmeshercomposite.hpp>
-#include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
-#include <ql/experimental/finitedifferences/fdmbermudanstepcondition.hpp>
-#include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
-#include <ql/experimental/finitedifferences/exponentialjump1dmesher.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmamericanstepcondition.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmbermudanstepcondition.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
+#include <ql/methods/finitedifferences/meshers/exponentialjump1dmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmklugeextousolver.hpp>
-#include <ql/experimental/finitedifferences/fdmsimpleprocess1dmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
 #include <ql/experimental/finitedifferences/fdklugeextouspreadengine.hpp>
 #include <ql/experimental/finitedifferences/fdmspreadpayoffinnervalue.hpp>
 

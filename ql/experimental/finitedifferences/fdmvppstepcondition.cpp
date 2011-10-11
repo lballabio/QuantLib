@@ -22,11 +22,11 @@
 
 #include <ql/math/array.hpp>
 #include <ql/math/functional.hpp>
-#include <ql/experimental/finitedifferences/fdmmesher.hpp>
-#include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdmvppstepcondition.hpp>
-#include <ql/experimental/finitedifferences/fdmlinearopiterator.hpp>
-#include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearopiterator.hpp>
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 
 #include <boost/bind.hpp>
 

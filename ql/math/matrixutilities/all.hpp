@@ -2,11 +2,13 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/math/matrixutilities/basisincompleteordered.hpp>
+#include <ql/math/matrixutilities/bicgstab.hpp>
 #include <ql/math/matrixutilities/choleskydecomposition.hpp>
 #include <ql/math/matrixutilities/factorreduction.hpp>
 #include <ql/math/matrixutilities/getcovariance.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 #include <ql/math/matrixutilities/qrdecomposition.hpp>
+#include <ql/math/matrixutilities/sparseilupreconditioner.hpp>
 #include <ql/math/matrixutilities/svd.hpp>
 #include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
 #include <ql/math/matrixutilities/tapcorrelations.hpp>

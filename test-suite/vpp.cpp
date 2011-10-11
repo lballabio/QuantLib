@@ -37,14 +37,14 @@
 #include <ql/experimental/processes/klugeextouprocess.hpp>
 #include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
 #include <ql/experimental/finitedifferences/vanillavppoption.hpp>
-#include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
-#include <ql/experimental/finitedifferences/uniform1dmesher.hpp>
-#include <ql/experimental/finitedifferences/fdmmeshercomposite.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/experimental/finitedifferences/fdsimpleextoustorageengine.hpp>
 #include <ql/experimental/finitedifferences/fdklugeextouspreadengine.hpp>
 #include <ql/experimental/finitedifferences/fdsimpleklugeextouvppengine.hpp>
 #include <ql/experimental/finitedifferences/fdmvppstepcondition.hpp>
-#include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmspreadpayoffinnervalue.hpp>
 
 #include <boost/lambda/lambda.hpp>

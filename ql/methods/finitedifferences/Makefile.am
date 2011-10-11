@@ -1,4 +1,6 @@
 
+SUBDIRS = meshers operators schemes solvers stepconditions utilities
+
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 this_includedir=${includedir}/${subdir}
@@ -35,6 +37,14 @@ libFiniteDifferences_la_SOURCES = \
     boundarycondition.cpp \
     bsmoperator.cpp \
     tridiagonaloperator.cpp
+
+libFiniteDifferences_la_LIBADD = \
+    meshers/libFdmMeshers.la \
+    operators/libFdmOperators.la \
+    schemes/libFdmSchemes.la \
+	solvers/libFdmSolvers.la \
+	stepconditions/libFdmStepConditions.la \
+	utilities/libFdmUtils.la
 
 noinst_LTLIBRARIES = libFiniteDifferences.la
 

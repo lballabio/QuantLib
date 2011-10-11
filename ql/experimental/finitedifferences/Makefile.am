@@ -4,162 +4,36 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
-    bicgstab.hpp \
-    concentrating1dmesher.hpp \
-	craigsneydscheme.hpp \
-	dividendbarrieroption.hpp \
-	douglasscheme.hpp \
-	expliciteulerscheme.hpp \
-	exponentialjump1dmesher.hpp \
-	fd2dblackscholesvanillaengine.hpp \
-	fdbatesvanillaengine.hpp \
-	fdblackscholesasianengine.hpp \
-	fdblackscholesbarrierengine.hpp \
-	fdblackscholesrebateengine.hpp \
-	fdblackscholesvanillaengine.hpp \
     fdextoujumpvanillaengine.hpp \
-	fdhestonbarrierengine.hpp \
-	fdhestonrebateengine.hpp \
-	fdhestonvanillaengine.hpp \
-	fdhestonhullwhitevanillaengine.hpp \
 	fdklugeextouspreadengine.hpp \
-	fdm1dmesher.hpp \
-	fdm2dblackscholesop.hpp \
-	fdm2dblackscholessolver.hpp \
-	fdm2dimsolver.hpp \
-	fdm3dimsolver.hpp \
-    fdmamericanstepcondition.hpp \
-    fdmarithmeticaveragecondition.hpp \
-    fdmbackwardsolver.hpp \
-    fdmbatesop.hpp \
-    fdmbatessolver.hpp \
-	fdmbermudanstepcondition.hpp \
-	fdmblackscholesmesher.hpp \
-	fdmblackscholesmultistrikemesher.hpp \
-	fdmblackscholesop.hpp \
-	fdmblackscholessolver.hpp \
-	fdmdirichletboundary.hpp \
-	fdmdividendhandler.hpp \
 	fdmexpextouinnervaluecalculator.hpp \
 	fdmextendedornsteinuhlenbeckop.hpp \
 	fdmextoujumpmodelinnervalue.hpp \
 	fdmextoujumpop.hpp \
 	fdmextoujumpsolver.hpp \
-	fdmhestonhullwhiteop.hpp \
-	fdmhestonhullwhitesolver.hpp \
-	fdmhestonop.hpp \
-	fdmhestonsolver.hpp \
-	fdmhestonvariancemesher.hpp \
-	fdminnervaluecalculator.hpp \
 	fdmklugeextouop.hpp \
 	fdmklugeextousolver.hpp \
-	fdmlinearop.hpp \
-	fdmlinearopcomposite.hpp \
-	fdmlinearopiterator.hpp \
-	fdmlinearoplayout.hpp \
-	fdmmesher.hpp \
-	fdmmeshercomposite.hpp \
-	fdmndimsolver.hpp \
-	fdmquantohelper.hpp \
-    fdmsimple2dbssolver.hpp \
 	fdmsimple2dextousolver.hpp \
     fdmsimple3dextoujumpsolver.hpp \
-    fdmsimpleprocess1dmesher.hpp \
-    fdmsimplestoragecondition.hpp \
-    fdmsimpleswingcondition.hpp \
-	fdmsnapshotcondition.hpp \
-	fdmsolverdesc.hpp \
 	fdmspreadpayoffinnervalue.hpp \
-	fdmstepconditioncomposite.hpp \
 	fdmvppstepcondition.hpp \
-    fdsimplebsswingengine.hpp \
 	fdsimpleextoujumpswingengine.hpp \
+    fdsimpleextoustorageengine.hpp \
 	fdsimpleklugeextouvppengine.hpp \
-	firstderivativeop.hpp \
-	hundsdorferscheme.hpp \
-	impliciteulerscheme.hpp \
-	modifiedcraigsneydscheme.hpp \
-	ninepointlinearop.hpp \
-	secondderivativeop.hpp \
-	secondordermixedderivativeop.hpp \
-	sparseilupreconditioner.hpp \
-	triplebandlinearop.hpp \
-	uniform1dmesher.hpp \
-	uniformgridmesher.hpp \
 	vanillavppoption.hpp
 
 libMultiDimFDM_la_SOURCES = \
-    bicgstab.cpp \
-    concentrating1dmesher.cpp \
-	craigsneydscheme.cpp \
-	dividendbarrieroption.cpp \
-	douglasscheme.cpp \
-	expliciteulerscheme.cpp \
-	exponentialjump1dmesher.cpp \
-	fd2dblackscholesvanillaengine.cpp \
-	fdbatesvanillaengine.cpp \
-	fdblackscholesasianengine.cpp \
-	fdblackscholesbarrierengine.cpp \
-	fdblackscholesrebateengine.cpp \
-	fdblackscholesvanillaengine.cpp \
     fdextoujumpvanillaengine.cpp \
-	fdhestonbarrierengine.cpp \
-	fdhestonrebateengine.cpp \
-	fdhestonvanillaengine.cpp \
-	fdhestonhullwhitevanillaengine.cpp \
 	fdklugeextouspreadengine.cpp \
-	fdm2dblackscholesop.cpp \
-	fdm2dblackscholessolver.cpp \
-	fdm2dimsolver.cpp \
-	fdm3dimsolver.cpp \
-	fdmamericanstepcondition.cpp \
-    fdmarithmeticaveragecondition.cpp \
-    fdmbackwardsolver.cpp \
-    fdmbatesop.cpp \
-    fdmbatessolver.cpp \
-	fdmbermudanstepcondition.cpp \
-	fdmblackscholesmesher.cpp \
-	fdmblackscholesmultistrikemesher.cpp \
-	fdmblackscholesop.cpp \
-	fdmblackscholessolver.cpp \
-	fdmdirichletboundary.cpp \
-	fdmdividendhandler.cpp \
 	fdmextendedornsteinuhlenbeckop.cpp \
 	fdmextoujumpop.cpp \
 	fdmextoujumpsolver.cpp \
-	fdmhestonhullwhiteop.cpp \
-	fdmhestonhullwhitesolver.cpp \
-	fdmhestonop.cpp \
-	fdmhestonsolver.cpp \
-	fdmhestonvariancemesher.cpp \
-	fdminnervaluecalculator.cpp \
 	fdmklugeextouop.cpp \
-	fdmlinearoplayout.cpp \
-	fdmmeshercomposite.cpp \
-	fdmquantohelper.cpp \
-    fdmsimple2dbssolver.cpp \
-    fdmsimpleprocess1dmesher.cpp \
-    fdmsimplestoragecondition.cpp \
-    fdmsimpleswingcondition.cpp \
-	fdmsnapshotcondition.cpp \
-	fdmstepconditioncomposite.cpp \
 	fdmvppstepcondition.cpp \
-    fdsimplebsswingengine.cpp \
 	fdsimpleextoujumpswingengine.cpp \
     fdsimpleextoustorageengine.cpp \
     fdsimpleklugeextouvppengine.cpp \
-	firstderivativeop.cpp \
-	hundsdorferscheme.cpp \
-	impliciteulerscheme.cpp \
-	modifiedcraigsneydscheme.cpp \
-	ninepointlinearop.cpp \
-	secondderivativeop.cpp \
-	secondordermixedderivativeop.cpp \
-	sparseilupreconditioner.cpp \
-	triplebandlinearop.cpp \
-	uniformgridmesher.cpp \
 	vanillavppoption.cpp
-	
 
 noinst_LTLIBRARIES = libMultiDimFDM.la
 

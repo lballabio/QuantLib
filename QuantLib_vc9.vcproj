@@ -106,92 +106,6 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release|x64"
-			OutputDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalOptions="/MP"
-				Optimization="2"
-				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="false"
-				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="."
-				PreprocessorDefinitions="NDEBUG;x64;_LIB;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
-				StringPooling="true"
-				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="true"
-				DisableLanguageExtensions="false"
-				ForceConformanceInForLoopScope="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\QuantLib.pch"
-				AssemblerListingLocation=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				ObjectFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				BrowseInformation="0"
-				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-				CompileAs="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-				Description="Make build directory"
-				CommandLine="if not exist lib mkdir lib"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc90-$(PlatformName)-mt.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				SuppressStartupBanner="false"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
@@ -255,90 +169,6 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile=".\lib\QuantLib-vc90-mt-gd.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				SuppressStartupBanner="false"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug|x64"
-			OutputDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalOptions="/MP"
-				Optimization="0"
-				EnableIntrinsicFunctions="false"
-				AdditionalIncludeDirectories="."
-				PreprocessorDefinitions="_DEBUG;x64;_LIB;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				DisableLanguageExtensions="false"
-				ForceConformanceInForLoopScope="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\QuantLib.pch"
-				AssemblerListingLocation=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				ObjectFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				BrowseInformation="0"
-				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-				DebugInformationFormat="3"
-				CompileAs="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-				Description="Make build directory"
-				CommandLine="if not exist lib mkdir lib"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc90-$(PlatformName)-mt-gd.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -446,6 +276,260 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Debug (static runtime)|Win32"
+			OutputDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
+				Optimization="0"
+				EnableIntrinsicFunctions="false"
+				AdditionalIncludeDirectories="."
+				PreprocessorDefinitions="_DEBUG;WIN32;_LIB;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				DisableLanguageExtensions="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\QuantLib.pch"
+				AssemblerListingLocation=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ObjectFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				BrowseInformation="0"
+				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="3"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+				Description="Make build directory"
+				CommandLine="if not exist lib mkdir lib"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile=".\lib\QuantLib-vc90-mt-sgd.lib"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="false"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
+				Optimization="2"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="false"
+				FavorSizeOrSpeed="1"
+				AdditionalIncludeDirectories="."
+				PreprocessorDefinitions="NDEBUG;x64;_LIB;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				DisableLanguageExtensions="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\QuantLib.pch"
+				AssemblerListingLocation=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ObjectFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				BrowseInformation="0"
+				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+				Description="Make build directory"
+				CommandLine="if not exist lib mkdir lib"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile=".\lib\QuantLib-vc90-$(PlatformName)-mt.lib"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="false"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
+				Optimization="0"
+				EnableIntrinsicFunctions="false"
+				AdditionalIncludeDirectories="."
+				PreprocessorDefinitions="_DEBUG;x64;_LIB;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				DisableLanguageExtensions="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\QuantLib.pch"
+				AssemblerListingLocation=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ObjectFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				BrowseInformation="0"
+				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+				Description="Make build directory"
+				CommandLine="if not exist lib mkdir lib"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile=".\lib\QuantLib-vc90-$(PlatformName)-mt-gd.lib"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="false"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Release (static runtime)|x64"
 			OutputDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
@@ -512,90 +596,6 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile=".\lib\QuantLib-vc90-$(PlatformName)-mt-s.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				SuppressStartupBanner="false"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug (static runtime)|Win32"
-			OutputDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalOptions="/MP"
-				Optimization="0"
-				EnableIntrinsicFunctions="false"
-				AdditionalIncludeDirectories="."
-				PreprocessorDefinitions="_DEBUG;WIN32;_LIB;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
-				DisableLanguageExtensions="false"
-				ForceConformanceInForLoopScope="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\QuantLib.pch"
-				AssemblerListingLocation=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				ObjectFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				BrowseInformation="0"
-				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="3"
-				CompileAs="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-				Description="Make build directory"
-				CommandLine="if not exist lib mkdir lib"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc90-mt-sgd.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -921,6 +921,446 @@
 					RelativePath=".\ql\methods\finitedifferences\zerocondition.hpp"
 					>
 				</File>
+				<Filter
+					Name="meshers"
+					>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\meshers\all.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\meshers\concentrating1dmesher.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\meshers\concentrating1dmesher.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\meshers\exponentialjump1dmesher.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\meshers\exponentialjump1dmesher.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\meshers\fdm1dmesher.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\meshers\fdmblackscholesmesher.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\meshers\fdmblackscholesmesher.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\meshers\fdmblackscholesmultistrikemesher.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\meshers\fdmblackscholesmultistrikemesher.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\meshers\fdmhestonvariancemesher.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\meshers\fdmhestonvariancemesher.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\meshers\fdmmesher.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\meshers\fdmmeshercomposite.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\meshers\fdmmeshercomposite.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\meshers\fdmsimpleprocess1dmesher.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\meshers\fdmsimpleprocess1dmesher.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\meshers\uniform1dmesher.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\meshers\uniformgridmesher.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\meshers\uniformgridmesher.hpp"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="operators"
+					>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\all.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\fdm2dblackscholesop.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\fdm2dblackscholesop.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\fdmbatesop.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\fdmbatesop.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\fdmblackscholesop.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\fdmblackscholesop.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\fdmhestonhullwhiteop.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\fdmhestonhullwhiteop.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\fdmhestonop.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\fdmhestonop.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\fdmlinearop.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\fdmlinearopcomposite.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\fdmlinearopiterator.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\fdmlinearoplayout.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\fdmlinearoplayout.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\firstderivativeop.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\firstderivativeop.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\ninepointlinearop.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\ninepointlinearop.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\secondderivativeop.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\secondderivativeop.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\secondordermixedderivativeop.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\secondordermixedderivativeop.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\triplebandlinearop.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\triplebandlinearop.hpp"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="schemes"
+					>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\schemes\all.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\schemes\craigsneydscheme.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\schemes\craigsneydscheme.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\schemes\douglasscheme.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\schemes\douglasscheme.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\schemes\expliciteulerscheme.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\schemes\expliciteulerscheme.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\schemes\hundsdorferscheme.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\schemes\hundsdorferscheme.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\schemes\impliciteulerscheme.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\schemes\impliciteulerscheme.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\schemes\modifiedcraigsneydscheme.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\schemes\modifiedcraigsneydscheme.hpp"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="solvers"
+					>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\all.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdm2dblackscholessolver.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdm2dblackscholessolver.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdm2dimsolver.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdm2dimsolver.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdm3dimsolver.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdm3dimsolver.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdmbackwardsolver.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdmbackwardsolver.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdmbatessolver.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdmbatessolver.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdmblackscholessolver.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdmblackscholessolver.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdmhestonhullwhitesolver.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdmhestonhullwhitesolver.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdmhestonsolver.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdmhestonsolver.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdmndimsolver.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdmsimple2dbssolver.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdmsimple2dbssolver.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdmsolverdesc.hpp"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="stepconditions"
+					>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\stepconditions\all.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\stepconditions\fdmamericanstepcondition.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\stepconditions\fdmamericanstepcondition.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\stepconditions\fdmarithmeticaveragecondition.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\stepconditions\fdmarithmeticaveragecondition.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\stepconditions\fdmbermudanstepcondition.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\stepconditions\fdmbermudanstepcondition.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\stepconditions\fdmsimplestoragecondition.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\stepconditions\fdmsimplestoragecondition.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\stepconditions\fdmsimpleswingcondition.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\stepconditions\fdmsimpleswingcondition.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\stepconditions\fdmsnapshotcondition.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\stepconditions\fdmsnapshotcondition.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\stepconditions\fdmstepconditioncomposite.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\stepconditions\fdmstepconditioncomposite.hpp"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="utilities"
+					>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\utilities\all.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\utilities\fdmdirichletboundary.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\utilities\fdmdirichletboundary.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\utilities\fdmdividendhandler.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\utilities\fdmdividendhandler.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\utilities\fdminnervaluecalculator.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\utilities\fdminnervaluecalculator.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\utilities\fdmquantohelper.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\utilities\fdmquantohelper.hpp"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="lattices"
@@ -1591,6 +2031,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\instruments\dividendbarrieroption.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\dividendbarrieroption.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\instruments\dividendschedule.hpp"
 				>
 			</File>
@@ -1979,6 +2427,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\math\generallinearleastsquares.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\math\incompletegamma.cpp"
 				>
 			</File>
@@ -2330,6 +2782,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\math\matrixutilities\bicgstab.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\matrixutilities\bicgstab.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\matrixutilities\choleskydecomposition.cpp"
 					>
 				</File>
@@ -2367,6 +2827,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\math\matrixutilities\qrdecomposition.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\matrixutilities\sparseilupreconditioner.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\matrixutilities\sparseilupreconditioner.hpp"
 					>
 				</File>
 				<File
@@ -4570,6 +5038,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\inflation\inflationtraits.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\inflation\interpolatedyoyinflationcurve.hpp"
 					>
 				</File>
@@ -4994,6 +5466,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\asian\fdblackscholesasianengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\asian\fdblackscholesasianengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\pricingengines\asian\mc_discr_arith_av_price.cpp"
 					>
 				</File>
@@ -5038,6 +5518,38 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\barrier\fdblackscholesbarrierengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\barrier\fdblackscholesbarrierengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\barrier\fdblackscholesrebateengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\barrier\fdblackscholesrebateengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\barrier\fdhestonbarrierengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\barrier\fdhestonbarrierengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\barrier\fdhestonrebateengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\barrier\fdhestonrebateengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath="ql\pricingengines\barrier\mcbarrierengine.cpp"
 					>
 				</File>
@@ -5051,6 +5563,14 @@
 				>
 				<File
 					RelativePath=".\ql\pricingengines\basket\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\basket\fd2dblackscholesvanillaengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\basket\fd2dblackscholesvanillaengine.hpp"
 					>
 				</File>
 				<File
@@ -5234,7 +5754,23 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\vanilla\fdbatesvanillaengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\vanilla\fdbatesvanillaengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\pricingengines\vanilla\fdbermudanengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\vanilla\fdblackscholesvanillaengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\vanilla\fdblackscholesvanillaengine.hpp"
 					>
 				</File>
 				<File
@@ -5262,11 +5798,35 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\vanilla\fdhestonhullwhitevanillaengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\vanilla\fdhestonhullwhitevanillaengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\vanilla\fdhestonvanillaengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\vanilla\fdhestonvanillaengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\pricingengines\vanilla\fdmultiperiodengine.hpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\pricingengines\vanilla\fdshoutengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\vanilla\fdsimplebsswingengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\vanilla\fdsimplebsswingengine.hpp"
 					>
 				</File>
 				<File
@@ -6798,110 +7358,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\finitedifferences\bicgstab.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\bicgstab.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\concentrating1dmesher.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\concentrating1dmesher.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\craigsneydscheme.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\craigsneydscheme.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\dividendbarrieroption.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\dividendbarrieroption.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\douglasscheme.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\douglasscheme.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\expliciteulerscheme.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\expliciteulerscheme.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\exponentialjump1dmesher.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\exponentialjump1dmesher.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fd2dblackscholesvanillaengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fd2dblackscholesvanillaengine.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdbatesvanillaengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdbatesvanillaengine.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdblackscholesasianengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdblackscholesasianengine.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdblackscholesbarrierengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdblackscholesbarrierengine.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdblackscholesrebateengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdblackscholesrebateengine.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdblackscholesvanillaengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdblackscholesvanillaengine.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdextoujumpvanillaengine.cpp"
 					>
 				</File>
@@ -6910,175 +7366,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdhestonbarrierengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdhestonbarrierengine.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdhestonhullwhitevanillaengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdhestonhullwhitevanillaengine.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdhestonrebateengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdhestonrebateengine.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdhestonvanillaengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdhestonvanillaengine.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdklugeextouspreadengine.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdklugeextouspreadengine.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdm1dmesher.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdm2dblackscholesop.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdm2dblackscholesop.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdm2dblackscholessolver.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdm2dblackscholessolver.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdm2dimsolver.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdm2dimsolver.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdm3dimsolver.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdm3dimsolver.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmamericanstepcondition.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmamericanstepcondition.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmarithmeticaveragecondition.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmarithmeticaveragecondition.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmbackwardsolver.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmbackwardsolver.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmbatesop.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmbatesop.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmbatessolver.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmbatessolver.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmbermudanstepcondition.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmbermudanstepcondition.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmblackscholesmesher.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmblackscholesmesher.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmblackscholesmultistrikemesher.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmblackscholesmultistrikemesher.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmblackscholesop.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmblackscholesop.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmblackscholessolver.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmblackscholessolver.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmdirichletboundary.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmdirichletboundary.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmdividendhandler.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmdividendhandler.hpp"
 					>
 				</File>
 				<File
@@ -7114,54 +7406,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmhestonhullwhiteop.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmhestonhullwhiteop.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmhestonhullwhitesolver.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmhestonhullwhitesolver.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmhestonop.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmhestonop.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmhestonsolver.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmhestonsolver.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmhestonvariancemesher.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmhestonvariancemesher.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdminnervaluecalculator.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdminnervaluecalculator.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmklugeextouop.cpp"
 					>
 				</File>
@@ -7174,58 +7418,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmlinearop.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmlinearopcomposite.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmlinearopiterator.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmlinearoplayout.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmlinearoplayout.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmmesher.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmmeshercomposite.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmmeshercomposite.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmndimsolver.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmquantohelper.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmquantohelper.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmsimple2dbssolver.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmsimple2dbssolver.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmsimple2dextousolver.hpp"
 					>
 				</File>
@@ -7234,51 +7426,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmsimpleprocess1dmesher.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmsimpleprocess1dmesher.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmsimplestoragecondition.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmsimplestoragecondition.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmsimpleswingcondition.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmsimpleswingcondition.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmsnapshotcondition.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmsnapshotcondition.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmsolverdesc.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmspreadpayoffinnervalue.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmstepconditioncomposite.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdmstepconditioncomposite.hpp"
 					>
 				</File>
 				<File
@@ -7287,14 +7435,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmvppstepcondition.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdsimplebsswingengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\fdsimplebsswingengine.hpp"
 					>
 				</File>
 				<File
@@ -7319,90 +7459,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdsimpleklugeextouvppengine.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\firstderivativeop.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\firstderivativeop.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\hundsdorferscheme.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\hundsdorferscheme.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\impliciteulerscheme.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\impliciteulerscheme.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\modifiedcraigsneydscheme.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\modifiedcraigsneydscheme.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\ninepointlinearop.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\ninepointlinearop.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\secondderivativeop.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\secondderivativeop.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\secondordermixedderivativeop.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\secondordermixedderivativeop.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\sparseilupreconditioner.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\sparseilupreconditioner.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\triplebandlinearop.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\triplebandlinearop.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\uniform1dmesher.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\uniformgridmesher.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\finitedifferences\uniformgridmesher.hpp"
 					>
 				</File>
 				<File

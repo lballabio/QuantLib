@@ -19,7 +19,7 @@
 
 #include "hestonmodel.hpp"
 #include "utilities.hpp"
-#include <ql/experimental/finitedifferences/dividendbarrieroption.hpp>
+#include <ql/instruments/dividendbarrieroption.hpp>
 #include <ql/instruments/dividendvanillaoption.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
@@ -31,10 +31,10 @@
 #include <ql/pricingengines/vanilla/fddividendeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/fdeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/analyticptdhestonengine.hpp>
-#include <ql/experimental/finitedifferences/fdhestonbarrierengine.hpp>
-#include <ql/experimental/finitedifferences/fdblackscholesbarrierengine.hpp>
-#include <ql/experimental/finitedifferences/fdblackscholesvanillaengine.hpp>
-#include <ql/experimental/finitedifferences/fdhestonvanillaengine.hpp>
+#include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>
+#include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
+#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/mceuropeanhestonengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/time/calendars/target.hpp>

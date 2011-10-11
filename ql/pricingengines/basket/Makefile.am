@@ -4,12 +4,14 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
+	fd2dblackscholesvanillaengine.hpp \
 	kirkengine.hpp \
 	mcamericanbasketengine.hpp \
 	mceuropeanbasketengine.hpp \
 	stulzengine.hpp
 
 libBasketEngines_la_SOURCES = \
+	fd2dblackscholesvanillaengine.cpp \
 	kirkengine.cpp \
 	mcamericanbasketengine.cpp \
 	mceuropeanbasketengine.cpp \

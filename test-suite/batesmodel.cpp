@@ -33,7 +33,7 @@
 #include <ql/pricingengines/vanilla/jumpdiffusionengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/mceuropeanhestonengine.hpp>
-#include <ql/experimental/finitedifferences/fdbatesvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/fdbatesvanillaengine.hpp>
 #include <ql/models/equity/batesmodel.hpp>
 #include <ql/models/equity/hestonmodelhelper.hpp>
 #include <ql/time/period.hpp>

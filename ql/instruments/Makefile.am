@@ -22,6 +22,7 @@ this_include_HEADERS = \
     cpiswap.hpp \
     cpicapfloor.hpp \
     creditdefaultswap.hpp \
+	dividendbarrieroption.hpp \
     dividendschedule.hpp \
     dividendvanillaoption.hpp \
     europeanoption.hpp \
@@ -73,6 +74,7 @@ libInstruments_la_SOURCES = \
     cpiswap.cpp \
     cpicapfloor.cpp \
     creditdefaultswap.cpp \
+	dividendbarrieroption.cpp \
     dividendvanillaoption.cpp \
     europeanoption.cpp \
     fixedratebondforward.cpp \

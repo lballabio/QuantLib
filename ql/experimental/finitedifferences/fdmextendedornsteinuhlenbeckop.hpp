@@ -24,10 +24,10 @@
 #ifndef quantlib_fdm_extended_ornsteinuhlenback_op_hpp
 #define quantlib_fdm_extended_ornsteinuhlenback_op_hpp
 
-#include <ql/experimental/finitedifferences/firstderivativeop.hpp>
-#include <ql/experimental/finitedifferences/triplebandlinearop.hpp>
-#include <ql/experimental/finitedifferences/fdmlinearopcomposite.hpp>
-#include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
+#include <ql/methods/finitedifferences/operators/firstderivativeop.hpp>
+#include <ql/methods/finitedifferences/operators/triplebandlinearop.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
 
 
 namespace QuantLib {

@@ -21,7 +21,7 @@
 */
 
 #include <ql/experimental/processes/extouwithjumpsprocess.hpp>
-#include <ql/experimental/finitedifferences/fdm2dimsolver.hpp>
+#include <ql/methods/finitedifferences/solvers/fdm2dimsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmextoujumpop.hpp>
 #include <ql/experimental/finitedifferences/fdmextoujumpsolver.hpp>
 

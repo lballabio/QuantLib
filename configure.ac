@@ -342,7 +342,13 @@ AC_CONFIG_FILES([
     ql/math/solvers1d/Makefile
     ql/math/statistics/Makefile
     ql/methods/Makefile
-    ql/methods/finitedifferences/Makefile
+    ql/methods/finitedifferences/Makefile    
+	ql/methods/finitedifferences/meshers/Makefile
+	ql/methods/finitedifferences/operators/Makefile
+	ql/methods/finitedifferences/schemes/Makefile
+	ql/methods/finitedifferences/solvers/Makefile
+	ql/methods/finitedifferences/stepconditions/Makefile
+	ql/methods/finitedifferences/utilities/Makefile
     ql/methods/lattices/Makefile
     ql/methods/montecarlo/Makefile
     ql/models/Makefile

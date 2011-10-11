@@ -31,9 +31,9 @@
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/experimental/finitedifferences/fdhestonbarrierengine.hpp>
-#include <ql/experimental/finitedifferences/fdhestonvanillaengine.hpp>
-#include <ql/experimental/finitedifferences/fdblackscholesbarrierengine.hpp>
+#include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>
+#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
+#include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

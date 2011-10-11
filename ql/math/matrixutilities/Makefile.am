@@ -5,23 +5,27 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
 	basisincompleteordered.hpp \
+	bicgstab.hpp \
 	choleskydecomposition.hpp \
 	factorreduction.hpp \
 	getcovariance.hpp \
 	pseudosqrt.hpp \
 	qrdecomposition.hpp \
+	sparseilupreconditioner.hpp \
 	svd.hpp \
 	symmetricschurdecomposition.hpp \
 	tapcorrelations.hpp \
 	tqreigendecomposition.hpp
 
 libMatrixUtilities_la_SOURCES = \
+	bicgstab.cpp \
 	basisincompleteordered.cpp \
 	choleskydecomposition.cpp \
 	factorreduction.cpp \
 	getcovariance.cpp \
 	pseudosqrt.cpp \
 	qrdecomposition.cpp \
+	sparseilupreconditioner.cpp \
 	svd.cpp \
 	symmetricschurdecomposition.cpp \
 	tapcorrelations.cpp \

@@ -26,9 +26,9 @@
 #define quantlib_fdm_ext_ou_jump_model_inner_value_hpp
 
 #include <ql/payoff.hpp>
-#include <ql/experimental/finitedifferences/fdmmesher.hpp>
-#include <ql/experimental/finitedifferences/fdmlinearopiterator.hpp>
-#include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearopiterator.hpp>
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 
 namespace QuantLib {
 

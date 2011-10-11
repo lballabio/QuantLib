@@ -17,6 +17,7 @@
 #include <ql/instruments/cpiswap.hpp>
 #include <ql/instruments/cpicapfloor.hpp>
 #include <ql/instruments/creditdefaultswap.hpp>
+#include <ql/instruments/dividendbarrieroption.hpp>
 #include <ql/instruments/dividendschedule.hpp>
 #include <ql/instruments/dividendvanillaoption.hpp>
 #include <ql/instruments/europeanoption.hpp>

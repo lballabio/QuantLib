@@ -34,11 +34,11 @@
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/experimental/processes/extouwithjumpsprocess.hpp>
 #include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
-#include <ql/experimental/finitedifferences/fdsimplebsswingengine.hpp>
+#include <ql/pricingengines/vanilla/fdsimplebsswingengine.hpp>
 #include <ql/experimental/finitedifferences/fdextoujumpvanillaengine.hpp>
 #include <ql/experimental/finitedifferences/fdsimpleextoujumpswingengine.hpp>
-#include <ql/experimental/finitedifferences/exponentialjump1dmesher.hpp>
-#include <ql/experimental/finitedifferences/fdblackscholesvanillaengine.hpp>
+#include <ql/methods/finitedifferences/meshers/exponentialjump1dmesher.hpp>
+#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 
 
 using namespace QuantLib;

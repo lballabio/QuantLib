@@ -26,7 +26,7 @@
 
 #include <ql/pricingengine.hpp>
 #include <ql/instruments/vanillaswingoption.hpp>
-#include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmextoujumpmodelinnervalue.hpp>
 
 namespace QuantLib {

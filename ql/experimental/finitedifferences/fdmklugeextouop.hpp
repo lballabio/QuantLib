@@ -24,9 +24,9 @@
 #ifndef quantlib_fdm_kluge_ext_ou_op_hpp
 #define quantlib_fdm_kluge_ext_ou_op_hpp
 
-#include <ql/experimental/finitedifferences/ninepointlinearop.hpp>
-#include <ql/experimental/finitedifferences/fdmlinearopcomposite.hpp>
-#include <ql/experimental/finitedifferences/fdmdirichletboundary.hpp>
+#include <ql/methods/finitedifferences/operators/ninepointlinearop.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
 
 
 namespace QuantLib {

@@ -600,6 +600,12 @@
 				RelativePath=".\inflationcapflooredcoupon.cpp">
 			</File>
 			<File
+				RelativePath=".\inflationcpicapfloor.cpp">
+			</File>
+			<File
+				RelativePath=".\inflationcpiswap.cpp">
+			</File>
+			<File
 				RelativePath=".\inflationvolatility.cpp">
 			</File>
 			<File
@@ -744,6 +750,9 @@
 				RelativePath=".\swaptionvolatilitymatrix.cpp">
 			</File>
 			<File
+				RelativePath=".\swingoption.cpp">
+			</File>
+			<File
 				RelativePath="termstructures.cpp">
 			</File>
 			<File
@@ -772,6 +781,9 @@
 			</File>
 			<File
 				RelativePath=".\volatilitymodels.cpp">
+			</File>
+			<File
+				RelativePath=".\vpp.cpp">
 			</File>
 			<File
 				RelativePath=".\writerextensibleoption.cpp">
@@ -934,6 +946,12 @@
 				RelativePath=".\inflationcapflooredcoupon.hpp">
 			</File>
 			<File
+				RelativePath=".\inflationcpicapfloor.hpp">
+			</File>
+			<File
+				RelativePath=".\inflationcpiswap.hpp">
+			</File>
+			<File
 				RelativePath=".\inflationvolatility.hpp">
 			</File>
 			<File
@@ -1081,6 +1099,9 @@
 				RelativePath=".\swaptionvolstructuresutilities.hpp">
 			</File>
 			<File
+				RelativePath=".\swingoption.hpp">
+			</File>
+			<File
 				RelativePath="termstructures.hpp">
 			</File>
 			<File
@@ -1109,6 +1130,9 @@
 			</File>
 			<File
 				RelativePath=".\volatilitymodels.hpp">
+			</File>
+			<File
+				RelativePath=".\vpp.hpp">
 			</File>
 			<File
 				RelativePath=".\writerextensibleoption.hpp">

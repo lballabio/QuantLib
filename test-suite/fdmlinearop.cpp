@@ -38,34 +38,34 @@
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/mchestonhullwhiteengine.hpp>
 #include <ql/methods/finitedifferences/finitedifferencemodel.hpp>
-#include <ql/experimental/finitedifferences/bicgstab.hpp>
-#include <ql/experimental/finitedifferences/douglasscheme.hpp>
-#include <ql/experimental/finitedifferences/hundsdorferscheme.hpp>
-#include <ql/experimental/finitedifferences/impliciteulerscheme.hpp>
-#include <ql/experimental/finitedifferences/craigsneydscheme.hpp>
-#include <ql/experimental/finitedifferences/uniformgridmesher.hpp>
-#include <ql/experimental/finitedifferences/uniform1dmesher.hpp>
-#include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
-#include <ql/experimental/finitedifferences/fdmblackscholesop.hpp>
-#include <ql/experimental/finitedifferences/fdmblackscholesmesher.hpp>
-#include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
-#include <ql/experimental/finitedifferences/fdmlinearop.hpp>
-#include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
-#include <ql/experimental/finitedifferences/fdmlinearopcomposite.hpp>
-#include <ql/experimental/finitedifferences/fdmhestonhullwhiteop.hpp>
-#include <ql/experimental/finitedifferences/fdmhestonvariancemesher.hpp>
-#include <ql/experimental/finitedifferences/fdmhestonop.hpp>
-#include <ql/experimental/finitedifferences/fdmhestonsolver.hpp>
-#include <ql/experimental/finitedifferences/fdmmeshercomposite.hpp>
-#include <ql/experimental/finitedifferences/fdmndimsolver.hpp>
-#include <ql/experimental/finitedifferences/fdm3dimsolver.hpp>
-#include <ql/experimental/finitedifferences/fdmamericanstepcondition.hpp>
-#include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
-#include <ql/experimental/finitedifferences/fdmdividendhandler.hpp>
-#include <ql/experimental/finitedifferences/firstderivativeop.hpp>
-#include <ql/experimental/finitedifferences/secondderivativeop.hpp>
-#include <ql/experimental/finitedifferences/secondordermixedderivativeop.hpp>
-#include <ql/experimental/finitedifferences/sparseilupreconditioner.hpp>
+#include <ql/math/matrixutilities/bicgstab.hpp>
+#include <ql/methods/finitedifferences/schemes/douglasscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/hundsdorferscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/impliciteulerscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/craigsneydscheme.hpp>
+#include <ql/methods/finitedifferences/meshers/uniformgridmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
+#include <ql/methods/finitedifferences/operators/fdmblackscholesop.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearop.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
+#include <ql/methods/finitedifferences/operators/fdmhestonhullwhiteop.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmhestonvariancemesher.hpp>
+#include <ql/methods/finitedifferences/operators/fdmhestonop.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmhestonsolver.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmndimsolver.hpp>
+#include <ql/methods/finitedifferences/solvers/fdm3dimsolver.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmamericanstepcondition.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmdividendhandler.hpp>
+#include <ql/methods/finitedifferences/operators/firstderivativeop.hpp>
+#include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
+#include <ql/methods/finitedifferences/operators/secondordermixedderivativeop.hpp>
+#include <ql/math/matrixutilities/sparseilupreconditioner.hpp>
 
 #if !defined(QL_NO_UBLAS_SUPPORT)
 #include <boost/numeric/ublas/vector.hpp>
@@ -97,7 +97,7 @@ namespace {
             if (iter != exerciseTimes_.end()) {
                 Size index = std::distance(exerciseTimes_.begin(), iter);
 
-                boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+               boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
                 const FdmLinearOpIterator endIter = layout->end();
                 for (FdmLinearOpIterator iter = layout->begin();
                      iter != endIter; ++iter) {

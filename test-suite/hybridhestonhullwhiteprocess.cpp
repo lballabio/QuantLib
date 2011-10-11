@@ -46,8 +46,8 @@
 #include <ql/pricingengines/vanilla/mchestonhullwhiteengine.hpp>
 #include <ql/pricingengines/vanilla/analyticbsmhullwhiteengine.hpp>
 #include <ql/pricingengines/vanilla/analytichestonhullwhiteengine.hpp>
-#include <ql/experimental/finitedifferences/fdhestonvanillaengine.hpp>
-#include <ql/experimental/finitedifferences/fdhestonhullwhitevanillaengine.hpp>
+#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/fdhestonhullwhitevanillaengine.hpp>
 
 #include <boost/bind.hpp>
 

@@ -23,17 +23,17 @@
 
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
-#include <ql/experimental/finitedifferences/fdmlinearoplayout.hpp>
-#include <ql/experimental/finitedifferences/uniform1dmesher.hpp>
-#include <ql/experimental/finitedifferences/fdminnervaluecalculator.hpp>
-#include <ql/experimental/finitedifferences/fdmmeshercomposite.hpp>
-#include <ql/experimental/finitedifferences/fdmsimpleprocess1dmesher.hpp>
-#include <ql/experimental/finitedifferences/fdsimplebsswingengine.hpp>
-#include <ql/experimental/finitedifferences/fdmsimplestoragecondition.hpp>
-#include <ql/experimental/finitedifferences/fdmstepconditioncomposite.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
+#include <ql/pricingengines/vanilla/fdsimplebsswingengine.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmsimplestoragecondition.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
 #include <ql/experimental/finitedifferences/fdsimpleextoustorageengine.hpp>
-#include <ql/experimental/finitedifferences/fdmsolverdesc.hpp>
-#include <ql/experimental/finitedifferences/fdmbackwardsolver.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmsolverdesc.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmsimple2dextousolver.hpp>
 #include <ql/experimental/finitedifferences/fdmexpextouinnervaluecalculator.hpp>
 
