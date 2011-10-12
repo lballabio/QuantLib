@@ -463,6 +463,7 @@ namespace QuantLib {
         // want notifications from termStructureHandle_ (they would
         // interfere with bootstrapping.)
         iborIndex_->unregisterWith(termStructureHandle_);
+
         registerWith(iborIndex_);
         registerWith(spread_);
         registerWith(discountHandle_);
@@ -488,8 +489,11 @@ namespace QuantLib {
       fwdStart_(fwdStart), discountHandle_(discount) {
         // take fixing into account
         iborIndex_ = iborIndex->clone(termStructureHandle_);
-        // see above
+        // We want to be notified of changes of fixings, but we don't
+        // want notifications from termStructureHandle_ (they would
+        // interfere with bootstrapping.)
         iborIndex_->unregisterWith(termStructureHandle_);
+
         registerWith(iborIndex_);
         registerWith(spread_);
         registerWith(discountHandle_);
@@ -515,8 +519,11 @@ namespace QuantLib {
       fwdStart_(fwdStart), discountHandle_(discount) {
         // take fixing into account
         iborIndex_ = iborIndex->clone(termStructureHandle_);
-        // see above
+        // We want to be notified of changes of fixings, but we don't
+        // want notifications from termStructureHandle_ (they would
+        // interfere with bootstrapping.)
         iborIndex_->unregisterWith(termStructureHandle_);
+
         registerWith(iborIndex_);
         registerWith(spread_);
         registerWith(discountHandle_);
@@ -537,8 +544,11 @@ namespace QuantLib {
       fwdStart_(fwdStart), discountHandle_(discount) {
         // take fixing into account
         iborIndex_ = swapIndex->iborIndex()->clone(termStructureHandle_);
-        // see above
+        // We want to be notified of changes of fixings, but we don't
+        // want notifications from termStructureHandle_ (they would
+        // interfere with bootstrapping.)
         iborIndex_->unregisterWith(termStructureHandle_);
+
         registerWith(iborIndex_);
         registerWith(spread_);
         registerWith(discountHandle_);
@@ -607,18 +617,6 @@ namespace QuantLib {
         return result;
     }
 
-    Spread SwapRateHelper::spread() const {
-        return spread_.empty() ? 0.0 : spread_->value();
-    }
-
-    shared_ptr<VanillaSwap> SwapRateHelper::swap() const {
-        return swap_;
-    }
-
-    const Period& SwapRateHelper::forwardStart() const {
-        return fwdStart_;
-    }
-
     void SwapRateHelper::accept(AcyclicVisitor& v) {
         Visitor<SwapRateHelper>* v1 =
             dynamic_cast<Visitor<SwapRateHelper>*>(&v);
@@ -627,7 +625,6 @@ namespace QuantLib {
         else
             RateHelper::accept(v);
     }
-
 
     BMASwapRateHelper::BMASwapRateHelper(
                           const Handle<Quote>& liborFraction,

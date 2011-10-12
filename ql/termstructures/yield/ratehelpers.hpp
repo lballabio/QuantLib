@@ -314,6 +314,21 @@ namespace QuantLib {
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
 
+
+    // inline
+
+    inline Spread SwapRateHelper::spread() const {
+        return spread_.empty() ? 0.0 : spread_->value();
+    }
+
+    inline boost::shared_ptr<VanillaSwap> SwapRateHelper::swap() const {
+        return swap_;
+    }
+
+    inline const Period& SwapRateHelper::forwardStart() const {
+        return fwdStart_;
+    }
+
 }
 
 #endif
