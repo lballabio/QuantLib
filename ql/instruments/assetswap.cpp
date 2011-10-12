@@ -43,7 +43,7 @@ namespace QuantLib {
                          Spread spread,
                          const DayCounter& floatingDayCounter,
                          Date dealMaturity,
-                         bool payFixedRate)
+                         bool payBondCoupon)
     : Swap(2), bond_(bond), bondCleanPrice_(bondCleanPrice),
       nonParRepayment_(nonParRepayment), spread_(spread), parSwap_(parSwap)
     {
@@ -151,7 +151,7 @@ namespace QuantLib {
         for (Leg::const_iterator i=legs_[0].begin(); i<legs_[0].end(); ++i)
             registerWith(*i);
 
-        if (payFixedRate) {
+        if (payBondCoupon) {
             payer_[0]=-1.0;
             payer_[1]=+1.0;
         } else {
@@ -160,7 +160,7 @@ namespace QuantLib {
         }
     }
 
-    AssetSwap::AssetSwap(bool payFixedRate,
+    AssetSwap::AssetSwap(bool payBondCoupon,
                          const shared_ptr<Bond>& bond,
                          Real bondCleanPrice,
                          const shared_ptr<IborIndex>& iborIndex,
@@ -260,7 +260,7 @@ namespace QuantLib {
         for (Leg::const_iterator i=legs_[0].begin(); i<legs_[0].end(); ++i)
             registerWith(*i);
 
-        if (payFixedRate) {
+        if (payBondCoupon) {
             payer_[0]=-1.0;
             payer_[1]=+1.0;
         } else {

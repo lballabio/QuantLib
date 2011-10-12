@@ -53,7 +53,7 @@ namespace QuantLib {
         class arguments;
         class results;
 
-        AssetSwap(bool payFixedRate,
+        AssetSwap(bool payBondCoupon,
                   const boost::shared_ptr<Bond>& bond,
                   Real bondCleanPrice,
                   const boost::shared_ptr<IborIndex>& iborIndex,
@@ -71,7 +71,7 @@ namespace QuantLib {
                   Spread spread = 0.0,
                   const DayCounter& floatingDayCount = DayCounter(),
                   Date dealMaturity = Date(),
-                  bool payFixedRate = false);
+                  bool payBondCoupon = false);
         // results
         Spread fairSpread() const;
         Real floatingLegBPS() const;
@@ -84,7 +84,7 @@ namespace QuantLib {
         Real cleanPrice() const { return bondCleanPrice_; }
         Real nonParRepayment() const { return nonParRepayment_; }
         const boost::shared_ptr<Bond>& bond() const { return bond_; }
-        bool payFixedRate() const { return (payer_[0] == -1.0); }
+        bool payBondCoupon() const { return (payer_[0] == -1.0); }
         const Leg& bondLeg() const { return legs_[0]; }
         const Leg& floatingLeg() const { return legs_[1]; }
         // other
