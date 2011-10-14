@@ -109,7 +109,7 @@ AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
      # 1.33.1 or 1.34 static
      CXXFLAGS="$ql_original_CXXFLAGS"
      boost_unit_found=no
-     AC_LINK_IFELSE(
+     AC_LINK_IFELSE([AC_LANG_SOURCE(
          [@%:@include <boost/test/unit_test.hpp>
           using namespace boost::unit_test_framework;
           test_suite*
@@ -117,7 +117,7 @@ AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
           {
               return (test_suite*) 0;
           }
-         ],
+         ])],
          [boost_unit_found=$boost_lib
           boost_defines=""
           break],
@@ -125,7 +125,7 @@ AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
      # 1.34 shared
      CXXFLAGS="$ql_original_CXXFLAGS -DBOOST_TEST_MAIN -DBOOST_TEST_DYN_LINK"
      boost_unit_found=no
-     AC_LINK_IFELSE(
+     AC_LINK_IFELSE([AC_LANG_SOURCE(
          [@%:@include <boost/test/unit_test.hpp>
           using namespace boost::unit_test_framework;
           test_suite*
@@ -133,7 +133,7 @@ AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
           {
               return (test_suite*) 0;
           }
-         ],
+         ])],
          [boost_unit_found=$boost_lib
           boost_defines="-DBOOST_TEST_DYN_LINK"
           break],
