@@ -27,10 +27,12 @@
 #include <ql/instruments/vanillaswingoption.hpp>
 #include <ql/instruments/vanillastorageoption.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/math/generallinearleastsquares.hpp>
 #include <ql/math/statistics/generalstatistics.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/processes/ornsteinuhlenbeckprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
+#include <ql/methods/montecarlo/lsmbasissystem.hpp>
 #include <ql/methods/montecarlo/multipathgenerator.hpp>
 #include <ql/experimental/processes/gemanroncoroniprocess.hpp>
 #include <ql/experimental/processes/extouwithjumpsprocess.hpp>
@@ -383,6 +385,8 @@ namespace {
     class GasPrice : public FdmInnerValueCalculator {
       public:
         Real innerValue(const FdmLinearOpIterator&, Time t) {
+            Size i = (Size) t;
+            QL_REQUIRE(i < LENGTH(gasPrices), "invalid time");
             return gasPrices[(Size) t]; }
         Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
             return innerValue(iter, t);
@@ -393,6 +397,7 @@ namespace {
         SparkSpreadPrice(Real heatRate) : heatRate_(heatRate) {}
         Real innerValue(const FdmLinearOpIterator&, Time t) {
             Size i = (Size) t;
+            QL_REQUIRE(i < LENGTH(powerPrices), "invalid time");
             return powerPrices[i] - heatRate_*gasPrices[i];
         }
         Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
@@ -478,6 +483,9 @@ namespace {
         : path_(path),
           shape_(shape) {}
         Real innerValue(const FdmLinearOpIterator&, Time t) {
+            QL_REQUIRE(t-std::sqrt(QL_EPSILON) <=  shape_->back().first,
+                        "invalid time");
+
             const Size i = Size(t*365u*24u);
             const Real f = std::lower_bound(shape_->begin(), shape_->end(),
                 std::pair<Time, Real>(t-std::sqrt(QL_EPSILON), 0.0))->second;
@@ -507,6 +515,9 @@ namespace {
           powerShape_(powerShape) {}
 
         Real innerValue(const FdmLinearOpIterator&, Time t) {
+            QL_REQUIRE(t-std::sqrt(QL_EPSILON) <=  powerShape_->back().first,
+                        "invalid time");
+
             const Size i = Size(t*365u*24u);
             const Real f = std::lower_bound(
                 powerShape_->begin(), powerShape_->end(),
@@ -597,7 +608,7 @@ void VPPTest::testVPPPricing() {
     boost::shared_ptr<Shape> powerShape(new Shape(nHours));
 
     for (Size i=0; i < nHours; ++i) {
-        const Time t = i/(365*24.);
+        const Time t = (i+1)/(365*24.);
 
         const Real gasPrice = gasPrices[i];
         const Real gs = std::log(gasPrice)-square<Real>()(volatility_u)
@@ -612,7 +623,7 @@ void VPPTest::testVPPPricing() {
         (*powerShape)[i] = Shape::value_type(t, ps);
     }
 
-    // test intrinsic value
+    // Test: intrinsic value
     const boost::shared_ptr<FdmMesher> oneDimMesher(
         new FdmMesherComposite(boost::shared_ptr<FdmLinearOpLayout>(
             new FdmLinearOpLayout(std::vector<Size>(1, nStates))),
@@ -639,7 +650,7 @@ void VPPTest::testVPPPricing() {
                    << "\n    expected  : " << expectedIntrinsic);
     }
 
-    // test finite difference price
+    // Test: finite difference price
     const boost::shared_ptr<PricingEngine> engine(
         new FdSimpleKlugeExtOUVPPEngine(klugeOUProcess, rTS, carbonPrice,
                                         1, 25, 11, 10,
@@ -648,14 +659,14 @@ void VPPTest::testVPPPricing() {
     vppOption.setPricingEngine(engine);
 
     const Real fdmPrice = vppOption.NPV();
-    const Real expectedFdmPrice = 5194.11;
+    const Real expectedFdmPrice = 5217.68;
     if (std::fabs(fdmPrice - expectedFdmPrice) > 0.1) {
-        BOOST_ERROR("Failed to reproduce finite difference price"
+       BOOST_ERROR("Failed to reproduce finite difference price"
                    << "\n    calculated: " << fdmPrice
                    << "\n    expected  : " << expectedFdmPrice);
     }
 
-    // test Monte-Carlo price
+    // Test: Monte-Carlo perfect foresight price
     const TimeGrid grid(dc.yearFraction(today, exercise->lastDate()+1),
                         exercise->dates().size());
     typedef PseudoRandom::rsg_type rsg_type;
@@ -666,7 +677,8 @@ void VPPTest::testVPPPricing() {
     MultiPathGenerator<rsg_type> generator(klugeOUProcess, grid, rsg, false);
 
     GeneralStatistics npv;
-    const Size nTrails = 10000;
+    const Size nTrails = 2500;
+
     for (Size i=0; i < nTrails; ++i) {
         const sample_type& path = generator.next();
 
@@ -682,12 +694,13 @@ void VPPTest::testVPPPricing() {
         Array state(nStates, 0.0);
         for (Size j=exercise->dates().size(); j > 0; --j) {
             stepCondition.applyTo(state, grid.at(j));
+            state*=rTS->discount(grid.at(j))/rTS->discount(grid.at(j-1));
         }
 
         npv.add(state.back());
     }
-    const Real npvMC = npv.mean();
-    const Real errorMC = npv.errorEstimate();
+    Real npvMC = npv.mean();
+    Real errorMC = npv.errorEstimate();
     const Real expectedMC = 5250.0;
     if (std::fabs(npvMC-expectedMC) > 3*errorMC) {
         BOOST_ERROR("Failed to reproduce Monte-Carlo price"
@@ -695,15 +708,188 @@ void VPPTest::testVPPPricing() {
                    << "\n    error     ; " << errorMC
                    << "\n    expected  : " << expectedMC);
     }
+    npv.reset();
+
+    // Test: Longstaff Schwartz least square Monte-Carlo
+    const Size nCalibrationTrails = 1000u;
+    std::vector<sample_type> calibrationPaths;
+    std::vector<boost::shared_ptr<FdmVPPStepCondition> > stepConditions;
+    std::vector<boost::shared_ptr<FdmInnerValueCalculator> > sparkSpreads;
+
+    sparkSpreads.reserve(nCalibrationTrails);
+    stepConditions.reserve(nCalibrationTrails);
+    calibrationPaths.reserve(nCalibrationTrails);
+
+    for (Size i=0; i < nCalibrationTrails; ++i) {
+        calibrationPaths.push_back(generator.next());
+
+        sparkSpreads.push_back(boost::shared_ptr<FdmInnerValueCalculator>(
+            new PathSparkSpreadPrice(heatRate, calibrationPaths.back().value,
+                                     gasShape, powerShape)));
+
+        stepConditions.push_back(boost::shared_ptr<FdmVPPStepCondition>(
+            new FdmVPPStepCondition(
+                heatRate, pMin, pMax, tMinUp, tMinDown,
+                startUpFuel, startUpFixCost, carbonPrice, 0u, oneDimMesher,
+                boost::shared_ptr<FdmInnerValueCalculator>(
+                    new PathGasPrice(calibrationPaths.back().value, gasShape)),
+                sparkSpreads.back())));
+    }
+
+
+    const FdmLinearOpIterator iter = oneDimMesher->layout()->begin();
+
+    // prices of all calibration paths for all states
+    std::vector<Array> prices(nCalibrationTrails, Array(nStates, 0.0));
+
+    // regression coefficients for all states and all exercise dates
+    std::vector<std::vector<Array> > coeff(
+        nStates, std::vector<Array>(exercise->dates().size(), Array()));
+
+    // regression functions
+    const Size dim = 1u;
+    std::vector<boost::function1<Real, Array> > v(
+        LsmBasisSystem::multiPathBasisSystem(dim,5u, LsmBasisSystem::Monomial));
+
+    for (Size i=exercise->dates().size(); i > 0u; --i) {
+        const Time t = grid.at(i);
+
+        std::vector<Array> x(nCalibrationTrails, Array(dim));
+
+        for (Size j=0; j < nCalibrationTrails; ++j) {
+            x[j][0] = sparkSpreads[j]->innerValue(iter, t);
+        }
+
+        for (Size k=0; k < nStates; ++k) {
+            std::vector<Real> y(nCalibrationTrails);
+
+            for (Size j=0; j < nCalibrationTrails; ++j) {
+                y[j] = prices[j][k];
+            }
+            coeff[k][i-1] = GeneralLinearLeastSquares(x, y, v).coefficients();
+
+            for (Size j=0; j < nCalibrationTrails; ++j) {
+                prices[j][k] = 0.0;
+                for (Size l=0; l < v.size(); ++l) {
+                    prices[j][k] += coeff[k][i-1][l]*v[l](x[j]);
+                }
+            }
+        }
+
+        for (Size j=0; j < nCalibrationTrails; ++j) {
+            stepConditions[j]->applyTo(prices[j], grid.at(i));
+        }
+    }
+
+    Real tmpValue = 0.0;
+    for (Size i=0; i < nTrails; ++i) {
+        Array x(dim), state(nStates, 0.0), contState(nStates, 0.0);
+
+        const sample_type& path = (i % 2) ? generator.antithetic()
+                                          : generator.next();
+
+        const boost::shared_ptr<FdmInnerValueCalculator> gasPrices(
+            new PathGasPrice(path.value, gasShape));
+
+        const boost::shared_ptr<FdmInnerValueCalculator> sparkSpreads(
+            new PathSparkSpreadPrice(heatRate, path.value,
+                                     gasShape, powerShape));
+
+        FdmVPPStepCondition stepCondition(
+            heatRate, pMin, pMax, tMinUp, tMinDown,
+            startUpFuel, startUpFixCost, carbonPrice, 0u, oneDimMesher,
+            gasPrices, sparkSpreads);
+
+        for (Size j=exercise->dates().size(); j > 0u; --j) {
+            const Time t = grid.at(j);
+            const Real gasPrice = gasPrices->innerValue(iter, t);
+            const Real sparkSpread = sparkSpreads->innerValue(iter, t);
+            const Real startUpCost
+                    = startUpFixCost + (gasPrice + carbonPrice)*startUpFuel;
+
+            x[0] = sparkSpread;
+            for (Size k=0; k < nStates; ++k) {
+                contState[k] = 0.0;
+                for (Size l=0; l < v.size(); ++l) {
+                    contState[k] += coeff[k][j-1][l]*v[l](x);
+                }
+            }
+
+            const Real pMinFlow = pMin*(sparkSpread - heatRate*carbonPrice);
+            const Real pMaxFlow = pMax*(sparkSpread - heatRate*carbonPrice);
+
+            // rollback continuation states and the path states
+            for (Size i=0; i < 2*tMinUp; ++i) {
+                if (i < tMinUp) {
+                    state[i]    += pMinFlow;
+                    contState[i]+= pMinFlow;
+                }
+                else {
+                    state[i]    += pMaxFlow;
+                    contState[i]+= pMaxFlow;
+                }
+            }
+
+            // dynamic programming using the continuation values
+            Array retVal(nStates);
+            for (Size i=0; i < tMinUp-1; ++i) {
+                retVal[i] = retVal[tMinUp + i]
+                          = (contState[i+1] > contState[tMinUp + i+1])?
+                                          state[i+1] : state[tMinUp + i+1];
+            }
+
+            if (contState[2*tMinUp] >=
+                std::max(contState[tMinUp-1], contState[2*tMinUp-1])) {
+                retVal[tMinUp-1] = retVal[2*tMinUp-1] = state[2*tMinUp];
+            }
+            else if (contState[tMinUp-1] >= contState[2*tMinUp-1]) {
+                retVal[tMinUp-1] = retVal[2*tMinUp-1] = state[tMinUp-1];
+            }
+            else {
+                retVal[tMinUp-1] = retVal[2*tMinUp-1] = state[2*tMinUp-1];
+            }
+
+            for (Size i=0; i < tMinDown-1; ++i) {
+                retVal[2*tMinUp + i] = state[2*tMinUp + i+1];
+            }
+
+            if (contState.back() >=
+                std::max(contState.front(), contState[tMinUp]) - startUpCost) {
+                retVal.back() = state.back();
+            }
+            else if (contState.front() >  contState[tMinUp]) {
+                retVal.back() = state.front()-startUpCost;
+            }
+            else {
+                retVal.back() = state[tMinUp]-startUpCost;
+            }
+            state = retVal;
+        }
+        tmpValue+=0.5*state.back();
+        if ((i%2)) {
+            npv.add(tmpValue, 1.0);
+            tmpValue = 0.0;
+        }
+    }
+
+    npvMC = npv.mean();
+    errorMC = npv.errorEstimate();
+    if (std::fabs(npvMC-fdmPrice) > 3*errorMC) {
+        BOOST_ERROR("Failed to reproduce Least Square Monte-Carlo price"
+                   << "\n    calculated   : " << npvMC
+                   << "\n    error        : " << errorMC
+                   << "\n    expected FDM : " << fdmPrice);
+    }
 }
 
 test_suite* VPPTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Vpp Test");
+    test_suite* suite = BOOST_TEST_SUITE("VPP Test");
     suite->add(QUANTLIB_TEST_CASE(&VPPTest::testGemanRoncoroniProcess));
     suite->add(QUANTLIB_TEST_CASE(&VPPTest::testSimpleExtOUStorageEngine));
     suite->add(QUANTLIB_TEST_CASE(&VPPTest::testKlugeExtOUSpreadOption));
     suite->add(QUANTLIB_TEST_CASE(&VPPTest::testVPPIntrinsicValue));
     suite->add(QUANTLIB_TEST_CASE(&VPPTest::testVPPPricing));
+
     return suite;
 }
 
