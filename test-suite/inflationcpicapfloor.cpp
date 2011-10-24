@@ -101,7 +101,7 @@ namespace {
         Natural settlementDays;
         Date settlement;
         Period observationLag, contractObservationLag;
-		indexInterpolationType contractObservationInterpolation;
+        CPI::InterpolationType contractObservationInterpolation;
         DayCounter dcZCIIS,dcNominal;
 		std::vector<Date> zciisD;
 		std::vector<Rate> zciisR;
@@ -226,7 +226,7 @@ namespace {
             // now build the zero inflation curve
             observationLag = Period(2,Months);
 			contractObservationLag = Period(3,Months);
-			contractObservationInterpolation = iiFLAT;
+			contractObservationInterpolation = CPI::Flat;
 			
             Datum zciisData[] = {
                 { Date(1, June, 2011), 3.087 },
@@ -419,7 +419,7 @@ void InflationCPICapFloorTest::cpicapfloorpricer() {
 	BusinessDayConvention fixConvention(Unadjusted), payConvention(ModifiedFollowing);
 	Rate strike(0.03);
 	Real baseCPI = common.hii->fixing(fixCalendar.adjust(startDate-common.observationLag,fixConvention));
-	indexInterpolationType observationInterpolation = iiINDEX;
+    CPI::InterpolationType observationInterpolation = CPI::AsIndex;
 	CPICapFloor aCap(Option::Call,
 					 nominal,
 					 startDate,   // start date of contract (only)

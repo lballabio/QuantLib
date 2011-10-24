@@ -5,7 +5,6 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     averagebmacoupon.hpp \
-    baseindexedcashflow.hpp \
     capflooredcoupon.hpp \
     capflooredinflationcoupon.hpp \
     cashflows.hpp \
@@ -36,7 +35,6 @@ this_include_HEADERS = \
 
 libCashFlows_la_SOURCES = \
     averagebmacoupon.cpp \
-    baseindexedcashflow.cpp \
     capflooredcoupon.cpp \
     capflooredinflationcoupon.cpp \
     cashflows.cpp \

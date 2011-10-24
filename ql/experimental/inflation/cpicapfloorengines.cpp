@@ -61,7 +61,7 @@ namespace QuantLib {
 		
 		
 		// what interpolation do we use? Index / flat / linear
-		if (arguments_.observationInterpolation == iiINDEX ) {
+		if (arguments_.observationInterpolation == CPI::AsIndex) {
 			// same as index means we can just use the price surface
 			// since this uses the index
 			if (arguments_.type == Option::Call) {
@@ -82,7 +82,7 @@ namespace QuantLib {
 			}
 			
 			// if we use a flat index vs the interpolated one ...
-			if (arguments_.observationInterpolation == iiFLAT) {
+			if (arguments_.observationInterpolation == CPI::Flat) {
 				// then use the price for the first day in the period because the value cannot change after then
 				npv = priceStart;
 				

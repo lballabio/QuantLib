@@ -30,8 +30,7 @@
 #include <ql/time/daycounter.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/indexes/iborindex.hpp>
-
-#include <ql/cashflows/baseindexedcashflow.hpp>
+#include <ql/cashflows/cpicoupon.hpp>
 
 namespace QuantLib {
 	
@@ -84,7 +83,7 @@ namespace QuantLib {
 				const BusinessDayConvention& fixedRoll,
 				const Period& observationLag,
 				const boost::shared_ptr<ZeroInflationIndex>& fixedIndex,
-				indexInterpolationType observationInterpolation = iiINDEX,
+				CPI::InterpolationType observationInterpolation = CPI::AsIndex,
 				Real inflationNominal = Null<Real>()
 				);
 		
@@ -117,7 +116,7 @@ namespace QuantLib {
         virtual const BusinessDayConvention& fixedPaymentRoll() const;
 		virtual Period observationLag() const;
         virtual const boost::shared_ptr<ZeroInflationIndex>& fixedIndex() const;
-		virtual indexInterpolationType observationInterpolation() const;
+		virtual CPI::InterpolationType observationInterpolation() const;
 		virtual Real inflationNominal() const;
 		
 		// legs
@@ -152,7 +151,7 @@ namespace QuantLib {
 		BusinessDayConvention fixedPaymentRoll_; 
 		boost::shared_ptr<ZeroInflationIndex> fixedIndex_;
 		Period observationLag_;
-		indexInterpolationType observationInterpolation_;
+        CPI::InterpolationType observationInterpolation_;
 		Real inflationNominal_;
         // results
         mutable Spread fairSpread_;
@@ -207,7 +206,7 @@ namespace QuantLib {
 	inline const BusinessDayConvention& CPIswap::fixedPaymentRoll() const { return fixedPaymentRoll_; }
 	inline Period CPIswap::observationLag() const { return observationLag_; }
 	inline const boost::shared_ptr<ZeroInflationIndex>& CPIswap::fixedIndex() const { return fixedIndex_; }
-	inline indexInterpolationType CPIswap::observationInterpolation() const { return observationInterpolation_; }
+	inline CPI::InterpolationType CPIswap::observationInterpolation() const { return observationInterpolation_; }
 	inline Real CPIswap::inflationNominal() const { return inflationNominal_; }
 	
     inline const Leg& CPIswap::cpiLeg() const {//inflation indexed

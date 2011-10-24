@@ -29,8 +29,7 @@
 #include <ql/time/dategenerationrule.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/interestrate.hpp>
-
-#include <ql/cashflows/baseindexedcashflow.hpp>
+#include <ql/cashflows/cpicoupon.hpp>
 
 namespace QuantLib {
 	
@@ -49,7 +48,7 @@ namespace QuantLib {
 				Real baseCPI,
 				const Period& observationLag,
 				const boost::shared_ptr<ZeroInflationIndex>& cpiIndex,
-				indexInterpolationType observationInterpolation,
+				CPI::InterpolationType observationInterpolation,
                 const Schedule& schedule,
                 const std::vector<Rate>& coupons,
                 const DayCounter& accrualDayCounter,
@@ -62,7 +61,7 @@ namespace QuantLib {
 		Real baseCPI() const { return baseCPI_; }
 		Period observationLag() const { return observationLag_; }
 		const boost::shared_ptr<ZeroInflationIndex>& cpiIndex() const { return cpiIndex_; }
-		indexInterpolationType observationInterpolation() const { return observationInterpolation_; }
+        CPI::InterpolationType observationInterpolation() const { return observationInterpolation_; }
 		
 		// other
         virtual ~CPIbond() {}
@@ -74,7 +73,7 @@ namespace QuantLib {
 		Real baseCPI_;
 		Period observationLag_;
 		boost::shared_ptr<ZeroInflationIndex> cpiIndex_;
-		indexInterpolationType observationInterpolation_;
+        CPI::InterpolationType observationInterpolation_;
     };
 	
 	

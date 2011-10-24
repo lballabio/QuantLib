@@ -30,7 +30,6 @@
 
 #include <ql/instruments/cpiswap.hpp>
 #include <ql/cashflows/cpicoupon.hpp>
-#include <ql/cashflows/baseindexedcashflow.hpp>
 
 #include<iostream>
 
@@ -56,7 +55,7 @@ namespace QuantLib {
 			const BusinessDayConvention& fixedPaymentRoll,
 			const Period& observationLag,
 			const boost::shared_ptr<ZeroInflationIndex>& fixedIndex,
-			indexInterpolationType observationInterpolation,
+			CPI::InterpolationType observationInterpolation,
 			Real inflationNominal
 			)
     : Swap(2), type_(type), nominal_(nominal), subtractInflationNominal_(subtractInflationNominal),
@@ -109,7 +108,7 @@ namespace QuantLib {
 		.withFixedRates(fixedRate_)
 		.withPaymentDayCounter(fixedDayCount_)
 		.withPaymentAdjustment(fixedPaymentRoll_)
-		.withObservationInterplation(observationInterpolation_)
+		.withObservationInterpolation(observationInterpolation_)
 		.withSubtractInflationNominal(subtractInflationNominal_);
 				 
 							 

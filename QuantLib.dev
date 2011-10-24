@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=1800
+UnitCount=1798
 Type=2
 Ver=1
 ObjFiles=
@@ -16168,9 +16168,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit1613]
-FileName=ql\cashflows\baseindexedcashflow.cpp
+FileName=ql\termstructures\volatility\inflation\constantcpivolatility.cpp
 CompileCpp=1
-Folder=cashflows
+Folder=termstructures/volatility/inflation
 Compile=1
 Link=1
 Priority=1000
@@ -16178,9 +16178,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit1614]
-FileName=ql\cashflows\baseindexedcashflow.hpp
+FileName=ql\termstructures\volatility\inflation\constantcpivolatility.hpp
 CompileCpp=1
-Folder=cashflows
+Folder=termstructures/volatility/inflation
 Compile=1
 Link=1
 Priority=1000
@@ -18021,26 +18021,6 @@ BuildCmd=
 FileName=ql\termstructures\inflation\inflationtraits.hpp
 CompileCpp=1
 Folder=termstructures/inflation
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit1799]
-FileName=ql\termstructures\volatility\inflation\constantcpivolatility.cpp
-CompileCpp=1
-Folder=termstructures/volatility/inflation
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit1800]
-FileName=ql\termstructures\volatility\inflation\constantcpivolatility.hpp
-CompileCpp=1
-Folder=termstructures/volatility/inflation
 Compile=1
 Link=1
 Priority=1000

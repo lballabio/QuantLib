@@ -29,7 +29,6 @@
 #include <ql/termstructures/yieldtermstructure.hpp>
 
 #include <ql/instruments/cpicapfloor.hpp>
-#include <ql/cashflows/baseindexedcashflow.hpp>
 
 
 namespace QuantLib {
@@ -46,7 +45,7 @@ namespace QuantLib {
 				Rate strike,
 				const Handle<ZeroInflationIndex> &infIndex,
 				const Period& observationLag,
-				indexInterpolationType observationInterpolation)
+                             CPI::InterpolationType observationInterpolation)
 	: type_(type), startDate_(startDate), baseCPI_(baseCPI),
 	maturity_(maturity), fixCalendar_(fixCalendar), fixConvention_(fixConvention),
 	payCalendar_(payCalendar), payConvention_(payConvention),
@@ -56,16 +55,16 @@ namespace QuantLib {
 		QL_REQUIRE(fixCalendar_ != Calendar(),"CPICapFloor: fixing calendar may not be null.");
 		QL_REQUIRE(payCalendar_ != Calendar(),"CPICapFloor: payment calendar may not be null.");
 	
-		if (observationInterpolation_ == iiFLAT  || 
-			(observationInterpolation_ ==iiINDEX && !infIndex_->interpolated())
+		if (observationInterpolation_ == CPI::Flat  || 
+			(observationInterpolation_ == CPI::AsIndex && !infIndex_->interpolated())
 			) {
 			QL_REQUIRE(observationLag_ >= infIndex_->availabilityLag(),
 					   "CPIcapfloor's observationLag must be at least availabilityLag of inflation index: "
 					   <<"when the observation is effectively flat"
 					   << observationLag_ << " vs " << infIndex_->availabilityLag());
 		}
-		if (observationInterpolation_ == iiLINEAR ||
-			(observationInterpolation_ ==iiINDEX && infIndex_->interpolated())
+		if (observationInterpolation_ == CPI::Linear ||
+			(observationInterpolation_ == CPI::AsIndex && infIndex_->interpolated())
 			) {
 			QL_REQUIRE(observationLag_ > infIndex_->availabilityLag(),
 					   "CPIcapfloor's observationLag must be greater then availabilityLag of inflation index: "

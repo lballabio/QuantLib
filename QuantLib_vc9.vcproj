@@ -1423,14 +1423,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\cashflows\baseindexedcashflow.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\cashflows\baseindexedcashflow.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\cashflows\capflooredcoupon.cpp"
 				>
 			</File>

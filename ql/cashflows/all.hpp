@@ -2,7 +2,6 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/cashflows/averagebmacoupon.hpp>
-#include <ql/cashflows/baseindexedcashflow.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
 #include <ql/cashflows/capflooredinflationcoupon.hpp>
 #include <ql/cashflows/cashflows.hpp>

@@ -30,8 +30,7 @@
 #include <ql/time/calendar.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/indexes/inflationindex.hpp>
-
-#include <ql/cashflows/baseindexedcashflow.hpp>
+#include <ql/cashflows/cpicoupon.hpp>
 
 namespace QuantLib {
 	
@@ -77,7 +76,7 @@ namespace QuantLib {
 					Rate strike,
 					const Handle<ZeroInflationIndex> &infIndex,
 					const Period& observationLag,
-					indexInterpolationType observationInterpolation = iiINDEX);
+					CPI::InterpolationType observationInterpolation = CPI::AsIndex);
 		
         //! \name Inspectors
         //@{
@@ -111,7 +110,7 @@ namespace QuantLib {
         Rate strike_;
         Handle<ZeroInflationIndex> infIndex_;
         Period observationLag_;
-		indexInterpolationType observationInterpolation_;
+        CPI::InterpolationType observationInterpolation_;
     };
 	
 	
@@ -127,7 +126,7 @@ namespace QuantLib {
         Rate strike;
         Handle<ZeroInflationIndex> infIndex;
         Period observationLag;
-		indexInterpolationType observationInterpolation;
+        CPI::InterpolationType observationInterpolation;
 		
         void validate() const;
     };

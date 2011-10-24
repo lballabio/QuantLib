@@ -29,7 +29,6 @@
 
 #include <ql/instruments/bonds/cpibond.hpp>
 #include <ql/cashflows/cpicoupon.hpp>
-#include <ql/cashflows/baseindexedcashflow.hpp>
 
 
 namespace QuantLib {
@@ -40,7 +39,7 @@ namespace QuantLib {
 					 Real baseCPI,
 					 const Period& observationLag,
 					 const boost::shared_ptr<ZeroInflationIndex>& cpiIndex,
-					 indexInterpolationType observationInterpolation,
+					 CPI::InterpolationType observationInterpolation,
 					 const Schedule& schedule,
 					 const std::vector<Rate>& fixedRate,
 					 const DayCounter& accrualDayCounter,
@@ -65,7 +64,7 @@ namespace QuantLib {
 		.withFixedRates(fixedRate)
 		.withPaymentDayCounter(accrualDayCounter)
 		.withPaymentAdjustment(paymentConvention)
-		.withObservationInterplation(observationInterpolation_)
+		.withObservationInterpolation(observationInterpolation_)
 		.withSubtractInflationNominal(growthOnly_);
 		
 		registerWith(cpiIndex_);

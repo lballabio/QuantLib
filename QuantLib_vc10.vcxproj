@@ -248,7 +248,6 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ql\cashflows\baseindexedcashflow.hpp" />
     <ClInclude Include="ql\cashflows\cpicoupon.hpp" />
     <ClInclude Include="ql\cashflows\cpicouponpricer.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdextoujumpvanillaengine.hpp" />
@@ -1345,7 +1344,6 @@
     <ClInclude Include="ql\volatilitymodel.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ql\cashflows\baseindexedcashflow.cpp" />
     <ClCompile Include="ql\cashflows\cpicoupon.cpp" />
     <ClCompile Include="ql\cashflows\cpicouponpricer.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdextoujumpvanillaengine.cpp" />

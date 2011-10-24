@@ -25,14 +25,13 @@
 
 #include <ql/cashflows/cpicoupon.hpp>
 #include <ql/cashflows/cpicouponpricer.hpp>
-#include <ql/cashflows/baseindexedcashflow.hpp>
 
 
 namespace QuantLib {
     
 	CPICoupon::
     CPICoupon(
-			  const Real baseCPI,	// user provided
+			  Real baseCPI,	// user provided
 			  const Date& paymentDate,
 			  Real nominal,
 			  const Date& startDate,
@@ -40,7 +39,7 @@ namespace QuantLib {
 			  Natural fixingDays,
 			  const boost::shared_ptr<ZeroInflationIndex>& zeroIndex,
 			  const Period& observationLag,
-			  indexInterpolationType observationInterpolation,
+			  CPI::InterpolationType observationInterpolation,
 			  const DayCounter& dayCounter,
 			  Real fixedRate, // aka gearing
 			  Spread spread,
@@ -79,14 +78,14 @@ namespace QuantLib {
 		
 		Rate I1;
 		// what interpolation do we use? Index / flat / linear
-		if (observationInterpolation() == iiINDEX ) {
+		if (observationInterpolation() == CPI::AsIndex) {
 			I1 = cpiIndex()->fixing(d); 
 			
 		} else {
 			// work out what it should be
 			std::pair<Date,Date> dd = inflationPeriod(d, cpiIndex()->frequency());
 			Real indexStart = cpiIndex()->fixing(dd.first);
-			if (observationInterpolation() == iiLINEAR) {
+			if (observationInterpolation() == CPI::Linear) {
 				Real indexEnd = cpiIndex()->fixing(dd.second+Period(1,Days));
 				// linear interpolation 
 				I1 = indexStart + (indexEnd - indexStart) * (d - dd.first) 
@@ -99,6 +98,53 @@ namespace QuantLib {
 		}
 		return I1;
 	}
+
+
+
+	
+	Date CPICashFlow::baseDate() const {
+		// you may not have a valid date
+		exit(-1);
+	}
+	
+	Real CPICashFlow::baseFixing() const {
+		return baseFixing_;
+	}
+	
+	Real CPICashFlow::amount() const {
+        Real I0 = baseFixing();
+        Real I1;
+		
+		// what interpolation do we use? Index / flat / linear
+		if (interpolation() == CPI::AsIndex ) {
+			I1 = index()->fixing(fixingDate()); 
+		} else {
+			// work out what it should be
+			//std::cout << fixingDate() << " and " << frequency() << std::endl;
+			//std::pair<Date,Date> dd = inflationPeriod(fixingDate(), frequency());
+			//std::cout << fixingDate() << " and " << dd.first << " " << dd.second << std::endl;
+			// work out what it should be
+			std::pair<Date,Date> dd = inflationPeriod(fixingDate(), frequency());
+			Real indexStart = index()->fixing(dd.first);
+			if (interpolation() == CPI::Linear) {
+				Real indexEnd = index()->fixing(dd.second+Period(1,Days));
+				// linear interpolation 
+				//std::cout << indexStart << " and " << indexEnd << std::endl;
+				I1 = indexStart + (indexEnd - indexStart) * (fixingDate() - dd.first) 
+				/ ( (dd.second+Period(1,Days)) - dd.first); // can't get to next period's value within current period
+			} else {
+				// no interpolation, i.e. flat = constant, so use start-of-period value
+				I1 = indexStart;
+			}
+			
+		}
+		
+		
+        if (growthOnly())
+            return notional() * (I1 / I0 - 1.0);
+        else
+            return notional() * (I1 / I0);
+    }
 	
 	
 	CPILeg::CPILeg(const Schedule& schedule, const boost::shared_ptr<ZeroInflationIndex>& index,
@@ -108,13 +154,13 @@ namespace QuantLib {
 	paymentDayCounter_(Thirty360()),
 	paymentAdjustment_(ModifiedFollowing),
 	fixingDays_(std::vector<Natural>(1,0)),
-	observationInterpolation_(iiINDEX),
+	observationInterpolation_(CPI::AsIndex),
 	subtractInflationNominal_(true),
 	spreads_(std::vector<Real>(1,0))
 	{}
 	
 	
-	CPILeg& CPILeg::withObservationInterplation(indexInterpolationType interp) {
+	CPILeg& CPILeg::withObservationInterpolation(CPI::InterpolationType interp) {
         observationInterpolation_ = interp;
         return *this;
     }
@@ -262,7 +308,7 @@ namespace QuantLib {
 		// in CPI legs you always have a notional flow of some sort
 		Date paymentDate = calendar.adjust(schedule_.date(n), paymentAdjustment_);
 		Date fixingDate = paymentDate - observationLag_;
-		boost::shared_ptr<CashFlow> xnl(new BaseIndexedCashFlow
+		boost::shared_ptr<CashFlow> xnl(new CPICashFlow
 						  (detail::get(notionals_, n, 0.0), index_,
 						   Date(), // is fake, i.e. you do not have one
 						   baseCPI_, fixingDate, paymentDate,

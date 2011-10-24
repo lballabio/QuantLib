@@ -74,7 +74,7 @@ namespace {
         Natural settlementDays;
         Date settlement;
         Period observationLag, contractObservationLag;
-		indexInterpolationType contractObservationInterpolation;
+        CPI::InterpolationType contractObservationInterpolation;
         DayCounter dcZCIIS,dcNominal;
 		std::vector<Date> zciisD;
 		std::vector<Rate> zciisR;
@@ -186,7 +186,7 @@ namespace {
             // now build the zero inflation curve
             observationLag = Period(2,Months);
 			contractObservationLag = Period(3,Months);
-			contractObservationInterpolation = iiFLAT;
+			contractObservationInterpolation = CPI::Flat;
 			
             Datum zciisData[] = {
                 { Date(25, November, 2010), 3.0495 },
@@ -272,7 +272,7 @@ void CPISwapTest::consistency() {
 	Calendar fixedPaymentCalendar = UnitedKingdom();
 	boost::shared_ptr<ZeroInflationIndex> fixedIndex = common.ii;
 	Period contractObservationLag = common.contractObservationLag;
-	indexInterpolationType observationInterpolation = common.contractObservationInterpolation;
+    CPI::InterpolationType observationInterpolation = common.contractObservationInterpolation;
 	
 	// set the schedules
 	Date startDate(2, October, 2007);
@@ -395,7 +395,7 @@ void CPISwapTest::zciisconsistency() {
 	CPIswap cS(stype, floatNominal, subtractInflationNominal, dummySpread, dummyDC, schOneDate,
 			   paymentConvention, fixingDays, dummyFloatIndex, 
 			   dummyFixedRate, baseCPI, dummyDC, schOneDate, paymentConvention, observationLag,
-			   common.ii, iiINDEX, inflationNominal);
+			   common.ii, CPI::AsIndex, inflationNominal);
 	
 	cS.setPricingEngine(dse);
 	QL_REQUIRE(fabs(cS.NPV())<1e-3,"CPIswap as ZCIIS does not reprice to zero");
@@ -430,7 +430,7 @@ void CPISwapTest::cpibondconsistency() {
 	Calendar fixedPaymentCalendar = UnitedKingdom();
 	boost::shared_ptr<ZeroInflationIndex> fixedIndex = common.ii;
 	Period contractObservationLag = common.contractObservationLag;
-	indexInterpolationType observationInterpolation = common.contractObservationInterpolation;
+    CPI::InterpolationType observationInterpolation = common.contractObservationInterpolation;
 	
 	// set the schedules
 	Date startDate(2, October, 2007);

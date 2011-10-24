@@ -3216,9 +3216,6 @@
     <ClInclude Include="ql\userconfig.hpp" />
     <ClInclude Include="ql\version.hpp" />
     <ClInclude Include="ql\volatilitymodel.hpp" />
-    <ClInclude Include="ql\cashflows\baseindexedcashflow.hpp">
-      <Filter>cashflows</Filter>
-    </ClInclude>
     <ClInclude Include="ql\cashflows\cpicoupon.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
@@ -5364,9 +5361,6 @@
     <ClCompile Include="ql\stochasticprocess.cpp" />
     <ClCompile Include="ql\termstructure.cpp" />
     <ClCompile Include="ql\timegrid.cpp" />
-    <ClCompile Include="ql\cashflows\baseindexedcashflow.cpp">
-      <Filter>cashflows</Filter>
-    </ClCompile>
     <ClCompile Include="ql\cashflows\cpicoupon.cpp">
       <Filter>cashflows</Filter>
     </ClCompile>
