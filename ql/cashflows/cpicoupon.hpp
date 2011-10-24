@@ -24,7 +24,6 @@
 #ifndef quantlib_cpicoupon_hpp
 #define quantlib_cpicoupon_hpp
 
-#include <boost/shared_ptr.hpp>
 #include <ql/cashflows/inflationcoupon.hpp>
 #include <ql/indexes/inflationindex.hpp>
 #include <ql/cashflows/baseindexedcashflow.hpp>
