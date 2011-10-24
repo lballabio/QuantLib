@@ -4542,6 +4542,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\termstructures\volatility\inflation\constantcpivolatility.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\inflation\constantcpivolatility.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\termstructures\volatility\inflation\cpivolatilitystructure.cpp"
 						>
 					</File>

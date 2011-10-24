@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=1798
+UnitCount=1800
 Type=2
 Ver=1
 ObjFiles=
@@ -18027,3 +18027,22 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
+[Unit1799]
+FileName=ql\termstructures\volatility\inflation\constantcpivolatility.cpp
+CompileCpp=1
+Folder=termstructures/volatility/inflation
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit1800]
+FileName=ql\termstructures\volatility\inflation\constantcpivolatility.hpp
+CompileCpp=1
+Folder=termstructures/volatility/inflation
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=

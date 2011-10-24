@@ -17,10 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-/*! \file yoyoptionletvolatilitystructures.cpp
- \brief yoy inflation volatility structures
- */
-
 #include <ql/termstructures/volatility/inflation/cpivolatilitystructure.hpp>
 #include <ql/termstructures/inflationtermstructure.hpp>
 
@@ -43,7 +39,7 @@ namespace QuantLib {
         // Depends on interpolation, or not, of observed index
         // and observation lag with which it was built.
         // We want this to work even if the index does not
-        // have a yoy term structure.
+        // have a term structure.
         if (indexIsInterpolated()) {
             return referenceDate() - observationLag();
         } else {
@@ -155,35 +151,5 @@ namespace QuantLib {
         return totalVariance(maturityDate, strike, obsLag, extrap);
     }
 
+}
 
-
-    //========================================================================
-    // constant CPI vol surface
-    //========================================================================
-
-    ConstantCPIOptionletVolatility::
-    ConstantCPIOptionletVolatility(const Volatility v,
-                                   Natural settlementDays,
-                                   const Calendar& cal,
-                                   BusinessDayConvention bdc,
-                                   const DayCounter& dc,
-                                   const Period& observationLag,
-                                   Frequency frequency,
-                                   bool indexIsInterpolated,
-                                   Rate minStrike,
-                                   Rate maxStrike)
-    : CPIVolatilitySurface(settlementDays, cal, bdc, dc,
-                           observationLag, frequency, indexIsInterpolated),
-      volatility_(v), minStrike_(minStrike), maxStrike_(maxStrike) {}
-
-
-    Volatility ConstantCPIOptionletVolatility::
-    volatilityImpl(const Time t, Rate strike) const {
-        return volatility_;
-    }
-
-
-
-
-
-} // namespace QuantLib

@@ -25,8 +25,6 @@
 #define quantlib_cpi_volatility_structure_hpp
 
 #include <ql/termstructures/voltermstructure.hpp>
-#include <ql/math/interpolation.hpp>
-#include <ql/time/calendars/target.hpp>
 
 namespace QuantLib {
 
@@ -136,43 +134,6 @@ namespace QuantLib {
         Period observationLag_;
         Frequency frequency_;
         bool indexIsInterpolated_;
-    };
-
-
-    //! Constant surface, no K or T dependence.
-    class ConstantCPIOptionletVolatility : public CPIVolatilitySurface {
-      public:
-        //! \name Constructor
-        //@{
-        //! calculate the reference date based on the global evaluation date
-        ConstantCPIOptionletVolatility(const Volatility v,
-                                       Natural settlementDays,
-                                       const Calendar&,
-                                       BusinessDayConvention bdc,
-                                       const DayCounter& dc,
-                                       const Period &observationLag,
-                                       Frequency frequency,
-                                       bool indexIsInterpolated,
-                                       Rate minStrike = -1.0,  // -100%
-                                       Rate maxStrike = 100.0);  // +10,000%
-        //@}
-        virtual ~ConstantCPIOptionletVolatility() {}
-
-        //! \name Limits
-        //@{
-        virtual Date maxDate() const { return Date::maxDate(); }
-        //! the minimum strike for which the term structure can return vols
-        virtual Real minStrike() const { return minStrike_; }
-        //! the maximum strike for which the term structure can return vols
-        virtual Real maxStrike() const { return maxStrike_; }
-        //@}
-
-    protected:
-        //! implements the actual volatility calculation in derived classes
-        virtual Volatility volatilityImpl(Time length, Rate strike) const;
-
-        Volatility volatility_;
-        Rate minStrike_, maxStrike_;
     };
 
 }
