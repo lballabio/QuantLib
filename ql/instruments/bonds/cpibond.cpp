@@ -33,7 +33,7 @@
 
 namespace QuantLib {
 
-    CPIbond::CPIbond(Natural settlementDays,
+    CPIBond::CPIBond(Natural settlementDays,
                      Real faceAmount,
                      bool growthOnly,
                      Real baseCPI,

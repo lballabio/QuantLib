@@ -253,7 +253,7 @@ void CPISwapTest::consistency() {
 
     // ZeroInflationSwap aka CPISwap
 
-    CPIswap::Type type = CPIswap::Payer;
+    CPISwap::Type type = CPISwap::Payer;
     Real nominal = 1000000.0;
     bool subtractInflationNominal = true;
     // float+spread leg
@@ -291,7 +291,7 @@ void CPISwapTest::consistency() {
     ;
 
 
-    CPIswap zisV(type, nominal, subtractInflationNominal,
+    CPISwap zisV(type, nominal, subtractInflationNominal,
                  spread, floatDayCount, floatSchedule,
                  floatPaymentConvention, fixingDays, floatIndex,
                  fixedRate, baseCPI, fixedDayCount, fixedSchedule,
@@ -381,7 +381,7 @@ void CPISwapTest::zciisconsistency() {
     oneDate.push_back(endDate);
     Schedule schOneDate(oneDate, cal, paymentConvention);
 
-    CPIswap::Type stype = CPIswap::Payer;
+    CPISwap::Type stype = CPISwap::Payer;
     Real inflationNominal = nominal;
     Real floatNominal = inflationNominal * std::pow(1.0+quote,50);
     bool subtractInflationNominal = true;
@@ -392,16 +392,16 @@ void CPISwapTest::zciisconsistency() {
 
     boost::shared_ptr<IborIndex> dummyFloatIndex;
 
-    CPIswap cS(stype, floatNominal, subtractInflationNominal, dummySpread, dummyDC, schOneDate,
+    CPISwap cS(stype, floatNominal, subtractInflationNominal, dummySpread, dummyDC, schOneDate,
                paymentConvention, fixingDays, dummyFloatIndex,
                dummyFixedRate, baseCPI, dummyDC, schOneDate, paymentConvention, observationLag,
                common.ii, CPI::AsIndex, inflationNominal);
 
     cS.setPricingEngine(dse);
-    QL_REQUIRE(fabs(cS.NPV())<1e-3,"CPIswap as ZCIIS does not reprice to zero");
+    QL_REQUIRE(fabs(cS.NPV())<1e-3,"CPISwap as ZCIIS does not reprice to zero");
 
     for (Size i=0; i<2; i++) {
-        QL_REQUIRE(fabs(cS.legNPV(i)-zciis.legNPV(i))<1e-3,"zciis leg does not equal CPIswap leg");
+        QL_REQUIRE(fabs(cS.legNPV(i)-zciis.legNPV(i))<1e-3,"zciis leg does not equal CPISwap leg");
     }
 }
 
@@ -411,7 +411,7 @@ void CPISwapTest::cpibondconsistency() {
 
     // ZeroInflationSwap aka CPISwap
 
-    CPIswap::Type type = CPIswap::Payer;
+    CPISwap::Type type = CPISwap::Payer;
     Real nominal = 1000000.0;
     bool subtractInflationNominal = true;
     // float+spread leg
@@ -449,7 +449,7 @@ void CPISwapTest::cpibondconsistency() {
     ;
 
 
-    CPIswap zisV(type, nominal, subtractInflationNominal,
+    CPISwap zisV(type, nominal, subtractInflationNominal,
                  spread, floatDayCount, floatSchedule,
                  floatPaymentConvention, fixingDays, floatIndex,
                  fixedRate, baseCPI, fixedDayCount, fixedSchedule,
@@ -485,7 +485,7 @@ void CPISwapTest::cpibondconsistency() {
     std::vector<Rate> fixedRates(1,fixedRate);
     Natural settlementDays = 1;// cannot be zero!
     bool growthOnly = true;
-    CPIbond cpiB(settlementDays, nominal, growthOnly,
+    CPIBond cpiB(settlementDays, nominal, growthOnly,
                  baseCPI, contractObservationLag, fixedIndex,
                  observationInterpolation, fixedSchedule,
                  fixedRates, fixedDayCount, fixedPaymentConvention);
@@ -499,7 +499,7 @@ void CPISwapTest::cpibondconsistency() {
 
 
 test_suite* CPISwapTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("CPIswap tests");
+    test_suite* suite = BOOST_TEST_SUITE("CPISwap tests");
 
     suite->add(QUANTLIB_TEST_CASE(&CPISwapTest::consistency));
     suite->add(QUANTLIB_TEST_CASE(&CPISwapTest::zciisconsistency));

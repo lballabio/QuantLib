@@ -36,8 +36,8 @@
 namespace QuantLib {
 
     // accrual adjustment is already in the schedules, as are calendars
-    CPIswap::
-    CPIswap(Type type,
+    CPISwap::
+    CPISwap(Type type,
             Real nominal,
             bool subtractInflationNominal,
             // float + spread leg
@@ -137,50 +137,50 @@ namespace QuantLib {
 
 
     //! for simple case sufficient to copy base class
-    void CPIswap::setupArguments(PricingEngine::arguments* args) const {
+    void CPISwap::setupArguments(PricingEngine::arguments* args) const {
 
         Swap::setupArguments(args);
 
-        CPIswap::arguments* arguments =
-        dynamic_cast<CPIswap::arguments*>(args);
+        CPISwap::arguments* arguments =
+        dynamic_cast<CPISwap::arguments*>(args);
 
         if (!arguments) return; // it's a swap engine...
     }
 
 
-    Rate CPIswap::fairRate() const {
+    Rate CPISwap::fairRate() const {
         calculate();
         QL_REQUIRE(fairRate_ != Null<Rate>(), "result not available");
         return fairRate_;
     }
 
-    Spread CPIswap::fairSpread() const {
+    Spread CPISwap::fairSpread() const {
         calculate();
         QL_REQUIRE(fairSpread_ != Null<Spread>(), "result not available");
         return fairSpread_;
     }
 
 
-    Real CPIswap::fixedLegNPV() const {//FIXME
+    Real CPISwap::fixedLegNPV() const {//FIXME
         calculate();
         QL_REQUIRE(legNPV_[0] != Null<Real>(), "result not available");
         return legNPV_[0];
     }
 
-    Real CPIswap::floatLegNPV() const {//FIXME
+    Real CPISwap::floatLegNPV() const {//FIXME
         calculate();
         QL_REQUIRE(legNPV_[1] != Null<Real>(), "result not available");
         return legNPV_[1];
     }
 
-    void CPIswap::setupExpired() const {
+    void CPISwap::setupExpired() const {
         Swap::setupExpired();
         legBPS_[0] = legBPS_[1] = 0.0;
         fairRate_ = Null<Rate>();
         fairSpread_ = Null<Spread>();
     }
 
-    void CPIswap::fetchResults(const PricingEngine::results* r) const {
+    void CPISwap::fetchResults(const PricingEngine::results* r) const {
         static const Spread basisPoint = 1.0e-4;
 
         // copy from VanillaSwap
@@ -189,7 +189,7 @@ namespace QuantLib {
 
         Swap::fetchResults(r);
 
-        const CPIswap::results* results = dynamic_cast<const CPIswap::results*>(r);
+        const CPISwap::results* results = dynamic_cast<const CPISwap::results*>(r);
         if (results) { // might be a swap engine, so no error is thrown
             fairRate_ = results->fairRate;
             fairSpread_ = results->fairSpread;
@@ -211,25 +211,25 @@ namespace QuantLib {
 
     }
 
-    void CPIswap::arguments::validate() const {
+    void CPISwap::arguments::validate() const {
         Swap::arguments::validate();
     }
 
-    void CPIswap::results::reset() {
+    void CPISwap::results::reset() {
         Swap::results::reset();
         fairRate = Null<Rate>();
         fairSpread = Null<Spread>();
     }
 
     std::ostream& operator<<(std::ostream& out,
-                             CPIswap::Type t) {
+                             CPISwap::Type t) {
         switch (t) {
-            case CPIswap::Payer:
+            case CPISwap::Payer:
                 return out << "Payer";
-            case CPIswap::Receiver:
+            case CPISwap::Receiver:
                 return out << "Receiver";
             default:
-                QL_FAIL("unknown CPIswap::Type(" << Integer(t) << ")");
+                QL_FAIL("unknown CPISwap::Type(" << Integer(t) << ")");
         }
     }
 

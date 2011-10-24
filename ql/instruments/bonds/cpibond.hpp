@@ -40,9 +40,9 @@ namespace QuantLib {
     /*! \ingroup instruments
 
      */
-    class CPIbond : public Bond {
-    public:
-        CPIbond(Natural settlementDays,
+    class CPIBond : public Bond {
+      public:
+        CPIBond(Natural settlementDays,
                 Real faceAmount,
                 bool growthOnly,
                 Real baseCPI,
@@ -63,10 +63,7 @@ namespace QuantLib {
         const boost::shared_ptr<ZeroInflationIndex>& cpiIndex() const { return cpiIndex_; }
         CPI::InterpolationType observationInterpolation() const { return observationInterpolation_; }
 
-        // other
-        virtual ~CPIbond() {}
-
-    protected:
+      protected:
         Frequency frequency_;
         DayCounter dayCounter_;
         bool growthOnly_;

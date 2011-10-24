@@ -38,34 +38,39 @@ namespace QuantLib {
 
     //! zero-inflation-indexed swap,
     /*! fixed x zero-inflation, i.e. fixed x CPI(i'th fixing)/CPI(base)
-        versus
-        floating + spread
+        versus floating + spread
 
-        Note that this does ony the inflation-vs-floating-leg.  Extension to inflation-vs-fixed-leg.
-        is simple - just replace the floating leg with a fixed leg.  We leave this as an exercise
-        for the reader in the interests of simplicity.
+        Note that this does ony the inflation-vs-floating-leg.
+        Extension to inflation-vs-fixed-leg.  is simple - just replace
+        the floating leg with a fixed leg.
 
-        Typically there are notional exchanges at the end: either inflated-notional vs notional;
-        or just (inflated-notional - notional) vs zero.  The latter is perhaphs more typical.
-        \warning Setting subtractInflationNominal to true means that the original inflation nominal
-        is subtracted from both nominals before they are exchanged, even if they are different.
+        Typically there are notional exchanges at the end: either
+        inflated-notional vs notional; or just (inflated-notional -
+        notional) vs zero.  The latter is perhaphs more typical.
+        \warning Setting subtractInflationNominal to true means that
+        the original inflation nominal is subtracted from both
+        nominals before they are exchanged, even if they are
+        different.
 
-        This swap can mimic a ZCIIS where [(1+q)^n - 1] is exchanged against (cpi ratio - 1),
-        by using differnt nominals on each leg and setting subtractInflationNominal to true.
-        ALSO - there must be just one date in each schedule.
+        This swap can mimic a ZCIIS where [(1+q)^n - 1] is exchanged
+        against (cpi ratio - 1), by using differnt nominals on each
+        leg and setting subtractInflationNominal to true.  ALSO -
+        there must be just one date in each schedule.
 
-        The two legs can have different schedules, fixing (days vs lag), settlement, and roll
-        conventions.  N.B. accrual adjustment periods are already in the schedules.  Trade date
-        and swap settlement date are outside the scope of the instrument.
-     */
-    class CPIswap : public Swap {
-    public:
+        The two legs can have different schedules, fixing (days vs
+        lag), settlement, and roll conventions.  N.B. accrual
+        adjustment periods are already in the schedules.  Trade date
+        and swap settlement date are outside the scope of the
+        instrument.
+    */
+    class CPISwap : public Swap {
+      public:
         enum Type { Receiver = -1, Payer = 1 };
         class arguments;
         class results;
         class engine;
 
-        CPIswap(Type type,
+        CPISwap(Type type,
                 Real nominal,
                 bool subtractInflationNominal,
                 // float+spread leg
@@ -126,9 +131,8 @@ namespace QuantLib {
         // other
         void setupArguments(PricingEngine::arguments* args) const;
         void fetchResults(const PricingEngine::results*) const;
-        virtual ~CPIswap() {}
 
-    private:
+      private:
         void setupExpired() const;
 
         Type type_;
@@ -161,7 +165,7 @@ namespace QuantLib {
 
 
     //! %Arguments for swap calculation
-    class CPIswap::arguments : public Swap::arguments {
+    class CPISwap::arguments : public Swap::arguments {
     public:
         arguments() : type(Receiver),
         nominal(Null<Real>()) {}
@@ -172,52 +176,52 @@ namespace QuantLib {
     };
 
     //! %Results from swap calculation
-    class CPIswap::results : public Swap::results {
+    class CPISwap::results : public Swap::results {
     public:
         Rate fairRate;
         Spread fairSpread;
         void reset();
     };
 
-    class CPIswap::engine : public GenericEngine<CPIswap::arguments,
-    CPIswap::results> {};
+    class CPISwap::engine : public GenericEngine<CPISwap::arguments,
+                                                 CPISwap::results> {};
 
 
     // inline definitions
 
     // inspectors
-    inline  CPIswap::Type CPIswap::type() const { return type_; }
-    inline  Real CPIswap::nominal() const { return nominal_; }
-    inline  bool CPIswap::subtractInflationNominal() const { return subtractInflationNominal_; }
+    inline  CPISwap::Type CPISwap::type() const { return type_; }
+    inline  Real CPISwap::nominal() const { return nominal_; }
+    inline  bool CPISwap::subtractInflationNominal() const { return subtractInflationNominal_; }
 
     // float+spread
-    inline Spread CPIswap::spread() const { return spread_; }
-    inline const DayCounter& CPIswap::floatDayCount() const { return floatDayCount_; }
-    inline const Schedule& CPIswap::floatSchedule() const { return floatSchedule_; }
-    inline const BusinessDayConvention& CPIswap::floatPaymentRoll() const { return floatPaymentRoll_; }
-    inline Natural CPIswap::fixingDays() const { return fixingDays_; }
-    inline const boost::shared_ptr<IborIndex>& CPIswap::floatIndex() const { return floatIndex_; }
+    inline Spread CPISwap::spread() const { return spread_; }
+    inline const DayCounter& CPISwap::floatDayCount() const { return floatDayCount_; }
+    inline const Schedule& CPISwap::floatSchedule() const { return floatSchedule_; }
+    inline const BusinessDayConvention& CPISwap::floatPaymentRoll() const { return floatPaymentRoll_; }
+    inline Natural CPISwap::fixingDays() const { return fixingDays_; }
+    inline const boost::shared_ptr<IborIndex>& CPISwap::floatIndex() const { return floatIndex_; }
 
     // fixed rate x inflation
-    inline Rate CPIswap::fixedRate() const { return fixedRate_; }
-    inline Real CPIswap::baseCPI() const { return baseCPI_; }
-    inline const DayCounter& CPIswap::fixedDayCount() const { return fixedDayCount_; }
-    inline const Schedule& CPIswap::fixedSchedule() const { return fixedSchedule_; }
-    inline const BusinessDayConvention& CPIswap::fixedPaymentRoll() const { return fixedPaymentRoll_; }
-    inline Period CPIswap::observationLag() const { return observationLag_; }
-    inline const boost::shared_ptr<ZeroInflationIndex>& CPIswap::fixedIndex() const { return fixedIndex_; }
-    inline CPI::InterpolationType CPIswap::observationInterpolation() const { return observationInterpolation_; }
-    inline Real CPIswap::inflationNominal() const { return inflationNominal_; }
+    inline Rate CPISwap::fixedRate() const { return fixedRate_; }
+    inline Real CPISwap::baseCPI() const { return baseCPI_; }
+    inline const DayCounter& CPISwap::fixedDayCount() const { return fixedDayCount_; }
+    inline const Schedule& CPISwap::fixedSchedule() const { return fixedSchedule_; }
+    inline const BusinessDayConvention& CPISwap::fixedPaymentRoll() const { return fixedPaymentRoll_; }
+    inline Period CPISwap::observationLag() const { return observationLag_; }
+    inline const boost::shared_ptr<ZeroInflationIndex>& CPISwap::fixedIndex() const { return fixedIndex_; }
+    inline CPI::InterpolationType CPISwap::observationInterpolation() const { return observationInterpolation_; }
+    inline Real CPISwap::inflationNominal() const { return inflationNominal_; }
 
-    inline const Leg& CPIswap::cpiLeg() const {//inflation indexed
+    inline const Leg& CPISwap::cpiLeg() const {//inflation indexed
         return legs_[0];
     }
 
-    inline const Leg& CPIswap::floatLeg() const {
+    inline const Leg& CPISwap::floatLeg() const {
         return legs_[1];
     }
 
-    std::ostream& operator<<(std::ostream& out, CPIswap::Type t);
+    std::ostream& operator<<(std::ostream& out, CPISwap::Type t);
 
 }
 
