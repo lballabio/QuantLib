@@ -4897,6 +4897,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\termstructures\volatility\inflation\cpivolatilitystructure.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\inflation\cpivolatilitystructure.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\termstructures\volatility\inflation\yoyinflationoptionletvolatilitystructure.cpp"
 						>
 					</File>
@@ -8003,14 +8011,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\inflation\cpicapfloortermpricesurface.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\inflation\cpioptionletvolatilitystructure.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\inflation\cpioptionletvolatilitystructure.hpp"
 					>
 				</File>
 				<File

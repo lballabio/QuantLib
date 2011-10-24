@@ -1923,6 +1923,9 @@
     <ClInclude Include="ql\termstructures\volatility\inflation\all.hpp">
       <Filter>termstructures\volatility\inflation</Filter>
     </ClInclude>
+    <ClInclude Include="ql\termstructures\volatility\inflation\cpivolatilitystructure.hpp">
+      <Filter>termstructures\volatility\inflation</Filter>
+    </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\inflation\yoyinflationoptionletvolatilitystructure.hpp">
       <Filter>termstructures\volatility\inflation</Filter>
     </ClInclude>
@@ -3276,9 +3279,6 @@
     <ClInclude Include="ql\experimental\inflation\cpicapfloortermpricesurface.hpp">
       <Filter>experimental\inflation</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\inflation\cpioptionletvolatilitystructure.hpp">
-      <Filter>experimental\inflation</Filter>
-    </ClInclude>
     <ClInclude Include="ql\experimental\finitedifferences\fdklugeextouspreadengine.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
@@ -4523,6 +4523,9 @@
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolstructure.cpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClCompile>
+    <ClCompile Include="ql\termstructures\volatility\inflation\cpivolatilitystructure.cpp">
+      <Filter>termstructures\volatility\inflation</Filter>
+    </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\inflation\yoyinflationoptionletvolatilitystructure.cpp">
       <Filter>termstructures\volatility\inflation</Filter>
     </ClCompile>
@@ -5401,9 +5404,6 @@
       <Filter>experimental\processes</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\inflation\cpicapfloortermpricesurface.cpp">
-      <Filter>experimental\inflation</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\inflation\cpioptionletvolatilitystructure.cpp">
       <Filter>experimental\inflation</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\finitedifferences\fdklugeextouspreadengine.cpp">

@@ -3,9 +3,11 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    cpivolatilitystructure.hpp \
     yoyinflationoptionletvolatilitystructure.hpp
 
 libInflationVol_la_SOURCES = \
+    cpivolatilitystructure.cpp \
     yoyinflationoptionletvolatilitystructure.cpp
 
 noinst_LTLIBRARIES = libInflationVol.la

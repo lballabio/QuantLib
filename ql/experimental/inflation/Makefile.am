@@ -5,7 +5,6 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     cpicapfloortermpricesurface.hpp \
-    cpioptionletvolatilitystructure.hpp \
     genericindexes.hpp \
     interpolatedyoyoptionletstripper.hpp \
     kinterpolatedyoyoptionletvolatilitysurface.hpp \
@@ -18,7 +17,6 @@ this_include_HEADERS = \
 
 libInflation_la_SOURCES = \
     cpicapfloortermpricesurface.cpp \
-    cpioptionletvolatilitystructure.cpp \
     yoycapfloortermpricesurface.cpp \
     yoyoptionlethelpers.cpp
 

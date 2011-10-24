@@ -16248,9 +16248,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit1621]
-FileName=ql\experimental\inflation\cpioptionletvolatilitystructure.cpp
+FileName=ql\termstructures\volatility\inflation\cpivolatilitystructure.cpp
 CompileCpp=1
-Folder=experimental/inflation
+Folder=termstructures/volatility/inflation
 Compile=1
 Link=1
 Priority=1000
@@ -16258,9 +16258,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit1622]
-FileName=ql\experimental\inflation\cpioptionletvolatilitystructure.hpp
+FileName=ql\termstructures\volatility\inflation\cpivolatilitystructure.hpp
 CompileCpp=1
-Folder=experimental/inflation
+Folder=termstructures/volatility/inflation
 Compile=1
 Link=1
 Priority=1000

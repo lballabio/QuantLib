@@ -18,13 +18,11 @@
  */
 
 #include <ql/cashflows/cpicouponpricer.hpp>
-#include <ql/experimental/inflation/cpioptionletvolatilitystructure.hpp>
-
 
 namespace QuantLib {
 	
     CPICouponPricer::
-    CPICouponPricer(const Handle<CPIOptionletVolatilitySurface>& capletVol)
+    CPICouponPricer(const Handle<CPIVolatilitySurface>& capletVol)
     : capletVol_(capletVol) {
 
         if( !capletVol_.empty() ) registerWith(capletVol_);
@@ -32,7 +30,7 @@ namespace QuantLib {
 
 
     void CPICouponPricer::setCapletVolatility(
-       const Handle<CPIOptionletVolatilitySurface>& capletVol) {
+       const Handle<CPIVolatilitySurface>& capletVol) {
         QL_REQUIRE(!capletVol.empty(),"empty capletVol handle")
         capletVol_ = capletVol;
         registerWith(capletVol_);

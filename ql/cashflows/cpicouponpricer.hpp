@@ -27,9 +27,8 @@
 #include <ql/cashflow.hpp>
 #include <ql/option.hpp>
 #include <ql/cashflows/inflationcouponpricer.hpp>
-
 #include <ql/cashflows/cpicoupon.hpp>
-#include <ql/experimental/inflation/cpioptionletvolatilitystructure.hpp>
+#include <ql/termstructures/volatility/inflation/cpivolatilitystructure.hpp>
 
 namespace QuantLib {
 
@@ -39,15 +38,15 @@ namespace QuantLib {
     */
     class CPICouponPricer : public InflationCouponPricer {
     public:
-        CPICouponPricer(const Handle<CPIOptionletVolatilitySurface>& capletVol
-                                 = Handle<CPIOptionletVolatilitySurface>());
+        CPICouponPricer(const Handle<CPIVolatilitySurface>& capletVol
+                                 = Handle<CPIVolatilitySurface>());
 
-        virtual Handle<CPIOptionletVolatilitySurface> capletVolatility() const{
+        virtual Handle<CPIVolatilitySurface> capletVolatility() const{
             return capletVol_;
         }
 
         virtual void setCapletVolatility(
-            const Handle<CPIOptionletVolatilitySurface>& capletVol);
+            const Handle<CPIVolatilitySurface>& capletVol);
 
 
         //! \name InflationCouponPricer interface
@@ -74,7 +73,7 @@ namespace QuantLib {
         virtual Rate adjustedFixing(Rate fixing = Null<Rate>()) const;
 
         //! data
-        Handle<CPIOptionletVolatilitySurface> capletVol_;
+        Handle<CPIVolatilitySurface> capletVol_;
         const CPICoupon* coupon_;
         Real gearing_;
         Spread spread_;

@@ -17,12 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-/*! \file cpioptionletvolatilitystructure.hpp
+/*! \file cpivolatilitystructure.hpp
     \brief zero inflation (i.e. CPI/RPI/HICP/etc.) volatility structures
  */
 
-#ifndef quantlib_cpioptionletvolatilitystructures_hpp
-#define quantlib_cpioptionletvolatilitystructures_hpp
+#ifndef quantlib_cpi_volatility_structure_hpp
+#define quantlib_cpi_volatility_structure_hpp
 
 #include <ql/termstructures/voltermstructure.hpp>
 #include <ql/math/interpolation.hpp>
@@ -30,37 +30,34 @@
 
 namespace QuantLib {
 
-    /*! Abstract interface ... no data, only results, CPI volatility is always w.r.t. 
-	    some base date.
-
-        Basically used to change the BlackVariance() methods to
-        totalVariance.  Also deal with lagged observations of an index
+    //! zero inflation (i.e. CPI/RPI/HICP/etc.) volatility structures
+    /*! Abstract interface. CPI volatility is always with respect to
+	    some base date.  Also deal with lagged observations of an index
         with a (usually different) availability lag.
-	 
-		\todo so far is exact copy of yoy inflation vol code
-		      - at least for the constant version.
     */
-    class CPIOptionletVolatilitySurface : public VolatilityTermStructure {
-    public:
-        //! \name Constructor
-        //! calculate the reference date based on the global evaluation date
-        CPIOptionletVolatilitySurface(Natural settlementDays,
-                                      const Calendar&,
-                                      BusinessDayConvention bdc,
-                                      const DayCounter& dc,
-                                      const Period& observationLag,
-                                      Frequency frequency,
-                                      bool indexIsInterpolated);
+    class CPIVolatilitySurface : public VolatilityTermStructure {
+      public:
+        /*! calculates the reference date based on the global
+            evaluation date.
+        */
+        CPIVolatilitySurface(Natural settlementDays,
+                             const Calendar&,
+                             BusinessDayConvention bdc,
+                             const DayCounter& dc,
+                             const Period& observationLag,
+                             Frequency frequency,
+                             bool indexIsInterpolated);
 
-        virtual ~CPIOptionletVolatilitySurface() {}
+        //! \name Volatility
+        /*! by default, inflation is observed with the lag
+            of the term structure.
 
-        //! \name Volatility (only)
+            Because inflation is highly linked to dates (for
+            interpolation, periods, etc) time-based overload of the
+            methods are not provided.
+        */
         //@{
-        //! Returns the volatility for a given maturity date and strike rate
-        //! that observes inflation, by default, with the observation lag
-        //! of the term structure.
-        //! Because inflation is highly linked to dates (for interpolation, periods, etc)
-        //! we do NOT provide a time version.
+        //! Returns the volatility for a given maturity date and strike rate.
         Volatility volatility(const Date& maturityDate,
                               Rate strike,
                               const Period &obsLag = Period(-1,Days),
@@ -71,37 +68,49 @@ namespace QuantLib {
                               const Period &obsLag = Period(-1,Days),
                               bool extrapolate = false) const;
 
-        //! Returns the total integrated variance for a given exercise date and strike rate.
+        //! Returns the total integrated variance for a given exercise
+        //! date and strike rate.
         /*! Total integrated variance is useful because it scales out
-         t for the optionlet pricing formulae.  Note that it is
-         called "total" because the surface does not know whether
-         it represents Black, Bachelier or Displaced Diffusion
-         variance.  These are virtual so alternate connections
-         between const vol and total var are possible.
-
-         Because inflation is highly linked to dates (for interpolation, periods, etc)
-         we do NOT provide a time version
-         */
+            t for the optionlet pricing formulae.  Note that it is
+            called "total" because the surface does not know whether
+            it represents Black, Bachelier or Displaced Diffusion
+            variance.  These are virtual so alternate connections
+            between const vol and total var are possible.
+        */
         virtual Volatility totalVariance(const Date& exerciseDate,
                                          Rate strike,
                                          const Period &obsLag = Period(-1,Days),
                                          bool extrapolate = false) const;
-        //! returns the total integrated variance for a given option tenor and strike rate
+        //! returns the total integrated variance for a given option
+        //! tenor and strike rate.
         virtual Volatility totalVariance(const Period& optionTenor,
                                          Rate strike,
                                          const Period &obsLag = Period(-1,Days),
                                          bool extrapolate = false) const;
+        //@}
 
-        //! The TS observes with a lag that is usually different from the
-        //! availability lag of the index.  An inflation rate is given,
-        //! by default, for the maturity requested assuming this lag.
+        //! \name Inspectors
+        //@{
+        /*! The term structure observes with a lag that is usually
+            different from the availability lag of the index.  An
+            inflation rate is given, by default, for the maturity
+            requested assuming this lag.
+        */
         virtual Period observationLag() const { return observationLag_; }
         virtual Frequency frequency() const { return frequency_; }
-        virtual bool indexIsInterpolated() const { return indexIsInterpolated_; }
+        virtual bool indexIsInterpolated() const {
+            return indexIsInterpolated_;
+        }
         virtual Date baseDate() const;
         //! base date will be in the past because of observation lag
         virtual Time timeFromBase(const Date &date,
                                   const Period& obsLag = Period(-1,Days)) const;
+        // acts as zero time value for boostrapping
+        virtual Volatility baseLevel() const {
+            QL_REQUIRE(baseLevel_ != Null<Volatility>(),
+                       "Base volatility, for baseDate(), not set.");
+            return baseLevel_;
+        }
         //@}
 
         //! \name Limits
@@ -111,28 +120,18 @@ namespace QuantLib {
         //! the maximum strike for which the term structure can return vols
         virtual Real maxStrike() const = 0;
         //@}
-
-        // acts as zero time value for boostrapping
-        virtual Volatility baseLevel() const {
-            QL_REQUIRE(baseLevel_ != Null<Volatility>(),
-                       "Base volatility, for baseDate(), not set.");
-            return baseLevel_;
-        }
-
-    protected:
-        virtual void checkRange(const Date &, Rate strike, bool extrapolate) const;
+      protected:
+        virtual void checkRange(const Date&, Rate strike, bool extrapolate) const;
         virtual void checkRange(Time, Rate strike, bool extrapolate) const;
 
-        //! Implements the actual volatility surface calculation in
-        //! derived classes e.g. bilinear interpolation.  N.B. does
-        //! not derive the surface.
+        /*! Implements the actual volatility surface calculation in
+            derived classes e.g. bilinear interpolation.  N.B. does
+            not derive the surface.
+        */
         virtual Volatility volatilityImpl(Time length,
                                           Rate strike) const = 0;
 
-        // acts as zero time value for boostrapping
-        virtual void setBaseLevel(Volatility v) { baseLevel_ = v; }
         mutable Volatility baseLevel_;
-
         // so you do not need an index
         Period observationLag_;
         Frequency frequency_;
@@ -141,9 +140,8 @@ namespace QuantLib {
 
 
     //! Constant surface, no K or T dependence.
-    class ConstantCPIOptionletVolatility
-    : public CPIOptionletVolatilitySurface {
-    public:
+    class ConstantCPIOptionletVolatility : public CPIVolatilitySurface {
+      public:
         //! \name Constructor
         //@{
         //! calculate the reference date based on the global evaluation date
@@ -177,9 +175,7 @@ namespace QuantLib {
         Rate minStrike_, maxStrike_;
     };
 
-
-
-} // namespace QuantLib
+}
 
 #endif
 

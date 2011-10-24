@@ -2,7 +2,6 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/experimental/inflation/cpicapfloortermpricesurface.hpp>
-#include <ql/experimental/inflation/cpioptionletvolatilitystructure.hpp>
 #include <ql/experimental/inflation/genericindexes.hpp>
 #include <ql/experimental/inflation/interpolatedyoyoptionletstripper.hpp>
 #include <ql/experimental/inflation/kinterpolatedyoyoptionletvolatilitysurface.hpp>
