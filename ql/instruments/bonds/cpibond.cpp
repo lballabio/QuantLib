@@ -2,16 +2,16 @@
 
 /*
  Copyright (C) 2010, 2011 Chris Kenyon
- 
+
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
- 
+
  QuantLib is free software: you can redistribute it and/or modify it
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
  <http://quantlib.org/license.shtml>.
- 
+
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
@@ -34,48 +34,48 @@
 namespace QuantLib {
 
     CPIbond::CPIbond(Natural settlementDays,
-					 Real faceAmount,
-					 bool growthOnly,
-					 Real baseCPI,
-					 const Period& observationLag,
-					 const boost::shared_ptr<ZeroInflationIndex>& cpiIndex,
-					 CPI::InterpolationType observationInterpolation,
-					 const Schedule& schedule,
-					 const std::vector<Rate>& fixedRate,
-					 const DayCounter& accrualDayCounter,
-					 BusinessDayConvention paymentConvention,
-					 const Date& issueDate)
+                     Real faceAmount,
+                     bool growthOnly,
+                     Real baseCPI,
+                     const Period& observationLag,
+                     const boost::shared_ptr<ZeroInflationIndex>& cpiIndex,
+                     CPI::InterpolationType observationInterpolation,
+                     const Schedule& schedule,
+                     const std::vector<Rate>& fixedRate,
+                     const DayCounter& accrualDayCounter,
+                     BusinessDayConvention paymentConvention,
+                     const Date& issueDate)
     : Bond(settlementDays, schedule.calendar(), issueDate),
-	frequency_(schedule.tenor().frequency()),
-	dayCounter_(accrualDayCounter),
-	growthOnly_(growthOnly),
-	baseCPI_(baseCPI),
-	observationLag_(observationLag),
-	cpiIndex_(cpiIndex),
-	observationInterpolation_(observationInterpolation) 
-	{
-		
+    frequency_(schedule.tenor().frequency()),
+    dayCounter_(accrualDayCounter),
+    growthOnly_(growthOnly),
+    baseCPI_(baseCPI),
+    observationLag_(observationLag),
+    cpiIndex_(cpiIndex),
+    observationInterpolation_(observationInterpolation)
+    {
+
         maturityDate_ = schedule.endDate();
-		
+
         // a CPIleg know about zero legs and inclusion of base inflation notional
-		cashflows_ = CPILeg(schedule, cpiIndex_,  
-							baseCPI_, observationLag_)
-		.withNotionals(faceAmount)
-		.withFixedRates(fixedRate)
-		.withPaymentDayCounter(accrualDayCounter)
-		.withPaymentAdjustment(paymentConvention)
-		.withObservationInterpolation(observationInterpolation_)
-		.withSubtractInflationNominal(growthOnly_);
-		
-		registerWith(cpiIndex_);
+        cashflows_ = CPILeg(schedule, cpiIndex_,
+                            baseCPI_, observationLag_)
+        .withNotionals(faceAmount)
+        .withFixedRates(fixedRate)
+        .withPaymentDayCounter(accrualDayCounter)
+        .withPaymentAdjustment(paymentConvention)
+        .withObservationInterpolation(observationInterpolation_)
+        .withSubtractInflationNominal(growthOnly_);
+
+        registerWith(cpiIndex_);
         Leg::const_iterator i;
         for (i = cashflows_.begin(); i < cashflows_.end(); ++i) {
             registerWith(*i);
-		}
+        }
     };
 
-	
-	
+
+
 
 };
 

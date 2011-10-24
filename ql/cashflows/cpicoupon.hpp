@@ -39,7 +39,7 @@ namespace QuantLib {
             Linear     //!< linearly between bracketing fixings
         };
     };
-    
+
 
     class CPICouponPricer;
 
@@ -76,7 +76,7 @@ namespace QuantLib {
                   Spread spread = 0.0,
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date());
-        
+
         //! \name Inspectors
         //@{
         //! fixed rate that will be inflated by the index ratio
@@ -101,7 +101,7 @@ namespace QuantLib {
         //! index used
         boost::shared_ptr<ZeroInflationIndex> cpiIndex() const;
         //@}
-        
+
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
@@ -111,7 +111,7 @@ namespace QuantLib {
         Real fixedRate_;
         Spread spread_;
         CPI::InterpolationType observationInterpolation_;
-        
+
         bool checkPricerImpl(
                        const boost::shared_ptr<InflationCouponPricer>&) const;
         // use to calculate for fixing date, allows change of
@@ -119,7 +119,7 @@ namespace QuantLib {
         Rate indexFixing(const Date &) const;
     };
 
-	
+
     //! Cash flow paying the performance of a CPI (zero inflation) index
     /*! It is NOT a coupon, i.e. no accruals. */
     class CPICashFlow : public IndexedCashFlow {
@@ -127,45 +127,45 @@ namespace QuantLib {
         CPICashFlow(Real notional,
                     const boost::shared_ptr<ZeroInflationIndex>& index,
                     const Date& baseDate,
-                    Real baseFixing, 
+                    Real baseFixing,
                     const Date& fixingDate,
                     const Date& paymentDate,
                     bool growthOnly = false,
-                    CPI::InterpolationType interpolation = CPI::AsIndex, 
+                    CPI::InterpolationType interpolation = CPI::AsIndex,
                     const Frequency& frequency = QuantLib::NoFrequency)
         : IndexedCashFlow(notional, index, baseDate, fixingDate,
                           paymentDate, growthOnly),
-		  baseFixing_(baseFixing), interpolation_(interpolation),
+          baseFixing_(baseFixing), interpolation_(interpolation),
           frequency_(frequency) {
-			QL_REQUIRE(fabs(baseFixing_)>1e-16,
+            QL_REQUIRE(fabs(baseFixing_)>1e-16,
                        "|baseFixing|<1e-16, future divide-by-zero error");
-			if (interpolation_ != CPI::AsIndex) {
-				QL_REQUIRE(frequency_ != QuantLib::NoFrequency,
+            if (interpolation_ != CPI::AsIndex) {
+                QL_REQUIRE(frequency_ != QuantLib::NoFrequency,
                            "non-index interpolation w/o frequency");
-			}
-		}
-		
-		//! value used on base date
+            }
+        }
+
+        //! value used on base date
         /*! This does not have to agree with index on that date. */
-		virtual Real baseFixing() const;
-		//! you may not have a valid date
-		virtual Date baseDate() const;
-		
-		//! do you want linear/constant/as-index interpolation of future data?  
-		virtual CPI::InterpolationType interpolation() const {
+        virtual Real baseFixing() const;
+        //! you may not have a valid date
+        virtual Date baseDate() const;
+
+        //! do you want linear/constant/as-index interpolation of future data?
+        virtual CPI::InterpolationType interpolation() const {
             return interpolation_;
         }
-		virtual Frequency frequency() const { return frequency_; }
-        
-		//! redefined to use baseFixing() and interpolation
-		virtual Real amount() const;
-      protected:
-		Real baseFixing_;
-        CPI::InterpolationType interpolation_;
-		Frequency frequency_;
-	};
+        virtual Frequency frequency() const { return frequency_; }
 
-    
+        //! redefined to use baseFixing() and interpolation
+        virtual Real amount() const;
+      protected:
+        Real baseFixing_;
+        CPI::InterpolationType interpolation_;
+        Frequency frequency_;
+    };
+
+
     //! Helper class building a sequence of capped/floored CPI coupons.
     /*! Also allowing for the inflated notional at the end...
         especially if there is only one date in the schedule.
@@ -216,15 +216,15 @@ namespace QuantLib {
 
 
     // inline definitions
-    
+
     inline Real CPICoupon::fixedRate() const {
         return fixedRate_;
     }
-    
+
     inline Real CPICoupon::spread() const {
         return spread_;
     }
-    
+
     inline Rate CPICoupon::adjustedFixing() const {
         return (rate()-spread())/fixedRate();
     }
@@ -232,19 +232,19 @@ namespace QuantLib {
     inline Rate CPICoupon::indexFixing() const {
         return indexFixing(fixingDate());
     }
-    
+
     inline Rate CPICoupon::baseCPI() const {
         return baseCPI_;
     }
-    
+
     inline CPI::InterpolationType CPICoupon::observationInterpolation() const {
         return observationInterpolation_;
     }
-    
+
     inline Rate CPICoupon::indexObservation(const Date& onDate) const {
         return indexFixing(onDate);
     }
-    
+
     inline boost::shared_ptr<ZeroInflationIndex> CPICoupon::cpiIndex() const {
         return boost::dynamic_pointer_cast<ZeroInflationIndex>(index());
     }
