@@ -6158,14 +6158,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\pricingengines\inflation\cpicapfloorengines.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\pricingengines\inflation\cpicapfloorengines.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\pricingengines\inflation\inflationcapfloorengines.cpp"
 					>
 				</File>
@@ -8011,6 +8003,14 @@
 				>
 				<File
 					RelativePath=".\ql\experimental\inflation\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\cpicapfloorengines.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\inflation\cpicapfloorengines.hpp"
 					>
 				</File>
 				<File

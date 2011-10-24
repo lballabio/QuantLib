@@ -45,7 +45,7 @@
 #include <ql/instruments/cpicapfloor.hpp>
 
 #include <ql/experimental/inflation/cpicapfloortermpricesurface.hpp>
-#include <ql/pricingengines/inflation/cpicapfloorengines.hpp>
+#include <ql/experimental/inflation/cpicapfloorengines.hpp>
 
 
 using namespace QuantLib;

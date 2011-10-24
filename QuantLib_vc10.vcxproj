@@ -268,6 +268,7 @@
     <ClInclude Include="ql\experimental\finitedifferences\fdsimpleextoustorageengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdsimpleklugeextouvppengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\vanillavppoption.hpp" />
+    <ClInclude Include="ql\experimental\inflation\cpicapfloorengines.hpp" />
     <ClInclude Include="ql\experimental\inflation\cpicapfloortermpricesurface.hpp" />
     <ClInclude Include="ql\experimental\processes\extouwithjumpsprocess.hpp" />
     <ClInclude Include="ql\experimental\processes\gemanroncoroniprocess.hpp" />
@@ -822,7 +823,6 @@
     <ClInclude Include="ql\pricingengines\barrier\fdhestonbarrierengine.hpp" />
     <ClInclude Include="ql\pricingengines\barrier\fdhestonrebateengine.hpp" />
     <ClInclude Include="ql\pricingengines\basket\fd2dblackscholesvanillaengine.hpp" />
-    <ClInclude Include="ql\pricingengines\inflation\cpicapfloorengines.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdbatesvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdblackscholesvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdhestonhullwhitevanillaengine.hpp" />
@@ -1359,6 +1359,7 @@
     <ClCompile Include="ql\experimental\finitedifferences\fdsimpleextoustorageengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdsimpleklugeextouvppengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\vanillavppoption.cpp" />
+    <ClCompile Include="ql\experimental\inflation\cpicapfloorengines.cpp" />
     <ClCompile Include="ql\experimental\inflation\cpicapfloortermpricesurface.cpp" />
     <ClCompile Include="ql\experimental\processes\extouwithjumpsprocess.cpp" />
     <ClCompile Include="ql\experimental\processes\gemanroncoroniprocess.cpp" />
@@ -1715,7 +1716,6 @@
     <ClCompile Include="ql\pricingengines\barrier\fdhestonbarrierengine.cpp" />
     <ClCompile Include="ql\pricingengines\barrier\fdhestonrebateengine.cpp" />
     <ClCompile Include="ql\pricingengines\basket\fd2dblackscholesvanillaengine.cpp" />
-    <ClCompile Include="ql\pricingengines\inflation\cpicapfloorengines.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\fdbatesvanillaengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\fdblackscholesvanillaengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\fdhestonhullwhitevanillaengine.cpp" />

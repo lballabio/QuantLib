@@ -17898,9 +17898,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit1786]
-FileName=ql\pricingengines\inflation\cpicapfloorengines.hpp
+FileName=ql\experimental\inflation\cpicapfloorengines.hpp
 CompileCpp=1
-Folder=pricingengines/inflation
+Folder=experimental/inflation
 Compile=1
 Link=1
 Priority=1000
@@ -17908,9 +17908,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit1787]
-FileName=ql\pricingengines\inflation\cpicapfloorengines.cpp
+FileName=ql\experimental\inflation\cpicapfloorengines.cpp
 CompileCpp=1
-Folder=pricingengines/inflation
+Folder=experimental/inflation
 Compile=1
 Link=1
 Priority=1000

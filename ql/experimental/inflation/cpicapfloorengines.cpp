@@ -27,7 +27,7 @@
 
 #include <ql/time/daycounters/actualactual.hpp>
 
-#include <ql/pricingengines/inflation/cpicapfloorengines.hpp>
+#include <ql/experimental/inflation/cpicapfloorengines.hpp>
 #include <ql/experimental/inflation/cpicapfloortermpricesurface.hpp>
 
 

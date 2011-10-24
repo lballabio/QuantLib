@@ -3240,9 +3240,6 @@
     <ClInclude Include="ql\instruments\bonds\cpibond.hpp">
       <Filter>instruments\bonds</Filter>
     </ClInclude>
-    <ClInclude Include="ql\pricingengines\inflation\cpicapfloorengines.hpp">
-      <Filter>pricingengines\inflation</Filter>
-    </ClInclude>
     <ClInclude Include="ql\experimental\finitedifferences\fdextoujumpvanillaengine.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
@@ -3278,6 +3275,9 @@
     </ClInclude>
     <ClInclude Include="ql\experimental\processes\gemanroncoroniprocess.hpp">
       <Filter>experimental\processes</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\inflation\cpicapfloorengines.hpp">
+      <Filter>experimental\inflation</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\inflation\cpicapfloortermpricesurface.hpp">
       <Filter>experimental\inflation</Filter>
@@ -5382,9 +5382,6 @@
     <ClCompile Include="ql\instruments\bonds\cpibond.cpp">
       <Filter>instruments\bonds</Filter>
     </ClCompile>
-    <ClCompile Include="ql\pricingengines\inflation\cpicapfloorengines.cpp">
-      <Filter>pricingengines\inflation</Filter>
-    </ClCompile>
     <ClCompile Include="ql\experimental\finitedifferences\fdextoujumpvanillaengine.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
@@ -5408,6 +5405,9 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\processes\gemanroncoroniprocess.cpp">
       <Filter>experimental\processes</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\inflation\cpicapfloorengines.cpp">
+      <Filter>experimental\inflation</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\inflation\cpicapfloortermpricesurface.cpp">
       <Filter>experimental\inflation</Filter>
