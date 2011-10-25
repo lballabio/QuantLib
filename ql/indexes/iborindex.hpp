@@ -49,11 +49,6 @@ namespace QuantLib {
         Date maturityDate(const Date& valueDate) const;
         Rate forecastFixing(const Date& fixingDate) const;
         // @}
-        //! overload to avoid date/time (re)calculation
-        Rate forecastFixing(const Date& valueDate,
-                            const Date& endDate,
-                            Time t) const;
-        // @}
         //! \name Inspectors
         //@{
         BusinessDayConvention businessDayConvention() const;
@@ -71,6 +66,23 @@ namespace QuantLib {
         BusinessDayConvention convention_;
         Handle<YieldTermStructure> termStructure_;
         bool endOfMonth_;
+      private:
+        // overload to avoid date/time (re)calculation
+        /* This can be called with cached coupon dates (and it does
+           give quite a performance boost to coupon calculations) but
+           is potentially misleading: by passing the wrong dates, one
+           can ask a 6-months index for a 1-year fixing.
+
+           For that reason, we're leaving this method private and
+           we're declaring the IborCoupon class (which uses it) as a
+           friend.  Should the need arise, we might promote it to
+           public, but before doing that I'd think hard whether we
+           have any other way to get the same results.
+        */
+        Rate forecastFixing(const Date& valueDate,
+                            const Date& endDate,
+                            Time t) const;
+        friend class IborCoupon;
     };
 
 
