@@ -103,6 +103,7 @@ namespace QuantLib {
         /*! returns the redemption, if only one is defined */
         const boost::shared_ptr<CashFlow>& redemption() const;
 
+        Date startDate() const;
         Date maturityDate() const;
         Date issueDate() const;
 

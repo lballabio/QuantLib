@@ -146,6 +146,10 @@ namespace QuantLib {
         return redemptions_.back();
     }
 
+    Date Bond::startDate() const {
+        return BondFunctions::startDate(*this);
+    }
+
     Date Bond::maturityDate() const {
         if (maturityDate_!=Null<Date>())
             return maturityDate_;
@@ -345,7 +349,6 @@ namespace QuantLib {
         cashflows_.push_back(redemption);
         redemptions_.push_back(redemption);
     }
-
 
     void Bond::calculateNotionalsFromCashflows() {
         notionalSchedule_.clear();
