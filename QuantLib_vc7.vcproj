@@ -5971,7 +5971,10 @@
 					RelativePath=".\ql\time\daycounters\actualactual.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\time\daycounters\all.hpp">
+					RelativePath=".\ql\time\daycounters\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\daycounters\business252.cpp">
 				</File>
 				<File
 					RelativePath=".\ql\time\daycounters\business252.hpp">

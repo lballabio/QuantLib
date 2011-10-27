@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=1798
+UnitCount=1799
 Type=2
 Ver=1
 ObjFiles=
@@ -18026,3 +18026,14 @@ Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
+
+[Unit1799]
+FileName=ql\time\daycounters\business252.cpp
+CompileCpp=1
+Folder=time/daycounters
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+

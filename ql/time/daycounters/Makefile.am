@@ -14,6 +14,7 @@ this_include_HEADERS = \
 
 libDayCounters_la_SOURCES = \
     actualactual.cpp \
+    business252.cpp \
 	simpledaycounter.cpp \
     thirty360.cpp
 

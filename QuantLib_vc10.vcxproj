@@ -1910,6 +1910,7 @@
     <ClCompile Include="ql\time\calendars\unitedstates.cpp" />
     <ClCompile Include="ql\time\calendars\weekendsonly.cpp" />
     <ClCompile Include="ql\time\daycounters\actualactual.cpp" />
+    <ClCompile Include="ql\time\daycounters\business252.cpp" />
     <ClCompile Include="ql\time\daycounters\simpledaycounter.cpp" />
     <ClCompile Include="ql\time\daycounters\thirty360.cpp" />
     <ClCompile Include="ql\legacy\libormarketmodels\lfmcovarparam.cpp" />

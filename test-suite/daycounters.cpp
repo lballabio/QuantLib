@@ -237,6 +237,9 @@ void DayCounterTest::testBusiness252() {
     testDates.push_back(Date(17,March,2006));
     testDates.push_back(Date(15,May,2006));
     testDates.push_back(Date(26,July,2006));
+    testDates.push_back(Date(28,June,2007));
+    testDates.push_back(Date(16,September,2009));
+    testDates.push_back(Date(26,July,2016));
 
     Time expected[] = {
         0.0039682539683,
@@ -249,7 +252,10 @@ void DayCounterTest::testBusiness252() {
         0.1666666666667,
         -0.1507936507937,
         0.1507936507937,
-        0.2023809523810
+        0.2023809523810,
+        0.912698412698,
+        2.214285714286,
+        6.84126984127
         };
 
     DayCounter dayCounter1 = Business252(Brazil());
@@ -261,7 +267,7 @@ void DayCounterTest::testBusiness252() {
         if (std::fabs(calculated-expected[i-1]) > 1.0e-12) {
                 BOOST_ERROR("from " << testDates[i-1]
                             << " to " << testDates[i] << ":\n"
-                            << std::setprecision(12)
+                            << std::setprecision(14)
                             << "    calculated: " << calculated << "\n"
                             << "    expected:   " << expected[i-1]);
         }
@@ -274,7 +280,7 @@ void DayCounterTest::testBusiness252() {
         if (std::fabs(calculated-expected[i-1]) > 1.0e-12) {
                 BOOST_ERROR("from " << testDates[i-1]
                             << " to " << testDates[i] << ":\n"
-                            << std::setprecision(12)
+                            << std::setprecision(14)
                             << "    calculated: " << calculated << "\n"
                             << "    expected:   " << expected[i-1]);
         }

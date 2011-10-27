@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Piter Dias
+ Copyright (C) 2011 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -38,21 +39,13 @@ namespace QuantLib {
           private:
             Calendar calendar_;
           public:
-            std::string name() const {
-                std::ostringstream out;
-                out << "Business/252(" << calendar_.name() << ")";
-                return out.str();
-            }
+            std::string name() const;
             BigInteger dayCount(const Date& d1,
-                                const Date& d2) const {
-                return calendar_.businessDaysBetween(d1, d2);
-            }
+                                const Date& d2) const;
             Time yearFraction(const Date& d1,
                               const Date& d2,
                               const Date&,
-                              const Date&) const {
-                return dayCount(d1, d2)/252.0;
-            }
+                              const Date&) const;
             Impl(Calendar c) { calendar_ = c; }
         };
       public:

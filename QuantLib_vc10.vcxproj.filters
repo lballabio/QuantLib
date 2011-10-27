@@ -4979,6 +4979,9 @@
     <ClCompile Include="ql\time\daycounters\actualactual.cpp">
       <Filter>time\daycounters</Filter>
     </ClCompile>
+    <ClCompile Include="ql\time\daycounters\business252.cpp">
+      <Filter>time\daycounters</Filter>
+    </ClCompile>
     <ClCompile Include="ql\time\daycounters\simpledaycounter.cpp">
       <Filter>time\daycounters</Filter>
     </ClCompile>

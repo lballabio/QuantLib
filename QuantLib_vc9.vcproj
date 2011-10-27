@@ -6658,6 +6658,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\time\daycounters\business252.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\time\daycounters\business252.hpp"
 					>
 				</File>
