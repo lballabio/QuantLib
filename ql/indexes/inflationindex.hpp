@@ -162,6 +162,7 @@ namespace QuantLib {
                            const Handle<ZeroInflationTermStructure>& h) const;
         //@}
       private:
+        bool needsForecast(const Date& fixingDate) const;
         Rate forecastFixing(const Date& fixingDate) const;
         Handle<ZeroInflationTermStructure> zeroInflation_;
     };

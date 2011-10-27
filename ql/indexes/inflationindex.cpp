@@ -79,43 +79,29 @@ namespace QuantLib {
 
     Rate ZeroInflationIndex::fixing(const Date& aFixingDate,
                                     bool /*forecastTodaysFixing*/) const {
-
-        // Stored fixings are always non-interpolated.
-        // If an interpolated fixing is required then
-        // the availability lag + one inflation period
-        // must have passsed to use historical fixings
-        // (because you need the next one to interpolate).
-        // The interpolation is calculated (linearly) on demand.
-
-        Date today = Settings::instance().evaluationDate();
-        Date todayMinusLag = today - availabilityLag_;
-
-        std::pair<Date,Date> lim = inflationPeriod(todayMinusLag, frequency_);
-        Date historicalFixingKnown = lim.first-1;
-        Date fixingDateNeeded = aFixingDate;
-        if (interpolated_) { // need the next one too
-            fixingDateNeeded = fixingDateNeeded + Period(frequency_);
-        }
-
-        if (fixingDateNeeded <= historicalFixingKnown) {
-
+        if (!needsForecast(aFixingDate)) {
             const TimeSeries<Real>& ts = timeSeries();
             Real pastFixing = ts[aFixingDate];
             QL_REQUIRE(pastFixing != Null<Real>(),
                        "Missing " << name() << " fixing for " << aFixingDate);
             Real theFixing = pastFixing;
-
             if (interpolated_) {
                 // fixings stored flat & for every day
-                Date fixingDate2 = aFixingDate + Period(frequency_);
-                Real pastFixing2 = ts[fixingDate2];
-                QL_REQUIRE(pastFixing2 != Null<Real>(),
-                           "Missing " << name() << " fixing for " << fixingDate2);
-                // now linearly interpolate
-                std::pair<Date,Date> lim = inflationPeriod(aFixingDate, frequency_);
-                Real daysInPeriod = lim.second+1 - lim.first;
-                theFixing = pastFixing
-                    + (pastFixing2-pastFixing)*(aFixingDate-lim.first)/daysInPeriod;
+                std::pair<Date,Date> lim =
+                    inflationPeriod(aFixingDate, frequency_);
+                if (aFixingDate == lim.first) {
+                    // we don't actually need the next fixing
+                    theFixing = pastFixing;
+                } else {
+                    Date fixingDate2 = aFixingDate + Period(frequency_);
+                    Real pastFixing2 = ts[fixingDate2];
+                    QL_REQUIRE(pastFixing2 != Null<Real>(),
+                               "Missing " << name() << " fixing for " << fixingDate2);
+                    // now linearly interpolate
+                    Real daysInPeriod = lim.second+1 - lim.first;
+                    theFixing = pastFixing
+                        + (pastFixing2-pastFixing)*(aFixingDate-lim.first)/daysInPeriod;
+                }
             }
             return theFixing;
         } else {
@@ -124,10 +110,47 @@ namespace QuantLib {
     }
 
 
-    Rate ZeroInflationIndex::forecastFixing(const Date& fixingDate) const {
+    bool ZeroInflationIndex::needsForecast(const Date& fixingDate) const {
 
+        // Stored fixings are always non-interpolated.
+        // If an interpolated fixing is required then
+        // the availability lag + one inflation period
+        // must have passed to use historical fixings
+        // (because you need the next one to interpolate).
+        // The interpolation is calculated (linearly) on demand.
+
+        Date today = Settings::instance().evaluationDate();
+        Date todayMinusLag = today - availabilityLag_;
+
+        Date historicalFixingKnown =
+            inflationPeriod(todayMinusLag, frequency_).first-1;
+        Date latestNeededDate = fixingDate;
+
+        if (interpolated_) { // might need the next one too
+            std::pair<Date,Date> p = inflationPeriod(fixingDate, frequency_);
+            if (fixingDate > p.first)
+                latestNeededDate += Period(frequency_);
+        }
+
+        if (latestNeededDate <= historicalFixingKnown) {
+            // the fixing date is well before the availability lag, so
+            // we know that fixings were provided.
+            return false;
+        } else {
+            // we're not sure, but the fixing might be there so we
+            // check.  Todo: check which fixings are not possible, to
+            // avoid using fixings in the future
+            Real f = timeSeries()[latestNeededDate];
+            return (f == Null<Real>());
+        }
+    }
+
+
+    Rate ZeroInflationIndex::forecastFixing(const Date& fixingDate) const {
         // the term structure is relative to the fixing value at the base date.
         Date baseDate = zeroInflation_->baseDate();
+        QL_REQUIRE(!needsForecast(baseDate),
+                   name() << " index fixing at base date is not available");
         Real baseFixing = fixing(baseDate);
         Date effectiveFixingDate;
         if (interpolated()) {

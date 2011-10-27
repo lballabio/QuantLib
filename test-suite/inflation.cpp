@@ -94,6 +94,7 @@ void InflationTest::testZeroIndex() {
     BOOST_MESSAGE("Testing zero inflation indices...");
 
     SavedSettings backup;
+    IndexHistoryCleaner cleaner;
 
     EUHICP euhicp(true);
     if (euhicp.name() != "EU HICP"
@@ -143,11 +144,11 @@ void InflationTest::testZeroIndex() {
         194.1, 193.4, 194.2, 195.0, 196.5, 197.7,
         198.5, 198.5, 199.2, 200.1, 200.4, 201.1,
         202.7, 201.6, 203.1, 204.4, 205.4, 206.2,
-        207.3, 206.1, -999.0 };
+        207.3, 206.1 };
 
     bool interp = false;
     boost::shared_ptr<UKRPI> iir(new UKRPI(interp));
-    for (Size i=0; i<rpiSchedule.size();i++) {
+    for (Size i=0; i<LENGTH(fixData); i++) {
         iir->addFixing(rpiSchedule[i], fixData[i]);
     }
 
@@ -179,6 +180,7 @@ void InflationTest::testZeroTermStructure() {
     BOOST_MESSAGE("Testing zero inflation term structure...");
 
     SavedSettings backup;
+    IndexHistoryCleaner cleaner;
 
     // try the Zero UK
     Calendar calendar = UnitedKingdom();
@@ -200,12 +202,12 @@ void InflationTest::testZeroTermStructure() {
         194.1, 193.4, 194.2, 195.0, 196.5, 197.7,
         198.5, 198.5, 199.2, 200.1, 200.4, 201.1,
         202.7, 201.6, 203.1, 204.4, 205.4, 206.2,
-        207.3, 206.1,  -999.0 };
+        207.3};
 
     RelinkableHandle<ZeroInflationTermStructure> hz;
     bool interp = false;
     boost::shared_ptr<UKRPI> iiUKRPI(new UKRPI(interp, hz));
-    for (Size i=0; i<rpiSchedule.size();i++) {
+    for (Size i=0; i<LENGTH(fixData); i++) {
         iiUKRPI->addFixing(rpiSchedule[i], fixData[i]);
     }
 
@@ -501,7 +503,7 @@ void InflationTest::testZeroTermStructure() {
 
     bool interpYES = true;
     boost::shared_ptr<UKRPI> iiUKRPIyes(new UKRPI(interpYES, hz));
-    for (Size i=0; i<rpiSchedule.size();i++) {
+    for (Size i=0; i<LENGTH(fixData);i++) {
         iiUKRPIyes->addFixing(rpiSchedule[i], fixData[i]);
     }
 
@@ -612,6 +614,7 @@ void InflationTest::testYYIndex() {
     BOOST_MESSAGE("Testing year-on-year inflation indices...");
 
     SavedSettings backup;
+    IndexHistoryCleaner cleaner;
 
     YYEUHICP yyeuhicp(true);
     if (yyeuhicp.name() != "EU YY_HICP"
@@ -698,12 +701,12 @@ void InflationTest::testYYIndex() {
         194.1, 193.4, 194.2, 195.0, 196.5, 197.7,
         198.5, 198.5, 199.2, 200.1, 200.4, 201.1,
         202.7, 201.6, 203.1, 204.4, 205.4, 206.2,
-        207.3, -999.0, -999.0 };
+        207.3 };
 
     bool interp = false;
     boost::shared_ptr<YYUKRPIr> iir(new YYUKRPIr(interp));
     boost::shared_ptr<YYUKRPIr> iirYES(new YYUKRPIr(true));
-    for (Size i=0; i<rpiSchedule.size();i++) {
+    for (Size i=0; i<LENGTH(fixData);i++) {
         iir->addFixing(rpiSchedule[i], fixData[i]);
         iirYES->addFixing(rpiSchedule[i], fixData[i]);
     }
@@ -764,6 +767,7 @@ void InflationTest::testYYTermStructure() {
     BOOST_MESSAGE("Testing year-on-year inflation term structure...");
 
     SavedSettings backup;
+    IndexHistoryCleaner cleaner;
 
     // try the YY UK
     Calendar calendar = UnitedKingdom();
@@ -785,12 +789,12 @@ void InflationTest::testYYTermStructure() {
         194.1, 193.4, 194.2, 195.0, 196.5, 197.7,
         198.5, 198.5, 199.2, 200.1, 200.4, 201.1,
         202.7, 201.6, 203.1, 204.4, 205.4, 206.2,
-        207.3, -999.0, -999 };
+        207.3 };
 
     RelinkableHandle<YoYInflationTermStructure> hy;
     bool interp = false;
     boost::shared_ptr<YYUKRPIr> iir(new YYUKRPIr(interp, hy));
-    for (Size i=0; i<rpiSchedule.size();i++) {
+    for (Size i=0; i<LENGTH(fixData); i++) {
         iir->addFixing(rpiSchedule[i], fixData[i]);
     }
 
