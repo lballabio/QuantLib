@@ -36,7 +36,7 @@ namespace QuantLib {
               Size i,
               U defaultValue) {
             if (v.empty()) {
-                return defaultValue;
+                return static_cast<T>(defaultValue);
             } else if (i < v.size()) {
                 return v[i];
             } else {

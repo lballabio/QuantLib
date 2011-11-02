@@ -60,10 +60,8 @@ void WriterExtensibleOptionTest::testAnalyticWriterExtensibleOptionEngine() {
     Real strike2 = 82.0;
     DayCounter dc = Actual360();
     Date today = Settings::instance().evaluationDate();
-    Real t1 = 0.5;
-    Date exDate1 = today + (t1*360 + 0.5);
-    Real t2 = 0.75;
-    Date exDate2 = today + (t2*360 + 0.5);
+    Date exDate1 = today + 180;
+    Date exDate2 = today + 270;
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(80.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
