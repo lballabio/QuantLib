@@ -46,6 +46,9 @@
 
 #define QL_PATCH_MSVC  // more granularity below
 
+// prevent auto-link of Boost libs such as serialization
+#define BOOST_ALL_NO_LIB
+
 // select toolset:
 #if (_MSC_VER < 1310)
 #  error "unsupported Microsoft compiler"
