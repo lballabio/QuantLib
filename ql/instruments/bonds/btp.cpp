@@ -31,6 +31,7 @@ namespace QuantLib {
 
     CCTEU::CCTEU(const Date& maturityDate,
                  Spread spread,
+                 const Handle<YieldTermStructure>& fwdCurve,
                  const Date& startDate,
                  const Date& issueDate)
     : FloatingRateBond(3, 100.0,
@@ -38,7 +39,7 @@ namespace QuantLib {
                                 maturityDate, 6*Months,
                                 NullCalendar(), Unadjusted, Unadjusted,
                                 DateGeneration::Backward, true),
-                       boost::shared_ptr<IborIndex>(new Euribor6M()),
+                       boost::shared_ptr<Euribor6M>(new Euribor6M(fwdCurve)),
                        Actual360(),
                        Following,
                        Euribor6M().fixingDays(),
