@@ -126,7 +126,7 @@ namespace QuantLib {
             Array temp(n);
             next_.weight = sequence_.weight;
 
-            TimeGrid timeGrid = path[0].timeGrid();
+            const TimeGrid& timeGrid = path[0].timeGrid();
             Time t, dt;
             for (Size i = 1; i < path.pathSize(); i++) {
                 Size offset = (i-1)*n;
