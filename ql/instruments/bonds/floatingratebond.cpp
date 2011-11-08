@@ -31,7 +31,7 @@ namespace QuantLib {
                            Natural settlementDays,
                            Real faceAmount,
                            const Schedule& schedule,
-                           const boost::shared_ptr<IborIndex>& index,
+                           const boost::shared_ptr<IborIndex>& iborIndex,
                            const DayCounter& paymentDayCounter,
                            BusinessDayConvention paymentConvention,
                            Natural fixingDays,
@@ -46,7 +46,7 @@ namespace QuantLib {
 
         maturityDate_ = schedule.endDate();
 
-        cashflows_ = IborLeg(schedule, index)
+        cashflows_ = IborLeg(schedule, iborIndex)
             .withNotionals(faceAmount)
             .withPaymentDayCounter(paymentDayCounter)
             .withPaymentAdjustment(paymentConvention)
@@ -62,7 +62,7 @@ namespace QuantLib {
         QL_ENSURE(!cashflows().empty(), "bond with no cashflows!");
         QL_ENSURE(redemptions_.size() == 1, "multiple redemptions created");
 
-        registerWith(index);
+        registerWith(iborIndex);
     }
 
     FloatingRateBond::FloatingRateBond(
@@ -72,7 +72,7 @@ namespace QuantLib {
                            const Date& maturityDate,
                            Frequency couponFrequency,
                            const Calendar& calendar,
-                           const boost::shared_ptr<IborIndex>& index,
+                           const boost::shared_ptr<IborIndex>& iborIndex,
                            const DayCounter& accrualDayCounter,
                            BusinessDayConvention accrualConvention,
                            BusinessDayConvention paymentConvention,
@@ -116,7 +116,7 @@ namespace QuantLib {
                           rule, endOfMonth,
                           firstDate, nextToLastDate);
 
-        cashflows_ = IborLeg(schedule, index)
+        cashflows_ = IborLeg(schedule, iborIndex)
             .withNotionals(faceAmount)
             .withPaymentDayCounter(accrualDayCounter)
             .withPaymentAdjustment(paymentConvention)
@@ -132,7 +132,7 @@ namespace QuantLib {
         QL_ENSURE(!cashflows().empty(), "bond with no cashflows!");
         QL_ENSURE(redemptions_.size() == 1, "multiple redemptions created");
 
-        registerWith(index);
+        registerWith(iborIndex);
     }
 
 }
