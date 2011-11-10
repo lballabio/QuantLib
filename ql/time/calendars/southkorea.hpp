@@ -48,7 +48,7 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2004-2010 only:)
+        (data available for 2004-2012 only:)
         <ul>
         <li>Lunar New Year, the last day of the previous lunar year,
             January 1st, 2nd in lunar calendar</li>
@@ -61,7 +61,8 @@ namespace QuantLib {
         </ul>
 
         Holidays for the Korea exchange
-        (data from <http://www.krx.co.kr> or
+        (data from
+        <http://eng.krx.co.kr/m8/m8_6/m8_6_1/JHPENG08006_01.jsp> or
         <http://www.dooriworld.com/daishin/holiday/holiday.html>):
         <ul>
         <li>Public holidays as listed above</li>
