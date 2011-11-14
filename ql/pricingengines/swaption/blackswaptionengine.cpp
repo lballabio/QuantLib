@@ -74,10 +74,10 @@ namespace QuantLib {
 
         Rate strike = swap.fixedRate();
 
-        // using the forecasting curve
+        // using the discounting curve
+        // swap.iborIndex() might be using a different forwarding curve
         swap.setPricingEngine(boost::shared_ptr<PricingEngine>(new
-            DiscountingSwapEngine(swap.iborIndex()->forwardingTermStructure(),
-                                  false)));
+            DiscountingSwapEngine(discountCurve_, false)));
         Rate atmForward = swap.fairRate();
 
         // Volatilities are quoted for zero-spreaded swaps.
