@@ -31,6 +31,7 @@
 namespace QuantLib {
 
     class ExtendedOrnsteinUhlenbeckProcess;
+    class YieldTermStructure;
 
     class FdSimpleExtOUStorageEngine
         : public GenericEngine<VanillaStorageOption::arguments,

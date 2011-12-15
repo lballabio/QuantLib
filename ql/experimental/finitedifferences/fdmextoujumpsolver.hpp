@@ -32,6 +32,7 @@ namespace QuantLib {
 
     class Fdm2DimSolver;
     class ExtOUWithJumpsProcess;
+    class YieldTermStructure;
 
     class FdmExtOUJumpSolver : public LazyObject {
       public:

@@ -25,6 +25,7 @@
 #define quantlib_fdm_simple_process_1d_mesher_hpp
 
 #include <ql/methods/finitedifferences/meshers/fdm1dmesher.hpp>
+#include <ql/utilities/null.hpp>
 #include <boost/shared_ptr.hpp>
 
 namespace QuantLib {

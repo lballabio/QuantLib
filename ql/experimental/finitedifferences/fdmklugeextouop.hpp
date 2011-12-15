@@ -34,8 +34,10 @@ namespace QuantLib {
     class FdmMesher;
     class YieldTermStructure;
     class KlugeExtOUProcess;
+    class ExtOUWithJumpsProcess;
     class FdmExtOUJumpOp;
     class FdmExtendedOrnsteinUhlenbackOp;
+    class ExtendedOrnsteinUhlenbeckProcess;
 
     /*! This class describes a correlated Kluge - extended Ornstein-Uhlenbeck
         process governed by
