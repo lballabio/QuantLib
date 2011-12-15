@@ -81,10 +81,6 @@ namespace QuantLib {
         Real spreadLegValue_;
     };
 
-	
-}	// namespace QuantLib
-
+}   // namespace QuantLib
 
 #endif
-
-

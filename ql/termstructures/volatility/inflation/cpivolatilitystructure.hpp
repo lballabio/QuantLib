@@ -30,7 +30,7 @@ namespace QuantLib {
 
     //! zero inflation (i.e. CPI/RPI/HICP/etc.) volatility structures
     /*! Abstract interface. CPI volatility is always with respect to
-	    some base date.  Also deal with lagged observations of an index
+        some base date.  Also deal with lagged observations of an index
         with a (usually different) availability lag.
     */
     class CPIVolatilitySurface : public VolatilityTermStructure {

@@ -35,7 +35,7 @@ namespace QuantLib {
         KirkSpreadOptionEngine(
             const boost::shared_ptr<BlackProcess>& process1,
             const boost::shared_ptr<BlackProcess>& process2,
-			const Handle<Quote>& correlation);
+            const Handle<Quote>& correlation);
         void calculate() const;
       private:
         boost::shared_ptr<BlackProcess> process1_;

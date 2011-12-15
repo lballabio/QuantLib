@@ -28,10 +28,10 @@
 class SwingOptionTest {
   public:
     static void testExtendedOrnsteinUhlenbeckProcess();
-	static void testFdBSSwingOption();
+    static void testFdBSSwingOption();
     static void testExtOUJumpSwingOption();
-	static void testFdmExponentialJump1dMesher();
-	static void testExtOUJumpVanillaEngine();
+    static void testFdmExponentialJump1dMesher();
+    static void testExtOUJumpVanillaEngine();
     static boost::unit_test_framework::test_suite* suite();
 };
 

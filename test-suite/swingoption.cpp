@@ -71,52 +71,52 @@ void SwingOptionTest::testExtendedOrnsteinUhlenbeckProcess() {
 
     SavedSettings backup;
 
-	const Real speed = 2.5;
-	const Volatility vol = 0.70;
-	const Real level = 1.43;
+    const Real speed = 2.5;
+    const Volatility vol = 0.70;
+    const Real level = 1.43;
 
-	ExtendedOrnsteinUhlenbeckProcess::Discretization discr[] = {
-		ExtendedOrnsteinUhlenbeckProcess::MidPoint,
-		ExtendedOrnsteinUhlenbeckProcess::Trapezodial,
-		ExtendedOrnsteinUhlenbeckProcess::GaussLobatto};
+    ExtendedOrnsteinUhlenbeckProcess::Discretization discr[] = {
+        ExtendedOrnsteinUhlenbeckProcess::MidPoint,
+        ExtendedOrnsteinUhlenbeckProcess::Trapezodial,
+        ExtendedOrnsteinUhlenbeckProcess::GaussLobatto};
 
-	boost::function<Real (Real)> f[] 
-		= { constant<Real, Real>(level),
-			std::bind1st(std::plus<Real>(), 1.0),
-			std::ptr_fun<Real, Real>(std::sin) }; 
+    boost::function<Real (Real)> f[] 
+        = { constant<Real, Real>(level),
+            std::bind1st(std::plus<Real>(), 1.0),
+            std::ptr_fun<Real, Real>(std::sin) }; 
 
-	for (Size n=0; n < LENGTH(f); ++n) {
-		ExtendedOrnsteinUhlenbeckProcess refProcess(
-			speed, vol, 0.0, f[n], 
-			ExtendedOrnsteinUhlenbeckProcess::GaussLobatto, 1e-6);
+    for (Size n=0; n < LENGTH(f); ++n) {
+        ExtendedOrnsteinUhlenbeckProcess refProcess(
+            speed, vol, 0.0, f[n], 
+            ExtendedOrnsteinUhlenbeckProcess::GaussLobatto, 1e-6);
 
-		for (Size i=0; i < LENGTH(discr)-1; ++i) {
-			ExtendedOrnsteinUhlenbeckProcess eouProcess(
-									  speed, vol, 0.0, f[n], discr[i]);
+        for (Size i=0; i < LENGTH(discr)-1; ++i) {
+            ExtendedOrnsteinUhlenbeckProcess eouProcess(
+                                      speed, vol, 0.0, f[n], discr[i]);
 
-			const Time T = 10;
-			const Size nTimeSteps = 10000;
+            const Time T = 10;
+            const Size nTimeSteps = 10000;
 
-			const Time dt = T/nTimeSteps;
-			Time t  = 0.0;
-			Real q = 0.0;
-			Real p = 0.0;
-			
-			PseudoRandom::rng_type rng(PseudoRandom::urng_type(1234u));
+            const Time dt = T/nTimeSteps;
+            Time t  = 0.0;
+            Real q = 0.0;
+            Real p = 0.0;
+            
+            PseudoRandom::rng_type rng(PseudoRandom::urng_type(1234u));
 
-			for (Size j=0; j < nTimeSteps; ++j) {
-				const Real dw = rng.next().value;
-				q=eouProcess.evolve(t,q,dt,dw);
-				p=refProcess.evolve(t,p,dt,dw);
+            for (Size j=0; j < nTimeSteps; ++j) {
+                const Real dw = rng.next().value;
+                q=eouProcess.evolve(t,q,dt,dw);
+                p=refProcess.evolve(t,p,dt,dw);
 
-				if (std::fabs(q-p) > 1e-6) {
-					BOOST_FAIL("invalid process evaluation " 
-					            << n << " " << i << " " << j << " " << q-p);
-				}
-				t+=dt;
-			}
-		}
-	}
+                if (std::fabs(q-p) > 1e-6) {
+                    BOOST_FAIL("invalid process evaluation " 
+                                << n << " " << i << " " << j << " " << q-p);
+                }
+                t+=dt;
+            }
+        }
+    }
 }
 
 
@@ -430,7 +430,7 @@ void SwingOptionTest::testExtOUJumpSwingOption() {
 test_suite* SwingOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Swing-Option Test");
     suite->add(QUANTLIB_TEST_CASE(
-		&SwingOptionTest::testExtendedOrnsteinUhlenbeckProcess));
+        &SwingOptionTest::testExtendedOrnsteinUhlenbeckProcess));
     suite->add(QUANTLIB_TEST_CASE(&SwingOptionTest::testFdBSSwingOption));
     suite->add(QUANTLIB_TEST_CASE(
                           &SwingOptionTest::testFdmExponentialJump1dMesher));

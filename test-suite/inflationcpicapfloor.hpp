@@ -30,12 +30,12 @@
 //! N.B. a cpi cap produces ONE flow only - because inflation is cumulative.
 class InflationCPICapFloorTest {
 public:
-	//! tests CPI price surface reproduction
-	static void cpicapfloorpricesurface();
-	//! tests interpolation pricer
-	static void cpicapfloorpricer();
-	
-	static boost::unit_test_framework::test_suite* suite();
+    //! tests CPI price surface reproduction
+    static void cpicapfloorpricesurface();
+    //! tests interpolation pricer
+    static void cpicapfloorpricer();
+    
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 
