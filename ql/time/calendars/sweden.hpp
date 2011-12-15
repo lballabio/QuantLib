@@ -41,7 +41,7 @@ namespace QuantLib {
         <li>Whit(Pentecost) Monday </li>
         <li>May Day, May 1st</li>
         <li>National Day, June 6th</li>
-        <li>Midsummer Eve (Friday between June 18-24)</li>
+        <li>Midsummer Eve (Friday between June 19-25)</li>
         <li>Christmas Eve, December 24th</li>
         <li>Christmas Day, December 25th</li>
         <li>Boxing Day, December 26th</li>

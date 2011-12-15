@@ -53,8 +53,8 @@ namespace QuantLib {
             // declared as a holiday.
             // As of 2002 the Stockholmborsen is open that day
             // || (d == 6  && m == June)
-            // Midsummer Eve (Friday between June 18-24)
-            || (w == Friday && (d >= 18 && d <= 24) && m == June)
+            // Midsummer Eve (Friday between June 19-25)
+            || (w == Friday && (d >= 19 && d <= 25) && m == June)
             // Christmas Eve
             || (d == 24 && m == December)
             // Christmas Day
