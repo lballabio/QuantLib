@@ -204,7 +204,7 @@ void VPPTest::testGemanRoncoroniProcess() {
 
 void VPPTest::testSimpleExtOUStorageEngine() {
 
-    BOOST_MESSAGE("Testing Simple Storage option based on ext. OU  model...");
+    BOOST_MESSAGE("Testing Simple Storage option based on ext. OU model...");
 
     SavedSettings backup;
 
@@ -236,7 +236,7 @@ void VPPTest::testSimpleExtOUStorageEngine() {
                new FdSimpleExtOUStorageEngine(ouProcess, rTS, 1, 25));
 
     VanillaStorageOption storageOption(bermudanExercise, 50, 0, 1);
-
+    
     storageOption.setPricingEngine(storageEngine);
 
     const Real expected = 69.6307;
@@ -252,7 +252,7 @@ void VPPTest::testSimpleExtOUStorageEngine() {
 
 void VPPTest::testKlugeExtOUSpreadOption() {
 
-    BOOST_MESSAGE("Testing Simple Kluge ext-Ornstein-Uhlenbeck spread option");
+    BOOST_MESSAGE("Testing Simple Kluge ext-Ornstein-Uhlenbeck spread option...");
 
     SavedSettings backup;
 
@@ -410,7 +410,7 @@ namespace {
 
 void VPPTest::testVPPIntrinsicValue() {
 
-    BOOST_MESSAGE("Testing VPP step condition");
+    BOOST_MESSAGE("Testing VPP step condition...");
 
     SavedSettings backup;
 
@@ -541,7 +541,7 @@ namespace {
 }
 
 void VPPTest::testVPPPricing() {
-    BOOST_MESSAGE("Testing VPP pricing using perfect foresight or FDM");
+    BOOST_MESSAGE("Testing VPP pricing using perfect foresight or FDM...");
 
     SavedSettings backup;
 
