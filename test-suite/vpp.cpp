@@ -90,7 +90,7 @@ void VPPTest::testGemanRoncoroniProcess() {
 
     SavedSettings backup;
 
-    const Date today = Date::todaysDate();
+    const Date today = Date(18, December, 2011);
     Settings::instance().evaluationDate() = today;
     const DayCounter dc = ActualActual();
 
@@ -208,7 +208,7 @@ void VPPTest::testSimpleExtOUStorageEngine() {
 
     SavedSettings backup;
 
-    Date settlementDate = Date::todaysDate();
+    Date settlementDate = Date(18, December, 2011);
     Settings::instance().evaluationDate() = settlementDate;
     DayCounter dayCounter = ActualActual();
     Date maturityDate = settlementDate + Period(12, Months);
@@ -239,7 +239,7 @@ void VPPTest::testSimpleExtOUStorageEngine() {
 
     storageOption.setPricingEngine(storageEngine);
 
-    const Real expected = 69.6307;
+    const Real expected = 69.5755;
     const Real calculated = storageOption.NPV();
 
     if (std::fabs(expected - calculated) > 5e-2) {
@@ -256,7 +256,7 @@ void VPPTest::testKlugeExtOUSpreadOption() {
 
     SavedSettings backup;
 
-    Date settlementDate = Date::todaysDate();
+    Date settlementDate = Date(18, December, 2011);
     Settings::instance().evaluationDate() = settlementDate;
 
     DayCounter dayCounter = ActualActual();
@@ -545,7 +545,7 @@ void VPPTest::testVPPPricing() {
 
     SavedSettings backup;
 
-    const Date today = Date::todaysDate();
+    const Date today = Date(18, December, 2011);
     const DayCounter dc = ActualActual();
     Settings::instance().evaluationDate() = today;
 
