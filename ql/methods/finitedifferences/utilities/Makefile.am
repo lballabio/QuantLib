@@ -4,12 +4,16 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
+	fdmaffinemodeltermstructure.hpp \
+	fdmaffinemodelswapinnervalue.hpp \
 	fdmdirichletboundary.hpp \
 	fdmdividendhandler.hpp \
 	fdminnervaluecalculator.hpp \
 	fdmquantohelper.hpp
 
 libFdmUtils_la_SOURCES = \
+	fdmaffinemodeltermstructure.cpp \
+	fdmaffinemodelswapinnervalue.cpp \
 	fdmdirichletboundary.cpp \
 	fdmdividendhandler.cpp \
 	fdminnervaluecalculator.cpp \

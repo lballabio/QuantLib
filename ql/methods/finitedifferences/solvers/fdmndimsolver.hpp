@@ -103,7 +103,7 @@ namespace QuantLib {
         for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
              ++iter) {
 
-            initialValues_[iter.index()] = solverDesc.calculator
+            initialValues_[iter.index()] = solverDesc_.calculator
                                 ->avgInnerValue(iter, solverDesc.maturity);
 
             const std::vector<Size>& c = iter.coordinates();

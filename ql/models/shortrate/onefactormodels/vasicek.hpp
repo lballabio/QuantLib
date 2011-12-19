@@ -51,14 +51,14 @@ namespace QuantLib {
 
         virtual boost::shared_ptr<ShortRateDynamics> dynamics() const;
 
-      protected:
-        virtual Real A(Time t, Time T) const;
-        virtual Real B(Time t, Time T) const;
-
         Real a() const { return a_(0.0); }
         Real b() const { return b_(0.0); }
         Real lambda() const { return lambda_(0.0); }
         Real sigma() const { return sigma_(0.0); }
+
+      protected:
+        virtual Real A(Time t, Time T) const;
+        virtual Real B(Time t, Time T) const;
 
         Real r0_;
         Parameter& a_;

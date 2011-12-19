@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008 Klaus Spanderen
+ Copyright (C) 2008, 2011 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,6 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
@@ -30,19 +31,22 @@ namespace QuantLib {
 
     FdmHestonHullWhiteEquityPart::FdmHestonHullWhiteEquityPart(
         const boost::shared_ptr<FdmMesher>& mesher,
+        const boost::shared_ptr<HullWhite>& hwModel,
         const boost::shared_ptr<YieldTermStructure>& qTS)
-    : rates_(mesher->locations(2)),
+    : x_(mesher->locations(2)),
       varianceValues_(0.5*mesher->locations(1)),
       dxMap_ (FirstDerivativeOp(0, mesher)),
       dxxMap_(SecondDerivativeOp(0, mesher).mult(0.5*mesher->locations(1))),
       mapT_   (0, mesher),
+      hwModel_(hwModel),
       mesher_ (mesher),
       qTS_(qTS) {
+
         // on the boundary s_min and s_max the second derivative
         // d²V/dS² is zero and due to Ito's Lemma the variance term
         // in the drift should vanish.
-        boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
-        FdmLinearOpIterator endIter = layout->end();
+        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+        const FdmLinearOpIterator endIter = layout->end();
         for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
             ++iter) {
             if (   iter.coordinates()[0] == 0
@@ -54,51 +58,18 @@ namespace QuantLib {
     }
 
     void FdmHestonHullWhiteEquityPart::setTime(Time t1, Time t2) {
+        const boost::shared_ptr<OneFactorModel::ShortRateDynamics> dynamics =
+            hwModel_->dynamics();
+
+        const Real phi = 0.5*(  dynamics->shortRate(t1, 0.0)
+                              + dynamics->shortRate(t2, 0.0));
+
         const Rate q = qTS_->forwardRate(t1, t2, Continuous).rate();
 
-        mapT_.axpyb(rates_-varianceValues_-q, dxMap_, dxxMap_, Array());
+        mapT_.axpyb(x_+phi-varianceValues_-q, dxMap_, dxxMap_, Array());
     }
 
     const TripleBandLinearOp& FdmHestonHullWhiteEquityPart::getMap() const {
-        return mapT_;
-    }
-
-    FdmHestonHullWhiteVariancePart::FdmHestonHullWhiteVariancePart(
-        const boost::shared_ptr<FdmMesher>& mesher,
-        Real sigma, Real kappa, Real theta)
-    : dyMap_(SecondDerivativeOp(1, mesher)
-               .mult(0.5*sigma*sigma*mesher->locations(1))
-             .add(FirstDerivativeOp(1, mesher)
-               .mult(kappa*(theta - mesher->locations(1))))) {
-    }
-
-    const TripleBandLinearOp& FdmHestonHullWhiteVariancePart::getMap() const {
-        return dyMap_;
-    }
-
-    FdmHestonHullWhiteRatesPart::FdmHestonHullWhiteRatesPart(
-        const boost::shared_ptr<FdmMesher>& mesher,
-        const boost::shared_ptr<HullWhiteProcess>& hwProcess)
-    : rates_(mesher->locations(2)),
-      dzMap_(FirstDerivativeOp(2, mesher)),
-      dzzMap_(SecondDerivativeOp(2, mesher)
-                 .mult(0.5*hwProcess->sigma()*hwProcess->sigma()
-                       *Array(mesher->layout()->size(), 1.))
-                 .add(-mesher->locations(2))),
-      mapT_(2, mesher),
-      hwProcess_(hwProcess) {
-    }
-
-    void FdmHestonHullWhiteRatesPart::setTime(Time t1, Time t2) {
-        const Time dt = t2-t1;
-
-        const Array drift = (rates_*(std::exp(-hwProcess_->a()*dt)-1.0)
-                           + hwProcess_->expectation(t1, 0.0, dt))/dt;
-
-        mapT_.axpyb(drift, dzMap_, dzzMap_, Array());
-    }
-
-    const TripleBandLinearOp& FdmHestonHullWhiteRatesPart::getMap() const {
         return mapT_;
     }
 
@@ -107,31 +78,34 @@ namespace QuantLib {
                     const boost::shared_ptr<HestonProcess>& hestonProcess,
                     const boost::shared_ptr<HullWhiteProcess>& hwProcess,
                     Real equityShortRateCorrelation)
-    : rates_(mesher->locations(2)),
-      v0_(hestonProcess->v0()),
+    : v0_(hestonProcess->v0()),
       kappa_(hestonProcess->kappa()),
       theta_(hestonProcess->theta()),
       sigma_(hestonProcess->sigma()),
       rho_(hestonProcess->rho()),
-      hwProcess_(hwProcess),
+      hwModel_(new HullWhite(hestonProcess->riskFreeRate(),
+                             hwProcess->a(), hwProcess->sigma())),
       hestonCorrMap_(SecondOrderMixedDerivativeOp(0, 1, mesher)
                      .mult(rho_*sigma_*mesher->locations(1))),
       equityIrCorrMap_(SecondOrderMixedDerivativeOp(0, 2, mesher)
                        .mult(Sqrt(mesher->locations(1))
                               * hwProcess->sigma()
                               * equityShortRateCorrelation)),
-      dyMap_(mesher, sigma_, kappa_, theta_),
-      dxMap_(mesher, hestonProcess->dividendYield().currentLink()),
-      dzMap_(mesher, hwProcess) {
+      dyMap_(SecondDerivativeOp(1u, mesher)
+              .mult(0.5*sigma_*sigma_*mesher->locations(1))
+            .add(FirstDerivativeOp(1, mesher)
+              .mult(kappa_*(theta_ - mesher->locations(1))))),
+      dxMap_(mesher, hwModel_, hestonProcess->dividendYield().currentLink()),
+      hullWhiteOp_(mesher, hwModel_, 2) {
 
         QL_REQUIRE(  equityShortRateCorrelation*equityShortRateCorrelation
-                    +hestonProcess->rho()*hestonProcess->rho() <= 1.0,
-                    "correlation matrix has negative eigenvalues");
+                   + hestonProcess->rho()*hestonProcess->rho() <= 1.0,
+                   "correlation matrix has negative eigenvalues");
     }
 
     void FdmHestonHullWhiteOp::setTime(Time t1, Time t2) {
         dxMap_.setTime(t1, t2);
-        dzMap_.setTime(t1, t2);
+        hullWhiteOp_.setTime(t1, t2);
     }
 
     Size FdmHestonHullWhiteOp::size() const {
@@ -139,8 +113,8 @@ namespace QuantLib {
     }
 
     Disposable<Array> FdmHestonHullWhiteOp::apply(const Array& u) const {
-        return  dyMap_.getMap().apply(u) + dxMap_.getMap().apply(u)
-              + dzMap_.getMap().apply(u)
+        return  dyMap_.apply(u) + dxMap_.getMap().apply(u)
+              + hullWhiteOp_.apply(u)
               + hestonCorrMap_.apply(u) + equityIrCorrMap_.apply(u);
     }
 
@@ -150,9 +124,9 @@ namespace QuantLib {
         if (direction == 0)
             return dxMap_.getMap().apply(r);
         else if (direction == 1)
-            return dyMap_.getMap().apply(r);
+            return dyMap_.apply(r);
         else if (direction == 2)
-            return dzMap_.getMap().apply(r);
+            return hullWhiteOp_.apply(r);
         else
             QL_FAIL("direction too large");
     }
@@ -168,10 +142,10 @@ namespace QuantLib {
             return dxMap_.getMap().solve_splitting(r, a, 1.0);
         }
         else if (direction == 1) {
-            return dyMap_.getMap().solve_splitting(r, a, 1.0);
+            return dyMap_.solve_splitting(r, a, 1.0);
         }
         else if (direction == 2) {
-            return dzMap_.getMap().solve_splitting(r, a, 1.0);
+            return hullWhiteOp_.solve_splitting(2, r, a);
         }
         else
             QL_FAIL("direction too large");

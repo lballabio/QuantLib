@@ -906,7 +906,7 @@ namespace {
                 new FdmHestonVarianceMesher(dim[1], process->hestonProcess(),
                                             maturity)));
         mesher1d.push_back(boost::shared_ptr<Fdm1dMesher>(
-                new Uniform1dMesher(-0.10, 0.20, dim[2])));
+                new Uniform1dMesher(-0.15, 0.15, dim[2])));
 
         boost::shared_ptr<FdmMesher> mesher(
                                      new FdmMesherComposite(layout, mesher1d));
@@ -999,7 +999,7 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
 
     const Real x0 = 100;
     const Real v0 = jointProcess->hestonProcess()->v0();
-    const Real r0 = jointProcess->hullWhiteProcess()->x0();
+    const Real r0 = 0;
     for (Size k=0; k < dim[2]; ++k) {
         Matrix ret(dim[0], dim[1]);
         for (Size i=0; i < dim[0]; ++i)
@@ -1056,7 +1056,7 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
     const Real expected = 4.73;
 
     if (std::fabs(directCalc - expected) > 3*tol) {
-        QL_FAIL("Error in calculating PV for Heston Hull White Option");
+        QL_FAIL("Error in calculating MC PV for Heston Hull White Option");
     }
 }
 

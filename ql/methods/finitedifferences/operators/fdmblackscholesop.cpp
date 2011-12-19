@@ -90,7 +90,7 @@ namespace QuantLib {
     }
 
     Size FdmBlackScholesOp::size() const {
-        return mesher_->layout()->dim().size();
+        return 1u;
     }
 
     Disposable<Array> FdmBlackScholesOp::apply(const Array& u) const {

@@ -17,6 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonhullwhitevanillaengine.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
@@ -28,7 +29,6 @@
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
-#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 
 namespace QuantLib {
 
@@ -99,7 +99,7 @@ namespace QuantLib {
         // 2.2 The equity mesher
         const boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff, "worng payoff type given");
+        QL_REQUIRE(payoff, "wrong payoff type given");
 
         boost::shared_ptr<Fdm1dMesher> equityMesher;
         if (strikes_.empty()) {
@@ -129,9 +129,10 @@ namespace QuantLib {
         }
        
         //2.3 The short rate mesher        
-        const Rate r0 = hwProcess_->x0();
+        const boost::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
+            new OrnsteinUhlenbeckProcess(hwProcess_->a(),hwProcess_->sigma()));
         const boost::shared_ptr<Fdm1dMesher> shortRateMesher(
-                     new FdmSimpleProcess1dMesher(rGrid_, hwProcess_, maturity));
+                   new FdmSimpleProcess1dMesher(rGrid_, ouProcess, maturity));
         
         std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
         meshers.push_back(equityMesher);
@@ -168,10 +169,10 @@ namespace QuantLib {
 
         const Real spot = hestonProcess->s0()->value();
         const Real v0   = hestonProcess->v0();
-        results_.value = solver->valueAt(spot, v0, r0);
-        results_.delta = solver->deltaAt(spot, v0, r0, spot*0.01);
-        results_.gamma = solver->gammaAt(spot, v0, r0, spot*0.01);
-        results_.theta = solver->thetaAt(spot, v0, r0);
+        results_.value = solver->valueAt(spot, v0, 0);
+        results_.delta = solver->deltaAt(spot, v0, 0, spot*0.01);
+        results_.gamma = solver->gammaAt(spot, v0, 0, spot*0.01);
+        results_.theta = solver->thetaAt(spot, v0, 0);
 
         cachedArgs2results_.resize(strikes_.size());        
         for (Size i=0; i < strikes_.size(); ++i) {
@@ -183,10 +184,10 @@ namespace QuantLib {
             
             DividendVanillaOption::results& 
                                 results = cachedArgs2results_[i].second;
-            results.value = solver->valueAt(spot*d, v0, r0)/d;
-            results.delta = solver->deltaAt(spot*d, v0, r0, spot*d*0.01);
-            results.gamma = solver->gammaAt(spot*d, v0, r0, spot*d*0.01)*d;
-            results.theta = solver->thetaAt(spot*d, v0, r0)/d;
+            results.value = solver->valueAt(spot*d, v0, 0)/d;
+            results.delta = solver->deltaAt(spot*d, v0, 0, spot*d*0.01);
+            results.gamma = solver->gammaAt(spot*d, v0, 0, spot*d*0.01)*d;
+            results.theta = solver->thetaAt(spot*d, v0, 0)/d;
         }
      
         if (controlVariate_) {

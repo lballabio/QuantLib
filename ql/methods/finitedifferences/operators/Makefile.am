@@ -7,8 +7,10 @@ this_include_HEADERS = \
 	fdm2dblackscholesop.hpp \
 	fdmbatesop.hpp \
 	fdmblackscholesop.hpp \
+	fdmg2op.hpp \
 	fdmhestonhullwhiteop.hpp \
 	fdmhestonop.hpp \
+	fdmhullwhiteop.hpp \
 	fdmlinearopcomposite.hpp \
 	fdmlinearop.hpp \
 	fdmlinearopiterator.hpp \
@@ -23,8 +25,10 @@ libFdmOperators_la_SOURCES = \
 	fdm2dblackscholesop.cpp \
 	fdmbatesop.cpp \
 	fdmblackscholesop.cpp \
+	fdmg2op.cpp \
 	fdmhestonhullwhiteop.cpp \
 	fdmhestonop.cpp \
+	fdmhullwhiteop.cpp \
 	fdmlinearoplayout.cpp \
 	firstderivativeop.cpp \
 	ninepointlinearop.cpp \

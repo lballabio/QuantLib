@@ -28,6 +28,7 @@
 
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/processes/hullwhiteprocess.hpp>
+#include <ql/methods/finitedifferences/operators/fdmhullwhiteop.hpp>
 #include <ql/methods/finitedifferences/operators/firstderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/triplebandlinearop.hpp>
 #include <ql/methods/finitedifferences/operators/ninepointlinearop.hpp>
@@ -35,52 +36,28 @@
 
 namespace QuantLib {
 
+    class HullWhite;
+
     class FdmHestonHullWhiteEquityPart {
       public:
         FdmHestonHullWhiteEquityPart(
             const boost::shared_ptr<FdmMesher>& mesher,
+            const boost::shared_ptr<HullWhite>& hwModel,
             const boost::shared_ptr<YieldTermStructure>& qTS);
 
         void setTime(Time t1, Time t2);
         const TripleBandLinearOp& getMap() const;
 
       protected:
-        const Array rates_;
+        const Array x_;
         Array varianceValues_, volatilityValues_;
         const FirstDerivativeOp  dxMap_;
         const TripleBandLinearOp dxxMap_;
         TripleBandLinearOp mapT_;
 
+        const boost::shared_ptr<HullWhite> hwModel_;
         const boost::shared_ptr<FdmMesher> mesher_;
         const boost::shared_ptr<YieldTermStructure> qTS_;
-    };
-
-    class FdmHestonHullWhiteVariancePart {
-      public:
-        FdmHestonHullWhiteVariancePart(
-            const boost::shared_ptr<FdmMesher>& mesher,
-            Real sigma, Real kappa, Real theta);
-
-        const TripleBandLinearOp& getMap() const;
-
-      protected:
-        const TripleBandLinearOp dyMap_;
-    };
-
-    class FdmHestonHullWhiteRatesPart {
-      public:
-        FdmHestonHullWhiteRatesPart(
-                    const boost::shared_ptr<FdmMesher>& mesher,
-                    const boost::shared_ptr<HullWhiteProcess>& hwProcess);
-
-        void setTime(Time t1, Time t2);
-        const TripleBandLinearOp& getMap() const;
-
-      protected:
-        const Array rates_;
-        const TripleBandLinearOp dzMap_, dzzMap_;
-        TripleBandLinearOp mapT_;
-        const boost::shared_ptr<HullWhiteProcess> hwProcess_;
     };
 
     class FdmHestonHullWhiteOp : public FdmLinearOpComposite {
@@ -104,15 +81,14 @@ namespace QuantLib {
         Disposable<Array> preconditioner(const Array& r, Real s) const;
 
       private:
-        const Array rates_;
         const Real v0_, kappa_, theta_, sigma_, rho_;
-        const boost::shared_ptr<HullWhiteProcess> hwProcess_;
+        const boost::shared_ptr<HullWhite> hwModel_;
 
         NinePointLinearOp hestonCorrMap_;
         NinePointLinearOp equityIrCorrMap_;
-        FdmHestonHullWhiteVariancePart dyMap_;
+        TripleBandLinearOp dyMap_;
         FdmHestonHullWhiteEquityPart dxMap_;
-        FdmHestonHullWhiteRatesPart dzMap_;
+        FdmHullWhiteOp hullWhiteOp_;
     };
 }
 

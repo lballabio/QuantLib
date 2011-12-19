@@ -87,6 +87,12 @@ namespace QuantLib {
             return termStructure()->discount(t);
         }
 
+        Real a() const { return a_(0.0); }
+        Real sigma() const { return sigma_(0.0); }
+        Real b() const { return b_(0.0); }
+        Real eta() const { return eta_(0.0); }
+        Real rho() const { return rho_(0.0); }
+
       protected:
         void generateArguments();
 
@@ -108,12 +114,6 @@ namespace QuantLib {
         Parameter phi_;
 
         Real V(Time t) const;
-
-        Real a() const { return a_(0.0); }
-        Real sigma() const { return sigma_(0.0); }
-        Real b() const { return b_(0.0); }
-        Real eta() const { return eta_(0.0); }
-        Real rho() const { return rho_(0.0); }
 
         class SwaptionPricingFunction;
         friend class SwaptionPricingFunction;
