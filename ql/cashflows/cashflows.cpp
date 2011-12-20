@@ -1096,6 +1096,11 @@ namespace QuantLib {
 
                 if (npvDate == Date())
                     npvDate = settlementDate;
+
+                // if the discount curve allows extrapolation, let's
+                // the spreaded curve do too.
+                curve_.enableExtrapolation(
+                                  discountCurve->allowsExtrapolation());
             }
             Real operator()(Rate zSpread) const {
                 zSpread_->setValue(zSpread);
