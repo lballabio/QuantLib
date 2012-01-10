@@ -357,7 +357,7 @@ namespace QuantLib {
             } else {
                 Real accruedAmount = bond_->accruedAmount(upfrontDate_);
                 Real dirtyPrice = bondCleanPrice_ + accruedAmount;
-                Real fairDirtyPrice = - payer_[1] * legNPV_[0]/legNPV_[1] * dirtyPrice;
+                Real fairDirtyPrice = - legNPV_[0]/legNPV_[1] * dirtyPrice;
                 fairCleanPrice_ = fairDirtyPrice - accruedAmount;
             }
 
