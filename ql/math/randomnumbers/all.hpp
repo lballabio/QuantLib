@@ -18,5 +18,6 @@
 #include <ql/math/randomnumbers/ranluxuniformrng.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/randomnumbers/seedgenerator.hpp>
+#include <ql/math/randomnumbers/sobolbrownianbridgersg.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
 

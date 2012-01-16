@@ -28,6 +28,7 @@
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/hybridhestonhullwhiteprocess.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/math/randomnumbers/sobolbrownianbridgersg.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/statistics/generalstatistics.hpp>
@@ -300,30 +301,24 @@ void HybridHestonHullWhiteProcessTest::testZeroBondPricing() {
 
     TimeGrid grid(times.begin(), times.end()-1);
 
-    typedef PseudoRandom::rsg_type rsg_type;
+    typedef SobolBrownianBridgeRsg rsg_type;
     typedef MultiPathGenerator<rsg_type>::sample_type sample_type;
 
-    BigNatural seed = 1234;
-    rsg_type rsg = PseudoRandom::make_sequence_generator(
-                              jointProcess->factors()*(grid.size()-1), seed);
-
+    const Size factors = jointProcess->factors();
+    const Size steps = grid.size()-1;
+    rsg_type rsg = rsg_type(factors, steps);
     MultiPathGenerator<rsg_type> generator(jointProcess, grid, rsg, false);
 
     const Size m = 90;
     std::vector<GeneralStatistics> zeroStat(m);
     std::vector<GeneralStatistics> optionStat(m);
 
-    const Size nrTrails = 5000;
+    const Size nrTrails = 4095;
     const Size optionTenor = 24;
     const DiscountFactor strike = 0.5;
 
-    std::vector<DiscountFactor> tmpZero(m);
-    std::vector<DiscountFactor> tmpOption(m);
-
     for (Size i=0; i < nrTrails; ++i) {
-        const bool antithetic = (i%2)==0 ? false : true;
-        sample_type path = (!antithetic) ? generator.next()
-                                         : generator.antithetic();
+        sample_type path =  generator.next();
 
         for (Size j=1; j < m; ++j) {
             const Time t = grid[j];            // zero end and option maturity
@@ -342,14 +337,8 @@ void HybridHestonHullWhiteProcessTest::testZeroBondPricing() {
             const DiscountFactor zeroOption = zeroBond
                 * std::max(0.0, hwModel->discountBond(t, T, states[2])-strike);
 
-            if (antithetic) {
-                zeroStat[j].add(0.5*(tmpZero[j] + zeroBond));
-                optionStat[j].add(0.5*(tmpOption[j] + zeroOption));
-            }
-            else {
-                tmpZero[j] = zeroBond;
-                tmpOption[j] = zeroOption;
-            }
+            zeroStat[j].add(zeroBond);
+            optionStat[j].add(zeroOption);
         }
     }
 
@@ -359,7 +348,7 @@ void HybridHestonHullWhiteProcessTest::testZeroBondPricing() {
         Real error = zeroStat[j].errorEstimate();
         Real expected = ts->discount(t);
 
-        if (std::fabs(calculated - expected) > 5*error) {
+        if (std::fabs(calculated - expected) > 0.025) {
             BOOST_ERROR("Failed to reproduce expected zero bond prices"
                         << "\n   t:          " << t
                         << "\n   calculated: " << calculated
@@ -370,10 +359,9 @@ void HybridHestonHullWhiteProcessTest::testZeroBondPricing() {
         const Time T = grid[j+optionTenor];
 
         calculated = optionStat[j].mean();
-        error = optionStat[j].errorEstimate();
         expected = hwModel->discountBondOption(Option::Call, strike, t, T);
 
-        if (std::fabs(calculated - expected) > 5*error) {
+        if (std::fabs(calculated - expected) > 0.0035) {
             BOOST_ERROR("Failed to reproduce expected zero bond option prices"
                         << "\n   t:          " << t
                         << "\n   T:          " << T
@@ -918,9 +906,9 @@ void HybridHestonHullWhiteProcessTest::testFdmHestonHullWhiteEngine() {
             
             option.setPricingEngine(boost::shared_ptr<PricingEngine>(
                 new FdHestonHullWhiteVanillaEngine(
-                     boost::shared_ptr<HestonModel>(
-                             new HestonModel(hestonProcess)),
-                                       hwProcess, corr[i], 50, 200, 10, 15)));    
+                    boost::shared_ptr<HestonModel>(
+                        new HestonModel(hestonProcess)),
+                                        hwProcess, corr[i], 50, 200, 10, 15)));
             const Real calculated = option.NPV();
             const Real calculatedDelta = option.delta();
             const Real calculatedGamma = option.gamma();

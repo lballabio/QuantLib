@@ -24,7 +24,7 @@
 
 namespace QuantLib {
 
-FdmMesherComposite::FdmMesherComposite(
+    FdmMesherComposite::FdmMesherComposite(
         const boost::shared_ptr<FdmLinearOpLayout>& layout,
         const std::vector<boost::shared_ptr<Fdm1dMesher> > & mesher)
     : FdmMesher(layout), mesher_(mesher) {

@@ -21,6 +21,7 @@ this_include_HEADERS = \
 	ranluxuniformrng.hpp \
 	rngtraits.hpp \
 	seedgenerator.hpp \
+	sobolbrownianbridgersg.hpp \
 	sobolrsg.hpp
 
 libRandomNumbers_la_SOURCES = \
@@ -33,6 +34,7 @@ libRandomNumbers_la_SOURCES = \
 	mt19937uniformrng.cpp \
 	primitivepolynomials.c \
 	seedgenerator.cpp \
+	sobolbrownianbridgersg.cpp \
 	sobolrsg.cpp
 
 noinst_LTLIBRARIES = libRandomNumbers.la
