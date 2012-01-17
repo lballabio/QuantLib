@@ -92,6 +92,7 @@ QL_TESTS = \
 	rngtraits.hpp rngtraits.cpp \
 	rounding.hpp rounding.cpp \
 	sampledcurve.hpp sampledcurve.cpp \
+	schedule.hpp schedule.cpp \
 	shortratemodels.hpp shortratemodels.cpp \
 	solvers.hpp solvers.cpp \
 	spreadoption.hpp spreadoption.cpp \

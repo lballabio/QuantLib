@@ -413,6 +413,7 @@
     <ClCompile Include="rngtraits.cpp" />
     <ClCompile Include="rounding.cpp" />
     <ClCompile Include="sampledcurve.cpp" />
+    <ClCompile Include="schedule.cpp" />
     <ClCompile Include="shortratemodels.cpp" />
     <ClCompile Include="solvers.cpp" />
     <ClCompile Include="spreadoption.cpp" />
@@ -530,6 +531,7 @@
     <ClInclude Include="rngtraits.hpp" />
     <ClInclude Include="rounding.hpp" />
     <ClInclude Include="sampledcurve.hpp" />
+    <ClInclude Include="schedule.hpp" />
     <ClInclude Include="shortratemodels.hpp" />
     <ClInclude Include="solvers.hpp" />
     <ClInclude Include="spreadoption.hpp" />
