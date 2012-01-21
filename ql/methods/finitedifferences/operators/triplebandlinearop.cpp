@@ -238,6 +238,23 @@ namespace QuantLib {
         return retVal;
     }
 
+#if !defined(QL_NO_UBLAS_SUPPORT)
+    Disposable<SparseMatrix> TripleBandLinearOp::toMatrix() const {
+        const boost::shared_ptr<FdmLinearOpLayout> index = mesher_->layout();
+        const Size n = index->size();
+
+        SparseMatrix retVal(n, n, 3*n);
+        for (Size i=0; i < n; ++i) {
+            retVal(i, i0_[i]) += lower_[i];
+            retVal(i, i     ) += diag_[i];
+            retVal(i, i2_[i]) += upper_[i];
+        }
+
+        return retVal;
+    }
+#endif
+
+
     Disposable<Array>
     TripleBandLinearOp::solve_splitting(const Array& r, Real a, Real b) const {
         const boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();

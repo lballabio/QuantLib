@@ -55,6 +55,9 @@ namespace QuantLib {
                                           const Array& x, Real s) const;
         Disposable<Array> preconditioner(const Array& r, Real s) const;
     
+#if !defined(QL_NO_UBLAS_SUPPORT)
+    Disposable<SparseMatrix> toMatrix() const;
+#endif
       private:
         const boost::shared_ptr<FdmMesher> mesher_;
         const boost::shared_ptr<GeneralizedBlackScholesProcess> p1_, p2_;

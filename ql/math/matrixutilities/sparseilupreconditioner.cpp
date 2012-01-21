@@ -42,16 +42,15 @@ namespace QuantLib {
 
     using namespace boost::numeric::ublas;
 
-    SparseILUPreconditioner::SparseILUPreconditioner(
-                                            const compressed_matrix<Real>& A,
-                                            Integer lfil)
-    : L_(compressed_matrix<Real>(A.size1(),A.size2())),
-      U_(compressed_matrix<Real>(A.size1(),A.size2())) {
+    SparseILUPreconditioner::SparseILUPreconditioner(const SparseMatrix& A,
+                                                     Integer lfil)
+    : L_(A.size1(),A.size2()),
+      U_(A.size1(),A.size2()) {
 
         QL_REQUIRE(A.size1() == A.size2(),
                    "sparse ILU preconditioner works only with square matrices");
 
-        for (compressed_matrix<Real>::size_type i=0; i < L_.size1(); ++i)
+        for (SparseMatrix::size_type i=0; i < L_.size1(); ++i)
             L_(i,i) = 1.0;
 
         const Integer n = A.size1();
@@ -164,11 +163,11 @@ namespace QuantLib {
         std::copy(uBandSet.begin(), uBandSet.end(), uBands_.begin());
     }
 
-    const compressed_matrix<Real>& SparseILUPreconditioner::L() const {
+    const SparseMatrix& SparseILUPreconditioner::L() const {
         return L_;
     }
 
-    const compressed_matrix<Real>& SparseILUPreconditioner::U() const {
+    const SparseMatrix& SparseILUPreconditioner::U() const {
         return U_;
     }
 

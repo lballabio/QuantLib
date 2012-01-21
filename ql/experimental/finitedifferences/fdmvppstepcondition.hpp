@@ -41,6 +41,7 @@ namespace QuantLib {
             Real heatRate,
             Real pMin, Real pMax,
             Size tMinUp, Size tMinDown,
+            Size nStarts,
             Real startUpFuel, Real startUpFixCost,
             Real carbonPrice,
             Size stateDirection,
@@ -48,6 +49,7 @@ namespace QuantLib {
             const boost::shared_ptr<FdmInnerValueCalculator>& gasPrice,
             const boost::shared_ptr<FdmInnerValueCalculator>& sparkSpreadPrice);
 
+        Size nStates() const;
         void applyTo(Array& a, Time t) const;
 
       private:
@@ -61,6 +63,7 @@ namespace QuantLib {
         const Real heatRate_;
         const Real pMin_, pMax_;
         const Size tMinUp_, tMinDown_;
+        const Size nStarts_;
         const Real startUpFuel_, startUpFixCost_;
         const Real carbonPrice_;
         const Size stateDirection_;
@@ -69,6 +72,7 @@ namespace QuantLib {
         const boost::shared_ptr<FdmInnerValueCalculator> gasPrice_;
         const boost::shared_ptr<FdmInnerValueCalculator> sparkSpreadPrice_;
 
+        const Size nStates_;
         std::vector<boost::function<Real (Real)> > stateEvolveFcts_;
     };
 }

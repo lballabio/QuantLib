@@ -112,5 +112,13 @@ namespace QuantLib {
     FdmG2Op::preconditioner(const Array& r, Real dt) const {
         return solve_splitting(direction1_, r, dt);
     }
+
+#if !defined(QL_NO_UBLAS_SUPPORT)
+    Disposable<SparseMatrix> FdmG2Op::toMatrix() const {
+        SparseMatrix retVal =
+            mapX_.toMatrix() + mapY_.toMatrix() + corrMap_.toMatrix();
+        return retVal;
+    }
+#endif
 }
 

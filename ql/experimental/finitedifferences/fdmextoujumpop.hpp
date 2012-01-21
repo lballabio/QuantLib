@@ -24,11 +24,11 @@
 #ifndef quantlib_fdm_ext_ou_jump_op_hpp
 #define quantlib_fdm_ext_ou_jump_op_hpp
 
+#include <ql/math/matrixutilities/sparsematrix.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/methods/finitedifferences/operators/triplebandlinearop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
-
 
 namespace QuantLib {
     
@@ -63,7 +63,24 @@ namespace QuantLib {
                                           const Array& r, Real s) const;
         Disposable<Array> preconditioner(const Array& r, Real s) const;
 
+#if !defined(QL_NO_UBLAS_SUPPORT)
+        Disposable<SparseMatrix> toMatrix() const;
+#endif
       private:
+        Disposable<Array> integro(const Array& r) const;
+
+        const boost::shared_ptr<FdmMesher> mesher_;
+        const boost::shared_ptr<ExtOUWithJumpsProcess> process_;
+        const boost::shared_ptr<YieldTermStructure> rTS_;
+        const FdmBoundaryConditionSet bcSet_;
+        GaussLaguerreIntegration gaussLaguerreIntegration_;
+
+        const Array x_;
+        const boost::shared_ptr<FdmExtendedOrnsteinUhlenbackOp> ouOp_;
+
+        const TripleBandLinearOp dyMap_;
+
+#if defined(QL_NO_UBLAS_SUPPORT)
         class IntegroIntegrand {
           public:
             IntegroIntegrand(const boost::shared_ptr<LinearInterpolation>& i,
@@ -77,18 +94,10 @@ namespace QuantLib {
             const boost::shared_ptr<LinearInterpolation>& interpl_;
         };
             
-        Disposable<Array> integro(const Array& r) const;  
-
-        const boost::shared_ptr<FdmMesher> mesher_;
-        const boost::shared_ptr<ExtOUWithJumpsProcess> process_;
-        const boost::shared_ptr<YieldTermStructure> rTS_;
-        const FdmBoundaryConditionSet bcSet_;
-        GaussLaguerreIntegration gaussLaguerreIntegration_;
-        
-        const Array x_;
-        const boost::shared_ptr<FdmExtendedOrnsteinUhlenbackOp> ouOp_;
-
-        const TripleBandLinearOp dyMap_;
+#else
+        SparseMatrix integroPart_;
+#endif
     };
 }
+
 #endif

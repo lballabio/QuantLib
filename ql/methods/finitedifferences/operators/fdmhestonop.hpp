@@ -95,6 +95,9 @@ namespace QuantLib {
                                           const Array& r, Real s) const;
         Disposable<Array> preconditioner(const Array& r, Real s) const;
 
+#if !defined(QL_NO_UBLAS_SUPPORT)
+        Disposable<SparseMatrix> toMatrix() const;
+#endif
       private:
         NinePointLinearOp correlationMap_;
         FdmHestonVariancePart dyMap_;

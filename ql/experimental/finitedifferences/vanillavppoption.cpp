@@ -41,16 +41,16 @@ namespace QuantLib {
         Real heatRate,
         Real pMin, Real pMax,
         Size tMinUp, Size tMinDown,
+        Size nStarts,
         Real startUpFuel, Real startUpFixCost,
-        Size initialState,
         const boost::shared_ptr<SwingExercise>& exercise)
     : MultiAssetOption(boost::shared_ptr<Payoff>(), exercise),
       heatRate_(heatRate),
       pMin_(pMin), pMax_(pMax),
       tMinUp_(tMinUp), tMinDown_(tMinDown),
+      nStarts_(nStarts),
       startUpFuel_(startUpFuel),
-      startUpFixCost_(startUpFixCost),
-      initialState_(initialState) {
+      startUpFixCost_(startUpFixCost) {
 
         Array weigths(2);
         weigths[0] = 1.0; weigths[1] = -heatRate;
@@ -77,9 +77,9 @@ namespace QuantLib {
         arguments->pMax           = pMax_;
         arguments->tMinUp         = tMinUp_;
         arguments->tMinDown       = tMinDown_;
+        arguments->nStarts        = nStarts_;
         arguments->startUpFuel    = startUpFuel_;
         arguments->startUpFixCost = startUpFixCost_;
-        arguments->initialState   = initialState_;
     }
 
     bool VanillaVPPOption::isExpired() const {

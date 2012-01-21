@@ -77,7 +77,7 @@ namespace QuantLib {
     Disposable<Array> FdmExtendedOrnsteinUhlenbackOp::apply_mixed(
                                                     const Array& r) const {
         Array retVal(r.size(), 0.0);
-        return  retVal;
+        return retVal;
     }
 
     Disposable<Array> FdmExtendedOrnsteinUhlenbackOp::apply_direction(
@@ -106,4 +106,11 @@ namespace QuantLib {
                                             const Array& r, Real dt) const {
         return solve_splitting(direction_, r, dt);
     }
+
+#if !defined(QL_NO_UBLAS_SUPPORT)
+    Disposable<SparseMatrix> FdmExtendedOrnsteinUhlenbackOp::toMatrix() const {
+        return mapX_.toMatrix();
+    }
+#endif
+
 }

@@ -103,7 +103,9 @@ namespace QuantLib {
 
         QL_REQUIRE(swingExercise, "Swing exercise supported only");
 
-        const Size nStates = 2*arguments_.tMinUp + arguments_.tMinDown;
+        const Size nStates = (arguments_.nStarts == Null<Size>())
+            ? 2*arguments_.tMinUp + arguments_.tMinDown
+            : (arguments_.nStarts+1)*(2*arguments_.tMinUp+arguments_.tMinDown);
 
         // 1. Layout
         std::vector<Size> dim;
@@ -140,7 +142,7 @@ namespace QuantLib {
                                          process_->getExtOUProcess(),maturity));
 
         const boost::shared_ptr<Fdm1dMesher> exerciseMesher(
-            new Uniform1dMesher(1.0, nStates, nStates));
+            new Uniform1dMesher(0.0, nStates-1.0, nStates));
 
         std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
         meshers.push_back(xMesher);
@@ -179,11 +181,12 @@ namespace QuantLib {
             new FdmVPPStepCondition(arguments_.heatRate,
                                     arguments_.pMin, arguments_.pMax,
                                     arguments_.tMinUp, arguments_.tMinDown,
+                                    arguments_.nStarts,
                                     arguments_.startUpFuel,
                                     arguments_.startUpFixCost,
                                     carbonPrice_, 3,
                                     mesher, gasPrice, sparkSpread)));
-
+        
         boost::shared_ptr<FdmStepConditionComposite> conditions(
                 new FdmStepConditionComposite(stoppingTimes, stepConditions));
 
@@ -202,8 +205,12 @@ namespace QuantLib {
         x[0] = process_->initialValues()[0];
         x[1] = process_->initialValues()[1];
         x[2] = process_->initialValues()[2];
-        x[3] = (Real) arguments_.initialState;
-
-        results_.value = solver->valueAt(x);
+        
+        Array results(2*arguments_.tMinUp + arguments_.tMinDown);
+        for (Size i=0; i < results.size(); ++i) {
+            x[3] = (Real) (nStates-results.size()+i);
+            results[i] = solver->valueAt(x);
+        }
+        results_.value = *std::max_element(results.begin(), results.end());
     }
 }

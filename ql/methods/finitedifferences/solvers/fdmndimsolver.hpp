@@ -65,6 +65,7 @@ namespace QuantLib {
 
         std::vector<std::vector<Real> > x_;
         std::vector<Real> initialValues_;
+        const std::vector<bool> extrapolation_;
 
         mutable boost::shared_ptr<data_table> f_;
         mutable boost::shared_ptr<MultiCubicSpline<N> > interp_;
@@ -87,7 +88,8 @@ namespace QuantLib {
       conditions_(FdmStepConditionComposite::joinConditions(thetaCondition_,
                                                         solverDesc.condition)),
       x_            (solverDesc.mesher->layout()->dim().size()),
-      initialValues_(solverDesc.mesher->layout()->size()) {
+      initialValues_(solverDesc.mesher->layout()->size()),
+      extrapolation_(std::vector<bool>(N, true)) {
 
         const boost::shared_ptr<FdmMesher> mesher = solverDesc.mesher;
         const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
@@ -137,7 +139,7 @@ namespace QuantLib {
         }
 
         interp_ = boost::shared_ptr<MultiCubicSpline<N> >(
-                                            new MultiCubicSpline<N>(x_, *f_));
+            new MultiCubicSpline<N>(x_, *f_, extrapolation_));
     }
 
 

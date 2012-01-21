@@ -148,4 +148,15 @@ namespace QuantLib {
                                                           Real dt) const {
         return solve_splitting(0, r, dt);
     }
+
+#if !defined(QL_NO_UBLAS_SUPPORT)
+    Disposable<SparseMatrix> Fdm2dBlackScholesOp::toMatrix() const {
+        SparseMatrix retVal =
+              opX_.toMatrix() + opY_.toMatrix() + corrMapT_.toMatrix() +
+              currentForwardRate_*boost::numeric::ublas::identity_matrix<Real>(
+                                                    mesher_->layout()->size());
+
+        return retVal;
+    }
+#endif
 }

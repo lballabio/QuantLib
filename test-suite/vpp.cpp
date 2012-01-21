@@ -422,9 +422,12 @@ void VPPTest::testVPPIntrinsicValue() {
     const Real startUpFuel    = 20;
     const Real startUpFixCost = 100;
     const Real carbonPrice    = 3.0;
+    const Size nStarts        = Null<Size>();
     const Size stateDirection = 0;
 
-    const Size nStates = 2*tMinUp + tMinDown;
+    const Size nStates = ((nStarts == Null<Size>()) ? 1 : nStarts)*
+                         (2*tMinUp + tMinDown);
+
     const std::vector<Size> dim(1, nStates);
     const boost::shared_ptr<FdmLinearOpLayout> layout(
                                                    new FdmLinearOpLayout(dim));
@@ -452,7 +455,10 @@ void VPPTest::testVPPIntrinsicValue() {
                                               new SparkSpreadPrice(heatRate));
 
         boost::shared_ptr<StepCondition<Array> > stepCondition(
-            new FdmVPPStepCondition(heatRate, pMin, pMax, tMinUp, tMinDown,
+            new FdmVPPStepCondition(heatRate,
+                                    pMin, pMax,
+                                    tMinUp, tMinDown,
+                                    nStarts,
                                     startUpFuel, startUpFixCost,
                                     carbonPrice, stateDirection,
                                     mesher, gasPrice, sparkSpreadPrice));
@@ -558,15 +564,15 @@ void VPPTest::testVPPPricing() {
     const Real startUpFuel    = 20;
     const Real startUpFixCost = 100;
     const Size nStates        = 2u*tMinUp + tMinDown;
-    const Size initialState   = nStates-1u;
 
     boost::shared_ptr<SwingExercise> exercise(
                                 new SwingExercise(today, today+6, 3600u));
 
     VanillaVPPOption vppOption(heatRate, pMin, pMax,
                                tMinUp, tMinDown,
+                               Null<Size>(),
                                startUpFuel, startUpFixCost,
-                               initialState, exercise);
+                               exercise);
 
     // model definition
     const Real beta         = 200;
@@ -632,7 +638,7 @@ void VPPTest::testVPPPricing() {
                     new Uniform1dMesher(0.0, 1.0, nStates)))));
 
     const FdmVPPStepCondition stepCondition(
-            heatRate, pMin, pMax, tMinUp, tMinDown,
+            heatRate, pMin, pMax, tMinUp, tMinDown, Null<Size>(),
             startUpFuel, startUpFixCost, carbonPrice, 0u, oneDimMesher,
             boost::shared_ptr<FdmInnerValueCalculator>(new GasPrice()),
             boost::shared_ptr<FdmInnerValueCalculator>(
@@ -683,7 +689,7 @@ void VPPTest::testVPPPricing() {
         const sample_type& path = generator.next();
 
         FdmVPPStepCondition stepCondition(
-            heatRate, pMin, pMax, tMinUp, tMinDown,
+            heatRate, pMin, pMax, tMinUp, tMinDown, Null<Size>(),
             startUpFuel, startUpFixCost, carbonPrice, 0u, oneDimMesher,
             boost::shared_ptr<FdmInnerValueCalculator>(
                 new PathGasPrice(path.value, gasShape)),
@@ -729,7 +735,7 @@ void VPPTest::testVPPPricing() {
 
         stepConditions.push_back(boost::shared_ptr<FdmVPPStepCondition>(
             new FdmVPPStepCondition(
-                heatRate, pMin, pMax, tMinUp, tMinDown,
+                heatRate, pMin, pMax, tMinUp, tMinDown,Null<Size>(),
                 startUpFuel, startUpFixCost, carbonPrice, 0u, oneDimMesher,
                 boost::shared_ptr<FdmInnerValueCalculator>(
                     new PathGasPrice(calibrationPaths.back().value, gasShape)),
@@ -796,7 +802,7 @@ void VPPTest::testVPPPricing() {
                                      gasShape, powerShape));
 
         FdmVPPStepCondition stepCondition(
-            heatRate, pMin, pMax, tMinUp, tMinDown,
+            heatRate, pMin, pMax, tMinUp, tMinDown,Null<Size>(),
             startUpFuel, startUpFixCost, carbonPrice, 0u, oneDimMesher,
             gasPrices, sparkSpreads);
 

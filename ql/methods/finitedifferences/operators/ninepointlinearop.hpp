@@ -26,7 +26,9 @@
 #ifndef quantlib_nine_point_linear_op_hpp
 #define quantlib_nine_point_linear_op_hpp
 
+#include <ql/math/matrixutilities/sparsematrix.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearop.hpp>
+
 #include <boost/shared_array.hpp>
 
 namespace QuantLib {
@@ -45,6 +47,10 @@ namespace QuantLib {
         Disposable<NinePointLinearOp> mult(const Array& u) const;
 
         void swap(NinePointLinearOp& m);
+
+#if !defined(QL_NO_UBLAS_SUPPORT)
+        Disposable<SparseMatrix> toMatrix() const;
+#endif
 
       protected:
         NinePointLinearOp() {}

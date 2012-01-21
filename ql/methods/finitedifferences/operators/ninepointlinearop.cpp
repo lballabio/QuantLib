@@ -158,6 +158,29 @@ namespace QuantLib {
         return retVal;
     }
 
+#if !defined(QL_NO_UBLAS_SUPPORT)
+    Disposable<SparseMatrix> NinePointLinearOp::toMatrix() const {
+        const boost::shared_ptr<FdmLinearOpLayout> index = mesher_->layout();
+        const Size n = index->size();
+
+        SparseMatrix retVal(n, n, 9*n);
+        for (Size i=0; i < index->size(); ++i) {
+            retVal(i, i00_[i]) += a00_[i];
+            retVal(i, i01_[i]) += a01_[i];
+            retVal(i, i02_[i]) += a02_[i];
+            retVal(i, i10_[i]) += a10_[i];
+            retVal(i, i      ) += a11_[i];
+            retVal(i, i12_[i]) += a12_[i];
+            retVal(i, i20_[i]) += a20_[i];
+            retVal(i, i21_[i]) += a21_[i];
+            retVal(i, i22_[i]) += a22_[i];
+        }
+
+        return retVal;
+    }
+#endif
+
+
     Disposable<NinePointLinearOp>
         NinePointLinearOp::mult(const Array & u) const {
 

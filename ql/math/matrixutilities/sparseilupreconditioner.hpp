@@ -24,43 +24,29 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #ifndef quantlib_sparse_ilu_preconditioner_hpp
 #define quantlib_sparse_ilu_preconditioner_hpp
 
-#include <ql/qldefines.hpp>
-
 #if !defined(QL_NO_UBLAS_SUPPORT)
 
+#include <ql/qldefines.hpp>
 #include <ql/math/array.hpp>
-
-#if defined(QL_PATCH_MSVC)
-#pragma warning(push)
-#pragma warning(disable:4180)
-#endif
-
-#include <boost/numeric/ublas/matrix_sparse.hpp>
-
-#if defined(QL_PATCH_MSVC)
-#pragma warning(pop)
-#endif
+#include <ql/math/matrixutilities/sparsematrix.hpp>
 
 namespace QuantLib {
 
     /*! References:
-
         Saad, Yousef. 1996, Iterative methods for sparse linear systems,
         http://www-users.cs.umn.edu/~saad/books.html
     */
     class SparseILUPreconditioner  {
       public:
-        SparseILUPreconditioner(
-                      const boost::numeric::ublas::compressed_matrix<Real>& A,
-                      Integer lfil = 1);
+        SparseILUPreconditioner(const SparseMatrix& A, Integer lfil = 1);
 
-        const boost::numeric::ublas::compressed_matrix<Real>& L() const;
-        const boost::numeric::ublas::compressed_matrix<Real>& U() const;
+        const SparseMatrix& L() const;
+        const SparseMatrix& U() const;
 
         Disposable<Array> apply(const Array& b) const;
 
       private:
-        boost::numeric::ublas::compressed_matrix<Real> L_, U_;
+        SparseMatrix L_, U_;
         std::vector<Size> lBands_, uBands_;
 
         Disposable<Array> forwardSolve(const Array& b) const;

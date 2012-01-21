@@ -36,8 +36,8 @@ namespace QuantLib {
         VanillaVPPOption(Real heatRate,
                          Real pMin, Real pMax,
                          Size tMinUp, Size tMinDown,
+                         Size nStarts,
                          Real startUpFuel, Real startUpFixCost,
-                         Size initialState,
                          const boost::shared_ptr<SwingExercise>& exercise);
 
         bool isExpired() const;
@@ -47,8 +47,8 @@ namespace QuantLib {
         const Real heatRate_;
         const Real pMin_, pMax_;
         const Size tMinUp_, tMinDown_;
+        const Size nStarts_;
         const Real startUpFuel_, startUpFixCost_;
-        const Size initialState_;
     };
 
     class VanillaVPPOption::arguments
@@ -60,8 +60,8 @@ namespace QuantLib {
         Real heatRate;
         Real pMin, pMax;
         Size tMinUp, tMinDown;
+        Size nStarts;
         Real startUpFuel, startUpFixCost;
-        Size initialState;
     };
 }
 

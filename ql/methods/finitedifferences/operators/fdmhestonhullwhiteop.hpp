@@ -80,6 +80,9 @@ namespace QuantLib {
                                           const Array& r, Real s) const;
         Disposable<Array> preconditioner(const Array& r, Real s) const;
 
+#if !defined(QL_NO_UBLAS_SUPPORT)
+        Disposable<SparseMatrix> toMatrix() const;
+#endif
       private:
         const Real v0_, kappa_, theta_, sigma_, rho_;
         const boost::shared_ptr<HullWhite> hwModel_;

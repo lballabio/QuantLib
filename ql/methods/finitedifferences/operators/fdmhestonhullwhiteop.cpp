@@ -155,4 +155,15 @@ namespace QuantLib {
                                                            Real dt) const {
         return solve_splitting(0, r, dt);
     }
+
+#if !defined(QL_NO_UBLAS_SUPPORT)
+    Disposable<SparseMatrix> FdmHestonHullWhiteOp::toMatrix() const {
+        SparseMatrix retVal =
+                dyMap_.toMatrix() + dxMap_.getMap().toMatrix()
+              + hullWhiteOp_.toMatrix()
+              + hestonCorrMap_.toMatrix() + equityIrCorrMap_.toMatrix();
+
+        return retVal;
+    }
+#endif
 }

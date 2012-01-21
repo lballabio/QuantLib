@@ -126,4 +126,10 @@ namespace QuantLib {
                                                         Real dt) const {
         return solve_splitting(direction_, r, dt);
     }
+
+#if !defined(QL_NO_UBLAS_SUPPORT)
+    Disposable<SparseMatrix> FdmBlackScholesOp::toMatrix() const {
+        return mapT_.toMatrix();
+    }
+#endif
 }

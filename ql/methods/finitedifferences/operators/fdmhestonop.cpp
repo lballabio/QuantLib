@@ -161,4 +161,14 @@ namespace QuantLib {
 
         return solve_splitting(0, r, dt);
     }
+
+#if !defined(QL_NO_UBLAS_SUPPORT)
+    Disposable<SparseMatrix> FdmHestonOp::toMatrix() const {
+        SparseMatrix retVal =
+              dyMap_.getMap().toMatrix() + dxMap_.getMap().toMatrix()
+            + correlationMap_.toMatrix();
+
+        return retVal;
+    }
+#endif
 }

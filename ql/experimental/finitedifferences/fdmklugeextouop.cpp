@@ -107,4 +107,13 @@ namespace QuantLib {
         FdmKlugeExtOUOp::preconditioner(const Array& r, Real dt) const {
         return klugeOp_->solve_splitting(0, r, dt);
     }
+
+#if !defined(QL_NO_UBLAS_SUPPORT)
+    Disposable<SparseMatrix> FdmKlugeExtOUOp::toMatrix() const {
+        SparseMatrix retVal 
+            = ouOp_->toMatrix() + corrMap_.toMatrix() + klugeOp_->toMatrix();
+
+        return retVal;
+    }
+#endif
 }

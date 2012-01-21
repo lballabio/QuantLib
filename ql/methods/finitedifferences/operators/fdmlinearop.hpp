@@ -27,6 +27,7 @@
 #define quantlib_fdm_linear_op_hpp
 
 #include <ql/math/array.hpp>
+#include <ql/math/matrixutilities/sparsematrix.hpp>
 
 namespace QuantLib {
 
@@ -35,6 +36,12 @@ namespace QuantLib {
         typedef Array array_type;
         virtual ~FdmLinearOp() { }
         virtual Disposable<array_type> apply(const array_type& r) const = 0;
+
+#if !defined(QL_NO_UBLAS_SUPPORT)
+        virtual Disposable<SparseMatrix> toMatrix() const {
+            QL_FAIL("not implemented");
+        }
+#endif
     };
 }
 

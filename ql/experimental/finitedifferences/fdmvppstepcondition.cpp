@@ -35,6 +35,7 @@ namespace QuantLib {
         Real heatRate,
         Real pMin, Real pMax,
         Size tMinUp, Size tMinDown,
+        Size nStarts,
         Real startUpFuel, Real startUpFixCost,
         Real carbonPrice,
         Size stateDirection,
@@ -46,6 +47,7 @@ namespace QuantLib {
       pMax_            (pMax),
       tMinUp_          (tMinUp),
       tMinDown_        (tMinDown),
+      nStarts_         (nStarts),
       startUpFuel_     (startUpFuel),
       startUpFixCost_  (startUpFixCost),
       carbonPrice_     (carbonPrice),
@@ -53,7 +55,9 @@ namespace QuantLib {
       mesher_          (mesher),
       gasPrice_        (gasPrice),
       sparkSpreadPrice_(sparkSpreadPrice),
-      stateEvolveFcts_ (2*tMinUp + tMinDown) {
+      nStates_         ((2*tMinUp + tMinDown)
+                          *((nStarts == Null<Size>()) ? 1 : nStarts+1)),
+      stateEvolveFcts_ (nStates_) {
 
         QL_REQUIRE(tMinUp_ > 1,   "minimum up time must be greater than one");
         QL_REQUIRE(tMinDown_ > 1, "minimum down time must be greater than one");
@@ -61,16 +65,23 @@ namespace QuantLib {
                    mesher_->layout()->dim()[stateDirection_],
                    "mesher does not fit to vpp arguments");
 
-        for (Size i=0; i < 2*tMinUp; ++i) {
-            if (i < tMinUp) {
+        for (Size i=0; i < nStates_; ++i) {
+            const Size j = i % (2*tMinUp + tMinDown);
+
+            if (j < tMinUp) {
                 stateEvolveFcts_[i] = boost::function<Real (Real)>(
                     boost::bind(&FdmVPPStepCondition::evolveAtPMin,this, _1));
             }
-            else {
+            else if (j < 2*tMinUp){
                 stateEvolveFcts_[i] = boost::function<Real (Real)>(
                     boost::bind(&FdmVPPStepCondition::evolveAtPMax,this, _1));
             }
         }
+    }
+
+
+    Size FdmVPPStepCondition::nStates() const {
+        return nStates_;
     }
 
 
@@ -107,7 +118,7 @@ namespace QuantLib {
         const Size state = iter.coordinates()[stateDirection_];
 
         if (stateEvolveFcts_[state].empty()) {
-            return 0;
+            return 0.0;
         }
         else {
             const Real sparkSpread = sparkSpreadPrice_->innerValue(iter, t);
@@ -117,27 +128,43 @@ namespace QuantLib {
 
     Disposable<Array> FdmVPPStepCondition::changeState(
                         const Real gasPrice, const Array& state, Time t) const {
-
         const Real startUpCost
                 = startUpFixCost_ + (gasPrice + carbonPrice_)*startUpFuel_;
 
         Array retVal(state.size());
+        const Size sss = 2*tMinUp_ + tMinDown_;
+        const Size n = sss * (nStarts_ == Null<Size>() ? 1 : nStarts_+1);
 
-        for (Size i=0; i < tMinUp_-1; ++i) {
-            retVal[i] = retVal[tMinUp_ + i]
-                      = std::max(state[i+1], state[tMinUp_ + i+1]);
+        for (Size i=0; i < n; ++i) {
+            const Size j = i % sss;
+
+            if (j < tMinUp_-1) {
+                retVal[i] = std::max(state[i+1], state[tMinUp_+i+1]);
+            }
+            else if (j == tMinUp_-1) {
+                retVal[i] = std::max(state[i+tMinUp_+1],
+                                     std::max(state[i], state[i+tMinUp_]));
+            }
+            else if (j < 2*tMinUp_) {
+                retVal[i] = retVal[i-tMinUp_];
+            }
+            else if (j <  2*tMinUp_+tMinDown_-1) {
+                retVal[i] = state[i+1];
+            }
+            else if (nStarts_ == Null<Size>()) {
+                retVal[i] = std::max(state[i],
+                    std::max(state.front(), state[tMinUp_]) - startUpCost);
+
+            }
+            else if (i >= sss) {
+                retVal[i] = std::max(state[i],
+                    std::max(state[i+1-2*sss], state[i+1-2*sss+tMinUp_])
+                            - startUpCost);
+            }
+            else {
+                retVal[i] = state[i];
+            }
         }
-
-        retVal[tMinUp_-1] = retVal[2*tMinUp_-1]
-                          = std::max(state[2*tMinUp_],
-                            std::max(state[tMinUp_-1], state[2*tMinUp_-1]));
-
-        for (Size i=0; i < tMinDown_-1; ++i) {
-            retVal[2*tMinUp_ + i] = state[2*tMinUp_ + i+1];
-        }
-
-        retVal.back() = std::max(state.back(),
-            std::max(state.front(), state[tMinUp_]) - startUpCost);
 
         return retVal;
     }

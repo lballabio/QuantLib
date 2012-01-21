@@ -12,6 +12,7 @@ this_include_HEADERS = \
 	pseudosqrt.hpp \
 	qrdecomposition.hpp \
 	sparseilupreconditioner.hpp \
+	sparsematrix.hpp \
 	svd.hpp \
 	symmetricschurdecomposition.hpp \
 	tapcorrelations.hpp \

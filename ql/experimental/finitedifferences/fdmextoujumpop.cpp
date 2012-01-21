@@ -32,6 +32,22 @@
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
 #include <ql/experimental/finitedifferences/fdmextendedornsteinuhlenbeckop.hpp>
 
+#if !defined(QL_NO_UBLAS_SUPPORT)
+
+#if defined(QL_PATCH_MSVC)
+#pragma warning(push)
+#pragma warning(disable:4180)
+#endif
+
+#include <boost/numeric/ublas/vector.hpp>
+#include <boost/numeric/ublas/operation.hpp>
+
+#if defined(QL_PATCH_MSVC)
+#pragma warning(pop)
+#endif
+
+#endif
+
 namespace QuantLib {
 
     FdmExtOUJumpOp::FdmExtOUJumpOp(
@@ -50,7 +66,52 @@ namespace QuantLib {
                    mesher,
                    process->getExtendedOrnsteinUhlenbeckProcess(), rTS, bcSet)),
       dyMap_  (FirstDerivativeOp(1, mesher)
-                .mult(-process->beta()*mesher->locations(1))) {
+                .mult(-process->beta()*mesher->locations(1)))
+    {
+#if !defined(QL_NO_UBLAS_SUPPORT)
+        const Real eta     = process_->eta();
+        const Real lambda  = process_->jumpIntensity();
+
+        const Array yInt   = gaussLaguerreIntegration_.x();
+        const Array weights= gaussLaguerreIntegration_.weights();
+
+        integroPart_ = SparseMatrix(mesher_->layout()->size(),
+                                    mesher_->layout()->size());
+
+        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+        const FdmLinearOpIterator endIter = layout->end();
+
+        Array yLoc(mesher_->layout()->dim()[1]);
+        for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
+            ++iter) {
+            yLoc[iter.coordinates()[1]] = mesher_->location(iter, 1);
+        }
+
+        for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
+            ++iter) {
+
+            const Size diag = iter.index();
+            integroPart_(diag, diag) -= lambda;
+
+            const Real y = mesher_->location(iter, 1);
+            const Integer yIndex = iter.coordinates()[1];
+
+            for (Size i=0; i < yInt.size(); ++i) {
+                const Real weight = std::exp(-yInt[i])*weights[i];
+
+                const Real ys = y + yInt[i]/eta;
+                const Integer l = (ys > yLoc.back()) ? yLoc.size()-2
+                    : std::upper_bound(yLoc.begin(),
+                                       yLoc.end()-1, ys) - yLoc.begin()-1;
+
+                const Real s = (ys-yLoc[l])/(yLoc[l+1]-yLoc[l]);
+                integroPart_(diag, layout->neighbourhood(iter, 1, l-yIndex))
+                    += weight*lambda*(1-s);
+                integroPart_(diag, layout->neighbourhood(iter, 1, l+1-yIndex))
+                    += weight*lambda*s;
+            }
+        }
+#endif
     }
 
     Size FdmExtOUJumpOp::size() const {
@@ -62,7 +123,7 @@ namespace QuantLib {
     }
 
     Disposable<Array> FdmExtOUJumpOp::apply(const Array& r) const {
-        return ouOp_->apply(r) + apply_direction(1, r) + integro(r);
+        return ouOp_->apply(r) + dyMap_.apply(r) + integro(r);
     }
 
     Disposable<Array> FdmExtOUJumpOp::apply_mixed(const Array& r) const {
@@ -97,11 +158,11 @@ namespace QuantLib {
     }
 
     Disposable<Array>
-        FdmExtOUJumpOp::preconditioner(const Array& r, Real dt) const {
-
+    FdmExtOUJumpOp::preconditioner(const Array& r, Real dt) const {
         return ouOp_->solve_splitting(0, r, dt);
     }
 
+#if defined(QL_NO_UBLAS_SUPPORT)
     FdmExtOUJumpOp::IntegroIntegrand::IntegroIntegrand(
                     const boost::shared_ptr<LinearInterpolation>& interpl,
                     const FdmBoundaryConditionSet& bcSet,
@@ -125,7 +186,6 @@ namespace QuantLib {
 
     Disposable<Array> FdmExtOUJumpOp::integro(const Array& r) const {
         Array integral(r.size());
-
         const boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
         const Size extraDims=layout->size()/(layout->dim()[0]*layout->dim()[1]);
 
@@ -168,4 +228,16 @@ namespace QuantLib {
 
         return process_->jumpIntensity()*(integral-r);
     }
+#else
+    Disposable<Array> FdmExtOUJumpOp::integro(const Array& r) const {
+        return prod(integroPart_, r);
+    }
+
+    Disposable<SparseMatrix> FdmExtOUJumpOp::toMatrix() const {
+        QL_REQUIRE(bcSet_.empty(), "boundary conditions are not supported");
+        SparseMatrix retVal = ouOp_->toMatrix()+dyMap_.toMatrix()+integroPart_;
+
+        return retVal;
+    }
+#endif
 }

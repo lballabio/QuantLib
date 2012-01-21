@@ -65,7 +65,8 @@ namespace QuantLib {
             
             helper = boost::shared_ptr<Fdm1dMesher>(
                 new Concentrating1dMesher(xMin, xMax, size, 
-                    std::pair<Real,Real>(std::log(cPoint.first),cPoint.second)));
+                    std::pair<Real,Real>(std::log(cPoint.first),
+                                         cPoint.second)));
         }
         else {
             helper = boost::shared_ptr<Fdm1dMesher>(
