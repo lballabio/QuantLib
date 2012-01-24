@@ -44,7 +44,7 @@ namespace QuantLib {
         const Integer n = A.size1();
         std::set<Integer> lBandSet, uBandSet;
 
-        SparseMatrix levs(n,n);
+        boost::numeric::ublas::compressed_matrix<Integer> levs(n,n);
         Integer lfilp = lfil + 1;
 
         for (Integer ii=0; ii<n; ++ii) {
