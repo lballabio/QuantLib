@@ -3522,6 +3522,33 @@
     <ClInclude Include="ql\pricingengines\vanilla\fdblackscholesvanillaengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\solvers\fdm1dimsolver.hpp">
+      <Filter>methods\finitedifferences\solvers</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\swaption\fdg2swaptionengine.hpp">
+      <Filter>pricingengines\swaption</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\swaption\fdhullwhiteswaptionengine.hpp">
+      <Filter>pricingengines\swaption</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\solvers\fdmg2solver.hpp">
+      <Filter>methods\finitedifferences\solvers</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\solvers\fdmhullwhitesolver.hpp">
+      <Filter>methods\finitedifferences\solvers</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\operators\fdmg2op.hpp">
+      <Filter>methods\finitedifferences\operators</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\operators\fdmhullwhiteop.hpp">
+      <Filter>methods\finitedifferences\operators</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\utilities\fdmaffinemodelswapinnervalue.hpp">
+      <Filter>methods\finitedifferences\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\utilities\fdmaffinemodeltermstructure.hpp">
+      <Filter>methods\finitedifferences\utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -5606,6 +5633,33 @@
     </ClCompile>
     <ClCompile Include="ql\pricingengines\vanilla\fdblackscholesvanillaengine.cpp">
       <Filter>pricingengines\vanilla</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\methods\finitedifferences\solvers\fdm1dimsolver.cpp">
+      <Filter>methods\finitedifferences\solvers</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\swaption\fdg2swaptionengine.cpp">
+      <Filter>pricingengines\swaption</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\swaption\fdhullwhiteswaptionengine.cpp">
+      <Filter>pricingengines\swaption</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\methods\finitedifferences\solvers\fdmg2solver.cpp">
+      <Filter>methods\finitedifferences\solvers</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\methods\finitedifferences\solvers\fdmhullwhitesolver.cpp">
+      <Filter>methods\finitedifferences\solvers</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\methods\finitedifferences\operators\fdmg2op.cpp">
+      <Filter>methods\finitedifferences\operators</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\methods\finitedifferences\operators\fdmhullwhiteop.cpp">
+      <Filter>methods\finitedifferences\operators</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\methods\finitedifferences\utilities\fdmaffinemodelswapinnervalue.cpp">
+      <Filter>methods\finitedifferences\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\methods\finitedifferences\utilities\fdmaffinemodeltermstructure.cpp">
+      <Filter>methods\finitedifferences\utilities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
