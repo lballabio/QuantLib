@@ -24,18 +24,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/math/matrixutilities/sparseilupreconditioner.hpp>
 #include <ql/math/matrix.hpp>
 
-#if defined(QL_PATCH_MSVC)
-#pragma warning(push)
-#pragma warning(disable:4180)
-#endif
-
-#include <boost/numeric/ublas/vector_of_vector.hpp>
-#include <boost/numeric/ublas/vector.hpp>
-
-#if defined(QL_PATCH_MSVC)
-#pragma warning(pop)
-#endif
-
 #include <set>
 
 namespace QuantLib {
@@ -56,8 +44,7 @@ namespace QuantLib {
         const Integer n = A.size1();
         std::set<Integer> lBandSet, uBandSet;
 
-        generalized_vector_of_vector<Integer,
-            row_major, vector<compressed_vector<Integer> > > levs(n,n);
+        SparseMatrix levs(n,n);
         Integer lfilp = lfil + 1;
 
         for (Integer ii=0; ii<n; ++ii) {
