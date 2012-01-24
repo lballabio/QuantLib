@@ -27,6 +27,10 @@
 #include <ql/methods/finitedifferences/operators/fdm2dblackscholesop.hpp>
 #include <ql/methods/finitedifferences/operators/secondordermixedderivativeop.hpp>
 
+#if !defined(QL_NO_UBLAS_SUPPORT)
+#include <boost/numeric/ublas/matrix.hpp>
+#endif
+
 namespace QuantLib {
 
     Fdm2dBlackScholesOp::Fdm2dBlackScholesOp(
