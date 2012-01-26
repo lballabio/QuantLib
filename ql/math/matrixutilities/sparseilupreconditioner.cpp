@@ -57,8 +57,7 @@ namespace QuantLib {
         const Integer n = A.size1();
         std::set<Integer> lBandSet, uBandSet;
 
-        generalized_vector_of_vector<Integer,
-            row_major, vector<compressed_vector<Integer> > > levs(n,n);
+        compressed_matrix<Integer> levs(n,n);
         Integer lfilp = lfil + 1;
 
         for (Integer ii=0; ii<n; ++ii) {

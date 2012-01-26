@@ -96,14 +96,11 @@
 // move inside here configs specific to VC++ 10 (2010)
 #  define QL_PATCH_MSVC100
 #  define QL_WORKING_BOOST_STREAMS
-// this goes here until we figure out what's wrong with boost::uBLAS
-#  define QL_NO_UBLAS_SUPPORT
 #else
 // Microsoft compiler we still don't know about.
 // We treat it the same way as the latest and hope for the better.
 #  define QL_PATCH_MSVC100
 #  define QL_WORKING_BOOST_STREAMS
-#  define QL_NO_UBLAS_SUPPORT
 #endif
 
 #ifndef _CPPRTTI
