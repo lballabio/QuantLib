@@ -40,7 +40,7 @@ namespace QuantLib {
         bool includeRefDateFlows =
             includeSettlementDateFlows_ ?
             *includeSettlementDateFlows_ :
-            Settings::instance().includeReferenceDateCashFlows();
+            Settings::instance().includeReferenceDateEvents();
 
         results_.value = CashFlows::npv(arguments_.cashflows,
                                         **discountCurve_,

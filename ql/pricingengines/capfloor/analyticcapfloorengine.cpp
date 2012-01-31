@@ -53,7 +53,7 @@ namespace QuantLib {
         Size nPeriods = arguments_.endDates.size();
 
         bool includeRefDatePayments =
-            Settings::instance().includeReferenceDateCashFlows();
+            Settings::instance().includeReferenceDateEvents();
         if (referenceDate == Settings::instance().evaluationDate()) {
             boost::optional<bool> includeTodaysPayments =
                 Settings::instance().includeTodaysCashFlows();

@@ -58,7 +58,7 @@ void CashFlowsTest::testSettings() {
     // case 1: don't include reference-date payments, no override at
     //         today's date
 
-    Settings::instance().includeReferenceDateCashFlows() = false;
+    Settings::instance().includeReferenceDateEvents() = false;
     Settings::instance().includeTodaysCashFlows() = none;
 
     CHECK_INCLUSION(0, 0, false);
@@ -74,7 +74,7 @@ void CashFlowsTest::testSettings() {
 
     // case 2: same, but with explicit setting at today's date
 
-    Settings::instance().includeReferenceDateCashFlows() = false;
+    Settings::instance().includeReferenceDateEvents() = false;
     Settings::instance().includeTodaysCashFlows() = false;
 
     CHECK_INCLUSION(0, 0, false);
@@ -91,7 +91,7 @@ void CashFlowsTest::testSettings() {
     // case 3: do include reference-date payments, no override at
     //         today's date
 
-    Settings::instance().includeReferenceDateCashFlows() = true;
+    Settings::instance().includeReferenceDateEvents() = true;
     Settings::instance().includeTodaysCashFlows() = none;
 
     CHECK_INCLUSION(0, 0, true);
@@ -108,7 +108,7 @@ void CashFlowsTest::testSettings() {
     // case 4: do include reference-date payments, explicit (and same)
     //         setting at today's date
 
-    Settings::instance().includeReferenceDateCashFlows() = true;
+    Settings::instance().includeReferenceDateEvents() = true;
     Settings::instance().includeTodaysCashFlows() = true;
 
     CHECK_INCLUSION(0, 0, true);
@@ -125,7 +125,7 @@ void CashFlowsTest::testSettings() {
     // case 5: do include reference-date payments, override at
     //         today's date
 
-    Settings::instance().includeReferenceDateCashFlows() = true;
+    Settings::instance().includeReferenceDateEvents() = true;
     Settings::instance().includeTodaysCashFlows() = false;
 
     CHECK_INCLUSION(0, 0, false);

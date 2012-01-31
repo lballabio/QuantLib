@@ -29,7 +29,7 @@ namespace QuantLib {
             d != Date() ? d : Settings::instance().evaluationDate();
         bool includeRefDateEvent =
             includeRefDate ? *includeRefDate :
-                           Settings::instance().includeReferenceDateCashFlows();
+                           Settings::instance().includeReferenceDateEvents();
         if (includeRefDateEvent)
             return date() < refDate;
         else
