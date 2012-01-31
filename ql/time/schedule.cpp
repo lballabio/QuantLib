@@ -353,9 +353,7 @@ namespace QuantLib {
                 for (Size i=0; i<dates_.size()-1; ++i)
                     dates_[i] = calendar_.endOfMonth(dates_[i]);
             }
-            if (terminationDateConvention == Unadjusted)
-                dates_.back() = Date::endOfMonth(dates_.back());
-            else
+            if (terminationDateConvention != Unadjusted)
                 dates_.back() = calendar_.endOfMonth(dates_.back());
         } else {
             // first date not adjusted for CDS schedules

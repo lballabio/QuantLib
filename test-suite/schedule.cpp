@@ -21,9 +21,30 @@
 #include "utilities.hpp"
 #include <ql/time/schedule.hpp>
 #include <ql/time/calendars/target.hpp>
+#include <ql/time/calendars/japan.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+
+namespace {
+
+    void check_dates(const Schedule& s,
+                     const std::vector<Date>& expected) {
+        if (s.size() != expected.size()) {
+            BOOST_FAIL("expected " << expected.size() << " dates, "
+                       << "found " << s.size());
+        }
+        for (Size i=0; i<expected.size(); ++i) {
+            if (s[i] != expected[i]) {
+                BOOST_ERROR("expected " << expected[i]
+                            << " at index " << i << ", "
+                            "found " << s[i]);
+            }
+        }
+    }
+
+}
+
 
 void ScheduleTest::testDailySchedule() {
     BOOST_MESSAGE("Testing schedule with daily frequency...");
@@ -47,22 +68,56 @@ void ScheduleTest::testDailySchedule() {
     expected[4] = Date(23,January,2012);
     expected[5] = Date(24,January,2012);
 
-    if (s.size() != expected.size()) {
-        BOOST_FAIL("expected " << expected.size() << " dates, "
-                   << "found " << s.size());
-    }
-    for (Size i=0; i<expected.size(); ++i) {
-        if (s[i] != expected[i]) {
-            BOOST_ERROR("expected " << expected[i] << " at index " << i << ", "
-                        "found " << s[i]);
-        }
-    }
+    check_dates(s, expected);
+}
+
+void ScheduleTest::testEndDateWithEomAdjustment() {
+    BOOST_MESSAGE(
+        "Testing end date for schedule with end-of-month adjustment...");
+
+    Schedule s =
+        MakeSchedule().from(Date(30,September,2009))
+                      .to(Date(15,June,2012))
+                      .withCalendar(Japan())
+                      .withTenor(6*Months)
+                      .withConvention(Following)
+                      .withTerminationDateConvention(Following)
+                      .forwards()
+                      .endOfMonth();
+
+    std::vector<Date> expected(7);
+    // The end date is adjusted, so it should also be moved to the end
+    // of the month.
+    expected[0] = Date(30,September,2009);
+    expected[1] = Date(31,March,2010);
+    expected[2] = Date(30,September,2010);
+    expected[3] = Date(31,March,2011);
+    expected[4] = Date(30,September,2011);
+    expected[5] = Date(30,March,2012);
+    expected[6] = Date(29,June,2012);
+
+    check_dates(s, expected);
+
+    // now with unadjusted termination date...
+    s = MakeSchedule().from(Date(30,September,2009))
+                      .to(Date(15,June,2012))
+                      .withCalendar(Japan())
+                      .withTenor(6*Months)
+                      .withConvention(Following)
+                      .withTerminationDateConvention(Unadjusted)
+                      .forwards()
+                      .endOfMonth();
+    // ...which should leave it alone.
+    expected[6] = Date(15,June,2012);
+
+    check_dates(s, expected);
 }
 
 
 test_suite* ScheduleTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Schedule tests");
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testDailySchedule));
+    suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testEndDateWithEomAdjustment));
     return suite;
 }
 
