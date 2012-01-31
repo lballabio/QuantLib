@@ -96,10 +96,10 @@ namespace QuantLib {
         bool includeReferenceDateEvents() const;
 #ifndef QL_DISABLE_DEPRECATED
         bool& includeReferenceDateCashFlows() {
-            return includeReferenceDate();
+            return includeReferenceDateEvents();
         }
         bool includeReferenceDateCashFlows() const {
-            return includeReferenceDate();
+            return includeReferenceDateEvents();
         }
 #endif
 
