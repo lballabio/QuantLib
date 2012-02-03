@@ -24,6 +24,16 @@ namespace QuantLib {
 
     bool CashFlow::hasOccurred(const Date& refDate,
                                boost::optional<bool> includeRefDate) const {
+
+        // easy and quick handling of most cases
+        if (refDate != Date()) {
+            Date cf = date();
+            if (refDate < cf)
+                return false;
+            if (cf < refDate)
+                return true;
+        }
+
         if (refDate == Date() ||
             refDate == Settings::instance().evaluationDate()) {
             // today's date; we override the bool with the one
