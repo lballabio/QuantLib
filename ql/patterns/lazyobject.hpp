@@ -100,14 +100,18 @@ namespace QuantLib {
     : calculated_(false), frozen_(false) {}
 
     inline void LazyObject::update() {
-        // observers don't expect notifications from frozen objects
-        // LazyObject forwards notifications only once until it has been 
-        // recalculated
-        if (!frozen_ && calculated_)
-            notifyObservers();
-        calculated_ = false;
+        // forwards notifications only the first time
+        if (calculated_) {
+            // set to false early, otherways non-lazy observers would be
+            // served obsolete data because of calculated_ being still true
+            calculated_ = false;
+            // observers don't expect notifications from frozen objects
+            if (!frozen_)
+                notifyObservers();
+        }
+        // calculated_ can be true if some Observer is not lazy
     }
-
+ 
     inline void LazyObject::recalculate() {
         bool wasFrozen = frozen_;
         calculated_ = frozen_ = false;
@@ -127,9 +131,12 @@ namespace QuantLib {
     }
 
     inline void LazyObject::unfreeze() {
-        frozen_ = false;
-        // send notification, just in case we lost any
-        notifyObservers();
+        // send notifications, just in case we lost any
+        // but only once if it was frozen
+        if (frozen_) {
+            frozen_ = false;
+            notifyObservers();
+        }
     }
 
     inline void LazyObject::calculate() const {
@@ -146,6 +153,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif
