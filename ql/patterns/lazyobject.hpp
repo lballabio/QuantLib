@@ -102,14 +102,17 @@ namespace QuantLib {
     inline void LazyObject::update() {
         // forwards notifications only the first time
         if (calculated_) {
-            // set to false early, otherways non-lazy observers would be
-            // served obsolete data because of calculated_ being still true
+            // set to false early
+            // 1) to prevent infinite recursion
+            // 2) otherways non-lazy observers would be served obsolete
+            //    data because of calculated_ being still true
             calculated_ = false;
             // observers don't expect notifications from frozen objects
             if (!frozen_)
                 notifyObservers();
+                // exiting notifyObservers() calculated_ could be
+                // already true because of non-lazy observers
         }
-        // calculated_ can be true if some Observer is not lazy
     }
  
     inline void LazyObject::recalculate() {
@@ -131,8 +134,8 @@ namespace QuantLib {
     }
 
     inline void LazyObject::unfreeze() {
-        // send notifications, just in case we lost any
-        // but only once if it was frozen
+        // send notifications, just in case we lost any,
+        // but only once, i.e. if it was frozen
         if (frozen_) {
             frozen_ = false;
             notifyObservers();
