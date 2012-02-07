@@ -208,11 +208,11 @@ namespace QuantLib {
                    "discount (" << discount << ") must be positive");
 
         QL_REQUIRE(blackPrice>=0.0,
-                   "blackPrice (" << blackPrice << ") must be non-negative");
+                   "option price (" << blackPrice << ") must be non-negative");
         // check the price of the "other" option implied by put-call paity
         Real otherOptionPrice = blackPrice - optionType*(forward-strike)*discount;
         QL_REQUIRE(otherOptionPrice>=0.0,
-                   "negative price (" << otherOptionPrice <<
+                   "negative option price (" << otherOptionPrice <<
                    ") implied by put-call parity: no solution exists");
 
         // always solve for out-of-the-money options which have greater vega
