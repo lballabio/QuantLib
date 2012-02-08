@@ -532,10 +532,14 @@ namespace QuantLib {
           case GaussChebyshev2nd:
             retVal = gaussianQuadrature_->operator()(
                 boost::function1<Real, Real>(
-                    if_then_else_return ( (_1+1.0)*c_inf > QL_EPSILON,
-                        boost::lambda::bind(f, -boost::lambda::bind(std::ptr_fun<Real,Real>(std::log),
-                                      0.5*_1+0.5 )/c_inf )/((_1+1.0)*c_inf),
-                        boost::lambda::bind(constant<Real, Real>(0.0), _1))));
+                    if_then_else_return ( (boost::lambda::_1+1.0)*c_inf 
+                                          > QL_EPSILON,
+                        boost::lambda::bind(f, -boost::lambda::bind(
+                            std::ptr_fun<Real,Real>(std::log),
+                            0.5*boost::lambda::_1+0.5 )/c_inf )
+                                          /((boost::lambda::_1+1.0)*c_inf),
+                        boost::lambda::bind(constant<Real, Real>(0.0), 
+                                            boost::lambda::_1))));
             break;
           case Simpson:
           case Trapezoid:
@@ -543,10 +547,12 @@ namespace QuantLib {
           case GaussKronrod:
             retVal = integrator_->operator()(
                 boost::function1<Real, Real>(
-                    if_then_else_return ( _1*c_inf > QL_EPSILON,
-                        boost::lambda::bind(f,-boost::lambda::bind(std::ptr_fun<Real,Real>(std::log), _1)
-                             /c_inf) /(_1*c_inf),
-                        boost::lambda::bind(constant<Real, Real>(0.0), _1))),
+                    if_then_else_return ( boost::lambda::_1*c_inf > QL_EPSILON,
+                        boost::lambda::bind(f,-boost::lambda::bind(
+                            std::ptr_fun<Real,Real>(std::log), 
+                            boost::lambda::_1)/c_inf) /(boost::lambda::_1*c_inf),
+                        boost::lambda::bind(constant<Real, Real>(0.0), 
+                                            boost::lambda::_1))),
                 0.0, 1.0);
             break;
           default:

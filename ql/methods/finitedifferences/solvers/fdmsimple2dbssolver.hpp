@@ -35,7 +35,7 @@ namespace QuantLib {
     class Fdm2DimSolver;
     class GeneralizedBlackScholesProcess;
 
-    class FdmSimple2dBSSolver : LazyObject {
+    class FdmSimple2dBSSolver : public LazyObject {
       public:
         FdmSimple2dBSSolver(
             const Handle<GeneralizedBlackScholesProcess>& process,
