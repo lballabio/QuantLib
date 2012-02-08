@@ -212,11 +212,17 @@ namespace QuantLib {
         // check the price of the "other" option implied by put-call paity
         Real otherOptionPrice = blackPrice - optionType*(forward-strike)*discount;
         QL_REQUIRE(otherOptionPrice>=0.0,
-                   "negative option price (" << otherOptionPrice <<
-                   ") implied by put-call parity: no solution exists");
+                   "negative " << Option::Type(-1*optionType) <<
+                   " price (" << otherOptionPrice <<
+                   ") implied by put-call parity. No solution exists for " <<
+                   optionType << " strike " << strike <<
+                   ", forward " << forward <<
+                   ", price " << blackPrice <<
+                   ", deflator " << discount);
 
-        // always solve for out-of-the-money options which have greater vega
-        // and are numerically more robust to implied vol calculations
+        // solve for the out-of-the-money option which has
+        // greater vega/price ratio, i.e.
+        // it is numerically more robust for implied vol calculations
         if (optionType==Option::Put && strike>forward) {
             optionType = Option::Call;
             blackPrice = otherOptionPrice;
