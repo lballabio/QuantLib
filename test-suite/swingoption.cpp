@@ -166,7 +166,7 @@ void SwingOptionTest::testFdmExponentialJump1dMesher() {
             = std::lower_bound(path.begin(), path.end(), x);
         const Real q = std::distance(path.begin(), iter)/Real(n);
         QL_REQUIRE(std::fabs(q - v) < relTol1
-                    || (v < threshold) && std::fabs(q-v) < relTol2,
+                   || ((v < threshold) && std::fabs(q-v) < relTol2),
                     "can not reproduce jump distribution");
     }
 }
