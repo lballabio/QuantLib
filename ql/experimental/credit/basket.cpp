@@ -256,7 +256,6 @@ namespace QuantLib {
 
     void Basket::updateScenarioLoss(bool zeroRecovery) {
         calculate();
-        Date today = Settings::instance().evaluationDate();
         for (Size i = 0; i < names_.size(); i++) {
             if (zeroRecovery)
                 scenarioLoss_[i].amount = notionals_[i];

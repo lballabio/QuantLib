@@ -42,7 +42,7 @@ void VolatilityModelsTest::testConstruction() {
 
     ConstantEstimator ce(1);
     TimeSeries<Volatility> sv = ce.calculate(locale);
-    TimeSeries<Volatility>::const_iterator cur = sv.begin();
+    sv.begin();
 }
 
 test_suite* VolatilityModelsTest::suite() {

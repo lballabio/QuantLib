@@ -87,8 +87,6 @@ namespace QuantLib {
                  endDate = coupon->accrualEndDate();
             Date effectiveStartDate =
                 (startDate <= today && today <= endDate) ? today : startDate;
-            Date defaultDate = // mid-point
-                effectiveStartDate + (endDate-effectiveStartDate)/2;
             Real couponAmount = coupon->amount();
 
             Probability S = probability_->survivalProbability(paymentDate);

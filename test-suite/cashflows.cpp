@@ -206,7 +206,7 @@ void CashFlowsTest::testAccessViolation() {
 
     try {
         // this caused an access violation in version 1.0
-        Real amount = coupon->amount();
+        coupon->amount();
     } catch (Error&) {
         // ok; proper exception thrown
     }

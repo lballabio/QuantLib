@@ -181,8 +181,6 @@ namespace QuantLib {
 
     void FittedBondDiscountCurve::FittingMethod::init() {
 
-        Date refDate  = curve_->referenceDate();
-
         // yield conventions
         DayCounter yieldDC = curve_->dayCounter();
         Compounding yieldComp = Compounded;

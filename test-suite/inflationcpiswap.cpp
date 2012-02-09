@@ -314,7 +314,6 @@ void CPISwapTest::consistency() {
                  fixedRate, baseCPI, fixedDayCount, fixedSchedule,
                  fixedPaymentConvention, contractObservationLag,
                  fixedIndex, observationInterpolation);
-    Date baseDate = floatSchedule[0] - contractObservationLag;
     Date asofDate = Settings::instance().evaluationDate();
 
     Real floatFix[] = {0.06255,0.05975,0.0637,0.018425,0.0073438,-1,-1};
@@ -472,8 +471,6 @@ void CPISwapTest::cpibondconsistency() {
                  fixedRate, baseCPI, fixedDayCount, fixedSchedule,
                  fixedPaymentConvention, contractObservationLag,
                  fixedIndex, observationInterpolation);
-    Date baseDate = floatSchedule[0] - contractObservationLag;
-    Date asofDate = Settings::instance().evaluationDate();
 
     Real floatFix[] = {0.06255,0.05975,0.0637,0.018425,0.0073438,-1,-1};
     Real cpiFix[] = {211.4,217.2,211.4,213.4,-2,-2};

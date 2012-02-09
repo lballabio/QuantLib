@@ -141,7 +141,6 @@ namespace QuantLib {
 
             for (Size i=0; i<n; i++)
             {
-                Real k_u = -b + lambda_ * i;
                 Real v_j = eta * i;
                 Real sw = eta * (3.0 + ((i % 2) == 0 ? -1.0 : 1.0) - ((i == 0) ? 1.0 : 0.0)) / 3.0; 
 

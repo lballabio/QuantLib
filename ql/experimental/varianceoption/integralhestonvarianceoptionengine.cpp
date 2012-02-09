@@ -54,7 +54,7 @@ namespace {
     double IvopOneDim(double eps, double chi, double theta, double rho,
                       double v0, double eprice, double tau, double rtax)
     {
-        double i0=0.0, x0=0.0, s=0.0,ss=0.0, kchi=0.0;
+        double i0=0.0, s=0.0, ss=0.0;
         boost::scoped_array<double> xiv(new double[2048*2048+1]);
         double nris=0.0;
         int j=0,mm=0;
@@ -72,15 +72,12 @@ namespace {
         /*
          **********************************************************
          **   i0: initial integrated variance i0=0
-         **   x0: initial centered log-returns x0=0
          **********************************************************
          */
         i0=0.0;
-        x0=0.0;
         s=2.0*chi*theta/(eps*eps)-1.0;
 
         s=s+1;
-        kchi=chi-eps*0.5*rho;
 
         /*
          *************************************************
@@ -103,7 +100,6 @@ namespace {
         }
 
         ss=s+1;
-        kchi=chi-eps*0.5*rho;
 
         /*
          *************************************************
@@ -203,7 +199,7 @@ namespace {
                     double v0, double tau, double rtax,
                     const boost::function<double(double)>& payoff) {
 
-        double i0=0.0, x0=0.0, s=0.0,ss=0.0, kchi=0.0;
+        double i0=0.0, s=0.0, ss=0.0;
         boost::scoped_array<double> xiv(new double[2048*2048+1]);
         boost::scoped_array<double> ivet(new double[2048*2048+1]);
         double nris=0.0;
@@ -213,7 +209,7 @@ namespace {
         double dstep=0;
         double ip=0;
         double payoffval=0;
-        double option=0, impart=0;
+        double option=0/*, impart=0*/;
 
         double sumr=0,sumi=0;
         Complex dxi,z;
@@ -228,14 +224,11 @@ namespace {
         /*
          **********************************************************
          **   i0: initial integrated variance i0=0
-         **   x0: initial centrated log-returns x0=0
          **********************************************************
          */
         i0=0.0;
-        x0=0.0;
         s=2.0*chi*theta/(eps*eps)-1.0;
         s=s+1;
-        kchi=chi-eps*0.5*rho;
 
         /*
          *************************************************
@@ -259,7 +252,6 @@ namespace {
         }
 
         ss=s+1;
-        kchi=chi-eps*0.5*rho;
 
         /*
          *************************************************
@@ -347,7 +339,7 @@ namespace {
         sumi=sumi*nris;
 
         option=std::exp(-rtax*tau)*sumr;
-        impart=sumi;
+        //impart=sumi;
         //QL_ENSURE(impart <= 1e-3,
         //          "imaginary part option (must be close to zero) = " << impart);
         return option;

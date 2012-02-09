@@ -201,7 +201,6 @@ int Bermudan()
     Real initialNumeraireValue = 0.95;
 
     Real volLevel = 0.11;
-    Real longTermCorr = 0.5;
     Real beta = 0.2;
     Real gamma = 1.0;
     Size numberOfFactors = std::min<Size>(5,numberRates);
@@ -550,7 +549,6 @@ int InverseFloater(Real rateLevel)
     Real initialNumeraireValue = 0.95;
 
     Real volLevel = 0.11;
-    Real longTermCorr = 0.5;
     Real beta = 0.2;
     Real gamma = 1.0;
     Size numberOfFactors = std::min<Size>(5,numberRates);
