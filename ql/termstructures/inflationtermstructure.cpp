@@ -30,9 +30,9 @@ namespace QuantLib {
                                         const Handle<YieldTermStructure>& yTS,
                                         const DayCounter& dayCounter,
                                         const boost::shared_ptr<Seasonality> &seasonality)
-    : TermStructure(dayCounter), nominalTermStructure_(yTS),
+    : TermStructure(dayCounter),
       observationLag_(observationLag), frequency_(frequency), indexIsInterpolated_(indexIsInterpolated),
-      baseRate_(baseRate) {
+      baseRate_(baseRate), nominalTermStructure_(yTS) {
         registerWith(nominalTermStructure_);
         setSeasonality(seasonality);
     }
@@ -48,9 +48,9 @@ namespace QuantLib {
                                         const DayCounter& dayCounter,
                                         const boost::shared_ptr<Seasonality> &seasonality)
     : TermStructure(referenceDate, calendar, dayCounter),
-      nominalTermStructure_(yTS), observationLag_(observationLag),
+      observationLag_(observationLag),
       frequency_(frequency), indexIsInterpolated_(indexIsInterpolated),
-      baseRate_(baseRate) {
+      baseRate_(baseRate), nominalTermStructure_(yTS) {
         registerWith(nominalTermStructure_);
         setSeasonality(seasonality);
     }
@@ -66,9 +66,9 @@ namespace QuantLib {
                                         const DayCounter &dayCounter,
                                         const boost::shared_ptr<Seasonality> &seasonality)
     : TermStructure(settlementDays, calendar, dayCounter),
-      nominalTermStructure_(yTS), observationLag_(observationLag),
+      observationLag_(observationLag),
       frequency_(frequency), indexIsInterpolated_(indexIsInterpolated),
-      baseRate_(baseRate) {
+      baseRate_(baseRate), nominalTermStructure_(yTS) {
         registerWith(nominalTermStructure_);
         setSeasonality(seasonality);
     }

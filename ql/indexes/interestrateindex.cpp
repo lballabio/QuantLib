@@ -33,8 +33,8 @@ namespace QuantLib {
                                          const Calendar& fixingCalendar,
                                          const DayCounter& dayCounter)
     : familyName_(familyName), tenor_(tenor), fixingDays_(fixingDays),
-      fixingCalendar_(fixingCalendar), currency_(currency),
-      dayCounter_(dayCounter) {
+      currency_(currency), dayCounter_(dayCounter),
+      fixingCalendar_(fixingCalendar) {
         tenor_.normalize();
 
         std::ostringstream out;
