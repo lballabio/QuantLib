@@ -585,7 +585,8 @@ namespace QuantLib {
             if (leg.empty())
                 return 0.0;
 
-            QL_REQUIRE(settlementDate!=Date(), "null settlement date");
+            if (settlementDate == Date())
+                settlementDate = Settings::instance().evaluationDate();
 
             if (npvDate == Date())
                 npvDate = settlementDate;
