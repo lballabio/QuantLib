@@ -2,6 +2,7 @@
 We gratefully acknowledge contributions from:
 
 Nathan Abbott
+Samad Abdessadki
 Kakhkhor Abdijalilov
 Xavier Abulker
 Toyin Akin
@@ -21,14 +22,18 @@ Sylvain Bertrand
 Manas Bhatt
 David Binderman
 Theo Boafo
+Delphine Bouthier
 Fakher Braham
 Joe Byers
+Xavier Caron
+Marine Casanova
 Peter Caspers
 Antoine Cellerier
 Yee Man Chan
 Aurelien Chanudet
 Yiping Chen
 Yanice Cherrak
+Meryem Chibo
 Warren Chou
 Jon Davidson
 Daniele De Francesco
@@ -39,6 +44,7 @@ Cristina Duminuco
 Dirk Eddelbuettel
 Bernd Engelmann
 Giorgio Facchinetti
+Matt Fair
 Paul Farrington
 Lorella Fatone
 Luca Ferraro
@@ -59,6 +65,7 @@ Frank Hövermann
 Charles Chongseok Hyun
 Simon Ibbotson
 Norbert Irmer
+Rahul Kanchi
 Tomoya Kawanishi
 Gary Kennedy
 Matt Knox
@@ -67,6 +74,8 @@ Silakhdar Krikeb
 Yan Kuang
 Allen Kuo
 Paul Laderoute
+Yasmine Lahlou
+Fabien Le Floc'h
 James Lee
 Samuel Lerouge
 Gang Liang
@@ -100,6 +109,7 @@ Dimitri Reiswich
 Sadruddin Rejeb
 Alessandro Roveda
 Mohamed Amine Sadaoui
+Amine Samani
 Alpha Sanou Toure
 Tamas Sashalmi
 Peter Schmitteckert
@@ -107,6 +117,7 @@ Ralph Schreyer
 David Schwartz
 Eugene Shevkoplyas
 Enrico Sirola
+Leon Sit
 Maxim Sokolov
 Niels Elken Sønderby
 Andreas Spengler
@@ -114,6 +125,7 @@ Roland Stamm
 Marco Tarenghi
 François du Vignaud
 Charles Whitmore
+Stephen Wong
 Bernd Johannes Wuebben
 Sun Xiuxin
 Jeff Yu
