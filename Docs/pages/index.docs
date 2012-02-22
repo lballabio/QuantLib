@@ -1,0 +1,42 @@
+
+/*
+ Copyright (C) 2000-2003 StatPro Italia srl
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/license.shtml>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
+/*! \mainpage Introduction
+
+    %QuantLib (http://quantlib.org/) is a C++ library for
+    financial quantitative analysts and developers.
+
+    %QuantLib is Non-Copylefted Free Software released under the modified BSD
+    License. It is also OSI Certified Open Source Software. OSI Certified is a
+    certification mark of the Open Source Initiative.
+
+    %QuantLib is free software and you are allowed to use, copy, modify,
+    merge, publish, distribute, and/or sell copies of it under the conditions
+    stated in the \ref license.
+
+    %QuantLib and its documentation are distributed in the hope that they
+    will be useful, but WITHOUT ANY WARRANTY; without even the implied
+    warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    \ref license for more details.
+
+    \section disclaimer Disclaimer
+    At this time, this documentation is widely incomplete and must be
+    regarded as a work in progress.  Contributions are welcome.
+
+*/
+

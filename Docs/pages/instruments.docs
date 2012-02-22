@@ -1,0 +1,94 @@
+
+/*
+ Copyright (C) 2000-2004 StatPro Italia srl
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/license.shtml>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
+/*! \defgroup instruments Financial instruments
+
+    Since version 0.3.4, the <tt>Instrument</tt> class was reworked
+    as shown in the following figure.
+
+    \latexonly
+    \begin{center}
+    \includegraphics[width=14cm]{instrument}
+    \end{center}
+    \endlatexonly
+
+    \htmlonly
+    <center><img src="instrument.png" alt="UML diagram"></center>
+    \endhtmlonly
+
+    On the one hand, the checking of the expiration condition is now
+    performed in a method <tt>isExpired()</tt> separated from the actual
+    calculation, and a <tt>setupExpired()</tt> method is provided. 
+    The latter sets the NPV to 0.0 and can be extended in derived
+    classes should any other results be returned. 
+
+    On the other hand, the pricing-engine machinery previously
+    contained in the Option class was moved upwards to the Instrument
+    class. Also, the <tt>setupEngine()</tt> method was replaced by a
+    <tt>setupArguments(Arguments*)</tt> method. This allows one to
+    cleanly implement containment of instruments with code such as:
+
+    \code
+    class FooArguments : public Arguments { ... };
+
+    class Foo : public Instrument {
+      public:
+        void setupArguments(Arguments*);
+        ...
+    };
+
+    class FooOptionArguments : public FooArguments { ... };
+
+    class FooOption : public Option {
+      private:
+        Foo underlying_;
+      public:
+        void setupArguments(Arguments* args) {
+            underlying_.setupArguments(args);
+            // set the option-specific part
+        }
+        ...
+    };
+    \endcode
+
+    which was more difficult to write with <tt>setupEngine()</tt>.            
+
+    Therefore, there are now two ways to inherit from
+    <tt>Instrument</tt>, namely:
+
+        -# implement the <tt>isExpired</tt> method, and completely 
+           override the <tt>performCalculations</tt> method so that 
+           it bypasses the pricing-engine machinery. If the class 
+           declared any other results beside <tt>NPV_</tt> and 
+           <tt>errorEstimate_</tt>, the <tt>setupExpired</tt> method 
+           should also be extended so that those results are set to a
+           value suitable for an expired instrument. This was the migration
+           path taken for all instruments not previously deriving from
+           the <tt>Option</tt> class.
+        -# define suitable argument and result classes for the instrument
+           and implement the <tt>isExpired</tt> and <tt>setupArguments</tt>
+           methods, reusing the pricing-engine machinery provided by
+           the default <tt>performCalculations</tt> method. The latter 
+           can be extended by first calling the default implementation
+           and then performing any additional tasks required by the 
+           instrument---most often, copying additional results from the
+           pricing engine results to the corresponding data members of
+           the instrument. As in the previous case, the <tt>setupExpired</tt> 
+           method can be extended to account for such extra data members.
+
+*/
