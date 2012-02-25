@@ -41,8 +41,8 @@ namespace QuantLib {
         interpolating a volatility vector whose elements are the market
         volatilities of a set of caps/floors with given length.
     */
-    class CapFloorTermVolCurve : public CapFloorTermVolatilityStructure,
-                                 public LazyObject,
+    class CapFloorTermVolCurve : public LazyObject,
+                                 public CapFloorTermVolatilityStructure,
                                  private boost::noncopyable {
       public:
         //! floating reference date, floating market data

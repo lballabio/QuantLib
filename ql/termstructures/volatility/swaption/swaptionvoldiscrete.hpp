@@ -30,8 +30,8 @@
 
 namespace QuantLib {
 
-    class SwaptionVolatilityDiscrete : public SwaptionVolatilityStructure,
-                                       public LazyObject   {
+    class SwaptionVolatilityDiscrete : public LazyObject,
+                                       public SwaptionVolatilityStructure {
       public:
         SwaptionVolatilityDiscrete(const std::vector<Period>& optionTenors,
                                    const std::vector<Period>& swapTenors,

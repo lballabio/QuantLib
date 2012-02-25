@@ -38,8 +38,8 @@ namespace QuantLib {
         a volatility surface whose elements are the market term volatilities
         of a set of caps/floors with given length and given strike.
     */
-    class CapFloorTermVolSurface : public CapFloorTermVolatilityStructure,
-                                   public LazyObject {
+    class CapFloorTermVolSurface : public LazyObject, 
+                                   public CapFloorTermVolatilityStructure {
       public:
         //! floating reference date, floating market data
         CapFloorTermVolSurface(Natural settlementDays,
