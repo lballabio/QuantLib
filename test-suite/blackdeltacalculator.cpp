@@ -197,14 +197,9 @@ void BlackDeltaCalculatorTest::testDeltaPriceConsistency() {
     Real discFor        =0.0;
     Real discDom        =0.0;
     Real implVol        =0.0;
-    Real spot           =0.0;
-    Real qRate          =0.0;
-    Real rRate          =0.0;
-    Real vol            =0.0;
     Real expectedVal    =0.0;
     Real calculatedVal  =0.0;
     Real error          =0.0;
-    Real forward        =0.0;
 
     boost::shared_ptr<SimpleQuote> spotQuote(new SimpleQuote(0.0));
     Handle<Quote> spotHandle(spotQuote);
@@ -248,7 +243,6 @@ void BlackDeltaCalculatorTest::testDeltaPriceConsistency() {
         discDom =rTS->discount(exDate);
         discFor =qTS->discount(exDate);
         implVol =sqrt(volTS->blackVariance(exDate,0.0));
-        forward =spotQuote->value()*discFor/discDom;
 
         BlackDeltaCalculator myCalc(values[i].type, DeltaVolQuote::PaSpot,
                                     spotQuote->value(),
@@ -378,10 +372,6 @@ void BlackDeltaCalculatorTest::testPutCallParity(){
     Real discFor        =0.0;
     Real discDom        =0.0;
     Real implVol        =0.0;
-    Real spot           =0.0;
-    Real qRate          =0.0;
-    Real rRate          =0.0;
-    Real vol            =0.0;
     Real deltaCall      =0.0;
     Real deltaPut       =0.0;
     Real expectedDiff   =0.0;
@@ -494,7 +484,7 @@ void BlackDeltaCalculatorTest::testPutCallParity(){
         deltaPut=myCalc.deltaFromStrike(values[i].strike);;
         myCalc.setOptionType(Option::Call);
 
-        expectedDiff=expectedDiff=values[i].strike/forward;
+        expectedDiff=values[i].strike/forward;
         calculatedDiff=deltaCall-deltaPut;
         error=std::fabs(expectedDiff-calculatedDiff);
 

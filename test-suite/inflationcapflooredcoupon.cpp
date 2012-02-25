@@ -721,8 +721,6 @@ void InflationCapFlooredCouponTest::testInstrumentEquality() {
     // yoy inflation vol is generally very low
     Volatility vols[] = { 0.001, 0.005, 0.010, 0.015, 0.020 };
 
-    Date startDate = vars.nominalTS->referenceDate();
-
     // this is model independent
     // capped coupon = fwd - cap, and fwd = swap(0)
     // floored coupon = fwd + floor

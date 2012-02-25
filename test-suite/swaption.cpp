@@ -833,8 +833,7 @@ void SwaptionTest::testImpliedVolatility() {
             Date exerciseDate = vars.calendar.advance(vars.today,exercises[i]);
             Date startDate = vars.calendar.advance(exerciseDate,
                                                    vars.settlementDays, Days);
-            Date maturity = vars.calendar.advance(startDate, lengths[j],
-                                                  vars.floatingConvention);
+
             for (Size t=0; t<LENGTH(strikes); t++) {
                 for (Size k=0; k<LENGTH(type); k++) {
                     boost::shared_ptr<VanillaSwap> swap =

@@ -150,7 +150,7 @@ void TimeSeriesTest::testIterators() {
 
     d = d0;
     for (size_t i = 0; d < d1; ++i, d = calendar.advance(d, 1, Days)) {
-        if (ts1[d] != i) {
+        if (ts1[d] != int(i)) {
             BOOST_ERROR("value does not match");
         }
     }

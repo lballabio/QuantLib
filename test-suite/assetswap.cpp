@@ -1403,7 +1403,6 @@ void AssetSwapTest::testZSpread() {
     setCouponPricer(floatingBond1->cashflows(), vars.pricer);
     vars.iborIndex->addFixing(Date(27,March,2007), 0.0402);
     Real floatingBondImpliedValue1 = floatingBond1->cleanPrice();
-    Date floatingBondSettlementDate1= floatingBond1->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real floatingBondCleanPrice1 = BondFunctions::cleanPrice(
@@ -1445,7 +1444,6 @@ void AssetSwapTest::testZSpread() {
     setCouponPricer(floatingBond2->cashflows(), vars.pricer);
     vars.iborIndex->addFixing(Date(22,March,2007), 0.04013);
     Real floatingBondImpliedValue2 = floatingBond2->cleanPrice();
-    Date floatingBondSettlementDate2= floatingBond2->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real floatingBondCleanPrice2 = BondFunctions::cleanPrice(
@@ -2596,7 +2594,6 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     setCouponPricer(floatingBond1->cashflows(), vars.pricer);
     vars.iborIndex->addFixing(Date(27,March,2007), 0.0402);
     Real floatingBondImpliedValue1 = floatingBond1->cleanPrice();
-    Date floatingBondSettlementDate1= floatingBond1->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real floatingBondCleanPrice1 = BondFunctions::cleanPrice(
@@ -2645,7 +2642,6 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     setCouponPricer(floatingBond2->cashflows(), vars.pricer);
     vars.iborIndex->addFixing(Date(22,March,2007), 0.04013);
     Real floatingBondImpliedValue2 = floatingBond2->cleanPrice();
-    Date floatingBondSettlementDate2= floatingBond2->settlementDate();
     // standard market conventions:
     // bond's frequency + coumpounding and daycounter of the YieldCurve
     Real floatingBondCleanPrice2 = BondFunctions::cleanPrice(

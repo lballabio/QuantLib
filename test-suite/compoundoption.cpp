@@ -112,7 +112,6 @@ void CompoundOptionTest::testPutCallParity(){
 
     DayCounter dc = Actual360();
     Date todaysDate = Date::todaysDate();
-    Date settlementDate=todaysDate;
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
@@ -248,7 +247,6 @@ void CompoundOptionTest::testValues(){
 
     DayCounter dc = Actual360();
     Date todaysDate = Date::todaysDate();
-    Date settlementDate=todaysDate;
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));

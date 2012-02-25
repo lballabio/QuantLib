@@ -384,8 +384,6 @@ void InflationVolTest::testYoYPriceSurfaceToATM() {
 
     setupPriceSurface();
 
-    Date eval = Settings::instance().evaluationDate();
-
     pair<vector<Time>, vector<Rate> > yyATMt = priceSurfEU->atmYoYSwapTimeRates();
     pair<vector<Date>, vector<Rate> > yyATMd = priceSurfEU->atmYoYSwapDateRates();
 

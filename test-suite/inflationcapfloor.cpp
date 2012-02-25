@@ -300,8 +300,6 @@ void InflationCapFloorTest::testConsistency() {
     Rate floor_rates[] = { 0.01, 0.025, 0.029, 0.03, 0.031, 0.035, 0.07 };
     Volatility vols[] = { 0.001, 0.005, 0.010, 0.015, 0.020 };
 
-    Date startDate = vars.nominalTS->referenceDate();
-
     for (Size whichPricer = 0; whichPricer < 3; whichPricer++) {
     for (Size i=0; i<LENGTH(lengths); i++) {
         for (Size j=0; j<LENGTH(cap_rates); j++) {
@@ -429,8 +427,6 @@ void InflationCapFloorTest::testParity() {
     Rate strikes[] = { 0., 0.025, 0.029, 0.03, 0.031, 0.035, 0.07 };
     // yoy inflation vol is generally very low
     Volatility vols[] = { 0.001, 0.005, 0.010, 0.015, 0.020 };
-
-    Date startDate = vars.nominalTS->referenceDate();
 
     // cap-floor-swap parity is model-independent
     for (Size whichPricer = 0; whichPricer < 3; whichPricer++) {

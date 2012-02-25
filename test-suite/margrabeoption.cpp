@@ -544,8 +544,6 @@ void MargrabeOptionTest::testAmericanExchangeTwoAssets() {
     boost::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2, dc);
 
-    Real tolerance = 1.0e-4;
-
     for (Size i=0; i<LENGTH(values); i++) {
 
         Date exDate = today + Integer(values[i].t*360+0.5);
