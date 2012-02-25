@@ -69,8 +69,8 @@ namespace {
     boost::shared_ptr<Matrix> cPriceEU;
     boost::shared_ptr<Matrix> fPriceEU;
 
-    boost::shared_ptr<YoYInflationIndex> yoyIndexUK(new YYUKRPIr(true, yoyUK));
-    boost::shared_ptr<YoYInflationIndex> yoyIndexEU(new YYEUHICPr(true, yoyEU));
+    boost::shared_ptr<YoYInflationIndex> yoyIndexUK;
+    boost::shared_ptr<YoYInflationIndex> yoyIndexEU;
 
     vector<Rate> cStrikesUK;
     vector<Rate> fStrikesUK;
@@ -80,12 +80,36 @@ namespace {
 
     boost::shared_ptr<InterpolatedYoYCapFloorTermPriceSurface<Bicubic,Cubic> > priceSurfEU;
 
+    void reset() {
+        nominalEUR = Handle<YieldTermStructure>();
+        nominalGBP = Handle<YieldTermStructure>();
+        priceSurfEU.reset();
+        yoyEU.linkTo(boost::shared_ptr<YoYInflationTermStructure>());
+        yoyUK.linkTo(boost::shared_ptr<YoYInflationTermStructure>());
+        yoyIndexUK.reset();
+        yoyIndexEU.reset();
+        cPriceEU.reset();
+        fPriceEU.reset();
+        cPriceUK.reset();
+        fPriceUK.reset();
+        yoyIndexUK.reset();
+
+        cStrikesEU.clear();        
+        fStrikesEU.clear();
+        cStrikesUK.clear();        
+        fStrikesUK.clear();
+        cfMaturitiesEU.clear();
+        cfMaturitiesUK.clear();
+    }
 
     void setup() {
 
         // make sure of the evaluation date
         Date eval = Date(Day(23), Month(11), Year(2007));
         Settings::instance().evaluationDate() = eval;
+
+        yoyIndexUK = boost::shared_ptr<YoYInflationIndex>(new YYUKRPIr(true, yoyUK));
+        yoyIndexEU = boost::shared_ptr<YoYInflationIndex>(new YYEUHICPr(true, yoyEU));
 
         // nominal yield curve (interpolated; times assume year parts have 365 days)
         Real timesEUR[] = {0.0109589, 0.0684932, 0.263014, 0.317808, 0.567123, 0.816438,
@@ -344,6 +368,7 @@ void InflationVolTest::testYoYPriceSurfaceToVol() {
                         << someOtherSlice.second[i]<< " vs " << volATyear3[i] );
     }
 
+    reset();
 }
 
 
@@ -389,7 +414,7 @@ void InflationVolTest::testYoYPriceSurfaceToATM() {
                    << priceSurfEU->atmYoYRate(yyATMd.first[i]) << " vs " << ayoy[i]
                    <<" at "<<yyATMd.first[i]);
     }
-
+    reset();
 }
 
 

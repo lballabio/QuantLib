@@ -83,6 +83,7 @@ namespace {
 
         RelinkableHandle<YieldTermStructure> nominalTS;
         boost::shared_ptr<ZeroInflationTermStructure> cpiTS;
+        RelinkableHandle<ZeroInflationTermStructure> hcpi;
 
         // cleanup
 
@@ -127,7 +128,6 @@ namespace {
                 -999.0, -999.0 };
 
             // link from cpi index to cpi TS
-            RelinkableHandle<ZeroInflationTermStructure> hcpi;
             bool interp = false;// this MUST be false because the observation lag is only 2 months
                                 // for ZCIIS; but not for contract if the contract uses a bigger lag.
             ii = boost::shared_ptr<UKRPI>(new UKRPI(interp, hcpi));
@@ -350,6 +350,9 @@ void CPISwapTest::consistency() {
     Real diff = fabs(1-zisV.NPV()/4191660.0);
     QL_REQUIRE(diff<1e-5,
                "failed stored consistency value test, ratio = " << diff);
+
+    // remove circular refernce
+    common.hcpi.linkTo(boost::shared_ptr<ZeroInflationTermStructure>());
 }
 
 
@@ -403,6 +406,8 @@ void CPISwapTest::zciisconsistency() {
     for (Size i=0; i<2; i++) {
         QL_REQUIRE(fabs(cS.legNPV(i)-zciis.legNPV(i))<1e-3,"zciis leg does not equal CPISwap leg");
     }
+    // remove circular refernce
+    common.hcpi.linkTo(boost::shared_ptr<ZeroInflationTermStructure>());
 }
 
 
@@ -495,6 +500,8 @@ void CPISwapTest::cpibondconsistency() {
     cpiB.setPricingEngine(dbe);
 
     QL_REQUIRE(fabs(cpiB.NPV() - zisV.legNPV(0))<1e-5,"cpi bond does not equal equivalent cpi swap leg");
+    // remove circular refernce
+    common.hcpi.linkTo(boost::shared_ptr<ZeroInflationTermStructure>());
 }
 
 

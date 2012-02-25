@@ -603,6 +603,8 @@ void InflationTest::testZeroTermStructure() {
                         << " discount " << nominalTS->discount(nzcisyes.maturityDate())
                         );
 
+    // remove circular refernce
+    hz.linkTo(boost::shared_ptr<ZeroInflationTermStructure>());
 }
 
 
@@ -919,7 +921,8 @@ void InflationTest::testYYTermStructure() {
                             <<", legs "<< yyS3.legNPV(0) << " and " << yyS3.legNPV(1)
                             );
     }
-
+    // remove circular refernce
+    hy.linkTo(boost::shared_ptr<YoYInflationTermStructure>());
 }
 
 void InflationTest::testPeriod() {

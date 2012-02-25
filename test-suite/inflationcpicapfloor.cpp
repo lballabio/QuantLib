@@ -111,6 +111,7 @@ namespace {
 
         RelinkableHandle<YieldTermStructure> nominalUK;
         RelinkableHandle<ZeroInflationTermStructure> cpiUK;
+        RelinkableHandle<ZeroInflationTermStructure> hcpi;
 
         vector<Rate> cStrikesUK;
         vector<Rate> fStrikesUK;
@@ -163,7 +164,6 @@ namespace {
                 -999};
 
             // link from cpi index to cpi TS
-            RelinkableHandle<ZeroInflationTermStructure> hcpi;
             bool interp = false;// this MUST be false because the observation lag is only 2 months
                                 // for ZCIIS; but not for contract if the contract uses a bigger lag.
             ii = boost::shared_ptr<UKRPI>(new UKRPI(interp, hcpi));
@@ -384,8 +384,8 @@ void InflationCPICapFloorTest::cpicapfloorpricesurface() {
         }
     }
 
-
-
+    // remove circular refernce
+    common.hcpi.linkTo(boost::shared_ptr<ZeroInflationTermStructure>());
 }
 
 
@@ -445,6 +445,9 @@ void InflationCPICapFloorTest::cpicapfloorpricer() {
     Real cached = cpiCFsurfUKh->capPrice(d, strike);
     QL_REQUIRE(fabs(cached - aCap.NPV())<1e-10,"InterpolatingCPICapFloorEngine does not reproduce cached price: "
                << cached << " vs " << aCap.NPV());
+
+    // remove circular refernce
+    common.hcpi.linkTo(boost::shared_ptr<ZeroInflationTermStructure>());
 }
 
 

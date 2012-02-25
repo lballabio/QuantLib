@@ -106,6 +106,7 @@ namespace {
 
         RelinkableHandle<YieldTermStructure> nominalTS;
         boost::shared_ptr<YoYInflationTermStructure> yoyTS;
+        RelinkableHandle<YoYInflationTermStructure> hy;
 
         // cleanup
 
@@ -145,7 +146,6 @@ namespace {
                 202.7, 201.6, 203.1, 204.4, 205.4, 206.2,
                 207.3, -999.0, -999 };
             // link from yoy index to yoy TS
-            RelinkableHandle<YoYInflationTermStructure> hy;
             bool interp = false;
             iir = boost::shared_ptr<YYUKRPIr>(new YYUKRPIr(interp, hy));
             for (Size i=0; i<rpiSchedule.size();i++) {
@@ -704,6 +704,8 @@ void InflationCapFlooredCouponTest::testDecomposition() {
                     << "\n" <<
                     "  Diff: " << error );
     }
+    // remove circular refernce
+    vars.hy.linkTo(boost::shared_ptr<YoYInflationTermStructure>());
 }
 
 
@@ -811,6 +813,8 @@ void InflationCapFlooredCouponTest::testInstrumentEquality() {
             }
         }
     }
+    // remove circular refernce
+    vars.hy.linkTo(boost::shared_ptr<YoYInflationTermStructure>());
 }
 
 
