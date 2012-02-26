@@ -31,16 +31,15 @@ namespace QuantLib {
     TermStructure::TermStructure(const Date& referenceDate,
                                  const Calendar& cal,
                                  const DayCounter& dc)
-    : moving_(false), calendar_(cal),
-      referenceDate_(referenceDate), updated_(true),
+    : moving_(false), updated_(true), calendar_(cal),
+      referenceDate_(referenceDate),
       settlementDays_(Null<Natural>()),
       dayCounter_(dc) {}
 
     TermStructure::TermStructure(Natural settlementDays,
                                  const Calendar& cal,
                                  const DayCounter& dc)
-    : moving_(true), calendar_(cal),
-      updated_(false),
+    : moving_(true), updated_(false), calendar_(cal),
       settlementDays_(settlementDays),
       dayCounter_(dc) {
         registerWith(Settings::instance().evaluationDate());
