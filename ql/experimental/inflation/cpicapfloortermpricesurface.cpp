@@ -39,9 +39,9 @@ namespace QuantLib {
 								const Matrix &fPrice)
     : InflationTermStructure(0, cal, baseRate, observationLag, zii->frequency(), 
 							 zii->interpolated(), yts, dc),
-      bdc_(bdc), zii_(zii),
+      zii_(zii),
       cStrikes_(cStrikes), fStrikes_(fStrikes),
-      cfMaturities_(cfMaturities), cPrice_(cPrice), fPrice_(fPrice) {
+      cfMaturities_(cfMaturities), cPrice_(cPrice), fPrice_(fPrice), bdc_(bdc) {
 
 		  // does the index have a TS?
 		  QL_REQUIRE(!zii_->zeroInflationTermStructure().empty(),"ZITS missing from index");

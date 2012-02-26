@@ -199,7 +199,6 @@ namespace QuantLib {
         Rate fixedRate = quote()->value();
 
         Real nominal = 1000000.0;   // has to be something but doesn't matter what
-        Date start = y->nominalTermStructure()->referenceDate();
         yyiis_.reset(new YearOnYearInflationSwap(YearOnYearInflationSwap::Payer,
                                                     nominal,
                                                     fixedSchedule,

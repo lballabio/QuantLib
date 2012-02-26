@@ -49,7 +49,7 @@ namespace QuantLib {
 
         // function and squared norm of gradient values;
         Real fnew, fold, gold2;
-        Real fdiff, normdiff;
+        Real fdiff;
         // classical initial value for line-search step
         Real t = 1.0;
         // Set gradient g at the size of the optimization problem
@@ -89,7 +89,6 @@ namespace QuantLib {
                 direction = getUpdatedDirection(P, gold2, prevGradient);
 
                 sddiff = direction - lineSearch_->searchDirection();
-                normdiff = std::sqrt(DotProduct(sddiff, sddiff));
                 lineSearch_->searchDirection() = direction;
                 // Now compute accuracy and check end criteria
                 // Numerical Recipes exit strategy on fx (see NR in C++, p.423)

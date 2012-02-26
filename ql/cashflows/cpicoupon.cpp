@@ -254,7 +254,6 @@ namespace QuantLib {
                        "no fixedRates or spreads given");
 
             Date refStart, start, refEnd, end;
-            Date lastPaymentDate = calendar.adjust(schedule_.date(n), paymentAdjustment_);
 
             for (Size i=0; i<n; ++i) {
                 refStart = start = schedule_.date(i);

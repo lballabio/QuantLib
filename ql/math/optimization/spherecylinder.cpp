@@ -32,9 +32,6 @@ namespace QuantLib {
                            Real tolerance,
                            Size maxIt,
                            const F& objectiveFunction) {
-
-            Real leftValue = objectiveFunction(low);
-            Real rightValue = objectiveFunction(high);
             Real W = 0.5*(3.0-std::sqrt(5.0));
             Real x = W*low+(1-W)*high;
             if (mid > low && mid < high)
@@ -51,12 +48,10 @@ namespace QuantLib {
 
                     if (tentativeNewMidValue < midValue) { // go left
                         high =x;
-                        rightValue = midValue;
                         x = tentativeNewMid;
                         midValue = tentativeNewMidValue;
                     } else { // go right
                         low = tentativeNewMid;
-                        leftValue = tentativeNewMidValue;
                     }
                 } else {
                     Real tentativeNewMid = W*x+(1-W)*high;
@@ -65,12 +60,10 @@ namespace QuantLib {
 
                     if (tentativeNewMidValue < midValue) { // go right
                         low =x;
-                        leftValue = midValue;
                         x = tentativeNewMid;
                         midValue = tentativeNewMidValue;
                     } else { // go left
                         high = tentativeNewMid;
-                        rightValue = tentativeNewMidValue;
                     }
                 }
                 ++iterations;

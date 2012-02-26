@@ -41,7 +41,6 @@ namespace QuantLib {
     : CalibrationHelper(volatility,termStructure, errorType) {
 
         Calendar calendar = index->fixingCalendar();
-        Period indexTenor = index->tenor();
         Natural fixingDays = index->fixingDays();
         Date exerciseDate = calendar.advance(termStructure->referenceDate(),
                                              maturity,

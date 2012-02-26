@@ -86,7 +86,6 @@ namespace QuantLib {
             paymentCashFlows_.clear();
 
             Date evaluationDate = Settings::instance().evaluationDate();
-            Date endDate = calendar_.adjust(pricingPeriods_.back()->endDate());
             const Currency& baseCurrency =
                 CommoditySettings::instance().currency();
             const UnitOfMeasure baseUnitOfMeasure =

@@ -77,7 +77,7 @@ namespace {
     {
         double v0=0.0, v1=0.0, v1p=0.0, v2p=0.0, v2pp=0.0, gm=0.0;
         int i=0,j=0;
-        double tmp=0.0, tau=0.0, e1=0.0, e2=0.0, e3=0.0, e4=0.0;
+        double tmp=0.0, e1=0.0, e2=0.0, e3=0.0, e4=0.0;
         double xstar=0.0, s0=0.0;
         double sigmat=0.0, disc=0.0, d1=0.0,d2=0.0,d3=0.0,d4=0.0;
         double et=0.0,tt=0.0, dt=0.0,p=0.0;
@@ -108,7 +108,6 @@ namespace {
         xstar=log(kprice/hbarr);
 
         if(xstar>0.0) xstar=0.0;
-        tau=taumax;
         sigmat=integs(taumin,taumax);
         disc=-integr(taumin,taumax);
 

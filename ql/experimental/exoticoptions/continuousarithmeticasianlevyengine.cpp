@@ -42,8 +42,6 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
 
-        Date today = Settings::instance().evaluationDate();
-
         DayCounter rfdc  = process_->riskFreeRate()->dayCounter();
         DayCounter divdc = process_->dividendYield()->dayCounter();
         DayCounter voldc = process_->blackVolatility()->dayCounter();

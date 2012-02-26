@@ -54,7 +54,6 @@ namespace QuantLib {
         std::vector<Real> stdDevs(optionlets, 0.0);
         std::vector<Real> forwards(optionlets, 0.0);
         YoYInflationCapFloor::Type type = arguments_.type;
-        Date today = volatility_->referenceDate();
 
         Handle<YoYInflationTermStructure> yoyTS
         = index()->yoyInflationTermStructure();

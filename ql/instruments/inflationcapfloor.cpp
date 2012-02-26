@@ -150,8 +150,6 @@ namespace QuantLib {
 
         arguments->type = type_;
 
-        Date today = Settings::instance().evaluationDate();
-
         for (Size i=0; i<n; ++i) {
             shared_ptr<YoYInflationCoupon> coupon =
             boost::dynamic_pointer_cast<YoYInflationCoupon>(
