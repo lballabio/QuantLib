@@ -1,5 +1,5 @@
 
-Notable changes for QuantLib 1.1:
+Notable changes for QuantLib 1.2:
 
 PORTABILITY
 
