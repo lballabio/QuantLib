@@ -1,0 +1,48 @@
+.\" Man page contributed by Dirk Eddelbuettel <edd@debian.org>
+.\" and released under the Quantlib license
+.TH EQUITYOPTION 1 "25 February 2006" QuantLib
+.SH NAME
+EquityOption - Example of using QuantLib to value equity options
+.SH SYNOPSIS
+.B EquityOption
+.SH DESCRIPTION
+.PP
+.B EquityOption
+is an example of using \fIQuantLib\fP.
+
+For a given set of option parameters, it computes the value of three
+different equity options types (with european, bermudan and american exercise
+features) using different valuation algorithms.
+
+The calculation methods are Black-Scholes (for european options only),
+Barone-Adesi/Whaley (american-only), Bjerksund/Stensland (american), Integral
+(european), Finite differences, Binomial Jarrow-Rudd, Binomial
+Cox-Ross-Rubinstein, Additive equiprobabilities, Binomial Trigeorgis,
+Binomial Tian, Binomial Leisen-Reimer, crude Monte Carlo (european-only) and
+Sobol-sequence Monte Carlo (european-only).
+
+.SH SEE ALSO
+The source code
+.IR EquityOption.cpp ,
+.BR BermudanSwaption (1),
+.BR Bonds (1),
+.BR CallableBonds (1),
+.BR CDS (1),
+.BR ConvertibleBonds (1),
+.BR DiscreteHedging (1),
+.BR FittedBondCurve (1),
+.BR FRA (1),
+.BR MarketModels (1),
+.BR Replication (1),
+.BR Repo (1),
+.BR SwapValuation (1),
+the QuantLib documentation and website at
+.IR http://quantlib.org .
+
+.SH AUTHORS
+The QuantLib Group (see
+.IR Authors.txt ).
+
+This manual page was added by Dirk Eddelbuettel <edd@debian.org>,
+the Debian GNU/Linux maintainer for
+.BR QuantLib .

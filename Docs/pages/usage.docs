@@ -1,0 +1,52 @@
+
+/*
+ Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/license.shtml>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
+/*! \page usage Usage
+    To use %QuantLib classes in your own code just add
+    \code
+    #include <ql/quantlib.hpp>
+    \endcode
+    at the beginning of your source/header files. Depending on
+    the number of your files in your project, this could cause a
+    large increase in compilation time. If this were not acceptable,
+    collective headers are also available for smaller parts of
+    the library; in particular, each subdirectory of the <tt>ql</tt>
+    directory contains a file <tt>all.hpp</tt> which makes available
+    all classes and function in the respective subdirectory.
+
+    Under the Examples folder you can find examples of %QuantLib usage,
+    including input files for automake and makefiles for the Borland
+    free compiler and Microsoft Visual C++. For the latter, project
+    files are also available.
+
+    \section microsoftvisual Microsoft Visual C++
+    A few suggestions for Visual C++ users wanting to use %QuantLib into their
+    own application:
+    -# you won't have to explicitly link your application to the QuantLib
+       library. This is done automatically by compiler directives embedded
+       in the sources.
+    -# Your project must be compiled with the same options that were used in
+       compiling the %QuantLib library you're linking with, namely,
+       - Property Pages -> C/C++ -> Code Generation -> Runtime Library:
+         select the appropriate run-time library.
+       - Property Pages -> C/C++ -> Code Generation -> Basic Runtime Checks:
+         select "Both (/RTC1, equiv. to /RTCsu)".
+
+*/
+
