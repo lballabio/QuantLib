@@ -18,7 +18,7 @@
 
 /*! \page history Version history
 
-    <strong>Release 1.2 - March 2012</strong>
+    <strong>Release 1.2 - March 6th, 2012</strong>
 
     PORTABILITY
     - Microsoft Visual C++ 2010 no longer needs to disable uBlas code.
@@ -122,7 +122,7 @@
     - Added FD pricing engine for a simple swing option based on the
       Black-Scholes model (thanks to Klaus Spanderen).
 
-    <strong>Release 1.1 - May 2011</strong>
+    <strong>Release 1.1 - May 23rd, 2011</strong>
 
     PORTABILITY
     - Added support for Microsoft Visual C++ 2010.
