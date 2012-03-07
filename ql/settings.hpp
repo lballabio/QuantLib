@@ -87,19 +87,28 @@ namespace QuantLib {
         */
         void resetEvaluationDate();
 
-        /*! This flag specifies whether or not cashflows occurring on
-            the NPV date should, by default, enter the NPV.  It can be
-            overridden locally when calling the NPV-related
-            methods.
+        /*! This flag specifies whether or not Events occurring on the reference
+            date should, by default, be taken into account as not happened yet.
+            It can be overridden locally when calling the Event::hasOccurred
+            method.
         */
-        bool& includeReferenceDateCashFlows();
-        bool includeReferenceDateCashFlows() const;
+        bool& includeReferenceDateEvents();
+        bool includeReferenceDateEvents() const;
+#ifndef QL_DISABLE_DEPRECATED
+        bool& includeReferenceDateCashFlows() {
+            return includeReferenceDateEvents();
+        }
+        bool includeReferenceDateCashFlows() const {
+            return includeReferenceDateEvents();
+        }
+#endif
 
-        /*! If set, this flag specifies whether or not cashflows
+        /*! If set, this flag specifies whether or not CashFlows
             occurring on today's date should enter the NPV.  When the
             NPV date (i.e., the date at which the cash flows are
             discounted) equals today's date, this flag overrides the
-            behavior chosen for the NPV date.
+            behavior chosen for includeReferenceDate. It cannot be overridden
+            locally when calling the CashFlow::hasOccurred method.
         */
         boost::optional<bool>& includeTodaysCashFlows();
         boost::optional<bool> includeTodaysCashFlows() const;
@@ -108,7 +117,7 @@ namespace QuantLib {
         bool enforcesTodaysHistoricFixings() const;
       private:
         DateProxy evaluationDate_;
-        bool includeReferenceDateCashFlows_;
+        bool includeReferenceDateEvents_;
         boost::optional<bool> includeTodaysCashFlows_;
         bool enforcesTodaysHistoricFixings_;
     };
@@ -121,7 +130,7 @@ namespace QuantLib {
         ~SavedSettings();
       private:
         Date evaluationDate_;
-        bool includeReferenceDateCashFlows_;
+        bool includeReferenceDateEvents_;
         boost::optional<bool> includeTodaysCashFlows_;
         bool enforcesTodaysHistoricFixings_;
     };
@@ -149,12 +158,12 @@ namespace QuantLib {
         return evaluationDate_;
     }
 
-    inline bool& Settings::includeReferenceDateCashFlows() {
-        return includeReferenceDateCashFlows_;
+    inline bool& Settings::includeReferenceDateEvents() {
+        return includeReferenceDateEvents_;
     }
 
-    inline bool Settings::includeReferenceDateCashFlows() const {
-        return includeReferenceDateCashFlows_;
+    inline bool Settings::includeReferenceDateEvents() const {
+        return includeReferenceDateEvents_;
     }
 
     inline boost::optional<bool>& Settings::includeTodaysCashFlows() {

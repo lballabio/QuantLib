@@ -28,7 +28,7 @@ namespace QuantLib {
     KirkSpreadOptionEngine::KirkSpreadOptionEngine(
             const boost::shared_ptr<BlackProcess>& process1,
             const boost::shared_ptr<BlackProcess>& process2,
-			const Handle<Quote>& correlation)
+            const Handle<Quote>& correlation)
     : process1_(process1), process2_(process2), rho_(correlation) {
         registerWith(process1_);
         registerWith(process2_);
@@ -37,21 +37,21 @@ namespace QuantLib {
 
     void KirkSpreadOptionEngine::calculate() const {
 
-		// First: tests on types
+        // First: tests on types
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
 
         boost::shared_ptr<PlainVanillaPayoff> payoff =
-			boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "not a plain-vanilla payoff");
 
-		// forward values - futures, so b=0
+        // forward values - futures, so b=0
         Real forward1 = process1_->stateVariable()->value();
         Real forward2 = process2_->stateVariable()->value();
 
         Date exerciseDate = arguments_.exercise->lastDate();
 
-		// Volatilities
+        // Volatilities
         Real sigma1 =
             process1_->blackVolatility()->blackVol(exerciseDate,forward1);
         Real sigma2 =
@@ -60,38 +60,38 @@ namespace QuantLib {
         DiscountFactor riskFreeDiscount =
             process1_->riskFreeRate()->discount(exerciseDate);
 
-		Real strike = payoff->strike();
+        Real strike = payoff->strike();
 
-		// Unique F (forward) value for pricing
+        // Unique F (forward) value for pricing
         Real F = forward1/(forward2+strike);
-		
-		// Its volatility
-		Real sigma =
+        
+        // Its volatility
+        Real sigma =
             sqrt(pow(sigma1,2)
                  + pow((sigma2*(forward2/(forward2+strike))),2)
                  - 2*rho_->value()*sigma1*sigma2*(forward2/(forward2+strike)));
-		
-		// Day counter and Dates handling variables
-		DayCounter rfdc = process1_->riskFreeRate()->dayCounter();
-		Time t = rfdc.yearFraction(process1_->riskFreeRate()->referenceDate(),
+        
+        // Day counter and Dates handling variables
+        DayCounter rfdc = process1_->riskFreeRate()->dayCounter();
+        Time t = rfdc.yearFraction(process1_->riskFreeRate()->referenceDate(),
                                    arguments_.exercise->lastDate());
 
-		// Black-Scholes solution values
-		Real d1 = (log(F)+ 0.5*pow(sigma,2)*t) / (sigma*sqrt(t));
+        // Black-Scholes solution values
+        Real d1 = (log(F)+ 0.5*pow(sigma,2)*t) / (sigma*sqrt(t));
         Real d2 = d1 - sigma*sqrt(t);
 
         CumulativeNormalDistribution cum;
         Real Nd1 = cum(d1);
         Real Nd2 = cum(d2);
-		Real NMd1 = cum(-d1);
-		Real NMd2 = cum(-d2);
+        Real NMd1 = cum(-d1);
+        Real NMd2 = cum(-d2);
         
-		if (payoff->optionType()==Option::Call) {
-			results_.value = riskFreeDiscount*(F*Nd1-Nd2)*(forward2+strike);
-		} else {
-			results_.value = riskFreeDiscount*(NMd2 -F*NMd1)*(forward2+strike);
-		}
+        if (payoff->optionType()==Option::Call) {
+            results_.value = riskFreeDiscount*(F*Nd1-Nd2)*(forward2+strike);
+        } else {
+            results_.value = riskFreeDiscount*(NMd2 -F*NMd1)*(forward2+strike);
+        }
     }
-	
+    
 }
 

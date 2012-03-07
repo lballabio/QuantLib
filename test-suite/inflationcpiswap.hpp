@@ -25,13 +25,13 @@
 //! Classic inflation index ratio-from-base products.  Always have some "notional" flow.
 class CPISwapTest {
 public:
-	//! consistency test w.r.t. manual build-up of calculatons
-	static void consistency();
-	//! a CPI swap can look like a Zero Coupon Inflation Inedex Swap, check it gies same prices
-	static void zciisconsistency();
-	//! one leg of a CPI swap looks like a CPI bond with growthOnly=true
-	static void cpibondconsistency();
-	static boost::unit_test_framework::test_suite* suite();
+    //! consistency test w.r.t. manual build-up of calculatons
+    static void consistency();
+    //! a CPI swap can look like a Zero Coupon Inflation Inedex Swap, check it gies same prices
+    static void zciisconsistency();
+    //! one leg of a CPI swap looks like a CPI bond with growthOnly=true
+    static void cpibondconsistency();
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 

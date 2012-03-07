@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2006, 2007, 2008, 2010, 2011 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2009 StatPro Italia srl
+ Copyright (C) 2009, 2012 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -223,8 +223,13 @@ namespace QuantLib {
                     }
                     break;
                 } else {
-                    dates_.insert(dates_.begin(), temp);
-                    isRegular_.insert(isRegular_.begin(), true);
+                    // skip dates that would result in duplicates
+                    // after adjustment
+                    if (calendar_.adjust(dates_.front(),convention)!=
+                        calendar_.adjust(temp,convention)) {
+                        dates_.insert(dates_.begin(), temp);
+                        isRegular_.insert(isRegular_.begin(), true);
+                    }
                     ++periods;
                 }
             }
@@ -301,8 +306,13 @@ namespace QuantLib {
                     }
                     break;
                 } else {
-                    dates_.push_back(temp);
-                    isRegular_.push_back(true);
+                    // skip dates that would result in duplicates
+                    // after adjustment
+                    if (calendar_.adjust(dates_.back(),convention)!=
+                        calendar_.adjust(temp,convention)) {
+                        dates_.push_back(temp);
+                        isRegular_.push_back(true);
+                    }
                     ++periods;
                 }
             }
@@ -343,9 +353,7 @@ namespace QuantLib {
                 for (Size i=0; i<dates_.size()-1; ++i)
                     dates_[i] = calendar_.endOfMonth(dates_[i]);
             }
-            if (terminationDateConvention == Unadjusted)
-                dates_.back() = Date::endOfMonth(dates_.back());
-            else
+            if (terminationDateConvention != Unadjusted)
                 dates_.back() = calendar_.endOfMonth(dates_.back());
         } else {
             // first date not adjusted for CDS schedules

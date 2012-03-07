@@ -20,7 +20,7 @@
 #include <ql/cashflows/cpicouponpricer.hpp>
 
 namespace QuantLib {
-	
+
     CPICouponPricer::
     CPICouponPricer(const Handle<CPIVolatilitySurface>& capletVol)
     : capletVol_(capletVol) {
@@ -102,7 +102,7 @@ namespace QuantLib {
 
         if (fixing == Null<Rate>())
             fixing = coupon_->indexFixing() / coupon_->baseCPI();
-		//std::cout << " adjustedFixing " << fixing << std::endl;
+        //std::cout << " adjustedFixing " << fixing << std::endl;
         // no adjustment
         return fixing;
     }
@@ -132,7 +132,7 @@ namespace QuantLib {
     Real CPICouponPricer::swapletPrice() const {
 
         Real swapletPrice = adjustedFixing() * coupon_->accrualPeriod() * discount_;
-		//std::cout << swapletPrice << " SWAPLET price" << std::endl;
+        //std::cout << swapletPrice << " SWAPLET price" << std::endl;
         return gearing_ * swapletPrice + spreadLegValue_;
     }
 
@@ -142,7 +142,7 @@ namespace QuantLib {
         // a yield curve, i.e. we do not get the problem
         // that a discounting-instrument-pricer is used
         // with a different yield curve
-		//std::cout << (gearing_ * adjustedFixing() + spread_) << " SWAPLET rate" << gearing_ << " " << spread_ << std::endl;
+        //std::cout << (gearing_ * adjustedFixing() + spread_) << " SWAPLET rate" << gearing_ << " " << spread_ << std::endl;
         return gearing_ * adjustedFixing() + spread_;
     }
 

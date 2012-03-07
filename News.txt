@@ -1,102 +1,109 @@
 
-Notable changes for QuantLib 1.1:
+Notable changes for QuantLib 1.2:
 
 PORTABILITY
 
-- Added support for Microsoft Visual C++ 2010.
+- Microsoft Visual C++ 2010 no longer needs to disable uBlas code.
 
-- Fixed m4 macro for QuantLib detection.  It now works also when asked
-  for versions such as 1.1 (as opposed to 1.1.0).
+- QuantLib now ships with an updated specification file for building
+  RPMs (thanks to Matt Fair).
 
 
 DATE/TIME
 
-- Added Russian calendar.
+- When EOM was specified, a schedule's end date was moved to the end
+  of month even if the 'Unadjusted' convention was given.  This is now
+  fixed.
 
-- Revamped time-series iterators (thanks to Slava Mazur.)  Iterators
-  on dates and values were added, as well as C++0X-style cbegin() and
-  cend() iterators.
+- When a daily frequency was used, a schedule could end up containing
+  duplicated dates.  This is now fixed (thanks to Simone Medori for
+  the bug report).
+
+- Added method to return truncated schedule.
+
+- Fixed Swedish Midsummer Eve's date (thanks to Gary Kennedy).
+
+- Added South Korea holidays for 2011/2012 (thanks to Charles
+  Chongseok Hyun and Faycal El Karaa).
+
+- Added holidays for 2011 to China, Hong Kong, India, Indonesia, Saudi
+  Arabia, and Taiwan calendars.
+
+- Added ECB maintenance dates for 2012 and 2013.
+
+- Greatly improved performance of business/252 day counter.  The
+  previous implementation would count the business days between two
+  dates at each invocation. The new implementation caches dynamically
+  the count of business days for whole months and years, so that after
+  a while only the first and last few days are counted.
 
 
 INSTRUMENTS
 
-- Added a few inspectors to zero-coupon inflation swaps.
+- The AssetSwap instrument now supports non-par repayment.
 
-- Added Kirk approximation for two-asset spread options.
+- Added specialized class for Italian CCTEU (certificato di credito
+  del tesoro).
 
-- Added specialized BTP class (Italian government bonds) and related
-  RendistatoCalculator class to help instantiation of this type of
-  FixedRateBond.
-
-- Added analytic pricing engine for the piecewise-constant
-  time-dependent Heston model.
-
-- Added paymentCalendar to FixedRateBond, possibly different
-  than the one used for accrual-date calculation.
+- Added CPI-linked swaps, bonds, and cap/floors.
 
 
-PROCESSES
+CASH FLOWS
 
-- Added Quadratic Exponential discretization scheme for the Heston
-  process, including martingale correction.
+- Added CashFlows::npvbps() method to calculate NPV and BPS in a
+  single loop to improve performance.
 
 
 INDEXES
 
-- Added inspector for discounting curve to swap index (thanks to Peter
-  Caspers.)
-
-- Added exogenous discounting to all swap indexes.
-
-- Added SONIA index.
-
-- Added HICPXT indexes.
+- Better detection of forecast/past fixings for inflation indexes.
+  When an interpolated index is asked for a fixing at the beginning of
+  a month, the fixing for the following (which would have zero weight
+  in the interpolation) is no longer required.  Also, if a fixing is
+  loaded in the index time series, it can be used even its observation
+  lag has not fully elapsed.
 
 
 TERM STRUCTURES
 
-- Added time-based interface to inflation curves.
+- Vastly improved the performance of piecewise yield curve bootstrap.
+  Anchoring the evaluation date (see below) provides a further
+  improvement.
 
-- Piecewise zero-spreaded term structure can now manage spread with
-  any compounding (thanks to Robert Philipp.)
-
-- FittedBondDiscountCurve now works with any BondHelpers, not only
-  FixedRateBondHelpers.
-
-- Added Svensson curve-fitting method (thanks to Alessandro Roveda.)
+- Moved CPI-volatility interface from experimental folder to the core
+  library.
 
 
 MATH
 
-- Added Ziggurat random-number generator (thanks to Kakhkhor
-  Abdijalilov.)
+- Added Newton 1-D solver with finite difference derivatives.
 
-- Added experimental copula-based random-number generators (thanks to
-  Hachemi Benyahia.)
-
-- More performant implementation of inverse cumulative distribution
-  (thanks to Kakhkhor Abdijalilov.)
-
-- More performant mt19937 implementation (thanks to Kakhkhor
-  Abdijalilov.)
-
-- Added more copulas (thanks to Hachemi Benyahia.)  The new formulas
-  are for Ali-Mikhail-Haq copula, Galambos copula, Husler-Reiss
-  copula, and Plackett copula.
-
-- Added autocovariance calculation (thanks to Slava Mazur.)
+- Improved interface for linear least-square regression (thanks to
+  Slava Mazur).
 
 
-MONTE CARLO
+FINITE DIFFERENCES
 
-- Improved LSM basis system (thanks to Kakhkhor Abdijalilov.)
+- Added TR-BDF2 scheme (thanks to Fabien Le Floc'h).
+
+- Moved stable parts of 2D finite-difference framework from the
+  experimental folder to the core library.
 
 
 UTILITIES
 
-- Reworked Null class template (thanks to Kakhkhor Abdijalilov.)  The
-  new implementation avoids the need for a macro on 64-bit systems and
-  automatically covers all floating-point and integer types.
+- Added resetEvaluationDate() and anchorEvaluationDate() methods to
+  enable/disable change of evaluation date at midnight, respectively.
+  Anchoring the evaluation date also improves the performance of some
+  calculations.
+
+
+PATTERNS
+
+- Fixed possible problem in LazyObject notification logic.  The
+  previous implementation would pass obsolete information to observers
+  that asked for data in their update() method (which is not advised,
+  but possible).  This is no longer the case.
 
 
 EXPERIMENTAL FOLDER
@@ -108,35 +115,30 @@ unstable; their interfaces might change in future releases.
 
 New contributions for this release were:
 
-- 2D finite-difference Bates engine based on the partial integro
-  differential equation.
+- Spread option and related engine (thanks to IMAFA/Polytech'Nice
+  students Meryem Chibo and Samad Abdessadki).
 
-- 2D finite-difference engine for Black-Scholes processes (including
-  local volatility.)
+- Writer-extensible option and related engine (thanks to
+  IMAFA/Polytech'Nice students Delphine Bouthier, Marine Casanova, and
+  Xavier Caron).
 
-- Black-Scholes process with support for vega stress test (thanks to
-  Michael Heckl.)
+- Levy engine for continuous-averaging Asian options (thanks to
+  IMAFA/Polytech'Nice students Yasmine Lahlou and Amine Samani).
 
-- Extended Ornstein-Uhlenbeck process.
+- Simple Virtual Power Plant and related finite-difference (FD) engine
+  (thanks to Klaus Spanderen).
 
-- Margrabe option (thanks to IMAFA/Polytech'Nice students Marius Akre,
-  Michael Benguigui, and Yanice Cherrak.)
+- FD solver and vanilla spread engine for Kluge-Ornstein-Uhlenbeck
+  process (thanks to Klaus Spanderen).
 
-- Simple chooser option (thanks to IMAFA/Polytech'Nice students
-  Clement Barret, Fakher Braham, and Mohamed Amine Sadaoui.)
+- Added generic n-dimensional FD solver (thanks to Klaus Spanderen).
 
-- Generalized Hull-White model (thanks to Cavit Hafizoglu.)  The
-  generalized model can take piecewise-constant parameters instead of
-  constant ones. A matching generalized Ornstein-Uhlenbeck process was
-  also added.
+- Added FD pricing engine for a simple storage option based on an
+  exponential Ornstein Uhlenbeck process (thanks to Klaus Spanderen).
 
-- Variance-gamma implementation (thanks to Adrian O'Neill.)
-  Contributed classes include a variance-gamma process and model (with
-  data but no behavior at this time) and a couple of working engines
-  for European options.
+- Added vanilla and swing option FD pricer for Kluge model (thanks to
+  Klaus Spanderen).
 
-- Hybrid products in the McBasket framework (thanks to Andrea Odetti.)
-  Path pricers now take a vector of YieldTermStructures that contains
-  the (possibly stochastic) yield curves.
+- Added FD pricing engine for a simple swing option based on the
+  Black-Scholes model (thanks to Klaus Spanderen).
 
-- Delta calculator for FX options (thanks to Dimitri Reiswich.)

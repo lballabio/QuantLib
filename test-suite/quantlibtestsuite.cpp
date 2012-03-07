@@ -132,6 +132,7 @@
 #include "rngtraits.hpp"
 #include "rounding.hpp"
 #include "sampledcurve.hpp"
+#include "schedule.hpp"
 #include "shortratemodels.hpp"
 #include "solvers.hpp"
 #include "spreadoption.hpp"
@@ -297,8 +298,8 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(InflationTest::suite());                  // in general inflation & tests
     test->add(InflationCapFloorTest::suite());          // use indexed coupons, i.e.
     test->add(InflationCapFlooredCouponTest::suite());  // QL_USE_INDEXED_COUPON has no effect
-	test->add(CPISwapTest::suite());					//
-	test->add(InflationCPICapFloorTest::suite());		//
+    test->add(CPISwapTest::suite());                    //
+    test->add(InflationCPICapFloorTest::suite());       //
     test->add(InflationVolTest::suite());               //
     test->add(InstrumentTest::suite());
     test->add(IntegralTest::suite());
@@ -334,6 +335,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(RngTraitsTest::suite());
     test->add(RoundingTest::suite());
     test->add(SampledCurveTest::suite());
+    test->add(ScheduleTest::suite());
     test->add(ShortRateModelTest::suite()); // fails with QL_USE_INDEXED_COUPON
     test->add(Solver1DTest::suite());
     test->add(SpreadOptionTest::suite());

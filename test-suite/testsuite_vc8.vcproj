@@ -803,6 +803,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\schedule.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\shortratemodels.cpp"
 				>
 			</File>
@@ -1261,6 +1265,10 @@
 			</File>
 			<File
 				RelativePath=".\sampledcurve.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\schedule.hpp"
 				>
 			</File>
 			<File

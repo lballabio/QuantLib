@@ -32,7 +32,7 @@ namespace QuantLib {
     }
 
     Settings::Settings()
-    : includeReferenceDateCashFlows_(false),
+    : includeReferenceDateEvents_(false),
       enforcesTodaysHistoricFixings_(false) {}
 
     void Settings::anchorEvaluationDate() {
@@ -48,8 +48,8 @@ namespace QuantLib {
 
     SavedSettings::SavedSettings()
     : evaluationDate_(Settings::instance().evaluationDate()),
-      includeReferenceDateCashFlows_(
-                        Settings::instance().includeReferenceDateCashFlows()),
+      includeReferenceDateEvents_(
+                        Settings::instance().includeReferenceDateEvents()),
       includeTodaysCashFlows_(Settings::instance().includeTodaysCashFlows()),
       enforcesTodaysHistoricFixings_(
                         Settings::instance().enforcesTodaysHistoricFixings()) {}
@@ -58,8 +58,8 @@ namespace QuantLib {
         try {
             if (Settings::instance().evaluationDate() != evaluationDate_)
                 Settings::instance().evaluationDate() = evaluationDate_;
-            Settings::instance().includeReferenceDateCashFlows() =
-                includeReferenceDateCashFlows_;
+            Settings::instance().includeReferenceDateEvents() =
+                includeReferenceDateEvents_;
             Settings::instance().includeTodaysCashFlows() =
                 includeTodaysCashFlows_;
             Settings::instance().enforcesTodaysHistoricFixings() =

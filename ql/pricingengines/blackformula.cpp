@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 Ferdinando Ametrano
+ Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2012 Ferdinando Ametrano
  Copyright (C) 2006 Mark Joshi
  Copyright (C) 2006 StatPro Italia srl
  Copyright (C) 2007 Cristina Duminuco
@@ -203,13 +203,38 @@ namespace QuantLib {
                                    Natural maxIterations)
     {
         checkParameters(strike, forward, displacement);
-        QL_REQUIRE(blackPrice>=0.0,
-                   "blackPrice (" << blackPrice << ") must be non-negative");
+
         QL_REQUIRE(discount>0.0,
                    "discount (" << discount << ") must be positive");
 
+        QL_REQUIRE(blackPrice>=0.0,
+                   "option price (" << blackPrice << ") must be non-negative");
+        // check the price of the "other" option implied by put-call paity
+        Real otherOptionPrice = blackPrice - optionType*(forward-strike)*discount;
+        QL_REQUIRE(otherOptionPrice>=0.0,
+                   "negative " << Option::Type(-1*optionType) <<
+                   " price (" << otherOptionPrice <<
+                   ") implied by put-call parity. No solution exists for " <<
+                   optionType << " strike " << strike <<
+                   ", forward " << forward <<
+                   ", price " << blackPrice <<
+                   ", deflator " << discount);
+
+        // solve for the out-of-the-money option which has
+        // greater vega/price ratio, i.e.
+        // it is numerically more robust for implied vol calculations
+        if (optionType==Option::Put && strike>forward) {
+            optionType = Option::Call;
+            blackPrice = otherOptionPrice;
+        }
+        if (optionType==Option::Call && strike<forward) {
+            optionType = Option::Put;
+            blackPrice = otherOptionPrice;
+        }
+
         strike = strike + displacement;
         forward = forward + displacement;
+
         if (guess==Null<Real>())
             guess = blackFormulaImpliedStdDevApproximation(
                 optionType, strike, forward, blackPrice, discount, displacement);
@@ -220,7 +245,7 @@ namespace QuantLib {
                                    blackPrice/discount);
         NewtonSafe solver;
         solver.setMaxEvaluations(maxIterations);
-        Real minSdtDev = 0.0, maxStdDev = 3.0;
+        Real minSdtDev = 0.0, maxStdDev = 24.0; // 24 = 300% * sqrt(60)
         Real stdDev = solver.solve(f, accuracy, guess, minSdtDev, maxStdDev);
         QL_ENSURE(stdDev>=0.0,
                   "stdDev (" << stdDev << ") must be non-negative");

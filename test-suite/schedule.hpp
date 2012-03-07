@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2009, 2011 Klaus Spanderen
+ Copyright (C) 2012 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,30 +17,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdmsimpleprocess1dmesher.hpp
-    \brief One-dimensional grid mesher
-*/
+#ifndef quantlib_test_schedule_hpp
+#define quantlib_test_schedule_hpp
 
-#ifndef quantlib_fdm_simple_process_1d_mesher_hpp
-#define quantlib_fdm_simple_process_1d_mesher_hpp
+#include <boost/test/unit_test.hpp>
 
-#include <ql/methods/finitedifferences/meshers/fdm1dmesher.hpp>
-#include <ql/utilities/null.hpp>
-#include <boost/shared_ptr.hpp>
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
 
-namespace QuantLib {
+class ScheduleTest {
+  public:
+    static void testDailySchedule();
+    static void testEndDateWithEomAdjustment();
+    static boost::unit_test_framework::test_suite* suite();
+};
 
-    class StochasticProcess1D;
-
-    class FdmSimpleProcess1dMesher : public Fdm1dMesher {
-      public:
-          FdmSimpleProcess1dMesher(
-            Size size,
-            const boost::shared_ptr<StochasticProcess1D>& process,
-            Time maturity, Size tAvgSteps = 10, Real epsilon = 0.0001,
-            Real mandatoryPoint = Null<Real>());
-    };
-
-}
 
 #endif

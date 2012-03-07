@@ -26,6 +26,8 @@
 #define quantlib_fdm_exp_ext_ou_inner_value_calculator_hpp
 
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
+#include <ql/payoff.hpp>
 
 namespace QuantLib {
 

@@ -59,7 +59,7 @@ namespace QuantLib {
         explicit InverseCumulativeRsg(const USG& uniformSequenceGenerator);
         InverseCumulativeRsg(const USG& uniformSequenceGenerator,
                              const IC& inverseCumulative);
-        //! returns next sample from the Gaussian distribution
+        //! returns next sample from the inverse cumulative distribution
         const sample_type& nextSequence() const;
         const sample_type& lastSequence() const { return x_; }
         Size dimension() const { return dimension_; }

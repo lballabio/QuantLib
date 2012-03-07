@@ -225,7 +225,7 @@ namespace QuantLib {
                           Compounding comp,
                           Frequency freq,
                           Date settlement) const {
-        Real currentNotional = notional(settlementDate());
+        Real currentNotional = notional(settlement);
         if (currentNotional == 0.0)
             return 0.0;
 
@@ -240,7 +240,7 @@ namespace QuantLib {
                      Date settlement,
                      Real accuracy,
                      Size maxEvaluations) const {
-        Real currentNotional = notional(settlementDate());
+        Real currentNotional = notional(settlement);
         if (currentNotional == 0.0)
             return 0.0;
 
@@ -249,7 +249,7 @@ namespace QuantLib {
     }
 
     Real Bond::accruedAmount(Date settlement) const {
-        Real currentNotional = notional(settlementDate());
+        Real currentNotional = notional(settlement);
         if (currentNotional == 0.0)
             return 0.0;
 

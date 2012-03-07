@@ -72,7 +72,7 @@ namespace QuantLib {
         bool includeRefDateFlows =
             includeSettlementDateFlows_ ?
             *includeSettlementDateFlows_ :
-            Settings::instance().includeReferenceDateCashFlows();
+            Settings::instance().includeReferenceDateEvents();
 
         for (Size i=0; i<n; ++i) {
             try {

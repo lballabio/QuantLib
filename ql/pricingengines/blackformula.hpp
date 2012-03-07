@@ -151,14 +151,14 @@ namespace QuantLib {
                                       Real displacement = 0.0);
 
      /*! Black 1976 formula for  derivative with respect to implied vol, this
-     is basically the vega, but if you want 1% change multiply by 1%
+         is basically the vega, but if you want 1% change multiply by 1%
     */
     Real blackFormulaVolDerivative(Real strike,
-                                      Real forward,
-                                      Real stdDev,
-                                      Real expiry,
-                                      Real discount = 1.0,
-                                      Real displacement = 0.0);
+                                   Real forward,
+                                   Real stdDev,
+                                   Real expiry,
+                                   Real discount = 1.0,
+                                   Real displacement = 0.0);
 
 
     /*! Black 1976 formula for standard deviation derivative

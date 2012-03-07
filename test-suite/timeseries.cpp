@@ -144,12 +144,12 @@ void TimeSeriesTest::testIterators() {
     TimeSeriesUnordered ts1;
     Date d0(25, March, 2005), d1(25, April, 2005), d = d0;
     UnitedStates calendar(UnitedStates::NYSE);
-    for (size_t i = 0; d < d1; ++i, d = calendar.advance(d, 1, Days)) {
+    for (int i = 0; d < d1; ++i, d = calendar.advance(d, 1, Days)) {
         ts1[d] = i;
     }
 
     d = d0;
-    for (size_t i = 0; d < d1; ++i, d = calendar.advance(d, 1, Days)) {
+    for (int i = 0; d < d1; ++i, d = calendar.advance(d, 1, Days)) {
         if (ts1[d] != int(i)) {
             BOOST_ERROR("value does not match");
         }

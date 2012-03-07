@@ -585,7 +585,8 @@ namespace QuantLib {
             if (leg.empty())
                 return 0.0;
 
-            QL_REQUIRE(settlementDate!=Date(), "null settlement date");
+            if (settlementDate == Date())
+                settlementDate = Settings::instance().evaluationDate();
 
             if (npvDate == Date())
                 npvDate = settlementDate;
@@ -1096,6 +1097,11 @@ namespace QuantLib {
 
                 if (npvDate == Date())
                     npvDate = settlementDate;
+
+                // if the discount curve allows extrapolation, let's
+                // the spreaded curve do too.
+                curve_.enableExtrapolation(
+                                  discountCurve->allowsExtrapolation());
             }
             Real operator()(Rate zSpread) const {
                 zSpread_->setValue(zSpread);

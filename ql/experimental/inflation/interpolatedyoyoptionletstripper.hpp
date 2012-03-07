@@ -283,11 +283,6 @@ namespace QuantLib {
                                             helperInstruments) );
             testPW->recalculate();
             volCurves_.push_back(testPW);
-            /*
-            for(Size j = 0; j < YoYCapFloorTermPriceSurface_->maturities().size(); j++) {
-                Date di =  helpers[j]->latestDate();
-            }
-            */
         }
     }
 

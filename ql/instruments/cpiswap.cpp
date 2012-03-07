@@ -63,9 +63,9 @@ namespace QuantLib {
     floatPaymentRoll_(floatPaymentRoll), fixingDays_(fixingDays),
     floatIndex_(floatIndex),
     fixedRate_(fixedRate), baseCPI_(baseCPI), fixedDayCount_(fixedDayCount), fixedSchedule_(fixedSchedule),
-    fixedPaymentRoll_(fixedPaymentRoll), 
-    fixedIndex_(fixedIndex), observationLag_(observationLag),
-      observationInterpolation_(observationInterpolation)
+    fixedPaymentRoll_(fixedPaymentRoll), fixedIndex_(fixedIndex),
+    observationLag_(observationLag),
+    observationInterpolation_(observationInterpolation)
     {
         QL_REQUIRE(floatSchedule_.size()>0,"empty float schedule");
         QL_REQUIRE(fixedSchedule_.size()>0,"empty fixed schedule");

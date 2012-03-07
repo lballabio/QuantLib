@@ -40,7 +40,7 @@ namespace QuantLib {
         bool includeRefDateFlows =
             includeSettlementDateFlows_ ?
             *includeSettlementDateFlows_ :
-            Settings::instance().includeReferenceDateCashFlows();
+            Settings::instance().includeReferenceDateEvents();
 
         results_.value = CashFlows::npv(arguments_.cashflows,
                                         **discountCurve_,
@@ -48,12 +48,21 @@ namespace QuantLib {
                                         results_.valuationDate,
                                         results_.valuationDate);
 
-        // a bond's cashflow on settlement date is never taken into account
-        results_.settlementValue = CashFlows::npv(arguments_.cashflows,
-                                                  **discountCurve_,
-                                                  false,
-                                                  arguments_.settlementDate,
-                                                  arguments_.settlementDate);
+        // a bond's cashflow on settlement date is never taken into
+        // account, so we might have to play it safe and recalculate
+        if (!includeRefDateFlows
+                     && results_.valuationDate == arguments_.settlementDate) {
+            // same parameters as above, we can avoid another call
+            results_.settlementValue = results_.value;
+        } else {
+            // no such luck
+            results_.settlementValue =
+                CashFlows::npv(arguments_.cashflows,
+                               **discountCurve_,
+                               false,
+                               arguments_.settlementDate,
+                               arguments_.settlementDate);
+        }
     }
 
 }

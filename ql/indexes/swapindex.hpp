@@ -90,10 +90,10 @@ namespace QuantLib {
         BusinessDayConvention fixedLegConvention_;
         bool exogenousDiscount_;
         Handle<YieldTermStructure> discount_;
-		// cache data to avoid swap recreation when the same fixing date
-		// is used multiple time to forecast changing fixing
+        // cache data to avoid swap recreation when the same fixing date
+        // is used multiple time to forecast changing fixing
         mutable boost::shared_ptr<VanillaSwap> lastSwap_;
-		mutable Date lastFixingDate_;
+        mutable Date lastFixingDate_;
     };
 
 
@@ -117,10 +117,10 @@ namespace QuantLib {
         //@}
       protected:
         boost::shared_ptr<OvernightIndex> overnightIndex_;
-		// cache data to avoid swap recreation when the same fixing date
-		// is used multiple time to forecast changing fixing
+        // cache data to avoid swap recreation when the same fixing date
+        // is used multiple time to forecast changing fixing
         mutable boost::shared_ptr<OvernightIndexedSwap> lastSwap_;
-		mutable Date lastFixingDate_;
+        mutable Date lastFixingDate_;
     };
 
     // inline definitions

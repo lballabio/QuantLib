@@ -23,14 +23,14 @@
 
 namespace QuantLib {
 
-    bool Event::hasOccurred(const Date& d,
-                            boost::optional<bool> includeToday) const {
+    bool Event::hasOccurred(const Date& d, // refDate
+                            boost::optional<bool> includeRefDate) const {
         Date refDate =
             d != Date() ? d : Settings::instance().evaluationDate();
-        bool includeTodaysEvent =
-            includeToday ? *includeToday :
-                           Settings::instance().includeReferenceDateCashFlows();
-        if (includeTodaysEvent)
+        bool includeRefDateEvent =
+            includeRefDate ? *includeRefDate :
+                           Settings::instance().includeReferenceDateEvents();
+        if (includeRefDateEvent)
             return date() < refDate;
         else
             return date() <= refDate;

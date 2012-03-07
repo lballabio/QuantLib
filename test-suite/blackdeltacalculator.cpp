@@ -484,7 +484,7 @@ void BlackDeltaCalculatorTest::testPutCallParity(){
         deltaPut=myCalc.deltaFromStrike(values[i].strike);;
         myCalc.setOptionType(Option::Call);
 
-        expectedDiff=values[i].strike/forward;
+        expectedDiff = values[i].strike/forward;
         calculatedDiff=deltaCall-deltaPut;
         error=std::fabs(expectedDiff-calculatedDiff);
 
