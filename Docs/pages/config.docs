@@ -71,13 +71,6 @@
     performance. Undefined by default.
 
     \code
-    #define QL_TODAYS_PAYMENTS
-    \endcode
-    If undefined (the default,) payments are considered to be settled
-    at the beginning of the day. Therefore, payments occurring at
-    today's date are not included in the NPV of an instrument.
-
-    \code
     #define QL_DISABLE_DEPRECATED
     \endcode
     If defined, deprecated code will not be included in the
