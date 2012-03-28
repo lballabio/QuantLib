@@ -114,10 +114,37 @@ void ScheduleTest::testEndDateWithEomAdjustment() {
 }
 
 
+void ScheduleTest::testDatesPastEndDateWithEomAdjustment() {
+    BOOST_MESSAGE(
+        "Testing that no dates are past the end date with EOM adjustment...");
+
+    Schedule s =
+        MakeSchedule().from(Date(28,March,2013))
+                      .to(Date(30,March,2015))
+                      .withCalendar(TARGET())
+                      .withTenor(1*Years)
+                      .withConvention(Unadjusted)
+                      .withTerminationDateConvention(Unadjusted)
+                      .forwards()
+                      .endOfMonth();
+
+    std::vector<Date> expected(3);
+    expected[0] = Date(31,March,2013);
+    expected[1] = Date(31,March,2014);
+    // March 31st 2015, coming from the EOM adjustment of March 28th,
+    // should be discarded as past the end date.
+    expected[2] = Date(30,March,2015);
+
+    check_dates(s, expected);
+}
+
+
 test_suite* ScheduleTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Schedule tests");
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testDailySchedule));
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testEndDateWithEomAdjustment));
+    suite->add(QUANTLIB_TEST_CASE(
+                       &ScheduleTest::testDatesPastEndDateWithEomAdjustment));
     return suite;
 }
 

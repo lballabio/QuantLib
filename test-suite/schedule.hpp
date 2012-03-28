@@ -29,6 +29,7 @@ class ScheduleTest {
   public:
     static void testDailySchedule();
     static void testEndDateWithEomAdjustment();
+    static void testDatesPastEndDateWithEomAdjustment();
     static boost::unit_test_framework::test_suite* suite();
 };
 
