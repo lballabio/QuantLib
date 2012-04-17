@@ -52,6 +52,7 @@ QL_TESTS = \
 	inflation.hpp inflation.cpp \
 	inflationcapfloor.hpp inflationcapfloor.cpp \
 	inflationcapflooredcoupon.hpp inflationcapflooredcoupon.cpp \
+    inflationcpibond.hpp inflationcpibond.cpp \
     inflationcpicapfloor.hpp inflationcpicapfloor.cpp \
 	inflationcpiswap.hpp inflationcpiswap.cpp \
 	inflationvolatility.hpp inflationvolatility.cpp \

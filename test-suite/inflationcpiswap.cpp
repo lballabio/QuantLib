@@ -104,6 +104,7 @@ namespace {
         // cleanup
 
         SavedSettings backup;
+        IndexHistoryCleaner cleaner;
 
         // setup
         CommonVars() {

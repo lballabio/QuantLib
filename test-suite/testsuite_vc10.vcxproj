@@ -373,6 +373,7 @@
     <ClCompile Include="inflation.cpp" />
     <ClCompile Include="inflationcapfloor.cpp" />
     <ClCompile Include="inflationcapflooredcoupon.cpp" />
+    <ClCompile Include="inflationcpibond.cpp" />
     <ClCompile Include="inflationcpicapfloor.cpp" />
     <ClCompile Include="inflationcpiswap.cpp" />
     <ClCompile Include="inflationvolatility.cpp" />
@@ -491,6 +492,7 @@
     <ClInclude Include="inflation.hpp" />
     <ClInclude Include="inflationcapfloor.hpp" />
     <ClInclude Include="inflationcapflooredcoupon.hpp" />
+    <ClInclude Include="inflationcpibond.hpp" />
     <ClInclude Include="inflationcpicapfloor.hpp" />
     <ClInclude Include="inflationcpiswap.hpp" />
     <ClInclude Include="inflationvolatility.hpp" />

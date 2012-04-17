@@ -341,6 +341,9 @@
     <ClCompile Include="volatilitymodels.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="inflationcpibond.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="inflationcpicapfloor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -693,6 +696,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="swingoption.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inflationcpibond.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inflationcpicapfloor.hpp">

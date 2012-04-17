@@ -249,7 +249,11 @@ namespace QuantLib {
                                  const boost::shared_ptr<CashFlow>& redemption);
 
         /*! used internally to collect notional information from the
-            coupons. It should not be called by derived classes.
+            coupons. It should not be called by derived classes,
+            unless they already provide redemption cash flows (in
+            which case they must set up the redemptions_ data member
+            independently).  It will fill the notionalSchedule_ and
+            notionals_ data members.
         */
         void calculateNotionalsFromCashflows();
 
