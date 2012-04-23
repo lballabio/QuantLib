@@ -20,6 +20,7 @@ this_include_HEADERS = \
 	fdsimpleextoujumpswingengine.hpp \
     fdsimpleextoustorageengine.hpp \
 	fdsimpleklugeextouvppengine.hpp \
+	glued1dmesher.hpp \
 	vanillavppoption.hpp
 
 libMultiDimFDM_la_SOURCES = \
@@ -33,6 +34,7 @@ libMultiDimFDM_la_SOURCES = \
 	fdsimpleextoujumpswingengine.cpp \
     fdsimpleextoustorageengine.cpp \
     fdsimpleklugeextouvppengine.cpp \
+	glued1dmesher.cpp \
 	vanillavppoption.cpp
 
 noinst_LTLIBRARIES = libMultiDimFDM.la

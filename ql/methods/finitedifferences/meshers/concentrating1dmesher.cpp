@@ -26,6 +26,8 @@
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
 #include <cmath>
 
+#include <ql/math/interpolations/linearinterpolation.hpp>
+
 // asinh is missing in WIN32 (and possibly on other compilers)
 #if !defined(QL_HAVE_ASINH)
 #define asinh(x) std::log(x + std::sqrt(x * x + 1))
@@ -34,7 +36,8 @@
 namespace QuantLib {
 
     Concentrating1dMesher::Concentrating1dMesher(
-        Real start, Real end, Size size, const std::pair<Real, Real>& cPoints)
+        Real start, Real end, Size size, const std::pair<Real, Real>& cPoints,
+        const bool requireCPoint)
     : Fdm1dMesher(size) {
 
         QL_REQUIRE(end > start, "end must be larger than start");
@@ -49,13 +52,28 @@ namespace QuantLib {
         QL_REQUIRE(density == Null<Real>() || density > 0.0,
                    "density > 0 required" );
 
+		Real c1, c2;
+		std::vector<Real> u, z;
+		boost::shared_ptr<Interpolation> transform;
+		if(cPoint != Null<Real>()) {
+            c1 = asinh((start-cPoint)/density);
+            c2 = asinh((end-cPoint)/density);
+			if(requireCPoint) {
+				Real z0 = - c1 / (c2-c1);
+				Real u0 = static_cast<int>(z0*(size-1)+0.5) / ((Real)(size-1));
+				u.push_back(0.0); u.push_back(u0); u.push_back(1.0);
+				z.push_back(0.0); z.push_back(z0); z.push_back(1.0);
+				transform = boost::shared_ptr<Interpolation>(
+				    new LinearInterpolation(u.begin(), u.end(), z.begin()));
+			}
+		}
+
         const Real dx = 1.0/(size-1);
         for (Size i=1; i < size-1; ++i) {
             if(cPoint != Null<Real>()) {
-                const Real c1 = asinh((start-cPoint)/density);
-                const Real c2 = asinh((end-cPoint)/density);
+				Real li = requireCPoint ? (*transform)(i*dx) : i*dx;
                 locations_[i] = cPoint
-                    + density*std::sinh(c1*(1.0-i*dx)+c2*i*dx);
+                    + density*std::sinh(c1*(1.0-li)+c2*li);
             }
             else {
                 locations_[i] = start + i*dx*(end-start);
