@@ -41,7 +41,8 @@ namespace QuantLib {
           case Down:
             break;
           case Up:
-            lvalue += 1.0;
+            if (modVal != 0.0)
+                lvalue += 1.0;
             break;
           case Closest:
             if (modVal >= (digit_/10.0))
