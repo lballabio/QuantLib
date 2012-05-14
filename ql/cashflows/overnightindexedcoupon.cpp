@@ -53,7 +53,7 @@ namespace QuantLib {
 
                 // already fixed part
                 Date today = Settings::instance().evaluationDate();
-                while (fixingDates[i]<today && i<n) {
+                while (i<n && fixingDates[i]<today) {
                     // rate must have been fixed
                     Rate pastFixing = IndexManager::instance().getHistory(
                                                 index->name())[fixingDates[i]];
@@ -65,7 +65,7 @@ namespace QuantLib {
                 }
 
                 // today is a border case
-                if (fixingDates[i] == today && i<n) {
+                if (i<n && fixingDates[i] == today) {
                     // might have been fixed
                     try {
                         Rate pastFixing = IndexManager::instance().getHistory(
