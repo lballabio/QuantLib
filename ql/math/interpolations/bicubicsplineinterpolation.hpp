@@ -55,14 +55,14 @@ namespace QuantLib {
                 calculate();
             }
             void calculate() {
-                splines_.reserve(this->zData_.rows());
+                splines_.resize(this->zData_.rows());
                 for (Size i=0; i<(this->zData_.rows()); ++i)
-                    splines_.push_back(CubicInterpolation(
+                    splines_[i] = CubicInterpolation(
                                 this->xBegin_, this->xEnd_,
                                 this->zData_.row_begin(i),
                                 CubicInterpolation::Spline, false,
                                 CubicInterpolation::SecondDerivative, 0.0,
-                                CubicInterpolation::SecondDerivative, 0.0));
+                                CubicInterpolation::SecondDerivative, 0.0);
             }
             Real value(Real x, Real y) const {
                 std::vector<Real> section(splines_.size());

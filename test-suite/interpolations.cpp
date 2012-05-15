@@ -1610,6 +1610,37 @@ void InterpolationTest::testBicubicDerivatives() {
     }
 }
 
+
+
+void InterpolationTest::testBicubicUpdate() {
+    BOOST_MESSAGE("Testing that bicubic splines actually update...");
+
+    Size N=6;
+    std::vector<Real> x(N), y(N);
+    for (Size i=0; i < N; ++i) {
+        x[i] = y[i] = i*0.2;
+    }
+
+    Matrix f(N, N);
+    for (Size i=0; i < N; ++i)
+        for (Size j=0; j < N; ++j)
+            f[i][j] = x[j]*(x[j] + y[i]);
+
+    BicubicSpline spline(x.begin(), x.end(), y.begin(), y.end(), f);
+
+    Real old_result = spline(x[2]+0.1, y[4]);
+
+    // modify input matrix and update.
+    f[4][3] += 1.0;
+    spline.update();
+
+    Real new_result = spline(x[2]+0.1, y[4]);
+    if (std::fabs(old_result-new_result) < 0.5) {
+        BOOST_ERROR("Failed to update bicubic spline");
+    }
+}
+
+
 test_suite* InterpolationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
 
@@ -1636,6 +1667,7 @@ test_suite* InterpolationTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
                               &InterpolationTest::testKernelInterpolation2D));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBicubicDerivatives));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBicubicUpdate));
 
     return suite;
 }
