@@ -47,6 +47,12 @@ namespace QuantLib {
                                     Handle<YieldTermStructure>(),
               const Date& startDate = Date(),
               const Date& issueDate = Date());
+        //! \name Bond interface
+        //@{
+        //! accrued amount at a given date
+        /*! The default bond settlement is used if no date is given. */
+        Real accruedAmount(Date d = Date()) const;
+        //@}
     };
 
     //! Italian BTP (Buono Poliennali del Tesoro) fixed rate bond
@@ -67,6 +73,12 @@ namespace QuantLib {
             Real redemption,
             const Date& startDate = Date(),
             const Date& issueDate = Date());
+        //! \name Bond interface
+        //@{
+        //! accrued amount at a given date
+        /*! The default bond settlement is used if no date is given. */
+        Real accruedAmount(Date d = Date()) const;
+        //@}
         //! BTP yield given a (clean) price and settlement date
         /*! The default BTP conventions are used: Actual/Actual (ISMA),
             Compounded, Annual.
@@ -177,6 +189,16 @@ namespace QuantLib {
     };
 
     // inline
+
+    inline Real CCTEU::accruedAmount(Date d) const {
+        Real result = FloatingRateBond::accruedAmount(d);
+        return ClosestRounding(5)(result);
+    }
+
+    inline Real BTP::accruedAmount(Date d) const {
+        Real result = FixedRateBond::accruedAmount(d);
+        return ClosestRounding(5)(result);
+    }
 
     inline const std::vector<boost::shared_ptr<BTP> >&
     RendistatoBasket::btps() const {
