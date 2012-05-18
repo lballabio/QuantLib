@@ -394,6 +394,10 @@ namespace QuantLib {
     Schedule Schedule::until(const Date& truncationDate) const {
         Schedule result = *this;
 
+        QL_REQUIRE(truncationDate>result.dates_[0],
+                   "truncation date " << truncationDate <<
+                   " must be later than schedule first date " <<
+                   result.dates_[0]);
         if (truncationDate<result.dates_.back()) {
             // remove later dates
             while (result.dates_.back()>truncationDate) {
