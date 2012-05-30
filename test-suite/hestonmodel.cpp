@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2007, 2009, 2010 Klaus Spanderen
+ Copyright (C) 2005, 2007, 2009, 2010, 2012 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -1118,6 +1118,98 @@ void HestonModelTest::testDAXCalibrationOfTimeDependentModel() {
     }
 }
 
+void HestonModelTest::testAlanLewisReferencePrices() {
+    BOOST_MESSAGE("Testing Alan Lewis Reference Prices ...");
+
+    /*
+     * testing Alan Lewis reference prices posted in
+     * http://wilmott.com/messageview.cfm?catid=34&threadid=90957
+     */
+
+    SavedSettings backup;
+
+    const Date settlementDate(5, July, 2002);
+    Settings::instance().evaluationDate() = settlementDate;
+
+    const Date maturityDate(5, July, 2003);
+    const boost::shared_ptr<Exercise> exercise(
+        new EuropeanExercise(maturityDate));
+
+    const DayCounter dayCounter = Actual365Fixed();
+    const Handle<YieldTermStructure> riskFreeTS(flatRate(0.01, dayCounter));
+    const Handle<YieldTermStructure> dividendTS(flatRate(0.02, dayCounter));
+
+    const Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
+
+    const Real v0    =  0.04;
+    const Real rho   = -0.5;
+    const Real sigma =  1.0;
+    const Real kappa =  4.0;
+    const Real theta =  0.25;
+
+    const boost::shared_ptr<HestonProcess> process(new HestonProcess(
+        riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho));
+    const boost::shared_ptr<HestonModel> model(new HestonModel(process));
+
+    const boost::shared_ptr<PricingEngine> laguerreEngine(
+        new AnalyticHestonEngine(model, 192u));
+
+    const boost::shared_ptr<PricingEngine> gaussLobattoEngine(
+        new AnalyticHestonEngine(model, QL_EPSILON, 100000u));
+
+    const Real strikes[] = { 80, 90, 100, 110, 120 };
+    const Option::Type types[] = { Option::Put, Option::Call };
+    const boost::shared_ptr<PricingEngine> engines[]
+        = { laguerreEngine, gaussLobattoEngine };
+
+    const Real expectedResults[][2] = {
+        { 7.958878113256768285213263077598987193482161301733,
+          26.774758743998854221382195325726949201687074848341 },
+        { 12.017966707346304987709573290236471654992071308187,
+          20.933349000596710388139445766564068085476194042256 },
+        { 17.055270961270109413522653999411000974895436309183,
+          16.070154917028834278213466703938231827658768230714 },
+        { 23.017825898442800538908781834822560777763225722188,
+          12.132211516709844867860534767549426052805766831181 },
+        { 29.811026202682471843340682293165857439167301370697,
+          9.024913483457835636553375454092357136489051667150  }
+    };
+
+    const Real tol = 1e-12; // 3e-15 works on linux/ia32,
+                            // but keep some buffer for other platforms
+
+    for (Size i=0; i < LENGTH(strikes); ++i) {
+        const Real strike = strikes[i];
+
+        for (Size j=0; j < LENGTH(types); ++j) {
+            const Option::Type type = types[j];
+
+            for (Size k=0; k < LENGTH(engines); ++k) {
+                const boost::shared_ptr<PricingEngine> engine = engines[k];
+
+                const boost::shared_ptr<StrikedTypePayoff> payoff(
+                    new PlainVanillaPayoff(type, strike));
+
+                VanillaOption option(payoff, exercise);
+                option.setPricingEngine(engine);
+
+                const Real expected = expectedResults[i][j];
+                const Real calculated = option.NPV();
+                const Real relError = std::fabs(calculated-expected)/expected;
+
+                if (relError > tol) {
+                    BOOST_FAIL(
+                           "failed to reproduce Alan Lewis Reference prices "
+                        << "\n    strike     : " << strike
+                        << "\n    option type: " << type
+                        << "\n    engine type: " << k
+                        << "\n    rel. error : " << relError);
+                }
+            }
+        }
+    }
+}
+
 test_suite* HestonModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Heston model tests");
 
@@ -1138,6 +1230,8 @@ test_suite* HestonModelTest::suite() {
                     &HestonModelTest::testAnalyticPiecewiseTimeDependent));
     suite->add(QUANTLIB_TEST_CASE(
                     &HestonModelTest::testDAXCalibrationOfTimeDependentModel));
+    suite->add(QUANTLIB_TEST_CASE(
+                    &HestonModelTest::testAlanLewisReferencePrices));
 
     return suite;
 }
