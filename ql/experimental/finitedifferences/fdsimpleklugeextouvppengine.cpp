@@ -206,9 +206,12 @@ namespace QuantLib {
         x[1] = process_->initialValues()[1];
         x[2] = process_->initialValues()[2];
         
+        const Real tol = 1e-8;
         Array results(2*arguments_.tMinUp + arguments_.tMinDown);
         for (Size i=0; i < results.size(); ++i) {
-            x[3] = (Real) (nStates-results.size()+i);
+
+            x[3] = std::max(tol, std::min(
+                (Real) (nStates-results.size()+i), nStates-1-tol));
             results[i] = solver->valueAt(x);
         }
         results_.value = *std::max_element(results.begin(), results.end());

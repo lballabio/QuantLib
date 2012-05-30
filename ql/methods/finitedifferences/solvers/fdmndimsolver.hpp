@@ -89,7 +89,7 @@ namespace QuantLib {
                                                         solverDesc.condition)),
       x_            (solverDesc.mesher->layout()->dim().size()),
       initialValues_(solverDesc.mesher->layout()->size()),
-      extrapolation_(std::vector<bool>(N, true)) {
+      extrapolation_(std::vector<bool>(N, false)) {
 
         const boost::shared_ptr<FdmMesher> mesher = solverDesc.mesher;
         const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
