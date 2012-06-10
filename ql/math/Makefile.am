@@ -28,6 +28,7 @@ this_include_HEADERS = \
 	primenumbers.hpp \
 	quadratic.hpp \
 	rounding.hpp \
+	richardsonextrapolation.hpp \
 	sampledcurve.hpp \
 	solver1d.hpp \
 	surface.hpp \
@@ -43,6 +44,7 @@ libMath_la_SOURCES = \
 	matrix.cpp \
 	primenumbers.cpp \
 	quadratic.cpp \
+	richardsonextrapolation.cpp \
 	rounding.cpp \
 	sampledcurve.cpp \
 	surface.cpp

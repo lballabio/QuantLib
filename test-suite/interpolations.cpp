@@ -36,6 +36,7 @@
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/kernelfunctions.hpp>
 #include <ql/math/functional.hpp>
+#include <ql/math/richardsonextrapolation.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <boost/assign/std/vector.hpp>
@@ -1610,6 +1611,35 @@ void InterpolationTest::testBicubicDerivatives() {
     }
 }
 
+namespace {
+    Real f(Real h) {
+        return std::pow( 1.0 + h, 1/h);
+    }
+}
+
+void InterpolationTest::testRichardsonExtrapolation() {
+    BOOST_MESSAGE("Testing Richardson Extrapolation...");
+
+    /* example taken from
+     * http://www.ipvs.uni-stuttgart.de/abteilungen/bv/lehre/
+     *      lehrveranstaltungen/vorlesungen/WS0910/
+     *      NSG_termine/dateien/Richardson.pdf
+     */
+
+    const RichardsonExtrapolation extrap(0.1, f);
+
+    const Real stepSize = 2.0;
+    const Real orderOfConvergence = 1.0;
+
+    const Real tol = 0.00001;
+    const Real expected = 2.71285;
+    const Real calculated = extrap.formula(stepSize, orderOfConvergence);
+
+    if (std::fabs(expected-calculated) > tol) {
+        BOOST_ERROR("failed to reproduce Richardson extrapolation");
+    }
+}
+
 test_suite* InterpolationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
 
@@ -1636,6 +1666,8 @@ test_suite* InterpolationTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
                               &InterpolationTest::testKernelInterpolation2D));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBicubicDerivatives));
+    suite->add(QUANTLIB_TEST_CASE(
+                            &InterpolationTest::testRichardsonExtrapolation));
 
     return suite;
 }
