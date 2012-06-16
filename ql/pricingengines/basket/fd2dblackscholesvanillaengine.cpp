@@ -86,7 +86,7 @@ namespace QuantLib {
                                     p1_->riskFreeRate()->dayCounter());
 
         // 5. Boundary conditions
-        std::vector<boost::shared_ptr<FdmDirichletBoundary> > boundaries;
+        const FdmBoundaryConditionSet boundaries;
 
         // 6. Solver
         const FdmSolverDesc solverDesc = { mesher, boundaries,

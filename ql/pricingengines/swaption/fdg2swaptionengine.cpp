@@ -119,7 +119,7 @@ namespace QuantLib {
                  mesher, calculator, referenceDate, dc);
 
         // 5. Boundary conditions
-        const std::vector<boost::shared_ptr<FdmDirichletBoundary> > boundaries;
+        const FdmBoundaryConditionSet boundaries;
 
         // 6. Solver
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions,

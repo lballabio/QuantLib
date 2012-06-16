@@ -27,8 +27,8 @@
 #define quantlib_craig_sneyd_scheme_hpp
 
 #include <ql/methods/finitedifferences/operatortraits.hpp>
-#include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmboundaryconditionset.hpp>
 
 namespace QuantLib {
 
@@ -44,8 +44,7 @@ namespace QuantLib {
         // constructors
         CraigSneydScheme(Real theta, Real mu,
             const boost::shared_ptr<FdmLinearOpComposite> & map,
-            const std::vector<boost::shared_ptr<FdmDirichletBoundary> > & bc_set
-                = std::vector<boost::shared_ptr<FdmDirichletBoundary> >());
+            const bc_set& bcSet = bc_set());
 
         void step(array_type& a, Time t);
         void setStep(Time dt);
@@ -55,7 +54,7 @@ namespace QuantLib {
         const Real theta_;
         const Real mu_;
         const boost::shared_ptr<FdmLinearOpComposite> & map_;
-        const std::vector<boost::shared_ptr<FdmDirichletBoundary> > bcSet_;
+        const bc_set bcSet_;
     };
 }
 

@@ -23,7 +23,7 @@
 #ifndef quantlib_fdm_solver_desc_hpp
 #define quantlib_fdm_solver_desc_hpp
 
-#include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmboundaryconditionset.hpp>
 
 namespace QuantLib {
 

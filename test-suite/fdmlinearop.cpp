@@ -621,7 +621,7 @@ void FdmLinearOpTest::testFdmHestonBarrier() {
         rhs[iter.index()]=std::max(std::exp(mesher->location(iter,0))-100, 0.0);
     }
 
-    std::vector<boost::shared_ptr<FdmDirichletBoundary> > bcSet;
+    FdmBoundaryConditionSet bcSet;
     bcSet.push_back(boost::shared_ptr<FdmDirichletBoundary>(
         new FdmDirichletBoundary(mesher, 0.0, 0,
                                  FdmDirichletBoundary::Upper)));
@@ -819,7 +819,7 @@ void FdmLinearOpTest::testFdmHestonExpress() {
     boost::shared_ptr<FdmInnerValueCalculator> calculator(
                                     new FdmLogInnerValue(payoff, mesher, 0));
 
-    std::vector<boost::shared_ptr<FdmDirichletBoundary> > bcSet;
+    const FdmBoundaryConditionSet bcSet;
     const FdmSolverDesc solverDesc = { mesher, bcSet,
                                        condition, calculator, 1.0, 50, 0 };
     FdmHestonSolver solver(hestonProcess, solverDesc);
@@ -911,7 +911,7 @@ namespace {
         boost::shared_ptr<FdmMesher> mesher(
                                      new FdmMesherComposite(layout, mesher1d));
 
-        const std::vector<boost::shared_ptr<FdmDirichletBoundary> > boundaries;
+        const FdmBoundaryConditionSet boundaries;
 
         std::list<std::vector<Time> > stoppingTimes;
         std::list<boost::shared_ptr<StepCondition<Array> > > stepConditions;

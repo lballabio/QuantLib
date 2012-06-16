@@ -24,9 +24,9 @@
 #ifndef quantlib_fdm_bates_op_hpp
 #define quantlib_fdm_bates_op_hpp
 
-#include <ql/methods/finitedifferences/operators/fdmhestonop.hpp>
-#include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
+#include <ql/methods/finitedifferences/operators/fdmhestonop.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmboundaryconditionset.hpp>
 
 namespace QuantLib {
 

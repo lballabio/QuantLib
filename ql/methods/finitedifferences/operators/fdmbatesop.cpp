@@ -30,6 +30,7 @@
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
 
 using boost::shared_ptr;
 
@@ -80,7 +81,15 @@ namespace QuantLib {
         
         for (FdmBoundaryConditionSet::const_iterator iter=bcSet_.begin();
             iter < bcSet_.end(); ++iter) {
-            valueOfDerivative=(*iter)->applyAfterApplying(x, valueOfDerivative);
+
+            const boost::shared_ptr<FdmDirichletBoundary> dirichlet
+                = boost::dynamic_pointer_cast<FdmDirichletBoundary>(*iter);
+
+            QL_REQUIRE(dirichlet, "FdmBatesOp can only deal with Dirichlet "
+                                  "boundary conditions.")
+
+            valueOfDerivative
+                = dirichlet->applyAfterApplying(x, valueOfDerivative);
         }
         
         return std::exp(-y*y)*valueOfDerivative;

@@ -29,7 +29,7 @@ namespace QuantLib {
 
     ImplicitEulerScheme::ImplicitEulerScheme(
         const boost::shared_ptr<FdmLinearOpComposite>& map,
-        const std::vector<boost::shared_ptr<FdmDirichletBoundary> >& bcSet,
+        const bc_set& bcSet,
         Real relTol)
     : dt_    (Null<Real>()),
       relTol_(relTol),

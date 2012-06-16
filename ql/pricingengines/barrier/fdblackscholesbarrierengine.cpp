@@ -24,6 +24,7 @@
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmdividendhandler.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmblackscholessolver.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
@@ -105,10 +106,10 @@ namespace QuantLib {
                 new FdmStepConditionComposite(stoppingTimes, stepConditions));
 
         // 5. Boundary conditions
-        std::vector<boost::shared_ptr<FdmDirichletBoundary> > boundaries;
+        FdmBoundaryConditionSet boundaries;
         if (   arguments_.barrierType == Barrier::DownIn
             || arguments_.barrierType == Barrier::DownOut) {
-            boundaries.push_back(boost::shared_ptr<FdmDirichletBoundary>(
+            boundaries.push_back(FdmBoundaryConditionSet::value_type(
                 new FdmDirichletBoundary(mesher, arguments_.rebate, 0,
                                          FdmDirichletBoundary::Lower)));
 
@@ -116,7 +117,7 @@ namespace QuantLib {
 
         if (   arguments_.barrierType == Barrier::UpIn
             || arguments_.barrierType == Barrier::UpOut) {
-            boundaries.push_back(boost::shared_ptr<FdmDirichletBoundary>(
+            boundaries.push_back(FdmBoundaryConditionSet::value_type(
                 new FdmDirichletBoundary(mesher, arguments_.rebate, 0,
                                          FdmDirichletBoundary::Upper)));
         }

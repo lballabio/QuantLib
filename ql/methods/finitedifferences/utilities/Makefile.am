@@ -6,6 +6,7 @@ this_include_HEADERS = \
 	all.hpp \
 	fdmaffinemodeltermstructure.hpp \
 	fdmaffinemodelswapinnervalue.hpp \
+	fdmboundaryconditionset.hpp \
 	fdmdirichletboundary.hpp \
 	fdmdividendhandler.hpp \
 	fdminnervaluecalculator.hpp \

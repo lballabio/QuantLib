@@ -191,7 +191,7 @@ namespace QuantLib {
                 new FdmStepConditionComposite(stoppingTimes, stepConditions));
 
         // 5. Boundary conditions
-        const std::vector<boost::shared_ptr<FdmDirichletBoundary> > boundaries;
+        const FdmBoundaryConditionSet boundaries;
 
         // 6. set-up solver
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions,

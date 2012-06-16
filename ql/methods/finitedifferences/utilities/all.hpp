@@ -3,6 +3,7 @@
 
 #include <ql/methods/finitedifferences/utilities/fdmaffinemodeltermstructure.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmaffinemodelswapinnervalue.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmboundaryconditionset.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmdividendhandler.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>

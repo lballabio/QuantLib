@@ -26,7 +26,7 @@
 
 #include <ql/methods/finitedifferences/operators/ninepointlinearop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
-#include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmboundaryconditionset.hpp>
 
 
 namespace QuantLib {

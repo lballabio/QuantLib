@@ -23,6 +23,7 @@
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmhestonvariancemesher.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
@@ -107,17 +108,17 @@ namespace QuantLib {
                                  process->riskFreeRate()->dayCounter());
 
         // 5. Boundary conditions
-        std::vector<boost::shared_ptr<FdmDirichletBoundary> > boundaries;
+        FdmBoundaryConditionSet boundaries;
         if (   arguments_.barrierType == Barrier::DownIn
             || arguments_.barrierType == Barrier::DownOut) {
-            boundaries.push_back(boost::shared_ptr<FdmDirichletBoundary>(
+            boundaries.push_back(FdmBoundaryConditionSet::value_type(
                 new FdmDirichletBoundary(mesher, arguments_.rebate, 0,
                                          FdmDirichletBoundary::Lower)));
 
         }
         if (   arguments_.barrierType == Barrier::UpIn
             || arguments_.barrierType == Barrier::UpOut) {
-            boundaries.push_back(boost::shared_ptr<FdmDirichletBoundary>(
+            boundaries.push_back(FdmBoundaryConditionSet::value_type(
                 new FdmDirichletBoundary(mesher, arguments_.rebate, 0,
                                          FdmDirichletBoundary::Upper)));
         }
