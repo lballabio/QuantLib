@@ -22,7 +22,6 @@
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
-#include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
 #include <ql/methods/finitedifferences/solvers/fdm1dimsolver.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmsnapshotcondition.hpp>
