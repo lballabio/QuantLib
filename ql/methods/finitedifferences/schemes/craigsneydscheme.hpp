@@ -28,7 +28,7 @@
 
 #include <ql/methods/finitedifferences/operatortraits.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
-#include <ql/methods/finitedifferences/utilities/fdmboundaryconditionset.hpp>
+#include <ql/methods/finitedifferences/schemes/boundaryconditionschemehelper.hpp>
 
 namespace QuantLib {
 
@@ -54,7 +54,7 @@ namespace QuantLib {
         const Real theta_;
         const Real mu_;
         const boost::shared_ptr<FdmLinearOpComposite> & map_;
-        const bc_set bcSet_;
+        const BoundaryConditionSchemeHelper bcSet_;
     };
 }
 

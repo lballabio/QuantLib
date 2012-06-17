@@ -22,22 +22,23 @@
 #include <ql/methods/finitedifferences/schemes/expliciteulerscheme.hpp>
 
 namespace QuantLib {
+    ExplicitEulerScheme::ExplicitEulerScheme(
+            const boost::shared_ptr<FdmLinearOpComposite> & map,
+            const bc_set& bcSet) :
+            dt_(Null<Real>()), map_(map), bcSet_(bcSet) {
+    }
 
-ExplicitEulerScheme::ExplicitEulerScheme(
-        const boost::shared_ptr<FdmLinearOpComposite> & map,
-        const bc_set& bcSet) :
-        dt_(Null<Real>()), map_(map), bcSet_(bcSet) {
-}
+    void ExplicitEulerScheme::step(array_type& a, Time t) {
+        QL_REQUIRE(t-dt_ > -1e-8, "a step towards negative time given");
+        map_->setTime(std::max(0.0, t - dt_), t);
+        bcSet_.setTime(std::max(0.0, t-dt_));
 
-void ExplicitEulerScheme::step(array_type& a, Time t) {
-    QL_REQUIRE(t-dt_ > -1e-8, "a step towards negative time given");
-    map_->setTime(std::max(0.0, t - dt_), t);
-    a += dt_ * map_->apply(a);
-    for (Size i = 0; i < bcSet_.size(); i++)
-        bcSet_[i]->applyAfterApplying(a);
-}
+        bcSet_.applyBeforeApplying(*map_);
+        a += dt_ * map_->apply(a);
+        bcSet_.applyAfterApplying(a);
+    }
 
-void ExplicitEulerScheme::setStep(Time dt) {
-    dt_ = dt;
-}
+    void ExplicitEulerScheme::setStep(Time dt) {
+        dt_ = dt;
+    }
 }

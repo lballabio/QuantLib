@@ -63,13 +63,20 @@ namespace QuantLib {
         }
     }
 
-    void FdmDirichletBoundary::applyAfterApplying(Array& rhs) const {
+    void FdmDirichletBoundary::applyBeforeApplying(operator_type&) const {
+    }
+
+    void FdmDirichletBoundary::applyAfterApplying(Array& x) const {
         for (std::vector<Size>::const_iterator iter = indicies_.begin();
              iter != indicies_.end(); ++iter) {
-            rhs[*iter] = valueOnBoundary_;
+            x[*iter] = valueOnBoundary_;
         }
     }
     
+    void FdmDirichletBoundary::applyBeforeSolving(operator_type&,
+                                                  array_type& rhs) const {
+    }
+
     void FdmDirichletBoundary::applyAfterSolving(Array& rhs) const {
         this->applyAfterApplying(rhs);
     }

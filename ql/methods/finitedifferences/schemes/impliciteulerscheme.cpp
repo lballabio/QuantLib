@@ -44,6 +44,9 @@ namespace QuantLib {
     void ImplicitEulerScheme::step(array_type& a, Time t) {
         QL_REQUIRE(t-dt_ > -1e-8, "a step towards negative time given");
         map_->setTime(std::max(0.0, t-dt_), t);
+        bcSet_.setTime(std::max(0.0, t-dt_));
+
+        bcSet_.applyBeforeSolving(*map_, a);
 
         a = BiCGstab(
                 boost::function<Disposable<Array>(const Array&)>(
@@ -54,8 +57,7 @@ namespace QuantLib {
                                 map_, _1, -dt_))
             ).solve(a).x;
         
-        for (Size i=0; i<bcSet_.size(); i++)
-            bcSet_[i]->applyAfterApplying(a);
+        bcSet_.applyAfterSolving(a);
     }
 
     void ImplicitEulerScheme::setStep(Time dt) {

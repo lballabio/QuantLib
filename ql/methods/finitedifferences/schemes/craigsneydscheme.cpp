@@ -36,11 +36,13 @@ namespace QuantLib {
 
     void CraigSneydScheme::step(array_type& a, Time t) {
         QL_REQUIRE(t-dt_ > -1e-8, "a step towards negative time given");
-        map_->setTime(std::max(0.0, t-dt_), t);
 
+        map_->setTime(std::max(0.0, t-dt_), t);
+        bcSet_.setTime(std::max(0.0, t-dt_));
+
+        bcSet_.applyBeforeApplying(*map_);
         Array y = a + dt_*map_->apply(a);
-        for (Size i=0; i<bcSet_.size(); i++)
-            bcSet_[i]->applyAfterApplying(y);
+        bcSet_.applyAfterApplying(y);
 
         Array y0 = y;
 
@@ -49,19 +51,17 @@ namespace QuantLib {
             y = map_->solve_splitting(i, rhs, -theta_*dt_);
         }
 
+        bcSet_.applyBeforeApplying(*map_);
         Array yt = y0 + mu_*dt_*map_->apply_mixed(y-a);
-        for (Size i=0; i<bcSet_.size(); i++)
-            bcSet_[i]->applyAfterApplying(yt);
+        bcSet_.applyAfterApplying(yt);
 
         for (Size i=0; i < map_->size(); ++i) {
             Array rhs = yt - theta_*dt_*map_->apply_direction(i, a);
             yt = map_->solve_splitting(i, rhs, -theta_*dt_);
         }
+        bcSet_.applyAfterSolving(yt);
 
         a = yt;
-        for (Size i=0; i<bcSet_.size(); i++)
-            bcSet_[i]->applyAfterApplying(a);
-
     }
 
     void CraigSneydScheme::setStep(Time dt) {

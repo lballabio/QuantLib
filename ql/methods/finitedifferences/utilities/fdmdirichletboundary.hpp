@@ -45,8 +45,8 @@ namespace QuantLib {
         FdmDirichletBoundary(const boost::shared_ptr<FdmMesher>& layout,
                              Real valueOnBoundary, Size direction, Side side);
 
-        void applyBeforeApplying(operator_type&) const {}
-        void applyBeforeSolving(operator_type&, array_type&) const {}
+        void applyBeforeApplying(operator_type&) const;
+        void applyBeforeSolving(operator_type&, array_type&) const;
         void applyAfterApplying(array_type&) const;
         void applyAfterSolving(array_type&) const;
         void setTime(Time) {}
