@@ -1,7 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2012 Peter Caspers
+ Copyright (C) 2008 Andreas Gaida
+ Copyright (C) 2008 Ralph Schreyer
+ Copyright (C) 2008 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,20 +19,28 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-
-/*! \file fdmboundaryconditionset.hpp
+/*! \file fdmindicesonboundary.hpp
+    \brief helper class to extract the indices on a boundary
 */
 
-#ifndef quantlib_fdm_boundary_condition_set_hpp
-#define quantlib_fdm_boundary_condition_set_hpp
+#ifndef quantlib_fdm_indices_on_boundary_hpp
+#define quantlib_fdm_indices_on_boundary_hpp
 
-#include <ql/methods/finitedifferences/operatortraits.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearop.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
 
 namespace QuantLib {
 
-    typedef OperatorTraits<FdmLinearOp>::bc_set FdmBoundaryConditionSet;
+    class FdmLinearOpLayout;
 
+    class FdmIndicesOnBoundary {
+      public:
+        FdmIndicesOnBoundary(const boost::shared_ptr<FdmLinearOpLayout>& l,
+                              Size direction, FdmDirichletBoundary::Side side);
+
+        const std::vector<Size>& getIndices() const;
+      private:
+        std::vector<Size> indices_;
+    };
 }
-
 #endif
+

@@ -21,8 +21,9 @@
 
 
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
-#include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmindicesonboundary.hpp>
 
 namespace QuantLib {
 
@@ -31,35 +32,19 @@ namespace QuantLib {
                             Real valueOnBoundary, Size direction,
                             FdmDirichletBoundary::Side side)
     : side_(side),
-      valueOnBoundary_(valueOnBoundary) {
-                                
-        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
-                                
-        std::vector<Size> newDim(layout->dim());
-        newDim[direction] = 1;
-        const Size hyperSize = std::accumulate(newDim.begin(), newDim.end(),
-                                               Size(1), std::multiplies<Size>());
-        indicies_.resize(hyperSize);
+      valueOnBoundary_(valueOnBoundary),
+      indices_(FdmIndicesOnBoundary(mesher->layout(),
+                                    direction, side).getIndices()) {
 
-        Size i=0;
-        const FdmLinearOpIterator endIter = layout->end();
-        for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
-            ++iter) {
-            if (   (side == Lower && iter.coordinates()[direction] == 0)
-                || (side == Upper && iter.coordinates()[direction] 
-                                            == layout->dim()[direction]-1)) {
-
-                QL_REQUIRE(hyperSize > i, "index missmatch");
-                indicies_[i++] = iter.index();
-            }
-        }
-        
         if (side_ == Lower) {
             xExtreme_ = mesher->locations(direction)[0];
         }
         else if (side_ == Upper) {
-            xExtreme_ 
-                = mesher->locations(direction)[layout->dim()[direction]-1];
+            xExtreme_ = mesher
+                ->locations(direction)[mesher->layout()->dim()[direction]-1];
+        }
+        else {
+            QL_FAIL("internal error");
         }
     }
 
@@ -67,8 +52,8 @@ namespace QuantLib {
     }
 
     void FdmDirichletBoundary::applyAfterApplying(Array& x) const {
-        for (std::vector<Size>::const_iterator iter = indicies_.begin();
-             iter != indicies_.end(); ++iter) {
+        for (std::vector<Size>::const_iterator iter = indices_.begin();
+             iter != indices_.end(); ++iter) {
             x[*iter] = valueOnBoundary_;
         }
     }

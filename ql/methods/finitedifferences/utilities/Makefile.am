@@ -9,16 +9,20 @@ this_include_HEADERS = \
 	fdmboundaryconditionset.hpp \
 	fdmdirichletboundary.hpp \
 	fdmdividendhandler.hpp \
+	fdmindicesonboundary.hpp \
 	fdminnervaluecalculator.hpp \
-	fdmquantohelper.hpp
+	fdmquantohelper.hpp \
+	fdmtimedepdirichletboundary.hpp
 
 libFdmUtils_la_SOURCES = \
 	fdmaffinemodeltermstructure.cpp \
 	fdmaffinemodelswapinnervalue.cpp \
 	fdmdirichletboundary.cpp \
 	fdmdividendhandler.cpp \
+	fdmindicesonboundary.cpp \
 	fdminnervaluecalculator.cpp \
-	fdmquantohelper.cpp
+	fdmquantohelper.cpp \
+	fdmtimedepdirichletboundary.cpp
 
 noinst_LTLIBRARIES = libFdmUtils.la
 
