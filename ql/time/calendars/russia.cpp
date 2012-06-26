@@ -37,7 +37,7 @@ namespace QuantLib {
         Month m = date.month();
         if (isWeekend(w)
             // New Year's holidays
-            || (d >= 1 && d <= 10 && m == January)
+            || (d >= 1 && d <= 8 && m == January)
             // Defender of the Fatherland Day (possibly moved to Monday)
             || ((d == 23 || ((d == 24 || d == 25) && w == Monday)) &&
                 m == February)

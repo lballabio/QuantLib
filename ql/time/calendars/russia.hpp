@@ -29,11 +29,11 @@
 namespace QuantLib {
 
     //! Russian calendar
-    /*! Public holidays (see <http://www.rts.ru/en/>:):
+    /*! Public holidays (see <http://www.cbr.ru/eng/>:):
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
-        <li>New Year holidays and Christmas, January 1st to 10th</li>
+        <li>New Year holidays and Christmas, January 1st to 8th</li>
         <li>Defender of the Fatherland Day, February 23rd (possibly
             moved to Monday)</li>
         <li>International Women's Day, March 8th (possibly moved to
@@ -50,7 +50,7 @@ namespace QuantLib {
       private:
         class SettlementImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Russia settlement"; }
+            std::string name() const { return "Russian settlement"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
