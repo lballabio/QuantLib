@@ -528,7 +528,7 @@ void FdmLinearOpTest::testTripleBandMapSolve() {
     Array t(dy.solve_splitting(copyOfDy.apply(u), 1.0, 0.0));
     for (Size i=0; i < u.size(); ++i) {
         if (std::fabs(u[i] - t[i]) > 1e-6) {
-            QL_FAIL("solve and apply are not consistent "
+            BOOST_FAIL("solve and apply are not consistent "
                     << "\n expected      : " << u[i]
                     << "\n calculated    : " << t[i]);
         }
@@ -544,7 +544,7 @@ void FdmLinearOpTest::testTripleBandMapSolve() {
     t = dx.solve_splitting(copyOfDx.apply(u), 1.0, 0.0);
     for (Size i=0; i < u.size(); ++i) {
         if (std::fabs(u[i] - t[i]) > 1e-6) {
-            QL_FAIL("solve and apply are not consistent "
+            BOOST_FAIL("solve and apply are not consistent "
                 << "\n expected      : " << u[i]
                 << "\n calculated    : " << t[i]);
         }
@@ -560,7 +560,7 @@ void FdmLinearOpTest::testTripleBandMapSolve() {
 
     for (Size i=0; i < u.size(); ++i) {
         if (std::fabs(u[i] - t[i]) > 1e-6) {
-            QL_FAIL("solve and apply are not consistent "
+            BOOST_FAIL("solve and apply are not consistent "
                 << "\n expected      : " << u[i]
                 << "\n calculated    : " << t[i]);
         }
@@ -574,7 +574,7 @@ void FdmLinearOpTest::testTripleBandMapSolve() {
 
     for (Size i=0; i < u.size(); ++i) {
         if (std::fabs(u[i] - t[i]) > 1e-6) {
-            QL_FAIL("solve and apply are not consistent "
+            BOOST_FAIL("solve and apply are not consistent "
                 << "\n expected      : " << u[i]
                 << "\n calculated    : " << t[i]);
         }
@@ -664,15 +664,15 @@ void FdmLinearOpTest::testFdmHestonBarrier() {
     const Real gammaExpected = -0.034296;
 
     if (std::fabs(npv - npvExpected) > 0.000001) {
-        QL_FAIL("Error in calculating PV for Heston barrier option");
+        BOOST_FAIL("Error in calculating PV for Heston barrier option");
     }
 
     if (std::fabs(delta - deltaExpected) > 0.000001) {
-        QL_FAIL("Error in calculating Delta for Heston barrier option");
+        BOOST_FAIL("Error in calculating Delta for Heston barrier option");
     }
 
     if (std::fabs(gamma - gammaExpected) > 0.000001) {
-            QL_FAIL("Error in calculating Gamma for Heston barrier option");
+            BOOST_FAIL("Error in calculating Gamma for Heston barrier option");
     }
 }
 
@@ -751,7 +751,7 @@ void FdmLinearOpTest::testFdmHestonAmerican() {
     const Real npvExpected = 5.641648;
 
     if (std::fabs(npv - npvExpected) > 0.000001) {
-        QL_FAIL("Error in calculating PV for Heston American Option");
+        BOOST_FAIL("Error in calculating PV for Heston American Option");
     }
 }
 
@@ -828,24 +828,24 @@ void FdmLinearOpTest::testFdmHestonExpress() {
     const Real v0 = 0.04;
 
     if (std::fabs(solver.valueAt(s, v0) - 101.027) > 0.01) {
-        QL_FAIL("Error in calculating PV for Heston Express Certificate");
+        BOOST_FAIL("Error in calculating PV for Heston Express Certificate");
     }
 
     if (std::fabs(solver.deltaAt(s, v0) - 0.4181) > 0.001) {
-        QL_FAIL("Error in calculating Delta for Heston Express Certificate");
+        BOOST_FAIL("Error in calculating Delta for Heston Express Certificate");
     }
 
     if (std::fabs(solver.gammaAt(s, v0) + 0.0400) > 0.001) {
-        QL_FAIL("Error in calculating Gamma for Heston Express Certificate");
+        BOOST_FAIL("Error in calculating Gamma for Heston Express Certificate");
     }
 
     if (std::fabs(solver.meanVarianceDeltaAt(s, v0) - 0.6602) > 0.001) {
-        QL_FAIL("Error in calculating mean variance Delta for "
+        BOOST_FAIL("Error in calculating mean variance Delta for "
                 "Heston Express Certificate");
     }
 
     if (std::fabs(solver.meanVarianceGammaAt(s, v0) + 0.0316) > 0.001) {
-        QL_FAIL("Error in calculating mean variance Delta for "
+        BOOST_FAIL("Error in calculating mean variance Delta for "
                 "Heston Express Certificate");
     }
 }
@@ -1021,7 +1021,7 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
     const Real solverTheta = solver3d.thetaAt(x[0], x[1], x[2]);
 
     if (std::fabs(directCalc - solverCalc) > 1e-4) {
-        QL_FAIL("Error in calculating PV for Heston Hull White Option");
+        BOOST_FAIL("Error in calculating PV for Heston Hull White Option");
     }
 
 
@@ -1030,10 +1030,10 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
     const Real solverNdTheta = solverNd.thetaAt(x);
 
     if (std::fabs(solverNdCalc - solverCalc) > 1e-4) {
-        QL_FAIL("Error in calculating PV for Heston Hull White Option");
+        BOOST_FAIL("Error in calculating PV for Heston Hull White Option");
     }
     if (std::fabs(solverNdTheta - solverTheta) > 1e-4) {
-        QL_FAIL("Error in calculating PV for Heston Hull White Option");
+        BOOST_FAIL("Error in calculating PV for Heston Hull White Option");
     }
 
     VanillaOption option(
@@ -1056,7 +1056,7 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
     const Real expected = 4.73;
 
     if (std::fabs(directCalc - expected) > 3*tol) {
-        QL_FAIL("Error in calculating MC PV for Heston Hull White Option");
+        BOOST_FAIL("Error in calculating MC PV for Heston Hull White Option");
     }
 }
 
@@ -1129,7 +1129,7 @@ void FdmLinearOpTest::testBiCGstab() {
                                  b-axpy(a, x))/DotProduct(b,b));
 
     if (error > tol) {
-        QL_FAIL("Error calculating the inverse using BiCGstab" <<
+        BOOST_FAIL("Error calculating the inverse using BiCGstab" <<
                 "\n tolerance:  " << tol <<
                 "\n error:      " << error);
     }  
@@ -1216,13 +1216,13 @@ void FdmLinearOpTest::testCrankNicolsonWithDamping() {
     Real relTol = 2e-3;
 
     if (std::fabs(calculatedPV - expectedPV) > relTol*expectedPV) {
-        QL_FAIL("Error calculating the PV of the digital option" <<
+        BOOST_FAIL("Error calculating the PV of the digital option" <<
                 "\n rel. tolerance:  " << relTol <<
                 "\n expected:        " << expectedPV <<
                 "\n calculated:      " << calculatedPV);
     }
     if (std::fabs(calculatedGamma - expectedGamma) > relTol*expectedGamma) {
-        QL_FAIL("Error calculating the Gamma of the digital option" <<
+        BOOST_FAIL("Error calculating the Gamma of the digital option" <<
                 "\n rel. tolerance:  " << relTol <<
                 "\n expected:        " << expectedGamma <<
                 "\n calculated:      " << calculatedGamma);
