@@ -26,8 +26,8 @@ namespace QuantLib {
                               const Handle<YieldTermStructure>& riskFreeRate,
                               const Handle<YieldTermStructure>& dividendYield,
                               const Handle<Quote>& s0,
-                              double v0, double kappa,
-                              double theta, double sigma, double rho,
+                              Real v0, Real kappa,
+                              Real theta, Real sigma, Real rho,
                               Real lambda, Real nu, Real delta, 
                               HestonProcess::Discretization d)
     : HestonProcess(riskFreeRate, dividendYield, 

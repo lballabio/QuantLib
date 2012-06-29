@@ -45,7 +45,7 @@ namespace QuantLib {
             const std::vector<Size>& startIndexOfConstraint,
             const std::vector<Size>& endIndexOfConstraint,
             const Clone<MarketModelMultiProduct>& product,
-            double initialNumeraireValue);
+            Real initialNumeraireValue);
         void multiplePathValues(
                   SequenceStatisticsInc& stats,
                   std::vector<std::vector<SequenceStatisticsInc> >& modifiedStats,

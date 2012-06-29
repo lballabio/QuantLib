@@ -27,7 +27,7 @@ namespace QuantLib {
                                  const std::vector<Real>& fixedAccruals,
                                  const std::vector<Real>& floatingAccruals,
                                  const std::vector<Time>& paymentTimes,
-                                 double fixedRate,
+                                 Real fixedRate,
                                  bool payer)
     : MultiProductMultiStep(rateTimes),
       fixedAccruals_(fixedAccruals), floatingAccruals_(floatingAccruals),
