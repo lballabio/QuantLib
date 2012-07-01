@@ -29,32 +29,43 @@
 
 namespace QuantLib {
 
-    //! Richardson Extrapolatio
-    /*! References:
+    //! Richardson Extrapolation
+    /*! Richardson Extrapolation is a sequence acceleration technique for
+      \f[
+          f(\Delta h) = f_0 + \alpha\cdot (\Delta h)^n + O((\Delta h)^{n+1})
+      \f]
+     */
 
+    /*! References:
         http://en.wikipedia.org/wiki/Richardson_extrapolation
      */
 
     class RichardsonExtrapolation {
       public:
-        RichardsonExtrapolation(Real h,
-                                const boost::function<Real (Real)>& f);
+        /*! Richardon Extrapolation
+           \param f function to be extrapolated to delta_h -> 0
+           \param delta_h step size
+           \param n if known, n is the order of convergence
+         */
+        RichardsonExtrapolation(const boost::function<Real (Real)>& f,
+                                Real delta_h, Real n = Null<Real>());
+
 
         /*! Extrapolation for known order of convergence
-            \param  step size for extrapolation. Is often 2
-            \param k order of convergence
+            \param t scaling factor for the step size
         */
-        Real formula(Real t, Real k) const;
+        Real operator()(Real t=2.0) const;
 
         /*! Extrapolation for unknown order of convergence
-            \param t first step size for the extrapolation.
-            \param s second step size for the extrapolation
+            \param t first scaling factor for the step size
+            \param s second scaling factor for the step size
         */
-        Real formulaUnknownConvergence(Real t, Real s) const;
+        Real operator()(Real t, Real s) const;
 
       private:
-        const Real h_;
-        const Real fh_;
+        const Real delta_h_;
+        const Real fdelta_h_;
+        const Real n_;
         const boost::function<Real (Real)> f_;
     };
 }

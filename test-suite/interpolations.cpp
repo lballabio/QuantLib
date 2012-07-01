@@ -1626,14 +1626,30 @@ void InterpolationTest::testRichardsonExtrapolation() {
      *      NSG_termine/dateien/Richardson.pdf
      */
 
-    const RichardsonExtrapolation extrap(0.1, f);
-
-    const Real stepSize = 2.0;
+    const Real stepSize = 0.1;
     const Real orderOfConvergence = 1.0;
+    const RichardsonExtrapolation extrap(f, stepSize, orderOfConvergence);
 
-    const Real tol = 0.00001;
-    const Real expected = 2.71285;
-    const Real calculated = extrap.formula(stepSize, orderOfConvergence);
+
+    Real tol = 0.00002;
+    Real expected = 2.71285;
+
+    const Real scalingFactor = 2.0;
+    Real calculated = extrap(scalingFactor);
+
+    if (std::fabs(expected-calculated) > tol) {
+        BOOST_ERROR("failed to reproduce Richardson extrapolation");
+    }
+
+    calculated = extrap();
+    if (std::fabs(expected-calculated) > tol) {
+        BOOST_ERROR("failed to reproduce Richardson extrapolation");
+    }
+
+    expected = 2.721376;
+
+    const Real scalingFactor2 = 4.0;
+    calculated = extrap(scalingFactor, scalingFactor2);
 
     if (std::fabs(expected-calculated) > tol) {
         BOOST_ERROR("failed to reproduce Richardson extrapolation");
