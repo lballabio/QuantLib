@@ -509,7 +509,6 @@ namespace QuantLib {
                             Date settlementDate,
                             Date npvDate,
                             Real npv) {
-        QL_REQUIRE(!leg.empty(), "empty leg");
 
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
@@ -518,15 +517,19 @@ namespace QuantLib {
             npvDate = settlementDate;
 
         Real bps = 0.0;
-        if (npv==Null<Real>())
+        if (npv==Null<Real>()) {
             CashFlows::npvbps(leg, discountCurve,
                               includeSettlementDateFlows,
                               settlementDate, npvDate,
                               npv, bps);
-        else
+        } else {
+            if (npv==0.0) return 0.0;
             bps = CashFlows::bps(leg, discountCurve,
                                  includeSettlementDateFlows,
                                  settlementDate, npvDate);
+        }
+
+        QL_REQUIRE(bps!=0.0, "null bps");
         return basisPoint_*npv/bps;
     }
 
@@ -664,7 +667,6 @@ namespace QuantLib {
               settlementDate_(settlementDate),
               npvDate_(npvDate) {
 
-                QL_REQUIRE(!leg.empty(), "empty leg");
 
             if (settlementDate == Date())
                 settlementDate = Settings::instance().evaluationDate();
@@ -1090,7 +1092,6 @@ namespace QuantLib {
               includeSettlementDateFlows_(includeSettlementDateFlows),
               settlementDate_(settlementDate),
               npvDate_(npvDate) {
-                QL_REQUIRE(!leg.empty(), "empty leg");
 
                 if (settlementDate == Date())
                     settlementDate = Settings::instance().evaluationDate();
@@ -1164,7 +1165,6 @@ namespace QuantLib {
                               Real accuracy,
                               Size maxIterations,
                               Rate guess) {
-        QL_REQUIRE(!leg.empty(), "empty leg");
 
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
