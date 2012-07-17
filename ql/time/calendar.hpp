@@ -144,13 +144,14 @@ namespace QuantLib {
                                        bool includeLast = false) const;
         //@}
 
+      protected:
         //! partial calendar implementation
         /*! This class provides the means of determining the Easter
             Monday for a given year, as well as specifying Saturdays
             and Sundays as weekend days.
         */
         class WesternImpl : public Impl {
-          protected:
+          public:
             bool isWeekend(Weekday) const;
             //! expressed relative to first day of year
             static Day easterMonday(Year);
@@ -161,7 +162,7 @@ namespace QuantLib {
             Saturdays and Sundays as weekend days.
         */
         class OrthodoxImpl : public Impl {
-          protected:
+          public:
             bool isWeekend(Weekday) const;
             //! expressed relative to first day of year
             static Day easterMonday(Year);
