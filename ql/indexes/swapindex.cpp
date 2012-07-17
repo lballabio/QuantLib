@@ -142,6 +142,23 @@ namespace QuantLib {
                           iborIndex_->clone(forwarding)));
     }
 
+    shared_ptr<SwapIndex>
+    SwapIndex::clone(const Handle<YieldTermStructure>& forwarding,
+                     const Handle<YieldTermStructure>& discounting) const {
+        return shared_ptr<SwapIndex>(new
+             SwapIndex(familyName(),
+                       tenor(),
+                       fixingDays(),
+                       currency(),
+                       fixingCalendar(),
+                       fixedLegTenor(),
+                       fixedLegConvention(),
+                       dayCounter(),
+                       iborIndex_->clone(forwarding),
+                       discounting));
+    }
+
+
     OvernightIndexedSwapIndex::OvernightIndexedSwapIndex(
                             const std::string& familyName,
                             const Period& tenor,

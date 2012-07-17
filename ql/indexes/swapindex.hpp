@@ -81,6 +81,10 @@ namespace QuantLib {
         //! returns a copy of itself linked to a different forwarding curve
         virtual boost::shared_ptr<SwapIndex> clone(
                         const Handle<YieldTermStructure>& forwarding) const;
+        //! returns a copy of itself linked to different curves
+        virtual boost::shared_ptr<SwapIndex> clone(
+                        const Handle<YieldTermStructure>& forwarding,
+                        const Handle<YieldTermStructure>& discounting) const;
         // @}
       protected:
         Rate forecastFixing(const Date& fixingDate) const;
