@@ -112,6 +112,22 @@ namespace QuantLib {
                                                          endOfMonth());
     }
 
+    Calendar Libor::jointCalendar() const {
+        return jointCalendar_;
+    }
+
+    boost::shared_ptr<IborIndex> Libor::clone(
+                                  const Handle<YieldTermStructure>& h) const {
+        return boost::shared_ptr<IborIndex>(new Libor(familyName(),
+                                                      tenor(),
+                                                      fixingDays(),
+                                                      currency(),
+                                                      financialCenterCalendar_,
+                                                      dayCounter(),
+                                                      h));
+    }
+
+
     DailyTenorLibor::DailyTenorLibor(
                  const std::string& familyName,
                  Natural settlementDays,
@@ -131,17 +147,6 @@ namespace QuantLib {
                 dayCounter, h) {
         QL_REQUIRE(currency!=EURCurrency(),
                    "for EUR Libor dedicated EurLibor constructor must be used");
-    }
-
-    boost::shared_ptr<IborIndex> Libor::clone(
-                                  const Handle<YieldTermStructure>& h) const {
-        return boost::shared_ptr<IborIndex>(new Libor(familyName(),
-                                                      tenor(),
-                                                      fixingDays(),
-                                                      currency(),
-                                                      financialCenterCalendar_,
-                                                      dayCounter(),
-                                                      h));
     }
 
 }

@@ -58,6 +58,10 @@ namespace QuantLib {
         boost::shared_ptr<IborIndex> clone(
                                    const Handle<YieldTermStructure>& h) const;
         // @}
+        //! \name Other inspectors
+        //@{
+        Calendar jointCalendar() const;
+        // @}
       private:
         Calendar financialCenterCalendar_;
         Calendar jointCalendar_;
