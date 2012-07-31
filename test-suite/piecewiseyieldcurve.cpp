@@ -911,6 +911,8 @@ void PiecewiseYieldCurveTest::testZeroCopy() {
 test_suite* PiecewiseYieldCurveTest::suite() {
 
     test_suite* suite = BOOST_TEST_SUITE("Piecewise yield curve tests");
+
+    // unstable
     //suite->add(QUANTLIB_TEST_CASE(
     //             &PiecewiseYieldCurveTest::testLogCubicDiscountConsistency));
     suite->add(QUANTLIB_TEST_CASE(
@@ -918,10 +920,14 @@ test_suite* PiecewiseYieldCurveTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
                  &PiecewiseYieldCurveTest::testLinearDiscountConsistency));
 
-    #if !defined(QL_USE_INDEXED_COUPON)
+// why?
+#if !defined(QL_USE_INDEXED_COUPON)
+  // if rates can be negative it makes no sense to interpolate loglinearly
+  #if !defined(QL_NEGATIVE_RATES)
     suite->add(QUANTLIB_TEST_CASE(
-                 &PiecewiseYieldCurveTest::testLogLinearZeroConsistency));
-    #endif
+                     &PiecewiseYieldCurveTest::testLogLinearZeroConsistency));
+  #endif
+#endif
     suite->add(QUANTLIB_TEST_CASE(
                  &PiecewiseYieldCurveTest::testLinearZeroConsistency));
     suite->add(QUANTLIB_TEST_CASE(
@@ -931,6 +937,7 @@ test_suite* PiecewiseYieldCurveTest::suite() {
                  &PiecewiseYieldCurveTest::testLinearForwardConsistency));
     suite->add(QUANTLIB_TEST_CASE(
                  &PiecewiseYieldCurveTest::testFlatForwardConsistency));
+    // unstable
     //suite->add(QUANTLIB_TEST_CASE(
     //             &PiecewiseYieldCurveTest::testSplineForwardConsistency));
 
