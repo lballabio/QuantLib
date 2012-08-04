@@ -29,17 +29,18 @@
  using the perfex library, http://user.it.uu.se/~mikpe/linux/perfctr
  and PAPI, http://icl.cs.utk.edu/papi
 
- Example results: 1. Core2 Q9300@2.5Ghz  :2272.6 mflops
-                  2. Core2 Q6600@2.4Ghz  :1984.0 mflops
-                  3. i3 540@3.1Ghz       :1755.3 mflops
-                  4. Core2 Dual@2.0Ghz   : 835.9 mflops
-                  5. Athlon 64 X2 4400+  : 824.2 mflops
-                  6. Core2 Dual@2.0Ghz   : 754.1 mflops
-                  7. Pentium4 Dual@2.8Ghz: 423.8 mflops
-                  8. Pentium4@3.0Ghz     : 266.3 mflops
-                  9. PentiumIII@1.1Ghz   : 146.2 mflops
-                 10. Alpha 2xEV68@833Mhz : 184.6 mflops
-                 11. Strong ARM@206Mhz   :   1.4 mflops
+ Example results: 1. Core2 Q9300@2.5Ghz     :2272.6 mflops
+                  2. Core2 Q6600@2.4Ghz     :1984.0 mflops
+                  3. i3 540@3.1Ghz          :1755.3 mflops
+                  4. Core2 Dual@2.0Ghz      : 835.9 mflops
+                  5. Athlon 64 X2 4400+     : 824.2 mflops
+                  6. Core2 Dual@2.0Ghz      : 754.1 mflops
+                  7. Pentium4 Dual@2.8Ghz   : 423.8 mflops
+                  8. Pentium4@3.0Ghz        : 266.3 mflops
+                  9. PentiumIII@1.1Ghz      : 146.2 mflops
+                 10. Alpha 2xEV68@833Mhz    : 184.6 mflops
+                 11. Raspberry Pi ARM@700Mhz:  28.3 mflops
+                 12. Strong ARM@206Mhz      :   1.4 mflops
 
  Remarks: OS: Linux, static libs
   1. icc-11.0,  -gcc-version=420 -fast -fp-model fast=2 -ipo-jobs2
@@ -61,7 +62,8 @@
   9. gcc-4.1.1, -O3 -march=pentium3 -ffast-math
                 -mfpmath=sse,387 -msse -funroll-all-loops
  10. gcc-3.3.5, -O3 -mcpu=e67 -funroll-all-loops, Remark: two processes
- 11. gcc-3.4.3, -O2 -g on a Zaurus PDA
+ 11. gcc-4.6.3, -O3
+ 12. gcc-3.4.3, -O2 -g on a Zaurus PDA
 
   This benchmark is derived from quantlibtestsuite.cpp. Please see the
   copyrights therein.
