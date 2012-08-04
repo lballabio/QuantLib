@@ -32,7 +32,7 @@
 namespace QuantLib {
 
     //! Analytic Heston engine incl. stochastic interest rates
-    /*! This class is pricing a european options under the following processes
+    /*! This class is pricing a european option under the following process
 
         \f[
         \begin{array}{rcl}
@@ -80,13 +80,11 @@ namespace QuantLib {
         void calculate() const;
 
       protected:
-        std::complex<Real> addOnTerm(Real phi,
-                                     Time t,
-                                     Size j) const;
+        std::complex<Real> addOnTerm(Real phi, Time t, Size j) const;
+
+        const boost::shared_ptr<HullWhite> hullWhiteModel_;
 
       private:
-        boost::shared_ptr<HullWhite> hullWhiteModel_;
-
         mutable Real m_;
         mutable Real a_, sigma_;
     };

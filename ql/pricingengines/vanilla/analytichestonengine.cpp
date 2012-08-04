@@ -55,7 +55,8 @@ namespace QuantLib {
             ComplexLogFormula cpxLog,
             Time term, Real ratio, Size j);
 
-        Fj_Helper(Real kappa, Real theta, Real sigma, Real v0, Real s0, Real rho,
+        Fj_Helper(Real kappa, Real theta, Real sigma,
+            Real v0, Real s0, Real rho,
             const AnalyticHestonEngine* const engine,
             ComplexLogFormula cpxLog,
             Time term,
@@ -63,7 +64,8 @@ namespace QuantLib {
             Real ratio,
             Size j);
 
-         Fj_Helper(Real kappa, Real theta, Real sigma, Real v0, Real s0, Real rho,
+         Fj_Helper(Real kappa, Real theta, Real sigma,
+            Real v0, Real s0, Real rho,
             ComplexLogFormula cpxLog,
             Time term,
             Real strike,
@@ -114,7 +116,8 @@ namespace QuantLib {
     {
     }
 
-    AnalyticHestonEngine::Fj_Helper::Fj_Helper(Real kappa, Real theta, Real sigma, Real v0, Real s0, Real rho,
+    AnalyticHestonEngine::Fj_Helper::Fj_Helper(Real kappa, Real theta,
+        Real sigma, Real v0, Real s0, Real rho,
         const AnalyticHestonEngine* const engine,
         ComplexLogFormula cpxLog,
         Time term,
@@ -141,7 +144,8 @@ namespace QuantLib {
     {
     }
 
-    AnalyticHestonEngine::Fj_Helper::Fj_Helper(Real kappa, Real theta, Real sigma, Real v0, Real s0, Real rho,
+    AnalyticHestonEngine::Fj_Helper::Fj_Helper(Real kappa, Real theta,
+        Real sigma, Real v0, Real s0, Real rho,
         ComplexLogFormula cpxLog,
         Time term,
         Real strike,
@@ -348,16 +352,13 @@ namespace QuantLib {
 
         evaluations = 0;
         const Real p1 = integration.calculate(c_inf,
-
-            Fj_Helper(kappa,theta,sigma,v0,spotPrice,rho, enginePtr, cpxLog, term, strikePrice, ratio, 1))
-            //Fj_Helper(arguments_, model_, this, cpxLog_, term, ratio, 1))
-            /M_PI;
+            Fj_Helper(kappa, theta, sigma, v0, spotPrice, rho, enginePtr,
+                      cpxLog, term, strikePrice, ratio, 1))/M_PI;
         evaluations+= integration.numberOfEvaluations();
 
         const Real p2 = integration.calculate(c_inf,
-                  Fj_Helper(kappa,theta,sigma,v0,spotPrice,rho, enginePtr, cpxLog, term, strikePrice, ratio, 2))
-            //Fj_Helper(arguments_, model_, this, cpxLog_, term, ratio, 2))
-            /M_PI;
+            Fj_Helper(kappa, theta, sigma, v0, spotPrice, rho, enginePtr,
+                      cpxLog, term, strikePrice, ratio, 2))/M_PI;
         evaluations+= integration.numberOfEvaluations();
 
         switch (type.optionType())

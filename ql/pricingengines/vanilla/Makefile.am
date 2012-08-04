@@ -9,6 +9,7 @@ this_include_HEADERS = \
     analyticdividendeuropeanengine.hpp \
     analyticeuropeanengine.hpp \
     analyticgjrgarchengine.hpp \
+    analytich1hwengine.hpp \
     analytichestonengine.hpp \
     analytichestonhullwhiteengine.hpp \
     analyticptdhestonengine.hpp \
@@ -51,6 +52,7 @@ libVanillaEngines_la_SOURCES = \
     analyticdividendeuropeanengine.cpp \
     analyticeuropeanengine.cpp \
     analyticgjrgarchengine.cpp \
+    analytich1hwengine.cpp \
     analytichestonengine.cpp \
     analytichestonhullwhiteengine.cpp \
     analyticptdhestonengine.cpp \

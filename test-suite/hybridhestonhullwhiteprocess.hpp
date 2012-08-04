@@ -39,6 +39,7 @@ class HybridHestonHullWhiteProcessTest {
     static void testBsmHullWhitePricing();
     static void testSpatialDiscretizatinError();
     static void testHestonHullWhiteCalibration();
+    static void testH1HWPricingEngine();
     static boost::unit_test_framework::test_suite* suite();
 };
 

@@ -34,7 +34,6 @@ namespace QuantLib {
       public:
         Fj_Helper(
             const Handle<PiecewiseTimeDependentHestonModel>& model,
-            const AnalyticPTDHestonEngine* const engine,
             Time term, Real strike, Size j);
     
         Real operator()(Real phi) const;
@@ -43,8 +42,6 @@ namespace QuantLib {
         const Size j_;    
         const Time term_;
         const Real v0_, x_, sx_;
-        
-        const AnalyticPTDHestonEngine* const engine_;
         
         std::vector<Rate> r_, q_;
         const boost::shared_ptr<YieldTermStructure> qTS_;
@@ -55,7 +52,6 @@ namespace QuantLib {
         
     AnalyticPTDHestonEngine::Fj_Helper::Fj_Helper(
         const Handle<PiecewiseTimeDependentHestonModel>& model,
-        const AnalyticPTDHestonEngine* const engine,
         Time term, Real strike, Size j)
     : j_(j),
       term_(term),
@@ -63,7 +59,6 @@ namespace QuantLib {
       v0_(model->v0()),
       x_ (std::log(model->s0())),
       sx_(std::log(strike)),
-      engine_(engine),
       r_(model->timeGrid().size()-1),
       q_(model->timeGrid().size()-1),
       model_(model),
@@ -191,10 +186,10 @@ namespace QuantLib {
                 *(v0 + kappaAvg*thetaAvg*term);
 
         const Real p1 = integration_->calculate(c_inf,
-                                Fj_Helper(model_, this, term, strike, 1))/M_PI;
+                                Fj_Helper(model_, term, strike, 1))/M_PI;
 
         const Real p2 = integration_->calculate(c_inf,
-                                Fj_Helper(model_, this, term, strike, 2))/M_PI;
+                                Fj_Helper(model_, term, strike, 2))/M_PI;
 
         switch (payoff->optionType())
         {
