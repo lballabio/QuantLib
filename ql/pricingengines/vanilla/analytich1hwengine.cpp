@@ -24,8 +24,6 @@
 #include <ql/math/distributions/gammadistribution.hpp>
 #include <ql/pricingengines/vanilla/analytich1hwengine.hpp>
 
-#include <stdio.h>
-
 namespace QuantLib {
     // integration helper class
     class AnalyticH1HWEngine::Fj_Helper
