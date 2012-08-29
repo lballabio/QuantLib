@@ -44,7 +44,7 @@ namespace QuantLib {
 
         if (!coupons.empty()) {
             std::sort(cashflows_.begin(), cashflows_.end(),
-                      earlier_than<boost::shared_ptr<CashFlow> >());
+                      earlier_than<shared_ptr<CashFlow> >());
 
             if (issueDate_ != Date()) {
                 QL_REQUIRE(issueDate_<cashflows_[0]->date(),
@@ -74,7 +74,7 @@ namespace QuantLib {
         if (!cashflows.empty()) {
 
             std::sort(cashflows_.begin(), cashflows_.end()-1,
-                      earlier_than<boost::shared_ptr<CashFlow> >());
+                      earlier_than<shared_ptr<CashFlow> >());
 
             if (maturityDate_ == Date())
                 maturityDate_ = CashFlows::maturityDate(cashflows);
@@ -140,7 +140,7 @@ namespace QuantLib {
         }
     }
 
-    const boost::shared_ptr<CashFlow>& Bond::redemption() const {
+    const shared_ptr<CashFlow>& Bond::redemption() const {
         QL_REQUIRE(redemptions_.size() == 1,
                    "multiple redemption cash flows given");
         return redemptions_.back();
@@ -309,7 +309,7 @@ namespace QuantLib {
                      !redemptions.empty()   ? redemptions.back() :
                                               100.0;
             Real amount = (R/100.0)*(notionals_[i-1]-notionals_[i]);
-            boost::shared_ptr<CashFlow> payment;
+            shared_ptr<CashFlow> payment;
             if (i < notionalSchedule_.size()-1)
                 payment.reset(new AmortizingPayment(amount,
                                                     notionalSchedule_[i]));
@@ -321,21 +321,20 @@ namespace QuantLib {
         // stable_sort now moves the redemptions to the right places
         // while ensuring that they follow coupons with the same date.
         std::stable_sort(cashflows_.begin(), cashflows_.end(),
-                         earlier_than<boost::shared_ptr<CashFlow> >());
+                         earlier_than<shared_ptr<CashFlow> >());
     }
 
     void Bond::setSingleRedemption(Real notional,
                                    Real redemption,
                                    const Date& date) {
 
-        boost::shared_ptr<CashFlow> redemptionCashflow(
+        shared_ptr<CashFlow> redemptionCashflow(
                          new Redemption(notional*redemption/100.0, date));
         setSingleRedemption(notional, redemptionCashflow);
     }
 
-    void Bond::setSingleRedemption(
-                              Real notional,
-                              const boost::shared_ptr<CashFlow>& redemption) {
+    void Bond::setSingleRedemption(Real notional,
+                                   const shared_ptr<CashFlow>& redemption) {
         notionals_.resize(2);
         notionalSchedule_.resize(2);
         redemptions_.clear();
@@ -357,7 +356,7 @@ namespace QuantLib {
         Date lastPaymentDate = Date();
         notionalSchedule_.push_back(Date());
         for (Size i=0; i<cashflows_.size(); ++i) {
-            boost::shared_ptr<Coupon> coupon =
+            shared_ptr<Coupon> coupon =
                 boost::dynamic_pointer_cast<Coupon>(cashflows_[i]);
             if (!coupon)
                 continue;
