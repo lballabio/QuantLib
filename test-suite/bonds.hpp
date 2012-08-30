@@ -28,6 +28,7 @@
 class BondTest {
   public:
     static void testYield();
+    static void testAtmRate();
     static void testZspread();
     static void testTheoretical();
     static void testCached();
