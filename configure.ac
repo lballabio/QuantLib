@@ -198,16 +198,15 @@ AC_MSG_RESULT([$ql_indexed_coupon])
 AC_MSG_CHECKING([whether to enable negative rates])
 AC_ARG_ENABLE([negative-rates],
               AC_HELP_STRING([--enable-negative-rates],
-                             [If enabled, negative yield rates are allowed
-                              in a few places where they are currently
-                              forbidden. It is still not clear whether
-                              this is safe.]),
+                             [If enabled (the default), negative yield
+                              rates are allowed.  If disabled, some
+                              features (notably, curve bootstrapping)
+                              will throw when negative rates are found.]),
               [ql_negative_rates=$enableval],
-              [ql_negative_rates=no])
+              [ql_negative_rates=yes])
 if test "$ql_negative_rates" = "yes" ; then
    AC_DEFINE([QL_NEGATIVE_RATES],[1],
-             [Define this if negative yield rates should be allowed.
-              This might not be safe.])
+             [Define this if negative yield rates should be allowed.])
 fi
 AC_MSG_RESULT([$ql_negative_rates])
 
