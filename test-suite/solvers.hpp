@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2012 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,7 +28,13 @@
 
 class Solver1DTest {
   public:
-    static void testResults();
+    static void testBrent();
+    static void testBisection();
+    static void testFalsePosition();
+    static void testNewton();
+    static void testNewtonSafe();
+    static void testRidder();
+    static void testSecant();
     static boost::unit_test_framework::test_suite* suite();
 };
 
