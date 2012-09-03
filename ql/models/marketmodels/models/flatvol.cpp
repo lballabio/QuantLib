@@ -83,46 +83,39 @@ namespace QuantLib {
                    "number of factors (" << numberOfFactors <<
                    ") must be greater than zero");
 
-        Real covar;
-        Time effStartTime, effStopTime;
-        Real correlation;
+        Time effStopTime;
         const vector<Time>& corrTimes = corr->times();
         const vector<Time>& evolTimes = evolution.evolutionTimes();
+        Matrix covariance(numberOfRates_, numberOfRates_);
         for (Size k=0, kk=0; k<numberOfSteps_; ++k) {
             // one covariance per evolution step
-            Matrix covariance(numberOfRates_, numberOfRates_, 0.0);
+            std::fill(covariance.begin(), covariance.end(), 0.0);
 
             // there might be more than one correlation matrix
             // in a single evolution step
-            Matrix correlations;
-
             for (; corrTimes[kk]<evolTimes[k]; ++kk) {
-                effStartTime = kk==0 ? 0.0 : corrTimes[kk-1];
+                Time effStartTime = kk==0 ? 0.0 : corrTimes[kk-1];
                 effStopTime = corrTimes[kk];
-                correlations = corr->correlation(kk);
+                const Matrix& corrMatrix = corr->correlation(kk);
                 for (Size i=0; i<numberOfRates_; ++i) {
                     for (Size j=i; j<numberOfRates_; ++j) {
-                        covar = flatVolCovariance(effStartTime,
-                                                  effStopTime,
-                                                  rateTimes[i], rateTimes[j],
-                                                  vols[i], vols[j]);
-                        correlation = correlations[i][j];
-                        covariance[i][j] += covar * correlations[i][j];
+                        Real cov = flatVolCovariance(effStartTime, effStopTime,
+                                                     rateTimes[i], rateTimes[j],
+                                                     vols[i], vols[j]);
+                        covariance[i][j] += cov * corrMatrix[i][j];
                      }
                 }
             }
             // last part in the evolution step
-            effStartTime = kk==0 ? 0.0 : corrTimes[kk-1];
+            Time effStartTime = kk==0 ? 0.0 : corrTimes[kk-1];
             effStopTime = evolTimes[k];
-            correlations = corr->correlation(kk);
+            const Matrix& corrMatrix = corr->correlation(kk);
             for (Size i=0; i<numberOfRates_; ++i) {
                 for (Size j=i; j<numberOfRates_; ++j) {
-                    covar = flatVolCovariance(effStartTime,
-                                              effStopTime,
-                                              rateTimes[i], rateTimes[j],
-                                              vols[i], vols[j]);
-                    correlation = correlations[i][j];
-                    covariance[i][j] += covar * correlation;
+                    Real cov = flatVolCovariance(effStartTime, effStopTime,
+                                                 rateTimes[i], rateTimes[j],
+                                                 vols[i], vols[j]);
+                    covariance[i][j] += cov * corrMatrix[i][j];
                  }
             }
             // no more use for the kk-th correlation matrix
