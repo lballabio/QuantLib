@@ -81,7 +81,7 @@ namespace QuantLib {
     }
 
     Real AnalyticH1HWEngine::Fj_Helper::Lambda(Time t) const {
-        const GammaFunction g;
+        const GammaFunction g = GammaFunction();
         const Size maxIter = 1000;
         const Real lambdaT = lambda(t);
 
