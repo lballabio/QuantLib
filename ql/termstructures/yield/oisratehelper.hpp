@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2009 Roland Lichters
- Copyright (C) 2009 Ferdinando Ametrano
+ Copyright (C) 2009, 2012 Roland Lichters
+ Copyright (C) 2009, 2012 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -36,7 +36,10 @@ namespace QuantLib {
         OISRateHelper(Natural settlementDays,
                       const Period& tenor, // swap maturity
                       const Handle<Quote>& fixedRate,
-                      const boost::shared_ptr<OvernightIndex>& overnightIndex);
+                      const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                      // exogenous discounting curve
+                      const Handle<YieldTermStructure>& discountingCurve
+                                            = Handle<YieldTermStructure>());
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -59,6 +62,9 @@ namespace QuantLib {
 
         boost::shared_ptr<OvernightIndexedSwap> swap_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
+
+        Handle<YieldTermStructure> discountHandle_;
+        RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
     };
 
     //! Rate helper for bootstrapping over Overnight Indexed Swap rates
@@ -68,7 +74,10 @@ namespace QuantLib {
                     const Date& startDate,
                     const Date& endDate,
                     const Handle<Quote>& fixedRate,
-                    const boost::shared_ptr<OvernightIndex>& overnightIndex);
+                    const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                      // exogenous discounting curve
+                      const Handle<YieldTermStructure>& discountingCurve
+                                            = Handle<YieldTermStructure>());
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -81,6 +90,9 @@ namespace QuantLib {
     protected:
         boost::shared_ptr<OvernightIndexedSwap> swap_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
+
+        Handle<YieldTermStructure> discountHandle_;
+        RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
     };
 
 }
