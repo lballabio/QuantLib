@@ -122,7 +122,7 @@ void CdoTest::testHW() {
                                    SeniorSec,
                                    Period(0,Weeks),
                                    10.),
-       ptr));
+       Handle<DefaultProbabilityTermStructure>(ptr)));
 
     for (Size i=0; i<poolSize; ++i) {
         ostringstream o;

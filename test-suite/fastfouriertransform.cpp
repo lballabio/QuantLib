@@ -24,6 +24,7 @@
 #include <ql/math/array.hpp>
 #include <complex>
 #include <vector>
+#include <functional>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -63,10 +64,13 @@ void FastFourierTransformTest::testInverse() {
     size_t nFrq = fft.output_size();
     std::vector< std::complex<Real> > ft (nFrq);
     std::vector< Real > tmp (nFrq);
+    std::complex<Real> z = std::complex<Real>();
 
     fft.inverse_transform(x.begin(), x.end(), ft.begin());
-    std::transform (ft.begin(), ft.end(), tmp.begin(), std::norm<Real>);
-    std::fill (ft.begin(), ft.end(), std::complex<Real>());
+    for (Size i=0; i<nFrq; ++i) {
+        tmp[i] = std::norm<Real>(ft[i]);
+        ft[i] = z;
+    }
     fft.inverse_transform(tmp.begin(), tmp.end(), ft.begin());
 
     // 0

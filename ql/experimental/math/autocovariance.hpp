@@ -28,6 +28,8 @@
 #include <ql/math/array.hpp>
 #include <complex>
 #include <vector>
+#include <algorithm>
+#include <functional>
 
 namespace QuantLib {
 
@@ -44,8 +46,11 @@ namespace QuantLib {
             std::vector<std::complex<Real> > ft(fft.output_size());
             fft.transform(begin, end, ft.begin());
             Array tmp(ft.size(), 0.0);
-            std::transform(ft.begin(), ft.end(), tmp.begin(), std::norm<Real>);
-            std::fill(ft.begin(), ft.end(), std::complex<Real>());
+            std::complex<Real> z = std::complex<Real>();
+            for (Size i=0; i<ft.size(); ++i) {
+                tmp[i] = std::norm<Real>(ft[i]);
+                ft[i] = z;
+            }
             fft.transform(tmp.begin(), tmp.end(), ft.begin());
             return ft;
         }
