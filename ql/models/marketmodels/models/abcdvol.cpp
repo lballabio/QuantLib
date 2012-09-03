@@ -24,19 +24,21 @@
 #include <ql/termstructures/volatility/abcd.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 
+using boost::shared_ptr;
+using std::vector;
+
 namespace QuantLib {
 
-    AbcdVol::AbcdVol(
-            Real a,
-            Real b,
-            Real c,
-            Real d,
-            const std::vector<Real>& ks,
-            const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
-            const EvolutionDescription& evolution,
-            const Size numberOfFactors,
-            const std::vector<Rate>& initialRates,
-            const std::vector<Spread>& displacements)
+    AbcdVol::AbcdVol(Real a,
+                     Real b,
+                     Real c,
+                     Real d,
+                     const vector<Real>& ks,
+                     const shared_ptr<PiecewiseConstantCorrelation>& corr,
+                     const EvolutionDescription& evolution,
+                     const Size numberOfFactors,
+                     const vector<Rate>& initialRates,
+                     const vector<Spread>& displacements)
     : numberOfFactors_(numberOfFactors),
       numberOfRates_(initialRates.size()),
       numberOfSteps_(evolution.evolutionTimes().size()),
@@ -45,7 +47,7 @@ namespace QuantLib {
       evolution_(evolution),
       pseudoRoots_(numberOfSteps_, Matrix(numberOfRates_, numberOfFactors_))
     {
-        const std::vector<Time>& rateTimes = evolution.rateTimes();
+        const vector<Time>& rateTimes = evolution.rateTimes();
         QL_REQUIRE(numberOfRates_==rateTimes.size()-1,
                    "mismatch between number of rates (" << numberOfRates_ <<
                    ") and rate times");
@@ -71,8 +73,8 @@ namespace QuantLib {
         Real covar;
         Time effStartTime, effStopTime;
         Real correlation;
-        const std::vector<Time>& corrTimes = corr->times();
-        const std::vector<Time>& evolTimes = evolution.evolutionTimes();
+        const vector<Time>& corrTimes = corr->times();
+        const vector<Time>& evolTimes = evolution.evolutionTimes();
         for (Size k=0, kk=0; k<numberOfSteps_; ++k) {
             // one covariance per evolution step
             Matrix covariance(numberOfRates_, numberOfRates_, 0.0);
