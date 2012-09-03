@@ -28,8 +28,8 @@ namespace QuantLib {
 
     //! Market-model evolution description
     /*! This class stores:
-        -# evolutionTimes = the times defining the rates that are to be evolved,
-        -# rateTimes = the times at which the rates need to be known,
+        -# evolutionTimes = the times at which the rates need to be known,
+        -# rateTimes = the times defining the rates that are to be evolved,
         -# relevanceRates = which rates need to be known at each time.
 
         This class is really just a tuple of evolution and rate times;
