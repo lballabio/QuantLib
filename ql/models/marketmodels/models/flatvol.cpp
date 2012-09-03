@@ -83,7 +83,7 @@ namespace QuantLib {
                    "number of factors (" << numberOfFactors <<
                    ") must be greater than zero");
 
-        Time effStopTime;
+        Time effStopTime = 0.0;
         const vector<Time>& corrTimes = corr->times();
         const vector<Time>& evolTimes = evolution.evolutionTimes();
         Matrix covariance(numberOfRates_, numberOfRates_);
@@ -94,7 +94,7 @@ namespace QuantLib {
             // there might be more than one correlation matrix
             // in a single evolution step
             for (; corrTimes[kk]<evolTimes[k]; ++kk) {
-                Time effStartTime = kk==0 ? 0.0 : corrTimes[kk-1];
+                Time effStartTime = effStopTime;
                 effStopTime = corrTimes[kk];
                 const Matrix& corrMatrix = corr->correlation(kk);
                 for (Size i=0; i<numberOfRates_; ++i) {
@@ -107,7 +107,7 @@ namespace QuantLib {
                 }
             }
             // last part in the evolution step
-            Time effStartTime = kk==0 ? 0.0 : corrTimes[kk-1];
+            Time effStartTime = effStopTime;
             effStopTime = evolTimes[k];
             const Matrix& corrMatrix = corr->correlation(kk);
             for (Size i=0; i<numberOfRates_; ++i) {
