@@ -81,6 +81,8 @@ namespace QuantLib {
         QL_REQUIRE(coupon_, "CMS coupon needed");
         gearing_ = coupon_->gearing();
         spread_ = coupon_->spread();
+        Time accrualPeriod = coupon_->accrualPeriod();
+        QL_REQUIRE(accrualPeriod != 0.0, "null accrual period");
 
         fixingDate_ = coupon_->fixingDate();
         paymentDate_ = coupon_->date();
@@ -93,7 +95,7 @@ namespace QuantLib {
             discount_ = rateCurve_->discount(paymentDate_);
         else discount_= 1.;
 
-        spreadLegValue_ = spread_ * coupon_->accrualPeriod()* discount_;
+        spreadLegValue_ = spread_ * accrualPeriod * discount_;
 
         if (fixingDate_ > today){
             swapTenor_ = swapIndex->tenor();

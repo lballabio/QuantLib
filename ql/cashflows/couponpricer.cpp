@@ -42,6 +42,7 @@ namespace QuantLib {
         gearing_ = coupon.gearing();
         spread_ = coupon.spread();
         accrualPeriod_ = coupon.accrualPeriod();
+        QL_REQUIRE(accrualPeriod_ != 0.0, "null accrual period");
 
         index_ = dynamic_pointer_cast<IborIndex>(coupon.index());
         if (!index_) {
