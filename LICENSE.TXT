@@ -5,9 +5,9 @@ QuantLib is
     Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
 
     Copyright (C) 2002, 2003, 2004 Decillion Pty(Ltd)
-    Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011 Ferdinando Ametrano
+    Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012 Ferdinando Ametrano
 
-    Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011 StatPro Italia srl
+    Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012 StatPro Italia srl
     Copyright (C) 2003, 2004, 2007 Neil Firth
     Copyright (C) 2003, 2004 Roman Gitlin
     Copyright (C) 2003 Niels Elken Sønderby
