@@ -162,7 +162,6 @@ void BondTest::testAtmRate() {
     CommonVars vars;
 
     Real tolerance = 1.0e-7;
-    Size maxEvaluations = 100;
 
     Integer issueMonths[] = { -24, -18, -12, -6, 0, 6, 12, 18, 24 };
     Integer lengths[] = { 3, 5, 10, 15, 20 };
