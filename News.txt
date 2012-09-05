@@ -1,144 +1,38 @@
 
-Notable changes for QuantLib 1.2:
+QuantLib 1.2.1 is a bug-fix release.
 
-PORTABILITY
+Changes:
 
-- Microsoft Visual C++ 2010 no longer needs to disable uBlas code.
+- The library default is now to allow negative rates as this is
+  happening for EUR OIS, CHF and German treasury yields, etc.
 
-- QuantLib now ships with an updated specification file for building
-  RPMs (thanks to Matt Fair).
+- Fixed problem with EOM adjustment in schedule.
+  When the end date was not adjusted, the next-to-last date could end up
+  after the end date due to EOM adjustment. This is now checked and fixed.
 
+- Added notional calculation to CPI bond.
+  This enables the user to use the full bond machinery besides NPV
+  calculation.
+  Thanks to Seyfullah Çetin for the heads-up and to Raso Mirko
+  and Billy Ng for the fix.
 
-DATE/TIME
+- Fixed bug in up-rounding (thanks to Simon Shakeshaft).
+  When up-rounding a number with no digits after the requested
+  precision (say, 0.86313 with 5-digits precision) the last
+  digit of the number would be increased. This is now fixed.
 
-- When EOM was specified, a schedule's end date was moved to the end
-  of month even if the 'Unadjusted' convention was given.  This is now
-  fixed.
+- Bicubic splines would not update their parameters correctly.
+  This is now fixed (thanks to Fabio Ramponi).
 
-- When a daily frequency was used, a schedule could end up containing
-  duplicated dates.  This is now fixed (thanks to Simone Medori for
-  the bug report).
+- Fixed extent of new-year holidays for the Russian calendar.
+  Thanks to Kirill Shemyakin.
 
-- Added method to return truncated schedule.
+- Added implementation of assertion_failed_msg function.
+  This is required for linking with recent Boost versions.
+  Thanks to Piter Dias.
 
-- Fixed Swedish Midsummer Eve's date (thanks to Gary Kennedy).
+- Build fixes for VC++11 and for g++ in c++11 mode (thanks to Xiangyu
+  Hong and Joao Paulo Magalhaes, respectively).
 
-- Added South Korea holidays for 2011/2012 (thanks to Charles
-  Chongseok Hyun and Faycal El Karaa).
-
-- Added holidays for 2011 to China, Hong Kong, India, Indonesia, Saudi
-  Arabia, and Taiwan calendars.
-
-- Added ECB maintenance dates for 2012 and 2013.
-
-- Greatly improved performance of business/252 day counter.  The
-  previous implementation would count the business days between two
-  dates at each invocation. The new implementation caches dynamically
-  the count of business days for whole months and years, so that after
-  a while only the first and last few days are counted.
-
-
-INSTRUMENTS
-
-- The AssetSwap instrument now supports non-par repayment.
-
-- Added specialized class for Italian CCTEU (certificato di credito
-  del tesoro).
-
-- Added CPI-linked swaps, bonds, and cap/floors.
-
-
-CASH FLOWS
-
-- Added CashFlows::npvbps() method to calculate NPV and BPS in a
-  single loop to improve performance.
-
-
-INDEXES
-
-- Better detection of forecast/past fixings for inflation indexes.
-  When an interpolated index is asked for a fixing at the beginning of
-  a month, the fixing for the following (which would have zero weight
-  in the interpolation) is no longer required.  Also, if a fixing is
-  loaded in the index time series, it can be used even its observation
-  lag has not fully elapsed.
-
-
-TERM STRUCTURES
-
-- Vastly improved the performance of piecewise yield curve bootstrap.
-  Anchoring the evaluation date (see below) provides a further
-  improvement.
-
-- Moved CPI-volatility interface from experimental folder to the core
-  library.
-
-
-MATH
-
-- Added Newton 1-D solver with finite difference derivatives.
-
-- Improved interface for linear least-square regression (thanks to
-  Slava Mazur).
-
-
-FINITE DIFFERENCES
-
-- Added TR-BDF2 scheme (thanks to Fabien Le Floc'h).
-
-- Moved stable parts of 2D finite-difference framework from the
-  experimental folder to the core library.
-
-
-UTILITIES
-
-- Added resetEvaluationDate() and anchorEvaluationDate() methods to
-  enable/disable change of evaluation date at midnight, respectively.
-  Anchoring the evaluation date also improves the performance of some
-  calculations.
-
-
-PATTERNS
-
-- Fixed possible problem in LazyObject notification logic.  The
-  previous implementation would pass obsolete information to observers
-  that asked for data in their update() method (which is not advised,
-  but possible).  This is no longer the case.
-
-
-EXPERIMENTAL FOLDER
-
-The ql/experimental folder contains code which is still not fully
-integrated with the library or even fully tested, but is released in
-order to get user feedback.  Experimental classes are considered
-unstable; their interfaces might change in future releases.
-
-New contributions for this release were:
-
-- Spread option and related engine (thanks to IMAFA/Polytech'Nice
-  students Meryem Chibo and Samad Abdessadki).
-
-- Writer-extensible option and related engine (thanks to
-  IMAFA/Polytech'Nice students Delphine Bouthier, Marine Casanova, and
-  Xavier Caron).
-
-- Levy engine for continuous-averaging Asian options (thanks to
-  IMAFA/Polytech'Nice students Yasmine Lahlou and Amine Samani).
-
-- Simple Virtual Power Plant and related finite-difference (FD) engine
-  (thanks to Klaus Spanderen).
-
-- FD solver and vanilla spread engine for Kluge-Ornstein-Uhlenbeck
-  process (thanks to Klaus Spanderen).
-
-- Added generic n-dimensional FD solver (thanks to Klaus Spanderen).
-
-- Added FD pricing engine for a simple storage option based on an
-  exponential Ornstein Uhlenbeck process (thanks to Klaus Spanderen).
-
-- Added vanilla and swing option FD pricer for Kluge model (thanks to
-  Klaus Spanderen).
-
-- Added FD pricing engine for a simple swing option based on the
-  Black-Scholes model (thanks to Klaus Spanderen).
+- A number of minor bug fixes (see the Changelog for full details).
 
