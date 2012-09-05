@@ -1,0 +1,96 @@
+
+/*
+ Copyright (C) 2002, 2003 Sadruddin Rejeb
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/license.shtml>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
+/*! \defgroup lattices Lattice methods
+
+    The framework (corresponding to the ql/Lattices directory)
+    contains basic building blocks for pricing instruments using lattice
+    methods (trees). A lattice, i.e. an instance of the abstract class
+    QuantLib::Lattice, relies on one or several trees (each one
+    approximating a diffusion process) to price an instance of the
+    DiscretizedAsset class. Trees are instances of classes derived from
+    QuantLib::Tree, classes which define the branching between
+    nodes and transition probabilities.
+
+    \section binomial Binomial trees
+    The binomial method is the simplest numerical method that can be used to
+    price path-independent derivatives. It is usually the preferred lattice
+    method under the Black-Scholes-Merton model. As an example, let's see
+    the framework implemented in the bsmlattice.hpp file. It is a method
+    based on a binomial tree, with constant short-rate (discounting).
+    There are several approaches to build the underlying binomial tree, like
+    Jarrow-Rudd or Cox-Ross-Rubinstein.
+
+    \section trinomial Trinomial trees
+    When the underlying stochastic process has a mean-reverting pattern, it is
+    usually better to use a trinomial tree instead of a binomial tree. An
+    example is implemented in the QuantLib::TrinomialTree class,
+    which is constructed using a diffusion process and a time-grid. The goal is
+    to build a recombining trinomial tree that will discretize, at a finite set
+    of times, the possible evolutions of a random variable \f$ y \f$ satisfying
+    \f[
+        dy_t = \mu(t, y_t) dt + \sigma(t, y_t) dW_t.
+    \f]
+    At each node, there is a probability \f$ p_u, p_m \f$ and \f$ p_d \f$ to go
+    through respectively the upper, the middle and the lower branch.
+    These probabilities must satisfy
+    \f[
+        p_{u}y_{i+1,k+1}+p_{m}y_{i+1,k}+p_{d}y_{i+1,k-1}=E_{i,j}
+    \f]
+    and
+    \f[
+        p_u y_{i+1,k+1}^2 + p_m y_{i+1,k}^2 + p_d y_{i+1,k-1}^2 =
+        V^2_{i,j}+E_{i,j}^2,
+    \f]
+    where k (the index of the node at the end of the middle branch)
+    is the index of the node which is the nearest to the expected future
+    value, \f$ E_{i,j}=\mathbf{E}\left( y(t_{i+1})|y(t_{i})=y_{i,j}\right) \f$
+    and \f$ V_{i,j}^{2}=\mathbf{Var}\{y(t_{i+1})|y(t_{i})=y_{i,j}\} \f$.
+    If we suppose that the variance is only dependant on time
+    \f$ V_{i,j}=V_{i} \f$ and set \f$ y_{i+1} \f$ to \f$ V_{i}\sqrt{3} \f$,
+    we find that
+    \f[
+        p_{u} = \frac{1}{6}+\frac{(E_{i,j}-y_{i+1,k})^{2}}{6V_{i}^{2}} +
+                \frac{E_{i,j}-y_{i+1,k}}{2\sqrt{3}V_{i}},
+    \f]
+    \f[
+        p_{m} = \frac{2}{3}-\frac{(E_{i,j}-y_{i+1,k})^{2}}{3V_{i}^{2}},
+    \f]
+    \f[
+        p_{d} = \frac{1}{6}+\frac{(E_{i,j}-y_{i+1,k})^{2}}{6V_{i}^{2}} -
+                \frac{E_{i,j}-y_{i+1,k}}{2\sqrt{3}V_{i}}.
+    \f]
+
+    \section bidimensional Bidimensional lattices
+    To come...
+
+    \section discretizedasset The QuantLib::DiscretizedAsset class
+
+    This class is a representation of the price of a derivative at a specific
+    time. It is roughly an array of values, each value being associated to a
+    state of the underlying stochastic variables. For the moment, it is only
+    used when working with trees, but it should be quite easy to make a use
+    of it in finite-differences methods. The two main points, when deriving
+    classes from QuantLib::DiscretizedAsset, are:
+    -# Define the initialisation procedure (e.g. terminal payoff for european
+       stock options).
+    -# Define the method adjusting values, when necessary, at each time steps
+       (e.g. apply the step condition for american or bermudan options).
+    Some examples are found in QuantLib::DiscretizedSwap and
+    QuantLib::DiscretizedSwaption.
+*/

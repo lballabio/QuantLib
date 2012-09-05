@@ -1,0 +1,94 @@
+
+/*
+ Copyright (C) 2004, 2005 StatPro Italia srl
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/license.shtml>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
+/*! \page config User configuration
+
+    A number of macros is provided for user configuration.  Defining
+    or undefining such macros triggers variations in some library
+    functionality.
+
+    Under a Linux/Unix system, they are (un)set by <tt>configure</tt>;
+    run
+    \code
+    ./configure --help
+    \endcode
+    for a list of corresponding command-line options.
+
+    Under a Windows system, they must be (un)defined by editing the
+    file <ql/userconfig.hpp> and commenting or uncommenting the
+    relevant lines.
+
+    Such macros include:
+
+    \code
+    #define QL_ERROR_FUNCTIONS
+    \endcode
+
+    If defined, function information is added to the error messages
+    thrown by the library. Undefined by default.
+
+    \code
+    #define QL_ERROR_LINES
+    \endcode
+    If defined, file and line information is added to the error
+    messages thrown by the library. Undefined by default.
+
+    \code
+    #define QL_ENABLE_TRACING
+    \endcode
+
+    If enabled, tracing messages might be emitted by the library
+    depending on run-time settings. Enabling this option can degrade
+    performance. Undefined by default.
+
+    \code
+    #define QL_NEGATIVE_RATES
+    \endcode
+    If defined, negative yield rates are allowed in a few places where
+    they are currently forbidden. It is still not clear whether this
+    is safe. Undefined by default.
+
+    \code
+    #define QL_EXTRA_SAFETY_CHECKS
+    \endcode
+    If defined, extra run-time checks are added to a few
+    functions. This can prevent their inlining and degrade
+    performance. Undefined by default.
+
+    \code
+    #define QL_DISABLE_DEPRECATED
+    \endcode
+    If defined, deprecated code will not be included in the
+    library. Undefined by default.
+
+    \code
+    #define QL_USE_INDEXED_COUPON
+    \endcode
+    If defined, indexed coupons (see the documentation) are used in
+    floating legs.  If undefined (the default), par coupons are used.
+
+    \code
+    #define QL_ENABLE_SESSIONS
+    \endcode
+    If defined, singletons will return different instances for
+    different sessions. You will have to provide and link with the
+    library a sessionId() function in namespace QuantLib, returning a
+    different session id for each session.
+
+*/
+

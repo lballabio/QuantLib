@@ -1,0 +1,38 @@
+
+QuantLib 1.2.1 is a bug-fix release.
+
+Changes:
+
+- The library default is now to allow negative rates as this is
+  happening for EUR OIS, CHF and German treasury yields, etc.
+
+- Fixed problem with EOM adjustment in schedule.
+  When the end date was not adjusted, the next-to-last date could end up
+  after the end date due to EOM adjustment. This is now checked and fixed.
+
+- Added notional calculation to CPI bond.
+  This enables the user to use the full bond machinery besides NPV
+  calculation.
+  Thanks to Seyfullah Çetin for the heads-up and to Raso Mirko
+  and Billy Ng for the fix.
+
+- Fixed bug in up-rounding (thanks to Simon Shakeshaft).
+  When up-rounding a number with no digits after the requested
+  precision (say, 0.86313 with 5-digits precision) the last
+  digit of the number would be increased. This is now fixed.
+
+- Bicubic splines would not update their parameters correctly.
+  This is now fixed (thanks to Fabio Ramponi).
+
+- Fixed extent of new-year holidays for the Russian calendar.
+  Thanks to Kirill Shemyakin.
+
+- Added implementation of assertion_failed_msg function.
+  This is required for linking with recent Boost versions.
+  Thanks to Piter Dias.
+
+- Build fixes for VC++11 and for g++ in c++11 mode (thanks to Xiangyu
+  Hong and Joao Paulo Magalhaes, respectively).
+
+- A number of minor bug fixes (see the Changelog for full details).
+
