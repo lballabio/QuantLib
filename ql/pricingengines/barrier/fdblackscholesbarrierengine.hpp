@@ -41,9 +41,7 @@ namespace QuantLib {
               reproducing results available in web/literature
               and comparison with Black pricing.
     */
-    class FdBlackScholesBarrierEngine
-        : public GenericEngine<DividendBarrierOption::arguments,
-                               DividendBarrierOption::results> {
+    class FdBlackScholesBarrierEngine : public DividendBarrierOption::engine {
       public:
         // Constructor
           FdBlackScholesBarrierEngine(

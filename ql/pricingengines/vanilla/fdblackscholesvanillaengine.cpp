@@ -36,13 +36,13 @@ namespace QuantLib {
             Size tGrid, Size xGrid, Size dampingSteps, 
             const FdmSchemeDesc& schemeDesc,
             bool localVol, Real illegalLocalVolOverwrite)
-    : GenericEngine<DividendVanillaOption::arguments,
-                    DividendVanillaOption::results>(),
-      process_(process),
+    : process_(process),
       tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc), 
       localVol_(localVol),
       illegalLocalVolOverwrite_(illegalLocalVolOverwrite) {
+
+        registerWith(process_);
     }
 
     void FdBlackScholesVanillaEngine::calculate() const {

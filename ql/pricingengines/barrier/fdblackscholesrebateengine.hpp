@@ -37,9 +37,7 @@ namespace QuantLib {
     /*!
         \ingroup barrierengines
     */
-    class FdBlackScholesRebateEngine
-        : public GenericEngine<DividendBarrierOption::arguments,
-                               DividendBarrierOption::results> {
+    class FdBlackScholesRebateEngine : public DividendBarrierOption::engine {
       public:
         // Constructor
           FdBlackScholesRebateEngine(

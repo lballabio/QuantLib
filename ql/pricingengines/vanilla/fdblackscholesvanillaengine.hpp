@@ -42,9 +42,7 @@ namespace QuantLib {
     */
     class GeneralizedBlackScholesProcess;
 
-    class FdBlackScholesVanillaEngine
-        : public GenericEngine<DividendVanillaOption::arguments,
-                               DividendVanillaOption::results> {
+    class FdBlackScholesVanillaEngine : public DividendVanillaOption::engine {
       public:
         // Constructor
           FdBlackScholesVanillaEngine(

@@ -40,11 +40,11 @@ namespace QuantLib {
             Size tGrid, Size xGrid, Size dampingSteps, 
             const FdmSchemeDesc& schemeDesc,
             bool localVol, Real illegalLocalVolOverwrite)
-    : GenericEngine<DividendBarrierOption::arguments,
-                    DividendBarrierOption::results>(),
-      process_(process), tGrid_(tGrid), xGrid_(xGrid), 
+    : process_(process), tGrid_(tGrid), xGrid_(xGrid),
       dampingSteps_(dampingSteps), schemeDesc_(schemeDesc),
       localVol_(localVol), illegalLocalVolOverwrite_(illegalLocalVolOverwrite){
+
+        registerWith(process_);
     }
 
     void FdBlackScholesBarrierEngine::calculate() const {
