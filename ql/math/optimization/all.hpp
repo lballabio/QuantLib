@@ -6,6 +6,7 @@
 #include <ql/math/optimization/conjugategradient.hpp>
 #include <ql/math/optimization/constraint.hpp>
 #include <ql/math/optimization/costfunction.hpp>
+#include <ql/math/optimization/differentialevolution.hpp>
 #include <ql/math/optimization/endcriteria.hpp>
 #include <ql/math/optimization/leastsquare.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>

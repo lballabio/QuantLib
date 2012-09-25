@@ -4,6 +4,7 @@
  Copyright (C) 2007 Marco Bianchetti
  Copyright (C) 2007 François du Vignaud
  Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2012 Ralph Schreyer
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +28,7 @@
 #include <ql/math/optimization/steepestdescent.hpp>
 #include <ql/math/optimization/bfgs.hpp>
 #include <ql/math/optimization/constraint.hpp>
+#include <ql/math/optimization/differentialevolution.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -336,10 +338,174 @@ void OptimizersTest::nestedOptimizationTest() {
 
 }
 
+namespace {
+
+    class FirstDeJong : public CostFunction {
+      public:
+        Disposable<Array> values(const Array& x) const {
+            Array retVal(x.size(),value(x));
+            return retVal;
+        }
+        Real value(const Array& x) const {
+            return DotProduct(x,x);
+        }
+    };
+
+    class SecondDeJong : public CostFunction {
+      public:
+        Disposable<Array> values(const Array& x) const {
+            Array retVal(x.size(),value(x));
+            return retVal;
+        }
+        Real value(const Array& x) const {
+            return  100.0*(x[0]*x[0]-x[1])*(x[0]*x[0]-x[1])
+                  + (1.0-x[0])*(1.0-x[0]);
+        }
+    };
+
+    class ModThirdDeJong : public CostFunction {
+      public:
+        Disposable<Array> values(const Array& x) const {
+            Array retVal(x.size(),value(x));
+            return retVal;
+        }
+        Real value(const Array& x) const {
+            Real fx = 0.0;
+            for (Size i=0; i<x.size(); ++i) {
+                fx += floor(x[i])*floor(x[i]);
+            }
+            return fx;
+        }
+    };
+
+    class ModFourthDeJong : public CostFunction {
+      public:
+        ModFourthDeJong()
+        : uniformRng_(MersenneTwisterUniformRng(4711)) {
+        }
+        Disposable<Array> values(const Array& x) const {
+            Array retVal(x.size(),value(x));
+            return retVal;
+        }
+        Real value(const Array& x) const {
+            Real fx = 0.0;
+            for (Size i=0; i<=x.size(); ++i) {
+                fx += (i+1.0)*pow(x[i],4.0) + uniformRng_.nextReal();
+            }
+            return fx;
+        }
+        MersenneTwisterUniformRng uniformRng_;
+    };
+
+    class Griewangk : public CostFunction {
+      public:
+        Disposable<Array> values(const Array& x) const{
+            Array retVal(x.size(),value(x));
+            return retVal;
+        }
+        Real value(const Array& x) const {
+            Real fx = 0.0;
+            for (Size i=0; i<=x.size(); ++i) {
+                fx += x[i]*x[i]/4000.0;
+            }
+            Real p = 1.0;
+            for (Size i=0; i<=x.size(); ++i) {
+                p *= cos(x[i]/sqrt(i+1.0));
+            }
+            return fx - p + 1.0;
+        }
+    };
+}
+
+
+void OptimizersTest::testDifferentialEvolution() {
+
+    /* Note:
+    *
+    * The "ModFourthDeJong" doesn't have a well defined optimum because
+    * of it's noisy part. It just has to be <= 15 in our example.
+    * The concrete value in our case for the values chosen is
+    * 12.3724219287, but might differ for a different input and
+    * different random numbers (as long as it stays below 15).
+    *
+    * The "Griewangk" function is an example where the adaptive
+    * version of DifferentialEvolution turns out to be more successful.
+    */
+    std::vector<boost::shared_ptr<CostFunction> > costFunctions;
+    std::vector<Array> minArrays;
+    std::vector<Array> maxArrays;
+    std::vector<Array> initialValues;
+    std::vector<EndCriteria> endCriteria;
+    std::vector<boost::shared_ptr<OptimizationMethod> > optimizers;
+    std::vector<Real> minima;
+
+    costFunctions.push_back(boost::shared_ptr<CostFunction>(new FirstDeJong()));
+    costFunctions.push_back(boost::shared_ptr<CostFunction>(new SecondDeJong()));
+    costFunctions.push_back(boost::shared_ptr<CostFunction>(new ModThirdDeJong()));
+    costFunctions.push_back(boost::shared_ptr<CostFunction>(new ModFourthDeJong()));
+    costFunctions.push_back(boost::shared_ptr<CostFunction>(new Griewangk()));
+
+    minArrays.push_back(Array(3,  -10.0));
+    minArrays.push_back(Array(2,  -10.0));
+    minArrays.push_back(Array(5,  -10.0));
+    minArrays.push_back(Array(30, -10.0));
+    minArrays.push_back(Array(10, -400.0));
+
+    maxArrays.push_back(Array(3,  10.0));
+    maxArrays.push_back(Array(2,  10.0));
+    maxArrays.push_back(Array(5,  10.0));
+    maxArrays.push_back(Array(30, 10.0));
+    maxArrays.push_back(Array(10, 400.0));
+
+    initialValues.push_back(Array(3,  5.0));
+    initialValues.push_back(Array(2,  5.0));
+    initialValues.push_back(Array(5,  5.0));
+    initialValues.push_back(Array(30, 5.0));
+    initialValues.push_back(Array(10, 100.0));
+
+    endCriteria.push_back(EndCriteria(1000, 100, 1e-10, 1e-8, Null<Real>()));
+    endCriteria.push_back(EndCriteria(1000, 100, 1e-10, 1e-8, Null<Real>()));
+    endCriteria.push_back(EndCriteria(1000, 100, 1e-10, 1e-8, Null<Real>()));
+    endCriteria.push_back(EndCriteria(1000, 100, 1e-10, 1e-8, Null<Real>()));
+    endCriteria.push_back(EndCriteria(10000, 1000, 1e-12, 1e-10, Null<Real>()));
+
+    optimizers.push_back(boost::shared_ptr<OptimizationMethod>(
+        new DifferentialEvolution(minArrays[0], maxArrays[0])));
+    optimizers.push_back(boost::shared_ptr<OptimizationMethod>(
+        new DifferentialEvolution(minArrays[1], maxArrays[1])));
+    optimizers.push_back(boost::shared_ptr<OptimizationMethod>(
+        new DifferentialEvolution(minArrays[2], maxArrays[2])));
+    optimizers.push_back(boost::shared_ptr<OptimizationMethod>(
+        new DifferentialEvolution(minArrays[3], maxArrays[3])));
+    optimizers.push_back(boost::shared_ptr<OptimizationMethod>(
+        new DifferentialEvolution(
+            minArrays[4], maxArrays[4],
+            DifferentialEvolution::RandToBest1Exp, 0.85, 1.0, true)));
+
+    minima.push_back(0.0);
+    minima.push_back(0.0);
+    minima.push_back(0.0);
+    minima.push_back(12.3724219287);
+    minima.push_back(0.0);
+
+    for(Size i=0; i<costFunctions.size(); ++i) {
+        NoConstraint noConstraint;
+        Problem problem(*costFunctions[i], noConstraint,
+                        initialValues[i]);
+        optimizers[i]->minimize(problem,endCriteria[i]);
+        if(fabs(problem.functionValue() - minima[i]) > 1e-8) {
+            BOOST_ERROR("DifferentialEvolution, costFunction # " << i);
+        }
+    }
+}
+
+
 test_suite* OptimizersTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Optimizers tests");
     suite->add(QUANTLIB_TEST_CASE(&OptimizersTest::test));
     suite->add(QUANTLIB_TEST_CASE(&OptimizersTest::nestedOptimizationTest));
+    suite->add(QUANTLIB_TEST_CASE(&OptimizersTest::testDifferentialEvolution));
     return suite;
 }
+
 

@@ -9,6 +9,7 @@ this_include_HEADERS = \
     conjugategradient.hpp \
     constraint.hpp \
     costfunction.hpp \
+    differentialevolution.hpp \
     endcriteria.hpp \
     leastsquare.hpp \
     levenbergmarquardt.hpp \
@@ -27,6 +28,7 @@ libOptimization_la_SOURCES = \
     bfgs.cpp \
     conjugategradient.cpp \
     constraint.cpp \
+    differentialevolution.cpp \
     endcriteria.cpp \
     leastsquare.cpp \
     levenbergmarquardt.cpp \
