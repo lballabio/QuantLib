@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004, 2005 StatPro Italia srl
- Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007, 2012 Ferdinando Ametrano
  Copyright (C) 2007, 2009 Piter Dias
 
  This file is part of QuantLib, a free-software/open-source library
@@ -45,6 +45,7 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+using boost::shared_ptr;
 
 namespace {
 
@@ -147,6 +148,71 @@ void BondTest::testYield() {
                   }
                 }
               }
+            }
+          }
+        }
+      }
+    }
+}
+
+void BondTest::testAtmRate() {
+
+    BOOST_MESSAGE("Testing consistency of bond price/atmRate calculation...");
+
+    CommonVars vars;
+
+    Real tolerance = 1.0e-7;
+
+    Integer issueMonths[] = { -24, -18, -12, -6, 0, 6, 12, 18, 24 };
+    Integer lengths[] = { 3, 5, 10, 15, 20 };
+    Natural settlementDays = 3;
+    Real coupons[] = { 0.02, 0.05, 0.08 };
+    Frequency frequencies[] = { Semiannual, Annual };
+    DayCounter bondDayCount = Thirty360();
+    BusinessDayConvention accrualConvention = Unadjusted;
+    BusinessDayConvention paymentConvention = ModifiedFollowing;
+    Real redemption = 100.0;
+    Handle<YieldTermStructure> disc(flatRate(vars.today,0.03,Actual360()));
+    shared_ptr<PricingEngine> bondEngine(new DiscountingBondEngine(disc));
+
+    for (Size i=0; i<LENGTH(issueMonths); i++) {
+      for (Size j=0; j<LENGTH(lengths); j++) {
+        for (Size k=0; k<LENGTH(coupons); k++) {
+          for (Size l=0; l<LENGTH(frequencies); l++) {
+            Date dated = vars.calendar.advance(vars.today,
+                                               issueMonths[i], Months);
+            Date issue = dated;
+            Date maturity = vars.calendar.advance(issue,
+                                                  lengths[j], Years);
+
+            Schedule sch(dated, maturity,
+                         Period(frequencies[l]), vars.calendar,
+                         accrualConvention, accrualConvention,
+                         DateGeneration::Backward, false);
+
+            FixedRateBond bond(settlementDays, vars.faceAmount, sch,
+                             std::vector<Rate>(1, coupons[k]),
+                             bondDayCount, paymentConvention,
+                             redemption, issue);
+
+            bond.setPricingEngine(bondEngine);
+            Real price = bond.cleanPrice();
+            Rate calculated = BondFunctions::atmRate(bond,
+                                                     **disc,
+                                                     bond.settlementDate(),
+                                                     price);
+
+            if (std::fabs(coupons[k]-calculated) > tolerance) {
+                  BOOST_FAIL("\natm rate recalculation failed:"
+                      "\n today:           " << vars.today <<
+                      "\n settlement date: " << bond.settlementDate() <<
+                      "\n issue:           " << issue <<
+                      "\n maturity:        " << maturity <<
+                      "\n coupon:          " << io::rate(coupons[k]) <<
+                      "\n frequency:       " << frequencies[l] <<
+                      "\n clean price:     " << price <<
+                      "\n dirty price:     " << price + bond.accruedAmount() <<
+                      "\n atm rate:        " << io::rate(calculated));
             }
           }
         }
@@ -277,7 +343,7 @@ void BondTest::testTheoretical() {
             Date issue = dated;
             Date maturity = vars.calendar.advance(issue, lengths[j], Years);
 
-            boost::shared_ptr<SimpleQuote> rate(new SimpleQuote(0.0));
+            shared_ptr<SimpleQuote> rate(new SimpleQuote(0.0));
             Handle<YieldTermStructure> discountCurve(flatRate(vars.today,
                                                               rate,
                                                               bondDayCount));
@@ -292,7 +358,7 @@ void BondTest::testTheoretical() {
                                bondDayCount, paymentConvention,
                                redemption, issue);
 
-            boost::shared_ptr<PricingEngine> bondEngine(
+            shared_ptr<PricingEngine> bondEngine(
                                     new DiscountingBondEngine(discountCurve));
             bond.setPricingEngine(bondEngine);
 
@@ -370,7 +436,7 @@ void BondTest::testCached() {
                         bondDayCount, ModifiedFollowing,
                         100.0, Date(1, November, 2004));
 
-    boost::shared_ptr<PricingEngine> bondEngine(
+    shared_ptr<PricingEngine> bondEngine(
                                     new DiscountingBondEngine(discountCurve));
     bond1.setPricingEngine(bondEngine);
 
@@ -576,7 +642,7 @@ void BondTest::testCachedZero() {
                          ModifiedFollowing,
                          100.0, Date(30,November,2004));
 
-    boost::shared_ptr<PricingEngine> bondEngine(
+    shared_ptr<PricingEngine> bondEngine(
                                     new DiscountingBondEngine(discountCurve));
     bond1.setPricingEngine(bondEngine);
 
@@ -661,7 +727,7 @@ void BondTest::testCachedFixed() {
                         ModifiedFollowing,
                         100.0, Date(30,November,2004));
 
-    boost::shared_ptr<PricingEngine> bondEngine(
+    shared_ptr<PricingEngine> bondEngine(
                                     new DiscountingBondEngine(discountCurve));
     bond1.setPricingEngine(bondEngine);
 
@@ -745,12 +811,12 @@ void BondTest::testCachedFloating() {
     Handle<YieldTermStructure> riskFreeRate(flatRate(today,0.025,Actual360()));
     Handle<YieldTermStructure> discountCurve(flatRate(today,0.03,Actual360()));
 
-    boost::shared_ptr<IborIndex> index(new USDLibor(6*Months, riskFreeRate));
+    shared_ptr<IborIndex> index(new USDLibor(6*Months, riskFreeRate));
     Natural fixingDays = 1;
 
     Real tolerance = 1.0e-6;
 
-    boost::shared_ptr<IborCouponPricer> pricer(new
+    shared_ptr<IborCouponPricer> pricer(new
         BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
 
     // plain
@@ -770,7 +836,7 @@ void BondTest::testCachedFloating() {
                            false,
                            100.0, Date(30,November,2004));
 
-    boost::shared_ptr<PricingEngine> bondEngine(
+    shared_ptr<PricingEngine> bondEngine(
                                      new DiscountingBondEngine(riskFreeRate));
     bond1.setPricingEngine(bondEngine);
 
@@ -802,7 +868,7 @@ void BondTest::testCachedFloating() {
                            false,
                            100.0, Date(30,November,2004));
 
-    boost::shared_ptr<PricingEngine> bondEngine2(
+    shared_ptr<PricingEngine> bondEngine2(
                                     new DiscountingBondEngine(discountCurve));
     bond2.setPricingEngine(bondEngine2);
 
@@ -951,6 +1017,7 @@ test_suite* BondTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Bond tests");
 
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testYield));
+    suite->add(QUANTLIB_TEST_CASE(&BondTest::testAtmRate));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testZspread));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testTheoretical));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testCached));

@@ -93,6 +93,7 @@
 #include "inflation.hpp"
 #include "inflationcapfloor.hpp"
 #include "inflationcapflooredcoupon.hpp"
+#include "inflationcpibond.hpp"
 #include "inflationcpicapfloor.hpp"
 #include "inflationcpiswap.hpp"
 #include "inflationvolatility.hpp"
@@ -272,6 +273,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CompoundOptionTest::suite());
     test->add(ConvertibleBondTest::suite());
     test->add(CovarianceTest::suite());
+    test->add(CPISwapTest::suite());
     test->add(CreditDefaultSwapTest::suite());
     test->add(CurveStatesTest::suite());
     test->add(DateTest::suite());
@@ -295,12 +297,12 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(HestonModelTest::suite());
     test->add(HimalayaOptionTest::suite());
     test->add(HybridHestonHullWhiteProcessTest::suite());
-    test->add(InflationTest::suite());                  // in general inflation & tests
-    test->add(InflationCapFloorTest::suite());          // use indexed coupons, i.e.
-    test->add(InflationCapFlooredCouponTest::suite());  // QL_USE_INDEXED_COUPON has no effect
-    test->add(CPISwapTest::suite());                    //
-    test->add(InflationCPICapFloorTest::suite());       //
-    test->add(InflationVolTest::suite());               //
+    test->add(InflationTest::suite());
+    test->add(InflationCapFloorTest::suite());
+    test->add(InflationCapFlooredCouponTest::suite());
+    test->add(InflationCPIBondTest::suite());
+    test->add(InflationCPICapFloorTest::suite());
+    test->add(InflationVolTest::suite());
     test->add(InstrumentTest::suite());
     test->add(IntegralTest::suite());
     test->add(InterestRateTest::suite());

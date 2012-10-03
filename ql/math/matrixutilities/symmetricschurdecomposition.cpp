@@ -119,8 +119,7 @@ namespace QuantLib {
         for (col=0; col<size; col++) {
             std::copy(eigenVectors_.column_begin(col),
                       eigenVectors_.column_end(col), eigenVector.begin());
-            temp[col] = std::pair<Real, std::vector<Real> >(
-                diagonal_[col], eigenVector);
+            temp[col] = std::make_pair(diagonal_[col], eigenVector);
         }
         std::sort(temp.begin(), temp.end(),
             std::greater<std::pair<Real, std::vector<Real> > >());

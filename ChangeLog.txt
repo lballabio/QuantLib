@@ -1,3 +1,314 @@
+2012-09-04 15:31  Luigi Ballabio
+
+	* [r18332] ql/cashflows/conundrumpricer.cpp,
+	  ql/cashflows/couponpricer.cpp:
+	  
+	  Prevented division by zero in floating-rate coupons.
+	  
+	  This could happen in degenerate cases where the accrual time
+	  is null, which now raise a proper exception.
+	  Another solution might be to turn the calculations around and
+	  calculate the price in terms of the rate, which would remove
+	  the division altogether.
+
+2012-09-04 12:36  Luigi Ballabio
+
+	* [r18331] test-suite/bonds.cpp:
+	  
+	  Removed unused variable.
+
+2012-09-04 12:36  Luigi Ballabio
+
+	* [r18330] LICENSE.TXT:
+	  
+	  Updated copyright years
+
+2012-09-03 15:32  Ferdinando Ametrano
+
+	* [r18329] ql/termstructures/yield/oisratehelper.cpp:
+	  
+	  ooops, removed double withDiscountingTermStructure
+
+2012-09-03 15:25  Ferdinando Ametrano
+
+	* [r18328] ql/termstructures/yield/oisratehelper.cpp,
+	  ql/termstructures/yield/oisratehelper.hpp:
+	  
+	  exposed exogenous discounting for OIS. Thanks to Roland Lichters
+
+2012-09-03 13:53  Luigi Ballabio
+
+	* [r18327] ql/math/matrixutilities/symmetricschurdecomposition.cpp:
+	  
+	  Fix for VC11 build (thanks to Xiangyu Hong).
+	  
+	  And besides, it's a better use of make_pair anyway.
+
+2012-09-03 13:53  Luigi Ballabio
+
+	* [r18326] ql/experimental/math/autocovariance.hpp,
+	  test-suite/cdo.cpp, test-suite/fastfouriertransform.cpp:
+	  
+	  Build fixes for gcc 4.7 in C++11 mode.
+	  
+	  Thanks to Klaus Spanderen and Joao Paulo Magalhaes.
+
+2012-09-03 13:52  Luigi Ballabio
+
+	* [r18325] test-suite/Makefile.am:
+	  
+	  Build fix for MinGW (thanks to Bojan Nikolic).
+	  
+	  External libraries are better added to the LDADD variable instead
+	  of LDFLAGS. Doing so puts them at the end of the command line,
+	  which is less error-prone.
+
+2012-09-03 11:12  Ferdinando Ametrano
+
+	* [r18323] ql/models/marketmodels/models/abcdvol.cpp,
+	  ql/models/marketmodels/models/flatvol.cpp:
+	  
+	  fixed bug for evolution times finer than correlation times. Thanks
+	  to Peter Caspers
+
+2012-09-03 11:05  Ferdinando Ametrano
+
+	* [r18322] ql/models/marketmodels/models/abcdvol.cpp,
+	  ql/models/marketmodels/models/flatvol.cpp:
+	  
+	  improved efficiency and readability
+
+2012-09-03 10:19  Ferdinando Ametrano
+
+	* [r18321] ql/models/marketmodels/models/abcdvol.cpp,
+	  ql/models/marketmodels/models/flatvol.cpp:
+	  
+	  - improved readability
+	  - removed unused vector in flatvol.cpp
+
+2012-09-03 10:17  Ferdinando Ametrano
+
+	* [r18320] ql/models/marketmodels/evolutiondescription.hpp:
+	  
+	  fixed description (thanks to Peter Caspers)
+
+2012-08-31 13:16  Luigi Ballabio
+
+	* [r18319] configure.ac:
+	  
+	  Punctuation fixes.
+
+2012-08-31 13:16  Luigi Ballabio
+
+	* [r18318] configure.ac, ql/userconfig.hpp:
+	  
+	  Negative rates are now enabled by default also on Linux.
+
+2012-08-31 13:16  Luigi Ballabio
+
+	* [r18317] ql/math/solvers1d/brent.hpp, test-suite/solvers.cpp,
+	  test-suite/solvers.hpp:
+	  
+	  Don't discard guess in Brent solver (thanks to Sebastian Poloczek).
+
+2012-08-31 13:15  Luigi Ballabio
+
+	* [r18316] Announce.txt, configure.ac, ql/version.hpp:
+	  
+	  Increased version number to 1.2.1
+
+2012-08-30 13:26  Ferdinando Ametrano
+
+	* [r18315] ql/pricingengines/bond/bondfunctions.cpp,
+	  test-suite/bonds.cpp, test-suite/bonds.hpp:
+	  
+	  fixed bug: atm was wrong if non-coupon cashflows were included.
+	  Unit test added.
+
+2012-08-29 14:03  Ferdinando Ametrano
+
+	* [r18314] ql/cashflows/cashflows.cpp:
+	  
+	  fixed bug: atm was wrong if non-coupon cashflows were included
+
+2012-08-29 13:59  Ferdinando Ametrano
+
+	* [r18313] ql/instruments/bond.cpp:
+	  
+	  
+
+2012-07-31 14:11  Ferdinando Ametrano
+
+	* [r18305] ql/userconfig.hpp, test-suite/piecewiseyieldcurve.cpp:
+	  
+	  defaulted to allow negative rates (define QL_NEGATIVE_RATES) as this
+	  is happening for EUR OIS, CHF and German treasury yields, etc.
+
+2012-07-12 10:29  Luigi Ballabio
+
+	* [r18297] ql/errors.cpp:
+	  
+	  Added implementation of assertion_failed_msg function.
+	  
+	  This is required for linking with recent Boost versions.
+	  Thanks to Piter Dias.
+
+2012-07-05 15:30  Ferdinando Ametrano
+
+	* [r18294] ql/patterns/observable.hpp:
+	  
+	  added unregisterWithAll method
+
+2012-07-04 15:10  Ferdinando Ametrano
+
+	* [r18290] ql/cashflows/cashflows.cpp:
+	  
+	  relaxed constrains
+
+2012-06-26 14:08  Luigi Ballabio
+
+	* [r18276] ql/time/calendars/russia.cpp, ql/time/calendars/russia.hpp:
+	  
+	  Fixed extent of new-year holidays for the Russian calendar.
+	  
+	  Thanks to Kirill Shemyakin.
+
+2012-05-18 15:48  Ferdinando Ametrano
+
+	* [r18264] ql/instruments/bonds/btp.hpp:
+	  
+	  rounded accrued interest as per market convention
+
+2012-05-18 15:46  Ferdinando Ametrano
+
+	* [r18263] ql/instruments/assetswap.cpp, ql/time/schedule.cpp:
+	  
+	  added check
+
+2012-05-15 12:21  Luigi Ballabio
+
+	* [r18262] ql/math/interpolations/bicubicsplineinterpolation.hpp,
+	  test-suite/interpolations.cpp, test-suite/interpolations.hpp:
+	  
+	  Bicubic splines would not update their parameters correctly.
+	  
+	  Thanks to Fabio Ramponi for the fix.
+
+2012-05-14 14:35  Luigi Ballabio
+
+	* [r18261] ql/models/model.hpp:
+	  
+	  Let base class use virtual inheritance from Observer.
+	  
+	  Thanks to Peter Caspers for the heads-up.
+
+2012-05-14 10:16  Luigi Ballabio
+
+	* [r18260] ql/cashflows/overnightindexedcoupon.cpp:
+	  
+	  Prevented out-of-bound access (thanks to Andre Miemiec).
+
+2012-05-04 06:54  Luigi Ballabio
+
+	* [r18259] ql/math/rounding.cpp, test-suite/rounding.cpp:
+	  
+	  Fixed bug in up-rounding (thanks to Simon Shakeshaft).
+	  
+	  When up-rounding a number with no digits after the requested
+	  precision (say, 0.86313 with 5-digits precision) the last
+	  digit of the number would be increased. This is now fixed.
+
+2012-04-27 13:20  Luigi Ballabio
+
+	* [r18258] test-suite/interpolations.cpp:
+	  
+	  Increased tolerance.
+
+2012-04-18 09:04  Luigi Ballabio
+
+	* [r18255] ql/math/optimization/problem.hpp:
+	  
+	  Added warning to class documentation.
+
+2012-04-17 10:26  Luigi Ballabio
+
+	* [r18250] ql/prices.cpp:
+	  
+	  Prevented switch from falling through (thanks to Simon Shakeshaft).
+
+2012-04-17 08:26  Luigi Ballabio
+
+	* [r18249] ql/instruments/bond.hpp, ql/instruments/bonds/cpibond.cpp,
+	  test-suite/Makefile.am, test-suite/inflationcpibond.cpp,
+	  test-suite/inflationcpibond.hpp, test-suite/inflationcpiswap.cpp,
+	  test-suite/quantlibtestsuite.cpp, test-suite/testsuite.dev,
+	  test-suite/testsuite_vc10.vcxproj,
+	  test-suite/testsuite_vc10.vcxproj.filters,
+	  test-suite/testsuite_vc7.vcproj, test-suite/testsuite_vc8.vcproj,
+	  test-suite/testsuite_vc9.vcproj:
+	  
+	  Added notional calculation to CPI bond.
+	  
+	  This enables the user to use the full bond machinery besides
+	  NPV calculation.
+	  
+	  Thanks to Seyfullah Çetin for the heads-up and to Raso Mirko
+	  and Billy Ng for the fix.
+
+2012-03-28 12:47  Luigi Ballabio
+
+	* [r18248] ql/time/schedule.cpp, test-suite/schedule.cpp,
+	  test-suite/schedule.hpp:
+	  
+	  Fixed problem with EOM adjustment in schedule.
+	  
+	  When the end date was not adjusted, the next-to-last date could
+	  end up after the end date due to EOM adjustment. This is now
+	  checked and fixed.
+
+2012-03-14 11:29  Luigi Ballabio
+
+	* [r18242] ql/math/solver1d.hpp:
+	  
+	  Fixed initialization of 1-D solver.
+
+2012-03-12 12:08  Luigi Ballabio
+
+	* [r18241] Docs/pages/config.docs:
+	  
+	  Removed documentation for obsolete flag
+
+2012-03-06 09:38  Luigi Ballabio
+
+	* [r18236] Docs/pages/history.docs:
+	  
+	  Updated release dates
+
+2012-03-05 15:28  Luigi Ballabio
+
+	* [r18233] News.txt:
+	  
+	  Last-minute doc fix
+
+2012-02-22 11:39  Luigi Ballabio
+
+	* [r18221] Contributors.txt, Docs/pages/authors.docs,
+	  Docs/pages/history.docs, News.txt:
+	  
+	  Updated news and contributor list.
+
+2012-02-22 11:39  Luigi Ballabio
+
+	* [r18220] Makefile.am:
+	  
+	  Added RPM spec file to distributed tarball.
+
+2012-02-22 10:35  Luigi Ballabio
+
+	* [r18219] ChangeLog.txt:
+	  
+	  Updated ChangeLog.
+
 2012-02-22 09:14  Luigi Ballabio
 
 	* [r18218] Docs/pages/index.docs, Docs/quantlib.css,

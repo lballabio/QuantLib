@@ -376,9 +376,14 @@ namespace QuantLib {
             }
         }
 
-        // final safety check to remove duplicated last dates, if any
-        // it can happen if EOM is applied to two near dates
-        if (dates_.back() == dates_[dates_.size()-2]) {
+        // Final safety check to remove extra next-to-last date, if
+        // necessary.  It can happen to be equal or later than the end
+        // date due to EOM adjustments (see the Schedule test suite
+        // for an example).
+        if (dates_[dates_.size()-2] >= dates_.back()) {
+            isRegular_[dates_.size()-2] =
+                (dates_[dates_.size()-2] == dates_.back());
+            dates_[dates_.size()-2] = dates_.back();
             dates_.pop_back();
             isRegular_.pop_back();
         }
@@ -389,6 +394,10 @@ namespace QuantLib {
     Schedule Schedule::until(const Date& truncationDate) const {
         Schedule result = *this;
 
+        QL_REQUIRE(truncationDate>result.dates_[0],
+                   "truncation date " << truncationDate <<
+                   " must be later than schedule first date " <<
+                   result.dates_[0]);
         if (truncationDate<result.dates_.back()) {
             // remove later dates
             while (result.dates_.back()>truncationDate) {

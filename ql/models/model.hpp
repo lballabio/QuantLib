@@ -76,7 +76,7 @@ namespace QuantLib {
 
 
     //! Calibrated model class
-    class CalibratedModel : public Observer, public virtual Observable {
+    class CalibratedModel : public virtual Observer, public virtual Observable {
       public:
         CalibratedModel(Size nArguments);
 

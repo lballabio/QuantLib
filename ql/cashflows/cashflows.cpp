@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2005, 2006 StatPro Italia srl
  Copyright (C) 2005 Charles Whitmore
- Copyright (C) 2007, 2008, 2009, 2010, 2011 Ferdinando Ametrano
+ Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012 Ferdinando Ametrano
  Copyright (C) 2008 Toyin Akin
 
  This file is part of QuantLib, a free-software/open-source library
@@ -409,17 +409,22 @@ namespace QuantLib {
                               public Visitor<Coupon> {
           public:
             BPSCalculator(const YieldTermStructure& discountCurve)
-            : discountCurve_(discountCurve), result_(0.0) {}
+            : discountCurve_(discountCurve), bps_(0.0), nonSensNPV_(0.0) {}
             void visit(Coupon& c) {
-                result_ += c.nominal() *
+                Real bps = c.nominal() *
                            c.accrualPeriod() *
                            discountCurve_.discount(c.date());
+                bps_ += bps;
             }
-            void visit(CashFlow&) {}
-            Real result() const { return result_; }
+            void visit(CashFlow& cf) {
+                nonSensNPV_ += cf.amount() * 
+                               discountCurve_.discount(cf.date());
+            }
+            Real bps() const { return bps_; }
+            Real nonSensNPV() const { return nonSensNPV_; }
           private:
             const YieldTermStructure& discountCurve_;
-            Real result_;
+            Real bps_, nonSensNPV_;
         };
 
         const Spread basisPoint_ = 1.0e-4;
@@ -471,7 +476,7 @@ namespace QuantLib {
                                      includeSettlementDateFlows))
                 leg[i]->accept(calc);
         }
-        return basisPoint_*calc.result()/discountCurve.discount(npvDate);
+        return basisPoint_*calc.bps()/discountCurve.discount(npvDate);
     }
 
     void CashFlows::npvbps(const Leg& leg,
@@ -500,7 +505,7 @@ namespace QuantLib {
         }
         DiscountFactor d = discountCurve.discount(npvDate);
         npv /= d;
-        bps = basisPoint_ * calc.result() / d;
+        bps = basisPoint_ * calc.bps() / d;
     }
 
     Rate CashFlows::atmRate(const Leg& leg,
@@ -508,8 +513,7 @@ namespace QuantLib {
                             bool includeSettlementDateFlows,
                             Date settlementDate,
                             Date npvDate,
-                            Real npv) {
-        QL_REQUIRE(!leg.empty(), "empty leg");
+                            Real targetNpv) {
 
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
@@ -517,17 +521,32 @@ namespace QuantLib {
         if (npvDate == Date())
             npvDate = settlementDate;
 
-        Real bps = 0.0;
-        if (npv==Null<Real>())
-            CashFlows::npvbps(leg, discountCurve,
-                              includeSettlementDateFlows,
-                              settlementDate, npvDate,
-                              npv, bps);
-        else
-            bps = CashFlows::bps(leg, discountCurve,
-                                 includeSettlementDateFlows,
-                                 settlementDate, npvDate);
-        return basisPoint_*npv/bps;
+        Real npv = 0.0;
+        BPSCalculator calc(discountCurve);
+        for (Size i=0; i<leg.size(); ++i) {
+            CashFlow& cf = *leg[i];
+            if (!cf.hasOccurred(settlementDate,
+                                includeSettlementDateFlows)) {
+                npv += cf.amount() *
+                       discountCurve.discount(cf.date());
+                cf.accept(calc);
+            }
+        }
+
+        if (targetNpv==Null<Real>())
+            targetNpv = npv - calc.nonSensNPV();
+        else {
+            targetNpv *= discountCurve.discount(npvDate);
+            targetNpv -= calc.nonSensNPV();
+        }
+
+        if (targetNpv==0.0)
+            return 0.0;
+
+        Real bps = calc.bps();
+        QL_REQUIRE(bps!=0.0, "null bps: impossible atm rate");
+
+        return targetNpv/bps;
     }
 
     // IRR utility functions
@@ -664,7 +683,6 @@ namespace QuantLib {
               settlementDate_(settlementDate),
               npvDate_(npvDate) {
 
-                QL_REQUIRE(!leg.empty(), "empty leg");
 
             if (settlementDate == Date())
                 settlementDate = Settings::instance().evaluationDate();
@@ -1090,7 +1108,6 @@ namespace QuantLib {
               includeSettlementDateFlows_(includeSettlementDateFlows),
               settlementDate_(settlementDate),
               npvDate_(npvDate) {
-                QL_REQUIRE(!leg.empty(), "empty leg");
 
                 if (settlementDate == Date())
                     settlementDate = Settings::instance().evaluationDate();
@@ -1164,7 +1181,6 @@ namespace QuantLib {
                               Real accuracy,
                               Size maxIterations,
                               Rate guess) {
-        QL_REQUIRE(!leg.empty(), "empty leg");
 
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();

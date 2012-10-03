@@ -46,11 +46,22 @@ namespace QuantLib {
 
             Real min1, min2;
             Real froot, p, q, r, s, xAcc1, xMid;
-            // dummy assignements to avoid compiler warning
-            Real d = 0.0, e = 0.0;
 
-            root_ = xMax_;
-            froot = fxMax_;
+            // we want to start with root_ (which equals the guess) on
+            // one side of the bracket and both xMin_ and xMax_ on the
+            // other.
+            froot = f(root_);
+            ++evaluationNumber_;
+            if (froot * fxMin_ < 0) {
+                xMax_ = xMin_;
+                fxMax_ = fxMin_;
+            } else {
+                xMin_ = xMax_;
+                fxMin_ = fxMax_;
+            }
+            Real d = root_- xMax_;
+            Real e = d;
+
             while (evaluationNumber_<=maxEvaluations_) {
                 if ((froot > 0.0 && fxMax_ > 0.0) ||
                     (froot < 0.0 && fxMax_ < 0.0)) {

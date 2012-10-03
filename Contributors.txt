@@ -60,6 +60,7 @@ Florent Grenier
 Cavit Hafizoglu
 Michael Heckl
 Laurent Hoffmann
+Xiangyu Hong
 Benoît Houzelle
 Frank Hövermann
 Charles Chongseok Hyun
@@ -81,14 +82,18 @@ Samuel Lerouge
 Gang Liang
 Robert Lopez
 André Louw
+Joao Paulo Magalhaes
 John Maiden
 Katiuscia Manzoni
 Francesca Mariani
 Slava Mazur
 Enrico Michelotti
+Andre Miemiec
+Raso Mirko
 Radu Mondescu
 Bart Mosley
 Tiziano Müller
+Billy Ng
 Bojan Nikolic
 Jean Nkeng
 Adrian O'Neill
@@ -101,6 +106,7 @@ Francesco Perissin
 Robert Philipp
 Adrien Pinatton
 Gianni Piolanti
+Sebastian Poloczek
 Mario Pucci
 J. Erik Radmall
 Fabio Ramponi
@@ -115,6 +121,8 @@ Tamas Sashalmi
 Peter Schmitteckert
 Ralph Schreyer
 David Schwartz
+Simon Shakeshaft
+Kirill Shemyakin
 Eugene Shevkoplyas
 Enrico Sirola
 Leon Sit

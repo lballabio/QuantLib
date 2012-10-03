@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2009 Roland Lichters
- Copyright (C) 2009 Ferdinando Ametrano
+ Copyright (C) 2009, 2012 Roland Lichters
+ Copyright (C) 2009. 2012 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -34,11 +34,13 @@ namespace QuantLib {
                     Natural settlementDays,
                     const Period& tenor, // swap maturity
                     const Handle<Quote>& fixedRate,
-                    const boost::shared_ptr<OvernightIndex>& overnightIndex)
+                    const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                    const Handle<YieldTermStructure>& discount)
     : RelativeDateRateHelper(fixedRate),
       settlementDays_(settlementDays), tenor_(tenor),
-      overnightIndex_(overnightIndex) {
+      overnightIndex_(overnightIndex), discountHandle_(discount) {
         registerWith(overnightIndex_);
+        registerWith(discountHandle_);
         initializeDates();
     }
 
@@ -51,9 +53,11 @@ namespace QuantLib {
         shared_ptr<OvernightIndex> clonedOvernightIndex =
             boost::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
 
+        // input discount curve Handle might be empty now but it could
+        //    be assigned a curve later; use a RelinkableHandle here
         swap_ = MakeOIS(tenor_, clonedOvernightIndex, 0.0)
-            .withSettlementDays(settlementDays_)
-            .withDiscountingTermStructure(termStructureHandle_);
+            .withDiscountingTermStructure(discountRelinkableHandle_)
+            .withSettlementDays(settlementDays_);
 
         earliestDate_ = swap_->startDate();
         latestDate_ = swap_->maturityDate();
@@ -62,9 +66,16 @@ namespace QuantLib {
     void OISRateHelper::setTermStructure(YieldTermStructure* t) {
         // do not set the relinkable handle as an observer -
         // force recalculation when needed
-        termStructureHandle_.linkTo(
-                         shared_ptr<YieldTermStructure>(t,no_deletion),
-                         false);
+        bool observer = false;
+
+        shared_ptr<YieldTermStructure> temp(t, no_deletion);
+        termStructureHandle_.linkTo(temp, observer);
+
+        if (discountHandle_.empty())
+            discountRelinkableHandle_.linkTo(temp, observer);
+        else
+            discountRelinkableHandle_.linkTo(*discountHandle_, observer);
+
         RelativeDateRateHelper::setTermStructure(t);
     }
 
@@ -88,10 +99,12 @@ namespace QuantLib {
                     const Date& startDate,
                     const Date& endDate,
                     const Handle<Quote>& fixedRate,
-                    const boost::shared_ptr<OvernightIndex>& overnightIndex)
-    : RateHelper(fixedRate) {
+                    const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                    const Handle<YieldTermStructure>& discount)
+    : RateHelper(fixedRate), discountHandle_(discount) {
 
         registerWith(overnightIndex);
+        registerWith(discountHandle_);
 
         // dummy OvernightIndex with curve/swap arguments
         // review here
@@ -100,10 +113,12 @@ namespace QuantLib {
         shared_ptr<OvernightIndex> clonedOvernightIndex =
             boost::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
 
-       swap_ = MakeOIS(Period(), clonedOvernightIndex, 0.0)
-           .withEffectiveDate(startDate)
-           .withTerminationDate(endDate)
-           .withDiscountingTermStructure(termStructureHandle_);
+        // input discount curve Handle might be empty now but it could
+        //    be assigned a curve later; use a RelinkableHandle here
+        swap_ = MakeOIS(Period(), clonedOvernightIndex, 0.0)
+            .withDiscountingTermStructure(discountRelinkableHandle_)
+            .withEffectiveDate(startDate)
+            .withTerminationDate(endDate);
 
         earliestDate_ = swap_->startDate();
         latestDate_ = swap_->maturityDate();
@@ -112,9 +127,16 @@ namespace QuantLib {
     void DatedOISRateHelper::setTermStructure(YieldTermStructure* t) {
         // do not set the relinkable handle as an observer -
         // force recalculation when needed
-        termStructureHandle_.linkTo(
-                         shared_ptr<YieldTermStructure>(t,no_deletion),
-                         false);
+        bool observer = false;
+
+        shared_ptr<YieldTermStructure> temp(t, no_deletion);
+        termStructureHandle_.linkTo(temp, observer);
+
+        if (discountHandle_.empty())
+            discountRelinkableHandle_.linkTo(temp, observer);
+        else
+            discountRelinkableHandle_.linkTo(*discountHandle_, observer);
+
         RateHelper::setTermStructure(t);
     }
 

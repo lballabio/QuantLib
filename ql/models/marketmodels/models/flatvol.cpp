@@ -26,9 +26,14 @@
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/models/marketmodels/correlations/expcorrelations.hpp>
 
+using boost::shared_ptr;
+using std::vector;
+
 namespace QuantLib {
 
-    Real flatVolCovariance(Time t1, Time t2, Time T, Time S, Volatility v1, Volatility v2) {
+    Real flatVolCovariance(Time t1,Time t2,
+                           Time T, Time S,
+                           Volatility v1, Volatility v2) {
         QL_REQUIRE(t1<=t2,
                    "integrations bounds (" << t1 <<
                    "," << t2 << ") are in reverse order");
@@ -42,12 +47,12 @@ namespace QuantLib {
     }
 
     FlatVol::FlatVol(
-            const std::vector<Volatility>& volatilities,
-            const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
+            const vector<Volatility>& vols,
+            const shared_ptr<PiecewiseConstantCorrelation>& corr,
             const EvolutionDescription& evolution,
             Size numberOfFactors,
-            const std::vector<Rate>& initialRates,
-            const std::vector<Spread>& displacements)
+            const vector<Rate>& initialRates,
+            const vector<Spread>& displacements)
     : numberOfFactors_(numberOfFactors),
       numberOfRates_(initialRates.size()),
       numberOfSteps_(evolution.evolutionTimes().size()),
@@ -56,16 +61,16 @@ namespace QuantLib {
       evolution_(evolution),
       pseudoRoots_(numberOfSteps_, Matrix(numberOfRates_, numberOfFactors_))
     {
-        const std::vector<Time>& rateTimes = evolution.rateTimes();
+        const vector<Time>& rateTimes = evolution.rateTimes();
         QL_REQUIRE(numberOfRates_==rateTimes.size()-1,
                    "mismatch between number of rates (" << numberOfRates_ <<
                    ") and rate times");
         QL_REQUIRE(numberOfRates_==displacements.size(),
                    "mismatch between number of rates (" << numberOfRates_ <<
                    ") and displacements (" << displacements.size() << ")");
-        QL_REQUIRE(numberOfRates_==volatilities.size(),
+        QL_REQUIRE(numberOfRates_==vols.size(),
                    "mismatch between number of rates (" << numberOfRates_ <<
-                   ") and volatilities (" << volatilities.size() << ")");
+                   ") and vols (" << vols.size() << ")");
         QL_REQUIRE(numberOfRates_<=numberOfFactors_*numberOfSteps_,
                    "number of rates (" << numberOfRates_ <<
                    ") greater than number of factors (" << numberOfFactors_
@@ -78,48 +83,39 @@ namespace QuantLib {
                    "number of factors (" << numberOfFactors <<
                    ") must be greater than zero");
 
-        std::vector<Volatility> stdDev(numberOfRates_);
-
-        Real covar;
-        Time effStartTime, effStopTime;
-        Real correlation;
-        const std::vector<Time>& corrTimes = corr->times();
-        const std::vector<Time>& evolTimes = evolution.evolutionTimes();
+        Time effStopTime = 0.0;
+        const vector<Time>& corrTimes = corr->times();
+        const vector<Time>& evolTimes = evolution.evolutionTimes();
+        Matrix covariance(numberOfRates_, numberOfRates_);
         for (Size k=0, kk=0; k<numberOfSteps_; ++k) {
             // one covariance per evolution step
-            Matrix covariance(numberOfRates_, numberOfRates_, 0.0);
+            std::fill(covariance.begin(), covariance.end(), 0.0);
 
             // there might be more than one correlation matrix
             // in a single evolution step
-            Matrix correlations;
-
             for (; corrTimes[kk]<evolTimes[k]; ++kk) {
-                effStartTime = kk==0 ? 0.0 : corrTimes[kk-1];
+                Time effStartTime = effStopTime;
                 effStopTime = corrTimes[kk];
-                correlations = corr->correlation(kk);
+                const Matrix& corrMatrix = corr->correlation(kk);
                 for (Size i=0; i<numberOfRates_; ++i) {
                     for (Size j=i; j<numberOfRates_; ++j) {
-                        covar = flatVolCovariance(effStartTime,
-                                                  effStopTime,
-                                                  rateTimes[i], rateTimes[j],
-                                                  volatilities[i], volatilities[j]);
-                        correlation = correlations[i][j];
-                        covariance[i][j] += covar * correlations[i][j];
+                        Real cov = flatVolCovariance(effStartTime, effStopTime,
+                                                     rateTimes[i], rateTimes[j],
+                                                     vols[i], vols[j]);
+                        covariance[i][j] += cov * corrMatrix[i][j];
                      }
                 }
             }
             // last part in the evolution step
-            effStartTime = kk==0 ? 0.0 : corrTimes[kk-1];
+            Time effStartTime = effStopTime;
             effStopTime = evolTimes[k];
-            correlations = corr->correlation(kk);
+            const Matrix& corrMatrix = corr->correlation(kk);
             for (Size i=0; i<numberOfRates_; ++i) {
                 for (Size j=i; j<numberOfRates_; ++j) {
-                    covar = flatVolCovariance(effStartTime,
-                                              effStopTime,
-                                              rateTimes[i], rateTimes[j],
-                                              volatilities[i], volatilities[j]);
-                    correlation = correlations[i][j];
-                    covariance[i][j] += covar * correlation;
+                    Real cov = flatVolCovariance(effStartTime, effStopTime,
+                                                 rateTimes[i], rateTimes[j],
+                                                 vols[i], vols[j]);
+                    covariance[i][j] += cov * corrMatrix[i][j];
                  }
             }
             // no more use for the kk-th correlation matrix
@@ -154,8 +150,8 @@ namespace QuantLib {
     FlatVolFactory::FlatVolFactory(
                                 Real longTermCorrelation,
                                 Real beta,
-                                const std::vector<Time>& times,
-                                const std::vector<Volatility>& vols,
+                                const vector<Time>& times,
+                                const vector<Volatility>& vols,
                                 const Handle<YieldTermStructure>& yieldCurve,
                                 Spread displacement)
     : longTermCorrelation_(longTermCorrelation), beta_(beta),
@@ -167,19 +163,19 @@ namespace QuantLib {
         registerWith(yieldCurve_);
     }
 
-    boost::shared_ptr<MarketModel>
+    shared_ptr<MarketModel>
     FlatVolFactory::create(const EvolutionDescription& evolution,
                                   Size numberOfFactors) const {
-        const std::vector<Time>& rateTimes = evolution.rateTimes();
+        const vector<Time>& rateTimes = evolution.rateTimes();
         Size numberOfRates = rateTimes.size()-1;
 
-        std::vector<Rate> initialRates(numberOfRates);
+        vector<Rate> initialRates(numberOfRates);
         for (Size i=0; i<numberOfRates; ++i)
             initialRates[i] = yieldCurve_->forwardRate(rateTimes[i],
                                                        rateTimes[i+1],
                                                        Simple);
 
-        std::vector<Volatility> displacedVolatilities(numberOfRates);
+        vector<Volatility> displacedVolatilities(numberOfRates);
         for (Size i=0; i<numberOfRates; ++i) {
             Volatility vol = // to be changes
                 volatility_(rateTimes[i]);
@@ -187,15 +183,15 @@ namespace QuantLib {
                 initialRates[i]*vol/(initialRates[i]+displacement_);
         }
 
-        std::vector<Spread> displacements(numberOfRates, displacement_);
+        vector<Spread> displacements(numberOfRates, displacement_);
 
         Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
                                                       longTermCorrelation_,
                                                       beta_);
-        boost::shared_ptr<PiecewiseConstantCorrelation> corr(new
+        shared_ptr<PiecewiseConstantCorrelation> corr(new
             TimeHomogeneousForwardCorrelation(correlations,
                                               rateTimes));
-        return boost::shared_ptr<MarketModel>(new
+        return shared_ptr<MarketModel>(new
             FlatVol(displacedVolatilities,
                            corr,
                            evolution,

@@ -184,7 +184,7 @@ AC_ARG_ENABLE([indexed-coupons],
               AC_HELP_STRING([--enable-indexed-coupons],
                              [If enabled, indexed coupons (see the
                               documentation) are used in floating legs.
-                              If disabled (the default,) par coupons
+                              If disabled (the default), par coupons
                               are used.]),
               [ql_indexed_coupon=$enableval],
               [ql_indexed_coupon=no])
@@ -198,16 +198,15 @@ AC_MSG_RESULT([$ql_indexed_coupon])
 AC_MSG_CHECKING([whether to enable negative rates])
 AC_ARG_ENABLE([negative-rates],
               AC_HELP_STRING([--enable-negative-rates],
-                             [If enabled, negative yield rates are allowed
-                              in a few places where they are currently
-                              forbidden. It is still not clear whether
-                              this is safe.]),
+                             [If enabled (the default), negative yield
+                              rates are allowed.  If disabled, some
+                              features (notably, curve bootstrapping)
+                              will throw when negative rates are found.]),
               [ql_negative_rates=$enableval],
-              [ql_negative_rates=no])
+              [ql_negative_rates=yes])
 if test "$ql_negative_rates" = "yes" ; then
    AC_DEFINE([QL_NEGATIVE_RATES],[1],
-             [Define this if negative yield rates should be allowed.
-              This might not be safe.])
+             [Define this if negative yield rates should be allowed.])
 fi
 AC_MSG_RESULT([$ql_negative_rates])
 
@@ -229,7 +228,7 @@ AC_MSG_RESULT([$ql_belt_and_braces])
 AC_MSG_CHECKING([whether to enable deprecated code])
 AC_ARG_ENABLE([deprecated-code],
               AC_HELP_STRING([--enable-deprecated-code],
-                             [If enabled (the default,) deprecated code
+                             [If enabled (the default), deprecated code
                               will be included in the library.]),
               [ql_use_deprecated_code=$enableval],
               [ql_use_deprecated_code=yes])

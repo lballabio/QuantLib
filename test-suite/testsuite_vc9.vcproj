@@ -1060,6 +1060,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\inflationcpibond.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\inflationcpicapfloor.cpp"
 				>
 			</File>
@@ -1522,6 +1526,10 @@
 			</File>
 			<File
 				RelativePath=".\inflationcapflooredcoupon.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\inflationcpibond.hpp"
 				>
 			</File>
 			<File

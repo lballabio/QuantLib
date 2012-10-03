@@ -88,6 +88,15 @@ namespace boost {
                                         std::string(expr)));
     }
 
+    void assertion_failed_msg(char const * expr, char const * msg,
+                              char const * function, char const * file,
+                              long line) {
+        throw std::runtime_error(format(file, line, function,
+                                        "Boost assertion failed: " +
+                                        std::string(expr) + ": " +
+                                        std::string(msg)));
+    }
+
 }
 
 namespace QuantLib {

@@ -24,19 +24,21 @@
 #include <ql/termstructures/volatility/abcd.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 
+using boost::shared_ptr;
+using std::vector;
+
 namespace QuantLib {
 
-    AbcdVol::AbcdVol(
-            Real a,
-            Real b,
-            Real c,
-            Real d,
-            const std::vector<Real>& ks,
-            const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
-            const EvolutionDescription& evolution,
-            const Size numberOfFactors,
-            const std::vector<Rate>& initialRates,
-            const std::vector<Spread>& displacements)
+    AbcdVol::AbcdVol(Real a,
+                     Real b,
+                     Real c,
+                     Real d,
+                     const vector<Real>& ks,
+                     const shared_ptr<PiecewiseConstantCorrelation>& corr,
+                     const EvolutionDescription& evolution,
+                     const Size numberOfFactors,
+                     const vector<Rate>& initialRates,
+                     const vector<Spread>& displacements)
     : numberOfFactors_(numberOfFactors),
       numberOfRates_(initialRates.size()),
       numberOfSteps_(evolution.evolutionTimes().size()),
@@ -45,7 +47,7 @@ namespace QuantLib {
       evolution_(evolution),
       pseudoRoots_(numberOfSteps_, Matrix(numberOfRates_, numberOfFactors_))
     {
-        const std::vector<Time>& rateTimes = evolution.rateTimes();
+        const vector<Time>& rateTimes = evolution.rateTimes();
         QL_REQUIRE(numberOfRates_==rateTimes.size()-1,
                    "mismatch between number of rates (" << numberOfRates_ <<
                    ") and rate times");
@@ -68,46 +70,41 @@ namespace QuantLib {
                    ") must be greater than zero");
 
         AbcdFunction abcd(a, b, c, d);
-        Real covar;
-        Time effStartTime, effStopTime;
-        Real correlation;
-        const std::vector<Time>& corrTimes = corr->times();
-        const std::vector<Time>& evolTimes = evolution.evolutionTimes();
+        Time effStopTime = 0.0;
+        const vector<Time>& corrTimes = corr->times();
+        const vector<Time>& evolTimes = evolution.evolutionTimes();
+        Matrix covariance(numberOfRates_, numberOfRates_);
         for (Size k=0, kk=0; k<numberOfSteps_; ++k) {
             // one covariance per evolution step
-            Matrix covariance(numberOfRates_, numberOfRates_, 0.0);
+            std::fill(covariance.begin(), covariance.end(), 0.0);
 
             // there might be more than one correlation matrix
-            // in a single evolution step
-            Matrix correlations;
-
+            // in a single evolution step,
             for (; corrTimes[kk]<evolTimes[k]; ++kk) {
-                effStartTime = kk==0 ? 0.0 : corrTimes[kk-1];
+                Time effStartTime = effStopTime;
                 effStopTime = corrTimes[kk];
-                correlations = corr->correlation(kk);
+                const Matrix& corrMatrix = corr->correlation(kk);
                 for (Size i=0; i<numberOfRates_; ++i) {
                     for (Size j=i; j<numberOfRates_; ++j) {
-                        covar = ks[i] * ks[j] * abcd.covariance(effStartTime,
+                        Real cov = ks[i]*ks[j]* abcd.covariance(effStartTime,
                                                                 effStopTime,
                                                                 rateTimes[i],
                                                                 rateTimes[j]);
-                        correlation = correlations[i][j];
-                        covariance[i][j] += covar * correlation;
+                        covariance[i][j] += cov * corrMatrix[i][j];
                     }
                 }
             }
             // last part in the evolution step
-            effStartTime = kk==0 ? 0.0 : corrTimes[kk-1];
+            Time effStartTime = effStopTime;
             effStopTime = evolTimes[k];
-            correlations = corr->correlation(kk);
+            const Matrix& corrMatrix = corr->correlation(kk);
             for (Size i=0; i<numberOfRates_; ++i) {
                 for (Size j=i; j<numberOfRates_; ++j) {
-                    covar = ks[i] * ks[j] * abcd.covariance(effStartTime,
+                    Real cov = ks[i]*ks[j]* abcd.covariance(effStartTime,
                                                             effStopTime,
                                                             rateTimes[i],
                                                             rateTimes[j]);
-                    correlation = correlations[i][j];
-                    covariance[i][j] += covar * correlation;
+                    covariance[i][j] += cov * corrMatrix[i][j];
                 }
             }
             // no more use for the kk-th correlation matrix

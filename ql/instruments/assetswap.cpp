@@ -61,6 +61,10 @@ namespace QuantLib {
                    "deal maturity " << dealMaturity <<
                    " cannot be later than (adjusted) bond maturity " <<
                    tempSch.dates().back());
+        QL_REQUIRE(dealMaturity > tempSch.dates()[0],
+                   "deal maturity " << dealMaturity <<
+                   " must be later than swap start date " <<
+                   tempSch.dates()[0]);
 
         // the following might become an input parameter
         BusinessDayConvention paymentAdjustment = Following;

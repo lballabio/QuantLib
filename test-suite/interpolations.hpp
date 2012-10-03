@@ -46,6 +46,7 @@ class InterpolationTest {
     static void testKernelInterpolation();
     static void testKernelInterpolation2D();
     static void testBicubicDerivatives();
+    static void testBicubicUpdate();
     static void testRichardsonExtrapolation();
 
     static boost::unit_test_framework::test_suite* suite();

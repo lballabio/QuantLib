@@ -32,7 +32,13 @@
 namespace QuantLib {
 
     class Constraint;
+
     //! Constrained optimization problem
+    /*! \warning The passed CostFunction and Constraint instances are
+                 stored by reference.  The user of this class must
+                 make sure that they are not destroyed before the
+                 Problem instance.
+    */
     class Problem {
       public:
         //! default constructor

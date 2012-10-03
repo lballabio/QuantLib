@@ -52,6 +52,7 @@ QL_TESTS = \
 	inflation.hpp inflation.cpp \
 	inflationcapfloor.hpp inflationcapfloor.cpp \
 	inflationcapflooredcoupon.hpp inflationcapflooredcoupon.cpp \
+    inflationcpibond.hpp inflationcpibond.cpp \
     inflationcpicapfloor.hpp inflationcpicapfloor.cpp \
 	inflationcpiswap.hpp inflationcpiswap.cpp \
 	inflationvolatility.hpp inflationvolatility.cpp \
@@ -179,12 +180,12 @@ noinst_PROGRAMS = quantlib-benchmark
 endif
 
 quantlib_test_suite_SOURCES = ${QL_TESTS}
-quantlib_test_suite_LDADD = libUnitMain.la ${top_builddir}/ql/libQuantLib.la
-quantlib_test_suite_LDFLAGS = -l${BOOST_UNIT_TEST_LIB}
+quantlib_test_suite_LDADD = libUnitMain.la ${top_builddir}/ql/libQuantLib.la \
+                            -l${BOOST_UNIT_TEST_LIB}
 
 quantlib_benchmark_SOURCES = ${QL_BENCHMARKS}
-quantlib_benchmark_LDADD = libUnitMain.la ${top_builddir}/ql/libQuantLib.la
-quantlib_benchmark_LDFLAGS = -l${BOOST_UNIT_TEST_LIB}
+quantlib_benchmark_LDADD = libUnitMain.la ${top_builddir}/ql/libQuantLib.la \
+                           -l${BOOST_UNIT_TEST_LIB}
 
 TESTS = quantlib-test-suite$(EXEEXT)
 TESTS_ENVIRONMENT = BOOST_TEST_LOG_LEVEL=message

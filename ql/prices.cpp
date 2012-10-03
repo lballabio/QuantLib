@@ -81,12 +81,16 @@ namespace QuantLib {
         switch(t) {
           case Open:
             open_ = value;
+            break;
           case Close:
             close_ = value;
+            break;
           case High:
             high_ = value;
+            break;
           case Low:
             low_ = value;
+            break;
           default:
             QL_FAIL("Unknown price type");
         }
