@@ -431,6 +431,7 @@
     <ClCompile Include="tqreigendecomposition.cpp" />
     <ClCompile Include="tracing.cpp" />
     <ClCompile Include="transformedgrid.cpp" />
+    <ClCompile Include="twoassetbarrieroption.cpp" />
     <ClCompile Include="utilities.cpp" />
     <ClCompile Include="variancegamma.cpp" />
     <ClCompile Include="varianceoption.cpp" />
@@ -551,6 +552,7 @@
     <ClInclude Include="tqreigendecomposition.hpp" />
     <ClInclude Include="tracing.hpp" />
     <ClInclude Include="transformedgrid.hpp" />
+    <ClInclude Include="twoassetbarrieroption.hpp" />
     <ClInclude Include="utilities.hpp" />
     <ClInclude Include="variancegamma.hpp" />
     <ClInclude Include="varianceoption.hpp" />

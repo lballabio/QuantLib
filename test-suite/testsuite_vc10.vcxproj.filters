@@ -326,6 +326,9 @@
     <ClCompile Include="transformedgrid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="twoassetbarrieroption.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="utilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -678,6 +681,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="transformedgrid.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="twoassetbarrieroption.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="utilities.hpp">

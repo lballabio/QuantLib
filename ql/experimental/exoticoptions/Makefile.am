@@ -7,6 +7,7 @@ this_include_HEADERS = \
     analyticamericanmargrabeengine.hpp \
     analyticeuropeanmargrabeengine.hpp \
     analyticsimplechooserengine.hpp \
+    analytictwoassetbarrierengine.hpp \
     analyticwriterextensibleoptionengine.hpp \
     continuousarithmeticasianlevyengine.hpp \
     everestoption.hpp \
@@ -19,12 +20,14 @@ this_include_HEADERS = \
     pagodaoption.hpp \
     simplechooseroption.hpp \
     spreadoption.hpp \
+    twoassetbarrieroption.hpp \
     writerextensibleoption.hpp
 
 libExoticOptions_la_SOURCES = \
     analyticamericanmargrabeengine.cpp \
     analyticeuropeanmargrabeengine.cpp \
     analyticsimplechooserengine.cpp \
+    analytictwoassetbarrierengine.cpp \
     analyticwriterextensibleoptionengine.cpp \
     continuousarithmeticasianlevyengine.cpp \
     everestoption.cpp \
@@ -36,6 +39,7 @@ libExoticOptions_la_SOURCES = \
     mcpagodaengine.cpp \
     pagodaoption.cpp \
     simplechooseroption.cpp \
+    twoassetbarrieroption.cpp \
     writerextensibleoption.cpp
 
 noinst_LTLIBRARIES = libExoticOptions.la

@@ -150,6 +150,7 @@
 #include "tqreigendecomposition.hpp"
 #include "tracing.hpp"
 #include "transformedgrid.hpp"
+#include "twoassetbarrieroption.hpp"
 #include "variancegamma.hpp"
 #include "varianceoption.hpp"
 #include "varianceswaps.hpp"
@@ -354,6 +355,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(TqrEigenDecompositionTest::suite());
     test->add(TracingTest::suite());
     test->add(TransformedGridTest::suite());
+    test->add(TwoAssetBarrierOptionTest::suite());
     test->add(VarianceGammaTest::suite());
     test->add(VarianceOptionTest::suite());
     test->add(VarianceSwapTest::suite());

@@ -111,6 +111,7 @@ QL_TESTS = \
 	transformedgrid.hpp transformedgrid.cpp \
 	tqreigendecomposition.hpp tqreigendecomposition.cpp \
 	tracing.hpp tracing.cpp \
+	twoassetbarrieroption.hpp twoassetbarrieroption.cpp \
 	utilities.hpp utilities.cpp \
 	variancegamma.hpp variancegamma.cpp \
 	varianceoption.hpp varianceoption.cpp \

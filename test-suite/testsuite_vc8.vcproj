@@ -875,6 +875,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\twoassetbarrieroption.cpp"
+				>
+			</File>
+			<File
 				RelativePath="utilities.cpp"
 				>
 			</File>
@@ -1345,6 +1349,10 @@
 			</File>
 			<File
 				RelativePath=".\transformedgrid.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\twoassetbarrieroption.hpp"
 				>
 			</File>
 			<File

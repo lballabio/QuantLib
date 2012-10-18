@@ -1058,6 +1058,12 @@
 					RelativePath=".\ql\experimental\exoticoptions\analyticsimplechooserengine.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\experimental\exoticoptions\analytictwoassetbarrierengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\analytictwoassetbarrierengine.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\experimental\exoticoptions\analyticwriterextensibleoptionengine.cpp">
 				</File>
 				<File
@@ -1125,6 +1131,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\exoticoptions\spreadoption.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\twoassetbarrieroption.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\twoassetbarrieroption.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\experimental\exoticoptions\writerextensibleoption.cpp">
