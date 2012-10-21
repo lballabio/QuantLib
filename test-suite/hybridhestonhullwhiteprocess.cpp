@@ -1419,6 +1419,7 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
 }
 
 void HybridHestonHullWhiteProcessTest::testH1HWPricingEngine() {
+
     SavedSettings backup;
 
     /*
@@ -1461,11 +1462,11 @@ void HybridHestonHullWhiteProcessTest::testH1HWPricingEngine() {
     const boost::shared_ptr<HullWhite> hullWhiteModel(
         new HullWhite(Handle<YieldTermStructure>(rTS), kappa_r, sigma_r));
 
-    const Real tol = 0.00001;
+    const Real tol = 0.0001;
     const Real strikes[] = {40, 80, 100, 120, 180 };
     const Real expected[LENGTH(sigma_v)][LENGTH(strikes)]
-        = { { 0.267521, 0.235730, 0.228209, 0.223462, 0.217844 },
-            { 0.263605, 0.211616, 0.199911, 0.193473, 0.190017 } };
+        = { { 0.267503, 0.235742, 0.228223, 0.223461, 0.217855 },
+            { 0.263626, 0.211625, 0.199907, 0.193502, 0.190025 } };
 
     for (Size j=0; j < LENGTH(sigma_v); ++j) {
         const boost::shared_ptr<HestonProcess> hestonProcess(
@@ -1482,7 +1483,7 @@ void HybridHestonHullWhiteProcessTest::testH1HWPricingEngine() {
 
             const boost::shared_ptr<PricingEngine> analyticH1HWEngine(
                 new AnalyticH1HWEngine(hestonModel, hullWhiteModel,
-                                       rho_sr, 192u));
+                                       rho_sr, 144));
             option.setPricingEngine(analyticH1HWEngine);
             const Real impliedH1HW
                 = option.impliedVolatility(option.NPV(), bsProcess);

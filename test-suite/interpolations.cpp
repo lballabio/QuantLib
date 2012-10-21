@@ -1676,9 +1676,8 @@ void InterpolationTest::testRichardsonExtrapolation() {
     }
 
     expected = 2.721376;
-
     const Real scalingFactor2 = 4.0;
-    calculated = extrap(scalingFactor, scalingFactor2);
+    calculated = extrap(scalingFactor2, scalingFactor);
 
     if (std::fabs(expected-calculated) > tol) {
         BOOST_ERROR("failed to reproduce Richardson extrapolation");
