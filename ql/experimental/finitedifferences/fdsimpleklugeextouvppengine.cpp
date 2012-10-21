@@ -41,7 +41,6 @@
 #include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmexpextouinnervaluecalculator.hpp>
 
-#include <boost/assign/list_of.hpp>
 #include <list>
 
 namespace QuantLib {
