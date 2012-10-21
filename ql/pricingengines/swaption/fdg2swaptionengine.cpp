@@ -51,13 +51,9 @@ namespace QuantLib {
     }
 
     void FdG2SwaptionEngine::calculate() const {
-        const Handle<YieldTermStructure> ts = model_->termStructure();
 
-        // 1. Layout
-        std::vector<Size> dims;
-        dims.push_back(xGrid_); dims.push_back(yGrid_);
-        const boost::shared_ptr<FdmLinearOpLayout> layout(
-            new FdmLinearOpLayout(dims));
+        // 1. Term structure
+        const Handle<YieldTermStructure> ts = model_->termStructure();
 
         // 2. Mesher
         const DayCounter dc = ts->dayCounter();
@@ -77,11 +73,8 @@ namespace QuantLib {
         const boost::shared_ptr<Fdm1dMesher> yMesher(
             new FdmSimpleProcess1dMesher(yGrid_,process2,maturity,1,invEps_));
 
-        std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
-        meshers.push_back(xMesher);
-        meshers.push_back(yMesher);
         const boost::shared_ptr<FdmMesher> mesher(
-            new FdmMesherComposite(layout, meshers));
+            new FdmMesherComposite(xMesher, yMesher));
 
         // 3. Inner Value Calculator
         const std::vector<Date>& exerciseDates = arguments_.exercise->dates();

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2011, 2012 Klaus Spanderen
+ Copyright (C) 2012 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,11 +18,11 @@
 */
 
 /*! \file fdmvppstepcondition.hpp
-    \brief VPP step condition for FD models
+    \brief VPP incl. start limit step condition for FD models
 */
 
-#ifndef quantlib_fdm_vpp_step_condition_hpp
-#define quantlib_fdm_vpp_step_condition_hpp
+#ifndef quantlib_fdm_start_limit_step_condition_hpp
+#define quantlib_fdm_start_limit_step_condition_hpp
 
 #include <ql/methods/finitedifferences/stepcondition.hpp>
 
@@ -35,54 +35,44 @@ namespace QuantLib {
     class FdmLinearOpIterator;
     class FdmInnerValueCalculator;
 
-    struct FdmVPPStepConditionParams {
-        const Real heatRate;
-        const Real pMin; const Real pMax;
-        const Size tMinUp; const Size tMinDown;
-        const Real startUpFuel; const Real startUpFixCost;
-        const Real fuelCostAddon;
-    };
-
-    struct FdmVPPStepConditionMesher {
-        const Size stateDirection;
-        const boost::shared_ptr<FdmMesher> mesher;
-    };
-
-    class FdmVPPStepCondition : public StepCondition<Array> {
+    class FdmStartLimitStepCondition : public StepCondition<Array> {
       public:
-        FdmVPPStepCondition(
-            const FdmVPPStepConditionParams& params,
-            Size nStates,
-            const FdmVPPStepConditionMesher& mesh,
+        FdmStartLimitStepCondition(
+            Real heatRate,
+            Real pMin, Real pMax,
+            Size tMinUp, Size tMinDown,
+            Size nStarts,
+            Real startUpFuel, Real startUpFixCost,
+            Real carbonPrice,
+            Size stateDirection,
+            const boost::shared_ptr<FdmMesher>& mesher,
             const boost::shared_ptr<FdmInnerValueCalculator>& gasPrice,
             const boost::shared_ptr<FdmInnerValueCalculator>& sparkSpreadPrice);
 
         Size nStates() const;
         void applyTo(Array& a, Time t) const;
 
-        virtual Real maxValue(const Array& states) const = 0;
-
-      protected:
+      private:
         Real evolveAtPMin(Real sparkSpread) const;
         Real evolveAtPMax(Real sparkSpread) const;
 
         Real evolve(const FdmLinearOpIterator& iter, Time t) const;
-
-        virtual Disposable<Array> changeState(
-            Real gasPrice, const Array& state, Time t) const = 0;
+        Disposable<Array> changeState(Real gasPrice,
+                                      const Array& state, Time t) const;
 
         const Real heatRate_;
         const Real pMin_, pMax_;
         const Size tMinUp_, tMinDown_;
+        const Size nStarts_;
         const Real startUpFuel_, startUpFixCost_;
-        const Real fuelCostAddon_;
+        const Real carbonPrice_;
         const Size stateDirection_;
-        const Size nStates_;
 
         const boost::shared_ptr<FdmMesher> mesher_;
         const boost::shared_ptr<FdmInnerValueCalculator> gasPrice_;
         const boost::shared_ptr<FdmInnerValueCalculator> sparkSpreadPrice_;
 
+        const Size nStates_;
         std::vector<boost::function<Real (Real)> > stateEvolveFcts_;
     };
 }

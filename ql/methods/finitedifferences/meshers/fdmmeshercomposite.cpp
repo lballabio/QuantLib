@@ -22,7 +22,81 @@
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 
+#include <boost/assign/list_of.hpp>
+
 namespace QuantLib {
+
+    namespace {
+        typedef boost::shared_ptr<Fdm1dMesher> T;
+
+        std::vector<T> build_vector(const T& m1) {
+            return std::vector<T>(1, m1);
+        }
+
+        std::vector<T> build_vector(const T& m1, const T& m2) {
+            const std::vector<boost::shared_ptr<Fdm1dMesher> > retVal
+                = boost::assign::list_of(m1)(m2);
+            return retVal;
+        }
+
+        std::vector<T> build_vector(const T& m1, const T& m2, const T& m3) {
+            const std::vector<boost::shared_ptr<Fdm1dMesher> > retVal
+                = boost::assign::list_of(m1)(m2)(m3);
+            return retVal;
+        }
+
+        std::vector<T> build_vector(const T& m1, const T& m2,
+                                    const T& m3, const T& m4) {
+            const std::vector<boost::shared_ptr<Fdm1dMesher> > retVal
+                = boost::assign::list_of(m1)(m2)(m3)(m4);
+            return retVal;
+        }
+
+        boost::shared_ptr<FdmLinearOpLayout> getLayoutFromMeshers(
+            const std::vector<boost::shared_ptr<Fdm1dMesher> > & meshers) {
+                std::vector<Size> dim(meshers.size());
+                for (Size i=0; i < dim.size(); ++i) {
+                    dim[i] = meshers[i]->size();
+                }
+            return boost::shared_ptr<FdmLinearOpLayout>(
+                new FdmLinearOpLayout(dim));
+        }
+    }
+
+    FdmMesherComposite::FdmMesherComposite(
+        const boost::shared_ptr<Fdm1dMesher>& mesher)
+    : FdmMesher(getLayoutFromMeshers(build_vector(mesher))),
+      mesher_(build_vector(mesher)) {
+    }
+
+
+    FdmMesherComposite::FdmMesherComposite(
+        const boost::shared_ptr<Fdm1dMesher>& m1,
+        const boost::shared_ptr<Fdm1dMesher>& m2)
+    : FdmMesher(getLayoutFromMeshers(build_vector(m1, m2))),
+      mesher_(build_vector(m1, m2)) {
+    }
+
+    FdmMesherComposite::FdmMesherComposite(
+        const boost::shared_ptr<Fdm1dMesher>& m1,
+        const boost::shared_ptr<Fdm1dMesher>& m2,
+        const boost::shared_ptr<Fdm1dMesher>& m3)
+    : FdmMesher(getLayoutFromMeshers(build_vector(m1, m2, m3))),
+      mesher_(build_vector(m1, m2, m3)) {
+    }
+
+    FdmMesherComposite::FdmMesherComposite(
+        const boost::shared_ptr<Fdm1dMesher>& m1,
+        const boost::shared_ptr<Fdm1dMesher>& m2,
+        const boost::shared_ptr<Fdm1dMesher>& m3,
+        const boost::shared_ptr<Fdm1dMesher>& m4)
+    : FdmMesher(getLayoutFromMeshers(build_vector(m1, m2, m3, m4))),
+      mesher_(build_vector(m1, m2, m3, m4)) {
+    }
+    FdmMesherComposite::FdmMesherComposite(
+        const std::vector<boost::shared_ptr<Fdm1dMesher> > & mesher)
+    : FdmMesher(getLayoutFromMeshers(mesher)), mesher_(mesher) {
+    }
 
     FdmMesherComposite::FdmMesherComposite(
         const boost::shared_ptr<FdmLinearOpLayout>& layout,
@@ -33,7 +107,6 @@ namespace QuantLib {
                        "size of 1d mesher " << i << " does not fit to layout");
         }
     }
-
 
     Real FdmMesherComposite::dplus(const FdmLinearOpIterator& iter,
                                    Size direction) const {

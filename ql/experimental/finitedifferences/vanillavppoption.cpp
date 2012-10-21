@@ -41,17 +41,17 @@ namespace QuantLib {
         Real heatRate,
         Real pMin, Real pMax,
         Size tMinUp, Size tMinDown,
-        Size nStarts,
         Real startUpFuel, Real startUpFixCost,
-        const boost::shared_ptr<SwingExercise>& exercise)
+        const boost::shared_ptr<SwingExercise>& exercise,
+        Size nStarts, Size nRunningHours)
     : MultiAssetOption(boost::shared_ptr<Payoff>(), exercise),
       heatRate_(heatRate),
       pMin_(pMin), pMax_(pMax),
       tMinUp_(tMinUp), tMinDown_(tMinDown),
-      nStarts_(nStarts),
       startUpFuel_(startUpFuel),
-      startUpFixCost_(startUpFixCost) {
-
+      startUpFixCost_(startUpFixCost),
+      nStarts_(nStarts),
+      nRunningHours_(nRunningHours) {
         Array weigths(2);
         weigths[0] = 1.0; weigths[1] = -heatRate;
 
@@ -61,6 +61,8 @@ namespace QuantLib {
 
     void VanillaVPPOption::arguments::validate() const {
         QL_REQUIRE(exercise, "no exercise given");
+        QL_REQUIRE(nStarts == Null<Size>() || nRunningHours == Null<Size>(),
+                "either a start limit or fuel limit is supported");
     }
 
     void VanillaVPPOption::setupArguments(
@@ -77,9 +79,10 @@ namespace QuantLib {
         arguments->pMax           = pMax_;
         arguments->tMinUp         = tMinUp_;
         arguments->tMinDown       = tMinDown_;
-        arguments->nStarts        = nStarts_;
         arguments->startUpFuel    = startUpFuel_;
         arguments->startUpFixCost = startUpFixCost_;
+        arguments->nStarts        = nStarts_;
+        arguments->nRunningHours  = nRunningHours_;
     }
 
     bool VanillaVPPOption::isExpired() const {

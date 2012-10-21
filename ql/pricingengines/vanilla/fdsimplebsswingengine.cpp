@@ -48,15 +48,8 @@ namespace QuantLib {
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::Bermudan,
                    "Bermudan exercise supported only");
-        
-        // 1. Layout
-        std::vector<Size> dim;
-        dim.push_back(xGrid_);
-        dim.push_back(arguments_.maxExerciseRights+1);
-        const boost::shared_ptr<FdmLinearOpLayout> layout(
-                                              new FdmLinearOpLayout(dim));
-        
-        // 2. Mesher
+
+        // 1. Mesher
         const boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         const Time maturity = process_->time(arguments_.exercise->lastDate());
@@ -68,21 +61,18 @@ namespace QuantLib {
                  new Uniform1dMesher(0, arguments_.maxExerciseRights,
                                         arguments_.maxExerciseRights+1));
         
-        std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
-        meshers.push_back(equityMesher);
-        meshers.push_back(exerciseMesher);
-        boost::shared_ptr<FdmMesher> mesher (
-                                     new FdmMesherComposite(layout, meshers));
+        const boost::shared_ptr<FdmMesher> mesher (
+            new FdmMesherComposite(equityMesher, exerciseMesher));
         
-        // 3. Calculator
+        // 2. Calculator
         boost::shared_ptr<FdmInnerValueCalculator> calculator(
                                                     new FdmZeroInnerValue());
         
-        // 4. Step conditions
+        // 3. Step conditions
         std::list<boost::shared_ptr<StepCondition<Array> > > stepConditions;
         std::list<std::vector<Time> > stoppingTimes;
         
-        // 4.1 Bermudan step conditions
+        // 3.1 Bermudan step conditions
         std::vector<Time> exerciseTimes;
         for (Size i=0; i<arguments_.exercise->dates().size(); ++i) {
             Time t = process_->time(arguments_.exercise->dates()[i]);
@@ -101,10 +91,10 @@ namespace QuantLib {
         boost::shared_ptr<FdmStepConditionComposite> conditions(
                 new FdmStepConditionComposite(stoppingTimes, stepConditions));
         
-        // 5. Boundary conditions
+        // 4. Boundary conditions
         const FdmBoundaryConditionSet boundaries;
         
-        // 6. Solver
+        // 5. Solver
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions,
                                      calculator, maturity, tGrid_, 0 };
         boost::shared_ptr<FdmSimple2dBSSolver> solver(

@@ -74,16 +74,9 @@ namespace QuantLib {
 
     void FdSimpleExtOUStorageEngine::calculate() const {
 
+        // 1. Exercise
         QL_REQUIRE(arguments_.exercise->type() == Exercise::Bermudan,
                    "Bermudan exercise supported only");
-
-        // 1. Layout
-        const Size yGrid = Size(arguments_.capacity/arguments_.changeRate+1);
-        std::vector<Size> dim;
-        dim.push_back(xGrid_);
-        dim.push_back(yGrid);
-        const boost::shared_ptr<FdmLinearOpLayout> layout(
-                                              new FdmLinearOpLayout(dim));
 
         // 2. Mesher
         const Time maturity
@@ -97,11 +90,8 @@ namespace QuantLib {
             new Uniform1dMesher(0, arguments_.capacity,
                                 Size(arguments_.capacity/arguments_.changeRate+1)));
 
-        std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
-        meshers.push_back(xMesher);
-        meshers.push_back(storageMesher);
-        boost::shared_ptr<FdmMesher> mesher (
-                                     new FdmMesherComposite(layout, meshers));
+        const boost::shared_ptr<FdmMesher> mesher (
+            new FdmMesherComposite(xMesher, storageMesher));
 
         // 3. Calculator
         boost::shared_ptr<FdmInnerValueCalculator> storageCalculator(

@@ -55,18 +55,11 @@ namespace QuantLib {
 
     void FdSimpleExtOUJumpSwingEngine::calculate() const {
 
+        // 1. Exercise
         boost::shared_ptr<SwingExercise> swingExercise(
             boost::dynamic_pointer_cast<SwingExercise>(arguments_.exercise));
 
         QL_REQUIRE(swingExercise, "Swing exercise supported only");
-
-        // 1. Layout
-        std::vector<Size> dim;
-        dim.push_back(xGrid_);
-        dim.push_back(yGrid_);
-        dim.push_back(arguments_.maxExerciseRights+1);
-        const boost::shared_ptr<FdmLinearOpLayout> layout(
-                                            new FdmLinearOpLayout(dim));
 
         // 2. Mesher
         const std::vector<Time> exerciseTimes
@@ -88,12 +81,8 @@ namespace QuantLib {
                        new Uniform1dMesher(0, arguments_.maxExerciseRights,
                                               arguments_.maxExerciseRights+1));
 
-        std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
-        meshers.push_back(xMesher);
-        meshers.push_back(yMesher);
-        meshers.push_back(exerciseMesher);
-        const boost::shared_ptr<FdmMesher> mesher (
-                                   new FdmMesherComposite(layout, meshers));
+        const boost::shared_ptr<FdmMesher> mesher(
+            new FdmMesherComposite(xMesher, yMesher, exerciseMesher));
 
         // 3. Calculator
         boost::shared_ptr<FdmInnerValueCalculator> calculator(

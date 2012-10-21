@@ -35,12 +35,13 @@
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdmklugeextousolver.hpp>
 #include <ql/methods/finitedifferences/meshers/exponentialjump1dmesher.hpp>
-#include <ql/experimental/finitedifferences/fdmvppstepcondition.hpp>
+#include <ql/experimental/finitedifferences/fdmvppstepconditionfactory.hpp>
 #include <ql/experimental/finitedifferences/fdsimpleklugeextouvppengine.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmexpextouinnervaluecalculator.hpp>
 
+#include <boost/assign/list_of.hpp>
 #include <list>
 
 namespace QuantLib {
@@ -51,16 +52,16 @@ namespace QuantLib {
           public:
             FdmSparkSpreadInnerValue(
                 const boost::shared_ptr<BasketPayoff>& basketPayoff,
-                const boost::shared_ptr<FdmInnerValueCalculator>& gasPrice,
+                const boost::shared_ptr<FdmInnerValueCalculator>& fuelPrice,
                 const boost::shared_ptr<FdmInnerValueCalculator>& powerPrice)
             : basketPayoff_(basketPayoff),
-              gasPrice_(gasPrice),
+              fuelPrice_(fuelPrice),
               powerPrice_(powerPrice) { }
 
             Real innerValue(const FdmLinearOpIterator& iter, Time t) {
                 Array s(2);
                 s[0] = powerPrice_->innerValue(iter, t);
-                s[1] = gasPrice_->innerValue(iter, t);
+                s[1] = fuelPrice_->innerValue(iter, t);
 
                 return (*basketPayoff_)(s);
             }
@@ -70,7 +71,7 @@ namespace QuantLib {
 
           private:
             const boost::shared_ptr<BasketPayoff> basketPayoff_;
-            const boost::shared_ptr<FdmInnerValueCalculator> gasPrice_;
+            const boost::shared_ptr<FdmInnerValueCalculator> fuelPrice_;
             const boost::shared_ptr<FdmInnerValueCalculator> powerPrice_;
         };
     }
@@ -79,21 +80,21 @@ namespace QuantLib {
     FdSimpleKlugeExtOUVPPEngine::FdSimpleKlugeExtOUVPPEngine(
         const boost::shared_ptr<KlugeExtOUProcess>& process,
         const boost::shared_ptr<YieldTermStructure>& rTS,
-        Real carbonPrice,
-        Size tGrid, Size xGrid, Size yGrid, Size gGrid,
-        const boost::shared_ptr<Shape>& gasShape,
+        const boost::shared_ptr<Shape>& fuelShape,
         const boost::shared_ptr<Shape>& powerShape,
+        Real fuelCostAddon,
+        Size tGrid, Size xGrid, Size yGrid, Size gGrid,
         const FdmSchemeDesc& schemeDesc)
-    : process_    (process),
-      rTS_        (rTS),
-      carbonPrice_(carbonPrice),
-      gasShape_   (gasShape),
-      powerShape_ (powerShape),
-      tGrid_      (tGrid),
-      xGrid_      (xGrid),
-      yGrid_      (yGrid),
-      gGrid_      (gGrid),
-      schemeDesc_ (schemeDesc) {
+    : process_      (process),
+      rTS_          (rTS),
+      fuelCostAddon_(fuelCostAddon),
+      fuelShape_     (fuelShape),
+      powerShape_   (powerShape),
+      tGrid_        (tGrid),
+      xGrid_        (xGrid),
+      yGrid_        (yGrid),
+      gGrid_        (gGrid),
+      schemeDesc_   (schemeDesc) {
     }
 
     void FdSimpleKlugeExtOUVPPEngine::calculate() const {
@@ -103,19 +104,9 @@ namespace QuantLib {
 
         QL_REQUIRE(swingExercise, "Swing exercise supported only");
 
-        const Size nStates = (arguments_.nStarts == Null<Size>())
-            ? 2*arguments_.tMinUp + arguments_.tMinDown
-            : (arguments_.nStarts+1)*(2*arguments_.tMinUp+arguments_.tMinDown);
+        const FdmVPPStepConditionFactory stepConditionFactory(arguments_);
 
-        // 1. Layout
-        std::vector<Size> dim;
-        dim.push_back(xGrid_);
-        dim.push_back(yGrid_);
-        dim.push_back(gGrid_);
-        dim.push_back(nStates);
-        const boost::shared_ptr<FdmLinearOpLayout> layout(
-            new FdmLinearOpLayout(dim));
-
+        // 1. Exercise definition
         const std::vector<Time> exerciseTimes
             = swingExercise->exerciseTimes(rTS_->dayCounter(),
                                            rTS_->referenceDate());
@@ -142,15 +133,10 @@ namespace QuantLib {
                                          process_->getExtOUProcess(),maturity));
 
         const boost::shared_ptr<Fdm1dMesher> exerciseMesher(
-            new Uniform1dMesher(0.0, nStates-1.0, nStates));
+            stepConditionFactory.stateMesher());
 
-        std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
-        meshers.push_back(xMesher);
-        meshers.push_back(yMesher);
-        meshers.push_back(gMesher);
-        meshers.push_back(exerciseMesher);
         const boost::shared_ptr<FdmMesher> mesher (
-            new FdmMesherComposite(layout, meshers));
+            new FdmMesherComposite(xMesher, yMesher, gMesher, exerciseMesher));
 
         // 3. Calculator
         const boost::shared_ptr<FdmInnerValueCalculator> zeroInnerValue(
@@ -159,9 +145,9 @@ namespace QuantLib {
         const boost::shared_ptr<Payoff> zeroStrikeCall(
             new PlainVanillaPayoff(Option::Call, 0.0));
 
-        const boost::shared_ptr<FdmInnerValueCalculator> gasPrice(
+        const boost::shared_ptr<FdmInnerValueCalculator> fuelPrice(
             new FdmExpExtOUInnerValueCalculator(zeroStrikeCall,
-                                                mesher, gasShape_, 2));
+                                                mesher, fuelShape_, 2));
 
         const boost::shared_ptr<FdmInnerValueCalculator> powerPrice(
             new FdmExtOUJumpModelInnerValue(zeroStrikeCall,mesher,powerShape_));
@@ -169,7 +155,7 @@ namespace QuantLib {
         const boost::shared_ptr<FdmInnerValueCalculator> sparkSpread(
             new FdmSparkSpreadInnerValue(
                 boost::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff),
-                gasPrice, powerPrice));
+                fuelPrice, powerPrice));
 
         // 4. Step conditions
         std::list<std::vector<Time> > stoppingTimes;
@@ -177,18 +163,16 @@ namespace QuantLib {
 
         // 4.1 Bermudan step conditions
         stoppingTimes.push_back(exerciseTimes);
-        stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
-            new FdmVPPStepCondition(arguments_.heatRate,
-                                    arguments_.pMin, arguments_.pMax,
-                                    arguments_.tMinUp, arguments_.tMinDown,
-                                    arguments_.nStarts,
-                                    arguments_.startUpFuel,
-                                    arguments_.startUpFixCost,
-                                    carbonPrice_, 3,
-                                    mesher, gasPrice, sparkSpread)));
+        const FdmVPPStepConditionMesher mesh = { 3u, mesher };
         
-        boost::shared_ptr<FdmStepConditionComposite> conditions(
-                new FdmStepConditionComposite(stoppingTimes, stepConditions));
+        const boost::shared_ptr<FdmVPPStepCondition> stepCondition(
+            stepConditionFactory.build(mesh, fuelCostAddon_,
+                                       fuelPrice, sparkSpread));
+
+        stepConditions.push_back(stepCondition);
+
+        const boost::shared_ptr<FdmStepConditionComposite> conditions(
+            new FdmStepConditionComposite(stoppingTimes, stepConditions));
 
         // 5. Boundary conditions
         const FdmBoundaryConditionSet boundaries;
@@ -207,13 +191,17 @@ namespace QuantLib {
         x[2] = process_->initialValues()[2];
         
         const Real tol = 1e-8;
-        Array results(2*arguments_.tMinUp + arguments_.tMinDown);
+        const Real maxExerciseValue = exerciseMesher->locations().back();
+        const Real minExerciseValue = exerciseMesher->locations().front();
+
+        Array results(exerciseMesher->size());
         for (Size i=0; i < results.size(); ++i) {
 
-            x[3] = std::max(tol, std::min(
-                (Real) (nStates-results.size()+i), nStates-1-tol));
+            x[3] = std::max(minExerciseValue + tol,
+                            std::min(exerciseMesher->location(i),
+                                     maxExerciseValue - tol));
             results[i] = solver->valueAt(x);
         }
-        results_.value = *std::max_element(results.begin(), results.end());
+        results_.value = stepCondition->maxValue(results);
     }
 }

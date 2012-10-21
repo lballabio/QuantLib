@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2011 Klaus Spanderen
+ Copyright (C) 2011, 2012 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,7 +18,7 @@
 */
 
 /*! \file fdsimpleextoujumpswingengine.hpp
-    \brief Finite Differences engine for simple swing options
+    \brief Finite Differences engine for simple vpp options
 */
 
 #ifndef quantlib_fd_simple_kluge_ou_vpp_engine_hpp
@@ -45,13 +45,11 @@ namespace QuantLib {
         FdSimpleKlugeExtOUVPPEngine(
             const boost::shared_ptr<KlugeExtOUProcess>& process,
             const boost::shared_ptr<YieldTermStructure>& rTS,
-            Real carbonPrice,
+            const boost::shared_ptr<Shape>& fuelShape,
+            const boost::shared_ptr<Shape>& powerShape,
+            Real fuelCostAddon,
             Size tGrid = 1 , Size xGrid = 50,
             Size yGrid = 10, Size gGrid = 20,
-            const boost::shared_ptr<Shape>& gasShape
-                                                = boost::shared_ptr<Shape>(),
-            const boost::shared_ptr<Shape>& powerShape
-                                                = boost::shared_ptr<Shape>(),
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
         void calculate() const;
@@ -59,8 +57,8 @@ namespace QuantLib {
       private:
         const boost::shared_ptr<KlugeExtOUProcess> process_;
         const boost::shared_ptr<YieldTermStructure> rTS_;
-        const Real carbonPrice_;
-        const boost::shared_ptr<Shape> gasShape_;
+        const Real fuelCostAddon_;
+        const boost::shared_ptr<Shape> fuelShape_;
         const boost::shared_ptr<Shape> powerShape_;
         const Size tGrid_, xGrid_, yGrid_, gGrid_;
         const FdmSchemeDesc schemeDesc_;

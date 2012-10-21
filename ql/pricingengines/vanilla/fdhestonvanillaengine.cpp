@@ -47,23 +47,17 @@ namespace QuantLib {
 
 
     FdmSolverDesc FdHestonVanillaEngine::getSolverDesc(Real scaleFactor) const {
-        // 1. Layout
-        std::vector<Size> dim;
-        dim.push_back(xGrid_);
-        dim.push_back(vGrid_);
-        boost::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
-
-        // 2. Mesher
+        // 1. Mesher
         const boost::shared_ptr<HestonProcess> process = model_->process();
         const Time maturity = process->time(arguments_.exercise->lastDate());
 
-        // 2.1 The variance mesher
+        // 1.1 The variance mesher
         const Size tGridMin = 5;
         const boost::shared_ptr<FdmHestonVarianceMesher> varianceMesher(
-            new FdmHestonVarianceMesher(layout->dim()[1], process, 
+            new FdmHestonVarianceMesher(vGrid_, process,
                                         maturity,std::max(tGridMin,tGrid_/50)));
 
-        // 2.2 The equity mesher
+        // 1.2 The equity mesher
         const boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
 
@@ -92,17 +86,14 @@ namespace QuantLib {
                     std::pair<Real, Real>(payoff->strike(), 0.075)));            
         }
         
-        std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
-        meshers.push_back(equityMesher);
-        meshers.push_back(varianceMesher);
         const boost::shared_ptr<FdmMesher> mesher(
-                                     new FdmMesherComposite(layout, meshers));
+            new FdmMesherComposite(equityMesher, varianceMesher));
 
-        // 3. Calculator
+        // 2. Calculator
         const boost::shared_ptr<FdmInnerValueCalculator> calculator(
                           new FdmLogInnerValue(arguments_.payoff, mesher, 0));
 
-        // 4. Step conditions
+        // 3. Step conditions
         const boost::shared_ptr<FdmStepConditionComposite> conditions = 
              FdmStepConditionComposite::vanillaComposite(
                                  arguments_.cashFlow, arguments_.exercise, 
@@ -110,10 +101,10 @@ namespace QuantLib {
                                  process->riskFreeRate()->referenceDate(),
                                  process->riskFreeRate()->dayCounter());
 
-        // 5. Boundary conditions
+        // 4. Boundary conditions
         const FdmBoundaryConditionSet boundaries;
 
-        // 6. Solver
+        // 5. Solver
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions,
                                      calculator, maturity,
                                      tGrid_, dampingSteps_ };

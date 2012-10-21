@@ -47,11 +47,7 @@ namespace QuantLib {
 
     void FdBlackScholesVanillaEngine::calculate() const {
 
-        // 1. Layout
-        std::vector<Size> dim(1, xGrid_);
-        boost::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
-
-        // 2. Mesher
+        // 1. Mesher
         const boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
 
@@ -62,15 +58,14 @@ namespace QuantLib {
                     Null<Real>(), Null<Real>(), 0.0001, 1.5, 
                     std::pair<Real, Real>(payoff->strike(), 0.1)));
         
-        std::vector<boost::shared_ptr<Fdm1dMesher> > meshers(1, equityMesher);
         const boost::shared_ptr<FdmMesher> mesher (
-                                     new FdmMesherComposite(layout, meshers));
+            new FdmMesherComposite(equityMesher));
         
-        // 3. Calculator
+        // 2. Calculator
         const boost::shared_ptr<FdmInnerValueCalculator> calculator(
                                       new FdmLogInnerValue(payoff, mesher, 0));
 
-        // 4. Step conditions
+        // 3. Step conditions
         const boost::shared_ptr<FdmStepConditionComposite> conditions = 
             FdmStepConditionComposite::vanillaComposite(
                                     arguments_.cashFlow, arguments_.exercise, 
@@ -78,10 +73,10 @@ namespace QuantLib {
                                     process_->riskFreeRate()->referenceDate(),
                                     process_->riskFreeRate()->dayCounter());
 
-        // 5. Boundary conditions
+        // 4. Boundary conditions
         const FdmBoundaryConditionSet boundaries;
 
-        // 6. Solver
+        // 5. Solver
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions, calculator,
                                      maturity, tGrid_, dampingSteps_ };
 

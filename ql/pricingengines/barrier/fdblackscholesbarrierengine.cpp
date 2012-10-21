@@ -49,13 +49,7 @@ namespace QuantLib {
 
     void FdBlackScholesBarrierEngine::calculate() const {
 
-        // 1. Layout
-        std::vector<Size> dim;
-        dim.push_back(xGrid_);
-        const boost::shared_ptr<FdmLinearOpLayout> layout(
-                                              new FdmLinearOpLayout(dim));
-
-        // 2. Mesher
+        // 1. Mesher
         const boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         const Time maturity = process_->time(arguments_.exercise->lastDate());
@@ -75,20 +69,18 @@ namespace QuantLib {
             new FdmBlackScholesMesher(xGrid_, process_, maturity,
                                       payoff->strike(), xMin, xMax));
         
-        std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
-        meshers.push_back(equityMesher);
-        boost::shared_ptr<FdmMesher> mesher (
-                                     new FdmMesherComposite(layout, meshers));
+        const boost::shared_ptr<FdmMesher> mesher (
+            new FdmMesherComposite(equityMesher));
 
-        // 3. Calculator
+        // 2. Calculator
         boost::shared_ptr<FdmInnerValueCalculator> calculator(
                                 new FdmLogInnerValue(payoff, mesher, 0));
 
-        // 4. Step conditions
+        // 3. Step conditions
         std::list<boost::shared_ptr<StepCondition<Array> > > stepConditions;
         std::list<std::vector<Time> > stoppingTimes;
 
-        // 4.1 Step condition if discrete dividends
+        // 3.1 Step condition if discrete dividends
         boost::shared_ptr<FdmDividendHandler> dividendCondition(
             new FdmDividendHandler(arguments_.cashFlow, mesher,
                                    process_->riskFreeRate()->referenceDate(),
@@ -105,7 +97,7 @@ namespace QuantLib {
         boost::shared_ptr<FdmStepConditionComposite> conditions(
                 new FdmStepConditionComposite(stoppingTimes, stepConditions));
 
-        // 5. Boundary conditions
+        // 4. Boundary conditions
         FdmBoundaryConditionSet boundaries;
         if (   arguments_.barrierType == Barrier::DownIn
             || arguments_.barrierType == Barrier::DownOut) {
@@ -122,7 +114,7 @@ namespace QuantLib {
                                          FdmDirichletBoundary::Upper)));
         }
 
-        // 6. Solver
+        // 5. Solver
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions, calculator,
                                      maturity, tGrid_, dampingSteps_ };
 
@@ -138,7 +130,7 @@ namespace QuantLib {
         results_.gamma = solver->gammaAt(spot);
         results_.theta = solver->thetaAt(spot);
 
-        // 7. Calculate vanilla option and rebate for in-barriers
+        // 6. Calculate vanilla option and rebate for in-barriers
         if (   arguments_.barrierType == Barrier::DownIn
             || arguments_.barrierType == Barrier::UpIn) {
             // Cast the payoff

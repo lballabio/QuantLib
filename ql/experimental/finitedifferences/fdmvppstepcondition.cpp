@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2011 Klaus Spanderen
+ Copyright (C) 2011, 2012 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdmvppstatetransitionmatrix.cpp
+/*! \file fdmvppstepcondition.cpp
 */
 
 #include <ql/math/array.hpp>
@@ -32,47 +32,37 @@
 
 namespace QuantLib {
     FdmVPPStepCondition::FdmVPPStepCondition(
-        Real heatRate,
-        Real pMin, Real pMax,
-        Size tMinUp, Size tMinDown,
-        Size nStarts,
-        Real startUpFuel, Real startUpFixCost,
-        Real carbonPrice,
-        Size stateDirection,
-        const boost::shared_ptr<FdmMesher>& mesher,
+        const FdmVPPStepConditionParams& params,
+        Size nStates,
+        const FdmVPPStepConditionMesher& mesh,
         const boost::shared_ptr<FdmInnerValueCalculator>& gasPrice,
         const boost::shared_ptr<FdmInnerValueCalculator>& sparkSpreadPrice)
-    : heatRate_        (heatRate),
-      pMin_            (pMin),
-      pMax_            (pMax),
-      tMinUp_          (tMinUp),
-      tMinDown_        (tMinDown),
-      nStarts_         (nStarts),
-      startUpFuel_     (startUpFuel),
-      startUpFixCost_  (startUpFixCost),
-      carbonPrice_     (carbonPrice),
-      stateDirection_  (stateDirection),
-      mesher_          (mesher),
+    : heatRate_        (params.heatRate),
+      pMin_            (params.pMin),
+      pMax_            (params.pMax),
+      tMinUp_          (params.tMinUp),
+      tMinDown_        (params.tMinDown),
+      startUpFuel_     (params.startUpFuel),
+      startUpFixCost_  (params.startUpFixCost),
+      fuelCostAddon_   (params.fuelCostAddon),
+      stateDirection_  (mesh.stateDirection),
+      nStates_         (nStates),
+      mesher_          (mesh.mesher),
       gasPrice_        (gasPrice),
       sparkSpreadPrice_(sparkSpreadPrice),
-      nStates_         ((2*tMinUp + tMinDown)
-                          *((nStarts == Null<Size>()) ? 1 : nStarts+1)),
       stateEvolveFcts_ (nStates_) {
 
-        QL_REQUIRE(tMinUp_ > 1,   "minimum up time must be greater than one");
-        QL_REQUIRE(tMinDown_ > 1, "minimum down time must be greater than one");
-        QL_REQUIRE(stateEvolveFcts_.size() ==
-                   mesher_->layout()->dim()[stateDirection_],
+        QL_REQUIRE(nStates_ == mesher_->layout()->dim()[stateDirection_],
                    "mesher does not fit to vpp arguments");
 
         for (Size i=0; i < nStates_; ++i) {
-            const Size j = i % (2*tMinUp + tMinDown);
+            const Size j = i % (2*tMinUp_ + tMinDown_);
 
-            if (j < tMinUp) {
+            if (j < tMinUp_) {
                 stateEvolveFcts_[i] = boost::function<Real (Real)>(
                     boost::bind(&FdmVPPStepCondition::evolveAtPMin,this, _1));
             }
-            else if (j < 2*tMinUp){
+            else if (j < 2*tMinUp_){
                 stateEvolveFcts_[i] = boost::function<Real (Real)>(
                     boost::bind(&FdmVPPStepCondition::evolveAtPMax,this, _1));
             }
@@ -113,7 +103,7 @@ namespace QuantLib {
     }
 
     Real FdmVPPStepCondition::evolve(
-                               const FdmLinearOpIterator& iter, Time t) const {
+        const FdmLinearOpIterator& iter, Time t) const {
 
         const Size state = iter.coordinates()[stateDirection_];
 
@@ -126,54 +116,12 @@ namespace QuantLib {
         }
     }
 
-    Disposable<Array> FdmVPPStepCondition::changeState(
-                        const Real gasPrice, const Array& state, Time t) const {
-        const Real startUpCost
-                = startUpFixCost_ + (gasPrice + carbonPrice_)*startUpFuel_;
-
-        Array retVal(state.size());
-        const Size sss = 2*tMinUp_ + tMinDown_;
-        const Size n = sss * (nStarts_ == Null<Size>() ? 1 : nStarts_+1);
-
-        for (Size i=0; i < n; ++i) {
-            const Size j = i % sss;
-
-            if (j < tMinUp_-1) {
-                retVal[i] = std::max(state[i+1], state[tMinUp_+i+1]);
-            }
-            else if (j == tMinUp_-1) {
-                retVal[i] = std::max(state[i+tMinUp_+1],
-                                     std::max(state[i], state[i+tMinUp_]));
-            }
-            else if (j < 2*tMinUp_) {
-                retVal[i] = retVal[i-tMinUp_];
-            }
-            else if (j <  2*tMinUp_+tMinDown_-1) {
-                retVal[i] = state[i+1];
-            }
-            else if (nStarts_ == Null<Size>()) {
-                retVal[i] = std::max(state[i],
-                    std::max(state.front(), state[tMinUp_]) - startUpCost);
-
-            }
-            else if (i >= sss) {
-                retVal[i] = std::max(state[i],
-                    std::max(state[i+1-2*sss], state[i+1-2*sss+tMinUp_])
-                            - startUpCost);
-            }
-            else {
-                retVal[i] = state[i];
-            }
-        }
-
-        return retVal;
-    }
 
     Real FdmVPPStepCondition::evolveAtPMin(Real sparkSpread) const {
-        return pMin_*(sparkSpread - heatRate_*carbonPrice_);
+        return pMin_*(sparkSpread - heatRate_*fuelCostAddon_);
     }
 
     Real FdmVPPStepCondition::evolveAtPMax(Real sparkSpread) const {
-        return pMax_*(sparkSpread - heatRate_*carbonPrice_);
+        return pMax_*(sparkSpread - heatRate_*fuelCostAddon_);
     }
 }

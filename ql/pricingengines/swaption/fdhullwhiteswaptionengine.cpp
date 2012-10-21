@@ -51,11 +51,8 @@ namespace QuantLib {
     }
 
     void FdHullWhiteSwaptionEngine::calculate() const {
+        // 1. Term structure
         const Handle<YieldTermStructure> ts = model_->termStructure();
-
-        // 1. Layout
-        const boost::shared_ptr<FdmLinearOpLayout> layout(
-            new FdmLinearOpLayout(std::vector<Size>(1u, xGrid_)));
 
         // 2. Mesher
         const DayCounter dc = ts->dayCounter();
@@ -71,9 +68,7 @@ namespace QuantLib {
             new FdmSimpleProcess1dMesher(xGrid_, process, maturity,1,invEps_));
 
         const boost::shared_ptr<FdmMesher> mesher(
-            new FdmMesherComposite(layout,
-                std::vector<boost::shared_ptr<Fdm1dMesher> >(
-                    1, shortRateMesher)));
+            new FdmMesherComposite(shortRateMesher));
 
         // 3. Inner Value Calculator
         const std::vector<Date>& exerciseDates = arguments_.exercise->dates();

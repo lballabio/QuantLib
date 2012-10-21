@@ -53,15 +53,7 @@ namespace QuantLib {
     }
                       
     void FdExtOUJumpVanillaEngine::calculate() const {
-        // 1. Layout
-
-        std::vector<Size> dim;
-        dim.push_back(xGrid_);
-        dim.push_back(yGrid_);
-        const boost::shared_ptr<FdmLinearOpLayout> layout(
-                                            new FdmLinearOpLayout(dim));
-
-        // 2. Mesher
+        // 1. Mesher
         const Time maturity 
             = rTS_->dayCounter().yearFraction(rTS_->referenceDate(),
                                               arguments_.exercise->lastDate());
@@ -76,27 +68,24 @@ namespace QuantLib {
                                         process_->jumpIntensity(),
                                         process_->eta()));
 
-        std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
-        meshers.push_back(xMesher);
-        meshers.push_back(yMesher);
-        const boost::shared_ptr<FdmMesher> mesher (
-                                   new FdmMesherComposite(layout, meshers));
+        const boost::shared_ptr<FdmMesher> mesher(
+            new FdmMesherComposite(xMesher, yMesher));
 
-        // 3. Calculator
+        // 2. Calculator
         const boost::shared_ptr<FdmInnerValueCalculator> calculator(
                     new FdmExtOUJumpModelInnerValue(arguments_.payoff, mesher));
 
-        // 4. Step conditions
+        // 3. Step conditions
         const boost::shared_ptr<FdmStepConditionComposite> conditions =
             FdmStepConditionComposite::vanillaComposite(
                                 DividendSchedule(), arguments_.exercise, 
                                 mesher, calculator, 
                                 rTS_->referenceDate(), rTS_->dayCounter());
 
-        // 5. Boundary conditions
+        // 4. Boundary conditions
         const FdmBoundaryConditionSet boundaries;
         
-        // 6. set-up solver
+        // 5. set-up solver
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions,
                                     calculator, maturity, tGrid_, 0 };
 

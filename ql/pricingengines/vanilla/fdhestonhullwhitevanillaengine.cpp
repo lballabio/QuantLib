@@ -55,36 +55,29 @@ namespace QuantLib {
 
     void FdHestonHullWhiteVanillaEngine::calculate() const {
   
-        // cache lookup for precalculated results
-         for (Size i=0; i < cachedArgs2results_.size(); ++i) {
-             if (   cachedArgs2results_[i].first.exercise->type() 
-                         == arguments_.exercise->type()
-                 && cachedArgs2results_[i].first.exercise->dates()
-                         == arguments_.exercise->dates()) {
-                 boost::shared_ptr<PlainVanillaPayoff> p1 =
-                     boost::dynamic_pointer_cast<PlainVanillaPayoff>(
-                                                             arguments_.payoff);
-                 boost::shared_ptr<PlainVanillaPayoff> p2 =
-                     boost::dynamic_pointer_cast<PlainVanillaPayoff>(
-                                           cachedArgs2results_[i].first.payoff);
-                 
-                 if (p1 && p1->strike()     == p2->strike() 
-                        && p1->optionType() == p2->optionType()) {
-                     QL_REQUIRE(arguments_.cashFlow.empty(),
-                                "multiple strikes engine does "
-                                "not work with discrete dividends");
-                     results_ = cachedArgs2results_[i].second;
-                     return;
-                 }
-             }
-         }
-       
-        // 1. Layout
-        std::vector<Size> dim;
-        dim.push_back(xGrid_);
-        dim.push_back(vGrid_);
-        dim.push_back(rGrid_);
-        boost::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
+        // 1. cache lookup for precalculated results
+        for (Size i=0; i < cachedArgs2results_.size(); ++i) {
+            if (   cachedArgs2results_[i].first.exercise->type()
+                        == arguments_.exercise->type()
+                && cachedArgs2results_[i].first.exercise->dates()
+                        == arguments_.exercise->dates()) {
+                boost::shared_ptr<PlainVanillaPayoff> p1 =
+                    boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+                                                            arguments_.payoff);
+                boost::shared_ptr<PlainVanillaPayoff> p2 =
+                    boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+                                          cachedArgs2results_[i].first.payoff);
+
+                if (p1 && p1->strike()     == p2->strike()
+                       && p1->optionType() == p2->optionType()) {
+                    QL_REQUIRE(arguments_.cashFlow.empty(),
+                               "multiple strikes engine does "
+                               "not work with discrete dividends");
+                    results_ = cachedArgs2results_[i].second;
+                    return;
+                }
+            }
+        }
 
         // 2. Mesher
         const boost::shared_ptr<HestonProcess> hestonProcess=model_->process();
@@ -93,7 +86,7 @@ namespace QuantLib {
         // 2.1 The variance mesher
         const Size tGridMin = 5;
         const boost::shared_ptr<FdmHestonVarianceMesher> varianceMesher(
-            new FdmHestonVarianceMesher(layout->dim()[1], hestonProcess, 
+            new FdmHestonVarianceMesher(vGrid_, hestonProcess,
                                         maturity,std::max(tGridMin,tGrid_/50)));
 
         // 2.2 The equity mesher
@@ -134,12 +127,9 @@ namespace QuantLib {
         const boost::shared_ptr<Fdm1dMesher> shortRateMesher(
                    new FdmSimpleProcess1dMesher(rGrid_, ouProcess, maturity));
         
-        std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
-        meshers.push_back(equityMesher);
-        meshers.push_back(varianceMesher);
-        meshers.push_back(shortRateMesher);
         const boost::shared_ptr<FdmMesher> mesher(
-                                     new FdmMesherComposite(layout, meshers));
+            new FdmMesherComposite(equityMesher, varianceMesher,
+                                   shortRateMesher));
 
         // 3. Calculator
         const boost::shared_ptr<FdmInnerValueCalculator> calculator(

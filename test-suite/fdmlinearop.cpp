@@ -908,8 +908,8 @@ namespace {
         mesher1d.push_back(boost::shared_ptr<Fdm1dMesher>(
                 new Uniform1dMesher(-0.15, 0.15, dim[2])));
 
-        boost::shared_ptr<FdmMesher> mesher(
-                                     new FdmMesherComposite(layout, mesher1d));
+        const boost::shared_ptr<FdmMesher> mesher(
+            new FdmMesherComposite(mesher1d));
 
         const FdmBoundaryConditionSet boundaries;
 
@@ -1182,9 +1182,8 @@ void FdmLinearOpTest::testCrankNicolsonWithDamping() {
                 Null<Real>(), Null<Real>(), 0.0001, 1.5,
                 std::pair<Real, Real>(payoff->strike(), 0.01)));
 
-    boost::shared_ptr<FdmMesher> mesher (
-        new FdmMesherComposite(layout,
-              std::vector<boost::shared_ptr<Fdm1dMesher> >(1, equityMesher)));
+    const boost::shared_ptr<FdmMesher> mesher (
+        new FdmMesherComposite(equityMesher));
 
     boost::shared_ptr<FdmBlackScholesOp> map(
                      new FdmBlackScholesOp(mesher, process, payoff->strike()));

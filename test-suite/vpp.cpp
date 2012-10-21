@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2010, 2011 Klaus Spanderen
+ Copyright (C) 2010, 2011, 2012 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -44,8 +44,9 @@
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/experimental/finitedifferences/fdsimpleextoustorageengine.hpp>
 #include <ql/experimental/finitedifferences/fdklugeextouspreadengine.hpp>
+#include <ql/experimental/finitedifferences/fdmvppstepconditionfactory.hpp>
 #include <ql/experimental/finitedifferences/fdsimpleklugeextouvppengine.hpp>
-#include <ql/experimental/finitedifferences/fdmvppstepcondition.hpp>
+#include <ql/experimental/finitedifferences/dynprogvppintrinsicvalueengine.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmspreadpayoffinnervalue.hpp>
 
@@ -54,7 +55,6 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
-
 
 namespace {
     boost::shared_ptr<ExtOUWithJumpsProcess> createKlugeProcess() {
@@ -167,10 +167,10 @@ void VPPTest::testGemanRoncoroniProcess() {
             const Time t = Real(i)/stepsPerYear;
             const DiscountFactor df = rTS->discount(t);
 
-            const Real gasPrice         = std::exp(path.value[1][i]);
+            const Real fuelPrice         = std::exp(path.value[1][i]);
             const Real electricityPrice = std::exp(path.value[0][i]);
 
-            const Real sparkSpread = electricityPrice - heatRate*gasPrice;
+            const Real sparkSpread = electricityPrice - heatRate*fuelPrice;
             plantValue += std::max(0.0, sparkSpread)*df;
             onTime.add((sparkSpread > 0.0) ? 1.0 : 0.0);
         }
@@ -338,7 +338,7 @@ void VPPTest::testKlugeExtOUSpreadOption() {
 namespace {
     // for a "real" gas and power forward curve
     // please see. e.g. http://www.kyos.com/?content=64
-    const Real gasPrices[] = {20.74,21.65,20.78,21.58,21.43,20.82,22.02,21.52,
+    const Real fuelPrices[] = {20.74,21.65,20.78,21.58,21.43,20.82,22.02,21.52,
                               21.02,21.46,21.75,20.69,22.16,20.38,20.82,20.68,
                               20.57,21.92,22.04,20.45,20.75,21.92,20.53,20.67,
                               20.88,21.02,20.82,21.67,21.82,22.12,20.45,20.74,
@@ -381,31 +381,6 @@ namespace {
                               52.65,55.57,57.67,56.79,55.15,54.74,50.31,47.49,
                               53.72,55.62,55.89,58.11,54.46,52.92,49.61,44.68,
                               51.59,57.44,56.50,55.12,57.22,54.61,49.92,45.20};
-
-    class GasPrice : public FdmInnerValueCalculator {
-      public:
-        Real innerValue(const FdmLinearOpIterator&, Time t) {
-            Size i = (Size) t;
-            QL_REQUIRE(i < LENGTH(gasPrices), "invalid time");
-            return gasPrices[(Size) t]; }
-        Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
-            return innerValue(iter, t);
-        }
-    };
-    class SparkSpreadPrice : public FdmInnerValueCalculator {
-      public:
-        SparkSpreadPrice(Real heatRate) : heatRate_(heatRate) {}
-        Real innerValue(const FdmLinearOpIterator&, Time t) {
-            Size i = (Size) t;
-            QL_REQUIRE(i < LENGTH(powerPrices), "invalid time");
-            return powerPrices[i] - heatRate_*gasPrices[i];
-        }
-        Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
-            return innerValue(iter, t);
-        }
-      private:
-        const Real heatRate_;
-    };
 }
 
 void VPPTest::testVPPIntrinsicValue() {
@@ -414,6 +389,10 @@ void VPPTest::testVPPIntrinsicValue() {
 
     SavedSettings backup;
 
+    const Date today = Date(18, December, 2011);
+    const DayCounter dc = ActualActual();
+    Settings::instance().evaluationDate() = today;
+
     // vpp parameters
     const Real pMin           = 8;
     const Real pMax           = 40;
@@ -421,54 +400,36 @@ void VPPTest::testVPPIntrinsicValue() {
     const Size tMinDown       = 2;
     const Real startUpFuel    = 20;
     const Real startUpFixCost = 100;
-    const Real carbonPrice    = 3.0;
+    const Real fuelCostAddon    = 3.0;
     const Size nStarts        = Null<Size>();
     const Size stateDirection = 0;
 
-    const Size nStates = ((nStarts == Null<Size>()) ? 1 : nStarts)*
-                         (2*tMinUp + tMinDown);
-
-    const std::vector<Size> dim(1, nStates);
-    const boost::shared_ptr<FdmLinearOpLayout> layout(
-                                                   new FdmLinearOpLayout(dim));
-
-    const boost::shared_ptr<FdmMesher> mesher(
-        new FdmMesherComposite(layout,
-             std::vector<boost::shared_ptr<Fdm1dMesher> >(1,
-                                boost::shared_ptr<Fdm1dMesher>(
-                                    new Uniform1dMesher(0.0, 1.0, nStates)))));
-
-    const boost::shared_ptr<FdmInnerValueCalculator> gasPrice(new GasPrice());
-
-    const Real efficiency[] = { 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.9 };
+    const boost::shared_ptr<SwingExercise> exercise(
+                                new SwingExercise(today, today+6, 3600u));
 
     // Expected values are calculated using mixed integer programming
     // based on the gnu linear programming toolkit. For details please see:
     // http://spanderen.de/
     //        2011/06/23/vpp-pricing-ii-mixed-integer-linear-programming/
+    const Real efficiency[] = { 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.9 };
     const Real expected[] = { 0.0, 2056.04, 11145.577778, 26452.04,
                               44512.461818, 62000.626667, 137591.911111};
 
     for (Size i=0; i < LENGTH(efficiency); ++i) {
         const Real heatRate = 1.0/efficiency[i];
-        const boost::shared_ptr<FdmInnerValueCalculator> sparkSpreadPrice(
-                                              new SparkSpreadPrice(heatRate));
 
-        boost::shared_ptr<StepCondition<Array> > stepCondition(
-            new FdmVPPStepCondition(heatRate,
-                                    pMin, pMax,
-                                    tMinUp, tMinDown,
-                                    nStarts,
-                                    startUpFuel, startUpFixCost,
-                                    carbonPrice, stateDirection,
-                                    mesher, gasPrice, sparkSpreadPrice));
+        VanillaVPPOption option(heatRate, pMin, pMax, tMinUp, tMinDown,
+                                startUpFuel, startUpFixCost, exercise);
 
-        Array state(nStates, 0.0);
-        for (Size j=LENGTH(gasPrices); j > 0; --j) {
-            stepCondition->applyTo(state, (Time) j-1);
-        }
-        const Real calculated = *std::max_element(state.begin(), state.end());
-        if (std::fabs(expected[i] - calculated) > 1e-2) {
+        option.setPricingEngine(boost::shared_ptr<PricingEngine>(
+            new DynProgVPPIntrinsicValueEngine(
+                std::vector<Real>(fuelPrices,fuelPrices+LENGTH(fuelPrices)),
+                std::vector<Real>(powerPrices,powerPrices+LENGTH(powerPrices)),
+                fuelCostAddon, flatRate(0.0, dc))));
+
+        const Real calculated = option.NPV();
+
+        if (std::fabs(expected[i] - calculated) > 1e-4) {
             BOOST_ERROR("Failed to reproduce reference values"
                        << "\n    calculated: " << calculated
                        << "\n    expected:   " << expected[i]);
@@ -479,11 +440,11 @@ void VPPTest::testVPPIntrinsicValue() {
 
 namespace {
 
-    class PathGasPrice : public FdmInnerValueCalculator {
+    class PathfuelPrice : public FdmInnerValueCalculator {
       public:
         typedef FdSimpleKlugeExtOUVPPEngine::Shape Shape;
 
-        PathGasPrice(
+        PathfuelPrice(
             const MultiPathGenerator<PseudoRandom>::sample_type::value_type& path,
             const boost::shared_ptr<Shape>& shape)
         : path_(path),
@@ -513,11 +474,11 @@ namespace {
         PathSparkSpreadPrice(
             Real heatRate,
             const MultiPathGenerator<PseudoRandom>::sample_type::value_type& path,
-            const boost::shared_ptr<Shape>& gasShape,
+            const boost::shared_ptr<Shape>& fuelShape,
             const boost::shared_ptr<Shape>& powerShape)
         : heatRate_(heatRate),
           path_(path),
-          gasShape_(gasShape),
+          fuelShape_(fuelShape),
           powerShape_(powerShape) {}
 
         Real innerValue(const FdmLinearOpIterator&, Time t) {
@@ -529,7 +490,7 @@ namespace {
                 powerShape_->begin(), powerShape_->end(),
                 std::pair<Time, Real>(t-std::sqrt(QL_EPSILON), 0.0))->second;
             const Real g = std::lower_bound(
-                gasShape_->begin(),gasShape_->end(),
+                fuelShape_->begin(),fuelShape_->end(),
                 std::pair<Time, Real>(t-std::sqrt(QL_EPSILON), 0.0))->second;
 
             return std::exp(f + path_[0][i]+path_[1][i])
@@ -541,7 +502,7 @@ namespace {
       private:
         const Real heatRate_;
         const MultiPathGenerator<PseudoRandom>::sample_type::value_type& path_;
-        const boost::shared_ptr<Shape> gasShape_;
+        const boost::shared_ptr<Shape> fuelShape_;
         const boost::shared_ptr<Shape> powerShape_;
     };
 }
@@ -563,16 +524,12 @@ void VPPTest::testVPPPricing() {
     const Size tMinDown       = 2;
     const Real startUpFuel    = 20;
     const Real startUpFixCost = 100;
-    const Size nStates        = 2u*tMinUp + tMinDown;
 
-    boost::shared_ptr<SwingExercise> exercise(
+    const boost::shared_ptr<SwingExercise> exercise(
                                 new SwingExercise(today, today+6, 3600u));
 
-    VanillaVPPOption vppOption(heatRate, pMin, pMax,
-                               tMinUp, tMinDown,
-                               Null<Size>(),
-                               startUpFuel, startUpFixCost,
-                               exercise);
+    VanillaVPPOption vppOption(heatRate, pMin, pMax, tMinUp, tMinDown,
+                               startUpFuel, startUpFixCost, exercise);
 
     // model definition
     const Real beta         = 200;
@@ -584,7 +541,7 @@ void VPPTest::testVPPPricing() {
     const Real volatility_u = std::sqrt(1.3);
     const Real rho          = 0.7;
     const Rate irRate       = 0.00;
-    const Real carbonPrice  = 3.0;
+    const Real fuelCostAddon  = 3.0;
 
     Array x0(2);
     x0[0] = 0.0; x0[1] = 0.0;
@@ -610,16 +567,16 @@ void VPPTest::testVPPPricing() {
     const Size nHours = LENGTH(powerPrices);
 
     typedef FdSimpleKlugeExtOUVPPEngine::Shape Shape;
-    boost::shared_ptr<Shape> gasShape(new Shape(nHours));
+    boost::shared_ptr<Shape> fuelShape(new Shape(nHours));
     boost::shared_ptr<Shape> powerShape(new Shape(nHours));
 
     for (Size i=0; i < nHours; ++i) {
         const Time t = (i+1)/(365*24.);
 
-        const Real gasPrice = gasPrices[i];
-        const Real gs = std::log(gasPrice)-square<Real>()(volatility_u)
+        const Real fuelPrice = fuelPrices[i];
+        const Real gs = std::log(fuelPrice)-square<Real>()(volatility_u)
                                /(4*kappa)*(1-std::exp(-2*kappa*t));
-        (*gasShape)[i] = Shape::value_type(t, gs);
+        (*fuelShape)[i] = Shape::value_type(t, gs);
 
         const Real powerPrice = powerPrices[i];
         const Real ps = std::log(powerPrice)-square<Real>()(volatility_x)
@@ -630,25 +587,13 @@ void VPPTest::testVPPPricing() {
     }
 
     // Test: intrinsic value
-    const boost::shared_ptr<FdmMesher> oneDimMesher(
-        new FdmMesherComposite(boost::shared_ptr<FdmLinearOpLayout>(
-            new FdmLinearOpLayout(std::vector<Size>(1, nStates))),
-            std::vector<boost::shared_ptr<Fdm1dMesher> >(1,
-                boost::shared_ptr<Fdm1dMesher>(
-                    new Uniform1dMesher(0.0, 1.0, nStates)))));
+    vppOption.setPricingEngine(boost::shared_ptr<PricingEngine>(
+        new DynProgVPPIntrinsicValueEngine(
+            std::vector<Real>(fuelPrices, fuelPrices+nHours),
+            std::vector<Real>(powerPrices, powerPrices+nHours),
+            fuelCostAddon, flatRate(0.0, dc))));
 
-    const FdmVPPStepCondition stepCondition(
-            heatRate, pMin, pMax, tMinUp, tMinDown, Null<Size>(),
-            startUpFuel, startUpFixCost, carbonPrice, 0u, oneDimMesher,
-            boost::shared_ptr<FdmInnerValueCalculator>(new GasPrice()),
-            boost::shared_ptr<FdmInnerValueCalculator>(
-               new SparkSpreadPrice(heatRate)));
-
-    Array state(nStates, 0.0);
-    for (Size j=exercise->dates().size(); j > 0; --j) {
-        stepCondition.applyTo(state, (Time) j-1);
-    }
-    const Real intrinsic = state.back();
+    const Real intrinsic = vppOption.NPV();
     const Real expectedIntrinsic = 2056.04;
     if (std::fabs(intrinsic - expectedIntrinsic) > 0.1) {
         BOOST_ERROR("Failed to reproduce intrinsic value"
@@ -658,9 +603,9 @@ void VPPTest::testVPPPricing() {
 
     // Test: finite difference price
     const boost::shared_ptr<PricingEngine> engine(
-        new FdSimpleKlugeExtOUVPPEngine(klugeOUProcess, rTS, carbonPrice,
-                                        1, 25, 11, 10,
-                                        gasShape, powerShape));
+        new FdSimpleKlugeExtOUVPPEngine(klugeOUProcess, rTS,
+                                        fuelShape, powerShape, fuelCostAddon,
+                                        1, 25, 11, 10));
 
     vppOption.setPricingEngine(engine);
 
@@ -673,6 +618,21 @@ void VPPTest::testVPPPricing() {
     }
 
     // Test: Monte-Carlo perfect foresight price
+    VanillaVPPOption::arguments args;
+    vppOption.setupArguments(&args);
+
+    const FdmVPPStepConditionFactory stepConditionFactory(args);
+
+    const boost::shared_ptr<FdmMesher> oneDimMesher(new FdmMesherComposite(
+        stepConditionFactory.stateMesher()));
+    const Size nStates = oneDimMesher->layout()->dim()[0];
+
+    const FdmVPPStepConditionParams vppParams = {
+        heatRate, pMin, pMax, tMinUp, tMinDown,
+        startUpFuel, startUpFixCost, fuelCostAddon,
+    };
+    const FdmVPPStepConditionMesher vppMesh = { 0u, oneDimMesher };
+
     const TimeGrid grid(dc.yearFraction(today, exercise->lastDate()+1),
                         exercise->dates().size());
     typedef PseudoRandom::rsg_type rsg_type;
@@ -687,19 +647,18 @@ void VPPTest::testVPPPricing() {
 
     for (Size i=0; i < nTrails; ++i) {
         const sample_type& path = generator.next();
-
-        FdmVPPStepCondition stepCondition(
-            heatRate, pMin, pMax, tMinUp, tMinDown, Null<Size>(),
-            startUpFuel, startUpFixCost, carbonPrice, 0u, oneDimMesher,
-            boost::shared_ptr<FdmInnerValueCalculator>(
-                new PathGasPrice(path.value, gasShape)),
-            boost::shared_ptr<FdmInnerValueCalculator>(
-                new PathSparkSpreadPrice(heatRate, path.value,
-                                         gasShape, powerShape)));
+        const boost::shared_ptr<FdmVPPStepCondition> stepCondition(
+            stepConditionFactory.build(
+                vppMesh, fuelCostAddon,
+                boost::shared_ptr<FdmInnerValueCalculator>(
+                    new PathfuelPrice(path.value, fuelShape)),
+                boost::shared_ptr<FdmInnerValueCalculator>(
+                    new PathSparkSpreadPrice(heatRate, path.value,
+                                             fuelShape, powerShape))));
 
         Array state(nStates, 0.0);
         for (Size j=exercise->dates().size(); j > 0; --j) {
-            stepCondition.applyTo(state, grid.at(j));
+            stepCondition->applyTo(state, grid.at(j));
             state*=rTS->discount(grid.at(j))/rTS->discount(grid.at(j-1));
         }
 
@@ -731,15 +690,12 @@ void VPPTest::testVPPPricing() {
 
         sparkSpreads.push_back(boost::shared_ptr<FdmInnerValueCalculator>(
             new PathSparkSpreadPrice(heatRate, calibrationPaths.back().value,
-                                     gasShape, powerShape)));
-
-        stepConditions.push_back(boost::shared_ptr<FdmVPPStepCondition>(
-            new FdmVPPStepCondition(
-                heatRate, pMin, pMax, tMinUp, tMinDown,Null<Size>(),
-                startUpFuel, startUpFixCost, carbonPrice, 0u, oneDimMesher,
-                boost::shared_ptr<FdmInnerValueCalculator>(
-                    new PathGasPrice(calibrationPaths.back().value, gasShape)),
-                sparkSpreads.back())));
+                                     fuelShape, powerShape)));
+        stepConditions.push_back(stepConditionFactory.build(
+            vppMesh, fuelCostAddon,
+            boost::shared_ptr<FdmInnerValueCalculator>(
+                new PathfuelPrice(calibrationPaths.back().value, fuelShape)),
+            sparkSpreads.back()));
     }
 
 
@@ -794,24 +750,19 @@ void VPPTest::testVPPPricing() {
         const sample_type& path = (i % 2) ? generator.antithetic()
                                           : generator.next();
 
-        const boost::shared_ptr<FdmInnerValueCalculator> gasPrices(
-            new PathGasPrice(path.value, gasShape));
+        const boost::shared_ptr<FdmInnerValueCalculator> fuelPrices(
+            new PathfuelPrice(path.value, fuelShape));
 
         const boost::shared_ptr<FdmInnerValueCalculator> sparkSpreads(
             new PathSparkSpreadPrice(heatRate, path.value,
-                                     gasShape, powerShape));
-
-        FdmVPPStepCondition stepCondition(
-            heatRate, pMin, pMax, tMinUp, tMinDown,Null<Size>(),
-            startUpFuel, startUpFixCost, carbonPrice, 0u, oneDimMesher,
-            gasPrices, sparkSpreads);
+                                     fuelShape, powerShape));
 
         for (Size j=exercise->dates().size(); j > 0u; --j) {
             const Time t = grid.at(j);
-            const Real gasPrice = gasPrices->innerValue(iter, t);
+            const Real fuelPrice = fuelPrices->innerValue(iter, t);
             const Real sparkSpread = sparkSpreads->innerValue(iter, t);
             const Real startUpCost
-                    = startUpFixCost + (gasPrice + carbonPrice)*startUpFuel;
+                    = startUpFixCost + (fuelPrice + fuelCostAddon)*startUpFuel;
 
             x[0] = sparkSpread;
             for (Size k=0; k < nStates; ++k) {
@@ -821,8 +772,8 @@ void VPPTest::testVPPPricing() {
                 }
             }
 
-            const Real pMinFlow = pMin*(sparkSpread - heatRate*carbonPrice);
-            const Real pMaxFlow = pMax*(sparkSpread - heatRate*carbonPrice);
+            const Real pMinFlow = pMin*(sparkSpread - heatRate*fuelCostAddon);
+            const Real pMaxFlow = pMax*(sparkSpread - heatRate*fuelCostAddon);
 
             // rollback continuation states and the path states
             for (Size i=0; i < 2*tMinUp; ++i) {

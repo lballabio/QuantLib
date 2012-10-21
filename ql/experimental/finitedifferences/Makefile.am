@@ -4,6 +4,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    dynprogvppintrinsicvalueengine.hpp \
     fdextoujumpvanillaengine.hpp \
 	fdklugeextouspreadengine.hpp \
 	fdmexpextouinnervaluecalculator.hpp \
@@ -16,7 +17,9 @@ this_include_HEADERS = \
 	fdmsimple2dextousolver.hpp \
     fdmsimple3dextoujumpsolver.hpp \
 	fdmspreadpayoffinnervalue.hpp \
+	fdmvppstartlimitstepcondition.hpp \
 	fdmvppstepcondition.hpp \
+	fdmvppstepconditionfactory.hpp \
 	fdsimpleextoujumpswingengine.hpp \
     fdsimpleextoustorageengine.hpp \
 	fdsimpleklugeextouvppengine.hpp \
@@ -24,13 +27,16 @@ this_include_HEADERS = \
 	vanillavppoption.hpp
 
 libMultiDimFDM_la_SOURCES = \
+	dynprogvppintrinsicvalueengine.cpp \
     fdextoujumpvanillaengine.cpp \
 	fdklugeextouspreadengine.cpp \
 	fdmextendedornsteinuhlenbeckop.cpp \
 	fdmextoujumpop.cpp \
 	fdmextoujumpsolver.cpp \
 	fdmklugeextouop.cpp \
+	fdmvppstartlimitstepcondition.cpp \
 	fdmvppstepcondition.cpp \
+	fdmvppstepconditionfactory.cpp \
 	fdsimpleextoujumpswingengine.cpp \
     fdsimpleextoustorageengine.cpp \
     fdsimpleklugeextouvppengine.cpp \

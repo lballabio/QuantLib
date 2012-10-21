@@ -38,6 +38,22 @@ namespace QuantLib {
             const boost::shared_ptr<FdmLinearOpLayout>& layout,
             const std::vector<boost::shared_ptr<Fdm1dMesher> > & mesher);
 
+        // convenient constructors
+        explicit FdmMesherComposite(
+            const std::vector<boost::shared_ptr<Fdm1dMesher> > & mesher);
+        explicit FdmMesherComposite(
+            const boost::shared_ptr<Fdm1dMesher>& mesher);
+        FdmMesherComposite(const boost::shared_ptr<Fdm1dMesher>& m1,
+                           const boost::shared_ptr<Fdm1dMesher>& m2);
+        FdmMesherComposite(const boost::shared_ptr<Fdm1dMesher>& m1,
+                           const boost::shared_ptr<Fdm1dMesher>& m2,
+                           const boost::shared_ptr<Fdm1dMesher>& m3);
+        FdmMesherComposite(const boost::shared_ptr<Fdm1dMesher>& m1,
+                           const boost::shared_ptr<Fdm1dMesher>& m2,
+                           const boost::shared_ptr<Fdm1dMesher>& m3,
+                           const boost::shared_ptr<Fdm1dMesher>& m4);
+
+
         Real dplus(const FdmLinearOpIterator& iter, Size direction) const;
         Real dminus(const FdmLinearOpIterator& iter, Size direction) const;
         Real location(const FdmLinearOpIterator& iter, Size direction) const;
