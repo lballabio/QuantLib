@@ -704,8 +704,13 @@ test_suite* BarrierOptionTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testHaugValues));
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testBabsiriValues));
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testBeagleholeValues));
-    suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testPerturbative));
     suite->add(QUANTLIB_TEST_CASE(
                         &BarrierOptionTest::testLocalVolAndHestonComparison));
+    return suite;
+}
+
+test_suite* BarrierOptionTest::experimental() {
+    test_suite* suite = BOOST_TEST_SUITE("Barrier option tests");
+    suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testPerturbative));
     return suite;
 }

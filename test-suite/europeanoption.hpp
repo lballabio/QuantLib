@@ -48,6 +48,7 @@ class EuropeanOptionTest {
     static void testPriceCurve();
     static void testLocalVolatility();
     static boost::unit_test_framework::test_suite* suite();
+    static boost::unit_test_framework::test_suite* experimental();
 };
 
 

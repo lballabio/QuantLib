@@ -1253,9 +1253,13 @@ test_suite* AsianOptionTest::suite() {
         &AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks));
     suite->add(QUANTLIB_TEST_CASE(
         &AsianOptionTest::testPastFixings));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testLevyEngine));
 
+    return suite;
+}
+
+test_suite* AsianOptionTest::experimental() {
+    test_suite* suite = BOOST_TEST_SUITE("Asian option tests");
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testLevyEngine));
     return suite;
 }
 

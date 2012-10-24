@@ -254,26 +254,18 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite());
     test->add(AssetSwapTest::suite()); // fails with QL_USE_INDEXED_COUPON
-    test->add(AutocovariancesTest::suite());
     test->add(BarrierOptionTest::suite());
     test->add(BasketOptionTest::suite());
     test->add(BatesModelTest::suite());
     test->add(BermudanSwaptionTest::suite());
-    test->add(BlackDeltaCalculatorTest::suite());
     test->add(BondTest::suite());
     test->add(BrownianBridgeTest::suite());
     test->add(CalendarTest::suite());
     test->add(CapFloorTest::suite());
     test->add(CapFlooredCouponTest::suite());
     test->add(CashFlowsTest::suite());
-    test->add(CdsOptionTest::suite());
-    test->add(CdoTest::suite());
-    test->add(ChooserOptionTest::suite());
     test->add(CliquetOptionTest::suite());
     test->add(CmsTest::suite());
-    test->add(CommodityUnitOfMeasureTest::suite());
-    test->add(CompoundOptionTest::suite());
-    test->add(ConvertibleBondTest::suite());
     test->add(CovarianceTest::suite());
     test->add(CPISwapTest::suite());
     test->add(CreditDefaultSwapTest::suite());
@@ -286,25 +278,19 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(DistributionTest::suite());
     test->add(DividendOptionTest::suite());
     test->add(EuropeanOptionTest::suite());
-    test->add(EverestOptionTest::suite());
     test->add(ExchangeRateTest::suite());
-    test->add(ExtendedTreesTest::suite());
     test->add(FactorialTest::suite());
-    test->add(FastFourierTransformTest::suite());
     test->add(FdHestonTest::suite());
     test->add(FdmLinearOpTest::suite());
     test->add(ForwardOptionTest::suite());
     test->add(GaussianQuadraturesTest::suite());
     test->add(GJRGARCHModelTest::suite());
     test->add(HestonModelTest::suite());
-    test->add(HimalayaOptionTest::suite());
     test->add(HybridHestonHullWhiteProcessTest::suite());
     test->add(InflationTest::suite());
     test->add(InflationCapFloorTest::suite());
     test->add(InflationCapFlooredCouponTest::suite());
     test->add(InflationCPIBondTest::suite());
-    test->add(InflationCPICapFloorTest::suite());
-    test->add(InflationVolTest::suite());
     test->add(InstrumentTest::suite());
     test->add(IntegralTest::suite());
     test->add(InterestRateTest::suite());
@@ -313,7 +299,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(LinearLeastSquaresRegressionTest::suite());
     test->add(LookbackOptionTest::suite());
     test->add(LowDiscrepancyTest::suite());
-    test->add(MargrabeOptionTest::suite());
     test->add(MarketModelTest::suite());
     test->add(MarketModelCmsTest::suite());
     test->add(MarketModelSmmTest::suite());
@@ -324,13 +309,10 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(MCLongstaffSchwartzEngineTest::suite());
     test->add(MersenneTwisterTest::suite());
     test->add(MoneyTest::suite());
-    test->add(NthToDefaultTest::suite());
-    test->add(OdeTest::suite());
     test->add(OperatorTest::suite());
     test->add(OptimizersTest::suite());
     test->add(OptionletStripperTest::suite());
     test->add(OvernightIndexedSwapTest::suite());
-    test->add(PagodaOptionTest::suite());
     test->add(PathGeneratorTest::suite());
     test->add(PeriodTest::suite());
     test->add(PiecewiseYieldCurveTest::suite());
@@ -343,8 +325,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ScheduleTest::suite());
     test->add(ShortRateModelTest::suite()); // fails with QL_USE_INDEXED_COUPON
     test->add(Solver1DTest::suite());
-    test->add(SpreadOptionTest::suite());
-    test->add(SwingOptionTest::suite());
     test->add(StatisticsTest::suite());
     test->add(SurfaceTest::suite());
     test->add(SwapTest::suite());
@@ -357,15 +337,40 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(TqrEigenDecompositionTest::suite());
     test->add(TracingTest::suite());
     test->add(TransformedGridTest::suite());
+    test->add(VarianceSwapTest::suite());
+    test->add(VolatilityModelsTest::suite());
+
+    // tests for experimental classes
+    test->add(AsianOptionTest::experimental());
+    test->add(AutocovariancesTest::suite());
+    test->add(BarrierOptionTest::experimental());
+    test->add(BlackDeltaCalculatorTest::suite());
+    test->add(CdoTest::suite());
+    test->add(CdsOptionTest::suite());
+    test->add(ChooserOptionTest::suite());
+    test->add(CommodityUnitOfMeasureTest::suite());
+    test->add(CompoundOptionTest::suite());
+    test->add(ConvertibleBondTest::suite());
+    test->add(EuropeanOptionTest::experimental());
+    test->add(EverestOptionTest::suite());
+    test->add(ExtendedTreesTest::suite());
+    test->add(FastFourierTransformTest::suite());
+    test->add(HimalayaOptionTest::suite());
+    test->add(InflationCPICapFloorTest::suite());
+    test->add(InflationVolTest::suite());
+    test->add(MargrabeOptionTest::suite());
+    test->add(NthToDefaultTest::suite());
+    test->add(OdeTest::suite());
+    test->add(PagodaOptionTest::suite());
+    test->add(SpreadOptionTest::suite());
+    test->add(SwingOptionTest::suite());
     test->add(TwoAssetBarrierOptionTest::suite());
     test->add(VarianceGammaTest::suite());
     test->add(VarianceOptionTest::suite());
-    test->add(VarianceSwapTest::suite());
-    test->add(VolatilityModelsTest::suite());
     test->add(VPPTest::suite());
     test->add(WriterExtensibleOptionTest::suite());
 
-    //tests for deprecated classes
+    // tests for deprecated classes
     test->add(LiborMarketModelTest::suite());
     test->add(LiborMarketModelProcessTest::suite());
 

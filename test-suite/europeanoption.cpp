@@ -1570,11 +1570,16 @@ test_suite* EuropeanOptionTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testIntegralEngines));
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testMcEngines));
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testQmcEngines));
-    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testFFTEngines));
 
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testPriceCurve));
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testLocalVolatility));
 
+    return suite;
+}
+
+test_suite* EuropeanOptionTest::experimental() {
+    test_suite* suite = BOOST_TEST_SUITE("European option tests");
+    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testFFTEngines));
     return suite;
 }
