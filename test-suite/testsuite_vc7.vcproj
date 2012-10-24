@@ -678,6 +678,9 @@
 				RelativePath=".\nthtodefault.cpp">
 			</File>
 			<File
+				RelativePath=".\ode.cpp">
+			</File>
+			<File
 				RelativePath="operators.cpp">
 			</File>
 			<File
@@ -1031,6 +1034,9 @@
 			</File>
 			<File
 				RelativePath=".\nthtodefault.hpp">
+			</File>
+			<File
+				RelativePath=".\ode.hpp">
 			</File>
 			<File
 				RelativePath="operators.hpp">

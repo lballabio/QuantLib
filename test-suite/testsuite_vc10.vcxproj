@@ -399,6 +399,7 @@
     <ClCompile Include="mersennetwister.cpp" />
     <ClCompile Include="money.cpp" />
     <ClCompile Include="nthtodefault.cpp" />
+    <ClCompile Include="ode.cpp" />
     <ClCompile Include="operators.cpp" />
     <ClCompile Include="optimizers.cpp" />
     <ClCompile Include="optionletstripper.cpp" />
@@ -519,6 +520,7 @@
     <ClInclude Include="mersennetwister.hpp" />
     <ClInclude Include="money.hpp" />
     <ClInclude Include="nthtodefault.hpp" />
+    <ClInclude Include="ode.hpp" />
     <ClInclude Include="operators.hpp" />
     <ClInclude Include="optimizers.hpp" />
     <ClInclude Include="optionletstripper.hpp" />

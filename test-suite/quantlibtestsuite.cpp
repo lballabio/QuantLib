@@ -119,6 +119,7 @@
 #include "mersennetwister.hpp"
 #include "money.hpp"
 #include "nthtodefault.hpp"
+#include "ode.hpp"
 #include "operators.hpp"
 #include "optimizers.hpp"
 #include "optionletstripper.hpp"
@@ -324,6 +325,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(MersenneTwisterTest::suite());
     test->add(MoneyTest::suite());
     test->add(NthToDefaultTest::suite());
+    test->add(OdeTest::suite());
     test->add(OperatorTest::suite());
     test->add(OptimizersTest::suite());
     test->add(OptionletStripperTest::suite());

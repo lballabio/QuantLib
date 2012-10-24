@@ -78,6 +78,7 @@ QL_TESTS = \
 	mersennetwister.hpp mersennetwister.cpp \
 	money.hpp money.cpp \
 	nthtodefault.hpp nthtodefault.cpp \
+	ode.hpp ode.cpp \
 	operators.hpp operators.cpp \
 	optimizers.hpp optimizers.cpp \
 	optionletstripper.hpp optionletstripper.cpp \

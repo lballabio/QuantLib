@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=1803
+UnitCount=1804
 Type=2
 Ver=1
 ObjFiles=
@@ -18071,6 +18071,16 @@ BuildCmd=
 FileName=ql\experimental\exoticoptions\twoassetbarrieroption.hpp
 CompileCpp=1
 Folder=experimental/exoticoptions
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit1804]
+FileName=ql\experimental\math\adaptiverungekutta.hpp
+CompileCpp=1
+Folder=experimental/math
 Compile=1
 Link=1
 Priority=1000

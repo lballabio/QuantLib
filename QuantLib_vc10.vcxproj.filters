@@ -3165,6 +3165,9 @@
     <ClInclude Include="ql\experimental\math\all.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\math\adaptiverungekutta.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\math\autocovariance.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>

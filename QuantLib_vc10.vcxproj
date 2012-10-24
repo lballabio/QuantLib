@@ -1308,6 +1308,7 @@
     <ClInclude Include="ql\experimental\inflation\yoyoptionlethelpers.hpp" />
     <ClInclude Include="ql\experimental\inflation\yoyoptionletstripper.hpp" />
     <ClInclude Include="ql\experimental\math\all.hpp" />
+    <ClInclude Include="ql\experimental\math\adaptiverungekutta.hpp" />
     <ClInclude Include="ql\experimental\math\autocovariance.hpp" />
     <ClInclude Include="ql\experimental\math\claytoncopularng.hpp" />
     <ClInclude Include="ql\experimental\math\farliegumbelmorgensterncopularng.hpp" />
