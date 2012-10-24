@@ -96,7 +96,7 @@ namespace QuantLib {
             while (dBegin != dEnd) {
                 validFixing = isValidFixingDate(*dBegin);
                 Real currentValue = h[*dBegin];
-                missingFixing= forceOverwrite || close(currentValue,nullValue);
+                missingFixing = forceOverwrite || currentValue == nullValue;
                 if (validFixing) {
                     if (missingFixing)
                         h[*(dBegin++)] = *(vBegin++);
