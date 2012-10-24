@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2012 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -46,6 +47,8 @@ class MarketModelTest {
     static void testAbcdVolatilityFit();
     static void testDriftCalculator();
     static void testIsInSubset();
+	static void testAbcdDegenerateCases();
+	static void testCovariance();
     static boost::unit_test_framework::test_suite* suite();
 };
 

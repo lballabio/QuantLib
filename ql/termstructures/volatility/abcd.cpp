@@ -21,6 +21,7 @@
 */
 
 #include <ql/termstructures/volatility/abcd.hpp>
+#include <ql/math/comparison.hpp>
 
 namespace QuantLib {
 
@@ -98,6 +99,11 @@ namespace QuantLib {
     // PRIMITIVE
     Real AbcdFunction::primitive(Time t, Time T, Time S) const {
         if (T<t || S<t) return 0.0;
+
+        if (close(c_,0.0)) {
+            Real v = a_+d_;
+            return t*(v*v+v*b_*S+v*b_*T-v*b_*t+b_*b_*S*T-0.5*b_*b_*t*(S+T)+b_*b_*t*t/3.0);
+        }
 
         Real k1=std::exp(c_*t), k2=std::exp(c_*S), k3=std::exp(c_*T);
 

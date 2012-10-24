@@ -6,6 +6,7 @@ Copyright (C) 2006 Marco Bianchetti
 Copyright (C) 2006 Cristina Duminuco
 Copyright (C) 2006 StatPro Italia srl
 Copyright (C) 2008 Mark Joshi
+Copyright (C) 2012 Peter Caspers
 
 This file is part of QuantLib, a free-software/open-source library
 for financial quantitative analysts and developers - http://quantlib.org/
@@ -83,7 +84,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/math/functional.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <sstream>
 
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductcaplet.hpp>
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductswaption.hpp>
@@ -107,6 +107,9 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/models/marketmodels/products/multistep/multistepinversefloater.hpp>
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductinversefloater.hpp>
 #include <ql/models/marketmodels/products/multistep/multisteppathwisewrapper.hpp>
+
+#include <boost/math/special_functions/fpclassify.hpp>
+#include <sstream>
 
 #if defined(BOOST_MSVC)
 #include <float.h>
@@ -4770,6 +4773,111 @@ void MarketModelTest::testIsInSubset() {
     }
 }
 
+
+void MarketModelTest::testAbcdDegenerateCases() {
+    BOOST_MESSAGE("Testing abcd degenerate cases...");
+
+    AbcdFunction f1(0.0,0.0,0.0,1.0);
+    AbcdFunction f2(1.0,0.0,0.0,0.0);
+
+    Real cov1 = f1.covariance(0.0,1.0,1.0,1.0);
+    if (std::fabs(cov1-1.0) > 1.0E-14
+        || boost::math::isnan(cov1) || boost::math::isinf(cov1))
+        BOOST_FAIL("(a,b,c,d)=(0,0,0,1): true covariance is 1.0, "
+                   << "actual value is " << cov1);
+
+    Real cov2 = f2.covariance(0.0,1.0,1.0,1.0);
+    if (std::fabs(cov2-1.0) > 1.0E-14
+        || boost::math::isnan(cov2) || boost::math::isinf(cov2))
+        BOOST_FAIL("(a,b,c,d)=(1,0,0,0): true covariance is 1.0, "
+                   << "actual value is " << cov2);
+}
+
+void MarketModelTest::testCovariance() {
+    BOOST_MESSAGE("Testing market models covariance...");
+
+    const Size n = 10;
+
+    std::vector<Real> rateTimes;
+    std::vector<Real> evolTimes1;
+    std::vector<Real> evolTimes2;
+    std::vector<Real> evolTimes3;
+    std::vector<Real> evolTimes4;
+    std::vector<std::vector<Real> > evolTimes;
+
+    for(Size i=1;i<=n;i++) rateTimes.push_back(i);
+    evolTimes1.push_back(n-1);
+    for(Size i=1;i<=n-1;i++) evolTimes2.push_back(i);
+    for(Size i=1;i<=2*n-2;i++) evolTimes3.push_back(0.5*i);
+    evolTimes4.push_back(0.3);
+    evolTimes4.push_back(1.3);
+    evolTimes4.push_back(2.0);
+    evolTimes4.push_back(4.5);
+    evolTimes4.push_back(8.2);
+
+    evolTimes.push_back(evolTimes1);
+    evolTimes.push_back(evolTimes2);
+    evolTimes.push_back(evolTimes3);
+    evolTimes.push_back(evolTimes4);
+
+    std::vector<std::string> evolNames;
+    evolNames.push_back("one evolution time");
+    evolNames.push_back("evolution times on rate fixings");
+    evolNames.push_back("evolution times on rate fixings and midpoints between fixings");
+    evolNames.push_back("irregular evolution times");
+
+    std::vector<Real> ks(n-1,1.0);
+    std::vector<Real> displ(n-1,0.0);
+    std::vector<Real> rates(n-1,0.0);
+    std::vector<Real> vols(n-1,1.0);
+
+    Matrix c = exponentialCorrelations(rateTimes,0.5,0.2,1.0,0.0);
+    boost::shared_ptr<PiecewiseConstantCorrelation> corr(
+                          new TimeHomogeneousForwardCorrelation(c,rateTimes));
+
+    std::vector<std::string> modelNames;
+    modelNames.push_back("FlatVol");
+    modelNames.push_back("AbcdVol");
+
+    for(Size k=0;k<modelNames.size();k++) {
+        for(Size l=0;l<evolNames.size();l++) {
+            EvolutionDescription evolution(rateTimes,evolTimes[l]);
+            boost::shared_ptr<MarketModel> model;
+            switch(k) {
+              case 0:
+                model = boost::shared_ptr<MarketModel>(
+                            new FlatVol(vols,corr,evolution,n-1,rates,displ));
+                break;
+              case 1:
+                model = boost::shared_ptr<MarketModel>(
+                                 new AbcdVol(1.0,0.0,0.0,0.0,ks,
+                                             corr,evolution,n-1,rates,displ));
+                break;
+              default:
+                BOOST_FAIL("Unknown model " << modelNames[k]);
+            }
+            if (model) {
+                for(Size i=0;i<evolTimes[l].size();i++) {
+                    Matrix cov = model->covariance(i);
+                    Real dt = evolTimes[l][i] - (i>0 ? evolTimes[l][i-1] : 0.0);
+                    for(Size x=0;x<n-1;x++) {
+                        for(Size y=0;y<n-1;y++) {
+                            if(std::min(rateTimes[x],rateTimes[y])>=evolTimes[l][i]
+                               && fabs(cov[x][y]-c[x][y]*dt)>1.0E-14) 
+                                BOOST_FAIL("Model " << modelNames[k]
+                                           << " with " << evolNames[l]
+                                           << ": covariance matrix in step " << i
+                                           << ": true value at (" << x << "," << y
+                                           << ") is " << c[x][y]*dt
+                                           << " actual value is " << cov[x][y]);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 // --- Call the desired tests
 test_suite* MarketModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Market-model tests");
@@ -4801,6 +4909,9 @@ test_suite* MarketModelTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testDriftCalculator));
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testIsInSubset));
+
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testAbcdDegenerateCases));
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCovariance));
 
     return suite;
 }
