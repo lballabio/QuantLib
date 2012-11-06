@@ -76,7 +76,7 @@ namespace QuantLib {
             // Children's Day
             || (d == 5  && m == May)
             // any of the three above observed later if on Saturday or Sunday
-            || ((d == 6 || d == 7) && m == May
+            || (d == 6 && m == May
                 && (w == Monday || w == Tuesday || w == Wednesday))
             // Marine Day (3rd Monday in July),
             // was July 20th until 2003, not a holiday before 1996
