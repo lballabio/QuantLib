@@ -40,6 +40,8 @@ namespace QuantLib {
             || (dd == em+59)
             // New Year's Day
             || (d == 1  && m == January)
+            // Epiphany
+            || (d == 6  && m == January && y >= 2011)
             // May Day
             || (d == 1  && m == May)
             // Constitution Day

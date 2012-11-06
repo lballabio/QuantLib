@@ -36,6 +36,7 @@ namespace QuantLib {
         <li>Easter Monday</li>
         <li>Corpus Christi</li>
         <li>New Year's Day, January 1st</li>
+        <li>Epiphany, January 6th (since 2011)</li>
         <li>May Day, May 1st</li>
         <li>Constitution Day, May 3rd</li>
         <li>Assumption of the Blessed Virgin Mary, August 15th</li>
