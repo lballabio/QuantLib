@@ -48,7 +48,7 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2004-2012 only:)
+        (data available for 2004-2013 only:)
         <ul>
         <li>Lunar New Year, the last day of the previous lunar year,
             January 1st, 2nd in lunar calendar</li>
