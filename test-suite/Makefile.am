@@ -44,6 +44,7 @@ QL_TESTS = \
 	fdheston.hpp fdheston.cpp \
 	fdmlinearop.hpp fdmlinearop.cpp \
 	forwardoption.hpp forwardoption.cpp \
+	garch.hpp garch.cpp \
 	gaussianquadratures.hpp gaussianquadratures.cpp \
 	gjrgarchmodel.hpp gjrgarchmodel.cpp \
 	hestonmodel.hpp hestonmodel.cpp \

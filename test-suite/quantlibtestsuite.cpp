@@ -86,6 +86,7 @@
 #include "fdmlinearop.hpp"
 #include "forwardoption.hpp"
 #include "gaussianquadratures.hpp"
+#include "garch.hpp"
 #include "gjrgarchmodel.hpp"
 #include "hestonmodel.hpp"
 #include "himalayaoption.hpp"
@@ -283,6 +284,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(FdHestonTest::suite());
     test->add(FdmLinearOpTest::suite());
     test->add(ForwardOptionTest::suite());
+    test->add(GARCHTest::suite());
     test->add(GaussianQuadraturesTest::suite());
     test->add(GJRGARCHModelTest::suite());
     test->add(HestonModelTest::suite());

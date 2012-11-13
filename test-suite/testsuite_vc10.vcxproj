@@ -365,6 +365,7 @@
     <ClCompile Include="fdheston.cpp" />
     <ClCompile Include="fdmlinearop.cpp" />
     <ClCompile Include="forwardoption.cpp" />
+    <ClCompile Include="garch.cpp" />
     <ClCompile Include="gaussianquadratures.cpp" />
     <ClCompile Include="gjrgarchmodel.cpp" />
     <ClCompile Include="hestonmodel.cpp" />
@@ -486,6 +487,7 @@
     <ClInclude Include="fdheston.hpp" />
     <ClInclude Include="fdmlinearop.hpp" />
     <ClInclude Include="forwardoption.hpp" />
+    <ClInclude Include="garch.hpp" />
     <ClInclude Include="gaussianquadratures.hpp" />
     <ClInclude Include="gjrgarchmodel.hpp" />
     <ClInclude Include="hestonmodel.hpp" />

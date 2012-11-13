@@ -611,6 +611,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\garch.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\gaussianquadratures.cpp"
 				>
 			</File>
@@ -1085,6 +1089,10 @@
 			</File>
 			<File
 				RelativePath=".\forwardoption.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\garch.hpp"
 				>
 			</File>
 			<File

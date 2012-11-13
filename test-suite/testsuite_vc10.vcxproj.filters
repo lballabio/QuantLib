@@ -140,6 +140,9 @@
     <ClCompile Include="forwardoption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="garch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="gaussianquadratures.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -495,6 +498,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="forwardoption.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="garch.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="gaussianquadratures.hpp">

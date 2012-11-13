@@ -576,6 +576,9 @@
 				RelativePath=".\forwardoption.cpp">
 			</File>
 			<File
+				RelativePath=".\garch.cpp">
+			</File>
+			<File
 				RelativePath=".\gaussianquadratures.cpp">
 			</File>
 			<File
@@ -932,6 +935,9 @@
 			</File>
 			<File
 				RelativePath=".\forwardoption.hpp">
+			</File>
+			<File
+				RelativePath=".\garch.hpp">
 			</File>
 			<File
 				RelativePath=".\gaussianquadratures.hpp">
