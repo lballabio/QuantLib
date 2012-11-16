@@ -1037,6 +1037,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\fdmg2op.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\fdmg2op.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\methods\finitedifferences\operators\fdmhestonhullwhiteop.cpp"
 						>
 					</File>
@@ -1050,6 +1058,14 @@
 					</File>
 					<File
 						RelativePath=".\ql\methods\finitedifferences\operators\fdmhestonop.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\fdmhullwhiteop.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\fdmhullwhiteop.hpp"
 						>
 					</File>
 					<File
@@ -1121,6 +1137,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\methods\finitedifferences\schemes\boundaryconditionschemehelper.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\methods\finitedifferences\schemes\craigsneydscheme.cpp"
 						>
 					</File>
@@ -1177,6 +1197,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdm1dimsolver.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdm1dimsolver.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\methods\finitedifferences\solvers\fdm2dblackscholessolver.cpp"
 						>
 					</File>
@@ -1225,6 +1253,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdmg2solver.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdmg2solver.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\methods\finitedifferences\solvers\fdmhestonhullwhitesolver.cpp"
 						>
 					</File>
@@ -1238,6 +1274,14 @@
 					</File>
 					<File
 						RelativePath=".\ql\methods\finitedifferences\solvers\fdmhestonsolver.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdmhullwhitesolver.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\solvers\fdmhullwhitesolver.hpp"
 						>
 					</File>
 					<File
@@ -1329,6 +1373,26 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\methods\finitedifferences\utilities\fdmaffinemodelswapinnervalue.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\utilities\fdmaffinemodelswapinnervalue.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\utilities\fdmaffinemodeltermstructure.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\utilities\fdmaffinemodeltermstructure.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\utilities\fdmboundaryconditionset.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\methods\finitedifferences\utilities\fdmdirichletboundary.cpp"
 						>
 					</File>
@@ -1345,6 +1409,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\methods\finitedifferences\utilities\fdmindicesonboundary.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\utilities\fdmindicesonboundary.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\methods\finitedifferences\utilities\fdminnervaluecalculator.cpp"
 						>
 					</File>
@@ -1358,6 +1430,14 @@
 					</File>
 					<File
 						RelativePath=".\ql\methods\finitedifferences\utilities\fdmquantohelper.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\utilities\fdmtimedepdirichletboundary.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\utilities\fdmtimedepdirichletboundary.hpp"
 						>
 					</File>
 				</Filter>
@@ -2471,6 +2551,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\math\richardsonextrapolation.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\math\richardsonextrapolation.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\math\rounding.cpp"
 				>
 			</File>
@@ -2830,6 +2918,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\math\matrixutilities\sparsematrix.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\matrixutilities\svd.cpp"
 					>
 				</File>
@@ -2974,6 +3066,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\math\randomnumbers\sobolbrownianbridgersg.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\randomnumbers\sobolbrownianbridgersg.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\randomnumbers\sobolrsg.cpp"
 					>
 				</File>
@@ -3063,6 +3163,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\math\optimization\costfunction.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\optimization\differentialevolution.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\optimization\differentialevolution.hpp"
 					>
 				</File>
 				<File
@@ -5698,6 +5806,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\vanilla\analytich1hwengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\vanilla\analytich1hwengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\pricingengines\vanilla\analytichestonengine.cpp"
 					>
 				</File>
@@ -5983,6 +6099,22 @@
 				</File>
 				<File
 					RelativePath=".\ql\pricingengines\swaption\discretizedswaption.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\swaption\fdg2swaptionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\swaption\fdg2swaptionengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\swaption\fdhullwhiteswaptionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\swaption\fdhullwhiteswaptionengine.hpp"
 					>
 				</File>
 				<File
@@ -7378,6 +7510,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\dynprogvppintrinsicvalueengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\dynprogvppintrinsicvalueengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdextoujumpvanillaengine.cpp"
 					>
 				</File>
@@ -7450,11 +7590,27 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmvppstartlimitstepcondition.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmvppstartlimitstepcondition.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmvppstepcondition.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmvppstepcondition.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmvppstepconditionfactory.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmvppstepconditionfactory.hpp"
 					>
 				</File>
 				<File
@@ -7479,6 +7635,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdsimpleklugeextouvppengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\glued1dmesher.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\glued1dmesher.hpp"
 					>
 				</File>
 				<File
@@ -8082,11 +8246,11 @@
 				Name="math"
 				>
 				<File
-					RelativePath=".\ql\experimental\math\all.hpp"
+					RelativePath=".\ql\experimental\math\adaptiverungekutta.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\math\adaptiverungekutta.hpp"
+					RelativePath=".\ql\experimental\math\all.hpp"
 					>
 				</File>
 				<File

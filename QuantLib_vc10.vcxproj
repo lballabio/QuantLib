@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (static runtime)|Win32">
@@ -250,6 +250,7 @@
   <ItemGroup>
     <ClInclude Include="ql\cashflows\cpicoupon.hpp" />
     <ClInclude Include="ql\cashflows\cpicouponpricer.hpp" />
+    <ClInclude Include="ql\experimental\finitedifferences\dynprogvppintrinsicvalueengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdextoujumpvanillaengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdklugeextouspreadengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmexpextouinnervaluecalculator.hpp" />
@@ -262,10 +263,13 @@
     <ClInclude Include="ql\experimental\finitedifferences\fdmsimple2dextousolver.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmsimple3dextoujumpsolver.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmspreadpayoffinnervalue.hpp" />
+    <ClInclude Include="ql\experimental\finitedifferences\fdmvppstartlimitstepcondition.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmvppstepcondition.hpp" />
+    <ClInclude Include="ql\experimental\finitedifferences\fdmvppstepconditionfactory.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdsimpleextoujumpswingengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdsimpleextoustorageengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdsimpleklugeextouvppengine.hpp" />
+    <ClInclude Include="ql\experimental\finitedifferences\glued1dmesher.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\vanillavppoption.hpp" />
     <ClInclude Include="ql\experimental\inflation\cpicapfloorengines.hpp" />
     <ClInclude Include="ql\experimental\inflation\cpicapfloortermpricesurface.hpp" />
@@ -280,6 +284,10 @@
     <ClInclude Include="ql\instruments\vanillaswingoption.hpp" />
     <ClInclude Include="ql\math\matrixutilities\bicgstab.hpp" />
     <ClInclude Include="ql\math\matrixutilities\sparseilupreconditioner.hpp" />
+    <ClInclude Include="ql\math\matrixutilities\sparsematrix.hpp" />
+    <ClInclude Include="ql\math\optimization\differentialevolution.hpp" />
+    <ClInclude Include="ql\math\randomnumbers\sobolbrownianbridgersg.hpp" />
+    <ClInclude Include="ql\math\richardsonextrapolation.hpp" />
     <ClInclude Include="ql\methods\all.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\meshers\all.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\meshers\concentrating1dmesher.hpp" />
@@ -311,6 +319,7 @@
     <ClInclude Include="ql\methods\finitedifferences\operators\secondordermixedderivativeop.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\triplebandlinearop.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\schemes\all.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\schemes\boundaryconditionschemehelper.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\schemes\craigsneydscheme.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\schemes\douglasscheme.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\schemes\expliciteulerscheme.hpp" />
@@ -343,10 +352,13 @@
     <ClInclude Include="ql\methods\finitedifferences\utilities\all.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\utilities\fdmaffinemodelswapinnervalue.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\utilities\fdmaffinemodeltermstructure.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\utilities\fdmboundaryconditionset.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\utilities\fdmdirichletboundary.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\utilities\fdmdividendhandler.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\utilities\fdmindicesonboundary.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\utilities\fdminnervaluecalculator.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\utilities\fdmquantohelper.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\utilities\fdmtimedepdirichletboundary.hpp" />
     <ClInclude Include="ql\methods\montecarlo\all.hpp" />
     <ClInclude Include="ql\methods\montecarlo\brownianbridge.hpp" />
     <ClInclude Include="ql\methods\montecarlo\earlyexercisepathpricer.hpp" />
@@ -831,6 +843,7 @@
     <ClInclude Include="ql\pricingengines\basket\fd2dblackscholesvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\swaption\fdg2swaptionengine.hpp" />
     <ClInclude Include="ql\pricingengines\swaption\fdhullwhiteswaptionengine.hpp" />
+    <ClInclude Include="ql\pricingengines\vanilla\analytich1hwengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdbatesvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdblackscholesvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdhestonhullwhitevanillaengine.hpp" />
@@ -1358,16 +1371,20 @@
   <ItemGroup>
     <ClCompile Include="ql\cashflows\cpicoupon.cpp" />
     <ClCompile Include="ql\cashflows\cpicouponpricer.cpp" />
+    <ClCompile Include="ql\experimental\finitedifferences\dynprogvppintrinsicvalueengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdextoujumpvanillaengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdklugeextouspreadengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmextendedornsteinuhlenbeckop.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmextoujumpop.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmextoujumpsolver.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmklugeextouop.cpp" />
+    <ClCompile Include="ql\experimental\finitedifferences\fdmvppstartlimitstepcondition.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmvppstepcondition.cpp" />
+    <ClCompile Include="ql\experimental\finitedifferences\fdmvppstepconditionfactory.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdsimpleextoujumpswingengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdsimpleextoustorageengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdsimpleklugeextouvppengine.cpp" />
+    <ClCompile Include="ql\experimental\finitedifferences\glued1dmesher.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\vanillavppoption.cpp" />
     <ClCompile Include="ql\experimental\inflation\cpicapfloorengines.cpp" />
     <ClCompile Include="ql\experimental\inflation\cpicapfloortermpricesurface.cpp" />
@@ -1381,6 +1398,9 @@
     <ClCompile Include="ql\instruments\vanillaswingoption.cpp" />
     <ClCompile Include="ql\math\matrixutilities\bicgstab.cpp" />
     <ClCompile Include="ql\math\matrixutilities\sparseilupreconditioner.cpp" />
+    <ClCompile Include="ql\math\optimization\differentialevolution.cpp" />
+    <ClCompile Include="ql\math\randomnumbers\sobolbrownianbridgersg.cpp" />
+    <ClCompile Include="ql\math\richardsonextrapolation.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\meshers\concentrating1dmesher.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\meshers\exponentialjump1dmesher.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\meshers\fdmblackscholesmesher.cpp" />
@@ -1431,8 +1451,10 @@
     <ClCompile Include="ql\methods\finitedifferences\utilities\fdmaffinemodeltermstructure.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\utilities\fdmdirichletboundary.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\utilities\fdmdividendhandler.cpp" />
+    <ClCompile Include="ql\methods\finitedifferences\utilities\fdmindicesonboundary.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\utilities\fdminnervaluecalculator.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\utilities\fdmquantohelper.cpp" />
+    <ClCompile Include="ql\methods\finitedifferences\utilities\fdmtimedepdirichletboundary.cpp" />
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp" />
     <ClCompile Include="ql\methods\montecarlo\genericlsregression.cpp" />
     <ClCompile Include="ql\methods\montecarlo\lsmbasissystem.cpp" />
@@ -1735,6 +1757,7 @@
     <ClCompile Include="ql\pricingengines\basket\fd2dblackscholesvanillaengine.cpp" />
     <ClCompile Include="ql\pricingengines\swaption\fdg2swaptionengine.cpp" />
     <ClCompile Include="ql\pricingengines\swaption\fdhullwhiteswaptionengine.cpp" />
+    <ClCompile Include="ql\pricingengines\vanilla\analytich1hwengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\fdbatesvanillaengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\fdblackscholesvanillaengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\fdhestonhullwhitevanillaengine.cpp" />
