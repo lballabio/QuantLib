@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2009 StatPro Italia srl
+ Copyright (C) 2009, 2012 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,6 +26,7 @@ class CashFlowsTest {
   public:
     static void testSettings();
     static void testAccessViolation();
+    static void testDefaultSettlementDate();
     static boost::unit_test_framework::test_suite* suite();
 };
 

@@ -352,6 +352,9 @@ namespace QuantLib {
     Time CashFlows::accruedPeriod(const Leg& leg,
                                   bool includeSettlementDateFlows,
                                   Date settlementDate) {
+        if (settlementDate == Date())
+            settlementDate = Settings::instance().evaluationDate();
+
         Leg::const_iterator cf = nextCashFlow(leg,
                                               includeSettlementDateFlows,
                                               settlementDate);
@@ -369,6 +372,9 @@ namespace QuantLib {
     BigInteger CashFlows::accruedDays(const Leg& leg,
                                       bool includeSettlementDateFlows,
                                       Date settlementDate) {
+        if (settlementDate == Date())
+            settlementDate = Settings::instance().evaluationDate();
+
         Leg::const_iterator cf = nextCashFlow(leg,
                                               includeSettlementDateFlows,
                                               settlementDate);
@@ -386,6 +392,9 @@ namespace QuantLib {
     Real CashFlows::accruedAmount(const Leg& leg,
                                   bool includeSettlementDateFlows,
                                   Date settlementDate) {
+        if (settlementDate == Date())
+            settlementDate = Settings::instance().evaluationDate();
+
         Leg::const_iterator cf = nextCashFlow(leg,
                                               includeSettlementDateFlows,
                                               settlementDate);

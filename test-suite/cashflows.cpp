@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2009 StatPro Italia srl
+ Copyright (C) 2009, 2012 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,11 +21,13 @@
 #include "utilities.hpp"
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
+#include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/calendars/target.hpp>
+#include <ql/time/schedule.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
 #include <ql/settings.hpp>
 
@@ -212,10 +214,42 @@ void CashFlowsTest::testAccessViolation() {
     }
 }
 
+void CashFlowsTest::testDefaultSettlementDate() {
+    BOOST_MESSAGE("Testing default evaluation date in cashflows methods...");
+    Date today = Settings::instance().evaluationDate();
+    Schedule schedule =
+        MakeSchedule()
+        .from(today-2*Months).to(today+4*Months)
+        .withFrequency(Semiannual)
+        .withCalendar(TARGET())
+        .withConvention(Unadjusted)
+        .backwards();
+
+    Leg leg = FixedRateLeg(schedule)
+              .withNotionals(100.0)
+              .withCouponRates(0.03, Actual360())
+              .withPaymentCalendar(TARGET())
+              .withPaymentAdjustment(Following);
+
+    Time accruedPeriod = CashFlows::accruedPeriod(leg, false);
+    if (accruedPeriod == 0.0)
+        BOOST_ERROR("null accrued period with default settlement date");
+
+    BigInteger accruedDays = CashFlows::accruedDays(leg, false);
+    if (accruedDays == 0)
+        BOOST_ERROR("no accrued days with default settlement date");
+
+    Real accruedAmount = CashFlows::accruedAmount(leg, false);
+    if (accruedAmount == 0.0)
+        BOOST_ERROR("null accrued amount with default settlement date");
+}
+
+
 test_suite* CashFlowsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Cash flows tests");
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testSettings));
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testAccessViolation));
+    suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testDefaultSettlementDate));
     return suite;
 }
 
