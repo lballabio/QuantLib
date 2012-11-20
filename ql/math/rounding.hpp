@@ -36,7 +36,7 @@ namespace QuantLib {
       public:
         //! rounding methods
         /*! The rounding methods follow the OMG specification available
-            at ftp://ftp.omg.org/pub/docs/formal/00-06-29.pdf
+            at <http://www.omg.org/cgi-bin/doc?formal/00-06-29.pdf>.
 
             \warning the names of the Floor and Ceiling methods might
                      be misleading. Check the provided reference.
