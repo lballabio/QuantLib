@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2012 Ralph Schreyer
+ Copyright (C) 2012 Mateusz Kapturski
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,216 +22,339 @@
 
 namespace QuantLib {
 
-    DifferentialEvolution::DifferentialEvolution(
-		const Array& minParams, const Array& maxParams,
-		DifferentialEvolution::Strategy strategy,
-		Real F, Real CR, bool adaptive, Size nPop)
-	: minParams_(minParams), maxParams_(maxParams),
-	  nParam_(minParams_.size()),
-      nPop_(nPop == Null<Size>() ? minParams.size()*10 : nPop),
-	  strategy_(strategy), adaptive_(adaptive),F_(F), CR_(CR) {
+    namespace {
 
-		QL_REQUIRE(minParams_.size() == maxParams_.size(),
-			"Need same number of minimum and maximum start parameters");
-		for (Size i=0; i<nParam_; ++i) {
-			QL_REQUIRE(minParams_[i] < maxParams_[i],
-				"Minimum start parameter number " << i 
-				<< " must be smaller than maximum start parameter");
-		}
-		QL_REQUIRE(F_ >= 0.0 && F_ <= 2.0,
-			"F must be between 0.0 and 2.0");
-		QL_REQUIRE(CR_ >= 0.0 && CR_ <= 1.0,
-			"CR must be between 0.0 and 1.0");
+        struct sort_by_cost {
+            bool operator()(const DifferentialEvolution::Candidate& left,
+                            const DifferentialEvolution::Candidate& right) {
+                return left.cost < right.cost;
+            }
+        };
 
-		setStrategy();
-	}
+    }
 
+    EndCriteria::Type DifferentialEvolution::minimize(Problem& p, const EndCriteria& endCriteria) {
+        EndCriteria::Type ecType;
 
-    EndCriteria::Type DifferentialEvolution::minimize(Problem& P,
-											const EndCriteria& endCriteria) {
+        upperBound_ = p.constraint().upperBound(p.currentValue());
+        lowerBound_ = p.constraint().lowerBound(p.currentValue());
+        currGenSizeWeights_ = Array(configuration().populationMembers,
+                                    configuration().stepsizeWeight);
+        currGenCrossover_ = Array(configuration().populationMembers,
+                                  configuration().crossoverProbability);
 
-		EndCriteria::Type ecType = EndCriteria::MaxIterations;
-	    QL_REQUIRE(P.currentValue().size() == nParam_,
-			"Number of parameters mismatch between problem and DE optimizer");
-        P.reset();		
-		init();
+        std::vector<Candidate> population(
+                                configuration().populationMembers,
+                                { Array(p.currentValue().size(), 0.0), 0.0 });
+        fillInitialPopulation(population, p);
 
-		Real bestCost = QL_MAX_REAL;
-		Size bestPop  = 0;
-		for (Size p = 0; p < nPop_; ++p) {
-			Array tmp(currGen_[p].pop_);
-			try {
-				currGen_[p].cost_ = P.costFunction().value(tmp);
-			} catch (Error&) {
-				currGen_[p].cost_ = QL_MAX_REAL;
-			}
-			if (currGen_[p].cost_ < bestCost) {
-				bestPop = p;
-				bestCost = currGen_[p].cost_;
-			}
-		}
+        std::partial_sort(population.begin(), population.begin() + 1, population.end(),
+                          sort_by_cost());
+        bestMemberEver_ = population.front();
+        Real fxOld = population.front().cost, fxNew = std::numeric_limits<Real>::max();
+        Size iteration = 0, stationaryPointIteration = 0;
 
-		Size lastChange = 0;
-		Size lastParamChange = 0;
-		for(Size i=0; i<endCriteria.maxIterations(); ++i) {
-
-			Size newBestPop = bestPop;
-			Real newBestCost = bestCost;
-
-			for (Size p=0; p<nPop_; ++p) {
-				// Find 3 different populations randomly
-				Size r1;
-				do {
-					r1 = static_cast <Size> (uniformRng_.nextInt32() % nPop_);
-				}		
-				while(r1 == p || r1 == bestPop);
-
-				Size r2;
-				do {
-					r2 = static_cast <Size> (uniformRng_.nextInt32() % nPop_);
-				}
-				while ( r2 == p || r2 == bestPop || r2 == r1);
-
-				Size r3;
-				do {
-					r3 = static_cast <Size> (uniformRng_.nextInt32() % nPop_);
-				} while ( r3 == p || r3 == bestPop || r3 == r1 || r3 == r2);
-
-				for(Size j=0; j<nParam_; ++j) {
-					nextGen_[p].pop_[j] = currGen_[p].pop_[j];
-				}
-
-				Size j = static_cast <Size> (uniformRng_.nextInt32() % nParam_);
-				Size L = 0;
-				do {
-					const double tmp = 
-						currGen_[      p].pop_[j] * a0_
-					  + currGen_[     r1].pop_[j] * a1_
-					  + currGen_[     r2].pop_[j] * a2_
-					  + currGen_[     r3].pop_[j] * a3_
-					  + currGen_[bestPop].pop_[j] * aBest_;
-
-					nextGen_[p].pop_[j] =
-						std::min(maxParams_[j], std::max(minParams_[j], tmp));
-
-					j = (j+1)%nParam_;
-					++L;
-				} while ((uniformRng_.nextReal() < CR_) && (L < nParam_));
-
-				// Evaluate the new population
-				Array tmp(nextGen_[p].pop_);
-				try {
-					nextGen_[p].cost_ = P.costFunction().value(tmp);
-                } catch (Error&) {
-					nextGen_[p].cost_ = QL_MAX_REAL;
-                }
-
-				// Not better, discard it and keep the old one.
-				if (nextGen_[p].cost_ >= currGen_[p].cost_) {
-					nextGen_[p] = currGen_[p];
-				}
-				// Better, keep it.
-				else {
-					// New best?
-					if (nextGen_[p].cost_ < newBestCost) {
-						newBestPop = p;
-						newBestCost = nextGen_[p].cost_;
-					}
-				}
-			}
-
-			if(std::abs(newBestCost-bestCost) > endCriteria.functionEpsilon()) {
-				lastChange = i;
-			}
-			const Array absDiff = Abs(nextGen_[newBestPop].pop_-currGen_[bestPop].pop_);
-			if(*std::max_element(absDiff.begin(), absDiff.end()) > endCriteria.rootEpsilon()) {
-				lastParamChange = i;
-			}
-
-			bestPop = newBestPop;
-			bestCost = newBestCost;
-			currGen_ = nextGen_;
-
-            if(i-lastChange > endCriteria.maxStationaryStateIterations()) {
-				ecType = EndCriteria::StationaryFunctionValue;
-				break;
-			}
-			if(i-lastParamChange > endCriteria.maxStationaryStateIterations()) {
-				ecType = EndCriteria::StationaryPoint;
-				break;
-			}
-
-            if (adaptive_) adaptParameters();
-		}
-		
-		const Array res(currGen_[bestPop].pop_);
-        P.setCurrentValue(res);
-        P.setFunctionValue(bestCost);
-        
+        // main loop - calculate consecutive emerging populations
+        while (!endCriteria.checkMaxIterations(iteration++, ecType)) {
+            calculateNextGeneration(population, p.costFunction());
+            std::partial_sort(population.begin(), population.begin() + 1, population.end(),
+                              sort_by_cost());
+            if (population.front().cost < bestMemberEver_.cost)
+                bestMemberEver_ = population.front();
+            fxNew = population.front().cost;
+            if (endCriteria.checkStationaryFunctionValue(fxOld, fxNew, stationaryPointIteration,
+                                                         ecType))
+                break;
+            fxOld = fxNew;
+        };
+        p.setCurrentValue(bestMemberEver_.values);
+        p.setFunctionValue(bestMemberEver_.cost);
         return ecType;
     }
 
-	
-	void DifferentialEvolution::init () {
-		// Initialize RNG
-		uniformRng_ = MersenneTwisterUniformRng(4711);
-		// Size all the arrays
-		currGen_.resize(nPop_);
-		nextGen_.resize(nPop_);
-		for (Size i = 0; i < nPop_; ++i) {
-			currGen_[i].pop_ = Array(nParam_);
-			nextGen_[i].pop_ = Array(nParam_);
-		}
-		// Initialize populations with random values
-		for (Size i=0; i<nParam_; ++i) {
-			const double offset = minParams_[i];
-			const double mul = maxParams_[i] - minParams_[i];
+    void DifferentialEvolution::calculateNextGeneration(
+                                     std::vector<Candidate>& population,
+                                     const CostFunction& costFunction) const {
 
-			for (Size j=0; j<nPop_; ++j) {
-				const double val_rnd = uniformRng_.nextReal();
-				currGen_[j].pop_[i] = val_rnd*mul + offset;
-			}
-		}
-	}
+        std::vector<Candidate> mirrorPopulation;
+        std::vector<Candidate> oldPopulation = population;
 
+        switch (configuration().strategy) {
 
-	void DifferentialEvolution::setStrategy() {
-        switch (strategy_) {
-		  case DifferentialEvolution::Rand1Exp:
-			a0_    =  0.0;
-			a1_    =  1.0;
-			a2_    =  F_;
-			a3_    = -F_;
-			aBest_ =  0.0;
+          case Rand1Standard: {
+              std::random_shuffle(population.begin(), population.end());
+              std::vector<Candidate> shuffledPop1 = population;
+              std::random_shuffle(population.begin(), population.end());
+              std::vector<Candidate> shuffledPop2 = population;
+              std::random_shuffle(population.begin(), population.end());
+              mirrorPopulation = shuffledPop1;
+
+              for (Size popIter = 0; popIter < population.size(); popIter++) {
+                  population[popIter].values = population[popIter].values
+                      + configuration().stepsizeWeight
+                      * (shuffledPop1[popIter].values - shuffledPop2[popIter].values);
+              }
+          }
             break;
-          case DifferentialEvolution::RandToBest1Exp:
-			a0_    =  1.0-F_;
-			a1_    =  F_;
-			a2_    = -F_;
-			a3_    =  0.0;
-			aBest_ =  F_;
+
+          case BestMemberWithJitter: {
+              std::random_shuffle(population.begin(), population.end());
+              std::vector<Candidate> shuffledPop1 = population;
+              std::random_shuffle(population.begin(), population.end());
+              Array jitter(population[0].values.size(), 0.0);
+
+              for (Size popIter = 0; popIter < population.size(); popIter++) {
+                  for (Size jitterIter = 0; jitterIter < jitter.size(); jitterIter++) {
+                      jitter[jitterIter] = rng_.nextReal();
+                  }
+                  population[popIter].values = bestMemberEver_.values
+                      + (shuffledPop1[popIter].values - population[popIter].values)
+                      * (0.0001 * jitter + configuration().stepsizeWeight);
+              }
+              mirrorPopulation = std::vector<Candidate>(population.size(),
+                                                        bestMemberEver_);
+          }
+            break;
+
+          case CurrentToBest2Diffs: {
+              std::random_shuffle(population.begin(), population.end());
+              std::vector<Candidate> shuffledPop1 = population;
+              std::random_shuffle(population.begin(), population.end());
+
+              for (Size popIter = 0; popIter < population.size(); popIter++) {
+                  population[popIter].values = oldPopulation[popIter].values
+                      + configuration().stepsizeWeight
+                      * (bestMemberEver_.values - oldPopulation[popIter].values)
+                      + configuration().stepsizeWeight
+                      * (population[popIter].values - shuffledPop1[popIter].values);
+              }
+              mirrorPopulation = shuffledPop1;
+          }
+            break;
+
+          case Rand1DiffWithPerVectorDither: {
+              std::random_shuffle(population.begin(), population.end());
+              std::vector<Candidate> shuffledPop1 = population;
+              std::random_shuffle(population.begin(), population.end());
+              std::vector<Candidate> shuffledPop2 = population;
+              std::random_shuffle(population.begin(), population.end());
+              mirrorPopulation = shuffledPop1;
+              Array FWeight = Array(population.front().values.size(), 0.0);
+              for (Size fwIter = 0; fwIter < FWeight.size(); fwIter++)
+                  FWeight[fwIter] = (1.0 - configuration().stepsizeWeight)
+                      * rng_.nextReal() + configuration().stepsizeWeight;
+              for (Size popIter = 0; popIter < population.size(); popIter++) {
+                  population[popIter].values = population[popIter].values
+                      + FWeight * (shuffledPop1[popIter].values - shuffledPop2[popIter].values);
+              }
+          }
+            break;
+
+          case Rand1DiffWithDither: {
+              std::random_shuffle(population.begin(), population.end());
+              std::vector<Candidate> shuffledPop1 = population;
+              std::random_shuffle(population.begin(), population.end());
+              std::vector<Candidate> shuffledPop2 = population;
+              std::random_shuffle(population.begin(), population.end());
+              mirrorPopulation = shuffledPop1;
+              Real FWeight = (1.0 - configuration().stepsizeWeight) * rng_.nextReal()
+                  + configuration().stepsizeWeight;
+              for (Size popIter = 0; popIter < population.size(); popIter++) {
+                  population[popIter].values = population[popIter].values
+                      + FWeight * (shuffledPop1[popIter].values - shuffledPop2[popIter].values);
+              }
+          }
+            break;
+
+          case EitherOrWithOptimalRecombination: {
+              std::random_shuffle(population.begin(), population.end());
+              std::vector<Candidate> shuffledPop1 = population;
+              std::random_shuffle(population.begin(), population.end());
+              std::vector<Candidate> shuffledPop2 = population;
+              std::random_shuffle(population.begin(), population.end());
+              mirrorPopulation = shuffledPop1;
+              Real probFWeight = 0.5;
+              if (rng_.nextReal() < probFWeight) {
+                  for (Size popIter = 0; popIter < population.size(); popIter++) {
+                      population[popIter].values = oldPopulation[popIter].values
+                          + configuration().stepsizeWeight
+                          * (shuffledPop1[popIter].values - shuffledPop2[popIter].values);
+                  }
+              } else {
+                  Real K = 0.5 * (configuration().stepsizeWeight + 1); // invariant with respect to probFWeight used
+                  for (Size popIter = 0; popIter < population.size(); popIter++) {
+                      population[popIter].values = oldPopulation[popIter].values
+                          + K
+                          * (shuffledPop1[popIter].values - shuffledPop2[popIter].values
+                             - 2.0 * population[popIter].values);
+                  }
+              }
+          }
+            break;
+
+          case Rand1SelfadaptiveWithRotation: {
+              std::random_shuffle(population.begin(), population.end());
+              std::vector<Candidate> shuffledPop1 = population;
+              std::random_shuffle(population.begin(), population.end());
+              std::vector<Candidate> shuffledPop2 = population;
+              std::random_shuffle(population.begin(), population.end());
+              mirrorPopulation = shuffledPop1;
+
+              adaptSizeWeights();
+
+              for (Size popIter = 0; popIter < population.size(); popIter++) {
+                  if (rng_.nextReal() < 0.1){
+                      population[popIter].values = rotateArray(bestMemberEver_.values);
+                  }else {
+                      population[popIter].values = bestMemberEver_.values
+                          + currGenSizeWeights_[popIter]
+                          * (shuffledPop1[popIter].values - shuffledPop2[popIter].values);
+                  }
+              }
+          }
+            break;
+
+          default:
+            QL_FAIL("Unknown strategy ("
+                    << Integer(configuration().strategy) << ")");
+        }
+        // in order to avoid unnecessary copying we use the same population object for mutants
+        crossover(oldPopulation, population, population, mirrorPopulation,
+                  costFunction);
+    }
+
+    void DifferentialEvolution::crossover(
+                               const std::vector<Candidate>& oldPopulation,
+                               std::vector<Candidate>& population,
+                               const std::vector<Candidate>& mutantPopulation,
+                               const std::vector<Candidate>& mirrorPopulation,
+                               const CostFunction& costFunction) const {
+
+        if (configuration().crossoverIsAdaptive) {
+            adaptCrossover();
+        }
+
+        Array mutationProbabilities = getMutationProbabilities(population);
+
+        std::vector<Array> crossoverMask(population.size(),
+                                         Array(population.front().values.size(), 1.0));
+        std::vector<Array> invCrossoverMask = crossoverMask;
+        getCrossoverMask(crossoverMask, invCrossoverMask, mutationProbabilities);
+
+        // crossover of the old and mutant population
+        for (Size popIter = 0; popIter < population.size(); popIter++) {
+            population[popIter].values = oldPopulation[popIter].values * invCrossoverMask[popIter]
+                + mutantPopulation[popIter].values * crossoverMask[popIter];
+            // immediately apply bounds if specified
+            if (configuration().applyBounds) {
+                for (Size memIter = 0; memIter < population[popIter].values.size(); memIter++) {
+                    if (population[popIter].values[memIter] > upperBound_[memIter])
+                        population[popIter].values[memIter] = upperBound_[memIter]
+                            + rng_.nextReal()
+                            * (mirrorPopulation[popIter].values[memIter]
+                               - upperBound_[memIter]);
+                    if (population[popIter].values[memIter] < lowerBound_[memIter])
+                        population[popIter].values[memIter] = lowerBound_[memIter]
+                            + rng_.nextReal()
+                            * (mirrorPopulation[popIter].values[memIter]
+                               - lowerBound_[memIter]);
+                }
+            }
+            // evaluate objective function as soon as possible to avoid unnecessary loops
+            try {
+                population[popIter].cost = costFunction.value(population[popIter].values);
+            } catch (Error&) {
+                population[popIter].cost = QL_MAX_REAL;
+            }
+        }
+    }
+
+    void DifferentialEvolution::getCrossoverMask(
+                                  std::vector<Array> & crossoverMask,
+                                  std::vector<Array> & invCrossoverMask,
+                                  const Array & mutationProbabilities) const {
+        for (Size cmIter = 0; cmIter < crossoverMask.size(); cmIter++) {
+            for (Size memIter = 0; memIter < crossoverMask[cmIter].size(); memIter++) {
+                if (rng_.nextReal() < mutationProbabilities[cmIter]) {
+                    invCrossoverMask[cmIter][memIter] = 0.0;
+                } else {
+                    crossoverMask[cmIter][memIter] = 0.0;
+                }
+            }
+        }
+    }
+
+    Array DifferentialEvolution::getMutationProbabilities(
+                            const std::vector<Candidate> & population) const {
+        Array mutationProbabilities = currGenCrossover_;
+        switch (configuration().crossoverType) {
+          case Normal:
+            break;
+          case Binomial:
+            mutationProbabilities = currGenCrossover_
+                * (1.0 - 1.0 / population.front().values.size())
+                + 1.0 / population.front().values.size();
+            break;
+          case Exponential:
+            for (Size coIter = 0;coIter< currGenCrossover_.size(); coIter++){
+                mutationProbabilities[coIter] =
+                    (1.0 - std::pow(currGenCrossover_[coIter],
+                                    (int) population.front().values.size()))
+                    / (population.front().values.size()
+                       * (1.0 - currGenCrossover_[coIter]));
+            }
             break;
           default:
-            QL_FAIL("Unknown Differential Evolution strategy " << strategy_);
+            QL_FAIL("Unknown crossover type ("
+                    << Integer(configuration().crossoverType) << ")");
+            break;
         }
-	}
+        return mutationProbabilities;
+    }
 
+    Array DifferentialEvolution::rotateArray(Array a) const {
+        std::random_shuffle(a.begin(), a.end());
+        return a;
+    }
 
-	void DifferentialEvolution::adaptParameters() {
-		const Real F_l = 0.1;
-		const Real F_u = 0.9;
-		const Real tau_1 = 0.1;
-		const Real tau_2 = 0.1;
+    void DifferentialEvolution::adaptSizeWeights() const {
+        // [=Fl & =Fu] respectively see Brest, J. et al., 2006,
+        // "Self-Adapting Control Parameters in Differential
+        // Evolution"
+        Real sizeWeightLowerBound = 0.1, sizeWeightUpperBound = 0.9;
+         // [=tau1] A Comparative Study on Numerical Benchmark
+         // Problems." page 649 for reference
+        Real sizeWeightChangeProb = 0.1;
+        for (Size coIter = 0;coIter < currGenSizeWeights_.size(); coIter++){
+            if (rng_.nextReal() < sizeWeightChangeProb)
+                currGenSizeWeights_[coIter] = sizeWeightLowerBound + rng_.nextReal() * sizeWeightUpperBound;
+        }
+    }
 
-		const Real r_1 = uniformRng_.nextReal();
-		const Real r_2 = uniformRng_.nextReal();
-		const Real r_3 = uniformRng_.nextReal();
-		const Real r_4 = uniformRng_.nextReal();
+    void DifferentialEvolution::adaptCrossover() const {
+        Real crossoverChangeProb = 0.1; // [=tau2]
+        for (Size coIter = 0;coIter < currGenCrossover_.size(); coIter++){
+            if (rng_.nextReal() < crossoverChangeProb)
+                currGenCrossover_[coIter] = rng_.nextReal();
+        }
+    }
 
-		F_  = r_2 < tau_1 ? F_l + r_1*F_u : F_;
-		CR_ = r_4 < tau_2 ? r_3 : CR_;
+    void DifferentialEvolution::fillInitialPopulation(
+                                          std::vector<Candidate> & population,
+                                          const Problem& p) const {
 
-		setStrategy();
-	}
+        // use initial values provided by the user
+        population.front().values = p.currentValue();
+        population.front().cost = p.costFunction().value(population.front().values);
+        // rest of the initial population is random
+        for (Size j = 1; j < population.size(); ++j) {
+            for (Size i = 0; i < p.currentValue().size(); ++i) {
+                Real l = lowerBound_[i], u = upperBound_[i];
+                population[j].values[i] = l + (u-l)*rng_.nextReal();
+            }
+            population[j].cost = p.costFunction().value(population[j].values);
+        }
+    }
+
 }
 

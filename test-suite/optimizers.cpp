@@ -5,6 +5,7 @@
  Copyright (C) 2007 François du Vignaud
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2012 Ralph Schreyer
+ Copyright (C) 2012 Mateusz Kapturski
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,6 +29,8 @@
 #include <ql/math/optimization/steepestdescent.hpp>
 #include <ql/math/optimization/bfgs.hpp>
 #include <ql/math/optimization/constraint.hpp>
+#include <ql/math/optimization/costfunction.hpp>
+#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/math/optimization/differentialevolution.hpp>
 
 using namespace QuantLib;
@@ -417,88 +420,108 @@ namespace {
     };
 }
 
-
 void OptimizersTest::testDifferentialEvolution() {
+    BOOST_MESSAGE("Testing differential evolution...");
 
     /* Note:
     *
     * The "ModFourthDeJong" doesn't have a well defined optimum because
-    * of it's noisy part. It just has to be <= 15 in our example.
-    * The concrete value in our case for the values chosen is
-    * 12.3724219287, but might differ for a different input and
-    * different random numbers (as long as it stays below 15).
+    * of its noisy part. It just has to be <= 15 in our example.
+    * The concrete value might differ for a different input and
+    * different random numbers.
     *
     * The "Griewangk" function is an example where the adaptive
     * version of DifferentialEvolution turns out to be more successful.
     */
+
+    DifferentialEvolution::Configuration conf =
+        DifferentialEvolution::Configuration()
+        .withStepsizeWeight(0.4)
+        .withBounds()
+        .withCrossoverProbability(0.35)
+        .withPopulationMembers(500)
+        .withStrategy(DifferentialEvolution::BestMemberWithJitter)
+        .withCrossoverType(DifferentialEvolution::Normal)
+        .withAdaptiveCrossover()
+        .withSeed(3242);
+    DifferentialEvolution deOptim(conf);
+
+    DifferentialEvolution::Configuration conf2 =
+        DifferentialEvolution::Configuration()
+        .withStepsizeWeight(1.8)
+        .withBounds()
+        .withCrossoverProbability(0.9)
+        .withPopulationMembers(1000)
+        .withStrategy(DifferentialEvolution::Rand1SelfadaptiveWithRotation)
+        .withCrossoverType(DifferentialEvolution::Normal)
+        .withAdaptiveCrossover()
+        .withSeed(3242);
+    DifferentialEvolution deOptim2(conf2);
+
+    std::vector<DifferentialEvolution > diffEvolOptimisers;
+    diffEvolOptimisers.push_back(deOptim);
+    diffEvolOptimisers.push_back(deOptim);
+    diffEvolOptimisers.push_back(deOptim);
+    diffEvolOptimisers.push_back(deOptim);
+    diffEvolOptimisers.push_back(deOptim2);
+
     std::vector<boost::shared_ptr<CostFunction> > costFunctions;
-    std::vector<Array> minArrays;
-    std::vector<Array> maxArrays;
+    costFunctions.push_back(boost::shared_ptr<CostFunction>(new FirstDeJong));
+    costFunctions.push_back(boost::shared_ptr<CostFunction>(new SecondDeJong));
+    costFunctions.push_back(boost::shared_ptr<CostFunction>(new ModThirdDeJong));
+    costFunctions.push_back(boost::shared_ptr<CostFunction>(new ModFourthDeJong));
+  	costFunctions.push_back(boost::shared_ptr<CostFunction>(new Griewangk));
+
+    std::vector<BoundaryConstraint> constraints;
+    constraints.push_back(BoundaryConstraint(-10.0, 10.0));
+    constraints.push_back(BoundaryConstraint(-10.0, 10.0));
+    constraints.push_back(BoundaryConstraint(-10.0, 10.0));
+    constraints.push_back(BoundaryConstraint(-10.0, 10.0));
+    constraints.push_back(BoundaryConstraint(-600.0, 600.0));
+
     std::vector<Array> initialValues;
-    std::vector<EndCriteria> endCriteria;
-    std::vector<boost::shared_ptr<OptimizationMethod> > optimizers;
-    std::vector<Real> minima;
-
-    costFunctions.push_back(boost::shared_ptr<CostFunction>(new FirstDeJong()));
-    costFunctions.push_back(boost::shared_ptr<CostFunction>(new SecondDeJong()));
-    costFunctions.push_back(boost::shared_ptr<CostFunction>(new ModThirdDeJong()));
-    costFunctions.push_back(boost::shared_ptr<CostFunction>(new ModFourthDeJong()));
-    costFunctions.push_back(boost::shared_ptr<CostFunction>(new Griewangk()));
-
-    minArrays.push_back(Array(3,  -10.0));
-    minArrays.push_back(Array(2,  -10.0));
-    minArrays.push_back(Array(5,  -10.0));
-    minArrays.push_back(Array(30, -10.0));
-    minArrays.push_back(Array(10, -400.0));
-
-    maxArrays.push_back(Array(3,  10.0));
-    maxArrays.push_back(Array(2,  10.0));
-    maxArrays.push_back(Array(5,  10.0));
-    maxArrays.push_back(Array(30, 10.0));
-    maxArrays.push_back(Array(10, 400.0));
-
-    initialValues.push_back(Array(3,  5.0));
-    initialValues.push_back(Array(2,  5.0));
-    initialValues.push_back(Array(5,  5.0));
+    initialValues.push_back(Array(3, 5.0));
+    initialValues.push_back(Array(2, 5.0));
+    initialValues.push_back(Array(5, 5.0));
     initialValues.push_back(Array(30, 5.0));
-    initialValues.push_back(Array(10, 100.0));
+  	initialValues.push_back(Array(10, 100.0));
 
-    endCriteria.push_back(EndCriteria(1000, 100, 1e-10, 1e-8, Null<Real>()));
-    endCriteria.push_back(EndCriteria(1000, 100, 1e-10, 1e-8, Null<Real>()));
-    endCriteria.push_back(EndCriteria(1000, 100, 1e-10, 1e-8, Null<Real>()));
-    endCriteria.push_back(EndCriteria(1000, 100, 1e-10, 1e-8, Null<Real>()));
-    endCriteria.push_back(EndCriteria(10000, 1000, 1e-12, 1e-10, Null<Real>()));
+    std::vector<EndCriteria> endCriteria;
+    endCriteria.push_back(EndCriteria(100, 10, 1e-10, 1e-8, Null<Real>()));
+    endCriteria.push_back(EndCriteria(100, 10, 1e-10, 1e-8, Null<Real>()));
+    endCriteria.push_back(EndCriteria(100, 10, 1e-10, 1e-8, Null<Real>()));
+    endCriteria.push_back(EndCriteria(500, 100, 1e-10, 1e-8, Null<Real>()));
+  	endCriteria.push_back(EndCriteria(1000, 800, 1e-12, 1e-10, Null<Real>()));
 
-    optimizers.push_back(boost::shared_ptr<OptimizationMethod>(
-        new DifferentialEvolution(minArrays[0], maxArrays[0])));
-    optimizers.push_back(boost::shared_ptr<OptimizationMethod>(
-        new DifferentialEvolution(minArrays[1], maxArrays[1])));
-    optimizers.push_back(boost::shared_ptr<OptimizationMethod>(
-        new DifferentialEvolution(minArrays[2], maxArrays[2])));
-    optimizers.push_back(boost::shared_ptr<OptimizationMethod>(
-        new DifferentialEvolution(minArrays[3], maxArrays[3])));
-    optimizers.push_back(boost::shared_ptr<OptimizationMethod>(
-        new DifferentialEvolution(
-            minArrays[4], maxArrays[4],
-            DifferentialEvolution::RandToBest1Exp, 0.85, 1.0, true)));
-
+    std::vector<Real> minima;
     minima.push_back(0.0);
     minima.push_back(0.0);
     minima.push_back(0.0);
-    minima.push_back(12.3724219287);
-    minima.push_back(0.0);
+    minima.push_back(10.9639796558);
+  	minima.push_back(0.0);
 
-    for(Size i=0; i<costFunctions.size(); ++i) {
-        NoConstraint noConstraint;
-        Problem problem(*costFunctions[i], noConstraint,
-                        initialValues[i]);
-        optimizers[i]->minimize(problem,endCriteria[i]);
-        if(fabs(problem.functionValue() - minima[i]) > 1e-8) {
-            BOOST_ERROR("DifferentialEvolution, costFunction # " << i);
+    for (Size i = 0; i < costFunctions.size(); ++i) {
+        Problem problem(*costFunctions[i], constraints[i], initialValues[i]);
+        diffEvolOptimisers[i].minimize(problem, endCriteria[i]);
+
+        if (i != 3) {
+            // stable
+            if (std::fabs(problem.functionValue() - minima[i]) > 1e-8) {
+                BOOST_ERROR("costFunction # " << i
+                            << "\ncalculated: " << problem.functionValue()
+                            << "\nexpected:   " << minima[i]);
+            }
+        } else {
+            // this case is unstable due to randomness; we're good as
+            // long as the result is below 15
+            if (problem.functionValue() > 15) {
+                BOOST_ERROR("costFunction # " << i
+                            << "\ncalculated: " << problem.functionValue()
+                            << "\nexpected:   " << "less than 15");
+            }
         }
     }
 }
-
 
 test_suite* OptimizersTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Optimizers tests");
@@ -507,5 +530,4 @@ test_suite* OptimizersTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&OptimizersTest::testDifferentialEvolution));
     return suite;
 }
-
 

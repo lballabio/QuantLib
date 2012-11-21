@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2012 Ralph Schreyer
+ Copyright (C) 2012 Mateusz Kapturski
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,75 +25,167 @@
 #ifndef quantlib_optimization_differential_evolution_hpp
 #define quantlib_optimization_differential_evolution_hpp
 
-#include <ql/math/optimization/costfunction.hpp>
+#include <ql/math/optimization/constraint.hpp>
 #include <ql/math/optimization/problem.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 
 namespace QuantLib {
 
-    //! Differential evolution optimizer
+    //! Differential Evolution configuration object
     /*! The algorithm and strategy names are taken from here:
 
-        Price, K., Storn, R., 1997. Differential Evolution – 
-        A Simple and Efficient Heuristic for Global Optimization 
+        Price, K., Storn, R., 1997. Differential Evolution -
+        A Simple and Efficient Heuristic for Global Optimization
         over Continuous Spaces.
-        Journal of Global Optimization, Kluwer Academic Publishers, 
+        Journal of Global Optimization, Kluwer Academic Publishers,
         1997, Vol. 11, pp. 341 - 359.
 
-        The binomial crossover is not yet implemented, neither the
-        strategies with a fourth random population. One should
-        factor out the mutation functions before doing so ...
+        There are seven basic strategies for creating mutant population
+        currently implemented. Three basic crossover types are also
+        available.
 
-
-        The adaptive parameter algorithm is described here:
-
-        Brest, J. et al., 2006. Self-Adapting Control Parameters 
-        in Differential Evolution: A Comparative Study on Numerical 
-        Benchmark Problems.
-        IEEE Transactions on Evolutionary Computation, Vol. 10, 
-        No. 6, December 2006.
-
-        \test optimization of known test functions.
+        Future development:
+        1) base element type to be extracted
+        2) L differences to be used instead of fixed number
+        3) various weights distributions for the differences (dither etc.)
+        4) printFullInfo parameter usage to track the algorithm
     */
-    class DifferentialEvolution : public OptimizationMethod {
+
+
+    //! %OptimizationMethod using Differential Evolution algorithm
+    class DifferentialEvolution: public OptimizationMethod {
       public:
-		enum Strategy {Rand1Exp, RandToBest1Exp};
+        enum Strategy {
+            Rand1Standard,
+            BestMemberWithJitter,
+            CurrentToBest2Diffs,
+            Rand1DiffWithPerVectorDither,
+            Rand1DiffWithDither,
+            EitherOrWithOptimalRecombination,
+            Rand1SelfadaptiveWithRotation
+        };
+        enum CrossoverType {
+            Normal,
+            Binomial,
+            Exponential
+        };
 
-        DifferentialEvolution(
-			const Array& minParams, const Array& maxParams,
-			DifferentialEvolution::Strategy strategy = 
-						DifferentialEvolution::RandToBest1Exp,
-            Real F = 0.85, Real CR = 1.0, bool adaptive = false, 
-            Size nPop = Null<Size>());
+        struct Candidate {
+            Array values;
+            Real cost;
+        };
 
-        virtual EndCriteria::Type minimize(Problem& P,
+        class Configuration {
+          public:
+            Strategy strategy;
+            CrossoverType crossoverType;
+            Size populationMembers;
+            Real stepsizeWeight, crossoverProbability;
+            unsigned long seed;
+            bool applyBounds, crossoverIsAdaptive;
+
+            Configuration()
+            : strategy(BestMemberWithJitter),
+              crossoverType(Normal),
+              populationMembers(100),
+              stepsizeWeight(0.2),
+              crossoverProbability(0.9),
+              seed(0),
+              applyBounds(true),
+              crossoverIsAdaptive(false) {}
+
+            Configuration& withBounds(bool b = true) {
+                applyBounds = b;
+                return *this;
+            }
+
+            Configuration& withCrossoverProbability(Real p) {
+                QL_REQUIRE(p>=0.0 && p<=1.0,
+                          "Crossover probability (" << p
+                           << ") must be in [0,1] range");
+                crossoverProbability = p;
+                return *this;
+            }
+
+            Configuration& withPopulationMembers(Size n) {
+                QL_REQUIRE(n>0, "Positive number of population members required");
+                populationMembers = n;
+                return *this;
+            }
+
+            Configuration& withSeed(unsigned long s) {
+                seed = s;
+                return *this;
+            }
+
+            Configuration& withAdaptiveCrossover(bool b = true) {
+                crossoverIsAdaptive = b;
+                return *this;
+            }
+
+            Configuration& withStepsizeWeight(Real w) {
+                QL_ENSURE(w>=0 && w<=2.0,
+                          "Step size weight ("<< w
+                          << ") must be in [0,2] range");
+                stepsizeWeight = w;
+                return *this;
+            }
+
+            Configuration& withCrossoverType(CrossoverType t) {
+                crossoverType = t;
+                return *this;
+            }
+
+            Configuration& withStrategy(Strategy s) {
+                strategy = s;
+                return *this;
+            }
+        };
+
+
+        DifferentialEvolution(Configuration configuration = Configuration())
+        : configuration_(configuration), rng_(configuration.seed) {}
+
+        virtual EndCriteria::Type minimize(Problem& p,
                                            const EndCriteria& endCriteria);
+
+        const Configuration& configuration() const {
+            return configuration_;
+        }
+
       private:
-		void init();
-		void setStrategy();
-		void adaptParameters();
+        Configuration configuration_;
+        Array upperBound_, lowerBound_;
+        mutable Array currGenSizeWeights_, currGenCrossover_;
+        Candidate bestMemberEver_;
+        MersenneTwisterUniformRng rng_;
 
-		const Array minParams_;
-		const Array maxParams_;
-		const Size nParam_;
-		const Size nPop_;
-		const DifferentialEvolution::Strategy strategy_;
-        const bool adaptive_;
-		Real F_, CR_, a0_, a1_, a2_, a3_, aBest_;
-		MersenneTwisterUniformRng uniformRng_;
+        void fillInitialPopulation(std::vector<Candidate>& population,
+                                   const Problem& p) const;
 
-	  private:
-		struct Population {
-			Array pop_;
-			Real  cost_;
-		};
+        void getCrossoverMask(std::vector<Array>& crossoverMask,
+                              std::vector<Array>& invCrossoverMask,
+                              const Array& mutationProbabilities) const;
 
-		typedef	std::vector<Population> Generation;
+        Array getMutationProbabilities(
+                              const std::vector<Candidate>& population) const;
 
-		Generation currGen_;
-		Generation nextGen_;
-	};
+        void adaptSizeWeights() const;
+
+        void adaptCrossover() const;
+
+        void calculateNextGeneration(std::vector<Candidate>& population,
+                                     const CostFunction& costFunction) const;
+
+        Array rotateArray(Array inputArray) const;
+
+        void crossover(const std::vector<Candidate>& oldPopulation,
+                       std::vector<Candidate> & population,
+                       const std::vector<Candidate>& mutantPopulation,
+                       const std::vector<Candidate>& mirrorPopulation,
+                       const CostFunction& costFunction) const;
+    };
+
 }
-
 
 #endif

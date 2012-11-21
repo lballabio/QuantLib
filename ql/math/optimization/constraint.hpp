@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2012 Mateusz Kapturski
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -37,11 +38,25 @@ namespace QuantLib {
             virtual ~Impl() {}
             //! Tests if params satisfy the constraint
             virtual bool test(const Array& params) const = 0;
+            //! Returns upper bound for given parameters
+            virtual Array upperBound(const Array& params) const {
+                return Array();
+            }
+            //! Returns lower bound for given parameters
+            virtual Array lowerBound(const Array& params) const {
+                return Array();
+            }
         };
         boost::shared_ptr<Impl> impl_;
       public:
         bool empty() const { return !impl_; }
         bool test(const Array& p) const { return impl_->test(p); }
+        Array upperBound(const Array& params) const {
+            return impl_->upperBound(params);
+        }
+        Array lowerBound(const Array& params) const {
+            return impl_->lowerBound(params);
+        }
         Real update(Array& p,
                     const Array& direction,
                     Real beta);
@@ -56,6 +71,14 @@ namespace QuantLib {
           public:
             bool test(const Array&) const {
                 return true;
+            }
+            Array upperBound(const Array& params) const {
+                return Array(params.size(),
+                             std::numeric_limits < Array::value_type > ::max());
+            }
+            Array lowerBound(const Array& params) const {
+                return Array(params.size(),
+                             std::numeric_limits < Array::value_type > ::min());
             }
         };
       public:
@@ -75,6 +98,13 @@ namespace QuantLib {
                         return false;
                 }
                 return true;
+            }
+            Array upperBound(const Array& params) const {
+                return Array(params.size(),
+                             std::numeric_limits < Array::value_type > ::max());
+            }
+            Array lowerBound(const Array& params) const {
+                return Array(params.size(), 0.0);
             }
         };
       public:
@@ -97,6 +127,12 @@ namespace QuantLib {
                 }
                 return true;
             }
+            Array upperBound(const Array& params) const {
+                return Array(params.size(), high_);
+            }
+            Array lowerBound(const Array& params) const {
+                return Array(params.size(), low_);
+            }
           private:
             Real low_, high_;
         };
@@ -117,6 +153,24 @@ namespace QuantLib {
             bool test(const Array& params) const {
                 return c1_.test(params) && c2_.test(params);
             }
+            Array upperBound(const Array& params) const {
+                Array c1ub = c1_.upperBound(params);
+                Array c2ub = c2_.upperBound(params);
+                Array rtrnArray(c1ub.size(), 0.0);
+                for (Size iter = 0; iter < c1ub.size(); iter++) {
+                    rtrnArray.at(iter) = std::min(c1ub.at(iter), c2ub.at(iter));
+                }
+                return rtrnArray;
+            }
+            Array lowerBound(const Array& params) const {
+                Array c1lb = c1_.lowerBound(params);
+                Array c2lb = c2_.lowerBound(params);
+                Array rtrnArray(c1lb.size(), 0.0);
+                for (Size iter = 0; iter < c1lb.size(); iter++) {
+                    rtrnArray.at(iter) = std::max(c1lb.at(iter), c2lb.at(iter));
+                }
+                return rtrnArray;
+            }
           private:
             Constraint c1_, c2_;
         };
@@ -124,6 +178,41 @@ namespace QuantLib {
         CompositeConstraint(const Constraint& c1, const Constraint& c2)
         : Constraint(boost::shared_ptr<Constraint::Impl>(
                                      new CompositeConstraint::Impl(c1,c2))) {}
+    };
+
+    //! %Constraint imposing i-th argument to be in [low_i,high_i] for all i
+    class NonhomogeneousBoundaryConstraint: public Constraint {
+      private:
+        class Impl: public Constraint::Impl {
+          public:
+            Impl(const Array& low, const Array& high) :
+                low_(low), high_(high) {
+                QL_ENSURE(low_.size()==high_.size(),
+                          "Upper and lower boundaries sizes are inconsistent.");
+            }
+            bool test(const Array& params) const {
+                QL_ENSURE(params.size()==low_.size(),
+                          "Number of parameters and boundaries sizes are inconsistent.")
+                for (Size i = 0; i < params.size(); i++) {
+                    if ((params[i] < low_[i]) || (params[i] > high_[i]))
+                        return false;
+                }
+                return true;
+            }
+            Array upperBound(const Array& params) const {
+                return high_;
+            }
+            Array lowerBound(const Array& params) const {
+                return low_;
+            }
+          private:
+            Array low_, high_;
+        };
+      public:
+        NonhomogeneousBoundaryConstraint(Array low, Array high)
+        : Constraint(boost::shared_ptr <Constraint::Impl>(
+                     new NonhomogeneousBoundaryConstraint::Impl(low, high))) {
+        }
     };
 
 }
