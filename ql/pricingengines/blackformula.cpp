@@ -323,12 +323,8 @@ namespace QuantLib {
         forward = forward + displacement;
         strike = strike + displacement;
 
-        if (stdDev==0.0) {
-            if (forward>strike)
-                return discount * forward;
-            else
-                return 0.0;
-        }
+        if (stdDev==0.0)
+            return 0.0;
 
         Real d1 = std::log(forward/strike)/stdDev + .5*stdDev;
         return discount * forward *
