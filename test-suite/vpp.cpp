@@ -861,8 +861,8 @@ void VPPTest::testVPPPricing() {
     }
 }
 
-#include <stdio.h>
 void VPPTest::testKlugeExtOUMatrixDecomposition() {
+#ifndef QL_NO_UBLAS_SUPPORT
     BOOST_MESSAGE("Testing KlugeExtOU matrix decomposition...");
 
     SavedSettings backup;
@@ -947,6 +947,7 @@ void VPPTest::testKlugeExtOUMatrixDecomposition() {
             }
         }
     }
+#endif
 }
 
 
@@ -957,9 +958,7 @@ test_suite* VPPTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&VPPTest::testKlugeExtOUSpreadOption));
     suite->add(QUANTLIB_TEST_CASE(&VPPTest::testVPPIntrinsicValue));
     suite->add(QUANTLIB_TEST_CASE(&VPPTest::testVPPPricing));
-#ifndef QL_NO_UBLAS_SUPPORT
     suite->add(QUANTLIB_TEST_CASE(&VPPTest::testKlugeExtOUMatrixDecomposition));
-#endif
 
     return suite;
 }

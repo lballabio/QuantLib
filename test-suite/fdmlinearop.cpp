@@ -1296,11 +1296,8 @@ test_suite* FdmLinearOpTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testBiCGstab));
     suite->add(
         QUANTLIB_TEST_CASE(&FdmLinearOpTest::testCrankNicolsonWithDamping));
-#ifndef QL_NO_UBLAS_SUPPORT
-      suite->add(
-          QUANTLIB_TEST_CASE(&FdmLinearOpTest::testSpareMatrixReference));
-#endif
-
+    suite->add(
+        QUANTLIB_TEST_CASE(&FdmLinearOpTest::testSpareMatrixReference));
 
     return suite;
     
