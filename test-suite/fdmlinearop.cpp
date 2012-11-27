@@ -32,7 +32,7 @@
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
-#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
+#include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
@@ -73,6 +73,7 @@
 #endif
 
 #include <boost/bind.hpp>
+#include <numeric>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -1228,6 +1229,50 @@ void FdmLinearOpTest::testCrankNicolsonWithDamping() {
     }
 }
 
+void FdmLinearOpTest::testSpareMatrixReference() {
+#ifndef QL_NO_UBLAS_SUPPORT
+    BOOST_MESSAGE("Testing SparseMatrixReference type...");
+
+    const Size rows    = 10;
+    const Size columns = 10;
+    const Size nMatrices = 5;
+    const Size nElements = 50;
+
+    PseudoRandom::urng_type rng(1234ul);
+
+    SparseMatrix expected(rows, columns);
+    std::vector<SparseMatrix> v(nMatrices, SparseMatrix(rows, columns));
+    std::vector<SparseMatrixReference> refs;
+
+    for (Size i=0; i < v.size(); ++i) {
+        SparseMatrixReference m(v[i]);
+        for (Size j=0; j < nElements; ++j) {
+            const Size row    = rng.next().value*rows;
+            const Size column = rng.next().value*columns;
+
+            const Real value = rng.next().value;
+            m(row, column)        += value;
+            expected(row, column) += value;
+        }
+
+        refs.push_back(m);
+    }
+
+    SparseMatrix calculated = std::accumulate(refs.begin()+1, refs.end(),
+                                              SparseMatrix(refs.front()));
+
+    for (Size i=0; i < rows; ++i) {
+        for (Size j=0; j < columns; ++j) {
+            if (std::fabs(calculated(i,j) - expected(i,j)) > 100*QL_EPSILON) {
+                BOOST_FAIL("Error using sparse matrix references in " <<
+                           "Element (" << i << ", " << j << ")" <<
+                        "\n expected  : " << expected(i, j) <<
+                        "\n calculated: " << calculated(i, j));
+            }
+        }
+    }
+#endif
+}
 
 test_suite* FdmLinearOpTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("linear operator tests");
@@ -1251,6 +1296,11 @@ test_suite* FdmLinearOpTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testBiCGstab));
     suite->add(
         QUANTLIB_TEST_CASE(&FdmLinearOpTest::testCrankNicolsonWithDamping));
+#ifndef QL_NO_UBLAS_SUPPORT
+      suite->add(
+          QUANTLIB_TEST_CASE(&FdmLinearOpTest::testSpareMatrixReference));
+#endif
+
 
     return suite;
     

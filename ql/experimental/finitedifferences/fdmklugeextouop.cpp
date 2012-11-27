@@ -109,11 +109,18 @@ namespace QuantLib {
     }
 
 #if !defined(QL_NO_UBLAS_SUPPORT)
-    Disposable<SparseMatrix> FdmKlugeExtOUOp::toMatrix() const {
-        SparseMatrix retVal 
-            = ouOp_->toMatrix() + corrMap_.toMatrix() + klugeOp_->toMatrix();
+    Disposable<std::vector<SparseMatrix> >
+    FdmKlugeExtOUOp::toMatrixDecomp() const {
+        const std::vector<SparseMatrix> klugeDecomp
+            = klugeOp_->toMatrixDecomp();
+
+        std::vector<SparseMatrix> retVal(4);
+        retVal[0] = klugeDecomp[0];
+        retVal[1] = klugeDecomp[1];
+        retVal[2] = ouOp_->toMatrixDecomp().front();
+        retVal[3] = corrMap_.toMatrix() + klugeDecomp[2];
 
         return retVal;
-    }
+    };
 #endif
 }

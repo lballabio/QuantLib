@@ -233,9 +233,13 @@ namespace QuantLib {
         return prod(integroPart_, r);
     }
 
-    Disposable<SparseMatrix> FdmExtOUJumpOp::toMatrix() const {
+    Disposable<std::vector<SparseMatrix> >
+    FdmExtOUJumpOp::toMatrixDecomp() const {
         QL_REQUIRE(bcSet_.empty(), "boundary conditions are not supported");
-        SparseMatrix retVal = ouOp_->toMatrix()+dyMap_.toMatrix()+integroPart_;
+
+        std::vector<SparseMatrix> retVal(1, ouOp_->toMatrixDecomp().front());
+        retVal.push_back(dyMap_.toMatrix());
+        retVal.push_back(integroPart_);
 
         return retVal;
     }

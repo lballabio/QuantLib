@@ -39,14 +39,17 @@
 #include <ql/experimental/processes/klugeextouprocess.hpp>
 #include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
 #include <ql/experimental/finitedifferences/vanillavppoption.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/experimental/finitedifferences/fdmklugeextouop.hpp>
 #include <ql/experimental/finitedifferences/fdsimpleextoustorageengine.hpp>
 #include <ql/experimental/finitedifferences/fdklugeextouspreadengine.hpp>
 #include <ql/experimental/finitedifferences/fdmvppstepconditionfactory.hpp>
 #include <ql/experimental/finitedifferences/fdsimpleklugeextouvppengine.hpp>
 #include <ql/experimental/finitedifferences/dynprogvppintrinsicvalueengine.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/methods/finitedifferences/meshers/exponentialjump1dmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmspreadpayoffinnervalue.hpp>
 
@@ -401,8 +404,6 @@ void VPPTest::testVPPIntrinsicValue() {
     const Real startUpFuel    = 20;
     const Real startUpFixCost = 100;
     const Real fuelCostAddon    = 3.0;
-    const Size nStarts        = Null<Size>();
-    const Size stateDirection = 0;
 
     const boost::shared_ptr<SwingExercise> exercise(
                                 new SwingExercise(today, today+6, 3600u));
@@ -440,11 +441,11 @@ void VPPTest::testVPPIntrinsicValue() {
 
 namespace {
 
-    class PathfuelPrice : public FdmInnerValueCalculator {
+    class PathFuelPrice : public FdmInnerValueCalculator {
       public:
         typedef FdSimpleKlugeExtOUVPPEngine::Shape Shape;
 
-        PathfuelPrice(
+        PathFuelPrice(
             const MultiPathGenerator<PseudoRandom>::sample_type::value_type& path,
             const boost::shared_ptr<Shape>& shape)
         : path_(path),
@@ -507,6 +508,41 @@ namespace {
     };
 }
 
+
+namespace {
+    boost::shared_ptr<KlugeExtOUProcess> createKlugeExtOUProcess() {
+        // model definition
+        const Real beta         = 200;
+        const Real eta          = 1.0/0.2;
+        const Real lambda       = 4.0;
+        const Real alpha        = 7.0;
+        const Real volatility_x = 1.4;
+        const Real kappa        = 4.45;
+        const Real volatility_u = std::sqrt(1.3);
+        const Real rho          = 0.7;
+
+        Array x0(2);
+        x0[0] = 0.0; x0[1] = 0.0;
+
+        const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess(
+            new ExtendedOrnsteinUhlenbeckProcess(alpha, volatility_x, x0[0],
+                                                 constant<Real, Real>(x0[0])));
+        const boost::shared_ptr<ExtOUWithJumpsProcess> lnPowerProcess(
+            new ExtOUWithJumpsProcess(ouProcess, x0[1], beta, lambda, eta));
+
+        const Real u=0.0;
+        const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> lnGasProcess(
+            new ExtendedOrnsteinUhlenbeckProcess(kappa, volatility_u, u,
+                                                 constant<Real, Real>(u)));
+
+        const boost::shared_ptr<KlugeExtOUProcess> klugeOUProcess(
+            new KlugeExtOUProcess(rho, lnPowerProcess, lnGasProcess));
+
+        return klugeOUProcess;
+    }
+}
+
+
 void VPPTest::testVPPPricing() {
     BOOST_MESSAGE("Testing VPP pricing using perfect foresight or FDM...");
 
@@ -531,38 +567,28 @@ void VPPTest::testVPPPricing() {
     VanillaVPPOption vppOption(heatRate, pMin, pMax, tMinUp, tMinDown,
                                startUpFuel, startUpFixCost, exercise);
 
-    // model definition
-    const Real beta         = 200;
-    const Real eta          = 1.0/0.2;
-    const Real lambda       = 4.0;
-    const Real alpha        = 7.0;
-    const Real volatility_x = 1.4;
-    const Real kappa        = 4.45;
-    const Real volatility_u = std::sqrt(1.3);
-    const Real rho          = 0.7;
+    const boost::shared_ptr<KlugeExtOUProcess> klugeOUProcess
+        = createKlugeExtOUProcess();
+    const boost::shared_ptr<ExtOUWithJumpsProcess> lnPowerProcess
+        = klugeOUProcess->getKlugeProcess();
+    const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess
+        = lnPowerProcess->getExtendedOrnsteinUhlenbeckProcess();
+    const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> lnGasProcess
+        = klugeOUProcess->getExtOUProcess();
+
+    const Real beta         = lnPowerProcess->beta();
+    const Real eta          = lnPowerProcess->eta();
+    const Real lambda       = lnPowerProcess->jumpIntensity();
+    const Real alpha        = ouProcess->speed();
+    const Real volatility_x = ouProcess->volatility();
+    const Real kappa        = lnGasProcess->speed();
+    const Real volatility_u = lnGasProcess->volatility();
+
     const Rate irRate       = 0.00;
     const Real fuelCostAddon  = 3.0;
 
-    Array x0(2);
-    x0[0] = 0.0; x0[1] = 0.0;
-
-    const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess(
-        new ExtendedOrnsteinUhlenbeckProcess(alpha, volatility_x, x0[0],
-                                             constant<Real, Real>(x0[0])));
-    const boost::shared_ptr<ExtOUWithJumpsProcess> lnPowerProcess(
-        new ExtOUWithJumpsProcess(ouProcess, x0[1], beta, lambda, eta));
-
-    const Real u=0.0;
-    const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> lnGasProcess(
-        new ExtendedOrnsteinUhlenbeckProcess(kappa, volatility_u, u,
-                                             constant<Real, Real>(u)));
-
-    const boost::shared_ptr<KlugeExtOUProcess> klugeOUProcess(
-        new KlugeExtOUProcess(rho, lnPowerProcess, lnGasProcess));
-
     const boost::shared_ptr<YieldTermStructure> rTS
         = flatRate(today, irRate, dc);
-
 
     const Size nHours = LENGTH(powerPrices);
 
@@ -627,10 +653,6 @@ void VPPTest::testVPPPricing() {
         stepConditionFactory.stateMesher()));
     const Size nStates = oneDimMesher->layout()->dim()[0];
 
-    const FdmVPPStepConditionParams vppParams = {
-        heatRate, pMin, pMax, tMinUp, tMinDown,
-        startUpFuel, startUpFixCost, fuelCostAddon,
-    };
     const FdmVPPStepConditionMesher vppMesh = { 0u, oneDimMesher };
 
     const TimeGrid grid(dc.yearFraction(today, exercise->lastDate()+1),
@@ -651,7 +673,7 @@ void VPPTest::testVPPPricing() {
             stepConditionFactory.build(
                 vppMesh, fuelCostAddon,
                 boost::shared_ptr<FdmInnerValueCalculator>(
-                    new PathfuelPrice(path.value, fuelShape)),
+                    new PathFuelPrice(path.value, fuelShape)),
                 boost::shared_ptr<FdmInnerValueCalculator>(
                     new PathSparkSpreadPrice(heatRate, path.value,
                                              fuelShape, powerShape))));
@@ -694,7 +716,7 @@ void VPPTest::testVPPPricing() {
         stepConditions.push_back(stepConditionFactory.build(
             vppMesh, fuelCostAddon,
             boost::shared_ptr<FdmInnerValueCalculator>(
-                new PathfuelPrice(calibrationPaths.back().value, fuelShape)),
+                new PathFuelPrice(calibrationPaths.back().value, fuelShape)),
             sparkSpreads.back()));
     }
 
@@ -751,7 +773,7 @@ void VPPTest::testVPPPricing() {
                                           : generator.next();
 
         const boost::shared_ptr<FdmInnerValueCalculator> fuelPrices(
-            new PathfuelPrice(path.value, fuelShape));
+            new PathFuelPrice(path.value, fuelShape));
 
         const boost::shared_ptr<FdmInnerValueCalculator> sparkSpreads(
             new PathSparkSpreadPrice(heatRate, path.value,
@@ -839,6 +861,95 @@ void VPPTest::testVPPPricing() {
     }
 }
 
+#include <stdio.h>
+void VPPTest::testKlugeExtOUMatrixDecomposition() {
+    BOOST_MESSAGE("Testing KlugeExtOU matrix decomposition...");
+
+    SavedSettings backup;
+
+    const Date today = Date(18, December, 2011);
+    Settings::instance().evaluationDate() = today;
+
+    const boost::shared_ptr<KlugeExtOUProcess> klugeOUProcess
+        = createKlugeExtOUProcess();
+
+    const Size xGrid = 50;
+    const Size yGrid = 20;
+    const Size uGrid = 20;
+    const Time maturity = 1;
+
+    const boost::shared_ptr<ExtOUWithJumpsProcess> klugeProcess
+        = klugeOUProcess->getKlugeProcess();
+    const boost::shared_ptr<StochasticProcess1D> ouProcess
+        = klugeProcess->getExtendedOrnsteinUhlenbeckProcess();
+
+    const boost::shared_ptr<FdmMesher> mesher(
+        new FdmMesherComposite(
+            boost::shared_ptr<Fdm1dMesher>(
+                new FdmSimpleProcess1dMesher(xGrid, ouProcess, maturity)),
+            boost::shared_ptr<Fdm1dMesher>(
+                new ExponentialJump1dMesher(yGrid,
+                                            klugeProcess->beta(),
+                                            klugeProcess->jumpIntensity(),
+                                            klugeProcess->eta())),
+            boost::shared_ptr<Fdm1dMesher>(
+                new FdmSimpleProcess1dMesher(uGrid,
+                                             klugeOUProcess->getExtOUProcess(),
+                                             maturity))));
+
+    const boost::shared_ptr<FdmLinearOpComposite> op(
+        new FdmKlugeExtOUOp(mesher, klugeOUProcess,
+                            flatRate(today, 0.0, ActualActual()),
+                            FdmBoundaryConditionSet(), 16));
+
+    Array x(mesher->layout()->size());
+
+    PseudoRandom::rng_type rng(PseudoRandom::urng_type(12345ul));
+    for (Size i=0; i < x.size(); ++i) {
+        x[i] = rng.next().value;
+    }
+
+    const Real tol = x.size()*QL_EPSILON;
+    const Array applyExpected = op->apply(x);
+    const Array applyExpectedMixed = op->apply_mixed(x);
+
+    const std::vector<SparseMatrix> matrixDecomp(op->toMatrixDecomp());
+    const Array applyCalculated = prod(op->toMatrix(), x);
+    const Array applyCalculatedMixed = prod(matrixDecomp.back(), x);
+
+    for (Size i=0; i < x.size(); ++i) {
+        if (std::fabs((applyExpected[i]-applyCalculated[i])) > tol) {
+            BOOST_ERROR("Failed to reproduce apply operation" <<
+                     "\n    expected  : " << applyExpected[i] <<
+                     "\n    calculated: " << applyCalculated[i]);
+        }
+        if (std::fabs((applyExpectedMixed[i]-applyCalculatedMixed[i])) > tol) {
+            BOOST_ERROR("Failed to reproduce apply operation" <<
+                     "\n    expected  : " << applyExpectedMixed[i] <<
+                     "\n    calculated: " << applyCalculatedMixed[i]);
+        }
+    }
+
+
+    for (Size i=0; i < 3; ++i) {
+        const Array applyExpectedDir = op->apply_direction(i, x);
+        const Array applyCalculatedDir = prod(matrixDecomp[i], x);
+
+        for (Size j=0; j < x.size(); ++j) {
+            const Real diff
+                = std::fabs((applyExpectedDir[j] - applyCalculatedDir[j]));
+
+            if (diff > tol) {
+                BOOST_ERROR("Failed to reproduce apply operation" <<
+                         "\n    expected  : " << applyExpectedDir[i] <<
+                         "\n    calculated: " << applyCalculatedDir[i] <<
+                         "\n    diff : " << diff);
+            }
+        }
+    }
+}
+
+
 test_suite* VPPTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("VPP Test");
     suite->add(QUANTLIB_TEST_CASE(&VPPTest::testGemanRoncoroniProcess));
@@ -846,6 +957,9 @@ test_suite* VPPTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&VPPTest::testKlugeExtOUSpreadOption));
     suite->add(QUANTLIB_TEST_CASE(&VPPTest::testVPPIntrinsicValue));
     suite->add(QUANTLIB_TEST_CASE(&VPPTest::testVPPPricing));
+#ifndef QL_NO_UBLAS_SUPPORT
+    suite->add(QUANTLIB_TEST_CASE(&VPPTest::testKlugeExtOUMatrixDecomposition));
+#endif
 
     return suite;
 }

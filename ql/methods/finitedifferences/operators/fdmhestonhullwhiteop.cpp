@@ -157,11 +157,13 @@ namespace QuantLib {
     }
 
 #if !defined(QL_NO_UBLAS_SUPPORT)
-    Disposable<SparseMatrix> FdmHestonHullWhiteOp::toMatrix() const {
-        SparseMatrix retVal =
-                dyMap_.toMatrix() + dxMap_.getMap().toMatrix()
-              + hullWhiteOp_.toMatrix()
-              + hestonCorrMap_.toMatrix() + equityIrCorrMap_.toMatrix();
+    Disposable<std::vector<SparseMatrix> >
+    FdmHestonHullWhiteOp::toMatrixDecomp() const {
+        std::vector<SparseMatrix> retVal(4);
+        retVal[0] = dxMap_.getMap().toMatrix();
+        retVal[1] = dyMap_.toMatrix();
+        retVal[2] = hullWhiteOp_.toMatrixDecomp().front();
+        retVal[3] = hestonCorrMap_.toMatrix() + equityIrCorrMap_.toMatrix();
 
         return retVal;
     }

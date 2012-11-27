@@ -163,10 +163,13 @@ namespace QuantLib {
     }
 
 #if !defined(QL_NO_UBLAS_SUPPORT)
-    Disposable<SparseMatrix> FdmHestonOp::toMatrix() const {
-        SparseMatrix retVal =
-              dyMap_.getMap().toMatrix() + dxMap_.getMap().toMatrix()
-            + correlationMap_.toMatrix();
+    Disposable<std::vector<SparseMatrix> >
+    FdmHestonOp::toMatrixDecomp() const {
+        std::vector<SparseMatrix> retVal(3);
+
+        retVal[0] = dyMap_.getMap().toMatrix();
+        retVal[1] = dxMap_.getMap().toMatrix();
+        retVal[2] = correlationMap_.toMatrix();
 
         return retVal;
     }

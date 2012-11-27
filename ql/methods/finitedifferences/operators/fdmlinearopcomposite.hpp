@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008 Klaus Spanderen
+ Copyright (C) 2008, 2012 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,7 +26,12 @@
 #ifndef quantlib_fdm_affine_map_composite_hpp
 #define quantlib_fdm_affine_map_composite_hpp
 
+#include <ql/math/matrixutilities/sparsematrix.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearop.hpp>
+
+#if !defined(QL_NO_UBLAS_SUPPORT)
+#include <numeric>
+#endif
 
 namespace QuantLib {
 
@@ -45,6 +50,17 @@ namespace QuantLib {
             solve_splitting(Size direction, const Array& r, Real s) const = 0;
         virtual Disposable<Array> 
             preconditioner(const Array& r, Real s) const = 0;
+
+#if !defined(QL_NO_UBLAS_SUPPORT)
+        virtual Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const=0;
+
+        Disposable<SparseMatrix> toMatrix() const {
+            const std::vector<SparseMatrix> dcmp = toMatrixDecomp();
+            SparseMatrix retVal = std::accumulate(dcmp.begin()+1, dcmp.end(),
+                                                  SparseMatrix(dcmp.front()));
+            return retVal;
+        }
+#endif
     };
 }
 

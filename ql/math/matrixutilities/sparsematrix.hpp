@@ -43,6 +43,8 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 namespace QuantLib {
     typedef boost::numeric::ublas::compressed_matrix<Real> SparseMatrix;
+    typedef boost::numeric::ublas::matrix_reference<SparseMatrix>
+        SparseMatrixReference;
 
     inline Disposable<Array> prod(const SparseMatrix& A, const Array& x) {
         Array b(x.size());

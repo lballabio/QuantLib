@@ -108,8 +108,10 @@ namespace QuantLib {
     }
 
 #if !defined(QL_NO_UBLAS_SUPPORT)
-    Disposable<SparseMatrix> FdmExtendedOrnsteinUhlenbackOp::toMatrix() const {
-        return mapX_.toMatrix();
+    Disposable<std::vector<SparseMatrix> >
+    FdmExtendedOrnsteinUhlenbackOp::toMatrixDecomp() const {
+        std::vector<SparseMatrix> retVal(1, mapX_.toMatrix());
+        return retVal;
     }
 #endif
 

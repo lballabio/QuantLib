@@ -32,6 +32,7 @@ class VPPTest {
     static void testKlugeExtOUSpreadOption();
     static void testVPPIntrinsicValue();
     static void testVPPPricing();
+    static void testKlugeExtOUMatrixDecomposition();
     static boost::unit_test_framework::test_suite* suite();
 };
 

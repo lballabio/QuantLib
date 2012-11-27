@@ -154,11 +154,14 @@ namespace QuantLib {
     }
 
 #if !defined(QL_NO_UBLAS_SUPPORT)
-    Disposable<SparseMatrix> Fdm2dBlackScholesOp::toMatrix() const {
-        SparseMatrix retVal =
-              opX_.toMatrix() + opY_.toMatrix() + corrMapT_.toMatrix() +
-              currentForwardRate_*boost::numeric::ublas::identity_matrix<Real>(
-                                                    mesher_->layout()->size());
+    Disposable<std::vector<SparseMatrix> >
+    Fdm2dBlackScholesOp::toMatrixDecomp() const {
+        std::vector<SparseMatrix> retVal(3);
+        retVal[0] = opX_.toMatrix();
+        retVal[1] = opY_.toMatrix();
+        retVal[2] = corrMapT_.toMatrix() +
+            currentForwardRate_*boost::numeric::ublas::identity_matrix<Real>(
+                    mesher_->layout()->size());
 
         return retVal;
     }

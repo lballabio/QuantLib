@@ -128,8 +128,10 @@ namespace QuantLib {
     }
 
 #if !defined(QL_NO_UBLAS_SUPPORT)
-    Disposable<SparseMatrix> FdmBlackScholesOp::toMatrix() const {
-        return mapT_.toMatrix();
+    Disposable<std::vector<SparseMatrix> >
+    FdmBlackScholesOp::toMatrixDecomp() const {
+        std::vector<SparseMatrix> retVal(1, mapT_.toMatrix());
+        return retVal;
     }
 #endif
 }

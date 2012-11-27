@@ -114,9 +114,12 @@ namespace QuantLib {
     }
 
 #if !defined(QL_NO_UBLAS_SUPPORT)
-    Disposable<SparseMatrix> FdmG2Op::toMatrix() const {
-        SparseMatrix retVal =
-            mapX_.toMatrix() + mapY_.toMatrix() + corrMap_.toMatrix();
+    Disposable<std::vector<SparseMatrix> > FdmG2Op::toMatrixDecomp() const {
+        std::vector<SparseMatrix> retVal(3);
+        retVal[0] = mapX_.toMatrix();
+        retVal[1] = mapY_.toMatrix();
+        retVal[2] = corrMap_.toMatrix();
+
         return retVal;
     }
 #endif

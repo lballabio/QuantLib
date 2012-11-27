@@ -132,4 +132,10 @@ namespace QuantLib {
         return lambda_*(integral-r);
     }
 
+#if !defined(QL_NO_UBLAS_SUPPORT)
+    Disposable<std::vector<SparseMatrix> > FdmBatesOp::toMatrixDecomp() const {
+        QL_FAIL("not implemented");
+    }
+#endif
+
 }
