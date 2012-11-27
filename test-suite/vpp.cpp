@@ -909,7 +909,7 @@ void VPPTest::testKlugeExtOUMatrixDecomposition() {
         x[i] = rng.next().value;
     }
 
-    const Real tol = x.size()*QL_EPSILON;
+    const Real tol = 1e-8;
     const Array applyExpected = op->apply(x);
     const Array applyExpectedMixed = op->apply_mixed(x);
 
