@@ -53,7 +53,7 @@ namespace QuantLib {
                 Real del = d*c;
                 h *= del;
                 if (std::fabs(del - 1.0)<QL_EPSILON)
-                    return h*std::exp(-x + a_*std::log(x) - gln);
+                    return 1.0-h*std::exp(-x + a_*std::log(x) - gln);
             }
         }
         QL_FAIL("too few iterations");
