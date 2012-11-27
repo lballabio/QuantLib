@@ -73,6 +73,7 @@ namespace QuantLib {
         struct Candidate {
             Array values;
             Real cost;
+            Candidate(Size size = 0) : values(size, 0.0), cost(0.0) {}
         };
 
         class Configuration {

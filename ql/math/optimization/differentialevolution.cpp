@@ -43,9 +43,8 @@ namespace QuantLib {
         currGenCrossover_ = Array(configuration().populationMembers,
                                   configuration().crossoverProbability);
 
-        std::vector<Candidate> population(
-                                configuration().populationMembers,
-                                { Array(p.currentValue().size(), 0.0), 0.0 });
+        std::vector<Candidate> population(configuration().populationMembers,
+                                          Candidate(p.currentValue().size()));
         fillInitialPopulation(population, p);
 
         std::partial_sort(population.begin(), population.begin() + 1, population.end(),
