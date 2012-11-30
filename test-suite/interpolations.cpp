@@ -39,7 +39,6 @@
 #include <ql/math/richardsonextrapolation.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
-#include <boost/assign/std/vector.hpp>
 #include <boost/foreach.hpp>
 
 using namespace QuantLib;
@@ -1456,16 +1455,18 @@ void InterpolationTest::testKernelInterpolation2D(){
     // Testing for consistency of input output data
     // at the nodes
 
-    using namespace boost::assign;
-
     BOOST_MESSAGE("Testing kernel 2D interpolation...");
 
     Real mean=0.0, var=0.18;
     GaussianKernel myKernel(mean,var);
 
-    std::vector<Real> xVec,yVec;
-    xVec += 0.10,0.20,0.30,0.40,0.50,0.60,0.70,0.80,0.90,1.00;
-    yVec += 1.0,2.0,3.5;
+    std::vector<Real> xVec(10);
+    xVec[0] = 0.10; xVec[1] = 0.20; xVec[2] = 0.30; xVec[3] = 0.40;
+    xVec[4] = 0.50; xVec[5] = 0.60; xVec[6] = 0.70; xVec[7] = 0.80;
+    xVec[8] = 0.90; xVec[9] = 1.00;
+
+    std::vector<Real> yVec(3);
+    yVec[0] = 1.0; yVec[1] = 2.0; yVec[2] = 3.5;
 
     Matrix M(xVec.size(),yVec.size());
 
@@ -1503,11 +1504,14 @@ void InterpolationTest::testKernelInterpolation2D(){
     }
 
     // alternative data set
-    std::vector<Real> xVec1,yVec1;
-    xVec1+=80.0,90.0,100.0,110.0;
-    yVec1+=0.5,0.7,1.0,2.0,3.5,4.5,5.5,6.5;
-    Matrix M1(xVec1.size(),yVec1.size());
+    std::vector<Real> xVec1(4);
+    xVec1[0] = 80.0; xVec1[1] = 90.0; xVec1[2] = 100.0; xVec1[3] = 110.0;
 
+    std::vector<Real> yVec1(8);
+    yVec1[0] = 0.5; yVec1[1] = 0.7; yVec1[2] = 1.0; yVec1[3] = 2.0;
+    yVec1[4] = 3.5; yVec1[5] = 4.5; yVec1[6] = 5.5; yVec1[7] = 6.5;
+
+    Matrix M1(xVec1.size(),yVec1.size());
     M1[0][0]=10.25; M1[1][0]=12.24;M1[2][0]=14.23;M1[3][0]=17.20;
     M1[0][1]=12.25; M1[1][1]=15.24;M1[2][1]=16.23;M1[3][1]=16.20;
     M1[0][2]=12.25; M1[1][2]=13.24;M1[2][2]=13.23;M1[3][2]=17.20;
@@ -1541,10 +1545,10 @@ void InterpolationTest::testKernelInterpolation2D(){
     }
 
     // test updating mechanism by changing initial variables
-    xVec1.clear();yVec1.clear();
+    xVec1[0] = 60.0; xVec1[1] = 95.0; xVec1[2] = 105.0; xVec1[3] = 135.0;
 
-    xVec1+=60.0,95.0,105.0,135.0;
-    yVec1+=12.5,13.7,15.0,19.0,26.5,27.5,29.2,36.5;
+    yVec1[0] = 12.5; yVec1[1] = 13.7; yVec1[2] = 15.0; yVec1[3] = 19.0;
+    yVec1[4] = 26.5; yVec1[5] = 27.5; yVec1[6] = 29.2; yVec1[7] = 36.5;
 
     kernel2DEp.update();
 
