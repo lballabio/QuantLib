@@ -42,8 +42,6 @@
 
 // leave outside here common configs
 
-#define _USE_MATH_DEFINES  // let <cmath> define math constants
-
 #define QL_PATCH_MSVC  // more granularity below
 
 // prevent auto-link of Boost libs such as serialization

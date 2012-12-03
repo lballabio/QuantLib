@@ -26,6 +26,14 @@
 /* install-hook */
 #define quantlib_defines_hpp
 
+#ifdef _MSC_VER
+/* Microsoft-specific, but needs to be defined before
+   including <boost/config.hpp> which somehow includes
+   <math.h> under VC++10
+*/
+#define _USE_MATH_DEFINES
+#endif
+
 #include <boost/config.hpp>
 #include <boost/version.hpp>
 #if BOOST_VERSION < 103100
