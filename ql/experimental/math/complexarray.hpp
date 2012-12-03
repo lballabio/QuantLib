@@ -553,8 +553,8 @@ namespace QuantLib {
         out << "[ ";
         if (!a.empty()) {
             for (Size n=0; n<a.size()-1; ++n)
-                out << std::setw(width) << a[n] << "; ";
-            out << std::setw(width) << a.back();
+                out << std::setw(int(width)) << a[n] << "; ";
+            out << std::setw(int(width)) << a.back();
         }
         out << " ]";
         return out;

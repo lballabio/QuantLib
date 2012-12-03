@@ -581,7 +581,7 @@ namespace QuantLib {
         for (Size i=0; i<m.rows(); i++) {
             out << "| ";
             for (Size j=0; j<m.columns(); j++)
-                out << std::setw(width) << m[i][j] << " ";
+                out << std::setw(int(width)) << m[i][j] << " ";
             out << "|\n";
         }
         return out;
