@@ -17,6 +17,8 @@ EXTRA_DIST = \
     Bonds_vc9.vcproj \
     Bonds_vc10.vcxproj \
     Bonds_vc10.vcxproj.filters \
+    Bonds_vc11.vcxproj \
+    Bonds_vc11.vcxproj.filters \
     ReadMe.txt
 
 .PHONY: examples check-examples

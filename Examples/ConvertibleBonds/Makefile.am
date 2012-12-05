@@ -17,6 +17,8 @@ EXTRA_DIST = \
     ConvertibleBonds_vc9.vcproj \
     ConvertibleBonds_vc10.vcxproj \
     ConvertibleBonds_vc10.vcxproj.filters \
+    ConvertibleBonds_vc11.vcxproj \
+    ConvertibleBonds_vc11.vcxproj.filters \
     ReadMe.txt
 
 .PHONY: examples check-examples

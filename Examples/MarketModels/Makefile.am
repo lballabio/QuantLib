@@ -16,7 +16,9 @@ EXTRA_DIST = \
     MarketModels_vc8.vcproj \
     MarketModels_vc9.vcproj \
     MarketModels_vc10.vcxproj \
-    MarketModels_vc10.vcxproj.filters
+    MarketModels_vc10.vcxproj.filters \
+    MarketModels_vc11.vcxproj \
+    MarketModels_vc11.vcxproj.filters
 
 .PHONY: examples check-examples
 

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006, 2008 Ferdinando Ametrano
+ Copyright (C) 2012 Édouard Tallent
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -38,6 +39,8 @@
 #  endif
 #elif (_MSC_VER == 1600)
 #  define QL_LIB_TOOLSET "vc100"
+#elif (_MSC_VER == 1700)
+#  define QL_LIB_TOOLSET "vc110"
 #else
 #  error "unknown Microsoft compiler"
 #endif

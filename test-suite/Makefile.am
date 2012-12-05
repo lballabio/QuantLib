@@ -204,6 +204,8 @@ EXTRA_DIST = \
 	testsuite_vc9.vcproj \
 	testsuite_vc10.vcxproj \
 	testsuite_vc10.vcxproj.filters \
+	testsuite_vc11.vcxproj \
+	testsuite_vc11.vcxproj.filters \
 	testsuite.dev
 
 else
@@ -217,6 +219,8 @@ EXTRA_DIST = \
 	testsuite_vc9.vcproj \
 	testsuite_vc10.vcxproj \
 	testsuite_vc10.vcxproj.filters \
+	testsuite_vc11.vcxproj \
+	testsuite_vc11.vcxproj.filters \
 	testsuite.dev
 
 endif

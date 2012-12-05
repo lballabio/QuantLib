@@ -17,6 +17,8 @@ EXTRA_DIST = \
     FRA_vc9.vcproj \
     FRA_vc10.vcxproj \
     FRA_vc10.vcxproj.filters \
+    FRA_vc11.vcxproj \
+    FRA_vc11.vcxproj.filters \
     ReadMe.txt
 
 .PHONY: examples check-examples

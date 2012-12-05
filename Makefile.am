@@ -31,6 +31,9 @@ EXTRA_DIST = \
 	QuantLib_vc10.sln \
 	QuantLib_vc10.vcxproj \
 	QuantLib_vc10.vcxproj.filters \
+	QuantLib_vc11.sln \
+	QuantLib_vc11.vcxproj \
+	QuantLib_vc11.vcxproj.filters \
 	Readme.txt \
 	autogen.sh
 
