@@ -60,13 +60,19 @@ namespace QuantLib {
                 fxMid = f(xMid);
                 ++evaluationNumber_;
                 s = std::sqrt(fxMid*fxMid-fxMin_*fxMax_);
-                if (close(s, 0.0))
+                if (close(s, 0.0)) {
+                    f(root_);
+                    ++evaluationNumber_;
                     return root_;
+                }
                 // Updating formula
                 nextRoot = xMid + (xMid - xMin_) *
                     ((fxMin_ >= fxMax_ ? 1.0 : -1.0) * fxMid / s);
-                if (std::fabs(nextRoot-root_) <= xAccuracy)
+                if (std::fabs(nextRoot-root_) <= xAccuracy) {
+                    f(root_);
+                    ++evaluationNumber_;
                     return root_;
+                }
 
                 root_ = nextRoot;
                 // Second of two function evaluations per iteration
@@ -91,7 +97,11 @@ namespace QuantLib {
                     QL_FAIL("never get here.");
                 }
 
-                if (std::fabs(xMax_-xMin_) <= xAccuracy) return root_;
+                if (std::fabs(xMax_-xMin_) <= xAccuracy) {
+                    f(root_);
+                    ++evaluationNumber_;
+                    return root_;
+                }
             }
 
             QL_FAIL("maximum number of function evaluations ("

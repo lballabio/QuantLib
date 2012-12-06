@@ -88,8 +88,11 @@ namespace QuantLib {
                     root_ -= dx;
                 }
                 // Convergence criterion
-                if (std::fabs(dx) < xAccuracy)
+                if (std::fabs(dx) < xAccuracy) {
+                    f(root_);
+                    ++evaluationNumber_;
                     return root_;
+                }
                 froot = f(root_);
                 dfroot = f.derivative(root_);
                 ++evaluationNumber_;

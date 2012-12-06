@@ -82,8 +82,11 @@ namespace QuantLib {
                 // Convergence check
                 xAcc1=2.0*QL_EPSILON*std::fabs(root_)+0.5*xAccuracy;
                 xMid=(xMax_-root_)/2.0;
-                if (std::fabs(xMid) <= xAcc1 || (close(froot, 0.0)))
+                if (std::fabs(xMid) <= xAcc1 || (close(froot, 0.0))) {
+                    f(root_);
+                    ++evaluationNumber_;
                     return root_;
+                }
                 if (std::fabs(e) >= xAcc1 &&
                     std::fabs(fxMin_) > std::fabs(froot)) {
 

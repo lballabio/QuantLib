@@ -64,8 +64,11 @@ namespace QuantLib {
                     s.setMaxEvaluations(maxEvaluations_-evaluationNumber_);
                     return s.solve(f, xAccuracy, root_+dx, xMin_, xMax_);
                 }
-                if (std::fabs(dx) < xAccuracy)
+                if (std::fabs(dx) < xAccuracy) {
+                    f(root_);
+                    ++evaluationNumber_;
                     return root_;
+                }
                 froot = f(root_);
                 dfroot = f.derivative(root_);
                 ++evaluationNumber_;

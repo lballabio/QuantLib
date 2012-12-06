@@ -45,6 +45,7 @@ namespace {
         Real derivative(Real x) const { return -2.0*x; }
     };
 
+
     template <class S, class F>
     void test_not_bracketed(const S& solver, const std::string& name,
                             const F& f, Real guess) {
@@ -78,9 +79,62 @@ namespace {
         }
     }
 
+    class Probe {
+      public:
+        Probe(Real& result, Real offset)
+        : result_(result), previous_(result), offset_(offset) {}
+        Real operator()(Real x) const {
+            result_ = x;
+            return previous_ + offset_ - x*x;
+        }
+        Real derivative(Real x) const { return 2.0*x; }
+      private:
+        Real& result_;
+        Real previous_;
+        Real offset_;
+    };
 
     template <class S>
-    void test_solver(const S& solver, const std::string& name) {
+    void test_last_call_with_root(const S& solver, const std::string& name,
+                                  bool bracketed,  Real accuracy) {
+
+        Real mins[] = { 3.0, 2.25, 1.5, 1.0 };
+        Real maxs[] = { 7.0, 5.75, 4.5, 3.0 };
+        Real steps[] = { 0.2, 0.2, 0.1, 0.1 };
+        Real offsets[] = { 25.0, 11.0, 5.0, 1.0 };
+        Real guesses[] = { 4.5, 4.5, 2.5, 2.5 };
+        Real expected[] = { 5.0, 4.0, 3.0, 2.0 };
+
+        Real argument = 0.0;
+        Real result;
+
+        for (Size i=0; i<4; ++i) {
+            if (bracketed) {
+                result = solver.solve(Probe(argument, offsets[i]), accuracy,
+                                      guesses[i], mins[i], maxs[i]);
+            } else {
+                result = solver.solve(Probe(argument, offsets[i]), accuracy,
+                                      guesses[i], steps[i]);
+            }
+
+            Real error = std::fabs(result-argument);
+            // no floating-point comparison: the solver should have
+            // called the function with the very same value it's
+            // returning
+            if (result != argument) {
+                BOOST_FAIL(name << " solver ("
+                           << (bracketed ? "" : "not ")
+                           << "bracketed):\n"
+                           << "    index:   " << i << "\n"
+                           << "    expected:   " << result << "\n"
+                           << "    calculated: " << argument << "\n"
+                           << "    error: " << error);
+            }
+        }
+    }        
+
+    template <class S>
+    void test_solver(const S& solver, const std::string& name, Real accuracy) {
         // guess on the left side of the root, increasing function
         test_not_bracketed(solver, name, F1(), 0.5);
         test_bracketed(solver, name, F1(), 0.5);
@@ -93,43 +147,47 @@ namespace {
         // guess on the right side of the root, decreasing function
         test_not_bracketed(solver, name, F2(), 1.5);
         test_bracketed(solver, name, F2(), 1.5);
+        // check that the last function call is made with the root value
+        test_last_call_with_root(solver, name, false, accuracy);
+        test_last_call_with_root(solver, name, true, accuracy);
     }
+
 }
 
 
 void Solver1DTest::testBrent() {
     BOOST_MESSAGE("Testing Brent solver...");
-    test_solver(Brent(),"Brent");
+    test_solver(Brent(), "Brent", 1.0e-6);
 }
 
 void Solver1DTest::testBisection() {
     BOOST_MESSAGE("Testing bisection solver...");
-    test_solver(Bisection(),"Bisection");
+    test_solver(Bisection(), "Bisection", 1.0e-6);
 }
 
 void Solver1DTest::testFalsePosition() {
     BOOST_MESSAGE("Testing false-position solver...");
-    test_solver(FalsePosition(),"FalsePosition");
+    test_solver(FalsePosition(), "FalsePosition", 1.0e-6);
 }
 
 void Solver1DTest::testNewton() {
     BOOST_MESSAGE("Testing Newton solver...");
-    test_solver(Newton(),"Newton");
+    test_solver(Newton(), "Newton", 1.0e-12);
 }
 
 void Solver1DTest::testNewtonSafe() {
     BOOST_MESSAGE("Testing Newton-safe solver...");
-    test_solver(NewtonSafe(),"NewtonSafe");
+    test_solver(NewtonSafe(), "NewtonSafe", 1.0e-9);
 }
 
 void Solver1DTest::testRidder() {
     BOOST_MESSAGE("Testing Ridder solver...");
-    test_solver(Ridder(),"Ridder");
+    test_solver(Ridder(), "Ridder", 1.0e-6);
 }
 
 void Solver1DTest::testSecant() {
     BOOST_MESSAGE("Testing secant solver...");
-    test_solver(Secant(),"Secant");
+    test_solver(Secant(), "Secant", 1.0e-6);
 }
 
 
