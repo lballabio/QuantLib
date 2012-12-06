@@ -36,29 +36,34 @@ namespace QuantLib {
     BlackSwaptionEngine::BlackSwaptionEngine(
                               const Handle<YieldTermStructure>& discountCurve,
                               Volatility vol,
-                              const DayCounter& dc)
+                              const DayCounter& dc,
+                              Real displacement)
     : discountCurve_(discountCurve),
       vol_(boost::shared_ptr<SwaptionVolatilityStructure>(new
-          ConstantSwaptionVolatility(0, NullCalendar(), Following, vol, dc))) {
+          ConstantSwaptionVolatility(0, NullCalendar(), Following, vol, dc))),
+      displacement_(displacement) {
         registerWith(discountCurve_);
     }
 
     BlackSwaptionEngine::BlackSwaptionEngine(
                             const Handle<YieldTermStructure>& discountCurve,
                             const Handle<Quote>& vol,
-                            const DayCounter& dc)
+                            const DayCounter& dc,
+                            Real displacement)
     : discountCurve_(discountCurve),
       vol_(boost::shared_ptr<SwaptionVolatilityStructure>(new
-          ConstantSwaptionVolatility(0, NullCalendar(), Following, vol, dc))) {
+          ConstantSwaptionVolatility(0, NullCalendar(), Following, vol, dc))),
+      displacement_(displacement) {
         registerWith(discountCurve_);
         registerWith(vol_);
     }
 
     BlackSwaptionEngine::BlackSwaptionEngine(
                         const Handle<YieldTermStructure>& discountCurve,
-                        const Handle<SwaptionVolatilityStructure>& volatility)
-    : discountCurve_(discountCurve),
-      vol_(volatility) {
+                        const Handle<SwaptionVolatilityStructure>& volatility,
+                        Real displacement)
+    : discountCurve_(discountCurve), vol_(volatility),
+      displacement_(displacement) {
         registerWith(discountCurve_);
         registerWith(vol_);
     }
@@ -134,11 +139,13 @@ namespace QuantLib {
         results_.additionalResults["stdDev"] = stdDev;
         Option::Type w = (arguments_.type==VanillaSwap::Payer) ?
                                                 Option::Call : Option::Put;
-        results_.value = blackFormula(w, strike, atmForward, stdDev, annuity);
+        results_.value = blackFormula(w, strike, atmForward, stdDev, annuity,
+                                                                displacement_);
 
         Time exerciseTime = vol_->timeFromReference(exerciseDate);
         results_.additionalResults["vega"] = std::sqrt(exerciseTime) *
-            blackFormulaStdDevDerivative(strike, atmForward, stdDev, annuity);
+            blackFormulaStdDevDerivative(strike, atmForward, stdDev, annuity,
+                                                                displacement_);
     }
 
 }

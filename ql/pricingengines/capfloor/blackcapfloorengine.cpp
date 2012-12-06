@@ -30,28 +30,34 @@ namespace QuantLib {
     BlackCapFloorEngine::BlackCapFloorEngine(
                               const Handle<YieldTermStructure>& discountCurve,
                               Volatility v,
-                              const DayCounter& dc)
+                              const DayCounter& dc,
+                              Real displacement)
     : discountCurve_(discountCurve),
       vol_(boost::shared_ptr<OptionletVolatilityStructure>(new
-          ConstantOptionletVolatility(0, NullCalendar(), Following, v, dc))) {
+          ConstantOptionletVolatility(0, NullCalendar(), Following, v, dc))),
+      displacement_(displacement) {
         registerWith(discountCurve_);
     }
 
     BlackCapFloorEngine::BlackCapFloorEngine(
                               const Handle<YieldTermStructure>& discountCurve,
                               const Handle<Quote>& v,
-                              const DayCounter& dc)
+                              const DayCounter& dc,
+                              Real displacement)
     : discountCurve_(discountCurve),
       vol_(boost::shared_ptr<OptionletVolatilityStructure>(new
-          ConstantOptionletVolatility(0, NullCalendar(), Following, v, dc))) {
+          ConstantOptionletVolatility(0, NullCalendar(), Following, v, dc))),
+      displacement_(displacement) {
         registerWith(discountCurve_);
         registerWith(vol_);
     }
 
     BlackCapFloorEngine::BlackCapFloorEngine(
                        const Handle<YieldTermStructure>& discountCurve,
-                       const Handle<OptionletVolatilityStructure>& volatility)
-    : discountCurve_(discountCurve), vol_(volatility) {
+                       const Handle<OptionletVolatilityStructure>& volatility,
+                       Real displacement)
+    : discountCurve_(discountCurve), vol_(volatility),
+      displacement_(displacement) {
         registerWith(discountCurve_);
         registerWith(vol_);
     }
@@ -90,12 +96,12 @@ namespace QuantLib {
                     if (sqrtTime>0.0) {
                         stdDevs[i] = std::sqrt(vol_->blackVariance(fixingDate,
                                                                    strike));
-                        vegas[i] = blackFormulaStdDevDerivative(
-                            strike, forward, stdDevs[i], d) * sqrtTime;
+                        vegas[i] = blackFormulaStdDevDerivative(strike,
+                            forward, stdDevs[i], d, displacement_) * sqrtTime;
                     }
                     // include caplets with past fixing date
-                    values[i] = blackFormula(Option::Call, strike,
-                                             forward, stdDevs[i], d);
+                    values[i] = blackFormula(Option::Call,
+                        strike, forward, stdDevs[i], d, displacement_);
                 }
                 if (type == CapFloor::Floor || type == CapFloor::Collar) {
                     Rate strike = arguments_.floorRates[i];
@@ -103,11 +109,11 @@ namespace QuantLib {
                     if (sqrtTime>0.0) {
                         stdDevs[i] = std::sqrt(vol_->blackVariance(fixingDate,
                                                                    strike));
-                        floorletVega = blackFormulaStdDevDerivative(
-                            strike, forward, stdDevs[i], d) * sqrtTime;
+                        floorletVega = blackFormulaStdDevDerivative(strike,
+                            forward, stdDevs[i], d, displacement_) * sqrtTime;
                     }
-                    Real floorlet = blackFormula(Option::Put, strike,
-                                                 forward, stdDevs[i], d);
+                    Real floorlet = blackFormula(Option::Put,
+                        strike, forward, stdDevs[i], d, displacement_);
                     if (type == CapFloor::Floor) {
                         values[i] = floorlet;
                         vegas[i] = floorletVega;
