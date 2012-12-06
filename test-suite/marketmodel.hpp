@@ -22,6 +22,7 @@
 #ifndef quantlib_test_market_model_hpp
 #define quantlib_test_market_model_hpp
 
+#include <ql/qldefines.hpp>
 #include <boost/test/unit_test.hpp>
 
 /* remember to document new and/or updated tests in the Doxygen

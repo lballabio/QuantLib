@@ -1247,8 +1247,8 @@ void FdmLinearOpTest::testSpareMatrixReference() {
     for (Size i=0; i < v.size(); ++i) {
         SparseMatrixReference m(v[i]);
         for (Size j=0; j < nElements; ++j) {
-            const Size row    = rng.next().value*rows;
-            const Size column = rng.next().value*columns;
+            const Size row    = Size(rng.next().value*rows);
+            const Size column = Size(rng.next().value*columns);
 
             const Real value = rng.next().value;
             m(row, column)        += value;
