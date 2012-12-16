@@ -53,7 +53,7 @@ namespace QuantLib {
         Time dt_;
         const Real theta_;
         const Real mu_;
-        const boost::shared_ptr<FdmLinearOpComposite> & map_;
+        const boost::shared_ptr<FdmLinearOpComposite> map_;
         const BoundaryConditionSchemeHelper bcSet_;
     };
 }
