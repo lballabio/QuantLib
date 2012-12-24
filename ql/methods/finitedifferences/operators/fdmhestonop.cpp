@@ -167,8 +167,8 @@ namespace QuantLib {
     FdmHestonOp::toMatrixDecomp() const {
         std::vector<SparseMatrix> retVal(3);
 
-        retVal[0] = dyMap_.getMap().toMatrix();
-        retVal[1] = dxMap_.getMap().toMatrix();
+        retVal[0] = dxMap_.getMap().toMatrix();
+        retVal[1] = dyMap_.getMap().toMatrix();
         retVal[2] = correlationMap_.toMatrix();
 
         return retVal;
