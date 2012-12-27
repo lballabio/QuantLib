@@ -42,6 +42,7 @@ public:
     static void testBiCGstab();
     static void testCrankNicolsonWithDamping();
     static void testSpareMatrixReference();
+    static void testSparseMatrixZeroAssignment();
     static boost::unit_test_framework::test_suite* suite();
 };
 

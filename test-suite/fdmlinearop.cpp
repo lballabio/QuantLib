@@ -1274,6 +1274,42 @@ void FdmLinearOpTest::testSpareMatrixReference() {
 #endif
 }
 
+namespace {
+#ifndef QL_NO_UBLAS_SUPPORT
+    Size nrElementsOfSparseMatrix(const SparseMatrix& m) {
+        Size retVal = 0;
+        for (SparseMatrix::const_iterator1 i1 = m.begin1();
+            i1 != m.end1(); ++i1) {
+            retVal+=std::distance(i1.begin(), i1.end());
+        }
+        return retVal;
+    }
+#endif
+}
+
+void FdmLinearOpTest::testSparseMatrixZeroAssignment() {
+#ifndef QL_NO_UBLAS_SUPPORT
+    BOOST_MESSAGE("Testing SparseMatrix zero assignment...");
+
+    SparseMatrix m(5,5);
+    if (nrElementsOfSparseMatrix(m)) {
+        BOOST_FAIL("non zero return for an emtpy matrix");
+    }
+    m(0, 0) = 0.0; m(1, 2) = 0.0;
+    if (nrElementsOfSparseMatrix(m) != 2) {
+        BOOST_FAIL("two elements expected");
+    }
+    m(1, 3) = 1.0;
+    if (nrElementsOfSparseMatrix(m) != 3) {
+        BOOST_FAIL("three elements expected");
+    }
+    m(1, 3) = 0.0;
+    if (nrElementsOfSparseMatrix(m) != 3) {
+        BOOST_FAIL("three elements expected");
+    }
+#endif
+}
+
 test_suite* FdmLinearOpTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("linear operator tests");
 
@@ -1298,6 +1334,8 @@ test_suite* FdmLinearOpTest::suite() {
         QUANTLIB_TEST_CASE(&FdmLinearOpTest::testCrankNicolsonWithDamping));
     suite->add(
         QUANTLIB_TEST_CASE(&FdmLinearOpTest::testSpareMatrixReference));
+    suite->add(
+        QUANTLIB_TEST_CASE(&FdmLinearOpTest::testSparseMatrixZeroAssignment));
 
     return suite;
     
