@@ -837,7 +837,7 @@ void HestonModelTest::testDifferentIntegrals() {
                               new AnalyticHestonEngine(model, 1e-10,
                                                        1000000));
         boost::shared_ptr<AnalyticHestonEngine> laguerreEngine(
-                                        new AnalyticHestonEngine(model, 192));
+                                        new AnalyticHestonEngine(model, 128));
         boost::shared_ptr<AnalyticHestonEngine> legendreEngine(
             new AnalyticHestonEngine(
                 model, AnalyticHestonEngine::Gatheral,
@@ -1152,7 +1152,7 @@ void HestonModelTest::testAlanLewisReferencePrices() {
     const boost::shared_ptr<HestonModel> model(new HestonModel(process));
 
     const boost::shared_ptr<PricingEngine> laguerreEngine(
-        new AnalyticHestonEngine(model, 192u));
+        new AnalyticHestonEngine(model, 128u));
 
     const boost::shared_ptr<PricingEngine> gaussLobattoEngine(
         new AnalyticHestonEngine(model, QL_EPSILON, 100000u));

@@ -206,10 +206,10 @@ void HybridHestonHullWhiteProcessTest::testCompareBsmHWandHestonHW() {
              new AnalyticBSMHullWhiteEngine(0.0, bsmProcess, hullWhiteModel));
 
     boost::shared_ptr<PricingEngine> hestonHwEngine(
-          new AnalyticHestonHullWhiteEngine(hestonModel, hullWhiteModel, 192));
+          new AnalyticHestonHullWhiteEngine(hestonModel, hullWhiteModel, 128));
 
 
-    const Real tol = 1e-6;
+    const Real tol = 1e-5;
     const Real strike[] = { 0.25, 0.5, 0.75, 0.8, 0.9,
                             1.0, 1.1, 1.2, 1.5, 2.0, 4.0 };
     const Size maturity[] = { 1, 2, 3, 5, 10, 15, 20, 25, 30 };
@@ -604,7 +604,7 @@ void HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing() {
     const boost::shared_ptr<HullWhite> hullWhiteModel(new HullWhite(
                                rTS, hwFwdProcess->a(), hwFwdProcess->sigma()));
 
-    const Real tol = 0.001;
+    const Real tol = 0.002;
     const Real strike[] = { 80, 120 };
     const Option::Type types[] = { Option::Put, Option::Call };
 
@@ -633,7 +633,7 @@ void HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing() {
             optionPureHeston.setPricingEngine(
                 boost::shared_ptr<PricingEngine>(
                     new AnalyticHestonHullWhiteEngine(hestonModel,
-                                                      hullWhiteModel, 192)));
+                                                      hullWhiteModel, 128)));
 
             Real calculated = optionHestonHW.NPV();
             Real error      = optionHestonHW.errorEstimate();
