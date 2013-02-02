@@ -19,10 +19,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdm1dmesher.hpp
-    \brief One-dimensional simple FDM mesher object working on an index
-*/
-
 /*! \file triplebandlinearop.hpp
     \brief general triple band linear operator
 */

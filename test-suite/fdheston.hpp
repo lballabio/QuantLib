@@ -34,7 +34,13 @@ public:
     static void testFdmHestonEuropeanWithDividends();
     static void testFdmHestonConvergence();
     static void testFdmHestonBlackScholes();
+    static void testBlackScholesFokkerPlanckFwdEquation();
+    static void testSquareRootFokkerPlanckFwdEquation();
+    static void testHestonLVFokkerPlanckFwdEquation();
+
     static boost::unit_test_framework::test_suite* suite();
+    static boost::unit_test_framework::test_suite* experimental();
+
 };
 
 #endif
