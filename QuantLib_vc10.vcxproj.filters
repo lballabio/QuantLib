@@ -3597,6 +3597,18 @@
     <ClInclude Include="ql\pricingengines\vanilla\analytich1hwengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdmblackscholesfwdop.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdmhestonfwdop.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdmsquarerootfwdop.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\modtriplebandlinearop.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -5744,6 +5756,15 @@
     </ClCompile>
     <ClCompile Include="ql\pricingengines\vanilla\analytich1hwengine.cpp">
       <Filter>pricingengines\vanilla</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdmblackscholesfwdop.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdmhestonfwdop.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdmsquarerootfwdop.cpp">
+      <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
