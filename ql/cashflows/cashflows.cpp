@@ -786,7 +786,8 @@ namespace QuantLib {
 
         Real npv = 0.0;
         DiscountFactor discount = 1.0;
-        Date lastDate = Date();
+        Date lastDate = npvDate;
+        Date refStartDate, refEndDate;
 
         for (Size i=0; i<leg.size(); ++i) {
             if (leg[i]->hasOccurred(settlementDate,
@@ -795,23 +796,24 @@ namespace QuantLib {
 
             Date couponDate = leg[i]->date();
             Real amount = leg[i]->amount();
-            if (lastDate == Date()) {
-                // first not-expired coupon
-                if (i > 0) {
-                    lastDate = leg[i-1]->date();
-                } else {
-                    shared_ptr<Coupon> coupon =
-                        boost::dynamic_pointer_cast<Coupon>(leg[i]);
-                    if (coupon)
-                        lastDate = coupon->accrualStartDate();
-                    else
-                        lastDate = couponDate - 1*Years;
+            shared_ptr<Coupon> coupon =
+                boost::dynamic_pointer_cast<Coupon>(leg[i]);
+            if (coupon) {
+                refStartDate = coupon->accrualStartDate();
+                refEndDate = coupon->accrualEndDate();
+            } else {
+                if (lastDate == npvDate) {
+                    // we don't have a previous coupon date,
+                    // so we fake it
+                    refStartDate = couponDate - 1*Years;
+                } else  {
+                    refStartDate = lastDate;
                 }
-                discount *= y.discountFactor(npvDate, couponDate,
-                                             lastDate, couponDate);
-            } else  {
-                discount *= y.discountFactor(lastDate, couponDate);
+                refEndDate = couponDate;
             }
+            DiscountFactor b = y.discountFactor(lastDate, couponDate,
+                                                refStartDate, refEndDate);
+            discount *= b;
             lastDate = couponDate;
 
             npv += amount * discount;

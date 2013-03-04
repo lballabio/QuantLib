@@ -589,7 +589,7 @@ void BondTest::testCached() {
     Rate marketYield3 = 0.02997;
 
     Date settlementDate = Date(30,November,2004);
-    Real cachedPrice3 = 99.764874;
+    Real cachedPrice3 = 99.764759;
 
     price = BondFunctions::cleanPrice(bond3, marketYield3,
                              bondDayCount, Compounded, freq, settlementDate);
