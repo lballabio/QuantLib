@@ -85,9 +85,9 @@ namespace QuantLib {
         std::size_t nData = std::distance(begin, end);
         QL_REQUIRE(maxLag < nData, "maxLag must be less than data size");
         const std::vector<std::complex<Real> >& ft = double_ft(begin, end);
-        std::size_t nFrq = ft.size();
+        Real w = 1.0 / (Real)ft.size();
         for (std::size_t k = 0; k <= maxLag; ++k)
-            *out++ = ft[k].real() / nFrq;
+            *out++ = ft[k].real() * w;
     }
 
     //! Unbiased auto-covariances
@@ -104,9 +104,10 @@ namespace QuantLib {
         QL_REQUIRE(maxLag < nData,
                    "number of covariances must be less than data size");
         const std::vector<std::complex<Real> >& ft = double_ft(begin, end);
-        std::size_t nFrq = ft.size();
-        for (std::size_t k = 0; k <= maxLag; ++k)
-            *out++ = ft[k].real() / (nFrq * (nData - k));
+        Real w1 = 1.0 / (Real)ft.size(), w2 = (Real)nData;
+        for (std::size_t k = 0; k <= maxLag; ++k, w2 -= 1.0) {
+            *out++ = ft[k].real() * w1 / w2;
+        }
     }
 
     //! Unbiased auto-covariances
@@ -151,11 +152,12 @@ namespace QuantLib {
         QL_REQUIRE(maxLag < nData,
                    "number of correlations must be less than data size");
         const std::vector<std::complex<Real> >& ft = double_ft(begin, end);
-        std::size_t nFrq = ft.size();
-        Real variance = ft[0].real() / (nFrq * nData);
-        *out++ = variance * nData / Real(nData-1);
-        for (std::size_t k = 1; k <= maxLag; ++k)
-            *out++ = ft[k].real() / (variance * nFrq * (nData - k));
+        Real w1 = 1.0 / (Real)ft.size(), w2 = (Real)nData;
+        Real variance = ft[0].real() * w1 / w2;
+        *out++ = variance * w2 / (w2-1.0);
+        w2 -= 1.0;
+        for (std::size_t k = 1; k <= maxLag; ++k, w2 -= 1.0)
+            *out++ = ft[k].real() * w1 / (variance * w2);
     }
 
     //! Unbiased auto-correlations.
