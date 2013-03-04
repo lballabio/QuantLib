@@ -111,7 +111,8 @@ namespace QuantLib {
         QL_REQUIRE(d1 <= d2,
                    "initial date (" << d1 << ") "
                    "later than final date (" << d2 << ")");
-        Probability p1 = defaultProbability(d1,extrapolate),
+        Probability p1 = d1 < referenceDate() ? 0.0 :
+                                           defaultProbability(d1,extrapolate),
                     p2 = defaultProbability(d2,extrapolate);
         return p2 - p1;
     }
@@ -123,7 +124,7 @@ namespace QuantLib {
         QL_REQUIRE(t1 <= t2,
                    "initial time (" << t1 << ") "
                    "later than final time (" << t2 << ")");
-        Probability p1 = defaultProbability(t1,extrapolate),
+        Probability p1 = t1 < 0.0 ? 0.0 : defaultProbability(t1,extrapolate),
                     p2 = defaultProbability(t2,extrapolate);
         return p2 - p1;
     }
