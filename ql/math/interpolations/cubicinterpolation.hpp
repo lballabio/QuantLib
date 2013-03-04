@@ -5,6 +5,7 @@
  Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
  Copyright (C) 2004, 2008, 2009, 2011 Ferdinando Ametrano
  Copyright (C) 2009 Sylvain Bertrand
+ Copyright (C) 2013 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -357,7 +358,14 @@ namespace QuantLib {
               leftType_(leftCondition), rightType_(rightCondition),
               leftValue_(leftConditionValue),
               rightValue_(rightConditionValue),
-              tmp_(n_), dx_(n_-1), S_(n_-1), L_(n_) {}
+              tmp_(n_), dx_(n_-1), S_(n_-1), L_(n_) {
+                if (leftType_ == CubicInterpolation::Lagrange
+                    || rightType_ == CubicInterpolation::Lagrange) {
+                    QL_REQUIRE((xEnd-xBegin) >= 4,
+                               "Lagrange boundary condition requires at least "
+                               "4 points (" << (xEnd-xBegin) << " are given)"); 
+                }
+            }
 
             void update() {
 
@@ -391,9 +399,16 @@ namespace QuantLib {
                         tmp_[0] = 3.0*S_[0] - leftValue_*dx_[0]/2.0;
                         break;
                       case CubicInterpolation::Periodic:
-                      case CubicInterpolation::Lagrange:
-                        // ignoring end condition value
                         QL_FAIL("this end condition is not implemented yet");
+                      case CubicInterpolation::Lagrange:
+                        L_.setFirstRow(1.0, 0.0);
+                        tmp_[0] = cubicInterpolatingPolynomialDerivative(
+                                            this->xBegin_[0],this->xBegin_[1],
+                                            this->xBegin_[2],this->xBegin_[3],
+                                            this->yBegin_[0],this->yBegin_[1],
+                                            this->yBegin_[2],this->yBegin_[3],
+                                            this->xBegin_[0]);
+                        break;
                       default:
                         QL_FAIL("unknown end condition");
                     }
@@ -416,9 +431,16 @@ namespace QuantLib {
                         tmp_[n_-1] = 3.0*S_[n_-2] + rightValue_*dx_[n_-2]/2.0;
                         break;
                       case CubicInterpolation::Periodic:
-                      case CubicInterpolation::Lagrange:
-                        // ignoring end condition value
                         QL_FAIL("this end condition is not implemented yet");
+                      case CubicInterpolation::Lagrange:
+                        L_.setLastRow(0.0,1.0);
+                        tmp_[n_-1] = cubicInterpolatingPolynomialDerivative(
+                                      this->xBegin_[n_-4],this->xBegin_[n_-3],
+                                      this->xBegin_[n_-2],this->xBegin_[n_-1],
+                                      this->yBegin_[n_-4],this->yBegin_[n_-3],
+                                      this->yBegin_[n_-2],this->yBegin_[n_-1],
+                                      this->xBegin_[n_-1]);
+                        break;
                       default:
                         QL_FAIL("unknown end condition");
                     }
@@ -698,6 +720,17 @@ namespace QuantLib {
             mutable Array tmp_;
             mutable std::vector<Real> dx_, S_;
             mutable TridiagonalOperator L_;
+
+			inline Real cubicInterpolatingPolynomialDerivative(
+                               Real a, Real b, Real c, Real d,
+                               Real u, Real v, Real w, Real z, Real x) const {
+                return (-((((a-c)*(b-c)*(c-x)*z-(a-d)*(b-d)*(d-x)*w)*(a-x+b-x)
+                           +((a-c)*(b-c)*z-(a-d)*(b-d)*w)*(a-x)*(b-x))*(a-b)+
+                          ((a-c)*(a-d)*v-(b-c)*(b-d)*u)*(c-d)*(c-x)*(d-x)
+                          +((a-c)*(a-d)*(a-x)*v-(b-c)*(b-d)*(b-x)*u)
+                          *(c-x+d-x)*(c-d)))/
+                    ((a-b)*(a-c)*(a-d)*(b-c)*(b-d)*(c-d));
+            }
         };
 
     }
