@@ -383,13 +383,15 @@ namespace QuantLib {
         const_iterator cur = quoteSeries.cbegin();
         Real u = cur->second;
         Real sigma2 = u*u;
-        retval[cur->first] = u;
         while (++cur != quoteSeries.end()) {
-            u = cur->second; // here?
             sigma2 = omega + alpha * u * u + beta * sigma2;
             retval[cur->first] = std::sqrt(sigma2);
-            // u = cur->second; // or here?
+            u = cur->second;
         }
+        sigma2 = omega + alpha * u * u + beta * sigma2;
+        --cur;
+        const_iterator prev = cur;
+        retval[cur->first + (cur->first - (--prev)->first) ] = std::sqrt(sigma2);
         return retval;
     }
 

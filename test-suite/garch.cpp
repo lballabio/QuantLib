@@ -45,6 +45,11 @@ namespace {
         Real logLikelihood;
     };
 
+    typedef boost::variate_generator<boost::minstd_rand,
+                                     boost::normal_distribution<Real> >
+        GaussianGenerator;
+
+    static Real tolerance = 1e-6;
 }
 
 #define CHECK(results, garch, member, tolerance) \
@@ -58,19 +63,14 @@ void GARCHTest::testCalibration() {
 
     BOOST_MESSAGE("Testing GARCH model calibration ...");
 
-    typedef boost::variate_generator<boost::minstd_rand,
-                                     boost::normal_distribution<Real> >
-        GaussianGenerator;
-
     Date start(7, July, 1962), d = start;
-    Calendar calendar = TARGET();
     TimeSeries<Volatility> ts;
     Garch11 garch(0.2, 0.3, 0.4);
     GaussianGenerator g(boost::minstd_rand(48),
                         boost::normal_distribution<Real>(0.0, 1.0));
 
     Volatility r = 0.0, v = 0.0;
-    for (std::size_t i = 0; i < 50000; ++i, d = calendar.advance(d, 1, Days)) {
+    for (std::size_t i = 0; i < 50000; ++i, d += 1) {
         v = garch.forecast(r, v);
         r = g() * std::sqrt(v);
         ts[d] = r;
@@ -82,8 +82,7 @@ void GARCHTest::testCalibration() {
     Real f2 = -cgarch1.costFunction(ts.cbegin_values(), ts.cend_values(),
                                     garch.alpha(), garch.beta(), garch.omega());
 
-    Results calibrated = { 0.193890, 0.290606, 0.204217, -0.018323 };
-    Real tolerance = 1e-6;
+    Results calibrated = { 0.195123, 0.267707, 0.212535, -0.0183111 };
 
     CHECK(calibrated, cgarch1, alpha, tolerance);
     CHECK(calibrated, cgarch1, beta, tolerance);
@@ -94,7 +93,7 @@ void GARCHTest::testCalibration() {
     Garch11 cgarch2(ts, Garch11::MomentMatchingGuess);
     DummyOptimizationMethod m;
     cgarch2.calibrate(ts, m, EndCriteria (3, 2, 0.0, 0.0, 0.0));
-    Results expected1 = { 0.325500, 0.293661, 0.150953, -0.025423 };
+    Results expected1 = { 0.277449, 0.300431, 0.167315, -0.0212112};
 
     CHECK(expected1, cgarch2, alpha, tolerance);
     CHECK(expected1, cgarch2, beta, tolerance);
@@ -112,7 +111,7 @@ void GARCHTest::testCalibration() {
     // Type 2 initial guess - no further optimization
     Garch11 cgarch3(ts, Garch11::GammaGuess);
     cgarch3.calibrate(ts, m, EndCriteria (3, 2, 0.0, 0.0, 0.0));
-    Results expected2 = { 0.341533, 0.160356, 0.197436, -0.024357 };
+    Results expected2 = { 0.27048, 0.172062, 0.220959, -0.0198067 };
 
     CHECK(expected2, cgarch3, alpha, tolerance);
     CHECK(expected2, cgarch3, beta, tolerance);
@@ -140,7 +139,7 @@ void GARCHTest::testCalibration() {
     // results than simplex
     LevenbergMarquardt lm;
     cgarch4.calibrate(ts, lm, EndCriteria (100000, 500, 1e-8, 1e-8, 1e-8));
-    Results expected3 = { 0.253443, 0.267758, 0.687105, -0.21211 };
+    Results expected3 = { 0.253378, 0.268415, 0.68642, -0.212107 };
 
     CHECK(expected3, cgarch4, alpha, tolerance);
     CHECK(expected3, cgarch4, beta, tolerance);
@@ -148,8 +147,50 @@ void GARCHTest::testCalibration() {
     CHECK(expected3, cgarch4, logLikelihood, tolerance);
 }
 
+namespace {
+
+    static Real expected_calc[] = {
+        0.452769, 0.513323, 0.530141, 0.5350841, 0.536558,
+        0.536999, 0.537132, 0.537171, 0.537183, 0.537187
+    };
+
+    void check_ts(const std::pair<Date, Volatility> &x) {
+        if (x.first.serialNumber() < 22835 || x.first.serialNumber() > 22844) {
+            BOOST_ERROR("Failed to reproduce calculated GARCH time: "
+                        << "\n    calculated: " << x.first.serialNumber()
+                        << "\n    expected:   [22835, 22844]");
+        }
+        Real error =
+            std::fabs(x.second - expected_calc[x.first.serialNumber()-22835]);
+        if (error > tolerance) {
+            BOOST_ERROR("Failed to reproduce calculated GARCH value at "
+                        << x.first.serialNumber() << ": "
+                        << "\n    calculated: " << x.second
+                        << "\n    expected:   "
+                        << expected_calc[x.first.serialNumber()-22835]);
+        }
+    }
+
+}
+
+void GARCHTest::testCalculation() {
+    BOOST_MESSAGE("Testing GARCH model calculation ...");
+    Date d(7, July, 1962);
+    TimeSeries<Volatility> ts;
+    Garch11 garch(0.2, 0.3, 0.4);
+
+    Volatility r = 0.1;
+    for (std::size_t i = 0; i < 10; ++i, d += 1) {
+        ts[d] = r;
+    }
+
+    TimeSeries<Volatility> tsout = garch.calculate(ts);
+    std::for_each(tsout.cbegin(), tsout.cend(), check_ts);
+}
+
 test_suite* GARCHTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("GARCH model tests");
     suite->add(QUANTLIB_TEST_CASE(&GARCHTest::testCalibration));
+    suite->add(QUANTLIB_TEST_CASE(&GARCHTest::testCalculation));
     return suite;
 }
