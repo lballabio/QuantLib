@@ -46,7 +46,7 @@ namespace QuantLib {
                 tenor,
                 2, // settlementDays
                 USDCurrency(),
-                TARGET(),
+                UnitedStates(UnitedStates::GovernmentBond),
                 6*Months, // fixedLegTenor
                 ModifiedFollowing, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
@@ -60,7 +60,7 @@ namespace QuantLib {
                 tenor,
                 2, // settlementDays
                 USDCurrency(),
-                TARGET(),
+                UnitedStates(UnitedStates::GovernmentBond),
                 6*Months, // fixedLegTenor
                 ModifiedFollowing, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
@@ -74,7 +74,7 @@ namespace QuantLib {
                 tenor,
                 2, // settlementDays
                 USDCurrency(),
-                TARGET(),
+                UnitedStates(UnitedStates::GovernmentBond),
                 6*Months, // fixedLegTenor
                 ModifiedFollowing, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter

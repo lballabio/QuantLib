@@ -35,7 +35,7 @@ namespace QuantLib {
                 tenor,
                 0, // settlementDays
                 GBPCurrency(),
-                TARGET(),
+                UnitedKingdom(UnitedKingdom::Exchange),
                 tenor > 1*Years ? // fixedLegTenor
                     6*Months : 1*Years,
                 ModifiedFollowing, // fixedLegConvention
@@ -52,7 +52,7 @@ namespace QuantLib {
                 tenor,
                 0, // settlementDays
                 GBPCurrency(),
-                TARGET(),
+                UnitedKingdom(UnitedKingdom::Exchange),
                 tenor > 1*Years ? // fixedLegTenor
                     6*Months : 1*Years,
                 ModifiedFollowing, // fixedLegConvention

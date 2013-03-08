@@ -115,7 +115,7 @@ namespace QuantLib {
             data[i] = discount;
         }
         // upper bound for convergence loop
-        static Size maxIterations() { return 50; }
+        static Size maxIterations() { return 100; }
     };
 
 
@@ -208,7 +208,7 @@ namespace QuantLib {
                 data[0] = rate; // first point is updated as well
         }
         // upper bound for convergence loop
-        static Size maxIterations() { return 30; }
+        static Size maxIterations() { return 100; }
     };
 
 
@@ -301,7 +301,7 @@ namespace QuantLib {
                 data[0] = forward; // first point is updated as well
         }
         // upper bound for convergence loop
-        static Size maxIterations() { return 30; }
+        static Size maxIterations() { return 100; }
     };
 
 }
