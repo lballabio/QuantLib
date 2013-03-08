@@ -31,7 +31,7 @@ using namespace boost::unit_test_framework;
 
 void LinearLeastSquaresRegressionTest::testRegression() {
 
-    BOOST_MESSAGE("Testing linear least-squares regression...");
+    BOOST_TEST_MESSAGE("Testing linear least-squares regression...");
 
     SavedSettings backup;
 
@@ -109,7 +109,7 @@ namespace {
 
 void LinearLeastSquaresRegressionTest::testMultiDimRegression() {
 
-    BOOST_MESSAGE("Testing linear least-squares regression...");
+    BOOST_TEST_MESSAGE("Testing linear least-squares regression...");
 
     SavedSettings backup;
 
@@ -180,7 +180,7 @@ void LinearLeastSquaresRegressionTest::testMultiDimRegression() {
 
 void LinearLeastSquaresRegressionTest::test1dLinearRegression() {
 
-    BOOST_MESSAGE("Testing 1D simple linear least-squares regression...");
+    BOOST_TEST_MESSAGE("Testing 1D simple linear least-squares regression...");
 
     /* Example taken from the QuantLib-User list, see posting
     * Multiple linear regression/weighted regression, Boris Skorodumov */

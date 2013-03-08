@@ -119,7 +119,7 @@ namespace {
 
 void TermStructureTest::testReferenceChange() {
 
-    BOOST_MESSAGE("Testing term structure against evaluation date change...");
+    BOOST_TEST_MESSAGE("Testing term structure against evaluation date change...");
 
     CommonVars vars;
 
@@ -154,7 +154,7 @@ void TermStructureTest::testReferenceChange() {
 
 void TermStructureTest::testImplied() {
 
-    BOOST_MESSAGE("Testing consistency of implied term structure...");
+    BOOST_TEST_MESSAGE("Testing consistency of implied term structure...");
 
     CommonVars vars;
 
@@ -180,7 +180,7 @@ void TermStructureTest::testImplied() {
 
 void TermStructureTest::testImpliedObs() {
 
-    BOOST_MESSAGE("Testing observability of implied term structure...");
+    BOOST_TEST_MESSAGE("Testing observability of implied term structure...");
 
     CommonVars vars;
 
@@ -200,7 +200,7 @@ void TermStructureTest::testImpliedObs() {
 
 void TermStructureTest::testFSpreaded() {
 
-    BOOST_MESSAGE("Testing consistency of forward-spreaded term structure...");
+    BOOST_TEST_MESSAGE("Testing consistency of forward-spreaded term structure...");
 
     CommonVars vars;
 
@@ -228,8 +228,8 @@ void TermStructureTest::testFSpreaded() {
 
 void TermStructureTest::testFSpreadedObs() {
 
-    BOOST_MESSAGE("Testing observability of forward-spreaded "
-                  "term structure...");
+    BOOST_TEST_MESSAGE("Testing observability of forward-spreaded "
+                       "term structure...");
 
     CommonVars vars;
 
@@ -251,7 +251,7 @@ void TermStructureTest::testFSpreadedObs() {
 
 void TermStructureTest::testZSpreaded() {
 
-    BOOST_MESSAGE("Testing consistency of zero-spreaded term structure...");
+    BOOST_TEST_MESSAGE("Testing consistency of zero-spreaded term structure...");
 
     CommonVars vars;
 
@@ -277,7 +277,7 @@ void TermStructureTest::testZSpreaded() {
 
 void TermStructureTest::testZSpreadedObs() {
 
-    BOOST_MESSAGE("Testing observability of zero-spreaded term structure...");
+    BOOST_TEST_MESSAGE("Testing observability of zero-spreaded term structure...");
 
     CommonVars vars;
 

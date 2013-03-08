@@ -245,7 +245,7 @@ namespace {
 
 
 void OptimizersTest::test() {
-    BOOST_MESSAGE("Testing optimizers...");
+    BOOST_TEST_MESSAGE("Testing optimizers...");
 
     setup();
 
@@ -326,7 +326,7 @@ void OptimizersTest::test() {
 
 
 void OptimizersTest::nestedOptimizationTest() {
-    BOOST_MESSAGE("Testing nested optimizations...");
+    BOOST_TEST_MESSAGE("Testing nested optimizations...");
     OptimizationBasedCostFunction optimizationBasedCostFunction;
     NoConstraint constraint;
     Array initialValues(1, 0.0);
@@ -421,7 +421,7 @@ namespace {
 }
 
 void OptimizersTest::testDifferentialEvolution() {
-    BOOST_MESSAGE("Testing differential evolution...");
+    BOOST_TEST_MESSAGE("Testing differential evolution...");
 
     /* Note:
     *

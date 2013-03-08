@@ -319,7 +319,7 @@ namespace {
         if (printReport_) {
             Array num(result.size());
             std::copy(result.begin(), result.end(), num.begin());
-            BOOST_MESSAGE("    " << measureTypeToString(measureType) << ": " << num);
+            BOOST_TEST_MESSAGE("    " << measureTypeToString(measureType) << ": " << num);
         }
         return result;
     }
@@ -383,9 +383,10 @@ namespace {
             maxError = std::max(std::fabs(discrepancies[i]), maxError);
         }
         if (maxError > errorThreshold) {
-            BOOST_MESSAGE(config);
+            BOOST_TEST_MESSAGE(config);
             for (Size i=0; i<N; ++i) {
-                BOOST_MESSAGE(io::ordinal(i+1) << " coterminal swap NPV: "
+                BOOST_TEST_MESSAGE(
+                              io::ordinal(i+1) << " coterminal swap NPV: "
                               << io::rate(results[i])
                               << " +- " << io::rate(errors[i])
                               << "; expected: " << io::rate(expectedNPVs[i])
@@ -414,9 +415,10 @@ namespace {
         errorThreshold = 2.0;
 
         if (maxError > errorThreshold) {
-            BOOST_MESSAGE(config);
+            BOOST_TEST_MESSAGE(config);
             for (Size i=1; i<=N; ++i) {
-                BOOST_MESSAGE(io::ordinal(i) << " Swaption: "
+                BOOST_TEST_MESSAGE(
+                              io::ordinal(i) << " Swaption: "
                               << io::rate(results[2*N-i])
                               << " +- " << io::rate(errors[2*N-i])
                               << "; expected: " << io::rate(expectedSwaptions[N-i])
@@ -433,9 +435,9 @@ namespace {
 
 void MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions() {
 
-    BOOST_MESSAGE("Testing exact repricing of "
-                  "multi-step coterminal swaps and swaptions "
-                  "in a lognormal coterminal swap rate market model...");
+    BOOST_TEST_MESSAGE("Testing exact repricing of "
+                       "multi-step coterminal swaps and swaptions "
+                       "in a lognormal coterminal swap rate market model...");
 
     setup();
 
@@ -502,7 +504,7 @@ void MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions() {
                             evolverTypeToString(evolvers[i]) << ", " <<
                             "MT BGF";
                         if (printReport_)
-                            BOOST_MESSAGE("    " << config.str());
+                            BOOST_TEST_MESSAGE("    " << config.str());
                         boost::shared_ptr<SequenceStatisticsInc> stats = simulate(evolver, product);
                         checkCoterminalSwapsAndSwaptions(*stats, fixedRate,
                                                          displacedPayoff, marketModel,config.str());

@@ -114,7 +114,7 @@ void ConvertibleBondTest::testBond() {
     /* when deeply out-of-the-money, the value of the convertible bond
        should equal that of the underlying plain-vanilla bond. */
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
        "Testing out-of-the-money convertible bonds against vanilla bonds...");
 
     CommonVars vars;
@@ -305,7 +305,7 @@ void ConvertibleBondTest::testOption() {
     /* a zero-coupon convertible bond with no credit spread is
        equivalent to a call option. */
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
        "Testing zero-coupon convertible bonds against vanilla option...");
 
     CommonVars vars;
@@ -362,7 +362,7 @@ void ConvertibleBondTest::testOption() {
 
 void ConvertibleBondTest::testRegression() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
        "Testing fixed-coupon convertible bond in known regression case...");
 
     using namespace boost;

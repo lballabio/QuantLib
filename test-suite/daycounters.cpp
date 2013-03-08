@@ -61,7 +61,7 @@ namespace {
 
 void DayCounterTest::testActualActual() {
 
-    BOOST_MESSAGE("Testing actual/actual day counters...");
+    BOOST_TEST_MESSAGE("Testing actual/actual day counters...");
 
     SingleCase testCases[] = {
         // first example
@@ -170,7 +170,7 @@ void DayCounterTest::testActualActual() {
 
 void DayCounterTest::testSimple() {
 
-    BOOST_MESSAGE("Testing simple day counter...");
+    BOOST_TEST_MESSAGE("Testing simple day counter...");
 
     Period p[] = { Period(3,Months), Period(6,Months), Period(1,Years) };
     Time expected[] = { 0.25, 0.5, 1.0 };
@@ -196,7 +196,7 @@ void DayCounterTest::testSimple() {
 
 void DayCounterTest::testOne() {
 
-    BOOST_MESSAGE("Testing 1/1 day counter...");
+    BOOST_TEST_MESSAGE("Testing 1/1 day counter...");
 
     Period p[] = { Period(3,Months), Period(6,Months), Period(1,Years) };
     Time expected[] = { 1.0, 1.0, 1.0 };
@@ -222,7 +222,7 @@ void DayCounterTest::testOne() {
 
 void DayCounterTest::testBusiness252() {
 
-    BOOST_MESSAGE("Testing business/252 day counter...");
+    BOOST_TEST_MESSAGE("Testing business/252 day counter...");
 
     std::vector<Date> testDates;
     testDates.push_back(Date(1,February,2002));

@@ -171,7 +171,7 @@ namespace {
 
 void DistributionTest::testNormal() {
 
-    BOOST_MESSAGE("Testing normal distributions...");
+    BOOST_TEST_MESSAGE("Testing normal distributions...");
 
     InverseCumulativeNormal invCumStandardNormal;
     Real check = invCumStandardNormal(0.5);
@@ -251,7 +251,7 @@ void DistributionTest::testNormal() {
 
 void DistributionTest::testBivariate() {
 
-    BOOST_MESSAGE("Testing bivariate cumulative normal distribution...");
+    BOOST_TEST_MESSAGE("Testing bivariate cumulative normal distribution...");
 
     checkBivariateAtZero<BivariateCumulativeNormalDistributionDr78>(
                                                       "Drezner 1978", 1.0e-6);
@@ -265,7 +265,7 @@ void DistributionTest::testBivariate() {
 
 void DistributionTest::testPoisson() {
 
-    BOOST_MESSAGE("Testing Poisson distribution...");
+    BOOST_TEST_MESSAGE("Testing Poisson distribution...");
 
     for (Real mean=0.0; mean<=10.0; mean+=0.5) {
         BigNatural i = 0;
@@ -302,7 +302,7 @@ void DistributionTest::testPoisson() {
 
 void DistributionTest::testCumulativePoisson() {
 
-    BOOST_MESSAGE("Testing cumulative Poisson distribution...");
+    BOOST_TEST_MESSAGE("Testing cumulative Poisson distribution...");
 
     for (Real mean=0.0; mean<=10.0; mean+=0.5) {
         BigNatural i = 0;
@@ -338,7 +338,7 @@ void DistributionTest::testCumulativePoisson() {
 
 void DistributionTest::testInverseCumulativePoisson() {
 
-    BOOST_MESSAGE("Testing inverse cumulative Poisson distribution...");
+    BOOST_TEST_MESSAGE("Testing inverse cumulative Poisson distribution...");
 
     InverseCumulativePoisson icp(1.0);
 

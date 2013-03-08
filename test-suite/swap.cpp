@@ -104,7 +104,7 @@ namespace {
 
 void SwapTest::testFairRate() {
 
-    BOOST_MESSAGE("Testing vanilla-swap calculation of fair fixed rate...");
+    BOOST_TEST_MESSAGE("Testing vanilla-swap calculation of fair fixed rate...");
 
     CommonVars vars;
 
@@ -131,8 +131,8 @@ void SwapTest::testFairRate() {
 
 void SwapTest::testFairSpread() {
 
-    BOOST_MESSAGE("Testing vanilla-swap calculation of "
-                  "fair floating spread...");
+    BOOST_TEST_MESSAGE("Testing vanilla-swap calculation of "
+                       "fair floating spread...");
 
     CommonVars vars;
 
@@ -158,7 +158,7 @@ void SwapTest::testFairSpread() {
 
 void SwapTest::testRateDependency() {
 
-    BOOST_MESSAGE("Testing vanilla-swap dependency on fixed rate...");
+    BOOST_TEST_MESSAGE("Testing vanilla-swap dependency on fixed rate...");
 
     CommonVars vars;
 
@@ -195,7 +195,7 @@ void SwapTest::testRateDependency() {
 
 void SwapTest::testSpreadDependency() {
 
-    BOOST_MESSAGE("Testing vanilla-swap dependency on floating spread...");
+    BOOST_TEST_MESSAGE("Testing vanilla-swap dependency on floating spread...");
 
     CommonVars vars;
 
@@ -232,7 +232,7 @@ void SwapTest::testSpreadDependency() {
 
 void SwapTest::testInArrears() {
 
-    BOOST_MESSAGE("Testing in-arrears swap calculation...");
+    BOOST_TEST_MESSAGE("Testing in-arrears swap calculation...");
 
     CommonVars vars;
 
@@ -298,7 +298,7 @@ void SwapTest::testInArrears() {
 
 void SwapTest::testCachedValue() {
 
-    BOOST_MESSAGE("Testing vanilla-swap calculation against cached value...");
+    BOOST_TEST_MESSAGE("Testing vanilla-swap calculation against cached value...");
 
     CommonVars vars;
 

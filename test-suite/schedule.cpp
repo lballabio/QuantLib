@@ -47,7 +47,7 @@ namespace {
 
 
 void ScheduleTest::testDailySchedule() {
-    BOOST_MESSAGE("Testing schedule with daily frequency...");
+    BOOST_TEST_MESSAGE("Testing schedule with daily frequency...");
 
     Date startDate = Date(17,January,2012);
 
@@ -72,7 +72,7 @@ void ScheduleTest::testDailySchedule() {
 }
 
 void ScheduleTest::testEndDateWithEomAdjustment() {
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing end date for schedule with end-of-month adjustment...");
 
     Schedule s =
@@ -115,7 +115,7 @@ void ScheduleTest::testEndDateWithEomAdjustment() {
 
 
 void ScheduleTest::testDatesPastEndDateWithEomAdjustment() {
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing that no dates are past the end date with EOM adjustment...");
 
     Schedule s =

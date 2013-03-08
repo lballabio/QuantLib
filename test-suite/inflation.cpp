@@ -91,7 +91,7 @@ namespace {
 
 
 void InflationTest::testZeroIndex() {
-    BOOST_MESSAGE("Testing zero inflation indices...");
+    BOOST_TEST_MESSAGE("Testing zero inflation indices...");
 
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
@@ -177,7 +177,7 @@ void InflationTest::testZeroIndex() {
 
 
 void InflationTest::testZeroTermStructure() {
-    BOOST_MESSAGE("Testing zero inflation term structure...");
+    BOOST_TEST_MESSAGE("Testing zero inflation term structure...");
 
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
@@ -613,7 +613,7 @@ void InflationTest::testZeroTermStructure() {
 //===========================================================================================
 
 void InflationTest::testYYIndex() {
-    BOOST_MESSAGE("Testing year-on-year inflation indices...");
+    BOOST_TEST_MESSAGE("Testing year-on-year inflation indices...");
 
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
@@ -766,7 +766,7 @@ void InflationTest::testYYIndex() {
 
 
 void InflationTest::testYYTermStructure() {
-    BOOST_MESSAGE("Testing year-on-year inflation term structure...");
+    BOOST_TEST_MESSAGE("Testing year-on-year inflation term structure...");
 
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
@@ -926,7 +926,7 @@ void InflationTest::testYYTermStructure() {
 }
 
 void InflationTest::testPeriod() {
-    BOOST_MESSAGE("Testing inflation period...");
+    BOOST_TEST_MESSAGE("Testing inflation period...");
 
     Date d;
     Frequency f;

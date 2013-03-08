@@ -138,7 +138,7 @@ namespace {
 
 void FdmLinearOpTest::testFdmLinearOpLayout() {
 
-    BOOST_MESSAGE("Testing indexing of a linear operator...");
+    BOOST_TEST_MESSAGE("Testing indexing of a linear operator...");
 
     SavedSettings backup;
 
@@ -213,7 +213,7 @@ void FdmLinearOpTest::testFdmLinearOpLayout() {
 
 void FdmLinearOpTest::testUniformGridMesher() {
 
-    BOOST_MESSAGE("Testing uniform grid mesher...");
+    BOOST_TEST_MESSAGE("Testing uniform grid mesher...");
 
     SavedSettings backup;
 
@@ -245,7 +245,7 @@ void FdmLinearOpTest::testUniformGridMesher() {
 
 void FdmLinearOpTest::testFirstDerivativesMapApply() {
 
-    BOOST_MESSAGE("Testing application of first-derivatives map...");
+    BOOST_TEST_MESSAGE("Testing application of first-derivatives map...");
 
         SavedSettings backup;
 
@@ -309,7 +309,7 @@ void FdmLinearOpTest::testFirstDerivativesMapApply() {
 
 void FdmLinearOpTest::testSecondDerivativesMapApply() {
 
-    BOOST_MESSAGE("Testing application of second-derivatives map...");
+    BOOST_TEST_MESSAGE("Testing application of second-derivatives map...");
 
         SavedSettings backup;
 
@@ -398,7 +398,7 @@ void FdmLinearOpTest::testSecondDerivativesMapApply() {
 
 void FdmLinearOpTest::testSecondOrderMixedDerivativesMapApply() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing application of second-order mixed-derivatives map...");
 
         SavedSettings backup;
@@ -500,7 +500,7 @@ void FdmLinearOpTest::testSecondOrderMixedDerivativesMapApply() {
 
 void FdmLinearOpTest::testTripleBandMapSolve() {
 
-    BOOST_MESSAGE("Testing triple-band map solution...");
+    BOOST_TEST_MESSAGE("Testing triple-band map solution...");
 
     SavedSettings backup;
 
@@ -585,7 +585,7 @@ void FdmLinearOpTest::testTripleBandMapSolve() {
 
 void FdmLinearOpTest::testFdmHestonBarrier() {
 
-    BOOST_MESSAGE("Testing FDM with Barrier option in Heston model...");
+    BOOST_TEST_MESSAGE("Testing FDM with Barrier option in Heston model...");
 
     SavedSettings backup;
 
@@ -679,7 +679,7 @@ void FdmLinearOpTest::testFdmHestonBarrier() {
 
 void FdmLinearOpTest::testFdmHestonAmerican() {
 
-    BOOST_MESSAGE("Testing FDM with American option in Heston model...");
+    BOOST_TEST_MESSAGE("Testing FDM with American option in Heston model...");
 
     SavedSettings backup;
 
@@ -758,7 +758,7 @@ void FdmLinearOpTest::testFdmHestonAmerican() {
 
 void FdmLinearOpTest::testFdmHestonExpress() {
 
-    BOOST_MESSAGE("Testing FDM with express certificate in Heston model...");
+    BOOST_TEST_MESSAGE("Testing FDM with express certificate in Heston model...");
 
     SavedSettings backup;
 
@@ -940,7 +940,7 @@ namespace {
 }
 
 void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
-    BOOST_MESSAGE("Testing FDM with Heston Hull-White model...");
+    BOOST_TEST_MESSAGE("Testing FDM with Heston Hull-White model...");
 
     SavedSettings backup;
 
@@ -1080,7 +1080,7 @@ namespace {
 
 void FdmLinearOpTest::testBiCGstab() {
 #if !defined(QL_NO_UBLAS_SUPPORT)
-    BOOST_MESSAGE("Testing BiCGstab with Heston operator...");
+    BOOST_TEST_MESSAGE("Testing BiCGstab with Heston operator...");
 
     SavedSettings backup;
     
@@ -1139,8 +1139,8 @@ void FdmLinearOpTest::testBiCGstab() {
 
 void FdmLinearOpTest::testCrankNicolsonWithDamping() {
 
-    BOOST_MESSAGE("Testing Crank-Nicolson with initial implicit damping steps "
-                  "for a digital option...");
+    BOOST_TEST_MESSAGE("Testing Crank-Nicolson with initial implicit damping steps "
+                       "for a digital option...");
 
     SavedSettings backup;
 
@@ -1231,7 +1231,7 @@ void FdmLinearOpTest::testCrankNicolsonWithDamping() {
 
 void FdmLinearOpTest::testSpareMatrixReference() {
 #ifndef QL_NO_UBLAS_SUPPORT
-    BOOST_MESSAGE("Testing SparseMatrixReference type...");
+    BOOST_TEST_MESSAGE("Testing SparseMatrixReference type...");
 
     const Size rows    = 10;
     const Size columns = 10;
@@ -1289,7 +1289,7 @@ namespace {
 
 void FdmLinearOpTest::testSparseMatrixZeroAssignment() {
 #ifndef QL_NO_UBLAS_SUPPORT
-    BOOST_MESSAGE("Testing SparseMatrix zero assignment...");
+    BOOST_TEST_MESSAGE("Testing SparseMatrix zero assignment...");
 
     SparseMatrix m(5,5);
     if (nrElementsOfSparseMatrix(m)) {

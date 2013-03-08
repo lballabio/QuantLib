@@ -127,14 +127,14 @@ namespace {
 
 void CurveStatesTest::testLMMCurveState() {
 
-    BOOST_MESSAGE("Testing Libor-market-model curve state...");
+    BOOST_TEST_MESSAGE("Testing Libor-market-model curve state...");
 
     CommonVars vars;
 }
 
 void CurveStatesTest::testCoterminalSwapCurveState() {
 
-    BOOST_MESSAGE("Testing coterminal-swap-market-model curve state...");
+    BOOST_TEST_MESSAGE("Testing coterminal-swap-market-model curve state...");
 
     CommonVars vars;
 }
@@ -142,7 +142,7 @@ void CurveStatesTest::testCoterminalSwapCurveState() {
 
 void CurveStatesTest::testCMSwapCurveState() {
 
-    BOOST_MESSAGE("Testing constant-maturity-swap-market-model curve state...");
+    BOOST_TEST_MESSAGE("Testing constant-maturity-swap-market-model curve state...");
 
     CommonVars vars;
 
@@ -162,7 +162,7 @@ void CurveStatesTest::testCMSwapCurveState() {
     for (Size i = 0; i < rateTimes.size(); ++i)
         rateTimes[i] = static_cast<Time>(i+1)*.5;
 
-    //BOOST_MESSAGE( << "Rates\nTime\tValue:"<< std::endl;)
+    //BOOST_TEST_MESSAGE( << "Rates\nTime\tValue:"<< std::endl;)
     //for (Size i = 0; i < rateTimes.size()-1; ++i){
     //    std::cout << rateTimes[i+1] << "\t"<<io::rate(forwards[i]) << std::endl;
     //}

@@ -114,7 +114,7 @@ namespace {
 
 void StatisticsTest::testStatistics() {
 
-    BOOST_MESSAGE("Testing statistics...");
+    BOOST_TEST_MESSAGE("Testing statistics...");
 
     check<IncrementalStatistics>(
         std::string("IncrementalStatistics"));
@@ -234,7 +234,7 @@ namespace {
 
 void StatisticsTest::testSequenceStatistics() {
 
-    BOOST_MESSAGE("Testing sequence statistics...");
+    BOOST_TEST_MESSAGE("Testing sequence statistics...");
 
     checkSequence<IncrementalStatistics>(
         std::string("IncrementalStatistics"),5);
@@ -314,7 +314,7 @@ namespace {
 
 void StatisticsTest::testConvergenceStatistics() {
 
-    BOOST_MESSAGE("Testing convergence statistics...");
+    BOOST_TEST_MESSAGE("Testing convergence statistics...");
 
     checkConvergence<IncrementalStatistics>(
                               std::string("IncrementalStatistics"));

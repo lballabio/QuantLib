@@ -149,7 +149,7 @@ namespace {
 
 void SwaptionVolatilityCubeTest::testAtmVols() {
 
-    BOOST_MESSAGE("Testing swaption volatility cube (atm vols)...");
+    BOOST_TEST_MESSAGE("Testing swaption volatility cube (atm vols)...");
 
     CommonVars vars;
 
@@ -168,7 +168,7 @@ void SwaptionVolatilityCubeTest::testAtmVols() {
 
 void SwaptionVolatilityCubeTest::testSmile() {
 
-    BOOST_MESSAGE("Testing swaption volatility cube (smile)...");
+    BOOST_TEST_MESSAGE("Testing swaption volatility cube (smile)...");
 
     CommonVars vars;
 
@@ -187,7 +187,7 @@ void SwaptionVolatilityCubeTest::testSmile() {
 
 void SwaptionVolatilityCubeTest::testSabrVols() {
 
-    BOOST_MESSAGE("Testing swaption volatility cube (sabr interpolation)...");
+    BOOST_TEST_MESSAGE("Testing swaption volatility cube (sabr interpolation)...");
 
     CommonVars vars;
 
@@ -226,7 +226,7 @@ void SwaptionVolatilityCubeTest::testSabrVols() {
 
 void SwaptionVolatilityCubeTest::testSpreadedCube() {
 
-    BOOST_MESSAGE("Testing spreaded swaption volatility cube...");
+    BOOST_TEST_MESSAGE("Testing spreaded swaption volatility cube...");
 
     CommonVars vars;
 
@@ -313,7 +313,7 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
 
 
 void SwaptionVolatilityCubeTest::testObservability() {
-    BOOST_MESSAGE("Testing volatility cube observability...");
+    BOOST_TEST_MESSAGE("Testing volatility cube observability...");
 
     CommonVars vars;
 

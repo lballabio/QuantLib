@@ -46,7 +46,7 @@ namespace {
 
 
 void InterestRateTest::testConversions() {
-    BOOST_MESSAGE("Testing interest-rate conversions...");
+    BOOST_TEST_MESSAGE("Testing interest-rate conversions...");
 
     InterestRateData cases[] = {
         // data from "Option Pricing Formulas", Haug, pag.181-182

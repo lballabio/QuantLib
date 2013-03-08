@@ -30,7 +30,7 @@ using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 void DateTest::ecbDates() {
-    BOOST_MESSAGE("Testing ECB dates...");
+    BOOST_TEST_MESSAGE("Testing ECB dates...");
 
     std::set<Date> knownDates = ECB::knownDates();
     if (knownDates.empty())
@@ -76,7 +76,7 @@ void DateTest::ecbDates() {
 }
 
 void DateTest::immDates() {
-    BOOST_MESSAGE("Testing IMM dates...");
+    BOOST_TEST_MESSAGE("Testing IMM dates...");
 
     const std::string IMMcodes[] = {
         "F0", "G0", "H0", "J0", "K0", "M0", "N0", "Q0", "U0", "V0", "X0", "Z0",
@@ -149,7 +149,7 @@ void DateTest::immDates() {
 
 void DateTest::testConsistency() {
 
-    BOOST_MESSAGE("Testing dates...");
+    BOOST_TEST_MESSAGE("Testing dates...");
 
     BigInteger minDate = Date::minDate().serialNumber()+1,
                maxDate = Date::maxDate().serialNumber();
@@ -250,7 +250,7 @@ void DateTest::testConsistency() {
 }
 
 void DateTest::isoDates() {
-    BOOST_MESSAGE("Testing ISO dates...");
+    BOOST_TEST_MESSAGE("Testing ISO dates...");
     std::string input_date("2006-01-15");
     Date d = DateParser::parseISO(input_date);
     if (d.dayOfMonth() != 15 ||

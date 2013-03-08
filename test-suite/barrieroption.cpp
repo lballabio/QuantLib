@@ -109,7 +109,7 @@ namespace {
 
 void BarrierOptionTest::testHaugValues() {
 
-    BOOST_MESSAGE("Testing barrier options against Haug's values...");
+    BOOST_TEST_MESSAGE("Testing barrier options against Haug's values...");
 
     NewBarrierOptionData values[] = {
         /* The data below are from
@@ -280,7 +280,7 @@ void BarrierOptionTest::testHaugValues() {
 
 void BarrierOptionTest::testBabsiriValues() {
 
-    BOOST_MESSAGE("Testing barrier options against Babsiri's values...");
+    BOOST_TEST_MESSAGE("Testing barrier options against Babsiri's values...");
 
     /*
         Data from
@@ -385,7 +385,7 @@ void BarrierOptionTest::testBabsiriValues() {
 
 void BarrierOptionTest::testBeagleholeValues() {
 
-    BOOST_MESSAGE("Testing barrier options against Beaglehole's values...");
+    BOOST_TEST_MESSAGE("Testing barrier options against Beaglehole's values...");
 
 
     /*
@@ -481,7 +481,7 @@ void BarrierOptionTest::testBeagleholeValues() {
 }
 
 void BarrierOptionTest::testPerturbative() {
-    BOOST_MESSAGE("Testing perturbative engine for barrier options...");
+    BOOST_TEST_MESSAGE("Testing perturbative engine for barrier options...");
 
     Real S = 100.0;
     Real rebate = 0.0;
@@ -566,8 +566,8 @@ void BarrierOptionTest::testPerturbative() {
 }
 
 void BarrierOptionTest::testLocalVolAndHestonComparison() {
-    BOOST_MESSAGE("Testing local volatility and Heston FD engines "
-                  "for barrier options...");
+    BOOST_TEST_MESSAGE("Testing local volatility and Heston FD engines "
+                       "for barrier options...");
 
     SavedSettings backup;
 

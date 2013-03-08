@@ -109,7 +109,7 @@ namespace {
 
 
 void LiborMarketModelProcessTest::testInitialisation() {
-    BOOST_MESSAGE("Testing caplet LMM process initialisation...");
+    BOOST_TEST_MESSAGE("Testing caplet LMM process initialisation...");
 
     SavedSettings backup;
 
@@ -152,7 +152,7 @@ void LiborMarketModelProcessTest::testInitialisation() {
 }
 
 void LiborMarketModelProcessTest::testLambdaBootstrapping() {
-    BOOST_MESSAGE("Testing caplet LMM lambda bootstrapping...");
+    BOOST_TEST_MESSAGE("Testing caplet LMM lambda bootstrapping...");
 
     SavedSettings backup;
 
@@ -199,7 +199,7 @@ void LiborMarketModelProcessTest::testLambdaBootstrapping() {
 }
 
 void LiborMarketModelProcessTest::testMonteCarloCapletPricing() {
-    BOOST_MESSAGE("Testing caplet LMM Monte-Carlo caplet pricing...");
+    BOOST_TEST_MESSAGE("Testing caplet LMM Monte-Carlo caplet pricing...");
 
     SavedSettings backup;
 

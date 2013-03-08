@@ -84,7 +84,7 @@ namespace {
 
 void CompoundOptionTest::testPutCallParity(){
 
-    BOOST_MESSAGE("Testing compound-option put-call parity...");
+    BOOST_TEST_MESSAGE("Testing compound-option put-call parity...");
 
     // Test Put Call Parity for compound options.
     // Formula taken from: "Foreign Exchange Risk", Wystup, Risk 2002
@@ -203,7 +203,7 @@ void CompoundOptionTest::testPutCallParity(){
 
 void CompoundOptionTest::testValues(){
 
-    BOOST_MESSAGE("Testing compound-option values and greeks...");
+    BOOST_TEST_MESSAGE("Testing compound-option values and greeks...");
 
     CompoundOptionData values[] = {
         // type Mother, typeDaughter, strike Mother, strike Daughter,  spot,    q,    r,    t Mother, t Daughter,  vol,   value,    tol, delta, gamma, vega, theta

@@ -67,7 +67,7 @@ namespace {
 
 void BlackDeltaCalculatorTest::testDeltaValues(){
 
-    BOOST_MESSAGE("Testing delta calculator values...");
+    BOOST_TEST_MESSAGE("Testing delta calculator values...");
 
     DeltaData values[] = {
         // Values taken from parallel implementation in R
@@ -151,7 +151,7 @@ void BlackDeltaCalculatorTest::testDeltaValues(){
 
 void BlackDeltaCalculatorTest::testDeltaPriceConsistency() {
 
-    BOOST_MESSAGE("Testing premium-adjusted delta price consistency...");
+    BOOST_TEST_MESSAGE("Testing premium-adjusted delta price consistency...");
 
     // This function tests for price consistencies with the standard
     // Black Scholes calculator, since premium adjusted deltas can be calculated
@@ -304,7 +304,7 @@ void BlackDeltaCalculatorTest::testDeltaPriceConsistency() {
 
 void BlackDeltaCalculatorTest::testPutCallParity(){
 
-    BOOST_MESSAGE("Testing put-call parity for deltas...");
+    BOOST_TEST_MESSAGE("Testing put-call parity for deltas...");
 
     // Test for put call parity between put and call deltas.
 
@@ -501,7 +501,7 @@ void BlackDeltaCalculatorTest::testPutCallParity(){
 
 void BlackDeltaCalculatorTest::testAtmCalcs(){
 
-    BOOST_MESSAGE("Testing delta-neutral ATM quotations...");
+    BOOST_TEST_MESSAGE("Testing delta-neutral ATM quotations...");
 
     SavedSettings backup;
 

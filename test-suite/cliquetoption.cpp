@@ -53,7 +53,7 @@ using namespace boost::unit_test_framework;
 
 void CliquetOptionTest::testValues() {
 
-    BOOST_MESSAGE("Testing Cliquet option values...");
+    BOOST_TEST_MESSAGE("Testing Cliquet option values...");
 
     Date today = Date::todaysDate();
     DayCounter dc = Actual360();
@@ -262,19 +262,19 @@ namespace {
 
 
 void CliquetOptionTest::testGreeks() {
-    BOOST_MESSAGE("Testing Cliquet option greeks...");
+    BOOST_TEST_MESSAGE("Testing Cliquet option greeks...");
     testOptionGreeks<AnalyticCliquetEngine>();
 }
 
 
 void CliquetOptionTest::testPerformanceGreeks() {
-    BOOST_MESSAGE("Testing performance option greeks...");
+    BOOST_TEST_MESSAGE("Testing performance option greeks...");
     testOptionGreeks<AnalyticPerformanceEngine>();
 }
 
 
 void CliquetOptionTest::testMcPerformance() {
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing Monte Carlo performance engine against analytic results...");
 
     SavedSettings backup;

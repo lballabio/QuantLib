@@ -117,7 +117,7 @@ namespace {
 
 void SwaptionTest::testStrikeDependency() {
 
-    BOOST_MESSAGE("Testing swaption dependency on strike...");
+    BOOST_TEST_MESSAGE("Testing swaption dependency on strike...");
 
     CommonVars vars;
 
@@ -217,7 +217,7 @@ void SwaptionTest::testStrikeDependency() {
 
 void SwaptionTest::testSpreadDependency() {
 
-    BOOST_MESSAGE("Testing swaption dependency on spread...");
+    BOOST_TEST_MESSAGE("Testing swaption dependency on spread...");
 
     CommonVars vars;
 
@@ -308,7 +308,7 @@ void SwaptionTest::testSpreadDependency() {
 
 void SwaptionTest::testSpreadTreatment() {
 
-    BOOST_MESSAGE("Testing swaption treatment of spread...");
+    BOOST_TEST_MESSAGE("Testing swaption treatment of spread...");
 
     CommonVars vars;
 
@@ -373,7 +373,7 @@ void SwaptionTest::testSpreadTreatment() {
 
 void SwaptionTest::testCachedValue() {
 
-    BOOST_MESSAGE("Testing swaption value against cached value...");
+    BOOST_TEST_MESSAGE("Testing swaption value against cached value...");
 
     CommonVars vars;
 
@@ -406,7 +406,7 @@ void SwaptionTest::testCachedValue() {
 
 void SwaptionTest::testVega() {
 
-    BOOST_MESSAGE("Testing swaption vega...");
+    BOOST_TEST_MESSAGE("Testing swaption vega...");
 
     CommonVars vars;
 
@@ -475,7 +475,7 @@ void SwaptionTest::testVega() {
 
 void SwaptionTest::testCashSettledSwaptions() {
 
-    BOOST_MESSAGE("Testing cash settled swaptions modified annuity...");
+    BOOST_TEST_MESSAGE("Testing cash settled swaptions modified annuity...");
 
     CommonVars vars;
 
@@ -816,7 +816,7 @@ void SwaptionTest::testCashSettledSwaptions() {
 
 void SwaptionTest::testImpliedVolatility() {
 
-    BOOST_MESSAGE("Testing implied volatility for swaptions...");
+    BOOST_TEST_MESSAGE("Testing implied volatility for swaptions...");
 
     CommonVars vars;
 

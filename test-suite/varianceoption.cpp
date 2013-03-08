@@ -29,7 +29,7 @@ using namespace boost::unit_test_framework;
 
 void VarianceOptionTest::testIntegralHeston() {
 
-    BOOST_MESSAGE("Testing variance option with integral Heston engine...");
+    BOOST_TEST_MESSAGE("Testing variance option with integral Heston engine...");
 
     DayCounter dc = Actual360();
     Date today = Settings::instance().evaluationDate();

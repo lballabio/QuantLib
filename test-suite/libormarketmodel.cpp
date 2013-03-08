@@ -113,7 +113,7 @@ namespace {
 
 
 void LiborMarketModelTest::testSimpleCovarianceModels() {
-    BOOST_MESSAGE("Testing simple covariance models...");
+    BOOST_TEST_MESSAGE("Testing simple covariance models...");
 
     SavedSettings backup;
 
@@ -190,7 +190,7 @@ void LiborMarketModelTest::testSimpleCovarianceModels() {
 
 
 void LiborMarketModelTest::testCapletPricing() {
-    BOOST_MESSAGE("Testing caplet pricing...");
+    BOOST_TEST_MESSAGE("Testing caplet pricing...");
 
     SavedSettings backup;
 
@@ -243,7 +243,7 @@ void LiborMarketModelTest::testCapletPricing() {
 }
 
 void LiborMarketModelTest::testCalibration() {
-    BOOST_MESSAGE("Testing calibration of a Libor forward model...");
+    BOOST_TEST_MESSAGE("Testing calibration of a Libor forward model...");
 
     SavedSettings backup;
 
@@ -347,7 +347,7 @@ void LiborMarketModelTest::testCalibration() {
 }
 
 void LiborMarketModelTest::testSwaptionPricing() {
-    BOOST_MESSAGE("Testing forward swap and swaption pricing...");
+    BOOST_TEST_MESSAGE("Testing forward swap and swaption pricing...");
 
     SavedSettings backup;
 

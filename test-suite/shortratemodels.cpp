@@ -53,7 +53,7 @@ namespace {
 
 
 void ShortRateModelTest::testCachedHullWhite() {
-    BOOST_MESSAGE("Testing Hull-White calibration against cached values...");
+    BOOST_TEST_MESSAGE("Testing Hull-White calibration against cached values...");
 
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
@@ -129,7 +129,7 @@ void ShortRateModelTest::testCachedHullWhite() {
 
 
 void ShortRateModelTest::testSwaps() {
-    BOOST_MESSAGE("Testing Hull-White swap pricing against known values...");
+    BOOST_TEST_MESSAGE("Testing Hull-White swap pricing against known values...");
 
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
@@ -240,7 +240,7 @@ void ShortRateModelTest::testSwaps() {
 }
 
 void ShortRateModelTest::testFuturesConvexityBias() {
-    BOOST_MESSAGE("Testing Hull-White futures convexity bias...");
+    BOOST_TEST_MESSAGE("Testing Hull-White futures convexity bias...");
 
     // G. Kirikos, D. Novak, "Convexity Conundrums", Risk Magazine, March 1997
     Real futureQuote = 94.0;

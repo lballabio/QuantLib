@@ -361,7 +361,7 @@ namespace {
         if (printReport_) {
             Array num(result.size());
             std::copy(result.begin(), result.end(), num.begin());
-            BOOST_MESSAGE("    " << measureTypeToString(measureType) << ": " << num);
+            BOOST_TEST_MESSAGE("    " << measureTypeToString(measureType) << ": " << num);
         }
         return result;
     }
@@ -404,8 +404,8 @@ namespace {
 
 void MarketModelSmmCapletCalibrationTest::testFunction() {
 
-    BOOST_MESSAGE("Testing GHLS caplet calibration "
-                  "in a lognormal coterminal swap market model...");
+    BOOST_TEST_MESSAGE("Testing GHLS caplet calibration "
+                       "in a lognormal coterminal swap market model...");
 
     setup();
 
@@ -438,11 +438,11 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
     bool lowestRoot = true;
     bool useFullApprox = false;
     if (printReport_) {
-        BOOST_MESSAGE("caplet market vols: " << QL_FIXED <<
-                      std::setprecision(4) << io::sequence(capletVols_));
-        BOOST_MESSAGE("alpha:              " << alpha_);
-        BOOST_MESSAGE("lowestRoot:         " << lowestRoot);
-        BOOST_MESSAGE("useFullApprox:      " << useFullApprox);
+        BOOST_TEST_MESSAGE("caplet market vols: " << QL_FIXED <<
+                           std::setprecision(4) << io::sequence(capletVols_));
+        BOOST_TEST_MESSAGE("alpha:              " << alpha_);
+        BOOST_TEST_MESSAGE("lowestRoot:         " << lowestRoot);
+        BOOST_TEST_MESSAGE("useFullApprox:      " << useFullApprox);
     }
     CTSMMCapletOriginalCalibration calibrator(evolution,
                                               corr,
@@ -459,9 +459,9 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
     Natural innerMaxIterations = 50;
     Real innerTolerance = 1e-9;
     if (printReport_) {
-        BOOST_MESSAGE("alpha:              " << alpha_);
-        BOOST_MESSAGE("lowestRoot:         " << lowestRoot);
-        BOOST_MESSAGE("useFullApprox:      " << useFullApprox);
+        BOOST_TEST_MESSAGE("alpha:              " << alpha_);
+        BOOST_TEST_MESSAGE("lowestRoot:         " << lowestRoot);
+        BOOST_TEST_MESSAGE("useFullApprox:      " << useFullApprox);
     }
     bool result = calibrator.calibrate(numberOfFactors_,
                                        maxIterations,
@@ -485,14 +485,14 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
         capletVols[i] = std::sqrt(capletTotCovariance[i][i]/rateTimes_[i]);
     }
     if (printReport_) {
-        BOOST_MESSAGE("caplet smm implied vols: " << QL_FIXED <<
-                      std::setprecision(4) << io::sequence(capletVols));
-        BOOST_MESSAGE("failures: " << calibrator.failures());
-        BOOST_MESSAGE("deformationSize: " << calibrator.deformationSize());
-        BOOST_MESSAGE("capletRmsError: " << calibrator.capletRmsError());
-        BOOST_MESSAGE("capletMaxError: " << calibrator.capletMaxError());
-        BOOST_MESSAGE("swaptionRmsError: " << calibrator.swaptionRmsError());
-        BOOST_MESSAGE("swaptionMaxError: " << calibrator.swaptionMaxError());
+        BOOST_TEST_MESSAGE("caplet smm implied vols: " << QL_FIXED <<
+                           std::setprecision(4) << io::sequence(capletVols));
+        BOOST_TEST_MESSAGE("failures: " << calibrator.failures());
+        BOOST_TEST_MESSAGE("deformationSize: " << calibrator.deformationSize());
+        BOOST_TEST_MESSAGE("capletRmsError: " << calibrator.capletRmsError());
+        BOOST_TEST_MESSAGE("capletMaxError: " << calibrator.capletMaxError());
+        BOOST_TEST_MESSAGE("swaptionRmsError: " << calibrator.swaptionRmsError());
+        BOOST_TEST_MESSAGE("swaptionMaxError: " << calibrator.swaptionMaxError());
     }
 
     // check perfect swaption fit

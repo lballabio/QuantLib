@@ -30,7 +30,7 @@ using namespace boost::unit_test_framework;
 
 void ExchangeRateTest::testDirect() {
 
-    BOOST_MESSAGE("Testing direct exchange rates...");
+    BOOST_TEST_MESSAGE("Testing direct exchange rates...");
 
     Currency EUR = EURCurrency(), USD = USDCurrency();
 
@@ -62,7 +62,7 @@ void ExchangeRateTest::testDirect() {
 
 void ExchangeRateTest::testDerived() {
 
-    BOOST_MESSAGE("Testing derived exchange rates...");
+    BOOST_TEST_MESSAGE("Testing derived exchange rates...");
 
     Currency EUR = EURCurrency(), USD = USDCurrency(), GBP = GBPCurrency();
 
@@ -97,7 +97,7 @@ void ExchangeRateTest::testDerived() {
 
 void ExchangeRateTest::testDirectLookup() {
 
-    BOOST_MESSAGE("Testing lookup of direct exchange rates...");
+    BOOST_TEST_MESSAGE("Testing lookup of direct exchange rates...");
 
     ExchangeRateManager& rateManager = ExchangeRateManager::instance();
     rateManager.clear();
@@ -167,7 +167,7 @@ void ExchangeRateTest::testDirectLookup() {
 
 void ExchangeRateTest::testTriangulatedLookup() {
 
-    BOOST_MESSAGE("Testing lookup of triangulated exchange rates...");
+    BOOST_TEST_MESSAGE("Testing lookup of triangulated exchange rates...");
 
     ExchangeRateManager& rateManager = ExchangeRateManager::instance();
     rateManager.clear();
@@ -233,7 +233,7 @@ void ExchangeRateTest::testTriangulatedLookup() {
 
 void ExchangeRateTest::testSmartLookup() {
 
-    BOOST_MESSAGE("Testing lookup of derived exchange rates...");
+    BOOST_TEST_MESSAGE("Testing lookup of derived exchange rates...");
 
     Currency EUR = EURCurrency(), USD = USDCurrency(), GBP = GBPCurrency(),
              CHF = CHFCurrency(), SEK = SEKCurrency(), JPY = JPYCurrency();

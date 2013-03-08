@@ -72,7 +72,7 @@ namespace {
 
 void ForwardOptionTest::testValues() {
 
-    BOOST_MESSAGE("Testing forward option values...");
+    BOOST_TEST_MESSAGE("Testing forward option values...");
 
     /* The data below are from
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
@@ -139,7 +139,7 @@ void ForwardOptionTest::testValues() {
 
 void ForwardOptionTest::testPerformanceValues() {
 
-    BOOST_MESSAGE("Testing forward performance option values...");
+    BOOST_TEST_MESSAGE("Testing forward performance option values...");
 
     /* The data below are the performance equivalent of the
        forward options tested above and taken from
@@ -364,7 +364,7 @@ namespace {
 
 void ForwardOptionTest::testGreeks() {
 
-    BOOST_MESSAGE("Testing forward option greeks...");
+    BOOST_TEST_MESSAGE("Testing forward option greeks...");
 
     SavedSettings backup;
 
@@ -374,7 +374,7 @@ void ForwardOptionTest::testGreeks() {
 
 void ForwardOptionTest::testPerformanceGreeks() {
 
-    BOOST_MESSAGE("Testing forward performance option greeks...");
+    BOOST_TEST_MESSAGE("Testing forward performance option greeks...");
 
     SavedSettings backup;
 

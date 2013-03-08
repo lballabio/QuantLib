@@ -27,7 +27,7 @@ using namespace boost::unit_test_framework;
 
 void CommodityUnitOfMeasureTest::testDirect() {
 
-    BOOST_MESSAGE("Testing direct commodity unit of measure conversions...");
+    BOOST_TEST_MESSAGE("Testing direct commodity unit of measure conversions...");
 
     UnitOfMeasureConversionManager& UOMManager =
         UnitOfMeasureConversionManager::instance();

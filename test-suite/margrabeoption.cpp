@@ -121,7 +121,7 @@ namespace {
 
 void MargrabeOptionTest::testEuroExchangeTwoAssets() {
 
-    BOOST_MESSAGE("Testing European one-asset-for-another option...");
+    BOOST_TEST_MESSAGE("Testing European one-asset-for-another option...");
 
     /*
         Exchange-One-Asset-for-Another European Options
@@ -313,7 +313,7 @@ void MargrabeOptionTest::testEuroExchangeTwoAssets() {
 
 void MargrabeOptionTest::testGreeks() {
 
-    BOOST_MESSAGE("Testing analytic European exchange option greeks...");
+    BOOST_TEST_MESSAGE("Testing analytic European exchange option greeks...");
 
     SavedSettings backup;
 
@@ -494,7 +494,7 @@ void MargrabeOptionTest::testGreeks() {
 
 void MargrabeOptionTest::testAmericanExchangeTwoAssets() {
 
-    BOOST_MESSAGE("Testing American one-asset-for-another option...");
+    BOOST_TEST_MESSAGE("Testing American one-asset-for-another option...");
 
     MargrabeAmericanOptionTwoData values[] = {
         //Simplification : we assume that the option always exchanges S2 for S1

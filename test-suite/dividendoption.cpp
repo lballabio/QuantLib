@@ -63,7 +63,7 @@ using namespace boost::unit_test_framework;
 
 void DividendOptionTest::testEuropeanValues() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
               "Testing dividend European option values with no dividends...");
 
     SavedSettings backup;
@@ -162,7 +162,7 @@ void DividendOptionTest::testEuropeanValues() {
 
 void DividendOptionTest::testEuropeanKnownValue() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
               "Testing dividend European option values with known value...");
 
     SavedSettings backup;
@@ -228,7 +228,7 @@ void DividendOptionTest::testEuropeanKnownValue() {
 
 void DividendOptionTest::testEuropeanStartLimit() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
        "Testing dividend European option with a dividend on today's date...");
 
     SavedSettings backup;
@@ -321,7 +321,7 @@ void DividendOptionTest::testEuropeanStartLimit() {
 
 void DividendOptionTest::testEuropeanEndLimit() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
               "Testing dividend European option values with end limits...");
 
     SavedSettings backup;
@@ -420,7 +420,7 @@ void DividendOptionTest::testEuropeanEndLimit() {
 
 void DividendOptionTest::testEuropeanGreeks() {
 
-    BOOST_MESSAGE("Testing dividend European option greeks...");
+    BOOST_TEST_MESSAGE("Testing dividend European option greeks...");
 
     SavedSettings backup;
 
@@ -568,7 +568,7 @@ void DividendOptionTest::testEuropeanGreeks() {
 
 void DividendOptionTest::testFdEuropeanValues() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
               "Testing finite-difference dividend European option values...");
 
     SavedSettings backup;
@@ -796,7 +796,7 @@ namespace {
 
 void DividendOptionTest::testFdEuropeanGreeks() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
              "Testing finite-differences dividend European option greeks...");
 
     SavedSettings backup;
@@ -813,7 +813,7 @@ void DividendOptionTest::testFdEuropeanGreeks() {
 }
 
 void DividendOptionTest::testFdAmericanGreeks() {
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
              "Testing finite-differences dividend American option greeks...");
 
     SavedSettings backup;
@@ -891,7 +891,7 @@ namespace {
 
 void DividendOptionTest::testFdEuropeanDegenerate() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
          "Testing degenerate finite-differences dividend European option...");
 
     SavedSettings backup;
@@ -907,7 +907,7 @@ void DividendOptionTest::testFdEuropeanDegenerate() {
 
 void DividendOptionTest::testFdAmericanDegenerate() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
          "Testing degenerate finite-differences dividend American option...");
 
     SavedSettings backup;

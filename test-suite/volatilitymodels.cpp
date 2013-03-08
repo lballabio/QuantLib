@@ -30,7 +30,7 @@ using namespace boost::unit_test_framework;
 
 void VolatilityModelsTest::testConstruction() {
 
-    BOOST_MESSAGE("Testing volatility model construction...");
+    BOOST_TEST_MESSAGE("Testing volatility model construction...");
 
     TimeSeries<Real> ts;
     ts[Date(25, March, 2005)] = 1.2;

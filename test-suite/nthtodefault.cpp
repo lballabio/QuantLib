@@ -91,8 +91,8 @@ namespace {
 }
 
 void NthToDefaultTest::testGauss() {
-    BOOST_MESSAGE("Testing nth-to-default against Hull-White values "
-                  "with Gaussian copula...");
+    BOOST_TEST_MESSAGE("Testing nth-to-default against Hull-White values "
+                       "with Gaussian copula...");
 
     SavedSettings backup;
 
@@ -201,8 +201,8 @@ void NthToDefaultTest::testGauss() {
 
 
 void NthToDefaultTest::testGaussStudent() {
-    BOOST_MESSAGE ("Testing nth-to-default against Hull-White values "
-                   "with Gaussian and Student copula...");
+    BOOST_TEST_MESSAGE("Testing nth-to-default against Hull-White values "
+                       "with Gaussian and Student copula...");
 
     SavedSettings backup;
 

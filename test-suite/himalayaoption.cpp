@@ -30,7 +30,7 @@ using namespace boost::unit_test_framework;
 
 void HimalayaOptionTest::testCached() {
 
-    BOOST_MESSAGE("Testing Himalaya option against cached values...");
+    BOOST_TEST_MESSAGE("Testing Himalaya option against cached values...");
 
     Date today = Settings::instance().evaluationDate();
 

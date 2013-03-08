@@ -82,7 +82,7 @@ namespace {
 
 void VPPTest::testGemanRoncoroniProcess() {
 
-    BOOST_MESSAGE("Testing Geman Roncoroni process...");
+    BOOST_TEST_MESSAGE("Testing Geman Roncoroni process...");
 
     /* Example induced by H. Geman, A. Roncoroni,
        "Understanding the Fine Structure of Electricity Prices",
@@ -207,7 +207,7 @@ void VPPTest::testGemanRoncoroniProcess() {
 
 void VPPTest::testSimpleExtOUStorageEngine() {
 
-    BOOST_MESSAGE("Testing Simple Storage option based on ext. OU model...");
+    BOOST_TEST_MESSAGE("Testing Simple Storage option based on ext. OU model...");
 
     SavedSettings backup;
 
@@ -255,7 +255,7 @@ void VPPTest::testSimpleExtOUStorageEngine() {
 
 void VPPTest::testKlugeExtOUSpreadOption() {
 
-    BOOST_MESSAGE("Testing Simple Kluge ext-Ornstein-Uhlenbeck spread option...");
+    BOOST_TEST_MESSAGE("Testing Simple Kluge ext-Ornstein-Uhlenbeck spread option...");
 
     SavedSettings backup;
 
@@ -388,7 +388,7 @@ namespace {
 
 void VPPTest::testVPPIntrinsicValue() {
 
-    BOOST_MESSAGE("Testing VPP step condition...");
+    BOOST_TEST_MESSAGE("Testing VPP step condition...");
 
     SavedSettings backup;
 
@@ -544,7 +544,7 @@ namespace {
 
 
 void VPPTest::testVPPPricing() {
-    BOOST_MESSAGE("Testing VPP pricing using perfect foresight or FDM...");
+    BOOST_TEST_MESSAGE("Testing VPP pricing using perfect foresight or FDM...");
 
     SavedSettings backup;
 
@@ -863,7 +863,7 @@ void VPPTest::testVPPPricing() {
 
 void VPPTest::testKlugeExtOUMatrixDecomposition() {
 #ifndef QL_NO_UBLAS_SUPPORT
-    BOOST_MESSAGE("Testing KlugeExtOU matrix decomposition...");
+    BOOST_TEST_MESSAGE("Testing KlugeExtOU matrix decomposition...");
 
     SavedSettings backup;
 

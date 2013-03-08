@@ -205,7 +205,7 @@ namespace {
 
 void CapFlooredCouponTest::testLargeRates() {
 
-    BOOST_MESSAGE("Testing degenerate collared coupon...");
+    BOOST_TEST_MESSAGE("Testing degenerate collared coupon...");
 
     CommonVars vars;
 
@@ -235,21 +235,21 @@ void CapFlooredCouponTest::testLargeRates() {
     collarLeg.setPricingEngine(engine);
 
     if (std::abs(vanillaLeg.NPV()-collarLeg.NPV())>tolerance) {
-        BOOST_MESSAGE("Lenght: " << vars.length << " y" << "\n" <<
-                      "Volatility: " << vars.volatility*100 << "%\n" <<
-                      "Notional: " << vars.nominal << "\n" <<
-                      "Vanilla floating leg NPV: " << vanillaLeg.NPV()
-                      << "\n" <<
-                      "Collared floating leg NPV (strikes 0 and 100): "
-                      << collarLeg.NPV()
-                      << "\n" <<
-                      "Diff: " << std::abs(vanillaLeg.NPV()-collarLeg.NPV()));
+        BOOST_ERROR("Lenght: " << vars.length << " y" << "\n" <<
+                    "Volatility: " << vars.volatility*100 << "%\n" <<
+                    "Notional: " << vars.nominal << "\n" <<
+                    "Vanilla floating leg NPV: " << vanillaLeg.NPV()
+                    << "\n" <<
+                    "Collared floating leg NPV (strikes 0 and 100): "
+                    << collarLeg.NPV()
+                    << "\n" <<
+                    "Diff: " << std::abs(vanillaLeg.NPV()-collarLeg.NPV()));
    }
 }
 
 void CapFlooredCouponTest::testDecomposition() {
 
-    BOOST_MESSAGE("Testing collared coupon against its decomposition...");
+    BOOST_TEST_MESSAGE("Testing collared coupon against its decomposition...");
 
     CommonVars vars;
 

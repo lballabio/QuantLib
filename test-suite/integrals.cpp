@@ -71,39 +71,39 @@ namespace {
 
 
 void IntegralTest::testSegment() {
-    BOOST_MESSAGE("Testing segment integration...");
+    BOOST_TEST_MESSAGE("Testing segment integration...");
     testSeveral(SegmentIntegral(10000));
 }
 
 void IntegralTest::testTrapezoid() {
-    BOOST_MESSAGE("Testing trapezoid integration...");
+    BOOST_TEST_MESSAGE("Testing trapezoid integration...");
     testSeveral(TrapezoidIntegral<Default>(tolerance, 10000));
 }
 
 void IntegralTest::testMidPointTrapezoid() {
-    BOOST_MESSAGE("Testing mid-point trapezoid integration...");
+    BOOST_TEST_MESSAGE("Testing mid-point trapezoid integration...");
     testSeveral(TrapezoidIntegral<MidPoint>(tolerance, 10000));
 }
 
 void IntegralTest::testSimpson() {
-    BOOST_MESSAGE("Testing Simpson integration...");
+    BOOST_TEST_MESSAGE("Testing Simpson integration...");
     testSeveral(SimpsonIntegral(tolerance, 10000));
 }
 
 void IntegralTest::testGaussKronrodAdaptive() {
-    BOOST_MESSAGE("Testing adaptive Gauss-Kronrod integration...");
+    BOOST_TEST_MESSAGE("Testing adaptive Gauss-Kronrod integration...");
     Size maxEvaluations = 1000;
     testSeveral(GaussKronrodAdaptive(tolerance, maxEvaluations));
 }
 
 void IntegralTest::testGaussLobatto() {
-    BOOST_MESSAGE("Testing adaptive Gauss-Lobatto integration...");
+    BOOST_TEST_MESSAGE("Testing adaptive Gauss-Lobatto integration...");
     Size maxEvaluations = 1000;
     testSeveral(GaussLobattoIntegral(maxEvaluations, tolerance));
 }
 
 void IntegralTest::testGaussKronrodNonAdaptive() {
-    BOOST_MESSAGE("Testing non-adaptive Gauss-Kronrod integration...");
+    BOOST_TEST_MESSAGE("Testing non-adaptive Gauss-Kronrod integration...");
     Real precision = tolerance;
     Size maxEvaluations = 100;
     Real relativeAccuracy = tolerance;

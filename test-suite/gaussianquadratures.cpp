@@ -118,7 +118,7 @@ namespace {
 
 
 void GaussianQuadraturesTest::testJacobi() {
-    BOOST_MESSAGE("Testing Gauss-Jacobi integration...");
+    BOOST_TEST_MESSAGE("Testing Gauss-Jacobi integration...");
 
     testSingleJacobi(GaussLegendreIntegration(16));
     testSingleJacobi(GaussChebyshevIntegration(130));
@@ -127,7 +127,7 @@ void GaussianQuadraturesTest::testJacobi() {
 }
 
 void GaussianQuadraturesTest::testLaguerre() {
-     BOOST_MESSAGE("Testing Gauss-Laguerre integration...");
+     BOOST_TEST_MESSAGE("Testing Gauss-Laguerre integration...");
 
      testSingleLaguerre(GaussLaguerreIntegration(16));
      testSingleLaguerre(GaussLaguerreIntegration(150,0.01));
@@ -139,7 +139,7 @@ void GaussianQuadraturesTest::testLaguerre() {
 }
 
 void GaussianQuadraturesTest::testHermite() {
-     BOOST_MESSAGE("Testing Gauss-Hermite integration...");
+     BOOST_TEST_MESSAGE("Testing Gauss-Hermite integration...");
 
      testSingle(GaussHermiteIntegration(16), "f(x) = Gaussian(x)",
                 NormalDistribution(), 1.0);
@@ -150,7 +150,7 @@ void GaussianQuadraturesTest::testHermite() {
 }
 
 void GaussianQuadraturesTest::testHyperbolic() {
-     BOOST_MESSAGE("Testing Gauss hyperbolic integration...");
+     BOOST_TEST_MESSAGE("Testing Gauss hyperbolic integration...");
 
      testSingle(GaussHyperbolicIntegration(16), "f(x) = 1/cosh(x)",
                 std::ptr_fun<Real,Real>(inv_cosh), M_PI);
@@ -159,7 +159,7 @@ void GaussianQuadraturesTest::testHyperbolic() {
 }
 
 void GaussianQuadraturesTest::testTabulated() {
-     BOOST_MESSAGE("Testing tabulated Gauss-Laguerre integration...");
+     BOOST_TEST_MESSAGE("Testing tabulated Gauss-Laguerre integration...");
 
      testSingleTabulated(constant<Real,Real>(1.0), "f(x) = 1",
                          2.0,       1.0e-13);

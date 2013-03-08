@@ -26,7 +26,7 @@ using namespace boost::unit_test_framework;
 
 void MersenneTwisterTest::testValues() {
 
-    BOOST_MESSAGE("Testing Mersenne twister...");
+    BOOST_TEST_MESSAGE("Testing Mersenne twister...");
 
     // the following numbers are provided by MT authors in order
     // to check any actual implementation of MT

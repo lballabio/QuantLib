@@ -51,7 +51,7 @@ using namespace boost::unit_test_framework;
 
 void ChooserOptionTest::testAnalyticSimpleChooserEngine(){
 
-    BOOST_MESSAGE("Testing analytic simple chooser option...");
+    BOOST_TEST_MESSAGE("Testing analytic simple chooser option...");
 
     /* The data below are from
        "Complete Guide to Option Pricing Formulas", Espen Gaarder Haug

@@ -37,7 +37,7 @@ using namespace boost::unit_test_framework;
 
 void CashFlowsTest::testSettings() {
 
-    BOOST_MESSAGE("Testing cash-flow settings...");
+    BOOST_TEST_MESSAGE("Testing cash-flow settings...");
 
     SavedSettings backup;
 
@@ -170,7 +170,7 @@ void CashFlowsTest::testSettings() {
 }
 
 void CashFlowsTest::testAccessViolation() {
-    BOOST_MESSAGE("Testing dynamic cast of coupon in Black pricer...");
+    BOOST_TEST_MESSAGE("Testing dynamic cast of coupon in Black pricer...");
 
     SavedSettings backup;
 
@@ -215,7 +215,7 @@ void CashFlowsTest::testAccessViolation() {
 }
 
 void CashFlowsTest::testDefaultSettlementDate() {
-    BOOST_MESSAGE("Testing default evaluation date in cashflows methods...");
+    BOOST_TEST_MESSAGE("Testing default evaluation date in cashflows methods...");
     Date today = Settings::instance().evaluationDate();
     Schedule schedule =
         MakeSchedule()

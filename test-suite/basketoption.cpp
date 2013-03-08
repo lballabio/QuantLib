@@ -168,7 +168,7 @@ namespace {
 
 void BasketOptionTest::testEuroTwoValues() {
 
-    BOOST_MESSAGE("Testing two-asset European basket options...");
+    BOOST_TEST_MESSAGE("Testing two-asset European basket options...");
 
     /*
         Data from:
@@ -399,8 +399,8 @@ void BasketOptionTest::testEuroTwoValues() {
 
 void BasketOptionTest::testBarraquandThreeValues() {
 
-    BOOST_MESSAGE("Testing three-asset basket options "
-                  "against Barraquand's values...");
+    BOOST_TEST_MESSAGE("Testing three-asset basket options "
+                       "against Barraquand's values...");
 
     QL_TEST_START_TIMING
 
@@ -616,8 +616,8 @@ void BasketOptionTest::testBarraquandThreeValues() {
 
 void BasketOptionTest::testTavellaValues() {
 
-    BOOST_MESSAGE("Testing three-asset American basket options "
-                  "against Tavella's values...");
+    BOOST_TEST_MESSAGE("Testing three-asset American basket options "
+                       "against Tavella's values...");
 
     QL_TEST_START_TIMING
 
@@ -736,7 +736,7 @@ void BasketOptionTest::testTavellaValues() {
 
 void BasketOptionTest::testOneDAmericanValues() {
 
-    BOOST_MESSAGE("Testing basket American options against 1-D case...");
+    BOOST_TEST_MESSAGE("Testing basket American options against 1-D case...");
 
     QL_TEST_START_TIMING
 
@@ -861,7 +861,7 @@ void BasketOptionTest::testOneDAmericanValues() {
 */
 void BasketOptionTest::testOddSamples() {
 
-    BOOST_MESSAGE("Testing antithetic engine using odd sample number...");
+    BOOST_TEST_MESSAGE("Testing antithetic engine using odd sample number...");
 
     QL_TEST_START_TIMING
     Size requiredSamples = 10001; // The important line

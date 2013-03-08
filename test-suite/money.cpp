@@ -29,7 +29,7 @@ using namespace boost::unit_test_framework;
 
 void MoneyTest::testNone() {
 
-    BOOST_MESSAGE("Testing money arithmetic without conversions...");
+    BOOST_TEST_MESSAGE("Testing money arithmetic without conversions...");
 
     Currency EUR = EURCurrency();
 
@@ -53,8 +53,8 @@ void MoneyTest::testNone() {
 
 void MoneyTest::testBaseCurrency() {
 
-    BOOST_MESSAGE("Testing money arithmetic with conversion "
-                  "to base currency...");
+    BOOST_TEST_MESSAGE("Testing money arithmetic with conversion "
+                       "to base currency...");
 
     Currency EUR = EURCurrency(), GBP = GBPCurrency(), USD = USDCurrency();
 
@@ -90,7 +90,7 @@ void MoneyTest::testBaseCurrency() {
 
 void MoneyTest::testAutomated() {
 
-    BOOST_MESSAGE("Testing money arithmetic with automated conversion...");
+    BOOST_TEST_MESSAGE("Testing money arithmetic with automated conversion...");
 
     Currency EUR = EURCurrency(), GBP = GBPCurrency(), USD = USDCurrency();
 

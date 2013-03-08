@@ -291,7 +291,8 @@ namespace {
 
 void InflationCapFloorTest::testConsistency() {
 
-    BOOST_MESSAGE("Testing consistency between yoy inflation cap, floor and collar...");
+    BOOST_TEST_MESSAGE("Testing consistency between yoy inflation cap,"
+                       " floor and collar...");
 
     CommonVars vars;
 
@@ -418,7 +419,7 @@ void InflationCapFloorTest::testConsistency() {
 // of the YoY cap/floor instrument.
 void InflationCapFloorTest::testParity() {
 
-    BOOST_MESSAGE("Testing yoy inflation cap/floor parity...");
+    BOOST_TEST_MESSAGE("Testing yoy inflation cap/floor parity...");
 
     CommonVars vars;
 
@@ -493,7 +494,8 @@ void InflationCapFloorTest::testParity() {
 
 void InflationCapFloorTest::testCachedValue() {
 
-    BOOST_MESSAGE("Testing Black yoy inflation cap/floor price against cached values...");
+    BOOST_TEST_MESSAGE("Testing Black yoy inflation cap/floor price"
+                       " against cached values...");
 
     CommonVars vars;
 

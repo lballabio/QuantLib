@@ -258,7 +258,7 @@ namespace {
 
 void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability() {
 
-    BOOST_MESSAGE("Testing swaption volatility matrix observability...");
+    BOOST_TEST_MESSAGE("Testing swaption volatility matrix observability...");
 
     CommonVars vars;
 
@@ -322,7 +322,7 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability() {
 
 void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixCoherence() {
 
-    BOOST_MESSAGE("Testing swaption volatility matrix...");
+    BOOST_TEST_MESSAGE("Testing swaption volatility matrix...");
 
     CommonVars vars;
 

@@ -34,7 +34,7 @@ typedef GenericGaussianStatistics<IncrementalStatistics>
 
 void RiskStatisticsTest::testResults() {
 
-    BOOST_MESSAGE("Testing risk measures...");
+    BOOST_TEST_MESSAGE("Testing risk measures...");
 
     IncrementalGaussianStatistics igs;
     RiskStatistics s;

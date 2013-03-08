@@ -60,7 +60,7 @@ namespace {
 
 
 void BrownianBridgeTest::testVariates() {
-    BOOST_MESSAGE("Testing Brownian-bridge variates...");
+    BOOST_TEST_MESSAGE("Testing Brownian-bridge variates...");
 
     std::vector<Time> times;
     times.push_back(0.1);
@@ -174,7 +174,7 @@ void BrownianBridgeTest::testVariates() {
 
 
 void BrownianBridgeTest::testPathGeneration() {
-    BOOST_MESSAGE("Testing Brownian-bridge path generation...");
+    BOOST_TEST_MESSAGE("Testing Brownian-bridge path generation...");
 
     std::vector<Time> times;
     times.push_back(0.1);

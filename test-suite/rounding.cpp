@@ -66,7 +66,7 @@ namespace {
 
 void RoundingTest::testClosest() {
 
-    BOOST_MESSAGE("Testing closest decimal rounding...");
+    BOOST_TEST_MESSAGE("Testing closest decimal rounding...");
 
     for (Size i=0; i<LENGTH(testData); i++) {
         Integer digits = testData[i].precision;
@@ -84,7 +84,7 @@ void RoundingTest::testClosest() {
 
 void RoundingTest::testUp() {
 
-    BOOST_MESSAGE("Testing upward decimal rounding...");
+    BOOST_TEST_MESSAGE("Testing upward decimal rounding...");
 
     for (Size i=0; i<LENGTH(testData); i++) {
         Integer digits = testData[i].precision;
@@ -102,7 +102,7 @@ void RoundingTest::testUp() {
 
 void RoundingTest::testDown() {
 
-    BOOST_MESSAGE("Testing downward decimal rounding...");
+    BOOST_TEST_MESSAGE("Testing downward decimal rounding...");
 
     for (Size i=0; i<LENGTH(testData); i++) {
         Integer digits = testData[i].precision;
@@ -120,7 +120,7 @@ void RoundingTest::testDown() {
 
 void RoundingTest::testFloor() {
 
-    BOOST_MESSAGE("Testing floor decimal rounding...");
+    BOOST_TEST_MESSAGE("Testing floor decimal rounding...");
 
     for (Size i=0; i<LENGTH(testData); i++) {
         Integer digits = testData[i].precision;
@@ -138,7 +138,7 @@ void RoundingTest::testFloor() {
 
 void RoundingTest::testCeiling() {
 
-    BOOST_MESSAGE("Testing ceiling decimal rounding...");
+    BOOST_TEST_MESSAGE("Testing ceiling decimal rounding...");
 
     for (Size i=0; i<LENGTH(testData); i++) {
         Integer digits = testData[i].precision;

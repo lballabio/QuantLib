@@ -31,7 +31,7 @@ using namespace boost::unit_test_framework;
 using namespace std;
 
 void FastFourierTransformTest::testSimple() {
-    BOOST_MESSAGE("Testing complex direct FFT...");
+    BOOST_TEST_MESSAGE("Testing complex direct FFT...");
     typedef std::complex<Real> cx;
     cx a[] = { cx(0,0), cx(1,1), cx(3,3), cx(4,4),
                cx(4,4), cx(3,3), cx(1,1), cx(0,0) };
@@ -53,7 +53,7 @@ void FastFourierTransformTest::testSimple() {
 }
 
 void FastFourierTransformTest::testInverse() {
-    BOOST_MESSAGE("Testing convolution via inverse FFT...");
+    BOOST_TEST_MESSAGE("Testing convolution via inverse FFT...");
     Array x(3);
     x[0] = 1;
     x[1] = 2;

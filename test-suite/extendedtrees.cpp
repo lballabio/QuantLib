@@ -266,8 +266,8 @@ namespace {
 
 void ExtendedTreesTest::testJRBinomialEngines() {
 
-    BOOST_MESSAGE("Testing time-dependent JR binomial European engines "
-                  "against analytic results...");
+    BOOST_TEST_MESSAGE("Testing time-dependent JR binomial European engines "
+                       "against analytic results...");
 
     SavedSettings backup;
 
@@ -283,8 +283,8 @@ void ExtendedTreesTest::testJRBinomialEngines() {
 
 void ExtendedTreesTest::testCRRBinomialEngines() {
 
-    BOOST_MESSAGE("Testing time-dependent CRR binomial European engines "
-                  "against analytic results...");
+    BOOST_TEST_MESSAGE("Testing time-dependent CRR binomial European engines "
+                       "against analytic results...");
 
     SavedSettings backup;
 
@@ -300,8 +300,8 @@ void ExtendedTreesTest::testCRRBinomialEngines() {
 
 void ExtendedTreesTest::testEQPBinomialEngines() {
 
-    BOOST_MESSAGE("Testing time-dependent EQP binomial European engines "
-                  "against analytic results...");
+    BOOST_TEST_MESSAGE("Testing time-dependent EQP binomial European engines "
+                       "against analytic results...");
 
     SavedSettings backup;
 
@@ -317,8 +317,8 @@ void ExtendedTreesTest::testEQPBinomialEngines() {
 
 void ExtendedTreesTest::testTGEOBinomialEngines() {
 
-    BOOST_MESSAGE("Testing time-dependent TGEO binomial European engines "
-                  "against analytic results...");
+    BOOST_TEST_MESSAGE("Testing time-dependent TGEO binomial European engines "
+                       "against analytic results...");
 
     SavedSettings backup;
 
@@ -334,8 +334,8 @@ void ExtendedTreesTest::testTGEOBinomialEngines() {
 
 void ExtendedTreesTest::testTIANBinomialEngines() {
 
-    BOOST_MESSAGE("Testing time-dependent TIAN binomial European engines "
-                  "against analytic results...");
+    BOOST_TEST_MESSAGE("Testing time-dependent TIAN binomial European engines "
+                       "against analytic results...");
 
     SavedSettings backup;
 
@@ -351,8 +351,8 @@ void ExtendedTreesTest::testTIANBinomialEngines() {
 
 void ExtendedTreesTest::testLRBinomialEngines() {
 
-    BOOST_MESSAGE("Testing time-dependent LR binomial European engines "
-                  "against analytic results...");
+    BOOST_TEST_MESSAGE("Testing time-dependent LR binomial European engines "
+                       "against analytic results...");
 
     SavedSettings backup;
 
@@ -368,8 +368,8 @@ void ExtendedTreesTest::testLRBinomialEngines() {
 
 void ExtendedTreesTest::testJOSHIBinomialEngines() {
 
-    BOOST_MESSAGE("Testing time-dependent Joshi binomial European engines "
-                  "against analytic results...");
+    BOOST_TEST_MESSAGE("Testing time-dependent Joshi binomial European engines "
+                       "against analytic results...");
 
     SavedSettings backup;
 

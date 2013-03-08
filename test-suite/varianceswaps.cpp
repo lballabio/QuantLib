@@ -95,7 +95,7 @@ namespace {
 
 void VarianceSwapTest::testReplicatingVarianceSwap() {
 
-    BOOST_MESSAGE("Testing variance swap with replicating cost engine...");
+    BOOST_TEST_MESSAGE("Testing variance swap with replicating cost engine...");
 
     ReplicatingVarianceSwapData values[] = {
 
@@ -222,7 +222,7 @@ void VarianceSwapTest::testReplicatingVarianceSwap() {
 
 void VarianceSwapTest::testMCVarianceSwap() {
 
-    BOOST_MESSAGE("Testing variance swap with Monte Carlo engine...");
+    BOOST_TEST_MESSAGE("Testing variance swap with Monte Carlo engine...");
 
     MCVarianceSwapData values[] = {
 

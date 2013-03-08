@@ -52,7 +52,7 @@ using namespace boost::unit_test_framework;
         << "    tolerance:         " << tolerance);
 
 void WriterExtensibleOptionTest::testAnalyticWriterExtensibleOptionEngine() {
-    BOOST_MESSAGE("Testing analytic engine for writer-extensible option...");
+    BOOST_TEST_MESSAGE("Testing analytic engine for writer-extensible option...");
 
     // What we need for the option (tests):
     Option::Type type = Option::Call;

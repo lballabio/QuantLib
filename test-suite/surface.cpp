@@ -27,7 +27,7 @@ using namespace boost::unit_test_framework;
 
 void SurfaceTest::testOutput() {
 
-    BOOST_MESSAGE("Testing surface...");
+    BOOST_TEST_MESSAGE("Testing surface...");
     Real tolerance = 1e-5;
 
     TestSurface st;

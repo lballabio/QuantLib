@@ -73,8 +73,8 @@ namespace {
 
 void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
 
-    BOOST_MESSAGE("Testing Barone-Adesi and Whaley approximation "
-                  "for American options...");
+    BOOST_TEST_MESSAGE("Testing Barone-Adesi and Whaley approximation "
+                       "for American options...");
 
     /* The data below are from
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
@@ -177,8 +177,8 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
 
 void AmericanOptionTest::testBjerksundStenslandValues() {
 
-    BOOST_MESSAGE("Testing Bjerksund and Stensland approximation "
-                  "for American options...");
+    BOOST_TEST_MESSAGE("Testing Bjerksund and Stensland approximation "
+                       "for American options...");
 
     AmericanOptionData values[] = {
         //      type, strike,   spot,    q,    r,    t,  vol,   value, tol
@@ -317,7 +317,7 @@ namespace {
 
 void AmericanOptionTest::testJuValues() {
 
-    BOOST_MESSAGE("Testing Ju approximation for American options...");
+    BOOST_TEST_MESSAGE("Testing Ju approximation for American options...");
 
     Date today = Date::todaysDate();
     DayCounter dc = Actual360();
@@ -371,7 +371,8 @@ void AmericanOptionTest::testJuValues() {
 
 void AmericanOptionTest::testFdValues() {
 
-    BOOST_MESSAGE("Testing finite-difference engine for American options...");
+    BOOST_TEST_MESSAGE("Testing finite-difference engine "
+                       "for American options...");
 
     Date today = Date::todaysDate();
     DayCounter dc = Actual360();
@@ -547,12 +548,12 @@ namespace {
 
 
 void AmericanOptionTest::testFdAmericanGreeks() {
-    BOOST_MESSAGE("Testing finite-differences American option greeks...");
+    BOOST_TEST_MESSAGE("Testing finite-differences American option greeks...");
     testFdGreeks<FDAmericanEngine<CrankNicolson> >();
 }
 
 void AmericanOptionTest::testFdShoutGreeks() {
-    BOOST_MESSAGE("Testing finite-differences shout option greeks...");
+    BOOST_TEST_MESSAGE("Testing finite-differences shout option greeks...");
     testFdGreeks<FDShoutEngine<CrankNicolson> >();
 }
 

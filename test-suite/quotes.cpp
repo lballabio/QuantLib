@@ -48,7 +48,7 @@ namespace {
 
 void QuoteTest::testObservable() {
 
-    BOOST_MESSAGE("Testing observability of quotes...");
+    BOOST_TEST_MESSAGE("Testing observability of quotes...");
 
     boost::shared_ptr<SimpleQuote> me(new SimpleQuote(0.0));
     Flag f;
@@ -62,7 +62,7 @@ void QuoteTest::testObservable() {
 
 void QuoteTest::testObservableHandle() {
 
-    BOOST_MESSAGE("Testing observability of quote handles...");
+    BOOST_TEST_MESSAGE("Testing observability of quote handles...");
 
     boost::shared_ptr<SimpleQuote> me1(new SimpleQuote(0.0));
     RelinkableHandle<Quote> h(me1);
@@ -83,7 +83,7 @@ void QuoteTest::testObservableHandle() {
 
 void QuoteTest::testDerived() {
 
-    BOOST_MESSAGE("Testing derived quotes...");
+    BOOST_TEST_MESSAGE("Testing derived quotes...");
 
     typedef Real (*unary_f)(Real);
     unary_f funcs[3] = { add10, mul10, sub10 };
@@ -103,7 +103,7 @@ void QuoteTest::testDerived() {
 
 void QuoteTest::testComposite() {
 
-    BOOST_MESSAGE("Testing composite quotes...");
+    BOOST_TEST_MESSAGE("Testing composite quotes...");
 
     typedef Real (*binary_f)(Real,Real);
     binary_f funcs[3] = { add, mul, sub };
@@ -123,7 +123,7 @@ void QuoteTest::testComposite() {
 }
 
 void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
             "Testing forward-value and implied-standard-deviation quotes...");
     Real forwardRate = .05;
     DayCounter dc = ActualActual();

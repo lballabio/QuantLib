@@ -41,7 +41,7 @@ Real average = 0.0, sigma = 1.0;
 
 void OperatorTest::testTridiagonal() {
 
-    BOOST_MESSAGE("Testing TridiagonalOperator...");
+    BOOST_TEST_MESSAGE("Testing TridiagonalOperator...");
 
     Size n = 8; // can use 3 for easier debugging
 
@@ -123,7 +123,7 @@ void OperatorTest::testTridiagonal() {
 
 void OperatorTest::testConsistency() {
 
-    BOOST_MESSAGE("Testing differential operators...");
+    BOOST_TEST_MESSAGE("Testing differential operators...");
 
     NormalDistribution normal(average,sigma);
     CumulativeNormalDistribution cum(average,sigma);
@@ -170,7 +170,7 @@ void OperatorTest::testConsistency() {
 }
 
 void OperatorTest::testBSMOperatorConsistency() {
-    BOOST_MESSAGE("Testing consistency of BSM operators...");
+    BOOST_TEST_MESSAGE("Testing consistency of BSM operators...");
 
     Array grid(10);
     Real price = 20.0;

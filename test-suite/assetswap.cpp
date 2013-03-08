@@ -119,7 +119,8 @@ namespace {
 }
 
 void AssetSwapTest::testConsistency() {
-    BOOST_MESSAGE("Testing consistency between fair price and fair spread...");
+    BOOST_TEST_MESSAGE(
+                 "Testing consistency between fair price and fair spread...");
 
     CommonVars vars;
 
@@ -504,8 +505,8 @@ void AssetSwapTest::testConsistency() {
 
 void AssetSwapTest::testImpliedValue() {
 
-    BOOST_MESSAGE("Testing implied bond value against asset-swap fair price"
-                  " with null spread...");
+    BOOST_TEST_MESSAGE("Testing implied bond value against asset-swap fair"
+                       " price with null spread...");
 
     CommonVars vars;
 
@@ -860,8 +861,8 @@ void AssetSwapTest::testImpliedValue() {
 
 void AssetSwapTest::testMarketASWSpread() {
 
-    BOOST_MESSAGE("Testing relationship between market asset swap"
-                  " and par asset swap...");
+    BOOST_TEST_MESSAGE("Testing relationship between market asset swap"
+                       " and par asset swap...");
 
     CommonVars vars;
 
@@ -1294,8 +1295,8 @@ void AssetSwapTest::testMarketASWSpread() {
 
 void AssetSwapTest::testZSpread() {
 
-    BOOST_MESSAGE("Testing clean and dirty price with null Z-spread "
-                  "against theoretical prices...");
+    BOOST_TEST_MESSAGE("Testing clean and dirty price with null Z-spread "
+                       "against theoretical prices...");
 
     CommonVars vars;
 
@@ -1614,8 +1615,8 @@ void AssetSwapTest::testZSpread() {
 
 void AssetSwapTest::testGenericBondImplied() {
 
-    BOOST_MESSAGE("Testing implied generic-bond value against"
-                  " asset-swap fair price with null spread...");
+    BOOST_TEST_MESSAGE("Testing implied generic-bond value against"
+                       " asset-swap fair price with null spread...");
 
     CommonVars vars;
 
@@ -1997,8 +1998,8 @@ void AssetSwapTest::testGenericBondImplied() {
 
 void AssetSwapTest::testMASWWithGenericBond() {
 
-    BOOST_MESSAGE("Testing market asset swap against par asset swap "
-                  "with generic bond...");
+    BOOST_TEST_MESSAGE("Testing market asset swap against par asset swap "
+                       "with generic bond...");
 
     CommonVars vars;
 
@@ -2466,8 +2467,8 @@ void AssetSwapTest::testMASWWithGenericBond() {
 
 void AssetSwapTest::testZSpreadWithGenericBond() {
 
-    BOOST_MESSAGE("Testing clean and dirty price with null Z-spread "
-                  "against theoretical prices...");
+    BOOST_TEST_MESSAGE("Testing clean and dirty price with null Z-spread "
+                       "against theoretical prices...");
 
     CommonVars vars;
 
@@ -2831,8 +2832,8 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
 
 void AssetSwapTest::testSpecializedBondVsGenericBond() {
 
-    BOOST_MESSAGE("Testing clean and dirty prices for specialized bond against"
-                  " equivalent generic bond...");
+    BOOST_TEST_MESSAGE("Testing clean and dirty prices for specialized bond"
+                       " against equivalent generic bond...");
 
     CommonVars vars;
 
@@ -3390,8 +3391,8 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
 
 void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
 
-    BOOST_MESSAGE("Testing asset-swap prices and spreads for specialized bond"
-                  " against equivalent generic bond...");
+    BOOST_TEST_MESSAGE("Testing asset-swap prices and spreads for specialized"
+                       " bond against equivalent generic bond...");
 
     CommonVars vars;
 

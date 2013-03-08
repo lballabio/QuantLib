@@ -139,7 +139,7 @@ namespace {
 
 void CapFloorTest::testVega() {
 
-    BOOST_MESSAGE("Testing cap/floor vega...");
+    BOOST_TEST_MESSAGE("Testing cap/floor vega...");
 
     CommonVars vars;
 
@@ -194,7 +194,7 @@ void CapFloorTest::testVega() {
 
 void CapFloorTest::testStrikeDependency() {
 
-    BOOST_MESSAGE("Testing cap/floor dependency on strike...");
+    BOOST_TEST_MESSAGE("Testing cap/floor dependency on strike...");
 
     CommonVars vars;
 
@@ -256,7 +256,7 @@ void CapFloorTest::testStrikeDependency() {
 
 void CapFloorTest::testConsistency() {
 
-    BOOST_MESSAGE("Testing consistency between cap, floor and collar...");
+    BOOST_TEST_MESSAGE("Testing consistency between cap, floor and collar...");
 
     CommonVars vars;
 
@@ -370,7 +370,7 @@ void CapFloorTest::testConsistency() {
 
 void CapFloorTest::testParity() {
 
-    BOOST_MESSAGE("Testing cap/floor parity...");
+    BOOST_TEST_MESSAGE("Testing cap/floor parity...");
 
     CommonVars vars;
 
@@ -421,7 +421,7 @@ void CapFloorTest::testParity() {
 
 void CapFloorTest::testATMRate() {
 
-    BOOST_MESSAGE("Testing cap/floor ATM rate...");
+    BOOST_TEST_MESSAGE("Testing cap/floor ATM rate...");
 
     CommonVars vars;
 
@@ -483,7 +483,7 @@ void CapFloorTest::testATMRate() {
 
 void CapFloorTest::testImpliedVolatility() {
 
-    BOOST_MESSAGE("Testing implied term volatility for cap and floor...");
+    BOOST_TEST_MESSAGE("Testing implied term volatility for cap and floor...");
 
     CommonVars vars;
 
@@ -569,7 +569,7 @@ void CapFloorTest::testImpliedVolatility() {
 
 void CapFloorTest::testCachedValue() {
 
-    BOOST_MESSAGE("Testing Black cap/floor price against cached values...");
+    BOOST_TEST_MESSAGE("Testing Black cap/floor price against cached values...");
 
     CommonVars vars;
 

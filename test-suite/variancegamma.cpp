@@ -73,8 +73,8 @@ namespace {
 
 void VarianceGammaTest::testVarianceGamma() {
 
-    BOOST_MESSAGE("Testing Variance Gamma model "
-        "for European options...");
+    BOOST_TEST_MESSAGE("Testing Variance Gamma model "
+                       "for European options...");
 
     SavedSettings backup;
 

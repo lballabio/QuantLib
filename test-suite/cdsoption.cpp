@@ -36,7 +36,7 @@ using namespace boost::unit_test_framework;
 
 void CdsOptionTest::testCached() {
 
-    BOOST_MESSAGE("Testing CDS-option value against cached values...");
+    BOOST_TEST_MESSAGE("Testing CDS-option value against cached values...");
 
     SavedSettings backup;
 

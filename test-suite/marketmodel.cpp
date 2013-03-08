@@ -427,7 +427,7 @@ namespace {
             if (printReport_) {
                 Array num(result.size());
                 std::copy(result.begin(), result.end(), num.begin());
-                BOOST_MESSAGE("    " << measureTypeToString(measureType) << ": " << num);
+                BOOST_TEST_MESSAGE("    " << measureTypeToString(measureType) << ": " << num);
             }
             return result;
     }
@@ -517,10 +517,10 @@ namespace {
                     if (printReport_
                         || (subProductExpectedValue->testBias && isBiased)
                         || std::max(-minError, maxError) > errorThreshold) {
-                            BOOST_MESSAGE(config);
+                            BOOST_TEST_MESSAGE(config);
                             currentResultIndex = 0;
                             for (Size j=0; j<subProductExpectedValue->values.size(); ++j) {
-                                BOOST_MESSAGE(io::ordinal(j+1)
+                                BOOST_TEST_MESSAGE(io::ordinal(j+1)
                                     << " "  << subProductExpectedValue->description
                                     << ": " << io::rate(results[currentResultIndex])
                                     << "\t" << io::rate(subProductExpectedValue->values[j])
@@ -575,10 +575,10 @@ namespace {
             Real errorThreshold = 2.50;
             if ( printReport_ || minError > 0.0 || maxError < 0.0 ||
                 minError <-errorThreshold || maxError > errorThreshold) {
-                    BOOST_MESSAGE(config);
+                    BOOST_TEST_MESSAGE(config);
                     Size i;
                     for (i=0; i<N; ++i) {
-                        BOOST_MESSAGE(io::ordinal(i+1) << " forward: "
+                        BOOST_TEST_MESSAGE(io::ordinal(i+1) << " forward: "
                             << io::rate(results[i])
                             << "\t" << io::rate(expectedForwards[i])
                             << "\t" << io::rate(errors[i])
@@ -587,7 +587,7 @@ namespace {
                         << "\n");
                     }
                     for (i=0; i<N; ++i) {
-                        BOOST_MESSAGE(
+                        BOOST_TEST_MESSAGE(
                             io::ordinal(i+1) << "\t"
                             << io::rate(results[i+N])
                             << " +- " << io::rate(errors[i+N])
@@ -643,10 +643,10 @@ namespace {
             Real errorThreshold = 2.50;
             if (minError > 0.0 || maxError < 0.0 ||
                 minError <-errorThreshold || maxError > errorThreshold) {
-                    BOOST_MESSAGE(config);
+                    BOOST_TEST_MESSAGE(config);
                     Size i;
                     for (i=0; i<N; ++i) {
-                        BOOST_MESSAGE(io::ordinal(i+1) << " forward: "
+                        BOOST_TEST_MESSAGE(io::ordinal(i+1) << " forward: "
                             << io::rate(results[i])
                             << " +- " << io::rate(errors[i])
                             << "; expected: " << io::rate(expectedForwards[i])
@@ -655,7 +655,7 @@ namespace {
                         << " standard errors");
                     }
                     for (i=0; i<N; ++i) {
-                        BOOST_MESSAGE(
+                        BOOST_TEST_MESSAGE(
                             io::ordinal(i+1) << " caplet: "
                             << io::rate(results[i+N])
                             << " +- " << io::rate(errors[i+N])
@@ -683,7 +683,7 @@ namespace {
 
             if (swapError>tolerance || bermudanNPV<0.0 ||
                 callableNPV<receiverNPV || callableError>tolerance)
-                BOOST_MESSAGE(config);  // detailed error info below
+                BOOST_TEST_MESSAGE(config);  // detailed error info below
             if (swapError>tolerance)
                 BOOST_ERROR("agreement between payer and receiver swap failed:"
                 "\n    payer swap:    " << payerNPV <<
@@ -706,7 +706,7 @@ namespace {
                 "\n    error:             " << callableError <<
                 "\n    tolerance:         " << tolerance);
             if (printReport_) {
-                BOOST_MESSAGE(std::setprecision(2) <<
+                BOOST_TEST_MESSAGE(std::setprecision(2) <<
                     "    payer swap:        " << io::rate(payerNPV) << " +/- " << io::rate(stats.errorEstimate()[0]) <<
                     "\n    receiver swap:     " << io::rate(receiverNPV) << " +/- " << io::rate(stats.errorEstimate()[1]) <<
                     "\n    bermudan:          " << io::rate(bermudanNPV) << " +/- " << io::rate(stats.errorEstimate()[2]) <<
@@ -720,9 +720,9 @@ namespace {
 
 void MarketModelTest::testOneStepForwardsAndOptionlets() {
 
-    BOOST_MESSAGE("Testing exact repricing of "
-        "one-step forwards and optionlets "
-        "in a lognormal forward rate market model...");
+    BOOST_TEST_MESSAGE("Testing exact repricing of "
+                       "one-step forwards and optionlets "
+                       "in a lognormal forward rate market model...");
 
     setup();
 
@@ -795,7 +795,7 @@ void MarketModelTest::testOneStepForwardsAndOptionlets() {
                                 evolverTypeToString(evolvers[i]) << ", " <<
                                 "MT BGF";
                             if (printReport_)
-                                BOOST_MESSAGE("    " << config.str());
+                                BOOST_TEST_MESSAGE("    " << config.str());
 
                             boost::shared_ptr<SequenceStatisticsInc> stats =
                                 simulate(evolver, product);
@@ -812,9 +812,9 @@ void MarketModelTest::testOneStepForwardsAndOptionlets() {
 
 void MarketModelTest::testOneStepNormalForwardsAndOptionlets() {
 
-    BOOST_MESSAGE("Testing exact repricing of "
-        "one-step forwards and optionlets "
-        "in a normal forward rate market model...");
+    BOOST_TEST_MESSAGE("Testing exact repricing of "
+                       "one-step forwards and optionlets "
+                       "in a normal forward rate market model...");
 
     setup();
 
@@ -887,7 +887,7 @@ void MarketModelTest::testOneStepNormalForwardsAndOptionlets() {
                                 evolverTypeToString(evolvers[i]) << ", " <<
                                 "MT BGF";
                             if (printReport_)
-                                BOOST_MESSAGE("    " << config.str());
+                                BOOST_TEST_MESSAGE("    " << config.str());
 
                             boost::shared_ptr<SequenceStatisticsInc> stats =
                                 simulate(evolver, product);
@@ -905,9 +905,9 @@ void MarketModelTest::testOneStepNormalForwardsAndOptionlets() {
 void MarketModelTest::testInverseFloater() 
 {
 
-    BOOST_MESSAGE("Testing exact repricing of "
-        "inverse floater "
-        "in forward rate market model...");
+    BOOST_TEST_MESSAGE("Testing exact repricing of "
+                       "inverse floater "
+                       "in forward rate market model...");
 
     setup();
 
@@ -997,7 +997,7 @@ void MarketModelTest::testInverseFloater()
                                 evolverTypeToString(evolvers[i]) << ", " <<
                                 "MT BGF";
                             if (printReport_)
-                                BOOST_MESSAGE("    " << config.str());
+                                BOOST_TEST_MESSAGE("    " << config.str());
 
                             boost::shared_ptr<SequenceStatisticsInc> stats =
                                 simulate(evolver, productComposite);
@@ -1051,7 +1051,8 @@ void testMultiProductComposite(const MarketModelMultiProduct& product,
                                const std::vector<SubProductExpectedValues>& subProductExpectedValues,
                                const std::string& testDescription) {
 
-                                   BOOST_MESSAGE("Testing exact repricing of "
+                                   BOOST_TEST_MESSAGE(
+                                       "Testing exact repricing of "
                                        << testDescription
                                        << "in a lognormal forward rate market model...");
 
@@ -1106,7 +1107,7 @@ void testMultiProductComposite(const MarketModelMultiProduct& product,
                                                                    evolverTypeToString(evolvers[i]) << ", " <<
                                                                    "MT BGF";
                                                                if (printReport_)
-                                                                   BOOST_MESSAGE("    " << config.str());
+                                                                   BOOST_TEST_MESSAGE("    " << config.str());
 
                                                                boost::shared_ptr<SequenceStatisticsInc> stats =
                                                                    simulate(evolver, product);
@@ -1278,7 +1279,7 @@ void MarketModelTest::testAllMultiStepProducts() {
 
 void MarketModelTest::testPeriodAdapter() {
 
-    BOOST_MESSAGE("Testing period-adaptation routines in LIBOR market model...");
+    BOOST_TEST_MESSAGE("Testing period-adaptation routines in LIBOR market model...");
 
     std::string testDescription = "test period adapter ";
 
@@ -1431,7 +1432,7 @@ void MarketModelTest::testPeriodAdapter() {
 }
 void MarketModelTest::testCallableSwapNaif() {
 
-    BOOST_MESSAGE("Pricing callable swap with naif exercise strategy in a LIBOR market model...");
+    BOOST_TEST_MESSAGE("Pricing callable swap with naif exercise strategy in a LIBOR market model...");
 
     setup();
 
@@ -1517,7 +1518,7 @@ void MarketModelTest::testCallableSwapNaif() {
                                 evolverTypeToString(evolvers[i]) << ", " <<
                                 "MT BGF";
                             if (printReport_)
-                                BOOST_MESSAGE("    " << config.str());
+                                BOOST_TEST_MESSAGE("    " << config.str());
 
                             // use the naif strategy
 
@@ -1589,7 +1590,7 @@ void MarketModelTest::testCallableSwapNaif() {
                             Real delta = uStats.mean();
                             Real deltaError = uStats.errorEstimate();
                             if (printReport_)
-                                BOOST_MESSAGE("    upper bound delta: " << io::rate(delta) << " +- " << io::rate(deltaError));
+                                BOOST_TEST_MESSAGE("    upper bound delta: " << io::rate(delta) << " +- " << io::rate(deltaError));
 
                         }
                     }
@@ -1600,7 +1601,7 @@ void MarketModelTest::testCallableSwapNaif() {
 
 void MarketModelTest::testCallableSwapLS() {
 
-    BOOST_MESSAGE("Pricing callable swap with Longstaff-Schwartz exercise strategy in a LIBOR market model...");
+    BOOST_TEST_MESSAGE("Pricing callable swap with Longstaff-Schwartz exercise strategy in a LIBOR market model...");
 
     setup();
 
@@ -1686,7 +1687,7 @@ void MarketModelTest::testCallableSwapLS() {
                                 evolverTypeToString(evolvers[i]) << ", " <<
                                 "MT BGF";
                             if (printReport_)
-                                BOOST_MESSAGE("    " << config.str());
+                                BOOST_TEST_MESSAGE("    " << config.str());
 
                             // calculate the exercise strategy
                             collectNodeData(*evolver,
@@ -1767,7 +1768,7 @@ void MarketModelTest::testCallableSwapLS() {
                             Real delta = uStats.mean();
                             Real deltaError = uStats.errorEstimate();
                             if (printReport_)
-                                BOOST_MESSAGE("    upper bound delta: " << io::rate(delta) << " +- " << io::rate(deltaError));
+                                BOOST_TEST_MESSAGE("    upper bound delta: " << io::rate(delta) << " +- " << io::rate(deltaError));
 
                         }
                     }
@@ -1778,7 +1779,7 @@ void MarketModelTest::testCallableSwapLS() {
 
 void MarketModelTest::testCallableSwapAnderson() {
 
-    BOOST_MESSAGE("Pricing callable swap with Anderson exercise strategy in a LIBOR market model...");
+    BOOST_TEST_MESSAGE("Pricing callable swap with Anderson exercise strategy in a LIBOR market model...");
 
     setup();
 
@@ -1860,7 +1861,7 @@ void MarketModelTest::testCallableSwapAnderson() {
                                 evolverTypeToString(evolvers[i]) << ", " <<
                                 "MT BGF";
                             if (printReport_)
-                                BOOST_MESSAGE("    " << config.str());
+                                BOOST_TEST_MESSAGE("    " << config.str());
                             // 1. calculate the exercise strategy
                             collectNodeData(*evolver,
                                 receiverSwap, parametricForm, nullRebate,
@@ -1873,7 +1874,7 @@ void MarketModelTest::testCallableSwapAnderson() {
                                 collectedData, parametricForm, parameters, ec, om) *
                                 initialNumeraireValue;
                             if (printReport_)
-                                BOOST_MESSAGE("    initial estimate:  " << io::rate(firstPassValue));
+                                BOOST_TEST_MESSAGE("    initial estimate:  " << io::rate(firstPassValue));
                             ParametricExerciseAdapter exerciseStrategy(parametricForm, parameters);
 
                             // 2. bermudan swaption to enter into the payer swap
@@ -1933,7 +1934,7 @@ void MarketModelTest::testCallableSwapAnderson() {
                             Real delta = uStats.mean();
                             Real deltaError = uStats.errorEstimate();
                             if (printReport_)
-                                BOOST_MESSAGE("    upper bound delta: " << io::rate(delta) << " +- " << io::rate(deltaError));
+                                BOOST_TEST_MESSAGE("    upper bound delta: " << io::rate(delta) << " +- " << io::rate(deltaError));
 
                         }
                     }
@@ -1946,7 +1947,7 @@ void MarketModelTest::testCallableSwapAnderson() {
 
 void MarketModelTest::testGreeks() {
 
-    BOOST_MESSAGE("Testing caplet greeks in a lognormal forward rate market model using partial proxy simulation...");
+    BOOST_TEST_MESSAGE("Testing caplet greeks in a lognormal forward rate market model using partial proxy simulation...");
 
     setup();
 
@@ -2104,7 +2105,7 @@ void MarketModelTest::testGreeks() {
                             measureTypeToString(measures[k]) << ", " <<
                             "MT BGF";
                         if (printReport_)
-                            BOOST_MESSAGE("    " << config.str());
+                            BOOST_TEST_MESSAGE("    " << config.str());
 
                         Size initialNumeraire = evolver->numeraires().front();
                         Real initialNumeraireValue =
@@ -2156,11 +2157,11 @@ void MarketModelTest::testGreeks() {
                             Real numDelta = (pricePlus[i]-priceMinus[i])/(2.0*forwardBump);
                             Real numGamma = (pricePlus[i]-2*price0[i]+priceMinus[i])/(forwardBump*forwardBump);
                             if (printReport_) {
-                                BOOST_MESSAGE(io::ordinal(i+1) << " caplet: "
+                                BOOST_TEST_MESSAGE(io::ordinal(i+1) << " caplet: "
                                     << "value = " << price0[i] << ", "
                                     << "delta = " << numDelta << ", "
                                     << "gamma = " << numGamma);
-                                BOOST_MESSAGE(io::ordinal(i+1) << " caplet: "
+                                BOOST_TEST_MESSAGE(io::ordinal(i+1) << " caplet: "
                                     << "value = " << values[i]
                                 << " +- " << errors[i]
                                 << " (" << (values[i]-price0[i])/errors[i] << " s.e.), "
@@ -2186,7 +2187,7 @@ void MarketModelTest::testGreeks() {
 void MarketModelTest::testPathwiseGreeks()
 {
 
-    BOOST_MESSAGE("Testing caplet deltas in a lognormal forward rate market model using pathwise method...");
+    BOOST_TEST_MESSAGE("Testing caplet deltas in a lognormal forward rate market model using pathwise method...");
 
     setup();
 
@@ -2280,7 +2281,7 @@ void MarketModelTest::testPathwiseGreeks()
                                 measureTypeToString(measures[k]) << ", " <<
                                 "MT BGF";
                             if (printReport_)
-                                BOOST_MESSAGE("    " << config.str());
+                                BOOST_TEST_MESSAGE("    " << config.str());
 
                             Size initialNumeraire = evolver.numeraires().front();
                             Real initialNumeraireValue =
@@ -2392,7 +2393,7 @@ void MarketModelTest::testPathwiseGreeks()
 
                                 if (fabs(priceErrorInSds) > errorTheshold)
                                 {
-                                    BOOST_MESSAGE("Caplet " << i << " price " << prices[i] << " model price " << modelPrices[i]
+                                    BOOST_TEST_MESSAGE("Caplet " << i << " price " << prices[i] << " model price " << modelPrices[i]
                                     << "   Standard error: " <<priceErrors[i] << " errors in sds: " << priceErrorInSds);
 
                                     ++numberErrors;
@@ -2417,7 +2418,7 @@ void MarketModelTest::testPathwiseGreeks()
                                     if (fabs(deltaErrorInSds) > errorTheshold)
                                     {
 
-                                        BOOST_MESSAGE("Caplet " << i << " delta " << j << "has value " << deltas[i][j] << " model value " << modelDeltas[i][j]
+                                        BOOST_TEST_MESSAGE("Caplet " << i << " delta " << j << "has value " << deltas[i][j] << " model value " << modelDeltas[i][j]
                                         << "   Standard error: " <<deltasErrors[i][j] << " errors in sds: " << deltaErrorInSds);
 
                                         ++numberErrors;
@@ -2441,7 +2442,7 @@ void MarketModelTest::testPathwiseGreeks()
 void MarketModelTest::testPathwiseVegas()
 {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing pathwise vegas in a lognormal forward rate market model...");
 
     setup();
@@ -3117,7 +3118,7 @@ void MarketModelTest::testPathwiseVegas()
                                 {
                                     ++numberFailures;
                                     if (printReport_)
-                                        BOOST_MESSAGE("path " << l << " step "
+                                        BOOST_TEST_MESSAGE("path " << l << " step "
                                         << currentStep << " j " << j
                                         << " k " << k << " B " << B[j][k] << "  B2 " << B2[j][k]);
 
@@ -3127,7 +3128,7 @@ void MarketModelTest::testPathwiseVegas()
                                 {
                                     ++numberFailures2;
                                     if (printReport_)
-                                        BOOST_MESSAGE("path " << l << " step "
+                                        BOOST_TEST_MESSAGE("path " << l << " step "
                                         << currentStep << " j " << j
                                         << " k " << k << " B4 " << B4[j][k] << "  B2 " << B2[j][k]);
 
@@ -3191,7 +3192,7 @@ void MarketModelTest::testPathwiseVegas()
                         measureTypeToString(measures[k]) << ", " <<
                         "MT BGF";
                     if (printReport_)
-                        BOOST_MESSAGE("    " << config.str());
+                        BOOST_TEST_MESSAGE("    " << config.str());
 
                     Size initialNumeraire = evolver.numeraires().front();
                     Real initialNumeraireValue =
@@ -3466,7 +3467,7 @@ void MarketModelTest::testPathwiseVegas()
                         measureTypeToString(measures[k]) << ", " <<
                         "MT BGF";
                     if (printReport_)
-                        BOOST_MESSAGE("    " << config.str());
+                        BOOST_TEST_MESSAGE("    " << config.str());
 
                     Size initialNumeraire = evolver.numeraires().front();
                     Real initialNumeraireValue =
@@ -3650,7 +3651,7 @@ void MarketModelTest::testPathwiseVegas()
 void MarketModelTest::testPathwiseMarketVegas()
 {
 
-    BOOST_MESSAGE("Testing pathwise market vegas in a lognormal forward rate market model...");
+    BOOST_TEST_MESSAGE("Testing pathwise market vegas in a lognormal forward rate market model...");
 
     setup();
 
@@ -4300,7 +4301,7 @@ void MarketModelTest::testPathwiseMarketVegas()
 
                     if (fabs(thisErrorInSds) > 4)
                     {
-                        BOOST_MESSAGE(" MC cap vega: " <<vegasMatrix[i][i+swaptions.size()] << " Analytic cap vega:" << analyticVegas[i] << " Error in sds:" << thisErrorInSds << "\n");
+                        BOOST_TEST_MESSAGE(" MC cap vega: " <<vegasMatrix[i][i+swaptions.size()] << " Analytic cap vega:" << analyticVegas[i] << " Error in sds:" << thisErrorInSds << "\n");
                         ++numberDiagonalFailures;
                     }
 
@@ -4344,7 +4345,7 @@ void MarketModelTest::testPathwiseMarketVegas()
 
 void MarketModelTest::testAbcdVolatilityIntegration() {
 
-    BOOST_MESSAGE("Testing Abcd-volatility integration...");
+    BOOST_TEST_MESSAGE("Testing Abcd-volatility integration...");
 
     setup();
 
@@ -4371,7 +4372,7 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
                     Real numerical = SI(abcd2,xMin,xMax);
                     Real analytical = instVol->covariance(xMin,xMax,T1,T2);
                     if (std::abs(analytical-numerical)>precision) {
-                        BOOST_MESSAGE("     T1=" << T1 << "," <<
+                        BOOST_TEST_MESSAGE("     T1=" << T1 << "," <<
                             "T2=" << T2 << ",\t\t" <<
                             "xMin=" << xMin << "," <<
                             "xMax=" << xMax << ",\t\t" <<
@@ -4397,7 +4398,7 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
 
 void MarketModelTest::testAbcdVolatilityCompare() {
 
-    BOOST_MESSAGE("Testing different implementations of Abcd-volatility...");
+    BOOST_TEST_MESSAGE("Testing different implementations of Abcd-volatility...");
 
     setup();
 
@@ -4445,7 +4446,7 @@ void MarketModelTest::testAbcdVolatilityCompare() {
 
 void MarketModelTest::testAbcdVolatilityFit() {
 
-    BOOST_MESSAGE("Testing Abcd-volatility fit...");
+    BOOST_TEST_MESSAGE("Testing Abcd-volatility fit...");
 
     setup();
 
@@ -4495,7 +4496,8 @@ void MarketModelTest::testAbcdVolatilityFit() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void MarketModelTest::testStochVolForwardsAndOptionlets() {
 
-    BOOST_MESSAGE("Testing exact repricing of "
+    BOOST_TEST_MESSAGE(
+        "Testing exact repricing of "
         "forwards and optionlets "
         "in a stochastic vol displaced diffusion forward rate market model...");
 
@@ -4594,7 +4596,7 @@ void MarketModelTest::testStochVolForwardsAndOptionlets() {
                         "SVDDFwdRatePc" << ", " <<
                         "MT BGF";
                     if (printReport_)
-                        BOOST_MESSAGE("    " << config.str());
+                        BOOST_TEST_MESSAGE("    " << config.str());
 
                     boost::shared_ptr<SequenceStatisticsInc> stats =
                         simulate(evolver, product);
@@ -4700,7 +4702,7 @@ void MarketModelTest::testDriftCalculator() {
     // Test full factor drift equivalence between compute() and
     // computeReduced()
 
-    BOOST_MESSAGE("Testing drift calculation...");
+    BOOST_TEST_MESSAGE("Testing drift calculation...");
 
     setup();
 
@@ -4724,7 +4726,7 @@ void MarketModelTest::testDriftCalculator() {
         std::vector<Rate> displacements = marketModel->displacements();
         for (Size j=0; j<numberOfSteps; ++j) {     // loop over steps
             const Matrix& A = marketModel->pseudoRoot(j);
-            //BOOST_MESSAGE(io::ordinal(j+1) << " pseudoroot:\n" << A);
+            //BOOST_TEST_MESSAGE(io::ordinal(j+1) << " pseudoroot:\n" << A);
             Size inf = std::max(0,static_cast<Integer>(alive[j]));
             for (Size h=inf; h<numeraires.size(); ++h) {     // loop over numeraires
                 LMMDriftCalculator driftcalculator(A, displacements, rateTaus,
@@ -4754,7 +4756,7 @@ void MarketModelTest::testIsInSubset() {
 
     // Performance test for isInSubset function (temporary)
 
-    BOOST_MESSAGE("Testing isInSubset...");
+    BOOST_TEST_MESSAGE("Testing isInSubset...");
 
     setup();
 
@@ -4765,7 +4767,7 @@ void MarketModelTest::testIsInSubset() {
     std::valarray<bool> result = isInSubset(set, subset);
     if (printReport_) {
         for (Size i=0; i<dim; i++) {
-            BOOST_MESSAGE(io::ordinal(i+1) << ":" <<
+            BOOST_TEST_MESSAGE(io::ordinal(i+1) << ":" <<
                 " set[" << i << "] =  " << set[i] <<
                 ", subset[" << i << "] =  " << subset[i] <<
                 ", result[" << i << "] =  " << result[i]);
@@ -4775,7 +4777,7 @@ void MarketModelTest::testIsInSubset() {
 
 
 void MarketModelTest::testAbcdDegenerateCases() {
-    BOOST_MESSAGE("Testing abcd degenerate cases...");
+    BOOST_TEST_MESSAGE("Testing abcd degenerate cases...");
 
     AbcdFunction f1(0.0,0.0,0.0,1.0);
     AbcdFunction f2(1.0,0.0,0.0,0.0);
@@ -4794,7 +4796,7 @@ void MarketModelTest::testAbcdDegenerateCases() {
 }
 
 void MarketModelTest::testCovariance() {
-    BOOST_MESSAGE("Testing market models covariance...");
+    BOOST_TEST_MESSAGE("Testing market models covariance...");
 
     const Size n = 10;
 

@@ -100,7 +100,7 @@ namespace {
 
 void MatricesTest::testEigenvectors() {
 
-    BOOST_MESSAGE("Testing eigenvalues and eigenvectors calculation...");
+    BOOST_TEST_MESSAGE("Testing eigenvalues and eigenvectors calculation...");
 
     setup();
 
@@ -139,7 +139,7 @@ void MatricesTest::testEigenvectors() {
 
 void MatricesTest::testSqrt() {
 
-    BOOST_MESSAGE("Testing matricial square root...");
+    BOOST_TEST_MESSAGE("Testing matricial square root...");
 
     setup();
 
@@ -158,7 +158,7 @@ void MatricesTest::testSqrt() {
 }
 
 void MatricesTest::testHighamSqrt() {
-    BOOST_MESSAGE("Testing Higham matricial square root...");
+    BOOST_TEST_MESSAGE("Testing Higham matricial square root...");
 
     setup();
 
@@ -178,7 +178,7 @@ void MatricesTest::testHighamSqrt() {
 
 void MatricesTest::testSVD() {
 
-    BOOST_MESSAGE("Testing singular value decomposition...");
+    BOOST_TEST_MESSAGE("Testing singular value decomposition...");
 
     setup();
 
@@ -223,7 +223,7 @@ void MatricesTest::testSVD() {
 
 void MatricesTest::testQRDecomposition() {
 
-    BOOST_MESSAGE("Testing QR decomposition...");
+    BOOST_TEST_MESSAGE("Testing QR decomposition...");
 
     setup();
 
@@ -259,7 +259,7 @@ void MatricesTest::testQRDecomposition() {
 
 void MatricesTest::testQRSolve() {
 
-    BOOST_MESSAGE("Testing QR solve...");
+    BOOST_TEST_MESSAGE("Testing QR solve...");
 
     setup();
 
@@ -322,7 +322,7 @@ void MatricesTest::testQRSolve() {
 
 void MatricesTest::testInverse() {
 
-    BOOST_MESSAGE("Testing LU inverse calculation...");
+    BOOST_TEST_MESSAGE("Testing LU inverse calculation...");
 
     setup();
 
@@ -351,7 +351,7 @@ void MatricesTest::testInverse() {
 
 void MatricesTest::testDeterminant() {
 
-    BOOST_MESSAGE("Testing LU determinant calculation...");
+    BOOST_TEST_MESSAGE("Testing LU determinant calculation...");
 
     setup();
     Real tol = 1e-10;
@@ -403,7 +403,7 @@ void MatricesTest::testDeterminant() {
 }
 
 void MatricesTest::testOrthogonalProjection() {
-    BOOST_MESSAGE("Testing orthogonal projections...");
+    BOOST_TEST_MESSAGE("Testing orthogonal projections...");
 
     Size dimension = 1000;
     Size numberVectors = 50;

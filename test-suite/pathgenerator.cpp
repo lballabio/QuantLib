@@ -143,7 +143,7 @@ namespace {
 
 void PathGeneratorTest::testPathGenerator() {
 
-    BOOST_MESSAGE("Testing 1-D path generation against cached values...");
+    BOOST_TEST_MESSAGE("Testing 1-D path generation against cached values...");
 
     SavedSettings backup;
 
@@ -180,7 +180,7 @@ void PathGeneratorTest::testPathGenerator() {
 
 void PathGeneratorTest::testMultiPathGenerator() {
 
-    BOOST_MESSAGE("Testing n-D path generation against cached values...");
+    BOOST_TEST_MESSAGE("Testing n-D path generation against cached values...");
 
     SavedSettings backup;
 

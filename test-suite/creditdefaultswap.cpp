@@ -40,7 +40,7 @@ using namespace boost::unit_test_framework;
 
 void CreditDefaultSwapTest::testCachedValue() {
 
-    BOOST_MESSAGE("Testing credit-default swap against cached values...");
+    BOOST_TEST_MESSAGE("Testing credit-default swap against cached values...");
 
     SavedSettings backup;
 
@@ -154,7 +154,7 @@ void CreditDefaultSwapTest::testCachedValue() {
 
 void CreditDefaultSwapTest::testCachedMarketValue() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing credit-default swap against cached market values...");
 
     SavedSettings backup;
@@ -298,7 +298,7 @@ void CreditDefaultSwapTest::testCachedMarketValue() {
 
 void CreditDefaultSwapTest::testImpliedHazardRate() {
 
-    BOOST_MESSAGE("Testing implied hazard-rate for credit-default swaps...");
+    BOOST_TEST_MESSAGE("Testing implied hazard-rate for credit-default swaps...");
 
     SavedSettings backup;
 
@@ -405,7 +405,7 @@ void CreditDefaultSwapTest::testImpliedHazardRate() {
 
 void CreditDefaultSwapTest::testFairSpread() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing fair-spread calculation for credit-default swaps...");
 
     SavedSettings backup;
@@ -470,7 +470,7 @@ void CreditDefaultSwapTest::testFairSpread() {
 
 void CreditDefaultSwapTest::testFairUpfront() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing fair-upfront calculation for credit-default swaps...");
 
     SavedSettings backup;

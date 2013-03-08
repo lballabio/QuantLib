@@ -364,7 +364,7 @@ namespace {
         if (printReport_) {
             Array num(result.size());
             std::copy(result.begin(), result.end(), num.begin());
-            BOOST_MESSAGE("    " << measureTypeToString(measureType) << ": " << num);
+            BOOST_TEST_MESSAGE("    " << measureTypeToString(measureType) << ": " << num);
         }
         return result;
     }
@@ -407,8 +407,8 @@ namespace {
 
 void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
 
-    BOOST_MESSAGE("Testing alpha caplet calibration "
-                  "in a lognormal coterminal swap market model...");
+    BOOST_TEST_MESSAGE("Testing alpha caplet calibration "
+                       "in a lognormal coterminal swap market model...");
 
     setup();
 
@@ -442,12 +442,12 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
     std::vector<Real> alphaMin(numberOfRates, -1.0);
     bool maximizeHomogeneity = false; //?
     if (printReport_) {
-        BOOST_MESSAGE("caplet market vols: " << QL_FIXED <<
-                      std::setprecision(4) << io::sequence(capletVols_));
-        BOOST_MESSAGE("alphaMin:           " << alphaMin_);
-        BOOST_MESSAGE("alphaInitial:       " << alpha_);
-        BOOST_MESSAGE("alphaMax:           " << alphaMax_);
-        BOOST_MESSAGE("maximizeHomogeneity:" << maximizeHomogeneity);
+        BOOST_TEST_MESSAGE("caplet market vols: " << QL_FIXED <<
+                           std::setprecision(4) << io::sequence(capletVols_));
+        BOOST_TEST_MESSAGE("alphaMin:           " << alphaMin_);
+        BOOST_TEST_MESSAGE("alphaInitial:       " << alpha_);
+        BOOST_TEST_MESSAGE("alphaMax:           " << alphaMax_);
+        BOOST_TEST_MESSAGE("maximizeHomogeneity:" << maximizeHomogeneity);
     }
     CTSMMCapletAlphaFormCalibration calibrator(evolution,
                                                corr,
@@ -466,11 +466,11 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
     Real innerTolerance = 1e-8;
 
     if (printReport_) {
-        BOOST_MESSAGE("numberOfFactors:    " << numberOfFactors_);
-        BOOST_MESSAGE("maxIterations:      " << maxIterations);
-        BOOST_MESSAGE("capletTolerance:    " << io::rate(capletTolerance));
-        BOOST_MESSAGE("innerMaxIterations: " << innerMaxIterations);
-        BOOST_MESSAGE("innerTolerance:     " << io::rate(innerTolerance));
+        BOOST_TEST_MESSAGE("numberOfFactors:    " << numberOfFactors_);
+        BOOST_TEST_MESSAGE("maxIterations:      " << maxIterations);
+        BOOST_TEST_MESSAGE("capletTolerance:    " << io::rate(capletTolerance));
+        BOOST_TEST_MESSAGE("innerMaxIterations: " << innerMaxIterations);
+        BOOST_TEST_MESSAGE("innerTolerance:     " << io::rate(innerTolerance));
     }
 
     bool result = calibrator.calibrate(numberOfFactors_,
@@ -495,14 +495,14 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
         capletVols[i] = std::sqrt(capletTotCovariance[i][i]/rateTimes_[i]);
     }
     if (printReport_) {
-        BOOST_MESSAGE("caplet smm implied vols: " << QL_FIXED <<
-                      std::setprecision(4) << io::sequence(capletVols));
-        BOOST_MESSAGE("failures: " << calibrator.failures());
-        BOOST_MESSAGE("deformationSize: " << calibrator.deformationSize());
-        BOOST_MESSAGE("capletRmsError: " << calibrator.capletRmsError());
-        BOOST_MESSAGE("capletMaxError: " << calibrator.capletMaxError());
-        BOOST_MESSAGE("swaptionRmsError: " << calibrator.swaptionRmsError());
-        BOOST_MESSAGE("swaptionMaxError: " << calibrator.swaptionMaxError());
+        BOOST_TEST_MESSAGE("caplet smm implied vols: " << QL_FIXED <<
+                           std::setprecision(4) << io::sequence(capletVols));
+        BOOST_TEST_MESSAGE("failures: " << calibrator.failures());
+        BOOST_TEST_MESSAGE("deformationSize: " << calibrator.deformationSize());
+        BOOST_TEST_MESSAGE("capletRmsError: " << calibrator.capletRmsError());
+        BOOST_TEST_MESSAGE("capletMaxError: " << calibrator.capletMaxError());
+        BOOST_TEST_MESSAGE("swaptionRmsError: " << calibrator.swaptionRmsError());
+        BOOST_TEST_MESSAGE("swaptionMaxError: " << calibrator.swaptionMaxError());
     }
 
     // check perfect swaption fit

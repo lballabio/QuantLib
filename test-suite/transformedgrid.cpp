@@ -33,7 +33,7 @@ public:
 
 void TransformedGridTest::testConstruction() {
 
-    BOOST_MESSAGE("Testing transformed grid construction...");
+    BOOST_TEST_MESSAGE("Testing transformed grid construction...");
 
     PlusOne p1;
     Array grid = BoundedGrid(0, 100, 100);

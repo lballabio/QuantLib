@@ -57,8 +57,8 @@ using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 void HybridHestonHullWhiteProcessTest::testBsmHullWhiteEngine() {
-    BOOST_MESSAGE("Testing European option pricing for a BSM process"
-                  " with one-factor Hull-White model...");
+    BOOST_TEST_MESSAGE("Testing European option pricing for a BSM process"
+                       " with one-factor Hull-White model...");
 
     SavedSettings backup;
 
@@ -154,8 +154,8 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhiteEngine() {
 }
 
 void HybridHestonHullWhiteProcessTest::testCompareBsmHWandHestonHW() {
-    BOOST_MESSAGE("Comparing European option pricing for a BSM process"
-                  " with one-factor Hull-White model...");
+    BOOST_TEST_MESSAGE("Comparing European option pricing for a BSM process"
+                       " with one-factor Hull-White model...");
 
     SavedSettings backup;
 
@@ -254,7 +254,7 @@ void HybridHestonHullWhiteProcessTest::testCompareBsmHWandHestonHW() {
 }
 
 void HybridHestonHullWhiteProcessTest::testZeroBondPricing() {
-    BOOST_MESSAGE("Testing Monte-Carlo zero bond pricing...");
+    BOOST_TEST_MESSAGE("Testing Monte-Carlo zero bond pricing...");
 
     SavedSettings backup;
 
@@ -371,7 +371,7 @@ void HybridHestonHullWhiteProcessTest::testZeroBondPricing() {
 }
 
 void HybridHestonHullWhiteProcessTest::testMcVanillaPricing() {
-    BOOST_MESSAGE("Testing Monte-Carlo vanilla option pricing...");
+    BOOST_TEST_MESSAGE("Testing Monte-Carlo vanilla option pricing...");
 
     SavedSettings backup;
 
@@ -469,7 +469,7 @@ void HybridHestonHullWhiteProcessTest::testMcVanillaPricing() {
 
 
 void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
-    BOOST_MESSAGE("Testing Monte-Carlo Heston option pricing...");
+    BOOST_TEST_MESSAGE("Testing Monte-Carlo Heston option pricing...");
 
     SavedSettings backup;
 
@@ -561,7 +561,7 @@ void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
 
 
 void HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing() {
-    BOOST_MESSAGE("Testing analytic Heston Hull-White option pricing...");
+    BOOST_TEST_MESSAGE("Testing analytic Heston Hull-White option pricing...");
 
     SavedSettings backup;
 
@@ -652,7 +652,7 @@ void HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing() {
 }
 
 void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
-    BOOST_MESSAGE("Testing the pricing of a callable equity product...");
+    BOOST_TEST_MESSAGE("Testing the pricing of a callable equity product...");
 
     SavedSettings backup;
 
@@ -767,8 +767,8 @@ void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
 }
 
 void HybridHestonHullWhiteProcessTest::testDiscretizationError() {
-    BOOST_MESSAGE("Testing the discretization error of the "
-                  "Heston Hull-White process...");
+    BOOST_TEST_MESSAGE("Testing the discretization error of the "
+                       "Heston Hull-White process...");
 
     SavedSettings backup;
 
@@ -863,7 +863,7 @@ void HybridHestonHullWhiteProcessTest::testDiscretizationError() {
 }
 
 void HybridHestonHullWhiteProcessTest::testFdmHestonHullWhiteEngine() {
-    BOOST_MESSAGE("Testing the FDM Heston Hull-White engine...");
+    BOOST_TEST_MESSAGE("Testing the FDM Heston Hull-White engine...");
 
     SavedSettings backup;
 
@@ -1040,7 +1040,7 @@ namespace {
 }
 
 void HybridHestonHullWhiteProcessTest::testBsmHullWhitePricing() {
-    BOOST_MESSAGE("Testing convergence speed of Heston-Hull-White engine...");
+    BOOST_TEST_MESSAGE("Testing convergence speed of Heston-Hull-White engine...");
     
     SavedSettings backup;
     
@@ -1130,7 +1130,7 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhitePricing() {
 }
 
 void HybridHestonHullWhiteProcessTest::testSpatialDiscretizatinError() {
-    BOOST_MESSAGE("Testing spatial convergence speed of Heston engine...");
+    BOOST_TEST_MESSAGE("Testing spatial convergence speed of Heston engine...");
     
     SavedSettings backup;
     
@@ -1220,7 +1220,7 @@ namespace {
 
 
 void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
-    BOOST_MESSAGE("Testing the Heston Hull-White calibration...");
+    BOOST_TEST_MESSAGE("Testing the Heston Hull-White calibration...");
 
     // Calibration of a hybrid Heston-Hull-White model using 
     // the finite difference HestonHullWhite pricing engine

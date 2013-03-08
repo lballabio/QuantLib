@@ -32,7 +32,7 @@ namespace {
 
 
 void TqrEigenDecompositionTest::testEigenValueDecomposition() {
-    BOOST_MESSAGE("Testing TQR eigenvalue decomposition...");
+    BOOST_TEST_MESSAGE("Testing TQR eigenvalue decomposition...");
 
     Array diag(5);
     Array sub(4,1);
@@ -59,7 +59,7 @@ void TqrEigenDecompositionTest::testEigenValueDecomposition() {
 }
 
 void TqrEigenDecompositionTest::testZeroOffDiagEigenValues() {
-    BOOST_MESSAGE("Testing TQR zero-off-diagonal eigenvalues...");
+    BOOST_TEST_MESSAGE("Testing TQR zero-off-diagonal eigenvalues...");
 
     Array diag(5);
     Array sub(4,1);
@@ -85,7 +85,7 @@ void TqrEigenDecompositionTest::testZeroOffDiagEigenValues() {
 }
 
 void TqrEigenDecompositionTest::testEigenVectorDecomposition() {
-    BOOST_MESSAGE("Testing TQR eigenvector decomposition...");
+    BOOST_TEST_MESSAGE("Testing TQR eigenvector decomposition...");
 
     Array diag(2,1);
     Array sub(1,1);

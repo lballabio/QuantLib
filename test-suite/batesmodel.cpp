@@ -59,7 +59,7 @@ namespace {
 
 void BatesModelTest::testAnalyticVsBlack() {
 
-    BOOST_MESSAGE("Testing analytic Bates engine against Black formula...");
+    BOOST_TEST_MESSAGE("Testing analytic Bates engine against Black formula...");
 
     SavedSettings backup;
 
@@ -172,7 +172,7 @@ void BatesModelTest::testAnalyticVsBlack() {
 
 void BatesModelTest::testAnalyticAndMcVsJumpDiffusion() {
 
-    BOOST_MESSAGE("Testing analytic Bates engine against Merton-76 engine...");
+    BOOST_TEST_MESSAGE("Testing analytic Bates engine against Merton-76 engine...");
 
     SavedSettings backup;
 
@@ -298,8 +298,8 @@ namespace {
 }
 
 void BatesModelTest::testAnalyticVsMCPricing() {
-    BOOST_MESSAGE("Testing analytic Bates engine against Monte-Carlo "
-                  "engine...");
+    BOOST_TEST_MESSAGE("Testing analytic Bates engine against Monte-Carlo "
+                       "engine...");
 
     SavedSettings backup;
 
@@ -385,7 +385,7 @@ void BatesModelTest::testDAXCalibration() {
        http://math.ut.ee/~spartak/papers/stochjumpvols.pdf
     */
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
              "Testing Bates model calibration using DAX volatility data...");
 
     SavedSettings backup;

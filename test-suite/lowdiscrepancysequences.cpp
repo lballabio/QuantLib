@@ -44,14 +44,14 @@ using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 void LowDiscrepancyTest::testSeedGenerator() {
-    BOOST_MESSAGE("Testing random-seed generator...");
+    BOOST_TEST_MESSAGE("Testing random-seed generator...");
     SeedGenerator::instance().get();
 }
 
 void LowDiscrepancyTest::testPolynomialsModuloTwo() {
 
-    BOOST_MESSAGE("Testing " << PPMT_MAX_DIM <<
-                  " primitive polynomials modulo two...");
+    BOOST_TEST_MESSAGE("Testing " << PPMT_MAX_DIM <<
+                       " primitive polynomials modulo two...");
 
     const Size jj[] = {
                  1,       1,       2,       2,       6,       6,      18,
@@ -83,8 +83,8 @@ void LowDiscrepancyTest::testPolynomialsModuloTwo() {
 
 void LowDiscrepancyTest::testRandomizedLowDiscrepancySequence() {
 
-    BOOST_MESSAGE("Testing randomized low-discrepancy sequences up to "
-                  "dimension " << PPMT_MAX_DIM << "...");
+    BOOST_TEST_MESSAGE("Testing randomized low-discrepancy sequences up to "
+                       "dimension " << PPMT_MAX_DIM << "...");
 
     RandomizedLDS<SobolRsg, RandomSequenceGenerator<MersenneTwisterUniformRng> > rldsg(PPMT_MAX_DIM);
     rldsg.nextSequence();
@@ -114,8 +114,8 @@ namespace
         Size N = 1024;
         Size numberBatches = 32;
 
-        BOOST_MESSAGE("Testing randomized lattice sequences (" << nameString
-                      << ") up to dimension " << maxDim << "...");
+        BOOST_TEST_MESSAGE("Testing randomized lattice sequences (" << nameString
+                           << ") up to dimension " << maxDim << "...");
 
         std::vector<Real> z;
 
@@ -176,8 +176,8 @@ void LowDiscrepancyTest::testRandomizedLattices()
 
 void LowDiscrepancyTest::testSobol() {
 
-    BOOST_MESSAGE("Testing Sobol sequences up to dimension "
-                  << PPMT_MAX_DIM << "...");
+    BOOST_TEST_MESSAGE("Testing Sobol sequences up to dimension "
+                       << PPMT_MAX_DIM << "...");
 
     std::vector<Real> point;
     Real tolerance = 1.0e-15;
@@ -260,7 +260,7 @@ void LowDiscrepancyTest::testSobol() {
 
 void LowDiscrepancyTest::testFaure() {
 
-    BOOST_MESSAGE("Testing Faure sequences...");
+    BOOST_TEST_MESSAGE("Testing Faure sequences...");
 
     std::vector<Real> point;
     Real tolerance = 1.0e-15;
@@ -409,7 +409,7 @@ void LowDiscrepancyTest::testFaure() {
 
 void LowDiscrepancyTest::testHalton() {
 
-    BOOST_MESSAGE("Testing Halton sequences...");
+    BOOST_TEST_MESSAGE("Testing Halton sequences...");
 
     std::vector<Real> point;
     Real tolerance = 1.0e-15;
@@ -901,7 +901,7 @@ namespace {
 
 void LowDiscrepancyTest::testMersenneTwisterDiscrepancy() {
 
-    BOOST_MESSAGE("Testing Mersenne-twister discrepancy...");
+    BOOST_TEST_MESSAGE("Testing Mersenne-twister discrepancy...");
 
     const Real * const discrepancy[8] = {
         dim002DiscrMersenneTwis, dim003DiscrMersenneTwis,
@@ -918,7 +918,7 @@ void LowDiscrepancyTest::testMersenneTwisterDiscrepancy() {
 
 void LowDiscrepancyTest::testPlainHaltonDiscrepancy() {
 
-    BOOST_MESSAGE("Testing plain Halton discrepancy...");
+    BOOST_TEST_MESSAGE("Testing plain Halton discrepancy...");
 
     const Real * const discrepancy[8] = {
         dim002DiscrPlain_Halton, dim003DiscrPlain_Halton,
@@ -934,7 +934,7 @@ void LowDiscrepancyTest::testPlainHaltonDiscrepancy() {
 
 void LowDiscrepancyTest::testRandomStartHaltonDiscrepancy() {
 
-    BOOST_MESSAGE("Testing random-start Halton discrepancy...");
+    BOOST_TEST_MESSAGE("Testing random-start Halton discrepancy...");
 
     const Real * const discrepancy[8] = {
         dim002DiscrRStartHalton, dim003DiscrRStartHalton,
@@ -950,7 +950,7 @@ void LowDiscrepancyTest::testRandomStartHaltonDiscrepancy() {
 
 void LowDiscrepancyTest::testRandomShiftHaltonDiscrepancy() {
 
-    BOOST_MESSAGE("Testing random-shift Halton discrepancy...");
+    BOOST_TEST_MESSAGE("Testing random-shift Halton discrepancy...");
 
     const Real * const discrepancy[8] = {
         dim002DiscrRShiftHalton, dim003DiscrRShiftHalton,
@@ -966,7 +966,7 @@ void LowDiscrepancyTest::testRandomShiftHaltonDiscrepancy() {
 
 void LowDiscrepancyTest::testRandomStartRandomShiftHaltonDiscrepancy() {
 
-    BOOST_MESSAGE("Testing random-start, random-shift Halton discrepancy...");
+    BOOST_TEST_MESSAGE("Testing random-start, random-shift Halton discrepancy...");
 
     const Real * const discrepancy[8] = {
         dim002DiscrRStRShHalton, dim003DiscrRStRShHalton,
@@ -982,7 +982,7 @@ void LowDiscrepancyTest::testRandomStartRandomShiftHaltonDiscrepancy() {
 
 void LowDiscrepancyTest::testJackelSobolDiscrepancy() {
 
-    BOOST_MESSAGE("Testing Jaeckel-Sobol discrepancy...");
+    BOOST_TEST_MESSAGE("Testing Jaeckel-Sobol discrepancy...");
 
     const Real * const discrepancy[8] = {
         dim002Discr_Sobol, dim003Discr_Sobol,
@@ -998,7 +998,7 @@ void LowDiscrepancyTest::testJackelSobolDiscrepancy() {
 
 void LowDiscrepancyTest::testSobolLevitanSobolDiscrepancy() {
 
-    BOOST_MESSAGE("Testing Levitan-Sobol discrepancy...");
+    BOOST_TEST_MESSAGE("Testing Levitan-Sobol discrepancy...");
 
     const Real * const discrepancy[8] = {
         dim002Discr_Sobol, dim003Discr_Sobol,
@@ -1014,7 +1014,7 @@ void LowDiscrepancyTest::testSobolLevitanSobolDiscrepancy() {
 
 void LowDiscrepancyTest::testSobolLevitanLemieuxSobolDiscrepancy() {
 
-    BOOST_MESSAGE("Testing Levitan-Lemieux-Sobol discrepancy...");
+    BOOST_TEST_MESSAGE("Testing Levitan-Lemieux-Sobol discrepancy...");
 
     const Real * const discrepancy[8] = {
         dim002Discr_Sobol, dim003Discr_Sobol,
@@ -1030,7 +1030,7 @@ void LowDiscrepancyTest::testSobolLevitanLemieuxSobolDiscrepancy() {
 
 void LowDiscrepancyTest::testUnitSobolDiscrepancy() {
 
-    BOOST_MESSAGE("Testing unit Sobol discrepancy...");
+    BOOST_TEST_MESSAGE("Testing unit Sobol discrepancy...");
 
     const Real * const discrepancy[8] = {
         dim002Discr__Unit_Sobol, dim003Discr__Unit_Sobol,
@@ -1047,7 +1047,7 @@ void LowDiscrepancyTest::testUnitSobolDiscrepancy() {
 
 void LowDiscrepancyTest::testSobolSkipping() {
 
-    BOOST_MESSAGE("Testing Sobol sequence skipping...");
+    BOOST_TEST_MESSAGE("Testing Sobol sequence skipping...");
 
     unsigned long seed = 42;
     Size dimensionality[] = { 1, 10, 100, 1000 };

@@ -30,7 +30,7 @@ using namespace boost::unit_test_framework;
 
 void EverestOptionTest::testCached() {
 
-    BOOST_MESSAGE("Testing Everest option against cached values...");
+    BOOST_TEST_MESSAGE("Testing Everest option against cached values...");
 
     Date today = Settings::instance().evaluationDate();
 

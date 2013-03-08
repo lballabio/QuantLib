@@ -63,7 +63,7 @@ namespace {
 
 void GARCHTest::testCalibration() {
 
-    BOOST_MESSAGE("Testing GARCH model calibration ...");
+    BOOST_TEST_MESSAGE("Testing GARCH model calibration ...");
 
     Date start(7, July, 1962), d = start;
     TimeSeries<Volatility> ts;
@@ -175,7 +175,7 @@ namespace {
 }
 
 void GARCHTest::testCalculation() {
-    BOOST_MESSAGE("Testing GARCH model calculation ...");
+    BOOST_TEST_MESSAGE("Testing GARCH model calculation ...");
     Date d(7, July, 1962);
     TimeSeries<Volatility> ts;
     Garch11 garch(0.2, 0.3, 0.4);

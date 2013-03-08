@@ -41,7 +41,7 @@ using namespace boost::unit_test_framework;
 
 void DefaultProbabilityCurveTest::testDefaultProbability() {
 
-    BOOST_MESSAGE("Testing default-probability structure...");
+    BOOST_TEST_MESSAGE("Testing default-probability structure...");
 
     Real hazardRate = 0.0100;
     Handle<Quote> hazardRateQuote = Handle<Quote>(
@@ -105,7 +105,7 @@ void DefaultProbabilityCurveTest::testDefaultProbability() {
 
 void DefaultProbabilityCurveTest::testFlatHazardRate() {
 
-    BOOST_MESSAGE("Testing flat hazard rate...");
+    BOOST_TEST_MESSAGE("Testing flat hazard rate...");
 
     Real hazardRate = 0.0100;
     Handle<Quote> hazardRateQuote = Handle<Quote>(
@@ -312,31 +312,31 @@ namespace {
 }
 
 void DefaultProbabilityCurveTest::testFlatHazardConsistency() {
-    BOOST_MESSAGE("Testing piecewise-flat hazard-rate consistency...");
+    BOOST_TEST_MESSAGE("Testing piecewise-flat hazard-rate consistency...");
     testBootstrapFromSpread<HazardRate,BackwardFlat>();
     testBootstrapFromUpfront<HazardRate,BackwardFlat>();
 }
 
 void DefaultProbabilityCurveTest::testFlatDensityConsistency() {
-    BOOST_MESSAGE("Testing piecewise-flat default-density consistency...");
+    BOOST_TEST_MESSAGE("Testing piecewise-flat default-density consistency...");
     testBootstrapFromSpread<DefaultDensity,BackwardFlat>();
     testBootstrapFromUpfront<DefaultDensity,BackwardFlat>();
 }
 
 void DefaultProbabilityCurveTest::testLinearDensityConsistency() {
-    BOOST_MESSAGE("Testing piecewise-linear default-density consistency...");
+    BOOST_TEST_MESSAGE("Testing piecewise-linear default-density consistency...");
     testBootstrapFromSpread<DefaultDensity,Linear>();
     testBootstrapFromUpfront<DefaultDensity,Linear>();
 }
 
 void DefaultProbabilityCurveTest::testLogLinearSurvivalConsistency() {
-    BOOST_MESSAGE("Testing log-linear survival-probability consistency...");
+    BOOST_TEST_MESSAGE("Testing log-linear survival-probability consistency...");
     testBootstrapFromSpread<SurvivalProbability,LogLinear>();
     testBootstrapFromUpfront<SurvivalProbability,LogLinear>();
 }
 
 void DefaultProbabilityCurveTest::testSingleInstrumentBootstrap() {
-    BOOST_MESSAGE("Testing single-instrument curve bootstrap...");
+    BOOST_TEST_MESSAGE("Testing single-instrument curve bootstrap...");
 
     Calendar calendar = TARGET();
 
@@ -372,7 +372,7 @@ void DefaultProbabilityCurveTest::testSingleInstrumentBootstrap() {
 }
 
 void DefaultProbabilityCurveTest::testUpfrontBootstrap() {
-    BOOST_MESSAGE("Testing bootstrap on upfront quotes...");
+    BOOST_TEST_MESSAGE("Testing bootstrap on upfront quotes...");
 
     SavedSettings backup;
     // not taken into account, this would prevent the upfront from being used

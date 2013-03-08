@@ -71,7 +71,7 @@ namespace {
 
 void FdHestonTest::testFdmHestonBarrierVsBlackScholes() {
 
-    BOOST_MESSAGE("Testing FDM with barrier option in Heston model...");
+    BOOST_TEST_MESSAGE("Testing FDM with barrier option in Heston model...");
 
     SavedSettings backup;
 
@@ -222,8 +222,8 @@ void FdHestonTest::testFdmHestonBarrierVsBlackScholes() {
 
 void FdHestonTest::testFdmHestonBarrier() {
 
-    BOOST_MESSAGE("Testing FDM with barrier option for Heston model vs "
-                  "Black-Scholes model...");
+    BOOST_TEST_MESSAGE("Testing FDM with barrier option for Heston model vs "
+                       "Black-Scholes model...");
 
     SavedSettings backup;
 
@@ -276,7 +276,7 @@ void FdHestonTest::testFdmHestonBarrier() {
 
 void FdHestonTest::testFdmHestonAmerican() {
 
-    BOOST_MESSAGE("Testing FDM with American option in Heston model...");
+    BOOST_TEST_MESSAGE("Testing FDM with American option in Heston model...");
 
     SavedSettings backup;
 
@@ -330,7 +330,7 @@ void FdHestonTest::testFdmHestonAmerican() {
 
 void FdHestonTest::testFdmHestonIkonenToivanen() {
 
-    BOOST_MESSAGE("Testing FDM Heston for Ikonen and Toivanen tests...");
+    BOOST_TEST_MESSAGE("Testing FDM Heston for Ikonen and Toivanen tests...");
 
     /* check prices of american puts as given in:
        From Efficient numerical methods for pricing American options under 
@@ -379,7 +379,7 @@ void FdHestonTest::testFdmHestonIkonenToivanen() {
 
 void FdHestonTest::testFdmHestonBlackScholes() {
 
-    BOOST_MESSAGE("Testing FDM Heston with Black Scholes model...");
+    BOOST_TEST_MESSAGE("Testing FDM Heston with Black Scholes model...");
 
     SavedSettings backup;
 
@@ -453,8 +453,8 @@ void FdHestonTest::testFdmHestonBlackScholes() {
 
 void FdHestonTest::testFdmHestonEuropeanWithDividends() {
 
-    BOOST_MESSAGE("Testing FDM with European option with dividends"
-                  " in Heston model...");
+    BOOST_TEST_MESSAGE("Testing FDM with European option with dividends"
+                       " in Heston model...");
 
     SavedSettings backup;
 
@@ -529,7 +529,7 @@ void FdHestonTest::testFdmHestonConvergence() {
        Heston model with correlation, K.J. in t'Hout and S. Foulon
     */
     
-    BOOST_MESSAGE("Testing FDM Heston convergence...");
+    BOOST_TEST_MESSAGE("Testing FDM Heston convergence...");
 
     SavedSettings backup;
     
@@ -706,7 +706,7 @@ namespace {
 }
 
 void FdHestonTest::testBlackScholesFokkerPlanckFwdEquation() {
-    BOOST_MESSAGE("Testing Fokker-Planck forward equation for BS process...");
+    BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation for BS process...");
 
     SavedSettings backup;
 
@@ -833,8 +833,8 @@ namespace {
 }
 
 void FdHestonTest::testSquareRootFokkerPlanckFwdEquation() {
-    BOOST_MESSAGE("Testing Fokker-Planck forward equation"
-                  "for the square root process...");
+    BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation"
+                       "for the square root process...");
 
     SavedSettings backup;
 
@@ -897,8 +897,8 @@ void FdHestonTest::testSquareRootFokkerPlanckFwdEquation() {
 
 
 void FdHestonTest::testHestonLVFokkerPlanckFwdEquation() {
-    BOOST_MESSAGE("Testing Fokker-Planck forward equation"
-                  "for the Heston process...");
+    BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation"
+                       "for the Heston process...");
 
     SavedSettings backup;
 

@@ -122,7 +122,7 @@ namespace {
 
 
 void MCLongstaffSchwartzEngineTest::testAmericanOption() {
-    BOOST_MESSAGE("Testing Monte-Carlo pricing of American options...");
+    BOOST_TEST_MESSAGE("Testing Monte-Carlo pricing of American options...");
 
     SavedSettings backup;
 
@@ -213,7 +213,7 @@ void MCLongstaffSchwartzEngineTest::testAmericanMaxOption() {
     // "Monte Carlo Methods in Financial Engineering",
     // by Paul Glasserman, 2004 Springer Verlag, p. 462
 
-    BOOST_MESSAGE("Testing Monte-Carlo pricing of American max options...");
+    BOOST_TEST_MESSAGE("Testing Monte-Carlo pricing of American max options...");
 
     SavedSettings backup;
 

@@ -493,7 +493,7 @@ namespace {
 
 void PiecewiseYieldCurveTest::testLogCubicDiscountConsistency() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-log-cubic discount curve...");
 
     CommonVars vars;
@@ -512,7 +512,7 @@ void PiecewiseYieldCurveTest::testLogCubicDiscountConsistency() {
 
 void PiecewiseYieldCurveTest::testLogLinearDiscountConsistency() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-log-linear discount curve...");
 
     CommonVars vars;
@@ -523,7 +523,7 @@ void PiecewiseYieldCurveTest::testLogLinearDiscountConsistency() {
 
 void PiecewiseYieldCurveTest::testLinearDiscountConsistency() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-linear discount curve...");
 
     CommonVars vars;
@@ -534,7 +534,7 @@ void PiecewiseYieldCurveTest::testLinearDiscountConsistency() {
 
 void PiecewiseYieldCurveTest::testLogLinearZeroConsistency() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-log-linear zero-yield curve...");
 
     CommonVars vars;
@@ -545,7 +545,7 @@ void PiecewiseYieldCurveTest::testLogLinearZeroConsistency() {
 
 void PiecewiseYieldCurveTest::testLinearZeroConsistency() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-linear zero-yield curve...");
 
     CommonVars vars;
@@ -556,7 +556,7 @@ void PiecewiseYieldCurveTest::testLinearZeroConsistency() {
 
 void PiecewiseYieldCurveTest::testSplineZeroConsistency() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-cubic zero-yield curve...");
 
     CommonVars vars;
@@ -575,7 +575,7 @@ void PiecewiseYieldCurveTest::testSplineZeroConsistency() {
 
 void PiecewiseYieldCurveTest::testLinearForwardConsistency() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-linear forward-rate curve...");
 
     CommonVars vars;
@@ -586,7 +586,7 @@ void PiecewiseYieldCurveTest::testLinearForwardConsistency() {
 
 void PiecewiseYieldCurveTest::testFlatForwardConsistency() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-flat forward-rate curve...");
 
     CommonVars vars;
@@ -597,7 +597,7 @@ void PiecewiseYieldCurveTest::testFlatForwardConsistency() {
 
 void PiecewiseYieldCurveTest::testSplineForwardConsistency() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-cubic forward-rate curve...");
 
     CommonVars vars;
@@ -615,7 +615,7 @@ void PiecewiseYieldCurveTest::testSplineForwardConsistency() {
 }
 
 void PiecewiseYieldCurveTest::testConvexMonotoneForwardConsistency() {
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing consistency of convex monotone forward-rate curve...");
 
     CommonVars vars;
@@ -627,7 +627,7 @@ void PiecewiseYieldCurveTest::testConvexMonotoneForwardConsistency() {
 
 
 void PiecewiseYieldCurveTest::testLocalBootstrapConsistency() {
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing consistency of local-bootstrap algorithm...");
 
     CommonVars vars;
@@ -640,7 +640,7 @@ void PiecewiseYieldCurveTest::testLocalBootstrapConsistency() {
 
 void PiecewiseYieldCurveTest::testObservability() {
 
-    BOOST_MESSAGE("Testing observability of piecewise yield curve...");
+    BOOST_TEST_MESSAGE("Testing observability of piecewise yield curve...");
 
     CommonVars vars;
 
@@ -683,7 +683,7 @@ void PiecewiseYieldCurveTest::testObservability() {
 
 void PiecewiseYieldCurveTest::testLiborFixing() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing use of today's LIBOR fixings in swap curve...");
 
     CommonVars vars;
@@ -768,7 +768,7 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
 }
 
 void PiecewiseYieldCurveTest::testJpyLibor() {
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing bootstrap over JPY LIBOR swaps...");
 
     CommonVars vars;
@@ -885,21 +885,21 @@ namespace {
 
 
 void PiecewiseYieldCurveTest::testDiscountCopy() {
-    BOOST_MESSAGE("Testing copying of discount curve...");
+    BOOST_TEST_MESSAGE("Testing copying of discount curve...");
 
     CommonVars vars;
     testCurveCopy<Discount,LogLinear>(vars);
 }
 
 void PiecewiseYieldCurveTest::testForwardCopy() {
-    BOOST_MESSAGE("Testing copying of forward-rate curve...");
+    BOOST_TEST_MESSAGE("Testing copying of forward-rate curve...");
 
     CommonVars vars;
     testCurveCopy<ForwardRate,BackwardFlat>(vars);
 }
 
 void PiecewiseYieldCurveTest::testZeroCopy() {
-    BOOST_MESSAGE("Testing copying of zero-rate curve...");
+    BOOST_TEST_MESSAGE("Testing copying of zero-rate curve...");
 
     CommonVars vars;
     testCurveCopy<ZeroYield,Linear>(vars);

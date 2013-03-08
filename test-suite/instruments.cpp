@@ -27,7 +27,7 @@ using namespace boost::unit_test_framework;
 
 void InstrumentTest::testObservable() {
 
-    BOOST_MESSAGE("Testing observability of instruments...");
+    BOOST_TEST_MESSAGE("Testing observability of instruments...");
 
     boost::shared_ptr<SimpleQuote> me1(new SimpleQuote(0.0));
     RelinkableHandle<Quote> h(me1);

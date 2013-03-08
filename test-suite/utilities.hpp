@@ -83,10 +83,14 @@ namespace QuantLib {
                                 << "\n  before: " << before
                                 << "\n  after:  " << after);
             }
-            // defined to avoid unused-variable warnings
+            #if BOOST_VERSION <= 105300
+            // defined to avoid unused-variable warnings. It doesn't
+            // work after Boost 1.53 because the functions were
+            // overloaded and the address can't be resolved.
             void _use_check(
                     const void* = &boost::test_tools::check_is_close,
                     const void* = &boost::test_tools::check_is_small) const {}
+            #endif
         };
 
     }

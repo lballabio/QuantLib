@@ -61,7 +61,7 @@ namespace {
 
 void OdeTest::testAdaptiveRungeKutta() {
 
-    BOOST_MESSAGE("Testing adaptive Runge Kutta...");
+    BOOST_TEST_MESSAGE("Testing adaptive Runge Kutta...");
 
     AdaptiveRungeKutta<Real> rk_real(1E-12,1E-4,0.0);
     AdaptiveRungeKutta<std::complex<Real> > rk_complex(1E-12,1E-4,0.0);

@@ -185,7 +185,7 @@ namespace {
 void SwapForwardMappingsTest::testForwardSwapJacobians()
 {
     {
-        BOOST_MESSAGE("Testing forward-rate coinitial-swap Jacobian...");
+        BOOST_TEST_MESSAGE("Testing forward-rate coinitial-swap Jacobian...");
         MarketModelData marketData;
         const std::vector<Time>& rateTimes = marketData.rateTimes();
         const std::vector<Rate>& forwards = marketData.forwards();
@@ -223,7 +223,7 @@ void SwapForwardMappingsTest::testForwardSwapJacobians()
                 for (Size j=0; j < nbRates; ++j)
                     if( fabs(modelJacobian[i][j]-coinitialJacobian[i][j]) > errorTolerance)
                     {
-                        BOOST_MESSAGE(
+                        BOOST_TEST_MESSAGE(
                             "rate " << i
                             << ", sensitivity "  <<  j
                             << ", formula value " << modelJacobian[i][j]
@@ -237,7 +237,7 @@ void SwapForwardMappingsTest::testForwardSwapJacobians()
 
     {
 
-        BOOST_MESSAGE("Testing forward-rate constant-maturity swap Jacobian...");
+        BOOST_TEST_MESSAGE("Testing forward-rate constant-maturity swap Jacobian...");
         MarketModelData marketData;
         const std::vector<Time>& rateTimes = marketData.rateTimes();
         const std::vector<Rate>& forwards = marketData.forwards();
@@ -278,7 +278,7 @@ void SwapForwardMappingsTest::testForwardSwapJacobians()
                     for (Size j=0; j < nbRates; ++j)
                         if( fabs(modelJacobian[i][j]-cmsJacobian[i][j]) > errorTolerance)
                         {
-                            BOOST_MESSAGE(
+                            BOOST_TEST_MESSAGE(
                                 "rate " << i
                                 << ", sensitivity "  <<  j
                                 << ", formula value " << modelJacobian[i][j]
@@ -296,7 +296,7 @@ void SwapForwardMappingsTest::testForwardSwapJacobians()
 
 void SwapForwardMappingsTest::testForwardCoterminalMappings() {
 
-    BOOST_MESSAGE("Testing forward-rate coterminal-swap mappings...");
+    BOOST_TEST_MESSAGE("Testing forward-rate coterminal-swap mappings...");
     MarketModelData marketData;
     const std::vector<Time>& rateTimes = marketData.rateTimes();
     const std::vector<Rate>& forwards = marketData.forwards();
@@ -360,7 +360,7 @@ void SwapForwardMappingsTest::testForwardCoterminalMappings() {
             lmmCurveState.coterminalSwapAnnuity(i,i) *
             todaysDiscounts[i]).value();
         if (false)
-            BOOST_MESSAGE(
+            BOOST_TEST_MESSAGE(
             "expected\t" << expectedSwaption <<
             "\tLMM\t" << results[i]
         << "\tstdev:\t" << errors[i] <<
@@ -371,7 +371,7 @@ void SwapForwardMappingsTest::testForwardCoterminalMappings() {
 void SwapForwardMappingsTest::testSwaptionImpliedVolatility() 
 {
 
-    BOOST_MESSAGE("Testing implied swaption vol in LMM using HW approximation...");
+    BOOST_TEST_MESSAGE("Testing implied swaption vol in LMM using HW approximation...");
     MarketModelData marketData;
     const std::vector<Time>& rateTimes = marketData.rateTimes();
     const std::vector<Rate>& forwards = marketData.forwards();

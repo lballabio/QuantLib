@@ -285,8 +285,8 @@ namespace {
 
 
 void InflationVolTest::testYoYPriceSurfaceToVol() {
-    BOOST_MESSAGE("Testing conversion from YoY price surface "
-                  "to YoY volatility surface...");
+    BOOST_TEST_MESSAGE("Testing conversion from YoY price surface "
+                       "to YoY volatility surface...");
 
     SavedSettings backup;
 
@@ -375,8 +375,8 @@ void InflationVolTest::testYoYPriceSurfaceToVol() {
 
 
 void InflationVolTest::testYoYPriceSurfaceToATM() {
-    BOOST_MESSAGE("Testing conversion from YoY cap-floor surface "
-                  "to YoY inflation term structure...");
+    BOOST_TEST_MESSAGE("Testing conversion from YoY cap-floor surface "
+                       "to YoY inflation term structure...");
 
     SavedSettings backup;
 

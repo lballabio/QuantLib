@@ -32,7 +32,7 @@ using namespace boost::unit_test_framework;
 
 void TimeSeriesTest::testConstruction() {
 
-    BOOST_MESSAGE("Testing time series construction...");
+    BOOST_TEST_MESSAGE("Testing time series construction...");
 
     TimeSeries<Real> ts;
     ts[Date(25, March, 2005)] = 1.2;
@@ -61,7 +61,7 @@ void TimeSeriesTest::testConstruction() {
 }
 
 void TimeSeriesTest::testIntervalPrice() {
-    BOOST_MESSAGE("Testing time series interval price...");
+    BOOST_TEST_MESSAGE("Testing time series interval price...");
 
     std::vector<Date> date;
     std::vector<Real> open, close, high, low;
@@ -101,7 +101,7 @@ namespace boost {
 #endif
 
 void TimeSeriesTest::testIterators() {
-    BOOST_MESSAGE("Testing time series iterators...");
+    BOOST_TEST_MESSAGE("Testing time series iterators...");
     std::vector<Date> dates;
     std::vector<Real> prices;
 

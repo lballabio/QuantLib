@@ -62,7 +62,7 @@ struct Case {
 };
 
 void SpreadOptionTest::testKirkEngine() {
-    BOOST_MESSAGE("Testing Kirk approximation for spread options...");
+    BOOST_TEST_MESSAGE("Testing Kirk approximation for spread options...");
 
     /* The example data below are from "complete guide to option
        pricing formulas", Espen Gaarder Haug, p 60 */

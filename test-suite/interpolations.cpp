@@ -203,7 +203,7 @@ namespace {
 */
 void InterpolationTest::testSplineErrorOnGaussianValues() {
 
-    BOOST_MESSAGE("Testing spline approximation on Gaussian data sets...");
+    BOOST_TEST_MESSAGE("Testing spline approximation on Gaussian data sets...");
 
     Size points[]                = {      5,      9,     17,     33 };
 
@@ -268,7 +268,7 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
 */
 void InterpolationTest::testSplineOnGaussianValues() {
 
-    BOOST_MESSAGE("Testing spline interpolation on a Gaussian data set...");
+    BOOST_TEST_MESSAGE("Testing spline interpolation on a Gaussian data set...");
 
     Real interpolated, interpolated2;
     Size n = 5;
@@ -337,7 +337,7 @@ void InterpolationTest::testSplineOnGaussianValues() {
 */
 void InterpolationTest::testSplineOnRPN15AValues() {
 
-    BOOST_MESSAGE("Testing spline interpolation on RPN15A data set...");
+    BOOST_TEST_MESSAGE("Testing spline interpolation on RPN15A data set...");
 
     const Real RPN15A_x[] = {
         7.99,       8.09,       8.19,      8.7,
@@ -487,7 +487,7 @@ void InterpolationTest::testSplineOnRPN15AValues() {
 */
 void InterpolationTest::testSplineOnGenericValues() {
 
-    BOOST_MESSAGE("Testing spline interpolation on generic values...");
+    BOOST_TEST_MESSAGE("Testing spline interpolation on generic values...");
 
     const Real generic_x[] = { 0.0, 1.0, 3.0, 4.0 };
     const Real generic_y[] = { 0.0, 0.0, 2.0, 2.0 };
@@ -564,8 +564,8 @@ void InterpolationTest::testSplineOnGenericValues() {
 
 void InterpolationTest::testSimmetricEndConditions() {
 
-    BOOST_MESSAGE("Testing symmetry of spline interpolation "
-                  "end-conditions...");
+    BOOST_TEST_MESSAGE("Testing symmetry of spline interpolation "
+                       "end-conditions...");
 
     Size n = 9;
 
@@ -599,8 +599,8 @@ void InterpolationTest::testSimmetricEndConditions() {
 
 void InterpolationTest::testDerivativeEndConditions() {
 
-    BOOST_MESSAGE("Testing derivative end-conditions "
-                  "for spline interpolation...");
+    BOOST_TEST_MESSAGE("Testing derivative end-conditions "
+                       "for spline interpolation...");
 
     Size n = 4;
 
@@ -724,7 +724,7 @@ void InterpolationTest::testDerivativeEndConditions() {
 */
 void InterpolationTest::testNonRestrictiveHymanFilter() {
 
-    BOOST_MESSAGE("Testing non-restrictive Hyman filter...");
+    BOOST_TEST_MESSAGE("Testing non-restrictive Hyman filter...");
 
     Size n = 4;
 
@@ -786,7 +786,7 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
 }
 
 void InterpolationTest::testMultiSpline() {
-    BOOST_MESSAGE("Testing N-dimensional cubic spline...");
+    BOOST_TEST_MESSAGE("Testing N-dimensional cubic spline...");
 
     std::vector<Size> dim(5);
     dim[0] = 6; dim[1] = 5; dim[2] = 5; dim[3] = 6; dim[4] = 4;
@@ -895,7 +895,7 @@ namespace {
 
 void InterpolationTest::testAsFunctor() {
 
-    BOOST_MESSAGE("Testing use of interpolations as functors...");
+    BOOST_TEST_MESSAGE("Testing use of interpolations as functors...");
 
     const Real x[] = { 0.0, 1.0, 2.0, 3.0, 4.0 };
     const Real y[] = { 5.0, 4.0, 3.0, 2.0, 1.0 };
@@ -940,7 +940,7 @@ void InterpolationTest::testAsFunctor() {
 
 void InterpolationTest::testBackwardFlat() {
 
-    BOOST_MESSAGE("Testing backward-flat interpolation...");
+    BOOST_TEST_MESSAGE("Testing backward-flat interpolation...");
 
     const Real x[] = { 0.0, 1.0, 2.0, 3.0, 4.0 };
     const Real y[] = { 5.0, 4.0, 3.0, 2.0, 1.0 };
@@ -1058,7 +1058,7 @@ void InterpolationTest::testBackwardFlat() {
 
 void InterpolationTest::testForwardFlat() {
 
-    BOOST_MESSAGE("Testing forward-flat interpolation...");
+    BOOST_TEST_MESSAGE("Testing forward-flat interpolation...");
 
     const Real x[] = { 0.0, 1.0, 2.0, 3.0, 4.0 };
     const Real y[] = { 5.0, 4.0, 3.0, 2.0, 1.0 };
@@ -1177,7 +1177,7 @@ void InterpolationTest::testForwardFlat() {
 
 void InterpolationTest::testSabrInterpolation(){
 
-    BOOST_MESSAGE("Testing Sabr interpolation...");
+    BOOST_TEST_MESSAGE("Testing Sabr interpolation...");
 
     // Test SABR function against input volatilities
     Real tolerance = 1.0e-12;
@@ -1329,7 +1329,7 @@ void InterpolationTest::testSabrInterpolation(){
 
 void InterpolationTest::testKernelInterpolation() {
 
-    BOOST_MESSAGE("Testing kernel 1D interpolation...");
+    BOOST_TEST_MESSAGE("Testing kernel 1D interpolation...");
 
     std::vector<Real> deltaGrid(5); // x-values, here delta in FX
     deltaGrid[0]=0.10; deltaGrid[1]=0.25; deltaGrid[2]=0.50;
@@ -1455,7 +1455,7 @@ void InterpolationTest::testKernelInterpolation2D(){
     // Testing for consistency of input output data
     // at the nodes
 
-    BOOST_MESSAGE("Testing kernel 2D interpolation...");
+    BOOST_TEST_MESSAGE("Testing kernel 2D interpolation...");
 
     Real mean=0.0, var=0.18;
     GaussianKernel myKernel(mean,var);
@@ -1573,7 +1573,7 @@ void InterpolationTest::testKernelInterpolation2D(){
 
 
 void InterpolationTest::testBicubicDerivatives() {
-    BOOST_MESSAGE("Testing bicubic spline derivatives...");
+    BOOST_TEST_MESSAGE("Testing bicubic spline derivatives...");
 
     std::vector<Real> x(100), y(100);
     for (Size i=0; i < 100; ++i) {
@@ -1617,7 +1617,7 @@ void InterpolationTest::testBicubicDerivatives() {
 
 
 void InterpolationTest::testBicubicUpdate() {
-    BOOST_MESSAGE("Testing that bicubic splines actually update...");
+    BOOST_TEST_MESSAGE("Testing that bicubic splines actually update...");
 
     Size N=6;
     std::vector<Real> x(N), y(N);
@@ -1651,7 +1651,7 @@ namespace {
 }
 
 void InterpolationTest::testRichardsonExtrapolation() {
-    BOOST_MESSAGE("Testing Richardson Extrapolation...");
+    BOOST_TEST_MESSAGE("Testing Richardson Extrapolation...");
 
     /* example taken from
      * http://www.ipvs.uni-stuttgart.de/abteilungen/bv/lehre/

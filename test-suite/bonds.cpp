@@ -72,7 +72,7 @@ namespace {
 
 void BondTest::testYield() {
 
-    BOOST_MESSAGE("Testing consistency of bond price/yield calculation...");
+    BOOST_TEST_MESSAGE("Testing consistency of bond price/yield calculation...");
 
     CommonVars vars;
 
@@ -157,7 +157,7 @@ void BondTest::testYield() {
 
 void BondTest::testAtmRate() {
 
-    BOOST_MESSAGE("Testing consistency of bond price/atmRate calculation...");
+    BOOST_TEST_MESSAGE("Testing consistency of bond price/atmRate calculation...");
 
     CommonVars vars;
 
@@ -222,7 +222,7 @@ void BondTest::testAtmRate() {
 
 void BondTest::testZspread() {
 
-    BOOST_MESSAGE("Testing consistency of bond price/z-spread calculation...");
+    BOOST_TEST_MESSAGE("Testing consistency of bond price/z-spread calculation...");
 
     CommonVars vars;
 
@@ -317,7 +317,7 @@ void BondTest::testZspread() {
 
 void BondTest::testTheoretical() {
 
-    BOOST_MESSAGE("Testing theoretical bond price/yield calculation...");
+    BOOST_TEST_MESSAGE("Testing theoretical bond price/yield calculation...");
 
     CommonVars vars;
 
@@ -408,7 +408,7 @@ void BondTest::testTheoretical() {
 
 void BondTest::testCached() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing bond price/yield calculation against cached values...");
 
     CommonVars vars;
@@ -620,7 +620,7 @@ void BondTest::testCached() {
 
 void BondTest::testCachedZero() {
 
-    BOOST_MESSAGE("Testing zero-coupon bond prices against cached values...");
+    BOOST_TEST_MESSAGE("Testing zero-coupon bond prices against cached values...");
 
     CommonVars vars;
 
@@ -701,7 +701,7 @@ void BondTest::testCachedZero() {
 
 void BondTest::testCachedFixed() {
 
-    BOOST_MESSAGE("Testing fixed-coupon bond prices against cached values...");
+    BOOST_TEST_MESSAGE("Testing fixed-coupon bond prices against cached values...");
 
     CommonVars vars;
 
@@ -799,7 +799,7 @@ void BondTest::testCachedFixed() {
 
 void BondTest::testCachedFloating() {
 
-    BOOST_MESSAGE("Testing floating-rate bond prices against cached values...");
+    BOOST_TEST_MESSAGE("Testing floating-rate bond prices against cached values...");
 
     CommonVars vars;
 
@@ -927,7 +927,7 @@ void BondTest::testCachedFloating() {
 
 void BondTest::testBrazilianCached() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing Brazilian public bond prices against Andima cached values...");
 
     CommonVars vars;

@@ -28,7 +28,7 @@ using namespace boost::unit_test_framework;
 
 void RngTraitsTest::testGaussian() {
 
-    BOOST_MESSAGE("Testing Gaussian pseudo-random number generation...");
+    BOOST_TEST_MESSAGE("Testing Gaussian pseudo-random number generation...");
 
     PseudoRandom::rsg_type rsg =
         PseudoRandom::make_sequence_generator(100, 1234);
@@ -49,7 +49,7 @@ void RngTraitsTest::testGaussian() {
 
 void RngTraitsTest::testDefaultPoisson() {
 
-    BOOST_MESSAGE("Testing Poisson pseudo-random number generation...");
+    BOOST_TEST_MESSAGE("Testing Poisson pseudo-random number generation...");
 
     PoissonPseudoRandom::icInstance =
         boost::shared_ptr<InverseCumulativePoisson>();
@@ -71,7 +71,7 @@ void RngTraitsTest::testDefaultPoisson() {
 
 void RngTraitsTest::testCustomPoisson() {
 
-    BOOST_MESSAGE("Testing custom Poisson pseudo-random number generation...");
+    BOOST_TEST_MESSAGE("Testing custom Poisson pseudo-random number generation...");
 
     PoissonPseudoRandom::icInstance =
         boost::shared_ptr<InverseCumulativePoisson>(

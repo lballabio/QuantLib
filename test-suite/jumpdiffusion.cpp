@@ -95,8 +95,8 @@ namespace {
 
 void JumpDiffusionTest::testMerton76() {
 
-    BOOST_MESSAGE("Testing Merton 76 jump-diffusion model "
-                  "for European options...");
+    BOOST_TEST_MESSAGE("Testing Merton 76 jump-diffusion model "
+                       "for European options...");
 
     SavedSettings backup;
 
@@ -345,7 +345,7 @@ void JumpDiffusionTest::testMerton76() {
 
 void JumpDiffusionTest::testGreeks() {
 
-    BOOST_MESSAGE("Testing jump-diffusion option greeks...");
+    BOOST_TEST_MESSAGE("Testing jump-diffusion option greeks...");
 
     SavedSettings backup;
 

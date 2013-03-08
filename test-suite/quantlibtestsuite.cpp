@@ -243,9 +243,9 @@ test_suite* init_unit_test_suite(int, char* []) {
          ;
     std::string rule = std::string(35, '=');
 
-    BOOST_MESSAGE(rule);
-    BOOST_MESSAGE(header);
-    BOOST_MESSAGE(rule);
+    BOOST_TEST_MESSAGE(rule);
+    BOOST_TEST_MESSAGE(header);
+    BOOST_TEST_MESSAGE(rule);
     test_suite* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(QUANTLIB_TEST_CASE(startTimer));

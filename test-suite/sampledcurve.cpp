@@ -33,7 +33,7 @@ public:
 
 void SampledCurveTest::testConstruction() {
 
-    BOOST_MESSAGE("Testing sampled curve construction...");
+    BOOST_TEST_MESSAGE("Testing sampled curve construction...");
 
     SampledCurve curve(BoundedGrid(-10.0,10.0,100));
     FSquared f2;

@@ -73,7 +73,7 @@ namespace {
 
 void DigitalOptionTest::testCashOrNothingEuropeanValues() {
 
-    BOOST_MESSAGE("Testing European cash-or-nothing digital option...");
+    BOOST_TEST_MESSAGE("Testing European cash-or-nothing digital option...");
 
     DigitalOptionData values[] = {
         // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 88
@@ -128,7 +128,7 @@ void DigitalOptionTest::testCashOrNothingEuropeanValues() {
 
 void DigitalOptionTest::testAssetOrNothingEuropeanValues() {
 
-    BOOST_MESSAGE("Testing European asset-or-nothing digital option...");
+    BOOST_TEST_MESSAGE("Testing European asset-or-nothing digital option...");
 
     // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 90
     DigitalOptionData values[] = {
@@ -183,7 +183,7 @@ void DigitalOptionTest::testAssetOrNothingEuropeanValues() {
 
 void DigitalOptionTest::testGapEuropeanValues() {
 
-    BOOST_MESSAGE("Testing European gap digital option...");
+    BOOST_TEST_MESSAGE("Testing European gap digital option...");
 
     // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 88
     DigitalOptionData values[] = {
@@ -238,8 +238,8 @@ void DigitalOptionTest::testGapEuropeanValues() {
 
 void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
 
-    BOOST_MESSAGE("Testing American cash-(at-hit)-or-nothing "
-                  "digital option...");
+    BOOST_TEST_MESSAGE("Testing American cash-(at-hit)-or-nothing "
+                       "digital option...");
 
     DigitalOptionData values[] = {
         //        type, strike,   spot,    q,    r,   t,  vol,   value, tol
@@ -306,8 +306,8 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
 
 void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
 
-    BOOST_MESSAGE("Testing American asset-(at-hit)-or-nothing "
-                  "digital option...");
+    BOOST_TEST_MESSAGE("Testing American asset-(at-hit)-or-nothing "
+                       "digital option...");
 
     DigitalOptionData values[] = {
         //        type, strike,   spot,    q,    r,   t,  vol,   value, tol
@@ -372,8 +372,8 @@ void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
 
 void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
 
-    BOOST_MESSAGE("Testing American cash-(at-expiry)-or-nothing "
-                  "digital option...");
+    BOOST_TEST_MESSAGE("Testing American cash-(at-expiry)-or-nothing "
+                       "digital option...");
 
     DigitalOptionData values[] = {
         //        type, strike,   spot,    q,    r,   t,  vol,   value, tol
@@ -434,8 +434,8 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
 
 void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
 
-    BOOST_MESSAGE("Testing American asset-(at-expiry)-or-nothing "
-                  "digital option...");
+    BOOST_TEST_MESSAGE("Testing American asset-(at-expiry)-or-nothing "
+                       "digital option...");
 
     DigitalOptionData values[] = {
         //        type, strike,   spot,    q,    r,   t,  vol,   value, tol
@@ -502,8 +502,8 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
 
 void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
 
-    BOOST_MESSAGE("Testing American cash-(at-hit)-or-nothing "
-                  "digital option greeks...");
+    BOOST_TEST_MESSAGE("Testing American cash-(at-hit)-or-nothing "
+                       "digital option greeks...");
 
     SavedSettings backup;
 
@@ -669,8 +669,8 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
 
 void DigitalOptionTest::testMCCashAtHit() {
 
-    BOOST_MESSAGE("Testing Monte Carlo cash-(at-hit)-or-nothing "
-                  "American engine...");
+    BOOST_TEST_MESSAGE("Testing Monte Carlo cash-(at-hit)-or-nothing "
+                       "American engine...");
 
     SavedSettings backup;
 

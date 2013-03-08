@@ -51,7 +51,7 @@ namespace {
 
 void TwoAssetBarrierOptionTest::testHaugValues() {
 
-    BOOST_MESSAGE("Testing two-asset barrier options against Haug's values...");
+    BOOST_TEST_MESSAGE("Testing two-asset barrier options against Haug's values...");
 
     OptionData values[] = {
         /* The data below are from

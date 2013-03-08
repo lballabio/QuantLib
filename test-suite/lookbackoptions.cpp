@@ -90,7 +90,7 @@ namespace {
 
 void LookbackOptionTest::testAnalyticContinuousFloatingLookback() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
            "Testing analytic continuous floating-strike lookback options...");
 
 
@@ -168,7 +168,7 @@ void LookbackOptionTest::testAnalyticContinuousFloatingLookback() {
 
 void LookbackOptionTest::testAnalyticContinuousFixedLookback() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
               "Testing analytic continuous fixed-strike lookback options...");
 
     LookbackOptionData values[] = {

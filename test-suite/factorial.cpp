@@ -27,7 +27,7 @@ using namespace boost::unit_test_framework;
 
 void FactorialTest::testFactorial() {
 
-    BOOST_MESSAGE("Testing factorial numbers...");
+    BOOST_TEST_MESSAGE("Testing factorial numbers...");
 
     Real expected = 1.0;
     Real calculated = Factorial::get(0);
@@ -49,7 +49,7 @@ void FactorialTest::testFactorial() {
 
 void FactorialTest::testGammaFunction() {
 
-    BOOST_MESSAGE("Testing Gamma function...");
+    BOOST_TEST_MESSAGE("Testing Gamma function...");
 
     Real expected = 0.0;
     Real calculated = GammaFunction().logValue(1);

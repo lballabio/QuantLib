@@ -26,7 +26,7 @@ using namespace boost::unit_test_framework;
 
 void PeriodTest::testYearsMonthsAlgebra() {
 
-    BOOST_MESSAGE("Testing period algebra on years/months...");
+    BOOST_TEST_MESSAGE("Testing period algebra on years/months...");
 
     Period OneYear(1, Years);
     Period SixMonths(6, Months);
@@ -79,7 +79,7 @@ void PeriodTest::testYearsMonthsAlgebra() {
 
 void PeriodTest::testWeeksDaysAlgebra() {
 
-    BOOST_MESSAGE("Testing period algebra on weeks/days...");
+    BOOST_TEST_MESSAGE("Testing period algebra on weeks/days...");
 
     Period TwoWeeks(2, Weeks);
     Period OneWeek(1, Weeks);

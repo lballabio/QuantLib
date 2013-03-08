@@ -214,7 +214,7 @@ namespace {
 
 void OvernightIndexedSwapTest::testFairRate() {
 
-    BOOST_MESSAGE("Testing Eonia-swap calculation of fair fixed rate...");
+    BOOST_TEST_MESSAGE("Testing Eonia-swap calculation of fair fixed rate...");
 
     CommonVars vars;
 
@@ -242,8 +242,8 @@ void OvernightIndexedSwapTest::testFairRate() {
 
 void OvernightIndexedSwapTest::testFairSpread() {
 
-    BOOST_MESSAGE("Testing Eonia-swap calculation of "
-                  "fair floating spread...");
+    BOOST_TEST_MESSAGE("Testing Eonia-swap calculation of "
+                       "fair floating spread...");
 
     CommonVars vars;
 
@@ -273,7 +273,7 @@ void OvernightIndexedSwapTest::testFairSpread() {
 
 void OvernightIndexedSwapTest::testCachedValue() {
 
-    BOOST_MESSAGE("Testing Eonia-swap calculation against cached value...");
+    BOOST_TEST_MESSAGE("Testing Eonia-swap calculation against cached value...");
 
     CommonVars vars;
 
@@ -297,7 +297,7 @@ void OvernightIndexedSwapTest::testCachedValue() {
 
 void OvernightIndexedSwapTest::testBootstrap() {
 
-    BOOST_MESSAGE("Testing Eonia-swap curve building...");
+    BOOST_TEST_MESSAGE("Testing Eonia-swap curve building...");
 
     CommonVars vars;
 

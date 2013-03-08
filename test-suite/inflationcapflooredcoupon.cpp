@@ -395,7 +395,7 @@ namespace {
 
 void InflationCapFlooredCouponTest::testDecomposition() {
 
-    BOOST_MESSAGE("Testing collared coupon against its decomposition...");
+    BOOST_TEST_MESSAGE("Testing collared coupon against its decomposition...");
 
     CommonVars vars;
 
@@ -711,7 +711,8 @@ void InflationCapFlooredCouponTest::testDecomposition() {
 
 void InflationCapFlooredCouponTest::testInstrumentEquality() {
 
-    BOOST_MESSAGE("Testing inflation capped/floored coupon against inflation capfloor instrument...");
+    BOOST_TEST_MESSAGE("Testing inflation capped/floored coupon against"
+                       " inflation capfloor instrument...");
 
     CommonVars vars;
 

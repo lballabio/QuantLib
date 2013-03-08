@@ -156,37 +156,37 @@ namespace {
 
 
 void Solver1DTest::testBrent() {
-    BOOST_MESSAGE("Testing Brent solver...");
+    BOOST_TEST_MESSAGE("Testing Brent solver...");
     test_solver(Brent(), "Brent", 1.0e-6);
 }
 
 void Solver1DTest::testBisection() {
-    BOOST_MESSAGE("Testing bisection solver...");
+    BOOST_TEST_MESSAGE("Testing bisection solver...");
     test_solver(Bisection(), "Bisection", 1.0e-6);
 }
 
 void Solver1DTest::testFalsePosition() {
-    BOOST_MESSAGE("Testing false-position solver...");
+    BOOST_TEST_MESSAGE("Testing false-position solver...");
     test_solver(FalsePosition(), "FalsePosition", 1.0e-6);
 }
 
 void Solver1DTest::testNewton() {
-    BOOST_MESSAGE("Testing Newton solver...");
+    BOOST_TEST_MESSAGE("Testing Newton solver...");
     test_solver(Newton(), "Newton", 1.0e-12);
 }
 
 void Solver1DTest::testNewtonSafe() {
-    BOOST_MESSAGE("Testing Newton-safe solver...");
+    BOOST_TEST_MESSAGE("Testing Newton-safe solver...");
     test_solver(NewtonSafe(), "NewtonSafe", 1.0e-9);
 }
 
 void Solver1DTest::testRidder() {
-    BOOST_MESSAGE("Testing Ridder solver...");
+    BOOST_TEST_MESSAGE("Testing Ridder solver...");
     test_solver(Ridder(), "Ridder", 1.0e-6);
 }
 
 void Solver1DTest::testSecant() {
-    BOOST_MESSAGE("Testing secant solver...");
+    BOOST_TEST_MESSAGE("Testing secant solver...");
     test_solver(Secant(), "Secant", 1.0e-6);
 }
 

@@ -32,7 +32,7 @@ class FSquared : std::unary_function<Real,Real> {
 
 void ArrayTest::testConstruction() {
 
-    BOOST_MESSAGE("Testing array construction...");
+    BOOST_TEST_MESSAGE("Testing array construction...");
 
     // empty array
     Array a1;

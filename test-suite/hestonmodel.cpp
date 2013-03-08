@@ -136,7 +136,7 @@ namespace {
 
 
 void HestonModelTest::testBlackCalibration() {
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
        "Testing Heston model calibration using a flat volatility surface...");
 
     SavedSettings backup;
@@ -235,7 +235,7 @@ void HestonModelTest::testBlackCalibration() {
 
 void HestonModelTest::testDAXCalibration() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
              "Testing Heston model calibration using DAX volatility data...");
 
     SavedSettings backup;
@@ -286,7 +286,7 @@ void HestonModelTest::testDAXCalibration() {
 }
 
 void HestonModelTest::testAnalyticVsBlack() {
-    BOOST_MESSAGE("Testing analytic Heston engine against Black formula...");
+    BOOST_TEST_MESSAGE("Testing analytic Heston engine against Black formula...");
 
     SavedSettings backup;
 
@@ -354,7 +354,7 @@ void HestonModelTest::testAnalyticVsBlack() {
 
 
 void HestonModelTest::testAnalyticVsCached() {
-    BOOST_MESSAGE("Testing analytic Heston engine against cached values...");
+    BOOST_TEST_MESSAGE("Testing analytic Heston engine against cached values...");
 
     SavedSettings backup;
 
@@ -450,7 +450,7 @@ void HestonModelTest::testAnalyticVsCached() {
 
 
 void HestonModelTest::testMcVsCached() {
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
                 "Testing Monte Carlo Heston engine against cached values...");
 
     SavedSettings backup;
@@ -505,7 +505,7 @@ void HestonModelTest::testMcVsCached() {
 }
 
 void HestonModelTest::testFdBarrierVsCached() {
-    BOOST_MESSAGE("Testing FD barrier Heston engine against cached values...");
+    BOOST_TEST_MESSAGE("Testing FD barrier Heston engine against cached values...");
 
     SavedSettings backup;
 
@@ -558,7 +558,7 @@ void HestonModelTest::testFdBarrierVsCached() {
 }
 
 void HestonModelTest::testFdVanillaVsCached() {
-    BOOST_MESSAGE("Testing FD vanilla Heston engine against cached values...");
+    BOOST_TEST_MESSAGE("Testing FD vanilla Heston engine against cached values...");
 
     SavedSettings backup;
 
@@ -600,7 +600,7 @@ void HestonModelTest::testFdVanillaVsCached() {
                    << "\n    error:      " << QL_SCIENTIFIC << error);
     }
 
-    BOOST_MESSAGE("Testing FD vanilla Heston engine for discrete dividends...");
+    BOOST_TEST_MESSAGE("Testing FD vanilla Heston engine for discrete dividends...");
 
     payoff = boost::shared_ptr<StrikedTypePayoff>(
                           new PlainVanillaPayoff(Option::Call, 95.0));
@@ -643,7 +643,7 @@ void HestonModelTest::testFdVanillaVsCached() {
                    << "\n    error:      " << QL_SCIENTIFIC << error);
     }
 
-    BOOST_MESSAGE("Testing FD vanilla Heston engine for american exercise...");
+    BOOST_TEST_MESSAGE("Testing FD vanilla Heston engine for american exercise...");
 
     dividendTS = Handle<YieldTermStructure>(flatRate(0.03, dayCounter));
     process = boost::shared_ptr<HestonProcess>(new HestonProcess(
@@ -680,7 +680,7 @@ void HestonModelTest::testFdVanillaVsCached() {
 }
 
 void HestonModelTest::testKahlJaeckelCase() {
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
           "Testing MC and FD Heston engines for the Kahl-Jaeckel example...");
 
     /* Example taken from Wilmott mag (Sept. 2005).
@@ -790,7 +790,7 @@ namespace {
 }
 
 void HestonModelTest::testDifferentIntegrals() {
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
        "Testing different numerical Heston integration algorithms...");
 
     SavedSettings backup;
@@ -915,7 +915,7 @@ void HestonModelTest::testDifferentIntegrals() {
 }
 
 void HestonModelTest::testMultipleStrikesEngine() {
-    BOOST_MESSAGE("Testing multiple-strikes FD Heston engine...");
+    BOOST_TEST_MESSAGE("Testing multiple-strikes FD Heston engine...");
 
     SavedSettings backup;
 
@@ -995,7 +995,7 @@ void HestonModelTest::testMultipleStrikesEngine() {
 
 
 void HestonModelTest::testAnalyticPiecewiseTimeDependent() {
-    BOOST_MESSAGE("Testing analytic piecewise time dependent Heston prices...");
+    BOOST_TEST_MESSAGE("Testing analytic piecewise time dependent Heston prices...");
 
     SavedSettings backup;
 
@@ -1058,7 +1058,7 @@ void HestonModelTest::testAnalyticPiecewiseTimeDependent() {
 }
 
 void HestonModelTest::testDAXCalibrationOfTimeDependentModel() {
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
              "Testing Time dependent Heston model calibration ...");
 
     SavedSettings backup;
@@ -1119,7 +1119,7 @@ void HestonModelTest::testDAXCalibrationOfTimeDependentModel() {
 }
 
 void HestonModelTest::testAlanLewisReferencePrices() {
-    BOOST_MESSAGE("Testing Alan Lewis Reference Prices ...");
+    BOOST_TEST_MESSAGE("Testing Alan Lewis Reference Prices ...");
 
     /*
      * testing Alan Lewis reference prices posted in

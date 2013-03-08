@@ -165,7 +165,7 @@ namespace {
 
 void QuantoOptionTest::testValues() {
 
-    BOOST_MESSAGE("Testing quanto option values...");
+    BOOST_TEST_MESSAGE("Testing quanto option values...");
 
     SavedSettings backup;
 
@@ -243,7 +243,7 @@ void QuantoOptionTest::testValues() {
 
 void QuantoOptionTest::testGreeks() {
 
-    BOOST_MESSAGE("Testing quanto option greeks...");
+    BOOST_TEST_MESSAGE("Testing quanto option greeks...");
 
     SavedSettings backup;
 
@@ -447,7 +447,7 @@ void QuantoOptionTest::testGreeks() {
 
 void QuantoOptionTest::testForwardValues() {
 
-    BOOST_MESSAGE("Testing quanto-forward option values...");
+    BOOST_TEST_MESSAGE("Testing quanto-forward option values...");
 
     SavedSettings backup;
 
@@ -529,7 +529,7 @@ void QuantoOptionTest::testForwardValues() {
 
 void QuantoOptionTest::testForwardGreeks() {
 
-    BOOST_MESSAGE("Testing quanto-forward option greeks...");
+    BOOST_TEST_MESSAGE("Testing quanto-forward option greeks...");
 
     SavedSettings backup;
 
@@ -740,7 +740,7 @@ void QuantoOptionTest::testForwardGreeks() {
 
 void QuantoOptionTest::testForwardPerformanceValues() {
 
-    BOOST_MESSAGE("Testing quanto-forward-performance option values...");
+    BOOST_TEST_MESSAGE("Testing quanto-forward-performance option values...");
 
     SavedSettings backup;
 
@@ -822,7 +822,7 @@ void QuantoOptionTest::testForwardPerformanceValues() {
 
 void QuantoOptionTest::testBarrierValues()  {
 
-    BOOST_MESSAGE("Testing quanto-barrier option values...");
+    BOOST_TEST_MESSAGE("Testing quanto-barrier option values...");
 
     SavedSettings backup;
 

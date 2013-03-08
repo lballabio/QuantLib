@@ -72,7 +72,7 @@ namespace {
 
 void CdoTest::testHW() {
 
-    BOOST_MESSAGE ("Testing CDO premiums against Hull-White values...");
+    BOOST_TEST_MESSAGE ("Testing CDO premiums against Hull-White values...");
 
     SavedSettings backup;
 

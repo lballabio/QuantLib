@@ -1486,7 +1486,7 @@ namespace {
 //******************************************************************************************//
 void RangeAccrualTest::testInfiniteRange()  {
 
-    BOOST_MESSAGE("Testing infinite range accrual floaters...");
+    BOOST_TEST_MESSAGE("Testing infinite range accrual floaters...");
 
     CommonVars vars;
 
@@ -1538,7 +1538,8 @@ void RangeAccrualTest::testInfiniteRange()  {
 
 void RangeAccrualTest::testPriceMonotonicityWithRespectToLowerStrike() {
 
-    BOOST_MESSAGE("Testing price monotonicity with respect to the lower strike...");
+    BOOST_TEST_MESSAGE(
+            "Testing price monotonicity with respect to the lower strike...");
 
     CommonVars vars;
 
@@ -1593,7 +1594,8 @@ void RangeAccrualTest::testPriceMonotonicityWithRespectToLowerStrike() {
 
 void RangeAccrualTest::testPriceMonotonicityWithRespectToUpperStrike() {
 
-    BOOST_MESSAGE("Testing price monotonicity with respect to the upper strike...");
+    BOOST_TEST_MESSAGE(
+            "Testing price monotonicity with respect to the upper strike...");
 
     CommonVars vars;
 

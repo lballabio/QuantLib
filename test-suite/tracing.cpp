@@ -74,7 +74,7 @@ namespace {
 
 void TracingTest::testOutput() {
 
-    BOOST_MESSAGE("Testing tracing...");
+    BOOST_TEST_MESSAGE("Testing tracing...");
 
     testTraceOutput(false, "");
     testTraceOutput(true,  "trace[0]: i = 42\n");

@@ -373,7 +373,7 @@ namespace {
         if (printReport_) {
             Array num(result.size());
             std::copy(result.begin(), result.end(), num.begin());
-            BOOST_MESSAGE("    " << measureTypeToString(measureType) << ": " << num);
+            BOOST_TEST_MESSAGE("    " << measureTypeToString(measureType) << ": " << num);
         }
         return result;
     }
@@ -416,8 +416,8 @@ namespace {
 
 void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
 
-    BOOST_MESSAGE("Testing max homogeneity caplet calibration "
-                  "in a lognormal coterminal swap market model...");
+    BOOST_TEST_MESSAGE("Testing max homogeneity caplet calibration "
+                       "in a lognormal coterminal swap market model...");
 
     setup();
 
@@ -448,9 +448,9 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
     // create calibrator
     Real caplet0Swaption1Priority = 1.0;
     if (printReport_) {
-        BOOST_MESSAGE("caplet market vols: " << QL_FIXED <<
-                      std::setprecision(4) << io::sequence(capletVols_));
-        BOOST_MESSAGE("caplet0Swapt1Prior: " << caplet0Swaption1Priority);
+        BOOST_TEST_MESSAGE("caplet market vols: " << QL_FIXED <<
+                           std::setprecision(4) << io::sequence(capletVols_));
+        BOOST_TEST_MESSAGE("caplet0Swapt1Prior: " << caplet0Swaption1Priority);
     }
     CTSMMCapletMaxHomogeneityCalibration calibrator(evolution,
                                                     corr,
@@ -465,11 +465,11 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
     Natural innerMaxIterations = 100;
     Real innerTolerance = 1e-8;
     if (printReport_) {
-        BOOST_MESSAGE("numberOfFactors:    " << numberOfFactors_);
-        BOOST_MESSAGE("maxIterations:      " << maxIterations);
-        BOOST_MESSAGE("capletTolerance:    " << io::rate(capletTolerance));
-        BOOST_MESSAGE("innerMaxIterations: " << innerMaxIterations);
-        BOOST_MESSAGE("innerTolerance:     " << io::rate(innerTolerance));
+        BOOST_TEST_MESSAGE("numberOfFactors:    " << numberOfFactors_);
+        BOOST_TEST_MESSAGE("maxIterations:      " << maxIterations);
+        BOOST_TEST_MESSAGE("capletTolerance:    " << io::rate(capletTolerance));
+        BOOST_TEST_MESSAGE("innerMaxIterations: " << innerMaxIterations);
+        BOOST_TEST_MESSAGE("innerTolerance:     " << io::rate(innerTolerance));
     }
     bool result = calibrator.calibrate(numberOfFactors_,
                                        maxIterations,
@@ -493,14 +493,14 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
         capletVols[i] = std::sqrt(capletTotCovariance[i][i]/rateTimes_[i]);
     }
     if (printReport_) {
-        BOOST_MESSAGE("caplet smm implied vols: " << QL_FIXED <<
-                      std::setprecision(4) << io::sequence(capletVols));
-        BOOST_MESSAGE("failures: " << calibrator.failures());
-        BOOST_MESSAGE("deformationSize: " << calibrator.deformationSize());
-        BOOST_MESSAGE("capletRmsError: " << calibrator.capletRmsError());
-        BOOST_MESSAGE("capletMaxError: " << calibrator.capletMaxError());
-        BOOST_MESSAGE("swaptionRmsError: " << calibrator.swaptionRmsError());
-        BOOST_MESSAGE("swaptionMaxError: " << calibrator.swaptionMaxError());
+        BOOST_TEST_MESSAGE("caplet smm implied vols: " << QL_FIXED <<
+                           std::setprecision(4) << io::sequence(capletVols));
+        BOOST_TEST_MESSAGE("failures: " << calibrator.failures());
+        BOOST_TEST_MESSAGE("deformationSize: " << calibrator.deformationSize());
+        BOOST_TEST_MESSAGE("capletRmsError: " << calibrator.capletRmsError());
+        BOOST_TEST_MESSAGE("capletMaxError: " << calibrator.capletMaxError());
+        BOOST_TEST_MESSAGE("swaptionRmsError: " << calibrator.swaptionRmsError());
+        BOOST_TEST_MESSAGE("swaptionMaxError: " << calibrator.swaptionMaxError());
       }
 
     // check perfect swaption fit
@@ -537,7 +537,7 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
     boost::shared_ptr<MarketModel> adapted(new FwdPeriodAdapter(flmm,period,offset,adaptedDisplacements));
    // FwdToCotSwapAdapter newSwapMM(adapted);
    // for (Size i=0; i < newSwapMM.numberOfRates(); ++i)
-     //      BOOST_MESSAGE("swap MM time dependent vols: "<< i << QL_FIXED <<
+     //      BOOST_TEST_MESSAGE("swap MM time dependent vols: "<< i << QL_FIXED <<
        //               std::setprecision(6) << Array(newSwapMM.timeDependentVolatility(i)));
 
 
@@ -552,8 +552,8 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
 void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
 {
 
-    BOOST_MESSAGE("Testing max homogeneity periodic caplet calibration "
-                  "in a lognormal coterminal swap market model...");
+    BOOST_TEST_MESSAGE("Testing max homogeneity periodic caplet calibration "
+                       "in a lognormal coterminal swap market model...");
 
     setup();
 
@@ -596,9 +596,9 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
     // create calibrator
     Real caplet0Swaption1Priority = 1.0;
     if (printReport_) {
-        BOOST_MESSAGE("caplet market vols: " << QL_FIXED <<
-                      std::setprecision(4) << io::sequence(capletVols_));
-        BOOST_MESSAGE("caplet0Swapt1Prior: " << caplet0Swaption1Priority);
+        BOOST_TEST_MESSAGE("caplet market vols: " << QL_FIXED <<
+                           std::setprecision(4) << io::sequence(capletVols_));
+        BOOST_TEST_MESSAGE("caplet0Swapt1Prior: " << caplet0Swaption1Priority);
     }
 
      // calibrate
@@ -618,11 +618,11 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
      Matrix modelSwaptionVolsMatrix;
 
        if (printReport_) {
-        BOOST_MESSAGE("numberOfFactors:    " << numberOfFactors_);
-        BOOST_MESSAGE("maxUnperiodicIterations:      " << maxUnperiodicIterations);
-        BOOST_MESSAGE("toleranceUnperiodic:    " << io::rate(toleranceUnperiodic));
-        BOOST_MESSAGE("max1dIterations: " << max1dIterations);
-        BOOST_MESSAGE("tolerance1d:     " << io::rate(tolerance1d));
+        BOOST_TEST_MESSAGE("numberOfFactors:    " << numberOfFactors_);
+        BOOST_TEST_MESSAGE("maxUnperiodicIterations:      " << maxUnperiodicIterations);
+        BOOST_TEST_MESSAGE("toleranceUnperiodic:    " << io::rate(toleranceUnperiodic));
+        BOOST_TEST_MESSAGE("max1dIterations: " << max1dIterations);
+        BOOST_TEST_MESSAGE("tolerance1d:     " << io::rate(tolerance1d));
 
        }
 
@@ -720,7 +720,7 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
 
 void MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder() {
 
-    BOOST_MESSAGE("Testing sphere-cylinder optimization...");
+    BOOST_TEST_MESSAGE("Testing sphere-cylinder optimization...");
 
     {
         Real R =1.0;

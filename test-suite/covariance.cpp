@@ -42,7 +42,7 @@ namespace {
 
 void CovarianceTest::testRankReduction() {
 
-    BOOST_MESSAGE("Testing matrix rank reduction salvaging algorithms...");
+    BOOST_TEST_MESSAGE("Testing matrix rank reduction salvaging algorithms...");
 
     Real expected, calculated;
 
@@ -98,8 +98,8 @@ void CovarianceTest::testRankReduction() {
 
 void CovarianceTest::testSalvagingMatrix() {
 
-    BOOST_MESSAGE("Testing positive semi-definiteness salvaging "
-        "algorithms...");
+    BOOST_TEST_MESSAGE("Testing positive semi-definiteness salvaging "
+                       "algorithms...");
 
     Real expected, calculated;
 
@@ -153,7 +153,7 @@ void CovarianceTest::testSalvagingMatrix() {
 
 void CovarianceTest::testCovariance() {
 
-    BOOST_MESSAGE("Testing covariance and correlation calculations...");
+    BOOST_TEST_MESSAGE("Testing covariance and correlation calculations...");
 
     Real data00[] = { 3.0,  9.0 };
     Real data01[] = { 2.0,  7.0 };

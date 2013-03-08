@@ -228,7 +228,7 @@ namespace {
 
 void EuropeanOptionTest::testValues() {
 
-    BOOST_MESSAGE("Testing European option values...");
+    BOOST_TEST_MESSAGE("Testing European option values...");
 
     SavedSettings backup;
 
@@ -350,7 +350,7 @@ void EuropeanOptionTest::testValues() {
 
 void EuropeanOptionTest::testGreekValues() {
 
-    BOOST_MESSAGE("Testing European option greek values...");
+    BOOST_TEST_MESSAGE("Testing European option greek values...");
 
     SavedSettings backup;
 
@@ -639,7 +639,7 @@ void EuropeanOptionTest::testGreekValues() {
 
 void EuropeanOptionTest::testGreeks() {
 
-    BOOST_MESSAGE("Testing analytic European option greeks...");
+    BOOST_TEST_MESSAGE("Testing analytic European option greeks...");
 
     SavedSettings backup;
 
@@ -800,7 +800,7 @@ void EuropeanOptionTest::testGreeks() {
 
 void EuropeanOptionTest::testImpliedVol() {
 
-    BOOST_MESSAGE("Testing European option implied volatility...");
+    BOOST_TEST_MESSAGE("Testing European option implied volatility...");
 
     SavedSettings backup;
 
@@ -928,8 +928,8 @@ void EuropeanOptionTest::testImpliedVol() {
 
 void EuropeanOptionTest::testImpliedVolContainment() {
 
-    BOOST_MESSAGE("Testing self-containment of "
-                  "implied volatility calculation...");
+    BOOST_TEST_MESSAGE("Testing self-containment of "
+                       "implied volatility calculation...");
 
     SavedSettings backup;
 
@@ -1111,8 +1111,8 @@ namespace {
 
 void EuropeanOptionTest::testJRBinomialEngines() {
 
-    BOOST_MESSAGE("Testing JR binomial European engines "
-                  "against analytic results...");
+    BOOST_TEST_MESSAGE("Testing JR binomial European engines "
+                       "against analytic results...");
 
     SavedSettings backup;
 
@@ -1129,8 +1129,8 @@ void EuropeanOptionTest::testJRBinomialEngines() {
 
 void EuropeanOptionTest::testCRRBinomialEngines() {
 
-    BOOST_MESSAGE("Testing CRR binomial European engines "
-                  "against analytic results...");
+    BOOST_TEST_MESSAGE("Testing CRR binomial European engines "
+                       "against analytic results...");
 
     SavedSettings backup;
 
@@ -1147,8 +1147,8 @@ void EuropeanOptionTest::testCRRBinomialEngines() {
 
 void EuropeanOptionTest::testEQPBinomialEngines() {
 
-    BOOST_MESSAGE("Testing EQP binomial European engines "
-                  "against analytic results...");
+    BOOST_TEST_MESSAGE("Testing EQP binomial European engines "
+                       "against analytic results...");
 
     SavedSettings backup;
 
@@ -1165,8 +1165,8 @@ void EuropeanOptionTest::testEQPBinomialEngines() {
 
 void EuropeanOptionTest::testTGEOBinomialEngines() {
 
-    BOOST_MESSAGE("Testing TGEO binomial European engines "
-                  "against analytic results...");
+    BOOST_TEST_MESSAGE("Testing TGEO binomial European engines "
+                       "against analytic results...");
 
     SavedSettings backup;
 
@@ -1183,8 +1183,8 @@ void EuropeanOptionTest::testTGEOBinomialEngines() {
 
 void EuropeanOptionTest::testTIANBinomialEngines() {
 
-    BOOST_MESSAGE("Testing TIAN binomial European engines "
-                  "against analytic results...");
+    BOOST_TEST_MESSAGE("Testing TIAN binomial European engines "
+                       "against analytic results...");
 
     SavedSettings backup;
 
@@ -1201,8 +1201,8 @@ void EuropeanOptionTest::testTIANBinomialEngines() {
 
 void EuropeanOptionTest::testLRBinomialEngines() {
 
-    BOOST_MESSAGE("Testing LR binomial European engines "
-                  "against analytic results...");
+    BOOST_TEST_MESSAGE("Testing LR binomial European engines "
+                       "against analytic results...");
 
     SavedSettings backup;
 
@@ -1219,8 +1219,8 @@ void EuropeanOptionTest::testLRBinomialEngines() {
 
 void EuropeanOptionTest::testJOSHIBinomialEngines() {
 
-    BOOST_MESSAGE("Testing Joshi binomial European engines "
-                  "against analytic results...");
+    BOOST_TEST_MESSAGE("Testing Joshi binomial European engines "
+                       "against analytic results...");
 
     SavedSettings backup;
 
@@ -1237,8 +1237,8 @@ void EuropeanOptionTest::testJOSHIBinomialEngines() {
 
 void EuropeanOptionTest::testFdEngines() {
 
-    BOOST_MESSAGE("Testing finite-difference European engines "
-                  "against analytic results...");
+    BOOST_TEST_MESSAGE("Testing finite-difference European engines "
+                       "against analytic results...");
 
     SavedSettings backup;
 
@@ -1255,8 +1255,7 @@ void EuropeanOptionTest::testFdEngines() {
 
 void EuropeanOptionTest::testIntegralEngines() {
 
-    BOOST_MESSAGE("Testing integral engines "
-                  "against analytic results...");
+    BOOST_TEST_MESSAGE("Testing integral engines against analytic results...");
 
     SavedSettings backup;
 
@@ -1270,8 +1269,8 @@ void EuropeanOptionTest::testIntegralEngines() {
 
 void EuropeanOptionTest::testMcEngines() {
 
-    BOOST_MESSAGE("Testing Monte Carlo European engines "
-                  "against analytic results...");
+    BOOST_TEST_MESSAGE("Testing Monte Carlo European engines "
+                       "against analytic results...");
 
     SavedSettings backup;
 
@@ -1285,8 +1284,8 @@ void EuropeanOptionTest::testMcEngines() {
 
 void EuropeanOptionTest::testQmcEngines() {
 
-    BOOST_MESSAGE("Testing Quasi Monte Carlo European engines "
-                  "against analytic results...");
+    BOOST_TEST_MESSAGE("Testing Quasi Monte Carlo European engines "
+                       "against analytic results...");
 
     SavedSettings backup;
 
@@ -1300,8 +1299,8 @@ void EuropeanOptionTest::testQmcEngines() {
 
 void EuropeanOptionTest::testFFTEngines() {
 
-    BOOST_MESSAGE("Testing FFT European engines "
-                  "against analytic results...");
+    BOOST_TEST_MESSAGE("Testing FFT European engines "
+                       "against analytic results...");
 
     SavedSettings backup;
 
@@ -1316,7 +1315,7 @@ void EuropeanOptionTest::testFFTEngines() {
 
 void EuropeanOptionTest::testPriceCurve() {
 
-    BOOST_MESSAGE("Testing European price curves...");
+    BOOST_TEST_MESSAGE("Testing European price curves...");
 
     SavedSettings backup;
 
@@ -1413,7 +1412,7 @@ void EuropeanOptionTest::testPriceCurve() {
 
 
 void EuropeanOptionTest::testLocalVolatility() {
-    BOOST_MESSAGE("Testing finite-differences with local volatility...");
+    BOOST_TEST_MESSAGE("Testing finite-differences with local volatility...");
 
     SavedSettings backup;
 

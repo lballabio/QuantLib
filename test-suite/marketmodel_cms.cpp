@@ -323,8 +323,8 @@ namespace {
         if (printReport_) {
             Array num(result.size());
             std::copy(result.begin(), result.end(), num.begin());
-            BOOST_MESSAGE("    " << measureTypeToString(measureType) << ": "
-                          << num);
+            BOOST_TEST_MESSAGE("    " << measureTypeToString(measureType) << ": "
+                               << num);
         }
         return result;
     }
@@ -391,15 +391,15 @@ namespace {
         }
 
         if (maxError > errorThreshold) {
-            BOOST_MESSAGE(config);
+            BOOST_TEST_MESSAGE(config);
             for (Size i=0; i<N; ++i) {
-                BOOST_MESSAGE(io::ordinal(i+1) << " CMS NPV: "
-                              << io::rate(results[i])
-                              << " +- " << io::rate(errors[i])
-                              << "; expected: " << io::rate(expectedNPVs[i])
-                              << "; discrepancy/error = "
-                              << discrepancies[N-1-i]
-                              << " standard errors");
+                BOOST_TEST_MESSAGE(io::ordinal(i+1) << " CMS NPV: "
+                                   << io::rate(results[i])
+                                   << " +- " << io::rate(errors[i])
+                                   << "; expected: " << io::rate(expectedNPVs[i])
+                                   << "; discrepancy/error = "
+                                   << discrepancies[N-1-i]
+                                   << " standard errors");
             }
             BOOST_ERROR("test failed");
         }
@@ -423,15 +423,15 @@ namespace {
         errorThreshold = 2.0;
 
         if (maxError > errorThreshold) {
-            BOOST_MESSAGE(config);
+            BOOST_TEST_MESSAGE(config);
             for (Size i=1; i<=N; ++i) {
-                BOOST_MESSAGE(io::ordinal(i) << " Swaption: "
-                              << io::rate(results[2*N-i])
-                              << " +- " << io::rate(errors[2*N-i])
-                              << "; expected: " << io::rate(expectedSwaptions[N-i])
-                              << "; discrepancy/error = "
-                              << io::percent(discrepancies[N-i])
-                              << " standard errors");
+                BOOST_TEST_MESSAGE(io::ordinal(i) << " Swaption: "
+                                   << io::rate(results[2*N-i])
+                                   << " +- " << io::rate(errors[2*N-i])
+                                   << "; expected: " << io::rate(expectedSwaptions[N-i])
+                                   << "; discrepancy/error = "
+                                   << io::percent(discrepancies[N-i])
+                                   << " standard errors");
             }
             BOOST_ERROR("test failed");
         }
@@ -442,9 +442,9 @@ namespace {
 
 void MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions() {
 
-    BOOST_MESSAGE("Testing exact repricing of "
-                  "multi-step constant maturity swaps and swaptions "
-                  "in a lognormal constant maturity swap market model...");
+    BOOST_TEST_MESSAGE("Testing exact repricing of "
+                       "multi-step constant maturity swaps and swaptions "
+                       "in a lognormal constant maturity swap market model...");
 
     setup();
 
@@ -521,7 +521,7 @@ void MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions() {
                             evolverTypeToString(evolvers[i]) << ", " <<
                             "MT BGF";
                         if (printReport_)
-                            BOOST_MESSAGE("    " << config.str());
+                            BOOST_TEST_MESSAGE("    " << config.str());
 
                         boost::shared_ptr<SequenceStatisticsInc> stats = simulate(evolver, product);
                         checkCMSAndSwaptions(*stats, fixedRate,

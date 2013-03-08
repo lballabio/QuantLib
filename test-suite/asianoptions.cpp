@@ -84,8 +84,8 @@ namespace {
 
 void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
 
-    BOOST_MESSAGE("Testing analytic continuous geometric average-price "
-                  "Asians...");
+    BOOST_TEST_MESSAGE(
+             "Testing analytic continuous geometric average-price Asians...");
 
     // data from "Option Pricing Formulas", Haug, pag.96-97
 
@@ -165,8 +165,8 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
 
 void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
 
-    BOOST_MESSAGE("Testing analytic continuous geometric average-price Asian "
-                  "greeks...");
+    BOOST_TEST_MESSAGE(
+       "Testing analytic continuous geometric average-price Asian greeks...");
 
     SavedSettings backup;
 
@@ -322,8 +322,8 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
 
 void AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice() {
 
-    BOOST_MESSAGE("Testing analytic discrete geometric average-price "
-                  "Asians...");
+    BOOST_TEST_MESSAGE(
+               "Testing analytic discrete geometric average-price Asians...");
 
     // data from "Implementing Derivatives Model",
     // Clewlow, Strickland, p.118-123
@@ -384,7 +384,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice() {
 
 void AsianOptionTest::testAnalyticDiscreteGeometricAverageStrike() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
               "Testing analytic discrete geometric average-strike Asians...");
 
     DayCounter dc = Actual360();
@@ -444,8 +444,8 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAverageStrike() {
 
 void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
 
-    BOOST_MESSAGE("Testing Monte Carlo discrete geometric average-price "
-                  "Asians...");
+    BOOST_TEST_MESSAGE(
+            "Testing Monte Carlo discrete geometric average-price Asians...");
 
     // data from "Implementing Derivatives Model",
     // Clewlow, Strickland, p.118-123
@@ -533,8 +533,8 @@ namespace {
 
 void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
 
-    BOOST_MESSAGE("Testing Monte Carlo discrete arithmetic average-price "
-                  "Asians...");
+    BOOST_TEST_MESSAGE(
+           "Testing Monte Carlo discrete arithmetic average-price Asians...");
 
     QL_TEST_START_TIMING
 
@@ -688,7 +688,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
 
 void AsianOptionTest::testMCDiscreteArithmeticAverageStrike() {
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
           "Testing Monte Carlo discrete arithmetic average-strike Asians...");
 
     QL_TEST_START_TIMING
@@ -826,7 +826,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAverageStrike() {
 
 void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
 
-    BOOST_MESSAGE("Testing discrete-averaging geometric Asian greeks...");
+    BOOST_TEST_MESSAGE("Testing discrete-averaging geometric Asian greeks...");
 
     SavedSettings backup;
 
@@ -990,7 +990,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
 
 void AsianOptionTest::testPastFixings() {
 
-    BOOST_MESSAGE("Testing use of past fixings in Asian options...");
+    BOOST_TEST_MESSAGE("Testing use of past fixings in Asian options...");
 
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
@@ -1145,7 +1145,7 @@ namespace {
 
 void AsianOptionTest::testLevyEngine() {
 
-    BOOST_MESSAGE("Testing Levy engine for Asians options...");
+    BOOST_TEST_MESSAGE("Testing Levy engine for Asians options...");
 
     // data from Haug, "Option Pricing Formulas", p.99-100
     ContinuousAverageData cases[] = {

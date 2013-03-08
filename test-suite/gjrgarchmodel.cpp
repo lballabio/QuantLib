@@ -41,7 +41,7 @@ using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 void GJRGARCHModelTest::testEngines() {
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
        "Testing Monte Carlo GJR-GARCH engine against "
        "analytic GJR-GARCH engine...");
 
@@ -200,7 +200,7 @@ void GJRGARCHModelTest::testDAXCalibration() {
        http://math.ut.ee/~spartak/papers/stochjumpvols.pdf
     */
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
          "Testing GJR-GARCH model calibration using DAX volatility data...");
 
     SavedSettings backup;

@@ -41,7 +41,7 @@ using namespace boost::unit_test_framework;
 
 void CalendarTest::testModifiedCalendars() {
 
-    BOOST_MESSAGE("Testing calendar modification...");
+    BOOST_TEST_MESSAGE("Testing calendar modification...");
 
     Calendar c1 = TARGET();
     Calendar c2 = UnitedStates(UnitedStates::NYSE);
@@ -90,7 +90,7 @@ void CalendarTest::testModifiedCalendars() {
 
 void CalendarTest::testJointCalendars() {
 
-    BOOST_MESSAGE("Testing joint calendars...");
+    BOOST_TEST_MESSAGE("Testing joint calendars...");
 
     Calendar c1 = TARGET(),
              c2 = UnitedKingdom(),
@@ -155,7 +155,7 @@ void CalendarTest::testJointCalendars() {
 }
 
 void CalendarTest::testUSSettlement() {
-    BOOST_MESSAGE("Testing US settlement holiday list...");
+    BOOST_TEST_MESSAGE("Testing US settlement holiday list...");
 
     std::vector<Date> expectedHol;
     expectedHol.push_back(Date(1,January,2004));
@@ -195,7 +195,7 @@ void CalendarTest::testUSSettlement() {
 }
 
 void CalendarTest::testUSGovernmentBondMarket() {
-    BOOST_MESSAGE("Testing US government bond market holiday list...");
+    BOOST_TEST_MESSAGE("Testing US government bond market holiday list...");
 
     std::vector<Date> expectedHol;
     expectedHol.push_back(Date(1,January,2004));
@@ -226,7 +226,7 @@ void CalendarTest::testUSGovernmentBondMarket() {
 }
 
 void CalendarTest::testUSNewYorkStockExchange() {
-    BOOST_MESSAGE("Testing New York Stock Exchange holiday list...");
+    BOOST_TEST_MESSAGE("Testing New York Stock Exchange holiday list...");
 
     std::vector<Date> expectedHol;
     expectedHol.push_back(Date(1,January,2004));
@@ -316,7 +316,7 @@ void CalendarTest::testUSNewYorkStockExchange() {
 }
 
 void CalendarTest::testTARGET() {
-    BOOST_MESSAGE("Testing TARGET holiday list...");
+    BOOST_TEST_MESSAGE("Testing TARGET holiday list...");
 
     std::vector<Date> expectedHol;
     expectedHol.push_back(Date(1,January,1999));
@@ -381,7 +381,7 @@ void CalendarTest::testTARGET() {
 }
 
 void CalendarTest::testGermanyFrankfurt() {
-    BOOST_MESSAGE("Testing Frankfurt Stock Exchange holiday list...");
+    BOOST_TEST_MESSAGE("Testing Frankfurt Stock Exchange holiday list...");
 
     std::vector<Date> expectedHol;
 
@@ -415,7 +415,7 @@ void CalendarTest::testGermanyFrankfurt() {
 }
 
 void CalendarTest::testGermanyEurex() {
-    BOOST_MESSAGE("Testing Eurex holiday list...");
+    BOOST_TEST_MESSAGE("Testing Eurex holiday list...");
 
     std::vector<Date> expectedHol;
 
@@ -449,7 +449,7 @@ void CalendarTest::testGermanyEurex() {
 }
 
 void CalendarTest::testGermanyXetra() {
-    BOOST_MESSAGE("Testing Xetra holiday list...");
+    BOOST_TEST_MESSAGE("Testing Xetra holiday list...");
 
     std::vector<Date> expectedHol;
 
@@ -483,7 +483,7 @@ void CalendarTest::testGermanyXetra() {
 }
 
 void CalendarTest::testUKSettlement() {
-    BOOST_MESSAGE("Testing UK settlement holiday list...");
+    BOOST_TEST_MESSAGE("Testing UK settlement holiday list...");
 
     std::vector<Date> expectedHol;
 
@@ -538,7 +538,7 @@ void CalendarTest::testUKSettlement() {
 }
 
 void CalendarTest::testUKExchange() {
-    BOOST_MESSAGE("Testing London Stock Exchange holiday list...");
+    BOOST_TEST_MESSAGE("Testing London Stock Exchange holiday list...");
 
     std::vector<Date> expectedHol;
 
@@ -593,7 +593,7 @@ void CalendarTest::testUKExchange() {
 }
 
 void CalendarTest::testUKMetals() {
-    BOOST_MESSAGE("Testing London Metals Exchange holiday list...");
+    BOOST_TEST_MESSAGE("Testing London Metals Exchange holiday list...");
 
     std::vector<Date> expectedHol;
 
@@ -648,7 +648,7 @@ void CalendarTest::testUKMetals() {
 }
 
 void CalendarTest::testItalyExchange() {
-    BOOST_MESSAGE("Testing Milan Stock Exchange holiday list...");
+    BOOST_TEST_MESSAGE("Testing Milan Stock Exchange holiday list...");
 
     std::vector<Date> expectedHol;
 
@@ -693,7 +693,7 @@ void CalendarTest::testItalyExchange() {
 }
 
 void CalendarTest::testBrazil() {
-    BOOST_MESSAGE("Testing Brazil holiday list...");
+    BOOST_TEST_MESSAGE("Testing Brazil holiday list...");
 
     std::vector<Date> expectedHol;
 
@@ -739,7 +739,7 @@ void CalendarTest::testBrazil() {
 
 
 void CalendarTest::testSouthKoreanSettlement() {
-    BOOST_MESSAGE("Testing South-Korean settlement holiday list...");
+    BOOST_TEST_MESSAGE("Testing South-Korean settlement holiday list...");
 
     std::vector<Date> expectedHol;
     expectedHol.push_back(Date(1,January,2004));
@@ -828,7 +828,7 @@ void CalendarTest::testSouthKoreanSettlement() {
 }
 
 void CalendarTest::testKoreaStockExchange() {
-    BOOST_MESSAGE("Testing Korea Stock Exchange holiday list...");
+    BOOST_TEST_MESSAGE("Testing Korea Stock Exchange holiday list...");
 
     std::vector<Date> expectedHol;
     expectedHol.push_back(Date(1,January,2004));
@@ -922,7 +922,7 @@ void CalendarTest::testKoreaStockExchange() {
 }
 
 void CalendarTest::testEndOfMonth() {
-    BOOST_MESSAGE("Testing end-of-month calculation...");
+    BOOST_TEST_MESSAGE("Testing end-of-month calculation...");
 
     Calendar c = TARGET(); // any calendar would be OK
 
@@ -950,7 +950,7 @@ void CalendarTest::testEndOfMonth() {
 
 void CalendarTest::testBusinessDaysBetween() {
 
-    BOOST_MESSAGE("Testing calculation of business days between dates...");
+    BOOST_TEST_MESSAGE("Testing calculation of business days between dates...");
 
     std::vector<Date> testDates;
     testDates.push_back(Date(1,February,2002));
@@ -997,7 +997,7 @@ void CalendarTest::testBusinessDaysBetween() {
 
 void CalendarTest::testBespokeCalendars() {
 
-    BOOST_MESSAGE("Testing bespoke calendars...");
+    BOOST_TEST_MESSAGE("Testing bespoke calendars...");
 
     BespokeCalendar a1;
     BespokeCalendar b1;

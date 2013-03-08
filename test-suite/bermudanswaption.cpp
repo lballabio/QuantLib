@@ -104,7 +104,7 @@ namespace {
 
 void BermudanSwaptionTest::testCachedValues() {
 
-    BOOST_MESSAGE("Testing Bermudan swaption against cached values...");
+    BOOST_TEST_MESSAGE("Testing Bermudan swaption against cached values...");
 
     CommonVars vars;
 

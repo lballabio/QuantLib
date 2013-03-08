@@ -30,7 +30,7 @@ using namespace boost::unit_test_framework;
 
 void PagodaOptionTest::testCached() {
 
-    BOOST_MESSAGE("Testing pagoda option against cached values...");
+    BOOST_TEST_MESSAGE("Testing pagoda option against cached values...");
 
     Date today = Settings::instance().evaluationDate();
 
