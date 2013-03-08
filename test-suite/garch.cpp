@@ -22,7 +22,9 @@
 #include <ql/models/volatility/garch.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
-#include <boost/random.hpp>
+#include <ql/math/randomnumbers/inversecumulativerng.hpp>
+#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -45,8 +47,8 @@ namespace {
         Real logLikelihood;
     };
 
-    typedef boost::variate_generator<boost::minstd_rand,
-                                     boost::normal_distribution<Real> >
+    typedef InverseCumulativeRng<MersenneTwisterUniformRng,
+                                 InverseCumulativeNormal>
         GaussianGenerator;
 
     static Real tolerance = 1e-6;
@@ -66,13 +68,12 @@ void GARCHTest::testCalibration() {
     Date start(7, July, 1962), d = start;
     TimeSeries<Volatility> ts;
     Garch11 garch(0.2, 0.3, 0.4);
-    GaussianGenerator g(boost::minstd_rand(48),
-                        boost::normal_distribution<Real>(0.0, 1.0));
+    GaussianGenerator rng(MersenneTwisterUniformRng(48));
 
     Volatility r = 0.0, v = 0.0;
     for (std::size_t i = 0; i < 50000; ++i, d += 1) {
         v = garch.forecast(r, v);
-        r = g() * std::sqrt(v);
+        r = rng.next().value * std::sqrt(v);
         ts[d] = r;
     }
 
@@ -82,7 +83,7 @@ void GARCHTest::testCalibration() {
     Real f2 = -cgarch1.costFunction(ts.cbegin_values(), ts.cend_values(),
                                     garch.alpha(), garch.beta(), garch.omega());
 
-    Results calibrated = { 0.195123, 0.267707, 0.212535, -0.0183111 };
+    Results calibrated = { 0.207592, 0.281979, 0.204647, -0.0217413 };
 
     CHECK(calibrated, cgarch1, alpha, tolerance);
     CHECK(calibrated, cgarch1, beta, tolerance);
@@ -93,7 +94,7 @@ void GARCHTest::testCalibration() {
     Garch11 cgarch2(ts, Garch11::MomentMatchingGuess);
     DummyOptimizationMethod m;
     cgarch2.calibrate(ts, m, EndCriteria (3, 2, 0.0, 0.0, 0.0));
-    Results expected1 = { 0.277449, 0.300431, 0.167315, -0.0212112};
+    Results expected1 = { 0.265749, 0.156956, 0.230964, -0.0227179 };
 
     CHECK(expected1, cgarch2, alpha, tolerance);
     CHECK(expected1, cgarch2, beta, tolerance);
@@ -111,7 +112,7 @@ void GARCHTest::testCalibration() {
     // Type 2 initial guess - no further optimization
     Garch11 cgarch3(ts, Garch11::GammaGuess);
     cgarch3.calibrate(ts, m, EndCriteria (3, 2, 0.0, 0.0, 0.0));
-    Results expected2 = { 0.27048, 0.172062, 0.220959, -0.0198067 };
+    Results expected2 = { 0.269896, 0.211373, 0.207534, -0.022798 };
 
     CHECK(expected2, cgarch3, alpha, tolerance);
     CHECK(expected2, cgarch3, beta, tolerance);
@@ -139,7 +140,7 @@ void GARCHTest::testCalibration() {
     // results than simplex
     LevenbergMarquardt lm;
     cgarch4.calibrate(ts, lm, EndCriteria (100000, 500, 1e-8, 1e-8, 1e-8));
-    Results expected3 = { 0.253378, 0.268415, 0.68642, -0.212107 };
+    Results expected3 = { 0.265196, 0.277364, 0.678812, -0.216313 };
 
     CHECK(expected3, cgarch4, alpha, tolerance);
     CHECK(expected3, cgarch4, beta, tolerance);
