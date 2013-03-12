@@ -392,7 +392,7 @@ namespace {
         }
         Real value(const Array& x) const {
             Real fx = 0.0;
-            for (Size i=0; i<=x.size(); ++i) {
+            for (Size i=0; i<x.size(); ++i) {
                 fx += (i+1.0)*pow(x[i],4.0) + uniformRng_.nextReal();
             }
             return fx;
@@ -408,11 +408,11 @@ namespace {
         }
         Real value(const Array& x) const {
             Real fx = 0.0;
-            for (Size i=0; i<=x.size(); ++i) {
+            for (Size i=0; i<x.size(); ++i) {
                 fx += x[i]*x[i]/4000.0;
             }
             Real p = 1.0;
-            for (Size i=0; i<=x.size(); ++i) {
+            for (Size i=0; i<x.size(); ++i) {
                 p *= cos(x[i]/sqrt(i+1.0));
             }
             return fx - p + 1.0;
