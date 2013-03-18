@@ -96,6 +96,6 @@ namespace QuantLib {
             InterpolatedSmileSection<Linear>(optionTime,
                                              strikes,
                                              stdDevs,
-                                             atmVol));
+                                             atmForward));
     }
 }
