@@ -4,6 +4,7 @@
  Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2003 StatPro Italia srl
  Copyright (C) 2005 Gary Kennedy
+ Copyright (C) 2013 Fabien Le Floc'h
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -166,6 +167,32 @@ namespace {
         }
     }
 
+    template <class Bivariate>
+    void checkBivariateTail(const char* tag, Real tolerance) {
+
+        /* make sure numerical greeks are sensible, numerical error in
+         * the tails can make garbage greeks for partial time barrier
+         * option */
+        Real x = -6.9;
+        Real y = 6.9;
+        Real corr = -0.999;
+        Bivariate bvn(corr);
+        for (int i = 0; i<10;i++) {
+            Real cdf0 = bvn(x,y);
+            y = y + tolerance;
+            double cdf1 = bvn(x,y);
+            if (cdf0 > cdf1) {
+                BOOST_ERROR(tag << " cdf must be decreasing in the tails\n"
+                            << QL_SCIENTIFIC
+                            << "    cdf0: " << cdf0 << "\n"
+                            << "    cdf1: " << cdf1 << "\n"
+                            << "    x: " << x << "\n"
+                            << "    y: " << y << "\n"
+                            << "    rho: " << corr);
+            }
+        }
+    }
+
 }
 
 
@@ -257,9 +284,19 @@ void DistributionTest::testBivariate() {
                                                       "Drezner 1978", 1.0e-6);
     checkBivariate<BivariateCumulativeNormalDistributionDr78>("Drezner 1978");
 
+    // due to relative low accuracy of Dr78, it does not pass with a
+    // smaller perturbation
+    checkBivariateTail<BivariateCumulativeNormalDistributionDr78>(
+                                                        "Drezner 1978", 1.0e-5);
+
     checkBivariateAtZero<BivariateCumulativeNormalDistributionWe04DP>(
                                                         "West 2004", 1.0e-15);
     checkBivariate<BivariateCumulativeNormalDistributionWe04DP>("West 2004");
+
+    checkBivariateTail<BivariateCumulativeNormalDistributionWe04DP>(
+                                                        "West 2004", 1.0e-6);
+    checkBivariateTail<BivariateCumulativeNormalDistributionWe04DP>(
+                                                        "West 2004", 1.0e-8);
 }
 
 

@@ -244,7 +244,14 @@ namespace QuantLib {
             } else {
                 BVN *= -1;
                 if (k > h) {
-                    BVN += cumnorm_(k) - cumnorm_(h);
+                    // evaluate cumnorm where it is most precise, that
+                    // is in the lower tail because of double accuracy
+                    // around 0.0 vs around 1.0
+                    if (h >= 0) {
+                        BVN += cumnorm_(-h) - cumnorm_(-k);
+                    } else {
+                        BVN += cumnorm_(k) - cumnorm_(h);
+                    }
                 }
             }
         }
