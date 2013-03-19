@@ -46,7 +46,9 @@ namespace QuantLib {
                            const boost::shared_ptr<IborIndex>& index,
                            Rate switchStrikes = Null<Rate>(),
                            Real accuracy = 1.0e-6,
-                           Natural maxIter = 100);
+                           Natural maxIter = 100,
+                           const Handle<YieldTermStructure>& discount =
+                                                Handle<YieldTermStructure>());
 
         const Matrix& capFloorPrices() const;
         const Matrix& capFloorVolatilities() const;

@@ -27,13 +27,15 @@ namespace QuantLib {
 
     OptionletStripper::OptionletStripper(
             const boost::shared_ptr<CapFloorTermVolSurface>& termVolSurface,
-            const boost::shared_ptr<IborIndex>& iborIndex)
+            const boost::shared_ptr<IborIndex>& iborIndex,
+            const Handle<YieldTermStructure>& discount)
     : termVolSurface_(termVolSurface),
-      iborIndex_(iborIndex),
+      iborIndex_(iborIndex), discount_(discount),
       nStrikes_(termVolSurface->strikes().size()) {
         
         registerWith(termVolSurface);
         registerWith(iborIndex_);
+        registerWith(discount_);
         registerWith(Settings::instance().evaluationDate());
 
         Period indexTenor = iborIndex_->tenor();

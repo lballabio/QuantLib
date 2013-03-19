@@ -27,6 +27,7 @@
 
 #include <ql/termstructures/volatility/optionlet/strippedoptionletbase.hpp>
 #include <ql/termstructures/volatility/capfloor/capfloortermvolsurface.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
 
@@ -62,9 +63,12 @@ namespace QuantLib {
 
       protected:
         OptionletStripper(const boost::shared_ptr<CapFloorTermVolSurface>&,
-                          const boost::shared_ptr<IborIndex>& iborIndex_);
-        const boost::shared_ptr<CapFloorTermVolSurface> termVolSurface_;
-        const boost::shared_ptr<IborIndex> iborIndex_;
+                          const boost::shared_ptr<IborIndex>& iborIndex_,
+                          const Handle<YieldTermStructure>& discount =
+                                                Handle<YieldTermStructure>());
+        boost::shared_ptr<CapFloorTermVolSurface> termVolSurface_;
+        boost::shared_ptr<IborIndex> iborIndex_;
+        Handle<YieldTermStructure> discount_;
         Size nStrikes_;
         Size nOptionletTenors_;
 

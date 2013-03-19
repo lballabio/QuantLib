@@ -37,8 +37,9 @@ namespace QuantLib {
             const shared_ptr<IborIndex>& index,
             Rate switchStrike,
             Real accuracy,
-            Natural maxIter)
-    : OptionletStripper(termVolSurface, index),
+            Natural maxIter,
+            const Handle<YieldTermStructure>& discount)
+    : OptionletStripper(termVolSurface, index, discount),
       volQuotes_(nOptionletTenors_,
                  std::vector<shared_ptr<SimpleQuote> >(nStrikes_)),
       floatingSwitchStrike_(switchStrike==Null<Rate>() ? true : false),
@@ -61,7 +62,8 @@ namespace QuantLib {
         const Date& referenceDate = termVolSurface_->referenceDate();
         const DayCounter& dc = termVolSurface_->dayCounter();
         shared_ptr<BlackCapFloorEngine> dummy(new
-                    BlackCapFloorEngine(iborIndex_->forwardingTermStructure(),
+                    BlackCapFloorEngine(// discounting does not matter here
+                                        iborIndex_->forwardingTermStructure(),
                                         0.20, dc));
         for (Size i=0; i<nOptionletTenors_; ++i) {
             CapFloor temp = MakeCapFloor(CapFloor::Cap,
@@ -88,6 +90,11 @@ namespace QuantLib {
             switchStrike_ = averageAtmOptionletRate / nOptionletTenors_;
         }
 
+        const Handle<YieldTermStructure>& discountCurve =
+            discount_.empty() ?
+                iborIndex_->forwardingTermStructure() :
+                discount_;
+
         const std::vector<Rate>& strikes = termVolSurface_->strikes();
         // initialize CapFloorMatrix
         if (capFlooMatrixNotInitialized_) {
@@ -103,7 +110,7 @@ namespace QuantLib {
                                                                 SimpleQuote());
                     shared_ptr<BlackCapFloorEngine> engine(new
                         BlackCapFloorEngine(
-                                        iborIndex_->forwardingTermStructure(),
+                                        discountCurve,
                                         Handle<Quote>(volQuotes_[i][j]),
                                         dc));
                     capFloors_[i][j] = MakeCapFloor(capFloorType,
@@ -132,8 +139,7 @@ namespace QuantLib {
                                                         previousCapFloorPrice;
                 previousCapFloorPrice = capFloorPrices_[i][j];
                 DiscountFactor d =
-                    iborIndex_->forwardingTermStructure()->discount(
-                                                   optionletPaymentDates_[i]);
+                    discountCurve->discount(optionletPaymentDates_[i]);
                 DiscountFactor optionletAnnuity=optionletAccrualPeriods_[i]*d;
                 try {
                     optionletStDevs_[i][j] =
