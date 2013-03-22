@@ -49,8 +49,6 @@ namespace QuantLib {
           rTS_           (rTS),
           solverDesc_    (solverDesc),
           schemeDesc_    (schemeDesc) {
-            QL_REQUIRE(N >= 3, "KlugeExtOU solver can't be applied on meshes "
-                               "with less than three dimensions");
             registerWith(klugeOUProcess_);
         }
 
@@ -78,6 +76,8 @@ namespace QuantLib {
         const FdmSchemeDesc schemeDesc_;
 
         mutable boost::shared_ptr<FdmNdimSolver<N> > solver_;
+        BOOST_STATIC_ASSERT(N >= 3); // KlugeExtOU solver can't be applied on meshes
+                                     // with less than three dimensions
     };
 }
 
