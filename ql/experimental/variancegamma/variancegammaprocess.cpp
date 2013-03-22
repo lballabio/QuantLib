@@ -43,12 +43,12 @@ namespace QuantLib {
         return s0_->value();
     }
 
-    Real VarianceGammaProcess::drift(Time t, Real x) const
+    Real VarianceGammaProcess::drift(Time /*t*/, Real /*x*/) const
     {
         QL_FAIL("not implemented yet");
     }
 
-    Real VarianceGammaProcess::diffusion(Time t, Real x) const
+    Real VarianceGammaProcess::diffusion(Time /*t*/, Real /*x*/) const
     {
         QL_FAIL("not implemented yet");
     }

@@ -155,7 +155,7 @@ namespace QuantLib {
     Size FdmSquareRootFwdOp::size() const {
         return 1;
     }
-    void FdmSquareRootFwdOp::setTime(Time t1, Time t2) {
+    void FdmSquareRootFwdOp::setTime(Time /*t1*/, Time /*t2*/) {
     }
 
     Disposable<Array> FdmSquareRootFwdOp::apply(const Array& r) const {

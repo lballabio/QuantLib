@@ -39,11 +39,11 @@ namespace QuantLib {
             //! Tests if params satisfy the constraint
             virtual bool test(const Array& params) const = 0;
             //! Returns upper bound for given parameters
-            virtual Array upperBound(const Array& params) const {
+            virtual Array upperBound(const Array& /*params*/) const {
                 return Array();
             }
             //! Returns lower bound for given parameters
-            virtual Array lowerBound(const Array& params) const {
+            virtual Array lowerBound(const Array& /*params*/) const {
                 return Array();
             }
         };
@@ -199,10 +199,10 @@ namespace QuantLib {
                 }
                 return true;
             }
-            Array upperBound(const Array& params) const {
+            Array upperBound(const Array&) const {
                 return high_;
             }
-            Array lowerBound(const Array& params) const {
+            Array lowerBound(const Array&) const {
                 return low_;
             }
           private:

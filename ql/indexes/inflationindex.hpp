@@ -65,7 +65,7 @@ namespace QuantLib {
             NullCalendar as its fixing calendar.
         */
         Calendar fixingCalendar() const;
-        bool isValidFixingDate(const Date& fixingDate) const { return true; }
+        bool isValidFixingDate(const Date&) const { return true; }
 
         /*! Forecasting index values requires an inflation term
             structure.  The inflation term structure (ITS) defines the

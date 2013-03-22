@@ -51,7 +51,7 @@ namespace {
 
     typedef std::complex<double> Complex;
 
-    double IvopOneDim(double eps, double chi, double theta, double rho,
+    double IvopOneDim(double eps, double chi, double theta, double /*rho*/,
                       double v0, double eprice, double tau, double rtax)
     {
         double i0=0.0, s=0.0, ss=0.0;
@@ -195,7 +195,7 @@ namespace {
 
 
 
-    double IvopTwoDim(double eps, double chi, double theta, double rho,
+    double IvopTwoDim(double eps, double chi, double theta, double /*rho*/,
                     double v0, double tau, double rtax,
                     const boost::function<double(double)>& payoff) {
 

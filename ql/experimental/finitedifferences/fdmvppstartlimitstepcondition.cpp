@@ -46,7 +46,7 @@ namespace QuantLib {
     }
 
     Disposable<Array> FdmVPPStartLimitStepCondition::changeState(
-        const Real gasPrice, const Array& state, Time t) const {
+        const Real gasPrice, const Array& state, Time) const {
         const Real startUpCost
                 = startUpFixCost_ + (gasPrice + fuelCostAddon_)*startUpFuel_;
 

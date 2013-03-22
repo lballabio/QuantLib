@@ -46,7 +46,7 @@ namespace QuantLib {
     }
 
 
-    FdmSolverDesc FdHestonVanillaEngine::getSolverDesc(Real scaleFactor) const {
+    FdmSolverDesc FdHestonVanillaEngine::getSolverDesc(Real) const {
         // 1. Mesher
         const boost::shared_ptr<HestonProcess> process = model_->process();
         const Time maturity = process->time(arguments_.exercise->lastDate());

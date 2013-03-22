@@ -231,7 +231,7 @@ namespace QuantLib {
         return w;
     }
 
-    Real AnalyticTwoAssetBarrierEngine::B(Real eta, Real phi) const {
+    Real AnalyticTwoAssetBarrierEngine::B(Real, Real) const {
         return 0.0;
     }
 

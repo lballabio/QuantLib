@@ -56,7 +56,7 @@ namespace QuantLib {
     }
 
     Real GeneralizedOrnsteinUhlenbeckProcess::variance(
-                                              Time t, Real x, Time dt) const {
+                                              Time t, Real, Time dt) const {
         Real speed = speed_(t);
         Volatility vol = volatility_(t);
 

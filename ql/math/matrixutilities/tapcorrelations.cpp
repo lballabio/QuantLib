@@ -56,7 +56,7 @@ namespace QuantLib {
 
     Disposable<Matrix> lmmTriangularAnglesParametrization(const Array& angles,
                                                           Size matrixSize,
-                                                          Size rank) {
+                                                          Size) {
         Matrix m(matrixSize, matrixSize);
         for (Size i=0; i<m.rows(); ++i) {
             Real cosPhi, sinPhi;

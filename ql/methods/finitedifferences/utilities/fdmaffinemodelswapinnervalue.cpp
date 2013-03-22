@@ -38,7 +38,7 @@ namespace QuantLib {
 
     template <>
     Disposable<Array> FdmAffineModelSwapInnerValue<G2>::getState(
-        const boost::shared_ptr<G2>& model, Time t,
+        const boost::shared_ptr<G2>&, Time,
         const FdmLinearOpIterator& iter) const {
 
         Array retVal(2);

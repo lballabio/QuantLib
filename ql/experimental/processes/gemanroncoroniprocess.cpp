@@ -62,11 +62,11 @@ namespace QuantLib {
         return muPrime + theta1_*(mu-x);
     }
     
-    Real GemanRoncoroniProcess::diffusion(Time t, Real x) const {
+    Real GemanRoncoroniProcess::diffusion(Time t, Real /*x*/) const {
         return std::sqrt(sig2_ + a_*square<Real>()(std::cos(M_PI*t+b_)));
     }
 
-    Real GemanRoncoroniProcess::stdDeviation(Time t0, Real x0, Time dt) const {
+    Real GemanRoncoroniProcess::stdDeviation(Time t0, Real /*x0*/, Time dt) const {
         const Volatility sig2t = sig2_+a_*square<Real>()(std::cos(M_PI*t0+b_));
         
         return std::sqrt(sig2t/(2*theta1_)*(1.0-std::exp(-2*theta1_*dt)));

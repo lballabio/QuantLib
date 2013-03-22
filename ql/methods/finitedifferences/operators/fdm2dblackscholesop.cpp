@@ -38,7 +38,7 @@ namespace QuantLib {
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& p1,
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& p2,
             Real correlation,
-            Time maturity,
+            Time /*maturity*/,
             bool localVol,
             Real illegalLocalVolOverwrite)
     : mesher_(mesher),

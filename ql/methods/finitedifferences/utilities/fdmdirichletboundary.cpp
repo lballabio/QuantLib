@@ -59,7 +59,7 @@ namespace QuantLib {
     }
     
     void FdmDirichletBoundary::applyBeforeSolving(operator_type&,
-                                                  array_type& rhs) const {
+                                                  array_type&) const {
     }
 
     void FdmDirichletBoundary::applyAfterSolving(Array& rhs) const {
