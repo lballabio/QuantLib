@@ -68,44 +68,44 @@ namespace QuantLib {
     //--------------------------------------------------------------------------
         return probabilityOfNEvents(p)[k];
 
-        vector<Real> w (p.size(), 0);
-        vector<Real> u (k+1, 0);
-        vector<Real> v (k+1, 0);
+//      vector<Real> w (p.size(), 0);
+//      vector<Real> u (k+1, 0);
+//      vector<Real> v (k+1, 0);
 
-        Real pZero = 1.0;
-        for (Size i = 0; i < w.size(); i++) {
-            pZero *= (1.0 - p[i]);
-            w[i] = p[i] / (1.0 - p[i]);
-        }
+//      Real pZero = 1.0;
+//      for (Size i = 0; i < w.size(); i++) {
+//          pZero *= (1.0 - p[i]);
+//          w[i] = p[i] / (1.0 - p[i]);
+//      }
 
-        if (k == 0) return pZero;
+//      if (k == 0) return pZero;
 
-        int kk = k;
-        Real prodw = 1.0;
+//      int kk = k;
+//      Real prodw = 1.0;
 
-        // Cumulated probability of up to n events:
-        // Cut off when the cumulated probability reaches 1,
-        // i.e. set all following probabilities of exactly n events to zero.
-        Real sum = 1.0;
+//      Cumulated probability of up to n events:
+//      Cut off when the cumulated probability reaches 1,
+//      i.e. set all following probabilities of exactly n events to zero.
+//      Real sum = 1.0;
 
-        u[0] = 1.0;
-        for (int i = 1; i <= kk; i++) {
-            v[i] = 0;
-            for (Size j = 0; j < w.size(); j++)
-                v[i] += pow (w[j], i);
-            u[i] = 0;
-            for (int j = 1; j <= i; j++)
-                u[i] +=  pow (-1.0, j+1) * v[j] * u[i-j];
-            u[i] /= i;
+//      u[0] = 1.0;
+//      for (int i = 1; i <= kk; i++) {
+//          v[i] = 0;
+//          for (Size j = 0; j < w.size(); j++)
+//              v[i] += pow (w[j], i);
+//          u[i] = 0;
+//          for (int j = 1; j <= i; j++)
+//              u[i] +=  pow (-1.0, j+1) * v[j] * u[i-j];
+//          u[i] /= i;
 
-            // cut off
-            if (sum * pZero >= 1.0 || u[i] < 0 || u[i] * pZero >= 1.0)
-                u[i] = 0;
+//          cut off
+//          if (sum * pZero >= 1.0 || u[i] < 0 || u[i] * pZero >= 1.0)
+//              u[i] = 0;
 
-            sum += u[i];
-        }
+//          sum += u[i];
+//      }
 
-        return pZero * prodw * u[kk];
+//      return pZero * prodw * u[kk];
     }
 
     //--------------------------------------------------------------------------

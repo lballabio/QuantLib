@@ -74,7 +74,6 @@ namespace QuantLib {
                    ") must be less than optionletStrikes size (" <<
                    optionletStrikes_.size() << ")");
         return optionletStrikes_[i];
-        return optionletStrikes_[i];
     }   
 
     const vector<Volatility>&

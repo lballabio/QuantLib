@@ -58,13 +58,11 @@ namespace QuantLib {
     }
 
 
-    Real CPICouponPricer::optionletPriceImp(Option::Type optionType,
-                                                     Real effStrike,
-                                                     Real forward,
-                                                     Real stdDev
-                                   ) const {
+    Real CPICouponPricer::optionletPriceImp(Option::Type,
+                                            Real,
+                                            Real,
+                                            Real) const {
         QL_FAIL("you must implement this to get a vol-dependent price");
-        return effStrike*forward*stdDev*optionType;
     }
 
 
