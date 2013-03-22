@@ -78,7 +78,7 @@ namespace QuantLib {
         QL_REQUIRE(iPos==str.length()-1, "unknown '" <<
                    str.substr(str.length()-1, str.length()) << "' unit");
         TimeUnit units = Days;
-        char abbr = std::toupper(str[iPos]);
+        char abbr = static_cast<char>(std::toupper(str[iPos]));
         if      (abbr == 'D') units = Days;
         else if (abbr == 'W') units = Weeks;
         else if (abbr == 'M') units = Months;
