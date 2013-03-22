@@ -250,10 +250,11 @@
     #pragma warning(disable: 4049)
 #endif
 
+extern
 
 #ifdef __cplusplus
 
-extern "C"
+"C"
 
 #endif
 

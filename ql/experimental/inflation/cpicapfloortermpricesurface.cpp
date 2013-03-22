@@ -39,7 +39,7 @@ namespace QuantLib {
                                 const Matrix &fPrice)
     : InflationTermStructure(0, cal, baseRate, observationLag, zii->frequency(), 
                              zii->interpolated(), yts, dc),
-      zii_(zii), cStrikes_(cStrikes), fStrikes_(fStrikes),
+      nominal_(nominal), zii_(zii), cStrikes_(cStrikes), fStrikes_(fStrikes),
       cfMaturities_(cfMaturities), cPrice_(cPrice), fPrice_(fPrice), bdc_(bdc) {
 
           // does the index have a TS?

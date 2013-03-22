@@ -46,7 +46,7 @@ namespace QuantLib {
                 const Handle<ZeroInflationIndex> &infIndex,
                 const Period& observationLag,
                              CPI::InterpolationType observationInterpolation)
-    : type_(type), startDate_(startDate), baseCPI_(baseCPI),
+    : type_(type), nominal_(nominal), startDate_(startDate), baseCPI_(baseCPI),
     maturity_(maturity), fixCalendar_(fixCalendar), fixConvention_(fixConvention),
     payCalendar_(payCalendar), payConvention_(payConvention),
     strike_(strike), infIndex_(infIndex), observationLag_(observationLag),
