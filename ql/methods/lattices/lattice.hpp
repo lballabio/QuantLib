@@ -118,20 +118,20 @@ namespace QuantLib {
     }
 
     template <class Impl>
-    Real TreeLattice<Impl>::presentValue(DiscretizedAsset& asset) const {
+    inline Real TreeLattice<Impl>::presentValue(DiscretizedAsset& asset) const {
         Size i = t_.index(asset.time());
         return DotProduct(asset.values(), statePrices(i));
     }
 
     template <class Impl>
-    void TreeLattice<Impl>::initialize(DiscretizedAsset& asset, Time t) const {
+    inline void TreeLattice<Impl>::initialize(DiscretizedAsset& asset, Time t) const {
         Size i = t_.index(t);
         asset.time() = t;
         asset.reset(this->impl().size(i));
     }
 
     template <class Impl>
-    void TreeLattice<Impl>::rollback(DiscretizedAsset& asset, Time to) const {
+    inline void TreeLattice<Impl>::rollback(DiscretizedAsset& asset, Time to) const {
         partialRollback(asset,to);
         asset.adjustValues();
     }

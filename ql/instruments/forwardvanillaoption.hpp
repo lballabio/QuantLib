@@ -65,7 +65,7 @@ namespace QuantLib {
     // template definitions
 
     template <class ArgumentsType>
-    void ForwardOptionArguments<ArgumentsType>::validate() const {
+    inline void ForwardOptionArguments<ArgumentsType>::validate() const {
         ArgumentsType::validate();
 
         QL_REQUIRE(moneyness != Null<Real>(), "null moneyness given");
