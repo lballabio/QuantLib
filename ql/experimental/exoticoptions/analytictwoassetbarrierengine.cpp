@@ -40,7 +40,6 @@ namespace QuantLib {
         QL_REQUIRE(payoff, "non-plain payoff given");
         QL_REQUIRE(payoff->strike()>0.0,"strike must be positive");
 
-        Real strike = payoff->strike();
         Real spot2 = process2_->x0();
         // option is triggered by S2
         QL_REQUIRE(spot2 >= 0.0, "negative or null underlying given");

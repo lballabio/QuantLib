@@ -539,7 +539,9 @@ namespace QuantLib {
         Garch11CostFunction cost(r2);
         boost::shared_ptr<Problem> problem(
                                new Problem(cost, constraints, initGuess));
-        EndCriteria::Type ret = method.minimize(*problem, endCriteria);
+        // TODO: check return value from minimize()
+        /* EndCriteria::Type ret = */
+        method.minimize(*problem, endCriteria);
         const Array &optimum = problem->currentValue();
         alpha = optimum[1];
         beta = optimum[2];
