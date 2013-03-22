@@ -6687,6 +6687,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmblackscholesfwdop.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmblackscholesfwdop.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmexpextouinnervaluecalculator.hpp"
 					>
 				</File>
@@ -6719,6 +6727,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmhestonfwdop.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmhestonfwdop.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmklugeextouop.cpp"
 					>
 				</File>
@@ -6740,6 +6756,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmspreadpayoffinnervalue.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmsquarerootfwdop.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmsquarerootfwdop.hpp"
 					>
 				</File>
 				<File
@@ -6796,6 +6820,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\glued1dmesher.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\modtriplebandlinearop.hpp"
 					>
 				</File>
 				<File
