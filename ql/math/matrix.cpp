@@ -25,6 +25,7 @@
 #if defined(QL_PATCH_MSVC)
 #pragma warning(push)
 #pragma warning(disable:4180)
+#pragma warning(disable:4127)
 #endif
 
 #if !defined(QL_NO_UBLAS_SUPPORT)

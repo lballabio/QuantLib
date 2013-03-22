@@ -56,16 +56,33 @@ namespace QuantLib {
 
 }
 
+/* Fix C4127: conditional expression is constant when wrapping macros
+   with do { ... } while(false); on MSVC
+*/
+#define MULTILINE_MACRO_BEGIN do {
+
+#if defined(BOOST_MSVC) && BOOST_MSVC >= 1500
+    /* __pragma is available from VC++9 */
+    #define MULTILINE_MACRO_END \
+        __pragma(warning(push)) \
+        __pragma(warning(disable:4127)) \
+        } while(false) \
+        __pragma(warning(pop))
+#else
+    #define MULTILINE_MACRO_END } while(false)
+#endif
+
+
 /*! \def QL_FAIL
     \brief throw an error (possibly with file and line information)
 */
 #define QL_FAIL(message) \
-do { \
+MULTILINE_MACRO_BEGIN \
     std::ostringstream _ql_msg_stream; \
     _ql_msg_stream << message; \
     throw QuantLib::Error(__FILE__,__LINE__, \
                           BOOST_CURRENT_FUNCTION,_ql_msg_stream.str()); \
-} while (false)
+MULTILINE_MACRO_END
 
 
 /*! \def QL_ASSERT

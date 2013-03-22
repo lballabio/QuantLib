@@ -215,7 +215,7 @@ namespace QuantLib {
         int f;
         Real x;
 
-        do {
+        for (;;) {
             j = mt32_.nextInt32(); // generate 32 bits of randomness
             f = j & 1; // 1 bit to choose a tails
             j >>= 1;
@@ -235,7 +235,7 @@ namespace QuantLib {
                                                       p_*mt32_.nextReal()+q_);
                 break;
             }
-        } while (true);
+        }
 
         return x;
     }

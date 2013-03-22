@@ -33,6 +33,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #if defined(QL_PATCH_MSVC)
 #pragma warning(push)
 #pragma warning(disable:4180)
+#pragma warning(disable:4127)
 #endif
 
 #include <boost/numeric/ublas/matrix_sparse.hpp>
