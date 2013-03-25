@@ -111,8 +111,9 @@ namespace QuantLib {
             return fixing;
 
         // see Hull, 4th ed., page 550
-        Date d2 = index_->maturityDate(d1);
-        Time tau = index_->dayCounter().yearFraction(d1, d2);
+        Date d2 = index_->valueDate(d1);
+        Date d3 = index_->maturityDate(d2);
+        Time tau = index_->dayCounter().yearFraction(d2, d3);
         Real variance = capletVolatility()->blackVariance(d1, fixing);
         Spread adjustement = fixing*fixing*variance*tau/(1.0+fixing*tau);
         return fixing + adjustement;
