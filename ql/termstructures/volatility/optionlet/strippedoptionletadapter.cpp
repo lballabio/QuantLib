@@ -23,6 +23,8 @@
 #include <ql/termstructures/volatility/capfloor/capfloortermvolsurface.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/interpolations/sabrinterpolation.hpp>
+#include <ql/termstructures/volatility/interpolatedsmilesection.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
 
 namespace QuantLib {
 
@@ -39,8 +41,16 @@ namespace QuantLib {
     }
 
     boost::shared_ptr<SmileSection>
-    StrippedOptionletAdapter::smileSectionImpl(Time) const {
-        QL_FAIL("Not implemented yet");
+    StrippedOptionletAdapter::smileSectionImpl(Time t) const {
+         std::vector<Rate> optionletStrikes = optionletStripper_->optionletStrikes(0); // strikes are the same for all times ?!
+         std::vector<Real> stddevs;
+         for(Size i=0;i<optionletStrikes.size();i++) {
+             stddevs.push_back(volatilityImpl(t,optionletStrikes[i])*std::sqrt(t));
+         }
+         // Extrapolation may be a problem with splines, but since minStrike() and maxStrike() are set, we assume that no one will use stddevs for strikes outside these strikes
+         CubicInterpolation::BoundaryCondition bc = optionletStrikes.size()>=4 ? CubicInterpolation::Lagrange : CubicInterpolation::SecondDerivative;
+         return boost::shared_ptr<SmileSection>(new InterpolatedSmileSection<Cubic>(t,optionletStrikes,stddevs,Null<Real>(),
+                                                            Cubic(CubicInterpolation::Spline,false,bc,0.0,bc,0.0)));
     }
 
     Volatility StrippedOptionletAdapter::volatilityImpl(Time length,
