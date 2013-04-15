@@ -27,13 +27,15 @@
 
 #include <ql/quote.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
-
+#include <ql/patterns/lazyobject.hpp>
 #include <list>
 
 namespace QuantLib {
+
     class PricingEngine;
+
     //! liquid market instrument used during calibration
-    class CalibrationHelper : public Observer, public Observable {
+    class CalibrationHelper : public LazyObject {
       public:
         enum CalibrationErrorType {
                             RelativePriceError, PriceError, ImpliedVolError};
@@ -47,13 +49,12 @@ namespace QuantLib {
             registerWith(volatility_);
             registerWith(termStructure_);
         }
-        void update() {
+        void performCalculations() const {
             marketValue_ = blackPrice(volatility_->value());
-            notifyObservers();
         }
 
         //! returns the actual price of the instrument (from volatility)
-        Real marketValue() const { return marketValue_; }
+        Real marketValue() const { calculate(); return marketValue_; }
 
         //! returns the price of the instrument according to the model
         virtual Real modelValue() const = 0;
@@ -78,7 +79,7 @@ namespace QuantLib {
         }
 
       protected:
-        Real marketValue_;
+        mutable Real marketValue_;
         Handle<Quote> volatility_;
         Handle<YieldTermStructure> termStructure_;
         boost::shared_ptr<PricingEngine> engine_;
