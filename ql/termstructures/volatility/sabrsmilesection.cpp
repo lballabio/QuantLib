@@ -55,12 +55,14 @@ namespace QuantLib {
     }
 
      Real SabrSmileSection::varianceImpl(Rate strike) const {
+        strike = std::max(0.00001,strike);
         Volatility vol = unsafeSabrVolatility(strike, forward_,
             exerciseTime(), alpha_, beta_, nu_, rho_);
         return vol*vol*exerciseTime();
      }
 
      Real SabrSmileSection::volatilityImpl(Rate strike) const {
+        strike = std::max(0.00001,strike);
         return unsafeSabrVolatility(strike, forward_,
             exerciseTime(), alpha_, beta_, nu_, rho_);
      }
