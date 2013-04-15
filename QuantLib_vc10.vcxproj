@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (static runtime)|Win32">
@@ -1332,6 +1332,15 @@
     <ClInclude Include="ql\experimental\math\fastfouriertransform.hpp" />
     <ClInclude Include="ql\experimental\math\frankcopularng.hpp" />
     <ClInclude Include="ql\experimental\math\zigguratrng.hpp" />
+    <ClInclude Include="ql\experimental\models\all.hpp" />
+    <ClInclude Include="ql\experimental\models\atmadjustedsmilesection.hpp" />
+    <ClInclude Include="ql\experimental\models\atmsmilesection.hpp" />
+    <ClInclude Include="ql\experimental\models\kahalesmilesection.hpp" />
+    <ClInclude Include="ql\experimental\models\markovfunctional.hpp" />
+    <ClInclude Include="ql\experimental\models\markovfunctionalcapfloorengine.hpp" />
+    <ClInclude Include="ql\experimental\models\markovfunctionalswaptionengine.hpp" />
+    <ClInclude Include="ql\experimental\models\mfstateprocess.hpp" />
+    <ClInclude Include="ql\experimental\models\smilesectionutils.hpp" />
     <ClInclude Include="ql\auto_link.hpp" />
     <ClInclude Include="ql\cashflow.hpp" />
     <ClInclude Include="ql\compounding.hpp" />
@@ -2086,6 +2095,14 @@
     <ClCompile Include="ql\experimental\inflation\yoycapfloortermpricesurface.cpp" />
     <ClCompile Include="ql\experimental\inflation\yoyoptionlethelpers.cpp" />
     <ClCompile Include="ql\experimental\math\zigguratrng.cpp" />
+    <ClCompile Include="ql\experimental\models\atmadjustedsmilesection.cpp" />
+    <ClCompile Include="ql\experimental\models\atmsmilesection.cpp" />
+    <ClCompile Include="ql\experimental\models\kahalesmilesection.cpp" />
+    <ClCompile Include="ql\experimental\models\markovfunctional.cpp" />
+    <ClCompile Include="ql\experimental\models\markovfunctionalcapfloorengine.cpp" />
+    <ClCompile Include="ql\experimental\models\markovfunctionalswaptionengine.cpp" />
+    <ClCompile Include="ql\experimental\models\mfstateprocess.cpp" />
+    <ClCompile Include="ql\experimental\models\smilesectionutils.cpp" />
     <ClCompile Include="ql\cashflow.cpp" />
     <ClCompile Include="ql\currency.cpp" />
     <ClCompile Include="ql\discretizedasset.cpp" />

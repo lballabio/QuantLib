@@ -221,6 +221,9 @@
     <ClCompile Include="marketmodel_smmcaplethomocalibration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="markovfunctional.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="matrices.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -579,6 +582,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="marketmodel_smmcaplethomocalibration.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="markovfunctional.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="matrices.hpp">

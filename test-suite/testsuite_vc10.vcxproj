@@ -395,6 +395,7 @@
     <ClCompile Include="marketmodel_smmcapletalphacalibration.cpp" />
     <ClCompile Include="marketmodel_smmcapletcalibration.cpp" />
     <ClCompile Include="marketmodel_smmcaplethomocalibration.cpp" />
+    <ClCompile Include="markovfunctional.cpp" />
     <ClCompile Include="matrices.cpp" />
     <ClCompile Include="mclongstaffschwartzengine.cpp" />
     <ClCompile Include="mersennetwister.cpp" />
@@ -517,6 +518,7 @@
     <ClInclude Include="marketmodel_smmcapletalphacalibration.hpp" />
     <ClInclude Include="marketmodel_smmcapletcalibration.hpp" />
     <ClInclude Include="marketmodel_smmcaplethomocalibration.hpp" />
+    <ClInclude Include="markovfunctional.hpp" />
     <ClInclude Include="matrices.hpp" />
     <ClInclude Include="mclongstaffschwartzengine.hpp" />
     <ClInclude Include="mersennetwister.hpp" />

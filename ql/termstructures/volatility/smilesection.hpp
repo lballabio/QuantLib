@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Mario Pucci
+ Copyright (C) 2013 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +28,7 @@
 #include <ql/patterns/observable.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/utilities/null.hpp>
+#include <ql/option.hpp>
 
 namespace QuantLib {
 
@@ -54,6 +56,18 @@ namespace QuantLib {
         const Date& referenceDate() const;
         Time exerciseTime() const { return exerciseTime_; }
         const DayCounter& dayCounter() const { return dc_; }
+        virtual Real optionPrice(Rate strike,
+                                 Option::Type type = Option::Call,
+                                 Real discount=1.0) const;
+        virtual Real digitalOptionPrice(Rate strike,
+                                        Option::Type type = Option::Call,
+                                        Real discount=1.0,
+                                        Real gap=1.0e-5) const;
+        virtual Real vega(Rate strike,
+                          Real discount=1.0) const;
+        virtual Real density(Rate strike,
+                             Real discount=1.0,
+                             Real gap=1.0E-4) const;
       protected:
         virtual void initializeExerciseTime() const;
         virtual Real varianceImpl(Rate strike) const;

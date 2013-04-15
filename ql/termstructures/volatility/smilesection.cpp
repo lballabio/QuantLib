@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Mario Pucci
+ Copyright (C) 2013 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,6 +19,7 @@
 */
 
 #include <ql/termstructures/volatility/smilesection.hpp>
+#include <ql/pricingengines/blackformula.hpp>
 #include <ql/settings.hpp>
 
 namespace QuantLib {
@@ -57,6 +59,44 @@ namespace QuantLib {
         QL_REQUIRE(exerciseTime_>=0.0,
                    "expiry time must be positive: " <<
                    exerciseTime_ << " not allowed");
+    }
+
+    Real SmileSection::optionPrice(Rate strike,
+                                   Option::Type type,
+                                   Real discount) const {
+        Real atm = atmLevel();
+        QL_REQUIRE(atm != Null<Real>(),
+                   "smile section must provide atm level to compute option price");
+        // for zero strike, return option price even if outside
+        // minstrike, maxstrike interval
+        return blackFormula(type,strike,atm, fabs(strike) < QL_EPSILON ?
+                            0.2 : sqrt(variance(strike)),discount);
+    }
+
+    Real SmileSection::digitalOptionPrice(Rate strike,
+                                          Option::Type type,
+                                          Real discount,
+                                          Real gap) const {
+        Real kl = std::max(strike-gap/2.0,0.0);
+        Real kr = kl+gap;
+        return (type==Option::Call ? 1.0 : -1.0) *
+            (optionPrice(kl,type,discount)-optionPrice(kr,type,discount)) / gap;
+    }
+    
+    Real SmileSection::density(Rate strike, Real discount, Real gap) const {
+        Real kl = std::max(strike-gap/2.0,0.0);
+        Real kr = kl+gap;
+        return (digitalOptionPrice(kl,Option::Call,discount,gap) -
+                digitalOptionPrice(kr,Option::Call,discount,gap)) / gap;
+    }
+
+    Real SmileSection::vega(Rate strike, Real discount) const {
+        Real atm = atmLevel();
+        QL_REQUIRE(atm != Null<Real>(),
+                   "smile section must provide atm level to compute option price");
+        return blackFormulaVolDerivative(strike,atmLevel(),
+                                         sqrt(variance(strike)),
+                                         exerciseTime(),discount)*0.01;
     }
 
 }

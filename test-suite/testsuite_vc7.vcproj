@@ -666,6 +666,9 @@
 				RelativePath=".\marketmodel_smmcaplethomocalibration.cpp">
 			</File>
 			<File
+				RelativePath="markovfunctional.cpp">
+			</File>
+			<File
 				RelativePath="matrices.cpp">
 			</File>
 			<File
@@ -1025,6 +1028,9 @@
 			</File>
 			<File
 				RelativePath=".\marketmodel_smmcaplethomocalibration.hpp">
+			</File>
+			<File
+				RelativePath="markovfunctional.hpp">
 			</File>
 			<File
 				RelativePath="matrices.hpp">

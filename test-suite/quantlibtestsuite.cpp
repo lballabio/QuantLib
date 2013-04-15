@@ -115,6 +115,7 @@
 #include "marketmodel_smmcaplethomocalibration.hpp"
 #include "marketmodel_smm.hpp"
 #include "marketmodel_cms.hpp"
+#include "markovfunctional.hpp"
 #include "matrices.hpp"
 #include "mclongstaffschwartzengine.hpp"
 #include "mersennetwister.hpp"
@@ -362,6 +363,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(InflationCPICapFloorTest::suite());
     test->add(InflationVolTest::suite());
     test->add(MargrabeOptionTest::suite());
+    test->add(MarkovFunctionalTest::suite());
     test->add(NthToDefaultTest::suite());
     test->add(OdeTest::suite());
     test->add(PagodaOptionTest::suite());

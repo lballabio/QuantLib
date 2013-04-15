@@ -74,6 +74,7 @@ QL_TESTS = \
 	marketmodel_smmcapletalphacalibration.hpp marketmodel_smmcapletalphacalibration.cpp \
 	marketmodel_smmcapletcalibration.hpp marketmodel_smmcapletcalibration.cpp \
 	marketmodel_smmcaplethomocalibration.hpp marketmodel_smmcaplethomocalibration.cpp \
+	markovfunctional.hpp markovfunctional.cpp \
 	matrices.hpp matrices.cpp \
 	mclongstaffschwartzengine.hpp mclongstaffschwartzengine.cpp \
 	mersennetwister.hpp mersennetwister.cpp \

@@ -259,6 +259,9 @@
     <Filter Include="experimental\mcbasket">
       <UniqueIdentifier>{51b20bfb-087c-4623-be3c-647010d4e809}</UniqueIdentifier>
     </Filter>
+    <Filter Include="experimental\models">
+      <UniqueIdentifier>{40d94aa5-3cb4-4add-992d-611c19c1e11f}</UniqueIdentifier>
+    </Filter>
     <Filter Include="experimental\processes">
       <UniqueIdentifier>{fffa1e10-7b29-41f9-a775-b2bb61638f39}</UniqueIdentifier>
     </Filter>
@@ -2958,6 +2961,33 @@
     <ClInclude Include="ql\experimental\mcbasket\pathpayoff.hpp">
       <Filter>experimental\mcbasket</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\models\all.hpp">
+      <Filter>experimental\models</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\models\atmadjustedsmilesection.hpp">
+      <Filter>experimental\models</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\models\atmsmilesection.hpp">
+      <Filter>experimental\models</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\models\kahalesmilesection.hpp">
+      <Filter>experimental\models</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\models\markovfunctionalcapfloorengine.hpp">
+      <Filter>experimental\models</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\models\markovfunctional.hpp">
+      <Filter>experimental\models</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\models\markovfunctionalswaptionengine.hpp">
+      <Filter>experimental\models</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\models\mfstateprocess.hpp">
+      <Filter>experimental\models</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\models\smilesectionutils.hpp">
+      <Filter>experimental\models</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\processes\all.hpp">
       <Filter>experimental\processes</Filter>
     </ClInclude>
@@ -5305,6 +5335,30 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\mcbasket\pathmultiassetoption.cpp">
       <Filter>experimental\mcbasket</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\models\atmadjustedsmilesection.cpp">
+      <Filter>experimental\models</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\models\atmsmilesection.cpp">
+      <Filter>experimental\models</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\models\kahalesmilesection.cpp">
+      <Filter>experimental\models</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\models\markovfunctionalcapfloorengine.cpp">
+      <Filter>experimental\models</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\models\markovfunctional.cpp">
+      <Filter>experimental\models</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\models\markovfunctionalswaptionengine.cpp">
+      <Filter>experimental\models</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\models\mfstateprocess.cpp">
+      <Filter>experimental\models</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\models\smilesectionutils.cpp">
+      <Filter>experimental\models</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\processes\extendedblackscholesprocess.cpp">
       <Filter>experimental\processes</Filter>
