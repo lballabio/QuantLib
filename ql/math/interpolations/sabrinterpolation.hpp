@@ -39,6 +39,7 @@
 #include <ql/termstructures/volatility/sabr.hpp>
 #include <ql/math/optimization/projectedcostfunction.hpp>
 #include <ql/math/optimization/constraint.hpp>
+#include <ql/math/randomnumbers/haltonrsg.hpp>
 
 namespace QuantLib {
 
@@ -114,20 +115,24 @@ namespace QuantLib {
                 bool rhoIsFixed,
                 bool vegaWeighted,
                 const boost::shared_ptr<EndCriteria>& endCriteria,
-                const boost::shared_ptr<OptimizationMethod>& optMethod)
+                const boost::shared_ptr<OptimizationMethod>& optMethod,
+                const Real errorAccept,
+                const bool useMaxError,
+                const Size maxGuesses)
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
               SABRCoeffHolder(t, forward, alpha, beta, nu, rho,
                               alphaIsFixed,betaIsFixed,nuIsFixed,rhoIsFixed),
               endCriteria_(endCriteria), optMethod_(optMethod),
-              forward_(forward),
+              errorAccept_(errorAccept), useMaxError_(useMaxError),
+              maxGuesses_(maxGuesses), forward_(forward),
               vegaWeighted_(vegaWeighted)
             {
                 // if no optimization method or endCriteria is provided, we provide one
                 if (!optMethod_)
-                    //optMethod_ = boost::shared_ptr<OptimizationMethod>(new
-                    //    LevenbergMarquardt(1e-8, 1e-8, 1e-8));
                     optMethod_ = boost::shared_ptr<OptimizationMethod>(new
-                        Simplex(0.01));
+                       LevenbergMarquardt(1e-8, 1e-8, 1e-8));
+                    //optMethod_ = boost::shared_ptr<OptimizationMethod>(new
+                    //    Simplex(0.01));
                 if (!endCriteria_) {
                     endCriteria_ = boost::shared_ptr<EndCriteria>(new
                         EndCriteria(60000, 100, 1e-8, 1e-8, 1e-8));
@@ -186,29 +191,68 @@ namespace QuantLib {
                     parameterAreFixed[2] = nuIsFixed_;
                     parameterAreFixed[3] = rhoIsFixed_;
 
-                    Array inversedTransformatedGuess(transformation_->inverse(guess));
+                    Size iterations = 0;
+                    Size freeParameters = 0;
+                    Real bestError = QL_MAX_REAL;
+                    Array bestParameters;
+                    for(Size i=0;i<4;i++) if(!parameterAreFixed[i]) freeParameters++;
+                    HaltonRsg halton(freeParameters,42);
+                    EndCriteria::Type tmpEndCriteria;
+                    Real tmpInterpolationError;
 
-                    ProjectedCostFunction constrainedSABRError(costFunction,
-                                    inversedTransformatedGuess, parameterAreFixed);
+                    do {
 
-                    Array projectedGuess
-                        (constrainedSABRError.project(inversedTransformatedGuess));
+                        if(iterations > 0) {
+                            HaltonRsg::sample_type s = halton.nextSequence();
+                            Size j = 0;
+                            //for(int i=0;i<4;i++) {
+                            //  if(!parameterAreFixed[i]) guess[i] = tan(-M_PI/2.0 + 1E-6 + (1-1E-6) * M_PI * s.value[j++]);
+                            //}
+                            if(!parameterAreFixed[0]) guess[0] = (1.0-2E-6)*s.value[j++]+1E-6;
+                            if(!parameterAreFixed[1]) guess[1] = (1.0-2E-6)*s.value[j++]+1E-6;
+                            if(!parameterAreFixed[2]) guess[2] = 5.0*s.value[j++]+1E-6;
+                            if(!parameterAreFixed[3]) guess[3] = (2.0*s.value[j++]-1.0)*(1.0-1E-6);
+                            guess = transformation_->direct(guess);
+                            if(alphaIsFixed_) guess[0] = alpha_;
+                            if(betaIsFixed_) guess[1] = beta_;
+                            if(nuIsFixed_) guess[2] = nu_;
+                            if(rhoIsFixed_) guess[3] = rho_;
+                        }
 
-                    NoConstraint constraint;
-                    Problem problem(constrainedSABRError, constraint, projectedGuess);
-                    SABREndCriteria_ = optMethod_->minimize(problem, *endCriteria_);
-                    Array projectedResult(problem.currentValue());
-                    Array transfResult(constrainedSABRError.include(projectedResult));
+                        Array inversedTransformatedGuess(transformation_->inverse(guess));
 
-                    Array result = transformation_->direct(transfResult);
-                    alpha_ = result[0];
-                    beta_  = result[1];
-                    nu_    = result[2];
-                    rho_   = result[3];
+                        ProjectedCostFunction constrainedSABRError(costFunction,
+                                        inversedTransformatedGuess, parameterAreFixed);
+
+                        Array projectedGuess
+                            (constrainedSABRError.project(inversedTransformatedGuess));
+
+                        NoConstraint constraint;
+                        Problem problem(constrainedSABRError, constraint, projectedGuess);
+                        tmpEndCriteria = optMethod_->minimize(problem, *endCriteria_);
+                        Array projectedResult(problem.currentValue());
+                        Array transfResult(constrainedSABRError.include(projectedResult));
+
+                        Array result = transformation_->direct(transfResult);
+
+                        tmpInterpolationError = useMaxError_ ? interpolationMaxError() : interpolationError();
+
+                        if(tmpInterpolationError < bestError) {
+                            bestError = tmpInterpolationError;
+                            bestParameters = result;
+                            SABREndCriteria_ = tmpEndCriteria;
+                        }
+
+                    } while( ++iterations < maxGuesses_ && tmpInterpolationError > errorAccept_ );
+
+                    alpha_ = bestParameters[0];
+                    beta_ = bestParameters[1];
+                    nu_ = bestParameters[2];
+                    rho_ = bestParameters[3];
+                    error_ = interpolationError();
+                    maxError_ = interpolationMaxError();
 
                 }
-                error_ = interpolationError();
-                maxError_ = interpolationMaxError();
 
             }
 
@@ -281,11 +325,11 @@ namespace QuantLib {
                 }
 
                 Array direct(const Array& x) const {
-                    y_[0] = x[0]*x[0] + eps1_;
+                    y_[0] = abs(x[0]<5.0) ? x[0]*x[0] + eps1_ : 25.0;
                     //y_[1] = std::atan(dilationFactor_*x[1])/M_PI + 0.5;
-                    y_[1] = std::exp(-(x[1]*x[1]));
-                    y_[2] = x[2]*x[2] + eps1_;
-                    y_[3] = eps2_ * std::sin(x[3]);
+                    y_[1] = abs(x[1])<1000.0 ? std::exp(-(x[1]*x[1])) : eps1_;
+                    y_[2] = abs(x[2])<5.0 ? x[2]*x[2] + eps1_ : 25.0;
+                    y_[3] = abs(x[3])<10.0 ? eps2_ * std::sin(x[3]) : eps1_;
                     return y_;
                 }
 
@@ -328,6 +372,9 @@ namespace QuantLib {
             };
             boost::shared_ptr<EndCriteria> endCriteria_;
             boost::shared_ptr<OptimizationMethod> optMethod_;
+            const Real errorAccept_;
+            const bool useMaxError_;
+            const Size maxGuesses_;
             const Real& forward_;
             bool vegaWeighted_;
             boost::shared_ptr<ParametersTransformation> transformation_;
@@ -358,7 +405,10 @@ namespace QuantLib {
                           const boost::shared_ptr<EndCriteria>& endCriteria
                                   = boost::shared_ptr<EndCriteria>(),
                           const boost::shared_ptr<OptimizationMethod>& optMethod
-                                  = boost::shared_ptr<OptimizationMethod>()) {
+                                  = boost::shared_ptr<OptimizationMethod>(),
+                          const Real errorAccept=0.0020,
+                          const bool useMaxError=false,
+                          const Size maxGuesses=50) {
 
             impl_ = boost::shared_ptr<Interpolation::Impl>(new
                 detail::SABRInterpolationImpl<I1,I2>(xBegin, xEnd, yBegin,
@@ -368,7 +418,8 @@ namespace QuantLib {
                                                      nuIsFixed, rhoIsFixed,
                                                      vegaWeighted,
                                                      endCriteria,
-                                                     optMethod));
+                                                     optMethod,
+                                                     errorAccept, useMaxError, maxGuesses));
             coeffs_ =
                 boost::dynamic_pointer_cast<detail::SABRCoeffHolder>(
                                                                        impl_);
@@ -400,14 +451,16 @@ namespace QuantLib {
              const boost::shared_ptr<EndCriteria> endCriteria
                  = boost::shared_ptr<EndCriteria>(),
              const boost::shared_ptr<OptimizationMethod> optMethod
-                 = boost::shared_ptr<OptimizationMethod>())
+                 = boost::shared_ptr<OptimizationMethod>(),
+             const Real errorAccept=0.0020, const bool useMaxError=false,
+             const Size maxGuesses=50)
         : t_(t), forward_(forward),
           alpha_(alpha), beta_(beta), nu_(nu), rho_(rho),
           alphaIsFixed_(alphaIsFixed), betaIsFixed_(betaIsFixed),
           nuIsFixed_(nuIsFixed), rhoIsFixed_(rhoIsFixed),
           vegaWeighted_(vegaWeighted),
           endCriteria_(endCriteria),
-          optMethod_(optMethod) {}
+          optMethod_(optMethod), errorAccept_(errorAccept), useMaxError_(useMaxError), maxGuesses_(maxGuesses) {}
         template <class I1, class I2>
         Interpolation interpolate(const I1& xBegin, const I1& xEnd,
                                   const I2& yBegin) const {
@@ -417,7 +470,8 @@ namespace QuantLib {
                                      alphaIsFixed_, betaIsFixed_,
                                      nuIsFixed_, rhoIsFixed_,
                                      vegaWeighted_,
-                                     endCriteria_, optMethod_);
+                                     endCriteria_, optMethod_,
+                                     errorAccept_, useMaxError_, maxGuesses_);
         }
         static const bool global = true;
       private:
@@ -428,6 +482,9 @@ namespace QuantLib {
         bool vegaWeighted_;
         const boost::shared_ptr<EndCriteria> endCriteria_;
         const boost::shared_ptr<OptimizationMethod> optMethod_;
+        const Real errorAccept_;
+        const bool useMaxError_;
+        const Size maxGuesses_;
     };
 
 }
