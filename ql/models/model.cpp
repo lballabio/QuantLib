@@ -138,7 +138,8 @@ namespace QuantLib {
             }
         }
         QL_REQUIRE(p==params.end(),"parameter array too big!");
-        update();
+        generateArguments();
+        notifyObservers();
     }
 
     ShortRateModel::ShortRateModel(Size nArguments)
