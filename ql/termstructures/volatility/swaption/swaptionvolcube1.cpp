@@ -31,6 +31,8 @@
     #define SWAPTIONVOLCUBE_TOL 100.0e-4
 #endif
 
+#define MINSTRIKE 0.0001
+
 namespace QuantLib {
 
     //=======================================================================//
@@ -51,20 +53,23 @@ namespace QuantLib {
                 bool isAtmCalibrated,
                 const boost::shared_ptr<EndCriteria>& endCriteria,
                 Real maxErrorTolerance,
-                const boost::shared_ptr<OptimizationMethod>& optMethod)
+                const boost::shared_ptr<OptimizationMethod>& optMethod,
+                const Real errorAccept,
+                const bool useMaxError,
+                const Size maxGuesses)
     : SwaptionVolatilityCube(atmVolStructure, optionTenors, swapTenors,
                              strikeSpreads, volSpreads, swapIndexBase,
                              shortSwapIndexBase,
                              vegaWeightedSmileFit),
       parametersGuessQuotes_(parametersGuess),
       isParameterFixed_(isParameterFixed), isAtmCalibrated_(isAtmCalibrated),
-      endCriteria_(endCriteria), optMethod_(optMethod)
+      endCriteria_(endCriteria), optMethod_(optMethod), errorAccept_(errorAccept), useMaxError_(useMaxError), maxGuesses_(maxGuesses)
     {
         if (maxErrorTolerance != Null<Rate>()) {
             maxErrorTolerance_ = maxErrorTolerance;
         } else{
-            maxErrorTolerance_ = SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL;
-            if (vegaWeightedSmileFit_) maxErrorTolerance_ = SWAPTIONVOLCUBE_TOL;
+            maxErrorTolerance_ = SWAPTIONVOLCUBE_TOL;
+            if (vegaWeightedSmileFit_) maxErrorTolerance_ =  SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL;
         }
        registerWithParametersGuess();
     }
@@ -148,9 +153,14 @@ namespace QuantLib {
         for (Size j=0; j<optionTimes.size(); j++) {
             for (Size k=0; k<swapLengths.size(); k++) {
                 Rate atmForward = atmStrike(optionDates[j], swapTenors[k]);
+                strikes.clear();
+                volatilities.clear();
                 for (Size i=0; i<nStrikes_; i++){
-                    strikes[i] = atmForward+strikeSpreads_[i];
-                    volatilities[i] = tmpMarketVolCube[i][j][k];
+                    Real strike = atmForward+strikeSpreads_[i];
+                    if(strike>=MINSTRIKE) {
+                        strikes.push_back(strike);
+                        volatilities.push_back(tmpMarketVolCube[i][j][k]);
+                    }
                 }
 
                 const std::vector<Real>& guess = parametersGuess_.operator()(
@@ -169,7 +179,10 @@ namespace QuantLib {
                                           isParameterFixed_[3],
                                           vegaWeightedSmileFit_,
                                           endCriteria_,
-                                          optMethod_));
+                                          optMethod_,
+                                          errorAccept_,
+                                          useMaxError_,
+                                          maxGuesses_));
                 sabrInterpolation->update();
 
                 Real rmsError = sabrInterpolation->rmsError();
@@ -196,19 +209,20 @@ namespace QuantLib {
                           "   rho = " <<  rhos[j][k]  << "\n"
                           );
 
-                QL_ENSURE(maxErrors[j][k]<maxErrorTolerance_,
-                          "global swaptions calibration failed: "
-                          "maxErrorTolerance = " << io::rate(maxErrorTolerance_)
-                          << " exceeded " << "\n" <<
-                          "option maturity = " << optionDates[j] << ", \n" <<
-                          "swap tenor = " << swapTenors[k] << "\n" <<
-                          "error = " << io::rate(errors[j][k])  << ", \n" <<
-                          "max error = " << io::rate(maxErrors[j][k]) << ", \n" <<
-                          "   alpha = " << alphas[j][k]<< "\n" <<
-                          "   beta = " << betas[j][k] << "\n" <<
-                          "   nu = " << nus[j][k]   << "\n" <<
-                          "   rho = " << rhos[j][k]
-                          );
+                QL_ENSURE(useMaxError_ ? maxError : rmsError < maxErrorTolerance_,
+                      "global swaptions calibration failed: "
+                      "option tenor " << optionDates[j] <<
+                      ", swap tenor " << swapTenors[k] <<
+                      (useMaxError_ ? ": max error " : ": error") <<
+                      (useMaxError_ ? maxError : rmsError) <<
+                          "   alpha = " <<  alphas[j][k] << "n" <<
+                          "   beta = " <<  betas[j][k] << "\n" <<
+                          "   nu = " <<  nus[j][k]   << "\n" <<
+                          "   rho = " <<  rhos[j][k]  << "\n" <<
+                      (useMaxError_ ? ": error" : ": max error ") <<
+                      (useMaxError_ ? rmsError :maxError)
+                );
+
             }
         }
         Cube sabrParametersCube(optionDates, swapTenors,
@@ -247,9 +261,14 @@ namespace QuantLib {
 
         for (Size j=0; j<optionTimes.size(); j++) {
             Rate atmForward = atmStrike(optionDates[j], swapTenors[k]);
+            strikes.clear();
+            volatilities.clear();
             for (Size i=0; i<nStrikes_; i++){
-                strikes[i] = atmForward+strikeSpreads_[i];
-                volatilities[i] = tmpMarketVolCube[i][j][k];
+                Real strike = atmForward+strikeSpreads_[i];
+                if(strike>=MINSTRIKE) {
+                    strikes.push_back(strike);
+                    volatilities.push_back(tmpMarketVolCube[i][j][k]);
+                }
             }
 
             const std::vector<Real>& guess = parametersGuess_.operator()(
@@ -268,7 +287,10 @@ namespace QuantLib {
                                       isParameterFixed_[3],
                                       vegaWeightedSmileFit_,
                                       endCriteria_,
-                                      optMethod_));
+                                      optMethod_,
+                                      errorAccept_,
+                                      useMaxError_,
+                                      maxGuesses_));
 
             sabrInterpolation->update();
             Real interpolationError = sabrInterpolation->rmsError();
@@ -291,20 +313,23 @@ namespace QuantLib {
                           ", beta "  <<  calibrationResult[1] <<
                           ", nu "    <<  calibrationResult[2]   <<
                           ", rho "   <<  calibrationResult[3]  <<
+                          ", max error " << calibrationResult[6] <<
                           ", error " <<  calibrationResult[5]
                           );
 
-            QL_ENSURE(calibrationResult[6]< maxErrorTolerance_,
+            QL_ENSURE(useMaxError_ ? calibrationResult[6] : calibrationResult[5] < maxErrorTolerance_,
                       "section calibration failed: "
                       "option tenor " << optionDates[j] <<
                       ", swap tenor " << swapTenors[k] <<
-                      ": max error " << calibrationResult[6]  <<
+                      (useMaxError_ ? ": max error " : ": error ") <<
+                      (useMaxError_ ? calibrationResult[6] : calibrationResult[5]) <<
                           ", alpha " <<  calibrationResult[0] <<
                           ", beta "  <<  calibrationResult[1] <<
                           ", nu "    <<  calibrationResult[2] <<
                           ", rho "   <<  calibrationResult[3] <<
-                          ", error " <<  calibrationResult[5]
-                          );
+                      (useMaxError_ ? ": error" : ": max error ") <<
+                      (useMaxError_ ? calibrationResult[5] : calibrationResult[6])
+            );
 
             parametersCube.setPoint(optionDates[j], swapTenors[k],
                                     optionTimes[j], swapLengths[k],
@@ -507,7 +532,7 @@ namespace QuantLib {
         }
 
         for (Size k=0; k<nStrikes_; k++){
-            const Real strike = atmForward + strikeSpreads_[k];
+            const Real strike = std::max(atmForward + strikeSpreads_[k],MINSTRIKE);
             const Real moneyness = atmForward/strike;
 
             Matrix strikes(2,2,0.);

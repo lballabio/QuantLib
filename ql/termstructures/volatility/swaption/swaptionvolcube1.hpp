@@ -102,7 +102,10 @@ namespace QuantLib {
                 = boost::shared_ptr<EndCriteria>(),
             Real maxErrorTolerance = Null<Real>(),
             const boost::shared_ptr<OptimizationMethod>& optMethod
-                = boost::shared_ptr<OptimizationMethod>());
+                = boost::shared_ptr<OptimizationMethod>(),
+            const Real errorAccept = 0.0020,
+            const bool useMaxError = false,
+            const Size maxGuesses = 50);
         //! \name LazyObject interface
         //@{
         void performCalculations() const;
@@ -153,6 +156,9 @@ namespace QuantLib {
         const boost::shared_ptr<EndCriteria> endCriteria_;
         Real maxErrorTolerance_;
         const boost::shared_ptr<OptimizationMethod> optMethod_;
+        const Real errorAccept_;
+        const bool useMaxError_;
+        const Size maxGuesses_;
     };
 
 }
