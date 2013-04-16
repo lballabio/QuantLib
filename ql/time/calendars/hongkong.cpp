@@ -46,8 +46,6 @@ namespace QuantLib {
             // New Year's Day
             || ((d == 1 || ((d == 2 || d == 3) && w == Monday))
                 && m == January)
-            // Ching Ming Festival
-            || (d == 5 && m == April)
             // Good Friday
             || (dd == em-3)
             // Easter Monday
@@ -69,6 +67,8 @@ namespace QuantLib {
         if (y == 2004) {
             if (// Lunar New Year
                 ((d==22 || d==23 || d==24) && m == January)
+                // Ching Ming Festival
+                || (d == 5 && m == April)
                 // Buddha's birthday
                 || (d == 26 && m == May)
                 // Tuen NG festival
@@ -83,6 +83,8 @@ namespace QuantLib {
         if (y == 2005) {
             if (// Lunar New Year
                 ((d==9 || d==10 || d==11) && m == February)
+                // Ching Ming Festival
+                || (d == 5 && m == April)
                 // Buddha's birthday
                 || (d == 16 && m == May)
                 // Tuen NG festival
@@ -97,6 +99,8 @@ namespace QuantLib {
         if (y == 2006) {
             if (// Lunar New Year
                 ((d >= 28 && d <= 31) && m == January)
+                // Ching Ming Festival
+                || (d == 5 && m == April)
                 // Buddha's birthday
                 || (d == 5 && m == May)
                 // Tuen NG festival
@@ -111,6 +115,8 @@ namespace QuantLib {
         if (y == 2007) {
             if (// Lunar New Year
                 ((d >= 17 && d <= 20) && m == February)
+                // Ching Ming Festival
+                || (d == 5 && m == April)
                 // Buddha's birthday
                 || (d == 24 && m == May)
                 // Tuen NG festival
@@ -197,6 +203,22 @@ namespace QuantLib {
                 || (d == 1 && m == October)
                 // Chung Yeung festival
                 || (d == 23 && m == October))
+            return false;
+        }
+
+        if (y == 2013) {
+            if (// Lunar New Year
+                (d >= 11 && d <= 13 && m == February)
+                // Ching Ming Festival
+                || (d == 4 && m == April)
+                // Buddha's birthday
+                || (d == 17 && m == May)
+                // Tuen Ng festival
+                || (d == 12 && m == June)
+                // Mid-autumn festival
+                || (d == 20 && m == September)
+                // Chung Yeung festival
+                || (d == 14 && m == October))
             return false;
         }
 

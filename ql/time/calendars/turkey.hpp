@@ -31,7 +31,8 @@ namespace QuantLib {
 
     //! Turkish calendar
     /*! Holidays for the Istanbul Stock Exchange:
-        (data from <http://www.ise.org/Markets/OfficialHolidays.aspx?sflang=en>):
+        (data from
+         <http://borsaistanbul.com/en/products-and-markets/official-holidays>):
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
@@ -40,7 +41,7 @@ namespace QuantLib {
         <li>Youth and Sports Day, May 19th</li>
         <li>Victory Day, August 30th</li>
         <li>Republic Day, October 29th</li>
-        <li>Local Holidays (Kurban, Ramadan; 2004 to 2010 only) </li>
+        <li>Local Holidays (Kurban, Ramadan; 2004 to 2013 only) </li>
         </ul>
 
         \ingroup calendars

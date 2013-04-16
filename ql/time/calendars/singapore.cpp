@@ -37,14 +37,13 @@ namespace QuantLib {
 
         if (isWeekend(w)
             // New Year's Day
-            || (d == 1 && m == January)
+            || ((d == 1 || (d == 2 && w == Monday)) && m == January)
             // Good Friday
             || (dd == em-3)
             // Labor Day
             || (d == 1 && m == May)
             // National Day
-            || (d == 9 && m == August)
-            || (d == 10 && m == August && y == 2009)
+            || ((d == 9 || (d == 10 && w == Monday)) && m == August)
             // Christmas Day
             || (d == 25 && m == December)
 
@@ -56,6 +55,8 @@ namespace QuantLib {
             || ((d == 7 || d == 8) && m == February && y == 2008)
             || ((d == 26 || d == 27) && m == January && y == 2009)
             || ((d == 15 || d == 16) && m == January && y == 2010)
+            || ((d == 23 || d == 24) && m == January && y == 2012)
+            || ((d == 11 || d == 12) && m == February && y == 2013)
 
             // Hari Raya Haji
             || ((d == 1 || d == 2) && m == February && y == 2004)
@@ -66,6 +67,8 @@ namespace QuantLib {
             || (d == 8 && m == December && y == 2008)
             || (d == 27 && m == November && y == 2009)
             || (d == 17 && m == November && y == 2010)
+            || (d == 26 && m == October && y == 2012)
+            || (d == 15 && m == October && y == 2013)
 
             // Vesak Poya Day
             || (d == 2 && m == June && y == 2004)
@@ -75,6 +78,8 @@ namespace QuantLib {
             || (d == 18 && m == May && y == 2008)
             || (d == 9 && m == May && y == 2009)
             || (d == 28 && m == May && y == 2010)
+            || (d == 5 && m == May && y == 2012)
+            || (d == 24 && m == May && y == 2013)
 
             // Deepavali
             || (d == 11 && m == November && y == 2004)
@@ -82,6 +87,8 @@ namespace QuantLib {
             || (d == 28 && m == October && y == 2008)
             || (d == 16 && m == November && y == 2009)
             || (d == 5 && m == November && y == 2010)
+            || (d == 13 && m == November && y == 2012)
+            || (d == 2 && m == November && y == 2013)
 
             // Diwali
             || (d == 1 && m == November && y == 2005)
@@ -94,6 +101,8 @@ namespace QuantLib {
             || (d == 1 && m == October && y == 2008)
             || (d == 21 && m == September && y == 2009)
             || (d == 10 && m == September && y == 2010)
+            || (d == 20 && m == August && y == 2012)
+            || (d == 8 && m == August && y == 2013)
             )
             return false;
         return true;

@@ -35,7 +35,6 @@ namespace QuantLib {
         <li>Saturdays</li>
         <li>Sundays</li>
         <li>New Year's Day, January 1st (possibly moved to Monday)</li>
-        <li>Ching Ming Festival, April 5th </li>
         <li>Good Friday</li>
         <li>Easter Monday</li>
         <li>Labor Day, May 1st (possibly moved to Monday)</li>
@@ -46,10 +45,11 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2004-2012 only:)
+        (data available for 2004-2013 only:)
         <ul>
         <li>Lunar New Year</li>
         <li>Chinese New Year</li>
+        <li>Ching Ming Festival</li>
         <li>Buddha's birthday</li>
         <li>Tuen NG Festival</li>
         <li>Mid-autumn Festival</li>

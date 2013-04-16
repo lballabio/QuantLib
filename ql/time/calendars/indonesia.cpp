@@ -211,6 +211,46 @@ namespace QuantLib {
                 return false;
         }
 
+        if (y == 2012) {
+            if (// Chinese New Year
+                (d == 23 && m == January)
+                // Saka New Year
+                || (d == 23 && m == March)
+                // Ied ul-Fitr
+                || (d >= 20 && d <= 22 && m == August)
+                // Eid ul-Adha
+                || (d == 26 && m == October)
+                // Islamic New Year
+                || (d >= 15 && d <= 16 && m == November)
+                // Public Holiday
+                || (d == 24 && m == December)
+                // Trading Holiday
+                || (d == 31 && m == December)
+                )
+                return false;
+        }
+
+        if (y == 2013) {
+            if (// Birthday of the prophet Muhammad SAW
+                (d == 24 && m == January)
+                // Saka New Year
+                || (d == 12 && m == March)
+                // Isra' Mi'raj of the prophet Muhammad SAW
+                || (d == 6 && m == June)
+                // Ied ul-Fitr
+                || (d >= 5 && d <= 9 && m == August)
+                // Eid ul-Adha
+                || (d >= 14 && d <= 15 && m == October)
+                // Islamic New Year
+                || (d == 5 && m == November)
+                // Public Holiday
+                || (d == 26 && m == December)
+                // Trading Holiday
+                || (d == 31 && m == December)
+                )
+                return false;
+        }
+
         return true;
     }
 

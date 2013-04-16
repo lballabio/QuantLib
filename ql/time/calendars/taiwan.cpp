@@ -182,6 +182,44 @@ namespace QuantLib {
                 return false;
         }
 
+        if (y == 2012) {
+            if (// Spring Festival
+                (d >= 23 && d <= 27 && m == January)
+                // Peace Memorial Day
+                || (d == 27 && m == February)
+                // Children's Day
+                // Tomb Sweeping Day
+                || (d == 4 && m == April)
+                // Labour Day
+                || (d == 1 && m == May)
+                // Dragon Boat Festival
+                || (d == 23 && m == June)
+                // Mid-Autumn Festival
+                || (d == 30 && m == September)
+                // Memorial Day:
+                // Founding of the Republic of China
+                || (d == 31 && m == December)
+                )
+                return false;
+        }
+
+        if (y == 2013) {
+            if (// Spring Festival
+                (d >= 10 && d <= 15 && m == February)
+                // Children's Day
+                || (d == 4 && m == April)
+                // Tomb Sweeping Day
+                || (d == 5 && m == April)
+                // Labour Day
+                || (d == 1 && m == May)
+                // Dragon Boat Festival
+                || (d == 12 && m == June)
+                // Mid-Autumn Festival
+                || (d >= 19 && d <= 20 && m == September)
+                )
+                return false;
+        }
+
         return true;
     }
 

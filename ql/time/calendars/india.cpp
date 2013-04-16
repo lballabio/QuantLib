@@ -42,6 +42,8 @@ namespace QuantLib {
             || (dd == em-3)
             // Ambedkar Jayanti
             || (d == 14 && m == April)
+            // May Day
+            || (d == 1 && m == May)
             // Independence Day
             || (d == 15 && m == August)
             // Gandhi Jayanti
@@ -212,6 +214,48 @@ namespace QuantLib {
                 || (d == 10 && m == November)
                 // Moharram
                 || (d == 6 && m == December)
+                )
+                return false;
+        }
+
+        if (y == 2012) {
+            if (// Mahashivratri
+                (d == 20 && m == February)
+                // Holi
+                || (d == 8 && m == March)
+                // Mahavir Jayanti
+                || (d == 5 && m == April)
+                // Ramzan Id
+                || (d == 20 && m == August)
+                // Ganesh Chaturthi
+                || (d == 19 && m == September)
+                // Dasara
+                || (d == 24 && m == October)
+                // Diwali - Balipratipada
+                || (d == 14 && m == November)
+                // Gurunanak Jayanti
+                || (d == 28 && m == November)
+                )
+                return false;
+        }
+
+        if (y == 2013) {
+            if (// Holi
+                (d == 27 && m == March)
+                // Ram Navmi
+                || (d == 19 && m == April)
+                // Mahavir Jayanti
+                || (d == 24 && m == April)
+                // Ramzan Id
+                || (d == 9 && m == August)
+                // Ganesh Chaturthi
+                || (d == 9 && m == September)
+                // Bakri Id
+                || (d == 16 && m == October)
+                // Diwali - Balipratipada
+                || (d == 4 && m == November)
+                // Moharram
+                || (d == 14 && m == November)
                 )
                 return false;
         }

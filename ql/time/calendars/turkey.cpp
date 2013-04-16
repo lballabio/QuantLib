@@ -99,6 +99,25 @@ namespace QuantLib {
             // Kurban
                 || (m == November && d >= 16 && d <= 19))
                 return false;
+        } else if (y == 2011) {
+            // not clear from borsainstanbul.com
+            if ((m == October && d == 1)
+                || (m == November && d >= 9 && d <= 13))
+                return false;
+        } else if (y == 2012) {
+            // Ramadan
+            if ((m == August && d >= 18 && d <= 21)
+            // Kurban
+                || (m == October && d >= 24 && d <= 28))
+                return false;
+        } else if (y == 2013) {
+            // Ramadan
+            if ((m == August && d >= 7 && d <= 10)
+            // Kurban
+                || (m == October && d >= 14 && d <= 18)
+            // additional holiday for Republic Day
+                || (m == October && d == 28))
+                return false;
         }
         return true;
     }

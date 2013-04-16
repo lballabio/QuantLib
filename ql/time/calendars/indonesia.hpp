@@ -42,7 +42,7 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2005-2011 only:)
+        (data available for 2005-2013 only:)
         <ul>
         <li>Idul Adha</li>
         <li>Ied Adha</li>

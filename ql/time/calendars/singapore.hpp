@@ -31,7 +31,8 @@ namespace QuantLib {
 
     //! %Singapore calendars
     /*! Holidays for the Singapore exchange
-        (data from <http://www.simex.com.sg>):
+        (data from
+         <http://www.sgx.com/wps/portal/sgxweb/home/trading/securities/trading_hours_calendar>):
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
@@ -43,7 +44,7 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2004-2010 only:)
+        (data available for 2004-2010, 2012-2013 only:)
         <ul>
         <li>Chinese New Year</li>
         <li>Hari Raya Haji</li>

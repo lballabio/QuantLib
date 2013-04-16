@@ -37,13 +37,14 @@ namespace QuantLib {
         <li>Republic Day, January 26th</li>
         <li>Good Friday</li>
         <li>Ambedkar Jayanti, April 14th</li>
+        <li>May Day, May 1st</li>
         <li>Independence Day, August 15th</li>
         <li>Gandhi Jayanti, October 2nd</li>
         <li>Christmas, December 25th</li>
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2005-2011 only:)
+        (data available for 2005-2013 only:)
         <ul>
         <li>Bakri Id</li>
         <li>Moharram</li>

@@ -50,14 +50,13 @@ namespace QuantLib {
         Other holidays for which no rule is given
         (data available for 2004-2013 only:)
         <ul>
-        <li>Lunar New Year, the last day of the previous lunar year,
-            January 1st, 2nd in lunar calendar</li>
+        <li>Lunar New Year, the last day of the previous lunar year</li>
         <li>Election Days</li>
         <li>National Assemblies</li>
         <li>Presidency</li>
         <li>Regional Election Days</li>
-        <li>Buddha's birthday, April 8th in lunar calendar</li>
-        <li>Harvest Moon Day, August 14th, 15th, 16th in lunar calendar</li>
+        <li>Buddha's birthday</li>
+        <li>Harvest Moon Day</li>
         </ul>
 
         Holidays for the Korea exchange

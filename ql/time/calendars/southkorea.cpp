@@ -115,6 +115,8 @@ namespace QuantLib {
             || ((d == 12 || d == 13) && m == September && y == 2011)
             || (d == 1 && m == October && y == 2012)
             || ((d == 18 || d == 19 || d == 20) && m == September && y == 2013)
+            // Hangul Proclamation of Korea
+            || (d == 9 && m == October && y == 2013)
             )
             return false;
 
