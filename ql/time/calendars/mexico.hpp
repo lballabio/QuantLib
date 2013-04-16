@@ -35,12 +35,16 @@ namespace QuantLib {
         <li>Saturdays</li>
         <li>Sundays</li>
         <li>New Year's Day, January 1st</li>
-        <li>Constitution Day, February 5th</li>
-        <li>Birthday of Benito Juarez, March 21st</li>
+        <li>Constitution Day, first Monday in February
+            (February 5th before 2006)</li>
+        <li>Birthday of Benito Juarez, third Monday in February
+            (March 21st before 2006)</li>
         <li>Holy Thursday</li>
         <li>Good Friday</li>
         <li>Labour Day, May 1st</li>
         <li>National Day, September 16th</li>
+        <li>Revolution Day, third Monday in November
+            (November 20th before 2006)</li>
         <li>Our Lady of Guadalupe, December 12th</li>
         <li>Christmas, December 25th</li>
         </ul>
