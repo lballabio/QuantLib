@@ -52,7 +52,9 @@ namespace QuantLib {
             preconditioner(const Array& r, Real s) const = 0;
 
 #if !defined(QL_NO_UBLAS_SUPPORT)
-        virtual Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const=0;
+        virtual Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const {
+            QL_FAIL(" ublas representation is not implemented");
+        }
 
         Disposable<SparseMatrix> toMatrix() const {
             const std::vector<SparseMatrix> dcmp = toMatrixDecomp();
