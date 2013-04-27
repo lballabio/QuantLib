@@ -31,7 +31,6 @@ namespace QuantLib {
         std::vector<Real> forwards(optionlets, 0.0);
         Real value=0.0;
 
-        Date today = Settings::instance().evaluationDate();
         Date settlement = model_->termStructure()->referenceDate();
 
         CapFloor::Type type = arguments_.type;

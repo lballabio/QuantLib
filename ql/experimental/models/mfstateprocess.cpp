@@ -21,12 +21,13 @@
 
 namespace QuantLib {
 
-    MfStateProcess::MfStateProcess(double reversion, const Array& times, const Array& vols) : reversion_(reversion), times_(times), vols_(vols), reversionZero_(false) {
+    MfStateProcess::MfStateProcess(double reversion, const Array& times, const Array& vols)
+    : reversion_(reversion), reversionZero_(false), times_(times), vols_(vols) {
         if(reversion_<QL_EPSILON && -reversion_<QL_EPSILON)
             reversionZero_=true;
         QL_REQUIRE(times.size() == vols.size()-1, "number of volatilities (" << vols.size() << ") compared to number of times (" << times_.size() << " must be bigger by one");
         for(int i=0; i<((int)times.size())-1; i++) QL_REQUIRE(times[i] < times[i+1], "times must be increasing (" << times[i] << "@" << i << " , " << times[i+1] << "@" << i+1 << ")");
-        for(int i=0; i<vols.size(); i++) QL_REQUIRE(vols[i] >= 0.0, "volatilities must be non negative (" << vols[i] << "@" << i << ")");
+        for(Size i=0; i<vols.size(); i++) QL_REQUIRE(vols[i] >= 0.0, "volatilities must be non negative (" << vols[i] << "@" << i << ")");
     }
 
     Real MfStateProcess::x0() const {
@@ -62,7 +63,7 @@ namespace QuantLib {
 
         double v=0.0;
 
-        for(unsigned int k=i;k<j;k++) {
+        for(int k=i;k<j;k++) {
             if(reversionZero_)
                 v+=vols_[k]*vols_[k]*(times_[k]-std::max(k>0?times_[k-1]:0.0,t));
             else

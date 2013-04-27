@@ -23,7 +23,7 @@
 namespace QuantLib {
 
     KahaleSmileSection::KahaleSmileSection(const boost::shared_ptr<SmileSection> source, const Real atm, const bool interpolate, const std::vector<Real>& moneynessGrid, const Real gap)
-        : source_(source), interpolate_(interpolate), SmileSection(*source), moneynessGrid_(moneynessGrid), gap_(1E-8) {
+        : SmileSection(*source), source_(source), moneynessGrid_(moneynessGrid), gap_(1E-8), interpolate_(interpolate) {
 
         if(atm==Null<Real>()) {
             f_ = source_->atmLevel();
@@ -102,7 +102,6 @@ namespace QuantLib {
         if(interpolate_) {
 
             for(Size i = leftIndex_; i<rightIndex_; i++) {
-                Size im = i-1 >= leftIndex_ ? i-1 : 0;
                 Real k0 = k_[i];
                 Real k1 = k_[i+1];
                 Real c0 = c_[i];
@@ -164,14 +163,14 @@ namespace QuantLib {
     Real KahaleSmileSection::optionPrice(Rate strike, Option::Type type, Real discount) const { // option prices are directly available, so implement this function rather than use smileSection standard implementation
         strike = std::max ( strike, QL_EPSILON );
         int i = index(strike);
-        if(interpolate_ || (i==0 || i==rightIndex_-leftIndex_+1)) return discount*(type == Option::Call ? cFunctions_[i]->operator()(strike) : cFunctions_[i]->operator()(strike)+strike-f_);
+        if(interpolate_ || (i==0 || i==(int) (rightIndex_-leftIndex_+1))) return discount*(type == Option::Call ? cFunctions_[i]->operator()(strike) : cFunctions_[i]->operator()(strike)+strike-f_);
         return source_->optionPrice(strike,type,discount); 
     }
 
     Real KahaleSmileSection::volatilityImpl(Rate strike) const {
         strike = std::max ( strike, QL_EPSILON );
         int i = index(strike);
-        if(!interpolate_ && !(i==0 || i==rightIndex_-leftIndex_+1)) return source_->volatility(strike);
+        if(!interpolate_ && !(i==0 || i==(int) (rightIndex_-leftIndex_+1))) return source_->volatility(strike);
         Real c = cFunctions_[i]->operator()(strike);
         Real vol=0.0;
         try {

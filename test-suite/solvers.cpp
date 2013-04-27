@@ -103,7 +103,7 @@ namespace {
         Real steps[] = { 0.2, 0.2, 0.1, 0.1 };
         Real offsets[] = { 25.0, 11.0, 5.0, 1.0 };
         Real guesses[] = { 4.5, 4.5, 2.5, 2.5 };
-        Real expected[] = { 5.0, 4.0, 3.0, 2.0 };
+        //Real expected[] = { 5.0, 4.0, 3.0, 2.0 };
 
         Real argument = 0.0;
         Real result;

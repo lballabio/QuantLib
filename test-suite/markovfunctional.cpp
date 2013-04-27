@@ -49,6 +49,8 @@
 #include <ql/models/shortrate/calibrationhelpers/caphelper.hpp>
 #include <ql/math/optimization/conjugategradient.hpp>
 
+#include <stdio.h>
+
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 

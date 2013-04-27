@@ -95,7 +95,7 @@ namespace QuantLib {
             enum Adjustments { AdjustNone = 0, AdjustDigitals = 1<<0, AdjustYts = 1<<1, ExtrapolatePayoffFlat = 1<<2, NoPayoffExtrapolation = 1<<3 };
 
             ModelSettings() : yGridPoints_(64), yStdDevs_(7.0), gaussHermitePoints_(32), digitalGap_(1E-5), marketRateAccuracy_(1E-7),
-                upperRateBound_(2.0), lowerRateBound_(0.0), smilePretreatment_(KahaleExtrapolation), adjustments_(AdjustNone),
+                lowerRateBound_(0.0), upperRateBound_(2.0), smilePretreatment_(KahaleExtrapolation), adjustments_(AdjustNone),
                 smileMoneynessCheckpoints_(std::vector<Real>()), enableNtl_(false) {}
             
             void validate() const {
@@ -275,7 +275,7 @@ namespace QuantLib {
                        const Date& expiry,
                        const CalibrationPoint& p,
                        const Real marketPrice)
-            : model_(model), expiry_(expiry), p_(p), marketPrice_(marketPrice) {}
+            : model_(model), marketPrice_(marketPrice), expiry_(expiry), p_(p) {}
             double operator()(double strike) const {
                 Real modelPrice = model_->marketDigitalPrice(expiry_,p_,Option::Call,strike);
                 return modelPrice-marketPrice_;

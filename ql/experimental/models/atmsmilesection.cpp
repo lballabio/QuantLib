@@ -21,7 +21,8 @@
 
 namespace QuantLib {
 
-    AtmSmileSection::AtmSmileSection(const boost::shared_ptr<SmileSection> source, const Real atm) : source_(source), SmileSection(*source) {
+    AtmSmileSection::AtmSmileSection(const boost::shared_ptr<SmileSection> source, const Real atm)
+    : SmileSection(*source), source_(source) {
 
         f_ = atm;
         if(f_ == Null<Real>()) f_ = source_->atmLevel();
