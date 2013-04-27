@@ -229,7 +229,10 @@ Handle<YieldTermStructure> md0Yts() {
 
 		for(int i=0;i<18;i++) {
 			if(i+1 != 6 && i+1 != 12 && i+1 != 18) {
-				r6m.push_back(boost::shared_ptr<FraRateHelper>(new FraRateHelper(Handle<Quote>(q6m[10+i]),i+1,i+7,2,TARGET(),ModifiedFollowing,false,Actual360())));
+#ifndef QL_NEGATIVE_RATES
+		       if(i+10 != 16 && i+10 != 17)
+#endif
+				  r6m.push_back(boost::shared_ptr<FraRateHelper>(new FraRateHelper(Handle<Quote>(q6m[10+i]),i+1,i+7,2,TARGET(),ModifiedFollowing,false,Actual360())));
 			}
 		}
 
@@ -1122,6 +1125,7 @@ void MarkovFunctionalTest::testBermudanSwaption() {
 
 	boost::shared_ptr<VanillaSwap> underlyingCall = MakeVanillaSwap(10*Years,iborIndex1,0.03)
 																			.withEffectiveDate(TARGET().advance(referenceDate,2,Days)) 
+																			//.withNominal(100000000.0)
 																			.receiveFixed(false);
 
 	std::vector<boost::shared_ptr<Exercise> > europeanExercises;
@@ -1137,8 +1141,8 @@ void MarkovFunctionalTest::testBermudanSwaption() {
 	Swaption bermudanSwaption(underlyingCall,bermudanExercise);
 	bermudanSwaption.setPricingEngine(mfSwaptionEngine1);
 
-	Real cachedValues[] = {0.00304896,0.0107602,0.0180412,0.0226599,0.0242589,0.0229815,0.0191239,0.01388,0.00763421};
-	Real cachedValue = 0.0327732;
+	Real cachedValues[] = {0.0030757,0.0107344,0.0179862,0.0225881,0.0243215,0.0229148,0.0191415,0.0139035,0.0076354};
+	Real cachedValue = 0.0327776;
 
 	for(Size i=0;i<expiries.size();i++) {
 		Real npv = europeanSwaptions[i].NPV();
@@ -1163,4 +1167,3 @@ test_suite* MarkovFunctionalTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testBermudanSwaption));
 	return suite;
 }
-

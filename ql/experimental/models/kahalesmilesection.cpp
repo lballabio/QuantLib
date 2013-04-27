@@ -61,7 +61,7 @@ namespace QuantLib {
 
         Brent brent;
         bool success;
-        Real secl;
+        Real secl = 0.0;
 
         if(leftIndex_ > 0) {
             do {
@@ -97,7 +97,7 @@ namespace QuantLib {
             QL_REQUIRE(leftIndex_ < rightIndex_, "can not extrapolate to left, right index of af region reached (" << rightIndex_ << ")");
         }
 
-        Real cp0, cp1;
+        Real cp0 = 0.0, cp1 = 0.0;
 
         if(interpolate_) {
 
@@ -107,7 +107,7 @@ namespace QuantLib {
                 Real c0 = c_[i];
                 Real c1 = c_[i+1];
                 Real sec = (c_[i+1]-c_[i]) / (k_[i+1]-k_[i]);
-                if(i==leftIndex_) cp0 = (secl + sec) / 2.0;
+                if(i==leftIndex_) cp0 = leftIndex_ > 0 ? (secl + sec) / 2.0 : sec;
                 Real secr;
                 if(i==rightIndex_-1) secr=0.0;
                 else secr = (c_[i+2]-c_[i+1]) / (k_[i+2]-k_[i+1]);

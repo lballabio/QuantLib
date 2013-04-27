@@ -88,12 +88,12 @@ namespace QuantLib {
                 npv0[k] = price;
 
                 if(expiry0 >today) {
-                    Real floatingLegNpv = (model_->zerobond(schedule.date(j1),expiry0,z[k]) - model_->zerobond(arguments_.fixedPayDates.back(),expiry0,z[k]));
+                    Real floatingLegNpv = arguments_.nominal* (model_->zerobond(schedule.date(j1),expiry0,z[k]) - model_->zerobond(arguments_.fixedPayDates.back(),expiry0,z[k]));
                     Real fixedLegNpv = 0.0;
                     for(Size l=j1;l<arguments_.fixedCoupons.size();l++) {
                         fixedLegNpv += arguments_.fixedCoupons[l] * model_->zerobond(arguments_.fixedPayDates[l],expiry0,z[k]);
                     }
-                    npv0[k] = std::max( npv0[k] * (npv0[k]>0.0 ? model_->numeraire(expiry0Time,z[k]) : 0.0) , (type==Option::Call ? 1.0 : -1.0) * ( floatingLegNpv - fixedLegNpv ) ) / model_->numeraire(expiry0Time,z[k]);
+					npv0[k] = std::max( npv0[k], (type==Option::Call ? 1.0 : -1.0) * ( floatingLegNpv - fixedLegNpv ) / model_->numeraire(expiry0Time,z[k]) );
                 }
 
             }
@@ -109,4 +109,3 @@ namespace QuantLib {
     }
 
 }
-
