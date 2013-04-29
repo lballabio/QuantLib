@@ -380,7 +380,7 @@ namespace QuantLib {
         // necessary.  It can happen to be equal or later than the end
         // date due to EOM adjustments (see the Schedule test suite
         // for an example).
-        if (dates_[dates_.size()-2] >= dates_.back()) {
+        if (dates_.size() >= 2 && dates_[dates_.size()-2] >= dates_.back()) {
             isRegular_[dates_.size()-2] =
                 (dates_[dates_.size()-2] == dates_.back());
             dates_[dates_.size()-2] = dates_.back();
