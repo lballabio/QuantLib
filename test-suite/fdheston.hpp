@@ -35,8 +35,11 @@ public:
     static void testFdmHestonConvergence();
     static void testFdmHestonBlackScholes();
     static void testBlackScholesFokkerPlanckFwdEquation();
+    static void testSquareRootZeroFlowBC();
+    static void testTransformedZeroFlowBC();
+    static void testSquareRootEvolveWithStationaryDensity();
     static void testSquareRootFokkerPlanckFwdEquation();
-    static void testHestonLVFokkerPlanckFwdEquation();
+    static void testHestonFokkerPlanckFwdEquation();
 
     static boost::unit_test_framework::test_suite* suite();
     static boost::unit_test_framework::test_suite* experimental();

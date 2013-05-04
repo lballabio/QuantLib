@@ -36,7 +36,9 @@ namespace QuantLib {
       public:
         FdmSquareRootFwdOp(
             const boost::shared_ptr<FdmMesher>& mesher,
-            Real kappa, Real theta, Real sigma, Size direction);
+            Real kappa, Real theta, Real sigma,
+            Size direction,
+            bool transform = false);
 
         Size size()    const;
         void setTime(Time t1, Time t2);
@@ -49,8 +51,6 @@ namespace QuantLib {
                                           const Array& r, Real s) const;
         Disposable<Array> preconditioner(const Array& r, Real s) const;
 
-        const boost::shared_ptr<TripleBandLinearOp> toLinearOp() const;
-
 #if !defined(QL_NO_UBLAS_SUPPORT)
         Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const;
 #endif
@@ -62,6 +62,11 @@ namespace QuantLib {
       private:
         void setLowerBC(const boost::shared_ptr<FdmMesher>& mesher);
         void setUpperBC(const boost::shared_ptr<FdmMesher>& mesher);
+        void setTransformLowerBC(const boost::shared_ptr<FdmMesher>& mesher);
+        void setTransformUpperBC(const boost::shared_ptr<FdmMesher>& mesher);
+
+        void getTransformCoeff(Real& alpha, Real& beta,
+                               Real& gamma, Size n) const;
 
         Real h    (Size i) const;
         Real zetam(Size i) const;
@@ -71,8 +76,10 @@ namespace QuantLib {
 
         const Size direction_;
         const Real kappa_, theta_, sigma_;
-        const boost::shared_ptr<ModTripleBandLinearOp> mapX_;
-        Array v_;
+        const Real alpha_;
+        const bool transform_;
+        boost::shared_ptr<ModTripleBandLinearOp> mapX_;
+        Array v_, vq_, vmq_;
     };
 }
 

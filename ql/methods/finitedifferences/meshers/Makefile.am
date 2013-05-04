@@ -13,6 +13,7 @@ this_include_HEADERS = \
     fdmmeshercomposite.hpp \
     fdmmesher.hpp \
     fdmsimpleprocess1dmesher.hpp \
+    predefined1dmesher.hpp \
     uniform1dmesher.hpp \
     uniformgridmesher.hpp
 

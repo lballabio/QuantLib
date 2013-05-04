@@ -46,7 +46,7 @@ namespace QuantLib {
       dxxMap_(new ModTripleBandLinearOp(TripleBandLinearOp(
           SecondDerivativeOp(0, mesher).mult(0.5*mesher->locations(1))))),
       mapX_  (new TripleBandLinearOp(0, mesher)),
-      mapY_  (new FdmSquareRootFwdOp(mesher,kappa_,theta_,sigma_,1)),
+      mapY_  (new FdmSquareRootFwdOp(mesher,kappa_,theta_,sigma_, 1)),
       correlation_(new NinePointLinearOp(
           SecondOrderMixedDerivativeOp(0, 1, mesher)
               .mult(rho_*sigma_*mesher->locations(1))))
@@ -93,7 +93,7 @@ namespace QuantLib {
 
     Disposable<Array> FdmHestonFwdOp::apply(const Array& u) const {
         return mapX_->apply(u)
-                + mapY_->toLinearOp()->apply(u)
+                + mapY_->apply(u)
                 + correlation_->apply(u);
     }
 
@@ -107,7 +107,7 @@ namespace QuantLib {
         if (direction == 0)
             return mapX_->apply(u) ;
         else if (direction == 1)
-            return mapY_->toLinearOp()->apply(u) ;
+            return mapY_->apply(u) ;
         else
             QL_FAIL("direction too large");
     }
@@ -118,7 +118,7 @@ namespace QuantLib {
             return mapX_->solve_splitting(u, s, 1.0);
         }
         else if (direction == 1) {
-            return mapY_->toLinearOp()->solve_splitting(u, s, 1.0);
+            return mapY_->solve_splitting(1, u, s);
         }
         else
             QL_FAIL("direction too large");

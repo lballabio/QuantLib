@@ -110,7 +110,7 @@ namespace QuantLib {
             --evaluations;
         }
 
-        // use a brent solver for the rest
+        // use a Brent solver for the rest
         Brent solver;
         solver.setMaxEvaluations(evaluations);
         return solver.solve(compose(std::bind2nd(std::minus<Real>(),x), 

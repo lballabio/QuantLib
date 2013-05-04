@@ -28,6 +28,7 @@
 class ArrayTest {
   public:
     static void testConstruction();
+    static void testArrayFunctions();
     static boost::unit_test_framework::test_suite* suite();
 };
 

@@ -17,8 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/qldefines.hpp>
-
 #include "fdheston.hpp"
 #include "utilities.hpp"
 
@@ -29,10 +27,14 @@
 #include <ql/instruments/barrieroption.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/instruments/dividendvanillaoption.hpp>
-#include <ql/models/equity/hestonmodel.hpp>
-#include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/math/incompletegamma.hpp>
+#include <ql/math/functional.hpp>
+#include <ql/math/solvers1d/brent.hpp>
+#include <ql/math/distributions/gammadistribution.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
+#include <ql/models/equity/hestonmodel.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
@@ -42,6 +44,7 @@
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/predefined1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
 #include <ql/methods/finitedifferences/schemes/douglasscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/hundsdorferscheme.hpp>
@@ -51,6 +54,7 @@
 #include <ql/experimental/finitedifferences/fdmsquarerootfwdop.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
 
+#include <boost/math/special_functions/gamma.hpp>
 #include <boost/math/distributions/non_central_chi_squared.hpp>
 
 using namespace QuantLib;
@@ -668,43 +672,6 @@ namespace {
                                    payoffTimesDensity.begin());
         return GaussLobattoIntegral(1000, 1e-6)(f, x.front(), x.back());
     }
-
-    Real fokkerPlanckPrice2D(const Array& p,
-                       const boost::shared_ptr<FdmMesherComposite>& mesher) {
-
-        std::vector<Real> x, y;
-        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
-
-        x.reserve(layout->dim()[0]);
-        y.reserve(layout->dim()[1]);
-
-        const FdmLinearOpIterator endIter = layout->end();
-        for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
-              ++iter) {
-            if (!iter.coordinates()[1]) {
-                x.push_back(mesher->location(iter, 0));
-            }
-            if (!iter.coordinates()[0]) {
-                y.push_back(mesher->location(iter, 1));
-            }
-        }
-
-        Array intX(y.size(), 0.0);
-        for (Size i=0; i < y.size(); ++i) {
-            // check for zero function
-            const Real sum = std::accumulate(p.begin() + i*x.size(),
-                                             p.begin() + (i+1)*x.size(), 0.0);
-
-            if (sum > 100*QL_EPSILON) {
-                const CubicNaturalSpline f(x.begin(), x.end(),
-                                           p.begin()+i*x.size());
-                intX[i]=GaussLobattoIntegral(1000000, 1e-6)(f,x.front(),x.back());
-            }
-        }
-
-        const CubicNaturalSpline f(y.begin(), y.end(), intX.begin());
-        return GaussLobattoIntegral(1000000, 1e-6)(f, y.front(), y.back());
-    }
 }
 
 void FdHestonTest::testBlackScholesFokkerPlanckFwdEquation() {
@@ -832,17 +799,265 @@ namespace {
 
         return boost::math::pdf(dist, x/k) / k;
     }
+
+    Real stationaryProbabilityFct(Real kappa, Real theta,
+                                   Real sigma, Real v) {
+        const Real alpha = 2*kappa*theta/(sigma*sigma);
+        const Real beta = alpha/theta;
+
+        return std::pow(beta, alpha)*std::pow(v, alpha-1.0)
+                *std::exp(-beta*v-GammaFunction().logValue(alpha));
+    }
+
+    class StationaryDistributionFct : public std::unary_function<Real,Real> {
+      public:
+        StationaryDistributionFct(Real kappa, Real theta, Real sigma)
+        : kappa_(kappa), theta_(theta), sigma_(sigma) {}
+
+        Real operator()(Real v) const {
+            const Real alpha = 2*kappa_*theta_/(sigma_*sigma_);
+            const Real beta = alpha/theta_;
+
+            return boost::math::gamma_p(alpha, beta*v);
+        }
+      private:
+        const Real kappa_, theta_, sigma_;
+    };
+
+    Real invStationaryDistributionFct(Real kappa, Real theta,
+                                      Real sigma, Real q) {
+        const Real alpha = 2*kappa*theta/(sigma*sigma);
+        const Real beta = alpha/theta;
+
+        return boost::math::gamma_p_inv(alpha, q)/beta;
+    }
 }
 
-void FdHestonTest::testSquareRootFokkerPlanckFwdEquation() {
-    BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation"
-                       "for the square root process...");
+void FdHestonTest::testSquareRootZeroFlowBC() {
+    BOOST_MESSAGE("Testing Zero Flow BC for the square root process...");
 
     SavedSettings backup;
 
     const Real kappa = 1.0;
     const Real theta = 0.4;
-    const Real sigma = 0.6;
+    const Real sigma = 0.8;
+    const Real v_0   = 0.1;
+    const Time t     = 1.0;
+
+    const Real vmin = 0.0005;
+    const Real h    = 0.0001;
+
+    const Real expected[5][5]
+        = {{ 0.000548, -0.000245, -0.005657, -0.001167, -0.000024},
+           {-0.000595, -0.000701, -0.003296, -0.000883, -0.000691},
+           {-0.001277, -0.001320, -0.003128, -0.001399, -0.001318},
+           {-0.001979, -0.002002, -0.003425, -0.002047, -0.002001},
+           {-0.002715, -0.002730, -0.003920, -0.002760, -0.002730} };
+
+    for (Size i=0; i < 5; ++i) {
+        const Real v = vmin + i*0.001;
+        const Real vm2 = v - 2*h;
+        const Real vm1 = v - h;
+        const Real v0  = v;
+        const Real v1  = v + h;
+        const Real v2  = v + 2*h;
+
+        const Real pm2= squareRootGreensFct(v_0, kappa, theta, sigma, t, vm2);
+        const Real pm1= squareRootGreensFct(v_0, kappa, theta, sigma, t, vm1);
+        const Real p0 = squareRootGreensFct(v_0, kappa, theta, sigma, t, v0);
+        const Real p1 = squareRootGreensFct(v_0, kappa, theta, sigma, t, v1);
+        const Real p2 = squareRootGreensFct(v_0, kappa, theta, sigma, t, v2);
+
+        // test derivatives
+        const Real flowSym2Order = sigma*sigma*v0/(4*h)*(p1-pm1)
+                                + (kappa*(v0-theta)+sigma*sigma/2)*p0;
+
+        const Real flowSym4Order
+            = sigma*sigma*v0/(24*h)*(-p2 + 8*p1 - 8*pm1 + pm2)
+              + (kappa*(v0-theta)+sigma*sigma/2)*p0;
+
+        const Real fwd1Order = sigma*sigma*v0/(2*h)*(p1-p0)
+                                + (kappa*(v0-theta)+sigma*sigma/2)*p0;
+
+        const Real fwd2Order = sigma*sigma*v0/(4*h)*(4*p1-3*p0-p2)
+                                + (kappa*(v0-theta)+sigma*sigma/2)*p0;
+
+        const Real fwd3Order
+            = sigma*sigma*v0/(12*h)*(-p2 + 6*p1 - 3*p0 - 2*pm1)
+                                + (kappa*(v0-theta)+sigma*sigma/2)*p0;
+
+        const Real tol = 0.000002;
+        if (   std::fabs(expected[i][0] - flowSym2Order) > tol
+            || std::fabs(expected[i][1] - flowSym4Order) > tol
+            || std::fabs(expected[i][2] - fwd1Order) > tol
+            || std::fabs(expected[i][3] - fwd2Order) > tol
+            || std::fabs(expected[i][4] - fwd3Order) > tol ) {
+            BOOST_ERROR("failed to reproduce Zero Flow BC at"
+                       << "\n   v:          " << v
+                       << "\n   tolerance:  " << tol);
+        }
+    }
+}
+
+
+namespace {
+    boost::shared_ptr<FdmMesher> createStationaryDistributionMesher(
+        Real kappa, Real theta, Real sigma, Size vGrid) {
+
+        const Real qMin = 0.01;
+        const Real qMax = 0.99;
+        const Real dq = (qMax-qMin)/(vGrid-1);
+
+        std::vector<Real> v(vGrid);
+        for (Size i=0; i < vGrid; ++i) {
+            v[i] = invStationaryDistributionFct(kappa, theta,
+                                                sigma, qMin + i*dq);
+        }
+
+        return boost::shared_ptr<FdmMesher>(
+            new FdmMesherComposite(boost::shared_ptr<Fdm1dMesher>(
+                new Predefined1dMesher(v))));
+    }
+}
+
+
+void FdHestonTest::testTransformedZeroFlowBC() {
+    BOOST_MESSAGE("Testing zero flow BC for transformed "
+                  "Fokker-Planck forward equation...");
+
+    SavedSettings backup;
+
+    const Real kappa = 1.0;
+    const Real theta = 0.4;
+    const Real sigma = 2.0;
+    const Size vGrid = 100;
+
+    const boost::shared_ptr<FdmMesher> mesher
+        = createStationaryDistributionMesher(kappa, theta, sigma, vGrid);
+    const Array v = mesher->locations(0);
+
+    Array p(vGrid);
+    for (Size i=0; i < v.size(); ++i)
+        p[i] =  stationaryProbabilityFct(kappa, theta, sigma, v[i]);
+
+
+    const Real alpha = 1.0 - 2*kappa*theta/(sigma*sigma);
+    const Array q = Pow(v, alpha)*p;
+
+    for (Size i=0; i < vGrid/2; ++i) {
+        const Real hm = v[i+1] - v[i];
+        const Real hp = v[i+2] - v[i+1];
+
+        const Real eta=1.0/(hm*(hm+hp)*hp);
+        const Real a = -eta*(square<Real>()(hm+hp) - hm*hm);
+        const Real b  = eta*square<Real>()(hm+hp);
+        const Real c = -eta*hm*hm;
+
+        const Real df = a*q[i] + b*q[i+1] + c*q[i+2];
+        const Real flow = 0.5*sigma*sigma*v[i]*df + kappa*v[i]*q[i];
+
+        const Real tol = 1e-6;
+        if (std::fabs(flow) > tol) {
+            BOOST_ERROR("failed to reproduce Zero Flow BC at"
+                       << "\n v:          " << v
+                       << "\n flow:       " << flow
+                       << "\n tolerance:  " << tol);
+        }
+    }
+}
+
+namespace {
+    class q_fct : public std::unary_function<Real, Real> {
+      public:
+        q_fct(const Array& v, const Array& p, const Real alpha)
+        : v_(v), q_(Pow(v, alpha)*p), alpha_(alpha) {
+            spline_ = boost::shared_ptr<CubicNaturalSpline>(
+                new CubicNaturalSpline(v_.begin(), v_.end(), q_.begin()));
+        }
+
+        Real operator()(Real v) {
+            return spline_->operator()(v)*std::pow(v, -alpha_);
+        }
+      private:
+
+        const Array v_, q_;
+        const Real alpha_;
+        boost::shared_ptr<CubicNaturalSpline> spline_;
+    };
+}
+
+void FdHestonTest::testSquareRootEvolveWithStationaryDensity() {
+    BOOST_MESSAGE("Testing Fokker-Planck forward equation"
+                  "for the square root process with stationary density...");
+
+    // Documentation for this test case:
+    // http://www.spanderen.de/fokker-planck-equation-feller-constraint-and-boundary-conditions/
+    SavedSettings backup;
+
+    const Real kappa = 2.5;
+    const Real theta = 0.2;
+    const Size vGrid = 100;
+    const Real eps = 1e-2;
+
+    for (Real sigma = 0.2; sigma < 2.01; sigma+=0.1) {
+        const Real vMin
+            = invStationaryDistributionFct(kappa, theta, sigma, eps);
+        const Real vMax
+            = invStationaryDistributionFct(kappa, theta, sigma, 1-eps);
+
+        const boost::shared_ptr<FdmMesher> mesher(
+            new FdmMesherComposite(boost::shared_ptr<Fdm1dMesher>(
+                    new Uniform1dMesher(vMin, vMax, vGrid))));
+
+        const Array v = mesher->locations(0);
+
+        Array p(vGrid);
+        for (Size i=0; i < v.size(); ++i)
+            p[i] =  stationaryProbabilityFct(kappa, theta, sigma, v[i]);
+
+        const boost::shared_ptr<FdmSquareRootFwdOp> op(
+            new FdmSquareRootFwdOp(mesher, kappa, theta,
+                                   sigma, 0, sigma > 0.75));
+
+
+        const Array eP = p;
+
+        const Size n = 100;
+        const Time dt = 0.01;
+        DouglasScheme evolver(0.5, op);
+        evolver.setStep(dt);
+
+        for (Size i=1; i <= n; ++i) {
+            evolver.step(p, i*dt);
+        }
+
+        const Real expected = 1-2*eps;
+        const Real alpha = 1-2*kappa*theta/(sigma*sigma);
+        const Real calculated = GaussLobattoIntegral(1e6, 1e-6)(
+                                        q_fct(v,p,alpha), v.front(),v.back());
+
+        const Real tol = 0.005;
+        if (std::fabs(calculated-expected) > tol) {
+            BOOST_ERROR("failed to reproduce stationary probability function"
+                    << "\n    calculated: " << calculated
+                    << "\n    expected:   " << expected
+                    << "\n    tolerance:  " << tol);
+        }
+    }
+}
+
+void FdHestonTest::testSquareRootFokkerPlanckFwdEquation() {
+    BOOST_MESSAGE("Testing Fokker-Planck forward equation"
+                  "for the square root process with Dirac start...");
+
+    SavedSettings backup;
+
+    const Real kappa = 1.2;
+    const Real theta = 0.4;
+    const Real sigma = 0.7;
+    const Real v0 = theta;
+    const Real alpha = 1.0 - 2*kappa*theta/(sigma*sigma);
+
     const Time maturity = 1.0;
 
     const Size xGrid = 1001;
@@ -861,31 +1076,32 @@ void FdHestonTest::testSquareRootFokkerPlanckFwdEquation() {
     const boost::shared_ptr<FdmSquareRootFwdOp> op(
         new FdmSquareRootFwdOp(mesher, kappa, theta, sigma, 0));
 
-    const Size idx = std::distance(x.begin(),
-                                   std::lower_bound(x.begin(), x.end(), theta));
-    const Real v0 = x[idx];
-    const Real dx = 0.5*(x[idx+1]-x[idx-1]);
+    const Time dt = maturity/tGrid;
+    const Size n = 5;
 
-    Array p(xGrid, 0.0);
-    p[idx] = 1.0/dx;
+    Array p(xGrid);
+    for (Size i=0; i < p.size(); ++i) {
+        p[i] = squareRootGreensFct(v0, kappa, theta,
+                                   sigma, n*dt, x[i]);
+    }
+    Array q = Pow(x, alpha)*p;
 
     DouglasScheme evolver(0.5, op);
-
-    const Time dt = maturity/tGrid;
     evolver.setStep(dt);
 
-    for (Time t=dt; t <= maturity+20*QL_EPSILON; t+=dt) {
+    for (Time t=(n+1)*dt; t <= maturity+20*QL_EPSILON; t+=dt) {
         evolver.step(p, t);
+        evolver.step(q, t);
     }
 
-    const Real tol = 0.001;
+    const Real tol = 0.002;
 
     Array y(x.size());
     for (Size i=0; i < x.size(); ++i) {
         const Real expected = squareRootGreensFct(v0, kappa, theta,
                                                   sigma, maturity, x[i]);
-        const Real calculated = p[i];
 
+        const Real calculated = p[i];
         if (std::fabs(expected - calculated) > tol) {
             BOOST_FAIL("failed to reproduce pdf at"
                        << QL_FIXED << std::setprecision(5)
@@ -898,7 +1114,47 @@ void FdHestonTest::testSquareRootFokkerPlanckFwdEquation() {
 }
 
 
-void FdHestonTest::testHestonLVFokkerPlanckFwdEquation() {
+
+namespace {
+    Real fokkerPlanckPrice2D(const Array& p,
+                       const boost::shared_ptr<FdmMesherComposite>& mesher) {
+
+        std::vector<Real> x, y;
+        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+
+        x.reserve(layout->dim()[0]);
+        y.reserve(layout->dim()[1]);
+
+        const FdmLinearOpIterator endIter = layout->end();
+        for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
+              ++iter) {
+            if (!iter.coordinates()[1]) {
+                x.push_back(mesher->location(iter, 0));
+            }
+            if (!iter.coordinates()[0]) {
+                y.push_back(mesher->location(iter, 1));
+            }
+        }
+
+        Array intX(y.size(), 0.0);
+        for (Size i=0; i < y.size(); ++i) {
+            // check for zero function
+            const Real sum = std::accumulate(p.begin() + i*x.size(),
+                                             p.begin() + (i+1)*x.size(), 0.0);
+
+            if (sum > 100*QL_EPSILON) {
+                const CubicNaturalSpline f(x.begin(), x.end(),
+                                           p.begin()+i*x.size());
+                intX[i]=GaussLobattoIntegral(1000000, 1e-6)(f,x.front(),x.back());
+            }
+        }
+
+        const CubicNaturalSpline f(y.begin(), y.end(), intX.begin());
+        return GaussLobattoIntegral(1000000, 1e-6)(f, y.front(), y.back());
+    }
+}
+
+void FdHestonTest::testHestonFokkerPlanckFwdEquation() {
     BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation"
                        "for the Heston process...");
 
@@ -1024,7 +1280,6 @@ void FdHestonTest::testHestonLVFokkerPlanckFwdEquation() {
     }
 }
 
-
 test_suite* FdHestonTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Finite Difference Heston tests");
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBarrier));
@@ -1044,10 +1299,14 @@ test_suite* FdHestonTest::experimental() {
     test_suite* suite = BOOST_TEST_SUITE("Finite Difference Heston tests");
     suite->add(QUANTLIB_TEST_CASE(
         &FdHestonTest::testBlackScholesFokkerPlanckFwdEquation));
+    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testSquareRootZeroFlowBC));
+    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testTransformedZeroFlowBC));
+    suite->add(QUANTLIB_TEST_CASE(
+          &FdHestonTest::testSquareRootEvolveWithStationaryDensity));
     suite->add(QUANTLIB_TEST_CASE(
         &FdHestonTest::testSquareRootFokkerPlanckFwdEquation));
     suite->add(QUANTLIB_TEST_CASE(
-        &FdHestonTest::testHestonLVFokkerPlanckFwdEquation));
+        &FdHestonTest::testHestonFokkerPlanckFwdEquation));
 
     return suite;
 }
