@@ -58,16 +58,17 @@ namespace QuantLib {
                .add(Array(mesher->layout()->size(),
                           2*kappa*kappa*theta/(sigma*sigma))))),
 
-      v_(mesher->layout()->dim()[direction_]) {
+      v_  (mesher->layout()->dim()[direction_]),
+      vq_ (mesher->layout()->size()),
+      vmq_(mesher->layout()->size()) {
 
         const FdmLinearOpIterator endIter = mesher->layout()->end();
         for (FdmLinearOpIterator iter = mesher->layout()->begin();
             iter != endIter; ++iter) {
-            v_[iter.coordinates()[direction_]]
-               = mesher->location(iter, direction_);
+            const Real v = mesher->location(iter, direction_);
+            v_[iter.coordinates()[direction_]] = v;
+            vmq_[iter.index()] = 1.0/(vq_[iter.index()] = std::pow(v, alpha_));
         }
-        vq_ = (transform_) ? Array(Pow(v_,  alpha_)) : vq_;
-        vmq_= (transform_) ? Array(Pow(v_, -alpha_)) : vmq_;
 
         // zero flux boundary condition
         if (!transform_) {

@@ -991,7 +991,7 @@ void FdHestonTest::testSquareRootEvolveWithStationaryDensity() {
                   "for the square root process with stationary density...");
 
     // Documentation for this test case:
-    // http://www.spanderen.de/fokker-planck-equation-feller-constraint-and-boundary-conditions/
+    // http://www.spanderen.de/2013/05/04/fokker-planck-equation-feller-constraint-and-boundary-conditions/
     SavedSettings backup;
 
     const Real kappa = 2.5;
