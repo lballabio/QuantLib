@@ -308,6 +308,7 @@
     <ClInclude Include="ql\methods\finitedifferences\meshers\fdmmesher.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\meshers\fdmmeshercomposite.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\meshers\fdmsimpleprocess1dmesher.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\meshers\predefined1dmesher.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\meshers\uniform1dmesher.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\meshers\uniformgridmesher.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\all.hpp" />

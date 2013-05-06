@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=1869
+UnitCount=1870
 Type=2
 Ver=1
 ObjFiles=
@@ -18731,6 +18731,16 @@ BuildCmd=
 FileName=ql\experimental\models\smilesectionutils.hpp
 CompileCpp=1
 Folder=experimental/models
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit1870]
+FileName=ql\methods\finitedifferences\meshers\predefined1dmesher.hpp
+CompileCpp=1
+Folder=methods/finitedifferences/meshers
 Compile=1
 Link=1
 Priority=1000
