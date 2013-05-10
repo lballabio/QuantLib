@@ -174,6 +174,39 @@ namespace QuantLib {
         ~IndexHistoryCleaner();
     };
 
+
+    // Allow streaming vectors to error messages.
+
+    // The standard forbids defining new overloads in the std
+    // namespace, so we have to use a wrapper instead of overloading
+    // operator<< to send a vector to the stream directly.
+    // Defining the overload outside the std namespace wouldn't work
+    // with Boost streams because of ADT name lookup rules.
+
+    template <class T>
+    struct vector_streamer {
+        vector_streamer(const std::vector<T>& v) : v(v) {}
+        std::vector<T> v;
+    };
+
+    template <class T>
+    vector_streamer<T> to_stream(const std::vector<T>& v) {
+        return vector_streamer<T>(v);
+    }
+
+    template <class T>
+    std::ostream& operator<<(std::ostream& out, const vector_streamer<T>& s) {
+        out << "{ ";
+        if (!s.v.empty()) {
+            for (size_t n=0; n<s.v.size()-1; ++n)
+                out << s.v[n] << ", ";
+            out << s.v.back();
+        }
+        out << " }";
+        return out;
+    }
+
+
 }
 
 

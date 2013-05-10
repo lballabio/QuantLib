@@ -332,26 +332,23 @@ namespace {
           case Terminal:
             result = terminalMeasure(evolution);
             if (!isInTerminalMeasure(evolution, result)) {
-                Array a(result.size());
-                std::copy(result.begin(), result.end(), a.begin());
-                BOOST_ERROR("\nfailure in verifying Terminal measure:\n" << a);
+                BOOST_ERROR("\nfailure in verifying Terminal measure:\n"
+                            << to_stream(result));
             }
             break;
           case MoneyMarket:
             result = moneyMarketMeasure(evolution);
             if (!isInMoneyMarketMeasure(evolution, result)) {
-                Array a(result.size());
-                std::copy(result.begin(), result.end(), a.begin());
-                BOOST_ERROR("\nfailure in verifying MoneyMarket measure:\n" << a);
+                BOOST_ERROR("\nfailure in verifying MoneyMarket measure:\n"
+                            << to_stream(result));
             }
             break;
           case MoneyMarketPlus:
             result = moneyMarketPlusMeasure(evolution, measureOffset_);
             if (!isInMoneyMarketPlusMeasure(evolution, result, measureOffset_)) {
-                Array a(result.size());
-                std::copy(result.begin(), result.end(), a.begin());
                 BOOST_ERROR("\nfailure in verifying MoneyMarketPlus(" <<
-                            measureOffset_ << ") measure:\n" << a);
+                            measureOffset_ << ") measure:\n" <<
+                            to_stream(result));
             }
             break;
           default:
@@ -359,9 +356,7 @@ namespace {
         }
         checkCompatibility(evolution, result);
         if (printReport_) {
-            Array num(result.size());
-            std::copy(result.begin(), result.end(), num.begin());
-            BOOST_TEST_MESSAGE("    " << measureTypeToString(measureType) << ": " << num);
+            BOOST_TEST_MESSAGE("    " << measureTypeToString(measureType) << ": " << to_stream(result));
         }
         return result;
     }
