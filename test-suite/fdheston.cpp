@@ -1033,8 +1033,8 @@ void FdHestonTest::testSquareRootEvolveWithStationaryDensity() {
 
         const Real expected = 1-2*eps;
         const Real alpha = 1-2*kappa*theta/(sigma*sigma);
-        const Real calculated = GaussLobattoIntegral(1e6, 1e-6)(
-                                        q_fct(v,p,alpha), v.front(),v.back());
+        const Real calculated = GaussLobattoIntegral(1000000, 1e-6)(
+                                        q_fct(v,p,alpha), v.front(), v.back());
 
         const Real tol = 0.005;
         if (std::fabs(calculated-expected) > tol) {

@@ -61,7 +61,7 @@ void FactorialTest::testGammaFunction() {
 
     for (Size i=2; i<9000; i++) {
         expected  += std::log(Real(i));
-        calculated = GammaFunction().logValue(i+1);
+        calculated = GammaFunction().logValue(static_cast<Real>(i+1));
         if (std::fabs(calculated-expected)/expected > 1.0e-9)
             BOOST_ERROR("GammaFunction(" << i << ")\n"
                         << std::setprecision(16) << QL_SCIENTIFIC

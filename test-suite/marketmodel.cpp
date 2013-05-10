@@ -4801,9 +4801,9 @@ void MarketModelTest::testCovariance() {
     std::vector<Real> evolTimes4;
     std::vector<std::vector<Real> > evolTimes;
 
-    for(Size i=1;i<=n;i++) rateTimes.push_back(i);
+    for(Size i=1;i<=n;i++) rateTimes.push_back(static_cast<Time>(i));
     evolTimes1.push_back(n-1);
-    for(Size i=1;i<=n-1;i++) evolTimes2.push_back(i);
+    for(Size i=1;i<=n-1;i++) evolTimes2.push_back(static_cast<Time>(i));
     for(Size i=1;i<=2*n-2;i++) evolTimes3.push_back(0.5*i);
     evolTimes4.push_back(0.3);
     evolTimes4.push_back(1.3);

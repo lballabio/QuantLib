@@ -394,7 +394,7 @@ void DistributionTest::testInverseCumulativePoisson() {
     };
 
     for (Size i=0; i<LENGTH(data); i++) {
-        if (!close(icp(data[i]), i)) {
+        if (!close(icp(data[i]), static_cast<Real>(i))) {
             BOOST_ERROR(std::setprecision(8)
                         << "failed to reproduce known value for x = "
                         << data[i] << "\n"

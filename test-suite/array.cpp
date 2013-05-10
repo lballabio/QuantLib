@@ -162,7 +162,7 @@ void ArrayTest::testConstruction() {
     // transform
     Array a10(5);
     for (i=0; i < a10.size(); i++) {
-        a10[i] = i;
+        a10[i] = static_cast<Real>(i);
     }
     FSquared f2;
     std::transform(a10.begin(), a10.end(), a10.begin(), FSquared());
