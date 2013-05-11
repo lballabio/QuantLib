@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2012 Peter Caspers
+ Copyright (C) 2013 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,21 +17,28 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_ode_hpp
-#define quantlib_test_ode_hpp
+/*! \file expm.hpp
+    \brief matrix exponential
+*/
 
-#include <boost/test/unit_test.hpp>
+#ifndef quantlib_expm_hpp
+#define quantlib_expm_hpp
 
-/* remember to document new and/or updated tests in the Doxygen
-   comment block of the corresponding class */
+#include <ql/math/matrix.hpp>
 
-class OdeTest {
-  public:
-    static void testAdaptiveRungeKutta();
-    static void testMatrixExponential();
+namespace QuantLib {
 
-    static boost::unit_test_framework::test_suite* suite();
-};
+    //! matrix exponential based on the ordinary differential equations method
 
+    /*! References:
+
+        C. Moler; C. Van Loan, 1978,
+        Nineteen Dubious Ways to Compute the Exponential of a Matrix
+        http://xa.yimg.com/kq/groups/22199541/1399635765/name/moler-nineteen.pdf
+    */
+
+    //! returns the matrix exponential exp(t*M)
+    Disposable<Matrix> Expm(const Matrix& M, Real t=1.0, Real tol=QL_EPSILON);
+}
 
 #endif

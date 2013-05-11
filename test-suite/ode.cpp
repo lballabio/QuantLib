@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2012 Peter Caspers
+ Copyright (C) 2013 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,6 +20,7 @@
 
 #include "ode.hpp"
 #include "utilities.hpp"
+#include <ql/experimental/math/expm.hpp>
 #include <ql/experimental/math/adaptiverungekutta.hpp>
 #include <complex>
 
@@ -130,8 +132,54 @@ void OdeTest::testAdaptiveRungeKutta() {
     }
 }
 
+namespace {
+    Real frobenuiusNorm(const Matrix& m) {
+        return std::sqrt(DotProduct((m*transpose(m)).diagonal(),
+                                    Array(m.rows(), 1.0)));
+    }
+}
+
+void OdeTest::testMatrixExponential() {
+    BOOST_TEST_MESSAGE("Testing matrix exponential based on ode...");
+
+    // Reference results are taken from
+    // http://www.millersville.edu/~bikenaga/linear-algebra/matrix-exponential/matrix-exponential.html
+
+    Matrix m(3, 3);
+    m[0][0] = 5; m[0][1] =-6; m[0][2] =-6;
+    m[1][0] =-1; m[1][1] = 4; m[1][2] = 2;
+    m[2][0] = 3; m[2][1] =-6; m[2][2] =-4;
+
+    const Real tol = 1e-12;
+
+    for (Real t=0.01; t < 11; t+=t) {
+        const Matrix calculated = Expm(m, t, tol);
+
+        Matrix expected(3, 3);
+        expected[0][0] = -3*std::exp(t)+4*std::exp(2*t);
+        expected[0][1] =  6*std::exp(t)-6*std::exp(2*t);
+        expected[0][2] =  6*std::exp(t)-6*std::exp(2*t);
+        expected[1][0] =    std::exp(t)-  std::exp(2*t);
+        expected[1][1] = -2*std::exp(t)+3*std::exp(2*t);
+        expected[1][2] = -2*std::exp(t)+2*std::exp(2*t);
+        expected[2][0] = -3*std::exp(t)+3*std::exp(2*t);
+        expected[2][1] =  6*std::exp(t)-6*std::exp(2*t);
+        expected[2][2] =  6*std::exp(t)-5*std::exp(2*t);
+
+        const Matrix diff = calculated - expected;
+        const Real relDiffNorm = frobenuiusNorm(diff)/frobenuiusNorm(expected);
+
+        if ( std::fabs(relDiffNorm) > 100*tol) {
+            BOOST_FAIL("Failed to reproduce expected matrix exponential."
+                    << "\n rel. difference norm: " << relDiffNorm
+                    << "\n tolerance           : " << 100*tol);
+        }
+    }
+}
+
 test_suite* OdeTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("ode tests");
     suite->add(QUANTLIB_TEST_CASE(&OdeTest::testAdaptiveRungeKutta));
+    suite->add(QUANTLIB_TEST_CASE(&OdeTest::testMatrixExponential));
     return suite;
 }

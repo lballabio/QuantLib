@@ -7,12 +7,14 @@ this_include_HEADERS = \
     adaptiverungekutta.hpp \
     autocovariance.hpp \
     claytoncopularng.hpp \
+    expm.hpp \
     farliegumbelmorgensterncopularng.hpp \
     fastfouriertransform.hpp \
     frankcopularng.hpp \
     zigguratrng.hpp
 
 libMath_la_SOURCES = \
+	expm.cpp \
     zigguratrng.cpp
 
 noinst_LTLIBRARIES = libMath.la
