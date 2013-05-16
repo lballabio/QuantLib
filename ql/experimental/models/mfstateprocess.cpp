@@ -39,7 +39,7 @@ namespace QuantLib {
     }
 
     Real MfStateProcess::diffusion(Time t, Real) const {
-        int i= std::upper_bound(times_.begin(),times_.end(),t)-times_.begin();
+        Size i= std::upper_bound(times_.begin(),times_.end(),t)-times_.begin();
         return vols_[i];
     }
 
@@ -58,12 +58,12 @@ namespace QuantLib {
         if(dt < QL_EPSILON) return 0.0;
         if(times_.size()==0) return reversionZero_ ? dt : 1.0 / (2.0*reversion_) * (std::exp(2.0*reversion_*(t+dt))-std::exp(2.0*reversion_*t));
 
-        int i= std::upper_bound(times_.begin(),times_.end(),t)-times_.begin();
-        int j= std::upper_bound(times_.begin(),times_.end(),t+dt)-times_.begin();
+        Size i= std::upper_bound(times_.begin(),times_.end(),t)-times_.begin();
+        Size j= std::upper_bound(times_.begin(),times_.end(),t+dt)-times_.begin();
 
         double v=0.0;
 
-        for(int k=i;k<j;k++) {
+        for(Size k=i;k<j;k++) {
             if(reversionZero_)
                 v+=vols_[k]*vols_[k]*(times_[k]-std::max(k>0?times_[k-1]:0.0,t));
             else

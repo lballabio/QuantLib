@@ -58,8 +58,9 @@ namespace QuantLib {
                                       maturity, payoff->strike()));
         
         const boost::shared_ptr<Fdm1dMesher> exerciseMesher(
-                 new Uniform1dMesher(0, arguments_.maxExerciseRights,
-                                        arguments_.maxExerciseRights+1));
+                 new Uniform1dMesher(
+                           0, static_cast<Real>(arguments_.maxExerciseRights),
+                           arguments_.maxExerciseRights+1));
         
         const boost::shared_ptr<FdmMesher> mesher (
             new FdmMesherComposite(equityMesher, exerciseMesher));

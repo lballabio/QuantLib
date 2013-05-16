@@ -182,7 +182,8 @@ namespace QuantLib {
     Size KahaleSmileSection::index(Rate strike) const {
         int i;
         //if(strike>=k_.back()) i=k_.size();
-        /*else*/ i=std::upper_bound(k_.begin(),k_.end(),strike)-k_.begin();
+        /*else*/
+        i=static_cast<int>(std::upper_bound(k_.begin(),k_.end(),strike)-k_.begin());
         i -= leftIndex_;
         i = std::max(std::min(i,static_cast<int>(rightIndex_-leftIndex_+1)),0);
         return i;

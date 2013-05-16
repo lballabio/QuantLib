@@ -57,7 +57,7 @@ namespace QuantLib {
 
         //! The required size for the output vector
         std::size_t output_size() const {
-            return (1 << cs_.size());
+            return ((std::size_t)1 << cs_.size());
         }
 
         //! FFT transform.

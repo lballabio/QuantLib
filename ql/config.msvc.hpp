@@ -101,6 +101,14 @@
 #  define QL_WORKING_BOOST_STREAMS
 #endif
 
+// Compilation on the x64 platform throws a lot of warnings assigning
+// QuantLib::Size == size_t (64 bit) to QuantLib::Integer == int (32
+// bit under x64 Windows). We disable this warning until a better
+// solution is suggested.
+#ifdef _M_X64
+#pragma warning(disable : 4267)
+#endif
+
 #ifndef _CPPRTTI
 #   if (_MSC_VER >= 1300) // VC++ 7.0 (.Net) and later
 #       error Enable Run-Time Type Info (Property Pages | C/C++ | Language)

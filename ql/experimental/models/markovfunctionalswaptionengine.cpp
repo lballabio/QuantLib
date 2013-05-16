@@ -35,8 +35,8 @@ namespace QuantLib {
             return;
         }
 
-        int idx = arguments_.exercise->dates().size()-1;
-        int minIdxAlive = std::upper_bound(arguments_.exercise->dates().begin(), arguments_.exercise->dates().end(), today) - arguments_.exercise->dates().begin();
+        int idx = static_cast<int>(arguments_.exercise->dates().size())-1;
+        int minIdxAlive = static_cast<int>(std::upper_bound(arguments_.exercise->dates().begin(), arguments_.exercise->dates().end(), today) - arguments_.exercise->dates().begin());
 
         VanillaSwap swap = *arguments_.swap;
         Option::Type type = arguments_.type==VanillaSwap::Payer ? Option::Call : Option::Put;

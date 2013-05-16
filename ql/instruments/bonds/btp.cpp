@@ -150,7 +150,7 @@ namespace QuantLib {
 
         Rate dummyRate = 0.05;
         for (Size i=0; i<nSwaps_; ++i) {
-            swapLenghts_[i] = i+1;
+            swapLenghts_[i] = static_cast<Real>(i+1);
             swaps_[i] = MakeVanillaSwap(
                 swapLenghts_[i]*Years, euriborIndex_, dummyRate, 1*Days)
                                 .withDiscountingTermStructure(discountCurve_);
