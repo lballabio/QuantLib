@@ -7939,6 +7939,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\math\expm.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\expm.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\math\farliegumbelmorgensterncopularng.hpp"
 					>
 				</File>
