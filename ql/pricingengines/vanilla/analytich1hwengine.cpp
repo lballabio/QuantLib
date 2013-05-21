@@ -85,16 +85,17 @@ namespace QuantLib {
         const Size maxIter = 1000;
         const Real lambdaT = lambda(t);
 
-        Size k=0;
+        Size i=0;
         Real retVal = 0.0, s;
 
         do {
+            Real k = static_cast<Real>(i);
             s=std::exp(k*std::log(0.5*lambdaT) + g.logValue(0.5*(1+d_)+k)
                         - g.logValue(k+1) - g.logValue(0.5*d_+k));
             retVal += s;
-        } while (s > std::numeric_limits<float>::epsilon() && ++k < maxIter);
+        } while (s > std::numeric_limits<float>::epsilon() && ++i < maxIter);
 
-        QL_REQUIRE(k < maxIter, "can not calculate Lambda");
+        QL_REQUIRE(i < maxIter, "can not calculate Lambda");
 
         retVal *= std::sqrt(2*c(t)) * std::exp(-0.5*lambdaT);
         return retVal;
