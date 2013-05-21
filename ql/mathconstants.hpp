@@ -118,5 +118,13 @@
     #define M_INVLN2    1.4426950408889633870E0
 #endif
 
+/* This should ensure that no macro are redefined if we happen to
+   include <math.h> again, whether or not we're using our macros
+   or theirs. We can't know in advance, since it depends on the
+   order of inclusion of headers in client code. */
+#ifdef _MSC_VER
+    #undef _USE_MATH_DEFINES
+#endif
+
 #endif
 
