@@ -200,8 +200,8 @@ void OdeTest::testMatrixExponentialOfZero() {
 
     for (Size i=0; i < calculated.rows(); ++i) {
         for (Size j=0; j < calculated.columns(); ++j) {
-            const Real kronekerDelta = (i==j)? 1.0 : 0.0;
-            if (std::fabs(calculated[i][j] -kronekerDelta) > tol) {
+            const Real kroneckerDelta = (i==j)? 1.0 : 0.0;
+            if (std::fabs(calculated[i][j] -kroneckerDelta) > tol) {
                 BOOST_FAIL("Failed to reproduce expected matrix exponential."
                         << "\n tolerance           : " << tol);
             }
