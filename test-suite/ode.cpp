@@ -166,13 +166,45 @@ void OdeTest::testMatrixExponential() {
         expected[2][1] =  6*std::exp(t)-6*std::exp(2*t);
         expected[2][2] =  6*std::exp(t)-5*std::exp(2*t);
 
-        const Matrix diff = calculated - expected;
-        const Real relDiffNorm = frobenuiusNorm(diff)/frobenuiusNorm(expected);
+        Matrix diff = calculated - expected;
+        Real relDiffNorm = frobenuiusNorm(diff)/frobenuiusNorm(expected);
 
         if ( std::fabs(relDiffNorm) > 100*tol) {
             BOOST_FAIL("Failed to reproduce expected matrix exponential."
                     << "\n rel. difference norm: " << relDiffNorm
                     << "\n tolerance           : " << 100*tol);
+        }
+
+        const Matrix negativeTime = Expm((-1)*m, -t, tol);
+        diff = negativeTime - expected;
+        relDiffNorm = frobenuiusNorm(diff)/frobenuiusNorm(expected);
+
+        if ( std::fabs(relDiffNorm) > 100*tol) {
+            BOOST_FAIL("Failed to reproduce expected matrix exponential."
+                    << "\n rel. difference norm: " << relDiffNorm
+                    << "\n tolerance           : " << 100*tol);
+        }
+
+    }
+}
+
+void OdeTest::testMatrixExponentialOfZero() {
+    BOOST_TEST_MESSAGE("Testing matrix exponential of a zero matrix "
+                       "based on ode...");
+
+    Matrix m(3, 3, 0.0);
+
+    const Real tol = 100*QL_EPSILON;
+    const Time t=1.0;
+    const Matrix calculated = Expm(m, t);
+
+    for (Size i=0; i < calculated.rows(); ++i) {
+        for (Size j=0; j < calculated.columns(); ++j) {
+            const Real kronekerDelta = (i==j)? 1.0 : 0.0;
+            if (std::fabs(calculated[i][j] -kronekerDelta) > tol) {
+                BOOST_FAIL("Failed to reproduce expected matrix exponential."
+                        << "\n tolerance           : " << tol);
+            }
         }
     }
 }
@@ -181,5 +213,6 @@ test_suite* OdeTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("ode tests");
     suite->add(QUANTLIB_TEST_CASE(&OdeTest::testAdaptiveRungeKutta));
     suite->add(QUANTLIB_TEST_CASE(&OdeTest::testMatrixExponential));
+    suite->add(QUANTLIB_TEST_CASE(&OdeTest::testMatrixExponentialOfZero));
     return suite;
 }

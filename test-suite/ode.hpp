@@ -29,6 +29,7 @@ class OdeTest {
   public:
     static void testAdaptiveRungeKutta();
     static void testMatrixExponential();
+    static void testMatrixExponentialOfZero();
 
     static boost::unit_test_framework::test_suite* suite();
 };
