@@ -1012,7 +1012,7 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
 		boost::shared_ptr<BlackSwaptionEngine> blackEngine(new BlackSwaptionEngine(flatYts_,calibrationHelperVols1[i]));
 		ch1[i].setPricingEngine(blackEngine);
 		Real blackPrice = ch1[i].NPV();
-		Real blackVega = boost::any_cast<Real>(ch1[i].additionalResults().at("vega"));
+		Real blackVega = ch1[i].result<Real>("vega");
 		ch1[i].setPricingEngine(mfSwaptionEngine1);
 		Real mfPrice = ch1[i].NPV();
 		if( fabs(blackPrice-mfPrice) / blackVega  > tol1 ) BOOST_MESSAGE("Basket 1 / flat yts, vts: Secondary instrument set calibration failed for instrument #" << i << " black premium is " << blackPrice << " while model premium is " << mfPrice << " (market vega is " << blackVega << ")");
@@ -1072,7 +1072,7 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
 		boost::shared_ptr<BlackSwaptionEngine> blackEngine(new BlackSwaptionEngine(md0Yts_,calibrationHelperVols2[i]));
 		ch2[i].setPricingEngine(blackEngine);
 		Real blackPrice = ch2[i].NPV();
-		Real blackVega = boost::any_cast<Real>(ch2[i].additionalResults().at("vega"));
+		Real blackVega = ch2[i].result<Real>("vega");
 		ch2[i].setPricingEngine(mfSwaptionEngine2);
 		Real mfPrice = ch2[i].NPV();
 		if( fabs(blackPrice-mfPrice) / blackVega > tol1 ) BOOST_MESSAGE("Basket 1 / real yts, vts: Secondary instrument set calibration failed for instrument #" << i << " black premium is " << blackPrice << " while model premium is " << mfPrice << " (market vega is " << blackVega << ")");
