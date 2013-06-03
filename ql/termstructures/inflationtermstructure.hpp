@@ -292,7 +292,7 @@ namespace QuantLib {
     }
 
     inline bool InflationTermStructure::hasSeasonality() const {
-        return seasonality_;
+        return static_cast<bool>(seasonality_);
     }
 
 }
