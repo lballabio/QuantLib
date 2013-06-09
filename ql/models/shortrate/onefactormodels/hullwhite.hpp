@@ -59,6 +59,12 @@ namespace QuantLib {
                                 Time maturity,
                                 Time bondMaturity) const;
 
+       Real discountBondOption(Option::Type type,
+                                Real strike,
+                                Time maturity,
+								Time bondStart,
+                                Time bondMaturity) const;
+
         /*! Futures convexity bias (i.e., the difference between
             futures implied rate and forward rate) calculated as in
             G. Kirikos, D. Novak, "Convexity Conundrums", Risk
