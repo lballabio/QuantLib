@@ -53,6 +53,14 @@ namespace QuantLib {
                                         Real strike,
                                         Time maturity,
                                         Time bondMaturity) const = 0;
+
+		virtual Real discountBondOption(Option::Type type,
+                                        Real strike,
+                                        Time maturity, Time bondStart,
+                                        Time bondMaturity) const { 
+											return discountBondOption(type,strike,maturity,bondMaturity);
+		}
+
     };
 
 
