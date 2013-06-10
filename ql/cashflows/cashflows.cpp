@@ -1175,6 +1175,9 @@ namespace QuantLib {
         ZeroSpreadedTermStructure spreadedCurve(discountCurveHandle,
                                                 zSpreadQuoteHandle,
                                                 comp, freq, dc);
+
+        spreadedCurve.enableExtrapolation(discountCurveHandle->allowsExtrapolation());
+
         return npv(leg, spreadedCurve,
                    includeSettlementDateFlows,
                    settlementDate, npvDate);
