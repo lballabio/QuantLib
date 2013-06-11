@@ -101,6 +101,27 @@ namespace QuantLib {
         return blackFormula(type, k, f, v);
     }
 
+	 Real HullWhite::discountBondOption(Option::Type type, Real strike,
+                                       Time maturity, Time bondStart,
+                                       Time bondMaturity) const {
+
+        Real _a = a();
+        Real v;
+        if (_a < std::sqrt(QL_EPSILON)) {
+            v = sigma()*B(bondStart, bondMaturity)* std::sqrt(maturity);
+        } else {
+			v = sigma()/(_a*sqrt(2.0*_a)) * sqrt ( 
+				   exp(-2.0*_a*(bondStart-maturity))-exp(-2.0*_a*bondStart)
+				   -2.0*(exp(-_a*(bondStart+bondMaturity-2.0*maturity))-exp(-_a*(bondStart+bondMaturity)))
+				   +exp(-2.0*_a*(bondMaturity-maturity))-exp(-2.0*_a*bondMaturity)
+				);
+        }
+        Real f = termStructure()->discount(bondMaturity);
+        Real k = termStructure()->discount(bondStart)*strike;
+
+        return blackFormula(type, k, f, v);
+    }
+
     Rate HullWhite::convexityBias(Real futuresPrice,
                                   Time t,
                                   Time T,
