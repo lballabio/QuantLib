@@ -25,11 +25,11 @@
 #ifndef quantlib_kahale_smile_section_hpp
 #define quantlib_kahale_smile_section_hpp
 
-#include <vector>
 #include <ql/termstructures/volatility/smilesection.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <boost/math/distributions/normal.hpp> 
+#include <vector>
 
 namespace QuantLib {
 

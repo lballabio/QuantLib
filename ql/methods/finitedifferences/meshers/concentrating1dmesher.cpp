@@ -24,9 +24,8 @@
 #include <ql/errors.hpp>
 #include <ql/utilities/null.hpp>
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
-#include <cmath>
-
 #include <ql/math/interpolations/linearinterpolation.hpp>
+#include <cmath>
 
 // asinh is missing in WIN32 (and possibly on other compilers)
 #if !defined(QL_HAVE_ASINH)
