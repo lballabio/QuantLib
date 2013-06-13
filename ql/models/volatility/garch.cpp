@@ -21,7 +21,7 @@
 #include <ql/models/volatility/garch.hpp>
 #include <ql/math/optimization/leastsquare.hpp>
 #include <ql/math/optimization/simplex.hpp>
-#include <ql/experimental/math/autocovariance.hpp>
+#include <ql/math/autocovariance.hpp>
 #include <boost/foreach.hpp>
 
 namespace QuantLib {

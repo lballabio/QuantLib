@@ -2,6 +2,7 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/math/array.hpp>
+#include <ql/math/autocovariance.hpp>
 #include <ql/math/bernsteinpolynomial.hpp>
 #include <ql/math/beta.hpp>
 #include <ql/math/bspline.hpp>
@@ -10,6 +11,7 @@
 #include <ql/math/domain.hpp>
 #include <ql/math/errorfunction.hpp>
 #include <ql/math/factorial.hpp>
+#include <ql/math/fastfouriertransform.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/generallinearleastsquares.hpp>
 #include <ql/math/kernelfunctions.hpp>

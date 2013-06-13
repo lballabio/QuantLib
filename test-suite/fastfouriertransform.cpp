@@ -20,7 +20,7 @@
 
 #include "fastfouriertransform.hpp"
 #include "utilities.hpp"
-#include <ql/experimental/math/fastfouriertransform.hpp>
+#include <ql/math/fastfouriertransform.hpp>
 #include <ql/math/array.hpp>
 #include <complex>
 #include <vector>

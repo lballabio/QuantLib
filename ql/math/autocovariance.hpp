@@ -24,7 +24,7 @@
 #ifndef quantlib_auto_covariance_hpp
 #define quantlib_auto_covariance_hpp
 
-#include <ql/experimental/math/fastfouriertransform.hpp>
+#include <ql/math/fastfouriertransform.hpp>
 #include <ql/math/array.hpp>
 #include <complex>
 #include <vector>

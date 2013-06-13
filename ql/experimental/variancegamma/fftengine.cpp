@@ -20,7 +20,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/experimental/variancegamma/fftengine.hpp>
 #include <ql/exercise.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
-#include <ql/experimental/math/fastfouriertransform.hpp>
+#include <ql/math/fastfouriertransform.hpp>
 #include <complex>
 
 namespace QuantLib {
