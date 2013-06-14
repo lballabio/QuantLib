@@ -470,7 +470,7 @@ void OptimizersTest::testDifferentialEvolution() {
     costFunctions.push_back(boost::shared_ptr<CostFunction>(new SecondDeJong));
     costFunctions.push_back(boost::shared_ptr<CostFunction>(new ModThirdDeJong));
     costFunctions.push_back(boost::shared_ptr<CostFunction>(new ModFourthDeJong));
-  	costFunctions.push_back(boost::shared_ptr<CostFunction>(new Griewangk));
+    costFunctions.push_back(boost::shared_ptr<CostFunction>(new Griewangk));
 
     std::vector<BoundaryConstraint> constraints;
     constraints.push_back(BoundaryConstraint(-10.0, 10.0));
@@ -484,21 +484,21 @@ void OptimizersTest::testDifferentialEvolution() {
     initialValues.push_back(Array(2, 5.0));
     initialValues.push_back(Array(5, 5.0));
     initialValues.push_back(Array(30, 5.0));
-  	initialValues.push_back(Array(10, 100.0));
+    initialValues.push_back(Array(10, 100.0));
 
     std::vector<EndCriteria> endCriteria;
     endCriteria.push_back(EndCriteria(100, 10, 1e-10, 1e-8, Null<Real>()));
     endCriteria.push_back(EndCriteria(100, 10, 1e-10, 1e-8, Null<Real>()));
     endCriteria.push_back(EndCriteria(100, 10, 1e-10, 1e-8, Null<Real>()));
     endCriteria.push_back(EndCriteria(500, 100, 1e-10, 1e-8, Null<Real>()));
-  	endCriteria.push_back(EndCriteria(1000, 800, 1e-12, 1e-10, Null<Real>()));
+    endCriteria.push_back(EndCriteria(1000, 800, 1e-12, 1e-10, Null<Real>()));
 
     std::vector<Real> minima;
     minima.push_back(0.0);
     minima.push_back(0.0);
     minima.push_back(0.0);
     minima.push_back(10.9639796558);
-  	minima.push_back(0.0);
+    minima.push_back(0.0);
 
     for (Size i = 0; i < costFunctions.size(); ++i) {
         Problem problem(*costFunctions[i], constraints[i], initialValues[i]);

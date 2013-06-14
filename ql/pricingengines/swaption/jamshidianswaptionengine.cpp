@@ -60,7 +60,7 @@ namespace QuantLib {
                    "cannot use the Jamshidian decomposition "
                    "on exotic swaptions");
 
-		QL_REQUIRE(arguments_.swap->spread() == 0.0, "non zero spread (" << arguments_.swap->spread() << ") not allowed"); // PC
+        QL_REQUIRE(arguments_.swap->spread() == 0.0, "non zero spread (" << arguments_.swap->spread() << ") not allowed"); // PC
 
         Date referenceDate;
         DayCounter dayCounter;
@@ -82,10 +82,10 @@ namespace QuantLib {
                                                 arguments_.exercise->date(0));
 
         std::vector<Time> fixedPayTimes(arguments_.fixedPayDates.size());
-		Time valueTime = dayCounter.yearFraction(referenceDate,arguments_.fixedResetDates[0]);
+        Time valueTime = dayCounter.yearFraction(referenceDate,arguments_.fixedResetDates[0]);
         for (Size i=0; i<fixedPayTimes.size(); i++)
             fixedPayTimes[i] = dayCounter.yearFraction(referenceDate,
-											arguments_.fixedPayDates[i]);
+                                                       arguments_.fixedPayDates[i]);
 
         rStarFinder finder(*model_, arguments_.nominal, maturity, valueTime,
                            fixedPayTimes, amounts);

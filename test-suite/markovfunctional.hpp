@@ -27,11 +27,11 @@
 
 class MarkovFunctionalTest {
   public:
-	static void testMfStateProcess();
-	static void testCalibrationOneInstrumentSet();
-	static void testCalibrationTwoInstrumentSets();
-	static void testVanillaEngines();
-	static void testBermudanSwaption();
+    static void testMfStateProcess();
+    static void testCalibrationOneInstrumentSet();
+    static void testCalibrationTwoInstrumentSets();
+    static void testVanillaEngines();
+    static void testBermudanSwaption();
     static boost::unit_test_framework::test_suite* suite();
 };
 

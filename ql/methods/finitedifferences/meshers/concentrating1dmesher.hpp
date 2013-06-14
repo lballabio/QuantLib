@@ -36,7 +36,7 @@ namespace QuantLib {
             Real start, Real end, Size size,
             const std::pair<Real, Real>& cPoints
                      = (std::pair<double, double>(Null<Real>(), Null<Real>())),
-			const bool requireCPoint = false);
+            const bool requireCPoint = false);
     };
 }
 
