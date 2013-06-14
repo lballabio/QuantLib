@@ -28,6 +28,8 @@
 #include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
 
 namespace QuantLib {
+
+    class YieldTermStructure;
     class FdmMesher;
     class HestonProcess;
     class FirstDerivativeOp;

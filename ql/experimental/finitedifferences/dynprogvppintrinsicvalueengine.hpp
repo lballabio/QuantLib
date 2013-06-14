@@ -26,6 +26,7 @@
 
 #include <ql/pricingengine.hpp>
 #include <ql/experimental/finitedifferences/vanillavppoption.hpp>
+#include <vector>
 
 namespace QuantLib {
 
