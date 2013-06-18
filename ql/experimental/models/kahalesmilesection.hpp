@@ -20,6 +20,10 @@
 /*! \file kahalesmilesection.hpp
     \brief Arbitrage free smile section using a C^1 inter- and extrapolation method proposed by Kahale, see
     http://www.risk.net/data/Pay_per_view/risk/technical/2004/0504_tech_option2.pdf
+    Exponential extrapolation for high strikes can be used alternatively to avoid a too slowly decreasing
+    call price function. Note that in the leftmost interval and right from the last grid point the input smile is always 
+    replaced by the extrapolating functional forms, so if you are sure that the input smile is globally arbitrage free and
+    you do not want to change it in these strike regions you should not use this class at all.
 */
 
 #ifndef quantlib_kahale_smile_section_hpp
@@ -31,6 +35,12 @@
 #include <ql/math/solvers1d/brent.hpp>
 #include <boost/math/distributions/normal.hpp> 
 
+// numerical constants that are still experimental
+#define QL_KAHALE_FMAX 1000.0
+#define QL_KAHALE_SMAX 5.0
+#define QL_KAHALE_ACC 1E-6
+#define QL_KAHALE_ACC_RELAX 1E-2
+
 namespace QuantLib {
 
     class KahaleSmileSection : public SmileSection {
@@ -38,8 +48,11 @@ namespace QuantLib {
       public:
 
         struct cFunction {
-            cFunction(Real f, Real s, Real a, Real b) : f_(f), s_(s), a_(a), b_(b) {}
+            // this is just a helper class where we do not want virtual functions
+            cFunction(Real f, Real s, Real a, Real b) : f_(f), s_(s), a_(a), b_(b), exponential_(false) {}
+            cFunction(Real a, Real b) : a_(a), b_(b), exponential_(true) {}
             Real operator()(Real k) {
+                if(exponential_) return std::exp(-a_*k+b_);
                 if(s_<QL_EPSILON) return std::max(f_-k,0.0)+a_*k+b_;
                 boost::math::normal normal;
                 Real d1 = log(f_/k) / s_ + s_ / 2.0;
@@ -47,10 +60,12 @@ namespace QuantLib {
                 return f_*boost::math::cdf(normal,d1)-k*boost::math::cdf(normal,d2)+a_*k+b_;
             }
             Real f_,s_,a_,b_;
+            const bool exponential_;
         };
 
         struct aHelper {
-            aHelper(Real k0, Real k1, Real c0, Real c1, Real c0p, Real c1p) : k0_(k0), k1_(k1), c0_(c0), c1_(c1), c0p_(c0p), c1p_(c1p) {}
+            aHelper(Real k0, Real k1, Real c0, Real c1, Real c0p, Real c1p) :
+                k0_(k0), k1_(k1), c0_(c0), c1_(c1), c0p_(c0p), c1p_(c1p) {}
             Real operator()(Real a) const {
                 boost::math::normal normal;
                 Real d20 = boost::math::quantile(normal,-c0p_+a);
@@ -58,7 +73,7 @@ namespace QuantLib {
                 Real alpha = (d20-d21)/(log(k0_)-log(k1_));
                 Real beta = d20-alpha*log(k0_);
                 s_ = -1.0 / alpha;
-                f_ = exp(s_*(beta+s_/2.0));
+                f_ = std::min(exp(s_*(beta+s_/2.0)), QL_KAHALE_FMAX); // cap ?
                 cFunction cTmp(f_,s_,a,0.0);
                 b_ = c0_-cTmp(k0_);
                 cFunction c(f_,s_,a,b_);
@@ -71,6 +86,7 @@ namespace QuantLib {
         struct sHelper {
             sHelper(Real k0, Real c0, Real c0p) : k0_(k0), c0_(c0), c0p_(c0p) {}
             Real operator()(Real s) const {
+                s = std::max(s,0.0);
                 boost::math::normal normal;
                 Real d20 = boost::math::quantile(normal,-c0p_);
                 f_ = k0_*exp(s*d20+s*s/2.0);
@@ -84,6 +100,7 @@ namespace QuantLib {
         struct sHelper1 {
             sHelper1(Real k1, Real c0, Real c1, Real c1p) : k1_(k1), c0_(c0), c1_(c1), c1p_(c1p) {}
             Real operator()(Real s) const {
+                s = std::max(s,0.0);
                 boost::math::normal normal;
                 Real d21 = boost::math::quantile(normal,-c1p_);
                 f_ = k1_*exp(s*d21+s*s/2.0);
@@ -95,14 +112,17 @@ namespace QuantLib {
             mutable Real f_,b_;
         };
 
-        KahaleSmileSection(const boost::shared_ptr<SmileSection> source, const Real atm = Null<Real>(), const bool interpolate=false, const std::vector<Real>& moneynessGrid = std::vector<Real>(), const Real gap = 1.0E-5 );
+        KahaleSmileSection(const boost::shared_ptr<SmileSection> source, const Real atm = Null<Real>(), 
+                           const bool interpolate=false, const bool exponentialExtrapolation=false,
+                           const bool deleteArbitragePoints=false, 
+                           const std::vector<Real>& moneynessGrid = std::vector<Real>(), const Real gap = 1.0E-5 );
 
         Real minStrike () const { return 0.0; }
         Real maxStrike () const { return QL_MAX_REAL; }
         Real atmLevel() const { return f_; }
 
-        Size minAfIndex() const { return leftIndex_-1; }
-        Size maxAfindex() const { return rightIndex_-1; }
+        Real minAfStrike() const { return k_[leftIndex_]; }
+        Real maxAfStrike() const { return k_[rightIndex_]; }
 
         Real optionPrice(Rate strike, Option::Type type = Option::Call, Real discount=1.0) const; 
 
@@ -113,12 +133,13 @@ namespace QuantLib {
         Size index(Rate strike) const;
         void compute();
         boost::shared_ptr<SmileSection> source_;
-        const std::vector<Real>& moneynessGrid_;
+        std::vector<Real> moneynessGrid_;
         std::vector<Real> k_, c_;
-        Real f_, gap_;
+        Real f_;
+        const Real gap_;
         Size centralIndex_,leftIndex_,rightIndex_;
         std::vector<boost::shared_ptr<cFunction> > cFunctions_;
-        const bool interpolate_;
+        const bool interpolate_, exponentialExtrapolation_, deleteArbitragePoints_;
     };
 
 
