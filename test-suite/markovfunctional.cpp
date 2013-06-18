@@ -580,8 +580,8 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
 																 .withMarketRateAccuracy(1e-7)
 																 .withLowerRateBound(0.0)
 																 .withUpperRateBound(2.0)
-																 .withSmilePretreatment(MarkovFunctional::ModelSettings::KahaleExtrapolation)   // we do not need a pretreatment because of flat smile input
-																 .withAdjustments(MarkovFunctional::ModelSettings::AdjustNone)
+                                                                 .withAdjustments(MarkovFunctional::ModelSettings::KahaleSmile |
+                                                                                  MarkovFunctional::ModelSettings::KahaleExponentialExtrapolation)
 																 .withSmileMoneynessCheckpoints(money)));
 	
 	MarkovFunctional::ModelOutputs outputs1 = mf1->modelOutputs();   // this costs a lot of time, so only use it if you want to check the calibration
@@ -610,7 +610,6 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
  														    .withMarketRateAccuracy(1e-7)
 															.withLowerRateBound(0.0)
 															.withUpperRateBound(2.0)
-															.withSmilePretreatment(MarkovFunctional::ModelSettings::NoPretreatment)
 														    .withAdjustments(MarkovFunctional::ModelSettings::AdjustNone)
 															.withSmileMoneynessCheckpoints(money)));
 	
@@ -640,8 +639,6 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
 																 .withMarketRateAccuracy(1e-7)
 																 .withLowerRateBound(0.0)
 																 .withUpperRateBound(2.0)
-																 .withSmilePretreatment(MarkovFunctional::ModelSettings::KahaleExtrapolation)
-																 .withAdjustments(MarkovFunctional::ModelSettings::AdjustNone)
 																 .withSmileMoneynessCheckpoints(money)
 																 ));
 	
@@ -673,7 +670,6 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
  														    .withMarketRateAccuracy(1e-7)
 															.withLowerRateBound(0.0)
 															.withUpperRateBound(2.0)
-															.withSmilePretreatment(MarkovFunctional::ModelSettings::KahaleExtrapolation)
 															.withSmileMoneynessCheckpoints(money)));
 	
 	MarkovFunctional::ModelOutputs outputs4 = mf4->modelOutputs();
@@ -744,7 +740,6 @@ void MarkovFunctionalTest::testVanillaEngines() {
 																 .withMarketRateAccuracy(1e-7)
 																 .withLowerRateBound(0.0)
 																 .withUpperRateBound(2.0)
-																 .withSmilePretreatment(MarkovFunctional::ModelSettings::KahaleExtrapolation)
 																 .withSmileMoneynessCheckpoints(money)));
 
 	MarkovFunctional::ModelOutputs outputs1 = mf1->modelOutputs();
@@ -789,7 +784,6 @@ void MarkovFunctionalTest::testVanillaEngines() {
 															.withMarketRateAccuracy(1e-7)
 															.withLowerRateBound(0.0)
 															.withUpperRateBound(2.0)
-															.withSmilePretreatment(MarkovFunctional::ModelSettings::KahaleExtrapolation)
 															.withSmileMoneynessCheckpoints(money)));
 
 	
@@ -834,7 +828,6 @@ void MarkovFunctionalTest::testVanillaEngines() {
 																 .withMarketRateAccuracy(1e-7)
 																 .withLowerRateBound(0.0)
 																 .withUpperRateBound(2.0)
-																 .withSmilePretreatment(MarkovFunctional::ModelSettings::KahaleExtrapolation)
 																 .withSmileMoneynessCheckpoints(money)));
 
 	boost::shared_ptr<MarkovFunctionalSwaptionEngine> mfSwaptionEngine3(new MarkovFunctionalSwaptionEngine(mf3,64,7.0));
@@ -881,7 +874,6 @@ void MarkovFunctionalTest::testVanillaEngines() {
 															.withMarketRateAccuracy(1e-7)
 															.withLowerRateBound(0.0)
 															.withUpperRateBound(2.0)
-															.withSmilePretreatment(MarkovFunctional::ModelSettings::KahaleExtrapolation)
 															.withSmileMoneynessCheckpoints(money)));
 
 	
@@ -986,7 +978,6 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
 																 .withMarketRateAccuracy(1e-7)
 																 .withLowerRateBound(0.0)
 																 .withUpperRateBound(2.0)
-																 .withSmilePretreatment(MarkovFunctional::ModelSettings::KahaleExtrapolation)
 																 .withSmileMoneynessCheckpoints(money)));
 
 	boost::shared_ptr<MarkovFunctionalSwaptionEngine> mfSwaptionEngine1(new MarkovFunctionalSwaptionEngine(mf1,64,7.0));
@@ -1033,7 +1024,6 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
 																 .withMarketRateAccuracy(1e-7)
 																 .withLowerRateBound(0.0)
 																 .withUpperRateBound(2.0)
-																 .withSmilePretreatment(MarkovFunctional::ModelSettings::KahaleExtrapolation)
 																 .withSmileMoneynessCheckpoints(money)));
 
 	std::vector<boost::shared_ptr<CalibrationHelper> > calibrationHelper2;
@@ -1118,7 +1108,6 @@ void MarkovFunctionalTest::testBermudanSwaption() {
 																 .withDigitalGap(1e-5)
 																 .withLowerRateBound(0.0)
 																 .withUpperRateBound(2.0)
-																 .withSmilePretreatment(MarkovFunctional::ModelSettings::KahaleExtrapolation)
 																 ));
 
 	boost::shared_ptr<PricingEngine> mfSwaptionEngine1(new MarkovFunctionalSwaptionEngine(mf1,64,7.0));
