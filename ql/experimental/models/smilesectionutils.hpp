@@ -41,14 +41,16 @@ namespace QuantLib {
         arbitragefreeIndices(const SmileSection&,
                              const std::vector<Real>& moneynessGrid =
                                                    std::vector<Real>()) const;
-        const Disposable<std::vector<Real> >
-        makeMoneynessGrid(const std::vector<Real>& moneynessGrid) const;
+        const std::vector<Real>&
+        makeMoneynessGrid(const SmileSection&, 
+                          const std::vector<Real>& moneynessGrid) const;
+        
         const std::vector<Real>&
         makeStrikeGrid(const SmileSection&,
                        const std::vector<Real>& moneynessGrid) const;
       private:
         bool af(Size i0, Size i) const;
-        mutable std::vector<Real> k_, c_;
+        mutable std::vector<Real> m_, k_, c_;
     };
 
 }

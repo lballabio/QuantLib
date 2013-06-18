@@ -35,7 +35,6 @@ namespace QuantLib {
                               const SmileSection& section,
                               const std::vector<Real>& moneynessGrid ) const {
 
-        std::vector<Real> moneynessGrid1 = makeMoneynessGrid(moneynessGrid);
         makeStrikeGrid(section,moneynessGrid);
 
         c_.clear();
@@ -48,9 +47,9 @@ namespace QuantLib {
         }
 
         Size centralIndex =
-            std::upper_bound(moneynessGrid1.begin(),
-                             moneynessGrid1.end(),
-                             1.0-QL_EPSILON) - moneynessGrid1.begin();
+            std::upper_bound(m_.begin(),
+                             m_.end(),
+                             1.0-QL_EPSILON) - m_.begin();
         QL_REQUIRE(centralIndex < k_.size()-1 && centralIndex > 1,
                    "Atm point in moneyness grid (" << centralIndex
                    << ") too close to boundary.");
@@ -87,28 +86,44 @@ namespace QuantLib {
         return false;
     }
 
-    const Disposable<std::vector<Real> >
+    const std::vector<Real>&
     SmileSectionUtils::makeMoneynessGrid(
+                               const SmileSection& section,
                                const std::vector<Real>& moneynessGrid) const {
+        
+        m_.clear();
 
-        std::vector<Real> result;
+        if(moneynessGrid.size()!=0) {
+            QL_REQUIRE(moneynessGrid[0] >= 0.0, "moneyness grid should only containt non negative values (" <<
+                       moneynessGrid[0] << ")");
+            for(Size i=0;i<moneynessGrid.size()-1;i++) {
+                QL_REQUIRE(moneynessGrid[i] < moneynessGrid[i+1],
+                           "moneyness grid should containt strictly increasing values (" << moneynessGrid[i] << "," <<
+                           moneynessGrid[i+1] << " at indices " << i << ", " << i+1 << ")");
+            }
+        }
 
-        if(moneynessGrid.size()==0) {
-            Real defaultMoneynesses[] =
-                {0.0,0.01,0.05,0.10,0.25,0.40,0.50,0.60,0.70,0.80,0.90,
+        std::vector<Real> tmp;
+
+        static const Real defaultMoney[] = {0.0,0.01,0.05,0.10,0.25,0.40,0.50,0.60,0.70,0.80,0.90,
                  1.0,1.25,1.5,1.75,2.0,5.0,7.5,10.0,15.0,20.0};
-            for(int i=0;i<21;i++) result.push_back(defaultMoneynesses[i]);
-        }
-        else {
-            result = std::vector<Real>(moneynessGrid);
-            std::sort(result.begin(),result.end());
-            QL_REQUIRE(result[0]>=0.0,
-                       "Moneynessgrid should contain only non negative values ("
-                       << result[0] << ")");
-            if(result[0]>QL_EPSILON) result.insert(result.begin(),0.0);
+
+        if(moneynessGrid.size()==0) tmp = std::vector<Real>(defaultMoney, defaultMoney+21);
+        else tmp = std::vector<Real>(moneynessGrid);
+
+        if(tmp[0] > QL_EPSILON) m_.push_back(0.0);
+
+        Real atm = section.atmLevel();
+        QL_REQUIRE(atm != Null<Real>(),
+                   "smile section must provide atm level to compute moneyness grid");
+
+        for(Size i=0;i<tmp.size();i++) {
+            if(fabs(tmp[i]) < QL_EPSILON ||
+               (tmp[i]*atm >= section.minStrike() && tmp[i]*atm <= section.maxStrike()))
+                m_.push_back( tmp[i] );
         }
 
-        return result;
+        return m_;
     }
 
     const std::vector<Real>&
@@ -116,20 +131,14 @@ namespace QuantLib {
                                const SmileSection& section,
                                const std::vector<Real>& moneynessGrid) const {
 
-        std::vector<Real> moneyness = makeMoneynessGrid(moneynessGrid);
+        makeMoneynessGrid(section,moneynessGrid);
 
         k_.clear();
-        Real atm = section.atmLevel();
-        QL_REQUIRE(atm != Null<Real>(),
-                   "smile section must provide atm level to compute strike grid");
 
-        for(Size i=0;i<moneyness.size();i++) {
-            Real strike = moneyness[i] * atm;
-             // only use the strikes that are allowed in the section,
-             // but add zero strike always
-            if(fabs(strike) < QL_EPSILON ||
-               (strike >= section.minStrike() && strike <= section.maxStrike()))
-                    k_.push_back( strike  );
+        Real atm = section.atmLevel();
+
+        for(Size i=0;i<m_.size();i++) {
+            k_.push_back( m_[i] * atm );
         }
 
         return k_;
