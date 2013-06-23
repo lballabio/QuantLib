@@ -5,11 +5,9 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     adaptiverungekutta.hpp \
-    autocovariance.hpp \
     claytoncopularng.hpp \
     expm.hpp \
     farliegumbelmorgensterncopularng.hpp \
-    fastfouriertransform.hpp \
     frankcopularng.hpp \
     zigguratrng.hpp
 

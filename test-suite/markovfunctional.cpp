@@ -405,21 +405,21 @@ namespace {
 
     Disposable<std::vector<Date> > expiriesCalBasket1() {
 
-		std::vector<Date> res;
-		Date referenceDate_ = Settings::instance().evaluationDate();
+        std::vector<Date> res;
+        Date referenceDate_ = Settings::instance().evaluationDate();
 
-		for(int i=1;i<=5;i++)
-			res.push_back(TARGET().advance(referenceDate_,i*Years));
+        for(int i=1;i<=5;i++)
+            res.push_back(TARGET().advance(referenceDate_,i*Years));
 
-		return res;
+        return res;
 
     }
 
     Disposable<std::vector<Period> > tenorsCalBasket1() {
 
-		std::vector<Period> res(5,10*Years);
+        std::vector<Period> res(5,10*Years);
 
-		return res;
+        return res;
 
     }
 
@@ -467,17 +467,17 @@ namespace {
 
     Disposable<std::vector<Period> > tenorsCalBasket3() {
 
-		std::vector<Period> res;
-		res.push_back(9*Years);
-		res.push_back(8*Years);
-		res.push_back(7*Years);
-		res.push_back(6*Years);
-		res.push_back(5*Years);
-		res.push_back(4*Years);
-		res.push_back(3*Years);
-		res.push_back(2*Years);
-		res.push_back(1*Years);
-		return res;
+        std::vector<Period> res;
+        res.push_back(9*Years);
+        res.push_back(8*Years);
+        res.push_back(7*Years);
+        res.push_back(6*Years);
+        res.push_back(5*Years);
+        res.push_back(4*Years);
+        res.push_back(3*Years);
+        res.push_back(2*Years);
+        res.push_back(1*Years);
+        return res;
 
     }
 
@@ -527,7 +527,7 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
     boost::shared_ptr<KahaleSmileSection> ksec11(new KahaleSmileSection(sec1,atm,false,false,false,money));
 
     if( std::fabs(ksec11->leftCoreStrike() - 0.01) > tol ) BOOST_ERROR("smile11 left af strike is " 
-								  << ksec11->leftCoreStrike() << "expected 0.01");
+                                  << ksec11->leftCoreStrike() << "expected 0.01");
 
     if( std::fabs(ksec11->rightCoreStrike() - 0.10) > tol ) BOOST_ERROR("smile11 right af strike is " 
                                   << ksec11->rightCoreStrike() << "expected 0.10");
@@ -601,12 +601,12 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
     boost::shared_ptr<KahaleSmileSection> ksec22(new KahaleSmileSection(sec2,atm,true,false,true,money));
     
     if( std::fabs(ksec21->leftCoreStrike() - 0.02) > tol ) BOOST_ERROR("smile21 left af strike is " 
-								  << ksec21->leftCoreStrike() << "expected 0.02");
+                                  << ksec21->leftCoreStrike() << "expected 0.02");
     if( std::fabs(ksec22->leftCoreStrike() - 0.02) > tol ) BOOST_ERROR("smile22 left af strike is " 
                                   << ksec22->leftCoreStrike() << "expected 0.02");
 
     if( std::fabs(ksec21->rightCoreStrike() - 0.10) > tol ) BOOST_ERROR("smile21 right af strike is " 
-								  << ksec21->rightCoreStrike() << "expected 0.10");
+                                  << ksec21->rightCoreStrike() << "expected 0.10");
     if( std::fabs(ksec22->rightCoreStrike() - 0.10) > tol ) BOOST_ERROR("smile22 right af strike is " 
                                   << ksec22->rightCoreStrike() <<  "expected 0.10");
 
@@ -636,12 +636,12 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
     boost::shared_ptr<KahaleSmileSection> ksec32(new KahaleSmileSection(sec3,atm,true,false,true,money));
     
     if( std::fabs(ksec31->leftCoreStrike() - 0.01) > tol ) BOOST_ERROR("smile31 left af strike is " 
-								  << ksec31->leftCoreStrike() << "expected 0.01");
+                                  << ksec31->leftCoreStrike() << "expected 0.01");
     if( std::fabs(ksec32->leftCoreStrike() - 0.01) > tol ) BOOST_ERROR("smile32 left af strike is " 
                                   << ksec32->leftCoreStrike() << "expected 0.01");
 
     if( std::fabs(ksec31->rightCoreStrike() - 0.08) > tol ) BOOST_ERROR("smile31 right af strike is " 
-								  << ksec31->rightCoreStrike() << "expected 0.08");
+                                  << ksec31->rightCoreStrike() << "expected 0.08");
     if( std::fabs(ksec32->rightCoreStrike() - 0.10) > tol ) BOOST_ERROR("smile32 right af strike is " 
                                   << ksec32->rightCoreStrike() << "expected 0.10");
     k = 0.0010;
@@ -663,612 +663,612 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
 
 void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
 
-	const Real tol0 = 0.0001; //  1bp tolerance for model zero rates vs. market zero rates (note that model zero rates are implied by the calibration of the numeraire to the smile)
-	const Real tol1 = 0.0001;  // 1bp tolerance for model call put premia vs. market premia
-	
-	BOOST_MESSAGE("Testing markov functional calibration to one instrument set...");
+    const Real tol0 = 0.0001; //  1bp tolerance for model zero rates vs. market zero rates (note that model zero rates are implied by the calibration of the numeraire to the smile)
+    const Real tol1 = 0.0001;  // 1bp tolerance for model call put premia vs. market premia
+    
+    BOOST_MESSAGE("Testing markov functional calibration to one instrument set...");
 
-	Date savedEvalDate = Settings::instance().evaluationDate();
-	Date referenceDate(14,November,2012);
-	Settings::instance().evaluationDate() = referenceDate;
+    Date savedEvalDate = Settings::instance().evaluationDate();
+    Date referenceDate(14,November,2012);
+    Settings::instance().evaluationDate() = referenceDate;
 
-	Handle<YieldTermStructure> flatYts_ = flatYts();
-	Handle<YieldTermStructure> md0Yts_ = md0Yts();
-	Handle<SwaptionVolatilityStructure> flatSwaptionVts_ = flatSwaptionVts();
-	Handle<SwaptionVolatilityStructure> md0SwaptionVts_ = md0SwaptionVts();
-	Handle<OptionletVolatilityStructure> flatOptionletVts_ = flatOptionletVts();
-	Handle<OptionletVolatilityStructure> md0OptionletVts_ = md0OptionletVts();
+    Handle<YieldTermStructure> flatYts_ = flatYts();
+    Handle<YieldTermStructure> md0Yts_ = md0Yts();
+    Handle<SwaptionVolatilityStructure> flatSwaptionVts_ = flatSwaptionVts();
+    Handle<SwaptionVolatilityStructure> md0SwaptionVts_ = md0SwaptionVts();
+    Handle<OptionletVolatilityStructure> flatOptionletVts_ = flatOptionletVts();
+    Handle<OptionletVolatilityStructure> md0OptionletVts_ = md0OptionletVts();
 
-	boost::shared_ptr<SwapIndex> swapIndexBase(new EuriborSwapIsdaFixA(1*Years));
-	boost::shared_ptr<IborIndex> iborIndex(new Euribor(6*Months));
+    boost::shared_ptr<SwapIndex> swapIndexBase(new EuriborSwapIsdaFixA(1*Years));
+    boost::shared_ptr<IborIndex> iborIndex(new Euribor(6*Months));
 
-	std::vector<Date> volStepDates;
-	std::vector<Real> vols;
-	vols.push_back(1.0);
+    std::vector<Date> volStepDates;
+    std::vector<Real> vols;
+    vols.push_back(1.0);
 
-	std::vector<Real> money; // use a grid with fewer points for smile arbitrage testing and model outputs than the default grid for the testing here
-	money.push_back(0.1);
-	money.push_back(0.25);
-	money.push_back(0.50);
-	money.push_back(0.75);
-	money.push_back(1.0);
-	money.push_back(1.25);
-	money.push_back(1.50);
-	money.push_back(2.0);
-	money.push_back(5.0);
+    std::vector<Real> money; // use a grid with fewer points for smile arbitrage testing and model outputs than the default grid for the testing here
+    money.push_back(0.1);
+    money.push_back(0.25);
+    money.push_back(0.50);
+    money.push_back(0.75);
+    money.push_back(1.0);
+    money.push_back(1.25);
+    money.push_back(1.50);
+    money.push_back(2.0);
+    money.push_back(5.0);
 
-	// Calibration Basket 1 / flat yts, vts
+    // Calibration Basket 1 / flat yts, vts
 
-	boost::shared_ptr<MarkovFunctional> mf1(new MarkovFunctional(flatYts_,0.01,volStepDates,vols,flatSwaptionVts_,expiriesCalBasket1(),tenorsCalBasket1(),swapIndexBase,
-								MarkovFunctional::ModelSettings().withYGridPoints(64)               // we use the default values more or less, this is just to demonstrate how to set the model parameters
-								                                 .withYStdDevs(7.0)
-																 .withGaussHermitePoints(32)
-																 .withDigitalGap(1e-5)
-																 .withMarketRateAccuracy(1e-7)
-																 .withLowerRateBound(0.0)
-																 .withUpperRateBound(2.0)
+    boost::shared_ptr<MarkovFunctional> mf1(new MarkovFunctional(flatYts_,0.01,volStepDates,vols,flatSwaptionVts_,expiriesCalBasket1(),tenorsCalBasket1(),swapIndexBase,
+                                MarkovFunctional::ModelSettings().withYGridPoints(64)               // we use the default values more or less, this is just to demonstrate how to set the model parameters
+                                                                 .withYStdDevs(7.0)
+                                                                 .withGaussHermitePoints(32)
+                                                                 .withDigitalGap(1e-5)
+                                                                 .withMarketRateAccuracy(1e-7)
+                                                                 .withLowerRateBound(0.0)
+                                                                 .withUpperRateBound(2.0)
                                                                  .withAdjustments(MarkovFunctional::ModelSettings::KahaleSmile |
                                                                                   MarkovFunctional::ModelSettings::KahaleExponentialExtrapolation)
-																 .withSmileMoneynessCheckpoints(money)));
-	
-	MarkovFunctional::ModelOutputs outputs1 = mf1->modelOutputs();   // this costs a lot of time, so only use it if you want to check the calibration
-	//BOOST_MESSAGE(outputs1);
+                                                                 .withSmileMoneynessCheckpoints(money)));
+    
+    MarkovFunctional::ModelOutputs outputs1 = mf1->modelOutputs();   // this costs a lot of time, so only use it if you want to check the calibration
+    //BOOST_MESSAGE(outputs1);
 
-	for(Size i=0; i<outputs1.expiries_.size(); i++) {
-		if(fabs(outputs1.marketZerorate_[i] - outputs1.modelZerorate_[i]) > tol0) BOOST_ERROR("Basket 1 / flat termstructures : Market zero rate (" << outputs1.marketZerorate_[i] << ") and model zero rate (" << outputs1.modelZerorate_[i] << ") do not agree.");
-	}
+    for(Size i=0; i<outputs1.expiries_.size(); i++) {
+        if(fabs(outputs1.marketZerorate_[i] - outputs1.modelZerorate_[i]) > tol0) BOOST_ERROR("Basket 1 / flat termstructures : Market zero rate (" << outputs1.marketZerorate_[i] << ") and model zero rate (" << outputs1.modelZerorate_[i] << ") do not agree.");
+    }
 
-	for(Size i=0;i<outputs1.expiries_.size(); i++) {
-		for(Size j=0;j<outputs1.smileStrikes_[i].size();j++) {
-			if(fabs(outputs1.marketCallPremium_[i][j]-outputs1.modelCallPremium_[i][j]) > tol1)
-				BOOST_ERROR("Basket 1 / flat termstructures : Market call premium (" << outputs1.marketCallPremium_[i][j] << ") does not match model premium (" << outputs1.modelCallPremium_[i][j] << ")");
-			if(fabs(outputs1.marketPutPremium_[i][j]-outputs1.modelPutPremium_[i][j]) > tol1)
-				BOOST_ERROR("Basket 1 / flat termstructures : Market put premium (" << outputs1.marketPutPremium_[i][j] << ") does not match model premium (" << outputs1.modelPutPremium_[i][j] << ")");
-		}
-	}
+    for(Size i=0;i<outputs1.expiries_.size(); i++) {
+        for(Size j=0;j<outputs1.smileStrikes_[i].size();j++) {
+            if(fabs(outputs1.marketCallPremium_[i][j]-outputs1.modelCallPremium_[i][j]) > tol1)
+                BOOST_ERROR("Basket 1 / flat termstructures : Market call premium (" << outputs1.marketCallPremium_[i][j] << ") does not match model premium (" << outputs1.modelCallPremium_[i][j] << ")");
+            if(fabs(outputs1.marketPutPremium_[i][j]-outputs1.modelPutPremium_[i][j]) > tol1)
+                BOOST_ERROR("Basket 1 / flat termstructures : Market put premium (" << outputs1.marketPutPremium_[i][j] << ") does not match model premium (" << outputs1.modelPutPremium_[i][j] << ")");
+        }
+    }
 
-	// Calibration Basket 2 / flat yts, vts
+    // Calibration Basket 2 / flat yts, vts
 
-	boost::shared_ptr<MarkovFunctional> mf2(new MarkovFunctional(flatYts_,0.01,volStepDates,vols,flatOptionletVts_,expiriesCalBasket2(),iborIndex,
-						MarkovFunctional::ModelSettings().withYGridPoints(64)
-								                            .withYStdDevs(7.0)
-															.withGaussHermitePoints(32)
-															.withDigitalGap(1e-5)
- 														    .withMarketRateAccuracy(1e-7)
-															.withLowerRateBound(0.0)
-															.withUpperRateBound(2.0)
-														    .withAdjustments(MarkovFunctional::ModelSettings::AdjustNone)
-															.withSmileMoneynessCheckpoints(money)));
-	
-	MarkovFunctional::ModelOutputs outputs2 = mf2->modelOutputs();
-	//BOOST_MESSAGE(outputs2);
+    boost::shared_ptr<MarkovFunctional> mf2(new MarkovFunctional(flatYts_,0.01,volStepDates,vols,flatOptionletVts_,expiriesCalBasket2(),iborIndex,
+                        MarkovFunctional::ModelSettings().withYGridPoints(64)
+                                                            .withYStdDevs(7.0)
+                                                            .withGaussHermitePoints(32)
+                                                            .withDigitalGap(1e-5)
+                                                            .withMarketRateAccuracy(1e-7)
+                                                            .withLowerRateBound(0.0)
+                                                            .withUpperRateBound(2.0)
+                                                            .withAdjustments(MarkovFunctional::ModelSettings::AdjustNone)
+                                                            .withSmileMoneynessCheckpoints(money)));
+    
+    MarkovFunctional::ModelOutputs outputs2 = mf2->modelOutputs();
+    //BOOST_MESSAGE(outputs2);
 
-	for(Size i=0; i<outputs2.expiries_.size(); i++) {
-		if(fabs(outputs2.marketZerorate_[i] - outputs2.modelZerorate_[i]) > tol0) BOOST_ERROR("Basket 2 / flat termstructures : Market zero rate (" << outputs2.marketZerorate_[i] << ") and model zero rate (" << outputs2.modelZerorate_[i] << ") do not agree.");
-	}
+    for(Size i=0; i<outputs2.expiries_.size(); i++) {
+        if(fabs(outputs2.marketZerorate_[i] - outputs2.modelZerorate_[i]) > tol0) BOOST_ERROR("Basket 2 / flat termstructures : Market zero rate (" << outputs2.marketZerorate_[i] << ") and model zero rate (" << outputs2.modelZerorate_[i] << ") do not agree.");
+    }
 
-	for(Size i=0;i<outputs2.expiries_.size(); i++) {
-		for(Size j=0;j<outputs2.smileStrikes_[i].size();j++) {
-			if(fabs(outputs2.marketCallPremium_[i][j]-outputs2.modelCallPremium_[i][j]) > tol1)
-				BOOST_ERROR("Basket 2 / flat termstructures : Market call premium (" << outputs2.marketCallPremium_[i][j] << ") does not match model premium (" << outputs2.modelCallPremium_[i][j] << ")");
-			if(fabs(outputs2.marketPutPremium_[i][j]-outputs2.modelPutPremium_[i][j]) > tol1)
-				BOOST_ERROR("Basket 2/ flat termstructures : Market put premium (" << outputs2.marketPutPremium_[i][j] << ") does not match model premium (" << outputs2.modelPutPremium_[i][j] << ")");
-		}
-	}
+    for(Size i=0;i<outputs2.expiries_.size(); i++) {
+        for(Size j=0;j<outputs2.smileStrikes_[i].size();j++) {
+            if(fabs(outputs2.marketCallPremium_[i][j]-outputs2.modelCallPremium_[i][j]) > tol1)
+                BOOST_ERROR("Basket 2 / flat termstructures : Market call premium (" << outputs2.marketCallPremium_[i][j] << ") does not match model premium (" << outputs2.modelCallPremium_[i][j] << ")");
+            if(fabs(outputs2.marketPutPremium_[i][j]-outputs2.modelPutPremium_[i][j]) > tol1)
+                BOOST_ERROR("Basket 2/ flat termstructures : Market put premium (" << outputs2.marketPutPremium_[i][j] << ") does not match model premium (" << outputs2.modelPutPremium_[i][j] << ")");
+        }
+    }
 
-	// Calibration Basket 1 / real yts, vts
+    // Calibration Basket 1 / real yts, vts
 
-	boost::shared_ptr<MarkovFunctional> mf3(new MarkovFunctional(md0Yts_,0.01,volStepDates,vols,md0SwaptionVts_,expiriesCalBasket1(),tenorsCalBasket1(),swapIndexBase,
-								MarkovFunctional::ModelSettings().withYGridPoints(128) // use more points to increase accuracy   
-								                                 .withYStdDevs(7.0)
-																 .withGaussHermitePoints(64)
-																 .withDigitalGap(1e-5)
-																 .withMarketRateAccuracy(1e-7)
-																 .withLowerRateBound(0.0)
-																 .withUpperRateBound(2.0)
-																 .withSmileMoneynessCheckpoints(money)
-																 ));
-	
-	MarkovFunctional::ModelOutputs outputs3 = mf3->modelOutputs();
-	//BOOST_MESSAGE(outputs3);
-	//outputSurfaces(mf3,md0Yts_);
+    boost::shared_ptr<MarkovFunctional> mf3(new MarkovFunctional(md0Yts_,0.01,volStepDates,vols,md0SwaptionVts_,expiriesCalBasket1(),tenorsCalBasket1(),swapIndexBase,
+                                MarkovFunctional::ModelSettings().withYGridPoints(128) // use more points to increase accuracy   
+                                                                 .withYStdDevs(7.0)
+                                                                 .withGaussHermitePoints(64)
+                                                                 .withDigitalGap(1e-5)
+                                                                 .withMarketRateAccuracy(1e-7)
+                                                                 .withLowerRateBound(0.0)
+                                                                 .withUpperRateBound(2.0)
+                                                                 .withSmileMoneynessCheckpoints(money)
+                                                                 ));
+    
+    MarkovFunctional::ModelOutputs outputs3 = mf3->modelOutputs();
+    //BOOST_MESSAGE(outputs3);
+    //outputSurfaces(mf3,md0Yts_);
 
-	for(Size i=0; i<outputs3.expiries_.size(); i++) {
-		if(fabs(outputs3.marketZerorate_[i] - outputs3.modelZerorate_[i]) > tol0) BOOST_ERROR("Basket 1 / real termstructures: Market zero rate (" << outputs3.marketZerorate_[i] << ") and model zero rate (" << outputs3.modelZerorate_[i] << ") do not agree.");
-	}
+    for(Size i=0; i<outputs3.expiries_.size(); i++) {
+        if(fabs(outputs3.marketZerorate_[i] - outputs3.modelZerorate_[i]) > tol0) BOOST_ERROR("Basket 1 / real termstructures: Market zero rate (" << outputs3.marketZerorate_[i] << ") and model zero rate (" << outputs3.modelZerorate_[i] << ") do not agree.");
+    }
 
-	for(Size i=0;i<outputs3.expiries_.size(); i++) {
-		for(Size j=0;j<outputs3.smileStrikes_[i].size();j++) {
-			if(fabs(outputs3.marketCallPremium_[i][j]-outputs3.modelCallPremium_[i][j]) > tol1)
-				BOOST_ERROR("Basket 1 / real termstructures: Market call premium (" << outputs3.marketCallPremium_[i][j] << ") does not match model premium (" << outputs3.modelCallPremium_[i][j] << ")");
-			if(fabs(outputs3.marketPutPremium_[i][j]-outputs3.modelPutPremium_[i][j]) > tol1)
-				BOOST_ERROR("Basket 1 /  real termstructures: Market put premium (" << outputs3.marketPutPremium_[i][j] << ") does not match model premium (" << outputs3.modelPutPremium_[i][j] << ")");
-		}
-	}
-
-
-	// Calibration Basket 2 / real yts, vts
-
-	boost::shared_ptr<MarkovFunctional> mf4(new MarkovFunctional(md0Yts_,0.01,volStepDates,vols,md0OptionletVts_,expiriesCalBasket2(),iborIndex,
-						MarkovFunctional::ModelSettings().withYGridPoints(64)
-								                            .withYStdDevs(7.0)
-															.withGaussHermitePoints(32)
-															.withDigitalGap(1e-5)
- 														    .withMarketRateAccuracy(1e-7)
-															.withLowerRateBound(0.0)
-															.withUpperRateBound(2.0)
-															.withSmileMoneynessCheckpoints(money)));
-	
-	MarkovFunctional::ModelOutputs outputs4 = mf4->modelOutputs();
-	//BOOST_MESSAGE(outputs4);
-
-	for(Size i=0; i<outputs4.expiries_.size(); i++) {
-		if(fabs(outputs4.marketZerorate_[i] - outputs4.modelZerorate_[i]) > tol0) BOOST_ERROR("Basket 2 / real termstructures : Market zero rate (" << outputs4.marketZerorate_[i] << ") and model zero rate (" << outputs4.modelZerorate_[i] << ") do not agree.");
-	}
-
-	for(Size i=0;i<outputs4.expiries_.size(); i++) {
-		for(Size j=0;j<outputs4.smileStrikes_[i].size();j++) {
-			if(fabs(outputs4.marketCallPremium_[i][j]-outputs4.modelCallPremium_[i][j]) > tol1)
-				BOOST_ERROR("Basket 2 / real termstructures : Market call premium (" << outputs4.marketCallPremium_[i][j] << ") does not match model premium (" << outputs4.modelCallPremium_[i][j] << ")");
-			if(fabs(outputs4.marketPutPremium_[i][j]-outputs4.modelPutPremium_[i][j]) > tol1)
-				BOOST_ERROR("Basket 2/ real termstructures : Market put premium (" << outputs4.marketPutPremium_[i][j] << ") does not match model premium (" << outputs4.modelPutPremium_[i][j] << ")");
-		}
-	}
+    for(Size i=0;i<outputs3.expiries_.size(); i++) {
+        for(Size j=0;j<outputs3.smileStrikes_[i].size();j++) {
+            if(fabs(outputs3.marketCallPremium_[i][j]-outputs3.modelCallPremium_[i][j]) > tol1)
+                BOOST_ERROR("Basket 1 / real termstructures: Market call premium (" << outputs3.marketCallPremium_[i][j] << ") does not match model premium (" << outputs3.modelCallPremium_[i][j] << ")");
+            if(fabs(outputs3.marketPutPremium_[i][j]-outputs3.modelPutPremium_[i][j]) > tol1)
+                BOOST_ERROR("Basket 1 /  real termstructures: Market put premium (" << outputs3.marketPutPremium_[i][j] << ") does not match model premium (" << outputs3.modelPutPremium_[i][j] << ")");
+        }
+    }
 
 
-	Settings::instance().evaluationDate() = savedEvalDate;
+    // Calibration Basket 2 / real yts, vts
+
+    boost::shared_ptr<MarkovFunctional> mf4(new MarkovFunctional(md0Yts_,0.01,volStepDates,vols,md0OptionletVts_,expiriesCalBasket2(),iborIndex,
+                        MarkovFunctional::ModelSettings().withYGridPoints(64)
+                                                            .withYStdDevs(7.0)
+                                                            .withGaussHermitePoints(32)
+                                                            .withDigitalGap(1e-5)
+                                                            .withMarketRateAccuracy(1e-7)
+                                                            .withLowerRateBound(0.0)
+                                                            .withUpperRateBound(2.0)
+                                                            .withSmileMoneynessCheckpoints(money)));
+    
+    MarkovFunctional::ModelOutputs outputs4 = mf4->modelOutputs();
+    //BOOST_MESSAGE(outputs4);
+
+    for(Size i=0; i<outputs4.expiries_.size(); i++) {
+        if(fabs(outputs4.marketZerorate_[i] - outputs4.modelZerorate_[i]) > tol0) BOOST_ERROR("Basket 2 / real termstructures : Market zero rate (" << outputs4.marketZerorate_[i] << ") and model zero rate (" << outputs4.modelZerorate_[i] << ") do not agree.");
+    }
+
+    for(Size i=0;i<outputs4.expiries_.size(); i++) {
+        for(Size j=0;j<outputs4.smileStrikes_[i].size();j++) {
+            if(fabs(outputs4.marketCallPremium_[i][j]-outputs4.modelCallPremium_[i][j]) > tol1)
+                BOOST_ERROR("Basket 2 / real termstructures : Market call premium (" << outputs4.marketCallPremium_[i][j] << ") does not match model premium (" << outputs4.modelCallPremium_[i][j] << ")");
+            if(fabs(outputs4.marketPutPremium_[i][j]-outputs4.modelPutPremium_[i][j]) > tol1)
+                BOOST_ERROR("Basket 2/ real termstructures : Market put premium (" << outputs4.marketPutPremium_[i][j] << ") does not match model premium (" << outputs4.modelPutPremium_[i][j] << ")");
+        }
+    }
+
+
+    Settings::instance().evaluationDate() = savedEvalDate;
 }
 
 void MarkovFunctionalTest::testVanillaEngines() {
 
-	const Real tol1 = 0.0001;	// 1bp tolerance for model engine call put premia vs. black premia
-								// note that we use the real market conventions here (i.e. 2 fixing days), different from the calibration approach where 0 fixing days must be used.
-	                            // therefore higher errors compared to the calibration results are expected.
+    const Real tol1 = 0.0001;   // 1bp tolerance for model engine call put premia vs. black premia
+                                // note that we use the real market conventions here (i.e. 2 fixing days), different from the calibration approach where 0 fixing days must be used.
+                                // therefore higher errors compared to the calibration results are expected.
 
-	BOOST_MESSAGE("Testing markov functional vanilla engines...");
+    BOOST_MESSAGE("Testing markov functional vanilla engines...");
 
-	Date savedEvalDate = Settings::instance().evaluationDate();
-	Date referenceDate(14,November,2012);
-	Settings::instance().evaluationDate() = referenceDate;
+    Date savedEvalDate = Settings::instance().evaluationDate();
+    Date referenceDate(14,November,2012);
+    Settings::instance().evaluationDate() = referenceDate;
 
-	Handle<YieldTermStructure> flatYts_ = flatYts();
-	Handle<YieldTermStructure> md0Yts_ = md0Yts();
-	Handle<SwaptionVolatilityStructure> flatSwaptionVts_ = flatSwaptionVts();
-	Handle<SwaptionVolatilityStructure> md0SwaptionVts_ = md0SwaptionVts();
-	Handle<OptionletVolatilityStructure> flatOptionletVts_ = flatOptionletVts();
-	Handle<OptionletVolatilityStructure> md0OptionletVts_ = md0OptionletVts();
+    Handle<YieldTermStructure> flatYts_ = flatYts();
+    Handle<YieldTermStructure> md0Yts_ = md0Yts();
+    Handle<SwaptionVolatilityStructure> flatSwaptionVts_ = flatSwaptionVts();
+    Handle<SwaptionVolatilityStructure> md0SwaptionVts_ = md0SwaptionVts();
+    Handle<OptionletVolatilityStructure> flatOptionletVts_ = flatOptionletVts();
+    Handle<OptionletVolatilityStructure> md0OptionletVts_ = md0OptionletVts();
 
-	boost::shared_ptr<SwapIndex> swapIndexBase(new EuriborSwapIsdaFixA(1*Years));
+    boost::shared_ptr<SwapIndex> swapIndexBase(new EuriborSwapIsdaFixA(1*Years));
 
-	std::vector<Date> volStepDates;
-	std::vector<Real> vols;
-	vols.push_back(1.0);
+    std::vector<Date> volStepDates;
+    std::vector<Real> vols;
+    vols.push_back(1.0);
 
-	std::vector<Real> money; // use a grid with few points for the check here
-	money.push_back(0.1);
-	money.push_back(0.25);
-	money.push_back(0.50);
-	money.push_back(0.75);
-	money.push_back(1.0);
-	money.push_back(1.25);
-	money.push_back(1.50);
-	money.push_back(2.0);
-	money.push_back(5.0);
+    std::vector<Real> money; // use a grid with few points for the check here
+    money.push_back(0.1);
+    money.push_back(0.25);
+    money.push_back(0.50);
+    money.push_back(0.75);
+    money.push_back(1.0);
+    money.push_back(1.25);
+    money.push_back(1.50);
+    money.push_back(2.0);
+    money.push_back(5.0);
 
-	// Calibration Basket 1 / flat yts, vts
+    // Calibration Basket 1 / flat yts, vts
 
-	boost::shared_ptr<IborIndex> iborIndex1(new Euribor(6*Months,flatYts_));
+    boost::shared_ptr<IborIndex> iborIndex1(new Euribor(6*Months,flatYts_));
 
-	boost::shared_ptr<MarkovFunctional> mf1(new MarkovFunctional(flatYts_,0.01,volStepDates,vols,flatSwaptionVts_,expiriesCalBasket1(),tenorsCalBasket1(),swapIndexBase,
-								MarkovFunctional::ModelSettings().withYGridPoints(64)
-								                                 .withYStdDevs(7.0)
-																 .withGaussHermitePoints(32)
-																 .withDigitalGap(1e-5)
-																 .withMarketRateAccuracy(1e-7)
-																 .withLowerRateBound(0.0)
-																 .withUpperRateBound(2.0)
-																 .withSmileMoneynessCheckpoints(money)));
+    boost::shared_ptr<MarkovFunctional> mf1(new MarkovFunctional(flatYts_,0.01,volStepDates,vols,flatSwaptionVts_,expiriesCalBasket1(),tenorsCalBasket1(),swapIndexBase,
+                                MarkovFunctional::ModelSettings().withYGridPoints(64)
+                                                                 .withYStdDevs(7.0)
+                                                                 .withGaussHermitePoints(32)
+                                                                 .withDigitalGap(1e-5)
+                                                                 .withMarketRateAccuracy(1e-7)
+                                                                 .withLowerRateBound(0.0)
+                                                                 .withUpperRateBound(2.0)
+                                                                 .withSmileMoneynessCheckpoints(money)));
 
-	MarkovFunctional::ModelOutputs outputs1 = mf1->modelOutputs();
-	//BOOST_MESSAGE(outputs1);
+    MarkovFunctional::ModelOutputs outputs1 = mf1->modelOutputs();
+    //BOOST_MESSAGE(outputs1);
 
-	boost::shared_ptr<MarkovFunctionalSwaptionEngine> mfSwaptionEngine1(new MarkovFunctionalSwaptionEngine(mf1,64,7.0));
-	boost::shared_ptr<BlackSwaptionEngine> blackSwaptionEngine1(new BlackSwaptionEngine(flatYts_,flatSwaptionVts_));
+    boost::shared_ptr<MarkovFunctionalSwaptionEngine> mfSwaptionEngine1(new MarkovFunctionalSwaptionEngine(mf1,64,7.0));
+    boost::shared_ptr<BlackSwaptionEngine> blackSwaptionEngine1(new BlackSwaptionEngine(flatYts_,flatSwaptionVts_));
 
-	for(Size i=0;i<outputs1.expiries_.size();i++) {
-		for(Size j=0;j<outputs1.smileStrikes_[0].size();j++) {   
-			boost::shared_ptr<VanillaSwap> underlyingCall = MakeVanillaSwap(outputs1.tenors_[i],iborIndex1,outputs1.smileStrikes_[i][j])
-																			.withEffectiveDate(TARGET().advance(outputs1.expiries_[i],2,Days)) 
-																			.receiveFixed(false);
-			boost::shared_ptr<VanillaSwap> underlyingPut = MakeVanillaSwap(outputs1.tenors_[i],iborIndex1,outputs1.smileStrikes_[i][j])
-																			.withEffectiveDate(TARGET().advance(outputs1.expiries_[i],2,Days)) 
-																			.receiveFixed(true);
-			boost::shared_ptr<Exercise> exercise(new EuropeanExercise(outputs1.expiries_[i]));
-			Swaption swaptionC(underlyingCall,exercise);
-			Swaption swaptionP(underlyingPut,exercise);
-			swaptionC.setPricingEngine(blackSwaptionEngine1);
-			swaptionP.setPricingEngine(blackSwaptionEngine1);
-			Real blackPriceCall = swaptionC.NPV();
-			Real blackPricePut = swaptionP.NPV();
-			swaptionC.setPricingEngine(mfSwaptionEngine1);
-			swaptionP.setPricingEngine(mfSwaptionEngine1);
-			Real mfPriceCall = swaptionC.NPV();
-			Real mfPricePut = swaptionP.NPV();
-			if( (blackPriceCall - mfPriceCall) > tol1 ) BOOST_ERROR("Basket 1 / flat termstructures: Call premium market (" << blackPriceCall << ") does not match model premium (" << mfPriceCall << ")");
-			if( (blackPricePut - mfPricePut) > tol1 ) BOOST_ERROR("Basket 1 / flat termstructures: Put premium market (" << blackPricePut << ") does not match model premium (" << mfPricePut << ")");
-		}
-	}
+    for(Size i=0;i<outputs1.expiries_.size();i++) {
+        for(Size j=0;j<outputs1.smileStrikes_[0].size();j++) {   
+            boost::shared_ptr<VanillaSwap> underlyingCall = MakeVanillaSwap(outputs1.tenors_[i],iborIndex1,outputs1.smileStrikes_[i][j])
+                                                                            .withEffectiveDate(TARGET().advance(outputs1.expiries_[i],2,Days)) 
+                                                                            .receiveFixed(false);
+            boost::shared_ptr<VanillaSwap> underlyingPut = MakeVanillaSwap(outputs1.tenors_[i],iborIndex1,outputs1.smileStrikes_[i][j])
+                                                                            .withEffectiveDate(TARGET().advance(outputs1.expiries_[i],2,Days)) 
+                                                                            .receiveFixed(true);
+            boost::shared_ptr<Exercise> exercise(new EuropeanExercise(outputs1.expiries_[i]));
+            Swaption swaptionC(underlyingCall,exercise);
+            Swaption swaptionP(underlyingPut,exercise);
+            swaptionC.setPricingEngine(blackSwaptionEngine1);
+            swaptionP.setPricingEngine(blackSwaptionEngine1);
+            Real blackPriceCall = swaptionC.NPV();
+            Real blackPricePut = swaptionP.NPV();
+            swaptionC.setPricingEngine(mfSwaptionEngine1);
+            swaptionP.setPricingEngine(mfSwaptionEngine1);
+            Real mfPriceCall = swaptionC.NPV();
+            Real mfPricePut = swaptionP.NPV();
+            if( (blackPriceCall - mfPriceCall) > tol1 ) BOOST_ERROR("Basket 1 / flat termstructures: Call premium market (" << blackPriceCall << ") does not match model premium (" << mfPriceCall << ")");
+            if( (blackPricePut - mfPricePut) > tol1 ) BOOST_ERROR("Basket 1 / flat termstructures: Put premium market (" << blackPricePut << ") does not match model premium (" << mfPricePut << ")");
+        }
+    }
 
-	// Calibration Basket 2 / flat yts, vts
+    // Calibration Basket 2 / flat yts, vts
 
-	boost::shared_ptr<IborIndex> iborIndex2(new Euribor(6*Months,flatYts_));
+    boost::shared_ptr<IborIndex> iborIndex2(new Euribor(6*Months,flatYts_));
 
-	boost::shared_ptr<MarkovFunctional> mf2(new MarkovFunctional(flatYts_,0.01,volStepDates,vols,flatOptionletVts_,expiriesCalBasket2(),iborIndex2,
-						MarkovFunctional::ModelSettings().withYGridPoints(64)
-								                            .withYStdDevs(7.0)
-															.withGaussHermitePoints(16)
-															.withDigitalGap(1e-5)
-															.withMarketRateAccuracy(1e-7)
-															.withLowerRateBound(0.0)
-															.withUpperRateBound(2.0)
-															.withSmileMoneynessCheckpoints(money)));
+    boost::shared_ptr<MarkovFunctional> mf2(new MarkovFunctional(flatYts_,0.01,volStepDates,vols,flatOptionletVts_,expiriesCalBasket2(),iborIndex2,
+                        MarkovFunctional::ModelSettings().withYGridPoints(64)
+                                                            .withYStdDevs(7.0)
+                                                            .withGaussHermitePoints(16)
+                                                            .withDigitalGap(1e-5)
+                                                            .withMarketRateAccuracy(1e-7)
+                                                            .withLowerRateBound(0.0)
+                                                            .withUpperRateBound(2.0)
+                                                            .withSmileMoneynessCheckpoints(money)));
 
-	
-	MarkovFunctional::ModelOutputs outputs2 = mf2->modelOutputs();
-	//BOOST_MESSAGE(outputs2);
+    
+    MarkovFunctional::ModelOutputs outputs2 = mf2->modelOutputs();
+    //BOOST_MESSAGE(outputs2);
 
-	boost::shared_ptr<BlackCapFloorEngine> blackCapFloorEngine2(new BlackCapFloorEngine(flatYts_,flatOptionletVts_));
-	boost::shared_ptr<MarkovFunctionalCapFloorEngine> mfCapFloorEngine2(new MarkovFunctionalCapFloorEngine(mf2,64,7.0));
-	std::vector<CapFloor> c2;
-	c2.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex2,0.01));
-	c2.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex2,0.02));
-	c2.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex2,0.03));
-	c2.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex2,0.04));
-	c2.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex2,0.05));
-	c2.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex2,0.07));
-	c2.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex2,0.10));
-	c2.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex2,0.01));
-	c2.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex2,0.02));
-	c2.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex2,0.03));
-	c2.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex2,0.04));
-	c2.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex2,0.05));
-	c2.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex2,0.07));
-	c2.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex2,0.10));
+    boost::shared_ptr<BlackCapFloorEngine> blackCapFloorEngine2(new BlackCapFloorEngine(flatYts_,flatOptionletVts_));
+    boost::shared_ptr<MarkovFunctionalCapFloorEngine> mfCapFloorEngine2(new MarkovFunctionalCapFloorEngine(mf2,64,7.0));
+    std::vector<CapFloor> c2;
+    c2.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex2,0.01));
+    c2.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex2,0.02));
+    c2.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex2,0.03));
+    c2.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex2,0.04));
+    c2.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex2,0.05));
+    c2.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex2,0.07));
+    c2.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex2,0.10));
+    c2.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex2,0.01));
+    c2.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex2,0.02));
+    c2.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex2,0.03));
+    c2.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex2,0.04));
+    c2.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex2,0.05));
+    c2.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex2,0.07));
+    c2.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex2,0.10));
 
-	for(Size i=0;i<c2.size();i++) {
-		c2[i].setPricingEngine(blackCapFloorEngine2);
-		Real blackPrice = c2[i].NPV();
-		c2[i].setPricingEngine(mfCapFloorEngine2);
-		Real mfPrice = c2[i].NPV();
-		if( (blackPrice - mfPrice) > tol1 ) BOOST_ERROR("Basket 2 / flat termstructures: Cap/Floor premium market (" << blackPrice << ") does not match model premium (" << mfPrice << ")");
-	}
+    for(Size i=0;i<c2.size();i++) {
+        c2[i].setPricingEngine(blackCapFloorEngine2);
+        Real blackPrice = c2[i].NPV();
+        c2[i].setPricingEngine(mfCapFloorEngine2);
+        Real mfPrice = c2[i].NPV();
+        if( (blackPrice - mfPrice) > tol1 ) BOOST_ERROR("Basket 2 / flat termstructures: Cap/Floor premium market (" << blackPrice << ") does not match model premium (" << mfPrice << ")");
+    }
 
-	// Calibration Basket 1 / real yts, vts
+    // Calibration Basket 1 / real yts, vts
 
-	boost::shared_ptr<IborIndex> iborIndex3(new Euribor(6*Months,md0Yts_));
+    boost::shared_ptr<IborIndex> iborIndex3(new Euribor(6*Months,md0Yts_));
 
-	boost::shared_ptr<MarkovFunctional> mf3(new MarkovFunctional(md0Yts_,0.01,volStepDates,vols,md0SwaptionVts_,expiriesCalBasket1(),tenorsCalBasket1(),swapIndexBase,
-								MarkovFunctional::ModelSettings().withYGridPoints(64) 
-								                                 .withYStdDevs(7.0)
-																 .withGaussHermitePoints(32)
-																 .withDigitalGap(1e-5)
-																 .withMarketRateAccuracy(1e-7)
-																 .withLowerRateBound(0.0)
-																 .withUpperRateBound(2.0)
-																 .withSmileMoneynessCheckpoints(money)));
+    boost::shared_ptr<MarkovFunctional> mf3(new MarkovFunctional(md0Yts_,0.01,volStepDates,vols,md0SwaptionVts_,expiriesCalBasket1(),tenorsCalBasket1(),swapIndexBase,
+                                MarkovFunctional::ModelSettings().withYGridPoints(64) 
+                                                                 .withYStdDevs(7.0)
+                                                                 .withGaussHermitePoints(32)
+                                                                 .withDigitalGap(1e-5)
+                                                                 .withMarketRateAccuracy(1e-7)
+                                                                 .withLowerRateBound(0.0)
+                                                                 .withUpperRateBound(2.0)
+                                                                 .withSmileMoneynessCheckpoints(money)));
 
-	boost::shared_ptr<MarkovFunctionalSwaptionEngine> mfSwaptionEngine3(new MarkovFunctionalSwaptionEngine(mf3,64,7.0));
-	boost::shared_ptr<BlackSwaptionEngine> blackSwaptionEngine3(new BlackSwaptionEngine(md0Yts_,md0SwaptionVts_));
+    boost::shared_ptr<MarkovFunctionalSwaptionEngine> mfSwaptionEngine3(new MarkovFunctionalSwaptionEngine(mf3,64,7.0));
+    boost::shared_ptr<BlackSwaptionEngine> blackSwaptionEngine3(new BlackSwaptionEngine(md0Yts_,md0SwaptionVts_));
 
-	MarkovFunctional::ModelOutputs outputs3 = mf3->modelOutputs();
-	//BOOST_MESSAGE(outputs3);
+    MarkovFunctional::ModelOutputs outputs3 = mf3->modelOutputs();
+    //BOOST_MESSAGE(outputs3);
 
-	for(Size i=0;i<outputs3.expiries_.size();i++) {
-		for(Size j=0;j<outputs3.smileStrikes_[0].size();j++) {   
-			boost::shared_ptr<VanillaSwap> underlyingCall = MakeVanillaSwap(outputs3.tenors_[i],iborIndex3,outputs3.smileStrikes_[i][j])
-																			.withEffectiveDate(TARGET().advance(outputs3.expiries_[i],2,Days)) 
-																			.receiveFixed(false);
-			boost::shared_ptr<VanillaSwap> underlyingPut = MakeVanillaSwap(outputs3.tenors_[i],iborIndex3,outputs3.smileStrikes_[i][j])
-																			.withEffectiveDate(TARGET().advance(outputs3.expiries_[i],2,Days)) 
-																			.receiveFixed(true);
-			boost::shared_ptr<Exercise> exercise(new EuropeanExercise(outputs3.expiries_[i]));
-			Swaption swaptionC(underlyingCall,exercise);
-			Swaption swaptionP(underlyingPut,exercise);
-			swaptionC.setPricingEngine(blackSwaptionEngine3);
-			swaptionP.setPricingEngine(blackSwaptionEngine3);
-			Real blackPriceCall = swaptionC.NPV();
-			Real blackPricePut = swaptionP.NPV();
-			swaptionC.setPricingEngine(mfSwaptionEngine3);
-			swaptionP.setPricingEngine(mfSwaptionEngine3);
-			Real mfPriceCall = swaptionC.NPV();
-			Real mfPricePut = swaptionP.NPV();
-			Real smileCorrectionCall = (outputs3.marketCallPremium_[i][j]-outputs3.marketRawCallPremium_[i][j]); // we can not expect to match the black scholes price where the smile is adjusted
-			Real smileCorrectionPut = (outputs3.marketPutPremium_[i][j]-outputs3.marketRawPutPremium_[i][j]); 
-			if( (blackPriceCall - mfPriceCall + smileCorrectionCall) > tol1 ) BOOST_ERROR("Basket 1 / real termstructures: Call premium market (" << blackPriceCall << ") does not match model premium (" << mfPriceCall << ")");
-			if( (blackPricePut - mfPricePut + smileCorrectionPut) > tol1 ) BOOST_ERROR("Basket 1 / real termstructures: Put premium market (" << blackPricePut << ") does not match model premium (" << mfPricePut << ")");
-		}
-	}
+    for(Size i=0;i<outputs3.expiries_.size();i++) {
+        for(Size j=0;j<outputs3.smileStrikes_[0].size();j++) {   
+            boost::shared_ptr<VanillaSwap> underlyingCall = MakeVanillaSwap(outputs3.tenors_[i],iborIndex3,outputs3.smileStrikes_[i][j])
+                                                                            .withEffectiveDate(TARGET().advance(outputs3.expiries_[i],2,Days)) 
+                                                                            .receiveFixed(false);
+            boost::shared_ptr<VanillaSwap> underlyingPut = MakeVanillaSwap(outputs3.tenors_[i],iborIndex3,outputs3.smileStrikes_[i][j])
+                                                                            .withEffectiveDate(TARGET().advance(outputs3.expiries_[i],2,Days)) 
+                                                                            .receiveFixed(true);
+            boost::shared_ptr<Exercise> exercise(new EuropeanExercise(outputs3.expiries_[i]));
+            Swaption swaptionC(underlyingCall,exercise);
+            Swaption swaptionP(underlyingPut,exercise);
+            swaptionC.setPricingEngine(blackSwaptionEngine3);
+            swaptionP.setPricingEngine(blackSwaptionEngine3);
+            Real blackPriceCall = swaptionC.NPV();
+            Real blackPricePut = swaptionP.NPV();
+            swaptionC.setPricingEngine(mfSwaptionEngine3);
+            swaptionP.setPricingEngine(mfSwaptionEngine3);
+            Real mfPriceCall = swaptionC.NPV();
+            Real mfPricePut = swaptionP.NPV();
+            Real smileCorrectionCall = (outputs3.marketCallPremium_[i][j]-outputs3.marketRawCallPremium_[i][j]); // we can not expect to match the black scholes price where the smile is adjusted
+            Real smileCorrectionPut = (outputs3.marketPutPremium_[i][j]-outputs3.marketRawPutPremium_[i][j]); 
+            if( (blackPriceCall - mfPriceCall + smileCorrectionCall) > tol1 ) BOOST_ERROR("Basket 1 / real termstructures: Call premium market (" << blackPriceCall << ") does not match model premium (" << mfPriceCall << ")");
+            if( (blackPricePut - mfPricePut + smileCorrectionPut) > tol1 ) BOOST_ERROR("Basket 1 / real termstructures: Put premium market (" << blackPricePut << ") does not match model premium (" << mfPricePut << ")");
+        }
+    }
 
-	// Calibration Basket 2 / real yts, vts
+    // Calibration Basket 2 / real yts, vts
 
-	boost::shared_ptr<IborIndex> iborIndex4(new Euribor(6*Months,md0Yts_));
+    boost::shared_ptr<IborIndex> iborIndex4(new Euribor(6*Months,md0Yts_));
 
-	boost::shared_ptr<MarkovFunctional> mf4(new MarkovFunctional(md0Yts_,0.01,volStepDates,vols,md0OptionletVts_,expiriesCalBasket2(),iborIndex4,
-						MarkovFunctional::ModelSettings().withYGridPoints(64)
-								                            .withYStdDevs(7.0)
-															.withGaussHermitePoints(32)
-															.withDigitalGap(1e-5)
-															.withMarketRateAccuracy(1e-7)
-															.withLowerRateBound(0.0)
-															.withUpperRateBound(2.0)
-															.withSmileMoneynessCheckpoints(money)));
+    boost::shared_ptr<MarkovFunctional> mf4(new MarkovFunctional(md0Yts_,0.01,volStepDates,vols,md0OptionletVts_,expiriesCalBasket2(),iborIndex4,
+                        MarkovFunctional::ModelSettings().withYGridPoints(64)
+                                                            .withYStdDevs(7.0)
+                                                            .withGaussHermitePoints(32)
+                                                            .withDigitalGap(1e-5)
+                                                            .withMarketRateAccuracy(1e-7)
+                                                            .withLowerRateBound(0.0)
+                                                            .withUpperRateBound(2.0)
+                                                            .withSmileMoneynessCheckpoints(money)));
 
-	
-	MarkovFunctional::ModelOutputs outputs4 = mf4->modelOutputs();
-	//BOOST_MESSAGE(outputs4);
+    
+    MarkovFunctional::ModelOutputs outputs4 = mf4->modelOutputs();
+    //BOOST_MESSAGE(outputs4);
 
-	boost::shared_ptr<BlackCapFloorEngine> blackCapFloorEngine4(new BlackCapFloorEngine(flatYts(),flatOptionletVts()));
-	boost::shared_ptr<MarkovFunctionalCapFloorEngine> mfCapFloorEngine4(new MarkovFunctionalCapFloorEngine(mf4,64,7.0));
-	std::vector<CapFloor> c4;
-	c4.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex4,0.01));
-	c4.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex4,0.02));
-	c4.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex4,0.03));
-	c4.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex4,0.04));
-	c4.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex4,0.05));
-	c4.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex4,0.07));
-	c4.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex4,0.10));
-	c4.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex4,0.01));
-	c4.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex4,0.02));
-	c4.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex4,0.03));
-	c4.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex4,0.04));
-	c4.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex4,0.05));
-	c4.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex4,0.07));
-	//c4.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex4,0.10)); //exclude because caplet stripper fails for this strike
+    boost::shared_ptr<BlackCapFloorEngine> blackCapFloorEngine4(new BlackCapFloorEngine(flatYts(),flatOptionletVts()));
+    boost::shared_ptr<MarkovFunctionalCapFloorEngine> mfCapFloorEngine4(new MarkovFunctionalCapFloorEngine(mf4,64,7.0));
+    std::vector<CapFloor> c4;
+    c4.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex4,0.01));
+    c4.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex4,0.02));
+    c4.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex4,0.03));
+    c4.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex4,0.04));
+    c4.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex4,0.05));
+    c4.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex4,0.07));
+    c4.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex4,0.10));
+    c4.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex4,0.01));
+    c4.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex4,0.02));
+    c4.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex4,0.03));
+    c4.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex4,0.04));
+    c4.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex4,0.05));
+    c4.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex4,0.07));
+    //c4.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex4,0.10)); //exclude because caplet stripper fails for this strike
 
-	for(Size i=0;i<c4.size();i++) {
-		c4[i].setPricingEngine(blackCapFloorEngine4);
-		Real blackPrice = c4[i].NPV();
-		c4[i].setPricingEngine(mfCapFloorEngine4);
-		Real mfPrice = c4[i].NPV();
-		if( (blackPrice - mfPrice) > tol1 ) BOOST_ERROR("Basket 2 / real termstructures: Cap/Floor premium market (" << blackPrice << ") does not match model premium (" << mfPrice << ")");
-	}
+    for(Size i=0;i<c4.size();i++) {
+        c4[i].setPricingEngine(blackCapFloorEngine4);
+        Real blackPrice = c4[i].NPV();
+        c4[i].setPricingEngine(mfCapFloorEngine4);
+        Real mfPrice = c4[i].NPV();
+        if( (blackPrice - mfPrice) > tol1 ) BOOST_ERROR("Basket 2 / real termstructures: Cap/Floor premium market (" << blackPrice << ") does not match model premium (" << mfPrice << ")");
+    }
 
-	Settings::instance().evaluationDate() = savedEvalDate;
+    Settings::instance().evaluationDate() = savedEvalDate;
 
 }
 
 void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
 
-	const Real tol1 = 0.1;  // 0.1 times vega tolerance for model vs. market in second instrument set
-	BOOST_MESSAGE("Testing markov functional calibration to two instrument sets...");
+    const Real tol1 = 0.1;  // 0.1 times vega tolerance for model vs. market in second instrument set
+    BOOST_MESSAGE("Testing markov functional calibration to two instrument sets...");
 
-	Date savedEvalDate = Settings::instance().evaluationDate();
-	Date referenceDate(14,November,2012);
-	Settings::instance().evaluationDate() = referenceDate;
+    Date savedEvalDate = Settings::instance().evaluationDate();
+    Date referenceDate(14,November,2012);
+    Settings::instance().evaluationDate() = referenceDate;
 
-	Handle<YieldTermStructure> flatYts_ = flatYts();
-	Handle<YieldTermStructure> md0Yts_ = md0Yts();
-	Handle<SwaptionVolatilityStructure> flatSwaptionVts_ = flatSwaptionVts();
-	Handle<SwaptionVolatilityStructure> md0SwaptionVts_ = md0SwaptionVts();
-	Handle<OptionletVolatilityStructure> flatOptionletVts_ = flatOptionletVts();
-	Handle<OptionletVolatilityStructure> md0OptionletVts_ = md0OptionletVts();
+    Handle<YieldTermStructure> flatYts_ = flatYts();
+    Handle<YieldTermStructure> md0Yts_ = md0Yts();
+    Handle<SwaptionVolatilityStructure> flatSwaptionVts_ = flatSwaptionVts();
+    Handle<SwaptionVolatilityStructure> md0SwaptionVts_ = md0SwaptionVts();
+    Handle<OptionletVolatilityStructure> flatOptionletVts_ = flatOptionletVts();
+    Handle<OptionletVolatilityStructure> md0OptionletVts_ = md0OptionletVts();
 
-	boost::shared_ptr<SwapIndex> swapIndexBase(new EuriborSwapIsdaFixA(1*Years));
+    boost::shared_ptr<SwapIndex> swapIndexBase(new EuriborSwapIsdaFixA(1*Years));
 
-	std::vector<Date> volStepDates;
-	std::vector<Real> vols;
-	volStepDates.push_back(TARGET().advance(referenceDate,1*Years));
-	volStepDates.push_back(TARGET().advance(referenceDate,2*Years));
-	volStepDates.push_back(TARGET().advance(referenceDate,3*Years));
-	vols.push_back(1.0);
-	vols.push_back(1.0);
-	vols.push_back(1.0);
-	vols.push_back(1.0);
+    std::vector<Date> volStepDates;
+    std::vector<Real> vols;
+    volStepDates.push_back(TARGET().advance(referenceDate,1*Years));
+    volStepDates.push_back(TARGET().advance(referenceDate,2*Years));
+    volStepDates.push_back(TARGET().advance(referenceDate,3*Years));
+    vols.push_back(1.0);
+    vols.push_back(1.0);
+    vols.push_back(1.0);
+    vols.push_back(1.0);
 
-	std::vector<Real> money; // use a grid with few points for the check here
-	money.push_back(0.1);
-	money.push_back(0.25);
-	money.push_back(0.50);
-	money.push_back(0.75);
-	money.push_back(1.0);
-	money.push_back(1.25);
-	money.push_back(1.50);
-	money.push_back(2.0);
-	money.push_back(5.0);
+    std::vector<Real> money; // use a grid with few points for the check here
+    money.push_back(0.1);
+    money.push_back(0.25);
+    money.push_back(0.50);
+    money.push_back(0.75);
+    money.push_back(1.0);
+    money.push_back(1.25);
+    money.push_back(1.50);
+    money.push_back(2.0);
+    money.push_back(5.0);
 
-	LevenbergMarquardt om;
-	//ConjugateGradient om;
-	EndCriteria ec(1000,500,1e-2,1e-2,1e-2);
-
-
-	// Calibration Basket 1 / flat yts, vts / Secondary calibration set consists of coterminal swaptions
-
-	boost::shared_ptr<IborIndex> iborIndex1(new Euribor(6*Months,flatYts_));
-
-	std::vector<boost::shared_ptr<CalibrationHelper> > calibrationHelper1;
-	std::vector<Real> calibrationHelperVols1;
-	calibrationHelperVols1.push_back(0.20);
-	calibrationHelperVols1.push_back(0.20);
-	calibrationHelperVols1.push_back(0.20);
-	calibrationHelperVols1.push_back(0.20);
-
-	calibrationHelper1.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(1*Years,4*Years,Handle<Quote>(new SimpleQuote(calibrationHelperVols1[0])),iborIndex1,1*Years,Thirty360(),Actual360(),flatYts_)));
-	calibrationHelper1.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(2*Years,3*Years,Handle<Quote>(new SimpleQuote(calibrationHelperVols1[1])),iborIndex1,1*Years,Thirty360(),Actual360(),flatYts_)));
-	calibrationHelper1.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(3*Years,2*Years,Handle<Quote>(new SimpleQuote(calibrationHelperVols1[2])),iborIndex1,1*Years,Thirty360(),Actual360(),flatYts_)));
-	calibrationHelper1.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(4*Years,1*Years,Handle<Quote>(new SimpleQuote(calibrationHelperVols1[3])),iborIndex1,1*Years,Thirty360(),Actual360(),flatYts_)));
-
-	boost::shared_ptr<MarkovFunctional> mf1(new MarkovFunctional(flatYts_,0.01,volStepDates,vols,flatSwaptionVts_,expiriesCalBasket1(),tenorsCalBasket1(),swapIndexBase,
-								MarkovFunctional::ModelSettings().withYGridPoints(64)
-								                                 .withYStdDevs(7.0)
-																 .withGaussHermitePoints(32)
-																 .withDigitalGap(1e-5)
-																 .withMarketRateAccuracy(1e-7)
-																 .withLowerRateBound(0.0)
-																 .withUpperRateBound(2.0)
-																 .withSmileMoneynessCheckpoints(money)));
-
-	boost::shared_ptr<MarkovFunctionalSwaptionEngine> mfSwaptionEngine1(new MarkovFunctionalSwaptionEngine(mf1,64,7.0));
-	calibrationHelper1[0]->setPricingEngine(mfSwaptionEngine1);
-	calibrationHelper1[1]->setPricingEngine(mfSwaptionEngine1);
-	calibrationHelper1[2]->setPricingEngine(mfSwaptionEngine1);
-	calibrationHelper1[3]->setPricingEngine(mfSwaptionEngine1);
-
-	mf1->calibrate(calibrationHelper1,om,ec);
-
-	//std::cout << "Calibrated parameters 1: ";
-	//Array params1 = mf1->params();
-	//for(Size i=0;i<params1.size();i++) std::cout << params1[i] << ";";
-	//std::cout << std::endl;
-
-	std::vector<Swaption> ch1;
-	ch1.push_back(MakeSwaption(boost::shared_ptr<SwapIndex>(new EuriborSwapIsdaFixA(4*Years,flatYts_)),1*Years));
-	ch1.push_back(MakeSwaption(boost::shared_ptr<SwapIndex>(new EuriborSwapIsdaFixA(3*Years,flatYts_)),2*Years));
-	ch1.push_back(MakeSwaption(boost::shared_ptr<SwapIndex>(new EuriborSwapIsdaFixA(2*Years,flatYts_)),3*Years));
-	ch1.push_back(MakeSwaption(boost::shared_ptr<SwapIndex>(new EuriborSwapIsdaFixA(1*Years,flatYts_)),4*Years));
-
-	for(Size i=0;i<ch1.size();i++) {
-		boost::shared_ptr<BlackSwaptionEngine> blackEngine(new BlackSwaptionEngine(flatYts_,calibrationHelperVols1[i]));
-		ch1[i].setPricingEngine(blackEngine);
-		Real blackPrice = ch1[i].NPV();
-		Real blackVega = ch1[i].result<Real>("vega");
-		ch1[i].setPricingEngine(mfSwaptionEngine1);
-		Real mfPrice = ch1[i].NPV();
-		if( fabs(blackPrice-mfPrice) / blackVega  > tol1 ) BOOST_MESSAGE("Basket 1 / flat yts, vts: Secondary instrument set calibration failed for instrument #" << i << " black premium is " << blackPrice << " while model premium is " << mfPrice << " (market vega is " << blackVega << ")");
-	}
-
-	//MarkovFunctional::ModelOutputs outputs1 = mf1->modelOutputs();
-	//BOOST_MESSAGE(outputs1);
-
-	// Calibration Basket 1 / real yts, vts / Secondary calibration set consists of coterminal swaptions
-
-	boost::shared_ptr<IborIndex> iborIndex2(new Euribor(6*Months,md0Yts_));
-
-	boost::shared_ptr<MarkovFunctional> mf2(new MarkovFunctional(md0Yts_,0.01,volStepDates,vols,md0SwaptionVts_,expiriesCalBasket1(),tenorsCalBasket1(),swapIndexBase,
-								MarkovFunctional::ModelSettings().withYGridPoints(64)
-								                                 .withYStdDevs(7.0)
-																 .withGaussHermitePoints(32)
-																 .withDigitalGap(1e-5)
-																 .withMarketRateAccuracy(1e-7)
-																 .withLowerRateBound(0.0)
-																 .withUpperRateBound(2.0)
-																 .withSmileMoneynessCheckpoints(money)));
-
-	std::vector<boost::shared_ptr<CalibrationHelper> > calibrationHelper2;
-	std::vector<Real> calibrationHelperVols2;
-	calibrationHelperVols2.push_back(md0SwaptionVts_->volatility(1*Years,4*Years,boost::dynamic_pointer_cast<SwaptionVolatilityCube>(md0SwaptionVts_.currentLink())->atmStrike(1*Years,4*Years)));
-	calibrationHelperVols2.push_back(md0SwaptionVts_->volatility(2*Years,3*Years,boost::dynamic_pointer_cast<SwaptionVolatilityCube>(md0SwaptionVts_.currentLink())->atmStrike(2*Years,3*Years)));
-	calibrationHelperVols2.push_back(md0SwaptionVts_->volatility(3*Years,2*Years,boost::dynamic_pointer_cast<SwaptionVolatilityCube>(md0SwaptionVts_.currentLink())->atmStrike(3*Years,2*Years)));
-	calibrationHelperVols2.push_back(md0SwaptionVts_->volatility(4*Years,1*Years,boost::dynamic_pointer_cast<SwaptionVolatilityCube>(md0SwaptionVts_.currentLink())->atmStrike(4*Years,1*Years)));
-
-	calibrationHelper2.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(1*Years,4*Years,Handle<Quote>(new SimpleQuote(calibrationHelperVols2[0])),iborIndex2,1*Years,Thirty360(),Actual360(),md0Yts_)));
-	calibrationHelper2.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(2*Years,3*Years,Handle<Quote>(new SimpleQuote(calibrationHelperVols2[1])),iborIndex2,1*Years,Thirty360(),Actual360(),md0Yts_)));
-	calibrationHelper2.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(3*Years,2*Years,Handle<Quote>(new SimpleQuote(calibrationHelperVols2[2])),iborIndex2,1*Years,Thirty360(),Actual360(),md0Yts_)));
-	calibrationHelper2.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(4*Years,1*Years,Handle<Quote>(new SimpleQuote(calibrationHelperVols2[3])),iborIndex2,1*Years,Thirty360(),Actual360(),md0Yts_)));
+    LevenbergMarquardt om;
+    //ConjugateGradient om;
+    EndCriteria ec(1000,500,1e-2,1e-2,1e-2);
 
 
-	boost::shared_ptr<MarkovFunctionalSwaptionEngine> mfSwaptionEngine2(new MarkovFunctionalSwaptionEngine(mf2,64,7.0));
-	calibrationHelper2[0]->setPricingEngine(mfSwaptionEngine2);
-	calibrationHelper2[1]->setPricingEngine(mfSwaptionEngine2);
-	calibrationHelper2[2]->setPricingEngine(mfSwaptionEngine2);
-	calibrationHelper2[3]->setPricingEngine(mfSwaptionEngine2);
+    // Calibration Basket 1 / flat yts, vts / Secondary calibration set consists of coterminal swaptions
 
-	mf2->calibrate(calibrationHelper2,om,ec);
+    boost::shared_ptr<IborIndex> iborIndex1(new Euribor(6*Months,flatYts_));
 
-	//std::cout << "Calibrated parameters 2: ";
-	//Array params2 = mf2->params();
-	//for(Size i=0;i<params2.size();i++) std::cout << params2[i] << ";";
-	//std::cout << std::endl;
+    std::vector<boost::shared_ptr<CalibrationHelper> > calibrationHelper1;
+    std::vector<Real> calibrationHelperVols1;
+    calibrationHelperVols1.push_back(0.20);
+    calibrationHelperVols1.push_back(0.20);
+    calibrationHelperVols1.push_back(0.20);
+    calibrationHelperVols1.push_back(0.20);
 
-	std::vector<Swaption> ch2;
-	ch2.push_back(MakeSwaption(boost::shared_ptr<SwapIndex>(new EuriborSwapIsdaFixA(4*Years,md0Yts_)),1*Years));
-	ch2.push_back(MakeSwaption(boost::shared_ptr<SwapIndex>(new EuriborSwapIsdaFixA(3*Years,md0Yts_)),2*Years));
-	ch2.push_back(MakeSwaption(boost::shared_ptr<SwapIndex>(new EuriborSwapIsdaFixA(2*Years,md0Yts_)),3*Years));
-	ch2.push_back(MakeSwaption(boost::shared_ptr<SwapIndex>(new EuriborSwapIsdaFixA(1*Years,md0Yts_)),4*Years));
+    calibrationHelper1.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(1*Years,4*Years,Handle<Quote>(new SimpleQuote(calibrationHelperVols1[0])),iborIndex1,1*Years,Thirty360(),Actual360(),flatYts_)));
+    calibrationHelper1.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(2*Years,3*Years,Handle<Quote>(new SimpleQuote(calibrationHelperVols1[1])),iborIndex1,1*Years,Thirty360(),Actual360(),flatYts_)));
+    calibrationHelper1.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(3*Years,2*Years,Handle<Quote>(new SimpleQuote(calibrationHelperVols1[2])),iborIndex1,1*Years,Thirty360(),Actual360(),flatYts_)));
+    calibrationHelper1.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(4*Years,1*Years,Handle<Quote>(new SimpleQuote(calibrationHelperVols1[3])),iborIndex1,1*Years,Thirty360(),Actual360(),flatYts_)));
 
-	for(Size i=0;i<ch2.size();i++) {
-		boost::shared_ptr<BlackSwaptionEngine> blackEngine(new BlackSwaptionEngine(md0Yts_,calibrationHelperVols2[i]));
-		ch2[i].setPricingEngine(blackEngine);
-		Real blackPrice = ch2[i].NPV();
-		Real blackVega = ch2[i].result<Real>("vega");
-		ch2[i].setPricingEngine(mfSwaptionEngine2);
-		Real mfPrice = ch2[i].NPV();
-		if( fabs(blackPrice-mfPrice) / blackVega > tol1 ) BOOST_MESSAGE("Basket 1 / real yts, vts: Secondary instrument set calibration failed for instrument #" << i << " black premium is " << blackPrice << " while model premium is " << mfPrice << " (market vega is " << blackVega << ")");
-	}
+    boost::shared_ptr<MarkovFunctional> mf1(new MarkovFunctional(flatYts_,0.01,volStepDates,vols,flatSwaptionVts_,expiriesCalBasket1(),tenorsCalBasket1(),swapIndexBase,
+                                MarkovFunctional::ModelSettings().withYGridPoints(64)
+                                                                 .withYStdDevs(7.0)
+                                                                 .withGaussHermitePoints(32)
+                                                                 .withDigitalGap(1e-5)
+                                                                 .withMarketRateAccuracy(1e-7)
+                                                                 .withLowerRateBound(0.0)
+                                                                 .withUpperRateBound(2.0)
+                                                                 .withSmileMoneynessCheckpoints(money)));
 
-	//MarkovFunctional::ModelOutputs outputs2 = mf2->modelOutputs();
-	//BOOST_MESSAGE(outputs2);
+    boost::shared_ptr<MarkovFunctionalSwaptionEngine> mfSwaptionEngine1(new MarkovFunctionalSwaptionEngine(mf1,64,7.0));
+    calibrationHelper1[0]->setPricingEngine(mfSwaptionEngine1);
+    calibrationHelper1[1]->setPricingEngine(mfSwaptionEngine1);
+    calibrationHelper1[2]->setPricingEngine(mfSwaptionEngine1);
+    calibrationHelper1[3]->setPricingEngine(mfSwaptionEngine1);
 
-	Settings::instance().evaluationDate() = savedEvalDate;
+    mf1->calibrate(calibrationHelper1,om,ec);
+
+    //std::cout << "Calibrated parameters 1: ";
+    //Array params1 = mf1->params();
+    //for(Size i=0;i<params1.size();i++) std::cout << params1[i] << ";";
+    //std::cout << std::endl;
+
+    std::vector<Swaption> ch1;
+    ch1.push_back(MakeSwaption(boost::shared_ptr<SwapIndex>(new EuriborSwapIsdaFixA(4*Years,flatYts_)),1*Years));
+    ch1.push_back(MakeSwaption(boost::shared_ptr<SwapIndex>(new EuriborSwapIsdaFixA(3*Years,flatYts_)),2*Years));
+    ch1.push_back(MakeSwaption(boost::shared_ptr<SwapIndex>(new EuriborSwapIsdaFixA(2*Years,flatYts_)),3*Years));
+    ch1.push_back(MakeSwaption(boost::shared_ptr<SwapIndex>(new EuriborSwapIsdaFixA(1*Years,flatYts_)),4*Years));
+
+    for(Size i=0;i<ch1.size();i++) {
+        boost::shared_ptr<BlackSwaptionEngine> blackEngine(new BlackSwaptionEngine(flatYts_,calibrationHelperVols1[i]));
+        ch1[i].setPricingEngine(blackEngine);
+        Real blackPrice = ch1[i].NPV();
+        Real blackVega = ch1[i].result<Real>("vega");
+        ch1[i].setPricingEngine(mfSwaptionEngine1);
+        Real mfPrice = ch1[i].NPV();
+        if( fabs(blackPrice-mfPrice) / blackVega  > tol1 ) BOOST_MESSAGE("Basket 1 / flat yts, vts: Secondary instrument set calibration failed for instrument #" << i << " black premium is " << blackPrice << " while model premium is " << mfPrice << " (market vega is " << blackVega << ")");
+    }
+
+    //MarkovFunctional::ModelOutputs outputs1 = mf1->modelOutputs();
+    //BOOST_MESSAGE(outputs1);
+
+    // Calibration Basket 1 / real yts, vts / Secondary calibration set consists of coterminal swaptions
+
+    boost::shared_ptr<IborIndex> iborIndex2(new Euribor(6*Months,md0Yts_));
+
+    boost::shared_ptr<MarkovFunctional> mf2(new MarkovFunctional(md0Yts_,0.01,volStepDates,vols,md0SwaptionVts_,expiriesCalBasket1(),tenorsCalBasket1(),swapIndexBase,
+                                MarkovFunctional::ModelSettings().withYGridPoints(64)
+                                                                 .withYStdDevs(7.0)
+                                                                 .withGaussHermitePoints(32)
+                                                                 .withDigitalGap(1e-5)
+                                                                 .withMarketRateAccuracy(1e-7)
+                                                                 .withLowerRateBound(0.0)
+                                                                 .withUpperRateBound(2.0)
+                                                                 .withSmileMoneynessCheckpoints(money)));
+
+    std::vector<boost::shared_ptr<CalibrationHelper> > calibrationHelper2;
+    std::vector<Real> calibrationHelperVols2;
+    calibrationHelperVols2.push_back(md0SwaptionVts_->volatility(1*Years,4*Years,boost::dynamic_pointer_cast<SwaptionVolatilityCube>(md0SwaptionVts_.currentLink())->atmStrike(1*Years,4*Years)));
+    calibrationHelperVols2.push_back(md0SwaptionVts_->volatility(2*Years,3*Years,boost::dynamic_pointer_cast<SwaptionVolatilityCube>(md0SwaptionVts_.currentLink())->atmStrike(2*Years,3*Years)));
+    calibrationHelperVols2.push_back(md0SwaptionVts_->volatility(3*Years,2*Years,boost::dynamic_pointer_cast<SwaptionVolatilityCube>(md0SwaptionVts_.currentLink())->atmStrike(3*Years,2*Years)));
+    calibrationHelperVols2.push_back(md0SwaptionVts_->volatility(4*Years,1*Years,boost::dynamic_pointer_cast<SwaptionVolatilityCube>(md0SwaptionVts_.currentLink())->atmStrike(4*Years,1*Years)));
+
+    calibrationHelper2.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(1*Years,4*Years,Handle<Quote>(new SimpleQuote(calibrationHelperVols2[0])),iborIndex2,1*Years,Thirty360(),Actual360(),md0Yts_)));
+    calibrationHelper2.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(2*Years,3*Years,Handle<Quote>(new SimpleQuote(calibrationHelperVols2[1])),iborIndex2,1*Years,Thirty360(),Actual360(),md0Yts_)));
+    calibrationHelper2.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(3*Years,2*Years,Handle<Quote>(new SimpleQuote(calibrationHelperVols2[2])),iborIndex2,1*Years,Thirty360(),Actual360(),md0Yts_)));
+    calibrationHelper2.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(4*Years,1*Years,Handle<Quote>(new SimpleQuote(calibrationHelperVols2[3])),iborIndex2,1*Years,Thirty360(),Actual360(),md0Yts_)));
+
+
+    boost::shared_ptr<MarkovFunctionalSwaptionEngine> mfSwaptionEngine2(new MarkovFunctionalSwaptionEngine(mf2,64,7.0));
+    calibrationHelper2[0]->setPricingEngine(mfSwaptionEngine2);
+    calibrationHelper2[1]->setPricingEngine(mfSwaptionEngine2);
+    calibrationHelper2[2]->setPricingEngine(mfSwaptionEngine2);
+    calibrationHelper2[3]->setPricingEngine(mfSwaptionEngine2);
+
+    mf2->calibrate(calibrationHelper2,om,ec);
+
+    //std::cout << "Calibrated parameters 2: ";
+    //Array params2 = mf2->params();
+    //for(Size i=0;i<params2.size();i++) std::cout << params2[i] << ";";
+    //std::cout << std::endl;
+
+    std::vector<Swaption> ch2;
+    ch2.push_back(MakeSwaption(boost::shared_ptr<SwapIndex>(new EuriborSwapIsdaFixA(4*Years,md0Yts_)),1*Years));
+    ch2.push_back(MakeSwaption(boost::shared_ptr<SwapIndex>(new EuriborSwapIsdaFixA(3*Years,md0Yts_)),2*Years));
+    ch2.push_back(MakeSwaption(boost::shared_ptr<SwapIndex>(new EuriborSwapIsdaFixA(2*Years,md0Yts_)),3*Years));
+    ch2.push_back(MakeSwaption(boost::shared_ptr<SwapIndex>(new EuriborSwapIsdaFixA(1*Years,md0Yts_)),4*Years));
+
+    for(Size i=0;i<ch2.size();i++) {
+        boost::shared_ptr<BlackSwaptionEngine> blackEngine(new BlackSwaptionEngine(md0Yts_,calibrationHelperVols2[i]));
+        ch2[i].setPricingEngine(blackEngine);
+        Real blackPrice = ch2[i].NPV();
+        Real blackVega = ch2[i].result<Real>("vega");
+        ch2[i].setPricingEngine(mfSwaptionEngine2);
+        Real mfPrice = ch2[i].NPV();
+        if( fabs(blackPrice-mfPrice) / blackVega > tol1 ) BOOST_MESSAGE("Basket 1 / real yts, vts: Secondary instrument set calibration failed for instrument #" << i << " black premium is " << blackPrice << " while model premium is " << mfPrice << " (market vega is " << blackVega << ")");
+    }
+
+    //MarkovFunctional::ModelOutputs outputs2 = mf2->modelOutputs();
+    //BOOST_MESSAGE(outputs2);
+
+    Settings::instance().evaluationDate() = savedEvalDate;
 
 }
 
 void MarkovFunctionalTest::testBermudanSwaption() {
 
-	Real tol0=0.0001; // 1bp tolerance against cached values
+    Real tol0=0.0001; // 1bp tolerance against cached values
 
-	BOOST_MESSAGE("Testing markov functional bermudan swaption engine...");
+    BOOST_MESSAGE("Testing markov functional bermudan swaption engine...");
 
-	Date savedEvalDate = Settings::instance().evaluationDate();
-	Date referenceDate(14,November,2012);
-	Settings::instance().evaluationDate() = referenceDate;
+    Date savedEvalDate = Settings::instance().evaluationDate();
+    Date referenceDate(14,November,2012);
+    Settings::instance().evaluationDate() = referenceDate;
 
-	Handle<YieldTermStructure> flatYts_ = flatYts();
-	Handle<YieldTermStructure> md0Yts_ = md0Yts();
-	Handle<SwaptionVolatilityStructure> flatSwaptionVts_ = flatSwaptionVts();
-	Handle<SwaptionVolatilityStructure> md0SwaptionVts_ = md0SwaptionVts();
-	Handle<OptionletVolatilityStructure> flatOptionletVts_ = flatOptionletVts();
-	Handle<OptionletVolatilityStructure> md0OptionletVts_ = md0OptionletVts();
+    Handle<YieldTermStructure> flatYts_ = flatYts();
+    Handle<YieldTermStructure> md0Yts_ = md0Yts();
+    Handle<SwaptionVolatilityStructure> flatSwaptionVts_ = flatSwaptionVts();
+    Handle<SwaptionVolatilityStructure> md0SwaptionVts_ = md0SwaptionVts();
+    Handle<OptionletVolatilityStructure> flatOptionletVts_ = flatOptionletVts();
+    Handle<OptionletVolatilityStructure> md0OptionletVts_ = md0OptionletVts();
 
-	boost::shared_ptr<SwapIndex> swapIndexBase(new EuriborSwapIsdaFixA(1*Years));
+    boost::shared_ptr<SwapIndex> swapIndexBase(new EuriborSwapIsdaFixA(1*Years));
 
-	std::vector<Date> volStepDates;
-	std::vector<Real> vols;
-	vols.push_back(1.0);
+    std::vector<Date> volStepDates;
+    std::vector<Real> vols;
+    vols.push_back(1.0);
 
-	boost::shared_ptr<IborIndex> iborIndex1(new Euribor(6*Months,md0Yts_));
+    boost::shared_ptr<IborIndex> iborIndex1(new Euribor(6*Months,md0Yts_));
 
-	boost::shared_ptr<MarkovFunctional> mf1(new MarkovFunctional(md0Yts_,0.01,volStepDates,vols,md0SwaptionVts_,expiriesCalBasket3(),tenorsCalBasket3(),swapIndexBase,
-								MarkovFunctional::ModelSettings().withYGridPoints(32)
-								                                 .withYStdDevs(7.0)
-																 .withGaussHermitePoints(16)
-																 .withMarketRateAccuracy(1e-7)
-																 .withDigitalGap(1e-5)
-																 .withLowerRateBound(0.0)
-																 .withUpperRateBound(2.0)
-																 ));
+    boost::shared_ptr<MarkovFunctional> mf1(new MarkovFunctional(md0Yts_,0.01,volStepDates,vols,md0SwaptionVts_,expiriesCalBasket3(),tenorsCalBasket3(),swapIndexBase,
+                                MarkovFunctional::ModelSettings().withYGridPoints(32)
+                                                                 .withYStdDevs(7.0)
+                                                                 .withGaussHermitePoints(16)
+                                                                 .withMarketRateAccuracy(1e-7)
+                                                                 .withDigitalGap(1e-5)
+                                                                 .withLowerRateBound(0.0)
+                                                                 .withUpperRateBound(2.0)
+                                                                 ));
 
-	boost::shared_ptr<PricingEngine> mfSwaptionEngine1(new MarkovFunctionalSwaptionEngine(mf1,64,7.0));
+    boost::shared_ptr<PricingEngine> mfSwaptionEngine1(new MarkovFunctionalSwaptionEngine(mf1,64,7.0));
 
-	boost::shared_ptr<VanillaSwap> underlyingCall = MakeVanillaSwap(10*Years,iborIndex1,0.03)
-																			.withEffectiveDate(TARGET().advance(referenceDate,2,Days)) 
-																			//.withNominal(100000000.0)
-																			.receiveFixed(false);
+    boost::shared_ptr<VanillaSwap> underlyingCall = MakeVanillaSwap(10*Years,iborIndex1,0.03)
+                                                                            .withEffectiveDate(TARGET().advance(referenceDate,2,Days)) 
+                                                                            //.withNominal(100000000.0)
+                                                                            .receiveFixed(false);
 
-	std::vector<boost::shared_ptr<Exercise> > europeanExercises;
-	std::vector<Date> expiries = expiriesCalBasket3();
-	std::vector<Swaption> europeanSwaptions;
-	for(Size i=0;i<expiries.size();i++) {
-		europeanExercises.push_back(boost::shared_ptr<Exercise>(new EuropeanExercise(expiries[i])));
-		europeanSwaptions.push_back(Swaption(underlyingCall,europeanExercises[i]));
-		europeanSwaptions.back().setPricingEngine(mfSwaptionEngine1);
-	}
+    std::vector<boost::shared_ptr<Exercise> > europeanExercises;
+    std::vector<Date> expiries = expiriesCalBasket3();
+    std::vector<Swaption> europeanSwaptions;
+    for(Size i=0;i<expiries.size();i++) {
+        europeanExercises.push_back(boost::shared_ptr<Exercise>(new EuropeanExercise(expiries[i])));
+        europeanSwaptions.push_back(Swaption(underlyingCall,europeanExercises[i]));
+        europeanSwaptions.back().setPricingEngine(mfSwaptionEngine1);
+    }
 
-	boost::shared_ptr<Exercise> bermudanExercise(new BermudanExercise(expiries));
-	Swaption bermudanSwaption(underlyingCall,bermudanExercise);
-	bermudanSwaption.setPricingEngine(mfSwaptionEngine1);
+    boost::shared_ptr<Exercise> bermudanExercise(new BermudanExercise(expiries));
+    Swaption bermudanSwaption(underlyingCall,bermudanExercise);
+    bermudanSwaption.setPricingEngine(mfSwaptionEngine1);
 
-	Real cachedValues[] = {0.0030757,0.0107344,0.0179862,0.0225881,0.0243215,0.0229148,0.0191415,0.0139035,0.0076354};
-	Real cachedValue = 0.0327776;
+    Real cachedValues[] = {0.0030757,0.0107344,0.0179862,0.0225881,0.0243215,0.0229148,0.0191415,0.0139035,0.0076354};
+    Real cachedValue = 0.0327776;
 
-	for(Size i=0;i<expiries.size();i++) {
-		Real npv = europeanSwaptions[i].NPV();
-		if( fabs( npv - cachedValues[i] ) > tol0 ) BOOST_ERROR("European swaption value (" << npv << ") deviates from cached value (" << cachedValues[i] << ")");
-	}
+    for(Size i=0;i<expiries.size();i++) {
+        Real npv = europeanSwaptions[i].NPV();
+        if( fabs( npv - cachedValues[i] ) > tol0 ) BOOST_ERROR("European swaption value (" << npv << ") deviates from cached value (" << cachedValues[i] << ")");
+    }
 
-	Real npv = bermudanSwaption.NPV();
-	if( fabs( npv - cachedValue ) > tol0 ) BOOST_ERROR("Bermudan swaption value (" << npv << ") deviates from cached value (" << cachedValue << ")");
+    Real npv = bermudanSwaption.NPV();
+    if( fabs( npv - cachedValue ) > tol0 ) BOOST_ERROR("Bermudan swaption value (" << npv << ") deviates from cached value (" << cachedValue << ")");
 
-	Settings::instance().evaluationDate() = savedEvalDate;
+    Settings::instance().evaluationDate() = savedEvalDate;
 
 }
 
@@ -1282,7 +1282,7 @@ test_suite* MarkovFunctionalTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testVanillaEngines));
     suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testCalibrationTwoInstrumentSets));
     suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testBermudanSwaption));
-	return suite;
+    return suite;
 }
 
 

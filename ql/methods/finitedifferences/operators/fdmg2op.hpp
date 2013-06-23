@@ -30,7 +30,7 @@
 
 namespace QuantLib {
 
-	class G2;
+    class G2;
     class FdmMesher;
 
     class FdmG2Op : public FdmLinearOpComposite {

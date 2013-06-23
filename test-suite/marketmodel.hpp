@@ -48,8 +48,8 @@ class MarketModelTest {
     static void testAbcdVolatilityFit();
     static void testDriftCalculator();
     static void testIsInSubset();
-	static void testAbcdDegenerateCases();
-	static void testCovariance();
+    static void testAbcdDegenerateCases();
+    static void testCovariance();
     static boost::unit_test_framework::test_suite* suite();
 };
 

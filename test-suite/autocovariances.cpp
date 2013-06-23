@@ -19,7 +19,7 @@
 
 #include "autocovariances.hpp"
 #include "utilities.hpp"
-#include <ql/experimental/math/autocovariance.hpp>
+#include <ql/math/autocovariance.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

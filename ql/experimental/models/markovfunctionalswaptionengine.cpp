@@ -93,7 +93,7 @@ namespace QuantLib {
                     for(Size l=j1;l<arguments_.fixedCoupons.size();l++) {
                         fixedLegNpv += arguments_.fixedCoupons[l] * model_->zerobond(arguments_.fixedPayDates[l],expiry0,z[k]);
                     }
-					npv0[k] = std::max( npv0[k], (type==Option::Call ? 1.0 : -1.0) * ( floatingLegNpv - fixedLegNpv ) / model_->numeraire(expiry0Time,z[k]) );
+                    npv0[k] = std::max( npv0[k], (type==Option::Call ? 1.0 : -1.0) * ( floatingLegNpv - fixedLegNpv ) / model_->numeraire(expiry0Time,z[k]) );
                 }
 
             }

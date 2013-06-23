@@ -18,7 +18,7 @@ QuantLib is
     Copyright (C) 2004 Mike Parker
     Copyright (C) 2004 Walter Penschke
     Copyright (C) 2004 Gianni Piolanti
-    Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011 Klaus Spanderen
+    Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013 Klaus Spanderen
     Copyright (C) 2004 Jeff Yu
 
     Copyright (C) 2005, 2006, 2008 Toyin Akin
@@ -40,7 +40,7 @@ QuantLib is
     Copyright (C) 2006 Richard Gould
     Copyright (C) 2006, 2007, 2008, 2009, 2010 Mark Joshi
     Copyright (C) 2006, 2007, 2008 Allen Kuo
-    Copyright (C) 2006, 2007, 2008, 2009 Roland Lichters
+    Copyright (C) 2006, 2007, 2008, 2009, 2012 Roland Lichters
     Copyright (C) 2006, 2007 Katiuscia Manzoni
     Copyright (C) 2006, 2007 Mario Pucci
     Copyright (C) 2006, 2007 François du Vignaud
@@ -64,11 +64,11 @@ QuantLib is
     Copyright (C) 2008 Simon Ibbotson
     Copyright (C) 2008 John Maiden
     Copyright (C) 2008 Francesca Mariani
-    Copyright (C) 2008, 2009, 2010, 2011 Master IMAFA - Polytech'Nice Sophia - Université de Nice Sophia Antipolis
+    Copyright (C) 2008, 2009, 2010, 2011, 2012 Master IMAFA - Polytech'Nice Sophia - Université de Nice Sophia Antipolis
     Copyright (C) 2008, 2009 Andrea Odetti
     Copyright (C) 2008 J. Erik Radmall
     Copyright (C) 2008 Maria Cristina Recchioni
-    Copyright (C) 2008, 2009 Ralph Schreyer
+    Copyright (C) 2008, 2009, 2012 Ralph Schreyer
     Copyright (C) 2008 Roland Stamm
     Copyright (C) 2008 Francesco Zirilli
 
@@ -77,7 +77,7 @@ QuantLib is
     Copyright (C) 2009 Frédéric Degraeve
     Copyright (C) 2009 Dirk Eddelbuettel
     Copyright (C) 2009 Bernd Engelmann
-    Copyright (C) 2009, 2010 Liquidnet Holdings, Inc.
+    Copyright (C) 2009, 2010, 2012 Liquidnet Holdings, Inc.
     Copyright (C) 2009 Bojan Nikolic
     Copyright (C) 2009, 2010 Dimitri Reiswich
     Copyright (C) 2009 Sun Xiuxin
@@ -88,14 +88,17 @@ QuantLib is
     Copyright (C) 2010 DeriveXperts SAS
     Copyright (C) 2010 Cavit Hafizoglu
     Copyright (C) 2010 Michael Heckl
-    Copyright (C) 2010 Liquidnet Holdings Inc.
     Copyright (C) 2010 Slava Mazur
     Copyright (C) 2010 Adrian O' Neill
     Copyright (C) 2010 Robert Philipp
     Copyright (C) 2010 Alessandro Roveda
     Copyright (C) 2010 SunTrust Bank
 
-    Copyright (C) 2011 Fabien Le Floc'h
+    Copyright (C) 2011, 2013 Fabien Le Floc'h
+
+    Copyright (C) 2012, 2013 Peter Caspers
+    Copyright (C) 2012 Mateusz Kapturski
+    Copyright (C) 2012 Édouard Tallent
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo
 Methods in Finance".

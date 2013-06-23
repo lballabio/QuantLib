@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "mfstateprocess.hpp"
+#include <ql/experimental/models/mfstateprocess.hpp>
 
 namespace QuantLib {
 

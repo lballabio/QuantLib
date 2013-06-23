@@ -130,8 +130,11 @@ namespace QuantLib {
                           done=false;
                       }
                 }
-                for(std::vector<Date>::const_reverse_iterator j = i->second.paymentDates_.rbegin(); 
-                    j != i->second.paymentDates_.rend() && done; j++) {
+                // Inlining this into the loop condition causes
+                // a bogus compilation error wih g++ 4.0.1 on Mac OS X
+                std::vector<Date>::const_reverse_iterator rend =
+                    i->second.paymentDates_.rend();
+                for(std::vector<Date>::const_reverse_iterator j = i->second.paymentDates_.rbegin(); j != rend && done; j++) {
                     if(*j < numeraireKnown) {
                         if(capletCalibrated_) {
                             makeCapletCalibrationPoint(*j);

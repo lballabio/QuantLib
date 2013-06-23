@@ -146,8 +146,9 @@ void ShortRateModelTest::testCachedHullWhite2() {
                               { 4, 2, 0.1021 },
                               { 5, 1, 0.1000 }};
     boost::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
-    boost::shared_ptr<IborIndex> index0(new IborIndex(index->familyName(),index->tenor(),0,index->currency(),index->fixingCalendar(),
-		index->businessDayConvention(),index->endOfMonth(),index->dayCounter(),termStructure)); // Euribor 6m with zero fixing days
+    boost::shared_ptr<IborIndex> index0(new IborIndex(
+        index->familyName(),index->tenor(),0,index->currency(),index->fixingCalendar(),
+        index->businessDayConvention(),index->endOfMonth(),index->dayCounter(),termStructure)); // Euribor 6m with zero fixing days
 
     boost::shared_ptr<PricingEngine> engine(
                                          new JamshidianSwaptionEngine(model));
@@ -177,8 +178,9 @@ void ShortRateModelTest::testCachedHullWhite2() {
     EndCriteria::Type ecType = model->endCriteria();
 
     // Check and print out results
-	// The cached values were produced with an older version of the JamshidianEngine not 
-	// accounting for the delay between option expiry and underlying start
+    // The cached values were produced with an older version of the
+    // JamshidianEngine not accounting for the delay between option
+    // expiry and underlying start
     #if defined(QL_USE_INDEXED_COUPON)
     Real cachedA = 0.0481608, cachedSigma = 0.00582493;
     #else

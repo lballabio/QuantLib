@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2006 Joseph Wang
- Copyright (C) 2010 Liquidnet Holdings Inc.
+ Copyright (C) 2010 Liquidnet Holdings, Inc.
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/

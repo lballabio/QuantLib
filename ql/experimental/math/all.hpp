@@ -2,11 +2,9 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/experimental/math/adaptiverungekutta.hpp>
-#include <ql/experimental/math/autocovariance.hpp>
 #include <ql/experimental/math/claytoncopularng.hpp>
 #include <ql/experimental/math/expm.hpp>
 #include <ql/experimental/math/farliegumbelmorgensterncopularng.hpp>
-#include <ql/experimental/math/fastfouriertransform.hpp>
 #include <ql/experimental/math/frankcopularng.hpp>
 #include <ql/experimental/math/zigguratrng.hpp>
 
