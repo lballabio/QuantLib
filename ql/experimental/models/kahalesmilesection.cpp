@@ -106,7 +106,6 @@ namespace QuantLib {
                 Real k1 = k_[leftIndex_];
                 Real c1 = c_[leftIndex_];
                 Real c0 = c_[0];
-                //Real c1p = cp_[leftIndex_-1];
                 secl = (c_[leftIndex_]-c_[0]) / (k_[leftIndex_]-k_[0]);
                 Real sec = (c_[leftIndex_+1]-c_[leftIndex_]) / (k_[leftIndex_+1]-k_[leftIndex_]);
                 Real c1p;
@@ -119,6 +118,7 @@ namespace QuantLib {
                 }
                 sHelper1 sh1(k1,c0,c1,c1p);
                 Real s = brent.solve(sh1,QL_KAHALE_ACC,0.20,0.00,QL_KAHALE_SMAX); // numerical parameters hardcoded here
+                sh1(s);
                 boost::shared_ptr<cFunction> cFct1(new cFunction(sh1.f_,s,0.0,sh1.b_));
                 cFunctions_[0]=cFct1;
             } catch(...) {
@@ -150,19 +150,20 @@ namespace QuantLib {
                 aHelper ah(k0,k1,c0,c1,cp0,cp1);
                 Real a;
                 try {
-                    a = brent.solve(ah,1E-5,0.5*(cp1+(1.0+cp0)),cp1+QL_EPSILON,1.0+cp0-QL_EPSILON);
+                    a = brent.solve(ah,QL_KAHALE_ACC,0.5*(cp1+(1.0+cp0)),cp1+QL_KAHALE_EPS,1.0+cp0-QL_KAHALE_EPS);
                     // numerical parameters hardcoded here
                 } catch(...) {
                     // from theory there must exist a zero. if the solver does not find it, it most
                     // probably lies close one of the interval bounds. Just choose the better bound
                     // and relax the accuracy. This does not matter in practice usually.
-                    Real la = std::fabs(ah(cp1+QL_EPSILON));
-                    Real ra = std::fabs(ah(1.0+cp0-QL_EPSILON));
+                    Real la = std::fabs(ah(cp1+QL_KAHALE_EPS));
+                    Real ra = std::fabs(ah(1.0+cp0-QL_KAHALE_EPS));
                     if( la < QL_KAHALE_ACC_RELAX || ra < QL_KAHALE_ACC_RELAX) { // tolerance hardcoded here
-                        a = la < ra ? la : ra;
+                        a = la < ra ? cp1+QL_KAHALE_EPS : 1.0+cp0-QL_KAHALE_EPS;
                     }
                     else
                         QL_FAIL("can not interpolate at index " << i);
+
                 }
                 ah(a);
                 boost::shared_ptr<cFunction> cFct(new cFunction(ah.f_,ah.s_,a,ah.b_));
@@ -179,21 +180,22 @@ namespace QuantLib {
             try {
                 Real k0 = k_[rightIndex_];
                 Real c0 = c_[rightIndex_];
-                Real c0p;
-                if(interpolate_) c0p = (c_[rightIndex_]-c_[rightIndex_-1])/(k_[rightIndex_]-k_[rightIndex_-1]);
+                Real cp0;
+                if(interpolate_) cp0 = 0.5*(c_[rightIndex_]-c_[rightIndex_-1])/(k_[rightIndex_]-k_[rightIndex_-1]);
                 else {
-                    c0p=(blackFormula(Option::Call, k0, f_, sqrt(source_->variance(k0)))-
+                    cp0=(blackFormula(Option::Call, k0, f_, sqrt(source_->variance(k0)))-
                          blackFormula(Option::Call, k0-gap_, f_, sqrt(source_->variance(k0-gap_))))/gap_;
 
                 }
                 boost::shared_ptr<cFunction> cFct;
                 if(exponentialExtrapolation_) {
-                    cFct = boost::shared_ptr<cFunction>(new cFunction(-c0p/c0 ,std::log(c0)-c0p/c0*k0));
+                    cFct = boost::shared_ptr<cFunction>(new cFunction(-cp0/c0 ,std::log(c0)-cp0/c0*k0));
                 }
                 else {
-                    sHelper sh(k0,c0,c0p);
+                    sHelper sh(k0,c0,cp0);
                     Real s;
                     s = brent.solve(sh,QL_KAHALE_ACC,0.20,0.0,QL_KAHALE_SMAX);  // numerical parameters hardcoded here
+                    sh(s);
                     cFct = boost::shared_ptr<cFunction>(new cFunction(sh.f_,s,0.0,0.0));
                 }
                 cFunctions_[rightIndex_-leftIndex_+1]=cFct;
@@ -212,7 +214,7 @@ namespace QuantLib {
     Real KahaleSmileSection::optionPrice(Rate strike, Option::Type type, Real discount) const { 
         // option prices are directly available, so implement this function rather than use smileSection 
         // standard implementation
-        strike = std::max ( strike, QL_EPSILON );
+        strike = std::max ( strike, QL_KAHALE_EPS );
         int i = index(strike);
         if(interpolate_ || (i==0 || i==(int) (rightIndex_-leftIndex_+1))) 
             return discount*(type == Option::Call ? cFunctions_[i]->operator()(strike) : 
@@ -222,7 +224,7 @@ namespace QuantLib {
     }
 
     Real KahaleSmileSection::volatilityImpl(Rate strike) const {
-        strike = std::max ( strike, QL_EPSILON );
+        strike = std::max ( strike, QL_KAHALE_EPS );
         int i = index(strike);
         if(!interpolate_ && !(i==0 || i==(int) (rightIndex_-leftIndex_+1))) return source_->volatility(strike);
         Real c = cFunctions_[i]->operator()(strike);

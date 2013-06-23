@@ -35,11 +35,12 @@
 #include <ql/math/solvers1d/brent.hpp>
 #include <boost/math/distributions/normal.hpp> 
 
-// numerical constants that are still experimental
+// numerical constants, still experimental
 #define QL_KAHALE_FMAX 1000.0
 #define QL_KAHALE_SMAX 5.0
-#define QL_KAHALE_ACC 1E-6
-#define QL_KAHALE_ACC_RELAX 1E-2
+#define QL_KAHALE_ACC 1E-12        
+#define QL_KAHALE_ACC_RELAX 1E-5  // this is an accuracy in option prices
+#define QL_KAHALE_EPS QL_EPSILON
 
 namespace QuantLib {
 
@@ -74,6 +75,7 @@ namespace QuantLib {
                 Real beta = d20-alpha*log(k0_);
                 s_ = -1.0 / alpha;
                 f_ = std::min(exp(s_*(beta+s_/2.0)), QL_KAHALE_FMAX); // cap ?
+                //f_ = exp(s_*(beta+s_/2.0));
                 cFunction cTmp(f_,s_,a,0.0);
                 b_ = c0_-cTmp(k0_);
                 cFunction c(f_,s_,a,b_);
@@ -121,8 +123,8 @@ namespace QuantLib {
         Real maxStrike () const { return QL_MAX_REAL; }
         Real atmLevel() const { return f_; }
 
-        Real minAfStrike() const { return k_[leftIndex_]; }
-        Real maxAfStrike() const { return k_[rightIndex_]; }
+        Real leftCoreStrike() const { return k_[leftIndex_]; }
+        Real rightCoreStrike() const { return k_[rightIndex_]; }
 
         Real optionPrice(Rate strike, Option::Type type = Option::Call, Real discount=1.0) const; 
 
