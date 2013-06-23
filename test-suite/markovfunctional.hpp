@@ -28,6 +28,7 @@
 class MarkovFunctionalTest {
   public:
 	static void testMfStateProcess();
+    static void testKahaleSmileSection();
 	static void testCalibrationOneInstrumentSet();
 	static void testCalibrationTwoInstrumentSets();
 	static void testVanillaEngines();
