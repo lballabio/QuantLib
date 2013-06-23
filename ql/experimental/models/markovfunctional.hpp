@@ -103,8 +103,6 @@ namespace QuantLib {
 
         struct ModelSettings {
 
-            enum SmilePretreatment { NoPretreatment, KahaleExtrapolation, KahaleInterExtrapolation };
-            
             // NoPayoffExtrapolation overrides ExtrapolatePayoffFlat
             enum Adjustments { AdjustNone = 0, AdjustDigitals = 1<<0, AdjustYts = 1<<1, ExtrapolatePayoffFlat = 1<<2, 
                                NoPayoffExtrapolation = 1<<3, KahaleSmile = 1<<4, KahaleExponentialExtrapolation = 1<<5, 
