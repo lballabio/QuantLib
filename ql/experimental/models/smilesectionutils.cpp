@@ -59,13 +59,13 @@ namespace QuantLib {
         bool isAf=true;
         do {
             rightIndex++;
-            isAf = af(leftIndex,rightIndex);
+            isAf = af(leftIndex,rightIndex,rightIndex) && af(leftIndex,rightIndex-1,rightIndex);
         } while(isAf && rightIndex<k_.size()-1);
         if(!isAf) rightIndex--;
 
         do {
             leftIndex--;
-            isAf = af(leftIndex,leftIndex) && af(leftIndex,leftIndex+1);
+            isAf = af(leftIndex,leftIndex,rightIndex) && af(leftIndex,leftIndex+1,rightIndex);
         } while(isAf && leftIndex>1);
         if(!isAf) leftIndex++;
 
@@ -75,12 +75,12 @@ namespace QuantLib {
         return std::pair<Size,Size>(leftIndex,rightIndex);
     }
 
-    bool SmileSectionUtils::af(Size i0, Size i) const {
+    bool SmileSectionUtils::af(Size i0, Size i, Size i1) const {
         if(i==0) return true;
         Size im = i-1 >= i0 ? i-1 : 0;
         Real q1 = (c_[i] - c_[im]) / (k_[i] - k_[im]);
         if(q1 < -1.0 || q1 > 0.0) return false;
-        if(i >= k_.size()-1) return true;
+        if(i >= i1) return true;
         Real q2 = (c_[i+1] - c_[i]) / (k_[i+1] - k_[i]);
         if(q1 <= q2) return true;
         return false;

@@ -49,7 +49,7 @@ namespace QuantLib {
         makeStrikeGrid(const SmileSection&,
                        const std::vector<Real>& moneynessGrid) const;
       private:
-        bool af(Size i0, Size i) const;
+        bool af(Size i0, Size i, Size i1) const;
         mutable std::vector<Real> m_, k_, c_;
     };
 
