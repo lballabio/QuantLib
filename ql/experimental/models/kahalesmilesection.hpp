@@ -34,6 +34,8 @@
 #include <ql/math/solvers1d/brent.hpp>
 #include <boost/math/distributions/normal.hpp> 
 #include <vector>
+#include <ql/experimental/models/smilesectionutils.hpp>
+
 
 // numerical constants, still experimental
 #define QL_KAHALE_FMAX 1000.0
@@ -135,13 +137,13 @@ namespace QuantLib {
         Size index(Rate strike) const;
         void compute();
         boost::shared_ptr<SmileSection> source_;
-        std::vector<Real> moneynessGrid_;
-        std::vector<Real> k_, c_;
+        std::vector<Real> moneynessGrid_, k_, c_;
         Real f_;
         const Real gap_;
         Size centralIndex_,leftIndex_,rightIndex_;
         std::vector<boost::shared_ptr<cFunction> > cFunctions_;
         const bool interpolate_, exponentialExtrapolation_, deleteArbitragePoints_;
+        boost::shared_ptr<SmileSectionUtils> ssutils_;
     };
 
 

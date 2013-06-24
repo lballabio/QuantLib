@@ -18,7 +18,6 @@
 */
 
 #include <ql/experimental/models/kahalesmilesection.hpp>
-#include <ql/experimental/models/smilesectionutils.hpp>
 
 namespace QuantLib {
 
@@ -29,28 +28,13 @@ namespace QuantLib {
           SmileSection(*source), source_(source), gap_(gap), moneynessGrid_(moneynessGrid),
           interpolate_(interpolate), exponentialExtrapolation_(exponentialExtrapolation),
           deleteArbitragePoints_(deleteArbitragePoints) {
+        
+        ssutils_ = boost::shared_ptr<SmileSectionUtils>(new SmileSectionUtils(*source,moneynessGrid,atm));
 
-        if(atm==Null<Real>()) {
-            f_ = source_->atmLevel();
-            QL_REQUIRE(f_ != Null<Real>(), "atm level must be provided by source section or given in the constructor");
-        }
-
-        else {
-            f_ = atm;
-        }
-
-        SmileSectionUtils ssutils;
-        moneynessGrid_ = ssutils.makeMoneynessGrid(*source_,moneynessGrid);
-        k_ = ssutils.makeStrikeGrid(*source_,moneynessGrid_);
-
-        QL_REQUIRE(k_.front() >= 0.0 && k_.back() >= 0.0,"Strikes (" << k_.front() << " ... " << k_.back() << 
-                   ") must be positive.");
-
-        c_.push_back(f_);
-
-        for(Size i=1;i<k_.size();i++) {
-            c_.push_back( source_->optionPrice(k_[i],Option::Call,1.0) );
-        }
+        moneynessGrid_ = ssutils_->moneyGrid();
+        k_ = ssutils_->strikeGrid();
+        c_ = ssutils_->callPrices();
+        f_ = ssutils_->atmLevel();
 
         compute();
 
@@ -58,11 +42,15 @@ namespace QuantLib {
 
     void KahaleSmileSection::compute() {
 
-        SmileSectionUtils ssutils;
+        std::pair<Size,Size> afIdx = ssutils_->arbitragefreeIndices();
+        leftIndex_ = afIdx.first;
+        rightIndex_ = afIdx.second;
 
         if(deleteArbitragePoints_) {
             while(leftIndex_>1 || rightIndex_<k_.size()-1) {
-                std::pair<Size,Size> afIdx = ssutils.arbitragefreeIndices(*source_,moneynessGrid_);
+                
+                ssutils_ = boost::shared_ptr<SmileSectionUtils>(new SmileSectionUtils(*source_,moneynessGrid_,f_));
+                std::pair<Size,Size> afIdx = ssutils_->arbitragefreeIndices();
 
                 leftIndex_ = afIdx.first;
                 rightIndex_ = afIdx.second;
@@ -85,11 +73,6 @@ namespace QuantLib {
                     rightIndex_--;
                 }
             }
-        }
-        else {
-            std::pair<Size,Size> afIdx = ssutils.arbitragefreeIndices(*source_,moneynessGrid_);
-            leftIndex_ = afIdx.first;
-            rightIndex_ = afIdx.second;
         }
 
         cFunctions_ = std::vector<boost::shared_ptr<cFunction> >(rightIndex_-leftIndex_+2);
