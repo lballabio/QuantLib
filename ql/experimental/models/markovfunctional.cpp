@@ -304,17 +304,17 @@ namespace QuantLib {
                                                  Option::Call,i->second.annuity_,modelSettings_.digitalGap_);
 
             // output smile for testing
-            // SmileSectionUtils sutils;
             // boost::shared_ptr<SmileSection> sec1 = i->second.rawSmileSection_;
             // boost::shared_ptr<KahaleSmileSection> sec2 = 
             //     boost::dynamic_pointer_cast<KahaleSmileSection>(i->second.smileSection_);
             // const std::vector<double>& money = modelSettings_.smileMoneynessCheckpoints_;
+            // SmileSectionUtils sutils(sec1,money);
             // std::cout << "-------------------------------------------------------------------" << std::endl;
             // std::cout << "Smile for expiry " << i->first << std::endl;
-            // std::cout << "Arbitrage free region " << sutils.arbitragefreeRegion(*sec1,money).first << " ... " <<
-            //     sutils.arbitragefreeRegion(*sec1,money).second << std::endl;
+            // std::cout << "Arbitrage free region " << sutils.arbitragefreeRegion().first << " ... " <<
+            //     sutils.arbitragefreeRegion().second << std::endl;
             // if(sec2)
-            //     std::cout << "Kahale core region    " << sec2->minAfStrike() << " ... " << sec2->maxAfStrike() << std::endl;
+            //     std::cout << "Kahale core region    " << sec2->leftCoreStrike() << " ... " << sec2->rightCoreStrike() << std::endl;
             // std::cout << "strike;rawCall;Call;rawDigial;Digital;rawDensity;Density;callDiff;Arb" << std::endl;
             // Real strike = 0.0010;
             // while(strike <= 1.0000 + 1E-8) {
@@ -482,8 +482,8 @@ namespace QuantLib {
                 modelOutputs_.annuity_.push_back(i->second.annuity_);
                 boost::shared_ptr<SmileSection> sec = i->second.smileSection_;
                 boost::shared_ptr<SmileSection> rawSec = i->second.rawSmileSection_;
-                SmileSectionUtils ssutils;
-                std::vector<Real> money = ssutils.makeMoneynessGrid(*sec,modelSettings_.smileMoneynessCheckpoints_);
+                SmileSectionUtils ssutils(*sec,modelSettings_.smileMoneynessCheckpoints_,i->second.atm_);
+                std::vector<Real> money = ssutils.moneyGrid();
                 std::vector<Real> strikes, marketCall, marketPut, modelCall, modelPut, 
                                   marketVega, marketRawCall, marketRawPut;
                 for(Size j=0;j<money.size();j++) {
