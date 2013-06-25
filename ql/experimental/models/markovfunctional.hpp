@@ -27,7 +27,6 @@
 #ifndef quantlib_markovfunctional_hpp
 #define quantlib_markovfunctional_hpp
 
-#include <ql/mathconstants.hpp>
 #include <ql/models/model.hpp>
 #include <ql/models/parameter.hpp>
 #include <ql/math/interpolation.hpp>
@@ -128,7 +127,7 @@ namespace QuantLib {
                            ") must be positive");
                 QL_REQUIRE(digitalGap_>0.0,"Digital gap (" << digitalGap_ << ") must be positive");
                 QL_REQUIRE(marketRateAccuracy_>0.0,"Market rate accuracy (" << marketRateAccuracy_ << ") must be positive");
-                QL_REQUIRE(!adjustments_&KahaleSmile || lowerRateBound_ == 0.0,
+                QL_REQUIRE((adjustments_ & KahaleSmile) == 0 || lowerRateBound_ == 0.0,
                            "If Kahale extrapolation is used, the lower rate bound (" << lowerRateBound_ << ") must be zero.");
                 QL_REQUIRE(lowerRateBound_ < upperRateBound_,"Lower rate bound (" << lowerRateBound_ << 
                            ") must be strictly less than upper rate bound (" << upperRateBound_ << ")");

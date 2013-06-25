@@ -58,7 +58,7 @@
 #include <boost/math/distributions/non_central_chi_squared.hpp>
 
 using namespace QuantLib;
-using namespace boost::unit_test_framework;
+using boost::unit_test_framework::test_suite;
 
 namespace {
     struct NewBarrierOptionData {

@@ -100,13 +100,13 @@ namespace QuantLib {
                 .withGearings(gearing)
                 .withSpreads(spread);
 
-        for (Leg::const_iterator i=legs_[1].begin(); i<legs_[1].end(); ++i)
+        Leg::const_iterator i;
+        for (i=legs_[1].begin(); i<legs_[1].end(); ++i)
             registerWith(*i);
 
         const Leg& bondLeg = bond_->cashflows();
-        Leg::const_iterator i = bondLeg.begin();
         // skip bond redemption
-        for (; i<bondLeg.end()-1 && (*i)->date()<=dealMaturity; ++i) {
+        for (i = bondLeg.begin(); i<bondLeg.end()-1 && (*i)->date()<=dealMaturity; ++i) {
             // whatever might be the choice for the discounting engine
             // bond flows on upfrontDate_ must be discarded
             bool upfrontDateBondFlows = false;
@@ -152,7 +152,7 @@ namespace QuantLib {
         }
 
         QL_REQUIRE(!legs_[0].empty(), "empty bond leg");
-        for (Leg::const_iterator i=legs_[0].begin(); i<legs_[0].end(); ++i)
+        for (i=legs_[0].begin(); i<legs_[0].end(); ++i)
             registerWith(*i);
 
         if (payBondCoupon) {
