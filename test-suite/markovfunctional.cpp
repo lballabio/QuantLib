@@ -57,64 +57,64 @@ using namespace boost::unit_test_framework;
 
 void MarkovFunctionalTest::testMfStateProcess() {
 
-	const Real tolerance = 1E-10;
+    const Real tolerance = 1E-10;
     BOOST_MESSAGE("Testing markov functional state process...");
 
-	Array times1(0), vols1(1,1.0);
-	MfStateProcess sp1(0.00,times1,vols1);
-	Real var11 = sp1.variance(0.0,0.0,1.0);
-	Real var12 = sp1.variance(0.0,0.0,2.0);
-	if( abs( var11 - 1.0 ) > tolerance ) BOOST_ERROR("process 1 has not variance 1.0 for dt = 1.0 but " << var11);
-	if( abs( var12 - 2.0 ) > tolerance ) BOOST_ERROR("process 1 has not variance 1.0 for dt = 1.0 but " << var12);
+    Array times1(0), vols1(1,1.0);
+    MfStateProcess sp1(0.00,times1,vols1);
+    Real var11 = sp1.variance(0.0,0.0,1.0);
+    Real var12 = sp1.variance(0.0,0.0,2.0);
+    if( abs( var11 - 1.0 ) > tolerance ) BOOST_ERROR("process 1 has not variance 1.0 for dt = 1.0 but " << var11);
+    if( abs( var12 - 2.0 ) > tolerance ) BOOST_ERROR("process 1 has not variance 1.0 for dt = 1.0 but " << var12);
 
-	Array times2(2), vols2(3);
-	times2[0] = 1.0; times2[1] = 2.0; 
-	vols2[0] = 1.0; vols2[1] = 2.0; vols2[2] = 3.0;
-	MfStateProcess sp2(0.00,times2,vols2);
-	Real dif21 = sp2.diffusion(0.0,0.0); 
-	Real dif22 = sp2.diffusion(0.99,0.0);
-	Real dif23 = sp2.diffusion(1.0,0.0);
-	Real dif24 = sp2.diffusion(1.9,0.0);
-	Real dif25 = sp2.diffusion(2.0,0.0);
-	Real dif26 = sp2.diffusion(3.0,0.0);
-	Real dif27 = sp2.diffusion(5.0,0.0);
-	if( abs( dif21 - 1.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 0.0, should be 1.0 but is " << dif21);
-	if( abs( dif22 - 1.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 0.99, should be 1.0 but is " << dif22);
-	if( abs( dif23 - 2.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 1.0, should be 2.0 but is " << dif23);
-	if( abs( dif24 - 2.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 1.9, should be 2.0 but is " << dif24);
-	if( abs( dif25 - 3.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 2.0, should be 3.0 but is " << dif25);
-	if( abs( dif26 - 3.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 3.0, should be 3.0 but is " << dif26);
-	if( abs( dif27 - 3.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 5.0, should be 3.0 but is " << dif27);
-	Real var21 = sp2.variance(0.0,0.0,0.0);
-	Real var22 = sp2.variance(0.0,0.0,0.5);
-	Real var23 = sp2.variance(0.0,0.0,1.0);
-	Real var24 = sp2.variance(0.0,0.0,1.5);
-	Real var25 = sp2.variance(0.0,0.0,3.0);
-	Real var26 = sp2.variance(0.0,0.0,5.0);
-	Real var27 = sp2.variance(1.2,0.0,1.0);
-	if( abs( var21 - 0.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance at 0.0, should be 0.0 but is " << var21);
-	if( abs( var22 - 0.5 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance at 0.5, should be 0.5 but is " << var22);
-	if( abs( var23 - 1.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance at 1.0, should be 1.0 but is " << var23);
-	if( abs( var24 - 3.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance at 1.5, should be 3.0 but is " << var24);
-	if( abs( var25 - 14.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance at 3.0, should be 14.0 but is " << var25);
-	if( abs( var26 - 32.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance at 5.0, should be 32.0 but is " << var26);
-	if( abs( var27 - 5.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance between 1.2 and 2.2, should be 5.0 but is " << var27);
+    Array times2(2), vols2(3);
+    times2[0] = 1.0; times2[1] = 2.0; 
+    vols2[0] = 1.0; vols2[1] = 2.0; vols2[2] = 3.0;
+    MfStateProcess sp2(0.00,times2,vols2);
+    Real dif21 = sp2.diffusion(0.0,0.0); 
+    Real dif22 = sp2.diffusion(0.99,0.0);
+    Real dif23 = sp2.diffusion(1.0,0.0);
+    Real dif24 = sp2.diffusion(1.9,0.0);
+    Real dif25 = sp2.diffusion(2.0,0.0);
+    Real dif26 = sp2.diffusion(3.0,0.0);
+    Real dif27 = sp2.diffusion(5.0,0.0);
+    if( abs( dif21 - 1.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 0.0, should be 1.0 but is " << dif21);
+    if( abs( dif22 - 1.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 0.99, should be 1.0 but is " << dif22);
+    if( abs( dif23 - 2.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 1.0, should be 2.0 but is " << dif23);
+    if( abs( dif24 - 2.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 1.9, should be 2.0 but is " << dif24);
+    if( abs( dif25 - 3.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 2.0, should be 3.0 but is " << dif25);
+    if( abs( dif26 - 3.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 3.0, should be 3.0 but is " << dif26);
+    if( abs( dif27 - 3.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 5.0, should be 3.0 but is " << dif27);
+    Real var21 = sp2.variance(0.0,0.0,0.0);
+    Real var22 = sp2.variance(0.0,0.0,0.5);
+    Real var23 = sp2.variance(0.0,0.0,1.0);
+    Real var24 = sp2.variance(0.0,0.0,1.5);
+    Real var25 = sp2.variance(0.0,0.0,3.0);
+    Real var26 = sp2.variance(0.0,0.0,5.0);
+    Real var27 = sp2.variance(1.2,0.0,1.0);
+    if( abs( var21 - 0.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance at 0.0, should be 0.0 but is " << var21);
+    if( abs( var22 - 0.5 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance at 0.5, should be 0.5 but is " << var22);
+    if( abs( var23 - 1.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance at 1.0, should be 1.0 but is " << var23);
+    if( abs( var24 - 3.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance at 1.5, should be 3.0 but is " << var24);
+    if( abs( var25 - 14.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance at 3.0, should be 14.0 but is " << var25);
+    if( abs( var26 - 32.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance at 5.0, should be 32.0 but is " << var26);
+    if( abs( var27 - 5.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance between 1.2 and 2.2, should be 5.0 but is " << var27);
 
-	MfStateProcess sp3(0.01,times2,vols2);
-	Real var31 = sp3.variance(0.0,0.0,0.0);
-	Real var32 = sp3.variance(0.0,0.0,0.5);
-	Real var33 = sp3.variance(0.0,0.0,1.0);
-	Real var34 = sp3.variance(0.0,0.0,1.5);
-	Real var35 = sp3.variance(0.0,0.0,3.0);
-	Real var36 = sp3.variance(0.0,0.0,5.0);
-	Real var37 = sp3.variance(1.2,0.0,1.0);
-	if( abs( var31 - 0.0 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 0.0, should be 0.0 but is " << std::setprecision(12) << var31);
-	if( abs( var32 - 0.502508354208 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 0.5, should be 0.5 but it " << std::setprecision(12) << var32);
-	if( abs( var33 - 1.01006700134 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 1.0, should be 1.0 but it " << std::setprecision(12) << var33);
-	if( abs( var34 - 3.06070578669 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 1.5, should be 3.0 but it " << std::setprecision(12) << var34);
-	if( abs( var35 - 14.5935513933 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 3.0, should be 14.0 but it " << std::setprecision(12) << var35);
-	if( abs( var36 - 34.0940185819 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 5.0, should be 32.0 but it " << std::setprecision(12) << var36);
-	if( abs( var37 - 5.18130257358 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance between 1.2 and 2.2, should be 5.0 but it " << std::setprecision(12) << var37);
+    MfStateProcess sp3(0.01,times2,vols2);
+    Real var31 = sp3.variance(0.0,0.0,0.0);
+    Real var32 = sp3.variance(0.0,0.0,0.5);
+    Real var33 = sp3.variance(0.0,0.0,1.0);
+    Real var34 = sp3.variance(0.0,0.0,1.5);
+    Real var35 = sp3.variance(0.0,0.0,3.0);
+    Real var36 = sp3.variance(0.0,0.0,5.0);
+    Real var37 = sp3.variance(1.2,0.0,1.0);
+    if( abs( var31 - 0.0 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 0.0, should be 0.0 but is " << std::setprecision(12) << var31);
+    if( abs( var32 - 0.502508354208 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 0.5, should be 0.5 but it " << std::setprecision(12) << var32);
+    if( abs( var33 - 1.01006700134 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 1.0, should be 1.0 but it " << std::setprecision(12) << var33);
+    if( abs( var34 - 3.06070578669 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 1.5, should be 3.0 but it " << std::setprecision(12) << var34);
+    if( abs( var35 - 14.5935513933 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 3.0, should be 14.0 but it " << std::setprecision(12) << var35);
+    if( abs( var36 - 34.0940185819 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 5.0, should be 32.0 but it " << std::setprecision(12) << var36);
+    if( abs( var37 - 5.18130257358 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance between 1.2 and 2.2, should be 5.0 but it " << std::setprecision(12) << var37);
  
 }
 
@@ -150,49 +150,49 @@ namespace {
 
         boost::shared_ptr<IborIndex> euribor6mEmpty(new Euribor(6*Months));
 
-		std::vector<boost::shared_ptr<Quote> > q6m;
-		std::vector<boost::shared_ptr<RateHelper> > r6m;
+        std::vector<boost::shared_ptr<Quote> > q6m;
+        std::vector<boost::shared_ptr<RateHelper> > r6m;
 
-		double q6mh[] = { 0.0001,0.0001,0.0001,0.0003,0.00055,0.0009,0.0014,0.0019,0.0025,0.0031,
-						  0.00325,0.00313,0.0031,0.00307,0.00309,0.00339,0.00316,0.00326,0.00335,0.00343,0.00358,0.00351,0.00388,0.00404,0.00425,0.00442,0.00462,
-						  0.00386,0.00491,0.00647,0.00837,0.01033,0.01218,0.01382,0.01527,0.01654,0.0177,0.01872,0.01959,0.0203,0.02088,0.02132,0.02164,0.02186,
-						  0.02202,0.02213,0.02222,0.02229,0.02234,0.02238,0.02241,0.02243,0.02244,0.02245,0.02247,0.0225,0.02284,0.02336,0.02407,0.0245 };
+        double q6mh[] = { 0.0001,0.0001,0.0001,0.0003,0.00055,0.0009,0.0014,0.0019,0.0025,0.0031,
+                          0.00325,0.00313,0.0031,0.00307,0.00309,0.00339,0.00316,0.00326,0.00335,0.00343,0.00358,0.00351,0.00388,0.00404,0.00425,0.00442,0.00462,
+                          0.00386,0.00491,0.00647,0.00837,0.01033,0.01218,0.01382,0.01527,0.01654,0.0177,0.01872,0.01959,0.0203,0.02088,0.02132,0.02164,0.02186,
+                          0.02202,0.02213,0.02222,0.02229,0.02234,0.02238,0.02241,0.02243,0.02244,0.02245,0.02247,0.0225,0.02284,0.02336,0.02407,0.0245 };
 
-		Period q6mh1[] = {1*Days,2*Days,3*Days,1*Weeks,1*Months,2*Months,3*Months,4*Months,5*Months,6*Months};
+        Period q6mh1[] = {1*Days,2*Days,3*Days,1*Weeks,1*Months,2*Months,3*Months,4*Months,5*Months,6*Months};
 
-		Period q6mh2[] = {7*Months, 8*Months, 9*Months, 10*Months, 11*Months, 1*Years,13*Months,14*Months,15*Months,16*Months,17*Months,18*Months,19*Months,20*Months,
+        Period q6mh2[] = {7*Months, 8*Months, 9*Months, 10*Months, 11*Months, 1*Years,13*Months,14*Months,15*Months,16*Months,17*Months,18*Months,19*Months,20*Months,
                           21*Months,22*Months,23*Months,2*Years,3*Years,4*Years,5*Years,6*Years,7*Years,8*Years,9*Years,10*Years,
                           11*Years,12*Years,13*Years,14*Years,15*Years,16*Years,17*Years,18*Years,19*Years,20*Years,
                           21*Years,22*Years,23*Years,24*Years,25*Years,26*Years,27*Years,28*Years,29*Years,30*Years,
                           35*Years,40*Years,50*Years,60*Years};
 
-		for(int i=0;i<10+18+37;i++) {
-			q6m.push_back(boost::shared_ptr<Quote>(new SimpleQuote(q6mh[i])));
-		}
+        for(int i=0;i<10+18+37;i++) {
+            q6m.push_back(boost::shared_ptr<Quote>(new SimpleQuote(q6mh[i])));
+        }
 
-		for(int i=0;i<10;i++) {
-			r6m.push_back(boost::shared_ptr<DepositRateHelper>(new DepositRateHelper(Handle<Quote>(q6m[i]),q6mh1[i],i<2 ? i : 2,TARGET(),ModifiedFollowing,false,Actual360())));
-		}
+        for(int i=0;i<10;i++) {
+            r6m.push_back(boost::shared_ptr<DepositRateHelper>(new DepositRateHelper(Handle<Quote>(q6m[i]),q6mh1[i],i<2 ? i : 2,TARGET(),ModifiedFollowing,false,Actual360())));
+        }
 
-		for(int i=0;i<18;i++) {
-			if(i+1 != 6 && i+1 != 12 && i+1 != 18) {
+        for(int i=0;i<18;i++) {
+            if(i+1 != 6 && i+1 != 12 && i+1 != 18) {
 #ifndef QL_NEGATIVE_RATES
                 if(i+10 != 16 && i+10 != 17)
 #endif
                     r6m.push_back(boost::shared_ptr<FraRateHelper>(new FraRateHelper(Handle<Quote>(q6m[10+i]),i+1,i+7,2,TARGET(),ModifiedFollowing,false,Actual360())));
-			}
-		}
+            }
+        }
 
-		for(int i=0;i<18+32;i++) {
-			if(i+7 == 12 || i+7 == 18 || i+7 >= 24) {
-				r6m.push_back(boost::shared_ptr<SwapRateHelper>(new SwapRateHelper(Handle<Quote>(q6m[10+i]),q6mh2[i],TARGET(),Annual,ModifiedFollowing,Actual360(),euribor6mEmpty)));
-			}
-		}
+        for(int i=0;i<18+32;i++) {
+            if(i+7 == 12 || i+7 == 18 || i+7 >= 24) {
+                r6m.push_back(boost::shared_ptr<SwapRateHelper>(new SwapRateHelper(Handle<Quote>(q6m[10+i]),q6mh2[i],TARGET(),Annual,ModifiedFollowing,Actual360(),euribor6mEmpty)));
+            }
+        }
 
-		Handle<YieldTermStructure> res(new PiecewiseYieldCurve<Discount,LogLinear>(0,TARGET(),r6m,Actual365Fixed()));
-		res->enableExtrapolation();
+        Handle<YieldTermStructure> res(new PiecewiseYieldCurve<Discount,LogLinear>(0,TARGET(),r6m,Actual365Fixed()));
+        res->enableExtrapolation();
 
-		return res;
+        return res;
 
     }
 
@@ -293,7 +293,7 @@ namespace {
         for(int i=0;i<30;i++) {
             std::vector<Handle<Quote> > qSwSmileTmp;
             for(int j=0;j<9;j++) {
-                qSwSmileTmp.push_back(Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(qSwSmileh[i*9+j]))));		
+                qSwSmileTmp.push_back(Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(qSwSmileh[i*9+j]))));      
             }
             qSwSmile.push_back(qSwSmileTmp);
         }
@@ -348,7 +348,7 @@ namespace {
 
         boost::shared_ptr<SwapIndex> swapIndex(new EuriborSwapIsdaFixA(30*Years,Handle<YieldTermStructure>(md0Yts())));
         boost::shared_ptr<SwapIndex> shortSwapIndex(new EuriborSwapIsdaFixA(1*Years,Handle<YieldTermStructure>(md0Yts()))); // We assume that we have 6m vols (which we actually don't have for 1y underlying, but this is just a test...)
-	
+    
         //return Handle<SwaptionVolatilityStructure>(new SwaptionVolCube2(swaptionVolAtm,optionTenorsSmile,swapTenorsSmile,strikeSpreads,qSwSmile,swapIndex,shortSwapIndex,false)); // bilinear interpolation gives nasty digitals
         Handle<SwaptionVolatilityStructure> res(new SwaptionVolCube1(swaptionVolAtm,optionTenorsSmile,swapTenorsSmile,strikeSpreads,qSwSmile,swapIndex,shortSwapIndex,true,parameterGuess,
                                                                      parameterFixed,true,ec,0.0050)); // put a big error tolerance here ... we just want a smooth cube for testing
@@ -481,9 +481,9 @@ namespace {
 
     }
 
-    Disposable<std::vector<Real>> impliedStdDevs(const Real atm,
-                                                 const std::vector<Real>& strikes, 
-                                                 const std::vector<Real>& prices) {
+    Disposable<std::vector<Real> > impliedStdDevs(const Real atm,
+                                                  const std::vector<Real>& strikes, 
+                                                  const std::vector<Real>& prices) {
     
         std::vector<Real> result;
     
