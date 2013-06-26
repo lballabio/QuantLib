@@ -987,7 +987,7 @@ namespace {
 }
 
 void FdHestonTest::testSquareRootEvolveWithStationaryDensity() {
-    BOOST_MESSAGE("Testing Fokker-Planck forward equation"
+    BOOST_MESSAGE("Testing Fokker-Planck forward equation "
                   "for the square root process with stationary density...");
 
     // Documentation for this test case:
@@ -1047,7 +1047,7 @@ void FdHestonTest::testSquareRootEvolveWithStationaryDensity() {
 }
 
 void FdHestonTest::testSquareRootFokkerPlanckFwdEquation() {
-    BOOST_MESSAGE("Testing Fokker-Planck forward equation"
+    BOOST_MESSAGE("Testing Fokker-Planck forward equation "
                   "for the square root process with Dirac start...");
 
     SavedSettings backup;
@@ -1155,7 +1155,7 @@ namespace {
 }
 
 void FdHestonTest::testHestonFokkerPlanckFwdEquation() {
-    BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation"
+    BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation "
                        "for the Heston process...");
 
     SavedSettings backup;
