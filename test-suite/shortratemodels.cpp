@@ -105,7 +105,7 @@ void ShortRateModelTest::testCachedHullWhite() {
     #else
     Real cachedA = 0.0464041, cachedSigma = 0.00579912;
     #endif
-    Real tolerance = 1.0e-6;
+    Real tolerance = 1.0e-5;
     Array xMinCalculated = model->params();
     Real yMinCalculated = model->value(xMinCalculated, swaptions);
     Array xMinExpected(2);
