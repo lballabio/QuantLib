@@ -25,7 +25,7 @@ namespace QuantLib {
                                            const bool interpolate, const bool exponentialExtrapolation,
                                            const bool deleteArbitragePoints, 
                                            const std::vector<Real>& moneynessGrid, const Real gap) : 
-          SmileSection(*source), source_(source), gap_(gap), moneynessGrid_(moneynessGrid),
+          SmileSection(*source), source_(source), moneynessGrid_(moneynessGrid), gap_(gap),
           interpolate_(interpolate), exponentialExtrapolation_(exponentialExtrapolation),
           deleteArbitragePoints_(deleteArbitragePoints) {
         
