@@ -79,9 +79,6 @@ void GARCHTest::testCalibration() {
 
     // Default calibration; works fine in most cases
     Garch11 cgarch1(ts);
-    Real f1 = cgarch1.logLikelihood();
-    Real f2 = -cgarch1.costFunction(ts.cbegin_values(), ts.cend_values(),
-                                    garch.alpha(), garch.beta(), garch.omega());
 
     Results calibrated = { 0.207592, 0.281979, 0.204647, -0.0217413 };
 

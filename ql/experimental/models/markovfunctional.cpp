@@ -364,7 +364,7 @@ namespace QuantLib {
             modelOutputs_.digitalsAdjustmentFactors_.insert(modelOutputs_.digitalsAdjustmentFactors_.begin(),
                                                             digitalsCorrectionFactor);
 
-            Real digital,swapRate,swapRate0;
+            Real digital=0.0,swapRate,swapRate0;
 
             for(int c=0;c==0 || (c==1 && (modelSettings_.adjustments_ & ModelSettings::AdjustDigitals));c++) {
 
