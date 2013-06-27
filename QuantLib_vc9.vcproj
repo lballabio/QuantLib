@@ -2447,6 +2447,10 @@
 				>
 			</File>
 			<File
+				RelativePath="ql\math\autocovariance.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\math\bernsteinpolynomial.cpp"
 				>
 			</File>
@@ -2496,6 +2500,10 @@
 			</File>
 			<File
 				RelativePath="ql\math\factorial.hpp"
+				>
+			</File>
+			<File
+				RelativePath="ql\math\fastfouriertransform.hpp"
 				>
 			</File>
 			<File
@@ -8358,10 +8366,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\math\autocovariance.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\experimental\math\claytoncopularng.hpp"
 					>
 				</File>
@@ -8375,10 +8379,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\math\farliegumbelmorgensterncopularng.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\math\fastfouriertransform.hpp"
 					>
 				</File>
 				<File

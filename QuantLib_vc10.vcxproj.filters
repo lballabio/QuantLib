@@ -849,6 +849,9 @@
     <ClInclude Include="ql\math\array.hpp">
       <Filter>math</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\autocovariance.hpp">
+      <Filter>math</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\bernsteinpolynomial.hpp">
       <Filter>math</Filter>
     </ClInclude>
@@ -871,6 +874,9 @@
       <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\factorial.hpp">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\math\fastfouriertransform.hpp">
       <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\functional.hpp">
@@ -3198,16 +3204,10 @@
     <ClInclude Include="ql\experimental\math\adaptiverungekutta.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\math\autocovariance.hpp">
-      <Filter>experimental\math</Filter>
-    </ClInclude>
     <ClInclude Include="ql\experimental\math\claytoncopularng.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\math\farliegumbelmorgensterncopularng.hpp">
-      <Filter>experimental\math</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\math\fastfouriertransform.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\math\frankcopularng.hpp">

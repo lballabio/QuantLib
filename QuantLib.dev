@@ -14738,9 +14738,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit1471]
-FileName=ql\experimental\math\fastfouriertransform.hpp
+FileName=ql\math\fastfouriertransform.hpp
 CompileCpp=1
-Folder=experimental/math
+Folder=math
 Compile=1
 Link=1
 Priority=1000
@@ -15348,9 +15348,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit1532]
-FileName=ql\experimental\math\autocovariance.hpp
+FileName=ql\math\autocovariance.hpp
 CompileCpp=1
-Folder=experimental/math
+Folder=math
 Compile=1
 Link=1
 Priority=1000
