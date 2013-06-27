@@ -100,11 +100,11 @@ void OdeTest::testAdaptiveRungeKutta() {
         Real exact3 = sin(x);
         std::complex<Real> exact4 = std::exp(std::complex<Real>(0.0,x));
 
-        if ( abs( exact1 - y1 ) > tol1 )
+        if ( std::fabs( exact1 - y1 ) > tol1 )
             BOOST_FAIL("Error in ode #1: exact solution at x=" << x
                        << " is " << exact1
                        << ", numerical solution is " << y1
-                       << " difference " << abs(exact1-y1)
+                       << " difference " << std::fabs(exact1-y1)
                        << " outside tolerance " << tol1);
         if ( abs( exact2 - y2 ) > tol2 )
             BOOST_FAIL("Error in ode #2: exact solution at x=" << x
@@ -112,11 +112,11 @@ void OdeTest::testAdaptiveRungeKutta() {
                        << ", numerical solution is " << y2
                        << " difference " << abs(exact2-y2)
                        << " outside tolerance " << tol2);
-        if ( abs( exact3 - y3[0] ) > tol3 )
+        if ( std::fabs( exact3 - y3[0] ) > tol3 )
             BOOST_FAIL("Error in ode #3: exact solution at x=" << x
                        << " is " << exact3
                        << ", numerical solution is " << y3[0]
-                       << " difference " << abs(exact3-y3[0])
+                       << " difference " << std::fabs(exact3-y3[0])
                        << " outside tolerance " << tol3);
         if ( abs( exact4 - y4[0] ) > tol4 )
             BOOST_FAIL("Error in ode #4: exact solution at x=" << x

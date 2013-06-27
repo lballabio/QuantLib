@@ -64,8 +64,8 @@ void MarkovFunctionalTest::testMfStateProcess() {
     MfStateProcess sp1(0.00,times1,vols1);
     Real var11 = sp1.variance(0.0,0.0,1.0);
     Real var12 = sp1.variance(0.0,0.0,2.0);
-    if( abs( var11 - 1.0 ) > tolerance ) BOOST_ERROR("process 1 has not variance 1.0 for dt = 1.0 but " << var11);
-    if( abs( var12 - 2.0 ) > tolerance ) BOOST_ERROR("process 1 has not variance 1.0 for dt = 1.0 but " << var12);
+    if( std::fabs( var11 - 1.0 ) > tolerance ) BOOST_ERROR("process 1 has not variance 1.0 for dt = 1.0 but " << var11);
+    if( std::fabs( var12 - 2.0 ) > tolerance ) BOOST_ERROR("process 1 has not variance 1.0 for dt = 1.0 but " << var12);
 
     Array times2(2), vols2(3);
     times2[0] = 1.0; times2[1] = 2.0; 
@@ -78,13 +78,13 @@ void MarkovFunctionalTest::testMfStateProcess() {
     Real dif25 = sp2.diffusion(2.0,0.0);
     Real dif26 = sp2.diffusion(3.0,0.0);
     Real dif27 = sp2.diffusion(5.0,0.0);
-    if( abs( dif21 - 1.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 0.0, should be 1.0 but is " << dif21);
-    if( abs( dif22 - 1.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 0.99, should be 1.0 but is " << dif22);
-    if( abs( dif23 - 2.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 1.0, should be 2.0 but is " << dif23);
-    if( abs( dif24 - 2.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 1.9, should be 2.0 but is " << dif24);
-    if( abs( dif25 - 3.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 2.0, should be 3.0 but is " << dif25);
-    if( abs( dif26 - 3.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 3.0, should be 3.0 but is " << dif26);
-    if( abs( dif27 - 3.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 5.0, should be 3.0 but is " << dif27);
+    if( std::fabs( dif21 - 1.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 0.0, should be 1.0 but is " << dif21);
+    if( std::fabs( dif22 - 1.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 0.99, should be 1.0 but is " << dif22);
+    if( std::fabs( dif23 - 2.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 1.0, should be 2.0 but is " << dif23);
+    if( std::fabs( dif24 - 2.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 1.9, should be 2.0 but is " << dif24);
+    if( std::fabs( dif25 - 3.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 2.0, should be 3.0 but is " << dif25);
+    if( std::fabs( dif26 - 3.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 3.0, should be 3.0 but is " << dif26);
+    if( std::fabs( dif27 - 3.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong drift at 5.0, should be 3.0 but is " << dif27);
     Real var21 = sp2.variance(0.0,0.0,0.0);
     Real var22 = sp2.variance(0.0,0.0,0.5);
     Real var23 = sp2.variance(0.0,0.0,1.0);
@@ -92,13 +92,13 @@ void MarkovFunctionalTest::testMfStateProcess() {
     Real var25 = sp2.variance(0.0,0.0,3.0);
     Real var26 = sp2.variance(0.0,0.0,5.0);
     Real var27 = sp2.variance(1.2,0.0,1.0);
-    if( abs( var21 - 0.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance at 0.0, should be 0.0 but is " << var21);
-    if( abs( var22 - 0.5 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance at 0.5, should be 0.5 but is " << var22);
-    if( abs( var23 - 1.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance at 1.0, should be 1.0 but is " << var23);
-    if( abs( var24 - 3.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance at 1.5, should be 3.0 but is " << var24);
-    if( abs( var25 - 14.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance at 3.0, should be 14.0 but is " << var25);
-    if( abs( var26 - 32.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance at 5.0, should be 32.0 but is " << var26);
-    if( abs( var27 - 5.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance between 1.2 and 2.2, should be 5.0 but is " << var27);
+    if( std::fabs( var21 - 0.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance at 0.0, should be 0.0 but is " << var21);
+    if( std::fabs( var22 - 0.5 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance at 0.5, should be 0.5 but is " << var22);
+    if( std::fabs( var23 - 1.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance at 1.0, should be 1.0 but is " << var23);
+    if( std::fabs( var24 - 3.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance at 1.5, should be 3.0 but is " << var24);
+    if( std::fabs( var25 - 14.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance at 3.0, should be 14.0 but is " << var25);
+    if( std::fabs( var26 - 32.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance at 5.0, should be 32.0 but is " << var26);
+    if( std::fabs( var27 - 5.0 ) > tolerance ) BOOST_ERROR("process 2 has wrong variance between 1.2 and 2.2, should be 5.0 but is " << var27);
 
     MfStateProcess sp3(0.01,times2,vols2);
     Real var31 = sp3.variance(0.0,0.0,0.0);
@@ -108,13 +108,13 @@ void MarkovFunctionalTest::testMfStateProcess() {
     Real var35 = sp3.variance(0.0,0.0,3.0);
     Real var36 = sp3.variance(0.0,0.0,5.0);
     Real var37 = sp3.variance(1.2,0.0,1.0);
-    if( abs( var31 - 0.0 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 0.0, should be 0.0 but is " << std::setprecision(12) << var31);
-    if( abs( var32 - 0.502508354208 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 0.5, should be 0.5 but it " << std::setprecision(12) << var32);
-    if( abs( var33 - 1.01006700134 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 1.0, should be 1.0 but it " << std::setprecision(12) << var33);
-    if( abs( var34 - 3.06070578669 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 1.5, should be 3.0 but it " << std::setprecision(12) << var34);
-    if( abs( var35 - 14.5935513933 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 3.0, should be 14.0 but it " << std::setprecision(12) << var35);
-    if( abs( var36 - 34.0940185819 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 5.0, should be 32.0 but it " << std::setprecision(12) << var36);
-    if( abs( var37 - 5.18130257358 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance between 1.2 and 2.2, should be 5.0 but it " << std::setprecision(12) << var37);
+    if( std::fabs( var31 - 0.0 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 0.0, should be 0.0 but is " << std::setprecision(12) << var31);
+    if( std::fabs( var32 - 0.502508354208 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 0.5, should be 0.5 but it " << std::setprecision(12) << var32);
+    if( std::fabs( var33 - 1.01006700134 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 1.0, should be 1.0 but it " << std::setprecision(12) << var33);
+    if( std::fabs( var34 - 3.06070578669 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 1.5, should be 3.0 but it " << std::setprecision(12) << var34);
+    if( std::fabs( var35 - 14.5935513933 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 3.0, should be 14.0 but it " << std::setprecision(12) << var35);
+    if( std::fabs( var36 - 34.0940185819 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 5.0, should be 32.0 but it " << std::setprecision(12) << var36);
+    if( std::fabs( var37 - 5.18130257358 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance between 1.2 and 2.2, should be 5.0 but it " << std::setprecision(12) << var37);
  
 }
 

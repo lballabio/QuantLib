@@ -325,11 +325,11 @@ namespace QuantLib {
                 }
 
                 Array direct(const Array& x) const {
-                    y_[0] = abs(x[0]<5.0) ? x[0]*x[0] + eps1_ : 25.0;
+                    y_[0] = std::fabs(x[0])<5.0 ? x[0]*x[0] + eps1_ : 25.0;
                     //y_[1] = std::atan(dilationFactor_*x[1])/M_PI + 0.5;
-                    y_[1] = abs(x[1])<1000.0 ? std::exp(-(x[1]*x[1])) : eps1_;
-                    y_[2] = abs(x[2])<5.0 ? x[2]*x[2] + eps1_ : 25.0;
-                    y_[3] = abs(x[3])<10.0 ? eps2_ * std::sin(x[3]) : eps1_;
+                    y_[1] = std::fabs(x[1])<1000.0 ? std::exp(-(x[1]*x[1])) : eps1_;
+                    y_[2] = std::fabs(x[2])<5.0 ? x[2]*x[2] + eps1_ : 25.0;
+                    y_[3] = std::fabs(x[3])<10.0 ? eps2_ * std::sin(x[3]) : eps1_;
                     return y_;
                 }
 
