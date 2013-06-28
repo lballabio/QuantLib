@@ -228,7 +228,7 @@ namespace QuantLib {
 
             // handle rejections
             if (i!=0) { // upper strips
-                if ((f_[i-1]-f_[i])*mt32_.nextReal() + f_[i] < exp(-0.5*x*x))
+                if ((f_[i-1]-f_[i])*mt32_.nextReal() + f_[i] < std::exp(-0.5*x*x))
                     break;
             } else { // base strip, sample from the tail
                 x = c[f]*InverseCumulativeNormal::standard_value(

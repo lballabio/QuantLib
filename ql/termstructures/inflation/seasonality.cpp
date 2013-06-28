@@ -79,7 +79,7 @@ namespace QuantLib {
         Real eps = 0.00001;
         for (Size i = 1; i < nTest; i++) {
             Real factorAt = this->seasonalityFactor(curveBaseDate+Period(i,Years));
-            QL_REQUIRE(fabs(factorAt-factorBase)<eps,"seasonality is inconsistent with inflation term structure, factors "
+            QL_REQUIRE(std::fabs(factorAt-factorBase)<eps,"seasonality is inconsistent with inflation term structure, factors "
                        << factorBase << " and later factor " << factorAt << ", " << i << " years later from inflation curve "
                        <<" with base date at " << curveBaseDate);
         }
@@ -200,7 +200,7 @@ namespace QuantLib {
             Rate factorBase = this->seasonalityFactor(curveBaseDate);
             Real seasonalityAt = factorAt / factorBase;
             Time timeFromCurveBase = dc.yearFraction(curveBaseDate, atDate);
-            f = pow(seasonalityAt, 1/timeFromCurveBase);
+            f = std::pow(seasonalityAt, 1/timeFromCurveBase);
         }
         else {
             Rate factor1Ybefore = this->seasonalityFactor(atDate - Period(1,Years));

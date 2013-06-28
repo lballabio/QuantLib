@@ -46,8 +46,8 @@ namespace QuantLib {
             Real operator()(Real x) const {
                 // Compute adjusted black scholes price
                 Real s0_adj = s0_ * std::exp(theta_ * x + omega_ * t_ + (sigma_ * sigma_ * x) / 2.0);
-                Real vol_adj = sigma_ * sqrt(x / t_);
-                vol_adj *= sqrt(t_);
+                Real vol_adj = sigma_ * std::sqrt(x / t_);
+                vol_adj *= std::sqrt(t_);
 
                 BlackScholesCalculator bs(payoff_, s0_adj, dividendDiscount_, vol_adj, riskFreeDiscount_);
                 Real bsprice = bs.value();
@@ -104,7 +104,7 @@ namespace QuantLib {
 
         SimpsonIntegral integrator(1e-4, 5000);
 
-        Real infinity = 15.0 * sqrt(process_->nu() * t);
+        Real infinity = 15.0 * std::sqrt(process_->nu() * t);
         results_.value = integrator(f, 0, infinity);
     }
 

@@ -137,7 +137,7 @@ namespace QuantLib {
                           paymentDate, growthOnly),
           baseFixing_(baseFixing), interpolation_(interpolation),
           frequency_(frequency) {
-            QL_REQUIRE(fabs(baseFixing_)>1e-16,
+            QL_REQUIRE(std::fabs(baseFixing_)>1e-16,
                        "|baseFixing|<1e-16, future divide-by-zero error");
             if (interpolation_ != CPI::AsIndex) {
                 QL_REQUIRE(frequency_ != QuantLib::NoFrequency,

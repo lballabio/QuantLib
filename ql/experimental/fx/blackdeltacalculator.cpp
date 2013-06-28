@@ -46,8 +46,8 @@ namespace QuantLib {
                    "non-negative standard deviation required: "
                    << stdDev_ << " not allowed");
 
-        fExpPos_    =forward_*exp(0.5*stdDev_*stdDev_);
-        fExpNeg_    =forward_*exp(-0.5*stdDev_*stdDev_);
+        fExpPos_    =forward_*std::exp(0.5*stdDev_*stdDev_);
+        fExpNeg_    =forward_*std::exp(-0.5*stdDev_*stdDev_);
     }
 
 
@@ -101,7 +101,7 @@ namespace QuantLib {
                        "Spot delta out of range.");
 
             arg=-phi_*f(phi_*delta/fDiscount_)*stdDev_+0.5*stdDev_*stdDev_;
-            res=forward_*exp(arg);
+            res=forward_*std::exp(arg);
             break;
 
           case DeltaVolQuote::Fwd:
@@ -109,7 +109,7 @@ namespace QuantLib {
                        "Forward delta out of range.");
 
             arg=-phi_*f(phi_*delta)*stdDev_+0.5*stdDev_*stdDev_;
-            res=forward_*exp(arg);
+            res=forward_*std::exp(arg);
             break;
 
           case DeltaVolQuote::PaSpot:

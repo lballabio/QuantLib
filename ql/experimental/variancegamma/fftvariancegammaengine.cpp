@@ -61,7 +61,7 @@ namespace QuantLib {
         std::complex<Real> i1(0, 1);
 
         Real omega = std::log(1.0 - theta_ * nu_ - sigma_*sigma_ * nu_ / 2.0) / nu_;
-        std::complex<Real> phi = std::exp(i1 * u * (log(s) + omega * t_)) 
+        std::complex<Real> phi = std::exp(i1 * u * (std::log(s) + omega * t_)) 
             * std::pow(dividendDiscount_/ riskFreeDiscount_, i1 * u);
         phi = phi * (std::pow((1.0 - i1 * theta_ * nu_ * u + sigma_*sigma_ * nu_ * u*u / 2.0), (-t_ / nu_)));
 

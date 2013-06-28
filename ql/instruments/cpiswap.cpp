@@ -86,7 +86,7 @@ namespace QuantLib {
 
         if (floatSchedule_.size()==1 ||
             !subtractInflationNominal_ ||
-            (subtractInflationNominal && fabs(nominal_-inflationNominal_)>0.00001)
+            (subtractInflationNominal && std::fabs(nominal_-inflationNominal_)>0.00001)
             )
         {
             Date payNotional;

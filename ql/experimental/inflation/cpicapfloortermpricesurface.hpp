@@ -267,10 +267,10 @@ namespace QuantLib {
                 Period mat = cfMaturities_[j];
                 Real df = yts->discount(cpiOptionDateFromTenor(mat));
                 Real atm_quote = zts->zeroRate(cpiOptionDateFromTenor(mat));
-                Real atm = pow(1.0+atm_quote, mat.length());
+                Real atm = std::pow(1.0+atm_quote, mat.length());
                 Real S = atm * df;
                 Real K_quote = fStrikes_[i]/100.0;
-                Real K = pow(1.0+K_quote, mat.length());
+                Real K = std::pow(1.0+K_quote, mat.length());
                 cP[i][j] = fPrice_[i][j] + S - K * df;
                 fP[i][j] = fPrice_[i][j];
             }
@@ -281,10 +281,10 @@ namespace QuantLib {
                 Period mat = cfMaturities_[j];
                 Real df = yts->discount(cpiOptionDateFromTenor(mat));
                 Real atm_quote = zts->zeroRate(cpiOptionDateFromTenor(mat));
-                Real atm = pow(1.0+atm_quote, mat.length());
+                Real atm = std::pow(1.0+atm_quote, mat.length());
                 Real S = atm * df;
                 Real K_quote = cStrikes_[i]/100.0;
-                Real K = pow(1.0+K_quote, mat.length());
+                Real K = std::pow(1.0+K_quote, mat.length());
                 cP[i+nfK][j] = cPrice_[i][j];
                 fP[i+nfK][j] = cPrice_[i][j] + K * df - S;
             }
