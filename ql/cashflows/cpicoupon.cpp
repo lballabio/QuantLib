@@ -105,7 +105,7 @@ namespace QuantLib {
 
     Date CPICashFlow::baseDate() const {
         // you may not have a valid date
-        exit(-1);
+        QL_FAIL("no base date specified");
     }
 
     Real CPICashFlow::baseFixing() const {
