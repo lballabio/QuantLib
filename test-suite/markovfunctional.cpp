@@ -124,7 +124,9 @@ namespace {
 
     Handle<YieldTermStructure> flatYts() {
 
-        return Handle<YieldTermStructure>(new FlatForward(0,TARGET(),0.03,Actual365Fixed()));
+        return Handle<YieldTermStructure>(
+            boost::shared_ptr<YieldTermStructure>(
+                new FlatForward(0,TARGET(),0.03,Actual365Fixed())));
 
     }
 
@@ -132,7 +134,9 @@ namespace {
 
     Handle<SwaptionVolatilityStructure> flatSwaptionVts() {
 
-        return Handle<SwaptionVolatilityStructure>(new ConstantSwaptionVolatility(0,TARGET(),ModifiedFollowing,0.20,Actual365Fixed()));
+        return Handle<SwaptionVolatilityStructure>(
+            boost::shared_ptr<SwaptionVolatilityStructure>(
+                new ConstantSwaptionVolatility(0,TARGET(),ModifiedFollowing,0.20,Actual365Fixed())));
 
     }
 
@@ -140,7 +144,9 @@ namespace {
 
     Handle<OptionletVolatilityStructure> flatOptionletVts() {
 
-        return Handle<OptionletVolatilityStructure>(new ConstantOptionletVolatility(0,TARGET(),ModifiedFollowing,0.20,Actual365Fixed()));
+        return Handle<OptionletVolatilityStructure>(
+            boost::shared_ptr<OptionletVolatilityStructure>(
+                new ConstantOptionletVolatility(0,TARGET(),ModifiedFollowing,0.20,Actual365Fixed())));
 
     }
 
@@ -189,7 +195,9 @@ namespace {
             }
         }
 
-        Handle<YieldTermStructure> res(new PiecewiseYieldCurve<Discount,LogLinear>(0,TARGET(),r6m,Actual365Fixed()));
+        Handle<YieldTermStructure> res(
+            boost::shared_ptr<YieldTermStructure>(
+                new PiecewiseYieldCurve<Discount,LogLinear>(0,TARGET(),r6m,Actual365Fixed())));
         res->enableExtrapolation();
 
         return res;
@@ -241,7 +249,9 @@ namespace {
             qSwAtm.push_back(qSwAtmTmp);
         }
 
-        Handle<SwaptionVolatilityStructure> swaptionVolAtm(new SwaptionVolatilityMatrix(TARGET(),ModifiedFollowing,optionTenors,swapTenors,qSwAtm,Actual365Fixed()));
+        Handle<SwaptionVolatilityStructure> swaptionVolAtm(
+            boost::shared_ptr<SwaptionVolatilityStructure>(
+                new SwaptionVolatilityMatrix(TARGET(),ModifiedFollowing,optionTenors,swapTenors,qSwAtm,Actual365Fixed())));
 
         std::vector<Period> optionTenorsSmile;
         std::vector<Period> swapTenorsSmile;
@@ -350,8 +360,10 @@ namespace {
         boost::shared_ptr<SwapIndex> shortSwapIndex(new EuriborSwapIsdaFixA(1*Years,Handle<YieldTermStructure>(md0Yts()))); // We assume that we have 6m vols (which we actually don't have for 1y underlying, but this is just a test...)
     
         //return Handle<SwaptionVolatilityStructure>(new SwaptionVolCube2(swaptionVolAtm,optionTenorsSmile,swapTenorsSmile,strikeSpreads,qSwSmile,swapIndex,shortSwapIndex,false)); // bilinear interpolation gives nasty digitals
-        Handle<SwaptionVolatilityStructure> res(new SwaptionVolCube1(swaptionVolAtm,optionTenorsSmile,swapTenorsSmile,strikeSpreads,qSwSmile,swapIndex,shortSwapIndex,true,parameterGuess,
-                                                                     parameterFixed,true,ec,0.0050)); // put a big error tolerance here ... we just want a smooth cube for testing
+        Handle<SwaptionVolatilityStructure> res(
+            boost::shared_ptr<SwaptionVolatilityStructure>(
+                new SwaptionVolCube1(swaptionVolAtm,optionTenorsSmile,swapTenorsSmile,strikeSpreads,qSwSmile,swapIndex,shortSwapIndex,true,parameterGuess,
+                                     parameterFixed,true,ec,0.0050))); // put a big error tolerance here ... we just want a smooth cube for testing
         res->enableExtrapolation();
         return res;
 
@@ -397,7 +409,9 @@ namespace {
         boost::shared_ptr<CapFloorTermVolSurface> cf(new CapFloorTermVolSurface(0,TARGET(),ModifiedFollowing,optionTenors,strikes,vols));
         boost::shared_ptr<OptionletStripper> stripper(new OptionletStripper1(cf,iborIndex));
 
-        return Handle<OptionletVolatilityStructure>(new StrippedOptionletAdapter(stripper));
+        return Handle<OptionletVolatilityStructure>(
+            boost::shared_ptr<OptionletVolatilityStructure>(
+                new StrippedOptionletAdapter(stripper)));
 
     }
 
@@ -1092,10 +1106,10 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
     calibrationHelperVols1.push_back(0.20);
     calibrationHelperVols1.push_back(0.20);
 
-    calibrationHelper1.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(1*Years,4*Years,Handle<Quote>(new SimpleQuote(calibrationHelperVols1[0])),iborIndex1,1*Years,Thirty360(),Actual360(),flatYts_)));
-    calibrationHelper1.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(2*Years,3*Years,Handle<Quote>(new SimpleQuote(calibrationHelperVols1[1])),iborIndex1,1*Years,Thirty360(),Actual360(),flatYts_)));
-    calibrationHelper1.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(3*Years,2*Years,Handle<Quote>(new SimpleQuote(calibrationHelperVols1[2])),iborIndex1,1*Years,Thirty360(),Actual360(),flatYts_)));
-    calibrationHelper1.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(4*Years,1*Years,Handle<Quote>(new SimpleQuote(calibrationHelperVols1[3])),iborIndex1,1*Years,Thirty360(),Actual360(),flatYts_)));
+    calibrationHelper1.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(1*Years,4*Years,Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(calibrationHelperVols1[0]))),iborIndex1,1*Years,Thirty360(),Actual360(),flatYts_)));
+    calibrationHelper1.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(2*Years,3*Years,Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(calibrationHelperVols1[1]))),iborIndex1,1*Years,Thirty360(),Actual360(),flatYts_)));
+    calibrationHelper1.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(3*Years,2*Years,Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(calibrationHelperVols1[2]))),iborIndex1,1*Years,Thirty360(),Actual360(),flatYts_)));
+    calibrationHelper1.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(4*Years,1*Years,Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(calibrationHelperVols1[3]))),iborIndex1,1*Years,Thirty360(),Actual360(),flatYts_)));
 
     boost::shared_ptr<MarkovFunctional> mf1(new MarkovFunctional(flatYts_,0.01,volStepDates,vols,flatSwaptionVts_,expiriesCalBasket1(),tenorsCalBasket1(),swapIndexBase,
                                 MarkovFunctional::ModelSettings().withYGridPoints(64)
@@ -1160,10 +1174,10 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
     calibrationHelperVols2.push_back(md0SwaptionVts_->volatility(3*Years,2*Years,boost::dynamic_pointer_cast<SwaptionVolatilityCube>(md0SwaptionVts_.currentLink())->atmStrike(3*Years,2*Years)));
     calibrationHelperVols2.push_back(md0SwaptionVts_->volatility(4*Years,1*Years,boost::dynamic_pointer_cast<SwaptionVolatilityCube>(md0SwaptionVts_.currentLink())->atmStrike(4*Years,1*Years)));
 
-    calibrationHelper2.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(1*Years,4*Years,Handle<Quote>(new SimpleQuote(calibrationHelperVols2[0])),iborIndex2,1*Years,Thirty360(),Actual360(),md0Yts_)));
-    calibrationHelper2.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(2*Years,3*Years,Handle<Quote>(new SimpleQuote(calibrationHelperVols2[1])),iborIndex2,1*Years,Thirty360(),Actual360(),md0Yts_)));
-    calibrationHelper2.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(3*Years,2*Years,Handle<Quote>(new SimpleQuote(calibrationHelperVols2[2])),iborIndex2,1*Years,Thirty360(),Actual360(),md0Yts_)));
-    calibrationHelper2.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(4*Years,1*Years,Handle<Quote>(new SimpleQuote(calibrationHelperVols2[3])),iborIndex2,1*Years,Thirty360(),Actual360(),md0Yts_)));
+    calibrationHelper2.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(1*Years,4*Years,Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(calibrationHelperVols2[0]))),iborIndex2,1*Years,Thirty360(),Actual360(),md0Yts_)));
+    calibrationHelper2.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(2*Years,3*Years,Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(calibrationHelperVols2[1]))),iborIndex2,1*Years,Thirty360(),Actual360(),md0Yts_)));
+    calibrationHelper2.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(3*Years,2*Years,Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(calibrationHelperVols2[2]))),iborIndex2,1*Years,Thirty360(),Actual360(),md0Yts_)));
+    calibrationHelper2.push_back(boost::shared_ptr<CalibrationHelper>(new SwaptionHelper(4*Years,1*Years,Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(calibrationHelperVols2[3]))),iborIndex2,1*Years,Thirty360(),Actual360(),md0Yts_)));
 
 
     boost::shared_ptr<MarkovFunctionalSwaptionEngine> mfSwaptionEngine2(new MarkovFunctionalSwaptionEngine(mf2,64,7.0));
