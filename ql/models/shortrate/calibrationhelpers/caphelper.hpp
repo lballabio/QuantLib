@@ -30,11 +30,7 @@
 namespace QuantLib {
 
     //! calibration helper for ATM cap
-    /*! \bug This helper does not register with the passed IBOR index
-             and with the evaluation date. Furthermore, the ATM strike
-             rate is not recalculated when any of its observables
-             change.
-    */
+
     class CapHelper : public CalibrationHelper {
       public:
         CapHelper(const Period& length,
@@ -50,8 +46,16 @@ namespace QuantLib {
         virtual void addTimesTo(std::list<Time>& times) const;
         virtual Real modelValue() const;
         virtual Real blackPrice(Volatility volatility) const;
+
+        void performCalculations() const;
+
       private:
-        boost::shared_ptr<Cap> cap_;
+        mutable boost::shared_ptr<Cap> cap_;
+        const Period length_;
+        const boost::shared_ptr<IborIndex> index_;
+        const Frequency fixedLegFrequency_;
+        const DayCounter fixedLegDayCounter_;
+        const bool includeFirstSwaplet_;
     };
 
 }

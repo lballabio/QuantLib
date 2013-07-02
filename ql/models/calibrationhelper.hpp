@@ -35,6 +35,7 @@ namespace QuantLib {
     class PricingEngine;
 
     //! liquid market instrument used during calibration
+
     class CalibrationHelper : public LazyObject {
       public:
         enum CalibrationErrorType {
@@ -48,7 +49,9 @@ namespace QuantLib {
           calibrationErrorType_(calibrationErrorType) {
             registerWith(volatility_);
             registerWith(termStructure_);
+            registerWith(Settings::instance().evaluationDate());
         }
+
         void performCalculations() const {
             marketValue_ = blackPrice(volatility_->value());
         }

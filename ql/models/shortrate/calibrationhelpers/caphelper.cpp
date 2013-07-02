@@ -36,61 +36,18 @@ namespace QuantLib {
                          bool includeFirstSwaplet,
                          const Handle<YieldTermStructure>& termStructure,
                          CalibrationHelper::CalibrationErrorType errorType)
-    : CalibrationHelper(volatility,termStructure,errorType) {
+        : CalibrationHelper(volatility,termStructure,errorType),
+        length_(length), index_(index), fixedLegFrequency_(fixedLegFrequency),
+        fixedLegDayCounter_(fixedLegDayCounter),
+        includeFirstSwaplet_(includeFirstSwaplet)
+    {
 
-        Period indexTenor = index->tenor();
-        Rate fixedRate = 0.04; // dummy value
-        Date startDate, maturity;
-        if (includeFirstSwaplet) {
-            startDate = termStructure->referenceDate();
-            maturity = termStructure->referenceDate() + length;
-        } else {
-            startDate = termStructure->referenceDate() + indexTenor;
-            maturity = termStructure->referenceDate() + length;
-        }
-        boost::shared_ptr<IborIndex> dummyIndex(new
-            IborIndex("dummy",
-                      indexTenor,
-                      index->fixingDays(),
-                      index->currency(),
-                      index->fixingCalendar(),
-                      index->businessDayConvention(),
-                      index->endOfMonth(),
-                      termStructure->dayCounter(),
-                      termStructure));
+        registerWith(index_);
 
-        std::vector<Real> nominals(1,1.0);
-
-        Schedule floatSchedule(startDate, maturity,
-                               index->tenor(), index->fixingCalendar(),
-                               index->businessDayConvention(),
-                               index->businessDayConvention(),
-                               DateGeneration::Forward, false);
-        Leg floatingLeg = IborLeg(floatSchedule, index)
-            .withNotionals(nominals)
-            .withPaymentAdjustment(index->businessDayConvention())
-            .withFixingDays(0);
-
-        Schedule fixedSchedule(startDate, maturity, Period(fixedLegFrequency),
-                               index->fixingCalendar(),
-                               Unadjusted, Unadjusted,
-                               DateGeneration::Forward, false);
-        Leg fixedLeg = FixedRateLeg(fixedSchedule)
-            .withNotionals(nominals)
-            .withCouponRates(fixedRate, fixedLegDayCounter)
-            .withPaymentAdjustment(index->businessDayConvention());
-
-        Swap swap(floatingLeg, fixedLeg);
-        swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                            new DiscountingSwapEngine(termStructure, false)));
-        Rate fairRate = fixedRate - swap.NPV()/(swap.legBPS(1)/1.0e-4);
-        engine_ = boost::shared_ptr<PricingEngine>();
-        cap_ = boost::shared_ptr<Cap>(new Cap(floatingLeg,
-                                              std::vector<Rate>(1, fairRate)));
-        marketValue_ = blackPrice(volatility_->value());
     }
 
     void CapHelper::addTimesTo(std::list<Time>& times) const {
+        calculate();
         CapFloor::arguments args;
         cap_->setupArguments(&args);
         std::vector<Time> capTimes =
@@ -102,11 +59,13 @@ namespace QuantLib {
     }
 
     Real CapHelper::modelValue() const {
+        calculate();
         cap_->setPricingEngine(engine_);
         return cap_->NPV();
     }
 
     Real CapHelper::blackPrice(Volatility sigma) const {
+        calculate();
         boost::shared_ptr<Quote> vol(new SimpleQuote(sigma));
         boost::shared_ptr<PricingEngine> black(
                                  new BlackCapFloorEngine(termStructure_,
@@ -116,5 +75,61 @@ namespace QuantLib {
         cap_->setPricingEngine(engine_);
         return value;
     }
+
+    void CapHelper::performCalculations() const {
+
+        Period indexTenor = index_->tenor();
+        Rate fixedRate = 0.04; // dummy value
+        Date startDate, maturity;
+        if (includeFirstSwaplet_) {
+            startDate = termStructure_->referenceDate();
+            maturity = termStructure_->referenceDate() + length_;
+        } else {
+            startDate = termStructure_->referenceDate() + indexTenor;
+            maturity = termStructure_->referenceDate() + length_;
+        }
+        boost::shared_ptr<IborIndex> dummyIndex(new
+            IborIndex("dummy",
+                      indexTenor,
+                      index_->fixingDays(),
+                      index_->currency(),
+                      index_->fixingCalendar(),
+                      index_->businessDayConvention(),
+                      index_->endOfMonth(),
+                      termStructure_->dayCounter(),
+                      termStructure_));
+
+        std::vector<Real> nominals(1,1.0);
+
+        Schedule floatSchedule(startDate, maturity,
+                               index_->tenor(), index_->fixingCalendar(),
+                               index_->businessDayConvention(),
+                               index_->businessDayConvention(),
+                               DateGeneration::Forward, false);
+        Leg floatingLeg = IborLeg(floatSchedule, index_)
+            .withNotionals(nominals)
+            .withPaymentAdjustment(index_->businessDayConvention())
+            .withFixingDays(0);
+
+        Schedule fixedSchedule(startDate, maturity, Period(fixedLegFrequency_),
+                               index_->fixingCalendar(),
+                               Unadjusted, Unadjusted,
+                               DateGeneration::Forward, false);
+        Leg fixedLeg = FixedRateLeg(fixedSchedule)
+            .withNotionals(nominals)
+            .withCouponRates(fixedRate, fixedLegDayCounter_)
+            .withPaymentAdjustment(index_->businessDayConvention());
+
+        Swap swap(floatingLeg, fixedLeg);
+        swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                            new DiscountingSwapEngine(termStructure_, false)));
+        Rate fairRate = fixedRate - swap.NPV()/(swap.legBPS(1)/1.0e-4);
+        cap_ = boost::shared_ptr<Cap>(new Cap(floatingLeg,
+                                              std::vector<Rate>(1, fairRate)));
+
+        CalibrationHelper::performCalculations();
+
+    }
+
 
 }

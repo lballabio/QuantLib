@@ -30,11 +30,7 @@
 namespace QuantLib {
 
     //! calibration helper for ATM swaption
-    /*! \bug This helper does not register with the passed IBOR index
-             and with the evaluation date. Furthermore, the ATM
-             exercise rate is not recalculated when any of its
-             observables change.
-    */
+
     class SwaptionHelper : public CalibrationHelper {
       public:
         SwaptionHelper(const Period& maturity,
@@ -46,14 +42,57 @@ namespace QuantLib {
                        const DayCounter& floatingLegDayCounter,
                        const Handle<YieldTermStructure>& termStructure,
                        CalibrationHelper::CalibrationErrorType errorType
-                                      = CalibrationHelper::RelativePriceError);
+                                      = CalibrationHelper::RelativePriceError,
+                       const Real strike = Null<Real>(),
+                       const Real nominal = 1.0);
+
+        SwaptionHelper(const Date& exerciseDate,
+                       const Period& length,
+                       const Handle<Quote>& volatility,
+                       const boost::shared_ptr<IborIndex>& index,
+                       const Period& fixedLegTenor,
+                       const DayCounter& fixedLegDayCounter,
+                       const DayCounter& floatingLegDayCounter,
+                       const Handle<YieldTermStructure>& termStructure,
+                       CalibrationHelper::CalibrationErrorType errorType
+                                      = CalibrationHelper::RelativePriceError,
+                       const Real strike = Null<Real>(),
+                       const Real nominal = 1.0);
+
+        SwaptionHelper(const Date& exerciseDate,
+                       const Date& endDate,
+                       const Handle<Quote>& volatility,
+                       const boost::shared_ptr<IborIndex>& index,
+                       const Period& fixedLegTenor,
+                       const DayCounter& fixedLegDayCounter,
+                       const DayCounter& floatingLegDayCounter,
+                       const Handle<YieldTermStructure>& termStructure,
+                       CalibrationHelper::CalibrationErrorType errorType
+                                      = CalibrationHelper::RelativePriceError,
+                       const Real strike = Null<Real>(),
+                       const Real nominal = 1.0);
+
         virtual void addTimesTo(std::list<Time>& times) const;
         virtual Real modelValue() const;
         virtual Real blackPrice(Volatility volatility) const;
+
+        Real volatility() const { calculate(); return volatility_->value(); }
+        Real nominal() const { calculate(); return swap_->nominal(); }
+        boost::shared_ptr<VanillaSwap> underlyingSwap() const { calculate(); return swap_; }
+        boost::shared_ptr<Swaption> swaption() const { calculate(); return swaption_; }
+
+        void performCalculations() const;
+
       private:
-        Rate exerciseRate_;
-        boost::shared_ptr<VanillaSwap> swap_;
-        boost::shared_ptr<Swaption> swaption_;
+
+        mutable Date exerciseDate_, endDate_;
+        const Period maturity_, length_, fixedLegTenor_;
+        const boost::shared_ptr<IborIndex> index_;
+        const DayCounter fixedLegDayCounter_, floatingLegDayCounter_;
+        const Real strike_, nominal_;
+        mutable Rate exerciseRate_;
+        mutable boost::shared_ptr<VanillaSwap> swap_;
+        mutable boost::shared_ptr<Swaption> swaption_;
     };
 
 }
