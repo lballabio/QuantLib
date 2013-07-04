@@ -18,7 +18,114 @@
 
 /*! \page history Version history
 
-    <strong>Release 1.2.1 - September 2012</strong>
+    <strong>Release 1.3 - July 2013</strong>
+
+    PORTABILITY
+    - Enabled g++ compilation in C++11 mode.
+    - Added VC++11 projects (thanks to Edouard Tallent).
+    - Added x64 target to VC++10 and VC++11 projects (thanks to Johannes
+      G&ouml;ttker-Schnetmann).
+    - Removed most level-4 warnings in VC++ (thanks to Michael Sharpe).
+    - Removed warnings in VC++ when compiling for the x64 platform (thanks
+      to Johannes G&ouml;ttker-Schnetmann).
+
+    DATE/TIME
+    - Fixed holiday for Japanese calendar (thanks to Sebastien Gurrieri).
+    - Added Epiphany (introduced in 2011) to Polish calendar (thanks to
+      katastrofa).
+    - Updated South-Korean calendar for 2013 (thanks to Faycal El Karaa).
+    - Updated Chinese calendar for 2012 (thanks to Cheng Li).
+    - Updated calendar for 2013 for China, Hong Kong, India, Indonesia,
+      Singapore, Taiwan and Turkey.
+    - Fixed a few Mexican holidays.
+    - Prevented out-of-bound access to degenerate schedule.
+
+    INSTRUMENTS
+    - Finite-difference Bermudan swaption engines for the G2++ and the
+      Hull-White models (thanks to Klaus Spanderen).
+    - Added analytic Heston-Hull-White pricing engine for vanilla option
+      using the H1HW approximation (thanks to Klaus Spanderen).
+    - Managed underlying start delay in Jamshidian swaption engine (thanks
+      to Peter Caspers).
+
+    MODELS
+    - Added calibration to GARCH model (thanks to Slava Mazur).
+    - Fixed forward-looking bias in Garch11 calculation (thanks to Slava
+      Mazur).
+
+    CASH FLOWS
+    - Use correct default for evaluation date in a few CashFlows methods
+      (thanks to Peter Caspers).
+    - Yield-based NPV calculation now uses coupon reference dates; this
+      fixes small discrepancies when using day counters such as ISMA
+      act/act (thanks to Henri Gough and Nick Glass).
+    - Fixed start and end dates for convexity adjustment of in-arrears
+      floating-rate coupon (thanks to Peter Caspers).
+
+    INDEXES
+    - Added inspector for the joint calendar used by Libor indexes.
+    - Added method to clone a swap index with a different discount curve
+      (thanks to Peter Caspers).
+
+    TERM STRUCTURES
+    - Fixed degenerate case for ABCD volatility (thanks to Peter Caspers).
+    - Relaxed extrapolation check for default-probability curves.  When
+      calculating default probabilities between two dates or times, allow
+      the first to precede the reference date. This effectively assumes
+      that the default probability before the reference is null, and helps
+      in cases where a coupon protection extends a couple of days before
+      the reference due to adjustments (for instance, when the protection
+      starts on a Saturday and the reference is rolled to the following
+      Monday).
+    - Pass correct ATM forward rate to smile section of SwaptionVolCube2
+      (thanks to Peter Caspers).
+    - Added exogenous discount to OptionletStripper1 (thanks to Peter
+      Caspers).
+
+    MATH
+    - Added Sobol brownian-bridge random sequence generator (thanks to
+      Klaus Spanderen).
+    - Added Richardson-extrapolation utility for numerical methods (thanks
+      to Klaus Spanderen).
+    - Added differential evolution optimizer (thanks to Ralph Schreyer and
+      Mateusz Kapturski).
+    - Added special case to close()/close_enough() when either value is 0;
+      previously, they would always return false which could be surprising
+      (thanks to Simon Shakeshaft for the fix).
+    - Fixed Gamma distribution tail (thanks to Ian Qsong).
+    - Ensure that the last function call inside a solver is passed the
+      root (thanks to Francis Duffy).
+    - Implemented Lagrange boundary condition for cubic interpolation
+      (thanks to Peter Caspers).
+    - Increased precision in tail of West's bivariate cumulative normal
+      (thanks to Fabien Le Floc'h).
+    - Improved calibration of SABR interpolation by allowing different
+      starting points (thanks to Peter Caspers).
+    - Moved FFT and autocovariance implementations from experimental
+      folder to core library.
+
+    FINITE DIFFERENCES
+    - Added time-dependent Dirichlet boundary condition (thanks to Peter
+      Caspers).
+
+    UTILITIES
+    - Implicit conversions of shared_ptr to bool are now explicit; they
+      have been removed in C++11 (thanks to Scott Condit).
+
+    EXPERIMENTAL FOLDER
+
+    The ql/experimental folder contains code which is still not fully
+    integrated with the library or even fully tested, but is released in
+    order to get user feedback.  Experimental classes are considered
+    unstable; their interfaces might change in future releases.
+
+    New contributions for this release were:
+    - Two-asset barrier option and related engine (thanks to
+      IMAFA/Polytech'Nice students Qingxiao Wang and Nabila Barkati).
+    - ODE solver (thanks to Peter Caspers).
+    - Markov functional model (thanks to Peter Caspers).
+
+    <strong>Release 1.2.1 - September 10th, 2012</strong>
 
     Bug-fix release.
 

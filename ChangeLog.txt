@@ -1210,6 +1210,7 @@ Author: Klaus Spanderen <klaus@spanderen.de>
 Date:   Mon, 19 Dec 2011 21:13:19 +0000
 
     finite difference based Bermudan swaption engines for the G2++ and the Hull-White model
+
 commit b2fa58ae618bb05b67a78bb8de2d64c1c6b3033d
 Author: Klaus Spanderen <klaus@spanderen.de>
 Date:   Sun, 18 Dec 2011 20:02:30 +0000
