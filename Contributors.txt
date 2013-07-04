@@ -141,6 +141,7 @@ Kirill Shemyakin
 Eugene Shevkoplyas
 Enrico Sirola
 Leon Sit
+Dale Smith
 Maxim Sokolov
 Niels Elken Sønderby
 Andreas Spengler
