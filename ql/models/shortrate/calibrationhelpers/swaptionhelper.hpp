@@ -76,8 +76,6 @@ namespace QuantLib {
         virtual Real modelValue() const;
         virtual Real blackPrice(Volatility volatility) const;
 
-        Real volatility() const { calculate(); return volatility_->value(); }
-        Real nominal() const { calculate(); return swap_->nominal(); }
         boost::shared_ptr<VanillaSwap> underlyingSwap() const { calculate(); return swap_; }
         boost::shared_ptr<Swaption> swaption() const { calculate(); return swaption_; }
 
