@@ -49,7 +49,6 @@ namespace QuantLib {
           calibrationErrorType_(calibrationErrorType) {
             registerWith(volatility_);
             registerWith(termStructure_);
-            registerWith(Settings::instance().evaluationDate());
         }
 
         void performCalculations() const {
