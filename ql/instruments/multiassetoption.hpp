@@ -39,7 +39,6 @@ namespace QuantLib {
                          const boost::shared_ptr<Exercise>&);
         //! \name Instrument interface
         //@{
-        class results;
         bool isExpired() const;
         //@}
         //! \name greeks
