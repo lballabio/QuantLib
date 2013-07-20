@@ -56,10 +56,9 @@ namespace QuantLib {
         }
         else if (valuesOnBoundary_) {
             values_ = valuesOnBoundary_(t);
-            std::cout << "now it s me" << std::endl;
         }
         else {
-            QL_FAIL("no time dependent function is defined");
+            QL_FAIL("no boundary values defined");
         }
     }
 
