@@ -68,6 +68,7 @@ namespace QuantLib {
 
         ts_ = ts;
         n_ = ts_->instruments_.size();
+        QL_REQUIRE(n_ > 0, "no bootstrap helpers given")
         for (Size j=0; j<n_; ++j)
             ts_->registerWith(ts_->instruments_[j]);
 
