@@ -937,7 +937,7 @@ namespace {
         return(result);
     }
 
-    void SINCS(double v1,double v2, double v3);
+    void SINCS(double v1,double& v2, double& v3);
     double PNTGND(int , double ,double ,double ,
                   double ,double ,double ,double );
 
@@ -969,7 +969,7 @@ namespace {
     //
 
 
-    void SINCS(double X, double SX, double CS )
+    void SINCS(double X, double& SX, double& CS )
     {
         /*
           Computes SIN(X), COS(X)^2, with series approx. for |X| near PI/2
@@ -995,7 +995,7 @@ namespace {
     double KRNRDT(double, double,
                   double(*TVTMFN)(double, double, double, double,
                                   double, double, double, double, double, int),
-                  double );
+                  double& );
 
     double ADONET(double A,double B, double TOL,double(*TVTMFN)(double X, double H1, double H2, double H3, double R23, double RUA, double RUB, double AR, double RUC, int NUC)){
         //
@@ -1036,7 +1036,7 @@ namespace {
     }
     //
 
-    double KRNRDT(double A, double B,double(*TVTMFN)(double X, double H1, double H2, double H3, double R23, double RUA, double RUB, double AR, double RUC, int NUC),double ERR ){
+    double KRNRDT(double A, double B,double(*TVTMFN)(double X, double H1, double H2, double H3, double R23, double RUA, double RUB, double AR, double RUC, int NUC),double& ERR ){
 
         //
         //     Kronrod Rule
