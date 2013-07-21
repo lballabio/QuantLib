@@ -359,7 +359,7 @@ void SwapForwardMappingsTest::testForwardCoterminalMappings() {
             std::sqrt(cotSwapsCovariance[i][i]),
             lmmCurveState.coterminalSwapAnnuity(i,i) *
             todaysDiscounts[i]).value();
-        if (false)
+        if (fabs(expectedSwaption-results[i]) > 0.0001)
             BOOST_TEST_MESSAGE(
             "expected\t" << expectedSwaption <<
             "\tLMM\t" << results[i]
