@@ -213,7 +213,7 @@ namespace QuantLib {
                                     const std::vector<Handle<Quote> >& jumps,
                                     const std::vector<Date>& jumpDates,
                                     const T& interpolator)
-    : DefaultDensityStructure(dates.front(), calendar, dayCounter, jumps, jumpDates),
+    : DefaultDensityStructure(dates.at(0), calendar, dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(std::vector<Time>(), densities, interpolator),
       dates_(dates)
     {
@@ -227,7 +227,7 @@ namespace QuantLib {
             const DayCounter& dayCounter,
             const Calendar& calendar,
             const T& interpolator)
-    : DefaultDensityStructure(dates.front(), calendar, dayCounter),
+    : DefaultDensityStructure(dates.at(0), calendar, dayCounter),
       InterpolatedCurve<T>(std::vector<Time>(), densities, interpolator),
       dates_(dates)
     {
@@ -240,7 +240,7 @@ namespace QuantLib {
             const std::vector<Real>& densities,
             const DayCounter& dayCounter,
             const T& interpolator)
-    : DefaultDensityStructure(dates.front(), Calendar(), dayCounter),
+    : DefaultDensityStructure(dates.at(0), Calendar(), dayCounter),
       InterpolatedCurve<T>(std::vector<Time>(), densities, interpolator),
       dates_(dates)
     {

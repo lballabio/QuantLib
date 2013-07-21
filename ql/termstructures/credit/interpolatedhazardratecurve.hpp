@@ -211,7 +211,7 @@ namespace QuantLib {
                                     const std::vector<Handle<Quote> >& jumps,
                                     const std::vector<Date>& jumpDates,
                                     const T& interpolator)
-    : HazardRateStructure(dates.front(), calendar, dayCounter, jumps, jumpDates),
+    : HazardRateStructure(dates.at(0), calendar, dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(std::vector<Time>(), hazardRates, interpolator),
       dates_(dates)
     {
@@ -225,7 +225,7 @@ namespace QuantLib {
             const DayCounter& dayCounter,
             const Calendar& calendar,
             const T& interpolator)
-    : HazardRateStructure(dates.front(), calendar, dayCounter),
+    : HazardRateStructure(dates.at(0), calendar, dayCounter),
       InterpolatedCurve<T>(std::vector<Time>(), hazardRates, interpolator),
       dates_(dates)
     {
@@ -238,7 +238,7 @@ namespace QuantLib {
             const std::vector<Rate>& hazardRates,
             const DayCounter& dayCounter,
             const T& interpolator)
-    : HazardRateStructure(dates.front(), Calendar(), dayCounter),
+    : HazardRateStructure(dates.at(0), Calendar(), dayCounter),
       InterpolatedCurve<T>(std::vector<Time>(), hazardRates, interpolator),
       dates_(dates)
     {

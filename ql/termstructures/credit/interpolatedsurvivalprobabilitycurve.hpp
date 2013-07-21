@@ -194,7 +194,7 @@ namespace QuantLib {
                                     const std::vector<Handle<Quote> >& jumps,
                                     const std::vector<Date>& jumpDates,
                                     const T& interpolator)
-    : SurvivalProbabilityStructure(dates.front(), calendar, dayCounter, jumps, jumpDates),
+    : SurvivalProbabilityStructure(dates.at(0), calendar, dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(std::vector<Time>(), probabilities, interpolator),
       dates_(dates)
     {

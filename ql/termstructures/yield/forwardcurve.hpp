@@ -215,7 +215,7 @@ namespace QuantLib {
                                     const std::vector<Handle<Quote> >& jumps,
                                     const std::vector<Date>& jumpDates,
                                     const T& interpolator)
-    : ForwardRateStructure(dates.front(), calendar, dayCounter, jumps, jumpDates),
+    : ForwardRateStructure(dates.at(0), calendar, dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(std::vector<Time>(), forwards, interpolator),
       dates_(dates)
     {
@@ -229,7 +229,7 @@ namespace QuantLib {
             const DayCounter& dayCounter,
             const Calendar& calendar,
             const T& interpolator)
-    : ForwardRateStructure(dates.front(), calendar, dayCounter),
+    : ForwardRateStructure(dates.at(0), calendar, dayCounter),
       InterpolatedCurve<T>(std::vector<Time>(), forwards, interpolator),
       dates_(dates)
     {
@@ -242,7 +242,7 @@ namespace QuantLib {
             const std::vector<Rate>& forwards,
             const DayCounter& dayCounter,
             const T& interpolator)
-    : ForwardRateStructure(dates.front(), Calendar(), dayCounter),
+    : ForwardRateStructure(dates.at(0), Calendar(), dayCounter),
       InterpolatedCurve<T>(std::vector<Time>(), forwards, interpolator),
       dates_(dates)
     {
