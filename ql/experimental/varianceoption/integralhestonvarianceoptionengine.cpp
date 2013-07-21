@@ -75,9 +75,9 @@ namespace {
          **********************************************************
          */
         i0=0.0;
-        s=2.0*chi*theta/(eps*eps)-1.0;
+        //s=2.0*chi*theta/(eps*eps)-1.0;
 
-        s=s+1;
+        //s=s+1;
 
         /*
          *************************************************
@@ -211,7 +211,7 @@ namespace {
         double payoffval=0;
         double option=0/*, impart=0*/;
 
-        double sumr=0,sumi=0;
+        double sumr=0;//,sumi=0;
         Complex dxi,z;
 
         boost::scoped_array<Complex> ff(new Complex[2048*2048]);
@@ -316,7 +316,7 @@ namespace {
         }
 
         sumr=0.0;
-        sumi=0.0;
+        //sumi=0.0;
         for (k=0;k<=mm-1;k++)
         {
             ip=i0-ivet[k+1];
@@ -333,10 +333,10 @@ namespace {
             csum=csum*std::pow(-1.0,k)*nris/pi2;
 
             sumr=sumr+payoffval*std::real(csum);
-            sumi=sumi+payoffval*std::imag(csum);
+            //sumi=sumi+payoffval*std::imag(csum);
         }
         sumr=sumr*nris;
-        sumi=sumi*nris;
+        //sumi=sumi*nris;
 
         option=std::exp(-rtax*tau)*sumr;
         //impart=sumi;
