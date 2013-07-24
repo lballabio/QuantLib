@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file markovFunctionalCapFloorEngine.hpp
+/*! \file markovfunctionalcapfloorengine.hpp
     \brief
 */
 

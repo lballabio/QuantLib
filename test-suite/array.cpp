@@ -181,7 +181,7 @@ void ArrayTest::testArrayFunctions() {
 
     Array a(5);
     for (Size i=0; i < a.size(); ++i) {
-        a[i] = std::sin(Real(i));
+        a[i] = std::sin(Real(i))+1.1;
     }
 
     const Real exponential = -2.3;

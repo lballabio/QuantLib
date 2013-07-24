@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file markovFunctionalSwaptionEngine.hpp
+/*! \file markovfunctionalswaptionengine.hpp
     \brief
 */
 

@@ -909,7 +909,7 @@ void VPPTest::testKlugeExtOUMatrixDecomposition() {
         x[i] = rng.next().value;
     }
 
-    const Real tol = 1e-8;
+    const Real tol = 1e-9;
     const Array applyExpected = op->apply(x);
     const Array applyExpectedMixed = op->apply_mixed(x);
 
@@ -918,15 +918,20 @@ void VPPTest::testKlugeExtOUMatrixDecomposition() {
     const Array applyCalculatedMixed = prod(matrixDecomp.back(), x);
 
     for (Size i=0; i < x.size(); ++i) {
-        if (std::fabs((applyExpected[i]-applyCalculated[i])) > tol) {
+        const Real diffApply = std::fabs(applyExpected[i]-applyCalculated[i]);
+        if (diffApply > tol && diffApply > std::fabs(applyExpected[i])*tol) {
             BOOST_ERROR("Failed to reproduce apply operation" <<
                      "\n    expected  : " << applyExpected[i] <<
-                     "\n    calculated: " << applyCalculated[i]);
+                     "\n    calculated: " << applyCalculated[i] <<
+                     "\n    diff      : " << diffApply);
         }
-        if (std::fabs((applyExpectedMixed[i]-applyCalculatedMixed[i])) > tol) {
+
+        const Real diffMixed = std::fabs(applyExpectedMixed[i]-applyCalculatedMixed[i]);
+        if (diffMixed > tol && diffMixed > std::fabs(applyExpected[i])*tol) {
             BOOST_ERROR("Failed to reproduce apply operation" <<
                      "\n    expected  : " << applyExpectedMixed[i] <<
-                     "\n    calculated: " << applyCalculatedMixed[i]);
+                     "\n    calculated: " << applyCalculatedMixed[i] <<
+                     "\n    diff      : " << diffMixed);
         }
     }
 
@@ -939,7 +944,7 @@ void VPPTest::testKlugeExtOUMatrixDecomposition() {
             const Real diff
                 = std::fabs((applyExpectedDir[j] - applyCalculatedDir[j]));
 
-            if (diff > tol) {
+            if (diff > tol && diff > std::fabs(applyExpectedDir[j]*tol)) {
                 BOOST_ERROR("Failed to reproduce apply operation" <<
                          "\n    expected  : " << applyExpectedDir[i] <<
                          "\n    calculated: " << applyCalculatedDir[i] <<

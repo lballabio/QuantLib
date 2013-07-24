@@ -204,7 +204,7 @@ namespace QuantLib {
                                  const std::vector<Handle<Quote> >& jumps,
                                  const std::vector<Date>& jumpDates,
                                  const T& interpolator)
-    : YieldTermStructure(dates.front(), calendar, dayCounter, jumps, jumpDates),
+    : YieldTermStructure(dates.at(0), calendar, dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(std::vector<Time>(), discounts, interpolator),
       dates_(dates)
     {
@@ -218,7 +218,7 @@ namespace QuantLib {
                                  const DayCounter& dayCounter,
                                  const Calendar& calendar,
                                  const T& interpolator)
-    : YieldTermStructure(dates.front(), calendar, dayCounter),
+    : YieldTermStructure(dates.at(0), calendar, dayCounter),
       InterpolatedCurve<T>(std::vector<Time>(), discounts, interpolator),
       dates_(dates)
     {
@@ -231,7 +231,7 @@ namespace QuantLib {
                                  const std::vector<DiscountFactor>& discounts,
                                  const DayCounter& dayCounter,
                                  const T& interpolator)
-    : YieldTermStructure(dates.front(), Calendar(), dayCounter),
+    : YieldTermStructure(dates.at(0), Calendar(), dayCounter),
       InterpolatedCurve<T>(std::vector<Time>(), discounts, interpolator),
       dates_(dates)
     {

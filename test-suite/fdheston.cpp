@@ -841,7 +841,7 @@ namespace {
 void FdHestonTest::testSquareRootZeroFlowBC() {
     #if BOOST_VERSION >= 103900
 
-    BOOST_MESSAGE("Testing Zero Flow BC for the square root process...");
+    BOOST_TEST_MESSAGE("Testing Zero Flow BC for the square root process...");
 
     SavedSettings backup;
 
@@ -930,8 +930,8 @@ namespace {
 
 
 void FdHestonTest::testTransformedZeroFlowBC() {
-    BOOST_MESSAGE("Testing zero flow BC for transformed "
-                  "Fokker-Planck forward equation...");
+    BOOST_TEST_MESSAGE("Testing zero flow BC for transformed "
+                       "Fokker-Planck forward equation...");
 
     SavedSettings backup;
 
@@ -979,8 +979,9 @@ namespace {
       public:
         q_fct(const Array& v, const Array& p, const Real alpha)
         : v_(v), q_(Pow(v, alpha)*p), alpha_(alpha) {
-            spline_ = boost::shared_ptr<CubicNaturalSpline>(
-                new CubicNaturalSpline(v_.begin(), v_.end(), q_.begin()));
+            spline_ = boost::shared_ptr<CubicInterpolation>(
+                new MonotonicCubicNaturalSpline(v_.begin(), v_.end(),
+                                                q_.begin()));
         }
 
         Real operator()(Real v) {
@@ -990,13 +991,13 @@ namespace {
 
         const Array v_, q_;
         const Real alpha_;
-        boost::shared_ptr<CubicNaturalSpline> spline_;
+        boost::shared_ptr<CubicInterpolation> spline_;
     };
 }
 
 void FdHestonTest::testSquareRootEvolveWithStationaryDensity() {
-    BOOST_MESSAGE("Testing Fokker-Planck forward equation "
-                  "for the square root process with stationary density...");
+    BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation "
+                       "for the square root process with stationary density...");
 
     // Documentation for this test case:
     // http://www.spanderen.de/2013/05/04/fokker-planck-equation-feller-constraint-and-boundary-conditions/
@@ -1027,7 +1028,6 @@ void FdHestonTest::testSquareRootEvolveWithStationaryDensity() {
             new FdmSquareRootFwdOp(mesher, kappa, theta,
                                    sigma, 0, sigma > 0.75));
 
-
         const Array eP = p;
 
         const Size n = 100;
@@ -1057,8 +1057,8 @@ void FdHestonTest::testSquareRootEvolveWithStationaryDensity() {
 void FdHestonTest::testSquareRootFokkerPlanckFwdEquation() {
     #if BOOST_VERSION >= 103900
 
-    BOOST_MESSAGE("Testing Fokker-Planck forward equation "
-                  "for the square root process with Dirac start...");
+    BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation "
+                       "for the square root process with Dirac start...");
 
     SavedSettings backup;
 

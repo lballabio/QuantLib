@@ -11,6 +11,7 @@ Mario Aleppo
 Jose Aparicio
 Sercan Atalik
 Lluis Pujol Bajador
+Nabila Barkati
 Clément Barret
 Christopher Baus
 Thomas Becker
@@ -35,13 +36,16 @@ Yiping Chen
 Yanice Cherrak
 Meryem Chibo
 Warren Chou
+Scott Condit
 Jon Davidson
 Daniele De Francesco
 Frédéric Degraeve
 Piero Del Boca
 Piter Dias
+Francis Duffy
 Cristina Duminuco
 Dirk Eddelbuettel
+Faycal El Karaa
 Bernd Engelmann
 Giorgio Facchinetti
 Matt Fair
@@ -53,10 +57,15 @@ Silvia Frasson
 Andreas Gaida
 Matteo Gallivanoni
 Roman Gitlin
+Nick Glass
 Marek Glowacki
 Richard Gomes
+Johannes Göttker-Schnetmann
+Henri Gough
 Richard Gould
 Florent Grenier
+Sebastien Gurrieri
+Tawanda Gwena
 Cavit Hafizoglu
 Michael Heckl
 Laurent Hoffmann
@@ -66,6 +75,7 @@ Frank Hövermann
 Charles Chongseok Hyun
 Simon Ibbotson
 Norbert Irmer
+Mike Jake
 Rahul Kanchi
 Tomoya Kawanishi
 Gary Kennedy
@@ -79,6 +89,7 @@ Yasmine Lahlou
 Fabien Le Floc'h
 James Lee
 Samuel Lerouge
+Cheng Li
 Gang Liang
 Robert Lopez
 André Louw
@@ -104,10 +115,13 @@ Gilbert Peffer
 Walter Penschke
 Francesco Perissin
 Robert Philipp
+Marcello Pietrobon
 Adrien Pinatton
 Gianni Piolanti
 Sebastian Poloczek
 Mario Pucci
+Ian Qsong
+Paul Rädle
 J. Erik Radmall
 Fabio Ramponi
 Maria Cristina Recchioni
@@ -122,16 +136,20 @@ Peter Schmitteckert
 Ralph Schreyer
 David Schwartz
 Simon Shakeshaft
+Michael Sharpe
 Kirill Shemyakin
 Eugene Shevkoplyas
 Enrico Sirola
 Leon Sit
+Dale Smith
 Maxim Sokolov
 Niels Elken Sønderby
 Andreas Spengler
 Roland Stamm
+Edouard Tallent
 Marco Tarenghi
 François du Vignaud
+Qingxiao Wang
 Charles Whitmore
 Stephen Wong
 Bernd Johannes Wuebben

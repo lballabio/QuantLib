@@ -33,6 +33,8 @@ namespace QuantLib {
     /*! This engine implements the approach described in
         <http://www.econ.univpm.it/recchioni/finance/w3/>.
 
+        \warning This was reported to fail tests on Mac OS X 10.8.4.
+
         \ingroup barrierengines
     */
     class PerturbativeBarrierOptionEngine : public BarrierOption::engine  {

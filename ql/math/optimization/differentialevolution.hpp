@@ -49,6 +49,8 @@ namespace QuantLib {
         2) L differences to be used instead of fixed number
         3) various weights distributions for the differences (dither etc.)
         4) printFullInfo parameter usage to track the algorithm
+
+        \warning This was reported to fail tests on Mac OS X 10.8.4.
     */
 
 

@@ -32,11 +32,7 @@
 #elif (_MSC_VER == 1400)
 #  define QL_LIB_TOOLSET "vc80"
 #elif (_MSC_VER == 1500)
-#  ifdef x64
-#    define QL_LIB_TOOLSET "vc90-x64"
-#  else
-#    define QL_LIB_TOOLSET "vc90"
-#  endif
+#  define QL_LIB_TOOLSET "vc90"
 #elif (_MSC_VER == 1600)
 #  define QL_LIB_TOOLSET "vc100"
 #elif (_MSC_VER == 1700)
@@ -45,6 +41,11 @@
 #  error "unknown Microsoft compiler"
 #endif
 
+#ifdef _M_X64
+#  define QL_LIB_PLATFORM "-x64"
+#else
+#  define QL_LIB_PLATFORM
+#endif
 
 /*** libraries to be linked ***/
 
@@ -70,7 +71,7 @@
 #  endif
 #endif
 
-#define QL_LIB_NAME "QuantLib-" QL_LIB_TOOLSET QL_LIB_THREAD_OPT QL_LIB_RT_OPT ".lib"
+#define QL_LIB_NAME "QuantLib-" QL_LIB_TOOLSET QL_LIB_PLATFORM QL_LIB_THREAD_OPT QL_LIB_RT_OPT ".lib"
 
 #pragma comment(lib, QL_LIB_NAME)
 #ifdef BOOST_LIB_DIAGNOSTIC

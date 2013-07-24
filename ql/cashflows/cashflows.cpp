@@ -799,8 +799,8 @@ namespace QuantLib {
             shared_ptr<Coupon> coupon =
                 boost::dynamic_pointer_cast<Coupon>(leg[i]);
             if (coupon) {
-                refStartDate = coupon->accrualStartDate();
-                refEndDate = coupon->accrualEndDate();
+                refStartDate = coupon->referencePeriodStart();
+                refEndDate = coupon->referencePeriodEnd();
             } else {
                 if (lastDate == npvDate) {
                     // we don't have a previous coupon date,
