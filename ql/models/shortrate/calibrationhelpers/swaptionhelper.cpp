@@ -126,24 +126,26 @@ namespace QuantLib {
         Calendar calendar = index_->fixingCalendar();
         Natural fixingDays = index_->fixingDays();
 
-        if(exerciseDate_ == Null<Date>())
-            exerciseDate_ = calendar.advance(termStructure_->referenceDate(),
+        Date exerciseDate = exerciseDate_;
+        if (exerciseDate == Null<Date>())
+            exerciseDate = calendar.advance(termStructure_->referenceDate(),
                                             maturity_,
                                             index_->businessDayConvention());
 
-        Date startDate = calendar.advance(exerciseDate_,
+        Date startDate = calendar.advance(exerciseDate,
                                     fixingDays, Days,
                                     index_->businessDayConvention());
 
-        if(endDate_ == Null<Date>())
-            endDate_ = calendar.advance(startDate, length_,
+        Date endDate = endDate_;
+        if (endDate == Null<Date>())
+            endDate = calendar.advance(startDate, length_,
                                        index_->businessDayConvention());
 
-        Schedule fixedSchedule(startDate, endDate_, fixedLegTenor_, calendar,
+        Schedule fixedSchedule(startDate, endDate, fixedLegTenor_, calendar,
                                index_->businessDayConvention(),
                                index_->businessDayConvention(),
                                DateGeneration::Forward, false);
-        Schedule floatSchedule(startDate, endDate_, index_->tenor(), calendar,
+        Schedule floatSchedule(startDate, endDate, index_->tenor(), calendar,
                                index_->businessDayConvention(),
                                index_->businessDayConvention(),
                                DateGeneration::Forward, false);
@@ -172,7 +174,7 @@ namespace QuantLib {
                             floatSchedule, index_, 0.0, floatingLegDayCounter_));
         swap_->setPricingEngine(swapEngine);
 
-        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate_));
+        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
         swaption_ = boost::shared_ptr<Swaption>(new Swaption(swap_, exercise));
 
