@@ -46,10 +46,8 @@ namespace QuantLib {
         virtual void addTimesTo(std::list<Time>& times) const;
         virtual Real modelValue() const;
         virtual Real blackPrice(Volatility volatility) const;
-
-        void performCalculations() const;
-
       private:
+        void performCalculations() const;
         mutable boost::shared_ptr<Cap> cap_;
         const Period length_;
         const boost::shared_ptr<IborIndex> index_;

@@ -79,10 +79,8 @@ namespace QuantLib {
         boost::shared_ptr<VanillaSwap> underlyingSwap() const { calculate(); return swap_; }
         boost::shared_ptr<Swaption> swaption() const { calculate(); return swaption_; }
 
-        void performCalculations() const;
-
       private:
-
+        void performCalculations() const;
         mutable Date exerciseDate_, endDate_;
         const Period maturity_, length_, fixedLegTenor_;
         const boost::shared_ptr<IborIndex> index_;
