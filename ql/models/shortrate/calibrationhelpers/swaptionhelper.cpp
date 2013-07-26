@@ -28,8 +28,7 @@
 
 namespace QuantLib {
 
-    SwaptionHelper::SwaptionHelper(
-                              const Period& maturity,
+    SwaptionHelper::SwaptionHelper(const Period& maturity,
                               const Period& length,
                               const Handle<Quote>& volatility,
                               const boost::shared_ptr<IborIndex>& index,
@@ -37,51 +36,64 @@ namespace QuantLib {
                               const DayCounter& fixedLegDayCounter,
                               const DayCounter& floatingLegDayCounter,
                               const Handle<YieldTermStructure>& termStructure,
-                              CalibrationHelper::CalibrationErrorType errorType)
-    : CalibrationHelper(volatility,termStructure, errorType) {
+                              CalibrationHelper::CalibrationErrorType errorType,
+                              const Real strike, const Real nominal)
 
-        Calendar calendar = index->fixingCalendar();
-        Natural fixingDays = index->fixingDays();
-        Date exerciseDate = calendar.advance(termStructure->referenceDate(),
-                                             maturity,
-                                             index->businessDayConvention());
-        Date startDate = calendar.advance(exerciseDate,
-                                          fixingDays, Days,
-                                          index->businessDayConvention());
-        Date endDate = calendar.advance(startDate, length,
-                                        index->businessDayConvention());
+    : CalibrationHelper(volatility,termStructure, errorType),
+        exerciseDate_(Null<Date>()), endDate_(Null<Date>()),
+        maturity_(maturity), length_(length), fixedLegTenor_(fixedLegTenor), index_(index),
+        fixedLegDayCounter_(fixedLegDayCounter), floatingLegDayCounter_(floatingLegDayCounter),
+        strike_(strike), nominal_(nominal)
+    {
 
-        Schedule fixedSchedule(startDate, endDate, fixedLegTenor, calendar,
-                               index->businessDayConvention(),
-                               index->businessDayConvention(),
-                               DateGeneration::Forward, false);
-        Schedule floatSchedule(startDate, endDate, index->tenor(), calendar,
-                               index->businessDayConvention(),
-                               index->businessDayConvention(),
-                               DateGeneration::Forward, false);
+        registerWith(index_);
 
-        boost::shared_ptr<PricingEngine> swapEngine(
-                             new DiscountingSwapEngine(termStructure, false));
+    }
 
-        VanillaSwap temp(VanillaSwap::Receiver, 1.0,
-                         fixedSchedule, 0.0, fixedLegDayCounter,
-                         floatSchedule, index, 0.0, floatingLegDayCounter);
-        temp.setPricingEngine(swapEngine);
-        exerciseRate_ = temp.fairRate();
-        swap_ = boost::shared_ptr<VanillaSwap>(
-            new VanillaSwap(VanillaSwap::Receiver, 1.0,
-                            fixedSchedule, exerciseRate_, fixedLegDayCounter,
-                            floatSchedule, index, 0.0, floatingLegDayCounter));
-        swap_->setPricingEngine(swapEngine);
+    SwaptionHelper::SwaptionHelper(
+                              const Date& exerciseDate,
+                              const Period& length,
+                              const Handle<Quote>& volatility,
+                              const boost::shared_ptr<IborIndex>& index,
+                              const Period& fixedLegTenor,
+                              const DayCounter& fixedLegDayCounter,
+                              const DayCounter& floatingLegDayCounter,
+                              const Handle<YieldTermStructure>& termStructure,
+                              CalibrationHelper::CalibrationErrorType errorType,
+                              const Real strike, const Real nominal)
+    : CalibrationHelper(volatility,termStructure, errorType),
+        exerciseDate_(exerciseDate), endDate_(Null<Date>()),
+        maturity_(0*Days), length_(length), fixedLegTenor_(fixedLegTenor), index_(index),
+        fixedLegDayCounter_(fixedLegDayCounter), floatingLegDayCounter_(floatingLegDayCounter),
+        strike_(strike), nominal_(nominal) {
 
-        engine_  = boost::shared_ptr<PricingEngine>();
-        boost::shared_ptr<Exercise> exercise(
-                                          new EuropeanExercise(exerciseDate));
-        swaption_ = boost::shared_ptr<Swaption>(new Swaption(swap_, exercise));
-        marketValue_ = blackPrice(volatility_->value());
+        registerWith(index_);
+
+    }
+
+    SwaptionHelper::SwaptionHelper(
+                              const Date& exerciseDate,
+                              const Date& endDate,
+                              const Handle<Quote>& volatility,
+                              const boost::shared_ptr<IborIndex>& index,
+                              const Period& fixedLegTenor,
+                              const DayCounter& fixedLegDayCounter,
+                              const DayCounter& floatingLegDayCounter,
+                              const Handle<YieldTermStructure>& termStructure,
+                              CalibrationHelper::CalibrationErrorType errorType,
+                              const Real strike, const Real nominal)
+    : CalibrationHelper(volatility,termStructure, errorType),
+        exerciseDate_(exerciseDate), endDate_(endDate),
+        maturity_(0*Days), length_(0*Days), fixedLegTenor_(fixedLegTenor), index_(index),
+        fixedLegDayCounter_(fixedLegDayCounter), floatingLegDayCounter_(floatingLegDayCounter),
+        strike_(strike), nominal_(nominal) {
+
+        registerWith(index_);
+
     }
 
     void SwaptionHelper::addTimesTo(std::list<Time>& times) const {
+        calculate();
         Swaption::arguments args;
         swaption_->setupArguments(&args);
         std::vector<Time> swaptionTimes =
@@ -93,11 +105,13 @@ namespace QuantLib {
     }
 
     Real SwaptionHelper::modelValue() const {
+        calculate();
         swaption_->setPricingEngine(engine_);
         return swaption_->NPV();
     }
 
     Real SwaptionHelper::blackPrice(Volatility sigma) const {
+        calculate();
         Handle<Quote> vol(boost::shared_ptr<Quote>(new SimpleQuote(sigma)));
         boost::shared_ptr<PricingEngine> black(new
                                     BlackSwaptionEngine(termStructure_, vol));
@@ -105,6 +119,67 @@ namespace QuantLib {
         Real value = swaption_->NPV();
         swaption_->setPricingEngine(engine_);
         return value;
+    }
+
+    void SwaptionHelper::performCalculations() const {
+
+        Calendar calendar = index_->fixingCalendar();
+        Natural fixingDays = index_->fixingDays();
+
+        Date exerciseDate = exerciseDate_;
+        if (exerciseDate == Null<Date>())
+            exerciseDate = calendar.advance(termStructure_->referenceDate(),
+                                            maturity_,
+                                            index_->businessDayConvention());
+
+        Date startDate = calendar.advance(exerciseDate,
+                                    fixingDays, Days,
+                                    index_->businessDayConvention());
+
+        Date endDate = endDate_;
+        if (endDate == Null<Date>())
+            endDate = calendar.advance(startDate, length_,
+                                       index_->businessDayConvention());
+
+        Schedule fixedSchedule(startDate, endDate, fixedLegTenor_, calendar,
+                               index_->businessDayConvention(),
+                               index_->businessDayConvention(),
+                               DateGeneration::Forward, false);
+        Schedule floatSchedule(startDate, endDate, index_->tenor(), calendar,
+                               index_->businessDayConvention(),
+                               index_->businessDayConvention(),
+                               DateGeneration::Forward, false);
+
+        boost::shared_ptr<PricingEngine> swapEngine(
+                             new DiscountingSwapEngine(termStructure_, false));
+
+        VanillaSwap::Type type = VanillaSwap::Receiver;
+
+        VanillaSwap temp(VanillaSwap::Receiver, nominal_,
+                            fixedSchedule, 0.0, fixedLegDayCounter_,
+                            floatSchedule, index_, 0.0, floatingLegDayCounter_);
+        temp.setPricingEngine(swapEngine);
+        Real forward = temp.fairRate();
+        if(strike_ == Null<Real>()) {
+            exerciseRate_ = forward;
+        }
+        else {
+            exerciseRate_ = strike_;
+            type = strike_ <= forward ? VanillaSwap::Receiver : VanillaSwap::Payer;
+            // ensure that calibration instrument is out of the money
+        }
+        swap_ = boost::shared_ptr<VanillaSwap>(
+            new VanillaSwap(type, nominal_,
+                            fixedSchedule, exerciseRate_, fixedLegDayCounter_,
+                            floatSchedule, index_, 0.0, floatingLegDayCounter_));
+        swap_->setPricingEngine(swapEngine);
+
+        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+
+        swaption_ = boost::shared_ptr<Swaption>(new Swaption(swap_, exercise));
+
+        CalibrationHelper::performCalculations();
+
     }
 
 }

@@ -49,9 +49,13 @@ namespace QuantLib {
             registerWith(volatility_);
             registerWith(termStructure_);
         }
+
         void performCalculations() const {
             marketValue_ = blackPrice(volatility_->value());
         }
+
+        //! returns the volatility Handle
+        Handle<Quote> volatility() { return volatility_; }
 
         //! returns the actual price of the instrument (from volatility)
         Real marketValue() const { calculate(); return marketValue_; }
