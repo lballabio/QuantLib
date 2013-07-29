@@ -224,7 +224,7 @@ void LinearLeastSquaresRegressionTest::test1dLinearRegression() {
     boost::circular_buffer<Real> cx(x.begin(), x.end()), cy(y.begin(), y.end());
     LinearRegression m1(cx, cy);
 
-    for (Size i=0; i < m1.dim(); ++i) {
+    for (Size i=0; i < 2; ++i) {
         if (std::fabs(m1.standardErrors()[i]-errorsExpected[i]) > tol) {
             BOOST_ERROR("Failed to reproduce linear regression standard errors"
                 << "\n    calculated: " << m1.standardErrors()[i]

@@ -121,7 +121,7 @@ void EverestOptionTest::testCached() {
                             .withAbsoluteTolerance(tolerance)
                             .withSeed(seed));
 
-    value = option.NPV();
+    option.NPV();
     Real accuracy = option.errorEstimate();
     if (accuracy > tolerance)
         BOOST_FAIL(std::setprecision(10)

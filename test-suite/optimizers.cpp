@@ -281,6 +281,7 @@ void OptimizersTest::test() {
                   case EndCriteria::MaxIterations:
                   case EndCriteria::Unknown:
                     completed = false;
+                    break;
                   default:
                     completed = true;
                 }

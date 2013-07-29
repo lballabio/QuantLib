@@ -813,8 +813,6 @@ void InterpolationTest::testMultiSpline() {
             grid[i].push_back(temp);
     }
 
-    r = 0.01;
-
     MultiCubicSpline<5>::data_table y5(dim);
 
     for (i = 0; i < dim[0]; ++i)
