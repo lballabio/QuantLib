@@ -550,6 +550,7 @@ void BarrierOptionTest::testPerturbative() {
                     << "\n  expected:   " << std::setprecision(8) << expected);
     }
 
+    /* Too slow, skip
     order = 2;
     engine = boost::shared_ptr<PricingEngine>(
          new PerturbativeBarrierOptionEngine(stochProcess, order, zeroGamma));
@@ -563,6 +564,7 @@ void BarrierOptionTest::testPerturbative() {
                     << "\n  calculated: " << std::setprecision(8) << calculated
                     << "\n  expected:   " << std::setprecision(8) << expected);
     }
+    */
 }
 
 void BarrierOptionTest::testLocalVolAndHestonComparison() {
