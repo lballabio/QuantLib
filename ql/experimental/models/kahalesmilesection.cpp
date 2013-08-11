@@ -172,6 +172,7 @@ namespace QuantLib {
                 }
                 boost::shared_ptr<cFunction> cFct;
                 if(exponentialExtrapolation_) {
+                    QL_REQUIRE(-cp0/c0 > 0.0, "dummy"); // this is caught below
                     cFct = boost::shared_ptr<cFunction>(new cFunction(-cp0/c0 ,std::log(c0)-cp0/c0*k0));
                 }
                 else {
