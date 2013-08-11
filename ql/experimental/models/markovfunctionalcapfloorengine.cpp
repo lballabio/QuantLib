@@ -84,12 +84,12 @@ namespace QuantLib {
                     strike = arguments_.floorRates[i];
                     Real floorlet;
                     if(fixingDate <= settlement) {
-                        floorlet = std::max( arguments_.forwards[i] - strike , 0.0 ) * f;
+                        floorlet = std::max( - ( arguments_.forwards[i] - strike ) , 0.0 ) * f * arguments_.accrualTimes[i];
                     }
                     else {
                         for(Size j=0;j<z.size();j++) {
                             Real floatingLegNpv = (model_->zerobond(valueDate,fixingDate,z[j]) - model_->zerobond(paymentDate,fixingDate,z[j]));
-                            Real fixedLegNpv = arguments_.capRates[i] * arguments_.accrualTimes[i] * model_->zerobond(paymentDate,fixingDate,z[j]); 
+                            Real fixedLegNpv = arguments_.floorRates[i] * arguments_.accrualTimes[i] * model_->zerobond(paymentDate,fixingDate,z[j]); 
                             p[j] = std::max( - ( floatingLegNpv - fixedLegNpv ) , 0.0) / model_->numeraire(fixingTime,z[j]);
                         }
                         CubicInterpolation payoff(z.begin(),z.end(),p.begin(),CubicInterpolation::Spline,true,CubicInterpolation::Lagrange,0.0,CubicInterpolation::Lagrange,0.0);
