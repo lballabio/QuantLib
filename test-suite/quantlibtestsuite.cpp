@@ -52,6 +52,7 @@
 #include "batesmodel.hpp"
 #include "bermudanswaption.hpp"
 #include "blackdeltacalculator.hpp"
+#include "blackformula.hpp"
 #include "bonds.hpp"
 #include "brownianbridge.hpp"
 #include "calendars.hpp"
@@ -252,6 +253,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(QUANTLIB_TEST_CASE(startTimer));
     test->add(QUANTLIB_TEST_CASE(configure));
 
+
     test->add(AmericanOptionTest::suite());
     test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite());
@@ -261,6 +263,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(BasketOptionTest::suite());
     test->add(BatesModelTest::suite());
     test->add(BermudanSwaptionTest::suite());
+    test->add(BlackFormulaTest::suite());
     test->add(BondTest::suite());
     test->add(BrownianBridgeTest::suite());
     test->add(CalendarTest::suite());

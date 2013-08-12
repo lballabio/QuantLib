@@ -11,6 +11,7 @@ QL_TESTS = \
 	batesmodel.hpp batesmodel.cpp \
 	bermudanswaption.hpp bermudanswaption.cpp \
 	blackdeltacalculator.hpp blackdeltacalculator.cpp \
+	blackformula.hpp blackformula.cpp \
 	bonds.hpp bonds.cpp \
 	brownianbridge.hpp brownianbridge.cpp \
 	calendars.hpp calendars.cpp \

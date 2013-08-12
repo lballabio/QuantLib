@@ -25,6 +25,7 @@
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/solvers1d/newtonsafe.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <boost/math/special_functions/atanh.hpp>
 
 namespace {
     void checkParameters(QuantLib::Real strike,
@@ -375,4 +376,77 @@ namespace QuantLib {
             payoff->strike(), forward, stdDev, discount);
     }
 
+    static Real h(Real eta) {
+
+        const static Real  A0          = 3.994961687345134e-1;
+        const static Real  A1          = 2.100960795068497e+1;
+        const static Real  A2          = 4.980340217855084e+1;
+        const static Real  A3          = 5.988761102690991e+2;
+        const static Real  A4          = 1.848489695437094e+3;
+        const static Real  A5          = 6.106322407867059e+3;
+        const static Real  A6          = 2.493415285349361e+4;
+        const static Real  A7          = 1.266458051348246e+4;
+
+        const static Real  B0          = 1.000000000000000e+0;
+        const static Real  B1          = 4.990534153589422e+1;
+        const static Real  B2          = 3.093573936743112e+1;
+        const static Real  B3          = 1.495105008310999e+3;
+        const static Real  B4          = 1.323614537899738e+3;
+        const static Real  B5          = 1.598919697679745e+4;
+        const static Real  B6          = 2.392008891720782e+4;
+        const static Real  B7          = 3.608817108375034e+3;
+        const static Real  B8          = -2.067719486400926e+2;
+        const static Real  B9          = 1.174240599306013e+1;
+
+        QL_REQUIRE(eta>=0.0,
+                       "eta (" << eta << ") must be non-negative");
+
+        const Real num = A0 + eta * (A1 + eta * (A2 + eta * (A3 + eta * (A4 + eta
+                    * (A5 + eta * (A6 + eta * A7))))));
+
+        const Real den = B0 + eta * (B1 + eta * (B2 + eta * (B3 + eta * (B4 + eta
+                    * (B5 + eta * (B6 + eta * (B7 + eta * (B8 + eta * B9))))))));
+
+        return std::sqrt(eta) * (num / den);
+
+    }
+
+    Real bachelierBlackFormulaImpliedVol(Option::Type optionType,
+                                   Real strike,
+                                   Real forward,
+                                   Real tte,
+                                   Real bachelierPrice,
+                                   Real discount) {
+
+        const static Real SQRT_QL_EPSILON = std::sqrt(QL_EPSILON);
+
+        QL_REQUIRE(tte>0.0,
+                   "tte (" << tte << ") must be positive");
+
+        Real forwardPremium = bachelierPrice/discount;
+
+        Real straddlePremium;
+        if (optionType==Option::Call){
+            straddlePremium = 2.0 * forwardPremium - (forward - strike);
+        } else {
+            straddlePremium = 2.0 * forwardPremium + (forward - strike);
+        }
+
+        Real nu = (forward - strike) / straddlePremium;
+        QL_REQUIRE(nu<=1.0,
+                   "nu (" << nu << ") must be <= 1.0");
+        QL_REQUIRE(nu>=-1.0,
+                     "nu (" << nu << ") must be >= -1.0");
+
+        nu = std::max(-1.0 + QL_EPSILON, std::min(nu,1.0 - QL_EPSILON));
+
+        // nu / arctanh(nu) -> 1 as nu -> 0
+        Real eta = (std::fabs(nu) < SQRT_QL_EPSILON) ? 1.0 : nu / boost::math::atanh(nu);
+
+        Real heta = h(eta);
+
+        Real impliedBpvol = std::sqrt(M_PI / (2 * tte)) * straddlePremium * heta;
+
+        return impliedBpvol;
+    }
 }
