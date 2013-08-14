@@ -477,6 +477,9 @@
 				RelativePath=".\blackdeltacalculator.cpp">
 			</File>
 			<File
+				RelativePath=".\blackformula.cpp">
+			</File>
+			<File
 				RelativePath=".\bonds.cpp">
 			</File>
 			<File
@@ -839,6 +842,9 @@
 			</File>
 			<File
 				RelativePath=".\blackdeltacalculator.hpp">
+			</File>
+			<File
+				RelativePath=".\blackformula.hpp">
 			</File>
 			<File
 				RelativePath=".\bonds.hpp">

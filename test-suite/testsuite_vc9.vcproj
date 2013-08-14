@@ -896,6 +896,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\blackformula.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\bonds.cpp"
 				>
 			</File>
@@ -1378,6 +1382,10 @@
 			</File>
 			<File
 				RelativePath=".\blackdeltacalculator.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\blackformula.hpp"
 				>
 			</File>
 			<File

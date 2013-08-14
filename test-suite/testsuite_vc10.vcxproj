@@ -634,6 +634,7 @@
     <ClCompile Include="batesmodel.cpp" />
     <ClCompile Include="bermudanswaption.cpp" />
     <ClCompile Include="blackdeltacalculator.cpp" />
+    <ClCompile Include="blackformula.cpp" />
     <ClCompile Include="bonds.cpp" />
     <ClCompile Include="brownianbridge.cpp" />
     <ClCompile Include="calendars.cpp" />
@@ -757,6 +758,7 @@
     <ClInclude Include="batesmodel.hpp" />
     <ClInclude Include="bermudanswaption.hpp" />
     <ClInclude Include="blackdeltacalculator.hpp" />
+    <ClInclude Include="blackformula.hpp" />
     <ClInclude Include="bonds.hpp" />
     <ClInclude Include="brownianbridge.hpp" />
     <ClInclude Include="calendars.hpp" />
