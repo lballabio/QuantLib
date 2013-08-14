@@ -4366,7 +4366,7 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
                     Real numerical = SI(abcd2,xMin,xMax);
                     Real analytical = instVol->covariance(xMin,xMax,T1,T2);
                     if (std::abs(analytical-numerical)>precision) {
-                        BOOST_TEST_MESSAGE("     T1=" << T1 << "," <<
+                        BOOST_ERROR("     T1=" << T1 << "," <<
                             "T2=" << T2 << ",\t\t" <<
                             "xMin=" << xMin << "," <<
                             "xMax=" << xMax << ",\t\t" <<
@@ -4376,7 +4376,7 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
                     if (T1==T2) {
                         Real variance = instVol->variance(xMin,xMax,T1);
                         if (std::abs(analytical-variance)>1e-14) {
-                            BOOST_FAIL("     T1=" << T1 << "," <<
+                            BOOST_ERROR("     T1=" << T1 << "," <<
                                 "T2=" << T2 << ",\t\t" <<
                                 "xMin=" << xMin << "," <<
                                 "xMax=" << xMax << ",\t\t" <<
