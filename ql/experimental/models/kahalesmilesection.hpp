@@ -38,7 +38,7 @@
 
 
 // numerical constants, still experimental
-#define QL_KAHALE_FMAX 1000.0
+//#define QL_KAHALE_FMAX 1000.0
 #define QL_KAHALE_SMAX 5.0
 #define QL_KAHALE_ACC 1E-12        
 #define QL_KAHALE_ACC_RELAX 1E-5  // this is an accuracy in option prices
@@ -76,8 +76,8 @@ namespace QuantLib {
                 Real alpha = (d20-d21)/(log(k0_)-log(k1_));
                 Real beta = d20-alpha*log(k0_);
                 s_ = -1.0 / alpha;
-                f_ = std::min(exp(s_*(beta+s_/2.0)), QL_KAHALE_FMAX); // cap ?
-                //f_ = exp(s_*(beta+s_/2.0));
+                //f_ = std::min(exp(s_*(beta+s_/2.0)), QL_KAHALE_FMAX); // cap ?
+                f_ = exp(s_*(beta+s_/2.0));
                 cFunction cTmp(f_,s_,a,0.0);
                 b_ = c0_-cTmp(k0_);
                 cFunction c(f_,s_,a,b_);

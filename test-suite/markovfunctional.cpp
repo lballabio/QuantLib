@@ -908,8 +908,8 @@ void MarkovFunctionalTest::testVanillaEngines() {
             swaptionP.setPricingEngine(mfSwaptionEngine1);
             Real mfPriceCall = swaptionC.NPV();
             Real mfPricePut = swaptionP.NPV();
-            if( (blackPriceCall - mfPriceCall) > tol1 ) BOOST_ERROR("Basket 1 / flat termstructures: Call premium market (" << blackPriceCall << ") does not match model premium (" << mfPriceCall << ")");
-            if( (blackPricePut - mfPricePut) > tol1 ) BOOST_ERROR("Basket 1 / flat termstructures: Put premium market (" << blackPricePut << ") does not match model premium (" << mfPricePut << ")");
+            if( fabs(blackPriceCall - mfPriceCall) > tol1 ) BOOST_ERROR("Basket 1 / flat termstructures: Call premium market (" << blackPriceCall << ") does not match model premium (" << mfPriceCall << ")");
+            if( fabs(blackPricePut - mfPricePut) > tol1 ) BOOST_ERROR("Basket 1 / flat termstructures: Put premium market (" << blackPricePut << ") does not match model premium (" << mfPricePut << ")");
         }
     }
 
@@ -954,7 +954,7 @@ void MarkovFunctionalTest::testVanillaEngines() {
         Real blackPrice = c2[i].NPV();
         c2[i].setPricingEngine(mfCapFloorEngine2);
         Real mfPrice = c2[i].NPV();
-        if( (blackPrice - mfPrice) > tol1 ) BOOST_ERROR("Basket 2 / flat termstructures: Cap/Floor premium market (" << blackPrice << ") does not match model premium (" << mfPrice << ")");
+        if( fabs(blackPrice - mfPrice) > tol1 ) BOOST_ERROR("Basket 2 / flat termstructures: Cap/Floor premium market (" << blackPrice << ") does not match model premium (" << mfPrice << ")");
     }
 
     // Calibration Basket 1 / real yts, vts
@@ -998,8 +998,8 @@ void MarkovFunctionalTest::testVanillaEngines() {
             Real mfPricePut = swaptionP.NPV();
             Real smileCorrectionCall = (outputs3.marketCallPremium_[i][j]-outputs3.marketRawCallPremium_[i][j]); // we can not expect to match the black scholes price where the smile is adjusted
             Real smileCorrectionPut = (outputs3.marketPutPremium_[i][j]-outputs3.marketRawPutPremium_[i][j]); 
-            if( (blackPriceCall - mfPriceCall + smileCorrectionCall) > tol1 ) BOOST_ERROR("Basket 1 / real termstructures: Call premium market (" << blackPriceCall << ") does not match model premium (" << mfPriceCall << ")");
-            if( (blackPricePut - mfPricePut + smileCorrectionPut) > tol1 ) BOOST_ERROR("Basket 1 / real termstructures: Put premium market (" << blackPricePut << ") does not match model premium (" << mfPricePut << ")");
+            if( fabs(blackPriceCall - mfPriceCall + smileCorrectionCall) > tol1 ) BOOST_ERROR("Basket 1 / real termstructures: Call premium market (" << blackPriceCall << ") does not match model premium (" << mfPriceCall << ")");
+            if( fabs(blackPricePut - mfPricePut + smileCorrectionPut) > tol1 ) BOOST_ERROR("Basket 1 / real termstructures: Put premium market (" << blackPricePut << ") does not match model premium (" << mfPricePut << ")");
         }
     }
 
@@ -1021,7 +1021,7 @@ void MarkovFunctionalTest::testVanillaEngines() {
     MarkovFunctional::ModelOutputs outputs4 = mf4->modelOutputs();
     //BOOST_MESSAGE(outputs4);
 
-    boost::shared_ptr<BlackCapFloorEngine> blackCapFloorEngine4(new BlackCapFloorEngine(flatYts(),flatOptionletVts()));
+    boost::shared_ptr<BlackCapFloorEngine> blackCapFloorEngine4(new BlackCapFloorEngine(md0Yts_,md0OptionletVts_));
     boost::shared_ptr<MarkovFunctionalCapFloorEngine> mfCapFloorEngine4(new MarkovFunctionalCapFloorEngine(mf4,64,7.0));
     std::vector<CapFloor> c4;
     c4.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex4,0.01));
@@ -1029,14 +1029,14 @@ void MarkovFunctionalTest::testVanillaEngines() {
     c4.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex4,0.03));
     c4.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex4,0.04));
     c4.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex4,0.05));
-    c4.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex4,0.07));
-    c4.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex4,0.10));
+    c4.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex4,0.06));
+    //c4.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex4,0.10)); //exclude because caplet stripper fails for this strike
     c4.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex4,0.01));
     c4.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex4,0.02));
     c4.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex4,0.03));
     c4.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex4,0.04));
     c4.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex4,0.05));
-    c4.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex4,0.07));
+    c4.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex4,0.06));
     //c4.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex4,0.10)); //exclude because caplet stripper fails for this strike
 
     for(Size i=0;i<c4.size();i++) {
@@ -1044,7 +1044,7 @@ void MarkovFunctionalTest::testVanillaEngines() {
         Real blackPrice = c4[i].NPV();
         c4[i].setPricingEngine(mfCapFloorEngine4);
         Real mfPrice = c4[i].NPV();
-        if( (blackPrice - mfPrice) > tol1 ) BOOST_ERROR("Basket 2 / real termstructures: Cap/Floor premium market (" << blackPrice << ") does not match model premium (" << mfPrice << ")");
+        if( fabs(blackPrice - mfPrice) > tol1 ) BOOST_ERROR("Basket 2 / real termstructures: Cap/Floor premium market (" << blackPrice << ") does not match model premium (" << mfPrice << ")");
     }
 
     Settings::instance().evaluationDate() = savedEvalDate;
