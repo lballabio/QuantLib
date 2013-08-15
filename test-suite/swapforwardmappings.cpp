@@ -460,10 +460,10 @@ test_suite* SwapForwardMappingsTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(
         &SwapForwardMappingsTest::testForwardSwapJacobians));
-#if !defined(QL_NO_UBLAS_SUPPORT)
-    suite->add(QUANTLIB_TEST_CASE(
-        &SwapForwardMappingsTest::testForwardCoterminalMappings));
-#endif
+// #if !defined(QL_NO_UBLAS_SUPPORT)
+//     suite->add(QUANTLIB_TEST_CASE(
+//         &SwapForwardMappingsTest::testForwardCoterminalMappings));
+// #endif
     return suite;
 }
 
