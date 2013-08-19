@@ -6,6 +6,7 @@ this_include_HEADERS = \
 	all.hpp \
 	actual360.hpp \
 	actual365fixed.hpp \
+	actual365nl.hpp \
 	actualactual.hpp \
 	business252.hpp \
 	one.hpp \
