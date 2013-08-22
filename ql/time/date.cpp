@@ -26,6 +26,14 @@
 #include <ql/errors.hpp>
 #include <iomanip>
 #include <ctime>
+
+#if BOOST_VERSION >= 103300
+#include <boost/date_time/gregorian/gregorian.hpp>
+namespace bt=boost::gregorian;
+#endif
+
+
+
 #if defined(BOOST_NO_STDC_NAMESPACE)
     namespace std { using ::time; using ::time_t; using ::tm;
                     using ::gmtime; using ::localtime; }
@@ -57,6 +65,19 @@ namespace QuantLib {
 
         serialNumber_ = d + offset + yearOffset(y);
     }
+
+#if BOOST_VERSION >= 103300
+    Date::Date(const std::string& d, const std::string& f) {
+        bt::date_input_facet *facet = new bt::date_input_facet(f.c_str());
+        bt::date boostDate, iniDate(1901, 1, 1);
+        std::istringstream is(d);
+        is.imbue(std::locale(std::cout.getloc(), facet));
+        is>>boostDate;
+        bt::date_duration noDays = boostDate - iniDate;
+        serialNumber_ = noDays.days() + minimumSerialNumber();
+        checkSerialNumber(serialNumber_);
+    }
+#endif
 
     Month Date::month() const {
         Day d = dayOfYear(); // dayOfYear is 1 based
@@ -483,6 +504,22 @@ namespace QuantLib {
             }
             return out;
         }
+
+#if BOOST_VERSION >= 103300
+        std::ostream& operator<<(std::ostream& out,
+                                 const userdefined_date_holder& holder) {
+            const Date& d = holder.d;
+            if (d == Date()) {
+                out << "null date";
+            } else {
+                bt::date boostDate(d.year(), d.month(), d.dayOfMonth());
+                bt::date_facet *facet = new bt::date_facet(holder.f.c_str());
+                out.imbue(std::locale(std::cout.getloc(), facet));
+                out << boostDate;
+            }
+            return out;
+        }
+#endif
     }
 
     namespace io {
@@ -498,6 +535,12 @@ namespace QuantLib {
         detail::iso_date_holder iso_date(const Date& d) {
             return detail::iso_date_holder(d);
         }
+
+#if BOOST_VERSION >= 103300
+        detail::userdefined_date_holder userdefined_date(const Date& d, const std::string& f) {
+            return detail::userdefined_date_holder(d, f);
+        }
+#endif
 
     }
 
