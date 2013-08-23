@@ -34,7 +34,7 @@ namespace QuantLib {
 
         \ingroup daycounters
     */
-    class Actual365NL : public DayCounter {
+    class Actual365NoLeap : public DayCounter {
     private:
         class Impl : public DayCounter::Impl {
         public:
@@ -74,9 +74,9 @@ namespace QuantLib {
             }
         };
     public:
-        Actual365NL()
+        Actual365NoLeap()
         : DayCounter(boost::shared_ptr<DayCounter::Impl>(
-                                                 new Actual365NL::Impl)) {}
+                                                new Actual365NoLeap::Impl)) {}
     };
 
 }
