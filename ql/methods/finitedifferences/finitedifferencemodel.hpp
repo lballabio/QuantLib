@@ -106,7 +106,7 @@ namespace QuantLib {
                 Time now = t, next = t-dt;
                 if (std::fabs(to-next) < std::sqrt(QL_EPSILON)) next = to;
                 bool hit = false;
-                for (Integer j = stoppingTimes_.size()-1; j >= 0 ; --j) {
+                for (Integer j = static_cast<Integer>(stoppingTimes_.size())-1; j >= 0 ; --j) {
                     if (next <= stoppingTimes_[j] && stoppingTimes_[j] < now) {
                         // a stopping time was hit
                         hit = true;
