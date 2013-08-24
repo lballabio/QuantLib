@@ -164,13 +164,13 @@ namespace QuantLib {
 
     Disposable<Array> SparseILUPreconditioner::forwardSolve(
                                                        const Array& b) const {
-        Size n = b.size();
+        Integer n = b.size();
         Array y(n, 0.0);
         y[0]=b[0]/L_(0,0);
-        for (Size i=1; i<=n-1; ++i) {
+        for (Integer i=1; i<=n-1; ++i) {
             y[i] = b[i]/L_(i,i);
             for (Integer j=lBands_.size()-1;
-                 j>=0 && i-lBands_[j] <= i-1; --j) {
+                 j>=0 && i-Integer(lBands_[j]) <= i-1; --j) {
                 y[i]-=L_(i,i-lBands_[j])*y[i-lBands_[j]]/L_(i,i);
             }
         }
