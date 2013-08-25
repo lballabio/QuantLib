@@ -84,11 +84,11 @@ namespace QuantLib {
         du[0] = urng_->next().value; 
         du[1] = urng_->next().value;
 
-        return evolve(t0, x0, dt, dw, du);
+        return evolveImpl(t0, x0, dt, dw, du);
     }
 
-    Real GemanRoncoroniProcess::evolve(Time t0, Real x0, Time dt, 
-                                       Real dw, const Array& du) const {
+    Real GemanRoncoroniProcess::evolveImpl(Time t0, Real x0, Time dt,
+                                       	   Real dw, const Array& du) const {
         Real retVal;
         const Time t = t0 + 0.5*dt;
         const Real mu = alpha_ + beta_*t + gamma_*std::cos(eps_ +2*M_PI*t)

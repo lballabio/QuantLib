@@ -45,6 +45,8 @@ namespace QuantLib {
             Time t, const Array& x = Null<Array>()) const;
         Disposable<Matrix> covariance(
             Time t, const Array& x = Null<Array>()) const;
+
+        using LfmCovarianceParameterization::integratedCovariance;
         virtual Real integratedCovariance(
             Size i, Size j, Time t, const Array& x = Null<Array>()) const;
 

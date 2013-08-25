@@ -58,7 +58,7 @@ namespace QuantLib {
 
         const boost::shared_ptr<Fdm1dMesher> em2(
             new FdmBlackScholesMesher(
-                    xGrid_, p2_, maturity, p2_->x0(), 
+                    yGrid_, p2_, maturity, p2_->x0(),
                     Null<Real>(), Null<Real>(), 0.0001, 1.5, 
                     std::pair<Real, Real>(p2_->x0(), 0.1)));
 

@@ -59,9 +59,9 @@ namespace QuantLib {
         Real diffusion(Time t, Real x) const;
         Real stdDeviation(Time t0, Real x0, Time dt)    const;
         Real evolve(Time t0, Real x0, Time dt, Real dw) const;
+        Real evolveImpl(Time t0, Real x0, Time dt,
+        			    Real dw, const Array& du) const;
 
-        Real evolve(Time t0, Real x0, Time dt, Real dw, const Array& du) const;
-        
     private:
         const Real x0_;
         const Real alpha_, beta_, gamma_, delta_;
