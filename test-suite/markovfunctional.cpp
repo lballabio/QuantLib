@@ -164,7 +164,7 @@ namespace {
                           0.00386,0.00491,0.00647,0.00837,0.01033,0.01218,0.01382,0.01527,0.01654,0.0177,0.01872,0.01959,0.0203,0.02088,0.02132,0.02164,0.02186,
                           0.02202,0.02213,0.02222,0.02229,0.02234,0.02238,0.02241,0.02243,0.02244,0.02245,0.02247,0.0225,0.02284,0.02336,0.02407,0.0245 };
 
-        Period q6mh1[] = {1*Days,2*Days,3*Days,1*Weeks,1*Months,2*Months,3*Months,4*Months,5*Months,6*Months};
+        Period q6mh1[] = {1*Days,1*Days,1*Days,1*Weeks,1*Months,2*Months,3*Months,4*Months,5*Months,6*Months};
 
         Period q6mh2[] = {7*Months, 8*Months, 9*Months, 10*Months, 11*Months, 1*Years,13*Months,14*Months,15*Months,16*Months,17*Months,18*Months,19*Months,20*Months,
                           21*Months,22*Months,23*Months,2*Years,3*Years,4*Years,5*Years,6*Years,7*Years,8*Years,9*Years,10*Years,
@@ -172,7 +172,7 @@ namespace {
                           21*Years,22*Years,23*Years,24*Years,25*Years,26*Years,27*Years,28*Years,29*Years,30*Years,
                           35*Years,40*Years,50*Years,60*Years};
 
-        for(int i=0;i<10+18+37;i++) {
+        for(int i=0;i<10+15+35;i++) {
             q6m.push_back(boost::shared_ptr<Quote>(new SimpleQuote(q6mh[i])));
         }
 
@@ -189,7 +189,7 @@ namespace {
             }
         }
 
-        for(int i=0;i<18+32;i++) {
+        for(int i=0;i<15+35;i++) {
             if(i+7 == 12 || i+7 == 18 || i+7 >= 24) {
                 r6m.push_back(boost::shared_ptr<SwapRateHelper>(new SwapRateHelper(Handle<Quote>(q6m[10+i]),q6mh2[i],TARGET(),Annual,ModifiedFollowing,Actual360(),euribor6mEmpty)));
             }

@@ -104,7 +104,7 @@ namespace QuantLib {
         Size dateNumber = stoppingTimes_.size();
         bool lastDateIsResTime = false;
         Integer firstIndex = -1;
-        Integer lastIndex = dateNumber - 1;
+        Integer lastIndex = static_cast<Integer>(dateNumber) - 1;
         bool firstDateIsZero = false;
         Time firstNonZeroDate = getResidualTime();
 
