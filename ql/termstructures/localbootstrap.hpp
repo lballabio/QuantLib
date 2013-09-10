@@ -230,7 +230,7 @@ namespace QuantLib {
             PenaltyFunction<Curve> currentCost(
                         ts_,
                         initialDataPt,
-                        ts_->instruments_.begin() + (iInst - localisation_+1),
+                        ts_->instruments_.begin() + ((iInst+1) - localisation_),
                         ts_->instruments_.begin() + (iInst+1));
 
             Problem toSolve(currentCost, solverConstraint, startArray);

@@ -302,7 +302,7 @@ namespace QuantLib {
                    "no more than 5 weekday in a given (month, year)");
         Weekday first = Date(1, m, y).weekday();
         Size skip = nth - (dayOfWeek>=first ? 1 : 0);
-        return Date(1 + dayOfWeek-first + skip*7, m, y);
+        return Date((1 + dayOfWeek + skip*7) - first, m, y);
     }
 
     Integer Date::monthLength(Month m, bool leapYear) {
