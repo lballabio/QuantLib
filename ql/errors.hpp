@@ -31,6 +31,7 @@
 #include <boost/shared_ptr.hpp>
 #include <exception>
 #include <sstream>
+#include <string>
 
 namespace QuantLib {
 
