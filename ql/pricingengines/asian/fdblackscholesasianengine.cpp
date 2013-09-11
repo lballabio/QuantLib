@@ -83,7 +83,7 @@ namespace QuantLib {
         stoppingTimes.push_back(std::vector<Time>(averageTimes));
         stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
                 new FdmArithmeticAverageCondition(
-                        averageTimes,
+                        averageTimes, 0,
                         arguments_.pastFixings, mesher, 0)));
 
         boost::shared_ptr<FdmStepConditionComposite> conditions(
