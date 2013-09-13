@@ -38,7 +38,7 @@ void BlackFormulaTest::testBachelierImpliedVol(){
     Real discount = 0.95;
 
     Real d[] = {-3.0, -2.0, -1.0, -0.5, 0.0, 0.5, 1.0, 2.0, 3.0};
-    for(int i=0;i<LENGTH(d);++i){
+    for(Size i=0;i<LENGTH(d);++i){
 
 
         Real strike = forward - d[i] * bpvol * std::sqrt(tte);
