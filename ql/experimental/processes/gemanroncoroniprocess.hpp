@@ -60,16 +60,13 @@ namespace QuantLib {
         Real stdDeviation(Time t0, Real x0, Time dt)    const;
         Real evolve(Time t0, Real x0, Time dt, Real dw) const;
 
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Woverloaded-virtual"
-#endif
         Real evolve(Time t0, Real x0, Time dt, Real dw, const Array& du) const;
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif
         
     private:
+        // avoid clang++ warnings
+        Disposable<Array> evolve(Time t0, const Array& x0,
+                                 Time dt, const Array& dw) const;
+
         const Real x0_;
         const Real alpha_, beta_, gamma_, delta_;
         const Real eps_, zeta_, d_; 
