@@ -247,8 +247,8 @@ namespace QuantLib {
             // need to do backwards updating
             if (flowsFound)
             {
-                Size nextStepToUse  = std::min(currentStep-1, finalStepDone);
-                Size nextStepIndex = nextStepToUse+1;
+                Integer nextStepToUse  = std::min<Integer>(currentStep-1, finalStepDone);
+                Integer nextStepIndex = nextStepToUse+1;
                 if (nextStepIndex != Size(stepToUse)) // then we need to update V
                 {
 
@@ -602,8 +602,8 @@ namespace QuantLib {
             // need to do backwards updating
             if (flowsFound)
             {
-                Size nextStepToUse  = std::min(currentStep-1, finalStepDone);
-                Size nextStepIndex = nextStepToUse+1;
+                Integer nextStepToUse  = std::min<Integer>(currentStep-1, finalStepDone);
+                Integer nextStepIndex = nextStepToUse+1;
                 if (nextStepIndex != Size(stepToUse)) // then we need to update V
                 {
 
@@ -1013,8 +1013,8 @@ namespace QuantLib {
             // need to do backwards updating
             if (flowsFound)
             {
-                Size nextStepToUse  = std::min(currentStep-1, finalStepDone);
-                Size nextStepIndex = nextStepToUse+1;
+                Integer nextStepToUse  = std::min<Integer>(currentStep-1, finalStepDone);
+                Integer nextStepIndex = nextStepToUse+1;
                 if (nextStepIndex != Size(stepToUse)) // then we need to update V
                 {
 

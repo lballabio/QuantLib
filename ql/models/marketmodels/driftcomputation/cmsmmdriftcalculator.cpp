@@ -91,7 +91,9 @@ namespace QuantLib {
                  j>=static_cast<Integer>(alive_)-1; --j)
             {
                 double sr = cs.cmSwapRate(j+1,spanningFwds_);
-                Integer endIndex = std::min(j+spanningFwds_+1,numberOfRates_);
+                Integer endIndex =
+                    std::min<Integer>(j + static_cast<Integer>(spanningFwds_) + 1,
+                             static_cast<Integer>(numberOfRates_));
                 Real first = sr * wkaj_[k][j+1];
                 Real second = cs.cmSwapAnnuity(numberOfRates_,j+1,spanningFwds_)
                 * (sr+displacements_[j+1])
