@@ -29,12 +29,12 @@ namespace QuantLib {
 
     FdmArithmeticAverageCondition::FdmArithmeticAverageCondition(
                                     const std::vector<Time> & averageTimes,
-                                    Real fixedSum, Size pastFixings,
+                                    Real, Size pastFixings,
                                     const boost::shared_ptr<FdmMesher> & mesher,
                                     Size equityDirection)
     : x_(mesher->layout()->dim()[equityDirection]),
       a_(mesher->layout()->dim()[equityDirection == 0 ? 1 : 0]),
-      averageTimes_(averageTimes), fixedSum_(fixedSum),
+      averageTimes_(averageTimes),
       pastFixings_(pastFixings), mesher_(mesher),
       equityDirection_(equityDirection) {
 

@@ -87,7 +87,7 @@ namespace QuantLib {
         return evolve(t0, x0, dt, dw, du);
     }
 
-    Real GemanRoncoroniProcess::evolve(Time t0, Real x0, Time dt, 
+    Real GemanRoncoroniProcess::evolve(Time t0, Real x0, Time dt,
                                        Real dw, const Array& du) const {
         Real retVal;
         const Time t = t0 + 0.5*dt;

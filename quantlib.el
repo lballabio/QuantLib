@@ -94,7 +94,7 @@
             "#define " guard "\n"
             "\n\n\n"
             "#endif\n"))
-  (previous-line 3))
+  (forward-line -3))
 
 (defun ql-add-sample-header ()
   (insert "#include <ql/qldefines.hpp>\n"))
@@ -104,6 +104,6 @@
   (insert "namespace QuantLib {\n"
           "\n\n\n"
           "}\n")
-  (previous-line 3)
+  (forward-line -3)
   (c-indent-command))
 

@@ -33,7 +33,7 @@ namespace QuantLib {
       public:
         FdmArithmeticAverageCondition(
                                 const std::vector<Time> & averageTimes,
-                                Real fixedSum, Size pastFixings,
+                                Real, Size pastFixings,
                                 const boost::shared_ptr<FdmMesher> & mesher,
                                 Size equityDirection);
 
@@ -44,7 +44,6 @@ namespace QuantLib {
         Array a_; // average values in physical units
 
         const std::vector<Time> averageTimes_;
-        const Real fixedSum_;
         const Size pastFixings_;
         const boost::shared_ptr<FdmMesher> mesher_;
         const Size equityDirection_;

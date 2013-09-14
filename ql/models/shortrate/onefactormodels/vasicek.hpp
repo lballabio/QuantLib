@@ -82,7 +82,7 @@ namespace QuantLib {
                  Real r0)
         : ShortRateDynamics(boost::shared_ptr<StochasticProcess1D>(
                              new OrnsteinUhlenbeckProcess(a, sigma, r0 - b))),
-          a_(a), b_(b), r0_(r0) {}
+          b_(b) {}
 
         virtual Real variable(Time, Rate r) const {
             return r - b_;
@@ -91,7 +91,7 @@ namespace QuantLib {
             return x + b_;
         }
       private:
-        Real a_, b_, r0_;
+        Real b_;
     };
 
 

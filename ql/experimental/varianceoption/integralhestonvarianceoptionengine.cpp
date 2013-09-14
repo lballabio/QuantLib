@@ -179,7 +179,7 @@ namespace {
         for (j=0;j<=mm-1;j++)
         {
             caux=std::pow(-1.0,j);
-            caux2=-2.0*pi*(double)(mm*j)*0.5/(double)mm;
+            caux2=-2.0*pi*(double)mm*(double)j*0.5/(double)mm;
             caux3=ui*caux2;
             csum=csum+ff[j+1]*caux*std::exp(caux3);
         }
