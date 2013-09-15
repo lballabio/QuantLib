@@ -64,8 +64,7 @@ namespace QuantLib {
         
     private:
         // avoid clang++ warnings
-        Disposable<Array> evolve(Time t0, const Array& x0,
-                                 Time dt, const Array& dw) const;
+        using StochasticProcess::evolve;
 
         const Real x0_;
         const Real alpha_, beta_, gamma_, delta_;
