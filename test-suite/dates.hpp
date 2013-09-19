@@ -31,6 +31,7 @@ class DateTest {
     static void ecbDates();
     static void immDates();
     static void isoDates();
+    static void parseDates();
     static boost::unit_test_framework::test_suite* suite();
 };
 

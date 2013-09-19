@@ -264,12 +264,47 @@ void DateTest::isoDates() {
     }
 }
 
+void DateTest::parseDates() {
+    BOOST_TEST_MESSAGE("Testing parsing of dates...");
+
+    std::string input_date("2006-01-15");
+    Date d = DateParser::parseFormatted(input_date, "%Y-%m-%d");
+    if (d != Date(15, January, 2006)) {
+        BOOST_FAIL("date parsing failed\n"
+                   << " input date:  " << input_date << "\n"
+                   << " parsed date: " << d);
+    }
+
+    input_date = "12/02/2012";
+    d = DateParser::parseFormatted(input_date, "%m/%d/%Y");
+    if (d != Date(2, December, 2012)) {
+        BOOST_FAIL("date parsing failed\n"
+                   << " input date:  " << input_date << "\n"
+                   << " parsed date: " << d);
+    }
+    d = DateParser::parseFormatted(input_date, "%d/%m/%Y");
+    if (d != Date(12, February, 2012)) {
+        BOOST_FAIL("date parsing failed\n"
+                   << " input date:  " << input_date << "\n"
+                   << " parsed date: " << d);
+    }
+
+    input_date = "20011002";
+    d = DateParser::parseFormatted(input_date, "%Y%m%d");
+    if (d != Date(2, October, 2001)) {
+        BOOST_FAIL("date parsing failed\n"
+                   << " input date:  " << input_date << "\n"
+                   << " parsed date: " << d);
+    }
+}
+
 test_suite* DateTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Date tests");
     suite->add(QUANTLIB_TEST_CASE(&DateTest::testConsistency));
     suite->add(QUANTLIB_TEST_CASE(&DateTest::ecbDates));
     suite->add(QUANTLIB_TEST_CASE(&DateTest::immDates));
     suite->add(QUANTLIB_TEST_CASE(&DateTest::isoDates));
+    suite->add(QUANTLIB_TEST_CASE(&DateTest::parseDates));
     return suite;
 }
 

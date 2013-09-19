@@ -96,10 +96,6 @@ namespace QuantLib {
         explicit Date(BigInteger serialNumber);
         //! More traditional constructor.
         Date(Day d, Month m, Year y);
-#if BOOST_VERSION >= 103300
-        //! Variable "from string" constructor.
-        Date(const std::string& d, const std::string& f);
-#endif
         //@}
         //! \name inspectors
         //@{

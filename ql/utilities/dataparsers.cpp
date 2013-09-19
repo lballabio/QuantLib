@@ -28,6 +28,8 @@
 #include <boost/lexical_cast.hpp>
 #endif
 #include <boost/algorithm/string/case_conv.hpp>
+#include <boost/date_time/gregorian/gregorian.hpp>
+#include <locale>
 #include <cctype>
 #if defined(BOOST_NO_STDC_NAMESPACE)
     namespace std { using ::toupper; }
@@ -112,6 +114,7 @@ namespace QuantLib {
         return list;
     }
 
+#ifndef QL_DISABLE_DEPRECATED
     Date DateParser::parse(const std::string& str, const std::string& fmt) {
         std::vector<std::string> slist;
         std::vector<std::string> flist;
@@ -138,6 +141,20 @@ namespace QuantLib {
             }
         }
         return Date(d,Month(m),y);
+    }
+#endif
+
+    Date DateParser::parseFormatted(const std::string& str,
+                                    const std::string& fmt) {
+        using namespace boost::gregorian;
+
+        date boostDate;
+        std::istringstream is(str);
+        is.imbue(std::locale(std::locale(),
+                             new date_input_facet(fmt.c_str())));
+        is >> boostDate;
+        date_duration noDays = boostDate - date(1901, 1, 1);
+        return Date(1, January, 1901) + noDays.days();
     }
 
     Date DateParser::parseISO(const std::string& str) {

@@ -66,19 +66,6 @@ namespace QuantLib {
         serialNumber_ = d + offset + yearOffset(y);
     }
 
-#if BOOST_VERSION >= 103300
-    Date::Date(const std::string& d, const std::string& f) {
-        bt::date_input_facet *facet = new bt::date_input_facet(f.c_str());
-        bt::date boostDate, iniDate(1901, 1, 1);
-        std::istringstream is(d);
-        is.imbue(std::locale(std::cout.getloc(), facet));
-        is>>boostDate;
-        bt::date_duration noDays = boostDate - iniDate;
-        serialNumber_ = noDays.days() + minimumSerialNumber();
-        checkSerialNumber(serialNumber_);
-    }
-#endif
-
     Month Date::month() const {
         Day d = dayOfYear(); // dayOfYear is 1 based
         Integer m = d/30 + 1;
