@@ -24,15 +24,9 @@
 #include <ql/time/date.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/errors.hpp>
+#include <boost/date_time/gregorian/gregorian.hpp>
 #include <iomanip>
 #include <ctime>
-
-#if BOOST_VERSION >= 103300
-#include <boost/date_time/gregorian/gregorian.hpp>
-namespace bt=boost::gregorian;
-#endif
-
-
 
 #if defined(BOOST_NO_STDC_NAMESPACE)
     namespace std { using ::time; using ::time_t; using ::tm;
@@ -492,21 +486,21 @@ namespace QuantLib {
             return out;
         }
 
-#if BOOST_VERSION >= 103300
         std::ostream& operator<<(std::ostream& out,
-                                 const userdefined_date_holder& holder) {
+                                 const formatted_date_holder& holder) {
+            using namespace boost::gregorian;
             const Date& d = holder.d;
             if (d == Date()) {
                 out << "null date";
             } else {
-                bt::date boostDate(d.year(), d.month(), d.dayOfMonth());
-                bt::date_facet *facet = new bt::date_facet(holder.f.c_str());
-                out.imbue(std::locale(std::cout.getloc(), facet));
+                date boostDate(d.year(), d.month(), d.dayOfMonth());
+                out.imbue(std::locale(std::locale(),
+                                      new date_facet(holder.f.c_str())));
                 out << boostDate;
             }
             return out;
         }
-#endif
+
     }
 
     namespace io {
@@ -523,11 +517,10 @@ namespace QuantLib {
             return detail::iso_date_holder(d);
         }
 
-#if BOOST_VERSION >= 103300
-        detail::userdefined_date_holder userdefined_date(const Date& d, const std::string& f) {
-            return detail::userdefined_date_holder(d, f);
+        detail::formatted_date_holder formatted_date(const Date& d,
+                                                     const std::string& f) {
+            return detail::formatted_date_holder(d, f);
         }
-#endif
 
     }
 
