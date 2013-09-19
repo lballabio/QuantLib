@@ -220,6 +220,14 @@ namespace QuantLib {
         };
         std::ostream& operator<<(std::ostream&, const iso_date_holder&);
 
+        struct formatted_date_holder {
+            formatted_date_holder(const Date& d, const std::string& f)
+            : d(d), f(f) {}
+            Date d;
+            std::string f;
+        };
+        std::ostream& operator<<(std::ostream&, const formatted_date_holder&);
+
     }
 
     namespace io {
@@ -235,6 +243,11 @@ namespace QuantLib {
         //! output dates in ISO format (yyyy-mm-dd)
         /*! \ingroup manips */
         detail::iso_date_holder iso_date(const Date&);
+
+        //! output dates in user defined format using boost date functionality
+        /*! \ingroup manips */
+        detail::formatted_date_holder formatted_date(const Date&,
+                                                     const std::string& fmt);
 
     }
 

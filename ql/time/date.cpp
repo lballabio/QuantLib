@@ -24,8 +24,10 @@
 #include <ql/time/date.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/errors.hpp>
+#include <boost/date_time/gregorian/gregorian.hpp>
 #include <iomanip>
 #include <ctime>
+
 #if defined(BOOST_NO_STDC_NAMESPACE)
     namespace std { using ::time; using ::time_t; using ::tm;
                     using ::gmtime; using ::localtime; }
@@ -483,6 +485,22 @@ namespace QuantLib {
             }
             return out;
         }
+
+        std::ostream& operator<<(std::ostream& out,
+                                 const formatted_date_holder& holder) {
+            using namespace boost::gregorian;
+            const Date& d = holder.d;
+            if (d == Date()) {
+                out << "null date";
+            } else {
+                date boostDate(d.year(), d.month(), d.dayOfMonth());
+                out.imbue(std::locale(std::locale(),
+                                      new date_facet(holder.f.c_str())));
+                out << boostDate;
+            }
+            return out;
+        }
+
     }
 
     namespace io {
@@ -497,6 +515,11 @@ namespace QuantLib {
 
         detail::iso_date_holder iso_date(const Date& d) {
             return detail::iso_date_holder(d);
+        }
+
+        detail::formatted_date_holder formatted_date(const Date& d,
+                                                     const std::string& f) {
+            return detail::formatted_date_holder(d, f);
         }
 
     }
