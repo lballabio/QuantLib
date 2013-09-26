@@ -58,9 +58,10 @@ namespace QuantLib {
 
         for(Size i=0;i<tmp.size();i++) {
             if(fabs(tmp[i]) < QL_EPSILON ||
-               (tmp[i]*f_ >= section.minStrike() && tmp[i]*f_ <= section.maxStrike()))
+               (tmp[i]*f_ >= section.minStrike() && tmp[i]*f_ <= section.maxStrike())) {
                 m_.push_back( tmp[i] );
                 k_.push_back( tmp[i] * f_ );
+            }
         }
 
         c_.push_back(f_);
