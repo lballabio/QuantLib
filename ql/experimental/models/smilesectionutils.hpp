@@ -33,15 +33,17 @@ namespace QuantLib {
     //! smile-section utilities
     class SmileSectionUtils {
       public:
-        SmileSectionUtils(const SmileSection& section,
-                          const std::vector<Real>& moneynessGrid = std::vector<Real>(),
-                          const Real atm = Null<Real>());
+        SmileSectionUtils(const SmileSection &section,
+                          const std::vector<Real> &moneynessGrid =
+                              std::vector<Real>(),
+                          const Real atm = Null<Real>(),
+                          const bool deleteArbitragePoints = false);
 
-        const std::pair<Real,Real> arbitragefreeRegion() const;
-        const std::pair<Size,Size> arbitragefreeIndices() const;
-        const std::vector<Real>& moneyGrid() const { return m_; }
-        const std::vector<Real>& strikeGrid() const { return k_; }
-        const std::vector<Real>& callPrices() const { return c_; }
+        const std::pair<Real, Real> arbitragefreeRegion() const;
+        const std::pair<Size, Size> arbitragefreeIndices() const;
+        const std::vector<Real> &moneyGrid() const { return m_; }
+        const std::vector<Real> &strikeGrid() const { return k_; }
+        const std::vector<Real> &callPrices() const { return c_; }
         const Real atmLevel() const { return f_; }
 
       private:
@@ -50,7 +52,6 @@ namespace QuantLib {
         Size leftIndex_, rightIndex_;
         Real f_;
     };
-
 }
 
 #endif
