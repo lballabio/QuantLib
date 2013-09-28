@@ -30,6 +30,7 @@
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmaffinemodeltermstructure.hpp>
+#include <ql/cashflows/coupon.hpp>
 
 #include <map>
 
@@ -120,11 +121,6 @@ namespace QuantLib {
                     iterExerciseDate, fwd->referenceDate(),
                     fwdModel_)));
 
-            swap_->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                new DiscountingSwapEngine(
-                    disTs_, boost::none,
-                    iterExerciseDate+index_->fixingDays(),
-                    iterExerciseDate)));
         }
         else {
             boost::dynamic_pointer_cast<FdmAffineModelTermStructure>(
@@ -133,7 +129,22 @@ namespace QuantLib {
                 fwdTs_.currentLink())->setVariable(fwdRate);
         }
 
-        return std::max(0.0, swap_->NPV());
+        Real npv = 0.0;
+        for (Size j = 0; j < 2; j++) {
+            for (Leg::const_iterator i = swap_->leg(j).begin();
+                 i != swap_->leg(j).end(); ++i) {
+                npv += boost::dynamic_pointer_cast<Coupon>(*i)
+                                    ->accrualStartDate() >= iterExerciseDate
+                            ? (*i)->amount() * disTs_->discount((*i)->date())
+                            : 0.0;
+            }
+            if (j == 0)
+                npv *= -1.0;
+        }
+        if (swap_->type() == VanillaSwap::Receiver)
+            npv *= -1.0;
+
+        return std::max(0.0, npv);
     }
 
     template <class ModelType> inline
