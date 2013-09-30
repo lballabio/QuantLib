@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/models/smilesectionutils.hpp>
+#include <ql/math/comparison.hpp>
 
 namespace QuantLib {
 
@@ -67,20 +68,30 @@ namespace QuantLib {
             k_.push_back(0.0);
         }
 
+        bool minStrikeAdded = false, maxStrikeAdded = false;
         for (Size i = 0; i < tmp.size(); i++) {
-            if ((tmp[i] * f_ >= section.minStrike() &&
-                 tmp[i] * f_ <= section.maxStrike())) {
-                m_.push_back(tmp[i]);
-                k_.push_back(tmp[i] * f_);
-            } else { // if the section provides a limited strike range
-                     // we put the respective endpoint in our grid
-                     // in order to not loose too much information
-                if (tmp[i] * f_ < section.minStrike()) {
+            Real k = tmp[i] * f_;
+            if ((k >= section.minStrike() &&
+                 k <= section.maxStrike())) {
+                if(!minStrikeAdded || !close(k,section.minStrike())) {
+                    m_.push_back(tmp[i]);
+                    k_.push_back(k);
+                }
+                if(close(k,section.maxStrike()))
+                    maxStrikeAdded = true;
+            }
+            else { // if the section provides a limited strike range
+                   // we put the respective endpoint in our grid
+                   // in order to not loose too much information
+                if (k < section.minStrike() && !minStrikeAdded) {
                     m_.push_back(section.minStrike() / f_);
                     k_.push_back(section.minStrike());
-                } else {
+                    minStrikeAdded = true;
+                }
+                if (k > section.maxStrike() && !maxStrikeAdded) {
                     m_.push_back(section.maxStrike() / f_);
                     k_.push_back(section.maxStrike());
+                    maxStrikeAdded = true;
                 }
             }
         }
