@@ -278,7 +278,7 @@ namespace QuantLib {
             QL_REQUIRE (d2.dx_[i] == d2.dx_[i-1], "bucket size varies in d2");
 
         // force offset 0
-        QL_REQUIRE (d1.xmin_ == 0.0 && d1.xmin_ == 0.0,
+        QL_REQUIRE (d1.xmin_ == 0.0 && d2.xmin_ == 0.0,
                  "distributions offset larger than 0");
 
         Distribution dist(d1.size() + d2.size() - 1,
