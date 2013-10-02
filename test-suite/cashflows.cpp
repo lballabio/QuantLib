@@ -23,6 +23,7 @@
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
 #include <ql/quotes/simplequote.hpp>
@@ -244,12 +245,33 @@ void CashFlowsTest::testDefaultSettlementDate() {
         BOOST_ERROR("null accrued amount with default settlement date");
 }
 
+void CashFlowsTest::testNullFixingDays() {
+    BOOST_TEST_MESSAGE("Testing ibor leg construction with null fixing days...");
+    Date today = Settings::instance().evaluationDate();
+    Schedule schedule =
+        MakeSchedule()
+        .from(today-2*Months).to(today+4*Months)
+        .withFrequency(Semiannual)
+        .withCalendar(TARGET())
+        .withConvention(Following)
+        .backwards();
+
+    boost::shared_ptr<IborIndex> index(new USDLibor(6*Months));
+    Leg leg = IborLeg(schedule, index)
+        .withNotionals(100.0)
+        // this can happen with default values, and caused an
+        // exception when the null was not managed properly
+        .withFixingDays(Null<Natural>());
+}
 
 test_suite* CashFlowsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Cash flows tests");
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testSettings));
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testAccessViolation));
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testDefaultSettlementDate));
+    #ifndef QL_USE_INDEXED_COUPON
+    suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testNullFixingDays));
+    #endif
     return suite;
 }
 
