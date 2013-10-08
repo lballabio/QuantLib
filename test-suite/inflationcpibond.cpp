@@ -161,6 +161,12 @@ namespace {
                          ii->frequency(),ii->interpolated(), baseZeroRate,
                          Handle<YieldTermStructure>(yTS), helpers)));
         }
+
+        // teardown
+        ~CommonVars() {
+            // break circular references and allow curves to be destroyed
+            cpiTS.linkTo(boost::shared_ptr<ZeroInflationTermStructure>());
+        }
     };
 
 }
