@@ -34,10 +34,13 @@ namespace {
     {
         QL_REQUIRE(strike>=0.0,
                    "strike (" << strike << ") must be non-negative");
-        QL_REQUIRE(forward>0.0,
-                   "forward (" << forward << ") must be positive");
-        QL_REQUIRE(displacement>=0.0,
-                   "displacement (" << displacement << ") must be non-negative");
+        QL_REQUIRE(forward + displacement > 0.0, "forward + displacement ("
+                                                     << forward << " + "
+                                                     << displacement
+                                                     << ") must be positive");
+        QL_REQUIRE(displacement >= 0.0, "displacement ("
+                                            << displacement
+                                            << ") must be non-negative");
     }
 }
 
