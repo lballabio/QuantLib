@@ -17,40 +17,26 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file africa.hpp
-    \brief African currencies
-
+/*
     Data from http://fx.sauder.ubc.ca/currency_table.html
     and http://www.thefinancials.com/vortex/CurrencyFormats.html
 */
 
-#ifndef quantlib_african_currencies_hpp
-#define quantlib_african_currencies_hpp
-
-#include <ql/currency.hpp>
-
-#if defined(QL_PATCH_MSVC)
-#pragma warning(push)
-#pragma warning(disable:4819)
-#endif
+#include <ql/currencies/africa.hpp>
 
 namespace QuantLib {
 
-    //! South-African rand
-    /*! The ISO three-letter code is ZAR; the numeric code is 710.
-        It is divided into 100 cents.
-
-        \ingroup currencies
+    // South-African rand
+    /* The ISO three-letter code is ZAR; the numeric code is 710.
+       It is divided into 100 cents.
     */
-    class ZARCurrency : public Currency {
-      public:
-        ZARCurrency();
-    };
+	ZARCurrency::ZARCurrency() {
+        static boost::shared_ptr<Data> zarData(
+                                new Data("South-African rand", "ZAR", 710,
+                                         "R", "", 100,
+                                         Rounding(),
+                                         "%3% %1$.2f"));
+        data_ = zarData;
+    }
 
 }
-
-#if defined(QL_PATCH_MSVC)
-#pragma warning(pop)
-#endif
-
-#endif
