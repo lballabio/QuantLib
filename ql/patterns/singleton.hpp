@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2004, 2005, 2007 StatPro Italia srl
+ Copyright (C) 2013 Simon Shakeshaft
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,7 +25,7 @@
 #ifndef quantlib_singleton_hpp
 #define quantlib_singleton_hpp
 
-#include <ql/types.hpp>
+//#include <ql/types.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/noncopyable.hpp>
 #include <map>
@@ -68,24 +69,8 @@ namespace QuantLib {
         //! access to the unique instance
         static T& instance();
       protected:
-        Singleton() {}
+        Singleton();
     };
-
-    // template definitions
-
-    template <class T>
-    T& Singleton<T>::instance() {
-        static std::map<Integer, boost::shared_ptr<T> > instances_;
-        #if defined(QL_ENABLE_SESSIONS)
-        Integer id = sessionId();
-        #else
-        Integer id = 0;
-        #endif
-        boost::shared_ptr<T>& instance = instances_[id];
-        if (!instance)
-            instance = boost::shared_ptr<T>(new T);
-        return *instance;
-    }
 
     // reverts the change above
     #if defined(QL_PATCH_MSVC71)
