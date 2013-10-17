@@ -71,8 +71,9 @@ namespace QuantLib {
         bool minStrikeAdded = false, maxStrikeAdded = false;
         for (Size i = 0; i < tmp.size(); i++) {
             Real k = tmp[i] * f_;
-            if ((k >= section.minStrike() &&
-                 k <= section.maxStrike())) {
+            if ( tmp[i] <= QL_EPSILON ||
+                (k >= section.minStrike() &&
+                 k <= section.maxStrike()) ) {
                 if(!minStrikeAdded || !close(k,section.minStrike())) {
                     m_.push_back(tmp[i]);
                     k_.push_back(k);
