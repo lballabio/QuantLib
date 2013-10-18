@@ -27,10 +27,12 @@
 
 #include <ql/time/date.hpp>
 #include <ql/patterns/observable.hpp>
-#include <ql/patterns/visitor.hpp>
+//#include <ql/patterns/visitor.hpp>
 #include <boost/optional.hpp>
 
 namespace QuantLib {
+
+    class AcyclicVisitor;
 
     //! Base class for event
     /*! This class acts as a base class for the actual

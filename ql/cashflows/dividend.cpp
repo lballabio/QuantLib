@@ -19,6 +19,7 @@
 */
 
 #include <ql/cashflows/dividend.hpp>
+#include <ql/patterns/visitor.hpp>
 
 namespace QuantLib {
 

@@ -27,7 +27,7 @@
 #define quantlib_business_day_convention_hpp
 
 #include <ql/qldefines.hpp>
-#include <ostream>
+#include <iosfwd>
 
 namespace QuantLib {
 
