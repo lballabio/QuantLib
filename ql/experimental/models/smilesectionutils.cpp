@@ -116,22 +116,23 @@ namespace QuantLib {
 
         while(!done) {
 
-            bool isAf;
+            bool isAf = true;
             done=true;
 
-            do {
+            while (isAf && rightIndex_ < k_.size() - 1) {
                 rightIndex_++;
                 isAf = af(leftIndex_, rightIndex_, rightIndex_) &&
                     af(leftIndex_, rightIndex_ - 1, rightIndex_);
-            } while (isAf && rightIndex_ < k_.size() - 1);
+            }
             if (!isAf)
                 rightIndex_--;
 
-            do {
+            isAf = true;
+            while (isAf && leftIndex_ > 1) {
                 leftIndex_--;
                 isAf = af(leftIndex_, leftIndex_, rightIndex_) &&
                     af(leftIndex_, leftIndex_ + 1, rightIndex_);
-            } while (isAf && leftIndex_ > 1);
+            }
             if (!isAf)
                 leftIndex_++;
 
