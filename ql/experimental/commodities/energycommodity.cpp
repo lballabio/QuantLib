@@ -149,7 +149,7 @@ namespace QuantLib {
                                            const CommodityType& commodityType,
                                            Real totalQuantityValue,
                                            const Date& evaluationDate) const {
-        secondaryCostAmounts_.empty();
+        secondaryCostAmounts_.clear();
         if (secondaryCosts_ != 0) {
             const Currency& baseCurrency =
                 CommoditySettings::instance().currency();

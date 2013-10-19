@@ -169,7 +169,7 @@ namespace QuantLib {
         //
         std::vector<Real> lgdsTmp, lgds = this->remainingBasket_->LGDs();
         lgdsTmp = lgds;
-        std::remove(lgds.begin(), lgds.end(), 0.);
+        lgds.erase(std::remove(lgds.begin(), lgds.end(), 0.), lgds.end());
         loss_unit_ = *(std::min_element(lgds.begin(), lgds.end()))
             / nBuckets_;
 

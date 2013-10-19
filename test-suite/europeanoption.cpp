@@ -126,6 +126,7 @@ namespace {
             engine = boost::shared_ptr<PricingEngine>(
                  new BinomialVanillaEngine<CoxRossRubinstein>(stochProcess,
                                                               binomialSteps));
+            break;
           case EQP:
             engine = boost::shared_ptr<PricingEngine>(
                  new BinomialVanillaEngine<AdditiveEQPBinomialTree>(

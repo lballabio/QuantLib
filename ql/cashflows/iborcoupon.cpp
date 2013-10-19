@@ -63,7 +63,7 @@ namespace QuantLib {
             fixingEndDate_ = index_->maturityDate(fixingValueDate_);
         else { // par coupon approximation
             Date nextFixingDate = fixingCalendar.advance(
-                accrualEndDate_, -static_cast<Integer>(fixingDays), Days);
+                accrualEndDate_, -static_cast<Integer>(fixingDays_), Days);
             fixingEndDate_ = fixingCalendar.advance(
                 nextFixingDate, indexFixingDays, Days);
         }
