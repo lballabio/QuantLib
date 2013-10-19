@@ -618,6 +618,19 @@ void FdHestonTest::testFdmHestonConvergence() {
 }
 
 namespace {
+	class spline_fct : public std::unary_function<Real, Real> {
+	  public:
+		template <class I1, class I2>
+		spline_fct(const I1& xBegin, const I1& xEnd, const I2& yBegin)
+		: spline_(new CubicNaturalSpline(xBegin, xEnd, yBegin)) {}
+
+		Real operator()(Real x) {
+			return (*spline_)(x, true);
+		}
+	  private:
+		const boost::shared_ptr<CubicInterpolation> spline_;
+	};
+
     Real fokkerPlanckPrice1D(const boost::shared_ptr<FdmMesher>& mesher,
                              const boost::shared_ptr<FdmLinearOpComposite>& op,
                              const boost::shared_ptr<StrikedTypePayoff>& payoff,
@@ -670,8 +683,7 @@ namespace {
             payoffTimesDensity[i] = payoff->operator()(std::exp(x[i]))*p[i];
         }
 
-        const CubicNaturalSpline f(x.begin(), x.end(),
-                                   payoffTimesDensity.begin());
+        const spline_fct f(x.begin(), x.end(), payoffTimesDensity.begin());
         return GaussLobattoIntegral(1000, 1e-6)(f, x.front(), x.back());
     }
 }
@@ -980,12 +992,11 @@ namespace {
         q_fct(const Array& v, const Array& p, const Real alpha)
         : v_(v), q_(Pow(v, alpha)*p), alpha_(alpha) {
             spline_ = boost::shared_ptr<CubicInterpolation>(
-                new MonotonicCubicNaturalSpline(v_.begin(), v_.end(),
-                                                q_.begin()));
+                new CubicNaturalSpline(v_.begin(), v_.end(), q_.begin()));
         }
 
         Real operator()(Real v) {
-            return spline_->operator()(v)*std::pow(v, -alpha_);
+            return (*spline_)(v, true)*std::pow(v, -alpha_);
         }
       private:
 
@@ -1154,13 +1165,12 @@ namespace {
                                              p.begin() + (i+1)*x.size(), 0.0);
 
             if (sum > 100*QL_EPSILON) {
-                const CubicNaturalSpline f(x.begin(), x.end(),
-                                           p.begin()+i*x.size());
+                const spline_fct f(x.begin(), x.end(), p.begin()+i*x.size());
                 intX[i]=GaussLobattoIntegral(1000000, 1e-6)(f,x.front(),x.back());
             }
         }
 
-        const CubicNaturalSpline f(y.begin(), y.end(), intX.begin());
+        const spline_fct f(y.begin(), y.end(), intX.begin());
         return GaussLobattoIntegral(1000000, 1e-6)(f, y.front(), y.back());
     }
 }
