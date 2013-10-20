@@ -23,6 +23,10 @@
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/comparison.hpp>
 
+#if BOOST_VERSION >= 103500
+#include <boost/math/distributions/normal.hpp>
+#endif
+
 namespace QuantLib {
 
     Real CumulativeNormalDistribution::operator()(Real z) const {
@@ -166,4 +170,25 @@ namespace QuantLib {
         return average_ + result*sigma_;
     }
 
+#if BOOST_VERSION >= 103500
+	class MaddockInverseCumulativeNormal::normal_distribution {
+	  public:
+		normal_distribution(Real average, Real sigma)
+		: nd_(average, sigma) {}
+		const boost::math::normal_distribution<Real>& get() {
+			return nd_;
+		}
+	  private:
+		const boost::math::normal_distribution<Real> nd_;
+	};
+
+    MaddockInverseCumulativeNormal::MaddockInverseCumulativeNormal(
+    	Real average, Real sigma)
+    : pImpl_(new MaddockInverseCumulativeNormal::normal_distribution(
+    			average, sigma)) {}
+
+	Real MaddockInverseCumulativeNormal::operator()(Real x) const {
+		return boost::math::quantile(pImpl_->get(), x);
+	}
+#endif
 }

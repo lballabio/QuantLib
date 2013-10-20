@@ -424,7 +424,7 @@ void ConvertibleBondTest::testRegression() {
                                       .withTenor(6*Months)
                                       .withCalendar(calendar)
                                       .withConvention(Unadjusted);
-    Integer settlementDays = 3;
+    Natural settlementDays = 3;
     shared_ptr<Exercise> exercise(new EuropeanExercise(maturityDate));
     Real conversionRatio = 100.0/20.3175;
     std::vector<Rate> coupons(schedule.size()-1, 0.05);
