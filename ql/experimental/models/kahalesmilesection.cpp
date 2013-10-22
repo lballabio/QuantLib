@@ -120,37 +120,30 @@ namespace QuantLib {
                 cp1 = (sec + secr) / 2.0;
                 aHelper ah(k0, k1, c0, c1, cp0, cp1);
                 Real a;
+                bool valid=false;
                 try {
                     a = brent.solve(
                         ah, QL_KAHALE_ACC, 0.5 * (cp1 + (1.0 + cp0)),
                         cp1 + QL_KAHALE_EPS, 1.0 + cp0 - QL_KAHALE_EPS);
                     // numerical parameters hardcoded here
+                    valid=true;
                 }
                 catch (...) {
-                    // from theory there must exist a zero. if the solver does
-                    // not find it, it most
-                    // probably lies close one of the interval bounds. Just
-                    // choose the better bound
-                    // and relax the accuracy. This does not matter in practice
-                    // usually.
-                    Real la = std::fabs(ah(cp1 + QL_KAHALE_EPS));
-                    Real ra = std::fabs(ah(1.0 + cp0 - QL_KAHALE_EPS));
-                    if (la < QL_KAHALE_ACC_RELAX ||
-                        ra < QL_KAHALE_ACC_RELAX) { // tolerance hardcoded here
-                        a = la < ra ? cp1 + QL_KAHALE_EPS
-                                    : 1.0 + cp0 - QL_KAHALE_EPS;
-                    } else
-                        QL_FAIL("can not interpolate at index "
-                                << i << "strikes are " << k0 << " and " << k1
-                                << "cp0 = " << cp0 << " < (c1-c0)/(k1-k0) = "
-                                << (c1 - c0) / (k1 - k0) << " < cp1 = " << cp1
-                                << " < 1+cp0 = " << 1 + cp0);
+                    // delete the right point of the interval where we try to interpolate
+                    moneynessGrid_.erase(moneynessGrid_.begin() + (i+1) );
+                    k_.erase(k_.begin() + (i+1) );
+                    c_.erase(c_.begin() + (i+1) );
+                    cFunctions_.erase(cFunctions_.begin() + (i+1) );
+                    rightIndex_--;
+                    i--;
                 }
-                ah(a);
-                boost::shared_ptr<cFunction> cFct(
-                    new cFunction(ah.f_, ah.s_, a, ah.b_));
-                cFunctions_[leftIndex_ > 0 ? i - leftIndex_ + 1 : 0] = cFct;
-                cp0 = cp1;
+                if(valid) {
+                    ah(a);
+                    boost::shared_ptr<cFunction> cFct(
+                                                      new cFunction(ah.f_, ah.s_, a, ah.b_));
+                    cFunctions_[leftIndex_ > 0 ? i - leftIndex_ + 1 : 0] = cFct;
+                    cp0 = cp1;
+                }
             }
         }
 

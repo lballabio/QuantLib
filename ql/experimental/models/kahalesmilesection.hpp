@@ -27,18 +27,6 @@
    replaced by the extrapolating functional forms, so if you are sure that the
    input smile is globally arbitrage free and you do not want to change it in
    these strike regions you should not use this class at all.
-
-    //TODO when fitted parameters exceed certain limits, error values may be
-   returned as call prices therefore it may be useful to check the parameters
-   and throw an exception in case they are out of range (to be defined what a
-   suitable range is). in case of interpolation such an exception should be
-   caught and the right interval point should be deleted, trying to interpolate
-   to the next point then (if any left, otherwise switch to right wing
-   extrapolation). In case the solver exceeds maximum iterations (does not find
-   the zero with desired accuracy) however, we can rely on the already
-   implemented workaround (relax the accuracy) or also delete the point and
-   proceed as above. Maybe the second alternative is the better one.
-
 */
 
 #ifndef quantlib_kahale_smile_section_hpp
@@ -52,10 +40,9 @@
 #include <vector>
 
 // numerical constants, still experimental
-//#define QL_KAHALE_FMAX 1000.0
+#define QL_KAHALE_FMAX QL_MAX_REAL
 #define QL_KAHALE_SMAX 5.0
 #define QL_KAHALE_ACC 1E-12
-#define QL_KAHALE_ACC_RELAX 1E-5 // this is an accuracy in option prices
 #define QL_KAHALE_EPS QL_EPSILON
 
 namespace QuantLib {
@@ -95,9 +82,8 @@ namespace QuantLib {
                 Real alpha = (d20 - d21) / (log(k0_) - log(k1_));
                 Real beta = d20 - alpha * log(k0_);
                 s_ = -1.0 / alpha;
-                // f_ = std::min(exp(s_*(beta+s_/2.0)), QL_KAHALE_FMAX);
-                // cap ?
                 f_ = exp(s_ * (beta + s_ / 2.0));
+                QL_REQUIRE(f_<QL_KAHALE_FMAX,"dummy"); // this is caught
                 cFunction cTmp(f_, s_, a, 0.0);
                 b_ = c0_ - cTmp(k0_);
                 cFunction c(f_, s_, a, b_);
@@ -114,6 +100,7 @@ namespace QuantLib {
                 boost::math::normal normal;
                 Real d20 = boost::math::quantile(normal, -c0p_);
                 f_ = k0_ * exp(s * d20 + s * s / 2.0);
+                QL_REQUIRE(f_<QL_KAHALE_FMAX,"dummy"); // this is caught
                 cFunction c(f_, s, 0.0, 0.0);
                 return c(k0_) - c0_;
             }
@@ -129,6 +116,7 @@ namespace QuantLib {
                 boost::math::normal normal;
                 Real d21 = boost::math::quantile(normal, -c1p_);
                 f_ = k1_ * exp(s * d21 + s * s / 2.0);
+                QL_REQUIRE(f_<QL_KAHALE_FMAX,"dummy"); // this is caught
                 b_ = c0_ - f_;
                 cFunction c(f_, s, 0.0, b_);
                 return c(k1_) - c1_;
