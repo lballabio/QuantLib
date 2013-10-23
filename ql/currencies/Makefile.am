@@ -12,7 +12,12 @@ this_include_HEADERS = \
 	oceania.hpp
 
 libCurrencies_la_SOURCES = \
-	exchangeratemanager.cpp
+	africa.cpp \
+	america.cpp \
+	asia.cpp \
+	europe.cpp \
+	exchangeratemanager.cpp \
+	oceania.cpp
 
 noinst_LTLIBRARIES = libCurrencies.la
 

@@ -4709,7 +4709,22 @@
     <ClCompile Include="ql\utilities\tracing.cpp">
       <Filter>utilities</Filter>
     </ClCompile>
+    <ClCompile Include="ql\currencies\africa.cpp">
+      <Filter>currencies</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\currencies\america.cpp">
+      <Filter>currencies</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\currencies\asia.cpp">
+      <Filter>currencies</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\currencies\europe.cpp">
+      <Filter>currencies</Filter>
+    </ClCompile>
     <ClCompile Include="ql\currencies\exchangeratemanager.cpp">
+      <Filter>currencies</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\currencies\oceania.cpp">
       <Filter>currencies</Filter>
     </ClCompile>
     <ClCompile Include="ql\processes\batesprocess.cpp">
