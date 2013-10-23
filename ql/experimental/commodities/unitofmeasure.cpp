@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/commodities/unitofmeasure.hpp>
+#include <ostream>
 
 namespace QuantLib {
 
