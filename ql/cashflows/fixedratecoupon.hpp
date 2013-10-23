@@ -28,6 +28,7 @@
 #define quantlib_fixed_rate_coupon_hpp
 
 #include <ql/cashflows/coupon.hpp>
+#include <ql/patterns/visitor.hpp>
 #include <ql/interestrate.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/time/schedule.hpp>

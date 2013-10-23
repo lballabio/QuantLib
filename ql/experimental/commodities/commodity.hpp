@@ -27,7 +27,7 @@
 #include <ql/instrument.hpp>
 #include <ql/money.hpp>
 #include <vector>
-#include <ostream>
+#include <iosfwd>
 
 namespace QuantLib {
 

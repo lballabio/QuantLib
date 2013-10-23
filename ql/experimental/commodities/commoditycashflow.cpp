@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/commodities/commoditycashflow.hpp>
+#include <ql/patterns/visitor.hpp>
 #include <iomanip>
 
 namespace QuantLib {

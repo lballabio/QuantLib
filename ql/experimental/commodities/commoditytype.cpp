@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/commodities/commoditytype.hpp>
+#include <ostream>
 
 namespace QuantLib {
 

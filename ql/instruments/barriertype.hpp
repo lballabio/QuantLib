@@ -27,7 +27,7 @@
 #define quantlib_barrier_type_hpp
 
 #include <ql/qldefines.hpp>
-#include <ostream>
+#include <iosfwd>
 
 namespace QuantLib {
 

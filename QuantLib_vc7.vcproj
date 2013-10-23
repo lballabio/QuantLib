@@ -566,16 +566,28 @@
 			Name="currencies"
 			Filter="">
 			<File
+				RelativePath=".\ql\currencies\africa.cpp">
+			</File>
+			<File
 				RelativePath=".\ql\currencies\africa.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\currencies\all.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\currencies\america.cpp">
+			</File>
+			<File
 				RelativePath=".\ql\currencies\america.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\currencies\asia.cpp">
+			</File>
+			<File
 				RelativePath=".\ql\currencies\asia.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\currencies\europe.cpp">
 			</File>
 			<File
 				RelativePath=".\ql\currencies\europe.hpp">
@@ -585,6 +597,9 @@
 			</File>
 			<File
 				RelativePath=".\ql\currencies\exchangeratemanager.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\currencies\oceania.cpp">
 			</File>
 			<File
 				RelativePath=".\ql\currencies\oceania.hpp">

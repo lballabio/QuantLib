@@ -19,6 +19,7 @@
 */
 
 #include <ql/cashflows/coupon.hpp>
+#include <ql/patterns/visitor.hpp>
 #include <ql/time/daycounter.hpp>
 
 namespace QuantLib {

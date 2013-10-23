@@ -29,7 +29,7 @@
 #define quantlib_weekday_hpp
 
 #include <ql/qldefines.hpp>
-#include <ostream>
+#include <iosfwd>
 
 namespace QuantLib {
 

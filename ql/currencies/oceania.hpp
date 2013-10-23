@@ -29,6 +29,11 @@
 
 #include <ql/currency.hpp>
 
+#if defined(QL_PATCH_MSVC)
+#pragma warning(push)
+#pragma warning(disable:4819)
+#endif
+
 namespace QuantLib {
 
     //! Australian dollar
@@ -39,14 +44,7 @@ namespace QuantLib {
     */
     class AUDCurrency : public Currency {
       public:
-        AUDCurrency() {
-            static boost::shared_ptr<Data> audData(
-                                      new Data("Australian dollar", "AUD", 36,
-                                               "A$", "", 100,
-                                               Rounding(),
-                                               "%3% %1$.2f"));
-            data_ = audData;
-        }
+        AUDCurrency();
     };
 
     //! New Zealand dollar
@@ -57,17 +55,13 @@ namespace QuantLib {
     */
     class NZDCurrency : public Currency {
       public:
-        NZDCurrency() {
-            static boost::shared_ptr<Data> nzdData(
-                                    new Data("New Zealand dollar", "NZD", 554,
-                                             "NZ$", "", 100,
-                                             Rounding(),
-                                             "%3% %1$.2f"));
-            data_ = nzdData;
-        }
+        NZDCurrency();
     };
 
 }
 
+#if defined(QL_PATCH_MSVC)
+#pragma warning(pop)
+#endif
 
 #endif

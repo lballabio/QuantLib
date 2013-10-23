@@ -26,6 +26,7 @@
 #define quantlib_callability_schedule_hpp
 
 #include <ql/event.hpp>
+#include <ql/patterns/visitor.hpp>
 #include <ql/utilities/null.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/optional.hpp>

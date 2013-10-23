@@ -27,7 +27,7 @@
 #define quantlib_duration_hpp
 
 #include <ql/qldefines.hpp>
-#include <ostream>
+#include <iosfwd>
 
 namespace QuantLib {
 

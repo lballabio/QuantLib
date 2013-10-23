@@ -27,7 +27,7 @@
 
 #include <ql/math/rounding.hpp>
 #include <ql/errors.hpp>
-#include <ostream>
+#include <iosfwd>
 
 namespace QuantLib {
 

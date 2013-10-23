@@ -25,7 +25,7 @@
 #define quantlib_replication_hpp
 
 #include <ql/types.hpp>
-#include <ostream>
+#include <iosfwd>
 
 namespace QuantLib {
 

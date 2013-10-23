@@ -29,6 +29,11 @@
 
 #include <ql/currency.hpp>
 
+#if defined(QL_PATCH_MSVC)
+#pragma warning(push)
+#pragma warning(disable:4819)
+#endif
+
 namespace QuantLib {
 
     //! Argentinian peso
@@ -39,14 +44,7 @@ namespace QuantLib {
     */
     class ARSCurrency : public Currency {
       public:
-        ARSCurrency() {
-            static boost::shared_ptr<Data> arsData(
-                                       new Data("Argentinian peso", "ARS", 32,
-                                                "", "", 100,
-                                                Rounding(),
-                                                "%2% %1$.2f"));
-            data_ = arsData;
-        }
+        ARSCurrency();
     };
 
     //! Brazilian real
@@ -57,14 +55,7 @@ namespace QuantLib {
     */
     class BRLCurrency : public Currency {
       public:
-        BRLCurrency() {
-            static boost::shared_ptr<Data> brlData(
-                                        new Data("Brazilian real", "BRL", 986,
-                                                 "R$", "", 100,
-                                                 Rounding(),
-                                                 "%3% %1$.2f"));
-            data_ = brlData;
-        }
+        BRLCurrency();
     };
 
     //! Canadian dollar
@@ -75,14 +66,7 @@ namespace QuantLib {
     */
     class CADCurrency : public Currency {
       public:
-        CADCurrency() {
-            static boost::shared_ptr<Data> cadData(
-                                       new Data("Canadian dollar", "CAD", 124,
-                                                "Can$", "", 100,
-                                                Rounding(),
-                                                "%3% %1$.2f"));
-            data_ = cadData;
-        }
+        CADCurrency();
     };
 
     //! Chilean peso
@@ -93,14 +77,7 @@ namespace QuantLib {
     */
     class CLPCurrency : public Currency {
       public:
-        CLPCurrency() {
-            static boost::shared_ptr<Data> clpData(
-                                          new Data("Chilean peso", "CLP", 152,
-                                                   "Ch$", "", 100,
-                                                   Rounding(),
-                                                   "%3% %1$.0f"));
-            data_ = clpData;
-        }
+        CLPCurrency();
     };
 
     //! Colombian peso
@@ -111,14 +88,7 @@ namespace QuantLib {
     */
     class COPCurrency : public Currency {
       public:
-        COPCurrency() {
-            static boost::shared_ptr<Data> copData(
-                                        new Data("Colombian peso", "COP", 170,
-                                                 "Col$", "", 100,
-                                                 Rounding(),
-                                                 "%3% %1$.2f"));
-            data_ = copData;
-        }
+        COPCurrency();
     };
 
     //! Mexican peso
@@ -129,14 +99,7 @@ namespace QuantLib {
     */
     class MXNCurrency : public Currency {
       public:
-        MXNCurrency() {
-            static boost::shared_ptr<Data> mxnData(
-                                          new Data("Mexican peso", "MXN", 484,
-                                                   "Mex$", "", 100,
-                                                   Rounding(),
-                                                   "%3% %1$.2f"));
-            data_ = mxnData;
-        }
+        MXNCurrency();
     };
 
     //! Peruvian nuevo sol
@@ -147,14 +110,7 @@ namespace QuantLib {
     */
     class PENCurrency : public Currency {
       public:
-        PENCurrency() {
-            static boost::shared_ptr<Data> penData(
-                                    new Data("Peruvian nuevo sol", "PEN", 604,
-                                             "S/.", "", 100,
-                                             Rounding(),
-                                             "%3% %1$.2f"));
-            data_ = penData;
-        }
+        PENCurrency();
     };
 
     //! Peruvian inti
@@ -168,14 +124,7 @@ namespace QuantLib {
     */
     class PEICurrency : public Currency {
       public:
-        PEICurrency() {
-            static boost::shared_ptr<Data> peiData(
-                                    new Data("Peruvian inti", "PEI", 998,
-                                             "I/.", "", 100,
-                                             Rounding(),
-                                             "%3% %1$.2f"));
-            data_ = peiData;
-        }
+        PEICurrency();
     };
 
     //! Peruvian sol
@@ -189,14 +138,7 @@ namespace QuantLib {
     */
     class PEHCurrency : public Currency {
       public:
-        PEHCurrency() {
-            static boost::shared_ptr<Data> pehData(
-                                    new Data("Peruvian sol", "PEH", 999,
-                                             "S./", "", 100,
-                                             Rounding(),
-                                             "%3% %1$.2f"));
-            data_ = pehData;
-        }
+        PEHCurrency();
     };
 
     //! Trinidad & Tobago dollar
@@ -207,14 +149,7 @@ namespace QuantLib {
     */
     class TTDCurrency : public Currency {
       public:
-        TTDCurrency() {
-            static boost::shared_ptr<Data> ttdData(
-                              new Data("Trinidad & Tobago dollar", "TTD", 780,
-                                       "TT$", "", 100,
-                                       Rounding(),
-                                       "%3% %1$.2f"));
-            data_ = ttdData;
-        }
+        TTDCurrency();
     };
 
     //! U.S. dollar
@@ -225,14 +160,7 @@ namespace QuantLib {
     */
     class USDCurrency : public Currency {
       public:
-        USDCurrency() {
-            static boost::shared_ptr<Data> usdData(
-                                           new Data("U.S. dollar", "USD", 840,
-                                                    "$", "\xA2", 100,
-                                                    Rounding(),
-                                                    "%3% %1$.2f"));
-            data_ = usdData;
-        }
+        USDCurrency();
     };
 
     //! Venezuelan bolivar
@@ -243,17 +171,13 @@ namespace QuantLib {
     */
     class VEBCurrency : public Currency {
       public:
-        VEBCurrency() {
-            static boost::shared_ptr<Data> vebData(
-                                    new Data("Venezuelan bolivar", "VEB", 862,
-                                             "Bs", "", 100,
-                                             Rounding(),
-                                             "%3% %1$.2f"));
-            data_ = vebData;
-        }
+        VEBCurrency();
     };
 
 }
 
+#if defined(QL_PATCH_MSVC)
+#pragma warning(pop)
+#endif
 
 #endif

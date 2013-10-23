@@ -24,6 +24,7 @@
 #ifndef quantlib_indexed_cash_flow_hpp
 #define quantlib_indexed_cash_flow_hpp
 
+#include <ql/patterns/visitor.hpp>
 #include <ql/cashflow.hpp>
 #include <ql/index.hpp>
 

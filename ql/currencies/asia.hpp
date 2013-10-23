@@ -29,6 +29,11 @@
 
 #include <ql/currency.hpp>
 
+#if defined(QL_PATCH_MSVC)
+#pragma warning(push)
+#pragma warning(disable:4819)
+#endif
+
 namespace QuantLib {
 
     //! Bangladesh taka
@@ -39,14 +44,7 @@ namespace QuantLib {
     */
     class BDTCurrency : public Currency {
       public:
-        BDTCurrency() {
-            static boost::shared_ptr<Data> bdtData(
-                                        new Data("Bangladesh taka", "BDT", 50,
-                                                 "Bt", "", 100,
-                                                 Rounding(),
-                                                 "%3% %1$.2f"));
-            data_ = bdtData;
-        }
+        BDTCurrency();
     };
 
     //! Chinese yuan
@@ -57,14 +55,7 @@ namespace QuantLib {
     */
     class CNYCurrency : public Currency {
       public:
-        CNYCurrency() {
-            static boost::shared_ptr<Data> cnyData(
-                                          new Data("Chinese yuan", "CNY", 156,
-                                                   "Y", "", 100,
-                                                   Rounding(),
-                                                   "%3% %1$.2f"));
-            data_ = cnyData;
-        }
+        CNYCurrency();
     };
 
     //! Honk Kong dollar
@@ -75,14 +66,7 @@ namespace QuantLib {
     */
     class HKDCurrency : public Currency {
       public:
-        HKDCurrency() {
-            static boost::shared_ptr<Data> hkdData(
-                                      new Data("Honk Kong dollar", "HKD", 344,
-                                               "HK$", "", 100,
-                                               Rounding(),
-                                               "%3% %1$.2f"));
-            data_ = hkdData;
-        }
+        HKDCurrency();
     };
 
     //! Israeli shekel
@@ -93,14 +77,7 @@ namespace QuantLib {
     */
     class ILSCurrency : public Currency {
       public:
-        ILSCurrency() {
-            static boost::shared_ptr<Data> ilsData(
-                                        new Data("Israeli shekel", "ILS", 376,
-                                                 "NIS", "", 100,
-                                                 Rounding(),
-                                                 "%1$.2f %3%"));
-            data_ = ilsData;
-        }
+        ILSCurrency();
     };
 
     //! Indian rupee
@@ -111,14 +88,7 @@ namespace QuantLib {
     */
     class INRCurrency : public Currency {
       public:
-        INRCurrency() {
-            static boost::shared_ptr<Data> inrData(
-                                          new Data("Indian rupee", "INR", 356,
-                                                   "Rs", "", 100,
-                                                   Rounding(),
-                                                   "%3% %1$.2f"));
-            data_ = inrData;
-        }
+        INRCurrency();
     };
 
     //! Iraqi dinar
@@ -129,14 +99,7 @@ namespace QuantLib {
     */
     class IQDCurrency : public Currency {
       public:
-        IQDCurrency() {
-            static boost::shared_ptr<Data> iqdData(
-                                           new Data("Iraqi dinar", "IQD", 368,
-                                                    "ID", "", 1000,
-                                                    Rounding(),
-                                                    "%2% %1$.3f"));
-            data_ = iqdData;
-        }
+        IQDCurrency();
     };
 
     //! Iranian rial
@@ -147,14 +110,7 @@ namespace QuantLib {
     */
     class IRRCurrency : public Currency {
       public:
-        IRRCurrency() {
-            static boost::shared_ptr<Data> irrData(
-                                          new Data("Iranian rial", "IRR", 364,
-                                                   "Rls", "", 1,
-                                                   Rounding(),
-                                                   "%3% %1$.2f"));
-            data_ = irrData;
-        }
+        IRRCurrency();
     };
 
     //! Japanese yen
@@ -165,14 +121,7 @@ namespace QuantLib {
     */
     class JPYCurrency : public Currency {
       public:
-        JPYCurrency() {
-            static boost::shared_ptr<Data> jpyData(
-                                          new Data("Japanese yen", "JPY", 392,
-                                                   "\xA5", "", 100,
-                                                   Rounding(),
-                                                   "%3% %1$.0f"));
-            data_ = jpyData;
-        }
+        JPYCurrency();
     };
 
     //! South-Korean won
@@ -183,14 +132,7 @@ namespace QuantLib {
     */
     class KRWCurrency : public Currency {
       public:
-        KRWCurrency() {
-            static boost::shared_ptr<Data> krwData(
-                                      new Data("South-Korean won", "KRW", 410,
-                                               "W", "", 100,
-                                               Rounding(),
-                                               "%3% %1$.0f"));
-            data_ = krwData;
-        }
+        KRWCurrency();
     };
 
     //! Kuwaiti dinar
@@ -201,14 +143,7 @@ namespace QuantLib {
     */
     class KWDCurrency : public Currency {
       public:
-        KWDCurrency() {
-            static boost::shared_ptr<Data> kwdData(
-                                         new Data("Kuwaiti dinar", "KWD", 414,
-                                                  "KD", "", 1000,
-                                                  Rounding(),
-                                                  "%3% %1$.3f"));
-            data_ = kwdData;
-        }
+        KWDCurrency();
     };
 
     //! Nepal rupee
@@ -219,14 +154,7 @@ namespace QuantLib {
     */
     class NPRCurrency : public Currency {
       public:
-        NPRCurrency() {
-            static boost::shared_ptr<Data> nprData(
-                                           new Data("Nepal rupee", "NPR", 524,
-                                                    "NRs", "", 100,
-                                                    Rounding(),
-                                                    "%3% %1$.2f"));
-            data_ = nprData;
-        }
+        NPRCurrency();
     };
 
     //! Pakistani rupee
@@ -237,14 +165,7 @@ namespace QuantLib {
     */
     class PKRCurrency : public Currency {
       public:
-        PKRCurrency() {
-            static boost::shared_ptr<Data> pkrData(
-                                       new Data("Pakistani rupee", "PKR", 586,
-                                                "Rs", "", 100,
-                                                Rounding(),
-                                                "%3% %1$.2f"));
-            data_ = pkrData;
-        }
+        PKRCurrency();
     };
 
     //! Saudi riyal
@@ -255,14 +176,7 @@ namespace QuantLib {
     */
     class SARCurrency : public Currency {
       public:
-        SARCurrency() {
-            static boost::shared_ptr<Data> sarData(
-                                           new Data("Saudi riyal", "SAR", 682,
-                                                    "SRls", "", 100,
-                                                    Rounding(),
-                                                    "%3% %1$.2f"));
-            data_ = sarData;
-        }
+        SARCurrency();
     };
 
     //! %Singapore dollar
@@ -273,14 +187,7 @@ namespace QuantLib {
     */
     class SGDCurrency : public Currency {
       public:
-        SGDCurrency() {
-            static boost::shared_ptr<Data> sgdData(
-                                      new Data("Singapore dollar", "SGD", 702,
-                                               "S$", "", 100,
-                                               Rounding(),
-                                               "%3% %1$.2f"));
-            data_ = sgdData;
-        }
+        SGDCurrency();
     };
 
     //! Thai baht
@@ -291,14 +198,7 @@ namespace QuantLib {
     */
     class THBCurrency : public Currency {
       public:
-        THBCurrency() {
-            static boost::shared_ptr<Data> thbData(
-                                             new Data("Thai baht", "THB", 764,
-                                                      "Bht", "", 100,
-                                                      Rounding(),
-                                                      "%1$.2f %3%"));
-            data_ = thbData;
-        }
+        THBCurrency();
     };
 
     //! %Taiwan dollar
@@ -309,17 +209,13 @@ namespace QuantLib {
     */
     class TWDCurrency : public Currency {
       public:
-        TWDCurrency() {
-            static boost::shared_ptr<Data> twdData(
-                                         new Data("Taiwan dollar", "TWD", 901,
-                                                  "NT$", "", 100,
-                                                  Rounding(),
-                                                  "%3% %1$.2f"));
-            data_ = twdData;
-        }
+        TWDCurrency();
     };
 
 }
 
+#if defined(QL_PATCH_MSVC)
+#pragma warning(pop)
+#endif
 
 #endif

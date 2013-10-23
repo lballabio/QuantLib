@@ -28,7 +28,7 @@
 #define quantlib_frequency_hpp
 
 #include <ql/qldefines.hpp>
-#include <ostream>
+#include <iosfwd>
 
 namespace QuantLib {
 

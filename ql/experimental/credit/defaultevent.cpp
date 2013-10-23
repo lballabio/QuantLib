@@ -20,6 +20,7 @@
 
 #include <ql/experimental/credit/defaultevent.hpp>
 #include <ql/experimental/credit/recoveryratequote.hpp>
+#include <ql/patterns/visitor.hpp>
 #include <ql/settings.hpp>
 
 namespace QuantLib {

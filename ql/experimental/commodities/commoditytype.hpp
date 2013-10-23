@@ -27,7 +27,7 @@
 #include <ql/qldefines.hpp>
 #include <boost/shared_ptr.hpp>
 #include <map>
-#include <ostream>
+#include <iosfwd>
 #include <string>
 
 namespace QuantLib {

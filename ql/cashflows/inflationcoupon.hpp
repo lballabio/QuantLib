@@ -25,6 +25,7 @@
 #define quantlib_inflation_coupon_hpp
 
 #include <ql/cashflows/coupon.hpp>
+#include <ql/patterns/visitor.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/handle.hpp>
 

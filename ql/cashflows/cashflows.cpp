@@ -26,6 +26,7 @@
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/solvers1d/newtonsafe.hpp>
 #include <ql/cashflows/couponpricer.hpp>
+#include <ql/patterns/visitor.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 

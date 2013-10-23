@@ -19,6 +19,7 @@
 */
 
 #include <ql/event.hpp>
+#include <ql/patterns/visitor.hpp>
 #include <ql/settings.hpp>
 
 namespace QuantLib {
