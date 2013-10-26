@@ -22,7 +22,7 @@
 */
 
 // uncomment to enable NTL support
-//#define MF_ENABLE_NTL 
+//#define MF_ENABLE_NTL
 
 #ifndef quantlib_markovfunctional_hpp
 #define quantlib_markovfunctional_hpp
@@ -111,7 +111,7 @@ namespace QuantLib {
                               marketRateAccuracy_(1E-7), lowerRateBound_(0.0), upperRateBound_(2.0), 
                               adjustments_(KahaleSmile | KahaleExponentialExtrapolation),
                               smileMoneynessCheckpoints_(std::vector<Real>()), enableNtl_(false) {}
-            
+
             void validate() {
                 if(adjustments_ & KahaleExponentialExtrapolation) addAdjustment(KahaleSmile);
                 if(adjustments_ & KahaleInterpolation) addAdjustment(KahaleSmile);
@@ -243,10 +243,10 @@ namespace QuantLib {
                                   const Date& referenceDate = Null<Date>(), const Real y=0.0) const;
 
         const Real forwardRate(const Date& fixing, const Date& referenceDate = Null<Date>(), const Real y=0.0,
-                               const bool zeroFixingDays=false, 
+                               const bool zeroFixingDays=false,
                                boost::shared_ptr<IborIndex> iborIdx = boost::shared_ptr<IborIndex>()) const;
         const Real swapRate(const Date& fixing, const Period& tenor, const Date& referenceDate = Null<Date>(), 
-                            const Real y=0.0,const bool zeroFixingDays=false, 
+                            const Real y=0.0,const bool zeroFixingDays=false,
                             boost::shared_ptr<SwapIndex> swapIdx = boost::shared_ptr<SwapIndex>()) const;
         const Real swapAnnuity(const Date& fixing, const Period& tenor, const Date& referenceDate = Null<Date>(), 
                                const Real y=0.0,const bool zeroFixingDays=false, 
@@ -255,7 +255,7 @@ namespace QuantLib {
         const Real capletPrice(const Option::Type& type, const Date& expiry, const Rate strike, 
                                const Date& referenceDate = Null<Date>(), const Real y=0.0, const bool zeroFixingDays=false, 
                                boost::shared_ptr<IborIndex> iborIdx = boost::shared_ptr<IborIndex>()) const;
-        
+
         const Real swaptionPrice(const Option::Type& type, const Date& expiry, const Period& tenor, const Rate strike, 
                                  const Date& referenceDate = Null<Date>(), const Real y=0.0, const bool zeroFixingDays=false, 
                                  boost::shared_ptr<SwapIndex> swapIdx = boost::shared_ptr<SwapIndex>()) const;
@@ -267,7 +267,7 @@ namespace QuantLib {
         */
         const Real gaussianPolynomialIntegral(const Real a, const Real b, const Real c, const Real d, const Real e, 
                                               const Real x0, const Real x1) const;
-        
+
         /*! Computes the integral
         \f[ {2\pi}^{-0.5} \int_{a}^{b} p(x) \exp{-0.5*x*x} \mathrm{d}x \f]
         with
@@ -288,8 +288,28 @@ namespace QuantLib {
             updateNumeraireTabulation();
         }
 
+        Disposable<std::vector<bool> > FixedFirstVolatility() const {
+            std::vector<bool> c(volatilities_.size(),false);
+            c[0] = true;
+            return c;
+        }
+
+        void calibrate(
+                   const std::vector<boost::shared_ptr<CalibrationHelper> >& helper,
+                   OptimizationMethod& method,
+                   const EndCriteria& endCriteria,
+                   const Constraint& constraint = Constraint(),
+                   const std::vector<Real>& weights = std::vector<Real>(),
+                   const std::vector<bool>& parametersFreedoms = std::vector<bool>()) {
+
+            CalibratedModel::calibrate(helper,method,endCriteria,constraint,weights,
+                                       parametersFreedoms.size() == 0 ? FixedFirstVolatility() :
+                                       parametersFreedoms);
+
+        }
+
       protected:
-        
+
         void generateArguments() {
             calculate();
             updateNumeraireTabulation();
@@ -304,7 +324,7 @@ namespace QuantLib {
 
         void makeSwaptionCalibrationPoint(const Date& expiry, const Period& tenor);
         void makeCapletCalibrationPoint(const Date& expiry);
-        
+
         const Real marketSwapRate(const Date& expiry, const CalibrationPoint& p, const Real digitalPrice, 
                                   const Real guess = 0.03) const;
         const Real marketDigitalPrice(const Date& expiry, const CalibrationPoint& p, const Option::Type& type, 
@@ -337,12 +357,12 @@ namespace QuantLib {
         boost::shared_ptr<StochasticProcess1D> stateProcess_;
 
         boost::shared_ptr<Matrix> discreteNumeraire_;
-        std::vector<boost::shared_ptr<Interpolation> > numeraire_; 
+        std::vector<boost::shared_ptr<Interpolation> > numeraire_;
         // vector of interpolated numeraires in y direction for all calibration times
 
         Parameter reversion_;
         Parameter& sigma_;
-        
+
         std::vector<Date> volstepdates_;
         std::vector<Time> volsteptimes_;
         Array volsteptimesArray_; // FIXME this is redundant (just a copy of volsteptimes_)
@@ -365,7 +385,7 @@ namespace QuantLib {
 
         Array normalIntegralX_;
         Array normalIntegralW_;
-        
+
     };
 
     std::ostream& operator<<(std::ostream& out, const MarkovFunctional::ModelOutputs& m);
@@ -374,4 +394,3 @@ namespace QuantLib {
 
 
 #endif
-
