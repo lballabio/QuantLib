@@ -247,7 +247,7 @@ namespace QuantLib {
                                        Real sigma   = 1.0);
         Real operator()(Real x) const;
 
-	  private:
+      private:
         const Real average_, sigma_;
     };
 #endif
