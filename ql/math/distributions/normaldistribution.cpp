@@ -171,24 +171,13 @@ namespace QuantLib {
     }
 
 #if BOOST_VERSION >= 103500
-	class MaddockInverseCumulativeNormal::normal_distribution {
-	  public:
-		normal_distribution(Real average, Real sigma)
-		: nd_(average, sigma) {}
-		const boost::math::normal_distribution<Real>& get() {
-			return nd_;
-		}
-	  private:
-		const boost::math::normal_distribution<Real> nd_;
-	};
-
     MaddockInverseCumulativeNormal::MaddockInverseCumulativeNormal(
     	Real average, Real sigma)
-    : pImpl_(new MaddockInverseCumulativeNormal::normal_distribution(
-    			average, sigma)) {}
+    : average_(average), sigma_(sigma) {}
 
 	Real MaddockInverseCumulativeNormal::operator()(Real x) const {
-		return boost::math::quantile(pImpl_->get(), x);
+		return boost::math::quantile(
+			boost::math::normal_distribution<Real>(average_, sigma_), x);
 	}
 #endif
 }

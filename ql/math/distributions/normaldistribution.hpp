@@ -246,9 +246,9 @@ namespace QuantLib {
     	MaddockInverseCumulativeNormal(Real average = 0.0,
 									   Real sigma   = 1.0);
 		Real operator()(Real x) const;
+
 	  private:
-		class normal_distribution;
-		const boost::shared_ptr<normal_distribution> pImpl_;
+		const Real average_, sigma_;
     };
 #endif
 

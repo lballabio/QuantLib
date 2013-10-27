@@ -618,19 +618,6 @@ void FdHestonTest::testFdmHestonConvergence() {
 }
 
 namespace {
-	class spline_fct : public std::unary_function<Real, Real> {
-	  public:
-		template <class I1, class I2>
-		spline_fct(const I1& xBegin, const I1& xEnd, const I2& yBegin)
-		: spline_(new CubicNaturalSpline(xBegin, xEnd, yBegin)) {}
-
-		Real operator()(Real x) {
-			return (*spline_)(x, true);
-		}
-	  private:
-		const boost::shared_ptr<CubicInterpolation> spline_;
-	};
-
     Real fokkerPlanckPrice1D(const boost::shared_ptr<FdmMesher>& mesher,
                              const boost::shared_ptr<FdmLinearOpComposite>& op,
                              const boost::shared_ptr<StrikedTypePayoff>& payoff,
@@ -683,7 +670,8 @@ namespace {
             payoffTimesDensity[i] = payoff->operator()(std::exp(x[i]))*p[i];
         }
 
-        const spline_fct f(x.begin(), x.end(), payoffTimesDensity.begin());
+        CubicNaturalSpline f(x.begin(), x.end(), payoffTimesDensity.begin());
+        f.enableExtrapolation();
         return GaussLobattoIntegral(1000, 1e-6)(f, x.front(), x.back());
     }
 }
@@ -1165,12 +1153,14 @@ namespace {
                                              p.begin() + (i+1)*x.size(), 0.0);
 
             if (sum > 100*QL_EPSILON) {
-                const spline_fct f(x.begin(), x.end(), p.begin()+i*x.size());
+            	CubicNaturalSpline f(x.begin(), x.end(), p.begin()+i*x.size());
+            	f.enableExtrapolation();
                 intX[i]=GaussLobattoIntegral(1000000, 1e-6)(f,x.front(),x.back());
             }
         }
 
-        const spline_fct f(y.begin(), y.end(), intX.begin());
+        CubicNaturalSpline f(y.begin(), y.end(), intX.begin());
+        f.enableExtrapolation();
         return GaussLobattoIntegral(1000000, 1e-6)(f, y.front(), y.back());
     }
 }
