@@ -172,12 +172,12 @@ namespace QuantLib {
 
 #if BOOST_VERSION >= 103500
     MaddockInverseCumulativeNormal::MaddockInverseCumulativeNormal(
-    	Real average, Real sigma)
+        Real average, Real sigma)
     : average_(average), sigma_(sigma) {}
 
 	Real MaddockInverseCumulativeNormal::operator()(Real x) const {
 		return boost::math::quantile(
-			boost::math::normal_distribution<Real>(average_, sigma_), x);
+            boost::math::normal_distribution<Real>(average_, sigma_), x);
 	}
 #endif
 }

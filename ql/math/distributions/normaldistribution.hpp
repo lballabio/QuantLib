@@ -241,14 +241,14 @@ namespace QuantLib {
     */
 
     class MaddockInverseCumulativeNormal
-	: public std::unary_function<Real,Real> {
-	  public:
-    	MaddockInverseCumulativeNormal(Real average = 0.0,
-									   Real sigma   = 1.0);
-		Real operator()(Real x) const;
+    : public std::unary_function<Real,Real> {
+      public:
+        MaddockInverseCumulativeNormal(Real average = 0.0,
+                                       Real sigma   = 1.0);
+        Real operator()(Real x) const;
 
 	  private:
-		const Real average_, sigma_;
+        const Real average_, sigma_;
     };
 #endif
 
