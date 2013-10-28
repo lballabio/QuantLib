@@ -2,7 +2,7 @@
 AC_INIT([QuantLib], [1.4],
         [quantlib-dev@lists.sourceforge.net],
         [QuantLib])
-AC_PREREQ(2.50)
+AC_PREREQ(2.62)
 AC_CONFIG_SRCDIR([ql/qldefines.hpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([ql/config.hpp])
@@ -62,6 +62,17 @@ AC_PROG_LIBTOOL
 AM_CONDITIONAL(ENABLE_STATIC, test "${enable_static}" == "yes")
 
 AC_LANG([C++])
+
+AC_ARG_ENABLE([openmp],
+              AC_HELP_STRING([--enable-openmp],
+                             [If enabled, configure will try to detect
+                              and enable OpenMP support.]),
+              [ql_openmp=$enableval],
+              [ql_openmp=no])
+if test "$ql_openmp" = "yes" ; then
+   AC_OPENMP
+   AC_SUBST([CXXFLAGS],["${CXXFLAGS} ${OPENMP_CXXFLAGS}"])
+fi
 
 # Check for mandatory features
 
