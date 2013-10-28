@@ -39,10 +39,10 @@ while test $# -gt 0; do
       echo @PACKAGE_VERSION@
       ;;
     --cflags)
-      echo -I@includedir@ @BOOST_INCLUDE@
+      echo -I@includedir@ @BOOST_INCLUDE@ @OPENMP_CXXFLAGS@
       ;;
     --libs)
-      echo -L@libdir@ @BOOST_LIB@ -lQuantLib
+      echo -L@libdir@ @BOOST_LIB@ -lQuantLib @OPENMP_CXXFLAGS@
       ;;
     *)
       echo "${usage}" 1>&2
