@@ -42,7 +42,7 @@ namespace QuantLib {
                    "mismatch between money-strike vector and vol matrix rows");
 
         QL_REQUIRE(dates[0]>=referenceDate,
-                   "cannot have dates[0] <= referenceDate");
+                   "cannot have dates[0] < referenceDate");
 
         Size j, i;
         times_ = std::vector<Time>(dates.size()+1);
