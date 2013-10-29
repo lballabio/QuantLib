@@ -26,6 +26,7 @@
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/math/distributions/poissondistribution.hpp>
 #include <ql/math/comparison.hpp>
+#include <ql/math/functional.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -195,7 +196,6 @@ namespace {
 
 }
 
-
 void DistributionTest::testNormal() {
 
     BOOST_TEST_MESSAGE("Testing normal distributions...");
@@ -249,6 +249,20 @@ void DistributionTest::testNormal() {
                     << QL_SCIENTIFIC << e << "\n"
                     << "tolerance exceeded");
     }
+
+#if BOOST_VERSION >= 103500
+    MaddockInverseCumulativeNormal mInvCum(average, sigma);
+    std::transform(x.begin(),x.end(), x.begin(), diff.begin(),
+    			   compose3(std::minus<Real>(),
+    				  identity<Real>(), compose(mInvCum, cum)));
+
+    e = norm(diff.begin(), diff.end(), h);
+    if (e > 1.0e-7) {
+        BOOST_ERROR("norm of MaddokInvCum . cum minus identity: "
+                    << QL_SCIENTIFIC << e << "\n"
+                    << "tolerance exceeded");
+    }
+#endif
 
     // check that cum.derivative = Gaussian
     for (i=0; i<x.size(); i++)
