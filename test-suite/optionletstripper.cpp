@@ -71,9 +71,6 @@ namespace {
         void setTermStructure() {
 
             calendar = TARGET();
-            Date today = calendar.adjust(Date::todaysDate());
-            Settings::instance().evaluationDate() = today;
-
             dayCounter = Actual365Fixed();
 
             Rate flatFwdRate = 0.04;
@@ -254,6 +251,8 @@ void OptionletStripperTest::testFlatTermVolatilityStripping1() {
         "surface using optionletstripper1...");
 
     CommonVars vars;
+    Settings::instance().evaluationDate() = Date(28, October, 2013);
+
     vars.setFlatTermVolSurface();
 
     shared_ptr<IborIndex> iborIndex(new Euribor6M(vars.yieldTermStructure));
@@ -313,6 +312,8 @@ void OptionletStripperTest::testTermVolatilityStripping1() {
         "vol surface using optionletstripper1...");
 
     CommonVars vars;
+    Settings::instance().evaluationDate() = Date(28, October, 2013);
+
     vars.setCapFloorTermVolSurface();
 
     shared_ptr<IborIndex> iborIndex(new Euribor6M(vars.yieldTermStructure));
@@ -374,6 +375,8 @@ void OptionletStripperTest::testFlatTermVolatilityStripping2() {
         "surface using optionletstripper2...");
 
   CommonVars vars;
+  Settings::instance().evaluationDate() = Date::todaysDate();
+
   vars.setFlatTermVolCurve();
   vars.setFlatTermVolSurface();
 
@@ -439,6 +442,7 @@ void OptionletStripperTest::testTermVolatilityStripping2() {
         "surface using optionletstripper2...");
 
   CommonVars vars;
+  Settings::instance().evaluationDate() = Date::todaysDate();
 
   vars.setCapFloorTermVolCurve();
   vars.setCapFloorTermVolSurface();
