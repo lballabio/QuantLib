@@ -205,12 +205,6 @@ namespace QuantLib {
         return this->jumpTimes_;
     }
 
-    inline void YieldTermStructure::update() {
-        TermStructure::update();
-        if (referenceDate() != latestReference_)
-            setJumps();
-    }
-
 }
 
 #endif

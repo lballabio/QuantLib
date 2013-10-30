@@ -184,4 +184,27 @@ namespace QuantLib {
                                          t2-t1);
     }
 
+    void YieldTermStructure::update() {
+        TermStructure::update();
+        Date newReference = Date();
+        try {
+            newReference = referenceDate();
+            if (newReference != latestReference_)
+                setJumps();
+        } catch (Error&) {
+            if (newReference == Date()) {
+                // the curve couldn't calculate the reference
+                // date. Most of the times, this is because some
+                // underlying handle wasn't set, so we can just absorb
+                // the exception and continue; the jumps will be set
+                // correctly when a valid underlying is set.
+                return;
+            } else {
+                // something else happened during the call to
+                // setJumps(), so we let the exception bubble up.
+                throw;
+            }
+        }
+    }
+
 }

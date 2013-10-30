@@ -298,6 +298,23 @@ void TermStructureTest::testZSpreadedObs() {
         BOOST_ERROR("Observer was not notified of spread change");
 }
 
+void TermStructureTest::testLinkToNullUnderlying() {
+    BOOST_TEST_MESSAGE(
+        "Testing that an underlying curve can be relinked to "
+        "a null underlying curve...");
+
+    CommonVars vars;
+
+    Handle<Quote> spread(boost::shared_ptr<Quote>(new SimpleQuote(0.01)));
+    RelinkableHandle<YieldTermStructure> underlying(vars.termStructure);
+    boost::shared_ptr<YieldTermStructure> spreaded(
+        new ZeroSpreadedTermStructure(underlying,spread));
+    // check that we can use it
+    Date testDate = vars.termStructure->referenceDate();
+    // if we do this, the curve can't work anymore. But it shouldn't
+    // throw as long as we don't try to use it.
+    underlying.linkTo(boost::shared_ptr<YieldTermStructure>());
+}
 
 test_suite* TermStructureTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Term structure tests");
@@ -308,6 +325,8 @@ test_suite* TermStructureTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testFSpreadedObs));
     suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testZSpreaded));
     suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testZSpreadedObs));
+    suite->add(QUANTLIB_TEST_CASE(
+                             &TermStructureTest::testLinkToNullUnderlying));
     return suite;
 }
 
