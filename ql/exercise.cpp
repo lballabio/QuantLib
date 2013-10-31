@@ -56,4 +56,35 @@ namespace QuantLib {
         dates_ = std::vector<Date>(1,date);
     }
 
+    RebatedExercise::RebatedExercise(
+        const Exercise &exercise, const Real rebate,
+        const Natural rebateSettlementDays,
+        const Calendar &rebatePaymentCalendar,
+        const BusinessDayConvention rebatePaymentConvention)
+        : Exercise(exercise),
+          rebates_(std::vector<Real>(dates().size(), rebate)),
+          rebateSettlementDays_(rebateSettlementDays),
+          rebatePaymentCalendar_(rebatePaymentCalendar),
+          rebatePaymentConvention_(rebatePaymentConvention) {}
+
+    RebatedExercise::RebatedExercise(
+        const Exercise &exercise, const std::vector<Real> &rebates,
+        const Natural rebateSettlementDays,
+        const Calendar &rebatePaymentCalendar,
+        const BusinessDayConvention rebatePaymentConvention)
+        : Exercise(exercise), rebates_(rebates),
+          rebateSettlementDays_(rebateSettlementDays),
+          rebatePaymentCalendar_(rebatePaymentCalendar),
+          rebatePaymentConvention_(rebatePaymentConvention) {
+
+        QL_REQUIRE(
+            type_ == Bermudan,
+            "a rebate vector is allowed only for a bermudan style exercise");
+
+        QL_REQUIRE(rebates.size() == dates().size(),
+                   "the number of rebates ("
+                       << rebates.size()
+                       << ") must be equal to the number of exercise dates ("
+                       << dates().size());
+    }
 }
