@@ -122,6 +122,7 @@ namespace QuantLib {
 
     MakeSwaption& MakeSwaption::withUnderlyingType(const VanillaSwap::Type type) {
         underlyingType_ = type;
+        return *this;
     }
 
     MakeSwaption& MakeSwaption::withPricingEngine(
