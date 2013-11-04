@@ -86,6 +86,12 @@ namespace QuantLib {
                 boost::shared_ptr<cFunction> cFct1(
                     new cFunction(sh1.f_, s, 0.0, sh1.b_));
                 cFunctions_[0] = cFct1;
+                // sanity check - in rare cases we can get digitials
+                // which are not monotonic or greater than 1.0
+                // due to numerical effects. Move to the next index in
+                // these cases.
+                Real dig = digitalOptionPrice(k1/2.0);
+                QL_REQUIRE( dig >= -c1p && dig <= 1.0 , "dummy");
             }
             catch (...) {
                 leftIndex_++;
