@@ -47,6 +47,9 @@ namespace QuantLib {
         @param frequency  Coupon frequency.
         @param settlementDays  The number of days from today's date
                                to the start of the protection period.
+                               Does not refer to initial cash settlements 
+                               (upfront and/or rebates) which are typically
+                               on T+3
         @param paymentConvention The payment convention applied to
                                  coupons schedules, settlement dates
                                  and protection period calculations.
@@ -64,7 +67,8 @@ namespace QuantLib {
                   Real recoveryRate,
                   const Handle<YieldTermStructure>& discountCurve,
                   bool settlesAccrual = true,
-                  bool paysAtDefaultTime = true);
+                  bool paysAtDefaultTime = true,
+				  const DayCounter& lastPeriodDayCounter = DayCounter());
         CdsHelper(Rate quote,
                   const Period& tenor,
                   Integer settlementDays,
@@ -76,7 +80,8 @@ namespace QuantLib {
                   Real recoveryRate,
                   const Handle<YieldTermStructure>& discountCurve,
                   bool settlesAccrual = true,
-                  bool paysAtDefaultTime = true);
+                  bool paysAtDefaultTime = true,
+				  const DayCounter& lastPeriodDayCounter = DayCounter());
         void setTermStructure(DefaultProbabilityTermStructure*);
       protected:
         void update();
@@ -93,6 +98,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> discountCurve_;
         bool settlesAccrual_;
         bool paysAtDefaultTime_;
+		DayCounter lastPeriodDC_;
 
         Schedule schedule_;
         boost::shared_ptr<CreditDefaultSwap> swap_;
@@ -115,20 +121,22 @@ namespace QuantLib {
                         Real recoveryRate,
                         const Handle<YieldTermStructure>& discountCurve,
                         bool settlesAccrual = true,
-                        bool paysAtDefaultTime = true);
+                        bool paysAtDefaultTime = true,
+						const DayCounter& lastPeriodDayCounter = DayCounter());
 
         SpreadCdsHelper(Rate runningSpread,
                         const Period& tenor,
-                        Integer settlementDays,
+                        Integer settlementDays, // ISDA: 1
                         const Calendar& calendar,
-                        Frequency frequency,
-                        BusinessDayConvention paymentConvention,
-                        DateGeneration::Rule rule,
-                        const DayCounter& dayCounter,
+                        Frequency frequency, // ISDA: Quarterly
+                        BusinessDayConvention paymentConvention,//ISDA:Following
+                        DateGeneration::Rule rule, // ISDA: CDS
+                        const DayCounter& dayCounter, // ISDA: Actual/360
                         Real recoveryRate,
                         const Handle<YieldTermStructure>& discountCurve,
                         bool settlesAccrual = true,
-                        bool paysAtDefaultTime = true);
+                        bool paysAtDefaultTime = true,
+						const DayCounter& lastPeriodDayCounter = DayCounter());
         Real impliedQuote() const;
       private:
         void resetEngine();
@@ -151,7 +159,8 @@ namespace QuantLib {
                          const Handle<YieldTermStructure>& discountCurve,
                          Natural upfrontSettlementDays = 0,
                          bool settlesAccrual = true,
-                         bool paysAtDefaultTime = true);
+                         bool paysAtDefaultTime = true,
+						 const DayCounter& lastPeriodDayCounter = DayCounter());
 
         /*! \note the upfront must be quoted in fractional units. */
         UpfrontCdsHelper(Rate upfront,
@@ -167,7 +176,8 @@ namespace QuantLib {
                          const Handle<YieldTermStructure>& discountCurve,
                          Natural upfrontSettlementDays = 0,
                          bool settlesAccrual = true,
-                         bool paysAtDefaultTime = true);
+                         bool paysAtDefaultTime = true,
+						 const DayCounter& lastPeriodDayCounter = DayCounter());
         Real impliedQuote() const;
         void initializeDates();
       private:
