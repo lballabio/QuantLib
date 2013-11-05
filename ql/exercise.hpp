@@ -109,54 +109,6 @@ namespace QuantLib {
         EuropeanExercise(const Date& date);
     };
 
-    //! Rebated exercise
-    /*! in case of exercise the holder receives a rebate (if positive) or pays
-       it (if negative)
-        on the rebate settlement date
-    */
-    class RebatedExercise : public Exercise {
-      public:
-        // in case of exercise the holder receives the rebate
-        // (if positive) or pays it (if negative) on the rebate
-        // settlement date
-        RebatedExercise(const Exercise &exercise, const Real rebate = 0.0,
-                        const Natural rebateSettlementDays = 0,
-                        const Calendar &rebatePaymentCalendar = NullCalendar(),
-                        const BusinessDayConvention rebatePaymentConvention =
-                            Following);
-        RebatedExercise(const Exercise &exercise,
-                        const std::vector<Real> &rebates,
-                        const Natural rebateSettlementDays = 0,
-                        const Calendar &rebatePaymentCalendar = NullCalendar(),
-                        const BusinessDayConvention rebatePaymentConvention =
-                            Following);
-        Real rebate(Size index) const;
-        Date rebatePaymentDate(Size index) const;
-        const std::vector<Real> &rebates() const { return rebates_; }
-
-      private:
-        const std::vector<Real> rebates_;
-        const Natural rebateSettlementDays_;
-        const Calendar rebatePaymentCalendar_;
-        const BusinessDayConvention rebatePaymentConvention_;
-    };
-
-    inline Real RebatedExercise::rebate(Size index) const {
-        QL_REQUIRE(index < rebates_.size(),
-                   "rebate with index " << index << " does not exist (0..."
-                   << (rebates_.size()-1) << ")");
-        return rebates_[index];
-    }
-
-    inline Date RebatedExercise::rebatePaymentDate(Size index) const {
-        QL_REQUIRE(type_ == European || type_ == Bermudan,
-                   "for american style exercises the rebate payment date "
-                       << "has to be calculted in the client code");
-        return rebatePaymentCalendar_.advance(dates_[index],
-                                              rebateSettlementDays_, Days,
-                                              rebatePaymentConvention_);
-    }
-
 }
 
 #endif
