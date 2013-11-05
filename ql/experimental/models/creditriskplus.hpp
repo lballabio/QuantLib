@@ -46,7 +46,7 @@ namespace QuantLib {
       public:
 
         CreditRiskPlus(const std::vector<Real> &exposure,
-                       const std::vector<Real> &pd,
+                       const std::vector<Real> &defaultProbability,
                        const std::vector<Size> &sector,
                        const std::vector<Real> &relativeDefaultVariance,
                        const Matrix &correlation, const Real unit);
