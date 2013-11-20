@@ -68,8 +68,8 @@ namespace QuantLib {
             // standard date. Notice that protection start is already adjusted 
             //   to T+1 
             Date rebateDate = schedule.calendar().advance(
-                schedule.calendar().adjust(protectionStart_, ModifiedFollowing),
-                2, TimeUnit::Days, ModifiedFollowing);
+                schedule.calendar().adjust(protectionStart_, convention),
+                2, TimeUnit::Days, convention);
 
             accrualRebate_.reset(new SimpleCashFlow(
                 firstCoupon->accruedAmount(protectionStart_), 
@@ -116,8 +116,8 @@ namespace QuantLib {
         //  an arbitrary date to the constructor
         Date effectiveUpfrontDate = upfrontDate == Null<Date>() ?
             schedule.calendar().advance(
-            schedule.calendar().adjust(protectionStart_, ModifiedFollowing), 
-            2, TimeUnit::Days, ModifiedFollowing) : upfrontDate;
+            schedule.calendar().adjust(protectionStart_, convention), 
+            2, TimeUnit::Days, convention) : upfrontDate;
         // '2' is used above since the protection start is assumed to be 
         //   on trade_date + 1 
         upfrontPayment_.reset(new SimpleCashFlow(notional*upfront, 
@@ -132,11 +132,7 @@ namespace QuantLib {
             // adjust to T+3 standard settlement, alternatively add 
             //  an arbitrary date to the constructor
 
-            // standard date. Notice that protection start is already adjusted 
-            //   to T+1 
-            Date rebateDate = schedule.calendar().advance(
-                schedule.calendar().adjust(protectionStart_, ModifiedFollowing),
-                2, TimeUnit::Days, ModifiedFollowing);
+            const Date& rebateDate = effectiveUpfrontDate;
 
             accrualRebate_.reset(new SimpleCashFlow(
                 firstCoupon->accruedAmount(protectionStart_), 
