@@ -9,7 +9,7 @@ this_include_HEADERS = \
     expm.hpp \
     farliegumbelmorgensterncopularng.hpp \
     frankcopularng.hpp \
-	simulatedannealing.hpp \
+    simulatedannealing.hpp \
     zigguratrng.hpp
 
 libMath_la_SOURCES = \
