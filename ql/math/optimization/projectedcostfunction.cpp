@@ -26,8 +26,8 @@ namespace QuantLib {
     ProjectedCostFunction::ProjectedCostFunction(
                 const CostFunction& costFunction,
                 const Array& parametersValues,
-                const std::vector<bool>& parametersFreedoms)
-        : Projection(parametersValues, parametersFreedoms), costFunction_(costFunction) {}
+                const std::vector<bool>& parametersFixed)
+        : Projection(parametersValues, parametersFixed), costFunction_(costFunction) {}
 
     ProjectedCostFunction::ProjectedCostFunction(
                 const CostFunction& costFunction,

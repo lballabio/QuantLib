@@ -24,19 +24,19 @@
 namespace QuantLib {
 
     Projection::Projection(const Array &parametersValues,
-                           const std::vector<bool> &parametersFreedoms)
+                           const std::vector<bool> &parametersFixed)
         : numberOfFreeParameters_(0), fixedParameters_(parametersValues),
           actualParameters_(parametersValues),
-          parametersFreedoms_(parametersFreedoms) {
+          parametersFixed_(parametersFixed) {
 
-        if (parametersFreedoms_.size() == 0)
-            parametersFreedoms_ =
+        if (parametersFixed_.size() == 0)
+            parametersFixed_ =
                 std::vector<bool>(actualParameters_.size(), false);
 
-        QL_REQUIRE(fixedParameters_.size() == parametersFreedoms_.size(),
+        QL_REQUIRE(fixedParameters_.size() == parametersFixed_.size(),
                    "fixedParameters_.size()!=parametersFreedoms_.size()");
-        for (Size i = 0; i < parametersFreedoms_.size(); i++)
-            if (!parametersFreedoms_[i])
+        for (Size i = 0; i < parametersFixed_.size(); i++)
+            if (!parametersFixed_[i])
                 numberOfFreeParameters_++;
         QL_REQUIRE(numberOfFreeParameters_ > 0, "numberOfFreeParameters==0");
 
@@ -48,19 +48,19 @@ namespace QuantLib {
                    "parametersValues.size()!=numberOfFreeParameters");
         Size i = 0;
         for (Size j = 0; j < actualParameters_.size(); j++)
-            if (!parametersFreedoms_[j])
+            if (!parametersFixed_[j])
                 actualParameters_[j] = parametersValues[i++];
 
     }
 
     Disposable<Array> Projection::project(const Array &parameters) const {
 
-        QL_REQUIRE(parameters.size() == parametersFreedoms_.size(),
+        QL_REQUIRE(parameters.size() == parametersFixed_.size(),
                    "parameters.size()!=parametersFreedoms_.size()");
         Array projectedParameters(numberOfFreeParameters_);
         Size i = 0;
-        for (Size j = 0; j < parametersFreedoms_.size(); j++)
-            if (!parametersFreedoms_[j])
+        for (Size j = 0; j < parametersFixed_.size(); j++)
+            if (!parametersFixed_[j])
                 projectedParameters[i++] = parameters[j];
         return projectedParameters;
 
@@ -74,7 +74,7 @@ namespace QuantLib {
         Array y(fixedParameters_);
         Size i = 0;
         for (Size j = 0; j < y.size(); j++)
-            if (!parametersFreedoms_[j])
+            if (!parametersFixed_[j])
                 y[j] = projectedParameters[i++];
         return y;
 

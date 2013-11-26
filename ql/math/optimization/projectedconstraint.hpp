@@ -36,9 +36,9 @@ namespace QuantLib {
         class Impl : public Constraint::Impl {
           public:
             Impl(const Constraint &constraint, const Array &parametersValues,
-                 const std::vector<bool> &parametersFreedoms)
+                 const std::vector<bool> &parametersFixed)
                 : constraint_(constraint),
-                  projection_(parametersValues, parametersFreedoms) {}
+                  projection_(parametersValues, parametersFixed) {}
             Impl(const Constraint &constraint, const Projection &projection)
                 : constraint_(constraint), projection_(projection) {}
             bool test(const Array &params) const {
@@ -54,10 +54,10 @@ namespace QuantLib {
 
         ProjectedConstraint(const Constraint &constraint,
                             const Array &parametersValues,
-                            const std::vector<bool> &parametersFreedoms)
+                            const std::vector<bool> &parametersFixed)
             : Constraint(boost::shared_ptr<Constraint::Impl>(
                   new ProjectedConstraint::Impl(constraint, parametersValues,
-                                                parametersFreedoms))) {}
+                                                parametersFixed))) {}
 
         ProjectedConstraint(const Constraint &constraint,
                             const Projection &projection)
