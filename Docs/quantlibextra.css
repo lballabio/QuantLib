@@ -1,0 +1,22 @@
+#projectname
+{
+    font-size: 140%;
+    padding: 1em;
+}
+
+#projectbrief
+{
+    font: 100% trebuchet ms,luxi sans,sans-serif;
+    font-weight: bold;
+    margin-top: 2px;
+    margin-bottom: 0;
+}
+
+#projectnumber
+{
+    font: 90% trebuchet ms,luxi sans,sans-serif;
+    font-weight: bold;
+    margin-top: 1em;
+    margin-bottom: 0;
+}
+
