@@ -541,18 +541,18 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
     boost::shared_ptr<KahaleSmileSection> ksec11(new KahaleSmileSection(sec1,atm,false,false,false,money));
 
     if( std::fabs(ksec11->leftCoreStrike() - 0.01) > tol ) BOOST_ERROR("smile11 left af strike is " 
-                                  << ksec11->leftCoreStrike() << "expected 0.01");
+                                  << ksec11->leftCoreStrike() << " expected 0.01");
 
     if( std::fabs(ksec11->rightCoreStrike() - 0.10) > tol ) BOOST_ERROR("smile11 right af strike is " 
-                                  << ksec11->rightCoreStrike() << "expected 0.10");
+                                  << ksec11->rightCoreStrike() << " expected 0.10");
 
     Real k = strikes[0];
     while(k <= strikes.back()+tol) {
         Real pric0 = sec1->optionPrice(k);
         Real pric1 = ksec11->optionPrice(k);
         if( std::fabs(pric0-pric1) > tol ) BOOST_ERROR("smile11 is not reprocduced at strike " << k
-                                                       << "input smile call price is  " << pric0 
-                                                       << "kahale smile call price is " << pric1);
+                                                       << " input smile call price is  " << pric0 
+                                                       << " kahale smile call price is " << pric1);
         k += 0.0001;
     }
 
@@ -562,7 +562,7 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
 
     // sanity check for left point extrapolation marks 0.01 as bad
     if( std::fabs(ksec12->leftCoreStrike() - 0.02) > tol ) BOOST_ERROR("smile12 left af strike is " 
-                                                                    << ksec12->leftCoreStrike() << "expected 0.01");
+                                                                    << ksec12->leftCoreStrike() << "expected 0.02");
 
     if( std::fabs(ksec12->rightCoreStrike() - 0.10) > tol ) BOOST_ERROR("smile12 right af strike is " 
                                                                     << ksec12->rightCoreStrike() << "expected 0.10");
@@ -571,8 +571,8 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
         Real pric0 = sec1->optionPrice(strikes[i]);
         Real pric1 = ksec12->optionPrice(strikes[i]);
         if( std::fabs(pric0-pric1) > tol ) BOOST_ERROR("smile12 is not reproduced on grid at strike " << strikes[i]
-                                                       << "input smile call price is " << pric0
-                                                       << "kahale smile call price is " << pric1);
+                                                       << " input smile call price is " << pric0
+                                                       << " kahale smile call price is " << pric1);
     }
 
     // test global no arbitrageability
@@ -616,14 +616,14 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
     boost::shared_ptr<KahaleSmileSection> ksec22(new KahaleSmileSection(sec2,atm,true,false,true,money));
 
     if( std::fabs(ksec21->leftCoreStrike() - 0.02) > tol ) BOOST_ERROR("smile21 left af strike is " 
-                                  << ksec21->leftCoreStrike() << "expected 0.02");
+                                  << ksec21->leftCoreStrike() << " expected 0.02");
     if( std::fabs(ksec22->leftCoreStrike() - 0.02) > tol ) BOOST_ERROR("smile22 left af strike is " 
-                                  << ksec22->leftCoreStrike() << "expected 0.02");
+                                  << ksec22->leftCoreStrike() << " expected 0.02");
 
     if( std::fabs(ksec21->rightCoreStrike() - 0.10) > tol ) BOOST_ERROR("smile21 right af strike is " 
-                                  << ksec21->rightCoreStrike() << "expected 0.10");
+                                  << ksec21->rightCoreStrike() << " expected 0.10");
     if( std::fabs(ksec22->rightCoreStrike() - 0.10) > tol ) BOOST_ERROR("smile22 right af strike is " 
-                                  << ksec22->rightCoreStrike() <<  "expected 0.10");
+                                  << ksec22->rightCoreStrike() <<  " expected 0.10");
 
     k = 0.0010;
     dig00 = dig10 = 1.0;
@@ -651,16 +651,16 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
     boost::shared_ptr<KahaleSmileSection> ksec32(new KahaleSmileSection(sec3,atm,true,false,true,money));
 
     if( std::fabs(ksec31->leftCoreStrike() - 0.01) > tol ) BOOST_ERROR("smile31 left af strike is " 
-                                  << ksec31->leftCoreStrike() << "expected 0.01");
+                                  << ksec31->leftCoreStrike() << " expected 0.01");
 
     // sanity check for left point extrapolation marks 0.01 as bad
     if( std::fabs(ksec32->leftCoreStrike() - 0.02) > tol ) BOOST_ERROR("smile32 left af strike is " 
-                                  << ksec32->leftCoreStrike() << "expected 0.01");
+                                  << ksec32->leftCoreStrike() << " expected 0.02");
 
     if( std::fabs(ksec31->rightCoreStrike() - 0.08) > tol ) BOOST_ERROR("smile31 right af strike is " 
-                                  << ksec31->rightCoreStrike() << "expected 0.08");
+                                  << ksec31->rightCoreStrike() << " expected 0.08");
     if( std::fabs(ksec32->rightCoreStrike() - 0.10) > tol ) BOOST_ERROR("smile32 right af strike is " 
-                                  << ksec32->rightCoreStrike() << "expected 0.10");
+                                  << ksec32->rightCoreStrike() << " expected 0.10");
     k = 0.0010;
     dig00 = dig10 = 1.0;
     while(k <= 2.0*strikes.back()+tol) {
