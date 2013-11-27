@@ -560,9 +560,12 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
 
     boost::shared_ptr<KahaleSmileSection> ksec12(new KahaleSmileSection(sec1,atm,true,false,false,money));
 
-    // sanity check for left point extrapolation marks 0.01 as bad
-    if( std::fabs(ksec12->leftCoreStrike() - 0.02) > tol ) BOOST_ERROR("smile12 left af strike is " 
-                                                                    << ksec12->leftCoreStrike() << "expected 0.02");
+    // sanity check for left point extrapolation may mark 0.01 as bad as well as good depending
+    // on platform and compiler due to numerical differences, so we have to admit two possible results
+    if (std::fabs(ksec12->leftCoreStrike() - 0.02) > tol &&
+        std::fabs(ksec12->leftCoreStrike() - 0.01) > tol)
+        BOOST_ERROR("smile12 left af strike is " << ksec12->leftCoreStrike()
+                                                 << "expected 0.01 or 0.02");
 
     if( std::fabs(ksec12->rightCoreStrike() - 0.10) > tol ) BOOST_ERROR("smile12 right af strike is " 
                                                                     << ksec12->rightCoreStrike() << "expected 0.10");
@@ -653,9 +656,11 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
     if( std::fabs(ksec31->leftCoreStrike() - 0.01) > tol ) BOOST_ERROR("smile31 left af strike is " 
                                   << ksec31->leftCoreStrike() << " expected 0.01");
 
-    // sanity check for left point extrapolation marks 0.01 as bad
-    if( std::fabs(ksec32->leftCoreStrike() - 0.02) > tol ) BOOST_ERROR("smile32 left af strike is " 
-                                  << ksec32->leftCoreStrike() << " expected 0.02");
+    // sanity check for left point extrapolation may mark 0.01 as bad as well as good depending
+    // on platform and compiler due to numerical differences, so we have to admit two possible results
+    if ( std::fabs(ksec32->leftCoreStrike() - 0.02) > tol &&
+         std::fabs(ksec32->leftCoreStrike() - 0.01) > tol ) BOOST_ERROR("smile32 left af strike is "
+                                  << ksec32->leftCoreStrike() << " expected 0.01 or 0.02");
 
     if( std::fabs(ksec31->rightCoreStrike() - 0.08) > tol ) BOOST_ERROR("smile31 right af strike is " 
                                   << ksec31->rightCoreStrike() << " expected 0.08");
