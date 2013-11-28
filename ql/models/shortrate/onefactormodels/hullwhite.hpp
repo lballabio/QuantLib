@@ -79,15 +79,11 @@ namespace QuantLib {
                                   Real sigma,
                                   Real a);
 
-        struct CalibrationConstraints {
-
-            static Disposable<std::vector<bool> > FixedReversion() {
-                std::vector<bool> c(2);
-                c[0] = true; c[1] = false;
-                return c;
-            }
-
-        };
+        static Disposable<std::vector<bool> > FixedReversion() {
+            std::vector<bool> c(2);
+            c[0] = true; c[1] = false;
+            return c;
+        }
 
       protected:
         void generateArguments();

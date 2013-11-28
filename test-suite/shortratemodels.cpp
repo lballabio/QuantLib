@@ -172,7 +172,7 @@ void ShortRateModelTest::testCachedHullWhiteFixedReversion() {
 
     //Optimize
     model->calibrate(swaptions, optimizationMethod, endCriteria, Constraint(), std::vector<Real>(),
-        HullWhite::CalibrationConstraints::FixedReversion());
+        HullWhite::FixedReversion());
     EndCriteria::Type ecType = model->endCriteria();
 
     // Check and print out results
