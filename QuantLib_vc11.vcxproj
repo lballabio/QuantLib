@@ -903,7 +903,9 @@
     <ClInclude Include="ql\math\optimization\lmdif.hpp" />
     <ClInclude Include="ql\math\optimization\method.hpp" />
     <ClInclude Include="ql\math\optimization\problem.hpp" />
+    <ClInclude Include="ql\math\optimization\projectedconstraint.hpp" />
     <ClInclude Include="ql\math\optimization\projectedcostfunction.hpp" />
+    <ClInclude Include="ql\math\optimization\projection.hpp" />
     <ClInclude Include="ql\math\optimization\simplex.hpp" />
     <ClInclude Include="ql\math\optimization\spherecylinder.hpp" />
     <ClInclude Include="ql\math\optimization\steepestdescent.hpp" />
@@ -1874,6 +1876,7 @@
     <ClCompile Include="ql\math\optimization\linesearchbasedmethod.cpp" />
     <ClCompile Include="ql\math\optimization\lmdif.cpp" />
     <ClCompile Include="ql\math\optimization\projectedcostfunction.cpp" />
+    <ClCompile Include="ql\math\optimization\projection.cpp" />
     <ClCompile Include="ql\math\optimization\simplex.cpp" />
     <ClCompile Include="ql\math\optimization\spherecylinder.cpp" />
     <ClCompile Include="ql\math\optimization\steepestdescent.cpp" />

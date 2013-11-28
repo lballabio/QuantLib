@@ -1082,6 +1082,8 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
     volStepDates.push_back(TARGET().advance(referenceDate,1*Years));
     volStepDates.push_back(TARGET().advance(referenceDate,2*Years));
     volStepDates.push_back(TARGET().advance(referenceDate,3*Years));
+    volStepDates.push_back(TARGET().advance(referenceDate,4*Years));
+    vols.push_back(1.0);
     vols.push_back(1.0);
     vols.push_back(1.0);
     vols.push_back(1.0);
@@ -1137,10 +1139,10 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
 
     mf1->calibrate(calibrationHelper1,om,ec);
 
-    //std::cout << "Calibrated parameters 1: ";
-    //Array params1 = mf1->params();
-    //for(Size i=0;i<params1.size();i++) std::cout << params1[i] << ";";
-    //std::cout << std::endl;
+    // std::cout << "Calibrated parameters 1: ";
+    // Array params1 = mf1->params();
+    // for(Size i=0;i<params1.size();i++) std::cout << params1[i] << ";";
+    // std::cout << std::endl;
 
     std::vector<Swaption> ch1;
     ch1.push_back(MakeSwaption(boost::shared_ptr<SwapIndex>(new EuriborSwapIsdaFixA(4*Years,flatYts_)),1*Years));
@@ -1196,10 +1198,10 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
 
     mf2->calibrate(calibrationHelper2,om,ec);
 
-    //std::cout << "Calibrated parameters 2: ";
-    //Array params2 = mf2->params();
-    //for(Size i=0;i<params2.size();i++) std::cout << params2[i] << ";";
-    //std::cout << std::endl;
+    // std::cout << "Calibrated parameters 2: ";
+    // Array params2 = mf2->params();
+    // for(Size i=0;i<params2.size();i++) std::cout << params2[i] << ";";
+    // std::cout << std::endl;
 
     std::vector<Swaption> ch2;
     ch2.push_back(MakeSwaption(boost::shared_ptr<SwapIndex>(new EuriborSwapIsdaFixA(4*Years,md0Yts_)),1*Years));

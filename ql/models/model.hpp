@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2005, 2007 StatPro Italia srl
+ Copyright (C) 2013 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -97,12 +98,13 @@ namespace QuantLib {
         /*! An additional constraint can be passed which must be
             satisfied in addition to the constraints of the model.
         */
-        void calibrate(
+        virtual void calibrate(
                    const std::vector<boost::shared_ptr<CalibrationHelper> >&,
                    OptimizationMethod& method,
                    const EndCriteria& endCriteria,
                    const Constraint& constraint = Constraint(),
-                   const std::vector<Real>& weights = std::vector<Real>());
+                   const std::vector<Real>& weights = std::vector<Real>(),
+                   const std::vector<bool>& fixParameters = std::vector<bool>());
 
         Real value(const Array& params,
                    const std::vector<boost::shared_ptr<CalibrationHelper> >&);
