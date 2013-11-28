@@ -2847,10 +2847,19 @@
 					RelativePath=".\ql\math\optimization\problem.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\math\optimization\projectedconstraint.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\math\optimization\projectedcostfunction.cpp">
 				</File>
 				<File
 					RelativePath=".\ql\math\optimization\projectedcostfunction.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\optimization\projection.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\optimization\projection.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\math\optimization\simplex.cpp">
