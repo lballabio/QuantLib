@@ -104,7 +104,7 @@ namespace QuantLib {
                    const EndCriteria& endCriteria,
                    const Constraint& constraint = Constraint(),
                    const std::vector<Real>& weights = std::vector<Real>(),
-                   const std::vector<bool>& parametersFixed = std::vector<bool>());
+                   const std::vector<bool>& fixParameters = std::vector<bool>());
 
         Real value(const Array& params,
                    const std::vector<boost::shared_ptr<CalibrationHelper> >&);

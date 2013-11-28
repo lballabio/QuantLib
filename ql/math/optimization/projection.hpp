@@ -32,8 +32,8 @@ namespace QuantLib {
 
     class Projection {
       public:
-        Projection(const Array &parametersValues,
-                   const std::vector<bool> &parametersFixed = std::vector<bool>());
+        Projection(const Array &parameterValues,
+                   const std::vector<bool> &fixParameters = std::vector<bool>());
 
         //! returns the subset of free parameters corresponding
         // to set of parameters
@@ -45,11 +45,11 @@ namespace QuantLib {
         include(const Array &projectedParameters) const;
 
       protected:
-        void mapFreeParameters(const Array &parametersValues) const;
+        void mapFreeParameters(const Array &parameterValues) const;
         Size numberOfFreeParameters_;
         const Array fixedParameters_;
         mutable Array actualParameters_;
-        std::vector<bool> parametersFixed_;
+        std::vector<bool> fixParameters_;
     };
 
 }

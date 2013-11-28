@@ -23,44 +23,44 @@
 
 namespace QuantLib {
 
-    Projection::Projection(const Array &parametersValues,
-                           const std::vector<bool> &parametersFixed)
-        : numberOfFreeParameters_(0), fixedParameters_(parametersValues),
-          actualParameters_(parametersValues),
-          parametersFixed_(parametersFixed) {
+    Projection::Projection(const Array &parameterValues,
+                           const std::vector<bool> &fixParameters)
+        : numberOfFreeParameters_(0), fixedParameters_(parameterValues),
+          actualParameters_(parameterValues),
+          fixParameters_(fixParameters) {
 
-        if (parametersFixed_.size() == 0)
-            parametersFixed_ =
+        if (fixParameters_.size() == 0)
+            fixParameters_ =
                 std::vector<bool>(actualParameters_.size(), false);
 
-        QL_REQUIRE(fixedParameters_.size() == parametersFixed_.size(),
+        QL_REQUIRE(fixedParameters_.size() == fixParameters_.size(),
                    "fixedParameters_.size()!=parametersFreedoms_.size()");
-        for (Size i = 0; i < parametersFixed_.size(); i++)
-            if (!parametersFixed_[i])
+        for (Size i = 0; i < fixParameters_.size(); i++)
+            if (!fixParameters_[i])
                 numberOfFreeParameters_++;
         QL_REQUIRE(numberOfFreeParameters_ > 0, "numberOfFreeParameters==0");
 
     }
 
-    void Projection::mapFreeParameters(const Array &parametersValues) const {
+    void Projection::mapFreeParameters(const Array &parameterValues) const {
 
-        QL_REQUIRE(parametersValues.size() == numberOfFreeParameters_,
-                   "parametersValues.size()!=numberOfFreeParameters");
+        QL_REQUIRE(parameterValues.size() == numberOfFreeParameters_,
+                   "parameterValues.size()!=numberOfFreeParameters");
         Size i = 0;
         for (Size j = 0; j < actualParameters_.size(); j++)
-            if (!parametersFixed_[j])
-                actualParameters_[j] = parametersValues[i++];
+            if (!fixParameters_[j])
+                actualParameters_[j] = parameterValues[i++];
 
     }
 
     Disposable<Array> Projection::project(const Array &parameters) const {
 
-        QL_REQUIRE(parameters.size() == parametersFixed_.size(),
+        QL_REQUIRE(parameters.size() == fixParameters_.size(),
                    "parameters.size()!=parametersFreedoms_.size()");
         Array projectedParameters(numberOfFreeParameters_);
         Size i = 0;
-        for (Size j = 0; j < parametersFixed_.size(); j++)
-            if (!parametersFixed_[j])
+        for (Size j = 0; j < fixParameters_.size(); j++)
+            if (!fixParameters_[j])
                 projectedParameters[i++] = parameters[j];
         return projectedParameters;
 
@@ -74,7 +74,7 @@ namespace QuantLib {
         Array y(fixedParameters_);
         Size i = 0;
         for (Size j = 0; j < y.size(); j++)
-            if (!parametersFixed_[j])
+            if (!fixParameters_[j])
                 y[j] = projectedParameters[i++];
         return y;
 

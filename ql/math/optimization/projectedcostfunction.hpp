@@ -39,8 +39,8 @@ namespace QuantLib {
     class ProjectedCostFunction : public CostFunction, public Projection {
         public:
             ProjectedCostFunction(const CostFunction& costFunction,
-                                 const Array& parametersValues,
-                                 const std::vector<bool>& parametersFixed);
+                                 const Array& parameterValues,
+                                 const std::vector<bool>& fixParameters);
 
             ProjectedCostFunction(const CostFunction& costFunction,
                                   const Projection& projection);

@@ -82,7 +82,7 @@ namespace QuantLib {
         const EndCriteria& endCriteria,
         const Constraint& additionalConstraint,
         const std::vector<Real>& weights,
-        const std::vector<bool>& parametersFixed) {
+        const std::vector<bool>& fixParameters) {
 
         QL_REQUIRE(weights.empty() ||
                    weights.size() == instruments.size(),
@@ -99,7 +99,7 @@ namespace QuantLib {
 
         Array prms = params();
         std::vector<bool> all(prms.size(), false);
-        Projection proj(prms,parametersFixed.size()>0 ? parametersFixed : all);
+        Projection proj(prms,fixParameters.size()>0 ? fixParameters : all);
         CalibrationFunction f(this,instruments,w,proj);
         ProjectedConstraint pc(c,proj);
         Problem prob(f, pc, proj.project(prms));
