@@ -79,7 +79,7 @@ namespace QuantLib {
                                   Real sigma,
                                   Real a);
 
-        static Disposable<std::vector<bool> > FixedReversion() {
+        static std::vector<bool> FixedReversion() {
             std::vector<bool> c(2);
             c[0] = true; c[1] = false;
             return c;

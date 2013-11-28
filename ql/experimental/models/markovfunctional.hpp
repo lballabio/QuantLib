@@ -288,7 +288,7 @@ namespace QuantLib {
             updateNumeraireTabulation();
         }
 
-        Disposable<std::vector<bool> > FixedFirstVolatility() const {
+        std::vector<bool> FixedFirstVolatility() const {
             std::vector<bool> c(volatilities_.size(),false);
             c[0] = true;
             return c;
