@@ -1,16 +1,13 @@
 
 EXTRA_DIST = \
              quantlib.doxy \
-             quantlib.css \
-             print.css \
+             quantlibextra.css \
              quantlibfooter.html \
              quantlibheader.html \
-             quantlibheaderonline.html \
              README.txt
 
 DOXYGEN_CONFIG := quantlib.doxy
-DOXYGEN_CUSTOM := quantlib.css print.css \
-                  quantlibheader.html quantlibfooter.html
+DOXYGEN_CUSTOM := quantlibextra.css quantlibheader.html quantlibfooter.html
 DOXYGEN_INPUT := $(shell find ${top_srcdir} -name *.hpp) \
                  $(wildcard pages/*.docs)
 
@@ -23,7 +20,7 @@ BASEPATH = @abs_top_srcdir@
 	tar chf $@ $<
 	rm $<
 
-.PHONY: docs-all docs-html docs-man docs-online docs-clean
+.PHONY: docs-all docs-html docs-man docs-clean
 .PHONY: docs-dist docs-html-dist docs-man-dist
 
 dist-hook:
@@ -31,46 +28,19 @@ dist-hook:
 	cp -p $(srcdir)/pages/*.docs $(distdir)/pages
 	cp -p $(srcdir)/Examples/*.cpp $(distdir)/Examples
 	cp -p $(srcdir)/images/*.jpg \
-	      $(srcdir)/images/*.png $(srcdir)/images/*.ico \
+	      $(srcdir)/images/*.ico \
 	      $(distdir)/images
 
 docs-all: docs-html docs-man
 docs-dist: docs-html-dist docs-man-dist
 
-docs-html: .time-stamp-html
-.time-stamp-html: .time-stamp
-	cp -f print.css html
-	cp -f images/*.jpg html
-	cp -f images/*.png html
-	cp -f images/*.ico html
-	touch .time-stamp-html
+docs-html: .time-stamp
 
 docs-html-dist: docs-html
 	ln -s html QuantLib-docs-$(VERSION)-html
 	tar chf - QuantLib-docs-$(VERSION)-html \
 	    | GZIP=--best gzip -c > QuantLib-docs-$(VERSION)-html.tar.gz
 	rm QuantLib-docs-$(VERSION)-html
-
-docs-online: .time-stamp-online
-.time-stamp-online: $(DOXYGEN_CONFIG) $(DOXYGEN_CUSTOM) $(DOXYGEN_INPUT)
-	$(SED) -e "s/quantlibheader\.html/quantlibheaderonline\.html/" \
-           -e "s/GENERATE_HTML          = NO/GENERATE_HTML          = YES/" \
-           -e "s/SHOW_FILES             = YES/SHOW_FILES             = NO/" \
-           -e "s/INCLUDE_GRAPH          = YES/INCLUDE_GRAPH          = NO/" \
-           -e "s/SEARCHENGINE           = NO/SEARCHENGINE           = YES/" \
-           -e "s/SERVER_BASED_SEARCH    = NO/SERVER_BASED_SEARCH    = YES/" \
-           -e "s/HTML_OUTPUT            = html/HTML_OUTPUT            = reference-$(VERSION)/" \
-           -e "s|ql_basepath|${BASEPATH}/|" \
-           -e "s|ql_version|$(VERSION)|" \
-	       quantlib.doxy > .quantlib.doxy
-	$(DOXYGEN) .quantlib.doxy
-	rm -f .quantlib.doxy
-	rm -f reference-$(VERSION)/*.md5
-	rm -f reference-$(VERSION)/*.map
-	cp -f images/*.jpg reference-$(VERSION)
-	cp -f images/*.png reference-$(VERSION)
-	cp -f images/*.ico reference-$(VERSION)
-	touch .time-stamp-online
 
 docs-man: .time-stamp-man
 .time-stamp-man: .time-stamp
@@ -88,16 +58,15 @@ docs-man-dist: docs-man
 docs-clean:
 	rm -Rf man
 	rm -Rf html
-	rm -Rf reference-*
 	rm -f .time-stamp*
 
 
 .time-stamp: $(DOXYGEN_CONFIG) $(DOXYGEN_CUSTOM) $(DOXYGEN_INPUT)
-	$(SED) -e "s/GENERATE_MAN           = NO/GENERATE_MAN           = YES/" \
-           -e "s/GENERATE_HTML          = NO/GENERATE_HTML          = YES/" \
-           -e "s|ql_basepath|${BASEPATH}/|" \
+	$(SED) -e "s|ql_basepath|${BASEPATH}/|" \
            -e "s|ql_version|$(VERSION)|" \
 	       quantlib.doxy > .quantlib.doxy
 	$(DOXYGEN) .quantlib.doxy
-	rm .quantlib.doxy
+	rm -f .quantlib.doxy
+	rm -f html/*.md5
+	rm -f html/*.map
 	touch .time-stamp

@@ -15,7 +15,9 @@
 #include <ql/math/optimization/lmdif.hpp>
 #include <ql/math/optimization/method.hpp>
 #include <ql/math/optimization/problem.hpp>
+#include <ql/math/optimization/projectedconstraint.hpp>
 #include <ql/math/optimization/projectedcostfunction.hpp>
+#include <ql/math/optimization/projection.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/math/optimization/spherecylinder.hpp>
 #include <ql/math/optimization/steepestdescent.hpp>
