@@ -73,6 +73,9 @@ namespace QuantLib {
             if (forwardStart_.length()<0)
                 startDate = floatCalendar_.adjust(startDate,
                                                   Preceding);
+            else
+                startDate = floatCalendar_.adjust(startDate,
+                                                  Following);
         }
 
         Date endDate;
