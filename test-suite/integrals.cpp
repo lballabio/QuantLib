@@ -115,9 +115,8 @@ void IntegralTest::testGaussKronrodNonAdaptive() {
 }
 
 #include <iostream>
-void IntegralTest::testGaussLobatto2d() {
-    BOOST_TEST_MESSAGE("Testing two dimensional adaptive "
-                       "Gauss-Lobatto integration...");
+void IntegralTest::testTwoDimensionalIntegration() {
+    BOOST_TEST_MESSAGE("Testing two dimensional integration...");
 
     const Size maxEvaluations = 1000;
     const Real calculated = TwoDimensionalIntegral(
@@ -146,7 +145,7 @@ test_suite* IntegralTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testGaussKronrodAdaptive));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testGaussKronrodNonAdaptive));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testGaussLobatto));
-    suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testGaussLobatto2d));
+    suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testTwoDimensionalIntegration));
     return suite;
 }
 
