@@ -32,7 +32,10 @@
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/distributions/gammadistribution.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
+#include <ql/math/integrals/trapezoidintegral.hpp>
+#include <ql/math/integrals/twodimensionalintegral.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
@@ -1146,22 +1149,20 @@ namespace {
             }
         }
 
-        Array intX(y.size(), 0.0);
-        for (Size i=0; i < y.size(); ++i) {
-            // check for zero function
-            const Real sum = std::accumulate(p.begin() + i*x.size(),
-                                             p.begin() + (i+1)*x.size(), 0.0);
+        Matrix m(y.size(), x.size());
+        std::copy(p.begin(), p.end(), m.begin());
 
-            if (sum > 100*QL_EPSILON) {
-            	CubicNaturalSpline f(x.begin(), x.end(), p.begin()+i*x.size());
-            	f.enableExtrapolation();
-                intX[i]=GaussLobattoIntegral(1000000, 1e-6)(f,x.front(),x.back());
-            }
-        }
+        const Real tolerance = 1e-3;
+        const Size maxEvaluations = 1000;
 
-        CubicNaturalSpline f(y.begin(), y.end(), intX.begin());
-        f.enableExtrapolation();
-        return GaussLobattoIntegral(1000000, 1e-6)(f, y.front(), y.back());
+        return TwoDimensionalIntegral(
+             boost::shared_ptr<Integrator>(
+                 new TrapezoidIntegral<Default>(tolerance, maxEvaluations)),
+             boost::shared_ptr<Integrator>(
+                 new TrapezoidIntegral<Default>(tolerance, maxEvaluations)))(
+             Bilinear().interpolate(x.begin(), x.end(), y.begin(), y.end(), m),
+             std::make_pair(x.front(), y.front()),
+             std::make_pair(x.back(), y.back()));
     }
 }
 
