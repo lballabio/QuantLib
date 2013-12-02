@@ -271,6 +271,9 @@
     <Filter Include="experimental\shortrate">
       <UniqueIdentifier>{e29388ea-045b-43fe-95f7-0973b8537907}</UniqueIdentifier>
     </Filter>
+    <Filter Include="experimental\swaptions">
+      <UniqueIdentifier>{63ee57ce-bf68-4a4a-b5c8-29d11c2a11ee}</UniqueIdentifier>
+    </Filter>
     <Filter Include="experimental\varianceoption">
       <UniqueIdentifier>{8fd699bb-f489-4e96-a998-54b5612a9aa7}</UniqueIdentifier>
     </Filter>
@@ -3027,6 +3030,18 @@
     <ClInclude Include="ql\experimental\shortrate\generalizedornsteinuhlenbeckprocess.hpp">
       <Filter>experimental\shortrate</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\swaptions\all.hpp">
+      <Filter>experimental\swaptions</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\swaptions\haganirregularswaptionengine.hpp">
+      <Filter>experimental\swaptions</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\swaptions\irregularswap.hpp">
+      <Filter>experimental\swaptions</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\swaptions\irregularswaption.hpp">
+      <Filter>experimental\swaptions</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\varianceoption\all.hpp">
       <Filter>experimental\varianceoption</Filter>
     </ClInclude>
@@ -5407,6 +5422,15 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\shortrate\generalizedornsteinuhlenbeckprocess.cpp">
       <Filter>experimental\shortrate</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\swaptions\haganirregularswaptionengine.cpp">
+      <Filter>experimental\swaptions</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\swaptions\irregularswap.cpp">
+      <Filter>experimental\swaptions</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\swaptions\irregularswaption.cpp">
+      <Filter>experimental\swaptions</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\varianceoption\integralhestonvarianceoptionengine.cpp">
       <Filter>experimental\varianceoption</Filter>

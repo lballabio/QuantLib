@@ -1503,6 +1503,10 @@
     <ClInclude Include="ql\experimental\shortrate\all.hpp" />
     <ClInclude Include="ql\experimental\shortrate\generalizedhullwhite.hpp" />
     <ClInclude Include="ql\experimental\shortrate\generalizedornsteinuhlenbeckprocess.hpp" />
+    <ClInclude Include="ql\experimental\swaptions\all.hpp" />
+    <ClInclude Include="ql\experimental\swaptions\haganirregularswaptionengine.hpp" />
+    <ClInclude Include="ql\experimental\swaptions\irregularswap.hpp" />
+    <ClInclude Include="ql\experimental\swaptions\irregularswaption.hpp" />
     <ClInclude Include="ql\experimental\varianceoption\all.hpp" />
     <ClInclude Include="ql\experimental\varianceoption\integralhestonvarianceoptionengine.hpp" />
     <ClInclude Include="ql\experimental\varianceoption\varianceoption.hpp" />
@@ -2299,6 +2303,9 @@
     <ClCompile Include="ql\experimental\risk\sensitivityanalysis.cpp" />
     <ClCompile Include="ql\experimental\shortrate\generalizedhullwhite.cpp" />
     <ClCompile Include="ql\experimental\shortrate\generalizedornsteinuhlenbeckprocess.cpp" />
+    <ClCompile Include="ql\experimental\swaptions\haganirregularswaptionengine.cpp" />
+    <ClCompile Include="ql\experimental\swaptions\irregularswap.cpp" />
+    <ClCompile Include="ql\experimental\swaptions\irregularswaption.cpp" />
     <ClCompile Include="ql\experimental\varianceoption\integralhestonvarianceoptionengine.cpp" />
     <ClCompile Include="ql\experimental\varianceoption\varianceoption.cpp" />
     <ClCompile Include="ql\experimental\variancegamma\analyticvariancegammaengine.cpp" />

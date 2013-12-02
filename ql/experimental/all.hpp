@@ -20,6 +20,7 @@
 #include <ql/experimental/processes/all.hpp>
 #include <ql/experimental/risk/all.hpp>
 #include <ql/experimental/shortrate/all.hpp>
+#include <ql/experimental/swaptions/all.hpp>
 #include <ql/experimental/variancegamma/all.hpp>
 #include <ql/experimental/varianceoption/all.hpp>
 #include <ql/experimental/volatility/all.hpp>

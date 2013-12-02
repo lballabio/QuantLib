@@ -1582,6 +1582,31 @@
 				</File>
 			</Filter>
 			<Filter
+				Name="swaptions"
+				Filter="">
+				<File
+					RelativePath=".\ql\experimental\swaptions\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\swaptions\haganirregularswaptionengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\swaptions\haganirregularswaptionengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\swaptions\irregularswap.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\swaptions\irregularswap.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\swaptions\irregularswaption.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\swaptions\irregularswaption.hpp">
+				</File>
+			</Filter>
+			<Filter
 				Name="variancegamma"
 				Filter="">
 				<File

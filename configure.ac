@@ -331,6 +331,7 @@ AC_CONFIG_FILES([
     ql/experimental/processes/Makefile
     ql/experimental/risk/Makefile
     ql/experimental/shortrate/Makefile
+    ql/experimental/swaptions/Makefile
     ql/experimental/variancegamma/Makefile
     ql/experimental/varianceoption/Makefile
     ql/experimental/volatility/Makefile
