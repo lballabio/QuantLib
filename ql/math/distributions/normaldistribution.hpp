@@ -225,7 +225,6 @@ namespace QuantLib {
         static const Real c8_;
     };
 
-#if BOOST_VERSION >= 103500
     //! Maddock Inverse cumulative normal distribution class
     /*! Given x between zero and one as
         the integral value of a gaussian normal distribution
@@ -250,7 +249,7 @@ namespace QuantLib {
       private:
         const Real average_, sigma_;
     };
-#endif
+
 
     // inline definitions
 
