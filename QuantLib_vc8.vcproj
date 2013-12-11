@@ -6700,6 +6700,46 @@
 				</File>
 			</Filter>
 			<Filter
+				Name="catbonds"
+				>
+				<File
+					RelativePath=".\ql\experimental\catbonds\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\catbonds\catbond.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\catbonds\catbond.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\catbonds\catrisk.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\catbonds\catrisk.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\catbonds\montecarlocatbondengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\catbonds\montecarlocatbondengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\catbonds\riskynotional.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\catbonds\riskynotional.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
 				Name="finitedifferences"
 				>
 				<File

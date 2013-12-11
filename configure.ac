@@ -315,6 +315,7 @@ AC_CONFIG_FILES([
     ql/experimental/amortizingbonds/Makefile
     ql/experimental/barrieroption/Makefile
     ql/experimental/callablebonds/Makefile
+    ql/experimental/catbonds/Makefile
     ql/experimental/commodities/Makefile
     ql/experimental/compoundoption/Makefile
     ql/experimental/convertiblebonds/Makefile

@@ -1,7 +1,7 @@
 [Project]
 FileName=testsuite.dev
 Name=QuantLib-test-suite
-UnitCount=244
+UnitCount=246
 Type=1
 Ver=1
 ObjFiles=
@@ -2479,6 +2479,26 @@ BuildCmd=
 
 [Unit244]
 FileName=blackformula.hpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit245]
+FileName=catbonds.cpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit246]
+FileName=catbonds.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1

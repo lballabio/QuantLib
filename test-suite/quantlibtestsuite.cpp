@@ -59,6 +59,7 @@
 #include "capfloor.hpp"
 #include "capflooredcoupon.hpp"
 #include "cashflows.hpp"
+#include "catbonds.hpp"
 #include "cdo.hpp"
 #include "cdsoption.hpp"
 #include "chooseroption.hpp"
@@ -352,6 +353,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(AsianOptionTest::experimental());
     test->add(BarrierOptionTest::experimental());
     test->add(BlackDeltaCalculatorTest::suite());
+    test->add(CatBondTest::suite());
     test->add(CdoTest::suite());
     test->add(CdsOptionTest::suite());
     test->add(ChooserOptionTest::suite());

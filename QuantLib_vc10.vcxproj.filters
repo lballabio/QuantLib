@@ -241,6 +241,9 @@
     <Filter Include="experimental\callablebonds">
       <UniqueIdentifier>{1b920d53-9803-4152-8653-c855397066d4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="experimental\catbonds">
+      <UniqueIdentifier>{38f8ad14-f839-425e-b711-68a9acd361f9}</UniqueIdentifier>
+    </Filter>
     <Filter Include="experimental\coupons">
       <UniqueIdentifier>{d7d44f55-80bf-4af8-9367-5c903022d99e}</UniqueIdentifier>
     </Filter>
@@ -2787,6 +2790,21 @@
     <ClInclude Include="ql\experimental\callablebonds\treecallablebondengine.hpp">
       <Filter>experimental\callablebonds</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\catbonds\all.hpp">
+      <Filter>experimental\catbonds</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\catbonds\catbond.hpp">
+      <Filter>experimental\catbonds</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\catbonds\catrisk.hpp">
+      <Filter>experimental\catbonds</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\catbonds\montecarlocatbondengine.hpp">
+      <Filter>experimental\catbonds</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\catbonds\riskynotional.hpp">
+      <Filter>experimental\catbonds</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\coupons\all.hpp">
       <Filter>experimental\coupons</Filter>
     </ClInclude>
@@ -5233,6 +5251,18 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\callablebonds\treecallablebondengine.cpp">
       <Filter>experimental\callablebonds</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\catbonds\catbond.cpp">
+      <Filter>experimental\catbonds</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\catbonds\catrisk.cpp">
+      <Filter>experimental\catbonds</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\catbonds\montecarlocatbondengine.cpp">
+      <Filter>experimental\catbonds</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\catbonds\riskynotional.cpp">
+      <Filter>experimental\catbonds</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\coupons\proxyibor.cpp">
       <Filter>experimental\coupons</Filter>

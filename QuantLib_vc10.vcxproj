@@ -1431,6 +1431,11 @@
     <ClInclude Include="ql\experimental\callablebonds\callablebondvolstructure.hpp" />
     <ClInclude Include="ql\experimental\callablebonds\discretizedcallablefixedratebond.hpp" />
     <ClInclude Include="ql\experimental\callablebonds\treecallablebondengine.hpp" />
+    <ClInclude Include="ql\experimental\catbonds\all.hpp" />
+    <ClInclude Include="ql\experimental\catbonds\catbond.hpp" />
+    <ClInclude Include="ql\experimental\catbonds\catrisk.hpp" />
+    <ClInclude Include="ql\experimental\catbonds\montecarlocatbondengine.hpp" />
+    <ClInclude Include="ql\experimental\catbonds\riskynotional.hpp" />
     <ClInclude Include="ql\experimental\coupons\all.hpp" />
     <ClInclude Include="ql\experimental\coupons\proxyibor.hpp" />
     <ClInclude Include="ql\experimental\coupons\quantocouponpricer.hpp" />
@@ -2248,6 +2253,10 @@
     <ClCompile Include="ql\experimental\callablebonds\callablebondvolstructure.cpp" />
     <ClCompile Include="ql\experimental\callablebonds\discretizedcallablefixedratebond.cpp" />
     <ClCompile Include="ql\experimental\callablebonds\treecallablebondengine.cpp" />
+    <ClCompile Include="ql\experimental\catbonds\catbond.cpp" />
+    <ClCompile Include="ql\experimental\catbonds\catrisk.cpp" />
+    <ClCompile Include="ql\experimental\catbonds\montecarlocatbondengine.cpp" />
+    <ClCompile Include="ql\experimental\catbonds\riskynotional.cpp" />
     <ClCompile Include="ql\experimental\coupons\proxyibor.cpp" />
     <ClCompile Include="ql\experimental\coupons\quantocouponpricer.cpp" />
     <ClCompile Include="ql\experimental\coupons\subperiodcoupons.cpp" />
