@@ -48,6 +48,18 @@ namespace QuantLib {
         return Event::hasOccurred(refDate, includeRefDate);
     }
 
+    bool CashFlow::tradingExCoupon(const Date& refDate) const {
+
+        Date ecd = exCouponDate();
+        if (ecd == Date())
+            return false;
+
+        Date ref =
+            refDate != Date() ? refDate : Settings::instance().evaluationDate();
+
+        return ecd <= ref;
+    }
+
     void CashFlow::accept(AcyclicVisitor& v) {
         Visitor<CashFlow>* v1 = dynamic_cast<Visitor<CashFlow>*>(&v);
         if (v1 != 0)

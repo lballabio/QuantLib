@@ -29,10 +29,12 @@ namespace QuantLib {
                    const Date& accrualStartDate,
                    const Date& accrualEndDate,
                    const Date& refPeriodStart,
-                   const Date& refPeriodEnd)
+                   const Date& refPeriodEnd,
+                   const Date& exCouponDate)
     : paymentDate_(paymentDate), nominal_(nominal), 
       accrualStartDate_(accrualStartDate), accrualEndDate_(accrualEndDate),
-      refPeriodStart_(refPeriodStart), refPeriodEnd_(refPeriodEnd) {
+      refPeriodStart_(refPeriodStart), refPeriodEnd_(refPeriodEnd),
+      exCouponDate_(exCouponDate) {
         if (refPeriodStart_ == Date())
             refPeriodStart_ = accrualStartDate_;
         if (refPeriodEnd_ == Date())
