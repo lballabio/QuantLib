@@ -3273,6 +3273,9 @@
     <ClInclude Include="ql\experimental\math\frankcopularng.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\math\simulatedannealing.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\math\zigguratrng.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>

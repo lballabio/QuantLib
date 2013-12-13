@@ -1600,6 +1600,7 @@
     <ClInclude Include="ql\experimental\math\expm.hpp" />
     <ClInclude Include="ql\experimental\math\farliegumbelmorgensterncopularng.hpp" />
     <ClInclude Include="ql\experimental\math\frankcopularng.hpp" />
+    <ClInclude Include="ql\experimental\math\simulatedannealing.hpp" />
     <ClInclude Include="ql\experimental\math\zigguratrng.hpp" />
     <ClInclude Include="ql\auto_link.hpp" />
     <ClInclude Include="ql\cashflow.hpp" />
