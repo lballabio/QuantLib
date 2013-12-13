@@ -850,6 +850,7 @@
     <ClInclude Include="ql\math\integrals\segmentintegral.hpp" />
     <ClInclude Include="ql\math\integrals\simpsonintegral.hpp" />
     <ClInclude Include="ql\math\integrals\trapezoidintegral.hpp" />
+    <ClInclude Include="ql\math\integrals\twodimensionalintegral.hpp" />
     <ClInclude Include="ql\math\matrixutilities\all.hpp" />
     <ClInclude Include="ql\math\matrixutilities\basisincompleteordered.hpp" />
     <ClInclude Include="ql\math\matrixutilities\choleskydecomposition.hpp" />

@@ -10,7 +10,8 @@ this_include_HEADERS = \
 	kronrodintegral.hpp \
 	segmentintegral.hpp \
 	simpsonintegral.hpp \
-	trapezoidintegral.hpp
+	trapezoidintegral.hpp \
+	twodimensionalintegral.hpp
 
 libIntegrals_la_SOURCES = \
 	gausslobattointegral.cpp \

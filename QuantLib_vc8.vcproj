@@ -2510,6 +2510,10 @@
 					RelativePath=".\ql\math\integrals\trapezoidintegral.hpp"
 					>
 				</File>
+				<File
+					RelativePath=".\ql\math\integrals\twodimensionalintegral.hpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="matrixutilities"

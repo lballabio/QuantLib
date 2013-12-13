@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=1906
+UnitCount=1908
 Type=2
 Ver=1
 ObjFiles=
@@ -19111,6 +19111,16 @@ BuildCmd=
 FileName=ql\experimental\math\simulatedannealing.hpp
 CompileCpp=1
 Folder=experimental/math
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit1908]
+FileName=ql\math\integrals\twodimensionalintegral.hpp
+CompileCpp=1
+Folder=math/integrals
 Compile=1
 Link=1
 Priority=1000
