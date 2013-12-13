@@ -641,6 +641,7 @@
     <ClCompile Include="capfloor.cpp" />
     <ClCompile Include="capflooredcoupon.cpp" />
     <ClCompile Include="cashflows.cpp" />
+    <ClCompile Include="catbonds.cpp" />
     <ClCompile Include="cdo.cpp" />
     <ClCompile Include="cdsoption.cpp" />
     <ClCompile Include="chooseroption.cpp" />
@@ -765,6 +766,7 @@
     <ClInclude Include="capfloor.hpp" />
     <ClInclude Include="capflooredcoupon.hpp" />
     <ClInclude Include="cashflows.hpp" />
+    <ClInclude Include="catbonds.hpp" />
     <ClInclude Include="cdo.hpp" />
     <ClInclude Include="cdsoption.hpp" />
     <ClInclude Include="chooseroption.hpp" />

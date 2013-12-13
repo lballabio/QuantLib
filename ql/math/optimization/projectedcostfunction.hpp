@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2007 François du Vignaud
  Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2013 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,7 +27,7 @@
 #define quantlib_math_projectedcostfunction_h
 
 #include <ql/math/optimization/costfunction.hpp>
-
+#include <ql/math/optimization/projection.hpp>
 
 namespace QuantLib {
 
@@ -34,11 +35,15 @@ namespace QuantLib {
     /*! This class creates a proxy cost function which can depend
         on any arbitrary subset of parameters (the other being fixed)
     */
-    class ProjectedCostFunction : public CostFunction {
+
+    class ProjectedCostFunction : public CostFunction, public Projection {
         public:
             ProjectedCostFunction(const CostFunction& costFunction,
-                                 const Array& parametersValues,
-                                 const std::vector<bool>& parametersFreedoms);
+                                 const Array& parameterValues,
+                                 const std::vector<bool>& fixParameters);
+
+            ProjectedCostFunction(const CostFunction& costFunction,
+                                  const Projection& projection);
 
             //! \name CostFunction interface
             //@{
@@ -47,21 +52,7 @@ namespace QuantLib {
                                    values(const Array& freeParameters) const;
             //@}
 
-            //! returns the subset of free parameters corresponding
-            // to set of parameters
-            virtual Disposable<Array> project(const Array& parameters) const;
-
-            //! returns whole set of parameters corresponding to the set
-            // of projected parameters
-            virtual Disposable<Array>
-                             include(const Array& projectedParameters) const;
-
         private:
-            void mapFreeParameters(const Array& parametersValues) const;
-            Size numberOfFreeParameters_;
-            const Array fixedParameters_;
-            mutable Array actualParameters_;
-            const std::vector<bool>& parametersFreedoms_;
             const CostFunction& costFunction_;
     };
 

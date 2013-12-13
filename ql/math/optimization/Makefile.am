@@ -18,7 +18,9 @@ this_include_HEADERS = \
     lmdif.hpp \
     method.hpp \
     problem.hpp \
+    projectedconstraint.hpp \
     projectedcostfunction.hpp \
+    projection.hpp \
     simplex.hpp \
     spherecylinder.hpp \
     steepestdescent.hpp
@@ -36,6 +38,7 @@ libOptimization_la_SOURCES = \
     linesearchbasedmethod.cpp \
     lmdif.cpp \
     projectedcostfunction.cpp \
+    projection.cpp \
     simplex.cpp \
     spherecylinder.cpp \
     steepestdescent.cpp

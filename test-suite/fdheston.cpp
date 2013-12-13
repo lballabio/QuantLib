@@ -55,9 +55,7 @@
 #include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
 
 #include <boost/math/special_functions/gamma.hpp>
-#if BOOST_VERSION >= 103900
 #include <boost/math/distributions/non_central_chi_squared.hpp>
-#endif
 
 using namespace QuantLib;
 using boost::unit_test_framework::test_suite;
@@ -789,7 +787,6 @@ void FdHestonTest::testBlackScholesFokkerPlanckFwdEquation() {
 
 namespace {
 
-    #if BOOST_VERSION >= 103900
     Real squareRootGreensFct(Real v0, Real kappa, Real theta,
                              Real sigma, Real t, Real x) {
 
@@ -803,7 +800,6 @@ namespace {
 
         return boost::math::pdf(dist, x/k) / k;
     }
-    #endif
 
     Real stationaryProbabilityFct(Real kappa, Real theta,
                                    Real sigma, Real v) {
@@ -839,8 +835,6 @@ namespace {
 }
 
 void FdHestonTest::testSquareRootZeroFlowBC() {
-    #if BOOST_VERSION >= 103900
-
     BOOST_TEST_MESSAGE("Testing Zero Flow BC for the square root process...");
 
     SavedSettings backup;
@@ -904,7 +898,6 @@ void FdHestonTest::testSquareRootZeroFlowBC() {
                        << "\n   tolerance:  " << tol);
         }
     }
-    #endif
 }
 
 
@@ -1054,8 +1047,6 @@ void FdHestonTest::testSquareRootEvolveWithStationaryDensity() {
 }
 
 void FdHestonTest::testSquareRootFokkerPlanckFwdEquation() {
-    #if BOOST_VERSION >= 103900
-
     BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation "
                        "for the square root process with Dirac start...");
 
@@ -1120,7 +1111,6 @@ void FdHestonTest::testSquareRootFokkerPlanckFwdEquation() {
                        << "\n   tolerance:  " << tol);
         }
     }
-    #endif
 }
 
 
@@ -1310,16 +1300,12 @@ test_suite* FdHestonTest::experimental() {
     test_suite* suite = BOOST_TEST_SUITE("Finite Difference Heston tests");
     suite->add(QUANTLIB_TEST_CASE(
         &FdHestonTest::testBlackScholesFokkerPlanckFwdEquation));
-    #if BOOST_VERSION >= 103900
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testSquareRootZeroFlowBC));
-    #endif
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testTransformedZeroFlowBC));
     suite->add(QUANTLIB_TEST_CASE(
           &FdHestonTest::testSquareRootEvolveWithStationaryDensity));
-    #if BOOST_VERSION >= 103900
     suite->add(QUANTLIB_TEST_CASE(
         &FdHestonTest::testSquareRootFokkerPlanckFwdEquation));
-    #endif
     suite->add(QUANTLIB_TEST_CASE(
         &FdHestonTest::testHestonFokkerPlanckFwdEquation));
 

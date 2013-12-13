@@ -4,6 +4,7 @@
  Copyright (C) 2003 Neil Firth
  Copyright (C) 2003, 2004, 2005, 2007, 2008 StatPro Italia srl
  Copyright (C) 2004 Ferdinando Ametrano
+ Copyright (C) 2013 Yue Tian
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,17 +31,23 @@
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>
 #include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
-#include <ql/experimental/barrieroption/perturbativebarrieroptionengine.hpp>
 #include <ql/pricingengines/barrier/mcbarrierengine.hpp>
+#include <ql/pricingengines/blackformula.hpp>
+#include <ql/experimental/barrieroption/perturbativebarrieroptionengine.hpp>
+#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
+#include <ql/experimental/barrieroption/vannavolgabarrierengine.hpp>
+#include <ql/experimental/barrieroption/vannavolgadoublebarrierengine.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancecurve.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <boost/make_shared.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+using boost::make_shared;
 
 #define REPORT_FAILURE(greekName, barrierType, barrier, rebate, payoff, \
                        exercise, s, q, r, today, v, expected, calculated, \
@@ -57,6 +64,60 @@ using namespace boost::unit_test_framework;
                << "    risk-free rate:   " << io::rate(r) << "\n" \
                << "    reference date:   " << today << "\n" \
                << "    maturity:         " << exercise->lastDate() << "\n" \
+               << "    volatility:       " << io::volatility(v) << "\n\n" \
+               << "    expected   " << greekName << ": " << expected << "\n" \
+               << "    calculated " << greekName << ": " << calculated << "\n"\
+               << "    error:            " << error << "\n" \
+               << "    tolerance:        " << tolerance);
+
+#define REPORT_FX_FAILURE(greekName, barrierType, barrier, \
+                          rebate, payoff, exercise, s, q, r, today, \
+                          vol25Put, atmVol, vol25Call, v, \
+                          expected, calculated, error, tolerance) \
+    BOOST_ERROR("\n" << barrierTypeToString(barrierType) << " " \
+               << exerciseTypeToString(exercise) << " " \
+               << payoff->optionType() << " FX option with " \
+               << payoffTypeToString(payoff) << " payoff:\n" \
+               << "    underlying value: " << s << "\n" \
+               << "    strike:           " << payoff->strike() << "\n" \
+               << "    barrier:          " << barrier << "\n" \
+               << "    rebate:           " << rebate << "\n" \
+               << "    dividend yield:   " << io::rate(q) << "\n" \
+               << "    risk-free rate:   " << io::rate(r) << "\n" \
+               << "    reference date:   " << today << "\n" \
+               << "    maturity:         " << exercise->lastDate() << "\n" \
+               << "    25PutVol:         " << io::volatility(vol25Put) << "\n" \
+               << "    atmVol:           " << io::volatility(atmVol) << "\n" \
+               << "    25CallVol:        " << io::volatility(vol25Call) << "\n" \
+               << "    volatility:       " << io::volatility(v) << "\n\n" \
+               << "    expected   " << greekName << ": " << expected << "\n" \
+               << "    calculated " << greekName << ": " << calculated << "\n"\
+               << "    error:            " << error << "\n" \
+               << "    tolerance:        " << tolerance);
+
+#define REPORT_FAILURE_DOUBLE(greekName, barrierType1, barrierType2, \
+                              barrier1, barrier2, rebate, payoff, \
+                              exercise, s, q, r, today, \
+                              vol25Put, atmVol, vol25Call, v, \
+                              expected, calculated, error, tolerance) \
+    BOOST_ERROR("\n" <<"Double Barrier Option " \
+               << barrierTypeToString(barrierType1) << " " \
+               << barrierTypeToString(barrierType2) << " " \
+               << exerciseTypeToString(exercise) << " " \
+               << payoff->optionType() << " option with " \
+               << payoffTypeToString(payoff) << " payoff:\n" \
+               << "    underlying value: " << s << "\n" \
+               << "    strike:           " << payoff->strike() << "\n" \
+               << "    barrier1:         " << barrier1 << "\n" \
+               << "    barrier2:         " << barrier2 << "\n" \
+               << "    rebate:           " << rebate << "\n" \
+               << "    dividend yield:   " << io::rate(q) << "\n" \
+               << "    risk-free rate:   " << io::rate(r) << "\n" \
+               << "    reference date:   " << today << "\n" \
+               << "    maturity:         " << exercise->lastDate() << "\n" \
+               << "    25PutVol:         " << io::volatility(vol25Put) << "\n" \
+               << "    atmVol:           " << io::volatility(atmVol) << "\n" \
+               << "    25CallVol:        " << io::volatility(vol25Call) << "\n" \
                << "    volatility:       " << io::volatility(v) << "\n\n" \
                << "    expected   " << greekName << ": " << expected << "\n" \
                << "    calculated " << greekName << ": " << calculated << "\n"\
@@ -102,6 +163,44 @@ namespace {
         Volatility v;  // volatility
         Real result;   // result
         Real tol;      // tolerance
+    };
+
+    struct BarrierFxOptionData {
+        Barrier::Type barrierType;
+        Real barrier;
+        Real rebate;
+        Option::Type type;
+        Real strike;
+        Real s;                 // spot
+        Rate q;                 // dividend
+        Rate r;                 // risk-free rate
+        Time t;                 // time to maturity
+        Volatility vol25Put;    // 25 delta put vol
+        Volatility volAtm;      // atm vol
+        Volatility vol25Call;   // 25 delta call vol
+        Volatility v;           // volatility at strike
+        Real result;            // result
+        Real tol;               // tolerance
+    };
+
+    struct DoubleBarrierFxOptionData {
+        Barrier::Type barrierType1;
+        Barrier::Type barrierType2;
+        Real barrier1;
+        Real barrier2;
+        Real rebate;
+        Option::Type type;
+        Real strike;
+        Real s;                 // spot
+        Rate q;                 // dividend
+        Rate r;                 // risk-free rate
+        Time t;                 // time to maturity
+        Volatility vol25Put;    // 25 delta put vol
+        Volatility volAtm;      // atm vol
+        Volatility vol25Call;   // 25 delta call vol
+        Volatility v;           // volatility at strike
+        Real result;            // result
+        Real tol;               // tolerance
     };
 
 }
@@ -214,34 +313,36 @@ void BarrierOptionTest::testHaugValues() {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> spot = make_shared<SimpleQuote>(0.0);
+    boost::shared_ptr<SimpleQuote> qRate = make_shared<SimpleQuote>(0.0);
     boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> rRate = make_shared<SimpleQuote>(0.0);
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> vol = make_shared<SimpleQuote>(0.0);
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     for (Size i=0; i<LENGTH(values); i++) {
         Date exDate = today + Integer(values[i].t*360+0.5);
-        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+        boost::shared_ptr<Exercise> exercise =
+            make_shared<EuropeanExercise>(exDate);
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<StrikedTypePayoff> payoff(new
-            PlainVanillaPayoff(values[i].type, values[i].strike));
+        boost::shared_ptr<StrikedTypePayoff> payoff =
+            make_shared<PlainVanillaPayoff>(values[i].type, values[i].strike);
 
-        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
-            BlackScholesMertonProcess(Handle<Quote>(spot),
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess =
+            make_shared<BlackScholesMertonProcess>(
+                                      Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
-                                      Handle<BlackVolTermStructure>(volTS)));
+                                      Handle<BlackVolTermStructure>(volTS));
 
-        boost::shared_ptr<PricingEngine> engine(
-                                     new AnalyticBarrierEngine(stochProcess));
+        boost::shared_ptr<PricingEngine> engine =
+            make_shared<AnalyticBarrierEngine>(stochProcess);
 
         BarrierOption barrierOption(
                 values[i].barrierType,
@@ -261,8 +362,8 @@ void BarrierOptionTest::testHaugValues() {
                            expected, calculated, error, values[i].tol);
         }
 
-        engine = boost::shared_ptr<PricingEngine>(
-                new FdBlackScholesBarrierEngine(stochProcess, 200, 400));
+        engine = make_shared<FdBlackScholesBarrierEngine>(stochProcess,
+                                                          200, 400);
         barrierOption.setPricingEngine(engine);
 
         calculated = barrierOption.NPV();
@@ -308,37 +409,39 @@ void BarrierOptionTest::testBabsiriValues() {
 
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
-    boost::shared_ptr<SimpleQuote> underlying(
-                                            new SimpleQuote(underlyingPrice));
+    boost::shared_ptr<SimpleQuote> underlying =
+        make_shared<SimpleQuote>(underlyingPrice);
 
-    boost::shared_ptr<SimpleQuote> qH_SME(new SimpleQuote(q));
+    boost::shared_ptr<SimpleQuote> qH_SME = make_shared<SimpleQuote>(q);
     boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qH_SME, dc);
 
-    boost::shared_ptr<SimpleQuote> rH_SME(new SimpleQuote(r));
+    boost::shared_ptr<SimpleQuote> rH_SME = make_shared<SimpleQuote>(r);
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rH_SME, dc);
 
-    boost::shared_ptr<SimpleQuote> volatility(new SimpleQuote(0.10));
+    boost::shared_ptr<SimpleQuote> volatility = make_shared<SimpleQuote>(0.10);
     boost::shared_ptr<BlackVolTermStructure> volTS =
         flatVol(today, volatility, dc);
 
     Date exDate = today+360;
-    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+    boost::shared_ptr<Exercise> exercise =
+        make_shared<EuropeanExercise>(exDate);
 
     for (Size i=0; i<LENGTH(values); i++) {
         volatility->setValue(values[i].volatility);
 
-        boost::shared_ptr<StrikedTypePayoff> callPayoff(new
-            PlainVanillaPayoff(Option::Call, values[i].strike));
+        boost::shared_ptr<StrikedTypePayoff> callPayoff =
+            make_shared<PlainVanillaPayoff>(Option::Call, values[i].strike);
 
-        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
-            BlackScholesMertonProcess(Handle<Quote>(underlying),
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess =
+            make_shared<BlackScholesMertonProcess>(
+                                      Handle<Quote>(underlying),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
-                                      Handle<BlackVolTermStructure>(volTS)));
+                                      Handle<BlackVolTermStructure>(volTS));
 
 
-        boost::shared_ptr<PricingEngine> engine(
-                                     new AnalyticBarrierEngine(stochProcess));
+        boost::shared_ptr<PricingEngine> engine =
+            make_shared<AnalyticBarrierEngine>(stochProcess);
 
         // analytic
         BarrierOption barrierCallOption(
@@ -407,38 +510,39 @@ void BarrierOptionTest::testBeagleholeValues() {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    boost::shared_ptr<SimpleQuote> underlying(
-                                            new SimpleQuote(underlyingPrice));
+    boost::shared_ptr<SimpleQuote> underlying =
+        make_shared<SimpleQuote>(underlyingPrice);
 
-    boost::shared_ptr<SimpleQuote> qH_SME(new SimpleQuote(q));
+    boost::shared_ptr<SimpleQuote> qH_SME = make_shared<SimpleQuote>(q);
     boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qH_SME, dc);
 
-    boost::shared_ptr<SimpleQuote> rH_SME(new SimpleQuote(r));
+    boost::shared_ptr<SimpleQuote> rH_SME = make_shared<SimpleQuote>(r);
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rH_SME, dc);
 
-    boost::shared_ptr<SimpleQuote> volatility(new SimpleQuote(0.10));
+    boost::shared_ptr<SimpleQuote> volatility = make_shared<SimpleQuote>(0.10);
     boost::shared_ptr<BlackVolTermStructure> volTS =
         flatVol(today, volatility, dc);
 
 
     Date exDate = today+360;
-    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+    boost::shared_ptr<Exercise> exercise =
+        make_shared<EuropeanExercise>(exDate);
 
     for (Size i=0; i<LENGTH(values); i++) {
         volatility->setValue(values[i].volatility);
 
-        boost::shared_ptr<StrikedTypePayoff> callPayoff(new
-            PlainVanillaPayoff(Option::Call, values[i].strike));
+        boost::shared_ptr<StrikedTypePayoff> callPayoff =
+            make_shared<PlainVanillaPayoff>(Option::Call, values[i].strike);
 
-        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
-            BlackScholesMertonProcess(Handle<Quote>(underlying),
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess =
+            make_shared<BlackScholesMertonProcess>(
+                                      Handle<Quote>(underlying),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
-                                      Handle<BlackVolTermStructure>(volTS)));
+                                      Handle<BlackVolTermStructure>(volTS));
 
-
-        boost::shared_ptr<PricingEngine> engine(
-                                     new AnalyticBarrierEngine(stochProcess));
+        boost::shared_ptr<PricingEngine> engine =
+            make_shared<AnalyticBarrierEngine>(stochProcess);
 
         BarrierOption barrierCallOption(
                 values[i].type,
@@ -491,7 +595,7 @@ void BarrierOptionTest::testPerturbative() {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    boost::shared_ptr<SimpleQuote> underlying(new SimpleQuote(S));
+    boost::shared_ptr<SimpleQuote> underlying = make_shared<SimpleQuote>(S);
     boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, q, dc);
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, r, dc);
 
@@ -501,29 +605,32 @@ void BarrierOptionTest::testPerturbative() {
     dates[0] = today + 90;  vols[0] = 0.105;
     dates[1] = today + 180; vols[1] = 0.11;
 
-    boost::shared_ptr<BlackVolTermStructure> volTS(
-                              new BlackVarianceCurve(today, dates, vols, dc));
+    boost::shared_ptr<BlackVolTermStructure> volTS =
+        make_shared<BlackVarianceCurve>(today, dates, vols, dc);
 
-    boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
-        new BlackScholesMertonProcess(Handle<Quote>(underlying),
+    boost::shared_ptr<BlackScholesMertonProcess> stochProcess =
+        make_shared<BlackScholesMertonProcess>(
+                                      Handle<Quote>(underlying),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
-                                      Handle<BlackVolTermStructure>(volTS)));
+                                      Handle<BlackVolTermStructure>(volTS));
 
     Real strike = 101.0;
     Real barrier = 101.0;
     Date exDate = today+180;
 
-    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-    boost::shared_ptr<StrikedTypePayoff> payoff(
-                                 new PlainVanillaPayoff(Option::Put, strike));
+    boost::shared_ptr<Exercise> exercise =
+        make_shared<EuropeanExercise>(exDate);
+    boost::shared_ptr<StrikedTypePayoff> payoff =
+        make_shared<PlainVanillaPayoff>(Option::Put, strike);
 
     BarrierOption option(Barrier::UpOut, barrier, rebate, payoff, exercise);
 
     Natural order = 0;
     bool zeroGamma = false;
-    boost::shared_ptr<PricingEngine> engine(
-         new PerturbativeBarrierOptionEngine(stochProcess, order, zeroGamma));
+    boost::shared_ptr<PricingEngine> engine =
+        make_shared<PerturbativeBarrierOptionEngine>(stochProcess,
+                                                     order, zeroGamma);
 
     option.setPricingEngine(engine);
 
@@ -537,8 +644,8 @@ void BarrierOptionTest::testPerturbative() {
     }
 
     order = 1;
-    engine = boost::shared_ptr<PricingEngine>(
-         new PerturbativeBarrierOptionEngine(stochProcess, order, zeroGamma));
+    engine = make_shared<PerturbativeBarrierOptionEngine>(stochProcess,
+                                                          order, zeroGamma);
 
     option.setPricingEngine(engine);
 
@@ -552,8 +659,8 @@ void BarrierOptionTest::testPerturbative() {
 
     /* Too slow, skip
     order = 2;
-    engine = boost::shared_ptr<PricingEngine>(
-         new PerturbativeBarrierOptionEngine(stochProcess, order, zeroGamma));
+    engine = make_shared<PerturbativeBarrierOptionEngine>(stochProcess,
+                                                          order, zeroGamma);
 
     option.setPricingEngine(engine);
 
@@ -589,12 +696,11 @@ void BarrierOptionTest::testLocalVolAndHestonComparison() {
         rates.push_back(r[i]);
     }
     const Handle<YieldTermStructure> rTS(
-            boost::shared_ptr<YieldTermStructure>(
-                                    new ZeroCurve(dates, rates, dayCounter)));
+            make_shared<ZeroCurve>(dates, rates, dayCounter));
     const Handle<YieldTermStructure> qTS(
                                    flatRate(settlementDate, 0.0, dayCounter));
 
-    const Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(4500.00)));
+    const Handle<Quote> s0(make_shared<SimpleQuote>(4500.00));
     
     Real tmp[] = { 100 ,500 ,2000,3400,3600,3800,4000,4200,4400,4500,
                    4600,4800,5000,5200,5400,5600,7500,10000,20000,30000 };
@@ -628,15 +734,17 @@ void BarrierOptionTest::testLocalVolAndHestonComparison() {
             blackVolMatrix[i][j-1] = v[i*(dates.size()-1)+j-1];
         }
     
-    const boost::shared_ptr<BlackVarianceSurface> volTS(
-        new BlackVarianceSurface(settlementDate, calendar,
+    const boost::shared_ptr<BlackVarianceSurface> volTS =
+        make_shared<BlackVarianceSurface>(
+                                 settlementDate, calendar,
                                  std::vector<Date>(dates.begin()+1,dates.end()),
                                  strikes, blackVolMatrix,
-                                 dayCounter));
+                                 dayCounter);
     volTS->setInterpolation<Bicubic>();
-    const boost::shared_ptr<GeneralizedBlackScholesProcess> localVolProcess(
-        new BlackScholesMertonProcess(s0, qTS, rTS, 
-                                      Handle<BlackVolTermStructure>(volTS)));
+    const boost::shared_ptr<GeneralizedBlackScholesProcess> localVolProcess =
+        make_shared<BlackScholesMertonProcess>(
+                                      s0, qTS, rTS, 
+                                      Handle<BlackVolTermStructure>(volTS));
     
     const Real v0   =0.195662;
     const Real kappa=5.6628;
@@ -644,28 +752,30 @@ void BarrierOptionTest::testLocalVolAndHestonComparison() {
     const Real sigma=1.1619;
     const Real rho  =-0.511493;
 
-    boost::shared_ptr<HestonProcess> hestonProcess(new HestonProcess(
-                                  rTS, qTS, s0, v0, kappa, theta, sigma, rho));
+    boost::shared_ptr<HestonProcess> hestonProcess =
+        make_shared<HestonProcess>(rTS, qTS, s0, v0, kappa, theta, sigma, rho);
 
-    boost::shared_ptr<HestonModel> hestonModel(new HestonModel(hestonProcess));
+    boost::shared_ptr<HestonModel> hestonModel =
+        make_shared<HestonModel>(hestonProcess);
 
-    boost::shared_ptr<PricingEngine> fdHestonEngine(
-                         new FdHestonBarrierEngine(hestonModel, 100, 400, 50));
+    boost::shared_ptr<PricingEngine> fdHestonEngine =
+        make_shared<FdHestonBarrierEngine>(hestonModel, 100, 400, 50);
     
-    boost::shared_ptr<PricingEngine> fdLocalVolEngine(
-                   new FdBlackScholesBarrierEngine(localVolProcess, 100, 400, 0,
-                                                   FdmSchemeDesc::Douglas(), 
-                                                   true, 0.35));
+    boost::shared_ptr<PricingEngine> fdLocalVolEngine =
+        make_shared<FdBlackScholesBarrierEngine>(localVolProcess, 100, 400, 0,
+                                                 FdmSchemeDesc::Douglas(), 
+                                                 true, 0.35);
     
     const Real strike  = s0->value();
     const Real barrier = 3000;
     const Real rebate  = 100;
     const Date exDate  = settlementDate + Period(20, Months);
     
-    const boost::shared_ptr<StrikedTypePayoff> payoff(new
-                                     PlainVanillaPayoff(Option::Put, strike));
+    const boost::shared_ptr<StrikedTypePayoff> payoff =
+        make_shared<PlainVanillaPayoff>(Option::Put, strike);
 
-    const boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+    const boost::shared_ptr<Exercise> exercise =
+        make_shared<EuropeanExercise>(exDate);
 
     BarrierOption barrierOption(Barrier::DownOut, 
                                 barrier, rebate, payoff, exercise);
@@ -701,6 +811,406 @@ void BarrierOptionTest::testLocalVolAndHestonComparison() {
 }
 
 
+void BarrierOptionTest::testVannaVolgaSimpleBarrierValues() {
+    BOOST_MESSAGE("Testing barrier FX options against Vanna/Volga values...");
+
+    SavedSettings backup;
+
+    BarrierFxOptionData values[] = {
+
+        //barrierType,barrier,rebate,type,strike,s,q,r,t,vol25Put,volAtm,vol25Call,vol, result, tol
+        { Barrier::UpOut,1.5,0,     Option::Call,1.13321,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.11638,0.148127, 1.0e-4},
+        { Barrier::UpOut,1.5,0,     Option::Call,1.22687,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.10088,0.075943, 1.0e-4},
+        { Barrier::UpOut,1.5,0,     Option::Call,1.31179,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08925,0.0274771, 1.0e-4},
+        { Barrier::UpOut,1.5,0,     Option::Call,1.38843,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08463,0.00573, 1.0e-4},
+        { Barrier::UpOut,1.5,0,     Option::Call,1.46047,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08412,0.00012, 1.0e-4},
+
+        { Barrier::UpOut,1.5,0,     Option::Put,1.13321,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.11638,0.00697606, 1.0e-4},
+        { Barrier::UpOut,1.5,0,     Option::Put,1.22687,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.10088,0.020078, 1.0e-4},
+        { Barrier::UpOut,1.5,0,     Option::Put,1.31179,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08925,0.0489395, 1.0e-4},
+        { Barrier::UpOut,1.5,0,     Option::Put,1.38843,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08463,0.0969877, 1.0e-4},
+        { Barrier::UpOut,1.5,0,     Option::Put,1.46047,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08412,0.157, 1.0e-4},
+
+        { Barrier::UpIn,1.5,0,      Option::Call,1.13321,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.11638,0.0322202, 1.0e-4},
+        { Barrier::UpIn,1.5,0,      Option::Call,1.22687,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.10088,0.0241491, 1.0e-4},
+        { Barrier::UpIn,1.5,0,      Option::Call,1.31179,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08925,0.0164275, 1.0e-4},
+        { Barrier::UpIn,1.5,0,      Option::Call,1.38843,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08463,0.01, 1.0e-4},
+        { Barrier::UpIn,1.5,0,      Option::Call,1.46047,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08412,0.00489, 1.0e-4},
+
+        { Barrier::UpIn,1.5,0,      Option::Put,1.13321,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.11638,0.000560713, 1.0e-4},
+        { Barrier::UpIn,1.5,0,      Option::Put,1.22687,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.10088,0.000546804, 1.0e-4},
+        { Barrier::UpIn,1.5,0,      Option::Put,1.31179,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08925,0.000130649, 1.0e-4},
+        { Barrier::UpIn,1.5,0,      Option::Put,1.38843,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08463,0.000300828, 1.0e-4},
+        { Barrier::UpIn,1.5,0,      Option::Put,1.46047,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08412,0.00135, 1.0e-4},
+
+        { Barrier::DownOut,1.1,0,       Option::Call,1.13321,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.11638,0.17746, 1.0e-4},
+        { Barrier::DownOut,1.1,0,       Option::Call,1.22687,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.10088,0.0994142, 1.0e-4},
+        { Barrier::DownOut,1.1,0,       Option::Call,1.31179,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08925,0.0439, 1.0e-4},
+        { Barrier::DownOut,1.1,0,       Option::Call,1.38843,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08463,0.01574, 1.0e-4},
+        { Barrier::DownOut,1.1,0,       Option::Call,1.46047,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08412,0.00501, 1.0e-4},
+
+        { Barrier::DownOut,1.3,0,       Option::Call,1.13321,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.11638,0.00612, 1.0e-4},
+        { Barrier::DownOut,1.3,0,       Option::Call,1.22687,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.10088,0.00426, 1.0e-4},
+        { Barrier::DownOut,1.3,0,       Option::Call,1.31179,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08925,0.00257, 1.0e-4},
+        { Barrier::DownOut,1.3,0,       Option::Call,1.38843,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08463,0.00122, 1.0e-4},
+        { Barrier::DownOut,1.3,0,       Option::Call,1.46047,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08412,0.00045, 1.0e-4},
+
+        { Barrier::DownOut,1.1,0,       Option::Put,1.13321,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.11638,0.00022, 1.0e-4},
+        { Barrier::DownOut,1.1,0,       Option::Put,1.22687,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.10088,0.00284, 1.0e-4},
+        { Barrier::DownOut,1.1,0,       Option::Put,1.31179,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08925,0.02032, 1.0e-4},
+        { Barrier::DownOut,1.1,0,       Option::Put,1.38843,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08463,0.058235, 1.0e-4},
+        { Barrier::DownOut,1.1,0,       Option::Put,1.46047,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08412,0.109432, 1.0e-4},
+
+        { Barrier::DownOut,1.3,0,       Option::Put,1.13321,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.11638,0, 1.0e-4},
+        { Barrier::DownOut,1.3,0,       Option::Put,1.22687,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.10088,0, 1.0e-4},
+        { Barrier::DownOut,1.3,0,       Option::Put,1.31179,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08925,0, 1.0e-4},
+        { Barrier::DownOut,1.3,0,       Option::Put,1.38843,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08463,0.00017, 1.0e-4},
+        { Barrier::DownOut,1.3,0,       Option::Put,1.46047,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08412,0.00083, 1.0e-4},
+
+        { Barrier::DownIn,1.1,0,        Option::Call,1.13321,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.11638,0.00289, 1.0e-4},
+        { Barrier::DownIn,1.1,0,        Option::Call,1.22687,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.10088,0.00067784, 1.0e-4},
+        { Barrier::DownIn,1.1,0,        Option::Call,1.31179,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08925,0, 1.0e-4},
+        { Barrier::DownIn,1.1,0,        Option::Call,1.38843,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08463,0, 1.0e-4},
+        { Barrier::DownIn,1.1,0,        Option::Call,1.46047,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08412,0, 1.0e-4},
+
+        { Barrier::DownIn,1.3,0,        Option::Call,1.13321,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.11638,0.17423, 1.0e-4},
+        { Barrier::DownIn,1.3,0,        Option::Call,1.22687,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.10088,0.09584, 1.0e-4},
+        { Barrier::DownIn,1.3,0,        Option::Call,1.31179,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08925,0.04133, 1.0e-4},
+        { Barrier::DownIn,1.3,0,        Option::Call,1.38843,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08463,0.01452, 1.0e-4},
+        { Barrier::DownIn,1.3,0,        Option::Call,1.46047,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08412,0.00456, 1.0e-4},
+
+        { Barrier::DownIn,1.1,0,        Option::Put,1.13321,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.11638,0.00732, 1.0e-4},
+        { Barrier::DownIn,1.1,0,        Option::Put,1.22687,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.10088,0.01778, 1.0e-4},
+        { Barrier::DownIn,1.1,0,        Option::Put,1.31179,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08925,0.02875, 1.0e-4},
+        { Barrier::DownIn,1.1,0,        Option::Put,1.38843,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08463,0.0390535, 1.0e-4},
+        { Barrier::DownIn,1.1,0,        Option::Put,1.46047,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08412,0.0489236, 1.0e-4},
+
+        { Barrier::DownIn,1.3,0,        Option::Put,1.13321,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.11638,0.00753, 1.0e-4},
+        { Barrier::DownIn,1.3,0,        Option::Put,1.22687,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.10088,0.02062, 1.0e-4},
+        { Barrier::DownIn,1.3,0,        Option::Put,1.31179,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08925,0.04907, 1.0e-4},
+        { Barrier::DownIn,1.3,0,        Option::Put,1.38843,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08463,0.09711, 1.0e-4},
+        { Barrier::DownIn,1.3,0,        Option::Put,1.46047,1.30265,0.0003541,0.0033871,1,0.10087,0.08925,0.08463,0.08412,0.15752, 1.0e-4},
+
+        { Barrier::UpOut,1.6,0,     Option::Call,1.06145,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.12511,0.20493, 1.0e-4},
+        { Barrier::UpOut,1.6,0,     Option::Call,1.19545,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.1089,0.105577, 1.0e-4},
+        { Barrier::UpOut,1.6,0,     Option::Call,1.32238,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09444,0.0358872, 1.0e-4},
+        { Barrier::UpOut,1.6,0,     Option::Call,1.44298,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09197,0.00634958, 1.0e-4},
+        { Barrier::UpOut,1.6,0,     Option::Call,1.56345,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09261,0, 1.0e-4},
+
+        { Barrier::UpOut,1.6,0,     Option::Put,1.06145,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.12511,0.0108218, 1.0e-4},
+        { Barrier::UpOut,1.6,0,     Option::Put,1.19545,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.1089,0.0313339, 1.0e-4},
+        { Barrier::UpOut,1.6,0,     Option::Put,1.32238,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09444,0.0751237, 1.0e-4},
+        { Barrier::UpOut,1.6,0,     Option::Put,1.44298,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09197,0.153407, 1.0e-4},
+        { Barrier::UpOut,1.6,0,     Option::Put,1.56345,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09261,0.253767, 1.0e-4},
+
+        { Barrier::UpIn,1.6,0,      Option::Call,1.06145,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.12511,0.05402, 1.0e-4},
+        { Barrier::UpIn,1.6,0,      Option::Call,1.19545,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.1089,0.0410069, 1.0e-4},
+        { Barrier::UpIn,1.6,0,      Option::Call,1.32238,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09444,0.0279562, 1.0e-4},
+        { Barrier::UpIn,1.6,0,      Option::Call,1.44298,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09197,0.0173055, 1.0e-4},
+        { Barrier::UpIn,1.6,0,      Option::Call,1.56345,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09261,0.00764, 1.0e-4},
+
+        { Barrier::UpIn,1.6,0,      Option::Put,1.06145,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.12511,0.000962737, 1.0e-4},
+        { Barrier::UpIn,1.6,0,      Option::Put,1.19545,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.1089,0.00102637, 1.0e-4},
+        { Barrier::UpIn,1.6,0,      Option::Put,1.32238,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09444,0.000419834, 1.0e-4},
+        { Barrier::UpIn,1.6,0,      Option::Put,1.44298,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09197,0.00159277, 1.0e-4},
+        { Barrier::UpIn,1.6,0,      Option::Put,1.56345,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09261,0.00473629, 1.0e-4},
+
+        { Barrier::DownOut,1,0,     Option::Call,1.06145,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.12511,0.255098, 1.0e-4},
+        { Barrier::DownOut,1,0,     Option::Call,1.19545,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.1089,0.145701, 1.0e-4},
+        { Barrier::DownOut,1,0,     Option::Call,1.32238,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09444,0.06384, 1.0e-4},
+        { Barrier::DownOut,1,0,     Option::Call,1.44298,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09197,0.02366, 1.0e-4},
+        { Barrier::DownOut,1,0,     Option::Call,1.56345,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09261,0.00764, 1.0e-4},
+
+        { Barrier::DownOut,1.3,0,       Option::Call,1.06145,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.12511,0.00592, 1.0e-4},
+        { Barrier::DownOut,1.3,0,       Option::Call,1.19545,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.1089,0.00421, 1.0e-4},
+        { Barrier::DownOut,1.3,0,       Option::Call,1.32238,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09444,0.00256, 1.0e-4},
+        { Barrier::DownOut,1.3,0,       Option::Call,1.44298,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09197,0.0012, 1.0e-4},
+        { Barrier::DownOut,1.3,0,       Option::Call,1.56345,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09261,0.0004, 1.0e-4},
+
+        { Barrier::DownOut,1,0,     Option::Put,1.06145,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.12511,0, 1.0e-4},
+        { Barrier::DownOut,1,0,     Option::Put,1.19545,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.1089,0.00280549, 1.0e-4},
+        { Barrier::DownOut,1,0,     Option::Put,1.32238,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09444,0.0279945, 1.0e-4},
+        { Barrier::DownOut,1,0,     Option::Put,1.44298,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09197,0.0896352, 1.0e-4},
+        { Barrier::DownOut,1,0,     Option::Put,1.56345,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09261,0.175182, 1.0e-4},
+
+        { Barrier::DownOut,1.3,0,       Option::Put,1.06145,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.12511,    0.00000, 1.0e-4},
+        { Barrier::DownOut,1.3,0,       Option::Put,1.19545,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.1089,     0.00000, 1.0e-4},
+        { Barrier::DownOut,1.3,0,       Option::Put,1.32238,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09444,    0.00000, 1.0e-4},
+        { Barrier::DownOut,1.3,0,       Option::Put,1.44298,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09197,0.0002, 1.0e-4},
+        { Barrier::DownOut,1.3,0,       Option::Put,1.56345,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09261,0.00096, 1.0e-4},
+
+        { Barrier::DownIn,1,0,      Option::Call,1.06145,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.12511,0.00384783, 1.0e-4},
+        { Barrier::DownIn,1,0,      Option::Call,1.19545,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.1089,0.000883232, 1.0e-4},
+        { Barrier::DownIn,1,0,      Option::Call,1.32238,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09444,0, 1.0e-4},
+        { Barrier::DownIn,1,0,      Option::Call,1.44298,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09197,   0.00000, 1.0e-4},
+        { Barrier::DownIn,1,0,      Option::Call,1.56345,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09261,   0.00000, 1.0e-4},
+
+        { Barrier::DownIn,1.3,0,        Option::Call,1.06145,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.12511,0.25302, 1.0e-4},
+        { Barrier::DownIn,1.3,0,        Option::Call,1.19545,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.1089,0.14238, 1.0e-4},
+        { Barrier::DownIn,1.3,0,        Option::Call,1.32238,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09444,0.06128, 1.0e-4},
+        { Barrier::DownIn,1.3,0,        Option::Call,1.44298,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09197,0.02245, 1.0e-4},
+        { Barrier::DownIn,1.3,0,        Option::Call,1.56345,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09261,0.00725, 1.0e-4},
+
+        { Barrier::DownIn,1,0,      Option::Put,1.06145,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.12511,0.01178, 1.0e-4},
+        { Barrier::DownIn,1,0,      Option::Put,1.19545,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.1089,0.0295548, 1.0e-4},
+        { Barrier::DownIn,1,0,      Option::Put,1.32238,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09444,0.047549, 1.0e-4},
+        { Barrier::DownIn,1,0,      Option::Put,1.44298,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09197,0.0653642, 1.0e-4},
+        { Barrier::DownIn,1,0,      Option::Put,1.56345,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09261,0.0833221, 1.0e-4},
+
+        { Barrier::DownIn,1.3,0,        Option::Put,1.06145,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.12511,0.01178, 1.0e-4},
+        { Barrier::DownIn,1.3,0,        Option::Put,1.19545,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.1089,0.03236, 1.0e-4},
+        { Barrier::DownIn,1.3,0,        Option::Put,1.32238,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09444,0.07554, 1.0e-4},
+        { Barrier::DownIn,1.3,0,        Option::Put,1.44298,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09197,0.15479, 1.0e-4},
+        { Barrier::DownIn,1.3,0,        Option::Put,1.56345,1.30265,0.0009418,0.0039788,2,0.10891,0.09525,0.09197,0.09261,0.25754, 1.0e-4},
+
+    };
+
+    DayCounter dc = Actual365Fixed();
+    Date today(5, March, 2013);
+    Settings::instance().evaluationDate() = today;
+
+    boost::shared_ptr<SimpleQuote> spot = make_shared<SimpleQuote>(0.0);
+    boost::shared_ptr<SimpleQuote> qRate = make_shared<SimpleQuote>(0.0);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate = make_shared<SimpleQuote>(0.0);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol25Put = make_shared<SimpleQuote>(0.0);
+    boost::shared_ptr<SimpleQuote> volAtm = make_shared<SimpleQuote>(0.0);
+    boost::shared_ptr<SimpleQuote> vol25Call = make_shared<SimpleQuote>(0.0);
+
+    for (Size i=0; i<LENGTH(values); i++) {
+
+        spot->setValue(values[i].s);
+        qRate->setValue(values[i].q);
+        rRate->setValue(values[i].r);
+        vol25Put->setValue(values[i].vol25Put);
+        volAtm->setValue(values[i].volAtm);
+        vol25Call->setValue(values[i].vol25Call);
+
+        boost::shared_ptr<StrikedTypePayoff> payoff =
+            make_shared<PlainVanillaPayoff>(values[i].type, values[i].strike);
+
+        Date exDate = today + Integer(values[i].t*365+0.5);
+        boost::shared_ptr<Exercise> exercise =
+            make_shared<EuropeanExercise>(exDate);
+
+        Handle<DeltaVolQuote> volAtmQuote = Handle<DeltaVolQuote>(
+						make_shared<DeltaVolQuote>(
+							Handle<Quote>(volAtm),
+							DeltaVolQuote::Fwd,
+							values[i].t,
+							DeltaVolQuote::AtmDeltaNeutral));
+
+        Handle<DeltaVolQuote> vol25PutQuote(Handle<DeltaVolQuote>(
+						make_shared<DeltaVolQuote>(
+							-0.25,
+							Handle<Quote>(vol25Put),
+							values[i].t,
+							DeltaVolQuote::Fwd
+							)));
+
+        Handle<DeltaVolQuote> vol25CallQuote(Handle<DeltaVolQuote>(
+						make_shared<DeltaVolQuote>(
+							0.25,
+							Handle<Quote>(vol25Call),
+							values[i].t,
+							DeltaVolQuote::Fwd
+							)));
+
+        BarrierOption barrierOption(values[i].barrierType,
+                                    values[i].barrier,
+                                    values[i].rebate,
+                                    payoff,
+                                    exercise);
+
+        Real bsVanillaPrice =
+            blackFormula(values[i].type, values[i].strike,
+                         spot->value()*qTS->discount(values[i].t)/rTS->discount(values[i].t),
+						 values[i].v * sqrt(values[i].t), rTS->discount(values[i].t));
+        boost::shared_ptr<PricingEngine> vannaVolgaEngine =
+            make_shared<VannaVolgaBarrierEngine>(
+                            volAtmQuote,
+							vol25PutQuote,
+							vol25CallQuote,
+							Handle<Quote> (spot),
+							Handle<YieldTermStructure> (rTS),
+							Handle<YieldTermStructure> (qTS),
+							true,
+							bsVanillaPrice);
+        barrierOption.setPricingEngine(vannaVolgaEngine);
+
+        Real calculated = barrierOption.NPV();
+        Real expected = values[i].result;
+        Real error = std::fabs(calculated-expected);
+        if (error>values[i].tol) {
+            REPORT_FX_FAILURE(
+                "value", values[i].barrierType, values[i].barrier,
+                values[i].rebate, payoff, exercise, values[i].s,
+                values[i].q, values[i].r, today, values[i].vol25Put,
+                values[i].volAtm, values[i].vol25Call, values[i].v,
+                expected, calculated, error, values[i].tol);
+        }
+    }
+}
+
+void BarrierOptionTest::testVannaVolgaDoubleBarrierValues() {
+    BOOST_MESSAGE(
+         "Testing double-barrier FX options against Vanna/Volga values...");
+
+    SavedSettings backup;
+
+    DoubleBarrierFxOptionData values[] = {
+
+        // barrierType1,barrierType1,barrier1, barrier2,    rebate,    type,            strike,         s,       q,       r,       t,   vol25Put,  volAtm,  vol25Call, vol,       result, tol
+
+        { Barrier::DownOut, Barrier::UpOut, 1.1,    1.5,    0.0,        Option::Call,   1.13321,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.11638,   0.14413, 1.0e-4},
+        { Barrier::DownOut, Barrier::UpOut, 1.1,    1.5,    0.0,        Option::Call,   1.22687,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.10088,   0.07456, 1.0e-4},
+        { Barrier::DownOut, Barrier::UpOut, 1.1,    1.5,    0.0,        Option::Call,   1.31179,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08925,   0.02710, 1.0e-4},
+        { Barrier::DownOut, Barrier::UpOut, 1.1,    1.5,    0.0,        Option::Call,   1.38843,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08463,   0.00569, 1.0e-4},
+        { Barrier::DownOut, Barrier::UpOut, 1.1,    1.5,    0.0,        Option::Call,   1.46047,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08412,   0.00013, 1.0e-4},
+
+        { Barrier::DownOut, Barrier::UpOut, 1.1,    1.5,    0.0,        Option::Put,   1.13321,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.11638,    0.00017, 1.0e-4},
+        { Barrier::DownOut, Barrier::UpOut, 1.1,    1.5,    0.0,        Option::Put,   1.22687,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.10088,    0.00353, 1.0e-4},
+        { Barrier::DownOut, Barrier::UpOut, 1.1,    1.5,    0.0,        Option::Put,   1.31179,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08925,    0.02221, 1.0e-4},
+        { Barrier::DownOut, Barrier::UpOut, 1.1,    1.5,    0.0,        Option::Put,   1.38843,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08463,    0.06049, 1.0e-4},
+        { Barrier::DownOut, Barrier::UpOut, 1.1,    1.5,    0.0,        Option::Put,   1.46047,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08412,    0.11103, 1.0e-4},
+
+        { Barrier::DownIn,  Barrier::UpIn,  1.1,    1.5,    0.0,        Option::Call,   1.13321,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.11638,   0.03621, 1.0e-4},
+        { Barrier::DownIn,  Barrier::UpIn,  1.1,    1.5,    0.0,        Option::Call,   1.22687,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.10088,   0.02553, 1.0e-4},
+        { Barrier::DownIn,  Barrier::UpIn,  1.1,    1.5,    0.0,        Option::Call,   1.31179,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08925,   0.01681, 1.0e-4},
+        { Barrier::DownIn,  Barrier::UpIn,  1.1,    1.5,    0.0,        Option::Call,   1.38843,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08463,   0.01005, 1.0e-4},
+        { Barrier::DownIn,  Barrier::UpIn,  1.1,    1.5,    0.0,        Option::Call,   1.46047,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08412,   0.00488, 1.0e-4},
+
+        { Barrier::DownIn,  Barrier::UpIn,  1.1,    1.5,    0.0,        Option::Put,   1.13321,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.11638,    0.00737, 1.0e-4},
+        { Barrier::DownIn,  Barrier::UpIn,  1.1,    1.5,    0.0,        Option::Put,   1.22687,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.10088,    0.01709, 1.0e-4},
+        { Barrier::DownIn,  Barrier::UpIn,  1.1,    1.5,    0.0,        Option::Put,   1.31179,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08925,    0.02686, 1.0e-4},
+        { Barrier::DownIn,  Barrier::UpIn,  1.1,    1.5,    0.0,        Option::Put,   1.38843,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08463,    0.03680, 1.0e-4},
+        { Barrier::DownIn,  Barrier::UpIn,  1.1,    1.5,    0.0,        Option::Put,   1.46047,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08412,    0.04733, 1.0e-4},
+
+        { Barrier::DownOut,  Barrier::UpOut,    1.0,    1.6,    0.0,        Option::Call,   1.06145,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.12511,   0.19981, 1.0e-4},
+        { Barrier::DownOut,  Barrier::UpOut,    1.0,    1.6,    0.0,        Option::Call,   1.19545,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.10890,   0.10389, 1.0e-4},
+        { Barrier::DownOut,  Barrier::UpOut,    1.0,    1.6,    0.0,        Option::Call,   1.32238,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09444,   0.03555, 1.0e-4},
+        { Barrier::DownOut,  Barrier::UpOut,    1.0,    1.6,    0.0,        Option::Call,   1.44298,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09197,   0.00634, 1.0e-4},
+        { Barrier::DownOut,  Barrier::UpOut,    1.0,    1.6,    0.0,        Option::Call,   1.56345,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09261,   0.00000, 1.0e-4},
+
+        { Barrier::DownOut,  Barrier::UpOut,    1.0,    1.6,    0.0,        Option::Put,   1.06145,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.12511,    0.00000, 1.0e-4},
+        { Barrier::DownOut,  Barrier::UpOut,    1.0,    1.6,    0.0,        Option::Put,   1.19545,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.10890,    0.00436, 1.0e-4},
+        { Barrier::DownOut,  Barrier::UpOut,    1.0,    1.6,    0.0,        Option::Put,   1.32238,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09444,    0.03173, 1.0e-4},
+        { Barrier::DownOut,  Barrier::UpOut,    1.0,    1.6,    0.0,        Option::Put,   1.44298,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09197,    0.09346, 1.0e-4},
+        { Barrier::DownOut,  Barrier::UpOut,    1.0,    1.6,    0.0,        Option::Put,   1.56345,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09261,    0.17704, 1.0e-4},
+
+        { Barrier::DownIn,    Barrier::UpIn,    1.0,    1.6,    0.0,        Option::Call,   1.06145,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.12511,   0.05913, 1.0e-4},
+        { Barrier::DownIn,    Barrier::UpIn,    1.0,    1.6,    0.0,        Option::Call,   1.19545,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.10890,   0.04269, 1.0e-4},
+        { Barrier::DownIn,    Barrier::UpIn,    1.0,    1.6,    0.0,        Option::Call,   1.32238,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09444,   0.02829, 1.0e-4},
+        { Barrier::DownIn,    Barrier::UpIn,    1.0,    1.6,    0.0,        Option::Call,   1.44298,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09197,   0.01732, 1.0e-4},
+        { Barrier::DownIn,    Barrier::UpIn,    1.0,    1.6,    0.0,        Option::Call,   1.56345,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09261,   0.00764, 1.0e-4},
+
+        { Barrier::DownIn,    Barrier::UpIn,    1.0,    1.6,    0.0,        Option::Put,   1.06145,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.12511,    0.01178, 1.0e-4},
+        { Barrier::DownIn,    Barrier::UpIn,    1.0,    1.6,    0.0,        Option::Put,   1.19545,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.10890,    0.02800, 1.0e-4},
+        { Barrier::DownIn,    Barrier::UpIn,    1.0,    1.6,    0.0,        Option::Put,   1.32238,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09444,    0.04381, 1.0e-4},
+        { Barrier::DownIn,    Barrier::UpIn,    1.0,    1.6,    0.0,        Option::Put,   1.44298,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09197,    0.06154, 1.0e-4},
+        { Barrier::DownIn,    Barrier::UpIn,    1.0,    1.6,    0.0,        Option::Put,   1.56345,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09261,    0.08147, 1.0e-4}
+
+    };
+
+    DayCounter dc = Actual360();
+    Date today(05, Mar, 2013);
+    Settings::instance().evaluationDate() = today;
+
+    boost::shared_ptr<SimpleQuote> spot = make_shared<SimpleQuote>(0.0);
+    boost::shared_ptr<SimpleQuote> qRate = make_shared<SimpleQuote>(0.0);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate = make_shared<SimpleQuote>(0.0);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol25Put = make_shared<SimpleQuote>(0.0);
+    boost::shared_ptr<SimpleQuote> volAtm = make_shared<SimpleQuote>(0.0);
+    boost::shared_ptr<SimpleQuote> vol25Call = make_shared<SimpleQuote>(0.0);
+
+    for (Size i=0; i<LENGTH(values); i++) {
+
+        spot->setValue(values[i].s);
+        qRate->setValue(values[i].q);
+        rRate->setValue(values[i].r);
+        vol25Put->setValue(values[i].vol25Put);
+        volAtm->setValue(values[i].volAtm);
+        vol25Call->setValue(values[i].vol25Call);
+
+        boost::shared_ptr<StrikedTypePayoff> payoff =
+            make_shared<PlainVanillaPayoff>(values[i].type, values[i].strike);
+
+        Date exDate = today + Integer(values[i].t*365+0.5);
+        boost::shared_ptr<Exercise> exercise =
+            make_shared<EuropeanExercise>(exDate);
+
+        Handle<DeltaVolQuote> volAtmQuote = Handle<DeltaVolQuote>(
+						make_shared<DeltaVolQuote>(
+							Handle<Quote>(volAtm),
+							DeltaVolQuote::Fwd,
+							values[i].t,
+							DeltaVolQuote::AtmDeltaNeutral));
+
+							//always delta neutral atm
+        Handle<DeltaVolQuote> vol25PutQuote(Handle<DeltaVolQuote>(
+						make_shared<DeltaVolQuote>(
+							-0.25,
+							Handle<Quote>(vol25Put),
+							values[i].t,
+							DeltaVolQuote::Fwd)));
+
+        Handle<DeltaVolQuote> vol25CallQuote(Handle<DeltaVolQuote>(
+						make_shared<DeltaVolQuote>(
+							0.25,
+							Handle<Quote>(vol25Call),
+							values[i].t,
+							DeltaVolQuote::Fwd)));
+
+        std::vector<Barrier::Type> barrierTypes;
+        barrierTypes.push_back(values[i].barrierType1);
+        barrierTypes.push_back(values[i].barrierType2);
+        std::vector<Real> barriers;
+        barriers.push_back(values[i].barrier1);
+        barriers.push_back(values[i].barrier2);
+        std::vector<Real> rebates;
+        rebates.push_back(values[i].rebate);
+        rebates.push_back(values[i].rebate);
+        DoubleBarrierOption doubleBarrierOption(barrierTypes,
+                                                barriers,
+                                                rebates,
+                                                payoff,
+                                                exercise);
+
+        Real bsVanillaPrice =
+            blackFormula(values[i].type, values[i].strike,
+						 spot->value()*qTS->discount(values[i].t)/rTS->discount(values[i].t),
+						 values[i].v * sqrt(values[i].t), rTS->discount(values[i].t));
+        boost::shared_ptr<PricingEngine> vannaVolgaEngine =
+            make_shared<VannaVolgaDoubleBarrierEngine>(
+                            volAtmQuote,
+							vol25PutQuote,
+							vol25CallQuote,
+							Handle<Quote> (spot),
+							Handle<YieldTermStructure> (rTS),
+							Handle<YieldTermStructure> (qTS),
+							true,
+							bsVanillaPrice);
+        doubleBarrierOption.setPricingEngine(vannaVolgaEngine);
+
+        Real calculated = doubleBarrierOption.NPV();
+        Real expected = values[i].result;
+        Real error = std::fabs(calculated-expected);
+        if (error>values[i].tol) {
+            REPORT_FAILURE_DOUBLE(
+                "value", values[i].barrierType1, values[i].barrierType2,
+                values[i].barrier1, values[i].barrier2,
+                values[i].rebate, payoff, exercise, values[i].s,
+                values[i].q, values[i].r, today, values[i].vol25Put,
+                values[i].volAtm, values[i].vol25Call, values[i].v,
+                expected, calculated, error, values[i].tol);
+        }
+    }
+}
+
+
 test_suite* BarrierOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Barrier option tests");
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testHaugValues));
@@ -714,5 +1224,9 @@ test_suite* BarrierOptionTest::suite() {
 test_suite* BarrierOptionTest::experimental() {
     test_suite* suite = BOOST_TEST_SUITE("Barrier option tests");
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testPerturbative));
+    suite->add(QUANTLIB_TEST_CASE(
+                      &BarrierOptionTest::testVannaVolgaSimpleBarrierValues));
+    suite->add(QUANTLIB_TEST_CASE(
+                      &BarrierOptionTest::testVannaVolgaDoubleBarrierValues));
     return suite;
 }

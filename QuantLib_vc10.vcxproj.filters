@@ -241,6 +241,9 @@
     <Filter Include="experimental\callablebonds">
       <UniqueIdentifier>{1b920d53-9803-4152-8653-c855397066d4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="experimental\catbonds">
+      <UniqueIdentifier>{38f8ad14-f839-425e-b711-68a9acd361f9}</UniqueIdentifier>
+    </Filter>
     <Filter Include="experimental\coupons">
       <UniqueIdentifier>{d7d44f55-80bf-4af8-9367-5c903022d99e}</UniqueIdentifier>
     </Filter>
@@ -270,6 +273,9 @@
     </Filter>
     <Filter Include="experimental\shortrate">
       <UniqueIdentifier>{e29388ea-045b-43fe-95f7-0973b8537907}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="experimental\swaptions">
+      <UniqueIdentifier>{63ee57ce-bf68-4a4a-b5c8-29d11c2a11ee}</UniqueIdentifier>
     </Filter>
     <Filter Include="experimental\varianceoption">
       <UniqueIdentifier>{8fd699bb-f489-4e96-a998-54b5612a9aa7}</UniqueIdentifier>
@@ -1218,7 +1224,13 @@
     <ClInclude Include="ql\math\optimization\problem.hpp">
       <Filter>math\optimization</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\optimization\projectedconstraint.hpp">
+      <Filter>math\optimization</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\optimization\projectedcostfunction.hpp">
+      <Filter>math\optimization</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\math\optimization\projection.hpp">
       <Filter>math\optimization</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\optimization\simplex.hpp">
@@ -2655,6 +2667,9 @@
     <ClInclude Include="ql\time\daycounters\actual365fixed.hpp">
       <Filter>time\daycounters</Filter>
     </ClInclude>
+    <ClInclude Include="ql\time\daycounters\actual365nl.hpp">
+      <Filter>time\daycounters</Filter>
+    </ClInclude>
     <ClInclude Include="ql\time\daycounters\actualactual.hpp">
       <Filter>time\daycounters</Filter>
     </ClInclude>
@@ -2777,6 +2792,21 @@
     </ClInclude>
     <ClInclude Include="ql\experimental\callablebonds\treecallablebondengine.hpp">
       <Filter>experimental\callablebonds</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\catbonds\all.hpp">
+      <Filter>experimental\catbonds</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\catbonds\catbond.hpp">
+      <Filter>experimental\catbonds</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\catbonds\catrisk.hpp">
+      <Filter>experimental\catbonds</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\catbonds\montecarlocatbondengine.hpp">
+      <Filter>experimental\catbonds</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\catbonds\riskynotional.hpp">
+      <Filter>experimental\catbonds</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\coupons\all.hpp">
       <Filter>experimental\coupons</Filter>
@@ -3021,6 +3051,18 @@
     <ClInclude Include="ql\experimental\shortrate\generalizedornsteinuhlenbeckprocess.hpp">
       <Filter>experimental\shortrate</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\swaptions\all.hpp">
+      <Filter>experimental\swaptions</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\swaptions\haganirregularswaptionengine.hpp">
+      <Filter>experimental\swaptions</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\swaptions\irregularswap.hpp">
+      <Filter>experimental\swaptions</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\swaptions\irregularswaption.hpp">
+      <Filter>experimental\swaptions</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\varianceoption\all.hpp">
       <Filter>experimental\varianceoption</Filter>
     </ClInclude>
@@ -3141,7 +3183,22 @@
     <ClInclude Include="ql\experimental\barrieroption\all.hpp">
       <Filter>experimental\barrieroption</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\barrieroption\analyticdoublebarrierengine.hpp">
+      <Filter>experimental\barrieroption</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\barrieroption\doublebarrieroption.hpp">
+      <Filter>experimental\barrieroption</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\barrieroption\perturbativebarrieroptionengine.hpp">
+      <Filter>experimental\barrieroption</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\barrieroption\vannavolgabarrierengine.hpp">
+      <Filter>experimental\barrieroption</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\barrieroption\vannavolgadoublebarrierengine.hpp">
+      <Filter>experimental\barrieroption</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\barrieroption\vannavolgainterpolation.hpp">
       <Filter>experimental\barrieroption</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\convertiblebonds\all.hpp">
@@ -4125,6 +4182,9 @@
       <Filter>math\optimization</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\optimization\projectedcostfunction.cpp">
+      <Filter>math\optimization</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\optimization\projection.cpp">
       <Filter>math\optimization</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\optimization\simplex.cpp">
@@ -5210,6 +5270,18 @@
     <ClCompile Include="ql\experimental\callablebonds\treecallablebondengine.cpp">
       <Filter>experimental\callablebonds</Filter>
     </ClCompile>
+    <ClCompile Include="ql\experimental\catbonds\catbond.cpp">
+      <Filter>experimental\catbonds</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\catbonds\catrisk.cpp">
+      <Filter>experimental\catbonds</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\catbonds\montecarlocatbondengine.cpp">
+      <Filter>experimental\catbonds</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\catbonds\riskynotional.cpp">
+      <Filter>experimental\catbonds</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\coupons\proxyibor.cpp">
       <Filter>experimental\coupons</Filter>
     </ClCompile>
@@ -5399,6 +5471,15 @@
     <ClCompile Include="ql\experimental\shortrate\generalizedornsteinuhlenbeckprocess.cpp">
       <Filter>experimental\shortrate</Filter>
     </ClCompile>
+    <ClCompile Include="ql\experimental\swaptions\haganirregularswaptionengine.cpp">
+      <Filter>experimental\swaptions</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\swaptions\irregularswap.cpp">
+      <Filter>experimental\swaptions</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\swaptions\irregularswaption.cpp">
+      <Filter>experimental\swaptions</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\varianceoption\integralhestonvarianceoptionengine.cpp">
       <Filter>experimental\varianceoption</Filter>
     </ClCompile>
@@ -5492,7 +5573,19 @@
     <ClCompile Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.cpp">
       <Filter>experimental\amortizingbonds</Filter>
     </ClCompile>
+    <ClCompile Include="ql\experimental\barrieroption\analyticdoublebarrierengine.cpp">
+      <Filter>experimental\barrieroption</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\barrieroption\doublebarrieroption.cpp">
+      <Filter>experimental\barrieroption</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\barrieroption\perturbativebarrieroptionengine.cpp">
+      <Filter>experimental\barrieroption</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\barrieroption\vannavolgabarrierengine.cpp">
+      <Filter>experimental\barrieroption</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\barrieroption\vannavolgadoublebarrierengine.cpp">
       <Filter>experimental\barrieroption</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\convertiblebonds\convertiblebond.cpp">

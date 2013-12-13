@@ -57,11 +57,7 @@
 #define QL_TEST_START_TIMING
 #endif
 
-#if BOOST_VERSION < 103500
-#define QUANTLIB_TEST_CASE(f) BOOST_TEST_CASE(f)
-#else
 #define QUANTLIB_TEST_CASE(f) BOOST_TEST_CASE(QuantLib::detail::quantlib_test_case(f))
-#endif
 
 namespace QuantLib {
 

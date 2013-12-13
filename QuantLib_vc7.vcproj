@@ -642,11 +642,38 @@
 				<File
 					RelativePath=".\ql\experimental\barrieroption\all.hpp">
 				</File>
+                <File
+					RelativePath=".\ql\experimental\barrieroption\analyticdoublebarrierengine.cpp">
+				</File>
+                <File
+					RelativePath=".\ql\experimental\barrieroption\analyticdoublebarrierengine.hpp">
+				</File>
+                <File
+					RelativePath=".\ql\experimental\barrieroption\doublebarrieroption.cpp">
+				</File>
+                <File
+					RelativePath=".\ql\experimental\barrieroption\doublebarrieroption.hpp">
+				</File>
 				<File
 					RelativePath=".\ql\experimental\barrieroption\perturbativebarrieroptionengine.cpp">
 				</File>
 				<File
 					RelativePath=".\ql\experimental\barrieroption\perturbativebarrieroptionengine.hpp">
+				</File>
+                <File
+					RelativePath=".\ql\experimental\barrieroption\vannavolgabarrierengine.cpp">
+				</File>
+                <File
+					RelativePath=".\ql\experimental\barrieroption\vannavolgabarrierengine.hpp">
+				</File>
+                <File
+					RelativePath=".\ql\experimental\barrieroption\vannavolgadoublebarrierengine.cpp">
+				</File>
+                <File
+					RelativePath=".\ql\experimental\barrieroption\vannavolgadoublebarrierengine.hpp">
+				</File>
+                <File
+					RelativePath=".\ql\experimental\barrieroption\vannavolgainterpolation.hpp">
 				</File>
 			</Filter>
 			<Filter
@@ -690,6 +717,37 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\callablebonds\treecallablebondengine.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="catbonds"
+				Filter="">
+				<File
+					RelativePath=".\ql\experimental\catbonds\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\catbonds\catbond.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\catbonds\catbond.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\catbonds\catrisk.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\catbonds\catrisk.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\catbonds\montecarlocatbondengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\catbonds\montecarlocatbondengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\catbonds\riskynotional.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\catbonds\riskynotional.hpp">
 				</File>
 			</Filter>
 			<Filter
@@ -1579,6 +1637,31 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\shortrate\generalizedornsteinuhlenbeckprocess.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="swaptions"
+				Filter="">
+				<File
+					RelativePath=".\ql\experimental\swaptions\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\swaptions\haganirregularswaptionengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\swaptions\haganirregularswaptionengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\swaptions\irregularswap.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\swaptions\irregularswap.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\swaptions\irregularswaption.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\experimental\swaptions\irregularswaption.hpp">
 				</File>
 			</Filter>
 			<Filter
@@ -2862,10 +2945,19 @@
 					RelativePath=".\ql\math\optimization\problem.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\math\optimization\projectedconstraint.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\math\optimization\projectedcostfunction.cpp">
 				</File>
 				<File
 					RelativePath=".\ql\math\optimization\projectedcostfunction.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\optimization\projection.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\optimization\projection.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\math\optimization\simplex.cpp">
@@ -6201,6 +6293,9 @@
 				</File>
 				<File
 					RelativePath=".\ql\time\daycounters\actual365fixed.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\daycounters\actual365nl.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\time\daycounters\actualactual.cpp">

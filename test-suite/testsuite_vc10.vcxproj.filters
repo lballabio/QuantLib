@@ -62,6 +62,9 @@
     <ClCompile Include="cashflows.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="catbonds.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="cdo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -426,6 +429,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cashflows.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="catbonds.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cdo.hpp">

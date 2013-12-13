@@ -924,6 +924,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\catbonds.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\cdo.cpp"
 				>
 			</File>
@@ -1410,6 +1414,10 @@
 			</File>
 			<File
 				RelativePath=".\cashflows.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\catbonds.hpp"
 				>
 			</File>
 			<File

@@ -250,7 +250,6 @@ void DistributionTest::testNormal() {
                     << "tolerance exceeded");
     }
 
-#if BOOST_VERSION >= 103500
     MaddockInverseCumulativeNormal mInvCum(average, sigma);
     std::transform(x.begin(),x.end(), x.begin(), diff.begin(),
     			   compose3(std::minus<Real>(),
@@ -262,7 +261,6 @@ void DistributionTest::testNormal() {
                     << QL_SCIENTIFIC << e << "\n"
                     << "tolerance exceeded");
     }
-#endif
 
     // check that cum.derivative = Gaussian
     for (i=0; i<x.size(); i++)

@@ -18,6 +18,7 @@ QL_TESTS = \
 	capfloor.hpp capfloor.cpp \
 	capflooredcoupon.hpp capflooredcoupon.cpp \
 	cashflows.hpp cashflows.cpp \
+	catbonds.hpp catbonds.cpp \
 	cdo.hpp cdo.cpp \
 	cdsoption.hpp cdsoption.cpp \
 	chooseroption.hpp chooseroption.cpp \

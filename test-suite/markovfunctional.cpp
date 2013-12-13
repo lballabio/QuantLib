@@ -68,10 +68,10 @@ void MarkovFunctionalTest::testMfStateProcess() {
     if( std::fabs( var12 - 2.0 ) > tolerance ) BOOST_ERROR("process 1 has not variance 1.0 for dt = 1.0 but " << var12);
 
     Array times2(2), vols2(3);
-    times2[0] = 1.0; times2[1] = 2.0; 
+    times2[0] = 1.0; times2[1] = 2.0;
     vols2[0] = 1.0; vols2[1] = 2.0; vols2[2] = 3.0;
     MfStateProcess sp2(0.00,times2,vols2);
-    Real dif21 = sp2.diffusion(0.0,0.0); 
+    Real dif21 = sp2.diffusion(0.0,0.0);
     Real dif22 = sp2.diffusion(0.99,0.0);
     Real dif23 = sp2.diffusion(1.0,0.0);
     Real dif24 = sp2.diffusion(1.9,0.0);
@@ -115,7 +115,7 @@ void MarkovFunctionalTest::testMfStateProcess() {
     if( std::fabs( var35 - 14.5935513933 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 3.0, should be 14.0 but it " << std::setprecision(12) << var35);
     if( std::fabs( var36 - 34.0940185819 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance at 5.0, should be 32.0 but it " << std::setprecision(12) << var36);
     if( std::fabs( var37 - 5.18130257358 ) > tolerance ) BOOST_ERROR("process 3 has wrong variance between 1.2 and 2.2, should be 5.0 but it " << std::setprecision(12) << var37);
- 
+
 }
 
 namespace {
@@ -358,7 +358,7 @@ namespace {
 
         boost::shared_ptr<SwapIndex> swapIndex(new EuriborSwapIsdaFixA(30*Years,Handle<YieldTermStructure>(md0Yts())));
         boost::shared_ptr<SwapIndex> shortSwapIndex(new EuriborSwapIsdaFixA(1*Years,Handle<YieldTermStructure>(md0Yts()))); // We assume that we have 6m vols (which we actually don't have for 1y underlying, but this is just a test...)
-    
+
         //return Handle<SwaptionVolatilityStructure>(new SwaptionVolCube2(swaptionVolAtm,optionTenorsSmile,swapTenorsSmile,strikeSpreads,qSwSmile,swapIndex,shortSwapIndex,false)); // bilinear interpolation gives nasty digitals
         Handle<SwaptionVolatilityStructure> res(
             boost::shared_ptr<SwaptionVolatilityStructure>(
@@ -498,9 +498,9 @@ namespace {
     Disposable<std::vector<Real> > impliedStdDevs(const Real atm,
                                                   const std::vector<Real>& strikes, 
                                                   const std::vector<Real>& prices) {
-    
+
         std::vector<Real> result;
-    
+
         for(Size i=0;i<prices.size();i++) {
             result.push_back( blackFormulaImpliedStdDev(Option::Call,strikes[i],atm,prices[i],1.0,0.0,0.2,1E-8,1000) );
         }
@@ -535,47 +535,51 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
 
     std::vector<Real> stdDevs0 = impliedStdDevs(atm,strikes,calls0);
     boost::shared_ptr<SmileSection> sec1(new InterpolatedSmileSection<Linear>(t,strikes,stdDevs0,atm));
-    
+
     // test arbitrage free smile reproduction
 
     boost::shared_ptr<KahaleSmileSection> ksec11(new KahaleSmileSection(sec1,atm,false,false,false,money));
 
     if( std::fabs(ksec11->leftCoreStrike() - 0.01) > tol ) BOOST_ERROR("smile11 left af strike is " 
-                                  << ksec11->leftCoreStrike() << "expected 0.01");
+                                  << ksec11->leftCoreStrike() << " expected 0.01");
 
     if( std::fabs(ksec11->rightCoreStrike() - 0.10) > tol ) BOOST_ERROR("smile11 right af strike is " 
-                                  << ksec11->rightCoreStrike() << "expected 0.10");
+                                  << ksec11->rightCoreStrike() << " expected 0.10");
 
     Real k = strikes[0];
     while(k <= strikes.back()+tol) {
         Real pric0 = sec1->optionPrice(k);
         Real pric1 = ksec11->optionPrice(k);
         if( std::fabs(pric0-pric1) > tol ) BOOST_ERROR("smile11 is not reprocduced at strike " << k
-                                                       << "input smile call price is  " << pric0 
-                                                       << "kahale smile call price is " << pric1);
+                                                       << " input smile call price is  " << pric0 
+                                                       << " kahale smile call price is " << pric1);
         k += 0.0001;
     }
 
     // test interpolation
 
     boost::shared_ptr<KahaleSmileSection> ksec12(new KahaleSmileSection(sec1,atm,true,false,false,money));
-    
-    if( std::fabs(ksec12->leftCoreStrike() - 0.01) > tol ) BOOST_ERROR("smile12 left af strike is " 
-                                                                    << ksec12->leftCoreStrike() << "expected 0.01");
+
+    // sanity check for left point extrapolation may mark 0.01 as bad as well as good depending
+    // on platform and compiler due to numerical differences, so we have to admit two possible results
+    if (std::fabs(ksec12->leftCoreStrike() - 0.02) > tol &&
+        std::fabs(ksec12->leftCoreStrike() - 0.01) > tol)
+        BOOST_ERROR("smile12 left af strike is " << ksec12->leftCoreStrike()
+                                                 << "expected 0.01 or 0.02");
 
     if( std::fabs(ksec12->rightCoreStrike() - 0.10) > tol ) BOOST_ERROR("smile12 right af strike is " 
                                                                     << ksec12->rightCoreStrike() << "expected 0.10");
 
-    for(Size i=0;i<strikes.size();i++) {
+    for(Size i=1;i<strikes.size();i++) {
         Real pric0 = sec1->optionPrice(strikes[i]);
         Real pric1 = ksec12->optionPrice(strikes[i]);
         if( std::fabs(pric0-pric1) > tol ) BOOST_ERROR("smile12 is not reproduced on grid at strike " << strikes[i]
-                                                       << "input smile call price is " << pric0
-                                                       << "kahale smile call price is " << pric1);
+                                                       << " input smile call price is " << pric0
+                                                       << " kahale smile call price is " << pric1);
     }
 
     // test global no arbitrageability
-    
+
     k = 0.0010;
     Real dig00 = 1.0, dig10 = 1.0;
     while(k <= 2.0*strikes.back()+tol) {
@@ -594,7 +598,7 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
     // test exponential extrapolation
 
     boost::shared_ptr<KahaleSmileSection> ksec13(new KahaleSmileSection(sec1,atm,false,true,false,money));
-    
+
     k=strikes.back();
     Real dig0 = ksec13->digitalOptionPrice(k-0.0010);
     while(k <= 10.0*strikes.back()+tol) {
@@ -613,16 +617,16 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
 
     boost::shared_ptr<KahaleSmileSection> ksec21(new KahaleSmileSection(sec2,atm,false,false,false,money));
     boost::shared_ptr<KahaleSmileSection> ksec22(new KahaleSmileSection(sec2,atm,true,false,true,money));
-    
+
     if( std::fabs(ksec21->leftCoreStrike() - 0.02) > tol ) BOOST_ERROR("smile21 left af strike is " 
-                                  << ksec21->leftCoreStrike() << "expected 0.02");
+                                  << ksec21->leftCoreStrike() << " expected 0.02");
     if( std::fabs(ksec22->leftCoreStrike() - 0.02) > tol ) BOOST_ERROR("smile22 left af strike is " 
-                                  << ksec22->leftCoreStrike() << "expected 0.02");
+                                  << ksec22->leftCoreStrike() << " expected 0.02");
 
     if( std::fabs(ksec21->rightCoreStrike() - 0.10) > tol ) BOOST_ERROR("smile21 right af strike is " 
-                                  << ksec21->rightCoreStrike() << "expected 0.10");
+                                  << ksec21->rightCoreStrike() << " expected 0.10");
     if( std::fabs(ksec22->rightCoreStrike() - 0.10) > tol ) BOOST_ERROR("smile22 right af strike is " 
-                                  << ksec22->rightCoreStrike() <<  "expected 0.10");
+                                  << ksec22->rightCoreStrike() <<  " expected 0.10");
 
     k = 0.0010;
     dig00 = dig10 = 1.0;
@@ -631,14 +635,14 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
         Real dig1 = ksec22->digitalOptionPrice(k);
         if( ! ( dig0 <= dig00+tol && dig0 >= 0.0 ) ) BOOST_ERROR("arbitrage in digitals21 (" 
                                                                << dig00 << "," << dig0 << ") at strike " 
-                                                                 << k); 
+                                                                 << k);
         if( ! ( dig1 <= dig10+tol && dig1 >= 0.0 ) ) BOOST_ERROR("arbitrage in digitals22 (" 
                                                                << dig10 << "," << dig1 << ") at strike " 
                                                                  << k);
         dig00 = dig0; dig10= dig1;
         k += 0.0001;
     }
-    
+
     // test arbitrageable smile (second but rightmost point)
 
     std::vector<Real> calls2(calls0);
@@ -648,16 +652,20 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
 
     boost::shared_ptr<KahaleSmileSection> ksec31(new KahaleSmileSection(sec3,atm,false,false,false,money));
     boost::shared_ptr<KahaleSmileSection> ksec32(new KahaleSmileSection(sec3,atm,true,false,true,money));
-    
+
     if( std::fabs(ksec31->leftCoreStrike() - 0.01) > tol ) BOOST_ERROR("smile31 left af strike is " 
-                                  << ksec31->leftCoreStrike() << "expected 0.01");
-    if( std::fabs(ksec32->leftCoreStrike() - 0.01) > tol ) BOOST_ERROR("smile32 left af strike is " 
-                                  << ksec32->leftCoreStrike() << "expected 0.01");
+                                  << ksec31->leftCoreStrike() << " expected 0.01");
+
+    // sanity check for left point extrapolation may mark 0.01 as bad as well as good depending
+    // on platform and compiler due to numerical differences, so we have to admit two possible results
+    if ( std::fabs(ksec32->leftCoreStrike() - 0.02) > tol &&
+         std::fabs(ksec32->leftCoreStrike() - 0.01) > tol ) BOOST_ERROR("smile32 left af strike is "
+                                  << ksec32->leftCoreStrike() << " expected 0.01 or 0.02");
 
     if( std::fabs(ksec31->rightCoreStrike() - 0.08) > tol ) BOOST_ERROR("smile31 right af strike is " 
-                                  << ksec31->rightCoreStrike() << "expected 0.08");
+                                  << ksec31->rightCoreStrike() << " expected 0.08");
     if( std::fabs(ksec32->rightCoreStrike() - 0.10) > tol ) BOOST_ERROR("smile32 right af strike is " 
-                                  << ksec32->rightCoreStrike() << "expected 0.10");
+                                  << ksec32->rightCoreStrike() << " expected 0.10");
     k = 0.0010;
     dig00 = dig10 = 1.0;
     while(k <= 2.0*strikes.back()+tol) {
@@ -679,7 +687,7 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
 
     const Real tol0 = 0.0001; //  1bp tolerance for model zero rates vs. market zero rates (note that model zero rates are implied by the calibration of the numeraire to the smile)
     const Real tol1 = 0.0001;  // 1bp tolerance for model call put premia vs. market premia
-    
+
     BOOST_MESSAGE("Testing markov functional calibration to one instrument set...");
 
     Date savedEvalDate = Settings::instance().evaluationDate();
@@ -724,7 +732,7 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
                                                                  .withAdjustments(MarkovFunctional::ModelSettings::KahaleSmile |
                                                                                   MarkovFunctional::ModelSettings::KahaleExponentialExtrapolation)
                                                                  .withSmileMoneynessCheckpoints(money)));
-    
+
     MarkovFunctional::ModelOutputs outputs1 = mf1->modelOutputs();   // this costs a lot of time, so only use it if you want to check the calibration
     //BOOST_MESSAGE(outputs1);
 
@@ -753,7 +761,7 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
                                                             .withUpperRateBound(2.0)
                                                             .withAdjustments(MarkovFunctional::ModelSettings::AdjustNone)
                                                             .withSmileMoneynessCheckpoints(money)));
-    
+
     MarkovFunctional::ModelOutputs outputs2 = mf2->modelOutputs();
     //BOOST_MESSAGE(outputs2);
 
@@ -782,7 +790,7 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
                                                                  .withUpperRateBound(2.0)
                                                                  .withSmileMoneynessCheckpoints(money)
                                                                  ));
-    
+
     MarkovFunctional::ModelOutputs outputs3 = mf3->modelOutputs();
     //BOOST_MESSAGE(outputs3);
     //outputSurfaces(mf3,md0Yts_);
@@ -812,7 +820,7 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
                                                             .withLowerRateBound(0.0)
                                                             .withUpperRateBound(2.0)
                                                             .withSmileMoneynessCheckpoints(money)));
-    
+
     MarkovFunctional::ModelOutputs outputs4 = mf4->modelOutputs();
     //BOOST_MESSAGE(outputs4);
 
@@ -890,7 +898,7 @@ void MarkovFunctionalTest::testVanillaEngines() {
     boost::shared_ptr<BlackSwaptionEngine> blackSwaptionEngine1(new BlackSwaptionEngine(flatYts_,flatSwaptionVts_));
 
     for(Size i=0;i<outputs1.expiries_.size();i++) {
-        for(Size j=0;j<outputs1.smileStrikes_[0].size();j++) {   
+        for(Size j=0;j<outputs1.smileStrikes_[0].size();j++) {
             boost::shared_ptr<VanillaSwap> underlyingCall = MakeVanillaSwap(outputs1.tenors_[i],iborIndex1,outputs1.smileStrikes_[i][j])
                                                                             .withEffectiveDate(TARGET().advance(outputs1.expiries_[i],2,Days)) 
                                                                             .receiveFixed(false);
@@ -927,7 +935,7 @@ void MarkovFunctionalTest::testVanillaEngines() {
                                                             .withUpperRateBound(2.0)
                                                             .withSmileMoneynessCheckpoints(money)));
 
-    
+
     MarkovFunctional::ModelOutputs outputs2 = mf2->modelOutputs();
     //BOOST_MESSAGE(outputs2);
 
@@ -978,7 +986,7 @@ void MarkovFunctionalTest::testVanillaEngines() {
     //BOOST_MESSAGE(outputs3);
 
     for(Size i=0;i<outputs3.expiries_.size();i++) {
-        for(Size j=0;j<outputs3.smileStrikes_[0].size();j++) {   
+        for(Size j=0;j<outputs3.smileStrikes_[0].size();j++) {
             boost::shared_ptr<VanillaSwap> underlyingCall = MakeVanillaSwap(outputs3.tenors_[i],iborIndex3,outputs3.smileStrikes_[i][j])
                                                                             .withEffectiveDate(TARGET().advance(outputs3.expiries_[i],2,Days)) 
                                                                             .receiveFixed(false);
@@ -1017,7 +1025,7 @@ void MarkovFunctionalTest::testVanillaEngines() {
                                                             .withUpperRateBound(2.0)
                                                             .withSmileMoneynessCheckpoints(money)));
 
-    
+
     MarkovFunctional::ModelOutputs outputs4 = mf4->modelOutputs();
     //BOOST_MESSAGE(outputs4);
 
@@ -1074,6 +1082,8 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
     volStepDates.push_back(TARGET().advance(referenceDate,1*Years));
     volStepDates.push_back(TARGET().advance(referenceDate,2*Years));
     volStepDates.push_back(TARGET().advance(referenceDate,3*Years));
+    volStepDates.push_back(TARGET().advance(referenceDate,4*Years));
+    vols.push_back(1.0);
     vols.push_back(1.0);
     vols.push_back(1.0);
     vols.push_back(1.0);
@@ -1129,10 +1139,10 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
 
     mf1->calibrate(calibrationHelper1,om,ec);
 
-    //std::cout << "Calibrated parameters 1: ";
-    //Array params1 = mf1->params();
-    //for(Size i=0;i<params1.size();i++) std::cout << params1[i] << ";";
-    //std::cout << std::endl;
+    // std::cout << "Calibrated parameters 1: ";
+    // Array params1 = mf1->params();
+    // for(Size i=0;i<params1.size();i++) std::cout << params1[i] << ";";
+    // std::cout << std::endl;
 
     std::vector<Swaption> ch1;
     ch1.push_back(MakeSwaption(boost::shared_ptr<SwapIndex>(new EuriborSwapIsdaFixA(4*Years,flatYts_)),1*Years));
@@ -1188,10 +1198,10 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
 
     mf2->calibrate(calibrationHelper2,om,ec);
 
-    //std::cout << "Calibrated parameters 2: ";
-    //Array params2 = mf2->params();
-    //for(Size i=0;i<params2.size();i++) std::cout << params2[i] << ";";
-    //std::cout << std::endl;
+    // std::cout << "Calibrated parameters 2: ";
+    // Array params2 = mf2->params();
+    // for(Size i=0;i<params2.size();i++) std::cout << params2[i] << ";";
+    // std::cout << std::endl;
 
     std::vector<Swaption> ch2;
     ch2.push_back(MakeSwaption(boost::shared_ptr<SwapIndex>(new EuriborSwapIsdaFixA(4*Years,md0Yts_)),1*Years));
@@ -1298,5 +1308,3 @@ test_suite* MarkovFunctionalTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testBermudanSwaption));
     return suite;
 }
-
-
