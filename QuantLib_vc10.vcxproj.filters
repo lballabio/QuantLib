@@ -1059,6 +1059,9 @@
     <ClInclude Include="ql\math\integrals\trapezoidintegral.hpp">
       <Filter>math\integrals</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\integrals\twodimensionalintegral.hpp">
+      <Filter>math\integrals</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\matrixutilities\all.hpp">
       <Filter>math\matrixutilities</Filter>
     </ClInclude>

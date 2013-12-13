@@ -18846,3 +18846,13 @@ Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
+
+[Unit1881]
+FileName=ql\math\integrals\twodimensionalintegral.hpp
+CompileCpp=1
+Folder=math/integrals
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
