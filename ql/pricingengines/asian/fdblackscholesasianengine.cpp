@@ -66,9 +66,9 @@ namespace QuantLib {
         const Real avg = (arguments_.runningAccumulator == 0)
                  ? spot : arguments_.runningAccumulator/arguments_.pastFixings;
 
-		const Real normInvEps = InverseCumulativeNormal()(1-0.0001);
+        const Real normInvEps = InverseCumulativeNormal()(1-0.0001);
         const Real sigmaSqrtT 
-			= process_->blackVolatility()->blackVol(maturity, payoff->strike())
+            = process_->blackVolatility()->blackVol(maturity, payoff->strike())
                                                         *std::sqrt(maturity);
         const Real r = sigmaSqrtT*normInvEps;
 
