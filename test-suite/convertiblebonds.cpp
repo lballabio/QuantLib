@@ -315,7 +315,7 @@ void ConvertibleBondTest::testOption() {
 
     vars.settlementDays = 0;
 
-    Size timeSteps = 1001;
+    Size timeSteps = 2001;
     boost::shared_ptr<PricingEngine> engine(
         new BinomialConvertibleEngine<CoxRossRubinstein>(vars.process,
                                                          timeSteps));
@@ -356,7 +356,8 @@ void ConvertibleBondTest::testOption() {
         BOOST_ERROR("failed to reproduce plain-option price:"
                     << "\n    calculated: " << euZero.NPV()
                     << "\n    expected:   " << expected
-                    << "\n    error:      " << error);
+                    << "\n    error:      " << error
+                    << "\n    tolerance:      " << tolerance);
     }
 }
 
