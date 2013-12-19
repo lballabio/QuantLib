@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2011 Master IMAFA - Polytech'Nice Sophia - Université de Nice Sophia Antipolis
+ Copyright (C) 2011 Master IMAFA - Polytech'Nice Sophia - Universitï¿½ de Nice Sophia Antipolis
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -72,9 +72,10 @@ namespace QuantLib {
         Rate dividendYield = process_->dividendYield()->
             zeroRate(maturity, divdc, Continuous, NoFrequency);
         Real b = riskFreeRate - dividendYield;
-        QL_REQUIRE(b != 0.0, "null cost of carry not allowed by Levy engine");
 
-        Real Se = (spot/(T*b))*(exp((b-riskFreeRate)*T2)-exp(-riskFreeRate*T2));
+        Real Se = (std::fabs(b) > 1000*QL_EPSILON) 
+			? (spot/(T*b))*(exp((b-riskFreeRate)*T2)-exp(-riskFreeRate*T2))
+			: spot*T2/T * std::exp(-riskFreeRate*T2);
 
         Real X;
         if (T2 < T) {
@@ -85,9 +86,11 @@ namespace QuantLib {
             X = strike;
         }
 
+        Real m = (std::fabs(b) > 1000*QL_EPSILON) ? ((exp(b*T2)-1)/b) : T2;
+
         Real M = (2*spot*spot/(b+volatility*volatility)) *
             (((exp((2*b+volatility*volatility)*T2)-1)
-              / (2*b+volatility*volatility))-((exp(b*T2)-1)/b));
+              / (2*b+volatility*volatility))-m);
 
         Real D = M/(T*T);
 

@@ -19,7 +19,7 @@
 
 #include <ql/exercise.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/methods/finitedifferences/stepconditions/fdmarithmeticaveragecondition.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/asian/fdblackscholesasianengine.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmsimple2dbssolver.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
@@ -27,6 +27,7 @@
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmarithmeticaveragecondition.hpp>
 
 namespace QuantLib {
 
@@ -58,9 +59,25 @@ namespace QuantLib {
         const boost::shared_ptr<Fdm1dMesher> equityMesher(
             new FdmBlackScholesMesher(xGrid_, process_, maturity,
                                       payoff->strike()));
+
+        const Real spot = process_->x0();
+        QL_REQUIRE(spot > 0.0, "negative or null underlying given");
+
+        const Real avg = (arguments_.runningAccumulator == 0)
+                 ? spot : arguments_.runningAccumulator/arguments_.pastFixings;
+
+        const Real normInvEps = InverseCumulativeNormal()(1-0.0001);
+        const Real sigmaSqrtT 
+            = process_->blackVolatility()->blackVol(maturity, payoff->strike())
+                                                        *std::sqrt(maturity);
+        const Real r = sigmaSqrtT*normInvEps;
+
+        Real xMin = std::min(std::log(avg)  - 0.25*r, std::log(spot) - 1.5*r);
+        Real xMax = std::max(std::log(avg)  + 0.25*r, std::log(spot) + 1.5*r);
+
         const boost::shared_ptr<Fdm1dMesher> averageMesher(
             new FdmBlackScholesMesher(aGrid_, process_, maturity,
-                                      payoff->strike()));
+                                      payoff->strike(), xMin, xMax));
 
         const boost::shared_ptr<FdmMesher> mesher (
             new FdmMesherComposite(equityMesher, averageMesher));
@@ -83,7 +100,7 @@ namespace QuantLib {
         stoppingTimes.push_back(std::vector<Time>(averageTimes));
         stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
                 new FdmArithmeticAverageCondition(
-                        averageTimes, 0,
+                        averageTimes, arguments_.runningAccumulator,
                         arguments_.pastFixings, mesher, 0)));
 
         boost::shared_ptr<FdmStepConditionComposite> conditions(
@@ -100,9 +117,6 @@ namespace QuantLib {
                               Handle<GeneralizedBlackScholesProcess>(process_),
                               payoff->strike(), solverDesc, schemeDesc_));
 
-        const Real spot = process_->x0();
-        const Real avg = arguments_.runningAccumulator == 0
-                 ? spot : arguments_.runningAccumulator/arguments_.pastFixings;
         results_.value = solver->valueAt(spot, avg);
         results_.delta = solver->deltaAt(spot, avg, spot*0.01);
         results_.gamma = solver->gammaAt(spot, avg, spot*0.01);
