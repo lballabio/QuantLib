@@ -370,7 +370,7 @@ void CmsTest::testCmsSwap() {
             Real priceAn = cms[sl]->NPV();
 
             Real difference =  std::fabs(priceNum-priceAn);
-            Real tol = 1.0e-4;
+            Real tol = 2.0e-4;
             if (difference > tol)
                 BOOST_FAIL("\nLength in Years:  " << swapLengths[sl] <<
                            //"\nfloor:            " << io::rate(infiniteFloor) <<
