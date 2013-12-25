@@ -23,6 +23,7 @@ libExperimental_la_LIBADD = \
     convertiblebonds/libConvertibleBonds.la \
     coupons/libCoupons.la \
     credit/libCredit.la \
+	exercise/libExercise.la \
     exoticoptions/libExoticOptions.la \
     finitedifferences/libMultiDimFDM.la \
     fx/libFX.la \

@@ -33,8 +33,7 @@ class MarkovFunctionalTest {
     static void testCalibrationTwoInstrumentSets();
     static void testVanillaEngines();
     static void testBermudanSwaption();
-    static boost::unit_test_framework::test_suite* suite();
+    static boost::unit_test_framework::test_suite *suite();
 };
-
 
 #endif
