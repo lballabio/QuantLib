@@ -1,7 +1,7 @@
 
 SUBDIRS = amortizingbonds barrieroption callablebonds catbonds \
           commodities compoundoption convertiblebonds coupons credit \
-          exoticoptions finitedifferences fx inflation lattices \
+          exercise exoticoptions finitedifferences fx inflation lattices \
           math mcbasket models processes risk shortrate swaptions \
           variancegamma varianceoption volatility
 
