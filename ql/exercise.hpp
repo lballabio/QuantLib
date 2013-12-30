@@ -27,9 +27,6 @@
 #define quantlib_exercise_type_h
 
 #include <ql/time/date.hpp>
-#include <ql/time/calendar.hpp>
-#include <ql/time/calendars/nullcalendar.hpp>
-#include <ql/time/businessdayconvention.hpp>
 #include <ql/errors.hpp>
 #include <vector>
 
