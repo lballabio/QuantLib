@@ -1,7 +1,7 @@
 
 SUBDIRS = amortizingbonds barrieroption callablebonds catbonds \
           commodities compoundoption convertiblebonds coupons credit \
-          exoticoptions finitedifferences fx inflation lattices \
+          exercise exoticoptions finitedifferences fx inflation lattices \
           math mcbasket models processes risk shortrate swaptions \
           variancegamma varianceoption volatility
 
@@ -23,6 +23,7 @@ libExperimental_la_LIBADD = \
     convertiblebonds/libConvertibleBonds.la \
     coupons/libCoupons.la \
     credit/libCredit.la \
+    exercise/libExercise.la \
     exoticoptions/libExoticOptions.la \
     finitedifferences/libMultiDimFDM.la \
     fx/libFX.la \
