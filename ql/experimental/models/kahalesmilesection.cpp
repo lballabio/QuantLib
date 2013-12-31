@@ -90,8 +90,8 @@ namespace QuantLib {
                 // which are not monotonic or greater than 1.0
                 // due to numerical effects. Move to the next index in
                 // these cases.
-                Real dig = digitalOptionPrice(k1/2.0);
-                QL_REQUIRE( dig >= -c1p && dig <= 1.0 , "dummy");
+                Real dig = digitalOptionPrice(k1 / 2.0);
+                QL_REQUIRE(dig >= -c1p && dig <= 1.0, "dummy");
             }
             catch (...) {
                 leftIndex_++;
@@ -126,27 +126,28 @@ namespace QuantLib {
                 cp1 = (sec + secr) / 2.0;
                 aHelper ah(k0, k1, c0, c1, cp0, cp1);
                 Real a;
-                bool valid=false;
+                bool valid = false;
                 try {
                     a = brent.solve(
                         ah, QL_KAHALE_ACC, 0.5 * (cp1 + (1.0 + cp0)),
                         cp1 + QL_KAHALE_EPS, 1.0 + cp0 - QL_KAHALE_EPS);
                     // numerical parameters hardcoded here
-                    valid=true;
+                    valid = true;
                 }
                 catch (...) {
-                    // delete the right point of the interval where we try to interpolate
-                    moneynessGrid_.erase(moneynessGrid_.begin() + (i+1) );
-                    k_.erase(k_.begin() + (i+1) );
-                    c_.erase(c_.begin() + (i+1) );
-                    cFunctions_.erase(cFunctions_.begin() + (i+1) );
+                    // delete the right point of the interval where we try to
+                    // interpolate
+                    moneynessGrid_.erase(moneynessGrid_.begin() + (i + 1));
+                    k_.erase(k_.begin() + (i + 1));
+                    c_.erase(c_.begin() + (i + 1));
+                    cFunctions_.erase(cFunctions_.begin() + (i + 1));
                     rightIndex_--;
                     i--;
                 }
-                if(valid) {
+                if (valid) {
                     ah(a);
                     boost::shared_ptr<cFunction> cFct(
-                                                      new cFunction(ah.f_, ah.s_, a, ah.b_));
+                        new cFunction(ah.f_, ah.s_, a, ah.b_));
                     cFunctions_[leftIndex_ > 0 ? i - leftIndex_ + 1 : 0] = cFct;
                     cp0 = cp1;
                 }

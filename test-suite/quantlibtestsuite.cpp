@@ -90,6 +90,7 @@
 #include "gaussianquadratures.hpp"
 #include "garch.hpp"
 #include "gjrgarchmodel.hpp"
+#include "gsr.hpp"
 #include "hestonmodel.hpp"
 #include "himalayaoption.hpp"
 #include "hybridhestonhullwhiteprocess.hpp"
@@ -364,6 +365,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(EverestOptionTest::suite());
     test->add(ExtendedTreesTest::suite());
     test->add(FdHestonTest::experimental());
+    test->add(GsrTest::suite());
     test->add(HimalayaOptionTest::suite());
     test->add(InflationCPICapFloorTest::suite());
     test->add(InflationVolTest::suite());

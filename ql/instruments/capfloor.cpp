@@ -207,6 +207,7 @@ namespace QuantLib {
         arguments->capRates.resize(n);
         arguments->floorRates.resize(n);
         arguments->spreads.resize(n);
+        arguments->indexes.resize(n);
 
         arguments->type = type_;
 
@@ -246,6 +247,8 @@ namespace QuantLib {
                 arguments->floorRates[i] = (floorRates_[i]-spread)/gearing;
             else
                 arguments->floorRates[i] = Null<Rate>();
+
+            arguments->indexes[i] = coupon->index();
         }
     }
 
