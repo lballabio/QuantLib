@@ -34,6 +34,7 @@ namespace QuantLib {
 
     class EventPaymentOffset {
       public:
+        virtual ~EventPaymentOffset() {}
         virtual Date paymentDate(const Date& eventDate) = 0;
     };
 
@@ -62,7 +63,8 @@ namespace QuantLib {
     public:
         NotionalRisk(boost::shared_ptr<EventPaymentOffset> paymentOffset)
         : paymentOffset_(paymentOffset) {}
-       
+        virtual ~NotionalRisk() {}
+
         virtual void updatePath(const std::vector<std::pair<Date, Real> >  &events, NotionalPath &path) const = 0;
 
       protected:
