@@ -22,34 +22,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "utilities.hpp"
-#include <ql/experimental/models/gsrprocess.hpp>
-#include <ql/experimental/models/gsr.hpp>
-#include <ql/experimental/models/nonstandardswap.hpp>
-#include <ql/experimental/models/nonstandardswaption.hpp>
-#include <ql/experimental/models/gaussian1dswaptionengine.hpp>
-#include <ql/experimental/models/gaussian1djamshidianswaptionengine.hpp>
-#include <ql/experimental/models/gaussian1dnonstandardswaptionengine.hpp>
-
-#include <ql/indexes/swap/euriborswap.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
-#include <ql/time/calendars/target.hpp>
-#include <ql/processes/hullwhiteprocess.hpp>
-#include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
-#include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
-#include <ql/quotes/simplequote.hpp>
-#include <ql/pricingengines/swaption/jamshidianswaptionengine.hpp>
-#include <ql/time/daycounters/actual360.hpp>
-#include <ql/time/daycounters/thirty360.hpp>
-#include <ql/indexes/ibor/euribor.hpp>
-#include <ql/termstructures/volatility/swaption/swaptionconstantvol.hpp>
-#include <ql/instruments/makevanillaswap.hpp>
-#include <ql/math/optimization/levenbergmarquardt.hpp>
-
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
-
-using namespace QuantLib;
 
 class GsrTest {
   public:
