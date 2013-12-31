@@ -207,7 +207,7 @@ namespace QuantLib {
         arguments->capRates.resize(n);
         arguments->floorRates.resize(n);
         arguments->spreads.resize(n);
-        arguments->indices.resize(n);
+        arguments->indexes.resize(n);
 
         arguments->type = type_;
 
@@ -248,7 +248,7 @@ namespace QuantLib {
             else
                 arguments->floorRates[i] = Null<Rate>();
 
-            arguments->indices[i] = coupon->index();
+            arguments->indexes[i] = coupon->index();
         }
     }
 
