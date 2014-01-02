@@ -42,7 +42,7 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
         QL_REQUIRE(startDate_ <= process_->riskFreeRate()->referenceDate(),
-                   "startDate must be equal or greater than reference date");
+                   "startDate must be earlier than or equal to reference date");
 
         DayCounter rfdc  = process_->riskFreeRate()->dayCounter();
         DayCounter divdc = process_->dividendYield()->dayCounter();
