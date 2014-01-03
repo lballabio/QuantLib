@@ -41,6 +41,8 @@ namespace QuantLib {
                    "not an Arithmetic average option");
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
+        QL_REQUIRE(startDate_ <= process_->riskFreeRate()->referenceDate(),
+                   "startDate must be earlier than or equal to reference date");
 
         DayCounter rfdc  = process_->riskFreeRate()->dayCounter();
         DayCounter divdc = process_->dividendYield()->dayCounter();
@@ -74,8 +76,8 @@ namespace QuantLib {
         Real b = riskFreeRate - dividendYield;
 
         Real Se = (std::fabs(b) > 1000*QL_EPSILON) 
-			? (spot/(T*b))*(exp((b-riskFreeRate)*T2)-exp(-riskFreeRate*T2))
-			: spot*T2/T * std::exp(-riskFreeRate*T2);
+            ? (spot/(T*b))*(exp((b-riskFreeRate)*T2)-exp(-riskFreeRate*T2))
+            : spot*T2/T * std::exp(-riskFreeRate*T2);
 
         Real X;
         if (T2 < T) {
