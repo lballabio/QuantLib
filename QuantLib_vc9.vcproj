@@ -7215,6 +7215,22 @@
 				</File>
 			</Filter>
 			<Filter
+				Name="exercise"
+				Filter="">
+				<File
+					RelativePath=".\ql\experimental\exercise\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exercise\rebatedexercise.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exercise\rebatedexercise.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
 				Name="fx"
 				>
 				<File
@@ -7850,6 +7866,94 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\models\basketgeneratingengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\basketgeneratingengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\floatfloatswap.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\floatfloatswap.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\floatfloatswaption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\floatfloatswaption.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\gaussian1dmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\gaussian1dmodel.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\gaussian1dcapfloorengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\gaussian1dcapfloorengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\gaussian1dfloatfloatswaptionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\gaussian1dfloatfloatswaptionengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\gaussian1djamshidianswaptionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\gaussian1djamshidianswaptionengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\gaussian1dswaptionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\gaussian1dswaptionengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\gaussian1dnonstandardswaptionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\gaussian1dnonstandardswaptionengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\gsr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\gsr.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\gsrprocess.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\gsrprocess.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\models\kahalesmilesection.cpp"
 					>
 				</File>
@@ -7866,27 +7970,27 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\models\markovfunctionalcapfloorengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\models\markovfunctionalcapfloorengine.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\models\markovfunctionalswaptionengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\models\markovfunctionalswaptionengine.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\experimental\models\mfstateprocess.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\experimental\models\mfstateprocess.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\nonstandardswap.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\nonstandardswap.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\nonstandardswaption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\nonstandardswaption.hpp"
 					>
 				</File>
 				<File
