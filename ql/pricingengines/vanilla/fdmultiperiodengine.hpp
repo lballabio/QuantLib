@@ -73,7 +73,7 @@ namespace QuantLib {
                       process_->time(args->exercise->date(i));
         }
 
-        virtual void calculate(PricingEngine::results*) const;
+        virtual void doCalc(PricingEngine::results*) const;
         mutable boost::shared_ptr<StandardStepCondition > stepCondition_;
         mutable boost::shared_ptr<model_type> model_;
         virtual void executeIntermediateStep(Size step) const = 0;
@@ -95,7 +95,7 @@ namespace QuantLib {
       timeStepPerPeriod_(timeSteps) {}
 
     template <template <class> class Scheme>
-    void FDMultiPeriodEngine<Scheme>::calculate(
+    void FDMultiPeriodEngine<Scheme>::doCalc(
                                             PricingEngine::results* r) const {
         OneAssetOption::results *results =
             dynamic_cast<OneAssetOption::results *>(r);

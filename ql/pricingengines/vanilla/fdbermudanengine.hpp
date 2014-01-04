@@ -46,7 +46,7 @@ namespace QuantLib {
                                       gridPoints, timeDependent) {}
         void calculate() const {
             this->setupArguments(&arguments_);
-            FDMultiPeriodEngine<Scheme>::calculate(&results_);
+            FDMultiPeriodEngine<Scheme>::doCalc(&results_);
         }
       protected:
         Real extraTermInBermudan ;

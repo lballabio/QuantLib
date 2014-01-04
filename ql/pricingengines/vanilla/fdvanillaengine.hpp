@@ -80,8 +80,6 @@ namespace QuantLib {
       protected:
         void ensureStrikeInGrid() const;
       private:
-        // temporaries
-        mutable Real gridLogSpacing_;
         Size safeGridPoints(Size gridPoints,
                             Time residualTime) const;
         static const Real safetyZoneFactor_;
@@ -100,7 +98,7 @@ namespace QuantLib {
       private:
         void calculate() const {
             base::setupArguments(&(this->arguments_));
-            base::calculate(&(this->results_));
+            base::doCalc(&(this->results_));
         }
     };
 
