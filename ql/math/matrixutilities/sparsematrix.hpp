@@ -36,10 +36,19 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #pragma warning(disable:4127)
 #endif
 
+#if defined(__clang__) && BOOST_VERSION > 105300
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-function"
+#endif
+
 #include <boost/numeric/ublas/matrix_sparse.hpp>
 
 #if defined(QL_PATCH_MSVC)
 #pragma warning(pop)
+#endif
+
+#if defined(__clang__) && BOOST_VERSION > 105300
+#pragma clang diagnostic pop
 #endif
 
 namespace QuantLib {
