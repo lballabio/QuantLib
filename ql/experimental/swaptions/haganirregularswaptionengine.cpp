@@ -43,8 +43,6 @@ namespace QuantLib {
         const Handle<SwaptionVolatilityStructure>& volatilityStructure)
         :swap_(swap),termStructure_(termStructure),volatilityStructure_(volatilityStructure),targetNPV_(0.0),lambda_(0.0){
 
-            Date referenceDate = Settings::instance().evaluationDate();
-
             engine_ = boost::shared_ptr<PricingEngine>(new DiscountingSwapEngine(termStructure_));
 
             //store swap npv 
@@ -127,8 +125,6 @@ namespace QuantLib {
 
         //update members
         lambda_ = lambda;
-
-        Date referenceDate = Settings::instance().evaluationDate();
 
         Size n = swap_->fixedLeg().size();
 
@@ -268,7 +264,6 @@ namespace QuantLib {
         //Reshuffle spread from float to fixed (, i.e. remove spread from float side by finding the adjusted fixed coupon 
         //such that the NPV of the swap stays constant).
         Leg  fixedLeg = swap_->fixedLeg();
-        Real fxdLgNPV = CashFlows::npv(fixedLeg,**termStructure_,true);
         Real fxdLgBPS = CashFlows::bps(fixedLeg,**termStructure_,true);
 
         Leg  floatLeg = swap_->floatingLeg();
@@ -357,8 +352,7 @@ namespace QuantLib {
         s1d.setMaxEvaluations(10000);
         s1d.setLowerBound(minLambda);
         s1d.setUpperBound(maxLambda);
-        Real lambda = s1d.solve(basket,1.0e-8,0.01, minLambda, maxLambda);
-
+        s1d.solve(basket,1.0e-8,0.01, minLambda, maxLambda);
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////

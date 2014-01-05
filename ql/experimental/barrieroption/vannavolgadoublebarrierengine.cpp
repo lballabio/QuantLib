@@ -291,7 +291,6 @@ namespace QuantLib {
 
                  Real H = arguments_.barrier[1];
                  Real L = arguments_.barrier[0];
-                 Real theta_tilt_plus = ((domesticTS_->zeroRate(T_, Continuous) - foreignTS_->zeroRate(T_, Continuous))/atmVol_->value() + atmVol_->value()/2.0)*std::sqrt(T_);
                  Real theta_tilt_minus = ((domesticTS_->zeroRate(T_, Continuous) - foreignTS_->zeroRate(T_, Continuous))/atmVol_->value() - atmVol_->value()/2.0)*std::sqrt(T_);
                  Real h = 1.0/atmVol_->value() * std::log(H/x0Quote->value())/std::sqrt(T_);
                  Real l = 1.0/atmVol_->value() * std::log(L/x0Quote->value())/std::sqrt(T_);
@@ -299,7 +298,6 @@ namespace QuantLib {
 
                  Real doubleNoTouch = 0.0;
                  for(int j = -series_; j< series_;j++ ){
-                     Real e_plus = 2*j*(h-l) - theta_tilt_plus;
                      Real e_minus = 2*j*(h-l) - theta_tilt_minus;
                      doubleNoTouch += std::exp(-2.0*j*theta_tilt_minus*(h-l))*(cnd(h+e_minus) - cnd(l+e_minus))
                                       - std::exp(-2.0*j*theta_tilt_minus*(h-l)+2.0*theta_tilt_minus*h)*(cnd(h-2.0*h+e_minus) - cnd(l-2.0*h+e_minus));

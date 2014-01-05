@@ -63,9 +63,9 @@ namespace QuantLib {
         const Handle<Quote> spotFX_;
         const Handle<YieldTermStructure> domesticTS_;
         const Handle<YieldTermStructure> foreignTS_;
-        const int series_;
         const bool adaptVanDelta_;
         const Real bsPriceWithSmile_;
+        const int series_;
     };
 
 

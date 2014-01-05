@@ -50,10 +50,6 @@ namespace QuantLib {
         Real H = arguments_.barrier[1];
         Real K_up = std::min(H, K);
         Real K_down = std::max(L, K);
-        Real b = std::log(H/S);
-        Real a = std::log(L/S);
-        Real k_up = std::log(K_up/S);
-        Real k_down = std::log(K_down/S);
         Time T = residualTime();
         Real rd = riskFreeRate();
         Real dd = riskFreeDiscount();

@@ -173,8 +173,6 @@ namespace QuantLib {
     }
 
     void IrregularSwap::fetchResults(const PricingEngine::results* r) const {
-        static const Spread basisPoint = 1.0e-4;
-
         Swap::fetchResults(r);
 
         const IrregularSwap::results* results =

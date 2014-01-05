@@ -44,8 +44,8 @@ namespace QuantLib {
                                Rate strike)
     : swapIndex_(swapIndex),
       delivery_(Settlement::Physical),
-      fixingDate_(fixingDate),
       optionConvention_(ModifiedFollowing),
+      fixingDate_(fixingDate),
       strike_(strike),
       underlyingType_(VanillaSwap::Payer) {}
 
