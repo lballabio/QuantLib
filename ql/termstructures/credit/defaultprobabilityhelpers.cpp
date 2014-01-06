@@ -102,6 +102,14 @@ namespace QuantLib {
                                           paymentConvention_);
         Date endDate = evaluationDate_ + tenor_;
 
+        if (rule_ == DateGeneration::CDS) { // for standard CDS ..
+            // .. the start date is not adjusted
+            startDate = protectionStart_;
+            // .. and the end date rolls by 3 month as soon as
+            // the trade date falls on an IMM date
+            endDate = protectionStart_ + tenor_;
+        }
+
         schedule_ =
             MakeSchedule().from(startDate)
                           .to(endDate)
