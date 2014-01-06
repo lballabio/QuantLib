@@ -33,26 +33,104 @@
 
 namespace QuantLib {
 
+    /*! References:
+
+        [1] The Pricing and Risk Management of Credit Default Swaps, with a
+            Focus on the ISDA Model,
+            OpenGamma Quantitative Research, Version as of 15-Oct-2013
+
+        [2] ISDA CDS Standard Model Proposed Numerical Fix \ Thursday,
+            November 15, 2012, Markit
+
+        [3] Markit Interest Rate Curve XML Specifications,
+            Version 1.16, Tuesday, 15 October 2013
+
+    */
+
     class IsdaCdsEngine : public CreditDefaultSwap::engine {
+
       public:
+        /*! According to [1] the settings for the flags AccrualBias /
+          ForwardsInCouponPeriod in
+            the standard model implementation C code are
+
+          prior 1.8.2    HalfDayBias / Flat
+          1.8.2          NoBias / Flat
+
+          The theoretical correct setting would be NoBias / Piecewise
+
+          Concerning [2] it is unclear in which version of the standard model
+          implementation C code the numerical problem of zero denominators is
+          solved and how exactly.
+        */
+
+        enum NumericalFix {
+            None,  // as in [1] footnote 26 (i.e. 10^{-50} is added to
+                   // denominators $f_i+h_i$$)
+            Taylor // as in [2] i.e. for $f_i+h_i < 10^{-4}$ a Taylor expansion
+                   // is used to avoid zero denominators
+        };
+
+        enum AccrualBias {
+            HalfDayBias, // as in [1] formula (50), second (error) term is
+                         // included
+            NoBias // as in [1], but second term in formula (50) is not included
+        };
+
+        enum ForwardsInCouponPeriod {
+            Flat, // as in [1], formula (52), second (error) term is included
+            Piecewise // as in [1], but second term in formula (52) is not
+                      // included
+        };
+
+        /*! Constructor where the client code is responsible for providing a
+            default curve and an interest rate curve compliant with the ISDA
+            specifications */
         IsdaCdsEngine(
             const Handle<DefaultProbabilityTermStructure> &probability,
             Real recoveryRate, const Handle<YieldTermStructure> &discountCurve,
-            boost::optional<bool> includeSettlementDateFlows = boost::none);
-        void calculate() const;
+            boost::optional<bool> includeSettlementDateFlows = boost::none,
+            const NumericalFix numericalFix = Taylor,
+            const AccrualBias accrualBias = NoBias,
+            const ForwardsInCouponPeriod forwardsInCouponPeriod = Piecewise);
 
-        static Handle<YieldTermStructure> IsdaYieldCurve(std::vector<
-            boost::shared_ptr<RelativeDateRateHelper> > &rateHelper);
-        static Handle<DefaultProbabilityTermStructure> IsdaProbabilityCurve(
-            std::vector<boost::shared_ptr<CdsHelper> > &probabilityHelper);
+        /*! Constructor where the engine produces ISDA compliant interest and
+            credit curves. For the interest rate curve, rate helpers
+            compliant with [3] must be given. For the credit curve, if more
+            than one helper is given, there is the choice whether each helper
+            is converted into an upfront helper (with the upfront premium
+            computed by the standard ISDA converter) or directly used
+            with the standard ISDA model to bootstrap the credit curve. The
+            former option (which is the default) ensures exact consistency
+            between converter (flat hazard rate) pricing and full hazard term
+            structure pricing within the ISDA standard model. */
+        IsdaCdsEngine(
+            const std::vector<boost::shared_ptr<CdsHelper> > &
+                probabilityHelpers,
+            Real recoveryRate,
+            const std::vector<boost::shared_ptr<RelativeDateRateHelper> > &
+                rateHelpers,
+            boost::optional<bool> includeSettlementDateFlows = boost::none,
+            const NumericalFix numericalFix = Taylor,
+            const AccrualBias accrualBias = NoBias,
+            const ForwardsInCouponPeriod forwardsInCouponPeriod = Piecewise,
+            const bool useUpfrontHelpers = true);
+
+        void calculate() const;
 
       private:
         Handle<DefaultProbabilityTermStructure> probability_;
+        std::vector<boost::shared_ptr<CdsHelper> > probabilityHelpers_;
         Real recoveryRate_;
         Handle<YieldTermStructure> discountCurve_;
+        std::vector<boost::shared_ptr<RelativeDateRateHelper> > rateHelpers_;
         boost::optional<bool> includeSettlementDateFlows_;
+        const NumericalFix numericalFix_;
+        const AccrualBias accrualBias_;
+        const ForwardsInCouponPeriod forwardsInCouponPeriod_;
+        bool useUpfrontHelpers_;
+        const bool bootstrapCurves_;
     };
 }
-
 
 #endif
