@@ -24,6 +24,7 @@
 #include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolcube.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -83,7 +84,7 @@ namespace QuantLib {
 
                 helper = boost::shared_ptr<SwaptionHelper>(new SwaptionHelper(
                     expiry, underlyingLastDate(),
-                    Handle<Quote>(new SimpleQuote(atmVol)),
+                    Handle<Quote>(boost::make_shared<SimpleQuote>(atmVol)),
                     standardSwapBase->iborIndex(),
                     standardSwapBase->fixedLegTenor(),
                     standardSwapBase->dayCounter(),
@@ -203,8 +204,8 @@ namespace QuantLib {
 
                 helper = boost::shared_ptr<SwaptionHelper>(new SwaptionHelper(
                     expiry, matPeriod,
-                    Handle<Quote>(
-                        new SimpleQuote(swaptionVolatility->volatility(
+                    Handle<Quote>(boost::make_shared<SimpleQuote>(
+                        swaptionVolatility->volatility(
                             expiry, matPeriod, solution[2], true))),
                     standardSwapBase->iborIndex(),
                     standardSwapBase->fixedLegTenor(),

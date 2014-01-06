@@ -146,7 +146,18 @@
 #define QL_NULL_REAL           ((std::numeric_limits<float>::max)())
 /*! @} */
 
-
 /*! @}  */
+
+
+// emit warning when using deprecated features
+#if defined(BOOST_MSVC)       // Microsoft Visual C++
+#define QL_DEPRECATED __declspec(deprecated)
+#elif defined(__GNUC__) || defined(__clang__)
+#define QL_DEPRECATED __attribute__((deprecated))
+#else
+// we don't know how to enable it, just define the macro away
+#define QL_DEPRECATED
+#endif
+
 
 #endif

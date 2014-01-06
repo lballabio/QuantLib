@@ -236,19 +236,6 @@ if test "$ql_belt_and_braces" = "yes" ; then
 fi
 AC_MSG_RESULT([$ql_belt_and_braces])
 
-AC_MSG_CHECKING([whether to enable deprecated code])
-AC_ARG_ENABLE([deprecated-code],
-              AC_HELP_STRING([--enable-deprecated-code],
-                             [If enabled (the default), deprecated code
-                              will be included in the library.]),
-              [ql_use_deprecated_code=$enableval],
-              [ql_use_deprecated_code=yes])
-if test "$ql_use_deprecated_code" = "no" ; then
-   AC_DEFINE([QL_DISABLE_DEPRECATED],[1],
-             [Define this if you want to disable deprecated code.])
-fi
-AC_MSG_RESULT([$ql_use_deprecated_code])
-
 AC_MSG_CHECKING([whether to enable sessions])
 AC_ARG_ENABLE([sessions],
               AC_HELP_STRING([--enable-sessions],

@@ -109,8 +109,9 @@ namespace QuantLib {
                  Size maxEvaluations = 10000,
                  const Array &guess = Array(),
                  Real simplexLambda = 1.0);
-#ifndef QL_DISABLE_DEPRECATED
         //! reference date based on current evaluation date
+        /*! \deprecated */
+        QL_DEPRECATED
         FittedBondDiscountCurve(
                  Natural settlementDays,
                  const Calendar& calendar,
@@ -122,6 +123,8 @@ namespace QuantLib {
                  const Array& guess = Array(),
                  Real simplexLambda = 1.0);
         //! curve reference date fixed for life of curve
+        /*! \deprecated */
+        QL_DEPRECATED
         FittedBondDiscountCurve(
                  const Date &referenceDate,
                  const std::vector<boost::shared_ptr<FixedRateBondHelper> >& bonds,
@@ -131,7 +134,6 @@ namespace QuantLib {
                  Size maxEvaluations = 10000,
                  const Array &guess = Array(),
                  Real simplexLambda = 1.0);
-#endif
         //@}
 
         //! \name Inspectors

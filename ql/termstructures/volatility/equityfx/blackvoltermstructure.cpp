@@ -23,12 +23,12 @@ namespace QuantLib {
 
     const Time BlackVolTermStructure::dT = 1.0/365.0;
 
-#ifndef QL_DISABLE_DEPRECATED
     BlackVolTermStructure::BlackVolTermStructure(const Calendar& cal,
                                                  BusinessDayConvention bdc,
                                                  const DayCounter& dc)
-    : VolatilityTermStructure(cal, bdc, dc) {}
-#endif
+    : VolatilityTermStructure(bdc, dc) {
+        calendar_ = cal;
+    }
 
     BlackVolTermStructure::BlackVolTermStructure(BusinessDayConvention bdc,
                                                  const DayCounter& dc)
@@ -122,13 +122,13 @@ namespace QuantLib {
         return v2-v1;
     }
 
-#ifndef QL_DISABLE_DEPRECATED
     BlackVolatilityTermStructure::BlackVolatilityTermStructure(
                                                     const Calendar& cal,
                                                     BusinessDayConvention bdc,
                                                     const DayCounter& dc)
-    : BlackVolTermStructure(cal, bdc, dc) {}
-#endif
+    : BlackVolTermStructure(bdc, dc) {
+        calendar_ = cal;
+    }
 
     BlackVolatilityTermStructure::BlackVolatilityTermStructure(
                                                     BusinessDayConvention bdc,
@@ -149,13 +149,13 @@ namespace QuantLib {
                                                     const DayCounter& dc)
     : BlackVolTermStructure(settlementDays, cal, bdc, dc) {}
 
-#ifndef QL_DISABLE_DEPRECATED
     BlackVarianceTermStructure::BlackVarianceTermStructure(
                                                     const Calendar& cal,
                                                     BusinessDayConvention bdc,
                                                     const DayCounter& dc)
-    : BlackVolTermStructure(cal, bdc, dc) {}
-#endif
+    : BlackVolTermStructure(bdc, dc) {
+        calendar_ = cal;
+    }
 
     BlackVarianceTermStructure::BlackVarianceTermStructure(
                                                     BusinessDayConvention bdc,

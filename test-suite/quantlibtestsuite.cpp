@@ -232,12 +232,6 @@ test_suite* init_unit_test_suite(int, char* []) {
             #else
             "undefined"
             #endif
-        "\n  QL_DISABLE_DEPRECATED "
-            #ifdef QL_DISABLE_DEPRECATED
-            "   defined"
-            #else
-            " undefined"
-            #endif
         "\n  QL_USE_INDEXED_COUPON "
             #ifdef QL_USE_INDEXED_COUPON
             "   defined"

@@ -71,12 +71,6 @@
     performance. Undefined by default.
 
     \code
-    #define QL_DISABLE_DEPRECATED
-    \endcode
-    If defined, deprecated code will not be included in the
-    library. Undefined by default.
-
-    \code
     #define QL_USE_INDEXED_COUPON
     \endcode
     If defined, indexed coupons (see the documentation) are used in

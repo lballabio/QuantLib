@@ -89,7 +89,7 @@ namespace QuantLib {
         setup();
     }
 
-#ifndef QL_DISABLE_DEPRECATED
+
     FittedBondDiscountCurve::FittedBondDiscountCurve (
                  Natural settlementDays,
                  const Calendar& calendar,
@@ -141,7 +141,7 @@ namespace QuantLib {
         fittingMethod_->curve_ = this;
         setup();
     }
-#endif
+
 
     void FittedBondDiscountCurve::performCalculations() const {
 

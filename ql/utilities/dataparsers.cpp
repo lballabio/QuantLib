@@ -114,7 +114,7 @@ namespace QuantLib {
         return list;
     }
 
-#ifndef QL_DISABLE_DEPRECATED
+
     Date DateParser::parse(const std::string& str, const std::string& fmt) {
         std::vector<std::string> slist;
         std::vector<std::string> flist;
@@ -142,7 +142,6 @@ namespace QuantLib {
         }
         return Date(d,Month(m),y);
     }
-#endif
 
     Date DateParser::parseFormatted(const std::string& str,
                                     const std::string& fmt) {
