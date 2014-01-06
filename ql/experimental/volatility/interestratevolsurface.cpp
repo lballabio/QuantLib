@@ -21,15 +21,6 @@
 
 namespace QuantLib {
 
-#ifndef QL_DISABLE_DEPRECATED
-    InterestRateVolSurface::InterestRateVolSurface(
-                            const boost::shared_ptr<InterestRateIndex>& index,
-                            const Calendar& cal,
-                            BusinessDayConvention bdc,
-                            const DayCounter& dc)
-    : BlackVolSurface(cal, bdc, dc), index_(index) {}
-#endif
-
     InterestRateVolSurface::InterestRateVolSurface(
                             const boost::shared_ptr<InterestRateIndex>& index,
                             BusinessDayConvention bdc,
