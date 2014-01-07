@@ -115,8 +115,8 @@ namespace QuantLib {
         //! implements the actual smile calculation in derived classes
         virtual boost::shared_ptr<SmileSection> smileSectionImpl(
                                                     Time optionTime) const = 0;
-        Volatility volatilityImpl(const Date& optionDate,
-                                  Rate strike) const;
+        virtual Volatility volatilityImpl(const Date& optionDate,
+                                          Rate strike) const;
         //! implements the actual volatility calculation in derived classes
         virtual Volatility volatilityImpl(Time optionTime,
                                           Rate strike) const = 0;
