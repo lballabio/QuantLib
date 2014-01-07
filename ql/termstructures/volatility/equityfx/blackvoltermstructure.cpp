@@ -21,8 +21,6 @@
 
 namespace QuantLib {
 
-    const Time BlackVolTermStructure::dT = 1.0/365.0;
-
     BlackVolTermStructure::BlackVolTermStructure(const Calendar& cal,
                                                  BusinessDayConvention bdc,
                                                  const DayCounter& dc)

@@ -130,8 +130,6 @@ namespace QuantLib {
         //! Black volatility calculation
         virtual Volatility blackVolImpl(Time t, Real strike) const = 0;
         //@}
-      private:
-        static const Time dT;
     };
 
     //! Black-volatility term structure
