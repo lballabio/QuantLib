@@ -50,7 +50,7 @@ namespace QuantLib {
       protectionStart_(protectionStart == Null<Date>() ? schedule[0] :
                                                          protectionStart) {
         QL_REQUIRE((protectionStart_ <= schedule[0]) 
-            || (schedule.rule() == DateGeneration::Rule::CDS),
+            || (schedule.rule() == DateGeneration::CDS),
                    "protection can not start after accrual");
 
         leg_ = FixedRateLeg(schedule)
@@ -69,7 +69,7 @@ namespace QuantLib {
             //   to T+1 
             Date rebateDate = schedule.calendar().advance(
                 schedule.calendar().adjust(protectionStart_, convention),
-                2, TimeUnit::Days, convention);
+                2, Days, convention);
 
             accrualRebate_.reset(new SimpleCashFlow(
                 firstCoupon->accruedAmount(protectionStart_), 
@@ -103,7 +103,7 @@ namespace QuantLib {
       protectionStart_(protectionStart == Null<Date>() ? schedule[0] :
                                                          protectionStart) {
         QL_REQUIRE((protectionStart_ <= schedule[0]) 
-            || (schedule.rule() == DateGeneration::Rule::CDS),
+            || (schedule.rule() == DateGeneration::CDS),
                    "protection can not start after accrual");
 
         leg_ = FixedRateLeg(schedule)
@@ -117,7 +117,7 @@ namespace QuantLib {
         Date effectiveUpfrontDate = upfrontDate == Null<Date>() ?
             schedule.calendar().advance(
             schedule.calendar().adjust(protectionStart_, convention), 
-            2, TimeUnit::Days, convention) : upfrontDate;
+            2, Days, convention) : upfrontDate;
         // '2' is used above since the protection start is assumed to be 
         //   on trade_date + 1 
         upfrontPayment_.reset(new SimpleCashFlow(notional*upfront, 
