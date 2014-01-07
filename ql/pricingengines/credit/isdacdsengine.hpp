@@ -50,18 +50,18 @@ namespace QuantLib {
     class IsdaCdsEngine : public CreditDefaultSwap::engine {
 
       public:
-        /*! According to [1] the settings for the flags AccrualBias /
-          ForwardsInCouponPeriod in
+        /*! According to [1] the settings for the flags
+            AccrualBias / ForwardsInCouponPeriod in
             the standard model implementation C code are
 
-          prior 1.8.2    HalfDayBias / Flat
-          1.8.2          NoBias / Flat
+            prior 1.8.2    HalfDayBias / Flat
+            1.8.2          NoBias / Flat
 
-          The theoretical correct setting would be NoBias / Piecewise
+            The theoretical correct setting would be NoBias / Piecewise
 
-          Concerning [2] it is unclear in which version of the standard model
-          implementation C code the numerical problem of zero denominators is
-          solved and how exactly.
+            Concerning [2] it is unclear in which version of the standard model
+            implementation C code the numerical problem of zero denominators is
+            solved and how exactly.
         */
 
         enum NumericalFix {
@@ -85,7 +85,8 @@ namespace QuantLib {
 
         /*! Constructor where the client code is responsible for providing a
             default curve and an interest rate curve compliant with the ISDA
-            specifications */
+            specifications (in particular w.r.t. interpolation). */
+
         IsdaCdsEngine(
             const Handle<DefaultProbabilityTermStructure> &probability,
             Real recoveryRate, const Handle<YieldTermStructure> &discountCurve,
@@ -104,6 +105,7 @@ namespace QuantLib {
             former option (which is the default) ensures exact consistency
             between converter (flat hazard rate) pricing and full hazard term
             structure pricing within the ISDA standard model. */
+
         IsdaCdsEngine(
             const std::vector<boost::shared_ptr<CdsHelper> > &
                 probabilityHelpers,
