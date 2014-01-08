@@ -482,6 +482,8 @@
   <ItemGroup>
     <ClInclude Include="ql\cashflows\cpicoupon.hpp" />
     <ClInclude Include="ql\cashflows\cpicouponpricer.hpp" />
+    <ClInclude Include="ql\experimental\exercise\all.hpp" />
+    <ClInclude Include="ql\experimental\exercise\rebatedexercise.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\dynprogvppintrinsicvalueengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdextoujumpvanillaengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdklugeextouspreadengine.hpp" />
@@ -1588,11 +1590,22 @@
     <ClInclude Include="ql\experimental\models\all.hpp" />
     <ClInclude Include="ql\experimental\models\atmadjustedsmilesection.hpp" />
     <ClInclude Include="ql\experimental\models\atmsmilesection.hpp" />
+    <ClInclude Include="ql\experimental\models\basketgeneratingengine.hpp" />
+    <ClInclude Include="ql\experimental\models\floatfloatswap.hpp" />
+    <ClInclude Include="ql\experimental\models\floatfloatswaption.hpp" />
+    <ClInclude Include="ql\experimental\models\gaussian1dmodel.hpp" />
+    <ClInclude Include="ql\experimental\models\gaussian1dcapfloorengine.hpp" />
+    <ClInclude Include="ql\experimental\models\gaussian1dfloatfloatswaptionengine.hpp" />
+    <ClInclude Include="ql\experimental\models\gaussian1djamshidianswaptionengine.hpp" />
+    <ClInclude Include="ql\experimental\models\gaussian1dnonstandardswaptionengine.hpp" />
+    <ClInclude Include="ql\experimental\models\gaussian1dswaptionengine.hpp" />
+    <ClInclude Include="ql\experimental\models\gsr.hpp" />
+    <ClInclude Include="ql\experimental\models\gsrprocess.hpp" />
     <ClInclude Include="ql\experimental\models\kahalesmilesection.hpp" />
     <ClInclude Include="ql\experimental\models\markovfunctional.hpp" />
-    <ClInclude Include="ql\experimental\models\markovfunctionalcapfloorengine.hpp" />
-    <ClInclude Include="ql\experimental\models\markovfunctionalswaptionengine.hpp" />
     <ClInclude Include="ql\experimental\models\mfstateprocess.hpp" />
+    <ClInclude Include="ql\experimental\models\nonstandardswap.hpp" />
+    <ClInclude Include="ql\experimental\models\nonstandardswaption.hpp" />
     <ClInclude Include="ql\experimental\models\smilesectionutils.hpp" />
     <ClInclude Include="ql\auto_link.hpp" />
     <ClInclude Include="ql\cashflow.hpp" />
@@ -1637,6 +1650,7 @@
   <ItemGroup>
     <ClCompile Include="ql\cashflows\cpicoupon.cpp" />
     <ClCompile Include="ql\cashflows\cpicouponpricer.cpp" />
+    <ClCompile Include="ql\experimental\exercise\rebatedexercise.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\dynprogvppintrinsicvalueengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdextoujumpvanillaengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdklugeextouspreadengine.cpp" />
@@ -2368,11 +2382,22 @@
     <ClCompile Include="ql\experimental\math\zigguratrng.cpp" />
     <ClCompile Include="ql\experimental\models\atmadjustedsmilesection.cpp" />
     <ClCompile Include="ql\experimental\models\atmsmilesection.cpp" />
+    <ClCompile Include="ql\experimental\models\basketgeneratingengine.cpp" />
+    <ClCompile Include="ql\experimental\models\floatfloatswap.cpp" />
+    <ClCompile Include="ql\experimental\models\floatfloatswaption.cpp" />
+    <ClCompile Include="ql\experimental\models\gaussian1dmodel.cpp" />
+    <ClCompile Include="ql\experimental\models\gaussian1dcapfloorengine.cpp" />
+    <ClCompile Include="ql\experimental\models\gaussian1dfloatfloatswaptionengine.cpp" />
+    <ClCompile Include="ql\experimental\models\gaussian1djamshidianswaptionengine.cpp" />
+    <ClCompile Include="ql\experimental\models\gaussian1dnonstandardswaptionengine.cpp" />
+    <ClCompile Include="ql\experimental\models\gaussian1dswaptionengine.cpp" />
+    <ClCompile Include="ql\experimental\models\gsr.cpp" />
+    <ClCompile Include="ql\experimental\models\gsrprocess.cpp" />
     <ClCompile Include="ql\experimental\models\kahalesmilesection.cpp" />
     <ClCompile Include="ql\experimental\models\markovfunctional.cpp" />
-    <ClCompile Include="ql\experimental\models\markovfunctionalcapfloorengine.cpp" />
-    <ClCompile Include="ql\experimental\models\markovfunctionalswaptionengine.cpp" />
     <ClCompile Include="ql\experimental\models\mfstateprocess.cpp" />
+    <ClCompile Include="ql\experimental\models\nonstandardswap.cpp" />
+    <ClCompile Include="ql\experimental\models\nonstandardswaption.cpp" />
     <ClCompile Include="ql\experimental\models\smilesectionutils.cpp" />
     <ClCompile Include="ql\cashflow.cpp" />
     <ClCompile Include="ql\currency.cpp" />

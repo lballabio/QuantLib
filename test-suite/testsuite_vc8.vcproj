@@ -631,6 +631,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\gsr.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\hestonmodel.cpp"
 				>
 			</File>
@@ -1121,6 +1125,10 @@
 			</File>
 			<File
 				RelativePath=".\gjrgarchmodel.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\gsr.hpp"
 				>
 			</File>
 			<File

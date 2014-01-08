@@ -672,6 +672,7 @@
     <ClCompile Include="garch.cpp" />
     <ClCompile Include="gaussianquadratures.cpp" />
     <ClCompile Include="gjrgarchmodel.cpp" />
+    <ClCompile Include="gsr.cpp" />
     <ClCompile Include="hestonmodel.cpp" />
     <ClCompile Include="himalayaoption.cpp" />
     <ClCompile Include="hybridhestonhullwhiteprocess.cpp" />
@@ -797,6 +798,7 @@
     <ClInclude Include="garch.hpp" />
     <ClInclude Include="gaussianquadratures.hpp" />
     <ClInclude Include="gjrgarchmodel.hpp" />
+    <ClInclude Include="gsr.hpp" />
     <ClInclude Include="hestonmodel.hpp" />
     <ClInclude Include="himalayaoption.hpp" />
     <ClInclude Include="hybridhestonhullwhiteprocess.hpp" />
