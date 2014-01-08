@@ -51,14 +51,14 @@ namespace QuantLib {
         mutable std::vector<boost::shared_ptr<bc_type> > controlBCs_;
         mutable SampledCurve controlPrices_;
         virtual void initializeStepCondition() const = 0;
-        virtual void doCalc(PricingEngine::results*) const;
+        virtual void calculate(PricingEngine::results*) const;
     };
 
 
     // template definitions
 
     template <template <class> class Scheme>
-    void FDStepConditionEngine<Scheme>::doCalc(
+    void FDStepConditionEngine<Scheme>::calculate(
                                             PricingEngine::results* r) const {
         OneAssetOption::results * results =
             dynamic_cast<OneAssetOption::results *>(r);

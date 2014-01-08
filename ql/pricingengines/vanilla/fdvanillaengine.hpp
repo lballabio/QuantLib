@@ -96,9 +96,10 @@ namespace QuantLib {
             this->registerWith(process);
         }
       private:
+        using base::calculate;
         void calculate() const {
             base::setupArguments(&(this->arguments_));
-            base::doCalc(&(this->results_));
+            base::calculate(&(this->results_));
         }
     };
 

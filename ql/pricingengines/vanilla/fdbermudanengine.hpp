@@ -46,9 +46,11 @@ namespace QuantLib {
                                       gridPoints, timeDependent) {}
         void calculate() const {
             this->setupArguments(&arguments_);
-            FDMultiPeriodEngine<Scheme>::doCalc(&results_);
+            FDMultiPeriodEngine<Scheme>::calculate(&results_);
         }
       protected:
+        using FDMultiPeriodEngine<Scheme>::calculate;
+
         Real extraTermInBermudan ;
         void initializeStepCondition() const {
             this->stepCondition_ =
