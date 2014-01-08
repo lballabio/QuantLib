@@ -155,6 +155,9 @@
     <ClCompile Include="gjrgarchmodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="gsr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="hestonmodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -522,6 +525,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="gjrgarchmodel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gsr.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="hestonmodel.hpp">
