@@ -250,6 +250,9 @@
     <Filter Include="experimental\fx">
       <UniqueIdentifier>{936a8947-d2c0-4bdd-95c5-8b52daf92cc4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="experimental\exercise">
+      <UniqueIdentifier>{8ee72e86-e0bd-4390-b4ef-8a60dad32991}</UniqueIdentifier>
+    </Filter>
     <Filter Include="experimental\exoticoptions">
       <UniqueIdentifier>{7d489132-7d03-49f7-bad4-bde084e20bbe}</UniqueIdentifier>
     </Filter>
@@ -2832,6 +2835,12 @@
     <ClInclude Include="ql\experimental\fx\deltavolquote.hpp">
       <Filter>experimental\fx</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\exercise\all.hpp">
+      <Filter>experimental\exercise</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\exercise\rebatedexercise.hpp">
+      <Filter>experimental\exercise</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\exoticoptions\all.hpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClInclude>
@@ -3009,19 +3018,52 @@
     <ClInclude Include="ql\experimental\models\atmsmilesection.hpp">
       <Filter>experimental\models</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\kahalesmilesection.hpp">
+    <ClInclude Include="ql\experimental\models\basketgeneratingengine.hpp">
       <Filter>experimental\models</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\markovfunctionalcapfloorengine.hpp">
+    <ClInclude Include="ql\experimental\models\floatfloatswap.hpp">
+      <Filter>experimental\models</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\models\floatfloatswaption.hpp">
+      <Filter>experimental\models</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\models\gaussian1dcapfloorengine.hpp">
+      <Filter>experimental\models</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\models\gaussian1dfloatfloatswaptionengine.hpp">
+      <Filter>experimental\models</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\models\gaussian1djamshidianswaptionengine.hpp">
+      <Filter>experimental\models</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\models\gaussian1dmodel.hpp">
+      <Filter>experimental\models</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\models\gaussian1dnonstandardswaptionengine.hpp">
+      <Filter>experimental\models</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\models\gaussian1dswaptionengine.hpp">
+      <Filter>experimental\models</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\models\gsr.hpp">
+      <Filter>experimental\models</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\models\gsrprocess.hpp">
+      <Filter>experimental\models</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\models\kahalesmilesection.hpp">
       <Filter>experimental\models</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\models\markovfunctional.hpp">
       <Filter>experimental\models</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\markovfunctionalswaptionengine.hpp">
+    <ClInclude Include="ql\experimental\models\mfstateprocess.hpp">
       <Filter>experimental\models</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\mfstateprocess.hpp">
+    <ClInclude Include="ql\experimental\models\nonstandardswap.hpp">
+      <Filter>experimental\models</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\models\nonstandardswaption.hpp">
       <Filter>experimental\models</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\models\smilesectionutils.hpp">
@@ -5303,6 +5345,9 @@
     <ClCompile Include="ql\experimental\fx\deltavolquote.cpp">
       <Filter>experimental\fx</Filter>
     </ClCompile>
+    <ClCompile Include="ql\experimental\exercise\rebatedexercise.cpp">
+      <Filter>experimental\exercise</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\analyticamericanmargrabeengine.cpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
@@ -5441,19 +5486,52 @@
     <ClCompile Include="ql\experimental\models\atmsmilesection.cpp">
       <Filter>experimental\models</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\kahalesmilesection.cpp">
+    <ClCompile Include="ql\experimental\models\basketgeneratingengine.cpp">
       <Filter>experimental\models</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\markovfunctionalcapfloorengine.cpp">
+    <ClCompile Include="ql\experimental\models\floatfloatswap.cpp">
+      <Filter>experimental\models</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\models\floatfloatswaption.cpp">
+      <Filter>experimental\models</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\models\gaussian1dcapfloorengine.cpp">
+      <Filter>experimental\models</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\models\gaussian1dfloatfloatswaptionengine.cpp">
+      <Filter>experimental\models</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\models\gaussian1djamshidianswaptionengine.cpp">
+      <Filter>experimental\models</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\models\gaussian1dmodel.cpp">
+      <Filter>experimental\models</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\models\gaussian1dnonstandardswaptionengine.cpp">
+      <Filter>experimental\models</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\models\gaussian1dswaptionengine.cpp">
+      <Filter>experimental\models</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\models\gsr.cpp">
+      <Filter>experimental\models</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\models\gsrprocess.cpp">
+      <Filter>experimental\models</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\models\kahalesmilesection.cpp">
       <Filter>experimental\models</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\models\markovfunctional.cpp">
       <Filter>experimental\models</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\markovfunctionalswaptionengine.cpp">
+    <ClCompile Include="ql\experimental\models\mfstateprocess.cpp">
       <Filter>experimental\models</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\mfstateprocess.cpp">
+    <ClCompile Include="ql\experimental\models\nonstandardswap.cpp">
+      <Filter>experimental\models</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\models\nonstandardswaption.cpp">
       <Filter>experimental\models</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\models\smilesectionutils.cpp">
