@@ -92,6 +92,9 @@ namespace QuantLib {
 
         See http://web.maths.unsw.edu.au/~fkuo/sobol/ for more information.
 
+        The Joe-Kuo numbers are available under a BSD-style license
+        available at the above link.
+
         Note that the Kuo numbers were generated to work with a
         different ordering of primitive polynomials for the first 40
         or so dimensions which is why we have the Alternative

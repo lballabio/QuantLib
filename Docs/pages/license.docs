@@ -109,6 +109,9 @@ Methods in Finance".
 QuantLib includes software developed by the University of Chicago,
 as Operator of Argonne National Laboratory.
 
+QuantLib includes a set of numbers provided by Stephen Joe and Frances
+Kuo under a BSD-style license.
+
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
