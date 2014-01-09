@@ -62,14 +62,14 @@ namespace QuantLib {
         if(rebatesAccrual) {
             boost::shared_ptr<FixedRateCoupon> firstCoupon =
                 boost::dynamic_pointer_cast<FixedRateCoupon>(leg_[0]);
-            // adjust to T+3 standard settlement, alternatively add 
-            //  an arbitrary date to the constructor
+            // adjust to T+3 standard settlement, alternatively add
+            // an arbitrary date to the constructor
 
-            // standard date. Notice that protection start is already adjusted 
-            //   to T+1 
+            // standard date. Notice that protection start is already adjusted
+            //  to T+1
             Date rebateDate = schedule.calendar().advance(
-                schedule.calendar().adjust(protectionStart_, convention),
-                2, Days, convention);
+                schedule.calendar().adjust(protectionStart_, convention), 2,
+                Days, convention);
 
             accrualRebate_.reset(new SimpleCashFlow(
                 firstCoupon->accruedAmount(protectionStart_), 
@@ -81,6 +81,8 @@ namespace QuantLib {
         registerWith(claim_);
         // the upfront payment left intentionally unitialized to indicate 
         //  this CDS has none.     
+
+        maturity_ = schedule.dates().back();
     }
 
     CreditDefaultSwap::CreditDefaultSwap(Protection::Side side,
@@ -142,6 +144,8 @@ namespace QuantLib {
         if (!claim_)
             claim_ = boost::shared_ptr<Claim>(new FaceValueClaim);
         registerWith(claim_);
+
+        maturity_ = schedule.dates().back();
     }
 
     Protection::Side CreditDefaultSwap::side() const {
@@ -206,6 +210,7 @@ namespace QuantLib {
         arguments->upfront = upfront_;
         arguments->spread = runningSpread_;
         arguments->protectionStart = protectionStart_;
+        arguments->maturity = maturity_;
     }
 
 
@@ -385,6 +390,8 @@ namespace QuantLib {
         QL_REQUIRE(claim, "claim not set");
         QL_REQUIRE(protectionStart != Null<Date>(),
                    "protection start date not set");
+        QL_REQUIRE(maturity != Null<Date(),
+                   "maturity date not set");
     }
 
     void CreditDefaultSwap::results::reset() {

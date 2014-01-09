@@ -47,6 +47,10 @@ namespace QuantLib {
                  NPV and therefore affect the fair-spread
                  calculation. This might not be what you want.
 
+        \warning conventionalSpread (and impliedHazardRate) use the
+                 mid point engine, which is not ISDA conform. Change
+                 this to isda cds engine (once this is finished) ?
+
          \ingroup instruments
     */
     class CreditDefaultSwap : public Instrument {
@@ -266,6 +270,7 @@ namespace QuantLib {
         boost::shared_ptr<CashFlow> upfrontPayment_;
         boost::shared_ptr<CashFlow> accrualRebate_;
         Date protectionStart_;
+        Date maturity_;
         // results
         mutable Rate fairUpfront_;
         mutable Rate fairSpread_;
@@ -292,6 +297,7 @@ namespace QuantLib {
         bool paysAtDefaultTime;
         boost::shared_ptr<Claim> claim;
         Date protectionStart;
+        Date maturity;
         void validate() const;
     };
 
