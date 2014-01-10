@@ -390,7 +390,7 @@ namespace QuantLib {
         QL_REQUIRE(claim, "claim not set");
         QL_REQUIRE(protectionStart != Null<Date>(),
                    "protection start date not set");
-        QL_REQUIRE(maturity != Null<Date(),
+        QL_REQUIRE(maturity != Null<Date>(),
                    "maturity date not set");
     }
 
