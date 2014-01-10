@@ -76,6 +76,13 @@ namespace QuantLib {
 
     void IsdaCdsEngine::calculate() const {
 
+        QL_REQUIRE(numericalFix_ == None || numericalFix_ == Taylor,
+                   "numerical fix must be None or Taylor");
+        QL_REQUIRE(accrualBias_ == HalfDayBias || accrualBias_ == NoBias,
+                   "accrual bias must be HalfDayBias or NoBias");
+        QL_REQUIRE(forwardsInCouponPeriod_ == Flat || forwardsInCouponPeriod_ == Piecewise,
+                   "forwards in coupon period must be Flat or Piecewise");
+
         // it would be possible to handle the cases which are excluded below,
         // but the ISDA engine is not explicitly specified to handle them,
         // so we just forbid them too
@@ -93,6 +100,13 @@ namespace QuantLib {
                 boost::make_shared<PiecewiseYieldCurve<Discount, LogLinear> >(
                     PiecewiseYieldCurve<Discount, LogLinear>(
                         0, WeekendsOnly(), rateHelpers_, Actual365Fixed())));
+
+            for(Size i=0;i<probabilityHelpers_.size();i++) {
+                boost::shared_ptr<CdsHelper> h =
+                    boost::dynamic_pointer_cast<CdsHelper>(probabilityHelpers_[i]);
+                QL_REQUIRE(h != NULL,"Cds helper required");
+                h->setDiscountCurve(discountCurve_);
+            }
 
             probability_ =
                 Handle<DefaultProbabilityTermStructure>(boost::make_shared<
