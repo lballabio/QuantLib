@@ -253,6 +253,7 @@ namespace QuantLib {
             } else {
                 protectionNpv += hhat / (fhphh + nFix) * (P0 * Q0 - P1 * Q1);
             }
+            d0 = d1;
         }
 
         protectionNpv *= arguments_.claim->amount(
