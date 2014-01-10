@@ -188,11 +188,14 @@ namespace QuantLib {
 
         std::vector<Date>::iterator it0 = std::upper_bound(
             nodesTmp.begin(), nodesTmp.end(), effectiveProtectionStart - 1);
+        nodesTmp.insert(it0, effectiveProtectionStart);
         std::vector<Date>::iterator it1 =
             std::upper_bound(nodesTmp.begin(), nodesTmp.end(), maturity);
-        nodesTmp.insert(it0, effectiveProtectionStart);
         nodesTmp.insert(it1, maturity);
 
+        it0 = std::upper_bound(
+            nodesTmp.begin(), nodesTmp.end(), effectiveProtectionStart - 1);
+        it1 = std::upper_bound(nodesTmp.begin(), nodesTmp.end(), maturity);
         std::vector<Date>::iterator it = std::unique(it0, it1);
 
         std::vector<Date> nodes(it0, it);
@@ -229,6 +232,7 @@ namespace QuantLib {
             } else {
                 protectionNpv += hhat / (fhphh + nFix) * (P0 * Q0 - P1 * Q1);
             }
+			i++;
         }
 
         protectionNpv *= arguments_.claim->amount(
