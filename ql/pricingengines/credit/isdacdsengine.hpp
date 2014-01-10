@@ -90,7 +90,11 @@ namespace QuantLib {
             To be precisely consistent with the ISDA specification
             QL_USE_INDEXED_COUPON
             must not be defined. This is not checked in order not to
-            kill the engine completely in this case. */
+            kill the engine completely in this case.
+
+            Furthermore, the ibor index in the swap rate helpers should not
+            provide the evaluation date's fixing.
+        */
 
         IsdaCdsEngine(
             const Handle<DefaultProbabilityTermStructure> &probability,
@@ -103,7 +107,9 @@ namespace QuantLib {
 
         /*! Constructor where the engine produces ISDA compliant interest and
             credit curves. For the interest rate curve, rate helpers
-            compliant with [3] must be given. For the credit curve, if more
+            compliant with [3] must be given. For the credit curve, the
+            discount curve handle in the helpers can be left empty
+            (since the rate curve is yet to be built). If more
             than one helper is given, one should consider to convert each
             one to an upfront helper (if it is given in conventional spread
             flavour) to ensure precise consistency between the converter
@@ -118,6 +124,9 @@ namespace QuantLib {
             const NumericalFix numericalFix = Taylor,
             const AccrualBias accrualBias = NoBias,
             const ForwardsInCouponPeriod forwardsInCouponPeriod = Piecewise);
+
+        const Handle<YieldTermStructure> isdaRateCurve() const { return discountCurve_; }
+        const Handle<DefaultProbabilityTermStructure> isdaCreditCurve() const { return probability_; }
 
         void calculate() const;
 
