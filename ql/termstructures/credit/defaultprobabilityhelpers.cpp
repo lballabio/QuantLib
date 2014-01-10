@@ -23,6 +23,11 @@
 #include <ql/termstructures/credit/defaultprobabilityhelpers.hpp>
 #include <ql/instruments/creditdefaultswap.hpp>
 #include <ql/pricingengines/credit/midpointcdsengine.hpp>
+#include <ql/pricingengines/credit/isdacdsengine.hpp>
+
+#include <boost/make_shared.hpp>
+
+#include <iostream>
 
 #include <ql/utilities/null_deleter.hpp>
 
@@ -40,14 +45,17 @@ namespace QuantLib {
                          const Handle<YieldTermStructure>& discountCurve,
                          bool settlesAccrual,
                          bool paysAtDefaultTime,
-						 const DayCounter& lastPeriodDayCounter)
+                         const DayCounter& lastPeriodDayCounter,
+                         const bool rebatesAccrual,
+                         const bool useIsdaEngine)
     : RelativeDateDefaultProbabilityHelper(quote),
       tenor_(tenor), settlementDays_(settlementDays), calendar_(calendar),
       frequency_(frequency), paymentConvention_(paymentConvention),
       rule_(rule), dayCounter_(dayCounter), recoveryRate_(recoveryRate),
       discountCurve_(discountCurve),
-      settlesAccrual_(settlesAccrual), paysAtDefaultTime_(paysAtDefaultTime), 
-      lastPeriodDC_(lastPeriodDayCounter) {
+      settlesAccrual_(settlesAccrual), paysAtDefaultTime_(paysAtDefaultTime),
+      lastPeriodDC_(lastPeriodDayCounter), rebatesAccrual_(rebatesAccrual),
+      useIsdaEngine_(useIsdaEngine) {
 
         initializeDates();
 
@@ -67,14 +75,17 @@ namespace QuantLib {
                          const Handle<YieldTermStructure>& discountCurve,
                          bool settlesAccrual,
                          bool paysAtDefaultTime,
-						 const DayCounter& lastPeriodDayCounter)
+                         const DayCounter& lastPeriodDayCounter,
+                         const bool rebatesAccrual,
+                         const bool useIsdaEngine)
     : RelativeDateDefaultProbabilityHelper(quote),
       tenor_(tenor), settlementDays_(settlementDays), calendar_(calendar),
       frequency_(frequency), paymentConvention_(paymentConvention),
       rule_(rule), dayCounter_(dayCounter), recoveryRate_(recoveryRate),
       discountCurve_(discountCurve),
-      settlesAccrual_(settlesAccrual), paysAtDefaultTime_(paysAtDefaultTime), 
-      lastPeriodDC_(lastPeriodDayCounter) {
+      settlesAccrual_(settlesAccrual), paysAtDefaultTime_(paysAtDefaultTime),
+      lastPeriodDC_(lastPeriodDayCounter), rebatesAccrual_(rebatesAccrual),
+      useIsdaEngine_(useIsdaEngine) {
 
         initializeDates();
 
@@ -123,8 +134,6 @@ namespace QuantLib {
                                          paymentConvention_);
     }
 
-
-
     SpreadCdsHelper::SpreadCdsHelper(
                               const Handle<Quote>& runningSpread,
                               const Period& tenor,
@@ -138,11 +147,14 @@ namespace QuantLib {
                               const Handle<YieldTermStructure>& discountCurve,
                               bool settlesAccrual,
                               bool paysAtDefaultTime,
-							  const DayCounter& lastPeriodDayCounter)
+                              const DayCounter& lastPeriodDayCounter,
+                              const bool rebatesAccrual,
+                              const bool useIsdaEngine)
     : CdsHelper(runningSpread, tenor, settlementDays, calendar,
                 frequency, paymentConvention, rule, dayCounter,
                 recoveryRate, discountCurve, settlesAccrual,
-                paysAtDefaultTime,lastPeriodDayCounter) {}
+                paysAtDefaultTime,lastPeriodDayCounter,rebatesAccrual,
+                useIsdaEngine) {}
 
     SpreadCdsHelper::SpreadCdsHelper(
                               Rate runningSpread,
@@ -157,33 +169,44 @@ namespace QuantLib {
                               const Handle<YieldTermStructure>& discountCurve,
                               bool settlesAccrual,
                               bool paysAtDefaultTime,
-							  const DayCounter& lastPeriodDayCounter)
+                              const DayCounter& lastPeriodDayCounter,
+                              const bool rebatesAccrual,
+                              const bool useIsdaEngine)
     : CdsHelper(runningSpread, tenor, settlementDays, calendar,
                 frequency, paymentConvention, rule, dayCounter,
                 recoveryRate, discountCurve, settlesAccrual,
-                paysAtDefaultTime,lastPeriodDayCounter) {}
+                paysAtDefaultTime,lastPeriodDayCounter,rebatesAccrual,
+                useIsdaEngine) {}
 
     Real SpreadCdsHelper::impliedQuote() const {
         swap_->recalculate();
         return swap_->fairSpread();
     }
 
-    void SpreadCdsHelper::resetEngine() {
-        swap_ = boost::shared_ptr<CreditDefaultSwap>(
-                    new CreditDefaultSwap(Protection::Buyer, 100.0, 0.01,
-                                          schedule_, paymentConvention_,
-                                          dayCounter_, settlesAccrual_,
-                                          paysAtDefaultTime_,
-                                          protectionStart_,
-										  boost::shared_ptr<Claim>(),
-										  lastPeriodDC_));
-
-        swap_->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                                      new MidPointCdsEngine(probability_,
-                                                            recoveryRate_,
-                                                            discountCurve_)));
+    void SpreadCdsHelper::initializeDates() {
+        CdsHelper::initializeDates();
     }
 
+    void SpreadCdsHelper::resetEngine() {
+        swap_ = boost::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
+            Protection::Buyer, 100.0, 0.01, schedule_, paymentConvention_,
+            dayCounter_, settlesAccrual_, paysAtDefaultTime_, protectionStart_,
+            boost::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_));
+
+        if (useIsdaEngine_) {
+            swap_->setPricingEngine(
+                boost::make_shared<IsdaCdsEngine>(IsdaCdsEngine(
+                    probability_, recoveryRate_, discountCurve_, false,
+                    static_cast<IsdaCdsEngine::NumericalFix>(isdaNumericalFix_),
+                    static_cast<IsdaCdsEngine::AccrualBias>(isdaAccrualBias_),
+                    static_cast<IsdaCdsEngine::ForwardsInCouponPeriod>(
+                        isdaForwardsInCouponPeriod_))));
+        } else {
+            swap_->setPricingEngine(
+                boost::make_shared<MidPointCdsEngine>(MidPointCdsEngine(
+                    probability_, recoveryRate_, discountCurve_)));
+        }
+    }
 
     UpfrontCdsHelper::UpfrontCdsHelper(
                               const Handle<Quote>& upfront,
@@ -200,11 +223,14 @@ namespace QuantLib {
                               Natural upfrontSettlementDays,
                               bool settlesAccrual,
                               bool paysAtDefaultTime,
-							  const DayCounter& lastPeriodDayCounter)
+                              const DayCounter& lastPeriodDayCounter,
+                              const bool rebatesAccrual,
+                              const bool useIsdaEngine)
     : CdsHelper(upfront, tenor, settlementDays, calendar,
                 frequency, paymentConvention, rule, dayCounter,
                 recoveryRate, discountCurve, settlesAccrual,
-                paysAtDefaultTime, lastPeriodDayCounter),
+                paysAtDefaultTime, lastPeriodDayCounter, rebatesAccrual,
+                useIsdaEngine),
       upfrontSettlementDays_(upfrontSettlementDays),
       runningSpread_(runningSpread) {
         initializeDates();
@@ -225,11 +251,14 @@ namespace QuantLib {
                               Natural upfrontSettlementDays,
                               bool settlesAccrual,
                               bool paysAtDefaultTime,
-							  const DayCounter& lastPeriodDayCounter)
+                              const DayCounter& lastPeriodDayCounter,
+                              const bool rebatesAccrual,
+                              const bool useIsdaEngine)
     : CdsHelper(upfrontSpread, tenor, settlementDays, calendar,
                 frequency, paymentConvention, rule, dayCounter,
                 recoveryRate, discountCurve, settlesAccrual,
-                paysAtDefaultTime, lastPeriodDayCounter),
+                paysAtDefaultTime, lastPeriodDayCounter, rebatesAccrual,
+                useIsdaEngine),
       upfrontSettlementDays_(upfrontSettlementDays),
       runningSpread_(runningSpread) {
         initializeDates();
@@ -242,13 +271,6 @@ namespace QuantLib {
                                          paymentConvention_);
     }
 
-    Real UpfrontCdsHelper::impliedQuote() const {
-        SavedSettings backup;
-        Settings::instance().includeTodaysCashFlows() = true;
-        swap_->recalculate();
-        return swap_->fairUpfront();
-    }
-
     void UpfrontCdsHelper::resetEngine() {
         swap_ = boost::shared_ptr<CreditDefaultSwap>(
                           new CreditDefaultSwap(Protection::Buyer, 100.0,
@@ -259,15 +281,30 @@ namespace QuantLib {
                                                 paysAtDefaultTime_,
                                                 protectionStart_,
                                                 upfrontDate_,
-												boost::shared_ptr<Claim>(),
-												lastPeriodDC_));
+                                                boost::shared_ptr<Claim>(),
+                                                lastPeriodDC_,
+                                                rebatesAccrual_));
+        if (useIsdaEngine_) {
+            swap_->setPricingEngine(
+                boost::make_shared<IsdaCdsEngine>(IsdaCdsEngine(
+                    probability_, recoveryRate_, discountCurve_, false,
+                    static_cast<IsdaCdsEngine::NumericalFix>(isdaNumericalFix_),
+                    static_cast<IsdaCdsEngine::AccrualBias>(isdaAccrualBias_),
+                    static_cast<IsdaCdsEngine::ForwardsInCouponPeriod>(
+                        isdaForwardsInCouponPeriod_))));
+        } else {
+            swap_->setPricingEngine(
+                boost::make_shared<MidPointCdsEngine>(MidPointCdsEngine(
+                    probability_, recoveryRate_, discountCurve_)));
+        }
+    }
 
-        swap_->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                                      new MidPointCdsEngine(probability_,
-                                                            recoveryRate_,
-                                                            discountCurve_,
-                                                            true)));
+    Real UpfrontCdsHelper::impliedQuote() const {
+        SavedSettings backup;
+        Settings::instance().includeTodaysCashFlows() = true;
+        swap_->recalculate();
+        return swap_->fairUpfront();
+
     }
 
 }
-

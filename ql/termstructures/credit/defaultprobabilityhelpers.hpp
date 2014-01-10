@@ -35,6 +35,7 @@ namespace QuantLib {
 
     class YieldTermStructure;
     class CreditDefaultSwap;
+    class IsdaCdsEngine;
 
     //! alias for default-probability bootstrap helpers
     typedef BootstrapHelper<DefaultProbabilityTermStructure>
@@ -47,7 +48,7 @@ namespace QuantLib {
         @param frequency  Coupon frequency.
         @param settlementDays  The number of days from today's date
                                to the start of the protection period.
-                               Does not refer to initial cash settlements 
+                               Does not refer to initial cash settlements
                                (upfront and/or rebates) which are typically
                                on T+3
         @param paymentConvention The payment convention applied to
@@ -68,7 +69,9 @@ namespace QuantLib {
                   const Handle<YieldTermStructure>& discountCurve,
                   bool settlesAccrual = true,
                   bool paysAtDefaultTime = true,
-				  const DayCounter& lastPeriodDayCounter = DayCounter());
+                  const DayCounter& lastPeriodDayCounter = DayCounter(),
+                  bool rebatesAccrual = true,
+                  bool useIsdaEngine = false); // switch to true later on ?
         CdsHelper(Rate quote,
                   const Period& tenor,
                   Integer settlementDays,
@@ -81,8 +84,18 @@ namespace QuantLib {
                   const Handle<YieldTermStructure>& discountCurve,
                   bool settlesAccrual = true,
                   bool paysAtDefaultTime = true,
-				  const DayCounter& lastPeriodDayCounter = DayCounter());
+                  const DayCounter& lastPeriodDayCounter = DayCounter(),
+                  bool rebatesAccrual = true,
+                  bool useIsdaEngine = false); // switch to true later on ?
         void setTermStructure(DefaultProbabilityTermStructure*);
+        void setIsdaEngineParameters(const int numericalFix,
+                                     const int accrualBias,
+                                     const int forwardsInCouponPeriod) {
+            isdaNumericalFix_ = numericalFix;
+            isdaAccrualBias_ = accrualBias;
+            isdaForwardsInCouponPeriod_ = forwardsInCouponPeriod;
+        }
+
       protected:
         void update();
         void initializeDates();
@@ -98,13 +111,29 @@ namespace QuantLib {
         Handle<YieldTermStructure> discountCurve_;
         bool settlesAccrual_;
         bool paysAtDefaultTime_;
-		DayCounter lastPeriodDC_;
+        DayCounter lastPeriodDC_;
+        bool rebatesAccrual_;
+        bool useIsdaEngine_;
+        int isdaNumericalFix_;
+        int isdaAccrualBias_;
+        int isdaForwardsInCouponPeriod_;
 
         Schedule schedule_;
         boost::shared_ptr<CreditDefaultSwap> swap_;
         RelinkableHandle<DefaultProbabilityTermStructure> probability_;
         //! protection effective date.
         Date protectionStart_;
+      private:
+        // we need this method in order to be able to pass rate and credit helpers
+        // to the standard isda engine and set the discount curve in the credit
+        // helpers as soons as the rate curve is built
+        void setDiscountCurve(const Handle<YieldTermStructure>& discountCurve) {
+            unregisterWith(discountCurve_);
+            discountCurve_ = discountCurve;
+            registerWith(discountCurve_);
+            update();
+        }
+        friend class IsdaCdsEngine;
     };
 
     //! Spread-quoted CDS hazard rate bootstrap helper.
@@ -122,7 +151,9 @@ namespace QuantLib {
                         const Handle<YieldTermStructure>& discountCurve,
                         bool settlesAccrual = true,
                         bool paysAtDefaultTime = true,
-						const DayCounter& lastPeriodDayCounter = DayCounter());
+                        const DayCounter& lastPeriodDayCounter = DayCounter(),
+                        bool reabtesAccrual = true,
+                        bool useIsdaEngine = false); // switch to true later on ?
 
         SpreadCdsHelper(Rate runningSpread,
                         const Period& tenor,
@@ -136,9 +167,12 @@ namespace QuantLib {
                         const Handle<YieldTermStructure>& discountCurve,
                         bool settlesAccrual = true,
                         bool paysAtDefaultTime = true,
-						const DayCounter& lastPeriodDayCounter = DayCounter());
+                        const DayCounter& lastPeriodDayCounter = DayCounter(), // ISDA: Actual/360(inc)
+                        const bool rebatesAccrual = true, // ISDA: true
+                        bool useIsdaEngine = false); // switch to true later on ?
         Real impliedQuote() const;
       private:
+        void initializeDates();
         void resetEngine();
     };
 
@@ -160,7 +194,9 @@ namespace QuantLib {
                          Natural upfrontSettlementDays = 0,
                          bool settlesAccrual = true,
                          bool paysAtDefaultTime = true,
-						 const DayCounter& lastPeriodDayCounter = DayCounter());
+                         const DayCounter& lastPeriodDayCounter = DayCounter(),
+                         const bool rebatesAccrual = true,
+                         const bool useIsdaEngine = false); // switch to true later on ?
 
         /*! \note the upfront must be quoted in fractional units. */
         UpfrontCdsHelper(Rate upfront,
@@ -177,18 +213,19 @@ namespace QuantLib {
                          Natural upfrontSettlementDays = 0,
                          bool settlesAccrual = true,
                          bool paysAtDefaultTime = true,
-						 const DayCounter& lastPeriodDayCounter = DayCounter());
+                         const DayCounter& lastPeriodDayCounter = DayCounter(),
+                         const bool rebatesAccrual = true,
+                         const bool useIsdaEngine = false); // swtich to true later on ?
         Real impliedQuote() const;
-        void initializeDates();
       private:
+        void initializeDates();
+        void resetEngine();
         Natural upfrontSettlementDays_;
         Date upfrontDate_;
         Rate runningSpread_;
-        void resetEngine();
     };
 
 }
 
 
 #endif
-
