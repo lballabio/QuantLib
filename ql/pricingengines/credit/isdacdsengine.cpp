@@ -213,11 +213,18 @@ namespace QuantLib {
         Date d1 = d0;
 
         while (d1 < maturity) {
+			i++;
             d1 = std::min<Date>(nodes[i], maturity);
-            Real P0 = discountCurve_->discount(nodes[i]);
-            Real P1 = discountCurve_->discount(nodes[i + 1]);
-            Real Q0 = probability_->survivalProbability(nodes[i]);
-            Real Q1 = probability_->survivalProbability(nodes[i + 1]);
+            //Real P0 = discountCurve_->discount(nodes[i]);
+            //Real P1 = discountCurve_->discount(nodes[i + 1]);
+            //Real Q0 = probability_->survivalProbability(nodes[i]);
+            //Real Q1 = probability_->survivalProbability(nodes[i + 1]);
+            Real P0 = discountCurve_->discount(d0);
+            Real P1 = discountCurve_->discount(d1);
+            Real Q0 = probability_->survivalProbability(d0);
+            Real Q1 = probability_->survivalProbability(d1);
+
+
             Real fhat = std::log(P0) - std::log(P1);
             Real hhat = std::log(Q0) - std::log(Q1);
             Real fhphh = fhat + hhat;
