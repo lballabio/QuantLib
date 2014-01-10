@@ -24,7 +24,9 @@
 #include <ql/instruments/claim.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/credit/piecewisedefaultcurve.hpp>
+#include <ql/termstructures/credit/flathazardrate.hpp>
 #include <ql/math/interpolations/forwardflatinterpolation.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
 #include <ql/time/daycounters/actual360.hpp>
@@ -35,16 +37,13 @@ namespace QuantLib {
 
     IsdaCdsEngine::IsdaCdsEngine(
         const Handle<DefaultProbabilityTermStructure> &probability,
-        const std::vector<Date> &probabilityStepDates, Real recoveryRate,
+        Real recoveryRate,
         const Handle<YieldTermStructure> &discountCurve,
-        const std::vector<Date> &yieldStepDates,
         boost::optional<bool> includeSettlementDateFlows,
         const NumericalFix numericalFix, const AccrualBias accrualBias,
         const ForwardsInCouponPeriod forwardsInCouponPeriod)
         : probability_(probability),
-          probabilityStepDates_(probabilityStepDates),
           recoveryRate_(recoveryRate), discountCurve_(discountCurve),
-          yieldStepDates_(yieldStepDates),
           includeSettlementDateFlows_(includeSettlementDateFlows),
           numericalFix_(numericalFix), accrualBias_(accrualBias),
           forwardsInCouponPeriod_(forwardsInCouponPeriod),
@@ -95,10 +94,6 @@ namespace QuantLib {
                     PiecewiseYieldCurve<Discount, LogLinear>(
                         0, WeekendsOnly(), rateHelpers_, Actual365Fixed())));
 
-            yieldStepDates_ = boost::dynamic_pointer_cast<
-                                  PiecewiseYieldCurve<Discount, LogLinear> >(
-                                  *discountCurve_)->dates();
-
             probability_ =
                 Handle<DefaultProbabilityTermStructure>(boost::make_shared<
                     PiecewiseDefaultCurve<SurvivalProbability, LogLinear> >(
@@ -106,15 +101,10 @@ namespace QuantLib {
                         0, WeekendsOnly(), probabilityHelpers_,
                         Actual365Fixed())));
 
-            probabilityStepDates_ =
-                boost::dynamic_pointer_cast<
-                    PiecewiseDefaultCurve<SurvivalProbability, LogLinear> >(
-                    *probability_)->dates();
-
         } else {
 
             // check if given curves are ISDA compatible
-            // (we do not check the interpolation scheme)
+            // (the interpolation is checked below)
 
             QL_REQUIRE(!discountCurve_.empty(),
                        "no discount term structure set");
@@ -154,9 +144,43 @@ namespace QuantLib {
 
         // collect nodes from both curves and sort them
 
-        std::vector<Date> nodesTmp(yieldStepDates_);
-        nodesTmp.insert(nodesTmp.end(), probabilityStepDates_.begin(),
-                        probabilityStepDates_.end());
+        boost::shared_ptr<PiecewiseYieldCurve<Discount, LogLinear> > castY1 =
+            boost::dynamic_pointer_cast<
+                PiecewiseYieldCurve<Discount, LogLinear> >(*discountCurve_);
+
+        boost::shared_ptr<PiecewiseYieldCurve<ForwardRate, BackwardFlat> > castY2 =
+            boost::dynamic_pointer_cast<
+                PiecewiseYieldCurve<ForwardRate, BackwardFlat> >(*discountCurve_);
+
+        boost::shared_ptr<FlatForward> castY3 =
+            boost::dynamic_pointer_cast<FlatForward>(*discountCurve_);
+
+        boost::shared_ptr<
+            PiecewiseDefaultCurve<SurvivalProbability, LogLinear> > castC1 =
+            boost::dynamic_pointer_cast<
+                PiecewiseDefaultCurve<SurvivalProbability, LogLinear> >(
+                *probability_);
+
+        boost::shared_ptr<PiecewiseDefaultCurve<HazardRate, BackwardFlat> >
+        castC2 = boost::dynamic_pointer_cast<
+            PiecewiseDefaultCurve<HazardRate, BackwardFlat> >(*probability_);
+
+        boost::shared_ptr<FlatHazardRate> castC3 =
+            boost::dynamic_pointer_cast<FlatHazardRate>(*probability_);
+
+        QL_REQUIRE(castY1 != NULL || castY2 != NULL || castY3 != NULL,"Yield curve must be flat forward interpolated");
+        QL_REQUIRE(castC1 != NULL || castC2 != NULL || castC3 != NULL,"Credit curve must be flat forward interpolated");
+
+        std::vector<Date> yDates, cDates;
+
+        if(castY1 != NULL) yDates = castY1->dates();
+        if(castY2 != NULL) yDates = castY2->dates();
+        if(castC1 != NULL) cDates = castC1->dates();
+        if(castC2 != NULL) cDates = castC2->dates();
+
+        std::vector<Date> nodesTmp(yDates);
+        nodesTmp.insert(nodesTmp.end(), cDates.begin(),
+                        cDates.end());
         std::sort(nodesTmp.begin(), nodesTmp.end());
 
         // add protection start date and cut all nodes earlier than this date

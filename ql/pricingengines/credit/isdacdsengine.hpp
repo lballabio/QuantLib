@@ -85,17 +85,17 @@ namespace QuantLib {
 
         /*! Constructor where the client code is responsible for providing a
             default curve and an interest rate curve compliant with the ISDA
-            specifications (in particular w.r.t. interpolation).
+            specifications.
 
             To be precisely consistent with the ISDA specification
             QL_USE_INDEXED_COUPON
-            must not be defined  */
+            must not be defined. This is not checked in order not to
+            kill the engine completely in this case. */
 
         IsdaCdsEngine(
             const Handle<DefaultProbabilityTermStructure> &probability,
-            const std::vector<Date> &probabilityStepDates, Real recoveryRate,
+            Real recoveryRate,
             const Handle<YieldTermStructure> &discountCurve,
-            const std::vector<Date> &yieldStepDates,
             boost::optional<bool> includeSettlementDateFlows = boost::none,
             const NumericalFix numericalFix = Taylor,
             const AccrualBias accrualBias = NoBias,
@@ -123,12 +123,10 @@ namespace QuantLib {
 
       private:
         mutable Handle<DefaultProbabilityTermStructure> probability_;
-        mutable std::vector<Date> probabilityStepDates_;
         const std::vector<boost::shared_ptr<DefaultProbabilityHelper> >
         probabilityHelpers_;
         const Real recoveryRate_;
         mutable Handle<YieldTermStructure> discountCurve_;
-        mutable std::vector<Date> yieldStepDates_;
         const std::vector<boost::shared_ptr<RateHelper> > rateHelpers_;
         const boost::optional<bool> includeSettlementDateFlows_;
         const NumericalFix numericalFix_;
