@@ -49,7 +49,7 @@ namespace QuantLib {
                           Date());
 
         boost::shared_ptr<CreditDefaultSwap> cds =
-            boost::make_shared<CreditDefaultSwap>(CreditDefaultSwap(
+            boost::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
                 side_, nominal_, couponRate_, upfrontRate_, schedule, Following,
                 dayCounter_, true, true, start, upfrontDate,
                 boost::shared_ptr<Claim>(), lastPeriodDayCounter_, true));
