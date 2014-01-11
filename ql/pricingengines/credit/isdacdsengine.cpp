@@ -376,10 +376,13 @@ namespace QuantLib {
 
         Real upfrontSign = Protection::Seller ? 1.0 : -1.0;
 
-        if (arguments_.side == Protection::Buyer) {
+        if (arguments_.side == Protection::Seller) {
             results_.defaultLegNPV *= -1.0;
             results_.accrualRebateNPV *= -1.0;
-        }
+		}else{
+            results_.couponLegNPV *= -1.0;
+            results_.upfrontNPV   *= -1.0;
+		}
 
         results_.value = results_.defaultLegNPV + results_.couponLegNPV +
                          results_.upfrontNPV + results_.accrualRebateNPV;
