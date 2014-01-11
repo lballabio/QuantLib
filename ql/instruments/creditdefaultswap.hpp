@@ -170,7 +170,7 @@ namespace QuantLib {
         const Date& protectionStartDate() const;
         //! The last date for which defaults will trigger the contract
         const Date& protectionEndDate() const;
-        bool rebatesAccrual() const {return accrualRebate_;}
+        bool rebatesAccrual() const {return accrualRebate_ != NULL;}
         //@}
         //! \name Results
         //@{
