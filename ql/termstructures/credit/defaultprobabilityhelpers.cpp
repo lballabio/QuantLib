@@ -194,17 +194,15 @@ namespace QuantLib {
             boost::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_));
 
         if (useIsdaEngine_) {
-            swap_->setPricingEngine(
-                boost::make_shared<IsdaCdsEngine>(IsdaCdsEngine(
-                    probability_, recoveryRate_, discountCurve_, false,
-                    static_cast<IsdaCdsEngine::NumericalFix>(isdaNumericalFix_),
-                    static_cast<IsdaCdsEngine::AccrualBias>(isdaAccrualBias_),
-                    static_cast<IsdaCdsEngine::ForwardsInCouponPeriod>(
-                        isdaForwardsInCouponPeriod_))));
+            swap_->setPricingEngine(boost::make_shared<IsdaCdsEngine>(
+                probability_, recoveryRate_, discountCurve_, false,
+                static_cast<IsdaCdsEngine::NumericalFix>(isdaNumericalFix_),
+                static_cast<IsdaCdsEngine::AccrualBias>(isdaAccrualBias_),
+                static_cast<IsdaCdsEngine::ForwardsInCouponPeriod>(
+                    isdaForwardsInCouponPeriod_)));
         } else {
-            swap_->setPricingEngine(
-                boost::make_shared<MidPointCdsEngine>(MidPointCdsEngine(
-                    probability_, recoveryRate_, discountCurve_)));
+            swap_->setPricingEngine(boost::make_shared<MidPointCdsEngine>(
+                probability_, recoveryRate_, discountCurve_));
         }
     }
 
@@ -272,30 +270,21 @@ namespace QuantLib {
     }
 
     void UpfrontCdsHelper::resetEngine() {
-        swap_ = boost::shared_ptr<CreditDefaultSwap>(
-                          new CreditDefaultSwap(Protection::Buyer, 100.0,
-                                                0.01, runningSpread_,
-                                                schedule_, paymentConvention_,
-                                                dayCounter_,
-                                                settlesAccrual_,
-                                                paysAtDefaultTime_,
-                                                protectionStart_,
-                                                upfrontDate_,
-                                                boost::shared_ptr<Claim>(),
-                                                lastPeriodDC_,
-                                                rebatesAccrual_));
+        swap_ = boost::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
+            Protection::Buyer, 100.0, 0.01, runningSpread_, schedule_,
+            paymentConvention_, dayCounter_, settlesAccrual_,
+            paysAtDefaultTime_, protectionStart_, upfrontDate_,
+            boost::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_));
         if (useIsdaEngine_) {
-            swap_->setPricingEngine(
-                boost::make_shared<IsdaCdsEngine>(IsdaCdsEngine(
-                    probability_, recoveryRate_, discountCurve_, false,
-                    static_cast<IsdaCdsEngine::NumericalFix>(isdaNumericalFix_),
-                    static_cast<IsdaCdsEngine::AccrualBias>(isdaAccrualBias_),
-                    static_cast<IsdaCdsEngine::ForwardsInCouponPeriod>(
-                        isdaForwardsInCouponPeriod_))));
+            swap_->setPricingEngine(boost::make_shared<IsdaCdsEngine>(
+                probability_, recoveryRate_, discountCurve_, false,
+                static_cast<IsdaCdsEngine::NumericalFix>(isdaNumericalFix_),
+                static_cast<IsdaCdsEngine::AccrualBias>(isdaAccrualBias_),
+                static_cast<IsdaCdsEngine::ForwardsInCouponPeriod>(
+                    isdaForwardsInCouponPeriod_)));
         } else {
-            swap_->setPricingEngine(
-                boost::make_shared<MidPointCdsEngine>(MidPointCdsEngine(
-                    probability_, recoveryRate_, discountCurve_)));
+            swap_->setPricingEngine(boost::make_shared<MidPointCdsEngine>(
+                probability_, recoveryRate_, discountCurve_));
         }
     }
 

@@ -98,8 +98,7 @@ namespace QuantLib {
 
             discountCurve_ = Handle<YieldTermStructure>(
                 boost::make_shared<PiecewiseYieldCurve<Discount, LogLinear> >(
-                    PiecewiseYieldCurve<Discount, LogLinear>(
-                        0, WeekendsOnly(), rateHelpers_, Actual365Fixed())));
+                    0, WeekendsOnly(), rateHelpers_, Actual365Fixed()));
 
             for(Size i=0;i<probabilityHelpers_.size();i++) {
                 boost::shared_ptr<CdsHelper> h =
@@ -111,9 +110,8 @@ namespace QuantLib {
             probability_ =
                 Handle<DefaultProbabilityTermStructure>(boost::make_shared<
                     PiecewiseDefaultCurve<SurvivalProbability, LogLinear> >(
-                    PiecewiseDefaultCurve<SurvivalProbability, LogLinear>(
                         0, WeekendsOnly(), probabilityHelpers_,
-                        Actual365Fixed())));
+                        Actual365Fixed()));
 
         } else {
 
@@ -227,7 +225,7 @@ namespace QuantLib {
         Date d1 = d0;
 
         while (d1 < maturity) {
-			i++;
+            i++;
             d1 = std::min<Date>(nodes[i], maturity);
             //Real P0 = discountCurve_->discount(nodes[i]);
             //Real P1 = discountCurve_->discount(nodes[i + 1]);
