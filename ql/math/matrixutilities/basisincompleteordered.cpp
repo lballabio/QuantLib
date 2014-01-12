@@ -114,10 +114,6 @@ namespace QuantLib {
             return x;
         }
 
-        Real norm(const std::vector<Real>& v)
-        {
-            return std::sqrt(normSquared(v));
-        }
     }
 
 
