@@ -311,15 +311,15 @@ namespace QuantLib {
                     localNodes.push_back(end);
                 }
 
-                for (Size i = 0; i < localNodes.size() - 1; i++) {
-                    Real t0 = discountCurve_->timeFromReference(localNodes[i]);
+                for (Size k = 0; k < localNodes.size() - 1; k++) {
+                    Real t0 = discountCurve_->timeFromReference(localNodes[k]);
                     Real t1 =
-                        discountCurve_->timeFromReference(localNodes[i + 1]);
-                    Real P0 = discountCurve_->discount(localNodes[i]);
-                    Real Q0 = probability_->survivalProbability(localNodes[i]);
-                    Real P1 = discountCurve_->discount(localNodes[i + 1]);
+                        discountCurve_->timeFromReference(localNodes[k + 1]);
+                    Real P0 = discountCurve_->discount(localNodes[k]);
+                    Real Q0 = probability_->survivalProbability(localNodes[k]);
+                    Real P1 = discountCurve_->discount(localNodes[k + 1]);
                     Real Q1 =
-                        probability_->survivalProbability(localNodes[i + 1]);
+                        probability_->survivalProbability(localNodes[k + 1]);
                     Real fhat = std::log(P0) - std::log(P1);
                     Real hhat = std::log(Q0) - std::log(Q1);
                     Real fhphh = fhat + hhat;
