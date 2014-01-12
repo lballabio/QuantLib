@@ -268,23 +268,6 @@ namespace {
 
     };
 
-    bool checkAbsError(Real x1, Real x2, Real tolerance){
-        return std::fabs(x1 - x2) < tolerance;
-    }
-
-    std::string typeToString(YoYInflationCapFloor::Type type) {
-        switch (type) {
-            case YoYInflationCapFloor::Cap:
-                return "YoYInflation cap";
-            case YoYInflationCapFloor::Floor:
-                return "YoYInflation floor";
-            case YoYInflationCapFloor::Collar:
-                return "YoYInflation collar";
-            default:
-                QL_FAIL("unknown YoYInflation cap/floor type");
-        }
-    }
-
 }
 
 

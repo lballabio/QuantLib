@@ -53,7 +53,7 @@ namespace {
       public:
         OneDimensionalPolynomialDegreeN(const Array& coefficients)
         : coefficients_(coefficients),
-          polynomialDegree_(coefficients.size()-1),odd(true) {}
+          polynomialDegree_(coefficients.size()-1) {}
 
         Real value(const Array& x) const {
             QL_REQUIRE(x.size()==1,"independent variable must be 1 dimensional");
@@ -73,7 +73,6 @@ namespace {
       private:
         const Array coefficients_;
         const Size polynomialDegree_;
-        mutable bool odd;
     };
 
 

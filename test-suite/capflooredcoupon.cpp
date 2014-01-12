@@ -187,19 +187,6 @@ namespace {
         }
     };
 
-    std::string typeToString(CapFloor::Type type) {
-        switch (type) {
-          case CapFloor::Cap:
-            return "cap";
-          case CapFloor::Floor:
-            return "floor";
-          case CapFloor::Collar:
-            return "collar";
-          default:
-            QL_FAIL("unknown cap/floor type");
-        }
-    }
-
 }
 
 

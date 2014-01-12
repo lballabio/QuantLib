@@ -253,13 +253,8 @@ namespace {
             // make sure that the index has the latest zero inflation term structure
             hcpi.linkTo(pCPIts);
         }
-
-
     };
 
-    bool checkAbsError(Real x1, Real x2, Real tolerance){
-        return std::fabs(x1 - x2) < tolerance;
-    }
 }
 
 
