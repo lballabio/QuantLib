@@ -25,7 +25,6 @@
 #define quantlib_vanna_volga_double_barrier_engine_hpp
 
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/experimental/barrieroption/doublebarrieroption.hpp>
 #include <ql/experimental/fx/deltavolquote.hpp>
 
