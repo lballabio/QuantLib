@@ -302,6 +302,11 @@ namespace QuantLib {
                     std::vector<Date>::const_iterator it1 =
                         std::upper_bound(nodes.begin(), nodes.end(), end);
                     localNodes = std::vector<Date>(it0, it1);
+					if(localNodes.size()==0) {
+						//both iterators point to the same element
+						localNodes.push_back(start);
+						localNodes.push_back(end);
+					}
                     if (start != *localNodes.begin())
                         localNodes.insert(localNodes.begin(), start);
                     if (end != localNodes.back())
