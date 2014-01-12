@@ -291,10 +291,10 @@ void example02() {
 
     Handle<YieldTermStructure> emptyHandle;
 
-    boost::shared_ptr<CdsHelper> cds5y = boost::make_shared<SpreadCdsHelper>(
-        SpreadCdsHelper(0.03, 5 * Years, 1, WeekendsOnly(), Quarterly, Following,
-                  DateGeneration::CDS, Actual360(), 0.4, emptyHandle, true,
-                        true, Actual360(true),true,true));
+    boost::shared_ptr<CdsHelper> cds5y(new SpreadCdsHelper(
+        0.03, 5 * Years, 1, WeekendsOnly(), Quarterly, Following,
+        DateGeneration::CDS, Actual360(), 0.4, emptyHandle, true, true,
+        Actual360(true), true, true));
 
     cds5y->setIsdaEngineParameters(IsdaCdsEngine::Taylor, IsdaCdsEngine::None,
                                    IsdaCdsEngine::Piecewise);
@@ -310,9 +310,27 @@ void example02() {
 
     // set up isda engine
 
-    boost::shared_ptr<PricingEngine> isdaPricer =
+    boost::shared_ptr<IsdaCdsEngine> isdaPricer =
         boost::make_shared<IsdaCdsEngine>(
-            IsdaCdsEngine(isdaCdsHelper, 0.4, isdaRateHelper));
+            isdaCdsHelper, 0.4, isdaRateHelper);
+
+    // check the curves built by the engine
+
+    Handle<YieldTermStructure> isdaYts = isdaPricer->isdaRateCurve();
+    Handle<DefaultProbabilityTermStructure> isdaCts = isdaPricer->isdaCreditCurve();
+
+    std::cout << "isda rate 1m " << dp1m->latestDate() << " "
+              << isdaYts->zeroRate(dp1m->latestDate(), Actual365Fixed(),
+                                      Continuous) << std::endl;
+    std::cout << "isda rate 3m " << dp3m->latestDate() << " "
+              << isdaYts->zeroRate(dp3m->latestDate(), Actual365Fixed(),
+                                      Continuous) << std::endl;
+    std::cout << "isda rate 6m " << dp6m->latestDate() << " "
+              << isdaYts->zeroRate(dp6m->latestDate(), Actual365Fixed(),
+                                      Continuous) << std::endl;
+
+    std::cout << "isda hazard 5y " << cds5y->latestDate() << " "
+              << isdaCts->hazardRate(cds5y->latestDate()) << std::endl;
 
     // price the trade
 
