@@ -78,7 +78,7 @@ namespace QuantLib {
 
         Real stdDev_, spot_, forward_;
         Integer phi_;
-        Real d1_,d2_,fExpPos_,fExpNeg_;
+        Real fExpPos_,fExpNeg_;
     };
 
 
