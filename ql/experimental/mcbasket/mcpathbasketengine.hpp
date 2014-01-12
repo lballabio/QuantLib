@@ -31,6 +31,7 @@
 #include <ql/processes/stochasticprocessarray.hpp>
 #include <ql/termstructures/yield/impliedtermstructure.hpp>
 #include <ql/timegrid.hpp>
+#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -205,7 +206,8 @@ namespace QuantLib {
             timePositions[i] = theTimeGrid.index(times[i]);
             discountFactors[i] = riskFreeRate->discount(times[i]);
             forwardTermStructures[i] = Handle<YieldTermStructure>(
-                        new ImpliedTermStructure(riskFreeRate, fixings[i]));
+                boost::make_shared<ImpliedTermStructure>(riskFreeRate,
+                                                         fixings[i]));
         }
 
         return boost::shared_ptr<
