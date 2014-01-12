@@ -22,17 +22,6 @@
 
 namespace {
 
-    std::string trim(const std::string& file) {
-        // find last path separator
-        std::string::size_type n = file.find_last_of("/\\");
-        if (n == std::string::npos)
-            // return the whole thing--it's a naked file name anyway
-            return file;
-        else
-            // keep the file name only
-            return file.substr(n+1);
-    }
-
     #if defined(_MSC_VER) || defined(__BORLANDC__)
     // allow Visual Studio integration
     std::string format(

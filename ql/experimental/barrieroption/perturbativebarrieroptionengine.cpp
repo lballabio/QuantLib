@@ -41,9 +41,6 @@ namespace {
     double H1, H2,  H3, R23, RUA, RUB, AR, RUC;
     int NUC;
 
-    // standard normal density function
-    double ndf(double t);
-
     // standard normal cumulative distribution function
     double PHID(double Z);
 

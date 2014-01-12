@@ -224,12 +224,6 @@ namespace QuantLib {
         };
 
 
-        Real fGamma(Real gamma, Real A, Real B) {
-            Real beta = gamma * (1 - A) - B;
-            return 3*A*(1 - gamma*gamma) - 1 + 3*gamma*gamma + 2*beta*beta - 4*beta*gamma;
-        }
-
-
         // Initial guess based on fitting ACF - initial guess for
         // fitting acf is a moment matching estimates for mean(r2),
         // acf(0), and acf(1).
