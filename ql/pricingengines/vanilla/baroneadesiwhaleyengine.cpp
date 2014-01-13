@@ -22,6 +22,7 @@
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/comparison.hpp>
 #include <ql/exercise.hpp>
 
 namespace QuantLib {
@@ -73,7 +74,7 @@ namespace QuantLib {
         Real d1 = (std::log(forwardSi/payoff->strike()) + 0.5*variance) /
             std::sqrt(variance);
         CumulativeNormalDistribution cumNormalDist;
-        Real K = (riskFreeDiscount!=1.0)
+        Real K = (!close(riskFreeDiscount, 1.0, 1e4))
         		? -2.0*std::log(riskFreeDiscount)
                    / (variance*(1.0-riskFreeDiscount))
                  : 2.0/variance;
@@ -195,7 +196,7 @@ namespace QuantLib {
             Real d1 = (std::log(forwardSk/payoff->strike()) + 0.5*variance)
                 /std::sqrt(variance);
             Real n = 2.0*std::log(dividendDiscount/riskFreeDiscount)/variance;
-            Real K = (riskFreeDiscount!=1.0)
+            Real K = (!close(riskFreeDiscount, 1.0, 1e4))
             		? -2.0*std::log(riskFreeDiscount)
                        / (variance*(1.0-riskFreeDiscount))
                      : 2.0/variance;
