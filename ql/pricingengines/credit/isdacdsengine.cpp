@@ -46,11 +46,11 @@ namespace QuantLib {
           recoveryRate_(recoveryRate), discountCurve_(discountCurve),
           includeSettlementDateFlows_(includeSettlementDateFlows),
           numericalFix_(numericalFix), accrualBias_(accrualBias),
-          forwardsInCouponPeriod_(forwardsInCouponPeriod),
-          bootstrapCurves_(false) {
+          forwardsInCouponPeriod_(forwardsInCouponPeriod) {
 
         registerWith(probability_);
         registerWith(discountCurve_);
+
     }
 
     IsdaCdsEngine::IsdaCdsEngine(
@@ -65,13 +65,27 @@ namespace QuantLib {
           rateHelpers_(rateHelpers),
           includeSettlementDateFlows_(includeSettlementDateFlows),
           numericalFix_(numericalFix), accrualBias_(accrualBias),
-          forwardsInCouponPeriod_(forwardsInCouponPeriod),
-          bootstrapCurves_(true) {
+          forwardsInCouponPeriod_(forwardsInCouponPeriod) {
 
-        for (Size i = 0; i < rateHelpers.size(); ++i)
-            registerWith(rateHelpers[i]);
-        for (Size i = 0; i < probabilityHelpers.size(); ++i)
-            registerWith(probabilityHelpers[i]);
+        discountCurve_ = Handle<YieldTermStructure>(
+            boost::make_shared<PiecewiseYieldCurve<Discount, LogLinear> >(
+                0, WeekendsOnly(), rateHelpers_, Actual365Fixed()));
+
+        for (Size i = 0; i < probabilityHelpers_.size(); i++) {
+            boost::shared_ptr<CdsHelper> h =
+                boost::dynamic_pointer_cast<CdsHelper>(probabilityHelpers_[i]);
+            QL_REQUIRE(h != NULL, "Cds helper required");
+            h->setDiscountCurve(discountCurve_);
+        }
+
+        probability_ =
+            Handle<DefaultProbabilityTermStructure>(boost::make_shared<
+                PiecewiseDefaultCurve<SurvivalProbability, LogLinear> >(
+                0, WeekendsOnly(), probabilityHelpers_, Actual365Fixed()));
+
+        registerWith(probability_);
+        registerWith(discountCurve_);
+
     }
 
     void IsdaCdsEngine::calculate() const {
@@ -92,56 +106,27 @@ namespace QuantLib {
 
         Date evalDate = Settings::instance().evaluationDate();
 
-        if (bootstrapCurves_) {
+        // check if given curves are ISDA compatible
+        // (the interpolation is checked below)
 
-            // set up the curves with the right conventions
-
-            discountCurve_ = Handle<YieldTermStructure>(
-                boost::make_shared<PiecewiseYieldCurve<Discount, LogLinear> >(
-                    0, WeekendsOnly(), rateHelpers_, Actual365Fixed()));
-
-            for(Size i=0;i<probabilityHelpers_.size();i++) {
-                boost::shared_ptr<CdsHelper> h =
-                    boost::dynamic_pointer_cast<CdsHelper>(probabilityHelpers_[i]);
-                QL_REQUIRE(h != NULL,"Cds helper required");
-                h->setDiscountCurve(discountCurve_);
-            }
-
-            probability_ =
-                Handle<DefaultProbabilityTermStructure>(boost::make_shared<
-                    PiecewiseDefaultCurve<SurvivalProbability, LogLinear> >(
-                        0, WeekendsOnly(), probabilityHelpers_,
-                        Actual365Fixed()));
-
-        } else {
-
-            // check if given curves are ISDA compatible
-            // (the interpolation is checked below)
-
-            QL_REQUIRE(!discountCurve_.empty(),
-                       "no discount term structure set");
-            QL_REQUIRE(!probability_.empty(),
-                       "no probability term structure set");
-            QL_REQUIRE(discountCurve_->dayCounter() == dc,
-                       "yield term structure day counter ("
-                           << discountCurve_->dayCounter()
-                           << ") should be Act/365(Fixed)");
-            QL_REQUIRE(probability_->dayCounter() == dc,
-                       "probability term structure day counter ("
-                           << probability_->dayCounter() << ") should be "
-                           << "Act/365(Fixed)");
-            QL_REQUIRE(discountCurve_->referenceDate() == evalDate,
-                       "yield term structure reference date ("
-                           << discountCurve_->referenceDate()
-                           << " should be evaluation date (" << evalDate
-                           << ")");
-            QL_REQUIRE(probability_->referenceDate() == evalDate,
-                       "probability term structure reference date ("
-                           << probability_->referenceDate()
-                           << " should be evaluation date (" << evalDate
-                           << ")");
-        }
-
+        QL_REQUIRE(!discountCurve_.empty(), "no discount term structure set");
+        QL_REQUIRE(!probability_.empty(), "no probability term structure set");
+        QL_REQUIRE(discountCurve_->dayCounter() == dc,
+                   "yield term structure day counter ("
+                       << discountCurve_->dayCounter()
+                       << ") should be Act/365(Fixed)");
+        QL_REQUIRE(probability_->dayCounter() == dc,
+                   "probability term structure day counter ("
+                       << probability_->dayCounter() << ") should be "
+                       << "Act/365(Fixed)");
+        QL_REQUIRE(discountCurve_->referenceDate() == evalDate,
+                   "yield term structure reference date ("
+                       << discountCurve_->referenceDate()
+                       << " should be evaluation date (" << evalDate << ")");
+        QL_REQUIRE(probability_->referenceDate() == evalDate,
+                   "probability term structure reference date ("
+                       << probability_->referenceDate()
+                       << " should be evaluation date (" << evalDate << ")");
         QL_REQUIRE(arguments_.settlesAccrual,
                    "ISDA engine not compatible with non accrual paying CDS");
         QL_REQUIRE(arguments_.paysAtDefaultTime,

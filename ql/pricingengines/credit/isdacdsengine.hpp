@@ -147,7 +147,6 @@ namespace QuantLib {
         const NumericalFix numericalFix_;
         const AccrualBias accrualBias_;
         const ForwardsInCouponPeriod forwardsInCouponPeriod_;
-        const bool bootstrapCurves_;
     };
 }
 
