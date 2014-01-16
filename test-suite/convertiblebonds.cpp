@@ -366,8 +366,6 @@ void ConvertibleBondTest::testRegression() {
     BOOST_TEST_MESSAGE(
        "Testing fixed-coupon convertible bond in known regression case...");
 
-    using namespace boost;
-
     SavedSettings backup;
 
     Date today = Date(23, December, 2008);
@@ -375,7 +373,7 @@ void ConvertibleBondTest::testRegression() {
 
     Settings::instance().evaluationDate() = tomorrow;
 
-    Handle<Quote> u(make_shared<SimpleQuote>(2.9084382818797443));
+    Handle<Quote> u(boost::make_shared<SimpleQuote>(2.9084382818797443));
 
     std::vector<Date> dates(25);
     std::vector<Rate> forwards(25);
@@ -406,15 +404,16 @@ void ConvertibleBondTest::testRegression() {
     dates[24] = Date(31,December,2199);  forwards[24] = 0.0228343838422;
 
     Handle<YieldTermStructure> r(
-                     make_shared<ForwardCurve>(dates, forwards, Actual360()));
+              boost::make_shared<ForwardCurve>(dates, forwards, Actual360()));
 
-    Handle<BlackVolTermStructure> sigma(make_shared<BlackConstantVol>(
+    Handle<BlackVolTermStructure> sigma(boost::make_shared<BlackConstantVol>(
                                  tomorrow, NullCalendar(), 21.685235548092248,
                                  Thirty360(Thirty360::BondBasis)));
 
-    shared_ptr<BlackProcess> process = make_shared<BlackProcess>(u,r,sigma);
+    boost::shared_ptr<BlackProcess> process =
+        boost::make_shared<BlackProcess>(u,r,sigma);
 
-    Handle<Quote> spread(make_shared<SimpleQuote>(0.11498700678012874));
+    Handle<Quote> spread(boost::make_shared<SimpleQuote>(0.11498700678012874));
 
     Date issueDate(23, July, 2008);
     Date maturityDate(1, August, 2013);
@@ -425,7 +424,8 @@ void ConvertibleBondTest::testRegression() {
                                       .withCalendar(calendar)
                                       .withConvention(Unadjusted);
     Natural settlementDays = 3;
-    shared_ptr<Exercise> exercise = make_shared<EuropeanExercise>(maturityDate);
+    boost::shared_ptr<Exercise> exercise =
+        boost::make_shared<EuropeanExercise>(maturityDate);
     Real conversionRatio = 100.0/20.3175;
     std::vector<Rate> coupons(schedule.size()-1, 0.05);
     DayCounter dayCounter = Thirty360(Thirty360::BondBasis);
@@ -439,7 +439,7 @@ void ConvertibleBondTest::testRegression() {
                                     coupons, dayCounter,
                                     schedule, redemption);
     bond.setPricingEngine(
-        make_shared<BinomialConvertibleEngine<CoxRossRubinstein> >(
+        boost::make_shared<BinomialConvertibleEngine<CoxRossRubinstein> >(
                                                               process, 600));
 
     try {
