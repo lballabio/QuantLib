@@ -103,6 +103,7 @@ namespace QuantLib {
 
         Actual365Fixed dc;
         Actual360 dc1;
+		Actual360 dc2(true);
 
         Date evalDate = Settings::instance().evaluationDate();
 
@@ -252,7 +253,8 @@ namespace QuantLib {
                 boost::dynamic_pointer_cast<FixedRateCoupon>(arguments_.leg[i]);
 
             QL_REQUIRE(coupon->dayCounter() == dc ||
-                           coupon->dayCounter() == dc1,
+				coupon->dayCounter() == dc1 ||
+				coupon->dayCounter() == dc2,
                        "ISDA engine requires a coupon day counter Act/365Fixed "
                            << "or Act/360 (" << coupon->dayCounter() << ")");
 
@@ -301,6 +303,7 @@ namespace QuantLib {
                     localNodes.push_back(end);
                 }
 
+				Real defaultAccrThisNode = 0.;
                 for (Size k = 0; k < localNodes.size() - 1; k++) {
                     Real t0 = discountCurve_->timeFromReference(localNodes[k]);
                     Real t1 =
@@ -318,7 +321,7 @@ namespace QuantLib {
                         // what exactly is implemented in the standard isda C
                         // code ?
                         Real fhphhq = fhphh * fhphh;
-                        defaultAccrualNpv +=
+                        defaultAccrThisNode +=
                             hhat * P0 * Q0 *
                             ((t0 - tstart) *
                                  (1.0 - 0.5 * fhphh + 1.0 / 6.0 * fhphhq -
@@ -327,16 +330,18 @@ namespace QuantLib {
                                  (0.5 - 1.0 / 3.0 * fhphh + 1.0 / 8.0 * fhphhq -
                                   1.0 / 30.0 * fhphhq * fhphh));
                     } else {
-                        defaultAccrualNpv +=
-                            hhat / (fhphh + nFix) *
-                            ((t1 - t0) * ((P0 * Q0 - P1 * Q1) / (fhphh + nFix) -
-                                          P1 * Q1) +
-                             (t0 - tstart) * (P0 * Q0 - P1 * Q1));
+                        defaultAccrThisNode +=
+                            (hhat / (fhphh + nFix)) *
+                            ( (t1 - t0) * ((P0 * Q0 - P1 * Q1)/(fhphh + nFix) -
+                                          P1 * Q1) 
+                               + (t0 - tstart) * (P0 * Q0 - P1 * Q1)
+							);
                     }
                 }
-                Real eta = coupon->accrualPeriod() / (tend - tstart);
-                defaultAccrualNpv *= -coupon->amount() * eta;
-            }
+                Real eta = (tend - tstart) / coupon->accrualPeriod();
+                defaultAccrualNpv += -defaultAccrThisNode * 
+					coupon->amount() * eta;
+			}
         }
 
         results_.couponLegNPV = premiumNpv + defaultAccrualNpv;
