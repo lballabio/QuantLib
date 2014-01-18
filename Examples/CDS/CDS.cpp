@@ -463,19 +463,19 @@ void example03() {
         DateGeneration::CDS, Actual360(), 0.4, emptyHandle, true, true,
         Actual360(true), true, true));
     boost::shared_ptr<CdsHelper> cds3y(new SpreadCdsHelper(
-        0.007927, 3 * Years, 1, WeekendsOnly(), Quarterly, Following,
+        0.012239, 3 * Years, 1, WeekendsOnly(), Quarterly, Following,
         DateGeneration::CDS, Actual360(), 0.4, emptyHandle, true, true,
         Actual360(true), true, true));
     boost::shared_ptr<CdsHelper> cds5y(new SpreadCdsHelper(
-        0.007927, 5 * Years, 1, WeekendsOnly(), Quarterly, Following,
+        0.016979, 5 * Years, 1, WeekendsOnly(), Quarterly, Following,
         DateGeneration::CDS, Actual360(), 0.4, emptyHandle, true, true,
         Actual360(true), true, true));
     boost::shared_ptr<CdsHelper> cds7y(new SpreadCdsHelper(
-        0.007927, 7 * Years, 1, WeekendsOnly(), Quarterly, Following,
+        0.019271, 7 * Years, 1, WeekendsOnly(), Quarterly, Following,
         DateGeneration::CDS, Actual360(), 0.4, emptyHandle, true, true,
         Actual360(true), true, true));
     boost::shared_ptr<CdsHelper> cds10y(new SpreadCdsHelper(
-        0.007927, 10 * Years, 1, WeekendsOnly(), Quarterly, Following,
+        0.020860, 10 * Years, 1, WeekendsOnly(), Quarterly, Following,
         DateGeneration::CDS, Actual360(), 0.4, emptyHandle, true, true,
         Actual360(true), true, true));
 
@@ -487,6 +487,14 @@ void example03() {
     isdaCdsHelpers.push_back(cds5y);
     isdaCdsHelpers.push_back(cds7y);
     isdaCdsHelpers.push_back(cds10y);
+
+    // set isda parameters
+    for (Size i = 0; i < isdaCdsHelpers.size(); i++) {
+        boost::dynamic_pointer_cast<CdsHelper>(isdaCdsHelpers[i])
+            ->setIsdaEngineParameters(IsdaCdsEngine::Taylor,
+                                      IsdaCdsEngine::NoBias,
+                                      IsdaCdsEngine::Piecewise);
+    }
 
     // set up isda engine
 
@@ -509,6 +517,14 @@ void example03() {
                   << std::endl;
     }
 
+    std::cout << "Isda credit curve:" << std::endl;
+    std::cout << "date;time;survivalprob" << std::endl;
+    for (Size i = 0; i < isdaCdsHelpers.size(); i++) {
+        Date d = isdaCdsHelpers[i]->latestDate();
+        Real t = isdaCts->timeFromReference(d);
+        std::cout << d << ";" << t << ";" << isdaCts->survivalProbability(d)
+                  << std::endl;
+    }
 }
 
 
