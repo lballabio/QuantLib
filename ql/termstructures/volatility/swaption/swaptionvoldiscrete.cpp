@@ -187,6 +187,7 @@ namespace QuantLib {
                 evaluationDate_ = d;
                 initializeOptionDatesAndTimes();
                 initializeSwapLengths();
+                optionInterpolator_.update();
             }
         }
         TermStructure::update();
