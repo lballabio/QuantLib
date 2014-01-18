@@ -33,59 +33,52 @@
 
 namespace QuantLib {
 
-    CdsHelper::CdsHelper(const Handle<Quote>& quote,
-                         const Period& tenor,
-                         Integer settlementDays,
-                         const Calendar& calendar,
+    CdsHelper::CdsHelper(const Handle<Quote> &quote, const Period &tenor,
+                         Integer settlementDays, const Calendar &calendar,
                          Frequency frequency,
                          BusinessDayConvention paymentConvention,
                          DateGeneration::Rule rule,
-                         const DayCounter& dayCounter,
-                         Real recoveryRate,
-                         const Handle<YieldTermStructure>& discountCurve,
-                         bool settlesAccrual,
-                         bool paysAtDefaultTime,
-                         const DayCounter& lastPeriodDayCounter,
-                         const bool rebatesAccrual,
-                         const bool useIsdaEngine)
-    : RelativeDateDefaultProbabilityHelper(quote),
-      tenor_(tenor), settlementDays_(settlementDays), calendar_(calendar),
-      frequency_(frequency), paymentConvention_(paymentConvention),
-      rule_(rule), dayCounter_(dayCounter), recoveryRate_(recoveryRate),
-      discountCurve_(discountCurve),
-      settlesAccrual_(settlesAccrual), paysAtDefaultTime_(paysAtDefaultTime),
-      lastPeriodDC_(lastPeriodDayCounter), rebatesAccrual_(rebatesAccrual),
-      useIsdaEngine_(useIsdaEngine) {
+                         const DayCounter &dayCounter, Real recoveryRate,
+                         const Handle<YieldTermStructure> &discountCurve,
+                         bool settlesAccrual, bool paysAtDefaultTime,
+                         const DayCounter &lastPeriodDayCounter,
+                         const bool rebatesAccrual, const bool useIsdaEngine)
+        : RelativeDateDefaultProbabilityHelper(quote), tenor_(tenor),
+          settlementDays_(settlementDays), calendar_(calendar),
+          frequency_(frequency), paymentConvention_(paymentConvention),
+          rule_(rule), dayCounter_(dayCounter), recoveryRate_(recoveryRate),
+          discountCurve_(discountCurve), settlesAccrual_(settlesAccrual),
+          paysAtDefaultTime_(paysAtDefaultTime),
+          lastPeriodDC_(lastPeriodDayCounter), rebatesAccrual_(rebatesAccrual),
+          useIsdaEngine_(useIsdaEngine), isdaNumericalFix_(IsdaCdsEngine::Taylor),
+          isdaAccrualBias_(IsdaCdsEngine::NoBias),
+          isdaForwardsInCouponPeriod_(IsdaCdsEngine::Piecewise) {
 
         initializeDates();
 
         registerWith(discountCurve);
-
     }
 
-    CdsHelper::CdsHelper(Rate quote,
-                         const Period& tenor,
-                         Integer settlementDays,
-                         const Calendar& calendar,
+    CdsHelper::CdsHelper(Rate quote, const Period &tenor,
+                         Integer settlementDays, const Calendar &calendar,
                          Frequency frequency,
                          BusinessDayConvention paymentConvention,
                          DateGeneration::Rule rule,
-                         const DayCounter& dayCounter,
-                         Real recoveryRate,
-                         const Handle<YieldTermStructure>& discountCurve,
-                         bool settlesAccrual,
-                         bool paysAtDefaultTime,
-                         const DayCounter& lastPeriodDayCounter,
-                         const bool rebatesAccrual,
-                         const bool useIsdaEngine)
-    : RelativeDateDefaultProbabilityHelper(quote),
-      tenor_(tenor), settlementDays_(settlementDays), calendar_(calendar),
-      frequency_(frequency), paymentConvention_(paymentConvention),
-      rule_(rule), dayCounter_(dayCounter), recoveryRate_(recoveryRate),
-      discountCurve_(discountCurve),
-      settlesAccrual_(settlesAccrual), paysAtDefaultTime_(paysAtDefaultTime),
-      lastPeriodDC_(lastPeriodDayCounter), rebatesAccrual_(rebatesAccrual),
-      useIsdaEngine_(useIsdaEngine) {
+                         const DayCounter &dayCounter, Real recoveryRate,
+                         const Handle<YieldTermStructure> &discountCurve,
+                         bool settlesAccrual, bool paysAtDefaultTime,
+                         const DayCounter &lastPeriodDayCounter,
+                         const bool rebatesAccrual, const bool useIsdaEngine)
+        : RelativeDateDefaultProbabilityHelper(quote), tenor_(tenor),
+          settlementDays_(settlementDays), calendar_(calendar),
+          frequency_(frequency), paymentConvention_(paymentConvention),
+          rule_(rule), dayCounter_(dayCounter), recoveryRate_(recoveryRate),
+          discountCurve_(discountCurve), settlesAccrual_(settlesAccrual),
+          paysAtDefaultTime_(paysAtDefaultTime),
+          lastPeriodDC_(lastPeriodDayCounter), rebatesAccrual_(rebatesAccrual),
+          useIsdaEngine_(useIsdaEngine), isdaNumericalFix_(IsdaCdsEngine::Taylor),
+          isdaAccrualBias_(IsdaCdsEngine::NoBias),
+          isdaForwardsInCouponPeriod_(IsdaCdsEngine::Piecewise) {
 
         initializeDates();
 
