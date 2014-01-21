@@ -104,7 +104,7 @@ namespace QuantLib {
             swapRateValue_ = swap->fairRate();
 
             static const Spread bp = 1.0e-4;
-            annuity_ = (swap->floatingLegBPS()/bp);
+            annuity_ = std::fabs(swap->fixedLegBPS()/bp);
 
             Size q = swapIndex->fixedLegTenor().frequency();
             const Schedule& schedule = swap->fixedSchedule();
