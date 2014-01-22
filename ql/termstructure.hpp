@@ -96,8 +96,6 @@ namespace QuantLib {
         //@{
         void update();
         //@}
-        //! same as update, but does not notify observers
-        void silentUpdate();
       protected:
         //! date-range check
         void checkRange(const Date& d,

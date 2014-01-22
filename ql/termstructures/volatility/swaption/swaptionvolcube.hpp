@@ -64,10 +64,6 @@ namespace QuantLib {
         //@{
         const Period& maxSwapTenor() const { return atmVol_->maxSwapTenor(); }
         //@}
-        //! \name Obverser interface
-        //@{
-        void update();
-        //@}
         //! \name Other inspectors
         //@{
         Rate atmStrike(const Date& optionDate,
