@@ -66,6 +66,7 @@ namespace QuantLib {
     SwaptionVolCube2::smileSectionImpl(Time optionTime,
                                        Time swapLength) const {
 
+        calculate();
         Date optionDate = Date(static_cast<BigInteger>(
             optionInterpolator_(optionTime)));
         Rounding rounder(0);
