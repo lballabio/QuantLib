@@ -93,6 +93,11 @@ namespace QuantLib {
                     registerWith(volSpreads_[j*nSwapTenors_+k][i]);
     }
 
+    void SwaptionVolatilityCube::update() {
+        atmVol_->silentUpdate(); // since the cube is relying on the atm ts
+        SwaptionVolatilityDiscrete::update();
+    }
+
     Rate SwaptionVolatilityCube::atmStrike(const Date& optionD,
                                            const Period& swapTenor) const {
 

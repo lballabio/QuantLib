@@ -60,6 +60,11 @@ namespace QuantLib {
         notifyObservers();
     }
 
+    void TermStructure::silentUpdate() {
+        if (moving_)
+            updated_ = false;
+    }
+
     void TermStructure::checkRange(const Date& d,
                                    bool extrapolate) const {
         QL_REQUIRE(d >= referenceDate(),
