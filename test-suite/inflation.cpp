@@ -607,6 +607,44 @@ void InflationTest::testZeroTermStructure() {
     hz.linkTo(boost::shared_ptr<ZeroInflationTermStructure>());
 }
 
+void InflationTest::testZeroIndexFutureFixing() {
+    BOOST_MESSAGE("Testing that zero inflation indices forecast future fixings...");
+
+    SavedSettings backup;
+    IndexHistoryCleaner cleaner;
+
+    EUHICP euhicp(false);
+
+    Date sample_date = Date(1,December,2013);
+    Real sample_fixing = 117.48;
+    euhicp.addFixing(sample_date, sample_fixing);
+
+    // fixing date in the past
+    Date evaluationDate = euhicp.fixingCalendar().adjust(sample_date + 2*Weeks);
+    Settings::instance().evaluationDate() = evaluationDate;
+    Real fixing = euhicp.fixing(sample_date);
+    if (std::fabs(fixing - sample_fixing) > 1e-12)
+        BOOST_ERROR("Failed to retrieve correct fixing: "
+                    << "\n    returned: " << fixing
+                    << "\n    expected: " << sample_fixing);
+
+    // fixing date in the future
+    evaluationDate = euhicp.fixingCalendar().adjust(sample_date - 2*Weeks);
+    Settings::instance().evaluationDate() = evaluationDate;
+    bool retrieved = false;
+    try {
+        fixing = euhicp.fixing(sample_date);
+        // the above should throw for lack of a forecast curve, so
+        // this shouldn't be executed and retrieved should stay false
+        retrieved = true;
+    } catch (Error&) {}
+
+    if (retrieved)
+        BOOST_ERROR("Retrieved future fixing: "
+                    << "\n    returned: " << fixing);
+}
+
+
 
 //===========================================================================================
 // year on year tests, index, termstructure, and swaps
@@ -958,6 +996,7 @@ test_suite* InflationTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(&InflationTest::testZeroIndex));
     suite->add(QUANTLIB_TEST_CASE(&InflationTest::testZeroTermStructure));
+    suite->add(QUANTLIB_TEST_CASE(&InflationTest::testZeroIndexFutureFixing));
 
     suite->add(QUANTLIB_TEST_CASE(&InflationTest::testYYIndex));
     suite->add(QUANTLIB_TEST_CASE(&InflationTest::testYYTermStructure));
