@@ -92,6 +92,7 @@ QL_TESTS = \
 	pathgenerator.hpp pathgenerator.cpp \
 	period.hpp period.cpp \
 	piecewiseyieldcurve.hpp piecewiseyieldcurve.cpp \
+	piecewisezerospreadedtermstructure.hpp piecewisezerospreadedtermstructure.cpp \
 	quantooption.hpp quantooption.cpp \
 	quotes.hpp quotes.cpp \
 	rangeaccrual.hpp rangeaccrual.cpp \

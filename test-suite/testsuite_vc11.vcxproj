@@ -724,6 +724,7 @@
     <ClCompile Include="pathgenerator.cpp" />
     <ClCompile Include="period.cpp" />
     <ClCompile Include="piecewiseyieldcurve.cpp" />
+    <ClCompile Include="piecewisezerospreadedtermstructure.cpp" />
     <ClCompile Include="quantooption.cpp" />
     <ClCompile Include="quotes.cpp" />
     <ClCompile Include="rangeaccrual.cpp" />
@@ -850,6 +851,7 @@
     <ClInclude Include="pathgenerator.hpp" />
     <ClInclude Include="period.hpp" />
     <ClInclude Include="piecewiseyieldcurve.hpp" />
+    <ClInclude Include="piecewisezerospreadedtermstructure.hpp" />
     <ClInclude Include="quantooption.hpp" />
     <ClInclude Include="quotes.hpp" />
     <ClInclude Include="rangeaccrual.hpp" />

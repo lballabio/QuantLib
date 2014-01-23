@@ -133,6 +133,7 @@
 #include "pathgenerator.hpp"
 #include "period.hpp"
 #include "piecewiseyieldcurve.hpp"
+#include "piecewisezerospreadedtermstructure.hpp"
 #include "quantooption.hpp"
 #include "quotes.hpp"
 #include "riskstats.hpp"
@@ -320,6 +321,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(PathGeneratorTest::suite());
     test->add(PeriodTest::suite());
     test->add(PiecewiseYieldCurveTest::suite());
+    test->add(PiecewiseZeroSpreadedTermStructureTest::suite());
     test->add(QuantoOptionTest::suite());
     test->add(QuoteTest::suite());
     test->add(RiskStatisticsTest::suite());

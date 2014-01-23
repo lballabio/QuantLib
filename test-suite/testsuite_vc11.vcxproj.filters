@@ -275,6 +275,9 @@
     <ClCompile Include="piecewiseyieldcurve.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="piecewisezerospreadedtermstructure.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="quantooption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -645,6 +648,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="piecewiseyieldcurve.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="piecewisezerospreadedtermstructure.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="quantooption.hpp">

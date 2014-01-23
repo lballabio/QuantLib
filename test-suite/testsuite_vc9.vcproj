@@ -1220,6 +1220,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\piecewisezerospreadedtermstructure.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\quantooption.cpp"
 				>
 			</File>
@@ -1714,6 +1718,10 @@
 			</File>
 			<File
 				RelativePath=".\piecewiseyieldcurve.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\piecewisezerospreadedtermstructure.hpp"
 				>
 			</File>
 			<File
