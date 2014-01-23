@@ -56,6 +56,10 @@ namespace QuantLib {
         Calendar calendar() const;
         Natural settlementDays() const;
         //@}
+        //! \name Observer interface
+        //@{
+        void update();
+        //@}
       protected:
         //! \name ForwardRateStructure implementation
         //@{
@@ -98,6 +102,18 @@ namespace QuantLib {
 
     inline Time ForwardSpreadedTermStructure::maxTime() const {
         return originalCurve_->maxTime();
+    }
+
+    inline void ForwardSpreadedTermStructure::update() {
+        if (!originalCurve_.empty()) {
+            YieldTermStructure::update();
+        } else {
+            /* The implementation inherited from YieldTermStructure
+               asks for our reference date, which we don't have since
+               the original curve is still not set. Therefore, we skip
+               over that and just call the base-class behavior. */
+            TermStructure::update();
+        }
     }
 
     inline Rate ForwardSpreadedTermStructure::forwardImpl(Time t) const {
