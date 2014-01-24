@@ -4,6 +4,7 @@
  Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2006 Giorgio Facchinetti
  Copyright (C) 2006 Mario Pucci
+ Copyright (C) 2014 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +28,7 @@
 #include <ql/indexes/swap/euriborswap.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
 #include <ql/cashflows/conundrumpricer.hpp>
+#include <ql/cashflows/lineartsrpricer.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp>
@@ -246,15 +248,21 @@ namespace {
             yieldCurveModels.push_back(GFunctionFactory::ExactYield);
             yieldCurveModels.push_back(GFunctionFactory::ParallelShifts);
             yieldCurveModels.push_back(GFunctionFactory::NonParallelShifts);
+            yieldCurveModels.push_back(GFunctionFactory::NonParallelShifts); // for linear tsr model
 
             Handle<Quote> zeroMeanRev(shared_ptr<Quote>(new SimpleQuote(0.0)));
 
             numericalPricers.clear();
             analyticPricers.clear();
-            for (Size j=0; j<yieldCurveModels.size(); ++j) {
-                numericalPricers.push_back(shared_ptr<CmsCouponPricer>(new
-                    NumericHaganPricer(atmVol, yieldCurveModels[j],
-                                       zeroMeanRev)));
+            for (Size j = 0; j < yieldCurveModels.size(); ++j) {
+                if (j < yieldCurveModels.size() - 1)
+                    numericalPricers.push_back(
+                        shared_ptr<CmsCouponPricer>(new NumericHaganPricer(
+                            atmVol, yieldCurveModels[j], zeroMeanRev)));
+                else
+                    numericalPricers.push_back(shared_ptr<CmsCouponPricer>(
+                        new LinearTsrPricer(atmVol, zeroMeanRev)));
+
                 analyticPricers.push_back(shared_ptr<CmsCouponPricer>(new
                     AnalyticHaganPricer(atmVol, yieldCurveModels[j],
                                         zeroMeanRev)));
@@ -309,6 +317,8 @@ void CmsTest::testFairRate()  {
 
         Spread difference =  std::fabs(rate1-rate0);
         Spread tol = 2.0e-4;
+        bool linearTsr = j==vars.yieldCurveModels.size()-1;
+
         if (difference > tol)
             BOOST_FAIL("\nCoupon payment date: " << paymentDate <<
                        "\nCoupon start date:   " << startDate <<
@@ -320,6 +330,7 @@ void CmsTest::testFairRate()  {
                        "\nCoupon DayCounter:   " << vars.iborIndex->dayCounter()<<
                        "\nYieldCurve Model:    " << vars.yieldCurveModels[j] <<
                        "\nNumerical Pricer:    " << io::rate(rate0) <<
+                                   (linearTsr ? " (Linear TSR Model)" : "") <<
                        "\nAnalytic Pricer:     " << io::rate(rate1) <<
                        "\ndifference:          " << io::rate(difference) <<
                        "\ntolerance:           " << io::rate(tol));
@@ -370,7 +381,8 @@ void CmsTest::testCmsSwap() {
             Real priceAn = cms[sl]->NPV();
 
             Real difference =  std::fabs(priceNum-priceAn);
-            Real tol = 1.0e-4;
+            Real tol = 2.0e-4;
+            bool linearTsr = j==vars.yieldCurveModels.size()-1;
             if (difference > tol)
                 BOOST_FAIL("\nLength in Years:  " << swapLengths[sl] <<
                            //"\nfloor:            " << io::rate(infiniteFloor) <<
@@ -381,6 +393,7 @@ void CmsTest::testCmsSwap() {
                            //"\ncap:              " << io::rate(infiniteCap) <<
                            "\nYieldCurve Model: " << vars.yieldCurveModels[j] <<
                            "\nNumerical Pricer: " << io::rate(priceNum) <<
+                                   (linearTsr ? " (Linear TSR Model)" : "") <<
                            "\nAnalytic Pricer:  " << io::rate(priceAn) <<
                            "\ndifference:       " << io::rate(difference) <<
                            "\ntolerance:        " << io::rate(tol));
@@ -456,6 +469,9 @@ void CmsTest::testParity() {
                     Real difference = std::fabs(capletPrice + floorletPrice -
                                                 swapletPrice);
                     Real tol = 2.0e-5;
+                    bool linearTsr = k==0 && j==vars.yieldCurveModels.size()-1;
+                    if(linearTsr)
+                        tol = 1.0e-7;
                     if (difference > tol)
                         BOOST_FAIL("\nCoupon payment date: " << paymentDate <<
                                    "\nCoupon start date:   " << startDate <<
@@ -466,10 +482,11 @@ void CmsTest::testParity() {
                                    "\nCoupon DayCounter:   " << vars.iborIndex->dayCounter() <<
                                    "\nYieldCurve Model:    " << vars.yieldCurveModels[j] <<
                                    (k==0 ? "\nNumerical Pricer" : "\nAnalytic Pricer") <<
+                                   (linearTsr ? " (Linear TSR Model)" : "") <<
                                    "\nSwaplet price:       " << io::rate(swapletPrice) <<
                                    "\nCaplet price:        " << io::rate(capletPrice) <<
                                    "\nFloorlet price:      " << io::rate(floorletPrice) <<
-                                   "\ndifference:          " << io::rate(difference) <<
+                                   "\ndifference:          " << difference <<
                                    "\ntolerance:           " << io::rate(tol));
                 }
             }
