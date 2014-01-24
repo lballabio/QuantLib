@@ -3654,6 +3654,9 @@
     <ClInclude Include="ql\math\modifiedbessel.hpp">
       <Filter>math</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\exoticoptions\analyticpdfhestonengine.hpp">
+      <Filter>experimental\exoticoptions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -5858,6 +5861,9 @@
     </ClCompile>
     <ClCompile Include="ql\math\modifiedbessel.cpp">
       <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\exoticoptions\analyticpdfhestonengine.cpp">
+      <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
