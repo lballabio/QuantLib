@@ -94,6 +94,7 @@ namespace QuantLib {
             .withEffectiveDate(swapIndex_->valueDate(fixingDate_))
             .withFixedLegCalendar(swapIndex_->fixingCalendar())
             .withFixedLegDayCount(swapIndex_->dayCounter())
+            .withFixedLegTenor(swapIndex_->fixedLegTenor())
             .withFixedLegConvention(bdc)
             .withFixedLegTerminationDateConvention(bdc)
             .withType(underlyingType_);
