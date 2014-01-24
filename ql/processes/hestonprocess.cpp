@@ -31,9 +31,6 @@
 #include <boost/lambda/lambda.hpp>
 #include <complex>
 
-#include <iostream>
-
-
 namespace QuantLib {
 
     HestonProcess::HestonProcess(
@@ -453,9 +450,6 @@ namespace QuantLib {
           case BroadieKayaExactSchemeLaguerre:
           case BroadieKayaExactSchemeTrapezoidal:
           {
-            static Size ii=0;
-            static Real sum = 0.0;
-
             const Real nu_0 = x0[1];
             const Real nu_t = varianceDistribution(nu_0, dw[1], dt);
 

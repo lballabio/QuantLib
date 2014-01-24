@@ -9,6 +9,7 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
 	array.hpp \
+	autocovariance.hpp \
 	bernsteinpolynomial.hpp \
 	beta.hpp \
 	bspline.hpp \
@@ -17,6 +18,7 @@ this_include_HEADERS = \
 	domain.hpp \
 	errorfunction.hpp \
 	factorial.hpp \
+	fastfouriertransform.hpp \
 	functional.hpp \
 	generallinearleastsquares.hpp \
 	kernelfunctions.hpp \
