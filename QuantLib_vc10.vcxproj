@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (static runtime)|Win32">
@@ -522,6 +522,7 @@
     <ClInclude Include="ql\math\matrixutilities\bicgstab.hpp" />
     <ClInclude Include="ql\math\matrixutilities\sparseilupreconditioner.hpp" />
     <ClInclude Include="ql\math\matrixutilities\sparsematrix.hpp" />
+    <ClInclude Include="ql\math\modifiedbessel.hpp" />
     <ClInclude Include="ql\math\optimization\differentialevolution.hpp" />
     <ClInclude Include="ql\math\randomnumbers\sobolbrownianbridgersg.hpp" />
     <ClInclude Include="ql\math\richardsonextrapolation.hpp" />
@@ -1651,6 +1652,7 @@
     <ClCompile Include="ql\instruments\vanillaswingoption.cpp" />
     <ClCompile Include="ql\math\matrixutilities\bicgstab.cpp" />
     <ClCompile Include="ql\math\matrixutilities\sparseilupreconditioner.cpp" />
+    <ClCompile Include="ql\math\modifiedbessel.cpp" />
     <ClCompile Include="ql\math\optimization\differentialevolution.cpp" />
     <ClCompile Include="ql\math\randomnumbers\sobolbrownianbridgersg.cpp" />
     <ClCompile Include="ql\math\richardsonextrapolation.cpp" />

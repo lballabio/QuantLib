@@ -72,11 +72,46 @@ void FactorialTest::testGammaFunction() {
     }
 }
 
+void FactorialTest::testGammaValues() {
+
+    BOOST_TEST_MESSAGE("Testing Gamma values...");
+
+    // reference results are calculated with R
+    Real tasks[][3] = {
+    		{ 0.0001, 9999.422883231624, 1e3},
+    		{ 1.2, 0.9181687423997607, 1e3},
+    		{ 7.3, 1271.4236336639089586, 1e3},
+    		{-1.1, 9.7148063829028946, 1e3},
+    		{-4.001,-41.6040228304425312, 1e3},
+    		{-4.999, -8.347576090315059, 1e3},
+    		{-19.000001, 8.220610833201313e-12, 1e8},
+    		{-19.5, 5.811045977502255e-18, 1e3},
+    		{-21.000001, 1.957288098276488e-14, 1e8},
+    		{-21.5, 1.318444918321553e-20, 1e6}
+    };
+
+    for (Size i=0; i < LENGTH(tasks); ++i) {
+    	const Real x = tasks[i][0];
+    	const Real expected = tasks[i][1];
+    	const Real calculated = GammaFunction().value(x);
+    	const Real tol = tasks[i][2] * QL_EPSILON*std::fabs(expected);
+
+    	if (std::fabs(calculated - expected) > tol) {
+            BOOST_ERROR("GammaFunction(" << x << ")\n"
+                        << std::setprecision(16) << QL_SCIENTIFIC
+                        << "    calculated: " << calculated << "\n"
+                        << "    expected:   " << expected << "\n"
+                        << "    rel. error: "
+                        << std::fabs(calculated-expected)/expected);
+    	}
+    }
+}
 
 test_suite* FactorialTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Factorial tests");
     suite->add(QUANTLIB_TEST_CASE(&FactorialTest::testFactorial));
     suite->add(QUANTLIB_TEST_CASE(&FactorialTest::testGammaFunction));
+    suite->add(QUANTLIB_TEST_CASE(&FactorialTest::testGammaValues));
     return suite;
 }
 

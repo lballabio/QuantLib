@@ -29,6 +29,7 @@ class FactorialTest {
   public:
     static void testFactorial();
     static void testGammaFunction();
+    static void testGammaValues();
     static boost::unit_test_framework::test_suite* suite();
 };
 

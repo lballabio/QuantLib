@@ -9,7 +9,6 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
 	array.hpp \
-	autocovariance.hpp \
 	bernsteinpolynomial.hpp \
 	beta.hpp \
 	bspline.hpp \
@@ -18,7 +17,6 @@ this_include_HEADERS = \
 	domain.hpp \
 	errorfunction.hpp \
 	factorial.hpp \
-	fastfouriertransform.hpp \
 	functional.hpp \
 	generallinearleastsquares.hpp \
 	kernelfunctions.hpp \
@@ -27,6 +25,7 @@ this_include_HEADERS = \
 	lexicographicalview.hpp \
 	linearleastsquaresregression.hpp \
 	matrix.hpp \
+	modifiedbessel.hpp \
 	primenumbers.hpp \
 	quadratic.hpp \
 	rounding.hpp \
@@ -44,6 +43,7 @@ libMath_la_SOURCES = \
 	factorial.cpp \
 	incompletegamma.cpp \
 	matrix.cpp \
+	modifiedbessel.cpp \
 	primenumbers.cpp \
 	quadratic.cpp \
 	richardsonextrapolation.cpp \

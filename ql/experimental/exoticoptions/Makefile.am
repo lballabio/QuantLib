@@ -5,6 +5,7 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     analyticamericanmargrabeengine.hpp \
+    analyticpdfhestonengine.hpp \
     analyticeuropeanmargrabeengine.hpp \
     analyticsimplechooserengine.hpp \
     analytictwoassetbarrierengine.hpp \
@@ -21,10 +22,11 @@ this_include_HEADERS = \
     simplechooseroption.hpp \
     spreadoption.hpp \
     twoassetbarrieroption.hpp \
-    writerextensibleoption.hpp
-
+    writerextensibleoption.hpp 
+    
 libExoticOptions_la_SOURCES = \
     analyticamericanmargrabeengine.cpp \
+    analyticpdfhestonengine.cpp \
     analyticeuropeanmargrabeengine.cpp \
     analyticsimplechooserengine.cpp \
     analytictwoassetbarrierengine.cpp \

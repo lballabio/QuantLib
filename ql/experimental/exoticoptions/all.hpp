@@ -2,6 +2,7 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/experimental/exoticoptions/analyticamericanmargrabeengine.hpp>
+#include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
 #include <ql/experimental/exoticoptions/analyticeuropeanmargrabeengine.hpp>
 #include <ql/experimental/exoticoptions/analyticsimplechooserengine.hpp>
 #include <ql/experimental/exoticoptions/analytictwoassetbarrierengine.hpp>
