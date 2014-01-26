@@ -7,7 +7,6 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/cmscoupon.hpp>
-#include <ql/cashflows/lineartsrpricer.hpp>
 #include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/cashflows/coupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
@@ -24,6 +23,7 @@
 #include <ql/cashflows/indexedcashflow.hpp>
 #include <ql/cashflows/inflationcoupon.hpp>
 #include <ql/cashflows/inflationcouponpricer.hpp>
+#include <ql/cashflows/lineartsrpricer.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/cashflows/rangeaccrual.hpp>
 #include <ql/cashflows/replication.hpp>
