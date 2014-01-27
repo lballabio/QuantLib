@@ -57,6 +57,8 @@ namespace QuantLib {
             || ((d == 15 || d == 16) && m == January && y == 2010)
             || ((d == 23 || d == 24) && m == January && y == 2012)
             || ((d == 11 || d == 12) && m == February && y == 2013)
+            || (d == 31 && m == January && y == 2014)
+            || (d == 1 && m == February && y == 2014)
 
             // Hari Raya Haji
             || ((d == 1 || d == 2) && m == February && y == 2004)
@@ -69,6 +71,7 @@ namespace QuantLib {
             || (d == 17 && m == November && y == 2010)
             || (d == 26 && m == October && y == 2012)
             || (d == 15 && m == October && y == 2013)
+            || (d == 6 && m == October && y == 2014)
 
             // Vesak Poya Day
             || (d == 2 && m == June && y == 2004)
@@ -80,6 +83,7 @@ namespace QuantLib {
             || (d == 28 && m == May && y == 2010)
             || (d == 5 && m == May && y == 2012)
             || (d == 24 && m == May && y == 2013)
+            || (d == 13 && m == May && y == 2014)
 
             // Deepavali
             || (d == 11 && m == November && y == 2004)
@@ -89,6 +93,7 @@ namespace QuantLib {
             || (d == 5 && m == November && y == 2010)
             || (d == 13 && m == November && y == 2012)
             || (d == 2 && m == November && y == 2013)
+            || (d == 23 && m == October && y == 2014)
 
             // Diwali
             || (d == 1 && m == November && y == 2005)
@@ -103,6 +108,7 @@ namespace QuantLib {
             || (d == 10 && m == September && y == 2010)
             || (d == 20 && m == August && y == 2012)
             || (d == 8 && m == August && y == 2013)
+            || (d == 28 && m == July && y == 2014)
             )
             return false;
         return true;

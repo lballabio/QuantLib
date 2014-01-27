@@ -43,6 +43,8 @@ namespace QuantLib {
             || (d == 1 && m == January)
             // 23 nisan / National Holiday
             || (d == 23 && m == April)
+            // 1 may/ National Holiday
+            || (d == 1 && m == May)
             // 19 may/ National Holiday
             || (d == 19 && m == May)
             // 30 aug/ National Holiday
@@ -117,6 +119,14 @@ namespace QuantLib {
                 || (m == October && d >= 14 && d <= 18)
             // additional holiday for Republic Day
                 || (m == October && d == 28))
+                return false;
+        } else if (y == 2014) {
+            // Ramadan
+            if ((m == July && d >= 27 && d <= 30)
+            // Kurban
+                || (m == October && d >= 4 && d <= 7)
+            // additional holiday for Republic Day
+                || (m == October && d == 29))
                 return false;
         }
         return true;

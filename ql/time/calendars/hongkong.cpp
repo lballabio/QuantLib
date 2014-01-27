@@ -222,6 +222,20 @@ namespace QuantLib {
             return false;
         }
 
+        if (y == 2014) {
+            if (// Lunar New Year
+                ((d == 31 && m == January) || (d <= 3 && m == February))
+                // Buddha's birthday
+                || (d == 6 && m == May)
+                // Tuen Ng festival
+                || (d == 2 && m == June)
+                // Mid-autumn festival
+                || (d == 9 && m == September)
+                // Chung Yeung festival
+                || (d == 2 && m == October))
+            return false;
+        }
+
         return true;
     }
 
