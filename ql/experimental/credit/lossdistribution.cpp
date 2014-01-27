@@ -304,8 +304,8 @@ namespace QuantLib {
     //--------------------------------------------------------------------------
         Distribution dist (nBuckets_, 0.0, maximum_);
         // KnuthUniformRng rng(seed_);
-        // LecuyerUniformRng rng;
-        MersenneTwisterUniformRng rng;
+        // LecuyerUniformRng rng(seed_);
+        MersenneTwisterUniformRng rng(seed_);
         for (Size i = 0; i < simulations_; i++) {
             double e = 0;
             for (Size j = 0; j < nominals.size(); j++) {
