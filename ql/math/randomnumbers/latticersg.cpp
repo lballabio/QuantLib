@@ -33,8 +33,7 @@ namespace QuantLib
         N_(N),
         i_(0),
         z_(z),
-        sequence_(std::vector<Real> (dimensionality), 1.0),
-        Ninv_(1.0/N)
+        sequence_(std::vector<Real> (dimensionality), 1.0)
     {
     }
     /*! skip to the n-th sample in the low-discrepancy sequence */
@@ -47,7 +46,7 @@ namespace QuantLib
     {
         for (Size j=0; j < dimensionality_; ++j)
         {
-            Real theta = i_*z_[j]*Ninv_;
+            Real theta = i_*z_[j]/N_;
             sequence_.value[j]= std::fmod(theta,1.0);
         }
         ++i_;
