@@ -49,7 +49,6 @@ namespace QuantLib {
         log_H_S_ = std::log(strike_/spot_);
 
         Real n_d1, n_d2;
-        Real cum_d1_, cum_d2_;
         if (variance_>=QL_EPSILON) {
             if (discount_==0.0 && dividendDiscount_==0.0) {
                 mu_     = - 0.5;

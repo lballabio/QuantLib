@@ -120,7 +120,7 @@ namespace QuantLib {
       orderedIndices_(factors, std::vector<Size>(steps)),
       bridgedVariates_(factors, std::vector<Real>(steps)) {
 
-        switch (ordering) {
+        switch (ordering_) {
           case Factors:
             fillByFactor(orderedIndices_, factors_, steps_);
             break;
