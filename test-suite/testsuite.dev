@@ -198,7 +198,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit16]
-FileName=factorial.cpp
+FileName=functions.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1
@@ -568,7 +568,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit54]
-FileName=factorial.hpp
+FileName=functions.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1

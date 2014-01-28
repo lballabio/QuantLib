@@ -56,6 +56,7 @@ namespace QuantLib {
     */
     class GammaFunction : public std::unary_function<Real,Real> {
       public:
+        Real value(Real x) const;
         Real logValue(Real x) const;
       private:
         static const Real c1_, c2_, c3_, c4_, c5_, c6_;

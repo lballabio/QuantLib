@@ -2547,6 +2547,14 @@
 				>
 			</File>
 			<File
+				RelativePath="ql\math\modifiedbessel.cpp"
+				>
+			</File>
+			<File
+				RelativePath="ql\math\modifiedbessel.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\math\primenumbers.cpp"
 				>
 			</File>
@@ -7275,6 +7283,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\exoticoptions\analyticeuropeanmargrabeengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticpdfhestonengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticpdfhestonengine.hpp"
 					>
 				</File>
 				<File

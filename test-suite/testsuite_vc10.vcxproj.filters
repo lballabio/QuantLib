@@ -131,7 +131,7 @@
     <ClCompile Include="extendedtrees.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="factorial.cpp">
+    <ClCompile Include="functions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="fastfouriertransform.cpp">
@@ -506,7 +506,7 @@
     <ClInclude Include="extendedtrees.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="factorial.hpp">
+    <ClInclude Include="functions.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="fastfouriertransform.hpp">

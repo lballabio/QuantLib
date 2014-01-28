@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2007, 2009 Klaus Spanderen
+ Copyright (C) 2005, 2007, 2009, 2014 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,11 +17,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/math/modifiedbessel.hpp>
+#include <ql/math/solvers1d/brent.hpp>
+#include <ql/math/integrals/gaussianquadratures.hpp>
+#include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/distributions/chisquaredistribution.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/processes/eulerdiscretization.hpp>
+
+#include <boost/lambda/bind.hpp>
+#include <boost/lambda/lambda.hpp>
+#include <complex>
 
 namespace QuantLib {
 
@@ -45,6 +53,12 @@ namespace QuantLib {
 
     Size HestonProcess::size() const {
         return 2;
+    }
+
+    Size HestonProcess::factors() const {
+        return (   discretization_ == BroadieKayaExactSchemeLobatto
+                || discretization_ == BroadieKayaExactSchemeTrapezoidal
+                || discretization_ == BroadieKayaExactSchemeLaguerre) ? 3 : 2;
     }
 
     Disposable<Array> HestonProcess::initialValues() const {
@@ -98,11 +112,223 @@ namespace QuantLib {
         return tmp;
     }
 
+    namespace {
+        // This is the continuous version of a characteristic function
+        // for the exact sampling of the Heston process, s. page 8, formula 13,
+        // M. Broadie, O. Kaya, Exact Simulation of Stochastic Volatility and
+        // other Affine Jump Diffusion Processes
+        // http://finmath.stanford.edu/seminars/documents/Broadie.pdf
+        //
+        // This version does not need a branch correction procedure.
+        // For details please see:
+        // Roger Lord, "Efficient Pricing Algorithms for exotic Derivatives",
+        // http://repub.eur.nl/pub/13917/LordR-Thesis.pdf
+        std::complex<Real> Phi(const HestonProcess& process,
+                               const std::complex<Real>& a,
+                               Real nu_0, Real nu_t, Time dt) {
+            const Real theta = process.theta();
+            const Real kappa = process.kappa();
+            const Real sigma = process.sigma();
+
+            const Volatility sigma2 = sigma*sigma;
+            const std::complex<Real> ga = std::sqrt(
+                    kappa*kappa - 2*sigma2*a*std::complex<Real>(0.0, 1.0));
+            const Real d = 4*theta*kappa/sigma2;
+
+            const Real nu = 0.5*d-1;
+            const std::complex<Real> z
+                = ga*std::exp(-0.5*ga*dt)/(1.0-std::exp(-ga*dt));
+            const std::complex<Real> log_z
+                = -0.5*ga*dt + std::log(ga/(1.0-std::exp(-ga*dt)));
+
+            const std::complex<Real> alpha= 4.0*ga*std::exp(-0.5*ga*dt)
+                                                            /(sigma2*(1.0-std::exp(-ga*dt)));
+            const std::complex<Real> beta= 4.0*kappa*std::exp(-0.5*kappa*dt)
+                                                         /(sigma2*(1.0-std::exp(-kappa*dt)));
+
+            return ga*std::exp(-0.5*(ga-kappa)*dt)*(1-std::exp(-kappa*dt))
+                    / (kappa*(1.0-std::exp(-ga*dt)))
+                   *std::exp((nu_0+nu_t)/sigma2 * (
+                      kappa*(1.0+std::exp(-kappa*dt))/(1.0-std::exp(-kappa*dt))
+                        - ga*(1.0+std::exp(-ga*dt))/(1.0-std::exp(-ga*dt))))
+                   *std::exp(nu*log_z)/std::pow(z, nu)
+                   *((nu_t > 1e-8)
+                           ?   modifiedBesselFunction_i(
+                                   nu, std::sqrt(nu_0*nu_t)*alpha)
+                             / modifiedBesselFunction_i(
+                                   nu, std::sqrt(nu_0*nu_t)*beta)
+                           : std::pow(alpha/beta, nu)
+                     );
+        }
+
+        Real ch(const HestonProcess& process,
+                Real x, Real u, Real nu_0, Real nu_t, Time dt) {
+            return M_2_PI*std::sin(u*x)/u
+                    * Phi(process, u, nu_0, nu_t, dt).real();
+        }
+
+        Real pade(Real x, const Real* nominator, const Real* denominator, Size m) {
+            Real n=0.0, d=0.0;
+            for (Integer i=m-1; i >= 0; --i) {
+                n = (n+nominator[i])*x;
+                d = (d+denominator[i])*x;
+            }
+            return (1+n)/(1+d);
+        }
+
+        // For the definition of the Pade approximation please see e.g.
+        // http://wikipedia.org/wiki/Sine_integral#Sine_integral
+        Real Si(Real x) {
+            if (x <=4.0) {
+                const Real n[] =
+                    { -4.54393409816329991e-2,1.15457225751016682e-3,
+                      -1.41018536821330254e-5,9.43280809438713025e-8,
+                      -3.53201978997168357e-10,7.08240282274875911e-13,
+                      -6.05338212010422477e-16 };
+                const Real d[] =
+                    {  1.01162145739225565e-2,4.99175116169755106e-5,
+                       1.55654986308745614e-7,3.28067571055789734e-10,
+                       4.5049097575386581e-13,3.21107051193712168e-16,
+                       0.0 };
+
+                return x*pade(x*x, n, d, sizeof(n)/sizeof(Real));
+            }
+            else {
+                const Real y = 1/(x*x);
+                const Real fn[] =
+                    { 7.44437068161936700618e2,1.96396372895146869801e5,
+                      2.37750310125431834034e7,1.43073403821274636888e9,
+                      4.33736238870432522765e10,6.40533830574022022911e11,
+                      4.20968180571076940208e12,1.00795182980368574617e13,
+                      4.94816688199951963482e12,-4.94701168645415959931e11 };
+                const Real fd[] =
+                    { 7.46437068161927678031e2,1.97865247031583951450e5,
+                      2.41535670165126845144e7,1.47478952192985464958e9,
+                      4.58595115847765779830e10,7.08501308149515401563e11,
+                      5.06084464593475076774e12,1.43468549171581016479e13,
+                      1.11535493509914254097e13, 0.0 };
+                const Real f = pade(y, fn, fd, 10)/x;
+
+                const Real gn[] =
+                    { 8.1359520115168615e2,2.35239181626478200e5,
+                      3.12557570795778731e7,2.06297595146763354e9,
+                      6.83052205423625007e10,1.09049528450362786e12,
+                      7.57664583257834349e12,1.81004487464664575e13,
+                      6.43291613143049485e12,-1.36517137670871689e12 };
+                const Real gd[] =
+                    { 8.19595201151451564e2,2.40036752835578777e5,
+                      3.26026661647090822e7,2.23355543278099360e9,
+                      7.87465017341829930e10,1.39866710696414565e12,
+                      1.17164723371736605e13,4.01839087307656620e13,
+                      3.99653257887490811e13, 0.0};
+                const Real g = y*pade(y, gn, gd, 10);
+
+                return M_PI_2 - f*std::cos(x)-g*std::sin(x);
+            }
+        }
+
+        Real probIntV(const HestonProcess& process,
+                      Real x, Real nu_0, Real nu_t, Time dt,
+                      HestonProcess::Discretization m) {
+
+            // use moment generating function to get the
+            // first,second, third and fourth moment of the distribution
+            const Real d = 1e-2;
+            const Real p2 = Phi(process, std::complex<Real>(0, -2*d),
+                                                nu_0, nu_t, dt).real();
+            const Real p1 = Phi(process, std::complex<Real>(0, -d),
+                                                nu_0, nu_t, dt).real();
+            const Real p0 = Phi(process, std::complex<Real>(0, 0),
+                                                nu_0, nu_t, dt).real();
+            const Real pm1= Phi(process, std::complex<Real>(0, d),
+                                                 nu_0, nu_t, dt).real();
+            const Real pm2= Phi(process, std::complex<Real>(0, 2*d),
+                                                 nu_0, nu_t, dt).real();
+
+            const Real avg    = (pm2-8*pm1+8*p1-p2)/(12*d);
+            const Real m2     = (-pm2+16*pm1-30*p0+16*p1-p2)/(12*d*d);
+            const Real var    = m2 - avg*avg;
+            const Real stdDev = std::sqrt(var);
+
+            const Real m3 = (-0.5*pm2 + pm1 - p1 + 0.5*p2)/(d*d*d);
+            const Real skew
+                = (m3 - 3*var*avg - avg*avg*avg) / (var*stdDev);
+
+            const Real m4 = (pm2 - 4*pm1 + 6*p0 - 4*p1 + p2)/(d*d*d*d);
+            const Real kurt
+                 =  (m4 - 4*m3*avg + 6*m2*avg*avg - 3*avg*avg*avg*avg)
+                   /(var*var);
+
+            // Cornish-Fisher relation to come up with an improved
+            // estimate of 1-F(u_\eps) < \eps
+            const Real eps = 1e-4;
+            const Real q = InverseCumulativeNormal()(1-eps);
+            const Real w =  q + (q*q-1)/6*skew + (q*q*q-3*q)/24*(kurt-3)
+                          - (2*q*q*q-5*q)/36*skew*skew;
+
+            const Real u_eps = std::min(100.0, std::max(0.1, avg + w*stdDev));
+
+            switch (m) {
+              case HestonProcess::BroadieKayaExactSchemeLaguerre:
+              {
+                // get the upper bound for the integration
+                Real upper = u_eps/2.0;
+                while (std::abs(Phi(process,upper,nu_0,nu_t,dt))
+                        > eps) upper*=2.0;
+
+                return (x < upper)
+                    ? std::max(0.0, std::min(1.0,
+                        GaussLaguerreIntegration(128)(
+                            boost::lambda::bind(&ch, process, x,
+                                boost::lambda::_1, nu_0, nu_t, dt))))
+                    : 1.0;
+              }
+              case HestonProcess::BroadieKayaExactSchemeLobatto:
+              {
+                // get the upper bound for the integration
+                Real upper = u_eps/2.0;
+                while (std::abs(Phi(process,upper,nu_0,nu_t,dt))
+                        >  eps) upper*=2.0;
+
+                return (x < upper)
+                    ? std::max(0.0, std::min(1.0,
+                        GaussLobattoIntegral(Null<Size>(), eps)(
+                            boost::lambda::bind(&ch, process, x,
+                                boost::lambda::_1, nu_0, nu_t, dt),
+                            1e-6, upper)))
+                    : 1.0;
+              }
+              case HestonProcess::BroadieKayaExactSchemeTrapezoidal:
+              {
+                const Real h = 0.05;
+
+                Real si = Si(0.5*h*x);
+                Real s = M_2_PI*si;
+                std::complex<Real> f;
+                Size j = 0;
+                do {
+                    ++j;
+                    const Real u = h*j;
+                    const Real si_n = Si(x*(u+0.5*h));
+
+                    f = Phi(process, u, nu_0, nu_t, dt);
+                    s+= M_2_PI*f.real()*(si_n-si);
+                    si = si_n;
+                }
+                while (M_2_PI*std::abs(f)/j > eps);
+
+                return s;
+              }
+              default:
+                QL_FAIL("unknown integration method");
+            }
+        }
+    }
+
     Disposable<Array> HestonProcess::evolve(Time t0, const Array& x0,
                                             Time dt, const Array& dw) const {
         Array retVal(2);
-        Real ncp, df, p, dy;
-        Real vol, vol2, mu, nu;
+        Real vol, vol2, mu, nu, dy;
 
         const Real sdt = std::sqrt(dt);
         const Real sqrhov = std::sqrt(1.0 - rho_*rho_);
@@ -151,26 +377,14 @@ namespace QuantLib {
             // use Alan Lewis trick to decorrelate the equity and the variance
             // process by using y(t)=x(t)-\frac{rho}{sigma}\nu(t)
             // and Ito's Lemma. Then use exact sampling for the variance
-            // process. For further details please read the wilmott thread
+            // process. For further details please read the Wilmott thread
             // "QuantLib code is very high quality"
             vol = (x0[1] > 0.0) ? std::sqrt(x0[1]) : 0.0;
             mu =   riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
                  - dividendYield_->forwardRate(t0, t0+dt, Continuous)
                    - 0.5 * vol*vol;
 
-            df  = 4*theta_*kappa_/(sigma_*sigma_);
-            ncp = 4*kappa_*std::exp(-kappa_*dt)
-                /(sigma_*sigma_*(1-std::exp(-kappa_*dt)))*x0[1];
-
-            p = CumulativeNormalDistribution()(dw[1]);
-            if (p<0.0)
-                p = 0.0;
-            else if (p >= 1.0)
-                p = 1.0-QL_EPSILON;
-
-            retVal[1] = sigma_*sigma_*(1-std::exp(-kappa_*dt))/(4*kappa_)
-                *InverseNonCentralChiSquareDistribution(df, ncp, 100)(p);
-
+            retVal[1] = varianceDistribution(x0[1], dw[1], dt);
             dy = (mu - rho_/sigma_*kappa_
                           *(theta_-vol*vol)) * dt + vol*sqrhov*dw[0]*sdt;
 
@@ -232,6 +446,35 @@ namespace QuantLib {
                                        +std::sqrt(k3*x0[1]+k4*retVal[1])*dw[0]);
           }
           break;
+          case BroadieKayaExactSchemeLobatto:
+          case BroadieKayaExactSchemeLaguerre:
+          case BroadieKayaExactSchemeTrapezoidal:
+          {
+            const Real nu_0 = x0[1];
+            const Real nu_t = varianceDistribution(nu_0, dw[1], dt);
+
+            const Real x = std::min(1.0-QL_EPSILON,
+                std::max(0.0, CumulativeNormalDistribution()(dw[2])));
+
+            const Real vds = Brent().solve(
+                boost::lambda::bind(&probIntV, *this, boost::lambda::_1,
+                                    nu_0, nu_t, dt, discretization_)-x,
+                1e-5, theta_*dt, 0.1*theta_*dt);
+
+            const Real vdw
+                = (nu_t - nu_0 - kappa_*theta_*dt + kappa_*vds)/sigma_;
+
+            mu = ( riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
+                  -dividendYield_->forwardRate(t0, t0+dt, Continuous))*dt
+                - 0.5*vds + rho_*vdw;
+
+            const Volatility sig = std::sqrt((1-rho_*rho_)*vds);
+            const Real s = x0[0]*exp(mu + sig*dw[0]);
+
+            retVal[0] = s;
+            retVal[1] = nu_t;
+          }
+          break;
           default:
             QL_FAIL("unknown discretization schema");
         }
@@ -256,4 +499,15 @@ namespace QuantLib {
                                            riskFreeRate_->referenceDate(), d);
     }
 
+    Real HestonProcess::varianceDistribution(Real v, Real dw, Time dt) const {
+        const Real df  = 4*theta_*kappa_/(sigma_*sigma_);
+        const Real ncp = 4*kappa_*std::exp(-kappa_*dt)
+            /(sigma_*sigma_*(1-std::exp(-kappa_*dt)))*v;
+
+        const Real p = std::min(1.0-QL_EPSILON,
+            std::max(0.0, CumulativeNormalDistribution()(dw)));
+
+        return sigma_*sigma_*(1-std::exp(-kappa_*dt))/(4*kappa_)
+            *InverseNonCentralChiSquareDistribution(df, ncp, 100)(p);
+    }
 }

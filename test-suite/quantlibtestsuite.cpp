@@ -82,11 +82,11 @@
 #include "everestoption.hpp"
 #include "exchangerate.hpp"
 #include "extendedtrees.hpp"
-#include "factorial.hpp"
 #include "fastfouriertransform.hpp"
 #include "fdheston.hpp"
 #include "fdmlinearop.hpp"
 #include "forwardoption.hpp"
+#include "functions.hpp"
 #include "gaussianquadratures.hpp"
 #include "garch.hpp"
 #include "gjrgarchmodel.hpp"
@@ -282,11 +282,11 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(DividendOptionTest::suite());
     test->add(EuropeanOptionTest::suite());
     test->add(ExchangeRateTest::suite());
-    test->add(FactorialTest::suite());
     test->add(FastFourierTransformTest::suite());
     test->add(FdHestonTest::suite());
     test->add(FdmLinearOpTest::suite());
     test->add(ForwardOptionTest::suite());
+    test->add(FunctionsTest::suite());
     test->add(GARCHTest::suite());
     test->add(GaussianQuadraturesTest::suite());
     test->add(GJRGARCHModelTest::suite());

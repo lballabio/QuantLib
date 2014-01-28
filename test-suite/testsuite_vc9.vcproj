@@ -1016,7 +1016,7 @@
 				>
 			</File>
 			<File
-				RelativePath="factorial.cpp"
+				RelativePath="functions.cpp"
 				>
 			</File>
 			<File
@@ -1517,7 +1517,7 @@
 				>
 			</File>
 			<File
-				RelativePath="factorial.hpp"
+				RelativePath="functions.hpp"
 				>
 			</File>
 			<File
