@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2014 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,19 +18,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_factorial_hpp
-#define quantlib_test_factorial_hpp
+#ifndef quantlib_test_functions_hpp
+#define quantlib_test_functions_hpp
 
 #include <boost/test/unit_test.hpp>
 
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
 
-class FactorialTest {
+class FunctionsTest {
   public:
     static void testFactorial();
     static void testGammaFunction();
     static void testGammaValues();
+    static void testModifiedBesselFunctions();
     static boost::unit_test_framework::test_suite* suite();
 };
 

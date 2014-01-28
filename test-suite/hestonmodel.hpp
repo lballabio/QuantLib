@@ -40,7 +40,6 @@ class HestonModelTest {
     static void testAnalyticPiecewiseTimeDependent();
     static void testDAXCalibrationOfTimeDependentModel();
     static void testAlanLewisReferencePrices();
-    static void testModifiedBesselFunctions();
     static void testAnalyticPDFHestonEngine();
     static boost::unit_test_framework::test_suite* suite();
     static boost::unit_test_framework::test_suite* experimental();

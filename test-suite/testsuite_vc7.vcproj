@@ -564,7 +564,7 @@
 				RelativePath=".\extendedtrees.cpp">
 			</File>
 			<File
-				RelativePath="factorial.cpp">
+				RelativePath="functions.cpp">
 			</File>
 			<File
 				RelativePath=".\fastfouriertransform.cpp">
@@ -931,7 +931,7 @@
 				RelativePath=".\extendedtrees.hpp">
 			</File>
 			<File
-				RelativePath="factorial.hpp">
+				RelativePath="functions.hpp">
 			</File>
 			<File
 				RelativePath=".\fastfouriertransform.hpp">
