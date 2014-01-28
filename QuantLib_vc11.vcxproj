@@ -798,6 +798,7 @@
     <ClInclude Include="ql\math\lexicographicalview.hpp" />
     <ClInclude Include="ql\math\linearleastsquaresregression.hpp" />
     <ClInclude Include="ql\math\matrix.hpp" />
+    <ClInclude Include="ql\math\modifiedbessel.hpp" />
     <ClInclude Include="ql\math\primenumbers.hpp" />
     <ClInclude Include="ql\math\quadratic.hpp" />
     <ClInclude Include="ql\math\rounding.hpp" />
@@ -1449,6 +1450,7 @@
     <ClInclude Include="ql\experimental\exoticoptions\all.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\analyticamericanmargrabeengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\analyticeuropeanmargrabeengine.hpp" />
+    <ClInclude Include="ql\experimental\exoticoptions\analyticpdfhestonengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\analyticsimplechooserengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\analytictwoassetbarrierengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\analyticwriterextensibleoptionengine.hpp" />
@@ -1825,6 +1827,7 @@
     <ClCompile Include="ql\math\factorial.cpp" />
     <ClCompile Include="ql\math\incompletegamma.cpp" />
     <ClCompile Include="ql\math\matrix.cpp" />
+    <ClCompile Include="ql\math\modifiedbessel.cpp" />
     <ClCompile Include="ql\math\primenumbers.cpp" />
     <ClCompile Include="ql\math\quadratic.cpp" />
     <ClCompile Include="ql\math\rounding.cpp" />
@@ -2259,6 +2262,7 @@
     <ClCompile Include="ql\experimental\fx\deltavolquote.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticamericanmargrabeengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticeuropeanmargrabeengine.cpp" />
+    <ClCompile Include="ql\experimental\exoticoptions\analyticpdfhestonengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticsimplechooserengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analytictwoassetbarrierengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticwriterextensibleoptionengine.cpp" />

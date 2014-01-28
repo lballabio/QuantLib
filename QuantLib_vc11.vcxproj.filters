@@ -903,6 +903,9 @@
     <ClInclude Include="ql\math\matrix.hpp">
       <Filter>math</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\modifiedbessel.hpp">
+      <Filter>math</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\primenumbers.hpp">
       <Filter>math</Filter>
     </ClInclude>
@@ -2814,6 +2817,9 @@
     <ClInclude Include="ql\experimental\exoticoptions\analyticeuropeanmargrabeengine.hpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\exoticoptions\analyticpdfhestonengine.hpp">
+      <Filter>experimental\exoticoptions</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\exoticoptions\analyticsimplechooserengine.hpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClInclude>
@@ -3978,6 +3984,9 @@
       <Filter>math</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\matrix.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\modifiedbessel.cpp">
       <Filter>math</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\primenumbers.cpp">
@@ -5238,6 +5247,9 @@
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\analyticeuropeanmargrabeengine.cpp">
+      <Filter>experimental\exoticoptions</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\exoticoptions\analyticpdfhestonengine.cpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\analyticsimplechooserengine.cpp">
