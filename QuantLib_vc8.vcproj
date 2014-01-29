@@ -7251,6 +7251,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\coupons\lineartsrpricer.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\coupons\lineartsrpricer.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\coupons\proxyibor.cpp"
 					>
 				</File>

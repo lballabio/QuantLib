@@ -2817,6 +2817,9 @@
     <ClInclude Include="ql\experimental\coupons\all.hpp">
       <Filter>experimental\coupons</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\coupons\lineartsrpricer.hpp">
+      <Filter>experimental\coupons</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\coupons\proxyibor.hpp">
       <Filter>experimental\coupons</Filter>
     </ClInclude>
@@ -5335,6 +5338,9 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\catbonds\riskynotional.cpp">
       <Filter>experimental\catbonds</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\coupons\lineartsrpricer.cpp">
+      <Filter>experimental\coupons</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\coupons\proxyibor.cpp">
       <Filter>experimental\coupons</Filter>
