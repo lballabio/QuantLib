@@ -26,6 +26,8 @@
 #include <ql/instruments/bonds/zerocouponbond.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
+#include <ql/time/calendars/unitedkingdom.hpp>
+#include <ql/time/calendars/australia.hpp>
 #include <ql/time/calendars/brazil.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
@@ -46,6 +48,13 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 using boost::shared_ptr;
+
+#define ASSERT_CLOSE(name, settlement, calculated, expected, tolerance)  \
+    if (std::fabs(calculated-expected) > tolerance) { \
+    BOOST_FAIL("Failed to reproduce " << name << " at " << settlement \
+               << "\n    calculated: " << std::setprecision(8) << calculated \
+               << "\n    expected:   " << std::setprecision(8) << expected); \
+    }
 
 namespace {
 
@@ -1011,6 +1020,280 @@ void BondTest::testBrazilianCached() {
     }
 }
 
+void BondTest::testExCouponGilt() {
+    BOOST_TEST_MESSAGE(
+        "Testing ex-coupon UK Gilt price against market values...");
+    /* UK Gilts have an exCouponDate 7 business days before the coupon
+       is due (see <http://www.dmo.gov.uk/index.aspx?page=Gilts/Gilt_Faq>).
+       On the exCouponDate the bond still trades cum-coupon so we use
+       6 days below and UK calendar
+
+       Output verified with Bloomberg:
+
+       ISIN: GB0009997999
+       Issue Date: February 29th, 1996
+       Interest Accrue: February 29th, 1996
+       First Coupon: June 7th, 1996
+       Maturity: June 7th, 2021
+       coupon: 8
+       period: 6M
+
+       Settlement date: May 29th, 2013
+       Test Price : 103
+       Accrued : 38021.97802
+       NPV : 106.8021978
+       Yield : 7.495180593
+       Yield->NPV : 106.8021978
+       Yield->NPV->Price : 103
+       Mod duration : 5.676044458
+       Convexity : 0.4215314859
+       PV 0.01 : 0.0606214023
+
+       Settlement date: May 30th, 2013
+       Test Price : 103
+       Accrued : -1758.241758
+       NPV : 102.8241758
+       Yield : 7.496183543
+       Yield->NPV : 102.8241758
+       Yield->NPV->Price : 103
+       Mod duration : 5.892816328
+       Convexity : 0.4375621862
+       PV 0.01 : 0.06059239822
+
+       Settlement date: May 31st, 2013
+       Test Price : 103
+       Accrued : -1538.461538
+       NPV : 102.8461538
+       Yield : 7.495987492
+       Yield->NPV : 102.8461539
+       Yield->NPV->Price : 103
+       Mod duration : 5.890186028
+       Convexity : 0.4372394381
+       PV 0.01 : 0.06057829784
+    */
+    struct test_case {
+        Date settlementDate;
+        Real testPrice;
+        Real accruedAmount;
+        Real NPV;
+        Rate yield;
+        Real duration;
+        Real convexity;
+    };
+
+    Calendar calendar = UnitedKingdom();
+
+    Natural settlementDays = 3;
+
+    Date issueDate(29, February, 1996);
+    Date startDate(29, February, 1996);
+    Date firstCouponDate(07, June, 1996);
+    Date maturityDate(07, June, 2021);
+
+    Rate coupon = 0.08;
+
+    Period tenor = 6*Months;
+    Period exCouponPeriod = 6*Days;
+
+    Compounding comp = Compounded;
+    Frequency freq   = Semiannual;
+    DayCounter dc = ActualActual(ActualActual::ISMA);
+
+    FixedRateBond bond(settlementDays, 100.0,
+                       Schedule(startDate, maturityDate, tenor,
+                                NullCalendar(), Unadjusted, Unadjusted,
+                                DateGeneration::Forward, true, firstCouponDate),
+                       std::vector<Rate>(1, coupon),
+                       dc, Unadjusted, 100.0,
+                       issueDate, calendar, exCouponPeriod, calendar);
+
+    const Leg& leg = bond.cashflows();
+
+    test_case cases[] = {
+        { Date(29,May,2013), 103.0,
+          3.8021978, 106.8021978, 0.0749518,
+          5.6760445, 42.1531486 },
+        { Date(30,May,2013), 103.0,
+          -0.1758242, 102.8241758, 0.0749618,
+          5.8928163, 43.7562186 },
+        { Date(31,May,2013), 103.0,
+          -0.1538462, 102.8461538, 0.0749599,
+          5.8901860, 43.7239438 }
+    };
+
+    for (Size i=0; i<LENGTH(cases); ++i) {
+        Real accrued = bond.accruedAmount(cases[i].settlementDate);
+        ASSERT_CLOSE("accrued amount", cases[i].settlementDate,
+                     accrued, cases[i].accruedAmount, 1e-6);
+        
+        Real npv = cases[i].testPrice + accrued;
+        ASSERT_CLOSE("NPV", cases[i].settlementDate,
+                     npv, cases[i].NPV, 1e-6);
+
+        Rate yield = CashFlows::yield(leg, npv, dc, comp, freq,
+                                      false, cases[i].settlementDate);
+        ASSERT_CLOSE("yield", cases[i].settlementDate,
+                     yield, cases[i].yield, 1e-6);
+
+        Time duration = CashFlows::duration(leg, yield, dc, comp, freq,
+                                            Duration::Modified, false,
+                                            cases[i].settlementDate);
+        ASSERT_CLOSE("duration", cases[i].settlementDate,
+                     duration, cases[i].duration, 1e-6);
+
+        Real convexity = CashFlows::convexity(leg, yield, dc, comp, freq,
+                                              false, cases[i].settlementDate);
+        ASSERT_CLOSE("convexity", cases[i].settlementDate,
+                     convexity, cases[i].convexity, 1e-6);
+
+        Real calcnpv = CashFlows::npv(leg, yield, dc, comp, freq,
+                                      false, cases[i].settlementDate);
+        ASSERT_CLOSE("NPV from yield", cases[i].settlementDate,
+                     calcnpv, cases[i].NPV, 1e-6);
+        
+        Real calcprice = calcnpv - accrued;
+        ASSERT_CLOSE("price from yield", cases[i].settlementDate,
+                     calcprice, cases[i].testPrice, 1e-6);
+    }
+}
+
+
+void BondTest::testExCouponAustralianBond() {
+    BOOST_TEST_MESSAGE(
+        "Testing ex-coupon Australian bond price against market values...");
+    /* Australian Government Bonds have an exCouponDate 7 calendar
+       days before the coupon is due.  On the exCouponDate the bond
+       trades ex-coupon so we use 7 days below and NullCalendar.
+       AGB accrued interest is rounded to 3dp.
+
+       Output verified with Bloomberg:
+
+       ISIN: AU300TB01208
+       Issue Date: June 10th, 2004
+       Interest Accrue: February 15th, 2004
+       First Coupon: August 15th, 2004
+       Maturity: February 15th, 2017
+       coupon: 6
+       period: 6M
+
+       Settlement date: August 7th, 2014
+       Test Price : 103
+       Accrued : 28670
+       NPV : 105.867
+       Yield : 4.723814867
+       Yield->NPV : 105.867
+       Yield->NPV->Price : 103
+       Mod duration : 2.262763296
+       Convexity : 0.0654870275
+       PV 0.01 : 0.02395519619
+
+       Settlement date: August 8th, 2014
+       Test Price : 103
+       Accrued : -1160
+       NPV : 102.884
+       Yield : 4.72354833
+       Yield->NPV : 102.884
+       Yield->NPV->Price : 103
+       Mod duration : 2.325360055
+       Convexity : 0.06725307785
+       PV 0.01 : 0.02392423439
+
+       Settlement date: August 11th, 2014
+       Test Price : 103
+       Accrued : -660
+       NPV : 102.934
+       Yield : 4.719277687
+       Yield->NPV : 102.934
+       Yield->NPV->Price : 103
+       Mod duration : 2.317320093
+       Convexity : 0.06684074058
+       PV 0.01 : 0.02385310264
+    */
+    struct test_case {
+        Date settlementDate;
+        Real testPrice;
+        Real accruedAmount;
+        Real NPV;
+        Rate yield;
+        Real duration;
+        Real convexity;
+    };
+
+    Calendar calendar = Australia();
+
+    Natural settlementDays = 3;
+
+    Date issueDate(10, June, 2004);
+    Date startDate(15, February, 2004);
+    Date firstCouponDate(15, August, 2004);
+    Date maturityDate(15, February, 2017);
+
+    Rate coupon = 0.06;
+
+    Period tenor = 6*Months;
+    Period exCouponPeriod = 7*Days;
+
+    Compounding comp = Compounded;
+    Frequency freq   = Semiannual;
+    DayCounter dc = ActualActual(ActualActual::ISMA);
+
+    FixedRateBond bond(settlementDays, 100.0,
+                       Schedule(startDate, maturityDate, tenor,
+                                NullCalendar(), Unadjusted, Unadjusted,
+                                DateGeneration::Forward, true, firstCouponDate),
+                       std::vector<Rate>(1, coupon),
+                       dc, Unadjusted, 100.0,
+                       issueDate, calendar, exCouponPeriod, NullCalendar());
+
+    const Leg& leg = bond.cashflows();
+
+    test_case cases[] = {
+        { Date(7,August,2014), 103.0,
+          2.8670, 105.867, 0.04723,
+          2.26276, 6.54870 },
+        { Date(8,August,2014), 103.0,
+          -0.1160, 102.884, 0.047235,
+          2.32536, 6.72531 },
+        { Date(11,August,2014), 103.0,
+          -0.0660, 102.934, 0.04719,
+          2.31732, 6.68407 }
+    };
+
+    for (Size i=0; i<LENGTH(cases); ++i) {
+        Real accrued = bond.accruedAmount(cases[i].settlementDate);
+        ASSERT_CLOSE("accrued amount", cases[i].settlementDate,
+                     accrued, cases[i].accruedAmount, 1e-3);
+        
+        Real npv = cases[i].testPrice + accrued;
+        ASSERT_CLOSE("NPV", cases[i].settlementDate,
+                     npv, cases[i].NPV, 1e-3);
+
+        Rate yield = CashFlows::yield(leg, npv, dc, comp, freq,
+                                      false, cases[i].settlementDate);
+        ASSERT_CLOSE("yield", cases[i].settlementDate,
+                     yield, cases[i].yield, 1e-5);
+
+        Time duration = CashFlows::duration(leg, yield, dc, comp, freq,
+                                            Duration::Modified, false,
+                                            cases[i].settlementDate);
+        ASSERT_CLOSE("duration", cases[i].settlementDate,
+                     duration, cases[i].duration, 1e-5);
+
+        Real convexity = CashFlows::convexity(leg, yield, dc, comp, freq,
+                                              false, cases[i].settlementDate);
+        ASSERT_CLOSE("convexity", cases[i].settlementDate,
+                     convexity, cases[i].convexity, 1e-4);
+
+        Real calcnpv = CashFlows::npv(leg, yield, dc, comp, freq,
+                                      false, cases[i].settlementDate);
+        ASSERT_CLOSE("NPV from yield", cases[i].settlementDate,
+                     calcnpv, cases[i].NPV, 1e-3);
+        
+        Real calcprice = calcnpv - accrued;
+        ASSERT_CLOSE("price from yield", cases[i].settlementDate,
+                     calcprice, cases[i].testPrice, 1e-3);
+    }
+}
 
 
 test_suite* BondTest::suite() {
@@ -1025,6 +1308,8 @@ test_suite* BondTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testCachedFixed));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testCachedFloating));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testBrazilianCached));
+    suite->add(QUANTLIB_TEST_CASE(&BondTest::testExCouponGilt));
+    suite->add(QUANTLIB_TEST_CASE(&BondTest::testExCouponAustralianBond));
     return suite;
 }
 
