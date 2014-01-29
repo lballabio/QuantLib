@@ -22,7 +22,7 @@
 
 #include <boost/make_shared.hpp>
 
-#include <ql/cashflows/lineartsrpricer.hpp>
+#include <ql/experimental/coupons/lineartsrpricer.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cmscoupon.hpp>

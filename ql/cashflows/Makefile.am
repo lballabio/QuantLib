@@ -26,7 +26,6 @@ this_include_HEADERS = \
     indexedcashflow.hpp \
     inflationcoupon.hpp \
     inflationcouponpricer.hpp \
-    lineartsrpricer.hpp \
     overnightindexedcoupon.hpp \
     rangeaccrual.hpp \
     replication.hpp \
@@ -57,7 +56,6 @@ libCashFlows_la_SOURCES = \
     indexedcashflow.cpp \
     inflationcoupon.cpp \
     inflationcouponpricer.cpp \
-    lineartsrpricer.cpp \
     overnightindexedcoupon.cpp \
     rangeaccrual.cpp \
     replication.cpp \

@@ -28,8 +28,8 @@
 #include <ql/indexes/swap/euriborswap.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
 #include <ql/cashflows/conundrumpricer.hpp>
-#include <ql/cashflows/lineartsrpricer.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/experimental/coupons/lineartsrpricer.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolcube2.hpp>
