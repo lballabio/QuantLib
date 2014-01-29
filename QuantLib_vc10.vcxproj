@@ -1441,6 +1441,7 @@
     <ClInclude Include="ql\experimental\catbonds\montecarlocatbondengine.hpp" />
     <ClInclude Include="ql\experimental\catbonds\riskynotional.hpp" />
     <ClInclude Include="ql\experimental\coupons\all.hpp" />
+    <ClInclude Include="ql\experimental\coupons\lineartsrpricer.hpp" />
     <ClInclude Include="ql\experimental\coupons\proxyibor.hpp" />
     <ClInclude Include="ql\experimental\coupons\quantocouponpricer.hpp" />
     <ClInclude Include="ql\experimental\coupons\subperiodcoupons.hpp" />
@@ -2279,6 +2280,7 @@
     <ClCompile Include="ql\experimental\catbonds\catrisk.cpp" />
     <ClCompile Include="ql\experimental\catbonds\montecarlocatbondengine.cpp" />
     <ClCompile Include="ql\experimental\catbonds\riskynotional.cpp" />
+    <ClCompile Include="ql\experimental\coupons\lineartsrpricer.cpp" />
     <ClCompile Include="ql\experimental\coupons\proxyibor.cpp" />
     <ClCompile Include="ql\experimental\coupons\quantocouponpricer.cpp" />
     <ClCompile Include="ql\experimental\coupons\subperiodcoupons.cpp" />
