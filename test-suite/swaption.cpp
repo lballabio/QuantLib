@@ -139,6 +139,8 @@ void SwaptionTest::testStrikeDependency() {
                     boost::shared_ptr<VanillaSwap> swap =
                         MakeVanillaSwap(lengths[j], vars.index, strikes[l])
                                 .withEffectiveDate(startDate)
+                                .withFixedLegTenor(1*Years)
+                                .withFixedLegDayCount(vars.fixedDayCount)
                                 .withFloatingLegSpread(0.0)
                                 .withType(type[k]);
                     boost::shared_ptr<Swaption> swaption =
@@ -237,6 +239,8 @@ void SwaptionTest::testSpreadDependency() {
                 for (Size l=0; l<LENGTH(spreads); l++) {
                     boost::shared_ptr<VanillaSwap> swap =
                         MakeVanillaSwap(lengths[j], vars.index, 0.06)
+                                .withFixedLegTenor(1*Years)
+                                .withFixedLegDayCount(vars.fixedDayCount)
                                 .withEffectiveDate(startDate)
                                 .withFloatingLegSpread(spreads[l])
                                 .withType(type[k]);
@@ -325,6 +329,8 @@ void SwaptionTest::testSpreadTreatment() {
                 for (Size l=0; l<LENGTH(spreads); l++) {
                     boost::shared_ptr<VanillaSwap> swap =
                         MakeVanillaSwap(lengths[j], vars.index, 0.06)
+                                .withFixedLegTenor(1*Years)
+                                .withFixedLegDayCount(vars.fixedDayCount)
                                 .withEffectiveDate(startDate)
                                 .withFloatingLegSpread(spreads[l])
                                 .withType(type[k]);
@@ -334,6 +340,8 @@ void SwaptionTest::testSpreadTreatment() {
                                         swap->fixedLegBPS();
                     boost::shared_ptr<VanillaSwap> equivalentSwap =
                         MakeVanillaSwap(lengths[j], vars.index, 0.06+correction)
+                                .withFixedLegTenor(1*Years)
+                                .withFixedLegDayCount(vars.fixedDayCount)
                                 .withEffectiveDate(startDate)
                                 .withFloatingLegSpread(0.0)
                                 .withType(type[k]);
@@ -386,7 +394,9 @@ void SwaptionTest::testCachedValue() {
                                            vars.settlementDays, Days);
     boost::shared_ptr<VanillaSwap> swap =
         MakeVanillaSwap(10*Years, vars.index, 0.06)
-        .withEffectiveDate(startDate);
+        .withEffectiveDate(startDate)
+        .withFixedLegTenor(1*Years)
+        .withFixedLegDayCount(vars.fixedDayCount);
 
     boost::shared_ptr<Swaption> swaption =
         vars.makeSwaption(swap, exerciseDate, 0.20);
@@ -424,6 +434,8 @@ void SwaptionTest::testVega() {
                     boost::shared_ptr<VanillaSwap> swap =
                         MakeVanillaSwap(lengths[j], vars.index, strikes[t])
                                 .withEffectiveDate(startDate)
+                                .withFixedLegTenor(1*Years)
+                                .withFixedLegDayCount(vars.fixedDayCount)
                                 .withFloatingLegSpread(0.0)
                                 .withType(type[h]);
                     for (Size u=0; u<LENGTH(vols); u++) {
@@ -839,6 +851,8 @@ void SwaptionTest::testImpliedVolatility() {
                     boost::shared_ptr<VanillaSwap> swap =
                         MakeVanillaSwap(lengths[j], vars.index, strikes[t])
                                 .withEffectiveDate(startDate)
+                                .withFixedLegTenor(1*Years)
+                                .withFixedLegDayCount(vars.fixedDayCount)
                                 .withFloatingLegSpread(0.0)
                                 .withType(type[k]);
                     for (Size h=0; h<LENGTH(types); h++) {

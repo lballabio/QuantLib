@@ -46,10 +46,15 @@ namespace QuantLib {
                const Date& accrualStartDate,
                const Date& accrualEndDate,
                const Date& refPeriodStart = Date(),
-               const Date& refPeriodEnd = Date());
+               const Date& refPeriodEnd = Date(),
+               const Date& exCouponDate = Date());
         //! \name Event interface
         //@{
         Date date() const { return paymentDate_; }
+        //@}
+        //! \name CashFlow interface
+        //@{
+        Date exCouponDate() const { return exCouponDate_; }
         //@}
         //! \name Inspectors
         //@{
@@ -85,6 +90,7 @@ namespace QuantLib {
         Date paymentDate_;
         Real nominal_;
         Date accrualStartDate_,accrualEndDate_, refPeriodStart_,refPeriodEnd_;
+        Date exCouponDate_;
     };
 
 

@@ -498,6 +498,9 @@
 				RelativePath=".\cashflows.cpp">
 			</File>
 			<File
+				RelativePath=".\catbonds.cpp">
+			</File>
+			<File
 				RelativePath=".\cdo.cpp">
 			</File>
 			<File
@@ -564,7 +567,7 @@
 				RelativePath=".\extendedtrees.cpp">
 			</File>
 			<File
-				RelativePath="factorial.cpp">
+				RelativePath="functions.cpp">
 			</File>
 			<File
 				RelativePath=".\fastfouriertransform.cpp">
@@ -586,6 +589,9 @@
 			</File>
 			<File
 				RelativePath=".\gjrgarchmodel.cpp">
+			</File>
+			<File
+				RelativePath=".\gsr.cpp">
 			</File>
 			<File
 				RelativePath=".\hestonmodel.cpp">
@@ -712,6 +718,9 @@
 			</File>
 			<File
 				RelativePath=".\piecewiseyieldcurve.cpp">
+			</File>
+			<File
+				RelativePath=".\piecewisezerospreadedtermstructure.cpp">
 			</File>
 			<File
 				RelativePath=".\quantooption.cpp">
@@ -865,6 +874,9 @@
 				RelativePath=".\cashflows.hpp">
 			</File>
 			<File
+				RelativePath=".\catbonds.hpp">
+			</File>
+			<File
 				RelativePath=".\cdo.hpp">
 			</File>
 			<File
@@ -931,7 +943,7 @@
 				RelativePath=".\extendedtrees.hpp">
 			</File>
 			<File
-				RelativePath="factorial.hpp">
+				RelativePath="functions.hpp">
 			</File>
 			<File
 				RelativePath=".\fastfouriertransform.hpp">
@@ -953,6 +965,9 @@
 			</File>
 			<File
 				RelativePath=".\gjrgarchmodel.hpp">
+			</File>
+			<File
+				RelativePath=".\gsr.hpp">
 			</File>
 			<File
 				RelativePath=".\hestonmodel.hpp">
@@ -1079,6 +1094,9 @@
 			</File>
 			<File
 				RelativePath=".\piecewiseyieldcurve.hpp">
+			</File>
+			<File
+				RelativePath=".\piecewisezerospreadedtermstructure.hpp">
 			</File>
 			<File
 				RelativePath=".\quantooption.hpp">

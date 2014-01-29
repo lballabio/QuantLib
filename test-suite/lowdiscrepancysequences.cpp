@@ -772,7 +772,7 @@ namespace {
                 prefix = "unit-initialized ";
                 break;
               case SobolRsg::Jaeckel:
-                prefix = "Jäckel-initialized ";
+                prefix = "Jaeckel-initialized ";
                 break;
               case SobolRsg::SobolLevitan:
                 prefix = "SobolLevitan-initialized ";

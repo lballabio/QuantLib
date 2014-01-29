@@ -22,13 +22,6 @@
 
 namespace QuantLib {
 
-#ifndef QL_DISABLE_DEPRECATED
-    BlackVolSurface::BlackVolSurface(const Calendar& cal,
-                                     BusinessDayConvention bdc,
-                                     const DayCounter& dc)
-    : BlackAtmVolCurve(cal, bdc, dc) {}
-#endif
-
     BlackVolSurface::BlackVolSurface(BusinessDayConvention bdc,
                                      const DayCounter& dc)
     : BlackAtmVolCurve(bdc, dc) {}

@@ -71,7 +71,6 @@ namespace QuantLib {
         log_H_S_ = std::log(strike_/spot_);
 
         Real n_d1, n_d2;
-        Real cum_d1_, cum_d2_;
         if (variance_>=QL_EPSILON) {
             D1_ = log_H_S_/stdDev_ + mu_*stdDev_;
             D2_ = D1_ - 2.0*mu_*stdDev_;

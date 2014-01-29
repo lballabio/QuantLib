@@ -137,29 +137,6 @@ namespace {
         return option;
     }
 
-    std::string engineTypeToString(EngineType type) {
-        switch (type) {
-          case Analytic:
-            return "analytic";
-          case JR:
-            return "Jarrow-Rudd";
-          case CRR:
-            return "Cox-Ross-Rubinstein";
-          case EQP:
-            return "EQP";
-          case TGEO:
-            return "Trigeorgis";
-          case TIAN:
-            return "Tian";
-          case LR:
-            return "LeisenReimer";
-          case JOSHI:
-            return "Joshi";
-          default:
-            QL_FAIL("unknown engine type");
-        }
-    }
-
 }
 
 namespace {

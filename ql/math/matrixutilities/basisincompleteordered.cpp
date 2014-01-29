@@ -105,19 +105,6 @@ namespace QuantLib {
             return x;
         }
 
-        Real normSquared(const std::vector<Real>& v)
-        {
-            Real x=0.0;
-            for (Size i=0; i < v.size(); ++i)
-                x += v[i]*v[i];
-
-            return x;
-        }
-
-        Real norm(const std::vector<Real>& v)
-        {
-            return std::sqrt(normSquared(v));
-        }
     }
 
 

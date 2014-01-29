@@ -47,14 +47,16 @@ namespace QuantLib {
                         const Date& accrualStartDate,
                         const Date& accrualEndDate,
                         const Date& refPeriodStart = Date(),
-                        const Date& refPeriodEnd = Date());
+                        const Date& refPeriodEnd = Date(),
+                        const Date& exCouponDate = Date());
         FixedRateCoupon(const Date& paymentDate,
                         Real nominal,
                         const InterestRate& interestRate,
                         const Date& accrualStartDate,
                         const Date& accrualEndDate,
                         const Date& refPeriodStart = Date(),
-                        const Date& refPeriodEnd = Date());
+                        const Date& refPeriodEnd = Date(),
+                        const Date& exCouponDate = Date());
         //@}
         //! \name CashFlow interface
         //@{
@@ -96,6 +98,10 @@ namespace QuantLib {
         FixedRateLeg& withPaymentAdjustment(BusinessDayConvention);
         FixedRateLeg& withFirstPeriodDayCounter(const DayCounter&);
         FixedRateLeg& withPaymentCalendar(const Calendar&);
+        FixedRateLeg& withExCouponPeriod(const Period&,
+                                         const Calendar&,
+                                         BusinessDayConvention,
+                                         bool endOfMonth);
         operator Leg() const;
       private:
         Schedule schedule_;
@@ -104,6 +110,10 @@ namespace QuantLib {
         std::vector<InterestRate> couponRates_;
         DayCounter firstPeriodDC_;
         BusinessDayConvention paymentAdjustment_;
+        Period exCouponPeriod_;
+        Calendar exCouponCalendar_;
+        BusinessDayConvention exCouponAdjustment_;
+        bool exCouponEndOfMonth_;
     };
 
     inline void FixedRateCoupon::accept(AcyclicVisitor& v) {

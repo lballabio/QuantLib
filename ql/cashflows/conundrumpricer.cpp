@@ -104,7 +104,7 @@ namespace QuantLib {
             swapRateValue_ = swap->fairRate();
 
             static const Spread bp = 1.0e-4;
-            annuity_ = (swap->floatingLegBPS()/bp);
+            annuity_ = std::fabs(swap->fixedLegBPS()/bp);
 
             Size q = swapIndex->fixedLegTenor().frequency();
             const Schedule& schedule = swap->fixedSchedule();
@@ -206,7 +206,7 @@ namespace QuantLib {
           public:
             VariableChange(boost::function<Real (Real)>& f,
                            Real a, Real b, Size k)
-            : a_(a), b_(b), width_(b-a), f_(f), k_(k) {}
+            : a_(a), width_(b-a), f_(f), k_(k) {}
             Real value(Real x) const {
                 Real newVar;
                 Real temp = width_;
@@ -217,7 +217,7 @@ namespace QuantLib {
                 return f_(newVar) * k_* temp;
             }
           private:
-            Real a_, b_, width_;
+            Real a_, width_;
             boost::function<Real (Real)> f_;
             Size k_;
         };

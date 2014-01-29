@@ -23,11 +23,6 @@ namespace QuantLib {
 
     namespace {
 
-        bool withinPreviousWeek(Time t1, Time t2) {
-            static const Time dt = 1.0/52;
-            return t1-dt <= t2 && t2 <= t1;
-        }
-
         bool withinNextWeek(Time t1, Time t2) {
             static const Time dt = 1.0/52;
             return t1 <= t2 && t2 <= t1+dt;

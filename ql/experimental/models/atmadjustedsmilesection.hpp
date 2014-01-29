@@ -18,7 +18,8 @@
 */
 
 /*! \file atmadjustedsmilesection.hpp
-    \brief smile section that allows for alternate specification of atm level and recentering the source volatility accordingly
+    \brief smile section that allows for alternate specification of atm level
+   and recentering the source volatility accordingly
 */
 
 #ifndef quantlib_atm_adjusted_smile_section_hpp
@@ -29,29 +30,49 @@
 namespace QuantLib {
 
     class AtmAdjustedSmileSection : public SmileSection {
-      public:
-        AtmAdjustedSmileSection(const boost::shared_ptr<SmileSection> source, const Real atm = Null<Real>(), bool recenterSmile = false);
 
-        Real minStrike () const { return source_->minStrike(); }
-        Real maxStrike () const { return source_->maxStrike(); }
+      public:
+
+        AtmAdjustedSmileSection(const boost::shared_ptr<SmileSection> source,
+                                const Real atm = Null<Real>(),
+                                bool recenterSmile = false);
+
+        Real minStrike() const { return source_->minStrike(); }
+        Real maxStrike() const { return source_->maxStrike(); }
         Real atmLevel() const { return f_; }
-        Real optionPrice(Rate strike, Option::Type type = Option::Call, Real discount=1.0) const { return source_->optionPrice(adjustedStrike(strike),type,discount); }
-        Real digitalOptionPrice(Rate strike, Option::Type type = Option::Call, Real discount=1.0, Real gap=1.0E-8) const { return source_->digitalOptionPrice(adjustedStrike(strike),type,discount,gap); }
-        Real vega(Rate strike, Real discount=1.0) const { return source_->vega(adjustedStrike(strike), discount); }
-        Real density(Rate strike, Real discount=1.0, Real gap=1.0E-4) const { return source_->density(adjustedStrike(strike),discount,gap); }
-        
+
+        Real optionPrice(Rate strike, Option::Type type = Option::Call,
+                         Real discount = 1.0) const {
+            return source_->optionPrice(adjustedStrike(strike), type, discount);
+        }
+
+        Real digitalOptionPrice(Rate strike, Option::Type type = Option::Call,
+                                Real discount = 1.0, Real gap = 1.0E-8) const {
+            return source_->digitalOptionPrice(adjustedStrike(strike), type,
+                                               discount, gap);
+        }
+
+        Real vega(Rate strike, Real discount = 1.0) const {
+            return source_->vega(adjustedStrike(strike), discount);
+        }
+
+        Real density(Rate strike, Real discount = 1.0,
+                     Real gap = 1.0E-4) const {
+            return source_->density(adjustedStrike(strike), discount, gap);
+        }
+
       protected:
+
         Real varianceImpl(Rate strike) const;
         Volatility volatilityImpl(Rate strike) const;
-     
+
       private:
+
         Real adjustedStrike(Real strike) const;
         boost::shared_ptr<SmileSection> source_;
         Real adjustment_;
         Real f_;
     };
-
-
 }
 
 #endif

@@ -310,7 +310,7 @@ void TermStructureTest::testLinkToNullUnderlying() {
     boost::shared_ptr<YieldTermStructure> spreaded(
         new ZeroSpreadedTermStructure(underlying,spread));
     // check that we can use it
-    Date testDate = vars.termStructure->referenceDate();
+    vars.termStructure->referenceDate();
     // if we do this, the curve can't work anymore. But it shouldn't
     // throw as long as we don't try to use it.
     underlying.linkTo(boost::shared_ptr<YieldTermStructure>());

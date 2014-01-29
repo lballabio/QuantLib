@@ -54,6 +54,7 @@ namespace QuantLib {
         const boost::shared_ptr<LmVolatilityModel> volaModel_;
 
       private:
+        using LmVolatilityModel::volatility;
         void generateArguments() {}
     };
 

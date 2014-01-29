@@ -50,8 +50,6 @@ namespace QuantLib {
         std::vector<Real> z_;
         
         sample_type sequence_;
-        Real Ninv_;
-           
     };
 
 }

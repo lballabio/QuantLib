@@ -44,8 +44,8 @@ namespace QuantLib {
                                Rate strike)
     : swapIndex_(swapIndex),
       delivery_(Settlement::Physical),
-      fixingDate_(fixingDate),
       optionConvention_(ModifiedFollowing),
+      fixingDate_(fixingDate),
       strike_(strike),
       underlyingType_(VanillaSwap::Payer) {}
 
@@ -94,6 +94,7 @@ namespace QuantLib {
             .withEffectiveDate(swapIndex_->valueDate(fixingDate_))
             .withFixedLegCalendar(swapIndex_->fixingCalendar())
             .withFixedLegDayCount(swapIndex_->dayCounter())
+            .withFixedLegTenor(swapIndex_->fixedLegTenor())
             .withFixedLegConvention(bdc)
             .withFixedLegTerminationDateConvention(bdc)
             .withType(underlyingType_);

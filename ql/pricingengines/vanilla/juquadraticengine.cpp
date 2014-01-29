@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2004 Neil Firth
  Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2013 Fabien Le Floc'h
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -150,27 +151,31 @@ namespace QuantLib {
             if (phi*(Sk-spot) > 0) {
                 results_.value = black.value() +
                     hA * std::pow((spot/Sk), lambda) / (1 - chi);
+                Real temp_chi_prime = (2 * b / spot) * std::log(spot/Sk);
+                Real chi_prime = temp_chi_prime + c / spot;
+                Real chi_double_prime = 2*b/(spot*spot)
+                    - temp_chi_prime / spot - c / (spot*spot);
+                Real d1_S = (std::log(forwardPrice/payoff->strike()) + 0.5*variance)
+                    / std::sqrt(variance);
+                //There is a typo in the original paper from Ju-Zhong
+                //the first term is the Black-Scholes delta/gamma.    
+                results_.delta = phi * dividendDiscount * cumNormalDist (phi * d1_S)
+                    + (lambda / (spot * (1 - chi)) + chi_prime / ((1 - chi)*(1 - chi))) *
+                    (phi * (Sk - payoff->strike()) - black_Sk) * std::pow((spot/Sk), lambda);
+
+                results_.gamma = dividendDiscount * normalDist (phi*d1_S) 
+                    / (spot * std::sqrt(variance))
+                    + (2 * lambda * chi_prime / (spot * (1 - chi) * (1 - chi))
+                        + 2 * chi_prime * chi_prime / ((1 - chi) * (1 - chi) * (1 - chi))
+                        + chi_double_prime / ((1 - chi) * (1 - chi))
+                        + lambda * (lambda - 1) / (spot * spot * (1 - chi)))
+                    * (phi * (Sk - payoff->strike()) - black_Sk)
+                    * std::pow((spot/Sk), lambda);
             } else {
                 results_.value = phi * (spot - payoff->strike());
+                results_.delta = phi;
+                results_.gamma = 0;
             }
-
-            Real temp_chi_prime = (2 * b / spot) * std::log(spot/Sk);
-            Real chi_prime = temp_chi_prime + c / spot;
-            Real chi_double_prime = 2*b/(spot*spot)
-                                    - temp_chi_prime / spot
-                                    - c / (spot*spot);
-            results_.delta = phi * dividendDiscount * cumNormalDist (phi * d1_Sk)
-                + (lambda / (spot * (1 - chi)) + chi_prime / ((1 - chi)*(1 - chi))) *
-                (phi * (Sk - payoff->strike()) - black_Sk) * std::pow((spot/Sk), lambda);
-
-            results_.gamma = phi * dividendDiscount * normalDist (phi*d1_Sk) /
-                                        (spot * std::sqrt(variance))
-                           + (2 * lambda * chi_prime / (spot * (1 - chi) * (1 - chi))
-                              + 2 * chi_prime * chi_prime / ((1 - chi) * (1 - chi) * (1 - chi))
-                              + chi_double_prime / ((1 - chi) * (1 - chi))
-                              + lambda * (1 - lambda) / (spot * spot * (1 - chi)))
-                            * (phi * (Sk - payoff->strike()) - black_Sk)
-                                 * std::pow((spot/Sk), lambda);
 
         } // end of "early exercise can be optimal"
     }

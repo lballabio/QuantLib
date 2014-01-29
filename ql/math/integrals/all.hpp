@@ -9,4 +9,5 @@
 #include <ql/math/integrals/segmentintegral.hpp>
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/integrals/trapezoidintegral.hpp>
+#include <ql/math/integrals/twodimensionalintegral.hpp>
 

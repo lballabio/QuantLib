@@ -650,6 +650,7 @@
     <ClCompile Include="capfloor.cpp" />
     <ClCompile Include="capflooredcoupon.cpp" />
     <ClCompile Include="cashflows.cpp" />
+    <ClCompile Include="catbonds.cpp" />
     <ClCompile Include="cdo.cpp" />
     <ClCompile Include="cdsoption.cpp" />
     <ClCompile Include="chooseroption.cpp" />
@@ -672,7 +673,7 @@
     <ClCompile Include="everestoption.cpp" />
     <ClCompile Include="exchangerate.cpp" />
     <ClCompile Include="extendedtrees.cpp" />
-    <ClCompile Include="factorial.cpp" />
+    <ClCompile Include="functions.cpp" />
     <ClCompile Include="fastfouriertransform.cpp" />
     <ClCompile Include="fdheston.cpp" />
     <ClCompile Include="fdmlinearop.cpp" />
@@ -680,6 +681,7 @@
     <ClCompile Include="garch.cpp" />
     <ClCompile Include="gaussianquadratures.cpp" />
     <ClCompile Include="gjrgarchmodel.cpp" />
+    <ClCompile Include="gsr.cpp" />
     <ClCompile Include="hestonmodel.cpp" />
     <ClCompile Include="himalayaoption.cpp" />
     <ClCompile Include="hybridhestonhullwhiteprocess.cpp" />
@@ -722,6 +724,7 @@
     <ClCompile Include="pathgenerator.cpp" />
     <ClCompile Include="period.cpp" />
     <ClCompile Include="piecewiseyieldcurve.cpp" />
+    <ClCompile Include="piecewisezerospreadedtermstructure.cpp" />
     <ClCompile Include="quantooption.cpp" />
     <ClCompile Include="quotes.cpp" />
     <ClCompile Include="rangeaccrual.cpp" />
@@ -774,6 +777,7 @@
     <ClInclude Include="capfloor.hpp" />
     <ClInclude Include="capflooredcoupon.hpp" />
     <ClInclude Include="cashflows.hpp" />
+    <ClInclude Include="catbonds.hpp" />
     <ClInclude Include="cdo.hpp" />
     <ClInclude Include="cdsoption.hpp" />
     <ClInclude Include="chooseroption.hpp" />
@@ -796,7 +800,7 @@
     <ClInclude Include="everestoption.hpp" />
     <ClInclude Include="exchangerate.hpp" />
     <ClInclude Include="extendedtrees.hpp" />
-    <ClInclude Include="factorial.hpp" />
+    <ClInclude Include="functions.hpp" />
     <ClInclude Include="fastfouriertransform.hpp" />
     <ClInclude Include="fdheston.hpp" />
     <ClInclude Include="fdmlinearop.hpp" />
@@ -804,6 +808,7 @@
     <ClInclude Include="garch.hpp" />
     <ClInclude Include="gaussianquadratures.hpp" />
     <ClInclude Include="gjrgarchmodel.hpp" />
+    <ClInclude Include="gsr.hpp" />
     <ClInclude Include="hestonmodel.hpp" />
     <ClInclude Include="himalayaoption.hpp" />
     <ClInclude Include="hybridhestonhullwhiteprocess.hpp" />
@@ -846,6 +851,7 @@
     <ClInclude Include="pathgenerator.hpp" />
     <ClInclude Include="period.hpp" />
     <ClInclude Include="piecewiseyieldcurve.hpp" />
+    <ClInclude Include="piecewisezerospreadedtermstructure.hpp" />
     <ClInclude Include="quantooption.hpp" />
     <ClInclude Include="quotes.hpp" />
     <ClInclude Include="rangeaccrual.hpp" />

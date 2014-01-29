@@ -6,5 +6,6 @@
 #include <ql/experimental/math/expm.hpp>
 #include <ql/experimental/math/farliegumbelmorgensterncopularng.hpp>
 #include <ql/experimental/math/frankcopularng.hpp>
+#include <ql/experimental/math/simulatedannealing.hpp>
 #include <ql/experimental/math/zigguratrng.hpp>
 

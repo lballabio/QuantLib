@@ -137,7 +137,6 @@ namespace QuantLib
         std::vector<Time> taus_;
         std::vector<Matrix> pseudoBumps_;
         std::vector<Spread> displacements_; 
-        Size numberBumps_;
         Size factors_;
 
         //! workspace

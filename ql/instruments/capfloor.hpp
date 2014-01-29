@@ -143,6 +143,7 @@ namespace QuantLib {
         std::vector<Real> gearings;
         std::vector<Real> spreads;
         std::vector<Real> nominals;
+        std::vector<boost::shared_ptr<InterestRateIndex> > indexes;
         void validate() const;
     };
 

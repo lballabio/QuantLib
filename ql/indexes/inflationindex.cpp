@@ -136,6 +136,10 @@ namespace QuantLib {
             // the fixing date is well before the availability lag, so
             // we know that fixings were provided.
             return false;
+        } else if (latestNeededDate > today) {
+            // the fixing can't be available, no matter what's in the
+            // time series
+            return true;
         } else {
             // we're not sure, but the fixing might be there so we
             // check.  Todo: check which fixings are not possible, to

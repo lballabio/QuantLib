@@ -38,10 +38,11 @@ namespace QuantLib {
         <li>Sundays</li>
         <li>New Year's Day, January 1st</li>
         <li>National Sovereignty and Children’s Day, April 23rd</li>
+        <li>Labour and Solidarity Day, May 1st</li>
         <li>Youth and Sports Day, May 19th</li>
         <li>Victory Day, August 30th</li>
         <li>Republic Day, October 29th</li>
-        <li>Local Holidays (Kurban, Ramadan; 2004 to 2013 only) </li>
+        <li>Local Holidays (Kurban, Ramadan; 2004 to 2014 only) </li>
         </ul>
 
         \ingroup calendars

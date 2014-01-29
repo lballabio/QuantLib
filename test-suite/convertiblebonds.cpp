@@ -41,6 +41,7 @@
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
+#include <boost/make_shared.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -86,17 +87,15 @@ namespace {
             // reset to avoid inconsistencies as the schedule is backwards
             issueDate = calendar.advance(maturityDate, -10, Years);
 
-            underlying.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(50.0)));
+            underlying.linkTo(boost::make_shared<SimpleQuote>(50.0));
             dividendYield.linkTo(flatRate(today, 0.02, dayCounter));
             riskFreeRate.linkTo(flatRate(today, 0.05, dayCounter));
             volatility.linkTo(flatVol(today, 0.15, dayCounter));
 
-            process = boost::shared_ptr<BlackScholesMertonProcess>(
-                    new BlackScholesMertonProcess(underlying, dividendYield,
-                                                  riskFreeRate, volatility));
+            process = boost::make_shared<BlackScholesMertonProcess>(
+                    underlying, dividendYield, riskFreeRate, volatility);
 
-            creditSpread.linkTo(
-                            boost::shared_ptr<Quote>(new SimpleQuote(0.005)));
+            creditSpread.linkTo(boost::make_shared<SimpleQuote>(0.005));
 
             // it fails with 1000000
             // faceAmount = 1000000.0;
@@ -121,21 +120,20 @@ void ConvertibleBondTest::testBond() {
 
     vars.conversionRatio = 1.0e-16;
 
-    boost::shared_ptr<Exercise> euExercise(
-                                     new EuropeanExercise(vars.maturityDate));
-    boost::shared_ptr<Exercise> amExercise(
-                                     new AmericanExercise(vars.issueDate,
-                                                          vars.maturityDate));
+    boost::shared_ptr<Exercise> euExercise =
+        boost::make_shared<EuropeanExercise>(vars.maturityDate);
+    boost::shared_ptr<Exercise> amExercise =
+        boost::make_shared<AmericanExercise>(vars.issueDate,
+                                             vars.maturityDate);
 
     Size timeSteps = 1001;
-    boost::shared_ptr<PricingEngine> engine(
-        new BinomialConvertibleEngine<CoxRossRubinstein>(vars.process,
-                                                         timeSteps));
+    boost::shared_ptr<PricingEngine> engine =
+        boost::make_shared<BinomialConvertibleEngine<CoxRossRubinstein> >(
+            vars.process, timeSteps);
 
     Handle<YieldTermStructure> discountCurve(
-         boost::shared_ptr<YieldTermStructure>(
-             new ForwardSpreadedTermStructure(vars.riskFreeRate,
-                                              vars.creditSpread)));
+         boost::make_shared<ForwardSpreadedTermStructure>(vars.riskFreeRate,
+                                                          vars.creditSpread));
 
     // zero-coupon
 
@@ -166,8 +164,8 @@ void ConvertibleBondTest::testBond() {
                         100.0, vars.maturityDate,
                         Following, vars.redemption, vars.issueDate);
 
-    boost::shared_ptr<PricingEngine> bondEngine(
-                                    new DiscountingBondEngine(discountCurve));
+    boost::shared_ptr<PricingEngine> bondEngine =
+        boost::make_shared<DiscountingBondEngine>(discountCurve);
     zero.setPricingEngine(bondEngine);
 
     Real tolerance = 1.0e-2 * (vars.faceAmount/100.0);
@@ -240,7 +238,8 @@ void ConvertibleBondTest::testBond() {
 
     // floating-rate
 
-    boost::shared_ptr<IborIndex> index(new Euribor1Y(discountCurve));
+    boost::shared_ptr<IborIndex> index =
+        boost::make_shared<Euribor1Y>(discountCurve);
     Natural fixingDays = 2;
     std::vector<Real> gearings(1, 1.0);
     std::vector<Rate> spreads;
@@ -263,8 +262,9 @@ void ConvertibleBondTest::testBond() {
                                            vars.redemption);
     amFloating.setPricingEngine(engine);
 
-    boost::shared_ptr<IborCouponPricer> pricer(new
-        BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
+    boost::shared_ptr<IborCouponPricer> pricer =
+        boost::make_shared<BlackIborCouponPricer>(
+            Handle<OptionletVolatilityStructure>());
 
     Schedule floatSchedule(vars.issueDate, vars.maturityDate,
                            Period(vars.frequency),
@@ -310,24 +310,24 @@ void ConvertibleBondTest::testOption() {
 
     CommonVars vars;
 
-    boost::shared_ptr<Exercise> euExercise(new
-                                    EuropeanExercise(vars.maturityDate));
+    boost::shared_ptr<Exercise> euExercise =
+        boost::make_shared<EuropeanExercise>(vars.maturityDate);
 
     vars.settlementDays = 0;
 
-    Size timeSteps = 1001;
-    boost::shared_ptr<PricingEngine> engine(
-        new BinomialConvertibleEngine<CoxRossRubinstein>(vars.process,
-                                                         timeSteps));
-    boost::shared_ptr<PricingEngine> vanillaEngine(
-            new BinomialVanillaEngine<CoxRossRubinstein>(vars.process,
-                                                         timeSteps));
+    Size timeSteps = 2001;
+    boost::shared_ptr<PricingEngine> engine =
+        boost::make_shared<BinomialConvertibleEngine<CoxRossRubinstein> >(
+                                                     vars.process, timeSteps);
+    boost::shared_ptr<PricingEngine> vanillaEngine =
+        boost::make_shared<BinomialVanillaEngine<CoxRossRubinstein> >(
+                                                     vars.process, timeSteps);
 
-    vars.creditSpread.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
+    vars.creditSpread.linkTo(boost::make_shared<SimpleQuote>(0.0));
 
     Real conversionStrike = vars.redemption/vars.conversionRatio;
-    boost::shared_ptr<StrikedTypePayoff> payoff(
-                      new PlainVanillaPayoff(Option::Call, conversionStrike));
+    boost::shared_ptr<StrikedTypePayoff> payoff =
+        boost::make_shared<PlainVanillaPayoff>(Option::Call, conversionStrike);
 
     Schedule schedule = MakeSchedule().from(vars.issueDate)
                                       .to(vars.maturityDate)
@@ -356,7 +356,8 @@ void ConvertibleBondTest::testOption() {
         BOOST_ERROR("failed to reproduce plain-option price:"
                     << "\n    calculated: " << euZero.NPV()
                     << "\n    expected:   " << expected
-                    << "\n    error:      " << error);
+                    << "\n    error:      " << error
+                    << "\n    tolerance:      " << tolerance);
     }
 }
 
@@ -365,8 +366,6 @@ void ConvertibleBondTest::testRegression() {
     BOOST_TEST_MESSAGE(
        "Testing fixed-coupon convertible bond in known regression case...");
 
-    using namespace boost;
-
     SavedSettings backup;
 
     Date today = Date(23, December, 2008);
@@ -374,7 +373,7 @@ void ConvertibleBondTest::testRegression() {
 
     Settings::instance().evaluationDate() = tomorrow;
 
-    Handle<Quote> u(shared_ptr<Quote>(new SimpleQuote(2.9084382818797443)));
+    Handle<Quote> u(boost::make_shared<SimpleQuote>(2.9084382818797443));
 
     std::vector<Date> dates(25);
     std::vector<Rate> forwards(25);
@@ -404,17 +403,17 @@ void ConvertibleBondTest::testRegression() {
     dates[23] = Date(29,December,2038);  forwards[23] = 0.0228343838422;
     dates[24] = Date(31,December,2199);  forwards[24] = 0.0228343838422;
 
-    Handle<YieldTermStructure> r(shared_ptr<YieldTermStructure>(
-                             new ForwardCurve(dates, forwards, Actual360())));
+    Handle<YieldTermStructure> r(
+              boost::make_shared<ForwardCurve>(dates, forwards, Actual360()));
 
-    Handle<BlackVolTermStructure> sigma(shared_ptr<BlackVolTermStructure>(
-            new BlackConstantVol(tomorrow, NullCalendar(), 21.685235548092248,
-                                 Thirty360(Thirty360::BondBasis))));
+    Handle<BlackVolTermStructure> sigma(boost::make_shared<BlackConstantVol>(
+                                 tomorrow, NullCalendar(), 21.685235548092248,
+                                 Thirty360(Thirty360::BondBasis)));
 
-    shared_ptr<BlackProcess> process(new BlackProcess(u,r,sigma));
+    boost::shared_ptr<BlackProcess> process =
+        boost::make_shared<BlackProcess>(u,r,sigma);
 
-    Handle<Quote> spread(shared_ptr<Quote>(
-                                     new SimpleQuote(0.11498700678012874)));
+    Handle<Quote> spread(boost::make_shared<SimpleQuote>(0.11498700678012874));
 
     Date issueDate(23, July, 2008);
     Date maturityDate(1, August, 2013);
@@ -425,7 +424,8 @@ void ConvertibleBondTest::testRegression() {
                                       .withCalendar(calendar)
                                       .withConvention(Unadjusted);
     Natural settlementDays = 3;
-    shared_ptr<Exercise> exercise(new EuropeanExercise(maturityDate));
+    boost::shared_ptr<Exercise> exercise =
+        boost::make_shared<EuropeanExercise>(maturityDate);
     Real conversionRatio = 100.0/20.3175;
     std::vector<Rate> coupons(schedule.size()-1, 0.05);
     DayCounter dayCounter = Thirty360(Thirty360::BondBasis);
@@ -438,8 +438,9 @@ void ConvertibleBondTest::testRegression() {
                                     spread, issueDate, settlementDays,
                                     coupons, dayCounter,
                                     schedule, redemption);
-    bond.setPricingEngine(shared_ptr<PricingEngine>(
-             new BinomialConvertibleEngine<CoxRossRubinstein>(process, 600)));
+    bond.setPricingEngine(
+        boost::make_shared<BinomialConvertibleEngine<CoxRossRubinstein> >(
+                                                              process, 600));
 
     try {
         Real x = bond.NPV();  // should throw; if not, an INF was not detected.

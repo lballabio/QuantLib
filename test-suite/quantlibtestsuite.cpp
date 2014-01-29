@@ -59,6 +59,7 @@
 #include "capfloor.hpp"
 #include "capflooredcoupon.hpp"
 #include "cashflows.hpp"
+#include "catbonds.hpp"
 #include "cdo.hpp"
 #include "cdsoption.hpp"
 #include "chooseroption.hpp"
@@ -81,14 +82,15 @@
 #include "everestoption.hpp"
 #include "exchangerate.hpp"
 #include "extendedtrees.hpp"
-#include "factorial.hpp"
 #include "fastfouriertransform.hpp"
 #include "fdheston.hpp"
 #include "fdmlinearop.hpp"
 #include "forwardoption.hpp"
+#include "functions.hpp"
 #include "gaussianquadratures.hpp"
 #include "garch.hpp"
 #include "gjrgarchmodel.hpp"
+#include "gsr.hpp"
 #include "hestonmodel.hpp"
 #include "himalayaoption.hpp"
 #include "hybridhestonhullwhiteprocess.hpp"
@@ -131,6 +133,7 @@
 #include "pathgenerator.hpp"
 #include "period.hpp"
 #include "piecewiseyieldcurve.hpp"
+#include "piecewisezerospreadedtermstructure.hpp"
 #include "quantooption.hpp"
 #include "quotes.hpp"
 #include "riskstats.hpp"
@@ -230,12 +233,6 @@ test_suite* init_unit_test_suite(int, char* []) {
             #else
             "undefined"
             #endif
-        "\n  QL_DISABLE_DEPRECATED "
-            #ifdef QL_DISABLE_DEPRECATED
-            "   defined"
-            #else
-            " undefined"
-            #endif
         "\n  QL_USE_INDEXED_COUPON "
             #ifdef QL_USE_INDEXED_COUPON
             "   defined"
@@ -285,11 +282,11 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(DividendOptionTest::suite());
     test->add(EuropeanOptionTest::suite());
     test->add(ExchangeRateTest::suite());
-    test->add(FactorialTest::suite());
     test->add(FastFourierTransformTest::suite());
     test->add(FdHestonTest::suite());
     test->add(FdmLinearOpTest::suite());
     test->add(ForwardOptionTest::suite());
+    test->add(FunctionsTest::suite());
     test->add(GARCHTest::suite());
     test->add(GaussianQuadraturesTest::suite());
     test->add(GJRGARCHModelTest::suite());
@@ -324,6 +321,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(PathGeneratorTest::suite());
     test->add(PeriodTest::suite());
     test->add(PiecewiseYieldCurveTest::suite());
+    test->add(PiecewiseZeroSpreadedTermStructureTest::suite());
     test->add(QuantoOptionTest::suite());
     test->add(QuoteTest::suite());
     test->add(RiskStatisticsTest::suite());
@@ -352,6 +350,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(AsianOptionTest::experimental());
     test->add(BarrierOptionTest::experimental());
     test->add(BlackDeltaCalculatorTest::suite());
+    test->add(CatBondTest::suite());
     test->add(CdoTest::suite());
     test->add(CdsOptionTest::suite());
     test->add(ChooserOptionTest::suite());
@@ -362,6 +361,8 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(EverestOptionTest::suite());
     test->add(ExtendedTreesTest::suite());
     test->add(FdHestonTest::experimental());
+    test->add(GsrTest::suite());
+    test->add(HestonModelTest::experimental());
     test->add(HimalayaOptionTest::suite());
     test->add(InflationCPICapFloorTest::suite());
     test->add(InflationVolTest::suite());

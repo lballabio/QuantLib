@@ -24,13 +24,13 @@
 
 namespace QuantLib {
 
-#ifndef QL_DISABLE_DEPRECATED
     SwaptionVolatilityStructure::SwaptionVolatilityStructure(
                                                     const Calendar& cal,
                                                     BusinessDayConvention bdc,
                                                     const DayCounter& dc)
-    : VolatilityTermStructure(cal, bdc, dc) {}
-#endif
+    : VolatilityTermStructure(bdc, dc) {
+        calendar_ = cal;
+    }
 
     SwaptionVolatilityStructure::SwaptionVolatilityStructure(
                                                     BusinessDayConvention bdc,

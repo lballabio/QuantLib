@@ -220,6 +220,25 @@ namespace QuantLib {
                 return false;
         }
 
+        if (y == 2014) {
+            if (// Lunar New Year
+                (d >= 28 && d <= 30 && m == January)
+                // Spring Festival
+                || ((d == 31 && m == January) || (d <= 4 && m == February))
+                // Children's Day
+                || (d == 4 && m == April)
+                // Tomb Sweeping Day
+                || (d == 5 && m == April)
+                // Labour Day
+                || (d == 1 && m == May)
+                // Dragon Boat Festival
+                || (d == 2 && m == June)
+                // Mid-Autumn Festival
+                || (d == 8 && m == September)
+                )
+                return false;
+        }
+
         return true;
     }
 

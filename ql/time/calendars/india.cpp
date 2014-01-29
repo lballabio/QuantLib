@@ -260,6 +260,31 @@ namespace QuantLib {
                 return false;
         }
 
+        if (y == 2014) {
+            if (// Mahashivratri
+                (d == 27 && m == February)
+                // Holi
+                || (d == 17 && m == March)
+                // Ram Navmi
+                || (d == 8 && m == April)
+                // Ramzan Id
+                || (d == 29 && m == July)
+                // Ganesh Chaturthi
+                || (d == 29 && m == August)
+                // Dasera
+                || (d == 3 && m == October)
+                // Bakri Id
+                || (d == 6 && m == October)
+                // Diwali - Balipratipada
+                || (d == 24 && m == October)
+                // Moharram
+                || (d == 4 && m == November)
+                // Gurunank Jayanti
+                || (d == 6 && m == November)
+                )
+                return false;
+        }
+
         return true;
     }
 

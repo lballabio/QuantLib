@@ -54,8 +54,6 @@ html-local:
 	$(MAKE) -C Docs docs-html
 docs-man:
 	$(MAKE) -C Docs docs-man
-docs-online:
-	$(MAKE) -C Docs docs-online
 docs-dist:
 	$(MAKE) -C Docs docs-dist
 docs-clean:

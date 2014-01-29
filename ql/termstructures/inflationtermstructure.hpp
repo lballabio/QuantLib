@@ -113,9 +113,6 @@ namespace QuantLib {
                         bool extrapolate) const;
 
         boost::shared_ptr<Seasonality> seasonality_;
-#ifdef QL_DISABLE_DEPRECATED
-      private:
-#endif
         Period observationLag_;
         Frequency frequency_;
         bool indexIsInterpolated_;

@@ -50,7 +50,10 @@ namespace QuantLib {
                               Reflection,
                               NonCentralChiSquareVariance,
                               QuadraticExponential,
-                              QuadraticExponentialMartingale};
+                              QuadraticExponentialMartingale,
+                              BroadieKayaExactSchemeLobatto,
+                              BroadieKayaExactSchemeLaguerre,
+                              BroadieKayaExactSchemeTrapezoidal };
 
         HestonProcess(const Handle<YieldTermStructure>& riskFreeRate,
                       const Handle<YieldTermStructure>& dividendYield,
@@ -60,6 +63,8 @@ namespace QuantLib {
                       Discretization d = QuadraticExponentialMartingale);
 
         Size size() const;
+        Size factors() const;
+
         Disposable<Array> initialValues() const;
         Disposable<Array> drift(Time t, const Array& x) const;
         Disposable<Matrix> diffusion(Time t, const Array& x) const;
@@ -78,14 +83,14 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& riskFreeRate() const;
 
         Time time(const Date&) const;
+
       private:
+        Real varianceDistribution(Real v, Real dw, Time dt) const;
+
         Handle<YieldTermStructure> riskFreeRate_, dividendYield_;
         Handle<Quote> s0_;
         Real v0_, kappa_, theta_, sigma_, rho_;
         Discretization discretization_;
     };
-
 }
-
-
 #endif

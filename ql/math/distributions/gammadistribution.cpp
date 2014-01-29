@@ -81,4 +81,19 @@ namespace QuantLib {
         return -temp+std::log(2.5066282746310005*ser/x);
     }
 
+    Real GammaFunction::value(Real x) const {
+        if (x >= 1.0) {
+            return std::exp(logValue(x));
+        }
+        else {
+            if (x > -20.0) {
+                // \Gamma(x) = \frac{\Gamma(x+1)}{x}
+                return value(x+1.0)/x;
+            }
+            else {
+                // \Gamma(-x) = -\frac{\pi}{\Gamma(x)\sin(\pi x) x}
+                return -M_PI/(value(-x)*x*std::sin(M_PI*x));
+            }
+        }
+    }
 }

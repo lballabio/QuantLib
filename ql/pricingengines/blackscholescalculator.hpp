@@ -57,6 +57,12 @@ namespace QuantLib {
         /*! Sensitivity to time to maturity per day
             (assuming 365 day in a year). */
         Real thetaPerDay(Time maturity) const;
+        // also un-hide overloads taking a spot
+        using BlackCalculator::delta;
+        using BlackCalculator::elasticity;
+        using BlackCalculator::gamma;
+        using BlackCalculator::theta;
+        using BlackCalculator::thetaPerDay;
       protected:
         Real spot_;
         DiscountFactor growth_;

@@ -68,8 +68,8 @@ namespace QuantLib {
         if (MinCumNormDistAB<1e-15)
             return MinCumNormDistAB;
 
-        Real a1 = a / std::sqrt(2.0 * (1.0 - rho_*rho_));
-        Real b1 = b / std::sqrt(2.0 * (1.0 - rho_*rho_));
+        Real a1 = a / std::sqrt(2.0 * (1.0 - rho2_));
+        Real b1 = b / std::sqrt(2.0 * (1.0 - rho2_));
 
         Real result=-1.0;
 
@@ -82,7 +82,7 @@ namespace QuantLib {
                                  +2.0*rho_*(y_[i]-a1)*(y_[j]-b1));
                 }
             }
-            result = std::sqrt(1.0 - rho_*rho_)/M_PI*sum;
+            result = std::sqrt(1.0 - rho2_)/M_PI*sum;
         } else if (a<=0 && b>=0 && rho_>=0) {
             BivariateCumulativeNormalDistributionDr78 bivCumNormalDist(-rho_);
             result= CumNormDistA - bivCumNormalDist(a, -b);

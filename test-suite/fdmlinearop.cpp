@@ -1276,7 +1276,6 @@ void FdmLinearOpTest::testSpareMatrixReference() {
 
 namespace {
 #ifndef QL_NO_UBLAS_SUPPORT
-#if BOOST_VERSION >= 103900
     Size nrElementsOfSparseMatrix(const SparseMatrix& m) {
         Size retVal = 0;
         for (SparseMatrix::const_iterator1 i1 = m.begin1();
@@ -1286,12 +1285,10 @@ namespace {
         return retVal;
     }
 #endif
-#endif
 }
 
 void FdmLinearOpTest::testSparseMatrixZeroAssignment() {
 #ifndef QL_NO_UBLAS_SUPPORT
-#if BOOST_VERSION >= 103900
     BOOST_TEST_MESSAGE("Testing SparseMatrix zero assignment...");
 
     SparseMatrix m(5,5);
@@ -1310,7 +1307,6 @@ void FdmLinearOpTest::testSparseMatrixZeroAssignment() {
     if (nrElementsOfSparseMatrix(m) != 3) {
         BOOST_FAIL("three elements expected");
     }
-#endif
 #endif
 }
 

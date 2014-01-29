@@ -30,11 +30,11 @@ namespace QuantLib {
         if (moneynessGrid.size() != 0) {
             QL_REQUIRE(
                 moneynessGrid[0] >= 0.0,
-                "moneyness grid should only containt non negative values ("
+                "moneyness grid should only contain non negative values ("
                     << moneynessGrid[0] << ")");
             for (Size i = 0; i < moneynessGrid.size() - 1; i++) {
                 QL_REQUIRE(moneynessGrid[i] < moneynessGrid[i + 1],
-                           "moneyness grid should containt strictly increasing "
+                           "moneyness grid should contain strictly increasing "
                            "values ("
                                << moneynessGrid[i] << ","
                                << moneynessGrid[i + 1] << " at indices " << i
@@ -71,19 +71,17 @@ namespace QuantLib {
         bool minStrikeAdded = false, maxStrikeAdded = false;
         for (Size i = 0; i < tmp.size(); i++) {
             Real k = tmp[i] * f_;
-            if ( tmp[i] <= QL_EPSILON ||
-                (k >= section.minStrike() &&
-                 k <= section.maxStrike()) ) {
-                if(!minStrikeAdded || !close(k,section.minStrike())) {
+            if (tmp[i] <= QL_EPSILON ||
+                (k >= section.minStrike() && k <= section.maxStrike())) {
+                if (!minStrikeAdded || !close(k, section.minStrike())) {
                     m_.push_back(tmp[i]);
                     k_.push_back(k);
                 }
-                if(close(k,section.maxStrike()))
+                if (close(k, section.maxStrike()))
                     maxStrikeAdded = true;
-            }
-            else { // if the section provides a limited strike range
-                   // we put the respective endpoint in our grid
-                   // in order to not loose too much information
+            } else { // if the section provides a limited strike range
+                     // we put the respective endpoint in our grid
+                     // in order to not loose too much information
                 if (k < section.minStrike() && !minStrikeAdded) {
                     m_.push_back(section.minStrike() / f_);
                     k_.push_back(section.minStrike());
@@ -112,17 +110,16 @@ namespace QuantLib {
         leftIndex_ = centralIndex;
         rightIndex_ = centralIndex;
 
-        bool done=false;
-
-        while(!done) {
+        bool done = false;
+        while (!done) {
 
             bool isAf = true;
-            done=true;
+            done = true;
 
             while (isAf && rightIndex_ < k_.size() - 1) {
                 rightIndex_++;
                 isAf = af(leftIndex_, rightIndex_, rightIndex_) &&
-                    af(leftIndex_, rightIndex_ - 1, rightIndex_);
+                       af(leftIndex_, rightIndex_ - 1, rightIndex_);
             }
             if (!isAf)
                 rightIndex_--;
@@ -131,7 +128,7 @@ namespace QuantLib {
             while (isAf && leftIndex_ > 1) {
                 leftIndex_--;
                 isAf = af(leftIndex_, leftIndex_, rightIndex_) &&
-                    af(leftIndex_, leftIndex_ + 1, rightIndex_);
+                       af(leftIndex_, leftIndex_ + 1, rightIndex_);
             }
             if (!isAf)
                 leftIndex_++;
@@ -154,16 +151,12 @@ namespace QuantLib {
                 rightIndex_--;
                 done = false;
             }
-
         }
-
 
         QL_REQUIRE(rightIndex_ > leftIndex_,
                    "arbitrage free region must at least contain two "
                    "points (only index is "
-                   << leftIndex_ << ")");
-
-
+                       << leftIndex_ << ")");
     }
 
     const std::pair<Real, Real> SmileSectionUtils::arbitragefreeRegion() const {

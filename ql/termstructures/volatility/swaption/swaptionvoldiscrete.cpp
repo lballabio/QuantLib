@@ -172,14 +172,6 @@ namespace QuantLib {
     }
 
     void SwaptionVolatilityDiscrete::performCalculations() const {
-        // check if date recalculation could be avoided here
-        if (moving_) {
-            initializeOptionDatesAndTimes();
-            initializeSwapLengths();
-        }
-    }
-
-    void SwaptionVolatilityDiscrete::update() {
         // recalculate dates if necessary...
         if (moving_) {
             Date d = Settings::instance().evaluationDate();
@@ -187,8 +179,12 @@ namespace QuantLib {
                 evaluationDate_ = d;
                 initializeOptionDatesAndTimes();
                 initializeSwapLengths();
+                optionInterpolator_.update();
             }
         }
+    }
+
+    void SwaptionVolatilityDiscrete::update() {
         TermStructure::update();
         LazyObject::update();
     }

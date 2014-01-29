@@ -213,7 +213,6 @@ namespace QuantLib {
         // K=0
         pIndepDistrib.insert(std::make_pair(0., 1.));
         for(Size iName=0; iName<names.size(); iName++) {
-            Real nameLoss = wk_[iName];
 
             // to do: allow for matrix constructor and uncoment this
             // correlQuote_->setValue(oneFactorCorrels_[iName]);
@@ -272,7 +271,6 @@ namespace QuantLib {
         //---------------------------------------------------------------
         Real relativeMax = this->results_.xMax / loss_unit_;
         Real relativeMin = this->results_.xMin / loss_unit_;
-        Size relativeMaxIdx = std::ceil(relativeMax);
         Size relativeMinIdx = std::floor(relativeMin);
         std::map<Real, Probability>::iterator
             distIt = pIndepDistrib.lower_bound(relativeMinIdx),

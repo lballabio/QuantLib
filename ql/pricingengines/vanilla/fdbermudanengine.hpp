@@ -49,6 +49,8 @@ namespace QuantLib {
             FDMultiPeriodEngine<Scheme>::calculate(&results_);
         }
       protected:
+        using FDMultiPeriodEngine<Scheme>::calculate;
+
         Real extraTermInBermudan ;
         void initializeStepCondition() const {
             this->stepCondition_ =

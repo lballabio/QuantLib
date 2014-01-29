@@ -54,7 +54,11 @@ namespace QuantLib {
                       BusinessDayConvention paymentConvention = Following,
                       Real redemption = 100.0,
                       const Date& issueDate = Date(),
-                      const Calendar& paymentCalendar = Calendar());
+                      const Calendar& paymentCalendar = Calendar(),
+                      const Period& exCouponPeriod = Period(),
+                      const Calendar& exCouponCalendar = Calendar(),
+                      const BusinessDayConvention exCouponConvention = Unadjusted,
+                      bool exCouponEndOfMonth = false);
         /*! simple annual compounding coupon rates
             with internal schedule calculation */
         FixedRateBond(Natural settlementDays,
@@ -72,7 +76,11 @@ namespace QuantLib {
                       const Date& stubDate = Date(),
                       DateGeneration::Rule rule = DateGeneration::Backward,
                       bool endOfMonth = false,
-                      const Calendar& paymentCalendar = Calendar());
+                      const Calendar& paymentCalendar = Calendar(),
+                      const Period& exCouponPeriod = Period(),
+                      const Calendar& exCouponCalendar = Calendar(),
+                      const BusinessDayConvention exCouponConvention = Unadjusted,
+                      bool exCouponEndOfMonth = false);
         //! generic compounding and frequency InterestRate coupons 
         FixedRateBond(Natural settlementDays,
                       Real faceAmount,
@@ -81,7 +89,11 @@ namespace QuantLib {
                       BusinessDayConvention paymentConvention = Following,
                       Real redemption = 100.0,
                       const Date& issueDate = Date(),
-                      const Calendar& paymentCalendar = Calendar());
+                      const Calendar& paymentCalendar = Calendar(),
+                      const Period& exCouponPeriod = Period(),
+                      const Calendar& exCouponCalendar = Calendar(),
+                      const BusinessDayConvention exCouponConvention = Unadjusted,
+                      bool exCouponEndOfMonth = false);
         Frequency frequency() const { return frequency_; }
         const DayCounter& dayCounter() const { return dayCounter_; }
       protected:

@@ -41,11 +41,7 @@ namespace {
     double H1, H2,  H3, R23, RUA, RUB, AR, RUC;
     int NUC;
 
-    // standard normal density function
-    double ndf(double t);
-
     // standard normal cumulative distribution function
-    double nc(double x);
     double PHID(double Z);
 
     // Functions used to compute the first order approximation
@@ -295,29 +291,6 @@ namespace {
     }
 
 
-    // standard normal density function
-    double ndf(double t) {
-        return 0.398942280401433*exp(-t*t/2);
-    }
-
-    // standard normal cumulative distribution function
-    double nc(double x){
-        double result;
-        if (x<-7.) {
-            result = ndf(x)/sqrt(1.+x*x);
-        } else if (x>7.) {
-            result = 1. - nc(-x);
-        } else {
-            result = 0.2316419;
-            static double a[5] = {0.31938153,-0.356563782,1.781477937,-1.821255978,1.330274429};
-            result=1./(1+result*fabs(x));
-            result=1-ndf(x)*(result*(a[0]+result*(a[1]+result*(a[2]+result*(a[3]+result*a[4])))));
-            if (x<=0.) result=1.-result;
-        }
-        return result;
-    }
-
-
     double PHID(double Z){
         /*
          *     Normal distribution probabilities accurate to 1D-15.
@@ -381,20 +354,6 @@ namespace {
 
         return(P);
     }
-
-
-
-    //function needed to calculate the two dimensional cumulative distribution function
-    double fxy(double x, double y, double a, double b, double rho) {
-        double a_s;
-        double b_s;
-        double result;
-        a_s = a / sqrt(2 * (1 - rho * rho));
-        b_s = b / sqrt(2 * (1 - rho * rho));
-        result = exp(a_s * (2 * x - a_s) + b_s * (2 * y - b_s) + 2 * rho * (x - a_s) * (y - b_s));
-        return result;
-    }
-
 
 
     /*

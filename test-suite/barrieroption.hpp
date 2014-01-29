@@ -32,6 +32,8 @@ class BarrierOptionTest {
     static void testBeagleholeValues();
     static void testPerturbative();
     static void testLocalVolAndHestonComparison();
+    static void testVannaVolgaSimpleBarrierValues();
+    static void testVannaVolgaDoubleBarrierValues();
     static boost::unit_test_framework::test_suite* suite();
     static boost::unit_test_framework::test_suite* experimental();
 };

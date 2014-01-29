@@ -36,7 +36,11 @@ namespace QuantLib {
                                  BusinessDayConvention paymentConvention,
                                  Real redemption,
                                  const Date& issueDate,
-                                 const Calendar& paymentCalendar)
+                                 const Calendar& paymentCalendar,
+                                 const Period& exCouponPeriod,
+                                 const Calendar& exCouponCalendar,
+                                 const BusinessDayConvention exCouponConvention,
+                                 bool exCouponEndOfMonth)
      : Bond(settlementDays,
             paymentCalendar==Calendar() ? schedule.calendar() : paymentCalendar,
             issueDate),
@@ -49,7 +53,11 @@ namespace QuantLib {
             .withNotionals(faceAmount)
             .withCouponRates(coupons, accrualDayCounter)
             .withPaymentCalendar(calendar_)
-            .withPaymentAdjustment(paymentConvention);
+            .withPaymentAdjustment(paymentConvention)
+            .withExCouponPeriod(exCouponPeriod,
+                                exCouponCalendar,
+                                exCouponConvention,
+                                exCouponEndOfMonth);
 
         addRedemptionsToCashflows(std::vector<Real>(1, redemption));
 
@@ -72,7 +80,11 @@ namespace QuantLib {
                                  const Date& stubDate,
                                  DateGeneration::Rule rule,
                                  bool endOfMonth,
-                                 const Calendar& paymentCalendar)
+                                 const Calendar& paymentCalendar,
+                                 const Period& exCouponPeriod,
+                                 const Calendar& exCouponCalendar,
+                                 const BusinessDayConvention exCouponConvention,
+                                 bool exCouponEndOfMonth)
      : Bond(settlementDays,
             paymentCalendar==Calendar() ? calendar : paymentCalendar,
             issueDate),
@@ -109,7 +121,11 @@ namespace QuantLib {
             .withNotionals(faceAmount)
             .withCouponRates(coupons, accrualDayCounter)
             .withPaymentCalendar(calendar_)
-            .withPaymentAdjustment(paymentConvention);
+            .withPaymentAdjustment(paymentConvention)
+            .withExCouponPeriod(exCouponPeriod,
+                                exCouponCalendar,
+                                exCouponConvention,
+                                exCouponEndOfMonth);
 
         addRedemptionsToCashflows(std::vector<Real>(1, redemption));
 
@@ -124,7 +140,11 @@ namespace QuantLib {
                                  BusinessDayConvention paymentConvention,
                                  Real redemption,
                                  const Date& issueDate,
-                                 const Calendar& paymentCalendar)
+                                 const Calendar& paymentCalendar,
+                                 const Period& exCouponPeriod,
+                                 const Calendar& exCouponCalendar,
+                                 const BusinessDayConvention exCouponConvention,
+                                 bool exCouponEndOfMonth)
      : Bond(settlementDays,
             paymentCalendar==Calendar() ? schedule.calendar() : paymentCalendar,
             issueDate),
@@ -137,7 +157,11 @@ namespace QuantLib {
             .withNotionals(faceAmount)
             .withCouponRates(coupons)
             .withPaymentCalendar(calendar_)
-            .withPaymentAdjustment(paymentConvention);
+            .withPaymentAdjustment(paymentConvention)
+            .withExCouponPeriod(exCouponPeriod,
+                                exCouponCalendar,
+                                exCouponConvention,
+                                exCouponEndOfMonth);
 
         addRedemptionsToCashflows(std::vector<Real>(1, redemption));
 

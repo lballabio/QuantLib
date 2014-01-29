@@ -19,14 +19,16 @@
 
 #include "integrals.hpp"
 #include "utilities.hpp"
+#include <ql/math/functional.hpp>
 #include <ql/math/integrals/segmentintegral.hpp>
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/integrals/trapezoidintegral.hpp>
 #include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
+#include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/termstructures/volatility/abcd.hpp>
+#include <ql/math/integrals/twodimensionalintegral.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -112,6 +114,28 @@ void IntegralTest::testGaussKronrodNonAdaptive() {
     testSeveral(gaussKronrodNonAdaptive);
 }
 
+#include <iostream>
+void IntegralTest::testTwoDimensionalIntegration() {
+    BOOST_TEST_MESSAGE("Testing two dimensional adaptive "
+                       "Gauss-Lobatto integration...");
+
+    const Size maxEvaluations = 1000;
+    const Real calculated = TwoDimensionalIntegral(
+        boost::shared_ptr<Integrator>(
+            new TrapezoidIntegral<Default>(tolerance, maxEvaluations)),
+        boost::shared_ptr<Integrator>(
+            new TrapezoidIntegral<Default>(tolerance, maxEvaluations)))(
+        std::multiplies<Real>(),
+        std::make_pair(0.0, 0.0), std::make_pair(1.0, 2.0));
+
+    const Real expected = 1.0;
+    if (std::fabs(calculated-expected) > tolerance) {
+        BOOST_FAIL(std::setprecision(10)
+                   << "two dimensional integration: "
+                   << "\n    calculated: " << calculated
+                   << "\n    expected:   " << expected);
+    }
+}
 
 test_suite* IntegralTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Integration tests");
@@ -122,6 +146,7 @@ test_suite* IntegralTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testGaussKronrodAdaptive));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testGaussKronrodNonAdaptive));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testGaussLobatto));
+    suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testTwoDimensionalIntegration));
     return suite;
 }
 

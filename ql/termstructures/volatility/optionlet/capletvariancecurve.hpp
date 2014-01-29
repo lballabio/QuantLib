@@ -30,9 +30,6 @@
 
 namespace QuantLib {
 
-    /*! \deprecated use the StrippedOptionletAdapter of a
-                    StrippedOptionlet instance
-    */
     class CapletVarianceCurve : public OptionletVolatilityStructure {
       public:
         CapletVarianceCurve(const Date& referenceDate,

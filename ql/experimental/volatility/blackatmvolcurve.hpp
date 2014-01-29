@@ -44,15 +44,6 @@ namespace QuantLib {
             constructors.
         */
         //@{
-#ifndef QL_DISABLE_DEPRECATED
-        /*! \warning term structures initialized by means of this
-                     constructor must manage their own reference date
-                     by overriding the referenceDate() method.
-        */
-        BlackAtmVolCurve(const Calendar& cal,
-                         BusinessDayConvention bdc = Following,
-                         const DayCounter& dc = DayCounter());
-#endif
         //! default constructor
         /*! \warning term structures initialized by means of this
                      constructor must manage their own reference date

@@ -18,7 +18,8 @@
 */
 
 /*! \file atmsmilesection.hpp
-    \brief smile section that allows for explicit / alternate specification of atm level
+    \brief smile section that allows for explicit / alternate specification of
+   atm level
 */
 
 #ifndef quantlib_atm_smile_section_hpp
@@ -31,25 +32,22 @@ namespace QuantLib {
     class AtmSmileSection : public SmileSection {
 
       public:
+        AtmSmileSection(const boost::shared_ptr<SmileSection> source,
+                        const Real atm = Null<Real>());
 
-        AtmSmileSection(const boost::shared_ptr<SmileSection> source, const Real atm = Null<Real>());
-
-        Real minStrike () const { return source_->minStrike(); }
-        Real maxStrike () const { return source_->maxStrike(); }
+        Real minStrike() const { return source_->minStrike(); }
+        Real maxStrike() const { return source_->maxStrike(); }
         Real atmLevel() const { return f_; }
 
-        
-    protected:
+      protected:
+        Volatility volatilityImpl(Rate strike) const {
+            return source_->volatility(strike);
+        }
 
-        Volatility volatilityImpl(Rate strike) const { return source_->volatility(strike); }
-     
       private:
         boost::shared_ptr<SmileSection> source_;
         Real f_;
-
     };
-
-
 }
 
 #endif

@@ -49,7 +49,7 @@ namespace QuantLib {
         <li>Mid-Autumn Festival</li>
         </ul>
 
-        Data from <http://www.sse.com.cn/sseportal/en/home/home.shtml>
+        Data from <http://www.sse.com.cn/>
 
         \ingroup calendars
     */

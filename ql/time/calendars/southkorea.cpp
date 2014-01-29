@@ -85,6 +85,7 @@ namespace QuantLib {
             || ((d == 2 || d == 3 || d == 4) && m == February && y == 2011)
             || ((d == 23 || d == 24) && m == January && y == 2012)
             || (d == 11 && m == February && y == 2013)
+            || ((d == 30 || d == 31) && m == January && y == 2014)
             // Election Days
             || (d == 15 && m == April && y == 2004)    // National Assembly
             || (d == 31 && m == May && y == 2006)      // Regional election
@@ -93,6 +94,7 @@ namespace QuantLib {
             || (d ==  2 && m == June && y == 2010)     // Local election
             || (d == 11 && m == April && y == 2012)    // National Assembly
             || (d == 19 && m == December && y == 2012) // Presidency
+            || (d == 4 && m == June && y == 2014)      // Local election
             // Buddha's birthday
             || (d == 26 && m == May && y == 2004)
             || (d == 15 && m == May && y == 2005)
@@ -104,6 +106,7 @@ namespace QuantLib {
             || (d == 10 && m == May && y == 2011)
             || (d == 28 && m == May && y == 2012)
             || (d == 17 && m == May && y == 2013)
+            || (d == 6 && m == May && y == 2014)
             // Harvest Moon Day
             || ((d == 27 || d == 28 || d == 29) && m == September && y == 2004)
             || ((d == 17 || d == 18 || d == 19) && m == September && y == 2005)
@@ -115,8 +118,10 @@ namespace QuantLib {
             || ((d == 12 || d == 13) && m == September && y == 2011)
             || (d == 1 && m == October && y == 2012)
             || ((d == 18 || d == 19 || d == 20) && m == September && y == 2013)
+            || ((d == 8 || d == 9 || d == 10) && m == September && y == 2014)
             // Hangul Proclamation of Korea
             || (d == 9 && m == October && y == 2013)
+            || (d == 9 && m == October && y == 2014)
             )
             return false;
 
@@ -143,6 +148,7 @@ namespace QuantLib {
             || (d == 30 && m == December && y == 2011)
             || (d == 31 && m == December && y == 2012)
             || (d == 31 && m == December && y == 2013)
+            || (d == 31 && m == December && y == 2014)
             )
             return false;
 

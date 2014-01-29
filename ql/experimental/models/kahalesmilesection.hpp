@@ -50,7 +50,6 @@ namespace QuantLib {
     class KahaleSmileSection : public SmileSection {
 
       public:
-
         struct cFunction {
             // this is just a helper class where we do not want virtual
             // functions
@@ -83,7 +82,7 @@ namespace QuantLib {
                 Real beta = d20 - alpha * log(k0_);
                 s_ = -1.0 / alpha;
                 f_ = exp(s_ * (beta + s_ / 2.0));
-                QL_REQUIRE(f_<QL_KAHALE_FMAX,"dummy"); // this is caught
+                QL_REQUIRE(f_ < QL_KAHALE_FMAX, "dummy"); // this is caught
                 cFunction cTmp(f_, s_, a, 0.0);
                 b_ = c0_ - cTmp(k0_);
                 cFunction c(f_, s_, a, b_);
@@ -100,7 +99,7 @@ namespace QuantLib {
                 boost::math::normal normal;
                 Real d20 = boost::math::quantile(normal, -c0p_);
                 f_ = k0_ * exp(s * d20 + s * s / 2.0);
-                QL_REQUIRE(f_<QL_KAHALE_FMAX,"dummy"); // this is caught
+                QL_REQUIRE(f_ < QL_KAHALE_FMAX, "dummy"); // this is caught
                 cFunction c(f_, s, 0.0, 0.0);
                 return c(k0_) - c0_;
             }
@@ -116,7 +115,7 @@ namespace QuantLib {
                 boost::math::normal normal;
                 Real d21 = boost::math::quantile(normal, -c1p_);
                 f_ = k1_ * exp(s * d21 + s * s / 2.0);
-                QL_REQUIRE(f_<QL_KAHALE_FMAX,"dummy"); // this is caught
+                QL_REQUIRE(f_ < QL_KAHALE_FMAX, "dummy"); // this is caught
                 b_ = c0_ - f_;
                 cFunction c(f_, s, 0.0, b_);
                 return c(k1_) - c1_;

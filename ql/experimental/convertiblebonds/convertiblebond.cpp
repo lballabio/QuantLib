@@ -159,6 +159,12 @@ namespace QuantLib {
                                       dividends, callability, creditSpread,
                                       cashflows_, dayCounter, schedule,
                                       issueDate, settlementDays, redemption));
+
+        registerWith(index);
+    }
+
+    namespace {
+        void no_deletion(ConvertibleBond*) {}
     }
 
     ConvertibleBond::option::option(
@@ -183,7 +189,10 @@ namespace QuantLib {
       callability_(callability), dividends_(dividends),
       creditSpread_(creditSpread), cashflows_(cashflows),
       dayCounter_(dayCounter), issueDate_(issueDate), schedule_(schedule),
-      settlementDays_(settlementDays), redemption_(redemption) {}
+      settlementDays_(settlementDays), redemption_(redemption) {
+        registerWith(boost::shared_ptr<ConvertibleBond>(const_cast<ConvertibleBond*>(bond),
+                                                        no_deletion));
+    }
 
 
 

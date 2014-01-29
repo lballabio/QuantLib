@@ -249,7 +249,7 @@ namespace QuantLib {
             {
                 Integer nextStepToUse  = std::min<Integer>(currentStep-1, finalStepDone);
                 Integer nextStepIndex = nextStepToUse+1;
-                if (nextStepIndex != Size(stepToUse)) // then we need to update V
+                if (nextStepIndex != stepToUse) // then we need to update V
                 {
 
                     const Matrix& thisPseudoRoot_= pseudoRootStructure_->pseudoRoot(currentStep);
@@ -604,7 +604,7 @@ namespace QuantLib {
             {
                 Integer nextStepToUse  = std::min<Integer>(currentStep-1, finalStepDone);
                 Integer nextStepIndex = nextStepToUse+1;
-                if (nextStepIndex != Size(stepToUse)) // then we need to update V
+                if (nextStepIndex != stepToUse) // then we need to update V
                 {
 
                     const Matrix& thisPseudoRoot_= pseudoRootStructure_->pseudoRoot(currentStep);
@@ -1015,7 +1015,7 @@ namespace QuantLib {
             {
                 Integer nextStepToUse  = std::min<Integer>(currentStep-1, finalStepDone);
                 Integer nextStepIndex = nextStepToUse+1;
-                if (nextStepIndex != Size(stepToUse)) // then we need to update V
+                if (nextStepIndex != stepToUse) // then we need to update V
                 {
 
                     const Matrix& thisPseudoRoot_= pseudoRootStructure_->pseudoRoot(currentStep);

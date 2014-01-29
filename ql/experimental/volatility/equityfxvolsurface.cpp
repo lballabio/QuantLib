@@ -21,13 +21,6 @@
 
 namespace QuantLib {
 
-#ifndef QL_DISABLE_DEPRECATED
-    EquityFXVolSurface::EquityFXVolSurface(const Calendar& cal,
-                                           BusinessDayConvention bdc,
-                                           const DayCounter& dc)
-    : BlackVolSurface(cal, bdc, dc) {}
-#endif
-
     EquityFXVolSurface::EquityFXVolSurface(BusinessDayConvention bdc,
                                            const DayCounter& dc)
     : BlackVolSurface(bdc, dc) {}
