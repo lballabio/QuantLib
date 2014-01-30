@@ -25,7 +25,7 @@
 #define quantlib_two_dimensional_integral_2d_hpp
 
 #include <ql/math/integrals/integral.hpp>
-
+#include <boost/shared_ptr.hpp>
 #include <boost/bind.hpp>
 #include <utility>
 
