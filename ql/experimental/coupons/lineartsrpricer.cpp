@@ -20,8 +20,6 @@
 /*! \file lineartsrpricer.cpp
 */
 
-#include <boost/make_shared.hpp>
-
 #include <ql/experimental/coupons/lineartsrpricer.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
@@ -35,6 +33,7 @@
 #include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/experimental/models/atmsmilesection.hpp>
+#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
