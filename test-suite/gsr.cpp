@@ -46,7 +46,7 @@ using namespace boost::unit_test_framework;
 
 void GsrTest::testGsrProcess() {
 
-    BOOST_MESSAGE("Testing GsrProcess");
+    BOOST_MESSAGE("Testing GSR process...");
 
     Date refDate = Settings::instance().evaluationDate();
 
@@ -162,7 +162,7 @@ void GsrTest::testGsrProcess() {
 
 void GsrTest::testGsrModel() {
 
-    BOOST_MESSAGE("Testing GsrModel");
+    BOOST_MESSAGE("Testing GSR model...");
 
     Date refDate = Settings::instance().evaluationDate();
 
