@@ -24,7 +24,6 @@
 #ifndef quantlib_gsr_hpp
 #define quantlib_gsr_hpp
 
-#include <ql/mathconstants.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>

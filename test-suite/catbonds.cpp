@@ -426,9 +426,9 @@ void CatBondTest::testCatBondInDoomScenario() {
     Real exhaustionProbability = catBond.exhaustionProbability();
     Real expectedLoss = catBond.expectedLoss();
 
-    BOOST_CHECK_CLOSE(1, lossProbability, tolerance);
-    BOOST_CHECK_CLOSE(1, exhaustionProbability, tolerance);
-    BOOST_CHECK_CLOSE(1, expectedLoss, tolerance);
+    BOOST_CHECK_CLOSE(1.0, lossProbability, tolerance);
+    BOOST_CHECK_CLOSE(1.0, exhaustionProbability, tolerance);
+    BOOST_CHECK_CLOSE(1.0, expectedLoss, tolerance);
 }
 
 

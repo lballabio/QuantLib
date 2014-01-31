@@ -42,7 +42,7 @@
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 
 using namespace QuantLib;
-using namespace boost::unit_test_framework;
+using boost::unit_test_framework::test_suite;
 
 void GsrTest::testGsrProcess() {
 
