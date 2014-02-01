@@ -12,7 +12,6 @@ DiscreteHedging_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
     DiscreteHedging.dev \
-    DiscreteHedging_vc7.vcproj \
     DiscreteHedging_vc8.vcproj \
     DiscreteHedging_vc9.vcproj \
     DiscreteHedging_vc10.vcxproj \

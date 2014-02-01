@@ -26,15 +26,11 @@
 
 #include <ql/types.hpp>
 #include <boost/shared_ptr.hpp>
-#if defined(QL_PATCH_MSVC71)
-    #pragma unmanaged
-#elif defined(QL_PATCH_MSVC)
+#if defined(QL_PATCH_MSVC)
     #pragma managed(push, off)
 #endif
 #include <boost/noncopyable.hpp>
-#if defined(QL_PATCH_MSVC71)
-    #pragma managed
-#elif defined(QL_PATCH_MSVC)
+#if defined(QL_PATCH_MSVC)
     #pragma managed(pop)
 #endif
 #include <map>
@@ -56,11 +52,8 @@ namespace QuantLib {
     Integer sessionId();
     #endif
 
-    // this is required on VC++ (with a slightly different syntax depending
-    // on the compiler version) when CLR support is enabled
-    #if defined(QL_PATCH_MSVC71)
-        #pragma unmanaged
-    #elif defined(QL_PATCH_MSVC)
+    // this is required on VC++ when CLR support is enabled
+    #if defined(QL_PATCH_MSVC)
         #pragma managed(push, off)
     #endif
 
@@ -120,9 +113,7 @@ namespace QuantLib {
     }
 
     // reverts the change above
-    #if defined(QL_PATCH_MSVC71)
-        #pragma managed
-    #elif defined(QL_PATCH_MSVC)
+    #if defined(QL_PATCH_MSVC)
         #pragma managed(pop)
     #endif
 
