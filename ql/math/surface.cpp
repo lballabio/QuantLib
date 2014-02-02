@@ -18,7 +18,15 @@
 */
 
 #include <ql/math/surface.hpp>
-#include <ql/math/domain.hpp>
+
+// we know Domain is deprecated, we're deprecating Surface too.
+#if defined(BOOST_MSVC)
+#pragma warning( disable : 4996 )
+#elif defined(__clang__)
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__GNUC__)
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 
 namespace QuantLib {
 
@@ -29,4 +37,5 @@ namespace QuantLib {
     boost::shared_ptr<Domain> TestSurface::domain() const {
         return boost::shared_ptr<Domain>(new UniversalDomain);
     }
+
 }

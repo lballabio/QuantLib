@@ -25,6 +25,17 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+// we know Surface and Domain are deprecated.
+// The tests will disappear when the classes do.
+#if defined(BOOST_MSVC)
+#pragma warning( disable : 4996 )
+#elif defined(__clang__)
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__GNUC__)
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
+
 void SurfaceTest::testOutput() {
 
     BOOST_TEST_MESSAGE("Testing surface class...");

@@ -30,25 +30,26 @@
 namespace QuantLib {
 
     //! %domain abstract lcass
-
-    class Domain : public std::binary_function<Real, Real, bool>{
+    /*! \deprecated */
+    class QL_DEPRECATED Domain
+        : public std::binary_function<Real, Real, bool>{
     public:
         virtual bool includes(Real x, Real y) const = 0;
         bool operator()(Real x, Real y) {return includes(x, y);}
         virtual ~Domain() {};
     };
 
-    class UniversalDomain : public Domain {
+    class QL_DEPRECATED UniversalDomain : public Domain {
     public:
         bool includes(Real, Real) const { return true; }
     };
 
-    class NullDomain : public Domain {
+    class QL_DEPRECATED NullDomain : public Domain {
     public:
         bool includes(Real, Real) const { return false; }
     };
 
-    class BoundedDomain : public Domain {
+    class QL_DEPRECATED BoundedDomain : public Domain {
     public:
         virtual Real xLowerBound() const = 0;
         virtual Real xUpperBound() const = 0;
@@ -56,7 +57,7 @@ namespace QuantLib {
         virtual Real yUpperBound() const = 0;
     };
 
-    class RectangularDomain : public BoundedDomain {
+    class QL_DEPRECATED RectangularDomain : public BoundedDomain {
     public:
         RectangularDomain(Real x1, Real y1, Real x2, Real y2) :
             minX_(x1), minY_(y1), maxX_(x2), maxY_(y2) {};

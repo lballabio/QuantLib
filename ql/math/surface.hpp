@@ -24,27 +24,47 @@
 #ifndef quantlib_surface_hpp
 #define quantlib_surface_hpp
 
-#include <ql/types.hpp>
+#include <ql/math/domain.hpp>
 #include <boost/shared_ptr.hpp>
 #include <functional>
 
 namespace QuantLib {
-    class Domain;
-    //! %Surface abstract class
-    //@todo: Interface this with STL binary function template
 
-    class Surface : public std::binary_function<Real, Real, Real> {
+// we know Domain is deprecated, we're deprecating Surface too.
+#if defined(BOOST_MSVC)
+#pragma warning( push )
+#pragma warning( disable : 4996 )
+#elif defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
+    //! %Surface abstract class
+    /*! \deprecated */
+    class QL_DEPRECATED Surface
+        : public std::binary_function<Real, Real, Real> {
       public:
         virtual Real operator()(Real x, Real y) const = 0;
         virtual boost::shared_ptr<Domain> domain() const = 0;
         virtual ~Surface() {};
     };
 
-    class TestSurface : public Surface {
-    public:
+    class QL_DEPRECATED TestSurface : public Surface {
+      public:
         Real operator()(Real x, Real y) const;
         boost::shared_ptr<Domain> domain() const;
     };
+
+#if defined(BOOST_MSVC)
+#pragma warning( pop )
+#elif defined(__clang__)
+#pragma clang diagnostic pop
+#elif defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 
 }
 
