@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2014 RiskMap srl
+ Copyright (C) 2014 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
