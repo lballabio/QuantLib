@@ -12,7 +12,6 @@ CDS_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
     CDS.dev \
-    CDS_vc7.vcproj \
     CDS_vc8.vcproj \
     CDS_vc9.vcproj \
     CDS_vc10.vcxproj \

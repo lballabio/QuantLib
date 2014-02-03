@@ -22,8 +22,6 @@ EXTRA_DIST = \
 	News.txt \
 	QuantLib.dev \
 	QuantLib.spec \
-	QuantLib_vc7.sln \
-	QuantLib_vc7.vcproj \
 	QuantLib_vc8.sln \
 	QuantLib_vc8.vcproj \
 	QuantLib_vc9.sln \

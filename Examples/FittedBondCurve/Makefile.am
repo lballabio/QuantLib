@@ -12,7 +12,6 @@ FittedBondCurve_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
     FittedBondCurve.dev \
-    FittedBondCurve_vc7.vcproj \
     FittedBondCurve_vc8.vcproj \
     FittedBondCurve_vc9.vcproj \
     FittedBondCurve_vc10.vcxproj \

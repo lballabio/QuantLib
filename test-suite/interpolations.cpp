@@ -1649,7 +1649,7 @@ namespace {
 }
 
 void InterpolationTest::testRichardsonExtrapolation() {
-    BOOST_TEST_MESSAGE("Testing Richardson Extrapolation...");
+    BOOST_TEST_MESSAGE("Testing Richardson extrapolation...");
 
     /* example taken from
      * http://www.ipvs.uni-stuttgart.de/abteilungen/bv/lehre/

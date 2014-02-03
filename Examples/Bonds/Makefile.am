@@ -12,7 +12,6 @@ Bonds_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
     Bonds.dev \
-    Bonds_vc7.vcproj \
     Bonds_vc8.vcproj \
     Bonds_vc9.vcproj \
     Bonds_vc10.vcxproj \

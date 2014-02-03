@@ -4750,7 +4750,7 @@ void MarketModelTest::testIsInSubset() {
 
     // Performance test for isInSubset function (temporary)
 
-    BOOST_TEST_MESSAGE("Testing isInSubset...");
+    BOOST_TEST_MESSAGE("Testing isInSubset function...");
 
     setup();
 

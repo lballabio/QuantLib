@@ -82,7 +82,7 @@ namespace {
 
 void VPPTest::testGemanRoncoroniProcess() {
 
-    BOOST_TEST_MESSAGE("Testing Geman Roncoroni process...");
+    BOOST_TEST_MESSAGE("Testing Geman-Roncoroni process...");
 
     /* Example induced by H. Geman, A. Roncoroni,
        "Understanding the Fine Structure of Electricity Prices",
@@ -207,7 +207,7 @@ void VPPTest::testGemanRoncoroniProcess() {
 
 void VPPTest::testSimpleExtOUStorageEngine() {
 
-    BOOST_TEST_MESSAGE("Testing Simple Storage option based on ext. OU model...");
+    BOOST_TEST_MESSAGE("Testing simple-storage option based on ext. OU model...");
 
     SavedSettings backup;
 
@@ -255,7 +255,7 @@ void VPPTest::testSimpleExtOUStorageEngine() {
 
 void VPPTest::testKlugeExtOUSpreadOption() {
 
-    BOOST_TEST_MESSAGE("Testing Simple Kluge ext-Ornstein-Uhlenbeck spread option...");
+    BOOST_TEST_MESSAGE("Testing simple Kluge ext-Ornstein-Uhlenbeck spread option...");
 
     SavedSettings backup;
 

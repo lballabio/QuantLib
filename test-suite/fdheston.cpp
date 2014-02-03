@@ -838,7 +838,7 @@ namespace {
 }
 
 void FdHestonTest::testSquareRootZeroFlowBC() {
-    BOOST_TEST_MESSAGE("Testing Zero Flow BC for the square root process...");
+    BOOST_TEST_MESSAGE("Testing zero-flow BC for the square root process...");
 
     SavedSettings backup;
 
@@ -926,7 +926,7 @@ namespace {
 
 
 void FdHestonTest::testTransformedZeroFlowBC() {
-    BOOST_TEST_MESSAGE("Testing zero flow BC for transformed "
+    BOOST_TEST_MESSAGE("Testing zero-flow BC for transformed "
                        "Fokker-Planck forward equation...");
 
     SavedSettings backup;

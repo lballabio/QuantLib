@@ -119,12 +119,12 @@ namespace QuantLib {
                                << volsteptimes_[j] << "@" << j << ")");
         }
 
-        std::vector<Date>::const_iterator i;
         if (capletCalibrated_) {
-            for (i = capletExpiries_.begin(); i != capletExpiries_.end(); i++) {
+            for (std::vector<Date>::const_iterator i = capletExpiries_.begin(); i != capletExpiries_.end(); i++) {
                 makeCapletCalibrationPoint(*i);
             }
         } else {
+            std::vector<Date>::const_iterator i;
             std::vector<Period>::const_iterator j;
             for (i = swaptionExpiries_.begin(), j = swaptionTenors_.begin();
                  i != swaptionExpiries_.end(); i++, j++) {

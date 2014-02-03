@@ -12,7 +12,6 @@ EquityOption_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
     EquityOption.dev \
-    EquityOption_vc7.vcproj \
     EquityOption_vc8.vcproj \
     EquityOption_vc9.vcproj \
     EquityOption_vc10.vcxproj \
