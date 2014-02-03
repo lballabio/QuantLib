@@ -29,11 +29,15 @@
 
 namespace QuantLib {
 
-    //! %domain abstract lcass
+    //! %domain abstract class
     /*! \deprecated */
     class QL_DEPRECATED Domain
         : public std::binary_function<Real, Real, bool>{
     public:
+#if defined(BOOST_MSVC)
+#pragma warning( push )
+#pragma warning( disable : 4996 )
+#endif
         virtual bool includes(Real x, Real y) const = 0;
         bool operator()(Real x, Real y) {return includes(x, y);}
         virtual ~Domain() {};
@@ -72,6 +76,11 @@ namespace QuantLib {
     private:
         Real minX_, minY_, maxX_, maxY_;
     };
+
+#if defined(BOOST_MSVC)
+#pragma warning( pop )
+#endif
+
 }
 
 
