@@ -306,6 +306,8 @@ namespace QuantLib {
                coupon_->accrualPeriod();
     }
 
+    Real LinearTsrPricer::meanReversion() const { return meanReversion_->value(); }
+
     Rate LinearTsrPricer::swapletRate() const {
         return swapletPrice() /
                (coupon_->accrualPeriod() *

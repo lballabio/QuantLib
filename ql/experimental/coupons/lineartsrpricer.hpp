@@ -48,7 +48,7 @@ namespace QuantLib {
           threshold
     */
 
-    class LinearTsrPricer : public CmsCouponPricer {
+    class LinearTsrPricer : public CmsCouponPricer, public MeanRevertingPricer {
 
       public:
 
