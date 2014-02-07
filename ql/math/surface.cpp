@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/math/surface.hpp>
+#include <ql/qldefines.hpp>
 
 // we know Domain is deprecated, we're deprecating Surface too.
 #if defined(BOOST_MSVC)
@@ -27,6 +27,8 @@
 #elif defined(__GNUC__)
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
+
+#include <ql/math/surface.hpp>
 
 namespace QuantLib {
 
