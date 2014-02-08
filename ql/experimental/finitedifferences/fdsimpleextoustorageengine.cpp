@@ -37,7 +37,6 @@
 #include <ql/experimental/finitedifferences/fdmsimple2dextousolver.hpp>
 #include <ql/experimental/finitedifferences/fdmexpextouinnervaluecalculator.hpp>
 
-
 namespace QuantLib {
 
     namespace {
@@ -63,12 +62,13 @@ namespace QuantLib {
     FdSimpleExtOUStorageEngine::FdSimpleExtOUStorageEngine(
             const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& process,
             const boost::shared_ptr<YieldTermStructure>& rTS,
-            Size tGrid, Size xGrid,
+            Size tGrid, Size xGrid, Size yGrid,
             const FdmSchemeDesc& schemeDesc)
     : process_(process),
       rTS_  (rTS),
       tGrid_(tGrid),
       xGrid_(xGrid),
+      yGrid_(yGrid),
       schemeDesc_(schemeDesc) {
     }
 
@@ -88,7 +88,9 @@ namespace QuantLib {
 
         const boost::shared_ptr<Fdm1dMesher> storageMesher(
             new Uniform1dMesher(0, arguments_.capacity,
-                                Size(arguments_.capacity/arguments_.changeRate+1)));
+            	(yGrid_ == Null<Size>())
+            	    ? Size(arguments_.capacity/arguments_.changeRate+1)
+            		: yGrid_));
 
         const boost::shared_ptr<FdmMesher> mesher (
             new FdmMesherComposite(xMesher, storageMesher));

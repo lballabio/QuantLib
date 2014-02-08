@@ -40,7 +40,7 @@ namespace QuantLib {
           FdSimpleExtOUStorageEngine(
                   const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& p,
                   const boost::shared_ptr<YieldTermStructure>& rTS,
-                  Size tGrid = 50, Size xGrid = 100,
+                  Size tGrid = 50, Size xGrid = 100, Size yGrid = Null<Size>(),
                   const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
 
         void calculate() const;
@@ -48,7 +48,7 @@ namespace QuantLib {
       private:
         const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> process_;
         const boost::shared_ptr<YieldTermStructure> rTS_;
-        const Size tGrid_, xGrid_;
+        const Size tGrid_, xGrid_, yGrid_;
         const FdmSchemeDesc schemeDesc_;
     };
 }

@@ -73,22 +73,18 @@ namespace QuantLib {
                 const Real x = x_[coor[0]];
                 const Real y = y_[coor[1]];
 
-                const Real price = calculator_->innerValue(iter, t);
-                Real currentValue = a[iter.index()];
+				const Real maxWithDraw = std::min(y-y_.front(), changeRate_);
+				const Real sellPrice   = interpl(x, y-maxWithDraw);
 
-                // sell
-                if (coor[1] > 0) {
-                    const Real sellPrice = interpl(x, y-changeRate_);
-                    currentValue
-                        = std::max(currentValue, sellPrice + price*changeRate_);
-                }
-                // buy
-                if (coor[1] < y_.size()-1) {
-                    const Real buyPrice = interpl(x, y+changeRate_);
-                    currentValue
-                        = std::max(currentValue, buyPrice - price*changeRate_);
-                }
-                retVal[iter.index()] = currentValue;
+				const Real maxInject = std::min(y_.back()-y, changeRate_);
+				const Real buyPrice  = interpl(x, y+maxInject);
+
+                const Real currentValue = a[iter.index()];
+                const Real price = calculator_->innerValue(iter, t);
+
+                retVal[iter.index()] = std::max(currentValue,
+					std::max(buyPrice - price*maxInject,
+							sellPrice + price*maxWithDraw));
             }
             a = retVal;
         }
