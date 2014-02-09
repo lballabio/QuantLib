@@ -9,6 +9,7 @@ this_include_HEADERS = \
     expm.hpp \
     farliegumbelmorgensterncopularng.hpp \
     frankcopularng.hpp \
+	polarstudenttrng.hpp \
     simulatedannealing.hpp \
     zigguratrng.hpp
 
