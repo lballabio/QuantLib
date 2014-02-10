@@ -54,7 +54,9 @@
       the finite-differences and tree frameworks.
 
     DATE/TIME
-    - Added Diamond Jubilee bank holiday to London calendar.
+    - Added Diamond Jubilee bank holiday to UK calendar.
+    - Added Royal Wedding bank holiday to UK calendar (thanks to
+      Whit Armstrong for the heads-up).
     - Added utilities to parse and format a date with the extended
       format implemented in Boost.Date (thanks to Michael von den
       Driesch).  The previous parsing utility was deprecated.
