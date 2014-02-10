@@ -325,7 +325,6 @@ void MargrabeOptionTest::testGreeks() {
     tolerance["theta"]   = 1.0e-5;
     tolerance["rho"]     = 1.0e-5;
 
-    Option::Type types[] = {Option::Call};
     Real underlyings1[]  = { 22.0 };
     Real underlyings2[]  = { 20.0 };
     Rate qRates1[]       = { 0.06, 0.16, 0.04 };
@@ -355,8 +354,7 @@ void MargrabeOptionTest::testGreeks() {
     boost::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(vol2, dc);
 
-    for (Size i=0; i<LENGTH(types); i++) {
-        for (Size k=0; k<LENGTH(residualTimes); k++) {
+    for (Size k=0; k<LENGTH(residualTimes); k++) {
           Date exDate = today + timeToDays(residualTimes[k]);
           boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
@@ -488,7 +486,6 @@ void MargrabeOptionTest::testGreeks() {
                 }
               }
           }
-        }
     }
 }
 
