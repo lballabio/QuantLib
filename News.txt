@@ -23,7 +23,12 @@ PORTABILITY
   required.  Anybody who is still stuck with this compiler and needs
   the support can fork the repository and maintain the changes.
 
-- Fixed Clang warnings
+- Specific support for Visual C++ 2013 (VC++12) is not yet available;
+  however, version checks in the code were relaxed so that one can
+  import and convert the VC++11 solution without causing errors when
+  auto-linking the generated libraries.
+
+- Fixed Clang warnings.
 
 - Use deprecated attribute of supported compilers.
   This replaces the QL_DISABLE_DEPRECATED mechanism that conditionally
