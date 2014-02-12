@@ -7232,7 +7232,7 @@
 			</Filter>
 			<Filter
 				Name="exercise"
-				Filter="">
+				>
 				<File
 					RelativePath=".\ql\experimental\exercise\all.hpp"
 					>
@@ -7914,14 +7914,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\models\gaussian1dmodel.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\models\gaussian1dmodel.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\experimental\models\gaussian1dcapfloorengine.cpp"
 					>
 				</File>
@@ -7946,11 +7938,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\models\gaussian1dswaptionengine.cpp"
+					RelativePath=".\ql\experimental\models\gaussian1dmodel.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\models\gaussian1dswaptionengine.hpp"
+					RelativePath=".\ql\experimental\models\gaussian1dmodel.hpp"
 					>
 				</File>
 				<File
@@ -7959,6 +7951,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\models\gaussian1dnonstandardswaptionengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\gaussian1dswaptionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\gaussian1dswaptionengine.hpp"
 					>
 				</File>
 				<File
@@ -8659,6 +8659,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\math\frankcopularng.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\polarstudenttrng.hpp"
 					>
 				</File>
 				<File
