@@ -133,6 +133,14 @@ namespace QuantLib {
         Handle<SwaptionVolatilityStructure> swaptionVol_;
     };
 
+    /*! (CMS) coupon pricer that has a mean reversion parameter which can be
+      used to calibrate to cms market quotes */
+    class MeanRevertingPricer {
+    public:
+        virtual Real meanReversion() const = 0;
+        virtual void setMeanReversion(const Handle<Quote>&) = 0;
+    };
+
     void setCouponPricer(const Leg& leg,
                          const boost::shared_ptr<FloatingRateCouponPricer>&);
 
