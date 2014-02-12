@@ -1588,6 +1588,7 @@
     <ClInclude Include="ql\experimental\math\claytoncopularng.hpp" />
     <ClInclude Include="ql\experimental\math\farliegumbelmorgensterncopularng.hpp" />
     <ClInclude Include="ql\experimental\math\frankcopularng.hpp" />
+    <ClInclude Include="ql\experimental\math\polarstudenttrng.hpp" />
     <ClInclude Include="ql\experimental\math\simulatedannealing.hpp" />
     <ClInclude Include="ql\experimental\math\zigguratrng.hpp" />
     <ClInclude Include="ql\experimental\models\all.hpp" />
