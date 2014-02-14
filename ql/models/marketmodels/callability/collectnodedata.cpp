@@ -108,11 +108,13 @@ namespace QuantLib {
                        dataProvider.evolution().evolutionTimes());
         std::valarray<bool> isExerciseTime(false,evolutionTimes.size());
         std::valarray<bool> v = rebate.isExerciseTime();
-        Size exercises = 0;
+        Size exercises = 0, idx = 0;
         for (i=0; i<evolutionTimes.size(); ++i) {
             if (isRebateTime[i]) {
-                isExerciseTime[i] = v[exercises];
-                ++exercises;
+                if(v[idx++]) {
+                    isExerciseTime[i] = true;
+                    exercises++;
+                }
             }
         }
 
