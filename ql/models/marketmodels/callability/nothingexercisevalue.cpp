@@ -40,9 +40,13 @@ namespace QuantLib {
             isExerciseTime_ = std::valarray<bool>(true,rateTimes.empty() ? 0 : rateTimes.size()-1);
         }
         else {
-            QL_REQUIRE(isExerciseTime_.size() == (rateTimes.empty() ? 0 : rateTimes.size()-1),
-                       "isExerciseTime (" << isExerciseTime_.size() << ") must " <<
-                       "have same size as rateTimes minus 1 (" << numberOfExercises_ << ")");
+            QL_REQUIRE(isExerciseTime_.size() ==
+                           (rateTimes.empty() ? 0 : rateTimes.size() - 1),
+                       "isExerciseTime ("
+                           << isExerciseTime_.size() << ") must "
+                           << "have same size as rateTimes minus 1 ("
+                           << (rateTimes.empty() ? 0 : rateTimes.size() - 1)
+                           << ")");
         }
         numberOfExercises_ = 0;
         for(Size i=0;i<isExerciseTime_.size();i++)
