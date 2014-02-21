@@ -255,7 +255,7 @@ namespace QuantLib {
             Rate lowerLimit = 0.0,
             Rate upperLimit = 1.0,
             Real precision = 1.0e-6,
-            Real hardUpperLimit = 2.0);
+            Real hardUpperLimit = QL_MAX_REAL);
 
        Real upperLimit() { return upperLimit_; }
        Real stdDeviations() { return stdDeviationsForUpperLimit_; }
