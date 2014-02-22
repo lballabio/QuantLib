@@ -97,6 +97,8 @@
       BlackFormula (thanks to Gary Kennedy).
     - Added Broadie-Kaya exact simulation schema to Heston model
       (thanks to Klaus Spanderen).
+    - Fixed upper/lower bound calculation for internal constraint in
+      calibrated model (thanks to Peter Caspers).
 
     CASH FLOWS
     - Added support for ex-coupon dates to cashflow calculations
