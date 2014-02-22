@@ -776,7 +776,7 @@ void HestonModelTest::testKahlJaeckelCase() {
             boost::shared_ptr<HestonProcess>(
                 new HestonProcess(
                     riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho,
-                    HestonProcess::BroadieKayaExactSchemeLobatto)))
+                    HestonProcess::BroadieKayaExactSchemeLaguerre)))
         .withSteps(1)
         .withSamples(1023));
 
