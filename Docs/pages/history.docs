@@ -36,7 +36,11 @@
       time and effort required.  Anybody who is still stuck with this
       compiler and needs the support can fork the repository and
       maintain the changes.
-    - Fixed Clang warnings
+    - Specific support for Visual C++ 2013 (VC++12) is not yet
+      available; however, version checks in the code were relaxed so
+      that one can import and convert the VC++11 solution without
+      causing errors when auto-linking the generated libraries.
+    - Fixed Clang warnings.
     - Use deprecated attribute of supported compilers.
       This replaces the QL_DISABLE_DEPRECATED mechanism that
       conditionally removes the features and causes the compiler
@@ -54,7 +58,9 @@
       the finite-differences and tree frameworks.
 
     DATE/TIME
-    - Added Diamond Jubilee bank holiday to London calendar.
+    - Added Diamond Jubilee bank holiday to UK calendar.
+    - Added Royal Wedding bank holiday to UK calendar (thanks to
+      Whit Armstrong for the heads-up).
     - Added utilities to parse and format a date with the extended
       format implemented in Boost.Date (thanks to Michael von den
       Driesch).  The previous parsing utility was deprecated.

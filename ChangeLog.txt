@@ -1,3 +1,64 @@
+commit 23d75a2f20aefc9990abf806fd268e4f772d6beb
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 11 Feb 2014 18:12:42 +0100
+
+    Allow auto-linking for VC++12.
+    
+    We still don't have projects for VC++12; this change allows one
+    to use the VC++11 solution and auto-link the generated library.
+
+commit 269e7b32482b917a09b5e4b12eac167e7969ef45
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 11 Feb 2014 10:26:48 +0100
+
+    Removed extra calculations.
+    
+    Apparently, they were added to nudge the compiler into not
+    optimizing method calls away. They were replaced by a proper
+    update method.
+
+commit 0365318322a0444c4b85ef514456b3f2f2c50508
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 10 Feb 2014 17:28:36 +0100
+
+    Remove unused test parameter.
+
+commit 27b9e84e7396b2ca4526f232c1f8bc95d562991f
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 10 Feb 2014 17:28:12 +0100
+
+    Remove duplicated assignments.
+
+commit 728484b97b5401ab40466f8532a93a27c019cd65
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 10 Feb 2014 17:27:09 +0100
+
+    Avoid shadowing data member with constructor argument.
+    
+    This could cause the data member to be given a null value.
+
+commit 19035c1b1a577f11067638a056e8b63b93275a31
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 10 Feb 2014 17:25:25 +0100
+
+    Remove unused assignment.
+    
+    The value is overwritten a few lines later.
+
+commit 67e989ff1d98ccb80d00387ab6e412e0b34ec372
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 10 Feb 2014 17:15:55 +0100
+
+    Add Royal Wedding bank holiday to UK calendar.
+    
+    Thanks to Whit Armstrong for the heads-up.
+
+commit 344a8ad46ad7433a2bd89002f2c2ef28726d6884
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 4 Feb 2014 15:46:42 +0100
+
+    Update changelogs.
+
 commit 89c6169ea23f3ec40d79dec64a6925ef282fcba0
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Tue, 4 Feb 2014 14:56:34 +0100
