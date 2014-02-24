@@ -66,6 +66,9 @@
       Driesch).  The previous parsing utility was deprecated.
     - Added Actual/365 (No Leap) day counter (thanks to Nick Glass).
     - Updated most moving holidays for 2014.
+    - Fixed a Schedule bug where a combination of backwards generation
+      and end-of-month convention would result in missing or
+      duplicated dates (thanks to Nicholas Manganaro for the heads-up).
 
     INSTRUMENTS
     - Fixed Delta and Gamma calculation in Ju quadratic engine (thanks

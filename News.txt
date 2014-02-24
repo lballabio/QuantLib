@@ -63,6 +63,10 @@ DATE/TIME
 
 - Updated most moving holidays for 2014.
 
+- Fixed a Schedule bug where a combination of backwards generation and
+  end-of-month convention would result in missing or duplicated dates
+  (thanks to Nicholas Manganaro for the heads-up).
+
 INSTRUMENTS
 
 - Fixed Delta and Gamma calculation in Ju quadratic engine (thanks to
