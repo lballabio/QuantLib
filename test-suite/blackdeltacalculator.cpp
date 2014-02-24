@@ -108,7 +108,6 @@ void BlackDeltaCalculatorTest::testDeltaValues(){
         currSpot    =values[i].spot;
         currdDf     =values[i].dDf;
         currfDf     =values[i].fDf;
-        currSpot    =values[i].spot;
         currStdDev  =values[i].stdDev;
         currStrike  =values[i].strike;
         currDelta   =values[i].value;
@@ -546,7 +545,6 @@ void BlackDeltaCalculatorTest::testAtmCalcs(){
         currSpot    =values[i].spot;
         currdDf     =values[i].dDf;
         currfDf     =values[i].fDf;
-        currSpot    =values[i].spot;
         currStdDev  =values[i].stdDev;
         currFwd     =currSpot*currfDf/currdDf;
 

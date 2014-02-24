@@ -1,1218 +1,2116 @@
-commit 56eb434163d39a4f0a898ce535c2313c6722a0e9
+commit 054efcb91497c418c72a5f7c332788011cff2ec9
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 1 Jul 2013 09:45:30 +0200
+Date:   Mon, 24 Feb 2014 12:33:07 +0100
 
-    Removed explicit conversions from pointer to shared_ptr.
+    Fixed a Schedule bug.
     
-    They're no longer valid on all compilers.
-
-commit 0c659e510ff06ebd0d92809b0ee9864e6e193053
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 28 Jun 2013 10:35:43 +0200
-
-    Added namespace qualification to some math function calls.
+    A combination of backwards generation and end-of-month convention
+    could result in missing or duplicated first dates.
     
-    These calls were causing compilation errors on Solaris.
-    Thanks to Paul Rädle for the heads-up.
+    Thanks to Nicholas Manganaro for the heads-up.
 
-commit 000c052c89092f27357fdbe055a1d7bbb93232f7
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 28 Jun 2013 10:35:12 +0200
-
-    Avoid exiting upon error.
-
-commit 651de1701da684191e6f6a0dea7a478f2ebdbaf9
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 27 Jun 2013 18:22:06 +0200
-
-    Ensure that the correct overload of fabs is used.
-    
-    Older versions of gcc would pick int abs(int) instead of the
-    floating-point overload.
-
-commit 676e31d9b2f86c2907669747c697f0ec6b62ce64
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 27 Jun 2013 17:09:38 +0200
-
-    Prevent warnings about unused or uninitialized variables.
-
-commit 48db7277aa62417ee3342c7ea4cd2e90786a7ab6
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 27 Jun 2013 17:08:27 +0200
-
-    Fixed order of data member initialization.
-
-commit e133273f2078e5188ab3ff236d7cfcb70e792df3
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 27 Jun 2013 14:14:13 +0200
-
-    Updated VC++ and Dev-C++ projects.
-    
-    A couple of header files were moved around, which didn't affect
-    the build but left a couple of dangling file references into
-    the projects.
-
-commit 71657da35f71f5b305c5d5d59703aa73f7b8b7b9
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 27 Jun 2013 09:23:02 +0200
-
-    Increased tolerance for numerical errors in tests.
-
-commit b30dceb7650dbe8b6e567a2399d73b01e6b5e2fc
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 26 Jun 2013 17:51:52 +0200
-
-    Disabled a few test cases when using older Boost versions.
-    
-    The test cases are using features which are only available in
-    newer versions.
-
-commit 0468858c24a240fbc9e459dd9a42e2472086c985
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 25 Jun 2013 15:57:30 +0200
-
-    Prevent a few warnings and errors in VC++.
-    
-    Problems included:
-    - math macro redefinitions;
-    - suspicious conversions from int to bool;
-    - extended scope of for-loop variables;
-    - ambiguous resolution of symbols in older Boost versions.
-
-commit c8d3a1599ed9afee48980905d93c9ff81fb9fb80
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 26 Jun 2013 13:42:36 +0200
-
-    Fixed missing spaces in test messages.
-
-commit 6ece64648793897ebba58227826c6c5f24a19431
-Merge: 2540ab4 da93efb
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 25 Jun 2013 10:31:07 +0200
-
-    Merge pull request #9 from Peter Caspers.
-    
-    Fixes to experimental Markov functional model.
-    Additional fixes in this commit:
-    - fixed C++11-only syntax;
-    - replaced hard tabs with spaces;
-    - reordered included headers.
-
-commit da93efb4ff9c0f51deed79522cf4059907316c12
+commit 303bcaf034cc11738a6652b4b436c3f4846c5c3a
 Author: Peter Caspers <pcaspers1973@gmail.com>
-Date:   Mon, 24 Jun 2013 10:06:39 +0200
+Date:   Sat, 22 Feb 2014 07:56:11 +0100
 
-    adaption to new smile section utils
-
-commit ecfdcb7c96453126a2a12234a29ac976d3196bb2
-Author: Peter Caspers <pcaspers1973@gmail.com>
-Date:   Mon, 24 Jun 2013 10:00:46 +0200
-
-    redesign smile section utils and adaption to that in markov model
-
-commit 94a73de4dca5f3905d955e011f0d002423ece532
-Merge: 8b70d7b 84643e8
-Author: Peter Caspers <pcaspers1973@gmail.com>
-Date:   Sun, 23 Jun 2013 16:43:21 +0200
-
-    Merge branch 'vendor' into markovfixes
-
-commit 8b70d7b4b4e58974ebbbd22bef51cf6079a00109
-Author: Peter Caspers <pcaspers1973@gmail.com>
-Date:   Sun, 23 Jun 2013 13:41:51 +0200
-
-    removed smile pretreatment constants (moved to adjustments)
-
-commit a9f175c9670d5862320f8c1dc576d6ae31504d14
-Author: Peter Caspers <pcaspers1973@gmail.com>
-Date:   Sun, 23 Jun 2013 12:43:55 +0200
-
-    added test case for Kahale smile section,
+    Fix upper/lower bound calculation in model constraint.
     
-    removed code for debug outputs
+    Backported from master.
 
-commit 81d593486197f7a671c7262ae8e37bd4d675fe9c
-Author: Peter Caspers <pcaspers1973@gmail.com>
-Date:   Sun, 23 Jun 2013 12:42:13 +0200
+commit 0b36fa5b099f2347debeb14fc1fdc8a3689f3dc2
+Merge: bb181fa 15076ba
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 19 Feb 2014 11:59:30 +0100
 
-    corrected arbitrage check w.r.t. right strike
+    Merge pull request #78.
 
-commit a93d07162d3bb42d9b5f0240905a3f385847b2f7
-Author: Peter Caspers <pcaspers1973@gmail.com>
-Date:   Sun, 23 Jun 2013 12:41:27 +0200
+commit 15076bae180a2cae77ed42d6046dec8406e2a2a7
+Author: BGC-nglass <nglass@bgcpartners.com>
+Date:   Wed, 19 Feb 2014 10:08:39 +0000
 
-    trim precondition check
+    Correct exCouponDate on last coupon
 
-commit 7744ff3eada304df15240e74c7de80221ef79d90
-Author: Peter Caspers <pcaspers1973@gmail.com>
-Date:   Sun, 23 Jun 2013 12:40:59 +0200
+commit bb181fafd5777dd62c6841e11131acc6ef4a6a7c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 12 Feb 2014 11:33:54 +0100
 
-    adjusted accuracy constants,
+    Use corrected rate in weighted average.
+
+commit f281a83b64209e1e1bfe815eb860f5100d33fbea
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 11 Feb 2014 18:21:14 +0100
+
+    Update changelog.
+
+commit 23d75a2f20aefc9990abf806fd268e4f772d6beb
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 11 Feb 2014 18:12:42 +0100
+
+    Allow auto-linking for VC++12.
     
-    relabeled minAfStrike and maxAfStrike to leftCoreStrike and
-    rightCoreStrike to reflect that this is the effective
-    region outside which extrapolation is done, which may be smaller than
-    the actual arbitrage free region,
+    We still don't have projects for VC++12; this change allows one
+    to use the VC++11 solution and auto-link the generated library.
+
+commit 269e7b32482b917a09b5e4b12eac167e7969ef45
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 11 Feb 2014 10:26:48 +0100
+
+    Removed extra calculations.
     
-    explicitly call the helper functions after zero search, because it
-    may not be ensured by the solver that the last function evaluation is
-    done at the solution
+    Apparently, they were added to nudge the compiler into not
+    optimizing method calls away. They were replaced by a proper
+    update method.
 
-commit 4d6854548fe9f087544421e3c0a9506ad1a5fa93
-Author: Peter Caspers <pcaspers1973@gmail.com>
-Date:   Tue, 18 Jun 2013 13:55:58 +0200
-
-    make moneynessGrid and strikeGrid consistent
-
-commit 44d565027041952fe900cad38ffad367bc3f4e30
-Author: Peter Caspers <pcaspers1973@gmail.com>
-Date:   Tue, 18 Jun 2013 13:55:22 +0200
-
-    unify model settings, reformat code, reauthor warnings section
-
-commit b66411fa5498b19a0f9927e5770bd80fdcad8840
-Author: Peter Caspers <pcaspers1973@gmail.com>
-Date:   Tue, 18 Jun 2013 13:54:47 +0200
-
-    adapt code to new handling of model settings
-
-commit b2c2a905930b33c67931a979a50343ab1270299c
-Author: Peter Caspers <pcaspers1973@gmail.com>
-Date:   Tue, 18 Jun 2013 13:54:19 +0200
-
-    added exponential extrapolation; added option to delete arbitrage points
-    from smile and then interpolate instead of cutting the smile at the
-    first arbitrage point and extrapolate from this point; make code more robust
-
-commit 44ab690cf56e09a3398485073e27e3d34c0770a6
+commit 0365318322a0444c4b85ef514456b3f2f2c50508
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 14 Jun 2013 11:42:16 +0200
+Date:   Mon, 10 Feb 2014 17:28:36 +0100
 
-    Replaced hard tabs with spaces.
+    Remove unused test parameter.
 
-commit 7283a7c7543dc09df26050ee7e559dbb4452003c
+commit 27b9e84e7396b2ca4526f232c1f8bc95d562991f
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 14 Jun 2013 11:20:41 +0200
+Date:   Mon, 10 Feb 2014 17:28:12 +0100
 
-    Updated list of copyright holders.
+    Remove duplicated assignments.
+
+commit 728484b97b5401ab40466f8532a93a27c019cd65
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 10 Feb 2014 17:27:09 +0100
+
+    Avoid shadowing data member with constructor argument.
     
-    Also, a few copyright attributions were cleaned up of typos
-    and alternative spellings.
+    This could cause the data member to be given a null value.
 
-commit 3678f3eafcea5cad6b788ff32eac4fc8db8b299f
-Merge: 6db8f1f 4a37ebf
+commit 19035c1b1a577f11067638a056e8b63b93275a31
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 14 Jun 2013 10:22:53 +0200
+Date:   Mon, 10 Feb 2014 17:25:25 +0100
 
-    Merged branch heads.
-
-commit 6db8f1feca63585ddb37416e45f879c2090ea625
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 14 Jun 2013 09:28:52 +0200
-
-    Enforce self-consistency of headers.
+    Remove unused assignment.
     
-    Headers should compile even when included alone.
+    The value is overwritten a few lines later.
 
-commit cfbd9d274137b7ba0d607859108b39ed8fce7e0a
+commit 67e989ff1d98ccb80d00387ab6e412e0b34ec372
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 13 Jun 2013 17:28:28 +0200
+Date:   Mon, 10 Feb 2014 17:15:55 +0100
 
-    Moved FFT and autocovariance implementations into core library.
-
-commit 4a37ebf4b13be465484faa20677a859d6de0ba3c
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 13 Jun 2013 21:52:55 +0200
-
-    Prevented compilation error with old g++ version on Mac OS X.
-
-commit 8f9a70973589dec6cbdb1cc8bae61c322b9eb21c
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 13 Jun 2013 17:00:50 +0200
-
-    Changed inclusion order according to project custom.
+    Add Royal Wedding bank holiday to UK calendar.
     
-    We usually include QuantLib headers first, then Boost ones, then those
-    from the standard library. This is to make sure that macros are properly
-    defined before including other stuff.
+    Thanks to Whit Armstrong for the heads-up.
 
-commit 55d10cba5f23a29da82329ceaae47ab1f8128133
-Merge: 596b8c7 2e3ec98
+commit 344a8ad46ad7433a2bd89002f2c2ef28726d6884
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 11 Jun 2013 17:55:28 +0200
+Date:   Tue, 4 Feb 2014 15:46:42 +0100
 
-    Merged Jamshidian swaption changes from Peter Caspers.
+    Update changelogs.
 
-commit da862212568b8d83b3f3e57244a0619cbe7a0591
-Author: peter <peter@peter-ThinkPad-W520.(none)>
-Date:   Mon, 10 Jun 2013 21:29:09 +0200
-
-    enable extrapolation in spreaded curve if enabled in discount curve
-
-commit 2e3ec98378bdce3ae6b74a477e52861d87c4a72e
-Author: peter <peter@peter-ThinkPad-W520.(none)>
-Date:   Sun, 9 Jun 2013 18:33:15 +0200
-
-    added test cases for swaption pricing with underlying start delay
-
-commit 737880a9fb44cfe17d8659e80a6630870823dbfc
-Author: peter <peter@peter-ThinkPad-W520.(none)>
-Date:   Sun, 9 Jun 2013 18:31:46 +0200
-
-    added discountBondOption with underlying start delay
-
-commit 5bc8951148eca1e1127c1b29ba74134ab30d4fbd
-Author: peter <peter@peter-ThinkPad-W520.(none)>
-Date:   Sun, 9 Jun 2013 18:31:16 +0200
-
-    respect underlying start delay
-
-commit 6b44d13c789b71e9894c034978fd88a65111e0c5
-Author: peter <peter@peter-ThinkPad-W520.(none)>
-Date:   Sun, 9 Jun 2013 18:26:45 +0200
-
-    added discountBondOption with underlying start delay
-
-commit 24e80e0b323119c15a7eb9aa4a21d30a87c27099
+commit 89c6169ea23f3ec40d79dec64a6925ef282fcba0
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 3 Jun 2013 15:21:40 +0000
+Date:   Tue, 4 Feb 2014 14:56:34 +0100
 
-    Implicit conversions of shared_ptr to bool are now explicit.
+    Update list of contributors.
+
+commit 2bf185f433d344d85f5d194eb48861ce2f5a941d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 4 Feb 2014 14:56:23 +0100
+
+    Add list of changes for version 1.4.
+
+commit 9ac514de2170dfee09a14a63aad8e2e7f9567343
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 4 Feb 2014 00:47:38 +0100
+
+    Associate comment to the correct method.
+
+commit a3958a2d3532cf94659666d8277d55f52085dbd2
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 3 Feb 2014 14:38:07 +0100
+
+    Prevent warnings about deprecated class on Visual C++.
+
+commit 547ceacc74cd097ecfc8863f07c0a098d4f10255
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sun, 2 Feb 2014 17:47:23 +0100
+
+    Update list of copyright holders.
+
+commit d690977612cd96c59258a0ee8b8ce1c28c1f4ed2
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sun, 2 Feb 2014 14:03:46 +0100
+
+    Deprecated a couple of unused classes.
+
+commit 6520c4dd0bfa20a7e7a5fb870431486dc9485202
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 1 Feb 2014 23:51:53 +0100
+
+    Drop support for Visual C++ 2003 (VC++7).
     
-    The implicit conversion has been removed in C++11.
-    Thanks to Scott Condit.
+    The compiler is now more than 10 years old and no longer supported
+    by Microsoft.  Keeping the support is not worth the time and effort
+    required.  Anybody who is still stuck with this compiler and needs
+    the support can fork the repository and maintain the changes.
 
-commit fdc78d24c743b36665006d7defd0895b98c5e3cb
-Author: Mark Joshi <markjoshi@users.sf.net>
-Date:   Fri, 31 May 2013 00:41:37 +0000
-
-    now builds with VC9
-
-commit 413a5c4dcab2d3996c7e3c0ae3087bed84b649c4
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sun, 26 May 2013 12:16:40 +0000
-
-    added further matrix exponential tests
-
-commit 4800f1b349f7a9e746b2ec5df9c4636eff155f05
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sun, 26 May 2013 12:10:00 +0000
-
-    added further matrix exponential tests
-
-commit 5f3313be573ef7f30f3986ade43519d5821976fd
+commit 16b57f4d32b5c762aa76a334c54bf4b60c5a1154
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 21 May 2013 09:47:02 +0000
+Date:   Fri, 31 Jan 2014 17:48:35 +0100
 
-    Prevented macro redefinitions in VC++.
+    Prevent a few VC++ warnings.
+
+commit b711736bdf796f1e802960e807e0a9b2887ee6ec
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 31 Jan 2014 17:36:21 +0100
+
+    Modify a few test messages
+
+commit bb14425b38af4ec41dd228af6aa6ec6613918ddc
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 31 Jan 2014 11:07:57 +0100
+
+    Reverted tolerance to previous value.
     
-    This should be a bit more robust against inclusions of standard
-    headers before or after QuantLib headers.
+    The increased errors were due to a missing bug fix on the
+    development branch.
 
-commit 3c584052dfb11be7b2a40ca03684fed773530129
+commit 7a17716c4fb645b12b7aabc03f82342bc05d2ceb
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 21 May 2013 09:46:58 +0000
+Date:   Thu, 30 Jan 2014 15:34:10 +0100
 
-    Removed another VC++ warning on x64.
+    Ensure that headers compile on their own.
+
+commit 4fe8490dc55bfe196179608cebca3fd9ae6966d6
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 30 Jan 2014 14:28:32 +0100
+
+    Reordered headers.
     
-    Thanks to Johannes Göttker-Schnetmann.
+    We put our headers first to make sure that the preprocessor sees
+    our macros, defines and whatever else before external code.
 
-commit 0a2068e678bdb6f1e039372f5f816a4a390352de
+commit f535a8f28e04e5626b1593e0d2c327b38583faae
+Merge: 42cfea2 2b1fb11
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 16 May 2013 14:34:41 +0000
+Date:   Wed, 29 Jan 2014 15:45:41 +0100
 
-    Removed most warnings for VC++ under x64.
+    Merge pull request #74.
+
+commit 2b1fb11ba7be25605a335ee2384259d7cdd1f5ef
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 29 Jan 2014 15:13:43 +0100
+
+    Updated VC++ and Dev-C++ projects
+
+commit 836179e8243d2b300d72d37f3b617f0b5760c35a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 29 Jan 2014 15:05:47 +0100
+
+    Increased test tolerance for new pricer
+
+commit f7085c277b4f6f764dcd18361147b20bf00edf03
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 29 Jan 2014 14:43:23 +0100
+
+    Moved new pricer to experimental tree
+
+commit 42cfea23bd43f6f106bca16f8793d212ac21e856
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 29 Jan 2014 13:23:06 +0100
+
+    Added overlooked test to global test suite
+
+commit 16f1be7a79f84d48be217b0363edcdf7f0c466df
+Merge: 9343d88 02214f0
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 29 Jan 2014 11:26:16 +0100
+
+    Merge pull request #60.
+
+commit 02214f047000724fdaf57be80d3f116626f31fbb
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 29 Jan 2014 10:53:54 +0100
+
+    Added examples as test cases.
+
+commit 9343d88e0ca6c5a6c3f1696ac7940baeeaf524f6
+Merge: c71dd4a 2767d61
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 28 Jan 2014 22:03:03 +0100
+
+    Merge pull request #73.
     
-    Thanks to Johannes Göttker-Schnetmann.
+    - added Broadie Kaya exact simulation schema;
+    - added pricing engine for arbitrary European payoffs under the
+      Heston model;
+    - added modified Bessel functions.
 
-commit bed8122bca45f27beccc5f276148916df59eeed1
+commit 2767d6169c81766506c3bd64b370c8cc7c1a60d1
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 16 May 2013 14:34:27 +0000
+Date:   Tue, 28 Jan 2014 18:24:23 +0100
 
-    Added x64 target to VC++10 and VC++11 projects.
-    
-    Thanks to Johannes Göttker-Schnetmann.
+    Moved modified Bessel tests with tests for other functions
 
-commit 1764236aa9148e11284b844ea4b513c4b2813d64
+commit 56a6d92d44ee9fd835ef1f52f96e8ad6493dd9eb
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 16 May 2013 14:34:15 +0000
+Date:   Tue, 28 Jan 2014 18:11:29 +0100
+
+    Reordered files
+
+commit 7c5dcaf84f657619729bf3a45193d3c1598399b4
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 28 Jan 2014 18:09:29 +0100
 
     Updated VC++ and Dev-C++ projects.
 
-commit 3ff13ea18232e2aa7e372ec28243183696c5ab7c
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sun, 12 May 2013 11:03:33 +0000
-
-    updated msvc-10 project files
-
-commit 411e9c457d70bad27c8ca0e3dca4e3ae793fc682
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sat, 11 May 2013 20:59:56 +0000
-
-    added matrix exponential
-
-commit b916fd7af241cf70a4efec242ccf6972e1847b95
+commit e82d03893da24343545cd4d96ee3e0e355ea3f7b
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 10 May 2013 12:49:58 +0000
+Date:   Tue, 28 Jan 2014 16:29:58 +0100
 
-    Avoided warnings in VC++ when compiling in x64 configuration.
+    Fixed file permissions
+
+commit f88cfc0daff51f967759980bb6cb349294779121
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 12 Jan 2014 20:55:40 +0100
+
+    Fix encoding
+
+commit 0a21bdc47475fa4776336a02cce3a76bd97dacfd
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 12 Jan 2014 20:55:09 +0100
+
+    Remove unused functions
+
+commit 11524d0391815d73337dced9ad28d9483a23e6e8
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 12 Jan 2014 20:02:51 +0100
+
+    Remove unused code.
+
+commit 3c3bdd4ac2652e259d92a20350b8b3f04527690c
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 12 Jan 2014 20:02:30 +0100
+
+    use precomputed result
+
+commit 1861fea8bc2f3b19e6b871fa17e44cb0eeea02ba
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 12 Jan 2014 20:02:08 +0100
+
+    Fix deprecated Handle initialization.
+
+commit 16ee093af2e1702a034dca33daa1ee659d9217d0
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 12 Jan 2014 20:01:33 +0100
+
+    Remove unnecessary include.
+
+commit 9e9e7e71b37bd7e2c43f2bdf48af0bb9a97744b4
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 12 Jan 2014 20:01:09 +0100
+
+    Remove unused functions.
+
+commit 5fc34fc7a3334d121f53e39164a2e1755254f02b
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 12 Jan 2014 20:00:12 +0100
+
+    Remove unused variables.
+
+commit 743bf8982b25b49964975ddf9895ce4ea274c4be
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 27 Jan 2014 18:05:06 +0100
+
+    Use declared data members.
+
+commit 62b33aa8db70b402e821254876a15fe79c398b79
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 27 Jan 2014 18:04:28 +0100
+
+    Remove redundant data member.
+
+commit 500b886378243d0f0f15491a8bc4592167465705
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 27 Jan 2014 18:03:42 +0100
+
+    Use passed seed in RNG initialization.
+
+commit bb023fe644e7ddebb670439d6cc39c0f7e45dcc4
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 15 Sep 2013 21:19:20 +0200
+
+    Hide methods to avoid clang warning.
+
+commit 2b98a41d54c23ac7fe211a8755515163c9d5ed99
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 15 Sep 2013 21:18:54 +0200
+
+    Remove unused variables to avoid clang warning.
+
+commit b98f0c15361a5b6829dd5777d9799e8b8e349c84
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 27 Jan 2014 13:10:07 +0100
+
+    Updated most moving holidays for 2014.
+
+commit fe8725ddf37d835d0179bc5ab9971e9cd1d371d5
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 26 Jan 2014 09:31:20 +0100
+
+    fix makefile
+
+commit de69d68ef18d8a3fc676eaec97a87afcffab6266
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 25 Jan 2014 00:44:39 +0100
+
+    Use fixed tenor from swap index when building swaption.
+
+commit 1185745b6598545f5676afc7b0b6a52479d38140
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 24 Jan 2014 22:41:52 +0100
+
+    Allow swap engine to work with empty legs.
     
-    Thanks to Johannes Göttker-Schnetmann.
+    In that case, start and end discounts will be null.
 
-commit 28369135a1e61f2a059b6aa141d29f40c19460c0
+commit 79dc964d374d87e90de4d1174cb1b68f3d1bf9f6
+Author: Mario Aleppo <mario.aleppo@statpro.com>
+Date:   Thu, 23 Jan 2014 21:12:50 +0100
+
+    Piecewise-spreaded curve can now choose interpolation.
+
+commit 11fb50ac2261d139a963c301f440613b7a6b3346
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 10 May 2013 12:49:23 +0000
+Date:   Thu, 23 Jan 2014 17:58:29 +0100
 
-    Avoid conversion to Array to stream vectors to error messages.
+    Allow simple spreaded curves to wrap an empty handle.
     
-    Thanks to Johannes Göttker-Schnetmann for the heads-up.
+    This prevent an exception being raised when a null curve is set
+    to a handle that also happen to be wrapped by a spreaded curve.
 
-commit 04738d23290d55f2fee04f41fd511a60e3a4aa44
+commit 6fb9f3667c4b97589ec9fe9ecd7f12bc1086d7fa
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 6 May 2013 08:29:48 +0000
+Date:   Thu, 23 Jan 2014 17:37:13 +0100
+
+    Add utility class for creating custom Region instance.
+
+commit bc45b0b6c7ae7b6d4fcb4859ac916a955da23c31
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 23 Jan 2014 14:50:38 +0100
+
+    Ignore inflation fixings stored at future dates.
+    
+    The change was make for zero inflation only at this time.
+    Also, the comparison is made with today's date. We might be more
+    strict if we had a better way to determine what fixings can't yet
+    be announced.
+
+commit b367a2aa5b8949f03580bf22bc3300fb20a1d25f
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 23 Jan 2014 14:46:45 +0100
+
+    Register inner option of convertible bond with observables.
+    
+    This allows proper recalculation when anything changes.
+
+commit d60263ec19b9cd24dc5fc0fdb22fbc66ad21b107
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Fri, 24 Jan 2014 20:12:41 +0100
+
+    add linear terminal swap rate model pricer for cms coupons
+
+commit 7821b92d9b3dad239149ed3a4d65af7d35c8f37d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 24 Jan 2014 18:07:55 +0100
+
+    Extend experimental generalized Hull-White model.
+    
+    Thanks to Cavit Hafizoglu.
+    
+    - Allow to choose the mapping function between short rate and
+      state variable;
+    - Include the case of constant parameters.
+
+commit 22cae3d22b87a356e85eef9503e8003f5c3d7ee3
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Fri, 24 Jan 2014 14:11:37 +0100
+
+    updated VC10 files
+
+commit 2f7755e1383650088ee253d8dbbfba7eca9f3405
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Fri, 24 Jan 2014 12:51:18 +0100
+
+    fixed formatting
+
+commit 262b02f1750160a4e4d68a4486cd8cca1a8a45d8
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Fri, 24 Jan 2014 12:33:22 +0100
+
+    added Broadie-Kaya exact simulation for the Heston model
+    added pricing engine for arbitrary European payoffs under the Heston
+    model
+
+commit 2a4c041ab9257ac6c90613ba98213361fba2e306
+Merge: 7a979ad 34be76c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 22 Jan 2014 18:29:43 +0100
+
+    Merge pull request #72.
+
+commit 34be76c9eb9dbb44dc215df979e05de83ce32af0
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Wed, 22 Jan 2014 16:53:23 +0100
+
+    clean up the previous fix
+
+commit eeb731e41cb356425c96579ad4e9fb4ccb96b4fb
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Wed, 22 Jan 2014 14:12:12 +0100
+
+    fix swaption volatility structures with floating reference date
+
+commit 7a979ad6b3b3d0f733f3b9924a8a57d18c8c2563
+Merge: 1cf238a 66d3828
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 21 Jan 2014 11:26:17 +0100
+
+    Merge pull request #71.
+
+commit 1cf238af056b659e4e6e2adac6ec3ab12dd75a1f
+Merge: d119eba dc6609d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 21 Jan 2014 11:02:08 +0100
+
+    Merge pull request #69.
+
+commit d119eba03a6f3259efe17e43f63508ad9b26d79f
+Merge: 7cd9996 39f314f
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 21 Jan 2014 10:19:29 +0100
+
+    Merge pull request #62.
+
+commit 66d3828f01ecf142e379dd7f5923cd7ec049b126
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sat, 18 Jan 2014 13:43:11 +0100
+
+    fix interpolation of option dates when evaluation date changes (thanks to Shen Hui)
+
+commit dc6609dc0b3d16ccc75f29dd3500b62cd472e0fc
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Sat, 18 Jan 2014 12:31:36 +0100
+
+    fixed theta issue for some american fdm engines. Theta should be
+    measured after the early exercise condition gets applied.
+
+commit 7cd99968e61a563f393e6f56a31561cffe88b5d2
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 16 Jan 2014 16:52:56 +0100
+
+    Remove unqualified calls to make_shared.
+    
+    On VC++12, argument-dependent lookup was causing ambiguities
+    between boost::make_shared and std::make_shared when vectors
+    were passed among the arguments.
+    
+    Thanks to Armel Wambou for the heads-up.
+
+commit b258b0da52997f0f8824914a633c00eae10cc9ee
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Mon, 13 Jan 2014 22:18:00 +0100
+
+    improve check for r=0
+
+commit f6b85bb0277dd427ccb160729209e25a525f8c46
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Fri, 10 Jan 2014 23:08:35 +0100
+
+    fixed case r=0.0
+
+commit 2ecf119185757726e69d1ef525e6ef8cd7034ee8
+Merge: 8d5b955 e670219
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 8 Jan 2014 18:18:27 +0100
+
+    Merge pull request #68.
+
+commit e670219ab5c0068e249252c3d4627c43ab6ced1e
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 8 Jan 2014 18:17:40 +0100
+
+    Mention the license of the Joe-Kuo numbers.
+
+commit 78457e838a25baeb859a0ac605c2dcfed66b8b04
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 8 Jan 2014 17:05:00 +0100
+
+    Replace hard tabs with spaces.
+
+commit 046e166f0fca5ef1693b210750aee2a7ee6681d8
+Merge: 8286964 31610ff
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 8 Jan 2014 15:38:18 +0100
+
+    Merge pull request #66.
+
+commit 403989afc7ca769a6abcbcc909b244d9b16f8ed6
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 8 Jan 2014 15:34:04 +0100
+
+    Update VC++ project filters.
+
+commit f4303132d386544d7a21d08187b608d7b049dc59
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 8 Jan 2014 14:53:36 +0100
+
+    Add new tests for VC++ and Dev-C++ projects.
+
+commit 82869647d87f857f517bbaf5adba6271fe2e980e
+Merge: 871983e 1fc21fc
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 8 Jan 2014 11:38:50 +0100
+
+    Merge pull request #67.
+
+commit 871983e4bc51e2b77572300d0b9670c1d3811fb1
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 7 Jan 2014 15:34:25 +0100
+
+    Removed unused private attribute.
+    
+    Probably a leftover from a previous implementation.
+
+commit 374c01f081e6e009b3e3c4a6d151332a8591be12
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 7 Jan 2014 15:31:43 +0100
+
+    Made protected method virtual.
+    
+    That fact that it was not virtual already was probably an oversight.
+    There's no much point in defining it and not have the possibility to
+    override it.
+
+commit 88d7489586de259fd2afb55663ed53c97b508426
+Author: Cheng Li <scrappedprince.li@gmail.com>
+Date:   Wed, 8 Jan 2014 15:35:39 +0800
+
+    Sobol direction number up to 21200 dims with Joe Kuo 6 searching rule
+    
+    details can be found in the following link:
+    http://web.maths.unsw.edu.au/~fkuo/sobol/
+
+commit 1fc21fc613959cfe028e7d7d3b7249ca57775391
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Wed, 8 Jan 2014 08:35:30 +0100
+
+    suppress warnings and keep backwards compatibility
+
+commit cec0adb72d60471de49e92849bd5a1f175f301d3
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 7 Jan 2014 17:26:30 +0100
+
+    Remove deprecation comment.
+    
+    The suggested alternative needs a number of inputs more than the
+    class that was being deprecated.
+
+commit 78171b96fb9f33199275ad0bee201c6d4dc523dd
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 7 Jan 2014 16:06:12 +0100
+
+    Enable deprecated access to protected data members.
+    
+    Protection level can't be switched with compiler attribute.
+    Access to those data members is one of the several things we'll fix
+    when we rethink the library.
+
+commit 6c8f2ccd18b857a00fa766201ca793d7e52bd897
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 7 Jan 2014 15:52:02 +0100
+
+    Rename deprecated list in generated docs.
+
+commit e6a3ae0341d8d19e0e2c197b56083249ef7bfd8c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 6 Jan 2014 20:55:04 +0100
+
+    Use deprecated attribute of supported compilers.
+    
+    This replaces the QL_DISABLE_DEPRECATED mechanism that conditionally removes
+    the features and causes the compiler itself to emit warnings if the features
+    are used.  The user can enable or disable the warnings by the means provided
+    by the compiler.
+
+commit be5dfb24e3f1d8e6f8f4fd03795cfcce6e37140e
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 6 Jan 2014 18:00:48 +0100
+
+    Remove deprecated features in experimental code.
+
+commit fac40c5c3e5aea546d0860b2727330a24b566c7b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 7 Jan 2014 15:39:56 +0100
+
+    Removed reference to outdated make target.
+
+commit 09c04a650701e8f5b7ccb2cb7a562791ccb098fd
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sun, 5 Jan 2014 16:57:24 +0100
+
+    Prevent a number of warnings under g++.
+    
+    Unused variables, out-of-order initializations, signed/unsigned comparisons.
+
+commit 66473f7e616c2848ba740d0b4c2ab7ce18dcb118
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Sat, 4 Jan 2014 15:11:44 +0100
+
+    fixed clang++ warning with respect to hidden virtual functions (far too
+    many different calculate methods)
+
+commit adb2392983f7aa55d3eb9d79f1817a4f60004de6
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Sat, 4 Jan 2014 14:06:44 +0100
+
+    fixed warnings with clang++ and boost version > 1.53 (thanks to Peter
+    Caspers)
+
+commit 8c10e2fa66ab1aadbb15a6107110d7dc2b9b9be2
+Merge: f50e539 d91b248
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Fri, 3 Jan 2014 16:13:11 +0100
+
+    Merge branch 'vendor' into vcUpd20140103
+
+commit f50e539a5dd29a8ef688a00ae9fc6fee2ecf58a3
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Fri, 3 Jan 2014 16:10:00 +0100
+
+    update UnitCount
+
+commit b1e84e4b58db78da81bfd6738079aec31f1466c5
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Fri, 3 Jan 2014 16:09:21 +0100
+
+    update vc and dev project files
+
+commit d91b24899d1c210a704fac8cc9bea4cfadd6a42d
+Merge: 98c4270 d36a321
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 2 Jan 2014 11:13:57 +0100
+
+    Merge pull request #64.
+
+commit d36a3217dbf3f7a411ce77bfc06451ccb5872926
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 2 Jan 2014 10:48:07 +0100
+
+    Fix error message.
+
+commit 26d88c6af4db804cab758fa5e9c1fe12bffbe24b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 31 Dec 2013 12:56:01 +0100
+
+    Added missing virtual destructors.
+
+commit 2517eab1c93cff9bb7da4f5611376e6657f1bdb1
+Merge: fc6d434 75a97b6
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 31 Dec 2013 11:34:29 +0100
+
+    Merge pull request #63.
+
+commit 75a97b687edb2e147ca20fc1a735863f0ce48409
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 31 Dec 2013 11:09:26 +0100
+
+    Renamed data member for consistency.
+    
+    Unlike "indices", "indexes" was already used in other places.
+
+commit 72c4c722c0209f0ce4c3f06d221c18a391fbabbb
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 31 Dec 2013 10:52:22 +0100
+
+    Move inclusions to cpp file.
+
+commit fc6d4344a4e825ecc00de5df681b6775a9dc96de
+Merge: 22f8dea e5e33e2
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 30 Dec 2013 16:42:03 +0100
+
+    Merge pull request #49.
+
+commit e5e33e2631e4d7f8b0ba070387ec2b9e0e1e1ab9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 30 Dec 2013 15:07:18 +0100
+
+    Revert changes to date() method.
+    
+    The check would be redundant in loops. Instead, I added a dateAt()
+    method that checks the index (like vector::at).
+
+commit 54e7c60eeffc83ec57906d4e911d943fc90d49ad
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 30 Dec 2013 15:04:53 +0100
+
+    Move leftover inclusions to where they are needed.
+
+commit 2ddac08539adeb1e5a35918b4a720c456f4ef391
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Sat, 28 Dec 2013 15:34:52 +0100
+
+    fixed startDate > referenceDate (-> throw exception)
+
+commit 3f83c3cef1c6c6c3f17ad7bb9574c56163ca8294
+Merge: 0db340a 92a85e3
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Wed, 25 Dec 2013 09:45:30 +0100
+
+    Merge branch 'fix20131026' into revampmarkov
+    
+    Conflicts:
+    	QuantLib/ql/experimental/Makefile.am
+
+commit 0db340a5b8189bc564bea3c3393761b92189aed8
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Wed, 25 Dec 2013 09:41:23 +0100
+
+    reorganized markov model code,
+    added new instruments and engines,
+    added one factor gsr model,
+    reformatting
+
+commit 39f314ff38c08b16bf6d7db02210c3036351d4e2
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Mon, 23 Dec 2013 20:51:28 +0100
+
+    fix annuity computation
+
+commit f3055c3b539267a2463062b10171e6df84fd75e4
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 19 Dec 2013 15:18:42 +0100
+
+    Replace explicit allocation with make_shared.
+
+commit a28cc92d1bdf3a134030f77a3c38769bc72821ad
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 19 Dec 2013 15:09:52 +0100
+
+    Increased time steps in convertible-bond test.
+
+commit 8652a0e6d79ee5230ba477cd50c14cf089c4ce56
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 19 Dec 2013 15:00:18 +0100
+
+    Fix delta and Gamma in Ju quadratic engine.
+    
+    Thanks to Fabien Le Floc'h for the fix.
+
+commit 2e9ff98da873f47692ecddd38db100595f07e796
+Merge: 455ee71 bebfc1f
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 19 Dec 2013 13:07:24 +0100
+
+    Merge pull request #61.
+
+commit bebfc1f04331e544b3f9e6e1008f7a59a90baf2d
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Mon, 16 Dec 2013 23:18:47 +0100
+
+    fixed formatting
+
+commit a84ae34f4b8351551737bd6e65e4477b4271e375
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Mon, 16 Dec 2013 23:10:44 +0100
+
+    added b=0 case to Levy engine for Asian options
+    improved case runningAvg >> forward for FDM Asian engine
+
+commit 455ee71b879780db26ff7d6366fe7f04aab57865
+Merge: 2518816 75b0555
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 13 Dec 2013 15:37:32 +0100
+
+    Merge pull request #58.
+
+commit 75b0555a52c7d0b9de881f960846afaa01863242
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 13 Dec 2013 15:34:32 +0100
+
+    Update VC++ projects.
+
+commit 2b5aa82a2af9224d6c86f4b3dcb08ffb5127ba33
+Author: BGC-nglass <nglass@bgcpartners.com>
+Date:   Fri, 13 Dec 2013 12:15:30 +0000
+
+    Implement ex-coupon date for fixed rate bonds
+    
+    This commit adds support for ex-coupon dates to fixed rate bonds and
+    updates the cashflow calculations to take account of this date.  The
+    results have been verified against Bloomberg for UK Gilts and Australian
+    Government Bonds
+
+commit 3a328b59cb453b76c657c3243fa91ef53d1907b5
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 13 Dec 2013 15:09:33 +0100
+
+    Updated VC++ projects.
+
+commit ae1a8bf7797b956a4e5697d7b435f1c966499aba
+Merge: dc783de 0395094
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 13 Dec 2013 14:52:02 +0100
+
+    Merge latest changes from master.
+
+commit 0a74d9461619a81e1cfa76a40555c74f64c076aa
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 11 Dec 2013 14:58:52 +0100
 
     Updated VC++ and Dev-C++ projects.
 
-commit 67f7168851e0bf3dd060e53ced2f082f1cb26197
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sun, 5 May 2013 08:48:31 +0000
-
-    fixed multi dimensional definition of square root Fokker-Planck operator
-
-commit a08d7ff195492135e324279892aba9878cec6048
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sat, 4 May 2013 20:27:52 +0000
-
-    updated vc10 project files
-
-commit 3eedd47bd3fa25b6622be51bf7ba2004c5348928
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sat, 4 May 2013 19:20:55 +0000
-
-    improved boundary conditions for the Fokker-Planck equations
-
-commit 4fc52a1280dab6e63c8ef2dc16b9e671db7be7c5
+commit 7084297c7b9a0b6826a3351b3b8c57683e963478
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 29 Apr 2013 16:08:44 +0000
+Date:   Wed, 11 Dec 2013 14:30:36 +0100
 
-    Prevent out-of-bound access to degenerate schedule.
-
-commit 33977ec100926734f55460c9b6541b6dbc77f248
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sat, 27 Apr 2013 22:15:57 +0000
-
-    fixed g++ warnings (thanks to Peter Caspers)
-
-commit c85ce4f34188ebb6a218f8865592e50104168fb8
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sat, 27 Apr 2013 15:35:16 +0000
-
-    ensure backward compatibility of ublas extension
-
-commit 8c848da73798d101671b19da25c5d6abf32607f6
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sat, 27 Apr 2013 15:08:33 +0000
-
-    fixed g++ warnings
-
-commit 13081d5da9fd30539a50a7d1cbc66614cd7e4872
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 16 Apr 2013 16:22:14 +0000
-
-    Added moving holidays for 2013.
-
-commit fab0164056c89a6d8d9dba7631c656ae4f5b6e4a
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 16 Apr 2013 16:22:03 +0000
-
-    Fixed a few Mexican holidays.
-
-commit 9625059d1b82f2d564f86569a2dc2131ec61a30e
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 15 Apr 2013 11:56:12 +0000
-
-    Added experimental Markov functional model (thanks to Peter Caspers).
-
-commit f3faf149d8ef0ead78f6c63022d213215475cece
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 15 Apr 2013 11:55:47 +0000
-
-    Filtered out negative strikes (thanks to Peter Caspers).
+    Removed unreleased files.
     
-    Also, calibration results were improved by using the functionality
-    recently added to SABR interpolation.
+    They were left over from previous ages.
 
-commit 46962259cba742aec7ab123562972d9dd0e532ab
+commit 41045f9338bb609f01760964c103fada100458d8
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 15 Apr 2013 11:55:41 +0000
+Date:   Wed, 11 Dec 2013 13:17:15 +0100
 
-    Floored the strike at 0.1bp for volatility computation.
+    Added experimental catastrophe bond.
     
-    This avoids problems for strikes near zero.
-    
-    Thanks to Peter Caspers.
+    Thanks to Grzegorz Andruszkiewicz.
 
-commit e174fb0da3fc6f2d18de47d33cd705b7d72616a9
+commit 10ee1e136d7ee0512bcb24968d4cb30c2b694475
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Mon, 9 Dec 2013 22:13:38 +0100
+
+    got orig file back
+
+commit b73b646f6f985950ff8836cdc41d0921268f2190
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 15 Apr 2013 11:55:35 +0000
+Date:   Thu, 5 Dec 2013 15:15:36 +0100
 
-    Added smileSectionImpl() implementation using cubic interpolation.
-    
-    Thanks to Peter Caspers.
+    Use boost::make_shared in barrier tests.
 
-commit 00c75adfeb003dae1322508ede7ff904fb031fe3
+commit 9298fe74063942765e5fcf241fad981db941ae2d
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 15 Apr 2013 11:55:29 +0000
+Date:   Thu, 5 Dec 2013 15:13:34 +0100
 
-    Replaced update() call during calibration with explicit method calls.
+    Added Vanna/Volga pricing engine for FX barrier options.
     
-    The generateArguments() and notifyObservers() methods are called directly.
-    This allows to separate the smile update triggered by market data change
-    from the numeraire update triggered by model volatility changes.
+    Engines were provided for both single- and double-barrier FX options.
+    An analytic engine was also provided for double-barrier equity options.
     
-    Thanks to Peter Caspers.
+    Thanks to Yue Tian.
 
-commit cd25a4f71a7f5a3a5c30767f8e2a75dac458bdd2
+commit 41ed94a4926070f8ceaf42d91974cecf63cbd5d8
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 15 Apr 2013 11:55:23 +0000
+Date:   Tue, 3 Dec 2013 14:51:07 +0100
 
-    Inherited CalibrationHelper from LazyObject (thanks to Peter Caspers).
-
-commit 53fab5597420b066e16d50dd9625c9edcd56923f
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 15 Apr 2013 11:55:16 +0000
-
-    Improved calibration by allowing different starting points.
+    Boost 1.39 or later required.
     
-    A result is returned as soon as the calibration error is below
-    the given value; otherwise, the parameters yielding the least
-    error are returned.
+    This allows one to use make_shared to create shared_ptr instances.
+    Unfortunately, the C++03 version only allows a maximum of 9 constructor
+    arguments, so we won't be able to use it everywhere.
     
-    Thanks to Peter Caspers.
+    (Also, let's use make_shared in new code, and by all means use it to
+    replace explicit new when you come across it, but I wouldn't go and
+    hunt for all allocations. A quick grep call gives more than 1000 hits,
+    and the time to change them all is better spent for something else.)
 
-commit c5417136e328ca066f51b9a10e6b86106450507c
+commit a7954711f8d6a38e2be2fa803f5310bd68abe61c
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 25 Mar 2013 15:54:50 +0000
+Date:   Mon, 2 Dec 2013 12:12:49 +0100
 
-    Fixed start and end dates for in-arrears convexity adjustment.
+    Added Hagan pricing engine for irregular swaptions.
     
-    Thanks to Peter Caspers.
+    Thanks to Andre Miemiec.
 
-commit f5122eca848c724a5772ff40442cc4c67e93f536
+commit d4575f48c15c131739f85b2299641addca372a7c
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Sun, 1 Dec 2013 16:15:59 +0100
+
+    added two dimensional integration
+
+commit be731c8a259e8f032b0d3ffeef026b2d47d37a23
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Sun, 1 Dec 2013 16:06:52 +0100
+
+    added two dimensional integration
+
+commit 7e2bd882d685b75c396a4b38d84a96b25bf139c8
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Sun, 1 Dec 2013 15:58:47 +0100
+
+    added two dimensional integration
+
+commit 1662d0add00da7a6f1fcd9a6d24839d872d24dbb
+Merge: 000673f 350a45f
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 22 Mar 2013 10:28:51 +0000
+Date:   Thu, 28 Nov 2013 15:41:30 +0100
+
+    Merge pull request #48.
+    
+    Allow for calibration of a subset of a model's parameters.
+
+commit 350a45f62132fc7b6a08a03917f665800b7d3a8f
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 28 Nov 2013 15:32:35 +0100
+
+    Added new files to VC++ and Dev-C++ projects.
+
+commit ac4a11deecc7e2b333e7851aa7fd92afa86f535c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 28 Nov 2013 15:00:25 +0100
+
+    Returned bare vectors instead of disposables.
+    
+    It's not called in any loop, and we can rely on NRVO anyway for
+    copy elision.
+
+commit 3dd01fe994e9f4027cf0bff99231df055444704a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 28 Nov 2013 12:42:57 +0100
+
+    Extracted calibration constraint from struct.
+    
+    This gives some uniformity to this kind of methods (not entirely,
+    though: some are static and some have to be instance methods).
+
+commit 800d200bbe4ee891eb8c0e3011360c782b6ed3bd
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 28 Nov 2013 12:27:27 +0100
+
+    Some nitpicking on parameter names.
+
+commit c3fb3c02997f089094b8a3728a85905bc523aa08
+Merge: 299d712 41c64c2
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 27 Nov 2013 18:05:22 +0100
+
+    Merge pull request #56.
+
+commit 6c10c50e134e39f1bafc26171561674242d109e8
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 27 Nov 2013 14:44:05 +0100
+
+    Used same font for subtitle in reference docs.
+
+commit 41c64c2e6a614a4e776a64f5257ddee4eb4febae
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Wed, 27 Nov 2013 13:30:41 +0100
+
+    relax some test cases
+
+commit 1e64053980a92bc22fa6f812d5e19068a0a0df42
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 27 Nov 2013 10:05:50 +0100
+
+    Logo now links to home page.
+
+commit 18727c09d36f2eea70cf1d31083b598d5613d0b4
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Tue, 26 Nov 2013 19:09:44 +0100
+
+    rename parameter
+
+commit a714221fc1fcebc5ea79b26976498e7877793349
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 26 Nov 2013 18:47:05 +0100
+
+    Removed most customizations from generated docs.
+    
+    They had become unmaintainable with recent versions of Doxygen, and were
+    missing the new features that were added.
+    
+    The offline and online versions were merged, too, with the glitch that
+    search doesn't work in the offline version (which, however, I'm not even
+    sure I want to keep distributing...)
+
+commit 4e464ac56e19423a5b8110a4d15369d203393885
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 26 Nov 2013 18:08:18 +0100
+
+    Removed obsolete documentation.
+
+commit 34ba46bfb1a37aab43abde121cd0baf2f2753663
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Tue, 26 Nov 2013 11:13:16 +0100
+
+    fix some output messages
+
+commit dc783de6dc95da99f1acfdbb26148990b72ba3b9
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Thu, 21 Nov 2013 18:08:43 +0100
+
+    replace tab by spaces
+
+commit b6133283aee10d671c6779af45a8aefc48ab9c97
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Thu, 21 Nov 2013 18:07:00 +0100
+
+    added simulated annealing optimizer
+
+commit f85afea233c7c7868cd3d1086ef5e8a809fb33b8
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Wed, 20 Nov 2013 16:57:23 +0100
+
+    fix breaks in suite due to new left interpolation sanity check in KahaleSmileSection, clean formatting
+
+commit e00cd67d7b52f58e28d9a499b4917f51d6e9c0c8
+Author: U-GSA-WLB\int5341 <int5341@DUSLA3E7.gsa.westlb.net>
+Date:   Thu, 14 Nov 2013 20:13:21 +0100
+
+    add diamond jubilee bank holiday to London calendar
+
+commit 81154f48c972c58bf60a8fa0d8e678a6b293b6c4
+Merge: 4bb5c08 fcefe73
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 8 Nov 2013 12:23:26 +0100
+
+    Merge pull request #52.
+
+commit 92a85e373dd6fd0c9f35b29efb315eabdf96c2be
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Tue, 5 Nov 2013 17:04:47 +0100
+
+    move rebated exercise class to experimental/exercise
+
+commit 4bb5c0875d81df5733c344760cdcb4a81de05a41
+Merge: ac7f3ea 83ff775
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 4 Nov 2013 15:31:35 +0100
+
+    Merge pull request #51.
+
+commit fcefe7352d911c4b522ab832e432e42f89c573bc
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 3 Nov 2013 17:06:10 +0100
+
+    add missing return statement
+
+commit 23df8d45798a557ff09b086991b2e643b12b8e5a
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sat, 2 Nov 2013 19:27:27 +0100
+
+    allow for construction by expiry date and for receiver and payer swaptions
+
+commit 5b29c6e075b901a119fa0e614682c39a66806058
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sat, 2 Nov 2013 19:09:24 +0100
+
+    replace tabs by spaces
+
+commit 4fd57296741e4ef401ad9f07e9759ea234652d68
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Thu, 31 Oct 2013 13:40:24 +0100
+
+    add rebates
+
+commit 83ff775280c091a9e379113df7e125818a35b41d
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Wed, 30 Oct 2013 21:47:49 +0100
+
+    add sanity check for left extrapolation
+
+commit ac7f3ea21d9fd4d92fb0edad9c0b756dad9f7327
+Merge: b7548c9 6b1f81b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 30 Oct 2013 13:09:57 +0100
+
+    Merge pull request #50.
+
+commit b7548c9510d0233aeb12b19974a29b593f97df7c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 30 Oct 2013 13:06:00 +0100
+
+    Prevent some errors when linking a null term structure.
+    
+    When settings a null term structure to a Handle used as an underlying
+    for another curve (say, a zero-spreaded curve), the latter tries to
+    reset the jumps in the base class and fails. This error is now trapped.
+    
+    Thanks to Christoph Breig for the heads-up.
+
+commit 6b1f81b102012b63ad05ba83f048abc3be722422
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Tue, 29 Oct 2013 23:15:33 +0100
+
+    fixed compile issue when using Halley's Method to refine the inverse of
+    the cumulative normal distribution.
+
+commit 213f7c1072b4f40a921cb4bcf037fb06f5f64bb7
+Merge: 0c4652d 91ae895
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 29 Oct 2013 14:53:16 +0100
+
+    Merge pull request #46.
+    
+    When available from Boost, add Maddock inverse-cumulative normal
+    distribution.
+    Also fix an extrapolation problem in a test (probably due to numerical
+    error in floating-point calculations).
+
+commit 0c4652dabc8a1e9557c9c0ec86b21b1013cf0045
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 29 Oct 2013 14:24:53 +0100
+
+    Fix evaluation date to avoid intermittent test failures.
+
+commit a144a6ee4c0ff9b0630311fbd30bb87adb226e85
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 28 Oct 2013 18:24:33 +0100
+
+    Add OpenMP flags to quantlib-config.
+
+commit cd4c3a885bdfabc0a2b8355b7b955c0caa05a813
+Author: joequant <joequant@gmail.com>
+Date:   Sun, 27 Oct 2013 18:46:40 +0800
+
+    parallelize FD utilities
+
+commit eadb8f17080718d7443c24c3923e5725bbe0c0f4
+Author: joequant <joequant@gmail.com>
+Date:   Sun, 20 Oct 2013 21:47:02 +0800
+
+    parallelize operators
+
+commit 4f6321a71790cb23bc2d5ef4a966951db144afd8
+Author: joequant <joequant@gmail.com>
+Date:   Sun, 20 Oct 2013 12:53:09 +0800
+
+    add lattice openmp
+
+commit 50c2fd0fd96e1b289892fa1ed9e6300db2040dce
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 28 Oct 2013 18:30:08 +0100
+
+    Detect OpenMP in configure when requested.
+    
+    By default, OpenMP support is disabled.
+
+commit 91ae8955e42b0b295d16ecb2abf2bc4d91fbe0a3
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Sun, 27 Oct 2013 15:39:46 +0100
+
+    formatting
+
+commit 150b9a0b7acd9ce227cf4dfea41b0eda0aa29ae3
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Sun, 27 Oct 2013 15:36:56 +0100
+
+    formatting
+
+commit fbdafe964edbc0daf3517cb8adbe8a686c7f7ec2
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Sun, 27 Oct 2013 15:28:43 +0100
+
+    changed pImpl_ implementation
+    removed extra class for spline extrapolation
+
+commit a081bbb6c0bc78556941e96afd35244f98ec3618
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 27 Oct 2013 09:01:22 +0100
+
+    fix include paths
+
+commit 9f2244d49efd6f1418276337e51d27529e234236
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sat, 26 Oct 2013 11:49:02 +0200
+
+    amend the test case for the calibration to a secondary instrument set
+
+commit 6072da1f8b37234e5d82fbc3365edb4342a10e5b
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sat, 26 Oct 2013 11:48:18 +0200
+
+    add a test case for calibration with fixed reversion parameter
+
+commit 9147da502955f123dda4931db0b8aa1b3f215ecd
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sat, 26 Oct 2013 11:47:41 +0200
+
+    add a calibration constraint which fixes the first component of the piecewise volatility,
+    overwrite the calibrate method to make this constraint the default
+
+commit 13cb4e57a42088a600322c5ebcd00d997e2683be
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sat, 26 Oct 2013 11:46:48 +0200
+
+    add a calibration constraint which fixes the mean reversion during calibration
+
+commit afd6a605a7fe6106129b6d0db53c220d24b8e061
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sat, 26 Oct 2013 11:46:23 +0200
+
+    allow for calibration of a subset of the model's parameters
+
+commit b70f11cf0074a3b85989cab7f3fb38286f3ceca6
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sat, 26 Oct 2013 11:45:11 +0200
+
+    abstract out the projection from ProjectedCostFunction and add a ProjectedConstraint class
+
+commit 870223a6f0a0acfdad72d392fbca949949fc7946
+Merge: e6158f8 6ce4f6a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 23 Oct 2013 18:02:35 +0200
+
+    Merge pull request #41 from Simon Shakeshaft.
+    
+    Allow singletons to work under Visual C++ when CLR is enabled.
+
+commit 6ce4f6ad9fa72b802fd952787062aa0a1c2def74
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 23 Oct 2013 18:00:56 +0200
+
+    Replace deprecated test macros with current version.
+
+commit 6d1b876e145e45cb6cab4f6969a5e5eac3b26de6
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 23 Oct 2013 18:00:24 +0200
+
+    Switch singleton implementation when using CLR.
+
+commit 236652e2f09e650941e024739e785a051371cc8e
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 23 Oct 2013 13:55:28 +0200
+
+    Add new files to build.
+
+commit db97be97b8ad9ca2afa0217da02ff411169cc207
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 23 Oct 2013 13:53:53 +0200
+
+    Add missing includes.
+
+commit 44c41e666633f99ddbf9f245eeed539dba5692d2
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 23 Oct 2013 13:52:18 +0200
+
+    Restore original singleton implementation.
+    
+    First step in using a define to switch between the working
+    implementations for the compiler switch being used.
+
+commit e6158f89ee8b0d07315b6d06c1d915d0873b1bc2
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 22 Oct 2013 21:07:16 +0200
+
+    Reorder header.
+
+commit 88b44edb512c2284ce751f3a9044d79088d05284
+Merge: aacf4c8 7fe7c99
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 22 Oct 2013 14:25:50 +0200
+
+    Merge pull request #47.
+
+commit 7fe7c997de31776c053500da49eeafca5bc8efd8
+Merge: 9562a2b d9ad42f
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Mon, 21 Oct 2013 16:08:08 +0200
+
+    Merge branch 'fix20131017' into fix20131021
+
+commit 9562a2bff532ca6a4ff5a393fe17a4cd147eb0bc
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Mon, 21 Oct 2013 13:26:32 +0200
+
+    It seems enough to ensure that f is a valid real, so set the maximum value to QL_MAX_REAL.
+    If a numerical problem during interpolation occurs (zero near boundary not found or f is infinite or both)
+    delete the right point of the interpolation interval and try the next one. If no point is left, continue
+    with the extrapolation.
+
+commit d007f25067a6eecc6c9568f84d4bf83cfc3bc45c
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Sun, 20 Oct 2013 22:55:07 +0200
+
+    test only if boost version supports InverseCumulativeNormalDistribution
+
+commit 60bc45ee86c5b6b1cf6008215c7d46cb73ec0c28
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Sun, 20 Oct 2013 22:49:42 +0200
+
+    added MaddockInverseCumulativeNormal (proxy for the corresponding boost
+    implementation)
+    fixed compiler issue with clang++ 3.3 and boost-1.53 in
+    test-suite/convertiblebonds.cpp
+
+commit eed2e4d1729177ae1e49a509a7b21357bd6f98a2
+Merge: 636a5d4 128609b
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Sat, 19 Oct 2013 15:07:23 +0200
+
+    Merge remote-tracking branch 'upstream/master' into quantlib-merge
+
+commit 636a5d4d6ca41ff077efff5b2d74aa1e29145215
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Sat, 19 Oct 2013 14:39:46 +0200
+
+    fixed extrapolation problem for VC9
+
+commit d9ad42f8b9af897cd57b19aff8f992645b29201a
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Fri, 18 Oct 2013 19:27:34 +0200
+
+    fix illegal index access (which could happen for deleteArbitragePoints = true)
+
+commit 89a43addccdc4e176fa0ef14e5c061085a50f0b9
+Author: Simon Shakeshaft <simon.shakeshaft@estrategy-solutions.com>
+Date:   Fri, 18 Oct 2013 07:10:51 +0100
+
+    Refactor #include <ql/patterns/visitor.hpp>
+    
+    Replace #include <ostream> with forward declared <iosfwd>
+    
+    Signed-off-by: Simon Shakeshaft <simon.shakeshaft@estrategy-solutions.com>
+
+commit a4ecc67b704ea2b4f87ebb9595c4e0aa172154f6
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Thu, 17 Oct 2013 18:52:55 +0200
+
+    ensure that strike 0 is present for bounded smile sections
+
+commit 21f8660f8c0ac990335899de822bee1d368b6c2c
+Author: Simon Shakeshaft <simon.shakeshaft@estrategy-solutions.com>
+Date:   Thu, 17 Oct 2013 12:39:46 +0100
+
+    Refactor #include <ql/settings.hpp> to .cpp not reqd in .hpp.
+    
+    Signed-off-by: Simon Shakeshaft <simon.shakeshaft@estrategy-solutions.com>
+
+commit 9bdadc12833f6618d4a034dfa5ed352d422f3001
+Author: Simon Shakeshaft <simon.shakeshaft@estrategy-solutions.com>
+Date:   Thu, 17 Oct 2013 12:26:28 +0100
+
+    Moved implementations to .cpp files - works around an issue when using CLI wrappers.
+    
+    see: http://connect.microsoft.com/VisualStudio/feedback/details/336844/static-variable-in-native-method-causes-exception-c0020001-during-process-exit
+
+commit 3cbd0d84084bef29fe226e4a4f1c4e9941743134
+Author: Simon Shakeshaft <simon.shakeshaft@estrategy-solutions.com>
+Date:   Thu, 17 Oct 2013 11:48:32 +0100
+
+    Separated implementation into cpp file, but this requires explicit template instantiations.
+    
+    commented out #include <ql/types.hpp> not required?
+    
+    Signed-off-by: Simon Shakeshaft <simon.shakeshaft@estrategy-solutions.com>
+
+commit 29e9d95a44f938c1f03cbb693b8554d9ce24f65c
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Wed, 16 Oct 2013 09:54:40 +0200
+
+    allow for negative strikes (down to -displacement)
+
+commit 2f0e1bbd4b608226b8348b086e1dcc0296c133b6
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Tue, 15 Oct 2013 14:42:09 +0200
+
+    check if forward + displacement is positive instead of the forward alone
+
+commit edd6a905221b41381612f940f399e109989fe389
+Author: Simon Shakeshaft <simon.shakeshaft@estrategy-solutions.com>
+Date:   Thu, 10 Oct 2013 12:57:41 +0100
+
+    Corrected flag usage in test-suite/bin/runtest.bat.
+    
+    Signed-off-by: Simon Shakeshaft <simon.shakeshaft@estrategy-solutions.com>
+
+commit d0ca3d60d26eec174c87ec945d7e86dfc64a93cb
+Author: Simon Shakeshaft <simon.shakeshaft@estrategy-solutions.com>
+Date:   Thu, 10 Oct 2013 12:49:14 +0100
+
+    Added additional test case for Thirty360 daycounter (BondBasis and EurobondBasis).
+    
+    Signed-off-by: Simon Shakeshaft <simon.shakeshaft@estrategy-solutions.com>
+
+commit 128609bf93d47139e039814f324465aff8c54b29
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 14 Aug 2013 11:49:23 +0200
+
+    Added missing error reporting to test cases.
+    
+    The error was simply output as a test message.
+
+commit 13e92263c70f98e3a4e01fdb0f938d93dba14606
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 8 Oct 2013 14:59:57 +0200
+
+    Break a circular reference in test cases.
+
+commit 5a590e8328e6f4063280f19dba89f8ff939ae8bb
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 7 Oct 2013 18:06:32 +0200
+
+    Added missing break statements.
+    
+    Thanks to Andrey Karpov for the heads-up.
+
+commit 6424e2c33d4415cae071ca031194c2a08d82b539
+Merge: 5a5c0cb c790878
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 2 Oct 2013 14:57:17 +0200
+
+    Merge latest changes from 1.3.x branch.
+
+commit c7908787dc707602d0df0636553c44e8b9a6e0c8
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 2 Oct 2013 12:09:11 +0200
+
+    Fixed IborCoupon construction with null fixing days.
+    
+    The coupon was used the passed fixing days instead of the ones
+    previously processed by the base class constructor.
+    
+    Thanks to Lisa Ann and Gerardo Ballabio for the heads-up.
+
+commit 5a5c0cb247ed44700d1613f1a6e7178f79e2ccb5
+Merge: cc8ea96 23a0040
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 30 Sep 2013 14:28:17 +0200
+
+    Merge pull request #35.
+
+commit ebf6fccae7526ab353b371625ea20563e3d5badc
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Mon, 30 Sep 2013 08:04:58 +0200
+
+    make sure that min and max strike are added only once
+
+commit f3ec97169c919543979e7ab7074ff69795e65cd9
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sat, 28 Sep 2013 22:01:40 +0200
+
+    change criterion to identify optional flows to exercise date <= accrual start date
+
+commit a22c231c2068caa2c570809593bae1b66c9cbac7
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sat, 28 Sep 2013 21:59:32 +0200
+
+    add endpoints for sections with limited strike range,
+    move deleteArbitragePoints from KahaleSmileSection to SmileSectionUtils,
+    delete unused member variables,
+    use otm option to imply volatility from price,
+    reformat source code
+
+commit 23a00403483663e54b551233b4aafcbe9dc67a0e
+Author: Maks <maksqwe1@ukr.net>
+Date:   Thu, 26 Sep 2013 22:07:22 +0300
+
+    fix "RecursiveCdoEngine::loss_unit_" init
+    
+    before getting "std::min_element(lgds.begin(), lgds.end())"
+    in "lgds" removed all "0" elements. But this is not correct removing.
+    std::remove() only moving all the elements that not equal to "0" and return iterator to the new end.
+    instead of "0" lgds contains trash. There are two ways:
+    1. get iterator to the new end: std::min_element(lgds.begin(), new_end_iterator)
+    2. really erase all "0" from lgds: lgds.erase(std::remove(lgds.begin(), lgds.end(), 0.), lgds.end());
+    
+    cplusplus.com/reference/algorithm/remove/
+    
+    I suggest 2
+
+commit c095de4e38d9258e98939206608888588660f987
+Author: Maks <maksqwe1@ukr.net>
+Date:   Thu, 26 Sep 2013 11:45:43 +0300
+
+    fix SmileSectionUtils::SmileSectionUtils() insertion values to "k_"
+    
+    ```C++
+    k_.push_back( tmp[i] * f_ );
+    ```
+    was without check
+
+commit 720bc3dc17f2b9459fffaa8a8b62b14daafefe66
+Author: Maks <maksqwe1@ukr.net>
+Date:   Thu, 26 Sep 2013 11:27:23 +0300
+
+    fix potential EnergyCommodity::secondaryCostAmounts_ leak
+    
+    each time you call EnergyCommodity::calculateSecondaryCostAmounts()
+
+commit aa85a8ccdf61f85fd939a5f8422bb9953884dac2
+Author: Maks <maksqwe1@ukr.net>
+Date:   Thu, 26 Sep 2013 11:22:08 +0300
+
+    fix CommodityCurve::dates_ and CommodityCurve::data_ leak
+    
+    each time you call CommodityCurve::setPrices()
+
+commit d6f3b57230165b523bf299c906d22673bc51e5cf
+Author: Maks <maksqwe1@ukr.net>
+Date:   Thu, 26 Sep 2013 11:07:55 +0300
+
+    fix ManipulateDistribution::convolve() QL_REQUIRE
+
+commit 71e5edd981a69e18120e8b728b313685d4abd43c
+Merge: 9d833d2 2249a79
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 19 Sep 2013 14:39:45 +0200
+
+    Merge pull request #29.
+
+commit 2249a797341f1be80c974eea4a8d89422d8a065a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 19 Sep 2013 14:34:47 +0200
+
+    Renamed holder generator to "formatted_date".
+    
+    It seems more descriptive and less ambiguous than "userdefined_date"
+    (it's the format which is user-defined, not the date).
+    
+    Also, the preprocessor checks for Boost > 1.33 were removed (since
+    we already assume that Boost is at least at version 1.34.1).
+
+commit 3ccd58f5cdc1355aca8edecbb39fe1c6c52bff55
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 19 Sep 2013 13:13:20 +0200
+
+    Moved parsing of dates to existing utility class.
+    
+    Previous parsing functionality was deprecated. A few tests were added.
+
+commit 199d512852b80f7c36e3b1a4c32786196bbb6c3f
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Sun, 25 Aug 2013 12:31:45 +0200
+
+    Backport fix from master: fixed index access
+
+commit dda7b933d75dc239833898ee5519c0cec8e3c739
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Sun, 15 Sep 2013 21:49:29 +0200
+
+    avoid clang++ warning
+
+commit 62b983fd510bf22726615958271ed7f25490f50c
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Sat, 14 Sep 2013 18:58:23 +0200
+
+    avoid clang++ warning
+
+commit d2fb8c304e3dc3ba022c21c765c590efae886457
+Merge: 5fcb16e ef4aceb
+Author: Michael von den Driesch <mdriesch@web.de>
+Date:   Sat, 14 Sep 2013 09:30:36 +0200
+
+    Merge remote-tracking branch 'lballabio/master'
+
+commit ef4aceb67b8af06d69b310b11a9a5ab5c2ad2378
+Merge: 42598e3 ae30b99
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 13 Sep 2013 16:12:46 +0200
+
+    Merge pull request #30.
+
+commit ae30b9959308e737e79e95d0a10455e87729ad3d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 13 Sep 2013 16:11:47 +0200
+
+    Restore diagnostics after the skipped warning.
+
+commit dd37b7c8fb558b974974b93c4fb57d2d88500050
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 13 Sep 2013 16:11:12 +0200
+
+    Fixed calls to renamed method.
+
+commit 43ef2a7cc812277827c37e7efea9d47504263e60
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Wed, 11 Sep 2013 22:56:50 +0200
+
+    added pragma directive to avoid clang++ warning
+
+commit 311df5644c30e035f9d25f75b8ca8a7665602d16
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Wed, 11 Sep 2013 22:41:05 +0200
+
+    revert parameter change
+
+commit 29b62f4bde3940755b276446b9b2f2c55734d894
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Wed, 11 Sep 2013 21:59:14 +0200
+
+    revert parameter change
+
+commit 42598e3947c534cbf12480d8fba3223e638eeb57
+Merge: e4f6e6d 35313c9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 10 Sep 2013 14:24:04 +0200
+
+    Ported fix from R01030x-branch.
+
+commit 35313c9502b0b8a36126290dedf1af03666622b9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 10 Sep 2013 14:20:46 +0200
+
+    Included <string> header in errors.hpp.
+    
+    This prevents compilation errors when using STLport, which doesn't
+    include it from other standard headers.
+    
+    Thanks to Marcello Pietrobon for the heads-up.
+
+commit e4f6e6d7973659d8968f83fe7a85112f7220f732
+Merge: b817650 3ab8d9a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 9 Sep 2013 11:21:24 +0200
+
+    Merge pull request #32.
+
+commit 638cb883df93ea2074dae5b715b3a4be86e7cb6c
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Fri, 23 Aug 2013 20:03:10 +0200
+
+    Backported fix from master.
+    
+    fix maturities for tn and sn quotes,
+    avoid generating too many quotes (and reading undefined array elements),
+    write 15 and 35 for the number of FRAs and Swaps entering the curve
+    throughout the code
+
+commit b603271a8d57553ddf31cedad9a08794452e11e4
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Fri, 23 Aug 2013 19:36:30 +0200
+
+    Backported fix from master.
+    
+    the expression mm*j can in general not be represented as int, therefore
+    we need to convert each factor to double before multiplying them
+
+commit aa316ed5b35c61ef0fd696ddf759a4bff96c6fb8
+Merge: 05fc310 1ff1ce1
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 6 Sep 2013 15:01:16 +0100
+
+    Merged pull request #31.
+    
+    Some fixes for runtime errors occuring in the test suite
+    when running under clang's "-fsanitize=address,undefined,integer".
+
+commit 3ab8d9ae1ee77821a0ed7b6ce54523da09a66fbd
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sat, 31 Aug 2013 12:36:10 +0200
+
+    fix warning during build
+
+commit 1ff1ce1fa10c765c131e8e1eef76c8af24d3a4af
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 25 Aug 2013 19:33:02 +0200
+
+    replace int with Integer
+
+commit 675c473bdc6e0812ae35affabe0f04caa5ec4932
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Sun, 25 Aug 2013 15:19:31 +0200
+
+    fixed clang warnings
+
+commit 171dcded49900df35bd4745cd1ca2fd90968fd2c
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Sun, 25 Aug 2013 12:49:44 +0200
+
+    fixed index comparison int vs unsigned int
+
+commit ecff9871c0747d70f4e59d710295624851897d0a
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Sun, 25 Aug 2013 12:31:45 +0200
+
+    fixed index access
+
+commit f8c73f2be36ca77f2f0709bea42f69dd429cda77
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Sat, 24 Aug 2013 18:39:49 +0200
+
+    fixed unsigned int conversion (thanks to Peter Caspers)
+
+commit 5fcb16ee9e2dd68d3291231da9f24ac8ad177faa
+Merge: fd0778a 05fc310
+Author: Michael von den Driesch <mdriesch@web.de>
+Date:   Fri, 23 Aug 2013 21:44:34 +0200
+
+    Merge remote-tracking branch 'lballabio/master'
+
+commit 262d55eed9080c1cdc65d8494160fde67dc0b813
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Fri, 23 Aug 2013 20:13:24 +0200
+
+    avoid unsigned int overflow runtime errors. Although the code probably
+    works on most (or all?) existing platforms without the changes, strictly
+    spoken there are undefined subexpressions which we eliminate here.
+
+commit a5f6bd8743518cbf68f7887fa7f306a4cc46b555
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Fri, 23 Aug 2013 20:03:10 +0200
+
+    fix maturities for tn and sn quotes,
+    avoid generating too many quotes (and reading undefined array elements),
+    write 15 and 35 for the number of FRAs and Swaps entering the curve
+    throughout the code
+
+commit 6bd427073cad274868c17c535b3d144e48923814
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Fri, 23 Aug 2013 19:56:48 +0200
+
+    handle limit case strike (including displacement) equals zero
+
+commit 771e709abba4e7f65cc04355d21e4bc5dc6a7c16
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Fri, 23 Aug 2013 19:36:30 +0200
+
+    the expression mm*j can in general not be represented as int, therefore
+    we need to convert each factor to double before multiplying them
+
+commit dbb3be3de2dcaa14fb5115f0ca5b0f2ad760d580
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 23 Aug 2013 17:24:53 +0200
+
+    Commit updated header.
+
+commit 0b6b31672fb40e46ac13100228e17aaa14f254f4
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 23 Aug 2013 16:34:19 +0200
+
+    Renamed new day counter to more Actual365NoLeap.
+    
+    This makes the name more explicit.
+
+commit 6976f1d6e6b2d2d5da790af7f7c29e3084d6ac4a
+Author: BGC-nglass <nglass@bgcpartners.com>
+Date:   Mon, 19 Aug 2013 17:52:54 +0100
+
+    Add new Act/365 NL Daycounter
+    
+    Add Act/365 (NL) Daycounter.
+    This is used for Japanese Government Bonds
+
+commit fd0778a6894daef8cfe4f094931d77aa43207796
+Author: Michael <mdriesch@web.de>
+Date:   Thu, 22 Aug 2013 09:46:20 +0200
+
+    Added convenience string to date and date to string functionality in QL Date class.
+
+commit 85dd9062392400e7b243b2745ea16de44f1b3369
+Author: BGC-nglass <nglass@bgcpartners.com>
+Date:   Tue, 20 Aug 2013 10:47:19 +0100
+
+    Fix simpleDuration, modifiedDuration and convexity with Act/Act(ISMA)
+    
+    http://sourceforge.net/p/quantlib/bugs/162/
+    
+    This commit fixes simpleduration, duration and convexity with
+    Act/Act(ISMA)
+
+commit 849a3f12588d742c43a8bab3405ec153c0dbf310
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 11 Aug 2013 22:25:41 +0200
+
+    Backport Markov functional model fixes from master.
+    
+    - Remove cap for F (this causes violations of the C^1 property in
+      certain cases). Require decreasing call prices for exponential
+      extrapolation.
+    - Fix floor pricing.
+    - Fix error check in vanilla engine tests, exclude 0.10 strike and
+      change strike 0.07 to 0.06 in cap engine test, use correct yield
+      and volatility termstructure in cap engine test.
+
+commit 021ebecb1d8665c4336ecec302b40b852ff2f66f
+Merge: 9aeaea2 f665da9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 15 Aug 2013 19:10:24 +0200
+
+    Merge pull request #26 from Peter Caspers.
+    
+    Fixes for Markov-functional cap-floor engine and Kahale smile section.
+
+commit 6128907d37ef2891bfc4626e02003541427f76cc
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Mon, 12 Aug 2013 20:55:41 +0200
+
+    Backport fix from master.
+    
+    Disable non working test case.
+
+commit 9aeaea23dd8f7df3debb4876213328209d0bc20c
+Merge: dd6c847 56acfc9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 15 Aug 2013 16:21:19 +0200
+
+    Merge pull request #25 from Peter Caspers.
+    
+    Disabled non-working test case.
+
+commit 662f2f57e8d844ab21ca29d33d8a6c3d463ccbbc
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 14 Aug 2013 10:04:50 +0200
 
     Updated VC++ and Dev-C++ projects.
 
-commit 48e26a40b1f576a12fafeee00f2f21e98bba9f93
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 22 Mar 2013 09:28:38 +0000
+commit 56acfc9c33e721ef0c9c2916baabdcd5cff382af
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Mon, 12 Aug 2013 20:55:41 +0200
 
-    Enforce static requirement at compile time.
+    disable non working test case
+
+commit f0edfc19b5a2f9166b8eef713e839d95e0fa2ae2
+Author: gary_kennedy <gary@clarusft.com>
+Date:   Mon, 12 Aug 2013 02:51:25 -0500
+
+    added analytic implied bpvol
+
+commit f665da9d31eaf2add19390f36cd63a49da5d882a
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 11 Aug 2013 22:29:47 +0200
+
+    fix error check in vanilla engine tests,
+    exclude 0.10 strike and change strike 0.07 to 0.06 in cap engine test,
+    use correct yield and volatility termstructure in cap engine test
+
+commit 8a964d85cd24ce7ce106e2cf127e2c27c3053e19
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 11 Aug 2013 22:26:01 +0200
+
+    fix floor pricing
+
+commit e501c82af8671989685686ccee5657a3141dc354
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 11 Aug 2013 22:25:41 +0200
+
+    remove cap for F (this causes violations of the C^1 property in certain cases)
+    require decreasing call prices for exponential extrapolation
+
+commit b98985c01d3c40ced7d6a43bab07fd589f625e1e
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 21 Jul 2013 21:56:25 +0200
+
+    Backported fix from master.
     
-    Thanks to Michael Sharpe.
+    Change input parameters used as return values to references; change
+    cached values due to the correction; disable slow test case.
 
-commit 593142a0ebf0e9b623dd40f2943412b978fc03db
+commit 418560ef719e1a08ec8b905834d6300461bc5afb
+Merge: 97e9798 83d4ca1
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 22 Mar 2013 09:28:23 +0000
+Date:   Mon, 29 Jul 2013 11:33:51 +0200
 
-    Avoided warnings for constant conditional expressions in VC++.
+    Merge pull request #18.
+
+commit 83d4ca1f9f00696a7c749a0d3d78cc6ecd746bde
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 29 Jul 2013 11:32:21 +0200
+
+    Disabled slow test case.
+
+commit a532864ed850e1e0c95f9832035381bb756dd9a1
+Merge: e54294c 3cdd4ed
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 26 Jul 2013 13:22:24 +0200
+
+    Merge pull request #12.
     
-    Thanks to Michael Sharpe.
+    Various enhancements to short-rate calibration helpers.
 
-commit 273cb02fd5d649bf724b1921c7c7b777cdaae81f
+commit 3cdd4edc842515cb97643595f09695c57c3e56e9
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 22 Mar 2013 09:28:01 +0000
+Date:   Fri, 26 Jul 2013 12:13:08 +0200
 
-    Removed or commented out unreachable code.
+    Allow recalculation of exercise and end dates.
     
-    Thanks to Michael Sharpe.
+    Setting the calculated values to the stored data members would prevent
+    recalculation if the evaluation date changed. Instead, using temporary
+    objects and leaving the data members null will trigger recalculation.
 
-commit 15511eed763bf6c6c9dd70ab9d8f8670e2c796af
+commit b74e277d8aa5ce44dbba5c364e2e82987bdd13cf
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 22 Mar 2013 09:27:37 +0000
+Date:   Fri, 26 Jul 2013 12:07:43 +0200
 
-    Prevented uninitialized-variable warning.
+    Newly added performCalculation method set to private.
     
-    Extracted if/else clause in Concentrating1dMesher constructor outside
-    the for loop and improved scope of variables so that c1 and c2 are
-    initialized at declaration time.
+    Having it as public in the CalibrationHelper class was probably an
+    oversight. Unfortunately, we can't change it there for backward
+    compatibility.
+
+commit 0ec08a4c5d9b7407fcaada54500b4da615b592d5
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 26 Jul 2013 11:53:20 +0200
+
+    Return the contained handle by value.
     
-    Thanks to Michael Sharpe.
+    This doesn't limit the intended uses but prevents client code from
+    breaking its link with sister handles.
 
-commit a648d0f9b1408803ae385d55dd1fc2462a3919ad
+commit e54294c11322b2a0e24574c05517e16d8904cfe2
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 22 Mar 2013 09:27:20 +0000
+Date:   Wed, 24 Jul 2013 15:00:58 +0200
 
-    Declared a few methods as inline to work around a VC++ bug.
+    Increased version number to 1.4.
+
+commit 21e3a3bf875c3747ceb99c68aef1a10d5ea2c5cc
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 24 Jul 2013 13:19:45 +0200
+
+    Increased version number to 1.3.1.
+
+commit bbf0411bdf241e0e9a1cc198c0cc7360f1ff20f9
+Merge: ce9b4ae a8e5561
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 24 Jul 2013 10:20:44 +0200
+
+    Merge latest changes from branch 'R01030x-branch'.
+
+commit a8e5561bc263918bf090ab9cad6bc4dc6716d6d4
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 23 Jul 2013 09:20:08 +0200
+
+    Replaced link to Subversion page.
+
+commit e20369ac3907de3addfd9214f8475a4135797704
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 23 Jul 2013 09:19:52 +0200
+
+    Added link to documentation page.
+
+commit d0e585b9fb5d03b4636be6a6a2595cc31caa3cc9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 23 Jul 2013 09:18:44 +0200
+
+    Fix file reference in Doxygen comment blocks.
+
+commit 95d12787c2427d9fde01cebbaafbd3e523fa176d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 23 Jul 2013 09:18:02 +0200
+
+    Fixed alignment of list items.
     
-    See <http://stackoverflow.com/questions/3051992/compiler-warning-at-c-template-base-class>.
+    It was causing Doxygen to split the list in two.
+
+commit b46b23fa820d5b369323dddfb0a33524f9517bd0
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 21 Jul 2013 22:01:18 +0200
+
+    reactivate test case
+
+commit 5b7c1ed27d17c87af5919f179aa4abf07a629cb1
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 21 Jul 2013 22:00:55 +0200
+
+    add missing break statement
+
+commit e71fc9d661cbaecc89c520fb9de0ee5bd96ca241
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 21 Jul 2013 22:00:36 +0200
+
+    make limit in loop explicit
+
+commit 86bcd4e9c4234b67b1c1940f50409dbdd57aee35
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 21 Jul 2013 22:00:05 +0200
+
+    remove assignment which is not used
+
+commit f3107ed15ec4537caf5fc9b8ca532a82d058d026
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 21 Jul 2013 21:59:49 +0200
+
+    remove assignment to variable which is not used
+
+commit 0d530723f9e2fa29739dd697daef34f779ef173e
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 21 Jul 2013 21:58:28 +0200
+
+    change cached value due to corrections in PerturbativeBarrierOptionEngine,
+    increase precision in output messages
+
+commit ae846eacd050ab13c82701452afed09c97e277fa
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 21 Jul 2013 21:57:04 +0200
+
+    comment out useless code
+
+commit 5b4d53cddf930c93e16ad1bde94851c8f06c0cec
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 21 Jul 2013 21:56:25 +0200
+
+    change input parameters used as return values to references
+
+commit 8b7ddf0a6928bbc6ff47fc5f9c5a0c782e754a81
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sat, 20 Jul 2013 09:06:20 +0200
+
+    remove debug output, change error message text
+
+commit 583f46c5fdb9955cfb949b6ba59481a77d86068d
+Merge: 3cd63f3 fe785fc
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 13 Jul 2013 20:50:44 +0200
+
+    Merge pull request #16
+
+commit 3cd63f39db38ed0ff8a10ee2481696b03b01f994
+Merge: 73a1c5b 3a92227
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 13 Jul 2013 19:42:21 +0200
+
+    Merge pull request #15.
+
+commit fe785fc0cc2c859a9ad6528c5386414184284f81
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sat, 13 Jul 2013 18:17:11 +0200
+
+    remove multiple declaration
+
+commit 3a922274b0e581c806b413ffd4231e16d26835e2
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sat, 13 Jul 2013 17:05:10 +0200
+
+    correct non matching #ifndef #define
+
+commit 8893eca2d68c2558542c240bafd08ba943116a85
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Wed, 10 Jul 2013 21:30:23 +0200
+
+    remove registration with evaluation date in base class, if needed in
+    derived classes, they should register by themselves
+
+commit 73a1c5bc515f5c9ad0f2ad11bb32eda484438137
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sun, 7 Jul 2013 21:07:46 +0200
+
+    fix gcc warning
+
+commit 5eb62b582fc5ce15d1e7ad3d93397e9a49ce2f37
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Thu, 4 Jul 2013 22:12:32 +0200
+
+    remove volatility and nominal inspectors from swaptionhelper
+    add volatility inspector to calibrationhelper
+
+commit f659fee27f3b3f014b7c622bd4d8d71cbcb7145e
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Tue, 2 Jul 2013 19:39:17 +0200
+
+    let the calibration helper observe the evaluationDate and the floating rate index,
+    move the constructor code to performCalculations(),
+    provide swaption constructors specifying dates instead of tenors,
+    allow for non atm strike swaptions and a non unit nominal
+
+commit 3b006159ee745f82f4af2f6465377f5a27610a21
+Merge: 0c659e5 af51bff
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 28 Jun 2013 15:39:48 +0200
+
+    Merge pull request #11 from Peter Caspers.
     
-    Thanks to Michael Sharpe.
+    Add clone method to SwapIndex which allows to change the tenor.
 
-commit 0d2cd3800bee2f4b24885613ecc461135abba277
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 22 Mar 2013 09:27:01 +0000
+commit af51bff7b8ed404e5fbf59896aad839bf63c447a
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Wed, 26 Jun 2013 20:19:58 +0200
 
-    Add explicit static_cast to silence VC++ warning.
-    
-    Thanks to Michael Sharpe.
-
-commit fad3ff06dfd006636a6cfbd23c65c6cfa62245a3
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 22 Mar 2013 09:26:48 +0000
-
-    Fixed unused-variable warnings in VC++ warning level 4.
-    
-    Thanks to Michael Sharpe.
-
-commit 646a0fa71b3195cb847614d37ac2c9332771267c
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 22 Mar 2013 09:26:28 +0000
-
-    Fixed uninitialized-variable warnings in VC++ warning level 4.
-    
-    Thanks to Michael Sharpe.
-
-commit 68b8208624394364881c6569795e971788793d0b
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 22 Mar 2013 09:26:05 +0000
-
-    Fixed unused-parameter warnings for VC++ warning level 4.
-    
-    Thanks to Michael Sharpe.
-
-commit 62580454e9e57c56663e70031ab54549949876fd
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 19 Mar 2013 14:28:35 +0000
-
-    Increased precision in tail of West's bivariate cumulative normal.
-    
-    Thanks to Fabien Le Floc'h.
-
-commit ebd2786e06488b99dc73540b3ab33b5d87a95d2e
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 19 Mar 2013 11:58:50 +0000
-
-    Added exogenous discount to OptionletStripper1 (thanks to Peter Caspers).
-
-commit db0bf8b352d2186ad5ba22006313fadb367cf7d9
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 18 Mar 2013 15:16:41 +0000
-
-    Pass correct ATM forward rate to smile section (thanks to Peter Caspers).
-
-commit a9d8ccc912129ac5ca2c00b98e8a6a1bbc94ba5f
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 12 Mar 2013 12:44:46 +0000
-
-    Prevented warning in VC++10.
-
-commit 6a9f318dd7ef6b88c7f325f471b250b06acbfb4a
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 12 Mar 2013 10:21:52 +0000
-
-    Fixed array access in tests.
-
-commit 89faaabd8f0c35a69eeeab1fb5e87779de4279cc
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 8 Mar 2013 15:16:58 +0000
-
-    Deprecated features of Boost.Test are no longer used
-
-commit 6be4473fa67df4a19e97ff1e58490ec49e415f1c
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 8 Mar 2013 15:14:33 +0000
-
-    Moved test from boost::random to our generators.
-    
-    This prevents results from changing when the Boost implementation
-    changes (which I wouldn't have expected, but seems to have happened
-    in development after Boost 1.53).
-
-commit 6ce441f1fc35bc833b22c75221784d94b3c7d4a9
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 8 Mar 2013 06:37:10 +0000
-
-    Merged latest changes from 1.2.x branch
-
-commit 0db631f246b3d98cf54f865fbf2396c65278cfc1
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 4 Mar 2013 14:07:09 +0000
-
-    Fixed a forward-looking bias issue in Garch11 calculation.
-    
-    Thanks to Slava Mazur.
-
-commit 9049add6f78da2a89d966d4bd820ed85fb9ace67
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 4 Mar 2013 14:06:45 +0000
-
-    Fixed precision issue in calculation of autocovariances.
-    
-    Thanks to Slava Mazur.
-
-commit 56f52d34a35f859add9943fdd4c713188ee95b98
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 4 Mar 2013 14:05:51 +0000
-
-    Relaxed extrapolation check for default-probability curves.
-    
-    When calculating default probabilities between two dates or times,
-    allow the first to precede the reference date. This effectively
-    assumes that the default probability before the reference is null,
-    and helps in cases where a coupon protection extends a couple of
-    days before the reference due to adjustments (for instance, when
-    the protection starts on a Saturday and the reference is rolled to
-    the following Monday).
-
-commit b3839d9863f74c66b4a256e4dc6eca889c146538
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 4 Mar 2013 14:05:36 +0000
-
-    Implemented Lagrange boundary condition for cubic interpolation.
-    
-    Thanks to Peter Caspers.
-
-commit c14231287287ab160c9368cdb0be92d38e7b00ad
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 4 Mar 2013 14:05:18 +0000
-
-    Yield-based NPV calculation now uses coupon reference dates.
-    
-    This fixes small discrepancies when using day counters such
-    as ISMA act/sact.
-    
-    Thanks to Henri Gough for the heads-up.
-
-commit 34d82cfc0d05d006ff14311e586f67ca44c5233e
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sat, 2 Mar 2013 18:44:51 +0000
-
-    updated vc10 project file
-
-commit ae090833fff63140d5b3b83d1b1538753520f15c
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Mon, 11 Feb 2013 12:28:26 +0000
-
-    updated vc10 project file
-
-commit 8d0aa19e7c16d1cbef3479279f52560e542f2beb
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sat, 2 Feb 2013 23:38:52 +0000
-
-    added Fokker-Planck finite difference operator for BS, square root and Heston processes
-
-commit c9ac134272aa0a76c63eb12c9c2df0511ce9ac77
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Thu, 27 Dec 2012 14:07:47 +0000
-
-    reduce integration order to enable more aggressive compiler optimization flags
-
-commit 14d94f3553e91fad09ca7ba7e09d79846a706a37
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Thu, 27 Dec 2012 13:11:38 +0000
-
-    added sparse matrix assignment tests
-
-commit 5d2f139dc84ae3c4446ae53b37723a8461e5cc42
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Mon, 24 Dec 2012 15:55:37 +0000
-
-    fixed order of operators
-
-commit 7e1cd85f2b2783f2ba514b68c61a309b3221983d
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Tue, 18 Dec 2012 21:08:51 +0000
-
-    added benchmark results for i7 870
-
-commit 2642193f1e2980eea2ca0cdbe8df7d11aa041cef
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 18 Dec 2012 16:06:57 +0000
-
-    Added missing virtual destructor to base class.
-
-commit fa3976c500e6bee81cf3a0acfb44d574d09c36d5
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sun, 16 Dec 2012 18:30:26 +0000
-
-    do not keep references to shared ptr
-
-commit e787fdf872c30f6592f6d5e5d983cf441d42facb
-Author: Ferdinando Ametrano <nando@ametrano.net>
-Date:   Thu, 6 Dec 2012 15:11:53 +0000
-
-    avoided warning
-
-commit 00803369b5fad78807554aaf5624a382919e9d98
-Author: Ferdinando Ametrano <nando@ametrano.net>
-Date:   Thu, 6 Dec 2012 11:59:47 +0000
-
-    Merging revisions 1-HEAD of branches/R01020x-branch/QuantLib into trunk\QuantLib, respecting ancestry
-
-commit 6d597f7aea8b999e207e7428110d316fe9d72b29
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 6 Dec 2012 07:56:35 +0000
-
-    Ensure that the last function call inside a solver is passed the root.
-    
-    Thanks to Francis Duffy.
-
-commit afb717af6df6fe1ebe77afc0a16f99a4105211ca
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 5 Dec 2012 14:18:55 +0000
-
-    Added VC++11 projects (thanks to Edouard Tallent).
-
-commit f82edb7fa70cdfcf2b8a67ad371605f3eecff9dd
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 3 Dec 2012 13:24:04 +0000
-
-    Avoided size mismatch warning (thanks to Marcello Pietrobon).
-
-commit f157baf6f8add49bc42b50cdc7d4213bce101a10
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 3 Dec 2012 11:37:43 +0000
-
-    Prevented warning under VC++10 (thanks to Marcello Pietrobon).
-
-commit 6d9c155b8dd050b52869a77fcee5cf131029aa87
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 30 Nov 2012 14:57:34 +0000
-
-    Avoid invalidating iterators.
-
-commit 54f657197732815c8483a7e451c4982d4ea41cfb
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Tue, 27 Nov 2012 21:59:25 +0000
-
-    improved ublas interface for the finite difference operator splitting methods
-
-commit e5c595dcd3db3e89c078812ae9ddddbce7a85742
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Tue, 27 Nov 2012 21:46:35 +0000
-
-    improved ublas interface for the finite difference operator splitting methods
-
-commit 27676f97c7f7b4cbd05939541939cea7e1ac7782
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Tue, 27 Nov 2012 21:34:21 +0000
-
-    improved ublas interface to the finite difference operator splitting methods
-
-commit 617aeeb7aa9ddbf17b5fe6985e0ce3dd3ac8fafd
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 27 Nov 2012 15:44:23 +0000
-
-    Fixed Gamma distribution tail (thanks to Ian Qsong).
-
-commit 9caff7a5f478f60847985885d4a5a6f7bd63c282
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 27 Nov 2012 09:46:46 +0000
-
-    Replaced struct initialization with constructor for compatibility.
-
-commit 09b53851ec49d50b8cf12f087efa8f319c34a058
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 26 Nov 2012 16:58:35 +0000
-
-    Correct limit for stdDev -> 0 (thanks to Peter Caspers).
-
-commit 53b948324ea3824a5630cae6b2556f85e83c5e5f
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 21 Nov 2012 09:18:57 +0000
-
-    Added new implementation from Mateusz Kapturski.
-
-commit d87710d879dee5d10269f14f9862ac77d7badc4a
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 20 Nov 2012 08:09:39 +0000
-
-    Fixed outdated link to OMG document (thanks to Tawanda Gwena).
-
-commit 0ca5eea60215237e6065a46d487fa1f4af126a38
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 20 Nov 2012 08:09:21 +0000
-
-    Use correct default for evaluation date in a few CashFlows methods.
-    
-    Thanks to Peter Caspers for the fix.
-
-commit 628238f57a68aaeae6e02e7e10580ead1549fc78
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 16 Nov 2012 14:21:22 +0000
-
-    Updated Windows projects
-
-commit af64e748e7f82b4686fa33a72c279f5c20c75566
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 13 Nov 2012 11:58:51 +0000
-
-    Added calibration to GARCH model (thanks to Slava Mazur).
-
-commit 5c81c18a8159500144dcbc218224ef311aba58eb
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 6 Nov 2012 11:33:07 +0000
-
-    Updated South-Korean calendar for 2013 (thanks to Faycal El Karaa).
-
-commit dd6096e791b663aa1760ea54c3190aeb2b0b7054
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 6 Nov 2012 11:29:50 +0000
-
-    Added Epiphany (introduced in 2011) to Polish calendar.
-    
-    Thanks to katastrofa, whoever that is.
-
-commit 371e23ea838d9262f0548919ba4d98ab94a05a4e
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 6 Nov 2012 11:29:30 +0000
-
-    Updated Chinese calendar for 2012 (thanks to Cheng Li).
-
-commit aad2991ce811096da451d3692304a5351f580f38
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 6 Nov 2012 11:29:12 +0000
-
-    Fixed holiday for Japanese calendar (thanks to Sebastien Gurrieri).
-    
-    When two holidays are on a consecutive Saturday and Sunday, only the
-    one falling on Sunday is moved to the following business day.
-
-commit 91e6853a1ac767d36955011612ace75e79d21678
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 24 Oct 2012 15:21:39 +0000
-
-    Fixed degenerate case for ABCD volatility (thanks to Peter Caspers).
-    
-    Tests added.
-
-commit 5352192c7da8e56cdcc96612dda84e91edc31ea2
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 24 Oct 2012 14:47:39 +0000
-
-    Re-enabled test.
-
-commit aa06dce25d1e03c880336b3cf02cdba7076e5924
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 24 Oct 2012 07:57:49 +0000
-
-    Grouped together tests for experimental code
-
-commit c349de399328289b3be2da97e51d4536057adbcd
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 24 Oct 2012 07:57:22 +0000
-
-    Added experimental ODE solver (thanks to Peter Caspers).
-    
-    A few tests are included.
-
-commit 2a254bb81a9d5bccf9a7584884a4b177c2888705
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 24 Oct 2012 07:56:40 +0000
-
-    Added special case to close()/close_enough() when either value is 0.
-    
-    Previously, they would always return false which could be surprising.
-    Thanks to Simon Shakeshaft for the fix.
-
-commit 7d43bb3c143692636fc31ff59faf2373b9571081
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 24 Oct 2012 07:56:24 +0000
-
-    Don't use floating-point comparison to check for Null<Real>.
-    
-    Thanks to Simon Shakeshaft for the heads-up.
-
-commit 241b14dbcc810649fdb7f6c1274d4ef5c0a20dd2
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sun, 21 Oct 2012 16:45:56 +0000
-
-    refactoring of FdmMesherComposite
-
-commit 3d65113e9b062f36bda045d56585ddbd1d5bc069
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sun, 21 Oct 2012 16:42:00 +0000
-
-    refactoring of FdmMesherComposite
-
-commit d165afbb295bdd55ed2758d1dfd8c30fecf86324
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sun, 21 Oct 2012 15:47:11 +0000
-
-    fixed broken test cases
-
-commit 6a441ef10adcd5011a9415e9c9731bad1d2c490d
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 18 Oct 2012 11:18:46 +0000
-
-    Added experimental two-asset barrier option.
-    
-    Thanks to Qingxiao Wang and Nabila Barkati from
-    IMAFA, Polytech'Nice Sophia.
-
-commit 0558b05d986ba04908449db73a8b87965d2ff146
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 3 Oct 2012 20:55:28 +0000
-
-    Merged latest changes from 1.2.x branch into trunk.
-    
-    QuantLib and QuantLib-SWIG only.  I'll leave the rest to
-    more knowledgeable people.
-
-commit 81112885767c2180772f8b784fb3a0acf073d8b0
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Tue, 25 Sep 2012 11:10:31 +0000
-
-    added differential evolution optimization (thanks to Ralph Schreyer)
-
-commit c305069ddf4402e2822256534f9c97cff93aba16
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Wed, 5 Sep 2012 21:37:10 +0000
-
-    fd black scholes pricing engines are now observers of the BS process.
-
-commit 09ce78ebc5fd540079eb912ad6089ddfad1bfb00
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 3 Sep 2012 11:25:26 +0000
-
-    Fixed build for MinGW (thanks to Bojan Nikolic).
-
-commit 3d29f2fd911b2e8c637b1372846328ea86d1bd91
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Wed, 22 Aug 2012 22:25:17 +0000
-
-    removed useless include statement
-
-commit 4fda3afdd36a9b9e8880426321b3ea57272d4a28
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Fri, 10 Aug 2012 22:40:49 +0000
-
-    support g++ version 4.7 with -std=c++11 enabled
-
-commit c80afcdfff4ac22ad4a544cbce4578420ee620dd
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sat, 4 Aug 2012 16:13:16 +0000
-
-    added Heston-Hull-White pricing engine using the H1HW approximation
-
-commit 83f9941390741d92aa1d771755fa04e656115072
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sat, 4 Aug 2012 12:11:15 +0000
-
-    added benchmark result for Raspberry Pi
-
-commit 43529990156a503760ebdab9a97f4e7cc05f8ea9
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 17 Jul 2012 12:22:45 +0000
-
-    Added method to clone a swap index with a different discount curve.
-    
-    Thanks to Peter Caspers.
-
-commit 6cf26fea1a3137ec0f1979bee0b42a13ef9c6e83
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 17 Jul 2012 12:22:31 +0000
-
-    Added inspector for the joint calendar used by Libor indexes.
-
-commit cdc82d15866e54ddc4774b4c056707edfe847c20
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 17 Jul 2012 12:22:15 +0000
-
-    Fixed access specifiers for Calendar::WesternImpl.
-    
-    Thanks to Mike Jake for the heads-up.
-
-commit 26b5f63cbc95e582c0aaf0037a134085d4d4b319
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sun, 1 Jul 2012 12:34:10 +0000
-
-    improved interface of RichardsonExtrapolation
-
-commit 0e6eb42b3220c414b920f61d4e0d750c6ccbcfe8
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Fri, 29 Jun 2012 21:17:35 +0000
-
-    replaced double with Real to keep header and source files in sync.
-
-commit ca032c4d01c21c18a9e251bd7147c6325e3132ed
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Fri, 29 Jun 2012 21:15:52 +0000
-
-    replaced double with Real to keep header and source files in sync.
-
-commit 691b8d87aa0d559a62aef5f7a1db06de338906f1
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sat, 23 Jun 2012 21:01:58 +0000
-
-    enable g++ -std=c++0x or g++ -std=c++11
-
-commit 012ddcd01be7a9a9b06d67772bad2f860e524bcd
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Mon, 18 Jun 2012 19:41:42 +0000
-
-    added time dependent Dirichlet boundary condition (thanks to Peter Caspers)
-
-commit b9450cf6a475fcf68cbf24c68fa941d91283bdb3
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sun, 17 Jun 2012 12:04:24 +0000
-
-    small refactoring of fdm schemes
-
-commit 42162004c9ac3adf6c12296fff64461ebafa7bcc
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sun, 17 Jun 2012 11:49:00 +0000
-
-    removed obsolete includes
-
-commit a462cad032ad3e8f65a090744869c26d677acf2c
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sat, 16 Jun 2012 14:37:20 +0000
-
-    changed type of FdmBoundaryConditionSet to OperatorTraits<FdmLinearOp>::bc_set (thanks to Peter Caspers)
-
-commit 3b894143bf5618a6971ba4ad36eb53dc81bbf917
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sun, 10 Jun 2012 08:56:09 +0000
-
-    added Richardson extrapolation
-
-commit 42f809aeed446f26ed6f1dbc0bb1ec9f40cfee19
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Wed, 30 May 2012 22:32:14 +0000
-
-    added test for Heston Model: compare QL results with Alan Lewis reference results
-
-commit 4bb6ac11093bdbe5d9232768deffe0b9f01c2662
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Wed, 30 May 2012 21:00:48 +0000
-
-    fixed MultiCubicSpline boundary issue
-
-commit 2d66db7fce973fb6689b40c5c83f6b11c1f4a8c3
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Mon, 23 Apr 2012 11:04:37 +0000
-
-    added Glued1dMesher (thanks to Peter Caspers)
-
-commit b03fdd0f240108f10757d8ec64e490d71fd43e82
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 8 Mar 2012 07:57:18 +0000
-
-    Increased version number to 1.3.
-
-commit dfd83cb5929e6ea8e1cdfe25dddecbbc1e56c07a
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 7 Mar 2012 08:27:53 +0000
-
-    Merged R01020x-branch/QuantLib
-
-commit f23dd82d5d681486b1484dbdbc6785de969daba0
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sun, 26 Feb 2012 10:24:13 +0000
-
-    fixed gcc 4.6.2 warnings
-
-commit 0de936ed1a09428cec42c63f20f52599ea6bdd1e
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sun, 26 Feb 2012 10:21:36 +0000
-
-    fixed gcc 4.6.2 warnings
-
-commit 02faf8c5b84e9ea2638f5edc4f64661c54af5a5e
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sat, 25 Feb 2012 21:17:43 +0000
-
-    fixed gcc 4.6.2 warnings
-
-commit e210586e1aa093c34f01e509c436a422094b08a7
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sat, 25 Feb 2012 20:50:45 +0000
-
-    delete circular references in inflation test cases
-
-commit 43cac330058fbf8317060cc986239c1f9bc65170
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sat, 25 Feb 2012 14:09:23 +0000
-
-    reverse inheritance order to avoid g++ linker problem
-
-commit 174c41439c50c23065787f03fdbbc5d9383c3b52
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Wed, 8 Feb 2012 20:02:36 +0000
-
-    use public inheritance
-
-commit b3bab5eb383acb3089f8ce9990b45d1a56574c8c
-Author: Ferdinando Ametrano <nando@ametrano.net>
-Date:   Mon, 6 Feb 2012 09:43:15 +0000
-
-    in synch with R01020x-branch
-
-commit 7bc21a3c69c7df9cbaead7567795a9a8cdfa6865
-Author: Ferdinando Ametrano <nando@ametrano.net>
-Date:   Mon, 6 Feb 2012 09:33:50 +0000
-
-    added Luca Billi's comment about preventing infinite recursion
-
-commit c3196cafed442d02b937920264f8d690577a14db
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Tue, 24 Jan 2012 22:35:43 +0000
-
-    Updated VC++ 10  projects
-
-commit 477a272783de585b4d4aaa2f43d48076de19bc71
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Tue, 24 Jan 2012 22:10:57 +0000
-
-    replaced generalized_vector_of_vector by compressed sparse matrix (vc 10 fix)
-
-commit 34987c47de4fffc13f6d7a37633b1ea11da34981
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Tue, 24 Jan 2012 21:37:23 +0000
-
-    replaced generalized_vector_of_vector by SparseMatrix (vc 10 fix)
-
-commit 7a1801388fcacd269634be51f3005644ae3f1cc5
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Tue, 24 Jan 2012 21:21:06 +0000
-
-    VC 10 fix
-
-commit 8498a6ff19b31f4f8b4009f240cab048dbd8e2e1
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 24 Jan 2012 17:27:11 +0000
-
-    qldefines.hpp must be included before checking QL_NO_UBLAS_SUPPORT.
-
-commit 84a4488ec8fd4ff80584352b07044e43f39d86e5
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sat, 21 Jan 2012 12:57:30 +0000
-
-    added sparse matrix support for finite difference operators
-
-commit 4ebcfe26b318db482186e77aec87b0a36c0fb3fd
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Mon, 16 Jan 2012 14:26:22 +0000
-
-    added sobol brownian bridge interface for MC framework
-
-commit 3a790fb80050f9a9d7994fb7de43bb91df92ca3f
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sun, 15 Jan 2012 13:18:10 +0000
-
-    fixed initialization order
-
-commit 957484ac793253141e452cdfaf3ff3b836f14fd9
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Mon, 19 Dec 2011 21:13:19 +0000
-
-    finite difference based Bermudan swaption engines for the G2++ and the Hull-White model
-
-commit b2fa58ae618bb05b67a78bb8de2d64c1c6b3033d
-Author: Klaus Spanderen <klaus@spanderen.de>
-Date:   Sun, 18 Dec 2011 20:02:30 +0000
-
-    fixed test suite (removed todaysDate)
+    add clone method which allows to change the tenor
