@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=1939
+UnitCount=1940
 Type=2
 Ver=1
 ObjFiles=
@@ -19431,6 +19431,16 @@ BuildCmd=
 FileName=ql\experimental\coupons\lineartsrpricer.hpp
 CompileCpp=1
 Folder=experimental/coupons
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit1940]
+FileName=ql\experimental\math\polarstudenttrng.hpp
+CompileCpp=1
+Folder=experimental/math
 Compile=1
 Link=1
 Priority=1000

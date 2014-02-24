@@ -8147,6 +8147,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\math\polarstudenttrng.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\math\simulatedannealing.hpp"
 					>
 				</File>

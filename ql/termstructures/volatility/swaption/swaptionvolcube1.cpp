@@ -129,6 +129,15 @@ namespace QuantLib {
         }
     }
 
+    void SwaptionVolCube1::updateAfterRecalibration() {
+        volCubeAtmCalibrated_ = marketVolCube_;
+        if(isAtmCalibrated_){
+            fillVolatilityCube();
+            denseParameters_ = sabrCalibration(volCubeAtmCalibrated_);
+            denseParameters_.updateInterpolators();
+        }
+    }
+
     SwaptionVolCube1::Cube
     SwaptionVolCube1::sabrCalibration(const Cube& marketVolCube) const {
 
@@ -508,11 +517,11 @@ namespace QuantLib {
         for (Size i=0; i<2; i++) {
             for (Size j=0; j<2; j++) {
                 atmForwards[i][j] = atmStrike(optionsDateNodes[i],
-                                              swapTenorNodes[j]);                
+                                              swapTenorNodes[j]);
                 // atmVols[i][j] = smiles[i][j]->volatility(atmForwards[i][j]);
                 atmVols[i][j] = atmVol_->volatility(
                     optionsDateNodes[i], swapTenorNodes[j], atmForwards[i][j]);
-                /* With the old implementation the interpolated spreads on ATM 
+                /* With the old implementation the interpolated spreads on ATM
                    volatilities were null even if the spreads on ATM volatilities to be
                    interpolated were non-zero. The new implementation removes
                    this behaviour, but introduces a small ERROR in the cube:
@@ -524,9 +533,9 @@ namespace QuantLib {
                    volatilities in sparse cube whose spreads are used in the calculation.
                    A similar imprecision is introduced to the volatilities in dense cube
                    whith moneyness near to 1.
-                   (See below how spreadVols are calculated). 
+                   (See below how spreadVols are calculated).
                    The extent of this error depends on the quality of the fit: in case of
-                   good fits it is negligibile.                  
+                   good fits it is negligibile.
                 */
             }
         }
@@ -594,17 +603,42 @@ namespace QuantLib {
     }
 
     void SwaptionVolCube1::recalibration(Real beta,
-                                         const Period& swapTenor){
-        Matrix newBetaGuess(nOptionTenors_, nSwapTenors_, beta);
-        parametersGuess_.setLayer(1, newBetaGuess);
-        parametersGuess_.updateInterpolators();
+                                         const Period& swapTenor) {
 
-        sabrCalibrationSection(marketVolCube_,sparseParameters_,swapTenor);
+        std::vector<Real> betaVector(nOptionTenors_, beta);
+        recalibration(betaVector,swapTenor);
 
-        if(isAtmCalibrated_){
-            fillVolatilityCube();
-            sabrCalibrationSection(volCubeAtmCalibrated_,denseParameters_,swapTenor);
+    }
+
+    void SwaptionVolCube1::recalibration(std::vector<Real> &beta,
+                                         const Period& swapTenor) {
+
+        QL_REQUIRE(beta.size() == nOptionTenors_,
+                   "beta size ("
+                       << beta.size()
+                       << ") must be equal to number of option tenors ("
+                       << nOptionTenors_ << ")");
+
+        const std::vector<Period> &swapTenors = marketVolCube_.swapTenors();
+        Size k = std::find(swapTenors.begin(), swapTenors.end(), swapTenor) -
+                 swapTenors.begin();
+
+        QL_REQUIRE(k != swapTenors.size(), "swap tenor (" << swapTenor
+                                                          << ") not found");
+
+        for (int i = 0; i < nOptionTenors_; ++i) {
+            parametersGuess_.setElement(1, i, k, beta[i]);
         }
+
+        parametersGuess_.updateInterpolators();
+        sabrCalibrationSection(marketVolCube_, sparseParameters_, swapTenor);
+
+        if (isAtmCalibrated_) {
+            fillVolatilityCube();
+            sabrCalibrationSection(volCubeAtmCalibrated_, denseParameters_,
+                                   swapTenor);
+        }
+
     }
 
     //======================================================================//
