@@ -62,7 +62,7 @@ namespace QuantLib {
         const Array& weights() { return w_; }
         const Array& x()       { return x_; }
         
-      private:
+      protected:
         Array x_, w_;
     };
 
