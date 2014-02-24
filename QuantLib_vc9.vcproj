@@ -8662,6 +8662,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\math\multidimintegrator.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\multidimintegrator.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\math\polarstudenttrng.hpp"
 					>
 				</File>

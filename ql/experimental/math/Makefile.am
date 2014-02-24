@@ -9,12 +9,14 @@ this_include_HEADERS = \
     expm.hpp \
     farliegumbelmorgensterncopularng.hpp \
     frankcopularng.hpp \
+    multidimintegrator.hpp \
 	polarstudenttrng.hpp \
     simulatedannealing.hpp \
     zigguratrng.hpp
 
 libMath_la_SOURCES = \
 	expm.cpp \
+    multidimintegrator.cpp \
     zigguratrng.cpp
 
 noinst_LTLIBRARIES = libMath.la
