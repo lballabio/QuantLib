@@ -10,6 +10,7 @@ this_include_HEADERS = \
     cdsoption.hpp \
     defaultevent.hpp \
     defaultprobabilitykey.hpp \
+    defaultprobabilitylatentmodel.hpp \
     defaulttype.hpp \
     distribution.hpp \
     factorspreadedhazardratecurve.hpp \

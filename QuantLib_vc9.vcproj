@@ -7482,6 +7482,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\defaultprobabilitylatentmodel.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\defaulttype.cpp"
 					>
 				</File>
@@ -8670,6 +8674,18 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\math\gaussiancopulapolicy.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\gaussiancopulapolicy.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\latentmodel.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\math\multidimintegrator.cpp"
 					>
 				</File>
@@ -8683,6 +8699,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\math\simulatedannealing.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\tcopulapolicy.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\tcopulapolicy.hpp"
 					>
 				</File>
 				<File
