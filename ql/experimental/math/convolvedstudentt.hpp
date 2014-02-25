@@ -182,7 +182,6 @@ namespace QuantLib {
     private:
         const CumulativeBehrensFisher distrib_;
 		mutable Real accuracy_, normSqr_;
-        mutable bool isRenormalized_;
 	};
 
 }
