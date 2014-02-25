@@ -141,8 +141,8 @@ if(true) {
         std::vector<boost::math::students_t_distribution<> > distributions_;
         std::vector<Real> varianceFactors_;
         
-        std::vector<CumulativeBehrensFisher> latentVarsCumul_;
-        std::vector<InverseCumulativeBehrensFisher> latentVarsInverters_;
+        mutable std::vector<CumulativeBehrensFisher> latentVarsCumul_;
+        mutable std::vector<InverseCumulativeBehrensFisher> latentVarsInverters_;
     };
 
 }
