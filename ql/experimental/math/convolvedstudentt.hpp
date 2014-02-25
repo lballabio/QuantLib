@@ -180,7 +180,7 @@ namespace QuantLib {
         //! Returns the cumulative inverse value.
 		Real operator()(const Probability q) const;
     private:
-        const CumulativeBehrensFisher distrib_;
+        mutable CumulativeBehrensFisher distrib_;
 		mutable Real accuracy_, normSqr_;
 	};
 
