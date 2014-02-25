@@ -178,7 +178,7 @@ namespace QuantLib {
             effectiveq = q;
         }
 		Real xMin = 
-            InverseCumulativeNormal::standard_value(effectiveq) / normSqr_;
+            InverseCumulativeNormal::standard_value(effectiveq) * normSqr_;
         // inversion will fail at the Brent's bounds-check if this is not enough
         // (q is very close to 1.), in a bad combination fails around 1.-1.e-7
 		Real xMax = 1.e6;
