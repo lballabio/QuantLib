@@ -27,26 +27,23 @@
 
 namespace QuantLib {
 
-    // \todo Split inline bodies from declarations.
-
     /*! Default event Latent Model. 
      This is a model for correlated default events based on a generic Latent 
       Model. It models solely the default events in a portfolio, not making any 
       reference to severities, exposures, etc...
+     An implicit mapping is stablished between the variables modelled and the
+     names in the basket given by the basket and model variable access indices.
      The class is parametric on the Latent Model copula.
     */
     template<class copulaPolicy>
     class DefaultProbLM : public LatentModel<copulaPolicy> {
     protected:
-        const boost::shared_ptr<Basket> basket_;
-        const boost::shared_ptr<Pool> pool_;// could pass without this one
+        /*const*/ boost::shared_ptr<Basket> basket_;
     public:
-        
-        // mention theres an implicit mapping order between variables and pool names, but this should be in derived classes at this level the pool concept should not appear
-
         /*!
         @param basket The basket of issuers on which to model defaults.
-        @param idiosyncFctrsWeights Idiosyncratic weights, see Latent Model doc.
+        @param factorWeights Latent model independent factors weights for each 
+            variable.
         @param quadOrder The order of the quadrature to integrate the 
             model (sole integrator by now).
         @param ini Copula initialization if any.
@@ -55,15 +52,18 @@ namespace QuantLib {
         */
         DefaultProbLM(
             const boost::shared_ptr<Basket>& basket,
-            const std::vector<std::vector<Real> >& idiosyncFctrsWeights,///////////////////////////////inits in th e copula!!!!????
+            const std::vector<std::vector<Real> >& factorWeights,
             Size quadOrder,
             const typename copulaPolicy::initTraits& ini = 
                 copulaPolicy::initTraits()
             ) 
         : basket_(basket), 
-          pool_(basket->pool()), 
-          LatentModel<copulaPolicy>(idiosyncFctrsWeights, quadOrder, ini) 
-        { }
+          LatentModel<copulaPolicy>(factorWeights, quadOrder, ini) 
+        {
+            // in the future change 'size' to 'liveSize'
+            QL_REQUIRE(basket_->size() == factorWeights.size(), 
+                "Incompatible basket and model sizes.");
+        }
         /* \todo
             Add other constructors as in LatentModel for ease of use. (less 
             dimensions, factors, etcc...)
@@ -84,11 +84,9 @@ namespace QuantLib {
             /*Avoid redundant call to minimum value inversion (might be \infty),
             and this independently of the copula function.
             */
-            if (prob < 1.e-10) return 0.;// use library macro..!
+            if (prob < 1.e-10) return 0.;// use library macro...
             return conditionalDefaultProbabilityInvP(
- ///               copulaPolicy::inverseCumulativeY(prob, iName), 
-                inverseCumulativeY(prob, iName), 
-                iName, mktFactors);
+                inverseCumulativeY(prob, iName), iName, mktFactors);
         }
         /*! Returns the probability of default of a given name conditional on
         the realization of a given set of values of the model independent
@@ -108,11 +106,8 @@ namespace QuantLib {
             Real sumMs = 
                 std::inner_product(factorWeights_[iName].begin(), 
                     factorWeights_[iName].end(), m.begin(), 0.);//SHOULD BE IN BASE CLASS 
-            Real res = 
- ////////////////////////////               copulaPolicy::cumulativeZ((invCumYProb - sumMs) / 
-                cumulativeZ((invCumYProb - sumMs) / 
+            Real res = cumulativeZ((invCumYProb - sumMs) / 
                     idiosyncFctrs_[iName] );
-        /* DISABLE TO TEST JACOBIAN*//////////////////////////////////////////////////////////////////////
             #if defined(QL_EXTRA_SAFETY_CHECKS)
             QL_REQUIRE (res >= 0. && res <= 1.,
                         "conditional probability " << res << "out of range");
@@ -133,41 +128,33 @@ namespace QuantLib {
         outside the call.
         */
         Probability conditionalDefaultProbability(const Date& date, Size iName,
-            const std::vector<Real>& mktFactors) const {
+            const std::vector<Real>& mktFactors) const 
+        {
+            const boost::shared_ptr<Pool>& pool = basket_->pool();
             Probability pDefUncond =
-                pool_->get(pool_->names()[iName]).
+                pool->get(pool->names()[iName]).
                 defaultProbability(basket_->defaultKeys()[iName])
                   ->defaultProbability(date);
             return conditionalDefaultProbability(pDefUncond, iName, mktFactors);          
         }
     public:
-        Real toto(const std::vector<Real>& m) const { return 1.;}///////////////////////////////////////////
         /*! Computes the unconditional probability of default of a given name. 
         Trivial method for testing
         */
         Probability probOfDefault(Size iName, const Date& d) const {
+            const boost::shared_ptr<Pool>& pool = basket_->pool();
             // avoid repeating this in the integration:
-            Probability pUncond = pool_->get(pool_->names()[iName]).
+            Probability pUncond = pool->get(pool->names()[iName]).
                 defaultProbability(basket_->defaultKeys()[iName])
                 ->defaultProbability(d);
             if (pUncond < 1.e-10) return 0.;
-            Real pUncondInv = 
-     //////////////////////////           copulaPolicy::inverseCumulativeY(pUncond, iName);
-                inverseCumulativeY(pUncond, iName);
-
-            ////return this->integrate(
-            ////  boost::function<Real (const std::vector<Real>& v1)>(
-            ////    boost::bind(
-            ////&DefaultProbLM<copulaPolicy>::toto,////////////////////////////////////////
-            ////    this,
-            ////    _1)));
 
             return this->integrate(
               boost::function<Real (const std::vector<Real>& v1)>(
                 boost::bind(
                 &DefaultProbLM<copulaPolicy>::conditionalDefaultProbabilityInvP,
                 this,
-                pUncondInv,
+                inverseCumulativeY(pUncond, iName),
                 iName, 
                 _1)
               ));
@@ -190,85 +177,58 @@ namespace QuantLib {
         //! Conditional probability of n default events or more.
         // \todo: check the issuer has not defaulted.
         Real conditionalProbAtLeastNEvents(Size n, const Date& date,
-            const std::vector<Real>& mktFactors) const {
-                /* \todo 
-                This algorithm traverses all permutations starting form the
-                lowest one. This is inneficient, there shouldnt be any need to 
-                go through the invalid ones. Use combinations of n elements.
-
-                For more efficient methods see other default latent models.
-                */
-                // first position with as many defaults as desired:
-                Size poolSize = basket_->size();//SHOULD BE LIVE SIZE---
-                
-                BigNatural limit = 
-                    static_cast<BigNatural>(std::pow(2., (int)(poolSize)));
-
-                // Precalc conditional probabilities
-                std::vector<Probability> pDefCond;
-                for(Size i=0; i<poolSize; i++)
-                    pDefCond.push_back(conditionalDefaultProbability(
-                        pool_->get(pool_->names()[i]).
-                        defaultProbability(basket_->defaultKeys()[i])->
-                        defaultProbability(date), i, mktFactors));
-
-                Probability probNEventsOrMore = 0.;
-                for(BigNatural mask = 
-                      static_cast<BigNatural>(std::pow(2., (int)(n))-1);
-                    mask < limit; mask++) 
-                {
-                    // cheap permutations
-                    boost::dynamic_bitset<> bsetMask(poolSize, mask);
-                    if(bsetMask.count() >= n) {
-                        Probability pConfig = 1;
-                        for(Size i=0; i<bsetMask.size(); i++)
-                            pConfig *= 
-                              (bsetMask[i] ? pDefCond[i] : (1.- pDefCond[i]));
-                        probNEventsOrMore += pConfig;
-                    }
-                }
-                return probNEventsOrMore;
-        }
+            const std::vector<Real>& mktFactors) const;
     };
+
+
+    template<class CP>
+    Real DefaultProbLM<CP>::conditionalProbAtLeastNEvents(Size n, 
+        const Date& date,
+        const std::vector<Real>& mktFactors) const {
+            /* \todo 
+            This algorithm traverses all permutations starting form the
+            lowest one. This is inneficient, there shouldnt be any need to 
+            go through the invalid ones. Use combinations of n elements.
+
+            For more efficient methods see other default latent models.
+            */
+            // first position with as many defaults as desired:
+            Size poolSize = basket_->size();//move to 'livesize'
+            const boost::shared_ptr<Pool>& pool = basket_->pool();
+
+            BigNatural limit = 
+                static_cast<BigNatural>(std::pow(2., (int)(poolSize)));
+
+            // Precalc conditional probabilities
+            std::vector<Probability> pDefCond;
+            for(Size i=0; i<poolSize; i++)
+                pDefCond.push_back(conditionalDefaultProbability(
+                    pool->get(pool->names()[i]).
+                    defaultProbability(basket_->defaultKeys()[i])->
+                    defaultProbability(date), i, mktFactors));
+
+            Probability probNEventsOrMore = 0.;
+            for(BigNatural mask = 
+                  static_cast<BigNatural>(std::pow(2., (int)(n))-1);
+                mask < limit; mask++) 
+            {
+                // cheap permutations
+                boost::dynamic_bitset<> bsetMask(poolSize, mask);
+                if(bsetMask.count() >= n) {
+                    Probability pConfig = 1;
+                    for(Size i=0; i<bsetMask.size(); i++)
+                        pConfig *= 
+                          (bsetMask[i] ? pDefCond[i] : (1.- pDefCond[i]));
+                    probNEventsOrMore += pConfig;
+                }
+            }
+            return probNEventsOrMore;
+        }
+
 
     // often used:
     typedef DefaultProbLM<GaussianCopulaPolicy> GaussianDefProbLM;
     typedef DefaultProbLM<TCopulaPolicy> TDefProbLM;
-
-
-/*
-
-    template<class copulaPolicy>
-    class RandomDefaultProbLM : public LatentModel<copulaPolicy> {
-    protected:
-        const boost::shared_ptr<Basket> basket_;
-        const boost::shared_ptr<Pool> pool_;// could pass without this one
-    public:
-        DefaultProbLM(
-            const boost::shared_ptr<Basket>& basket,
-            const std::vector<std::vector<Real> >& idiosyncFctrsWeights,///////////////////////////////inits in th e copula!!!!????
-            Size quadOrder,
-            const typename copulaPolicy::initTraits& ini = 
-                copulaPolicy::initTraits()
-            ) 
-        : basket_(basket), 
-          pool_(basket->pool()), 
-          LatentModel<copulaPolicy>(idiosyncFctrsWeights, quadOrder, ini) 
-        { }
-    protected:
-    public:
-//..............///
-
-        Probability probOfDefault(Size iName, const Date& d) const {
-//..............///
-        }
-        Probability probAtLeastNEvents(Size n, const Date& date) const {
-//..............///
-
-        }
-
-    };
-*/
 }
 
 #endif

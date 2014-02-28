@@ -23,7 +23,6 @@
 #include <vector>
 
 #include <boost/math/distributions/students_t.hpp>
-#include <ql/math/distributions/studenttdistribution.hpp>
 
 #include <ql/errors.hpp>
 #include <ql/utilities/disposable.hpp>
@@ -33,11 +32,14 @@ namespace QuantLib {
 
     /*! \brief Sudent-T Latent Model's copula policy.
 
-    Describes the copula of a set of normalized Student-T independent random factors to be fed into the latent variable model. 
-    The latent model requires the independent variables to be of unit variance so the policy expects the factors coefficients to be as usual and the T variables to be normalized, the normalization is performed by the policy. To normalize the random variables they are divided by the square root of the variance of each T (\f$ \frac{\nu}{\nu-2}\f$)
-    The coeficients(factors) in the linear combination of the random factors must be of norm unity to 
+    Describes the copula of a set of normalized Student-T independent random 
+    factors to be fed into the latent variable model. 
+    The latent model requires the independent variables to be of unit variance 
+    so the policy expects the factors coefficients to be as usual and the T 
+    variables to be normalized, the normalization is performed by the policy. 
+    To normalize the random variables they are divided by the square root of 
+    the variance of each T (\f$ \frac{\nu}{\nu-2}\f$)
     */
-        /// Document the normalization (for the unit variance)---<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     class TCopulaPolicy {
     public:
         /*! Stores the parameters defining the factors random variable 
@@ -47,11 +49,19 @@ namespace QuantLib {
         typedef 
             struct { 
                 std::vector<Integer> tOrders;
-                std::vector<std::vector<Real> > factors;
             } initTraits;
 
-        //*! Delayed initialization of the distribution parameters and caches.
-        TCopulaPolicy(const initTraits& vals);
+        /*! Delayed initialization of the distribution parameters and caches. 
+        To be called by the latent model. */
+        /* \todo 
+        Explore other constructors, with different vector dimensions, defining
+        simpler combinations (only one correlation, only one variable) might
+        simplify memory.
+        */
+        TCopulaPolicy(
+            const std::vector<std::vector<Real> >& factorWeights = 
+                std::vector<std::vector<Real> >(), 
+            const initTraits& vals = initTraits());
 
         /*! Cumulative probability of the indexed latent variable 
             @param iVariable The index of the latent variable requested.
@@ -66,9 +76,7 @@ namespace QuantLib {
         //! Cumulative probability of the idiosyncratic factors (all the same)
         Probability cumulativeZ(Real z) const {
             return boost::math::cdf(distributions_.back(), z / 
-                varianceFactors_.back())
-                ;
-  ////              /varianceFactors_.back();///////////////////////////////////////////////////JACOBIAN
+                varianceFactors_.back());
         }
         /*! Probability density of a given realization of values of the systemic
           factors (remember they are independent).
@@ -77,32 +85,17 @@ namespace QuantLib {
         */
         Probability density(const std::vector<Real>& m) const {
     #if defined(QL_EXTRA_SAFETY_CHECKS)
-            Size toto = distributions_.size();///////////////////////////////////////////////////////////////////////
             QL_REQUIRE(m.size() == distributions_.size()-1, 
                 "Incompatible sample and latent model sizes");
     #endif
             Real prodDensities = 1.;
 
-
-if(true) {
-            //////////////////////for(Size i=0; i<m.size(); i++) 
-            //////////////////////    prodDensities *= distribsQL_[i](m[i] /varianceFactors_[i]) / varianceFactors_[i];
-            //////////////////////return prodDensities;
-
             for(Size i=0; i<m.size(); i++) 
-                 prodDensities *= boost::math::pdf(distributions_[i], m[i] /varianceFactors_[i]
-     ////////////////////////////////////////////////       * (std::sqrt(varianceFactors_[i]))  //////////NON NORMLZ NOW..........
-                 )/varianceFactors_[i];//<<<< JACOBIAN  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                 prodDensities *= 
+                 boost::math::pdf(distributions_[i], m[i] /varianceFactors_[i])
+                    /varianceFactors_[i];
                  // accumulate lambda
             return prodDensities;
-}else{
-
-            for(Size i=0; i<m.size(); i++) 
-                 prodDensities *= boost::math::pdf(distributions_[i], m[i] /varianceFactors_[i]);
-            return prodDensities;
-}
-
-
         }
         /*! Returns the inverse of the cumulative distribution of the (modelled) 
           latent variable (as indexed by iVariable). Involves the convolution
@@ -138,11 +131,12 @@ if(true) {
         Disposable<std::vector<Real> > 
             allFactorCumulInverter(const std::vector<Real>& probs) const;
     private:
-        std::vector<boost::math::students_t_distribution<> > distributions_;
-        std::vector<Real> varianceFactors_;
-        
+        mutable std::vector<boost::math::students_t_distribution<> > 
+            distributions_;
+        mutable std::vector<Real> varianceFactors_;
         mutable std::vector<CumulativeBehrensFisher> latentVarsCumul_;
-        mutable std::vector<InverseCumulativeBehrensFisher> latentVarsInverters_;
+        mutable std::vector<InverseCumulativeBehrensFisher> 
+            latentVarsInverters_;
     };
 
 }
