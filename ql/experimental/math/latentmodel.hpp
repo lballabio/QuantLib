@@ -27,7 +27,7 @@
 #include <boost/lambda/construct.hpp>
 
 #include <ql/experimental/math/multidimintegrator.hpp>
-////////////////////////////////#include <ql/math/randomnumbers/randomsequencegenerator.hpp>
+#include <ql/math/randomnumbers/randomsequencegenerator.hpp>
 
 /*! \file latentmodel.hpp
     \brief Generic multifactor latent variable model.
@@ -165,7 +165,7 @@ namespace QuantLib {
         function \f$F_i(Y_i)\f$ characteristics.
     */
     template <class copulaPolicyImpl>
-    class LatentModel : public LatentModelInterface {
+    class LatentModel {
     public:
         //! \name Copula interface.
         //@{
