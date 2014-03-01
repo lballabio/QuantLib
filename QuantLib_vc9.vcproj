@@ -8694,6 +8694,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\math\multidimquadrature.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\multidimquadrature.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\math\polarstudenttrng.hpp"
 					>
 				</File>
