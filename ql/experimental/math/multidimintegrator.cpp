@@ -24,8 +24,8 @@ namespace QuantLib {
     MultidimIntegral::MultidimIntegral(
             const std::vector<boost::shared_ptr<Integrator> >& integrators)
     : integrators_(integrators), 
-      integrationLevelEntries_(maxDimensions_+1),
-      varBuffer_() {
+      integrationLevelEntries_(maxDimensions_),
+      varBuffer_(integrators.size(), 0.) {
         QL_REQUIRE(integrators.size() <= maxDimensions_, 
             "Too many dimensions in integration.");
         spawnFcts<maxDimensions_>();
