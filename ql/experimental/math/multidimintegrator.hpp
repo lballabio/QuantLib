@@ -57,13 +57,12 @@ namespace QuantLib {
         {
             QL_REQUIRE((a.size()==b.size())&&(b.size()==integrators_.size()), 
                 "Incompatible integration problem dimensions");
-            varBuffer_.resize(a.size());
             return integrationLevelEntries_[integrators_.size()-1](f, a, b);
         }
         // to do: write std::vector<Real> operator()(...) version
 
     private:
-        static const Size maxDimensions_ = 30;
+        static const Size maxDimensions_ = 15;
 
         /* Here is the tradeoff; this is avoiding the dimension limits checks 
         during integration at the price of these asignments during construction.
@@ -74,12 +73,13 @@ namespace QuantLib {
         */
         template<Size depth>
         void spawnFcts() const {
-            integrationLevelEntries_[depth] =
-             boost::bind(&MultidimIntegral::integrate<depth>, this, _1, _2, _3);
+            integrationLevelEntries_[depth-1] =
+              boost::bind(&MultidimIntegral::integrate<depth-1>, this, 
+                _1, _2, _3);
             spawnFcts<depth-1>();
         }
         template<>
-        void spawnFcts<0>() const {
+        void spawnFcts<1>() const {
             integrationLevelEntries_[0] = 
                 boost::bind(&MultidimIntegral::integrate<0>, this, _1, _2, _3);
         }
@@ -123,11 +123,6 @@ namespace QuantLib {
     private:
         const std::vector<boost::shared_ptr<Integrator> > integrators_;
 
-        /* One can avoid the passing around of the ct refs to a and b but the 
-        price is to keep a copy of them (they are unknown at construction time)
-         On the other hand the vector integration variable has to be created.*/
-        mutable std::vector<Real> varBuffer_;
-
         /* typedef (const boost::function<Real 
             (const std::vector<Real>&arg1)>&arg2) integrableFunctType;
         */
@@ -147,6 +142,12 @@ namespace QuantLib {
             const std::vector<Real>&) //<- b
             > > 
             integrationLevelEntries_;
+
+        /* One can avoid the passing around of the ct refs to a and b but the 
+        price is to keep a copy of them (they are unknown at construction time)
+         On the other hand the vector integration variable has to be created.*/
+        mutable std::vector<Real> varBuffer_;
+
     };
 
 }

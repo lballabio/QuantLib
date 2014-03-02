@@ -36,8 +36,14 @@ namespace QuantLib {
 
         Test example:
         \code{.cpp}
+        #include <iostream>
+        #include <iomanip>
         #include <boost/function.hpp>
+        #include <boost/timer.hpp>
+        #include <ql/quantlib.hpp>
+
         #include <ql/experimental/math/multidiminquadrature.hpp>
+        #include <ql/experimental/math/multidimintegrator.hpp>
 
         using namespace QuantLib;
         using namespace std;
@@ -53,11 +59,42 @@ namespace QuantLib {
         };
 
         int main() {
-            boost::function<Real (const std::vector<Real>& arg)> f;
-            f = integrand();
-            Size dim = 8;
-            GaussianQuadMultidimIntegrator intg(dim, 15);
-            Real value = intg(f);
+            boost::timer timer;
+            std::cout << std::endl;
+
+            Real dimension = 3;
+            Real exactSol = std::pow(std::exp(-.25) * 
+                std::sqrt(M_PI), dimension);
+
+            boost::function<Real(const std::vector<Real>& arg)> f;
+            f = boost::cref(integrand());
+            GaussianQuadMultidimIntegrator intg(dimension, 15);
+
+            timer.restart();
+            Real valueQuad = intg(f);
+            Real secondsQuad = timer.elapsed();
+
+            std::vector<boost::shared_ptr<Integrator> > integrals;
+            for(Size i=0; i<dimension; i++)
+                integrals.push_back(
+                boost::make_shared<TrapezoidIntegral<Default> >(1.e-4, 20));
+            std::vector<Real> a_limits(integrals.size(), -4.);
+            std::vector<Real> b_limits(integrals.size(), 4.);
+            MultidimIntegral testIntg(integrals);
+
+            timer.restart();
+            Real valueGrid = testIntg(f, a_limits, b_limits);
+            Real secondsGrid = timer.elapsed();
+
+            cout << fixed << setprecision(4);
+            cout << endl << "-------------- " << endl << 
+                "Exact: " << exactSol << endl << 
+                "Quad: " << valueQuad << endl << 
+                "Grid: " << valueGrid << endl << 
+                endl;
+
+            cout << "Seconds for Quad: " << secondsQuad << endl << 
+             "Seconds for Grid: " << secondsGrid << endl;
             return 0;
         }
         \endcode
@@ -65,7 +102,8 @@ namespace QuantLib {
         \todo Add coherence test between the integrand function dimensions (the
         vector size) and the declared dimension in the constructor.
 
-        \todo Split into integrator for functions returning scalar and vector?
+        \todo Split into integrator classes for functions returning scalar and 
+            vector?
     */
     class GaussianQuadMultidimIntegrator {
     private:
@@ -110,7 +148,7 @@ namespace QuantLib {
         //! Integration quadrature order.
         Size order() const {return integralV_.order();}
 
-        //! Integrates function f over \f[ R^{dim} \f]
+        //! Integrates function f over \f$ R^{dim} \f$
         /* This function is just syntax since the only thing it does is calling 
         to integrate<RetType> which has to exist for the type returned by the 
         function. So theres one redundant call but there should not be any extra 
@@ -128,6 +166,94 @@ namespace QuantLib {
             return integrate<RetType_T>(f);
         }
     private:
+        /* The maximum number of dimensions of the integration variable domain
+            A higher than this number of dimension would presumably be 
+           impractical and another integration algorithm (MC) should be 
+           considered.
+           \to do Consider moving it to a library configuration variable.
+        */
+        static const Size maxDimensions_ = 15;
+
+        //! \name Integration entry points generation
+        //@{
+        //! Recursive template methods to statically generate (at this 
+        //    class construction time) handles to the integration entry points
+        template<Size levelSpawn>
+        void spawnFcts() const {
+            integrationEntries_[levelSpawn-1] = 
+                boost::bind(
+                &GaussianQuadMultidimIntegrator::scalarIntegrator<levelSpawn>, 
+                    this, _1, _2);
+            integrationEntriesVR_[levelSpawn-1] = 
+                boost::bind(
+                &GaussianQuadMultidimIntegrator::vectorIntegratorVR<levelSpawn>, 
+                    this, _1, _2);
+            spawnFcts<levelSpawn-1>();
+        }
+        //! Terminal level:
+        template<>
+        void spawnFcts<1>() const {
+            integrationEntries_[0] = 
+              boost::bind(&GaussianQuadMultidimIntegrator::scalarIntegrator<1>, 
+              this, _1, _2);
+            integrationEntriesVR_[0] = 
+             boost::bind(&GaussianQuadMultidimIntegrator::vectorIntegratorVR<1>, 
+             this, _1, _2);
+        }
+        //@}
+
+        //---------------------------------------------------------
+
+        template <int intgDepth>
+        Real scalarIntegrator(
+            boost::function<Real (const std::vector<Real>& arg1)> f, 
+            const Real mFctr) const 
+        {
+            varBuffer_[intgDepth-1] = mFctr;
+            return integral_(boost::bind(
+                &GaussianQuadMultidimIntegrator::scalarIntegrator<intgDepth-1>,
+                this,
+                f,
+                _1)
+            );
+        }
+        //! Terminal integrand; scalar function version
+        template<> 
+        Real scalarIntegrator<1>(
+            boost::function<Real (const std::vector<Real>& arg1)> f,
+            const Real mFctr) const
+        {
+            varBuffer_[0] = mFctr;
+            return f(varBuffer_);
+        }
+
+        template <int intgDepth>
+        DispArray vectorIntegratorVR(
+            const boost::function<DispArray(const std::vector<Real>& arg1)>& f,
+            const Real mFctr) const 
+        {
+            varBuffer_[intgDepth-1] = mFctr;
+            return 
+              integralV_(boost::bind(
+               &GaussianQuadMultidimIntegrator::vectorIntegratorVR<intgDepth-1>,
+               this,
+               f,
+               _1)
+            );
+        }
+        //! Terminal integrand; disposable vector function version
+        template<>
+        DispArray
+            vectorIntegratorVR<1>(
+            const boost::function<DispArray (const std::vector<Real>& arg1)>& f,
+            const Real mFctr) const 
+        {
+            varBuffer_[0] = mFctr;
+            return f(varBuffer_);
+        }
+
+        //---------------------------------------------------------
+
         // Declare, spezializations follow.
         template<class RetType_T>
         RetType_T integrate(const boost::function<RetType_T (
@@ -139,7 +265,6 @@ namespace QuantLib {
             const std::vector<Real>& v1)>& f) const 
         {
             // integration variables
-            std::fill(integrandFctrs.begin(), integrandFctrs.end(), 0.);
             // call vector quadrature integration with the function and start 
             // values, kicks in recursion over the dimensions of the integration
             // variable.
@@ -147,7 +272,6 @@ namespace QuantLib {
                        // integration entry level is selected now
                        integrationEntries_[dimension_-1],
                        boost::cref(f),
-                       boost::ref(integrandFctrs),
                        _1)
                        );
         }
@@ -157,87 +281,18 @@ namespace QuantLib {
             const boost::function<DispArray (
                 const std::vector<Real>& v1)>& f) const 
         {
-            std::fill(integrandFctrs.begin(), integrandFctrs.end(), 0.);
-
             return integralV_(boost::bind(
                        boost::cref(integrationEntriesVR_[dimension_-1]),
                        boost::cref(f),
-                       boost::ref(integrandFctrs),
                        _1)
                        );
         } 
-
-        template <int intgDepth>
-        Real scalarIntegrator(
-            boost::function<Real (const std::vector<Real>& arg1)> f, 
-            std::vector<Real>& mFactrs, 
-            const Real mFctr) const 
-        {
-            mFactrs[dimension_-intgDepth] = mFctr;
-            return integral_(boost::bind(
-                &GaussianQuadMultidimIntegrator::scalarIntegrator<intgDepth-1>,
-                this,
-                f,
-                boost::ref(mFactrs),
-                _1)
-            );
-        }
-        //! Terminal integrand; scalar function version
-        template<> 
-        Real scalarIntegrator<1>(
-            boost::function<Real (const std::vector<Real>& arg1)> f,
-            std::vector<Real>& mFactrs, 
-            const Real mFctr) const
-        {
-            mFactrs.back() = mFctr;
-            return f(mFactrs);
-        }
-
-        template <int intgDepth>
-        DispArray vectorIntegratorVR(
-            const boost::function<DispArray(const std::vector<Real>& arg1)>& f,
-            std::vector<Real>& mFactrs, 
-            const Real mFctr) const 
-        {
-            mFactrs[dimension_-intgDepth] = mFctr;
-            return 
-              integralV_(boost::bind(
-               &GaussianQuadMultidimIntegrator::vectorIntegratorVR<intgDepth-1>,
-               this,
-               f,
-               boost::ref(mFactrs),
-               _1)
-            );
-        }
-        //! Terminal integrand; disposable vector function version
-        // Notice it has to match with the type in the boost function.
-        template<>
-        DispArray
-            vectorIntegratorVR<1>(
-            const boost::function<DispArray (const std::vector<Real>& arg1)>& f,
-            std::vector<Real>& mFactrs, 
-            const Real mFctr) const 
-        {
-            mFactrs.back() = mFctr;
-            return f(mFactrs);
-        }
-
-        // non static by design 
+    private:
         // Same object for all dimensions poses problems when using the 
         //   parallelized integrals version.
         //! The actual integrators.
         GaussHermiteIntegration integral_;
         VectorIntegrator integralV_;
-
-        //! \name Integration entry points generation
-        //@{
-        /* The maximum number of dimensions of the integration variable domain
-            A higher than this number of dimension would presumably be 
-           impractical and another integration algorithm (MC) should be 
-           considered.
-           \to do Consider moving it to a library configuration variable.
-        */
-        static const Size maxNumFactors_ = 30;
 
         //! Buffer to allow acces to integrations. We do not know at which 
         //    level/dimension we are going to start integration
@@ -245,40 +300,15 @@ namespace QuantLib {
         mutable std::vector<
         boost::function<Real (boost::function<Real (
             const std::vector<Real>& varg2)> f1, 
-            std::vector<Real>& v2, const Real r3)> > integrationEntries_;
+            const Real r3)> > integrationEntries_;
         mutable std::vector<
         boost::function<DispArray (const boost::function<DispArray(
             const std::vector<Real>& vvarg2)>& vf1, 
-            std::vector<Real>& vv2, const Real vr3)> > integrationEntriesVR_;
+            const Real vr3)> > integrationEntriesVR_;
 
-        //! Recursive template methods to statically generate (at this 
-        //    class construction time) handles to the integration entry points
-        template<Size levelSpawn>
-        void spawnFcts() const {
-            integrationEntries_[levelSpawn-1] = 
-                boost::bind(
-                &GaussianQuadMultidimIntegrator::scalarIntegrator<levelSpawn>, 
-                    this, _1, _2, _3);
-            integrationEntriesVR_[levelSpawn-1] = 
-                boost::bind(
-                &GaussianQuadMultidimIntegrator::vectorIntegratorVR<levelSpawn>, 
-                    this, _1, _2, _3);
-            spawnFcts<levelSpawn-1>();
-        }
-        // terminal level:
-        template<>
-        void spawnFcts<1>() const {
-            integrationEntries_[0] = 
-              boost::bind(&GaussianQuadMultidimIntegrator::scalarIntegrator<1>, 
-              this, _1, _2, _3);
-            integrationEntriesVR_[0] = 
-             boost::bind(&GaussianQuadMultidimIntegrator::vectorIntegratorVR<1>, 
-             this, _1, _2, _3);
-        }
-        //@}
         Size dimension_;
         // integration veriable buffer
-        mutable std::vector<Real> integrandFctrs;
+        mutable std::vector<Real> varBuffer_;
     };
 
 }

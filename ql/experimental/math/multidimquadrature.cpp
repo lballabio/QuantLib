@@ -25,13 +25,12 @@ namespace QuantLib {
         Size dimension, Size quadOrder, Real mu) 
         : integral_(quadOrder, mu),
           integralV_(quadOrder, mu),
-          integrationEntries_(maxNumFactors_),
-          integrationEntriesVR_(maxNumFactors_),
+          integrationEntries_(maxDimensions_),
+          integrationEntriesVR_(maxDimensions_),
           dimension_(dimension),
-          integrandFctrs(dimension_, 0.)
-        {
-            // need a test on dimension integrity
-            spawnFcts<maxNumFactors_>();
-        }
+          varBuffer_(dimension_, 0.)
+    {
+        spawnFcts<maxDimensions_>();
+    }
 
 }
