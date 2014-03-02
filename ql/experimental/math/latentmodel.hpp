@@ -69,7 +69,8 @@ namespace QuantLib {
         one known as error term in some contexts) random variables have 
         independent zero-mean unit-variance distributions. A restriction of the 
         model implemented here is that the N idiosyncratic variables all follow 
-        the same probability law \f$ \Phi_Z(z)\f$. Also the model is normalized 
+        the same probability law \f$ \Phi_Z(z)\f$ (but they are still 
+        independent random variables) Also the model is normalized 
         so that: \f$-1\leq a_{i,k} \leq 1\f$ (technically the \f$Y_i\f$ are 
         convex linear combinations). The correlation between \f$Y_i\f$ and 
         \f$Y_j\f$ is then \f$\sum_k a_{i,k} a_{j,k}\f$. 
@@ -328,7 +329,12 @@ namespace QuantLib {
         }
         const std::vector<Real>& idiosyncFctrs() const {return idiosyncFctrs_;}
 
-
+        //! Latent variable correlations:
+        Real latentVariableCorrel(Size iVar1, Size iVar2) const {
+            // true for any normalized combination
+            return std::inner_product(factorWeights_[iVar1].begin(), 
+                factorWeights_[iVar1].end(), factorWeights_[iVar2].begin(), 0.)
+        }
         //! \name Integration facility interface
         //@{
         /*! Integrates an arbitrary scalar function over the density domain(i.e.
