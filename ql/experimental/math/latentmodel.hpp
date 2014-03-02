@@ -26,7 +26,7 @@
 #include <boost/lambda/lambda.hpp>
 #include <boost/lambda/construct.hpp>
 
-#include <ql/experimental/math/multidimintegrator.hpp>
+#include <ql/experimental/math/multidiminquadrature.hpp>
 #include <ql/math/randomnumbers/randomsequencegenerator.hpp>
 
 /*! \file latentmodel.hpp
@@ -46,7 +46,6 @@ namespace QuantLib {
             }
         };
     }
-
 
     // Intended to replace OneFactorCopula
 
@@ -229,7 +228,7 @@ namespace QuantLib {
             nextSequence method for a particular copula implementation.
         */
         template <class RSG>         
-        class LatentVariableModelRsg {// Was: class InverseLatentVariableRsg {
+        class LatentVariableModelRsg {
             // derive RandomSequenceGenerator? <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         public:
             typedef Sample<std::vector<Real> > sample_type;
@@ -339,31 +338,21 @@ namespace QuantLib {
             const boost::function<Real(const std::vector<Real>& v1)>& f) const {
             // function composition: composes the integrand with the density 
             //   through a product.
-
             return 
                 integrator_.integrate<Real>(boost::bind(std::multiplies<Real>(), 
                 boost::bind(&copulaPolicyImpl::density, copula_, _1),
                 boost::bind(boost::cref(f), _1)));   
-                /*--------------------------------------------------------------------------------------------
-
-            return integrator2_(boost::bind(std::multiplies<Real>(),
-                    boost::bind(&copulaPolicyImpl::density, copula_, _1),//notice, static<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-                    boost::bind(boost::cref(f), _1)), std::vector<Real>(1, -19.), std::vector<Real>(1, 19.));
-            */
-
-
         }
         /*! Integrates an arbitrary vector function over the density domain(i.e.
          computes its expected value).
         */
         Disposable<std::vector<Real> > integrate(
-            const boost::function<std::vector<Real>(const std::vector<Real>& v1)>& f ) const {
-
+            const boost::function<std::vector<Real>(
+                const std::vector<Real>& v1)>& f ) const {
             return integrator_.integrate<std::vector<Real> >(
                 boost::bind(detail::multiplyV(),
                     boost::bind(&copulaPolicyImpl::density, copula_, _1),
                     boost::bind(boost::cref(f), _1)));
-
         }
         //@}
     protected:
@@ -376,11 +365,13 @@ namespace QuantLib {
         //! Number of systemic factors.
         mutable Size nFactors_;//matches idiosyncFctrs_[0].size();i=0 or any
         //! Number of latent model variables, idiosyncratic terms or model dim
-        mutable Size nVariables_;// matches idiosyncFctrs_.size() --------------// WONT COPY, WONT OP=
+        mutable Size nVariables_;// matches idiosyncFctrs_.size() 
 
-        // \todo Dont tie it to a Quadrature make the integrator algo generic:
+        /* \todo Dont tie it to a Quadrature make the integrator algo generic. 
+            something in the line of a factory, yet they do not have a common
+            ancestor.
+        */
         GaussianQuadMultidimIntegrator integrator_;
-        MultidimIntegral integrator2_;///<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
         mutable copulaType copula_;
     };
@@ -396,7 +387,6 @@ namespace QuantLib {
     : factorWeights_(factorWeights),
       nFactors_(factorWeights[0].size()), 
       integrator_(factorWeights[0].size(), quadOrder),
-      /* ----------------------------------------------------------- */ integrator2_(std::vector<boost::shared_ptr<Integrator> >(1, boost::make_shared<TrapezoidIntegral<Default> >(1.e-6, 500))),
       nVariables_(factorWeights.size()), copula_(factorWeights, ini)
     {
         for(Size i=0; i<factorWeights.size(); i++) {
@@ -418,7 +408,6 @@ namespace QuantLib {
     : nFactors_(1),
       nVariables_(factorWeights.size()),
       integrator_(1, quadOrder),
-       integrator2_(std::vector<boost::shared_ptr<Integrator> >(1, boost::make_shared<TrapezoidIntegral<Default> >(1.e-6, 500)))
     {
         for(Size iName=0; iName < factorWeights.size(); iName++)
             factorWeights_.push_back(std::vector<Real>(1, 
@@ -442,8 +431,7 @@ namespace QuantLib {
       idiosyncFctrs_(nVariables, 
         std::sqrt(1.-idiosyncFctrsWeight*idiosyncFctrsWeight)),
       integrator_(1, quadOrder),
-       integrator2_(std::vector<boost::shared_ptr<Integrator> >(1, boost::make_shared<TrapezoidIntegral<Default> >(1.e-6, 500))),
-      copula_(factorWeights_, ini)// respect construction order 
+      copula_(factorWeights_, ini)
     { }
 
 }                    
