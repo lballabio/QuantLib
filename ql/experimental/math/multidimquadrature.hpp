@@ -165,6 +165,55 @@ namespace QuantLib {
         {
             return integrate<RetType_T>(f);
         }
+
+        ////.........................................................................................................
+        template<>
+        Real operator()(const boost::function<Real (
+            const std::vector<Real>& v1)>& f) const;
+            return integral_(boost::bind(
+                       // integration entry level is selected now
+                       integrationEntries_[dimension_-1],
+                       boost::cref(f),
+                       _1)
+                       );
+        }
+
+        //---------------------------------------------------------
+/* Boost fails on MSVC2008 to recognise the return type when calling op()
+*/
+        // Declare, spezializations follow.
+        template<class RetType_T>
+        RetType_T integrate(const boost::function<RetType_T (
+            const std::vector<Real>& v1)>& f) const;
+
+        // Scalar integrand version (merge with vector case?)
+        template<>
+        Real integrate<Real>(const boost::function<Real (
+            const std::vector<Real>& v1)>& f) const 
+        {
+            // integration variables
+            // call vector quadrature integration with the function and start 
+            // values, kicks in recursion over the dimensions of the integration
+            // variable.
+            return integral_(boost::bind(
+                       // integration entry level is selected now
+                       integrationEntries_[dimension_-1],
+                       boost::cref(f),
+                       _1)
+                       );
+        }
+        // Vector integrand version
+        template<>
+        DispArray integrate<DispArray>(
+            const boost::function<DispArray (
+                const std::vector<Real>& v1)>& f) const 
+        {
+            return integralV_(boost::bind(
+                       boost::cref(integrationEntriesVR_[dimension_-1]),
+                       boost::cref(f),
+                       _1)
+                       );
+        } 
     private:
         /* The maximum number of dimensions of the integration variable domain
             A higher than this number of dimension would presumably be 
@@ -251,42 +300,6 @@ namespace QuantLib {
             varBuffer_[0] = mFctr;
             return f(varBuffer_);
         }
-
-        //---------------------------------------------------------
-
-        // Declare, spezializations follow.
-        template<class RetType_T>
-        RetType_T integrate(const boost::function<RetType_T (
-            const std::vector<Real>& v1)>& f) const;
-
-        // Scalar integrand version (merge with vector case?)
-        template<>
-        Real integrate<Real>(const boost::function<Real (
-            const std::vector<Real>& v1)>& f) const 
-        {
-            // integration variables
-            // call vector quadrature integration with the function and start 
-            // values, kicks in recursion over the dimensions of the integration
-            // variable.
-            return integral_(boost::bind(
-                       // integration entry level is selected now
-                       integrationEntries_[dimension_-1],
-                       boost::cref(f),
-                       _1)
-                       );
-        }
-        // Vector integrand version
-        template<>
-        DispArray integrate<DispArray>(
-            const boost::function<DispArray (
-                const std::vector<Real>& v1)>& f) const 
-        {
-            return integralV_(boost::bind(
-                       boost::cref(integrationEntriesVR_[dimension_-1]),
-                       boost::cref(f),
-                       _1)
-                       );
-        } 
     private:
         // Same object for all dimensions poses problems when using the 
         //   parallelized integrals version.
