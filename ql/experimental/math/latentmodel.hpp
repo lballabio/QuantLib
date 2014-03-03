@@ -332,8 +332,11 @@ namespace QuantLib {
         //! Latent variable correlations:
         Real latentVariableCorrel(Size iVar1, Size iVar2) const {
             // true for any normalized combination
+            Real init = (iVar1 == iVar2 ? 
+                idiosyncFctrs_[iVar1] * idiosyncFctrs_[iVar1] : 0.);
             return std::inner_product(factorWeights_[iVar1].begin(), 
-                factorWeights_[iVar1].end(), factorWeights_[iVar2].begin(), 0.)
+                factorWeights_[iVar1].end(), factorWeights_[iVar2].begin(), 
+                    init);
         }
         //! \name Integration facility interface
         //@{
@@ -345,7 +348,7 @@ namespace QuantLib {
             // function composition: composes the integrand with the density 
             //   through a product.
             return 
-                integrator_/*.integrate<Real>*/(boost::bind(std::multiplies<Real>(), 
+                integrator_.integrate<Real>(boost::bind(std::multiplies<Real>(), 
                 boost::bind(&copulaPolicyImpl::density, copula_, _1),
                 boost::bind(boost::cref(f), _1)));   
         }
@@ -355,7 +358,7 @@ namespace QuantLib {
         Disposable<std::vector<Real> > integrate(
             const boost::function<std::vector<Real>(
                 const std::vector<Real>& v1)>& f ) const {
-            return integrator_/*.integrate<std::vector<Real> >*/(
+            return integrator_.integrate<std::vector<Real> >(
                 boost::bind<Disposable<std::vector<Real> > >(detail::multiplyV(),
                     boost::bind(&copulaPolicyImpl::density, copula_, _1),
                     boost::bind(boost::cref(f), _1)));

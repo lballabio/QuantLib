@@ -139,12 +139,14 @@ namespace QuantLib {
         }
         /*Conditional default probability product, intermediate step in the 
             correlation calculation.*/
-        Probability condProbProduct(const Date& date, 
+        Probability condProbProduct(Real invCumYProb1, Real invCumYProb2, 
             Size iName1, Size iName2, 
             const std::vector<Real>& mktFactors) const {
             return 
-                conditionalDefaultProbability(date, iName1, mktFactors) *
-                conditionalDefaultProbability(date, iName2, mktFactors);
+                conditionalDefaultProbabilityInvP(invCumYProb1, iName1, 
+                    mktFactors) *
+                conditionalDefaultProbabilityInvP(invCumYProb2, iName2, 
+                    mktFactors);
         }
     public:
         /*! Computes the unconditional probability of default of a given name. 
@@ -168,28 +170,61 @@ namespace QuantLib {
                 _1)
               ));
         }
+        /*! Pearsons' default probability correlation. 
+            Users should consider specialization on the copula type for specific
+            distributions since that might simplify the integrations, most 
+            importantly if this is to be used in calibration of observations for
+            factor coefficients as is quite expensive to integrate directly.
+        */
         Real defaultCorrelation(const Date& d, 
-            Size iName1, Size iName2) const 
+            Size iNamei, Size iNamej) const 
         {
             const boost::shared_ptr<Pool>& pool = basket_->pool();
-            Probability pUncond1 = pool->get(pool->names()[iName1]).
-                defaultProbability(basket_->defaultKeys()[iName1])
+            // unconditionals:
+            Probability pi = pool->get(pool->names()[iNamei]).
+                defaultProbability(basket_->defaultKeys()[iNamei])
                 ->defaultProbability(d);
-            Probability pUncond2 = pool->get(pool->names()[iName2]).
-                defaultProbability(basket_->defaultKeys()[iName2])
+            Probability pj = pool->get(pool->names()[iNamej]).
+                defaultProbability(basket_->defaultKeys()[iNamej])
                 ->defaultProbability(d);
-            Real p1p2 = pUncond1 * pUncond2;
-            return (
-                this->integrate(
+            Real pipj = pi * pj;
+            Real invPi = inverseCumulativeY(pi, iNamei);
+            Real invPj = inverseCumulativeY(pj, iNamej);
+            // avoid repetitive calls when i=j?
+            Real E1i1j = integrate(
                   boost::function<Real (const std::vector<Real>& v1)>(
                     boost::bind(
                     &DefaultProbLM<copulaPolicy>::condProbProduct,
                     this,
-                    boost::cref(d), // call with prob better
-                    iName1,
-                    iName2,
+                    invPi,
+                    invPj,
+                    iNamei,
+                    iNamej,
                     _1)
-                    )) - p1p2 ) / std::sqrt(p1p2 * (1.-pUncond1)*(1.-pUncond2));
+                    ));
+            Real E1iSqr = integrate(
+                  boost::function<Real (const std::vector<Real>& v1)>(
+                    boost::bind(
+                    &DefaultProbLM<copulaPolicy>::condProbProduct,
+                    this,
+                    invPi,
+                    invPi,
+                    iNamei,
+                    iNamei,
+                    _1)
+                    ));
+            Real E1jSqr = integrate(
+                  boost::function<Real (const std::vector<Real>& v1)>(
+                    boost::bind(
+                    &DefaultProbLM<copulaPolicy>::condProbProduct,
+                    this,
+                    invPj,
+                    invPj,
+                    iNamej,
+                    iNamej,
+                    _1)
+                    ));
+            return (E1i1j - pipj )/std::sqrt((E1iSqr-pi*pi)*(E1jSqr-pj*pj));
         }
         /*! Returns the probaility of having a given or larger number of 
         defaults in the basket portfolio at a given time.
