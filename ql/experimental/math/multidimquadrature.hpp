@@ -169,7 +169,8 @@ namespace QuantLib {
         ////.........................................................................................................
         template<>
         Real operator()(const boost::function<Real (
-            const std::vector<Real>& v1)>& f) const;
+            const std::vector<Real>& v1)>& f) const
+        {
             return integral_(boost::bind(
                        // integration entry level is selected now
                        integrationEntries_[dimension_-1],
