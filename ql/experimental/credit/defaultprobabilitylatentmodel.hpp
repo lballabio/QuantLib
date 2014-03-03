@@ -195,35 +195,17 @@ namespace QuantLib {
                   boost::function<Real (const std::vector<Real>& v1)>(
                     boost::bind(
                     &DefaultProbLM<copulaPolicy>::condProbProduct,
-                    this,
-                    invPi,
-                    invPj,
-                    iNamei,
-                    iNamej,
-                    _1)
-                    ));
+                    this, invPi, invPj, iNamei, iNamej, _1) ));
             Real E1iSqr = integrate(
                   boost::function<Real (const std::vector<Real>& v1)>(
                     boost::bind(
                     &DefaultProbLM<copulaPolicy>::condProbProduct,
-                    this,
-                    invPi,
-                    invPi,
-                    iNamei,
-                    iNamei,
-                    _1)
-                    ));
+                    this, invPi, invPi, iNamei, iNamei, _1) ));
             Real E1jSqr = integrate(
                   boost::function<Real (const std::vector<Real>& v1)>(
                     boost::bind(
                     &DefaultProbLM<copulaPolicy>::condProbProduct,
-                    this,
-                    invPj,
-                    invPj,
-                    iNamej,
-                    iNamej,
-                    _1)
-                    ));
+                    this, invPj, invPj, iNamej, iNamej, _1) ));
             return (E1i1j - pipj )/std::sqrt((E1iSqr-pi*pi)*(E1jSqr-pj*pj));
         }
         /*! Returns the probaility of having a given or larger number of 
