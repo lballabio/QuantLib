@@ -1,3 +1,47 @@
+commit 054efcb91497c418c72a5f7c332788011cff2ec9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 24 Feb 2014 12:33:07 +0100
+
+    Fixed a Schedule bug.
+    
+    A combination of backwards generation and end-of-month convention
+    could result in missing or duplicated first dates.
+    
+    Thanks to Nicholas Manganaro for the heads-up.
+
+commit 303bcaf034cc11738a6652b4b436c3f4846c5c3a
+Author: Peter Caspers <pcaspers1973@gmail.com>
+Date:   Sat, 22 Feb 2014 07:56:11 +0100
+
+    Fix upper/lower bound calculation in model constraint.
+    
+    Backported from master.
+
+commit 0b36fa5b099f2347debeb14fc1fdc8a3689f3dc2
+Merge: bb181fa 15076ba
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 19 Feb 2014 11:59:30 +0100
+
+    Merge pull request #78.
+
+commit 15076bae180a2cae77ed42d6046dec8406e2a2a7
+Author: BGC-nglass <nglass@bgcpartners.com>
+Date:   Wed, 19 Feb 2014 10:08:39 +0000
+
+    Correct exCouponDate on last coupon
+
+commit bb181fafd5777dd62c6841e11131acc6ef4a6a7c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 12 Feb 2014 11:33:54 +0100
+
+    Use corrected rate in weighted average.
+
+commit f281a83b64209e1e1bfe815eb860f5100d33fbea
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 11 Feb 2014 18:21:14 +0100
+
+    Update changelog.
+
 commit 23d75a2f20aefc9990abf806fd268e4f772d6beb
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Tue, 11 Feb 2014 18:12:42 +0100
