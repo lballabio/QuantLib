@@ -210,7 +210,8 @@ namespace QuantLib {
             Rate fixedRate = 0.0;
             lastSwap_ = MakeOIS(tenor_, overnightIndex_, fixedRate)
                 .withEffectiveDate(valueDate(fixingDate))
-                .withFixedLegDayCount(dayCounter_);
+                .withFixedLegDayCount(dayCounter_)
+                .withTelescopicValueDates(true);
             lastFixingDate_ = fixingDate;
         }
         return lastSwap_;
