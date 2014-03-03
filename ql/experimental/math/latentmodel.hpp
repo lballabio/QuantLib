@@ -26,7 +26,7 @@
 #include <boost/lambda/lambda.hpp>
 #include <boost/lambda/construct.hpp>
 
-#include <ql/experimental/math/multidiminquadrature.hpp>
+#include <ql/experimental/math/multidimquadrature.hpp>
 #include <ql/math/randomnumbers/randomsequencegenerator.hpp>
 
 /*! \file latentmodel.hpp
@@ -345,7 +345,7 @@ namespace QuantLib {
             // function composition: composes the integrand with the density 
             //   through a product.
             return 
-                integrator_.integrate<Real>(boost::bind(std::multiplies<Real>(), 
+                integrator_/*.integrate<Real>*/(boost::bind(std::multiplies<Real>(), 
                 boost::bind(&copulaPolicyImpl::density, copula_, _1),
                 boost::bind(boost::cref(f), _1)));   
         }
@@ -355,8 +355,8 @@ namespace QuantLib {
         Disposable<std::vector<Real> > integrate(
             const boost::function<std::vector<Real>(
                 const std::vector<Real>& v1)>& f ) const {
-            return integrator_.integrate<std::vector<Real> >(
-                boost::bind(detail::multiplyV(),
+            return integrator_/*.integrate<std::vector<Real> >*/(
+                boost::bind<Disposable<std::vector<Real> > >(detail::multiplyV(),
                     boost::bind(&copulaPolicyImpl::density, copula_, _1),
                     boost::bind(boost::cref(f), _1)));
         }

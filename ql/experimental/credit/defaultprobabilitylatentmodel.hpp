@@ -137,6 +137,15 @@ namespace QuantLib {
                   ->defaultProbability(date);
             return conditionalDefaultProbability(pDefUncond, iName, mktFactors);          
         }
+        /*Conditional default probability product, intermediate step in the 
+            correlation calculation.*/
+        Probability condProbProduct(const Date& date, 
+            Size iName1, Size iName2, 
+            const std::vector<Real>& mktFactors) const {
+            return 
+                conditionalDefaultProbability(date, iName1, mktFactors) *
+                conditionalDefaultProbability(date, iName2, mktFactors);
+        }
     public:
         /*! Computes the unconditional probability of default of a given name. 
         Trivial method for testing
@@ -158,6 +167,29 @@ namespace QuantLib {
                 iName, 
                 _1)
               ));
+        }
+        Real defaultCorrelation(const Date& d, 
+            Size iName1, Size iName2) const 
+        {
+            const boost::shared_ptr<Pool>& pool = basket_->pool();
+            Probability pUncond1 = pool->get(pool->names()[iName1]).
+                defaultProbability(basket_->defaultKeys()[iName1])
+                ->defaultProbability(d);
+            Probability pUncond2 = pool->get(pool->names()[iName2]).
+                defaultProbability(basket_->defaultKeys()[iName2])
+                ->defaultProbability(d);
+            Real p1p2 = pUncond1 * pUncond2;
+            return (
+                this->integrate(
+                  boost::function<Real (const std::vector<Real>& v1)>(
+                    boost::bind(
+                    &DefaultProbLM<copulaPolicy>::condProbProduct,
+                    this,
+                    boost::cref(d), // call with prob better
+                    iName1,
+                    iName2,
+                    _1)
+                    )) - p1p2 ) / std::sqrt(p1p2 * (1.-pUncond1)*(1.-pUncond2));
         }
         /*! Returns the probaility of having a given or larger number of 
         defaults in the basket portfolio at a given time.
