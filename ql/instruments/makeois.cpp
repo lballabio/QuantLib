@@ -24,19 +24,19 @@
 
 namespace QuantLib {
 
-    MakeOIS::MakeOIS(const Period& swapTenor,
-                     const boost::shared_ptr<OvernightIndex>& overnightIndex,
-                     Rate fixedRate,
-                     const Period& forwardStart)
-    : swapTenor_(swapTenor), overnightIndex_(overnightIndex),
-      fixedRate_(fixedRate), forwardStart_(forwardStart),
-      fixingDays_(2), paymentFrequency_(Annual),
-      rule_(DateGeneration::Forward),
-      endOfMonth_(1*Months<=swapTenor && swapTenor<=2*Years ? true : false),
-      type_(OvernightIndexedSwap::Payer), nominal_(1.0),
-      overnightSpread_(0.0),
-      fixedDayCount_(overnightIndex->dayCounter()),
-      engine_(new DiscountingSwapEngine(overnightIndex_->forwardingTermStructure())) {}
+    MakeOIS::MakeOIS(const Period &swapTenor,
+                     const boost::shared_ptr<OvernightIndex> &overnightIndex,
+                     Rate fixedRate, const Period &forwardStart)
+        : swapTenor_(swapTenor), overnightIndex_(overnightIndex),
+          fixedRate_(fixedRate), forwardStart_(forwardStart), fixingDays_(2),
+          paymentFrequency_(Annual), rule_(DateGeneration::Forward),
+          endOfMonth_(
+              1 * Months <= swapTenor && swapTenor <= 2 * Years ? true : false),
+          type_(OvernightIndexedSwap::Payer), nominal_(1.0),
+          overnightSpread_(0.0), fixedDayCount_(overnightIndex->dayCounter()),
+          engine_(new DiscountingSwapEngine(
+              overnightIndex_->forwardingTermStructure())),
+          telescopicValueDates_(false) {}
 
     MakeOIS::operator OvernightIndexedSwap() const {
         boost::shared_ptr<OvernightIndexedSwap> ois = *this;
@@ -87,7 +87,8 @@ namespace QuantLib {
                                       schedule,
                                       0.0, // fixed rate
                                       fixedDayCount_,
-                                      overnightIndex_, overnightSpread_);
+                                      overnightIndex_, overnightSpread_,
+                                      telescopicValueDates_);
             // ATM on the forecasting curve
             bool includeSettlementDateFlows = false;
             temp.setPricingEngine(boost::shared_ptr<PricingEngine>(
@@ -101,7 +102,8 @@ namespace QuantLib {
             OvernightIndexedSwap(type_, nominal_,
                                  schedule,
                                  usedFixedRate, fixedDayCount_,
-                                 overnightIndex_, overnightSpread_));
+                                 overnightIndex_, overnightSpread_,
+                                 telescopicValueDates_));
         ois->setPricingEngine(engine_);
         return ois;
     }
@@ -173,5 +175,12 @@ namespace QuantLib {
         overnightSpread_ = sp;
         return *this;
     }
+
+    MakeOIS& MakeOIS::withTelescopicValueDates(bool telescopicValueDates) {
+        telescopicValueDates_ = telescopicValueDates;
+        return *this;
+
+    }
+
 
 }

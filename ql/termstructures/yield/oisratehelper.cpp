@@ -57,7 +57,8 @@ namespace QuantLib {
         //    be assigned a curve later; use a RelinkableHandle here
         swap_ = MakeOIS(tenor_, clonedOvernightIndex, 0.0)
             .withDiscountingTermStructure(discountRelinkableHandle_)
-            .withSettlementDays(settlementDays_);
+            .withSettlementDays(settlementDays_)
+            .withTelescopicValueDates(true);
 
         earliestDate_ = swap_->startDate();
         latestDate_ = swap_->maturityDate();
@@ -118,7 +119,8 @@ namespace QuantLib {
         swap_ = MakeOIS(Period(), clonedOvernightIndex, 0.0)
             .withDiscountingTermStructure(discountRelinkableHandle_)
             .withEffectiveDate(startDate)
-            .withTerminationDate(endDate);
+            .withTerminationDate(endDate)
+            .withTelescopicValueDates(true);
 
         earliestDate_ = swap_->startDate();
         latestDate_ = swap_->maturityDate();

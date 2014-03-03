@@ -44,7 +44,8 @@ namespace QuantLib {
                     Rate fixedRate,
                     const DayCounter& fixedDC,
                     const boost::shared_ptr<OvernightIndex>& overnightIndex,
-                    Spread spread = 0.0);
+                    Spread spread = 0.0,
+                    bool telescopicValueDates = false);
         OvernightIndexedSwap(
                     Type type,
                     std::vector<Real> nominals,
@@ -52,7 +53,8 @@ namespace QuantLib {
                     Rate fixedRate,
                     const DayCounter& fixedDC,
                     const boost::shared_ptr<OvernightIndex>& overnightIndex,
-                    Spread spread = 0.0);
+                    Spread spread = 0.0,
+                    bool telescopicValueDates = false);
         //! \name Inspectors
         //@{
         Type type() const { return type_; }
@@ -95,6 +97,7 @@ namespace QuantLib {
 
         boost::shared_ptr<OvernightIndex> overnightIndex_;
         Spread spread_;
+        bool telescopicValueDates_;
     };
 
 

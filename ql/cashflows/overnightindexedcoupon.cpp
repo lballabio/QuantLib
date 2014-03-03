@@ -121,7 +121,8 @@ namespace QuantLib {
                     Spread spread,
                     const Date& refPeriodStart,
                     const Date& refPeriodEnd,
-                    const DayCounter& dayCounter)
+                    const DayCounter& dayCounter,
+                    const bool telescopicValueDates)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          overnightIndex->fixingDays(), overnightIndex,
                          gearing, spread,
@@ -129,14 +130,25 @@ namespace QuantLib {
                          dayCounter, false) {
 
         // value dates
-        Schedule sch = MakeSchedule()
-                    .from(startDate)
-                    .to(endDate)
-                    .withTenor(1*Days)
-                    .withCalendar(overnightIndex->fixingCalendar())
-                    .withConvention(overnightIndex->businessDayConvention())
-                    .backwards();
+        Date evalDate = Settings::instance().evaluationDate();
+        Date tmpEndDate = telescopicValueDates ? std::min( std::max(evalDate, startDate) + 7 , endDate) : endDate;
+        Schedule sch =
+            MakeSchedule()
+                .from(startDate)
+                // .to(endDate)
+                .to(tmpEndDate)
+                .withTenor(1 * Days)
+                .withCalendar(overnightIndex->fixingCalendar())
+                .withConvention(overnightIndex->businessDayConvention())
+                .backwards();
         valueDates_ = sch.dates();
+
+        if(telescopicValueDates) {
+            Date tmp = overnightIndex->fixingCalendar().adjust(endDate,overnightIndex->businessDayConvention());
+            if(tmp != valueDates_.back())
+                valueDates_.push_back(tmp);
+        }
+
         QL_ENSURE(valueDates_.size()>=2, "degenerate schedule");
 
         // fixing dates
@@ -177,9 +189,10 @@ namespace QuantLib {
         }
     }
 
-    OvernightLeg::OvernightLeg(const Schedule& schedule,
-                               const shared_ptr<OvernightIndex>& i)
-    : schedule_(schedule), overnightIndex_(i), paymentAdjustment_(Following) {}
+    OvernightLeg::OvernightLeg(const Schedule &schedule,
+                               const shared_ptr<OvernightIndex> &i)
+        : schedule_(schedule), overnightIndex_(i),
+          paymentAdjustment_(Following), telescopicValueDates_(false) {}
 
     OvernightLeg& OvernightLeg::withNotionals(Real notional) {
         notionals_ = vector<Real>(1, notional);
@@ -222,6 +235,11 @@ namespace QuantLib {
         return *this;
     }
 
+    OvernightLeg& OvernightLeg::withTelescopicValueDates(const bool telescopicValueDates) {
+        telescopicValueDates_ = telescopicValueDates;
+        return *this;
+    }
+
     OvernightLeg::operator Leg() const {
 
         QL_REQUIRE(!notionals_.empty(), "no notional given");
@@ -255,7 +273,8 @@ namespace QuantLib {
                                        detail::get(gearings_, i, 1.0),
                                        detail::get(spreads_, i, 0.0),
                                        refStart, refEnd,
-                                       paymentDayCounter_)));
+                                       paymentDayCounter_,
+                                       telescopicValueDates_)));
         }
         return cashflows;
     }
