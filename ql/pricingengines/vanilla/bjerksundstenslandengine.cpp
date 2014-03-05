@@ -37,7 +37,7 @@ namespace QuantLib {
             Real d = -(std::log(S / H) + (bT + (gamma - 0.5) * variance) )
                 / std::sqrt(variance);
             Real kappa = 2.0 * bT / variance + (2.0 * gamma - 1.0);
-            return std::exp(lambda) * std::pow(S, gamma) * (cumNormalDist(d)
+            return std::exp(lambda) * (cumNormalDist(d)
                 - std::pow((I / S), kappa) *
                 cumNormalDist(d - 2.0 * std::log(I/S) / std::sqrt(variance)));
         }
@@ -66,11 +66,10 @@ namespace QuantLib {
                 return S - X;
             } else {
                 // investigate what happen to alpha for dD->0.0
-                Real alpha = (I - X) * std::pow(I, (-beta));
-                return alpha * std::pow(S, beta)
-                    - alpha * phi(S, beta, I, I, rT, bT, variance)
-                    +         phi(S,  1.0, I, I, rT, bT, variance)
-                    -         phi(S,  1.0, X, I, rT, bT, variance)
+                return (I - X) * std::pow(S/I, beta)
+                        *(1 - phi(S, beta, I, I, rT, bT, variance))
+                    +    S *  phi(S,  1.0, I, I, rT, bT, variance)
+                    -    S *  phi(S,  1.0, X, I, rT, bT, variance)
                     -    X *  phi(S,  0.0, I, I, rT, bT, variance)
                     +    X *  phi(S,  0.0, X, I, rT, bT, variance);
             }
