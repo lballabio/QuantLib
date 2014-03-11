@@ -273,11 +273,11 @@ namespace QuantLib {
                 InterestRate irate(this->data_[i], dayCounter(), compounding, frequency);
                 Real compound = irate.compoundFactor(this->times_[i]);
                 this->data_[i] = irate.impliedRate(compound, dayCounter(), Continuous, 
-                                                   Annual, this->times_[i]);
+                                                   NoFrequency, this->times_[i]);
             }
         }
 
-#if !defined(QL_NEGATIVE_RATES)
+        #if !defined(QL_NEGATIVE_RATES)
         for (Size i = 1; i < times_.size(); i++)
         {
             QL_REQUIRE(this->data_[i] > 0.0, "non-positive yield");
@@ -291,7 +291,7 @@ namespace QuantLib {
                 io::rate(this->data_[i - 1]) << " at " << dates_[i - 1] <<
                 " (t=" << this->times_[i - 1] << ")");
         }
-#endif
+        #endif
 
         this->interpolation_ =
             this->interpolator_.interpolate(this->times_.begin(),
