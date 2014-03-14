@@ -26,27 +26,6 @@
 
 namespace {
     using namespace QuantLib;
-    class ParametersConstraint : public Constraint {
-      private:
-        class Impl : public Constraint::Impl {
-            Size nBeta_;
-          public:
-            Impl(Size nBeta) : Constraint::Impl(), nBeta_(nBeta) {}
-
-            bool test(const Array& params) const {
-                QL_REQUIRE(params.size()==nBeta_+1,
-                           "params.size()!=nBeta_+1");
-                for (Size i=0; i<nBeta_; ++i)
-                    if (params[i]<0.0 || params[i]>1.0)
-                        return false;
-
-                return params[nBeta_]>0.0; // mean reversion
-            }
-        };
-      public:
-        ParametersConstraint(Size nBeta)
-        : Constraint(boost::shared_ptr<Constraint::Impl>(new Impl(nBeta))) {}
-    };
 
     class ObjectiveFunction : public CostFunction {
       public:
@@ -73,27 +52,6 @@ namespace {
         virtual void updateVolatilityCubeAndCmsMarket(const Array& x) const;
     };
 
-    class ParametersConstraint2 : public Constraint {
-      private:
-        class Impl : public Constraint::Impl {
-            Size nBeta_;
-          public:
-            Impl(Size nBeta) : Constraint::Impl(), nBeta_(nBeta) {}
-
-            bool test(const Array& params) const {
-                QL_REQUIRE(params.size()==nBeta_,
-                           "params.size()!=nBeta_");
-                for (Size i=0; i<nBeta_; ++i)
-                    if (params[i]<0.0 || params[i]>1.0)
-                        return false;
-                return true;
-            }
-        };
-      public:
-        ParametersConstraint2(Size nBeta)
-        : Constraint(boost::shared_ptr<Constraint::Impl>(new Impl(nBeta))) {}
-    };
-
     class ObjectiveFunction2 : public ObjectiveFunction {
       public:
         ObjectiveFunction2(CmsMarketCalibration* smileAndCms,
@@ -106,9 +64,29 @@ namespace {
         Real fixedMeanReversion_;
     };
 
+    class ObjectiveFunction3 : public ObjectiveFunction {
+      public:
+        ObjectiveFunction3(CmsMarketCalibration *smileAndCms)
+            : ObjectiveFunction(smileAndCms) {};
+
+      private:
+        virtual void updateVolatilityCubeAndCmsMarket(const Array &x) const;
+    };
+
+    class ObjectiveFunction4 : public ObjectiveFunction {
+      public:
+        ObjectiveFunction4(CmsMarketCalibration *smileAndCms,
+                           Real fixedMeanReversion)
+            : ObjectiveFunction(smileAndCms),
+              fixedMeanReversion_(fixedMeanReversion) {};
+
+      private:
+        virtual void updateVolatilityCubeAndCmsMarket(const Array &x) const;
+        Real fixedMeanReversion_;
+    };
 
     //===========================================================================//
-    //                              ObjectiveFunction                            //
+    //        ObjectiveFunction (constant beta, free mean reversion)             //
     //===========================================================================//
 
     Real ObjectiveFunction::value(const Array& x) const {
@@ -130,8 +108,8 @@ namespace {
         const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
                boost::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
         for (Size i=0; i<nSwapTenors; ++i)
-            volCubeBySabr->recalibration(x[i], swapTenors[i]);
-        Real meanReversion = x[nSwapTenors];
+            volCubeBySabr->recalibration(smileAndCms_->betaTransformDirect(x[i]), swapTenors[i]);
+        Real meanReversion = smileAndCms_->reversionTransformDirect(x[nSwapTenors]);
         cmsMarket_->reprice(volCube_, meanReversion);
     }
 
@@ -163,7 +141,7 @@ namespace {
     }
 
     //===========================================================================//
-    //                      ObjectiveFunction2              //
+    //        ObjectiveFunction2 (constant beta, fixed mean reversion)           //
     //===========================================================================//
 
     void
@@ -176,10 +154,68 @@ namespace {
         const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
                boost::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
         for (Size i=0; i<nSwapTenors; ++i)
-            volCubeBySabr->recalibration(x[i], swapTenors[i]);
-        cmsMarket_->reprice(volCube_, fixedMeanReversion_);
+            volCubeBySabr->recalibration(smileAndCms_->betaTransformDirect(x[i]), swapTenors[i]);
+        cmsMarket_->reprice(
+            volCube_,
+            fixedMeanReversion_ == Null<Real>()
+                ? Null<Real>()
+                : smileAndCms_->reversionTransformDirect(fixedMeanReversion_));
+    }
+
+    //===========================================================================//
+    //        ObjectiveFunction3 (beta termstructure, free mean reversion)       //
+    //===========================================================================//
+
+    void
+    ObjectiveFunction3::updateVolatilityCubeAndCmsMarket(
+                                                        const Array& x) const {
+        const std::vector<Period>& swapTenors = cmsMarket_->swapTenors();
+        const std::vector<Period>& swapLengths = cmsMarket_->swapLengths();
+        Size nSwapTenors = swapTenors.size();
+        Size nSwapLengths = swapLengths.size();
+        QL_REQUIRE((nSwapLengths*nSwapTenors)+1 == x.size(),
+                   "bad calibration guess (nSwapLengths*nSwapTenors)+1 != x.size()");
+        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
+               boost::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
+        for (Size i=0; i<nSwapTenors; ++i) {
+            std::vector<Real> beta(x.begin()+(i*nSwapLengths),x.begin()+((i+1)*nSwapLengths));
+            for(Size i=0;i<beta.size();i++)
+                beta[i] = smileAndCms_->betaTransformDirect(beta[i]);
+            volCubeBySabr->recalibration(swapLengths, beta, swapTenors[i]);
+        }
+        Real meanReversion = smileAndCms_->reversionTransformDirect(x[nSwapLengths+nSwapTenors]);
+        cmsMarket_->reprice(volCube_, meanReversion);
+    }
+
+    //===========================================================================//
+    //        ObjectiveFunction4 (beta termstructure, fixed mean reversion)      //
+    //===========================================================================//
+
+    void
+    ObjectiveFunction4::updateVolatilityCubeAndCmsMarket(
+                                                        const Array& x) const {
+        const std::vector<Period>& swapTenors = cmsMarket_->swapTenors();
+        const std::vector<Period>& swapLengths = cmsMarket_->swapLengths();
+        Size nSwapTenors = swapTenors.size();
+        Size nSwapLengths = swapLengths.size();
+        QL_REQUIRE((nSwapLengths*nSwapTenors) == x.size(),
+                   "bad calibration guess (nSwapLengths*nSwapTenors) != x.size()");
+        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
+               boost::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
+        for (Size i=0; i<nSwapTenors; ++i) {
+            std::vector<Real> beta(x.begin()+(i*nSwapLengths),x.begin()+((i+1)*nSwapLengths));
+            for(Size i=0;i<beta.size();i++)
+                beta[i] = smileAndCms_->betaTransformDirect(beta[i]);
+            volCubeBySabr->recalibration(swapLengths, beta, swapTenors[i]);
+        }
+        cmsMarket_->reprice(
+            volCube_,
+            fixedMeanReversion_ == Null<Real>()
+                ? Null<Real>()
+                : smileAndCms_->reversionTransformDirect(fixedMeanReversion_));
     }
 }
+
 
 namespace QuantLib {
 
@@ -195,7 +231,19 @@ namespace QuantLib {
     : volCube_(volCube),
       cmsMarket_(cmsMarket),
       weights_(weights),
-      calibrationType_(calibrationType) {}
+      calibrationType_(calibrationType) {
+
+        QL_REQUIRE(weights.rows() == cmsMarket_->swapLengths().size(),
+                   "weights number of rows ("
+                       << weights.rows()
+                       << ") must be equal to number of swap lengths ("
+                       << cmsMarket_->swapLengths().size() << ")");
+        QL_REQUIRE(weights.columns() == cmsMarket_->swapTenors().size(),
+                   "weights number of columns ("
+                       << weights.columns()
+                       << ") must be equal to number of swap indexes ("
+                       << cmsMarket_->swapTenors().size());
+    }
 
     Array CmsMarketCalibration::compute(
                         const boost::shared_ptr<EndCriteria>& endCriteria,
@@ -203,34 +251,51 @@ namespace QuantLib {
                         const Array& guess,
                         bool isMeanReversionFixed) {
         Size nSwapTenors = cmsMarket_->swapTenors().size();
-        QL_REQUIRE(nSwapTenors == guess.size() || nSwapTenors == guess.size()-1,
-                   "guess size (" << guess.size() << ") must be equal to swap tenors size (" << nSwapTenors
-                   << ") or greater by one if mean reversion is given as last element");
-        bool isMeanReversionGiven = (nSwapTenors == guess.size()-1);
+        QL_REQUIRE(isMeanReversionFixed || guess.size() == nSwapTenors+1,
+                   "if mean reversion is not fixed, a guess must be provided");
+        QL_REQUIRE(nSwapTenors == guess.size() ||
+                       nSwapTenors == guess.size() - 1,
+                   "guess size (" << guess.size()
+                                  << ") must be equal to swap tenors size ("
+                                  << nSwapTenors
+                                  << ") or greater by one if mean reversion is "
+                     "given as last element");
+        bool isMeanReversionGiven = (nSwapTenors == guess.size() - 1);
+        Size nBeta = guess.size() - (isMeanReversionGiven ? 1 : 0);
         Array result;
-        if (isMeanReversionFixed || !isMeanReversionGiven) {
-            Size nBeta = guess.size() - (isMeanReversionGiven ? 1 : 0);
-            ParametersConstraint2 constraint(nBeta);
+        if (isMeanReversionFixed) {
+            NoConstraint constraint;
             Real fixedMeanReversion = isMeanReversionGiven ? guess[nBeta] : Null<Real>();
             Array betasGuess(nBeta);
             for (Size i=0; i<nBeta; ++i)
                 betasGuess[i] = guess[i];
-            ObjectiveFunction2 costFunction(this, fixedMeanReversion);
+            ObjectiveFunction2 costFunction(
+                this, fixedMeanReversion == Null<Real>()
+                          ? Null<Real>()
+                          : reversionTransformInverse(fixedMeanReversion));
             Problem problem(costFunction, constraint, betasGuess);
             endCriteria_ = method->minimize(problem, *endCriteria);
             Array tmp = problem.currentValue();
+            error_ = costFunction.value(tmp);
             result = Array(nBeta+(isMeanReversionGiven ? 1 : 0));
             for (Size i=0; i<nBeta; ++i)
-                result[i] = tmp[i];
-            if(isMeanReversionGiven) result[nBeta] = fixedMeanReversion;
-            error_ = costFunction.value(tmp);
+                result[i] = betaTransformDirect(tmp[i]);
+            if (isMeanReversionGiven)
+                result[nBeta] = fixedMeanReversion;
         } else {
-            ParametersConstraint constraint(guess.size()-1);
+            NoConstraint constraint;
             ObjectiveFunction costFunction(this);
-            Problem problem(costFunction, constraint, guess);
+            Array betaReversionGuess(nBeta+1);
+            for(Size i=0;i<nBeta;++i)
+                betaReversionGuess[i] = betaTransformInverse(guess[i]);
+            betaReversionGuess[nBeta] = reversionTransformInverse(guess[nBeta]);
+            Problem problem(costFunction, constraint, betaReversionGuess);
             endCriteria_ = method->minimize(problem, *endCriteria);
             result = problem.currentValue();
             error_ = costFunction.value(result);
+            for(Size i=0; i<nBeta; ++i)
+                result[i] = betaTransformDirect(result[i]);
+            result[nBeta] = reversionTransformDirect(result[nBeta]);
         }
         const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
             boost::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
@@ -241,5 +306,94 @@ namespace QuantLib {
 
         return result;
     }
+
+    Matrix CmsMarketCalibration::compute(
+                        const boost::shared_ptr<EndCriteria>& endCriteria,
+                        const boost::shared_ptr<OptimizationMethod>& method,
+                        const Matrix& guess,
+                        bool isMeanReversionFixed,
+                        const Real meanReversionGuess) {
+        Size nSwapTenors = cmsMarket_->swapTenors().size();
+        Size nSwapLengths = cmsMarket_->swapLengths().size();
+        QL_REQUIRE(isMeanReversionFixed || meanReversionGuess != Null<Real>(),
+                   "if mean reversion is not fixed, a guess must be provided");
+        QL_REQUIRE(nSwapTenors == guess.columns(),
+                   "number of swap tenors ("
+                       << nSwapTenors
+                       << ") must be equal to number of guess columns ("
+                       << guess.columns() << ")");
+        QL_REQUIRE(nSwapLengths == guess.rows(),
+                   "number of swap lengths ("
+                       << nSwapLengths
+                       << ") must be equal to number of guess rows ("
+                       << guess.rows() << ")");
+        Matrix result;
+        Size nBeta = nSwapTenors*nSwapLengths;
+        if (isMeanReversionFixed) {
+            NoConstraint constraint;
+            Array betasGuess(nBeta);
+            for (Size i = 0; i < nSwapTenors; ++i) {
+                for (Size j = 0; j < nSwapLengths; ++j) {
+                    betasGuess[i * nSwapLengths + j] =
+                        betaTransformInverse(guess[j][i]);
+                }
+            }
+            ObjectiveFunction4 costFunction(
+                this, meanReversionGuess == Null<Real>()
+                          ? meanReversionGuess
+                          : reversionTransformInverse(meanReversionGuess));
+            Problem problem(costFunction, constraint, betasGuess);
+            endCriteria_ = method->minimize(problem, *endCriteria);
+            Array tmp = problem.currentValue();
+            error_ = costFunction.value(tmp);
+            result = Matrix(nSwapLengths,
+                            nSwapTenors +
+                                (meanReversionGuess != Null<Real>() ? 1 : 0));
+            for (Size i = 0; i < nSwapTenors; ++i) {
+                for(Size j=0;j<nSwapLengths; ++j) {
+                    result[j][i] = betaTransformDirect(tmp[i*nSwapLengths+j]);
+                }
+            }
+            if(meanReversionGuess != Null<Real>()) {
+                for(Size j=0;j<nSwapLengths; ++j) {
+                    result[j][nSwapTenors] = meanReversionGuess;
+                }
+            }
+        } else {
+            NoConstraint constraint;
+            Array betasReversionGuess(nBeta+1);
+            for (Size i = 0; i < nSwapTenors; ++i) {
+                for (Size j = 0; j < nSwapLengths; ++j) {
+                    betasReversionGuess[i * nSwapLengths + j] =
+                        betaTransformInverse(guess[j][i]);
+                }
+            }
+            betasReversionGuess[nBeta] = reversionTransformInverse(meanReversionGuess);
+            ObjectiveFunction3 costFunction(this);
+            Problem problem(costFunction, constraint, betasReversionGuess);
+            endCriteria_ = method->minimize(problem, *endCriteria);
+            Array tmp = problem.currentValue();
+            error_ = costFunction.value(tmp);
+            result = Matrix(nSwapLengths,nSwapTenors+1);
+            for (Size i=0; i<nSwapTenors; ++i) {
+                for(Size j=0;j<nSwapLengths; ++j) {
+                    result[j][i] = betaTransformDirect(tmp[i*nSwapLengths+j]);
+                }
+            }
+            for (Size j = 0; j < nSwapLengths; ++j) {
+                result[j][nSwapTenors] =
+                    reversionTransformDirect(tmp[nBeta]);
+            }
+        }
+        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
+            boost::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
+        volCubeBySabr->updateAfterRecalibration();
+        sparseSabrParameters_ = volCubeBySabr->sparseSabrParameters();
+        denseSabrParameters_ = volCubeBySabr->denseSabrParameters();
+        browseCmsMarket_ = cmsMarket_->browse();
+
+        return result;
+    }
+
 
 }
