@@ -208,11 +208,14 @@ namespace QuantLib {
                             //for(int i=0;i<4;i++) {
                             //  if(!parameterAreFixed[i]) guess[i] = tan(-M_PI/2.0 + 1E-6 + (1-1E-6) * M_PI * s.value[j++]);
                             //}
-                            if(!parameterAreFixed[0]) guess[0] = (1.0-2E-6)*s.value[j++]+1E-6;
+                            //guess = transformation_->direct(guess);
                             if(!parameterAreFixed[1]) guess[1] = (1.0-2E-6)*s.value[j++]+1E-6;
-                            if(!parameterAreFixed[2]) guess[2] = 5.0*s.value[j++]+1E-6;
+                            if(!parameterAreFixed[0]) {
+                                guess[0] = (1.0-2E-6)*s.value[j++]+1E-6;            // lognormal vol guess
+                                guess[0] *= forward_ / std::pow(forward_,guess[1]); // adapt this to beta level
+                            }
+                            if(!parameterAreFixed[2]) guess[2] = 1.5*s.value[j++]+1E-6;
                             if(!parameterAreFixed[3]) guess[3] = (2.0*s.value[j++]-1.0)*(1.0-1E-6);
-                            guess = transformation_->direct(guess);
                             if(alphaIsFixed_) guess[0] = alpha_;
                             if(betaIsFixed_) guess[1] = beta_;
                             if(nuIsFixed_) guess[2] = nu_;
