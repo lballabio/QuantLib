@@ -43,7 +43,7 @@ namespace QuantLib {
         MakeCreditDefaultSwap &withUpfrontRate(Real);
         MakeCreditDefaultSwap &withSide(Protection::Side);
         MakeCreditDefaultSwap &withNominal(Real);
-        MakeCreditDefaultSwap &withTenor(Period);
+        MakeCreditDefaultSwap &withCouponTenor(Period);
         MakeCreditDefaultSwap &withDayCounter(DayCounter &);
         MakeCreditDefaultSwap &withLastPeriodDayCounter(DayCounter &);
 
@@ -54,6 +54,7 @@ namespace QuantLib {
         Protection::Side side_;
         Real nominal_;
         Period tenor_;
+        Period couponTenor_;
         Real couponRate_;
         Real upfrontRate_;
         DayCounter dayCounter_;

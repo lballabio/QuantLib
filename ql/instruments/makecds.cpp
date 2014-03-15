@@ -28,8 +28,8 @@ namespace QuantLib {
 
     MakeCreditDefaultSwap::MakeCreditDefaultSwap(const Period &tenor,
                                                  const Real couponRate)
-    : side_(Protection::Buyer), nominal_(1.0), tenor_(tenor), couponRate_(couponRate),
-          upfrontRate_(0.0),
+        : side_(Protection::Buyer), nominal_(1.0), tenor_(tenor),
+          couponTenor_(3 * Months), couponRate_(couponRate), upfrontRate_(0.0),
           dayCounter_(Actual360()), lastPeriodDayCounter_(Actual360(true)) {}
 
     MakeCreditDefaultSwap::operator CreditDefaultSwap() const {
@@ -37,25 +37,27 @@ namespace QuantLib {
         return *swap;
     }
 
-    MakeCreditDefaultSwap::operator boost::shared_ptr<CreditDefaultSwap>() const {
+    MakeCreditDefaultSwap::
+    operator boost::shared_ptr<CreditDefaultSwap>() const {
 
         Date evaluation = Settings::instance().evaluationDate();
         Date start = evaluation + 1;
         Date upfrontDate = WeekendsOnly().adjust(evaluation + 3);
         Date end = start + tenor_;
 
-        Schedule schedule(start, end, tenor_, WeekendsOnly(), Following,
+        Schedule schedule(start, end, couponTenor_, WeekendsOnly(), Following,
                           Unadjusted, DateGeneration::CDS, false, Date(),
                           Date());
 
         boost::shared_ptr<CreditDefaultSwap> cds =
             boost::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
-                side_, nominal_, couponRate_, upfrontRate_, schedule, Following,
+                side_, nominal_, upfrontRate_, couponRate_, schedule, Following,
                 dayCounter_, true, true, start, upfrontDate,
                 boost::shared_ptr<Claim>(), lastPeriodDayCounter_, true));
 
         cds->setPricingEngine(engine_);
         return cds;
+
     }
 
     MakeCreditDefaultSwap &
@@ -75,8 +77,9 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeCreditDefaultSwap &MakeCreditDefaultSwap::withTenor(Period tenor) {
-        tenor_ = tenor;
+    MakeCreditDefaultSwap &
+    MakeCreditDefaultSwap::withCouponTenor(Period couponTenor) {
+        couponTenor_ = couponTenor;
         return *this;
     }
 
@@ -86,8 +89,8 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeCreditDefaultSwap &
-    MakeCreditDefaultSwap::withLastPeriodDayCounter(DayCounter &lastPeriodDayCounter) {
+    MakeCreditDefaultSwap &MakeCreditDefaultSwap::withLastPeriodDayCounter(
+        DayCounter &lastPeriodDayCounter) {
         lastPeriodDayCounter_ = lastPeriodDayCounter;
         return *this;
     }
