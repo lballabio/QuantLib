@@ -95,14 +95,14 @@ namespace QuantLib {
         // 4.1 Bermudan step conditions
         stoppingTimes.push_back(exerciseTimes);
 
-        const boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         boost::shared_ptr<FdmInnerValueCalculator> exerciseCalculator(
-                      new FdmExtOUJumpModelInnerValue(payoff, mesher, shape_));
+            new FdmExtOUJumpModelInnerValue(arguments_.payoff, mesher, shape_));
 
         stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
-                new FdmSimpleSwingCondition(exerciseTimes, mesher,
-                                            exerciseCalculator, 2)));
+            new FdmSimpleSwingCondition(
+            	exerciseTimes, mesher, exerciseCalculator,
+            	arguments_.maxExerciseRights - arguments_.minExerciseRights,
+            	2)));
 
         boost::shared_ptr<FdmStepConditionComposite> conditions(
                 new FdmStepConditionComposite(stoppingTimes, stepConditions));

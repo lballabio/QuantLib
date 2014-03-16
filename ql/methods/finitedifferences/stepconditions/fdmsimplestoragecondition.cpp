@@ -73,18 +73,35 @@ namespace QuantLib {
                 const Real x = x_[coor[0]];
                 const Real y = y_[coor[1]];
 
-				const Real maxWithDraw = std::min(y-y_.front(), changeRate_);
-				const Real sellPrice   = interpl(x, y-maxWithDraw);
-
-				const Real maxInject = std::min(y_.back()-y, changeRate_);
-				const Real buyPrice  = interpl(x, y+maxInject);
-
-                const Real currentValue = a[iter.index()];
                 const Real price = calculator_->innerValue(iter, t);
 
-                retVal[iter.index()] = std::max(currentValue,
+                const Real maxWithDraw = std::min(y-y_.front(), changeRate_);
+            	const Real sellPrice   = interpl(x, y-maxWithDraw);
+
+            	const Real maxInject = std::min(y_.back()-y, changeRate_);
+            	const Real buyPrice  = interpl(x, y+maxInject);
+
+                // bang-bang-wait strategy
+                Real currentValue = std::max(a[iter.index()],
 					std::max(buyPrice - price*maxInject,
-							sellPrice + price*maxWithDraw));
+							 sellPrice + price*maxWithDraw));
+
+                // check if intermediate grid points give a better value
+                std::vector<Real>::const_iterator yIter =
+                	std::upper_bound(y_.begin(), y_.end(), y - maxWithDraw);
+
+                while (yIter != y_.end() && *yIter < y + maxInject) {
+                	if (*yIter != y) {
+						const Real change = *yIter - y;
+						const Real storagePrice(interpl(x, *yIter));
+
+						currentValue = std::max(currentValue,
+							storagePrice - change*price);
+                	}
+            		++yIter;
+                }
+
+                retVal[iter.index()] = currentValue;
             }
             a = retVal;
         }

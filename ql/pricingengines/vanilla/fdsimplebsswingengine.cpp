@@ -45,13 +45,14 @@ namespace QuantLib {
     }
             
     void FdSimpleBSSwingEngine::calculate() const {
-
         QL_REQUIRE(arguments_.exercise->type() == Exercise::Bermudan,
                    "Bermudan exercise supported only");
 
         // 1. Mesher
         const boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        QL_REQUIRE(payoff, "Strike type payoff expected");
+            
         const Time maturity = process_->time(arguments_.exercise->lastDate());
         const boost::shared_ptr<Fdm1dMesher> equityMesher(
             new FdmBlackScholesMesher(xGrid_, process_,
@@ -86,8 +87,10 @@ namespace QuantLib {
                                     new FdmLogInnerValue(payoff, mesher, 0));
 
         stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
-            new FdmSimpleSwingCondition(exerciseTimes, mesher,
-                                        exerciseCalculator, 1)));
+            new FdmSimpleSwingCondition(
+            	exerciseTimes, mesher, exerciseCalculator,
+            	arguments_.maxExerciseRights - arguments_.minExerciseRights,
+            	1)));
         
         boost::shared_ptr<FdmStepConditionComposite> conditions(
                 new FdmStepConditionComposite(stoppingTimes, stepConditions));

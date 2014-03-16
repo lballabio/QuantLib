@@ -1258,7 +1258,7 @@ void HestonModelTest::testAnalyticPDFHestonEngine() {
             new HestonProcess(riskFreeTS, dividendTS,
                               s0, v0, kappa, theta, sigma, rho))));
 
-    const Real tol = 1e-5;
+    const Real tol = 1e-6;
     const boost::shared_ptr<PricingEngine> pdfEngine(
         new AnalyticPDFHestonEngine(model, tol));
 
@@ -1282,7 +1282,7 @@ void HestonModelTest::testAnalyticPDFHestonEngine() {
         planVanillaOption.setPricingEngine(analyticEngine);
         const Real expected = planVanillaOption.NPV();
 
-        if (std::fabs(calculated-expected) > tol) {
+        if (std::fabs(calculated-expected) > 3*tol) {
             BOOST_FAIL(
                    "failed to reproduce plain vanilla european prices with"
                    " the analytic probability density engine"

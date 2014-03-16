@@ -26,11 +26,13 @@ namespace QuantLib {
             const std::vector<Time> & exerciseTimes,
             const boost::shared_ptr<FdmMesher>& mesher,
             const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
+            Size optionalExercises,
             Size swingDirection)
-    : exerciseTimes_ (exerciseTimes),
-      mesher_        (mesher),
-      calculator_    (calculator),
-      swingDirection_(swingDirection) {
+    : exerciseTimes_    (exerciseTimes),
+      mesher_           (mesher),
+      calculator_       (calculator),
+      optionalExercises_(optionalExercises),
+      swingDirection_   (swingDirection) {
     }
     
     void FdmSimpleSwingCondition::applyTo(Array& a, Time t) const {
@@ -59,7 +61,7 @@ namespace QuantLib {
                          = a[layout->neighbourhood(iter, swingDirection_, -1)];
                     
                     if (   currentValue < cashflow + valueMinusOneExRight
-                        || exerciseValue >= d ) {
+                        || exerciseValue >= d + optionalExercises_) {
                         retVal[iter.index()] = cashflow + valueMinusOneExRight;
                     }
                 }
