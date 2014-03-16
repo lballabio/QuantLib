@@ -33,6 +33,8 @@
 
 #include <boost/make_shared.hpp>
 
+#include <iostream>
+
 namespace QuantLib {
 
     IsdaCdsEngine::IsdaCdsEngine(
@@ -70,6 +72,10 @@ namespace QuantLib {
         discountCurve_ = Handle<YieldTermStructure>(
             boost::make_shared<PiecewiseYieldCurve<Discount, LogLinear> >(
                 0, WeekendsOnly(), rateHelpers_, Actual365Fixed()));
+
+        discountCurve_->enableExtrapolation();
+
+        //std::cout << "TEST rate curve : " << discountCurve_->discount(discountCurve_->referenceDate()+5000) << std::endl;
 
         for (Size i = 0; i < probabilityHelpers_.size(); i++) {
             boost::shared_ptr<CdsHelper> h =
@@ -136,7 +142,7 @@ namespace QuantLib {
                        arguments_.claim) != NULL,
                    "ISDA engine not compatible with non face value claim");
 
-        Date maturity = arguments_.maturity + 1;
+        Date maturity = arguments_.maturity+1; // +1; // TODO revisit this later, it makes problems (extrapolation needed ?!)
         Date effectiveProtectionStart =
             std::max<Date>(arguments_.protectionStart, evalDate + 1);
 
@@ -198,6 +204,12 @@ namespace QuantLib {
 
         std::vector<Date> nodes(it0, it);
 
+        //debug
+        //std::cout << "***debug engine - nodes ...:" << std::endl;
+        // for(Size i=0;i<nodes.size();i++) {
+        //     std::cout << nodes[i] << std::endl;
+        // }
+
         const Real nFix = (numericalFix_ == None ? 1E-50 : 0.0);
 
         // protection leg pricing (npv is always negative at this stage)
@@ -217,6 +229,7 @@ namespace QuantLib {
             //Real P1 = discountCurve_->discount(nodes[i + 1]);
             //Real Q0 = probability_->survivalProbability(nodes[i]);
             //Real Q1 = probability_->survivalProbability(nodes[i + 1]);
+            //std::cout << "handling the period " << d0 << " to " << d1;
             Real P0 = discountCurve_->discount(d0);
             Real P1 = discountCurve_->discount(d1);
             Real Q0 = probability_->survivalProbability(d0);
@@ -226,6 +239,7 @@ namespace QuantLib {
             Real fhat = std::log(P0) - std::log(P1);
             Real hhat = std::log(Q0) - std::log(Q1);
             Real fhphh = fhat + hhat;
+            //std::cout << " fhat=" << fhat << " hhat=" << hhat;
 
             if (fhphh < 1E-4 && numericalFix_ == Taylor) {
                 Real fhphhq = fhphh * fhphh;
@@ -237,6 +251,7 @@ namespace QuantLib {
             } else {
                 protectionNpv += hhat / (fhphh + nFix) * (P0 * Q0 - P1 * Q1);
             }
+            //std::cout << " cumProtNpv = " << protectionNpv << std::endl;
             d0 = d1;
         }
 
@@ -266,6 +281,7 @@ namespace QuantLib {
                     coupon->amount() *
                     discountCurve_->discount(coupon->date()) *
                     probability_->survivalProbability(coupon->accrualEndDate());
+                //std::cout << "Coupon #" << i << " has amount " << coupon->amount() << std::endl;
             }
 
             // default accruals
@@ -343,6 +359,8 @@ namespace QuantLib {
 					coupon->amount() * eta;
 			}
         }
+
+        //std::cout << "premiumNPV=" << premiumNpv << " defaultAccruals=" << defaultAccrualNpv << std::endl;
 
         results_.couponLegNPV = premiumNpv + defaultAccrualNpv;
 

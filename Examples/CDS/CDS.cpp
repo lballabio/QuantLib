@@ -291,46 +291,64 @@ void example02() {
 
     Handle<YieldTermStructure> emptyHandle;
 
-    boost::shared_ptr<CdsHelper> cds5y(new SpreadCdsHelper(
-        0.03, 5 * Years, 1, WeekendsOnly(), Quarterly, Following,
-        DateGeneration::CDS, Actual360(), 0.4, emptyHandle, true, true,
-        Actual360(true), true, true));
+    // boost::shared_ptr<CdsHelper> cds5y(new SpreadCdsHelper(
+    //     0.03, 5 * Years, 1, WeekendsOnly(), Quarterly, Following,
+    //     DateGeneration::CDS, Actual360(), 0.4, emptyHandle, true, true,
+    //     Actual360(true), true, false));
 
-    cds5y->setIsdaEngineParameters(IsdaCdsEngine::Taylor, IsdaCdsEngine::None,
-                                   IsdaCdsEngine::Piecewise);
+    // cds5y->setIsdaEngineParameters(IsdaCdsEngine::Taylor, IsdaCdsEngine::None,
+    //                                IsdaCdsEngine::Piecewise);
 
     std::vector<boost::shared_ptr<DefaultProbabilityHelper> > isdaCdsHelper;
 
+    Handle<YieldTermStructure> rateTs(
+        boost::make_shared<PiecewiseYieldCurve<Discount, LogLinear> >(
+            0, WeekendsOnly(), isdaRateHelper, Actual365Fixed()));
+    rateTs->enableExtrapolation();
+
+    boost::shared_ptr<CdsHelper> cds5y(new SpreadCdsHelper(
+        0.03, 5 * Years, 1, WeekendsOnly(), Quarterly, Following,
+        DateGeneration::CDS, Actual360(), 0.4, rateTs, true, true,
+        Actual360(true), true, false));
+
     isdaCdsHelper.push_back(cds5y);
+
+    Handle<DefaultProbabilityTermStructure> defaultTs(boost::make_shared<
+        PiecewiseDefaultCurve<SurvivalProbability, LogLinear> >(
+        0, WeekendsOnly(), isdaCdsHelper, Actual365Fixed()));
+
+    defaultTs->enableExtrapolation(); // why is this necessary ???
 
     // set up sample CDS trade
 
     boost::shared_ptr<CreditDefaultSwap> trade =
-        MakeCreditDefaultSwap(5 * Years, 0.01);
+        MakeCreditDefaultSwap(5 * Years, 0.03);
 
     // set up isda engine
 
+    // boost::shared_ptr<IsdaCdsEngine> isdaPricer =
+    //     boost::make_shared<IsdaCdsEngine>(
+    //         isdaCdsHelper, 0.4, isdaRateHelper);
     boost::shared_ptr<IsdaCdsEngine> isdaPricer =
-        boost::make_shared<IsdaCdsEngine>(
-            isdaCdsHelper, 0.4, isdaRateHelper);
+        boost::make_shared<IsdaCdsEngine>(defaultTs,0.40,rateTs);
 
     // check the curves built by the engine
 
-    Handle<YieldTermStructure> isdaYts = isdaPricer->isdaRateCurve();
-    Handle<DefaultProbabilityTermStructure> isdaCts = isdaPricer->isdaCreditCurve();
+    // Handle<YieldTermStructure> isdaYts = isdaPricer->isdaRateCurve();
+    // Handle<DefaultProbabilityTermStructure> isdaCts = isdaPricer->isdaCreditCurve();
 
-    std::cout << "isda rate 1m " << dp1m->latestDate() << " "
-              << isdaYts->zeroRate(dp1m->latestDate(), Actual365Fixed(),
-                                      Continuous) << std::endl;
-    std::cout << "isda rate 3m " << dp3m->latestDate() << " "
-              << isdaYts->zeroRate(dp3m->latestDate(), Actual365Fixed(),
-                                      Continuous) << std::endl;
-    std::cout << "isda rate 6m " << dp6m->latestDate() << " "
-              << isdaYts->zeroRate(dp6m->latestDate(), Actual365Fixed(),
-                                      Continuous) << std::endl;
+    // std::cout << "isda rate 1m " << dp1m->latestDate() << " "
+    //           << isdaYts->zeroRate(dp1m->latestDate(), Actual365Fixed(),
+    //                                   Continuous) << std::endl;
+    // std::cout << "isda rate 3m " << dp3m->latestDate() << " "
+    //           << isdaYts->zeroRate(dp3m->latestDate(), Actual365Fixed(),
+    //                                   Continuous) << std::endl;
+    // std::cout << "isda rate 6m " << dp6m->latestDate() << " "
+    //           << isdaYts->zeroRate(dp6m->latestDate(), Actual365Fixed(),
+    //                                   Continuous) << std::endl;
 
-    std::cout << "isda hazard 5y " << cds5y->latestDate() << " "
-              << isdaCts->hazardRate(cds5y->latestDate()) << std::endl;
+    // std::cout << "isda hazard 5y " << cds5y->latestDate() << " "
+    //           << isdaCts->hazardRate(cds5y->latestDate()) << std::endl;
 
     // price the trade
 
@@ -492,9 +510,9 @@ void example03() {
     // set isda parameters
     for (Size i = 0; i < isdaCdsHelpers.size(); i++) {
         boost::dynamic_pointer_cast<CdsHelper>(isdaCdsHelpers[i])
-            ->setIsdaEngineParameters(IsdaCdsEngine::Taylor,
-                                      IsdaCdsEngine::NoBias,
-                                      IsdaCdsEngine::Piecewise);
+            ->setIsdaEngineParameters(IsdaCdsEngine::Taylor, // None, Taylor
+                                      IsdaCdsEngine::NoBias, // HalfDayBias, NoBias
+                                      IsdaCdsEngine::Piecewise); // Piecewise // Flat
     }
 
     // set up isda engine
