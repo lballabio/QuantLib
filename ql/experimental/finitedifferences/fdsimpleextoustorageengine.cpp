@@ -61,11 +61,11 @@ namespace QuantLib {
         };
 
         class LessButNotCloseEnough
-        		: public std::binary_function<Real, Real, bool> {
+                : public std::binary_function<Real, Real, bool> {
           public:
-        	bool operator()(Real a, Real b) {
-        		return !(close_enough(a, b, 100) || b < a);
-        	}
+            bool operator()(Real a, Real b) {
+                return !(close_enough(a, b, 100) || b < a);
+            }
         };
     }
 
@@ -101,27 +101,27 @@ namespace QuantLib {
         boost::shared_ptr<Fdm1dMesher> storageMesher;
 
         if(yGrid_ == Null<Size>()){
-        	//elevator mesher
-        	std::vector<Real> storageValues(1, arguments_.capacity);
+            //elevator mesher
+            std::vector<Real> storageValues(1, arguments_.capacity);
             storageValues.reserve(arguments_.capacity/arguments_.changeRate+1);
 
             for (Real level=0; level <= arguments_.capacity;
-            		level+=arguments_.changeRate) {
-            		storageValues.push_back(level);
-            		storageValues.push_back(arguments_.capacity - level);
+                    level+=arguments_.changeRate) {
+                    storageValues.push_back(level);
+                    storageValues.push_back(arguments_.capacity - level);
             }
 
-            const std::set<Real, LessButNotCloseEnough>	orderedValues(
-            	storageValues.begin(), storageValues.end());
+            const std::set<Real, LessButNotCloseEnough>    orderedValues(
+                storageValues.begin(), storageValues.end());
             storageValues.assign(orderedValues.begin(), orderedValues.end());
 
-            storageMesher =	boost::shared_ptr<Fdm1dMesher>(
-            	new Predefined1dMesher(storageValues));
+            storageMesher =    boost::shared_ptr<Fdm1dMesher>(
+                new Predefined1dMesher(storageValues));
         }
         else {
-        	// uniform mesher
-        	storageMesher = boost::shared_ptr<Fdm1dMesher>(
-        		new Uniform1dMesher(0, arguments_.capacity, yGrid_));
+            // uniform mesher
+            storageMesher = boost::shared_ptr<Fdm1dMesher>(
+                new Uniform1dMesher(0, arguments_.capacity, yGrid_));
         }
 
         const boost::shared_ptr<FdmMesher> mesher (
