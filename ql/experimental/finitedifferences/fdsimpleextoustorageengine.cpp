@@ -103,7 +103,8 @@ namespace QuantLib {
         if(yGrid_ == Null<Size>()){
             //elevator mesher
             std::vector<Real> storageValues(1, arguments_.capacity);
-            storageValues.reserve(arguments_.capacity/arguments_.changeRate+1);
+            storageValues.reserve(
+                Size(arguments_.capacity/arguments_.changeRate)+1);
 
             for (Real level=0; level <= arguments_.capacity;
                     level+=arguments_.changeRate) {
