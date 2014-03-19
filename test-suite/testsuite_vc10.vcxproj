@@ -728,7 +728,6 @@
     <ClCompile Include="solvers.cpp" />
     <ClCompile Include="spreadoption.cpp" />
     <ClCompile Include="stats.cpp" />
-    <ClCompile Include="surface.cpp" />
     <ClCompile Include="swap.cpp" />
     <ClCompile Include="swapforwardmappings.cpp" />
     <ClCompile Include="swaption.cpp" />
@@ -855,7 +854,6 @@
     <ClInclude Include="solvers.hpp" />
     <ClInclude Include="spreadoption.hpp" />
     <ClInclude Include="stats.hpp" />
-    <ClInclude Include="surface.hpp" />
     <ClInclude Include="swap.hpp" />
     <ClInclude Include="swapforwardmappings.hpp" />
     <ClInclude Include="swaption.hpp" />

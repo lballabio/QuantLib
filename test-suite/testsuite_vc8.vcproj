@@ -855,10 +855,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\surface.cpp"
-				>
-			</File>
-			<File
 				RelativePath="swap.cpp"
 				>
 			</File>
@@ -1353,10 +1349,6 @@
 			</File>
 			<File
 				RelativePath="stats.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\surface.hpp"
 				>
 			</File>
 			<File

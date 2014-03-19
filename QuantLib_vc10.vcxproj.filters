@@ -876,9 +876,6 @@
     <ClInclude Include="ql\math\curve.hpp">
       <Filter>math</Filter>
     </ClInclude>
-    <ClInclude Include="ql\math\domain.hpp">
-      <Filter>math</Filter>
-    </ClInclude>
     <ClInclude Include="ql\math\errorfunction.hpp">
       <Filter>math</Filter>
     </ClInclude>
@@ -925,9 +922,6 @@
       <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\solver1d.hpp">
-      <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\math\surface.hpp">
       <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\transformedgrid.hpp">
@@ -4101,9 +4095,6 @@
       <Filter>math</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\sampledcurve.cpp">
-      <Filter>math</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\math\surface.cpp">
       <Filter>math</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\statistics\discrepancystatistics.cpp">

@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=1940
+UnitCount=1937
 Type=2
 Ver=1
 ObjFiles=
@@ -2240,9 +2240,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit222]
-FileName=ql\math\domain.hpp
+FileName=ql\experimental\coupons\lineartsrpricer.cpp
 CompileCpp=1
-Folder=math
+Folder=experimental/coupons
 Compile=1
 Link=1
 Priority=1000
@@ -2460,9 +2460,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit244]
-FileName=ql\math\surface.cpp
+FileName=ql\experimental\coupons\lineartsrpricer.hpp
 CompileCpp=1
-Folder=math
+Folder=experimental/coupons
 Compile=1
 Link=1
 Priority=1000
@@ -2470,9 +2470,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit245]
-FileName=ql\math\surface.hpp
+FileName=ql\experimental\math\polarstudenttrng.hpp
 CompileCpp=1
-Folder=math
+Folder=experimental/math
 Compile=1
 Link=1
 Priority=1000
@@ -19411,36 +19411,6 @@ BuildCmd=
 FileName=ql\math\modifiedbessel.hpp
 CompileCpp=1
 Folder=math
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit1938]
-FileName=ql\experimental\coupons\lineartsrpricer.cpp
-CompileCpp=1
-Folder=experimental/coupons
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit1939]
-FileName=ql\experimental\coupons\lineartsrpricer.hpp
-CompileCpp=1
-Folder=experimental/coupons
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit1940]
-FileName=ql\experimental\math\polarstudenttrng.hpp
-CompileCpp=1
-Folder=experimental/math
 Compile=1
 Link=1
 Priority=1000

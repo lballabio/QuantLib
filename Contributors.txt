@@ -8,6 +8,7 @@ Xavier Abulker
 Toyin Akin
 Marius Akre
 Mario Aleppo
+Grzegorz Andruszkiewicz
 Jose Aparicio
 Sercan Atalik
 Lluis Pujol Bajador
@@ -42,6 +43,7 @@ Daniele De Francesco
 Frédéric Degraeve
 Piero Del Boca
 Piter Dias
+Michael von den Driesch
 Francis Duffy
 Cristina Duminuco
 Dirk Eddelbuettel
@@ -72,11 +74,13 @@ Laurent Hoffmann
 Xiangyu Hong
 Benoît Houzelle
 Frank Hövermann
+Shen Hui
 Charles Chongseok Hyun
 Simon Ibbotson
 Norbert Irmer
 Mike Jake
 Rahul Kanchi
+Andrey Karpov
 Tomoya Kawanishi
 Gary Kennedy
 Matt Knox
@@ -148,6 +152,7 @@ Andreas Spengler
 Roland Stamm
 Edouard Tallent
 Marco Tarenghi
+Yue Tian
 François du Vignaud
 Qingxiao Wang
 Charles Whitmore

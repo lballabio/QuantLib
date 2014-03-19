@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file onefactorjamshidianengine.hpp
+/*! \file gaussian1djamshidianswaptionengine.hpp
     \brief Swaption engine using Jamshidian's decomposition
 */
 

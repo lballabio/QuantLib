@@ -82,6 +82,8 @@ namespace QuantLib {
         mutable Date lastDate_;
         mutable Interpolation tempKinterpolation_;
         mutable std::pair<std::vector<Rate>, std::vector<Volatility> > slice_;
+      private:
+        void updateSlice(const Date &d) const;
     };
 
 
@@ -146,18 +148,7 @@ namespace QuantLib {
     template<class Interpolator1D>
     Volatility KInterpolatedYoYOptionletVolatilitySurface<Interpolator1D>::
     volatilityImpl(const Date &d, Rate strike) const {
-
-        if (!lastDateisSet_ || d != lastDate_ ) {
-            slice_ = yoyOptionletStripper_->slice(d);
-
-            tempKinterpolation_ =
-                factory1D_.interpolate( slice_.first.begin(),
-                                        slice_.first.end(),
-                                        slice_.second.begin() );
-            lastDateisSet_ = true;
-            lastDate_ = d;
-        }
-
+        updateSlice(d);
         return tempKinterpolation_(strike);
     }
 
@@ -166,10 +157,7 @@ namespace QuantLib {
     std::pair<std::vector<Rate>, std::vector<Volatility> >
     KInterpolatedYoYOptionletVolatilitySurface<Interpolator1D>::
     Dslice(const Date &d) const {
-        // make sure that the correct D slice is in slice_
-        Rate strike = (minStrike() + maxStrike())/2.0;
-        Volatility v = volatilityImpl(d, strike); v = v+v;//dummy but needed
-
+        updateSlice(d);
         return slice_;
     }
 
@@ -183,6 +171,22 @@ namespace QuantLib {
         Date d = referenceDate() + Period(years, Years) + Period(days, Days);
 
         return this->volatilityImpl(d, strike);
+    }
+
+    template<class Interpolator1D>
+    void KInterpolatedYoYOptionletVolatilitySurface<Interpolator1D>::
+    updateSlice(const Date &d) const {
+
+        if (!lastDateisSet_ || d != lastDate_ ) {
+            slice_ = yoyOptionletStripper_->slice(d);
+
+            tempKinterpolation_ =
+                factory1D_.interpolate( slice_.first.begin(),
+                                        slice_.first.end(),
+                                        slice_.second.begin() );
+            lastDateisSet_ = true;
+            lastDate_ = d;
+        }
     }
 
 }
