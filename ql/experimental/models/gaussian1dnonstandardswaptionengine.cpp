@@ -108,8 +108,7 @@ namespace QuantLib {
             Real rate = arguments_.fixedRate[i];
             if (close(rate, 0.0))
                 rate = 0.03; // this value is at least better than zero
-            weightedRate +=
-                arguments_.fixedNominal[i] * arguments_.fixedRate[i];
+            weightedRate += arguments_.fixedNominal[i] * rate;
             if (arguments_.fixedNominal[i] > 1.0)
                 ind += 1.0;
         }

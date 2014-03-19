@@ -788,7 +788,6 @@
     <ClInclude Include="ql\math\bspline.hpp" />
     <ClInclude Include="ql\math\comparison.hpp" />
     <ClInclude Include="ql\math\curve.hpp" />
-    <ClInclude Include="ql\math\domain.hpp" />
     <ClInclude Include="ql\math\errorfunction.hpp" />
     <ClInclude Include="ql\math\factorial.hpp" />
     <ClInclude Include="ql\math\fastfouriertransform.hpp" />
@@ -806,7 +805,6 @@
     <ClInclude Include="ql\math\rounding.hpp" />
     <ClInclude Include="ql\math\sampledcurve.hpp" />
     <ClInclude Include="ql\math\solver1d.hpp" />
-    <ClInclude Include="ql\math\surface.hpp" />
     <ClInclude Include="ql\math\transformedgrid.hpp" />
     <ClInclude Include="ql\math\interpolations\abcdinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\all.hpp" />
@@ -1865,7 +1863,6 @@
     <ClCompile Include="ql\math\quadratic.cpp" />
     <ClCompile Include="ql\math\rounding.cpp" />
     <ClCompile Include="ql\math\sampledcurve.cpp" />
-    <ClCompile Include="ql\math\surface.cpp" />
     <ClCompile Include="ql\math\statistics\discrepancystatistics.cpp" />
     <ClCompile Include="ql\math\statistics\generalstatistics.cpp" />
     <ClCompile Include="ql\math\statistics\histogram.cpp" />

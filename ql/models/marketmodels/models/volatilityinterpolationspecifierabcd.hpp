@@ -36,7 +36,7 @@ namespace QuantLib
                                                                    Size offset,
                                                                    const std::vector< PiecewiseConstantAbcdVariance>& originalVariances, // these should be associated with the long rates
                                                                    const std::vector<Time>& timesForSmallRates, // these should be associated with the shorter rates
-                                                                   Real lastCapletVol_=0.0
+                                                                   Real lastCapletVol=0.0
                                                                    );
 
         virtual ~VolatilityInterpolationSpecifierabcd();

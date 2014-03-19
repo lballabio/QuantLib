@@ -314,9 +314,6 @@
     <ClCompile Include="stats.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="surface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="swap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -687,9 +684,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stats.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="surface.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="swap.hpp">

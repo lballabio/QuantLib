@@ -38,7 +38,7 @@ namespace QuantLib
         Size offset,
         const std::vector< PiecewiseConstantAbcdVariance>& originalVariances, // these should be associated with the long rates
         const std::vector<Time>& timesForSmallRates, // these should be associated with the shorter rates
-        Real lastCapletVol_
+        Real lastCapletVol
         )
         :
     period_(period),
@@ -47,7 +47,7 @@ namespace QuantLib
         originalVariances_(originalVariances.size()),
         originalABCDVariances_(originalVariances),
         originalABCDVariancesScaled_(originalVariances),
-        lastCapletVol_(lastCapletVol_),
+        lastCapletVol_(lastCapletVol),
         timesForSmallRates_(timesForSmallRates),
         scalingFactors_(originalVariances.size(),1.0),
         noBigRates_(originalVariances.size()),
