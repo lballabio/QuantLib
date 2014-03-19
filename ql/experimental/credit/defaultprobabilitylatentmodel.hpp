@@ -16,8 +16,8 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-#ifndef quantlib_defaultp_latent_model_hpp
-#define quantlib_defaultp_latent_model_hpp
+#ifndef quantlib_default_latent_model_hpp
+#define quantlib_default_latent_model_hpp
 
 #include <boost/dynamic_bitset.hpp>
 
@@ -27,8 +27,9 @@
 
 namespace QuantLib {
 
-    /*! Default event Latent Model. 
-     This is a model for correlated default events based on a generic Latent 
+    /*! \brief Default event Latent Model.
+
+     This is a model for joint default events based on a generic Latent 
       Model. It models solely the default events in a portfolio, not making any 
       reference to severities, exposures, etc...
      An implicit mapping is stablished between the variables modelled and the
@@ -36,12 +37,16 @@ namespace QuantLib {
      The class is parametric on the Latent Model copula.
     */
     template<class copulaPolicy>
-    class DefaultProbLM : public LatentModel<copulaPolicy> {
+    class DefaultLatentModel : public LatentModel<copulaPolicy> {
     protected:
-        /*const*/ boost::shared_ptr<Basket> basket_;
+        boost::shared_ptr<Basket> basket_;
+        boost::shared_ptr<LatentModel<copulaPolicy>::LMIntegration> 
+            integration_;
+        typedef LatentModel<typename copulaPolicy>::IntegrationFactory 
+            IntegrationFactory;
     public:
         /*!
-        @param basket The basket of issuers on which to model defaults.
+        @param basket The basket of issuers/ctptys on which to model defaults.
         @param factorWeights Latent model independent factors weights for each 
             variable.
         @param quadOrder The order of the quadrature to integrate the 
@@ -50,15 +55,17 @@ namespace QuantLib {
 
         \warning Baskets with realized defaults not tested/WIP.
         */
-        DefaultProbLM(
+        DefaultLatentModel(
             const boost::shared_ptr<Basket>& basket,
             const std::vector<std::vector<Real> >& factorWeights,
-            Size quadOrder,
+            LatentModel<copulaPolicy>::LatentModelIntegrationType integralType,
             const typename copulaPolicy::initTraits& ini = 
                 copulaPolicy::initTraits()
             ) 
         : basket_(basket), 
-          LatentModel<copulaPolicy>(factorWeights, quadOrder, ini) 
+          LatentModel<copulaPolicy>(factorWeights, ini),
+          integration_(IntegrationFactory::createLMIntegration(
+            factorWeights[0].size(), integralType))
         {
             // in the future change 'size' to 'liveSize'
             QL_REQUIRE(basket_->size() == factorWeights.size(), 
@@ -105,7 +112,7 @@ namespace QuantLib {
             const std::vector<Real>& m) const {
             Real sumMs = 
                 std::inner_product(factorWeights_[iName].begin(), 
-                    factorWeights_[iName].end(), m.begin(), 0.);//SHOULD BE IN BASE CLASS 
+                    factorWeights_[iName].end(), m.begin(), 0.);
             Real res = cumulativeZ((invCumYProb - sumMs) / 
                     idiosyncFctrs_[iName] );
             #if defined(QL_EXTRA_SAFETY_CHECKS)
@@ -137,7 +144,7 @@ namespace QuantLib {
                   ->defaultProbability(date);
             return conditionalDefaultProbability(pDefUncond, iName, mktFactors);          
         }
-        /*Conditional default probability product, intermediate step in the 
+        /*! Conditional default probability product, intermediate step in the 
             correlation calculation.*/
         Probability condProbProduct(Real invCumYProb1, Real invCumYProb2, 
             Size iName1, Size iName2, 
@@ -148,6 +155,13 @@ namespace QuantLib {
                 conditionalDefaultProbabilityInvP(invCumYProb2, iName2, 
                     mktFactors);
         }
+        //! Conditional probability of n default events or more.
+        // \todo: check the issuer has not defaulted.
+        Real conditionalProbAtLeastNEvents(Size n, const Date& date,
+            const std::vector<Real>& mktFactors) const;
+        //! access to integration:
+        const boost::shared_ptr<LatentModel<copulaPolicy>::LMIntegration>& 
+            integration() const { return integration_; }
     public:
         /*! Computes the unconditional probability of default of a given name. 
         Trivial method for testing
@@ -160,10 +174,11 @@ namespace QuantLib {
                 ->defaultProbability(d);
             if (pUncond < 1.e-10) return 0.;
 
-            return this->integrate(
+            return integratedExpectedValue(
               boost::function<Real (const std::vector<Real>& v1)>(
                 boost::bind(
-                &DefaultProbLM<copulaPolicy>::conditionalDefaultProbabilityInvP,
+                &DefaultLatentModel<copulaPolicy>
+                    ::conditionalDefaultProbabilityInvP,
                 this,
                 inverseCumulativeY(pUncond, iName),
                 iName, 
@@ -174,64 +189,61 @@ namespace QuantLib {
             Users should consider specialization on the copula type for specific
             distributions since that might simplify the integrations, most 
             importantly if this is to be used in calibration of observations for
-            factor coefficients as is quite expensive to integrate directly.
+            factor coefficients as it is expensive to integrate directly.
         */
-        Real defaultCorrelation(const Date& d, 
-            Size iNamei, Size iNamej) const 
-        {
-            const boost::shared_ptr<Pool>& pool = basket_->pool();
-            // unconditionals:
-            Probability pi = pool->get(pool->names()[iNamei]).
-                defaultProbability(basket_->defaultKeys()[iNamei])
-                ->defaultProbability(d);
-            Probability pj = pool->get(pool->names()[iNamej]).
-                defaultProbability(basket_->defaultKeys()[iNamej])
-                ->defaultProbability(d);
-            Real pipj = pi * pj;
-            Real invPi = inverseCumulativeY(pi, iNamei);
-            Real invPj = inverseCumulativeY(pj, iNamej);
-            // avoid repetitive calls when i=j?
-            Real E1i1j = integrate(
-                  boost::function<Real (const std::vector<Real>& v1)>(
-                    boost::bind(
-                    &DefaultProbLM<copulaPolicy>::condProbProduct,
-                    this, invPi, invPj, iNamei, iNamej, _1) ));
-            Real E1iSqr = integrate(
-                  boost::function<Real (const std::vector<Real>& v1)>(
-                    boost::bind(
-                    &DefaultProbLM<copulaPolicy>::condProbProduct,
-                    this, invPi, invPi, iNamei, iNamei, _1) ));
-            Real E1jSqr = integrate(
-                  boost::function<Real (const std::vector<Real>& v1)>(
-                    boost::bind(
-                    &DefaultProbLM<copulaPolicy>::condProbProduct,
-                    this, invPj, invPj, iNamej, iNamej, _1) ));
-            return (E1i1j - pipj )/std::sqrt((E1iSqr-pi*pi)*(E1jSqr-pj*pj));
-        }
+        Real defaultCorrelation(const Date& d, Size iNamei, Size iNamej) const;
+
         /*! Returns the probaility of having a given or larger number of 
         defaults in the basket portfolio at a given time.
         */
         Probability probAtLeastNEvents(Size n, const Date& date) const {
-            return this->integrate(
-                boost::function<Real (const std::vector<Real>& v1)>(
-                    boost::bind(
-                    &DefaultProbLM<copulaPolicy>::conditionalProbAtLeastNEvents,
-                    this,
-                    n,
-                    boost::cref(date),
-                    _1)
-                ));
+            return integratedExpectedValue(
+             boost::function<Real (const std::vector<Real>& v1)>(
+              boost::bind(
+              &DefaultLatentModel<copulaPolicy>::conditionalProbAtLeastNEvents,
+              this,
+              n,
+              boost::cref(date),
+              _1)
+             ));
         }
-    protected:
-        //! Conditional probability of n default events or more.
-        // \todo: check the issuer has not defaulted.
-        Real conditionalProbAtLeastNEvents(Size n, const Date& date,
-            const std::vector<Real>& mktFactors) const;
     };
 
 
+    //---- Defines -----------------------------------------------------------
+
     template<class CP>
-    Real DefaultProbLM<CP>::conditionalProbAtLeastNEvents(Size n, 
+    Real DefaultLatentModel<CP>::defaultCorrelation(const Date& d, 
+        Size iNamei, Size iNamej) const 
+    {
+        const boost::shared_ptr<Pool>& pool = basket_->pool();
+        // unconditionals:
+        Probability pi = pool->get(pool->names()[iNamei]).
+            defaultProbability(basket_->defaultKeys()[iNamei])
+            ->defaultProbability(d);
+        Probability pj = pool->get(pool->names()[iNamej]).
+            defaultProbability(basket_->defaultKeys()[iNamej])
+            ->defaultProbability(d);
+        Real pipj = pi * pj;
+        Real invPi = inverseCumulativeY(pi, iNamei);
+        Real invPj = inverseCumulativeY(pj, iNamej);
+        // avoid repetitive calls when i=j?
+        Real E1i1j; // joint default covariance term
+        if(iNamei !=iNamej) {
+            E1i1j = integratedExpectedValue(
+              boost::function<Real (const std::vector<Real>& v1)>(
+                boost::bind(
+                &DefaultLatentModel<CP>::condProbProduct,
+                this, invPi, invPj, iNamei, iNamej, _1) ));
+        }else{
+            E1i1j = pi;
+        }
+        return (E1i1j - pipj )/std::sqrt(pipj*(1.-pi)*(1.-pj));
+    }
+
+
+    template<class CP>
+    Real DefaultLatentModel<CP>::conditionalProbAtLeastNEvents(Size n, 
         const Date& date,
         const std::vector<Real>& mktFactors) const {
             /* \todo 
@@ -276,8 +288,8 @@ namespace QuantLib {
 
 
     // often used:
-    typedef DefaultProbLM<GaussianCopulaPolicy> GaussianDefProbLM;
-    typedef DefaultProbLM<TCopulaPolicy> TDefProbLM;
+    typedef DefaultLatentModel<GaussianCopulaPolicy> GaussianDefProbLM;
+    typedef DefaultLatentModel<TCopulaPolicy> TDefProbLM;
 }
 
 #endif

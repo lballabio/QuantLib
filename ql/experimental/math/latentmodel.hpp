@@ -27,7 +27,15 @@
 #include <boost/lambda/construct.hpp>
 
 #include <ql/experimental/math/multidimquadrature.hpp>
+#include <ql/experimental/math/multidimintegrator.hpp>
+
 #include <ql/math/randomnumbers/randomsequencegenerator.hpp>
+
+// for template spezs
+#include <ql/experimental/math/gaussiancopulapolicy.hpp>
+#include <ql/experimental/math/tcopulapolicy.hpp>
+#include <ql/math/randomnumbers/boxmullergaussianrng.hpp>
+#include <ql/experimental/math/polarstudenttrng.hpp>
 
 /*! \file latentmodel.hpp
     \brief Generic multifactor latent variable model.
@@ -38,7 +46,7 @@ namespace QuantLib {
     namespace detail {
         // havent figured out how to do this in-place
         struct multiplyV {
-            typedef std::vector<QuantLib::Real>& result_type;
+            typedef std::vector<Real>& result_type;
             std::vector<Real>& operator()(Real d,  std::vector<Real>& v) {
                 std::transform(v.begin(), v.end(), v.begin(), 
                     boost::lambda::_1 * d);
@@ -76,8 +84,16 @@ namespace QuantLib {
         \f$Y_j\f$ is then \f$\sum_k a_{i,k} a_{j,k}\f$. 
         \f$\Phi_{Y_i}\f$ denotes the cumulative distribution function of 
         \f$Y_i\f$ which in general differs for each latent variable.\par
-        In its single factor set up this model is usually employed in pricing
-        and in its multifactorial version in portfolio risk metrics.\par
+        In its single factor set up this model is usually employed in derivative
+        pricing and it is best to use it through integration of the desired 
+        statistical properties of the model; in its multifactorial version (with
+        typically around a dozen factors) it is used in the context of portfolio
+        risk metrics; because of the number of variables it is best to opt for a
+        simulation to compute model properties/magnitudes. 
+        For this reason this class template provides a random factor sample 
+        interface and an integration interface that will be instantiated by 
+        derived concrete models as needed. The class is neutral on the 
+        integration and random generation algorithms\par
         The latent variables are typically treated as unobservable magnitudes 
         and they serve to model one or several magnitudes related to them 
         through some function
@@ -163,6 +179,10 @@ namespace QuantLib {
         problem, the (e.g.) time at which the modeled variable first takes a 
         given value. This problem has solution/sense depending on the transfer 
         function \f$F_i(Y_i)\f$ characteristics.
+
+        To make direct integration and simulation time efficient virtual 
+        functions have been avoided in accessing methods in the copula policy 
+        and in the sampling of the random factors
     */
     template <class copulaPolicyImpl>
     class LatentModel {
@@ -202,7 +222,11 @@ namespace QuantLib {
         Real inverseCumulativeZ(Probability p) const {
             return copula_.inverseCumulativeZ(p);
         }
-        //! All factor cumulative inversion. Used in integrations and sampling.
+        /*! All factor cumulative inversion. Used in integrations and sampling.
+            Inverts all the cumulative random factors probabilities in the 
+            model. These are all the systemic factors plus all the idiosyncratic
+            ones, so the size of the inversion is the number of systemic factors
+            plus the number of latent modelled variables*/
         Disposable<std::vector<Real> > 
             allFactorCumulInverter(const std::vector<Real>& probs) const {
             return copula_->allFactorCumulInverter(probs);
@@ -210,75 +234,192 @@ namespace QuantLib {
         //@}
 
         /*!The value of the latent variable Y_i conditional to (given) a set of 
-        values of the factors. */
-        Real latentVarValue(const std::vector<Real> m, Size iVar) const {
+        values of the factors. 
+        @param allFactors Contains values for all the independent factors in 
+        the model. The systemic and idiosyncratic in that order. A full sample 
+        is required, i.e. all the idiosyncratic values are expected to be 
+        present even if only the relevant one is used.
+        */
+        Real latentVarValue(const std::vector<Real>& allFactors, 
+                            Size iVar) const 
+        {
             return std::inner_product(factorWeights_[iVar].begin(), 
-                factorWeights_[iVar].end(), m.begin()) 
-                + m.back() * idiosyncFctrs_[iVar];
+                // systemic term:
+                factorWeights_[iVar].end(), allFactors.begin(),
+                // idiosyncratic term:
+                allFactors[numFactors()+iVar] * idiosyncFctrs_[iVar]);
         }
+        // \to do write variants of the above, although is the most common case
 
-        friend class InverseLatentVariableRsg;
-        //! \name Random number generator facility.
+
+    protected:
+        //! \name Latent model random factor number generator facility.
         //@{
         /*!  Allows generation or random samples of the latent variable. 
 
-            RSG will be a uniform sequence generator in the default 
-            implementation. Some derived classes might specialize (on the copula
+            Generates samples of all the factors in the latent model according 
+            to the given copula. The default implementation given uses the 
+            inversion in the copula policy (which must be present).
+            USNG is expected to be a uniform sequence generator in the default 
+            implementation. 
+            Derived classes might specialize (on the copula
             type) to another type of generator if a more efficient algorithm 
             that the distribution inversion is available rewritig then the 
             nextSequence method for a particular copula implementation.
+            Some combinations of generators might make no sense, while it 
+            could be possible to block template classes corresponding to those
+            cases its not done (yet?) (e.g. a BoxMuller under a TCopula.)
+            The class can only be used from derived Latent models.  
+            Dimensionality coherence (between the generator and the copula) 
+            should have been checked by the client code.
+            In multithread usage the sequence generator is expect to be already
+            in position.
+            To sample the latent variable itself users should call 
+            LatentModel::latentVarValue with these samples.
         */
-        template <class RSG>         
-        class LatentVariableModelRsg {
-            // derive RandomSequenceGenerator? <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        // Cant use InverseCumulativeRsg since the inverse there has to return a
+        //   real number and here a vector is needed.
+        template <class USNG>
+        class FactorSampler {
         public:
             typedef Sample<std::vector<Real> > sample_type;
-            LatentVariableModelRsg(const RSG& rsg)
-            : sequenceGenerator_(rsg),
-              // dimensions should be coherent (check?)
+            explicit FactorSampler(const USNG& rsg, const copulaType& copula) 
+            : sequenceGen_(rsg), copula_(copula), 
               x_(std::vector<Real>(rsg.dimension()), 1.0) { }
-
-            /*! Returns a sample of the modelled variables \f$ Y_i \f$. 
+            /*! Returns a sample of the factor set \f$ M_k\,Z_i\f$. 
             This method has the vocation of being specialized at particular 
             types of the copula with a more efficient inversion to generate the 
             random variables modelled (e.g. Box-Muller for a gaussian).
             Here a default implementation is provided based directly on the 
             inversion of the cumulative distribution from the copula.
+            Care has to be taken in potential specializations that the generator
+            algorithm is compatible with an eventual concurrence of the 
+            simulations.
              */
             const sample_type& nextSequence() const {
-                typename RSG::sample_type sample =
-                    sequenceGenerator_.nextSequence();
-                // sample.value.size() is equal to the num of factors in the
-                // model plus one, this extra one corresponds to the systemic 
-                // variable.
-
-                /* Delegate the inversion to the copula policy.
-                  Notice theres no ptr to the LM here and thus we are ignorant 
-                  of the problem dimensions (how many variables and number of 
-                  isiosync factors), we only know the total. And one needs to 
-                  split since some factors need to be inverted through the 
-                  systemic and some through the idiosyncratic inverse 
-                  cumulatives. This is trivial in the Gaussian case where even 
-                  the dimensions can be ignored. In the general case this means 
-                  the copula has to be aware of the problems dimensions; this 
-                  is one argument against the decission to make copula policies 
-                  static as it is now.
-                */
-                // use inversecumulativersg.hpp? only is one dimensional there
-                x_.value = 
-                    ////////////////   copulaPolicyImpl::allFactorCumulInverter(sample.value);
-                    copula_.allFactorCumulInverter(sample.value);////<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-                // weight stays 1.
+                typename USNG::sample_type sample =
+                    sequenceGen_.nextSequence();
+                //Not possible to overload operator member access in Disposable
+                //return copula_.allFactorCumulInverter(sample.value).value;
+                x_.value = copula_.allFactorCumulInverter(sample.value);
                 return x_;
             }
-            const sample_type& lastSequence() const { return x_; }
-            Size dimension() const { return usg.dimension(); }
         private:
-            RSG sequenceGenerator_;
+            USNG sequenceGen_;// copy, we might be mutithreaded
             mutable sample_type x_;
+            // no copies
+            const copulaType& copula_;
         };
         //@}
 
+
+        //! \name Latent model direct integration facility.
+        //@{
+        /* Things trying to achieve here:
+        1.- Unify the two branches of integrators in the library, they do not 
+          hang from a common base class and here a common ptr for the 
+          factory is needed.
+        2.- Have a common signature for the integration call.
+        3.- Factory construction so integrable latent models can choose the 
+          integration algorithm separately.
+        */
+    protected:
+        class LMIntegration {
+        public:
+            virtual Real integrate(const boost::function<Real (
+                const std::vector<Real>& arg)>& f) const = 0;
+            //// needs vector version too.
+            virtual ~LMIntegration() {}
+        };
+    public:
+        enum LatentModelIntegrationType {
+            GaussianQuadrature,
+            Trapezoid
+            // etc....
+        };
+    private:
+        //CRTP-ish for joining the integrations, class above to have the factory
+        template <class I_T>
+        class IntegrationBase : 
+            public I_T, public LMIntegration {// diamond on 'integrate'
+         // this class template always to be fully specialized
+         private:
+             IntegrationBase() {}
+         virtual ~IntegrationBase() {} 
+        };
+        /* class template specializations. I havent use CRTP type cast directly
+        because the signature of the integrators is different, grid integration
+        needs the domain. */
+        template<> class IntegrationBase<GaussianQuadMultidimIntegrator> : 
+            public GaussianQuadMultidimIntegrator, public LMIntegration {
+        public:
+            IntegrationBase(Size dimension, Size order) 
+            : GaussianQuadMultidimIntegrator(dimension, order) {}
+            Real integrate(const boost::function<Real (
+                const std::vector<Real>& arg)>& f) const {
+                    return GaussianQuadMultidimIntegrator::integrate<Real>(f);
+            }
+            // disposable vector version here....
+            virtual ~IntegrationBase() {}
+        };
+        template<> class IntegrationBase<MultidimIntegral> : 
+            public MultidimIntegral, public LMIntegration {
+        public:
+            IntegrationBase(
+                const std::vector<boost::shared_ptr<Integrator> >& integrators, 
+                Real a, Real b) 
+            : MultidimIntegral(integrators), 
+              a_(integrators.size(),a), b_(integrators.size(),b) {}
+            Real integrate(const boost::function<Real (
+                const std::vector<Real>& arg)>& f) const {
+                    return MultidimIntegral::operator ()(f, a_, b_);
+            }
+            virtual ~IntegrationBase() {}
+            const std::vector<Real> a_, b_;
+        };
+    protected:
+        /* \todo Move integrator traits like number of quadrature points, 
+        integration domain dimensions, etc to the copula through a static 
+        member function. Since they depend on the nature of the probability 
+        density distribution thats where they belong.
+        This is why theres one factory per copula policy template parameter.
+        */
+        class IntegrationFactory {
+        public:
+            static boost::shared_ptr<LMIntegration> createLMIntegration(
+                Size dimension, 
+                LatentModelIntegrationType type = GaussianQuadrature) 
+            {
+                switch(type) {
+                    case GaussianQuadrature:
+                        return 
+                            boost::make_shared<
+                            IntegrationBase<GaussianQuadMultidimIntegrator> >(
+                                dimension, 25);
+                        break;
+                    case Trapezoid:
+                        {
+                        std::vector<boost::shared_ptr<Integrator> > integrals;
+                        for(Size i=0; i<dimension; i++)
+                            integrals.push_back(
+                            boost::make_shared<TrapezoidIntegral<Default> >(
+                                1.e-4, 20));
+                        return 
+                          boost::make_shared<IntegrationBase<MultidimIntegral> >
+                               (integrals, -6., 6.);
+                        break;
+                        }
+                    default:
+                        QL_FAIL("Unknown latent model integration type.");
+                }
+            }
+        private:
+            IntegrationFactory() {}
+        };
+        //@}
+
+
+    public:
         // model size, number of latent variables modelled
         Size size() const {return nVariables_;}
         // 
@@ -286,47 +427,46 @@ namespace QuantLib {
 
         /*! Constructs a LM with an arbitrary number of latent variables
           and factors given by the dimensions of the passed matrix.
-            @param factorsWeights Ordering is factorWeights_[iName][iFactor]
-            @param quadOrder Quadrature load.
+            @param factorsWeights Ordering is factorWeights_[iVar][iFactor]
             @param ini Initialization variables. Trait type from the copula 
               policy to allow for static policies (this solution needs to be 
               revised, possibly drop the static policy and create a policy 
               member in LatentModel)
         */
-        LatentModel(const std::vector<std::vector<Real> >& factorsWeights, 
-            Size quadOrder,
+        explicit LatentModel(
+            const std::vector<std::vector<Real> >& factorsWeights, 
             const typename copulaType::initTraits& ini = 
                 copulaType::initTraits());
         /*! Constructs a LM with an arbitrary number of latent variables 
           depending only on one random factor but contributing to each latent
           variable through different weights.
             @param factorsWeights Ordering is factorWeights_[iVariable]
-            @param quadOrder Quadrature load.
             @param ini Initialization variables. Trait type from the copula 
               policy to allow for static policies (this solution needs to be 
               revised, possibly drop the static policy and create a policy 
               member in LatentModel)
         */
-        LatentModel(const std::vector<Real>& factorsWeight, Size quadOrder,
+        explicit LatentModel(const std::vector<Real>& factorsWeight,
             const typename copulaType::initTraits& ini = 
                 copulaType::initTraits());
         /*! Constructs a LM with an arbitrary number of latent variables 
           depending only on one random factor with the same weight for all
           latent variables.
             @param factorsWeight The weight, same for all.
-            @param quadOrder Quadrature load.
             @param ini Initialization variables. Trait type from the copula 
               policy to allow for static policies (this solution needs to be 
               revised, possibly drop the static policy and create a policy 
               member in LatentModel)
         */
-        LatentModel(const Real correlSqr, Size nVariables, Size quadOrder,
+        explicit LatentModel(const Real correlSqr, Size nVariables,
             const typename copulaType::initTraits& ini = 
                 copulaType::initTraits());
 
+        //! Provides values of the factors \f$ a_{i,k} \f$ 
         const std::vector<std::vector<Real> >& factorWeights() const {
             return factorWeights_;
         }
+        //! Provides values of the normalized idiosyncratic factors \f$ Z_i \f$
         const std::vector<Real>& idiosyncFctrs() const {return idiosyncFctrs_;}
 
         //! Latent variable correlations:
@@ -343,25 +483,36 @@ namespace QuantLib {
         /*! Integrates an arbitrary scalar function over the density domain(i.e.
          computes its expected value).
         */
-        Real integrate(
+        Real integratedExpectedValue(
             const boost::function<Real(const std::vector<Real>& v1)>& f) const {
             // function composition: composes the integrand with the density 
             //   through a product.
             return 
-                integrator_.integrate<Real>(boost::bind(std::multiplies<Real>(), 
-                boost::bind(&copulaPolicyImpl::density, copula_, _1),
-                boost::bind(boost::cref(f), _1)));   
+                integration()->integrate(
+                    boost::bind(std::multiplies<Real>(), 
+                    boost::bind(&copulaPolicyImpl::density, copula_, _1),
+                    boost::bind(boost::cref(f), _1)));   
         }
         /*! Integrates an arbitrary vector function over the density domain(i.e.
          computes its expected value).
         */
-        Disposable<std::vector<Real> > integrate(
-            const boost::function<std::vector<Real>(
+        Disposable<std::vector<Real> > integratedExpectedValue(
+           // const boost::function<std::vector<Real>(
+            const boost::function<Disposable<std::vector<Real> >(
                 const std::vector<Real>& v1)>& f ) const {
-            return integrator_.integrate<std::vector<Real> >(
-                boost::bind<Disposable<std::vector<Real> > >(detail::multiplyV(),
-                    boost::bind(&copulaPolicyImpl::density, copula_, _1),
-                    boost::bind(boost::cref(f), _1)));
+            return 
+                integration()->integrate(
+                    boost::bind<Disposable<std::vector<Real> > >(
+                        detail::multiplyV(),
+                        boost::bind(&copulaPolicyImpl::density, copula_, _1),
+                        boost::bind(boost::cref(f), _1)));
+        }
+    protected:
+        // Integrable models must provide their integrator.
+        // Arguable, not having the integration in the LM class saves that 
+        //   memory but have an entry in the VT... 
+        virtual const boost::shared_ptr<LMIntegration>& integration() const {
+            QL_FAIL("Integration non implemented in Latent model.");
         }
         //@}
     protected:
@@ -376,26 +527,18 @@ namespace QuantLib {
         //! Number of latent model variables, idiosyncratic terms or model dim
         mutable Size nVariables_;// matches idiosyncFctrs_.size() 
 
-        /* \todo Dont tie it to a Quadrature make the integrator algo generic. 
-            something in the line of a factory, yet they do not have a common
-            ancestor.
-        */
-        GaussianQuadMultidimIntegrator integrator_;
-
         mutable copulaType copula_;
     };
 
 
-    // Defines -----------------------------------------------------------------
+    // Defines ----------------------------------------------------------------
 
     template <class Impl>
     LatentModel<Impl>::LatentModel(
         const std::vector<std::vector<Real> >& factorWeights,
-        Size quadOrder,
         const typename Impl::initTraits& ini)
     : factorWeights_(factorWeights),
       nFactors_(factorWeights[0].size()), 
-      integrator_(factorWeights[0].size(), quadOrder),
       nVariables_(factorWeights.size()), copula_(factorWeights, ini)
     {
         for(Size i=0; i<factorWeights.size(); i++) {
@@ -412,11 +555,9 @@ namespace QuantLib {
     template <class Impl>
     LatentModel<Impl>::LatentModel(
         const std::vector<Real>& factorWeights,
-        Size quadOrder,
         const typename Impl::initTraits& ini)
     : nFactors_(1),
       nVariables_(factorWeights.size()),
-      integrator_(1, quadOrder),
     {
         for(Size iName=0; iName < factorWeights.size(); iName++)
             factorWeights_.push_back(std::vector<Real>(1, 
@@ -432,16 +573,81 @@ namespace QuantLib {
     LatentModel<Impl>::LatentModel(
         const Real correlSqr,
         Size nVariables,
-        Size quadOrder,
         const typename Impl::initTraits& ini)
     : factorWeights_(nVariables, std::vector<Real>(1, idiosyncFctrsWeight)),
       nFactors_(1), 
       nVariables_(nVariables),
       idiosyncFctrs_(nVariables, 
         std::sqrt(1.-idiosyncFctrsWeight*idiosyncFctrsWeight)),
-      integrator_(1, quadOrder),
       copula_(factorWeights_, ini)
     { }
+
+
+    //----Template partial specializations of the random FactorSampler---------
+    /*
+    Notice that while the default template needs a sequence generator the 
+    specializations need a number generator. This is forced at the time the 
+    concrete policy class is used in the template parameter, if it has been 
+    specialized it needs the sample type typedef to match at compilation. 
+    */
+    /*! \brief  Specialization for direct Gaussian Box-Muller generation.\par
+    The implementation of Box-Muller in the library is the rejection variant so
+    do not use it within a multithreaded simulation.
+    */
+    template<> template<class URNG>// uniform number expected
+    class LatentModel<GaussianCopulaPolicy>
+        ::FactorSampler<RandomSequenceGenerator<BoxMullerGaussianRng<URNG> > > {
+    public:
+        //Size below must be == to the numb of factors idiosy + systemi
+        typedef Sample<std::vector<Real> > sample_type;
+        explicit FactorSampler(
+            const RandomSequenceGenerator<BoxMullerGaussianRng<URNG> >& 
+                boxMullRng
+            ) 
+            : boxMullRng_(boxMullRng){ }
+        const sample_type& nextSequence() const {
+                return boxMullRng_.nextSequence();
+        }
+    private:
+        RandomSequenceGenerator<BoxMullerGaussianRng<URNG> > boxMullRng_;
+    };
+
+    /*! \brief Specialization for direct T samples generation.\par
+    The PolarT is a rejection algorithm so do not use it within a 
+    multithreaded simulation.
+    The RandomSequenceGenerator class does not admit heterogeneous 
+    distribution samples so theres a trick here since the template parameter is 
+    not what it is used internally.
+    */
+    template<> template<class URNG>// uniform number expected
+    class LatentModel<TCopulaPolicy>
+        ::FactorSampler<RandomSequenceGenerator<PolarStudentTRng<URNG> > > {
+    public:
+        typedef Sample<std::vector<Real> > sample_type;
+        explicit FactorSampler(const URNG& urng,
+            Size dimensionality,
+            const TCopulaPolicy& copula
+            ) 
+        : sequence_(std::vector<Real> (dimensionality), 1.0) {
+            // 1 == urng.dimension() is enforced by the sample type
+            const std::vector<Real>& varF = copula.varianceFactors();
+            for(Size i=0; i<varF.size(); i++)// back inserter lamba
+                trng_.push_back(
+                    PolarStudentTRng<URNG>(2./(1.-varF[i]*varF[i]), urng));
+        }
+        const sample_type& nextSequence() const {
+            Size i=0;
+            for(; i<trng_.size(); i++)//systemic samples plus one idiosyncratic
+                sequence_.value[i] = trng_[i].next().value;
+            for(; i<sequence_.value.size(); i++)//rest of idiosyncratic samples
+                sequence_.value[i] = trng_.back().next().value;
+            return sequence_;
+        }
+    private:
+        mutable sample_type sequence_;
+        mutable std::vector<PolarStudentTRng<URNG> > trng_;
+    };
+
 
 }                    
 

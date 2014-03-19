@@ -38,7 +38,7 @@ namespace QuantLib {
     but other copulas will need parameters and initialization.*/
     struct GaussianCopulaPolicy {
 
-        typedef int initTraits;// optional?
+        typedef int initTraits;// boost optional?
 
         GaussianCopulaPolicy(
             const std::vector<std::vector<Real> >& factorWeights = 
@@ -87,6 +87,7 @@ namespace QuantLib {
         Real inverseCumulativeDensity(Probability p, Size iFactor) const {
             return InverseCumulativeNormal::standard_value(p);
         }
+        //! 
         //to use this (by default) version, the generator must be a uniform one.
         Disposable<std::vector<Real> > 
             allFactorCumulInverter(const std::vector<Real>& probs) const {

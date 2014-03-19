@@ -79,18 +79,19 @@ namespace QuantLib {
         const std::vector<Real>& probs) const 
     {
     #if defined(QL_EXTRA_SAFETY_CHECKS)
-        QL_REQUIRE(probs.size() == distributions_.size()-1, 
+        QL_REQUIRE(probs.size()-latentVarsCumul_.size() 
+            == distributions_.size()-1, 
             "Incompatible sample and latent model sizes");
     #endif
 
         std::vector<Real> result(probs.size());
         Size indexSystemic = 0;
-        std::transform(probs.begin(), probs.begin() + latentVarsCumul_.size(),
+        std::transform(probs.begin(), probs.begin() + varianceFactors_.size()-1,
             result.begin(), 
             bind(&TCopulaPolicy::inverseCumulativeDensity, 
-                                this, _1, ++indexSystemic));
-        std::transform(probs.begin() + latentVarsCumul_.size(), probs.end(),
-            result.begin()+latentVarsCumul_.size(),
+                                this, _1, indexSystemic++));
+        std::transform(probs.begin() + varianceFactors_.size()-1, probs.end(),
+            result.begin()+ varianceFactors_.size()-1,
             boost::bind(&TCopulaPolicy::inverseCumulativeZ, this, _1));
         return result;
     }

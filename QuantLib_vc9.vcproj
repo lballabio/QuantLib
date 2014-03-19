@@ -7566,6 +7566,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\randomdefaultlatentmodel.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\randomdefaultmodel.cpp"
 					>
 				</File>

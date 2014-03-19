@@ -63,6 +63,9 @@ namespace QuantLib {
                 std::vector<std::vector<Real> >(), 
             const initTraits& vals = initTraits());
 
+        const std::vector<Real>& varianceFactors() const {
+            return varianceFactors_;
+        }
         /*! Cumulative probability of the indexed latent variable 
             @param iVariable The index of the latent variable requested.
         */
@@ -119,7 +122,7 @@ namespace QuantLib {
         /*! Returns the inverse of the cumulative distribution of the 
           systemic factor iFactor.
         */
-        Real inverseCumulativeDensity(Probability p, Size iFactor) const {
+        Real inverseCumulativeDensity(Probability p, Size iFactor) const {///////////////////////////const arguments here and in the other methods, see gaussian too.....
     #if defined(QL_EXTRA_SAFETY_CHECKS)
             QL_REQUIRE(iFactor < distributions_.size()-1, 
                 "Random factor variable index out of bounds.");
