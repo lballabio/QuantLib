@@ -207,6 +207,10 @@ namespace QuantLib {
              */
             Real operator()(Real t) const {
                 QL_REQUIRE (t >= 0.0, "t < 0");
+                /* As long as this doesnt involve modifying a mutable member
+                it should be thread safe (they are const methods and access is 
+                read only)
+                */
                 return dts_->defaultProbability(curveRef_ + 
                     Period(static_cast<Integer>(t), Days), true) - pd_;
             }
