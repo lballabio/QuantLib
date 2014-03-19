@@ -132,8 +132,8 @@ namespace QuantLib {
         2.- a vector, 3. another vector. typedefs eventually...
          at first sight this might look like mimicking a virtual table, it isnt 
          that. The reason is to be able to select the correct integration 
-         dimension at run time, this can be done before because of the template 
-         argument restriction to be constant known at compilation.
+         dimension at run time, this can not be done before because of the 
+         template argument restriction to be constant known at compilation.
         */
         mutable std::vector<boost::function<Real (//<- members: integrate<N>
             // integrable function:
