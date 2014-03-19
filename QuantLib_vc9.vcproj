@@ -2483,10 +2483,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\math\domain.hpp"
-				>
-			</File>
-			<File
 				RelativePath="ql\math\errorfunction.cpp"
 				>
 			</File>
@@ -2596,14 +2592,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\math\solver1d.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\math\surface.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\math\surface.hpp"
 				>
 			</File>
 			<File

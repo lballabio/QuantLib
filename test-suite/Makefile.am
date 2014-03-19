@@ -105,7 +105,6 @@ QL_TESTS = \
 	solvers.hpp solvers.cpp \
 	spreadoption.hpp spreadoption.cpp \
 	stats.hpp stats.cpp \
-	surface.hpp surface.cpp \
 	swap.hpp swap.cpp \
 	swapforwardmappings.hpp swapforwardmappings.cpp \
 	swaption.hpp swaption.cpp \

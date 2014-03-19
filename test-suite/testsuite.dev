@@ -1,7 +1,7 @@
 [Project]
 FileName=testsuite.dev
 Name=QuantLib-test-suite
-UnitCount=250
+UnitCount=248
 Type=1
 Ver=1
 ObjFiles=
@@ -1398,7 +1398,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit136]
-FileName=surface.hpp
+FileName=piecewisezerospreadedtermstructure.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1
@@ -1408,7 +1408,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit137]
-FileName=surface.cpp
+FileName=piecewisezerospreadedtermstructure.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1
@@ -2519,26 +2519,6 @@ BuildCmd=
 
 [Unit248]
 FileName=gsr.hpp
-CompileCpp=1
-Folder=QuantLib-test-suite
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit249]
-FileName=piecewisezerospreadedtermstructure.cpp
-CompileCpp=1
-Folder=QuantLib-test-suite
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit250]
-FileName=piecewisezerospreadedtermstructure.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1

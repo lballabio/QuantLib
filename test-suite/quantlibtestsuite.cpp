@@ -145,7 +145,6 @@
 #include "solvers.hpp"
 #include "spreadoption.hpp"
 #include "swingoption.hpp"
-#include "surface.hpp"
 #include "stats.hpp"
 #include "swap.hpp"
 #include "swapforwardmappings.hpp"
@@ -332,7 +331,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ShortRateModelTest::suite()); // fails with QL_USE_INDEXED_COUPON
     test->add(Solver1DTest::suite());
     test->add(StatisticsTest::suite());
-    test->add(SurfaceTest::suite());
     test->add(SwapTest::suite());
     test->add(SwapForwardMappingsTest::suite());
     test->add(SwaptionTest::suite());
