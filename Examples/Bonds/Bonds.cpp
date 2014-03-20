@@ -160,15 +160,14 @@ int main(int, char* []) {
         }
 
         // Definition of the rate helpers
-        std::vector<boost::shared_ptr<FixedRateBondHelper> > bondsHelpers;
+        std::vector<boost::shared_ptr<BondHelper> > bondsHelpers;
 
         for (Size i=0; i<numberOfBonds; i++) {
 
             Schedule schedule(issueDates[i], maturities[i], Period(Semiannual), UnitedStates(UnitedStates::GovernmentBond),
                     Unadjusted, Unadjusted, DateGeneration::Backward, false);
 
-            boost::shared_ptr<FixedRateBondHelper> bondHelper(new FixedRateBondHelper(
-                    quoteHandle[i],
+            boost::shared_ptr<FixedRateBond> bond(new FixedRateBond(
                     settlementDays,
                     100.0,
                     schedule,
@@ -176,7 +175,10 @@ int main(int, char* []) {
                     ActualActual(ActualActual::Bond),
                     Unadjusted,
                     redemption,
-                    issueDates[i]));
+                    issueDates[i],
+                    calendar));
+
+            boost::shared_ptr<BondHelper> bondHelper(new BondHelper(quoteHandle[i], bond));
 
             bondsHelpers.push_back(bondHelper);
         }
