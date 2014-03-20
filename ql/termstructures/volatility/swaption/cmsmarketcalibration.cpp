@@ -179,8 +179,8 @@ namespace {
                boost::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
         for (Size i=0; i<nSwapTenors; ++i) {
             std::vector<Real> beta(x.begin()+(i*nSwapLengths),x.begin()+((i+1)*nSwapLengths));
-            for(Size i=0;i<beta.size();i++)
-                beta[i] = smileAndCms_->betaTransformDirect(beta[i]);
+            for(Size j=0;j<beta.size();++j)
+                beta[j] = smileAndCms_->betaTransformDirect(beta[j]);
             volCubeBySabr->recalibration(swapLengths, beta, swapTenors[i]);
         }
         Real meanReversion = smileAndCms_->reversionTransformDirect(x[nSwapLengths+nSwapTenors]);
@@ -204,8 +204,8 @@ namespace {
                boost::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
         for (Size i=0; i<nSwapTenors; ++i) {
             std::vector<Real> beta(x.begin()+(i*nSwapLengths),x.begin()+((i+1)*nSwapLengths));
-            for(Size i=0;i<beta.size();i++)
-                beta[i] = smileAndCms_->betaTransformDirect(beta[i]);
+            for(Size j=0;j<beta.size();++j)
+                beta[j] = smileAndCms_->betaTransformDirect(beta[j]);
             volCubeBySabr->recalibration(swapLengths, beta, swapTenors[i]);
         }
         cmsMarket_->reprice(
