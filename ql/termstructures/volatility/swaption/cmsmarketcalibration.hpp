@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2007 Marco Bianchetti
  Copyright (C) 2006, 2007 Giorgio Facchinetti
+ Copyright (C) 2014 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -61,6 +62,12 @@ namespace QuantLib {
                       const Matrix& guess,
                       bool isMeanReversionFixed,
                       const Real meanReversionGuess = Null<Real>());
+
+        Matrix
+        computeParametric(const boost::shared_ptr<EndCriteria> &endCriteria,
+                          const boost::shared_ptr<OptimizationMethod> &method,
+                          const Matrix &guess, bool isMeanReversionFixed,
+                          const Real meanReversionGuess = Null<Real>());
 
         Real error() { return error_; }
         EndCriteria::Type endCriteria() { return endCriteria_; };
