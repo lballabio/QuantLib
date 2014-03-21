@@ -88,8 +88,8 @@ namespace QuantLib {
         Natural fixingDays_;
         Currency currency_;
         DayCounter dayCounter_;
-      private:
         std::string name_;
+      private:
         Calendar fixingCalendar_;
     };
 
