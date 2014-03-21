@@ -4,16 +4,24 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    cmsspreadcoupon.hpp \
+    lognormalcmsspreadpricer.hpp \
     lineartsrpricer.hpp \
     proxyibor.hpp \
     quantocouponpricer.hpp \
-    subperiodcoupons.hpp
+    strippedcapflooredcoupon.hpp \
+    subperiodcoupons.hpp \
+    swapspreadindex.hpp
 
 libCoupons_la_SOURCES = \
+    cmsspreadcoupon.cpp \
+    lognormalcmsspreadpricer.cpp \
     lineartsrpricer.cpp \
     proxyibor.cpp \
     quantocouponpricer.cpp \
-    subperiodcoupons.cpp
+    strippedcapflooredcoupon.cpp \
+    subperiodcoupons.cpp \
+    swapspreadindex.cpp
 
 noinst_LTLIBRARIES = libCoupons.la
 
