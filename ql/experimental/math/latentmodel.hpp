@@ -382,7 +382,9 @@ namespace QuantLib {
         integration domain dimensions, etc to the copula through a static 
         member function. Since they depend on the nature of the probability 
         density distribution thats where they belong.
-        This is why theres one factory per copula policy template parameter.
+        This is why theres one factory per copula policy template parameter, and
+        the integration domain/number of quadrature points can also be specified
+        by specialization of this class on the LM copula policy.
         */
         class IntegrationFactory {
         public:
