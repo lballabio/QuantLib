@@ -64,6 +64,8 @@ namespace QuantLib {
         const TimeSeries<Real>& timeSeries() const {
             return IndexManager::instance().getHistory(name());
         }
+        //! check if index allows for native fixings
+        virtual void checkNativeFixingsAllowed() {}
         //! stores the historical fixing at the given date
         /*! the date passed as arguments must be the actual calendar
             date of the fixing; no settlement days must be used.
@@ -85,6 +87,7 @@ namespace QuantLib {
         void addFixings(DateIterator dBegin, DateIterator dEnd,
                         ValueIterator vBegin,
                         bool forceOverwrite = false) {
+            checkNativeFixingsAllowed();
             std::string tag = name();
             TimeSeries<Real> h = IndexManager::instance().getHistory(tag);
             bool missingFixing, validFixing;

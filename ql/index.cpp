@@ -24,6 +24,7 @@ namespace QuantLib {
     void Index::addFixing(const Date& fixingDate,
                           Real fixing,
                           bool forceOverwrite) {
+        checkNativeFixingsAllowed();
         addFixings(&fixingDate, (&fixingDate)+1,
                    &fixing,
                    forceOverwrite);
@@ -31,6 +32,7 @@ namespace QuantLib {
 
     void Index::addFixings(const TimeSeries<Real>& t,
                            bool forceOverwrite) {
+        checkNativeFixingsAllowed();
         // is there a way of iterating over dates and values
         // without having to make a copy?
         std::vector<Date> dates = t.dates();
@@ -41,6 +43,7 @@ namespace QuantLib {
     }
 
     void Index::clearFixings() {
+        checkNativeFixingsAllowed();
         IndexManager::instance().clearHistory(name());
     }
 
