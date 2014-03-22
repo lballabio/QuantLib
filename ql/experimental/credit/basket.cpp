@@ -180,8 +180,9 @@ namespace QuantLib {
         return notional;
     }
 
-    vector<Real> Basket::remainingNotionals(const Date& startDate,
-                                            const Date& endDate) const {
+    Disposable<std::vector<Real> > Basket::remainingNotionals(
+        const Date& startDate, const Date& endDate) const 
+    {
         vector<Real> notionals;
         for (Size i = 0; i < names_.size(); i++) {
             if (!pool_->get(names_[i]).defaultedBetween(startDate,
@@ -192,7 +193,7 @@ namespace QuantLib {
         return notionals;
     }
 
-    vector<string> Basket::remainingNames(const Date& startDate,
+    Disposable<vector<string> > Basket::remainingNames(const Date& startDate,
                                           const Date& endDate) const {
         vector<string> names;
         for (Size i = 0; i < names_.size(); i++) {
@@ -217,7 +218,7 @@ namespace QuantLib {
         return models;
     }
 
-        vector<DefaultProbKey>
+    Disposable<vector<DefaultProbKey> >
             Basket::remainingDefaultKeys(const Date& startDate,
                                               const Date& endDate) const {
         vector<DefaultProbKey> keys;

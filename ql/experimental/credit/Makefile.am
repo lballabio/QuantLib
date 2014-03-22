@@ -9,11 +9,13 @@ this_include_HEADERS = \
     cdo.hpp \
     cdsoption.hpp \
     defaultevent.hpp \
+    defaultlossmodel.hpp \
     defaultprobabilitykey.hpp \
     defaultprobabilitylatentmodel.hpp \
     defaulttype.hpp \
     distribution.hpp \
     factorspreadedhazardratecurve.hpp \
+    gaussianlhplossmodel.hpp \
     issuer.hpp \
     loss.hpp \
     lossdistribution.hpp \
@@ -43,6 +45,7 @@ libCredit_la_SOURCES = \
     defaultprobabilitykey.cpp \
     defaulttype.cpp \
     distribution.cpp \
+    gaussianlhplossmodel.hpp \
     issuer.cpp \
     lossdistribution.cpp \
     nthtodefault.cpp \

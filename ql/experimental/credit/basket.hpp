@@ -32,6 +32,7 @@
 #include <ql/experimental/credit/recoveryratemodel.hpp>
 #include <ql/experimental/credit/pool.hpp>
 #include <ql/experimental/credit/loss.hpp>
+#include <ql/utilities/disposable.hpp>
 
 namespace QuantLib {
 
@@ -109,16 +110,16 @@ namespace QuantLib {
         /*! Vector of surviving notionals after losses between start
             and end date, recovery ignored.
         */
-        std::vector<Real> remainingNotionals(const Date& startDate,
+        Disposable<std::vector<Real> > remainingNotionals(const Date& startDate,
                                              const Date& endDate) const;
         /*! Vector of surviving issuers after defaults between start
             and end date.
         */
-        std::vector<std::string> remainingNames(const Date& startDate,
-                                                const Date& endDate) const;
+        Disposable<std::vector<std::string> >  remainingNames(
+            const Date& startDate, const Date& endDate) const;
 
 
-        std::vector<DefaultProbKey>
+        Disposable<std::vector<DefaultProbKey> >
             remainingDefaultKeys(const Date& startDate,
                                           const Date& endDate) const;
         std::vector<boost::shared_ptr<RecoveryRateModel> >

@@ -7462,6 +7462,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\defaultlossmodel.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\defaultprobabilitykey.cpp"
 					>
 				</File>
@@ -7491,6 +7495,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\factorspreadedhazardratecurve.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\gaussianlhplossmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\gaussianlhplossmodel.hpp"
 					>
 				</File>
 				<File
