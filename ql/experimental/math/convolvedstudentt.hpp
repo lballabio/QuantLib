@@ -57,8 +57,6 @@ namespace QuantLib {
         two Ts of even order described in: 'On the density of the sum of two
         independent Student t-random vectors' C.Berg, C.Vignat; June 2009; 
         eprint arXiv:0906.3037 
-        \todo Noncentrals combination. Although of no interest for latent 
-        models.
     */
     class CumulativeBehrensFisher // ODD orders only by now, rename?
         : public std::unary_function<Real, Probability> {
