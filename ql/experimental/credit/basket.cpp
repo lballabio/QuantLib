@@ -29,7 +29,6 @@ namespace QuantLib {
     Basket::Basket(const vector<string>& names,
                    const vector<Real>& notionals,
                    const boost::shared_ptr<Pool> pool,
-                   const vector<DefaultProbKey>& defaultKeys,
                    const vector<boost::shared_ptr<RecoveryRateModel> >&
                        rrModels,
                    Real attachment,
@@ -37,7 +36,6 @@ namespace QuantLib {
         : names_(names),
           notionals_(notionals),
           pool_(pool),
-          defaultKeys_(defaultKeys),
           rrModels_(rrModels),
           attachmentRatio_(attachment),
           detachmentRatio_(detachment),

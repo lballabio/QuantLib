@@ -54,7 +54,6 @@ namespace QuantLib {
         Basket(const std::vector<std::string>& names,
                const std::vector<Real>& notionals,
                const boost::shared_ptr<Pool> pool,
-               const std::vector<DefaultProbKey>& defaultKeys,
                const std::vector<boost::shared_ptr<RecoveryRateModel> >& rrModels,
                Real attachmentRatio = 0.0,
                Real detachmentRatio = 1.0);
@@ -170,9 +169,6 @@ namespace QuantLib {
         std::vector<std::string> names_;
         std::vector<Real> notionals_;
         boost::shared_ptr<Pool> pool_;
-        // seniorities, events, currencies for which each name
-        // enters the contract
-        std::vector<DefaultProbKey> defaultKeys_;
         // rr models for each name, each one points to the names RR quote
         std::vector<boost::shared_ptr<RecoveryRateModel> > rrModels_;
         Real attachmentRatio_;
