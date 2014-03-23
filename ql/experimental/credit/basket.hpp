@@ -67,7 +67,7 @@ namespace QuantLib {
 
         boost::shared_ptr<Pool> pool() const;
 
-        const std::vector<DefaultProbKey>& defaultKeys() const;
+        Disposable<std::vector<DefaultProbKey> > defaultKeys() const;
         const std::vector<boost::shared_ptr<RecoveryRateModel> >&
             recoveryModels() const;
 
@@ -94,7 +94,7 @@ namespace QuantLib {
         /*! Vector of cumulative default probability to date d for al
             issuers in the basket.
         */
-        std::vector<Real> probabilities(const Date& d) const;
+        Disposable<std::vector<Real> > probabilities(const Date& d) const;
         /*! Actual basket losses between start and end date, taking
             the actual recovery rates of loss events into account.
         */
