@@ -217,34 +217,34 @@ void example01() {
 
 void example02() {
 
-    Date evaluationDate = Date(14, January, 2014);
+    Date evaluationDate = Date(26, February, 2014);
 
     Settings::instance().evaluationDate() = evaluationDate;
 
     // set up ISDA IR curve helpers
 
     boost::shared_ptr<DepositRateHelper> dp1m =
-        boost::make_shared<DepositRateHelper>(0.02, 1 * Months, 2,
+        boost::make_shared<DepositRateHelper>(0.00222, 1 * Months, 2,
                                               WeekendsOnly(), ModifiedFollowing,
                                               false, Actual360());
     boost::shared_ptr<DepositRateHelper> dp2m =
-        boost::make_shared<DepositRateHelper>(0.02, 2 * Months, 2,
+        boost::make_shared<DepositRateHelper>(0.00252, 2 * Months, 2,
                                               WeekendsOnly(), ModifiedFollowing,
                                               false, Actual360());
     boost::shared_ptr<DepositRateHelper> dp3m =
-        boost::make_shared<DepositRateHelper>(0.02, 3 * Months, 2,
+        boost::make_shared<DepositRateHelper>(0.00289, 3 * Months, 2,
                                               WeekendsOnly(), ModifiedFollowing,
                                               false, Actual360());
     boost::shared_ptr<DepositRateHelper> dp6m =
-        boost::make_shared<DepositRateHelper>(0.02, 6 * Months, 2,
+        boost::make_shared<DepositRateHelper>(0.00387, 6 * Months, 2,
                                               WeekendsOnly(), ModifiedFollowing,
                                               false, Actual360());
     boost::shared_ptr<DepositRateHelper> dp9m =
-        boost::make_shared<DepositRateHelper>(0.02, 9 * Months, 2,
+        boost::make_shared<DepositRateHelper>(0.0047, 9 * Months, 2,
                                               WeekendsOnly(), ModifiedFollowing,
                                               false, Actual360());
     boost::shared_ptr<DepositRateHelper> dp12m =
-        boost::make_shared<DepositRateHelper>(0.02, 12 * Months, 2,
+        boost::make_shared<DepositRateHelper>(0.00553, 12 * Months, 2,
                                               WeekendsOnly(), ModifiedFollowing,
                                               false, Actual360());
 
@@ -262,16 +262,31 @@ void example02() {
 #endif
 
     boost::shared_ptr<SwapRateHelper> sw2y = boost::make_shared<SwapRateHelper>(
-        0.02, 2 * Years, WeekendsOnly(), Annual, ModifiedFollowing, Thirty360(),
+        0.00455, 2 * Years, WeekendsOnly(), Annual, ModifiedFollowing, Thirty360(),
         euribor6m);
     boost::shared_ptr<SwapRateHelper> sw3y = boost::make_shared<SwapRateHelper>(
-        0.02, 3 * Years, WeekendsOnly(), Annual, ModifiedFollowing, Thirty360(),
+        0.00603, 3 * Years, WeekendsOnly(), Annual, ModifiedFollowing, Thirty360(),
         euribor6m);
     boost::shared_ptr<SwapRateHelper> sw4y = boost::make_shared<SwapRateHelper>(
-        0.02, 4 * Years, WeekendsOnly(), Annual, ModifiedFollowing, Thirty360(),
+        0.00806, 4 * Years, WeekendsOnly(), Annual, ModifiedFollowing, Thirty360(),
         euribor6m);
     boost::shared_ptr<SwapRateHelper> sw5y = boost::make_shared<SwapRateHelper>(
-        0.02, 5 * Years, WeekendsOnly(), Annual, ModifiedFollowing, Thirty360(),
+        0.01018, 5 * Years, WeekendsOnly(), Annual, ModifiedFollowing, Thirty360(),
+        euribor6m);
+    boost::shared_ptr<SwapRateHelper> sw6y = boost::make_shared<SwapRateHelper>(
+        0.01226, 6 * Years, WeekendsOnly(), Annual, ModifiedFollowing, Thirty360(),
+        euribor6m);
+    boost::shared_ptr<SwapRateHelper> sw7y = boost::make_shared<SwapRateHelper>(
+        0.01418, 7 * Years, WeekendsOnly(), Annual, ModifiedFollowing, Thirty360(),
+        euribor6m);
+    boost::shared_ptr<SwapRateHelper> sw8y = boost::make_shared<SwapRateHelper>(
+        0.01593, 8 * Years, WeekendsOnly(), Annual, ModifiedFollowing, Thirty360(),
+        euribor6m);
+    boost::shared_ptr<SwapRateHelper> sw9y = boost::make_shared<SwapRateHelper>(
+        0.01749, 9 * Years, WeekendsOnly(), Annual, ModifiedFollowing, Thirty360(),
+        euribor6m);
+    boost::shared_ptr<SwapRateHelper> sw10y = boost::make_shared<SwapRateHelper>(
+        0.01889, 10 * Years, WeekendsOnly(), Annual, ModifiedFollowing, Thirty360(),
         euribor6m);
 
     std::vector<boost::shared_ptr<RateHelper> > isdaRateHelper;
@@ -286,6 +301,11 @@ void example02() {
     isdaRateHelper.push_back(sw3y);
     isdaRateHelper.push_back(sw4y);
     isdaRateHelper.push_back(sw5y);
+    isdaRateHelper.push_back(sw6y);
+    isdaRateHelper.push_back(sw7y);
+    isdaRateHelper.push_back(sw8y);
+    isdaRateHelper.push_back(sw9y);
+    isdaRateHelper.push_back(sw10y);
 
     // set up ISDA credit helper
 
@@ -306,8 +326,16 @@ void example02() {
             0, WeekendsOnly(), isdaRateHelper, Actual365Fixed()));
     rateTs->enableExtrapolation();
 
+    // output ratee curve
+    std::cout << "ISDA rate curve: " << std::endl;
+    for(Size i=0;i<isdaRateHelper.size();i++) {
+        Date d = isdaRateHelper[i]->latestDate();
+        std::cout << d << ";" << rateTs->zeroRate(d,Actual365Fixed(),Continuous).rate() << 
+            ";" << rateTs->discount(d) << std::endl;
+    }
+
     boost::shared_ptr<CdsHelper> cds5y(new SpreadCdsHelper(
-        0.03, 5 * Years, 1, WeekendsOnly(), Quarterly, Following,
+        0.00713804688, 5 * Years, 1, WeekendsOnly(), Quarterly, Following,
         DateGeneration::CDS, Actual360(), 0.4, rateTs, true, true,
         Actual360(true), true, false));
 
@@ -317,7 +345,16 @@ void example02() {
         PiecewiseDefaultCurve<SurvivalProbability, LogLinear> >(
         0, WeekendsOnly(), isdaCdsHelper, Actual365Fixed()));
 
-    defaultTs->enableExtrapolation(); // why is this necessary ???
+    std::cout << "ISDA credit curve: " << std::endl;
+    for(Size i=0;i<isdaCdsHelper.size();i++) {
+        Date d = isdaCdsHelper[i]->latestDate();
+        std::cout << d << ";" << defaultTs->defaultProbability(d) << std::endl;
+    }
+
+    std::cout << "20-12-2018 defaultProb = " << defaultTs->defaultProbability(Date(20,December,2018)) << std::endl;
+
+    return;
+
 
     // set up sample CDS trade
 
