@@ -55,8 +55,10 @@ namespace QuantLib {
             Real d = basket->remainingDetachmentRatio(start, today);
             const boost::shared_ptr<Pool> pool = basket->pool();
             remainingBasket_ =
-                boost::shared_ptr<Basket>(new Basket(names, notionals, pool,
-                                                    basket->remainingDefaultKeys(start, today),
+                boost::shared_ptr<Basket>(new Basket(
+                                                    Date(),//<<temporary hack
+                                                    names, notionals, pool,
+                                          //<<temporary hack          basket->remainingDefaultKeys(start, today),
                                                     basket->remainingRecModels(start, today),
                                                      a, d));
 
@@ -120,9 +122,11 @@ namespace QuantLib {
             Real d = basket->remainingDetachmentRatio(start, today);
             const boost::shared_ptr<Pool> pool = basket->pool();
             remainingBasket_ =
-                boost::shared_ptr<Basket>(new Basket(names, notionals,
+                boost::shared_ptr<Basket>(new Basket(
+                                                     Date(),//<<temporary hack
+                                                     names, notionals,
                                                      pool,
-                                                     basket->remainingDefaultKeys(start, today),
+                                               //<<temporary hack      basket->remainingDefaultKeys(start, today),
                                                      basket->remainingRecModels(start, today),
                                                      a, d));
 

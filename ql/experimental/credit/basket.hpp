@@ -200,6 +200,9 @@ namespace QuantLib {
 
         // deprecated::----
         Real remainingAttachmentAmount(const Date& d1, const Date& d2) const {return remainingAttachmentAmount(d2);}
+        // deprecated::----
+        Real remainingAttachmentRatio(const Date& startDate , const Date& endDate) const {return remainingAttachmentAmount(endDate)
+            / remainingNotional(endDate);} 
 
         /*!
           Detachment amount of the equivalent remaining basket.
@@ -217,6 +220,9 @@ namespace QuantLib {
 
         // deprecated::----
         Real remainingDetachmentAmount(const Date& d1, const Date& d2) const {return remainingDetachmentAmount(d2);}
+        // deprecated::----
+        Real remainingDetachmentRatio(const Date& startDate , const Date& endDate) const {return remainingDetachmentAmount(endDate)
+            / remainingNotional(endDate);} 
 
 
         Real remainingTrancheNotional() const {
