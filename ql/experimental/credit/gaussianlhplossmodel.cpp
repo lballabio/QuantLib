@@ -25,7 +25,7 @@ namespace QuantLib {
             Real correlation,
             const std::vector<Real>& recoveries)
         :
-        correl_(Handle<Quote>(boost::make_shared<Quote>(correlation))),
+        correl_(Handle<Quote>(boost::make_shared<SimpleQuote>(correlation))),
           sqrt1minuscorrel_(std::sqrt(1.-correlation)),
           biphi_(-sqrt(correlation)),
           beta_(sqrt(correlation)),

@@ -26,14 +26,16 @@ using namespace std;
 
 namespace QuantLib {
 
-    Basket::Basket(const vector<string>& names,
+    Basket::Basket(const Date& refDate,
+        const vector<string>& names,
                    const vector<Real>& notionals,
                    const boost::shared_ptr<Pool> pool,
                    const vector<boost::shared_ptr<RecoveryRateModel> >&
                        rrModels,
                    Real attachment,
                    Real detachment)
-        : names_(names),
+        : refDate_(refDate),
+        names_(names),
           notionals_(notionals),
           pool_(pool),
           rrModels_(rrModels),
@@ -73,13 +75,58 @@ namespace QuantLib {
         trancheNotional_ = detachmentAmount_ - attachmentAmount_;
     }
 
+
+    void Basket::performCalculations() const {
+        Date today = Settings::instance().evaluationDate();
+            /* the methods called now invoke calculate(), this is not recursive
+              since we have the calculated flag set to true by now.
+            */
+            /* update cache values at the calculation date (work as arguments 
+              to the Loss Models)
+            */
+
+            //this one must remain on top since there are dependencies
+            evalDateLiveKeys_      = remainingDefaultKeys(today);
+            evalDateSettledLoss_   = settledLoss(today);
+            evalDateRemainingNot_  = remainingNotional(today);
+            evalDateLiveNotionals_ = remainingNotionals(today);
+            evalDateLiveNames_     = remainingNames(today);
+            evalDateAttachAmount_  = remainingAttachmentAmount(today);
+            evalDateDetachAmmount_ = 
+                remainingDetachmentAmount(today);
+            evalDateLiveList_ = liveList(today);
+     //       if(lossModel_){
+     //           evalDateCumulContingentLoss_ = cumulatedLoss(today);
+     //       }else{
+                evalDateCumulContingentLoss_ = evalDateSettledLoss_;
+     //       }
+
+            /*  
+
+        vector<DefaultProbKey> defKeys = defaultKeys();
+
+        for (Size i = 0; i < notionals_.size(); i++) {
+            //we are registered, the quote might have changed.
+            QL_REQUIRE(
+                rrModels_[i]->appliesToSeniority(defKeys[i].seniority()),
+                "Recovery model does not match basket member seniority.");
+
+            LGDs_[i] = notionals_[i]
+            * (1.0 - rrModels_[i]->recoveryValue(today,
+                                                 defKeys[i]
+                                                 ));
+            basketLGD_ += LGDs_[i];
+        }
+        */
+    }
+
     Size Basket::size() const {
         return names_.size();
     }
 
-    const vector<string>& Basket::names() const {
-        return names_;
-    }
+    //const vector<string>& Basket::names() const {
+    //    return names_;
+    //}
 
     const vector<Real>& Basket::notionals() const {
         return notionals_;
@@ -104,34 +151,10 @@ namespace QuantLib {
         return LGDs_;
     }
 
-    Real Basket::attachmentRatio() const {
-        return attachmentRatio_;
-    }
-
-    Real Basket::detachmentRatio() const {
-        return detachmentRatio_;
-    }
-
-    Real Basket::basketNotional() const {
-        return basketNotional_;
-    }
-
-    Real Basket::basketLGD() const {
-        calculate();
-        return basketLGD_;
-    }
-
-    Real Basket::trancheNotional() const {
-        return trancheNotional_;
-    }
-
-    Real Basket::attachmentAmount() const {
-        return attachmentAmount_;
-    }
-
-    Real Basket::detachmentAmount() const {
-        return detachmentAmount_;
-    }
+    //////////////////////////////Real Basket::basketLGD() const {
+    //////////////////////////////    calculate();
+    //////////////////////////////    return basketLGD_;
+    //////////////////////////////}
 
     Disposable<vector<Real> > Basket::probabilities(const Date& d) const {
         vector<Real> prob(names_.size());
@@ -141,7 +164,7 @@ namespace QuantLib {
                 defKeys[j])->defaultProbability(d);
         return prob;
     }
-
+/*
     Real Basket::cumulatedLoss(const Date& startDate,
                                const Date& endDate) const {
         Real loss = 0.0;
@@ -168,20 +191,26 @@ namespace QuantLib {
         }
         return loss;
     }
+    */
 
-    Real Basket::remainingNotional(const Date& startDate,
+    Real Basket::remainingNotional() const {
+        calculate();
+        return evalDateRemainingNot_;
+    }
+
+    Real Basket::remainingNotional(//const Date& startDate,
                                    const Date& endDate) const {
         Real notional = 0;
         vector<DefaultProbKey> defKeys = defaultKeys();
         for (Size i = 0; i < names_.size(); i++) {
-            if (!pool_->get(names_[i]).defaultedBetween(startDate,
+            if (!pool_->get(names_[i]).defaultedBetween(refDate_, // startDate,
                                                         endDate,
                                                         defKeys[i]))
                 notional += notionals_[i];
         }
         return notional;
     }
-
+/*
     Disposable<std::vector<Real> > Basket::remainingNotionals(
         const Date& startDate, const Date& endDate) const 
     {
@@ -195,7 +224,8 @@ namespace QuantLib {
         }
         return notionals;
     }
-
+*/
+    /*
     Disposable<vector<string> > Basket::remainingNames(const Date& startDate,
                                           const Date& endDate) const {
         vector<string> names;
@@ -208,7 +238,7 @@ namespace QuantLib {
         }
         return names;
     }
-
+*/
     vector<boost::shared_ptr<RecoveryRateModel> >
         Basket::remainingRecModels(const Date& startDate,
                                           const Date& endDate) const {
@@ -222,7 +252,7 @@ namespace QuantLib {
         }
         return models;
     }
-
+/*
     Disposable<vector<DefaultProbKey> >
             Basket::remainingDefaultKeys(const Date& startDate,
                                               const Date& endDate) const {
@@ -236,31 +266,35 @@ namespace QuantLib {
         }
         return keys;
     }
-
+*/
+/*
     Real Basket::remainingAttachmentAmount(const Date& startDate,
                                            const Date& endDate) const {
         Real loss = cumulatedLoss(startDate, endDate);
         return std::max(0.0, attachmentAmount_ - loss);
     }
-
+*/
+    /*
     Real Basket::remainingAttachmentRatio(const Date& startDate,
                                           const Date& endDate) const {
         return remainingAttachmentAmount(startDate, endDate)
             / remainingNotional(startDate, endDate);
     }
-
+*/
+/*
     Real Basket::remainingDetachmentAmount(const Date& startDate,
                                            const Date& endDate) const {
         Real loss = cumulatedLoss(startDate, endDate);
         return std::max(0.0, detachmentAmount_ - loss);
     }
-
+*/
+    /*
     Real Basket::remainingDetachmentRatio(const Date& startDate,
                                           const Date& endDate) const {
         return remainingDetachmentAmount(startDate, endDate)
             / remainingNotional(startDate, endDate);
     }
-
+*/
     void Basket::updateScenarioLoss(bool zeroRecovery) {
         calculate();
         for (Size i = 0; i < names_.size(); i++) {
@@ -313,25 +347,6 @@ namespace QuantLib {
         }
         return losses;
     }
-
-    void Basket::performCalculations() const {
-        Date today = Settings::instance().evaluationDate();
-        vector<DefaultProbKey> defKeys = defaultKeys();
-
-        for (Size i = 0; i < notionals_.size(); i++) {
-            //we are registered, the quote might have changed.
-            QL_REQUIRE(
-                rrModels_[i]->appliesToSeniority(defKeys[i].seniority()),
-                "Recovery model does not match basket member seniority.");
-
-            LGDs_[i] = notionals_[i]
-            * (1.0 - rrModels_[i]->recoveryValue(today,
-                                                 defKeys[i]
-                                                 ));
-            basketLGD_ += LGDs_[i];
-        }
-    }
-
 
 }
 
