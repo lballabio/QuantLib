@@ -576,11 +576,11 @@ namespace QuantLib {
         const Real correlSqr,
         Size nVariables,
         const typename Impl::initTraits& ini)
-    : factorWeights_(nVariables, std::vector<Real>(1, idiosyncFctrsWeight)),
+    : factorWeights_(nVariables, std::vector<Real>(1, correlSqr)),
       nFactors_(1), 
       nVariables_(nVariables),
       idiosyncFctrs_(nVariables, 
-        std::sqrt(1.-idiosyncFctrsWeight*idiosyncFctrsWeight)),
+        std::sqrt(1.-correlSqr*correlSqr)),
       copula_(factorWeights_, ini)
     { }
 
