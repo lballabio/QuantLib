@@ -116,35 +116,35 @@ namespace QuantLib {
         spreadLegValue_ = spread_ * coupon_->accrualPeriod() *
             couponDiscountCurve_->discount(paymentDate_);
 
+        gearing1_ = index_->gearing1();
+        gearing2_ = index_->gearing2();
+
+        QL_REQUIRE(gearing1_ > 0.0 && gearing2_ < 0.0,
+                   "gearing1 (" << gearing1_
+                   << ") should be positive while gearing2 ("
+                   << gearing2_ << ") should be negative");
+
+        c1_ = boost::shared_ptr<CmsCoupon>(new CmsCoupon(
+            coupon_->date(), coupon_->nominal(), coupon_->accrualStartDate(),
+            coupon_->accrualEndDate(), coupon_->fixingDays(),
+            index_->swapIndex1(), 1.0, 0.0, coupon_->referencePeriodStart(),
+            coupon_->referencePeriodEnd(), coupon_->dayCounter(),
+            coupon_->isInArrears()));
+
+        c2_ = boost::shared_ptr<CmsCoupon>(new CmsCoupon(
+            coupon_->date(), coupon_->nominal(), coupon_->accrualStartDate(),
+            coupon_->accrualEndDate(), coupon_->fixingDays(),
+            index_->swapIndex2(), 1.0, 0.0, coupon_->referencePeriodStart(),
+            coupon_->referencePeriodEnd(), coupon_->dayCounter(),
+            coupon_->isInArrears()));
+
+        c1_->setPricer(cmsPricer_);
+        c2_->setPricer(cmsPricer_);
+
         if (fixingDate_ > today_) {
-
-            gearing1_ = index_->gearing1();
-            gearing2_ = index_->gearing2();
-
-            QL_REQUIRE(gearing1_ > 0.0 && gearing2_ < 0.0,
-                       "gearing1 (" << gearing1_
-                                    << ") should be positive while gearing2 ("
-                                    << gearing2_ << ") should be negative");
 
             fixingTime_ =
                 cmsPricer_->swaptionVolatility()->timeFromReference(fixingDate_);
-
-            c1_ = boost::shared_ptr<CmsCoupon>(new CmsCoupon(
-                coupon_->date(), coupon_->nominal(),
-                coupon_->accrualStartDate(), coupon_->accrualEndDate(),
-                coupon_->fixingDays(), index_->swapIndex1(), 1.0, 0.0,
-                coupon_->referencePeriodStart(), coupon_->referencePeriodEnd(),
-                coupon_->dayCounter(), coupon_->isInArrears()));
-
-            c2_ = boost::shared_ptr<CmsCoupon>(new CmsCoupon(
-                coupon_->date(), coupon_->nominal(),
-                coupon_->accrualStartDate(), coupon_->accrualEndDate(),
-                coupon_->fixingDays(), index_->swapIndex2(), 1.0, 0.0,
-                coupon_->referencePeriodStart(), coupon_->referencePeriodEnd(),
-                coupon_->dayCounter(), coupon_->isInArrears()));
-
-            c1_->setPricer(cmsPricer_);
-            c2_->setPricer(cmsPricer_);
 
             swapRate1_ = c1_->indexFixing();
             swapRate2_ = c2_->indexFixing();
