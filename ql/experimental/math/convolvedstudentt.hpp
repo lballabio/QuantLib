@@ -22,6 +22,7 @@
 
 #include <vector>
 #include <numeric>
+#include <functional>
 
 #include <ql/types.hpp>
 #include <ql/utilities/disposable.hpp>
