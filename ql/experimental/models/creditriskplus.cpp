@@ -78,13 +78,16 @@ namespace QuantLib {
     Real CreditRiskPlus::lossQuantile(const Real p) {
 
         Size i = 0;
-        Real sum = 0.0;
-        do {
-            sum += loss_[i];
+        Real sum = loss_[0];
+        while(i < upperIndex_-1 && sum < p) {
             ++i;
-        } while (i < upperIndex_ && sum < p);
+            sum += loss_[i];
+        }
 
-        Real p1 = sum - loss_[i - 1];
+        if(loss_[0] >= p)
+            return 0.0;
+
+        Real p1 = sum - loss_[i];
         Real p2 = sum >= p ? sum : 1.0;
         Real l1 = (i - 1) * unit_;
         Real l2 = i * unit_;
