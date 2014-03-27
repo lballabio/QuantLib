@@ -111,7 +111,7 @@ void CreditRiskPlusTest::testReferenceValues() {
     // as a simple expression in the latter, we do not suspect a problem in our
     // calculation
 
-    if ( std::fabs(cr.relativeDefaultVariance() - 0.65 * 0.65) > 0.02 )
+    if ( std::fabs(cr.relativeDefaultVariance() - 0.65 * 0.65) > 0.001 )
         BOOST_FAIL("failed to reproduce overall relative default variance ("
                    << cr.relativeDefaultVariance() << ", should be 0.4225)");
 
