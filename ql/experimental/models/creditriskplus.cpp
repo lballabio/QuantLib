@@ -57,6 +57,7 @@ namespace QuantLib {
                        << " must be equal to number of sectors (" << n_ << ")");
 
         el_ = 0.0;
+        el2_ = 0.0;
         for (Size i = 0; i < m_; i++) {
             QL_REQUIRE(exposure_[i] >= 0.0, "exposure #"
                                                 << i << " is negative ("
@@ -68,6 +69,7 @@ namespace QuantLib {
                                                    << (n_ - 1));
             exposureSum_ += exposure_[i];
             el_ += pd_[i] * exposure_[i];
+            el2_ += pd_[i] * exposure_[i]*exposure_[i];
         }
 
         QL_REQUIRE(unit_ > 0.0, "loss unit (" << unit_ << ") must be positive");

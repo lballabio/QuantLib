@@ -58,7 +58,7 @@ namespace QuantLib {
         Real expectedLoss() const { return el_; }
         Real unexpectedLoss() { return ul_; }
         Real relativeDefaultVariance() {
-            return unexpectedLoss() * unexpectedLoss() /
+            return (unexpectedLoss() * unexpectedLoss() - el2_) /
                    (expectedLoss() * expectedLoss());
         }
 
@@ -88,7 +88,7 @@ namespace QuantLib {
         std::vector<Real> sectorExposure_, sectorEl_, sectorUl_, marginalLoss_,
             loss_;
 
-        Real exposureSum_, el_, ul_;
+        Real exposureSum_, el_, el2_, ul_;
         unsigned long upperIndex_;
 
         void compute();
