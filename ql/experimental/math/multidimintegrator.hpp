@@ -78,11 +78,6 @@ namespace QuantLib {
                 _1, _2, _3);
             spawnFcts<depth-1>();
         }
-        template<>
-        void spawnFcts<1>() const {
-            integrationLevelEntries_[0] = 
-                boost::bind(&MultidimIntegral::integrate<0>, this, _1, _2, _3);
-        }
 
         // Splits the integration in cross-sections per dimension.
         template<int T_N> 
@@ -96,18 +91,6 @@ namespace QuantLib {
             return integrate<T_N-1>(f, a, b);
         }
 
-        // spez last call/dimension
-        template<>
-        Real vectorBinder<0> (
-            const boost::function<Real (const std::vector<Real>&)>& f, 
-            Real z,
-            const std::vector<Real>& a,
-            const std::vector<Real>& b) const
-        {
-            varBuffer_[0] = z;
-            return f(varBuffer_);
-        }
-        
         // actual integration of dimension nT
         template<int nT>
         Real integrate(
@@ -149,6 +132,26 @@ namespace QuantLib {
         mutable std::vector<Real> varBuffer_;
 
     };
+
+    // Template specializations ---------------------------------------------
+
+    template<>
+    inline void MultidimIntegral::spawnFcts<1>() const {
+        integrationLevelEntries_[0] = 
+            boost::bind(&MultidimIntegral::integrate<0>, this, _1, _2, _3);
+    }
+
+    // spez last call/dimension
+    template<>
+    inline Real MultidimIntegral::vectorBinder<0> (
+        const boost::function<Real (const std::vector<Real>&)>& f, 
+        Real z,
+        const std::vector<Real>& a,
+        const std::vector<Real>& b) const
+    {
+        varBuffer_[0] = z;
+        return f(varBuffer_);
+    }
 
 }
 
