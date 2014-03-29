@@ -303,17 +303,6 @@ namespace QuantLib {
                    );
     } 
 
-    //! Terminal level:
-    template<>
-    inline void GaussianQuadMultidimIntegrator::spawnFcts<1>() const {
-        integrationEntries_[0] = 
-          boost::bind(&GaussianQuadMultidimIntegrator::scalarIntegrator<1>, 
-          this, _1, _2);
-        integrationEntriesVR_[0] = 
-         boost::bind(&GaussianQuadMultidimIntegrator::vectorIntegratorVR<1>, 
-         this, _1, _2);
-    }
-
     //! Terminal integrand; scalar function version
     template<> 
     inline Real GaussianQuadMultidimIntegrator::scalarIntegrator<1>(
@@ -333,6 +322,17 @@ namespace QuantLib {
     {
         varBuffer_[0] = mFctr;
         return f(varBuffer_);
+    }
+
+    //! Terminal level:
+    template<>
+    inline void GaussianQuadMultidimIntegrator::spawnFcts<1>() const {
+        integrationEntries_[0] = 
+          boost::bind(&GaussianQuadMultidimIntegrator::scalarIntegrator<1>, 
+          this, _1, _2);
+        integrationEntriesVR_[0] = 
+         boost::bind(&GaussianQuadMultidimIntegrator::vectorIntegratorVR<1>, 
+         this, _1, _2);
     }
 
 }
