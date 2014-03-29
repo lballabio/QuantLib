@@ -108,9 +108,9 @@ namespace QuantLib {
     
         const Real spot = process_->x0();
 
-        results_.value = solver->valueAt(spot, 0);
-        results_.delta = solver->deltaAt(spot, 0, spot*0.01);
-        results_.gamma = solver->gammaAt(spot, 0, spot*0.01);
-        results_.theta = solver->thetaAt(spot, 0);
+        results_.value = solver->valueAt(spot, 1);
+        results_.delta = solver->deltaAt(spot, 1, spot*0.01);
+        results_.gamma = solver->gammaAt(spot, 1, spot*0.01);
+        results_.theta = solver->thetaAt(spot, 1);
     }
 }
