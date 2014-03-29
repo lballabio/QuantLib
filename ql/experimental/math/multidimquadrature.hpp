@@ -105,9 +105,12 @@ namespace QuantLib {
         \todo Split into integrator classes for functions returning scalar and 
             vector?
     */
+    namespace {
+        typedef Disposable<std::vector<Real> > DispArray;
+    }
+
     class GaussianQuadMultidimIntegrator {
     private:
-        typedef Disposable<std::vector<Real> > DispArray;
         // Vector integration. Quadrature to functions returning a vector of 
         // real numbers, turns 1D quadratures into ND
         class VectorIntegrator : public GaussHermiteIntegration {
