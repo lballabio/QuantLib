@@ -75,6 +75,15 @@ namespace QuantLib {
         const std::vector<Real>& notionals() const;
         Real notional();
 
+        /*! Returns the expected exposures -programmed (if amortizing) or 
+          contingent to default, value, prepayment,...- for each name.
+        */
+        Disposable<std::vector<Real> >
+            exposures(const Date& = Date()) const;
+            //notionals(const Date& = Date()) const;
+        //! Returns the total expected exposures for that name.
+        Real exposure(const std::string& name, const Date& = Date()) const;
+
         boost::shared_ptr<Pool> pool() const;
 
         Disposable<std::vector<DefaultProbKey> > defaultKeys() const;
@@ -102,6 +111,8 @@ namespace QuantLib {
         Real attachmentAmount() const {return attachmentAmount_;}
         //! Detachment amount = detachmentRatio() * basketNotional()
         Real detachmentAmount() const {return detachmentAmount_;}
+
+        boost::shared_ptr<Claim> claim() const {return claim_;}
         /*! Vector of cumulative default probability to date d for all
             issuers in the basket.
         */
@@ -280,9 +291,15 @@ namespace QuantLib {
         Real detachmentRatio_;
         Real basketNotional_;
         mutable Real basketLGD_;
-        Real trancheNotional_;
-        Real attachmentAmount_;
-        Real detachmentAmount_;
+        //! basket tranched inception attachment amount:
+        mutable Real attachmentAmount_;
+        //! basket tranched inception detachment amount:
+        mutable Real detachmentAmount_;
+        //! basket tranched notional amount:
+        mutable Real trancheNotional_;
+        //! The claim is the same for all names
+        const boost::shared_ptr<Claim> claim_;
+
         //! Individual names expected LGDs at the reference date.
         mutable std::vector<Real> LGDs_;
         std::vector<Loss> scenarioLoss_;

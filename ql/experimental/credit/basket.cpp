@@ -33,7 +33,9 @@ namespace QuantLib {
                    const vector<boost::shared_ptr<RecoveryRateModel> >&
                        rrModels,
                    Real attachment,
-                   Real detachment)
+                   Real detachment,
+                               const boost::shared_ptr<Claim>& claim =
+              boost::make_shared<FaceValueClaim>())
         : refDate_(refDate),
         names_(names),
           notionals_(notionals),
@@ -47,7 +49,8 @@ namespace QuantLib {
           attachmentAmount_(0.0),
           detachmentAmount_(0.0),
           LGDs_(notionals.size(), 0.0),
-          scenarioLoss_(names.size(), Loss(0.0, 0.0)) {
+          scenarioLoss_(names.size(), Loss(0.0, 0.0)) 
+    {
         QL_REQUIRE(!names_.empty(), "no names given");
         QL_REQUIRE(!notionals_.empty(), "notionals empty");
         QL_REQUIRE (attachmentRatio_ >= 0 &&
@@ -62,6 +65,7 @@ namespace QuantLib {
         for(Size i=0; i<notionals_.size(); i++)
             registerWith(rrModels_[i]);
         registerWith(Settings::instance().evaluationDate());
+        registerWith(claim_);
 
         // At this point Issuers in the pool might or might not have
         //   probability term structures for the defultKeys(eventType+
@@ -277,6 +281,70 @@ namespace QuantLib {
 
         return calcBufferNotionals;
     }
+
+        // maybe I need to have two terms: 'notionals' (by position) and 'exposures'(by counterparty)
+
+            // These two are messy: say, ok I got the array, now the order(I am not returning a map) is what? that of the pool? that might mean a reordering of the lists at construction time.... or have a vector of names without duplicates?
+            //All names, defaults ignored. i.e. programmed 
+    Disposable<std::vector<Real> > Basket::exposures(const Date& d) const {
+
+        // THESE MIGHT BE MEMBERS::::
+        typedef std::multimap<std::string ,boost::shared_ptr<InstrumentPosition> >::const_iterator portfIter;
+        typedef std::pair<std::string ,boost::shared_ptr<InstrumentPosition> > portfItem;
+        std::set<std::string> tmpSet(names_.begin(), names_.end());// only they are ordered now
+        std::vector<std::string> uniqueNames(tmpSet.begin(), tmpSet.end());
+        Size numUniqueNames = uniqueNames.size();// SHOULD MATCH pool size
+        QL_REQUIRE(numUniqueNames == pool_->size(), "Portfolio and pool counterparties should match exactly.");
+        std::multimap<std::string, boost::shared_ptr<InstrumentPosition> > positionsMap;
+        for(Size i=0; i<names_.size(); i++)
+            positionsMap.insert(portfItem(names_[i], positions_[i]));
+        
+        vector<Real> cumul(numUniqueNames, 0.);
+        for(Size i=0; i<numUniqueNames; i++) {
+            std::pair<portfIter, portfIter> match = positionsMap.equal_range(uniqueNames[i]);
+            do{
+                cumul[i] += match.first->second->expectedExposure(d);
+                match.first++;
+            }while(match.first != match.second);
+        }
+
+        ////vector<Real> cumul;
+        ////std::transform(positions_.begin(), positions_.end(), 
+        ////    std::back_inserter(cumul),
+        ////    boost::bind(
+        ////        &InstrumentPosition::expectedExposure, 
+        ////        _1, 
+        ////        boost::cref(d)
+        ////        ));
+        return cumul;
+    }
+
+    //! It is supossed to return the addition of ALL notionals from the requested ctpty......
+    Real Basket::exposure(const std::string& name, const Date& d) const {
+        // WRONG! There might be several positions associated to a given name. Might be worth splitting this method, one overload without date argument (meaning, at inception) at another one with.
+        //////////////////////const std::vector<std::string>& poolNames = pool_->names();
+
+        //remember that 'this->names_' contains duplicates, contrary to 'pool->names'
+        std::vector<std::string>::const_iterator match =  
+            std::find(names_.begin(), names_.end(), name);
+        QL_REQUIRE(match != names_.end(), "Name not in basket.");
+        Real totalNotional = 0.;
+        do{
+            totalNotional += 
+                positions_[std::distance(names_.begin(), match)]->expectedExposure(d);
+            match++;
+            match = std::find(match, names_.end(), name);
+        }while(match != names_.end());
+
+        return totalNotional;
+        //Size position = std::distance(poolNames.begin(), 
+        //    std::find(poolNames.begin(), poolNames.end(), name));
+        //QL_REQUIRE(position < pool_->size(), "Name not in pool list");
+
+        //return positions_[position]->expectedExposure(d);
+    }
+
+
 
 /*
     Disposable<std::vector<Real> > Basket::remainingNotionals(
