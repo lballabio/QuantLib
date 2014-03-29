@@ -328,7 +328,7 @@ namespace QuantLib {
         return evalDateLiveNames_;
     }
 
-    inline const vector<Real>& Basket::remainingNotionals() const {
+    inline const std::vector<Real>& Basket::remainingNotionals() const {
         calculate();
         return evalDateLiveNotionals_;
     }
@@ -338,7 +338,9 @@ namespace QuantLib {
         return evalDateSettledLoss_;
     }
 
-    inline const vector<DefaultProbKey>& Basket::remainingDefaultKeys() const {
+    inline const std::vector<DefaultProbKey>& 
+        Basket::remainingDefaultKeys() const 
+    {
         calculate();
         return evalDateLiveKeys_;
     }
