@@ -307,6 +307,42 @@ namespace QuantLib {
         const Date refDate_;
     };
 
+
+    inline const std::vector<Size>& Basket::liveList() const {
+        calculate();
+        return evalDateLiveList_;
+    }
+
+    inline Real Basket::remainingDetachmentAmount() const {
+        calculate();
+        return evalDateDetachAmmount_;
+    }
+
+    inline Real Basket::remainingAttachmentAmount() const {
+        calculate();
+        return evalDateAttachAmount_;
+    }
+
+    inline const std::vector<std::string>& Basket::remainingNames() const {
+        calculate();
+        return evalDateLiveNames_;
+    }
+
+    inline const vector<Real>& Basket::remainingNotionals() const {
+        calculate();
+        return evalDateLiveNotionals_;
+    }
+
+    inline Real Basket::settledLoss() const {
+        calculate();
+        return evalDateSettledLoss_;
+    }
+
+    inline const vector<DefaultProbKey>& Basket::remainingDefaultKeys() const {
+        calculate();
+        return evalDateLiveKeys_;
+    }
+
 }
 
 

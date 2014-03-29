@@ -193,9 +193,56 @@ namespace QuantLib {
     }
     */
 
+    Real Basket::settledLoss(const Date& endDate) const {
+        calculate();
+        // maybe return zero directly instead?:
+        QL_REQUIRE(endDate >= refDate_, 
+            "Target date lies before basket inception");// MIGHT B A FORWARD BASKET! ret zero?
+        
+        Real loss = 0.0;
+        for (Size i = 0; i < names_.size(); i++) {
+            boost::shared_ptr<DefaultEvent> credEvent =
+                pool_->get(names_[i]).defaultedBetween(
+                    refDate_, // startDate,
+                    endDate,
+                    pool_->defaultKeys()[i]);
+            if (credEvent) {
+                if(credEvent->hasSettled()) {
+                    loss += 
+                        claim_->amount(
+                            credEvent->date(),
+
+                            //notionals_[i],
+                            exposure(names_[i], credEvent->date()),//NOtice I am forcely requesting an exposure in the past...
+                            // also the seniority does not belong to the counterparty anymore but to the poition.....
+                            credEvent->settlement().recoveryRate(
+                                pool_->defaultKeys()[i].seniority()));
+                }
+            }
+        }
+        return loss;
+    }
+
+
     Real Basket::remainingNotional() const {
         calculate();
         return evalDateRemainingNot_;
+    }
+
+    Disposable<std::vector<Size> > 
+        Basket::liveList(const Date& endDate) const {///// SHOULD RETURN  NAME STRING VECTOR!!!
+        
+        calculate();
+
+        std::vector<Size> calcBufferLiveList;
+        for (Size i = 0; i < names_.size(); i++)
+            if (!pool_->get(names_[i]).defaultedBetween(
+                    refDate_,
+                    endDate,
+                    pool_->defaultKeys()[i]))
+                calcBufferLiveList.push_back(i);
+
+        return calcBufferLiveList;
     }
 
     Real Basket::remainingNotional(//const Date& startDate,
@@ -210,6 +257,27 @@ namespace QuantLib {
         }
         return notional;
     }
+
+    Disposable<vector<Real> > 
+        Basket::remainingNotionals(const Date& endDate) const {
+        calculate();
+
+        QL_REQUIRE(endDate >= refDate_, 
+            "Target date lies before basket inception");// MIGHT B A FORWARD BASKET! ret zero?
+
+        std::vector<Real> calcBufferNotionals;
+        const std::vector<Size>& alive = liveList(endDate);
+        for(Size i=0; i<alive.size(); i++)
+            calcBufferNotionals.push_back(
+                // this is returning by position:
+                //////positions_[alive[i]]->expectedExposure(endDate)
+                exposure(names_[i], endDate)/////// OPTIMIZE , ITS BETTER TO LOOP ONCE OVER THE MAP
+                ////------SHOULD BE USING INCEPTION NOTIONAL----?????? or a new method in instrPos allowing for amortization???
+                );// some better way to trim it? 
+
+        return calcBufferNotionals;
+    }
+
 /*
     Disposable<std::vector<Real> > Basket::remainingNotionals(
         const Date& startDate, const Date& endDate) const 
@@ -239,6 +307,30 @@ namespace QuantLib {
         return names;
     }
 */
+
+    Disposable<std::vector<std::string> >
+        Basket::remainingNames(const Date& endDate) const {
+
+        calculate();
+        // maybe return zero directly instead?:
+        QL_REQUIRE(endDate >= refDate_, 
+            "Target date lies before basket inception");// MIGHT B A FORWARD BASKET! ret zero?
+
+        const std::vector<Size>& alive = liveList(endDate);
+        std::vector<std::string> calcBufferNames;
+        for(Size i=0; i<alive.size(); i++)
+            calcBufferNames.push_back(names_[alive[i]]);
+/*
+        std::transform(alive.begin(), alive.end(), 
+            std::back_inserter(calcBufferNames),
+ boost::cref(names_)[boost::lambda::_1]
+       ///     boost::lambda::bind(std::vector<std::string>::operator[], boost::cref(names_), boost::lambda::_1)
+            //[&names_](Size iAlive)names_ {return names_[iAlive];}
+        );
+*/
+        return calcBufferNames;
+    }
+
     vector<boost::shared_ptr<RecoveryRateModel> >
         Basket::remainingRecModels(const Date& startDate,
                                           const Date& endDate) const {
@@ -267,6 +359,22 @@ namespace QuantLib {
         return keys;
     }
 */
+
+    Disposable<vector<DefaultProbKey> >
+        Basket::remainingDefaultKeys(const Date& endDate) const {
+        calculate();
+
+        // maybe return zero directly instead?:
+        QL_REQUIRE(endDate >= refDate_, // should dtae be in the future?????
+            "Target date lies before basket inception");// MIGHT B A FORWARD BASKET! ret zero?
+
+        const std::vector<Size>& alive = liveList(endDate);
+        vector<DefaultProbKey> defKeys;
+        for(Size i=0; i<alive.size(); i++)
+            defKeys.push_back(pool_->defaultKeys()[alive[i]]);
+        return defKeys;
+    }
+
 /*
     Real Basket::remainingAttachmentAmount(const Date& startDate,
                                            const Date& endDate) const {
@@ -295,6 +403,34 @@ namespace QuantLib {
             / remainingNotional(startDate, endDate);
     }
 */
+    //! computed on the inception values, notice the positions might have amortized or changed in value and the total outstanding notional might differ from the inception one.
+    Real Basket::remainingDetachmentAmount(const Date& endDate) const {
+        return detachmentAmount_;
+        /*
+        calculate();
+
+        // maybe return zero directly instead?:
+        QL_REQUIRE(endDate >= refDate_, 
+            "Target date lies before basket inception");// MIGHT B A FORWARD BASKET! ret zero?
+        // WHAT IF DATE IN THE FUTURE???????????? can be the case of a scenario (say a MC) while we R computing an expected value
+
+        Real loss = settledLoss(endDate);
+        return std::max(0.0, detachmentAmount_ - loss);
+        */
+    }
+
+    //! computed on the inception values, notice the positions might have amortized or changed in value and the total outstanding notional might differ from the inception one.-----------Maybe the problem is not so impossible: at the time of a default the exposures are never stochastic by definition since they are in the past by definition. They renormalize the tranche but then it is much more complex..... It becomes a path problem.
+    Real Basket::remainingAttachmentAmount(const Date& endDate) const {
+        calculate();
+
+        // maybe return zero directly instead?:
+        QL_REQUIRE(endDate >= refDate_, 
+            "Target date lies before basket inception");// MIGHT B A FORWARD BASKET! ret zero?
+        // WHAT IF DATE IN THE FUTURE???????????? can be the case of a scenario (say a MC) while we R computing an expected value
+        Real loss = settledLoss(endDate);
+        return std::min(detachmentAmount_, attachmentAmount_ + std::max(0.0, loss - attachmentAmount_));
+    }
+
     void Basket::updateScenarioLoss(bool zeroRecovery) {
         calculate();
         for (Size i = 0; i < names_.size(); i++) {
