@@ -101,7 +101,7 @@ namespace QuantLib {
         stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
             new FdmSimpleSwingCondition(
             	exerciseTimes, mesher, exerciseCalculator,
-            	arguments_.maxExerciseRights - arguments_.minExerciseRights,
+            	arguments_.minExerciseRights,
             	2)));
 
         boost::shared_ptr<FdmStepConditionComposite> conditions(
@@ -123,16 +123,6 @@ namespace QuantLib {
         const Real x = process_->initialValues()[0];
         const Real y = process_->initialValues()[1];
 
-        std::vector< std::pair<Real, Real> > exerciseValues;
-        for (Size i=arguments_.minExerciseRights;
-             i <= arguments_.maxExerciseRights; ++i) {
-            const Real z = Real(i);
-            exerciseValues.push_back(std::pair<Real, Real>(
-                                       solver->valueAt(x, y, z), z));
-        }
-        const Real z = std::max_element(exerciseValues.begin(),
-                                        exerciseValues.end())->second;
-
-        results_.value = solver->valueAt(x, y, z);
+        results_.value = solver->valueAt(x, y, 0.0);
     }
 }
