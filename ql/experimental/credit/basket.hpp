@@ -25,6 +25,7 @@
 #ifndef quantlib_basket_hpp
 #define quantlib_basket_hpp
 
+#include <ql/instruments/claim.hpp>
 #include <ql/termstructures/defaulttermstructure.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/experimental/credit/defaultprobabilitykey.hpp>
@@ -64,7 +65,9 @@ namespace QuantLib {
                const boost::shared_ptr<Pool> pool,
                const std::vector<boost::shared_ptr<RecoveryRateModel> >& rrModels,
                Real attachmentRatio = 0.0,
-               Real detachmentRatio = 1.0);
+               Real detachmentRatio = 1.0,
+               const boost::shared_ptr<Claim>& claim =
+                   boost::shared_ptr<Claim>(new FaceValueClaim()));
 
         void update() {LazyObject::update();}///............??????????????init losses here
 
@@ -78,8 +81,8 @@ namespace QuantLib {
         /*! Returns the expected exposures -programmed (if amortizing) or 
           contingent to default, value, prepayment,...- for each name.
         */
-        Disposable<std::vector<Real> >
-            exposures(const Date& = Date()) const;
+        ////////////////////////Disposable<std::vector<Real> >
+        ////////////////////////    exposures(const Date& = Date()) const;
             //notionals(const Date& = Date()) const;
         //! Returns the total expected exposures for that name.
         Real exposure(const std::string& name, const Date& = Date()) const;

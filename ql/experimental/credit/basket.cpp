@@ -28,28 +28,28 @@ namespace QuantLib {
 
     Basket::Basket(const Date& refDate,
         const vector<string>& names,
-                   const vector<Real>& notionals,
-                   const boost::shared_ptr<Pool> pool,
-                   const vector<boost::shared_ptr<RecoveryRateModel> >&
-                       rrModels,
-                   Real attachment,
-                   Real detachment,
-                               const boost::shared_ptr<Claim>& claim =
-              boost::make_shared<FaceValueClaim>())
-        : refDate_(refDate),
-        names_(names),
-          notionals_(notionals),
-          pool_(pool),
-          rrModels_(rrModels),
-          attachmentRatio_(attachment),
-          detachmentRatio_(detachment),
-          basketNotional_(0.0),
-          basketLGD_(0.0),
-          trancheNotional_(0.0),
-          attachmentAmount_(0.0),
-          detachmentAmount_(0.0),
-          LGDs_(notionals.size(), 0.0),
-          scenarioLoss_(names.size(), Loss(0.0, 0.0)) 
+        const vector<Real>& notionals,
+        const boost::shared_ptr<Pool> pool,
+        const vector<boost::shared_ptr<RecoveryRateModel> >&
+            rrModels,
+        Real attachment,
+        Real detachment,
+        const boost::shared_ptr<Claim>& claim
+        )
+    : refDate_(refDate),
+      names_(names),
+      notionals_(notionals),
+      pool_(pool),
+      rrModels_(rrModels),
+      attachmentRatio_(attachment),
+      detachmentRatio_(detachment),
+      basketNotional_(0.0),
+      basketLGD_(0.0),
+      trancheNotional_(0.0),
+      attachmentAmount_(0.0),
+      detachmentAmount_(0.0),
+      LGDs_(notionals.size(), 0.0),
+      scenarioLoss_(names.size(), Loss(0.0, 0.0)) 
     {
         QL_REQUIRE(!names_.empty(), "no names given");
         QL_REQUIRE(!notionals_.empty(), "notionals empty");
@@ -284,6 +284,7 @@ namespace QuantLib {
 
         // maybe I need to have two terms: 'notionals' (by position) and 'exposures'(by counterparty)
 
+    /**************************************************
             // These two are messy: say, ok I got the array, now the order(I am not returning a map) is what? that of the pool? that might mean a reordering of the lists at construction time.... or have a vector of names without duplicates?
             //All names, defaults ignored. i.e. programmed 
     Disposable<std::vector<Real> > Basket::exposures(const Date& d) const {
@@ -291,6 +292,7 @@ namespace QuantLib {
         // THESE MIGHT BE MEMBERS::::
         typedef std::multimap<std::string ,boost::shared_ptr<InstrumentPosition> >::const_iterator portfIter;
         typedef std::pair<std::string ,boost::shared_ptr<InstrumentPosition> > portfItem;
+
         std::set<std::string> tmpSet(names_.begin(), names_.end());// only they are ordered now
         std::vector<std::string> uniqueNames(tmpSet.begin(), tmpSet.end());
         Size numUniqueNames = uniqueNames.size();// SHOULD MATCH pool size
@@ -318,6 +320,7 @@ namespace QuantLib {
         ////        ));
         return cumul;
     }
+    ********************************/
 
     //! It is supossed to return the addition of ALL notionals from the requested ctpty......
     Real Basket::exposure(const std::string& name, const Date& d) const {
@@ -331,7 +334,8 @@ namespace QuantLib {
         Real totalNotional = 0.;
         do{
             totalNotional += 
-                positions_[std::distance(names_.begin(), match)]->expectedExposure(d);
+             //////   NOT IMPLEMENTED YET----   positions_[std::distance(names_.begin(), match)]->expectedExposure(d);
+                notionals_[std::distance(names_.begin(), match)];
             match++;
             match = std::find(match, names_.end(), name);
         }while(match != names_.end());
