@@ -41,12 +41,12 @@ namespace QuantLib {
     class LognormalCmsSpreadPricer : public CmsSpreadCouponPricer {
 
       public:
-
-        LognormalCmsSpreadPricer(const boost::shared_ptr<CmsCouponPricer> cmsPricer,
-                        const Handle<Quote> &correlation,
-                        const Handle<YieldTermStructure> &couponDiscountCurve =
-                            Handle<YieldTermStructure>(),
-                        const Size IntegrationPoints = 16);
+        LognormalCmsSpreadPricer(
+            const boost::shared_ptr<CmsCouponPricer> cmsPricer,
+            const Handle<Quote> &correlation,
+            const Handle<YieldTermStructure> &couponDiscountCurve =
+                Handle<YieldTermStructure>(),
+            const Size IntegrationPoints = 16);
 
         /* */
         virtual Real swapletPrice() const;
@@ -59,21 +59,19 @@ namespace QuantLib {
         void flushCache();
 
       private:
-
         class PrivateObserver : public Observer {
           public:
-            PrivateObserver(LognormalCmsSpreadPricer *t)
-                : t_(t) {}
-            void update() {
-                t_->flushCache();
-            }
+            PrivateObserver(LognormalCmsSpreadPricer *t) : t_(t) {}
+            void update() { t_->flushCache(); }
+
           private:
             LognormalCmsSpreadPricer *t_;
         };
 
         boost::shared_ptr<PrivateObserver> privateObserver_;
 
-        typedef std::map<std::pair<std::string,Date>,std::pair<Real,Real> > CacheType;
+        typedef std::map<std::pair<std::string, Date>, std::pair<Real, Real>>
+        CacheType;
 
         void initialize(const FloatingRateCoupon &coupon);
         Real optionletPrice(Option::Type optionType, Real strike) const;
@@ -101,7 +99,7 @@ namespace QuantLib {
         Real swapRate1_, swapRate2_, gearing1_, gearing2_;
         Real adjustedRate1_, adjustedRate2_;
         Real vol1_, vol2_;
-        Real mu1_,mu2_;
+        Real mu1_, mu2_;
         Real rho_;
 
         mutable Real phi_, a_, b_, s1_, s2_, m1_, m2_, v1_, v2_, k_;
@@ -109,7 +107,6 @@ namespace QuantLib {
         boost::shared_ptr<CmsCoupon> c1_, c2_;
 
         CacheType cache_;
-
     };
 }
 

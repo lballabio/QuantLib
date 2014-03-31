@@ -42,7 +42,7 @@ namespace QuantLib {
 
         QL_REQUIRE(integrationPoints >= 4,
                    "at least 4 integration points should be used ("
-                   << integrationPoints << ")");
+                       << integrationPoints << ")");
         integrator_ =
             boost::make_shared<GaussHermiteIntegration>(integrationPoints);
 
@@ -58,20 +58,19 @@ namespace QuantLib {
 
         Real v = M_SQRT2 * x;
         Real h =
-            k_ - b_ * s2_ *
-                          std::exp((m2_ - 0.5 * v2_ * v2_) * fixingTime_ +
-                                   v2_ * sqrt(fixingTime_) * v);
+            k_ - b_ * s2_ * std::exp((m2_ - 0.5 * v2_ * v2_) * fixingTime_ +
+                                     v2_ * sqrt(fixingTime_) * v);
         Real phi1, phi2;
         phi1 = cnd_->operator()(
             phi_ * (std::log(a_ * s1_ / h) +
                     (m1_ + (0.5 - rho_ * rho_) * v1_ * v1_) * fixingTime_ +
                     rho_ * v1_ * std::sqrt(fixingTime_) * v) /
             (v1_ * sqrt(fixingTime_ * (1.0 - rho_ * rho_))));
-        phi2 = cnd_->operator()(
-            phi_ * (std::log(a_ * s1_ / h) +
-                    (m1_ - 0.5 * v1_ * v1_) * fixingTime_ +
-                    rho_ * v1_ * std::sqrt(fixingTime_) * v) /
-            (v1_ * sqrt(fixingTime_ * (1.0 - rho_ * rho_))));
+        phi2 =
+            cnd_->operator()(phi_ * (std::log(a_ * s1_ / h) +
+                                     (m1_ - 0.5 * v1_ * v1_) * fixingTime_ +
+                                     rho_ * v1_ * std::sqrt(fixingTime_) * v) /
+                             (v1_ * sqrt(fixingTime_ * (1.0 - rho_ * rho_))));
         Real f = a_ * phi_ * s1_ *
                      std::exp(m1_ * fixingTime_ -
                               0.5 * rho_ * rho_ * v1_ * v1_ * fixingTime_ +
@@ -79,14 +78,12 @@ namespace QuantLib {
                      phi1 -
                  phi_ * h * phi2;
         return 1.0 / M_SQRTPI * std::exp(-x * x) * f;
-
-   }
-
-    void LognormalCmsSpreadPricer::flushCache() {
-        cache_.clear();
     }
 
-    void LognormalCmsSpreadPricer::initialize(const FloatingRateCoupon &coupon) {
+    void LognormalCmsSpreadPricer::flushCache() { cache_.clear(); }
+
+    void
+    LognormalCmsSpreadPricer::initialize(const FloatingRateCoupon &coupon) {
 
         coupon_ = dynamic_cast<const CmsSpreadCoupon *>(&coupon);
         QL_REQUIRE(coupon_, "CMS spread coupon needed");
@@ -108,21 +105,22 @@ namespace QuantLib {
 
         today_ = QuantLib::Settings::instance().evaluationDate();
 
-        if(couponDiscountCurve_.empty())
-            couponDiscountCurve_ = index_->swapIndex1()->exogenousDiscount() ?
-                index_->swapIndex1()->discountingTermStructure() :
-                index_->swapIndex1()->forwardingTermStructure();
+        if (couponDiscountCurve_.empty())
+            couponDiscountCurve_ =
+                index_->swapIndex1()->exogenousDiscount()
+                    ? index_->swapIndex1()->discountingTermStructure()
+                    : index_->swapIndex1()->forwardingTermStructure();
 
         spreadLegValue_ = spread_ * coupon_->accrualPeriod() *
-            couponDiscountCurve_->discount(paymentDate_);
+                          couponDiscountCurve_->discount(paymentDate_);
 
         gearing1_ = index_->gearing1();
         gearing2_ = index_->gearing2();
 
         QL_REQUIRE(gearing1_ > 0.0 && gearing2_ < 0.0,
                    "gearing1 (" << gearing1_
-                   << ") should be positive while gearing2 ("
-                   << gearing2_ << ") should be negative");
+                                << ") should be positive while gearing2 ("
+                                << gearing2_ << ") should be negative");
 
         c1_ = boost::shared_ptr<CmsCoupon>(new CmsCoupon(
             coupon_->date(), coupon_->nominal(), coupon_->accrualStartDate(),
@@ -143,42 +141,45 @@ namespace QuantLib {
 
         if (fixingDate_ > today_) {
 
-            fixingTime_ =
-                cmsPricer_->swaptionVolatility()->timeFromReference(fixingDate_);
+            fixingTime_ = cmsPricer_->swaptionVolatility()->timeFromReference(
+                fixingDate_);
 
             swapRate1_ = c1_->indexFixing();
             swapRate2_ = c2_->indexFixing();
 
             // costly part, look up in cache first
-            std::pair<std::string,Date> key = std::make_pair(index_->name(), fixingDate_);
+            std::pair<std::string, Date> key =
+                std::make_pair(index_->name(), fixingDate_);
             CacheType::const_iterator k = cache_.find(key);
-            if(k != cache_.end()) {
+            if (k != cache_.end()) {
                 adjustedRate1_ = k->second.first;
                 adjustedRate2_ = k->second.second;
-            }
-            else {
+            } else {
                 adjustedRate1_ = c1_->adjustedFixing();
                 adjustedRate2_ = c2_->adjustedFixing();
-                cache_.insert(std::make_pair(key,std::make_pair(adjustedRate1_,adjustedRate2_)));
+                cache_.insert(std::make_pair(
+                    key, std::make_pair(adjustedRate1_, adjustedRate2_)));
             }
 
-            vol1_ = cmsPricer_->swaptionVolatility()->volatility(fixingDate_, index_->swapIndex1()->tenor(), swapRate1_);
-            vol2_ = cmsPricer_->swaptionVolatility()->volatility(fixingDate_, index_->swapIndex2()->tenor(), swapRate2_);
+            vol1_ = cmsPricer_->swaptionVolatility()->volatility(
+                fixingDate_, index_->swapIndex1()->tenor(), swapRate1_);
+            vol2_ = cmsPricer_->swaptionVolatility()->volatility(
+                fixingDate_, index_->swapIndex2()->tenor(), swapRate2_);
 
             mu1_ = 1.0 / fixingTime_ * std::log(adjustedRate1_ / swapRate1_);
             mu2_ = 1.0 / fixingTime_ * std::log(adjustedRate2_ / swapRate2_);
 
-            rho_ = std::max(std::min(correlation()->value(),0.9999),-0.9999); // avoid division by zero in integrand
-
+            rho_ = std::max(std::min(correlation()->value(), 0.9999),
+                            -0.9999); // avoid division by zero in integrand
         }
     }
 
     Real LognormalCmsSpreadPricer::optionletPrice(Option::Type optionType,
-                                         Real strike) const {
+                                                  Real strike) const {
 
         phi_ = optionType == Option::Call ? 1.0 : -1.0;
         Real res = 0.0;
-        if(strike >= 0.0) {
+        if (strike >= 0.0) {
             a_ = gearing1_;
             b_ = gearing2_;
             s1_ = swapRate1_;
@@ -188,8 +189,7 @@ namespace QuantLib {
             v1_ = vol1_;
             v2_ = vol2_;
             k_ = strike;
-        }
-        else {
+        } else {
             a_ = -gearing2_;
             b_ = -gearing1_;
             s1_ = swapRate2_;
@@ -199,18 +199,19 @@ namespace QuantLib {
             v1_ = vol2_;
             v2_ = vol1_;
             k_ = -strike;
-            res += phi_ * (swapletRate() - strike);
+            res += phi_ * (gearing1_ * adjustedRate1_ +
+                           gearing2_ * adjustedRate2_ - strike);
         }
 
-        res += integrator_->operator()(std::bind1st(std::mem_fun(&LognormalCmsSpreadPricer::integrand),this));
-        return res * couponDiscountCurve_->discount(paymentDate_) * coupon_->accrualPeriod();
-
+        res += integrator_->operator()(std::bind1st(
+            std::mem_fun(&LognormalCmsSpreadPricer::integrand), this));
+        return res * couponDiscountCurve_->discount(paymentDate_) *
+               coupon_->accrualPeriod();
     }
 
     Rate LognormalCmsSpreadPricer::swapletRate() const {
-        return swapletPrice() /
-               (coupon_->accrualPeriod() *
-                couponDiscountCurve_->discount(paymentDate_));
+        return swapletPrice() / (coupon_->accrualPeriod() *
+                                 couponDiscountCurve_->discount(paymentDate_));
     }
 
     Real LognormalCmsSpreadPricer::capletPrice(Rate effectiveCap) const {
@@ -219,10 +220,9 @@ namespace QuantLib {
             // the fixing is determined
             const Rate Rs = std::max(
                 coupon_->index()->fixing(fixingDate_) - effectiveCap, 0.);
-            Rate price =
-                (gearing_ * Rs) *
-                (coupon_->accrualPeriod() *
-                 couponDiscountCurve_->discount(paymentDate_));
+            Rate price = (gearing_ * Rs) *
+                         (coupon_->accrualPeriod() *
+                          couponDiscountCurve_->discount(paymentDate_));
             return price;
         } else {
             Real capletPrice = optionletPrice(Option::Call, effectiveCap);
@@ -242,10 +242,9 @@ namespace QuantLib {
             // the fixing is determined
             const Rate Rs = std::max(
                 effectiveFloor - coupon_->index()->fixing(fixingDate_), 0.);
-            Rate price =
-                (gearing_ * Rs) *
-                (coupon_->accrualPeriod() *
-                 couponDiscountCurve_->discount(paymentDate_));
+            Rate price = (gearing_ * Rs) *
+                         (coupon_->accrualPeriod() *
+                          couponDiscountCurve_->discount(paymentDate_));
             return price;
         } else {
             Real floorletPrice = optionletPrice(Option::Put, effectiveFloor);
@@ -260,10 +259,9 @@ namespace QuantLib {
     }
 
     Real LognormalCmsSpreadPricer::swapletPrice() const {
-
         return gearing_ * coupon_->accrualPeriod() *
                    couponDiscountCurve_->discount(paymentDate_) *
-                   (gearing1_ * c1_->rate() + gearing2_ * c2_->rate()) +
+                   (gearing1_ * adjustedRate1_ + gearing2_ * adjustedRate2_) +
                spreadLegValue_;
     }
 }
