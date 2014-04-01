@@ -286,11 +286,8 @@ namespace QuantLib {
                 InterestRate r(this->data_[i], dayCounter(), compounding, frequency);
                 this->data_[i] = r.equivalentRate(Continuous, NoFrequency, this->times_[i]);
             }
-        }
 
-        #if !defined(QL_NEGATIVE_RATES)
-        for (Size i = 1; i < times_.size(); i++)
-        {
+            #if !defined(QL_NEGATIVE_RATES)
             QL_REQUIRE(this->data_[i] > 0.0, "non-positive yield");
             // positive yields are not enough to ensure non-negative fwd rates
             // so here's a stronger requirement
@@ -301,8 +298,8 @@ namespace QuantLib {
                 " (t=" << this->times_[i] << ") after the zero yield " <<
                 io::rate(this->data_[i - 1]) << " at " << dates_[i - 1] <<
                 " (t=" << this->times_[i - 1] << ")");
+            #endif
         }
-        #endif
 
         this->interpolation_ =
             this->interpolator_.interpolate(this->times_.begin(),
