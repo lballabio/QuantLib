@@ -250,7 +250,7 @@ namespace QuantLib {
 
     template <class T>
     void InterpolatedZeroCurve<T>::initialize(const Compounding& compounding, 
-		const Frequency& frequency)
+                                              const Frequency& frequency)
     {
         QL_REQUIRE(dates_.size() >= T::requiredPoints,
                    "not enough input dates given");
@@ -259,6 +259,20 @@ namespace QuantLib {
 
         this->times_.resize(dates_.size());
         this->times_[0] = 0.0;
+        if (compounding != Continuous) {
+            // We also have to convert the first rate.
+            // The first time is 0.0, so we can't use it.
+            // We fall back to about one day.
+            Time dt = 1.0/365;
+            InterestRate irate(this->data_[0], dayCounter(), compounding, frequency);
+            Real compound = irate.compoundFactor(dt);
+            this->data_[0] = irate.impliedRate(compound, dayCounter(), Continuous, 
+                                               NoFrequency, dt);
+            #if !defined(QL_NEGATIVE_RATES)
+            QL_REQUIRE(this->data_[0] > 0.0, "non-positive yield");
+            #endif
+        }
+
         for (Size i=1; i<dates_.size(); ++i) {
             QL_REQUIRE(dates_[i] > dates_[i-1],
                        "invalid date (" << dates_[i] << ", vs "
@@ -267,6 +281,7 @@ namespace QuantLib {
             QL_REQUIRE(!close(this->times_[i],this->times_[i-1]),
                        "two dates correspond to the same time "
                        "under this curve's day count convention");
+
 			// adjusting zero rates to match continuous compounding
             if (compounding != Continuous)
             {
