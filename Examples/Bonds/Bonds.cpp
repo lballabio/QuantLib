@@ -178,6 +178,16 @@ int main(int, char* []) {
                     redemption,
                     issueDates[i]));
 
+            // the above could also be done by creating a
+            // FixedRateBond instance and writing:
+            //
+            // boost::shared_ptr<BondHelper> bondHelper(
+            //         new BondHelper(quoteHandle[i], bond));
+            //
+            // This would also work for bonds that still don't have a
+            // specialized helper, such as floating-rate bonds.
+
+
             bondsHelpers.push_back(bondHelper);
         }
 
