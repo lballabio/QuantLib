@@ -167,7 +167,8 @@ int main(int, char* []) {
             Schedule schedule(issueDates[i], maturities[i], Period(Semiannual), UnitedStates(UnitedStates::GovernmentBond),
                     Unadjusted, Unadjusted, DateGeneration::Backward, false);
 
-            boost::shared_ptr<FixedRateBond> bond(new FixedRateBond(
+            boost::shared_ptr<FixedRateBondHelper> bondHelper(new FixedRateBondHelper(
+                    quoteHandle[i],
                     settlementDays,
                     100.0,
                     schedule,
@@ -175,10 +176,7 @@ int main(int, char* []) {
                     ActualActual(ActualActual::Bond),
                     Unadjusted,
                     redemption,
-                    issueDates[i],
-                    calendar));
-
-            boost::shared_ptr<BondHelper> bondHelper(new BondHelper(quoteHandle[i], bond));
+                    issueDates[i]));
 
             bondsHelpers.push_back(bondHelper);
         }
