@@ -22,6 +22,7 @@
 #include <ql/time/schedule.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/japan.hpp>
+#include <ql/time/calendars/unitedstates.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -138,13 +139,90 @@ void ScheduleTest::testDatesPastEndDateWithEomAdjustment() {
     check_dates(s, expected);
 }
 
+void ScheduleTest::testForwardDatesWithEomAdjustment() {
+    BOOST_TEST_MESSAGE(
+        "Testing that the last date is not adjusted for EOM when "
+        "termination date convention is unadjusted...");
+
+    Schedule s =
+        MakeSchedule().from(Date(31,August,1996))
+                      .to(Date(15,September,1997))
+                      .withCalendar(UnitedStates(UnitedStates::GovernmentBond))
+                      .withTenor(6*Months)
+                      .withConvention(Unadjusted)
+                      .withTerminationDateConvention(Unadjusted)
+                      .forwards()
+                      .endOfMonth();
+
+    std::vector<Date> expected(4);
+    expected[0] = Date(31,August,1996);
+    expected[1] = Date(28,February,1997);
+    expected[2] = Date(31,August,1997);
+    expected[3] = Date(15,September,1997);
+
+    check_dates(s, expected);
+}
+
+void ScheduleTest::testBackwardDatesWithEomAdjustment() {
+    BOOST_TEST_MESSAGE(
+        "Testing that the first date is not adjusted for EOM "
+        "going backward when termination date convention is unadjusted...");
+
+    Schedule s =
+        MakeSchedule().from(Date(22,August,1996))
+                      .to(Date(31,August,1997))
+                      .withCalendar(UnitedStates(UnitedStates::GovernmentBond))
+                      .withTenor(6*Months)
+                      .withConvention(Unadjusted)
+                      .withTerminationDateConvention(Unadjusted)
+                      .backwards()
+                      .endOfMonth();
+
+    std::vector<Date> expected(4);
+    expected[0] = Date(22,August,1996);
+    expected[1] = Date(31,August,1996);
+    expected[2] = Date(28,February,1997);
+    expected[3] = Date(31,August,1997);
+
+    check_dates(s, expected);
+}
+
+void ScheduleTest::testDoubleFirstDateWithEomAdjustment() {
+    BOOST_TEST_MESSAGE(
+        "Testing that the first date is not duplicated due to "
+        "EOM convention when going backwards...");
+
+    Schedule s =
+        MakeSchedule().from(Date(22,August,1996))
+                      .to(Date(31,August,1997))
+                      .withCalendar(UnitedStates(UnitedStates::GovernmentBond))
+                      .withTenor(6*Months)
+                      .withConvention(Following)
+                      .withTerminationDateConvention(Following)
+                      .backwards()
+                      .endOfMonth();
+
+    std::vector<Date> expected(3);
+    expected[0] = Date(30,August,1996);
+    expected[1] = Date(28,February,1997);
+    expected[2] = Date(29,August,1997);
+
+    check_dates(s, expected);
+}
+
 
 test_suite* ScheduleTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Schedule tests");
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testDailySchedule));
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testEndDateWithEomAdjustment));
     suite->add(QUANTLIB_TEST_CASE(
-                       &ScheduleTest::testDatesPastEndDateWithEomAdjustment));
+        &ScheduleTest::testDatesPastEndDateWithEomAdjustment));
+    suite->add(QUANTLIB_TEST_CASE(
+        &ScheduleTest::testForwardDatesWithEomAdjustment));
+    suite->add(QUANTLIB_TEST_CASE(
+        &ScheduleTest::testBackwardDatesWithEomAdjustment));
+    suite->add(QUANTLIB_TEST_CASE(
+        &ScheduleTest::testDoubleFirstDateWithEomAdjustment));
     return suite;
 }
 

@@ -347,14 +347,23 @@ namespace QuantLib {
         if (endOfMonth && calendar_.isEndOfMonth(seed)) {
             // adjust to end of month
             if (convention == Unadjusted) {
-                for (Size i=0; i<dates_.size()-1; ++i)
+                for (Size i=1; i<dates_.size()-1; ++i)
                     dates_[i] = Date::endOfMonth(dates_[i]);
             } else {
-                for (Size i=0; i<dates_.size()-1; ++i)
+                for (Size i=1; i<dates_.size()-1; ++i)
                     dates_[i] = calendar_.endOfMonth(dates_[i]);
             }
-            if (terminationDateConvention != Unadjusted)
+            if (terminationDateConvention != Unadjusted) {
+                dates_.front() = calendar_.endOfMonth(dates_.front());
                 dates_.back() = calendar_.endOfMonth(dates_.back());
+            } else {
+                // the termination date is the first if going backwards,
+                // the last otherwise.
+                if (rule_ == DateGeneration::Backward)
+                    dates_.back() = Date::endOfMonth(dates_.back());
+                else
+                    dates_.front() = Date::endOfMonth(dates_.front());
+            }
         } else {
             // first date not adjusted for CDS schedules
             if (rule_ != DateGeneration::OldCDS)
@@ -376,7 +385,7 @@ namespace QuantLib {
             }
         }
 
-        // Final safety check to remove extra next-to-last date, if
+        // Final safety checks to remove extra next-to-last date, if
         // necessary.  It can happen to be equal or later than the end
         // date due to EOM adjustments (see the Schedule test suite
         // for an example).
@@ -387,7 +396,13 @@ namespace QuantLib {
             dates_.pop_back();
             isRegular_.pop_back();
         }
-
+        if (dates_.size() >= 2 && dates_[1] <= dates_.front()) {
+            isRegular_[1] =
+                (dates_[1] == dates_.front());
+            dates_[1] = dates_.front();
+            dates_.erase(dates_.begin());
+            isRegular_.erase(isRegular_.begin());
+        }
     }
 
 

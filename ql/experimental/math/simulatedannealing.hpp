@@ -49,7 +49,7 @@ namespace QuantLib {
             ConstantBudget
         };
 
-        /*! reduce temperature T by a factor of (1-\epsilon) after m moves */
+        /*! reduce temperature T by a factor of \f$ (1-\epsilon) \f$ after m moves */
         SimulatedAnnealing(const Real lambda, const Real T0,
                            const Real epsilon, const Size m,
                            const RNG &rng = RNG())
@@ -57,7 +57,7 @@ namespace QuantLib {
               epsilon_(epsilon), alpha_(0.0), K_(0), rng_(rng), m_(m) {}
 
         /*! budget a total of K moves, set temperature T to the initial
-          temperature times ( 1 - k/K )^\alpha with k being the total number
+          temperature times \f$ ( 1 - k/K )^\alpha \f$ with k being the total number
           of moves so far. After K moves the temperature is guaranteed to be
           zero, after that the optimization runs like a deterministic simplex
           algorithm.
