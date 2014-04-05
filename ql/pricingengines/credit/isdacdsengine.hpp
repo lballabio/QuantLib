@@ -1,9 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 Roland Lichters
- Copyright (C) 2008, 2009 StatPro Italia srl
- Copyright (C) 2009, 2014 Jose Aparicio
+ Copyright (C) 2014 Jose Aparicio
  Copyright (C) 2014 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library

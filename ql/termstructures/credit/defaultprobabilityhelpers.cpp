@@ -125,6 +125,7 @@ namespace QuantLib {
         earliestDate_ = schedule_.dates().front();
         latestDate_   = calendar_.adjust(schedule_.dates().back(),
                                          paymentConvention_);
+        if(useIsdaEngine_) ++latestDate_;
     }
 
     SpreadCdsHelper::SpreadCdsHelper(

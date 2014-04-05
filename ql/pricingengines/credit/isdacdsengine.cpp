@@ -1,9 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 Roland Lichters
- Copyright (C) 2008, 2009 StatPro Italia srl
- Copyright (C) 2009, 2014 Jose Aparicio
+ Copyright (C) 2014 Jose Aparicio
  Copyright (C) 2014 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
@@ -39,27 +37,25 @@ namespace QuantLib {
 
     IsdaCdsEngine::IsdaCdsEngine(
         const Handle<DefaultProbabilityTermStructure> &probability,
-        Real recoveryRate,
-        const Handle<YieldTermStructure> &discountCurve,
+        Real recoveryRate, const Handle<YieldTermStructure> &discountCurve,
         boost::optional<bool> includeSettlementDateFlows,
         const NumericalFix numericalFix, const AccrualBias accrualBias,
         const ForwardsInCouponPeriod forwardsInCouponPeriod)
-        : probability_(probability),
-          recoveryRate_(recoveryRate), discountCurve_(discountCurve),
+        : probability_(probability), recoveryRate_(recoveryRate),
+          discountCurve_(discountCurve),
           includeSettlementDateFlows_(includeSettlementDateFlows),
           numericalFix_(numericalFix), accrualBias_(accrualBias),
           forwardsInCouponPeriod_(forwardsInCouponPeriod) {
 
         registerWith(probability_);
         registerWith(discountCurve_);
-
     }
 
     IsdaCdsEngine::IsdaCdsEngine(
-        const std::vector<boost::shared_ptr<DefaultProbabilityHelper> > &
+        const std::vector<boost::shared_ptr<DefaultProbabilityHelper>> &
             probabilityHelpers,
         Real recoveryRate,
-        const std::vector<boost::shared_ptr<RateHelper> > &rateHelpers,
+        const std::vector<boost::shared_ptr<RateHelper>> &rateHelpers,
         boost::optional<bool> includeSettlementDateFlows,
         const NumericalFix numericalFix, const AccrualBias accrualBias,
         const ForwardsInCouponPeriod forwardsInCouponPeriod)
@@ -70,12 +66,10 @@ namespace QuantLib {
           forwardsInCouponPeriod_(forwardsInCouponPeriod) {
 
         discountCurve_ = Handle<YieldTermStructure>(
-            boost::make_shared<PiecewiseYieldCurve<Discount, LogLinear> >(
+            boost::make_shared<PiecewiseYieldCurve<Discount, LogLinear>>(
                 0, WeekendsOnly(), rateHelpers_, Actual365Fixed()));
 
         discountCurve_->enableExtrapolation();
-
-        //std::cout << "TEST rate curve : " << discountCurve_->discount(discountCurve_->referenceDate()+5000) << std::endl;
 
         for (Size i = 0; i < probabilityHelpers_.size(); i++) {
             boost::shared_ptr<CdsHelper> h =
@@ -86,12 +80,11 @@ namespace QuantLib {
 
         probability_ =
             Handle<DefaultProbabilityTermStructure>(boost::make_shared<
-                PiecewiseDefaultCurve<SurvivalProbability, LogLinear> >(
+                PiecewiseDefaultCurve<SurvivalProbability, LogLinear>>(
                 0, WeekendsOnly(), probabilityHelpers_, Actual365Fixed()));
 
         registerWith(probability_);
         registerWith(discountCurve_);
-
     }
 
     void IsdaCdsEngine::calculate() const {
@@ -100,7 +93,8 @@ namespace QuantLib {
                    "numerical fix must be None or Taylor");
         QL_REQUIRE(accrualBias_ == HalfDayBias || accrualBias_ == NoBias,
                    "accrual bias must be HalfDayBias or NoBias");
-        QL_REQUIRE(forwardsInCouponPeriod_ == Flat || forwardsInCouponPeriod_ == Piecewise,
+        QL_REQUIRE(forwardsInCouponPeriod_ == Flat ||
+                       forwardsInCouponPeriod_ == Piecewise,
                    "forwards in coupon period must be Flat or Piecewise");
 
         // it would be possible to handle the cases which are excluded below,
@@ -109,7 +103,7 @@ namespace QuantLib {
 
         Actual365Fixed dc;
         Actual360 dc1;
-		Actual360 dc2(true);
+        Actual360 dc2(true);
 
         Date evalDate = Settings::instance().evaluationDate();
 
@@ -142,49 +136,53 @@ namespace QuantLib {
                        arguments_.claim) != NULL,
                    "ISDA engine not compatible with non face value claim");
 
-        Date maturity = arguments_.maturity+1; // +1; // TODO revisit this later, it makes problems (extrapolation needed ?!)
+        Date maturity = arguments_.maturity;
         Date effectiveProtectionStart =
             std::max<Date>(arguments_.protectionStart, evalDate + 1);
 
         // collect nodes from both curves and sort them
 
-        boost::shared_ptr<PiecewiseYieldCurve<Discount, LogLinear> > castY1 =
+        boost::shared_ptr<PiecewiseYieldCurve<Discount, LogLinear>> castY1 =
             boost::dynamic_pointer_cast<
-                PiecewiseYieldCurve<Discount, LogLinear> >(*discountCurve_);
+                PiecewiseYieldCurve<Discount, LogLinear>>(*discountCurve_);
 
-        boost::shared_ptr<PiecewiseYieldCurve<ForwardRate, BackwardFlat> > castY2 =
-            boost::dynamic_pointer_cast<
-                PiecewiseYieldCurve<ForwardRate, BackwardFlat> >(*discountCurve_);
+        boost::shared_ptr<PiecewiseYieldCurve<ForwardRate, BackwardFlat>>
+        castY2 = boost::dynamic_pointer_cast<
+            PiecewiseYieldCurve<ForwardRate, BackwardFlat>>(*discountCurve_);
 
         boost::shared_ptr<FlatForward> castY3 =
             boost::dynamic_pointer_cast<FlatForward>(*discountCurve_);
 
-        boost::shared_ptr<
-            PiecewiseDefaultCurve<SurvivalProbability, LogLinear> > castC1 =
-            boost::dynamic_pointer_cast<
-                PiecewiseDefaultCurve<SurvivalProbability, LogLinear> >(
-                *probability_);
+        boost::shared_ptr<PiecewiseDefaultCurve<SurvivalProbability, LogLinear>>
+        castC1 = boost::dynamic_pointer_cast<
+            PiecewiseDefaultCurve<SurvivalProbability, LogLinear>>(
+            *probability_);
 
-        boost::shared_ptr<PiecewiseDefaultCurve<HazardRate, BackwardFlat> >
+        boost::shared_ptr<PiecewiseDefaultCurve<HazardRate, BackwardFlat>>
         castC2 = boost::dynamic_pointer_cast<
-            PiecewiseDefaultCurve<HazardRate, BackwardFlat> >(*probability_);
+            PiecewiseDefaultCurve<HazardRate, BackwardFlat>>(*probability_);
 
         boost::shared_ptr<FlatHazardRate> castC3 =
             boost::dynamic_pointer_cast<FlatHazardRate>(*probability_);
 
-        QL_REQUIRE(castY1 != NULL || castY2 != NULL || castY3 != NULL,"Yield curve must be flat forward interpolated");
-        QL_REQUIRE(castC1 != NULL || castC2 != NULL || castC3 != NULL,"Credit curve must be flat forward interpolated");
+        QL_REQUIRE(castY1 != NULL || castY2 != NULL || castY3 != NULL,
+                   "Yield curve must be flat forward interpolated");
+        QL_REQUIRE(castC1 != NULL || castC2 != NULL || castC3 != NULL,
+                   "Credit curve must be flat forward interpolated");
 
         std::vector<Date> yDates, cDates;
 
-        if(castY1 != NULL) yDates = castY1->dates();
-        if(castY2 != NULL) yDates = castY2->dates();
-        if(castC1 != NULL) cDates = castC1->dates();
-        if(castC2 != NULL) cDates = castC2->dates();
+        if (castY1 != NULL)
+            yDates = castY1->dates();
+        if (castY2 != NULL)
+            yDates = castY2->dates();
+        if (castC1 != NULL)
+            cDates = castC1->dates();
+        if (castC2 != NULL)
+            cDates = castC2->dates();
 
         std::vector<Date> nodesTmp(yDates);
-        nodesTmp.insert(nodesTmp.end(), cDates.begin(),
-                        cDates.end());
+        nodesTmp.insert(nodesTmp.end(), cDates.begin(), cDates.end());
         std::sort(nodesTmp.begin(), nodesTmp.end());
 
         // add protection start date and cut all nodes earlier than this date
@@ -197,15 +195,15 @@ namespace QuantLib {
             std::upper_bound(nodesTmp.begin(), nodesTmp.end(), maturity);
         nodesTmp.insert(it1, maturity);
 
-        it0 = std::upper_bound(
-            nodesTmp.begin(), nodesTmp.end(), effectiveProtectionStart - 1);
+        it0 = std::upper_bound(nodesTmp.begin(), nodesTmp.end(),
+                               effectiveProtectionStart - 1);
         it1 = std::upper_bound(nodesTmp.begin(), nodesTmp.end(), maturity);
         std::vector<Date>::iterator it = std::unique(it0, it1);
 
         std::vector<Date> nodes(it0, it);
 
-        //debug
-        //std::cout << "***debug engine - nodes ...:" << std::endl;
+        // debug
+        // std::cout << "***debug engine - nodes ...:" << std::endl;
         // for(Size i=0;i<nodes.size();i++) {
         //     std::cout << nodes[i] << std::endl;
         // }
@@ -222,24 +220,24 @@ namespace QuantLib {
             1;
         Date d1 = d0;
 
-        while (d1 < maturity) {
+        while (d1 <= maturity) {
             i++;
-            d1 = std::min<Date>(nodes[i], maturity);
-            //Real P0 = discountCurve_->discount(nodes[i]);
-            //Real P1 = discountCurve_->discount(nodes[i + 1]);
-            //Real Q0 = probability_->survivalProbability(nodes[i]);
-            //Real Q1 = probability_->survivalProbability(nodes[i + 1]);
-            //std::cout << "handling the period " << d0 << " to " << d1;
+            d1 = std::min<Date>(nodes[i], maturity+1);
+            if(d1 == maturity) ++d1; // last day included
+            // Real P0 = discountCurve_->discount(nodes[i]);
+            // Real P1 = discountCurve_->discount(nodes[i + 1]);
+            // Real Q0 = probability_->survivalProbability(nodes[i]);
+            // Real Q1 = probability_->survivalProbability(nodes[i + 1]);
+            // std::cout << "handling the period " << d0 << " to " << d1;
             Real P0 = discountCurve_->discount(d0);
             Real P1 = discountCurve_->discount(d1);
             Real Q0 = probability_->survivalProbability(d0);
             Real Q1 = probability_->survivalProbability(d1);
 
-
             Real fhat = std::log(P0) - std::log(P1);
             Real hhat = std::log(Q0) - std::log(Q1);
             Real fhphh = fhat + hhat;
-            //std::cout << " fhat=" << fhat << " hhat=" << hhat;
+            // std::cout << " fhat=" << fhat << " hhat=" << hhat;
 
             if (fhphh < 1E-4 && numericalFix_ == Taylor) {
                 Real fhphhq = fhphh * fhphh;
@@ -251,7 +249,7 @@ namespace QuantLib {
             } else {
                 protectionNpv += hhat / (fhphh + nFix) * (P0 * Q0 - P1 * Q1);
             }
-            //std::cout << " cumProtNpv = " << protectionNpv << std::endl;
+            // std::cout << " cumProtNpv = " << protectionNpv << std::endl;
             d0 = d1;
         }
 
@@ -268,20 +266,21 @@ namespace QuantLib {
                 boost::dynamic_pointer_cast<FixedRateCoupon>(arguments_.leg[i]);
 
             QL_REQUIRE(coupon->dayCounter() == dc ||
-				coupon->dayCounter() == dc1 ||
-				coupon->dayCounter() == dc2,
+                           coupon->dayCounter() == dc1 ||
+                           coupon->dayCounter() == dc2,
                        "ISDA engine requires a coupon day counter Act/365Fixed "
                            << "or Act/360 (" << coupon->dayCounter() << ")");
 
             // premium coupons
 
-            if (!arguments_.leg[i]
-                     ->hasOccurred(evalDate, includeSettlementDateFlows_)) {
+            if (!arguments_.leg[i]->hasOccurred(evalDate,
+                                                includeSettlementDateFlows_)) {
                 premiumNpv +=
                     coupon->amount() *
                     discountCurve_->discount(coupon->date()) *
                     probability_->survivalProbability(coupon->accrualEndDate());
-                //std::cout << "Coupon #" << i << " has amount " << coupon->amount() << std::endl;
+                // std::cout << "Coupon #" << i << " has amount " <<
+                // coupon->amount() << std::endl;
             }
 
             // default accruals
@@ -291,8 +290,8 @@ namespace QuantLib {
                 Date start = std::max<Date>(coupon->accrualStartDate(),
                                             effectiveProtectionStart);
                 Date end = coupon->accrualEndDate();
-                if (maturity == end + 1)
-                    end = maturity; // last period
+                if (maturity == end)
+                     end = maturity+1; // last period
                 Real tstart =
                     discountCurve_->timeFromReference(start) -
                     (accrualBias_ == HalfDayBias ? -1.0 / 730.0 : 0.0);
@@ -305,11 +304,11 @@ namespace QuantLib {
                     std::vector<Date>::const_iterator it1 =
                         std::upper_bound(nodes.begin(), nodes.end(), end);
                     localNodes = std::vector<Date>(it0, it1);
-					if(localNodes.size()==0) {
-						//both iterators point to the same element
-						localNodes.push_back(start);
-						localNodes.push_back(end);
-					}
+                    if (localNodes.size() == 0) {
+                        // both iterators point to the same element
+                        localNodes.push_back(start);
+                        localNodes.push_back(end);
+                    }
                     if (start != *localNodes.begin())
                         localNodes.insert(localNodes.begin(), start);
                     if (end != localNodes.back())
@@ -319,13 +318,14 @@ namespace QuantLib {
                     localNodes.push_back(end);
                 }
 
-				Real defaultAccrThisNode = 0.;
+                Real defaultAccrThisNode = 0.;
                 for (Size k = 0; k < localNodes.size() - 1; k++) {
                     Real t0 = discountCurve_->timeFromReference(localNodes[k]);
                     Real t1 =
                         discountCurve_->timeFromReference(localNodes[k + 1]);
                     Real P0 = discountCurve_->discount(localNodes[k]);
-                    Real Q0 = probability_->survivalProbability(localNodes[k]);
+                    Real Q0 =
+                        probability_->survivalProbability(localNodes[k]);
                     Real P1 = discountCurve_->discount(localNodes[k + 1]);
                     Real Q1 =
                         probability_->survivalProbability(localNodes[k + 1]);
@@ -348,10 +348,9 @@ namespace QuantLib {
                     } else {
                         defaultAccrThisNode +=
                             (hhat / (fhphh + nFix)) *
-                            ( (t1 - t0) * ((P0 * Q0 - P1 * Q1)/(fhphh + nFix) -
-                                          P1 * Q1) 
-                               + (t0 - tstart) * (P0 * Q0 - P1 * Q1)
-							);
+                            ((t1 - t0) * ((P0 * Q0 - P1 * Q1) / (fhphh + nFix) -
+                                          P1 * Q1) +
+                             (t0 - tstart) * (P0 * Q0 - P1 * Q1));
                     }
                 }
                 Real eta = coupon->accrualPeriod() / (tend - tstart);
@@ -360,7 +359,8 @@ namespace QuantLib {
 			}
         }
 
-        //std::cout << "premiumNPV=" << premiumNpv << " defaultAccruals=" << defaultAccrualNpv << std::endl;
+        // std::cout << "premiumNPV=" << premiumNpv << " defaultAccruals=" <<
+        // defaultAccrualNpv << std::endl;
 
         results_.couponLegNPV = premiumNpv + defaultAccrualNpv;
 
@@ -370,7 +370,7 @@ namespace QuantLib {
         results_.upfrontNPV = 0.0;
         if (arguments_.upfrontPayment &&
             !arguments_.upfrontPayment->hasOccurred(
-                 evalDate, includeSettlementDateFlows_)) {
+                evalDate, includeSettlementDateFlows_)) {
             upfPVO1 =
                 discountCurve_->discount(arguments_.upfrontPayment->date());
             results_.upfrontNPV = upfPVO1 * arguments_.upfrontPayment->amount();
@@ -379,7 +379,7 @@ namespace QuantLib {
         results_.accrualRebateNPV = 0.;
         if (arguments_.accrualRebate &&
             !arguments_.accrualRebate->hasOccurred(
-                 evalDate, includeSettlementDateFlows_)) {
+                evalDate, includeSettlementDateFlows_)) {
             results_.accrualRebateNPV =
                 discountCurve_->discount(arguments_.accrualRebate->date()) *
                 arguments_.accrualRebate->amount();
@@ -390,10 +390,10 @@ namespace QuantLib {
         if (arguments_.side == Protection::Seller) {
             results_.defaultLegNPV *= -1.0;
             results_.accrualRebateNPV *= -1.0;
-		}else{
+        } else {
             results_.couponLegNPV *= -1.0;
-            results_.upfrontNPV   *= -1.0;
-		}
+            results_.upfrontNPV *= -1.0;
+        }
 
         results_.value = results_.defaultLegNPV + results_.couponLegNPV +
                          results_.upfrontNPV + results_.accrualRebateNPV;
