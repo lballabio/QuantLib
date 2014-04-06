@@ -353,6 +353,11 @@ namespace QuantLib {
         return evalDateLiveNotionals_;
     }
 
+    inline Real Basket::cumulatedLoss() const {
+        calculate();
+        return evalDateCumulContingentLoss_;       
+    }
+    
     inline Real Basket::settledLoss() const {
         calculate();
         return evalDateSettledLoss_;

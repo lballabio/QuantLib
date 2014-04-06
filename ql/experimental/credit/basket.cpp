@@ -37,6 +37,7 @@ namespace QuantLib {
         const boost::shared_ptr<Claim>& claim
         )
     : refDate_(refDate),
+      claim_(claim),
       names_(names),
       notionals_(notionals),
       pool_(pool),
