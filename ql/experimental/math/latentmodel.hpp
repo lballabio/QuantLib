@@ -28,6 +28,7 @@
 
 #include <ql/experimental/math/multidimquadrature.hpp>
 #include <ql/experimental/math/multidimintegrator.hpp>
+#include <ql/math/integrals/trapezoidintegral.hpp>
 
 #include <ql/math/randomnumbers/randomsequencegenerator.hpp>
 
