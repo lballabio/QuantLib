@@ -101,8 +101,7 @@ namespace QuantLib {
         stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
             new FdmSimpleSwingCondition(
             	exerciseTimes, mesher, exerciseCalculator,
-            	arguments_.minExerciseRights,
-            	2)));
+            	2, arguments_.minExerciseRights)));
 
         boost::shared_ptr<FdmStepConditionComposite> conditions(
                 new FdmStepConditionComposite(stoppingTimes, stepConditions));

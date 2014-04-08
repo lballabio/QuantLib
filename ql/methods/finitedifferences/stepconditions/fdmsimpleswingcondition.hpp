@@ -36,8 +36,8 @@ namespace QuantLib {
                   const std::vector<Time> & exerciseTimes,
                   const boost::shared_ptr<FdmMesher>& mesher,
                   const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
-                  Size minExercises,
-                  Size swingDirection);
+                  Size swingDirection,
+                  Size minExercises = 0);
     
         void applyTo(Array& a, Time t) const;
     
