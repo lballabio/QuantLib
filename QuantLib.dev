@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=1872
+UnitCount=1874
 Type=2
 Ver=1
 ObjFiles=
@@ -18767,3 +18767,22 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
+[Unit1873]
+FileName=ql\experimental\risk\creditriskplus.cpp
+CompileCpp=1
+Folder=experimental/risk
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit1874]
+FileName=ql\experimental\risk\creditriskplus.hpp
+CompileCpp=1
+Folder=experimental/risk
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=

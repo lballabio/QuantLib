@@ -3009,6 +3009,9 @@
     <ClInclude Include="ql\experimental\risk\all.hpp">
       <Filter>experimental\risk</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\risk\creditriskplus.hpp">
+      <Filter>experimental\risk</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\risk\sensitivityanalysis.hpp">
       <Filter>experimental\risk</Filter>
     </ClInclude>
@@ -5374,6 +5377,9 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\processes\vegastressedblackscholesprocess.cpp">
       <Filter>experimental\processes</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\risk\creditriskplus.cpp">
+      <Filter>experimental\risk</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\risk\sensitivityanalysis.cpp">
       <Filter>experimental\risk</Filter>

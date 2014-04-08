@@ -7882,6 +7882,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\risk\creditriskplus.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\risk\creditriskplus.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\risk\sensitivityanalysis.cpp"
 					>
 				</File>
