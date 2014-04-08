@@ -19,8 +19,7 @@
 
 #include "creditriskplus.hpp"
 #include "utilities.hpp"
-
-#include <ql/experimental/models/creditriskplus.hpp>
+#include <ql/experimental/risk/creditriskplus.hpp>
 #include <ql/math/comparison.hpp>
 
 using namespace QuantLib;

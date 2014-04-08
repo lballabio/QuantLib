@@ -6,7 +6,6 @@ this_include_HEADERS = \
     all.hpp \
     atmadjustedsmilesection.hpp \
     atmsmilesection.hpp \
-    creditriskplus.hpp \
     kahalesmilesection.hpp \
     markovfunctional.hpp \
     markovfunctionalcapfloorengine.hpp \
@@ -17,7 +16,6 @@ this_include_HEADERS = \
 libModels_la_SOURCES = \
     atmadjustedsmilesection.cpp \
     atmsmilesection.cpp \
-    creditriskplus.cpp \
     kahalesmilesection.cpp \
     markovfunctional.cpp \
     markovfunctionalcapfloorengine.cpp \

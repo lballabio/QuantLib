@@ -17,8 +17,7 @@
   FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/models/creditriskplus.hpp>
-
+#include <ql/experimental/risk/creditriskplus.hpp>
 #include <map>
 
 namespace QuantLib {

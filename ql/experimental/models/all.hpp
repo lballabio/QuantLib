@@ -3,7 +3,6 @@
 
 #include <ql/experimental/models/atmadjustedsmilesection.hpp>
 #include <ql/experimental/models/atmsmilesection.hpp>
-#include <ql/experimental/models/creditriskplus.hpp>
 #include <ql/experimental/models/kahalesmilesection.hpp>
 #include <ql/experimental/models/markovfunctional.hpp>
 #include <ql/experimental/models/markovfunctionalcapfloorengine.hpp>
