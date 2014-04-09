@@ -1584,6 +1584,7 @@
     <ClInclude Include="ql\experimental\math\all.hpp" />
     <ClInclude Include="ql\experimental\math\adaptiverungekutta.hpp" />
     <ClInclude Include="ql\experimental\math\claytoncopularng.hpp" />
+    <ClInclude Include="ql\experimental\math\convolvedstudentt.hpp" />
     <ClInclude Include="ql\experimental\math\farliegumbelmorgensterncopularng.hpp" />
     <ClInclude Include="ql\experimental\math\frankcopularng.hpp" />
     <ClInclude Include="ql\experimental\math\polarstudenttrng.hpp" />
@@ -1675,6 +1676,7 @@
     <ClCompile Include="ql\experimental\inflation\cpicapfloorengines.cpp" />
     <ClCompile Include="ql\experimental\inflation\cpicapfloortermpricesurface.cpp" />
     <ClCompile Include="ql\experimental\math\expm.cpp" />
+    <ClCompile Include="ql\experimental\math\convolvedstudentt.cpp" />
     <ClCompile Include="ql\experimental\processes\extouwithjumpsprocess.cpp" />
     <ClCompile Include="ql\experimental\processes\gemanroncoroniprocess.cpp" />
     <ClCompile Include="ql\experimental\processes\klugeextouprocess.cpp" />

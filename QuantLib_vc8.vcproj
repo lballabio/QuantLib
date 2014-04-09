@@ -8119,6 +8119,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\math\convolvedstudentt.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\convolvedstudentt.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\math\expm.cpp"
 					>
 				</File>
