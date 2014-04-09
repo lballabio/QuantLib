@@ -1613,6 +1613,7 @@
     <ClInclude Include="ql\experimental\math\all.hpp" />
     <ClInclude Include="ql\experimental\math\adaptiverungekutta.hpp" />
     <ClInclude Include="ql\experimental\math\claytoncopularng.hpp" />
+    <ClInclude Include="ql\experimental\math\convolvedstudentt.hpp" />
     <ClInclude Include="ql\experimental\math\expm.hpp" />
     <ClInclude Include="ql\experimental\math\farliegumbelmorgensterncopularng.hpp" />
     <ClInclude Include="ql\experimental\math\frankcopularng.hpp" />
@@ -2412,6 +2413,7 @@
     <ClCompile Include="ql\experimental\compoundoption\compoundoption.cpp" />
     <ClCompile Include="ql\experimental\inflation\yoycapfloortermpricesurface.cpp" />
     <ClCompile Include="ql\experimental\inflation\yoyoptionlethelpers.cpp" />
+    <ClCompile Include="ql\experimental\math\convolvedstudentt.cpp" />
     <ClCompile Include="ql\experimental\math\expm.cpp" />
     <ClCompile Include="ql\experimental\math\zigguratrng.cpp" />
     <ClCompile Include="ql\cashflow.cpp" />
