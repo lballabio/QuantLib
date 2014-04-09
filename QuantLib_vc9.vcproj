@@ -2810,6 +2810,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\math\integrals\filonintegral.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\integrals\filonintegral.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\integrals\gaussianorthogonalpolynomial.cpp"
 					>
 				</File>

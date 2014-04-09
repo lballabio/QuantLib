@@ -1044,6 +1044,9 @@
     <ClInclude Include="ql\math\integrals\all.hpp">
       <Filter>math\integrals</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\integrals\filonintegral.hpp">
+      <Filter>math\integrals</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\integrals\gaussianorthogonalpolynomial.hpp">
       <Filter>math\integrals</Filter>
     </ClInclude>
@@ -4129,6 +4132,9 @@
     </ClCompile>
     <ClCompile Include="ql\math\distributions\studenttdistribution.cpp">
       <Filter>math\distributions</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\integrals\filonintegral.cpp">
+      <Filter>math\integrals</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\integrals\gaussianorthogonalpolynomial.cpp">
       <Filter>math\integrals</Filter>
