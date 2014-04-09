@@ -843,6 +843,7 @@
     <ClInclude Include="ql\math\distributions\poissondistribution.hpp" />
     <ClInclude Include="ql\math\distributions\studenttdistribution.hpp" />
     <ClInclude Include="ql\math\integrals\all.hpp" />
+    <ClInclude Include="ql\math\integrals\filonintegral.hpp" />
     <ClInclude Include="ql\math\integrals\gaussianorthogonalpolynomial.hpp" />
     <ClInclude Include="ql\math\integrals\gaussianquadratures.hpp" />
     <ClInclude Include="ql\math\integrals\gausslobattointegral.hpp" />
@@ -1874,6 +1875,7 @@
     <ClCompile Include="ql\math\distributions\gammadistribution.cpp" />
     <ClCompile Include="ql\math\distributions\normaldistribution.cpp" />
     <ClCompile Include="ql\math\distributions\studenttdistribution.cpp" />
+    <ClCompile Include="ql\math\integrals\filonintegral.cpp" />
     <ClCompile Include="ql\math\integrals\gaussianorthogonalpolynomial.cpp" />
     <ClCompile Include="ql\math\integrals\gaussianquadratures.cpp" />
     <ClCompile Include="ql\math\integrals\gausslobattointegral.cpp" />

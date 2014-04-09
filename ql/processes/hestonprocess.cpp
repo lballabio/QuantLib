@@ -29,6 +29,7 @@
 
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/lambda.hpp>
+
 #include <complex>
 
 namespace QuantLib {
@@ -141,10 +142,10 @@ namespace QuantLib {
             const std::complex<Real> log_z
                 = -0.5*ga*dt + std::log(ga/(1.0-std::exp(-ga*dt)));
 
-            const std::complex<Real> alpha= 4.0*ga*std::exp(-0.5*ga*dt)
-                                                            /(sigma2*(1.0-std::exp(-ga*dt)));
-            const std::complex<Real> beta= 4.0*kappa*std::exp(-0.5*kappa*dt)
-                                                         /(sigma2*(1.0-std::exp(-kappa*dt)));
+            const std::complex<Real> alpha
+                = 4.0*ga*std::exp(-0.5*ga*dt)/(sigma2*(1.0-std::exp(-ga*dt)));
+            const std::complex<Real> beta = 4.0*kappa*std::exp(-0.5*kappa*dt)
+                                           /(sigma2*(1.0-std::exp(-kappa*dt)));
 
             return ga*std::exp(-0.5*(ga-kappa)*dt)*(1-std::exp(-kappa*dt))
                     / (kappa*(1.0-std::exp(-ga*dt)))
@@ -227,10 +228,8 @@ namespace QuantLib {
             }
         }
 
-        Real probIntV(const HestonProcess& process,
-                      Real x, Real nu_0, Real nu_t, Time dt,
-                      HestonProcess::Discretization m) {
-
+        Real cornishFisherEps(const HestonProcess& process,
+                              Real nu_0, Real nu_t, Time dt, Real eps) {
             // use moment generating function to get the
             // first,second, third and fourth moment of the distribution
             const Real d = 1e-2;
@@ -261,24 +260,34 @@ namespace QuantLib {
 
             // Cornish-Fisher relation to come up with an improved
             // estimate of 1-F(u_\eps) < \eps
-            const Real eps = 1e-4;
             const Real q = InverseCumulativeNormal()(1-eps);
             const Real w =  q + (q*q-1)/6*skew + (q*q*q-3*q)/24*(kurt-3)
                           - (2*q*q*q-5*q)/36*skew*skew;
 
-            const Real u_eps = std::min(100.0, std::max(0.1, avg + w*stdDev));
+            return avg + w*stdDev;
+        }
 
-            switch (m) {
+        Real cdf_nu_ds(const HestonProcess& process,
+                       Real x, Real nu_0, Real nu_t, Time dt,
+                       HestonProcess::Discretization discretization) {
+            const Real eps = 1e-4;
+            const Real u_eps = std::min(100.0,
+                std::max(0.1, cornishFisherEps(process, nu_0, nu_t, dt, eps)));
+
+            switch (discretization) {
               case HestonProcess::BroadieKayaExactSchemeLaguerre:
               {
+                  static const GaussLaguerreIntegration
+                      gaussLaguerreIntegration(128);
+
                 // get the upper bound for the integration
                 Real upper = u_eps/2.0;
-                while (std::abs(Phi(process,upper,nu_0,nu_t,dt))
+                while (std::abs(Phi(process,upper,nu_0,nu_t,dt)/upper)
                         > eps) upper*=2.0;
 
                 return (x < upper)
                     ? std::max(0.0, std::min(1.0,
-                        GaussLaguerreIntegration(128)(
+                        gaussLaguerreIntegration(
                             boost::lambda::bind(&ch, process, x,
                                 boost::lambda::_1, nu_0, nu_t, dt))))
                     : 1.0;
@@ -287,7 +296,7 @@ namespace QuantLib {
               {
                 // get the upper bound for the integration
                 Real upper = u_eps/2.0;
-                while (std::abs(Phi(process,upper,nu_0,nu_t,dt))
+                while (std::abs(Phi(process, upper,nu_0,nu_t,dt)/upper)
                         >  eps) upper*=2.0;
 
                 return (x < upper)
@@ -295,7 +304,7 @@ namespace QuantLib {
                         GaussLobattoIntegral(Null<Size>(), eps)(
                             boost::lambda::bind(&ch, process, x,
                                 boost::lambda::_1, nu_0, nu_t, dt),
-                            1e-6, upper)))
+                            QL_EPSILON, upper)))
                     : 1.0;
               }
               case HestonProcess::BroadieKayaExactSchemeTrapezoidal:
@@ -457,7 +466,7 @@ namespace QuantLib {
                 std::max(0.0, CumulativeNormalDistribution()(dw[2])));
 
             const Real vds = Brent().solve(
-                boost::lambda::bind(&probIntV, *this, boost::lambda::_1,
+                boost::lambda::bind(&cdf_nu_ds, *this, boost::lambda::_1,
                                     nu_0, nu_t, dt, discretization_)-x,
                 1e-5, theta_*dt, 0.1*theta_*dt);
 
