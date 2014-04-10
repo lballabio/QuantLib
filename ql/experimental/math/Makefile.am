@@ -13,17 +13,20 @@ this_include_HEADERS = \
     gaussiancopulapolicy.hpp \
     latentmodel.hpp \
     multidimintegrator.hpp \
-	polarstudenttrng.hpp \
+    multidimquadrature.hpp \
+    polarstudenttrng.hpp \
     simulatedannealing.hpp \
     tcopulapolicy.hpp \
     zigguratrng.hpp
 
 libMath_la_SOURCES = \
     convolvedstudentt.cpp \
-	expm.cpp \
+    expm.cpp \
     gaussiancopulapolicy.cpp \
     multidimintegrator.cpp \
+    multidimquadrature.cpp \
     tcopulapolicy.cpp \
+    multidimquadrature.cpp \
     zigguratrng.cpp
 
 noinst_LTLIBRARIES = libMath.la

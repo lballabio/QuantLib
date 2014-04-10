@@ -34,71 +34,6 @@ namespace QuantLib {
         A template recursion along dimensions avoids calling depth 
         test or virtual functions.
 
-        Test example:
-        \code{.cpp}
-        #include <iostream>
-        #include <iomanip>
-        #include <boost/function.hpp>
-        #include <boost/timer.hpp>
-        #include <ql/quantlib.hpp>
-
-        #include <ql/experimental/math/multidiminquadrature.hpp>
-        #include <ql/experimental/math/multidimintegrator.hpp>
-
-        using namespace QuantLib;
-        using namespace std;
-        
-        // Correct value is: (e^{-.25} \sqrt{\pi})^{dim}
-        struct integrand {
-            Real operator()(const std::vector<Real>& arg) const {
-                Real sum = 1.;
-                for(Size i=0; i<arg.size(); i++) 
-                    sum *= std::exp(-arg[i]*arg[i]) * std::cos(arg[i]);
-                return sum;
-            }
-        };
-
-        int main() {
-            boost::timer timer;
-            std::cout << std::endl;
-
-            Real dimension = 3;
-            Real exactSol = std::pow(std::exp(-.25) * 
-                std::sqrt(M_PI), dimension);
-
-            boost::function<Real(const std::vector<Real>& arg)> f;
-            f = boost::cref(integrand());
-            GaussianQuadMultidimIntegrator intg(dimension, 15);
-
-            timer.restart();
-            Real valueQuad = intg(f);
-            Real secondsQuad = timer.elapsed();
-
-            std::vector<boost::shared_ptr<Integrator> > integrals;
-            for(Size i=0; i<dimension; i++)
-                integrals.push_back(
-                boost::make_shared<TrapezoidIntegral<Default> >(1.e-4, 20));
-            std::vector<Real> a_limits(integrals.size(), -4.);
-            std::vector<Real> b_limits(integrals.size(), 4.);
-            MultidimIntegral testIntg(integrals);
-
-            timer.restart();
-            Real valueGrid = testIntg(f, a_limits, b_limits);
-            Real secondsGrid = timer.elapsed();
-
-            cout << fixed << setprecision(4);
-            cout << endl << "-------------- " << endl << 
-                "Exact: " << exactSol << endl << 
-                "Quad: " << valueQuad << endl << 
-                "Grid: " << valueGrid << endl << 
-                endl;
-
-            cout << "Seconds for Quad: " << secondsQuad << endl << 
-             "Seconds for Grid: " << secondsGrid << endl;
-            return 0;
-        }
-        \endcode
-
         \todo Add coherence test between the integrand function dimensions (the
         vector size) and the declared dimension in the constructor.
 
@@ -171,8 +106,9 @@ namespace QuantLib {
 
 
         //---------------------------------------------------------
-/* Boost fails on MSVC2008 to recognise the return type when calling op()
-*/
+        /* Boost fails on MSVC2008 to recognise the return type when 
+        calling op()  , its not boost, its me.... FIX ME*/
+
         // Declare, spezializations follow.
         template<class RetType_T>
         RetType_T integrate(const boost::function<RetType_T (
