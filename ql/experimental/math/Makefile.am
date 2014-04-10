@@ -26,7 +26,6 @@ libMath_la_SOURCES = \
     multidimintegrator.cpp \
     multidimquadrature.cpp \
     tcopulapolicy.cpp \
-    multidimquadrature.cpp \
     zigguratrng.cpp
 
 noinst_LTLIBRARIES = libMath.la
