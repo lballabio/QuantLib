@@ -10,6 +10,7 @@ this_include_HEADERS = \
     farliegumbelmorgensterncopularng.hpp \
     frankcopularng.hpp \
     multidimintegrator.hpp \
+    multidimquadrature.hpp \
 	polarstudenttrng.hpp \
     simulatedannealing.hpp \
     zigguratrng.hpp
@@ -17,6 +18,7 @@ this_include_HEADERS = \
 libMath_la_SOURCES = \
 	expm.cpp \
     multidimintegrator.cpp \
+    multidimquadrature.cpp \
     zigguratrng.cpp
 
 noinst_LTLIBRARIES = libMath.la

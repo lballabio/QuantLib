@@ -12,6 +12,7 @@ SUBDIRS = \
     FittedBondCurve \
     FRA \
     MarketModels \
+    MultidimIntegral \
     Replication \
     Repo \
     Swap
