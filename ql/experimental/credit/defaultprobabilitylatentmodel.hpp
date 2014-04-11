@@ -38,12 +38,20 @@ namespace QuantLib {
     */
     template<class copulaPolicy>
     class DefaultLatentModel : public LatentModel<copulaPolicy> {
+        // import template members
+    private:
+        using LatentModel<copulaPolicy>::factorWeights_;
+        using LatentModel<copulaPolicy>::idiosyncFctrs_;
+        using LatentModel<copulaPolicy>::copula_;
+    public:
+        using LatentModel<copulaPolicy>::inverseCumulativeY;
+        using LatentModel<copulaPolicy>::cumulativeZ;
+        using LatentModel<copulaPolicy>::integratedExpectedValue;// which one?
     protected:
         boost::shared_ptr<Basket> basket_;
-        boost::shared_ptr<LatentModel<copulaPolicy>::LMIntegration> 
-            integration_;
-        typedef LatentModel<typename copulaPolicy>::IntegrationFactory 
-            IntegrationFactory;
+        boost::shared_ptr<LMIntegration> integration_;
+        //typedef LatentModel<typename copulaPolicy>::IntegrationFactory 
+        //    IntegrationFactory;
     public:
         /*!
         @param basket The basket of issuers/ctptys on which to model defaults.
@@ -58,13 +66,13 @@ namespace QuantLib {
         DefaultLatentModel(
             const boost::shared_ptr<Basket>& basket,
             const std::vector<std::vector<Real> >& factorWeights,
-            LatentModel<copulaPolicy>::LatentModelIntegrationType integralType,
+            LatentModelIntegrationType::LatentModelIntegrationType integralType,
             const typename copulaPolicy::initTraits& ini = 
                 copulaPolicy::initTraits()
             ) 
         : basket_(basket), 
           LatentModel<copulaPolicy>(factorWeights, ini),
-          integration_(IntegrationFactory::createLMIntegration(
+          integration_(LatentModel<copulaPolicy>::IntegrationFactory::createLMIntegration(
             factorWeights[0].size(), integralType))
         {
             // in the future change 'size' to 'liveSize'
@@ -160,7 +168,7 @@ namespace QuantLib {
         Real conditionalProbAtLeastNEvents(Size n, const Date& date,
             const std::vector<Real>& mktFactors) const;
         //! access to integration:
-        const boost::shared_ptr<LatentModel<copulaPolicy>::LMIntegration>& 
+        const boost::shared_ptr<LMIntegration>& 
             integration() const { return integration_; }
     public:
         /*! Computes the unconditional probability of default of a given name. 

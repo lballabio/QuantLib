@@ -42,8 +42,18 @@ namespace QuantLib {
     class RandomDefaultLM : public LatentModel<copulaPolicy>,
                             public LazyObject
     {
+        // import template members
     private:
-        typedef typename LatentModel<copulaPolicy>::FactorSampler<USNG> 
+        //using LatentModel<copulaPolicy>::factorWeights_;
+        //using LatentModel<copulaPolicy>::idiosyncFctrs_;
+        using LatentModel<copulaPolicy>::copula_;
+    public:
+        using LatentModel<copulaPolicy>::numFactors;
+        using LatentModel<copulaPolicy>::size;
+    private:
+        //typedef typename LatentModel<copulaPolicy>::FactorSampler<USNG> 
+        //    copulaRNG_type;
+        typedef typename LatentModel<copulaPolicy>::template FactorSampler<USNG> 
             copulaRNG_type;
         /*! Stores sims results in a bitfield buffer for lean memory storage.
         Although strictly speaking this is not guaranteed by the compiler it
@@ -66,8 +76,8 @@ namespace QuantLib {
         into an specific event (or realization of the modelled magnitude) is to 
         be defined on each specific case.
         */
-        friend class Worker;
-        class Worker {
+        ////////////////////////////////////////////friend class Worker;
+        class Worker {//// does it really make sense for this one to be an inner class????
         public:
             /*! @param numSims This thread simulations number.
                 @param rsg Must be already positioned and done coherently with 
@@ -271,7 +281,8 @@ namespace QuantLib {
             baseUrng.skipTo(nSimsPerThread_ * iThread);
             workers_.push_back(boost::make_shared<Worker>(
                 Worker(nSimsPerThread_, 
-                LatentModel<C>::FactorSampler<URNG>(baseUrng, 
+                copulaRNG_type(baseUrng, 
+   ///             LatentModel<C>::FactorSampler<URNG>(baseUrng, 
                     copula_), *this)));// ursg must be copied into the rsg
         }
         // last thread takes care of left over sims (typical of a machine 
@@ -279,7 +290,8 @@ namespace QuantLib {
         baseUrng.skipTo(nSimsPerThread_ * (numThreads_-1));
         workers_.push_back(boost::make_shared<Worker>(
             Worker(nSimsLastThread_, 
-            LatentModel<C>::FactorSampler<URNG>(baseUrng, 
+            copulaRNG_type(baseUrng, 
+  //          LatentModel<C>::FactorSampler<URNG>(baseUrng, 
             copula_), *this)));
 
         performSimulations();
@@ -296,12 +308,13 @@ namespace QuantLib {
         presence of the method does not mean the combination is valid (as it is 
         not with rejection samplers).
     */
-   // template<> template<>
+   template<>  //template<>
     void RandomDefaultLM<GaussianCopulaPolicy, RandomSequenceGenerator<
         BoxMullerGaussianRng<MersenneTwisterUniformRng> > >
         ::performCalculations() const 
     {
             QL_REQUIRE(numThreads_ == 1, 
+                // also not possible with rejection BoxMuller
                 "Multithreading not possible with MersenneTwister.");
             workers_.clear();
             RandomSequenceGenerator<
@@ -312,13 +325,13 @@ namespace QuantLib {
 
             workers_.push_back(boost::make_shared<Worker>(
                 Worker(nSimsPerThread_, LatentModel<GaussianCopulaPolicy>
-                    ::FactorSampler<RandomSequenceGenerator<
-                        BoxMullerGaussianRng<MersenneTwisterUniformRng> > >(
+                  ::FactorSampler<RandomSequenceGenerator<BoxMullerGaussianRng<MersenneTwisterUniformRng> > >(
+         //             ::FactorSampler<MersenneTwisterUniformRng>(
                             baseUrng), *this)));
             performSimulations();
     }
 
-   // template<> template<>
+    template<> //template<>
     void RandomDefaultLM<GaussianCopulaPolicy, 
         RandomSequenceGenerator<MersenneTwisterUniformRng> >
         ::performCalculations() const 
@@ -336,7 +349,7 @@ namespace QuantLib {
             performSimulations();
     }
 
-  //  template<> template<>
+    template<>// template<>
     void RandomDefaultLM<TCopulaPolicy, 
         RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > >
         ::performCalculations() const 
@@ -492,15 +505,19 @@ namespace QuantLib {
 		std::vector<Probability> 
             //hitsByDate(basket_->remainingSize(), 0.);
             hitsByDate(basket_->size(), 0.);
-        for(Size iSim=0; iSim < simsBuffer_.size(); iSim++) {
+        ////for(Size iSim=0; iSim < simsBuffer_.size(); iSim++) {
+        for(Size iSim=0; iSim < nSims_; iSim++) {
+            const std::vector<simEvent>& events = getSim(iSim);
             std::map<unsigned short, unsigned short> namesDefaulting;
-            for(Size iEvt=0; iEvt < simsBuffer_[iSim].size(); iEvt++) {
+            //////for(Size iEvt=0; iEvt < simsBuffer_[iSim].size(); iEvt++) {
+            for(Size iEvt=0; iEvt < events.size(); iEvt++) {
                 // if event is within time horizon...
-                if(val > simsBuffer_[iSim][iEvt].dayFromRef)
+                //////if(val > simsBuffer_[iSim][iEvt].dayFromRef)
+                if(val > events[iEvt].dayFromRef)
 					//...count it. notice insertion sorts by date.
 					namesDefaulting.insert(std::make_pair<unsigned short, 
-                      unsigned short>(simsBuffer_[iSim][iEvt].dayFromRef, 
-                        simsBuffer_[iSim][iEvt].nameIdx));
+                      unsigned short>(events[iEvt].dayFromRef, 
+                        events[iEvt].nameIdx));
 			}
             if(namesDefaulting.size() >= n) {
                 std::map<unsigned short, unsigned short>::const_iterator 

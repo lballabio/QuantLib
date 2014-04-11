@@ -44,7 +44,7 @@
 
 namespace QuantLib {
 
-    namespace detail {
+    namespace {
         // havent figured out how to do this in-place
         struct multiplyV {
             typedef std::vector<Real>& result_type;
@@ -54,8 +54,48 @@ namespace QuantLib {
             return v;
             }
         };
-    }
 
+
+        //! \name Latent model direct integration facility.
+        //@{
+        /* Things trying to achieve here:
+        1.- Unify the two branches of integrators in the library, they do not 
+          hang from a common base class and here a common ptr for the 
+          factory is needed.
+        2.- Have a common signature for the integration call.
+        3.- Factory construction so integrable latent models can choose the 
+          integration algorithm separately.
+        */
+        class LMIntegration {
+        public:
+            virtual Real integrate(const boost::function<Real (
+                const std::vector<Real>& arg)>& f) const = 0;
+            //// needs vector version too.
+            virtual ~LMIntegration() {}
+        };
+
+        //CRTP-ish for joining the integrations, class above to have the factory
+        template <class I_T>
+        class IntegrationBase : 
+            public I_T, public LMIntegration {// diamond on 'integrate'
+         // this class template always to be fully specialized
+         private:
+             IntegrationBase() {}
+         virtual ~IntegrationBase() {} 
+        };
+        //@}
+    }
+	
+    //typedef 
+	namespace LatentModelIntegrationType {// gcc reports value collision with heston engine (?!)
+	typedef 
+	enum LatentModelIntegrationType {
+        GaussianQuadrature,
+        Trapezoid
+        // etc....
+    } LatentModelIntegrationType;
+	}
+		
     // Intended to replace OneFactorCopula
 
     /*!
@@ -186,11 +226,11 @@ namespace QuantLib {
         and in the sampling of the random factors
     */
     template <class copulaPolicyImpl>
-    class LatentModel {
+    class LatentModel {//to be observer if factors as quotes
     public:
         //! \name Copula interface.
         //@{
-        typedef typename copulaPolicyImpl copulaType;
+        typedef copulaPolicyImpl copulaType;
         /*! Cumulative probability of the \f$ Y_i \f$ modelled latent random 
             variable to take a given value.
         */
@@ -230,7 +270,7 @@ namespace QuantLib {
             plus the number of latent modelled variables*/
         Disposable<std::vector<Real> > 
             allFactorCumulInverter(const std::vector<Real>& probs) const {
-            return copula_->allFactorCumulInverter(probs);
+            return copula_.allFactorCumulInverter(probs);
         }
         //@}
 
@@ -259,10 +299,24 @@ namespace QuantLib {
         /*!  Allows generation or random samples of the latent variable. 
 
             Generates samples of all the factors in the latent model according 
-            to the given copula. The default implementation given uses the 
+            to the given copula as random sequence. The default implementation given uses the 
             inversion in the copula policy (which must be present).
             USNG is expected to be a uniform sequence generator in the default 
             implementation. 
+			
+			Several (very different) usages make the spez non trivial
+			The final goal is to obtain a sequence generator of the factor samples, several routes are possible depending on the algorithms:
+			
+			1.- URNG -> Sequence Gen -> CopulaInversion  
+			  e.g.: CopulaInversion(RandomSequenceGenerator<MersenneTwisterRNG>)
+			2.- PseudoRSG ------------> CopulaInversion
+			  e.g.: CopulaInversion(SobolRSG)
+			3.- URNG -> SpecificMapping -> Sequence Gen  (bypasses the copula for performance)
+			  e.g.: RandomSequenceGenerator<BoxMullerGaussianRng<MersenneTwisterRNG> > 
+			
+			Notice that the order the three algorithms involved (uniform gen, sequence construction, distribution mapping) is not always the same. (in fact there could be some other ways to generate but these are the ones in the library now.)
+			Difficulties arise when wanting to use situation 3.- whith a generic RNG, leaving it unspecified
+			
             Derived classes might specialize (on the copula
             type) to another type of generator if a more efficient algorithm 
             that the distribution inversion is available rewritig then the 
@@ -279,8 +333,11 @@ namespace QuantLib {
             LatentModel::latentVarValue with these samples.
         */
         // Cant use InverseCumulativeRsg since the inverse there has to return a
-        //   real number and here a vector is needed.
-        template <class USNG>
+        //   real number and here a vector is needed, the function inverted here 
+		//   is multivalued.
+        template <class USNG, 
+		    // dummy template parameter to allow for 'full' specialization of inner class without specialization of the outer; rivers of keystrokes on this issue on the net.
+		    bool = true>
         class FactorSampler {
         public:
             typedef Sample<std::vector<Real> > sample_type;
@@ -314,43 +371,38 @@ namespace QuantLib {
         //@}
 
 
-        //! \name Latent model direct integration facility.
-        //@{
-        /* Things trying to achieve here:
-        1.- Unify the two branches of integrators in the library, they do not 
-          hang from a common base class and here a common ptr for the 
-          factory is needed.
-        2.- Have a common signature for the integration call.
-        3.- Factory construction so integrable latent models can choose the 
-          integration algorithm separately.
-        */
-    protected:
-        class LMIntegration {
-        public:
-            virtual Real integrate(const boost::function<Real (
-                const std::vector<Real>& arg)>& f) const = 0;
-            //// needs vector version too.
-            virtual ~LMIntegration() {}
-        };
-    public:
-        enum LatentModelIntegrationType {
-            GaussianQuadrature,
-            Trapezoid
-            // etc....
-        };
-    private:
-        //CRTP-ish for joining the integrations, class above to have the factory
-        template <class I_T>
-        class IntegrationBase : 
-            public I_T, public LMIntegration {// diamond on 'integrate'
-         // this class template always to be fully specialized
-         private:
-             IntegrationBase() {}
-         virtual ~IntegrationBase() {} 
-        };
+    ////////////    //! \name Latent model direct integration facility.
+    ////////////    //@{
+    ////////////    /* Things trying to achieve here:
+    ////////////    1.- Unify the two branches of integrators in the library, they do not 
+    ////////////      hang from a common base class and here a common ptr for the 
+    ////////////      factory is needed.
+    ////////////    2.- Have a common signature for the integration call.
+    ////////////    3.- Factory construction so integrable latent models can choose the 
+    ////////////      integration algorithm separately.
+    ////////////    */
+    ////////////protected:
+    ////////////    class LMIntegration {
+    ////////////    public:
+    ////////////        virtual Real integrate(const boost::function<Real (
+    ////////////            const std::vector<Real>& arg)>& f) const = 0;
+    ////////////        //// needs vector version too.
+    ////////////        virtual ~LMIntegration() {}
+    ////////////    };
+    ////////////private:
+    ////////////    //CRTP-ish for joining the integrations, class above to have the factory
+    ////////////    template <class I_T>
+    ////////////    class IntegrationBase : 
+    ////////////        public I_T, public LMIntegration {// diamond on 'integrate'
+    ////////////     // this class template always to be fully specialized
+    ////////////     private:
+    ////////////         IntegrationBase() {}
+    ////////////     virtual ~IntegrationBase() {} 
+    ////////////    };
         /* class template specializations. I havent use CRTP type cast directly
         because the signature of the integrators is different, grid integration
         needs the domain. */
+/*
         template<> class IntegrationBase<GaussianQuadMultidimIntegrator> : 
             public GaussianQuadMultidimIntegrator, public LMIntegration {
         public:
@@ -360,9 +412,11 @@ namespace QuantLib {
                 const std::vector<Real>& arg)>& f) const {
                     return GaussianQuadMultidimIntegrator::integrate<Real>(f);
             }
+
             // disposable vector version here....
             virtual ~IntegrationBase() {}
-        };
+        };*/
+/*
         template<> class IntegrationBase<MultidimIntegral> : 
             public MultidimIntegral, public LMIntegration {
         public:
@@ -378,29 +432,38 @@ namespace QuantLib {
             virtual ~IntegrationBase() {}
             const std::vector<Real> a_, b_;
         };
+*/
+    public:
+	/*
+        enum LatentModelIntegrationType {
+            GaussianQuadrature,
+            Trapezoid
+            // etc....
+        };
+		*/
     protected:
         /* \todo Move integrator traits like number of quadrature points, 
         integration domain dimensions, etc to the copula through a static 
         member function. Since they depend on the nature of the probability 
         density distribution thats where they belong.
-        This is why theres one factory per copula policy template parameter, and
-        the integration domain/number of quadrature points can also be specified
-        by specialization of this class on the LM copula policy.
+        This is why theres one factory per copula policy template parameter 
+        (even if this is not used...yet)
         */
         class IntegrationFactory {
         public:
             static boost::shared_ptr<LMIntegration> createLMIntegration(
                 Size dimension, 
-                LatentModelIntegrationType type = GaussianQuadrature) 
+				//>>>>???? below? -------------------------------------------------------------------
+                LatentModelIntegrationType::LatentModelIntegrationType type = LatentModelIntegrationType::GaussianQuadrature) 
             {
                 switch(type) {
-                    case GaussianQuadrature:
+                    case LatentModelIntegrationType::GaussianQuadrature:
                         return 
                             boost::make_shared<
                             IntegrationBase<GaussianQuadMultidimIntegrator> >(
                                 dimension, 25);
                         break;
-                    case Trapezoid:
+                    case LatentModelIntegrationType::Trapezoid:
                         {
                         std::vector<boost::shared_ptr<Integrator> > integrals;
                         for(Size i=0; i<dimension; i++)
@@ -506,7 +569,7 @@ namespace QuantLib {
             return 
                 integration()->integrate(
                     boost::bind<Disposable<std::vector<Real> > >(
-                        detail::multiplyV(),
+                        multiplyV(),
                         boost::bind(&copulaPolicyImpl::density, copula_, _1),
                         boost::bind(boost::cref(f), _1)));
         }
@@ -534,6 +597,40 @@ namespace QuantLib {
     };
 
 
+
+    namespace {
+        /* class template specializations. I havent use CRTP type cast directly
+        because the signature of the integrators is different, grid integration
+        needs the domain. */
+        template<> class IntegrationBase<GaussianQuadMultidimIntegrator> : 
+        public GaussianQuadMultidimIntegrator, public LMIntegration {
+        public:
+            IntegrationBase(Size dimension, Size order) 
+            : GaussianQuadMultidimIntegrator(dimension, order) {}
+            Real integrate(const boost::function<Real (
+                const std::vector<Real>& arg)>& f) const {
+                    return GaussianQuadMultidimIntegrator::integrate<Real>(f);
+            }
+            // disposable vector version here....
+            virtual ~IntegrationBase() {}
+        };
+
+        template<> class IntegrationBase<MultidimIntegral> : 
+            public MultidimIntegral, public LMIntegration {
+        public:
+            IntegrationBase(
+                const std::vector<boost::shared_ptr<Integrator> >& integrators, 
+                Real a, Real b) 
+            : MultidimIntegral(integrators), 
+              a_(integrators.size(),a), b_(integrators.size(),b) {}
+            Real integrate(const boost::function<Real (
+                const std::vector<Real>& arg)>& f) const {
+                    return MultidimIntegral::operator ()(f, a_, b_);
+            }
+            virtual ~IntegrationBase() {}
+            const std::vector<Real> a_, b_;
+        };
+    }
     // Defines ----------------------------------------------------------------
 
     template <class Impl>
@@ -560,7 +657,7 @@ namespace QuantLib {
         const std::vector<Real>& factorWeights,
         const typename Impl::initTraits& ini)
     : nFactors_(1),
-      nVariables_(factorWeights.size()),
+      nVariables_(factorWeights.size())
     {
         for(Size iName=0; iName < factorWeights.size(); iName++)
             factorWeights_.push_back(std::vector<Real>(1, 
@@ -592,22 +689,27 @@ namespace QuantLib {
     specializations need a number generator. This is forced at the time the 
     concrete policy class is used in the template parameter, if it has been 
     specialized it needs the sample type typedef to match at compilation. 
+	
+	Notice here the outer class template is specialized only, leaving the inner
+	generator still a class template. Apparently old versions of gcc (3.x) bug 
+	on this one not recognizing the specialization.
     */
     /*! \brief  Specialization for direct Gaussian Box-Muller generation.\par
     The implementation of Box-Muller in the library is the rejection variant so
     do not use it within a multithreaded simulation.
     */
-    template<> template<class URNG>// uniform number expected
-    class LatentModel<GaussianCopulaPolicy>
-        ::FactorSampler<RandomSequenceGenerator<BoxMullerGaussianRng<URNG> > > {
+    template<class TC> template<class URNG, bool dummy>//template<class MersenneTwisterUniformRng>// template<class URNG>// uniform number expected
+    class LatentModel<TC> // LatentModel<GaussianCopulaPolicy>
+        ::FactorSampler <RandomSequenceGenerator<BoxMullerGaussianRng<URNG> > , dummy> {
     public:
         //Size below must be == to the numb of factors idiosy + systemi
         typedef Sample<std::vector<Real> > sample_type;
         explicit FactorSampler(
             const RandomSequenceGenerator<BoxMullerGaussianRng<URNG> >& 
+         //   const URNG& 
                 boxMullRng
             ) 
-            : boxMullRng_(boxMullRng){ }
+            : boxMullRng_(boxMullRng){ } //<< this asignment forces the type match
         const sample_type& nextSequence() const {
                 return boxMullRng_.nextSequence();
         }
@@ -622,9 +724,9 @@ namespace QuantLib {
     distribution samples so theres a trick here since the template parameter is 
     not what it is used internally.
     */
-    template<> template<class URNG>// uniform number expected
-    class LatentModel<TCopulaPolicy>
-        ::FactorSampler<RandomSequenceGenerator<PolarStudentTRng<URNG> > > {
+    template<class TC> template<class URNG, bool dummy>// uniform number expected
+    class LatentModel<TC>
+        ::FactorSampler<RandomSequenceGenerator<PolarStudentTRng<URNG> > , dummy> {
     public:
         typedef Sample<std::vector<Real> > sample_type;
         explicit FactorSampler(const URNG& urng,

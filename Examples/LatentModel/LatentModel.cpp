@@ -35,11 +35,6 @@
 #include <iostream>
 #include <iomanip>
 
-#include <ql/experimental/math/tcopulapolicy.hpp>
-#include <ql/experimental/credit/defaultprobabilitylatentmodel.hpp>
-#include <ql/experimental/credit/randomdefaultlatentmodel.hpp>
-
-
 using namespace std;
 using namespace QuantLib;
 
@@ -53,7 +48,7 @@ namespace QuantLib {
 
 /* This sample code shows basic usage of a Latent variable model.
    The data and correlation problem presented is the same as in:
-     Modelling Dependent Defaults: Asset Correlations Are Not Enough!
+     'Modelling Dependent Defaults: Asset Correlations Are Not Enough!'
      Frey R., A. J. McNeil and M. A. Nyfeler RiskLab publications March 2001
 */
 int main(int, char* []) {
@@ -119,8 +114,9 @@ int main(int, char* []) {
             std::vector<Real>(1, std::sqrt(0.1)));
         // Gaussian integrable joint default model:
         GaussianDefProbLM lmG(theBskt, fctrsWeights, 
-            LatentModel<GaussianCopulaPolicy>
-            ::LatentModelIntegrationType::GaussianQuadrature);
+            LatentModelIntegrationType::GaussianQuadrature,
+			GaussianCopulaPolicy::initTraits() // otherwise gcc screams
+			);
         // Gaussian random joint default model:
         Size numSimulations = 1000000;
         Size numCoresUsed = 1;
@@ -138,8 +134,7 @@ int main(int, char* []) {
         iniT.tOrders = ordersT;
         // StudentT integrable joint default model:
         TDefProbLM lmT(theBskt, fctrsWeights, 
-            LatentModel<TCopulaPolicy>
-            ::LatentModelIntegrationType::GaussianQuadrature
+            LatentModelIntegrationType::GaussianQuadrature
             , iniT);
         // StudentT random joint default model:
         RandomDefaultLM<TCopulaPolicy> rdlmT(theBskt, 
