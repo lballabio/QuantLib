@@ -418,6 +418,7 @@ AC_CONFIG_FILES([
     Examples/EquityOption/Makefile
     Examples/FittedBondCurve/Makefile
     Examples/FRA/Makefile
+    Examples/LatentModel/Makefile
     Examples/MarketModels/Makefile
     Examples/MultidimIntegral/Makefile
     Examples/Replication/Makefile
