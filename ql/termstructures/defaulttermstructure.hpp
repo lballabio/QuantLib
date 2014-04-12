@@ -32,11 +32,6 @@
 
 namespace QuantLib {
 
-    //! probability
-    /*! \ingroup types */
-    typedef Real Probability;
-
-
     //! Default probability term structure
     /*! This abstract class defines the interface of concrete
         credit structures which will be derived from this one.

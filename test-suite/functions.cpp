@@ -110,7 +110,7 @@ void FunctionsTest::testGammaValues() {
 }
 
 void FunctionsTest::testModifiedBesselFunctions() {
-    BOOST_TEST_MESSAGE("Testing Modified Bessel function of first kind ...");
+    BOOST_TEST_MESSAGE("Testing modified Bessel function of first kind...");
 
     /* reference values are computed with R and the additional package Bessel
      * http://cran.r-project.org/web/packages/Bessel

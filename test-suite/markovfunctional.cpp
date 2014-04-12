@@ -57,7 +57,7 @@ using namespace boost::unit_test_framework;
 void MarkovFunctionalTest::testMfStateProcess() {
 
     const Real tolerance = 1E-10;
-    BOOST_MESSAGE("Testing markov functional state process...");
+    BOOST_MESSAGE("Testing Markov functional state process...");
 
     Array times1(0), vols1(1, 1.0);
     MfStateProcess sp1(0.00, times1, vols1);
@@ -870,7 +870,7 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
         0.0001; // 1bp tolerance for model call put premia vs. market premia
 
     BOOST_MESSAGE(
-        "Testing markov functional calibration to one instrument set...");
+        "Testing Markov functional calibration to one instrument set...");
 
     Date savedEvalDate = Settings::instance().evaluationDate();
     Date referenceDate(14, November, 2012);
@@ -1108,7 +1108,7 @@ void MarkovFunctionalTest::testVanillaEngines() {
     // different from the calibration approach where 0 fixing days must be used.
     // therefore higher errors compared to the calibration results are expected.
 
-    BOOST_MESSAGE("Testing markov functional vanilla engines...");
+    BOOST_MESSAGE("Testing Markov functional vanilla engines...");
 
     Date savedEvalDate = Settings::instance().evaluationDate();
     Date referenceDate(14, November, 2012);
@@ -1403,7 +1403,7 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
     const Real tol1 = 0.1; // 0.1 times vega tolerance for model vs. market in
                            // second instrument set
     BOOST_MESSAGE(
-        "Testing markov functional calibration to two instrument sets...");
+        "Testing Markov functional calibration to two instrument sets...");
 
     Date savedEvalDate = Settings::instance().evaluationDate();
     Date referenceDate(14, November, 2012);
@@ -1663,7 +1663,7 @@ void MarkovFunctionalTest::testBermudanSwaption() {
 
     Real tol0 = 0.0001; // 1bp tolerance against cached values
 
-    BOOST_MESSAGE("Testing markov functional bermudan swaption engine...");
+    BOOST_MESSAGE("Testing Markov functional Bermudan swaption engine...");
 
     Date savedEvalDate = Settings::instance().evaluationDate();
     Date referenceDate(14, November, 2012);

@@ -316,7 +316,7 @@ void CmsTest::testFairRate()  {
         Rate rate1 = coupon.rate();
 
         Spread difference =  std::fabs(rate1-rate0);
-        Spread tol = 2.5e-4;
+        Spread tol = 2.0e-4;
         bool linearTsr = j==vars.yieldCurveModels.size()-1;
 
         if (difference > tol)
@@ -381,7 +381,7 @@ void CmsTest::testCmsSwap() {
             Real priceAn = cms[sl]->NPV();
 
             Real difference =  std::fabs(priceNum-priceAn);
-            Real tol = 2.5e-4;
+            Real tol = 2.0e-4;
             bool linearTsr = j==vars.yieldCurveModels.size()-1;
             if (difference > tol)
                 BOOST_FAIL("\nLength in Years:  " << swapLengths[sl] <<

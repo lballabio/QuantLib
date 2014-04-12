@@ -123,7 +123,7 @@ void SwingOptionTest::testExtendedOrnsteinUhlenbeckProcess() {
 
 void SwingOptionTest::testFdmExponentialJump1dMesher() {
 
-    BOOST_TEST_MESSAGE("Testing finite difference mesher for the Kluge model ...");
+    BOOST_TEST_MESSAGE("Testing finite difference mesher for the Kluge model...");
 
     SavedSettings backup;
 
@@ -173,7 +173,7 @@ void SwingOptionTest::testFdmExponentialJump1dMesher() {
 
 void SwingOptionTest::testExtOUJumpVanillaEngine() {
 
-    BOOST_TEST_MESSAGE("Testing finite difference pricer for the Kluge model ...");
+    BOOST_TEST_MESSAGE("Testing finite difference pricer for the Kluge model...");
 
     SavedSettings backup;
 
@@ -254,7 +254,7 @@ namespace {
 
 void SwingOptionTest::testFdBSSwingOption() {
 
-    BOOST_TEST_MESSAGE("Testing Black-Scholes Vanilla Swing option pricing ...");
+    BOOST_TEST_MESSAGE("Testing Black-Scholes vanilla swing option pricing...");
 
     SavedSettings backup;
 
@@ -331,7 +331,7 @@ void SwingOptionTest::testFdBSSwingOption() {
 
 void SwingOptionTest::testExtOUJumpSwingOption() {
 
-    BOOST_TEST_MESSAGE("Testing Simple Swing option pricing for Kluge model...");
+    BOOST_TEST_MESSAGE("Testing simple swing option pricing for Kluge model...");
 
     SavedSettings backup;
 

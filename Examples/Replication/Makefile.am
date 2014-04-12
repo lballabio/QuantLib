@@ -12,7 +12,6 @@ Replication_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
     Replication.dev \
-    Replication_vc7.vcproj \
     Replication_vc8.vcproj \
     Replication_vc9.vcproj \
     Replication_vc10.vcxproj \

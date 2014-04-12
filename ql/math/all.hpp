@@ -8,7 +8,6 @@
 #include <ql/math/bspline.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/math/curve.hpp>
-#include <ql/math/domain.hpp>
 #include <ql/math/errorfunction.hpp>
 #include <ql/math/factorial.hpp>
 #include <ql/math/fastfouriertransform.hpp>
@@ -27,7 +26,6 @@
 #include <ql/math/richardsonextrapolation.hpp>
 #include <ql/math/sampledcurve.hpp>
 #include <ql/math/solver1d.hpp>
-#include <ql/math/surface.hpp>
 #include <ql/math/transformedgrid.hpp>
 
 #include <ql/math/copulas/all.hpp>

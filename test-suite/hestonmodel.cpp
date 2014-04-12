@@ -1082,7 +1082,7 @@ void HestonModelTest::testAnalyticPiecewiseTimeDependent() {
 
 void HestonModelTest::testDAXCalibrationOfTimeDependentModel() {
     BOOST_TEST_MESSAGE(
-             "Testing Time dependent Heston model calibration ...");
+             "Testing time-dependent Heston model calibration...");
 
     SavedSettings backup;
 
@@ -1142,7 +1142,7 @@ void HestonModelTest::testDAXCalibrationOfTimeDependentModel() {
 }
 
 void HestonModelTest::testAlanLewisReferencePrices() {
-    BOOST_TEST_MESSAGE("Testing Alan Lewis Reference Prices ...");
+    BOOST_TEST_MESSAGE("Testing Alan Lewis reference prices...");
 
     /*
      * testing Alan Lewis reference prices posted in
@@ -1234,7 +1234,7 @@ void HestonModelTest::testAlanLewisReferencePrices() {
 }
 
 void HestonModelTest::testAnalyticPDFHestonEngine() {
-    BOOST_TEST_MESSAGE("Testing Alan Lewis Reference Prices ...");
+    BOOST_TEST_MESSAGE("Testing analytic PDF Heston engine...");
 
     SavedSettings backup;
 

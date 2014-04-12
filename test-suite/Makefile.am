@@ -29,6 +29,7 @@ QL_TESTS = \
 	convertiblebonds.hpp convertiblebonds.cpp \
 	covariance.hpp covariance.cpp \
 	creditdefaultswap.hpp creditdefaultswap.cpp \
+	creditriskplus.hpp creditriskplus.cpp \
 	curvestates.hpp curvestates.cpp \
 	dates.hpp dates.cpp \
 	daycounters.hpp daycounters.cpp \
@@ -105,7 +106,6 @@ QL_TESTS = \
 	solvers.hpp solvers.cpp \
 	spreadoption.hpp spreadoption.cpp \
 	stats.hpp stats.cpp \
-	surface.hpp surface.cpp \
 	swap.hpp swap.cpp \
 	swapforwardmappings.hpp swapforwardmappings.cpp \
 	swaption.hpp swaption.cpp \
@@ -204,7 +204,6 @@ benchmark: quantlib-benchmark$(EXEEXT)
 
 EXTRA_DIST = \
 	README.txt \
-	testsuite_vc7.vcproj \
 	testsuite_vc8.vcproj \
 	testsuite_vc9.vcproj \
 	testsuite_vc10.vcxproj \
@@ -219,7 +218,6 @@ EXTRA_DIST = \
 	${QL_TESTS} \
 	quantlibbenchmark.cpp \
 	README.txt \
-	testsuite_vc7.vcproj \
 	testsuite_vc8.vcproj \
 	testsuite_vc9.vcproj \
 	testsuite_vc10.vcxproj \

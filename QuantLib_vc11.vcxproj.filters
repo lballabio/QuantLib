@@ -876,9 +876,6 @@
     <ClInclude Include="ql\math\curve.hpp">
       <Filter>math</Filter>
     </ClInclude>
-    <ClInclude Include="ql\math\domain.hpp">
-      <Filter>math</Filter>
-    </ClInclude>
     <ClInclude Include="ql\math\errorfunction.hpp">
       <Filter>math</Filter>
     </ClInclude>
@@ -928,9 +925,6 @@
       <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\solver1d.hpp">
-      <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\math\surface.hpp">
       <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\transformedgrid.hpp">
@@ -1045,6 +1039,9 @@
       <Filter>math\distributions</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\integrals\all.hpp">
+      <Filter>math\integrals</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\math\integrals\filonintegral.hpp">
       <Filter>math\integrals</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\integrals\gaussianorthogonalpolynomial.hpp">
@@ -3093,6 +3090,9 @@
     <ClInclude Include="ql\experimental\risk\all.hpp">
       <Filter>experimental\risk</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\risk\creditriskplus.hpp">
+      <Filter>experimental\risk</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\risk\sensitivityanalysis.hpp">
       <Filter>experimental\risk</Filter>
     </ClInclude>
@@ -3318,6 +3318,9 @@
     <ClInclude Include="ql\experimental\math\claytoncopularng.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\math\convolvedstudentt.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\math\expm.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
@@ -3325,6 +3328,9 @@
       <Filter>experimental\math</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\math\frankcopularng.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\math\polarstudenttrng.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\math\simulatedannealing.hpp">
@@ -4103,9 +4109,6 @@
     <ClCompile Include="ql\math\sampledcurve.cpp">
       <Filter>math</Filter>
     </ClCompile>
-    <ClCompile Include="ql\math\surface.cpp">
-      <Filter>math</Filter>
-    </ClCompile>
     <ClCompile Include="ql\math\statistics\discrepancystatistics.cpp">
       <Filter>math\statistics</Filter>
     </ClCompile>
@@ -4132,6 +4135,9 @@
     </ClCompile>
     <ClCompile Include="ql\math\distributions\studenttdistribution.cpp">
       <Filter>math\distributions</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\integrals\filonintegral.cpp">
+      <Filter>math\integrals</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\integrals\gaussianorthogonalpolynomial.cpp">
       <Filter>math\integrals</Filter>
@@ -5564,6 +5570,9 @@
     <ClCompile Include="ql\experimental\processes\vegastressedblackscholesprocess.cpp">
       <Filter>experimental\processes</Filter>
     </ClCompile>
+    <ClCompile Include="ql\experimental\risk\creditriskplus.cpp">
+      <Filter>experimental\risk</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\risk\sensitivityanalysis.cpp">
       <Filter>experimental\risk</Filter>
     </ClCompile>
@@ -5707,6 +5716,9 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\inflation\yoyoptionlethelpers.cpp">
       <Filter>experimental\inflation</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\math\convolvedstudentt.cpp">
+      <Filter>experimental\math</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\math\expm.cpp">
       <Filter>experimental\math</Filter>

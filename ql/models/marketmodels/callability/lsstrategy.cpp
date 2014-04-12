@@ -54,12 +54,12 @@ namespace QuantLib {
         exerciseIndex_ = std::vector<Size>(relevantTimes_.size());
         isExerciseTime_.resize(relevantTimes_.size(), false);
         std::valarray<bool> v = exercise_->isExerciseTime();
-        Size exercises = 0;
+        Size exercises = 0, idx = 0;
         Size i;
         for (i=0; i<relevantTimes_.size(); ++i) {
             exerciseIndex_[i] = exercises;
             if (isRebateTime_[i]) {
-                isExerciseTime_[i] = v[exercises];
+                isExerciseTime_[i] = v[idx++];
                 if (isExerciseTime_[i]) {
                     exerciseTimes_.push_back(relevantTimes_[i]);
                     ++exercises;

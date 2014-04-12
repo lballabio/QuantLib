@@ -39,12 +39,14 @@ namespace QuantLib {
             //! Tests if params satisfy the constraint
             virtual bool test(const Array& params) const = 0;
             //! Returns upper bound for given parameters
-            virtual Array upperBound(const Array& /*params*/) const {
-                return Array();
+            virtual Array upperBound(const Array& params) const {
+                return Array(params.size(),
+                             std::numeric_limits < Array::value_type > ::max());
             }
             //! Returns lower bound for given parameters
-            virtual Array lowerBound(const Array& /*params*/) const {
-                return Array();
+            virtual Array lowerBound(const Array& params) const {
+                return Array(params.size(),
+                             std::numeric_limits < Array::value_type > ::min());
             }
         };
         boost::shared_ptr<Impl> impl_;
@@ -52,10 +54,20 @@ namespace QuantLib {
         bool empty() const { return !impl_; }
         bool test(const Array& p) const { return impl_->test(p); }
         Array upperBound(const Array& params) const {
-            return impl_->upperBound(params);
+            Array result = impl_->upperBound(params);
+            QL_REQUIRE(params.size() == result.size(),
+                       "upper bound size (" << result.size()
+                                            << ") not equal to params size ("
+                                            << params.size() << ")");
+            return result;
         }
         Array lowerBound(const Array& params) const {
-            return impl_->lowerBound(params);
+            Array result = impl_->lowerBound(params);
+            QL_REQUIRE(params.size() == result.size(),
+                       "lower bound size (" << result.size()
+                                            << ") not equal to params size ("
+                                            << params.size() << ")");
+            return result;
         }
         Real update(Array& p,
                     const Array& direction,
@@ -71,14 +83,6 @@ namespace QuantLib {
           public:
             bool test(const Array&) const {
                 return true;
-            }
-            Array upperBound(const Array& params) const {
-                return Array(params.size(),
-                             std::numeric_limits < Array::value_type > ::max());
-            }
-            Array lowerBound(const Array& params) const {
-                return Array(params.size(),
-                             std::numeric_limits < Array::value_type > ::min());
             }
         };
       public:

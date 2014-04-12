@@ -2483,10 +2483,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\math\domain.hpp"
-				>
-			</File>
-			<File
 				RelativePath="ql\math\errorfunction.cpp"
 				>
 			</File>
@@ -2596,14 +2592,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\math\solver1d.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\math\surface.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\math\surface.hpp"
 				>
 			</File>
 			<File
@@ -2807,6 +2795,14 @@
 				>
 				<File
 					RelativePath=".\ql\math\integrals\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\integrals\filonintegral.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\integrals\filonintegral.hpp"
 					>
 				</File>
 				<File
@@ -7232,7 +7228,7 @@
 			</Filter>
 			<Filter
 				Name="exercise"
-				Filter="">
+				>
 				<File
 					RelativePath=".\ql\experimental\exercise\all.hpp"
 					>
@@ -7914,14 +7910,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\models\gaussian1dmodel.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\models\gaussian1dmodel.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\experimental\models\gaussian1dcapfloorengine.cpp"
 					>
 				</File>
@@ -7946,11 +7934,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\models\gaussian1dswaptionengine.cpp"
+					RelativePath=".\ql\experimental\models\gaussian1dmodel.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\models\gaussian1dswaptionengine.hpp"
+					RelativePath=".\ql\experimental\models\gaussian1dmodel.hpp"
 					>
 				</File>
 				<File
@@ -7959,6 +7947,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\models\gaussian1dnonstandardswaptionengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\gaussian1dswaptionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\gaussian1dswaptionengine.hpp"
 					>
 				</File>
 				<File
@@ -8087,6 +8083,14 @@
 				>
 				<File
 					RelativePath=".\ql\experimental\risk\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\risk\creditriskplus.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\risk\creditriskplus.hpp"
 					>
 				</File>
 				<File
@@ -8646,6 +8650,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\math\convolvedstudentt.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\convolvedstudentt.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\math\expm.cpp"
 					>
 				</File>
@@ -8659,6 +8671,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\math\frankcopularng.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\polarstudenttrng.hpp"
 					>
 				</File>
 				<File

@@ -12,7 +12,6 @@ MarketModels_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
     MarketModels.dev \
-    MarketModels_vc7.vcproj \
     MarketModels_vc8.vcproj \
     MarketModels_vc9.vcproj \
     MarketModels_vc10.vcxproj \

@@ -166,7 +166,7 @@ void BondTest::testYield() {
 
 void BondTest::testAtmRate() {
 
-    BOOST_TEST_MESSAGE("Testing consistency of bond price/atmRate calculation...");
+    BOOST_TEST_MESSAGE("Testing consistency of bond price/ATM rate calculation...");
 
     CommonVars vars;
 

@@ -41,7 +41,7 @@ Real average = 0.0, sigma = 1.0;
 
 void OperatorTest::testTridiagonal() {
 
-    BOOST_TEST_MESSAGE("Testing TridiagonalOperator...");
+    BOOST_TEST_MESSAGE("Testing tridiagonal operator...");
 
     Size n = 8; // can use 3 for easier debugging
 

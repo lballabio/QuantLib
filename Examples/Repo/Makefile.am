@@ -12,7 +12,6 @@ Repo_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
     Repo.dev \
-    Repo_vc7.vcproj \
     Repo_vc8.vcproj \
     Repo_vc9.vcproj \
     Repo_vc10.vcxproj \

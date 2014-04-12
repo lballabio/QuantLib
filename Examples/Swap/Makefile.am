@@ -12,7 +12,6 @@ SwapValuation_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
     Swap.dev \
-    Swap_vc7.vcproj \
     Swap_vc8.vcproj \
     Swap_vc9.vcproj \
     Swap_vc10.vcxproj \

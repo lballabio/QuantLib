@@ -206,7 +206,8 @@ void ShortRateModelTest::testCachedHullWhiteFixedReversion() {
 
 
 void ShortRateModelTest::testCachedHullWhite2() {
-    BOOST_TEST_MESSAGE("Testing Hull-White calibration against cached values using swaptions without start delay ...");
+    BOOST_TEST_MESSAGE("Testing Hull-White calibration against cached "
+                       "values using swaptions without start delay...");
 
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
