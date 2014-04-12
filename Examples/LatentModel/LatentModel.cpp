@@ -83,16 +83,17 @@ int main(int, char* []) {
         std::vector<Issuer> issuers;
         for(Size i=0; i<hazardRates.size(); i++) {
             std::vector<QuantLib::Issuer::key_curve_pair> curves(1, 
-                std::make_pair(QuantLib::NorthAmericaCorpDefaultKey(
-                    QuantLib::EURCurrency(), QuantLib::SeniorSec,
-                    QuantLib::Period(), 1. // amount threshold
+                std::make_pair(NorthAmericaCorpDefaultKey(
+                    EURCurrency(), QuantLib::SeniorSec,
+                    Period(), 1. // amount threshold
                     ), defTS[i]));
             issuers.push_back(Issuer(curves));
         }
 
         boost::shared_ptr<Pool> thePool = boost::make_shared<Pool>();
         for(Size i=0; i<hazardRates.size(); i++)
-            thePool->add(names[i], issuers[i]);
+            thePool->add(names[i], issuers[i], NorthAmericaCorpDefaultKey(
+                    EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
 
         std::vector<DefaultProbKey> defaultKeys(hazardRates.size(), 
             NorthAmericaCorpDefaultKey(EURCurrency(), SeniorSec, Period(), 1.));
