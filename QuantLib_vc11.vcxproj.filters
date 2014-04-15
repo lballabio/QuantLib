@@ -2322,6 +2322,9 @@
     <ClInclude Include="ql\pricingengines\vanilla\discretizedvanillaoption.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\vanilla\hestonexpansionengine.hpp">
+      <Filter>pricingengines\vanilla</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\vanilla\fdamericanengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
@@ -4989,6 +4992,9 @@
       <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\vanilla\discretizedvanillaoption.cpp">
+      <Filter>pricingengines\vanilla</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\vanilla\hestonexpansionengine.cpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\vanilla\fdvanillaengine.cpp">

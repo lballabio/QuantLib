@@ -5571,6 +5571,14 @@
 					>
 				</File>
 				<File
+					RelativePath="ql\pricingengines\vanilla\hestonexpansionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\pricingengines\vanilla\hestonexpansionengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\pricingengines\vanilla\fdamericanengine.hpp"
 					>
 				</File>
