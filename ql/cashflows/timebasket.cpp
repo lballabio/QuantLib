@@ -43,7 +43,7 @@ namespace QuantLib {
         for (Size i = 0; i < sbuckets.size(); i++)
             result[sbuckets[i]] = 0.0;
 
-        for (const_iterator j = begin(); j != end(); j++) {
+        for (const_iterator j = begin(); j != end(); ++j) {
             Date date = j->first;
             Real value = j->second;
             Date pDate = Null<Date>(), nDate = Null<Date>();
