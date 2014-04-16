@@ -61,10 +61,8 @@ namespace QuantLib {
         solver.setMaxEvaluations(1000);
         Real accuracy = 1.0e-6;
 
-        Real X=0.0;
-        Real sSolved=0.0;
-        sSolved=solver.solve(*f, accuracy, strikeDaughter(), 1.0e-6, strikeDaughter()*1000.0);
-        X=transformX(sSolved); // transform stock to return as in Wystup's book
+        Real sSolved=solver.solve(*f, accuracy, strikeDaughter(), 1.0e-6, strikeDaughter()*1000.0);
+        Real X=transformX(sSolved); // transform stock to return as in Wystup's book
         /* Solver Setup Finished*****************************************/
 
         Real phi=typeDaughter(); // -1 or 1
@@ -93,11 +91,6 @@ namespace QuantLib {
         Real rD=riskFreeRateDaughter();
         Real dD=dividendRateDaughter();
 
-        Real tempRes=0.0;
-        Real tempDelta=0.0;
-        Real tempGamma=0.0;
-        Real tempVega=0.0;
-        Real tempTheta=0.0;
         Real N2XmSM=N2(-phi*w*XmSM,phi*dP);
         Real N2X=N2(-phi*w*X,phi*dM);
         Real NeX=N_(-phi*w*e(X));
@@ -108,12 +101,11 @@ namespace QuantLib {
         Real invMTime=1/std::sqrt(rTM);
         Real invDTime=1/std::sqrt(rTD);
 
-        tempRes=phi*w*S*ddD*N2XmSM-phi*w*strD*rdD*N2X-w*strM*rdM*NX;
-        tempDelta=phi*w*ddD*N2XmSM;
-        tempGamma=(ddD/(vD*S))*(invMTime*nXm*NT12+w*invDTime*ndP*NeX);
-        tempVega=ddD*S*((1/invMTime)*nXm*NT12+w*(1/invDTime)*ndP*NeX);
-
-        tempTheta+=phi*w*dD*S*ddD*N2XmSM-phi*w*rD*strD*rdD*N2X-w*rD*strM*rdM*NX;
+        Real tempRes=phi*w*S*ddD*N2XmSM-phi*w*strD*rdD*N2X-w*strM*rdM*NX;
+        Real tempDelta=phi*w*ddD*N2XmSM;
+        Real tempGamma=(ddD/(vD*S))*(invMTime*nXm*NT12+w*invDTime*ndP*NeX);
+        Real tempVega=ddD*S*((1/invMTime)*nXm*NT12+w*(1/invDTime)*ndP*NeX);
+        Real tempTheta=phi*w*dD*S*ddD*N2XmSM-phi*w*rD*strD*rdD*N2X-w*rD*strM*rdM*NX;
         tempTheta-=0.5*vD*S*ddD*(invMTime*nXm*NT12+w*invDTime*ndP*NeX);
 
         results_.value=tempRes;
