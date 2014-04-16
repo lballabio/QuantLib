@@ -34,8 +34,8 @@ namespace QuantLib {
     namespace {
 
         // makes typing a little easier
-        typedef std::vector<boost::function1<Real, Real> > VF_R;
-        typedef std::vector<boost::function1<Real, Array> > VF_A;
+        typedef std::vector<boost::function1<Real, const Real&> > VF_R;
+        typedef std::vector<boost::function1<Real, const Array&> > VF_A;
         typedef std::vector<std::vector<Size> > VV;
         Real (GaussianOrthogonalPolynomial::*ptr_w)(Size, Real) const =
             &GaussianOrthogonalPolynomial::weightedValue;

@@ -73,7 +73,7 @@ namespace QuantLib {
         return path[t]*scalingValue_;
     }
 
-    std::vector<boost::function1<Real, Real> >
+    std::vector<boost::function1<Real, const Real&> >
     AmericanPathPricer::basisSystem() const {
         return v_;
     }

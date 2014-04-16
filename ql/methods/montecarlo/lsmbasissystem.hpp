@@ -39,10 +39,10 @@ namespace QuantLib {
         enum PolynomType { Monomial, Laguerre, Hermite, Hyperbolic,
                            Legendre, Chebyshev, Chebyshev2nd };
 
-        static std::vector<boost::function1<Real, Real> >
+        static std::vector<boost::function1<Real, const Real&> >
             pathBasisSystem(Size order, PolynomType polyType);
 
-        static std::vector<boost::function1<Real, Array> >
+        static std::vector<boost::function1<Real, const Array&> >
             multiPathBasisSystem(Size dim, Size order, PolynomType polyType);
     };
 
