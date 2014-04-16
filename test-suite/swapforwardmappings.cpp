@@ -145,7 +145,7 @@ namespace {
     }
 
     const boost::shared_ptr<SequenceStatisticsInc> simulate(
-        const std::vector<Real> todaysDiscounts,
+        const std::vector<Real>& todaysDiscounts,
         const boost::shared_ptr<MarketModelEvolver>& evolver,
         const MarketModelMultiProduct& product)
     {
