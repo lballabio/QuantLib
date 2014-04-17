@@ -40,7 +40,7 @@ namespace QuantLib {
       useAtmSpread_(false), forwardStart_(forwardStart),
 
       cmsSpread_(0.0), cmsGearing_(1.0),
-      cmsCap_(2.0), cmsFloor_(Null<Real>()),
+      cmsCap_(Null<Real>()), cmsFloor_(Null<Real>()),
 
       effectiveDate_(Date()),
       cmsCalendar_(swapIndex->fixingCalendar()),
@@ -71,7 +71,7 @@ namespace QuantLib {
       useAtmSpread_(false), forwardStart_(forwardStart),
 
       cmsSpread_(0.0), cmsGearing_(1.0),
-      cmsCap_(2.0), cmsFloor_(Null<Real>()),
+      cmsCap_(Null<Real>()), cmsFloor_(Null<Real>()),
 
       effectiveDate_(Date()),
       cmsCalendar_(swapIndex->fixingCalendar()),

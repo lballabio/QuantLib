@@ -54,7 +54,7 @@ namespace QuantLib {
     class VanillaSwingOption : public OneAssetOption {
       public:
           class arguments;
-          VanillaSwingOption(const boost::shared_ptr<StrikedTypePayoff>& payoff,
+          VanillaSwingOption(const boost::shared_ptr<Payoff>& payoff,
                              const boost::shared_ptr<SwingExercise>& ex,
                              Size minExerciseRights, Size maxExerciseRights)
         : OneAssetOption(payoff, ex),

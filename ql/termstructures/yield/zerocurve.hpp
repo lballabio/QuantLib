@@ -28,6 +28,7 @@
 #include <ql/termstructures/yield/zeroyieldstructure.hpp>
 #include <ql/termstructures/interpolatedcurve.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/interestrate.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <utility>
@@ -49,18 +50,24 @@ namespace QuantLib {
             const std::vector<Handle<Quote> >& jumps =
                                                 std::vector<Handle<Quote> >(),
             const std::vector<Date>& jumpDates = std::vector<Date>(),
-            const Interpolator& interpolator = Interpolator());
+            const Interpolator& interpolator = Interpolator(),
+            Compounding compounding = Continuous,
+            Frequency frequency = Annual);
         InterpolatedZeroCurve(
             const std::vector<Date>& dates,
             const std::vector<Rate>& yields,
             const DayCounter& dayCounter,
             const Calendar& calendar,
-            const Interpolator& interpolator);
+            const Interpolator& interpolator,
+            Compounding compounding = Continuous,
+            Frequency frequency = Annual);
         InterpolatedZeroCurve(
             const std::vector<Date>& dates,
             const std::vector<Rate>& yields,
             const DayCounter& dayCounter,
-            const Interpolator& interpolator);
+            const Interpolator& interpolator,
+            Compounding compounding = Continuous,
+            Frequency frequency = Annual);
         //! \name TermStructure interface
         //@{
         Date maxDate() const;
@@ -98,7 +105,7 @@ namespace QuantLib {
         //@}
         mutable std::vector<Date> dates_;
       private:
-        void initialize();
+        void initialize(const Compounding& compounding, const Frequency& frequency);
     };
 
     //! Term structure based on linear interpolation of zero yields
@@ -198,12 +205,14 @@ namespace QuantLib {
                                     const Calendar& calendar,
                                     const std::vector<Handle<Quote> >& jumps,
                                     const std::vector<Date>& jumpDates,
-                                    const T& interpolator)
+                                    const T& interpolator,
+                                    Compounding compounding,
+                                    Frequency frequency)
     : ZeroYieldStructure(dates.at(0), calendar, dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(std::vector<Time>(), yields, interpolator),
       dates_(dates)
     {
-        initialize();
+        initialize(compounding,frequency);
     }
 
     template <class T>
@@ -212,12 +221,14 @@ namespace QuantLib {
                                                const std::vector<Rate>& yields,
                                                const DayCounter& dayCounter,
                                                const Calendar& calendar,
-                                               const T& interpolator)
+                                               const T& interpolator,
+                                               Compounding compounding,
+                                               Frequency frequency)
     : ZeroYieldStructure(dates.at(0), calendar, dayCounter),
       InterpolatedCurve<T>(std::vector<Time>(), yields, interpolator),
       dates_(dates)
     {
-        initialize();
+        initialize(compounding,frequency);
     }
 
     template <class T>
@@ -225,18 +236,21 @@ namespace QuantLib {
                                                const std::vector<Date>& dates,
                                                const std::vector<Rate>& yields,
                                                const DayCounter& dayCounter,
-                                               const T& interpolator)
+                                               const T& interpolator,
+                                               Compounding compounding,
+                                               Frequency frequency)
     : ZeroYieldStructure(dates.at(0), Calendar(), dayCounter),
       InterpolatedCurve<T>(std::vector<Time>(), yields, interpolator),
       dates_(dates)
     {
-        initialize();
+        initialize(compounding,frequency);
     }
 
     #endif
 
     template <class T>
-    void InterpolatedZeroCurve<T>::initialize()
+    void InterpolatedZeroCurve<T>::initialize(const Compounding& compounding, 
+                                              const Frequency& frequency)
     {
         QL_REQUIRE(dates_.size() >= T::requiredPoints,
                    "not enough input dates given");
@@ -245,6 +259,18 @@ namespace QuantLib {
 
         this->times_.resize(dates_.size());
         this->times_[0] = 0.0;
+        if (compounding != Continuous) {
+            // We also have to convert the first rate.
+            // The first time is 0.0, so we can't use it.
+            // We fall back to about one day.
+            Time dt = 1.0/365;
+            InterestRate r(this->data_[0], dayCounter(), compounding, frequency);
+            this->data_[0] = r.equivalentRate(Continuous, NoFrequency, dt);
+            #if !defined(QL_NEGATIVE_RATES)
+            QL_REQUIRE(this->data_[0] > 0.0, "non-positive yield");
+            #endif
+        }
+
         for (Size i=1; i<dates_.size(); ++i) {
             QL_REQUIRE(dates_[i] > dates_[i-1],
                        "invalid date (" << dates_[i] << ", vs "
@@ -253,17 +279,25 @@ namespace QuantLib {
             QL_REQUIRE(!close(this->times_[i],this->times_[i-1]),
                        "two dates correspond to the same time "
                        "under this curve's day count convention");
+
+			// adjusting zero rates to match continuous compounding
+            if (compounding != Continuous)
+            {
+                InterestRate r(this->data_[i], dayCounter(), compounding, frequency);
+                this->data_[i] = r.equivalentRate(Continuous, NoFrequency, this->times_[i]);
+            }
+
             #if !defined(QL_NEGATIVE_RATES)
             QL_REQUIRE(this->data_[i] > 0.0, "non-positive yield");
             // positive yields are not enough to ensure non-negative fwd rates
             // so here's a stronger requirement
-            QL_REQUIRE(this->data_[i]   * this->times_[i] -
-                       this->data_[i-1] * this->times_[i-1] >= 0.0,
-                       "negative forward rate implied by the zero yield " <<
-                       io::rate(this->data_[i]) << " at " << dates_[i] <<
-                       " (t=" << this->times_[i] << ") after the zero yield " <<
-                       io::rate(this->data_[i-1]) << " at " << dates_[i-1] <<
-                       " (t=" << this->times_[i-1] << ")");
+            QL_REQUIRE(this->data_[i] * this->times_[i] -
+                this->data_[i - 1] * this->times_[i - 1] >= 0.0,
+                "negative forward rate implied by the zero yield " <<
+                io::rate(this->data_[i]) << " at " << dates_[i] <<
+                " (t=" << this->times_[i] << ") after the zero yield " <<
+                io::rate(this->data_[i - 1]) << " at " << dates_[i - 1] <<
+                " (t=" << this->times_[i - 1] << ")");
             #endif
         }
 

@@ -6,6 +6,7 @@ this_include_HEADERS = \
     all.hpp \
     adaptiverungekutta.hpp \
     claytoncopularng.hpp \
+    convolvedstudentt.hpp \
     expm.hpp \
     farliegumbelmorgensterncopularng.hpp \
     frankcopularng.hpp \
@@ -16,6 +17,7 @@ this_include_HEADERS = \
     zigguratrng.hpp
 
 libMath_la_SOURCES = \
+    convolvedstudentt.cpp \
 	expm.cpp \
     multidimintegrator.cpp \
     multidimquadrature.cpp \

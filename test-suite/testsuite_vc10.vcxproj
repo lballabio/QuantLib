@@ -652,6 +652,7 @@
     <ClCompile Include="convertiblebonds.cpp" />
     <ClCompile Include="covariance.cpp" />
     <ClCompile Include="creditdefaultswap.cpp" />
+    <ClCompile Include="creditriskplus.cpp" />
     <ClCompile Include="curvestates.cpp" />
     <ClCompile Include="dates.cpp" />
     <ClCompile Include="daycounters.cpp" />
@@ -778,6 +779,7 @@
     <ClInclude Include="convertiblebonds.hpp" />
     <ClInclude Include="covariance.hpp" />
     <ClInclude Include="creditdefaultswap.hpp" />
+    <ClInclude Include="creditriskplus.hpp" />
     <ClInclude Include="curvestates.hpp" />
     <ClInclude Include="dates.hpp" />
     <ClInclude Include="daycounters.hpp" />
