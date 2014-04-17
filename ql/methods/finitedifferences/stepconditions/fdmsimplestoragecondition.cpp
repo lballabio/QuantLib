@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2011 Klaus Spanderen
+ Copyright (C) 2014 Ralph Schreyer
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -74,20 +75,33 @@ namespace QuantLib {
                 const Real y = y_[coor[1]];
 
                 const Real price = calculator_->innerValue(iter, t);
-                Real currentValue = a[iter.index()];
 
-                // sell
-                if (coor[1] > 0) {
-                    const Real sellPrice = interpl(x, y-changeRate_);
-                    currentValue
-                        = std::max(currentValue, sellPrice + price*changeRate_);
+                const Real maxWithDraw = std::min(y-y_.front(), changeRate_);
+                const Real sellPrice   = interpl(x, y-maxWithDraw);
+
+                const Real maxInject = std::min(y_.back()-y, changeRate_);
+                const Real buyPrice  = interpl(x, y+maxInject);
+
+                // bang-bang-wait strategy
+                Real currentValue = std::max(a[iter.index()],
+                    std::max(buyPrice - price*maxInject,
+                             sellPrice + price*maxWithDraw));
+
+                // check if intermediate grid points give a better value
+                std::vector<Real>::const_iterator yIter =
+                    std::upper_bound(y_.begin(), y_.end(), y - maxWithDraw);
+
+                while (yIter != y_.end() && *yIter < y + maxInject) {
+                    if (*yIter != y) {
+                        const Real change = *yIter - y;
+                        const Real storagePrice(interpl(x, *yIter));
+
+                        currentValue = std::max(currentValue,
+                            storagePrice - change*price);
+                    }
+                    ++yIter;
                 }
-                // buy
-                if (coor[1] < y_.size()-1) {
-                    const Real buyPrice = interpl(x, y+changeRate_);
-                    currentValue
-                        = std::max(currentValue, buyPrice - price*changeRate_);
-                }
+
                 retVal[iter.index()] = currentValue;
             }
             a = retVal;

@@ -18,6 +18,7 @@ this_include_HEADERS = \
     binomialengine.hpp \
     bjerksundstenslandengine.hpp \
     discretizedvanillaoption.hpp \
+    hestonexpansionengine.hpp \
     integralengine.hpp \
     jumpdiffusionengine.hpp \
     juquadraticengine.hpp \
@@ -60,6 +61,7 @@ libVanillaEngines_la_SOURCES = \
     batesengine.cpp \
     bjerksundstenslandengine.cpp \
     discretizedvanillaoption.cpp \
+    hestonexpansionengine.cpp \
     integralengine.cpp \
     jumpdiffusionengine.cpp \
     juquadraticengine.cpp \

@@ -53,7 +53,9 @@ namespace QuantLib {
           copula_(copula),
           accuracy_(accuracy),
           seed_(seed),
-          rsg_(PseudoRandom::make_sequence_generator(pool->size()+1, seed)) {}
+          rsg_(PseudoRandom::make_sequence_generator(pool->size()+1, seed)) {
+        registerWith(copula);
+    }
 
     void GaussianRandomDefaultModel::reset() {
         Size dim = pool_->size() + 1;

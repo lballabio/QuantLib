@@ -186,7 +186,18 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
         // from "Option pricing formulas", Haug, McGraw-Hill 1998, pag 27
       { Option::Call,  40.00,  42.00, 0.08, 0.04, 0.75, 0.35,  5.2704 },
         // from "Option pricing formulas", Haug, McGraw-Hill 1998, VBA code
-      { Option::Put,   40.00,  36.00, 0.00, 0.06, 1.00, 0.20,  4.4531 }
+      { Option::Put,   40.00,  36.00, 0.00, 0.06, 1.00, 0.20,  4.4531 },
+        // ATM option with very small volatility, reference value taken from R
+      { Option::Call, 100, 100, 0.05, 0.05, 1.0, 0.0021, 0.08032314 },
+        // ATM option with very small volatility,
+        // reference value taken from Barone-Adesi and Whaley Approximation
+      { Option::Call, 100, 100, 0.05, 0.05, 1.0, 0.0001, 0.003860656 },
+      { Option::Call, 100, 99.99, 0.05, 0.05, 1.0, 0.0001, 0.00081 },
+        // ITM option with a very small volatility
+      { Option::Call, 100, 110, 0.05, 0.05, 1.0, 0.0001, 10.0 },
+      { Option::Put, 110, 100, 0.05, 0.05, 1.0, 0.0001, 10.0 },
+        // ATM option with a very large volatility
+      { Option::Put, 100, 110, 0.05, 0.05, 1.0, 10, 94.89543 }
     };
 
     Date today = Date::todaysDate();
@@ -199,7 +210,7 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
-    Real tolerance = 1.0e-4;
+    Real tolerance = 5.0e-5;
 
     for (Size i=0; i<LENGTH(values); i++) {
 

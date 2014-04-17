@@ -107,7 +107,7 @@ namespace QuantLib {
     public:
         MonteCarloCDOEngine1 (boost::shared_ptr<RandomDefaultModel> rdm,
                               Size samples)
-            : rdm_(rdm), samples_(samples) {}
+            : rdm_(rdm), samples_(samples) { registerWith(rdm); }
     private:
         void defaultScenarios() const;
 
@@ -161,7 +161,7 @@ namespace QuantLib {
       public:
         MonteCarloCDOEngine2 (boost::shared_ptr<RandomDefaultModel> rdm,
                               Size samples)
-            : rdm_(rdm), samples_(samples) {}
+            : rdm_(rdm), samples_(samples) { registerWith(rdm); }
         void calculate() const;
       private:
         // not needed here

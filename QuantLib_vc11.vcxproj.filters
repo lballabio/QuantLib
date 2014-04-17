@@ -1041,6 +1041,9 @@
     <ClInclude Include="ql\math\integrals\all.hpp">
       <Filter>math\integrals</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\integrals\filonintegral.hpp">
+      <Filter>math\integrals</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\integrals\gaussianorthogonalpolynomial.hpp">
       <Filter>math\integrals</Filter>
     </ClInclude>
@@ -2319,6 +2322,9 @@
     <ClInclude Include="ql\pricingengines\vanilla\discretizedvanillaoption.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\vanilla\hestonexpansionengine.hpp">
+      <Filter>pricingengines\vanilla</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\vanilla\fdamericanengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
@@ -3087,6 +3093,9 @@
     <ClInclude Include="ql\experimental\risk\all.hpp">
       <Filter>experimental\risk</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\risk\creditriskplus.hpp">
+      <Filter>experimental\risk</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\risk\sensitivityanalysis.hpp">
       <Filter>experimental\risk</Filter>
     </ClInclude>
@@ -3310,6 +3319,9 @@
       <Filter>experimental\math</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\math\claytoncopularng.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\math\convolvedstudentt.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\math\expm.hpp">
@@ -4126,6 +4138,9 @@
     </ClCompile>
     <ClCompile Include="ql\math\distributions\studenttdistribution.cpp">
       <Filter>math\distributions</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\integrals\filonintegral.cpp">
+      <Filter>math\integrals</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\integrals\gaussianorthogonalpolynomial.cpp">
       <Filter>math\integrals</Filter>
@@ -4979,6 +4994,9 @@
     <ClCompile Include="ql\pricingengines\vanilla\discretizedvanillaoption.cpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
+    <ClCompile Include="ql\pricingengines\vanilla\hestonexpansionengine.cpp">
+      <Filter>pricingengines\vanilla</Filter>
+    </ClCompile>
     <ClCompile Include="ql\pricingengines\vanilla\fdvanillaengine.cpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
@@ -5558,6 +5576,9 @@
     <ClCompile Include="ql\experimental\processes\vegastressedblackscholesprocess.cpp">
       <Filter>experimental\processes</Filter>
     </ClCompile>
+    <ClCompile Include="ql\experimental\risk\creditriskplus.cpp">
+      <Filter>experimental\risk</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\risk\sensitivityanalysis.cpp">
       <Filter>experimental\risk</Filter>
     </ClCompile>
@@ -5701,6 +5722,9 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\inflation\yoyoptionlethelpers.cpp">
       <Filter>experimental\inflation</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\math\convolvedstudentt.cpp">
+      <Filter>experimental\math</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\math\expm.cpp">
       <Filter>experimental\math</Filter>

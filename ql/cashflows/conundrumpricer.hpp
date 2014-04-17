@@ -254,7 +254,8 @@ namespace QuantLib {
             const Handle<Quote>& meanReversion,
             Rate lowerLimit = 0.0,
             Rate upperLimit = 1.0,
-            Real precision = 1.0e-6);
+            Real precision = 1.0e-6,
+            Real hardUpperLimit = QL_MAX_REAL);
 
        Real upperLimit() { return upperLimit_; }
        Real stdDeviations() { return stdDeviationsForUpperLimit_; }
@@ -309,6 +310,7 @@ namespace QuantLib {
 
         mutable Real upperLimit_, stdDeviationsForUpperLimit_;
         const Real lowerLimit_, requiredStdDeviations_, precision_, refiningIntegrationTolerance_;
+        const Real hardUpperLimit_;
     };
 
     //! CMS-coupon pricer
