@@ -551,6 +551,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\creditriskplus.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\curvestates.cpp"
 				>
 			</File>
@@ -1045,6 +1049,10 @@
 			</File>
 			<File
 				RelativePath=".\creditdefaultswap.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\creditriskplus.hpp"
 				>
 			</File>
 			<File

@@ -245,13 +245,15 @@ namespace QuantLib {
         const Handle<Quote>& meanReversion,
         Real lowerLimit,
         Real upperLimit,
-        Real precision)
+        Real precision,
+        Real hardUpperLimit)
     : HaganPricer(swaptionVol, modelOfYieldCurve, meanReversion),
        upperLimit_(upperLimit),
        lowerLimit_(lowerLimit),
        requiredStdDeviations_(8),
        precision_(precision),
-       refiningIntegrationTolerance_(.0001){
+       refiningIntegrationTolerance_(.0001),
+       hardUpperLimit_(hardUpperLimit) {
 
     }
 
@@ -282,6 +284,7 @@ namespace QuantLib {
                     gaussKronrodNonAdaptive(precision_, 1000000, 1.0);
                 // if the integration intervall is wide enough we use the
                 // following change variable x -> a + (b-a)*(t/(a-b))^3
+                upperBoundary = std::max(a,std::min(upperBoundary, hardUpperLimit_));
                 if (upperBoundary > 2*a){
                     Size k = 3;
                     boost::function<Real (Real)> temp = boost::ref(integrand);
@@ -295,13 +298,14 @@ namespace QuantLib {
 
                 // if the expected precision has not been reached we use the old algorithm
                 if (!gaussKronrodNonAdaptive.integrationSuccess()){
-                    const GaussKronrodAdaptive integrator(precision_, 1000000);
+                    const GaussKronrodAdaptive integrator(precision_, 100000);
+                    b = std::max(a,std::min(b, hardUpperLimit_));
                     result = integrator(integrand,a , b);
                 }
 
             } else {   // if a < b we use the old algorithm
-
-                const GaussKronrodAdaptive integrator(precision_, 1000000);
+                b = std::max(a,std::min(b,hardUpperLimit_));
+                const GaussKronrodAdaptive integrator(precision_, 100000);
                 result = integrator(integrand,a , b);
             }
             return result;
