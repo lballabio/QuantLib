@@ -85,7 +85,7 @@ namespace QuantLib {
         return this->payoff(this->state(path, t));
     }
 
-    std::vector<boost::function1<Real, const Array&> >
+    std::vector<boost::function1<Real, Array> >
     AmericanBasketPathPricer::basisSystem() const {
         return v_;
     }

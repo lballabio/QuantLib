@@ -732,7 +732,7 @@ void VPPTest::testVPPPricing() {
 
     // regression functions
     const Size dim = 1u;
-    std::vector<boost::function1<Real, const Array&> > v(
+    std::vector<boost::function1<Real, Array> > v(
         LsmBasisSystem::multiPathBasisSystem(dim,5u, LsmBasisSystem::Monomial));
 
     for (Size i=exercise->dates().size(); i > 0u; --i) {
