@@ -258,7 +258,7 @@ namespace {
             boost::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
         for (Size i = 0; i < nSwapTenors; ++i) {
             Real betaInf = smileAndCms_->betaTransformDirect(x[0 + 3 * i]);
-            Real beta0 = smileAndCms_->betaTransformDirect(x[1] + 3 * i);
+            Real beta0 = smileAndCms_->betaTransformDirect(x[1 + 3 * i]);
             Real decay = x[2 + 3 * i] * x[2 + 3 * i];
             std::vector<Real> beta(nSwapLengths);
             for (Size i = 0; i < beta.size(); i++) {
@@ -291,7 +291,7 @@ namespace {
             boost::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
         for (Size i = 0; i < nSwapTenors; ++i) {
             Real betaInf = smileAndCms_->betaTransformDirect(x[0 + 3 * i]);
-            Real beta0 = smileAndCms_->betaTransformDirect(x[1] + 3 * i);
+            Real beta0 = smileAndCms_->betaTransformDirect(x[1 + 3 * i]);
             Real decay = x[2 + 3 * i] * x[2 + 3 * i];
             std::vector<Real> beta(nSwapLengths);
             for (Size i = 0; i < beta.size(); i++) {
@@ -538,8 +538,6 @@ namespace QuantLib {
                 }
             }
         } else {
-            QL_FAIL("parametric beta calibration with mean reversion free not "
-                    "implemented");
             NoConstraint constraint;
             Array betasReversionGuess(nParams + 1);
             for (Size i = 0; i < nSwapTenors; ++i) {
