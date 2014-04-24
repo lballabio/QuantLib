@@ -26,6 +26,9 @@
 #define quantlib_chinese_calendar_hpp
 
 #include <ql/time/calendar.hpp>
+#include <set>
+#include <vector>
+#include <boost/assign.hpp>
 
 namespace QuantLib {
 
@@ -49,7 +52,8 @@ namespace QuantLib {
         <li>Mid-Autumn Festival</li>
         </ul>
 
-        Data from <http://www.sse.com.cn/>
+        Sse Data from <http://www.sse.com.cn/>
+		ChinaIB Data from <http://www.chinamoney.com.cn/>
 
         \ingroup calendars
     */
@@ -61,8 +65,24 @@ namespace QuantLib {
             bool isWeekend(Weekday) const;
             bool isBusinessDay(const Date&) const;
         };
+
+		class ChinaIB : public Calendar::Impl {
+		public:
+			ChinaIB() {
+				sseImpl = boost::shared_ptr<Calendar::Impl>(new China::SseImpl);
+			}
+			std::string name() const { return "China inter bank market";}
+			bool isWeekend(Weekday) const;
+			bool isBusinessDay(const Date&) const;
+
+		private:
+			boost::shared_ptr<Calendar::Impl> sseImpl;
+
+			const std::set<Date>& badWeekends() const;
+		};
       public:
-        enum Market { SSE    //!< Shanghai stock exchange
+        enum Market { SSE,    //!< Shanghai stock exchange
+			          IB
         };
         China(Market m = SSE);
     };
