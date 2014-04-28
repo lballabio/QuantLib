@@ -26,7 +26,7 @@ namespace QuantLib {
     China::China(Market m) {
         // all calendar instances share the same implementation instance
         static boost::shared_ptr<Calendar::Impl> sseImpl(new China::SseImpl);
-        static boost::shared_ptr<Calendar::Impl> IBImpl(new China::ChinaIB);
+        static boost::shared_ptr<Calendar::Impl> IBImpl(new China::IbImpl);
         switch (m) {
           case SSE:
             impl_ = sseImpl;
@@ -124,11 +124,11 @@ namespace QuantLib {
         return true;
     }
 
-    bool China::ChinaIB::isWeekend(Weekday w) const {
+    bool China::IbImpl::isWeekend(Weekday w) const {
         return w == Saturday || w == Sunday;
     }
 
-    bool China::ChinaIB::isBusinessDay(const Date& date) const {
+    bool China::IbImpl::isBusinessDay(const Date& date) const {
 
         bool isNormalBizDay = sseImpl->isBusinessDay(date);
 
@@ -144,7 +144,7 @@ namespace QuantLib {
         }
     }
 
-    const std::set<Date>& China::ChinaIB::badWeekends() const {
+    const std::set<Date>& China::IbImpl::badWeekends() const {
 
         // Hard coded working weekends
 

@@ -52,8 +52,8 @@ namespace QuantLib {
         <li>Mid-Autumn Festival</li>
         </ul>
 
-        Sse Data from <http://www.sse.com.cn/>
-        ChinaIB Data from <http://www.chinamoney.com.cn/>
+        SSE data from <http://www.sse.com.cn/>
+        IB data from <http://www.chinamoney.com.cn/>
 
         \ingroup calendars
     */
@@ -66,9 +66,9 @@ namespace QuantLib {
             bool isBusinessDay(const Date&) const;
         };
 
-        class ChinaIB : public Calendar::Impl {
+        class IbImpl : public Calendar::Impl {
           public:
-            ChinaIB() {
+            IbImpl() {
                 sseImpl = boost::shared_ptr<Calendar::Impl>(new China::SseImpl);
             }
             std::string name() const { return "China inter bank market";}
@@ -80,7 +80,7 @@ namespace QuantLib {
         };
       public:
         enum Market { SSE,    //!< Shanghai stock exchange
-                      IB
+                      IB      //!< Interbank calendar
         };
         China(Market m = SSE);
     };
