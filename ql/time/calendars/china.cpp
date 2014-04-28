@@ -20,6 +20,7 @@
 
 #include <ql/time/calendars/china.hpp>
 #include <ql/errors.hpp>
+#include <set>
 
 namespace QuantLib {
 
@@ -129,35 +130,35 @@ namespace QuantLib {
     }
 
     bool China::IbImpl::isBusinessDay(const Date& date) const {
-
-        bool isNormalBizDay = sseImpl->isBusinessDay(date);
-
-        if(isNormalBizDay) {
-            // If it is already a SSE business day, it must be a IB business day
-            return isNormalBizDay;
-        } else {
-            const std::set<Date>& badWeekendList = badWeekends();
-            if(badWeekendList.find(date) != badWeekendList.end())
-                return true;
-            else
-                return false;
-        }
-    }
-
-    const std::set<Date>& China::IbImpl::badWeekends() const {
-
-        // Hard coded working weekends
-
-        static const std::vector<Date> vec
-            = boost::assign::list_of<Date>
+        static const Date working_weekends[] = {
             // 2013
-            (Date(5,Jan,2013))(Date(6,Jan,2013))(Date(16,Feb,2013))(Date(17,Feb,2013))(Date(7,Apr,2013))(Date(27,Apr,2013))(Date(28,Apr,2013))
-            (Date(8,Jun,2013))(Date(9,Jun,2013))(Date(22,Sep,2013))(Date(29,Sep,2013))(Date(12,Oct,2013))
+            Date(5,January,2013),
+            Date(6,January,2013),
+            Date(16,February,2013),
+            Date(17,February,2013),
+            Date(7,April,2013),
+            Date(27,April,2013),
+            Date(28,April,2013),
+            Date(8,June,2013),
+            Date(9,June,2013),
+            Date(22,September,2013),
+            Date(29,September,2013),
+            Date(12,October,2013),
             // 2014
-            (Date(26,Jan,2014))(Date(8,Feb,2014))(Date(4,May,2014))(Date(28,Sep,2014))(Date(11,Oct,2014));
+            Date(26,January,2014),
+            Date(8,February,2014),
+            Date(4,May,2014),
+            Date(28,September,2014),
+            Date(11,October,2014)
+        };
+        static const Size n =
+            sizeof(working_weekends)/sizeof(working_weekends[0]);
+        static const std::set<Date> workingWeekends(working_weekends+0,
+                                                    working_weekends+n);
 
-        static const std::set<Date> badWeekendList(vec.begin(), vec.end());
-        return badWeekendList;
+        // If it is already a SSE business day, it must be a IB business day
+        return sseImpl->isBusinessDay(date) ||
+            (workingWeekends.find(date) != workingWeekends.end());
     }
 
 }

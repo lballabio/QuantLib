@@ -26,9 +26,6 @@
 #define quantlib_chinese_calendar_hpp
 
 #include <ql/time/calendar.hpp>
-#include <set>
-#include <vector>
-#include <boost/assign.hpp>
 
 namespace QuantLib {
 
@@ -76,7 +73,6 @@ namespace QuantLib {
             bool isBusinessDay(const Date&) const;
           private:
             boost::shared_ptr<Calendar::Impl> sseImpl;
-            const std::set<Date>& badWeekends() const;
         };
       public:
         enum Market { SSE,    //!< Shanghai stock exchange
