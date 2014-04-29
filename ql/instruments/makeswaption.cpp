@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007, 2008 Ferdinando Ametrano
+ Copyright (C) 2007, 2008, 2014 Ferdinando Ametrano
  Copyright (C) 2007 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library
@@ -56,11 +56,14 @@ namespace QuantLib {
 
     MakeSwaption::operator boost::shared_ptr<Swaption>() const {
 
-        const Date& evaluationDate = Settings::instance().evaluationDate();
         const Calendar& fixingCalendar = swapIndex_->fixingCalendar();
-        if(fixingDate_ == Null<Date>())
-            fixingDate_ = fixingCalendar.advance(evaluationDate, optionTenor_,
-                                             optionConvention_);
+        Date refDate = Settings::instance().evaluationDate();
+        // if the evaluation date is not a business day
+        // then move to the next business day
+        refDate = fixingCalendar.adjust(refDate);
+        if (fixingDate_ == Null<Date>())
+            fixingDate_ = fixingCalendar.advance(refDate, optionTenor_,
+                                                 optionConvention_);
         if (exerciseDate_ == Null<Date>()) {
             exercise_ = boost::shared_ptr<Exercise>(new
                 EuropeanExercise(fixingDate_));

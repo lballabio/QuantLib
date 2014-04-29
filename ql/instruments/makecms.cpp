@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006, 2007 Ferdinando Ametrano
+ Copyright (C) 2006, 2007, 2014 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -103,8 +103,11 @@ namespace QuantLib {
             startDate = effectiveDate_;
         else {
             Natural fixingDays = iborIndex_->fixingDays();
-            Date referenceDate = Settings::instance().evaluationDate();
-            Date spotDate = floatCalendar_.advance(referenceDate,
+            Date refDate = Settings::instance().evaluationDate();
+            // if the evaluation date is not a business day
+            // then move to the next business day
+            refDate = floatCalendar_.adjust(refDate);
+            Date spotDate = floatCalendar_.advance(refDate,
                                                    fixingDays*Days);
             startDate = spotDate+forwardStart_;
         }
