@@ -1398,7 +1398,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit136]
-FileName=surface.hpp
+FileName=piecewisezerospreadedtermstructure.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1
@@ -1408,7 +1408,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit137]
-FileName=surface.cpp
+FileName=piecewisezerospreadedtermstructure.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1
@@ -2528,7 +2528,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit249]
-FileName=piecewisezerospreadedtermstructure.cpp
+FileName=creditriskplus.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1
@@ -2538,7 +2538,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit250]
-FileName=piecewisezerospreadedtermstructure.hpp
+FileName=creditriskplus.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1

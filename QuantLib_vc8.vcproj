@@ -2136,10 +2136,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\math\domain.hpp"
-				>
-			</File>
-			<File
 				RelativePath="ql\math\errorfunction.cpp"
 				>
 			</File>
@@ -2249,14 +2245,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\math\solver1d.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\math\surface.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\math\surface.hpp"
 				>
 			</File>
 			<File
@@ -2460,6 +2448,14 @@
 				>
 				<File
 					RelativePath=".\ql\math\integrals\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\integrals\filonintegral.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\integrals\filonintegral.hpp"
 					>
 				</File>
 				<File
@@ -5575,6 +5571,14 @@
 					>
 				</File>
 				<File
+					RelativePath="ql\pricingengines\vanilla\hestonexpansionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\pricingengines\vanilla\hestonexpansionengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\pricingengines\vanilla\fdamericanengine.hpp"
 					>
 				</File>
@@ -7575,6 +7579,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\risk\creditriskplus.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\risk\creditriskplus.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\risk\sensitivityanalysis.cpp"
 					>
 				</File>
@@ -8131,6 +8143,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\math\convolvedstudentt.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\convolvedstudentt.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\math\expm.cpp"
 					>
 				</File>
@@ -8144,6 +8164,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\math\frankcopularng.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\polarstudenttrng.hpp"
 					>
 				</File>
 				<File

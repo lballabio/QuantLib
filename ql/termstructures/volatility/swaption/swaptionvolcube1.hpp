@@ -131,6 +131,9 @@ namespace QuantLib {
                                     const Period& swapTenor) const;
         void recalibration(Real beta,
                            const Period& swapTenor);
+        void recalibration(std::vector<Real> &beta,
+                           const Period& swapTenor);
+        void updateAfterRecalibration();
      protected:
         void registerWithParametersGuess();
         boost::shared_ptr<SmileSection> smileSection(

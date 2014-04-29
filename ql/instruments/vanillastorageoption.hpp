@@ -63,11 +63,6 @@ namespace QuantLib {
                       "positive capacity, load and change rate required");
             QL_REQUIRE(load <= capacity && changeRate <= capacity,
                         "illegal values load of changeRate");
-            QL_REQUIRE(   std::fabs(capacity/changeRate
-                           - std::floor(capacity/changeRate+0.5)) < QL_EPSILON
-                       && std::fabs(load/changeRate
-                               - std::floor(load/changeRate+0.5)) < QL_EPSILON,
-                       "load and capacity must be multiple of changeRate");
         }
 
         Real capacity;

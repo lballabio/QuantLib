@@ -70,6 +70,7 @@
 #include "convertiblebonds.hpp"
 #include "covariance.hpp"
 #include "creditdefaultswap.hpp"
+#include "creditriskplus.hpp"
 #include "curvestates.hpp"
 #include "dates.hpp"
 #include "daycounters.hpp"
@@ -145,7 +146,6 @@
 #include "solvers.hpp"
 #include "spreadoption.hpp"
 #include "swingoption.hpp"
-#include "surface.hpp"
 #include "stats.hpp"
 #include "swap.hpp"
 #include "swapforwardmappings.hpp"
@@ -332,7 +332,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ShortRateModelTest::suite()); // fails with QL_USE_INDEXED_COUPON
     test->add(Solver1DTest::suite());
     test->add(StatisticsTest::suite());
-    test->add(SurfaceTest::suite());
     test->add(SwapTest::suite());
     test->add(SwapForwardMappingsTest::suite());
     test->add(SwaptionTest::suite());
@@ -357,6 +356,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CommodityUnitOfMeasureTest::suite());
     test->add(CompoundOptionTest::suite());
     test->add(ConvertibleBondTest::suite());
+    test->add(CreditRiskPlusTest::suite());
     test->add(EuropeanOptionTest::experimental());
     test->add(EverestOptionTest::suite());
     test->add(ExtendedTreesTest::suite());

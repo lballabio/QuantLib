@@ -95,6 +95,9 @@
     <ClCompile Include="creditdefaultswap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="creditriskplus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="curvestates.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -314,9 +317,6 @@
     <ClCompile Include="stats.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="surface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="swap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -468,6 +468,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="creditdefaultswap.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="creditriskplus.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="curvestates.hpp">
@@ -687,9 +690,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stats.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="surface.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="swap.hpp">

@@ -34,7 +34,7 @@ namespace QuantLib {
 
     //! Base class for random default models
     /*! Provides sequences of random default times for each name in the pool. */
-    class RandomDefaultModel {
+    class RandomDefaultModel : public Observer, public Observable {
     public:
         RandomDefaultModel(boost::shared_ptr<Pool> pool,
                            const std::vector<DefaultProbKey>& defaultKeys)
@@ -44,6 +44,7 @@ namespace QuantLib {
                        "Incompatible pool and keys sizes.");
         }
         virtual ~RandomDefaultModel() {}
+        void update() { notifyObservers(); }
         /*!
           Generate a sequence of random default times, one for each name in the
           pool, and store the result in the Pool using method setTime(name).

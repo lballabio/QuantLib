@@ -59,8 +59,8 @@ namespace {
         SavedSettings backup;
 
         // setup
-        CommonVars() {
-            nominals = std::vector<Real>(1,100);
+        CommonVars()
+        : nominals(1,100) {
             frequency = Semiannual;
             index = boost::shared_ptr<IborIndex>(new Euribor6M(termStructure));
             calendar = index->fixingCalendar();

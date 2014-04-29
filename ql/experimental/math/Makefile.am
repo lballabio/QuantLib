@@ -6,13 +6,16 @@ this_include_HEADERS = \
     all.hpp \
     adaptiverungekutta.hpp \
     claytoncopularng.hpp \
+    convolvedstudentt.hpp \
     expm.hpp \
     farliegumbelmorgensterncopularng.hpp \
     frankcopularng.hpp \
+	polarstudenttrng.hpp \
     simulatedannealing.hpp \
     zigguratrng.hpp
 
 libMath_la_SOURCES = \
+    convolvedstudentt.cpp \
 	expm.cpp \
     zigguratrng.cpp
 

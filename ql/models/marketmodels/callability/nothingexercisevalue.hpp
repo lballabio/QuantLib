@@ -28,7 +28,8 @@ namespace QuantLib {
     class NothingExerciseValue : public MarketModelExerciseValue {
       public:
         //! \todo use Payoff
-        NothingExerciseValue(const std::vector<Time>& rateTimes);
+        NothingExerciseValue(const std::vector<Time>& rateTimes,
+                             const std::valarray<bool>& isExerciseTime = std::valarray<bool>());
         Size numberOfExercises() const;
         // including any time at which state should be updated
         const EvolutionDescription& evolution() const;
@@ -42,6 +43,7 @@ namespace QuantLib {
       private:
         Size numberOfExercises_;
         std::vector<Time> rateTimes_;
+        std::valarray<bool> isExerciseTime_;
         EvolutionDescription evolution_;
         // evolving
         Size currentIndex_;

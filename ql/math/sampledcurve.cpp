@@ -76,7 +76,7 @@ namespace QuantLib {
         Array::const_iterator grid;
         for (val = newValues.begin(), grid = new_grid.begin() ;
              grid != new_grid.end();
-             val++, grid++) {
+             ++val, ++grid) {
             *val = priceSpline(*grid, true);
         }
         values_.swap(newValues);

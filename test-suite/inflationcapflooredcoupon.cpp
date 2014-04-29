@@ -113,9 +113,9 @@ namespace {
         SavedSettings backup;
 
         // setup
-        CommonVars() {
+        CommonVars()
+        : nominals(1,1000000) {
             // option variables
-            nominals = std::vector<Real>(1,1000000);
             frequency = Annual;
             // usual setup
             volatility = 0.01;
@@ -237,8 +237,8 @@ namespace {
 
         Leg makeYoYCapFlooredLeg(Size which, const Date& startDate,
                               Integer length,
-                              const std::vector<Rate> caps,
-                              const std::vector<Rate> floors,
+                              const std::vector<Rate>& caps,
+                              const std::vector<Rate>& floors,
                               Volatility volatility,
                               const Rate gearing = 1.0,
                               const Rate spread = 0.0) {

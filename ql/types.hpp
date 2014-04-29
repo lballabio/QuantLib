@@ -77,6 +77,10 @@ namespace QuantLib {
     /*! \ingroup types */
     typedef Real Volatility;
 
+    //! probability
+    /*! \ingroup types */
+    typedef Real Probability;
+
 }
 
 

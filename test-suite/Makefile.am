@@ -29,6 +29,7 @@ QL_TESTS = \
 	convertiblebonds.hpp convertiblebonds.cpp \
 	covariance.hpp covariance.cpp \
 	creditdefaultswap.hpp creditdefaultswap.cpp \
+	creditriskplus.hpp creditriskplus.cpp \
 	curvestates.hpp curvestates.cpp \
 	dates.hpp dates.cpp \
 	daycounters.hpp daycounters.cpp \
@@ -105,7 +106,6 @@ QL_TESTS = \
 	solvers.hpp solvers.cpp \
 	spreadoption.hpp spreadoption.cpp \
 	stats.hpp stats.cpp \
-	surface.hpp surface.cpp \
 	swap.hpp swap.cpp \
 	swapforwardmappings.hpp swapforwardmappings.cpp \
 	swaption.hpp swaption.cpp \
