@@ -5,6 +5,7 @@
  Copyright (C) 2006 Cristina Duminuco
  Copyright (C) 2006 Marco Bianchetti
  Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2014 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -91,7 +92,8 @@ namespace QuantLib {
                               Real accuracy = 1.0e-4,
                               Natural maxEvaluations = 100,
                               Volatility minVol = 1.0e-7,
-                              Volatility maxVol = 4.0) const;
+                              Volatility maxVol = 4.0,
+                              Real displacement = 0.0) const;
       private:
         // arguments
         boost::shared_ptr<VanillaSwap> swap_;
