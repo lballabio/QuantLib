@@ -72,4 +72,12 @@
 //#   define QL_ENABLE_SESSIONS
 #endif
 
+/* Define this to have thread safe singletons using single lock mechanism. 
+   DCLP was not used. See http://www.drdobbs.com/cpp/c-and-the-perils-of-double-checked-locki/184405726
+   Enabling this may cause a perfomance decrease. To reduce perfomance decrease,
+   See section 7 of http://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf */
+#ifndef QL_SINGLETON_LOCK
+//#   define QL_SINGLETON_LOCK
+#endif
+
 #endif
