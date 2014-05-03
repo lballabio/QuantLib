@@ -109,7 +109,7 @@ namespace QuantLib {
             if (close(rate, 0.0))
                 rate = 0.03; // this value is at least better than zero
             weightedRate += arguments_.fixedNominal[i] * rate;
-            if (arguments_.fixedNominal[i] > 1.0)
+            if (arguments_.fixedNominal[i] > 1E-8) // exclude zero nominal periods
                 ind += 1.0;
         }
         Real nominalAvg = nominalSum / ind;
@@ -121,7 +121,8 @@ namespace QuantLib {
         weightedRate /= nominalSum;
         initial[0] = nominalAvg;
         initial[1] =
-            model_->termStructure()->timeFromReference(underlyingLastDate());
+            model_->termStructure()->timeFromReference(underlyingLastDate()) -
+            model_->termStructure()->timeFromReference(expiry);
         initial[2] = weightedRate;
 
         return initial;
