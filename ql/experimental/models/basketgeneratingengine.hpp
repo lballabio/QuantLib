@@ -155,7 +155,6 @@ namespace QuantLib {
                 if (v[0] < 0.0)
                     type *= -1;
                 Real maturity = std::min(fabs(v[1]), maxMaturity_);
-                Real mat0=maturity; // just debug
 
                 Real fixedRate = v[2]; // allow for negative rates explicitly
                 // (though it might not be reasonable for calibration depending
