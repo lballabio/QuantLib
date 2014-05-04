@@ -220,10 +220,12 @@ namespace QuantLib {
             1;
         Date d1 = d0;
 
+        int e = 1;
         while (d1 <= maturity) {
             i++;
-            d1 = std::min<Date>(nodes[i], maturity+1);
-            if(d1 == maturity) ++d1; // last day included
+            d1 = std::min<Date>(nodes[i], maturity);
+            if(d1==maturity)
+                e=0;
             // Real P0 = discountCurve_->discount(nodes[i]);
             // Real P1 = discountCurve_->discount(nodes[i + 1]);
             // Real Q0 = probability_->survivalProbability(nodes[i]);
@@ -231,8 +233,8 @@ namespace QuantLib {
             // std::cout << "handling the period " << d0 << " to " << d1;
             Real P0 = discountCurve_->discount(d0);
             Real P1 = discountCurve_->discount(d1);
-            Real Q0 = probability_->survivalProbability(d0);
-            Real Q1 = probability_->survivalProbability(d1);
+            Real Q0 = probability_->survivalProbability(d0-1); // these are_ end_ of day probs
+            Real Q1 = probability_->survivalProbability(d1-e);
 
             Real fhat = std::log(P0) - std::log(P1);
             Real hhat = std::log(Q0) - std::log(Q1);
@@ -290,13 +292,10 @@ namespace QuantLib {
                 Date start = std::max<Date>(coupon->accrualStartDate(),
                                             effectiveProtectionStart);
                 Date end = coupon->accrualEndDate();
-                if (maturity == end)
-                     end = maturity+1; // last period
                 Real tstart =
                     discountCurve_->timeFromReference(start) -
                     (accrualBias_ == HalfDayBias ? -1.0 / 730.0 : 0.0);
                 Real tend = discountCurve_->timeFromReference(end);
-
                 std::vector<Date> localNodes;
                 if (forwardsInCouponPeriod_ == Piecewise) {
                     std::vector<Date>::const_iterator it0 =
@@ -319,16 +318,19 @@ namespace QuantLib {
                 }
 
                 Real defaultAccrThisNode = 0.;
+                int e=1;
                 for (Size k = 0; k < localNodes.size() - 1; k++) {
+                    if(localNodes[k+1]==maturity)
+                        e=0;
                     Real t0 = discountCurve_->timeFromReference(localNodes[k]);
                     Real t1 =
                         discountCurve_->timeFromReference(localNodes[k + 1]);
                     Real P0 = discountCurve_->discount(localNodes[k]);
                     Real Q0 =
-                        probability_->survivalProbability(localNodes[k]);
+                        probability_->survivalProbability(localNodes[k]-1);
                     Real P1 = discountCurve_->discount(localNodes[k + 1]);
                     Real Q1 =
-                        probability_->survivalProbability(localNodes[k + 1]);
+                        probability_->survivalProbability(localNodes[k + 1]-e);
                     Real fhat = std::log(P0) - std::log(P1);
                     Real hhat = std::log(Q0) - std::log(Q1);
                     Real fhphh = fhat + hhat;
