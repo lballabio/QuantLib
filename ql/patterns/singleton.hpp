@@ -26,6 +26,7 @@
 
 #include <ql/types.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/atomic.hpp>
 #include <boost/thread/mutex.hpp>
 #if defined(QL_PATCH_MSVC)
     #pragma managed(push, off)
@@ -79,16 +80,17 @@ namespace QuantLib {
     */
     template <class T>
     class Singleton : private boost::noncopyable {
-    
-    #if defined(QL_SINGLETON_LOCK)   
-    private:
-        static boost::mutex mutex_;
-    #endif
-
-    #if (QL_MANAGED == 1)
+    #if (QL_MANAGED == 1) && !defined(QL_SINGLETON_THREAD_SAFE)
       private:
         static std::map<Integer, boost::shared_ptr<T> > instances_;
     #endif
+
+    #if defined(QL_SINGLETON_THREAD_SAFE)
+      private:
+        static boost::atomic<T*> instance_;
+        static boost::mutex mutex_;
+    #endif
+
       public:
         //! access to the unique instance
         static T& instance();
@@ -96,36 +98,54 @@ namespace QuantLib {
         Singleton() {}
     };
 
-    #if defined(QL_SINGLETON_LOCK) 
+    // static member definitions
+    
+    #if (QL_MANAGED == 1) && !defined(QL_SINGLETON_THREAD_SAFE)
+      template <class T>
+      std::map<Integer, boost::shared_ptr<T> > Singleton<T>::instances_;
+    #endif
+
+    #if defined(QL_SINGLETON_THREAD_SAFE) 
+    template <class T>  boost::atomic<T*> Singleton<T>::instance_;
     template <class T> boost::mutex Singleton<T>::mutex_;
     #endif
     
-    #if (QL_MANAGED == 1)
-    // static member definition
-    template <class T>
-    std::map<Integer, boost::shared_ptr<T> > Singleton<T>::instances_;
-    #endif
-
     // template definitions
 
     template <class T>
     T& Singleton<T>::instance() {
 
-        #if defined(QL_SINGLETON_LOCK) 
-        boost::mutex::scoped_lock lock(mutex_);
-        #endif
-        
-        #if (QL_MANAGED == 0)
+        #if (QL_MANAGED == 0) && !defined(QL_SINGLETON_THREAD_SAFE)
         static std::map<Integer, boost::shared_ptr<T> > instances_;
         #endif
+
         #if defined(QL_ENABLE_SESSIONS)
-        Integer id = sessionId();
+          Integer id = sessionId();
         #else
-        Integer id = 0;
+          Integer id = 0;
         #endif
+        
+        /*thread safe double checked locking pattern with atomic memory calls
+          boost::atomic may use locks and may cause a performance decrease so it
+          it is protected by the compiler define QL_SINGLETON_THREAD_SAFE
+          see userconfig.hpp*/
+        #if defined(QL_SINGLETON_THREAD_SAFE) 
+        T* instance =  instance_.load(boost::memory_order_consume);
+        
+        if (!instance) {
+            boost::mutex::scoped_lock guard(mutex_);
+            instance = instance_.load(boost::memory_order_consume);
+            if (!instance) {
+                instance = new T();
+                instance_.store(instance, boost::memory_order_release);
+            }
+        }
+        #else //this is not thread safe
         boost::shared_ptr<T>& instance = instances_[id];
         if (!instance)
             instance = boost::shared_ptr<T>(new T);
+        #endif
+  
         return *instance;
     }
 
