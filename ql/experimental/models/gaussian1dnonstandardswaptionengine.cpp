@@ -145,7 +145,7 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<RebatedExercise>(arguments_.exercise);
 
         int idx = arguments_.exercise->dates().size() - 1;
-        int minIdxAlive =
+        Size minIdxAlive =
             std::upper_bound(arguments_.exercise->dates().begin(),
                              arguments_.exercise->dates().end(), settlement) -
             arguments_.exercise->dates().begin();
