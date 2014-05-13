@@ -145,10 +145,10 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<RebatedExercise>(arguments_.exercise);
 
         int idx = arguments_.exercise->dates().size() - 1;
-        Size minIdxAlive =
+        int minIdxAlive = static_cast<int>(
             std::upper_bound(arguments_.exercise->dates().begin(),
                              arguments_.exercise->dates().end(), settlement) -
-            arguments_.exercise->dates().begin();
+            arguments_.exercise->dates().begin());
 
         NonstandardSwap swap = *arguments_.swap;
         Option::Type type =
