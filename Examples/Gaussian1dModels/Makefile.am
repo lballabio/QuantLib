@@ -17,7 +17,7 @@ Gaussian1dModels_LDADD = ../../ql/libQuantLib.la
 examples: Gaussian1dModels$(EXEEXT)
 
 check-examples: examples
-	./Gaussian1dModels$(EXEEXT)
+	./Gaussian1dModels$(EXEEXT) --batch
 
 dist-hook:
 	mkdir -p $(distdir)/bin

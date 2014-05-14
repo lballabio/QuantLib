@@ -108,10 +108,13 @@ void printTiming(const Timer& timer) {
               << "\n(this step took " << seconds << "s)" << std::endl;
 }
 
+bool interactive = true;
+
 void waitForKey() {
-    std::cout << "\nPress RETURN to continue ... ";
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    return;
+    if (interactive) {
+        std::cout << "\n [Press RETURN to continue...] ";
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
 }
 
 // here the main part of the code starts
@@ -119,6 +122,13 @@ void waitForKey() {
 int main(int argc, char *argv[]) {
 
     try {
+
+        for (int i=1; i<argc; ++i) {
+            if (std::string(argv[i]) == "--batch") {
+                interactive = false;
+                break;
+            }
+        }
 
         std::cout << "\nGaussian1dModel Examples" << std::endl;
 
