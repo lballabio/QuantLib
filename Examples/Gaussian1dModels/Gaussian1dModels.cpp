@@ -18,7 +18,7 @@
 */
 
 #include <ql/quantlib.hpp>
-#include <boost/timer/timer.hpp>
+#include <boost/timer.hpp>
 
 using namespace QuantLib;
 
@@ -93,10 +93,19 @@ void printModelCalibration(
 
 // helper function that prints timing information to std::cout
 
-void printTiming(boost::timer::cpu_timer &timer) {
-    boost::timer::cpu_times t(timer.elapsed());
-    std::cout << std::fixed << std::setprecision(1) << "\n(this step took "
-              << (t.user / 1000000.0) << "ms)" << std::endl;
+class Timer {
+    boost::timer timer_;
+    double elapsed_;
+  public:
+    void start() { timer_ = boost::timer(); }
+    void stop() { elapsed_ = timer_.elapsed(); }
+    double elapsed() const { return elapsed_; }
+};
+
+void printTiming(const Timer& timer) {
+    double seconds = timer.elapsed();
+    std::cout << std::fixed << std::setprecision(1)
+              << "\n(this step took " << seconds << "s)" << std::endl;
 }
 
 void waitForKey() {
@@ -116,7 +125,7 @@ int main(int argc, char *argv[]) {
         std::cout << "\nThis is some example code showing how to use the GSR "
                      "\n(Gaussian short rate) and Markov Functional model." << std::endl;
 
-        boost::timer::cpu_timer timer;
+        Timer timer;
 
         Date refDate(30, April, 2014);
         Settings::instance().evaluationDate() = refDate;
