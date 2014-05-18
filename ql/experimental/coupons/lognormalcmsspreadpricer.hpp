@@ -70,7 +70,7 @@ namespace QuantLib {
 
         boost::shared_ptr<PrivateObserver> privateObserver_;
 
-        typedef std::map<std::pair<std::string, Date>, std::pair<Real, Real>>
+        typedef std::map<std::pair<std::string, Date>, std::pair<Real, Real> >
         CacheType;
 
         void initialize(const FloatingRateCoupon &coupon);
