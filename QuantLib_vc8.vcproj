@@ -7043,6 +7043,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticholderextensibleoptionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticholderextensibleoptionengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\exoticoptions\analyticpdfhestonengine.cpp"
 					>
 				</File>
@@ -7104,6 +7112,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\exoticoptions\himalayaoption.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\holderextensibleoption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\holderextensibleoption.hpp"
 					>
 				</File>
 				<File

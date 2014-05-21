@@ -83,6 +83,7 @@
 #include "everestoption.hpp"
 #include "exchangerate.hpp"
 #include "extendedtrees.hpp"
+#include "extensibleoptions.hpp"
 #include "fastfouriertransform.hpp"
 #include "fdheston.hpp"
 #include "fdmlinearop.hpp"
@@ -163,7 +164,6 @@
 #include "varianceswaps.hpp"
 #include "volatilitymodels.hpp"
 #include "vpp.hpp"
-#include "writerextensibleoption.hpp"
 
 #include <iostream>
 #include <iomanip>
@@ -360,6 +360,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(EuropeanOptionTest::experimental());
     test->add(EverestOptionTest::suite());
     test->add(ExtendedTreesTest::suite());
+    test->add(ExtensibleOptionsTest::suite());
     test->add(FdHestonTest::experimental());
     test->add(GsrTest::suite());
     test->add(HestonModelTest::experimental());
@@ -377,7 +378,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(VarianceGammaTest::suite());
     test->add(VarianceOptionTest::suite());
     test->add(VPPTest::suite());
-    test->add(WriterExtensibleOptionTest::suite());
 
     // tests for deprecated classes
     test->add(LiborMarketModelTest::suite());

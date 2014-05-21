@@ -603,6 +603,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\extensibleoptions.cpp"
+				>
+			</File>
+			<File
 				RelativePath="functions.cpp"
 				>
 			</File>
@@ -930,10 +934,6 @@
 				RelativePath=".\vpp.cpp"
 				>
 			</File>
-			<File
-				RelativePath=".\writerextensibleoption.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -1101,6 +1101,10 @@
 			</File>
 			<File
 				RelativePath=".\extendedtrees.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\extensibleoptions.hpp"
 				>
 			</File>
 			<File
@@ -1433,10 +1437,6 @@
 			</File>
 			<File
 				RelativePath=".\vpp.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\writerextensibleoption.hpp"
 				>
 			</File>
 		</Filter>

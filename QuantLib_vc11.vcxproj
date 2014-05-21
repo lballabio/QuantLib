@@ -1461,6 +1461,7 @@
     <ClInclude Include="ql\experimental\exoticoptions\analyticamericanmargrabeengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\analyticcomplexchooserengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\analyticeuropeanmargrabeengine.hpp" />
+    <ClInclude Include="ql\experimental\exoticoptions\analyticholderextensibleoptionengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\analyticpdfhestonengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\analyticsimplechooserengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\analytictwoassetbarrierengine.hpp" />
@@ -1469,6 +1470,7 @@
     <ClInclude Include="ql\experimental\exoticoptions\continuousarithmeticasianlevyengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\everestoption.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\himalayaoption.hpp" />
+    <ClInclude Include="ql\experimental\exoticoptions\holderextensibleoption.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\kirkspreadoptionengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\margrabeoption.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\mceverestengine.hpp" />
@@ -2306,6 +2308,7 @@
     <ClCompile Include="ql\experimental\exoticoptions\analyticamericanmargrabeengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticcomplexchooserengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticeuropeanmargrabeengine.cpp" />
+    <ClCompile Include="ql\experimental\exoticoptions\analyticholderextensibleoptionengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticpdfhestonengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticsimplechooserengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analytictwoassetbarrierengine.cpp" />
@@ -2314,6 +2317,7 @@
     <ClCompile Include="ql\experimental\exoticoptions\continuousarithmeticasianlevyengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\everestoption.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\himalayaoption.cpp" />
+    <ClCompile Include="ql\experimental\exoticoptions\holderextensibleoption.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\kirkspreadoptionengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\margrabeoption.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\mceverestengine.cpp" />

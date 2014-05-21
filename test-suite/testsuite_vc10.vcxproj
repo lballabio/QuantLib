@@ -665,6 +665,7 @@
     <ClCompile Include="everestoption.cpp" />
     <ClCompile Include="exchangerate.cpp" />
     <ClCompile Include="extendedtrees.cpp" />
+    <ClCompile Include="extensibleoptions.cpp" />
     <ClCompile Include="functions.cpp" />
     <ClCompile Include="fastfouriertransform.cpp" />
     <ClCompile Include="fdheston.cpp" />
@@ -747,7 +748,6 @@
     <ClCompile Include="varianceswaps.cpp" />
     <ClCompile Include="volatilitymodels.cpp" />
     <ClCompile Include="vpp.cpp" />
-    <ClCompile Include="writerextensibleoption.cpp" />
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -792,6 +792,7 @@
     <ClInclude Include="everestoption.hpp" />
     <ClInclude Include="exchangerate.hpp" />
     <ClInclude Include="extendedtrees.hpp" />
+    <ClInclude Include="extensibleoptions.hpp" />
     <ClInclude Include="functions.hpp" />
     <ClInclude Include="fastfouriertransform.hpp" />
     <ClInclude Include="fdheston.hpp" />
@@ -875,7 +876,6 @@
     <ClInclude Include="varianceswaps.hpp" />
     <ClInclude Include="volatilitymodels.hpp" />
     <ClInclude Include="vpp.hpp" />
-    <ClInclude Include="writerextensibleoption.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QuantLib_vc10.vcxproj">

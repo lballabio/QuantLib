@@ -42,6 +42,7 @@ QL_TESTS = \
 	everestoption.hpp everestoption.cpp \
 	exchangerate.hpp exchangerate.cpp \
 	extendedtrees.hpp extendedtrees.cpp \
+	extensibleoptions.hpp extensibleoptions.cpp \
 	fastfouriertransform.hpp fastfouriertransform.cpp \
 	fdheston.hpp fdheston.cpp \
 	fdmlinearop.hpp fdmlinearop.cpp \
@@ -124,8 +125,7 @@ QL_TESTS = \
 	varianceoption.hpp varianceoption.cpp \
 	varianceswaps.hpp varianceswaps.cpp \
 	volatilitymodels.hpp volatilitymodels.cpp \
-	vpp.hpp vpp.cpp \
-	writerextensibleoption.hpp writerextensibleoption.cpp
+	vpp.hpp vpp.cpp
 
 QL_BENCHMARKS = \
 	quantlibbenchmark.cpp \

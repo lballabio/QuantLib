@@ -2859,6 +2859,9 @@
     <ClInclude Include="ql\experimental\exoticoptions\analyticeuropeanmargrabeengine.hpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\exoticoptions\analyticholderextensibleoptionengine.hpp">
+      <Filter>experimental\exoticoptions</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\exoticoptions\analyticpdfhestonengine.hpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClInclude>
@@ -2881,6 +2884,9 @@
       <Filter>experimental\exoticoptions</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\exoticoptions\himalayaoption.hpp">
+      <Filter>experimental\exoticoptions</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\exoticoptions\holderextensibleoption.hpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\exoticoptions\kirkspreadoptionengine.hpp">
@@ -5390,6 +5396,9 @@
     <ClCompile Include="ql\experimental\exoticoptions\analyticeuropeanmargrabeengine.cpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
+    <ClCompile Include="ql\experimental\exoticoptions\analyticholderextensibleoptionengine.cpp">
+      <Filter>experimental\exoticoptions</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\analyticpdfhestonengine.cpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
@@ -5412,6 +5421,9 @@
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\himalayaoption.cpp">
+      <Filter>experimental\exoticoptions</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\exoticoptions\holderextensibleoption.cpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\kirkspreadoptionengine.cpp">

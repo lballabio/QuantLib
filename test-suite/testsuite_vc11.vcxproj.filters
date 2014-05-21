@@ -134,6 +134,9 @@
     <ClCompile Include="extendedtrees.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="extensibleoptions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="functions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -380,9 +383,6 @@
     <ClCompile Include="vpp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="writerextensibleoption.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -507,6 +507,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="extendedtrees.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="extensibleoptions.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="functions.hpp">
@@ -756,9 +759,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vpp.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="writerextensibleoption.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

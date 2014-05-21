@@ -2228,7 +2228,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit219]
-FileName=writerextensibleoption.cpp
+FileName=extensibleoptions.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1
@@ -2238,7 +2238,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit220]
-FileName=writerextensibleoption.hpp
+FileName=extensibleoptions.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1
