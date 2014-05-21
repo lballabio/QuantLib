@@ -7027,6 +7027,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticcomplexchooserengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticcomplexchooserengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\exoticoptions\analyticeuropeanmargrabeengine.cpp"
 					>
 				</File>
@@ -7064,6 +7072,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\exoticoptions\analyticwriterextensibleoptionengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\complexchooseroption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\complexchooseroption.hpp"
 					>
 				</File>
 				<File

@@ -5,11 +5,13 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     analyticamericanmargrabeengine.hpp \
+    analyticcomplexchooserengine.hpp \
     analyticeuropeanmargrabeengine.hpp \
     analyticpdfhestonengine.hpp \
     analyticsimplechooserengine.hpp \
     analytictwoassetbarrierengine.hpp \
     analyticwriterextensibleoptionengine.hpp \
+    complexchooseroption.hpp \
     continuousarithmeticasianlevyengine.hpp \
     everestoption.hpp \
     himalayaoption.hpp \
@@ -26,11 +28,13 @@ this_include_HEADERS = \
 
 libExoticOptions_la_SOURCES = \
     analyticamericanmargrabeengine.cpp \
+    analyticcomplexchooserengine.cpp \
     analyticeuropeanmargrabeengine.cpp \
     analyticpdfhestonengine.cpp \
     analyticsimplechooserengine.cpp \
     analytictwoassetbarrierengine.cpp \
     analyticwriterextensibleoptionengine.cpp \
+    complexchooseroption.cpp \
     continuousarithmeticasianlevyengine.cpp \
     everestoption.cpp \
     himalayaoption.cpp \

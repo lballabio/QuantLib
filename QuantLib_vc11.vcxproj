@@ -1459,11 +1459,13 @@
     <ClInclude Include="ql\experimental\fx\deltavolquote.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\all.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\analyticamericanmargrabeengine.hpp" />
+    <ClInclude Include="ql\experimental\exoticoptions\analyticcomplexchooserengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\analyticeuropeanmargrabeengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\analyticpdfhestonengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\analyticsimplechooserengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\analytictwoassetbarrierengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\analyticwriterextensibleoptionengine.hpp" />
+    <ClInclude Include="ql\experimental\exoticoptions\complexchooseroption.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\continuousarithmeticasianlevyengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\everestoption.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\himalayaoption.hpp" />
@@ -2302,11 +2304,13 @@
     <ClCompile Include="ql\experimental\fx\blackdeltacalculator.cpp" />
     <ClCompile Include="ql\experimental\fx\deltavolquote.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticamericanmargrabeengine.cpp" />
+    <ClCompile Include="ql\experimental\exoticoptions\analyticcomplexchooserengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticeuropeanmargrabeengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticpdfhestonengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticsimplechooserengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analytictwoassetbarrierengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticwriterextensibleoptionengine.cpp" />
+    <ClCompile Include="ql\experimental\exoticoptions\complexchooseroption.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\continuousarithmeticasianlevyengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\everestoption.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\himalayaoption.cpp" />

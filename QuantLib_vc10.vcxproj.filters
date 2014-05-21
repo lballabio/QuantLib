@@ -2850,6 +2850,9 @@
     <ClInclude Include="ql\experimental\exoticoptions\analyticamericanmargrabeengine.hpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\exoticoptions\analyticcomplexchooserengine.hpp">
+      <Filter>experimental\exoticoptions</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\exoticoptions\analyticeuropeanmargrabeengine.hpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClInclude>
@@ -2860,6 +2863,9 @@
       <Filter>experimental\exoticoptions</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\exoticoptions\analyticwriterextensibleoptionengine.hpp">
+      <Filter>experimental\exoticoptions</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\exoticoptions\complexchooseroption.hpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\exoticoptions\continuousarithmeticasianlevyengine.hpp">
@@ -5375,6 +5381,9 @@
     <ClCompile Include="ql\experimental\exoticoptions\analyticamericanmargrabeengine.cpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
+    <ClCompile Include="ql\experimental\exoticoptions\analyticcomplexchooserengine.cpp">
+      <Filter>experimental\exoticoptions</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\analyticeuropeanmargrabeengine.cpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
@@ -5385,6 +5394,9 @@
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\analyticwriterextensibleoptionengine.cpp">
+      <Filter>experimental\exoticoptions</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\exoticoptions\complexchooseroption.cpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\continuousarithmeticasianlevyengine.cpp">
