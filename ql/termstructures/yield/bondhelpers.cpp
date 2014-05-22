@@ -30,9 +30,10 @@ namespace QuantLib {
         void no_deletion(YieldTermStructure*) {}
     }
 
-    BondHelper::BondHelper(const Handle<Quote>& cleanPrice,
-                           const boost::shared_ptr<Bond>& bond)
-    : RateHelper(cleanPrice), bond_(new Bond(*bond)) {
+    BondHelper::BondHelper(const Handle<Quote>& price,
+                           const boost::shared_ptr<Bond>& bond,
+                           const bool useCleanPrice)
+    : RateHelper(price), bond_(new Bond(*bond)) {
 
         // the bond's last cashflow date, which can be later than
         // bond's maturity date because of adjustment
@@ -42,6 +43,8 @@ namespace QuantLib {
         boost::shared_ptr<PricingEngine> bondEngine(new
             DiscountingBondEngine(termStructureHandle_));
         bond_->setPricingEngine(bondEngine);
+
+        useCleanPrice_ = useCleanPrice;
     }
 
     void BondHelper::setTermStructure(YieldTermStructure* t) {
@@ -57,7 +60,11 @@ namespace QuantLib {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         // we didn't register as observers - force calculation
         bond_->recalculate();
-        return bond_->cleanPrice();
+
+        if (useCleanPrice_)
+            return bond_->cleanPrice();
+        else
+            return bond_->dirtyPrice();
     }
 
     void BondHelper::accept(AcyclicVisitor& v) {
@@ -83,11 +90,12 @@ namespace QuantLib {
                                     const Period& exCouponPeriod,
                                     const Calendar& exCouponCalendar,
                                     const BusinessDayConvention exCouponConvention,
-                                    bool exCouponEndOfMonth)
+                                    bool exCouponEndOfMonth,
+                                    const bool useCleanPrice)
     : BondHelper(cleanPrice, boost::shared_ptr<Bond>(new
         FixedRateBond(settlementDays, faceAmount, schedule,
                       coupons, dayCounter, paymentConvention,
-                      redemption, issueDate))) {
+                      redemption, issueDate)), useCleanPrice) {
         fixedRateBond_ = boost::shared_ptr<FixedRateBond>(new
             FixedRateBond(settlementDays, faceAmount, schedule,
                           coupons, dayCounter, paymentConvention,

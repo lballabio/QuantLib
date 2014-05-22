@@ -43,8 +43,9 @@ namespace QuantLib {
                      the bond after creating the helper, so that the
                      helper has sole ownership of it.
         */
-        BondHelper(const Handle<Quote>& cleanPrice,
-                   const boost::shared_ptr<Bond>& bond);
+        BondHelper(const Handle<Quote>& price,
+                   const boost::shared_ptr<Bond>& bond,
+                   const bool useCleanPrice = true);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -58,14 +59,19 @@ namespace QuantLib {
         //@{
         void accept(AcyclicVisitor&);
         //@}
+        //! \name useCleanPrice
+        //@{
+        bool useCleanPrice() const;
+        //@}
       protected:
         boost::shared_ptr<Bond> bond_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
+        bool useCleanPrice_;        
     };
 
     class FixedRateBondHelper : public BondHelper {
       public:
-        FixedRateBondHelper(const Handle<Quote>& cleanPrice,
+        FixedRateBondHelper(const Handle<Quote>& price,
                             Natural settlementDays,
                             Real faceAmount,
                             const Schedule& schedule,
@@ -78,7 +84,8 @@ namespace QuantLib {
                             const Period& exCouponPeriod = Period(),
                             const Calendar& exCouponCalendar = Calendar(),
                             const BusinessDayConvention exCouponConvention = Unadjusted,
-                            bool exCouponEndOfMonth = false);
+                            bool exCouponEndOfMonth = false,
+                            const bool useCleanPrice = true);
         //! \name additional inspectors
         //@{
         boost::shared_ptr<FixedRateBond> fixedRateBond() const;
@@ -96,6 +103,10 @@ namespace QuantLib {
 
     inline boost::shared_ptr<Bond> BondHelper::bond() const {
         return bond_;
+    }
+
+    inline bool BondHelper::useCleanPrice() const {
+        return useCleanPrice_;
     }
 
     inline boost::shared_ptr<FixedRateBond>
