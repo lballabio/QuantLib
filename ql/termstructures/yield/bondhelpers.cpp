@@ -78,7 +78,12 @@ namespace QuantLib {
                                     const DayCounter& dayCounter,
                                     BusinessDayConvention paymentConvention,
                                     Real redemption,
-                                    const Date& issueDate)
+                                    const Date& issueDate,
+                                    const Calendar& paymentCalendar,
+                                    const Period& exCouponPeriod,
+                                    const Calendar& exCouponCalendar,
+                                    const BusinessDayConvention exCouponConvention,
+                                    bool exCouponEndOfMonth)
     : BondHelper(cleanPrice, boost::shared_ptr<Bond>(new
         FixedRateBond(settlementDays, faceAmount, schedule,
                       coupons, dayCounter, paymentConvention,
@@ -86,7 +91,9 @@ namespace QuantLib {
         fixedRateBond_ = boost::shared_ptr<FixedRateBond>(new
             FixedRateBond(settlementDays, faceAmount, schedule,
                           coupons, dayCounter, paymentConvention,
-                          redemption, issueDate));
+                          redemption, issueDate, paymentCalendar,
+                          exCouponPeriod, exCouponCalendar,
+                          exCouponConvention, exCouponEndOfMonth));
     }
 
     void FixedRateBondHelper::accept(AcyclicVisitor& v) {
