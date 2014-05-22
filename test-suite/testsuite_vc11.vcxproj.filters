@@ -272,6 +272,9 @@
     <ClCompile Include="pagodaoption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="partialtimebarrieroption.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="pathgenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -645,6 +648,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="pagodaoption.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="partialtimebarrieroption.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="pathgenerator.hpp">

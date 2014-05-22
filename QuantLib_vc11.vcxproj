@@ -1462,6 +1462,7 @@
     <ClInclude Include="ql\experimental\exoticoptions\analyticcomplexchooserengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\analyticeuropeanmargrabeengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\analyticholderextensibleoptionengine.hpp" />
+    <ClInclude Include="ql\experimental\exoticoptions\analyticpartialtimebarrieroptionengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\analyticpdfhestonengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\analyticsimplechooserengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\analytictwoassetbarrierengine.hpp" />
@@ -1477,6 +1478,7 @@
     <ClInclude Include="ql\experimental\exoticoptions\mchimalayaengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\mcpagodaengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\pagodaoption.hpp" />
+    <ClInclude Include="ql\experimental\exoticoptions\partialtimebarrieroption.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\simplechooseroption.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\spreadoption.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\twoassetbarrieroption.hpp" />
@@ -2309,6 +2311,7 @@
     <ClCompile Include="ql\experimental\exoticoptions\analyticcomplexchooserengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticeuropeanmargrabeengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticholderextensibleoptionengine.cpp" />
+    <ClCompile Include="ql\experimental\exoticoptions\analyticpartialtimebarrieroptionengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticpdfhestonengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticsimplechooserengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analytictwoassetbarrierengine.cpp" />
@@ -2324,6 +2327,7 @@
     <ClCompile Include="ql\experimental\exoticoptions\mchimalayaengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\mcpagodaengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\pagodaoption.cpp" />
+    <ClCompile Include="ql\experimental\exoticoptions\partialtimebarrieroption.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\simplechooseroption.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\twoassetbarrieroption.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\writerextensibleoption.cpp" />

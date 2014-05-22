@@ -7051,6 +7051,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticpartialtimebarrieroptionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticpartialtimebarrieroptionengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\exoticoptions\analyticpdfhestonengine.cpp"
 					>
 				</File>
@@ -7168,6 +7176,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\exoticoptions\pagodaoption.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\partialtimebarrieroption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\partialtimebarrieroption.hpp"
 					>
 				</File>
 				<File

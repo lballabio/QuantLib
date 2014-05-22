@@ -799,6 +799,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\partialtimebarrieroption.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\pathgenerator.cpp"
 				>
 			</File>
@@ -1297,6 +1301,10 @@
 			</File>
 			<File
 				RelativePath=".\pagodaoption.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\partialtimebarrieroption.hpp"
 				>
 			</File>
 			<File

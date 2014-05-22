@@ -132,6 +132,7 @@
 #include "optionletstripper.hpp"
 #include "overnightindexedswap.hpp"
 #include "pagodaoption.hpp"
+#include "partialtimebarrieroption.hpp"
 #include "pathgenerator.hpp"
 #include "period.hpp"
 #include "piecewiseyieldcurve.hpp"
@@ -372,6 +373,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(NthToDefaultTest::suite());
     test->add(OdeTest::suite());
     test->add(PagodaOptionTest::suite());
+    test->add(PartialTimeBarrierOptionTest::suite());
     test->add(SpreadOptionTest::suite());
     test->add(SwingOptionTest::suite());
     test->add(TwoAssetBarrierOptionTest::suite());

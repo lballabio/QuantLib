@@ -5,6 +5,7 @@
 #include <ql/experimental/exoticoptions/analyticcomplexchooserengine.hpp>
 #include <ql/experimental/exoticoptions/analyticeuropeanmargrabeengine.hpp>
 #include <ql/experimental/exoticoptions/analyticholderextensibleoptionengine.hpp>
+#include <ql/experimental/exoticoptions/analyticpartialtimebarrieroptionengine.hpp>
 #include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
 #include <ql/experimental/exoticoptions/analyticsimplechooserengine.hpp>
 #include <ql/experimental/exoticoptions/analytictwoassetbarrierengine.hpp>
@@ -20,6 +21,7 @@
 #include <ql/experimental/exoticoptions/mchimalayaengine.hpp>
 #include <ql/experimental/exoticoptions/mcpagodaengine.hpp>
 #include <ql/experimental/exoticoptions/pagodaoption.hpp>
+#include <ql/experimental/exoticoptions/partialtimebarrieroption.hpp>
 #include <ql/experimental/exoticoptions/simplechooseroption.hpp>
 #include <ql/experimental/exoticoptions/spreadoption.hpp>
 #include <ql/experimental/exoticoptions/twoassetbarrieroption.hpp>

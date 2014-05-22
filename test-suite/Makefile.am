@@ -91,6 +91,7 @@ QL_TESTS = \
 	optionletstripper.hpp optionletstripper.cpp \
 	overnightindexedswap.hpp overnightindexedswap.cpp \
 	pagodaoption.hpp pagodaoption.cpp \
+	partialtimebarrieroption.hpp partialtimebarrieroption.cpp \
 	pathgenerator.hpp pathgenerator.cpp \
 	period.hpp period.cpp \
 	piecewiseyieldcurve.hpp piecewiseyieldcurve.cpp \

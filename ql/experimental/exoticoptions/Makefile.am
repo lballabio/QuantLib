@@ -8,6 +8,7 @@ this_include_HEADERS = \
     analyticcomplexchooserengine.hpp \
     analyticeuropeanmargrabeengine.hpp \
     analyticholderextensibleoptionengine.hpp \
+    analyticpartialtimebarrieroptionengine.hpp \
     analyticpdfhestonengine.hpp \
     analyticsimplechooserengine.hpp \
     analytictwoassetbarrierengine.hpp \
@@ -23,6 +24,7 @@ this_include_HEADERS = \
     mchimalayaengine.hpp \
     mcpagodaengine.hpp \
     pagodaoption.hpp \
+    partialtimebarrieroption.hpp \
     simplechooseroption.hpp \
     spreadoption.hpp \
     twoassetbarrieroption.hpp \
@@ -33,6 +35,7 @@ libExoticOptions_la_SOURCES = \
     analyticcomplexchooserengine.cpp \
     analyticeuropeanmargrabeengine.cpp \
     analyticholderextensibleoptionengine.cpp \
+    analyticpartialtimebarrieroptionengine.cpp \
     analyticpdfhestonengine.cpp \
     analyticsimplechooserengine.cpp \
     analytictwoassetbarrierengine.cpp \
@@ -48,6 +51,7 @@ libExoticOptions_la_SOURCES = \
     mchimalayaengine.cpp \
     mcpagodaengine.cpp \
     pagodaoption.cpp \
+    partialtimebarrieroption.cpp \
     simplechooseroption.cpp \
     twoassetbarrieroption.cpp \
     writerextensibleoption.cpp
