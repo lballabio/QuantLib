@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2007 Marco Bianchetti
  Copyright (C) 2006, 2007 Giorgio Facchinetti
+ Copyright (C) 2014 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,13 +25,13 @@
 #ifndef quantlib_cms_market_calibration_h
 #define quantlib_cms_market_calibration_h
 
-#include <ql/math/optimization/endcriteria.hpp> 
-#include <ql/math/matrix.hpp> 
-#include <ql/math/array.hpp> 
-#include <ql/handle.hpp> 
+#include <ql/math/optimization/endcriteria.hpp>
+#include <ql/math/matrix.hpp>
+#include <ql/math/array.hpp>
+#include <ql/handle.hpp>
 
 namespace QuantLib {
-    
+
     class SwaptionVolatilityStructure;
     class CmsMarket;
     class OptimizationMethod;
@@ -55,8 +56,37 @@ namespace QuantLib {
                       const boost::shared_ptr<OptimizationMethod>& method,
                       const Array& guess,
                       bool isMeanReversionFixed);
+
+        Matrix compute(const boost::shared_ptr<EndCriteria>& endCriteria,
+                      const boost::shared_ptr<OptimizationMethod>& method,
+                      const Matrix& guess,
+                      bool isMeanReversionFixed,
+                      const Real meanReversionGuess = Null<Real>());
+
+        Matrix
+        computeParametric(const boost::shared_ptr<EndCriteria> &endCriteria,
+                          const boost::shared_ptr<OptimizationMethod> &method,
+                          const Matrix &guess, bool isMeanReversionFixed,
+                          const Real meanReversionGuess = Null<Real>());
+
         Real error() { return error_; }
         EndCriteria::Type endCriteria() { return endCriteria_; };
+
+        static Real betaTransformInverse(Real beta) {
+            return std::sqrt(-std::log(beta));
+        }
+        static Real betaTransformDirect(Real y) {
+            return std::max(
+                std::min(std::fabs(y) < 10.0 ? std::exp(-(y * y)) : 0.0,
+                         0.999999),
+                0.000001);
+        }
+        static Real reversionTransformInverse(Real reversion) {
+            return reversion * reversion;
+        }
+        static Real reversionTransformDirect(Real y) {
+            return std::sqrt(y);
+        }
 
       private:
         Real error_;
