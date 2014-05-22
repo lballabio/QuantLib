@@ -74,11 +74,11 @@ namespace QuantLib {
                             BusinessDayConvention paymentConv = Following,
                             Real redemption = 100.0,
                             const Date& issueDate = Date(),
-							const Calendar& paymentCalendar = Calendar(),
-							const Period& exCouponPeriod = Period(),
-							const Calendar& exCouponCalendar = Calendar(),
-							const BusinessDayConvention exCouponConvention = Unadjusted,
-							bool exCouponEndOfMonth = false);
+                            const Calendar& paymentCalendar = Calendar(),
+                            const Period& exCouponPeriod = Period(),
+                            const Calendar& exCouponCalendar = Calendar(),
+                            const BusinessDayConvention exCouponConvention = Unadjusted,
+                            bool exCouponEndOfMonth = false);
         //! \name additional inspectors
         //@{
         boost::shared_ptr<FixedRateBond> fixedRateBond() const;

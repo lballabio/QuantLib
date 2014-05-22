@@ -92,8 +92,8 @@ namespace QuantLib {
             FixedRateBond(settlementDays, faceAmount, schedule,
                           coupons, dayCounter, paymentConvention,
                           redemption, issueDate, paymentCalendar,
-						  exCouponPeriod, exCouponCalendar,
-						  exCouponConvention, exCouponEndOfMonth));
+                          exCouponPeriod, exCouponCalendar,
+                          exCouponConvention, exCouponEndOfMonth));
     }
 
     void FixedRateBondHelper::accept(AcyclicVisitor& v) {
