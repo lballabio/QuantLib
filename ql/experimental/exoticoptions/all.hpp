@@ -10,6 +10,7 @@
 #include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
 #include <ql/experimental/exoticoptions/analyticsimplechooserengine.hpp>
 #include <ql/experimental/exoticoptions/analytictwoassetbarrierengine.hpp>
+#include <ql/experimental/exoticoptions/analytictwoassetcorrelationengine.hpp>
 #include <ql/experimental/exoticoptions/analyticwriterextensibleoptionengine.hpp>
 #include <ql/experimental/exoticoptions/complexchooseroption.hpp>
 #include <ql/experimental/exoticoptions/compoundoption.hpp>
@@ -27,5 +28,6 @@
 #include <ql/experimental/exoticoptions/simplechooseroption.hpp>
 #include <ql/experimental/exoticoptions/spreadoption.hpp>
 #include <ql/experimental/exoticoptions/twoassetbarrieroption.hpp>
+#include <ql/experimental/exoticoptions/twoassetcorrelationoption.hpp>
 #include <ql/experimental/exoticoptions/writerextensibleoption.hpp>
 

@@ -1332,6 +1332,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\twoassetcorrelationoption.cpp"
+				>
+			</File>
+			<File
 				RelativePath="utilities.cpp"
 				>
 			</File>
@@ -1838,6 +1842,10 @@
 			</File>
 			<File
 				RelativePath=".\twoassetbarrieroption.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\twoassetcorrelationoption.hpp"
 				>
 			</File>
 			<File

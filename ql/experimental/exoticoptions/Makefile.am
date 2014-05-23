@@ -13,6 +13,7 @@ this_include_HEADERS = \
     analyticpdfhestonengine.hpp \
     analyticsimplechooserengine.hpp \
     analytictwoassetbarrierengine.hpp \
+    analytictwoassetcorrelationengine.hpp \
     analyticwriterextensibleoptionengine.hpp \
     complexchooseroption.hpp \
     compoundoption.hpp \
@@ -30,6 +31,7 @@ this_include_HEADERS = \
     simplechooseroption.hpp \
     spreadoption.hpp \
     twoassetbarrieroption.hpp \
+    twoassetcorrelationoption.hpp \
     writerextensibleoption.hpp
 
 libExoticOptions_la_SOURCES = \
@@ -42,6 +44,7 @@ libExoticOptions_la_SOURCES = \
     analyticpdfhestonengine.cpp \
     analyticsimplechooserengine.cpp \
     analytictwoassetbarrierengine.cpp \
+    analytictwoassetcorrelationengine.cpp \
     analyticwriterextensibleoptionengine.cpp \
     complexchooseroption.cpp \
     compoundoption.cpp \
@@ -58,6 +61,7 @@ libExoticOptions_la_SOURCES = \
     partialtimebarrieroption.cpp \
     simplechooseroption.cpp \
     twoassetbarrieroption.cpp \
+    twoassetcorrelationoption.cpp \
     writerextensibleoption.cpp
 
 noinst_LTLIBRARIES = libExoticOptions.la

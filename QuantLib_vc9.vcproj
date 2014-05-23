@@ -7346,6 +7346,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\exoticoptions\analytictwoassetcorrelationengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\analytictwoassetcorrelationengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\exoticoptions\analyticwriterextensibleoptionengine.cpp"
 					>
 				</File>
@@ -7467,6 +7475,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\exoticoptions\twoassetbarrieroption.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\twoassetcorrelationoption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\twoassetcorrelationoption.hpp"
 					>
 				</File>
 				<File
