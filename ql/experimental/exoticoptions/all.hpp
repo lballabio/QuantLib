@@ -3,6 +3,7 @@
 
 #include <ql/experimental/exoticoptions/analyticamericanmargrabeengine.hpp>
 #include <ql/experimental/exoticoptions/analyticcomplexchooserengine.hpp>
+#include <ql/experimental/exoticoptions/analyticcompoundoptionengine.hpp>
 #include <ql/experimental/exoticoptions/analyticeuropeanmargrabeengine.hpp>
 #include <ql/experimental/exoticoptions/analyticholderextensibleoptionengine.hpp>
 #include <ql/experimental/exoticoptions/analyticpartialtimebarrieroptionengine.hpp>
@@ -11,6 +12,7 @@
 #include <ql/experimental/exoticoptions/analytictwoassetbarrierengine.hpp>
 #include <ql/experimental/exoticoptions/analyticwriterextensibleoptionengine.hpp>
 #include <ql/experimental/exoticoptions/complexchooseroption.hpp>
+#include <ql/experimental/exoticoptions/compoundoption.hpp>
 #include <ql/experimental/exoticoptions/continuousarithmeticasianlevyengine.hpp>
 #include <ql/experimental/exoticoptions/everestoption.hpp>
 #include <ql/experimental/exoticoptions/himalayaoption.hpp>

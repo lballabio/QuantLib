@@ -6,6 +6,7 @@ this_include_HEADERS = \
     all.hpp \
     analyticamericanmargrabeengine.hpp \
     analyticcomplexchooserengine.hpp \
+    analyticcompoundoptionengine.hpp \
     analyticeuropeanmargrabeengine.hpp \
     analyticholderextensibleoptionengine.hpp \
     analyticpartialtimebarrieroptionengine.hpp \
@@ -14,6 +15,7 @@ this_include_HEADERS = \
     analytictwoassetbarrierengine.hpp \
     analyticwriterextensibleoptionengine.hpp \
     complexchooseroption.hpp \
+    compoundoption.hpp \
     continuousarithmeticasianlevyengine.hpp \
     everestoption.hpp \
     himalayaoption.hpp \
@@ -33,6 +35,7 @@ this_include_HEADERS = \
 libExoticOptions_la_SOURCES = \
     analyticamericanmargrabeengine.cpp \
     analyticcomplexchooserengine.cpp \
+    analyticcompoundoptionengine.cpp \
     analyticeuropeanmargrabeengine.cpp \
     analyticholderextensibleoptionengine.cpp \
     analyticpartialtimebarrieroptionengine.cpp \
@@ -41,6 +44,7 @@ libExoticOptions_la_SOURCES = \
     analytictwoassetbarrierengine.cpp \
     analyticwriterextensibleoptionengine.cpp \
     complexchooseroption.cpp \
+    compoundoption.cpp \
     continuousarithmeticasianlevyengine.cpp \
     everestoption.cpp \
     himalayaoption.cpp \

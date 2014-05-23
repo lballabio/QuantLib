@@ -1605,9 +1605,8 @@
     <ClInclude Include="ql\experimental\convertiblebonds\convertiblebond.hpp" />
     <ClInclude Include="ql\experimental\convertiblebonds\discretizedconvertible.hpp" />
     <ClInclude Include="ql\experimental\convertiblebonds\tflattice.hpp" />
-    <ClInclude Include="ql\experimental\compoundoption\all.hpp" />
-    <ClInclude Include="ql\experimental\compoundoption\analyticcompoundoptionengine.hpp" />
-    <ClInclude Include="ql\experimental\compoundoption\compoundoption.hpp" />
+    <ClInclude Include="ql\experimental\exoticoptions\analyticcompoundoptionengine.hpp" />
+    <ClInclude Include="ql\experimental\exoticoptions\compoundoption.hpp" />
     <ClInclude Include="ql\experimental\inflation\all.hpp" />
     <ClInclude Include="ql\experimental\inflation\genericindexes.hpp" />
     <ClInclude Include="ql\experimental\inflation\interpolatedyoyoptionletstripper.hpp" />
@@ -2425,8 +2424,8 @@
     <ClCompile Include="ql\experimental\barrieroption\vannavolgadoublebarrierengine.cpp" />
     <ClCompile Include="ql\experimental\convertiblebonds\convertiblebond.cpp" />
     <ClCompile Include="ql\experimental\convertiblebonds\discretizedconvertible.cpp" />
-    <ClCompile Include="ql\experimental\compoundoption\analyticcompoundoptionengine.cpp" />
-    <ClCompile Include="ql\experimental\compoundoption\compoundoption.cpp" />
+    <ClCompile Include="ql\experimental\exoticoptions\analyticcompoundoptionengine.cpp" />
+    <ClCompile Include="ql\experimental\exoticoptions\compoundoption.cpp" />
     <ClCompile Include="ql\experimental\inflation\yoycapfloortermpricesurface.cpp" />
     <ClCompile Include="ql\experimental\inflation\yoyoptionlethelpers.cpp" />
     <ClCompile Include="ql\experimental\math\convolvedstudentt.cpp" />

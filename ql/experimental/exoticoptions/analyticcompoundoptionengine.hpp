@@ -24,7 +24,7 @@
 #ifndef quantlib_analytic_compound_option_engine_hpp
 #define quantlib_analytic_compound_option_engine_hpp
 
-#include <ql/experimental/compoundoption/compoundoption.hpp>
+#include <ql/experimental/exoticoptions/compoundoption.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/math/solvers1d/brent.hpp>
