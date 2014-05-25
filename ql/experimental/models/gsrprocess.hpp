@@ -81,7 +81,7 @@ namespace QuantLib {
         mutable std::map<std::pair<Real, Real>, Real> cache1_, cache2_, cache3_,
             cache5_;
         mutable std::map<Real, Real> cache4_;
-        std::vector<bool> revZero_;
+        mutable std::vector<bool> revZero_;
     };
 }
 

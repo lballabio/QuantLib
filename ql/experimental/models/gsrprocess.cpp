@@ -40,10 +40,6 @@ namespace QuantLib {
                                                     << times[i] << "@" << i
                                                     << " , " << times[i + 1]
                                                     << "@" << i + 1 << ")");
-        for (int i = 0; i < (int)reversions.size(); i++)
-            // if (close(reversions[i], 0.0))
-            if (std::fabs(reversions[i]) < 1E-4)
-                revZero_[i] = true;
         flushCache();
     }
 
@@ -74,10 +70,20 @@ namespace QuantLib {
                    "t (" << t
                          << ") must not be greater than forward measure time ("
                          << getForwardMeasureTime() << ")");
+
         return expectationp1(w, xw, dt) + expectationp2(w, dt);
     }
 
     void GsrProcess::flushCache() const {
+        // this method must be called if parameters change (see the note
+        // in the header), so we can ensure here that the zero reversion
+        // flag is kept consistent, too
+        for (int i = 0; i < (int)reversions_.size(); i++)
+            // if (close(reversions_[i], 0.0))
+            if (std::fabs(reversions_[i]) < 1E-4)
+                revZero_[i] = true;
+            else
+                revZero_[i] = false;
         cache1_.clear();
         cache2_.clear();
         cache3_.clear();
