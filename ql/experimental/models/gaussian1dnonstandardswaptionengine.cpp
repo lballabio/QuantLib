@@ -183,6 +183,15 @@ namespace QuantLib {
                                  floatSchedule.dates().end(), expiry0 - 1) -
                 floatSchedule.dates().begin();
 
+            // a lazy object is not multithreading enabled
+            // this makes sure that model_ does not need to
+            // be recalculated in the parallel loop
+#ifdef _OPENMP
+            if(expiry0>settlement)
+                model_->numeraire(QL_EPSILON);
+#endif
+
+#pragma omp parallel for default(shared) firstprivate(p) if(expiry0>settlement)
             for (Size k = 0; k < (expiry0 > settlement ? npv0.size() : 1);
                  k++) {
 
