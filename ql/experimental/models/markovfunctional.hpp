@@ -317,12 +317,13 @@ namespace QuantLib {
                                 const Handle<YieldTermStructure> &yts) const;
 
         void generateArguments() {
+            // if calculate triggers performCalculations, updateNumeraireTabulations
+            // is called twice. If we can not check the lazy object status this seem
+            // hard to avoid though.
             calculate();
             updateNumeraireTabulation();
             notifyObservers();
         }
-
-        void update() { LazyObject::update(); }
 
         void performCalculations() const {
             updateSmiles();
@@ -333,6 +334,10 @@ namespace QuantLib {
             std::vector<bool> c(volatilities_.size(), false);
             c[0] = true;
             return c;
+        }
+
+        void update() {
+            LazyObject::update();
         }
 
       private:
