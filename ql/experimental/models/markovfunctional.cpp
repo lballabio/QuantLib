@@ -224,11 +224,11 @@ namespace QuantLib {
             numeraire_.push_back(numInt);
         }
 
-        LazyObject::registerWith(termStructure());
+        registerWith(termStructure());
         if (!swaptionVol_.empty())
-            LazyObject::registerWith(swaptionVol_);
+            registerWith(swaptionVol_);
         if (!capletVol_.empty())
-            LazyObject::registerWith(capletVol_);
+            registerWith(capletVol_);
     }
 
     void MarkovFunctional::makeSwaptionCalibrationPoint(const Date &expiry,
