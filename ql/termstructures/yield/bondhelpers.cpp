@@ -77,7 +77,7 @@ namespace QuantLib {
     }
 
     FixedRateBondHelper::FixedRateBondHelper(
-                                    const Handle<Quote>& cleanPrice,
+                                    const Handle<Quote>& price,
                                     Natural settlementDays,
                                     Real faceAmount,
                                     const Schedule& schedule,
@@ -92,7 +92,7 @@ namespace QuantLib {
                                     const BusinessDayConvention exCouponConvention,
                                     bool exCouponEndOfMonth,
                                     const bool useCleanPrice)
-    : BondHelper(cleanPrice, boost::shared_ptr<Bond>(new
+    : BondHelper(price, boost::shared_ptr<Bond>(new
         FixedRateBond(settlementDays, faceAmount, schedule,
                       coupons, dayCounter, paymentConvention,
                       redemption, issueDate)), useCleanPrice) {
