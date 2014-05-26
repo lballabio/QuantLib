@@ -42,7 +42,8 @@ namespace QuantLib {
                  const std::vector<Time>& optionTimes,
                  const std::vector<Time>& swapLengths,
                  Size nLayers,
-                 bool extrapolation = true);
+                 bool extrapolation = true,
+                 bool backwardFlat = false);
             Cube& operator=(const Cube& o);
             Cube(const Cube&);
             virtual ~Cube() {}
@@ -83,6 +84,7 @@ namespace QuantLib {
             std::vector<Matrix> points_;
             mutable std::vector<Disposable<Matrix> > transposedPoints_;
             bool extrapolation_;
+            bool backwardFlat_;
             mutable std::vector< boost::shared_ptr<Interpolation2D> > interpolators_;
          };
       public:
@@ -103,9 +105,10 @@ namespace QuantLib {
             Real maxErrorTolerance = Null<Real>(),
             const boost::shared_ptr<OptimizationMethod>& optMethod
                 = boost::shared_ptr<OptimizationMethod>(),
-            const Real errorAccept = 0.0020,
+            const Real errorAccept = Null<Real>(),
             const bool useMaxError = false,
-            const Size maxGuesses = 50);
+            const Size maxGuesses = 50,
+            const bool backwardFlat = false);
         //! \name LazyObject interface
         //@{
         void performCalculations() const;
@@ -131,11 +134,15 @@ namespace QuantLib {
                                     const Period& swapTenor) const;
         void recalibration(Real beta,
                            const Period& swapTenor);
-        void recalibration(std::vector<Real> &beta,
+        void recalibration(const std::vector<Real> &beta,
+                           const Period& swapTenor);
+        void recalibration(const std::vector<Period> &swapLengths,
+                           const std::vector<Real> &beta,
                            const Period& swapTenor);
         void updateAfterRecalibration();
      protected:
         void registerWithParametersGuess();
+        void setParameterGuess() const;
         boost::shared_ptr<SmileSection> smileSection(
                                     Time optionTime,
                                     Time swapLength,
@@ -159,11 +166,26 @@ namespace QuantLib {
         const boost::shared_ptr<EndCriteria> endCriteria_;
         Real maxErrorTolerance_;
         const boost::shared_ptr<OptimizationMethod> optMethod_;
-        const Real errorAccept_;
+        Real errorAccept_;
         const bool useMaxError_;
         const Size maxGuesses_;
-    };
+        const bool backwardFlat_;
 
+        class PrivateObserver : public Observer {
+          public:
+            PrivateObserver(SwaptionVolCube1 *v)
+                : v_(v) {}
+            void update() {
+                v_->setParameterGuess();
+                v_->update();
+            }
+          private:
+            SwaptionVolCube1 *v_;
+        };
+
+       boost::shared_ptr<PrivateObserver> privateObserver_;
+
+    };
 }
 
 #endif
