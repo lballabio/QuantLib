@@ -36,23 +36,23 @@ namespace QuantLib {
       public:
         class arguments;
         class engine;
-
-        // Mother is the Compound Option.
-        // Daughter is the Option which plays the role of the underlying.
+        // Mother is the compound Option.
+        // Daughter is the option which plays the role of the underlying.
         CompoundOption(const boost::shared_ptr<StrikedTypePayoff>& motherPayoff,
                        const boost::shared_ptr<Exercise>& motherExercise,
                        const boost::shared_ptr<StrikedTypePayoff>& daughterPayoff,
                        const boost::shared_ptr<Exercise>& daughterExercise);
-
         void setupArguments(PricingEngine::arguments*) const;
 
-      protected:
-        boost::shared_ptr<OneAssetOption> motherOption_;
+      private:
+        boost::shared_ptr<StrikedTypePayoff> daughterPayoff_;
+        boost::shared_ptr<Exercise> daughterExercise_;
     };
 
     class CompoundOption::arguments : public OneAssetOption::arguments {
       public:
-        boost::shared_ptr<OneAssetOption> motherOption;
+        boost::shared_ptr<StrikedTypePayoff> daughterPayoff;
+        boost::shared_ptr<Exercise> daughterExercise;
         void validate() const;
     };
 
