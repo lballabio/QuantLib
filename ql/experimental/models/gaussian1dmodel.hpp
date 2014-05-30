@@ -153,7 +153,9 @@ namespace QuantLib {
 
         // we let derived classes register with the termstructure
         Gaussian1dModel(const Handle<YieldTermStructure> &yieldTermStructure)
-            : TermStructureConsistentModel(yieldTermStructure) {}
+            : TermStructureConsistentModel(yieldTermStructure) {
+            registerWith(Settings::instance().evaluationDate());
+        }
 
         virtual ~Gaussian1dModel() {}
 
@@ -165,7 +167,10 @@ namespace QuantLib {
         zerobondImpl(const Time T, const Time t, const Real y,
                      const Handle<YieldTermStructure> &yts) const = 0;
 
-        void performCalculations() const {}
+        void performCalculations() const {
+            evaluationDate_ = Settings::instance().evaluationDate();
+            enforcesTodaysHistoricFixings_ = Settings::instance().enforcesTodaysHistoricFixings();
+        }
 
         void generateArguments() {
             calculate();
@@ -173,6 +178,8 @@ namespace QuantLib {
         }
 
         boost::shared_ptr<StochasticProcess1D> stateProcess_;
+        mutable Date evaluationDate_;
+        mutable bool enforcesTodaysHistoricFixings_;
     };
 
     inline const boost::shared_ptr<StochasticProcess1D>
@@ -193,7 +200,6 @@ namespace QuantLib {
     inline const Real
     Gaussian1dModel::zerobond(const Time T, const Time t, const Real y,
                               const Handle<YieldTermStructure> &yts) const {
-
         return zerobondImpl(T, t, y, yts);
     }
 

@@ -29,9 +29,10 @@ namespace QuantLib {
 
         QL_REQUIRE(iborIdx != NULL, "no ibor index given");
 
+        calculate();
+
         if (fixing <=
-            ((Date)Settings::instance().evaluationDate()) +
-                (Settings::instance().enforcesTodaysHistoricFixings() ? 0 : -1))
+            (evaluationDate_ + (enforcesTodaysHistoricFixings_ ? 0 : -1)))
             return iborIdx->fixing(fixing);
 
         Handle<YieldTermStructure> yts =
@@ -57,9 +58,10 @@ namespace QuantLib {
 
         QL_REQUIRE(swapIdx != NULL, "no swap index given");
 
+        calculate();
+
         if (fixing <=
-            ((Date)Settings::instance().evaluationDate()) +
-                (Settings::instance().enforcesTodaysHistoricFixings() ? 0 : -1))
+            (evaluationDate_ + (enforcesTodaysHistoricFixings_ ? 0 : -1)))
             return swapIdx->fixing(fixing);
 
         Handle<YieldTermStructure> ytsf =
@@ -122,6 +124,8 @@ namespace QuantLib {
 
         QL_REQUIRE(swapIdx != NULL, "no swap index given");
 
+        calculate();
+
         Handle<YieldTermStructure> ytsd =
             swapIdx->discountingTermStructure(); // might be empty, then use
                                                  // model curve
@@ -154,6 +158,8 @@ namespace QuantLib {
         const Real yStdDevs, const Size yGridPoints,
         const bool extrapolatePayoff,
         const bool flatPayoffExtrapolation) const {
+
+        calculate();
 
         Time fixingTime = termStructure()->timeFromReference(expiry);
         Time referenceTime =

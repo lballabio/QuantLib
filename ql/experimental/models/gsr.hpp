@@ -151,8 +151,7 @@ namespace QuantLib {
                                 const Handle<YieldTermStructure> &yts) const;
 
         void generateArguments() {
-            boost::dynamic_pointer_cast<GsrProcess>(stateProcess_)
-                ->flushCache();
+            boost::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
             notifyObservers();
         }
 
@@ -160,7 +159,14 @@ namespace QuantLib {
             LazyObject::update();
         }
 
+        void performCalculations() const {
+            Gaussian1dModel::performCalculations();
+            updateTimes();
+            updateState();
+        }
+
       private:
+        void updateTimes() const;
         void updateState() const;
         void initialize(Real);
 
@@ -171,40 +177,20 @@ namespace QuantLib {
         std::vector<Date> volstepdates_; // this is shared between vols and
                                          // reverisons in case of piecewise
                                          // reversions
-        std::vector<Time> volsteptimes_;
-        Array volsteptimesArray_; // FIXME this is redundant (just a copy of
+        mutable std::vector<Time> volsteptimes_;
+        mutable Array volsteptimesArray_; // FIXME this is redundant (just a copy of
                                   // volsteptimes_)
-
-        class PrivateObserver : public Observer {
-          public:
-            PrivateObserver(Gsr *g)
-                : g_(g) {}
-            void update() {
-                g_->updateState();
-                g_->update();
-                g_->notifyObservers();
-            }
-          private:
-            Gsr *g_;
-        };
-
-        boost::shared_ptr<PrivateObserver> privateObserver_;
-
-
 
     };
 
     inline const Real Gsr::numeraireTime() const {
-        calculate();
         return boost::dynamic_pointer_cast<GsrProcess>(stateProcess_)
             ->getForwardMeasureTime();
     }
 
     inline const void Gsr::numeraireTime(const Real T) {
-        calculate();
         boost::dynamic_pointer_cast<GsrProcess>(stateProcess_)
             ->setForwardMeasureTime(T);
-        calculate();
     }
 }
 

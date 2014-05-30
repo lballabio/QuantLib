@@ -57,6 +57,10 @@ namespace QuantLib {
         Real y(Time t) const;
         Real G(Time t, Time T, Real x) const;
         //@}
+        void setForwardMeasureTime(Time t) {
+            flushCache();
+            ForwardMeasureProcess1D::setForwardMeasureTime(t);
+        }
         void flushCache() const;
 
       protected:

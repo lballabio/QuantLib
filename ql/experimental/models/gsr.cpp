@@ -98,24 +98,8 @@ namespace QuantLib {
         initialize(T);
     }
 
-    void Gsr::updateState() const {
-
-        for (Size i = 0; i < sigma_.size(); i++) {
-            sigma_.setParam(i, volatilities_[i]->value());
-        }
-
-        for (Size i = 0; i < reversion_.size(); i++) {
-            reversion_.setParam(i, reversions_[i]->value());
-        }
-
-        boost::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
-
-    }
-
-    void Gsr::initialize(Real T) {
-
+    void Gsr::updateTimes() const {
         volsteptimes_.clear();
-        volsteptimesArray_ = Array(volstepdates_.size());
         int j = 0;
         for (std::vector<Date>::const_iterator i = volstepdates_.begin();
              i != volstepdates_.end(); ++i, ++j) {
@@ -131,6 +115,25 @@ namespace QuantLib {
                                << volsteptimes_[j - 1] << "@" << (j - 1) << ", "
                                << volsteptimes_[j] << "@" << j << ")");
         }
+        if(stateProcess_ != NULL)
+            boost::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
+    }
+
+    void Gsr::updateState() const {
+        for (Size i = 0; i < sigma_.size(); i++) {
+            sigma_.setParam(i, volatilities_[i]->value());
+        }
+        for (Size i = 0; i < reversion_.size(); i++) {
+            reversion_.setParam(i, reversions_[i]->value());
+        }
+        boost::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
+    }
+
+    void Gsr::initialize(Real T) {
+
+        volsteptimesArray_ = Array(volstepdates_.size());
+
+        updateTimes();
 
         QL_REQUIRE(volatilities_.size() == volsteptimes_.size() + 1,
                    "there must be n+1 volatilities ("
@@ -157,14 +160,14 @@ namespace QuantLib {
         stateProcess_ = boost::shared_ptr<GsrProcess>(new GsrProcess(
             volsteptimesArray_, sigma_.params(), reversion_.params(), T));
 
-        privateObserver_ = boost::make_shared<PrivateObserver>(this);
-        privateObserver_->registerWith(stateProcess_);
-        privateObserver_->registerWith(termStructure());
+        registerWith(termStructure());
+
+        registerWith(stateProcess_);
         for(Size i=0;i<reversions_.size();++i)
-            privateObserver_->registerWith(reversions_[i]);
+            registerWith(reversions_[i]);
 
         for(Size i=0;i<volatilities_.size();++i)
-            privateObserver_->registerWith(volatilities_[i]);
+            registerWith(volatilities_[i]);
 
         updateState();
     }

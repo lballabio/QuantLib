@@ -326,6 +326,8 @@ namespace QuantLib {
         }
 
         void performCalculations() const {
+            Gaussian1dModel::performCalculations();
+            updateTimes();
             updateSmiles();
             updateNumeraireTabulation();
         }
@@ -343,6 +345,10 @@ namespace QuantLib {
       private:
 
         void initialize();
+        void updateTimes() const;
+        void updateTimes1() const;
+        void updateTimes2() const;
+
         void updateSmiles() const;
         void updateNumeraireTabulation() const;
 
@@ -442,13 +448,13 @@ namespace QuantLib {
         Parameter &sigma_;
 
         std::vector<Date> volstepdates_;
-        std::vector<Time> volsteptimes_;
-        Array volsteptimesArray_; // FIXME this is redundant (just a copy of
+        mutable std::vector<Time> volsteptimes_;
+        mutable Array volsteptimesArray_; // FIXME this is redundant (just a copy of
                                   // volsteptimes_)
         std::vector<Real> volatilities_;
 
         Date numeraireDate_;
-        Time numeraireTime_;
+        mutable Time numeraireTime_;
 
         Handle<SwaptionVolatilityStructure> swaptionVol_;
         Handle<OptionletVolatilityStructure> capletVol_;
@@ -459,7 +465,7 @@ namespace QuantLib {
         boost::shared_ptr<IborIndex> iborIndex_;
 
         mutable std::map<Date, CalibrationPoint> calibrationPoints_;
-        std::vector<Real> times_;
+        mutable std::vector<Real> times_;
         Array y_;
 
         Array normalIntegralX_;
