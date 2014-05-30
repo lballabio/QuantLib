@@ -65,6 +65,9 @@ namespace QuantLib {
                             std::max(arguments_.forwards[i] - strike, 0.0) * f *
                             arguments_.accrualTimes[i];
                     } else {
+
+                        // todo add openmp support later on (as in gaussian1dswaptionengine)
+
                         for (Size j = 0; j < z.size(); j++) {
                             Real floatingLegNpv;
                             if (iborIndex != NULL)

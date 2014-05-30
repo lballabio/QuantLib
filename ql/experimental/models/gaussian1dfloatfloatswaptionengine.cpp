@@ -197,16 +197,8 @@ namespace QuantLib {
             event0Time = std::max(
                 model_->termStructure()->timeFromReference(event0), 0.0);
 
-            // a lazy object is not multithreading enabled
-            // this makes sure that model_ does not need to
-            // be recalculated in the parallel loop
-#ifdef _OPENMP
-            if(event0>expiry)
-                model_->numeraire(QL_EPSILON);
-#endif
+            // todo add openmp support later on (as in gaussian1dswaptionengine)
 
-#pragma omp parallel for default(shared) firstprivate(p,pa) if(event0>expiry)
-            // iterate through the grid
             for (Size k = 0; k < (event0 > expiry ? npv0.size() : 1); k++) {
 
                 // roll back
