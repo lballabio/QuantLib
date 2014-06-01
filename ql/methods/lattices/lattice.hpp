@@ -166,7 +166,7 @@ namespace QuantLib {
     template <class Impl>
     void TreeLattice<Impl>::stepback(Size i, const Array& values,
                                      Array& newValues) const {
-        #pragma omp parallel for
+        //#pragma omp parallel for
         for (Size j=0; j<this->impl().size(i); j++) {
             Real value = 0.0;
             for (Size l=0; l<n_; l++) {

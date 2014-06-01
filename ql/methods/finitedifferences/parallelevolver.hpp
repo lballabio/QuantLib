@@ -48,7 +48,7 @@ namespace QuantLib {
         std::vector<itemType> stepConditions_;
       public:
         void applyTo(std::vector<array_type>& a, Time t) const {
-#pragma omp parallel for
+            //#pragma omp parallel for
             for (Size i=0; i < stepConditions_.size(); i++) {
                 stepConditions_[i]->applyTo(a[i], t);
             }
@@ -99,7 +99,7 @@ namespace QuantLib {
         }
         void step(array_type& a,
                   Time t) {
-#pragma omp parallel for
+            //#pragma omp parallel for
             for (Size i=0; i < evolvers_.size(); i++) {
                 evolvers_[i]->step(a[i], t);
             }
