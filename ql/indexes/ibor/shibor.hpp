@@ -35,13 +35,6 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& h = Handle<YieldTermStructure>());
     };
 
-    class DailyTenorShibor : public Shibor {
-      public:
-        DailyTenorShibor(
-            const Handle<YieldTermStructure>& h = Handle<YieldTermStructure>())
-        : Shibor(1*Days, h) {}
-    };
-
 }
 
 
