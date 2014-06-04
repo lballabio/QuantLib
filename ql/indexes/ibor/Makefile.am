@@ -18,6 +18,7 @@ this_include_HEADERS = \
     libor.hpp \
     nzdlibor.hpp \
     seklibor.hpp \
+    shibor.hpp \
     sonia.hpp \
     tibor.hpp \
     trlibor.hpp \
@@ -29,6 +30,7 @@ libIborIndexes_la_SOURCES = \
     euribor.cpp \
     eurlibor.cpp \
     libor.cpp \
+    shibor.cpp \
     sonia.cpp
 
 noinst_LTLIBRARIES = libIborIndexes.la
