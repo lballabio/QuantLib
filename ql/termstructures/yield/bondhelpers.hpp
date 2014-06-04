@@ -31,7 +31,7 @@
 
 namespace QuantLib {
 
-    //! fixed-coupon bond helper
+    //! Bond helper for curve bootstrap
     /*! \warning This class assumes that the reference date
                  does not change between calls of setTermStructure().
     */
@@ -45,23 +45,20 @@ namespace QuantLib {
         */
         BondHelper(const Handle<Quote>& price,
                    const boost::shared_ptr<Bond>& bond,
-                   const bool useCleanPrice = true);
+                   bool useCleanPrice = true);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
         void setTermStructure(YieldTermStructure*);
         //@}
-        //! \name additional inspectors
+        //! \name Additional inspectors
         //@{
         boost::shared_ptr<Bond> bond() const;
+        bool useCleanPrice() const;
         //@}
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&);
-        //@}
-        //! \name useCleanPrice
-        //@{
-        bool useCleanPrice() const;
         //@}
       protected:
         boost::shared_ptr<Bond> bond_;
@@ -69,6 +66,7 @@ namespace QuantLib {
         bool useCleanPrice_;        
     };
 
+    //! Fixed-coupon bond helper for curve bootstrap
     class FixedRateBondHelper : public BondHelper {
       public:
         FixedRateBondHelper(const Handle<Quote>& price,
@@ -86,7 +84,7 @@ namespace QuantLib {
                             const BusinessDayConvention exCouponConvention = Unadjusted,
                             bool exCouponEndOfMonth = false,
                             const bool useCleanPrice = true);
-        //! \name additional inspectors
+        //! \name Additional inspectors
         //@{
         boost::shared_ptr<FixedRateBond> fixedRateBond() const;
         //@}

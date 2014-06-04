@@ -23,6 +23,7 @@
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/settings.hpp>
+#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -33,16 +34,15 @@ namespace QuantLib {
     BondHelper::BondHelper(const Handle<Quote>& price,
                            const boost::shared_ptr<Bond>& bond,
                            const bool useCleanPrice)
-    : RateHelper(price), bond_(new Bond(*bond)) {
+    : RateHelper(price), bond_(boost::make_shared<Bond>(*bond)) {
 
         // the bond's last cashflow date, which can be later than
         // bond's maturity date because of adjustment
         latestDate_ = bond_->cashflows().back()->date();
         earliestDate_ = bond_->nextCashFlowDate();
 
-        boost::shared_ptr<PricingEngine> bondEngine(new
-            DiscountingBondEngine(termStructureHandle_));
-        bond_->setPricingEngine(bondEngine);
+        bond_->setPricingEngine(
+             boost::make_shared<DiscountingBondEngine>(termStructureHandle_));
 
         useCleanPrice_ = useCleanPrice;
     }
@@ -60,11 +60,7 @@ namespace QuantLib {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         // we didn't register as observers - force calculation
         bond_->recalculate();
-
-        if (useCleanPrice_)
-            return bond_->cleanPrice();
-        else
-            return bond_->dirtyPrice();
+        return useCleanPrice_ ? bond_->cleanPrice() : bond_->dirtyPrice();
     }
 
     void BondHelper::accept(AcyclicVisitor& v) {
@@ -92,16 +88,15 @@ namespace QuantLib {
                                     const BusinessDayConvention exCouponConvention,
                                     bool exCouponEndOfMonth,
                                     const bool useCleanPrice)
-    : BondHelper(price, boost::shared_ptr<Bond>(new
-        FixedRateBond(settlementDays, faceAmount, schedule,
-                      coupons, dayCounter, paymentConvention,
-                      redemption, issueDate)), useCleanPrice) {
-        fixedRateBond_ = boost::shared_ptr<FixedRateBond>(new
-            FixedRateBond(settlementDays, faceAmount, schedule,
-                          coupons, dayCounter, paymentConvention,
-                          redemption, issueDate, paymentCalendar,
-                          exCouponPeriod, exCouponCalendar,
-                          exCouponConvention, exCouponEndOfMonth));
+    : BondHelper(price,
+                 boost::shared_ptr<Bond>(
+                     new FixedRateBond(settlementDays, faceAmount, schedule,
+                                       coupons, dayCounter, paymentConvention,
+                                       redemption, issueDate, paymentCalendar,
+                                       exCouponPeriod, exCouponCalendar,
+                                       exCouponConvention, exCouponEndOfMonth)),
+                 useCleanPrice) {
+        fixedRateBond_ = boost::dynamic_pointer_cast<FixedRateBond>(bond_);
     }
 
     void FixedRateBondHelper::accept(AcyclicVisitor& v) {
