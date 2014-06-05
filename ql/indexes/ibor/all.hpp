@@ -9,6 +9,7 @@
 #include <ql/indexes/ibor/eonia.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/ibor/eurlibor.hpp>
+#include <ql/indexes/ibor/fedfunds.hpp>
 #include <ql/indexes/ibor/gbplibor.hpp>
 #include <ql/indexes/ibor/jibar.hpp>
 #include <ql/indexes/ibor/jpylibor.hpp>

@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=1960
+UnitCount=1962
 Type=2
 Ver=1
 ObjFiles=
@@ -19659,6 +19659,26 @@ BuildCmd=
 
 [Unit1960]
 FileName=ql\indexes\ibor\shibor.hpp
+CompileCpp=1
+Folder=indexes/ibor
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit1961]
+FileName=ql\indexes\ibor\fedfunds.cpp
+CompileCpp=1
+Folder=indexes/ibor
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit1962]
+FileName=ql\indexes\ibor\fedfunds.hpp
 CompileCpp=1
 Folder=indexes/ibor
 Compile=1
