@@ -804,6 +804,7 @@
     <ClInclude Include="ql\math\interpolations\abcdinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\all.hpp" />
     <ClInclude Include="ql\math\interpolations\backwardflatinterpolation.hpp" />
+    <ClInclude Include="ql\math\interpolations\backwardflatlinearinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\bicubicsplineinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\bilinearinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\convexmonotoneinterpolation.hpp" />

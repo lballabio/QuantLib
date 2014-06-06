@@ -939,6 +939,9 @@
     <ClInclude Include="ql\math\interpolations\backwardflatinterpolation.hpp">
       <Filter>math\interpolations</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\interpolations\backwardflatlinearinterpolation.hpp">
+      <Filter>math\interpolations</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\interpolations\bicubicsplineinterpolation.hpp">
       <Filter>math\interpolations</Filter>
     </ClInclude>
