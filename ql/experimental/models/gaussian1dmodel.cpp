@@ -72,13 +72,8 @@ namespace QuantLib {
 
         Schedule sched, floatSched;
 
-        SwapIndex tmpIdx =
-            SwapIndex(swapIdx->familyName(), tenor, swapIdx->fixingDays(),
-                      swapIdx->currency(), swapIdx->fixingCalendar(),
-                      swapIdx->fixedLegTenor(), swapIdx->fixedLegConvention(),
-                      swapIdx->dayCounter(), swapIdx->iborIndex());
         boost::shared_ptr<VanillaSwap> underlying =
-            tmpIdx.underlyingSwap(fixing);
+            swapIdx->underlyingSwap(fixing,tenor);
 
         sched = underlying->fixedSchedule();
 
@@ -130,13 +125,8 @@ namespace QuantLib {
             swapIdx->discountingTermStructure(); // might be empty, then use
                                                  // model curve
 
-        SwapIndex tmpIdx =
-            SwapIndex(swapIdx->familyName(), tenor, swapIdx->fixingDays(),
-                      swapIdx->currency(), swapIdx->fixingCalendar(),
-                      swapIdx->fixedLegTenor(), swapIdx->fixedLegConvention(),
-                      swapIdx->dayCounter(), swapIdx->iborIndex());
         boost::shared_ptr<VanillaSwap> underlying =
-            tmpIdx.underlyingSwap(fixing);
+            swapIdx->underlyingSwap(fixing,tenor);
         Schedule sched = underlying->fixedSchedule();
 
         Real annuity = 0.0;

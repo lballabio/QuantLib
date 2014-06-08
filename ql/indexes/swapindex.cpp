@@ -80,15 +80,15 @@ namespace QuantLib {
     }
 
     shared_ptr<VanillaSwap>
-    SwapIndex::underlyingSwap(const Date& fixingDate) const {
+    SwapIndex::underlyingSwap(const Date& fixingDate, const Period& tenor) const {
 
         QL_REQUIRE(fixingDate!=Date(), "null fixing date");
 
         // caching mechanism
-        if (lastFixingDate_!=fixingDate) {
+        if (lastFixingDate_!=fixingDate || lastTenor_!=tenor) {
             Rate fixedRate = 0.0;
             if (exogenousDiscount_)
-                lastSwap_ = MakeVanillaSwap(tenor_, iborIndex_, fixedRate)
+                lastSwap_ = MakeVanillaSwap(tenor, iborIndex_, fixedRate)
                     .withEffectiveDate(valueDate(fixingDate))
                     .withFixedLegCalendar(fixingCalendar())
                     .withFixedLegDayCount(dayCounter_)
@@ -97,7 +97,7 @@ namespace QuantLib {
                     .withFixedLegTerminationDateConvention(fixedLegConvention_)
                     .withDiscountingTermStructure(discount_);
             else
-                lastSwap_ = MakeVanillaSwap(tenor_, iborIndex_, fixedRate)
+                lastSwap_ = MakeVanillaSwap(tenor, iborIndex_, fixedRate)
                     .withEffectiveDate(valueDate(fixingDate))
                     .withFixedLegCalendar(fixingCalendar())
                     .withFixedLegDayCount(dayCounter_)
@@ -105,8 +105,14 @@ namespace QuantLib {
                     .withFixedLegConvention(fixedLegConvention_)
                     .withFixedLegTerminationDateConvention(fixedLegConvention_);
             lastFixingDate_ = fixingDate;
+            lastTenor_ = tenor;
         }
         return lastSwap_;
+    }
+
+    shared_ptr<VanillaSwap>
+    SwapIndex::underlyingSwap(const Date& fixingDate) const {
+        return underlyingSwap(fixingDate, tenor_);
     }
 
     Date SwapIndex::maturityDate(const Date& valueDate) const {

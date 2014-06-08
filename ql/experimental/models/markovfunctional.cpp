@@ -257,14 +257,8 @@ namespace QuantLib {
         p.isCaplet_ = false;
         p.tenor_ = tenor;
 
-        SwapIndex tmpIndex(
-            swapIndexBase_->familyName(), tenor, swapIndexBase_->fixingDays(),
-            swapIndexBase_->currency(), swapIndexBase_->fixingCalendar(),
-            swapIndexBase_->fixedLegTenor(),
-            swapIndexBase_->fixedLegConvention(), swapIndexBase_->dayCounter(),
-            swapIndexBase_->iborIndex());
         boost::shared_ptr<VanillaSwap> underlying =
-            tmpIndex.underlyingSwap(expiry);
+            swapIndexBase_->underlyingSwap(expiry,tenor);
         Schedule sched = underlying->fixedSchedule();
         Calendar cal = sched.calendar();
         BusinessDayConvention bdc = underlying->paymentConvention();
@@ -997,13 +991,8 @@ namespace QuantLib {
             swapIdx = swapIndexBase_;
         QL_REQUIRE(swapIdx, "No swap index given");
 
-        SwapIndex tmpIdx =
-            SwapIndex(swapIdx->familyName(), tenor, swapIdx->fixingDays(),
-                      swapIdx->currency(), swapIdx->fixingCalendar(),
-                      swapIdx->fixedLegTenor(), swapIdx->fixedLegConvention(),
-                      swapIdx->dayCounter(), swapIdx->iborIndex());
         boost::shared_ptr<VanillaSwap> underlying =
-            tmpIdx.underlyingSwap(fixing);
+            swapIdx->underlyingSwap(fixing,tenor);
         Schedule sched = underlying->fixedSchedule();
         Real annuity = swapAnnuityInternal(fixing, tenor, referenceDate, y,
                                       zeroFixingDays, swapIdx);
@@ -1028,13 +1017,8 @@ namespace QuantLib {
             swapIdx = swapIndexBase_;
         QL_REQUIRE(swapIdx, "No swap index given");
 
-        SwapIndex tmpIdx =
-            SwapIndex(swapIdx->familyName(), tenor, swapIdx->fixingDays(),
-                      swapIdx->currency(), swapIdx->fixingCalendar(),
-                      swapIdx->fixedLegTenor(), swapIdx->fixedLegConvention(),
-                      swapIdx->dayCounter(), swapIdx->iborIndex());
         boost::shared_ptr<VanillaSwap> underlying =
-            tmpIdx.underlyingSwap(fixing);
+            swapIdx->underlyingSwap(fixing,tenor);
         Schedule sched = underlying->fixedSchedule();
 
         Real annuity = 0.0;

@@ -73,8 +73,10 @@ namespace QuantLib {
         /*! \warning Relinking the term structure underlying the index will
                      not have effect on the returned swap.
         */
-        boost::shared_ptr<VanillaSwap> underlyingSwap(
-                                                const Date& fixingDate) const;
+        boost::shared_ptr<VanillaSwap>
+        underlyingSwap(const Date &fixingDate) const;
+        boost::shared_ptr<VanillaSwap>
+        underlyingSwap(const Date &fixingDate, const Period &tenor) const;
         //@}
         //! \name Other methods
         //@{
@@ -101,6 +103,7 @@ namespace QuantLib {
         // is used multiple time to forecast changing fixing
         mutable boost::shared_ptr<VanillaSwap> lastSwap_;
         mutable Date lastFixingDate_;
+        mutable Period lastTenor_;
     };
 
 
