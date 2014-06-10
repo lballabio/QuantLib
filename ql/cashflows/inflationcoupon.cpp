@@ -34,10 +34,11 @@ namespace QuantLib {
                                     const Period& observationLag,
                                     const DayCounter& dayCounter,
                                     const Date& refPeriodStart,
-                                    const Date& refPeriodEnd
+                                    const Date& refPeriodEnd,
+                                    const Date& exCouponDate
                                     )
     : Coupon(paymentDate, nominal,
-             startDate, endDate, refPeriodStart,refPeriodEnd),  // ref period is before lag
+             startDate, endDate, refPeriodStart,refPeriodEnd,exCouponDate),  // ref period is before lag
       index_(index), observationLag_(observationLag), dayCounter_(dayCounter),
       fixingDays_(fixingDays)
     {
