@@ -126,6 +126,15 @@ namespace QuantLib {
                                Compounding compounding,
                                Frequency frequency,
                                Date settlementDate = Date());
+        static Real dirtyPrice(const Bond& bond,
+                               const InterestRate& yield,
+                               Date settlementDate = Date());
+        static Real dirtyPrice(const Bond& bond,
+                               Rate yield,
+                               const DayCounter& dayCounter,
+                               Compounding compounding,
+                               Frequency frequency,
+                               Date settlementDate = Date());
         static Real bps(const Bond& bond,
                         const InterestRate& yield,
                         Date settlementDate = Date());
