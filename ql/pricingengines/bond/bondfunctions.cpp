@@ -296,7 +296,7 @@ namespace QuantLib {
     Real BondFunctions::cleanPrice(const Bond& bond,
                                    const InterestRate& yield,
                                    Date settlement) {
-        return BondFunctions::dirtyPrice(bond, yield, settlement) - bond.accruedAmount(settlement);
+        return dirtyPrice(bond, yield, settlement) - bond.accruedAmount(settlement);
     }
 
     Real BondFunctions::cleanPrice(const Bond& bond,
