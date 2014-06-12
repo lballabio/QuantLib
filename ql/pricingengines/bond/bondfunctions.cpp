@@ -296,17 +296,7 @@ namespace QuantLib {
     Real BondFunctions::cleanPrice(const Bond& bond,
                                    const InterestRate& yield,
                                    Date settlement) {
-        if (settlement == Date())
-            settlement = bond.settlementDate();
-
-        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
-                   "non tradable at " << settlement <<
-                   " (maturity being " << bond.maturityDate() << ")");
-
-        Real dirtyPrice = CashFlows::npv(bond.cashflows(), yield,
-                                         false, settlement) *
-            100.0 / bond.notional(settlement);
-        return dirtyPrice - bond.accruedAmount(settlement);
+        return BondFunctions::dirtyPrice(bond, yield, settlement) - bond.accruedAmount(settlement);
     }
 
     Real BondFunctions::cleanPrice(const Bond& bond,
