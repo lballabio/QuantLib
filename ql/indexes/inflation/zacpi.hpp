@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file ukrpi.hpp
+/*! \file zacpi.hpp
     \brief %ZACPI index
 */
 
