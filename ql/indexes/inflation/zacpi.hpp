@@ -29,7 +29,7 @@
 
 namespace QuantLib {
 
-    //! UK Retail Price Inflation Index
+    //! South African Comsumer Price Inflation Index
     class ZACPI : public ZeroInflationIndex {
       public:
         ZACPI(bool interpolated,
@@ -46,10 +46,10 @@ namespace QuantLib {
     };
 
 
-    //! Genuine year-on-year UK RPI (i.e. not a ratio of UK RPI)
-    class YYUKRPI : public YoYInflationIndex {
+    //! Genuine year-on-year South African CPI (i.e. not a ratio of ZA CPI)
+    class YYZACPI : public YoYInflationIndex {
       public:
-        YYUKRPI(bool interpolated,
+        YYZACPI(bool interpolated,
                 const Handle<YoYInflationTermStructure>& ts =
                         Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_CPI",
@@ -64,10 +64,10 @@ namespace QuantLib {
     };
 
 
-    //! Fake year-on-year UK RPI (i.e. a ratio of UK RPI)
-    class YYUKRPIr : public YoYInflationIndex {
+    //! Fake year-on-year South African CPI (i.e. a ratio of ZA CPI)
+    class YYZACPIr : public YoYInflationIndex {
       public:
-        YYUKRPIr(bool interpolated,
+        YYZACPIr(bool interpolated,
                  const Handle<YoYInflationTermStructure>& ts =
                         Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YYR_CPI",
