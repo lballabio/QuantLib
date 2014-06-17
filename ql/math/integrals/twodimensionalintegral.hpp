@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file integral2d
+/*! \file twodimensionalintegral.hpp
     \brief two dimensional integration
 */
 

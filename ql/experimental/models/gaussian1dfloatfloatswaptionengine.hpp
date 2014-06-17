@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file onefactorcmsswaptionengine.hpp
+/*! \file gaussian1dfloatfloatswaptionengine.hpp
     \brief float float swaption engine for one factor interest rate models
 */
 

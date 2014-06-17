@@ -58,6 +58,7 @@ namespace QuantLib {
         const boost::shared_ptr<Impl>& implementation() const {
             return impl_;
         }
+        const Constraint& constraint() const { return constraint_; }
       protected:
         Parameter(Size size,
                   const boost::shared_ptr<Impl>& impl,
