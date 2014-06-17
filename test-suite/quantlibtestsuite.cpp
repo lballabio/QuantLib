@@ -70,6 +70,7 @@
 #include "convertiblebonds.hpp"
 #include "covariance.hpp"
 #include "creditdefaultswap.hpp"
+#include "creditriskplus.hpp"
 #include "curvestates.hpp"
 #include "dates.hpp"
 #include "daycounters.hpp"
@@ -82,6 +83,7 @@
 #include "everestoption.hpp"
 #include "exchangerate.hpp"
 #include "extendedtrees.hpp"
+#include "extensibleoptions.hpp"
 #include "fastfouriertransform.hpp"
 #include "fdheston.hpp"
 #include "fdmlinearop.hpp"
@@ -130,6 +132,7 @@
 #include "optionletstripper.hpp"
 #include "overnightindexedswap.hpp"
 #include "pagodaoption.hpp"
+#include "partialtimebarrieroption.hpp"
 #include "pathgenerator.hpp"
 #include "period.hpp"
 #include "piecewiseyieldcurve.hpp"
@@ -145,7 +148,6 @@
 #include "solvers.hpp"
 #include "spreadoption.hpp"
 #include "swingoption.hpp"
-#include "surface.hpp"
 #include "stats.hpp"
 #include "swap.hpp"
 #include "swapforwardmappings.hpp"
@@ -158,12 +160,12 @@
 #include "tracing.hpp"
 #include "transformedgrid.hpp"
 #include "twoassetbarrieroption.hpp"
+#include "twoassetcorrelationoption.hpp"
 #include "variancegamma.hpp"
 #include "varianceoption.hpp"
 #include "varianceswaps.hpp"
 #include "volatilitymodels.hpp"
 #include "vpp.hpp"
-#include "writerextensibleoption.hpp"
 
 #include <iostream>
 #include <iomanip>
@@ -332,7 +334,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ShortRateModelTest::suite()); // fails with QL_USE_INDEXED_COUPON
     test->add(Solver1DTest::suite());
     test->add(StatisticsTest::suite());
-    test->add(SurfaceTest::suite());
     test->add(SwapTest::suite());
     test->add(SwapForwardMappingsTest::suite());
     test->add(SwaptionTest::suite());
@@ -357,9 +358,11 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CommodityUnitOfMeasureTest::suite());
     test->add(CompoundOptionTest::suite());
     test->add(ConvertibleBondTest::suite());
+    test->add(CreditRiskPlusTest::suite());
     test->add(EuropeanOptionTest::experimental());
     test->add(EverestOptionTest::suite());
     test->add(ExtendedTreesTest::suite());
+    test->add(ExtensibleOptionsTest::suite());
     test->add(FdHestonTest::experimental());
     test->add(GsrTest::suite());
     test->add(HestonModelTest::experimental());
@@ -371,13 +374,14 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(NthToDefaultTest::suite());
     test->add(OdeTest::suite());
     test->add(PagodaOptionTest::suite());
+    test->add(PartialTimeBarrierOptionTest::suite());
     test->add(SpreadOptionTest::suite());
     test->add(SwingOptionTest::suite());
     test->add(TwoAssetBarrierOptionTest::suite());
+    test->add(TwoAssetCorrelationOptionTest::suite());
     test->add(VarianceGammaTest::suite());
     test->add(VarianceOptionTest::suite());
     test->add(VPPTest::suite());
-    test->add(WriterExtensibleOptionTest::suite());
 
     // tests for deprecated classes
     test->add(LiborMarketModelTest::suite());

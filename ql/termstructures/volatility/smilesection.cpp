@@ -94,7 +94,7 @@ namespace QuantLib {
         Real atm = atmLevel();
         QL_REQUIRE(atm != Null<Real>(),
                    "smile section must provide atm level to compute option price");
-        return blackFormulaVolDerivative(strike,atmLevel(),
+        return blackFormulaVolDerivative(strike,atm,
                                          sqrt(variance(strike)),
                                          exerciseTime(),discount)*0.01;
     }

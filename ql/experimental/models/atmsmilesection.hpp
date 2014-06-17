@@ -38,10 +38,17 @@ namespace QuantLib {
         Real minStrike() const { return source_->minStrike(); }
         Real maxStrike() const { return source_->maxStrike(); }
         Real atmLevel() const { return f_; }
+        const Date& exerciseDate() const { return source_->exerciseDate(); }
+        Time exerciseTime() const { return source_->exerciseTime(); }
+        const DayCounter& dayCounter() const { return source_->dayCounter(); }
+        const Date& referenceDate() const { return source_->referenceDate(); }
 
       protected:
         Volatility volatilityImpl(Rate strike) const {
             return source_->volatility(strike);
+        }
+        Real varianceImpl(Rate strike) const {
+            return source_->variance(strike);
         }
 
       private:

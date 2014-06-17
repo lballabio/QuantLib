@@ -26,7 +26,7 @@
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/matrix.hpp>
-#include <ql/time/calendars/all.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 #include <boost/make_shared.hpp>
 
 namespace QuantLib {

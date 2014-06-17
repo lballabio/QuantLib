@@ -78,7 +78,7 @@ namespace QuantLib {
         for(DefaultEventSet::const_iterator itev = events_.begin();
             // am i really speeding things up with the date comp?
             itev != events_.end(); // && (*itev)->date() > start;
-            itev++) {
+            ++itev) {
             if((*itev)->matchesDefaultKey(contractKey) &&
                 between(*itev, start, end, includeRefDate))
                 return *itev;
@@ -99,7 +99,7 @@ namespace QuantLib {
         for(DefaultEventSet::const_iterator itev = events_.begin();
             // am i really speeding things up with the date comp?
             itev != events_.end(); // && (*itev)->date() > start;
-            itev++) {
+            ++itev) {
             if((*itev)->matchesDefaultKey(contractKey) &&
                 between(*itev, start, end, includeRefDate))
                 defaults.push_back(*itev);

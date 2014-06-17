@@ -95,6 +95,9 @@
     <ClCompile Include="creditdefaultswap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="creditriskplus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="curvestates.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -129,6 +132,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="extendedtrees.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="extensibleoptions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="functions.cpp">
@@ -266,6 +272,9 @@
     <ClCompile Include="pagodaoption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="partialtimebarrieroption.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="pathgenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -314,9 +323,6 @@
     <ClCompile Include="stats.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="surface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="swap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -350,6 +356,9 @@
     <ClCompile Include="twoassetbarrieroption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="twoassetcorrelationoption.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="utilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -378,9 +387,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="vpp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="writerextensibleoption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="quantlibtestsuite.cpp" />
@@ -470,6 +476,9 @@
     <ClInclude Include="creditdefaultswap.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="creditriskplus.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="curvestates.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -504,6 +513,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="extendedtrees.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="extensibleoptions.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="functions.hpp">
@@ -641,6 +653,9 @@
     <ClInclude Include="pagodaoption.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="partialtimebarrieroption.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="pathgenerator.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -689,9 +704,6 @@
     <ClInclude Include="stats.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="surface.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="swap.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -728,6 +740,9 @@
     <ClInclude Include="twoassetbarrieroption.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="twoassetcorrelationoption.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="utilities.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -756,9 +771,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vpp.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="writerextensibleoption.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

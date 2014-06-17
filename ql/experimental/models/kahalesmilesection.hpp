@@ -136,6 +136,10 @@ namespace QuantLib {
         Real minStrike() const { return 0.0; }
         Real maxStrike() const { return QL_MAX_REAL; }
         Real atmLevel() const { return f_; }
+        const Date& exerciseDate() const { return source_->exerciseDate(); }
+        Time exerciseTime() const { return source_->exerciseTime(); }
+        const DayCounter& dayCounter() const { return source_->dayCounter(); }
+        const Date& referenceDate() const { return source_->referenceDate(); }
 
         Real leftCoreStrike() const { return k_[leftIndex_]; }
         Real rightCoreStrike() const { return k_[rightIndex_]; }

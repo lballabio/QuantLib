@@ -126,10 +126,10 @@ namespace {
         SavedSettings backup;
 
         // setup
-        CommonVars() {
+        CommonVars()
+        : nominals(1,1000000) {
             //std::cout <<"CommonVars" << std::endl;
             // option variables
-            nominals = std::vector<Real>(1,1000000);  // 1M
             frequency = Annual;
             // usual setup
             volatility = 0.01;

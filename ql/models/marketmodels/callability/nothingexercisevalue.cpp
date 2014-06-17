@@ -24,18 +24,34 @@
 namespace QuantLib {
 
     NothingExerciseValue::NothingExerciseValue(
-                                          const std::vector<Time>& rateTimes)
-    : numberOfExercises_(rateTimes.empty() ? 0 : rateTimes.size()-1),
-      rateTimes_(rateTimes),
+                                               const std::vector<Time>& rateTimes,
+                                               const std::valarray<bool>& isExerciseTime)
+    : rateTimes_(rateTimes), isExerciseTime_(isExerciseTime),
       currentIndex_(0) {
 
         checkIncreasingTimes(rateTimes);
-        QL_REQUIRE(numberOfExercises_>0,
+        QL_REQUIRE(rateTimes.size() >= 2,
                    "Rate times must contain at least two values");
         cf_.amount = 0.0;
         std::vector<Time> evolutionTimes(rateTimes_);
         evolutionTimes.pop_back();
         evolution_= EvolutionDescription(rateTimes_, evolutionTimes);
+        if(isExerciseTime_.size()==0) {
+            isExerciseTime_ = std::valarray<bool>(true,rateTimes.empty() ? 0 : rateTimes.size()-1);
+        }
+        else {
+            QL_REQUIRE(isExerciseTime_.size() ==
+                           (rateTimes.empty() ? 0 : rateTimes.size() - 1),
+                       "isExerciseTime ("
+                           << isExerciseTime_.size() << ") must "
+                           << "have same size as rateTimes minus 1 ("
+                           << (rateTimes.empty() ? 0 : rateTimes.size() - 1)
+                           << ")");
+        }
+        numberOfExercises_ = 0;
+        for(Size i=0;i<isExerciseTime_.size();i++)
+            if(isExerciseTime_[i])
+                ++numberOfExercises_;
     }
 
     Size NothingExerciseValue::numberOfExercises() const {
@@ -61,7 +77,7 @@ namespace QuantLib {
 
 
     std::valarray<bool> NothingExerciseValue::isExerciseTime() const {
-        return std::valarray<bool>(true, numberOfExercises_); // opposite way round from vector constructor
+        return isExerciseTime_;
     }
 
     MarketModelMultiProduct::CashFlow

@@ -57,6 +57,7 @@ namespace QuantLib {
                      Real meanReversion);
         // inspectors ...
         const std::vector<Period>& swapTenors() const { return swapTenors_;}
+        const std::vector<Period>& swapLengths() const { return swapLengths_;}
         const Matrix& impliedCmsSpreads() { return mdlSpreads_; }
         const Matrix& spreadErrors() { return errSpreads_; }
         Matrix browse() const;

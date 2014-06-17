@@ -6,6 +6,7 @@ this_include_HEADERS = \
 	all.hpp \
 	abcdinterpolation.hpp \
 	backwardflatinterpolation.hpp \
+	backwardflatlinearinterpolation.hpp \
 	bicubicsplineinterpolation.hpp \
 	bilinearinterpolation.hpp \
 	convexmonotoneinterpolation.hpp \

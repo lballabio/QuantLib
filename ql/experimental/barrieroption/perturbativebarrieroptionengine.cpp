@@ -232,7 +232,6 @@ namespace {
             dtp=(taumax-tmp)/(double)(npoint2);
 
             for(j=1;j<=npoint2; j++) {
-                v2pp=0.0;
                 tmp1=tmp+dtp*(double)(2*j-1)*0.50;
                 s=0.50*integs(tmp1,taumax);
 
@@ -280,6 +279,7 @@ namespace {
                 v2pp=v2pp-exp(gm*s)*gm*hbarr*caux;
 
                 v2p=v2p+(alpha(tmp1)-gm*0.5*sigmaq(tmp1))*v2pp;
+                v2pp=0.0;
             }
 
             v2=v2+v2p*(alpha(tmp)-gm*0.5*sigmaq(tmp))*dtp;
@@ -906,22 +906,19 @@ namespace {
           Computes Plackett formula integrands
         */
 
-        static double  R12=0.0, RR2=0, R13=0.0, RR3=0.0, R=0.0, RR=0.0, ZRO=0.0;
-        static double result;
-
-        ZRO = 0.0;
-
-        result = 0.0;
+        static double R12=0.0, RR2=0, R13=0.0, RR3=0.0, R=0.0, RR=0.0;
+        const double ZRO = 0.0;
+        double result = 0.0;
 
         SINCS( RUA*X, R12, RR2 );
         SINCS( RUB*X, R13, RR3 );
 
-        if ( fabs(RUA)> 0 )  result = result + RUA*PNTGND( NUC, H1,H2,H3, R13,R23,R12,RR2);
-        if( fabs(RUB)>0 ) result = result + RUB*PNTGND( NUC, H1,H3,H2, R12,R23,R13,RR3 ) ;
+        if ( fabs(RUA)> 0 )  result += RUA*PNTGND( NUC, H1,H2,H3, R13,R23,R12,RR2);
+        if( fabs(RUB)>0 ) result += RUB*PNTGND( NUC, H1,H3,H2, R12,R23,R13,RR3 ) ;
         if ( NUC > 0 )
             {
                 SINCS( AR + RUC*X, R, RR );
-                result = result - RUC*PNTGND( NUC, H2, H3, H1, ZRO, ZRO, R, RR );
+                result -= RUC*PNTGND( NUC, H2, H3, H1, ZRO, ZRO, R, RR );
             }
         return(result);
     }

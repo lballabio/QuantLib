@@ -1491,6 +1491,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\indexes\ibor\fedfunds.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\indexes\ibor\fedfunds.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\indexes\ibor\gbplibor.hpp"
 					>
 				</File>
@@ -1516,6 +1524,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\indexes\ibor\seklibor.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\indexes\ibor\shibor.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\indexes\ibor\shibor.hpp"
 					>
 				</File>
 				<File
@@ -2136,10 +2152,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\math\domain.hpp"
-				>
-			</File>
-			<File
 				RelativePath="ql\math\errorfunction.cpp"
 				>
 			</File>
@@ -2252,14 +2264,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\math\surface.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\math\surface.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\math\transformedgrid.hpp"
 				>
 			</File>
@@ -2276,6 +2280,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\math\interpolations\backwardflatinterpolation.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\interpolations\backwardflatlinearinterpolation.hpp"
 					>
 				</File>
 				<File
@@ -2460,6 +2468,14 @@
 				>
 				<File
 					RelativePath=".\ql\math\integrals\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\integrals\filonintegral.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\integrals\filonintegral.hpp"
 					>
 				</File>
 				<File
@@ -5575,6 +5591,14 @@
 					>
 				</File>
 				<File
+					RelativePath="ql\pricingengines\vanilla\hestonexpansionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\pricingengines\vanilla\hestonexpansionengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\pricingengines\vanilla\fdamericanengine.hpp"
 					>
 				</File>
@@ -7023,11 +7047,35 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticcomplexchooserengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticcomplexchooserengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\exoticoptions\analyticeuropeanmargrabeengine.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\experimental\exoticoptions\analyticeuropeanmargrabeengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticholderextensibleoptionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticholderextensibleoptionengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticpartialtimebarrieroptionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticpartialtimebarrieroptionengine.hpp"
 					>
 				</File>
 				<File
@@ -7055,11 +7103,27 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\exoticoptions\analytictwoassetcorrelationengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\analytictwoassetcorrelationengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\exoticoptions\analyticwriterextensibleoptionengine.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\experimental\exoticoptions\analyticwriterextensibleoptionengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\complexchooseroption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\complexchooseroption.hpp"
 					>
 				</File>
 				<File
@@ -7084,6 +7148,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\exoticoptions\himalayaoption.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\holderextensibleoption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\holderextensibleoption.hpp"
 					>
 				</File>
 				<File
@@ -7135,6 +7207,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\exoticoptions\partialtimebarrieroption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\partialtimebarrieroption.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\exoticoptions\simplechooseroption.cpp"
 					>
 				</File>
@@ -7155,11 +7235,35 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\exoticoptions\twoassetcorrelationoption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\twoassetcorrelationoption.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\exoticoptions\writerextensibleoption.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\experimental\exoticoptions\writerextensibleoption.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticcompoundoptionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticcompoundoptionengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\compoundoption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\compoundoption.hpp"
 					>
 				</File>
 			</Filter>
@@ -7572,6 +7676,14 @@
 				>
 				<File
 					RelativePath=".\ql\experimental\risk\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\risk\creditriskplus.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\risk\creditriskplus.hpp"
 					>
 				</File>
 				<File
@@ -8024,30 +8136,6 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="compoundoption"
-				>
-				<File
-					RelativePath=".\ql\experimental\compoundoption\all.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\compoundoption\analyticcompoundoptionengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\compoundoption\analyticcompoundoptionengine.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\compoundoption\compoundoption.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\compoundoption\compoundoption.hpp"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="inflation"
 				>
 				<File
@@ -8128,6 +8216,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\math\claytoncopularng.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\convolvedstudentt.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\convolvedstudentt.hpp"
 					>
 				</File>
 				<File

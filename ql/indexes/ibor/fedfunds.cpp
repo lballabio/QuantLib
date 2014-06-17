@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Joseph Wang
+ Copyright (C) 2014 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,27 +17,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/qldefines.hpp>
-
-// we know Domain is deprecated, we're deprecating Surface too.
-#if defined(BOOST_MSVC)
-#pragma warning( disable : 4996 )
-#elif defined(__clang__)
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#elif defined(__GNUC__)
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#endif
-
-#include <ql/math/surface.hpp>
+#include <ql/indexes/ibor/fedfunds.hpp>
+#include <ql/time/calendars/unitedstates.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/currencies/america.hpp>
 
 namespace QuantLib {
 
-    Real TestSurface::operator() (Real x, Real y) const {
-        return std::sin(x) * std::cos(y);
-    }
-
-    boost::shared_ptr<Domain> TestSurface::domain() const {
-        return boost::shared_ptr<Domain>(new UniversalDomain);
-    }
+    FedFunds::FedFunds(const Handle<YieldTermStructure>& h)
+    : OvernightIndex("FedFunds", 0,
+                     USDCurrency(),
+                     UnitedStates(UnitedStates::Settlement),
+                     Actual365Fixed(), h) {}
 
 }
