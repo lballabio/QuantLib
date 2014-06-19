@@ -3,6 +3,7 @@
 
 #include <ql/math/interpolations/abcdinterpolation.hpp>
 #include <ql/math/interpolations/backwardflatinterpolation.hpp>
+#include <ql/math/interpolations/backwardflatlinearinterpolation.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/math/interpolations/convexmonotoneinterpolation.hpp>

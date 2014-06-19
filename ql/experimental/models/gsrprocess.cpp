@@ -348,15 +348,15 @@ namespace QuantLib {
     }
 
     const int GsrProcess::lowerIndex(Time t) const {
-        return std::upper_bound(times_.begin(), times_.end(), t) -
-               times_.begin();
+        return (const int)(std::upper_bound(times_.begin(), times_.end(), t) -
+                           times_.begin());
     }
 
     const int GsrProcess::upperIndex(Time t) const {
         if (t < QL_EPSILON)
             return 0;
-        return std::upper_bound(times_.begin(), times_.end(), t - QL_EPSILON) -
-               times_.begin() + 1;
+        return (const int)(std::upper_bound(times_.begin(), times_.end(), t - QL_EPSILON) -
+                           times_.begin() + 1);
     }
 
     const Real GsrProcess::cappedTime(Size index, Real cap) const {

@@ -9,12 +9,14 @@
 #include <ql/indexes/ibor/eonia.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/ibor/eurlibor.hpp>
+#include <ql/indexes/ibor/fedfunds.hpp>
 #include <ql/indexes/ibor/gbplibor.hpp>
 #include <ql/indexes/ibor/jibar.hpp>
 #include <ql/indexes/ibor/jpylibor.hpp>
 #include <ql/indexes/ibor/libor.hpp>
 #include <ql/indexes/ibor/nzdlibor.hpp>
 #include <ql/indexes/ibor/seklibor.hpp>
+#include <ql/indexes/ibor/shibor.hpp>
 #include <ql/indexes/ibor/sonia.hpp>
 #include <ql/indexes/ibor/tibor.hpp>
 #include <ql/indexes/ibor/trlibor.hpp>

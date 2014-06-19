@@ -106,9 +106,9 @@ namespace {
         SavedSettings backup;
 
         // setup
-        CommonVars() {
+        CommonVars()
+        : nominals(1,1000000) {
             // option variables
-            nominals = std::vector<Real>(1,1000000);
             frequency = Annual;
             // usual setup
             calendar = UnitedKingdom();

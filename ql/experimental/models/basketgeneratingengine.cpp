@@ -45,7 +45,7 @@ namespace QuantLib {
 
         std::vector<boost::shared_ptr<CalibrationHelper> > result;
 
-        int minIdxAlive =
+        Size minIdxAlive =
             std::upper_bound(exercise->dates().begin(), exercise->dates().end(),
                              Settings::instance().evaluationDate()) -
             exercise->dates().begin();
