@@ -40,6 +40,10 @@ namespace QuantLib {
         Real minStrike() const { return source_->minStrike(); }
         Real maxStrike() const { return source_->maxStrike(); }
         Real atmLevel() const { return f_; }
+        const Date& exerciseDate() const { return source_->exerciseDate(); }
+        Time exerciseTime() const { return source_->exerciseTime(); }
+        const DayCounter& dayCounter() const { return source_->dayCounter(); }
+        const Date& referenceDate() const { return source_->referenceDate(); }
 
         Real optionPrice(Rate strike, Option::Type type = Option::Call,
                          Real discount = 1.0) const {

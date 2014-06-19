@@ -31,7 +31,7 @@
 
 namespace QuantLib {
 
-    //! fixed-coupon bond helper
+    //! Bond helper for curve bootstrap
     /*! \warning This class assumes that the reference date
                  does not change between calls of setTermStructure().
     */
@@ -43,16 +43,18 @@ namespace QuantLib {
                      the bond after creating the helper, so that the
                      helper has sole ownership of it.
         */
-        BondHelper(const Handle<Quote>& cleanPrice,
-                   const boost::shared_ptr<Bond>& bond);
+        BondHelper(const Handle<Quote>& price,
+                   const boost::shared_ptr<Bond>& bond,
+                   bool useCleanPrice = true);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
         void setTermStructure(YieldTermStructure*);
         //@}
-        //! \name additional inspectors
+        //! \name Additional inspectors
         //@{
         boost::shared_ptr<Bond> bond() const;
+        bool useCleanPrice() const;
         //@}
         //! \name Visitability
         //@{
@@ -61,11 +63,13 @@ namespace QuantLib {
       protected:
         boost::shared_ptr<Bond> bond_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
+        bool useCleanPrice_;        
     };
 
+    //! Fixed-coupon bond helper for curve bootstrap
     class FixedRateBondHelper : public BondHelper {
       public:
-        FixedRateBondHelper(const Handle<Quote>& cleanPrice,
+        FixedRateBondHelper(const Handle<Quote>& price,
                             Natural settlementDays,
                             Real faceAmount,
                             const Schedule& schedule,
@@ -73,8 +77,14 @@ namespace QuantLib {
                             const DayCounter& dayCounter,
                             BusinessDayConvention paymentConv = Following,
                             Real redemption = 100.0,
-                            const Date& issueDate = Date());
-        //! \name additional inspectors
+                            const Date& issueDate = Date(),
+                            const Calendar& paymentCalendar = Calendar(),
+                            const Period& exCouponPeriod = Period(),
+                            const Calendar& exCouponCalendar = Calendar(),
+                            const BusinessDayConvention exCouponConvention = Unadjusted,
+                            bool exCouponEndOfMonth = false,
+                            const bool useCleanPrice = true);
+        //! \name Additional inspectors
         //@{
         boost::shared_ptr<FixedRateBond> fixedRateBond() const;
         //@}
@@ -91,6 +101,10 @@ namespace QuantLib {
 
     inline boost::shared_ptr<Bond> BondHelper::bond() const {
         return bond_;
+    }
+
+    inline bool BondHelper::useCleanPrice() const {
+        return useCleanPrice_;
     }
 
     inline boost::shared_ptr<FixedRateBond>

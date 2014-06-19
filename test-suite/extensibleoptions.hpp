@@ -17,16 +17,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_writer_extensible_option_hpp
-#define quantlib_test_writer_extensible_option_hpp
+#ifndef quantlib_test_extensible_options_hpp
+#define quantlib_test_extensible_options_hpp
 
 #include <boost/test/unit_test.hpp>
 
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
 
-class WriterExtensibleOptionTest {
+class ExtensibleOptionsTest {
   public:
+    static void testAnalyticHolderExtensibleOptionEngine();
     static void testAnalyticWriterExtensibleOptionEngine();
     static boost::unit_test_framework::test_suite* suite();
 };

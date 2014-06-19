@@ -70,6 +70,12 @@ namespace QuantLib {
             Date spotDate = floatCalendar_.advance(referenceDate,
                                                    fixingDays*Days);
             startDate = spotDate+forwardStart_;
+            if (forwardStart_.length()<0)
+                startDate = floatCalendar_.adjust(startDate,
+                                                  Preceding);
+            else
+                startDate = floatCalendar_.adjust(startDate,
+                                                  Following);
         }
 
         Date endDate;

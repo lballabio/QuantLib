@@ -347,7 +347,7 @@ void DayCounterTest::testThirty360_BondBasis() {
                 BOOST_ERROR("from " << testStartDates[i]
                             << " to " << testEndDates[i] << ":\n"
                             << "    calculated: " << calculated << "\n"
-                            << "    expected:   " << expected[i-1]);
+                            << "    expected:   " << expected[i]);
         }
     }
 }

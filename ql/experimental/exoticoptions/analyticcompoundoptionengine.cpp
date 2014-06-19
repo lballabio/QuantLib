@@ -17,9 +17,42 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/compoundoption/analyticcompoundoptionengine.hpp>
+#include <ql/experimental/exoticoptions/analyticcompoundoptionengine.hpp>
+#include <ql/math/solvers1d/brent.hpp>
+#include <ql/pricingengines/blackformula.hpp>
 
 namespace QuantLib {
+
+    namespace {
+
+        // Helper Class needed to solve an implicit problem of finding a
+        // spot to a corresponding option price.
+        class ImpliedSpotHelper {
+          public:
+            ImpliedSpotHelper(DiscountFactor dividendDiscount,
+                              DiscountFactor riskFreeDiscount,
+                              Real standardDeviation ,
+                              boost::shared_ptr<PlainVanillaPayoff> payoff,
+                              Real strike)
+            : dividendDiscount_(dividendDiscount),
+              riskFreeDiscount_(riskFreeDiscount),
+              standardDeviation_(standardDeviation),
+              strike_(strike),payoff_(payoff) {}
+            Real operator()(Real spot) const {
+                Real forwardPrice = spot*dividendDiscount_/riskFreeDiscount_;
+                Real value = blackFormula(payoff_, forwardPrice,
+                                          standardDeviation_,riskFreeDiscount_);
+                return value - strike_;
+            }
+          private:
+            DiscountFactor dividendDiscount_;
+            DiscountFactor riskFreeDiscount_;
+            Real standardDeviation_;
+            Real strike_;
+            boost::shared_ptr<PlainVanillaPayoff> payoff_;
+        };
+
+    }
 
     AnalyticCompoundOptionEngine::AnalyticCompoundOptionEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
@@ -61,10 +94,8 @@ namespace QuantLib {
         solver.setMaxEvaluations(1000);
         Real accuracy = 1.0e-6;
 
-        Real X=0.0;
-        Real sSolved=0.0;
-        sSolved=solver.solve(*f, accuracy, strikeDaughter(), 1.0e-6, strikeDaughter()*1000.0);
-        X=transformX(sSolved); // transform stock to return as in Wystup's book
+        Real sSolved=solver.solve(*f, accuracy, strikeDaughter(), 1.0e-6, strikeDaughter()*1000.0);
+        Real X=transformX(sSolved); // transform stock to return as in Wystup's book
         /* Solver Setup Finished*****************************************/
 
         Real phi=typeDaughter(); // -1 or 1
@@ -93,11 +124,6 @@ namespace QuantLib {
         Real rD=riskFreeRateDaughter();
         Real dD=dividendRateDaughter();
 
-        Real tempRes=0.0;
-        Real tempDelta=0.0;
-        Real tempGamma=0.0;
-        Real tempVega=0.0;
-        Real tempTheta=0.0;
         Real N2XmSM=N2(-phi*w*XmSM,phi*dP);
         Real N2X=N2(-phi*w*X,phi*dM);
         Real NeX=N_(-phi*w*e(X));
@@ -108,12 +134,11 @@ namespace QuantLib {
         Real invMTime=1/std::sqrt(rTM);
         Real invDTime=1/std::sqrt(rTD);
 
-        tempRes=phi*w*S*ddD*N2XmSM-phi*w*strD*rdD*N2X-w*strM*rdM*NX;
-        tempDelta=phi*w*ddD*N2XmSM;
-        tempGamma=(ddD/(vD*S))*(invMTime*nXm*NT12+w*invDTime*ndP*NeX);
-        tempVega=ddD*S*((1/invMTime)*nXm*NT12+w*(1/invDTime)*ndP*NeX);
-
-        tempTheta+=phi*w*dD*S*ddD*N2XmSM-phi*w*rD*strD*rdD*N2X-w*rD*strM*rdM*NX;
+        Real tempRes=phi*w*S*ddD*N2XmSM-phi*w*strD*rdD*N2X-w*strM*rdM*NX;
+        Real tempDelta=phi*w*ddD*N2XmSM;
+        Real tempGamma=(ddD/(vD*S))*(invMTime*nXm*NT12+w*invDTime*ndP*NeX);
+        Real tempVega=ddD*S*((1/invMTime)*nXm*NT12+w*(1/invDTime)*ndP*NeX);
+        Real tempTheta=phi*w*dD*S*ddD*N2XmSM-phi*w*rD*strD*rdD*N2X-w*rD*strM*rdM*NX;
         tempTheta-=0.5*vD*S*ddD*(invMTime*nXm*NT12+w*invDTime*ndP*NeX);
 
         results_.value=tempRes;
@@ -123,143 +148,138 @@ namespace QuantLib {
         results_.theta=tempTheta;
     }
 
-    Real AnalyticCompoundOptionEngine::typeDaughter() const{
+    Real AnalyticCompoundOptionEngine::typeDaughter() const {
         // returns -1 or 1 according to put or call
         return (Real) payoffDaughter()->optionType();
     }
 
-    Real AnalyticCompoundOptionEngine::typeMother() const{
+    Real AnalyticCompoundOptionEngine::typeMother() const {
         return (Real) payoffMother()->optionType();
     }
 
-    Date AnalyticCompoundOptionEngine::maturityDaughter() const{
+    Date AnalyticCompoundOptionEngine::maturityDaughter() const {
+        return arguments_.daughterExercise->lastDate();
+    }
+
+    Date AnalyticCompoundOptionEngine::maturityMother() const {
         return arguments_.exercise->lastDate();
     }
 
-    Date AnalyticCompoundOptionEngine::maturityMother() const{
-        return (arguments_.motherOption->exercise())->lastDate();
-    }
-
-    Time AnalyticCompoundOptionEngine::residualTimeDaughter() const{
+    Time AnalyticCompoundOptionEngine::residualTimeDaughter() const {
         return process_->time(maturityDaughter());
     }
 
-    Time AnalyticCompoundOptionEngine::residualTimeMother() const{
+    Time AnalyticCompoundOptionEngine::residualTimeMother() const {
         return process_->time(maturityMother());
     }
 
-    Time AnalyticCompoundOptionEngine::residualTimeMotherDaughter() const{
+    Time AnalyticCompoundOptionEngine::residualTimeMotherDaughter() const {
         return residualTimeDaughter()-residualTimeMother();
     }
 
 
-    Real AnalyticCompoundOptionEngine::volatilityDaughter() const{
+    Real AnalyticCompoundOptionEngine::volatilityDaughter() const {
         return process_->blackVolatility()->blackVol(maturityDaughter(),
                                                      strikeDaughter());
     }
 
 
-    Real AnalyticCompoundOptionEngine::volatilityMother() const{
+    Real AnalyticCompoundOptionEngine::volatilityMother() const {
         return process_->blackVolatility()->blackVol(maturityMother(),
                                                      strikeMother());
     }
 
-    Real AnalyticCompoundOptionEngine::stdDeviationDaughter() const{
+    Real AnalyticCompoundOptionEngine::stdDeviationDaughter() const {
         return volatilityDaughter()*std::sqrt(residualTimeDaughter());
     }
 
-    Real AnalyticCompoundOptionEngine::stdDeviationMother() const{
+    Real AnalyticCompoundOptionEngine::stdDeviationMother() const {
         return volatilityMother()*std::sqrt(residualTimeMother());
     }
 
 
     boost::shared_ptr<PlainVanillaPayoff>
-    AnalyticCompoundOptionEngine::payoffDaughter() const{
+    AnalyticCompoundOptionEngine::payoffDaughter() const {
         boost::shared_ptr<PlainVanillaPayoff> dPayoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
-
+            boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+                                                   arguments_.daughterPayoff);
         QL_REQUIRE(dPayoff, "non-plain payoff given");
-
         return dPayoff;
     }
 
     boost::shared_ptr<PlainVanillaPayoff>
-    AnalyticCompoundOptionEngine::payoffMother() const{
-
+    AnalyticCompoundOptionEngine::payoffMother() const {
         boost::shared_ptr<PlainVanillaPayoff> mPayoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(
-                                         (arguments_.motherOption)->payoff());
-
+            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(mPayoff, "non-plain payoff given");
-
         return mPayoff;
     }
 
-    Real AnalyticCompoundOptionEngine::strikeMother() const{
+    Real AnalyticCompoundOptionEngine::strikeMother() const {
         return payoffMother()->strike();
     }
 
-    Real AnalyticCompoundOptionEngine::strikeDaughter() const{
+    Real AnalyticCompoundOptionEngine::strikeDaughter() const {
         return payoffDaughter()->strike();
     }
 
-    DiscountFactor AnalyticCompoundOptionEngine::riskFreeDiscountDaughter() const{
+    DiscountFactor AnalyticCompoundOptionEngine::riskFreeDiscountDaughter() const {
         return process_->riskFreeRate()->discount(residualTimeDaughter());
     }
 
-    DiscountFactor AnalyticCompoundOptionEngine::riskFreeDiscountMother() const{
+    DiscountFactor AnalyticCompoundOptionEngine::riskFreeDiscountMother() const {
         return process_->riskFreeRate()->discount(residualTimeMother());
     }
 
-    DiscountFactor AnalyticCompoundOptionEngine::riskFreeDiscountMotherDaughter() const{
+    DiscountFactor AnalyticCompoundOptionEngine::riskFreeDiscountMotherDaughter() const {
         return process_->riskFreeRate()->discount(residualTimeMotherDaughter());
     }
 
-    DiscountFactor AnalyticCompoundOptionEngine::dividendDiscountDaughter() const{
+    DiscountFactor AnalyticCompoundOptionEngine::dividendDiscountDaughter() const {
         return process_->dividendYield()->discount(residualTimeDaughter());
     }
 
-    DiscountFactor AnalyticCompoundOptionEngine::dividendDiscountMother() const{
+    DiscountFactor AnalyticCompoundOptionEngine::dividendDiscountMother() const {
         return process_->dividendYield()->discount(residualTimeMother());
     }
 
-    DiscountFactor AnalyticCompoundOptionEngine::dividendDiscountMotherDaughter() const{
+    DiscountFactor AnalyticCompoundOptionEngine::dividendDiscountMotherDaughter() const {
         return process_->dividendYield()->discount(residualTimeMotherDaughter());
     }
 
-    Real AnalyticCompoundOptionEngine::dPlus() const{
+    Real AnalyticCompoundOptionEngine::dPlus() const {
         Real forward = spot() * dividendDiscountDaughter() / riskFreeDiscountDaughter();
         Real sd=stdDeviationDaughter();
         return std::log(forward/strikeDaughter())/sd+0.5*sd;
     }
 
-    Real AnalyticCompoundOptionEngine::dMinus() const{
+    Real AnalyticCompoundOptionEngine::dMinus() const {
         return dPlus()-stdDeviationDaughter();
     }
 
-    Real AnalyticCompoundOptionEngine::dPlusTau12(Real S) const{
+    Real AnalyticCompoundOptionEngine::dPlusTau12(Real S) const {
         Real forward = S * dividendDiscountMotherDaughter() / riskFreeDiscountMotherDaughter();
         Real sd=volatilityDaughter()*std::sqrt(residualTimeMotherDaughter());
         return std::log(forward/strikeDaughter())/sd+0.5*sd;
     }
 
-    Real AnalyticCompoundOptionEngine::spot() const{
+    Real AnalyticCompoundOptionEngine::spot() const {
         return process_->x0();
     }
 
-    Real AnalyticCompoundOptionEngine::riskFreeRateDaughter() const{
+    Real AnalyticCompoundOptionEngine::riskFreeRateDaughter() const {
         return process_->riskFreeRate()->zeroRate(residualTimeDaughter(),
                                                   Continuous,
                                                   NoFrequency);
     }
 
-    Real AnalyticCompoundOptionEngine::dividendRateDaughter() const{
+    Real AnalyticCompoundOptionEngine::dividendRateDaughter() const {
         return process_->dividendYield()->zeroRate(residualTimeDaughter(),
                                                    Continuous,
                                                    NoFrequency);
     }
 
-    Real AnalyticCompoundOptionEngine::transformX(Real X) const{
+    Real AnalyticCompoundOptionEngine::transformX(Real X) const {
 
         Real sd=stdDeviationMother();
         Real resX=riskFreeDiscountMother()*X/(spot()*dividendDiscountMother());
@@ -269,37 +289,11 @@ namespace QuantLib {
         return resX/sd;
     }
 
-    Real AnalyticCompoundOptionEngine::e(Real X) const{
+    Real AnalyticCompoundOptionEngine::e(Real X) const {
         Real rtM=residualTimeMother();
         Real rtD=residualTimeDaughter();
 
         return (X*std::sqrt(rtD)+std::sqrt(rtM)*dMinus())/std::sqrt(rtD-rtM);
-    }
-
-
-    ImpliedSpotHelper::ImpliedSpotHelper(
-                                 DiscountFactor dividendDiscount,
-                                 DiscountFactor riskFreeDiscount,
-                                 Real standardDeviation,
-                                 boost::shared_ptr<PlainVanillaPayoff> payoff,
-                                 Real strike)
-    : dividendDiscount_(dividendDiscount), riskFreeDiscount_(riskFreeDiscount),
-      standardDeviation_(standardDeviation),
-      strike_(strike),payoff_(payoff){}
-
-    Real ImpliedSpotHelper::operator ()(Real spot)const{
-
-        Real forwardPrice = spot * dividendDiscount_ / riskFreeDiscount_;
-
-        // Should be handled more efficient! Each time the optimizer calls the operator
-        // a new object is created. Need a Calc function which returns value for a given
-        // spot.
-        // Any better solution with current QuantLib architecture?
-
-        boost::shared_ptr<BlackCalculator> blackCalc(
-                   new BlackCalculator(payoff_, forwardPrice,
-                                       standardDeviation_,riskFreeDiscount_));
-        return blackCalc->value()-strike_;
     }
 
 }

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/compoundoption/compoundoption.hpp>
+#include <ql/experimental/exoticoptions/compoundoption.hpp>
 
 namespace QuantLib {
 
@@ -26,33 +26,28 @@ namespace QuantLib {
                    const boost::shared_ptr<Exercise>& motherExercise,
                    const boost::shared_ptr<StrikedTypePayoff>& daughterPayoff,
                    const boost::shared_ptr<Exercise>& daughterExercise)
-    : OneAssetOption(daughterPayoff, daughterExercise),
-      motherOption_(new OneAssetOption(motherPayoff,motherExercise)) {}
+    : OneAssetOption(motherPayoff, motherExercise),
+      daughterPayoff_(daughterPayoff), daughterExercise_(daughterExercise) {}
 
     void CompoundOption::setupArguments(PricingEngine::arguments* args) const {
-
         OneAssetOption::setupArguments(args);
 
         CompoundOption::arguments* moreArgs =
             dynamic_cast<CompoundOption::arguments*>(args);
-
         QL_REQUIRE(moreArgs != 0, "wrong argument type");
-
-        moreArgs->motherOption= motherOption_;
+        moreArgs->daughterPayoff = daughterPayoff_;
+        moreArgs->daughterExercise = daughterExercise_;
     }
 
-
     void CompoundOption::arguments::validate() const {
-
         OneAssetOption::arguments::validate();
-
-        QL_REQUIRE(motherOption->payoff(),
-                   "No payoff given for mother compound option.");
-        QL_REQUIRE(motherOption->exercise(),
-                   "No exercise given for mother compound option.");
-        QL_REQUIRE(motherOption->exercise()->lastDate()<=exercise->lastDate(),
-                   "Maturity of mother option exceeds "
-                   "maturity of daughter option.");
+        QL_REQUIRE(daughterPayoff,
+                   "no payoff given for underlying option");
+        QL_REQUIRE(daughterExercise,
+                   "no exercise given for underlying option");
+        QL_REQUIRE(exercise->lastDate() <= daughterExercise->lastDate(),
+                   "maturity of compound option exceeds "
+                   "maturity of underlying option");
     }
 
 }

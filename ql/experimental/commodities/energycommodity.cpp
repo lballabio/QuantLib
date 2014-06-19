@@ -46,7 +46,7 @@ namespace QuantLib {
             << std::setw(10) << std::right << "open" << std::endl;
 
         for (EnergyDailyPositions::const_iterator i = dailyPositions.begin();
-             i != dailyPositions.end(); i++) {
+             i != dailyPositions.end(); ++i) {
             const EnergyDailyPosition& dailyPosition = i->second;
             out << std::setw(4) << io::iso_date(i->first) << "  "
                 << std::setw(12) << std::right << std::fixed
@@ -155,7 +155,7 @@ namespace QuantLib {
                 CommoditySettings::instance().currency();
             try {
                 for (SecondaryCosts::const_iterator i = secondaryCosts_->begin();
-                     i != secondaryCosts_->end(); i++) {
+                     i != secondaryCosts_->end(); ++i) {
                     if (boost::any_cast<CommodityUnitCost>(&i->second)) {
                         Real value =
                             calculateUnitCost(
