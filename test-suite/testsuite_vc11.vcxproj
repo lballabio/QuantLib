@@ -674,6 +674,7 @@
     <ClCompile Include="everestoption.cpp" />
     <ClCompile Include="exchangerate.cpp" />
     <ClCompile Include="extendedtrees.cpp" />
+    <ClCompile Include="extensibleoptions.cpp" />
     <ClCompile Include="functions.cpp" />
     <ClCompile Include="fastfouriertransform.cpp" />
     <ClCompile Include="fdheston.cpp" />
@@ -722,6 +723,7 @@
     <ClCompile Include="optionletstripper.cpp" />
     <ClCompile Include="overnightindexedswap.cpp" />
     <ClCompile Include="pagodaoption.cpp" />
+    <ClCompile Include="partialtimebarrieroption.cpp" />
     <ClCompile Include="pathgenerator.cpp" />
     <ClCompile Include="period.cpp" />
     <ClCompile Include="piecewiseyieldcurve.cpp" />
@@ -750,13 +752,13 @@
     <ClCompile Include="tracing.cpp" />
     <ClCompile Include="transformedgrid.cpp" />
     <ClCompile Include="twoassetbarrieroption.cpp" />
+    <ClCompile Include="twoassetcorrelationoption.cpp" />
     <ClCompile Include="utilities.cpp" />
     <ClCompile Include="variancegamma.cpp" />
     <ClCompile Include="varianceoption.cpp" />
     <ClCompile Include="varianceswaps.cpp" />
     <ClCompile Include="volatilitymodels.cpp" />
     <ClCompile Include="vpp.cpp" />
-    <ClCompile Include="writerextensibleoption.cpp" />
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -801,6 +803,7 @@
     <ClInclude Include="everestoption.hpp" />
     <ClInclude Include="exchangerate.hpp" />
     <ClInclude Include="extendedtrees.hpp" />
+    <ClInclude Include="extensibleoptions.hpp" />
     <ClInclude Include="functions.hpp" />
     <ClInclude Include="fastfouriertransform.hpp" />
     <ClInclude Include="fdheston.hpp" />
@@ -849,6 +852,7 @@
     <ClInclude Include="optionletstripper.hpp" />
     <ClInclude Include="overnightindexedswap.hpp" />
     <ClInclude Include="pagodaoption.hpp" />
+    <ClInclude Include="partialtimebarrieroption.hpp" />
     <ClInclude Include="pathgenerator.hpp" />
     <ClInclude Include="period.hpp" />
     <ClInclude Include="piecewiseyieldcurve.hpp" />
@@ -878,13 +882,13 @@
     <ClInclude Include="tracing.hpp" />
     <ClInclude Include="transformedgrid.hpp" />
     <ClInclude Include="twoassetbarrieroption.hpp" />
+    <ClInclude Include="twoassetcorrelationoption.hpp" />
     <ClInclude Include="utilities.hpp" />
     <ClInclude Include="variancegamma.hpp" />
     <ClInclude Include="varianceoption.hpp" />
     <ClInclude Include="varianceswaps.hpp" />
     <ClInclude Include="volatilitymodels.hpp" />
     <ClInclude Include="vpp.hpp" />
-    <ClInclude Include="writerextensibleoption.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QuantLib_vc11.vcxproj">

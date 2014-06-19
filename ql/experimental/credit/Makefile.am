@@ -25,7 +25,6 @@ this_include_HEADERS = \
     onefactorstudentcopula.hpp \
     pool.hpp \
     randomdefaultmodel.hpp \
-	randomdefaultlatentmodel.hpp \
     recoveryratemodel.hpp \
     recoveryratequote.hpp \
     recursivecdoengine.hpp \

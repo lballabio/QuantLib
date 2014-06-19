@@ -52,10 +52,10 @@ namespace QuantLib {
         Real variance(Rate strike) const;
         Volatility volatility(Rate strike) const;
         virtual Real atmLevel() const = 0;
-        const Date& exerciseDate() const { return exerciseDate_; }
-        const Date& referenceDate() const;
-        Time exerciseTime() const { return exerciseTime_; }
-        const DayCounter& dayCounter() const { return dc_; }
+        virtual const Date& exerciseDate() const { return exerciseDate_; }
+        virtual const Date& referenceDate() const;
+        virtual Time exerciseTime() const { return exerciseTime_; }
+        virtual const DayCounter& dayCounter() const { return dc_; }
         virtual Real optionPrice(Rate strike,
                                  Option::Type type = Option::Call,
                                  Real discount=1.0) const;

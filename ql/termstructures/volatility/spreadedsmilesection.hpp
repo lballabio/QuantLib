@@ -43,6 +43,7 @@ namespace QuantLib {
         const Date& exerciseDate() const;
         Time exerciseTime() const;
         const DayCounter& dayCounter() const;
+        const Date& referenceDate() const;
         //@}
         //! \name LazyObject interface
         //@{
@@ -79,6 +80,9 @@ namespace QuantLib {
         return underlyingSection_->dayCounter();
     }
 
+    inline const Date& SpreadedSmileSection::referenceDate() const {
+        return underlyingSection_->referenceDate();
+    }
 }
 
 #endif

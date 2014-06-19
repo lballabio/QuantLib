@@ -73,10 +73,16 @@ namespace QuantLib {
       spotSwaps_(nExercise_, vector<shared_ptr<Swap> >(nSwapIndexes_)),
       fwdSwaps_(nExercise_, vector<shared_ptr<Swap> >(nSwapIndexes_))
     {
-        QL_REQUIRE(2*nSwapIndexes_==bidAskSpreads[0].size(),
-                   "2*nSwapIndexes_!=bidAskSpreads columns()");
-        QL_REQUIRE(nExercise_==bidAskSpreads.size(),
-                   "nExercise_==bidAskSpreads rows()");
+        QL_REQUIRE(2 * nSwapIndexes_ == bidAskSpreads[0].size(),
+                   "2*nSwapIndexes_ (" << 2 * nSwapIndexes_
+                                       << ") != bidAskSpreads columns() ("
+                                       << bidAskSpreads[0].size() << ")");
+        QL_REQUIRE(nExercise_ == bidAskSpreads.size(),
+                   "nExercise_ (" << nExercise_ << ") != bidAskSpreads rows() ("
+                                  << bidAskSpreads.size() << ")");
+        QL_REQUIRE(nSwapIndexes_ == pricers.size(),
+                   "nSwapIndexes_ (" << nSwapIndexes_ << ") != pricers ("
+                                     << pricers_.size() << ")");
 
         for (Size j=0; j<nSwapIndexes_; ++j) {
             swapTenors_[j] = swapIndexes_[j]->tenor();
@@ -240,33 +246,33 @@ namespace QuantLib {
         Matrix result(nExercise_*nSwapIndexes_, 14);
             for (Size j=0; j<nSwapIndexes_; ++j) {
                 for (Size i=0; i<nExercise_; ++i) {
-                result[j*nSwapIndexes_+i][0] = swapTenors_[j].length();
-                result[j*nSwapIndexes_+i][1] = swapLengths_[i].length();
+                result[j*nExercise_+i][0] = swapTenors_[j].length();
+                result[j*nExercise_+i][1] = swapLengths_[i].length();
 
                 // Spreads
-                result[j*nSwapIndexes_+i][2] = mktBidSpreads_[i][j]*10000;
-                result[j*nSwapIndexes_+i][3] = mktAskSpreads_[i][j]*10000;
-                result[j*nSwapIndexes_+i][4] = mktSpreads_[i][j]*10000;
-                result[j*nSwapIndexes_+i][5] = mdlSpreads_[i][j]*10000;
-                result[j*nSwapIndexes_+i][6] = errSpreads_[i][j]*10000;
+                result[j*nExercise_+i][2] = mktBidSpreads_[i][j]*10000;
+                result[j*nExercise_+i][3] = mktAskSpreads_[i][j]*10000;
+                result[j*nExercise_+i][4] = mktSpreads_[i][j]*10000;
+                result[j*nExercise_+i][5] = mdlSpreads_[i][j]*10000;
+                result[j*nExercise_+i][6] = errSpreads_[i][j]*10000;
                 if (mdlSpreads_[i][j]>mktAskSpreads_[i][j])
-                    result[j*nSwapIndexes_+i][7] = (mdlSpreads_[i][j] -
+                    result[j*nExercise_+i][7] = (mdlSpreads_[i][j] -
                                                 mktAskSpreads_[i][j])*10000;
                 else if (mdlSpreads_[i][j]<mktBidSpreads_[i][j])
-                    result[j*nSwapIndexes_+i][7] = (mktBidSpreads_[i][j] -
+                    result[j*nExercise_+i][7] = (mktBidSpreads_[i][j] -
                                                 mdlSpreads_[i][j])*10000;
                 else
-                    result[j*nSwapIndexes_+i][7] = 0.0;
+                    result[j*nExercise_+i][7] = 0.0;
 
                 // spot CMS Leg NPVs
-                result[j*nSwapIndexes_+i][ 8] = mktSpotCmsLegNPV_[i][j];
-                result[j*nSwapIndexes_+i][ 9] = mdlSpotCmsLegNPV_[i][j];
-                result[j*nSwapIndexes_+i][10] = errSpotCmsLegNPV_[i][j];
+                result[j*nExercise_+i][ 8] = mktSpotCmsLegNPV_[i][j];
+                result[j*nExercise_+i][ 9] = mdlSpotCmsLegNPV_[i][j];
+                result[j*nExercise_+i][10] = errSpotCmsLegNPV_[i][j];
 
                 // forward CMS Leg NPVs
-                result[j*nSwapIndexes_+i][11] = mktFwdCmsLegNPV_[i][j];
-                result[j*nSwapIndexes_+i][12] = mdlFwdCmsLegNPV_[i][j];
-                result[j*nSwapIndexes_+i][13] = errFwdCmsLegNPV_[i][j];
+                result[j*nExercise_+i][11] = mktFwdCmsLegNPV_[i][j];
+                result[j*nExercise_+i][12] = mdlFwdCmsLegNPV_[i][j];
+                result[j*nExercise_+i][13] = errFwdCmsLegNPV_[i][j];
             }
         }
         return result;

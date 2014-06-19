@@ -38,13 +38,18 @@ namespace QuantLib {
     but other copulas will need parameters and initialization.*/
     struct GaussianCopulaPolicy {
 
-        typedef int initTraits;// boost optional?
+        typedef int initTraits;
 
         GaussianCopulaPolicy(
             const std::vector<std::vector<Real> >& factorWeights = 
                 std::vector<std::vector<Real> >(), 
             const initTraits& dummy = int())
            /*: density_(), cumulative_()*/{}
+
+        //! returns a copy of the initialization arguments
+        initTraits getInitTraits() const {
+            return initTraits();
+        }
 
         /*! Cumulative probability of the indexed latent variable 
             @param iVariable The index of the latent variable requested.

@@ -11,6 +11,7 @@ SUBDIRS = \
     EquityOption \
     FittedBondCurve \
     FRA \
+    Gaussian1dModels \
     MarketModels \
     MultidimIntegral \
     Replication \

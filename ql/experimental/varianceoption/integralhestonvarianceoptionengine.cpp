@@ -54,7 +54,7 @@ namespace {
     double IvopOneDim(double eps, double chi, double theta, double /*rho*/,
                       double v0, double eprice, double tau, double rtax)
     {
-        double i0=0.0, s=0.0, ss=0.0;
+        double ss=0.0;
         boost::scoped_array<double> xiv(new double[2048*2048+1]);
         double nris=0.0;
         int j=0,mm=0;
@@ -74,7 +74,7 @@ namespace {
          **   i0: initial integrated variance i0=0
          **********************************************************
          */
-        i0=0.0;
+        double i0=0.0;
         //s=2.0*chi*theta/(eps*eps)-1.0;
 
         //s=s+1;
@@ -87,7 +87,7 @@ namespace {
 
         pi= 3.14159265358979324;
         pi2=2.0*pi;
-        s=2.0*chi*theta/(eps*eps)-1.0;
+        double s=2.0*chi*theta/(eps*eps)-1.0;
         /*
          ****************************************
          ** Note that s must be greater than zero
@@ -199,7 +199,7 @@ namespace {
                     double v0, double tau, double rtax,
                     const boost::function<double(double)>& payoff) {
 
-        double i0=0.0, s=0.0, ss=0.0;
+        double ss=0.0;
         boost::scoped_array<double> xiv(new double[2048*2048+1]);
         boost::scoped_array<double> ivet(new double[2048*2048+1]);
         double nris=0.0;
@@ -226,7 +226,7 @@ namespace {
          **   i0: initial integrated variance i0=0
          **********************************************************
          */
-        i0=0.0;
+        double i0=0.0;
 
         /*
          *************************************************
@@ -237,7 +237,7 @@ namespace {
         pi= 3.14159265358979324;
         pi2=2.0*pi;
 
-        s=2.0*chi*theta/(eps*eps)-1.0;
+        double s=2.0*chi*theta/(eps*eps)-1.0;
         /*
          ****************************************
          ** Note that s must be greater than zero
