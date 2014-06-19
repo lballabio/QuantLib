@@ -25,6 +25,7 @@
 #include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/lambda/construct.hpp>
+#include <boost/make_shared.hpp>
 
 #include <ql/experimental/math/multidimquadrature.hpp>
 #include <ql/experimental/math/multidimintegrator.hpp>
@@ -47,12 +48,18 @@ namespace QuantLib {
     namespace {
         // havent figured out how to do this in-place
         struct multiplyV {
-            typedef std::vector<Real>& result_type;
-            std::vector<Real>& operator()(Real d,  std::vector<Real>& v) {
+            typedef Disposable<std::vector<Real> > result_type;
+            std::vector<Real>& operator()(Real d,  Disposable<std::vector<Real> > v) {
                 std::transform(v.begin(), v.end(), v.begin(), 
                     boost::lambda::_1 * d);
-            return v;
+            return v;// g++ warning!
             }
+            //typedef std::vector<Real>& result_type;
+            //std::vector<Real>& operator()(Real d,  std::vector<Real>& v) {
+            //    std::transform(v.begin(), v.end(), v.begin(), 
+            //        boost::lambda::_1 * d);
+            //return v;
+            //}
         };
 
 
@@ -68,9 +75,24 @@ namespace QuantLib {
         */
         class LMIntegration {
         public:
+            // Interface with actual integrators:
+            // integral of a scalar function
             virtual Real integrate(const boost::function<Real (
                 const std::vector<Real>& arg)>& f) const = 0;
-            //// needs vector version too.
+            // integral of a vector function
+            /* I had to use a different name, since the compiler does not
+            recognise the overload; MSVC sees the argument as 
+            boost::function<Signature> in both cases....   
+            I could do the as with the quadratures and have this as a template 
+            function and spez for the vector case but I prefer to understand
+            why the overload fails....
+                        FIX ME
+            */
+            virtual Disposable<std::vector<Real> > integrateV(
+                const boost::function<Disposable<std::vector<Real> >  (
+                const std::vector<Real>& arg)>& f) const {
+                QL_FAIL("No vector integration provided");
+            }
             virtual ~LMIntegration() {}
         };
 
@@ -78,7 +100,7 @@ namespace QuantLib {
         template <class I_T>
         class IntegrationBase : 
             public I_T, public LMIntegration {// diamond on 'integrate'
-         // this class template always to be fully specialized
+         // this class template always to be fully specialized:
          private:
              IntegrationBase() {}
          virtual ~IntegrationBase() {} 
@@ -226,8 +248,11 @@ namespace QuantLib {
         and in the sampling of the random factors
     */
     template <class copulaPolicyImpl>
-    class LatentModel {//to be observer if factors as quotes
+    class LatentModel 
+        : public virtual Observer 
+    {//to be observer if factors as quotes
     public:
+        void update();
         //! \name Copula interface.
         //@{
         typedef copulaPolicyImpl copulaType;
@@ -292,8 +317,12 @@ namespace QuantLib {
         }
         // \to do write variants of the above, although is the most common case
 
+        const copulaType& copula() const {
+            return copula_;
+        }
 
-    protected:
+    public:
+  //  protected:
         //! \name Latent model random factor number generator facility.
         //@{
         /*!  Allows generation or random samples of the latent variable. 
@@ -518,13 +547,27 @@ namespace QuantLib {
         /*! Constructs a LM with an arbitrary number of latent variables 
           depending only on one random factor with the same weight for all
           latent variables.
-            @param factorsWeight The weight, same for all.
+            @param correlSqr The weight, same for all.
             @param ini Initialization variables. Trait type from the copula 
               policy to allow for static policies (this solution needs to be 
               revised, possibly drop the static policy and create a policy 
               member in LatentModel)
         */
         explicit LatentModel(const Real correlSqr, Size nVariables,
+            const typename copulaType::initTraits& ini = 
+                copulaType::initTraits());
+        /*! Constructs a LM with an arbitrary number of latent variables 
+          depending only on one random factor with the same weight for all
+          latent variables. The weight is observed and this constructor is
+          intended to be used when the model relates to a market value.
+            @param singleFactorCorrel The weight/mkt-factor, same for all.
+            @param ini Initialization variables. Trait type from the copula 
+              policy to allow for static policies (this solution needs to be 
+              revised, possibly drop the static policy and create a policy 
+              member in LatentModel)
+        */
+        explicit LatentModel(const Handle<Quote>& singleFactorCorrel,
+            Size nVariables,
             const typename copulaType::initTraits& ini = 
                 copulaType::initTraits());
 
@@ -567,7 +610,7 @@ namespace QuantLib {
             const boost::function<Disposable<std::vector<Real> >(
                 const std::vector<Real>& v1)>& f ) const {
             return 
-                integration()->integrate(
+                integration()->integrateV(//see note in LMIntegrators base class
                     boost::bind<Disposable<std::vector<Real> > >(
                         multiplyV(),
                         boost::bind(&copulaPolicyImpl::density, copula_, _1),
@@ -583,7 +626,12 @@ namespace QuantLib {
         //@}
     protected:
         // Ordering is: factorWeights_[iVariable][iFactor]
-        mutable std::vector<std::vector<Real> > factorWeights_;
+        mutable std::vector<std::vector<Real> > factorWeights_; ////////////////////// TO BE QUOTES!!!!!!!!!!!!!!!!!!!!!
+        /* This is a duplicated value from the data above chosen for memory reasons.
+I have opted for this one value redundant memory rather than have the memory load of the observable in all factors. Typically Latent models are used in two very different ways: with many factors and not linked to a market observable (typical matrix size above is of tens of thousands entries) or with just one observable value and the matrix is just a scalar. Otherwise, to remove the redundancy, the matrix factorWeights_ should be one of Quotes Handles.
+        */
+        mutable Handle<Quote> cachedMktFactor_; // if used by the relevant constructor.
+
         // updated only by correlation observability and constructors.
         // \sqrt{1-\sum_k \beta_{i,k}^2} the addition being along the factors. 
         // It has therefore the size of the basket. Cached for perfomance
@@ -611,7 +659,12 @@ namespace QuantLib {
                 const std::vector<Real>& arg)>& f) const {
                     return GaussianQuadMultidimIntegrator::integrate<Real>(f);
             }
-            // disposable vector version here....
+            Disposable<std::vector<Real> > integrateV(
+                const boost::function<Disposable<std::vector<Real> >  (
+                    const std::vector<Real>& arg)>& f) const {
+                    return GaussianQuadMultidimIntegrator::
+                        integrate<Disposable<std::vector<Real> > >(f);
+            }
             virtual ~IntegrationBase() {}
         };
 
@@ -627,6 +680,7 @@ namespace QuantLib {
                 const std::vector<Real>& arg)>& f) const {
                     return MultidimIntegral::operator ()(f, a_, b_);
             }
+            // disposable vector version here....
             virtual ~IntegrationBase() {}
             const std::vector<Real> a_, b_;
         };
@@ -682,8 +736,36 @@ namespace QuantLib {
       copula_(factorWeights_, ini)
     { }
 
+    template <class Impl>
+    LatentModel<Impl>::LatentModel(
+        const Handle<Quote>& singleFactorCorrel,
+        Size nVariables,
+        const typename Impl::initTraits& ini)
+    : factorWeights_(nVariables, std::vector<Real>(1, 
+        singleFactorCorrel->value())),
+      nFactors_(1), 
+      nVariables_(nVariables),
+      idiosyncFctrs_(nVariables, 
+        std::sqrt(1.-singleFactorCorrel->value()*singleFactorCorrel->value())),
+      copula_(factorWeights_, ini),
+      cachedMktFactor_(singleFactorCorrel)
+    {
+        registerWith(cachedMktFactor_);
+    }
 
-    //----Template partial specializations of the random FactorSampler---------
+
+    template <class Impl>
+    void LatentModel<Impl>::update() {
+        // only registration with the single market correl quote
+        factorWeights_ = std::vector<std::vector<Real> >(nVariables_, 
+            std::vector<Real>(1, cachedMktFactor_->value()));
+        idiosyncFctrs_ = std::vector<Real>(nVariables_, 
+            std::sqrt(1.-cachedMktFactor_->value()*cachedMktFactor_->value()));
+        copula_ = copulaType(factorWeights_, copula_.getInitTraits());
+    }
+
+
+    //----Template partial specializations of the random FactorSampler---------////////////////// WHY THE COPULA TYPE IS NOT INFORCED TOO?????? THESE GENS ONLY CORRESPOND TO ONE COPULA.
     /*
     Notice that while the default template needs a sequence generator the 
     specializations need a number generator. This is forced at the time the 
@@ -709,7 +791,7 @@ namespace QuantLib {
          //   const URNG& 
                 boxMullRng
             ) 
-            : boxMullRng_(boxMullRng){ } //<< this asignment forces the type match
+        : boxMullRng_(boxMullRng){ } //<< this asignment forces the type match
         const sample_type& nextSequence() const {
                 return boxMullRng_.nextSequence();
         }
@@ -736,7 +818,7 @@ namespace QuantLib {
         : sequence_(std::vector<Real> (dimensionality), 1.0) {
             // 1 == urng.dimension() is enforced by the sample type
             const std::vector<Real>& varF = copula.varianceFactors();
-            for(Size i=0; i<varF.size(); i++)// back inserter lamba
+            for(Size i=0; i<varF.size(); i++)// ...use back inserter lambda
                 trng_.push_back(
                     PolarStudentTRng<URNG>(2./(1.-varF[i]*varF[i]), urng));
         }

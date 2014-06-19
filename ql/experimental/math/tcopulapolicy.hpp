@@ -23,6 +23,7 @@
 #include <vector>
 
 #include <boost/math/distributions/students_t.hpp>
+#include <boost/bind.hpp>
 
 #include <ql/errors.hpp>
 #include <ql/utilities/disposable.hpp>
@@ -63,6 +64,16 @@ namespace QuantLib {
                 std::vector<std::vector<Real> >(), 
             const initTraits& vals = initTraits());
 
+        //! returns a copy of the initialization arguments
+        initTraits getInitTraits() const {
+            initTraits data;
+            data.tOrders.resize(distributions_.size());
+            std::transform(distributions_.begin(), distributions_.end(), 
+                data.tOrders.begin(), 
+                boost::bind(&boost::math::students_t_distribution<>::degrees_of_freedom, _1)
+                );
+            return data;
+        }
         const std::vector<Real>& varianceFactors() const {
             return varianceFactors_;
         }
@@ -122,7 +133,7 @@ namespace QuantLib {
         /*! Returns the inverse of the cumulative distribution of the 
           systemic factor iFactor.
         */
-        Real inverseCumulativeDensity(Probability p, Size iFactor) const {///////////////////////////const arguments here and in the other methods, see gaussian too.....
+        Real inverseCumulativeDensity(Probability p, Size iFactor) const {
     #if defined(QL_EXTRA_SAFETY_CHECKS)
             QL_REQUIRE(iFactor < distributions_.size()-1, 
                 "Random factor variable index out of bounds.");
