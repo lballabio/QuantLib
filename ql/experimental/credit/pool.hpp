@@ -37,7 +37,8 @@ namespace QuantLib {
         void clear();
         bool has (const std::string& name) const;
         void add (const std::string& name, const Issuer& issuer, 
-            const DefaultProbKey& contractTrigger);
+            const DefaultProbKey& contractTrigger = NorthAmericaCorpDefaultKey(
+                Currency(), SeniorSec, Period(), 1.));
         const Issuer& get (const std::string& name) const;
         const DefaultProbKey& defaultKey(const std::string& name) const;
         void setTime(const std::string& name, Real time);

@@ -168,7 +168,7 @@ int main(int, char* []) {
             cout << endl;
         }
         cout << endl;
-        cout << "------StudeT default correlations---" << endl;
+        cout << "----StudentT default correlations---" << endl;
         cout << "------------------------------------" << endl;
         for(Size iName1=0; iName1 <3; iName1++) {
             for(Size iName2=0; iName2 <3; iName2++)

@@ -20,7 +20,6 @@
 #include <ql/experimental/credit/onefactorstudentcopula.hpp>
 #include <ql/experimental/credit/pool.hpp>
 #include <ql/experimental/credit/randomdefaultmodel.hpp>
-#include <ql/experimental/credit/randomdefaultlatentmodel.hpp>
 #include <ql/experimental/credit/recoveryratemodel.hpp>
 #include <ql/experimental/credit/recoveryratequote.hpp>
 #include <ql/experimental/credit/recursivecdoengine.hpp>

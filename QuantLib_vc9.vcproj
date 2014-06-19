@@ -5946,14 +5946,6 @@
 					>
 				</File>
 				<File
-					RelativePath="ql\pricingengines\vanilla\hestonexpansionengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath="ql\pricingengines\vanilla\hestonexpansionengine.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\pricingengines\vanilla\fdamericanengine.hpp"
 					>
 				</File>
@@ -6043,6 +6035,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\pricingengines\vanilla\fdvanillaengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\pricingengines\vanilla\hestonexpansionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\pricingengines\vanilla\hestonexpansionengine.hpp"
 					>
 				</File>
 				<File
@@ -7318,6 +7318,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticcompoundoptionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticcompoundoptionengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\exoticoptions\analyticeuropeanmargrabeengine.cpp"
 					>
 				</File>
@@ -7387,6 +7395,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\exoticoptions\complexchooseroption.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\compoundoption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\compoundoption.hpp"
 					>
 				</File>
 				<File
@@ -7511,22 +7527,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\exoticoptions\writerextensibleoption.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\exoticoptions\analyticcompoundoptionengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\exoticoptions\analyticcompoundoptionengine.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\exoticoptions\compoundoption.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\exoticoptions\compoundoption.hpp"
 					>
 				</File>
 			</Filter>
@@ -7667,10 +7667,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\pool.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\credit\randomdefaultlatentmodel.hpp"
 					>
 				</File>
 				<File
