@@ -118,16 +118,7 @@ int main(int, char* []) {
             LatentModelIntegrationType::GaussianQuadrature,
 			GaussianCopulaPolicy::initTraits() // otherwise gcc screams
 			);
-        // Gaussian random joint default model:
-        Size numSimulations = 1000000;
-        Size numCoresUsed = 1;
-        RandomDefaultLM<GaussianCopulaPolicy> rdlmG(
-                theBskt, fctrsWeights, GaussianCopulaPolicy::initTraits(), 
-                numSimulations, numCoresUsed);
-        //RandomDefaultLM<GaussianCopulaPolicy, 
-        //    RandomSequenceGenerator<MersenneTwisterUniformRng> > rdlmG(
-        //        theBskt, fctrsWeights, GaussianCopulaPolicy::initTraits(), 
-        //        numSimulations, numCoresUsed);
+
         // Define StudentT copula
         // this is as far as we can be from the Gaussian
         std::vector<Integer> ordersT(2, 3);
@@ -137,28 +128,17 @@ int main(int, char* []) {
         TDefProbLM lmT(theBskt, fctrsWeights, 
             LatentModelIntegrationType::GaussianQuadrature
             , iniT);
-        // StudentT random joint default model:
-        RandomDefaultLM<TCopulaPolicy> rdlmT(theBskt, 
-                    fctrsWeights, iniT, numSimulations, numCoresUsed);
-        //RandomDefaultLM<TCopulaPolicy, 
-        //    RandomSequenceGenerator<
-        //        PolarStudentTRng<MersenneTwisterUniformRng> > > rdlmT(theBskt, 
-        //            fctrsWeights, iniT, numSimulations, numCoresUsed);
 
         /* --------------------------------------------------------------
                         DUMP SOME RESULTS
         -------------------------------------------------------------- */
         std::cout << 
-            "T versus Gaussian prob of extreme event (random and integrable)-" 
+            "T versus Gaussian prob of extreme event -" 
             << std::endl;
         Date calcDate(TARGET().advance(Settings::instance().evaluationDate(), 
             Period(120, Months)));
         for(Size numEvts=0; numEvts <=3; numEvts++) {
             std::cout << "-Prob of " << 3 << " events... " <<
-            rdlmT.probAtLeastNEvents(numEvts, calcDate)
-            << " ... " <<
-            rdlmG.probAtLeastNEvents(numEvts, calcDate) 
-            << " ... " <<
             lmT.probAtLeastNEvents(numEvts, calcDate)
             << " ... " <<
             lmG.probAtLeastNEvents(numEvts, calcDate) 
@@ -212,23 +192,6 @@ int main(int, char* []) {
             cout << endl;
         }
         cout << endl;
-        cout << "----Gaussian rand def correlations----" << endl;
-        cout << "--------------------------------------" << endl;
-        for(Size iName1=0; iName1 <3; iName1++) {
-            for(Size iName2=0; iName2 <3; iName2++)
-                cout << rdlmG.defaultCorrelation(correlDate, iName1, iName2) 
-                    << " * ";
-            cout << endl;
-        }
-        cout << endl;
-        cout << "---- StudenT rand def correlations----" << endl;
-        cout << "--------------------------------------" << endl;
-        for(Size iName1=0; iName1 <3; iName1++) {
-            for(Size iName2=0; iName2 <3; iName2++)
-                cout << rdlmT.defaultCorrelation(correlDate, iName1, iName2) 
-                    << " * ";
-            cout << endl;
-        }
 
 
         Real seconds  = timer.elapsed();
