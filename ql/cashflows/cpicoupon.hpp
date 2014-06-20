@@ -201,7 +201,7 @@ namespace QuantLib {
         CPILeg& withExCouponPeriod(const Period&,
                                          const Calendar&,
                                          BusinessDayConvention,
-                                         bool endOfMonth);
+                                         bool endOfMonth = false);
         operator Leg() const;
 
       private:
