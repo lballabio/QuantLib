@@ -16,6 +16,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 #ifndef quantlib_default_latent_model_hpp
 #define quantlib_default_latent_model_hpp
 
@@ -39,7 +40,7 @@ namespace QuantLib {
     template<class copulaPolicy>
     class DefaultLatentModel : public LatentModel<copulaPolicy> {
         // import template members
-    private:
+    protected:
         using LatentModel<copulaPolicy>::factorWeights_;
         using LatentModel<copulaPolicy>::idiosyncFctrs_;
         using LatentModel<copulaPolicy>::copula_;
@@ -50,11 +51,9 @@ namespace QuantLib {
     protected:
         boost::shared_ptr<Basket> basket_;
         boost::shared_ptr<LMIntegration> integration_;
-        //typedef LatentModel<typename copulaPolicy>::IntegrationFactory 
-        //    IntegrationFactory;
     public:
         /*!
-        @param basket The basket of issuers/ctptys on which to model defaults.
+   ////////////////////////////////////////////////////////     @param basket The basket of issuers/ctptys on which to model defaults.
         @param factorWeights Latent model independent factors weights for each 
             variable.
         @param quadOrder The order of the quadrature to integrate the 
@@ -64,26 +63,42 @@ namespace QuantLib {
         \warning Baskets with realized defaults not tested/WIP.
         */
         DefaultLatentModel(
-            const boost::shared_ptr<Basket>& basket,
             const std::vector<std::vector<Real> >& factorWeights,
             LatentModelIntegrationType::LatentModelIntegrationType integralType,
             const typename copulaPolicy::initTraits& ini = 
                 copulaPolicy::initTraits()
             ) 
-        : basket_(basket), 
-          LatentModel<copulaPolicy>(factorWeights, ini),
-          integration_(LatentModel<copulaPolicy>::IntegrationFactory::createLMIntegration(
-            factorWeights[0].size(), integralType))
-        {
-            // in the future change 'size' to 'liveSize'
-            QL_REQUIRE(basket_->size() == factorWeights.size(), 
-                "Incompatible basket and model sizes.");
-        }
+        : LatentModel<copulaPolicy>(factorWeights, ini),
+          integration_(LatentModel<copulaPolicy>::IntegrationFactory::
+            createLMIntegration(factorWeights[0].size(), integralType))
+        { }
+        DefaultLatentModel(
+            const Handle<Quote>& mktCorrel,
+            Size nVariables,
+            LatentModelIntegrationType::LatentModelIntegrationType integralType,
+            const typename copulaPolicy::initTraits& ini = 
+                copulaPolicy::initTraits()
+                )
+        : LatentModel<copulaPolicy>(mktCorrel, nVariables, ini),
+          integration_(LatentModel<copulaPolicy>::IntegrationFactory::
+            createLMIntegration(1, integralType))
+        { }
         /* \todo
             Add other constructors as in LatentModel for ease of use. (less 
             dimensions, factors, etcc...)
         */
+
+        /* To interface with loss models. It is possible to change the basket 
+        since there are no cached magnitudes.
+        */
+        void resetBasket(const boost::shared_ptr<Basket> basket) {
+            basket_ = basket;
+            // in the future change 'size' to 'liveSize'
+            QL_REQUIRE(basket_->size() == factorWeights_.size(), 
+                "Incompatible new basket and model sizes.");
+        }
     protected:
+    public:// FOR TESTS IN BINOMIAL MODEL--------------------------------------------------------------friend?
         /*! Returns the probability of default of a given name conditional on
         the realization of a given set of values of the model independent
         factors. The date at which the probability is given is implicit in the
@@ -175,6 +190,7 @@ namespace QuantLib {
         Trivial method for testing
         */
         Probability probOfDefault(Size iName, const Date& d) const {
+            QL_REQUIRE(basket_, "No portfolio basket set.");////////////// NEEDS TO BE ADDED IN OTHER METHODS TOOOO
             const boost::shared_ptr<Pool>& pool = basket_->pool();
             // avoid repeating this in the integration:
             Probability pUncond = pool->get(pool->names()[iName]).
@@ -224,6 +240,8 @@ namespace QuantLib {
     Real DefaultLatentModel<CP>::defaultCorrelation(const Date& d, 
         Size iNamei, Size iNamej) const 
     {
+        QL_REQUIRE(basket_, "No portfolio basket set.");
+
         const boost::shared_ptr<Pool>& pool = basket_->pool();
         // unconditionals:
         Probability pi = pool->get(pool->names()[iNamei]).
@@ -254,6 +272,8 @@ namespace QuantLib {
     Real DefaultLatentModel<CP>::conditionalProbAtLeastNEvents(Size n, 
         const Date& date,
         const std::vector<Real>& mktFactors) const {
+            QL_REQUIRE(basket_, "No portfolio basket set.");
+
             /* \todo 
             This algorithm traverses all permutations starting form the
             lowest one. This is inneficient, there shouldnt be any need to 

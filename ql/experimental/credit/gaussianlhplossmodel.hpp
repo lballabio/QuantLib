@@ -40,16 +40,11 @@
 
 namespace QuantLib {
 
-    // TO DO: Make avergae prob and average recvoery to be weighted average (by exposure) so they can be used as control variate.
-// TO DO: Implement the Student-t version for tail dependnece
-// TO DO: Return the distribution and the other metrics.
-// TO DO: FIX: SETTING UP A DETACH HIGHER THAN THE MAX ATTAINABLE LOSS SHOULD NOT B A PROBLM
-// TO DO: Implement ESF
-// TO DO: Implement full distribution....
+// TO DO: FIX: SETTING UP A DETACH HIGHER THAN THE MAX ATTAINABLE LOSS SHOULD NOT B A PROBLM-----------
 
     /*!
-      CDO engine with analytical expected tranche loss for a large homogeneous
-      pool with Gaussian one-factor copula. See for example
+      Portfolio loss model with analytical expected tranche loss for a large 
+      homogeneous pool with Gaussian one-factor copula. See for example
       "The Normal Inverse Gaussian Distribution for Synthetic CDO pricing.",
       Anna Kalemanova, Bernd Schmid, Ralf Werner,
       Journal of Derivatives, Vol. 14, No. 3, (Spring 2007), pp. 80-93.
@@ -61,6 +56,8 @@ namespace QuantLib {
     class GaussianLHPLossModel : public DefaultLossModel, 
         public LatentModel<GaussianCopulaPolicy> {
     public:
+        typedef GaussianCopulaPolicy copulaType;
+
         GaussianLHPLossModel(
             const Handle<Quote>& correlQuote,
             const std::vector<Handle<RecoveryRateQuote> >& quotes);
@@ -78,27 +75,32 @@ namespace QuantLib {
             biphi_ = BivariateCumulativeNormalDistribution(
                 -std::sqrt(1.-correl_->value()));
             beta_ = sqrt(correl_->value());
+
+            DefaultLossModel::update();
         }
 
-        // basket needs only to initialize once. The basket is lazy triggered on updates ------Still we 
-        //   need to init (and lock) the loss model
-        //   on every call to a model method since it might be used by other baskets between calls.
-        void initialize(const Basket& basket) {
-            basket_ = &basket;
 
-            /* Notice that the attach and detach ratios are floating here. The amount limits are fixed (except for past defaults) and the notinal portfolio-basket is floating, giving a floating tranche. In the situation where the underlying amortizes this implies a lowering of the risk with time since this pushes the ratio limits up (even above 100%) or increasing the seniority of the tranche with time.
-
+        void setupBasket(const boost::shared_ptr<Basket>& basket) {
+            /*
+            if(basket_)
+                unregisterWith(basket_);
+            basket_ = basket;
+            if(basket_) registerWith(basket_);
+            // update???, no, thats for model variables/caches only
             */
-            remainingAttachAmount_ = basket.remainingAttachmentAmount();
-            remainingDetachAmount_ = basket.remainingDetachmentAmount();
 
-            /// CHECK THE EXPOSURES ON THIS BASKET ARE DETERMINISTIC (FIXED OR PROGRAMMED AMORTIZNG) OTHERWISE THIS MODEL IS NOT FIT FOR IT. (needs the exposure in the copula)
+            basket_ = basket;
+
+            remainingAttachAmount_ = basket->remainingAttachmentAmount();
+            remainingDetachAmount_ = basket->remainingDetachmentAmount();
+
+            /// CHECK THE EXPOSURES ON THIS BASKET ARE DETERMINISTIC (FIXED OR 
+            // PROGRAMMED AMORTIZNG) OTHERWISE THIS MODEL IS NOT FIT FOR IT.---------------------------------------------
         }
 
     private:
-            // @param attachLimit as a fraction of the underlying (live????) portfolio notional... the algo needs it to be live but do I convert before the actual calcs or do I get it converted??????
-            /* trying to solve the problem when the notional is time dependent....
-
+        /*! @param attachLimit as a fraction of the underlying live portfolio 
+        notional 
         */
         Real expectedTrancheLossImpl(
             Real remainingNot, // << at the given date 'd'
@@ -108,19 +110,22 @@ namespace QuantLib {
     public:
         Real expectedTrancheLoss(const Date& d) const {
             const Real remainingBasktNot = basket_->remainingNotional(d);// CALLED HERE AND CALLED AGAIN IN expectedTrancheLossImpl
-                        Real averageRR = averageRecovery(d);
+            Real averageRR = averageRecovery(d);
             Probability prob = averageProb(d);
 
-            const Real attach = std::min(remainingAttachAmount_ / remainingBasktNot, 1.);
-            const Real detach = std::min(remainingDetachAmount_ / remainingBasktNot, 1.);
+            const Real attach = std::min(remainingAttachAmount_ 
+                / remainingBasktNot, 1.);
+            const Real detach = std::min(remainingDetachAmount_ 
+                / remainingBasktNot, 1.);
 
-            return expectedTrancheLossImpl(remainingBasktNot, prob, averageRR, attach, detach);
+            return expectedTrancheLossImpl(remainingBasktNot, prob, averageRR, 
+                attach, detach);
         }
 
-/// WRITE DENSITY.....
-        /// homogeneize, prob loss over.... and density names as in Saddle....... then VaR search function.......
-       //////.... Real densityTrancheLoss(const Date& d, Real trancheLossFraction) const {
-            //@param remaining fraction in live tranche units, not portfolio as a fraction of the remaining(live) tranche (i.e. a_remaining=0% and det_remaining=100%) 
+        /*!  @param remaining fraction in live tranche units, not portfolio as 
+        a fraction of the remaining(live) tranche (i.e. a_remaining=0% and 
+        det_remaining=100%) 
+        */
         Real probOverLoss(const Date& d, Real remainingLossFraction) const;
 
         //! Returns the ESF as an absolute amount (rather than a fraction)
@@ -132,7 +137,8 @@ namespace QuantLib {
         Real expectedShortfall(const Date& d, Probability perctl) const;
     protected:
         // This is wrong, it is not accounting for the current defaults ....
-        // returns the loss value in actual loss units, returns the loss value for the underlying portfolio, untranched
+        // returns the loss value in actual loss units, returns the loss value 
+        // for the underlying portfolio, untranched
         Real percentilePortfolioLossFraction(const Date& d, Real perctl) const;
     public:
             // same as percentilePortfolio but tranched
@@ -154,7 +160,6 @@ namespace QuantLib {
             return averageRecovery(d);
         }
 
-        // should be initalized beforehand, not cacheable because is basket dependent, and basket could be updated at any time
         Probability averageProb(const Date& d) const {
             // weighted average by programmed exposure.
             const std::vector<Probability> probs = 
@@ -164,13 +169,20 @@ namespace QuantLib {
             return std::inner_product(probs.begin(), probs.end(), 
                 remainingNots.begin(), 0.) / basket_->remainingNotional(d);
         }
-/*
-It is tempting to define the average recovery without the probability factor, weighting only by notional instead, but that way the expected loss of the average/aggregated and the original portfolio would not coincide. This instroduces however a time dependence in the recovery value.
 
-weighting by notional implies time dependent weighting since the basket might amortize.
-*/
-        Real averageRecovery(const Date& d) const {// no time dependence in this model
-            const std::vector<Probability> probs = basket_->remainingProbabilities(d);
+        /* It is tempting to define the average recovery without the probability
+        factor, weighting only by notional instead, but that way the expected 
+        loss of the average/aggregated and the original portfolio would not 
+        coincide. This introduces however a time dependence in the recovery 
+        value.
+        Weighting by notional implies time dependent weighting since the basket 
+        might amortize.
+        */
+        Real averageRecovery(
+            const Date& d) const //no explicit time dependence in this model
+        {
+            const std::vector<Probability> probs = 
+                basket_->remainingProbabilities(d);
             std::vector<Real> recoveries;
             for(Size i=0; i<basket_->remainingSize(); i++)
                 recoveries.push_back(rrQuotes_[i]->value());
@@ -189,32 +201,26 @@ weighting by notional implies time dependent weighting since the basket might am
     private:
         // cached
         mutable Real sqrt1minuscorrel_;
-    ////////////////////////////////////////////////////////////////    mutable Real averageRecovery_;
+
         Handle<Quote> correl_;
         std::vector<Handle<RecoveryRateQuote> > rrQuotes_;
         // calculation buffers
 
-        /*! The problem with defining a fixed average recovery on a portfolio with uneven exposures 
-        is that it does not preserve portfolio
-        moments like the expected loss. To achieve it one should define the averarage recovery with a 
-        time dependence: $\hat{R}(t) = \frac{\sum_i R_i N_i P_i(t)}{\sum_i N_i P_i(t)}$
+        /* The problem with defining a fixed average recovery on a portfolio 
+        with uneven exposures is that it does not preserve portfolio
+        moments like the expected loss. To achieve it one should define the 
+        averarage recovery with a time dependence: 
+        $\hat{R}(t) = \frac{\sum_i R_i N_i P_i(t)}{\sum_i N_i P_i(t)}$
         But the date dependence increases significantly the calculations cost.
-        Notice that this problem dissapears if the recoveries are the same along the portfolio.
+        Notice that this problem dissapears if the recoveries are all equal.
         */
-//////////////////        mutable Real averageRecovery_;
-
-        //mutable Basket_N remainingBasket_;
- ////////////////////////////       mutable Real attach_, detach_;
-        //remaining underlying portfolio notional
-///////////////////////////        mutable Real remainingNotional_;
         mutable Real remainingAttachAmount_;
         mutable Real remainingDetachAmount_;
         
-        const Basket* basket_;
+        boost::shared_ptr<Basket> basket_;
 
         Real beta_;
         BivariateCumulativeNormalDistribution biphi_;
-   ////     static InverseCumulativeNormal inverse_;
         static CumulativeNormalDistribution const phi_;
     };
 

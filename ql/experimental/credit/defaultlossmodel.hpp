@@ -58,6 +58,14 @@ namespace QuantLib {
         for it to be a basket property
         */
         DefaultLossModel() { }
+
+        void update() {notifyObservers();}
+
+
+        //! \name Statistics
+        //@{
+        // Non mandatory implementations.
+
         /*! Expected amount lost due to default events (expressed in portfolio 
         currency units) at the requested date in the currently live portfolio. 
         Only the contingent amount is returned, this is, not included of the 
@@ -115,11 +123,23 @@ namespace QuantLib {
             The the probabilities ordering in the vector coincides with the 
             pool order.
         */
-        virtual std::vector<Probability> probsBeingNthEvent(
+        virtual Disposable<std::vector<Probability> > probsBeingNthEvent(
             Size n, const Date& d) const {
             QL_FAIL("probsBeingNthEvent Not implemented for this model.");
         }
+        //! Pearsons' default probability correlation. 
+        virtual Real defaultCorrelation(const Date& d, Size iName, 
+            Size jName) const {
+            QL_FAIL("defaultCorrelation Not implemented for this model.");
+        }
+        /*! Returns the probaility of having a given or larger number of 
+        defaults in the basket portfolio at a given time.
+        */
+        virtual Probability probAtLeastNEvents(Size n, const Date& d) const {
+            QL_FAIL("probAtLeastNEvents Not implemented for this model.");
+        }
 
+        //@}
 
         // VECTOR VERSION IN THE POOL ORDERING>>?????
         /*! To be delegated to a concrete RR Model (BasketConstantRRModel) 
@@ -135,8 +155,13 @@ namespace QuantLib {
         request of model dependent information.
 
         Initialize gets call on model to basket asignment and on basket observability updates. Depending on the complexity of the initialize implementation in a particular model (or how much information from the basket it caches locally) it might trigger basket recalculation. Essentially the basket takes care of re-initializing when needed; if the loss model registers with its own magnitudes (e.g. correlation) it has to do its own work and taking any measures so that the post-initialization state is correct (this is the tricky part)
+
+-> it might be possible that some models do nothing
+
         */
-        virtual void initialize(const Basket& basket) = 0;
+        //resets basket, which is treated by the model as an argument (theres a cyclic refeernce though)
+     ///////////////////////////////////////////////////////////////   virtual void initialize(const Basket& basket) = 0;
+        virtual void setupBasket(const boost::shared_ptr<Basket>& basket) = 0;
     };
 
 }

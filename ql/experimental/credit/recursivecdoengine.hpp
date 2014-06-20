@@ -23,9 +23,9 @@
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/matrixutilities/factorreduction.hpp>
-#include <ql/experimental/credit/syntheticcdoengines.hpp>
 #include <ql/experimental/credit/onefactorgaussiancopula.hpp>
 #include <ql/experimental/credit/onefactorstudentcopula.hpp>
+#include <ql/experimental/credit/midpointcdoengine.hpp>
 #include <boost/bind.hpp>
 #include <map>
 #include <algorithm>

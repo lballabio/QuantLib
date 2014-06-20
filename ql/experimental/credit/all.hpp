@@ -2,6 +2,7 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/experimental/credit/basket.hpp>
+#include <ql/experimental/credit/binomiallossmodel.hpp>
 #include <ql/experimental/credit/blackcdsoptionengine.hpp>
 #include <ql/experimental/credit/cdo.hpp>
 #include <ql/experimental/credit/cdsoption.hpp>
@@ -10,6 +11,7 @@
 #include <ql/experimental/credit/defaultprobabilitylatentmodel.hpp>
 #include <ql/experimental/credit/defaulttype.hpp>
 #include <ql/experimental/credit/distribution.hpp>
+#include <ql/experimental/credit/gaussianlhplossmodel.hpp>
 #include <ql/experimental/credit/factorspreadedhazardratecurve.hpp>
 #include <ql/experimental/credit/issuer.hpp>
 #include <ql/experimental/credit/loss.hpp>
@@ -20,6 +22,7 @@
 #include <ql/experimental/credit/onefactorstudentcopula.hpp>
 #include <ql/experimental/credit/pool.hpp>
 #include <ql/experimental/credit/randomdefaultmodel.hpp>
+#include <ql/experimental/credit/randomdefaultlatentmodel.hpp>
 #include <ql/experimental/credit/recoveryratemodel.hpp>
 #include <ql/experimental/credit/recoveryratequote.hpp>
 #include <ql/experimental/credit/recursivecdoengine.hpp>
@@ -27,6 +30,6 @@
 #include <ql/experimental/credit/riskyassetswapoption.hpp>
 #include <ql/experimental/credit/riskybond.hpp>
 #include <ql/experimental/credit/spreadedhazardratecurve.hpp>
+#include <ql/experimental/credit/spotlosslatentmodel.hpp>
 #include <ql/experimental/credit/syntheticcdo.hpp>
-#include <ql/experimental/credit/syntheticcdoengines.hpp>
 

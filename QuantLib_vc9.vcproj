@@ -7546,6 +7546,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\binomiallossmodel.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\blackcdsoptionengine.cpp"
 					>
 				</File>
@@ -7567,6 +7571,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\cdsoption.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\constantlosslatentmodel.hpp"
 					>
 				</File>
 				<File
@@ -7622,6 +7630,22 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\integralcdoengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\integralcdoengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\integralntdengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\integralntdengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\issuer.cpp"
 					>
 				</File>
@@ -7639,6 +7663,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\lossdistribution.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\midpointcdoengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\midpointcdoengine.hpp"
 					>
 				</File>
 				<File
@@ -7682,11 +7714,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\randomdefaultlatentmodel.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\randomdefaultmodel.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\randomdefaultmodel.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\randomlosslatentmodel.hpp"
 					>
 				</File>
 				<File
@@ -7734,6 +7774,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\spotlosslatentmodel.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\spreadedhazardratecurve.hpp"
 					>
 				</File>
@@ -7743,14 +7787,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\syntheticcdo.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\credit\syntheticcdoengines.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\credit\syntheticcdoengines.hpp"
 					>
 				</File>
 			</Filter>

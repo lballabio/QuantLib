@@ -1,8 +1,31 @@
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+
+/*
+ Copyright (C) 2008 Roland Lichters
+ Copyright (C) 2009, 2014 Jose Aparicio
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/license.shtml>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
 #include <ql/experimental/credit/gaussianlhplossmodel.hpp>
 
 #include <boost/make_shared.hpp>
 
 namespace QuantLib {
+
+    CumulativeNormalDistribution const GaussianLHPLossModel::phi_ = 
+        CumulativeNormalDistribution();
 
     GaussianLHPLossModel::GaussianLHPLossModel(
             const Handle<Quote>& correlQuote,
@@ -13,13 +36,15 @@ namespace QuantLib {
           biphi_(-sqrt(correlQuote->value())),
           beta_(sqrt(correlQuote->value())),
           LatentModel<GaussianCopulaPolicy>(sqrt(correlQuote->value()),
-            quotes.size())
+            quotes.size(),
+            //g++ complains default value not seen as typename
+            GaussianCopulaPolicy::initTraits())
         {
             registerWith(correl_);
             for(Size i=0; i<quotes.size(); i++)
                 registerWith(quotes[i]);
-            this->update();//?////////////////////////////////////////////////////////////////old mechanics
-        }
+            this->update();
+    }
 
     GaussianLHPLossModel::GaussianLHPLossModel(
             Real correlation,
@@ -30,12 +55,14 @@ namespace QuantLib {
           biphi_(-sqrt(correlation)),
           beta_(sqrt(correlation)),
           LatentModel<GaussianCopulaPolicy>(sqrt(correlation),
-            recoveries.size())
+            recoveries.size(),
+            //g++ complains default value not seen as typename
+            GaussianCopulaPolicy::initTraits())
         {
             for(Size i=0; i<recoveries.size(); i++)
                 rrQuotes_.push_back(Handle<RecoveryRateQuote>(
                 boost::make_shared<RecoveryRateQuote>(recoveries[i])));
-            this->update();//?//?////////////////////////////////////////////////////////////////old mechanics
+            this->update();
         }
 
         GaussianLHPLossModel::GaussianLHPLossModel(
@@ -46,13 +73,15 @@ namespace QuantLib {
           biphi_(-sqrt(correlQuote->value())),
           beta_(sqrt(correlQuote->value())),
           LatentModel<GaussianCopulaPolicy>(sqrt(correlQuote->value()),
-            recoveries.size())
+            recoveries.size(),
+            //g++ complains default value not seen as typename
+            GaussianCopulaPolicy::initTraits())
         {
             registerWith(correl_);
             for(Size i=0; i<recoveries.size(); i++)
                 rrQuotes_.push_back(Handle<RecoveryRateQuote>(
                 boost::make_shared<RecoveryRateQuote>(recoveries[i])));
-            this->update();//?/////////////////////////////////////////////////////////////old mechanics
+            this->update();
         }
 
 
@@ -116,7 +145,7 @@ namespace QuantLib {
                 attach + remainingLossFraction * (detach - attach);
 
             Real averageRR = averageRecovery(d);
-            Real maxAttLossFract = (1.-averageRR); // GLOBAL at CLASS SCOPE?????????????? updateable on observability triggers
+            Real maxAttLossFract = (1.-averageRR);
             if(portfFract > maxAttLossFract) return 0.;
 
             // for non-equity losses add the probability jump at zero tranche 
