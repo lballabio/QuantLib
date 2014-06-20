@@ -159,7 +159,9 @@ namespace QuantLib {
     observationInterpolation_(CPI::AsIndex),
     subtractInflationNominal_(true),
     spreads_(std::vector<Real>(1,0))
-    {}
+    {
+        paymentCalendar_ = schedule.calendar();
+    }
 
 
     CPILeg& CPILeg::withObservationInterpolation(CPI::InterpolationType interp) {

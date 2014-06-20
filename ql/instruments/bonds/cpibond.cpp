@@ -71,7 +71,7 @@ namespace QuantLib {
             .withFixedRates(fixedRate)
             .withPaymentDayCounter(accrualDayCounter)
             .withPaymentAdjustment(paymentConvention)
-            .withPaymentCalendar(paymentCalendar)
+            .withPaymentCalendar(calendar_)
             .withObservationInterpolation(observationInterpolation_)
             .withSubtractInflationNominal(growthOnly_)
             .withExCouponPeriod(exCouponPeriod,
