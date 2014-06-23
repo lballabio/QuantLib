@@ -41,7 +41,7 @@ namespace QuantLib {
     */
     class MultidimIntegral {
     public:
-        MultidimIntegral(
+        explicit MultidimIntegral(
             const std::vector<boost::shared_ptr<Integrator> >& integrators);
 
         // scalar variant:
