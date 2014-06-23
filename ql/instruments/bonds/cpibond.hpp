@@ -53,7 +53,12 @@ namespace QuantLib {
                 const std::vector<Rate>& coupons,
                 const DayCounter& accrualDayCounter,
                 BusinessDayConvention paymentConvention = ModifiedFollowing,
-                const Date& issueDate = Date());
+                const Date& issueDate = Date(),
+                const Calendar& paymentCalendar = Calendar(),
+                const Period& exCouponPeriod = Period(),
+                const Calendar& exCouponCalendar = Calendar(),
+                const BusinessDayConvention exCouponConvention = Unadjusted,
+                bool exCouponEndOfMonth = false);
 
         Frequency frequency() const { return frequency_; }
         const DayCounter& dayCounter() const { return dayCounter_; }
