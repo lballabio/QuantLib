@@ -20,8 +20,6 @@
 #ifndef quantlib_randomdefault_latent_model_hpp
 #define quantlib_randomdefault_latent_model_hpp
 
-#include <boost/thread/thread.hpp>
-
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
@@ -110,35 +108,35 @@ namespace QuantLib {
         updating the simulation buffer with their respective event on each 
         simulation sample.
         */
-        class Worker {//CRTP also aplies together with container class
-            friend class RandomLM;
-        public:
-            /*! @param numSims This thread simulations number.
-                @param rsg Must be already positioned and done coherently with 
-                  the number of simulations in this and other threads.
-            */
-            Worker(Size numSims, const copulaRNG_type& copulasRng,
-                const derivedRandomLM& caller) 
-            : numSims_(numSims),
-              copulasRng_(copulasRng),
-              data_(caller) {}
-            Size assignedLoad() const { return numSims_;}
-        protected:
-            // trigger only by friends
-            void performSimulations() {
-                for(Size i=numSims_; i; i--) nextSequence();
-            }
-            void nextSequence();
-            // not made explicit inlined; 
-            // CRTP: void nextSample(const std::vector<Real>&);
-        protected:
-            const Size numSims_;
-            copulaRNG_type copulasRng_;
-            const derivedRandomLM& data_;
+        //class Worker {//CRTP also aplies together with container class
+        //    friend class RandomLM;
+        //public:
+        //    /*! @param numSims This thread simulations number.
+        //        @param rsg Must be already positioned and done coherently with 
+        //          the number of simulations in this and other threads.
+        //    */
+        //    Worker(Size numSims, const copulaRNG_type& copulasRng,
+        //        const derivedRandomLM& caller) 
+        //    : numSims_(numSims),
+        //      copulasRng_(copulasRng),
+        //      data_(caller) {}
+        //    Size assignedLoad() const { return numSims_;}
+        //protected:
+        //    // trigger only by friends
+        //    void performSimulations() {
+        //        for(Size i=numSims_; i; i--) nextSequence();
+        //    }
+        //    void nextSequence();
+        //    // not made explicit inlined; 
+        //    // CRTP: void nextSample(const std::vector<Real>&);
+        //protected:
+        //    const Size numSims_;
+        //    copulaRNG_type copulasRng_;
+        //    const derivedRandomLM& data_;
 
-            mutable std::vector<std::vector<simEvent<derivedRandomLM> > > 
-                simsBuffer_;
-        };
+        //    mutable std::vector<std::vector<simEvent<derivedRandomLM> > > 
+        //        simsBuffer_;
+        //};
 
     protected:
         //why one would have default parameters on a class that cant be 
@@ -147,16 +145,9 @@ namespace QuantLib {
             Size numLMVars, 
             const copulaPolicy& copula,
             Size nSims, 
-            BigNatural seed = 2863311530, 
-            Size numThreads = boost::thread::hardware_concurrency())
+            BigNatural seed = 2863311530)
         : numFactors_(numFactors), numLMVars_(numLMVars), copula_(copula), 
-          nSims_(nSims), seed_(seed),
-          numThreads_(std::max<Size>(1, std::min<Size>(numThreads, 
-              boost::thread::hardware_concurrency()))),
-          nSimsPerThread_(nSims/numThreads_),//chop to size_t
-          nSimsLastThread_(numThreads_ == 1 ? 
-          nSimsPerThread_ : nSims - nSimsPerThread_*(numThreads_-1))
-        {}
+          nSims_(nSims), seed_(seed) {}
 
         void update() { 
             LazyObject::update(); 
@@ -164,59 +155,52 @@ namespace QuantLib {
         }
 
         void performCalculations() const {
-            workers_.clear();
-
             USNG baseUrng(numFactors_+ numLMVars_, seed_); 
-
-            for(Size iThread = 0; iThread < numThreads_-1; iThread++) {
-                /* reposition urng:
-                tricky: a jump in the sequence does not mean the same jump in 
-                the base uniform generator. It is the responsibility of the user
-                sending a suitable generator.*/
-                baseUrng.skipTo(nSimsPerThread_ * iThread);
-                workers_.push_back(boost::make_shared<Worker>(
-                    Worker(nSimsPerThread_, 
-                        copulaRNG_type(baseUrng, copula_), 
-                        static_cast<const derivedRandomLM&> (*this) )));
-                // ursg must be copied into the rsg
-            }
-            // last thread takes care of left over sims (typical of a machine 
-            //   with an odd number of cpus)
-            baseUrng.skipTo(nSimsPerThread_ * (numThreads_-1));
-            workers_.push_back(boost::make_shared<Worker>(
-                Worker(nSimsLastThread_, 
-                       copulaRNG_type(baseUrng, copula_), 
-                       static_cast<const derivedRandomLM&> (*this) )));
+            copulasRng_ = 
+                boost::make_shared<copulaRNG_type>(baseUrng, copula_);
             performSimulations();
+
+            ////for(Size iThread = 0; iThread < numThreads_-1; iThread++) {
+            ////    /* reposition urng:
+            ////    tricky: a jump in the sequence does not mean the same jump in 
+            ////    the base uniform generator. It is the responsibility of the user
+            ////    sending a suitable generator.*/
+            ////    baseUrng.skipTo(nSimsPerThread_ * iThread);
+            ////    workers_.push_back(boost::make_shared<Worker>(
+            ////        Worker(nSimsPerThread_, 
+            ////            copulaRNG_type(baseUrng, copula_), 
+            ////            static_cast<const derivedRandomLM&> (*this) )));
+            ////    // ursg must be copied into the rsg
+            ////}
+            ////// last thread takes care of left over sims (typical of a machine 
+            //////   with an odd number of cpus)
+            ////baseUrng.skipTo(nSimsPerThread_ * (numThreads_-1));
+            ////workers_.push_back(boost::make_shared<Worker>(
+            ////    Worker(nSimsLastThread_, 
+            ////           copulaRNG_type(baseUrng, copula_), 
+            ////           static_cast<const derivedRandomLM&> (*this) )));
+            ////performSimulations();
         }
 
         void performSimulations() const {
-            // for thread safety, compute basket:...using the old basket by now
-            std::vector<boost::shared_ptr<boost::thread> > thrds;
-            for(Size i=0; i<numThreads_; i++)
-                thrds.push_back(boost::make_shared<boost::thread>(
-                    boost::bind(
-                    &Worker::performSimulations, boost::ref(*workers_[i]))));
-            std::for_each(thrds.begin(), thrds.end(), 
-                boost::bind(&boost::thread::join, _1));
-            //boost::thread_group and join_all is another option, though in the 
-            // doc they say new is called
+            // Next sequence should determine the event and push it into buffer
+            for(Size i=nSims_; i; i--) {
+                const std::vector<Real>& sample = 
+                    copulasRng_->nextSequence().value;
+                static_cast<const derivedRandomLM* >
+                    (this)->nextSample(sample);
+            // alternatively make call an explicit local method...
+            }
         }
 
         /* Method to access simulation results and avoiding a copy of  
         each thread results buffer. PerformCalculations should have been called.
-        Here in the monothread version this method is redundant.
+        Here in the monothread version this method is redundant/trivial but 
+        serves to detach the statistics access to the way the simulations are
+        stored.
         */
         const std::vector<simEvent<derivedRandomLM> >& getSim(
-            const Size iSim) const 
-        {
-            // no call to calculate, no check on limits; protected method, this
-            // is invoked from statistics methods which should have calculate()
-            Size wrkrId = 
-                std::min((Size)(iSim / nSimsPerThread_), numThreads_-1);
-            return 
-                workers_[wrkrId]->simsBuffer_[iSim - wrkrId * nSimsPerThread_];
-        }
+            const Size iSim) const { return simsBuffer_[iSim]; }
     public:
         //! \name Statistics, DefaultLossModel interface.
         // These are virtual and allow for children-specific optimization and 
@@ -236,17 +220,15 @@ namespace QuantLib {
             Size jName) const;
         //@}
     private:
-        // noncopiable:....
-        mutable std::vector<boost::shared_ptr<Worker> > workers_;
-        const Size numThreads_;
-        const Size nSimsPerThread_;
-        const Size nSimsLastThread_;
         BigNatural seed_;
     protected:
         const Size numFactors_;
         const Size numLMVars_;
 
         const Size nSims_;
+
+        mutable std::vector<std::vector<simEvent<derivedRandomLM> > > 
+            simsBuffer_;
 
         mutable copulaPolicy copula_;
         mutable boost::shared_ptr<copulaRNG_type> copulasRng_;
@@ -258,13 +240,22 @@ namespace QuantLib {
         */
     };
 
-    template<class D, class C, class URNG>
-    inline void RandomLM<D, C, URNG>::Worker::nextSequence()
-    {
-        const std::vector<Real>& values = copulasRng_.nextSequence().value;
-        // implemented in derivedLM through static polymorphism:
-        static_cast<const D::Worker* >(this)->nextSample(values);
-    }
+
+    ////////// spez for correct generator construction (not done in parent because it
+    //////////  would be partial and using the bool parameter trick would leave a 
+    //////////  class with too many templates.
+    ////////template<>
+    ////////void RandomLM<RandomDefaultLM, TCopulaPolicy, RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > >::performCalculations() const {
+    ////////    // Which is a type specialized in itself with a different constructor signature we have to drag along here:
+    ////////    typedef LatentModel<TCopulaPolicy>::FactorSampler<RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > > > SpezGenerator;
+
+    ////////    RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > baseUrng(numFactors_+ numLMVars_, seed_, copula_.copula()); 
+    ////////    copulasRng_ = 
+    ////////        boost::make_shared<SpezGenerator>(baseUrng, copula_);
+    ////////     //   boost::make_shared<copulaRNG_type>(baseUrng, copula_);
+    ////////    performSimulations();
+    ////////}
+
 
     template<class D, class C, class URNG>
     Probability RandomLM<D, C, URNG>::probAtLeastNEvents(Size n, 
@@ -274,14 +265,14 @@ namespace QuantLib {
         Date today = Settings::instance().evaluationDate();
 
         QL_REQUIRE(d>today, "Date for statistic must be in the future.");
-
-        BigInteger val = d.serialNumber() - today.serialNumber();
+        // casted to natural to avoid warning, we have just checked the sign
+        Natural val = d.serialNumber() - today.serialNumber();
 
         if(n==0) return 1.;
 
         Real counts = 0.;
         for(Size iSim=0; iSim < nSims_; iSim++) {
-            Integer simCount = 0;
+            Size simCount = 0;
             const std::vector<simEvent<D> >& events = 
                 getSim(iSim);
             for(Size iEvt=0; iEvt < events.size(); iEvt++)
@@ -307,8 +298,8 @@ namespace QuantLib {
         Date today = Settings::instance().evaluationDate();
 
         QL_REQUIRE(d>today, "Date for statistic must be in the future.");
-
-        BigInteger val = d.serialNumber() - today.serialNumber();
+        // casted to natural to avoid warning, we have just checked the sign
+        Natural val = d.serialNumber() - today.serialNumber();
 
 		std::vector<Probability> hitsByDate(basketSize, 0.);
         ////for(Size iSim=0; iSim < simsBuffer_.size(); iSim++) {
@@ -348,9 +339,11 @@ namespace QuantLib {
         // a control variate with the probabilities is possible
         calculate();
         Date today = Settings::instance().evaluationDate();
-        QL_REQUIRE(d>today, "Date for statistic must be in the future.");
 
-        BigInteger val = d.serialNumber() - today.serialNumber();
+        QL_REQUIRE(d>today, "Date for statistic must be in the future.");
+        // casted to natural to avoid warning, we have just checked the sign
+        Natural val = d.serialNumber() - today.serialNumber();
+
         Real expectedDefiDefj = 0.;// E[1_i 1_j]
         // the rest of magnitudes have known values (probabilities) but that 
         //   would distort the simulation results.
@@ -397,15 +390,6 @@ namespace QuantLib {
             copulaPolicy, USNG>;
         typedef simEvent<RandomDefaultLM<copulaPolicy, USNG> > defaultSimEvent;
     private:
-        class Worker : public RandomLM<RandomDefaultLM<copulaPolicy, USNG>, 
-            copulaPolicy, USNG>::Worker/*<RandomDefaultLM<copulaPolicy, USNG>, copulaPolicy, USNG>*/ {
-            // grant access to static polymorphism:
-            friend class RandomLM<RandomDefaultLM<copulaPolicy, USNG>, 
-                copulaPolicy, USNG>::Worker;
-        protected:
-            void nextSample(const std::vector<Real>& values) const;
-        };
-    private:
         const DefaultLatentModel<copulaPolicy> copula_;
         const std::vector<Real> recoveries_;
         mutable boost::shared_ptr<Basket> basket_;
@@ -413,15 +397,14 @@ namespace QuantLib {
         Real accuracy_;
     public:
         // \todo: Allow a constructor with ConstantLossLatentmodel and no 
-        //    recoveries.
+        //    recoveries... and drop the default value recovery vector...
         RandomDefaultLM(
             const boost::shared_ptr<Basket>& basket,
             const DefaultLatentModel<copulaPolicy>& copula,
             const std::vector<Real>& recoveries = std::vector<Real>(), // allow for default only model.
             Size nSims = 0,// stats will crash on div by zero, fix me.
             Real accuracy = 1.e-6, 
-            BigNatural seed = 2863311530,
-            Size numThreads = boost::thread::hardware_concurrency());
+            BigNatural seed = 2863311530);
         // This one needs reconsidering. 
         void setupBasket(const boost::shared_ptr<Basket>& basket) {//public?
             //DOES THIS ONE REALLY NEEDS RESET??
@@ -431,6 +414,8 @@ namespace QuantLib {
         Real recoveryValueImpl(const Date& defaultDate, Size iName,  // protected???
             const std::vector<DefaultProbKey>& defKeys = std::vector<DefaultProbKey>()) const{ return recoveries_[iName];}
     protected:
+        void nextSample(const std::vector<Real>& values) const;
+
         Real latentVarValue(const std::vector<Real>& factorsSample, 
             Size iVar) const {
             return copula_.latentVarValue(factorsSample, iVar);
@@ -479,34 +464,60 @@ namespace QuantLib {
     };
 
 
+    ////////////////////////////////////////// spez for correct generator construction (not done in parent because it
+    //////////////////////////////////////////  would be partial and using the bool parameter trick would leave a 
+    //////////////////////////////////////////  class with too many templates.
+    ////////////////////////////////////////template<>
+    ////////////////////////////////////////void RandomDefaultLM<TCopulaPolicy, RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > >::performCalculations() const {
+    ////////////////////////////////////////    USNG baseUrng(numFactors_+ numLMVars_, seed_, copula_.copula().getInitTraits()); 
+    ////////////////////////////////////////    copulasRng_ = 
+    ////////////////////////////////////////        boost::make_shared<copulaRNG_type>(baseUrng, copula_);
+    ////////////////////////////////////////    performSimulations();
+    ////////////////////////////////////////}
+
+
+    // spez for correct generator construction (not done in parent because it
+    //  would be partial and using the bool parameter trick would leave a 
+    //  class with too many templates.
+    template<>
+    void RandomLM<RandomDefaultLM<TCopulaPolicy, RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > >, TCopulaPolicy, RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > >::performCalculations() const {
+        // Which is a type specialized in itself with a different constructor signature we have to drag along here:
+   ////     typedef LatentModel<TCopulaPolicy>::FactorSampler<RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > > > SpezGenerator;
+
+        MersenneTwisterUniformRng baseUrng(seed_); 
+        copulasRng_ = 
+        //     boost::make_shared<SpezGenerator>(baseUrng, copula_);
+           boost::make_shared<copulaRNG_type>(baseUrng, numFactors_+ numLMVars_, copula_);
+        performSimulations();
+    }
+
 
 
 
     template<class C, class URNG>
-    void RandomDefaultLM<C, URNG>::Worker::nextSample(
+    void RandomDefaultLM<C, URNG>::nextSample(
         const std::vector<Real>& values) const 
     {
-        const boost::shared_ptr<Pool>& pool = data_.basket_->pool();
+        const boost::shared_ptr<Pool>& pool = basket_->pool();
         // starts with no events
         simsBuffer_.push_back(std::vector<defaultSimEvent> ());
 
-        for(Size iName=0; iName<data_.copula_.size(); iName++) {
+        for(Size iName=0; iName<copula_.size(); iName++) {
             Real latentVarSample = 
-                data_.copula_.latentVarValue(values, iName);
+                copula_.latentVarValue(values, iName);
             Probability simDefaultProb = 
-               data_.copula_.cumulativeY(latentVarSample, iName);
+               copula_.cumulativeY(latentVarSample, iName);
             // If the default simulated lies before the max date:
-            if (data_.horizonDefaultPs_[iName] >= simDefaultProb) {
+            if (horizonDefaultPs_[iName] >= simDefaultProb) {
                 const Handle<DefaultProbabilityTermStructure>& dfts = 
                     pool->get(pool->names()[iName]).// use 'live' names
-                    defaultProbability(
-                        data_.basket_->defaultKeys()[iName]);
+                    defaultProbability(basket_->defaultKeys()[iName]);
                 // compute and store default time with respect to the 
                 //  curve ref date:
                 Size dateSTride =
                     static_cast<Size>(Brent().solve(// casted from Real:
                         detail::Root(dfts, simDefaultProb),
-                            data_.accuracy_,0.,1.));
+                            accuracy_,0.,1.));
                    /*
                    // value if one approximates to a flat HR; 
                    //   faster (>x2) but it introduces an error:..
@@ -539,8 +550,7 @@ namespace QuantLib {
         const std::vector<Real>& recoveries,
         Size nSims,
         Real accuracy, 
-        BigNatural seed,
-        Size numThreads) 
+        BigNatural seed) 
       : copula_(copula), //<- renmae to latentModel_ or defautlLM_
         basket_(basket), 
         accuracy_(accuracy),
@@ -548,7 +558,7 @@ namespace QuantLib {
         recoveries_(recoveries.size()==0 ? std::vector<Real>(basket->size(), 0.)
             : recoveries),
         RandomLM(copula.numFactors(), copula.size(), copula.copula(), 
-            nSims, seed, numThreads )
+            nSims, seed )
     {
         // in the future change 'size' to 'liveSize' This needs revision to
         //   allow superpool simulations where different sections of the 
@@ -574,9 +584,10 @@ namespace QuantLib {
     // For the multithread implementation these souldnt be used, fortunately 
     //   they will fail because skipTo is absent.
     typedef RandomDefaultLM<GaussianCopulaPolicy, RandomSequenceGenerator<BoxMullerGaussianRng<MersenneTwisterUniformRng> > > GaussianMTRandomDefaultLM;
-    // This one uses the copula inversion directly
+    // This one uses the copula inversion directly:
     // typedef RandomDefaultLM<GaussianCopulaPolicy, MersenneTwisterUniformRng> GaussianMTRandomDefaultLM;
-    typedef RandomDefaultLM<TCopulaPolicy, MersenneTwisterUniformRng> TMTRandomDefaultLM;
+  ////  typedef RandomDefaultLM<TCopulaPolicy, RandomSequenceGenerator<MersenneTwisterUniformRng> > TMTRandomDefaultLM;
+    typedef RandomDefaultLM<TCopulaPolicy, RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > > TMTRandomDefaultLM;
 
 
 
@@ -591,7 +602,7 @@ namespace QuantLib {
     modelled variable; while the copula policy ignores what it is being modelled
     -- See the comment for faster inversion in the code. Theres potential for
     a generic algorithm here but most of times latent models are going to be 
-    used with credit defaults.
+    used with credit defaults. A notable exception is though transition models.
     */
     namespace detail {// not template dependent .....move it
         //! Utility for the numerical time solver

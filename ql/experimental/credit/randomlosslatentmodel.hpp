@@ -44,15 +44,6 @@ namespace QuantLib {
           copulaPolicy, USNG>;
       typedef simEvent<RandomLossLM<copulaPolicy, USNG> > defaultSimEvent;
     private:
-        class Worker : public RandomLM<RandomLossLM<copulaPolicy, USNG>, 
-            copulaPolicy, USNG>::Worker/*<RandomDefaultLM<copulaPolicy, USNG>, copulaPolicy, USNG>*/ {
-            // grant access to static polymorphism:
-            friend class RandomLM<RandomLossLM<copulaPolicy, USNG>, 
-                copulaPolicy, USNG>::Worker;
-        protected:
-            void nextSample(const std::vector<Real>& values) const;
-        };
-    private:
         const SpotRecoveryLatentModel<copulaPolicy> copula_;
         mutable boost::shared_ptr<Basket> basket_;
         // for time inversion:
@@ -63,9 +54,7 @@ namespace QuantLib {
             const SpotRecoveryLatentModel<copulaPolicy>& copula,
             Size nSims = 0,
             Real accuracy = 1.e-6, 
-            BigNatural seed = 2863311530,
-            Size numThreads = boost::thread::hardware_concurrency()
-        );
+            BigNatural seed = 2863311530);
         //  next two; DefaultLossModel interface
         // This one needs reconsidering. 
         void setupBasket(const boost::shared_ptr<Basket>& basket) {//public?
@@ -79,6 +68,8 @@ namespace QuantLib {
                 return 0.5;
         }
     protected:
+        void nextSample(const std::vector<Real>& values) const;
+
         Real latentVarValue(const std::vector<Real>& factorsSample, 
             Size iVar) const {
                 return copula_.latentVarValue(factorsSample, iVar);
@@ -88,10 +79,10 @@ namespace QuantLib {
         Real conditionalRecovery(Real latentVarSample, Size iName, 
             const Date& d) const;
     public:
-//statistics:
-Real expectedTrancheLoss(const Date& d) const;
-std::pair<Real, Real> expectedTrancheLossInterval(const Date& d, Probability confidencePerc) const;
-
+        //statistics:
+        Real expectedTrancheLoss(const Date& d) const;
+        std::pair<Real, Real> expectedTrancheLossInterval(const Date& d, 
+            Probability confidencePerc) const;
     private:
         // see not on randomdefaultlatentmodel
         void initDates() const {
@@ -140,30 +131,31 @@ std::pair<Real, Real> expectedTrancheLossInterval(const Date& d, Probability con
 
 
 
+
     template<class C, class URNG>
-    void RandomLossLM<C, URNG>::Worker::nextSample(
+    void RandomLossLM<C, URNG>::nextSample(
         const std::vector<Real>& values) const 
     {
-        const boost::shared_ptr<Pool>& pool = data_.basket_->pool();
+        const boost::shared_ptr<Pool>& pool = basket_->pool();
         simsBuffer_.push_back(std::vector<defaultSimEvent> ());
 
         // half the model is defaults, the other half are RRs...
-        for(Size iName=0; iName<data_.copula_.size()/2; iName++) {
+        for(Size iName=0; iName<copula_.size()/2; iName++) {
             // ...but samples must be full
             Real latentVarSample = 
-                data_.copula_.latentVarValue(values, iName);
+                copula_.latentVarValue(values, iName);
             Probability simDefaultProb = 
-                data_.copula_.cumulativeY(latentVarSample, iName);
+                copula_.cumulativeY(latentVarSample, iName);
             // If the default simulated lies before the max date:
-            if (data_.horizonDefaultPs_[iName] >= simDefaultProb) {
+            if (horizonDefaultPs_[iName] >= simDefaultProb) {
                 const Handle<DefaultProbabilityTermStructure>& dfts = 
                     pool->get(pool->names()[iName]).  // use 'live' names
-                    defaultProbability(data_.basket_->defaultKeys()[iName]);
+                    defaultProbability(basket_->defaultKeys()[iName]);
                 // compute and store default time with respect to the 
                 //  curve ref date:
                 Size dateSTride =
                     static_cast<Size>(Brent().solve(// casted from Real:
-                    detail::Root(dfts, simDefaultProb),data_.accuracy_,0.,1.));
+                    detail::Root(dfts, simDefaultProb), accuracy_, 0., 1.));
                /*
                // value if one approximates to a flat HR; 
                //   faster (>x2) but it introduces an error:..
@@ -182,7 +174,7 @@ std::pair<Real, Real> expectedTrancheLossInterval(const Date& d, Probability con
                 Date today = dfts->referenceDate();/// NO GOOD, NOW DATES MEAN DIFFERENT THINGS!!!!!!!!!!!!!!!!!!!! NEED FIXING!!!
 
                 Real recovery = 
-                    data_.copula_.conditionalRecovery(latentVarSample, iName, 
+                    copula_.conditionalRecovery(latentVarSample, iName, 
                         today+Period(static_cast<Integer>(dateSTride), Days));
                 simsBuffer_.back().push_back(
                    defaultSimEvent(iName, dateSTride, recovery));
@@ -207,14 +199,12 @@ std::pair<Real, Real> expectedTrancheLossInterval(const Date& d, Probability con
         const SpotRecoveryLatentModel<C>& copula,
         Size nSims,
         Real accuracy, 
-        BigNatural seed ,
-        Size numThreads
-        ) 
+        BigNatural seed) 
     : basket_(basket), 
       accuracy_(accuracy), 
       copula_(copula), //<<-------------------------------------------------------------------------------CHECK THIS COPY
       RandomLM(copula.numFactors(), copula.size(), copula.copula(), 
-          nSims, seed, numThreads )
+          nSims, seed)
     {
         // in the future change 'size' to 'liveSize'
         QL_REQUIRE(2 * basket_->size() == copula.size(),
@@ -277,7 +267,9 @@ std::pair<Real, Real> expectedTrancheLossInterval(const Date& d, Probability con
     typedef RandomLossLM<GaussianCopulaPolicy, RandomSequenceGenerator<BoxMullerGaussianRng<MersenneTwisterUniformRng> > > GaussianRandomLossLM;
     // This one uses the copula inversion directly
     // typedef RandomDefaultLM<GaussianCopulaPolicy, MersenneTwisterUniformRng> GaussianMTRandomDefaultLM;
-    typedef RandomLossLM<TCopulaPolicy, MersenneTwisterUniformRng> TRandomLossLM;
+  //////--  typedef RandomLossLM<TCopulaPolicy, MersenneTwisterUniformRng> TRandomLossLM;
+    typedef RandomLossLM<TCopulaPolicy, RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > > TRandomLossLM;
+
 
 }
 

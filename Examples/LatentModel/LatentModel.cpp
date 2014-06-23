@@ -118,41 +118,54 @@ int main(int, char* []) {
             LatentModelIntegrationType::GaussianQuadrature,
 			GaussianCopulaPolicy::initTraits() // otherwise gcc screams
 			);
+        lmG.resetBasket(theBskt);
         // Gaussian random joint default model:
         Size numSimulations = 1000000;
         Size numCoresUsed = 4;
         // Sobol, many cores
         RandomDefaultLM<GaussianCopulaPolicy> rdlmG(
-            theBskt, lmG, std::vector<Real>(), numSimulations, 1.e-6, 2863311530, numCoresUsed);
+            theBskt, lmG, std::vector<Real>(), numSimulations, 1.e-6, 2863311530);
         // Monothread only
         /*
         RandomDefaultLM<GaussianCopulaPolicy, 
             RandomSequenceGenerator<MersenneTwisterUniformRng> > rdlmG(
-            theBskt, lmT, std::vector<Real>(), numSimulations, 1.e-6, 2863311530, numCoresUsed);
+            theBskt, lmT, std::vector<Real>(), numSimulations, 1.e-6, 2863311530);
         */
         // Define StudentT copula
         // this is as far as we can be from the Gaussian
-        std::vector<Integer> ordersT(2, 37);
+        std::vector<Integer> ordersT(2, 5);
         TCopulaPolicy::initTraits iniT;
         iniT.tOrders = ordersT;
         // StudentT integrable joint default model:
         TDefProbLM lmT(/*theBskt, */fctrsWeights, 
             LatentModelIntegrationType::GaussianQuadrature, iniT);
+        lmT.resetBasket(theBskt);
         // StudentT random joint default model:
+        //  --Not showing the correct default correlation!!-------------------
         // Sobol, many cores
-        RandomDefaultLM<TCopulaPolicy> rdlmT(
-            theBskt, lmT, std::vector<Real>(), numSimulations, 1.e-6, 2863311530, numCoresUsed);
-        // Monothread only
-        /*
-        RandomDefaultLM<TCopulaPolicy, 
-            RandomSequenceGenerator<
-                PolarStudentTRng<MersenneTwisterUniformRng> > > rdlmT(
-            theBskt, lmT, std::vector<Real>(), numSimulations, 1.e-6, 2863311530, numCoresUsed);
+        //////RandomDefaultLM<TCopulaPolicy> rdlmT(
+        //////    theBskt, lmT, std::vector<Real>(), numSimulations, 1.e-6, 2863311530);
+        // Monothread only, direct/copula inversion
+        RandomDefaultLM<TCopulaPolicy, RandomSequenceGenerator<MersenneTwisterUniformRng> > rdlmT(
+            theBskt, lmT, std::vector<Real>(), numSimulations, 1.e-6, 2863311530);
+
+        /* Goes through two partial spezs, number look worst.
+        RandomDefaultLM<TCopulaPolicy, RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > > rdlmT(
+            theBskt, lmT, std::vector<Real>(), numSimulations, 1.e-6, 2863311530);
         */
 
         /* --------------------------------------------------------------
                         DUMP SOME RESULTS
         -------------------------------------------------------------- */
+        /* Correlations in a T copula should be below those of the gaussian
+        for the same factors.
+        The calculations on the MC show dispersion on both copulas (thats
+        ok) and too large values with very large dispersions on the T case.
+        Computations are ok, within the dispersion, for the gaussian; compare
+        with the direct integration in both cases.
+        However the T does converge to the gaussian value for large value of
+        the parameters.
+        */
         std::cout << 
             "T versus Gaussian prob of extreme event (random and integrable)-" 
             << std::endl;

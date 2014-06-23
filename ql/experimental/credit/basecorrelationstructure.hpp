@@ -50,42 +50,6 @@ namespace QuantLib {
     template<class Interpolator2D_T> // template? alternatively have a ref to Interpolator2D
     class BaseCorrelationTermStructure : public CorrelationTermStructure {
     public:
-/*
-Inspiration from:
-    SwaptionVolatilityDiscrete::SwaptionVolatilityDiscrete(
-                                    const std::vector<Period>& optionTenors,
-                                    const std::vector<Period>& swapTenors,
-                                    Natural settlementDays,
-                                    const Calendar& cal,
-                                    BusinessDayConvention bdc,
-                                    const DayCounter& dc)
-    : SwaptionVolatilityStructure(settlementDays, cal, bdc, dc),
-      nOptionTenors_(optionTenors.size()),
-      optionTenors_(optionTenors),
-      optionDates_(nOptionTenors_),
-      optionTimes_(nOptionTenors_),
-      optionDatesAsReal_(nOptionTenors_),
-      nSwapTenors_(swapTenors.size()),
-      swapTenors_(swapTenors),
-      swapLengths_(nSwapTenors_) {
-
-        checkOptionTenors();
-        initializeOptionDatesAndTimes();
-
-        checkSwapTenors();
-        initializeSwapLengths();
-
-        optionInterpolator_= LinearInterpolation(optionTimes_.begin(),
-                                                 optionTimes_.end(),
-                                                 optionDatesAsReal_.begin());
-        optionInterpolator_.update();
-        optionInterpolator_.enableExtrapolation();
-
-        registerWith(Settings::instance().evaluationDate());
-        evaluationDate_ = Settings::instance().evaluationDate();
-    }
-
-*/
         BaseCorrelationTermStructure(
             Natural settlementDays,
             const Calendar& cal,
