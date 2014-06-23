@@ -28,6 +28,8 @@
 
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/instruments/bonds/fixedratebond.hpp>
+#include <ql/instruments/bonds/cpibond.hpp>
+#include <ql/cashflows/cpicoupon.hpp>
 
 namespace QuantLib {
 
@@ -112,6 +114,45 @@ namespace QuantLib {
         return fixedRateBond_;
     }
 
+    //! CPI bond helper for curve bootstrap
+    class CPIBondHelper : public BondHelper {
+      public:
+        CPIBondHelper(const Handle<Quote>& price,
+                            Natural settlementDays,
+                            Real faceAmount,
+                            const bool growthOnly,
+                            Real baseCPI,
+                            const Period& observationLag,
+                            const boost::shared_ptr<ZeroInflationIndex>& cpiIndex,
+                            CPI::InterpolationType observationInterpolation,
+                            const Schedule& schedule,
+                            const std::vector<Rate>& fixedRate,
+                            const DayCounter& accrualDayCounter,
+                            BusinessDayConvention paymentConvention = Following,
+                            const Date& issueDate = Date(),
+                            const Calendar& paymentCalendar = Calendar(),
+                            const Period& exCouponPeriod = Period(),
+                            const Calendar& exCouponCalendar = Calendar(),
+                            const BusinessDayConvention exCouponConvention = Unadjusted,
+                            bool exCouponEndOfMonth = false,
+                            const bool useCleanPrice = true);
+        //! \name Additional inspectors
+        //@{
+        boost::shared_ptr<CPIBond> cpiBond() const;
+        //@}
+        //! \name Visitability
+        //@{
+        void accept(AcyclicVisitor&);
+        //@}
+      protected:
+        boost::shared_ptr<CPIBond> cpiBond_;
+    };
+
+
+    inline boost::shared_ptr<CPIBond>
+    CPIBondHelper::cpiBond() const {
+        return cpiBond_;
+    }
 }
 
 #endif
