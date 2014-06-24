@@ -23,6 +23,7 @@
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/settings.hpp>
+#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -30,18 +31,20 @@ namespace QuantLib {
         void no_deletion(YieldTermStructure*) {}
     }
 
-    BondHelper::BondHelper(const Handle<Quote>& cleanPrice,
-                           const boost::shared_ptr<Bond>& bond)
-    : RateHelper(cleanPrice), bond_(new Bond(*bond)) {
+    BondHelper::BondHelper(const Handle<Quote>& price,
+                           const boost::shared_ptr<Bond>& bond,
+                           const bool useCleanPrice)
+    : RateHelper(price), bond_(boost::make_shared<Bond>(*bond)) {
 
         // the bond's last cashflow date, which can be later than
         // bond's maturity date because of adjustment
         latestDate_ = bond_->cashflows().back()->date();
         earliestDate_ = bond_->nextCashFlowDate();
 
-        boost::shared_ptr<PricingEngine> bondEngine(new
-            DiscountingBondEngine(termStructureHandle_));
-        bond_->setPricingEngine(bondEngine);
+        bond_->setPricingEngine(
+             boost::make_shared<DiscountingBondEngine>(termStructureHandle_));
+
+        useCleanPrice_ = useCleanPrice;
     }
 
     void BondHelper::setTermStructure(YieldTermStructure* t) {
@@ -57,7 +60,7 @@ namespace QuantLib {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         // we didn't register as observers - force calculation
         bond_->recalculate();
-        return bond_->cleanPrice();
+        return useCleanPrice_ ? bond_->cleanPrice() : bond_->dirtyPrice();
     }
 
     void BondHelper::accept(AcyclicVisitor& v) {
@@ -70,7 +73,7 @@ namespace QuantLib {
     }
 
     FixedRateBondHelper::FixedRateBondHelper(
-                                    const Handle<Quote>& cleanPrice,
+                                    const Handle<Quote>& price,
                                     Natural settlementDays,
                                     Real faceAmount,
                                     const Schedule& schedule,
@@ -78,15 +81,22 @@ namespace QuantLib {
                                     const DayCounter& dayCounter,
                                     BusinessDayConvention paymentConvention,
                                     Real redemption,
-                                    const Date& issueDate)
-    : BondHelper(cleanPrice, boost::shared_ptr<Bond>(new
-        FixedRateBond(settlementDays, faceAmount, schedule,
-                      coupons, dayCounter, paymentConvention,
-                      redemption, issueDate))) {
-        fixedRateBond_ = boost::shared_ptr<FixedRateBond>(new
-            FixedRateBond(settlementDays, faceAmount, schedule,
-                          coupons, dayCounter, paymentConvention,
-                          redemption, issueDate));
+                                    const Date& issueDate,
+                                    const Calendar& paymentCalendar,
+                                    const Period& exCouponPeriod,
+                                    const Calendar& exCouponCalendar,
+                                    const BusinessDayConvention exCouponConvention,
+                                    bool exCouponEndOfMonth,
+                                    const bool useCleanPrice)
+    : BondHelper(price,
+                 boost::shared_ptr<Bond>(
+                     new FixedRateBond(settlementDays, faceAmount, schedule,
+                                       coupons, dayCounter, paymentConvention,
+                                       redemption, issueDate, paymentCalendar,
+                                       exCouponPeriod, exCouponCalendar,
+                                       exCouponConvention, exCouponEndOfMonth)),
+                 useCleanPrice) {
+        fixedRateBond_ = boost::dynamic_pointer_cast<FixedRateBond>(bond_);
     }
 
     void FixedRateBondHelper::accept(AcyclicVisitor& v) {
@@ -98,4 +108,43 @@ namespace QuantLib {
             BootstrapHelper<YieldTermStructure>::accept(v);
     }
 
+    CPIBondHelper::CPIBondHelper(
+                            const Handle<Quote>& price,
+                            Natural settlementDays,
+                            Real faceAmount,
+                            const bool growthOnly,
+                            Real baseCPI,
+                            const Period& observationLag,
+                            const boost::shared_ptr<ZeroInflationIndex>& cpiIndex,
+                            CPI::InterpolationType observationInterpolation,
+                            const Schedule& schedule,
+                            const std::vector<Rate>& fixedRate,
+                            const DayCounter& accrualDayCounter,
+                            BusinessDayConvention paymentConvention,
+                            const Date& issueDate,
+                            const Calendar& paymentCalendar,
+                            const Period& exCouponPeriod,
+                            const Calendar& exCouponCalendar,
+                            const BusinessDayConvention exCouponConvention,
+                            bool exCouponEndOfMonth,
+                            const bool useCleanPrice)
+    : BondHelper(price,
+                 boost::shared_ptr<Bond>(
+                     new CPIBond(settlementDays, faceAmount, growthOnly, baseCPI, 
+                                       observationLag, cpiIndex, observationInterpolation,
+                                       schedule, fixedRate, accrualDayCounter, paymentConvention,
+                                       issueDate, paymentCalendar, exCouponPeriod, exCouponCalendar,
+                                       exCouponConvention, exCouponEndOfMonth)),
+                 useCleanPrice) {
+        cpiBond_ = boost::dynamic_pointer_cast<CPIBond>(bond_);
+    }
+
+    void CPIBondHelper::accept(AcyclicVisitor& v) {
+        Visitor<CPIBondHelper>* v1 =
+            dynamic_cast<Visitor<CPIBondHelper>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            BootstrapHelper<YieldTermStructure>::accept(v);
+    }
 }

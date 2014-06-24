@@ -101,7 +101,7 @@ namespace QuantLib {
         FixedRateLeg& withExCouponPeriod(const Period&,
                                          const Calendar&,
                                          BusinessDayConvention,
-                                         bool endOfMonth);
+                                         bool endOfMonth = false);
         operator Leg() const;
       private:
         Schedule schedule_;

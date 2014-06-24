@@ -131,6 +131,65 @@ namespace QuantLib {
 
     bool China::IbImpl::isBusinessDay(const Date& date) const {
         static const Date working_weekends[] = {
+            // 2005
+            Date(5, February, 2005),
+            Date(6, February, 2005),
+            Date(30, April, 2005),
+            Date(8, May, 2005),
+            Date(8, October, 2005),
+            Date(9, October, 2005),
+            Date(31, December, 2005),
+            //2006
+            Date(28, January, 2006),
+            Date(29, April, 2006),
+            Date(30, April, 2006),
+            Date(30, September, 2006),
+            Date(30, December, 2006),
+            Date(31, December, 2006),
+            // 2007
+            Date(17, February, 2007),
+            Date(25, February, 2007),
+            Date(28, April, 2007),
+            Date(29, April, 2007),
+            Date(29, September, 2007),
+            Date(30, September, 2007),
+            Date(29, December, 2007),
+            // 2008
+            Date(2, February, 2008),
+            Date(3, February, 2008),
+            Date(4, May, 2008),
+            Date(27, September, 2008),
+            Date(28, September, 2008),
+            // 2009
+            Date(4, January, 2009),
+            Date(24, January, 2009),
+            Date(1, February, 2009),
+            Date(31, May, 2009),
+            Date(27, September, 2009),
+            Date(10, October, 2009),
+            // 2010
+            Date(20, February, 2010),
+            Date(21, February, 2010),
+            Date(12, June, 2010),
+            Date(13, June, 2010),
+            Date(19, September, 2010),
+            Date(25, September, 2010),
+            Date(26, September, 2010),
+            Date(9, October, 2010),
+            // 2011
+            Date(30, January, 2011),
+            Date(12, February, 2011),
+            Date(2, April, 2011),
+            Date(8, October, 2011),
+            Date(9, October, 2011),
+            Date(31, December, 2011),
+            // 2012
+            Date(21, January, 2012),
+            Date(29, January, 2012),
+            Date(31, March, 2012),
+            Date(1, April, 2012),
+            Date(28, April, 2012),
+            Date(29, September, 2012),
             // 2013
             Date(5,January,2013),
             Date(6,January,2013),

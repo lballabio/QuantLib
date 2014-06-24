@@ -75,7 +75,8 @@ namespace QuantLib {
                   Real fixedRate, // aka gearing
                   Spread spread = 0.0,
                   const Date& refPeriodStart = Date(),
-                  const Date& refPeriodEnd = Date());
+                  const Date& refPeriodEnd = Date(),
+                  const Date& exCouponDate = Date());
 
         //! \name Inspectors
         //@{
@@ -186,6 +187,7 @@ namespace QuantLib {
         CPILeg& withFixedRates(const std::vector<Real>& fixedRates);
         CPILeg& withPaymentDayCounter(const DayCounter&);
         CPILeg& withPaymentAdjustment(BusinessDayConvention);
+        CPILeg& withPaymentCalendar(const Calendar&);
         CPILeg& withFixingDays(Natural fixingDays);
         CPILeg& withFixingDays(const std::vector<Natural>& fixingDays);
         CPILeg& withObservationInterpolation(CPI::InterpolationType);
@@ -196,6 +198,10 @@ namespace QuantLib {
         CPILeg& withCaps(const std::vector<Rate>& caps);
         CPILeg& withFloors(Rate floor);
         CPILeg& withFloors(const std::vector<Rate>& floors);
+        CPILeg& withExCouponPeriod(const Period&,
+                                         const Calendar&,
+                                         BusinessDayConvention,
+                                         bool endOfMonth = false);
         operator Leg() const;
 
       private:
@@ -207,11 +213,16 @@ namespace QuantLib {
         std::vector<Real> fixedRates_;  // aka gearing
         DayCounter paymentDayCounter_;
         BusinessDayConvention paymentAdjustment_;
+        Calendar paymentCalendar_;
         std::vector<Natural> fixingDays_;
         CPI::InterpolationType observationInterpolation_;
         bool subtractInflationNominal_;
         std::vector<Spread> spreads_;
         std::vector<Rate> caps_, floors_;
+        Period exCouponPeriod_;
+        Calendar exCouponCalendar_;
+        BusinessDayConvention exCouponAdjustment_;
+        bool exCouponEndOfMonth_;
     };
 
 

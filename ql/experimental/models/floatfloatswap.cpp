@@ -359,7 +359,8 @@ namespace QuantLib {
         FloatFloatSwap::arguments *arguments =
             dynamic_cast<FloatFloatSwap::arguments *>(args);
 
-        QL_REQUIRE(arguments != 0, "argument type does not match");
+        if(!arguments)
+            return; // swap engine ... // QL_REQUIRE(arguments != 0, "argument type does not match");
 
         arguments->type = type_;
         arguments->nominal1 = nominal1_;

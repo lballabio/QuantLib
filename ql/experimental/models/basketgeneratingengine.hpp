@@ -94,9 +94,9 @@ namespace QuantLib {
 
       private:
 
-        const boost::shared_ptr<Gaussian1dModel> &onefactormodel_;
+        const boost::shared_ptr<Gaussian1dModel> onefactormodel_;
         const Handle<Quote> oas_;
-        const Handle<YieldTermStructure> &discountCurve_;
+        const Handle<YieldTermStructure> discountCurve_;
 
         class MatchHelper;
         friend class MatchHelper;
@@ -105,8 +105,8 @@ namespace QuantLib {
             MatchHelper(const VanillaSwap::Type type, const Real npv,
                         const Real delta, const Real gamma,
                         const boost::shared_ptr<Gaussian1dModel> &model,
-                        const boost::shared_ptr<SwapIndex> indexBase,
-                        const Date &expiry, const Real &maxMaturity,
+                        const boost::shared_ptr<SwapIndex> &indexBase,
+                        const Date &expiry, const Real maxMaturity,
                         const Real h)
                 : type_(type), mdl_(model), indexBase_(indexBase),
                   expiry_(expiry), maxMaturity_(maxMaturity), npv_(npv),
@@ -222,9 +222,9 @@ namespace QuantLib {
             }
 
             const VanillaSwap::Type type_;
-            const boost::shared_ptr<Gaussian1dModel> &mdl_;
+            const boost::shared_ptr<Gaussian1dModel> mdl_;
             const boost::shared_ptr<SwapIndex> indexBase_;
-            const Date &expiry_;
+            const Date expiry_;
             const Real maxMaturity_;
             const Real npv_, delta_, gamma_, h_;
         };
