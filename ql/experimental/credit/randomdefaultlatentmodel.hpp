@@ -409,7 +409,7 @@ namespace QuantLib {
         void setupBasket(const boost::shared_ptr<Basket>& basket) {//public?
             //DOES THIS ONE REALLY NEEDS RESET??
             update();
-            basket_ = basket;
+            basket_ = basket;/////////THIS IS NOT RESETING THE BASKET IN THE DEFAULT LATENT MODEL IS POINTING TO!!!!  THE SPOT LOSS MODEL HAS THE SAME PROBLEM
         }
         Real recoveryValueImpl(const Date& defaultDate, Size iName,  // protected???
             const std::vector<DefaultProbKey>& defKeys = std::vector<DefaultProbKey>()) const{ return recoveries_[iName];}

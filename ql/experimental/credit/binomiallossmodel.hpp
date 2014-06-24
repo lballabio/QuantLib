@@ -164,8 +164,8 @@ namespace QuantLib {
         basket_       = basket;
         attachAmount_ = basket->remainingAttachmentAmount();
         detachAmount_ = basket->remainingDetachmentAmount();
-// DOES BASKET NEED RECALCULATION ...??? .....is it automatic?
-///////////////////////////////////////////////////        copula_->resetBasket(basket);// forces interface
+
+        copula_->resetBasket(basket);// forces interface
     }
 
     /* The algorithm to compute the prob. of n defaults in the basket is 
@@ -245,8 +245,8 @@ namespace QuantLib {
         }else if(avgProb <= QL_EPSILON) {
            lossProbDensity[0] = 1.;
         }else{
-            /* FIX ME: If I come in here with a very high default prob then I 
-            only get tiny values at the end and the sum of probabilities in the 
+            /* FIX ME: With high default probabilities one only gets tiny values
+            at the end and the sum of probabilities in the 
             conditional distribution does not add up to one. It might be due to 
             the fact that recursion should be done in the other direction as 
             pointed out in the book. This is numerical.
