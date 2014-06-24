@@ -53,7 +53,6 @@ namespace QuantLib {
         boost::shared_ptr<LMIntegration> integration_;
     public:
         /*!
-   ////////////////////////////////////////////////////////     @param basket The basket of issuers/ctptys on which to model defaults.
         @param factorWeights Latent model independent factors weights for each 
             variable.
         @param quadOrder The order of the quadrature to integrate the 
@@ -98,7 +97,6 @@ namespace QuantLib {
                 "Incompatible new basket and model sizes.");
         }
     protected:
-    public:// FOR TESTS IN BINOMIAL MODEL--------------------------------------------------------------friend?
         /*! Returns the probability of default of a given name conditional on
         the realization of a given set of values of the model independent
         factors. The date at which the probability is given is implicit in the
@@ -190,7 +188,7 @@ namespace QuantLib {
         Trivial method for testing
         */
         Probability probOfDefault(Size iName, const Date& d) const {
-            QL_REQUIRE(basket_, "No portfolio basket set.");////////////// NEEDS TO BE ADDED IN OTHER METHODS TOOOO
+            QL_REQUIRE(basket_, "No portfolio basket set.");
             const boost::shared_ptr<Pool>& pool = basket_->pool();
             // avoid repeating this in the integration:
             Probability pUncond = pool->get(pool->names()[iName]).
