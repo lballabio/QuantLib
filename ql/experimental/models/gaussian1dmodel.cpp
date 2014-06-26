@@ -73,7 +73,7 @@ namespace QuantLib {
         Schedule sched, floatSched;
 
         boost::shared_ptr<VanillaSwap> underlying =
-            swapIdx->underlyingSwap(fixing,tenor);
+            swapIdx->clone(tenor,false)->underlyingSwap(fixing);
 
         sched = underlying->fixedSchedule();
 
@@ -126,7 +126,7 @@ namespace QuantLib {
                                                  // model curve
 
         boost::shared_ptr<VanillaSwap> underlying =
-            swapIdx->underlyingSwap(fixing,tenor);
+            swapIdx->clone(tenor,false)->underlyingSwap(fixing);
         Schedule sched = underlying->fixedSchedule();
 
         Real annuity = 0.0;

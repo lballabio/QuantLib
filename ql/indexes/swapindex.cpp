@@ -80,15 +80,15 @@ namespace QuantLib {
     }
 
     shared_ptr<VanillaSwap>
-    SwapIndex::underlyingSwap(const Date& fixingDate, const Period& tenor) const {
+    SwapIndex::underlyingSwap(const Date& fixingDate) const {
 
         QL_REQUIRE(fixingDate!=Date(), "null fixing date");
 
         // caching mechanism
-        if (lastFixingDate_!=fixingDate || lastTenor_!=tenor) {
+        if (lastFixingDate_!=fixingDate) {
             Rate fixedRate = 0.0;
             if (exogenousDiscount_)
-                lastSwap_ = MakeVanillaSwap(tenor, iborIndex_, fixedRate)
+                lastSwap_ = MakeVanillaSwap(tenor_, iborIndex_, fixedRate)
                     .withEffectiveDate(valueDate(fixingDate))
                     .withFixedLegCalendar(fixingCalendar())
                     .withFixedLegDayCount(dayCounter_)
@@ -97,7 +97,7 @@ namespace QuantLib {
                     .withFixedLegTerminationDateConvention(fixedLegConvention_)
                     .withDiscountingTermStructure(discount_);
             else
-                lastSwap_ = MakeVanillaSwap(tenor, iborIndex_, fixedRate)
+                lastSwap_ = MakeVanillaSwap(tenor_, iborIndex_, fixedRate)
                     .withEffectiveDate(valueDate(fixingDate))
                     .withFixedLegCalendar(fixingCalendar())
                     .withFixedLegDayCount(dayCounter_)
@@ -105,14 +105,8 @@ namespace QuantLib {
                     .withFixedLegConvention(fixedLegConvention_)
                     .withFixedLegTerminationDateConvention(fixedLegConvention_);
             lastFixingDate_ = fixingDate;
-            lastTenor_ = tenor;
         }
         return lastSwap_;
-    }
-
-    shared_ptr<VanillaSwap>
-    SwapIndex::underlyingSwap(const Date& fixingDate) const {
-        return underlyingSwap(fixingDate, tenor_);
     }
 
     Date SwapIndex::maturityDate(const Date& valueDate) const {
@@ -164,33 +158,25 @@ namespace QuantLib {
                        discounting));
     }
 
-    shared_ptr<SwapIndex>
-    SwapIndex::clone(const Period& tenor) const {
+    shared_ptr<SwapIndex> SwapIndex::clone(const Period &tenor,
+                                           const bool copy) const {
+        // caching mechanism
+        if (lastTenor_ != tenor || copy) {
 
-        if (exogenousDiscount_)
-            return shared_ptr<SwapIndex>(new
-                SwapIndex(familyName(),
-                          tenor,
-                          fixingDays(),
-                          currency(),
-                          fixingCalendar(),
-                          fixedLegTenor(),
-                          fixedLegConvention(),
-                          dayCounter(),
-                          iborIndex(),
-                          discountingTermStructure()));
-        else
-            return shared_ptr<SwapIndex>(new
-                SwapIndex(familyName(),
-                          tenor,
-                          fixingDays(),
-                          currency(),
-                          fixingCalendar(),
-                          fixedLegTenor(),
-                          fixedLegConvention(),
-                          dayCounter(),
-                          iborIndex()));
+            if (exogenousDiscount_)
+                lastIndex_ = shared_ptr<SwapIndex>(new SwapIndex(
+                    familyName(), tenor, fixingDays(), currency(),
+                    fixingCalendar(), fixedLegTenor(), fixedLegConvention(),
+                    dayCounter(), iborIndex(), discountingTermStructure()));
+            else
+                lastIndex_ = shared_ptr<SwapIndex>(new SwapIndex(
+                    familyName(), tenor, fixingDays(), currency(),
+                    fixingCalendar(), fixedLegTenor(), fixedLegConvention(),
+                    dayCounter(), iborIndex()));
 
+            lastTenor_ = tenor;
+        }
+        return lastIndex_;
     }
 
     OvernightIndexedSwapIndex::OvernightIndexedSwapIndex(

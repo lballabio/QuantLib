@@ -258,7 +258,7 @@ namespace QuantLib {
         p.tenor_ = tenor;
 
         boost::shared_ptr<VanillaSwap> underlying =
-            swapIndexBase_->underlyingSwap(expiry,tenor);
+            swapIndexBase_->clone(tenor,false)->underlyingSwap(expiry);
         Schedule sched = underlying->fixedSchedule();
         Calendar cal = sched.calendar();
         BusinessDayConvention bdc = underlying->paymentConvention();
@@ -992,7 +992,7 @@ namespace QuantLib {
         QL_REQUIRE(swapIdx, "No swap index given");
 
         boost::shared_ptr<VanillaSwap> underlying =
-            swapIdx->underlyingSwap(fixing,tenor);
+            swapIdx->clone(tenor,false)->underlyingSwap(fixing);
         Schedule sched = underlying->fixedSchedule();
         Real annuity = swapAnnuityInternal(fixing, tenor, referenceDate, y,
                                       zeroFixingDays, swapIdx);
@@ -1018,7 +1018,7 @@ namespace QuantLib {
         QL_REQUIRE(swapIdx, "No swap index given");
 
         boost::shared_ptr<VanillaSwap> underlying =
-            swapIdx->underlyingSwap(fixing,tenor);
+            swapIdx->clone(tenor,false)->underlyingSwap(fixing);
         Schedule sched = underlying->fixedSchedule();
 
         Real annuity = 0.0;
