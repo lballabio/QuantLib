@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=1962
+UnitCount=1964
 Type=2
 Ver=1
 ObjFiles=
@@ -19696,3 +19696,14 @@ Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
+
+[Unit1964]
+FileName=ql\indexes\inflation\zacpi.hpp
+CompileCpp=1
+Folder=indexes/inflation
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
