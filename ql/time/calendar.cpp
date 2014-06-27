@@ -61,7 +61,7 @@ namespace QuantLib {
                         return adjust(d, Preceding);
                     }
                     if (c == HalfMonthModifiedFollowing) {
-                        if (d.dayOfMonth() < 15 && d1.dayOfMonth() > 15) {
+                        if (d.dayOfMonth() <= 15 && d1.dayOfMonth() > 15) {
                             return adjust(d, Preceding);
                         }
                     }
