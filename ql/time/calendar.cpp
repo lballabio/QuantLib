@@ -51,17 +51,20 @@ namespace QuantLib {
             return d;
 
         Date d1 = d;
-        if (c == Following || c == ModifiedFollowing) {
+        if (c == Following || c == ModifiedFollowing 
+            || c == HalfMonthModifiedFollowing) {
             while (isHoliday(d1))
                 d1++;
-			if (c == ModifiedFollowing || c == HalfMonthModifiedFollowing) {
-                if (d1.month() != d.month()) {
-                    return adjust(d,Preceding);
-                }
-				if (c == HalfMonthModifiedFollowing) {
-					if (d.dayOfMonth() < 15 && d1.dayOfMonth() > 15) {
-						return adjust(d, Preceding);
-					}
+                if (c == ModifiedFollowing 
+                    || c == HalfMonthModifiedFollowing) {
+                    if (d1.month() != d.month()) {
+                        return adjust(d, Preceding);
+                    }
+                    if (c == HalfMonthModifiedFollowing) {
+                        if (d.dayOfMonth() < 15 && d1.dayOfMonth() > 15) {
+                            return adjust(d, Preceding);
+                        }
+                    }
             }
         } else if (c == Preceding || c == ModifiedPreceding) {
             while (isHoliday(d1))
