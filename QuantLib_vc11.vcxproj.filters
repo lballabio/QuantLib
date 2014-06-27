@@ -696,6 +696,9 @@
     <ClInclude Include="ql\indexes\inflation\uscpi.hpp">
       <Filter>indexes\inflation</Filter>
     </ClInclude>
+    <ClInclude Include="ql\indexes\inflation\zacpi.hpp">
+      <Filter>indexes\inflation</Filter>
+    </ClInclude>
     <ClInclude Include="ql\instruments\all.hpp">
       <Filter>instruments</Filter>
     </ClInclude>

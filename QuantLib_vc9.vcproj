@@ -1989,6 +1989,10 @@
 					RelativePath=".\ql\indexes\inflation\uscpi.hpp"
 					>
 				</File>
+				<File
+					RelativePath=".\ql\indexes\inflation\zacpi.hpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
