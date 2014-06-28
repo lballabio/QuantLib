@@ -33,6 +33,11 @@
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
 
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-function"
+#endif
+
 #if !defined(QL_NO_UBLAS_SUPPORT)
 #include <boost/numeric/ublas/vector_proxy.hpp>
 #include <boost/numeric/ublas/triangular.hpp>
@@ -46,6 +51,11 @@
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
+
 
 namespace QuantLib {
 
