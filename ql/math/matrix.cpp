@@ -28,6 +28,11 @@
 #pragma warning(disable:4127)
 #endif
 
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
+
 #if !defined(QL_NO_UBLAS_SUPPORT)
 #include <boost/numeric/ublas/vector_proxy.hpp>
 #include <boost/numeric/ublas/triangular.hpp>
@@ -36,6 +41,10 @@
 
 #if defined(QL_PATCH_MSVC)
 #pragma warning(pop)
+#endif
+
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic pop
 #endif
 
 namespace QuantLib {
