@@ -50,18 +50,18 @@ namespace QuantLib {
         Preceding,                   /*!< Choose the first business
                                           day before the given holiday. */
         // NON ISDA
-        HalfMonthModifiedFollowing,  /*!< Choose the first business day after
-                                          the given holiday unless that day 
-                                          crosses the mid-month (15th) or the 
-                                          end of month, in which case choose 
-                                          the first business day before the 
-                                          holiday. */
         ModifiedPreceding,           /*!< Choose the first business day before
                                           the given holiday unless it belongs
                                           to a different month, in which case
                                           choose the first business day after
                                           the holiday. */
-        Unadjusted                   /*!< Do not adjust. */
+        Unadjusted,                  /*!< Do not adjust. */
+        HalfMonthModifiedFollowing   /*!< Choose the first business day after
+                                          the given holiday unless that day
+                                          crosses the mid-month (15th) or the
+                                          end of month, in which case choose
+                                          the first business day before the
+                                          holiday. */
     };
 
     /*! \relates BusinessDayConvention */
