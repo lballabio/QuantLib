@@ -35,7 +35,16 @@
 #include <ql/time/schedule.hpp>
 #include <ql/instruments/vanillaswap.hpp>
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
+
 #include <boost/bind.hpp>
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 
 namespace QuantLib {
 

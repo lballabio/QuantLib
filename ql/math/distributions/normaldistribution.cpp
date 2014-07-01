@@ -22,7 +22,17 @@
 
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/comparison.hpp>
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
+
 #include <boost/math/distributions/normal.hpp>
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 
 namespace QuantLib {
 

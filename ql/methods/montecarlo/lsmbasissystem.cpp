@@ -21,12 +21,21 @@
 /*! \file lsmbasissystem.cpp
     \brief utility classes for longstaff schwartz early exercise Monte Carlo
 */
-// lsmbasissystem.hpp
 
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
+
 #include <boost/bind.hpp>
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
+
 #include <set>
 #include <numeric>
 

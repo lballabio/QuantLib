@@ -27,7 +27,17 @@
 #define quantlib_null_hpp
 
 #include <ql/types.hpp>
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
+
 #include <boost/type_traits.hpp>
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 
 namespace QuantLib {
 

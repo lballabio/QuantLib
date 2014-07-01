@@ -21,7 +21,17 @@
 
 #include <ql/termstructures/credit/defaultdensitystructure.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
+
 #include <boost/bind.hpp>
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 
 using namespace boost;
 
