@@ -338,6 +338,8 @@ namespace QuantLib {
         const Real searchStep = 0.0050;
         const Real intrinsicValueAddOn = 0.001;
 
+        std::vector<bool> validMaturity(cfMaturities_.size(),false);
+
         cfMaturityTimes_.clear();
         for (Size i=0; i<cfMaturities_.size();i++) {
             cfMaturityTimes_.push_back(timeFromReference(
@@ -455,6 +457,7 @@ namespace QuantLib {
                 {
                     tmpSwapMaturities.push_back(t);
                     tmpSwapRates.push_back(kI);
+                    validMaturity[i] = true;
                 }
             }
             else
@@ -470,10 +473,9 @@ namespace QuantLib {
         //Polynomial2D tmpInterpol;
         //Interpolation interpol = tmpInterpol.interpolate(tmpSwapMaturities.begin(), tmpSwapMaturities.end(), tmpSwapRates.begin());
         //interpol.enableExtrapolation();
-        Time startMaturity = tmpSwapMaturities.front();
         int counter = 0;
         for (Size i=0; i<cfMaturities_.size(); ++i) {
-            if (cfMaturityTimes_[i] < startMaturity) {
+            if ( !validMaturity[i] ) {
                 atmYoYSwapDateRates_.first.push_back(referenceDate()+cfMaturities_[i]);
                 atmYoYSwapTimeRates_.first.push_back(timeFromReference(referenceDate()+cfMaturities_[i]));
                 // atmYoYSwapRates_->second.push_back(interpol((*cfMaturities_)[i]));
