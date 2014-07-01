@@ -68,7 +68,9 @@ namespace QuantLib {
             Real primitive(Real x) const {
                 if (x<*(this->xBegin2_))
                     return interpolation1_.primitive(x, true);
-                return interpolation2_.primitive(x, true);
+                return interpolation2_.primitive(x, true) -
+                    interpolation2_.primitive(*xBegin2_, true) +
+                    interpolation1_.primitive(*xBegin2_, true);
             }
             Real derivative(Real x) const {
                 if (x<*(this->xBegin2_))
