@@ -28,7 +28,7 @@
 #pragma warning(disable:4127)
 #endif
 
-#if defined(__GNUC__)
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
@@ -48,7 +48,7 @@
 #pragma warning(pop)
 #endif
 
-#if defined(__GNUC__)
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
 
