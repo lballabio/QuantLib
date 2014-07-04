@@ -17,8 +17,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
 			CharacterSet="2"
 			>

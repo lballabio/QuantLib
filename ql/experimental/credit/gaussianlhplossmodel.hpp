@@ -36,11 +36,10 @@
 
 /* Intended to replace GaussianLHPCDOEngine in 
     ql/experimental/credit/syntheticcdoengines.hpp
+   Moved from an engine to a loss model, CDO engines might refer to it.
 */
 
 namespace QuantLib {
-
-// TO DO: FIX: SETTING UP A DETACH HIGHER THAN THE MAX ATTAINABLE LOSS SHOULD NOT B A PROBLM-----------
 
     /*!
       Portfolio loss model with analytical expected tranche loss for a large 
@@ -52,6 +51,12 @@ namespace QuantLib {
 
       It can be used to price a credit derivative or to provide risk metrics of 
       a portfolio.
+
+      \todo It should be checking that basket exposures are deterministic (fixed
+      or programmed amortizing) otherwise the model is not fit for the basket.
+
+      \todo Bugging on tranched baskets with upper limit over maximum 
+        attainable loss?
      */
     class GaussianLHPLossModel : public DefaultLossModel, 
         public LatentModel<GaussianCopulaPolicy> {
@@ -76,28 +81,11 @@ namespace QuantLib {
                 -std::sqrt(1.-correl_->value()));
             beta_ = sqrt(correl_->value());
 
+            remainingAttachAmount_ = basket_->remainingAttachmentAmount();
+            remainingDetachAmount_ = basket_->remainingDetachmentAmount();
+
             DefaultLossModel::update();
         }
-
-
-        void setupBasket(const boost::shared_ptr<Basket>& basket) {
-            /*
-            if(basket_)
-                unregisterWith(basket_);
-            basket_ = basket;
-            if(basket_) registerWith(basket_);
-            // update???, no, thats for model variables/caches only
-            */
-
-            basket_ = basket;
-
-            remainingAttachAmount_ = basket->remainingAttachmentAmount();
-            remainingDetachAmount_ = basket->remainingDetachmentAmount();
-
-            /// CHECK THE EXPOSURES ON THIS BASKET ARE DETERMINISTIC (FIXED OR 
-            // PROGRAMMED AMORTIZNG) OTHERWISE THIS MODEL IS NOT FIT FOR IT.---------------------------------------------
-        }
-
     private:
         /*! @param attachLimit as a fraction of the underlying live portfolio 
         notional 
@@ -109,7 +97,8 @@ namespace QuantLib {
             Real attachLimit, Real detachLimit) const;
     public:
         Real expectedTrancheLoss(const Date& d) const {
-            const Real remainingBasktNot = basket_->remainingNotional(d);// CALLED HERE AND CALLED AGAIN IN expectedTrancheLossImpl
+            //can calls to Basket::remainingNotional(d) be cached?<<<<<<<<<<<<<
+            const Real remainingBasktNot = basket_->remainingNotional(d);
             Real averageRR = averageRecovery(d);
             Probability prob = averageProb(d);
 
@@ -153,13 +142,6 @@ namespace QuantLib {
                     - attach, 0.), detach - attach);
         }
 
-        Real recoveryValueImpl(const Date& d, Size iName, 
-            const std::vector<DefaultProbKey>& defKeys = 
-                std::vector<DefaultProbKey>()) const 
-        {
-            return averageRecovery(d);
-        }
-
         Probability averageProb(const Date& d) const {
             // weighted average by programmed exposure.
             const std::vector<Probability> probs = 
@@ -170,7 +152,7 @@ namespace QuantLib {
                 remainingNots.begin(), 0.) / basket_->remainingNotional(d);
         }
 
-        /* It is tempting to define the average recovery without the probability
+        /* One could define the average recovery without the probability
         factor, weighting only by notional instead, but that way the expected 
         loss of the average/aggregated and the original portfolio would not 
         coincide. This introduces however a time dependence in the recovery 
@@ -217,8 +199,6 @@ namespace QuantLib {
         mutable Real remainingAttachAmount_;
         mutable Real remainingDetachAmount_;
         
-        boost::shared_ptr<Basket> basket_;
-
         Real beta_;
         BivariateCumulativeNormalDistribution biphi_;
         static CumulativeNormalDistribution const phi_;

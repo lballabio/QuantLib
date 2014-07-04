@@ -46,6 +46,11 @@ namespace QuantLib {
 }
 #endif
 
+
+namespace {
+    void nodeletion(DefaultLossModel*) {}
+}
+
 /* This sample code shows basic usage of a Latent variable model.
    The data and correlation problem presented is the same as in:
      'Modelling Dependent Defaults: Asset Correlations Are Not Enough!'
@@ -105,6 +110,9 @@ int main(int, char* []) {
         boost::shared_ptr<Basket> theBskt = boost::make_shared<Basket>(
             todaysDate, names, std::vector<Real>(hazardRates.size(), 100.), 
             thePool);
+        boost::shared_ptr<Basket> theBskt2 = boost::make_shared<Basket>(
+            todaysDate, names, std::vector<Real>(hazardRates.size(), 100.), 
+            thePool, 0., .75);
 
         /* --------------------------------------------------------------
                         SET UP JOINT DEFAULT EVENT LATENT MODELS
@@ -118,13 +126,13 @@ int main(int, char* []) {
             LatentModelIntegrationType::GaussianQuadrature,
 			GaussianCopulaPolicy::initTraits() // otherwise gcc screams
 			);
-        lmG.resetBasket(theBskt);
+ /// TTHROUGH THE BASKET NOW , has to set the model              lmG.resetBasket(theBskt);
         // Gaussian random joint default model:
-        Size numSimulations = 1000000;
+        Size numSimulations = 1000;
         Size numCoresUsed = 4;
         // Sobol, many cores
         RandomDefaultLM<GaussianCopulaPolicy> rdlmG(
-            theBskt, lmG, std::vector<Real>(), numSimulations, 1.e-6, 2863311530);
+            /*theBskt,*/ lmG, std::vector<Real>(), numSimulations, 1.e-6, 2863311530);
         // Monothread only
         /*
         RandomDefaultLM<GaussianCopulaPolicy, 
@@ -139,16 +147,16 @@ int main(int, char* []) {
         // StudentT integrable joint default model:
         TDefProbLM lmT(/*theBskt, */fctrsWeights, 
             LatentModelIntegrationType::GaussianQuadrature, iniT);
-        lmT.resetBasket(theBskt);
+ /// TTHROUGH THE BASKET NOW , has to set the model      lmT.resetBasket(theBskt);
         // StudentT random joint default model:
         //  --Not showing the correct default correlation!!-------------------
         // Sobol, many cores
-        //////RandomDefaultLM<TCopulaPolicy> rdlmT(
-        //////    theBskt, lmT, std::vector<Real>(), numSimulations, 1.e-6, 2863311530);
+        boost::shared_ptr<DefaultLossModel> rdlmT(boost::make_shared<RandomDefaultLM<TCopulaPolicy> >(lmT, std::vector<Real>(), numSimulations, 1.e-6, 2863311530));
+        /*
         // Monothread only, direct/copula inversion
         RandomDefaultLM<TCopulaPolicy, RandomSequenceGenerator<MersenneTwisterUniformRng> > rdlmT(
             theBskt, lmT, std::vector<Real>(), numSimulations, 1.e-6, 2863311530);
-
+*/
         /* Goes through two partial spezs, number look worst.
         RandomDefaultLM<TCopulaPolicy, RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > > rdlmT(
             theBskt, lmT, std::vector<Real>(), numSimulations, 1.e-6, 2863311530);
@@ -171,12 +179,44 @@ int main(int, char* []) {
             << std::endl;
         Date calcDate(TARGET().advance(Settings::instance().evaluationDate(), 
             Period(120, Months)));
+      //  theBskt->setLossModel(boost::shared_ptr<DefaultLossModel>(rdlmT));
+        theBskt->setLossModel(rdlmT);
+       for(Size numEvts=0; numEvts <=3; numEvts++) {
+            std::cout << "-Prob of " << 3 << " events... " <<
+            theBskt->probAtLeastNEvents(numEvts, calcDate)
+            << std::endl;
+        }
+
+Real etl_ = theBskt->probAtLeastNEvents(2, calcDate);
+
+        theBskt2->setLossModel(rdlmT);
+       //now it should reset the arg basket prior in the loss model
+        Probability tititi = theBskt2->probAtLeastNEvents(1, calcDate);
+        // bskt1 calc=false now?
+
+
+
+
+
+
+
+ ////       theBskt->setLossModel(boost::shared_ptr<DefaultLossModel>(&rdlmG, nodeletion));
+
+etl_ = theBskt->probAtLeastNEvents(2, calcDate);
+
         for(Size numEvts=0; numEvts <=3; numEvts++) {
             std::cout << "-Prob of " << 3 << " events... " <<
-            rdlmT.probAtLeastNEvents(numEvts, calcDate)
-            << " ... " <<
-            rdlmG.probAtLeastNEvents(numEvts, calcDate) 
-            << " ... " <<
+            theBskt->probAtLeastNEvents(numEvts, calcDate)
+            << std::endl;
+        }
+        lmT.resetBasket(theBskt);
+        lmG.resetBasket(theBskt);
+        for(Size numEvts=0; numEvts <=3; numEvts++) {
+            std::cout << "-Prob of " << 3 << " events... " <<
+          //  rdlmT.probAtLeastNEvents(numEvts, calcDate)
+          //  << " ... " <<
+            //rdlmG.probAtLeastNEvents(numEvts, calcDate) 
+            //<< " ... " <<
             lmT.probAtLeastNEvents(numEvts, calcDate)
             << " ... " <<
             lmG.probAtLeastNEvents(numEvts, calcDate) 
@@ -232,18 +272,22 @@ int main(int, char* []) {
         cout << endl;
         cout << "----Gaussian rand def correlations----" << endl;
         cout << "--------------------------------------" << endl;
+        // too bad, runs the MC again
+  ///////////////      theBskt->setLossModel(boost::shared_ptr<DefaultLossModel>(&rdlmG));
         for(Size iName1=0; iName1 <3; iName1++) {
             for(Size iName2=0; iName2 <3; iName2++)
-                cout << rdlmG.defaultCorrelation(correlDate, iName1, iName2) 
+                cout << theBskt->defaultCorrelation(correlDate, iName1, iName2) 
                     << " * ";
             cout << endl;
         }
         cout << endl;
         cout << "---- StudenT rand def correlations----" << endl;
         cout << "--------------------------------------" << endl;
+        // too bad, runs the MC again
+        theBskt->setLossModel(boost::shared_ptr<DefaultLossModel>(rdlmT));
         for(Size iName1=0; iName1 <3; iName1++) {
             for(Size iName2=0; iName2 <3; iName2++)
-                cout << rdlmT.defaultCorrelation(correlDate, iName1, iName2) 
+                cout << theBskt->defaultCorrelation(correlDate, iName1, iName2) 
                     << " * ";
             cout << endl;
         }

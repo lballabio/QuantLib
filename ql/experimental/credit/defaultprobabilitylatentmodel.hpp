@@ -33,9 +33,13 @@ namespace QuantLib {
      This is a model for joint default events based on a generic Latent 
       Model. It models solely the default events in a portfolio, not making any 
       reference to severities, exposures, etc...
-     An implicit mapping is stablished between the variables modelled and the
-     names in the basket given by the basket and model variable access indices.
+     An implicit correspondence is stablished between the variables modelled and
+     the names in the basket given by the basket and model variable access 
+     indices.
      The class is parametric on the Latent Model copula.
+
+     \todo Consider QL_REQUIRE(basket_, "No portfolio basket set.") test in 
+     debug model only for performance reasons.
     */
     template<class copulaPolicy>
     class DefaultLatentModel : public LatentModel<copulaPolicy> {
@@ -49,7 +53,9 @@ namespace QuantLib {
         using LatentModel<copulaPolicy>::cumulativeZ;
         using LatentModel<copulaPolicy>::integratedExpectedValue;// which one?
     protected:
-        boost::shared_ptr<Basket> basket_;
+        // not a handle, the model doesnt keep any cached magnitudes, no need 
+        //  for notifications, still...
+        mutable boost::shared_ptr<Basket> basket_;
         boost::shared_ptr<LMIntegration> integration_;
     public:
         /*!
@@ -90,12 +96,19 @@ namespace QuantLib {
         /* To interface with loss models. It is possible to change the basket 
         since there are no cached magnitudes.
         */
-        void resetBasket(const boost::shared_ptr<Basket> basket) {
+        void resetBasket(const boost::shared_ptr<Basket> basket) const {
             basket_ = basket;
             // in the future change 'size' to 'liveSize'
             QL_REQUIRE(basket_->size() == factorWeights_.size(), 
                 "Incompatible new basket and model sizes.");
         }
+        // \todo Reconsider this problem:
+        /* Acces to loss models owning this LM, dont want to have another copy
+        there ...*/
+        //const boost::shared_ptr<Basket>& basket() const {return  basket_};
+        // ...or make friends every class that uses it and keep hiding members:
+        template<typename copulaPolicy, typename R> friend class 
+            RandomDefaultLM;
     protected:
         /*! Returns the probability of default of a given name conditional on
         the realization of a given set of values of the model independent
@@ -163,7 +176,7 @@ namespace QuantLib {
                 pool->get(pool->names()[iName]).
                 defaultProbability(basket_->defaultKeys()[iName])
                   ->defaultProbability(date);
-            return conditionalDefaultProbability(pDefUncond, iName, mktFactors);          
+            return conditionalDefaultProbability(pDefUncond, iName, mktFactors);
         }
         /*! Conditional default probability product, intermediate step in the 
             correlation calculation.*/

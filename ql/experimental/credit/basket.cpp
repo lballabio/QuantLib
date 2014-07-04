@@ -65,6 +65,7 @@ namespace QuantLib {
 
         //////////for(Size i=0; i<notionals_.size(); i++)
         //////////    registerWith(rrModels_[i]);
+        // registrations relevant to the loss status, not to the expected loss values; those are through models.
         registerWith(Settings::instance().evaluationDate());
         registerWith(claim_);
 
@@ -90,72 +91,36 @@ namespace QuantLib {
         if (lossModel_) {
             //recovery quotes, defaults(once Issuer is observable)etc might 
             //  trigger us:
-            registerWith(lossModel_);
+            registerWith(lossModel_);////////is this doubling what it is done at default loss model relinking???????????????????????????????????????????????
             // some magnitudes depend on the Loss Model:
-            calculated_ = false;
+  ////////////////////////          calculated_ = false;///this is done by Lazy::update()--------------------------------------
+
             /* Initialization of the model allows to cache any generic computations which are not specific to any magnitude. These might have different results for different baskets and have to be recomputed on each basket reassignment. The default loss model always have the option of being a lazy object but thats left as a choice.
 
             */
+// SET BASKET NOW? the only difference is that the eval date magnitudes are not ready yet..
       // now the resposibility of Basket::performCalculations(), hmm not, the work is done in concrete DLM implementation of setupBasket(...)----->      lossModel_->initialize(*this);
         }
-        update();
+        // No local update, theres no need to recalculate realized losses; just reset and notify
+        //update();
+        LazyObject::update();
     }
 
-
     void Basket::performCalculations() const {
-        // No. the presence of a model is not tested, its not mandatory here.
 
-   //     lossModel_->setupBasket(*this);
-        // how expensive is this copy?
+        QL_REQUIRE(lossModel_, "Basket has no default loss model assigned.");/// NOW I CAN REMOVE THE TESTS ON THE METHODS! FASTER!!
 
-        Date today = Settings::instance().evaluationDate();
-            /* the methods called now invoke calculate(), this is not recursive
-              since we have the calculated flag set to true by now.
-            */
-            /* update cache values at the calculation date (work as arguments 
-              to the Loss Models)
-            */
+        // The model must notify us if the another basket calls it for reasignment. The basket works as an argument to the deafult loss models so, even if the models dont cache anything, they will be using the wrong defautl TS. \todo: This has a possible optimization: the basket incorporates trancheability and many models do their compuations independently of that (some do but do it inefficiently when asked for two tranches on the same basket; e,g, recursive model) so it might be more efficient sending the pool only; however the modtionals and other basket info are still used.
+        lossModel_->setBasket(const_cast<Basket*>(this));
 
-            //this one must remain on top since there are dependencies
-            evalDateLiveKeys_      = remainingDefaultKeys(today);
-            evalDateSettledLoss_   = settledLoss(today);
-            evalDateRemainingNot_  = remainingNotional(today);
-            evalDateLiveNotionals_ = remainingNotionals(today);
-            evalDateLiveNames_     = remainingNames(today);
-            evalDateAttachAmount_  = remainingAttachmentAmount(today);
-            evalDateDetachAmmount_ = 
-                remainingDetachmentAmount(today);
-            evalDateLiveList_ = liveList(today);
+// what happens to other basket pointing and registerd with the previous lossmodel?; they are still registerd and will be notified for no use....!!!!
 
-
-
-        if(lossModel_) 
-            lossModel_->setupBasket(boost::make_shared<Basket>(*this));//temporary passed as constant ref!!!!!
-
-        
-        if(lossModel_){
-                evalDateCumulContingentLoss_ = cumulatedLoss(today);
-            }else{
-              evalDateCumulContingentLoss_ = evalDateSettledLoss_;
-            }
-
-            /*  
-
-        vector<DefaultProbKey> defKeys = defaultKeys();
-
-        for (Size i = 0; i < notionals_.size(); i++) {
-            //we are registered, the quote might have changed.
-            QL_REQUIRE(
-                rrModels_[i]->appliesToSeniority(defKeys[i].seniority()),
-                "Recovery model does not match basket member seniority.");
-
-            LGDs_[i] = notionals_[i]
-            * (1.0 - rrModels_[i]->recoveryValue(today,
-                                                 defKeys[i]
-                                                 ));
-            basketLGD_ += LGDs_[i];
-        }
-        */
+        // THIS CAN NOT BE LIKE THIS!! ITS CYCLIC AND ITS A GREAT BUG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ////////////////if(lossModel_){
+        ////////////////        evalDateCumulContingentLoss_ = cumulatedLoss(today);
+        ////////////////    }else{
+        ////////////////      evalDateCumulContingentLoss_ = evalDateSettledLoss_;
+        ////////////////    }
     }
 
 
@@ -185,24 +150,26 @@ namespace QuantLib {
                 pool_->get(pool_->names()[i]).defaultedBetween(refDate_, //startDate,
                     endDate, pool_->defaultKeys()[i]);
             if (credEvent) {
-                if(credEvent->hasSettled()) {
+                /* \todo If the event has not settled one would need to introduce some model recovery rate (independently of a loss model) This remains to be done.
+                  */  
+                if(credEvent->hasSettled()) /////////////{
                     loss += claim_->amount(credEvent->date(),
                             // notionals_[i],
                             exposure(pool_->names()[i], credEvent->date()),
                             credEvent->settlement().recoveryRate(
                                 pool_->defaultKeys()[i].seniority()));
-                }else{
-                    // might perform redundant checks and inits but gives us a chance of not needing one
-                    QL_REQUIRE(lossModel_, "Loss model not set for basket");
-                    //lock model
-       ///// done in performCalcs.....             lossModel_->initialize(*this);// NOT CALLING CALCULATE, see if thats ok for the Loss Model, or it needs the basket to be computed....
-                    loss += claim_->amount(credEvent->date(),
-                            //// notionals_[i],
-                            exposure(pool_->names()[i], credEvent->date()),
-                            lossModel_->recoveryValueImpl(credEvent->date(), 
-                                i, pool_->defaultKeys()));
-                    // unlock model
-                }
+       ////////////////         }else{//////////////////////////////////////////////////////////////////////////////////////////
+       ////////////////             // might perform redundant checks and inits but gives us a chance of not needing one
+       ////////////////             QL_REQUIRE(lossModel_, "Loss model not set for basket");
+       ////////////////             //lock model
+       ///////////////////// done in performCalcs.....             lossModel_->initialize(*this);// NOT CALLING CALCULATE, see if thats ok for the Loss Model, or it needs the basket to be computed....
+       ////////////////             loss += claim_->amount(credEvent->date(),
+       ////////////////                     //// notionals_[i],
+       ////////////////                     exposure(pool_->names()[i], credEvent->date()),
+       ////////////////                     lossModel_->recoveryValueImpl(credEvent->date(), ///////////////AND THIS IS A SECOND PROBLEM : FORCING THE RR CONCEPT INTO ALL MODELS!!!!
+       ////////////////                         i, pool_->defaultKeys()));
+       ////////////////             // unlock model
+       ////////////////         }
             }
         }
         return loss;
@@ -634,7 +601,7 @@ namespace QuantLib {
         // if the level falls within realized losses the prob is 1.
         if(xPtfl < 0.) return 1.;
 
-        QL_REQUIRE(lossModel_, "Basket has no loss model assigned");
+   /////////////////     QL_REQUIRE(lossModel_, "Basket has no loss model assigned");
         // lock loss model
   ///SEE comment in expectedTrancheLoss      lossModel_->initialize(*this);//// SHOULD THIS BE AUTOMATIC??????????????????
         return lossModel_->probOverLoss(d, xPrim);
@@ -643,7 +610,7 @@ namespace QuantLib {
 
     Real Basket::percentile(const Date& d, Probability prob) const {
         calculate();
-        QL_REQUIRE(lossModel_, "Basket has no loss model assigned");
+ /////////////////       QL_REQUIRE(lossModel_, "Basket has no loss model assigned");
       ///SEE comment in expectedTrancheLoss        lossModel_->initialize(*this);
         return lossModel_->percentile(d, prob);
 
@@ -658,7 +625,7 @@ namespace QuantLib {
 //////////////////////////////////////////////  ---- INLINE SOME OF THESE -----------------------------
 Real Basket::expectedTrancheLoss(const Date& d) const {
         calculate();
-        QL_REQUIRE(lossModel_, "Basket has no loss model assigned");
+ //////////////////////////       QL_REQUIRE(lossModel_, "Basket has no loss model assigned");
         // lock loss model
   ///////Redundant....? Also called when the model was asigned to this basket. Only if there has been registered observables that were updated in between....add a call in the update()???? Also a model might be referenced by several baskets...maybe the call to remove is the one in the asignment-------------------------------------------------------------      lossModel_->initialize(*this);
         /* All these initialize have a cost which in most times it <<<<<<<<<<<<<<<<<<<< TACKLE THIS POINT
@@ -677,15 +644,15 @@ Real Basket::expectedTrancheLoss(const Date& d) const {
 
 
     Disposable<std::vector<Real> > 
-        Basket::splitLossLevel(const Date& date, Real loss) const {
-        QL_REQUIRE(lossModel_, "Basket has no loss model assigned");
+        Basket::splitVaRLevel(const Date& date, Real loss) const {
+ //////////////////////       QL_REQUIRE(lossModel_, "Basket has no loss model assigned");
         calculate();
     ///SEE comment in expectedTrancheLoss          lossModel_->initialize(*this);
-        return lossModel_->splitLossLevel(date, loss);
+        return lossModel_->splitVaRLevel(date, loss);
     }
 
     Real Basket::expectedShortfall(const Date& d, Probability prob) const {
-        QL_REQUIRE(lossModel_, "Basket has no loss model assigned");
+ //////////////////////       QL_REQUIRE(lossModel_, "Basket has no loss model assigned");
         calculate();
    ///SEE comment in expectedTrancheLoss           lossModel_->initialize(*this);
         return lossModel_->expectedShortfall(d, prob);
@@ -693,7 +660,7 @@ Real Basket::expectedTrancheLoss(const Date& d) const {
 
     Disposable<std::map<Real, Probability> > 
         Basket::lossDistribution(const Date& d) const {
-        QL_REQUIRE(lossModel_, "Basket has no loss model assigned");
+//////////////////////        QL_REQUIRE(lossModel_, "Basket has no loss model assigned");
         calculate();
         // lock loss model
    ///SEE comment in expectedTrancheLoss           lossModel_->initialize(*this);
@@ -702,7 +669,7 @@ Real Basket::expectedTrancheLoss(const Date& d) const {
 
     std::vector<Probability> 
         Basket::probsBeingNthEvent(Size n, const Date& d) const {
-        QL_REQUIRE(lossModel_, "Basket has no loss model assigned");
+ //////////////////////       QL_REQUIRE(lossModel_, "Basket has no loss model assigned");
 
         Size alreadyDefaulted = pool_->size() - remainingNames().size();
         if(alreadyDefaulted >=n) 
@@ -714,12 +681,34 @@ Real Basket::expectedTrancheLoss(const Date& d) const {
         return lossModel_->probsBeingNthEvent(n-alreadyDefaulted, d);
     }
 
-    Real Basket::recoveryRate(const Date& d, Size iName) const {
-        QL_REQUIRE(lossModel_, "Basket has no loss model assigned");
+
+    Real Basket::defaultCorrelation(const Date& d, Size iName, Size jName) const{
+//////////////////////        QL_REQUIRE(lossModel_, "Basket has no loss model assigned");
         calculate();
-    ///SEE comment in expectedTrancheLoss          lossModel_->initialize(*this);
-        return lossModel_->recoveryValueImpl(d, iName, pool_->defaultKeys());//or remaining keys????
+        return lossModel_->defaultCorrelation(d, iName, jName);
+
     }
+    /*! Returns the probaility of having a given or larger number of 
+    defaults in the basket portfolio at a given time.
+    */
+    Probability Basket::probAtLeastNEvents(Size n, const Date& d) const{
+ //////////////////////       QL_REQUIRE(lossModel_, "Basket has no loss model assigned");
+        calculate();
+        return lossModel_->probAtLeastNEvents(n, d);
+
+    }
+
+
+
+
+
+
+////////////    Real Basket::recoveryRate(const Date& d, Size iName) const {
+//////////////////////////////////        QL_REQUIRE(lossModel_, "Basket has no loss model assigned");
+////////////        calculate();
+////////////    ///SEE comment in expectedTrancheLoss          lossModel_->initialize(*this);
+////////////        return lossModel_->recoveryValueImpl(d, iName, pool_->defaultKeys());//or remaining keys????
+////////////    }
 
 
 }

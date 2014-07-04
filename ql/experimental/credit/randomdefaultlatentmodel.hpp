@@ -30,9 +30,11 @@
 // needed for specializations:
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 
+/* Intended to replace 
+    ql\experimental\credit\randomdefaultmodel.Xpp
+*/
 
 namespace QuantLib {
-
 
     /*! Simulation event trait class template. Each latent model will be 
     modelling different entities according to the meaning of the model function
@@ -40,16 +42,16 @@ namespace QuantLib {
     factors and variables it is common to any model. Only within a given 
     transformation function the model and event generated becomes concrete. 
 
-    However in the context of the library these simulations are already made
-    specific to a default event. Yet other variables contingent to default can
-    be modelled (recovery, market...) So we are placed into a credit/default
-    context by RandomLM already (not strictly neccesary but avoids introducing 
-    an extra class).
+    However here these simulations are already made specific to a default event.
+    Yet other variables contingent to default can be modelled (recovery, 
+    market...) So we are placed in a less generic stage where default is 
+    modelled possibly jointly with other unespecified magnitudes. 
 
     Another role of this trait class is to compact in memory the simulation 
     data. The statistic post processing needs to have the results stored in 
     memory and simulations can not be consumed at generation time, typically 
-    because some statistics are conditional on others (e.g. ESF).
+    because some statistics are conditional on others (e.g. ESF) or/and 
+    parametric (percentile, etc...)
 
     Simulation events do not derive from each other, and they are specialized
     for each type; duck typing applies for variable names (see the statistic 
@@ -68,13 +70,15 @@ namespace QuantLib {
 
 
 
-    /*! Base class for latent model monte carlo simulation. Generates the 
-    factors and variable samples and determines event threshold but it is not
-    responsible for actual event specification; thats the derived classes 
-    responsibility according to what they model.
+    /*! Base class for latent model monte carlo simulation. Independent of the 
+    copula type and the generator. 
+    Generates the factors and variable samples and determines event threshold 
+    but it is not responsible for actual event specification; thats the derived 
+    classes responsibility according to what they model.
     Derived classes need mainly to implement nextSample (Worker::nextSample in 
     the multithreaded version) to compute the simulation event generated, if 
-    any, from the latent variables sample.
+    any, from the latent variables sample. They also have the accompanying 
+    event trait to specify.
     */
     /* CRTP used for performance to avoid virtual table resolution in the Monte 
     Carlo. Not only in sample generation but access; quite an amount of time can
@@ -83,103 +87,45 @@ namespace QuantLib {
     simulation costs.
 
     \todo: someone with sound experience on cache misses look into this, the 
-    statistics will be getting memory in and out of the cpu heavily.
+    statistics will be getting memory in and out of the cpu heavily and it 
+    might be possible to get performance out of that.
     \todo: parallelize the statistics computation, things like Var/ESF splits
     are very expensive.
     \todo: consider another design, taking the statistics outside the models.
     */
-    template<class derivedRandomLM,
+    template<class derivedRandomLM, class copulaPolicy, class USNG = SobolRsg>
     /* Shouldnt it be?:
     template<template <class, class> class derivedRandomLM,
     */
-        class copulaPolicy, class USNG = SobolRsg>
-    class RandomLM : public LazyObject, 
-        public DefaultLossModel {
+    class RandomLM : public virtual LazyObject, 
+                     public virtual DefaultLossModel {
     private:
         // Takes the parents type, all children have the same type, the 
         // random generation is performed in this class only.
         typedef typename LatentModel<copulaPolicy>::template FactorSampler<USNG>
             copulaRNG_type;
     protected:
-        /*! Takes care of sims dispatch and correct RNG positioning. Common 
-        acces to container class object is read only.
-        Children must implement CRTP on the signature
-            void nextSample(const std::vector<Real>& values) const
-        updating the simulation buffer with their respective event on each 
-        simulation sample.
-        */
-        //class Worker {//CRTP also aplies together with container class
-        //    friend class RandomLM;
-        //public:
-        //    /*! @param numSims This thread simulations number.
-        //        @param rsg Must be already positioned and done coherently with 
-        //          the number of simulations in this and other threads.
-        //    */
-        //    Worker(Size numSims, const copulaRNG_type& copulasRng,
-        //        const derivedRandomLM& caller) 
-        //    : numSims_(numSims),
-        //      copulasRng_(copulasRng),
-        //      data_(caller) {}
-        //    Size assignedLoad() const { return numSims_;}
-        //protected:
-        //    // trigger only by friends
-        //    void performSimulations() {
-        //        for(Size i=numSims_; i; i--) nextSequence();
-        //    }
-        //    void nextSequence();
-        //    // not made explicit inlined; 
-        //    // CRTP: void nextSample(const std::vector<Real>&);
-        //protected:
-        //    const Size numSims_;
-        //    copulaRNG_type copulasRng_;
-        //    const derivedRandomLM& data_;
-
-        //    mutable std::vector<std::vector<simEvent<derivedRandomLM> > > 
-        //        simsBuffer_;
-        //};
-
-    protected:
-        //why one would have default parameters on a class that cant be 
-        //  instantiated by itself? uh?
         RandomLM(Size numFactors, 
             Size numLMVars, 
             const copulaPolicy& copula,
             Size nSims, 
-            BigNatural seed = 2863311530)
+            BigNatural seed)
         : numFactors_(numFactors), numLMVars_(numLMVars), copula_(copula), 
           nSims_(nSims), seed_(seed) {}
 
-        void update() { 
-            LazyObject::update(); 
-            static_cast<const derivedRandomLM* >(this)->initDates();
+        void update() {
+            // if basket:
+            DefaultLossModel::update(); 
+            // if calculations:
+            LazyObject::update();
         }
 
         void performCalculations() const {
+            static_cast<const derivedRandomLM* >(this)->initDates();//in update?
             USNG baseUrng(numFactors_+ numLMVars_, seed_); 
             copulasRng_ = 
                 boost::make_shared<copulaRNG_type>(baseUrng, copula_);
             performSimulations();
-
-            ////for(Size iThread = 0; iThread < numThreads_-1; iThread++) {
-            ////    /* reposition urng:
-            ////    tricky: a jump in the sequence does not mean the same jump in 
-            ////    the base uniform generator. It is the responsibility of the user
-            ////    sending a suitable generator.*/
-            ////    baseUrng.skipTo(nSimsPerThread_ * iThread);
-            ////    workers_.push_back(boost::make_shared<Worker>(
-            ////        Worker(nSimsPerThread_, 
-            ////            copulaRNG_type(baseUrng, copula_), 
-            ////            static_cast<const derivedRandomLM&> (*this) )));
-            ////    // ursg must be copied into the rsg
-            ////}
-            ////// last thread takes care of left over sims (typical of a machine 
-            //////   with an odd number of cpus)
-            ////baseUrng.skipTo(nSimsPerThread_ * (numThreads_-1));
-            ////workers_.push_back(boost::make_shared<Worker>(
-            ////    Worker(nSimsLastThread_, 
-            ////           copulaRNG_type(baseUrng, copula_), 
-            ////           static_cast<const derivedRandomLM&> (*this) )));
-            ////performSimulations();
         }
 
         void performSimulations() const {
@@ -187,8 +133,7 @@ namespace QuantLib {
             for(Size i=nSims_; i; i--) {
                 const std::vector<Real>& sample = 
                     copulasRng_->nextSequence().value;
-                static_cast<const derivedRandomLM* >
-                    (this)->nextSample(sample);
+                static_cast<const derivedRandomLM* >(this)->nextSample(sample);
             // alternatively make call an explicit local method...
             }
         }
@@ -201,7 +146,7 @@ namespace QuantLib {
         */
         const std::vector<simEvent<derivedRandomLM> >& getSim(
             const Size iSim) const { return simsBuffer_[iSim]; }
-    public:
+
         //! \name Statistics, DefaultLossModel interface.
         // These are virtual and allow for children-specific optimization and 
         //   variance reduction. The virtual table is ok, they are not part
@@ -236,25 +181,9 @@ namespace QuantLib {
         // Maximum time inversion horizon
         static const Size maxHorizon_ = 4050; // over 11 years
         /* Inversion probability limits are computed by children in initdates()
-        This subject to be given some thinking (duplicates code)
+        This one to be given some thinking (duplicates code)
         */
     };
-
-
-    ////////// spez for correct generator construction (not done in parent because it
-    //////////  would be partial and using the bool parameter trick would leave a 
-    //////////  class with too many templates.
-    ////////template<>
-    ////////void RandomLM<RandomDefaultLM, TCopulaPolicy, RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > >::performCalculations() const {
-    ////////    // Which is a type specialized in itself with a different constructor signature we have to drag along here:
-    ////////    typedef LatentModel<TCopulaPolicy>::FactorSampler<RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > > > SpezGenerator;
-
-    ////////    RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > baseUrng(numFactors_+ numLMVars_, seed_, copula_.copula()); 
-    ////////    copulasRng_ = 
-    ////////        boost::make_shared<SpezGenerator>(baseUrng, copula_);
-    ////////     //   boost::make_shared<copulaRNG_type>(baseUrng, copula_);
-    ////////    performSimulations();
-    ////////}
 
 
     template<class D, class C, class URNG>
@@ -289,12 +218,10 @@ namespace QuantLib {
         RandomLM<D, C, URNG>::probsBeingNthEvent(Size n, 
             const Date& d) const 
     {
-        // children should know the basket size: (not neccesarily equal to the
-        //   number of variables in the copula).
-        Size basketSize = static_cast<const D*>(this)->basketSize();
+        calculate();
+        Size basketSize = basket_->size();
 
         QL_REQUIRE(n>0 && n<=basketSize, "Impossible number of defaults.");
-        calculate();
         Date today = Settings::instance().evaluationDate();
 
         QL_REQUIRE(d>today, "Date for statistic must be in the future.");
@@ -302,14 +229,11 @@ namespace QuantLib {
         Natural val = d.serialNumber() - today.serialNumber();
 
 		std::vector<Probability> hitsByDate(basketSize, 0.);
-        ////for(Size iSim=0; iSim < simsBuffer_.size(); iSim++) {
         for(Size iSim=0; iSim < nSims_; iSim++) {
             const std::vector<simEvent<D> >& events = getSim(iSim);
             std::map<unsigned short, unsigned short> namesDefaulting;
-            //////for(Size iEvt=0; iEvt < simsBuffer_[iSim].size(); iEvt++) {
             for(Size iEvt=0; iEvt < events.size(); iEvt++) {
                 // if event is within time horizon...
-                //////if(val > simsBuffer_[iSim][iEvt].dayFromRef)
                 if(val > events[iEvt].dayFromRef)
 					//...count it. notice insertion sorts by date.
 					namesDefaulting.insert(std::make_pair<unsigned short, 
@@ -374,12 +298,15 @@ namespace QuantLib {
 
 
 
-
-
+    /*
+    ---------------------------------------------------------------------------
+    ---------------------------------------------------------------------------
+    */
 
     // move this one to a separte file?
 
-    /*! Default only latent model simulation with trivial recovery amounts.
+    /*! Default only latent model simulation with trivially fixed recovery 
+        amounts.
     */
     template<class copulaPolicy, class USNG = SobolRsg>
     class RandomDefaultLM : 
@@ -392,27 +319,18 @@ namespace QuantLib {
     private:
         const DefaultLatentModel<copulaPolicy> copula_;
         const std::vector<Real> recoveries_;
-        mutable boost::shared_ptr<Basket> basket_;
         // for time inversion:
         Real accuracy_;
     public:
         // \todo: Allow a constructor with ConstantLossLatentmodel and no 
         //    recoveries... and drop the default value recovery vector...
+        // \todo: Allow a constructor building its own default latent model.
         RandomDefaultLM(
-            const boost::shared_ptr<Basket>& basket,
             const DefaultLatentModel<copulaPolicy>& copula,
-            const std::vector<Real>& recoveries = std::vector<Real>(), // allow for default only model.
-            Size nSims = 0,// stats will crash on div by zero, fix me.
+            const std::vector<Real>& recoveries = std::vector<Real>(),
+            Size nSims = 0,// stats will crash on div by zero, FIX ME.
             Real accuracy = 1.e-6, 
             BigNatural seed = 2863311530);
-        // This one needs reconsidering. 
-        void setupBasket(const boost::shared_ptr<Basket>& basket) {//public?
-            //DOES THIS ONE REALLY NEEDS RESET??
-            update();
-            basket_ = basket;/////////THIS IS NOT RESETING THE BASKET IN THE DEFAULT LATENT MODEL IS POINTING TO!!!!  THE SPOT LOSS MODEL HAS THE SAME PROBLEM
-        }
-        Real recoveryValueImpl(const Date& defaultDate, Size iName,  // protected???
-            const std::vector<DefaultProbKey>& defKeys = std::vector<DefaultProbKey>()) const{ return recoveries_[iName];}
     protected:
         void nextSample(const std::vector<Real>& values) const;
 
@@ -422,11 +340,22 @@ namespace QuantLib {
         }
         //allows statistics to know the portfolio size (could be moved to parent 
         //invoking duck typing on the variable name or a handle to the basket)
-        Size basketSize() const { return basket_->size(); }
+        Size basketSize() const { return copula_.size(); }
     private:
         // This one and the buffer might be moved to the parent, only some 
         //   dates might be specific to a particular model.
         void initDates() const {
+            /* Explore: might save recalculation if the basket is the same 
+            (some situations, like BC or control variates) in that case do not 
+            update, only reset the copula's basket.
+            */
+            copula_.resetBasket(basket_.currentLink());
+
+            QL_REQUIRE(basket_->size() == copula_.size(), 
+                "Incompatible basket and model sizes.");
+            QL_REQUIRE(recoveries_.size() == basket_->size(), 
+                "Incompatible basket and recovery sizes.");
+
             /* Precalculate horizon time default probabilities (used to 
               determine if the default took place and subsequently compute its 
               event time)
@@ -434,10 +363,10 @@ namespace QuantLib {
             Date today = Settings::instance().evaluationDate();
             Date maxHorizonDate = today  + Period(maxHorizon_, Days);
 
-            const boost::shared_ptr<Pool>& pool = basket_->pool();
-            for(Size iName=0; iName < basket_->size(); ++iName)//use'live'basket
+            const boost::shared_ptr<Pool>& pool = copula_.basket_->pool();
+            for(Size iName=0; iName < copula_.size(); ++iName)//use'live'basket
                 horizonDefaultPs_.push_back(pool->get(pool->names()[iName]).
-                    defaultProbability(basket_->defaultKeys()[iName])
+                    defaultProbability(copula_.basket_->defaultKeys()[iName])
                         ->defaultProbability(maxHorizonDate, true));
         }
 
@@ -446,7 +375,8 @@ namespace QuantLib {
         mutable std::vector<Probability> horizonDefaultPs_;
     };
 
-    /*! Stores sims results in a bitfield buffer for lean memory storage.
+    /*! Random default with deterministic recovery event type.\par
+    Stores sims results in a bitfield buffer for lean memory storage.
     Although strictly speaking this is not guaranteed by the compiler it
     amounts to reducing the memory storage by half.
     Some computations, like conditional statistics, precise that all sims
@@ -464,33 +394,6 @@ namespace QuantLib {
     };
 
 
-    ////////////////////////////////////////// spez for correct generator construction (not done in parent because it
-    //////////////////////////////////////////  would be partial and using the bool parameter trick would leave a 
-    //////////////////////////////////////////  class with too many templates.
-    ////////////////////////////////////////template<>
-    ////////////////////////////////////////void RandomDefaultLM<TCopulaPolicy, RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > >::performCalculations() const {
-    ////////////////////////////////////////    USNG baseUrng(numFactors_+ numLMVars_, seed_, copula_.copula().getInitTraits()); 
-    ////////////////////////////////////////    copulasRng_ = 
-    ////////////////////////////////////////        boost::make_shared<copulaRNG_type>(baseUrng, copula_);
-    ////////////////////////////////////////    performSimulations();
-    ////////////////////////////////////////}
-
-
-    // spez for correct generator construction (not done in parent because it
-    //  would be partial and using the bool parameter trick would leave a 
-    //  class with too many templates.
-    template<>
-    void RandomLM<RandomDefaultLM<TCopulaPolicy, RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > >, TCopulaPolicy, RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > >::performCalculations() const {
-        // Which is a type specialized in itself with a different constructor signature we have to drag along here:
-   ////     typedef LatentModel<TCopulaPolicy>::FactorSampler<RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > > > SpezGenerator;
-
-        MersenneTwisterUniformRng baseUrng(seed_); 
-        copulasRng_ = 
-        //     boost::make_shared<SpezGenerator>(baseUrng, copula_);
-           boost::make_shared<copulaRNG_type>(baseUrng, numFactors_+ numLMVars_, copula_);
-        performSimulations();
-    }
-
 
 
 
@@ -498,7 +401,7 @@ namespace QuantLib {
     void RandomDefaultLM<C, URNG>::nextSample(
         const std::vector<Real>& values) const 
     {
-        const boost::shared_ptr<Pool>& pool = basket_->pool();
+        const boost::shared_ptr<Pool>& pool = copula_.basket_->pool();
         // starts with no events
         simsBuffer_.push_back(std::vector<defaultSimEvent> ());
 
@@ -511,7 +414,7 @@ namespace QuantLib {
             if (horizonDefaultPs_[iName] >= simDefaultProb) {
                 const Handle<DefaultProbabilityTermStructure>& dfts = 
                     pool->get(pool->names()[iName]).// use 'live' names
-                    defaultProbability(basket_->defaultKeys()[iName]);
+                    defaultProbability(copula_.basket_->defaultKeys()[iName]);
                 // compute and store default time with respect to the 
                 //  curve ref date:
                 Size dateSTride =
@@ -545,34 +448,22 @@ namespace QuantLib {
 
     template<class C, class R> 
     RandomDefaultLM<C, R>::RandomDefaultLM(
-        const boost::shared_ptr<Basket>& basket,
         const DefaultLatentModel<C>& copula,
         const std::vector<Real>& recoveries,
         Size nSims,
         Real accuracy, 
         BigNatural seed) 
-      : copula_(copula), //<- renmae to latentModel_ or defautlLM_
-        basket_(basket), 
+      : copula_(copula), //<- renmae to latentModel_ or defautlLM_; why the copy? <<<<<<<<<<<<<<<<<
         accuracy_(accuracy),
         // set to 0 RR if empty, RRs to be ignored
-        recoveries_(recoveries.size()==0 ? std::vector<Real>(basket->size(), 0.)
+        recoveries_(recoveries.size()==0 ? std::vector<Real>(copula.size(), 0.)
             : recoveries),
         RandomLM(copula.numFactors(), copula.size(), copula.copula(), 
             nSims, seed )
-    {
-        // in the future change 'size' to 'liveSize' This needs revision to
-        //   allow superpool simulations where different sections of the 
-        //   same simulation are used on different products or portfolios.
-        QL_REQUIRE(basket_->size() == copula.size(), 
-            "Incompatible basket and model sizes.");
-        QL_REQUIRE(recoveries_.size() == basket_->size(), 
-            "Incompatible basket and recovery sizes.");
-
-        initDates();
-
-        registerWith(basket_);
-        // baskets are registered with evaluation date anyway
+    {   
+        // redundant through basket?
         registerWith(Settings::instance().evaluationDate());
+
     }
 
 
@@ -580,29 +471,35 @@ namespace QuantLib {
 
 
 
-    // Common usage typedefs:
+    // Common usage typedefs (notice they vary in the multithread version)
     // For the multithread implementation these souldnt be used, fortunately 
     //   they will fail because skipTo is absent.
-    typedef RandomDefaultLM<GaussianCopulaPolicy, RandomSequenceGenerator<BoxMullerGaussianRng<MersenneTwisterUniformRng> > > GaussianMTRandomDefaultLM;
+    typedef RandomDefaultLM<GaussianCopulaPolicy, 
+        RandomSequenceGenerator<BoxMullerGaussianRng<
+            MersenneTwisterUniformRng> > > GaussianMTRandomDefaultLM;
     // This one uses the copula inversion directly:
-    // typedef RandomDefaultLM<GaussianCopulaPolicy, MersenneTwisterUniformRng> GaussianMTRandomDefaultLM;
-  ////  typedef RandomDefaultLM<TCopulaPolicy, RandomSequenceGenerator<MersenneTwisterUniformRng> > TMTRandomDefaultLM;
-    typedef RandomDefaultLM<TCopulaPolicy, RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > > TMTRandomDefaultLM;
+    /* typedef RandomDefaultLM<GaussianCopulaPolicy, MersenneTwisterUniformRng>
+    GaussianMTRandomDefaultLM;*/
+    /*  typedef RandomDefaultLM<TCopulaPolicy, 
+      RandomSequenceGenerator<MersenneTwisterUniformRng> > TMTRandomDefaultLM;*/
+    typedef RandomDefaultLM<TCopulaPolicy, 
+        RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > > 
+            TMTRandomDefaultLM;
 
 
 
 
 
 
-    /* It could be argued that this concept is part of the copula. In general 
-    when the modelled magnitude is parametric one can solve for inversion to get
-    the parameter value for a given magnitude value (provided the modelled 
-    variable dependence in invertible). In this particular problem the parameter
-    is Time and it is solved here where we are alredy in the context of the 
-    modelled variable; while the copula policy ignores what it is being modelled
-    -- See the comment for faster inversion in the code. Theres potential for
-    a generic algorithm here but most of times latent models are going to be 
-    used with credit defaults. A notable exception is though transition models.
+    /* It could be argued that this concept is part of the copula (more generic).
+    In general when the modelled magnitude is parametric one can solve for 
+    inversion to get the parameter value for a given magnitude value (provided 
+    the modelled variable dependence in invertible). In this particular problem 
+    the parameter is Time and it is solved here where we are alredy in the 
+    context of default 
+    See default transition models for another instance of this inversion.
+    Alternatively use the faster trick (flat HR) mentioned in the code or make
+    the algorithm parametric on the type of interpolation in the DefautlTS
     */
     namespace detail {// not template dependent .....move it
         //! Utility for the numerical time solver

@@ -24,64 +24,48 @@
 #include <ql/instruments/claim.hpp>
 #include <ql/experimental/credit/defaultprobabilitykey.hpp>
 #include <ql/utilities/disposable.hpp>
+#include <ql/experimental/credit/basket.hpp>
 
 
 /* Intended to replace LossDistribution in 
     ql/experimental/credit/lossdistribution, not sure its covering all the 
-    functionality
+    functionality (see mthod below)
 */
 
 namespace QuantLib {
 
-    class Basket;
+    namespace {
+        void no_deletion(Basket*) {}
+    }
 
-
-    /*!
-        - A concrete default model must provide a (joint or single) recovery rate implementation.
-        - As it is now the clients have to remember to call 'calculate' at the begining of each functionality method. To avoid this split the work to a delegated virtual ---Impl private method. Drop the Lazyness? Is it that expensive to comp the current losses and basket and perf this in an update???
-
-        -> Leaving the reference date of the basket open means passing it to the basket or to the model on every request. The upside is that
-        the same basket or loss model objects can be associated with/to several models/baskets respectively. The downside is that, leaving
-        the date open, we precise to compute the remaining basket at the beginning of every call to methods in the loss models.  It remains possible
-        though to wrap the models with a reference date member and cache the remaining basket. This is why the method that computes the basket could be 
-        left virtual. Methods in the derived class will have one less argument though, so one would need the type of the object. I leave this to be solved later on.
+    /*! Default loss model interface definition.
+    Allows communication between the basket and specific algorithms. Intended to
+    hold any kind of portfolio joint loss, latent models, top-down,....
     */
-    // Lazy for the current losses
-   /// class DefaultLossModel : public LazyObject {
-    class DefaultLossModel : public virtual Observer, 
-                             public virtual Observable {// current losses now delegated in the Basket which access the loss model...
-    public:
-        /*!
-            @param refDate Reference date at which defaults are relevant to the basket.
-        */
-        /* The basket ref date plays an argument role and it is arguable 
-        for it to be a basket property
-        */
+    class DefaultLossModel : public Observable {
+     /* Protection together with frienship to avoid the need of checking the 
+     basket-argument pointer integrity. It is the responsibility of the basket 
+     now; our only caller.
+     */
+        friend class Basket;
+    protected:
+        // argument basket:
+        mutable RelinkableHandle<Basket> basket_;
+
         DefaultLossModel() { }
-
         void update() {notifyObservers();}
-
 
         //! \name Statistics
         //@{
-        // Non mandatory implementations.
+        /* Non mandatory implementations, fails if client is not providing what 
+        requested. */
 
-        /*! Expected amount lost due to default events (expressed in portfolio 
-        currency units) at the requested date in the currently live portfolio. 
-        Only the contingent amount is returned, this is, not included of the 
-        losses from realized defaults. */
-        ////////////////////////virtual Real expectedLoss(const Date&) const {
-        ////////////////////////    QL_FAIL("expectedLoss Not implemented for this type.");
-        ////////////////////////}
         /* Default implementation using the expectedLoss(Date) method. 
           Typically this method is called repeatedly with the same 
           date parameter which makes it innefficient. */
         virtual Real expectedTrancheLoss(const Date& d) const {
             QL_FAIL("expectedTrancheLoss Not implemented for this model.");
         }
-        /* Other methods might be here or in derived classes. The interface is
-        set up here to homogeneize the calls. */
-
         /*! Probability of the tranche losing the same or more than the 
           fractional amount given.
 
@@ -100,11 +84,19 @@ namespace QuantLib {
         virtual Real expectedShortfall(const Date& d, Real percentile) const {
             QL_FAIL("eSF Not implemented for this model.");   
         }
-        //! Associated VaR fraction to each name.
-        virtual Disposable<std::vector<Real> > 
-            splitLossLevel(const Date& d, Real loss) const {
-            QL_FAIL("fractionVaR Not implemented for this model.");   
+        //! Associated VaR fraction to each counterparty.
+        virtual Disposable<std::vector<Real> >
+            splitVaRLevel(const Date& d, Real loss) const {
+            QL_FAIL("splitVaRLevel Not implemented for this model.");   
         }
+        //! Associated ESF fraction to each counterparty.
+        virtual Disposable<std::vector<Real> >
+            splitESFLevel(const Date& d, Real loss) const {
+            QL_FAIL("splitESFLevel Not implemented for this model.");   
+        }
+
+        // \todo Add splits by instrument position.
+
         //! Full loss distribution.
         virtual Disposable<std::map<Real, Probability> > 
             lossDistribution(const Date&) const {
@@ -141,27 +133,27 @@ namespace QuantLib {
 
         //@}
 
-        // VECTOR VERSION IN THE POOL ORDERING>>?????
-        /*! To be delegated to a concrete RR Model (BasketConstantRRModel) 
-        implemented in the concrete Default Loss Model. Derived classes should 
-        register with the RR models for this class to perform its updates. */
-        // An alternative is for this class to own a ptr to an abstract RR model and register with it.....
-        //// There are several classes derived from this one not really knowing what to do with this one.......
-        virtual Real recoveryValueImpl(const Date& defaultDate, Size iName, //const std::string& name <- from the Pool
-            const std::vector<DefaultProbKey>& defKeys = std::vector<DefaultProbKey>()) const = 0;
-
-        /* Each subclass should as it fits and needs, some might need to reference somehow the basket, others retain 
-        locally some information about the basket. It should be as light as possible since it is called on every basket 
-        request of model dependent information.
-
-        Initialize gets call on model to basket asignment and on basket observability updates. Depending on the complexity of the initialize implementation in a particular model (or how much information from the basket it caches locally) it might trigger basket recalculation. Essentially the basket takes care of re-initializing when needed; if the loss model registers with its own magnitudes (e.g. correlation) it has to do its own work and taking any measures so that the post-initialization state is correct (this is the tricky part)
-
--> it might be possible that some models do nothing
-
+        /*! Send a reference to the basket to allow the model to read the 
+        problem arguments (contained in the basket)
         */
-        //resets basket, which is treated by the model as an argument (theres a cyclic refeernce though)
-     ///////////////////////////////////////////////////////////////   virtual void initialize(const Basket& basket) = 0;
-        virtual void setupBasket(const boost::shared_ptr<Basket>& basket) = 0;
+        /* An alternative to this scheme is to copy a set of 
+        arguments/results dependent on the model type as is done in the library
+        instrument pricing 
+        */
+        virtual void setBasket(Basket* bskt) const {// virtual?
+            if(!basket_.empty()) basket_->update(); 
+            /* After this; if the model modifies its internal status/caches (if 
+            any) it should notify the  prior basket to recognise that basket is 
+            not in a calculated=true state. Since we dont know at this level if 
+            the model keeps caches it is the children responsibility. Typically 
+            this is done at the first call to calculate to the loss model, there
+            it notifies the basket. The old basket is still registered with us 
+            until the basket takes in a new model....
+            ..alternatively both old basket and model could be forced reset here
+            */
+            basket_.linkTo(boost::shared_ptr<Basket>(bskt, no_deletion), false);
+        }
+
     };
 
 }

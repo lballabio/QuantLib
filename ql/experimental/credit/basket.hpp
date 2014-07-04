@@ -69,7 +69,34 @@ namespace QuantLib {
             Real detachmentRatio = 1.0,
             const boost::shared_ptr<Claim>& claim =
                 boost::shared_ptr<Claim>(new FaceValueClaim()));
-        void update() {LazyObject::update();}
+        void update() {
+            Date today = Settings::instance().evaluationDate();
+            /* update cache values at the calculation date (work as arguments 
+              to the Loss Models)
+            \to do: IMPORTANT: notice that defaults added to Issuers dont get
+            notify as the codes stnds today. Issuers need to be observables.
+            */
+            //this one must remain on top since there are dependencies
+            evalDateLiveKeys_      = remainingDefaultKeys(today);
+            evalDateSettledLoss_   = settledLoss(today);
+            evalDateRemainingNot_  = remainingNotional(today);
+            evalDateLiveNotionals_ = remainingNotionals(today);
+            evalDateLiveNames_     = remainingNames(today);
+            evalDateAttachAmount_  = remainingAttachmentAmount(today);
+            evalDateDetachAmmount_ = 
+                remainingDetachmentAmount(today);
+            evalDateLiveList_ = liveList(today);
+            /* REMOVE THIS
+            if(lossModel_){
+                evalDateCumulContingentLoss_ = cumulatedLoss(today);
+            }else{
+              evalDateCumulContingentLoss_ = evalDateSettledLoss_;
+            }
+            */
+
+            LazyObject::update();
+        
+        }
         //! Basket inception number of counterparties.
         Size size() const;
         //! Basket counterparties names at inception.
@@ -252,6 +279,9 @@ namespace QuantLib {
         /*! 
         */
         Real expectedShortfall(const Date& d, Probability prob) const;
+        // Split a portfolio loss along counterparties. Typically loss corresponds to some percentile.
+        Disposable<std::vector<Real> > 
+            splitVaRLevel(const Date& date, Real loss) const;
         /*! 
         */
         Disposable<std::map<Real, Probability> > lossDistribution(
@@ -263,17 +293,37 @@ namespace QuantLib {
         ---------TO DO: Implement with a string passed----------------------
         ---------TO DO: Perform check the name is alive---------------------
         */
+        Real densityTrancheLoss(const Date& d, Real lossFraction) const;
         std::vector<Probability> probsBeingNthEvent(
             Size n, const Date& d) const;
+        Real defaultCorrelation(const Date& d, Size iName, Size jName) const;
+        /*! Returns the probaility of having a given or larger number of 
+        defaults in the basket portfolio at a given time.
+        */
+        Probability probAtLeastNEvents(Size n, const Date& d) const;
+
+
+
+
+
+
+
+
         /*! Expected recovery rate of the underlying postion as a fraction of 
           its exposure value at date d.
           NOTICE THE ARG IS THE CTPTY....SHOULDNT IT BE THE POSITION/INSTRUMENT?????
         */
         Real recoveryRate(const Date& d, Size iName) const;
-        // Split a portfolio loss along counterparties. Typically loss corresponds to some percentile.
-        Disposable<std::vector<Real> > 
-            splitLossLevel(const Date& date, Real loss) const;
+
+
+
+
         //@}
+
+
+
+
+
 
       private:
         // LazyObject interface

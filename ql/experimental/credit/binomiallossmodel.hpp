@@ -55,6 +55,11 @@ namespace QuantLib {
 
     LLM: Loss Latent Model template parameter able to model default and loss.
 
+    The model is allowed and arbitrary copula, although initially designed for
+    a Gaussian setup. If these exotic varsions not allowed the template 
+    parameter might be dropped but the use of random recoveries should be
+    added in some other way.
+
     \todo untested/wip for the random recovery models.
     */
     template<class LLM>
@@ -66,7 +71,13 @@ namespace QuantLib {
         : copula_(copula) { }
 
         void update() {
-            //notifyObservers();
+            /* say there are defaults and these havent settled... and this is 
+            the engine to compute them.... is this the wrong place?:*/
+            attachAmount_ = basket->remainingAttachmentAmount();
+            detachAmount_ = basket->remainingDetachmentAmount();
+
+            copula_->resetBasket(basket);// forces interface
+
             DefaultLossModel::update();
         }
 
@@ -102,10 +113,6 @@ namespace QuantLib {
         Real percentile(const Date& d, Real percentile) const;
         Real expectedShortfall(const Date&d, Real percentile) const;
         Real expectedTrancheLoss(const Date& d) const;
-        void setupBasket(const boost::shared_ptr<Basket>& basket);
-
-        // forward:
-        //.....
     protected:
         // Model internal workings ----------------
         //! Average loss per credit.
@@ -115,15 +122,7 @@ namespace QuantLib {
             const std::vector<Real>& bsktNots,
             const std::vector<Probability>& uncondDefProbs, 
             const std::vector<Real>&) const;
-        //! DefaultLossModel interface
-        Real recoveryValueImpl(const Date& defaultDate, Size iName,
-            const std::vector<DefaultProbKey>& defKeys = 
-                std::vector<DefaultProbKey>()) const {
-            // might be unnecesarily expensive in joint recovery models?....
-            return 
-                copula_->expectedRecovery(defaultDate, iName, defKeys[iName]);
-        }
-        // expected as in time-value, not average
+        // expected as in time-value, not average, see literature
         Disposable<std::vector<Real> >
             expConditionalLgd(const Date& d,
                                const std::vector<Real>& mktFactors) const
@@ -150,23 +149,11 @@ namespace QuantLib {
         const boost::shared_ptr<LLM> copula_;
 
         // cached arguments:
-        mutable boost::shared_ptr<Basket> basket_;
         // remaining basket magnitudes:
         mutable Real attachAmount_, detachAmount_;
     };
 
     //-------------------------------------------------------------------------
-
-    template< class LLM>
-    void BinomialLossModel<LLM>::setupBasket(
-        const boost::shared_ptr<Basket>& basket) 
-    {
-        basket_       = basket;
-        attachAmount_ = basket->remainingAttachmentAmount();
-        detachAmount_ = basket->remainingDetachmentAmount();
-
-        copula_->resetBasket(basket);// forces interface
-    }
 
     /* The algorithm to compute the prob. of n defaults in the basket is 
         recursive. For this reason theres no sense in returning the prob 
@@ -345,7 +332,6 @@ namespace QuantLib {
             );
 
         // \to do: move to a do-while over attach to detach
-        // \to do: account for realized losses.
         Real suma = 0.;
         for(Size i=0; i<lossVals.size(); i++) { 
             suma += condLProb[i] * 
@@ -454,7 +440,7 @@ namespace QuantLib {
                 }while(itNxt != distrib.end());
                 return suma / (1.-perctl);
             }
-            return 0.;// well, we are in error....  fix: FAIL
+            QL_FAIL("Binomial model fails to calculate ESF.");
     }
 
     // The standard use:

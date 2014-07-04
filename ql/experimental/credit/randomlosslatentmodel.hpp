@@ -33,7 +33,7 @@
 
 namespace QuantLib {
 
-    /*! Random spot recovery rate loss model simulation.
+    /*! Random spot recovery rate loss model simulation for an arbitrary copula.
     */
     template<class copulaPolicy, class USNG = SobolRsg>
     class RandomLossLM : public RandomLM<RandomLossLM<copulaPolicy, USNG>, 
@@ -45,28 +45,14 @@ namespace QuantLib {
       typedef simEvent<RandomLossLM<copulaPolicy, USNG> > defaultSimEvent;
     private:
         const SpotRecoveryLatentModel<copulaPolicy> copula_;
-        mutable boost::shared_ptr<Basket> basket_;
-        // for time inversion:
+       // for time inversion:
         Real accuracy_;
     public:
         RandomLossLM(
-            const boost::shared_ptr<Basket>& basket,
             const SpotRecoveryLatentModel<copulaPolicy>& copula,
             Size nSims = 0,
             Real accuracy = 1.e-6, 
             BigNatural seed = 2863311530);
-        //  next two; DefaultLossModel interface
-        // This one needs reconsidering. 
-        void setupBasket(const boost::shared_ptr<Basket>& basket) {//public?
-            //DOES THIS ONE REALLY NEEDS RESET??
-            update();
-            basket_ = basket;
-        }
-        Real recoveryValueImpl(const Date& defaultDate, Size iName,
-            const std::vector<DefaultProbKey>& defKeys = std::vector<DefaultProbKey>()) const{ 
-                // WATCH OUT ! TEMPORARY HACK TO COMPILE, MUST RETURN THE EXPECTED VALUE OF THE SPOT RECOVERY _GIVEN_ THAT DEFAULT HAS TAKEN PLACE.<<<<<<<<<<<<<<<<
-                return 0.5;
-        }
     protected:
         void nextSample(const std::vector<Real>& values) const;
 
@@ -86,6 +72,11 @@ namespace QuantLib {
     private:
         // see not on randomdefaultlatentmodel
         void initDates() const {
+            copula_.resetBasket(basket_.currentLink());
+
+            QL_REQUIRE(2 * basket_->size() == copula.size(),
+                "Incompatible basket and model sizes.");
+
             /* Precalculate horizon time default probabilities (used to 
               determine if the default took place and subsequently compute its 
               event time)
@@ -195,7 +186,6 @@ namespace QuantLib {
 
     template<class C, class URNG>
     RandomLossLM<C, URNG>::RandomLossLM(
-        const boost::shared_ptr<Basket>& basket,
         const SpotRecoveryLatentModel<C>& copula,
         Size nSims,
         Real accuracy, 
@@ -206,14 +196,7 @@ namespace QuantLib {
       RandomLM(copula.numFactors(), copula.size(), copula.copula(), 
           nSims, seed)
     {
-        // in the future change 'size' to 'liveSize'
-        QL_REQUIRE(2 * basket_->size() == copula.size(),
-            "Incompatible basket and model sizes.");
-
-        initDates();
-
-        registerWith(basket_);
-        // baskets are registered with evaluation date anyway
+        // redundant through basket?
         registerWith(Settings::instance().evaluationDate());
     }
 
@@ -263,12 +246,13 @@ namespace QuantLib {
 
 
 
-    // Common uses:
-    typedef RandomLossLM<GaussianCopulaPolicy, RandomSequenceGenerator<BoxMullerGaussianRng<MersenneTwisterUniformRng> > > GaussianRandomLossLM;
-    // This one uses the copula inversion directly
-    // typedef RandomDefaultLM<GaussianCopulaPolicy, MersenneTwisterUniformRng> GaussianMTRandomDefaultLM;
-  //////--  typedef RandomLossLM<TCopulaPolicy, MersenneTwisterUniformRng> TRandomLossLM;
-    typedef RandomLossLM<TCopulaPolicy, RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > > TRandomLossLM;
+    // Common uses: Not valid in multithread version.
+    typedef RandomLossLM<GaussianCopulaPolicy, 
+        RandomSequenceGenerator<BoxMullerGaussianRng<
+            MersenneTwisterUniformRng> > > GaussianRandomLossLM;
+    typedef RandomLossLM<TCopulaPolicy, 
+        RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > > 
+            TRandomLossLM;
 
 
 }
