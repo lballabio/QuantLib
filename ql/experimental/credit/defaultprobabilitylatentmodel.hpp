@@ -109,7 +109,7 @@ namespace QuantLib {
         // ...or make friends every class that uses it and keep hiding members:
         template<typename copulaPolicy, typename R> friend class 
             RandomDefaultLM;
-    protected:
+    public:
         /*! Returns the probability of default of a given name conditional on
         the realization of a given set of values of the model independent
         factors. The date at which the probability is given is implicit in the
@@ -121,7 +121,14 @@ namespace QuantLib {
         cumulative inversion.
         */
         Probability conditionalDefaultProbability(Probability prob, Size iName,
-            const std::vector<Real>& mktFactors) const {
+            const std::vector<Real>& mktFactors) const 
+        {
+            // we can be called from the outside (from an integrable loss model)
+            //   but we are called often at integration points. This or
+            //   consider a list of friends.
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
+            QL_REQUIRE(basket_, "No portfolio basket set.");
+        #endif
             /*Avoid redundant call to minimum value inversion (might be \infty),
             and this independently of the copula function.
             */
@@ -129,6 +136,7 @@ namespace QuantLib {
             return conditionalDefaultProbabilityInvP(
                 inverseCumulativeY(prob, iName), iName, mktFactors);
         }
+    protected:
         /*! Returns the probability of default of a given name conditional on
         the realization of a given set of values of the model independent
         factors. The date at which the probability is given is implicit in the

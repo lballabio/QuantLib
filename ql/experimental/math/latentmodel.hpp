@@ -250,7 +250,7 @@ namespace QuantLib {
     template <class copulaPolicyImpl>
     class LatentModel 
         : public virtual Observer 
-    {//to be observer if factors as quotes
+    {//observer if factors as quotes
     public:
         void update();
         //! \name Copula interface.
@@ -348,12 +348,11 @@ namespace QuantLib {
 			
             Derived classes might specialize (on the copula
             type) to another type of generator if a more efficient algorithm 
-            that the distribution inversion is available rewritig then the 
+            that the distribution inversion is available; rewritig then the 
             nextSequence method for a particular copula implementation.
             Some combinations of generators might make no sense, while it 
             could be possible to block template classes corresponding to those
             cases its not done (yet?) (e.g. a BoxMuller under a TCopula.)
-            The class can only be used from derived Latent models.  
             Dimensionality coherence (between the generator and the copula) 
             should have been checked by the client code.
             In multithread usage the sequence generator is expect to be already
@@ -629,6 +628,8 @@ namespace QuantLib {
         mutable std::vector<std::vector<Real> > factorWeights_; ////////////////////// TO BE QUOTES!!!!!!!!!!!!!!!!!!!!!
         /* This is a duplicated value from the data above chosen for memory reasons.
 I have opted for this one value redundant memory rather than have the memory load of the observable in all factors. Typically Latent models are used in two very different ways: with many factors and not linked to a market observable (typical matrix size above is of tens of thousands entries) or with just one observable value and the matrix is just a scalar. Otherwise, to remove the redundancy, the matrix factorWeights_ should be one of Quotes Handles.
+Yet it is not entirely true that quotes might be used only in pricing, think sensitivity analysis....
+\todo Reconsider this, see how expensive truly is.
         */
         mutable Handle<Quote> cachedMktFactor_; // if used by the relevant constructor.
 
@@ -685,6 +686,7 @@ I have opted for this one value redundant memory rather than have the memory loa
             const std::vector<Real> a_, b_;
         };
     }
+
     // Defines ----------------------------------------------------------------
 
     template <class Impl>

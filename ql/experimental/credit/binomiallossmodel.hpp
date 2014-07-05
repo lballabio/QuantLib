@@ -188,6 +188,9 @@ namespace QuantLib {
 
         std::vector<Probability> condDefProb(bsktSize, 0.);
         for(Size j=0; j<bsktSize; j++)//transform
+            // \todo Call these with the precomputed inverse of the 
+            //    probabilities and avoid the precaclculation, it has to be 
+            //    done from the caller of this method.
             condDefProb[j] = 
                 copula_->conditionalDefaultProbability(uncondDefProb[j], j, 
                     mktFactors);

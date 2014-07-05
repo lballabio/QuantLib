@@ -7038,6 +7038,14 @@
 				RelativePath=".\ql\experimental\all.hpp"
 				>
 			</File>
+			<File
+				RelativePath=".\ql\experimental\credit\correlationstructure.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\experimental\credit\correlationstructure.hpp"
+				>
+			</File>
 			<Filter
 				Name="volatility"
 				>
@@ -7538,6 +7546,22 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\basecorrelationstructure.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\basecorrelationstructure.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\basecorrellossmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\basecorrellossmodel.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\basket.cpp"
 					>
 				</File>
@@ -7627,6 +7651,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\gaussianlhplossmodel.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\inhomogeneouspooldef.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\inhomogeneouspooldef.hpp"
 					>
 				</File>
 				<File

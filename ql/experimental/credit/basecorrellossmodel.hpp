@@ -306,8 +306,8 @@ namespace QuantLib {
             
         basketAttach_->setLossModel(scalarCorrelModelAttach_);
         basketDetach_->setLossModel(scalarCorrelModelDetach_);
-        scalarCorrelModelAttach_->registerWith(basketAttach_);
-        scalarCorrelModelDetach_->registerWith(basketDetach_);
+        ////////scalarCorrelModelAttach_->registerWith(basketAttach_);
+        ////////scalarCorrelModelDetach_->registerWith(basketDetach_);
 
     }
 
@@ -327,8 +327,8 @@ namespace QuantLib {
             
         basketAttach_->setLossModel(scalarCorrelModelAttach_);
         basketDetach_->setLossModel(scalarCorrelModelDetach_);
-        scalarCorrelModelAttach_->registerWith(basketAttach_);
-        scalarCorrelModelDetach_->registerWith(basketDetach_);
+        ////////scalarCorrelModelAttach_->registerWith(basketAttach_);
+        ////////scalarCorrelModelDetach_->registerWith(basketDetach_);
     }
 
 
