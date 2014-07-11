@@ -500,7 +500,7 @@ namespace QuantLib {
                                 1.e-4, 20));
                         return 
                           boost::make_shared<IntegrationBase<MultidimIntegral> >
-                               (integrals, -6., 6.);
+                               (integrals, -9., 9.);
                         break;
                         }
                     default:
@@ -516,8 +516,10 @@ namespace QuantLib {
     public:
         // model size, number of latent variables modelled
         Size size() const {return nVariables_;}
-        // 
+        //! Number of systemic factors.
         Size numFactors() const {return nFactors_;}
+        //! Number of total free random factors; systemic and idiosyncratic.
+        Size numTotalFactors() const { return nVariables_ + nFactors_; }
 
         /*! Constructs a LM with an arbitrary number of latent variables
           and factors given by the dimensions of the passed matrix.

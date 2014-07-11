@@ -44,8 +44,9 @@ namespace QuantLib {
     class TCopulaPolicy {
     public:
         /*! Stores the parameters defining the factors random variable 
-        T-distributions and the factors coefficients entering the linear 
-        combination defining the latent variable.
+        T-distributions. As it is now the latent models are restricted to
+        having the same distribution for all idiosyncratic factors, so only
+        one parameter is needed for them.
         */
         typedef 
             struct { 
