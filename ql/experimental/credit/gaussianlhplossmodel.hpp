@@ -77,16 +77,12 @@ namespace QuantLib {
 
         void update() {
             sqrt1minuscorrel_ = sqrt(1.-correl_->value());
-            biphi_ = BivariateCumulativeNormalDistribution(
-                -std::sqrt(1.-correl_->value()));
             beta_ = sqrt(correl_->value());
-
-            remainingAttachAmount_ = basket_->remainingAttachmentAmount();
-            remainingDetachAmount_ = basket_->remainingDetachmentAmount();
-
-            DefaultLossModel::update();
+            biphi_ = BivariateCumulativeNormalDistribution(
+                -beta_);
         }
     private:
+        void resetModel() { }
         /*! @param attachLimit as a fraction of the underlying live portfolio 
         notional 
         */
@@ -101,10 +97,13 @@ namespace QuantLib {
             const Real remainingBasktNot = basket_->remainingNotional(d);
             Real averageRR = averageRecovery(d);
             Probability prob = averageProb(d);
+            Real remainingAttachAmount = basket_->remainingAttachmentAmount();
+            Real remainingDetachAmount = basket_->remainingDetachmentAmount();
 
-            const Real attach = std::min(remainingAttachAmount_ 
+
+            const Real attach = std::min(remainingAttachAmount 
                 / remainingBasktNot, 1.);
-            const Real detach = std::min(remainingDetachAmount_ 
+            const Real detach = std::min(remainingDetachAmount 
                 / remainingBasktNot, 1.);
 
             return expectedTrancheLossImpl(remainingBasktNot, prob, averageRR, 
@@ -130,13 +129,15 @@ namespace QuantLib {
         // for the underlying portfolio, untranched
         Real percentilePortfolioLossFraction(const Date& d, Real perctl) const;
     public:
-            // same as percentilePortfolio but tranched
+        // same as percentilePortfolio but tranched
         Real percentile(const Date& d, Real perctl) const {
             const Real remainingNot = basket_->remainingNotional(d);
+            Real remainingAttachAmount = basket_->remainingAttachmentAmount();
+            Real remainingDetachAmount = basket_->remainingDetachmentAmount();
             const Real attach = 
-                std::min(remainingAttachAmount_ / remainingNot, 1.);
+                std::min(remainingAttachAmount / remainingNot, 1.);
             const Real detach = 
-                std::min(remainingDetachAmount_ / remainingNot, 1.);
+                std::min(remainingDetachAmount / remainingNot, 1.);
             return remainingNot * 
                 std::min(std::max(percentilePortfolioLossFraction(d, perctl) 
                     - attach, 0.), detach - attach);
@@ -196,8 +197,6 @@ namespace QuantLib {
         But the date dependence increases significantly the calculations cost.
         Notice that this problem dissapears if the recoveries are all equal.
         */
-        mutable Real remainingAttachAmount_;
-        mutable Real remainingDetachAmount_;
         
         Real beta_;
         BivariateCumulativeNormalDistribution biphi_;

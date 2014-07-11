@@ -42,9 +42,12 @@ namespace QuantLib {
     //
     // Intended to replace HomogeneousPoolCDOEngine in syntheticcdoengines.hpp
     class InhomogeneousPoolLossModel : public DefaultLossModel {
+    private:
+        void resetModel() /*const*/;
     public:
         InhomogeneousPoolLossModel(
-            const boost::shared_ptr<GaussianConstantLossLM>& copula,
+      ////      const boost::shared_ptr<GaussianConstantLossLM>& copula,
+            const boost::shared_ptr<GaussianDefProbLM>& copula,
             const std::vector<Real>& recoveries,
             Size nBuckets,
             Real max = 5.,
@@ -54,21 +57,20 @@ namespace QuantLib {
           nBuckets_(nBuckets), 
           recoveries_(recoveries),
           max_(max), min_(min), nSteps_(nSteps), delta_((max - min)/nSteps)
-        { }
+        { 
+            QL_REQUIRE(copula->numFactors() == 1, "Not implemented for multifactor");
+        }
+// Write another constructor sending the LM factors and recoveries.
 
         ////void initialize(const Basket& basket) {
-        void setupBasket(const boost::shared_ptr<Basket>& basket);
-        void update() {
-///////            notifyObservers();
-            DefaultLossModel::update();
-        }
+        ///void setupBasket(const boost::shared_ptr<Basket>& basket);
 
     protected:
-        Real recoveryValueImpl(const Date& defaultDate, Size iName,
-            const std::vector<DefaultProbKey>& defKeys = 
-                std::vector<DefaultProbKey>()) const {
-                return recoveries_[iName];
-        }
+        //////////////////////////////Real recoveryValueImpl(const Date& defaultDate, Size iName,
+        //////////////////////////////    const std::vector<DefaultProbKey>& defKeys = 
+        //////////////////////////////        std::vector<DefaultProbKey>()) const {
+        //////////////////////////////        return recoveries_[iName];
+        //////////////////////////////}
         Distribution lossDistrib(const Date& d) const;
     public:
         // TO DO: write a multifactor version 
@@ -88,13 +90,15 @@ namespace QuantLib {
         }
     protected:
         const boost::shared_ptr<GaussianDefProbLM> copula_;
+ ////////////////////////       const boost::shared_ptr<GaussianConstantLossLM> copula_;
         Size nBuckets_;
         const std::vector<Real> recoveries_;
-        boost::shared_ptr<Basket> basket_;
+ ///////////////////////////       boost::shared_ptr<Basket> basket_;
         mutable Real attach_, detach_, notional_, attachAmount_, detachAmount_;
         mutable std::vector<Real> notionals_;
     private:
         // integration:
+        //  \todo move integration to latent model types when moving to a multifactor version
         const Real max_;// redundant?
         const Real min_;
         const Real nSteps_;

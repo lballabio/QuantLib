@@ -70,6 +70,10 @@ namespace QuantLib {
             const boost::shared_ptr<Claim>& claim =
                 boost::shared_ptr<Claim>(new FaceValueClaim()));
         void update() {
+            computeBasket();
+            LazyObject::update();
+        }
+        void computeBasket() const {
             Date today = Settings::instance().evaluationDate();
             /* update cache values at the calculation date (work as arguments 
               to the Loss Models)
@@ -94,7 +98,6 @@ namespace QuantLib {
             }
             */
 
-            LazyObject::update();
         
         }
         //! Basket inception number of counterparties.
@@ -350,11 +353,11 @@ namespace QuantLib {
         loss model and would be too expensive to recompute on every call.
         */
         mutable Real evalDateSettledLoss_,
-            evalDateCumulContingentLoss_,
+        //    evalDateCumulContingentLoss_,
             evalDateRemainingNot_,
-            evalDateAttachRatio_,
+        //    evalDateAttachRatio_,
             evalDateAttachAmount_,
-            evalDateDetachRatio_,
+        //    evalDateDetachRatio_,
             evalDateDetachAmmount_;
         mutable std::vector<Size> evalDateLiveList_;
         mutable std::vector<Real> evalDateLiveNotionals_;
@@ -420,7 +423,8 @@ namespace QuantLib {
 
     inline Real Basket::cumulatedLoss() const {
         calculate();
-        return evalDateCumulContingentLoss_;       
+       ///// return evalDateCumulContingentLoss_;   
+        return this->evalDateSettledLoss_;
     }
     
     inline Real Basket::settledLoss() const {

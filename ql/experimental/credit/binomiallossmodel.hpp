@@ -56,8 +56,8 @@ namespace QuantLib {
     LLM: Loss Latent Model template parameter able to model default and loss.
 
     The model is allowed and arbitrary copula, although initially designed for
-    a Gaussian setup. If these exotic varsions not allowed the template 
-    parameter might be dropped but the use of random recoveries should be
+    a Gaussian setup. If these exotic versions were not allowed the template 
+    parameter can then be dropped but the use of random recoveries should be
     added in some other way.
 
     \todo untested/wip for the random recovery models.
@@ -69,18 +69,16 @@ namespace QuantLib {
         BinomialLossModel(
             const boost::shared_ptr<LLM>& copula)
         : copula_(copula) { }
-
-        void update() {
+    private:
+        void resetModel() {
             /* say there are defaults and these havent settled... and this is 
             the engine to compute them.... is this the wrong place?:*/
-            attachAmount_ = basket->remainingAttachmentAmount();
-            detachAmount_ = basket->remainingDetachmentAmount();
+            attachAmount_ = basket_->remainingAttachmentAmount();
+            detachAmount_ = basket_->remainingDetachmentAmount();
 
-            copula_->resetBasket(basket);// forces interface
-
-            DefaultLossModel::update();
+            copula_->resetBasket(basket_.currentLink());// forces interface
         }
-
+    protected:
         /*! Returns the probability of the default loss values given by the 
             method lossPoints.
         */
@@ -323,7 +321,7 @@ namespace QuantLib {
 
         std::vector<Real> condLProb = 
             lossProbability(d, bsktNots, uncondDefProbs, mkf);
-
+/* bugs?
         return std::inner_product(condLProb.begin(), condLProb.end(), 
             lossVals.begin(), 
             0., 
@@ -333,7 +331,7 @@ namespace QuantLib {
                 boost::lambda::_2 - attachAmount_, 0.),
               detachAmount_ - attachAmount_)
             );
-
+*/
         // \to do: move to a do-while over attach to detach
         Real suma = 0.;
         for(Size i=0; i<lossVals.size(); i++) { 

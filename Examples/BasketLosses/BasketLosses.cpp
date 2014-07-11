@@ -22,6 +22,7 @@
 #include <boost/timer.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/function.hpp>
+#include <boost/assign/std/vector.hpp>
 
 #ifdef BOOST_MSVC
 #  include <ql/auto_link.hpp>
@@ -37,6 +38,7 @@
 
 using namespace std;
 using namespace QuantLib;
+using namespace boost::assign;
 
 #if defined(QL_ENABLE_SESSIONS)
 namespace QuantLib {
@@ -64,8 +66,12 @@ int main(int, char* []) {
         /* --------------------------------------------------------------
                         SET UP BASKET PORTFOLIO
         -------------------------------------------------------------- */
-        // build curves and issuers into a basket of three names
-        std::vector<Real> hazardRates(10, -std::log(1.-0.01));
+        // build curves and issuers into a basket of ten names
+        std::vector<Real> hazardRates;
+        hazardRates += 
+        //  0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9;        
+            0.001, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09;        
+        //  0.01,  0.01,  0.01,  0.01, 0.01,  0.01,  0.01,  0.01,  0.01,  0.01;        
         std::vector<std::string> names;
         for(Size i=0; i<hazardRates.size(); i++)
             names.push_back(std::string("Acme") + 
@@ -96,7 +102,9 @@ int main(int, char* []) {
             NorthAmericaCorpDefaultKey(EURCurrency(), SeniorSec, Period(), 1.));
         boost::shared_ptr<Basket> theBskt = boost::make_shared<Basket>(
             todaysDate, 
-            names, std::vector<Real>(hazardRates.size(), 100.), thePool );
+            names, std::vector<Real>(hazardRates.size(), 100.), thePool,
+         //   0.0, 0.78);
+            0.024, .78);
 
         /* --------------------------------------------------------------
                         SET UP DEFAULT LOSS MODELS
@@ -104,25 +112,22 @@ int main(int, char* []) {
 
         std::vector<Real> recoveries(hazardRates.size(), 0.4);
 
-        // Latent model factors, corresponds to the first entry in Table1 of the
-        //   publication mentioned. It is a single factor model
+        Date calcDate(TARGET().advance(Settings::instance().evaluationDate(), 
+            Period(120, Months)));
+        Real factorValue = 0.05;
         std::vector<std::vector<Real> > fctrsWeights(hazardRates.size(), 
-            std::vector<Real>(1, std::sqrt(0.1)));
-        // Gaussian integrable joint default model:
+            std::vector<Real>(1, std::sqrt(factorValue)));
+
+        // --- LHP model --------------------------
         boost::shared_ptr<DefaultLossModel> lmGLHP(
             boost::make_shared<GaussianLHPLossModel>(
                 fctrsWeights[0][0] * fctrsWeights[0][0], recoveries));
         theBskt->setLossModel(lmGLHP);
 
-        std::cout << "GLHP Expected Losses: "  << std::endl;
-        Date calcDate = todaysDate;
-        for(Size i=0; i <9; i++) {
-            std::cout << calcDate << " ... " << 
-                theBskt->expectedTrancheLoss(calcDate) <<
-                std::endl;
-            calcDate = TARGET().advance(calcDate, Period(i, Years));
-        }
+        std::cout << "GLHP Expected 10-Yr Losses: "  << std::endl;
+        std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
 
+        // --- G Binomial model --------------------
         boost::shared_ptr<GaussianConstantLossLM> ktLossLM(
             boost::make_shared<GaussianConstantLossLM>(fctrsWeights, 
             recoveries, LatentModelIntegrationType::GaussianQuadrature, 
@@ -131,33 +136,180 @@ int main(int, char* []) {
             boost::make_shared<GaussianBinomialLossModel>(ktLossLM));
         theBskt->setLossModel(lmBinomial);
 
-        std::cout << "Gaussian Binomial Expected Losses: "  << std::endl;
-        calcDate = todaysDate;
-        for(Size i=0; i <9; i++) {
-            std::cout << calcDate << " ... " << 
-                theBskt->expectedTrancheLoss(calcDate) <<
-                std::endl;
-            calcDate = TARGET().advance(calcDate, Period(i, Years));
-        }
+        std::cout << "Gaussian Binomial Expected 10-Yr Losses: "  << std::endl;
+        std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
 
+        // --- T Binomial model --------------------
         TCopulaPolicy::initTraits initT;
         initT.tOrders = std::vector<Integer>(2, 3);
         boost::shared_ptr<TConstantLossLM> ktTLossLM(
             boost::make_shared<TConstantLossLM>(fctrsWeights, 
-            recoveries, LatentModelIntegrationType::GaussianQuadrature,
+            recoveries, 
+            //LatentModelIntegrationType::GaussianQuadrature,
+              LatentModelIntegrationType::Trapezoid,
             initT));
         boost::shared_ptr<DefaultLossModel> lmTBinomial(
             boost::make_shared<TBinomialLossModel>(ktTLossLM));
         theBskt->setLossModel(lmTBinomial);
 
-        std::cout << "T Binomial Expected Losses: "  << std::endl;
-        calcDate = todaysDate;
-        for(Size i=0; i <9; i++) {
-            std::cout << calcDate << " ... " << 
-                theBskt->expectedTrancheLoss(calcDate) <<
-                std::endl;
-            calcDate = TARGET().advance(calcDate, Period(i, Years));
-        }
+        std::cout << "T Binomial Expected 10-Yr Losses: "  << std::endl;
+        std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
+
+        // --- G Inhomogeneous model ---------------
+        boost::shared_ptr<GaussianDefProbLM> gLM(
+            boost::make_shared<GaussianDefProbLM>(fctrsWeights, 
+            LatentModelIntegrationType::GaussianQuadrature));
+        Size numBuckets = 100;
+        boost::shared_ptr<DefaultLossModel> inhomogeneousLM(
+            boost::make_shared<InhomogeneousPoolLossModel>(gLM, 
+                recoveries, numBuckets));
+        theBskt->setLossModel(inhomogeneousLM);
+
+        std::cout << "G Inhomogeneous Expected 10-Yr Losses: "  << std::endl;
+        std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
+
+        // --- G Random model ---------------------
+        // Gaussian random joint default model:
+        Size numSimulations = 1000;
+        Size numCoresUsed = 4;
+        // Sobol, many cores
+        boost::shared_ptr<DefaultLossModel> rdlmG(
+            boost::make_shared<RandomDefaultLM<GaussianCopulaPolicy> >(*gLM.get(), 
+                recoveries, numSimulations, 1.e-6, 2863311530));
+        // Monothread only
+        /*
+        RandomDefaultLM<GaussianCopulaPolicy, 
+            RandomSequenceGenerator<MersenneTwisterUniformRng> > rdlmG(
+            gLM, recoveries, numSimulations, 
+            1.e-6, 2863311530);
+        */
+        theBskt->setLossModel(rdlmG);
+
+        std::cout << "Random G Expected 10-Yr Losses: "  << std::endl;
+        std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
+
+        // --- StudentT Random model ---------------------
+        // Sobol, many cores
+        boost::shared_ptr<DefaultLossModel> rdlmT(
+            boost::make_shared<RandomDefaultLM<TCopulaPolicy> >(*ktTLossLM.get(), 
+                recoveries, numSimulations, 1.e-6, 2863311530));
+        /*
+        // Monothread only, direct/copula inversion
+        boost::shared_ptr<DefaultLossModel> rdlmT(
+            boost::make_shared<RandomDefaultLM<TCopulaPolicy, 
+            RandomSequenceGenerator<MersenneTwisterUniformRng> > >(
+                ktTLossLM, recoveries, numSimulations, 1.e-6, 
+                2863311530));
+        */
+        theBskt->setLossModel(rdlmT);
+
+        std::cout << "Random T Expected 10-Yr Losses: "  << std::endl;
+        std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
+
+
+        // Spot Loss latent model: 
+        std::vector<std::vector<Real> > fctrsWeightsRR(2 * hazardRates.size(), 
+            std::vector<Real>(1, std::sqrt(factorValue)));
+        Real modelA = 2.2;
+        GaussianSpotLossLM sptLG(fctrsWeightsRR, recoveries, modelA,
+            LatentModelIntegrationType::GaussianQuadrature);
+        TSpotLossLM sptLT(fctrsWeightsRR, recoveries, modelA,
+            LatentModelIntegrationType::GaussianQuadrature, initT);
+
+
+        // --- G Random Loss model ---------------------
+        // Gaussian random joint default model:
+        // Sobol, many cores
+        boost::shared_ptr<DefaultLossModel> rdLlmG(
+            boost::make_shared<RandomLossLM<GaussianCopulaPolicy> >(sptLG, 
+                numSimulations, 1.e-6, 2863311530));
+        // Monothread only
+        /*
+        RandomDefaultLM<GaussianCopulaPolicy, 
+            RandomSequenceGenerator<MersenneTwisterUniformRng> > rdlmG(
+            gLM, recoveries, numSimulations, 
+            1.e-6, 2863311530);
+        */
+        theBskt->setLossModel(rdLlmG);
+
+        std::cout << "Random Loss G Expected 10-Yr Losses: "  << std::endl;
+        std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
+
+        // --- T Random Loss model ---------------------
+        // Gaussian random joint default model:
+        // Sobol, many cores
+        boost::shared_ptr<DefaultLossModel> rdLlmT(
+            boost::make_shared<RandomLossLM<TCopulaPolicy> >(sptLT, 
+                numSimulations, 1.e-6, 2863311530));
+        // Monothread only
+        /*
+        RandomDefaultLM<GaussianCopulaPolicy, 
+            RandomSequenceGenerator<MersenneTwisterUniformRng> > rdlmG(
+            gLM, recoveries, numSimulations, 
+            1.e-6, 2863311530);
+        */
+        theBskt->setLossModel(rdLlmT);
+
+        std::cout << "Random Loss T Expected 10-Yr Losses: "  << std::endl;
+        std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
+
+
+
+
+
+        // Base Correlation model set up to test cocherence with base LHP model
+        std::vector<Period> bcTenors;
+        bcTenors.push_back(Period(1, Years));
+        bcTenors.push_back(Period(5, Years));
+        std::vector<Real> bcLossPercentages;
+        bcLossPercentages.push_back(0.03);
+        bcLossPercentages.push_back(0.12);
+        std::vector<std::vector<Handle<Quote> > > correls;
+        // 
+        std::vector<Handle<Quote> > corr1Y;
+        // 3%
+        corr1Y.push_back(Handle<Quote>(boost::shared_ptr<Quote>(
+            new SimpleQuote(fctrsWeights[0][0] * fctrsWeights[0][0]))));
+        // 12%
+        corr1Y.push_back(Handle<Quote>(boost::shared_ptr<Quote>(
+            new SimpleQuote(fctrsWeights[0][0] * fctrsWeights[0][0]))));
+        correls.push_back(corr1Y);
+        std::vector<Handle<Quote> > corr2Y;
+        // 3%
+        corr2Y.push_back(Handle<Quote>(boost::shared_ptr<Quote>(
+            new SimpleQuote(fctrsWeights[0][0] * fctrsWeights[0][0]))));
+        // 12%
+        corr2Y.push_back(Handle<Quote>(boost::shared_ptr<Quote>(
+            new SimpleQuote(fctrsWeights[0][0] * fctrsWeights[0][0]))));
+        correls.push_back(corr2Y);
+        boost::shared_ptr<BaseCorrelationTermStructure<BilinearInterpolation> > 
+          correlSurface(
+            new BaseCorrelationTermStructure<BilinearInterpolation>(
+                // first one would do, all should be the same.
+                defTS[0]->settlementDays(),
+                defTS[0]->calendar(),
+                Unadjusted,
+                bcTenors,
+                bcLossPercentages,
+                correls,
+                Actual365Fixed()
+            )
+        );
+        Handle<BaseCorrelationTermStructure<BilinearInterpolation> > 
+            correlHandle(correlSurface);
+        boost::shared_ptr<DefaultLossModel> bcLMG_LHP_Bilin(
+            boost::make_shared<GaussianLHPFlatBCLM>(correlHandle, recoveries));
+
+        theBskt->setLossModel(bcLMG_LHP_Bilin);
+
+        std::cout << "Base Correlation GLHP Expected 10-Yr Losses: "  
+            << std::endl;
+        std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
+
+
+
+
+
 
 // set model - dump basket data/status - reset model - ...etc..
 

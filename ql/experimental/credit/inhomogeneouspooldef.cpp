@@ -22,20 +22,20 @@
 
 namespace QuantLib {
 
-    void InhomogeneousPoolLossModel::setupBasket(
-        const boost::shared_ptr<Basket>& basket) 
+    void InhomogeneousPoolLossModel::resetModel() /*const*/ 
     {
-        basket_ = basket;
         // need to be capped now since the limit amounts might be over the 
         //  remaining notional (think amortizing)
-        attach_ = std::min(basket->remainingAttachmentAmount() / 
-            basket->remainingNotional(), 1.);
-        detach_ = std::min(basket->remainingDetachmentAmount() / 
-            basket->remainingNotional(), 1.);
-        notional_ = basket->remainingNotional();
-        notionals_ = basket->remainingNotionals();
-        attachAmount_ = basket->remainingAttachmentAmount();
-        detachAmount_ = basket->remainingDetachmentAmount();
+        attach_ = std::min(basket_->remainingAttachmentAmount() / 
+            basket_->remainingNotional(), 1.);
+        detach_ = std::min(basket_->remainingDetachmentAmount() / 
+            basket_->remainingNotional(), 1.);
+        notional_ = basket_->remainingNotional();
+        notionals_ = basket_->remainingNotionals();
+        attachAmount_ = basket_->remainingAttachmentAmount();
+        detachAmount_ = basket_->remainingDetachmentAmount();
+
+        copula_->resetBasket(basket_.currentLink());
     }
 
     Distribution InhomogeneousPoolLossModel::lossDistrib(const Date& d) const {

@@ -53,7 +53,7 @@ namespace QuantLib {
         mutable RelinkableHandle<Basket> basket_;
 
         DefaultLossModel() { }
-        void update() {notifyObservers();}
+     ///////////////////////////   void update() {notifyObservers();}
 
         //! \name Statistics
         //@{
@@ -140,8 +140,8 @@ namespace QuantLib {
         arguments/results dependent on the model type as is done in the library
         instrument pricing 
         */
-        virtual void setBasket(Basket* bskt) const {// virtual?
-            if(!basket_.empty()) basket_->update(); 
+        virtual void setBasket(Basket* bskt) /*const*/ {// virtual?
+            if(!basket_.empty()) basket_->update(); // notifyObservers is no longer enough since we might not be registered anymore
             /* After this; if the model modifies its internal status/caches (if 
             any) it should notify the  prior basket to recognise that basket is 
             not in a calculated=true state. Since we dont know at this level if 
@@ -152,7 +152,12 @@ namespace QuantLib {
             ..alternatively both old basket and model could be forced reset here
             */
             basket_.linkTo(boost::shared_ptr<Basket>(bskt, no_deletion), false);
+           ///////////////////////// this->update();
+ //////////////?????????????           notifyObservers();//hmm the update on the previous basket above is no longer needed right?? Lazy models will do this again...!!! they need to call update too.
+            resetModel();// or rename to setBasketImpl(...)
         }
+    private: // the call order matters, which is the reason for the parent to be the sole caller.
+        virtual void resetModel() /*const*/ = 0;//reset model caches after a basket reset. This is only due to a basket change not a general observability mechanics....
 
     };
 

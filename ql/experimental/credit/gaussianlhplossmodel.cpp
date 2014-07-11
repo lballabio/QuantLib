@@ -43,7 +43,7 @@ namespace QuantLib {
             registerWith(correl_);
             for(Size i=0; i<quotes.size(); i++)
                 registerWith(quotes[i]);
-            this->update();
+            //this->update();
     }
 
     GaussianLHPLossModel::GaussianLHPLossModel(
@@ -62,7 +62,7 @@ namespace QuantLib {
             for(Size i=0; i<recoveries.size(); i++)
                 rrQuotes_.push_back(Handle<RecoveryRateQuote>(
                 boost::make_shared<RecoveryRateQuote>(recoveries[i])));
-            this->update();
+            //this->update();
         }
 
         GaussianLHPLossModel::GaussianLHPLossModel(
@@ -81,7 +81,7 @@ namespace QuantLib {
             for(Size i=0; i<recoveries.size(); i++)
                 rrQuotes_.push_back(Handle<RecoveryRateQuote>(
                 boost::make_shared<RecoveryRateQuote>(recoveries[i])));
-            this->update();
+            //this->update();
         }
 
 
@@ -130,16 +130,18 @@ namespace QuantLib {
             Real remainingLossFraction) const {
                 // check d is not before todays date
 
-            QL_REQUIRE(remainingLossFraction >=0., "Incorrect loss fraction.");
+            QL_REQUIRE(remainingLossFraction >=0., "Incorrect loss fraction.");// this test goes into basket<<<<<<<<<<<<<<<<<<<<<<<<<
             QL_REQUIRE(remainingLossFraction <=1., "Incorrect loss fraction.");
 
+            Real remainingAttachAmount = basket_->remainingAttachmentAmount();
+            Real remainingDetachAmount = basket_->remainingDetachmentAmount();
             // live unerlying portfolio loss fraction (remaining portf fraction)
 
             const Real remainingBasktNot = basket_->remainingNotional(d);
             const Real attach = 
-                std::min(remainingAttachAmount_ / remainingBasktNot, 1.);
+                std::min(remainingAttachAmount / remainingBasktNot, 1.);
             const Real detach = 
-                std::min(remainingDetachAmount_ / remainingBasktNot, 1.);
+                std::min(remainingDetachAmount / remainingBasktNot, 1.);
 
             Real portfFract = 
                 attach + remainingLossFraction * (detach - attach);
@@ -168,12 +170,14 @@ namespace QuantLib {
         {
             // loss as a fraction of the live portfolio
             Real ptflLossPerc = percentilePortfolioLossFraction(d, perctl);
+            Real remainingAttachAmount = basket_->remainingAttachmentAmount();
+            Real remainingDetachAmount = basket_->remainingDetachmentAmount();
 
             const Real remainingNot = basket_->remainingNotional(d);
             const Real attach = 
-                std::min(remainingAttachAmount_ / remainingNot, 1.);
+                std::min(remainingAttachAmount / remainingNot, 1.);
             const Real detach = 
-                std::min(remainingDetachAmount_ / remainingNot, 1.);
+                std::min(remainingDetachAmount / remainingNot, 1.);
 
             if(ptflLossPerc >= detach-QL_EPSILON) 
                 return remainingNot * (detach-attach);//equivalent
@@ -196,7 +200,7 @@ namespace QuantLib {
             const Date& d, Real perctl) const 
         {
             QL_REQUIRE(perctl >= 0. && perctl <=1., 
-                "Percentile argument out of bounds.");
+                "Percentile argument out of bounds.");// this test goes into basket<<<<<<<<<<<<<<<<<<<<<<<<<
 
             if(perctl==0.) return 0.;// portfl == attach
             if(perctl==1.) perctl = 1. - QL_EPSILON; // portfl == detach

@@ -103,15 +103,22 @@ namespace QuantLib {
         }
         // No local update, theres no need to recalculate realized losses; just reset and notify
         //update();
-        LazyObject::update();
+
+
+
+        LazyObject::update(); //<- just set calc=false
+        //update();// or we might be called from an statistic member without being intialized yet (first called)
     }
 
     void Basket::performCalculations() const {
+        // Calculations for status
+        computeBasket();// or we might be called from an statistic member without being intialized yet (first called)
 
+        // Calculations for set up of arguments to the model, and model notification(reset)
         QL_REQUIRE(lossModel_, "Basket has no default loss model assigned.");/// NOW I CAN REMOVE THE TESTS ON THE METHODS! FASTER!!
 
         // The model must notify us if the another basket calls it for reasignment. The basket works as an argument to the deafult loss models so, even if the models dont cache anything, they will be using the wrong defautl TS. \todo: This has a possible optimization: the basket incorporates trancheability and many models do their compuations independently of that (some do but do it inefficiently when asked for two tranches on the same basket; e,g, recursive model) so it might be more efficient sending the pool only; however the modtionals and other basket info are still used.
-        lossModel_->setBasket(const_cast<Basket*>(this));
+        lossModel_->setBasket(const_cast<Basket*>(this));// now ready for calls to model
 
 // what happens to other basket pointing and registerd with the previous lossmodel?; they are still registerd and will be notified for no use....!!!!
 

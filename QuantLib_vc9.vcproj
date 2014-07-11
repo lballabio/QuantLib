@@ -7554,10 +7554,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\credit\basecorrellossmodel.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\experimental\credit\basecorrellossmodel.hpp"
 					>
 				</File>

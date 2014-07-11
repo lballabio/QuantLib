@@ -114,9 +114,6 @@ namespace QuantLib {
           nSims_(nSims), seed_(seed) {}
 
         void update() {
-            // if basket:
-            DefaultLossModel::update(); 
-            // if calculations:
             LazyObject::update();
         }
 
@@ -298,6 +295,11 @@ namespace QuantLib {
 
 
 
+
+
+
+
+
     /*
     ---------------------------------------------------------------------------
     ---------------------------------------------------------------------------
@@ -326,11 +328,15 @@ namespace QuantLib {
         //    recoveries... and drop the default value recovery vector...
         // \todo: Allow a constructor building its own default latent model.
         RandomDefaultLM(
-            const DefaultLatentModel<copulaPolicy>& copula,
+            const DefaultLatentModel<copulaPolicy>& copula,//////////////////////////// change to pointer!
             const std::vector<Real>& recoveries = std::vector<Real>(),
             Size nSims = 0,// stats will crash on div by zero, FIX ME.
             Real accuracy = 1.e-6, 
             BigNatural seed = 2863311530);
+        //! \name Statistics
+        //@{
+        virtual Real expectedTrancheLoss(const Date& d) const;
+        //@}
     protected:
         void nextSample(const std::vector<Real>& values) const;
 
@@ -342,9 +348,7 @@ namespace QuantLib {
         //invoking duck typing on the variable name or a handle to the basket)
         Size basketSize() const { return copula_.size(); }
     private:
-        // This one and the buffer might be moved to the parent, only some 
-        //   dates might be specific to a particular model.
-        void initDates() const {
+        void resetModel() /*const*/ {
             /* Explore: might save recalculation if the basket is the same 
             (some situations, like BC or control variates) in that case do not 
             update, only reset the copula's basket.
@@ -355,7 +359,12 @@ namespace QuantLib {
                 "Incompatible basket and model sizes.");
             QL_REQUIRE(recoveries_.size() == basket_->size(), 
                 "Incompatible basket and recovery sizes.");
-
+            // invalidate current calculations if any and notify observers
+            LazyObject::update();
+        }
+        // This one and the buffer might be moved to the parent, only some 
+        //   dates might be specific to a particular model.
+        void initDates() const {
             /* Precalculate horizon time default probabilities (used to 
               determine if the default took place and subsequently compute its 
               event time)
@@ -466,6 +475,37 @@ namespace QuantLib {
 
     }
 
+    template<class C, class URNG>
+    Real RandomDefaultLM<C, URNG>::expectedTrancheLoss(const Date& d) const {
+        calculate();
+
+        Real attachAmount = basket_->remainingAttachmentAmount();
+        Real detachAmount = basket_->remainingDetachmentAmount();
+
+        BigInteger val = d.serialNumber() - 
+            Settings::instance().evaluationDate().value().serialNumber();
+        // for each sim collect defaults before date d and add the losses. 
+        //   return the average.
+        Real trancheLoss= 0.;
+        for(Size iSim=0; iSim < nSims_; iSim++) {
+            const std::vector<defaultSimEvent>& events = getSim(iSim);
+            Real portfSimLoss=0.;
+            for(Size iEvt=0; iEvt < events.size(); iEvt++) {
+                // if event is within time horizon...
+                if(val > events[iEvt].dayFromRef) {
+                    Size iName = events[iEvt].nameIdx;
+                    // ...and is contained in the basket.
+                  //superpool simulations not yet
+                  // if(basket_->pool()->has(copula_->pool()->names()[iName]))
+                        portfSimLoss += basket_->remainingNotionals()[iName] * // NEED LOCAL NOTIONALS... updatable on basket reasignment
+                            (1.-recoveries_[iName]);//recovery index only works if the RR vector is of live-names size.
+                }
+            }
+            trancheLoss += std::min(std::max(portfSimLoss - attachAmount, 0.), detachAmount - attachAmount);
+        }
+
+        return trancheLoss / nSims_;
+    }
 
 
 

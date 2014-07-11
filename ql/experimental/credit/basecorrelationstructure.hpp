@@ -29,14 +29,15 @@
 
 namespace QuantLib {
 
-    // Between this class and its parent I might need to include more classes
-    //   allowing for more structure.
 
     /*! Matrix based Base Correlation Term Structure 
     Loss level versus time interpolated scalar copula type parametric 
     correlation term structure. Represents the correlation for the credit loss 
     level of a given portfolio at a given loss level and time.
-    \todo:
+
+    \todo The relation to a given basket is to be made explicit for bespoke 
+    models to be implemented.
+
     - Consider moving to a matrix data structure. A matrix might make some
     computations heavy, template specialization on the dimension might be an
     alternative to having two classes, one for scalars and another for matrices.
@@ -47,9 +48,16 @@ namespace QuantLib {
     careful when using non local interpolators like CubicSplines which have an
     effect on the past (calibrated) coupons of previous tenors.
     */
-    template<class Interpolator2D_T> // template? alternatively have a ref to Interpolator2D
+    template<class Interpolator2D_T>
     class BaseCorrelationTermStructure : public CorrelationTermStructure {
     public:
+        /*
+        @param correls Corresponds to: correls[iYear][iLoss]
+
+        The Settlement date should in an ideal world coincide with the 
+        (implicit) basket inception date and its default term structures 
+        settlement dates.
+        */
         BaseCorrelationTermStructure(
             Natural settlementDays,
             const Calendar& cal,

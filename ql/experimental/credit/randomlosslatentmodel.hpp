@@ -70,13 +70,20 @@ namespace QuantLib {
         std::pair<Real, Real> expectedTrancheLossInterval(const Date& d, 
             Probability confidencePerc) const;
     private:
-        // see not on randomdefaultlatentmodel
-        void initDates() const {
+        void resetModel() /*const*/ {
+            /* Explore: might save recalculation if the basket is the same 
+            (some situations, like BC or control variates) in that case do not 
+            update, only reset the copula's basket.
+            */
             copula_.resetBasket(basket_.currentLink());
 
-            QL_REQUIRE(2 * basket_->size() == copula.size(),
+            QL_REQUIRE(2 * basket_->size() == copula_.size(),
                 "Incompatible basket and model sizes.");
-
+            // invalidate current calculations if any and notify observers
+            LazyObject::update();
+        }
+        // see not on randomdefaultlatentmodel
+        void initDates() const {
             /* Precalculate horizon time default probabilities (used to 
               determine if the default took place and subsequently compute its 
               event time)
@@ -133,6 +140,13 @@ namespace QuantLib {
         // half the model is defaults, the other half are RRs...
         for(Size iName=0; iName<copula_.size()/2; iName++) {
             // ...but samples must be full
+            /* This is really a trick, we are passing a longer than
+            expected set of values in the sample but the last idiosyncratic
+            values corresponding to the RR are not used. They are used below
+            only if we are in default. This works due to the way the SpotLossLM
+            is split in two almost disjoint latent models and that theres no
+            check on the vector size in the LM base class.
+            */
             Real latentVarSample = 
                 copula_.latentVarValue(values, iName);
             Probability simDefaultProb = 
@@ -164,8 +178,9 @@ namespace QuantLib {
                 ////      Date today = Settings::instance().evaluationDate();
                 Date today = dfts->referenceDate();/// NO GOOD, NOW DATES MEAN DIFFERENT THINGS!!!!!!!!!!!!!!!!!!!! NEED FIXING!!!
 
+                Real latentRRVarSample = copula_.latentRRVarValue(values, iName);
                 Real recovery = 
-                    copula_.conditionalRecovery(latentVarSample, iName, 
+                    copula_.conditionalRecovery(latentRRVarSample, iName, 
                         today+Period(static_cast<Integer>(dateSTride), Days));
                 simsBuffer_.back().push_back(
                    defaultSimEvent(iName, dateSTride, recovery));
@@ -190,7 +205,7 @@ namespace QuantLib {
         Size nSims,
         Real accuracy, 
         BigNatural seed) 
-    : basket_(basket), 
+    : ///////////////////////////basket_(basket), 
       accuracy_(accuracy), 
       copula_(copula), //<<-------------------------------------------------------------------------------CHECK THIS COPY
       RandomLM(copula.numFactors(), copula.size(), copula.copula(), 

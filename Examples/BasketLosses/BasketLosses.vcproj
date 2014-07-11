@@ -40,11 +40,12 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				MinimalRebuild="true"
+				AdditionalIncludeDirectories="..\.."
+				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="1"
 				WarningLevel="3"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -57,6 +58,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="true"
 				TargetMachine="1"
 			/>
