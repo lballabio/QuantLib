@@ -155,6 +155,24 @@ const boost::shared_ptr<Pool>& pool = basket_->pool();
     ////ADD INTEGRATION OVER THE LATENT FACTOR TO OBTAIN THE PROB DENSITY OF A NAMES RECOVERY 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+        /* Due to the way the latent model is splitted in two parts, we call the
+        base class for the default sample and the LM owned here for the RR model
+        sample. This sample only makes sense if it led to a default.
+        @param allFactors All sampled factors, default and RR valiables.
+        @param iVar The index of the name for which we want the RR sample
+
+        \todo Write vector version for all names' RRs 
+        */
+        Real latentRRVarValue(const std::vector<Real>& allFactors, 
+            Size iVar) const {
+            // remove the idiosyncratic variables corresponding to the default
+            std::vector<Real> sample(allFactors.begin(), 
+                allFactors.begin() + DefaultLatentModel<copulaPolicy>::numFactors());
+            sample.insert(sample.end(), allFactors.begin() + 
+                DefaultLatentModel<copulaPolicy>::numTotalFactors(), allFactors.end());
+            // might get rid of the copy above if I rewrite this one here....
+            return recoveryCrossSection_.latentVarValue(sample, iVar);
+        }
 
         // wrong name, its no loss
         Real expectedLossRR(const Date& d, Size iName) const {/////////THESE SHOULD BE CONST MEMBER FUNCTIONS!!!!!!!!!!!!!!
