@@ -20,6 +20,7 @@
 #ifndef quantlib_randomdefault_latent_model_hpp
 #define quantlib_randomdefault_latent_model_hpp
 
+#include <ql/math/statistics/histogram.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
@@ -143,6 +144,12 @@ namespace QuantLib {
         */
         const std::vector<simEvent<derivedRandomLM> >& getSim(
             const Size iSim) const { return simsBuffer_[iSim]; }
+        /* Allows statistics to be written generically for fixed and random
+        recovery rates. */
+        Real getEventRecovery(const simEvent<derivedRandomLM>& evt) const {
+            return static_cast<const derivedRandomLM* >(this)->getEventRecovery(
+                evt);
+        }
 
         //! \name Statistics, DefaultLossModel interface.
         // These are virtual and allow for children-specific optimization and 
@@ -160,6 +167,30 @@ namespace QuantLib {
         //! Pearsons' default probability correlation. 
         virtual Real defaultCorrelation(const Date& d, Size iName, 
             Size jName) const;
+        virtual Real expectedTrancheLoss(const Date& d) const;
+        virtual std::pair<Real, Real> expectedTrancheLossInterval(const Date& d,
+            Probability confidencePerc) const;
+        virtual Disposable<std::map<Real, Probability> > 
+            lossDistribution(const Date& d) const;
+        virtual Histogram computeHistogram(const Date& d) const;
+        virtual Real expectedShortfall(const Date& d, Real percent) const;
+        virtual Real percentile(const Date& d, Real percentile) const;
+        /*! Returns the VaR value for a given percentile and the 95 confidence 
+        interval of that value. */
+        virtual boost::tuples::tuple<Real, Real, Real> percentileAndInterval(
+            const Date& d, Real percentile) const;
+        /*! Distributes the total VaR amount along the portfolio counterparties.
+        @param loss Loss amount (in loss units).
+        */
+        virtual Disposable<std::vector<Real> > splitVaRLevel(const Date& date, 
+            Real loss) const;
+        /*! Distributes the total VaR amount along the portfolio counterparties.
+        Provides confidence interval for split so that portfolio optimization
+        can be performed outside those limits.
+        @param loss Loss amount (in loss units).
+        */
+        virtual Disposable<std::vector<std::vector<Real> > > splitVaRAndError(
+            const Date& date, Real loss, Probability confInterval) const;
         //@}
     private:
         BigNatural seed_;
@@ -182,6 +213,8 @@ namespace QuantLib {
         */
     };
 
+
+    /* ---- Statistics ---------------------------------------------------  */
 
     template<class D, class C, class URNG>
     Probability RandomLM<D, C, URNG>::probAtLeastNEvents(Size n, 
@@ -294,7 +327,377 @@ namespace QuantLib {
     }
 
 
+    template<class D, class C, class URNG>
+    Real RandomLM<D, C, URNG>::expectedTrancheLoss(
+        const Date& d) const {
+            return expectedTrancheLossInterval(d, 0.95).first;
+    }
 
+    template<class D, class C, class URNG>// return disposable...
+    std::pair<Real, Real> RandomLM<D, C, URNG>::expectedTrancheLossInterval(
+        const Date& d, Probability confidencePerc) const 
+    {
+        calculate();
+        Date today = Settings::instance().evaluationDate();
+        BigInteger val = d.serialNumber() - today.serialNumber();
+
+        Real attachAmount = basket_->attachmentAmount();
+        Real detachAmount = basket_->detachmentAmount();
+
+        Real trancheLoss= 0.;
+        GeneralStatistics lossStats;
+        for(Size iSim=0; iSim < nSims_; iSim++) {
+            const std::vector<simEvent<D> >& events = getSim(iSim);
+
+            Real portfSimLoss=0.;
+            for(Size iEvt=0; iEvt < events.size(); iEvt++) {
+                // if event is within time horizon...
+                if(val > events[iEvt].dayFromRef) {
+                    Size iName = events[iEvt].nameIdx;
+                    // ...and is contained in the basket.
+                        portfSimLoss += 
+                            basket_->exposure(basket_->names()[iName], 
+                                Date(events[iEvt].dayFromRef + 
+                                    today.serialNumber())) *
+                                        (1.-getEventRecovery(events[iEvt]));
+               }
+            }
+            lossStats.add(// dates? current losses? realized defaults, not yet
+                std::min(std::max(portfSimLoss - attachAmount, 0.),
+                    detachAmount - attachAmount) );
+        }
+        return std::make_pair(lossStats.mean(), lossStats.errorEstimate() * 
+            InverseCumulativeNormal::standard_value(0.5*(1.+confidencePerc)));
+    }
+
+    template<class D, class C, class URNG>
+    Disposable<std::map<Real, Probability> > 
+        RandomLM<D, C, URNG>::lossDistribution(const Date& d) const {
+
+        Histogram hist = computeHistogram(d);
+        std::map<Real, Probability> distrib;
+
+        // prob of losses less or equal to
+        Real suma = hist.frequency(0);
+        distrib.insert(std::make_pair<Real, Probability>(0., suma ));
+        for(Size i=1; i<hist.bins(); i++) {
+            suma += hist.frequency(i);
+            distrib.insert(std::make_pair<Real, Probability>(hist.breaks()[i-1],
+                suma ));
+        }
+        return distrib;
+    }
+
+
+    template<class D, class C, class URNG>
+    Histogram RandomLM<D, C, URNG>::computeHistogram(const Date& d) const {
+        std::vector<Real> data;
+        std::set<Real> keys;// attainable loss values
+        keys.insert(0.);
+        Date today = Settings::instance().evaluationDate();
+        BigInteger val = d.serialNumber() - today.serialNumber();
+        // redundant test? should have been tested by the basket caller?
+        QL_REQUIRE(d >= today, 
+            "Requested percentile date must lie after computation date.");
+        calculate();
+
+        Real attachAmount = basket_->attachmentAmount();
+        Real detachAmount = basket_->detachmentAmount();
+
+        for(Size iSim=0; iSim < nSims_; iSim++) {
+            const std::vector<simEvent<D> >& events = getSim(iSim);
+
+            Real portfSimLoss=0.;
+            for(Size iEvt=0; iEvt < events.size(); iEvt++) {
+                if(val > events[iEvt].dayFromRef) {
+                    Size iName = events[iEvt].nameIdx;
+          // test needed (here and the others) to reuse simulations:
+          //          if(basket_->pool()->has(copula_->pool()->names()[iName]))
+                        portfSimLoss += 
+                            basket_->exposure(basket_->names()[iName], 
+                                Date(events[iEvt].dayFromRef + 
+                                    today.serialNumber())) *
+                                        (1.-getEventRecovery(events[iEvt]));
+                }
+            }
+            data.push_back(std::min(std::max(portfSimLoss - attachAmount, 0.),
+                detachAmount - attachAmount));
+            keys.insert(data.back());
+        }
+        // avoid using as many points as in the simulation.
+        Size nPts = std::min<Size>(data.size(), 150);// fix
+        return Histogram(data.begin(), data.end(), nPts);
+    }
+
+    template<class D, class C, class URNG>
+    Real RandomLM<D, C, URNG>::expectedShortfall(const Date& d, 
+        Real percent) const {
+
+        const Date today = Settings::instance().evaluationDate();
+        QL_REQUIRE(d >= today, 
+            "Requested percentile date must lie after computation date.");
+        calculate();
+
+        Real attachAmount = basket_->attachmentAmount();
+        Real detachAmount = basket_->detachmentAmount();
+
+        BigInteger val = d.serialNumber() - today.serialNumber();
+        if(val <= 0) return 0.;// plus basket realized losses
+
+        //GenericRiskStatistics<GeneralStatistics> statsX;
+        std::vector<Real> losses;
+        for(Size iSim=0; iSim < nSims_; iSim++) {
+            const std::vector<simEvent<D> >& events = getSim(iSim);
+            Real portfSimLoss=0.;
+            for(Size iEvt=0; iEvt < events.size(); iEvt++) {
+                if(val > events[iEvt].dayFromRef) {
+                    Size iName = events[iEvt].nameIdx;
+                    // ...and is contained in the basket.
+                    //if(basket_->pool()->has(copula_->pool()->names()[iName]))
+                        portfSimLoss += 
+                            basket_->exposure(basket_->names()[iName], 
+                                Date(events[iEvt].dayFromRef + 
+                                    today.serialNumber())) *
+                                        (1.-getEventRecovery(events[iEvt]));
+                }
+            }
+            portfSimLoss = std::min(std::max(portfSimLoss - attachAmount, 0.),
+                detachAmount - attachAmount);
+            losses.push_back(portfSimLoss);
+        }
+
+        std::sort(losses.begin(), losses.end());
+        Real posit = std::ceil(percent * nSims_);
+        posit = posit >= 0. ? posit : 0.;
+        Size position = static_cast<Size>(posit);
+        Real perctlInf = losses[position];//q_{\alpha}
+        /* find the first loss larger than the one of the percentile. Notice the
+        choice here, the expected shortfall is understood in the sense that we 
+        are looking for the average given than losses are above a certain value 
+        rather than above a certain probability.*/
+        std::vector<Real>::iterator itPastPerc = 
+            std::find_if(losses.begin() + position, losses.end(), 
+                std::bind1st(std::less<Real>(), perctlInf));
+        // the prob of values strictly larger than the quantile value.
+        Probability probOverQ = 
+            static_cast<Real>(std::distance(losses.begin() + position, 
+                losses.end())) / static_cast<Real>(nSims_);
+
+        return ( perctlInf * (1.-percent-probOverQ) +
+            std::accumulate(losses.begin() + position, losses.end(), 0.)/nSims_
+                )/(1.-percent);
+        /* For the definition of ESF see for instance: 'Quantitative Risk 
+        Management' by A.J. McNeil, R.Frey and P.Embrechts, princeton series in 
+        finance, 2005; equations on page 39 sect 2.12:
+        $q_{\alpha}(F) = inf{x \in R : F(x) \le \alpha}$
+        and equation 2.25 on p. 45:
+        $ESF_{\alpha} = \frac{1}{1-\alpha} [E(L; L \ge q_{\alpha} ) + 
+            q_{\alpha} (1-\alpha-P(L \ge q_{\alpha})) ]$
+        The second term accounts for non continuous distributions.
+        */
+    }
+
+    template<class D, class C, class URNG>
+    Real RandomLM<D, C, URNG>::percentile(const Date& d, Real percentile) const {
+        return percentileAndInterval(d, percentile).get<0>();
+    }
+
+
+    /* See Appendix-A of "Evaluating value-at-risk methodologies: Accuracy 
+        versus computational time.", M. Pritsker, Wharton FIC, November 1996
+    Strictly speaking this gives the interval with a 95% probability of 
+    the true value being within the interval, this is different to the error 
+    of the stimator just computed. See the reference for a discussion.
+    */
+    template<class D, class C, class URNG>
+    boost::tuples::tuple<Real, Real, Real>
+        RandomLM<D, C, URNG>::percentileAndInterval(const Date& d, 
+            Real percentile) const {
+
+        QL_REQUIRE(percentile >= 0. && percentile <= 1., 
+            "Incorrect percentile");
+        calculate();
+
+        Real attachAmount = basket_->attachmentAmount();
+        Real detachAmount = basket_->detachmentAmount();
+
+        std::vector<Real> rankLosses;
+        Date today = Settings::instance().evaluationDate();
+        BigInteger val = d.serialNumber() - today.serialNumber();
+        for(Size iSim=0; iSim < nSims_; iSim++) {
+            const std::vector<simEvent<D> >& events = getSim(iSim);
+            Real portfSimLoss=0.;
+            for(Size iEvt=0; iEvt < events.size(); iEvt++) {
+                if(val > events[iEvt].dayFromRef) {
+                    Size iName = events[iEvt].nameIdx;
+                 //   if(basket_->pool()->has(copula_->pool()->names()[iName]))
+                        portfSimLoss += 
+                            basket_->exposure(basket_->names()[iName], 
+                                Date(events[iEvt].dayFromRef + 
+                                    today.serialNumber())) *
+                                        (1.-getEventRecovery(events[iEvt]));
+                }
+            }
+            portfSimLoss = std::min(std::max(portfSimLoss - attachAmount, 0.),
+                detachAmount - attachAmount);
+            // update dataset for rank stat:
+            rankLosses.push_back(portfSimLoss);
+        }
+
+        std::sort(rankLosses.begin(), rankLosses.end());
+        Size quantilePosition = static_cast<Size>(floor(nSims_*percentile));
+        Real quantileValue = rankLosses[quantilePosition];
+
+        // compute confidence interval:
+        const Probability confInterval = 0.95;// as an argument?
+        Real lowerPercentile, upperPercentile;
+        Size r = quantilePosition - 1;
+        Size s = quantilePosition + 1;
+        bool rLocked = false,
+            sLocked = false;
+        Size rfinal = 0,
+            sfinal = 0;
+        for(Size delta=1; delta < quantilePosition; delta++) {
+            Real cached = 
+                incompleteBetaFunction(s, nSims_+1-s, percentile, 1.e-8, 500);
+            Real pMinus = 
+            /* There was a fix in the repository on the gammadistribution. It 
+            might impact these, it might be neccesary to multiply these values 
+            by '-1'*/
+                incompleteBetaFunction(r+1, nSims_-r, percentile, 1.e-8, 500)
+                -
+                cached;
+            Real pPlus  = 
+                incompleteBetaFunction(r, nSims_-r+1, percentile, 1.e-8, 500)
+                -
+                cached;
+            if((pMinus > confInterval) && !rLocked ) {
+               rfinal = r + 1;
+               rLocked = true;
+            }
+            if((pPlus >= confInterval) && !sLocked) {
+                sfinal = s;
+                sLocked = true;
+            }
+            if(rLocked && sLocked) break;
+            r--;
+            s++;
+            s = std::min(nSims_-1, s);
+        }
+        lowerPercentile = rankLosses[r];
+        upperPercentile = rankLosses[s];
+
+        return boost::tuples::tuple<Real, Real, Real>(quantileValue, 
+            lowerPercentile, upperPercentile);
+    }
+
+
+    template<class D, class C, class URNG>
+    Disposable<std::vector<Real> > RandomLM<D, C, URNG>::splitVaRLevel(
+        const Date& date, Real loss) const
+    {
+        return splitVaRAndError(date, loss, 0.95)[0];
+    }
+
+    // parallelize this one, it is really expensive
+    template<class D, class C, class URNG>
+    /* FIX ME: some trouble on limit cases, like zero loss or no losses over the
+    requested level.*/
+    Disposable<std::vector<std::vector<Real> > > 
+        RandomLM<D, C, URNG>::splitVaRAndError(const Date& date, Real loss, 
+            Probability confInterval) const
+    {
+        /* Check 'loss' value integrity: i.e. is within tranche limits? (should 
+            have been done basket...)*/
+        calculate();
+
+        Real attachAmount = basket_->attachmentAmount();
+        Real detachAmount = basket_->detachmentAmount();
+        Size numLiveNames = basket_->remainingSize();
+
+        std::vector<Real> split(numLiveNames, 0.);
+        std::vector<GeneralStatistics> splitStats(numLiveNames, 
+            GeneralStatistics());
+        Date today = Settings::instance().evaluationDate();
+        BigInteger val = date.serialNumber() - today.serialNumber();
+
+        for(Size iSim=0; iSim < nSims_; iSim++) {
+            const std::vector<simEvent<D> >& events = getSim(iSim);
+            Real portfSimLoss=0.;
+            //std::vector<Real> splitBuffer(numLiveNames_, 0.);
+            std::vector<simEvent<D> > splitEventsBuffer;
+
+            for(Size iEvt=0; iEvt < events.size(); iEvt++) {
+                if(val > events[iEvt].dayFromRef) {
+                    Size iName = events[iEvt].nameIdx;
+                // if(basket_->pool()->has(copula_->pool()->names()[iName])) {
+                        portfSimLoss += 
+                            basket_->exposure(basket_->names()[iName], 
+                                Date(events[iEvt].dayFromRef + 
+                                    today.serialNumber())) *
+                                        (1.-getEventRecovery(events[iEvt]));
+                        //and will sort later if buffer applies:
+                        splitEventsBuffer.push_back(events[iEvt]);
+                }
+            }
+            portfSimLoss = std::min(std::max(portfSimLoss - attachAmount, 0.),
+                detachAmount - attachAmount);
+
+            /* second pass; split is conditional to total losses within target 
+            losses/percentile:  */
+            Real ptflCumulLoss = 0.;
+            if(portfSimLoss > loss) {
+                std::sort(splitEventsBuffer.begin(), splitEventsBuffer.end());
+                //NOW THIS:
+                split.assign(numLiveNames, 0.);
+                /*  if the name triggered a loss in the portf limits assign 
+                this loss to that name..  */
+                for(Size i=0; i<splitEventsBuffer.size(); i++) {
+                    Size iName = splitEventsBuffer[i].nameIdx;
+                    Real lossName = 
+            // allows amortizing (others should be like this)
+            // basket_->remainingNotionals(Date(simsBuffer_[i].dayFromRef + 
+            //      today.serialNumber()))[iName] * 
+                        basket_->exposure(basket_->names()[iName], 
+                            Date(splitEventsBuffer[i].dayFromRef + 
+                                today.serialNumber())) * 
+                                (1.-getEventRecovery(splitEventsBuffer[i]));
+
+                    Real tranchedLossBefore = 
+                        std::min(std::max(ptflCumulLoss - attachAmount, 0.), 
+                        detachAmount - attachAmount);
+                    ptflCumulLoss += lossName;
+                    Real tranchedLossAfter = 
+                        std::min(std::max(ptflCumulLoss - attachAmount, 0.),
+                        detachAmount - attachAmount);
+                    // assign new losses:
+                    split[iName] += tranchedLossAfter - tranchedLossBefore;
+                }
+                for(Size iName=0; iName<numLiveNames; iName++) {
+                    splitStats[iName].add(split[iName] / 
+                        std::min(std::max(ptflCumulLoss - attachAmount, 0.), 
+                            detachAmount - attachAmount) );
+                }
+            }
+        }
+
+        // Compute error in VaR split
+        std::vector<Real> means, rangeUp, rangeDown;
+        Real confidFactor = InverseCumulativeNormal()(0.5+confInterval/2.);
+        for(Size iName=0; iName<numLiveNames; iName++) {
+            means.push_back(splitStats[iName].mean());
+            Real error = confidFactor * splitStats[iName].errorEstimate() ;
+            rangeDown.push_back(means.back() - error);
+            rangeUp.push_back(means.back() + error);
+        }
+
+        std::vector<std::vector<Real> > results;
+        results.push_back(means);
+        results.push_back(rangeDown);
+        results.push_back(rangeUp);
+
+        return results;
+    }
 
 
 
@@ -333,10 +736,6 @@ namespace QuantLib {
             Size nSims = 0,// stats will crash on div by zero, FIX ME.
             Real accuracy = 1.e-6, 
             BigNatural seed = 2863311530);
-        //! \name Statistics
-        //@{
-        virtual Real expectedTrancheLoss(const Date& d) const;
-        //@}
     protected:
         void nextSample(const std::vector<Real>& values) const;
 
@@ -378,7 +777,9 @@ namespace QuantLib {
                     defaultProbability(copula_.basket_->defaultKeys()[iName])
                         ->defaultProbability(maxHorizonDate, true));
         }
-
+        Real getEventRecovery(const defaultSimEvent& evt) const {
+            return recoveries_[evt.nameIdx];
+        }
         // Default probabilities for each name at the time of the maximun 
         //   horizon date. Cached for perf.
         mutable std::vector<Probability> horizonDefaultPs_;
@@ -473,38 +874,6 @@ namespace QuantLib {
         // redundant through basket?
         registerWith(Settings::instance().evaluationDate());
 
-    }
-
-    template<class C, class URNG>
-    Real RandomDefaultLM<C, URNG>::expectedTrancheLoss(const Date& d) const {
-        calculate();
-
-        Real attachAmount = basket_->remainingAttachmentAmount();
-        Real detachAmount = basket_->remainingDetachmentAmount();
-
-        BigInteger val = d.serialNumber() - 
-            Settings::instance().evaluationDate().value().serialNumber();
-        // for each sim collect defaults before date d and add the losses. 
-        //   return the average.
-        Real trancheLoss= 0.;
-        for(Size iSim=0; iSim < nSims_; iSim++) {
-            const std::vector<defaultSimEvent>& events = getSim(iSim);
-            Real portfSimLoss=0.;
-            for(Size iEvt=0; iEvt < events.size(); iEvt++) {
-                // if event is within time horizon...
-                if(val > events[iEvt].dayFromRef) {
-                    Size iName = events[iEvt].nameIdx;
-                    // ...and is contained in the basket.
-                  //superpool simulations not yet
-                  // if(basket_->pool()->has(copula_->pool()->names()[iName]))
-                        portfSimLoss += basket_->remainingNotionals()[iName] * // NEED LOCAL NOTIONALS... updatable on basket reasignment
-                            (1.-recoveries_[iName]);//recovery index only works if the RR vector is of live-names size.
-                }
-            }
-            trancheLoss += std::min(std::max(portfSimLoss - attachAmount, 0.), detachAmount - attachAmount);
-        }
-
-        return trancheLoss / nSims_;
     }
 
 

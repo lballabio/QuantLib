@@ -64,11 +64,6 @@ namespace QuantLib {
         // conditional to default, defined as spot-recovery.
         Real conditionalRecovery(Real latentVarSample, Size iName, 
             const Date& d) const;
-    public:
-        //statistics:
-        Real expectedTrancheLoss(const Date& d) const;
-        std::pair<Real, Real> expectedTrancheLossInterval(const Date& d, 
-            Probability confidencePerc) const;
     private:
         void resetModel() /*const*/ {
             /* Explore: might save recalculation if the basket is the same 
@@ -96,6 +91,9 @@ namespace QuantLib {
                 horizonDefaultPs_.push_back(pool->get(pool->names()[iName]).
                     defaultProbability(basket_->defaultKeys()[iName])
                         ->defaultProbability(maxHorizonDate, true));
+        }
+        Real getEventRecovery(const defaultSimEvent& evt) const {
+            return evt.recovery();
         }
         // Default probabilities for each name at the time of the maximun 
         //   horizon date. Cached for perf.
@@ -214,50 +212,6 @@ namespace QuantLib {
         // redundant through basket?
         registerWith(Settings::instance().evaluationDate());
     }
-
-    template<class C, class URNG>
-    Real RandomLossLM<C, URNG>::expectedTrancheLoss(
-        const Date& d) const {
-            return expectedTrancheLossInterval(d, 0.95).first;
-    }
-
-    template<class C, class URNG>// return disposable...
-    std::pair<Real, Real> RandomLossLM<C, URNG>::expectedTrancheLossInterval(
-        const Date& d, Probability confidencePerc) const 
-    {
-        calculate();
-        Date today = Settings::instance().evaluationDate();
-        BigInteger val = d.serialNumber() - today.serialNumber();
-
-        Real trancheLoss= 0.;
-        GeneralStatistics lossStats;
-        for(Size iSim=0; iSim < nSims_; iSim++) {
-            const std::vector<defaultSimEvent>& events = getSim(iSim);
-
-            Real portfSimLoss=0.;
-            for(Size iEvt=0; iEvt <  events.size(); iEvt++) {
-                // if event is within time horizon...
-                if(val > events[iEvt].dayFromRef) {
-                    Size iName = events[iEvt].nameIdx;
-                    // ...and is contained in the basket.
-                        portfSimLoss += 
-                            basket_->exposure(basket_->names()[iName], 
-                                Date(events[iEvt].dayFromRef + 
-                                    today.serialNumber())) *
-    //                        (1.-simsBuffer_[iSim][iEvt].recovery / 100.);
-                            (1.-events[iEvt].recovery());
-               }
-            }
-            lossStats.add(// dates? current losses? realized defaults, not yet
-              std::min(std::max(portfSimLoss - basket_->attachmentAmount(), 0.),
-                basket_->detachmentAmount() - basket_->attachmentAmount()) );
-        }
-        return std::make_pair(lossStats.mean(), lossStats.errorEstimate() * 
-            InverseCumulativeNormal::standard_value(0.5*(1.+confidencePerc)));
-    }
-
-
-
 
 
 
