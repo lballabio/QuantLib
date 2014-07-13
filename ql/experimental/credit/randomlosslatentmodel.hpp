@@ -226,8 +226,12 @@ namespace QuantLib {
     : ///////////////////////////basket_(basket), 
       accuracy_(accuracy), 
       copula_(copula), //<<-------------------------------------------------------------------------------CHECK THIS COPY
-      RandomLM<RandomLossLM, C, URNG>(copula.numFactors(), copula.size(), copula.copula(), 
-          nSims, seed)
+#if !defined(QL_PATCH_MSVC90)
+        RandomLM<RandomLossLM, C, URNG>
+#else
+        RandomLM
+#endif
+        (copula.numFactors(), copula.size(), copula.copula(), nSims, seed)
     {
         // redundant through basket?
         this->registerWith(Settings::instance().evaluationDate());

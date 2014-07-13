@@ -977,8 +977,16 @@ namespace QuantLib {
         // set to 0 RR if empty, RRs to be ignored
         recoveries_(recoveries.size()==0 ? std::vector<Real>(copula.size(), 0.)
             : recoveries),
-        RandomLM<typename RandomDefaultLM<C,R>, C, R>(copula.numFactors(), copula.size(), copula.copula(), 
-            nSims, seed )
+        /* Anyone can shed any light into this one? To me MSCV is wrong to 
+        require the removal of the parameters. 
+        Can anyone report behaviour of other versions of MS compiler?
+        */
+#if !defined(QL_PATCH_MSVC90)
+        RandomLM<RandomDefaultLM, C, R>
+#else
+        RandomLM
+#endif
+        (copula.numFactors(), copula.size(), copula.copula(), nSims, seed )
     {   
         // redundant through basket?
         this->registerWith(Settings::instance().evaluationDate());
