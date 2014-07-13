@@ -10,14 +10,21 @@ namespace QuantLib {
     */
     template <class copulaPolicy>
     class SpotRecoveryLatentModel : public LatentModel<copulaPolicy> {
-        //: public DefaultLatentModel<copulaPolicy> {// ----- not deriving from a RR model........, DefaultLatentModel<CP>::size() will return an incorrect value.
+    public:
+        // resolve LM interface:
+        using LatentModel<copulaPolicy>::factorWeights;
+        using LatentModel<copulaPolicy>::inverseCumulativeY;
+        using LatentModel<copulaPolicy>::cumulativeY;
+        using LatentModel<copulaPolicy>::latentVarValue;
+        using LatentModel<copulaPolicy>::integratedExpectedValue;
+   ///////////////     using LatentModel<copulaPolicy>::conditionalDefaultProbabilityInvP;
     private:
         const std::vector<Real> recoveries_;
         const Real modelA_;
         //! \products of default and recoveries factors, see literature. ('covariances')
         std::vector<Real> crossIdiosyncFctrs_;
    //     LatentModel<copulaPolicy> recoveryCrossSection_;
-        mutable Size numNames_;//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<update at basket reset
+        mutable Size numNames_;
         mutable boost::shared_ptr<Basket> basket_;
 
     public:
@@ -204,7 +211,7 @@ namespace QuantLib {
                           _1)
                          ));
         }
-
+/* NEED TO ADD DEFAULT TO ADD THIS METHOD
         Real conditionalExpLossRR(const Date& d, Size iName, 
             const std::vector<Real>& mktFactors) const 
         {////WRITE VERSION TAKING P-INV AND NOT THE DATE TO INTEGRATE BELOW
@@ -219,7 +226,7 @@ namespace QuantLib {
             return conditionalDefaultProbabilityInvP(invP, iName, mktFactors)
                 * conditionalRecoveryP(pDefUncond, iName, mktFactors);//CHANGE TO VERSION USING THE P-INVERSE
         }
-
+*/
         Real expectedLoss(const Date& d, Size iName) const {
             return integratedExpectedValue(
                 boost::function<Real (const std::vector<Real>& v1)>(

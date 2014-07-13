@@ -143,16 +143,19 @@ namespace QuantLib {
           Remove defaulted names and adjust the subordination.
         */
         std::vector<std::string> names =
-            basket->remainingNames(start, today);
+            basket->remainingNames(/*start, */today);
         std::vector<Real> notionals
-            = basket->remainingNotionals(start, today);
-        Real a = basket->remainingAttachmentRatio(start, today);
-        Real d = basket->remainingDetachmentRatio(start, today);
+            = basket->remainingNotionals(/*start, today*/);
+        ////////Real a = basket->remainingAttachmentRatio(/*start, today*/);
+        ////////Real d = basket->remainingDetachmentRatio(/*start, today*/);
+        Real a = basket->remainingAttachmentAmount(/*start, today*/) / basket->remainingNotional();
+        Real d = basket->remainingDetachmentAmount(/*start, today*/) / basket->remainingNotional();
         const boost::shared_ptr<Pool> pool = basket->pool();
         this->remainingBasket_ =
-            boost::shared_ptr<Basket>(new Basket(names, notionals, pool,
-                                                basket->remainingDefaultKeys(start, today),
-                                                basket->remainingRecModels(start, today),
+            boost::shared_ptr<Basket>(new Basket(today, //<hack for the time being, should be the ref date.....
+            names, notionals, pool,
+                                            //    basket->remainingDefaultKeys(/*start, today*/), // FOR NEW BASKET
+                                            //    basket->remainingRecModels(/*start, today*/),
                                                  a, d));
 
         this->results_.xMin = this->remainingBasket_->attachmentAmount();

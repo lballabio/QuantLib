@@ -33,79 +33,14 @@
 
 namespace QuantLib {
 
-    /*! Random spot recovery rate loss model simulation for an arbitrary copula.
-    */
-    template<class copulaPolicy, class USNG = SobolRsg>
-    class RandomLossLM : public RandomLM<RandomLossLM<copulaPolicy, USNG>, 
-        copulaPolicy, USNG>
-    {
-      // grant access to static polymorphism:
-      friend class RandomLM<RandomLossLM<copulaPolicy, USNG>, 
-          copulaPolicy, USNG>;
-      typedef simEvent<RandomLossLM<copulaPolicy, USNG> > defaultSimEvent;
-    private:
-        const SpotRecoveryLatentModel<copulaPolicy> copula_;
-       // for time inversion:
-        Real accuracy_;
-    public:
-        RandomLossLM(
-            const SpotRecoveryLatentModel<copulaPolicy>& copula,
-            Size nSims = 0,
-            Real accuracy = 1.e-6, 
-            BigNatural seed = 2863311530);
-    protected:
-        void nextSample(const std::vector<Real>& values) const;
 
-        Real latentVarValue(const std::vector<Real>& factorsSample, 
-            Size iVar) const {
-                return copula_.latentVarValue(factorsSample, iVar);
-        }
-        Size basketSize() const { return basket_->size(); }
-        // conditional to default, defined as spot-recovery.
-        Real conditionalRecovery(Real latentVarSample, Size iName, 
-            const Date& d) const;
-    private:
-        void resetModel() /*const*/ {
-            /* Explore: might save recalculation if the basket is the same 
-            (some situations, like BC or control variates) in that case do not 
-            update, only reset the copula's basket.
-            */
-            copula_.resetBasket(basket_.currentLink());
-
-            QL_REQUIRE(2 * basket_->size() == copula_.size(),
-                "Incompatible basket and model sizes.");
-            // invalidate current calculations if any and notify observers
-            LazyObject::update();
-        }
-        // see not on randomdefaultlatentmodel
-        void initDates() const {
-            /* Precalculate horizon time default probabilities (used to 
-              determine if the default took place and subsequently compute its 
-              event time)
-            */
-            Date today = Settings::instance().evaluationDate();
-            Date maxHorizonDate = today  + Period(maxHorizon_, Days);
-
-            const boost::shared_ptr<Pool>& pool = basket_->pool();
-            for(Size iName=0; iName < basket_->size(); ++iName)//use'live'basket
-                horizonDefaultPs_.push_back(pool->get(pool->names()[iName]).
-                    defaultProbability(basket_->defaultKeys()[iName])
-                        ->defaultProbability(maxHorizonDate, true));
-        }
-        Real getEventRecovery(const defaultSimEvent& evt) const {
-            return evt.recovery();
-        }
-        // Default probabilities for each name at the time of the maximun 
-        //   horizon date. Cached for perf.
-        mutable std::vector<Probability> horizonDefaultPs_;
-    };
-
+    template<class , class > class RandomLossLM;
     template<class copulaPolicy, class USNG>
         struct simEvent<RandomLossLM<copulaPolicy, USNG> > {
             simEvent(unsigned int n, unsigned int d, Real r) 
             : nameIdx(n), dayFromRef(d), 
                 // truncates the value:
-                compactRR(r/rrGranular+.5) {}
+                compactRR(static_cast<unsigned int>(r/rrGranular+.5)) {}
             unsigned int nameIdx : 12; // can index up to 4095 names
             unsigned int dayFromRef : 12; // can index up to 4095 days = 11 yrs
             unsigned int compactRR : 8;//RRPrecission 7;  // SHOULD BE PRIVATE
@@ -122,8 +57,91 @@ namespace QuantLib {
             }
             static const Real rrGranular;// = 1./256.;// 2^8
     };
+
     template <class C, class G> const Real 
         simEvent<RandomLossLM<C, G> >::rrGranular = 1./256.;// 2^8
+    // const Real simEvent<RandomLossLM>::rrGranular = 1./256.;// 2^8
+
+    /*! Random spot recovery rate loss model simulation for an arbitrary copula.
+    */
+    template<class copulaPolicy, class USNG = SobolRsg>
+    class RandomLossLM : public RandomLM<RandomLossLM, copulaPolicy, USNG>
+    {
+    private:
+        typedef simEvent<RandomLossLM> defaultSimEvent;
+
+        const SpotRecoveryLatentModel<copulaPolicy> copula_;
+       // for time inversion:
+        Real accuracy_;
+    public:
+        RandomLossLM(
+            const SpotRecoveryLatentModel<copulaPolicy>& copula,
+            Size nSims = 0,
+            Real accuracy = 1.e-6, 
+            BigNatural seed = 2863311530);
+
+        // grant access to static polymorphism:
+        /* While this works on g++, VC9 refuses to compile it.
+        Not completely sure whos right; individually making friends of the 
+        calling members or writting explicitly the derived class T parameters 
+        throws the same errors. It might not work either for other versions of
+        MS compilers; in that case this test has to be extended to 
+        !defined(_MSC_VER)
+        The access is then open to the member fucntions.
+        */
+#if !defined(QL_PATCH_MSVC90)
+        friend class RandomLM<RandomLossLM, copulaPolicy, USNG>;
+    protected:
+#else
+    public:
+#endif
+        void nextSample(const std::vector<Real>& values) const;
+        // see not on randomdefaultlatentmodel
+        void initDates() const {
+            /* Precalculate horizon time default probabilities (used to 
+              determine if the default took place and subsequently compute its 
+              event time)
+            */
+            Date today = Settings::instance().evaluationDate();
+            Date maxHorizonDate = today  + Period(this->maxHorizon_, Days);
+
+            const boost::shared_ptr<Pool>& pool = this->basket_->pool();
+            for(Size iName=0; iName < this->basket_->size(); ++iName)//use'live'basket
+                horizonDefaultPs_.push_back(pool->get(pool->names()[iName]).
+                    defaultProbability(this->basket_->defaultKeys()[iName])
+                        ->defaultProbability(maxHorizonDate, true));
+        }
+       Real getEventRecovery(const defaultSimEvent& evt) const {
+  //       Real getEventRecovery(const simEvent<RandomLossLM<copulaPolicy, USNG> >& evt) const {
+            return evt.recovery();
+        }
+    protected:
+        Real latentVarValue(const std::vector<Real>& factorsSample, 
+            Size iVar) const {
+                return copula_.latentVarValue(factorsSample, iVar);
+        }
+        Size basketSize() const { return this->basket_->size(); }
+        // conditional to default, defined as spot-recovery.
+        Real conditionalRecovery(Real latentVarSample, Size iName, 
+            const Date& d) const;
+    private:
+        void resetModel() /*const*/ {
+            /* Explore: might save recalculation if the basket is the same 
+            (some situations, like BC or control variates) in that case do not 
+            update, only reset the copula's basket.
+            */
+            copula_.resetBasket(this->basket_.currentLink());
+
+            QL_REQUIRE(2 * this->basket_->size() == copula_.size(),
+                "Incompatible basket and model sizes.");
+            // invalidate current calculations if any and notify observers
+            LazyObject::update();
+        }
+        // Default probabilities for each name at the time of the maximun 
+        //   horizon date. Cached for perf.
+        mutable std::vector<Probability> horizonDefaultPs_;
+    };
+
 
 
 
@@ -132,8 +150,9 @@ namespace QuantLib {
     void RandomLossLM<C, URNG>::nextSample(
         const std::vector<Real>& values) const 
     {
-        const boost::shared_ptr<Pool>& pool = basket_->pool();
-        simsBuffer_.push_back(std::vector<defaultSimEvent> ());
+        const boost::shared_ptr<Pool>& pool = this->basket_->pool();
+        this->simsBuffer_.push_back(std::vector<defaultSimEvent> ());
+//        this->simsBuffer_.push_back(std::vector<simEvent<RandomLossLM> > ());
 
         // half the model is defaults, the other half are RRs...
         for(Size iName=0; iName<copula_.size()/2; iName++) {
@@ -153,7 +172,7 @@ namespace QuantLib {
             if (horizonDefaultPs_[iName] >= simDefaultProb) {
                 const Handle<DefaultProbabilityTermStructure>& dfts = 
                     pool->get(pool->names()[iName]).  // use 'live' names
-                    defaultProbability(basket_->defaultKeys()[iName]);
+                    defaultProbability(this->basket_->defaultKeys()[iName]);
                 // compute and store default time with respect to the 
                 //  curve ref date:
                 Size dateSTride =
@@ -180,8 +199,9 @@ namespace QuantLib {
                 Real recovery = 
                     copula_.conditionalRecovery(latentRRVarSample, iName, 
                         today+Period(static_cast<Integer>(dateSTride), Days));
-                simsBuffer_.back().push_back(
-                   defaultSimEvent(iName, dateSTride, recovery));
+                this->simsBuffer_.back().push_back(
+                  defaultSimEvent(iName, dateSTride, recovery));
+  //                  simEvent<RandomLossLM>(iName, dateSTride, recovery));
                 //emplace_back
             }
         /* Used to remove sims with no events. Uses less memory, faster 
@@ -206,11 +226,11 @@ namespace QuantLib {
     : ///////////////////////////basket_(basket), 
       accuracy_(accuracy), 
       copula_(copula), //<<-------------------------------------------------------------------------------CHECK THIS COPY
-      RandomLM(copula.numFactors(), copula.size(), copula.copula(), 
+      RandomLM<RandomLossLM, C, URNG>(copula.numFactors(), copula.size(), copula.copula(), 
           nSims, seed)
     {
         // redundant through basket?
-        registerWith(Settings::instance().evaluationDate());
+        this->registerWith(Settings::instance().evaluationDate());
     }
 
 

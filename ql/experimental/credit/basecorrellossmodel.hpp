@@ -198,6 +198,7 @@ namespace QuantLib {
     would be possible.
     */
     // Spezs in cpp file?
+    template<>
     void BaseCorrelationLossModel<GaussianLHPLossModel, 
         BilinearInterpolation>::setupModels() const 
     {
@@ -212,6 +213,7 @@ namespace QuantLib {
         basketDetach_->setLossModel(scalarCorrelModelDetach_);
     }
 
+    template<>
     void BaseCorrelationLossModel<GaussianBinomialLossModel, 
         BilinearInterpolation>::setupModels() const 
     {
@@ -219,12 +221,12 @@ namespace QuantLib {
             boost::make_shared<GaussianConstantLossLM>(
                 Handle<Quote>(localCorrelationAttach_), recoveries_, 
                 LatentModelIntegrationType::GaussianQuadrature, 
-                recoveries_.size());
+                recoveries_.size(), copulaTraits_);
         boost::shared_ptr<GaussianConstantLossLM> lmD = 
             boost::make_shared<GaussianConstantLossLM>(
                 Handle<Quote>(localCorrelationDetach_), recoveries_, 
                 LatentModelIntegrationType::GaussianQuadrature, 
-                recoveries_.size());
+                recoveries_.size(), copulaTraits_);
         scalarCorrelModelAttach_ = 
             boost::make_shared<GaussianBinomialLossModel>(lmA);
         scalarCorrelModelDetach_ = 
@@ -237,6 +239,7 @@ namespace QuantLib {
 
     }
 
+    template<>
     void BaseCorrelationLossModel<TBinomialLossModel, 
         BilinearInterpolation>::setupModels() const 
     {

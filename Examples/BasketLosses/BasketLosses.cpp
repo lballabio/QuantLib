@@ -158,7 +158,9 @@ int main(int, char* []) {
         // --- G Inhomogeneous model ---------------
         boost::shared_ptr<GaussianDefProbLM> gLM(
             boost::make_shared<GaussianDefProbLM>(fctrsWeights, 
-            LatentModelIntegrationType::GaussianQuadrature));
+            LatentModelIntegrationType::GaussianQuadrature,
+            // g++ requires this when using make_shared
+            GaussianCopulaPolicy::initTraits()));
         Size numBuckets = 100;
         boost::shared_ptr<DefaultLossModel> inhomogeneousLM(
             boost::make_shared<InhomogeneousPoolLossModel>(gLM, 
@@ -170,7 +172,7 @@ int main(int, char* []) {
 
         // --- G Random model ---------------------
         // Gaussian random joint default model:
-        Size numSimulations = 1000;
+        Size numSimulations = 100000;
         Size numCoresUsed = 4;
         // Sobol, many cores
         boost::shared_ptr<DefaultLossModel> rdlmG(
@@ -212,7 +214,8 @@ int main(int, char* []) {
             std::vector<Real>(1, std::sqrt(factorValue)));
         Real modelA = 2.2;
         GaussianSpotLossLM sptLG(fctrsWeightsRR, recoveries, modelA,
-            LatentModelIntegrationType::GaussianQuadrature);
+            LatentModelIntegrationType::GaussianQuadrature,
+            GaussianCopulaPolicy::initTraits());
         TSpotLossLM sptLT(fctrsWeightsRR, recoveries, modelA,
             LatentModelIntegrationType::GaussianQuadrature, initT);
 
@@ -257,54 +260,54 @@ int main(int, char* []) {
 
 
 
-        // Base Correlation model set up to test cocherence with base LHP model
-        std::vector<Period> bcTenors;
-        bcTenors.push_back(Period(1, Years));
-        bcTenors.push_back(Period(5, Years));
-        std::vector<Real> bcLossPercentages;
-        bcLossPercentages.push_back(0.03);
-        bcLossPercentages.push_back(0.12);
-        std::vector<std::vector<Handle<Quote> > > correls;
-        // 
-        std::vector<Handle<Quote> > corr1Y;
-        // 3%
-        corr1Y.push_back(Handle<Quote>(boost::shared_ptr<Quote>(
-            new SimpleQuote(fctrsWeights[0][0] * fctrsWeights[0][0]))));
-        // 12%
-        corr1Y.push_back(Handle<Quote>(boost::shared_ptr<Quote>(
-            new SimpleQuote(fctrsWeights[0][0] * fctrsWeights[0][0]))));
-        correls.push_back(corr1Y);
-        std::vector<Handle<Quote> > corr2Y;
-        // 3%
-        corr2Y.push_back(Handle<Quote>(boost::shared_ptr<Quote>(
-            new SimpleQuote(fctrsWeights[0][0] * fctrsWeights[0][0]))));
-        // 12%
-        corr2Y.push_back(Handle<Quote>(boost::shared_ptr<Quote>(
-            new SimpleQuote(fctrsWeights[0][0] * fctrsWeights[0][0]))));
-        correls.push_back(corr2Y);
-        boost::shared_ptr<BaseCorrelationTermStructure<BilinearInterpolation> > 
-          correlSurface(
-            new BaseCorrelationTermStructure<BilinearInterpolation>(
-                // first one would do, all should be the same.
-                defTS[0]->settlementDays(),
-                defTS[0]->calendar(),
-                Unadjusted,
-                bcTenors,
-                bcLossPercentages,
-                correls,
-                Actual365Fixed()
-            )
-        );
-        Handle<BaseCorrelationTermStructure<BilinearInterpolation> > 
-            correlHandle(correlSurface);
-        boost::shared_ptr<DefaultLossModel> bcLMG_LHP_Bilin(
-            boost::make_shared<GaussianLHPFlatBCLM>(correlHandle, recoveries));
+        //////// Base Correlation model set up to test cocherence with base LHP model
+        //////std::vector<Period> bcTenors;
+        //////bcTenors.push_back(Period(1, Years));
+        //////bcTenors.push_back(Period(5, Years));
+        //////std::vector<Real> bcLossPercentages;
+        //////bcLossPercentages.push_back(0.03);
+        //////bcLossPercentages.push_back(0.12);
+        //////std::vector<std::vector<Handle<Quote> > > correls;
+        //////// 
+        //////std::vector<Handle<Quote> > corr1Y;
+        //////// 3%
+        //////corr1Y.push_back(Handle<Quote>(boost::shared_ptr<Quote>(
+        //////    new SimpleQuote(fctrsWeights[0][0] * fctrsWeights[0][0]))));
+        //////// 12%
+        //////corr1Y.push_back(Handle<Quote>(boost::shared_ptr<Quote>(
+        //////    new SimpleQuote(fctrsWeights[0][0] * fctrsWeights[0][0]))));
+        //////correls.push_back(corr1Y);
+        //////std::vector<Handle<Quote> > corr2Y;
+        //////// 3%
+        //////corr2Y.push_back(Handle<Quote>(boost::shared_ptr<Quote>(
+        //////    new SimpleQuote(fctrsWeights[0][0] * fctrsWeights[0][0]))));
+        //////// 12%
+        //////corr2Y.push_back(Handle<Quote>(boost::shared_ptr<Quote>(
+        //////    new SimpleQuote(fctrsWeights[0][0] * fctrsWeights[0][0]))));
+        //////correls.push_back(corr2Y);
+        //////boost::shared_ptr<BaseCorrelationTermStructure<BilinearInterpolation> > 
+        //////  correlSurface(
+        //////    new BaseCorrelationTermStructure<BilinearInterpolation>(
+        //////        // first one would do, all should be the same.
+        //////        defTS[0]->settlementDays(),
+        //////        defTS[0]->calendar(),
+        //////        Unadjusted,
+        //////        bcTenors,
+        //////        bcLossPercentages,
+        //////        correls,
+        //////        Actual365Fixed()
+        //////    )
+        //////);
+        //////Handle<BaseCorrelationTermStructure<BilinearInterpolation> > 
+        //////    correlHandle(correlSurface);
+        //////boost::shared_ptr<DefaultLossModel> bcLMG_LHP_Bilin(
+        //////    boost::make_shared<GaussianLHPFlatBCLM>(correlHandle, recoveries));
 
-        theBskt->setLossModel(bcLMG_LHP_Bilin);
+        //////theBskt->setLossModel(bcLMG_LHP_Bilin);
 
-        std::cout << "Base Correlation GLHP Expected 10-Yr Losses: "  
-            << std::endl;
-        std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
+        //////std::cout << "Base Correlation GLHP Expected 10-Yr Losses: "  
+        //////    << std::endl;
+        //////std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
 
 
 

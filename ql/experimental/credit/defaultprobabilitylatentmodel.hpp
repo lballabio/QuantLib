@@ -102,13 +102,6 @@ namespace QuantLib {
             QL_REQUIRE(basket_->size() == factorWeights_.size(), 
                 "Incompatible new basket and model sizes.");
         }
-        // \todo Reconsider this problem:
-        /* Acces to loss models owning this LM, dont want to have another copy
-        there ...*/
-        //const boost::shared_ptr<Basket>& basket() const {return  basket_};
-        // ...or make friends every class that uses it and keep hiding members:
-        template<typename copulaPolicy, typename R> friend class 
-            RandomDefaultLM;
     public:
         /*! Returns the probability of default of a given name conditional on
         the realization of a given set of values of the model independent

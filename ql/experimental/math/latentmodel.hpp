@@ -52,7 +52,11 @@ namespace QuantLib {
             std::vector<Real>& operator()(Real d,  Disposable<std::vector<Real> > v) {
                 std::transform(v.begin(), v.end(), v.begin(), 
                     boost::lambda::_1 * d);
-            return v;// g++ warning!
+            return v;// g++ warning!- claims returning reference to local
+            // but cant do anything about the disposability because of the 
+            // integrand signature (see when used). Some g++ setups might
+            // refuse compilation, in that case the binding in 
+            // 'integratedExpectedValue' might have to be removed
             }
             //typedef std::vector<Real>& result_type;
             //std::vector<Real>& operator()(Real d,  std::vector<Real>& v) {
@@ -61,7 +65,7 @@ namespace QuantLib {
             //return v;
             //}
         };
-
+    }
 
         //! \name Latent model direct integration facility.
         //@{
@@ -106,7 +110,6 @@ namespace QuantLib {
          virtual ~IntegrationBase() {} 
         };
         //@}
-    }
 	
     //typedef 
 	namespace LatentModelIntegrationType {// gcc reports value collision with heston engine (?!)
@@ -649,7 +652,7 @@ Yet it is not entirely true that quotes might be used only in pricing, think sen
 
 
 
-    namespace {
+    //namespace {
         /* class template specializations. I havent use CRTP type cast directly
         because the signature of the integrators is different, grid integration
         needs the domain. */
@@ -687,7 +690,7 @@ Yet it is not entirely true that quotes might be used only in pricing, think sen
             virtual ~IntegrationBase() {}
             const std::vector<Real> a_, b_;
         };
-    }
+    //}
 
     // Defines ----------------------------------------------------------------
 

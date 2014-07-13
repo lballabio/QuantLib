@@ -408,6 +408,7 @@ AC_CONFIG_FILES([
     m4/Makefile
     Docs/Makefile
     Examples/Makefile
+    Examples/BasketLosses/Makefile
     Examples/BermudanSwaption/Makefile
     Examples/Bonds/Makefile
     Examples/CallableBonds/Makefile

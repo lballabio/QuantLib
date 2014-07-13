@@ -4,10 +4,15 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    basecorrellossmodel.hpp \
+    basecorrelationstructure.hpp \
     basket.hpp \
+    binomiallossmodel.hpp \
     blackcdsoptionengine.hpp \
     cdo.hpp \
     cdsoption.hpp \
+    constantlosslatentmodel.hpp \
+    correlationstructure.hpp \
     defaultevent.hpp \
     defaultlossmodel.hpp \
     defaultprobabilitykey.hpp \
@@ -16,37 +21,50 @@ this_include_HEADERS = \
     distribution.hpp \
     factorspreadedhazardratecurve.hpp \
     gaussianlhplossmodel.hpp \
+    inhomogeneouspooldef.hpp \
+    integralcdoengine.hpp \
+    integralntdengine.hpp \
     issuer.hpp \
     loss.hpp \
     lossdistribution.hpp \
+    midpointcdoengine.hpp \
     nthtodefault.hpp \
     onefactorcopula.hpp \
     onefactorgaussiancopula.hpp \
     onefactorstudentcopula.hpp \
     pool.hpp \
+    randomdefaultlatentmodel.hpp \
     randomdefaultmodel.hpp \
+    randomlosslatentmodel.hpp \
     recoveryratemodel.hpp \
     recoveryratequote.hpp \
     recursivecdoengine.hpp \
     riskyassetswap.hpp \
     riskyassetswapoption.hpp \
     riskybond.hpp \
+    spotlosslatentmodel.hpp \
     spreadedhazardratecurve.hpp \
-    syntheticcdo.hpp \
-    syntheticcdoengines.hpp
+    syntheticcdo.hpp
 
 libCredit_la_SOURCES = \
+    basecorrellossmodel.cpp \
+    basecorrelationstructure.cpp \
     basket.cpp \
     blackcdsoptionengine.cpp \
     cdo.cpp \
     cdsoption.cpp \
+    correlationstructure.cpp \
     defaultevent.cpp \
     defaultprobabilitykey.cpp \
     defaulttype.cpp \
     distribution.cpp \
-    gaussianlhplossmodel.hpp \
+    gaussianlhplossmodel.cpp \
+    inhomogeneouspooldef.cpp \
+    integralcdoengine.cpp \
+    integralntdengine.cpp \
     issuer.cpp \
     lossdistribution.cpp \
+    midpointcdoengine.cpp \
     nthtodefault.cpp \
     onefactorcopula.cpp \
     onefactorgaussiancopula.cpp \
@@ -58,8 +76,7 @@ libCredit_la_SOURCES = \
     riskyassetswap.cpp \
     riskyassetswapoption.cpp \
     riskybond.cpp \
-    syntheticcdo.cpp \
-    syntheticcdoengines.cpp
+    syntheticcdo.cpp
 
 noinst_LTLIBRARIES = libCredit.la
 
