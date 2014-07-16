@@ -158,25 +158,33 @@ namespace QuantLib {
                        discounting));
     }
 
-    shared_ptr<SwapIndex> SwapIndex::clone(const Period &tenor,
-                                           const bool copy) const {
-        // caching mechanism
-        if (lastTenor_ != tenor || copy) {
+    shared_ptr<SwapIndex>
+    SwapIndex::clone(const Period& tenor) const {
 
-            if (exogenousDiscount_)
-                lastIndex_ = shared_ptr<SwapIndex>(new SwapIndex(
-                    familyName(), tenor, fixingDays(), currency(),
-                    fixingCalendar(), fixedLegTenor(), fixedLegConvention(),
-                    dayCounter(), iborIndex(), discountingTermStructure()));
-            else
-                lastIndex_ = shared_ptr<SwapIndex>(new SwapIndex(
-                    familyName(), tenor, fixingDays(), currency(),
-                    fixingCalendar(), fixedLegTenor(), fixedLegConvention(),
-                    dayCounter(), iborIndex()));
+        if (exogenousDiscount_)
+            return shared_ptr<SwapIndex>(new
+                SwapIndex(familyName(),
+                          tenor,
+                          fixingDays(),
+                          currency(),
+                          fixingCalendar(),
+                          fixedLegTenor(),
+                          fixedLegConvention(),
+                          dayCounter(),
+                          iborIndex(),
+                          discountingTermStructure()));
+        else
+            return shared_ptr<SwapIndex>(new
+                SwapIndex(familyName(),
+                          tenor,
+                          fixingDays(),
+                          currency(),
+                          fixingCalendar(),
+                          fixedLegTenor(),
+                          fixedLegConvention(),
+                          dayCounter(),
+                          iborIndex()));
 
-            lastTenor_ = tenor;
-        }
-        return lastIndex_;
     }
 
     OvernightIndexedSwapIndex::OvernightIndexedSwapIndex(

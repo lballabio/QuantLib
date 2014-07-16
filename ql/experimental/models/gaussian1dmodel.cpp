@@ -72,8 +72,7 @@ namespace QuantLib {
 
         Schedule sched, floatSched;
 
-        boost::shared_ptr<VanillaSwap> underlying =
-            swapIdx->clone(tenor,false)->underlyingSwap(fixing);
+        boost::shared_ptr<VanillaSwap> underlying = underlyingSwap(swapIdx, fixing, tenor);
 
         sched = underlying->fixedSchedule();
 
@@ -125,8 +124,8 @@ namespace QuantLib {
             swapIdx->discountingTermStructure(); // might be empty, then use
                                                  // model curve
 
-        boost::shared_ptr<VanillaSwap> underlying =
-            swapIdx->clone(tenor,false)->underlyingSwap(fixing);
+        boost::shared_ptr<VanillaSwap> underlying = underlyingSwap(swapIdx, fixing, tenor);
+
         Schedule sched = underlying->fixedSchedule();
 
         Real annuity = 0.0;

@@ -73,8 +73,8 @@ namespace QuantLib {
         /*! \warning Relinking the term structure underlying the index will
                      not have effect on the returned swap.
         */
-        boost::shared_ptr<VanillaSwap>
-        underlyingSwap(const Date &fixingDate) const;
+        boost::shared_ptr<VanillaSwap> underlyingSwap(
+                                                const Date& fixingDate) const;
         //@}
         //! \name Other methods
         //@{
@@ -86,9 +86,8 @@ namespace QuantLib {
                         const Handle<YieldTermStructure>& forwarding,
                         const Handle<YieldTermStructure>& discounting) const;
         //! returns a copy of itself with different tenor
-        //! if copy is false, a cached result may be returned
-        virtual boost::shared_ptr<SwapIndex>
-        clone(const Period &tenor, const bool copy = true) const;
+        virtual boost::shared_ptr<SwapIndex> clone(
+                        const Period& tenor) const;
         // @}
       protected:
         Rate forecastFixing(const Date& fixingDate) const;
@@ -102,10 +101,6 @@ namespace QuantLib {
         // is used multiple time to forecast changing fixing
         mutable boost::shared_ptr<VanillaSwap> lastSwap_;
         mutable Date lastFixingDate_;
-        // cache data to avoid index recreating when a clone with a
-        // different tenor is required, but no copy
-        mutable boost::shared_ptr<SwapIndex> lastIndex_;
-        mutable Period lastTenor_;
     };
 
 
