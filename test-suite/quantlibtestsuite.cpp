@@ -125,6 +125,7 @@
 #include "mclongstaffschwartzengine.hpp"
 #include "mersennetwister.hpp"
 #include "money.hpp"
+#include "noarbsabr.hpp"
 #include "nthtodefault.hpp"
 #include "ode.hpp"
 #include "operators.hpp"
@@ -370,6 +371,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(InflationVolTest::suite());
     test->add(MargrabeOptionTest::suite());
     test->add(MarkovFunctionalTest::suite());
+    test->add(NoArbSabrTest::suite());
     test->add(NthToDefaultTest::suite());
     test->add(OdeTest::suite());
     test->add(PagodaOptionTest::suite());
