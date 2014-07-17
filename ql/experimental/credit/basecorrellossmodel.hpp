@@ -107,11 +107,14 @@ namespace QuantLib {
           copulaTraits_(traits)
         { 
             registerWith(correlTS);
+            registerWith(Settings::instance().evaluationDate());
         }
     private:
         // react to base correl surface notifications (quotes or reference date)
         void update() {
             setupModels();
+            // tell basket to notify instruments, etc, we are invalid
+            if(!basket_.empty()) basket_->notifyObservers();
         }
 
         /* Update model caches after basket assignement. */

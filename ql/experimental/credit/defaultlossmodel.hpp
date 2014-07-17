@@ -41,6 +41,12 @@ namespace QuantLib {
     /*! Default loss model interface definition.
     Allows communication between the basket and specific algorithms. Intended to
     hold any kind of portfolio joint loss, latent models, top-down,....
+
+    An inconvenience of this design as opposed to the full arguments/results
+    is that when pricing several derivatives instruments on the same basket
+    not all the pricing engines would require or perform better under the 
+    same loss model and when pricing a portfolio of those there might be some
+    switching on the basket loss models, which might require recalculations.
     */
     class DefaultLossModel : public Observable {
      /* Protection together with frienship to avoid the need of checking the 
@@ -53,8 +59,6 @@ namespace QuantLib {
         mutable RelinkableHandle<Basket> basket_;
 
         DefaultLossModel() { }
-     ///////////////////////////   void update() {notifyObservers();}
-
         //! \name Statistics
         //@{
         /* Non mandatory implementations, fails if client is not providing what 
@@ -130,7 +134,12 @@ namespace QuantLib {
         virtual Probability probAtLeastNEvents(Size n, const Date& d) const {
             QL_FAIL("probAtLeastNEvents Not implemented for this model.");
         }
-
+        /*! Expected RR for name conditinal to default by that date.
+        */
+        virtual Real expectedRecovery(const Date&, Size iName, 
+            const DefaultProbKey&) const {
+            QL_FAIL("expected recovery Not implemented for this model.");
+        }
         //@}
 
         /*! Send a reference to the basket to allow the model to read the 

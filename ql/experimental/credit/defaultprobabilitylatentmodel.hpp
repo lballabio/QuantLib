@@ -130,6 +130,10 @@ namespace QuantLib {
                 inverseCumulativeY(prob, iName), iName, mktFactors);
         }
     protected:
+        void update() {
+            if(basket_) basket_->notifyObservers();
+            LatentModel<copulaPolicy>::update();
+        }
         /*! Returns the probability of default of a given name conditional on
         the realization of a given set of values of the model independent
         factors. The date at which the probability is given is implicit in the
@@ -291,7 +295,7 @@ namespace QuantLib {
             lowest one. This is inneficient, there shouldnt be any need to 
             go through the invalid ones. Use combinations of n elements.
 
-            For more efficient methods see other default latent models.
+            See integration in O'Kane for homogeneous ntds.
             */
             // first position with as many defaults as desired:
             Size poolSize = basket_->size();//move to 'livesize'

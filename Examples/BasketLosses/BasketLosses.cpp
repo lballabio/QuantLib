@@ -176,7 +176,7 @@ int main(int, char* []) {
         Size numCoresUsed = 4;
         // Sobol, many cores
         boost::shared_ptr<DefaultLossModel> rdlmG(
-            boost::make_shared<RandomDefaultLM<GaussianCopulaPolicy> >(*gLM.get(), 
+            boost::make_shared<RandomDefaultLM<GaussianCopulaPolicy> >(gLM, 
                 recoveries, numSimulations, 1.e-6, 2863311530));
         // Monothread only
         /*
@@ -193,7 +193,7 @@ int main(int, char* []) {
         // --- StudentT Random model ---------------------
         // Sobol, many cores
         boost::shared_ptr<DefaultLossModel> rdlmT(
-            boost::make_shared<RandomDefaultLM<TCopulaPolicy> >(*ktTLossLM.get(), 
+            boost::make_shared<RandomDefaultLM<TCopulaPolicy> >(ktTLossLM, 
                 recoveries, numSimulations, 1.e-6, 2863311530));
         /*
         // Monothread only, direct/copula inversion
@@ -213,11 +213,11 @@ int main(int, char* []) {
         std::vector<std::vector<Real> > fctrsWeightsRR(2 * hazardRates.size(), 
             std::vector<Real>(1, std::sqrt(factorValue)));
         Real modelA = 2.2;
-        GaussianSpotLossLM sptLG(fctrsWeightsRR, recoveries, modelA,
+        boost::shared_ptr<GaussianSpotLossLM> sptLG(new GaussianSpotLossLM(fctrsWeightsRR, recoveries, modelA,
             LatentModelIntegrationType::GaussianQuadrature,
-            GaussianCopulaPolicy::initTraits());
-        TSpotLossLM sptLT(fctrsWeightsRR, recoveries, modelA,
-            LatentModelIntegrationType::GaussianQuadrature, initT);
+            GaussianCopulaPolicy::initTraits()));
+        boost::shared_ptr<TSpotLossLM> sptLT(new TSpotLossLM(fctrsWeightsRR, recoveries, modelA,
+            LatentModelIntegrationType::GaussianQuadrature, initT));
 
 
         // --- G Random Loss model ---------------------

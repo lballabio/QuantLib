@@ -115,20 +115,20 @@ int main(int, char* []) {
             std::vector<Real>(1, std::sqrt(0.1)));
         // --- Default Latent models -------------------------------------
         // Gaussian integrable joint default model:
-        GaussianDefProbLM lmG(fctrsWeights, 
+        boost::shared_ptr<GaussianDefProbLM> lmG(new GaussianDefProbLM(fctrsWeights, 
             LatentModelIntegrationType::GaussianQuadrature,
 			GaussianCopulaPolicy::initTraits() // otherwise gcc screams
-			);
+			));
         // Define StudentT copula
         // this is as far as we can be from the Gaussian, 2 T_3 factors:
         std::vector<Integer> ordersT(2, 3);
         TCopulaPolicy::initTraits iniT;
         iniT.tOrders = ordersT;
         // StudentT integrable joint default model:
-        TDefProbLM lmT(fctrsWeights, 
+        boost::shared_ptr<TDefProbLM> lmT(new TDefProbLM(fctrsWeights, 
             // LatentModelIntegrationType::GaussianQuadrature,
             LatentModelIntegrationType::Trapezoid,
-            iniT);
+            iniT));
 
         // --- Default Loss models ----------------------------------------
         // Gaussian random joint default model:
@@ -183,15 +183,15 @@ int main(int, char* []) {
         std::vector<Probability> probEventsTLatent, probEventsGLatent, 
             probEventsTRandLoss, probEventsGRandLoss;
         //
-        lmT.resetBasket(theBskt);
+        lmT->resetBasket(theBskt);
         for(Size numEvts=0; numEvts <=theBskt->size(); numEvts++) {
-            probEventsTLatent.push_back(lmT.probAtLeastNEvents(numEvts, 
+            probEventsTLatent.push_back(lmT->probAtLeastNEvents(numEvts, 
                 calcDate));
          }
         //
-        lmG.resetBasket(theBskt);
+        lmG->resetBasket(theBskt);
         for(Size numEvts=0; numEvts <=theBskt->size(); numEvts++) {
-            probEventsGLatent.push_back(lmG.probAtLeastNEvents(numEvts, 
+            probEventsGLatent.push_back(lmG->probAtLeastNEvents(numEvts, 
                 calcDate));
          }
         //
@@ -212,20 +212,20 @@ int main(int, char* []) {
         std::vector<std::vector<Real> > correlsGlm, correlsTlm, correlsGrand, 
             correlsTrand;
         //
-        lmG.resetBasket(theBskt);
+        lmG->resetBasket(theBskt);
         for(Size iName1=0; iName1 <theBskt->size(); iName1++) {
             std::vector<Real> tmp;
             for(Size iName2=0; iName2 <theBskt->size(); iName2++)
-                tmp.push_back(lmG.defaultCorrelation(correlDate, 
+                tmp.push_back(lmG->defaultCorrelation(correlDate, 
                     iName1, iName2));
             correlsGlm.push_back(tmp);
         }
         //
-        lmT.resetBasket(theBskt);
+        lmT->resetBasket(theBskt);
         for(Size iName1=0; iName1 <theBskt->size(); iName1++) {
             std::vector<Real> tmp;
             for(Size iName2=0; iName2 <theBskt->size(); iName2++)
-                tmp.push_back(lmT.defaultCorrelation(correlDate, 
+                tmp.push_back(lmT->defaultCorrelation(correlDate, 
                     iName1, iName2));
             correlsTlm.push_back(tmp);
         }

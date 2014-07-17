@@ -81,7 +81,8 @@ namespace QuantLib {
         trancheNotional_ = detachmentAmount_ - attachmentAmount_;
     }
 
-
+/*\todo Alternatively send a relinkable handle so it can be changed from the outside. In that case reconsider the observability chain.
+*/
     void Basket::setLossModel(
         const boost::shared_ptr<DefaultLossModel>& lossModel) {
 
@@ -710,12 +711,12 @@ Real Basket::expectedTrancheLoss(const Date& d) const {
 
 
 
-////////////    Real Basket::recoveryRate(const Date& d, Size iName) const {
-//////////////////////////////////        QL_REQUIRE(lossModel_, "Basket has no loss model assigned");
-////////////        calculate();
-////////////    ///SEE comment in expectedTrancheLoss          lossModel_->initialize(*this);
-////////////        return lossModel_->recoveryValueImpl(d, iName, pool_->defaultKeys());//or remaining keys????
-////////////    }
+    Real Basket::recoveryRate(const Date& d, Size iName) const {
+//////////////////////        QL_REQUIRE(lossModel_, "Basket has no loss model assigned");
+        calculate();
+    ///SEE comment in expectedTrancheLoss          lossModel_->initialize(*this);
+        return lossModel_->expectedRecovery(d, iName, pool_->defaultKeys()[iName]);//or remaining keys????
+    }
 
 
 }

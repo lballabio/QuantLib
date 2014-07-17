@@ -104,7 +104,7 @@ namespace QuantLib {
         const Real nSteps_;
         const Real delta_; 
     };
-
+///// ADD TH EMISSING MEMBERS FROM LOSS DISTRIB!!!!!!!!
 }
 
 #endif

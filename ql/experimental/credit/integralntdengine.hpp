@@ -26,6 +26,7 @@ namespace QuantLib {
 
     class YieldTermStructure;
 
+    // Varying recoveries allowed, allow now for heterogeneous notionals
     class IntegralNtdEngine : public NthToDefault::engine {
     public:
         IntegralNtdEngine(const Period& integrationStep,

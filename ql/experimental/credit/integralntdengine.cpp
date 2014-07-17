@@ -36,22 +36,40 @@ namespace QuantLib {
         Real accrualValue = 0.0;
         Real claimValue = 0.0;
         Date d, d0;
+        /* Given the expense of probsBeingNthEvent both in integrable and 
+        monte carlo algorithms this engine tests who to call.
+        Warning: This is not entirely a basket property but of the model too.
+        The basket has to have all notionals equal but it is the model which
+        determines the recovery; having all the market recoveries equal is not
+        enough since we might be using a loss model which is stochastic in the
+        recovery rates.
+        */
+        bool basketIsHomogeneous = true;// hardcoded by now
+
         for (Size i = 0; i < arguments_.premiumLeg.size(); i++) {
             boost::shared_ptr<FixedRateCoupon> coupon =
                 boost::dynamic_pointer_cast<FixedRateCoupon>(
                     arguments_.premiumLeg[i]);
             Date d = arguments_.premiumLeg[i]->date();
             if (d > discountCurve_->referenceDate()) {
+                /*
                 std::vector<Probability> probsTriggering =
                     arguments_.basket->probsBeingNthEvent(arguments_.ntdOrder, 
                         d);
                 Probability defaultProb = 
                     std::accumulate(probsTriggering.begin(), 
-                    probsTriggering.end(), 0.);
+                    probsTriggering.end(), 0.);/////////////////////////////////////// OVERKILL???? 1-probAtleastNevents is enough
+
+*/
+                // prob of contract not having been triggered by date of payment
+                Probability probNonTriggered = 
+                    1. - arguments_.basket->probAtLeastNEvents(
+                        arguments_.ntdOrder, d);
 
                 results_.premiumValue += arguments_.premiumLeg[i]->amount()
                     * discountCurve_->discount(d)
-                    * (1.0 - defaultProb);
+                    * probNonTriggered;
+                 ////   * (1.0 - defaultProb);
 
                 if (coupon->accrualStartDate() >= 
                     discountCurve_->referenceDate())
@@ -62,37 +80,59 @@ namespace QuantLib {
                 // do steps of specified size
                 d0 = d;
                 Period stepSize = integrationStepSize_;
+/*
                 probsTriggering =
-                    arguments_.basket->probsBeingNthEvent(arguments_.ntdOrder, 
+                    arguments_.basket->probsBeingNthEvent(arguments_.ntdOrder, ///////REDUNDANT?
                         d0);
-                Probability defProb0 = std::accumulate(probsTriggering.begin(), 
+                Probability defProb0 = std::accumulate(probsTriggering.begin(), ///OVERKILL????
                     probsTriggering.end(), 0.);
+*/
+                Probability defProb0 = arguments_.basket->probAtLeastNEvents(
+                        arguments_.ntdOrder, d0);
+                std::vector<Probability> probsTriggering, probsTriggering1;//<<<<<<<<<<<< write two while loops
                 do {
                     DiscountFactor disc = discountCurve_->discount(d);
-                    std::vector<Probability> probsTriggering1 =
-                        arguments_.basket->probsBeingNthEvent(
+
+                    Probability defProb1;
+                    if(basketIsHomogeneous) {//take test out of the while loop
+                        defProb1 = arguments_.basket->probAtLeastNEvents(
                             arguments_.ntdOrder, d);
-                    Probability defProb1 = 
-                        std::accumulate(probsTriggering1.begin(), 
+                        claimValue -= (defProb1-defProb0)
+                            * arguments_.basket->claim()->amount(d, 
+                                arguments_.notional, 
+                                arguments_.basket->recoveryRate(d, 0))
+                            * disc;
+
+                    }else{
+                        probsTriggering1 =
+                            arguments_.basket->probsBeingNthEvent(
+                                arguments_.ntdOrder, d);
+                        defProb1 = std::accumulate(probsTriggering1.begin(), 
                             probsTriggering1.end(), 0.);
+                        /*Recoveries might differ along names, depending on 
+                        which name is triggering the contract the loss will be 
+                        different  
+                        There is an issue here; MC engines can still be used since the prob of triggering the contract can be extracted from the simulation from the probsBeingNthEvent statistic. Yet, when the RR is stochastic the realized value of the RR is the expected one subject/conditional to the contract being triggered; not simply the expected value. For this reason the MC can not be used through the statistic but has to consume the simulations directly.
+                        */
+                        for(Size iName=0; 
+                            iName<arguments_.basket->remainingSize(); 
+                            iName++) 
+                        {
+                            claimValue -= (probsTriggering1[iName]-
+                                probsTriggering[iName])
+                                * arguments_.basket->claim()->amount(d, 
+                                    arguments_.notional,// [iName]! 
+                                    arguments_.basket->recoveryRate(d, iName))
+                                * disc;
+                        }
+                        probsTriggering = probsTriggering1;
+                    }
+
                     Probability dcfdd = defProb1 - defProb0;
                     defProb0 = defProb1;
 
                     if (arguments_.settlePremiumAccrual)
                         accrualValue += coupon->accruedAmount(d)*disc*dcfdd;
-                    //Recoveries might differ along names, depending on which 
-                    //name is triggering the contract the loss will be different
-                    for(Size iName=0; iName<arguments_.basket->remainingSize(); 
-                        iName++) {
-                        claimValue -= (probsTriggering1[iName]-
-                            probsTriggering[iName])
-                            * arguments_.basket->claim()->amount(d, 
-                                arguments_.notional, 
-                                arguments_.basket->recoveryRate(d, iName))
-                            * disc;
-                    }
-
-                    probsTriggering = probsTriggering1;
 
                     d0 = d;
                     d = d0 + stepSize;

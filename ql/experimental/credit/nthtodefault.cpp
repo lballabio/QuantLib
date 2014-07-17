@@ -60,6 +60,8 @@ namespace QuantLib {
 
         registerWith(basket_);
     }
+
+
 // SOME OF THESE ARE INLINES-----------------------------------------------------------------------------------
     Size NthToDefault::basketSize() const { return basket_->size(); }
 

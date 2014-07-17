@@ -211,6 +211,9 @@ namespace QuantLib {
                           _1)
                          ));
         }
+
+        ////// -----------------IMPLEMENT EXPECTED RECOVERY -----------------------------------
+
 /* NEED TO ADD DEFAULT TO ADD THIS METHOD
         Real conditionalExpLossRR(const Date& d, Size iName, 
             const std::vector<Real>& mktFactors) const 

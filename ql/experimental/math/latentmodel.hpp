@@ -252,7 +252,7 @@ namespace QuantLib {
     */
     template <class copulaPolicyImpl>
     class LatentModel 
-        : public virtual Observer 
+        : public virtual Observer , public virtual Observable 
     {//observer if factors as quotes
     public:
         void update();
@@ -749,11 +749,11 @@ Yet it is not entirely true that quotes might be used only in pricing, think sen
         Size nVariables,
         const typename Impl::initTraits& ini)
     : factorWeights_(nVariables, std::vector<Real>(1, 
-        singleFactorCorrel->value())),
+        std::sqrt(singleFactorCorrel->value()))),
       nFactors_(1), 
       nVariables_(nVariables),
       idiosyncFctrs_(nVariables, 
-        std::sqrt(1.-singleFactorCorrel->value()*singleFactorCorrel->value())),
+        std::sqrt(1.-singleFactorCorrel->value())),
       copula_(factorWeights_, ini),
       cachedMktFactor_(singleFactorCorrel)
     {
@@ -763,12 +763,17 @@ Yet it is not entirely true that quotes might be used only in pricing, think sen
 
     template <class Impl>
     void LatentModel<Impl>::update() {
-        // only registration with the single market correl quote
+        /* only registration with the single market correl quote. If we get 
+        register with something else remember that the quote stores correlation
+        and the model need factor values; which for one factor models are the
+        square root of the correlation.
+        */
         factorWeights_ = std::vector<std::vector<Real> >(nVariables_, 
-            std::vector<Real>(1, cachedMktFactor_->value()));
+            std::vector<Real>(1, std::sqrt(cachedMktFactor_->value())));
         idiosyncFctrs_ = std::vector<Real>(nVariables_, 
-            std::sqrt(1.-cachedMktFactor_->value()*cachedMktFactor_->value()));
+            std::sqrt(1.-cachedMktFactor_->value()));
         copula_ = copulaType(factorWeights_, copula_.getInitTraits());
+        notifyObservers();
     }
 
 

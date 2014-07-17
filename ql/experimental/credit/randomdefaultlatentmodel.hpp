@@ -20,6 +20,7 @@
 #ifndef quantlib_randomdefault_latent_model_hpp
 #define quantlib_randomdefault_latent_model_hpp
 
+#include <ql/math/beta.hpp>
 #include <ql/math/statistics/histogram.hpp>
 #include <ql/math/statistics/riskstatistics.hpp>
 #include <ql/math/solvers1d/brent.hpp>
@@ -122,6 +123,9 @@ namespace QuantLib {
           nSims_(nSims), seed_(seed) {}
 
         void update() {
+            simsBuffer_.clear();
+            // tell basket to notify instruments, etc, we are invalid
+            if(!basket_.empty()) basket_->notifyObservers();
             LazyObject::update();
         }
 
@@ -168,7 +172,16 @@ namespace QuantLib {
         */
         virtual Probability probAtLeastNEvents(Size n, const Date& d) const;
         /*! Order of results refers to the simulated (super)pool not the 
-        basket's pool.*/
+        basket's pool.
+        Notice that this statistic suffers from heavy dispersion. To see 
+        techniques to improve it (not implemented here) see:
+        Joshi, M., D. Kainth. 2004. Rapid and accurate development of prices 
+        and Greeks for nth to default credit swaps in the Li model. Quantitative
+        Finance, Vol. 4. Institute of Physics Publishing, London, UK, 266–275
+        and:
+        Chen, Z., Glasserman, P. 'Fast pricing of basket default swaps' in 
+        Operations Research Vol. 56, No. 2, March–April 2008, pp. 286–303
+        */
         virtual Disposable<std::vector<Probability> > probsBeingNthEvent(Size n,
             const Date& d) const;
         //! Pearsons' default probability correlation. 
@@ -630,7 +643,7 @@ namespace QuantLib {
         return splitVaRAndError(date, loss, 0.95)[0];
     }
 
-    // parallelize this one, it is really expensive
+    // parallelize this one(if possible), it is really expensive
  //   template<class D, class C, class URNG>
         template<template <class, class> class D, class C, class URNG>
 
@@ -812,7 +825,7 @@ namespace QuantLib {
     private:
         typedef simEvent<RandomDefaultLM> defaultSimEvent;
 
-        const DefaultLatentModel<copulaPolicy> copula_;
+        const boost::shared_ptr<DefaultLatentModel<copulaPolicy> > copula_;//<<<<<<<<<<<<<<<<<<<<WHY THIS IS NOT A CONSTANTLOSS LM WITH THE rr INCLUDED?? ........BECAUSE IT INCLUDES THE INTEGRATION AND IT WILL BE A LOSS MODEL TOO!!!
         const std::vector<Real> recoveries_;
         // for time inversion:
         Real accuracy_;
@@ -821,7 +834,7 @@ namespace QuantLib {
         //    recoveries... and drop the default value recovery vector...
         // \todo: Allow a constructor building its own default latent model.
         RandomDefaultLM(
-            const DefaultLatentModel<copulaPolicy>& copula,//////////////////////////// change to pointer!
+            const boost::shared_ptr<DefaultLatentModel<copulaPolicy> >& copula,//////////////////////////// change to pointer!
             const std::vector<Real>& recoveries = std::vector<Real>(),
             Size nSims = 0,// stats will crash on div by zero, FIX ME.
             Real accuracy = 1.e-6, 
@@ -864,23 +877,28 @@ namespace QuantLib {
         Real getEventRecovery(const defaultSimEvent& evt) const {
             return recoveries_[evt.nameIdx];
         }
+        Real expectedRecovery(const Date&, Size iName, 
+                    const DefaultProbKey&) const {
+            // deterministic
+            return recoveries_[iName];
+        }
     protected:
         Real latentVarValue(const std::vector<Real>& factorsSample, 
             Size iVar) const {
-            return copula_.latentVarValue(factorsSample, iVar);
+            return copula_->latentVarValue(factorsSample, iVar);
         }
         //allows statistics to know the portfolio size (could be moved to parent 
         //invoking duck typing on the variable name or a handle to the basket)
-        Size basketSize() const { return copula_.size(); }
+        Size basketSize() const { return copula_->size(); }//////////////////////////////and the basket? we have a basket too!!
     private:
         void resetModel() /*const*/ {
             /* Explore: might save recalculation if the basket is the same 
             (some situations, like BC or control variates) in that case do not 
             update, only reset the copula's basket.
             */
-            copula_.resetBasket(this->basket_.currentLink());
+            copula_->resetBasket(this->basket_.currentLink());
 
-            QL_REQUIRE(this->basket_->size() == copula_.size(), 
+            QL_REQUIRE(this->basket_->size() == copula_->size(), 
                 "Incompatible basket and model sizes.");
             QL_REQUIRE(recoveries_.size() == this->basket_->size(), 
                 "Incompatible basket and recovery sizes.");
@@ -924,11 +942,11 @@ namespace QuantLib {
         // starts with no events
         this->simsBuffer_.push_back(std::vector<defaultSimEvent> ());
 
-        for(Size iName=0; iName<copula_.size(); iName++) {
+        for(Size iName=0; iName<copula_->size(); iName++) {
             Real latentVarSample = 
-                copula_.latentVarValue(values, iName);
+                copula_->latentVarValue(values, iName);
             Probability simDefaultProb = 
-               copula_.cumulativeY(latentVarSample, iName);
+               copula_->cumulativeY(latentVarSample, iName);
             // If the default simulated lies before the max date:
             if (horizonDefaultPs_[iName] >= simDefaultProb) {
                 const Handle<DefaultProbabilityTermStructure>& dfts = 
@@ -967,7 +985,7 @@ namespace QuantLib {
 
     template<class C, class R> 
     RandomDefaultLM<C, R>::RandomDefaultLM(
-        const DefaultLatentModel<C>& copula,
+        const boost::shared_ptr<DefaultLatentModel<C> >& copula,
         const std::vector<Real>& recoveries,
         Size nSims,
         Real accuracy, 
@@ -975,7 +993,7 @@ namespace QuantLib {
       : copula_(copula), //<- renmae to latentModel_ or defautlLM_; why the copy? <<<<<<<<<<<<<<<<<
         accuracy_(accuracy),
         // set to 0 RR if empty, RRs to be ignored
-        recoveries_(recoveries.size()==0 ? std::vector<Real>(copula.size(), 0.)
+        recoveries_(recoveries.size()==0 ? std::vector<Real>(copula->size(), 0.)
             : recoveries),
         /* Anyone can shed any light into this one? To me MSCV is wrong to 
         require the removal of the parameters. 
@@ -986,11 +1004,12 @@ namespace QuantLib {
 #else
         RandomLM
 #endif
-        (copula.numFactors(), copula.size(), copula.copula(), nSims, seed )
+        (copula->numFactors(), copula->size(), copula->copula(), nSims, seed )
     {   
         // redundant through basket?
         this->registerWith(Settings::instance().evaluationDate());
-
+/************************************************************************************** WE HAVENT REGISTERD WITH THE COPULA MODEL ; SO UPDATES OF A CORREL MKT QUOTE DO NOT GET PROPAGATED HERE!!!*/
+        this->registerWith(copula_);
     }
 
 

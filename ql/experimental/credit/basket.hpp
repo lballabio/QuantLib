@@ -238,7 +238,7 @@ namespace QuantLib {
 
         //! Assigns the default loss model to this basket. Resets calculations.
         void setLossModel(
-            const boost::shared_ptr<DefaultLossModel>& lossModel);
+            const boost::shared_ptr<DefaultLossModel>& lossModel);//handle???
 
         //---------------------------------------------------------------------------------------------methods from previous set up
         /*!
@@ -312,9 +312,9 @@ namespace QuantLib {
 
 
 
-        /*! Expected recovery rate of the underlying postion as a fraction of 
-          its exposure value at date d.
-          NOTICE THE ARG IS THE CTPTY....SHOULDNT IT BE THE POSITION/INSTRUMENT?????
+        /*! Expected recovery rate of the underlying position as a fraction of 
+          its exposure value at date d _given_ it has defaulted _on_ that date.
+          NOTICE THE ARG IS THE CTPTY....SHOULDNT IT BE THE POSITION/INSTRUMENT?????<<<<<<<<<<<<<<<<<<<<<<<
         */
         Real recoveryRate(const Date& d, Size iName) const;
 

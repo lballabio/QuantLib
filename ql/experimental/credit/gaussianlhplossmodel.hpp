@@ -80,6 +80,8 @@ namespace QuantLib {
             beta_ = sqrt(correl_->value());
             biphi_ = BivariateCumulativeNormalDistribution(
                 -beta_);
+            // tell basket to notify instruments, etc, we are invalid
+            if(!basket_.empty()) basket_->notifyObservers();
         }
     private:
         void resetModel() { }
@@ -128,6 +130,10 @@ namespace QuantLib {
         // returns the loss value in actual loss units, returns the loss value 
         // for the underlying portfolio, untranched
         Real percentilePortfolioLossFraction(const Date& d, Real perctl) const;
+        Real expectedRecovery(const Date& d, Size iName, 
+            const DefaultProbKey& ik) const { 
+                return rrQuotes_[iName].currentLink()->value();
+        }
     public:
         // same as percentilePortfolio but tranched
         Real percentile(const Date& d, Real perctl) const {
@@ -143,7 +149,7 @@ namespace QuantLib {
                     - attach, 0.), detach - attach);
         }
 
-        Probability averageProb(const Date& d) const {
+        Probability averageProb(const Date& d) const {// not an overload of Deflossmodel ???<<<<<???
             // weighted average by programmed exposure.
             const std::vector<Probability> probs = 
                 basket_->remainingProbabilities(d);//use remaining basket

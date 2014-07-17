@@ -70,12 +70,12 @@ namespace QuantLib {
     private:
         typedef simEvent<RandomLossLM> defaultSimEvent;
 
-        const SpotRecoveryLatentModel<copulaPolicy> copula_;
-       // for time inversion:
+        const boost::shared_ptr<SpotRecoveryLatentModel<copulaPolicy> > copula_;
+        // for time inversion:
         Real accuracy_;
     public:
         RandomLossLM(
-            const SpotRecoveryLatentModel<copulaPolicy>& copula,
+            const boost::shared_ptr<SpotRecoveryLatentModel<copulaPolicy> >& copula,
             Size nSims = 0,
             Real accuracy = 1.e-6, 
             BigNatural seed = 2863311530);
@@ -118,7 +118,7 @@ namespace QuantLib {
     protected:
         Real latentVarValue(const std::vector<Real>& factorsSample, 
             Size iVar) const {
-                return copula_.latentVarValue(factorsSample, iVar);
+                return copula_->latentVarValue(factorsSample, iVar);
         }
         Size basketSize() const { return this->basket_->size(); }
         // conditional to default, defined as spot-recovery.
@@ -130,9 +130,9 @@ namespace QuantLib {
             (some situations, like BC or control variates) in that case do not 
             update, only reset the copula's basket.
             */
-            copula_.resetBasket(this->basket_.currentLink());
+            copula_->resetBasket(this->basket_.currentLink());
 
-            QL_REQUIRE(2 * this->basket_->size() == copula_.size(),
+            QL_REQUIRE(2 * this->basket_->size() == copula_->size(),
                 "Incompatible basket and model sizes.");
             // invalidate current calculations if any and notify observers
             LazyObject::update();
@@ -155,7 +155,7 @@ namespace QuantLib {
 //        this->simsBuffer_.push_back(std::vector<simEvent<RandomLossLM> > ());
 
         // half the model is defaults, the other half are RRs...
-        for(Size iName=0; iName<copula_.size()/2; iName++) {
+        for(Size iName=0; iName<copula_->size()/2; iName++) {
             // ...but samples must be full
             /* This is really a trick, we are passing a longer than
             expected set of values in the sample but the last idiosyncratic
@@ -165,9 +165,9 @@ namespace QuantLib {
             check on the vector size in the LM base class.
             */
             Real latentVarSample = 
-                copula_.latentVarValue(values, iName);
+                copula_->latentVarValue(values, iName);
             Probability simDefaultProb = 
-                copula_.cumulativeY(latentVarSample, iName);
+                copula_->cumulativeY(latentVarSample, iName);
             // If the default simulated lies before the max date:
             if (horizonDefaultPs_[iName] >= simDefaultProb) {
                 const Handle<DefaultProbabilityTermStructure>& dfts = 
@@ -195,9 +195,9 @@ namespace QuantLib {
                 ////      Date today = Settings::instance().evaluationDate();
                 Date today = dfts->referenceDate();/// NO GOOD, NOW DATES MEAN DIFFERENT THINGS!!!!!!!!!!!!!!!!!!!! NEED FIXING!!!
 
-                Real latentRRVarSample = copula_.latentRRVarValue(values, iName);
+                Real latentRRVarSample = copula_->latentRRVarValue(values, iName);
                 Real recovery = 
-                    copula_.conditionalRecovery(latentRRVarSample, iName, 
+                    copula_->conditionalRecovery(latentRRVarSample, iName, 
                         today+Period(static_cast<Integer>(dateSTride), Days));
                 this->simsBuffer_.back().push_back(
                   defaultSimEvent(iName, dateSTride, recovery));
@@ -219,7 +219,7 @@ namespace QuantLib {
 
     template<class C, class URNG>
     RandomLossLM<C, URNG>::RandomLossLM(
-        const SpotRecoveryLatentModel<C>& copula,
+        const boost::shared_ptr<SpotRecoveryLatentModel<C> >& copula,
         Size nSims,
         Real accuracy, 
         BigNatural seed) 
@@ -231,7 +231,7 @@ namespace QuantLib {
 #else
         RandomLM
 #endif
-        (copula.numFactors(), copula.size(), copula.copula(), nSims, seed)
+        (copula->numFactors(), copula->size(), copula->copula(), nSims, seed)
     {
         // redundant through basket?
         this->registerWith(Settings::instance().evaluationDate());
