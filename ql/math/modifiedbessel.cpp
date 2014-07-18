@@ -36,14 +36,14 @@ namespace QuantLib {
             std::complex<Real> value() { return std::complex<Real>(0.0,1.0);}
         };
         template <class T> struct Unweighted {
-            static T weightSmallX(const T& x) { return 1.0; }
-            static T weight1LargeX(const T& x) { return std::exp(x); }
-            static T weight2LargeX(const T& x) { return std::exp(-x); }
+            T weightSmallX(const T& x) { return 1.0; }
+            T weight1LargeX(const T& x) { return std::exp(x); }
+            T weight2LargeX(const T& x) { return std::exp(-x); }
         };
         template <class T> struct ExponentiallyWeighted {
-            static T weightSmallX(const T& x) { return std::exp(-x); }
-            static T weight1LargeX(const T& x) { return 1.0; }
-            static T weight2LargeX(const T& x) { return std::exp(-2.0*x); }
+            T weightSmallX(const T& x) { return std::exp(-x); }
+            T weight1LargeX(const T& x) { return 1.0; }
+            T weight2LargeX(const T& x) { return std::exp(-2.0*x); }
         };
 
         template <class T, class W = Unweighted<T> >
@@ -59,7 +59,7 @@ namespace QuantLib {
                     sum += B_k;
                     QL_REQUIRE(++k < 1000, "max iterations exceeded");
                 }
-                return sum * W::weightSmallX(x);
+                return sum * W().weightSmallX(x);
             }
             else {
                 Real na_k=1.0, sign=1.0;
@@ -78,8 +78,8 @@ namespace QuantLib {
 
                 const T i = I<T>().value();
                 return 1.0 / std::sqrt(2 * M_PI * x) *
-                       (W::weight1LargeX(x) * s1 +
-                        i * std::exp(i * nu * M_PI) * W::weight2LargeX(x) * s2);
+                    (W().weight1LargeX(x) * s1 +
+                     i * std::exp(i * nu * M_PI) * W().weight2LargeX(x) * s2);
             }
         }
 
