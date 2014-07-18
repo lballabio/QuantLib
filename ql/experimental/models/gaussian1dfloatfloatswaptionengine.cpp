@@ -197,7 +197,8 @@ namespace QuantLib {
             event0Time = std::max(
                 model_->termStructure()->timeFromReference(event0), 0.0);
 
-            // iterate through the grid
+            // todo add openmp support later on (as in gaussian1dswaptionengine)
+
             for (Size k = 0; k < (event0 > expiry ? npv0.size() : 1); k++) {
 
                 // roll back

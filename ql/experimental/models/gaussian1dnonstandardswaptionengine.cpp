@@ -183,6 +183,8 @@ namespace QuantLib {
                                  floatSchedule.dates().end(), expiry0 - 1) -
                 floatSchedule.dates().begin();
 
+            // todo add openmp support later on (as in gaussian1dswaptionengine)
+
             for (Size k = 0; k < (expiry0 > settlement ? npv0.size() : 1);
                  k++) {
 

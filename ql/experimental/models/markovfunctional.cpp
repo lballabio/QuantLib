@@ -84,6 +84,53 @@ namespace QuantLib {
         initialize();
     }
 
+    void MarkovFunctional::updateTimes() const {
+        QL_MFMESSAGE(modelOutputs_,"updating times");
+        updateTimes1();
+        updateTimes2();
+    }
+
+    void MarkovFunctional::updateTimes1() const {
+        volsteptimes_.clear();
+        int j = 0;
+        for (std::vector<Date>::const_iterator i = volstepdates_.begin();
+             i != volstepdates_.end(); ++i, ++j) {
+            volsteptimes_.push_back(termStructure()->timeFromReference(*i));
+            volsteptimesArray_[j] = volsteptimes_[j];
+            if (j == 0)
+                QL_REQUIRE(volsteptimes_[0] > 0.0,
+                           "volsteptimes must be positive (" << volsteptimes_[0]
+                                                             << ")");
+            else
+                QL_REQUIRE(volsteptimes_[j] > volsteptimes_[j - 1],
+                           "volsteptimes must be strictly increasing ("
+                               << volsteptimes_[j - 1] << "@" << (j - 1) << ", "
+                               << volsteptimes_[j] << "@" << j << ")");
+        }
+    }
+
+    void MarkovFunctional::updateTimes2() const {
+        numeraireTime_ = termStructure()->timeFromReference(numeraireDate_);
+        times_.clear();
+        times_.push_back(0.0);
+        modelOutputs_.expiries_.clear();
+        modelOutputs_.tenors_.clear();
+        for (std::map<Date, CalibrationPoint>::iterator k =
+                 calibrationPoints_.begin();
+             k != calibrationPoints_.end(); ++k) {
+            times_.push_back(termStructure()->timeFromReference(k->first));
+            modelOutputs_.expiries_.push_back(k->first);
+            modelOutputs_.tenors_.push_back(k->second.tenor_);
+        }
+        times_.push_back(numeraireTime_);
+        QL_REQUIRE(volatilities_.size() == volsteptimes_.size() + 1,
+                   "there must be n+1 volatilities ("
+                       << volatilities_.size()
+                       << ") for n volatility step times ("
+                       << volsteptimes_.size() << ")");
+    }
+
+
     void MarkovFunctional::initialize() {
 
         QL_MFMESSAGE(modelOutputs_, "initializing");
@@ -101,23 +148,9 @@ namespace QuantLib {
             normalIntegralX_[i] *= M_SQRT2;
         }
 
-        volsteptimes_.clear();
         volsteptimesArray_ = Array(volstepdates_.size());
-        int j = 0;
-        for (std::vector<Date>::const_iterator i = volstepdates_.begin();
-             i != volstepdates_.end(); ++i, ++j) {
-            volsteptimes_.push_back(termStructure()->timeFromReference(*i));
-            volsteptimesArray_[j] = volsteptimes_[j];
-            if (j == 0)
-                QL_REQUIRE(volsteptimes_[0] > 0.0,
-                           "volsteptimes must be positive (" << volsteptimes_[0]
-                                                             << ")");
-            else
-                QL_REQUIRE(volsteptimes_[j] > volsteptimes_[j - 1],
-                           "volsteptimes must be strictly increasing ("
-                               << volsteptimes_[j - 1] << "@" << (j - 1) << ", "
-                               << volsteptimes_[j] << "@" << j << ")");
-        }
+
+        updateTimes1();
 
         if (capletCalibrated_) {
             for (std::vector<Date>::const_iterator i = capletExpiries_.begin(); i != capletExpiries_.end(); ++i) {
@@ -181,27 +214,8 @@ namespace QuantLib {
             }
         } while (!done);
 
-        numeraireTime_ = termStructure()->timeFromReference(numeraireDate_);
+        updateTimes2();
 
-        times_.clear();
-        times_.push_back(0.0);
-
-        modelOutputs_.expiries_.clear();
-        modelOutputs_.tenors_.clear();
-        for (std::map<Date, CalibrationPoint>::iterator k =
-                 calibrationPoints_.begin();
-             k != calibrationPoints_.end(); ++k) {
-            times_.push_back(termStructure()->timeFromReference(k->first));
-            modelOutputs_.expiries_.push_back(k->first);
-            modelOutputs_.tenors_.push_back(k->second.tenor_);
-        }
-        times_.push_back(numeraireTime_);
-
-        QL_REQUIRE(volatilities_.size() == volsteptimes_.size() + 1,
-                   "there must be n+1 volatilities ("
-                       << volatilities_.size()
-                       << ") for n volatility step times ("
-                       << volsteptimes_.size() << ")");
         sigma_ =
             PiecewiseConstantParameter(volsteptimes_, PositiveConstraint());
         for (Size i = 0; i < sigma_.size(); i++) {
@@ -224,11 +238,11 @@ namespace QuantLib {
             numeraire_.push_back(numInt);
         }
 
-        LazyObject::registerWith(termStructure());
+        registerWith(termStructure());
         if (!swaptionVol_.empty())
-            LazyObject::registerWith(swaptionVol_);
+            registerWith(swaptionVol_);
         if (!capletVol_.empty())
-            LazyObject::registerWith(capletVol_);
+            registerWith(capletVol_);
     }
 
     void MarkovFunctional::makeSwaptionCalibrationPoint(const Date &expiry,
@@ -243,14 +257,8 @@ namespace QuantLib {
         p.isCaplet_ = false;
         p.tenor_ = tenor;
 
-        SwapIndex tmpIndex(
-            swapIndexBase_->familyName(), tenor, swapIndexBase_->fixingDays(),
-            swapIndexBase_->currency(), swapIndexBase_->fixingCalendar(),
-            swapIndexBase_->fixedLegTenor(),
-            swapIndexBase_->fixedLegConvention(), swapIndexBase_->dayCounter(),
-            swapIndexBase_->iborIndex());
-        boost::shared_ptr<VanillaSwap> underlying =
-            tmpIndex.underlyingSwap(expiry);
+        boost::shared_ptr<VanillaSwap> underlying = underlyingSwap(swapIndexBase_, expiry, tenor);
+
         Schedule sched = underlying->fixedSchedule();
         Calendar cal = sched.calendar();
         BusinessDayConvention bdc = underlying->paymentConvention();
@@ -983,13 +991,8 @@ namespace QuantLib {
             swapIdx = swapIndexBase_;
         QL_REQUIRE(swapIdx, "No swap index given");
 
-        SwapIndex tmpIdx =
-            SwapIndex(swapIdx->familyName(), tenor, swapIdx->fixingDays(),
-                      swapIdx->currency(), swapIdx->fixingCalendar(),
-                      swapIdx->fixedLegTenor(), swapIdx->fixedLegConvention(),
-                      swapIdx->dayCounter(), swapIdx->iborIndex());
-        boost::shared_ptr<VanillaSwap> underlying =
-            tmpIdx.underlyingSwap(fixing);
+        boost::shared_ptr<VanillaSwap> underlying = underlyingSwap(swapIdx, fixing, tenor);
+
         Schedule sched = underlying->fixedSchedule();
         Real annuity = swapAnnuityInternal(fixing, tenor, referenceDate, y,
                                       zeroFixingDays, swapIdx);
@@ -1014,13 +1017,8 @@ namespace QuantLib {
             swapIdx = swapIndexBase_;
         QL_REQUIRE(swapIdx, "No swap index given");
 
-        SwapIndex tmpIdx =
-            SwapIndex(swapIdx->familyName(), tenor, swapIdx->fixingDays(),
-                      swapIdx->currency(), swapIdx->fixingCalendar(),
-                      swapIdx->fixedLegTenor(), swapIdx->fixedLegConvention(),
-                      swapIdx->dayCounter(), swapIdx->iborIndex());
-        boost::shared_ptr<VanillaSwap> underlying =
-            tmpIdx.underlyingSwap(fixing);
+        boost::shared_ptr<VanillaSwap> underlying = underlyingSwap(swapIdx, fixing, tenor);
+
         Schedule sched = underlying->fixedSchedule();
 
         Real annuity = 0.0;
