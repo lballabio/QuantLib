@@ -56,8 +56,14 @@
 #include <ql/experimental/finitedifferences/fdmblackscholesfwdop.hpp>
 #include <ql/experimental/finitedifferences/fdmsquarerootfwdop.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
-
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
 #include <boost/math/special_functions/gamma.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic pop
+#endif
 #include <boost/math/distributions/non_central_chi_squared.hpp>
 
 using namespace QuantLib;
