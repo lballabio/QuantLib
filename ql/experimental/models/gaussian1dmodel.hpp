@@ -224,12 +224,12 @@ namespace QuantLib {
         underlyingSwap(const boost::shared_ptr<SwapIndex> &index,
                        const Date &expiry, const Period &tenor) const {
 
-            CacheType::iterator i = swapCache_.find((CachedSwapKey){index, expiry, tenor});
+            CachedSwapKey k = {index, expiry, tenor};
+            CacheType::iterator i = swapCache_.find(k);
             if (i == swapCache_.end()) {
                 boost::shared_ptr<VanillaSwap> underlying =
                     index->clone(tenor)->underlyingSwap(expiry);
-                swapCache_.insert(std::make_pair(
-                    (CachedSwapKey){index, expiry, tenor}, underlying));
+                swapCache_.insert(std::make_pair(k, underlying));
                 return underlying;
             }
             return i->second;
