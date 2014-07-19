@@ -1227,11 +1227,14 @@ void InterpolationTest::testSabrInterpolation(){
     }
 
     // Test SABR calibration against input parameters
-    // Initial null guesses (uses default values)
-    Real alphaGuess = Null<Real>();
-    Real betaGuess = Null<Real>();
-    Real nuGuess = Null<Real>();
-    Real rhoGuess = Null<Real>();
+    // Use default values (but not null, since then parameters
+    // will then not be fixed during optimization, see the
+    // interpolation constructor, thus rendering the test cases
+    // with fixed parameters non-sensical)
+    Real alphaGuess = std::sqrt(0.2);
+    Real betaGuess = 0.5;
+    Real nuGuess = std::sqrt(0.4);
+    Real rhoGuess = 0.0;
 
     const bool vegaWeighted[]= {true, false};
     const bool isAlphaFixed[]= {true, false};
@@ -1254,14 +1257,22 @@ void InterpolationTest::testSabrInterpolation(){
           for (Size k_b=0; k_b<LENGTH(isBetaFixed); ++k_b) {
             for (Size k_n=0; k_n<LENGTH(isNuFixed); ++k_n) {
               for (Size k_r=0; k_r<LENGTH(isRhoFixed); ++k_r) {
-                SABRInterpolation sabrInterpolation(strikes.begin(), strikes.end(),
-                                                    volatilities.begin(), expiry, forward,
-                                                    alphaGuess, betaGuess, nuGuess, rhoGuess,
-                                                    isAlphaFixed[k_a], isBetaFixed[k_b],
-                                                    isNuFixed[k_n], isRhoFixed[k_r],
-                                                    vegaWeighted[i],
-                                                    endCriteria, methods_[j]);
-                sabrInterpolation.update();
+                  // to meet the tough calibration tolerance we need to lower the default
+                  // error threshold for accepting a calibration (to be more specific, some
+                  // of the new test cases arising from fixing a subset of the model's
+                  // parameters do not calibrate with the desired error using the initial
+                  // guess (i.e. optimization runs into a local minimum) - then a series of
+                  // random start values for optimization is chosen until our tight custom
+                  // error threshold is satisfied.
+                  SABRInterpolation sabrInterpolation(
+                      strikes.begin(), strikes.end(), volatilities.begin(),
+                      expiry, forward, isAlphaFixed[k_a] ? initialAlpha : alphaGuess,
+                      isBetaFixed[k_b] ? initialBeta : betaGuess,
+                      isNuFixed[k_n] ? initialNu : nuGuess,
+                      isRhoFixed[k_r] ? initialRho : rhoGuess, isAlphaFixed[k_a],
+                      isBetaFixed[k_b], isNuFixed[k_n], isRhoFixed[k_r],
+                      vegaWeighted[i], endCriteria, methods_[j], 1E-10);
+                  sabrInterpolation.update();
 
                 // Recover SABR calibration parameters
                 bool failed = false;
