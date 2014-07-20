@@ -99,7 +99,7 @@ void NoArbSabrTest::testConsistencyWithHagan() {
     Real f = 0.0488;
 
     SabrSmileSection sabr(tau,f,boost::assign::list_of(alpha)(beta)(nu)(rho));
-    NoArbSabr noarbsabr(tau,f,alpha,beta,nu,rho);
+    NoArbSabrSmileSection noarbsabr(tau,f,alpha,beta,nu,rho);
 
     Real absProb=noarbsabr.absorptionProbability();
     if( absProb > 1E-10 || absProb < 0.0 )
