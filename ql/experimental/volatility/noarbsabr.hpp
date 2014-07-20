@@ -57,7 +57,7 @@
 
 namespace QuantLib {
 
-class NoArbSabr {
+class NoArbSabrModel {
 
   public:
     struct Constants {
@@ -98,7 +98,7 @@ class NoArbSabr {
         static QL_NOARBSABR_CONSTEXPR Real forward_search_step = 0.0010;
     };
 
-    NoArbSabr(const Real expiryTime, const Real forward, const Real alpha,
+    NoArbSabrModel(const Real expiryTime, const Real forward, const Real alpha,
               const Real beta, const Real nu, const Real rho);
 
     Real optionPrice(const Real strike) const;
@@ -107,7 +107,7 @@ class NoArbSabr {
         return p(strike, true) * (1 - absProb_) / numericalIntegralOverP_;
     }
 
-    Real forward() const { return forward_; }
+    Real forward() const { return externalForward_; }
     Real expiryTime() const { return expiryTime_; }
     Real alpha() const { return alpha_; }
     Real beta() const { return beta_; }
