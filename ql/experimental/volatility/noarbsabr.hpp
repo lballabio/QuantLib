@@ -48,13 +48,10 @@
 
 #include <vector>
 
-// as long as we don't have a general solution, we apply
-// a local workaround here to satisfy both c++98 and 11
-#if (defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L) ||        \
-     (_MSC_VER >= 1600))
-#define QL_NOARBSABR_CONSTEXPR constexpr
+#if (defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L) || (_MSC_VER >= 1600))
+  #define QL_CONSTEXPR constexpr
 #else
-#define QL_NOARBSABR_CONSTEXPR const
+  #define QL_CONSTEXPR const
 #endif
 
 namespace QuantLib {
@@ -64,40 +61,40 @@ class NoArbSabrModel {
   public:
     struct Constants {
         // accuracy when inverting d0 to get phi
-        static QL_NOARBSABR_CONSTEXPR Real phi_accuracy = 1E-10;
+        static QL_CONSTEXPR Real phi_accuracy = 1E-10;
         // parameter bounds
-        static QL_NOARBSABR_CONSTEXPR Real beta_min = 0.01;
-        static QL_NOARBSABR_CONSTEXPR Real beta_max = 0.99;
-        static QL_NOARBSABR_CONSTEXPR Real expiryTime_max = 30.0;
-        static QL_NOARBSABR_CONSTEXPR Real sigmaI_min = 0.05;
-        static QL_NOARBSABR_CONSTEXPR Real sigmaI_max = 1.00;
-        static QL_NOARBSABR_CONSTEXPR Real nu_min = 0.0001;
-        static QL_NOARBSABR_CONSTEXPR Real nu_max = 0.80;
-        static QL_NOARBSABR_CONSTEXPR Real rho_min = -0.9999;
-        static QL_NOARBSABR_CONSTEXPR Real rho_max = 0.9999;
+        static QL_CONSTEXPR Real beta_min = 0.01;
+        static QL_CONSTEXPR Real beta_max = 0.99;
+        static QL_CONSTEXPR Real expiryTime_max = 30.0;
+        static QL_CONSTEXPR Real sigmaI_min = 0.05;
+        static QL_CONSTEXPR Real sigmaI_max = 1.00;
+        static QL_CONSTEXPR Real nu_min = 0.0001;
+        static QL_CONSTEXPR Real nu_max = 0.80;
+        static QL_CONSTEXPR Real rho_min = -0.9999;
+        static QL_CONSTEXPR Real rho_max = 0.9999;
         // cutoff for phi(d0) / tau
         // the relevant integrand in (3.1) is
         // below 1e-10 for bigger values then
         // for the case beta = 0.99
-        static QL_NOARBSABR_CONSTEXPR Real phiByTau_cutoff = 110.0;
+        static QL_CONSTEXPR Real phiByTau_cutoff = 110.0;
         // number of mc simulations in tabulated
         // absorption probabilities
-        static QL_NOARBSABR_CONSTEXPR Real nsim = 2500000.0;
+        static QL_CONSTEXPR Real nsim = 2500000.0;
         // small probability used for extrapolation
         // of beta towards 1
-        static QL_NOARBSABR_CONSTEXPR Real tiny_prob = 1E-5;
+        static QL_CONSTEXPR Real tiny_prob = 1E-5;
         // minimum strike allowed
-        static QL_NOARBSABR_CONSTEXPR Real strike_min = 0.00001;
+        static QL_CONSTEXPR Real strike_min = 0.00001;
         // accuracy and max iterations for
         // gauss lobatto integral
-        static QL_NOARBSABR_CONSTEXPR Real gl_accuracy = 1E-6;
-        static QL_NOARBSABR_CONSTEXPR Size gl_max_iterations = 10000;
+        static QL_CONSTEXPR Real gl_accuracy = 1E-6;
+        static QL_CONSTEXPR Size gl_max_iterations = 10000;
         // accuracy when adjusting the model forward
         // to match the given forward
-        static QL_NOARBSABR_CONSTEXPR Real forward_accuracy = 0.00001;
+        static QL_CONSTEXPR Real forward_accuracy = 0.00001;
         // step for searching the model forward
         // in newton algorithm
-        static QL_NOARBSABR_CONSTEXPR Real forward_search_step = 0.0010;
+        static QL_CONSTEXPR Real forward_search_step = 0.0010;
     };
 
     NoArbSabrModel(const Real expiryTime, const Real forward, const Real alpha,

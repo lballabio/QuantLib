@@ -18,7 +18,7 @@
 */
 
 /*! \file noarbsabrinterpolation.hpp
-    \brief no arbitrage sabr interpolation interpolation 
+    \brief no arbitrage sabr interpolation interpolation
            between discrete points
 */
 
@@ -37,58 +37,86 @@ namespace QuantLib {
 namespace detail {
 
 // we can directly use the smile section as the wrapper
-typedef NoArbSabrSmileSection NoArbSabrWrapper
+typedef NoArbSabrSmileSection NoArbSabrWrapper;
 
 struct NoArbSabrSpecs {
     Size dimension() { return 4; }
     void defaultValues(std::vector<Real> &params, const Real &forward,
-                      const Real expiryTIme) {
-        return SABRSpecs::defaultValues(params, forard, expiryTime);
+                       const Real expiryTime) {
+        return SABRSpecs().defaultValues(params, forward, expiryTime);
     }
-    void guess(Array &values, const Real &forward, const Real expiryTime, 
+    void guess(Array &values, const Real &forward, const Real expiryTime,
                const std::vector<bool> &parameterAreFixed,
                const std::vector<Real> &r) {
-        using NoArbSabr::Constants;
         Size j = 0;
         if (!parameterAreFixed[1])
-            values[1] = beta_min + (beta_max-beta_min)*r[j++];
+            values[1] = NoArbSabrModel::Constants::beta_min +
+                        (NoArbSabrModel::Constants::beta_max -
+                         NoArbSabrModel::Constants::beta_min) *
+                            r[j++];
         if (!parameterAreFixed[0]) {
-            Real sigmaI = sigmaI_min + (sigmaI_max - sigmaI_min)*r[j++];
+            Real sigmaI = NoArbSabrModel::Constants::sigmaI_min +
+                          (NoArbSabrModel::Constants::sigmaI_max -
+                           NoArbSabrModel::Constants::sigmaI_min) *
+                              r[j++];
             values[0] = sigmaI / std::pow(forward, values[1] - 1.0);
         }
         if (!parameterAreFixed[2])
-            values[2] = nu_min + (nu_max - nu_min)*r[j++];
+            values[2] = NoArbSabrModel::Constants::nu_min +
+                        (NoArbSabrModel::Constants::nu_max -
+                         NoArbSabrModel::Constants::nu_min) *
+                            r[j++];
         if (!parameterAreFixed[3])
-            values[3] = rho_min + (rho_max - rho_min)*r[j++];
+            values[3] = NoArbSabrModel::Constants::rho_min +
+                        (NoArbSabrModel::Constants::rho_max -
+                         NoArbSabrModel::Constants::rho_min) *
+                            r[j++];
     }
-    Real eps1() { return .0000001; }
-    Real eps2() { return .9999; }
-    Real dilationFactor() { return 0.001; }
     Array inverse(const Array &y, const Real forward) {
         Array x(4);
-        x[1] = std::sqrt(-std::log((y[1] - beta_min) / (beta_max - beta_min)));
-        x[0] = std::tan((y[0] * std::pow(forward, y[1] - 1.0) - sigmaI_min) /
-                            (sigmaI_max - sigmaI_min) * M_PI -
+        x[1] =
+            std::sqrt(-std::log((y[1] - NoArbSabrModel::Constants::beta_min) /
+                                (NoArbSabrModel::Constants::beta_max -
+                                 NoArbSabrModel::Constants::beta_min)));
+        x[0] = std::tan((y[0] * std::pow(forward, y[1] - 1.0) -
+                         NoArbSabrModel::Constants::sigmaI_min) /
+                            (NoArbSabrModel::Constants::sigmaI_max -
+                             NoArbSabrModel::Constants::sigmaI_min) *
+                            M_PI -
                         M_PI / 2.0);
-        x[2] =
-            std::tan((y[2] - nu_min) / (nu_max - nu_min) * M_PI + M_PI / 2.0);
-        x[3] = std::tan((y[3] - rho_min) / (rho_max - rho_min) * M_PI +
+        x[2] = std::tan((y[2] - NoArbSabrModel::Constants::nu_min) /
+                            (NoArbSabrModel::Constants::nu_max -
+                             NoArbSabrModel::Constants::nu_min) *
+                            M_PI +
+                        M_PI / 2.0);
+        x[3] = std::tan((y[3] - NoArbSabrModel::Constants::rho_min) /
+                            (NoArbSabrModel::Constants::rho_max -
+                             NoArbSabrModel::Constants::rho_min) *
+                            M_PI +
                         M_PI / 2.0);
         return x;
     }
     Array direct(const Array &x, const Real forward) {
         Array y(4);
-        y[1] = std::fabs(x[1]) < -std::log(beta_min)
-                   ? beta_min + (beta_max - beta_min) * std::exp(-(x[1] * x[1]))
-                   : beta_min;
-        Real sigmaI =
-            sigmaI_min +
-            (sigmaI_max - sigmaI_min) * (std::atan(x[0]) + M_PI / 2.0) / M_PI;
+        y[1] = std::fabs(x[1]) < -std::log(NoArbSabrModel::Constants::beta_min)
+                   ? NoArbSabrModel::Constants::beta_min +
+                         (NoArbSabrModel::Constants::beta_max -
+                          NoArbSabrModel::Constants::beta_min) *
+                             std::exp(-(x[1] * x[1]))
+                   : NoArbSabrModel::Constants::beta_min;
+        Real sigmaI = NoArbSabrModel::Constants::sigmaI_min +
+                      (NoArbSabrModel::Constants::sigmaI_max -
+                       NoArbSabrModel::Constants::sigmaI_min) *
+                          (std::atan(x[0]) + M_PI / 2.0) / M_PI;
         y[0] = sigmaI / std::pow(forward, y[1] - 1.0);
-        y[2] =
-            nu_min + (nu_max - nu_min) * (std::atan(x[2]) + M_PI / 2.0) / M_PI;
-        y[3] = rho_min +
-               (rho_max - rho_min) * (std::atan(x[3]) + M_PI / 2.0) / M_PI;
+        y[2] = NoArbSabrModel::Constants::nu_min +
+               (NoArbSabrModel::Constants::nu_max -
+                NoArbSabrModel::Constants::nu_min) *
+                   (std::atan(x[2]) + M_PI / 2.0) / M_PI;
+        y[3] = NoArbSabrModel::Constants::rho_min +
+               (NoArbSabrModel::Constants::rho_max -
+                NoArbSabrModel::Constants::rho_min) *
+                   (std::atan(x[3]) + M_PI / 2.0) / M_PI;
         return y;
     }
     typedef NoArbSabrWrapper type;
@@ -103,26 +131,27 @@ struct NoArbSabrSpecs {
 class NoArbSabrInterpolation : public Interpolation {
   public:
     template <class I1, class I2>
-    NoArbSabrInterpolation(const I1 &xBegin, // x = strikes
-                      const I1 &xEnd,
-                      const I2 &yBegin, // y = volatilities
-                      Time t,           // option expiry
-                      const Real &forward, Real alpha, Real beta, Real nu,
-                      Real rho, bool alphaIsFixed, bool betaIsFixed,
-                      bool nuIsFixed, bool rhoIsFixed, bool vegaWeighted = true,
-                      const boost::shared_ptr<EndCriteria> &endCriteria =
-                          boost::shared_ptr<EndCriteria>(),
-                      const boost::shared_ptr<OptimizationMethod> &optMethod =
-                          boost::shared_ptr<OptimizationMethod>(),
-                      const Real errorAccept = 0.0020,
-                      const bool useMaxError = false,
-                      const Size maxGuesses = 50) {
+    NoArbSabrInterpolation(
+        const I1 &xBegin, // x = strikes
+        const I1 &xEnd,
+        const I2 &yBegin, // y = volatilities
+        Time t,           // option expiry
+        const Real &forward, Real alpha, Real beta, Real nu, Real rho,
+        bool alphaIsFixed, bool betaIsFixed, bool nuIsFixed, bool rhoIsFixed,
+        bool vegaWeighted = true,
+        const boost::shared_ptr<EndCriteria> &endCriteria =
+            boost::shared_ptr<EndCriteria>(),
+        const boost::shared_ptr<OptimizationMethod> &optMethod =
+            boost::shared_ptr<OptimizationMethod>(),
+        const Real errorAccept = 0.0020, const bool useMaxError = false,
+        const Size maxGuesses = 50) {
 
         impl_ = boost::shared_ptr<Interpolation::Impl>(
             new detail::XABRInterpolationImpl<I1, I2, detail::NoArbSabrSpecs>(
                 xBegin, xEnd, yBegin, t, forward,
                 boost::assign::list_of(alpha)(beta)(nu)(rho),
-                boost::assign::list_of(alphaIsFixed)(betaIsFixed)(nuIsFixed)(rhoIsFixed),
+                boost::assign::list_of(alphaIsFixed)(betaIsFixed)(nuIsFixed)(
+                    rhoIsFixed),
                 vegaWeighted, endCriteria, optMethod, errorAccept, useMaxError,
                 maxGuesses));
         coeffs_ = boost::dynamic_pointer_cast<
@@ -149,14 +178,14 @@ class NoArbSabrInterpolation : public Interpolation {
 class NoArbSabr {
   public:
     NoArbSabr(Time t, Real forward, Real alpha, Real beta, Real nu, Real rho,
-         bool alphaIsFixed, bool betaIsFixed, bool nuIsFixed, bool rhoIsFixed,
-         bool vegaWeighted = false,
-         const boost::shared_ptr<EndCriteria> endCriteria =
-             boost::shared_ptr<EndCriteria>(),
-         const boost::shared_ptr<OptimizationMethod> optMethod =
-             boost::shared_ptr<OptimizationMethod>(),
-         const Real errorAccept = 0.0020, const bool useMaxError = false,
-         const Size maxGuesses = 50)
+              bool alphaIsFixed, bool betaIsFixed, bool nuIsFixed,
+              bool rhoIsFixed, bool vegaWeighted = false,
+              const boost::shared_ptr<EndCriteria> endCriteria =
+                  boost::shared_ptr<EndCriteria>(),
+              const boost::shared_ptr<OptimizationMethod> optMethod =
+                  boost::shared_ptr<OptimizationMethod>(),
+              const Real errorAccept = 0.0020, const bool useMaxError = false,
+              const Size maxGuesses = 50)
         : t_(t), forward_(forward), alpha_(alpha), beta_(beta), nu_(nu),
           rho_(rho), alphaIsFixed_(alphaIsFixed), betaIsFixed_(betaIsFixed),
           nuIsFixed_(nuIsFixed), rhoIsFixed_(rhoIsFixed),
