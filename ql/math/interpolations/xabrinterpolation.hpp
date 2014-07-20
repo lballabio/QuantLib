@@ -187,7 +187,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
                             guess[i] = this->params_[i];
                 }
 
-                Array inversedTransformatedGuess(Model().inverse(guess));
+                Array inversedTransformatedGuess(Model().inverse(guess, forward_));
 
                 ProjectedCostFunction constrainedXABRError(
                     costFunction, inversedTransformatedGuess, this->paramIsFixed_);
@@ -203,7 +203,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
                 Array transfResult(
                     constrainedXABRError.include(projectedResult));
 
-                Array result = Model().direct(transfResult);
+                Array result = Model().direct(transfResult,forward_);
                 tmpInterpolationError = useMaxError_ ? interpolationMaxError()
                                                      : interpolationError();
 
@@ -285,7 +285,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
         XABRError(XABRInterpolationImpl *xabr) : xabr_(xabr) {}
 
         Real value(const Array &x) const {
-            const Array y = Model().direct(x);
+            const Array y = Model().direct(x,xabr_->forward_);
             for (Size i = 0; i <xabr_-> params_.size(); ++i)
                 xabr_->params_[i] = y[i];
             xabr_->updateModelInstance();
@@ -293,7 +293,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
         }
 
         Disposable<Array> values(const Array &x) const {
-            const Array y = Model().direct(x);
+            const Array y = Model().direct(x,xabr_->forward_);
             for (Size i = 0; i < xabr_->params_.size(); ++i)
                 xabr_->params_[i] = y[i];
             xabr_->updateModelInstance();

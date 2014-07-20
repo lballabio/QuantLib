@@ -96,16 +96,16 @@ struct SABRSpecs {
     Real eps1() { return .0000001; }
     Real eps2() { return .9999; }
     Real dilationFactor() { return 0.001; }
-    Array inverse(const Array &x) {
-        Array y(4);
-        y[0] = std::sqrt(x[0] - eps1());
+    Array inverse(const Array &y, const Real) {
+        Array x(4);
+        x[0] = std::sqrt(y[0] - eps1());
         // y_[1] = std::tan(M_PI*(x[1] - 0.5))/dilationFactor();
-        y[1] = std::sqrt(-std::log(x[1]));
-        y[2] = std::sqrt(x[2] - eps1());
-        y[3] = std::asin(x[3] / eps2());
-        return y;
+        x[1] = std::sqrt(-std::log(y[1]));
+        x[2] = std::sqrt(y[2] - eps1());
+        x[3] = std::asin(y[3] / eps2());
+        return x;
     }
-    Array direct(const Array &x) {
+    Array direct(const Array &x, const Real) {
         Array y(4);
         y[0] = std::fabs(x[0]) < 5.0 ? x[0] * x[0] + eps1() : (10.0*x[0]-25.0) + eps1();
         // y_[1] = std::atan(dilationFactor_*x[1])/M_PI + 0.5;
@@ -119,7 +119,7 @@ struct SABRSpecs {
     typedef SABRWrapper type;
     boost::shared_ptr<type> instance(const Time t, const Real &forward,
                                      const std::vector<Real> &params) {
-        return boost::make_shared<SABRWrapper>(t, forward, params);
+        return boost::make_shared<type>(t, forward, params);
     }
 };
 }
@@ -151,7 +151,7 @@ class SABRInterpolation : public Interpolation {
                 vegaWeighted, endCriteria, optMethod, errorAccept, useMaxError,
                 maxGuesses));
         coeffs_ = boost::dynamic_pointer_cast<
-            detail::XABRCoeffHolder<detail::SABRSpecs>>(impl_);
+            detail::XABRCoeffHolder<detail::SABRSpecs> >(impl_);
     }
     Real expiry() const { return coeffs_->t_; }
     Real forward() const { return coeffs_->forward_; }
