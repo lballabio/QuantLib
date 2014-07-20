@@ -66,6 +66,8 @@ NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
     }
     fmin_ = std::max(Constants::strike_min, fmin_);
 
+    QL_REQUIRE(fmax_ > fmin_,"could not find a reasonable integration domain");
+
     integrator_ =
         boost::shared_ptr<GaussLobattoIntegral>(new GaussLobattoIntegral(
             Constants::gl_max_iterations, Constants::gl_accuracy));
@@ -85,22 +87,26 @@ NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
 
 Real NoArbSabrModel::optionPrice(const Real strike) const {
     return (1.0 - absProb_) *
-           integrator_->operator()(boost::lambda::bind(&NoArbSabrModel::integrand,
-                                                       this, strike,
-                                                       boost::lambda::_1),
-                                   strike, fmax_) /
-           numericalIntegralOverP_;
+           (strike >= fmax_
+                ? 0.0
+                : (integrator_->operator()(
+                       boost::lambda::bind(&NoArbSabrModel::integrand, this,
+                                           strike, boost::lambda::_1),
+                       strike, fmax_) /
+                   numericalIntegralOverP_));
 }
 
 Real NoArbSabrModel::digitalOptionPrice(const Real strike) const {
     return strike < Constants::strike_min
                ? 1.0
                : (1.0 - absProb_) *
-                     integrator_->operator()(
-                         boost::lambda::bind(&NoArbSabrModel::p, this,
-                                             boost::lambda::_1, true),
-                         strike, fmax_) /
-                     numericalIntegralOverP_;
+                     (strike >= fmax_
+                          ? 0.0
+                          : (integrator_->operator()(
+                                 boost::lambda::bind(&NoArbSabrModel::p, this,
+                                                     boost::lambda::_1, true),
+                                 strike, fmax_) /
+                             numericalIntegralOverP_));
 }
 
 Real NoArbSabrModel::forwardError(const Real forward) const {
