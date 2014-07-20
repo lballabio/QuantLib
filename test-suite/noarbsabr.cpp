@@ -23,7 +23,7 @@
 #include <boost/assign/list_of.hpp>
 
 #include <ql/termstructures/volatility/sabrsmilesection.hpp>
-#include <ql/experimental/volatility/noarbsabr.hpp>
+#include <ql/experimental/volatility/noarbsabrsmilesection.hpp>
 
 using namespace QuantLib;
 using namespace QuantLib::detail;
@@ -38,11 +38,11 @@ void checkD0(const Real sigmaI, const Real beta, const Real rho, const Real nu,
 
     D0Interpolator d(forward, tau, alpha, beta, nu, rho);
 
-    if (std::fabs(d() * NoArbSabr::Constants::nsim - (Real)absorptions) > 0.1)
+    if (std::fabs(d() * NoArbSabrModel::Constants::nsim - (Real)absorptions) > 0.1)
         BOOST_ERROR("failed to reproduce number of absorptions at sigmaI="
                     << sigmaI << ", beta=" << beta << ", rho=" << rho << ", nu="
                     << nu << " tau=" << tau << ": D0Interpolator says "
-                    << d() * NoArbSabr::Constants::nsim
+                    << d() * NoArbSabrModel::Constants::nsim
                     << " while the reference value is " << absorptions);
 
     return;
@@ -78,7 +78,7 @@ void NoArbSabrTest::testAbsorptionMatrix() {
     // not been changed
 
     try {
-        NoArbSabr::checkAbsorptionMatrix();
+        NoArbSabrModel::checkAbsorptionMatrix();
     } catch(QuantLib::Error) {
         BOOST_ERROR("failed to verify the hash value of the absorption matrix");
     }
@@ -99,20 +99,35 @@ void NoArbSabrTest::testConsistencyWithHagan() {
     Real f = 0.0488;
 
     SabrSmileSection sabr(tau,f,boost::assign::list_of(alpha)(beta)(nu)(rho));
-    NoArbSabrSmileSection noarbsabr(tau,f,alpha,beta,nu,rho);
+    NoArbSabrSmileSection noarbsabr(tau,f,boost::assign::list_of(alpha)(beta)(nu)(rho));
 
-    Real absProb=noarbsabr.absorptionProbability();
+    Real absProb=noarbsabr.model()->absorptionProbability();
     if( absProb > 1E-10 || absProb < 0.0 )
         BOOST_ERROR("absorption probability should be close to zero, but is " << absProb);
 
     Real strike = 0.0001;
     while (strike < 0.15) {
+        // test vanilla prices
         Real sabrPrice = sabr.optionPrice(strike);
         Real noarbsabrPrice = noarbsabr.optionPrice(strike);
-        if (std::fabs(sabrPrice - noarbsabrPrice) > 0.00001)
+        if (std::fabs(sabrPrice - noarbsabrPrice) > 1e-5)
             BOOST_ERROR("incosistent Hagan price ("
                         << sabrPrice << ") and noarb-sabr price ("
                         << noarbsabrPrice << ") at strike " << strike);
+        // test digitals
+        Real sabrDigital = sabr.digitalOptionPrice(strike);
+        Real noarbsabrDigital = noarbsabr.digitalOptionPrice(strike);
+        if (std::fabs(sabrDigital - noarbsabrDigital) > 1e-3)
+            BOOST_ERROR("incosistent Hagan digital ("
+                        << sabrDigital << ") and noarb-sabr digital ("
+                        << noarbsabrDigital << ") at strike " << strike);
+        // test density
+        Real sabrDensity = sabr.density(strike);
+        Real noarbsabrDensity = noarbsabr.density(strike);
+        if (std::fabs(sabrDensity - noarbsabrDensity) > 1e-0)
+            BOOST_ERROR("incosistent Hagan density ("
+                        << sabrDensity << ") and noarb-sabr density ("
+                        << noarbsabrDensity << ") at strike " << strike);
         strike += 0.0001;
     }
 
@@ -120,7 +135,7 @@ void NoArbSabrTest::testConsistencyWithHagan() {
 
 
 test_suite* NoArbSabrTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("NoArbSabr tests");
+    test_suite* suite = BOOST_TEST_SUITE("NoArbSabrModel tests");
     suite->add(QUANTLIB_TEST_CASE(&NoArbSabrTest::testAbsorptionMatrix));
     suite->add(QUANTLIB_TEST_CASE(&NoArbSabrTest::testConsistencyWithHagan));
     return suite;
