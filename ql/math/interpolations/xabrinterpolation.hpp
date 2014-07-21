@@ -70,7 +70,7 @@ template <typename Model> class XABRCoeffHolder {
             if (params[i] != Null<Real>())
                 paramIsFixed_[i] = paramIsFixed[i];
         }
-        Model().defaultValues(params_, forward_, t_);
+        Model().defaultValues(params_, paramIsFixed_, forward_, t_);
         updateModelInstance();
     }
     virtual ~XABRCoeffHolder() {}
@@ -181,13 +181,14 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
 
                 if (iterations > 0) {
                     HaltonRsg::sample_type s = halton.nextSequence();
-                    Model().guess(guess, forward_, this->t_, this->paramIsFixed_, s.value);
+                    Model().guess(guess, this->paramIsFixed_, forward_, this->t_, s.value);
                     for (Size i = 0; i < this->paramIsFixed_.size(); ++i)
                         if (this->paramIsFixed_[i])
                             guess[i] = this->params_[i];
                 }
 
-                Array inversedTransformatedGuess(Model().inverse(guess, forward_));
+                Array inversedTransformatedGuess(Model().inverse(
+                    guess, this->paramIsFixed_, this->params_, forward_));
 
                 ProjectedCostFunction constrainedXABRError(
                     costFunction, inversedTransformatedGuess, this->paramIsFixed_);
@@ -203,7 +204,8 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
                 Array transfResult(
                     constrainedXABRError.include(projectedResult));
 
-                Array result = Model().direct(transfResult,forward_);
+                Array result = Model().direct(transfResult, this->paramIsFixed_,
+                                              this->params_, forward_);
                 tmpInterpolationError = useMaxError_ ? interpolationMaxError()
                                                      : interpolationError();
 
@@ -285,7 +287,8 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
         XABRError(XABRInterpolationImpl *xabr) : xabr_(xabr) {}
 
         Real value(const Array &x) const {
-            const Array y = Model().direct(x,xabr_->forward_);
+            const Array y = Model().direct(x, xabr_->paramIsFixed_,
+                                           xabr_->params_, xabr_->forward_);
             for (Size i = 0; i <xabr_-> params_.size(); ++i)
                 xabr_->params_[i] = y[i];
             xabr_->updateModelInstance();
@@ -293,7 +296,8 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
         }
 
         Disposable<Array> values(const Array &x) const {
-            const Array y = Model().direct(x,xabr_->forward_);
+            const Array y = Model().direct(x, xabr_->paramIsFixed_,
+                                           xabr_->params_, xabr_->forward_);
             for (Size i = 0; i < xabr_->params_.size(); ++i)
                 xabr_->params_[i] = y[i];
             xabr_->updateModelInstance();
