@@ -68,10 +68,10 @@ class NoArbSabrModel {
         static QL_CONSTEXPR Real expiryTime_max = 30.0;
         static QL_CONSTEXPR Real sigmaI_min = 0.05;
         static QL_CONSTEXPR Real sigmaI_max = 1.00;
-        static QL_CONSTEXPR Real nu_min = 0.0001;
+        static QL_CONSTEXPR Real nu_min = 0.01;
         static QL_CONSTEXPR Real nu_max = 0.80;
-        static QL_CONSTEXPR Real rho_min = -0.9999;
-        static QL_CONSTEXPR Real rho_max = 0.9999;
+        static QL_CONSTEXPR Real rho_min = -0.99;
+        static QL_CONSTEXPR Real rho_max = 0.99;
         // cutoff for phi(d0) / tau
         // the relevant integrand in (3.1) is
         // below 1e-10 for bigger values then
