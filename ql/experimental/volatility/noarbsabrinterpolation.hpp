@@ -18,15 +18,13 @@
 */
 
 /*! \file noarbsabrinterpolation.hpp
-    \brief no arbitrage sabr interpolation interpolation
-           between discrete points
+    \brief noabr sabr interpolation between discrete points
 */
 
 #ifndef quantlib_noarbsabr_interpolation_hpp
 #define quantlib_noarbsabr_interpolation_hpp
 
 #include <ql/math/interpolations/xabrinterpolation.hpp>
-#include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/experimental/volatility/noarbsabrsmilesection.hpp>
 
 #include <boost/make_shared.hpp>
@@ -41,43 +39,77 @@ typedef NoArbSabrSmileSection NoArbSabrWrapper;
 
 struct NoArbSabrSpecs {
     Size dimension() { return 4; }
-    void defaultValues(std::vector<Real> &params, const Real &forward,
+    Real eps() { return 0.000001; }
+    void defaultValues(std::vector<Real> &params,
+                       std::vector<bool> &paramIsFixed, const Real &forward,
                        const Real expiryTime) {
-        return SABRSpecs().defaultValues(params, forward, expiryTime);
+        SABRSpecs().defaultValues(params, paramIsFixed, forward, expiryTime);
+        // check if alpha / beta is admissable, otherwise adjust
+        // if possible (i.e. not fixed, otherwise an exception will
+        // be thrown from the model constructor anyway)
+        Real sigmaI = params[0] * std::pow(forward,params[1] - 1.0);
+        if (sigmaI < NoArbSabrModel::Constants::sigmaI_min) {
+            if (!paramIsFixed[0])
+                params[0] = NoArbSabrModel::Constants::sigmaI_min * (1.0+eps()) /
+                            std::pow(forward, params[1] - 1.0);
+            else {
+                if (!paramIsFixed[1])
+                    params[1] = 1.0 +
+                                std::log(NoArbSabrModel::Constants::sigmaI_min *
+                                         (1.0+eps()) / params[0]) /
+                                    std::log(forward);
+            }
+        }
+        if (sigmaI > NoArbSabrModel::Constants::sigmaI_max) {
+            if (!paramIsFixed[0])
+                params[0] = NoArbSabrModel::Constants::sigmaI_max * (1.0-eps()) /
+                            std::pow(forward, params[1] - 1.0);
+            else {
+                if (!paramIsFixed[1])
+                    params[1] = 1.0 +
+                                std::log(NoArbSabrModel::Constants::sigmaI_max *
+                                         (1.0-eps()) / params[0]) /
+                                    std::log(forward);
+            }
+        }
     }
-    void guess(Array &values, const Real &forward, const Real expiryTime,
-               const std::vector<bool> &parameterAreFixed,
+    void guess(Array &values, const std::vector<bool> &paramIsFixed,
+               const Real &forward, const Real expiryTime,
                const std::vector<Real> &r) {
         Size j = 0;
-        if (!parameterAreFixed[1])
+        if (!paramIsFixed[1])
             values[1] = NoArbSabrModel::Constants::beta_min +
                         (NoArbSabrModel::Constants::beta_max -
                          NoArbSabrModel::Constants::beta_min) *
                             r[j++];
-        if (!parameterAreFixed[0]) {
+        if (!paramIsFixed[0]) {
             Real sigmaI = NoArbSabrModel::Constants::sigmaI_min +
                           (NoArbSabrModel::Constants::sigmaI_max -
                            NoArbSabrModel::Constants::sigmaI_min) *
                               r[j++];
+            sigmaI *= (1.0-eps());
+            sigmaI += eps() / 2.0;
             values[0] = sigmaI / std::pow(forward, values[1] - 1.0);
         }
-        if (!parameterAreFixed[2])
+        if (!paramIsFixed[2])
             values[2] = NoArbSabrModel::Constants::nu_min +
                         (NoArbSabrModel::Constants::nu_max -
                          NoArbSabrModel::Constants::nu_min) *
                             r[j++];
-        if (!parameterAreFixed[3])
+        if (!paramIsFixed[3])
             values[3] = NoArbSabrModel::Constants::rho_min +
                         (NoArbSabrModel::Constants::rho_max -
                          NoArbSabrModel::Constants::rho_min) *
                             r[j++];
     }
-    Array inverse(const Array &y, const Real forward) {
+    Array inverse(const Array &y, const std::vector<bool> &paramIsFixed,
+                  const std::vector<Real> &params, const Real forward) {
         Array x(4);
-        x[1] =
-            std::sqrt(-std::log((y[1] - NoArbSabrModel::Constants::beta_min) /
-                                (NoArbSabrModel::Constants::beta_max -
-                                 NoArbSabrModel::Constants::beta_min)));
+        x[1] = std::tan((y[1] - NoArbSabrModel::Constants::beta_min) /
+                            (NoArbSabrModel::Constants::beta_max -
+                             NoArbSabrModel::Constants::beta_min) *
+                            M_PI +
+                        M_PI / 2.0);
         x[0] = std::tan((y[0] * std::pow(forward, y[1] - 1.0) -
                          NoArbSabrModel::Constants::sigmaI_min) /
                             (NoArbSabrModel::Constants::sigmaI_max -
@@ -96,27 +128,55 @@ struct NoArbSabrSpecs {
                         M_PI / 2.0);
         return x;
     }
-    Array direct(const Array &x, const Real forward) {
+    Array direct(const Array &x, const std::vector<bool> &paramIsFixed,
+                 const std::vector<Real> &params, const Real forward) {
         Array y(4);
-        y[1] = std::fabs(x[1]) < -std::log(NoArbSabrModel::Constants::beta_min)
-                   ? NoArbSabrModel::Constants::beta_min +
-                         (NoArbSabrModel::Constants::beta_max -
-                          NoArbSabrModel::Constants::beta_min) *
-                             std::exp(-(x[1] * x[1]))
-                   : NoArbSabrModel::Constants::beta_min;
-        Real sigmaI = NoArbSabrModel::Constants::sigmaI_min +
-                      (NoArbSabrModel::Constants::sigmaI_max -
-                       NoArbSabrModel::Constants::sigmaI_min) *
-                          (std::atan(x[0]) + M_PI / 2.0) / M_PI;
-        y[0] = sigmaI / std::pow(forward, y[1] - 1.0);
-        y[2] = NoArbSabrModel::Constants::nu_min +
-               (NoArbSabrModel::Constants::nu_max -
-                NoArbSabrModel::Constants::nu_min) *
-                   (std::atan(x[2]) + M_PI / 2.0) / M_PI;
-        y[3] = NoArbSabrModel::Constants::rho_min +
-               (NoArbSabrModel::Constants::rho_max -
-                NoArbSabrModel::Constants::rho_min) *
-                   (std::atan(x[3]) + M_PI / 2.0) / M_PI;
+        if (paramIsFixed[1])
+            y[1] = params[1];
+        else
+            y[1] = NoArbSabrModel::Constants::beta_min +
+                   (NoArbSabrModel::Constants::beta_max -
+                    NoArbSabrModel::Constants::beta_min) *
+                       (std::atan(x[1]) + M_PI / 2.0) / M_PI;
+        // we compute alpha from sigmaI using beta
+        // if alpha is fixed we have to check if beta is admissable
+        // and adjust if need be
+        if (paramIsFixed[0]) {
+            y[0] = params[0];
+            Real sigmaI = y[0] * std::pow(forward, y[1] - 1.0);
+            if (sigmaI < NoArbSabrModel::Constants::sigmaI_min) {
+                y[1] = (1.0 +
+                        std::log(NoArbSabrModel::Constants::sigmaI_min *
+                                 (1.0+eps()) / y[0]) /
+                            std::log(forward));
+            }
+            if (sigmaI > NoArbSabrModel::Constants::sigmaI_max) {
+                y[1] = (1.0 +
+                        std::log(NoArbSabrModel::Constants::sigmaI_max *
+                                 (1.0-eps()) / y[0]) /
+                            std::log(forward));
+            }
+        } else {
+            Real sigmaI = NoArbSabrModel::Constants::sigmaI_min +
+                          (NoArbSabrModel::Constants::sigmaI_max -
+                           NoArbSabrModel::Constants::sigmaI_min) *
+                              (std::atan(x[0]) + M_PI / 2.0) / M_PI;
+            y[0] = sigmaI / std::pow(forward, y[1] - 1.0);
+        }
+        if (paramIsFixed[2])
+            y[2] = params[2];
+        else
+            y[2] = NoArbSabrModel::Constants::nu_min +
+                   (NoArbSabrModel::Constants::nu_max -
+                    NoArbSabrModel::Constants::nu_min) *
+                       (std::atan(x[2]) + M_PI / 2.0) / M_PI;
+        if (paramIsFixed[3])
+            y[3] = params[3];
+        else
+            y[3] = NoArbSabrModel::Constants::rho_min +
+                   (NoArbSabrModel::Constants::rho_max -
+                    NoArbSabrModel::Constants::rho_min) *
+                       (std::atan(x[3]) + M_PI / 2.0) / M_PI;
         return y;
     }
     typedef NoArbSabrWrapper type;

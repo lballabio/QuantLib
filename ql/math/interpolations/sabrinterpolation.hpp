@@ -59,27 +59,27 @@ class SABRWrapper {
 
 struct SABRSpecs {
     Size dimension() { return 4; }
-    void defaultValues(std::vector<Real> &params, const Real &forward,
-                      const Real expiryTIme) {
+    void defaultValues(std::vector<Real> &params, std::vector<bool> &,
+                       const Real &forward, const Real expiryTIme) {
         if (params[1] == Null<Real>())
             params[1] = 0.5;
         if (params[0] == Null<Real>())
             // adapt alpha to beta level
             params[0] =
                 0.2 *
-                (params[1] < 0.999 ? std::pow(forward, 1.0 - params[1]) : 1.0);
+                (params[1] < 0.9999 ? std::pow(forward, 1.0 - params[1]) : 1.0);
         if (params[2] == Null<Real>())
             params[2] = std::sqrt(0.4);
         if (params[3] == Null<Real>())
             params[3] = 0.0;
     }
-    void guess(Array &values, const Real &forward, const Real expiryTime, 
-               const std::vector<bool> &parameterAreFixed,
+    void guess(Array &values, const std::vector<bool> &paramIsFixed,
+               const Real &forward, const Real expiryTime, 
                const std::vector<Real> &r) {
         Size j = 0;
-        if (!parameterAreFixed[1])
+        if (!paramIsFixed[1])
             values[1] = (1.0 - 2E-6) * r[j++] + 1E-6;
-        if (!parameterAreFixed[0]) {
+        if (!paramIsFixed[0]) {
             values[0] =
                 (1.0 - 2E-6) * r[j++] + 1E-6; // lognormal vol guess
             // adapt this to beta level
@@ -88,15 +88,16 @@ struct SABRSpecs {
                     std::pow(forward,
                              1.0 - values[1]);
         }
-        if (!parameterAreFixed[2])
+        if (!paramIsFixed[2])
             values[2] = 1.5 * r[j++] + 1E-6;
-        if (!parameterAreFixed[3])
+        if (!paramIsFixed[3])
             values[3] = (2.0 * r[j++] - 1.0) * (1.0 - 1E-6);
     }
     Real eps1() { return .0000001; }
     Real eps2() { return .9999; }
     Real dilationFactor() { return 0.001; }
-    Array inverse(const Array &y, const Real) {
+    Array inverse(const Array &y, const std::vector<bool>&,
+                  const std::vector<Real>&, const Real) {
         Array x(4);
         x[0] = std::sqrt(y[0] - eps1());
         // y_[1] = std::tan(M_PI*(x[1] - 0.5))/dilationFactor();
@@ -105,7 +106,8 @@ struct SABRSpecs {
         x[3] = std::asin(y[3] / eps2());
         return x;
     }
-    Array direct(const Array &x, const Real) {
+    Array direct(const Array &x, const std::vector<bool>&,
+                 const std::vector<Real>&, const Real) {
         Array y(4);
         y[0] = std::fabs(x[0]) < 5.0 ? x[0] * x[0] + eps1() : (10.0*x[0]-25.0) + eps1();
         // y_[1] = std::atan(dilationFactor_*x[1])/M_PI + 0.5;
