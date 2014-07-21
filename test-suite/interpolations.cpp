@@ -5,6 +5,7 @@
  Copyright (C) 2005, 2006 StatPro Italia srl
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2009 Dimitri Reiswich
+ Copyright (C) 2014 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -39,6 +40,7 @@
 #include <ql/math/richardsonextrapolation.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
+#include <ql/experimental/volatility/noarbsabrinterpolation.hpp>
 #include <boost/foreach.hpp>
 
 using namespace QuantLib;
@@ -1697,6 +1699,184 @@ void InterpolationTest::testRichardsonExtrapolation() {
     }
 }
 
+void InterpolationTest::testNoArbSabrInterpolation(){
+
+    BOOST_TEST_MESSAGE("Testing noarb-Sabr interpolation...");
+
+    // Test SABR function against input volatilities
+    Real tolerance = 1.0e-12;
+    std::vector<Real> strikes(31);
+    std::vector<Real> volatilities(31), volatilities2(31);
+    // input strikes
+    strikes[0] = 0.03 ; strikes[1] = 0.032 ; strikes[2] = 0.034 ;
+    strikes[3] = 0.036 ; strikes[4] = 0.038 ; strikes[5] = 0.04 ;
+    strikes[6] = 0.042 ; strikes[7] = 0.044 ; strikes[8] = 0.046 ;
+    strikes[9] = 0.048 ; strikes[10] = 0.05 ; strikes[11] = 0.052 ;
+    strikes[12] = 0.054 ; strikes[13] = 0.056 ; strikes[14] = 0.058 ;
+    strikes[15] = 0.06 ; strikes[16] = 0.062 ; strikes[17] = 0.064 ;
+    strikes[18] = 0.066 ; strikes[19] = 0.068 ; strikes[20] = 0.07 ;
+    strikes[21] = 0.072 ; strikes[22] = 0.074 ; strikes[23] = 0.076 ;
+    strikes[24] = 0.078 ; strikes[25] = 0.08 ; strikes[26] = 0.082 ;
+    strikes[27] = 0.084 ; strikes[28] = 0.086 ; strikes[29] = 0.088;
+    strikes[30] = 0.09;
+    // input volatilities for noarb sabr (other than above
+    // alpha is 0.2 here due to the restriction sigmaI <= 1.0 !)
+    volatilities[0] = 0.773560508215704;
+    volatilities[1] = 0.763758326966438;
+    volatilities[2] = 0.754625712062984;
+    volatilities[3] = 0.746081830689374;
+    volatilities[4] = 0.738059709107945;
+    volatilities[5] = 0.730503396111651;
+    volatilities[6] = 0.723364254765603;
+    volatilities[7] = 0.716601603936043;
+    volatilities[8] = 0.710180030784660;
+    volatilities[9] = 0.704068722911692;
+    volatilities[10] = 0.698240930588339;
+    volatilities[11] = 0.692673108850334;
+    volatilities[12] = 0.687344473528052;
+    volatilities[13] = 0.682236589615839;
+    volatilities[14] = 0.677333033229655;
+    volatilities[15] = 0.672619111958598;
+    volatilities[16] = 0.668081631947153;
+    volatilities[17] = 0.663708702669639;
+    volatilities[18] = 0.659489572330010;
+    volatilities[19] = 0.655414488316019;
+    volatilities[20] = 0.651474578279402;
+    volatilities[21] = 0.647661748307455;
+    volatilities[22] = 0.643968595319308;
+    volatilities[23] = 0.640388331386338;
+    volatilities[24] = 0.636914718080825;
+    volatilities[25] = 0.633542009307056;
+    volatilities[26] = 0.630264901337129;
+    volatilities[27] = 0.627078488992519;
+    volatilities[28] = 0.623978227089270;
+    volatilities[29] = 0.620959896409305;
+    volatilities[30] = 0.618019573572684;
+
+    Time expiry = 1.0;
+    Real forward = 0.039;
+    // input SABR coefficients (corresponding to the vols above)
+    Real initialAlpha = 0.2;
+    Real initialBeta = 0.6;
+    Real initialNu = 0.02;
+    Real initialRho = 0.01;
+    // calculate SABR vols and compare with input vols
+    NoArbSabrSmileSection noarbSabr(expiry, forward,
+                                    boost::assign::list_of(initialAlpha)(
+                                        initialBeta)(initialNu)(initialRho));
+    for (Size i = 0; i < strikes.size(); i++) {
+        Real calculatedVol = noarbSabr.volatility(strikes[i]);
+        if (std::fabs(volatilities[i]-calculatedVol) > tolerance)
+        BOOST_ERROR(
+            "failed to calculate noarb-Sabr function at strike " << strikes[i]
+            << "\n    expected:   " << volatilities[i]
+            << "\n    calculated: " << calculatedVol
+            << "\n    error:      " << std::fabs(calculatedVol-volatilities[i]));
+    }
+
+    // Test SABR calibration against input parameters
+    Real betaGuess = 0.5;
+    Real alphaGuess = 0.2 / std::pow(forward,betaGuess-1.0); // new default value for alpha
+    Real nuGuess = std::sqrt(0.4);
+    Real rhoGuess = 0.0;
+
+    const bool vegaWeighted[]= {true, false};
+    const bool isAlphaFixed[]= {true, false};
+    const bool isBetaFixed[]= {true, false};
+    const bool isNuFixed[]= {true, false};
+    const bool isRhoFixed[]= {true, false};
+
+    Real calibrationTolerance = 5.0e-6;
+    // initialize optimization methods
+    std::vector<boost::shared_ptr<OptimizationMethod> > methods_;
+    methods_.push_back( boost::shared_ptr<OptimizationMethod>(new Simplex(0.01)));
+    methods_.push_back( boost::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8)));
+    // Initialize end criteria
+    boost::shared_ptr<EndCriteria> endCriteria(new
+                  EndCriteria(100000, 100, 1e-8, 1e-8, 1e-8));
+    // Test looping over all possibilities
+    for (Size j=1; j<methods_.size(); ++j) { // skip simplex (gets caught in some cases)
+        for (Size i=0; i<LENGTH(vegaWeighted); ++i) {
+            for (Size k_a=0; k_a<LENGTH(isAlphaFixed); ++k_a) {
+                for (Size k_b=0; k_b<LENGTH(isBetaFixed); ++k_b) {
+                    for (Size k_n=0; k_n<LENGTH(isNuFixed); ++k_n) {
+                        for (Size k_r=0; k_r<LENGTH(isRhoFixed); ++k_r) {
+                            std::cout << "***START TEST CASE " << isAlphaFixed[k_a] << isBetaFixed[k_b] << isNuFixed[k_n] << isRhoFixed[k_r] << std::endl;
+                            NoArbSabrInterpolation noarbSabrInterpolation(
+                                                                          strikes.begin(), strikes.end(),
+                                                                          volatilities.begin(), expiry, forward,
+                                                                          isAlphaFixed[k_a] ? initialAlpha
+                                                                          : alphaGuess,
+                                                                          isBetaFixed[k_b] ? initialBeta
+                                                                          : betaGuess,
+                                                                          isNuFixed[k_n] ? initialNu : nuGuess,
+                                                                          isRhoFixed[k_r] ? initialRho : rhoGuess,
+                                                                          isAlphaFixed[k_a], isBetaFixed[k_b],
+                                                                          isNuFixed[k_n], isRhoFixed[k_r],
+                                                                          vegaWeighted[i], endCriteria,
+                                                                          methods_[j], 1E-10);
+                            noarbSabrInterpolation.update();
+
+                            // Recover SABR calibration parameters
+                            bool failed = false;
+                            Real calibratedAlpha = noarbSabrInterpolation.alpha();
+                            Real calibratedBeta = noarbSabrInterpolation.beta();
+                            Real calibratedNu = noarbSabrInterpolation.nu();
+                            Real calibratedRho = noarbSabrInterpolation.rho();
+                            Real error;
+
+                            // compare results: alpha
+                            error = std::fabs(initialAlpha-calibratedAlpha);
+                            if (error > calibrationTolerance) {
+                                BOOST_ERROR("\nfailed to calibrate alpha Sabr parameter:" <<
+                                            "\n    expected:        " << initialAlpha <<
+                                            "\n    calibrated:      " << calibratedAlpha <<
+                                            "\n    error:           " << error);
+                                failed = true;
+                            }
+                            // Beta
+                            error = std::fabs(initialBeta-calibratedBeta);
+                            if (error > calibrationTolerance) {
+                                BOOST_ERROR("\nfailed to calibrate beta Sabr parameter:" <<
+                                            "\n    expected:        " << initialBeta <<
+                                            "\n    calibrated:      " << calibratedBeta <<
+                                            "\n    error:           " << error);
+                                failed = true;
+                            }
+                            // Nu
+                            error = std::fabs(initialNu-calibratedNu);
+                            if (error > calibrationTolerance) {
+                                BOOST_ERROR("\nfailed to calibrate nu Sabr parameter:" <<
+                                            "\n    expected:        " << initialNu <<
+                                            "\n    calibrated:      " << calibratedNu <<
+                                            "\n    error:           " << error);
+                                failed = true;
+                            }
+                            // Rho
+                            error = std::fabs(initialRho-calibratedRho);
+                            if (error > calibrationTolerance) {
+                                BOOST_ERROR("\nfailed to calibrate rho Sabr parameter:" <<
+                                            "\n    expected:        " << initialRho <<
+                                            "\n    calibrated:      " << calibratedRho <<
+                                            "\n    error:           " << error);
+                                failed = true;
+                            }
+
+                            if (failed)
+                                BOOST_MESSAGE("\nnoarb-Sabr calibration failure:" <<
+                                           "\n    isAlphaFixed:    " << isAlphaFixed[k_a] <<
+                                           "\n    isBetaFixed:     " << isBetaFixed[k_b] <<
+                                           "\n    isNuFixed:       " << isNuFixed[k_n] <<
+                                           "\n    isRhoFixed:      " << isRhoFixed[k_r] <<
+                                           "\n    vegaWeighted[i]: " << vegaWeighted[i]);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}
 
 test_suite* InterpolationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
@@ -1727,7 +1907,6 @@ test_suite* InterpolationTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBicubicUpdate));
     suite->add(QUANTLIB_TEST_CASE(
                             &InterpolationTest::testRichardsonExtrapolation));
-
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testNoArbSabrInterpolation));
     return suite;
 }
-
