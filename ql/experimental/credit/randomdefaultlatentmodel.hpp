@@ -27,11 +27,13 @@
 #include <ql/math/randomnumbers/sobolrsg.hpp>
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
+
 #include <ql/experimental/math/latentmodel.hpp>
+#include <ql/experimental/credit/constantlosslatentmodel.hpp>
+
 #include <ql/experimental/math/gaussiancopulapolicy.hpp>
 #include <ql/experimental/math/tcopulapolicy.hpp>
 
-// needed for specializations:
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 
 /* Intended to replace 
@@ -62,21 +64,7 @@ namespace QuantLib {
     for each type; duck typing applies for variable names (see the statistic 
     methods)
     */
-    //////////template <typename simEventOwner> struct simEvent {
-    //////////private:
-    //////////    simEvent(){}//fail if no spez
-    //////////};
-    /* Shouldnt it be?: */
-    template </* template<class, class> */class simEventOwner> struct simEvent;/* {
-    private:
-        simEvent(){}//fail if no spez
-    
-    };
-   */
-
-
-
-
+    template <class simEventOwner> struct simEvent;
 
 
     /*! Base class for latent model monte carlo simulation. Independent of the 
@@ -102,10 +90,8 @@ namespace QuantLib {
     are very expensive.
     \todo: consider another design, taking the statistics outside the models.
     */
-  ///////////////////  template<class derivedRandomLM, class copulaPolicy, class USNG = SobolRsg>
-    /* Shouldnt it be?:*/
-    template<template <class, class> class derivedRandomLM, class copulaPolicy, class USNG = SobolRsg>
-    
+    template<template <class, class> class derivedRandomLM, class copulaPolicy,
+        class USNG = SobolRsg>
     class RandomLM : public virtual LazyObject, 
                      public virtual DefaultLossModel {
     private:
@@ -130,7 +116,8 @@ namespace QuantLib {
         }
 
         void performCalculations() const {
-            static_cast<const derivedRandomLM<copulaPolicy, USNG>* >(this)->initDates();//in update?
+            static_cast<const derivedRandomLM<copulaPolicy, USNG>* >(
+                this)->initDates();//in update?
             USNG baseUrng(numFactors_+ numLMVars_, seed_); 
             copulasRng_ = 
                 boost::make_shared<copulaRNG_type>(baseUrng, copula_);
@@ -142,7 +129,8 @@ namespace QuantLib {
             for(Size i=nSims_; i; i--) {
                 const std::vector<Real>& sample = 
                     copulasRng_->nextSequence().value;
-                static_cast<const derivedRandomLM<copulaPolicy, USNG>* >(this)->nextSample(sample);
+                static_cast<const derivedRandomLM<copulaPolicy, USNG>* >(
+                    this)->nextSample(sample);
             // alternatively make call an explicit local method...
             }
         }
@@ -153,13 +141,16 @@ namespace QuantLib {
         serves to detach the statistics access to the way the simulations are
         stored.
         */
-        const std::vector<simEvent<derivedRandomLM<copulaPolicy, USNG> > >& getSim(
-            const Size iSim) const { return simsBuffer_[iSim]; }
+        const std::vector<simEvent<derivedRandomLM<copulaPolicy, USNG> > >& 
+            getSim(const Size iSim) const { return simsBuffer_[iSim]; }
+
         /* Allows statistics to be written generically for fixed and random
         recovery rates. */
-        Real getEventRecovery(const simEvent<derivedRandomLM<copulaPolicy, USNG> >& evt) const {
-            return static_cast<const derivedRandomLM<copulaPolicy, USNG>* >(this)->getEventRecovery(
-                evt);
+        Real getEventRecovery(
+            const simEvent<derivedRandomLM<copulaPolicy, USNG> >& evt) const 
+        {
+            return static_cast<const derivedRandomLM<copulaPolicy, USNG>* >(
+                this)->getEventRecovery(evt);
         }
 
         //! \name Statistics, DefaultLossModel interface.
@@ -222,23 +213,20 @@ namespace QuantLib {
 
         const Size nSims_;
 
-        mutable std::vector<std::vector<simEvent<derivedRandomLM<copulaPolicy, USNG > > > >
-            simsBuffer_;
+        mutable std::vector<std::vector<simEvent<derivedRandomLM<copulaPolicy, 
+            USNG > > > > simsBuffer_;
 
         mutable copulaPolicy copula_;
         mutable boost::shared_ptr<copulaRNG_type> copulasRng_;
 
         // Maximum time inversion horizon
         static const Size maxHorizon_ = 4050; // over 11 years
-        /* Inversion probability limits are computed by children in initdates()
-        This one to be given some thinking (duplicates code)
-        */
+        // Inversion probability limits are computed by children in initdates()
     };
 
 
     /* ---- Statistics ---------------------------------------------------  */
 
-//    template<class D, class C, class URNG>
     template<template <class, class> class D, class C, class URNG>
     Probability RandomLM<D, C, URNG>::probAtLeastNEvents(Size n, 
         const Date& d) const 
@@ -266,9 +254,7 @@ namespace QuantLib {
         // \todo Provide confidence interval
     }
 
- ///   template<class D, class C, class URNG>
-        template<template <class, class> class D, class C, class URNG>
-
+    template<template <class, class> class D, class C, class URNG>
     Disposable<std::vector<Probability> > 
         RandomLM<D, C, URNG>::probsBeingNthEvent(Size n, 
             const Date& d) const 
@@ -311,9 +297,7 @@ namespace QuantLib {
     }
 
 
-//	template<class D, class C, class URNG>
-        template<template <class, class> class D, class C, class URNG>
-
+    template<template <class, class> class D, class C, class URNG>
     Real RandomLM<D, C, URNG>::defaultCorrelation(const Date& d,
         Size iName, Size jName) const 
     {
@@ -354,17 +338,14 @@ namespace QuantLib {
     }
 
 
-//    template<class D, class C, class URNG>
-        template<template <class, class> class D, class C, class URNG>
-
+    template<template <class, class> class D, class C, class URNG>
     Real RandomLM<D, C, URNG>::expectedTrancheLoss(
         const Date& d) const {
             return expectedTrancheLossInterval(d, 0.95).first;
     }
 
- //   template<class D, class C, class URNG>// return disposable...
-        template<template <class, class> class D, class C, class URNG>
 
+    template<template <class, class> class D, class C, class URNG>
     std::pair<Real, Real> RandomLM<D, C, URNG>::expectedTrancheLossInterval(
         const Date& d, Probability confidencePerc) const 
     {
@@ -401,9 +382,8 @@ namespace QuantLib {
             InverseCumulativeNormal::standard_value(0.5*(1.+confidencePerc)));
     }
 
-//    template<class D, class C, class URNG>
-        template<template <class, class> class D, class C, class URNG>
 
+    template<template <class, class> class D, class C, class URNG>
     Disposable<std::map<Real, Probability> > 
         RandomLM<D, C, URNG>::lossDistribution(const Date& d) const {
 
@@ -422,9 +402,7 @@ namespace QuantLib {
     }
 
 
-//    template<class D, class C, class URNG>
-        template<template <class, class> class D, class C, class URNG>
-
+    template<template <class, class> class D, class C, class URNG>
     Histogram RandomLM<D, C, URNG>::computeHistogram(const Date& d) const {
         std::vector<Real> data;
         std::set<Real> keys;// attainable loss values
@@ -464,9 +442,8 @@ namespace QuantLib {
         return Histogram(data.begin(), data.end(), nPts);
     }
 
-//    template<class D, class C, class URNG>
-        template<template <class, class> class D, class C, class URNG>
 
+    template<template <class, class> class D, class C, class URNG>
     Real RandomLM<D, C, URNG>::expectedShortfall(const Date& d, 
         Real percent) const {
 
@@ -534,9 +511,8 @@ namespace QuantLib {
         */
     }
 
-///    template<class D, class C, class URNG>
-        template<template <class, class> class D, class C, class URNG>
 
+    template<template <class, class> class D, class C, class URNG>
     Real RandomLM<D, C, URNG>::percentile(const Date& d, Real perc) const {
         // need to specify return type in tuples' get is parametric
         return percentileAndInterval(d, perc).template get<0>();
@@ -549,9 +525,7 @@ namespace QuantLib {
     the true value being within the interval; which is different to the error 
     of the stimator just computed. See the reference for a discussion.
     */
-///    template<class D, class C, class URNG>
-        template<template <class, class> class D, class C, class URNG>
-
+    template<template <class, class> class D, class C, class URNG>
     boost::tuples::tuple<Real, Real, Real> // disposable?
         RandomLM<D, C, URNG>::percentileAndInterval(const Date& d, 
             Real percentile) const {
@@ -634,19 +608,16 @@ namespace QuantLib {
     }
 
 
-//    template<class D, class C, class URNG>
-        template<template <class, class> class D, class C, class URNG>
-
+    template<template <class, class> class D, class C, class URNG>
     Disposable<std::vector<Real> > RandomLM<D, C, URNG>::splitVaRLevel(
         const Date& date, Real loss) const
     {
         return splitVaRAndError(date, loss, 0.95)[0];
     }
 
-    // parallelize this one(if possible), it is really expensive
- //   template<class D, class C, class URNG>
-        template<template <class, class> class D, class C, class URNG>
 
+    // parallelize this one(if possible), it is really expensive
+    template<template <class, class> class D, class C, class URNG>
     /* FIX ME: some trouble on limit cases, like zero loss or no losses over the
     requested level.*/
     Disposable<std::vector<std::vector<Real> > > 
@@ -806,7 +777,6 @@ namespace QuantLib {
     template<class , class > class RandomDefaultLM;
     template<class copulaPolicy, class USNG>
     struct simEvent<RandomDefaultLM<copulaPolicy, USNG> > {
- //   struct simEvent<RandomDefaultLM/*<copulaPolicy, USNG>*/ > {
         simEvent(unsigned int n, unsigned int d) 
         : nameIdx(n), dayFromRef(d){}
         unsigned int nameIdx : 16; // can index up to 65535 names
@@ -825,20 +795,46 @@ namespace QuantLib {
     private:
         typedef simEvent<RandomDefaultLM> defaultSimEvent;
 
-        const boost::shared_ptr<DefaultLatentModel<copulaPolicy> > copula_;//<<<<<<<<<<<<<<<<<<<<WHY THIS IS NOT A CONSTANTLOSS LM WITH THE rr INCLUDED?? ........BECAUSE IT INCLUDES THE INTEGRATION AND IT WILL BE A LOSS MODEL TOO!!!
+        // \todo Consider this to be only a ConstantLossLM instead
+        const boost::shared_ptr<DefaultLatentModel<copulaPolicy> > copula_;
         const std::vector<Real> recoveries_;
         // for time inversion:
         Real accuracy_;
     public:
-        // \todo: Allow a constructor with ConstantLossLatentmodel and no 
-        //    recoveries... and drop the default value recovery vector...
         // \todo: Allow a constructor building its own default latent model.
         RandomDefaultLM(
-            const boost::shared_ptr<DefaultLatentModel<copulaPolicy> >& copula,//////////////////////////// change to pointer!
+            const boost::shared_ptr<DefaultLatentModel<copulaPolicy> >& copula,
             const std::vector<Real>& recoveries = std::vector<Real>(),
             Size nSims = 0,// stats will crash on div by zero, FIX ME.
             Real accuracy = 1.e-6, 
-            BigNatural seed = 2863311530);
+            BigNatural seed = 2863311530)
+        : copula_(copula), //<- renmae to latentModel_ or defautlLM_;
+          accuracy_(accuracy),
+          recoveries_(recoveries.size()==0 ? std::vector<Real>(copula->size(), 
+            0.) : recoveries), 
+          RandomLM(copula->numFactors(), copula->size(), copula->copula(), 
+            nSims, seed )
+        {   
+            // redundant through basket?
+            this->registerWith(Settings::instance().evaluationDate());
+            this->registerWith(copula_);
+        }
+        RandomDefaultLM(
+            const boost::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >& 
+                copula,
+            Size nSims = 0,// stats will crash on div by zero, FIX ME.
+            Real accuracy = 1.e-6, 
+            BigNatural seed = 2863311530)
+        : copula_(copula),
+          accuracy_(accuracy),
+          recoveries_(copula->recoveries()), 
+          RandomLM(copula->numFactors(), copula->size(), copula->copula(), 
+            nSims, seed )
+        {   
+            // redundant through basket?
+            this->registerWith(Settings::instance().evaluationDate());
+            this->registerWith(copula_);
+        }
 
         // grant access to static polymorphism:
         /* While this works on g++, VC9 refuses to compile it.
@@ -869,7 +865,7 @@ namespace QuantLib {
             Date maxHorizonDate = today  + Period(this->maxHorizon_, Days);
 
             const boost::shared_ptr<Pool>& pool = this->basket_->pool();
-            for(Size iName=0; iName < this->basket_->size(); ++iName)//use'live'basket
+            for(Size iName=0; iName < this->basket_->size(); ++iName)//use'live'
                 horizonDefaultPs_.push_back(pool->get(pool->names()[iName]).
                     defaultProbability(this->basket_->defaultKeys()[iName])
                         ->defaultProbability(maxHorizonDate, true));
@@ -889,7 +885,7 @@ namespace QuantLib {
         }
         //allows statistics to know the portfolio size (could be moved to parent 
         //invoking duck typing on the variable name or a handle to the basket)
-        Size basketSize() const { return copula_->size(); }//////////////////////////////and the basket? we have a basket too!!
+        Size basketSize() const { return copula_->size(); }
     private:
         void resetModel() /*const*/ {
             /* Explore: might save recalculation if the basket is the same 
@@ -911,24 +907,6 @@ namespace QuantLib {
         //   horizon date. Cached for perf.
         mutable std::vector<Probability> horizonDefaultPs_;
     };
-
-    ///*! Random default with deterministic recovery event type.\par
-    //Stores sims results in a bitfield buffer for lean memory storage.
-    //Although strictly speaking this is not guaranteed by the compiler it
-    //amounts to reducing the memory storage by half.
-    //Some computations, like conditional statistics, precise that all sims
-    //results be available. 
-    //*/
-    //template<class copulaPolicy, class USNG>
-    //struct simEvent<RandomDefaultLM/*<copulaPolicy, USNG>*/ > {
-    //    simEvent(unsigned int n, unsigned int d) 
-    //    : nameIdx(n), dayFromRef(d){}
-    //    unsigned int nameIdx : 16; // can index up to 65535 names
-    //    unsigned int dayFromRef : 16; //indexes up to 65535 days ~179 years
-    //    bool operator<(const simEvent& evt) const {
-    //        return dayFromRef < evt.dayFromRef; 
-    //    }
-    //};
 
 
 
@@ -983,39 +961,6 @@ namespace QuantLib {
 
 
 
-    template<class C, class R> 
-    RandomDefaultLM<C, R>::RandomDefaultLM(
-        const boost::shared_ptr<DefaultLatentModel<C> >& copula,
-        const std::vector<Real>& recoveries,
-        Size nSims,
-        Real accuracy, 
-        BigNatural seed) 
-      : copula_(copula), //<- renmae to latentModel_ or defautlLM_; why the copy? <<<<<<<<<<<<<<<<<
-        accuracy_(accuracy),
-        // set to 0 RR if empty, RRs to be ignored
-        recoveries_(recoveries.size()==0 ? std::vector<Real>(copula->size(), 0.)
-            : recoveries),
-        /* Anyone can shed any light into this one? To me MSCV is wrong to 
-        require the removal of the parameters. 
-        Can anyone report behaviour of other versions of MS compiler?
-        */
-#if !defined(QL_PATCH_MSVC90)
-        RandomLM<RandomDefaultLM, C, R>
-#else
-        RandomLM
-#endif
-        (copula->numFactors(), copula->size(), copula->copula(), nSims, seed )
-    {   
-        // redundant through basket?
-        this->registerWith(Settings::instance().evaluationDate());
-/************************************************************************************** WE HAVENT REGISTERD WITH THE COPULA MODEL ; SO UPDATES OF A CORREL MKT QUOTE DO NOT GET PROPAGATED HERE!!!*/
-        this->registerWith(copula_);
-    }
-
-
-
-
-
     // Common usage typedefs (notice they vary in the multithread version)
     // For the multithread implementation these souldnt be used, fortunately 
     //   they will fail because skipTo is absent.
@@ -1030,10 +975,6 @@ namespace QuantLib {
     typedef RandomDefaultLM<TCopulaPolicy, 
         RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > > 
             TMTRandomDefaultLM;
-
-
-
-
 
 }
 

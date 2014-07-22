@@ -32,13 +32,12 @@ namespace QuantLib {
 
     /* The engine obtains the cdo reference basket from its arguments and it 
     is expecting it to have a default model assigned. 
-    There are other  alternatives but assigning the model in the engine might
-    break(trigger recalculation) of other tranches without the alternative of
-    not doing so. However here, all cdos referering to the same basket are
-    only priced with the same default loss model, yet the option not to do it
-    exists if you retain a reference(pointer) to the underlying basket. You 
-    need to price CDO1 then reset the model in the basket handle you have and
-    then price CDO2 (or reprice CDO1 if you wish).
+    */
+    /* FIX ME: ASSUMES basket->expectedTrancheLoss(endDate) includes past 
+    realized losses (between cdo inception and calculation time) .... what if 
+    basket inception is not the same as CDO's ?????
+
+    \todo non tested under realized defaults. JTD metrics might be invalid
     */
     class MidPointCDOEngine : public SyntheticCDO::engine {
     public:

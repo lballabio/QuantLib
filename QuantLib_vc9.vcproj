@@ -7650,7 +7650,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\credit\inhomogeneouspooldef.cpp"
+					RelativePath=".\ql\experimental\credit\homogeneouspooldef.hpp"
 					>
 				</File>
 				<File

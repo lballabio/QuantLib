@@ -77,7 +77,7 @@ namespace QuantLib {
       calculated as
 
       \f[
-      V_2 = m \, \cdot \sum_{i=1}^N \,(D_2 - D_1 - E_i) \cdot \Delta_{i-1,i}\,d_i
+      V_2 =m \, \cdot \sum_{i=1}^N \,(D_2 - D_1 - E_i) \cdot \Delta_{i-1,i}\,d_i
       \f]
 
       where \f$ m \f$ is the premium rate, \f$ \Delta_{i-1, i}\f$ is the day
@@ -105,7 +105,7 @@ namespace QuantLib {
         class engine;
 
         // Review: No accrual settlement flag. No separate upfront payment date.
-        // Review: FORWARD START SITUATION.
+        // Review: Forward start case.
         /**
             @param notional Tranche notional. If the notional exceeds the basket
                 inception tranche notional the cdo is leveraged by that factor.
@@ -215,7 +215,7 @@ namespace QuantLib {
         /* Expected tranche losses affecting this tranche coupons. Notice this 
         number might be below the actual basket losses, since the cdo protection
         might start after basket inception (forward start CDO)*/
-        std::vector<Real> expectedTrancheLoss; // to do: Implement in and out of the results via disposability????-----------------
+        std::vector<Real> expectedTrancheLoss;
     };
 
 

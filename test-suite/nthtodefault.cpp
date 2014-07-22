@@ -25,8 +25,6 @@
 //#include <ql/experimental/credit/gaussianlhplossmodel.hpp>
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
 #include <ql/experimental/credit/randomdefaultlatentmodel.hpp>
-
-
 #include <ql/experimental/credit/integralntdengine.hpp>
 #include <ql/experimental/credit/pool.hpp>
 #include <ql/instruments/creditdefaultswap.hpp>
@@ -161,16 +159,15 @@ void NthToDefaultTest::testGauss() {
         LatentModelIntegrationType::GaussianQuadrature, names, 
         GaussianCopulaPolicy::initTraits()));
 
-    /* If you like the action you can price with the simulation engine 
-    below. But you need at least 1e6 simulations to pass the pricing error tests
+    /* If you like the action you can price with the simulation engine below
+    instead below. But you need at least 1e6 simulations to pass the pricing 
+    error tests
     */
     //boost::shared_ptr<GaussianDefProbLM> gLM(
     //    boost::make_shared<GaussianDefProbLM>(correlationHandle, names,
     //    LatentModelIntegrationType::GaussianQuadrature,
     //    // g++ requires this when using make_shared
     //    GaussianCopulaPolicy::initTraits()));
-
-
     //Size numSimulations = 1000000;
     //// Size numCoresUsed = 4; use your are in the multithread branch
     //// Sobol, many cores
@@ -183,11 +180,6 @@ void NthToDefaultTest::testGauss() {
     vector<Handle<DefaultProbabilityTermStructure> > singleProbability;
     singleProbability.push_back (probabilities[0]);
 
-    //////////////////////////////////CreditDefaultSwap cds (Protection::Seller, namesNotional, 0.02,
-    //////////////////////////////////                       schedule, Following, Actual360());
-    //////////////////////////////////cds.setPricingEngine(boost::shared_ptr<PricingEngine>(
-    //////////////////////////////////                         new IntegralCdsEngine(timeUnit, probabilities[0],
-    //////////////////////////////////                                               recovery, yieldHandle)));
     // Set up pool and basket
     std::vector<std::string> namesIds;
     for(Size i=0; i<names; i++)
@@ -216,13 +208,10 @@ void NthToDefaultTest::testGauss() {
         std::vector<Real>(names, namesNotional/names), thePool, 0., 1.));
     basket->setLossModel(copula);
 
-    ////////////////NthToDefault ftd (basket, 1, Protection::Seller, schedule, 0.0, 0.02,
-    ////////////////    Actual360(), namesNotional, true);
 
     boost::shared_ptr<PricingEngine> engine(
         new IntegralNtdEngine(timeUnit, yieldHandle));
 
-    ////////////////////////ftd.setPricingEngine(engine);
     Real diff, maxDiff = 0;
 
     vector<NthToDefault> ntd;
@@ -293,7 +282,8 @@ void NthToDefaultTest::testGaussStudent() {
     gridDates.push_back (TARGET().advance (asofDate, Period (5, Years)));
     gridDates.push_back (TARGET().advance (asofDate, Period (7, Years)));
 
-    boost::shared_ptr<YieldTermStructure> yieldPtr (new FlatForward (asofDate, rate, dc, cmp));
+    boost::shared_ptr<YieldTermStructure> yieldPtr (new FlatForward (asofDate, 
+        rate, dc, cmp));
     Handle<YieldTermStructure> yieldHandle (yieldPtr);
 
     vector<Handle<DefaultProbabilityTermStructure> > probabilities;
@@ -308,13 +298,6 @@ void NthToDefaultTest::testGaussStudent() {
     boost::shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.3));
     Handle<Quote> correlationHandle (simpleQuote);
 
-    /*
-    boost::shared_ptr<OneFactorCopula> gaussianCopula (
-                             new OneFactorGaussianCopula (correlationHandle));
-    boost::shared_ptr<OneFactorCopula> studentCopula (
-                        new OneFactorStudentCopula (correlationHandle, 5, 5));
-    RelinkableHandle<OneFactorCopula> copula;
-    */
     boost::shared_ptr<DefaultLossModel> gaussianCopula( new 
         ConstantLossModel<GaussianCopulaPolicy>( correlationHandle, 
         std::vector<Real>(names, recovery), 
@@ -326,7 +309,6 @@ void NthToDefaultTest::testGaussStudent() {
         ConstantLossModel<TCopulaPolicy>( correlationHandle, 
         std::vector<Real>(names, recovery), 
         LatentModelIntegrationType::GaussianQuadrature, names, iniT));
-    //////////RelinkableHandle<DefaultLossModel> copula;
 
     // Set up pool and basket
     std::vector<std::string> namesIds;
@@ -372,7 +354,6 @@ void NthToDefaultTest::testGaussStudent() {
 
     simpleQuote->setValue (0.3);
 
-    //copula.linkTo (gaussianCopula);
     basket->setLossModel(gaussianCopula);
 
     for (Size i = 0; i < ntd.size(); i++) {
@@ -386,7 +367,6 @@ void NthToDefaultTest::testGaussStudent() {
                              << absTolerance << " exceeded");
     }
 
-    //copula.linkTo (studentCopula);
     basket->setLossModel(studentCopula);
 
     maxDiff = 0;

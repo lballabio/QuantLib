@@ -104,7 +104,7 @@ int main(int, char* []) {
             todaysDate, 
             names, std::vector<Real>(hazardRates.size(), 100.), thePool,
          //   0.0, 0.78);
-            0.024, .78);
+            0.03, .06);
 
         /* --------------------------------------------------------------
                         SET UP DEFAULT LOSS MODELS
@@ -113,7 +113,7 @@ int main(int, char* []) {
         std::vector<Real> recoveries(hazardRates.size(), 0.4);
 
         Date calcDate(TARGET().advance(Settings::instance().evaluationDate(), 
-            Period(120, Months)));
+            Period(60, Months)));
         Real factorValue = 0.05;
         std::vector<std::vector<Real> > fctrsWeights(hazardRates.size(), 
             std::vector<Real>(1, std::sqrt(factorValue)));
@@ -156,15 +156,24 @@ int main(int, char* []) {
         std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
 
         // --- G Inhomogeneous model ---------------
+        /*
         boost::shared_ptr<GaussianDefProbLM> gLM(
             boost::make_shared<GaussianDefProbLM>(fctrsWeights, 
             LatentModelIntegrationType::GaussianQuadrature,
             // g++ requires this when using make_shared
             GaussianCopulaPolicy::initTraits()));
+*/
+        boost::shared_ptr<GaussianConstantLossLM> gLM(
+            boost::make_shared<GaussianConstantLossLM>(fctrsWeights, 
+            recoveries,
+            LatentModelIntegrationType::GaussianQuadrature,
+            // g++ requires this when using make_shared
+            GaussianCopulaPolicy::initTraits()));
+
         Size numBuckets = 100;
         boost::shared_ptr<DefaultLossModel> inhomogeneousLM(
-            boost::make_shared<InhomogeneousPoolLossModel>(gLM, 
-                recoveries, numBuckets));
+            boost::make_shared<IHGaussPoolLossModel>(gLM, 
+              /*  recoveries,*/ numBuckets));
         theBskt->setLossModel(inhomogeneousLM);
 
         std::cout << "G Inhomogeneous Expected 10-Yr Losses: "  << std::endl;

@@ -89,6 +89,7 @@ namespace QuantLib {
             Real remainingNot, // << at the given date 'd'
             Real prob, // << at the given date 'd'
             Real averageRR, // << at the given date 'd'
+            // these are percentual values:
             Real attachLimit, Real detachLimit) const 
         {
 
@@ -97,22 +98,13 @@ namespace QuantLib {
             if (remainingNot == 0.) return 0.;
 
             const Real one = 1.0 - 1.0e-12;  // FIXME DUE TO THE INV CUMUL AT 1
-            const Real k1 = std::min(one, attachLimit / 
-                (1.0 - averageRR)) + QL_EPSILON;
-            const Real k2 = std::min(one, detachLimit / 
-                (1.0 - averageRR)) + QL_EPSILON;
+            const Real k1 = std::min(one, attachLimit /(1.0 - averageRR)
+                ) + QL_EPSILON;
+            const Real k2 = std::min(one, detachLimit /(1.0 - averageRR)
+                ) + QL_EPSILON;
 
             if (prob > 0) {
                 const Real ip = InverseCumulativeNormal::standard_value(prob);
-
-                if(k1>0.)
-                    return remainingNot * (1.-averageRR) * 
-                      (biphi_(-InverseCumulativeNormal::standard_value(k1), ip)-
-                      biphi_(-InverseCumulativeNormal::standard_value(k2), ip));
-                else
-                    return remainingNot * (1.-averageRR) * (prob - 
-                      biphi_(-InverseCumulativeNormal::standard_value(k2), ip));
-
                 const Real invFlightK1 = 
                     (ip-sqrt1minuscorrel_ * 
                         InverseCumulativeNormal::standard_value(k1))/beta_;
@@ -128,9 +120,8 @@ namespace QuantLib {
 
         Real GaussianLHPLossModel::probOverLoss(const Date& d,
             Real remainingLossFraction) const {
-                // check d is not before todays date
-
-            QL_REQUIRE(remainingLossFraction >=0., "Incorrect loss fraction.");// this test goes into basket<<<<<<<<<<<<<<<<<<<<<<<<<
+            // these test goes into basket<<<<<<<<<<<<<<<<<<<<<<<<<
+            QL_REQUIRE(remainingLossFraction >=0., "Incorrect loss fraction.");
             QL_REQUIRE(remainingLossFraction <=1., "Incorrect loss fraction.");
 
             Real remainingAttachAmount = basket_->remainingAttachmentAmount();
@@ -199,8 +190,9 @@ namespace QuantLib {
         Real GaussianLHPLossModel::percentilePortfolioLossFraction(
             const Date& d, Real perctl) const 
         {
+            // this test goes into basket<<<<<<<<<<<<<<<<<<<<<<<<<
             QL_REQUIRE(perctl >= 0. && perctl <=1., 
-                "Percentile argument out of bounds.");// this test goes into basket<<<<<<<<<<<<<<<<<<<<<<<<<
+                "Percentile argument out of bounds.");
 
             if(perctl==0.) return 0.;// portfl == attach
             if(perctl==1.) perctl = 1. - QL_EPSILON; // portfl == detach

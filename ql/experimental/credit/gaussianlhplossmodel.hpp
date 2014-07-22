@@ -96,19 +96,21 @@ namespace QuantLib {
     public:
         Real expectedTrancheLoss(const Date& d) const {
             //can calls to Basket::remainingNotional(d) be cached?<<<<<<<<<<<<<
-            const Real remainingBasktNot = basket_->remainingNotional(d);
+            const Real remainingfullNot = basket_->remainingNotional(d);
             Real averageRR = averageRecovery(d);
             Probability prob = averageProb(d);
             Real remainingAttachAmount = basket_->remainingAttachmentAmount();
             Real remainingDetachAmount = basket_->remainingDetachmentAmount();
 
 
-            const Real attach = std::min(remainingAttachAmount 
-                / remainingBasktNot, 1.);
-            const Real detach = std::min(remainingDetachAmount 
-                / remainingBasktNot, 1.);
+            //const Real attach = std::min(remainingAttachAmount 
+            //    / remainingfullNot, 1.);
+            //const Real detach = std::min(remainingDetachAmount 
+            //    / remainingfullNot, 1.);
+            const Real attach = remainingAttachAmount / remainingfullNot;
+            const Real detach = remainingDetachAmount / remainingfullNot;
 
-            return expectedTrancheLossImpl(remainingBasktNot, prob, averageRR, 
+            return expectedTrancheLossImpl(remainingfullNot, prob, averageRR, 
                 attach, detach);
         }
 

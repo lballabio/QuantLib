@@ -24,13 +24,6 @@
 
 namespace QuantLib {
 
-    /* FIX ME: ASSUMES basket->expectedTrancheLoss(endDate) includes past 
-    realized losses (between cdo inception and calculation time) .... what if 
-    basket inception is not the same as CDO's ?????
-
-    \todo non tested under realized defaults. JTD metrics might be invalid
-    */
-    // Expects the basket to have a default loss model asigned.
     void MidPointCDOEngine::calculate() const {
         Date today = Settings::instance().evaluationDate();
 
@@ -53,7 +46,7 @@ namespace QuantLib {
             // realized:
             e1 = arguments_.basket->expectedTrancheLoss(
                 boost::dynamic_pointer_cast<Coupon>(
-                    arguments_.normalizedLeg[0])->accrualEndDate());
+                    arguments_.normalizedLeg[0])->accrualStartDate());
         results_.expectedTrancheLoss.push_back(e1);
         //'e1'  should contain the existing loses.....? use remaining amounts?
         for (Size i = 0; i < arguments_.normalizedLeg.size(); i++) {

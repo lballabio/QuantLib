@@ -18,37 +18,33 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_inhomogenous_pool_default_model_hpp
-#define quantlib_inhomogenous_pool_default_model_hpp
+#ifndef quantlib_homogenous_pool_default_model_hpp
+#define quantlib_homogenous_pool_default_model_hpp
 
 #include <ql/experimental/credit/lossdistribution.hpp>
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
 
-// Intended to replace InhomogeneousPoolCDOEngine in syntheticcdoengines.hpp
+// Intended to replace HomogeneousPoolCDOEngine in syntheticcdoengines.hpp
 
 namespace QuantLib {
 
     //-------------------------------------------------------------------------
-    //! Default loss distribution convolution for finite non homogeneous pool
+    //! Default loss distribution convolution for finite homogeneous pool
     /* A note on the number of buckets: As it is now the code goes splitting
     losses into buckets from loses equal to zero to losses up to the value of
     the underlying basket. This is in view of a stochastic loss given default
     but in a constant LGD situation this is a waste and it is more efficient to
     go up to the attainable losses.
     \todo Extend to the multifactor case for a generic LM
-    \todo Many common code with the homogeneous version, both classes perform
-    the same work on different loss distribution types, merge and send the 
-    distribution object?
     */
     template<class copulaPolicy>
-    class InhomogeneousPoolLossModel : public DefaultLossModel {
+    class HomogeneousPoolLossModel : public DefaultLossModel {
     private:
         void resetModel();
     public:
-        InhomogeneousPoolLossModel(
-        // restricted to non random recoveries, but it could be possible.
+        HomogeneousPoolLossModel(
             const boost::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >& 
                 copula,
             Size nBuckets,
@@ -62,18 +58,17 @@ namespace QuantLib {
             QL_REQUIRE(copula->numFactors() == 1, 
                 "Inhomogeneous model not implemented for multifactor");
         }
-    // Write another constructor sending the LM factors and recoveries.
     protected:
         Distribution lossDistrib(const Date& d) const;
     public:
         Real expectedTrancheLoss(const Date& d) const {
             return lossDistrib(d).cumulativeExcessProbability(attachAmount_, 
-              detachAmount_);
+                detachAmount_);
             // This one if the distribution is over the whole loss structure:
             // but it becomes very expensive
             /*
-            return lossDistrib(d).trancheExpectedValue(
-                attachAmount_, detachAmount_);
+            return lossDistrib(d).trancheExpectedValue(attach_ * notional_, 
+                detach_ * notional_);
             */
         }
         Real percentile(const Date& d, Real percentile) const {
@@ -101,14 +96,14 @@ namespace QuantLib {
         const Real delta_; 
     };
     // \todo Add other loss distribution statistics
-    typedef InhomogeneousPoolLossModel<GaussianCopulaPolicy> 
-        IHGaussPoolLossModel;
-    typedef InhomogeneousPoolLossModel<TCopulaPolicy> IHStudentPoolLossModel;
+    typedef HomogeneousPoolLossModel<GaussianCopulaPolicy> 
+        HomogGaussPoolLossModel;
+    typedef HomogeneousPoolLossModel<TCopulaPolicy> HomogTPoolLossModel;
 
     //-----------------------------------------------------------------------
 
     template<class CP>
-    void InhomogeneousPoolLossModel<CP>::resetModel()
+    void HomogeneousPoolLossModel<CP>::resetModel()
     {
         // need to be capped now since the limit amounts might be over the 
         //  remaining notional (think amortizing)
@@ -125,10 +120,10 @@ namespace QuantLib {
     }
 
     template<class CP>
-    Distribution InhomogeneousPoolLossModel<CP>::lossDistrib(
+    Distribution HomogeneousPoolLossModel<CP>::lossDistrib(
         const Date& d) const 
     {
-        LossDistBucketing bucktLDistBuff(nBuckets_, detachAmount_);
+        LossDistHomogeneous bucktLDistBuff(nBuckets_, detachAmount_);
 
         std::vector<Real> lgd;// switch to a mutable cache member
         std::vector<Real> recoveries = copula_->recoveries();
@@ -140,7 +135,6 @@ namespace QuantLib {
 
         // integrate locally (1 factor). 
         // use explicitly a 1D latent model object? 
-        // \todo Use a library integrator here and in the homogeneous case.
         Distribution dist(nBuckets_, 0.0, 
             detachAmount_);
             //notional_);

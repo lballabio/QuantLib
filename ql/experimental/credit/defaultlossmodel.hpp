@@ -44,11 +44,12 @@ namespace QuantLib {
 
     An inconvenience of this design as opposed to the full arguments/results
     is that when pricing several derivatives instruments on the same basket
-    not all the pricing engines would require or perform better under the 
-    same loss model and when pricing a portfolio of those there might be some
-    switching on the basket loss models, which might require recalculations.
+    not all the pricing engines would point to the same loss model; thus when
+    pricing a set of such instruments there might be some switching on the 
+    basket loss models, which might require recalculations (of the basket) or 
+    not depending on the pricing order.
     */
-    class DefaultLossModel : public Observable {
+    class DefaultLossModel : public Observable {// joint-? basket?-defaultLoss
      /* Protection together with frienship to avoid the need of checking the 
      basket-argument pointer integrity. It is the responsibility of the basket 
      now; our only caller.
@@ -145,12 +146,8 @@ namespace QuantLib {
         /*! Send a reference to the basket to allow the model to read the 
         problem arguments (contained in the basket)
         */
-        /* An alternative to this scheme is to copy a set of 
-        arguments/results dependent on the model type as is done in the library
-        instrument pricing 
-        */
-        virtual void setBasket(Basket* bskt) /*const*/ {// virtual?
-            if(!basket_.empty()) basket_->update(); // notifyObservers is no longer enough since we might not be registered anymore
+    private: //can only be called from Basket
+        virtual void setBasket(Basket* bskt) {
             /* After this; if the model modifies its internal status/caches (if 
             any) it should notify the  prior basket to recognise that basket is 
             not in a calculated=true state. Since we dont know at this level if 
@@ -161,13 +158,11 @@ namespace QuantLib {
             ..alternatively both old basket and model could be forced reset here
             */
             basket_.linkTo(boost::shared_ptr<Basket>(bskt, no_deletion), false);
-           ///////////////////////// this->update();
- //////////////?????????????           notifyObservers();//hmm the update on the previous basket above is no longer needed right?? Lazy models will do this again...!!! they need to call update too.
             resetModel();// or rename to setBasketImpl(...)
         }
-    private: // the call order matters, which is the reason for the parent to be the sole caller.
-        virtual void resetModel() /*const*/ = 0;//reset model caches after a basket reset. This is only due to a basket change not a general observability mechanics....
-
+        // the call order matters, which is the reason for the parent to be the sole caller.
+        //! Concrete models do now any updates/inits they need on basket reset
+        virtual void resetModel() = 0;
     };
 
 }

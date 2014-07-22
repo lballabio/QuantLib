@@ -47,47 +47,40 @@ namespace QuantLib {
         : 1.) 
     {
         QL_REQUIRE (basket->names().size() > 0, "basket is empty");
-     //PP   registerWith (yieldTS_);
-/////////// NEEDS TO CHECK THAT THE SCHEDULE FIRST DATE LIES AFTER THE BASKET REFERENCE DATE!!!, I.E. OK FORWARD START BUT DO NOT TAKE DATES PRIOR TO THE BSKT EXISTANCE.....review the basket have a ref date at all?
         // Basket inception must lie before contract protection start.
         QL_REQUIRE(basket->refDate() <= schedule.startDate(),
-            //using the start date of the schedule might be wrong, think of the CDS rule
+        //using the start date of the schedule might be wrong, think of the 
+        //  CDS rule
             "Basket did not exist before contract start.");
 
-        // Notice the notional is that of the basket at basket inception, some names might have defaulted in between
+        // Notice the notional is that of the basket at basket inception, some 
+        //   names might have defaulted in between
         normalizedLeg_ = FixedRateLeg(schedule)
-            .withNotionals(basket_->trancheNotional() * leverageFactor_)// notional normalized to the live notional in the negine
-            /* This normalized nottional business is a waste. Say I have two identical tranches on a bskt, one of them is leveraged..... I need to create a different basket just for it....!! Maybe I can pass a notional which I can compare to the original basket tranche notional and work out a leverage factor which to pass to the pricing engine.
-
-            */
+            .withNotionals(basket_->trancheNotional() * leverageFactor_)
             .withCouponRates(runningRate, dayCounter)
             .withPaymentAdjustment(paymentConvention);
 
-       //////////// const boost::shared_ptr<Pool> pool = basket->pool();
-
         Date today = Settings::instance().evaluationDate();
-        // register with probabilities if the corresponding issuer is // IS IT NOT ENOUGH NOW TO REGISTER WITH THE BSKT?????????????????????????????????????
-        // alive under this name contractual conditions
+        // register with probabilities if the corresponding issuer is, baskets
+        //   are not registered with the DTS
         for (Size i = 0; i < basket->names().size(); i++) {
+            /* This turns out to be a problem: depends on today but I am not 
+            modifying the registrations, if we go back in time in the 
+            calculations this would left me unregistered to some. Not impossible
+            to de-register and register when updating but i am dropping it.
             if(!basket->pool()->get(basket->names()[i]).
-                defaultedBetween(schedule.dates()[0],
-                                 today,// << problem, this depends on today but I am not modifying the registrations, if we go back in time in the calculations this would left me unregistered to some 
-                                 basket->pool()->defaultKeys()[i]))
-                                 // registers with the associated curve (issuer and event type)
+                defaultedBetween(schedule.dates()[0], today,
+                                     basket->pool()->defaultKeys()[i]))
+            */
+            // registers with the associated curve (issuer and event type)
+            // \todo make it possible to access them by name instead of index
             registerWith(basket->pool()->get(basket->names()[i]).
-                defaultProbability(basket->pool()->defaultKeys()[i]));// SHOULD BE ACCESSING THEM BY NAME, not index
-            // To do: the basket could do this last line on its own without so much
-            //    travelling, update its interface? some RR models depend on the
-            //    probabilities and they will be registered with them. Strictly
-            //    speaking the basket does not need directly to be registered
-            //    with the probs.
-            /*
-                we used to be registering with Issuers which are not observables. However
-                this might be what we want: Issuer registration might give us registration
-                with probabilities and with creditEvents at the same time.
+                defaultProbability(basket->pool()->defaultKeys()[i]));
+            /* \todo Issuers should be observables/obsrvr and they would in turn
+            regiter with the DTS; only we might get updates from curves we do
+            not use.
             */
         }
-        // register with recoveries:
         registerWith(basket_);
     }
 
@@ -135,14 +128,14 @@ namespace QuantLib {
     }
 
     bool SyntheticCDO::isExpired () const {
-        // to do: it could have also expired (knocked out) because theres  <<<<<<<<<<<<<<<<<<<<<<<<<
+        // FIXME: it could have also expired (knocked out) because theres
         //   no remaining tranche notional.
         return detail::simple_event(normalizedLeg_.back()->date())
                .hasOccurred();
     }
 
     Real SyntheticCDO::remainingNotional() const {
-        calculate();/// calculate?????  calculate the basket is enough 
+        calculate();
         return remainingNotional_;
     }
 
@@ -232,19 +225,21 @@ namespace QuantLib {
 
     }
 
+    // untested, not sure this is not messing up, once it comes out of this
+    //   the basket model is different.....
     Real SyntheticCDO::implicitCorrelation(const std::vector<Real>& recoveries, 
         const Handle<YieldTermStructure>& discountCurve, 
         Real targetNPV,
         Real accuracy) const 
     {
-            // SHOULD SAVE AND RESTORE THE (POSSIBLE) ENGINE IN THE CDO..........AND FREEZE IT!! OTHERWISE WILL RECALC
         boost::shared_ptr<SimpleQuote> correl(new SimpleQuote(0.0));
 
         boost::shared_ptr<GaussianLHPLossModel> lhp(new 
             GaussianLHPLossModel(Handle<Quote>(correl), recoveries));
 
         // lock
-        basket_->setLossModel(lhp);// intialization of the LHP model takes place here and since we do not reasign the basket theres no need to do it again in the ObjectiveFunction for every change of the correl quote.
+        basket_->setLossModel(lhp);
+
         MidPointCDOEngine engineIC(discountCurve);
         setupArguments(engineIC.getArguments());
         const SyntheticCDO::results* results = 

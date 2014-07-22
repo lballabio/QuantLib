@@ -58,7 +58,12 @@ namespace QuantLib {
             ) 
         : recoveries_(recoveries), 
           DefaultLatentModel<copulaPolicy>(mktCorrel, nVariables,
-            integralType, ini) { }
+            integralType, ini) {
+            // actually one could define the other and get rid of the variable 
+            // here and in other similar models
+            QL_REQUIRE(recoveries.size() == nVariables, 
+                "Incompatible model and recovery sizes.");
+        }
 
         Real conditionalRecovery(const Date& d, Size iName, 
                                  const std::vector<Real>& mktFactors) const {

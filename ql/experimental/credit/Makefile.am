@@ -21,6 +21,7 @@ this_include_HEADERS = \
     distribution.hpp \
     factorspreadedhazardratecurve.hpp \
     gaussianlhplossmodel.hpp \
+    homogeneouspooldef.hpp \
     inhomogeneouspooldef.hpp \
     integralcdoengine.hpp \
     integralntdengine.hpp \
@@ -59,7 +60,6 @@ libCredit_la_SOURCES = \
     defaulttype.cpp \
     distribution.cpp \
     gaussianlhplossmodel.cpp \
-    inhomogeneouspooldef.cpp \
     integralcdoengine.cpp \
     integralntdengine.cpp \
     issuer.cpp \
