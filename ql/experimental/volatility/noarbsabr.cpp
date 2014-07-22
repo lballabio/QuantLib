@@ -20,7 +20,6 @@
 #include <ql/experimental/volatility/noarbsabr.hpp>
 
 #include <ql/math/solvers1d/brent.hpp>
-#include <ql/math/solvers1d/finitedifferencenewtonsafe.hpp>
 #include <ql/math/modifiedbessel.hpp>
 
 #include <boost/make_shared.hpp>
@@ -54,16 +53,16 @@ NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
     QL_REQUIRE(rho >= Constants::rho_min && rho <= Constants::rho_max,
                "rho (" << rho << ") out of bounds");
 
-    // determine a region sufficient for integration
+    // determine a region sufficient for integration in the normal case
 
     fmin_ = fmax_ = forward_;
-    for (Real tmp = p(fmax_, false); tmp > Constants::gl_accuracy;
-         tmp = p(fmax_, false)) {
+    for (Real tmp = p(fmax_); tmp > Constants::i_accuracy;
+         tmp = p(fmax_)) {
         fmax_ *= 2.0;
     }
-    for (Real tmp = p(fmin_, false);
-         tmp > Constants::gl_accuracy && fmin_ > Constants::strike_min;
-         tmp = p(fmin_, false)) {
+    for (Real tmp = p(fmin_);
+         tmp > Constants::i_accuracy && fmin_ > Constants::strike_min;
+         tmp = p(fmin_)) {
         fmin_ *= 0.5;
     }
     fmin_ = std::max(Constants::strike_min, fmin_);
@@ -71,55 +70,55 @@ NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
     QL_REQUIRE(fmax_ > fmin_,"could not find a reasonable integration domain");
 
     integrator_ =
-        boost::shared_ptr<GaussLobattoIntegral>(new GaussLobattoIntegral(
-            Constants::gl_max_iterations, Constants::gl_accuracy));
+        boost::shared_ptr<GaussKronrodNonAdaptive>(new GaussKronrodNonAdaptive(
+            Constants::i_accuracy, Constants::i_max_iterations,
+            Constants::i_accuracy)); // absoulte accuracy is relevant here
 
     detail::D0Interpolator d0(forward_, expiryTime_, alpha_, beta_, nu_, rho_);
     absProb_ = d0();
 
     try {
-        FiniteDifferenceNewtonSafe n;
-        forward_ = n.solve(
-                           boost::lambda::bind(&NoArbSabrModel::forwardError, this, boost::lambda::_1),
-                           Constants::forward_accuracy, externalForward_,
-                           std::min(Constants::forward_search_step, externalForward_/2.0));
-    } catch(QuantLib::Error e) {
-        QL_FAIL("unable to calculate adjusted forward: " << e.what());
+        Brent b;
+        Real start = std::sqrt(externalForward_ - Constants::strike_min);
+        Real tmp =
+            b.solve(boost::lambda::bind(&NoArbSabrModel::forwardError, this,
+                                        boost::lambda::_1),
+                    Constants::forward_accuracy, start,
+                    std::min(Constants::forward_search_step, start / 2.0));
+        forward_ = tmp * tmp + Constants::strike_min;
+    } catch (QuantLib::Error e) {
+        // fall back to unadjusted forward
+        forward_ = externalForward_;
     }
-
-    forwardError(forward_); // make sure that numericalIntegralOverP_ is
-                            // consistent with the found forward_
-
+    // make sure that numericalIntegralOverP_ is
+    // consistent with the found forward
+    forwardError(std::sqrt(forward_ - Constants::strike_min));
 }
 
 Real NoArbSabrModel::optionPrice(const Real strike) const {
     return (1.0 - absProb_) *
-           (strike >= fmax_
-                ? 0.0
-                : (integrator_->operator()(
+           ( integrator_->operator()(
                        boost::lambda::bind(&NoArbSabrModel::integrand, this,
                                            strike, boost::lambda::_1),
-                       strike, fmax_) /
-                   numericalIntegralOverP_));
+                       strike, std::max(fmax_, 2.0*strike)) /
+                   numericalIntegralOverP_);
 }
 
 Real NoArbSabrModel::digitalOptionPrice(const Real strike) const {
-    return strike < Constants::strike_min
+    return strike < QL_MIN_POSITIVE_REAL
                ? 1.0
                : (1.0 - absProb_) *
-                     (strike >= fmax_
-                          ? 0.0
-                          : (integrator_->operator()(
+                     (integrator_->operator()(
                                  boost::lambda::bind(&NoArbSabrModel::p, this,
-                                                     boost::lambda::_1, true),
-                                 strike, fmax_) /
-                             numericalIntegralOverP_));
+                                                     boost::lambda::_1),
+                                 strike, std::max(fmax_, 2.0*strike)) /
+                      numericalIntegralOverP_);
 }
 
 Real NoArbSabrModel::forwardError(const Real forward) const {
-    forward_ = std::min(std::max(forward, fmin_), fmax_);
+    forward_ = forward*forward + Constants::strike_min;
     numericalIntegralOverP_ = integrator_->operator()(
-        boost::lambda::bind(&NoArbSabrModel::p, this, boost::lambda::_1, false),
+        boost::lambda::bind(&NoArbSabrModel::p, this, boost::lambda::_1),
         fmin_, fmax_);
     return optionPrice(0.0) - externalForward_;
 }
@@ -128,9 +127,9 @@ Real NoArbSabrModel::integrand(const Real strike, const Real f) const {
     return std::max(f - strike, 0.0) * p(f);
 }
 
-Real NoArbSabrModel::p(const Real f, const bool checkNumericalLimits) const {
+Real NoArbSabrModel::p(const Real f) const {
 
-    if (checkNumericalLimits && (f < fmin_ || f > fmax_))
+    if( f < QL_MIN_POSITIVE_REAL || forward_ < QL_MIN_POSITIVE_REAL )
         return 0.0;
 
     Real fOmB = std::pow(f, 1.0 - beta_);
@@ -276,7 +275,7 @@ Real D0Interpolator::operator()() const {
                                 int ind =
                                     (tauInd + iTau +
                                      (sigmaIInd + iSigma +
-                                      (rhoInd + iRho +
+                                                                            (rhoInd + iRho +
                                        (nuInd + iNu +
                                         ((betaInd + iBeta) * nuG_.size())) *
                                            rhoG_.size()) *
@@ -305,14 +304,12 @@ Real D0Interpolator::operator()() const {
 
 Real D0Interpolator::phi(const Real d0) const {
     if (d0 < 1e-7)
-        return NoArbSabrModel::Constants::phiByTau_cutoff;
-    Real tmp = boost::math::gamma_q_inv(gamma_, d0) * expiryTime_;
-    return tmp;
+        return NoArbSabrModel::Constants::phiByTau_cutoff * expiryTime_;
+    return boost::math::gamma_q_inv(gamma_, d0) * expiryTime_;
 }
 
-Real D0Interpolator::d0(const Real phi, const Real target) const {
-    Real res = boost::math::gamma_q(gamma_, std::max(0.0, phi / expiryTime_));
-    return res - target;
+Real D0Interpolator::d0(const Real phi) const {
+    return boost::math::gamma_q(gamma_, std::max(0.0, phi / expiryTime_));
 }
 
 } // namespace detail

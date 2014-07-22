@@ -44,7 +44,7 @@
 
 #include <ql/qldefines.hpp>
 #include <ql/types.hpp>
-#include <ql/math/integrals/gausslobattointegral.hpp>
+#include <ql/math/integrals/kronrodintegral.hpp>
 
 #include <vector>
 
@@ -60,8 +60,6 @@ class NoArbSabrModel {
 
   public:
     struct Constants {
-        // accuracy when inverting d0 to get phi
-        static QL_CONSTEXPR Real phi_accuracy = 1E-10;
         // parameter bounds
         static QL_CONSTEXPR Real beta_min = 0.01;
         static QL_CONSTEXPR Real beta_max = 0.99;
@@ -83,15 +81,15 @@ class NoArbSabrModel {
         // small probability used for extrapolation
         // of beta towards 1
         static QL_CONSTEXPR Real tiny_prob = 1E-5;
-        // minimum strike allowed
-        static QL_CONSTEXPR Real strike_min = 0.00001;
+        // minimum strike used for normal case integration
+        static QL_CONSTEXPR Real strike_min = 1E-6; 
         // accuracy and max iterations for
-        // gauss lobatto integral
-        static QL_CONSTEXPR Real gl_accuracy = 1E-6;
-        static QL_CONSTEXPR Size gl_max_iterations = 10000;
+        // numerical integration
+        static QL_CONSTEXPR Real i_accuracy = 1E-6;
+        static QL_CONSTEXPR Size i_max_iterations = 10000;
         // accuracy when adjusting the model forward
         // to match the given forward
-        static QL_CONSTEXPR Real forward_accuracy = 0.00001;
+        static QL_CONSTEXPR Real forward_accuracy = 1E-6;
         // step for searching the model forward
         // in newton algorithm
         static QL_CONSTEXPR Real forward_search_step = 0.0010;
@@ -103,7 +101,7 @@ class NoArbSabrModel {
     Real optionPrice(const Real strike) const;
     Real digitalOptionPrice(const Real strike) const;
     Real density(const Real strike) const {
-        return p(strike, true) * (1 - absProb_) / numericalIntegralOverP_;
+        return p(strike) * (1 - absProb_) / numericalIntegralOverP_;
     }
 
     Real forward() const { return externalForward_; }
@@ -117,15 +115,15 @@ class NoArbSabrModel {
 
     static void checkAbsorptionMatrix();
 
-  private:
-    Real p(const Real f, const bool checkNumericalLimits = true) const;
+    private:
+    Real p(const Real f) const;
     Real forwardError(const Real forward) const;
     Real integrand(const Real strike, const Real f) const;
     const Real expiryTime_, externalForward_;
     const Real alpha_, beta_, nu_, rho_;
     Real absProb_, fmin_, fmax_;
     mutable Real forward_, numericalIntegralOverP_;
-    boost::shared_ptr<GaussLobattoIntegral> integrator_;
+    boost::shared_ptr<GaussKronrodNonAdaptive> integrator_;
 };
 
 namespace detail {
@@ -138,7 +136,7 @@ class D0Interpolator {
 
   private:
     Real phi(const Real d0) const;
-    Real d0(const Real phi, const Real target = 0.0) const;
+    Real d0(const Real phi) const;
     const Real forward_, expiryTime_, alpha_, beta_, nu_, rho_, gamma_;
     Real sigmaI_;
     std::vector<Real> tauG_, sigmaIG_, rhoG_, nuG_, betaG_;
