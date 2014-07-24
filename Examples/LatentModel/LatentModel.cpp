@@ -23,15 +23,6 @@
 #include <boost/make_shared.hpp>
 #include <boost/function.hpp>
 
-#ifdef BOOST_MSVC
-#  include <ql/auto_link.hpp>
-#  define BOOST_LIB_NAME boost_thread
-#  include <boost/config/auto_link.hpp>
-#  define BOOST_LIB_NAME boost_system
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-#endif
-
 #include <iostream>
 #include <iomanip>
 
@@ -115,7 +106,8 @@ int main(int, char* []) {
             std::vector<Real>(1, std::sqrt(0.1)));
         // --- Default Latent models -------------------------------------
         // Gaussian integrable joint default model:
-        boost::shared_ptr<GaussianDefProbLM> lmG(new GaussianDefProbLM(fctrsWeights, 
+        boost::shared_ptr<GaussianDefProbLM> lmG(new 
+            GaussianDefProbLM(fctrsWeights, 
             LatentModelIntegrationType::GaussianQuadrature,
 			GaussianCopulaPolicy::initTraits() // otherwise gcc screams
 			));
@@ -138,33 +130,10 @@ int main(int, char* []) {
         boost::shared_ptr<DefaultLossModel> rdlmG(
             boost::make_shared<RandomDefaultLM<GaussianCopulaPolicy> >(lmG, 
                 std::vector<Real>(), numSimulations, 1.e-6, 2863311530));
-        // Monothread only
-        /*
-        RandomDefaultLM<GaussianCopulaPolicy, 
-            RandomSequenceGenerator<MersenneTwisterUniformRng> > rdlmG(
-            theBskt, lmT, std::vector<Real>(), numSimulations, 
-            1.e-6, 2863311530);
-        */
         // StudentT random joint default model:
-        // Sobol, many cores
         boost::shared_ptr<DefaultLossModel> rdlmT(
             boost::make_shared<RandomDefaultLM<TCopulaPolicy> >(lmT, 
             std::vector<Real>(), numSimulations, 1.e-6, 2863311530));
-        /*
-        // Monothread only, direct/copula inversion
-        boost::shared_ptr<DefaultLossModel> rdlmT(
-            boost::make_shared<RandomDefaultLM<TCopulaPolicy, 
-            RandomSequenceGenerator<MersenneTwisterUniformRng> > >(
-                lmT, std::vector<Real>(), numSimulations, 1.e-6, 
-                2863311530));
-        */
-        
-        /* Goes through two partial spezs, number look worst.
-        RandomDefaultLM<TCopulaPolicy, 
-            RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > > 
-                rdlmT(theBskt, lmT, std::vector<Real>(), numSimulations, 1.e-6, 
-                2863311530);
-        */
 
         /* --------------------------------------------------------------
                         DUMP SOME RESULTS
@@ -296,11 +265,6 @@ int main(int, char* []) {
             ;
                 cout << endl;
         }
-
-
-
-
-
 
 
 

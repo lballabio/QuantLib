@@ -24,15 +24,6 @@
 #include <boost/function.hpp>
 #include <boost/assign/std/vector.hpp>
 
-#ifdef BOOST_MSVC
-#  include <ql/auto_link.hpp>
-#  define BOOST_LIB_NAME boost_thread
-#  include <boost/config/auto_link.hpp>
-#  define BOOST_LIB_NAME boost_system
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-#endif
-
 #include <iostream>
 #include <iomanip>
 
@@ -156,13 +147,6 @@ int main(int, char* []) {
         std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
 
         // --- G Inhomogeneous model ---------------
-        /*
-        boost::shared_ptr<GaussianDefProbLM> gLM(
-            boost::make_shared<GaussianDefProbLM>(fctrsWeights, 
-            LatentModelIntegrationType::GaussianQuadrature,
-            // g++ requires this when using make_shared
-            GaussianCopulaPolicy::initTraits()));
-*/
         boost::shared_ptr<GaussianConstantLossLM> gLM(
             boost::make_shared<GaussianConstantLossLM>(fctrsWeights, 
             recoveries,
@@ -172,8 +156,7 @@ int main(int, char* []) {
 
         Size numBuckets = 100;
         boost::shared_ptr<DefaultLossModel> inhomogeneousLM(
-            boost::make_shared<IHGaussPoolLossModel>(gLM, 
-              /*  recoveries,*/ numBuckets));
+            boost::make_shared<IHGaussPoolLossModel>(gLM, numBuckets));
         theBskt->setLossModel(inhomogeneousLM);
 
         std::cout << "G Inhomogeneous Expected 10-Yr Losses: "  << std::endl;
@@ -187,13 +170,6 @@ int main(int, char* []) {
         boost::shared_ptr<DefaultLossModel> rdlmG(
             boost::make_shared<RandomDefaultLM<GaussianCopulaPolicy> >(gLM, 
                 recoveries, numSimulations, 1.e-6, 2863311530));
-        // Monothread only
-        /*
-        RandomDefaultLM<GaussianCopulaPolicy, 
-            RandomSequenceGenerator<MersenneTwisterUniformRng> > rdlmG(
-            gLM, recoveries, numSimulations, 
-            1.e-6, 2863311530);
-        */
         theBskt->setLossModel(rdlmG);
 
         std::cout << "Random G Expected 10-Yr Losses: "  << std::endl;
@@ -204,14 +180,6 @@ int main(int, char* []) {
         boost::shared_ptr<DefaultLossModel> rdlmT(
             boost::make_shared<RandomDefaultLM<TCopulaPolicy> >(ktTLossLM, 
                 recoveries, numSimulations, 1.e-6, 2863311530));
-        /*
-        // Monothread only, direct/copula inversion
-        boost::shared_ptr<DefaultLossModel> rdlmT(
-            boost::make_shared<RandomDefaultLM<TCopulaPolicy, 
-            RandomSequenceGenerator<MersenneTwisterUniformRng> > >(
-                ktTLossLM, recoveries, numSimulations, 1.e-6, 
-                2863311530));
-        */
         theBskt->setLossModel(rdlmT);
 
         std::cout << "Random T Expected 10-Yr Losses: "  << std::endl;
@@ -222,10 +190,12 @@ int main(int, char* []) {
         std::vector<std::vector<Real> > fctrsWeightsRR(2 * hazardRates.size(), 
             std::vector<Real>(1, std::sqrt(factorValue)));
         Real modelA = 2.2;
-        boost::shared_ptr<GaussianSpotLossLM> sptLG(new GaussianSpotLossLM(fctrsWeightsRR, recoveries, modelA,
+        boost::shared_ptr<GaussianSpotLossLM> sptLG(new GaussianSpotLossLM(
+            fctrsWeightsRR, recoveries, modelA,
             LatentModelIntegrationType::GaussianQuadrature,
             GaussianCopulaPolicy::initTraits()));
-        boost::shared_ptr<TSpotLossLM> sptLT(new TSpotLossLM(fctrsWeightsRR, recoveries, modelA,
+        boost::shared_ptr<TSpotLossLM> sptLT(new TSpotLossLM(fctrsWeightsRR, 
+            recoveries, modelA,
             LatentModelIntegrationType::GaussianQuadrature, initT));
 
 
@@ -235,13 +205,6 @@ int main(int, char* []) {
         boost::shared_ptr<DefaultLossModel> rdLlmG(
             boost::make_shared<RandomLossLM<GaussianCopulaPolicy> >(sptLG, 
                 numSimulations, 1.e-6, 2863311530));
-        // Monothread only
-        /*
-        RandomDefaultLM<GaussianCopulaPolicy, 
-            RandomSequenceGenerator<MersenneTwisterUniformRng> > rdlmG(
-            gLM, recoveries, numSimulations, 
-            1.e-6, 2863311530);
-        */
         theBskt->setLossModel(rdLlmG);
 
         std::cout << "Random Loss G Expected 10-Yr Losses: "  << std::endl;
@@ -253,13 +216,6 @@ int main(int, char* []) {
         boost::shared_ptr<DefaultLossModel> rdLlmT(
             boost::make_shared<RandomLossLM<TCopulaPolicy> >(sptLT, 
                 numSimulations, 1.e-6, 2863311530));
-        // Monothread only
-        /*
-        RandomDefaultLM<GaussianCopulaPolicy, 
-            RandomSequenceGenerator<MersenneTwisterUniformRng> > rdlmG(
-            gLM, recoveries, numSimulations, 
-            1.e-6, 2863311530);
-        */
         theBskt->setLossModel(rdLlmT);
 
         std::cout << "Random Loss T Expected 10-Yr Losses: "  << std::endl;
@@ -319,139 +275,6 @@ int main(int, char* []) {
             << std::endl;
         std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
 
-
-
-
-
-
-// set model - dump basket data/status - reset model - ...etc..
-
-
-
-
-
-
-
-
-
-
-
-/*
-        lmG.resetBasket(theBskt);
-        // Gaussian random joint default model:
-        Size numSimulations = 1000000;
-        Size numCoresUsed = 1;
-        RandomDefaultLM<GaussianCopulaPolicy> rdlmG(
-                theBskt, fctrsWeights, GaussianCopulaPolicy::initTraits(), 
-                numSimulations, numCoresUsed);
-        //RandomDefaultLM<GaussianCopulaPolicy, 
-        //    RandomSequenceGenerator<MersenneTwisterUniformRng> > rdlmG(
-        //        theBskt, fctrsWeights, GaussianCopulaPolicy::initTraits(), 
-        //        numSimulations, numCoresUsed);
-        // Define StudentT copula
-        // this is as far as we can be from the Gaussian
-        std::vector<Integer> ordersT(2, 3);
-        TCopulaPolicy::initTraits iniT;
-        iniT.tOrders = ordersT;
-        // StudentT integrable joint default model:
-        TDefProbLM lmT(fctrsWeights, 
-            LatentModelIntegrationType::GaussianQuadrature
-            , iniT);
-        lmT.resetBasket(theBskt);
-        // StudentT random joint default model:
-        RandomDefaultLM<TCopulaPolicy> rdlmT(theBskt, 
-                    fctrsWeights, iniT, numSimulations, numCoresUsed);
-        //RandomDefaultLM<TCopulaPolicy, 
-        //    RandomSequenceGenerator<
-        //        PolarStudentTRng<MersenneTwisterUniformRng> > > rdlmT(theBskt, 
-        //            fctrsWeights, iniT, numSimulations, numCoresUsed);
-*/
-        /* --------------------------------------------------------------
-                        DUMP SOME RESULTS
-        -------------------------------------------------------------- */
-/*
-        std::cout << 
-            "T versus Gaussian prob of extreme event (random and integrable)-" 
-            << std::endl;
-        Date calcDate(TARGET().advance(Settings::instance().evaluationDate(), 
-            Period(120, Months)));
-        for(Size numEvts=0; numEvts <=3; numEvts++) {
-            std::cout << "-Prob of " << 3 << " events... " <<
-            rdlmT.probAtLeastNEvents(numEvts, calcDate)
-            << " ... " <<
-            rdlmG.probAtLeastNEvents(numEvts, calcDate) 
-            << " ... " <<
-            lmT.probAtLeastNEvents(numEvts, calcDate)
-            << " ... " <<
-            lmG.probAtLeastNEvents(numEvts, calcDate) 
-            << std::endl;
-        }
-
-        Date correlDate = TARGET().advance(
-            Settings::instance().evaluationDate(), Period(12, Months));
-        std::vector<std::vector<Real> > correlsG, correlsT;
-        for(Size iName1=0; iName1 <3; iName1++) {
-            std::vector<Real> tmpG, tmpT;
-            for(Size iName2=0; iName2 <3; iName2++) {
-                tmpG.push_back(lmG.defaultCorrelation(correlDate, 
-                    iName1, iName2));
-                tmpT.push_back(lmT.defaultCorrelation(correlDate, 
-                    iName1, iName2));
-            }
-            correlsG.push_back(tmpG);
-            correlsT.push_back(tmpT);
-        }
-        cout << endl;
-        cout << "------Gaussian default correlations---" << endl;
-        cout << "--------------------------------------" << endl;
-        for(Size iName1=0; iName1 <3; iName1++) {
-            for(Size iName2=0; iName2 <3; iName2++)
-                cout << correlsG[iName1][iName2] << " * ";
-            cout << endl;
-        }
-        cout << endl;
-        cout << "------StudeT default correlations---" << endl;
-        cout << "------------------------------------" << endl;
-        for(Size iName1=0; iName1 <3; iName1++) {
-            for(Size iName2=0; iName2 <3; iName2++)
-                cout << correlsT[iName1][iName2] << " * ";
-            cout << endl;
-        }
-        cout << endl;
-        cout << "------Gaussian asset correlations-----" << endl;
-        cout << "--------------------------------------" << endl;
-        for(Size iName1=0; iName1 <3; iName1++) {
-            for(Size iName2=0; iName2 <3; iName2++)
-                cout << lmG.latentVariableCorrel(iName1, iName2) << " * ";
-            cout << endl;
-        }
-        cout << endl;
-        cout << "------StudeT asset correlations-----" << endl;
-        cout << "------------------------------------" << endl;
-        for(Size iName1=0; iName1 <3; iName1++) {
-            for(Size iName2=0; iName2 <3; iName2++)
-                cout << lmT.latentVariableCorrel(iName1, iName2) << " * ";
-            cout << endl;
-        }
-        cout << endl;
-        cout << "----Gaussian rand def correlations----" << endl;
-        cout << "--------------------------------------" << endl;
-        for(Size iName1=0; iName1 <3; iName1++) {
-            for(Size iName2=0; iName2 <3; iName2++)
-                cout << rdlmG.defaultCorrelation(correlDate, iName1, iName2) 
-                    << " * ";
-            cout << endl;
-        }
-        cout << endl;
-        cout << "---- StudenT rand def correlations----" << endl;
-        cout << "--------------------------------------" << endl;
-        for(Size iName1=0; iName1 <3; iName1++) {
-            for(Size iName2=0; iName2 <3; iName2++)
-                cout << rdlmT.defaultCorrelation(correlDate, iName1, iName2) 
-                    << " * ";
-            cout << endl;
-        }
-*/
 
         Real seconds  = timer.elapsed();
         Integer hours = Integer(seconds/3600);
