@@ -303,7 +303,7 @@ Real D0Interpolator::operator()() const {
 }
 
 Real D0Interpolator::phi(const Real d0) const {
-    if (d0 < 1e-7)
+    if (d0 < 1e-14)
         return NoArbSabrModel::Constants::phiByTau_cutoff * expiryTime_;
     return boost::math::gamma_q_inv(gamma_, d0) * expiryTime_;
 }

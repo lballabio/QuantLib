@@ -71,10 +71,9 @@ class NoArbSabrModel {
         static QL_CONSTEXPR Real rho_min = -0.99;
         static QL_CONSTEXPR Real rho_max = 0.99;
         // cutoff for phi(d0) / tau
-        // the relevant integrand in (3.1) is
-        // below 1e-10 for bigger values then
-        // for the case beta = 0.99
-        static QL_CONSTEXPR Real phiByTau_cutoff = 110.0;
+        // if beta = 0.99, d0 is below 1E-14 for
+        // bigger values than this
+        static QL_CONSTEXPR Real phiByTau_cutoff = 124.587;
         // number of mc simulations in tabulated
         // absorption probabilities
         static QL_CONSTEXPR Real nsim = 2500000.0;
