@@ -14,6 +14,7 @@ this_include_HEADERS = \
 	noarbsabr.hpp \
 	noarbsabrinterpolation.hpp \
 	noarbsabrsmilesection.hpp \
+	noarbsabrinterpolatedsmilesection.hpp \
     sabrvolsurface.hpp \
     volcube.hpp
 
@@ -27,6 +28,7 @@ libVolatility_la_SOURCES = \
     interestratevolsurface.cpp \
 	noarbsabr.cpp \
 	noarbsabrsmilesection.cpp \
+	noarbsabrinterpolatedsmilesection.cpp \
     sabrvolsurface.cpp \
     volcube.cpp
 

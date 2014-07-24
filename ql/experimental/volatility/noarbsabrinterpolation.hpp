@@ -24,7 +24,7 @@
 #ifndef quantlib_noarbsabr_interpolation_hpp
 #define quantlib_noarbsabr_interpolation_hpp
 
-#include <ql/math/interpolations/xabrinterpolation.hpp>
+#include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/experimental/volatility/noarbsabrsmilesection.hpp>
 
 #include <boost/make_shared.hpp>
