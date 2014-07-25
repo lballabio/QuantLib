@@ -66,13 +66,18 @@
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/secondordermixedderivativeop.hpp>
 #include <ql/math/matrixutilities/sparseilupreconditioner.hpp>
-
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
 #if !defined(QL_NO_UBLAS_SUPPORT)
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/operation.hpp>
 #endif
-
 #include <boost/bind.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic pop
+#endif
 #include <numeric>
 
 using namespace QuantLib;

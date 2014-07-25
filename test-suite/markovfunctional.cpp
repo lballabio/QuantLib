@@ -485,6 +485,12 @@ namespace {
 
     Handle<OptionletVolatilityStructure> md0OptionletVts() {
 
+        // with the thread safe observer it takes very long to destruct
+        // the cap floor instruments created in OptionletStripper1
+#ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+        return flatOptionletVts();
+#endif
+
         Size nOptTen = 16;
         Size nStrikes = 12; // leave out last strike 10% because it causes an
                             // exception in bootstrapping
