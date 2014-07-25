@@ -44,7 +44,8 @@
 
 #include <ql/qldefines.hpp>
 #include <ql/types.hpp>
-#include <ql/math/integrals/kronrodintegral.hpp>
+//#include <ql/math/integrals/kronrodintegral.hpp>
+#include <ql/math/integrals/gausslobattointegral.hpp>
 
 #include <vector>
 
@@ -122,7 +123,8 @@ class NoArbSabrModel {
     const Real alpha_, beta_, nu_, rho_;
     Real absProb_, fmin_, fmax_;
     mutable Real forward_, numericalIntegralOverP_;
-    boost::shared_ptr<GaussKronrodNonAdaptive> integrator_;
+    // boost::shared_ptr<GaussKronrodNonAdaptive> integrator_;
+    boost::shared_ptr<GaussLobattoIntegral> integrator_;
 };
 
 namespace detail {

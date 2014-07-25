@@ -69,10 +69,14 @@ NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
 
     QL_REQUIRE(fmax_ > fmin_,"could not find a reasonable integration domain");
 
+    // integrator_ =
+    //     boost::shared_ptr<GaussKronrodNonAdaptive>(new GaussKronrodNonAdaptive(
+    //         Constants::i_accuracy, Constants::i_max_iterations,
+    //         Constants::i_accuracy)); // absoulte accuracy is relevant here
     integrator_ =
-        boost::shared_ptr<GaussKronrodNonAdaptive>(new GaussKronrodNonAdaptive(
-            Constants::i_accuracy, Constants::i_max_iterations,
-            Constants::i_accuracy)); // absoulte accuracy is relevant here
+        boost::shared_ptr<GaussLobattoIntegral>(new GaussLobattoIntegral(
+            Constants::i_max_iterations,
+            Constants::i_accuracy));
 
     detail::D0Interpolator d0(forward_, expiryTime_, alpha_, beta_, nu_, rho_);
     absProb_ = d0();
