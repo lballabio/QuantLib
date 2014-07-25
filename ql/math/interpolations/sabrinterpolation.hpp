@@ -74,7 +74,7 @@ struct SABRSpecs {
             params[3] = 0.0;
     }
     void guess(Array &values, const std::vector<bool> &paramIsFixed,
-               const Real &forward, const Real expiryTime, 
+               const Real &forward, const Real expiryTime,
                const std::vector<Real> &r) {
         Size j = 0;
         if (!paramIsFixed[1])

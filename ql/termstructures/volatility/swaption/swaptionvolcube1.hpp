@@ -55,7 +55,7 @@ namespace QuantLib {
     class Interpolation2D;
     class EndCriteria;
     class OptimizationMethod;
-    
+
     template<class Model>
     class SwaptionVolCube1x : public SwaptionVolatilityCube {
         class Cube {
