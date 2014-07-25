@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006, 2007 Giorgio Facchinetti
+ Copyright (C) 2014 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,6 +20,9 @@
 
 /*! \file swaptionvolcube1.hpp
     \brief Swaption volatility cube, fit-early-interpolate-later approach
+           The provided types are
+           SwaptionVolCube1 using the classic Hagan 2002 Sabr formula
+           SwaptionVolCube1a using the No Arbitrage Sabr model (Doust)
 */
 
 #ifndef quantlib_swaption_volcube_fit_early_interpolate_later_h
@@ -28,14 +32,11 @@
 #include <ql/termstructures/volatility/sabrsmilesection.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/math/interpolations/sabrinterpolation.hpp>
-
-#include <ql/termstructures/volatility/swaption/swaptionconstantvol.hpp>
-#include <ql/quotes/simplequote.hpp>
-#include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/interpolations/flatextrapolation2d.hpp>
 #include <ql/math/interpolations/backwardflatlinearinterpolation.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
+#include <ql/experimental/volatility/noarbsabrinterpolation.hpp>
 #include <ql/quote.hpp>
 
 #include <boost/make_shared.hpp>
@@ -1148,7 +1149,7 @@ namespace QuantLib {
     typedef SwaptionVolCube1x<SwaptionVolCubeSabrModel> SwaptionVolCube1;
 
     //======================================================================//
-    //                      SwaptionVolCube1 (NoArbSabr)                    //
+    //                      SwaptionVolCube1a (NoArbSabr)                    //
     //======================================================================//
 
     struct SwaptionVolCubeNoArbSabrModel {
