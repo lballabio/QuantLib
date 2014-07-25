@@ -44,10 +44,11 @@ namespace QuantLib {
               Real fixedRate, // aka gearing
               Spread spread,
               const Date& refPeriodStart,
-              const Date& refPeriodEnd)
+              const Date& refPeriodEnd,
+              const Date& exCouponDate)
     : InflationCoupon(paymentDate, nominal, startDate, endDate,
                       fixingDays, zeroIndex, observationLag,
-                      dayCounter, refPeriodStart, refPeriodEnd),
+                      dayCounter, refPeriodStart, refPeriodEnd, exCouponDate),
         baseCPI_(baseCPI), fixedRate_(fixedRate), spread_(spread),
         observationInterpolation_(observationInterpolation) {
 
@@ -154,6 +155,7 @@ namespace QuantLib {
     baseCPI_(baseCPI), observationLag_(observationLag),
     paymentDayCounter_(Thirty360()),
     paymentAdjustment_(ModifiedFollowing),
+    paymentCalendar_(schedule.calendar()),
     fixingDays_(std::vector<Natural>(1,0)),
     observationInterpolation_(CPI::AsIndex),
     subtractInflationNominal_(true),
@@ -202,6 +204,11 @@ namespace QuantLib {
         return *this;
     }
 
+    CPILeg& CPILeg::withPaymentCalendar(const Calendar& cal) {
+        paymentCalendar_ = cal;
+        return *this;
+    }
+
     CPILeg& CPILeg::withFixingDays(Natural fixingDays) {
         fixingDays_ = std::vector<Natural>(1,fixingDays);
         return *this;
@@ -242,12 +249,23 @@ namespace QuantLib {
         return *this;
     }
 
+    CPILeg& CPILeg::withExCouponPeriod(
+                        const Period& period,
+                        const Calendar& cal,
+                        BusinessDayConvention convention,
+                        bool endOfMonth) {
+        exCouponPeriod_ = period;
+        exCouponCalendar_ = cal;
+        exCouponAdjustment_ = convention;
+        exCouponEndOfMonth_ = endOfMonth;
+        return *this;
+    }
+
 
     CPILeg::operator Leg() const {
 
         QL_REQUIRE(!notionals_.empty(), "no notional given");
         Size n = schedule_.size()-1;
-        Calendar calendar = schedule_.calendar();
         Leg leg;
         leg.reserve(n+1);   // +1 for notional, we always have some sort ...
         if (n>0) {
@@ -259,7 +277,17 @@ namespace QuantLib {
             for (Size i=0; i<n; ++i) {
                 refStart = start = schedule_.date(i);
                 refEnd   =   end = schedule_.date(i+1);
-                Date paymentDate = calendar.adjust(end, paymentAdjustment_);
+                Date paymentDate = paymentCalendar_.adjust(end, paymentAdjustment_);
+
+                Date exCouponDate;
+                if (exCouponPeriod_ != Period())
+                {
+                    exCouponDate = exCouponCalendar_.advance(paymentDate,
+                                                                -exCouponPeriod_,
+                                                                exCouponAdjustment_,
+                                                                exCouponEndOfMonth_);
+                }
+
                 if (i==0   && !schedule_.isRegular(i+1)) {
                     BusinessDayConvention bdc = schedule_.businessDayConvention();
                     refStart = schedule_.calendar().adjust(end - schedule_.tenor(), bdc);
@@ -273,7 +301,7 @@ namespace QuantLib {
                                   (new FixedRateCoupon
                                    (paymentDate, detail::get(notionals_, i, 0.0),
                                     detail::effectiveFixedRate(spreads_,caps_,floors_,i),
-                                    paymentDayCounter_, start, end, refStart, refEnd)));
+                                    paymentDayCounter_, start, end, refStart, refEnd, exCouponDate)));
                 } else { // zero inflation coupon
                     if (detail::noOption(caps_, floors_, i)) { // just swaplet
                         boost::shared_ptr<CPICoupon> coup;
@@ -289,7 +317,7 @@ namespace QuantLib {
                                      paymentDayCounter_,
                                      detail::get(fixedRates_, i, 0.0),
                                      detail::get(spreads_, i, 0.0),
-                                     refStart, refEnd));
+                                     refStart, refEnd, exCouponDate));
 
                         // in this case you can set a pricer
                         // straight away because it only provides computation - not data
@@ -306,7 +334,7 @@ namespace QuantLib {
         }
 
         // in CPI legs you always have a notional flow of some sort
-        Date paymentDate = calendar.adjust(schedule_.date(n), paymentAdjustment_);
+        Date paymentDate = paymentCalendar_.adjust(schedule_.date(n), paymentAdjustment_);
         Date fixingDate = paymentDate - observationLag_;
         boost::shared_ptr<CashFlow> xnl(new CPICashFlow
                           (detail::get(notionals_, n, 0.0), index_,

@@ -101,6 +101,11 @@ namespace QuantLib {
         USRegion();
     };
 
+    //! South Africa as geographical/economic region
+    class ZARegion : public Region {
+    public:
+        ZARegion();
+    };
 
 
     // inline definitions

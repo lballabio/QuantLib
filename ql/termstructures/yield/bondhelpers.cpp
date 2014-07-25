@@ -108,4 +108,43 @@ namespace QuantLib {
             BootstrapHelper<YieldTermStructure>::accept(v);
     }
 
+    CPIBondHelper::CPIBondHelper(
+                            const Handle<Quote>& price,
+                            Natural settlementDays,
+                            Real faceAmount,
+                            const bool growthOnly,
+                            Real baseCPI,
+                            const Period& observationLag,
+                            const boost::shared_ptr<ZeroInflationIndex>& cpiIndex,
+                            CPI::InterpolationType observationInterpolation,
+                            const Schedule& schedule,
+                            const std::vector<Rate>& fixedRate,
+                            const DayCounter& accrualDayCounter,
+                            BusinessDayConvention paymentConvention,
+                            const Date& issueDate,
+                            const Calendar& paymentCalendar,
+                            const Period& exCouponPeriod,
+                            const Calendar& exCouponCalendar,
+                            const BusinessDayConvention exCouponConvention,
+                            bool exCouponEndOfMonth,
+                            const bool useCleanPrice)
+    : BondHelper(price,
+                 boost::shared_ptr<Bond>(
+                     new CPIBond(settlementDays, faceAmount, growthOnly, baseCPI, 
+                                       observationLag, cpiIndex, observationInterpolation,
+                                       schedule, fixedRate, accrualDayCounter, paymentConvention,
+                                       issueDate, paymentCalendar, exCouponPeriod, exCouponCalendar,
+                                       exCouponConvention, exCouponEndOfMonth)),
+                 useCleanPrice) {
+        cpiBond_ = boost::dynamic_pointer_cast<CPIBond>(bond_);
+    }
+
+    void CPIBondHelper::accept(AcyclicVisitor& v) {
+        Visitor<CPIBondHelper>* v1 =
+            dynamic_cast<Visitor<CPIBondHelper>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            BootstrapHelper<YieldTermStructure>::accept(v);
+    }
 }
