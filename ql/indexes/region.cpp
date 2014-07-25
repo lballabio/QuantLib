@@ -49,8 +49,13 @@ namespace QuantLib {
     }
 
     USRegion::USRegion() {
-        static boost::shared_ptr<Data> UKdata(new Data("USA","US"));
-        data_ = UKdata;
+        static boost::shared_ptr<Data> USdata(new Data("USA","US"));
+        data_ = USdata;
+    }
+
+    ZARegion::ZARegion() {
+        static boost::shared_ptr<Data> ZAdata(new Data("South Africa","ZA"));
+        data_ = ZAdata;
     }
 
 

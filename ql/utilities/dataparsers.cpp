@@ -24,11 +24,18 @@
 #include <ql/utilities/null.hpp>
 #include <ql/time/period.hpp>
 #include <ql/errors.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
 #ifndef x64
 #include <boost/lexical_cast.hpp>
 #endif
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic pop
+#endif
 #include <locale>
 #include <cctype>
 #if defined(BOOST_NO_STDC_NAMESPACE)
