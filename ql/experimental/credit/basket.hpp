@@ -397,45 +397,45 @@ namespace QuantLib {
     }
 
     inline const std::vector<Size>& Basket::liveList() const {
-        calculate();
+   ///////not using loss models anymore----     calculate();
         return evalDateLiveList_;
     }
 
     inline Real Basket::remainingDetachmentAmount() const {
-        calculate();
+   ///////not using loss models anymore----     calculate();
         return evalDateDetachAmmount_;
     }
 
     inline Real Basket::remainingAttachmentAmount() const {
-        calculate();
+      ///////not using loss models anymore----  calculate();
         return evalDateAttachAmount_;
     }
 
     inline const std::vector<std::string>& Basket::remainingNames() const {
-        calculate();
+   ///////not using loss models anymore----     calculate();
         return evalDateLiveNames_;
     }
 
     inline const std::vector<Real>& Basket::remainingNotionals() const {
-        calculate();
+    ///////not using loss models anymore----    calculate();
         return evalDateLiveNotionals_;
     }
 
     inline Real Basket::cumulatedLoss() const {
-        calculate();
+   ///////not using loss models anymore----     calculate();
        ///// return evalDateCumulContingentLoss_;   
         return this->evalDateSettledLoss_;
     }
     
     inline Real Basket::settledLoss() const {
-        calculate();
+   ///////not using loss models anymore----     calculate();
         return evalDateSettledLoss_;
     }
 
     inline const std::vector<DefaultProbKey>& 
         Basket::remainingDefaultKeys() const 
     {
-        calculate();
+   ///////not using loss models anymore----     calculate();
         return evalDateLiveKeys_;
     }
 

@@ -69,6 +69,8 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
         registerWith(claim_);
 
+        computeBasket();
+
         // At this point Issuers in the pool might or might not have
         //   probability term structures for the defultKeys(eventType+
         //   currency+seniority) entering in this basket. This is not
@@ -148,7 +150,7 @@ namespace QuantLib {
 
 
     Real Basket::cumulatedLoss(const Date& endDate) const {
-        calculate();
+   ///////not using loss models anymore----     calculate();
         // maybe return zero directly instead?:
         QL_REQUIRE(endDate >= refDate_, 
             "Target date lies before basket inception");// MIGHT B A FORWARD BASKET! ret zero?
@@ -212,7 +214,7 @@ namespace QuantLib {
     */
 
     Real Basket::settledLoss(const Date& endDate) const {
-        calculate();
+    ///////not using loss models anymore----    calculate();
         // maybe return zero directly instead?:
         QL_REQUIRE(endDate >= refDate_, 
             "Target date lies before basket inception");// MIGHT B A FORWARD BASKET! ret zero?
@@ -238,14 +240,14 @@ namespace QuantLib {
 
 
     Real Basket::remainingNotional() const {
-        calculate();
+     ///////not using loss models anymore----   calculate();
         return evalDateRemainingNot_;
     }
 
     Disposable<std::vector<Size> > 
         Basket::liveList(const Date& endDate) const {///// SHOULD RETURN  NAME STRING VECTOR!!!
         
-        calculate();
+    ///////not using loss models anymore----    calculate();
 
         std::vector<Size> calcBufferLiveList;
         for (Size i = 0; i < size(); i++)
@@ -273,7 +275,7 @@ namespace QuantLib {
 
     Disposable<vector<Real> > 
         Basket::remainingNotionals(const Date& endDate) const {
-        calculate();
+   ///////not using loss models anymore----     calculate();
 
         QL_REQUIRE(endDate >= refDate_, 
             "Target date lies before basket inception");// MIGHT B A FORWARD BASKET! ret zero?
@@ -295,7 +297,7 @@ namespace QuantLib {
     Disposable<std::vector<Probability> > 
         Basket::remainingProbabilities(const Date& d) const {
 
-        calculate();
+  ///////not using loss models anymore----      calculate();
         QL_REQUIRE(d >= refDate_, "Target date lies before basket inception");// MIGHT B A FORWARD BASKET! ret zero?
         vector<Real> prob;
         const std::vector<Size>& alive = liveList();
@@ -409,7 +411,7 @@ namespace QuantLib {
     Disposable<std::vector<std::string> >
         Basket::remainingNames(const Date& endDate) const {
 
-        calculate();
+ ///////not using loss models anymore----       calculate();
         // maybe return zero directly instead?:
         QL_REQUIRE(endDate >= refDate_, 
             "Target date lies before basket inception");// MIGHT B A FORWARD BASKET! ret zero?
@@ -460,7 +462,7 @@ namespace QuantLib {
 
     Disposable<vector<DefaultProbKey> >
         Basket::remainingDefaultKeys(const Date& endDate) const {
-        calculate();
+///////not using loss models anymore----        calculate();
 
         // maybe return zero directly instead?:
         QL_REQUIRE(endDate >= refDate_, // should dtae be in the future?????
@@ -475,7 +477,7 @@ namespace QuantLib {
 
 
     Size Basket::remainingSize() const {
-        calculate();
+  ///////not using loss models anymore----      calculate();
         return evalDateLiveList_.size();
     }
 
@@ -526,7 +528,7 @@ namespace QuantLib {
 
     //! computed on the inception values, notice the positions might have amortized or changed in value and the total outstanding notional might differ from the inception one.-----------Maybe the problem is not so impossible: at the time of a default the exposures are never stochastic by definition since they are in the past by definition. They renormalize the tranche but then it is much more complex..... It becomes a path problem.
     Real Basket::remainingAttachmentAmount(const Date& endDate) const {
-        calculate();
+  ///////not using loss models anymore----      calculate();
 
         // maybe return zero directly instead?:
         QL_REQUIRE(endDate >= refDate_, 
