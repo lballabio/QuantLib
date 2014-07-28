@@ -46,7 +46,11 @@ namespace QuantLib {
                 copulaPolicy::initTraits()            
             ) 
         : recoveries_(recoveries), 
-          DefaultLatentModel<copulaPolicy>(factorWeights, integralType, ini) { }
+          DefaultLatentModel<copulaPolicy>(factorWeights, integralType, ini) {
+
+              QL_REQUIRE(recoveries.size() == factorWeights.size(), 
+                "Incompatible factors and recovery sizes.");
+        }
 
         ConstantLossLatentmodel(
             const Handle<Quote>& mktCorrel,

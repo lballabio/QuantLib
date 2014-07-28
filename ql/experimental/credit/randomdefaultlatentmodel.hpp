@@ -964,7 +964,8 @@ namespace QuantLib {
     // Common usage typedefs (notice they vary in the multithread version)
     // For the multithread implementation these souldnt be used, fortunately 
     //   they will fail because skipTo is absent.
-    typedef RandomDefaultLM<GaussianCopulaPolicy/*, 
+    typedef RandomDefaultLM<GaussianCopulaPolicy
+        , RandomSequenceGenerator<MersenneTwisterUniformRng> /*, 
         RandomSequenceGenerator<BoxMullerGaussianRng<
             MersenneTwisterUniformRng> > */> GaussianRandomDefaultLM;
     // This one uses the copula inversion directly:
