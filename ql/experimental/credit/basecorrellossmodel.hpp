@@ -31,6 +31,7 @@
 // move these to the CPP (and the template spezs)
 #include <ql/experimental/credit/gaussianlhplossmodel.hpp>
 #include <ql/experimental/credit/binomiallossmodel.hpp>
+#include <ql/experimental/credit/inhomogeneouspooldef.hpp>
 
 namespace QuantLib {
 
@@ -266,6 +267,32 @@ namespace QuantLib {
         basketDetach_->setLossModel(scalarCorrelModelDetach_);
         ////////scalarCorrelModelAttach_->registerWith(basketAttach_);
         ////////scalarCorrelModelDetach_->registerWith(basketDetach_);
+    }
+
+    template<>
+    void BaseCorrelationLossModel<IHGaussPoolLossModel, 
+        BilinearInterpolation>::setupModels() const 
+    {
+        boost::shared_ptr<GaussianConstantLossLM> lmA = 
+            boost::make_shared<GaussianConstantLossLM>(
+                Handle<Quote>(localCorrelationAttach_), recoveries_, 
+                LatentModelIntegrationType::GaussianQuadrature, 
+                recoveries_.size(), copulaTraits_);
+        boost::shared_ptr<GaussianConstantLossLM> lmD = 
+            boost::make_shared<GaussianConstantLossLM>(
+                Handle<Quote>(localCorrelationDetach_), recoveries_, 
+                LatentModelIntegrationType::GaussianQuadrature, 
+                recoveries_.size(), copulaTraits_);
+
+        // \todo Allow the sending specific model params, as the number of 
+        //   buckets here.
+        scalarCorrelModelAttach_ = 
+            boost::make_shared<IHGaussPoolLossModel>(lmA, 500);
+        scalarCorrelModelDetach_ = 
+            boost::make_shared<IHGaussPoolLossModel>(lmD, 500);
+            
+        basketAttach_->setLossModel(scalarCorrelModelAttach_);
+        basketDetach_->setLossModel(scalarCorrelModelDetach_);
     }
 
 

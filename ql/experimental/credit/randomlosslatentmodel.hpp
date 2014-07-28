@@ -226,9 +226,9 @@ namespace QuantLib {
 
 
     // Common uses: Not valid in multithread version.
-    typedef RandomLossLM<GaussianCopulaPolicy, 
+    typedef RandomLossLM<GaussianCopulaPolicy/* 
         RandomSequenceGenerator<BoxMullerGaussianRng<
-            MersenneTwisterUniformRng> > > GaussianRandomLossLM;
+            MersenneTwisterUniformRng> > */> GaussianRandomLossLM;
     typedef RandomLossLM<TCopulaPolicy, 
         RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > > 
             TRandomLossLM;

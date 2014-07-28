@@ -47,6 +47,9 @@ namespace QuantLib {
     private:
         void resetModel();
     public:
+        // allow base correlations:
+        typedef typename copulaPolicy copulaType;
+
         InhomogeneousPoolLossModel(
         // restricted to non random recoveries, but it could be possible.
             const boost::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >& 
