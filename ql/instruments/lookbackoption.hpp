@@ -81,6 +81,22 @@ namespace QuantLib {
         Date lookbackStart_;
     };
 
+    //! Continuous-partial-fixed lookback option
+    /*! \ingroup instruments */
+    class ContinuousPartialFixedLookbackOption : public ContinuousFixedLookbackOption {
+      public:
+        class arguments;
+        class engine;
+        ContinuousPartialFixedLookbackOption(
+                          Date lookbackStart,
+                          const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                          const boost::shared_ptr<Exercise>& exercise);
+        void setupArguments(PricingEngine::arguments*) const;
+      protected:
+        // arguments
+        Date lookbackStart_;
+    };
+
     //! %Arguments for continuous floating lookback option calculation
     class ContinuousFloatingLookbackOption::arguments
         : public OneAssetOption::arguments {
@@ -106,6 +122,14 @@ namespace QuantLib {
         void validate() const;
     };
 
+    //! %Arguments for continuous partial fixed lookback option calculation
+    class ContinuousPartialFixedLookbackOption::arguments
+        : public ContinuousFixedLookbackOption::arguments {
+      public:
+        Date lookbackStart;
+        void validate() const;
+    };
+
     //! %Continuous floating lookback %engine base class
     class ContinuousFloatingLookbackOption::engine
         : public GenericEngine<ContinuousFloatingLookbackOption::arguments,
@@ -120,6 +144,11 @@ namespace QuantLib {
     class ContinuousPartialFloatingLookbackOption::engine
         : public GenericEngine<ContinuousPartialFloatingLookbackOption::arguments,
                                ContinuousPartialFloatingLookbackOption::results> {};
+
+    //! %Continuous partial fixed lookback %engine base class
+    class ContinuousPartialFixedLookbackOption::engine
+        : public GenericEngine<ContinuousPartialFixedLookbackOption::arguments,
+                               ContinuousPartialFixedLookbackOption::results> {};
 }
 
 

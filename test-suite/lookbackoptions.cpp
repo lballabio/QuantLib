@@ -26,6 +26,7 @@
 #include <ql/pricingengines/lookback/analyticcontinuousfloatinglookback.hpp>
 #include <ql/pricingengines/lookback/analyticcontinuousfixedlookback.hpp>
 #include <ql/pricingengines/lookback/analyticcontinuouspartialfloatinglookback.hpp>
+#include <ql/pricingengines/lookback/analyticcontinuouspartialfixedlookback.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -383,6 +384,102 @@ void LookbackOptionTest::testAnalyticContinuousPartialFloatingLookback() {
     }
 }
 
+void LookbackOptionTest::testAnalyticContinuousPartialFixedLookback() {
+
+    BOOST_TEST_MESSAGE(
+              "Testing analytic continuous fixed-strike lookback options...");
+
+    LookbackOptionData values[] = {
+        // data from "Option Pricing Formulas, Second Edition", Haug, 2006, pg.148
+        //type,            strike, minmax,  s,     q,    r,    t,    v,    l, t1, result,  tol
+        { Option::Call, 90, 0, 100, 0, 0.06, 1, 0.1, 0, 0.25, 20.2845, 1.0e-4},
+        { Option::Call, 90, 0, 100, 0, 0.06, 1, 0.1, 0, 0.5, 19.6239, 1.0e-4},
+        { Option::Call, 90, 0, 100, 0, 0.06, 1, 0.1, 0, 0.75, 18.6244, 1.0e-4},
+        { Option::Call, 110, 0, 100, 0, 0.06, 1, 0.1, 0, 0.25, 4.0432, 1.0e-4},
+        { Option::Call, 110, 0, 100, 0, 0.06, 1, 0.1, 0, 0.5, 3.958, 1.0e-4},
+        { Option::Call, 110, 0, 100, 0, 0.06, 1, 0.1, 0, 0.75, 3.7015, 1.0e-4},
+        { Option::Call, 90, 0, 100, 0, 0.06, 1, 0.2, 0, 0.25, 27.5385, 1.0e-4},
+        { Option::Call, 90, 0, 100, 0, 0.06, 1, 0.2, 0, 0.5, 25.8126, 1.0e-4},
+        { Option::Call, 90, 0, 100, 0, 0.06, 1, 0.2, 0, 0.75, 23.4957, 1.0e-4},
+        { Option::Call, 110, 0, 100, 0, 0.06, 1, 0.2, 0, 0.25, 11.4895, 1.0e-4},
+        { Option::Call, 110, 0, 100, 0, 0.06, 1, 0.2, 0, 0.5, 10.8995, 1.0e-4},
+        { Option::Call, 110, 0, 100, 0, 0.06, 1, 0.2, 0, 0.75, 9.8244, 1.0e-4},
+        { Option::Call, 90, 0, 100, 0, 0.06, 1, 0.3, 0, 0.25, 35.4578, 1.0e-4},
+        { Option::Call, 90, 0, 100, 0, 0.06, 1, 0.3, 0, 0.5, 32.7172, 1.0e-4},
+        { Option::Call, 90, 0, 100, 0, 0.06, 1, 0.3, 0, 0.75, 29.1473, 1.0e-4},
+        { Option::Call, 110, 0, 100, 0, 0.06, 1, 0.3, 0, 0.25, 19.725, 1.0e-4},
+        { Option::Call, 110, 0, 100, 0, 0.06, 1, 0.3, 0, 0.5, 18.4025, 1.0e-4},
+        { Option::Call, 110, 0, 100, 0, 0.06, 1, 0.3, 0, 0.75, 16.2976, 1.0e-4},
+        { Option::Put, 90, 0, 100, 0, 0.06, 1, 0.1, 0, 0.25, 0.4973, 1.0e-4},
+        { Option::Put, 90, 0, 100, 0, 0.06, 1, 0.1, 0, 0.5, 0.4632, 1.0e-4},
+        { Option::Put, 90, 0, 100, 0, 0.06, 1, 0.1, 0, 0.75, 0.3863, 1.0e-4},
+        { Option::Put, 110, 0, 100, 0, 0.06, 1, 0.1, 0, 0.25, 12.6978, 1.0e-4},
+        { Option::Put, 110, 0, 100, 0, 0.06, 1, 0.1, 0, 0.5, 10.9492, 1.0e-4},
+        { Option::Put, 110, 0, 100, 0, 0.06, 1, 0.1, 0, 0.75, 9.1555, 1.0e-4},
+        { Option::Put, 90, 0, 100, 0, 0.06, 1, 0.2, 0, 0.25, 4.5863, 1.0e-4},
+        { Option::Put, 90, 0, 100, 0, 0.06, 1, 0.2, 0, 0.5, 4.1925, 1.0e-4},
+        { Option::Put, 90, 0, 100, 0, 0.06, 1, 0.2, 0, 0.75, 3.5831, 1.0e-4},
+        { Option::Put, 110, 0, 100, 0, 0.06, 1, 0.2, 0, 0.25, 19.0255, 1.0e-4},
+        { Option::Put, 110, 0, 100, 0, 0.06, 1, 0.2, 0, 0.5, 16.9433, 1.0e-4},
+        { Option::Put, 110, 0, 100, 0, 0.06, 1, 0.2, 0, 0.75, 14.6505, 1.0e-4},
+        { Option::Put, 90, 0, 100, 0, 0.06, 1, 0.3, 0, 0.25, 9.9348, 1.0e-4},
+        { Option::Put, 90, 0, 100, 0, 0.06, 1, 0.3, 0, 0.5, 9.1111, 1.0e-4},
+        { Option::Put, 90, 0, 100, 0, 0.06, 1, 0.3, 0, 0.75, 7.9267, 1.0e-4},
+        { Option::Put, 110, 0, 100, 0, 0.06, 1, 0.3, 0, 0.25, 25.2112, 1.0e-4},
+        { Option::Put, 110, 0, 100, 0, 0.06, 1, 0.3, 0, 0.5, 22.8217, 1.0e-4},
+        { Option::Put, 110, 0, 100, 0, 0.06, 1, 0.3, 0, 0.75, 20.0566, 1.0e-4}
+    };
+
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+
+    for (Size i=0; i<LENGTH(values); i++) {
+        Date exDate = today + Integer(values[i].t*360+0.5);
+        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+
+        spot ->setValue(values[i].s);
+        qRate->setValue(values[i].q);
+        rRate->setValue(values[i].r);
+        vol  ->setValue(values[i].v);
+
+        boost::shared_ptr<StrikedTypePayoff> payoff(
+                     new PlainVanillaPayoff(values[i].type, values[i].strike));
+
+        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
+                            new BlackScholesMertonProcess(
+                                       Handle<Quote>(spot),
+                                       Handle<YieldTermStructure>(qTS),
+                                       Handle<YieldTermStructure>(rTS),
+                                       Handle<BlackVolTermStructure>(volTS)));
+
+        boost::shared_ptr<PricingEngine> engine(
+                     new AnalyticContinuousPartialFixedLookbackEngine(stochProcess));
+
+        Date lookbackStart = today + Integer(values[i].t1*360+0.5);
+        ContinuousPartialFixedLookbackOption option(lookbackStart,
+                                             payoff,
+                                             exercise);
+        option.setPricingEngine(engine);
+
+        Real calculated = option.NPV();
+        Real expected = values[i].result;
+        Real error = std::fabs(calculated-expected);
+        if (error>values[i].tol) {
+            REPORT_FAILURE_FIXED("value", values[i].minmax, payoff, exercise,
+                                 values[i].s, values[i].q, values[i].r, today,
+                                 values[i].v, expected, calculated, error,
+                                 values[i].tol);
+        }
+    }
+}
 
 test_suite* LookbackOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Lookback option tests");
@@ -393,6 +490,8 @@ test_suite* LookbackOptionTest::suite() {
                 &LookbackOptionTest::testAnalyticContinuousFixedLookback));
     suite->add(QUANTLIB_TEST_CASE(
                 &LookbackOptionTest::testAnalyticContinuousPartialFloatingLookback));
+    suite->add(QUANTLIB_TEST_CASE(
+                &LookbackOptionTest::testAnalyticContinuousPartialFixedLookback));
     return suite;
 }
 

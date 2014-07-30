@@ -103,12 +103,33 @@ namespace QuantLib {
 
         ContinuousFloatingLookbackOption::arguments::validate();
 
-        QL_REQUIRE(minmax != Null<Real>(), "null prior extremum");
-        QL_REQUIRE(minmax >= 0.0, "nonnegative prior extremum required: "
-                   << minmax << " not allowed");
-        QL_REQUIRE(lambda != Null<Real>(), "null lambda");
-
         //TODO: validate lambda range against put / call
+        //QL_REQUIRE(timeToStartOfLookback != Null<Real>(), "null timeToStartOfLookback");
+    }
+
+    ContinuousPartialFixedLookbackOption::ContinuousPartialFixedLookbackOption(
+        Date lookbackStart,
+        const boost::shared_ptr<StrikedTypePayoff>& payoff,
+        const boost::shared_ptr<Exercise>& exercise)
+    : ContinuousFixedLookbackOption(0, payoff, exercise),
+      lookbackStart_(lookbackStart) {}
+
+    void ContinuousPartialFixedLookbackOption::setupArguments(
+                                       PricingEngine::arguments* args) const {
+
+        ContinuousFixedLookbackOption::setupArguments(args);
+
+        ContinuousPartialFixedLookbackOption::arguments* moreArgs =
+            dynamic_cast<ContinuousPartialFixedLookbackOption::arguments*>(args);
+        QL_REQUIRE(moreArgs != 0, "wrong argument type");
+        moreArgs->lookbackStart = lookbackStart_;
+    }
+
+    void ContinuousPartialFixedLookbackOption::arguments::validate() const {
+
+        ContinuousFixedLookbackOption::arguments::validate();
+
+        //TODO: validate lookbackStart
         //QL_REQUIRE(timeToStartOfLookback != Null<Real>(), "null timeToStartOfLookback");
     }
 }
