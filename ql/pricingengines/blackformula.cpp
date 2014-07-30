@@ -25,7 +25,14 @@
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/solvers1d/newtonsafe.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
 #include <boost/math/special_functions/atanh.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic pop
+#endif
 
 namespace {
     void checkParameters(QuantLib::Real strike,
