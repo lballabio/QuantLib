@@ -36,7 +36,7 @@ namespace QuantLib {
     */
     class ForwardMeasureProcess : public StochasticProcess {
       public:
-        void setForwardMeasureTime(Time);
+        virtual void setForwardMeasureTime(Time);
         Time getForwardMeasureTime() const;
       protected:
         ForwardMeasureProcess() {}
@@ -53,7 +53,7 @@ namespace QuantLib {
     */
     class ForwardMeasureProcess1D : public StochasticProcess1D {
       public:
-        void setForwardMeasureTime(Time);
+        virtual void setForwardMeasureTime(Time);
         Time getForwardMeasureTime() const;
       protected:
         ForwardMeasureProcess1D() {}

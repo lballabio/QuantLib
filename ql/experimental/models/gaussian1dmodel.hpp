@@ -22,7 +22,7 @@
 */
 
 // uncomment to enable NTL support (see below for more details and references)
-// #define GAUSS1D_ENABLE_NTL 
+// #define GAUSS1D_ENABLE_NTL
 
 #ifndef quantlib_gaussian1dmodel_hpp
 #define quantlib_gaussian1dmodel_hpp
@@ -45,7 +45,15 @@
     #include <boost/math/bindings/rr.hpp>
 #endif
 
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
 #include <boost/math/special_functions/erf.hpp>
+#include <boost/unordered_map.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic pop
+#endif
 
 namespace QuantLib {
 
@@ -67,7 +75,6 @@ namespace QuantLib {
 
     class Gaussian1dModel : public TermStructureConsistentModel,
                             public LazyObject {
-
       public:
 
         const boost::shared_ptr<StochasticProcess1D> stateProcess() const;
@@ -149,11 +156,47 @@ namespace QuantLib {
                                       const Real T = 1.0, const Real t = 0,
                                       const Real y = 0) const;
 
-      protected:
+      private:
 
+        // It is of great importance for performance reasons to cache underlying
+        // swaps generated from indexes. In addition the indexes may only be given
+        // as templates for the conventions with the tenor replaced by the actual
+        // one later on.
+
+        struct CachedSwapKey {
+            const boost::shared_ptr<SwapIndex> index;
+            const Date fixing;
+            const Period tenor;
+            const bool operator==(const CachedSwapKey &o) const {
+                return index->name() == o.index->name() && fixing == o.fixing &&
+                       tenor == o.tenor;
+            }
+        };
+
+        struct CachedSwapKeyHasher
+            : std::unary_function<CachedSwapKey, std::size_t> {
+            std::size_t operator()(CachedSwapKey const &x) const {
+                std::size_t seed = 0;
+                boost::hash_combine(seed, x.index->name());
+                boost::hash_combine(seed, x.fixing.serialNumber());
+                boost::hash_combine(seed, x.tenor.length());
+                boost::hash_combine(seed, x.tenor.units());
+                return seed;
+            }
+        };
+
+        typedef boost::unordered_map<CachedSwapKey,
+                                     boost::shared_ptr<VanillaSwap>,
+                                     CachedSwapKeyHasher> CacheType;
+
+        mutable CacheType swapCache_;
+
+      protected:
         // we let derived classes register with the termstructure
         Gaussian1dModel(const Handle<YieldTermStructure> &yieldTermStructure)
-            : TermStructureConsistentModel(yieldTermStructure) {}
+            : TermStructureConsistentModel(yieldTermStructure) {
+            registerWith(Settings::instance().evaluationDate());
+        }
 
         virtual ~Gaussian1dModel() {}
 
@@ -165,14 +208,37 @@ namespace QuantLib {
         zerobondImpl(const Time T, const Time t, const Real y,
                      const Handle<YieldTermStructure> &yts) const = 0;
 
-        void performCalculations() const {}
+        void performCalculations() const {
+            evaluationDate_ = Settings::instance().evaluationDate();
+            enforcesTodaysHistoricFixings_ = Settings::instance().enforcesTodaysHistoricFixings();
+        }
 
         void generateArguments() {
             calculate();
             notifyObservers();
         }
 
+        // retrieve underlying swap from cache if possible, otherwise
+        // create it and store it in the cache
+        boost::shared_ptr<VanillaSwap>
+        underlyingSwap(const boost::shared_ptr<SwapIndex> &index,
+                       const Date &expiry, const Period &tenor) const {
+
+            CachedSwapKey k = {index, expiry, tenor};
+            CacheType::iterator i = swapCache_.find(k);
+            if (i == swapCache_.end()) {
+                boost::shared_ptr<VanillaSwap> underlying =
+                    index->clone(tenor)->underlyingSwap(expiry);
+                swapCache_.insert(std::make_pair(k, underlying));
+                return underlying;
+            }
+            return i->second;
+        }
+
         boost::shared_ptr<StochasticProcess1D> stateProcess_;
+        mutable Date evaluationDate_;
+        mutable bool enforcesTodaysHistoricFixings_;
+
     };
 
     inline const boost::shared_ptr<StochasticProcess1D>
@@ -193,7 +259,6 @@ namespace QuantLib {
     inline const Real
     Gaussian1dModel::zerobond(const Time T, const Time t, const Real y,
                               const Handle<YieldTermStructure> &yts) const {
-
         return zerobondImpl(T, t, y, yts);
     }
 
