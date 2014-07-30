@@ -62,6 +62,25 @@ namespace QuantLib {
         Real minmax_;
     };
 
+    //! Continuous-partial-floating lookback option
+    /*! \ingroup instruments */
+    class ContinuousPartialFloatingLookbackOption : public ContinuousFloatingLookbackOption {
+      public:
+        class arguments;
+        class engine;
+        ContinuousPartialFloatingLookbackOption(
+                          Real currentMinmax,
+                          Real lambda,
+                          Date lookbackStart,
+                          const boost::shared_ptr<TypePayoff>& payoff,
+                          const boost::shared_ptr<Exercise>& exercise);
+        void setupArguments(PricingEngine::arguments*) const;
+      protected:
+        // arguments
+        Real lambda_;
+        Date lookbackStart_;
+    };
+
     //! %Arguments for continuous floating lookback option calculation
     class ContinuousFloatingLookbackOption::arguments
         : public OneAssetOption::arguments {
@@ -78,6 +97,15 @@ namespace QuantLib {
         void validate() const;
     };
 
+    //! %Arguments for continuous partial floating lookback option calculation
+    class ContinuousPartialFloatingLookbackOption::arguments
+        : public ContinuousFloatingLookbackOption::arguments {
+      public:
+        Real lambda;
+        Date lookbackStart;
+        void validate() const;
+    };
+
     //! %Continuous floating lookback %engine base class
     class ContinuousFloatingLookbackOption::engine
         : public GenericEngine<ContinuousFloatingLookbackOption::arguments,
@@ -88,6 +116,10 @@ namespace QuantLib {
         : public GenericEngine<ContinuousFixedLookbackOption::arguments,
                                ContinuousFixedLookbackOption::results> {};
 
+    //! %Continuous partial floating lookback %engine base class
+    class ContinuousPartialFloatingLookbackOption::engine
+        : public GenericEngine<ContinuousPartialFloatingLookbackOption::arguments,
+                               ContinuousPartialFloatingLookbackOption::results> {};
 }
 
 
