@@ -26,7 +26,11 @@ namespace QuantLib {
    //     LatentModel<copulaPolicy> recoveryCrossSection_;
         mutable Size numNames_;
         mutable boost::shared_ptr<Basket> basket_;
-
+        boost::shared_ptr<LMIntegration> integration_;
+    protected:
+        //! access to integration:
+        const boost::shared_ptr<LMIntegration>& 
+            integration() const { return integration_; }
     public:
         SpotRecoveryLatentModel(
             const std::vector<std::vector<Real> >& factorWeights,
@@ -37,6 +41,8 @@ namespace QuantLib {
                 copulaPolicy::initTraits()
             ) 
         : LatentModel<copulaPolicy>(factorWeights, ini),
+          integration_(LatentModel<copulaPolicy>::IntegrationFactory::
+            createLMIntegration(factorWeights[0].size(), integralType)),
           recoveries_(recoveries), 
           modelA_(modelA),
           numNames_(factorWeights.size()/2)
@@ -78,6 +84,75 @@ namespace QuantLib {
         }
 
 
+
+
+
+
+        Probability conditionalDefaultProbability(const Date& date, Size iName,
+            const std::vector<Real>& mktFactors) const 
+        {
+            const boost::shared_ptr<Pool>& pool = basket_->pool();
+            Probability pDefUncond =
+                pool->get(pool->names()[iName]).
+                defaultProbability(basket_->defaultKeys()[iName])
+                  ->defaultProbability(date);
+            return conditionalDefaultProbability(pDefUncond, iName, mktFactors);
+        }
+
+        Probability conditionalDefaultProbability(Probability prob, Size iName,
+            const std::vector<Real>& mktFactors) const 
+        {
+            // we can be called from the outside (from an integrable loss model)
+            //   but we are called often at integration points. This or
+            //   consider a list of friends.
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
+            QL_REQUIRE(basket_, "No portfolio basket set.");
+        #endif
+            /*Avoid redundant call to minimum value inversion (might be \infty),
+            and this independently of the copula function.
+            */
+            if (prob < 1.e-10) return 0.;// use library macro...
+            return conditionalDefaultProbabilityInvP(
+                inverseCumulativeY(prob, iName), iName, mktFactors);
+        }
+
+        Probability conditionalDefaultProbabilityInvP(Real invCumYProb, 
+            Size iName, 
+            const std::vector<Real>& m) const {
+            Real sumMs = 
+                std::inner_product(factorWeights_[iName].begin(), 
+                    factorWeights_[iName].end(), m.begin(), 0.);
+            Real res = cumulativeZ((invCumYProb - sumMs) / 
+                    idiosyncFctrs_[iName] );
+            #if defined(QL_EXTRA_SAFETY_CHECKS)
+            QL_REQUIRE (res >= 0. && res <= 1.,
+                        "conditional probability " << res << "out of range");
+            #endif
+        
+            return res;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         /*! Expected (it is volatile) conditional (to the latent factor) 
         spot recovery rate. It is also conditional to default taking place.
         Corresponds to a multifactor generalization of the model in eq. 44 
@@ -115,15 +190,23 @@ namespace QuantLib {
               std::inner_product(
                   fctrs_[iName /*+ basket_->size()*/].begin(),///betas_[iName].begin(), 
  //                 fctrs_[iName /*+ basket_->size()*/].end(), 
-                  fctrs_[iName /*+ basket_->size()*/].begin() + numNames_, 
+                  fctrs_[iName /*+ basket_->size()*/].end(), 
+//?????                  fctrs_[iName /*+ basket_->size()*/].begin() + numNames_, 
                   mktFactors.begin() /*+ pool_->size()*/,
                   0.);
+    // CACHE THESE ONES FOR EACH NAME?
+ //           const Real sumBetaLoss = 
+ //             std::inner_product(
+ //                 fctrs_[iName/* + basket_->size()*/].begin(),
+ ////                 fctrs_[iName /*+ basket_->size()*/].end(),
+ //                 fctrs_[iName /*+ basket_->size()*/].begin() + numNames_,
+ //                 fctrs_[iName /*+ basket_->size()*/].begin(), 
+ //                 0.);
             const Real sumBetaLoss = 
               std::inner_product(
-                  fctrs_[iName/* + basket_->size()*/].begin(),
- //                 fctrs_[iName /*+ basket_->size()*/].end(),
-                  fctrs_[iName /*+ basket_->size()*/].begin() + numNames_,
-                  fctrs_[iName /*+ basket_->size()*/].begin(), 
+                  fctrs_[iName + numNames_].begin(),
+                  fctrs_[iName + numNames_].end(),
+                  fctrs_[iName + numNames_].begin(), 
                   0.);
 
             return cumulativeZ((sumMs + std::sqrt(1.-crossIdiosyncFctrs_[iName])

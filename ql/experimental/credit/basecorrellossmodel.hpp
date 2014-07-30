@@ -269,6 +269,9 @@ namespace QuantLib {
         ////////scalarCorrelModelDetach_->registerWith(basketDetach_);
     }
 
+    /* \todo Fix this model, is failing for equity tranches at least, the
+    base model works all right, its the link here.
+    */
     template<>
     void BaseCorrelationLossModel<IHGaussPoolLossModel, 
         BilinearInterpolation>::setupModels() const 
