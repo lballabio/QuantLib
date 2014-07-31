@@ -103,8 +103,18 @@ namespace QuantLib {
 
         ContinuousFloatingLookbackOption::arguments::validate();
 
-        //TODO: validate lambda range against put / call
-        //QL_REQUIRE(timeToStartOfLookback != Null<Real>(), "null timeToStartOfLookback");
+        boost::shared_ptr<EuropeanExercise> europeanExercise =
+            boost::dynamic_pointer_cast<EuropeanExercise>(exercise);
+        QL_REQUIRE(lookbackStart <= europeanExercise->lastDate(), 
+            "lookback start date must be earlier than exercise date");
+        
+        boost::shared_ptr<FloatingTypePayoff> floatingTypePayoff =
+            boost::dynamic_pointer_cast<FloatingTypePayoff>(payoff);
+        
+        if (floatingTypePayoff->optionType() == Option::Call)
+            QL_REQUIRE(lambda >= 1.0, "lambda should be greater than or equal to 1 for calls");
+        else if (floatingTypePayoff->optionType() == Option::Put)
+            QL_REQUIRE(lambda <= 1.0, "lambda should be smaller than or equal to 1 for puts");
     }
 
     ContinuousPartialFixedLookbackOption::ContinuousPartialFixedLookbackOption(
@@ -129,8 +139,10 @@ namespace QuantLib {
 
         ContinuousFixedLookbackOption::arguments::validate();
 
-        //TODO: validate lookbackStart
-        //QL_REQUIRE(timeToStartOfLookback != Null<Real>(), "null timeToStartOfLookback");
+        boost::shared_ptr<EuropeanExercise> europeanExercise =
+            boost::dynamic_pointer_cast<EuropeanExercise>(exercise);
+        QL_REQUIRE(lookbackStart <= europeanExercise->lastDate(), 
+            "lookback start date must be earlier than exercise date");
     }
 }
 

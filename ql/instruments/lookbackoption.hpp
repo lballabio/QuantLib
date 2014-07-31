@@ -27,6 +27,7 @@
 
 #include <ql/instruments/oneassetoption.hpp>
 #include <ql/instruments/payoffs.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 
