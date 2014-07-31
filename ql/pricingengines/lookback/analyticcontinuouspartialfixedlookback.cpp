@@ -44,18 +44,12 @@ namespace QuantLib {
           case Option::Call:
             QL_REQUIRE(payoff->strike()>=0.0,
                        "Strike must be positive or null");
-            //if (strike <= minmax())
-            //    results_.value = A(1) + C(1);
-            //else
-            results_.value = B(1);
+            results_.value = A(1);
             break;
           case Option::Put:
             QL_REQUIRE(payoff->strike()>0.0,
                        "Strike must be positive");
-            //if (strike >= minmax())
-            //    results_.value = A(-1) + C(-1);
-            //else
-            results_.value = B(-1);
+            results_.value = A(-1);
             break;
           default:
             QL_FAIL("Unknown type");
@@ -110,25 +104,7 @@ namespace QuantLib {
         return process_->time(arguments_.lookbackStart);
     }
 
-    //Real AnalyticContinuousPartialFixedLookbackEngine::A(Real eta) const {
-    //    Volatility vol = volatility();
-    //    Real lambda = 2.0*(riskFreeRate() - dividendYield())/(vol*vol);
-    //    Real ss = underlying()/minmax();
-    //    Real d1 =
-    //        std::log(ss)/stdDeviation() + 0.5*(lambda+1.0)*stdDeviation();
-    //    Real N1 = f_(eta*d1);
-    //    Real N2 = f_(eta*(d1-stdDeviation()));
-    //    Real N3 = f_(eta*(d1-lambda*stdDeviation()));
-    //    Real N4 = f_(eta*d1);
-    //    Real powss = std::pow(ss, -lambda);
-    //    return eta*(underlying() * dividendDiscount() * N1 -
-    //                minmax() * riskFreeDiscount() * N2 -
-    //                underlying() * riskFreeDiscount() *
-    //                (powss * N3 - dividendDiscount()* N4/riskFreeDiscount())/
-    //        lambda);
-    //}
-
-    Real AnalyticContinuousPartialFixedLookbackEngine::B(Real eta) const {
+    Real AnalyticContinuousPartialFixedLookbackEngine::A(Real eta) const {
         bool differentStartOfLookback = timeToStartOfLookback() != residualTime();
         Real carry = riskFreeRate() - dividendYield();
 
@@ -185,10 +161,5 @@ namespace QuantLib {
                     * (1 - 0.5 * vol * vol / carry) * 
                     underlying() * n7 * n8);
     }
-
-    //Real AnalyticContinuousPartialFixedLookbackEngine::C(Real eta) const {
-    //    return eta*(riskFreeDiscount()*(minmax() - strike()));
-    //}
-
 }
 

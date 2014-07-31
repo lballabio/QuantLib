@@ -35,8 +35,8 @@
 namespace QuantLib {
 
     //! Pricing engine for European continuous floating-strike lookback
-    /*! Formula from "Option Pricing Formulas",
-        E.G. Haug, McGraw-Hill, 1998, p.61-62
+    /*! Formula from "Option Pricing Formulas, Second Edition",
+        E.G. Haug, 2006, p.146
 
         \ingroup lookbackengines
 

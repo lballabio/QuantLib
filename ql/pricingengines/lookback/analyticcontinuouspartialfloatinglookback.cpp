@@ -100,7 +100,8 @@ namespace QuantLib {
 
 
     Real AnalyticContinuousPartialFloatingLookbackEngine::A(Real eta) const {
-        //TODO: Special case... if timeToStartOfLookback() == residualTime(), it could be valued as vanilla option
+        //TODO: Special case... if timeToStartOfLookback() == residualTime(), 
+        //      it could be valued as plain European option
 
         bool differentStartOfLookback = timeToStartOfLookback() != residualTime();
         Real carry = riskFreeRate() - dividendYield();

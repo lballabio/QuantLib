@@ -32,9 +32,9 @@
 
 namespace QuantLib {
 
-    //! Pricing engine for European continuous fixed-strike lookback
-    /*! Formula from "Option Pricing Formulas",
-        E.G. Haug, McGraw-Hill, 1998, p.63-64
+    //! Pricing engine for European continuous partial-time fixed-strike lookback
+    /*! Formula from "Option Pricing Formulas, Second Edition",
+        E.G. Haug, 2006, p.148
 
         \ingroup lookbackengines
 
@@ -60,9 +60,7 @@ namespace QuantLib {
         DiscountFactor riskFreeDiscount() const;
         Rate dividendYield() const;
         DiscountFactor dividendDiscount() const;
-        //Real A(Real eta) const;
-        Real B(Real eta) const;
-        //Real C(Real eta) const;
+        Real A(Real eta) const;
     };
 
 }
