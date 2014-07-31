@@ -2454,6 +2454,12 @@
     <ClInclude Include="ql\pricingengines\lookback\analyticcontinuousfloatinglookback.hpp">
       <Filter>pricingengines\lookback</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\lookback\analyticcontinuouspartialfixedlookback.hpp">
+      <Filter>pricingengines\lookback</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\lookback\analyticcontinuouspartialfloatinglookback.hpp">
+      <Filter>pricingengines\lookback</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\bond\all.hpp">
       <Filter>pricingengines\bond</Filter>
     </ClInclude>
@@ -5093,6 +5099,12 @@
     <ClCompile Include="ql\pricingengines\lookback\analyticcontinuousfloatinglookback.cpp">
       <Filter>pricingengines\lookback</Filter>
     </ClCompile>
+    <ClCompile Include="ql\pricingengines\lookback\analyticcontinuouspartialfixedlookback.cpp">
+      <Filter>pricingengines\lookback</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\lookback\analyticcontinuouspartialfloatinglookback.cpp">
+      <Filter>pricingengines\lookback</Filter>
+    </ClCompile>
     <ClCompile Include="ql\pricingengines\bond\bondfunctions.cpp">
       <Filter>pricingengines\bond</Filter>
     </ClCompile>
@@ -6117,5 +6129,7 @@
     <ClCompile Include="ql\experimental\exoticoptions\analyticpdfhestonengine.cpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
+    <ClCompile Include="ql\pricingengines\lookback\analyticcontinuouspartialfloatinglookback.cpp" />
+    <ClCompile Include="ql\pricingengines\lookback\analyticcontinuouspartialfixedlookback.cpp" />
   </ItemGroup>
 </Project>
