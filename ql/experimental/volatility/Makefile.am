@@ -27,6 +27,7 @@ libVolatility_la_SOURCES = \
     extendedblackvariancesurface.cpp \
     interestratevolsurface.cpp \
     noarbsabr.cpp \
+    noarbsabrabsprobs.cpp \
     noarbsabrsmilesection.cpp \
     noarbsabrinterpolatedsmilesection.cpp \
     sabrvolsurface.cpp \

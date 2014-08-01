@@ -173,8 +173,6 @@ Real NoArbSabrModel::p(const Real f) const {
 
 namespace detail {
 
-#include "noarbsabrabsprobs.cpp"
-
 using namespace boost::assign;
 
 D0Interpolator::D0Interpolator(const Real forward, const Real expiryTime,

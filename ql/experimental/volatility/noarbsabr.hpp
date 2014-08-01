@@ -129,6 +129,8 @@ class NoArbSabrModel {
 
 namespace detail {
 
+extern "C" const unsigned long sabrabsprob[1209600];
+
 class D0Interpolator {
   public:
     D0Interpolator(const Real forward, const Real expiryTime, const Real alpha,
