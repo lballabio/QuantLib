@@ -7806,6 +7806,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\saddlepointlossmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\saddlepointlossmodel.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\spotlosslatentmodel.hpp"
 					>
 				</File>
