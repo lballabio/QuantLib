@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2009 Ferdinando Ametrano
+ Copyright (C) 2009, 2014 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -51,8 +51,11 @@ namespace QuantLib {
         if (effectiveDate_ != Date())
             startDate = effectiveDate_;
         else {
-            Date referenceDate = Settings::instance().evaluationDate();
-            Date spotDate = calendar.advance(referenceDate,
+            Date refDate = Settings::instance().evaluationDate();
+            // if the evaluation date is not a business day
+            // then move to the next business day
+            refDate = calendar.adjust(refDate);
+            Date spotDate = calendar.advance(refDate,
                                              fixingDays_*Days);
             startDate = spotDate+forwardStart_;
         }
