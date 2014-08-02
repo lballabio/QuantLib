@@ -32,10 +32,11 @@
 namespace QuantLib {
 
 NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
-                     const Real alpha, const Real beta, const Real nu,
-                     const Real rho)
+                               const Real alpha, const Real beta, const Real nu,
+                               const Real rho)
     : expiryTime_(expiryTime), externalForward_(forward), alpha_(alpha),
-      beta_(beta), nu_(nu), rho_(rho), forward_(forward) {
+      beta_(beta), nu_(nu), rho_(rho), forward_(forward),
+      numericalForward_(forward) {
 
     QL_REQUIRE(expiryTime > 0.0 && expiryTime <= Constants::expiryTime_max,
                "expiryTime (" << expiryTime << ") out of bounds");
@@ -56,8 +57,7 @@ NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
     // determine a region sufficient for integration in the normal case
 
     fmin_ = fmax_ = forward_;
-    for (Real tmp = p(fmax_); tmp > Constants::i_accuracy;
-         tmp = p(fmax_)) {
+    for (Real tmp = p(fmax_); tmp > Constants::i_accuracy; tmp = p(fmax_)) {
         fmax_ *= 2.0;
     }
     for (Real tmp = p(fmin_);
@@ -67,16 +67,11 @@ NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
     }
     fmin_ = std::max(Constants::strike_min, fmin_);
 
-    QL_REQUIRE(fmax_ > fmin_,"could not find a reasonable integration domain");
+    QL_REQUIRE(fmax_ > fmin_, "could not find a reasonable integration domain");
 
-    // integrator_ =
-    //     boost::shared_ptr<GaussKronrodNonAdaptive>(new GaussKronrodNonAdaptive(
-    //         Constants::i_accuracy, Constants::i_max_iterations,
-    //         Constants::i_accuracy)); // absoulte accuracy is relevant here
     integrator_ =
         boost::shared_ptr<GaussLobattoIntegral>(new GaussLobattoIntegral(
-            Constants::i_max_iterations,
-            Constants::i_accuracy));
+            Constants::i_max_iterations, Constants::i_accuracy));
 
     detail::D0Interpolator d0(forward_, expiryTime_, alpha_, beta_, nu_, rho_);
     absProb_ = d0();
@@ -94,36 +89,39 @@ NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
         // fall back to unadjusted forward
         forward_ = externalForward_;
     }
-    // make sure that numericalIntegralOverP_ is
-    // consistent with the found forward
-    forwardError(std::sqrt(forward_ - Constants::strike_min));
+
+    Real d = forwardError(std::sqrt(forward_ - Constants::strike_min));
+    numericalForward_ = d + externalForward_;
 }
 
 Real NoArbSabrModel::optionPrice(const Real strike) const {
+    if (p(std::max(forward_, strike)) < Constants::density_threshold)
+        return 0.0;
     return (1.0 - absProb_) *
-           ( integrator_->operator()(
-                       boost::lambda::bind(&NoArbSabrModel::integrand, this,
-                                           strike, boost::lambda::_1),
-                       strike, std::max(fmax_, 2.0*strike)) /
-                   numericalIntegralOverP_);
+           (integrator_->operator()(
+                boost::lambda::bind(&NoArbSabrModel::integrand, this, strike,
+                                    boost::lambda::_1),
+                strike, std::max(fmax_, 2.0 * strike)) /
+            numericalIntegralOverP_);
 }
 
 Real NoArbSabrModel::digitalOptionPrice(const Real strike) const {
-    return strike < QL_MIN_POSITIVE_REAL
-               ? 1.0
-               : (1.0 - absProb_) *
-                     (integrator_->operator()(
-                                 boost::lambda::bind(&NoArbSabrModel::p, this,
-                                                     boost::lambda::_1),
-                                 strike, std::max(fmax_, 2.0*strike)) /
-                      numericalIntegralOverP_);
+    if (strike < QL_MIN_POSITIVE_REAL)
+        return 1.0;
+    if (p(std::max(forward_, strike)) < Constants::density_threshold)
+        return 0.0;
+    return (1.0 - absProb_) * (integrator_->operator()(
+                                   boost::lambda::bind(&NoArbSabrModel::p, this,
+                                                       boost::lambda::_1),
+                                   strike, std::max(fmax_, 2.0 * strike)) /
+                               numericalIntegralOverP_);
 }
 
 Real NoArbSabrModel::forwardError(const Real forward) const {
-    forward_ = forward*forward + Constants::strike_min;
+    forward_ = forward * forward + Constants::strike_min;
     numericalIntegralOverP_ = integrator_->operator()(
-        boost::lambda::bind(&NoArbSabrModel::p, this, boost::lambda::_1),
-        fmin_, fmax_);
+        boost::lambda::bind(&NoArbSabrModel::p, this, boost::lambda::_1), fmin_,
+        fmax_);
     return optionPrice(0.0) - externalForward_;
 }
 
@@ -133,7 +131,8 @@ Real NoArbSabrModel::integrand(const Real strike, const Real f) const {
 
 Real NoArbSabrModel::p(const Real f) const {
 
-    if( f < QL_MIN_POSITIVE_REAL || forward_ < QL_MIN_POSITIVE_REAL )
+    if (f < Constants::density_lower_bound ||
+        forward_ < Constants::density_lower_bound)
         return 0.0;
 
     Real fOmB = std::pow(f, 1.0 - beta_);
@@ -212,7 +211,8 @@ Real D0Interpolator::operator()() const {
 
     Size tauInd = std::upper_bound(tauG_.begin(), tauG_.end(), expiryTime_) -
                   tauG_.begin();
-    if(tauInd == tauG_.size()) --tauInd; // tau at upper bound
+    if (tauInd == tauG_.size())
+        --tauInd; // tau at upper bound
     Real expiryTimeTmp = expiryTime_;
     if (tauInd == 0) {
         ++tauInd;
@@ -225,7 +225,8 @@ Real D0Interpolator::operator()() const {
         sigmaIG_.size() -
         (std::upper_bound(sigmaIG_.rbegin(), sigmaIG_.rend(), sigmaI_) -
          sigmaIG_.rbegin());
-    if(sigmaIInd == 0) ++sigmaIInd; // sigmaI at upper bound
+    if (sigmaIInd == 0)
+        ++sigmaIInd; // sigmaI at upper bound
     Real sigmaIL = (sigmaI_ - sigmaIG_[sigmaIInd - 1]) /
                    (sigmaIG_[sigmaIInd] - sigmaIG_[sigmaIInd - 1]);
 
@@ -243,7 +244,8 @@ Real D0Interpolator::operator()() const {
 
     // for nu = 0 we know phi = 0.5*z_F^2
     Size nuInd = std::upper_bound(nuG_.begin(), nuG_.end(), nu_) - nuG_.begin();
-    if(nuInd == nuG_.size()) --nuInd; // nu at upper bound
+    if (nuInd == nuG_.size())
+        --nuInd; // nu at upper bound
     Real tmpNuG = nuInd > 0 ? nuG_[nuInd - 1] : 0.0;
     Real nuL = (nu_ - tmpNuG) / (nuG_[nuInd] - tmpNuG);
 
@@ -272,23 +274,22 @@ Real D0Interpolator::operator()() const {
                                  (1.0 - beta_)); // this is 0.5*z_F^2, see above
                         } else {
                             if (iBeta == 0 && betaInd == betaG_.size()) {
-                                phiTmp = phi(NoArbSabrModel::Constants::tiny_prob);
+                                phiTmp =
+                                    phi(NoArbSabrModel::Constants::tiny_prob);
                             } else {
-                                int ind =
-                                    (tauInd + iTau +
-                                     (sigmaIInd + iSigma +
-                                                                            (rhoInd + iRho +
-                                       (nuInd + iNu +
-                                        ((betaInd + iBeta) * nuG_.size())) *
-                                           rhoG_.size()) *
-                                          sigmaIG_.size()) *
-                                         tauG_.size());
+                                int ind = (tauInd + iTau +
+                                           (sigmaIInd + iSigma +
+                                            (rhoInd + iRho +
+                                             (nuInd + iNu + ((betaInd + iBeta) *
+                                                             nuG_.size())) *
+                                                 rhoG_.size()) *
+                                                sigmaIG_.size()) *
+                                               tauG_.size());
                                 QL_REQUIRE(ind >= 0 && ind < 1209600,
                                            "absorption matrix index ("
                                                << ind << ") invalid");
-                                phiTmp = phi(
-                                    (Real)sabrabsprob[ind] /
-                                    NoArbSabrModel::Constants::nsim);
+                                phiTmp = phi((Real)sabrabsprob[ind] /
+                                             NoArbSabrModel::Constants::nsim);
                             }
                         }
                         phiRes += phiTmp * (iTau == -1 ? (1.0 - tauL) : tauL) *

@@ -37,6 +37,14 @@
     value corresponding to d0 = tiny_prob = 1E-5 at beta = 1.
     For tau < 0.25 phi is extrapolated flat.
     For rho outside [-0.75, 0.75] phi is extrapolated linearly.
+
+    There are some parameter sets that are admissable, yet do
+    not allow for the adjustment procedure as suggested in the
+    paper to force the model implied forward to the correct
+    value. In this case, no adjustment is done, leading to a
+    model implied forward different from the desired one.
+    This situation can be identified by comparing forward()
+    and numericalForward().
 */
 
 #ifndef quantlib_noarb_sabr
@@ -44,7 +52,6 @@
 
 #include <ql/qldefines.hpp>
 #include <ql/types.hpp>
-//#include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 
 #include <vector>
@@ -82,10 +89,10 @@ class NoArbSabrModel {
         // of beta towards 1
         static QL_CONSTEXPR Real tiny_prob = 1E-5;
         // minimum strike used for normal case integration
-        static QL_CONSTEXPR Real strike_min = 1E-6; 
+        static QL_CONSTEXPR Real strike_min = 1E-6;
         // accuracy and max iterations for
         // numerical integration
-        static QL_CONSTEXPR Real i_accuracy = 1E-6;
+        static QL_CONSTEXPR Real i_accuracy = 1E-7;
         static QL_CONSTEXPR Size i_max_iterations = 10000;
         // accuracy when adjusting the model forward
         // to match the given forward
@@ -93,6 +100,10 @@ class NoArbSabrModel {
         // step for searching the model forward
         // in newton algorithm
         static QL_CONSTEXPR Real forward_search_step = 0.0010;
+        // lower bound for density evaluation
+        static QL_CONSTEXPR Real density_lower_bound = 1E-50;
+        // threshold to identify a zero density
+        static QL_CONSTEXPR Real density_threshold = 1E-100;
     };
 
     NoArbSabrModel(const Real expiryTime, const Real forward, const Real alpha,
@@ -105,6 +116,7 @@ class NoArbSabrModel {
     }
 
     Real forward() const { return externalForward_; }
+    Real numericalForward() const { return numericalForward_; }
     Real expiryTime() const { return expiryTime_; }
     Real alpha() const { return alpha_; }
     Real beta() const { return beta_; }
@@ -123,7 +135,7 @@ class NoArbSabrModel {
     const Real alpha_, beta_, nu_, rho_;
     Real absProb_, fmin_, fmax_;
     mutable Real forward_, numericalIntegralOverP_;
-    // boost::shared_ptr<GaussKronrodNonAdaptive> integrator_;
+    mutable Real numericalForward_;
     boost::shared_ptr<GaussLobattoIntegral> integrator_;
 };
 
