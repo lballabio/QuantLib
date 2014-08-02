@@ -30,7 +30,7 @@
     expiryTime (0.0, 30.0]
     sigmaI = alpha*forward^(beta-1) [0.05, 1.0]
     nu [0.0001, 0.8]
-    rho [-0.9999, 0.9999]
+    rho [-0.99, 0.99]
 
     As suggested in the paper, d0 is interpolated (linearly)
     in phi space. For beta > 0.9 phi is extrapolated to a
