@@ -22,6 +22,7 @@
 #define quantlib_constantloss_latentmodel_hpp
 
 #include <ql/experimental/credit/defaultprobabilitylatentmodel.hpp>
+// take the loss model to a different file and avoid this inclusion
 #include <ql/experimental/credit/defaultlossmodel.hpp>
 
 namespace QuantLib {

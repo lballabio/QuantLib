@@ -7778,7 +7778,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\credit\recursivecdoengine.hpp"
+					RelativePath=".\ql\experimental\credit\recursivelossmodel.hpp"
 					>
 				</File>
 				<File

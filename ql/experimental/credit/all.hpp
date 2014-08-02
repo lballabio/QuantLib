@@ -36,7 +36,7 @@
 #include <ql/experimental/credit/randomlosslatentmodel.hpp>
 #include <ql/experimental/credit/recoveryratemodel.hpp>
 #include <ql/experimental/credit/recoveryratequote.hpp>
-#include <ql/experimental/credit/recursivecdoengine.hpp>
+#include <ql/experimental/credit/recursivelossmodel.hpp>
 #include <ql/experimental/credit/riskyassetswap.hpp>
 #include <ql/experimental/credit/riskyassetswapoption.hpp>
 #include <ql/experimental/credit/riskybond.hpp>

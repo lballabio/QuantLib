@@ -134,6 +134,8 @@ namespace QuantLib {
             if(basket_) basket_->notifyObservers();
             LatentModel<copulaPolicy>::update();
         }
+    public:// open since users access it for performance on joint integrations.
+
         /*! Returns the probability of default of a given name conditional on
         the realization of a given set of values of the model independent
         factors. The date at which the probability is given is implicit in the
@@ -161,6 +163,7 @@ namespace QuantLib {
         
             return res;
         }
+    protected:
         /*! Returns the probability of default of a given name conditional on
         the realization of a given set of values of the model independent
         factors.

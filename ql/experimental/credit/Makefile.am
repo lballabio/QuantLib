@@ -39,7 +39,7 @@ this_include_HEADERS = \
     randomlosslatentmodel.hpp \
     recoveryratemodel.hpp \
     recoveryratequote.hpp \
-    recursivecdoengine.hpp \
+    recursivelossmodel.hpp \
     riskyassetswap.hpp \
     riskyassetswapoption.hpp \
     riskybond.hpp \
