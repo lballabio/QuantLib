@@ -57,11 +57,15 @@ NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
     // determine a region sufficient for integration in the normal case
 
     fmin_ = fmax_ = forward_;
-    for (Real tmp = p(fmax_); tmp > Constants::i_accuracy; tmp = p(fmax_)) {
+    for (Real tmp = p(fmax_);
+         tmp > std::max(Constants::i_accuracy / std::max(1.0, fmax_ - fmin_),
+                        Constants::density_threshold);
+         tmp = p(fmax_)) {
         fmax_ *= 2.0;
     }
     for (Real tmp = p(fmin_);
-         tmp > Constants::i_accuracy && fmin_ > Constants::strike_min;
+         tmp > std::max(Constants::i_accuracy / std::max(1.0, fmax_ - fmin_),
+                        Constants::density_threshold);
          tmp = p(fmin_)) {
         fmin_ *= 0.5;
     }
