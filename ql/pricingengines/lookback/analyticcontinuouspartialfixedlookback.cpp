@@ -100,12 +100,12 @@ namespace QuantLib {
         return process_->dividendYield()->discount(residualTime());
     }
 
-    Time AnalyticContinuousPartialFixedLookbackEngine::timeToStartOfLookback() const {
-        return process_->time(arguments_.lookbackStart);
+    Time AnalyticContinuousPartialFixedLookbackEngine::lookbackPeriodStartTime() const {
+        return process_->time(arguments_.lookbackPeriodStart);
     }
 
     Real AnalyticContinuousPartialFixedLookbackEngine::A(Real eta) const {
-        bool differentStartOfLookback = timeToStartOfLookback() != residualTime();
+        bool differentStartOfLookback = lookbackPeriodStartTime() != residualTime();
         Real carry = riskFreeRate() - dividendYield();
 
         Volatility vol = volatility();
@@ -118,12 +118,12 @@ namespace QuantLib {
         Real e1 = 0, e2 = 0;
         if (differentStartOfLookback)
         {
-            e1 = (carry + vol * vol / 2) * (residualTime() - timeToStartOfLookback()) / (vol * std::sqrt(residualTime() - timeToStartOfLookback()));
-            e2 = e1 - vol * std::sqrt(residualTime() - timeToStartOfLookback());
+            e1 = (carry + vol * vol / 2) * (residualTime() - lookbackPeriodStartTime()) / (vol * std::sqrt(residualTime() - lookbackPeriodStartTime()));
+            e2 = e1 - vol * std::sqrt(residualTime() - lookbackPeriodStartTime());
         } 
 
-        Real f1 = (ls + (carry + vol * vol / 2) * timeToStartOfLookback()) / (vol * std::sqrt(timeToStartOfLookback()));
-        Real f2 = f1 - vol * std::sqrt(timeToStartOfLookback());
+        Real f1 = (ls + (carry + vol * vol / 2) * lookbackPeriodStartTime()) / (vol * std::sqrt(lookbackPeriodStartTime()));
+        Real f2 = f1 - vol * std::sqrt(lookbackPeriodStartTime());
 
         Real n1 = f_(eta*d1);
         Real n2 = f_(eta*d2);
@@ -131,9 +131,9 @@ namespace QuantLib {
         BivariateCumulativeNormalDistributionWe04DP cnbn1 = NULL, cnbn2 = NULL, cnbn3 = NULL;
         if (differentStartOfLookback)
         {
-            cnbn1 = BivariateCumulativeNormalDistributionWe04DP (-std::sqrt(timeToStartOfLookback() / residualTime()));
-            cnbn2 = BivariateCumulativeNormalDistributionWe04DP (std::sqrt(1 - timeToStartOfLookback() / residualTime()));
-            cnbn3 = BivariateCumulativeNormalDistributionWe04DP (-std::sqrt(1 - timeToStartOfLookback() / residualTime()));
+            cnbn1 = BivariateCumulativeNormalDistributionWe04DP (-std::sqrt(lookbackPeriodStartTime() / residualTime()));
+            cnbn2 = BivariateCumulativeNormalDistributionWe04DP (std::sqrt(1 - lookbackPeriodStartTime() / residualTime()));
+            cnbn3 = BivariateCumulativeNormalDistributionWe04DP (-std::sqrt(1 - lookbackPeriodStartTime() / residualTime()));
         }
         else 
         {
@@ -142,7 +142,7 @@ namespace QuantLib {
             cnbn3 = BivariateCumulativeNormalDistributionWe04DP (0);
         }
 
-        Real n3 = cnbn1(eta*(d1-x*stdDeviation()), eta*(-f1+2.0* carry * std::sqrt(timeToStartOfLookback()) / vol));
+        Real n3 = cnbn1(eta*(d1-x*stdDeviation()), eta*(-f1+2.0* carry * std::sqrt(lookbackPeriodStartTime()) / vol));
         Real n4 = cnbn2(eta*e1, eta*d1);
         Real n5 = cnbn3(-eta*e1, eta*d1);
         Real n6 = cnbn1(eta*f2, -eta*d2);
@@ -150,7 +150,7 @@ namespace QuantLib {
         Real n8 = f_(-eta*e2);
 
         Real pow_s = std::pow(s, -x);
-        Real carryDiscount = std::exp(-carry * (residualTime() - timeToStartOfLookback()));
+        Real carryDiscount = std::exp(-carry * (residualTime() - lookbackPeriodStartTime()));
         return eta*(underlying() * dividendDiscount() * n1 
                     - strike() * riskFreeDiscount() * n2
                     + underlying() * riskFreeDiscount() / x 

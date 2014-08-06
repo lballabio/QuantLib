@@ -363,10 +363,10 @@ void LookbackOptionTest::testAnalyticContinuousPartialFloatingLookback() {
         boost::shared_ptr<PricingEngine> engine(
                   new AnalyticContinuousPartialFloatingLookbackEngine(stochProcess));
 
-        Date lookbackStart = today + Integer(values[i].t1*360+0.5);
+        Date lookbackEnd = today + Integer(values[i].t1*360+0.5);
         ContinuousPartialFloatingLookbackOption option(values[i].minmax,
                                                 values[i].l,
-                                                lookbackStart,
+                                                lookbackEnd,
                                                 payoff,
                                                 exercise);
         option.setPricingEngine(engine);

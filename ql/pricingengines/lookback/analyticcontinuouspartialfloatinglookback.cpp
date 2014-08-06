@@ -94,16 +94,13 @@ namespace QuantLib {
         return arguments_.lambda;
     }
 
-    Time AnalyticContinuousPartialFloatingLookbackEngine::timeToStartOfLookback() const {
-        return process_->time(arguments_.lookbackStart);
+    Time AnalyticContinuousPartialFloatingLookbackEngine::lookbackPeriodEndTime() const {
+        return process_->time(arguments_.lookbackPeriodEnd);
     }
 
 
     Real AnalyticContinuousPartialFloatingLookbackEngine::A(Real eta) const {
-        //TODO: Special case... if timeToStartOfLookback() == residualTime(), 
-        //      it could be valued as plain European option
-
-        bool differentStartOfLookback = timeToStartOfLookback() != residualTime();
+        bool fullLookbackPeriod = lookbackPeriodEndTime() == residualTime();
         Real carry = riskFreeRate() - dividendYield();
         Volatility vol = volatility();
         Real x = 2.0*carry/(vol*vol);
@@ -114,29 +111,29 @@ namespace QuantLib {
         Real d2 = d1 - stdDeviation();
 
         Real e1 = 0, e2 = 0;
-        if (differentStartOfLookback)
+        if (!fullLookbackPeriod)
         {
-            e1 = (carry + vol * vol / 2) * (residualTime() - timeToStartOfLookback()) / (vol * std::sqrt(residualTime() - timeToStartOfLookback()));
-            e2 = e1 - vol * std::sqrt(residualTime() - timeToStartOfLookback());
+            e1 = (carry + vol * vol / 2) * (residualTime() - lookbackPeriodEndTime()) / (vol * std::sqrt(residualTime() - lookbackPeriodEndTime()));
+            e2 = e1 - vol * std::sqrt(residualTime() - lookbackPeriodEndTime());
         } 
 
-        Real f1 = (ls + (carry + vol * vol / 2) * timeToStartOfLookback()) / (vol * std::sqrt(timeToStartOfLookback()));
-        Real f2 = f1 - vol * std::sqrt(timeToStartOfLookback());
+        Real f1 = (ls + (carry + vol * vol / 2) * lookbackPeriodEndTime()) / (vol * std::sqrt(lookbackPeriodEndTime()));
+        Real f2 = f1 - vol * std::sqrt(lookbackPeriodEndTime());
 
         Real l1 = std::log(lambda()) / vol;
         Real g1 = l1 / std::sqrt(residualTime());
         Real g2;
-        if (differentStartOfLookback) g2 = l1 / std::sqrt(residualTime() - timeToStartOfLookback());
+        if (!fullLookbackPeriod) g2 = l1 / std::sqrt(residualTime() - lookbackPeriodEndTime());
         
         Real n1 = f_(eta*(d1 - g1));
         Real n2 = f_(eta*(d2 - g1));
 
         BivariateCumulativeNormalDistributionWe04DP cnbn1 = NULL, cnbn2 = NULL, cnbn3 = NULL;
-        if (differentStartOfLookback)
+        if (!fullLookbackPeriod)
         {
-            cnbn1 = BivariateCumulativeNormalDistributionWe04DP (std::sqrt(timeToStartOfLookback() / residualTime()));
-            cnbn2 = BivariateCumulativeNormalDistributionWe04DP (-std::sqrt(1 - timeToStartOfLookback() / residualTime()));
-            cnbn3 = BivariateCumulativeNormalDistributionWe04DP (-std::sqrt(timeToStartOfLookback() / residualTime()));
+            cnbn1 = BivariateCumulativeNormalDistributionWe04DP (std::sqrt(lookbackPeriodEndTime() / residualTime()));
+            cnbn2 = BivariateCumulativeNormalDistributionWe04DP (-std::sqrt(1 - lookbackPeriodEndTime() / residualTime()));
+            cnbn3 = BivariateCumulativeNormalDistributionWe04DP (-std::sqrt(lookbackPeriodEndTime() / residualTime()));
         }
         else 
         {
@@ -145,9 +142,9 @@ namespace QuantLib {
             cnbn3 = BivariateCumulativeNormalDistributionWe04DP (-1);
         }
 
-        Real n3 = cnbn1(eta*(-f1+2.0* carry * std::sqrt(timeToStartOfLookback()) / vol), eta*(-d1+x*stdDeviation()-g1));
+        Real n3 = cnbn1(eta*(-f1+2.0* carry * std::sqrt(lookbackPeriodEndTime()) / vol), eta*(-d1+x*stdDeviation()-g1));
         Real n4 = 0, n5 = 0, n6 = 0, n7 = 0;
-        if (differentStartOfLookback)
+        if (!fullLookbackPeriod)
         {
             n4 = cnbn2(-eta*(d1+g1), eta*(e1 + g2));
             n5 = cnbn2(-eta*(d1-g1), eta*(e1 - g2));
@@ -163,7 +160,7 @@ namespace QuantLib {
         Real pow_s = std::pow(s, -x);
         Real pow_l = std::pow(lambda(), x);
 
-        if (differentStartOfLookback)
+        if (!fullLookbackPeriod)
         {
             return eta*(underlying() * dividendDiscount() * n1 -
                         lambda() * minmax() * riskFreeDiscount() * n2 + 
@@ -171,7 +168,7 @@ namespace QuantLib {
                         (pow_s * n3 - dividendDiscount() / riskFreeDiscount() * pow_l * n4)
                         + underlying() * dividendDiscount() * n5 + 
                         riskFreeDiscount() * lambda() * minmax() * n6 -
-                        std::exp(-carry * (residualTime() - timeToStartOfLookback())) * 
+                        std::exp(-carry * (residualTime() - lookbackPeriodEndTime())) * 
                         dividendDiscount() * (1 + 0.5 * vol * vol / carry) * lambda() * 
                         underlying() * n7 * n8);
         }

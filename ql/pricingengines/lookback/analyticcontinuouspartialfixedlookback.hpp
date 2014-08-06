@@ -31,6 +31,19 @@
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 
 namespace QuantLib {
+    //From http://help.rmetrics.org/fExoticOptions/LookbackOptions.html :
+    // Partial-Time Fixed Strike Options:
+    // For a partial-time fixed strike lookback option, the lookback period starts 
+    // at a predetermined date after the initialization date of the option. 
+    // The partial-time fixed strike lookback call option payoff is given by the 
+    // difference between the maximum observed price of the underlying asset during 
+    // the lookback period and the fixed strike price. The partial-time fixed strike
+    // lookback put option payoff is given by the difference between the fixed strike
+    // price and the minimum observed price of the underlying asset during the lookback
+    // period. The partial-time fixed strike lookback option is cheaper than a similar
+    // standard fixed strike lookback option. Partial-time fixed strike lookback
+    // options can be priced analytically using a model introduced by Heynen and Kat (1994).
+    // [Haug's Book, Chapter 2.9.4] 
 
     //! Pricing engine for European continuous partial-time fixed-strike lookback
     /*! Formula from "Option Pricing Formulas, Second Edition",
@@ -54,7 +67,7 @@ namespace QuantLib {
         Real strike() const;
         Time residualTime() const;
         Volatility volatility() const;
-        Time timeToStartOfLookback() const;
+        Time lookbackPeriodStartTime() const;
         Real stdDeviation() const;
         Rate riskFreeRate() const;
         DiscountFactor riskFreeDiscount() const;

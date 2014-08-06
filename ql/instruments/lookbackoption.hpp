@@ -72,14 +72,14 @@ namespace QuantLib {
         ContinuousPartialFloatingLookbackOption(
                           Real currentMinmax,
                           Real lambda,
-                          Date lookbackStart,
+                          Date lookbackPeriodEnd,
                           const boost::shared_ptr<TypePayoff>& payoff,
                           const boost::shared_ptr<Exercise>& exercise);
         void setupArguments(PricingEngine::arguments*) const;
       protected:
         // arguments
         Real lambda_;
-        Date lookbackStart_;
+        Date lookbackPeriodEnd_;
     };
 
     //! Continuous-partial-fixed lookback option
@@ -89,13 +89,13 @@ namespace QuantLib {
         class arguments;
         class engine;
         ContinuousPartialFixedLookbackOption(
-                          Date lookbackStart,
+                          Date lookbackPeriodStart,
                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
                           const boost::shared_ptr<Exercise>& exercise);
         void setupArguments(PricingEngine::arguments*) const;
       protected:
         // arguments
-        Date lookbackStart_;
+        Date lookbackPeriodStart_;
     };
 
     //! %Arguments for continuous floating lookback option calculation
@@ -119,7 +119,7 @@ namespace QuantLib {
         : public ContinuousFloatingLookbackOption::arguments {
       public:
         Real lambda;
-        Date lookbackStart;
+        Date lookbackPeriodEnd;
         void validate() const;
     };
 
@@ -127,7 +127,7 @@ namespace QuantLib {
     class ContinuousPartialFixedLookbackOption::arguments
         : public ContinuousFixedLookbackOption::arguments {
       public:
-        Date lookbackStart;
+        Date lookbackPeriodStart;
         void validate() const;
     };
 

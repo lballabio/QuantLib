@@ -80,12 +80,12 @@ namespace QuantLib {
     ContinuousPartialFloatingLookbackOption::ContinuousPartialFloatingLookbackOption(
         Real minmax,
         Real lambda,
-        Date lookbackStart,
+        Date lookbackPeriodEnd,
         const boost::shared_ptr<TypePayoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise)
     : ContinuousFloatingLookbackOption(minmax, payoff, exercise),
       lambda_(lambda),
-      lookbackStart_(lookbackStart) {}
+      lookbackPeriodEnd_(lookbackPeriodEnd) {}
 
     void ContinuousPartialFloatingLookbackOption::setupArguments(
                                        PricingEngine::arguments* args) const {
@@ -96,7 +96,7 @@ namespace QuantLib {
             dynamic_cast<ContinuousPartialFloatingLookbackOption::arguments*>(args);
         QL_REQUIRE(moreArgs != 0, "wrong argument type");
         moreArgs->lambda = lambda_;
-        moreArgs->lookbackStart = lookbackStart_;
+        moreArgs->lookbackPeriodEnd = lookbackPeriodEnd_;
     }
 
     void ContinuousPartialFloatingLookbackOption::arguments::validate() const {
@@ -105,7 +105,7 @@ namespace QuantLib {
 
         boost::shared_ptr<EuropeanExercise> europeanExercise =
             boost::dynamic_pointer_cast<EuropeanExercise>(exercise);
-        QL_REQUIRE(lookbackStart <= europeanExercise->lastDate(), 
+        QL_REQUIRE(lookbackPeriodEnd <= europeanExercise->lastDate(), 
             "lookback start date must be earlier than exercise date");
         
         boost::shared_ptr<FloatingTypePayoff> floatingTypePayoff =
@@ -118,11 +118,11 @@ namespace QuantLib {
     }
 
     ContinuousPartialFixedLookbackOption::ContinuousPartialFixedLookbackOption(
-        Date lookbackStart,
+        Date lookbackPeriodStart,
         const boost::shared_ptr<StrikedTypePayoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise)
     : ContinuousFixedLookbackOption(0, payoff, exercise),
-      lookbackStart_(lookbackStart) {}
+      lookbackPeriodStart_(lookbackPeriodStart) {}
 
     void ContinuousPartialFixedLookbackOption::setupArguments(
                                        PricingEngine::arguments* args) const {
@@ -132,7 +132,7 @@ namespace QuantLib {
         ContinuousPartialFixedLookbackOption::arguments* moreArgs =
             dynamic_cast<ContinuousPartialFixedLookbackOption::arguments*>(args);
         QL_REQUIRE(moreArgs != 0, "wrong argument type");
-        moreArgs->lookbackStart = lookbackStart_;
+        moreArgs->lookbackPeriodStart = lookbackPeriodStart_;
     }
 
     void ContinuousPartialFixedLookbackOption::arguments::validate() const {
@@ -141,7 +141,7 @@ namespace QuantLib {
 
         boost::shared_ptr<EuropeanExercise> europeanExercise =
             boost::dynamic_pointer_cast<EuropeanExercise>(exercise);
-        QL_REQUIRE(lookbackStart <= europeanExercise->lastDate(), 
+        QL_REQUIRE(lookbackPeriodStart <= europeanExercise->lastDate(), 
             "lookback start date must be earlier than exercise date");
     }
 }
