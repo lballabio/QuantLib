@@ -371,7 +371,9 @@ namespace QuantLib {
         Real sum = 0.;
         for(Size i=0; i<lossPts.size(); i++) {
             distrib.insert(std::make_pair<Real, Probability>(lossPts[i], 
-                sum+values[i]));
+                //capped, some situations giving a very small probability over 1
+                std::min(sum+values[i],1.)
+                ));
             sum+= values[i];
         }
         return distrib;

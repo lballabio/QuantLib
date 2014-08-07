@@ -46,10 +46,30 @@
 namespace QuantLib {
 
     namespace {
+        struct multiplyV {
+            typedef Disposable<std::vector<Real> > result_type;
+            Disposable<std::vector<Real> > 
+                operator()(Real d,  Disposable<std::vector<Real> > v) 
+            {
+                std::transform(v.begin(), v.end(), v.begin(), 
+                    boost::lambda::_1 * d);
+                return v;
+            }
+        };
+
+        ////struct multiplyV {
+        ////    typedef std::vector<Real> result_type;
+        ////    std::vector<Real> operator()(Real d,  Disposable<std::vector<Real> > v) {
+        ////        std::transform(v.begin(), v.end(), v.begin(), 
+        ////            boost::lambda::_1 * d);
+        ////    return v;
+        ////    }
+        ////};
+        /*
         // havent figured out how to do this in-place
         struct multiplyV {
             typedef Disposable<std::vector<Real> > result_type;
-            std::vector<Real>& operator()(Real d,  Disposable<std::vector<Real> > v) {
+            std::vector<Real>& operator()(Real d,  Disposable<std::vector<Real> > v) {/// RETURN SIGNATURE?????????!!!
                 std::transform(v.begin(), v.end(), v.begin(), 
                     boost::lambda::_1 * d);
             return v;// g++ warning!- claims returning reference to local
@@ -65,6 +85,7 @@ namespace QuantLib {
             //return v;
             //}
         };
+        */
     }
 
         //! \name Latent model direct integration facility.

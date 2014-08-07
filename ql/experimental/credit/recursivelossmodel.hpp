@@ -44,12 +44,20 @@ namespace QuantLib {
 
         Notice that using copulas other than Gaussian it is only an
         approximation (see remark on p.68).
+
+        \todo Make the loss unit equal to some small fraction depending on the
+        portfolio loss weights (notionals and recoveries). As it is now this
+        is ok for pricing but not for risk metrics. See the discussion in O'Kane
+        18.3.2
+        \todo Intengrands should all use the inverted probabilities for 
+        performance instead of calling the copula inversion with the same vals.
     */
     template<class copulaPolicy> 
     class RecursiveLossModel : public DefaultLossModel {
     public:
         RecursiveLossModel(
             const boost::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >& m,
+// nope! use max common divisor. See O'Kane. Or give both options at least.
             Size nbuckets  = 1)
         : copula_(m), nBuckets_(nbuckets), wk_() { }
       private:
@@ -61,10 +69,8 @@ namespace QuantLib {
           */
         Disposable<std::map<Real, Probability> > conditionalLossDistrib(
             const std::vector<Probability>& pDefDate, 
-            //const Date& date,
             const std::vector<Real>& mktFactor) const;
-        Real expectedConditionalLoss(const std::vector<Probability>& pDefDate, 
-            //const Date& date,
+        Real expectedConditionalLoss(const std::vector<Probability>& pDefDate, //<< never used!!
             const std::vector<Real>& mktFactor) const;
         Disposable<std::vector<Real> > conditionalLossProb(
             const std::vector<Probability>& pDefDate, 
@@ -127,6 +133,7 @@ namespace QuantLib {
     };
 
 
+    typedef RecursiveLossModel<GaussianCopulaPolicy> RecursiveGaussLossModel;
 
     // Inlines ------------------------------------------------
 
@@ -134,8 +141,42 @@ namespace QuantLib {
     inline Real RecursiveLossModel<CP>::expectedTrancheLoss(
         const Date& date) const 
     {
+/*
+        std::map<Real, Probability> dist = lossDistribution(date);
+
+        Real expLoss = 0.;
+        std::map<Real, Probability>::iterator distIt = dist.begin();
+
+        while(distIt != dist.end()) {
+            Real loss = distIt->first * lossUnit_;
+            loss = std::max(std::min(loss, detachAmount_)-attachAmount_, 0.);
+            // MIN MAX BUGS ....??
+            expLoss += loss * distIt->second;
+            distIt++;
+        }
+        return expLoss ;
+
+
+
+
+    ///////////////////////////////////////////////////////////////////////
+
         // calculate inverted unconditional Ps first so we save the inversion:
         // TO DO : turn to STL algorithm code
+        std::vector<Probability> uncDefProb = 
+            basket_->remainingProbabilities(date);
+
+        return copula_->integratedExpectedValue(
+            boost::function<Real (const std::vector<Real>& v1)>(
+                boost::bind(
+                    &RecursiveLossModel::expectedConditionalLoss,
+                    this,
+                    boost::cref(uncDefProb),
+                    _1)
+                )
+            );
+            */
+/**/
         std::vector<Probability> uncDefProb = 
             basket_->remainingProbabilities(date);
         std::vector<Real> invProb;
@@ -151,6 +192,7 @@ namespace QuantLib {
                     _1)
                 )
             );
+            
     }
 
     template<class CP>
@@ -181,6 +223,8 @@ namespace QuantLib {
         detachAmount_ = basket_->remainingDetachmentAmount();
         // model parameters:
         remainingBsktSize_ = notionals_.size();
+
+        copula_->resetBasket(basket_.currentLink());
 
         std::vector<Real> lgdsTmp, lgds;
         for(Size i=0; i<remainingBsktSize_; i++)
@@ -413,7 +457,9 @@ namespace QuantLib {
 
         while(distIt != pIndepDistrib.end()) {
             Real loss = distIt->first * lossUnit_;
-            loss = std::max(std::min(loss, detachAmount_)-attachAmount_, 0.);
+     //       loss = std::max(std::min(loss, detachAmount_)-attachAmount_, 0.);
+            loss = std::min(std::max(loss - attachAmount_, 0.), 
+                detachAmount_ - attachAmount_);
             // MIN MAX BUGS ....??
             expLoss += loss * distIt->second;
             distIt++;
@@ -444,7 +490,9 @@ namespace QuantLib {
 
         while(distIt != pIndepDistrib.end()) {
             Real loss = distIt->first * lossUnit_;
-            loss = std::max(std::min(loss, detachAmount_)-attachAmount_, 0.);
+   //         loss = std::max(std::min(loss, detachAmount_)-attachAmount_, 0.);
+            loss = std::min(std::max(loss - attachAmount_, 0.), 
+                detachAmount_ - attachAmount_);
             // MIN MAX BUGS ....???
             expLoss += loss * distIt->second;
             distIt++;

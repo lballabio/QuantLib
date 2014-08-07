@@ -282,7 +282,7 @@ namespace QuantLib {
         static const Real deltaMin = 1.e-5;
         //
         Probability pMaxName = copula_->conditionalDefaultProbability(
-            uncondPs[iNamMax], iNamMax, mktFactor);
+            uncondPs[iNamMax], iNamMax, mktFactor);// call through the variant taking the inversion,we are integrating here
         // aproximates the  saddle pt corresponding to this minimum; finds 
         //   it by using only the smallest logistic term and thus this is 
         //   smaller than the true value:
@@ -403,6 +403,11 @@ namespace QuantLib {
         Real loss, 
         const std::vector<Real>& mktFactor) const 
     {
+        /* This is taking in the unconditional probabilites non inverted. See if
+        the callers can be written taking the inversion already; if they are 
+        performing it thats a perf hit. At least this can be seen to be true
+        for the recovery call (but rand rr are not intended to be used yet)
+        */
        // return probOverLossPortfCond1stOrder(d, loss, mktFactor);
         if (loss <= QL_EPSILON) return 1.;
 
@@ -779,7 +784,7 @@ namespace QuantLib {
     }
 
     // disposable?
-    std::vector<Real> SaddlePointLossModel::expectedShortfallSplitCond(
+    Disposable<std::vector<Real> > SaddlePointLossModel::expectedShortfallSplitCond(
         const std::vector<Probability>& uncondProbs,
         Real lossPerc, const std::vector<Real>& mktFactor) const 
     {
@@ -905,9 +910,10 @@ namespace QuantLib {
             * exp(-wq*wq * numNames/2.)*(elCond/wq - 
                 lossPerc/(saddlePt * std::sqrt(K2Saddle)));
         // Broda and Paolella:
-        ////   return term1 + term2;
+        //   return term1 + term2;
 
         // Martin:
+        
         return 
             //  ( 2. * M_SQRT1_2 / M_2_SQRTPI) *
             (elCond * probOverLossPortfCond(uncondProbs, lossPerc, mktFactor)
@@ -979,6 +985,19 @@ return
              
         // Integrate with the tranche or the portfolio according to the limits.
 
+/*
+        return copula_->integratedExpectedValue(
+            boost::function<Real (const std::vector<Real>& v1)>(
+                boost::bind(
+   //                 &SaddlePointLossModel::expectedShortfallCond,
+                    &SaddlePointLossModel::expectedShortfallFullPortfolioCond,
+                    this,
+                    boost::cref(uncondProbs),
+                    lossPerc,
+                    _1)
+                )
+            ) / (1.-percProb);
+*/
         return copula_->integratedExpectedValue(
             boost::function<Real (const std::vector<Real>& v1)>(
                 boost::bind(
@@ -992,21 +1011,21 @@ return
                 )
             ) / (1.-percProb);
 
-        /*
+/*        
         std::vector<Real> integrESFPartition = 
             copula_->integratedExpectedValue(
-            boost::function<std::vector<Real> (const std::vector<Real>& v1)>(
+            boost::function<Disposable<std::vector<Real> >(const std::vector<Real>& v1)>(
                 boost::bind(
                     &SaddlePointLossModel::expectedShortfallSplitCond,
                     this,
-                    boost::cref(d),
+                    boost::cref(uncondProbs),
                     lossPerc,
                     _1)
                 )
             );
 
         return std::inner_product(integrESFPartition.begin(), integrESFPartition.end(), remainingNotionals_.begin(), 0.);
-        */
+*/        
 
     }
 

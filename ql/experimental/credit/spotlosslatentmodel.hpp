@@ -1,3 +1,22 @@
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+
+/*
+ Copyright (C) 2014 Jose Aparicio
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/license.shtml>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
 #ifndef quantlib_spotlosslatentmodel_hpp
 #define quantlib_spotlosslatentmodel_hpp
 
@@ -5,8 +24,18 @@
 
 namespace QuantLib {
 
-    /* Integrable random spot recovery rate latent variable portfolio model.
+    /*! Integrable random spot recovery rate latent variable portfolio model.
 
+    See: 
+    -> 'A Spot Stochastic Recovery Extension of the Gaussian Copula' N.Bennani 
+        and J.Maetz, MPRA July 2009
+    -> 'Extension of Spot Recovery model for Gaussian Copula' H.Li, October
+        2009,  MPRA
+    The model is adpated here for a multifactor model and a generic copula.
+
+    \todo Reorganize this model: the distribution of the spot recovery given
+    default could be given as a functional of rr_i with the market factors and
+    the rest of methods depend on this. That would offer a family of models.
     */
     template <class copulaPolicy>
     class SpotRecoveryLatentModel : public LatentModel<copulaPolicy> {
@@ -17,13 +46,11 @@ namespace QuantLib {
         using LatentModel<copulaPolicy>::cumulativeY;
         using LatentModel<copulaPolicy>::latentVarValue;
         using LatentModel<copulaPolicy>::integratedExpectedValue;
-   ///////////////     using LatentModel<copulaPolicy>::conditionalDefaultProbabilityInvP;
     private:
         const std::vector<Real> recoveries_;
         const Real modelA_;
-        //! \products of default and recoveries factors, see literature. ('covariances')
+        // products of default and recoveries factors, see refs ('covariances')
         std::vector<Real> crossIdiosyncFctrs_;
-   //     LatentModel<copulaPolicy> recoveryCrossSection_;
         mutable Size numNames_;
         mutable boost::shared_ptr<Basket> basket_;
         boost::shared_ptr<LMIntegration> integration_;
@@ -53,24 +80,19 @@ namespace QuantLib {
                 "Number of recoveries does not match number of defaultable entities.");
 
             // reminder: first betas are default, last ones are recovery 
-            for(Size iName=0; iName<numNames_; iName++) /// USE STL AT THIS LEVEL TOO..
-                /* Corresponds to: (k denotes factor, i denotes modelled variable -default and recoveries))
+            for(Size iName=0; iName<numNames_; iName++) /// USE STL
+                /* Corresponds to: (k denotes factor, i denotes modelled 
+                    variable -default and recoveries))
                     \sum_k a^2_{i,k} a^2_{N+i,k}
                 */
-                // not sure I should call it cross systemic instead...
-
-                /* NOT WORKING AS IS
-                crossIdiosyncFctrs_.push_back( // back inserter??????
-                    std::inner_product(betas_[iName].begin(), betas_[iName].end(), 
-                    betas_[iName + pool->size()].begin(), 0.,
-                    boost::lambda::_1*boost::lambda::_1*boost::lambda::_2*boost::lambda::_2,
-                    std::plus<Real>()));
-            */
             {
                 Real cumul = 0.;
-                for(Size iB=0; iB<factorWeights[iName].size(); iB++)// actually this size is unique
-                    cumul += factorWeights[iName][iB] * factorWeights[iName][iB] * 
-                        factorWeights[iName + numNames_][iB] * factorWeights[iName + numNames_][iB];
+                for(Size iB=0; iB<factorWeights[iName].size(); iB++)
+                    // actually this size is unique
+                    cumul += factorWeights[iName][iB] * 
+                        factorWeights[iName][iB] * 
+                        factorWeights[iName + numNames_][iB] * 
+                        factorWeights[iName + numNames_][iB];
                 crossIdiosyncFctrs_.push_back(cumul);
             }
 
@@ -82,11 +104,6 @@ namespace QuantLib {
             QL_REQUIRE(basket_->size() == numNames_, 
                 "Incompatible new basket and model sizes.");
         }
-
-
-
-
-
 
         Probability conditionalDefaultProbability(const Date& date, Size iName,
             const std::vector<Real>& mktFactors) const 
@@ -132,27 +149,6 @@ namespace QuantLib {
             return res;
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         /*! Expected (it is volatile) conditional (to the latent factor) 
         spot recovery rate. It is also conditional to default taking place.
         Corresponds to a multifactor generalization of the model in eq. 44 
@@ -181,34 +177,16 @@ namespace QuantLib {
         Real conditionalRecoveryP(Real uncondDefP, Size iName, 
                                  const std::vector<Real>& mktFactors) const {//////////NEEDS ANOTHER VERSION USING THE P-INVERSE
 ///.........reviewing here...................
-
             const std::vector<std::vector<Real> >& fctrs_ = factorWeights();
-
             Size iRecovery = iName + basket_->size();// should be live pool
-
             const Real sumMs =
-              std::inner_product(
-                  fctrs_[iName /*+ basket_->size()*/].begin(),///betas_[iName].begin(), 
- //                 fctrs_[iName /*+ basket_->size()*/].end(), 
-                  fctrs_[iName /*+ basket_->size()*/].end(), 
-//?????                  fctrs_[iName /*+ basket_->size()*/].begin() + numNames_, 
-                  mktFactors.begin() /*+ pool_->size()*/,
-                  0.);
-    // CACHE THESE ONES FOR EACH NAME?
- //           const Real sumBetaLoss = 
- //             std::inner_product(
- //                 fctrs_[iName/* + basket_->size()*/].begin(),
- ////                 fctrs_[iName /*+ basket_->size()*/].end(),
- //                 fctrs_[iName /*+ basket_->size()*/].begin() + numNames_,
- //                 fctrs_[iName /*+ basket_->size()*/].begin(), 
- //                 0.);
+              std::inner_product(fctrs_[iName].begin(), fctrs_[iName].end(), 
+                  mktFactors.begin(), 0.);
             const Real sumBetaLoss = 
-              std::inner_product(
-                  fctrs_[iName + numNames_].begin(),
+              std::inner_product(fctrs_[iName + numNames_].begin(),
                   fctrs_[iName + numNames_].end(),
                   fctrs_[iName + numNames_].begin(), 
                   0.);
-
             return cumulativeZ((sumMs + std::sqrt(1.-crossIdiosyncFctrs_[iName])
                      * std::sqrt(1.+modelA_*modelA_) * 
                        inverseCumulativeY(recoveries_[iName], iRecovery)
@@ -217,10 +195,11 @@ namespace QuantLib {
                 / std::sqrt(1.- sumBetaLoss + modelA_*modelA_ * 
                     (1.-crossIdiosyncFctrs_[iName])) );
         }
-//---------------------------------------------------------------------------------------------------------------------------------------------------------------- TO MONTECARLO
+
         /*! Implements equation 42 on p.14 (second 
             Remember that for this call to make sense the sample used must be 
-            one leading to a default.
+            one leading to a default. Theres no check on this. This member
+            typically to be used within a simulation.
         */
         Real conditionalRecovery(Real latentVarSample, Size iName, 
             const Date& d) const 
@@ -245,8 +224,6 @@ namespace QuantLib {
                     inverseCumulativeY(recoveries_[iName], iRecovery) 
                 , iRecovery);
         }
-    ////ADD INTEGRATION OVER THE LATENT FACTOR TO OBTAIN THE PROB DENSITY OF A NAMES RECOVERY 
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         /* Due to the way the latent model is splitted in two parts, we call the
         base class for the default sample and the LM owned here for the RR model
@@ -260,44 +237,9 @@ namespace QuantLib {
             Size iName) const 
         {
             Size iRecovery = iName + numNames_;// should be live pool
-
             return latentVarValue(allFactors, iRecovery);
-
-
-/*
-            // remove the idiosyncratic variables corresponding to the default
-            std::vector<Real> sample(allFactors.begin(), 
-                allFactors.begin() + DefaultLatentModel<copulaPolicy>::numFactors());
-            sample.insert(sample.end(), allFactors.begin() + 
-                DefaultLatentModel<copulaPolicy>::numTotalFactors(), allFactors.end());
-            // might get rid of the copy above if I rewrite this one here....
-            return recoveryCrossSection_.latentVarValue(sample, iRRVar);
-            */
         }
 
-        // wrong name, its no loss
-        Real expectedLossRR(const Date& d, Size iName) const {/////////THESE SHOULD BE CONST MEMBER FUNCTIONS!!!!!!!!!!!!!!
-            const boost::shared_ptr<Pool>& pool = basket_->pool();
-
-            Probability pDefUncond =
-                pool->get(pool->names()[iName]).
-                defaultProbability(basket_->defaultKeys()[iName])
-                  ->defaultProbability(d);
-
-            return integratedExpectedValue(
-                boost::function<Real (const std::vector<Real>& v1)>(
-                          boost::bind(
-                          &SpotRecoveryLatentModel<copulaPolicy>::conditionalRecoveryP,
-                          this,
-                          pDefUncond,
-                          iName,
-                          _1)
-                         ));
-        }
-
-        ////// -----------------IMPLEMENT EXPECTED RECOVERY -----------------------------------
-
-/* NEED TO ADD DEFAULT TO ADD THIS METHOD
         Real conditionalExpLossRR(const Date& d, Size iName, 
             const std::vector<Real>& mktFactors) const 
         {////WRITE VERSION TAKING P-INV AND NOT THE DATE TO INTEGRATE BELOW
@@ -310,9 +252,16 @@ namespace QuantLib {
             Real invP = inverseCumulativeY(pDefUncond, iName);
 
             return conditionalDefaultProbabilityInvP(invP, iName, mktFactors)
-                * conditionalRecoveryP(pDefUncond, iName, mktFactors);//CHANGE TO VERSION USING THE P-INVERSE
+                * conditionalRecoveryP(pDefUncond, iName, mktFactors);
+            //CHANGE TO VERSION USING THE P-INVERSE
         }
-*/
+
+        /*! Single name expected loss. 
+        The main reason of this method is for the testing of this model. The 
+        model is coherent in that it preserves the single name expected loss
+        and thus is coherent with the single name CDS market when used in the
+        pricing context. i.e. it should match: pdef_i(d) \times RR_i
+        */
         Real expectedLoss(const Date& d, Size iName) const {
             return integratedExpectedValue(
                 boost::function<Real (const std::vector<Real>& v1)>(

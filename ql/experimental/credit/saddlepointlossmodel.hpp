@@ -71,6 +71,9 @@ namespace QuantLib {
 
     \todo Restricted by now to gaussian constant loss model. Open it.
     \todo Some portfolios show instabilities in the high order expansion terms.
+    \todo Methods here are calling and integrating using the unconditional 
+        probabilities without inverting them first; quite a lot of calls to 
+        the copula inversion can be avoided; this should improve performance.
     */
 
     /* The treatment of recovery wont work with random recoveries, they should
@@ -178,7 +181,7 @@ namespace QuantLib {
             const std::vector<Real>& mktFactor_;
             const std::vector<Probability>& uncondProbs_;
         public:
-            //! @param in fractional loss units
+            //! @param target in fractional loss units
             SaddleObjectiveFunction(const SaddlePointLossModel& me,
                                     const Real target,
                                     const std::vector<Probability>& uncondProbs,
@@ -305,7 +308,7 @@ namespace QuantLib {
             const std::vector<Probability>& uncondProbs,
             Real lossPerc, Probability percentile, 
             const std::vector<Real>& mktFactor) const;
-        std::vector<Real> expectedShortfallSplitCond(
+        Disposable<std::vector<Real> > expectedShortfallSplitCond(
             const std::vector<Probability>& uncondProbs,
             Real lossPerc, const std::vector<Real>& mktFactor) const;
     public:
@@ -324,7 +327,7 @@ namespace QuantLib {
                         sensitivity. Equivalent to a percentile.
         */
         Disposable<std::vector<Real> > 
-            splitLossLevel(const Date& date, Real loss) const;
+            splitVaRLevel(const Date& date, Real loss) const;
         Real expectedShortfall(const Date&d, Probability percentile) const;
     protected:
         Real conditionalExpectedLoss(
@@ -347,6 +350,7 @@ namespace QuantLib {
                 / basket_->remainingNotional(), 1.);
             detachRatio_ = std::min(basket_->remainingDetachmentAmount() 
                 / basket_->remainingNotional(), 1.);
+            copula_->resetBasket(basket_.currentLink());
         }
     protected:
         const boost::shared_ptr<GaussianConstantLossLM> copula_;
@@ -585,7 +589,7 @@ namespace QuantLib {
     }
 
     inline Disposable<std::vector<Real> > 
-    SaddlePointLossModel::splitLossLevel(const Date& date, Real s) const 
+    SaddlePointLossModel::splitVaRLevel(const Date& date, Real s) const 
     {
         const std::vector<Probability> uncondProbs = 
             basket_->remainingProbabilities(date);
