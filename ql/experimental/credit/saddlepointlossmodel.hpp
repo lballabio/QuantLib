@@ -29,7 +29,7 @@
 
 namespace QuantLib {
 
-    /*! Saddle point credit default loss model.
+    /*! Saddle point portfolio credit default loss model.
 
       Default Loss model implementing the Saddle point expansion 
       integrations on several default risk metrics. Codepence is dealt with 
@@ -336,12 +336,6 @@ namespace QuantLib {
         Real conditionalExpectedTrancheLoss(
             const std::vector<Probability>& uncondProbs,
             const std::vector<Real>& mktFactor) const;
-
-        //////////////////////////////////void update() {             
-        //////////////////////////////////    // tell basket to notify instruments, etc, we are invalid
-        //////////////////////////////////    if(!basket_.empty()) basket_->notifyObservers();
-        //////////////////////////////////    DefaultLossModel::update();
-        //////////////////////////////////}
 
         void resetModel() {
             remainingNotionals_ = basket_->remainingNotionals();
