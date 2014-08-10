@@ -302,6 +302,7 @@ namespace QuantLib {
     : GenericModelEngine<HestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
+      evaluations_(0),
       cpxLog_     (Gatheral),
       integration_(new Integration(
                           Integration::gaussLaguerre(integrationOrder))) {
@@ -313,6 +314,7 @@ namespace QuantLib {
     : GenericModelEngine<HestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
+      evaluations_(0),
       cpxLog_(Gatheral),
       integration_(new Integration(Integration::gaussLobatto(
                               relTolerance, Null<Real>(), maxEvaluations))) {
@@ -325,6 +327,7 @@ namespace QuantLib {
     : GenericModelEngine<HestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
+      evaluations_(0),
       cpxLog_(cpxLog),
       integration_(new Integration(integration)) {
         QL_REQUIRE(   cpxLog_ != BranchCorrection

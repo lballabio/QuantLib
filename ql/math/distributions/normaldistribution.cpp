@@ -186,4 +186,12 @@ namespace QuantLib {
             boost::math::normal_distribution<Real>(average_, sigma_), x);
 	}
 
+    MaddockCumulativeNormal::MaddockCumulativeNormal(
+        Real average, Real sigma)
+    : average_(average), sigma_(sigma) {}
+
+	Real MaddockCumulativeNormal::operator()(Real x) const {
+		return boost::math::cdf(
+            boost::math::normal_distribution<Real>(average_, sigma_), x);
+	}
 }
