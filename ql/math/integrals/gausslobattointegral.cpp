@@ -86,9 +86,9 @@ namespace QuantLib {
         
         increaseNumberOfEvaluations(13);
         if (acc == 0.0 && (   f1 != 0.0 || f2 != 0.0 || f3 != 0.0
-        		           || f4 != 0.0 || f5 != 0.0 || f6 != 0.0)) {
-        	QL_FAIL("can not calculate absolute accuracy "
-        			"from relative accuracy");
+                           || f4 != 0.0 || f5 != 0.0 || f6 != 0.0)) {
+            QL_FAIL("can not calculate absolute accuracy "
+                    "from relative accuracy");
         }
 
         Real r = 1.0;
