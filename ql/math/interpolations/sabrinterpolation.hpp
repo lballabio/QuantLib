@@ -53,7 +53,7 @@ class SABRWrapper {
     }
 
   private:
-    const Real &t_, &forward_;
+    const Real t_, &forward_;
     const std::vector<Real> &params_;
 };
 
