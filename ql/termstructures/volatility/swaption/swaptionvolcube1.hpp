@@ -325,6 +325,7 @@ namespace QuantLib {
             denseParameters_ = sabrCalibration(volCubeAtmCalibrated_);
             denseParameters_.updateInterpolators();
         }
+        notifyObservers();
     }
 
     template<class Model> typename SwaptionVolCube1x<Model>::Cube
@@ -830,6 +831,7 @@ namespace QuantLib {
             sabrCalibrationSection(volCubeAtmCalibrated_, denseParameters_,
                                    swapTenor);
         }
+        notifyObservers();
 
     }
 
