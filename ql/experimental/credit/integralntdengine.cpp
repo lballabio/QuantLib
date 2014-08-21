@@ -58,7 +58,8 @@ namespace QuantLib {
                         d);
                 Probability defaultProb = 
                     std::accumulate(probsTriggering.begin(), 
-                    probsTriggering.end(), 0.);/////////////////////////////////////// OVERKILL???? 1-probAtleastNevents is enough
+                    probsTriggering.end(), 0.);
+                // OVERKILL???? 1-probAtleastNevents is enough
 
 */
                 // prob of contract not having been triggered by date of payment
@@ -82,14 +83,16 @@ namespace QuantLib {
                 Period stepSize = integrationStepSize_;
 /*
                 probsTriggering =
-                    arguments_.basket->probsBeingNthEvent(arguments_.ntdOrder, ///////REDUNDANT?
+                    arguments_.basket->probsBeingNthEvent(arguments_.ntdOrder, 
+                    ///////REDUNDANT?
                         d0);
-                Probability defProb0 = std::accumulate(probsTriggering.begin(), ///OVERKILL????
+                Probability defProb0 = std::accumulate(probsTriggering.begin(), 
+                ///OVERKILL????
                     probsTriggering.end(), 0.);
 */
                 Probability defProb0 = arguments_.basket->probAtLeastNEvents(
                         arguments_.ntdOrder, d0);
-                std::vector<Probability> probsTriggering, probsTriggering1;//<<<<<<<<<<<< write two while loops
+                std::vector<Probability> probsTriggering, probsTriggering1;
                 do {
                     DiscountFactor disc = discountCurve_->discount(d);
 
@@ -112,7 +115,15 @@ namespace QuantLib {
                         /*Recoveries might differ along names, depending on 
                         which name is triggering the contract the loss will be 
                         different  
-                        There is an issue here; MC engines can still be used since the prob of triggering the contract can be extracted from the simulation from the probsBeingNthEvent statistic. Yet, when the RR is stochastic the realized value of the RR is the expected one subject/conditional to the contract being triggered; not simply the expected value. For this reason the MC can not be used through the statistic but has to consume the simulations directly.
+                        There is an issue here; MC engines can still be used 
+                        since the prob of triggering the contract can be 
+                        extracted from the simulation from the 
+                        probsBeingNthEvent statistic. Yet, when the RR is 
+                        stochastic the realized value of the RR is the expected 
+                        one subject/conditional to the contract being triggered;
+                        not simply the expected value. For this reason the MC 
+                        can not be used through the statistic but has to consume
+                        the simulations directly.
                         */
                         for(Size iName=0; 
                             iName<arguments_.basket->remainingSize(); 

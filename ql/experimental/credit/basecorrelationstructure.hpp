@@ -30,20 +30,19 @@
 namespace QuantLib {
 
 
-    /*! Matrix based Base Correlation Term Structure 
+    /*! Matrix based Base Correlation Term Structure\par
     Loss level versus time interpolated scalar copula type parametric 
     correlation term structure. Represents the correlation for the credit loss 
     level of a given portfolio at a given loss level and time.
 
     \todo The relation to a given basket is to be made explicit for bespoke 
     models to be implemented.
-
-    - Consider moving to a matrix data structure. A matrix might make some
+    \todo Consider moving to a matrix data structure. A matrix might make some
     computations heavy, template specialization on the dimension might be an
     alternative to having two classes, one for scalars and another for matrices.
-    - Rethink all the data structure with a basket where current losses are not
-    zero.
-    - In principle the 2D interpolator is left optional since there are 
+    \todo Rethink all the data structure with a basket where current losses are 
+    not zero.
+    \todo In principle the 2D interpolator is left optional since there are 
     arbitrage issues on the interpolator type to be used. However one has to be
     careful when using non local interpolators like CubicSplines which have an
     effect on the past (calibrated) coupons of previous tenors.
@@ -76,8 +75,7 @@ namespace QuantLib {
           lossLevel_(lossLevel),
           trancheTimes_(tenors.size(), 0.) {
               checkTrancheTenors();
-                
-              // INIT TRANCHE DATES--- move to update?????????? we are reg with instance date???
+               
               for(Size i=0; i<tenors_.size(); i++)
                   trancheDates_.push_back(
                       calendar().advance(referenceDate(),
@@ -85,13 +83,9 @@ namespace QuantLib {
                                          businessDayConvention())
                                           );
 
-              initializeTrancheTimes();// have to set the size-- see the vol classes
-
-              ////checkTrancheTenors();//???? loss rather
-              ////initializeLengths();//????
-
+              initializeTrancheTimes();
               checkInputs(correlations_.rows(), correlations_.columns());
-        updateMatrix();
+                updateMatrix();
               registerWithMarketData();
               /*
               interpolation_ = // so far all constructors match this...
@@ -105,10 +99,11 @@ namespace QuantLib {
     private:
         /* Notice that while this is calling a virtual method in the constructor
 
-        1.- The virtual function is ('should be coded do that is') only accessing members from the base class not from the (unallocated) derived class.
+        1.- The virtual function is ('should be coded do that is') only 
+        accessing members from the base class not from the (unallocated) 
+        derived class.
         */
-  virtual void setupInterpolation() ;//////// = 0;;
-         ///OR:       virtual Interpolator2D_T& setupInterpolation() const;//////// = 0;;
+  virtual void setupInterpolation() ;
     public:
         Size correlationSize() const {return 1;}
         //! Implicit correlation for the given loss interval.
@@ -127,36 +122,31 @@ namespace QuantLib {
         Date maxDate() const {
             return trancheDates_.back();
         }
-// DESTRUCTOR?????????????-----------------------------------------
+// DESTRUCTOR?????????????-------------------------------------------------------------------------------------------------------------
         //---------------------------------------
-        Real correlation(const Date& d, Real lossLevel, bool extrapolate = false) const {
+        Real correlation(const Date& d, Real lossLevel, 
+            bool extrapolate = false) const 
+        {
             return correlation(timeFromReference(d), lossLevel, extrapolate);
         }
-        Real correlation(Time t, Real lossLevel, bool extrapolate = false) const {
-            return interpolation_(t, lossLevel, true);// in correlImpl?????????
+        Real correlation(Time t, Real lossLevel, 
+            bool extrapolate = false) const 
+        {
+            return interpolation_(t, lossLevel, true);
         }
     private:
         std::vector<std::vector<Handle<Quote> > > correlHandles_;
         mutable Matrix correlations_;
         Interpolation2D interpolation_;
-        //Interpolator2D_T interpolation_;// because its factory constructed it should be a ptr otherwise it will be default constructed 
-
-        // these mapped form SwaptionVolDiscrete......----------------
         Size nTrancheTenors_,
             nLosses_;
         std::vector<Period> tenors_;
-        mutable std::vector<Real> lossLevel_; // used now
-      //////////  std::vector<Period> optionTenors_;///>>??????????????????????????????????????
+        mutable std::vector<Real> lossLevel_;
         mutable std::vector<Date> trancheDates_; // used now
         mutable std::vector<Time> trancheTimes_;// used now 
-     ///////////////   mutable std::vector<Real> optionDatesAsReal_;///>>??????????????????????????????????????
-     ////////////////   Interpolation optionInterpolator_;
-
-   /////////     Size nSwapTenors_;///>>??????????????????????????????????????
-        //! fractional loss of a given portfolio
-///////////////////        Date evaluationDate_;///>>?????????????????????????????
-
     };
+
+    // ----------------------------------------------------------------------
 
     template <class I2D_T>
     void BaseCorrelationTermStructure<I2D_T>::checkTrancheTenors() const {
@@ -172,7 +162,6 @@ namespace QuantLib {
 
     template <class I2D_T>
     void BaseCorrelationTermStructure<I2D_T>::checkLosses() const {
-        // CHECK ZERO IS PRESENT AND INSERT IT IF NOT??????????????????????
         QL_REQUIRE(lossLevel_[0]>0.,
                    "first loss level is negative (" <<
                    lossLevel_[0] << ")");
@@ -194,10 +183,6 @@ namespace QuantLib {
             trancheTimes_[i] = timeFromReference(trancheDates_[i]);
     }
 
-
-
-    ///------------
-
     template <class I2D_T>
     void BaseCorrelationTermStructure<I2D_T>::checkInputs(Size volRows,
                                                Size volsColumns) const {
@@ -209,7 +194,6 @@ namespace QuantLib {
                    "mismatch between number of tranche tenors (" <<
                    nTrancheTenors_ << ") and number of columns (" << 
                    volsColumns << ") in the correl matrix");
-        ///////////CHECK CORREL VALS MAKE SENSE/////////////////////////////
     }
 
     template <class I2D_T>
@@ -222,7 +206,6 @@ namespace QuantLib {
 
     template <class I2D_T>
     void BaseCorrelationTermStructure<I2D_T>::update() {
-        // recalc dateS????? are we registerd with Today??? Can I use the 'moving' flag from TS for this?
         updateMatrix();
         TermStructure::update();
     }
@@ -235,46 +218,6 @@ namespace QuantLib {
 
     }
 
-    // UPDATE ======UPDATE ======UPDATE ======UPDATE ======UPDATE ======UPDATE ======UPDATE ======UPDATE ======
-
-
-    ////////void SwaptionVolatilityMatrix::performCalculations() const {
-
-    ////////    SwaptionVolatilityDiscrete::performCalculations();
-
-    ////////    // we might use iterators here...
-    ////////    for (Size i=0; i<volatilities_.rows(); ++i)
-    ////////        for (Size j=0; j<volatilities_.columns(); ++j)
-    ////////            volatilities_[i][j] = volHandles_[i][j]->value();
-    ////////}
-
-/*
-    //! Default Factories for some specific two dimensional interpolations through template specialization. The signature of the 2D interpolator constructor is not guaranteed.
-    template<>
-     void 
-  //  BilinearInterpolation&
-    BaseCorrelationTermStructure<BilinearInterpolation>::setupInterpolation() {
-         interpolation_ =  
-             BilinearInterpolation(trancheTimes_.begin(), 
-            trancheTimes_.end(), lossLevel_.begin(), lossLevel_.end(), 
-            correlations_);
-    }
-
-
-
-     // See that some interpolators might take you out of the [-1,1] correlation domain.
-
-    template<>
-     void 
-  //  BilinearInterpolation&
-    BaseCorrelationTermStructure<BicubicSpline>::setupInterpolation() {
-         interpolation_ =  
-             BicubicSpline(trancheTimes_.begin(), 
-            trancheTimes_.end(), lossLevel_.begin(), lossLevel_.end(), 
-            correlations_);
-    }
-
-*/
 }
 
 #endif

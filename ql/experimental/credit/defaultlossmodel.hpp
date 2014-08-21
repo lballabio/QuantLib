@@ -112,7 +112,6 @@ namespace QuantLib {
             const Date& d, Real lossFraction) const {
             QL_FAIL("densityTrancheLoss Not implemented for this model.");
         }
-        //!
         /*! Probabilities for each of the (remaining) basket elements in the 
         pool to have defaulted by time d and at the same time be the Nth 
         defaulting name to default in the basket. This method is oriented to 
@@ -160,7 +159,8 @@ namespace QuantLib {
             basket_.linkTo(boost::shared_ptr<Basket>(bskt, no_deletion), false);
             resetModel();// or rename to setBasketImpl(...)
         }
-        // the call order matters, which is the reason for the parent to be the sole caller.
+        // the call order matters, which is the reason for the parent to be the 
+        //   sole caller.
         //! Concrete models do now any updates/inits they need on basket reset
         virtual void resetModel() = 0;
     };

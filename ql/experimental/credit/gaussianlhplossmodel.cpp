@@ -43,7 +43,6 @@ namespace QuantLib {
             registerWith(correl_);
             for(Size i=0; i<quotes.size(); i++)
                 registerWith(quotes[i]);
-            //this->update();
     }
 
     GaussianLHPLossModel::GaussianLHPLossModel(
@@ -62,7 +61,6 @@ namespace QuantLib {
             for(Size i=0; i<recoveries.size(); i++)
                 rrQuotes_.push_back(Handle<RecoveryRateQuote>(
                 boost::make_shared<RecoveryRateQuote>(recoveries[i])));
-            //this->update();
         }
 
         GaussianLHPLossModel::GaussianLHPLossModel(
@@ -81,7 +79,6 @@ namespace QuantLib {
             for(Size i=0; i<recoveries.size(); i++)
                 rrQuotes_.push_back(Handle<RecoveryRateQuote>(
                 boost::make_shared<RecoveryRateQuote>(recoveries[i])));
-            //this->update();
         }
 
 

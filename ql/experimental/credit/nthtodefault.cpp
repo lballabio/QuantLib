@@ -62,7 +62,7 @@ namespace QuantLib {
     }
 
 
-// SOME OF THESE ARE INLINES-----------------------------------------------------------------------------------
+// SOME OF THESE ARE INLINES---------------------------------
     Size NthToDefault::basketSize() const { return basket_->size(); }
 
     bool NthToDefault::isExpired() const {

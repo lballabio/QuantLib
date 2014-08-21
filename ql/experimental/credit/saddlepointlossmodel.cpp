@@ -31,9 +31,7 @@ namespace QuantLib {
        ---------------------------------------------------------------------- */
 
     Real SaddlePointLossModel::CumulantGeneratingCond(
-        const std::vector<Probability>& uncondProbs,
-        ////////////////////////const std::vector<Real>& uncondRRs,
-        ///const Date& date, 
+        const std::vector<Real>& invUncondProbs,
         Real lossFraction,
         const std::vector<Real>&  mktFactor) const 
     {
@@ -42,18 +40,18 @@ namespace QuantLib {
 
         for(Size iName=0; iName < nNames; iName++) {
             Probability pBuffer = 
-                copula_->conditionalDefaultProbability(uncondProbs[iName], 
-                    iName, mktFactor);
+                copula_->conditionalDefaultProbabilityInvP(
+                    invUncondProbs[iName], iName, mktFactor);
             sum += std::log(1. - pBuffer + 
                 pBuffer * std::exp(remainingNotionals_[iName] * 
-                (1.-copula_->conditionalRecovery(uncondProbs[iName], iName, mktFactor)) ////////////////////////////////////////////////////////
-                * lossFraction / remainingNotional_));
+                (1.-copula_->conditionalRecoveryInvP(invUncondProbs[iName],
+                    iName, mktFactor)) * lossFraction / remainingNotional_));
         }
        return sum;
     }
 
     Real SaddlePointLossModel::CumGen1stDerivativeCond(
-        const std::vector<Probability>& uncondProbs,
+        const std::vector<Real>& invUncondProbs,
         Real saddle,
         const std::vector<Real>&  mktFactor) const 
     {
@@ -62,12 +60,12 @@ namespace QuantLib {
 
         for(Size iName=0; iName < nNames; iName++) {
             Probability pBuffer = 
-                copula_->conditionalDefaultProbability(uncondProbs[iName], 
-                    iName, mktFactor);
+                copula_->conditionalDefaultProbabilityInvP(
+                    invUncondProbs[iName], iName, mktFactor);
             // loss in fractional units
             Real lossInDef = remainingNotionals_[iName] * 
-                (1.-copula_->conditionalRecovery(uncondProbs[iName], iName, mktFactor)) ////////////////////////////////////////////////////////
-                / remainingNotional_;
+                (1.-copula_->conditionalRecoveryInvP(invUncondProbs[iName], 
+                    iName, mktFactor)) / remainingNotional_;
             Real midFactor = pBuffer * std::exp(lossInDef * saddle);
             sum += lossInDef * midFactor / (1.-pBuffer + midFactor);
         }
@@ -75,7 +73,7 @@ namespace QuantLib {
     }
 
     Real SaddlePointLossModel::CumGen2ndDerivativeCond(
-        const std::vector<Probability>& uncondProbs,
+        const std::vector<Real>& invUncondProbs,
         Real saddle, 
         const std::vector<Real>&  mktFactor) const 
     {
@@ -84,12 +82,12 @@ namespace QuantLib {
 
         for(Size iName=0; iName < nNames; iName++) {
             Probability pBuffer = 
-                copula_->conditionalDefaultProbability(uncondProbs[iName], 
-                    iName, mktFactor);
+                copula_->conditionalDefaultProbabilityInvP(
+                    invUncondProbs[iName], iName, mktFactor);
             // loss in fractional units
             Real lossInDef = remainingNotionals_[iName] * 
-                (1.-copula_->conditionalRecovery(uncondProbs[iName], iName, mktFactor)) ////////////////////////////////////////////////////////
-                / remainingNotional_;
+                (1.-copula_->conditionalRecoveryInvP(invUncondProbs[iName], 
+                    iName, mktFactor)) / remainingNotional_;
             Real midFactor = pBuffer * std::exp(lossInDef * saddle);
             Real denominator = 1.-pBuffer + midFactor;
             sum += lossInDef * lossInDef * midFactor / denominator - 
@@ -99,7 +97,7 @@ namespace QuantLib {
     }
 
     Real SaddlePointLossModel::CumGen3rdDerivativeCond(
-        const std::vector<Probability>& uncondProbs,
+        const std::vector<Real>& invUncondProbs,
         Real saddle, 
         const std::vector<Real>&  mktFactor) const 
     {
@@ -108,11 +106,11 @@ namespace QuantLib {
 
         for(Size iName=0; iName < nNames; iName++) {
             Probability pBuffer = 
-                copula_->conditionalDefaultProbability(uncondProbs[iName], 
-                    iName, mktFactor);
+                copula_->conditionalDefaultProbabilityInvP(
+                    invUncondProbs[iName], iName, mktFactor);
             Real lossInDef = remainingNotionals_[iName] * 
-                (1.-copula_->conditionalRecovery(uncondProbs[iName], iName, mktFactor)) ////////////////////////////////////////////////////////
-                / remainingNotional_;
+                (1.-copula_->conditionalRecoveryInvP(invUncondProbs[iName], 
+                    iName, mktFactor)) / remainingNotional_;
 
             const Real midFactor = pBuffer * std::exp(lossInDef * saddle);
             const Real denominator = 1.-pBuffer + midFactor;
@@ -129,7 +127,7 @@ namespace QuantLib {
     }
 
     Real SaddlePointLossModel::CumGen4thDerivativeCond(
-        const std::vector<Probability>& uncondProbs,
+        const std::vector<Real>& invUncondProbs,
         Real saddle, 
         const std::vector<Real>&  mktFactor) const 
     {
@@ -138,11 +136,11 @@ namespace QuantLib {
 
         for(Size iName=0; iName < nNames; iName++) {
             Probability pBuffer = 
-                copula_->conditionalDefaultProbability(uncondProbs[iName], 
-                    iName, mktFactor);
+                copula_->conditionalDefaultProbabilityInvP(
+                    invUncondProbs[iName], iName, mktFactor);
             Real lossInDef = remainingNotionals_[iName] * 
-                (1.-copula_->conditionalRecovery(uncondProbs[iName], iName, mktFactor)) ////////////////////////////////////////////////////////
-                / remainingNotional_;
+                (1.-copula_->conditionalRecoveryInvP(invUncondProbs[iName], 
+                    iName, mktFactor)) / remainingNotional_;
 
             Real midFactor = pBuffer * std::exp(lossInDef * saddle);
             Real denominator = 1.-pBuffer + midFactor;
@@ -162,7 +160,7 @@ namespace QuantLib {
 
     boost::tuples::tuple<Real, Real, Real, Real> /// DISPOSABLE????
         SaddlePointLossModel::CumGen0234DerivCond(
-        const std::vector<Probability>& uncondProbs,
+        const std::vector<Real>& invUncondProbs,
         Real saddle, 
         const std::vector<Real>&  mktFactor) const 
     {
@@ -174,11 +172,11 @@ namespace QuantLib {
              deriv4 = 0.;
         for(Size iName=0; iName < nNames; iName++) {
             Probability pBuffer = 
-                copula_->conditionalDefaultProbability(uncondProbs[iName], 
-                    iName, mktFactor);
+                copula_->conditionalDefaultProbabilityInvP(
+                    invUncondProbs[iName], iName, mktFactor);
             Real lossInDef = remainingNotionals_[iName] * 
-                (1.-copula_->conditionalRecovery(uncondProbs[iName], iName, mktFactor)) ////////////////////////////////////////////////////////
-                / remainingNotional_;
+                (1.-copula_->conditionalRecoveryInvP(invUncondProbs[iName], 
+                    iName, mktFactor)) / remainingNotional_;
 
             Real midFactor = pBuffer * std::exp(lossInDef * saddle);
             Real denominator = 1.-pBuffer + midFactor;
@@ -205,7 +203,7 @@ namespace QuantLib {
 
     boost::tuples::tuple<Real, Real> /// DISPOSABLE???? 
         SaddlePointLossModel::CumGen02DerivCond(
-        const std::vector<Probability>& uncondProbs,
+        const std::vector<Real>& invUncondProbs,
         Real saddle, 
         const std::vector<Real>&  mktFactor) const 
     {
@@ -215,11 +213,11 @@ namespace QuantLib {
              deriv2 = 0.;
         for(Size iName=0; iName < nNames; iName++) {
             Probability pBuffer = 
-                copula_->conditionalDefaultProbability(uncondProbs[iName], 
-                    iName, mktFactor);
+                copula_->conditionalDefaultProbabilityInvP(
+                    invUncondProbs[iName], iName, mktFactor);
             Real lossInDef = remainingNotionals_[iName] * 
-                (1.-copula_->conditionalRecovery(uncondProbs[iName], iName, mktFactor)) ////////////////////////////////////////////////////////
-                / remainingNotional_;
+                (1.-copula_->conditionalRecoveryInvP(invUncondProbs[iName], 
+                    iName, mktFactor)) / remainingNotional_;
 
             Real midFactor = pBuffer * std::exp(lossInDef * saddle);
             Real denominator = 1.-pBuffer + midFactor;
@@ -236,24 +234,10 @@ namespace QuantLib {
         return boost::tuples::tuple<Real, Real>(deriv0, deriv2);
     }
 
-
-
-
-
-
     // ----- Saddle point search ----------------------------------------------
 
-
-    /*! Calculates the mkt-fct-conditional saddle point for the loss level 
-        given and the probability passed. 
-        The date is implicitly given through the probability. Performance 
-        requires to pass the probabilities for that date. Otherwise once we 
-        integrate this over the market factor we would be computing the same 
-        probabilities over and over. While this works fine here some models of 
-        the recovery rate might require the date.
-    */
     Real SaddlePointLossModel::findSaddle(
-        const std::vector<Probability>& uncondPs,
+        const std::vector<Real>& invUncondPs,
         Real lossLevel, // in total portfolio loss fractional unit 
         const std::vector<Real>& mktFactor, 
         Real accuracy,
@@ -263,13 +247,13 @@ namespace QuantLib {
         // \to do:
         // REQUIRE that loss level is below the max loss attainable in 
         //   the portfolio, otherwise theres no solution...
-        SaddleObjectiveFunction f(*this, lossLevel, uncondPs, mktFactor);
+        SaddleObjectiveFunction f(*this, lossLevel, invUncondPs, mktFactor);
 
         Size nNames = remainingNotionals_.size();
         std::vector<Real> lgds;
         for(Size iName=0; iName<nNames; iName++)
             lgds.push_back(remainingNotionals_[iName] * 
-            (1.-copula_->conditionalRecovery(uncondPs[iName], iName, 
+            (1.-copula_->conditionalRecoveryInvP(invUncondPs[iName], iName,
                 mktFactor)) );
 
         // computed limits:
@@ -281,8 +265,8 @@ namespace QuantLib {
         //   inversion:
         static const Real deltaMin = 1.e-5;
         //
-        Probability pMaxName = copula_->conditionalDefaultProbability(
-            uncondPs[iNamMax], iNamMax, mktFactor);// call through the variant taking the inversion,we are integrating here
+        Probability pMaxName = copula_->conditionalDefaultProbabilityInvP(
+            invUncondPs[iNamMax], iNamMax, mktFactor);
         // aproximates the  saddle pt corresponding to this minimum; finds 
         //   it by using only the smallest logistic term and thus this is 
         //   smaller than the true value:
@@ -291,28 +275,32 @@ namespace QuantLib {
                 (pMaxName*lgds[iNamMax]/remainingNotional_-pMaxName*deltaMin));
         // and the associated minimum loss is approximately: (this is thence 
         //   the minimum loss we can resolve/invert)
-        Real minLoss = CumGen1stDerivativeCond(uncondPs, saddleMin, mktFactor);
+        Real minLoss = 
+            CumGen1stDerivativeCond(invUncondPs, saddleMin, mktFactor);
 
         // If we are below the loss resolution it returns approximating 
         //  by the minimum/maximum attainable point. Typically the functionals
         //  to integrate will have a low dependency on this point.
         if(lossLevel < minLoss) return saddleMin;
-        static const Real deltaMax = 1.e-9;
+        static const Real deltaMax = 1.e-6; // 1.e-9;
         Real saddleMax = 1./(lgds[iNamMax]/remainingNotional_) * 
             std::log((lgds[iNamMax]/remainingNotional_
                 -deltaMin)*(1.-pMaxName)/(pMaxName*deltaMin));
         Real maxLoss = 
-            CumGen1stDerivativeCond(uncondPs, saddleMax, mktFactor);
+            CumGen1stDerivativeCond(invUncondPs, saddleMax, mktFactor);
         if(lossLevel > maxLoss) return saddleMax;
 
         Brent solverBrent;
+        Real guess = (saddleMin+saddleMax)/2.;
+        /*
+            (lossLevel - 
+                CumGen1stDerivativeCond(invUncondPs, lossLevel, mktFactor))
+                /CumGen2ndDerivativeCond(invUncondPs, lossLevel, mktFactor);
+        if(guess > saddleMax) guess = (saddleMin+saddleMax)/2.;
+        */
         solverBrent.setMaxEvaluations(maxEvaluations);
-        return solverBrent.solve(f, accuracy, (saddleMin+saddleMax)/2., 
-            saddleMin, saddleMax);
+        return solverBrent.solve(f, accuracy, guess, saddleMin, saddleMax);
     }
-
-
-
 
 
     // ----- Statistics -------------------------------------------------------
@@ -340,10 +328,6 @@ namespace QuantLib {
         solver.setMaxEvaluations(100);
         Real minVal = QL_EPSILON;
 
-        // PREVIOUS SOLUTION (expensive) 
-        //if(probOverLoss(d, 1.e-6) <= 1.-percentile) return 0.;
-        // ON A TRANCHED PORTFOLIO I CAN NOT REQUEST ANY PERCENTILE. ATTAINABLE
-        //   ONES OSCILATE BETWEEN THE ONES CORRESPONDING TO THE TRANCHE LIMITS.
         Real maxVal = 1.-QL_EPSILON; 
         Real guess = 0.5;
 
@@ -352,7 +336,7 @@ namespace QuantLib {
     }
 
     Probability SaddlePointLossModel::probOverLossCond(
-        const std::vector<Probability>& uncondPs,
+        const std::vector<Real>& invUncondPs,
         Real trancheLossFract, 
         const std::vector<Real>& mktFactor) const {
         Real portfFract = attachRatio_ + trancheLossFract * 
@@ -363,7 +347,7 @@ namespace QuantLib {
         //   equal to)
         ////////////////---       if(trancheLossFract <= QL_EPSILON) return 1.;
         return 
-            probOverLossPortfCond(uncondPs,
+            probOverLossPortfCond(invUncondPs,
             //below; should substract realized loses. Use remaining amounts??
                 portfFract * basket_->basketNotional(),
                 mktFactor);
@@ -373,18 +357,15 @@ namespace QuantLib {
         SaddlePointLossModel::lossDistribution(const Date& d) const {
         std::map<Real, Probability> distrib;
         static const Real numPts = 500.;
-        for(Real lossFraction=1./numPts; lossFraction<0.45; lossFraction+= 1./numPts) {
-            // FOR FIXED RECOVERY MODEL I SHOULD BE USING THE MAX LOSS ATTAINABLE--------------------------
-            distrib.insert(std::make_pair<Real, Probability>((lossFraction) * remainingNotional_ , 
-                // maybe call the full structure????
-            //    1.-probOverLoss(d, lossFraction)));
-             // 1.-  probOverPortfLoss(d, lossFraction)));
-              1.-  probOverPortfLoss(d, lossFraction* remainingNotional_ )));
-        }
+        for(Real lossFraction=1./numPts; lossFraction<0.45; 
+            lossFraction+= 1./numPts)
+            distrib.insert(std::make_pair<Real, Probability>(
+                lossFraction * remainingNotional_ , 
+                  1.-probOverPortfLoss(d, lossFraction* remainingNotional_ )));
         return distrib;
     }
 
-    /*!  NOTICE THIS IS ON THE TOTAL PORTFOLIO ---- UNTRANCHED..............
+    /*  NOTICE THIS IS ON THE TOTAL PORTFOLIO ---- UNTRANCHED..............
         Probability of having losses in the portfolio due to default 
         events equal or larger than a given absolute loss value on a 
         given date conditional to the latent model factor.
@@ -394,12 +375,9 @@ namespace QuantLib {
         'Taking to the Saddle', Risk Magazine, June 2001, page 91
 
         @param loss loss in absolute value
-
-        to do: behaves like theres a missing term, e.g. returns 0 for 0 losses and is 
-        displaced with respect to the other models.
     */
     Probability SaddlePointLossModel::probOverLossPortfCond(
-        const std::vector<Probability>& uncondProbs,
+        const std::vector<Real>& invUncondProbs,
         Real loss, 
         const std::vector<Real>& mktFactor) const 
     {
@@ -418,20 +396,18 @@ namespace QuantLib {
 
         Real averageRecovery_ = 0.;
         for(Size iName=0; iName < nNames; iName++)
-            averageRecovery_ += 
-            copula_->conditionalRecovery(uncondProbs[iName], iName, mktFactor);  ////////////////////////////////////////////////////////////////
-        averageRecovery_ = averageRecovery_ / nNames;/////////ACCUMULATE + BIND
+            averageRecovery_ += copula_->conditionalRecoveryInvP(
+                invUncondProbs[iName], iName, mktFactor);
+        averageRecovery_ = averageRecovery_ / nNames;
 
         Real maxAttLossFract = 1.-averageRecovery_;
         if(relativeLoss > maxAttLossFract) return 0.;
 
-        Real saddlePt = findSaddle(uncondProbs,
-            ///d, 
+        Real saddlePt = findSaddle(invUncondProbs,
             relativeLoss, mktFactor);
 
         boost::tuples::tuple<Real, Real, Real, Real> cumulants = 
-            CumGen0234DerivCond(uncondProbs, 
-                //d, 
+            CumGen0234DerivCond(invUncondProbs, 
                 saddlePt, mktFactor);
         Real baseVal = cumulants.get<0>();
         Real secondVal = cumulants.get<1>();
@@ -492,9 +468,9 @@ namespace QuantLib {
         }
     }
 
-
+    // cheaper; less terms retained; yet the cost lies in the saddle point calc
     Probability SaddlePointLossModel::probOverLossPortfCond1stOrder(
-        const std::vector<Probability>& uncondPs,
+        const std::vector<Real>& invUncondPs,
         Real loss, 
         const std::vector<Real>& mktFactor) const 
     {
@@ -508,19 +484,18 @@ namespace QuantLib {
         Real averageRecovery_ = 0.;
         for(Size iName=0; iName < nNames; iName++)
             averageRecovery_ += 
-            copula_->conditionalRecovery(uncondPs[iName], iName, mktFactor);  ///////////////////////////////////////////////////////////////////////
-        averageRecovery_ = averageRecovery_ / nNames;/////////ACCUMULATE + BIND
+            copula_->conditionalRecoveryInvP(invUncondPs[iName], iName, 
+            mktFactor);  
+        averageRecovery_ = averageRecovery_ / nNames;
 
         Real maxAttLossFract = 1.-averageRecovery_;
         if(relativeLoss > maxAttLossFract) return 0.;
 
-        Real saddlePt = findSaddle(uncondPs,
-            ////d, 
+        Real saddlePt = findSaddle(invUncondPs,
             relativeLoss, mktFactor);
 
         boost::tuples::tuple<Real, Real> cumulants = 
-            CumGen02DerivCond(uncondPs,
-                ////d, 
+            CumGen02DerivCond(invUncondPs,
                 saddlePt, mktFactor);
         Real baseVal = cumulants.get<0>();
         Real secondVal = cumulants.get<1>();
@@ -534,7 +509,8 @@ namespace QuantLib {
             return 
                 // dangerous exponential; fix me
                 std::exp(exponent)
-                //////  std::exp(baseVal - relativeLoss * saddlePt + .5 * saddleTo2 * secondVal)
+                /*  std::exp(baseVal - relativeLoss * saddlePt 
+                    + .5 * saddleTo2 * secondVal)*/
                 * CumulativeNormalDistribution()(-std::abs(saddlePt)*
                     std::sqrt(/*saddleTo2 **/secondVal));
         }else if(saddlePt==0.){// <-> (loss == condEL)
@@ -546,7 +522,8 @@ namespace QuantLib {
 
             return 
                 1.-
-               //// std::exp(baseVal - relativeLoss * saddlePt + .5 * saddleTo2 * secondVal)
+               /* std::exp(baseVal - relativeLoss * saddlePt 
+               + .5 * saddleTo2 * secondVal)*/
                 std::exp(exponent)
                 * CumulativeNormalDistribution()(-std::abs(saddlePt)*
                     std::sqrt(/*saddleTo2 **/secondVal));
@@ -561,26 +538,27 @@ namespace QuantLib {
         Based on the integrals of the expected shortfall. See......refernce.
     */
     Probability SaddlePointLossModel::probDensityCond(
-        const std::vector<Probability>& uncondPs,
+        const std::vector<Real>& invUncondPs,
         Real loss,
         const std::vector<Real>& mktFactor) const 
     {
         if (loss <= QL_EPSILON) return 0.;
 
         Real relativeLoss = loss / remainingNotional_;
-        Real saddlePt = findSaddle(uncondPs,
+        Real saddlePt = findSaddle(invUncondPs,
             relativeLoss, mktFactor);
 
         boost::tuples::tuple<Real, Real, Real, Real> cumulants = 
-            CumGen0234DerivCond(uncondPs,
+            CumGen0234DerivCond(invUncondPs,
             saddlePt, mktFactor);
-        Real K0Saddle = cumulants.get<0>();/// ACCESS THEM DIRECTLY BELOW RATHER THAN THIS COPY!
+        /// access them directly rather than through this copy
+        Real K0Saddle = cumulants.get<0>();
         Real K2Saddle = cumulants.get<1>();
         Real K3Saddle = cumulants.get<2>();
         Real K4Saddle = cumulants.get<3>();
         /* see, for instance R.Martin "he saddle point method and portfolio 
         optionalities." in Risk December 2006 p.93 */
-        Real cum2DerCond = CumGen2ndDerivativeCond(uncondPs,
+        Real cum2DerCond = CumGen2ndDerivativeCond(invUncondPs,
             saddlePt, mktFactor);
         //\todo the exponentials below are dangerous and agressive, tame them.
         return 
@@ -591,151 +569,39 @@ namespace QuantLib {
             - 5.*std::pow(K3Saddle,2.)
                 /(24.*std::pow(K2Saddle, 3.))
             ) * std::exp(K0Saddle - saddlePt * relativeLoss)
-             / (std::sqrt(2. * M_PI * K2Saddle)*remainingNotional_);
+             / (std::sqrt(2. * M_PI * K2Saddle));
     }
 
-    /*! Conditional expected equity-tranche loss. The integration on the Saddle point
-      expansion (to first order, see corrections in the reference) to obtain 
-      this value is described on equation 57 (section 4.2) of
-      'Analytical techniques for synthetic CDOs and credit default risk 
-      measures', by A.Antonov, S.Mechkov and T.Misirpashaev, Numerix paper, 
-      May 2005
+    /*    NOTICE THIS IS ON THE TOTAL PORTFOLIO ---- UNTRANCHED..
+        Sensitivities of the individual names to a given portfolio loss value 
+        due to defaults. It returns ratios to the total structure notional, 
+        which aggregated add up to the requested loss value.
 
-      @param lossRatio In portfolio fractional units.
-
-      FAILING....
-    */
-////////    Real SaddlePointLossModel::expectedEquityLossCond(
-////////        const std::vector<Probability>& uncondPs,
-////////        //const Date& d, 
-////////        Real lossRatio, 
-////////        const std::vector<Real>& mktFactor) const 
-////////    {
-////////        if(lossRatio < QL_EPSILON) return 0.;
-////////        // avoid failing saddle:
-////////        Date today = Settings::instance().evaluationDate();
-////////        if(d <= today) return 0.;
-////////        // failing when the tranche limit lies above the attainable losses..... 
-////////                //....??? this->recoveryValueImpl
-////////                /*
-////////when requesting non attainable losses the saddle finding point will fail to find its root finding limits (not the case for an stochastic recovery rate).
-////////                */
-////////                // true for a constant RR model:
-/////////////calculate();
-////////   ////     Basket_N remainingBasket = basket_->remainingBasket(refDate, d);
-////////        const Size nNames = remainingNotionals_.size();
-////////
-////////      //  const std::vector<Real>& nots = remainingBasket_.notionals();
-////////        std::vector<Real> recoveries;// should be LGDs
-////////        for(Size iName=0; iName<nNames; iName++)
-////////            recoveries.push_back(1.-recoveryValueImpl(Date(), iName));// should be LGDs
-////////          //23 Aug :   recoveries.push_back(recoveryValueImpl(d, iName));// should be LGDs
-////////        Real maxAttainableLoss = // should be LGDs
-////////            std::inner_product(recoveries.begin(), recoveries.end(), remainingNotionals_.begin(), 0.) / remainingNotional_;
-////////       //     std::accumulate(nots.begin(), nots.end(), 0.);
-////////
-////////    //    if(lossRatio >= maxAttainableLoss) lossRatio = maxAttainableLoss - QL_EPSILON;
-////////    //    Real saddle = findSaddle(/*refDate,*/ d, lossRatio, mktFactor);
-////////
-////////        lossRatio = 
-////////            lossRatio >= maxAttainableLoss ?  maxAttainableLoss - 1.e-2 : lossRatio;
-////////        Real saddle = findSaddle(/*refDate,*/ uncondPs,
-////////            ////d, 
-////////            lossRatio, 
-////////           // lossRatio >= maxAttainableLoss ?  maxAttainableLoss - 1.e-2 : lossRatio,// due to this being a saddle expansion to second order we have to take this big a cut
-////////            mktFactor);
-////////
-////////        boost::tuples::tuple<Real, Real, Real, Real> cumulants = 
-////////            CumGen0234DerivCond(uncondPs,
-////////            ////d, 
-////////            saddle, mktFactor);
-////////        Real KSaddle  = cumulants.get<0>();//// USE THEM DIRECTLY -- NO COPY
-////////        Real K2Saddle = cumulants.get<1>();
-////////        Real K3Saddle = cumulants.get<2>();
-////////  // not needed here...      Real K4Saddle = cumulants.get<3>();
-////////
-////////        Real absSaddle = std::abs(saddle);
-////////        //Real KSaddle = CumulantGeneratingCond(d, saddle, mktFactor);
-////////        //Real K2Saddle = CumGen2ndDerivativeCond(d, saddle, mktFactor);
-////////        //
-////////    // no need, use saddle pt sign directly    Real condELratio = conditionalExpectedLoss(/*refDate,*/ d, mktFactor) / remainingNotional_;
-////////        //
-////////
-////////
-////////    //    Real heavy = saddle > 0. ? 0. : 1.;
-////////
-////////    //    Real f1 = std::exp(KSaddle-saddle * lossRatio * remainingNotional_);
-////////        Real f1 = std::exp(KSaddle-saddle * lossRatio);
-////////        Real s1 = std::sqrt(K2Saddle/M_TWOPI);
-////////        //Real s2 = CumulativeNormalDistribution()(-absSaddle * std::sqrt(K2Saddle));
-////////        Real s2 = CumulativeNormalDistribution()(-absSaddle * std::sqrt(K2Saddle));
-////////        Real sf4 ;//= std::exp(0.5 * K2Saddle * saddle * saddle);
-////////        // numerical stability:
-////////        if(s2<QL_EPSILON) {
-////////            sf4 = 0.;
-////////        }else{
-////////            sf4 = std::exp(0.5 * K2Saddle * saddle * saddle);
-////////        }
-////////        Real eLequity = f1 * (s1 - K2Saddle * absSaddle * s2 * sf4);
-////////        /*
-////////                Real eLequity = std::exp(KSaddle-saddle * lossRatio) *
-////////                    (std::sqrt(K2Saddle/M_TWOPI) - K2Saddle * absSaddle * 
-////////                      CumulativeNormalDistribution()(-absSaddle * std::sqrt(K2Saddle)) * 
-////////                        std::exp(0.5 * K2Saddle * saddle * saddle));
-////////        */
-////////
-////////
-////////          //      if(lossRatio < condELratio)
-////////        if(saddle<0.)
-////////            eLequity += conditionalExpectedLoss(uncondPs,
-////////                //d, 
-////////                mktFactor) - 
-////////                lossRatio * remainingNotional_;/// remainingBasket_.basketNotional();
-////////        /*
-////////                    eLequity += heavy * (condELratio - lossRatio);
-////////        */
-////////        // first correction (eq. 58 on p.15): (presumably I will have the same problem as before above)
-////////        /**/
-////////
-////////    //    return eLequity;
-////////
-////////        ///   Real K3Saddle = CumGen3rdDerivativeCond(d, saddle, mktFactor);
-////////        eLequity += (1./6. ) * saddle * K3Saddle * f1 * 
-////////            (-1./(s1*M_PI) + (3. + K2Saddle)*absSaddle*s2*sf4-saddle*saddle*s1);
-////////          //  (-1./(s1*M_PI) + (3. + K2Saddle)*absSaddle*s2*std::exp(.5*K2Saddle*saddle*saddle)-saddle*saddle*s1);
-////////
-////////
-////////        return eLequity;
-////////    }
-////////
-
-
-    /*!    NOTICE THIS IS ON THE TOTAL PORTFOLIO ---- UNTRANCHED...........................................
-        Sensitivities of the individual names to a given portfolio loss value due to defaults. It returns ratios to the total structure notional, which aggregated add up to the requested loss value.
-
-    see equation 8 in 'VAR: who contributes and how much?' by R.Martin, K.Thompson, and C. Browne in Risk Magazine, August 2001
-    @param loss Loss amount level at which we want to request the sensitivity. Equivalent to a percentile.
+    see equation 8 in 'VAR: who contributes and how much?' by R.Martin, 
+    K.Thompson, and C. Browne in Risk Magazine, August 2001
+    @param loss Loss amount level at which we want to request the sensitivity. 
+    Equivalent to a percentile.
     */
     Disposable<std::vector<Real> > SaddlePointLossModel::splitLossCond(
-        const std::vector<Probability>& uncondProbs,
+        const std::vector<Real>& invUncondProbs,
         Real loss, 
-        std::vector<Real> mktFactor) const ///// SHOULD BE RETURNING A FRACTION NOT ABSOLUTE VALUES......
+        std::vector<Real> mktFactor) const 
     {
         const Size nNames = remainingNotionals_.size();
         if (loss <= QL_EPSILON) return std::vector<Real>(nNames, 0.);
 
-        Real saddlePt = findSaddle(uncondProbs, loss / remainingNotional_, 
+        Real saddlePt = findSaddle(invUncondProbs, loss / remainingNotional_, 
             mktFactor);
 
         std::vector<Real> condContrib(nNames, 0.);
 
         for(Size iName=0; iName<nNames; iName++) {
             Probability pBuffer = 
-                copula_->conditionalDefaultProbability(uncondProbs[iName], 
-                    iName, mktFactor);
+                copula_->conditionalDefaultProbabilityInvP(
+                    invUncondProbs[iName], iName, mktFactor);
             Real lossInDef = remainingNotionals_[iName] * 
-                (1.-copula_->conditionalRecovery(uncondProbs[iName], iName,      //////////////////////////////
-                    mktFactor));
+                (1.-copula_->conditionalRecoveryInvP(invUncondProbs[iName], 
+                    iName, mktFactor));
             Real midFactor = pBuffer * 
                 std::exp(lossInDef * saddlePt/ remainingNotional_);
             Real denominator = 1.-pBuffer + midFactor;
@@ -746,59 +612,58 @@ namespace QuantLib {
     }
 
     Real SaddlePointLossModel::conditionalExpectedLoss(
-        const std::vector<Probability>& uncondProbs,
+        const std::vector<Real>& invUncondProbs,
         const std::vector<Real>& mktFactor) const 
     {
         const Size nNames = remainingNotionals_.size();
         Real eloss = 0.;
         /// USE STL.....-------------------
         for(Size iName=0; iName < nNames; iName++) {
-            Probability pBuffer = 
-                copula_->conditionalDefaultProbability(uncondProbs[iName], 
-                    iName, mktFactor);
+            Probability pBuffer = copula_->conditionalDefaultProbabilityInvP(
+                invUncondProbs[iName], iName, mktFactor);
             eloss += pBuffer * remainingNotionals_[iName] *
-                (1.-copula_->conditionalRecovery(uncondProbs[iName], iName, mktFactor)); //////////////////
+                (1.-copula_->conditionalRecoveryInvP(invUncondProbs[iName], 
+                    iName, mktFactor));
         }
         return eloss;
     }
 
     Real SaddlePointLossModel::conditionalExpectedTrancheLoss(
-        const std::vector<Probability>& uncondProbs,
+        const std::vector<Real>& invUncondProbs,
         const std::vector<Real>& mktFactor) const 
     {
         const Size nNames = remainingNotionals_.size();
         Real eloss = 0.;
         /// USE STL.....-------------------
         for(Size iName=0; iName < nNames; iName++) {
-            Probability pBuffer = 
-                copula_->conditionalDefaultProbability(uncondProbs[iName], iName, mktFactor);
+            Probability pBuffer = copula_->conditionalDefaultProbabilityInvP(
+                invUncondProbs[iName], iName, mktFactor);
             eloss += 
                 pBuffer * remainingNotionals_[iName] * 
-                (1.-copula_->conditionalRecovery(uncondProbs[iName], iName, mktFactor))//////////////////
-                ;
+                (1.-copula_->conditionalRecoveryInvP(invUncondProbs[iName], 
+                iName, mktFactor));
         }
         return std::min(
             std::max(eloss - attachRatio_ * remainingNotional_, 0.), 
-                (detachRatio_ - attachRatio_) * remainingNotional_)
-                ;
+                (detachRatio_ - attachRatio_) * remainingNotional_);
     }
 
-    // disposable?
-    Disposable<std::vector<Real> > SaddlePointLossModel::expectedShortfallSplitCond(
-        const std::vector<Probability>& uncondProbs,
-        Real lossPerc, const std::vector<Real>& mktFactor) const 
+    Disposable<std::vector<Real> > 
+        SaddlePointLossModel::expectedShortfallSplitCond(
+            const std::vector<Real>& invUncondProbs,
+            Real lossPerc, const std::vector<Real>& mktFactor) const 
     {
         const Size nNames = remainingNotionals_.size();
         std::vector<Real> lgds;
         for(Size iName=0; iName<nNames; iName++)
             lgds.push_back(remainingNotionals_[iName] * 
-            (1.-copula_->conditionalRecovery(uncondProbs[iName], iName, mktFactor)) );////////////////////////
+                (1.-copula_->conditionalRecoveryInvP(invUncondProbs[iName],
+                    iName, mktFactor))); 
         std::vector<Real> vola(nNames, 0.), mu(nNames, 0.);
         Real volaTot = 0., muTot = 0.;
         for(Size iName=0; iName < nNames; iName++) {
-            Probability pBuffer = 
-                copula_->conditionalDefaultProbability(uncondProbs[iName], 
-                    iName, mktFactor);
+            Probability pBuffer = copula_->conditionalDefaultProbabilityInvP(
+                invUncondProbs[iName], iName, mktFactor);
             mu[iName] = lgds[iName] * pBuffer / remainingNotionals_[iName];
             muTot += lgds[iName] * pBuffer;
             vola[iName] = lgds[iName] * lgds[iName] * pBuffer * (1.-pBuffer) 
@@ -821,7 +686,7 @@ namespace QuantLib {
     }
 
     Real SaddlePointLossModel::expectedShortfallTrancheCond(
-        const std::vector<Probability>& uncondProbs,
+        const std::vector<Real>& invUncondProbs,
         Real lossPerc, // value 
         Probability percentile,
         const std::vector<Real>& mktFactor) const 
@@ -832,15 +697,15 @@ namespace QuantLib {
         */
         //tranche correction term:
         Real correctionTerm = 0.;
-        Real probLOver = probOverLossPortfCond(uncondProbs, 
+        Real probLOver = probOverLossPortfCond(invUncondProbs,
             basket_->detachmentAmount(), mktFactor);
         if(basket_->attachmentAmount() > QL_EPSILON) {
             if(lossPerc < basket_->attachmentAmount()) {
                 correctionTerm = ( (basket_->detachmentAmount() 
                     - 2.*basket_->attachmentAmount())*
-                        probOverLossPortfCond(uncondProbs, lossPerc, mktFactor)
-                            + basket_->attachmentAmount() * probLOver
-                                )/(1.-percentile);
+                        probOverLossPortfCond(invUncondProbs, lossPerc, 
+                            mktFactor)
+                    + basket_->attachmentAmount() * probLOver )/(1.-percentile);
             }else{
                 correctionTerm = ( (percentile-1)*basket_->attachmentAmount()
                     + basket_->detachmentAmount() * probLOver
@@ -848,45 +713,49 @@ namespace QuantLib {
             }
         }
 
-        return expectedShortfallFullPortfolioCond(uncondProbs, 
+        return expectedShortfallFullPortfolioCond(invUncondProbs, 
             std::max(lossPerc, basket_->attachmentAmount()), mktFactor)
-            + expectedShortfallFullPortfolioCond(uncondProbs, 
+            + expectedShortfallFullPortfolioCond(invUncondProbs, 
                 basket_->detachmentAmount(), mktFactor)
             - correctionTerm;
     }
 
-
-    // ESF except by a factor equal to the tail probability.
     Real SaddlePointLossModel::expectedShortfallFullPortfolioCond(
-        const std::vector<Probability>& uncondProbs,
+        const std::vector<Real>& invUncondProbs,
         Real lossPerc, // value 
         const std::vector<Real>& mktFactor) const 
     {
+        /* This version is based on: Martin 2006 paper and on the expression 
+        in 'SaddlePoint approximation of expected shortfall for transformed 
+        means' S.A. Broda and M.S.Paolella , Amsterdam School of Economics 
+        discussion paper, available online.
+        */
         Real lossPercRatio = lossPerc  /remainingNotional_;
         Real elCond = 0.;
         const Size nNames = remainingNotionals_.size();
 
         /// use stl algorthms
         for(Size iName=0; iName < nNames; iName++) {
-            Probability pBuffer = 
-                copula_->conditionalDefaultProbability(uncondProbs[iName], 
-                    iName, mktFactor);
+            Probability pBuffer = copula_->conditionalDefaultProbabilityInvP(
+                invUncondProbs[iName], iName, mktFactor);
             elCond += pBuffer * remainingNotionals_[iName] * 
-                (1.-copula_->conditionalRecovery(uncondProbs[iName], /////////////////////////////////////
+                (1.-copula_->conditionalRecoveryInvP(invUncondProbs[iName],
                     iName, mktFactor));
         }
+        Real saddlePt = findSaddle(invUncondProbs, lossPercRatio, mktFactor);
+
+        // Martin 2006:
+        return 
+            elCond * probOverLossPortfCond(invUncondProbs, lossPerc, mktFactor)
+              + (lossPerc - elCond) * probDensityCond(invUncondProbs, lossPerc,
+                    mktFactor) /saddlePt;
 
         // calling the EL tranche
         // return elCond - expectedEquityLossCond(d, lossPercRatio, mktFactor);
 
-        /* This version is based on: Martin 2006 paper and on the expression 
-        in 'SaddlePoint approximation of expected shortfall for transformed 
-        means' S.A. Broda and M.S.Paolella , Amsterdam School of Economics 
-        discussion paper, available online.
-        */
+        /*
+        // Broda and Paolella:
         Real elCondRatio = elCond / remainingNotional_;
-        Real saddlePt = findSaddle(uncondProbs,
-            lossPercRatio, mktFactor);
 
         boost::tuples::tuple<Real, Real, Real, Real> cumulants = 
             CumGen0234DerivCond(uncondProbs, 
@@ -904,67 +773,18 @@ namespace QuantLib {
 
         Real numNames = static_cast<Real>(nNames);
 
-        Real term1 = CumulativeNormalDistribution()(wq/* *std::sqrt(numNames)*/)
+        Real term1 = CumulativeNormalDistribution()(wq)// * std::sqrt(numNames)
             * elCond ;
         Real term2 = .5 * M_2_SQRTPI * M_SQRT1_2 * (1./std::sqrt(numNames))
             * exp(-wq*wq * numNames/2.)*(elCond/wq - 
                 lossPerc/(saddlePt * std::sqrt(K2Saddle)));
-        // Broda and Paolella:
-        //   return term1 + term2;
-
-        // Martin:
-        
-        return 
-            //  ( 2. * M_SQRT1_2 / M_2_SQRTPI) *
-            (elCond * probOverLossPortfCond(uncondProbs, lossPerc, mktFactor)
-            + (.5 * M_2_SQRTPI * M_SQRT1_2) * (lossPerc - elCond) 
-                * probDensityCond(uncondProbs, lossPerc, mktFactor) /saddlePt);
-
-        return CumulativeNormalDistribution()(wq//*std::sqrt(numNames)
-        ) * elCond + .5 * M_2_SQRTPI * M_SQRT1_2 * exp(-wq*wq//*numNames
-        /2.)* (elCond/wq - lossPerc/(saddlePt * std::sqrt(K2Saddle)));
-
-        return CumulativeNormalDistribution()(wq) * elCond +
-            std::sqrt(1./M_2_PI)* exp(-wq*wq/2.)*(elCond/wq - 
-                lossPercRatio/(saddlePt * std::sqrt(K2Saddle)));
-
-
-/*
-        const std::vector<Real> uncondProbs = basket_->remainingProbabilities(d);
-        const Size nNames = remainingNotionals_.size();
-        std::vector<Real> lgds;
-        for(Size i=0; i<nNames; i++)
-            lgds.push_back(remainingNotionals_[i] * (1.-recoveryValueImpl(d, i)) );//use RR from method provided to acces model RR...conditional...
-        Real vola = 0., mu = 0.;
-        for(Size iName=0; iName < nNames; iName++) {
-            Probability pBuffer = 
-                copula_->conditionalProbability(uncondProbs[iName], iName, mktFactor);
-            mu += lgds[iName] * pBuffer;
-            vola += lgds[iName] * lgds[iName] * pBuffer * (1.-pBuffer);
-        }
-
-return 
-        mu * 
-        probOverLossPortfCond(d, lossPerc, mktFactor)
-        + probDensityCond(d, lossPerc, mktFactor) * (lossPerc-mu)/findSaddle(d, lossPerc/remainingNotional_, mktFactor);
-*/
-
-
-/*
-        Real uEdisp = (lossPerc-mu)/std::sqrt(vola);
-
-        return CumulativeNormalDistribution(mu, std::sqrt(vola))(lossPerc) * mu + // + 
-            std::sqrt(vola) * NormalDistribution()(uEdisp);
-*/
-
-        //return CumulativeNormalDistribution()(uEdisp) * mu + 
-        //    std::sqrt(vola) * NormalDistribution()(uEdisp);
+        return term1 + term2;
+        */
     }
 
     Real SaddlePointLossModel::expectedShortfall(const Date&d, 
         Probability percProb) const 
     {
-        //double integration here ....??? correct??
         // assuming I have the tranched one.
         Real lossPerc = percentile(d, percProb);
 
@@ -975,67 +795,30 @@ return
         //assumed the amount includes the realized loses
         if(lossPerc >= trancheAmount) return trancheAmount;
         //SHOULD CHECK NOW THE OPPOSITE LIMIT ("zero" losses)....
-
-//////////        GaussLaguerreIntegration integrtr(20);
-//////////ESFIntegrator esfInt(*this, d, lossPerc);
-//////////        return integrtr(esfInt) / (1.-percProb);
-
-        const std::vector<Probability> uncondProbs = 
+        std::vector<Real> invUncondProbs = 
             basket_->remainingProbabilities(d);
-             
-        // Integrate with the tranche or the portfolio according to the limits.
+        for(Size i=0; i<invUncondProbs.size(); i++)
+            invUncondProbs[i] = 
+                copula_->inverseCumulativeY(invUncondProbs[i], i);
 
-/*
+        // Integrate with the tranche or the portfolio according to the limits.
         return copula_->integratedExpectedValue(
             boost::function<Real (const std::vector<Real>& v1)>(
                 boost::bind(
-   //                 &SaddlePointLossModel::expectedShortfallCond,
                     &SaddlePointLossModel::expectedShortfallFullPortfolioCond,
                     this,
-                    boost::cref(uncondProbs),
+                    boost::cref(invUncondProbs),
                     lossPerc,
                     _1)
                 )
             ) / (1.-percProb);
-*/
 
-        return copula_->integratedExpectedValue(
-            boost::function<Real (const std::vector<Real>& v1)>(
-                boost::bind(
-   //                 &SaddlePointLossModel::expectedShortfallCond,
-                    &SaddlePointLossModel::expectedShortfallTrancheCond,
-                    this,
-                    boost::cref(uncondProbs),
-                    lossPerc,
-                    percProb,
-                    _1)
-                )
-            ) / (1.-percProb);
-
-/*        
-        std::vector<Real> integrESFPartition = 
-            copula_->integratedExpectedValue(
-            boost::function<Disposable<std::vector<Real> >(const std::vector<Real>& v1)>(
-                boost::bind(
-                    &SaddlePointLossModel::expectedShortfallSplitCond,
-                    this,
-                    boost::cref(uncondProbs),
-                    lossPerc,
-                    _1)
-                )
-            );
-
-        return std::inner_product(integrESFPartition.begin(), integrESFPartition.end(), remainingNotionals_.begin(), 0.);
-*/        
+    /* test:?
+        return std::inner_product(integrESFPartition.begin(), 
+        integrESFPartition.end(), remainingNotionals_.begin(), 0.);
+    */        
 
     }
-
-
-
-
-
-
-
 
 
 }

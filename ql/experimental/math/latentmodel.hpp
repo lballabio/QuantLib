@@ -46,6 +46,7 @@
 namespace QuantLib {
 
     namespace {
+        // havent figured out how to do this in-place
         struct multiplyV {
             typedef Disposable<std::vector<Real> > result_type;
             Disposable<std::vector<Real> > 
@@ -56,90 +57,60 @@ namespace QuantLib {
                 return v;
             }
         };
-
-        ////struct multiplyV {
-        ////    typedef std::vector<Real> result_type;
-        ////    std::vector<Real> operator()(Real d,  Disposable<std::vector<Real> > v) {
-        ////        std::transform(v.begin(), v.end(), v.begin(), 
-        ////            boost::lambda::_1 * d);
-        ////    return v;
-        ////    }
-        ////};
-        /*
-        // havent figured out how to do this in-place
-        struct multiplyV {
-            typedef Disposable<std::vector<Real> > result_type;
-            std::vector<Real>& operator()(Real d,  Disposable<std::vector<Real> > v) {/// RETURN SIGNATURE?????????!!!
-                std::transform(v.begin(), v.end(), v.begin(), 
-                    boost::lambda::_1 * d);
-            return v;// g++ warning!- claims returning reference to local
-            // but cant do anything about the disposability because of the 
-            // integrand signature (see when used). Some g++ setups might
-            // refuse compilation, in that case the binding in 
-            // 'integratedExpectedValue' might have to be removed
-            }
-            //typedef std::vector<Real>& result_type;
-            //std::vector<Real>& operator()(Real d,  std::vector<Real>& v) {
-            //    std::transform(v.begin(), v.end(), v.begin(), 
-            //        boost::lambda::_1 * d);
-            //return v;
-            //}
-        };
-        */
     }
 
-        //! \name Latent model direct integration facility.
-        //@{
-        /* Things trying to achieve here:
-        1.- Unify the two branches of integrators in the library, they do not 
-          hang from a common base class and here a common ptr for the 
-          factory is needed.
-        2.- Have a common signature for the integration call.
-        3.- Factory construction so integrable latent models can choose the 
-          integration algorithm separately.
+    //! \name Latent model direct integration facility.
+    //@{
+    /* Things trying to achieve here:
+    1.- Unify the two branches of integrators in the library, they do not 
+      hang from a common base class and here a common ptr for the 
+      factory is needed.
+    2.- Have a common signature for the integration call.
+    3.- Factory construction so integrable latent models can choose the 
+      integration algorithm separately.
+    */
+    class LMIntegration {
+    public:
+        // Interface with actual integrators:
+        // integral of a scalar function
+        virtual Real integrate(const boost::function<Real (
+            const std::vector<Real>& arg)>& f) const = 0;
+        // integral of a vector function
+        /* I had to use a different name, since the compiler does not
+        recognise the overload; MSVC sees the argument as 
+        boost::function<Signature> in both cases....   
+        I could do the as with the quadratures and have this as a template 
+        function and spez for the vector case but I prefer to understand
+        why the overload fails....
+                    FIX ME
         */
-        class LMIntegration {
-        public:
-            // Interface with actual integrators:
-            // integral of a scalar function
-            virtual Real integrate(const boost::function<Real (
-                const std::vector<Real>& arg)>& f) const = 0;
-            // integral of a vector function
-            /* I had to use a different name, since the compiler does not
-            recognise the overload; MSVC sees the argument as 
-            boost::function<Signature> in both cases....   
-            I could do the as with the quadratures and have this as a template 
-            function and spez for the vector case but I prefer to understand
-            why the overload fails....
-                        FIX ME
-            */
-            virtual Disposable<std::vector<Real> > integrateV(
-                const boost::function<Disposable<std::vector<Real> >  (
-                const std::vector<Real>& arg)>& f) const {
-                QL_FAIL("No vector integration provided");
-            }
-            virtual ~LMIntegration() {}
-        };
+        virtual Disposable<std::vector<Real> > integrateV(
+            const boost::function<Disposable<std::vector<Real> >  (
+            const std::vector<Real>& arg)>& f) const {
+            QL_FAIL("No vector integration provided");
+        }
+        virtual ~LMIntegration() {}
+    };
 
-        //CRTP-ish for joining the integrations, class above to have the factory
-        template <class I_T>
-        class IntegrationBase : 
-            public I_T, public LMIntegration {// diamond on 'integrate'
-         // this class template always to be fully specialized:
-         private:
-             IntegrationBase() {}
-         virtual ~IntegrationBase() {} 
-        };
-        //@}
+    //CRTP-ish for joining the integrations, class above to have the factory
+    template <class I_T>
+    class IntegrationBase : 
+        public I_T, public LMIntegration {// diamond on 'integrate'
+     // this class template always to be fully specialized:
+     private:
+         IntegrationBase() {}
+     virtual ~IntegrationBase() {} 
+    };
+    //@}
 	
     //typedef 
 	namespace LatentModelIntegrationType {// gcc reports value collision with heston engine (?!)
-	typedef 
-	enum LatentModelIntegrationType {
-        GaussianQuadrature,
-        Trapezoid
-        // etc....
-    } LatentModelIntegrationType;
+	    typedef 
+	    enum LatentModelIntegrationType {
+            GaussianQuadrature,
+            Trapezoid
+            // etc....
+        } LatentModelIntegrationType;
 	}
 		
     // Intended to replace OneFactorCopula

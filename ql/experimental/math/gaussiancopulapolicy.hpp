@@ -44,7 +44,18 @@ namespace QuantLib {
             const std::vector<std::vector<Real> >& factorWeights = 
                 std::vector<std::vector<Real> >(), 
             const initTraits& dummy = int())
-           /*: density_(), cumulative_()*/{}
+        {
+            /* check factors in LM are normalized. (it is arguable to perform
+            the test here rather than in the latent model constructors */
+            for(Size iLVar=0; iLVar<factorWeights.size(); iLVar++) {
+                Real factorsNorm = 
+                    std::inner_product(factorWeights[iLVar].begin(), 
+                        factorWeights[iLVar].end(), 
+                        factorWeights[iLVar].begin(), 0.);
+                QL_REQUIRE(factorsNorm < 1., 
+                    "Non normal random factor combination.");
+            }
+        }
 
         //! returns a copy of the initialization arguments
         initTraits getInitTraits() const {

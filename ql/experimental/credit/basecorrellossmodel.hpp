@@ -36,36 +36,34 @@
 namespace QuantLib {
 
     /*! Base Correlation loss model; interpolation is performed by portfolio 
-    (live) amount percentage. 
-
+    (live) amount percentage.\par
     Though the literature on this model is inmense, see for a more than 
-    introductory level (precrisis) chapters 19, 20 and 21 of 'Modelling single 
-    name and multi-name credit derivatives.' Dominic O’Kane, Wiley Finance, 2008
-    For freely available documentation see:
+    introductory level (precrisis) chapters 19, 20 and 21 of <b>Modelling single
+    name and multi-name credit derivatives.</b> Dominic O’Kane, Wiley Finance, 
+    2008\par
+    For freely available documentation see:\par
     Credit Correlation: A Guide; JP Morgan Credit Derivatives Strategy; 
-        12 March 2004 
+        12 March 2004 \par
     Introducing Base Correlations; JP Morgan Credit Derivatives Strategy; 
-        22 March 2004
+        22 March 2004 \par
     A Relative Value Framework for Credit Correlation; JP Morgan Credit 
-        Derivatives Strategy; 27 April 2004
+        Derivatives Strategy; 27 April 2004 \par
     Valuing and Hedging Synthetic CDO Tranches Using Base Correlations; Bear 
-        Stearns; May 17, 2004
-    Correlation Primer; Nomura Fixed Income Research, August 6, 2004
+        Stearns; May 17, 2004 \par
+    Correlation Primer; Nomura Fixed Income Research, August 6, 2004 \par
     Base Correlation Explained; Lehman Brothers Fixed Income Quantitative 
-        Credit Research; 15 November 2004
+        Credit Research; 15 November 2004 \par
     'Pricing CDOs with a smile' in Societe Generale Credit Research; 
-        February 2005
-    For bespoke base correlation see
+        February 2005 \par
+    For bespoke base correlation see: \par
     Base Correlation Mapping in Lehman Brothers' Quantitative Credit Research 
-        Quarterly; Volume 2007-Q1
+        Quarterly; Volume 2007-Q1 \par
     You can explore typical postcrisis data by perusing some of the JPMorgan 
-    Global Correlation Daily Analytics
-
+    Global Correlation Daily Analytics \par
     Here the crisis model problems of ability to price stressed portfolios 
     or tranches over the maximum loss are the responsibility of the base models.
     Users should select their models according to this; choosing the copula or
-    a random loss given default base model (or more exotic ones).
-
+    a random loss given default base model (or more exotic ones). \par
     Notice this is different to a bespoke base correlation loss (bespoke here 
     refering to basket composition, not just attachment levels) ; where 
     loss interpolation is on the expected loss value to match the two baskets. 
@@ -201,7 +199,6 @@ namespace QuantLib {
     parameter trick partial specializations leaving the interpolation open 
     would be possible.
     */
-    // Spezs in cpp file?
     template<>
     void BaseCorrelationLossModel<GaussianLHPLossModel, 
         BilinearInterpolation>::setupModels() const 
@@ -238,8 +235,6 @@ namespace QuantLib {
             
         basketAttach_->setLossModel(scalarCorrelModelAttach_);
         basketDetach_->setLossModel(scalarCorrelModelDetach_);
-        ////////scalarCorrelModelAttach_->registerWith(basketAttach_);
-        ////////scalarCorrelModelDetach_->registerWith(basketDetach_);
 
     }
 
@@ -265,8 +260,6 @@ namespace QuantLib {
             
         basketAttach_->setLossModel(scalarCorrelModelAttach_);
         basketDetach_->setLossModel(scalarCorrelModelDetach_);
-        ////////scalarCorrelModelAttach_->registerWith(basketAttach_);
-        ////////scalarCorrelModelDetach_->registerWith(basketDetach_);
     }
 
     /* \todo Fix this model, is failing for equity tranches at least, the

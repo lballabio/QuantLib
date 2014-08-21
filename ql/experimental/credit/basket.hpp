@@ -39,8 +39,7 @@ namespace QuantLib {
 
     class DefaultLossModel;
 
-    /*! Credit Basket.
-
+    /*! Credit Basket.\par
         A basket is a collection of credit names, represented by a
         unique identifier (a text string), associated notional
         amounts, a pool and tranche information. The pool is a map of
@@ -90,15 +89,6 @@ namespace QuantLib {
             evalDateDetachAmmount_ = 
                 remainingDetachmentAmount(today);
             evalDateLiveList_ = liveList(today);
-            /* REMOVE THIS
-            if(lossModel_){
-                evalDateCumulContingentLoss_ = cumulatedLoss(today);
-            }else{
-              evalDateCumulContingentLoss_ = evalDateSettledLoss_;
-            }
-            */
-
-        
         }
         //! Basket inception number of counterparties.
         Size size() const;
@@ -117,8 +107,6 @@ namespace QuantLib {
         /*! Loss Given Default for all issuers/notionals based on
             expected recovery rates for the respective issuers.
         */
-        const std::vector<Real>& LGDs() const;///////////////////////////////////////////////////????????????????????????????????? nonsensical now, this might depend on a position, not a ctpty
-        Real lgd();;///////////////////////////////////////////////////?????????????????????????????????
         //! Basket inception date.
         const Date& refDate() const {return refDate_;}
         /*! Attachment point expressed as a fraction of the total inception 
@@ -152,7 +140,7 @@ namespace QuantLib {
             Optionally one can pass a date in the future and that will collect 
             events stored in the issuers list. This shows the effect of 
             'programmed' (after today's) events on top of past ones. The 
-            intention is to be used in riak analysis (jump to default, etc).
+            intention is to be used in risk analysis (jump to default, etc).
         */
         Real settledLoss() const;
         Real settledLoss(const Date&) const;
@@ -234,32 +222,10 @@ namespace QuantLib {
         }
         //!Indexes of remaining names. Notice these are names and not positions.
         const std::vector<Size>& liveList() const;
-        Disposable<std::vector<Size> > liveList(const Date&) const;//////////////////////////arguable--- is it used???
-
+        Disposable<std::vector<Size> > liveList(const Date&) const;//?? keep?
         //! Assigns the default loss model to this basket. Resets calculations.
         void setLossModel(
-            const boost::shared_ptr<DefaultLossModel>& lossModel);//handle???
-
-        //---------------------------------------------------------------------------------------------methods from previous set up
-        /*!
-          Based on the default times stored in the Pool for each name, update
-          the vector of incremental basket losses (sorted by default time)
-          for this basket. If zeroRecovery is set to true, losses are full
-          notional amounts, otherwise loss give defaults.
-         */
-        /*
-        void updateScenarioLoss(bool zeroRecovery = false);
-        //! Cumulative tranche loss up to end date under the current scenario
-        Real scenarioTrancheLoss(Date endDate) const;
-        //! Vector of incremental basket losses under the current scenario
-        std::vector<Loss> scenarioIncrementalBasketLosses() const;
-        //! Vector of incremental tranche losses under the current scenario
-        std::vector<Loss> scenarioIncrementalTrancheLosses(
-                                Date startDate = Date::minDate(),
-                                Date endDate = Date::maxDate()) const;
-                                */
-        //----------------------------------------------------------------------------------------------------------------------
-
+            const boost::shared_ptr<DefaultLossModel>& lossModel);
         /*! \name Basket Loss Statistics
             Methods providing statistical metrics on the loss or value 
             distribution of the basket. Most calculations rely on the pressence
@@ -270,25 +236,25 @@ namespace QuantLib {
         /*!
             @param lossFraction is the fraction of losses expressed in 
               inception (no losses) tranche units (e.g. 'attach level'=0%, 
-              'detach level'=100%)..............lossFraction is OK? is the basket thinking total fraction and the model thinking remaining fraction?????
-
-        // I THINK IS ONLY THE SADDLE THAT IMPLEMENTS THIS ONE. THE RELATIVE UNITS 
-        //  WAS NOT A GOOD IDEA. SHOULD I REMOVE THIS ONE? IT IS EQUIVALENT TO THE CUMULATIVE DENSITY....
+              'detach level'=100%)
         */
         Probability probOverLoss(const Date& d, Real lossFraction) const;
         /*! 
         */
         Real percentile(const Date& d, Probability prob) const;
-        /*! 
+        /*! ESF 
         */
         Real expectedShortfall(const Date& d, Probability prob) const;
-        // Split a portfolio loss along counterparties. Typically loss corresponds to some percentile.
+        /* Split a portfolio loss along counterparties. Typically loss 
+        corresponds to some percentile.*/
         Disposable<std::vector<Real> > 
             splitVaRLevel(const Date& date, Real loss) const;
-        /*! 
+        /*! Full loss distribution
         */
         Disposable<std::map<Real, Probability> > lossDistribution(
             const Date&) const;
+        Real densityTrancheLoss(const Date& d, Real lossFraction) const;
+        Real defaultCorrelation(const Date& d, Size iName, Size jName) const;
         /*! Probability vector that each of the remaining live names (at eval
           date) is the n-th default by date d.
           @param n The internal index to the name, it should be live at the 
@@ -296,38 +262,18 @@ namespace QuantLib {
         ---------TO DO: Implement with a string passed----------------------
         ---------TO DO: Perform check the name is alive---------------------
         */
-        Real densityTrancheLoss(const Date& d, Real lossFraction) const;
         std::vector<Probability> probsBeingNthEvent(
             Size n, const Date& d) const;
-        Real defaultCorrelation(const Date& d, Size iName, Size jName) const;
         /*! Returns the probaility of having a given or larger number of 
         defaults in the basket portfolio at a given time.
         */
         Probability probAtLeastNEvents(Size n, const Date& d) const;
-
-
-
-
-
-
-
-
         /*! Expected recovery rate of the underlying position as a fraction of 
           its exposure value at date d _given_ it has defaulted _on_ that date.
           NOTICE THE ARG IS THE CTPTY....SHOULDNT IT BE THE POSITION/INSTRUMENT?????<<<<<<<<<<<<<<<<<<<<<<<
         */
         Real recoveryRate(const Date& d, Size iName) const;
-
-
-
-
         //@}
-
-
-
-
-
-
       private:
         // LazyObject interface
          void performCalculations() const;
@@ -346,18 +292,14 @@ namespace QuantLib {
         mutable Real detachmentAmount_;
         //! basket tranched notional amount:
         mutable Real trancheNotional_;
-
         /* Caches. Most of the times one wants statistics on the distribution of
         futures losses at arbitrary dates but some problems (e.g. derivatives 
         pricing) work with todays (evalDate) magnitudes which do not require a 
         loss model and would be too expensive to recompute on every call.
         */
         mutable Real evalDateSettledLoss_,
-        //    evalDateCumulContingentLoss_,
             evalDateRemainingNot_,
-        //    evalDateAttachRatio_,
             evalDateAttachAmount_,
-        //    evalDateDetachRatio_,
             evalDateDetachAmmount_;
         mutable std::vector<Size> evalDateLiveList_;
         mutable std::vector<Real> evalDateLiveNotionals_;
@@ -365,7 +307,6 @@ namespace QuantLib {
         mutable std::vector<DefaultProbKey> evalDateLiveKeys_;
         //! Basket inception date.
         const Date refDate_;
-
         /* It is the basket responsibility to ensure that the model assigned it 
           is properly initialized to the basket current data. 
           This might not be the case for various reasons: the basket data might
@@ -397,45 +338,36 @@ namespace QuantLib {
     }
 
     inline const std::vector<Size>& Basket::liveList() const {
-   ///////not using loss models anymore----     calculate();
         return evalDateLiveList_;
     }
 
     inline Real Basket::remainingDetachmentAmount() const {
-   ///////not using loss models anymore----     calculate();
         return evalDateDetachAmmount_;
     }
 
     inline Real Basket::remainingAttachmentAmount() const {
-      ///////not using loss models anymore----  calculate();
         return evalDateAttachAmount_;
     }
 
     inline const std::vector<std::string>& Basket::remainingNames() const {
-   ///////not using loss models anymore----     calculate();
         return evalDateLiveNames_;
     }
 
     inline const std::vector<Real>& Basket::remainingNotionals() const {
-    ///////not using loss models anymore----    calculate();
         return evalDateLiveNotionals_;
     }
 
     inline Real Basket::cumulatedLoss() const {
-   ///////not using loss models anymore----     calculate();
-       ///// return evalDateCumulContingentLoss_;   
         return this->evalDateSettledLoss_;
     }
     
     inline Real Basket::settledLoss() const {
-   ///////not using loss models anymore----     calculate();
         return evalDateSettledLoss_;
     }
 
     inline const std::vector<DefaultProbKey>& 
         Basket::remainingDefaultKeys() const 
     {
-   ///////not using loss models anymore----     calculate();
         return evalDateLiveKeys_;
     }
 

@@ -75,7 +75,12 @@ namespace QuantLib {
             return recoveries_[iName];
         }
 
-        Real conditionalRecovery(Real uncondDefP, Size iName, 
+        Real conditionalRecovery(Probability uncondDefP, Size iName, 
+                                 const std::vector<Real>& mktFactors) const {
+            return recoveries_[iName];
+        }
+
+        Real conditionalRecoveryInvP(Real invUncondDefP, Size iName, 
                                  const std::vector<Real>& mktFactors) const {
             return recoveries_[iName];
         }
@@ -160,7 +165,8 @@ namespace QuantLib {
     private:
         virtual void resetModel() {
             // update the default latent model we derive from
-            DefaultLatentModel<copulaPolicy>::resetBasket(DefaultLossModel::basket_.currentLink());// forces interface
+            DefaultLatentModel<copulaPolicy>::resetBasket(
+                DefaultLossModel::basket_.currentLink());// forces interface
         }
 
     };

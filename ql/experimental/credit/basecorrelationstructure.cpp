@@ -22,10 +22,11 @@
 
 namespace QuantLib {
 
-    //! Default Factories for some specific two dimensional interpolations through template specialization. The signature of the 2D interpolator constructor is not guaranteed.
+    /* Default Factories for some specific two dimensional interpolations 
+    through template specialization. The signature of the 2D interpolator 
+        constructor is not guaranteed.*/
     template<>
-     void 
-  //  BilinearInterpolation&
+    void 
     BaseCorrelationTermStructure<BilinearInterpolation>::setupInterpolation() {
          interpolation_ =  
              BilinearInterpolation(trancheTimes_.begin(), 
@@ -33,13 +34,11 @@ namespace QuantLib {
             correlations_);
      }
 
-
-
-     // See that some interpolators might take you out of the [-1,1] correlation domain.
-
+     /* Notice See that some interpolators might take you out of the [-1,1]
+     correlation domain.
+    */
     template<>
-     void 
-  //  BilinearInterpolation&
+    void 
     BaseCorrelationTermStructure<BicubicSpline>::setupInterpolation() {
          interpolation_ =  
              BicubicSpline(trancheTimes_.begin(), 

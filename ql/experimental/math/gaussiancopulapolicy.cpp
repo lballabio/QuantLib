@@ -21,7 +21,8 @@
 
 namespace QuantLib {
 
-    const NormalDistribution GaussianCopulaPolicy::density_ = NormalDistribution();
+    const NormalDistribution GaussianCopulaPolicy::density_ = 
+        NormalDistribution();
     const CumulativeNormalDistribution GaussianCopulaPolicy::cumulative_ = 
         CumulativeNormalDistribution();
 

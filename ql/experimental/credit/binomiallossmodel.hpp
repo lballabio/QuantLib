@@ -35,32 +35,32 @@
 
 namespace QuantLib {
 
-    /*! Binomial Defaultable Basket Loss Model
-
+    /*! Binomial Defaultable Basket Loss Model\par
     Models the portfolio loss distribution by approximatting it to an adjusted 
     binomial. Fits the two moments of the loss distribution through an adapted 
     binomial approximation. This simple model allows for portfolio inhomogeneity
-    with no excesive cost over the LHP.
-    See:
-    -Approximating Independent Loss Distributions with an Adjusted Binomial 
-    Distribution , Dominic O’Kane, 2007 EDHEC RISK AND ASSET MANAGEMENT 
+    with no excesive cost over the LHP.\par
+    See:\par
+    <b>Approximating Independent Loss Distributions with an Adjusted Binomial 
+    Distribution</b> , Dominic O’Kane, 2007 EDHEC RISK AND ASSET MANAGEMENT 
     RESEARCH CENTRE \par
-    -Modelling single name and multi-name credit derivatives. Chapter 18.5.2, 
-    Dominic O’Kane, Wiley Finance, 2008
-
+    <b>Modelling single name and multi-name credit derivatives</b> Chapter 
+    18.5.2, Dominic O’Kane, Wiley Finance, 2008 \par
     The version presented here is adaptated to the multifactorial case
     by computing a conditional binomial approximation; notice that the Binomial
     is stable. This way the model can be used also in risk management models
-    rather than only in pricing. The copula is also left undefined/arbitrary. 
-
-    LLM: Loss Latent Model template parameter able to model default and loss.
-
+    rather than only in pricing. The copula is also left 
+    undefined/arbitrary. \par
+    LLM: Loss Latent Model template parameter able to model default and 
+    loss.\par
     The model is allowed and arbitrary copula, although initially designed for
     a Gaussian setup. If these exotic versions were not allowed the template 
     parameter can then be dropped but the use of random recoveries should be
     added in some other way.
 
     \todo untested/wip for the random recovery models.
+    \todo integrate with the previously computed probability inversions of
+    the cumulative functions.
     */
     template<class LLM>
     class BinomialLossModel : public DefaultLossModel {
@@ -321,17 +321,6 @@ namespace QuantLib {
 
         std::vector<Real> condLProb = 
             lossProbability(d, bsktNots, uncondDefProbs, mkf);
-/* bugs?
-        return std::inner_product(condLProb.begin(), condLProb.end(), 
-            lossVals.begin(), 
-            0., 
-            std::plus<Real>(), 
-            boost::lambda::_1 * boost::lambda::bind(std::min<Real>, 
-              boost::lambda::bind(std::max<Real>, 
-                boost::lambda::_2 - attachAmount_, 0.),
-              detachAmount_ - attachAmount_)
-            );
-*/
         // \to do: move to a do-while over attach to detach
         Real suma = 0.;
         for(Size i=0; i<lossVals.size(); i++) { 

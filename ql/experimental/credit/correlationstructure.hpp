@@ -28,7 +28,7 @@ namespace QuantLib {
     // obviously known in advance and theres no reference to a strike.
 
     /*! Abstract interface, derived correlations TS might have elements with 
-    arbitrary dimensions.
+    arbitrary dimensions.\par
     In principle there might be several extrapolation dimensions, at this 
     level we do not know how many or the nature of those dimensions (time, 
     strike...) 
