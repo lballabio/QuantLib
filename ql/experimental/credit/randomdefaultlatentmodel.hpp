@@ -612,7 +612,11 @@ namespace QuantLib {
     Disposable<std::vector<Real> > RandomLM<D, C, URNG>::splitVaRLevel(
         const Date& date, Real loss) const
     {
-        return splitVaRAndError(date, loss, 0.95)[0];
+        std::vector<Real> varLevels = splitVaRAndError(date, loss, 0.95)[0];
+        // turn relative units into absolute:
+        std::transform(varLevels.begin(), varLevels.end(), varLevels.begin(),
+            std::bind1st(std::multiplies<Real>(), loss));
+        return varLevels;
     }
 
 
