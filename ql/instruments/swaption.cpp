@@ -5,6 +5,7 @@
  Copyright (C) 2006 Cristina Duminuco
  Copyright (C) 2006 Marco Bianchetti
  Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2014 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -35,7 +36,8 @@ namespace QuantLib {
           public:
             ImpliedVolHelper(const Swaption&,
                              const Handle<YieldTermStructure>& discountCurve,
-                             Real targetValue);
+                             Real targetValue,
+                             Real displacement);
             Real operator()(Volatility x) const;
             Real derivative(Volatility x) const;
           private:
@@ -49,7 +51,8 @@ namespace QuantLib {
         ImpliedVolHelper::ImpliedVolHelper(
                               const Swaption& swaption,
                               const Handle<YieldTermStructure>& discountCurve,
-                              Real targetValue)
+                              Real targetValue,
+                              Real displacement)
         : discountCurve_(discountCurve), targetValue_(targetValue) {
 
             // set an implausible value, so that calculation is forced
@@ -57,7 +60,8 @@ namespace QuantLib {
             vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(-1.0));
             Handle<Quote> h(vol_);
             engine_ = boost::shared_ptr<PricingEngine>(new
-                                    BlackSwaptionEngine(discountCurve_, h));
+                                    BlackSwaptionEngine(discountCurve_, h,
+                                    Actual365Fixed(), displacement));
             swaption.setupArguments(engine_->getArguments());
 
             results_ =
@@ -129,18 +133,18 @@ namespace QuantLib {
         QL_REQUIRE(exercise, "exercise not set");
     }
 
-    Volatility Swaption::impliedVolatility(
-                              Real targetValue,
-                              const Handle<YieldTermStructure>& discountCurve,
-                              Volatility guess,
-                              Real accuracy,
-                              Natural maxEvaluations,
-                              Volatility minVol,
-                              Volatility maxVol) const {
+    Volatility Swaption::impliedVolatility(Real targetValue,
+                                           const Handle<YieldTermStructure>& d,
+                                           Volatility guess,
+                                           Real accuracy,
+                                           Natural maxEvaluations,
+                                           Volatility minVol,
+                                           Volatility maxVol,
+                                           Real displacement) const {
         //calculate();
         QL_REQUIRE(!isExpired(), "instrument expired");
 
-        ImpliedVolHelper f(*this, discountCurve, targetValue);
+        ImpliedVolHelper f(*this, d, targetValue, displacement);
         //Brent solver;
         NewtonSafe solver;
         solver.setMaxEvaluations(maxEvaluations);
