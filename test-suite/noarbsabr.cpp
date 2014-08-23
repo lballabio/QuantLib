@@ -26,7 +26,6 @@
 #include <ql/experimental/volatility/noarbsabrsmilesection.hpp>
 
 using namespace QuantLib;
-using namespace QuantLib::detail;
 using namespace boost::unit_test_framework;
 
 namespace {
@@ -36,13 +35,13 @@ void checkD0(const Real sigmaI, const Real beta, const Real rho, const Real nu,
     Real forward = 0.03; // does not matter in the end
     Real alpha = sigmaI / std::pow(forward, beta - 1.0);
 
-    D0Interpolator d(forward, tau, alpha, beta, nu, rho);
+    detail::D0Interpolator d(forward, tau, alpha, beta, nu, rho);
 
-    if (std::fabs(d() * NoArbSabrModel::Constants::nsim - (Real)absorptions) > 0.1)
+    if (std::fabs(d() * detail::NoArbSabrModel::nsim - (Real)absorptions) > 0.1)
         BOOST_ERROR("failed to reproduce number of absorptions at sigmaI="
                     << sigmaI << ", beta=" << beta << ", rho=" << rho << ", nu="
                     << nu << " tau=" << tau << ": D0Interpolator says "
-                    << d() * NoArbSabrModel::Constants::nsim
+                    << d() * detail::NoArbSabrModel::nsim
                     << " while the reference value is " << absorptions);
 
     return;

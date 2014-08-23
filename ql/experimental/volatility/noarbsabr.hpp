@@ -56,56 +56,52 @@
 
 #include <vector>
 
-#if (defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L) || (_MSC_VER >= 1600))
-  #define QL_CONSTEXPR constexpr
-#else
-  #define QL_CONSTEXPR const
-#endif
-
 namespace QuantLib {
+
+namespace detail {
+namespace NoArbSabrModel {
+// parameter bounds
+const Real beta_min = 0.01;
+const Real beta_max = 0.99;
+const Real expiryTime_max = 30.0;
+const Real sigmaI_min = 0.05;
+const Real sigmaI_max = 1.00;
+const Real nu_min = 0.01;
+const Real nu_max = 0.80;
+const Real rho_min = -0.99;
+const Real rho_max = 0.99;
+// cutoff for phi(d0) / tau
+// if beta = 0.99, d0 is below 1E-14 for
+// bigger values than this
+const Real phiByTau_cutoff = 124.587;
+// number of mc simulations in tabulated
+// absorption probabilities
+const Real nsim = 2500000.0;
+// small probability used for extrapolation
+// of beta towards 1
+const Real tiny_prob = 1E-5;
+// minimum strike used for normal case integration
+const Real strike_min = 1E-6;
+// accuracy and max iterations for
+// numerical integration
+const Real i_accuracy = 1E-7;
+const Size i_max_iterations = 10000;
+// accuracy when adjusting the model forward
+// to match the given forward
+const Real forward_accuracy = 1E-6;
+// step for searching the model forward
+// in newton algorithm
+const Real forward_search_step = 0.0010;
+// lower bound for density evaluation
+const Real density_lower_bound = 1E-50;
+// threshold to identify a zero density
+const Real density_threshold = 1E-100;
+}
+}
 
 class NoArbSabrModel {
 
   public:
-    struct Constants {
-        // parameter bounds
-        static QL_CONSTEXPR Real beta_min = 0.01;
-        static QL_CONSTEXPR Real beta_max = 0.99;
-        static QL_CONSTEXPR Real expiryTime_max = 30.0;
-        static QL_CONSTEXPR Real sigmaI_min = 0.05;
-        static QL_CONSTEXPR Real sigmaI_max = 1.00;
-        static QL_CONSTEXPR Real nu_min = 0.01;
-        static QL_CONSTEXPR Real nu_max = 0.80;
-        static QL_CONSTEXPR Real rho_min = -0.99;
-        static QL_CONSTEXPR Real rho_max = 0.99;
-        // cutoff for phi(d0) / tau
-        // if beta = 0.99, d0 is below 1E-14 for
-        // bigger values than this
-        static QL_CONSTEXPR Real phiByTau_cutoff = 124.587;
-        // number of mc simulations in tabulated
-        // absorption probabilities
-        static QL_CONSTEXPR Real nsim = 2500000.0;
-        // small probability used for extrapolation
-        // of beta towards 1
-        static QL_CONSTEXPR Real tiny_prob = 1E-5;
-        // minimum strike used for normal case integration
-        static QL_CONSTEXPR Real strike_min = 1E-6;
-        // accuracy and max iterations for
-        // numerical integration
-        static QL_CONSTEXPR Real i_accuracy = 1E-7;
-        static QL_CONSTEXPR Size i_max_iterations = 10000;
-        // accuracy when adjusting the model forward
-        // to match the given forward
-        static QL_CONSTEXPR Real forward_accuracy = 1E-6;
-        // step for searching the model forward
-        // in newton algorithm
-        static QL_CONSTEXPR Real forward_search_step = 0.0010;
-        // lower bound for density evaluation
-        static QL_CONSTEXPR Real density_lower_bound = 1E-50;
-        // threshold to identify a zero density
-        static QL_CONSTEXPR Real density_threshold = 1E-100;
-    };
-
     NoArbSabrModel(const Real expiryTime, const Real forward, const Real alpha,
               const Real beta, const Real nu, const Real rho);
 
