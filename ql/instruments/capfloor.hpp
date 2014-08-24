@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2014 Ferdinando Ametrano
  Copyright (C) 2006 François du Vignaud
  Copyright (C) 2006, 2007 StatPro Italia srl
 
@@ -89,7 +89,8 @@ namespace QuantLib {
                                      Real accuracy = 1.0e-4,
                                      Natural maxEvaluations = 100,
                                      Volatility minVol = 1.0e-7,
-                                     Volatility maxVol = 4.0) const;
+                                     Volatility maxVol = 4.0,
+                                     Real displacement = 0.0) const;
       private:
         Type type_;
         Leg floatingLeg_;

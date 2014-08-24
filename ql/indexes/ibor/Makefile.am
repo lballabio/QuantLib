@@ -12,12 +12,14 @@ this_include_HEADERS = \
     eonia.hpp \
     euribor.hpp \
     eurlibor.hpp \
+    fedfunds.hpp \
     gbplibor.hpp \
     jibar.hpp \
     jpylibor.hpp \
     libor.hpp \
     nzdlibor.hpp \
     seklibor.hpp \
+    shibor.hpp \
     sonia.hpp \
     tibor.hpp \
     trlibor.hpp \
@@ -28,7 +30,9 @@ libIborIndexes_la_SOURCES = \
     eonia.cpp \
     euribor.cpp \
     eurlibor.cpp \
+    fedfunds.cpp \
     libor.cpp \
+    shibor.cpp \
     sonia.cpp
 
 noinst_LTLIBRARIES = libIborIndexes.la

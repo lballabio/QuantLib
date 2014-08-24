@@ -44,8 +44,15 @@ namespace QuantLib {
                      const std::vector<Rate>& fixedRate,
                      const DayCounter& accrualDayCounter,
                      BusinessDayConvention paymentConvention,
-                     const Date& issueDate)
-    : Bond(settlementDays, schedule.calendar(), issueDate),
+                     const Date& issueDate,
+                     const Calendar& paymentCalendar,
+                     const Period& exCouponPeriod,
+                     const Calendar& exCouponCalendar,
+                     const BusinessDayConvention exCouponConvention,
+                     bool exCouponEndOfMonth)
+    : Bond(settlementDays, 
+           paymentCalendar==Calendar() ? schedule.calendar() : paymentCalendar,
+           issueDate),
     frequency_(schedule.tenor().frequency()),
     dayCounter_(accrualDayCounter),
     growthOnly_(growthOnly),
@@ -60,12 +67,18 @@ namespace QuantLib {
         // a CPIleg know about zero legs and inclusion of base inflation notional
         cashflows_ = CPILeg(schedule, cpiIndex_,
                             baseCPI_, observationLag_)
-        .withNotionals(faceAmount)
-        .withFixedRates(fixedRate)
-        .withPaymentDayCounter(accrualDayCounter)
-        .withPaymentAdjustment(paymentConvention)
-        .withObservationInterpolation(observationInterpolation_)
-        .withSubtractInflationNominal(growthOnly_);
+            .withNotionals(faceAmount)
+            .withFixedRates(fixedRate)
+            .withPaymentDayCounter(accrualDayCounter)
+            .withPaymentAdjustment(paymentConvention)
+            .withPaymentCalendar(calendar_)
+            .withObservationInterpolation(observationInterpolation_)
+            .withSubtractInflationNominal(growthOnly_)
+            .withExCouponPeriod(exCouponPeriod,
+                                exCouponCalendar,
+                                exCouponConvention,
+                                exCouponEndOfMonth);
+
 
         calculateNotionalsFromCashflows();
 

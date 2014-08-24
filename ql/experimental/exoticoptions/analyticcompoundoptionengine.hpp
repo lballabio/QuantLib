@@ -24,11 +24,9 @@
 #ifndef quantlib_analytic_compound_option_engine_hpp
 #define quantlib_analytic_compound_option_engine_hpp
 
-#include <ql/experimental/compoundoption/compoundoption.hpp>
+#include <ql/experimental/exoticoptions/compoundoption.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
-#include <ql/math/solvers1d/brent.hpp>
-#include <ql/pricingengines/blackcalculator.hpp>
 
 namespace QuantLib {
 
@@ -41,7 +39,6 @@ namespace QuantLib {
         \test the correctness of the returned value is tested by
               reproducing results available in literature.
     */
-
     class AnalyticCompoundOptionEngine : public CompoundOption::engine {
       public:
         AnalyticCompoundOptionEngine(
@@ -97,24 +94,6 @@ namespace QuantLib {
 
         boost::shared_ptr<PlainVanillaPayoff> payoffMother() const;
         boost::shared_ptr<PlainVanillaPayoff> payoffDaughter() const;
-    };
-
-    // Helper Class needed to solve an implicit problem of finding a
-    // spot to a corresponding option price.
-    class ImpliedSpotHelper {
-      public:
-        ImpliedSpotHelper(DiscountFactor dividendDiscount,
-                          DiscountFactor riskFreeDiscount,
-                          Real standardDeviation ,
-                          boost::shared_ptr<PlainVanillaPayoff> payoff,
-                          Real strike);
-        Real operator()(Real spot)const;
-      private:
-        DiscountFactor dividendDiscount_;
-        DiscountFactor riskFreeDiscount_;
-        Real standardDeviation_;
-        Real strike_;
-        boost::shared_ptr<PlainVanillaPayoff> payoff_;
     };
 
 }

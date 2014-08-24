@@ -603,6 +603,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\extensibleoptions.cpp"
+				>
+			</File>
+			<File
 				RelativePath="functions.cpp"
 				>
 			</File>
@@ -795,6 +799,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\partialtimebarrieroption.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\pathgenerator.cpp"
 				>
 			</File>
@@ -907,6 +915,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\twoassetcorrelationoption.cpp"
+				>
+			</File>
+			<File
 				RelativePath="utilities.cpp"
 				>
 			</File>
@@ -928,10 +940,6 @@
 			</File>
 			<File
 				RelativePath=".\vpp.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\writerextensibleoption.cpp"
 				>
 			</File>
 		</Filter>
@@ -1101,6 +1109,10 @@
 			</File>
 			<File
 				RelativePath=".\extendedtrees.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\extensibleoptions.hpp"
 				>
 			</File>
 			<File
@@ -1296,6 +1308,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\partialtimebarrieroption.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\pathgenerator.hpp"
 				>
 			</File>
@@ -1412,6 +1428,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\twoassetcorrelationoption.hpp"
+				>
+			</File>
+			<File
 				RelativePath="utilities.hpp"
 				>
 			</File>
@@ -1433,10 +1453,6 @@
 			</File>
 			<File
 				RelativePath=".\vpp.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\writerextensibleoption.hpp"
 				>
 			</File>
 		</Filter>

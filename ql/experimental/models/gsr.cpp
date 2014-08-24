@@ -18,6 +18,8 @@
 */
 
 #include <ql/experimental/models/gsr.hpp>
+#include <boost/make_shared.hpp>
+#include <ql/quotes/simplequote.hpp>
 
 namespace QuantLib {
 
@@ -27,8 +29,53 @@ namespace QuantLib {
              const Real T)
         : Gaussian1dModel(termStructure), CalibratedModel(2),
           reversion_(arguments_[0]), sigma_(arguments_[1]),
+          volstepdates_(volstepdates) {
+
+        QL_REQUIRE(!termStructure.empty(),
+                   "yield term structure handle is empty");
+
+        volatilities_.resize(volatilities.size());
+        for (Size i = 0; i < volatilities.size(); ++i)
+            volatilities_[i] =
+                Handle<Quote>(boost::make_shared<SimpleQuote>(volatilities[i]));
+        reversions_.resize(1);
+        reversions_[0] = Handle<Quote>(boost::make_shared<SimpleQuote>(reversion));
+
+        initialize(T);
+    }
+
+    Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
+             const std::vector<Date> &volstepdates,
+             const std::vector<Real> &volatilities,
+             const std::vector<Real> &reversions, const Real T)
+        : Gaussian1dModel(termStructure), CalibratedModel(2),
+          reversion_(arguments_[0]), sigma_(arguments_[1]),
+          volstepdates_(volstepdates) {
+
+        QL_REQUIRE(!termStructure.empty(),
+                   "yield term structure handle is empty");
+
+        volatilities_.resize(volatilities.size());
+        for (Size i = 0; i < volatilities.size(); ++i)
+            volatilities_[i] =
+                Handle<Quote>(boost::make_shared<SimpleQuote>(volatilities[i]));
+        reversions_.resize(reversions.size());
+        for (Size i = 0; i < reversions.size(); ++i)
+            reversions_[i] =
+                Handle<Quote>(boost::make_shared<SimpleQuote>(reversions[i]));
+
+        initialize(T);
+    }
+
+    Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
+             const std::vector<Date> &volstepdates,
+             const std::vector<Handle<Quote> > &volatilities,
+             const Handle<Quote> reversion,
+             const Real T)
+        : Gaussian1dModel(termStructure), CalibratedModel(2),
+          reversion_(arguments_[0]), sigma_(arguments_[1]),
           volatilities_(volatilities),
-          reversions_(std::vector<Real>(1, reversion)),
+          reversions_(std::vector<Handle<Quote> >(1, reversion)),
           volstepdates_(volstepdates) {
 
         QL_REQUIRE(!termStructure.empty(),
@@ -38,8 +85,9 @@ namespace QuantLib {
 
     Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
              const std::vector<Date> &volstepdates,
-             const std::vector<Real> &volatilities,
-             const std::vector<Real> &reversions, const Real T)
+             const std::vector<Handle<Quote> > &volatilities,
+             const std::vector<Handle<Quote> > &reversions,
+             const Real T)
         : Gaussian1dModel(termStructure), CalibratedModel(2),
           reversion_(arguments_[0]), sigma_(arguments_[1]),
           volatilities_(volatilities), reversions_(reversions),
@@ -50,10 +98,8 @@ namespace QuantLib {
         initialize(T);
     }
 
-    void Gsr::initialize(Real T) {
-
+    void Gsr::updateTimes() const {
         volsteptimes_.clear();
-        volsteptimesArray_ = Array(volstepdates_.size());
         int j = 0;
         for (std::vector<Date>::const_iterator i = volstepdates_.begin();
              i != volstepdates_.end(); ++i, ++j) {
@@ -69,6 +115,25 @@ namespace QuantLib {
                                << volsteptimes_[j - 1] << "@" << (j - 1) << ", "
                                << volsteptimes_[j] << "@" << j << ")");
         }
+        if(stateProcess_ != NULL)
+            boost::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
+    }
+
+    void Gsr::updateState() const {
+        for (Size i = 0; i < sigma_.size(); i++) {
+            sigma_.setParam(i, volatilities_[i]->value());
+        }
+        for (Size i = 0; i < reversion_.size(); i++) {
+            reversion_.setParam(i, reversions_[i]->value());
+        }
+        boost::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
+    }
+
+    void Gsr::initialize(Real T) {
+
+        volsteptimesArray_ = Array(volstepdates_.size());
+
+        updateTimes();
 
         QL_REQUIRE(volatilities_.size() == volsteptimes_.size() + 1,
                    "there must be n+1 volatilities ("
@@ -78,9 +143,6 @@ namespace QuantLib {
         // sigma_ =
         // PiecewiseConstantParameter(volsteptimes_,PositiveConstraint());
         sigma_ = PiecewiseConstantParameter(volsteptimes_, NoConstraint());
-        for (Size i = 0; i < sigma_.size(); i++) {
-            sigma_.setParam(i, volatilities_[i]);
-        }
 
         QL_REQUIRE(reversions_.size() == 1 ||
                        reversions_.size() == volsteptimes_.size() + 1,
@@ -89,32 +151,35 @@ namespace QuantLib {
                        << ") for n volatility step times ("
                        << volsteptimes_.size() << ")");
         if (reversions_.size() == 1) {
-            reversion_ = ConstantParameter(reversions_[0], NoConstraint());
+            reversion_ = ConstantParameter(reversions_[0]->value(), NoConstraint());
         } else {
             reversion_ =
                 PiecewiseConstantParameter(volsteptimes_, NoConstraint());
-            for (Size i = 0; i < reversions_.size(); i++) {
-                reversion_.setParam(i, reversions_[i]);
-            }
         }
 
         stateProcess_ = boost::shared_ptr<GsrProcess>(new GsrProcess(
             volsteptimesArray_, sigma_.params(), reversion_.params(), T));
 
-        LazyObject::registerWith(stateProcess_); // forward measure time may
-                                                 // change, the model must be
-                                                 // notified then
-        LazyObject::registerWith(termStructure());
+        registerWith(termStructure());
+
+        registerWith(stateProcess_);
+        for(Size i=0;i<reversions_.size();++i)
+            registerWith(reversions_[i]);
+
+        for(Size i=0;i<volatilities_.size();++i)
+            registerWith(volatilities_[i]);
+
+        updateState();
     }
 
     const Real Gsr::zerobondImpl(const Time T, const Time t, const Real y,
                                  const Handle<YieldTermStructure> &yts) const {
 
+        calculate();
+
         if (t == 0.0)
             return yts.empty() ? this->termStructure()->discount(T, true)
                                : yts->discount(T, true);
-
-        calculate();
 
         boost::shared_ptr<GsrProcess> p =
             boost::dynamic_pointer_cast<GsrProcess>(stateProcess_);
@@ -132,6 +197,8 @@ namespace QuantLib {
 
     const Real Gsr::numeraireImpl(const Time t, const Real y,
                                   const Handle<YieldTermStructure> &yts) const {
+
+        calculate();
 
         boost::shared_ptr<GsrProcess> p =
             boost::dynamic_pointer_cast<GsrProcess>(stateProcess_);

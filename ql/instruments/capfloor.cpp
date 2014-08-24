@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2014 Ferdinando Ametrano
  Copyright (C) 2006 François du Vignaud
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006, 2007 StatPro Italia srl
@@ -38,7 +38,8 @@ namespace QuantLib {
           public:
             ImpliedVolHelper(const CapFloor&,
                              const Handle<YieldTermStructure>& discountCurve,
-                             Real targetValue);
+                             Real targetValue,
+                             Real displacement);
             Real operator()(Volatility x) const;
             Real derivative(Volatility x) const;
           private:
@@ -52,7 +53,8 @@ namespace QuantLib {
         ImpliedVolHelper::ImpliedVolHelper(
                               const CapFloor& cap,
                               const Handle<YieldTermStructure>& discountCurve,
-                              Real targetValue)
+                              Real targetValue,
+                              Real displacement)
         : discountCurve_(discountCurve), targetValue_(targetValue) {
 
             // set an implausible value, so that calculation is forced
@@ -60,7 +62,8 @@ namespace QuantLib {
             vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(-1));
             Handle<Quote> h(vol_);
             engine_ = boost::shared_ptr<PricingEngine>(new
-                                    BlackCapFloorEngine(discountCurve_, h));
+                                    BlackCapFloorEngine(discountCurve_, h,
+                                    Actual365Fixed(), displacement));
             cap.setupArguments(engine_->getArguments());
 
             results_ =
@@ -303,11 +306,12 @@ namespace QuantLib {
                                            Real accuracy,
                                            Natural maxEvaluations,
                                            Volatility minVol,
-                                           Volatility maxVol) const {
+                                           Volatility maxVol,
+                                           Real displacement) const {
         //calculate();
         QL_REQUIRE(!isExpired(), "instrument expired");
 
-        ImpliedVolHelper f(*this, d, targetValue);
+        ImpliedVolHelper f(*this, d, targetValue, displacement);
         //Brent solver;
         NewtonSafe solver;
         solver.setMaxEvaluations(maxEvaluations);

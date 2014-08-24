@@ -18,16 +18,20 @@
 */
 
 #include <ql/experimental/math/convolvedstudentt.hpp>
-//#include <ql/math/distributions/convolvedstudentt.hpp>
-
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
-#include <boost/math/distributions/students_t.hpp>
-
 #include <ql/errors.hpp>
 #include <ql/math/factorial.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <boost/function.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
+#include <boost/bind.hpp>
+#include <boost/math/distributions/students_t.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic pop
+#endif
 
 namespace QuantLib {
 
@@ -35,15 +39,16 @@ namespace QuantLib {
         const std::vector<Integer>& degreesFreedom,
         const std::vector<Real>& factors
         )
-    : degreesFreedom_(degreesFreedom), factors_(factors), a_(0.),
-      polyConvolved_(std::vector<Real>(1, 1.))// value to start convolution
+    : degreesFreedom_(degreesFreedom), factors_(factors),
+      polyConvolved_(std::vector<Real>(1, 1.)), // value to start convolution
+      a_(0.)
     {
-        QL_REQUIRE(degreesFreedom.size() == factors.size(), 
+        QL_REQUIRE(degreesFreedom.size() == factors.size(),
             "Incompatible sizes in convolution.");
         for(Size i=0; i<degreesFreedom.size(); i++) {
-            QL_REQUIRE(degreesFreedom[i]%2 != 0, 
+            QL_REQUIRE(degreesFreedom[i]%2 != 0,
                 "Even degree of freedom not allowed");
-            QL_REQUIRE(degreesFreedom[i] >= 0, 
+            QL_REQUIRE(degreesFreedom[i] >= 0,
                 "Negative degree of freedom not allowed");
         }
         for(Size i=0; i<degreesFreedom_.size(); i++)
@@ -59,7 +64,7 @@ namespace QuantLib {
         }
         //convolution, here it is a product of polynomials and exponentials
         for(Size i=0; i<polynCharFnc_.size(); i++)
-            polyConvolved_ = 
+            polyConvolved_ =
                 convolveVectorPolynomials(polyConvolved_, polynCharFnc_[i]);
           // trim possible zeros that might have arised:
           std::vector<Real>::reverse_iterator it = polyConvolved_.rbegin();
@@ -73,12 +78,12 @@ namespace QuantLib {
           }
           // cache 'a' value (the exponent)
           for(Size i=0; i<degreesFreedom_.size(); i++)
-              a_ += std::sqrt(static_cast<Real>(degreesFreedom_[i])) 
+              a_ += std::sqrt(static_cast<Real>(degreesFreedom_[i]))
                 * std::abs(factors_[i]);
           a2_ = a_ * a_;
     }
 
-    Disposable<std::vector<Real> > 
+    Disposable<std::vector<Real> >
     CumulativeBehrensFisher::polynCharactT(Natural n) const {
         Natural nu = 2 * n +1;
         std::vector<Real> low(1,1.), high(1,1.);
@@ -89,8 +94,8 @@ namespace QuantLib {
         for(Size k=1; k<n; k++) {
             std::vector<Real> recursionFactor(1,0.); // 0 coef
             recursionFactor.push_back(0.); // 1 coef
-            recursionFactor.push_back(nu/((2.*k+1.)*(2.*k-1.))); // 2 coef 
-            std::vector<Real> lowUp = 
+            recursionFactor.push_back(nu/((2.*k+1.)*(2.*k-1.))); // 2 coef
+            std::vector<Real> lowUp =
                 convolveVectorPolynomials(recursionFactor, low);
             //add them up:
             for(Size i=0; i<high.size(); i++)
@@ -101,12 +106,12 @@ namespace QuantLib {
         return high;
     }
 
-    Disposable<std::vector<Real> > 
+    Disposable<std::vector<Real> >
     CumulativeBehrensFisher::convolveVectorPolynomials(
-        const std::vector<Real>& v1, 
+        const std::vector<Real>& v1,
         const std::vector<Real>& v2) const {
     #if defined(QL_EXTRA_SAFETY_CHECKS)
-        QL_REQUIRE(!v1.empty() && !v2.empty(), 
+        QL_REQUIRE(!v1.empty() && !v2.empty(),
             "Incorrect vectors in polynomial.");
     #endif
 
@@ -133,22 +138,22 @@ namespace QuantLib {
             integral += polyConvolved_[1] * x/squared;
 
         for(Size exponent = 2; exponent <polyConvolved_.size(); exponent++) {
-            integral -= polyConvolved_[exponent] * 
+            integral -= polyConvolved_[exponent] *
                 Factorial::get(exponent-1) * std::sin((exponent)*atan2xa)
                     /std::pow(rootsqr, static_cast<Real>(exponent));
          }
         return .5 + integral / M_PI;
     }
 
-    Probability 
+    Probability
     CumulativeBehrensFisher::density(const Real x) const {
         Real squared = a2_ + x*x;
         Real integral = polyConvolved_[0] * a_ / squared;
         Real rootsqr = std::sqrt(squared);
         Real atan2xa = std::atan2(-x,a_);
         for(Size exponent=1; exponent <polyConvolved_.size(); exponent++) {
-            integral += polyConvolved_[exponent] * 
-                Factorial::get(exponent) * std::cos((exponent+1)*atan2xa) 
+            integral += polyConvolved_[exponent] *
+                Factorial::get(exponent) * std::cos((exponent+1)*atan2xa)
                     /std::pow(rootsqr, static_cast<Real>(exponent+1) );
         }
         return integral / M_PI;
@@ -157,11 +162,11 @@ namespace QuantLib {
 
 
     InverseCumulativeBehrensFisher::InverseCumulativeBehrensFisher(
-		const std::vector<Integer>& degreesFreedom,
-        const std::vector<Real>& factors, 
-		Real accuracy)
-	: normSqr_(std::inner_product(factors.begin(), factors.end(), 
-        factors.begin(), 0.)), 
+        const std::vector<Integer>& degreesFreedom,
+        const std::vector<Real>& factors,
+        Real accuracy)
+    : normSqr_(std::inner_product(factors.begin(), factors.end(),
+        factors.begin(), 0.)),
       accuracy_(accuracy), distrib_(degreesFreedom, factors) { }
 
     Real InverseCumulativeBehrensFisher::operator()(const Probability q) const {
@@ -177,16 +182,16 @@ namespace QuantLib {
             sign = 1.;
             effectiveq = q;
         }
-		Real xMin = 
+        Real xMin =
             InverseCumulativeNormal::standard_value(effectiveq) * normSqr_;
         // inversion will fail at the Brent's bounds-check if this is not enough
         // (q is very close to 1.), in a bad combination fails around 1.-1.e-7
-		Real xMax = 1.e6;
-        return sign * 
-            Brent().solve(boost::bind(std::bind2nd(std::minus<Real>(), 
+        Real xMax = 1.e6;
+        return sign *
+            Brent().solve(boost::bind(std::bind2nd(std::minus<Real>(),
             effectiveq), boost::bind<Real>(
                 &CumulativeBehrensFisher::operator (),
                 distrib_, _1)), accuracy_, (xMin+xMax)/2., xMin, xMax);
-	}
+    }
 
 }

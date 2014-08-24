@@ -28,10 +28,12 @@
 
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/instruments/bonds/fixedratebond.hpp>
+#include <ql/instruments/bonds/cpibond.hpp>
+#include <ql/cashflows/cpicoupon.hpp>
 
 namespace QuantLib {
 
-    //! fixed-coupon bond helper
+    //! Bond helper for curve bootstrap
     /*! \warning This class assumes that the reference date
                  does not change between calls of setTermStructure().
     */
@@ -43,16 +45,18 @@ namespace QuantLib {
                      the bond after creating the helper, so that the
                      helper has sole ownership of it.
         */
-        BondHelper(const Handle<Quote>& cleanPrice,
-                   const boost::shared_ptr<Bond>& bond);
+        BondHelper(const Handle<Quote>& price,
+                   const boost::shared_ptr<Bond>& bond,
+                   bool useCleanPrice = true);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
         void setTermStructure(YieldTermStructure*);
         //@}
-        //! \name additional inspectors
+        //! \name Additional inspectors
         //@{
         boost::shared_ptr<Bond> bond() const;
+        bool useCleanPrice() const;
         //@}
         //! \name Visitability
         //@{
@@ -61,11 +65,13 @@ namespace QuantLib {
       protected:
         boost::shared_ptr<Bond> bond_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
+        bool useCleanPrice_;        
     };
 
+    //! Fixed-coupon bond helper for curve bootstrap
     class FixedRateBondHelper : public BondHelper {
       public:
-        FixedRateBondHelper(const Handle<Quote>& cleanPrice,
+        FixedRateBondHelper(const Handle<Quote>& price,
                             Natural settlementDays,
                             Real faceAmount,
                             const Schedule& schedule,
@@ -78,8 +84,9 @@ namespace QuantLib {
                             const Period& exCouponPeriod = Period(),
                             const Calendar& exCouponCalendar = Calendar(),
                             const BusinessDayConvention exCouponConvention = Unadjusted,
-                            bool exCouponEndOfMonth = false);
-        //! \name additional inspectors
+                            bool exCouponEndOfMonth = false,
+                            const bool useCleanPrice = true);
+        //! \name Additional inspectors
         //@{
         boost::shared_ptr<FixedRateBond> fixedRateBond() const;
         //@}
@@ -98,11 +105,54 @@ namespace QuantLib {
         return bond_;
     }
 
+    inline bool BondHelper::useCleanPrice() const {
+        return useCleanPrice_;
+    }
+
     inline boost::shared_ptr<FixedRateBond>
     FixedRateBondHelper::fixedRateBond() const {
         return fixedRateBond_;
     }
 
+    //! CPI bond helper for curve bootstrap
+    class CPIBondHelper : public BondHelper {
+      public:
+        CPIBondHelper(const Handle<Quote>& price,
+                            Natural settlementDays,
+                            Real faceAmount,
+                            const bool growthOnly,
+                            Real baseCPI,
+                            const Period& observationLag,
+                            const boost::shared_ptr<ZeroInflationIndex>& cpiIndex,
+                            CPI::InterpolationType observationInterpolation,
+                            const Schedule& schedule,
+                            const std::vector<Rate>& fixedRate,
+                            const DayCounter& accrualDayCounter,
+                            BusinessDayConvention paymentConvention = Following,
+                            const Date& issueDate = Date(),
+                            const Calendar& paymentCalendar = Calendar(),
+                            const Period& exCouponPeriod = Period(),
+                            const Calendar& exCouponCalendar = Calendar(),
+                            const BusinessDayConvention exCouponConvention = Unadjusted,
+                            bool exCouponEndOfMonth = false,
+                            const bool useCleanPrice = true);
+        //! \name Additional inspectors
+        //@{
+        boost::shared_ptr<CPIBond> cpiBond() const;
+        //@}
+        //! \name Visitability
+        //@{
+        void accept(AcyclicVisitor&);
+        //@}
+      protected:
+        boost::shared_ptr<CPIBond> cpiBond_;
+    };
+
+
+    inline boost::shared_ptr<CPIBond>
+    CPIBondHelper::cpiBond() const {
+        return cpiBond_;
+    }
 }
 
 #endif
