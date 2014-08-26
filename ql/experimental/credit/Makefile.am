@@ -77,7 +77,6 @@ libCredit_la_SOURCES = \
     riskyassetswap.cpp \
     riskyassetswapoption.cpp \
     riskybond.cpp \
-    saddlepointlossmodel.hpp \
     syntheticcdo.cpp
 
 noinst_LTLIBRARIES = libCredit.la
