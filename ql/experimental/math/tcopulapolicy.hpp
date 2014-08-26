@@ -66,12 +66,14 @@ namespace QuantLib {
             const initTraits& vals = initTraits());
 
         //! returns a copy of the initialization arguments
+        //... better to have a cache?
         initTraits getInitTraits() const {
             initTraits data;
             data.tOrders.resize(distributions_.size());
             std::transform(distributions_.begin(), distributions_.end(), 
                 data.tOrders.begin(), 
-                boost::bind(&boost::math::students_t_distribution<>::degrees_of_freedom, _1)
+                boost::bind(
+                &boost::math::students_t_distribution<>::degrees_of_freedom, _1)
                 );
             return data;
         }
@@ -104,11 +106,9 @@ namespace QuantLib {
                 "Incompatible sample and latent model sizes");
     #endif
             Real prodDensities = 1.;
-
             for(Size i=0; i<m.size(); i++) 
-                 prodDensities *= 
-                 boost::math::pdf(distributions_[i], m[i] /varianceFactors_[i])
-                    /varianceFactors_[i];
+                prodDensities *= boost::math::pdf(distributions_[i], 
+                    m[i] /varianceFactors_[i]) /varianceFactors_[i];
                  // accumulate lambda
             return prodDensities;
         }

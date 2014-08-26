@@ -103,8 +103,8 @@ namespace QuantLib {
     };
     //@}
 	
-    //typedef 
-	namespace LatentModelIntegrationType {// gcc reports value collision with heston engine (?!)
+    // gcc reports value collision with heston engine (?!) thats why the name
+	namespace LatentModelIntegrationType {
 	    typedef 
 	    enum LatentModelIntegrationType {
             GaussianQuadrature,
@@ -317,29 +317,38 @@ namespace QuantLib {
         }
 
     public:
-  //  protected:
+    //  protected:
         //! \name Latent model random factor number generator facility.
         //@{
         /*!  Allows generation or random samples of the latent variable. 
 
             Generates samples of all the factors in the latent model according 
-            to the given copula as random sequence. The default implementation given uses the 
-            inversion in the copula policy (which must be present).
+            to the given copula as random sequence. The default implementation 
+            given uses the inversion in the copula policy (which must be 
+            present).
             USNG is expected to be a uniform sequence generator in the default 
             implementation. 
-			
+		*/
+        /*
 			Several (very different) usages make the spez non trivial
-			The final goal is to obtain a sequence generator of the factor samples, several routes are possible depending on the algorithms:
+			The final goal is to obtain a sequence generator of the factor 
+            samples, several routes are possible depending on the algorithms:
 			
 			1.- URNG -> Sequence Gen -> CopulaInversion  
 			  e.g.: CopulaInversion(RandomSequenceGenerator<MersenneTwisterRNG>)
 			2.- PseudoRSG ------------> CopulaInversion
 			  e.g.: CopulaInversion(SobolRSG)
-			3.- URNG -> SpecificMapping -> Sequence Gen  (bypasses the copula for performance)
-			  e.g.: RandomSequenceGenerator<BoxMullerGaussianRng<MersenneTwisterRNG> > 
+			3.- URNG -> SpecificMapping -> Sequence Gen  (bypasses the copula 
+                for performance)
+			  e.g.: RandomSequenceGenerator<BoxMullerGaussianRng<
+                MersenneTwisterRNG> > 
 			
-			Notice that the order the three algorithms involved (uniform gen, sequence construction, distribution mapping) is not always the same. (in fact there could be some other ways to generate but these are the ones in the library now.)
-			Difficulties arise when wanting to use situation 3.- whith a generic RNG, leaving it unspecified
+			Notice that the order the three algorithms involved (uniform gen, 
+            sequence construction, distribution mapping) is not always the same.
+            (in fact there could be some other ways to generate but these are 
+            the ones in the library now.)
+			Difficulties arise when wanting to use situation 3.- whith a generic
+            RNG, leaving it unspecified
 			
             Derived classes might specialize (on the copula
             type) to another type of generator if a more efficient algorithm 
@@ -356,10 +365,11 @@ namespace QuantLib {
             LatentModel::latentVarValue with these samples.
         */
         // Cant use InverseCumulativeRsg since the inverse there has to return a
-        //   real number and here a vector is needed, the function inverted here 
+        //   real number and here a vector is needed, the function inverted here
 		//   is multivalued.
         template <class USNG, 
-		    // dummy template parameter to allow for 'full' specialization of inner class without specialization of the outer; rivers of keystrokes on this issue on the net.
+		    // dummy template parameter to allow for 'full' specialization of 
+            // inner class without specialization of the outer.
 		    bool = true>
         class FactorSampler {
         public:
@@ -392,78 +402,6 @@ namespace QuantLib {
             const copulaType& copula_;
         };
         //@}
-
-
-    ////////////    //! \name Latent model direct integration facility.
-    ////////////    //@{
-    ////////////    /* Things trying to achieve here:
-    ////////////    1.- Unify the two branches of integrators in the library, they do not 
-    ////////////      hang from a common base class and here a common ptr for the 
-    ////////////      factory is needed.
-    ////////////    2.- Have a common signature for the integration call.
-    ////////////    3.- Factory construction so integrable latent models can choose the 
-    ////////////      integration algorithm separately.
-    ////////////    */
-    ////////////protected:
-    ////////////    class LMIntegration {
-    ////////////    public:
-    ////////////        virtual Real integrate(const boost::function<Real (
-    ////////////            const std::vector<Real>& arg)>& f) const = 0;
-    ////////////        //// needs vector version too.
-    ////////////        virtual ~LMIntegration() {}
-    ////////////    };
-    ////////////private:
-    ////////////    //CRTP-ish for joining the integrations, class above to have the factory
-    ////////////    template <class I_T>
-    ////////////    class IntegrationBase : 
-    ////////////        public I_T, public LMIntegration {// diamond on 'integrate'
-    ////////////     // this class template always to be fully specialized
-    ////////////     private:
-    ////////////         IntegrationBase() {}
-    ////////////     virtual ~IntegrationBase() {} 
-    ////////////    };
-        /* class template specializations. I havent use CRTP type cast directly
-        because the signature of the integrators is different, grid integration
-        needs the domain. */
-/*
-        template<> class IntegrationBase<GaussianQuadMultidimIntegrator> : 
-            public GaussianQuadMultidimIntegrator, public LMIntegration {
-        public:
-            IntegrationBase(Size dimension, Size order) 
-            : GaussianQuadMultidimIntegrator(dimension, order) {}
-            Real integrate(const boost::function<Real (
-                const std::vector<Real>& arg)>& f) const {
-                    return GaussianQuadMultidimIntegrator::integrate<Real>(f);
-            }
-
-            // disposable vector version here....
-            virtual ~IntegrationBase() {}
-        };*/
-/*
-        template<> class IntegrationBase<MultidimIntegral> : 
-            public MultidimIntegral, public LMIntegration {
-        public:
-            IntegrationBase(
-                const std::vector<boost::shared_ptr<Integrator> >& integrators, 
-                Real a, Real b) 
-            : MultidimIntegral(integrators), 
-              a_(integrators.size(),a), b_(integrators.size(),b) {}
-            Real integrate(const boost::function<Real (
-                const std::vector<Real>& arg)>& f) const {
-                    return MultidimIntegral::operator ()(f, a_, b_);
-            }
-            virtual ~IntegrationBase() {}
-            const std::vector<Real> a_, b_;
-        };
-*/
-    public:
-	/*
-        enum LatentModelIntegrationType {
-            GaussianQuadrature,
-            Trapezoid
-            // etc....
-        };
-		*/
     protected:
         /* \todo Move integrator traits like number of quadrature points, 
         integration domain dimensions, etc to the copula through a static 
@@ -476,8 +414,8 @@ namespace QuantLib {
         public:
             static boost::shared_ptr<LMIntegration> createLMIntegration(
                 Size dimension, 
-				//>>>>???? below? -------------------------------------------------------------------
-                LatentModelIntegrationType::LatentModelIntegrationType type = LatentModelIntegrationType::GaussianQuadrature) 
+                LatentModelIntegrationType::LatentModelIntegrationType type = 
+                    LatentModelIntegrationType::GaussianQuadrature) 
             {
                 switch(type) {
                     case LatentModelIntegrationType::GaussianQuadrature:
@@ -493,9 +431,19 @@ namespace QuantLib {
                             integrals.push_back(
                             boost::make_shared<TrapezoidIntegral<Default> >(
                                 1.e-4, 20));
+                        /* This integration domain is tailored for the T 
+                        distribution; it is too wide for normals or Ts of high
+                        order. 
+                        \todo This needs to be solved by having the copula to 
+                        provide the integration traits for any integration 
+                        algorithm since it is the copula that knows the relevant
+                        domain for its density distributions. Also to be able to
+                        block integrations which will fail; like a quadrature  
+                        here in some cases.
+                        */
                         return 
                           boost::make_shared<IntegrationBase<MultidimIntegral> >
-                               (integrals, -9., 9.);
+                               (integrals, -35., 35.);
                         break;
                         }
                     default:
@@ -622,13 +570,21 @@ namespace QuantLib {
         //@}
     protected:
         // Ordering is: factorWeights_[iVariable][iFactor]
-        mutable std::vector<std::vector<Real> > factorWeights_; ////////////////////// TO BE QUOTES!!!!!!!!!!!!!!!!!!!!!
-        /* This is a duplicated value from the data above chosen for memory reasons.
-I have opted for this one value redundant memory rather than have the memory load of the observable in all factors. Typically Latent models are used in two very different ways: with many factors and not linked to a market observable (typical matrix size above is of tens of thousands entries) or with just one observable value and the matrix is just a scalar. Otherwise, to remove the redundancy, the matrix factorWeights_ should be one of Quotes Handles.
-Yet it is not entirely true that quotes might be used only in pricing, think sensitivity analysis....
-\todo Reconsider this, see how expensive truly is.
+        mutable std::vector<std::vector<Real> > factorWeights_;
+        /* This is a duplicated value from the data above chosen for memory 
+        reasons.
+        I have opted for this one value redundant memory rather than have the 
+        memory load of the observable in all factors. Typically Latent models 
+        are used in two very different ways: with many factors and not linked 
+        to a market observable (typical matrix size above is of tens of 
+        thousands entries) or with just one observable value and the matrix is 
+        just a scalar. Otherwise, to remove the redundancy, the matrix 
+        factorWeights_ should be one of Quotes Handles.
+        Yet it is not entirely true that quotes might be used only in pricing, 
+        think sensitivity analysis....
+        \todo Reconsider this, see how expensive truly is.
         */
-        mutable Handle<Quote> cachedMktFactor_; // if used by the relevant constructor.
+        mutable Handle<Quote> cachedMktFactor_;
 
         // updated only by correlation observability and constructors.
         // \sqrt{1-\sum_k \beta_{i,k}^2} the addition being along the factors. 
@@ -644,45 +600,43 @@ Yet it is not entirely true that quotes might be used only in pricing, think sen
 
 
 
-    //namespace {
-        /* class template specializations. I havent use CRTP type cast directly
-        because the signature of the integrators is different, grid integration
-        needs the domain. */
-        template<> class IntegrationBase<GaussianQuadMultidimIntegrator> : 
-        public GaussianQuadMultidimIntegrator, public LMIntegration {
-        public:
-            IntegrationBase(Size dimension, Size order) 
-            : GaussianQuadMultidimIntegrator(dimension, order) {}
-            Real integrate(const boost::function<Real (
+    /* class template specializations. I havent use CRTP type cast directly
+    because the signature of the integrators is different, grid integration
+    needs the domain. */
+    template<> class IntegrationBase<GaussianQuadMultidimIntegrator> : 
+    public GaussianQuadMultidimIntegrator, public LMIntegration {
+    public:
+        IntegrationBase(Size dimension, Size order) 
+        : GaussianQuadMultidimIntegrator(dimension, order) {}
+        Real integrate(const boost::function<Real (
+            const std::vector<Real>& arg)>& f) const {
+                return GaussianQuadMultidimIntegrator::integrate<Real>(f);
+        }
+        Disposable<std::vector<Real> > integrateV(
+            const boost::function<Disposable<std::vector<Real> >  (
                 const std::vector<Real>& arg)>& f) const {
-                    return GaussianQuadMultidimIntegrator::integrate<Real>(f);
-            }
-            Disposable<std::vector<Real> > integrateV(
-                const boost::function<Disposable<std::vector<Real> >  (
-                    const std::vector<Real>& arg)>& f) const {
-                    return GaussianQuadMultidimIntegrator::
-                        integrate<Disposable<std::vector<Real> > >(f);
-            }
-            virtual ~IntegrationBase() {}
-        };
+                return GaussianQuadMultidimIntegrator::
+                    integrate<Disposable<std::vector<Real> > >(f);
+        }
+        virtual ~IntegrationBase() {}
+    };
 
-        template<> class IntegrationBase<MultidimIntegral> : 
-            public MultidimIntegral, public LMIntegration {
-        public:
-            IntegrationBase(
-                const std::vector<boost::shared_ptr<Integrator> >& integrators, 
-                Real a, Real b) 
-            : MultidimIntegral(integrators), 
-              a_(integrators.size(),a), b_(integrators.size(),b) {}
-            Real integrate(const boost::function<Real (
-                const std::vector<Real>& arg)>& f) const {
-                    return MultidimIntegral::operator ()(f, a_, b_);
-            }
-            // disposable vector version here....
-            virtual ~IntegrationBase() {}
-            const std::vector<Real> a_, b_;
-        };
-    //}
+    template<> class IntegrationBase<MultidimIntegral> : 
+        public MultidimIntegral, public LMIntegration {
+    public:
+        IntegrationBase(
+            const std::vector<boost::shared_ptr<Integrator> >& integrators, 
+            Real a, Real b) 
+        : MultidimIntegral(integrators), 
+          a_(integrators.size(),a), b_(integrators.size(),b) {}
+        Real integrate(const boost::function<Real (
+            const std::vector<Real>& arg)>& f) const {
+                return MultidimIntegral::operator ()(f, a_, b_);
+        }
+        // disposable vector version here....
+        virtual ~IntegrationBase() {}
+        const std::vector<Real> a_, b_;
+    };
 
     // Defines ----------------------------------------------------------------
 
@@ -769,7 +723,7 @@ Yet it is not entirely true that quotes might be used only in pricing, think sen
     }
 
 
-    //----Template partial specializations of the random FactorSampler---------////////////////// WHY THE COPULA TYPE IS NOT INFORCED TOO?????? THESE GENS ONLY CORRESPOND TO ONE COPULA.
+    //----Template partial specializations of the random FactorSampler--------
     /*
     Notice that while the default template needs a sequence generator the 
     specializations need a number generator. This is forced at the time the 
@@ -784,9 +738,10 @@ Yet it is not entirely true that quotes might be used only in pricing, think sen
     The implementation of Box-Muller in the library is the rejection variant so
     do not use it within a multithreaded simulation.
     */
-    template<class TC> template<class URNG, bool dummy>//template<class MersenneTwisterUniformRng>// template<class URNG>// uniform number expected
-    class LatentModel<TC> // LatentModel<GaussianCopulaPolicy>
-        ::FactorSampler <RandomSequenceGenerator<BoxMullerGaussianRng<URNG> > , dummy> {
+    template<class TC> template<class URNG, bool dummy>
+    class LatentModel<TC>
+        ::FactorSampler <RandomSequenceGenerator<BoxMullerGaussianRng<URNG> > ,
+            dummy> {
     public:
         //Size below must be == to the numb of factors idiosy + systemi
         typedef Sample<std::vector<Real> > sample_type;
@@ -810,9 +765,10 @@ Yet it is not entirely true that quotes might be used only in pricing, think sen
     distribution samples so theres a trick here since the template parameter is 
     not what it is used internally.
     */
-    template<class TC> template<class URNG, bool dummy>// uniform number expected
+    template<class TC> template<class URNG, bool dummy>//uniform number expected
     class LatentModel<TC>
-        ::FactorSampler<RandomSequenceGenerator<PolarStudentTRng<URNG> > , dummy> {
+        ::FactorSampler<RandomSequenceGenerator<PolarStudentTRng<URNG> > , 
+            dummy> {
     public:
         typedef Sample<std::vector<Real> > sample_type;
         explicit FactorSampler(const URNG& urng,

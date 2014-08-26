@@ -62,6 +62,10 @@ namespace {
         // Opening the T, T&G tests too. The convolution is analytical
         //   now so it runs it a time comparable to the gaussian tests and
         //   has enough precission to pass the tests.
+        // Below the T models are integrated with a quadrature, even if this
+        //   is incorrect the test pass good enough, the quadrature gets to
+        //   be worst as the kernel deviates from a normal, this is low 
+        //   orders of the T; here 5 is enough, 3 would not be.
         ,
           { 0.3, -1,  5, { 1766, 420, 161,  6 } },
           { 0.3,  5, -1, { 1444, 408, 171, 10 } },
