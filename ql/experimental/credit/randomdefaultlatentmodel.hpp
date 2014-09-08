@@ -64,6 +64,7 @@ namespace QuantLib {
     for each type; duck typing applies for variable names (see the statistic 
     methods)
     */
+    // replaces class Loss 
     template <class simEventOwner> struct simEvent;
 
 
