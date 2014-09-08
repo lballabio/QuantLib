@@ -146,7 +146,7 @@ namespace QuantLib {
         problem arguments (contained in the basket)
         */
     private: //can only be called from Basket
-        virtual void setBasket(Basket* bskt) {
+        void setBasket(Basket* bskt) {
             /* After this; if the model modifies its internal status/caches (if 
             any) it should notify the  prior basket to recognise that basket is 
             not in a calculated=true state. Since we dont know at this level if 
