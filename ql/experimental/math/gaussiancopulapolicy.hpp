@@ -40,13 +40,13 @@ namespace QuantLib {
 
         typedef int initTraits;
 
-        GaussianCopulaPolicy(
+        explicit GaussianCopulaPolicy(
             const std::vector<std::vector<Real> >& factorWeights = 
                 std::vector<std::vector<Real> >(), 
             const initTraits& dummy = int())
+        : numFactors_(factorWeights.size() + factorWeights[0].size())
         {
-            /* check factors in LM are normalized. (it is arguable to perform
-            the test here rather than in the latent model constructors */
+            /* check factors in LM are normalized. */
             for(Size iLVar=0; iLVar<factorWeights.size(); iLVar++) {
                 Real factorsNorm = 
                     std::inner_product(factorWeights[iLVar].begin(), 
@@ -55,6 +55,15 @@ namespace QuantLib {
                 QL_REQUIRE(factorsNorm < 1., 
                     "Non normal random factor combination.");
             }
+            /* check factor matrix is squared .......... */
+        }
+
+        /*! Number of independent random factors. 
+        This is the only methos that ould stop the class from being static, it
+        is needed for the MC generator construction.
+        */
+        Size numFactors() const {
+            return numFactors_;
         }
 
         //! returns a copy of the initialization arguments
@@ -114,6 +123,7 @@ namespace QuantLib {
             return result;
         }
     private:
+        mutable Size numFactors_;
         // no op =
         static const NormalDistribution density_;
         static const CumulativeNormalDistribution cumulative_;

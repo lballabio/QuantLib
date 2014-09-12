@@ -119,9 +119,7 @@ namespace QuantLib {
         void performCalculations() const {
             static_cast<const derivedRandomLM<copulaPolicy, USNG>* >(
                 this)->initDates();//in update?
-            USNG baseUrng(numFactors_+ numLMVars_, seed_); 
-            copulasRng_ = 
-                boost::make_shared<copulaRNG_type>(baseUrng, copula_);
+            copulasRng_ = boost::make_shared<copulaRNG_type>(copula_, seed_);
             performSimulations();
         }
 
@@ -365,7 +363,7 @@ namespace QuantLib {
             Real portfSimLoss=0.;
             for(Size iEvt=0; iEvt < events.size(); iEvt++) {
                 // if event is within time horizon...
-                if(val > events[iEvt].dayFromRef) {
+                if(val > static_cast<BigInteger>(events[iEvt].dayFromRef)) {
                     Size iName = events[iEvt].nameIdx;
                     // ...and is contained in the basket.
                         portfSimLoss += 
@@ -423,7 +421,7 @@ namespace QuantLib {
 
             Real portfSimLoss=0.;
             for(Size iEvt=0; iEvt < events.size(); iEvt++) {
-                if(val > events[iEvt].dayFromRef) {
+                if(val > static_cast<BigInteger>(events[iEvt].dayFromRef)) {
                     Size iName = events[iEvt].nameIdx;
           // test needed (here and the others) to reuse simulations:
           //          if(basket_->pool()->has(copula_->pool()->names()[iName]))
@@ -465,7 +463,7 @@ namespace QuantLib {
             const std::vector<simEvent<D<C, URNG> > >& events = getSim(iSim);
             Real portfSimLoss=0.;
             for(Size iEvt=0; iEvt < events.size(); iEvt++) {
-                if(val > events[iEvt].dayFromRef) {
+                if(val > static_cast<BigInteger>(events[iEvt].dayFromRef)) {
                     Size iName = events[iEvt].nameIdx;
                     // ...and is contained in the basket.
                     //if(basket_->pool()->has(copula_->pool()->names()[iName]))
@@ -545,7 +543,7 @@ namespace QuantLib {
             const std::vector<simEvent<D<C, URNG> > >& events = getSim(iSim);
             Real portfSimLoss=0.;
             for(Size iEvt=0; iEvt < events.size(); iEvt++) {
-                if(val > events[iEvt].dayFromRef) {
+                if(val > static_cast<BigInteger>(events[iEvt].dayFromRef)) {
                     Size iName = events[iEvt].nameIdx;
                  //   if(basket_->pool()->has(copula_->pool()->names()[iName]))
                         portfSimLoss += 
@@ -650,7 +648,7 @@ namespace QuantLib {
             std::vector<simEvent<D<C, URNG> > > splitEventsBuffer;
 
             for(Size iEvt=0; iEvt < events.size(); iEvt++) {
-                if(val > events[iEvt].dayFromRef) {
+                if(val > static_cast<BigInteger>(events[iEvt].dayFromRef)) {
                     Size iName = events[iEvt].nameIdx;
                 // if(basket_->pool()->has(copula_->pool()->names()[iName])) {
                         portfSimLoss += 
@@ -967,20 +965,32 @@ namespace QuantLib {
 
 
     // Common usage typedefs (notice they vary in the multithread version)
-    // For the multithread implementation these souldnt be used, fortunately 
-    //   they will fail because skipTo is absent.
-    typedef RandomDefaultLM<GaussianCopulaPolicy
-        , RandomSequenceGenerator<MersenneTwisterUniformRng> /*, 
-        RandomSequenceGenerator<BoxMullerGaussianRng<
-            MersenneTwisterUniformRng> > */> GaussianRandomDefaultLM;
-    // This one uses the copula inversion directly:
-    /* typedef RandomDefaultLM<GaussianCopulaPolicy, MersenneTwisterUniformRng>
-    GaussianMTRandomDefaultLM;*/
-    /*  typedef RandomDefaultLM<TCopulaPolicy, 
-      RandomSequenceGenerator<MersenneTwisterUniformRng> > TMTRandomDefaultLM;*/
+    // ---------- Gaussian default generators options ------------------------
+    /* Uses copula direct normal inversion and MT generator 
+    typedef RandomDefaultLM<GaussianCopulaPolicy,
+        RandomSequenceGenerator<MersenneTwisterUniformRng> > 
+            GaussianRandomDefaultLM;
+    */
+    /* Uses BoxMuller for gaussian generation, bypassing copula inversions 
+    typedef RandomDefaultLM<GaussianCopulaPolicy, RandomSequenceGenerator<
+        BoxMullerGaussianRng<MersenneTwisterUniformRng> > > 
+            GaussianRandomDefaultLM;
+    */
+    /* Default case, uses the copula inversion directly and sobol sequence */
+    typedef RandomDefaultLM<GaussianCopulaPolicy> GaussianRandomDefaultLM;
+
+    // ---------- T default generators options ----------------------------
+    /* Uses copula inversion and MT base generation
+    typedef RandomDefaultLM<TCopulaPolicy, 
+      RandomSequenceGenerator<MersenneTwisterUniformRng> > TRandomDefaultLM;
+    */
+    /* Uses MT and polar direct strudent-T generation 
     typedef RandomDefaultLM<TCopulaPolicy, 
         RandomSequenceGenerator<PolarStudentTRng<MersenneTwisterUniformRng> > > 
             TRandomDefaultLM;
+    */  
+    /* Default case, uses sobol sequence and copula inversion */
+    typedef RandomDefaultLM<TCopulaPolicy> TRandomDefaultLM;
 
 }
 

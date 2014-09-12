@@ -374,9 +374,11 @@ namespace QuantLib {
         class FactorSampler {
         public:
             typedef Sample<std::vector<Real> > sample_type;
-            explicit FactorSampler(const USNG& rsg, const copulaType& copula) 
-            : sequenceGen_(rsg), copula_(copula), 
-              x_(std::vector<Real>(rsg.dimension()), 1.0) { }
+            explicit FactorSampler(const copulaType& copula, 
+                BigNatural seed = 0) 
+            : sequenceGen_(copula.numFactors(), seed), // base case construction
+              copula_(copula), 
+              x_(std::vector<Real>(copula.numFactors()), 1.0) { }
             /*! Returns a sample of the factor set \f$ M_k\,Z_i\f$. 
             This method has the vocation of being specialized at particular 
             types of the copula with a more efficient inversion to generate the 
@@ -745,12 +747,9 @@ namespace QuantLib {
     public:
         //Size below must be == to the numb of factors idiosy + systemi
         typedef Sample<std::vector<Real> > sample_type;
-        explicit FactorSampler(
-            const RandomSequenceGenerator<BoxMullerGaussianRng<URNG> >& 
-         //   const URNG& 
-                boxMullRng
-            ) 
-        : boxMullRng_(boxMullRng){ } //<< this asignment forces the type match
+        explicit FactorSampler(const copulaType& copula, BigNatural seed = 0) 
+        : boxMullRng_(copula.numFactors(), 
+            BoxMullerGaussianRng<URNG>(URNG(seed))){ }
         const sample_type& nextSequence() const {
                 return boxMullRng_.nextSequence();
         }
@@ -771,16 +770,14 @@ namespace QuantLib {
             dummy> {
     public:
         typedef Sample<std::vector<Real> > sample_type;
-        explicit FactorSampler(const URNG& urng,
-            Size dimensionality,
-            const TCopulaPolicy& copula
-            ) 
-        : sequence_(std::vector<Real> (dimensionality), 1.0) {
+        explicit FactorSampler(const TCopulaPolicy& copula, BigNatural seed = 0)
+        : sequence_(std::vector<Real> (copula.numFactors()), 1.0),
+          urng_(seed) {
             // 1 == urng.dimension() is enforced by the sample type
             const std::vector<Real>& varF = copula.varianceFactors();
             for(Size i=0; i<varF.size(); i++)// ...use back inserter lambda
                 trng_.push_back(
-                    PolarStudentTRng<URNG>(2./(1.-varF[i]*varF[i]), urng));
+                    PolarStudentTRng<URNG>(2./(1.-varF[i]*varF[i]), urng_));
         }
         const sample_type& nextSequence() const {
             Size i=0;
@@ -792,6 +789,7 @@ namespace QuantLib {
         }
     private:
         mutable sample_type sequence_;
+        URNG urng_;
         mutable std::vector<PolarStudentTRng<URNG> > trng_;
     };
 

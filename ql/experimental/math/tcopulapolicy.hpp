@@ -60,10 +60,15 @@ namespace QuantLib {
         simpler combinations (only one correlation, only one variable) might
         simplify memory.
         */
-        TCopulaPolicy(
+        explicit TCopulaPolicy(
             const std::vector<std::vector<Real> >& factorWeights = 
                 std::vector<std::vector<Real> >(), 
             const initTraits& vals = initTraits());
+
+        //! Number of independent random factors.
+        Size numFactors() const {
+            return latentVarsInverters_.size() + varianceFactors_.size() - 1;
+        }
 
         //! returns a copy of the initialization arguments
         //... better to have a cache?
