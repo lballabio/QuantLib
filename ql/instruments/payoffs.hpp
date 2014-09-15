@@ -247,7 +247,6 @@ namespace QuantLib {
         Real operator()(Real price) const;
         virtual void accept(AcyclicVisitor&);
         //@}
-        Real strike() const { return strike_; };
         Real secondStrike() const { return secondStrike_;}
         Real cashPayoff() const { return cashPayoff_;}
       protected:
