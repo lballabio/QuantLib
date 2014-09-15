@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006, 2007, 2010 Ferdinando Ametrano
+ Copyright (C) 2006, 2007, 2010, 2014 Ferdinando Ametrano
  Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2006 StatPro Italia srl
 
@@ -65,11 +65,20 @@ namespace QuantLib {
         if (effectiveDate_ != Date())
             startDate = effectiveDate_;
         else {
-            Date referenceDate = Settings::instance().evaluationDate();
+            Date refDate = Settings::instance().evaluationDate();
+            // if the evaluation date is not a business day
+            // then move to the next business day
+            refDate = floatCalendar_.adjust(refDate);
             Natural fixingDays = iborIndex_->fixingDays();
-            Date spotDate = floatCalendar_.advance(referenceDate,
+            Date spotDate = floatCalendar_.advance(refDate,
                                                    fixingDays*Days);
             startDate = spotDate+forwardStart_;
+            if (forwardStart_.length()<0)
+                startDate = floatCalendar_.adjust(startDate,
+                                                  Preceding);
+            else
+                startDate = floatCalendar_.adjust(startDate,
+                                                  Following);
         }
 
         Date endDate;

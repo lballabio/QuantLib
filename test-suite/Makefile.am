@@ -42,6 +42,7 @@ QL_TESTS = \
 	everestoption.hpp everestoption.cpp \
 	exchangerate.hpp exchangerate.cpp \
 	extendedtrees.hpp extendedtrees.cpp \
+	extensibleoptions.hpp extensibleoptions.cpp \
 	fastfouriertransform.hpp fastfouriertransform.cpp \
 	fdheston.hpp fdheston.cpp \
 	fdmlinearop.hpp fdmlinearop.cpp \
@@ -90,6 +91,7 @@ QL_TESTS = \
 	optionletstripper.hpp optionletstripper.cpp \
 	overnightindexedswap.hpp overnightindexedswap.cpp \
 	pagodaoption.hpp pagodaoption.cpp \
+	partialtimebarrieroption.hpp partialtimebarrieroption.cpp \
 	pathgenerator.hpp pathgenerator.cpp \
 	period.hpp period.cpp \
 	piecewiseyieldcurve.hpp piecewiseyieldcurve.cpp \
@@ -119,13 +121,13 @@ QL_TESTS = \
 	tqreigendecomposition.hpp tqreigendecomposition.cpp \
 	tracing.hpp tracing.cpp \
 	twoassetbarrieroption.hpp twoassetbarrieroption.cpp \
+	twoassetcorrelationoption.hpp twoassetcorrelationoption.cpp \
 	utilities.hpp utilities.cpp \
 	variancegamma.hpp variancegamma.cpp \
 	varianceoption.hpp varianceoption.cpp \
 	varianceswaps.hpp varianceswaps.cpp \
 	volatilitymodels.hpp volatilitymodels.cpp \
-	vpp.hpp vpp.cpp \
-	writerextensibleoption.hpp writerextensibleoption.cpp
+	vpp.hpp vpp.cpp
 
 QL_BENCHMARKS = \
 	quantlibbenchmark.cpp \

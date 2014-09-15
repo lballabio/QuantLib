@@ -256,8 +256,12 @@ namespace QuantLib {
     }
 
     void DepositRateHelper::initializeDates() {
+        // if the evaluation date is not a business day
+        // then move to the next business day
+        Date referenceDate =
+            iborIndex_->fixingCalendar().adjust(evaluationDate_);
         earliestDate_ = iborIndex_->fixingCalendar().advance(
-            evaluationDate_, iborIndex_->fixingDays()*Days);
+            referenceDate, iborIndex_->fixingDays()*Days);
         latestDate_ = iborIndex_->maturityDate(earliestDate_);
         fixingDate_ = iborIndex_->fixingDate(earliestDate_);
     }
@@ -424,10 +428,14 @@ namespace QuantLib {
     }
 
     void FraRateHelper::initializeDates() {
-        Date settlement = iborIndex_->fixingCalendar().advance(
-            evaluationDate_, iborIndex_->fixingDays()*Days);
+        // if the evaluation date is not a business day
+        // then move to the next business day
+        Date referenceDate =
+            iborIndex_->fixingCalendar().adjust(evaluationDate_);
+        Date spotDate = iborIndex_->fixingCalendar().advance(
+            referenceDate, iborIndex_->fixingDays()*Days);
         earliestDate_ = iborIndex_->fixingCalendar().advance(
-                               settlement,
+                               spotDate,
                                periodToStart_,
                                iborIndex_->businessDayConvention(),
                                iborIndex_->endOfMonth());

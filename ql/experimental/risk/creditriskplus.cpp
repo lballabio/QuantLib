@@ -55,9 +55,10 @@ namespace QuantLib {
                        << relativeDefaultVariance_.size() << ")"
                        << " must be equal to number of sectors (" << n_ << ")");
 
+        exposureSum_ = 0.0;
         el_ = 0.0;
         el2_ = 0.0;
-        for (Size i = 0; i < m_; i++) {
+        for (Size i = 0; i < m_; ++i) {
             QL_REQUIRE(exposure_[i] >= 0.0, "exposure #"
                                                 << i << " is negative ("
                                                 << exposure_[i] << ")");
@@ -119,7 +120,7 @@ namespace QuantLib {
 
         std::map<unsigned long, Real, std::less<unsigned long> >::iterator iter;
 
-        for (int k = 0; k < m_; k++) {
+        for (Size k = 0; k < m_; ++k) {
             unsigned long exUnit = (unsigned long)(floor(0.5 + exposure_[k] / unit_)); // round
             if (exposure_[k] > 0 && exUnit == 0)
                 exUnit = 1; // but avoid zero exposure
@@ -143,19 +144,19 @@ namespace QuantLib {
         // compute per sector figures
 
         Real pdSum_ = 0;
-        for (Size k = 0; k < m_; k++) {
+        for (Size k = 0; k < m_; ++k) {
             pdSum_ += pdAdj[k];
             sectorPdSum_[sector_[k]] += pd_[k];
             sectorExposure_[sector_[k]] += exposure_[k];
             sectorEl_[sector_[k]] += exposure_[k] * pd_[k];
         }
 
-        for (Size i = 0; i < n_; i++) {
+        for (Size i = 0; i < n_; ++i) {
 
             // precompute sector specific terms (formula 15 in [1])
 
             sectorSpecTerms_[i] += relativeDefaultVariance_[i] * sectorEl_[i];
-            for (Size j = 0; j < n_; j++) {
+            for (Size j = 0; j < n_; ++j) {
                 if (j != i) {
                     sectorSpecTerms_[i] +=
                         correlation_[i][j] *
@@ -169,11 +170,11 @@ namespace QuantLib {
         // compute synthetic standard deviation (formula 12 in [1])
 
         ul_ = 0.0;
-        for (Size i = 0; i < n_; i++) {
+        for (Size i = 0; i < n_; ++i) {
             sectorUl_[i] =
                 relativeDefaultVariance_[i] * sectorEl_[i] * sectorEl_[i];
             ul_ += sectorUl_[i];
-            for (Size j = 0; j < n_; j++) {
+            for (Size j = 0; j < n_; ++j) {
                 if (j != i) {
                     ul_ += correlation_[i][j] *
                            std::sqrt(relativeDefaultVariance_[i] *
@@ -184,18 +185,18 @@ namespace QuantLib {
         }
 
         Real matchUl_ = ul_; // formula 13 in [1], rhs
-        for (Size k = 0; k < m_; k++) {
+        for (Size k = 0; k < m_; ++k) {
             Real tmp = pd_[k] * exposure_[k] * exposure_[k];
             sectorUl_[sector_[k]] += tmp;
             ul_ += tmp;
         }
         ul_ = std::sqrt(ul_);
-        for (Size i = 0; i < n_; i++)
+        for (Size i = 0; i < n_; ++i)
             sectorUl_[i] = std::sqrt(sectorUl_[i]);
 
         // compute risk contributions (formula 15 in [1])
 
-        for (Size k = 0; k < m_; k++) {
+        for (Size k = 0; k < m_; ++k) {
             marginalLoss_[k] = pd_[k] * exposure_[k] / ul_ *
                                (sectorSpecTerms_[sector_[k]] + exposure_[k]);
         }
@@ -213,11 +214,11 @@ namespace QuantLib {
         loss_.push_back(pow(1.0 - pC_, alphaC_)); // A(0)
 
         Real res;
-        for (unsigned long n = 0; n < upperIndex_ - 1; n++) { // compute A(n+1)
+        for (unsigned long n = 0; n < upperIndex_ - 1; ++n) { // compute A(n+1)
                                                               // recursively
             res = 0.0;
             for (unsigned long j = 0;
-                 j <= std::min<unsigned long>(maxNu_ - 1, n); j++) {
+                 j <= std::min<unsigned long>(maxNu_ - 1, n); ++j) {
                 iter = epsNuC_.find(j + 1);
                 if (iter != epsNuC_.end()) {
                     res += (*iter).second * loss_[n - j] * alphaC_;

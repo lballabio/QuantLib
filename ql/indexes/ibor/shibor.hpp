@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2011 Master IMAFA - Polytech'Nice Sophia - Université de Nice Sophia Antipolis
+ Copyright (C) 2014 Cheng Li, DataYes
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,19 +17,25 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_writer_extensible_option_hpp
-#define quantlib_test_writer_extensible_option_hpp
+/*! \file shibor.hpp
+    \brief China Shibor indexes
+*/
 
-#include <boost/test/unit_test.hpp>
+#ifndef quantlib_shibor_hpp
+#define quantlib_shibor_hpp
 
-/* remember to document new and/or updated tests in the Doxygen
-   comment block of the corresponding class */
+#include <ql/indexes/iborindex.hpp>
 
-class WriterExtensibleOptionTest {
-  public:
-    static void testAnalyticWriterExtensibleOptionEngine();
-    static boost::unit_test_framework::test_suite* suite();
-};
+namespace QuantLib {
+
+    class Shibor : public IborIndex {
+      public:
+        Shibor(
+            const Period& tenor,
+            const Handle<YieldTermStructure>& h = Handle<YieldTermStructure>());
+    };
+
+}
 
 
 #endif

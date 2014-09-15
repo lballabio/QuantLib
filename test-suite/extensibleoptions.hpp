@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2013 Cheng Li, DataYes
+ Copyright (C) 2011 Master IMAFA - Polytech'Nice Sophia - Université de Nice Sophia Antipolis
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,35 +17,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file libor.h
-    \brief base class for China Shibor indexes
-*/
+#ifndef quantlib_test_extensible_options_hpp
+#define quantlib_test_extensible_options_hpp
 
-#ifndef quanlib_shibor_hpp
-#define quanlib_shibor_hpp
+#include <boost/test/unit_test.hpp>
 
-#include <ql/indexes/iborindex.hpp>
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
 
+class ExtensibleOptionsTest {
+  public:
+    static void testAnalyticHolderExtensibleOptionEngine();
+    static void testAnalyticWriterExtensibleOptionEngine();
+    static boost::unit_test_framework::test_suite* suite();
+};
 
-namespace QuantLib {
-
-	class Shibor : public IborIndex {
-	public:
-		Shibor(
-			  const Period& tenor,
-			  const Handle<YieldTermStructure>& h =
-			  Handle<YieldTermStructure>());
-
-	};
-
-	class DailyTenorShibor : public Shibor {
-	public:
-		DailyTenorShibor(
-			const Handle<YieldTermStructure>& h =
-			Handle<YieldTermStructure>())
-			: Shibor(1*Days, h) {}
-	};
-
-}
 
 #endif
