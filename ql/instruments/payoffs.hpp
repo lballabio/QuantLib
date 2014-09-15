@@ -251,7 +251,6 @@ namespace QuantLib {
         Real secondStrike() const { return secondStrike_;}
         Real cashPayoff() const { return cashPayoff_;}
       protected:
-        Real strike_;
         Real secondStrike_;
         Real cashPayoff_;
     };
