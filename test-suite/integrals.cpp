@@ -62,6 +62,8 @@ namespace {
 
     template <class T>
     void testSeveral(const T& I) {
+        testSingle(I, "f(x) = 0",
+                   constant<Real,Real>(0.0), 0.0, 1.0, 0.0);
         testSingle(I, "f(x) = 1",
                    constant<Real,Real>(1.0), 0.0, 1.0, 1.0);
         testSingle(I, "f(x) = x",
