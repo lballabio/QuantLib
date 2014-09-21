@@ -87,23 +87,11 @@ namespace QuantLib {
               checkInputs(correlations_.rows(), correlations_.columns());
                 updateMatrix();
               registerWithMarketData();
-              /*
-              interpolation_ = // so far all constructors match this...
-                  Interpolator2D_T(lossLevel_.begin(), lossLevel_.end(),
-                                 trancheTimes_.begin(), trancheTimes_.end(),
-                                 correlations_);
-                                 */
               // call factory
               setupInterpolation();
         }
     private:
-        /* Notice that while this is calling a virtual method in the constructor
-
-        1.- The virtual function is ('should be coded do that is') only 
-        accessing members from the base class not from the (unallocated) 
-        derived class.
-        */
-  virtual void setupInterpolation() ;
+        virtual void setupInterpolation() ;
     public:
         Size correlationSize() const {return 1;}
         //! Implicit correlation for the given loss interval.
@@ -122,8 +110,6 @@ namespace QuantLib {
         Date maxDate() const {
             return trancheDates_.back();
         }
-// DESTRUCTOR?????????????-------------------------------------------------------------------------------------------------------------
-        //---------------------------------------
         Real correlation(const Date& d, Real lossLevel, 
             bool extrapolate = false) const 
         {
@@ -142,8 +128,8 @@ namespace QuantLib {
             nLosses_;
         std::vector<Period> tenors_;
         mutable std::vector<Real> lossLevel_;
-        mutable std::vector<Date> trancheDates_; // used now
-        mutable std::vector<Time> trancheTimes_;// used now 
+        mutable std::vector<Date> trancheDates_;
+        mutable std::vector<Time> trancheTimes_;
     };
 
     // ----------------------------------------------------------------------

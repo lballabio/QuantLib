@@ -65,7 +65,6 @@ namespace QuantLib {
     For the more general context mathematical theory see: <b>Saddlepoint 
     approximations with applications</b> by R.W. Butler, Cambridge series in 
     statistical and probabilistic mathematics. 2007 \par
-    \todo Restricted by now to gaussian constant loss model. Open it.
     \todo Some portfolios show instabilities in the high order expansion terms.
     \todo Methods here are calling and integrating using the unconditional 
         probabilities without inverting them first; quite a lot of calls to 

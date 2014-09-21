@@ -251,7 +251,6 @@ namespace QuantLib {
 
         // shift
         while (x_[0] < attachmentPoint) {
-      //  while (x_[1] < attachmentPoint) {
             x_.erase(x_.begin());
             dx_.erase(dx_.begin());
             count_.erase(count_.begin());
@@ -262,27 +261,22 @@ namespace QuantLib {
 
         // remove losses over detachment point:
         std::vector<Real>::iterator detachPosit = 
-            std::find_if(x_.begin(), x_.end(), std::bind2nd(std::greater<Real>(), detachmentPoint));
+            std::find_if(x_.begin(), x_.end(), 
+                std::bind2nd(std::greater<Real>(), detachmentPoint));
         if(detachPosit != x_.end())
             x_.erase(detachPosit + 1, x_.end());
 
         size_ = x_.size();
-        cumulativeDensity_.erase(cumulativeDensity_.begin() + size_, cumulativeDensity_.end());
-       // cumulativeDensity_.rbegin() 
+        cumulativeDensity_.erase(cumulativeDensity_.begin() + size_, 
+            cumulativeDensity_.end());
         cumulativeDensity_.back() = 1.; 
         count_.erase(count_.begin() + size_, count_.end());
         dx_.erase(dx_.begin() + size_, dx_.end());
 
-
-        //excessProbability_.erase(excessProbability_.begin() + size_, excessProbability_.end());
-       // density_.erase(density_.begin() + size_, density_.end());
-
         // truncate
         for (Size i = 0; i < x_.size(); i++) {
-         ///...   x_[i] -= attachmentPoint; // = x_[i-1] + dx_[i-1];
-            x_[i] = std::min(std::max(x_[i] - attachmentPoint, 0.), detachmentPoint - attachmentPoint);
-            //////if (x_[i] > detachmentPoint - attachmentPoint)
-            //////    excessProbability_[i] = 0.0;
+            x_[i] = std::min(std::max(x_[i] - attachmentPoint, 0.), 
+                detachmentPoint - attachmentPoint);
         }
 
         density_.clear(); 
@@ -290,20 +284,16 @@ namespace QuantLib {
         cumulativeExcessProbability_.clear(); //? reuse?
         density_.push_back((cumulativeDensity_[0]-0.)/dx_[0]);
         excessProbability_.push_back(1.);
-      ////  cumulativeExcessProbability_.push_back(0.);
         for(Size i=1; i<size_-1; i++) {
             excessProbability_.push_back(1.-cumulativeDensity_[i-1]);
-            density_.push_back((cumulativeDensity_[i]-cumulativeDensity_[i-1])/dx_[i]);
+            density_.push_back((cumulativeDensity_[i]-
+                cumulativeDensity_[i-1])/dx_[i]);
         }
         excessProbability_.push_back(1.-cumulativeDensity_.back());
         density_.push_back((1.-cumulativeDensity_.back())/dx_.back());
-        ////for(Size i=1; i<size_; i++) {
-        ////    cumulativeExcessProbability_.push_back(
-        ////        excessProbability_[i-1] * dx_[i-1] + cumulativeExcessProbability_[i-1]);
-        ////}
 
+        return;//
 
-return;
         // force spike at zero
         excessProbability_[0] = 1.0;
 
@@ -328,7 +318,7 @@ return;
             QL_REQUIRE (d2.dx_[i] == d2.dx_[i-1], "bucket size varies in d2");
 
         // force offset 0
-        QL_REQUIRE (d1.xmin_ == 0.0 && d1.xmin_ == 0.0,
+        QL_REQUIRE (d1.xmin_ == 0.0 && d2.xmin_ == 0.0,
                  "distributions offset larger than 0");
 
         Distribution dist(d1.size() + d2.size() - 1,
@@ -364,21 +354,13 @@ return;
         normalize();
         Real expected = 0;
         Size iVal = locate(confidenceLevel(percValue));
-        //////////// to do: perform checks on iVal
-        //////////for (int i = iVal; i < size_; i++) {
-        //////////    Real x = x_[i] + dx_[i]/2;
-        //////////    expected += x * dx_[i] * density_[i];
-        //////////}
-        //////////return expected / (1.-cumulativeDensity_.at(iVal));
 
-if(iVal == size_-1) return x_.back();
+        if(iVal == size_-1) return x_.back();
 
         for (int i = iVal; i < size_; i++)
-            expected += x_[i] * (cumulativeDensity_[i] - cumulativeDensity_[i-1]);
+            expected += x_[i] * 
+                (cumulativeDensity_[i] - cumulativeDensity_[i-1]);
         return expected/(1.-cumulativeDensity_.at(iVal));
-
-
-
     }
 
 }
