@@ -291,19 +291,6 @@ namespace QuantLib {
         }
         excessProbability_.push_back(1.-cumulativeDensity_.back());
         density_.push_back((1.-cumulativeDensity_.back())/dx_.back());
-
-        return;//
-
-        // force spike at zero
-        excessProbability_[0] = 1.0;
-
-        // update density and cumlated
-        for (Size i = 0; i < x_.size(); i++) {
-            density_[i] = (excessProbability_[i] - excessProbability_[i+1])
-                / dx_[i];
-            cumulativeDensity_[i] = density_[i] * dx_[i];
-            if (i > 0) cumulativeDensity_[i] += cumulativeDensity_[i-1];
-        }
     }
 
     //-------------------------------------------------------------------------
