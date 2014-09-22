@@ -3801,6 +3801,12 @@
     <ClInclude Include="ql\experimental\exoticoptions\analyticpdfhestonengine.hpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\barrier\binomialbarrierengine.hpp">
+      <Filter>pricingengines\barrier</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\barrier\discretizedbarrieroption.hpp">
+      <Filter>pricingengines\barrier</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -5787,6 +5793,9 @@
       <Filter>experimental\math</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\barrier\analyticbinarybarrierengine.cpp">
+      <Filter>pricingengines\barrier</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\barrier\discretizedbarrieroption.cpp">
       <Filter>pricingengines\barrier</Filter>
     </ClCompile>
     <ClCompile Include="ql\cashflow.cpp" />
