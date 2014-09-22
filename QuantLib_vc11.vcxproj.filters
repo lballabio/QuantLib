@@ -3372,6 +3372,9 @@
     <ClInclude Include="ql\experimental\math\zigguratrng.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
+    <ClCompile Include="ql\pricingengines\barrier\analyticbinarybarrierengine.cpp">
+      <Filter>pricingengines\barrier</Filter>
+    </ClCompile>
     <ClInclude Include="ql\auto_link.hpp" />
     <ClInclude Include="ql\cashflow.hpp" />
     <ClInclude Include="ql\compounding.hpp" />
@@ -3532,6 +3535,9 @@
       <Filter>pricingengines\asian</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\barrier\fdblackscholesbarrierengine.hpp">
+      <Filter>pricingengines\barrier</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\barrier\analyticbinarybarrierengine.hpp">
       <Filter>pricingengines\barrier</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\barrier\fdblackscholesrebateengine.hpp">

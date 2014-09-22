@@ -892,6 +892,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\binaryoption.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\blackdeltacalculator.cpp"
 				>
 			</File>
@@ -1398,6 +1402,10 @@
 			</File>
 			<File
 				RelativePath=".\bermudanswaption.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\binaryoption.hpp"
 				>
 			</File>
 			<File
