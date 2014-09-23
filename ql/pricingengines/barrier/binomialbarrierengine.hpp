@@ -37,25 +37,43 @@ namespace QuantLib {
     //! Pricing engine for barrier options using binomial trees
     /*! \ingroup barrierengines
 
+        \note Timesteps are adjusted using Boyle and Lau algorithm.
+              See Journal of Derivatives, 1/1994,
+              "Bumping up against the barrier with the binomial method"
+
         \test the correctness of the returned values is tested by
-              checking it against analytic results.
+              checking it against analytic european results.
     */
     template <class T>
     class BinomialBarrierEngine : public BarrierOption::engine {
       public:
+        /*! \param maxTimeSteps is used to limit timeSteps when using Boyle-Lau
+                   optimization. If zero (the default) the maximum number of 
+                   steps is calculated by an heuristic: anything when < 1000,
+                   otherwise no more than 5*timeSteps.
+                   If maxTimeSteps is equal to timeSteps Boyle-Lau is disabled.
+        */
         BinomialBarrierEngine(
              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size timeSteps)
-        : process_(process), timeSteps_(timeSteps) {
+             Size timeSteps,
+             Size maxTimeSteps=0)
+        : process_(process), timeSteps_(timeSteps), maxTimeSteps_(maxTimeSteps) {
             QL_REQUIRE(timeSteps>0,
                        "timeSteps must be positive, " << timeSteps <<
                        " not allowed");
+            QL_REQUIRE(maxTimeSteps==0 || maxTimeSteps>=timeSteps,
+                       "maxTimeSteps must be zero or "
+                       "greater than or equal to timeSteps, "
+                       << maxTimeSteps << " not allowed");
+            if (maxTimeSteps_==0)
+               maxTimeSteps_ = std::max( (Size)1000, timeSteps_*5);
             registerWith(process_);
         }
         void calculate() const;
       private:
         boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size timeSteps_;
+        Size maxTimeSteps_;
     };
 
 
@@ -102,13 +120,37 @@ namespace QuantLib {
                                       process_->stateVariable(),
                                       flatDividends, flatRiskFree, flatVol));
 
-        TimeGrid grid(maturity, timeSteps_);
+        // correct timesteps to ensure a (local) minimum, using Boyle and Lau
+        // approach. See Journal of Derivatives, 1/1994,
+        // "Bumping up against the barrier with the binomial method"
+        Size optimum_steps = timeSteps_;
+        if (maxTimeSteps_ > timeSteps_ && s0 > 0 && arguments_.barrier > 0) {
+            Real divisor;
+            if (s0 > arguments_.barrier)
+               divisor = std::pow(std::log(s0 / arguments_.barrier), 2);
+            else
+               divisor = std::pow(std::log(arguments_.barrier / s0), 2);
+            if (!close(divisor,0)) {
+                for (Size i=1; i < timeSteps_ ; ++i) {
+                    Size optimum = Size(( i*i * v*v * maturity) / divisor);
+                    if (timeSteps_ < optimum) {
+                        optimum_steps = optimum;
+                        break; // found first minimum with iterations>=timesteps
+                    }
+                }
+            }
 
-        boost::shared_ptr<T> tree(new T(bs, maturity, timeSteps_,
+            if (optimum_steps > maxTimeSteps_) 
+               optimum_steps = maxTimeSteps_; // too high, limit
+        }
+
+        TimeGrid grid(maturity, optimum_steps);
+
+        boost::shared_ptr<T> tree(new T(bs, maturity, optimum_steps,
                                         payoff->strike()));
 
         boost::shared_ptr<BlackScholesLattice<T> > lattice(
-            new BlackScholesLattice<T>(tree, r, maturity, timeSteps_));
+            new BlackScholesLattice<T>(tree, r, maturity, optimum_steps));
 
         DiscretizedBarrierOption option(arguments_, *process_, grid);
 

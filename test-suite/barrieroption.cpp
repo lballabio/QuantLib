@@ -301,36 +301,36 @@ void BarrierOptionTest::testHaugValues() {
         { Barrier::UpIn,      105.0,    3.0,  Option::Put, european,  100, 100.0, 0.04, 0.08, 0.50, 0.30,  4.4226, 1.0e-4 },
         { Barrier::UpIn,      105.0,    3.0,  Option::Put, european,  110, 100.0, 0.04, 0.08, 0.50, 0.30,  8.3686, 1.0e-4 },
 
-        // Options with american exercise: values computed with Haug's VBA code (handles only out options)
+        // Options with american exercise: values computed with 400 steps of Haug's VBA code (handles only out options)
         //     barrierType, barrier, rebate,         type, exercise, strk,     s,    q,    r,    t,    v,  result, tol
-        { Barrier::DownOut,    95.0,    0.0, Option::Call, american,   90, 100.0, 0.04, 0.08, 0.50, 0.25, 10.4495, 1.0e-4},
-        { Barrier::DownOut,    95.0,    0.0, Option::Call, american,  100, 100.0, 0.04, 0.08, 0.50, 0.25,  4.5175, 1.0e-4},
-        { Barrier::DownOut,    95.0,    0.0, Option::Call, american,  110, 100.0, 0.04, 0.08, 0.50, 0.25,  2.6013, 1.0e-4},
+        { Barrier::DownOut,    95.0,    0.0, Option::Call, american,   90, 100.0, 0.04, 0.08, 0.50, 0.25, 10.4655, 1.0e-4},
+        { Barrier::DownOut,    95.0,    0.0, Option::Call, american,  100, 100.0, 0.04, 0.08, 0.50, 0.25,  4.5159, 1.0e-4},
+        { Barrier::DownOut,    95.0,    0.0, Option::Call, american,  110, 100.0, 0.04, 0.08, 0.50, 0.25,  2.5971, 1.0e-4},
         { Barrier::DownOut,   100.0,    3.0, Option::Call, american,   90, 100.0, 0.04, 0.08, 0.50, 0.25,  3.0000, 1.0e-4},
         { Barrier::DownOut,   100.0,    3.0, Option::Call, american,  100, 100.0, 0.04, 0.08, 0.50, 0.25,  3.0000, 1.0e-4},
         { Barrier::DownOut,   100.0,    3.0, Option::Call, american,  110, 100.0, 0.04, 0.08, 0.50, 0.25,  3.0000, 1.0e-4},
-        { Barrier::UpOut,     105.0,    0.0, Option::Call, american,   90, 100.0, 0.04, 0.08, 0.50, 0.25, 11.6685, 1.0e-4},
-        { Barrier::UpOut,     105.0,    0.0, Option::Call, american,  100, 100.0, 0.04, 0.08, 0.50, 0.25,  3.1171, 1.0e-4},
-        { Barrier::UpOut,     105.0,    3.0, Option::Call, american,  110, 100.0, 0.04, 0.08, 0.50, 0.25,  2.3453, 1.0e-4},
+        { Barrier::UpOut,     105.0,    0.0, Option::Call, american,   90, 100.0, 0.04, 0.08, 0.50, 0.25, 11.8076, 1.0e-4},
+        { Barrier::UpOut,     105.0,    0.0, Option::Call, american,  100, 100.0, 0.04, 0.08, 0.50, 0.25,  3.3993, 1.0e-4},
+        { Barrier::UpOut,     105.0,    3.0, Option::Call, american,  110, 100.0, 0.04, 0.08, 0.50, 0.25,  2.3457, 1.0e-4},
 
-        { Barrier::DownOut,    95.0,    3.0,  Option::Put, american,   90, 100.0, 0.04, 0.08, 0.50, 0.25,  2.2789, 1.0e-4 },
-        { Barrier::DownOut,    95.0,    0.0,  Option::Put, american,  100, 100.0, 0.04, 0.08, 0.50, 0.25,  3.2518, 1.0e-4 },
-        { Barrier::DownOut,    95.0,    0.0,  Option::Put, american,  110, 100.0, 0.04, 0.08, 0.50, 0.25, 11.5487, 1.0e-4 },
+        { Barrier::DownOut,    95.0,    3.0,  Option::Put, american,   90, 100.0, 0.04, 0.08, 0.50, 0.25,  2.2795, 1.0e-4 },
+        { Barrier::DownOut,    95.0,    0.0,  Option::Put, american,  100, 100.0, 0.04, 0.08, 0.50, 0.25,  3.3512, 1.0e-4 },
+        { Barrier::DownOut,    95.0,    0.0,  Option::Put, american,  110, 100.0, 0.04, 0.08, 0.50, 0.25, 11.5773, 1.0e-4 },
         { Barrier::DownOut,   100.0,    3.0,  Option::Put, american,   90, 100.0, 0.04, 0.08, 0.50, 0.25,  3.0000, 1.0e-4 },
         { Barrier::DownOut,   100.0,    3.0,  Option::Put, american,  100, 100.0, 0.04, 0.08, 0.50, 0.25,  3.0000, 1.0e-4 },
         { Barrier::DownOut,   100.0,    3.0,  Option::Put, american,  110, 100.0, 0.04, 0.08, 0.50, 0.25,  3.0000, 1.0e-4 },
-        { Barrier::UpOut,     105.0,    0.0,  Option::Put, american,   90, 100.0, 0.04, 0.08, 0.50, 0.25,  1.4769, 1.0e-4 },
-        { Barrier::UpOut,     105.0,    0.0,  Option::Put, american,  100, 100.0, 0.04, 0.08, 0.50, 0.25,  3.2989, 1.0e-4 },
+        { Barrier::UpOut,     105.0,    0.0,  Option::Put, american,   90, 100.0, 0.04, 0.08, 0.50, 0.25,  1.4763, 1.0e-4 },
+        { Barrier::UpOut,     105.0,    0.0,  Option::Put, american,  100, 100.0, 0.04, 0.08, 0.50, 0.25,  3.3001, 1.0e-4 },
         { Barrier::UpOut,     105.0,    0.0,  Option::Put, american,  110, 100.0, 0.04, 0.08, 0.50, 0.25, 10.0000, 1.0e-4 },
 
         // some american in-options - results (roughly) verified with other numerical methods 
         //     barrierType, barrier, rebate,         type, exercise, strk,     s,    q,    r,    t,    v,  result, tol
-        { Barrier::DownIn,     95.0,    3.0, Option::Call, american,   90, 100.0, 0.04, 0.08, 0.50, 0.25,  7.7542, 1.0e-4},
-        { Barrier::DownIn,     95.0,    3.0, Option::Call, american,  100, 100.0, 0.04, 0.08, 0.50, 0.25,  4.0001, 1.0e-4},
-        { Barrier::DownIn,     95.0,    3.0, Option::Call, american,  110, 100.0, 0.04, 0.08, 0.50, 0.25,  2.0571, 1.0e-4},
-        { Barrier::DownIn,    100.0,    3.0, Option::Call, american,   90, 100.0, 0.04, 0.08, 0.50, 0.25, 13.8348, 1.0e-4},
-        { Barrier::UpIn,      105.0,    3.0, Option::Call, american,   90, 100.0, 0.04, 0.08, 0.50, 0.25, 14.1188, 1.0e-4},
-        { Barrier::UpIn,      105.0,    3.0, Option::Call, american,  110, 100.0, 0.04, 0.08, 0.50, 0.25,  4.5857, 1.0e-4},
+        { Barrier::DownIn,     95.0,    3.0, Option::Call, american,   90, 100.0, 0.04, 0.08, 0.50, 0.25,  7.7615, 1.0e-4},
+        { Barrier::DownIn,     95.0,    3.0, Option::Call, american,  100, 100.0, 0.04, 0.08, 0.50, 0.25,  4.0118, 1.0e-4},
+        { Barrier::DownIn,     95.0,    3.0, Option::Call, american,  110, 100.0, 0.04, 0.08, 0.50, 0.25,  2.0544, 1.0e-4},
+        { Barrier::DownIn,    100.0,    3.0, Option::Call, american,   90, 100.0, 0.04, 0.08, 0.50, 0.25, 13.8308, 1.0e-4},
+        { Barrier::UpIn,      105.0,    3.0, Option::Call, american,   90, 100.0, 0.04, 0.08, 0.50, 0.25, 14.1150, 1.0e-4},
+        { Barrier::UpIn,      105.0,    3.0, Option::Call, american,  110, 100.0, 0.04, 0.08, 0.50, 0.25,  4.5900, 1.0e-4},
 
         /*
             Data from "Going to Extreme: Correcting Simulation Bias in Exotic
@@ -422,17 +422,18 @@ void BarrierOptionTest::testHaugValues() {
            }
         }
 
-        engine = boost::make_shared<BinomialBarrierEngine<CoxRossRubinstein> >(stochProcess, 200);
+        engine = boost::make_shared<BinomialBarrierEngine<CoxRossRubinstein> >(stochProcess, 400);
         barrierOption.setPricingEngine(engine);
 
         calculated = barrierOption.NPV();
         expected = values[i].result;
         error = std::fabs(calculated-expected);
-        if (error>2.0e-2) {
-            REPORT_FAILURE("Binomial value", values[i].barrierType, values[i].barrier,
+        double tol = 1.1e-2;
+        if (error>tol) {
+            REPORT_FAILURE("Binomial (Boyle-lau) value", values[i].barrierType, values[i].barrier,
                            values[i].rebate, payoff, exercise, values[i].s,
                            values[i].q, values[i].r, today, values[i].v,
-                           expected, calculated, error, values[i].tol);
+                           expected, calculated, error, tol);
         }
 
     }
