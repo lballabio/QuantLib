@@ -422,7 +422,7 @@ void BarrierOptionTest::testHaugValues() {
            }
         }
 
-        engine = boost::make_shared<BinomialBarrierEngine<CoxRossRubinstein> >(stochProcess, 400);
+        engine = boost::make_shared<BinomialBarrierEngine<CoxRossRubinstein,DiscretizedBarrierOption> >(stochProcess, 400);
         barrierOption.setPricingEngine(engine);
 
         calculated = barrierOption.NPV();
@@ -436,6 +436,22 @@ void BarrierOptionTest::testHaugValues() {
                            expected, calculated, error, tol);
         }
 
+        // Note: here, to test Derman convergence, we force maxTimeSteps to 
+        // timeSteps, effectively disabling Boyle-Lau barrier adjustment.
+        // Production code should always enable Boyle-Lau. In most cases it
+        // gives very good convergence with only a modest timeStep increment.
+        engine = boost::make_shared<BinomialBarrierEngine<CoxRossRubinstein,DiscretizedDermanKaniBarrierOption> >(stochProcess, 400);
+        barrierOption.setPricingEngine(engine);
+        calculated = barrierOption.NPV();
+        expected = values[i].result;
+        error = std::fabs(calculated-expected);
+        tol = 4e-2;
+        if (error>tol) {
+            REPORT_FAILURE("Binomial (Derman) value", values[i].barrierType, values[i].barrier,
+                           values[i].rebate, payoff, exercise, values[i].s,
+                           values[i].q, values[i].r, today, values[i].v,
+                           expected, calculated, error, tol);
+        }
     }
 }
 

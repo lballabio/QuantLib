@@ -44,7 +44,7 @@ namespace QuantLib {
         \test the correctness of the returned values is tested by
               checking it against analytic european results.
     */
-    template <class T>
+    template <class T, class D>
     class BinomialBarrierEngine : public BarrierOption::engine {
       public:
         /*! \param maxTimeSteps is used to limit timeSteps when using Boyle-Lau
@@ -79,8 +79,8 @@ namespace QuantLib {
 
     // template definitions
 
-    template <class T>
-    void BinomialBarrierEngine<T>::calculate() const {
+    template <class T, class D>
+    void BinomialBarrierEngine<T,D>::calculate() const {
 
         DayCounter rfdc  = process_->riskFreeRate()->dayCounter();
         DayCounter divdc = process_->dividendYield()->dayCounter();
@@ -152,8 +152,7 @@ namespace QuantLib {
         boost::shared_ptr<BlackScholesLattice<T> > lattice(
             new BlackScholesLattice<T>(tree, r, maturity, optimum_steps));
 
-        DiscretizedBarrierOption option(arguments_, *process_, grid);
-
+        D option(arguments_, *process_, grid);
         option.initialize(lattice, maturity);
 
         // Partial derivatives calculated from various points in the

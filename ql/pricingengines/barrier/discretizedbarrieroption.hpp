@@ -39,18 +39,44 @@ namespace QuantLib {
 
         void reset(Size size);
 
+        const Array& vanilla() const { 
+            return vanilla_.values(); 
+        }
+
+        const BarrierOption::arguments& arguments() const {
+           return arguments_;
+        }
+
         std::vector<Time> mandatoryTimes() const {
             return stoppingTimes_;
         }
+
+        void checkBarrier(Array &optvalues, const Array &grid) const;
       protected:
         void postAdjustValuesImpl();
       private:
-        void checkBarrier(const Array &grid, bool endTime, bool stoppingTime);
         BarrierOption::arguments arguments_;
         std::vector<Time> stoppingTimes_;
         DiscretizedVanillaOption vanilla_; 
     };
 
+    class DiscretizedDermanKaniBarrierOption : public DiscretizedAsset {
+      public:
+        DiscretizedDermanKaniBarrierOption(const BarrierOption::arguments&,
+                                 const StochasticProcess& process,
+                                 const TimeGrid& grid = TimeGrid());
+
+        void reset(Size size);
+
+        std::vector<Time> mandatoryTimes() const {
+            return unenhanced_.mandatoryTimes();
+        }
+      protected:
+        void postAdjustValuesImpl();
+      private:
+        void adjustBarrier(Array &optvalues, const Array &grid);
+        DiscretizedBarrierOption unenhanced_;
+    };
 }
 
 

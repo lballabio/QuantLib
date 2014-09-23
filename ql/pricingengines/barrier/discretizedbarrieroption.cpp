@@ -19,6 +19,7 @@
 
 #include <ql/pricingengines/barrier/discretizedbarrieroption.hpp>
 #include <vector>
+#include <iostream>
 
 namespace QuantLib {
 
@@ -47,7 +48,16 @@ namespace QuantLib {
     }
 
     void DiscretizedBarrierOption::postAdjustValuesImpl() {
+        if (arguments_.barrierType==Barrier::DownIn ||
+                     arguments_.barrierType==Barrier::UpIn) {
+            vanilla_.rollback(time());
+        }
         Array grid = method()->grid(time());
+        checkBarrier(values_, grid);
+    }
+
+    void DiscretizedBarrierOption::checkBarrier(Array &optvalues, const Array &grid) const {
+
         Time now = time();
         bool endTime = isOnTime(stoppingTimes_.back());
         bool stoppingTime = false;         
@@ -72,60 +82,134 @@ namespace QuantLib {
           default:
             QL_FAIL("invalid option type");
         }
-        if (arguments_.barrierType==Barrier::DownIn ||
-                     arguments_.barrierType==Barrier::UpIn) {
-            vanilla_.rollback(now);  
-        }
-        checkBarrier(grid, endTime, stoppingTime);
-    }
-
-    void DiscretizedBarrierOption::checkBarrier(const Array &grid, bool endTime, bool stoppingTime) {
-
-        for (Size j=0; j<values_.size(); j++) {
+        for (Size j=0; j<optvalues.size(); j++) {
             switch (arguments_.barrierType) {
               case Barrier::DownIn:
                   if (grid[j] <= arguments_.barrier) {
                      // knocked in
                      if (stoppingTime) {
-                         values_[j] = std::max(vanilla_.values()[j],
+                        optvalues[j] = std::max(vanilla_.values()[j],
                                       (*arguments_.payoff)(grid[j]));
                      }
                      else
-                         values_[j] = vanilla_.values()[j]; 
+                         optvalues[j] = vanilla_.values()[j]; 
                   }
                   else if (endTime)
-                      values_[j] = arguments_.rebate;
+                      optvalues[j] = arguments_.rebate;
                   break;
               case Barrier::DownOut:
                   if (grid[j] <= arguments_.barrier)
-                      values_[j] = arguments_.rebate; // knocked out
-                  else if (stoppingTime)
-                      values_[j] = std::max(values()[j],
+                      optvalues[j] = arguments_.rebate; // knocked out
+                  else if (stoppingTime) {
+                      optvalues[j] = std::max(optvalues[j],
                                      (*arguments_.payoff)(grid[j]));
+                  }
                   break;
               case Barrier::UpIn:
                   if (grid[j] >= arguments_.barrier) {
                      // knocked in
                      if (stoppingTime) {
-                         values_[j] = std::max(vanilla_.values()[j],
+                         optvalues[j] = std::max(vanilla_.values()[j],
                                       (*arguments_.payoff)(grid[j]));
                      }
                      else
-                         values_[j] = vanilla_.values()[j]; 
+                         optvalues[j] = vanilla_.values()[j]; 
                   }
                   else if (endTime)
-                      values_[j] = arguments_.rebate;
+                      optvalues[j] = arguments_.rebate;
                   break;
               case Barrier::UpOut:
                   if (grid[j] >= arguments_.barrier)
-                     values_[j] = arguments_.rebate; // knocked out
+                     optvalues[j] = arguments_.rebate; // knocked out
                   else if (stoppingTime)
-                      values_[j] = std::max(values()[j],
+                      optvalues[j] = std::max(optvalues[j],
                                      (*arguments_.payoff)(grid[j]));
                   break;
               default:
                   QL_FAIL("invalid barrier type");
             }
+        }
+    }
+
+
+
+    DiscretizedDermanKaniBarrierOption::DiscretizedDermanKaniBarrierOption(
+                                         const BarrierOption::arguments& args,
+                                         const StochasticProcess& process,
+                                         const TimeGrid& grid)
+    : unenhanced_(args, process, grid) {
+    }
+
+    void DiscretizedDermanKaniBarrierOption::reset(Size size) {
+        unenhanced_.initialize(method(), time());
+        values_ = Array(size, 0.0);
+        adjustValues();
+    }
+
+    void DiscretizedDermanKaniBarrierOption::postAdjustValuesImpl() {
+        unenhanced_.rollback(time());
+
+        Array grid = method()->grid(time());
+        adjustBarrier(values_, grid);
+        unenhanced_.checkBarrier(values_, grid); // compute payoffs
+    }
+
+    void DiscretizedDermanKaniBarrierOption::adjustBarrier(Array &optvalues, const Array &grid) {
+        Real barrier = unenhanced_.arguments().barrier;
+        Real rebate = unenhanced_.arguments().rebate;
+        switch (unenhanced_.arguments().barrierType) {
+           case Barrier::DownIn:
+              for (Size j=0; j<optvalues.size()-1; ++j) {
+                  if (grid[j]<=barrier && grid[j+1] > barrier) {
+                      // grid[j+1] above barrier, grid[j] under (in),
+                      // interpolate optvalues[j+1]
+                      Real ltob = (barrier-grid[j]);
+                      Real htob = (grid[j+1]-barrier);
+                      Real htol = (grid[j+1]-grid[j]);
+                      Real u1 = unenhanced_.values()[j+1];
+                      Real t1 = unenhanced_.vanilla()[j+1];
+                      optvalues[j+1] = std::max(0.0, (ltob*t1+htob*u1)/htol);
+                  }
+              }
+              break;
+           case Barrier::DownOut:
+              for (Size j=0; j<optvalues.size()-1; ++j) {
+                  if (grid[j]<=barrier && grid[j+1] > barrier) {
+                      // grid[j+1] above barrier, grid[j] under (out),
+                      // interpolate optvalues[j+1]
+                      double a = (barrier-grid[j])*rebate;
+                      double b = (grid[j+1]-barrier)*unenhanced_.values()[j+1];
+                      double c = (grid[j+1]-grid[j]);
+                      optvalues[j+1] = std::max(0.0, (a+b)/c);
+                  }
+              }
+              break;
+           case Barrier::UpIn:
+              for (Size j=0; j<optvalues.size()-1; ++j) {
+                  if (grid[j] < barrier && grid[j+1] >= barrier) {
+                      // grid[j+1] above barrier (in), grid[j] under, 
+                      // interpolate optvalues[j]
+                      Real ltob = (barrier-grid[j]);
+                      Real htob = (grid[j+1]-barrier);
+                      Real htol = (grid[j+1]-grid[j]);
+                      Real u = unenhanced_.values()[j];
+                      Real t = unenhanced_.vanilla()[j];
+                      optvalues[j] = std::max(0.0, (ltob*u+htob*t)/htol); // derman std
+                  }
+               }
+              break;
+           case Barrier::UpOut:
+              for (Size j=0; j<optvalues.size()-1; ++j) {
+                  if (grid[j] < barrier && grid[j+1] >= barrier) {
+                      // grid[j+1] above barrier (out), grid[j] under, 
+                      // interpolate optvalues[j]
+                      double a = (barrier-grid[j])*unenhanced_.values()[j];
+                      double b = (grid[j+1]-barrier)*rebate;
+                      double c = (grid[j+1]-grid[j]);
+                      optvalues[j] = std::max(0.0, (a+b)/c);
+                  }
+              }
+              break;
         }
     }
 
