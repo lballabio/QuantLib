@@ -37,7 +37,8 @@ namespace QuantLib {
                           DiscountFactor discount,
                           DiscountFactor dividendDiscount,
                           Real variance,
-                          const boost::shared_ptr<StrikedTypePayoff>& payoff);
+                          const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                          bool knock_in);
         Real value() const;
       private:
         Real spot_;

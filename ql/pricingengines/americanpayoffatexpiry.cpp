@@ -24,9 +24,10 @@ namespace QuantLib {
 
     AmericanPayoffAtExpiry::AmericanPayoffAtExpiry(
          Real spot, DiscountFactor discount, DiscountFactor dividendDiscount,
-         Real variance, const boost::shared_ptr<StrikedTypePayoff>& payoff)
+         Real variance, const boost::shared_ptr<StrikedTypePayoff>& payoff,
+         bool knock_in)
     : spot_(spot), discount_(discount), dividendDiscount_(dividendDiscount),
-      variance_(variance), knock_in_(true) {
+      variance_(variance), knock_in_(knock_in) {
 
         QL_REQUIRE(spot_>0.0,
                    "positive spot value required");

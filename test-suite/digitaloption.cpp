@@ -422,8 +422,11 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
-        boost::shared_ptr<PricingEngine> engine(
-                             new AnalyticDigitalAmericanEngine(stochProcess));
+        boost::shared_ptr<PricingEngine> engine;
+        if (values[i].knockin)
+           engine.reset(new AnalyticDigitalAmericanEngine(stochProcess));
+        else
+           engine.reset(new AnalyticDigitalAmericanKOEngine(stochProcess));
 
         VanillaOption opt(payoff, amExercise);
         opt.setPricingEngine(engine);
@@ -492,8 +495,11 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
-        boost::shared_ptr<PricingEngine> engine(
-                             new AnalyticDigitalAmericanEngine(stochProcess));
+        boost::shared_ptr<PricingEngine> engine;
+        if (values[i].knockin)
+           engine.reset(new AnalyticDigitalAmericanEngine(stochProcess));
+        else
+           engine.reset(new AnalyticDigitalAmericanKOEngine(stochProcess));
 
         VanillaOption opt(payoff, amExercise);
         opt.setPricingEngine(engine);
