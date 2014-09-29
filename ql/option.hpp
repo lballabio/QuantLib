@@ -69,7 +69,6 @@ namespace QuantLib {
     class Greeks : public virtual PricingEngine::results {
       public:
         Greeks() {
-           reset();
         }
         void reset() {
             delta =  gamma = theta = vega =
@@ -85,7 +84,6 @@ namespace QuantLib {
     class MoreGreeks : public virtual PricingEngine::results {
       public:
         MoreGreeks() {
-           reset();
         }
         void reset() {
             itmCashProbability = deltaForward = elasticity = thetaPerDay =
