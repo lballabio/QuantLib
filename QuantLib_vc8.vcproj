@@ -2350,6 +2350,10 @@
 					RelativePath=".\ql\math\interpolations\sabrinterpolation.hpp"
 					>
 				</File>
+				<File
+					RelativePath=".\ql\math\interpolations\xabrinterpolation.hpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="statistics"
@@ -4647,10 +4651,6 @@
 					</File>
 					<File
 						RelativePath=".\ql\termstructures\volatility\swaption\swaptionvolcube.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatility\swaption\swaptionvolcube1.cpp"
 						>
 					</File>
 					<File
@@ -7332,6 +7332,38 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\volatility\interestratevolsurface.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\noarbsabr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\noarbsabr.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\noarbsabrabsprobs.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\noarbsabrinterpolatedsmilesection.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\noarbsabrinterpolatedsmilesection.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\noarbsabrinterpolation.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\noarbsabrsmilesection.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\noarbsabrsmilesection.hpp"
 					>
 				</File>
 				<File

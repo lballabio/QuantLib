@@ -716,6 +716,7 @@
     <ClCompile Include="mclongstaffschwartzengine.cpp" />
     <ClCompile Include="mersennetwister.cpp" />
     <ClCompile Include="money.cpp" />
+    <ClCompile Include="noarbsabr.cpp" />
     <ClCompile Include="nthtodefault.cpp" />
     <ClCompile Include="ode.cpp" />
     <ClCompile Include="operators.cpp" />
@@ -845,6 +846,7 @@
     <ClInclude Include="mclongstaffschwartzengine.hpp" />
     <ClInclude Include="mersennetwister.hpp" />
     <ClInclude Include="money.hpp" />
+    <ClInclude Include="noarbsabr.hpp" />
     <ClInclude Include="nthtodefault.hpp" />
     <ClInclude Include="ode.hpp" />
     <ClInclude Include="operators.hpp" />

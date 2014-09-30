@@ -828,6 +828,7 @@
     <ClInclude Include="ql\math\interpolations\mixedinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\multicubicspline.hpp" />
     <ClInclude Include="ql\math\interpolations\sabrinterpolation.hpp" />
+    <ClInclude Include="ql\math\interpolations\xabrinterpolation.hpp" />
     <ClInclude Include="ql\math\statistics\all.hpp" />
     <ClInclude Include="ql\math\statistics\convergencestatistics.hpp" />
     <ClInclude Include="ql\math\statistics\discrepancystatistics.hpp" />
@@ -1439,6 +1440,10 @@
     <ClInclude Include="ql\experimental\volatility\extendedblackvariancecurve.hpp" />
     <ClInclude Include="ql\experimental\volatility\extendedblackvariancesurface.hpp" />
     <ClInclude Include="ql\experimental\volatility\interestratevolsurface.hpp" />
+    <ClInclude Include="ql\experimental\volatility\noarbsabr.hpp" />
+    <ClInclude Include="ql\experimental\volatility\noarbsabrinterpolatedsmilesection.hpp" />
+    <ClInclude Include="ql\experimental\volatility\noarbsabrinterpolation.hpp" />
+    <ClInclude Include="ql\experimental\volatility\noarbsabrsmilesection.hpp" />
     <ClInclude Include="ql\experimental\volatility\sabrvolsurface.hpp" />
     <ClInclude Include="ql\experimental\volatility\volcube.hpp" />
     <ClInclude Include="ql\experimental\callablebonds\all.hpp" />
@@ -2110,7 +2115,6 @@
     <ClCompile Include="ql\termstructures\volatility\swaption\spreadedswaptionvol.cpp" />
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionconstantvol.cpp" />
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolcube.cpp" />
-    <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolcube1.cpp" />
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolcube2.cpp" />
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvoldiscrete.cpp" />
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolmatrix.cpp" />
@@ -2296,6 +2300,10 @@
     <ClCompile Include="ql\experimental\volatility\extendedblackvariancecurve.cpp" />
     <ClCompile Include="ql\experimental\volatility\extendedblackvariancesurface.cpp" />
     <ClCompile Include="ql\experimental\volatility\interestratevolsurface.cpp" />
+    <ClInclude Include="ql\experimental\volatility\noarbsabr.cpp" />
+    <ClInclude Include="ql\experimental\volatility\noarbsabrabsprobs.cpp" />
+    <ClInclude Include="ql\experimental\volatility\noarbsabrinterpolatedsmilesection.cpp" />
+    <ClInclude Include="ql\experimental\volatility\noarbsabrsmilesection.cpp" />
     <ClCompile Include="ql\experimental\volatility\sabrvolsurface.cpp" />
     <ClCompile Include="ql\experimental\volatility\volcube.cpp" />
     <ClCompile Include="ql\experimental\callablebonds\blackcallablebondengine.cpp" />

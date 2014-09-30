@@ -993,6 +993,9 @@
     <ClInclude Include="ql\math\interpolations\sabrinterpolation.hpp">
       <Filter>math\interpolations</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\interpolations\xabrinterpolation.hpp">
+      <Filter>math\interpolations</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\statistics\all.hpp">
       <Filter>math\statistics</Filter>
     </ClInclude>
@@ -2782,6 +2785,18 @@
       <Filter>experimental\volatility</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\volatility\interestratevolsurface.hpp">
+      <Filter>experimental\volatility</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\volatility\noarbsabr.hpp">
+      <Filter>experimental\volatility</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\volatility\noarbsabrinterpolatedsmilesection.hpp">
+      <Filter>experimental\volatility</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\volatility\noarbsabrinterpolation.hpp">
+      <Filter>experimental\volatility</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\volatility\noarbsabrsmilesection.hpp">
       <Filter>experimental\volatility</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\volatility\sabrvolsurface.hpp">
@@ -4796,9 +4811,6 @@
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolcube.cpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClCompile>
-    <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolcube1.cpp">
-      <Filter>termstructures\volatility\swaption</Filter>
-    </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolcube2.cpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClCompile>
@@ -5354,6 +5366,18 @@
     <ClCompile Include="ql\experimental\volatility\interestratevolsurface.cpp">
       <Filter>experimental\volatility</Filter>
     </ClCompile>
+    <ClInclude Include="ql\experimental\volatility\noarbsabr.cpp">
+      <Filter>experimental\volatility</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\volatility\noarbsabrabsprobs.cpp">
+      <Filter>experimental\volatility</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\volatility\noarbsabrinterpolatedsmilesection.cpp">
+      <Filter>experimental\volatility</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\volatility\noarbsabrsmilesection.cpp">
+      <Filter>experimental\volatility</Filter>
+    </ClInclude>
     <ClCompile Include="ql\experimental\volatility\sabrvolsurface.cpp">
       <Filter>experimental\volatility</Filter>
     </ClCompile>
