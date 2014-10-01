@@ -13,6 +13,7 @@ SUBDIRS = \
     FittedBondCurve \
     FRA \
     Gaussian1dModels \
+    LatentModel \
     MarketModels \
     MultidimIntegral \
     Replication \
