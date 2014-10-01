@@ -83,7 +83,7 @@ namespace QuantLib {
             Real accuracy = 1.e-6, 
             BigNatural seed = 2863311530)
         : accuracy_(accuracy), copula_(copula), 
-          RandomLM(copula->numFactors(), copula->size(), copula->copula(), 
+          RandomLM<RandomLossLM, copulaPolicy, USNG>(copula->numFactors(), copula->size(), copula->copula(), 
             nSims, seed)
     {
         // redundant through basket?

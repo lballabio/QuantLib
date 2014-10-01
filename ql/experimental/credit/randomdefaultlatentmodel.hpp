@@ -815,7 +815,7 @@ namespace QuantLib {
           accuracy_(accuracy),
           recoveries_(recoveries.size()==0 ? std::vector<Real>(copula->size(), 
             0.) : recoveries), 
-          RandomLM(copula->numFactors(), copula->size(), copula->copula(), 
+          RandomLM<RandomDefaultLM, copulaPolicy, USNG>(copula->numFactors(), copula->size(), copula->copula(), 
             nSims, seed )
         {   
             // redundant through basket?
@@ -831,7 +831,7 @@ namespace QuantLib {
         : copula_(copula),
           accuracy_(accuracy),
           recoveries_(copula->recoveries()), 
-          RandomLM(copula->numFactors(), copula->size(), copula->copula(), 
+          RandomLM<RandomDefaultLM, copulaPolicy, USNG>(copula->numFactors(), copula->size(), copula->copula(), 
             nSims, seed )
         {   
             // redundant through basket?

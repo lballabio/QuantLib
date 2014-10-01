@@ -747,7 +747,8 @@ namespace QuantLib {
     public:
         //Size below must be == to the numb of factors idiosy + systemi
         typedef Sample<std::vector<Real> > sample_type;
-        explicit FactorSampler(const copulaType& copula, BigNatural seed = 0) 
+        explicit FactorSampler(const LatentModel<TC>::copulaType& copula,
+                               BigNatural seed = 0) 
         : boxMullRng_(copula.numFactors(), 
             BoxMullerGaussianRng<URNG>(URNG(seed))){ }
         const sample_type& nextSequence() const {
