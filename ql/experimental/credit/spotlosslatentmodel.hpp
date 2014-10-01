@@ -349,11 +349,11 @@ namespace QuantLib {
         const typename CP::initTraits& ini
         ) 
     : LatentModel<CP>(factorWeights, ini),
-      integration_(LatentModel<CP>::IntegrationFactory::
-        createLMIntegration(factorWeights[0].size(), integralType)),
       recoveries_(recoveries), 
       modelA_(modelA),
-      numNames_(factorWeights.size()/2)
+      numNames_(factorWeights.size()/2),
+      integration_(LatentModel<CP>::IntegrationFactory::
+        createLMIntegration(factorWeights[0].size(), integralType))
     {
         QL_REQUIRE(factorWeights.size() % 2 == 0, 
          "Number of RR variables must be equal to number of default variables");

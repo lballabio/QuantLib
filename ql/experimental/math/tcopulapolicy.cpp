@@ -29,8 +29,6 @@ namespace QuantLib {
     TCopulaPolicy::TCopulaPolicy(
         const std::vector<std::vector<Real> >& factorWeights, 
         const initTraits& vals)
-    : latentVarsCumul_(), latentVarsInverters_(), varianceFactors_(), 
-      distributions_()  
     {
         for(Size iFactor=0; iFactor<vals.tOrders.size(); iFactor++) {
             // require no T is of order 2 (finite variance)

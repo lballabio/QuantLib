@@ -106,7 +106,7 @@ void CdoTest::testHW() {
     a discontinuity in the bucketting.
     */
     Size nBuckets = 400;
-    Period period = 1*Months;
+    // Period period = 1*Months;
     // for MC engines
     Size numSims = 10000;
 

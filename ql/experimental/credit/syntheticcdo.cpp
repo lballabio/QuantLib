@@ -41,10 +41,9 @@ namespace QuantLib {
       side_(side),
       upfrontRate_(upfrontRate),
       runningRate_(runningRate),
+      leverageFactor_(notional ? notional.get()/basket->trancheNotional() : 1.),
       dayCounter_(dayCounter),
-      paymentConvention_(paymentConvention),
-      leverageFactor_(notional ? notional.get() / basket->trancheNotional() 
-        : 1.) 
+      paymentConvention_(paymentConvention)
     {
         QL_REQUIRE (basket->names().size() > 0, "basket is empty");
         // Basket inception must lie before contract protection start.
@@ -60,7 +59,8 @@ namespace QuantLib {
             .withCouponRates(runningRate, dayCounter)
             .withPaymentAdjustment(paymentConvention);
 
-        Date today = Settings::instance().evaluationDate();
+        // Date today = Settings::instance().evaluationDate();
+        
         // register with probabilities if the corresponding issuer is, baskets
         //   are not registered with the DTS
         for (Size i = 0; i < basket->names().size(); i++) {
@@ -68,6 +68,7 @@ namespace QuantLib {
             modifying the registrations, if we go back in time in the 
             calculations this would left me unregistered to some. Not impossible
             to de-register and register when updating but i am dropping it.
+
             if(!basket->pool()->get(basket->names()[i]).
                 defaultedBetween(schedule.dates()[0], today,
                                      basket->pool()->defaultKeys()[i]))

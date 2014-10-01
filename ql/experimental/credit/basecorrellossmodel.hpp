@@ -101,8 +101,8 @@ namespace QuantLib {
             new SimpleQuote(0.))),
           localCorrelationDetach_(boost::shared_ptr<SimpleQuote>(
             new SimpleQuote(0.))),
-          correlTS_(correlTS),
           recoveries_(recoveries),
+          correlTS_(correlTS),
           copulaTraits_(traits)
         { 
             registerWith(correlTS);

@@ -377,8 +377,8 @@ namespace QuantLib {
             explicit FactorSampler(const copulaType& copula, 
                 BigNatural seed = 0) 
             : sequenceGen_(copula.numFactors(), seed), // base case construction
-              copula_(copula), 
-              x_(std::vector<Real>(copula.numFactors()), 1.0) { }
+              x_(std::vector<Real>(copula.numFactors()), 1.0),
+              copula_(copula) { }
             /*! Returns a sample of the factor set \f$ M_k\,Z_i\f$. 
             This method has the vocation of being specialized at particular 
             types of the copula with a more efficient inversion to generate the 
@@ -684,10 +684,10 @@ namespace QuantLib {
         Size nVariables,
         const typename Impl::initTraits& ini)
     : factorWeights_(nVariables, std::vector<Real>(1, correlSqr)),
-      nFactors_(1), 
-      nVariables_(nVariables),
       idiosyncFctrs_(nVariables, 
         std::sqrt(1.-correlSqr*correlSqr)),
+      nFactors_(1), 
+      nVariables_(nVariables),
       copula_(factorWeights_, ini)
     { }
 
@@ -698,12 +698,12 @@ namespace QuantLib {
         const typename Impl::initTraits& ini)
     : factorWeights_(nVariables, std::vector<Real>(1, 
         std::sqrt(singleFactorCorrel->value()))),
-      nFactors_(1), 
-      nVariables_(nVariables),
+      cachedMktFactor_(singleFactorCorrel),
       idiosyncFctrs_(nVariables, 
         std::sqrt(1.-singleFactorCorrel->value())),
-      copula_(factorWeights_, ini),
-      cachedMktFactor_(singleFactorCorrel)
+      nFactors_(1), 
+      nVariables_(nVariables),
+      copula_(factorWeights_, ini)
     {
         registerWith(cachedMktFactor_);
     }

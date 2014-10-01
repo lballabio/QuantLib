@@ -37,16 +37,16 @@ namespace QuantLib {
         Real detachment,
         const boost::shared_ptr<Claim>& claim
         )
-    : refDate_(refDate),
-      claim_(claim),
-      notionals_(notionals),
+    : notionals_(notionals),
       pool_(pool),
+      claim_(claim),
       attachmentRatio_(attachment),
       detachmentRatio_(detachment),
       basketNotional_(0.0),
-      trancheNotional_(0.0),
       attachmentAmount_(0.0),
-      detachmentAmount_(0.0)
+      detachmentAmount_(0.0),
+      trancheNotional_(0.0),
+      refDate_(refDate)
     {
         QL_REQUIRE(!notionals_.empty(), "notionals empty");
         QL_REQUIRE (attachmentRatio_ >= 0 &&
