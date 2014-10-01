@@ -21,8 +21,8 @@
 #include "utilities.hpp"
 #include <ql/experimental/credit/cdo.hpp>
 #include <ql/experimental/credit/pool.hpp>
-#include <ql/experimental//credit/integralcdoengine.hpp>
-#include <ql/experimental//credit/midpointcdoengine.hpp>
+#include <ql/experimental/credit/integralcdoengine.hpp>
+#include <ql/experimental/credit/midpointcdoengine.hpp>
 #include <ql/experimental/credit/randomdefaultlatentmodel.hpp>
 #include <ql/experimental/credit/inhomogeneouspooldef.hpp>
 #include <ql/experimental/credit/homogeneouspooldef.hpp>
