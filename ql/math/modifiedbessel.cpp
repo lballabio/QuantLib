@@ -84,8 +84,8 @@ namespace QuantLib {
 
         template <class T, class W>
         T modifiedBesselFunction_k_impl(Real nu, const T& x) {
-            return M_PI_2 * (modifiedBesselFunction_i(-nu, x) -
-                             modifiedBesselFunction_i(nu, x)) /
+            return M_PI_2 * (modifiedBesselFunction_i_impl<T,W>(-nu, x) -
+                             modifiedBesselFunction_i_impl<T,W>(nu, x)) /
                              std::sin(M_PI * nu);
         }
     }
