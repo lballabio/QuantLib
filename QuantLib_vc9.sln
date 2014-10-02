@@ -72,16 +72,25 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MarketModels", "Examples\Ma
 		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MultidimIntegral", "Examples\MultidimIntegral\MultidimIntegral.vcproj", "{D3E10D43-57DF-42D7-AEA6-44AD48CAE119}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Gaussian1dModels", "Examples\Gaussian1dModels\Gaussian1dModels_vc9.vcproj", "{B62FC7BE-C1BC-4AB0-BB11-BBF627CC3BA6}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LatentModel", "Examples\LatentModel\LatentModel.vcproj", "{E4098DFF-FD34-48A6-955F-C1E3F97FBA26}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MultidimIntegral", "Examples\MultidimIntegral\MultidimIntegral_vc9.vcproj", "{D3E10D43-57DF-42D7-AEA6-44AD48CAE119}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
+	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BasketLosses", "Examples\BasketLosses\BasketLosses.vcproj", "{43A17E5B-EC94-4EB5-9D68-788BF234AE1F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LatentModel", "Examples\LatentModel\LatentModel_vc9.vcproj", "{E4098DFF-FD34-48A6-955F-C1E3F97FBA26}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BasketLosses", "Examples\BasketLosses\BasketLosses_vc9.vcproj", "{43A17E5B-EC94-4EB5-9D68-788BF234AE1F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
