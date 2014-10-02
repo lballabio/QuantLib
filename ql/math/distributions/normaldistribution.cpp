@@ -181,9 +181,17 @@ namespace QuantLib {
         Real average, Real sigma)
     : average_(average), sigma_(sigma) {}
 
-	Real MaddockInverseCumulativeNormal::operator()(Real x) const {
-		return boost::math::quantile(
+    Real MaddockInverseCumulativeNormal::operator()(Real x) const {
+        return boost::math::quantile(
             boost::math::normal_distribution<Real>(average_, sigma_), x);
-	}
+    }
 
+    MaddockCumulativeNormal::MaddockCumulativeNormal(
+        Real average, Real sigma)
+    : average_(average), sigma_(sigma) {}
+
+    Real MaddockCumulativeNormal::operator()(Real x) const {
+        return boost::math::cdf(
+            boost::math::normal_distribution<Real>(average_, sigma_), x);
+    }
 }
