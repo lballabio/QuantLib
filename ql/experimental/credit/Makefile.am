@@ -4,7 +4,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
-    basecorrellossmodel.hpp \
+    basecorrelationlossmodel.hpp \
     basecorrelationstructure.hpp \
     basket.hpp \
     binomiallossmodel.hpp \
@@ -49,7 +49,6 @@ this_include_HEADERS = \
     syntheticcdo.hpp
 
 libCredit_la_SOURCES = \
-    basecorrellossmodel.cpp \
     basecorrelationstructure.cpp \
     basket.cpp \
     blackcdsoptionengine.cpp \

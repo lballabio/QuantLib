@@ -7558,7 +7558,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\credit\basecorrellossmodel.hpp"
+					RelativePath=".\ql\experimental\credit\basecorrelationlossmodel.hpp"
 					>
 				</File>
 				<File
