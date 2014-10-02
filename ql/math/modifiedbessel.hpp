@@ -50,7 +50,7 @@ namespace QuantLib {
     modifiedBesselFunction_i_exponentiallyWeighted(Real nu,
                                                    const std::complex<Real> &z);
     std::complex<Real>
-    modifiedBesselFunction_kexponentiallyWeighted(Real nu,
+    modifiedBesselFunction_k_exponentiallyWeighted(Real nu,
                                                   const std::complex<Real> &z);
 }
 #endif
