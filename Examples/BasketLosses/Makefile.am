@@ -11,9 +11,14 @@ BasketLosses_SOURCES = BasketLosses.cpp
 BasketLosses_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
-    BasketLosses.vcproj \
-    ReadMe.txt
-	
+    BasketLosses.dev \
+    BasketLosses_vc8.vcproj \
+    BasketLosses_vc9.vcproj \
+    BasketLosses_vc10.vcxproj \
+    BasketLosses_vc10.vcxproj.filters \
+    BasketLosses_vc11.vcxproj \
+    BasketLosses_vc11.vcxproj.filters
+
 .PHONY: examples check-examples
 
 examples: BasketLosses$(EXEEXT)
