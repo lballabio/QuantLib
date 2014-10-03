@@ -34,7 +34,7 @@ namespace QuantLib {
                  const Handle<YieldTermStructure>& fwdCurve,
                  const Date& startDate,
                  const Date& issueDate)
-    : FloatingRateBond(3, 100.0,
+    : FloatingRateBond(2, 100.0,
                        Schedule(startDate,
                                 maturityDate, 6*Months,
                                 NullCalendar(), Unadjusted, Unadjusted,
@@ -55,7 +55,7 @@ namespace QuantLib {
              Rate fixedRate,
              const Date& startDate,
              const Date& issueDate)
-    : FixedRateBond(3, 100.0,
+    : FixedRateBond(2, 100.0,
                     Schedule(startDate,
                              maturityDate, 6*Months,
                              NullCalendar(), Unadjusted, Unadjusted,
@@ -69,7 +69,7 @@ namespace QuantLib {
              Real redemption,
              const Date& startDate,
              const Date& issueDate)
-    : FixedRateBond(3, 100.0,
+    : FixedRateBond(2, 100.0,
                     Schedule(startDate,
                              maturityDate, 6*Months,
                              NullCalendar(), Unadjusted, Unadjusted,
