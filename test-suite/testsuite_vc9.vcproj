@@ -1188,6 +1188,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\noarbsabr.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\nthtodefault.cpp"
 				>
 			</File>
@@ -1694,6 +1698,10 @@
 			</File>
 			<File
 				RelativePath=".\money.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\noarbsabr.hpp"
 				>
 			</File>
 			<File
