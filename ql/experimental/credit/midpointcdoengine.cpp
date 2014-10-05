@@ -30,7 +30,9 @@ namespace QuantLib {
         results_.premiumValue = 0.0;
         results_.protectionValue = 0.0;
         results_.upfrontPremiumValue = 0.0;
+        results_.error = 0;
         results_.expectedTrancheLoss.clear();
+        // todo Should be remaining when considering realized loses
         results_.xMin = arguments_.basket->attachmentAmount();
         results_.xMax = arguments_.basket->detachmentAmount();
         results_.remainingNotional = results_.xMax - results_.xMin;
@@ -39,6 +41,7 @@ namespace QuantLib {
 
         // compute expected loss at the beginning of first relevant period
         Real e1 = 0;
+        // todo add includeSettlement date flows variable to engine.
         if (!arguments_.normalizedLeg[0]->hasOccurred(today))
             // Notice that since there might be a gap between the end of 
             // acrrual and payment dates and today be in between
@@ -71,19 +74,30 @@ namespace QuantLib {
                 * discountCurve_->discount(paymentDate);
             // default flows:
             const Real discount = discountCurve_->discount(defaultDate);
+
+            /* Accrual removed till the argument flag is implemented
             // pays accrued on defaults' date
             results_.premiumValue += coupon->accruedAmount(defaultDate)
                 * discount * (e2 - e1) / inceptionTrancheNotional;
-            results_.protectionValue += discount * (e2 - e1) * 
-                arguments_.leverageFactor;
+            */
+            results_.protectionValue += discount * (e2 - e1);
+            /* use it in a future version for coherence with the integral engine
+            * arguments_.leverageFactor;
+            */
             e1 = e2;
         }
 
         //\todo treat upfron tnow as in the new CDS (see March 2014)
         // add includeSettlement date flows variable to engine ?
         if (!arguments_.normalizedLeg[0]->hasOccurred(today))
-            results_.upfrontPremiumValue = arguments_.upfrontRate * 
-                arguments_.leverageFactor * results_.remainingNotional;
+            results_.upfrontPremiumValue 
+                = inceptionTrancheNotional * arguments_.upfrontRate 
+                    * discountCurve_->discount(
+                        boost::dynamic_pointer_cast<Coupon>(
+                            arguments_.normalizedLeg[0])->accrualStartDate());
+            /* use it in a future version for coherence with the integral engine
+                arguments_.leverageFactor * ;
+            */
         if (arguments_.side == Protection::Buyer) {
             results_.protectionValue *= -1;
             results_.premiumValue *= -1;

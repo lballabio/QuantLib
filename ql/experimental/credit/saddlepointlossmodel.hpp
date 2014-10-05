@@ -292,31 +292,23 @@ namespace QuantLib {
         to the latent model factor.
         Based on the integrals of the expected shortfall. 
         */
-        Probability probDensityCond( 
-                        const std::vector<Real>& invUncondProbs,
-
-            Real loss, 
-            const std::vector<Real>& mktFactor) const;
+        Probability probDensityCond(const std::vector<Real>& invUncondProbs,
+            Real loss, const std::vector<Real>& mktFactor) const;
     public:
         Probability probDensity(const Date& d, Real loss) const;
     protected:
         Disposable<std::vector<Real> > splitLossCond(
-                        const std::vector<Real>& invUncondProbs,
-
-            Real loss, 
-            std::vector<Real> mktFactor) const;
+            const std::vector<Real>& invUncondProbs,
+            Real loss, std::vector<Real> mktFactor) const;
         Real expectedShortfallFullPortfolioCond(
-                        const std::vector<Real>& invUncondProbs,
-
+            const std::vector<Real>& invUncondProbs,
             Real lossPerc, const std::vector<Real>& mktFactor) const;
         Real expectedShortfallTrancheCond(
-                        const std::vector<Real>& invUncondProbs,
-
+            const std::vector<Real>& invUncondProbs,
             Real lossPerc, Probability percentile, 
             const std::vector<Real>& mktFactor) const;
         Disposable<std::vector<Real> > expectedShortfallSplitCond(
-                        const std::vector<Real>& invUncondProbs,
-
+            const std::vector<Real>& invUncondProbs,
             Real lossPerc, const std::vector<Real>& mktFactor) const;
     public:
         /*! Sensitivities of the individual names to a given portfolio loss 

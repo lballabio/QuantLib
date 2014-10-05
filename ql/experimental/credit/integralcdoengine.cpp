@@ -32,19 +32,21 @@ namespace QuantLib {
         results_.upfrontPremiumValue = 0.0;
         results_.error = 0;
         results_.expectedTrancheLoss.clear();
-
+        // todo Should be remaining when considering realized loses
         results_.xMin = arguments_.basket->attachmentAmount();
-            results_.xMax = arguments_.basket->detachmentAmount();
-            results_.remainingNotional = results_.xMax - results_.xMin;
+        results_.xMax = arguments_.basket->detachmentAmount();
+        results_.remainingNotional = results_.xMax - results_.xMin;
+        const Real inceptionTrancheNotional = 
+            arguments_.basket->trancheNotional();
 
+        // compute expected loss at the beginning of first relevant period
         Real e1 = 0;
-        // add includeSettlement date flows variable to engine.
+        // todo add includeSettlement date flows variable to engine.
         if (!arguments_.normalizedLeg[0]->hasOccurred(today)) 
              // cast to fixed rate coupon?
             e1 = arguments_.basket->expectedTrancheLoss(
                 boost::dynamic_pointer_cast<Coupon>(
                     arguments_.normalizedLeg[0])->accrualStartDate()); 
-
         results_.expectedTrancheLoss.push_back(e1);// zero or realized losses?
 
         for (Size i = 0; i < arguments_.normalizedLeg.size(); i++) {
@@ -72,7 +74,7 @@ namespace QuantLib {
 
                 results_.premiumValue
                     // ..check for e2 including past/realized losses
-                    += (results_.remainingNotional - e2)
+                    += (inceptionTrancheNotional - e2)
                     * arguments_.runningRate
                     * arguments_.dayCounter.yearFraction(d0, d)
                     * discountCurve_->discount(d);
@@ -94,7 +96,7 @@ namespace QuantLib {
         // add includeSettlement date flows variable to engine.
         if (!arguments_.normalizedLeg[0]->hasOccurred(today))
             results_.upfrontPremiumValue
-                = results_.remainingNotional * arguments_.upfrontRate
+                = inceptionTrancheNotional * arguments_.upfrontRate
                     * discountCurve_->discount(
                         boost::dynamic_pointer_cast<Coupon>(
                             arguments_.normalizedLeg[0])->accrualStartDate());
@@ -107,8 +109,20 @@ namespace QuantLib {
 
         results_.value = results_.premiumValue - results_.protectionValue
             + results_.upfrontPremiumValue;
-
         results_.errorEstimate = Null<Real>();
+        // Fair spread GIVEN the upfront
+        Real fairSpread = 0.;
+        if (results_.premiumValue != 0.0) {
+            fairSpread =
+                -(results_.protectionValue + results_.upfrontPremiumValue)
+                  *arguments_.runningRate/results_.premiumValue;
+        }
+
+        results_.additionalResults["fairPremium"] = fairSpread;
+        results_.additionalResults["premiumLegNPV"] = 
+            results_.premiumValue + results_.upfrontPremiumValue;
+        results_.additionalResults["protectionLegNPV"] = 
+            results_.protectionValue;
     }
 
 }
