@@ -21,7 +21,6 @@ libSwaptionVol_la_SOURCES = \
     spreadedswaptionvol.cpp \
     swaptionconstantvol.cpp \
     swaptionvolcube.cpp \
-    swaptionvolcube1.cpp \
     swaptionvolcube2.cpp \
     swaptionvoldiscrete.cpp \
     swaptionvolmatrix.cpp \

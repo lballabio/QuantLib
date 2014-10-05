@@ -261,7 +261,7 @@ namespace {
             Real beta0 = smileAndCms_->betaTransformDirect(x[1 + 3 * i]);
             Real decay = x[2 + 3 * i] * x[2 + 3 * i];
             std::vector<Real> beta(nSwapLengths);
-            for (Size j = 0; j < beta.size(); j++) {
+            for (Size j = 0; j < beta.size(); ++j) {
                 Real t = smileAndCms_->volCube_->timeFromReference(
                     smileAndCms_->volCube_->optionDateFromTenor(swapLengths[j]));
                 beta[j] = betaInf + (beta0 - betaInf) * std::exp(-decay * t);
@@ -294,7 +294,7 @@ namespace {
             Real beta0 = smileAndCms_->betaTransformDirect(x[1 + 3 * i]);
             Real decay = x[2 + 3 * i] * x[2 + 3 * i];
             std::vector<Real> beta(nSwapLengths);
-            for (Size j = 0; j < beta.size(); j++) {
+            for (Size j = 0; j < beta.size(); ++j) {
                 Real t = smileAndCms_->volCube_->timeFromReference(
                     smileAndCms_->volCube_->optionDateFromTenor(swapLengths[j]));
                 beta[j] = betaInf + (beta0 - betaInf) * std::exp(-decay * t);
