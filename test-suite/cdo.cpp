@@ -66,10 +66,13 @@ namespace {
         //   is incorrect the test pass good enough, the quadrature gets to
         //   be worst as the kernel deviates from a normal, this is low 
         //   orders of the T; here 5 is enough, 3 would not be.
+
+        /**/
         ,
           { 0.3, -1,  5, { 1766, 420, 161,  6 } },
           { 0.3,  5, -1, { 1444, 408, 171, 10 } },
           { 0.3,  5,  5, { 1713, 359, 136,  9 } }
+        
     };
 
     void check(int i, int j, string desc, Real found, Real expected,
@@ -99,16 +102,10 @@ void CdoTest::testHW() {
     Real lambda = 0.01;
 
     // nBuckets and period determine the computation time
-    /* Rose it up from 200 to pass. Revert it to that value and one tranche 
-    fails, 300 and its another one. Always with the midpoint integration which
-    seems much more sensitive than integration with one month periods. Since
-    it is always on the edge of pasing I believe this is just due to hitting 
-    a discontinuity in the bucketting.
-    */
-    Size nBuckets = 400;
+    Size nBuckets = 200;
     Period period = 1*Months;
     // for MC engines
-    Size numSims = 10000;
+    Size numSims = 5000;
 
     Real rate = 0.05;
     DayCounter daycount = Actual360();
@@ -190,16 +187,16 @@ void CdoTest::testHW() {
             // 1.-Inhomogeneous gaussian
             modelNames.push_back("Inhomogeneous gaussian");
             basketModels.push_back(boost::shared_ptr<DefaultLossModel>( new 
-                IHGaussPoolLossModel(gaussKtLossLM, nBuckets)));
+                IHGaussPoolLossModel(gaussKtLossLM, nBuckets, 5., -5, 15)));
             absoluteTolerance.push_back(1.);
-            relativeToleranceMidp.push_back(0.03);
+            relativeToleranceMidp.push_back(0.04);
             relativeTolerancePeriod.push_back(0.04);
             // 2.-homogeneous gaussian
             modelNames.push_back("Homogeneous gaussian");
             basketModels.push_back(boost::shared_ptr<DefaultLossModel>( new 
-                HomogGaussPoolLossModel(gaussKtLossLM, nBuckets, 5., -5, 100)));
+                HomogGaussPoolLossModel(gaussKtLossLM, nBuckets, 5., -5, 15)));
             absoluteTolerance.push_back(1.);
-            relativeToleranceMidp.push_back(0.03);
+            relativeToleranceMidp.push_back(0.04);
             relativeTolerancePeriod.push_back(0.04);
             // 3.-random default gaussian
             modelNames.push_back("Random default gaussian");
@@ -227,21 +224,22 @@ void CdoTest::testHW() {
             initTG.tOrders.push_back(hwData7[i].nz);
             boost::shared_ptr<TConstantLossLM> TKtLossLM(new TConstantLossLM(
                 hCorrelation, std::vector<Real>(poolSize, recovery), 
-                LatentModelIntegrationType::GaussianQuadrature, poolSize, 
+                LatentModelIntegrationType::GaussianQuadrature, 
+                poolSize, 
                 initTG));
             // 1.-inhomogeneous studentT
             modelNames.push_back("Inhomogeneous student");
             basketModels.push_back(boost::shared_ptr<DefaultLossModel>( new 
-                IHStudentPoolLossModel(TKtLossLM, nBuckets)));
+                IHStudentPoolLossModel(TKtLossLM, nBuckets, 5., -5., 15)));
             absoluteTolerance.push_back(1.);
-            relativeToleranceMidp.push_back(0.03);
+            relativeToleranceMidp.push_back(0.04);
             relativeTolerancePeriod.push_back(0.04);
             // 2.-homogeneous student T
             modelNames.push_back("Homogeneous student");
             basketModels.push_back(boost::shared_ptr<DefaultLossModel>( new 
-                HomogTPoolLossModel(TKtLossLM, nBuckets)));
+                HomogTPoolLossModel(TKtLossLM, nBuckets, 5., -5., 15)));
             absoluteTolerance.push_back(1.);
-            relativeToleranceMidp.push_back(0.03);
+            relativeToleranceMidp.push_back(0.04);
             relativeTolerancePeriod.push_back(0.04);
             // 3.-random default student T
             modelNames.push_back("Random default studentT");
@@ -258,7 +256,7 @@ void CdoTest::testHW() {
         else if (hwData7[i].nm > 0 && hwData7[i].nz == -1) {
             TCopulaPolicy::initTraits initTG;
             initTG.tOrders.push_back(hwData7[i].nm);
-            initTG.tOrders.push_back(55);
+            initTG.tOrders.push_back(45);
             /* T_{55} is pretty close to a gaussian. Probably theres no need to
             be this conservative as the polynomial convolution gets shorter and
             faster as the order decreases.
@@ -266,21 +264,22 @@ void CdoTest::testHW() {
             boost::shared_ptr<TConstantLossLM> TKtLossLM(new TConstantLossLM(
                 hCorrelation, 
                 std::vector<Real>(poolSize, recovery), 
-                LatentModelIntegrationType::GaussianQuadrature, poolSize, 
+                LatentModelIntegrationType::GaussianQuadrature, 
+                poolSize, 
                 initTG));
             // 1.-inhomogeneous 
             modelNames.push_back("Inhomogeneous student-gaussian");
             basketModels.push_back(boost::shared_ptr<DefaultLossModel>( new 
-                IHStudentPoolLossModel(TKtLossLM, nBuckets)));
+                IHStudentPoolLossModel(TKtLossLM, nBuckets, 5., -5., 15)));
             absoluteTolerance.push_back(1.);
-            relativeToleranceMidp.push_back(0.03);
+            relativeToleranceMidp.push_back(0.04);
             relativeTolerancePeriod.push_back(0.04);
             // 2.-homogeneous 
             modelNames.push_back("Homogeneous student-gaussian");
             basketModels.push_back(boost::shared_ptr<DefaultLossModel>( new 
-                HomogTPoolLossModel(TKtLossLM, nBuckets)));
+                HomogTPoolLossModel(TKtLossLM, nBuckets, 5., -5., 15)));
             absoluteTolerance.push_back(1.);
-            relativeToleranceMidp.push_back(0.03);
+            relativeToleranceMidp.push_back(0.04);
             relativeTolerancePeriod.push_back(0.04);
             // 3.-random default 
             modelNames.push_back("Random default student-gaussian");
@@ -296,26 +295,27 @@ void CdoTest::testHW() {
         }
         else if (hwData7[i].nm == -1 && hwData7[i].nz > 0) {
             TCopulaPolicy::initTraits initTG;
-            initTG.tOrders.push_back(55);// pretty close to gaussian
+            initTG.tOrders.push_back(45);// pretty close to gaussian
             initTG.tOrders.push_back(hwData7[i].nz);
             boost::shared_ptr<TConstantLossLM> TKtLossLM(new TConstantLossLM(
                 hCorrelation, 
                 std::vector<Real>(poolSize, recovery), 
-                LatentModelIntegrationType::GaussianQuadrature, poolSize, 
+                LatentModelIntegrationType::GaussianQuadrature, 
+                poolSize, 
                 initTG));
             // 1.-inhomogeneous gaussian
             modelNames.push_back("Inhomogeneous gaussian-student");
             basketModels.push_back(boost::shared_ptr<DefaultLossModel>( new 
-                IHStudentPoolLossModel(TKtLossLM, nBuckets)));
+                IHStudentPoolLossModel(TKtLossLM, nBuckets, 5., -5., 15)));
             absoluteTolerance.push_back(1.);
-            relativeToleranceMidp.push_back(0.03);
+            relativeToleranceMidp.push_back(0.04);
             relativeTolerancePeriod.push_back(0.04);
             // 2.-homogeneous gaussian
             modelNames.push_back("Homogeneous gaussian-student");
             basketModels.push_back(boost::shared_ptr<DefaultLossModel>( new 
-                HomogTPoolLossModel(TKtLossLM, nBuckets)));
+                HomogTPoolLossModel(TKtLossLM, nBuckets, 5., -5., 15)));
             absoluteTolerance.push_back(1.);
-            relativeToleranceMidp.push_back(0.03);
+            relativeToleranceMidp.push_back(0.04);
             relativeTolerancePeriod.push_back(0.04);
             // 3.-random default gaussian
             modelNames.push_back("Random default gaussian-student");
