@@ -35,7 +35,7 @@
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/integrals/trapezoidintegral.hpp>
-#include <ql/math/integrals/twodimensionalintegral.hpp>
+#include <ql/math/integrals/discreteintegrals.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
@@ -52,6 +52,7 @@
 #include <ql/methods/finitedifferences/schemes/douglasscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/hundsdorferscheme.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmmesherintegral.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesfwdop.hpp>
 #include <ql/experimental/finitedifferences/fdmsquarerootfwdop.hpp>
@@ -1026,8 +1027,9 @@ void FdHestonTest::testSquareRootEvolveWithStationaryDensity() {
             p[i] =  stationaryProbabilityFct(kappa, theta, sigma, v[i]);
 
         const boost::shared_ptr<FdmSquareRootFwdOp> op(
-            new FdmSquareRootFwdOp(mesher, kappa, theta,
-                                   sigma, 0, sigma > 0.75));
+            new FdmSquareRootFwdOp(mesher, kappa, theta, sigma, 0,
+                                   (sigma < 0.75) ? FdmSquareRootFwdOp::Plain
+                                                        : FdmSquareRootFwdOp::Power));
 
         const Array eP = p;
 
@@ -1145,20 +1147,8 @@ namespace {
             }
         }
 
-        Matrix m(y.size(), x.size());
-        std::copy(p.begin(), p.end(), m.begin());
-
-        const Real tolerance = 1e-3;
-        const Size maxEvaluations = 1000;
-
-        return TwoDimensionalIntegral(
-             boost::shared_ptr<Integrator>(
-                 new TrapezoidIntegral<Default>(tolerance, maxEvaluations)),
-             boost::shared_ptr<Integrator>(
-                 new TrapezoidIntegral<Default>(tolerance, maxEvaluations)))(
-             Bilinear().interpolate(x.begin(), x.end(), y.begin(), y.end(), m),
-             std::make_pair(x.front(), y.front()),
-             std::make_pair(x.back(), y.back()));
+        return FdmMesherIntegral(mesher,
+                                 DiscreteSimpsonIntegral()).integrate(p);
     }
 }
 

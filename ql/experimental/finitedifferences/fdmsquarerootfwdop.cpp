@@ -35,14 +35,14 @@ namespace QuantLib {
     FdmSquareRootFwdOp::FdmSquareRootFwdOp(
         const boost::shared_ptr<FdmMesher>& mesher,
         Real kappa, Real theta, Real sigma,
-        Size direction, bool transform)
+        Size direction, TransformationType transform)
     : direction_(direction),
       kappa_(kappa),
       theta_(theta),
       sigma_(sigma),
       alpha_(1.0 - 2*kappa_*theta_/(sigma_*sigma_)),
       transform_(transform),
-      mapX_(!transform ?
+      mapX_(transform == Plain ?
 
           new ModTripleBandLinearOp(FirstDerivativeOp(direction_, mesher)
               .mult(kappa*(mesher->locations(direction_)-theta) + sigma*sigma)
@@ -56,8 +56,8 @@ namespace QuantLib {
                .add(FirstDerivativeOp(direction_, mesher)
                      .mult(kappa*(mesher->locations(direction_)+theta)))
                .add(Array(mesher->layout()->size(),
-                          2*kappa*kappa*theta/(sigma*sigma))))),
-
+                          2*kappa*kappa*theta/(sigma*sigma))))
+      ),
       v_  (mesher->layout()->dim()[direction_]),
       vq_ (mesher->layout()->size()),
       vmq_(mesher->layout()->size()) {
@@ -71,11 +71,11 @@ namespace QuantLib {
         }
 
         // zero flux boundary condition
-        if (!transform_) {
+        if (transform_ == Plain) {
             setLowerBC(mesher);
             setUpperBC(mesher);
         }
-        else {
+        else if (transform == Power) {
             setTransformLowerBC(mesher);
             setTransformUpperBC(mesher);
         }
@@ -180,10 +180,10 @@ namespace QuantLib {
     }
 
     Real FdmSquareRootFwdOp::f0() const {
-        const Real a = -(2*h(0)+h(1))/(h(0)*(h(0)+h(1)));
+        const Real a = -(2*h(0)+h(1))/zetam(1);
         const Real alpha = sigma_*sigma_*v(1)/zetam(1) - mu(1)*h(1)/zetam(1);
         const Real nu = a*v(0) + (2*kappa_*(v(0)-theta_) + sigma_*sigma_)
-                        /(sigma_*sigma_);
+                                        /(sigma_*sigma_);
 
         return alpha/nu;
     }
@@ -203,7 +203,7 @@ namespace QuantLib {
             return v_[i-1];
         }
         else if (i == 0) {
-            return std::max(0.5*v_[0], v_[0] - 0.01 * (v_[1] - v_[0]));
+            return std::max(0.5*v_[0], v_[0] - 0.5 * (v_[1] - v_[0]));
         }
         else if (i == v_.size()+1) {
             return v_.back() + (v_.back() - *(v_.end()-2));
@@ -246,7 +246,7 @@ namespace QuantLib {
     }
 
     Disposable<Array> FdmSquareRootFwdOp::apply(const Array& p) const {
-        if (!transform_) {
+        if (transform_ != Power) {
             return mapX_->apply(p);
         }
         else {
@@ -261,7 +261,7 @@ namespace QuantLib {
     Disposable<Array> FdmSquareRootFwdOp::apply_direction(
         Size direction, const Array& r) const {
         if (direction == direction_) {
-            if (!transform_) {
+            if (transform_ != Power) {
                 return mapX_->apply(r);
             }
             else {
@@ -276,7 +276,7 @@ namespace QuantLib {
     Disposable<Array> FdmSquareRootFwdOp::solve_splitting(
         Size direction, const Array& r, Real dt) const {
         if (direction == direction_) {
-            if (!transform_) {
+            if (transform_ != Power) {
                 return mapX_->solve_splitting(r, dt, 1.0);
             }
             else {
@@ -291,7 +291,7 @@ namespace QuantLib {
 
     Disposable<Array> FdmSquareRootFwdOp::preconditioner(
         const Array& r, Real dt) const {
-        if (!transform_) {
+        if (transform_ != Power) {
             return solve_splitting(direction_, r, dt);
         }
         else {
