@@ -132,6 +132,8 @@ namespace QuantLib {
         std::transform(lgd.begin(), lgd.end(), notionals_.begin(), 
             lgd.begin(), std::multiplies<Real>());
         std::vector<Real> prob = basket_->remainingProbabilities(d);
+        for(Size iName=0; iName<prob.size(); iName++)
+            prob[iName] = copula_->inverseCumulativeY(prob[iName], iName);
 
         // integrate locally (1 factor). 
         // use explicitly a 1D latent model object? 
@@ -143,7 +145,7 @@ namespace QuantLib {
             std::vector<Real> conditionalProbs;
             for(Size iName=0; iName<notionals_.size(); iName++)
                 conditionalProbs.push_back(
-                copula_->conditionalDefaultProbability(prob[iName], iName, 
+                copula_->conditionalDefaultProbabilityInvP(prob[iName], iName, 
                     mkft));
             Distribution d = bucktLDistBuff(lgd, conditionalProbs);
             Real densitydm = delta_ * copula_->density(mkft);
