@@ -29,6 +29,10 @@
 
 namespace QuantLib {
 
+    namespace detail {
+        typedef Disposable<std::vector<Real> > DispArray;
+    }
+
     /*! \brief Integrates a vector or scalar function of vector domain. 
         
         A template recursion along dimensions avoids calling depth 
@@ -40,10 +44,6 @@ namespace QuantLib {
         \todo Split into integrator classes for functions returning scalar and 
             vector?
     */
-    namespace {
-        typedef Disposable<std::vector<Real> > DispArray;
-    }
-
     class GaussianQuadMultidimIntegrator {
     private:
         // Vector integration. Quadrature to functions returning a vector of 
@@ -54,7 +54,7 @@ namespace QuantLib {
             : GaussHermiteIntegration(n, mu) {}
 
             template <class F> // todo: fix copies.
-                DispArray operator()(const F& f) const {
+            detail::DispArray operator()(const F& f) const {
                 //first one, we do not know the size of the vector returned by f
                 Integer i = order()-1;
                 std::vector<Real> term = f(x_[i]);// potential copy! @#$%^!!!
@@ -158,8 +158,8 @@ namespace QuantLib {
         }
 
         template <int intgDepth>
-        DispArray vectorIntegratorVR(
-            const boost::function<DispArray(const std::vector<Real>& arg1)>& f,
+        detail::DispArray vectorIntegratorVR(
+            const boost::function<detail::DispArray(const std::vector<Real>& arg1)>& f,
             const Real mFctr) const 
         {
             varBuffer_[intgDepth-1] = mFctr;
@@ -186,7 +186,7 @@ namespace QuantLib {
             const std::vector<Real>& varg2)> f1, 
             const Real r3)> > integrationEntries_;
         mutable std::vector<
-        boost::function<DispArray (const boost::function<DispArray(
+        boost::function<detail::DispArray (const boost::function<detail::DispArray(
             const std::vector<Real>& vvarg2)>& vf1, 
             const Real vr3)> > integrationEntriesVR_;
 
@@ -229,8 +229,8 @@ namespace QuantLib {
 
     // Vector integrand version
     template<>
-    inline DispArray GaussianQuadMultidimIntegrator::integrate<DispArray>(
-        const boost::function<DispArray (const std::vector<Real>& v1)>& f) const
+    inline detail::DispArray GaussianQuadMultidimIntegrator::integrate<detail::DispArray>(
+        const boost::function<detail::DispArray (const std::vector<Real>& v1)>& f) const
     {
         return integralV_(boost::bind(
                    boost::cref(integrationEntriesVR_[dimension_-1]),
@@ -251,9 +251,9 @@ namespace QuantLib {
 
     //! Terminal integrand; disposable vector function version
     template<>
-    inline DispArray
+    inline detail::DispArray
         GaussianQuadMultidimIntegrator::vectorIntegratorVR<1>(
-        const boost::function<DispArray (const std::vector<Real>& arg1)>& f,
+        const boost::function<detail::DispArray (const std::vector<Real>& arg1)>& f,
         const Real mFctr) const 
     {
         varBuffer_[0] = mFctr;

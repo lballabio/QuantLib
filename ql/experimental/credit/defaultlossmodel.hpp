@@ -34,8 +34,8 @@
 
 namespace QuantLib {
 
-    namespace {
-        void no_deletion(Basket*) {}
+    namespace detail {
+        inline void no_deletion(Basket*) {}
     }
 
     /*! Default loss model interface definition.
@@ -156,7 +156,8 @@ namespace QuantLib {
             until the basket takes in a new model....
             ..alternatively both old basket and model could be forced reset here
             */
-            basket_.linkTo(boost::shared_ptr<Basket>(bskt, no_deletion), false);
+            basket_.linkTo(boost::shared_ptr<Basket>(bskt, detail::no_deletion),
+                           false);
             resetModel();// or rename to setBasketImpl(...)
         }
         // the call order matters, which is the reason for the parent to be the 

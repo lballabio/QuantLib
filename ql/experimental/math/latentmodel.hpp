@@ -45,7 +45,7 @@
 
 namespace QuantLib {
 
-    namespace {
+    namespace detail {
         // havent figured out how to do this in-place
         struct multiplyV {
             typedef Disposable<std::vector<Real> > result_type;
@@ -558,7 +558,7 @@ namespace QuantLib {
             return 
                 integration()->integrateV(//see note in LMIntegrators base class
                     boost::bind<Disposable<std::vector<Real> > >(
-                        multiplyV(),
+                        detail::multiplyV(),
                         boost::bind(&copulaPolicyImpl::density, copula_, _1),
                         boost::bind(boost::cref(f), _1)));
         }
