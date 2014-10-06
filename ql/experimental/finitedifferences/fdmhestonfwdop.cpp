@@ -55,7 +55,7 @@ namespace QuantLib {
     {
         const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
 
-        if (true || type == FdmSquareRootFwdOp::Plain) {
+        if (type_ == FdmSquareRootFwdOp::Plain) {
             // zero flux boundary condition
             const Size n = layout->dim()[1];
             const Real alpha = 2*rho_*mapY_->v(0)/sigma_*mapY_->f0();
