@@ -52,7 +52,7 @@ namespace QuantLib {
         typedef Sample<Real> sample_type;
         typedef URNG urng_type;
 
-        PolarStudentTRng(Real degFreedom, BigNatural seed = 0) 
+        explicit PolarStudentTRng(Real degFreedom, BigNatural seed = 0) 
             : uniformGenerator_(seed),
               degFreedom_(degFreedom) {
           QL_REQUIRE(degFreedom_ > 0, 

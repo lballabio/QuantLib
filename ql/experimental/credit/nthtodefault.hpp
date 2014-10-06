@@ -35,6 +35,7 @@ namespace QuantLib {
 
     class YieldTermStructure;
     class Claim;
+    class Basket;
 
     //--------------------------------------------------------------------------
     //! N-th to default swap
@@ -68,25 +69,23 @@ namespace QuantLib {
     */
     class NthToDefault : public Instrument {
       public:
-        NthToDefault(
+        class arguments;
+        class results;
+        class engine;
+
+        //! This product is 'digital'; the basket might be tranched but this is 
+        //  not relevant to it.
+        NthToDefault(const boost::shared_ptr<Basket>& basket,
                 Size n,
-                const std::vector<Handle<DefaultProbabilityTermStructure> >&
-                                                                probabilities,
-                Real recoveryRate,
-                const Handle<OneFactorCopula>& copula,
                 Protection::Side side,
-                Real nominal,
                 const Schedule& premiumSchedule,
+                Rate upfrontRate,
                 Rate premiumRate,
                 const DayCounter& dayCounter,
-                bool settlePremiumAccrual,
-                const Handle<YieldTermStructure>& yieldTS,
-                const Period& integrationStepSize,
-                boost::shared_ptr<Claim> claim = boost::shared_ptr<Claim>());
+                Real nominal,
+                bool settlePremiumAccrual);
 
         bool isExpired() const;
-
-        Rate fairPremium() const;
 
         // inspectors
         Rate premium() const { return premiumRate_; }
@@ -94,33 +93,78 @@ namespace QuantLib {
         DayCounter dayCounter() const { return dayCounter_; }
         Protection::Side side() const { return side_; }
         Size rank() const { return n_; }
-        Size basketSize() const { return probabilities_.size(); }
+        Size basketSize() const;
 
+        const Date& maturity() const {return premiumSchedule_.endDate();}//???
+
+        const boost::shared_ptr<Basket>& basket() const {return basket_;}
+
+        // results
+        Rate fairPremium() const;
+        Real premiumLegNPV() const;
+        Real protectionLegNPV() const;
+        Real errorEstimate() const;
+
+        void setupArguments(PricingEngine::arguments*) const;
+        void fetchResults(const PricingEngine::results*) const;
       private:
-        Probability defaultProbability(const Date& d) const;
 
         void setupExpired() const;
-        void performCalculations() const;
 
+        boost::shared_ptr<Basket> basket_;
         Size n_;
-        std::vector<Handle<DefaultProbabilityTermStructure> > probabilities_;
-        Real recoveryRate_;
-        Handle<OneFactorCopula> copula_;
         Protection::Side side_;
         Real nominal_;
         Schedule premiumSchedule_;
         Rate premiumRate_;
+        Rate upfrontRate_;
         DayCounter dayCounter_;
         bool settlePremiumAccrual_;
-        Handle<YieldTermStructure> yieldTS_;
-        Period integrationStepSize_;
-        boost::shared_ptr<Claim> claim_;
 
-        Leg premiumLeg_;
+        Leg premiumLeg_;/////////////////// LEG AND SCHEDULE BOTH MEMBERS..... REVISE THIS!
 
         // results
-        mutable Rate fairPremium_;
+        mutable Rate premiumValue_;
+        mutable Real protectionValue_;
+        mutable Real upfrontPremiumValue_;
+        mutable Real fairPremium_;
+        mutable Real errorEstimate_;
     };
+
+
+
+    class NthToDefault::arguments : public virtual PricingEngine::arguments {
+    public:
+        arguments() : side(Protection::Side(-1)),
+                      premiumRate(Null<Real>()),
+                      upfrontRate(Null<Real>()) {}
+        void validate() const;
+
+        boost::shared_ptr<Basket> basket;
+        Protection::Side side;
+        Leg premiumLeg;
+
+        Size ntdOrder;
+        bool settlePremiumAccrual;
+        Real notional;// ALL NAMES WITH THE SAME WEIGHT, NOTIONAL IS NOT MAPPED TO THE BASKET HERE, this does not have to be that way, its perfectly possible to have irreg notionals...
+        Real premiumRate;
+        Rate upfrontRate;
+    };
+
+    class NthToDefault::results : public Instrument::results {
+    public:
+        void reset();
+        Real premiumValue;
+        Real protectionValue;
+        Real upfrontPremiumValue;
+        Real fairPremium;
+        Real errorEstimate;
+    };
+
+    //! NTD base engine
+    class NthToDefault::engine : 
+        public GenericEngine<NthToDefault::arguments, 
+                             NthToDefault::results> { };
 
 }
 
