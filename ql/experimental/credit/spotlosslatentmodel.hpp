@@ -184,10 +184,10 @@ namespace QuantLib {
         const std::vector<Real>& m) const 
     {
         Real sumMs = 
-            std::inner_product(factorWeights_[iName].begin(), 
-                factorWeights_[iName].end(), m.begin(), 0.);
-        Real res = cumulativeZ((invCumYProb - sumMs) / 
-                idiosyncFctrs_[iName] );
+            std::inner_product(this->factorWeights_[iName].begin(), 
+                               this->factorWeights_[iName].end(), m.begin(), 0.);
+        Real res = this->cumulativeZ((invCumYProb - sumMs) / 
+                this->idiosyncFctrs_[iName] );
         #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_REQUIRE (res >= 0. && res <= 1.,
                     "conditional probability " << res << "out of range");
@@ -242,7 +242,7 @@ namespace QuantLib {
               fctrs_[iName + numNames_].end(),
               fctrs_[iName + numNames_].begin(), 
               0.);
-        return cumulativeZ((sumMs + std::sqrt(1.-crossIdiosyncFctrs_[iName])
+        return this->cumulativeZ((sumMs + std::sqrt(1.-crossIdiosyncFctrs_[iName])
                  * std::sqrt(1.+modelA_*modelA_) * 
                    invUncondRR
             - std::sqrt(crossIdiosyncFctrs_[iName]) * 
@@ -312,7 +312,7 @@ namespace QuantLib {
         const std::vector<Real>& mktFactors) const 
     {
         return conditionalDefaultProbabilityInvP(invP, iName, mktFactors)
-            * (1.-conditionalRecoveryInvPinvRR(invP, invRR, iName, mktFactors));
+            * (1.-this->conditionalRecoveryInvPinvRR(invP, invRR, iName, mktFactors));
     }
 
     template<class CP>
@@ -331,7 +331,7 @@ namespace QuantLib {
         return integratedExpectedValue(
             boost::function<Real (const std::vector<Real>& v1)>(
                boost::bind(
-               &SpotRecoveryLatentModel<copulaPolicy>::conditionalExpLossRRInv,
+               &SpotRecoveryLatentModel<CP>::conditionalExpLossRRInv,
                this,
                invP,
                invRR,
@@ -349,11 +349,11 @@ namespace QuantLib {
         const typename CP::initTraits& ini
         ) 
     : LatentModel<CP>(factorWeights, ini),
-      integration_(LatentModel<CP>::IntegrationFactory::
-        createLMIntegration(factorWeights[0].size(), integralType)),
       recoveries_(recoveries), 
       modelA_(modelA),
-      numNames_(factorWeights.size()/2)
+      numNames_(factorWeights.size()/2),
+      integration_(LatentModel<CP>::IntegrationFactory::
+        createLMIntegration(factorWeights[0].size(), integralType))
     {
         QL_REQUIRE(factorWeights.size() % 2 == 0, 
          "Number of RR variables must be equal to number of default variables");

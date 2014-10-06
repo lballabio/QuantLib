@@ -21,8 +21,8 @@
 #include "utilities.hpp"
 #include <ql/experimental/credit/cdo.hpp>
 #include <ql/experimental/credit/pool.hpp>
-#include <ql/experimental//credit/integralcdoengine.hpp>
-#include <ql/experimental//credit/midpointcdoengine.hpp>
+#include <ql/experimental/credit/integralcdoengine.hpp>
+#include <ql/experimental/credit/midpointcdoengine.hpp>
 #include <ql/experimental/credit/randomdefaultlatentmodel.hpp>
 #include <ql/experimental/credit/inhomogeneouspooldef.hpp>
 #include <ql/experimental/credit/homogeneouspooldef.hpp>
@@ -58,7 +58,7 @@ namespace {
     // corr, Nm, Nz, 0-3, 3-6, 6-10, 10-100
     hwDatum hwData7[] = {
         { 0.1, -1, -1, { 2279, 450,  89,  1 } },
-        { 0.3, -1, -1, { 1487, 472, 203,  7 } }
+        { 0.3, -1, -1, { 1487, 472, 203,  7 } },
         // Opening the T, T&G tests too. The convolution is analytical
         //   now so it runs it a time comparable to the gaussian tests and
         //   has enough precission to pass the tests.
@@ -66,13 +66,9 @@ namespace {
         //   is incorrect the test pass good enough, the quadrature gets to
         //   be worst as the kernel deviates from a normal, this is low 
         //   orders of the T; here 5 is enough, 3 would not be.
-
-        /**/
-        ,
-          { 0.3, -1,  5, { 1766, 420, 161,  6 } },
-          { 0.3,  5, -1, { 1444, 408, 171, 10 } },
-          { 0.3,  5,  5, { 1713, 359, 136,  9 } }
-        
+        { 0.3, -1,  5, { 1766, 420, 161,  6 } },
+        { 0.3,  5, -1, { 1444, 408, 171, 10 } },
+        { 0.3,  5,  5, { 1713, 359, 136,  9 } }
     };
 
     void check(int i, int j, string desc, Real found, Real expected,
@@ -103,7 +99,7 @@ void CdoTest::testHW() {
 
     // nBuckets and period determine the computation time
     Size nBuckets = 200;
-    Period period = 1*Months;
+    // Period period = 1*Months;
     // for MC engines
     Size numSims = 5000;
 

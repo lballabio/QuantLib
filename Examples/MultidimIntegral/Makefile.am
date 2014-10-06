@@ -11,7 +11,13 @@ MultidimIntegral_SOURCES = MultidimIntegral.cpp
 MultidimIntegral_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
-    MultidimIntegral.vcproj
+    MultidimIntegral.dev \
+    MultidimIntegral_vc8.vcproj \
+    MultidimIntegral_vc9.vcproj \
+    MultidimIntegral_vc10.vcxproj \
+    MultidimIntegral_vc10.vcxproj.filters \
+    MultidimIntegral_vc11.vcxproj \
+    MultidimIntegral_vc11.vcxproj.filters
 
 .PHONY: examples check-examples
 

@@ -106,8 +106,8 @@ namespace QuantLib {
             const copulaPolicy& copula,
             Size nSims, 
             BigNatural seed)
-        : numFactors_(numFactors), numLMVars_(numLMVars), copula_(copula), 
-          nSims_(nSims), seed_(seed) {}
+        : seed_(seed), numFactors_(numFactors), numLMVars_(numLMVars),
+          nSims_(nSims), copula_(copula) {}
 
         void update() {
             simsBuffer_.clear();
@@ -355,7 +355,7 @@ namespace QuantLib {
         Real attachAmount = basket_->attachmentAmount();
         Real detachAmount = basket_->detachmentAmount();
 
-        Real trancheLoss= 0.;
+        // Real trancheLoss= 0.;
         GeneralStatistics lossStats;
         for(Size iSim=0; iSim < nSims_; iSim++) {
             const std::vector<simEvent<D<C, URNG> > >& events = getSim(iSim);
@@ -570,8 +570,8 @@ namespace QuantLib {
         Size s = quantilePosition + 1;
         bool rLocked = false,
             sLocked = false;
-        Size rfinal = 0,
-            sfinal = 0;
+        // Size rfinal = 0,
+        //      sfinal = 0;
         for(Size delta=1; delta < quantilePosition; delta++) {
             Real cached = 
                 incompleteBetaFunction(s, nSims_+1-s, percentile, 1.e-8, 500);
@@ -587,11 +587,11 @@ namespace QuantLib {
                 -
                 cached;
             if((pMinus > confInterval) && !rLocked ) {
-               rfinal = r + 1;
+                // rfinal = r + 1;
                rLocked = true;
             }
             if((pPlus >= confInterval) && !sLocked) {
-                sfinal = s;
+                // sfinal = s;
                 sLocked = true;
             }
             if(rLocked && sLocked) break;
@@ -811,12 +811,12 @@ namespace QuantLib {
             Size nSims = 0,// stats will crash on div by zero, FIX ME.
             Real accuracy = 1.e-6, 
             BigNatural seed = 2863311530)
-        : copula_(copula), //<- renmae to latentModel_ or defautlLM_;
-          accuracy_(accuracy),
+        : RandomLM<RandomDefaultLM, copulaPolicy, USNG>(copula->numFactors(), copula->size(), copula->copula(), 
+            nSims, seed ),
+          copula_(copula), //<- renmae to latentModel_ or defautlLM_;
           recoveries_(recoveries.size()==0 ? std::vector<Real>(copula->size(), 
             0.) : recoveries), 
-          RandomLM(copula->numFactors(), copula->size(), copula->copula(), 
-            nSims, seed )
+          accuracy_(accuracy)
         {   
             // redundant through basket?
             this->registerWith(Settings::instance().evaluationDate());
@@ -828,11 +828,11 @@ namespace QuantLib {
             Size nSims = 0,// stats will crash on div by zero, FIX ME.
             Real accuracy = 1.e-6, 
             BigNatural seed = 2863311530)
-        : copula_(copula),
-          accuracy_(accuracy),
+        : RandomLM<RandomDefaultLM, copulaPolicy, USNG>(copula->numFactors(), copula->size(), copula->copula(), 
+            nSims, seed ),
+          copula_(copula),
           recoveries_(copula->recoveries()), 
-          RandomLM(copula->numFactors(), copula->size(), copula->copula(), 
-            nSims, seed )
+          accuracy_(accuracy)
         {   
             // redundant through basket?
             this->registerWith(Settings::instance().evaluationDate());

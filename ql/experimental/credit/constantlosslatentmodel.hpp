@@ -46,8 +46,8 @@ namespace QuantLib {
             const typename copulaPolicy::initTraits& ini = 
                 copulaPolicy::initTraits()            
             ) 
-        : recoveries_(recoveries), 
-          DefaultLatentModel<copulaPolicy>(factorWeights, integralType, ini) {
+        : DefaultLatentModel<copulaPolicy>(factorWeights, integralType, ini),
+          recoveries_(recoveries) {
 
               QL_REQUIRE(recoveries.size() == factorWeights.size(), 
                 "Incompatible factors and recovery sizes.");
@@ -61,9 +61,9 @@ namespace QuantLib {
             const typename copulaPolicy::initTraits& ini = 
                 copulaPolicy::initTraits()            
             ) 
-        : recoveries_(recoveries), 
-          DefaultLatentModel<copulaPolicy>(mktCorrel, nVariables,
-            integralType, ini) {
+        : DefaultLatentModel<copulaPolicy>(mktCorrel, nVariables,
+                                           integralType, ini),
+          recoveries_(recoveries) {
             // actually one could define the other and get rid of the variable 
             // here and in other similar models
             QL_REQUIRE(recoveries.size() == nVariables, 

@@ -48,7 +48,7 @@ namespace QuantLib {
         void resetModel();
     public:
         // allow base correlations:
-        typedef typename copulaPolicy copulaType;
+        typedef copulaPolicy copulaType;
 
         InhomogeneousPoolLossModel(
         // restricted to non random recoveries, but it could be possible.

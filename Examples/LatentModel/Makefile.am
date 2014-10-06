@@ -11,9 +11,14 @@ LatentModel_SOURCES = LatentModel.cpp
 LatentModel_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
-    LatentModel.vcproj \
-    ReadMe.txt
-	
+    LatentModel.dev \
+    LatentModel_vc8.vcproj \
+    LatentModel_vc9.vcproj \
+    LatentModel_vc10.vcxproj \
+    LatentModel_vc10.vcxproj.filters \
+    LatentModel_vc11.vcxproj \
+    LatentModel_vc11.vcxproj.filters
+
 .PHONY: examples check-examples
 
 examples: LatentModel$(EXEEXT)

@@ -136,8 +136,8 @@ namespace QuantLib {
     class NthToDefault::arguments : public virtual PricingEngine::arguments {
     public:
         arguments() : side(Protection::Side(-1)),
-                      upfrontRate(Null<Real>()),
-                      premiumRate(Null<Real>()) {}
+                      premiumRate(Null<Real>()),
+                      upfrontRate(Null<Real>()) {}
         void validate() const;
 
         boost::shared_ptr<Basket> basket;

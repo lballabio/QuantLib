@@ -165,7 +165,7 @@ int main(int, char* []) {
         // --- G Random model ---------------------
         // Gaussian random joint default model:
         Size numSimulations = 100000;
-        Size numCoresUsed = 4;
+        // Size numCoresUsed = 4;
         // Sobol, many cores
         boost::shared_ptr<DefaultLossModel> rdlmG(
             boost::make_shared<RandomDefaultLM<GaussianCopulaPolicy> >(gLM, 

@@ -30,15 +30,15 @@ namespace QuantLib {
     GaussianLHPLossModel::GaussianLHPLossModel(
             const Handle<Quote>& correlQuote,
             const std::vector<Handle<RecoveryRateQuote> >& quotes)
-        : correl_(correlQuote),
-          rrQuotes_(quotes), 
-          sqrt1minuscorrel_(std::sqrt(1.-correlQuote->value())),
-          biphi_(-sqrt(correlQuote->value())),
-          beta_(sqrt(correlQuote->value())),
-          LatentModel<GaussianCopulaPolicy>(sqrt(correlQuote->value()),
+        : LatentModel<GaussianCopulaPolicy>(sqrt(correlQuote->value()),
             quotes.size(),
             //g++ complains default value not seen as typename
-            GaussianCopulaPolicy::initTraits())
+            GaussianCopulaPolicy::initTraits()),
+          sqrt1minuscorrel_(std::sqrt(1.-correlQuote->value())),
+          correl_(correlQuote),
+          rrQuotes_(quotes), 
+          beta_(sqrt(correlQuote->value())),
+          biphi_(-sqrt(correlQuote->value()))
         {
             registerWith(correl_);
             for(Size i=0; i<quotes.size(); i++)
@@ -48,15 +48,14 @@ namespace QuantLib {
     GaussianLHPLossModel::GaussianLHPLossModel(
             Real correlation,
             const std::vector<Real>& recoveries)
-        :
-        correl_(Handle<Quote>(boost::make_shared<SimpleQuote>(correlation))),
-          sqrt1minuscorrel_(std::sqrt(1.-correlation)),
-          biphi_(-sqrt(correlation)),
-          beta_(sqrt(correlation)),
-          LatentModel<GaussianCopulaPolicy>(sqrt(correlation),
+        : LatentModel<GaussianCopulaPolicy>(sqrt(correlation),
             recoveries.size(),
             //g++ complains default value not seen as typename
-            GaussianCopulaPolicy::initTraits())
+            GaussianCopulaPolicy::initTraits()),
+          sqrt1minuscorrel_(std::sqrt(1.-correlation)),
+          correl_(Handle<Quote>(boost::make_shared<SimpleQuote>(correlation))),
+          beta_(sqrt(correlation)),
+          biphi_(-sqrt(correlation))
         {
             for(Size i=0; i<recoveries.size(); i++)
                 rrQuotes_.push_back(Handle<RecoveryRateQuote>(
@@ -66,14 +65,14 @@ namespace QuantLib {
         GaussianLHPLossModel::GaussianLHPLossModel(
             const Handle<Quote>& correlQuote,
             const std::vector<Real>& recoveries)
-        : correl_(correlQuote),
-          sqrt1minuscorrel_(std::sqrt(1.-correlQuote->value())),
-          biphi_(-sqrt(correlQuote->value())),
-          beta_(sqrt(correlQuote->value())),
-          LatentModel<GaussianCopulaPolicy>(sqrt(correlQuote->value()),
+        : LatentModel<GaussianCopulaPolicy>(sqrt(correlQuote->value()),
             recoveries.size(),
             //g++ complains default value not seen as typename
-            GaussianCopulaPolicy::initTraits())
+            GaussianCopulaPolicy::initTraits()),
+          sqrt1minuscorrel_(std::sqrt(1.-correlQuote->value())),
+          correl_(correlQuote),
+          beta_(sqrt(correlQuote->value())),
+          biphi_(-sqrt(correlQuote->value()))
         {
             registerWith(correl_);
             for(Size i=0; i<recoveries.size(); i++)

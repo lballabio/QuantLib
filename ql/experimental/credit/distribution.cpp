@@ -284,7 +284,7 @@ namespace QuantLib {
         cumulativeExcessProbability_.clear(); //? reuse?
         density_.push_back((cumulativeDensity_[0]-0.)/dx_[0]);
         excessProbability_.push_back(1.);
-        for(Size i=1; i<size_-1; i++) {
+        for(Integer i=1; i<size_-1; i++) {
             excessProbability_.push_back(1.-cumulativeDensity_[i-1]);
             density_.push_back((cumulativeDensity_[i]-
                 cumulativeDensity_[i-1])/dx_[i]);
@@ -340,7 +340,7 @@ namespace QuantLib {
             "Incorrect percentile");
         normalize();
         Real expected = 0;
-        Size iVal = locate(confidenceLevel(percValue));
+        Integer iVal = locate(confidenceLevel(percValue));
 
         if(iVal == size_-1) return x_.back();
 
