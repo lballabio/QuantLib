@@ -102,6 +102,9 @@ namespace QuantLib {
         */
         int locate (Real x);
 
+        /* Returns the average value conditional on values above
+        the passed percentile probability */
+        Real expectedShortfall (Real percValue);
     private:
         int size_;
         Real xmin_, xmax_;

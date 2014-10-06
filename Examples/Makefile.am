@@ -2,6 +2,7 @@
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 SUBDIRS = \
+    BasketLosses \
     BermudanSwaption \
     Bonds \
     CallableBonds \
@@ -12,7 +13,9 @@ SUBDIRS = \
     FittedBondCurve \
     FRA \
     Gaussian1dModels \
+    LatentModel \
     MarketModels \
+    MultidimIntegral \
     Replication \
     Repo \
     Swap

@@ -24,8 +24,9 @@
 #ifndef quantlib_pool_hpp
 #define quantlib_pool_hpp
 
-#include <ql/experimental/credit/issuer.hpp>
 #include <map>
+#include <ql/utilities/disposable.hpp>
+#include <ql/experimental/credit/issuer.hpp>
 
 namespace QuantLib {
 
@@ -35,15 +36,24 @@ namespace QuantLib {
         Size size() const;
         void clear();
         bool has (const std::string& name) const;
-        void add (const std::string& name, const Issuer& issuer);
+        void add (const std::string& name, const Issuer& issuer, 
+            const DefaultProbKey& contractTrigger = NorthAmericaCorpDefaultKey(
+                Currency(), SeniorSec, Period(), 1.));
         const Issuer& get (const std::string& name) const;
+        const DefaultProbKey& defaultKey(const std::string& name) const;
         void setTime(const std::string& name, Real time);
         Real getTime (const std::string& name) const;
         const std::vector<std::string>& names() const;
+        Disposable<std::vector<DefaultProbKey> > defaultKeys() const;
     private:
+        // \todo: needs to cehck all defaul TS have the same ref date? here or
+        //   where used? e.g. simulations.
         std::map<std::string,Issuer> data_;
         std::map<std::string,Real> time_;
         std::vector<std::string> names_;
+        /*! default events seniority and currency this name enters the basket 
+        with. Determines to which event/probability this pool referes to. */
+        std::map<std::string, DefaultProbKey> defaultKeys_;
     };
 
 }
