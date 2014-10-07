@@ -811,7 +811,13 @@ namespace QuantLib {
             Size nSims = 0,// stats will crash on div by zero, FIX ME.
             Real accuracy = 1.e-6, 
             BigNatural seed = 2863311530)
-        : RandomLM<RandomDefaultLM, copulaPolicy, USNG>(copula->numFactors(), copula->size(), copula->copula(), 
+        : 
+#if !defined(_MSC_VER)
+          RandomLM<RandomDefaultLM, copulaPolicy, USNG>
+#else
+          RandomLM
+#endif    
+          (copula->numFactors(), copula->size(), copula->copula(), 
             nSims, seed ),
           copula_(copula), //<- renmae to latentModel_ or defautlLM_;
           recoveries_(recoveries.size()==0 ? std::vector<Real>(copula->size(), 
@@ -828,7 +834,13 @@ namespace QuantLib {
             Size nSims = 0,// stats will crash on div by zero, FIX ME.
             Real accuracy = 1.e-6, 
             BigNatural seed = 2863311530)
-        : RandomLM<RandomDefaultLM, copulaPolicy, USNG>(copula->numFactors(), copula->size(), copula->copula(), 
+        : 
+#if !defined(_MSC_VER)
+          RandomLM<RandomDefaultLM, copulaPolicy, USNG>
+#else
+          RandomLM
+#endif    
+          (copula->numFactors(), copula->size(), copula->copula(), 
             nSims, seed ),
           copula_(copula),
           recoveries_(copula->recoveries()), 
@@ -843,16 +855,14 @@ namespace QuantLib {
         /* While this works on g++, VC9 refuses to compile it.
         Not completely sure whos right; individually making friends of the 
         calling members or writting explicitly the derived class T parameters 
-        throws the same errors. It might not work either for other versions of
-        MS compilers; in that case this test has to be extended to 
-        !defined(_MSC_VER)
+        throws the same errors.
         The access is then open to the member fucntions.
         Another solution is to use this http://accu.org/index.php/journals/296
 
         It might well be that gcc is allowing some c11 features silently, which
         wont pass on a lower gcc version.
         */
-#if !defined(QL_PATCH_MSVC90)
+#if !defined(_MSC_VER)
         friend class RandomLM<RandomDefaultLM, copulaPolicy, USNG>;
     protected:
 #else
