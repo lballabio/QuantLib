@@ -359,7 +359,7 @@ namespace QuantLib {
         std::vector<Real> values  = expectedDistribution(d);
         Real sum = 0.;
         for(Size i=0; i<lossPts.size(); i++) {
-            distrib.insert(std::make_pair<Real, Probability>(lossPts[i], 
+            distrib.insert(std::make_pair(lossPts[i], 
                 //capped, some situations giving a very small probability over 1
                 std::min(sum+values[i],1.)
                 ));
