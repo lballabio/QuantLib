@@ -32,7 +32,6 @@
 #include <ql/math/matrix.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/time/daycounters/simpledaycounter.hpp>
-//#include <iostream>
 #include <sstream>
 
 #if defined(BOOST_MSVC)

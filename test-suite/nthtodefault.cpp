@@ -20,9 +20,6 @@
 #include "nthtodefault.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/credit/nthtodefault.hpp>
-//#include <ql/experimental/credit/onefactorgaussiancopula.hpp>
-//#include <ql/experimental/credit/onefactorstudentcopula.hpp>
-//#include <ql/experimental/credit/gaussianlhplossmodel.hpp>
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
 #include <ql/experimental/credit/randomdefaultlatentmodel.hpp>
 #include <ql/experimental/credit/integralntdengine.hpp>
