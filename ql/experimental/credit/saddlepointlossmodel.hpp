@@ -1199,12 +1199,11 @@ namespace QuantLib {
         std::vector<Real> mktFactor) const 
     {
         const Size nNames = remainingNotionals_.size();
-        if (loss <= QL_EPSILON) return std::vector<Real>(nNames, 0.);
+        std::vector<Real> condContrib(nNames, 0.);
+        if (loss <= QL_EPSILON) return condContrib;
 
         Real saddlePt = findSaddle(invUncondProbs, loss / remainingNotional_, 
             mktFactor);
-
-        std::vector<Real> condContrib(nNames, 0.);
 
         for(Size iName=0; iName<nNames; iName++) {
             Probability pBuffer = 

@@ -112,7 +112,45 @@ namespace QuantLib {
             // etc....
         } LatentModelIntegrationType;
 	}
-		
+
+    /* class template specializations. I havent use CRTP type cast directly
+    because the signature of the integrators is different, grid integration
+    needs the domain. */
+    template<> class IntegrationBase<GaussianQuadMultidimIntegrator> : 
+    public GaussianQuadMultidimIntegrator, public LMIntegration {
+    public:
+        IntegrationBase(Size dimension, Size order) 
+        : GaussianQuadMultidimIntegrator(dimension, order) {}
+        Real integrate(const boost::function<Real (
+            const std::vector<Real>& arg)>& f) const {
+                return GaussianQuadMultidimIntegrator::integrate<Real>(f);
+        }
+        Disposable<std::vector<Real> > integrateV(
+            const boost::function<Disposable<std::vector<Real> >  (
+                const std::vector<Real>& arg)>& f) const {
+                return GaussianQuadMultidimIntegrator::
+                    integrate<Disposable<std::vector<Real> > >(f);
+        }
+        virtual ~IntegrationBase() {}
+    };
+
+    template<> class IntegrationBase<MultidimIntegral> : 
+        public MultidimIntegral, public LMIntegration {
+    public:
+        IntegrationBase(
+            const std::vector<boost::shared_ptr<Integrator> >& integrators, 
+            Real a, Real b) 
+        : MultidimIntegral(integrators), 
+          a_(integrators.size(),a), b_(integrators.size(),b) {}
+        Real integrate(const boost::function<Real (
+            const std::vector<Real>& arg)>& f) const {
+                return MultidimIntegral::operator ()(f, a_, b_);
+        }
+        // disposable vector version here....
+        virtual ~IntegrationBase() {}
+        const std::vector<Real> a_, b_;
+    };		
+
     // Intended to replace OneFactorCopula
 
     /*!
@@ -602,43 +640,6 @@ namespace QuantLib {
 
 
 
-    /* class template specializations. I havent use CRTP type cast directly
-    because the signature of the integrators is different, grid integration
-    needs the domain. */
-    template<> class IntegrationBase<GaussianQuadMultidimIntegrator> : 
-    public GaussianQuadMultidimIntegrator, public LMIntegration {
-    public:
-        IntegrationBase(Size dimension, Size order) 
-        : GaussianQuadMultidimIntegrator(dimension, order) {}
-        Real integrate(const boost::function<Real (
-            const std::vector<Real>& arg)>& f) const {
-                return GaussianQuadMultidimIntegrator::integrate<Real>(f);
-        }
-        Disposable<std::vector<Real> > integrateV(
-            const boost::function<Disposable<std::vector<Real> >  (
-                const std::vector<Real>& arg)>& f) const {
-                return GaussianQuadMultidimIntegrator::
-                    integrate<Disposable<std::vector<Real> > >(f);
-        }
-        virtual ~IntegrationBase() {}
-    };
-
-    template<> class IntegrationBase<MultidimIntegral> : 
-        public MultidimIntegral, public LMIntegration {
-    public:
-        IntegrationBase(
-            const std::vector<boost::shared_ptr<Integrator> >& integrators, 
-            Real a, Real b) 
-        : MultidimIntegral(integrators), 
-          a_(integrators.size(),a), b_(integrators.size(),b) {}
-        Real integrate(const boost::function<Real (
-            const std::vector<Real>& arg)>& f) const {
-                return MultidimIntegral::operator ()(f, a_, b_);
-        }
-        // disposable vector version here....
-        virtual ~IntegrationBase() {}
-        const std::vector<Real> a_, b_;
-    };
 
     // Defines ----------------------------------------------------------------
 

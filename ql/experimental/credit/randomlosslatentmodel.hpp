@@ -82,14 +82,9 @@ namespace QuantLib {
             Size nSims = 0,
             Real accuracy = 1.e-6, 
             BigNatural seed = 2863311530)
-        : 
-#if !defined(_MSC_VER)
-          RandomLM<RandomLossLM, copulaPolicy, USNG>
-#else
-          RandomLM
-#endif    
-          (copula->numFactors(), copula->size(), copula->copula(), 
-            nSims, seed),
+        : RandomLM< ::QuantLib::RandomLossLM, copulaPolicy, USNG>
+            (copula->numFactors(), copula->size(), copula->copula(), 
+                nSims, seed),
           copula_(copula), accuracy_(accuracy)
     {
         // redundant through basket?
@@ -103,12 +98,8 @@ namespace QuantLib {
         throws the same errors.
         The access is then open to the member fucntions.
         */
-#if !defined(_MSC_VER)
-        friend class RandomLM<RandomLossLM, copulaPolicy, USNG>;
+        friend class RandomLM< ::QuantLib::RandomLossLM, copulaPolicy, USNG>;
     protected:
-#else
-    public:
-#endif
         void nextSample(const std::vector<Real>& values) const;
 
         // see note on randomdefaultlatentmodel

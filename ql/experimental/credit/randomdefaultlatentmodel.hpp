@@ -811,14 +811,9 @@ namespace QuantLib {
             Size nSims = 0,// stats will crash on div by zero, FIX ME.
             Real accuracy = 1.e-6, 
             BigNatural seed = 2863311530)
-        : 
-#if !defined(_MSC_VER)
-          RandomLM<RandomDefaultLM, copulaPolicy, USNG>
-#else
-          RandomLM
-#endif    
-          (copula->numFactors(), copula->size(), copula->copula(), 
-            nSims, seed ),
+        : RandomLM< ::QuantLib::RandomDefaultLM, copulaPolicy, USNG>
+            (copula->numFactors(), copula->size(), copula->copula(), 
+                nSims, seed ),
           copula_(copula), //<- renmae to latentModel_ or defautlLM_;
           recoveries_(recoveries.size()==0 ? std::vector<Real>(copula->size(), 
             0.) : recoveries), 
@@ -834,14 +829,9 @@ namespace QuantLib {
             Size nSims = 0,// stats will crash on div by zero, FIX ME.
             Real accuracy = 1.e-6, 
             BigNatural seed = 2863311530)
-        : 
-#if !defined(_MSC_VER)
-          RandomLM<RandomDefaultLM, copulaPolicy, USNG>
-#else
-          RandomLM
-#endif    
-          (copula->numFactors(), copula->size(), copula->copula(), 
-            nSims, seed ),
+        : RandomLM< ::QuantLib::RandomDefaultLM, copulaPolicy, USNG>
+            (copula->numFactors(), copula->size(), copula->copula(), 
+                nSims, seed ),
           copula_(copula),
           recoveries_(copula->recoveries()), 
           accuracy_(accuracy)
@@ -862,12 +852,8 @@ namespace QuantLib {
         It might well be that gcc is allowing some c11 features silently, which
         wont pass on a lower gcc version.
         */
-#if !defined(_MSC_VER)
-        friend class RandomLM<RandomDefaultLM, copulaPolicy, USNG>;
+        friend class RandomLM< ::QuantLib::RandomDefaultLM, copulaPolicy, USNG>;
     protected:
-#else
-    public:
-#endif
         void nextSample(const std::vector<Real>& values) const;
         void initDates() const {
             /* Precalculate horizon time default probabilities (used to 
