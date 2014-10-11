@@ -1366,7 +1366,7 @@ void FdmLinearOpTest::testFdmMesherIntegral() {
         = FdmMesherIntegral(mesher, DiscreteTrapezoidIntegral()).integrate(f);
 
     if (std::fabs(calculatedTrapezoid - expectedTrapezoid)
-    		> tol*expectedSimpson) {
+    		> tol*expectedTrapezoid) {
         BOOST_FAIL(std::setprecision(16)
             << "discrete mesher integration using Trapezoid rule failed: "
             << "\n    calculated: " << calculatedTrapezoid
