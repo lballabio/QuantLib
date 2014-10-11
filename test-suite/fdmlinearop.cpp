@@ -1354,7 +1354,7 @@ void FdmLinearOpTest::testFdmMesherIntegral() {
     const Real calculatedSimpson
         = FdmMesherIntegral(mesher, DiscreteSimpsonIntegral()).integrate(f);
 
-    if (std::fabs(calculatedSimpson - expectedSimpson) > tol) {
+    if (std::fabs(calculatedSimpson - expectedSimpson) > tol*expectedSimpson) {
         BOOST_FAIL(std::setprecision(16)
             << "discrete mesher integration using Simpson's rule failed: "
             << "\n    calculated: " << calculatedSimpson
@@ -1365,7 +1365,8 @@ void FdmLinearOpTest::testFdmMesherIntegral() {
     const Real calculatedTrapezoid
         = FdmMesherIntegral(mesher, DiscreteTrapezoidIntegral()).integrate(f);
 
-    if (std::fabs(calculatedTrapezoid - expectedTrapezoid) > tol) {
+    if (std::fabs(calculatedTrapezoid - expectedTrapezoid)
+    		> tol*expectedSimpson) {
         BOOST_FAIL(std::setprecision(16)
             << "discrete mesher integration using Trapezoid rule failed: "
             << "\n    calculated: " << calculatedTrapezoid
