@@ -114,6 +114,7 @@ namespace QuantLib {
                                                           blackVolatility));
 
         originalEngine_ = boost::shared_ptr<Engine>(new Engine(fwdProcess));
+        originalEngine_->reset();
 
         originalArguments_ =
             dynamic_cast<VanillaOption::arguments*>(
@@ -150,16 +151,24 @@ namespace QuantLib {
 
         this->results_.value = discQ * originalResults_->value;
         // I need the strike derivative here ...
-        this->results_.delta = discQ * (originalResults_->delta +
-            this->arguments_.moneyness * originalResults_->strikeSensitivity);
+        if (originalResults_->delta != Null<Real>() &&
+            originalResults_->strikeSensitivity != Null<Real>()) {
+            this->results_.delta = discQ * (originalResults_->delta +
+                  this->arguments_.moneyness * 
+                        originalResults_->strikeSensitivity);
+        }
         this->results_.gamma = 0.0;
         this->results_.theta = process_->dividendYield()->
             zeroRate(this->arguments_.resetDate, divdc, Continuous, NoFrequency)
             * this->results_.value;
-        this->results_.vega  = discQ * originalResults_->vega;
-        this->results_.rho   = discQ *  originalResults_->rho;
-        this->results_.dividendRho = - resetTime * this->results_.value
-            + discQ * originalResults_->dividendRho;
+        if (originalResults_->vega != Null<Real>())
+            this->results_.vega  = discQ * originalResults_->vega;
+        if (originalResults_->rho != Null<Real>())
+            this->results_.rho   = discQ *  originalResults_->rho;
+        if (originalResults_->dividendRho != Null<Real>()) {
+            this->results_.dividendRho = - resetTime * this->results_.value
+               + discQ * originalResults_->dividendRho;
+        }
     }
 
 }
