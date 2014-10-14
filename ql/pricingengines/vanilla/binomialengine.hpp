@@ -160,7 +160,6 @@ namespace QuantLib {
         // Finally, rollback to t=0
         option.rollback(0.0);
         Real p0 = option.presentValue();
-        Real s1 = lattice->underlying(1, 1);
 
         // Store results
         results_.value = p0;
