@@ -68,8 +68,6 @@ namespace QuantLib {
     //! additional %option results
     class Greeks : public virtual PricingEngine::results {
       public:
-        Greeks() {
-        }
         void reset() {
             delta =  gamma = theta = vega =
                 rho = dividendRho = Null<Real>();
@@ -83,8 +81,6 @@ namespace QuantLib {
     //! more additional %option results
     class MoreGreeks : public virtual PricingEngine::results {
       public:
-        MoreGreeks() {
-        }
         void reset() {
             itmCashProbability = deltaForward = elasticity = thetaPerDay =
                 strikeSensitivity = Null<Real>();
