@@ -13,8 +13,7 @@ this_include_HEADERS = \
 libBarrierOption_la_SOURCES = \
     wulinyongdoublebarrierengine.cpp \
     perturbativebarrieroptionengine.cpp \
-    vannavolgabarrierengine.cpp \
-    vannavolgadoublebarrierengine.cpp
+    vannavolgabarrierengine.cpp
 
 noinst_LTLIBRARIES = libBarrierOption.la
 

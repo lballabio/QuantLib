@@ -8806,10 +8806,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\barrieroption\vannavolgadoublebarrierengine.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\experimental\barrieroption\vannavolgadoublebarrierengine.hpp"
 					>
 				</File>

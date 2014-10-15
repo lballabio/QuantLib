@@ -5924,9 +5924,6 @@
     <ClCompile Include="ql\experimental\barrieroption\vannavolgabarrierengine.cpp">
       <Filter>experimental\barrieroption</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\barrieroption\vannavolgadoublebarrierengine.cpp">
-      <Filter>experimental\barrieroption</Filter>
-    </ClCompile>
     <ClCompile Include="ql\experimental\convertiblebonds\convertiblebond.cpp">
       <Filter>experimental\convertiblebonds</Filter>
     </ClCompile>

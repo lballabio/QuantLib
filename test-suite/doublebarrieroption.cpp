@@ -445,7 +445,7 @@ void DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues() {
 						 spot->value()*qTS->discount(values[i].t)/rTS->discount(values[i].t),
 						 values[i].v * sqrt(values[i].t), rTS->discount(values[i].t));
         boost::shared_ptr<PricingEngine> vannaVolgaEngine =
-            boost::make_shared<VannaVolgaDoubleBarrierEngine>(
+            boost::make_shared<VannaVolgaDoubleBarrierEngine<WulinYongDoubleBarrierEngine> >(
                             volAtmQuote,
 							vol25PutQuote,
 							vol25CallQuote,
@@ -468,6 +468,33 @@ void DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues() {
                 values[i].volAtm, values[i].vol25Call, values[i].v,
                 expected, calculated, error, values[i].tol);
         }
+
+        vannaVolgaEngine =
+            boost::make_shared<VannaVolgaDoubleBarrierEngine<AnalyticDoubleBarrierEngine> >(
+                            volAtmQuote,
+							vol25PutQuote,
+							vol25CallQuote,
+							Handle<Quote> (spot),
+							Handle<YieldTermStructure> (rTS),
+							Handle<YieldTermStructure> (qTS),
+							true,
+							bsVanillaPrice);
+        doubleBarrierOption.setPricingEngine(vannaVolgaEngine);
+
+        calculated = doubleBarrierOption.NPV();
+        expected = values[i].result;
+        error = std::fabs(calculated-expected);
+        Real maxtol = 5.0e-3; // different engines have somewhat different results
+        if (error>maxtol) {
+            REPORT_FAILURE_VANNAVOLGA(
+                "value", values[i].barrierType,
+                values[i].barrier1, values[i].barrier2,
+                values[i].rebate, payoff, exercise, values[i].s,
+                values[i].q, values[i].r, today, values[i].vol25Put,
+                values[i].volAtm, values[i].vol25Call, values[i].v,
+                expected, calculated, error, values[i].tol);
+        }
+
     }
 }
 

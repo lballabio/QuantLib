@@ -2477,7 +2477,6 @@
     <ClCompile Include="ql\experimental\barrieroption\wulinyongdoublebarrierengine.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\perturbativebarrieroptionengine.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\vannavolgabarrierengine.cpp" />
-    <ClCompile Include="ql\experimental\barrieroption\vannavolgadoublebarrierengine.cpp" />
     <ClCompile Include="ql\experimental\convertiblebonds\convertiblebond.cpp" />
     <ClCompile Include="ql\experimental\convertiblebonds\discretizedconvertible.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticcompoundoptionengine.cpp" />
