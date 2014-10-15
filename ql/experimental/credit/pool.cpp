@@ -18,10 +18,9 @@
 */
 
 #include <boost/bind.hpp>
-
+#include <iterator>
 #include <ql/experimental/credit/pool.hpp>
 
-using namespace std;
 
 namespace QuantLib {
 

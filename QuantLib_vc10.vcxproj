@@ -2319,10 +2319,10 @@
     <ClCompile Include="ql\experimental\volatility\extendedblackvariancecurve.cpp" />
     <ClCompile Include="ql\experimental\volatility\extendedblackvariancesurface.cpp" />
     <ClCompile Include="ql\experimental\volatility\interestratevolsurface.cpp" />
-    <ClInclude Include="ql\experimental\volatility\noarbsabr.cpp" />
-    <ClInclude Include="ql\experimental\volatility\noarbsabrabsprobs.cpp" />
-    <ClInclude Include="ql\experimental\volatility\noarbsabrinterpolatedsmilesection.cpp" />
-    <ClInclude Include="ql\experimental\volatility\noarbsabrsmilesection.cpp" />
+    <ClCompile Include="ql\experimental\volatility\noarbsabr.cpp" />
+    <ClCompile Include="ql\experimental\volatility\noarbsabrabsprobs.cpp" />
+    <ClCompile Include="ql\experimental\volatility\noarbsabrinterpolatedsmilesection.cpp" />
+    <ClCompile Include="ql\experimental\volatility\noarbsabrsmilesection.cpp" />
     <ClCompile Include="ql\experimental\volatility\sabrvolsurface.cpp" />
     <ClCompile Include="ql\experimental\volatility\volcube.cpp" />
     <ClCompile Include="ql\experimental\callablebonds\blackcallablebondengine.cpp" />

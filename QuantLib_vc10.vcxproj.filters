@@ -5426,18 +5426,6 @@
     <ClCompile Include="ql\experimental\volatility\interestratevolsurface.cpp">
       <Filter>experimental\volatility</Filter>
     </ClCompile>
-    <ClInclude Include="ql\experimental\volatility\noarbsabr.cpp">
-      <Filter>experimental\volatility</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\volatility\noarbsabrabsprobs.cpp">
-      <Filter>experimental\volatility</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\volatility\noarbsabrinterpolatedsmilesection.cpp">
-      <Filter>experimental\volatility</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\volatility\noarbsabrsmilesection.cpp">
-      <Filter>experimental\volatility</Filter>
-    </ClInclude>
     <ClCompile Include="ql\experimental\volatility\sabrvolsurface.cpp">
       <Filter>experimental\volatility</Filter>
     </ClCompile>
@@ -6230,6 +6218,18 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\analyticpdfhestonengine.cpp">
       <Filter>experimental\exoticoptions</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\volatility\noarbsabr.cpp">
+      <Filter>experimental\volatility</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\volatility\noarbsabrabsprobs.cpp">
+      <Filter>experimental\volatility</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\volatility\noarbsabrinterpolatedsmilesection.cpp">
+      <Filter>experimental\volatility</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\volatility\noarbsabrsmilesection.cpp">
+      <Filter>experimental\volatility</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
