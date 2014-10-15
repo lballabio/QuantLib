@@ -44,6 +44,8 @@ namespace QuantLib {
 
         Real payoffAtExpiry(Real spot, Real variance, Real discount);
     private:
+       void etaPhi(Barrier::Type barrierType, Option::Type type, 
+                   Real &eta, Real &phi) const;
 
         const boost::shared_ptr<GeneralizedBlackScholesProcess>& process_;
         const boost::shared_ptr<StrikedTypePayoff> &payoff_;
@@ -130,8 +132,46 @@ namespace QuantLib {
         results_.value = helper.payoffAtExpiry(spot, variance, riskFreeDiscount);
     }
 
-
     // helper object methods
+    void AnalyticBinaryBarrierEngine_helper::etaPhi(Barrier::Type barrierType,
+                                                    Option::Type type,
+                                                    Real &eta, Real &phi) const
+    {
+        switch (barrierType) {
+            case Barrier::DownIn:
+            case Barrier::DownOut:
+               if (type == Option::Call) {
+                  // down and call
+                  eta =  1.0;
+                  phi =  1.0;
+               }
+               else {
+                  // down and put
+                  eta =  1.0;
+                  phi = -1.0;
+               }
+               break;
+
+            case Barrier::UpIn:
+            case Barrier::UpOut:
+               if (type == Option::Call) {
+                  // up and call
+                  eta = -1.0;
+                  phi =  1.0;
+               }
+               else {
+                  // up and put
+                  eta = -1.0;
+                  phi = -1.0;
+               }
+               break;
+
+            default:
+                QL_FAIL("invalid barrier type");
+        }
+    }
+
+
     Real AnalyticBinaryBarrierEngine_helper::payoffAtExpiry(
          Real spot, Real variance, Real discount)
     {
@@ -183,10 +223,9 @@ namespace QuantLib {
         Real log_H2_SX = std::log(barrier*barrier/(spot*strike));
         Real H_S_2mu = std::pow(barrier/spot, 2*mu);
 
-        // we pre-calculate with fixed eta and phi. Cumulative distrib.
-        // for inverse sign can be obtained by substracting from 1
-        Real eta = 1.0;
-        Real phi = 1.0; 
+        Real eta;
+        Real phi;
+        etaPhi(barrierType, type, eta, phi);
 
         Real x1, x2, y1, y2;
         Real n_x1, n_x2, n_y1, n_y2;
@@ -252,10 +291,10 @@ namespace QuantLib {
                   // down-in and put 
                   if (strike >= barrier) {
                      // B2-B3+B4 (eta=1, phi=-1)
-                     alpha = (1.0 - cum_x2) + H_S_2mu*(-cum_y1 + cum_y2);
+                     alpha = cum_x2 + H_S_2mu*(-cum_y1 + cum_y2);
                   } else {
                      // B1 (eta=1, phi=-1)
-                     alpha = 1.0 - cum_x1;   
+                     alpha = cum_x1;
                   }
                }
                break;
@@ -268,17 +307,17 @@ namespace QuantLib {
                      alpha = cum_x1;  
                   } else {
                      // B2-B3+B4 (eta=-1, phi=1)
-                     alpha = cum_x2 + H_S_2mu * (-(1.0-cum_y1) + (1.0-cum_y2)); 
+                     alpha = cum_x2 + H_S_2mu * (-cum_y1 + cum_y2);
                   }
                }
                else {
                   // up-in and put 
                   if (strike >= barrier) {
                      // B1-B2+B4 (eta=-1, phi=-1)
-                     alpha = (1.0-cum_x1) - (1.0-cum_x2) + H_S_2mu * (1.0-cum_y2); 
+                     alpha = cum_x1 - cum_x2 + H_S_2mu * cum_y2;
                   } else {
                      // B3 (eta=-1, phi=-1)
-                     alpha = H_S_2mu * (1.0-cum_y1);  
+                     alpha = H_S_2mu * cum_y1;  
                   }
                }
                break;
@@ -288,17 +327,17 @@ namespace QuantLib {
                   // down-out and call
                   if (strike >= barrier) {
                      // B1-B3 (eta=1, phi=1)
-                     alpha = cum_x1 - H_S_2mu * cum_y1;  
+                     alpha = cum_x1 - H_S_2mu * cum_y1; 
                   } else {
                      // B2-B4 (eta=1, phi=1)
-                     alpha = cum_x2 - H_S_2mu * cum_y2;  
+                     alpha = cum_x2 - H_S_2mu * cum_y2; 
                   }
                }
                else {
                   // down-out and put 
                   if (strike >= barrier) {
                      // B1-B2+B3-B4 (eta=1, phi=-1)
-                     alpha = (1.0-cum_x1) - (1.0-cum_x2) + H_S_2mu * (cum_y1-cum_y2); 
+                     alpha = cum_x1 - cum_x2 + H_S_2mu * (cum_y1-cum_y2);
                   } else {
                      // always 0
                      alpha = 0;  
@@ -313,17 +352,17 @@ namespace QuantLib {
                      alpha = 0;  
                   } else {
                      // B1-B2+B3-B4 (eta=-1, phi=1)
-                     alpha = cum_x1 - cum_x2 - H_S_2mu * (cum_y1-cum_y2); 
+                     alpha = cum_x1 - cum_x2 + H_S_2mu * (cum_y1-cum_y2);
                   }
                }
                else {
                   // up-out and put 
                   if (strike >= barrier) {
                      // B2-B4 (eta=-1, phi=-1)
-                     alpha = (1.0-cum_x2) - H_S_2mu * (1.0-cum_y2);  
+                     alpha = cum_x2 - H_S_2mu * cum_y2;
                   } else {
                      // B1-B3 (eta=-1, phi=-1)
-                     alpha = (1.0-cum_x1) - H_S_2mu * (1.0-cum_y1);
+                     alpha = cum_x1 - H_S_2mu * cum_y1;
                   }
                }
                break;
