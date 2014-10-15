@@ -1800,6 +1800,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\instruments\doublebarrieroption.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\doublebarrieroption.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\doublebarriertype.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\doublebarriertype.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\instruments\europeanoption.cpp"
 				>
 			</File>
@@ -1949,6 +1965,14 @@
 			</File>
 			<File
 				RelativePath=".\ql\instruments\quantobarrieroption.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\quantodoublebarrieroption.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\quantodoublebarrieroption.hpp"
 				>
 			</File>
 			<File
@@ -5392,6 +5416,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\pricingengines\barrier\fdhestonrebateengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\pricingengines\barrier\analyticdoublebarrierengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\pricingengines\barrier\analyticdoublebarrierengine.hpp"
 					>
 				</File>
 				<File

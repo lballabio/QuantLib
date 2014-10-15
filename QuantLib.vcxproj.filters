@@ -2256,6 +2256,9 @@
     <ClInclude Include="ql\pricingengines\barrier\analyticbarrierengine.hpp">
       <Filter>pricingengines\barrier</Filter>
     </ClInclude>
+    <ClCompile Include="ql\pricingengines\barrier\analyticdoublebarrierengine.cpp">
+      <Filter>pricingengines\barrier</Filter>
+    </ClCompile>
     <ClInclude Include="ql\pricingengines\barrier\mcbarrierengine.hpp">
       <Filter>pricingengines\barrier</Filter>
     </ClInclude>
@@ -3618,6 +3621,15 @@
     <ClInclude Include="ql\instruments\dividendbarrieroption.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
+    <ClCompile Include="ql\instruments\doublebarrieroption.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\instruments\quantodoublebarrieroption.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\instruments\doublebarriertype.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
     <ClInclude Include="ql\methods\finitedifferences\schemes\douglasscheme.hpp">
       <Filter>methods\finitedifferences\schemes</Filter>
     </ClInclude>
@@ -3635,6 +3647,18 @@
     </ClInclude>
     <ClInclude Include="ql\pricingengines\asian\fdblackscholesasianengine.hpp">
       <Filter>pricingengines\asian</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\barrier\analyticdoublebarrierengine.hpp">
+      <Filter>pricingengines\barrier</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\instruments\doublebarrieroption.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\instruments\quantodoublebarrieroption.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\instruments\doublebarriertype.hpp">
+      <Filter>instruments</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\barrier\fdblackscholesbarrierengine.hpp">
       <Filter>pricingengines\barrier</Filter>

@@ -137,6 +137,7 @@ QL_BENCHMARKS = \
 	americanoption.hpp americanoption.cpp \
 	asianoptions.hpp asianoptions.cpp \
 	barrieroption.hpp barrieroption.cpp \
+	doublebarrieroption.hpp doublebarrieroption.cpp \
 	basketoption.hpp basketoption.cpp \
 	batesmodel.hpp batesmodel.cpp \
 	convertiblebonds.hpp convertiblebonds.cpp \

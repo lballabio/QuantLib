@@ -1,9 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 Ferdinando Ametrano
- Copyright (C) 2004 StatPro Italia srl
- Copyright (C) 2008 Paul Farrington
+ Copyright (C) 2012 Thema Consulting SA (developer: Riccardo Ghetta)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,25 +17,26 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_quanto_option_hpp
-#define quantlib_test_quanto_option_hpp
+/*! \file doublebarriertype.hpp
+    \brief Double Barrier type
+*/
 
-#include <boost/test/unit_test.hpp>
+#ifndef quantlib_double_barrier_type_hpp
+#define quantlib_double_barrier_type_hpp
 
-/* remember to document new and/or updated tests in the Doxygen
-   comment block of the corresponding class */
+#include <ql/qldefines.hpp>
+#include <ostream>
 
-class QuantoOptionTest {
-  public:
-    static void testValues();
-    static void testGreeks();
-    static void testForwardValues();
-    static void testForwardGreeks();
-    static void testForwardPerformanceValues();
-    static void testBarrierValues();
-    static void testDoubleBarrierValues();
-    static boost::unit_test_framework::test_suite* suite();
-};
+namespace QuantLib {
 
+    //! Placeholder for enumerated barrier types
+    struct DoubleBarrier {
+        enum Type { KnockIn, KnockOut };
+    };
+
+    std::ostream& operator<<(std::ostream& out,
+                             DoubleBarrier::Type type);
+
+}
 
 #endif

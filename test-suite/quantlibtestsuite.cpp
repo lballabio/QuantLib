@@ -49,6 +49,7 @@
 #include "assetswap.hpp"
 #include "autocovariances.hpp"
 #include "barrieroption.hpp"
+#include "doublebarrieroption.hpp"
 #include "basketoption.hpp"
 #include "batesmodel.hpp"
 #include "bermudanswaption.hpp"
@@ -261,6 +262,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(AssetSwapTest::suite()); // fails with QL_USE_INDEXED_COUPON
     test->add(AutocovariancesTest::suite());
     test->add(BarrierOptionTest::suite());
+    test->add(DoubleBarrierOptionTest::suite());
     test->add(BasketOptionTest::suite());
     test->add(BatesModelTest::suite());
     test->add(BermudanSwaptionTest::suite());
