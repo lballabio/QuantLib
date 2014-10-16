@@ -3,4 +3,6 @@
 
 #include <ql/pricingengines/lookback/analyticcontinuousfixedlookback.hpp>
 #include <ql/pricingengines/lookback/analyticcontinuousfloatinglookback.hpp>
+#include <ql/pricingengines/lookback/analyticcontinuouspartialfixedlookback.hpp>
+#include <ql/pricingengines/lookback/analyticcontinuouspartialfloatinglookback.hpp>
 
