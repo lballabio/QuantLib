@@ -38,8 +38,6 @@ namespace QuantLib {
 
         QL_REQUIRE(process_->x0() > 0.0, "negative or null underlying");
 
-        Real strike = payoff->strike();
-
         switch (payoff->optionType()) {
           case Option::Call:
             QL_REQUIRE(payoff->strike()>=0.0,
@@ -128,18 +126,11 @@ namespace QuantLib {
         Real n1 = f_(eta*d1);
         Real n2 = f_(eta*d2);
 
-        BivariateCumulativeNormalDistributionWe04DP cnbn1 = NULL, cnbn2 = NULL, cnbn3 = NULL;
-        if (differentStartOfLookback)
-        {
+        BivariateCumulativeNormalDistributionWe04DP cnbn1(-1), cnbn2(0), cnbn3(0);
+        if (differentStartOfLookback) {
             cnbn1 = BivariateCumulativeNormalDistributionWe04DP (-std::sqrt(lookbackPeriodStartTime() / residualTime()));
             cnbn2 = BivariateCumulativeNormalDistributionWe04DP (std::sqrt(1 - lookbackPeriodStartTime() / residualTime()));
             cnbn3 = BivariateCumulativeNormalDistributionWe04DP (-std::sqrt(1 - lookbackPeriodStartTime() / residualTime()));
-        }
-        else 
-        {
-            cnbn1 = BivariateCumulativeNormalDistributionWe04DP (-1);
-            cnbn2 = BivariateCumulativeNormalDistributionWe04DP (0);
-            cnbn3 = BivariateCumulativeNormalDistributionWe04DP (0);
         }
 
         Real n3 = cnbn1(eta*(d1-x*stdDeviation()), eta*(-f1+2.0* carry * std::sqrt(lookbackPeriodStartTime()) / vol));

@@ -128,18 +128,11 @@ namespace QuantLib {
         Real n1 = f_(eta*(d1 - g1));
         Real n2 = f_(eta*(d2 - g1));
 
-        BivariateCumulativeNormalDistributionWe04DP cnbn1 = NULL, cnbn2 = NULL, cnbn3 = NULL;
-        if (!fullLookbackPeriod)
-        {
+        BivariateCumulativeNormalDistributionWe04DP cnbn1(1), cnbn2(0), cnbn3(-1);
+        if (!fullLookbackPeriod) {
             cnbn1 = BivariateCumulativeNormalDistributionWe04DP (std::sqrt(lookbackPeriodEndTime() / residualTime()));
             cnbn2 = BivariateCumulativeNormalDistributionWe04DP (-std::sqrt(1 - lookbackPeriodEndTime() / residualTime()));
             cnbn3 = BivariateCumulativeNormalDistributionWe04DP (-std::sqrt(lookbackPeriodEndTime() / residualTime()));
-        }
-        else 
-        {
-            cnbn1 = BivariateCumulativeNormalDistributionWe04DP (1);
-            cnbn2 = BivariateCumulativeNormalDistributionWe04DP (0);
-            cnbn3 = BivariateCumulativeNormalDistributionWe04DP (-1);
         }
 
         Real n3 = cnbn1(eta*(-f1+2.0* carry * std::sqrt(lookbackPeriodEndTime()) / vol), eta*(-d1+x*stdDeviation()-g1));

@@ -111,10 +111,14 @@ namespace QuantLib {
         boost::shared_ptr<FloatingTypePayoff> floatingTypePayoff =
             boost::dynamic_pointer_cast<FloatingTypePayoff>(payoff);
         
-        if (floatingTypePayoff->optionType() == Option::Call)
-            QL_REQUIRE(lambda >= 1.0, "lambda should be greater than or equal to 1 for calls");
-        else if (floatingTypePayoff->optionType() == Option::Put)
-            QL_REQUIRE(lambda <= 1.0, "lambda should be smaller than or equal to 1 for puts");
+        if (floatingTypePayoff->optionType() == Option::Call) {
+            QL_REQUIRE(lambda >= 1.0,
+                       "lambda should be greater than or equal to 1 for calls");
+        }
+        if (floatingTypePayoff->optionType() == Option::Put) {
+            QL_REQUIRE(lambda <= 1.0,
+                       "lambda should be smaller than or equal to 1 for puts");
+        }
     }
 
     ContinuousPartialFixedLookbackOption::ContinuousPartialFixedLookbackOption(
