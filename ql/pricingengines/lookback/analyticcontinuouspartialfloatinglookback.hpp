@@ -34,19 +34,8 @@
 
 
 namespace QuantLib {
-    //From http://help.rmetrics.org/fExoticOptions/LookbackOptions.html :
-    // Partial-Time Floating Strike Options:
-    // For a partial-time floating strike lookback option, the lookback 
-    // period starts at time zero and ends at an arbitrary date before 
-    // expiration. Except for the partial lookback period, the option is 
-    // similar to a floating strike lookback option. The partial-time 
-    // floating strike lookback option is cheaper than a similar standard 
-    // floating strike lookback option. Partial-time floating strike lookback 
-    // options can be priced analytically using a model introduced by Heynen 
-    // and Kat (1994).
-    // [Haug's Book, Chapter 2.9.3] 
 
-    //! Pricing engine for European continuous floating-strike lookback
+    //! Pricing engine for European continuous partial-time floating-strike lookback option
     /*! Formula from "Option Pricing Formulas, Second Edition",
         E.G. Haug, 2006, p.146
 

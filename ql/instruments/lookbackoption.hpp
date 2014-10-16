@@ -65,7 +65,20 @@ namespace QuantLib {
     };
 
     //! Continuous-partial-floating lookback option
-    /*! \ingroup instruments */
+    /*! From http://help.rmetrics.org/fExoticOptions/LookbackOptions.html :
+
+        For a partial-time floating strike lookback option, the
+        lookback period starts at time zero and ends at an arbitrary
+        date before expiration. Except for the partial lookback
+        period, the option is similar to a floating strike lookback
+        option. The partial-time floating strike lookback option is
+        cheaper than a similar standard floating strike lookback
+        option. Partial-time floating strike lookback options can be
+        priced analytically using a model introduced by Heynen and Kat
+        (1994).
+
+        \ingroup instruments
+    */
     class ContinuousPartialFloatingLookbackOption : public ContinuousFloatingLookbackOption {
       public:
         class arguments;
@@ -84,7 +97,25 @@ namespace QuantLib {
     };
 
     //! Continuous-partial-fixed lookback option
-    /*! \ingroup instruments */
+    /*! From http://help.rmetrics.org/fExoticOptions/LookbackOptions.html :
+
+        For a partial-time fixed strike lookback option, the lookback
+        period starts at a predetermined date after the initialization
+        date of the option.  The partial-time fixed strike lookback
+        call option payoff is given by the difference between the
+        maximum observed price of the underlying asset during the
+        lookback period and the fixed strike price. The partial-time
+        fixed strike lookback put option payoff is given by the
+        difference between the fixed strike price and the minimum
+        observed price of the underlying asset during the lookback
+        period. The partial-time fixed strike lookback option is
+        cheaper than a similar standard fixed strike lookback
+        option. Partial-time fixed strike lookback options can be
+        priced analytically using a model introduced by Heynen and Kat
+        (1994).
+
+        \ingroup instruments
+    */
     class ContinuousPartialFixedLookbackOption : public ContinuousFixedLookbackOption {
       public:
         class arguments;
