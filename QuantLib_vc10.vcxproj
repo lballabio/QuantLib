@@ -1324,6 +1324,8 @@
     <ClInclude Include="ql\pricingengines\lookback\all.hpp" />
     <ClInclude Include="ql\pricingengines\lookback\analyticcontinuousfixedlookback.hpp" />
     <ClInclude Include="ql\pricingengines\lookback\analyticcontinuousfloatinglookback.hpp" />
+    <ClInclude Include="ql\pricingengines\lookback\analyticcontinuouspartialfixedlookback.hpp" />
+    <ClInclude Include="ql\pricingengines\lookback\analyticcontinuouspartialfloatinglookback.hpp" />
     <ClInclude Include="ql\pricingengines\bond\all.hpp" />
     <ClInclude Include="ql\pricingengines\bond\bondfunctions.hpp" />
     <ClInclude Include="ql\pricingengines\bond\discountingbondengine.hpp" />
@@ -2233,6 +2235,8 @@
     <ClCompile Include="ql\pricingengines\cliquet\mcperformanceengine.cpp" />
     <ClCompile Include="ql\pricingengines\lookback\analyticcontinuousfixedlookback.cpp" />
     <ClCompile Include="ql\pricingengines\lookback\analyticcontinuousfloatinglookback.cpp" />
+    <ClCompile Include="ql\pricingengines\lookback\analyticcontinuouspartialfixedlookback.cpp" />
+    <ClCompile Include="ql\pricingengines\lookback\analyticcontinuouspartialfloatinglookback.cpp" />
     <ClCompile Include="ql\pricingengines\bond\bondfunctions.cpp" />
     <ClCompile Include="ql\pricingengines\bond\discountingbondengine.cpp" />
     <ClCompile Include="ql\pricingengines\swap\discountingswapengine.cpp" />

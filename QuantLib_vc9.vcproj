@@ -6277,6 +6277,22 @@
 					RelativePath=".\ql\pricingengines\lookback\analyticcontinuousfloatinglookback.hpp"
 					>
 				</File>
+				<File
+					RelativePath=".\ql\pricingengines\lookback\analyticcontinuouspartialfixedlookback.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\lookback\analyticcontinuouspartialfixedlookback.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\lookback\analyticcontinuouspartialfloatinglookback.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\lookback\analyticcontinuouspartialfloatinglookback.hpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="bond"

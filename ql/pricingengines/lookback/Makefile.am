@@ -5,11 +5,15 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
 	analyticcontinuousfixedlookback.hpp \
-	analyticcontinuousfloatinglookback.hpp
+	analyticcontinuousfloatinglookback.hpp \
+	analyticcontinuouspartialfixedlookback.hpp \
+	analyticcontinuouspartialfloatinglookback.hpp
 
 libLookbackEngines_la_SOURCES = \
 	analyticcontinuousfixedlookback.cpp \
-	analyticcontinuousfloatinglookback.cpp
+	analyticcontinuousfloatinglookback.cpp \
+	analyticcontinuouspartialfixedlookback.cpp \
+	analyticcontinuouspartialfloatinglookback.cpp
 
 noinst_LTLIBRARIES = libLookbackEngines.la
 
