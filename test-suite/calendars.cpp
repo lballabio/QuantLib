@@ -275,11 +275,15 @@ void CalendarTest::testUSNewYorkStockExchange() {
                    << " calculated holidays");
 
     std::vector<Date> histClose;
+    histClose.push_back(Date(30,October,2012));  // Hurricane Sandy
+    histClose.push_back(Date(29,October,2012));  // Hurricane Sandy
     histClose.push_back(Date(11,June,2004));     // Reagan's funeral
     histClose.push_back(Date(14,September,2001));// September 11, 2001
     histClose.push_back(Date(13,September,2001));// September 11, 2001
     histClose.push_back(Date(12,September,2001));// September 11, 2001
     histClose.push_back(Date(11,September,2001));// September 11, 2001
+    histClose.push_back(Date(27,April,1994));    // Nixon's funeral.
+    histClose.push_back(Date(27,September,1985));// Hurricane Gloria
     histClose.push_back(Date(14,July,1977));     // 1977 Blackout
     histClose.push_back(Date(25,January,1973));  // Johnson's funeral.
     histClose.push_back(Date(28,December,1972)); // Truman's funeral
@@ -287,6 +291,13 @@ void CalendarTest::testUSNewYorkStockExchange() {
     histClose.push_back(Date(31,March,1969));    // Eisenhower's funeral
     histClose.push_back(Date(10,February,1969)); // heavy snow
     histClose.push_back(Date(5,July,1968));      // Day after Independence Day
+    histClose.push_back(Date(9,April,1968));     // Mourning for MLK
+    histClose.push_back(Date(24,December,1965)); // Christmas Eve
+    histClose.push_back(Date(25,November,1963)); // Kennedy's funeral
+    histClose.push_back(Date(29,May,1961));      // Day before Decoration Day
+    histClose.push_back(Date(26,December,1958)); // Day after Christmas
+    histClose.push_back(Date(24,December,1956)); // Christmas Eve
+    histClose.push_back(Date(24,December,1954)); // Christmas Eve
     // June 12-Dec. 31, 1968
     // Four day week (closed on Wednesdays) - Paperwork Crisis
     histClose.push_back(Date(12,Jun,1968));
@@ -311,8 +322,6 @@ void CalendarTest::testUSNewYorkStockExchange() {
             BOOST_FAIL(histClose[i]
                        << " should be holiday (historical close)");
     }
-
-
 }
 
 void CalendarTest::testTARGET() {

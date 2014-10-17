@@ -7,7 +7,12 @@
 #include <ql/experimental/math/expm.hpp>
 #include <ql/experimental/math/farliegumbelmorgensterncopularng.hpp>
 #include <ql/experimental/math/frankcopularng.hpp>
+#include <ql/experimental/math/gaussiancopulapolicy.hpp>
+#include <ql/experimental/math/latentmodel.hpp>
+#include <ql/experimental/math/multidimintegrator.hpp>
+#include <ql/experimental/math/multidimquadrature.hpp>
 #include <ql/experimental/math/polarstudenttrng.hpp>
 #include <ql/experimental/math/simulatedannealing.hpp>
+#include <ql/experimental/math/tcopulapolicy.hpp>
 #include <ql/experimental/math/zigguratrng.hpp>
 

@@ -633,6 +633,7 @@
     <ClCompile Include="basketoption.cpp" />
     <ClCompile Include="batesmodel.cpp" />
     <ClCompile Include="bermudanswaption.cpp" />
+    <ClCompile Include="binaryoption.cpp" />
     <ClCompile Include="blackdeltacalculator.cpp" />
     <ClCompile Include="blackformula.cpp" />
     <ClCompile Include="bonds.cpp" />
@@ -707,6 +708,7 @@
     <ClCompile Include="mclongstaffschwartzengine.cpp" />
     <ClCompile Include="mersennetwister.cpp" />
     <ClCompile Include="money.cpp" />
+    <ClCompile Include="noarbsabr.cpp" />
     <ClCompile Include="nthtodefault.cpp" />
     <ClCompile Include="ode.cpp" />
     <ClCompile Include="operators.cpp" />
@@ -762,6 +764,7 @@
     <ClInclude Include="basketoption.hpp" />
     <ClInclude Include="batesmodel.hpp" />
     <ClInclude Include="bermudanswaption.hpp" />
+    <ClInclude Include="binaryoption.hpp" />
     <ClInclude Include="blackdeltacalculator.hpp" />
     <ClInclude Include="blackformula.hpp" />
     <ClInclude Include="bonds.hpp" />
@@ -836,6 +839,7 @@
     <ClInclude Include="mclongstaffschwartzengine.hpp" />
     <ClInclude Include="mersennetwister.hpp" />
     <ClInclude Include="money.hpp" />
+    <ClInclude Include="noarbsabr.hpp" />
     <ClInclude Include="nthtodefault.hpp" />
     <ClInclude Include="ode.hpp" />
     <ClInclude Include="operators.hpp" />

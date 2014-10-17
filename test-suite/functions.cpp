@@ -110,7 +110,7 @@ void FunctionsTest::testGammaValues() {
 }
 
 void FunctionsTest::testModifiedBesselFunctions() {
-    BOOST_TEST_MESSAGE("Testing modified Bessel function of first kind...");
+    BOOST_TEST_MESSAGE("Testing modified Bessel function of first and second kind...");
 
     /* reference values are computed with R and the additional package Bessel
      * http://cran.r-project.org/web/packages/Bessel
@@ -225,6 +225,74 @@ void FunctionsTest::testModifiedBesselFunctions() {
     }
 }
 
+void FunctionsTest::testWeightedModifiedBesselFunctions() {
+    BOOST_TEST_MESSAGE("Testing weighted modified Bessel functions ...");
+    Real nu = -5.0;
+    while (nu <= 5.0) {
+        Real x = 0.1;
+        while (x <= 15.0) {
+            Real vi = modifiedBesselFunction_i_exponentiallyWeighted(nu, x);
+            Real wi = modifiedBesselFunction_i(nu, x) * exp(-x);
+            Real vk = modifiedBesselFunction_k_exponentiallyWeighted(nu, x);
+            Real wk = M_PI_2 * (modifiedBesselFunction_i(-nu,x)*exp(-x)-
+                                 modifiedBesselFunction_i(nu,x)*exp(-x)) / std::sin(M_PI*nu);
+            if (std::abs((vi - wi) / (std::max(exp(x), 1.0) * vi)) >
+                1E3 * QL_EPSILON)
+                BOOST_ERROR("failed to verify exponentially weighted"
+                            << "modified Bessel function of first kind"
+                            << "\n order      : " << nu << "\n argument   : "
+                            << x << "\n calcuated  : " << vi
+                            << "\n expecetd   : " << wi);
+            if (std::abs((vk - wk) / (std::max(exp(x), 1.0) * vk)) >
+                1E3 * QL_EPSILON)
+                BOOST_ERROR("failed to verify exponentially weighted"
+                            << "modified Bessel function of second kind"
+                            << "\n order      : " << nu << "\n argument   : "
+                            << x << "\n calcuated  : " << vk
+                            << "\n expecetd   : " << wk);
+            x += 0.5;
+        }
+        nu += 0.5;
+    }
+    nu = -5.0;
+    while (nu <= 5.0) {
+        Real x = -5.0;
+        while (x <= 5.0) {
+            Real y = -5.0;
+            while (y <= 5.0) {
+                std::complex<Real> z(x, y);
+                std::complex<Real> vi =
+                    modifiedBesselFunction_i_exponentiallyWeighted(nu, z);
+                std::complex<Real> wi =
+                    modifiedBesselFunction_i(nu, z) * exp(-z);
+                std::complex<Real> vk =
+                    modifiedBesselFunction_k_exponentiallyWeighted(nu, z);
+                std::complex<Real> wk =
+                    M_PI_2 * (modifiedBesselFunction_i(-nu, z) * exp(-z) -
+                              modifiedBesselFunction_i(nu, z) * exp(-z)) /
+                    std::sin(M_PI * nu);
+                if (std::abs((vi - wi) / vi) > 1E3 * QL_EPSILON)
+                    BOOST_ERROR("failed to verify exponentially weighted"
+                                << "modified Bessel function of first kind"
+                                << "\n order      : " << nu
+                                << "\n argument   : " << z <<
+                                "\n calcuated: "
+                                << vi << "\n expecetd   : " << wi);
+                if (std::abs((vk - wk) / vk) > 1E3 * QL_EPSILON)
+                    BOOST_ERROR("failed to verify exponentially weighted"
+                                << "modified Bessel function of second kind"
+                                << "\n order      : " << nu
+                                << "\n argument   : " << z <<
+                                "\n calcuated: "
+                                << vk << "\n expecetd   : " << wk);
+                y += 0.5;
+            }
+            x += 0.5;
+        }
+        nu += 0.5;
+    }
+}
+
 test_suite* FunctionsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Factorial tests");
     suite->add(QUANTLIB_TEST_CASE(&FunctionsTest::testFactorial));
@@ -232,6 +300,7 @@ test_suite* FunctionsTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&FunctionsTest::testGammaValues));
     suite->add(QUANTLIB_TEST_CASE(
                         &FunctionsTest::testModifiedBesselFunctions));
+    suite->add(QUANTLIB_TEST_CASE(
+                        &FunctionsTest::testWeightedModifiedBesselFunctions));
     return suite;
 }
-

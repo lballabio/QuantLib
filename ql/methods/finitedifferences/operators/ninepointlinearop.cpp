@@ -144,7 +144,7 @@ namespace QuantLib {
         const Size *i10(i10_.get()),                   *i12(i12_.get());
         const Size *i20(i20_.get()), *i21(i21_.get()), *i22(i22_.get());
 
-        #pragma omp parallel for
+        //#pragma omp parallel for
         for (Size i=0; i < retVal.size(); ++i) {
             retVal[i] =   a00[i]*u[i00[i]]
                         + a01[i]*u[i01[i]]
@@ -188,7 +188,7 @@ namespace QuantLib {
         NinePointLinearOp retVal(d0_, d1_, mesher_);
         const Size size = mesher_->layout()->size();
 
-        #pragma omp parallel for
+        //#pragma omp parallel for
         for (Size i=0; i < size; ++i) {
             const Real s = u[i];
             retVal.a11_[i]=a11_[i]*s; retVal.a00_[i]=a00_[i]*s;

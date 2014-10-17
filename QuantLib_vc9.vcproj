@@ -2697,6 +2697,10 @@
 					RelativePath=".\ql\math\interpolations\sabrinterpolation.hpp"
 					>
 				</File>
+				<File
+					RelativePath=".\ql\math\interpolations\xabrinterpolation.hpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="statistics"
@@ -5005,10 +5009,6 @@
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatility\swaption\swaptionvolcube1.cpp"
-						>
-					</File>
-					<File
 						RelativePath=".\ql\termstructures\volatility\swaption\swaptionvolcube1.hpp"
 						>
 					</File>
@@ -5766,6 +5766,26 @@
 					>
 				</File>
 				<File
+					RelativePath="ql\pricingengines\barrier\analyticbinarybarrierengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\pricingengines\barrier\analyticbinarybarrierengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\pricingengines\barrier\binomialbarrierengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\pricingengines\barrier\discretizedbarrieroption.cpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\pricingengines\barrier\discretizedbarrieroption.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\pricingengines\basket\kirkengine.cpp"
 					>
 				</File>
@@ -5950,14 +5970,6 @@
 					>
 				</File>
 				<File
-					RelativePath="ql\pricingengines\vanilla\hestonexpansionengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath="ql\pricingengines\vanilla\hestonexpansionengine.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\pricingengines\vanilla\fdamericanengine.hpp"
 					>
 				</File>
@@ -6047,6 +6059,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\pricingengines\vanilla\fdvanillaengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\pricingengines\vanilla\hestonexpansionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\pricingengines\vanilla\hestonexpansionengine.hpp"
 					>
 				</File>
 				<File
@@ -6275,6 +6295,22 @@
 				</File>
 				<File
 					RelativePath=".\ql\pricingengines\lookback\analyticcontinuousfloatinglookback.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\lookback\analyticcontinuouspartialfixedlookback.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\lookback\analyticcontinuouspartialfixedlookback.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\lookback\analyticcontinuouspartialfloatinglookback.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\lookback\analyticcontinuouspartialfloatinglookback.hpp"
 					>
 				</File>
 			</Filter>
@@ -7042,6 +7078,14 @@
 				RelativePath=".\ql\experimental\all.hpp"
 				>
 			</File>
+			<File
+				RelativePath=".\ql\experimental\credit\correlationstructure.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\experimental\credit\correlationstructure.hpp"
+				>
+			</File>
 			<Filter
 				Name="volatility"
 				>
@@ -7107,6 +7151,38 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\volatility\sabrvolsurface.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\noarbsabr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\noarbsabr.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\noarbsabrabsprobs.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\noarbsabrinterpolatedsmilesection.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\noarbsabrinterpolatedsmilesection.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\noarbsabrinterpolation.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\noarbsabrsmilesection.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\noarbsabrsmilesection.hpp"
 					>
 				</File>
 				<File
@@ -7322,6 +7398,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticcompoundoptionengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\analyticcompoundoptionengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\exoticoptions\analyticeuropeanmargrabeengine.cpp"
 					>
 				</File>
@@ -7391,6 +7475,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\exoticoptions\complexchooseroption.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\compoundoption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\compoundoption.hpp"
 					>
 				</File>
 				<File
@@ -7517,22 +7609,6 @@
 					RelativePath=".\ql\experimental\exoticoptions\writerextensibleoption.hpp"
 					>
 				</File>
-				<File
-					RelativePath=".\ql\experimental\exoticoptions\analyticcompoundoptionengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\exoticoptions\analyticcompoundoptionengine.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\exoticoptions\compoundoption.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\exoticoptions\compoundoption.hpp"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="credit"
@@ -7542,11 +7618,27 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\basecorrelationstructure.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\basecorrelationstructure.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\basecorrelationlossmodel.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\basket.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\basket.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\binomiallossmodel.hpp"
 					>
 				</File>
 				<File
@@ -7574,6 +7666,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\constantlosslatentmodel.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\defaultevent.cpp"
 					>
 				</File>
@@ -7582,11 +7678,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\defaultlossmodel.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\defaultprobabilitykey.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\defaultprobabilitykey.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\defaultprobabilitylatentmodel.hpp"
 					>
 				</File>
 				<File
@@ -7610,6 +7714,38 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\gaussianlhplossmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\gaussianlhplossmodel.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\homogeneouspooldef.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\inhomogeneouspooldef.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\integralcdoengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\integralcdoengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\integralntdengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\integralntdengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\issuer.cpp"
 					>
 				</File>
@@ -7627,6 +7763,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\lossdistribution.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\midpointcdoengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\midpointcdoengine.hpp"
 					>
 				</File>
 				<File
@@ -7670,11 +7814,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\randomdefaultlatentmodel.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\randomdefaultmodel.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\randomdefaultmodel.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\randomlosslatentmodel.hpp"
 					>
 				</File>
 				<File
@@ -7694,7 +7846,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\credit\recursivecdoengine.hpp"
+					RelativePath=".\ql\experimental\credit\recursivelossmodel.hpp"
 					>
 				</File>
 				<File
@@ -7722,6 +7874,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\saddlepointlossmodel.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\spotlosslatentmodel.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\spreadedhazardratecurve.hpp"
 					>
 				</File>
@@ -7731,14 +7891,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\syntheticcdo.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\credit\syntheticcdoengines.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\credit\syntheticcdoengines.hpp"
 					>
 				</File>
 			</Filter>
@@ -8762,11 +8914,47 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\math\gaussiancopulapolicy.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\gaussiancopulapolicy.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\latentmodel.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\multidimintegrator.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\multidimintegrator.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\multidimquadrature.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\multidimquadrature.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\math\polarstudenttrng.hpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\experimental\math\simulatedannealing.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\tcopulapolicy.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\tcopulapolicy.hpp"
 					>
 				</File>
 				<File

@@ -23,7 +23,6 @@
 
 #include <ql/instruments/swaption.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
-//#include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/solvers1d/newtonsafe.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/exercise.hpp>

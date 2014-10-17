@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="methods">
@@ -988,6 +988,9 @@
       <Filter>math\interpolations</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\interpolations\sabrinterpolation.hpp">
+      <Filter>math\interpolations</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\math\interpolations\xabrinterpolation.hpp">
       <Filter>math\interpolations</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\statistics\all.hpp">
@@ -2454,6 +2457,12 @@
     <ClInclude Include="ql\pricingengines\lookback\analyticcontinuousfloatinglookback.hpp">
       <Filter>pricingengines\lookback</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\lookback\analyticcontinuouspartialfixedlookback.hpp">
+      <Filter>pricingengines\lookback</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\lookback\analyticcontinuouspartialfloatinglookback.hpp">
+      <Filter>pricingengines\lookback</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\bond\all.hpp">
       <Filter>pricingengines\bond</Filter>
     </ClInclude>
@@ -2781,6 +2790,18 @@
     <ClInclude Include="ql\experimental\volatility\interestratevolsurface.hpp">
       <Filter>experimental\volatility</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\volatility\noarbsabr.hpp">
+      <Filter>experimental\volatility</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\volatility\noarbsabrinterpolatedsmilesection.hpp">
+      <Filter>experimental\volatility</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\volatility\noarbsabrinterpolation.hpp">
+      <Filter>experimental\volatility</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\volatility\noarbsabrsmilesection.hpp">
+      <Filter>experimental\volatility</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\volatility\sabrvolsurface.hpp">
       <Filter>experimental\volatility</Filter>
     </ClInclude>
@@ -2937,10 +2958,19 @@
     <ClInclude Include="ql\experimental\credit\all.hpp">
       <Filter>experimental\credit</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\credit\basecorrelationlossmodel.hpp">
+      <Filter>experimental\credit</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\credit\basecorrelationstructure.hpp">
+      <Filter>experimental\credit</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\credit\basket.hpp">
       <Filter>experimental\credit</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\credit\blackcdsoptionengine.hpp">
+      <Filter>experimental\credit</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\credit\binomiallossmodel.hpp">
       <Filter>experimental\credit</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\credit\cdo.hpp">
@@ -2949,10 +2979,22 @@
     <ClInclude Include="ql\experimental\credit\cdsoption.hpp">
       <Filter>experimental\credit</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\credit\constantlosslatentmodel.hpp">
+      <Filter>experimental\credit</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\credit\correlationstructure.hpp">
+      <Filter>experimental\credit</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\credit\defaultevent.hpp">
       <Filter>experimental\credit</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\credit\defaultlossmodel.hpp">
+      <Filter>experimental\credit</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\credit\defaultprobabilitykey.hpp">
+      <Filter>experimental\credit</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\credit\defaultprobabilitylatentmodel.hpp">
       <Filter>experimental\credit</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\credit\defaulttype.hpp">
@@ -2964,6 +3006,21 @@
     <ClInclude Include="ql\experimental\credit\factorspreadedhazardratecurve.hpp">
       <Filter>experimental\credit</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\credit\gaussianlhplossmodel.hpp">
+      <Filter>experimental\credit</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\credit\homogeneouspooldef.hpp">
+      <Filter>experimental\credit</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\credit\inhomogeneouspooldef.hpp">
+      <Filter>experimental\credit</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\credit\integralcdoengine.hpp">
+      <Filter>experimental\credit</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\credit\integralntdengine.hpp">
+      <Filter>experimental\credit</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\credit\issuer.hpp">
       <Filter>experimental\credit</Filter>
     </ClInclude>
@@ -2971,6 +3028,9 @@
       <Filter>experimental\credit</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\credit\lossdistribution.hpp">
+      <Filter>experimental\credit</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\credit\midpointcdoengine.hpp">
       <Filter>experimental\credit</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\credit\nthtodefault.hpp">
@@ -2988,7 +3048,13 @@
     <ClInclude Include="ql\experimental\credit\pool.hpp">
       <Filter>experimental\credit</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\credit\randomdefaultlatentmodel.hpp">
+      <Filter>experimental\credit</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\credit\randomdefaultmodel.hpp">
+      <Filter>experimental\credit</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\credit\randomlosslatentmodel.hpp">
       <Filter>experimental\credit</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\credit\recoveryratemodel.hpp">
@@ -2997,7 +3063,7 @@
     <ClInclude Include="ql\experimental\credit\recoveryratequote.hpp">
       <Filter>experimental\credit</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\credit\recursivecdoengine.hpp">
+    <ClInclude Include="ql\experimental\credit\recursivelossmodel.hpp">
       <Filter>experimental\credit</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\credit\riskyassetswap.hpp">
@@ -3009,13 +3075,16 @@
     <ClInclude Include="ql\experimental\credit\riskybond.hpp">
       <Filter>experimental\credit</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\credit\saddlepointlossmodel.hpp">
+      <Filter>experimental\credit</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\credit\spotlosslatentmodel.hpp">
+      <Filter>experimental\credit</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\credit\spreadedhazardratecurve.hpp">
       <Filter>experimental\credit</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\credit\syntheticcdo.hpp">
-      <Filter>experimental\credit</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\credit\syntheticcdoengines.hpp">
       <Filter>experimental\credit</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\finitedifferences\all.hpp">
@@ -3354,10 +3423,25 @@
     <ClInclude Include="ql\experimental\math\frankcopularng.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\math\gaussiancopulapolicy.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\math\latentmodel.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\math\multidimintegrator.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\math\multidimquadrature.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\math\polarstudenttrng.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\math\simulatedannealing.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\math\tcopulapolicy.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\math\zigguratrng.hpp">
@@ -3521,6 +3605,9 @@
     </ClInclude>
     <ClInclude Include="ql\pricingengines\asian\fdblackscholesasianengine.hpp">
       <Filter>pricingengines\asian</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\barrier\analyticbinarybarrierengine.hpp">
+      <Filter>pricingengines\barrier</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\barrier\fdblackscholesbarrierengine.hpp">
       <Filter>pricingengines\barrier</Filter>
@@ -3797,6 +3884,12 @@
     </ClInclude>
     <ClInclude Include="ql\experimental\exoticoptions\analyticpdfhestonengine.hpp">
       <Filter>experimental\exoticoptions</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\barrier\binomialbarrierengine.hpp">
+      <Filter>pricingengines\barrier</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\barrier\discretizedbarrieroption.hpp">
+      <Filter>pricingengines\barrier</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -4793,9 +4886,6 @@
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolcube.cpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClCompile>
-    <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolcube1.cpp">
-      <Filter>termstructures\volatility\swaption</Filter>
-    </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolcube2.cpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClCompile>
@@ -5091,6 +5181,12 @@
       <Filter>pricingengines\lookback</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\lookback\analyticcontinuousfloatinglookback.cpp">
+      <Filter>pricingengines\lookback</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\lookback\analyticcontinuouspartialfixedlookback.cpp">
+      <Filter>pricingengines\lookback</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\lookback\analyticcontinuouspartialfloatinglookback.cpp">
       <Filter>pricingengines\lookback</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\bond\bondfunctions.cpp">
@@ -5483,6 +5579,9 @@
     <ClCompile Include="ql\experimental\exoticoptions\writerextensibleoption.cpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
+    <ClCompile Include="ql\experimental\credit\basecorrelationstructure.cpp">
+      <Filter>experimental\credit</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\credit\basket.cpp">
       <Filter>experimental\credit</Filter>
     </ClCompile>
@@ -5493,6 +5592,9 @@
       <Filter>experimental\credit</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\credit\cdsoption.cpp">
+      <Filter>experimental\credit</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\credit\correlationstructure.cpp">
       <Filter>experimental\credit</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\credit\defaultevent.cpp">
@@ -5507,10 +5609,22 @@
     <ClCompile Include="ql\experimental\credit\distribution.cpp">
       <Filter>experimental\credit</Filter>
     </ClCompile>
+    <ClCompile Include="ql\experimental\credit\gaussianlhplossmodel.cpp">
+      <Filter>experimental\credit</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\credit\integralcdoengine.cpp">
+      <Filter>experimental\credit</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\credit\integralntdengine.cpp">
+      <Filter>experimental\credit</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\credit\issuer.cpp">
       <Filter>experimental\credit</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\credit\lossdistribution.cpp">
+      <Filter>experimental\credit</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\credit\midpointcdoengine.cpp">
       <Filter>experimental\credit</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\credit\nthtodefault.cpp">
@@ -5547,9 +5661,6 @@
       <Filter>experimental\credit</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\credit\syntheticcdo.cpp">
-      <Filter>experimental\credit</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\credit\syntheticcdoengines.cpp">
       <Filter>experimental\credit</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\mcbasket\adaptedpathpayoff.cpp">
@@ -5780,8 +5891,26 @@
     <ClCompile Include="ql\experimental\math\convolvedstudentt.cpp">
       <Filter>experimental\math</Filter>
     </ClCompile>
+    <ClCompile Include="ql\experimental\math\gaussiancopulapolicy.cpp">
+      <Filter>experimental\math</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\math\multidimintegrator.cpp">
+      <Filter>experimental\math</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\math\multidimquadrature.cpp">
+      <Filter>experimental\math</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\math\tcopulapolicy.cpp">
+      <Filter>experimental\math</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\math\zigguratrng.cpp">
       <Filter>experimental\math</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\barrier\analyticbinarybarrierengine.cpp">
+      <Filter>pricingengines\barrier</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\barrier\discretizedbarrieroption.cpp">
+      <Filter>pricingengines\barrier</Filter>
     </ClCompile>
     <ClCompile Include="ql\cashflow.cpp" />
     <ClCompile Include="ql\currency.cpp" />
@@ -6116,6 +6245,18 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\analyticpdfhestonengine.cpp">
       <Filter>experimental\exoticoptions</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\volatility\noarbsabr.cpp">
+      <Filter>experimental\volatility</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\volatility\noarbsabrabsprobs.cpp">
+      <Filter>experimental\volatility</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\volatility\noarbsabrinterpolatedsmilesection.cpp">
+      <Filter>experimental\volatility</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\volatility\noarbsabrsmilesection.cpp">
+      <Filter>experimental\volatility</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

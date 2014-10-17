@@ -10,13 +10,22 @@ this_include_HEADERS = \
     expm.hpp \
     farliegumbelmorgensterncopularng.hpp \
     frankcopularng.hpp \
-	polarstudenttrng.hpp \
+    gaussiancopulapolicy.hpp \
+    latentmodel.hpp \
+    multidimintegrator.hpp \
+    multidimquadrature.hpp \
+    polarstudenttrng.hpp \
     simulatedannealing.hpp \
+    tcopulapolicy.hpp \
     zigguratrng.hpp
 
 libMath_la_SOURCES = \
     convolvedstudentt.cpp \
-	expm.cpp \
+    expm.cpp \
+    gaussiancopulapolicy.cpp \
+    multidimintegrator.cpp \
+    multidimquadrature.cpp \
+    tcopulapolicy.cpp \
     zigguratrng.cpp
 
 noinst_LTLIBRARIES = libMath.la

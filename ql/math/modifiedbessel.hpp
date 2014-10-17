@@ -33,13 +33,24 @@ namespace QuantLib {
 
         Based on series expansion outlined in e.g.
         http://www.mhtlab.uwaterloo.ca/courses/me755/web_chap4.pdf
+
+        The exponentially weighted versions return the function value
+        times exp(-x) resp exp(-z)
      */
     Real modifiedBesselFunction_i(Real nu, Real x);
     Real modifiedBesselFunction_k(Real nu, Real x);
+    Real modifiedBesselFunction_i_exponentiallyWeighted(Real nu, Real x);
+    Real modifiedBesselFunction_k_exponentiallyWeighted(Real nu, Real x);
 
     std::complex<Real> modifiedBesselFunction_i(Real nu,
                                                 const std::complex<Real>& z);
     std::complex<Real> modifiedBesselFunction_k(Real nu,
                                                 const std::complex<Real>& z);
+    std::complex<Real>
+    modifiedBesselFunction_i_exponentiallyWeighted(Real nu,
+                                                   const std::complex<Real> &z);
+    std::complex<Real>
+    modifiedBesselFunction_k_exponentiallyWeighted(Real nu,
+                                                  const std::complex<Real> &z);
 }
 #endif
