@@ -7,6 +7,7 @@ QL_TESTS = \
 	assetswap.hpp assetswap.cpp \
 	autocovariances.hpp autocovariances.cpp \
 	barrieroption.hpp barrieroption.cpp \
+	binaryoption.hpp binaryoption.cpp \
 	basketoption.hpp basketoption.cpp \
 	batesmodel.hpp batesmodel.cpp \
 	bermudanswaption.hpp bermudanswaption.cpp \
@@ -84,6 +85,7 @@ QL_TESTS = \
 	mclongstaffschwartzengine.hpp mclongstaffschwartzengine.cpp \
 	mersennetwister.hpp mersennetwister.cpp \
 	money.hpp money.cpp \
+	noarbsabr.hpp noarbsabr.cpp \
 	nthtodefault.hpp nthtodefault.cpp \
 	ode.hpp ode.cpp \
 	operators.hpp operators.cpp \

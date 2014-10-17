@@ -114,6 +114,7 @@ namespace QuantLib {
                                                      riskFreeRate, blackVol));
 
         boost::shared_ptr<Engine> originalEngine(new Engine(quantoProcess));
+        originalEngine->reset();
         typename Instr::arguments* originalArguments =
             dynamic_cast<typename Instr::arguments*>(
                                               originalEngine->getArguments());

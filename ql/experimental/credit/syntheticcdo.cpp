@@ -17,56 +17,71 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/experimental/credit/syntheticcdo.hpp>
 #include <ql/event.hpp>
+#include <ql/math/solvers1d/brent.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/experimental/credit/gaussianlhplossmodel.hpp>
+#include <ql/experimental/credit/midpointcdoengine.hpp>
 
 using namespace std;
 
 namespace QuantLib {
 
-    SyntheticCDO::SyntheticCDO (const boost::shared_ptr<Basket> basket,
-                                Protection::Side side,
-                                const Schedule& schedule,
-                                Rate upfrontRate,
-                                Rate runningRate,
-                                const DayCounter& dayCounter,
-                                BusinessDayConvention paymentConvention,
-                                const Handle<YieldTermStructure>& yieldTS)
-        : basket_(basket),
-          side_(side),
-          schedule_(schedule),
-          upfrontRate_(upfrontRate),
-          runningRate_(runningRate),
-          dayCounter_(dayCounter),
-          paymentConvention_(paymentConvention),
-          yieldTS_(yieldTS) {
+    SyntheticCDO::SyntheticCDO(const boost::shared_ptr<Basket>& basket,
+                               Protection::Side side,
+                               const Schedule& schedule,
+                               Rate upfrontRate,
+                               Rate runningRate,
+                               const DayCounter& dayCounter,
+                               BusinessDayConvention paymentConvention,
+                               boost::optional<Real> notional)
+    : basket_(basket),
+      side_(side),
+      upfrontRate_(upfrontRate),
+      runningRate_(runningRate),
+      leverageFactor_(notional ? notional.get()/basket->trancheNotional() : 1.),
+      dayCounter_(dayCounter),
+      paymentConvention_(paymentConvention)
+    {
         QL_REQUIRE (basket->names().size() > 0, "basket is empty");
+        // Basket inception must lie before contract protection start.
+        QL_REQUIRE(basket->refDate() <= schedule.startDate(),
+        //using the start date of the schedule might be wrong, think of the 
+        //  CDS rule
+            "Basket did not exist before contract start.");
 
-        registerWith (yieldTS_);
-        const boost::shared_ptr<Pool> pool = basket->pool();
+        // Notice the notional is that of the basket at basket inception, some 
+        //   names might have defaulted in between
+        normalizedLeg_ = FixedRateLeg(schedule)
+            .withNotionals(basket_->trancheNotional() * leverageFactor_)
+            .withCouponRates(runningRate, dayCounter)
+            .withPaymentAdjustment(paymentConvention);
 
-        Date today = Settings::instance().evaluationDate();
-        // register with probabilities if the corresponding issuer is
-        // alive under this name contractual conditions
+        // Date today = Settings::instance().evaluationDate();
+        
+        // register with probabilities if the corresponding issuer is, baskets
+        //   are not registered with the DTS
         for (Size i = 0; i < basket->names().size(); i++) {
-            if(!pool->get(basket->names()[i]).
-                defaultedBetween(schedule.dates()[0],
-                                 today,
-                                 basket->defaultKeys()[i]))
-            registerWith(pool->get(basket->names()[i]).
-                defaultProbability(basket->defaultKeys()[i]));
-            // To do: the basket could do this last line on its own without so much
-            //    travelling, update its interface? some RR models depend on the
-            //    probabilities and they will be registered with them. Strictly
-            //    speaking the basket does not need directly to be registered
-            //    with the probs.
-            /*
-                we used to be registering with Issuers which are not observables. However
-                this might be what we want: Issuer registration might give us registration
-                with probabilities and with creditEvents at the same time.
+            /* This turns out to be a problem: depends on today but I am not 
+            modifying the registrations, if we go back in time in the 
+            calculations this would left me unregistered to some. Not impossible
+            to de-register and register when updating but i am dropping it.
+
+            if(!basket->pool()->get(basket->names()[i]).
+                defaultedBetween(schedule.dates()[0], today,
+                                     basket->pool()->defaultKeys()[i]))
+            */
+            // registers with the associated curve (issuer and event type)
+            // \todo make it possible to access them by name instead of index
+            registerWith(basket->pool()->get(basket->names()[i]).
+                defaultProbability(basket->pool()->defaultKeys()[i]));
+            /* \todo Issuers should be observables/obsrvr and they would in turn
+            regiter with the DTS; only we might get updates from curves we do
+            not use.
             */
         }
-        // register with recoveries:
         registerWith(basket_);
     }
 
@@ -103,7 +118,7 @@ namespace QuantLib {
         return (protectionValue_ - premiumValue_) / remainingNotional_;
     }
 
-    vector<Real> SyntheticCDO::expectedTrancheLoss() const {
+    Disposable<vector<Real> > SyntheticCDO::expectedTrancheLoss() const {
         calculate();
         return expectedTrancheLoss_;
     }
@@ -114,8 +129,10 @@ namespace QuantLib {
     }
 
     bool SyntheticCDO::isExpired () const {
-        return detail::simple_event(schedule_.dates().back())
-               .hasOccurred(yieldTS_->referenceDate());
+        // FIXME: it could have also expired (knocked out) because theres
+        //   no remaining tranche notional.
+        return detail::simple_event(normalizedLeg_.back()->date())
+               .hasOccurred();
     }
 
     Real SyntheticCDO::remainingNotional() const {
@@ -129,12 +146,13 @@ namespace QuantLib {
         QL_REQUIRE(arguments != 0, "wrong argument type");
         arguments->basket = basket_;
         arguments->side = side_;
-        arguments->schedule = schedule_;
+        arguments->normalizedLeg = normalizedLeg_;
+
         arguments->upfrontRate = upfrontRate_;
         arguments->runningRate = runningRate_;
         arguments->dayCounter = dayCounter_;
         arguments->paymentConvention = paymentConvention_;
-        arguments->yieldTS = yieldTS_;
+        arguments->leverageFactor = leverageFactor_;
     }
 
     void SyntheticCDO::fetchResults(const PricingEngine::results* r) const {
@@ -167,7 +185,6 @@ namespace QuantLib {
         QL_REQUIRE(runningRate != Null<Real>(), "no premium rate given");
         QL_REQUIRE(upfrontRate != Null<Real>(), "no upfront rate given");
         QL_REQUIRE(!dayCounter.empty(), "no day counter given");
-        QL_REQUIRE(!yieldTS.empty(), "no discount curve given");
     }
 
     void SyntheticCDO::results::reset() {
@@ -178,6 +195,69 @@ namespace QuantLib {
         remainingNotional = Null<Real>();
         error = 0;
         expectedTrancheLoss.clear();
+    }
+
+
+
+
+
+    namespace {
+
+        class ObjectiveFunction {
+          public:
+            ObjectiveFunction(Real target,
+                              SimpleQuote& quote,
+                              PricingEngine& engine,
+                              const SyntheticCDO::results* results)
+            : target_(target), quote_(quote),
+              engine_(engine), results_(results) {}
+
+            Real operator()(Real guess) const {
+                quote_.setValue(guess);
+                engine_.calculate();
+                return results_->value - target_;
+            }
+          private:
+            Real target_;
+            SimpleQuote& quote_;
+            PricingEngine& engine_;
+            const SyntheticCDO::results* results_;
+        };
+
+    }
+
+    // untested, not sure this is not messing up, once it comes out of this
+    //   the basket model is different.....
+    Real SyntheticCDO::implicitCorrelation(const std::vector<Real>& recoveries, 
+        const Handle<YieldTermStructure>& discountCurve, 
+        Real targetNPV,
+        Real accuracy) const 
+    {
+        boost::shared_ptr<SimpleQuote> correl(new SimpleQuote(0.0));
+
+        boost::shared_ptr<GaussianLHPLossModel> lhp(new 
+            GaussianLHPLossModel(Handle<Quote>(correl), recoveries));
+
+        // lock
+        basket_->setLossModel(lhp);
+
+        MidPointCDOEngine engineIC(discountCurve);
+        setupArguments(engineIC.getArguments());
+        const SyntheticCDO::results* results = 
+            dynamic_cast<const SyntheticCDO::results*>(engineIC.getResults());
+
+        // aviod recal of the basket on engine updates through the quote
+        basket_->recalculate();
+        basket_->freeze();
+
+        ObjectiveFunction f(targetNPV, *correl, engineIC, results);
+        Rate guess = 0.001;
+        //  Rate step = guess*0.1;
+
+        // wrap/catch to be able to unfreeze the basket:
+        Real solution = Brent().solve(f, accuracy, guess, QL_EPSILON, 1.-QL_EPSILON);
+        basket_->unfreeze();
+        return solution;
     }
 
 }

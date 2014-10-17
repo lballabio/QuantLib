@@ -19,4 +19,5 @@
 #include <ql/math/interpolations/mixedinterpolation.hpp>
 #include <ql/math/interpolations/multicubicspline.hpp>
 #include <ql/math/interpolations/sabrinterpolation.hpp>
+#include <ql/math/interpolations/xabrinterpolation.hpp>
 
