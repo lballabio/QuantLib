@@ -44,9 +44,6 @@ namespace QuantLib {
 
         Real payoffAtExpiry(Real spot, Real variance, Real discount);
     private:
-       void etaPhi(Barrier::Type barrierType, Option::Type type, 
-                   Real &eta, Real &phi) const;
-
         const boost::shared_ptr<GeneralizedBlackScholesProcess>& process_;
         const boost::shared_ptr<StrikedTypePayoff> &payoff_;
         const boost::shared_ptr<AmericanExercise> &exercise_;
@@ -134,46 +131,6 @@ namespace QuantLib {
         results_.value = helper.payoffAtExpiry(spot, variance, riskFreeDiscount);
     }
 
-    // helper object methods
-    void AnalyticBinaryBarrierEngine_helper::etaPhi(Barrier::Type barrierType,
-                                                    Option::Type type,
-                                                    Real &eta, Real &phi) const
-    {
-        switch (barrierType) {
-            case Barrier::DownIn:
-            case Barrier::DownOut:
-               if (type == Option::Call) {
-                  // down and call
-                  eta =  1.0;
-                  phi =  1.0;
-               }
-               else {
-                  // down and put
-                  eta =  1.0;
-                  phi = -1.0;
-               }
-               break;
-
-            case Barrier::UpIn:
-            case Barrier::UpOut:
-               if (type == Option::Call) {
-                  // up and call
-                  eta = -1.0;
-                  phi =  1.0;
-               }
-               else {
-                  // up and put
-                  eta = -1.0;
-                  phi = -1.0;
-               }
-               break;
-
-            default:
-                QL_FAIL("invalid barrier type");
-        }
-    }
-
-
     Real AnalyticBinaryBarrierEngine_helper::payoffAtExpiry(
          Real spot, Real variance, Real discount)
     {
@@ -225,9 +182,9 @@ namespace QuantLib {
         Real log_H2_SX = std::log(barrier*barrier/(spot*strike));
         Real H_S_2mu = std::pow(barrier/spot, 2*mu);
 
-        Real eta;
-        Real phi;
-        etaPhi(barrierType, type, eta, phi);
+        Real eta = (barrierType == Barrier::DownIn ||
+                    barrierType == Barrier::DownOut ? 1.0 : -1.0);
+        Real phi = (type == Option::Call ? 1.0 : -1.0);
 
         Real x1, x2, y1, y2;
         Real n_x1, n_x2, n_y1, n_y2;
