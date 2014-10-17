@@ -98,7 +98,9 @@ namespace QuantLib {
             results_.delta = 0;
             results_.gamma = 0;
             results_.vega = 0;
+            results_.theta = 0;
             results_.rho = 0;
+            results_.dividendRho = 0;
             return;
         }
 
