@@ -7,6 +7,7 @@ QL_TESTS = \
 	assetswap.hpp assetswap.cpp \
 	autocovariances.hpp autocovariances.cpp \
 	barrieroption.hpp barrieroption.cpp \
+	binaryoption.hpp binaryoption.cpp \
 	basketoption.hpp basketoption.cpp \
 	batesmodel.hpp batesmodel.cpp \
 	bermudanswaption.hpp bermudanswaption.cpp \

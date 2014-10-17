@@ -393,6 +393,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="quantlibtestsuite.cpp" />
+    <ClCompile Include="binaryoption.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="americanoption.hpp">
@@ -777,6 +780,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vpp.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="binaryoption.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

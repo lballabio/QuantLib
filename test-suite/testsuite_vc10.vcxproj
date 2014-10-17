@@ -633,6 +633,7 @@
     <ClCompile Include="basketoption.cpp" />
     <ClCompile Include="batesmodel.cpp" />
     <ClCompile Include="bermudanswaption.cpp" />
+    <ClCompile Include="binaryoption.cpp" />
     <ClCompile Include="blackdeltacalculator.cpp" />
     <ClCompile Include="blackformula.cpp" />
     <ClCompile Include="bonds.cpp" />
@@ -763,6 +764,7 @@
     <ClInclude Include="basketoption.hpp" />
     <ClInclude Include="batesmodel.hpp" />
     <ClInclude Include="bermudanswaption.hpp" />
+    <ClInclude Include="binaryoption.hpp" />
     <ClInclude Include="blackdeltacalculator.hpp" />
     <ClInclude Include="blackformula.hpp" />
     <ClInclude Include="bonds.hpp" />

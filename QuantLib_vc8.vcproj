@@ -5419,6 +5419,26 @@
 					>
 				</File>
 				<File
+					RelativePath="ql\pricingengines\barrier\analyticbinarybarrierengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\pricingengines\barrier\analyticbinarybarrierengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\pricingengines\barrier\binomialbarrierengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\pricingengines\barrier\discretizedbarrieroption.cpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\pricingengines\barrier\discretizedbarrieroption.hpp"
+					>
+				</File>
+				<File
 					RelativePath="ql\pricingengines\basket\mcamericanbasketengine.cpp"
 					>
 				</File>

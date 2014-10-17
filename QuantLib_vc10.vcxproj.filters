@@ -3606,6 +3606,9 @@
     <ClInclude Include="ql\pricingengines\asian\fdblackscholesasianengine.hpp">
       <Filter>pricingengines\asian</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\barrier\analyticbinarybarrierengine.hpp">
+      <Filter>pricingengines\barrier</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\barrier\fdblackscholesbarrierengine.hpp">
       <Filter>pricingengines\barrier</Filter>
     </ClInclude>
@@ -3881,6 +3884,12 @@
     </ClInclude>
     <ClInclude Include="ql\experimental\exoticoptions\analyticpdfhestonengine.hpp">
       <Filter>experimental\exoticoptions</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\barrier\binomialbarrierengine.hpp">
+      <Filter>pricingengines\barrier</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\barrier\discretizedbarrieroption.hpp">
+      <Filter>pricingengines\barrier</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -5896,6 +5905,12 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\math\zigguratrng.cpp">
       <Filter>experimental\math</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\barrier\analyticbinarybarrierengine.cpp">
+      <Filter>pricingengines\barrier</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\barrier\discretizedbarrieroption.cpp">
+      <Filter>pricingengines\barrier</Filter>
     </ClCompile>
     <ClCompile Include="ql\cashflow.cpp" />
     <ClCompile Include="ql\currency.cpp" />
