@@ -5,7 +5,7 @@
  Copyright (C) 2003, 2004, 2005, 2007, 2008 StatPro Italia srl
  Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2013 Yue Tian
- Copyright (C) 2014 R.Ghetta Thema Consulting SA
+ Copyright (C) 2014 Thema Consulting SA
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
