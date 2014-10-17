@@ -175,7 +175,6 @@ namespace QuantLib {
             K = spot * dividendDiscount / discount; // forward
         }
 
-        Real log_X_S = std::log(strike/spot);
         Real log_S_X = std::log(spot/strike);
         Real log_S_H = std::log(spot/barrier);
         Real log_H_S = std::log(barrier/spot);
@@ -187,7 +186,6 @@ namespace QuantLib {
         Real phi = (type == Option::Call ? 1.0 : -1.0);
 
         Real x1, x2, y1, y2;
-        Real n_x1, n_x2, n_y1, n_y2;
         Real cum_x1, cum_x2, cum_y1, cum_y2;
         if (variance>=QL_EPSILON) {
 
@@ -204,11 +202,6 @@ namespace QuantLib {
             cum_x2 = f(x2);
             cum_y1 = f(y1);
             cum_y2 = f(y2);
-            n_x1 = f.derivative(x1);
-            n_x2 = f.derivative(x2);
-            n_y1 = f.derivative(y1);
-            n_y2 = f.derivative(y2);
-
         } else {
             if (log_S_X>0)
                 cum_x1= 1.0;
@@ -226,10 +219,6 @@ namespace QuantLib {
                 cum_y2= 1.0;
             else
                 cum_y2= 0.0;
-            n_x1 = 0.0;
-            n_x2 = 0.0;
-            n_y1 = 0.0;
-            n_y2 = 0.0;
         }
 
         Real alpha = 0;
