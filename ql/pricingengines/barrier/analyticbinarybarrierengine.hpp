@@ -35,8 +35,6 @@ namespace QuantLib {
 
         \ingroup barrierengines
 
-        greeks are calculated by simple numeric derivation
-
         \test
         - the correctness of the returned value in case of
           cash-or-nothing at-expiry binary payoff is tested by
