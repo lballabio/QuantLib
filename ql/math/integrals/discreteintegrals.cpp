@@ -20,7 +20,7 @@
 #include <ql/math/integrals/discreteintegrals.hpp>
 
 #include <boost/accumulators/accumulators.hpp>
-#include <boost/accumulators/statistics/sum_kahan.hpp>
+#include <boost/accumulators/statistics/sum.hpp>
 
 using namespace boost::accumulators;
 
@@ -31,13 +31,13 @@ namespace QuantLib {
         const Size n = f.size();
         QL_REQUIRE(n == x.size(), "inconsistent size");
 
-        accumulator_set<Real, features<tag::sum_kahan> > acc;
+        accumulator_set<Real, features<tag::sum> > acc;
 
         for (Size i=0; i < n-1; ++i) {
             acc((x[i+1]-x[i])*(f[i]+f[i+1]));
         }
 
-        return 0.5*sum_kahan(acc);
+        return 0.5*sum(acc);
     }
 
     Real DiscreteSimpsonIntegral::operator()(
@@ -46,7 +46,7 @@ namespace QuantLib {
         const Size n = f.size();
         QL_REQUIRE(n == x.size(), "inconsistent size");
 
-        accumulator_set<Real, features<tag::sum_kahan> > acc;
+        accumulator_set<Real, features<tag::sum> > acc;
 
         for (Size j=0; j < n-2; j+=2) {
             const Real dxj   = x[j+1]-x[j];
@@ -64,6 +64,6 @@ namespace QuantLib {
             acc(0.5*(x[n-1]-x[n-2])*(f[n-1]+f[n-2]));
         }
 
-        return sum_kahan(acc);
+        return sum(acc);
     }
 }
