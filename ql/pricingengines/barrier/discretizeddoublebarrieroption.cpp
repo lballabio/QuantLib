@@ -49,7 +49,7 @@ namespace QuantLib {
     }
 
     void DiscretizedDoubleBarrierOption::postAdjustValuesImpl() {
-        if (arguments_.barrierType==DoubleBarrier::KnockIn) {
+        if (arguments_.barrierType!=DoubleBarrier::KnockOut) {
             vanilla_.rollback(time());
         }
         Array grid = method()->grid(time());
@@ -114,6 +114,38 @@ namespace QuantLib {
                   else if (stoppingTime)
                       optvalues[j] = std::max(optvalues[j],
                                      (*arguments_.payoff)(grid[j]));
+                  break;
+              case DoubleBarrier::KIKO:
+                  // low barrier is KI, high is KO
+                  if (grid[j] <= arguments_.barrier_lo) {
+                     // knocked in dn
+                     if (stoppingTime) {
+                         optvalues[j] = std::max(vanilla()[j],
+                                      (*arguments_.payoff)(grid[j]));
+                     }
+                     else
+                         optvalues[j] = vanilla()[j];
+                  }
+                  else if (grid[j] >= arguments_.barrier_hi)
+                     optvalues[j] = arguments_.rebate; // knocked out hi
+                  else if (endTime)
+                      optvalues[j] = arguments_.rebate;
+                  break;
+              case DoubleBarrier::KOKI:
+                  // low barrier is KO, high is KI
+                  if (grid[j] <= arguments_.barrier_lo)
+                      optvalues[j] = arguments_.rebate; // knocked out lo
+                  else if (grid[j] >= arguments_.barrier_hi) {
+                     // knocked in up
+                     if (stoppingTime) {
+                         optvalues[j] = std::max(vanilla()[j],
+                                      (*arguments_.payoff)(grid[j]));
+                     }
+                     else
+                         optvalues[j] = vanilla()[j];
+                  }
+                  else if (endTime)
+                      optvalues[j] = arguments_.rebate;
                   break;
               default:
                   QL_FAIL("invalid barrier type");

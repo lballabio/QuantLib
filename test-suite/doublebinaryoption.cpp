@@ -25,6 +25,7 @@ Copyright (C) 2012 Thema Consulting SA (Programmer: Riccardo Ghetta)
 #include <ql/quotes/simplequote.hpp>
 #include <ql/instruments/doublebarrieroption.hpp>
 #include <ql/pricingengines/barrier/AnalyticDoubleBarrierBinaryEngine.hpp>
+#include <ql/pricingengines/barrier/binomialdoublebarrierengine.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;
@@ -33,7 +34,7 @@ using namespace boost::unit_test_framework;
 #define REPORT_FAILURE(greekName, payoff, exercise, barrierType, barrier_lo, \
                         barrier_hi, s, q, r, today, v, expected, calculated, \
                         error, tolerance) \
-    BOOST_FAIL(payoff->optionType() << " option with " \
+    BOOST_ERROR(payoff->optionType() << " option with " \
                << barrierType << " barrier type:\n" \
                << "    barrier_lo:       " << barrier_lo << "\n" \
                << "    barrier_hi:       " << barrier_hi << "\n" \
@@ -97,27 +98,77 @@ void DoubleBinaryOptionTest::testHaugValues() {
         { DoubleBarrier::KnockOut,   95.00, 105.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.20,  0.0911, 1e-4 },
         { DoubleBarrier::KnockOut,   95.00, 105.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.30,  0.0002, 1e-4 },
         { DoubleBarrier::KnockOut,   95.00, 105.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.50,  0.0000, 1e-4 },
+
+        { DoubleBarrier::KIKO,       80.00, 120.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.10,  0.0000, 1e-4 },
+        { DoubleBarrier::KIKO,       80.00, 120.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.20,  0.2402, 1e-4 },
+        { DoubleBarrier::KIKO,       80.00, 120.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.30,  1.4076, 1e-4 },
+        { DoubleBarrier::KIKO,       80.00, 120.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.50,  3.8160, 1e-4 },
+
+        { DoubleBarrier::KIKO,       85.00, 115.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.10,  0.0075, 1e-4 },
+        { DoubleBarrier::KIKO,       85.00, 115.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.20,  0.9910, 1e-4 },
+        { DoubleBarrier::KIKO,       85.00, 115.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.30,  2.8098, 1e-4 },
+        { DoubleBarrier::KIKO,       85.00, 115.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.50,  4.6612, 1e-4 },
+
+        { DoubleBarrier::KIKO,       90.00, 110.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.10,  0.2656, 1e-4 },
+        { DoubleBarrier::KIKO,       90.00, 110.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.20,  2.7954, 1e-4 },
+        { DoubleBarrier::KIKO,       90.00, 110.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.30,  4.4024, 1e-4 },
+        { DoubleBarrier::KIKO,       90.00, 110.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.50,  4.9266, 1e-4 },
+
+        { DoubleBarrier::KIKO,       95.00, 105.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.10,  2.6285, 1e-4 },
+        { DoubleBarrier::KIKO,       95.00, 105.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.20,  4.7523, 1e-4 },
+        { DoubleBarrier::KIKO,       95.00, 105.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.30,  4.9096, 1e-4 },
+        { DoubleBarrier::KIKO,       95.00, 105.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.50,  4.9675, 1e-4 },
+
         // following values calculated with haug's VBA code
-        { DoubleBarrier::KnockIn,     80.00, 120.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.10, 0.0042, 1e-4 },
-        { DoubleBarrier::KnockIn,     80.00, 120.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.20, 0.9450, 1e-4 },
-        { DoubleBarrier::KnockIn,     80.00, 120.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.30, 3.5486, 1e-4 },
-        { DoubleBarrier::KnockIn,     80.00, 120.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.50, 7.9663, 1e-4 },
+        { DoubleBarrier::KnockIn,    80.00, 120.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.10,  0.0042, 1e-4 },
+        { DoubleBarrier::KnockIn,    80.00, 120.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.20,  0.9450, 1e-4 },
+        { DoubleBarrier::KnockIn,    80.00, 120.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.30,  3.5486, 1e-4 },
+        { DoubleBarrier::KnockIn,    80.00, 120.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.50,  7.9663, 1e-4 },
 
-        { DoubleBarrier::KnockIn,     85.00, 115.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.10, 0.0797, 1e-4 },
-        { DoubleBarrier::KnockIn,     85.00, 115.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.20, 2.6458, 1e-4 },
-        { DoubleBarrier::KnockIn,     85.00, 115.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.30, 6.1658, 1e-4 },
-        { DoubleBarrier::KnockIn,     85.00, 115.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.50, 9.4486, 1e-4 },
+        { DoubleBarrier::KnockIn,    85.00, 115.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.10,  0.0797, 1e-4 },
+        { DoubleBarrier::KnockIn,    85.00, 115.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.20,  2.6458, 1e-4 },
+        { DoubleBarrier::KnockIn,    85.00, 115.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.30,  6.1658, 1e-4 },
+        { DoubleBarrier::KnockIn,    85.00, 115.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.50,  9.4486, 1e-4 },
 
-        { DoubleBarrier::KnockIn,     90.00, 110.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.10, 0.9704, 1e-4 },
-        { DoubleBarrier::KnockIn,     90.00, 110.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.20, 6.2006, 1e-4 },
-        { DoubleBarrier::KnockIn,     90.00, 110.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.30, 9.0798, 1e-4 },
-        { DoubleBarrier::KnockIn,     90.00, 110.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.50, 9.8699, 1e-4 },
+        { DoubleBarrier::KnockIn,    90.00, 110.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.10,  0.9704, 1e-4 },
+        { DoubleBarrier::KnockIn,    90.00, 110.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.20,  6.2006, 1e-4 },
+        { DoubleBarrier::KnockIn,    90.00, 110.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.30,  9.0798, 1e-4 },
+        { DoubleBarrier::KnockIn,    90.00, 110.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.50,  9.8699, 1e-4 },
 
-        { DoubleBarrier::KnockIn,     95.00, 105.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.10, 6.2434, 1e-4 },
-        { DoubleBarrier::KnockIn,     95.00, 105.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.20, 9.7847, 1e-4 },
-        { DoubleBarrier::KnockIn,     95.00, 105.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.30, 9.8756, 1e-4 },
-        { DoubleBarrier::KnockIn,     95.00, 105.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.50, 9.8758, 1e-4 },
+        { DoubleBarrier::KnockIn,    95.00, 105.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.10,  6.2434, 1e-4 },
+        { DoubleBarrier::KnockIn,    95.00, 105.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.20,  9.7847, 1e-4 },
+        { DoubleBarrier::KnockIn,    95.00, 105.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.30,  9.8756, 1e-4 },
+        { DoubleBarrier::KnockIn,    95.00, 105.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.50,  9.8758, 1e-4 },
 
+        { DoubleBarrier::KOKI,       80.00, 120.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.10,  0.0041, 1e-4 },
+        { DoubleBarrier::KOKI,       80.00, 120.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.20,  0.7080, 1e-4 },
+        { DoubleBarrier::KOKI,       80.00, 120.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.30,  2.1581, 1e-4 },
+        { DoubleBarrier::KOKI,       80.00, 120.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.50,  4.2061, 1e-4 },
+
+        { DoubleBarrier::KOKI,       85.00, 115.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.10,  0.0723, 1e-4 },
+        { DoubleBarrier::KOKI,       85.00, 115.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.20,  1.6663, 1e-4 },
+        { DoubleBarrier::KOKI,       85.00, 115.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.30,  3.3930, 1e-4 },
+        { DoubleBarrier::KOKI,       85.00, 115.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.50,  4.8679, 1e-4 },
+
+        { DoubleBarrier::KOKI,       90.00, 110.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.10,  0.7080, 1e-4 },
+        { DoubleBarrier::KOKI,       90.00, 110.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.20,  3.4424, 1e-4 },
+        { DoubleBarrier::KOKI,       90.00, 110.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.30,  4.7496, 1e-4 },
+        { DoubleBarrier::KOKI,       90.00, 110.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.50,  5.0475, 1e-4 },
+
+        { DoubleBarrier::KOKI,       95.00, 105.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.10,  3.6524, 1e-4 },
+        { DoubleBarrier::KOKI,       95.00, 105.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.20,  5.1256, 1e-4 },
+        { DoubleBarrier::KOKI,       95.00, 105.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.30,  5.0763, 1e-4 },
+        { DoubleBarrier::KOKI,       95.00, 105.00, 10.00, 100.00, 0.02, 0.05, 0.25, 0.50,  5.0275, 1e-4 },
+
+        // degenerate cases
+        { DoubleBarrier::KnockOut,   95.00, 105.00, 10.00,  80.00, 0.02, 0.05, 0.25, 0.10,  0.0000, 1e-4 },
+        { DoubleBarrier::KnockOut,   95.00, 105.00, 10.00, 110.00, 0.02, 0.05, 0.25, 0.10,  0.0000, 1e-4 },
+        { DoubleBarrier::KnockIn,    95.00, 105.00, 10.00,  80.00, 0.02, 0.05, 0.25, 0.10, 10.0000, 1e-4 },
+        { DoubleBarrier::KnockIn,    95.00, 105.00, 10.00, 110.00, 0.02, 0.05, 0.25, 0.10, 10.0000, 1e-4 },
+        { DoubleBarrier::KIKO,       95.00, 105.00, 10.00,  80.00, 0.02, 0.05, 0.25, 0.10, 10.0000, 1e-4 },
+        { DoubleBarrier::KIKO,       95.00, 105.00, 10.00, 110.00, 0.02, 0.05, 0.25, 0.10,  0.0000, 1e-4 },
+        { DoubleBarrier::KOKI,       95.00, 105.00, 10.00,  80.00, 0.02, 0.05, 0.25, 0.10,  0.0000, 1e-4 },
+        { DoubleBarrier::KOKI,       95.00, 105.00, 10.00, 110.00, 0.02, 0.05, 0.25, 0.10, 10.0000, 1e-4 },
     };
 
     DayCounter dc = Actual360();
@@ -137,9 +188,12 @@ void DoubleBinaryOptionTest::testHaugValues() {
             Option::Call, 0, values[i].cash));
 
         Date exDate = today + Integer(values[i].t*360+0.5);
-        boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
-                                                                    exDate,
-                                                                    true));
+        boost::shared_ptr<Exercise> exercise;
+        if (values[i].barrierType == DoubleBarrier::KIKO ||
+            values[i].barrierType == DoubleBarrier::KOKI)
+            exercise.reset(new AmericanExercise(today, exDate));
+        else
+            exercise.reset(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
@@ -151,26 +205,46 @@ void DoubleBinaryOptionTest::testHaugValues() {
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
+
+        // checking with analytic engine
         boost::shared_ptr<PricingEngine> engine(
                              new AnalyticDoubleBarrierBinaryEngine(stochProcess));
-
         DoubleBarrierOption opt(values[i].barrierType, 
                           values[i].barrier_lo, 
                           values[i].barrier_hi, 
                           0,
                           payoff,
-                          amExercise);
-
+                          exercise);
         opt.setPricingEngine(engine);
 
         Real calculated = opt.NPV();
-        Real error = std::fabs(calculated-values[i].result);
+        Real expected = values[i].result;
+        Real error = std::fabs(calculated-expected);
         if (error > values[i].tol) {
-            REPORT_FAILURE("value", payoff, amExercise, values[i].barrierType, 
+            REPORT_FAILURE("value", payoff, exercise, values[i].barrierType, 
                            values[i].barrier_lo, values[i].barrier_hi, values[i].s,
                            values[i].q, values[i].r, today, values[i].v,
                            values[i].result, calculated, error, values[i].tol);
         }
+
+        Size steps = 500;
+        // checking with binomial engine
+        engine = boost::shared_ptr<PricingEngine>(
+              new BinomialDoubleBarrierEngine<CoxRossRubinstein,
+                              DiscretizedDoubleBarrierOption>(stochProcess, 
+                                                                 steps));
+        opt.setPricingEngine(engine);
+        calculated = opt.NPV();
+        expected = values[i].result;
+        error = std::fabs(calculated-expected);
+        double tol = 0.22;
+        if (error>tol) {
+            REPORT_FAILURE("Binomial value", payoff, exercise, values[i].barrierType, 
+                           values[i].barrier_lo, values[i].barrier_hi, values[i].s,
+                           values[i].q, values[i].r, today, values[i].v,
+                           values[i].result, calculated, error, tol);
+        }
+
     }
 } 
 

@@ -30,6 +30,10 @@ namespace QuantLib {
             return out << "KnockIn";
           case DoubleBarrier::KnockOut:
             return out << "KnockOut";
+          case DoubleBarrier::KIKO:
+            return out << "KI lo+KO up";
+          case DoubleBarrier::KOKI:
+            return out << "KO lo+KI up";
           default:
             QL_FAIL("unknown DoubleBarrier::Type (" << Integer(type) << ")");
         }

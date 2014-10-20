@@ -96,13 +96,11 @@ namespace QuantLib {
     void DoubleBarrierOption::arguments::validate() const {
         OneAssetOption::arguments::validate();
 
-        switch (barrierType) {
-          case DoubleBarrier::KnockIn:
-          case DoubleBarrier::KnockOut:
-            break;
-          default:
-            QL_FAIL("unknown type");
-        }
+        QL_REQUIRE(barrierType == DoubleBarrier::KnockIn ||
+                   barrierType == DoubleBarrier::KnockOut ||
+                   barrierType == DoubleBarrier::KIKO ||
+                   barrierType == DoubleBarrier::KOKI,
+                   "Invalid barrier type");
 
         QL_REQUIRE(barrier_lo != Null<Real>(), "no low barrier given");
         QL_REQUIRE(barrier_hi != Null<Real>(), "no high barrier given");
