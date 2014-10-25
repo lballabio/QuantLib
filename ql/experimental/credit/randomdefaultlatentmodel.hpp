@@ -391,11 +391,10 @@ namespace QuantLib {
 
         // prob of losses less or equal to
         Real suma = hist.frequency(0);
-        distrib.insert(std::make_pair<Real, Probability>(0., suma ));
+        distrib.insert(std::make_pair(0., suma));
         for(Size i=1; i<hist.bins(); i++) {
             suma += hist.frequency(i);
-            distrib.insert(std::make_pair<Real, Probability>(hist.breaks()[i-1],
-                suma ));
+            distrib.insert(std::make_pair( hist.breaks()[i-1], suma ));
         }
         return distrib;
     }
