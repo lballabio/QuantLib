@@ -14,8 +14,6 @@ EXTRA_DIST = \
     BermudanSwaption.dev \
     BermudanSwaption_vc8.vcproj \
     BermudanSwaption_vc9.vcproj \
-    BermudanSwaption_vc10.vcxproj \
-    BermudanSwaption_vc10.vcxproj.filters \
     BermudanSwaption_vc11.vcxproj \
     BermudanSwaption_vc11.vcxproj.filters \
     ReadMe.txt

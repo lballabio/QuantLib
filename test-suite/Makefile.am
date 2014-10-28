@@ -210,8 +210,6 @@ EXTRA_DIST = \
 	README.txt \
 	testsuite_vc8.vcproj \
 	testsuite_vc9.vcproj \
-	testsuite_vc10.vcxproj \
-	testsuite_vc10.vcxproj.filters \
 	testsuite_vc11.vcxproj \
 	testsuite_vc11.vcxproj.filters \
 	testsuite.dev
@@ -224,8 +222,6 @@ EXTRA_DIST = \
 	README.txt \
 	testsuite_vc8.vcproj \
 	testsuite_vc9.vcproj \
-	testsuite_vc10.vcxproj \
-	testsuite_vc10.vcxproj.filters \
 	testsuite_vc11.vcxproj \
 	testsuite_vc11.vcxproj.filters \
 	testsuite.dev

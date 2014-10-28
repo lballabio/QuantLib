@@ -14,8 +14,6 @@ EXTRA_DIST = \
     Swap.dev \
     Swap_vc8.vcproj \
     Swap_vc9.vcproj \
-    Swap_vc10.vcxproj \
-    Swap_vc10.vcxproj.filters \
     Swap_vc11.vcxproj \
     Swap_vc11.vcxproj.filters \
     README.txt

@@ -14,8 +14,6 @@ EXTRA_DIST = \
     FRA.dev \
     FRA_vc8.vcproj \
     FRA_vc9.vcproj \
-    FRA_vc10.vcxproj \
-    FRA_vc10.vcxproj.filters \
     FRA_vc11.vcxproj \
     FRA_vc11.vcxproj.filters \
     ReadMe.txt

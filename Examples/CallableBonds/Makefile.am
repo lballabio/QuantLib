@@ -14,8 +14,6 @@ EXTRA_DIST = \
     CallableBonds.dev \
     CallableBonds_vc8.vcproj \
     CallableBonds_vc9.vcproj \
-    CallableBonds_vc10.vcxproj \
-    CallableBonds_vc10.vcxproj.filters \
     CallableBonds_vc11.vcxproj \
     CallableBonds_vc11.vcxproj.filters \
     ReadMe.txt

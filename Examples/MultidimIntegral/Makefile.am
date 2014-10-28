@@ -14,8 +14,6 @@ EXTRA_DIST = \
     MultidimIntegral.dev \
     MultidimIntegral_vc8.vcproj \
     MultidimIntegral_vc9.vcproj \
-    MultidimIntegral_vc10.vcxproj \
-    MultidimIntegral_vc10.vcxproj.filters \
     MultidimIntegral_vc11.vcxproj \
     MultidimIntegral_vc11.vcxproj.filters
 
