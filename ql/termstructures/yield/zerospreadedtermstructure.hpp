@@ -89,6 +89,7 @@ namespace QuantLib {
         //           ") must be the same of the curve to be spreaded (" <<
         //           originalCurve_->dayCounter() <<
         //           ")");
+        enableExtrapolation(originalCurve_->allowsExtrapolation());
         registerWith(originalCurve_);
         registerWith(spread_);
     }
