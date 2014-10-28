@@ -14,8 +14,8 @@ EXTRA_DIST = \
     Swap.dev \
     Swap_vc8.vcproj \
     Swap_vc9.vcproj \
-    Swap_vc11.vcxproj \
-    Swap_vc11.vcxproj.filters \
+    Swap.vcxproj \
+    Swap.vcxproj.filters \
     README.txt
 
 .PHONY: examples check-examples

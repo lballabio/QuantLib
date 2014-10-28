@@ -14,8 +14,8 @@ EXTRA_DIST = \
     BasketLosses.dev \
     BasketLosses_vc8.vcproj \
     BasketLosses_vc9.vcproj \
-    BasketLosses_vc11.vcxproj \
-    BasketLosses_vc11.vcxproj.filters
+    BasketLosses.vcxproj \
+    BasketLosses.vcxproj.filters
 
 .PHONY: examples check-examples
 

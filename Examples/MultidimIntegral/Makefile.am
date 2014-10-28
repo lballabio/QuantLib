@@ -14,8 +14,8 @@ EXTRA_DIST = \
     MultidimIntegral.dev \
     MultidimIntegral_vc8.vcproj \
     MultidimIntegral_vc9.vcproj \
-    MultidimIntegral_vc11.vcxproj \
-    MultidimIntegral_vc11.vcxproj.filters
+    MultidimIntegral.vcxproj \
+    MultidimIntegral.vcxproj.filters
 
 .PHONY: examples check-examples
 

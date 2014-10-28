@@ -888,7 +888,7 @@
     <ClInclude Include="vpp.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QuantLib_vc11.vcxproj">
+    <ProjectReference Include="..\QuantLib.vcxproj">
       <Project>{ad0a27da-91da-46a2-acbd-296c419ed3aa}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
