@@ -21,6 +21,7 @@ EXTRA_DIST = \
 	LICENSE.TXT \
 	News.txt \
 	QuantLib.dev \
+	QuantLib.props \
 	QuantLib.spec \
 	QuantLib_vc8.sln \
 	QuantLib_vc8.vcproj \
