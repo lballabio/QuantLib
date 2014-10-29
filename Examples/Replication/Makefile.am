@@ -14,10 +14,8 @@ EXTRA_DIST = \
     Replication.dev \
     Replication_vc8.vcproj \
     Replication_vc9.vcproj \
-    Replication_vc10.vcxproj \
-    Replication_vc10.vcxproj.filters \
-    Replication_vc11.vcxproj \
-    Replication_vc11.vcxproj.filters \
+    Replication.vcxproj \
+    Replication.vcxproj.filters \
     ReadMe.txt
 
 .PHONY: examples check-examples

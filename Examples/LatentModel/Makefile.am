@@ -14,10 +14,8 @@ EXTRA_DIST = \
     LatentModel.dev \
     LatentModel_vc8.vcproj \
     LatentModel_vc9.vcproj \
-    LatentModel_vc10.vcxproj \
-    LatentModel_vc10.vcxproj.filters \
-    LatentModel_vc11.vcxproj \
-    LatentModel_vc11.vcxproj.filters
+    LatentModel.vcxproj \
+    LatentModel.vcxproj.filters
 
 .PHONY: examples check-examples
 
