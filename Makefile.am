@@ -29,6 +29,7 @@ EXTRA_DIST = \
 	QuantLib_vc9.vcproj \
 	QuantLib_vc10.sln \
 	QuantLib_vc11.sln \
+	QuantLib_vc12.sln \
 	QuantLib.vcxproj \
 	QuantLib.vcxproj.filters \
 	Readme.txt \
