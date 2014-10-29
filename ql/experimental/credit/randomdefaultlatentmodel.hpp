@@ -573,18 +573,19 @@ namespace QuantLib {
         //      sfinal = 0;
         for(Size delta=1; delta < quantilePosition; delta++) {
             Real cached = 
-                incompleteBetaFunction(s, nSims_+1-s, percentile, 1.e-8, 500);
+                incompleteBetaFunction(Real(s), Real(nSims_+1-s),
+				                       percentile, 1.e-8, 500);
             Real pMinus = 
             /* There was a fix in the repository on the gammadistribution. It 
             might impact these, it might be neccesary to multiply these values 
             by '-1'*/
-                incompleteBetaFunction(r+1, nSims_-r, percentile, 1.e-8, 500)
-                -
-                cached;
+                incompleteBetaFunction(Real(r+1), Real(nSims_-r),
+				                       percentile, 1.e-8, 500)
+                - cached;
             Real pPlus  = 
-                incompleteBetaFunction(r, nSims_-r+1, percentile, 1.e-8, 500)
-                -
-                cached;
+                incompleteBetaFunction(Real(r), Real(nSims_-r+1),
+				                       percentile, 1.e-8, 500)
+                - cached;
             if((pMinus > confInterval) && !rLocked ) {
                 // rfinal = r + 1;
                rLocked = true;

@@ -213,9 +213,9 @@ Real D0Interpolator::operator()() const {
     // we do not need to check the indices here, because this is already
     // done in the NoArbSabr constructor
 
-    int tauInd = std::upper_bound(tauG_.begin(), tauG_.end(), expiryTime_) -
-                  tauG_.begin();
-    if (tauInd == static_cast<int>(tauG_.size()))
+    Size tauInd = std::upper_bound(tauG_.begin(), tauG_.end(), expiryTime_) -
+                                   tauG_.begin();
+    if (tauInd == tauG_.size())
         --tauInd; // tau at upper bound
     Real expiryTimeTmp = expiryTime_;
     if (tauInd == 0) {
@@ -247,17 +247,17 @@ Real D0Interpolator::operator()() const {
         (rho_ - rhoG_[rhoInd - 1]) / (rhoG_[rhoInd] - rhoG_[rhoInd - 1]);
 
     // for nu = 0 we know phi = 0.5*z_F^2
-    int nuInd = std::upper_bound(nuG_.begin(), nuG_.end(), nu_) - nuG_.begin();
-    if (nuInd == static_cast<int>(nuG_.size()))
+    Size nuInd = std::upper_bound(nuG_.begin(), nuG_.end(), nu_) - nuG_.begin();
+    if (nuInd == nuG_.size())
         --nuInd; // nu at upper bound
     Real tmpNuG = nuInd > 0 ? nuG_[nuInd - 1] : 0.0;
     Real nuL = (nu_ - tmpNuG) / (nuG_[nuInd] - tmpNuG);
 
     // for beta = 1 we know phi = 0.0
-    int betaInd =
+    Size betaInd =
         std::upper_bound(betaG_.begin(), betaG_.end(), beta_) - betaG_.begin();
     Real tmpBetaG;
-    if (betaInd == static_cast<int>(betaG_.size()))
+    if (betaInd == betaG_.size())
         tmpBetaG = 1.0;
     else
         tmpBetaG = betaG_[betaInd];
