@@ -123,8 +123,15 @@ namespace QuantLib {
             Real totalValue = std::pow(1.0+coupon, nPeriods);
             for(Size i = 0; i < (Size)nPeriods-1; ++i) {
                 compoundedInterest *= (1.0 + coupon);
-                Real currentNotional =
-                    initialNotional*(compoundedInterest - (compoundedInterest-1.0)/(1.0 - 1.0/totalValue));
+                Real currentNotional = 0.0;
+                if(coupon < 1.0e-12) {
+                    currentNotional =
+                       initialNotional*(compoundedInterest - (i+1.0)/(nPeriods - 1));
+                }
+                else {
+                    currentNotional =
+                       initialNotional*(compoundedInterest - (compoundedInterest-1.0)/(1.0 - 1.0/totalValue));
+                }
                 notionals[i+1] = currentNotional;
             }
             notionals.back() = 0.0;
