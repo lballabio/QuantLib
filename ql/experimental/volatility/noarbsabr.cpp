@@ -277,7 +277,7 @@ Real D0Interpolator::operator()() const {
                                 (sigmaI_ * sigmaI_ * (1.0 - beta_) *
                                  (1.0 - beta_)); // this is 0.5*z_F^2, see above
                         } else {
-                            if (iBeta == 0 && betaInd == static_cast<int>(betaG_.size())) {
+                            if (iBeta == 0 && betaInd == betaG_.size()) {
                                 phiTmp =
                                     phi(detail::NoArbSabrModel::tiny_prob);
                             } else {

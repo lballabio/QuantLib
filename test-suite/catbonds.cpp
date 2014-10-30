@@ -65,20 +65,20 @@ void CatBondTest::testEventSetForWholeYears() {
 	std::vector<std::pair<Date, Real> > path;
 
 	BOOST_REQUIRE(simulation->nextPath(path));
-	BOOST_CHECK_EQUAL(0, path.size());
+	BOOST_CHECK_EQUAL(Size(0), path.size());
 
 	BOOST_REQUIRE(simulation->nextPath(path));
-	BOOST_CHECK_EQUAL(1, path.size());
+	BOOST_CHECK_EQUAL(Size(1), path.size());
 	BOOST_CHECK_EQUAL(Date(1, February, 2015), path.at(0).first);
 	BOOST_CHECK_EQUAL(100, path.at(0).second);
 
 	BOOST_REQUIRE(simulation->nextPath(path));
-	BOOST_CHECK_EQUAL(1, path.size());
+	BOOST_CHECK_EQUAL(Size(1), path.size());
 	BOOST_CHECK_EQUAL(Date(1, July, 2015), path.at(0).first);
 	BOOST_CHECK_EQUAL(150, path.at(0).second);
 
 	BOOST_REQUIRE(simulation->nextPath(path));
-	BOOST_CHECK_EQUAL(1, path.size());
+	BOOST_CHECK_EQUAL(Size(1), path.size());
 	BOOST_CHECK_EQUAL(Date(5, January, 2015), path.at(0).first);
 	BOOST_CHECK_EQUAL(50, path.at(0).second);
 
@@ -97,10 +97,10 @@ void CatBondTest::testEventSetForIrregularPeriods() {
 	std::vector<std::pair<Date, Real> > path;
 
 	BOOST_REQUIRE(simulation->nextPath(path));
-	BOOST_CHECK_EQUAL(0, path.size());
+	BOOST_CHECK_EQUAL(Size(0), path.size());
 
 	BOOST_REQUIRE(simulation->nextPath(path));
-	BOOST_CHECK_EQUAL(2, path.size());
+	BOOST_CHECK_EQUAL(Size(2), path.size());
 	BOOST_CHECK_EQUAL(Date(1, July, 2015), path.at(0).first);
 	BOOST_CHECK_EQUAL(150, path.at(0).second);
 	BOOST_CHECK_EQUAL(Date(5, January, 2016), path.at(1).first);
@@ -122,10 +122,10 @@ void CatBondTest::testEventSetForNoEvents () {
 	std::vector<std::pair<Date, Real> > path;
 
 	BOOST_REQUIRE(simulation->nextPath(path));
-	BOOST_CHECK_EQUAL(0, path.size());
+	BOOST_CHECK_EQUAL(Size(0), path.size());
 
     BOOST_REQUIRE(simulation->nextPath(path));
-	BOOST_CHECK_EQUAL(0, path.size());
+	BOOST_CHECK_EQUAL(Size(0), path.size());
 
     BOOST_REQUIRE(!simulation->nextPath(path));
 }
