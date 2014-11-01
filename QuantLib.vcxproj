@@ -873,7 +873,7 @@
     <ClInclude Include="ql\math\randomnumbers\latticerules.hpp" />
     <ClInclude Include="ql\math\randomnumbers\lecuyeruniformrng.hpp" />
     <ClInclude Include="ql\math\randomnumbers\mt19937uniformrng.hpp" />
-    <ClInclude Include="ql\math\randomnumbers\primitivepolynomials.h" />
+    <ClInclude Include="ql\math\randomnumbers\primitivepolynomials.hpp" />
     <ClInclude Include="ql\math\randomnumbers\randomizedlds.hpp" />
     <ClInclude Include="ql\math\randomnumbers\randomsequencegenerator.hpp" />
     <ClInclude Include="ql\math\randomnumbers\ranluxuniformrng.hpp" />
@@ -1936,7 +1936,7 @@
     <ClCompile Include="ql\math\randomnumbers\latticerules.cpp" />
     <ClCompile Include="ql\math\randomnumbers\lecuyeruniformrng.cpp" />
     <ClCompile Include="ql\math\randomnumbers\mt19937uniformrng.cpp" />
-    <ClCompile Include="ql\math\randomnumbers\primitivepolynomials.c" />
+    <ClCompile Include="ql\math\randomnumbers\primitivepolynomials.cpp" />
     <ClCompile Include="ql\math\randomnumbers\seedgenerator.cpp" />
     <ClCompile Include="ql\math\randomnumbers\sobolrsg.cpp" />
     <ClCompile Include="ql\math\optimization\armijo.cpp" />

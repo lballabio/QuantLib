@@ -2735,11 +2735,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\math\randomnumbers\primitivepolynomials.c"
+					RelativePath=".\ql\math\randomnumbers\primitivepolynomials.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\math\randomnumbers\primitivepolynomials.h"
+					RelativePath=".\ql\math\randomnumbers\primitivepolynomials.hpp"
 					>
 				</File>
 				<File
