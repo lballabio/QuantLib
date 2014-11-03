@@ -28,6 +28,7 @@
 
 #include <ql/termstructures/iterativebootstrap.hpp>
 #include <ql/termstructures/localbootstrap.hpp>
+#include <ql/termstructures/multibootstrap.hpp>
 #include <ql/termstructures/yield/bootstraptraits.hpp>
 #include <ql/patterns/lazyobject.hpp>
 
@@ -189,6 +190,8 @@ namespace QuantLib {
         friend class Bootstrap<this_curve>;
         friend class BootstrapError<this_curve> ;
         friend class PenaltyFunction<this_curve>;
+        friend class MultiCurvePenaltyFunction<this_curve>;
+        friend class MultiCurveOptimizer<this_curve>;
         Bootstrap<this_curve> bootstrap_;
     };
 

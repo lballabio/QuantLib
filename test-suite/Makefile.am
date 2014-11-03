@@ -107,6 +107,7 @@ QL_TESTS = \
 	sampledcurve.hpp sampledcurve.cpp \
 	schedule.hpp schedule.cpp \
 	shortratemodels.hpp shortratemodels.cpp \
+	simultaneouscurvebootstrap.hpp simultaneouscurvebootstrap.cpp \
 	solvers.hpp solvers.cpp \
 	spreadoption.hpp spreadoption.cpp \
 	stats.hpp stats.cpp \

@@ -26,11 +26,13 @@
 #include <ql/instruments/forwardrateagreement.hpp>
 #include <ql/instruments/forwardvanillaoption.hpp>
 #include <ql/instruments/impliedvolatility.hpp>
+#include <ql/instruments/iboroisbasisswap.hpp>
 #include <ql/instruments/inflationcapfloor.hpp>
 #include <ql/instruments/lookbackoption.hpp>
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/instruments/makecms.hpp>
 #include <ql/instruments/makeois.hpp>
+#include <ql/instruments/makeiboroisbasisswap.hpp>
 #include <ql/instruments/makeswaption.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/instruments/makeyoyinflationcapfloor.hpp>

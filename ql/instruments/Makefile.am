@@ -31,11 +31,13 @@ this_include_HEADERS = \
     forwardrateagreement.hpp \
     forwardvanillaoption.hpp \
     impliedvolatility.hpp \
+    iboroisbasisswap.hpp \
     inflationcapfloor.hpp \
     lookbackoption.hpp \
     makecapfloor.hpp \
     makecms.hpp \
     makeois.hpp \
+    makeiboroisbasisswap.hpp \
     makeswaption.hpp \
     makevanillaswap.hpp \
     makeyoyinflationcapfloor.hpp \
@@ -82,11 +84,13 @@ libInstruments_la_SOURCES = \
     forwardrateagreement.cpp \
     forwardvanillaoption.cpp \
     impliedvolatility.cpp \
+    iboroisbasisswap.cpp \
     inflationcapfloor.cpp \
     lookbackoption.cpp \
     makecapfloor.cpp \
     makecms.cpp \
     makeois.cpp \
+    makeiboroisbasisswap.cpp \
     makeswaption.cpp \
     makevanillaswap.cpp \
     makeyoyinflationcapfloor.cpp \
