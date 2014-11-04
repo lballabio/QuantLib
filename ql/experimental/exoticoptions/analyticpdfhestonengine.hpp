@@ -62,7 +62,7 @@ namespace QuantLib {
         // reduced probability in x_t = ln(s_t/s_0) - (r-q)*t
         Real Pv(Real x_t, Time t) const;
 
-        // reduced probability in Pr(s_t < s)
+        // cumulative distribution function Pr(s_t < s)
         Real cdf(Real s, Time t) const;
 
       private:
