@@ -126,7 +126,7 @@ namespace QuantLib {
                 Real currentNotional = 0.0;
                 if(coupon < 1.0e-12) {
                     currentNotional =
-                       initialNotional*(1.0 - (i+1.0)/(nPeriods - 1));
+                       initialNotional*(1.0 - (i+1.0)/nPeriods);
                 }
                 else {
                     currentNotional =
