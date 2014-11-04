@@ -131,9 +131,6 @@ namespace QuantLib {
         mutable Size evaluations_;
         const ComplexLogFormula cpxLog_;
         const boost::shared_ptr<Integration> integration_;
-
-
-
     };
 
 
@@ -152,7 +149,7 @@ namespace QuantLib {
         static Integration gaussLobatto(Real relTolerance, Real absTolerance,
                                         Size maxEvaluations = 1000);
 
-        // usually these routine have a poor convergence behaviour.
+        // usually these routines have a poor convergence behavior.
         static Integration gaussKronrod(Real absTolerance,
                                         Size maxEvaluations = 1000);
         static Integration simpson(Real absTolerance,
@@ -191,7 +188,6 @@ namespace QuantLib {
                                                        Size) const {
         return std::complex<Real>(0,0);
     }
-
 }
 
 #endif
