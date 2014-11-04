@@ -34,8 +34,7 @@ int main() {
     Real exactSol = std::pow(std::exp(-.25) * 
         std::sqrt(M_PI), static_cast<Real>(dimension));
 
-    boost::function<Real(const std::vector<Real>& arg)> f;
-    f = boost::cref(integrand());
+    boost::function<Real(const std::vector<Real>& arg)> f = integrand();
     GaussianQuadMultidimIntegrator intg(dimension, 15);
 
     timer.restart();

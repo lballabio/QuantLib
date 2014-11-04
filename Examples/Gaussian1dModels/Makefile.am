@@ -14,10 +14,8 @@ EXTRA_DIST = \
     Gaussian1dModels.dev \
     Gaussian1dModels_vc8.vcproj \
     Gaussian1dModels_vc9.vcproj \
-    Gaussian1dModels_vc10.vcxproj \
-    Gaussian1dModels_vc10.vcxproj.filters \
-    Gaussian1dModels_vc11.vcxproj \
-    Gaussian1dModels_vc11.vcxproj.filters
+    Gaussian1dModels.vcxproj \
+    Gaussian1dModels.vcxproj.filters
 
 .PHONY: examples check-examples
 

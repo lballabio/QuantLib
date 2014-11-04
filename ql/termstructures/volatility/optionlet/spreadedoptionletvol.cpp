@@ -28,8 +28,9 @@ namespace QuantLib {
                         const Handle<OptionletVolatilityStructure>& baseVol,
                         const Handle<Quote>& spread)
     : baseVol_(baseVol), spread_(spread) {
-          registerWith(baseVol_);
-          registerWith(spread_);
+        enableExtrapolation(baseVol->allowsExtrapolation());
+        registerWith(baseVol_);
+        registerWith(spread_);
     }
 
     boost::shared_ptr<SmileSection>
