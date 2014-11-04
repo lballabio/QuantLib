@@ -55,9 +55,6 @@ namespace QuantLib {
             Size gaussLobattoIntegrationOrder = 10000ul);
         void calculate() const;
 
-        // reduced probability,
-        // hidden variable \nu is integrated out.
-        Real Pv(Real s_0, Real s_t, Time t) const;
 
         // reduced probability in x_t = ln(s_t/s_0) - (r-q)*t
         Real Pv(Real x_t, Time t) const;

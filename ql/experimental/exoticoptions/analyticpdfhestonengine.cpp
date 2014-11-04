@@ -145,15 +145,6 @@ namespace QuantLib {
                          -xMax, xMax);
     }
 
-    Real AnalyticPDFHestonEngine::Pv(Real s_0, Real s_t, Time t) const {
-        const boost::shared_ptr<HestonProcess>& process = model_->process();
-        const DiscountFactor d=  process->riskFreeRate()->discount(t)
-                               / process->dividendYield()->discount(t);
-        const Real x_t = std::log(d * s_t/s_0);
-
-        return Pv(x_t, t);
-    }
-
     Real AnalyticPDFHestonEngine::Pv(Real x_t, Time t) const {
         return GaussLobattoIntegral(
             gaussLobattoIntegrationOrder_, 0.1*gaussLobattoEps_)(
