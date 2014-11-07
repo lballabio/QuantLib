@@ -33,6 +33,7 @@ class Solver1DTest {
     static void testFalsePosition();
     static void testNewton();
     static void testNewtonSafe();
+    static void testFiniteDifferenceNewtonSafe();
     static void testRidder();
     static void testSecant();
     static boost::unit_test_framework::test_suite* suite();

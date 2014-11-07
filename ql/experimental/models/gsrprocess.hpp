@@ -57,6 +57,10 @@ namespace QuantLib {
         Real y(Time t) const;
         Real G(Time t, Time T, Real x) const;
         //@}
+        void setForwardMeasureTime(Time t) {
+            flushCache();
+            ForwardMeasureProcess1D::setForwardMeasureTime(t);
+        }
         void flushCache() const;
 
       protected:
@@ -81,7 +85,7 @@ namespace QuantLib {
         mutable std::map<std::pair<Real, Real>, Real> cache1_, cache2_, cache3_,
             cache5_;
         mutable std::map<Real, Real> cache4_;
-        std::vector<bool> revZero_;
+        mutable std::vector<bool> revZero_;
     };
 }
 

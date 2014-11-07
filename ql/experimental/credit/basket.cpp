@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2008 Roland Lichters
- Copyright (C) 2009 Jose Aparicio
+ Copyright (C) 2009, 2014 Jose Aparicio
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,50 +18,51 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <boost/make_shared.hpp>
+
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/credit/loss.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
+#include <ql/experimental/credit/defaultlossmodel.hpp>
 
 using namespace std;
 
 namespace QuantLib {
 
-    Basket::Basket(const vector<string>& names,
-                   const vector<Real>& notionals,
-                   const boost::shared_ptr<Pool> pool,
-                   const vector<DefaultProbKey>& defaultKeys,
-                   const vector<boost::shared_ptr<RecoveryRateModel> >&
-                       rrModels,
-                   Real attachment,
-                   Real detachment)
-        : names_(names),
-          notionals_(notionals),
-          pool_(pool),
-          defaultKeys_(defaultKeys),
-          rrModels_(rrModels),
-          attachmentRatio_(attachment),
-          detachmentRatio_(detachment),
-          basketNotional_(0.0),
-          basketLGD_(0.0),
-          trancheNotional_(0.0),
-          attachmentAmount_(0.0),
-          detachmentAmount_(0.0),
-          LGDs_(notionals.size(), 0.0),
-          scenarioLoss_(names.size(), Loss(0.0, 0.0)) {
-        QL_REQUIRE(!names_.empty(), "no names given");
+    Basket::Basket(const Date& refDate,
+        const vector<string>& names,
+        const vector<Real>& notionals,
+        const boost::shared_ptr<Pool> pool,
+        Real attachment,
+        Real detachment,
+        const boost::shared_ptr<Claim>& claim
+        )
+    : notionals_(notionals),
+      pool_(pool),
+      claim_(claim),
+      attachmentRatio_(attachment),
+      detachmentRatio_(detachment),
+      basketNotional_(0.0),
+      attachmentAmount_(0.0),
+      detachmentAmount_(0.0),
+      trancheNotional_(0.0),
+      refDate_(refDate)
+    {
         QL_REQUIRE(!notionals_.empty(), "notionals empty");
         QL_REQUIRE (attachmentRatio_ >= 0 &&
                     attachmentRatio_ <= detachmentRatio_ &&
                     detachmentRatio_ <= 1,
                     "invalid attachment/detachment ratio");
-        QL_REQUIRE(names_.size() == notionals_.size() &&
-                   notionals_.size() == defaultKeys_.size() &&
-                   defaultKeys_.size() == rrModels_.size(),
-            "unmatched data entry sizes in basket");
+        QL_REQUIRE(pool_, "Empty pool pointer.");
+        QL_REQUIRE(notionals_.size() == pool_->size(), 
+                   "unmatched data entry sizes in basket");
 
-        for(Size i=0; i<notionals_.size(); i++)
-            registerWith(rrModels_[i]);
+        // registrations relevant to the loss status, not to the expected 
+        // loss values; those are through models.
         registerWith(Settings::instance().evaluationDate());
+        registerWith(claim_);
+
+        computeBasket();
 
         // At this point Issuers in the pool might or might not have
         //   probability term structures for the defultKeys(eventType+
@@ -75,254 +76,310 @@ namespace QuantLib {
         trancheNotional_ = detachmentAmount_ - attachmentAmount_;
     }
 
-    Size Basket::size() const {
-        return names_.size();
+    /*\todo Alternatively send a relinkable handle so it can be changed from 
+    the outside. In that case reconsider the observability chain.
+    */
+    void Basket::setLossModel(
+        const boost::shared_ptr<DefaultLossModel>& lossModel) {
+
+        if (lossModel_)
+            unregisterWith(lossModel_);
+        lossModel_ = lossModel;
+        if (lossModel_) {
+            //recovery quotes, defaults(once Issuer is observable)etc might 
+            //  trigger us:
+            registerWith(lossModel_);
+        }
+        LazyObject::update(); //<- just set calc=false
     }
 
-    const vector<string>& Basket::names() const {
-        return names_;
+    void Basket::performCalculations() const {
+        // Calculations for status
+        computeBasket();// or we might be called from an statistic member 
+                        // without being intialized yet (first called)
+        QL_REQUIRE(lossModel_, "Basket has no default loss model assigned.");
+
+        /* The model must notify us if the another basket calls it for 
+        reasignment. The basket works as an argument to the deafult loss models 
+        so, even if the models dont cache anything, they will be using the wrong
+        defautl TS. \todo: This has a possible optimization: the basket 
+        incorporates trancheability and many models do their compuations 
+        independently of that (some do but do it inefficiently when asked for 
+        two tranches on the same basket; e,g, recursive model) so it might be 
+        more efficient sending the pool only; however the modtionals and other 
+        basket info are still used.*/
+        lossModel_->setBasket(const_cast<Basket*>(this));
     }
 
-    const vector<Real>& Basket::notionals() const {
-        return notionals_;
-    }
-
-    const std::vector<DefaultProbKey>&
-    Basket::defaultKeys() const {
-        return defaultKeys_;
-    }
-
-    const std::vector<boost::shared_ptr<RecoveryRateModel> >&
-    Basket::recoveryModels() const {
-        return rrModels_;
-    }
-
-    boost::shared_ptr<Pool> Basket::pool() const {
-        return pool_;
-    }
-
-    const vector<Real>& Basket::LGDs() const {
-        calculate();
-        return LGDs_;
-    }
-
-    Real Basket::attachmentRatio() const {
-        return attachmentRatio_;
-    }
-
-    Real Basket::detachmentRatio() const {
-        return detachmentRatio_;
-    }
-
-    Real Basket::basketNotional() const {
-        return basketNotional_;
-    }
-
-    Real Basket::basketLGD() const {
-        calculate();
-        return basketLGD_;
-    }
-
-    Real Basket::trancheNotional() const {
-        return trancheNotional_;
-    }
-
-    Real Basket::attachmentAmount() const {
-        return attachmentAmount_;
-    }
-
-    Real Basket::detachmentAmount() const {
-        return detachmentAmount_;
-    }
-
-    vector<Real> Basket::probabilities(const Date& d) const {
-        vector<Real> prob (names_.size());
-        for (Size j = 0; j < names_.size(); j++)
-            prob[j] = pool_->get(names_[j]).defaultProbability(
-                defaultKeys_[j])->defaultProbability(d);
+    Disposable<vector<Real> > Basket::probabilities(const Date& d) const {
+        vector<Real> prob(size());
+        vector<DefaultProbKey> defKeys = defaultKeys();
+        for (Size j = 0; j < size(); j++)
+            prob[j] = pool_->get(pool_->names()[j]).defaultProbability(
+                defKeys[j])->defaultProbability(d);
         return prob;
     }
 
-    Real Basket::cumulatedLoss(const Date& startDate,
-                               const Date& endDate) const {
+    Real Basket::cumulatedLoss(const Date& endDate) const {
+        QL_REQUIRE(endDate >= refDate_, 
+            "Target date lies before basket inception");
         Real loss = 0.0;
-        for (Size i = 0; i < names_.size(); i++) {
+        for (Size i = 0; i < size(); i++) {
             boost::shared_ptr<DefaultEvent> credEvent =
-                pool_->get(names_[i]).defaultedBetween(startDate,
-                                                       endDate,
-                                                       defaultKeys_[i]);
-            // to do: adjust for settlement notional accrued convexity, see doc
+                pool_->get(pool_->names()[i]).defaultedBetween(refDate_,
+                    endDate, pool_->defaultKeys()[i]);
+            if (credEvent) {
+                /* \todo If the event has not settled one would need to 
+                introduce some model recovery rate (independently of a loss 
+                model) This remains to be done.
+                */  
+                if(credEvent->hasSettled())
+                    loss += claim_->amount(credEvent->date(),
+                            // notionals_[i],
+                            exposure(pool_->names()[i], credEvent->date()),
+                            credEvent->settlement().recoveryRate(
+                                pool_->defaultKeys()[i].seniority()));
+            }
+        }
+        return loss;
+    }
+
+    Real Basket::settledLoss(const Date& endDate) const {
+        QL_REQUIRE(endDate >= refDate_, 
+            "Target date lies before basket inception");
+        
+        Real loss = 0.0;
+        for (Size i = 0; i < size(); i++) {
+            boost::shared_ptr<DefaultEvent> credEvent =
+                pool_->get(pool_->names()[i]).defaultedBetween(refDate_,
+                    endDate, pool_->defaultKeys()[i]);
             if (credEvent) {
                 if(credEvent->hasSettled()) {
-                    loss += notionals_[i] * (1. -
-                        credEvent->settlement().recoveryRate(
-                          defaultKeys_[i].seniority()));
-                }else{// name defaulted but did not settled/confirm
-                    loss += notionals_[i] * (1. -
-                        rrModels_[i]->recoveryValue(credEvent->date(),
-                                                    defaultKeys_[i]
-                                                ));
+                    loss += claim_->amount(credEvent->date(),
+                            //notionals_[i],
+                            exposure(pool_->names()[i], credEvent->date()),
+                            //NOtice I am requesting an exposure in the past...
+                            /* also the seniority does not belong to the 
+                            counterparty anymore but to the position.....*/
+                            credEvent->settlement().recoveryRate(
+                                pool_->defaultKeys()[i].seniority()));
                 }
             }
         }
         return loss;
     }
 
-    Real Basket::remainingNotional(const Date& startDate,
-                                   const Date& endDate) const {
+    Real Basket::remainingNotional() const {
+        return evalDateRemainingNot_;
+    }
+
+    Disposable<std::vector<Size> > 
+        Basket::liveList(const Date& endDate) const {
+        std::vector<Size> calcBufferLiveList;
+        for (Size i = 0; i < size(); i++)
+            if (!pool_->get(pool_->names()[i]).defaultedBetween(
+                    refDate_,
+                    endDate,
+                    pool_->defaultKeys()[i]))
+                calcBufferLiveList.push_back(i);
+
+        return calcBufferLiveList;
+    }
+
+    Real Basket::remainingNotional(const Date& endDate) const {
         Real notional = 0;
-        for (Size i = 0; i < names_.size(); i++) {
-            if (!pool_->get(names_[i]).defaultedBetween(startDate,
+        vector<DefaultProbKey> defKeys = defaultKeys();
+        for (Size i = 0; i < size(); i++) {
+            if (!pool_->get(pool_->names()[i]).defaultedBetween(refDate_,
                                                         endDate,
-                                                        defaultKeys_[i]))
+                                                        defKeys[i]))
                 notional += notionals_[i];
         }
         return notional;
     }
 
-    vector<Real> Basket::remainingNotionals(const Date& startDate,
-                                            const Date& endDate) const {
-        vector<Real> notionals;
-        for (Size i = 0; i < names_.size(); i++) {
-            if (!pool_->get(names_[i]).defaultedBetween(startDate,
-                                                        endDate,
-                                                        defaultKeys_[i]))
-                notionals.push_back(notionals_[i]);
-        }
-        return notionals;
+    Disposable<vector<Real> > 
+        Basket::remainingNotionals(const Date& endDate) const 
+    {
+        QL_REQUIRE(endDate >= refDate_, 
+            "Target date lies before basket inception");
+
+        std::vector<Real> calcBufferNotionals;
+        const std::vector<Size>& alive = liveList(endDate);
+        for(Size i=0; i<alive.size(); i++)
+            calcBufferNotionals.push_back(
+                exposure(pool_->names()[i], endDate)
+                );// some better way to trim it? 
+        return calcBufferNotionals;
     }
 
-    vector<string> Basket::remainingNames(const Date& startDate,
-                                          const Date& endDate) const {
-        vector<string> names;
-        for (Size i = 0; i < names_.size(); i++) {
-            if (!pool_->get(names_[i]).defaultedBetween(startDate,
-                                                        endDate,
-                                                        defaultKeys_[i]))
-                names.push_back(names_[i]);
-        }
-        return names;
+    Disposable<std::vector<Probability> > 
+        Basket::remainingProbabilities(const Date& d) const 
+    {
+        QL_REQUIRE(d >= refDate_, "Target date lies before basket inception");
+        vector<Real> prob;
+        const std::vector<Size>& alive = liveList();
+
+        for(Size i=0; i<alive.size(); i++)
+            prob.push_back(pool_->get(pool_->names()[i]).defaultProbability(
+                pool_->defaultKeys()[i])->defaultProbability(d, true));
+        return prob;
     }
 
-    vector<boost::shared_ptr<RecoveryRateModel> >
-        Basket::remainingRecModels(const Date& startDate,
-                                          const Date& endDate) const {
-        vector<boost::shared_ptr<RecoveryRateModel> > models;
-        for (Size i = 0; i < names_.size(); i++) {
-            if (!pool_->get(names_[i]).defaultedBetween(startDate,
-                                                        endDate,
-                                                        defaultKeys_[i]))
-                models.push_back(rrModels_[i]);
-        }
-        return models;
+    /* It is supossed to return the addition of ALL notionals from the 
+    requested ctpty......*/
+    Real Basket::exposure(const std::string& name, const Date& d) const {
+        //'this->names_' contains duplicates, contrary to 'pool->names'
+        std::vector<std::string>::const_iterator match =  
+            std::find(pool_->names().begin(), pool_->names().end(), name);
+        QL_REQUIRE(match != pool_->names().end(), "Name not in basket.");
+        Real totalNotional = 0.;
+        do{
+            totalNotional += 
+             // NOT IMPLEMENTED YET:
+    //positions_[std::distance(names_.begin(), match)]->expectedExposure(d);
+                notionals_[std::distance(pool_->names().begin(), match)];
+            match++;
+            match = std::find(match, pool_->names().end(), name);
+        }while(match != pool_->names().end());
+
+        return totalNotional;
+        //Size position = std::distance(poolNames.begin(), 
+        //    std::find(poolNames.begin(), poolNames.end(), name));
+        //QL_REQUIRE(position < pool_->size(), "Name not in pool list");
+
+        //return positions_[position]->expectedExposure(d);
     }
 
-        vector<DefaultProbKey>
-            Basket::remainingDefaultKeys(const Date& startDate,
-                                              const Date& endDate) const {
-        vector<DefaultProbKey> keys;
-        for (Size i = 0; i < names_.size(); i++) {
-            if (!pool_->get(names_[i]).defaultedBetween(startDate,
-                                                        endDate,
-                                                        defaultKeys_[i]))
-                keys.push_back(defaultKeys_[i]);
-        }
-        return keys;
+    Disposable<std::vector<std::string> >
+        Basket::remainingNames(const Date& endDate) const 
+    {
+        // maybe return zero directly instead?:
+        QL_REQUIRE(endDate >= refDate_, 
+            "Target date lies before basket inception");
+
+        const std::vector<Size>& alive = liveList(endDate);
+        std::vector<std::string> calcBufferNames;
+        for(Size i=0; i<alive.size(); i++)
+            calcBufferNames.push_back(pool_->names()[alive[i]]);
+        return calcBufferNames;
     }
 
-    Real Basket::remainingAttachmentAmount(const Date& startDate,
-                                           const Date& endDate) const {
-        Real loss = cumulatedLoss(startDate, endDate);
-        return std::max(0.0, attachmentAmount_ - loss);
+    Disposable<vector<DefaultProbKey> >
+        Basket::remainingDefaultKeys(const Date& endDate) const 
+    {
+        QL_REQUIRE(endDate >= refDate_,
+            "Target date lies before basket inception");
+
+        const std::vector<Size>& alive = liveList(endDate);
+        vector<DefaultProbKey> defKeys;
+        for(Size i=0; i<alive.size(); i++)
+            defKeys.push_back(pool_->defaultKeys()[alive[i]]);
+        return defKeys;
     }
 
-    Real Basket::remainingAttachmentRatio(const Date& startDate,
-                                          const Date& endDate) const {
-        return remainingAttachmentAmount(startDate, endDate)
-            / remainingNotional(startDate, endDate);
+    Size Basket::remainingSize() const {
+        return evalDateLiveList_.size();
     }
 
-    Real Basket::remainingDetachmentAmount(const Date& startDate,
-                                           const Date& endDate) const {
-        Real loss = cumulatedLoss(startDate, endDate);
-        return std::max(0.0, detachmentAmount_ - loss);
+    /* computed on the inception values, notice the positions might have 
+    amortized or changed in value and the total outstanding notional might 
+    differ from the inception one.*/
+    Real Basket::remainingDetachmentAmount(const Date& endDate) const {
+        return detachmentAmount_;
     }
 
-    Real Basket::remainingDetachmentRatio(const Date& startDate,
-                                          const Date& endDate) const {
-        return remainingDetachmentAmount(startDate, endDate)
-            / remainingNotional(startDate, endDate);
+    Real Basket::remainingAttachmentAmount(const Date& endDate) const {
+        // maybe return zero directly instead?:
+        QL_REQUIRE(endDate >= refDate_, 
+            "Target date lies before basket inception");
+        Real loss = settledLoss(endDate);
+        return std::min(detachmentAmount_, attachmentAmount_ + 
+            std::max(0.0, loss - attachmentAmount_));
     }
 
-    void Basket::updateScenarioLoss(bool zeroRecovery) {
+    Probability Basket::probOverLoss(const Date& d, Real lossFraction) const {
+        // convert initial basket fraction to remaining basket fraction
         calculate();
-        for (Size i = 0; i < names_.size(); i++) {
-            if (zeroRecovery)
-                scenarioLoss_[i].amount = notionals_[i];
-            else
-                scenarioLoss_[i].amount = LGDs_[i];
-            scenarioLoss_[i].time = pool_->getTime(names_[i]);
-        }
-        std::sort(scenarioLoss_.begin(), scenarioLoss_.end());
+        // if eaten up all the tranche the prob of losing any amount is 1 
+        //  (we have already lost it)
+        if(evalDateRemainingNot_ == 0.) return 1.;
+
+        // Turn to live (remaining) tranche units to feed into the model request
+        Real xPtfl = attachmentAmount_ + 
+            (detachmentAmount_-attachmentAmount_)*lossFraction;
+        Real xPrim = (xPtfl- evalDateAttachAmount_)/
+            (detachmentAmount_-evalDateAttachAmount_);
+        // in live tranche fractional units
+        // if the level falls within realized losses the prob is 1.
+        if(xPtfl < 0.) return 1.;
+
+        return lossModel_->probOverLoss(d, xPrim);
     }
 
-    vector<Loss> Basket::scenarioIncrementalBasketLosses() const {
-        return scenarioLoss_;
+    Real Basket::percentile(const Date& d, Probability prob) const {
+        calculate();
+        return lossModel_->percentile(d, prob);
+
+        Real percLiveFract = lossModel_->percentile(d, prob);     
+        return (percLiveFract*(detachmentAmount_-evalDateAttachAmount_) 
+            + attachmentAmount_ - evalDateAttachAmount_)
+            /(detachmentAmount_-attachmentAmount_);
     }
 
-    Real Basket::scenarioTrancheLoss(Date endDate) const {
-        Real A = attachmentAmount_;
-        Real D = detachmentAmount_;
-        Date today = Settings::instance().evaluationDate();
-        Real t2 = ActualActual().yearFraction(today, endDate);
-        Real L = 0.0;
-        for (Size i = 0; i < scenarioLoss_.size(); i++) {
-            if (scenarioLoss_[i].time <= t2)
-                L += scenarioLoss_[i].amount;
-            else break;
-        }
-        return std::min(L, D) - std::min(L, A);
+    Real Basket::expectedTrancheLoss(const Date& d) const {
+        calculate();
+        return cumulatedLoss() + lossModel_->expectedTrancheLoss(d);
     }
 
-    vector<Loss> Basket::scenarioIncrementalTrancheLosses(Date startDate,
-                                                          Date endDate) const {
-        vector<Loss> losses;
-        Real A = attachmentAmount_;
-        Real D = detachmentAmount_;
-        Date today = Settings::instance().evaluationDate();
-        Real tmin = ActualActual().yearFraction(today, startDate);
-        Real tmax = ActualActual().yearFraction(today, endDate);
-        Real TL1 = 0.0;
-        Real L = 0.0;
-        for (Size i = 0; i < scenarioLoss_.size(); i++) {
-            Real t = scenarioLoss_[i].time;
-            if (t > tmax && endDate != Date::maxDate()) break;
-            if (t < tmin && startDate != Date::minDate()) continue;
-            L += scenarioLoss_[i].amount;
-            Real TL2 = std::min(L, D) - std::min(L, A);
-            Real increment = TL2 - TL1;
-            TL1 = TL2;
-            losses.push_back(Loss(t, increment));
-        }
-        return losses;
+    Disposable<std::vector<Real> > 
+        Basket::splitVaRLevel(const Date& date, Real loss) const {
+        calculate();
+        return lossModel_->splitVaRLevel(date, loss);
     }
 
-    void Basket::performCalculations() const {
-        Date today = Settings::instance().evaluationDate();
-        for (Size i = 0; i < notionals_.size(); i++) {
-            //we are registered, the quote might have changed.
-            QL_REQUIRE(
-                rrModels_[i]->appliesToSeniority(defaultKeys_[i].seniority()),
-                "Recovery model does not match basket member seniority.");
-
-            LGDs_[i] = notionals_[i]
-            * (1.0 - rrModels_[i]->recoveryValue(today,
-                                                 defaultKeys_[i]
-                                                 ));
-            basketLGD_ += LGDs_[i];
-        }
+    Real Basket::expectedShortfall(const Date& d, Probability prob) const {
+        calculate();
+        return lossModel_->expectedShortfall(d, prob);
     }
 
+    Disposable<std::map<Real, Probability> > 
+        Basket::lossDistribution(const Date& d) const {
+        calculate();
+        return lossModel_->lossDistribution(d);
+    }
+
+    std::vector<Probability> 
+        Basket::probsBeingNthEvent(Size n, const Date& d) const {
+
+        Size alreadyDefaulted = pool_->size() - remainingNames().size();
+        if(alreadyDefaulted >=n) 
+            return std::vector<Probability>(remainingNames().size(), 0.);
+
+        calculate();
+        return lossModel_->probsBeingNthEvent(n-alreadyDefaulted, d);
+    }
+
+    Real Basket::defaultCorrelation(const Date& d, Size iName, Size jName) const{
+        calculate();
+        return lossModel_->defaultCorrelation(d, iName, jName);
+
+    }
+
+    /*! Returns the probaility of having a given or larger number of 
+    defaults in the basket portfolio at a given time.
+    */
+    Probability Basket::probAtLeastNEvents(Size n, const Date& d) const{
+        calculate();
+        return lossModel_->probAtLeastNEvents(n, d);
+
+    }
+
+    Real Basket::recoveryRate(const Date& d, Size iName) const {
+        calculate();
+        return 
+            lossModel_->expectedRecovery(d, iName, pool_->defaultKeys()[iName]);
+    }
 
 }
 

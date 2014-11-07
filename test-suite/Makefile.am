@@ -7,6 +7,7 @@ QL_TESTS = \
 	assetswap.hpp assetswap.cpp \
 	autocovariances.hpp autocovariances.cpp \
 	barrieroption.hpp barrieroption.cpp \
+	binaryoption.hpp binaryoption.cpp \
 	basketoption.hpp basketoption.cpp \
 	batesmodel.hpp batesmodel.cpp \
 	bermudanswaption.hpp bermudanswaption.cpp \
@@ -42,6 +43,7 @@ QL_TESTS = \
 	everestoption.hpp everestoption.cpp \
 	exchangerate.hpp exchangerate.cpp \
 	extendedtrees.hpp extendedtrees.cpp \
+	extensibleoptions.hpp extensibleoptions.cpp \
 	fastfouriertransform.hpp fastfouriertransform.cpp \
 	fdheston.hpp fdheston.cpp \
 	fdmlinearop.hpp fdmlinearop.cpp \
@@ -83,6 +85,7 @@ QL_TESTS = \
 	mclongstaffschwartzengine.hpp mclongstaffschwartzengine.cpp \
 	mersennetwister.hpp mersennetwister.cpp \
 	money.hpp money.cpp \
+	noarbsabr.hpp noarbsabr.cpp \
 	nthtodefault.hpp nthtodefault.cpp \
 	ode.hpp ode.cpp \
 	operators.hpp operators.cpp \
@@ -90,6 +93,7 @@ QL_TESTS = \
 	optionletstripper.hpp optionletstripper.cpp \
 	overnightindexedswap.hpp overnightindexedswap.cpp \
 	pagodaoption.hpp pagodaoption.cpp \
+	partialtimebarrieroption.hpp partialtimebarrieroption.cpp \
 	pathgenerator.hpp pathgenerator.cpp \
 	period.hpp period.cpp \
 	piecewiseyieldcurve.hpp piecewiseyieldcurve.cpp \
@@ -119,13 +123,13 @@ QL_TESTS = \
 	tqreigendecomposition.hpp tqreigendecomposition.cpp \
 	tracing.hpp tracing.cpp \
 	twoassetbarrieroption.hpp twoassetbarrieroption.cpp \
+	twoassetcorrelationoption.hpp twoassetcorrelationoption.cpp \
 	utilities.hpp utilities.cpp \
 	variancegamma.hpp variancegamma.cpp \
 	varianceoption.hpp varianceoption.cpp \
 	varianceswaps.hpp varianceswaps.cpp \
 	volatilitymodels.hpp volatilitymodels.cpp \
-	vpp.hpp vpp.cpp \
-	writerextensibleoption.hpp writerextensibleoption.cpp
+	vpp.hpp vpp.cpp
 
 QL_BENCHMARKS = \
 	quantlibbenchmark.cpp \
@@ -206,10 +210,8 @@ EXTRA_DIST = \
 	README.txt \
 	testsuite_vc8.vcproj \
 	testsuite_vc9.vcproj \
-	testsuite_vc10.vcxproj \
-	testsuite_vc10.vcxproj.filters \
-	testsuite_vc11.vcxproj \
-	testsuite_vc11.vcxproj.filters \
+	testsuite.vcxproj \
+	testsuite.vcxproj.filters \
 	testsuite.dev
 
 else
@@ -220,10 +222,8 @@ EXTRA_DIST = \
 	README.txt \
 	testsuite_vc8.vcproj \
 	testsuite_vc9.vcproj \
-	testsuite_vc10.vcxproj \
-	testsuite_vc10.vcxproj.filters \
-	testsuite_vc11.vcxproj \
-	testsuite_vc11.vcxproj.filters \
+	testsuite.vcxproj \
+	testsuite.vcxproj.filters \
 	testsuite.dev
 
 endif

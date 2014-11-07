@@ -22,6 +22,7 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/forwardvanillaoption.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/binomialengine.hpp>
 #include <ql/pricingengines/forward/forwardengine.hpp>
 #include <ql/pricingengines/forward/forwardperformanceengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -382,12 +383,135 @@ void ForwardOptionTest::testPerformanceGreeks() {
 }
 
 
+class TestBinomialEngine : public BinomialVanillaEngine<CoxRossRubinstein>
+{
+private:
+public:
+   TestBinomialEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess > &process):
+   BinomialVanillaEngine<CoxRossRubinstein>(process, 300) // fixed steps
+   {
+   }
+};
+
+// verify than if engine
+void ForwardOptionTest::testGreeksInitialization() {
+   BOOST_TEST_MESSAGE("Testing forward option greeks initialization ...");
+
+   DayCounter dc = Actual360();
+   Date today = Date::todaysDate();
+   Settings::instance().evaluationDate() = today;
+
+   boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
+   boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
+   Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
+   boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.01));
+   Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
+   boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.11));
+   Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
+
+   boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
+      new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+
+   boost::shared_ptr<PricingEngine> engine(
+                        new ForwardVanillaEngine<TestBinomialEngine>(stochProcess));
+   Date exDate = today + 1*Years;
+   boost::shared_ptr<Exercise> exercise(
+                                 new EuropeanExercise(exDate));
+   Date reset = today + 6*Months;
+   boost::shared_ptr<StrikedTypePayoff> payoff(
+                        new PlainVanillaPayoff(Option::Call, 0.0));
+
+   ForwardVanillaOption option(0.9, reset, payoff, exercise);
+   option.setPricingEngine(engine);
+
+   boost::shared_ptr<PricingEngine> ctrlengine(
+                        new TestBinomialEngine(stochProcess));
+   VanillaOption ctrloption(payoff, exercise);
+   ctrloption.setPricingEngine(ctrlengine);
+
+   Real delta = 0;
+   try
+   {
+      delta = ctrloption.delta();
+   }
+   catch (const QuantLib::Error &) {
+      // if normal option can't calculate delta,
+      // nor should forward
+      try
+      {
+         delta   = option.delta();
+      }
+      catch (const QuantLib::Error &) {
+         delta = Null<Real>();
+      }
+      QL_REQUIRE(delta == Null<Real>(), "Forward delta invalid");
+   }
+
+   Real rho  = 0;
+   try
+   {
+      rho = ctrloption.rho();
+   }
+   catch (const QuantLib::Error &) {
+      // if normal option can't calculate rho,
+      // nor should forward
+      try
+      {
+         rho = option.rho();
+      }
+      catch (const QuantLib::Error &) {
+         rho = Null<Real>();
+      }
+      QL_REQUIRE(rho == Null<Real>(), "Forward rho invalid");
+   }
+
+   Real divRho = 0;
+   try
+   {
+      divRho = ctrloption.dividendRho();
+   }
+   catch (const QuantLib::Error &) {
+      // if normal option can't calculate divRho,
+      // nor should forward
+      try
+      {
+         divRho = option.dividendRho();
+      }
+      catch (const QuantLib::Error &) {
+         divRho = Null<Real>();
+      }
+      QL_REQUIRE(divRho == Null<Real>(), "Forward dividendRho invalid");
+   }
+
+   Real vega = 0;
+   try
+   {
+      vega = ctrloption.vega();
+   }
+   catch (const QuantLib::Error &) {
+      // if normal option can't calculate vega,
+      // nor should forward
+      try
+      {
+         vega = option.vega();
+      }
+      catch (const QuantLib::Error &) {
+         vega = Null<Real>();
+      }
+      QL_REQUIRE(vega == Null<Real>(), "Forward vega invalid");
+   }
+}
+
+
+
 test_suite* ForwardOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Forward option tests");
     suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testValues));
     suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testGreeks));
     suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testPerformanceValues));
     suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testPerformanceGreeks));
+    suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testGreeksInitialization));
+
     return suite;
 }
 

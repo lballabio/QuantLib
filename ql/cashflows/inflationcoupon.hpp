@@ -55,7 +55,8 @@ namespace QuantLib {
                         const Period& observationLag,
                         const DayCounter& dayCounter,
                         const Date& refPeriodStart = Date(),
-                        const Date& refPeriodEnd = Date()
+                        const Date& refPeriodEnd = Date(),
+                        const Date& exCouponDate = Date()
                         );
 
         //! \name CashFlow interface

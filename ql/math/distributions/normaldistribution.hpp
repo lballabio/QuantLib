@@ -225,7 +225,7 @@ namespace QuantLib {
         static const Real c8_;
     };
 
-    //! Maddock Inverse cumulative normal distribution class
+    //! Maddock's Inverse cumulative normal distribution class
     /*! Given x between zero and one as
         the integral value of a gaussian normal distribution
         this class provides the value y such that
@@ -238,11 +238,21 @@ namespace QuantLib {
          insufficient accuracy compared to the epsilon for type double,
          do we clean up the result using Halley iteration.
     */
-
     class MaddockInverseCumulativeNormal
     : public std::unary_function<Real,Real> {
       public:
         MaddockInverseCumulativeNormal(Real average = 0.0,
+                                       Real sigma   = 1.0);
+        Real operator()(Real x) const;
+
+      private:
+        const Real average_, sigma_;
+    };
+
+    //! Maddock's cumulative normal distribution class
+    class MaddockCumulativeNormal : public std::unary_function<Real,Real> {
+      public:
+        MaddockCumulativeNormal(Real average = 0.0,
                                        Real sigma   = 1.0);
         Real operator()(Real x) const;
 

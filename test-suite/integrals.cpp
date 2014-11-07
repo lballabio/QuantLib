@@ -30,9 +30,15 @@
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/termstructures/volatility/abcd.hpp>
 #include <ql/math/integrals/twodimensionalintegral.hpp>
-
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/lambda.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic pop
+#endif
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -56,6 +62,8 @@ namespace {
 
     template <class T>
     void testSeveral(const T& I) {
+        testSingle(I, "f(x) = 0",
+                   constant<Real,Real>(0.0), 0.0, 1.0, 0.0);
         testSingle(I, "f(x) = 1",
                    constant<Real,Real>(1.0), 0.0, 1.0, 1.0);
         testSingle(I, "f(x) = x",

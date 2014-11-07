@@ -74,6 +74,30 @@ namespace QuantLib {
                                  floatSchedule.dates().end(), expiry0 - 1) -
                 floatSchedule.dates().begin();
 
+            // a lazy object is not thread safe, neither is the caching
+            // in gsrprocess. therefore we trigger computations here such
+            // that neither lazy object recalculation nor write access
+            // during caching occurs in the parallized loop below.
+            // this is known to work for the gsr and markov functional
+            // model implementations of Gaussian1dModel
+#ifdef _OPENMP
+            if (expiry0 > settlement) {
+                for (Size l = k1; l < arguments_.floatingCoupons.size(); l++) {
+                    model_->forwardRate(arguments_.floatingFixingDates[l],
+                                        expiry0, 0.0,
+                                        arguments_.swap->iborIndex());
+                    model_->zerobond(arguments_.floatingPayDates[l], expiry0,
+                                     0.0, discountCurve_);
+                }
+                for (Size l = j1; l < arguments_.fixedCoupons.size(); l++) {
+                    model_->zerobond(arguments_.fixedPayDates[l], expiry0, 0.0,
+                                     discountCurve_);
+                }
+                model_->numeraire(expiry0Time, 0.0, discountCurve_);
+            }
+#endif
+
+#pragma omp parallel for default(shared) firstprivate(p) if(expiry0>settlement)
             for (Size k = 0; k < (expiry0 > settlement ? npv0.size() : 1);
                  k++) {
 

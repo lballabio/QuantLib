@@ -527,12 +527,14 @@ namespace QuantLib {
                    m1.rows() << "x" << m1.columns() << ", " <<
                    m2.rows() << "x" << m2.columns() << ") cannot be "
                    "multiplied");
-        Matrix result(m1.rows(),m2.columns());
-        for (Size i=0; i<result.rows(); i++)
-            for (Size j=0; j<result.columns(); j++)
-                result[i][j] =
-                    std::inner_product(m1.row_begin(i), m1.row_end(i),
-                                       m2.column_begin(j), 0.0);
+        Matrix result(m1.rows(),m2.columns(),0.0);
+        for (Size i=0; i<result.rows(); ++i) {
+            for (Size k=0; k<m1.columns(); ++k) {
+                for (Size j=0; j<result.columns(); ++j) {
+                    result[i][j] += m1[i][k]*m2[k][j];
+                }
+            }
+        }
         return result;
     }
 

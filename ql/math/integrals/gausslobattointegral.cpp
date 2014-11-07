@@ -69,17 +69,27 @@ namespace QuantLib {
         const Real y11= f(m+alpha_*h);
         const Real y13= f(b);
 
+        const Real f1 = f(m-x1_*h);
+        const Real f2 = f(m+x1_*h);
+        const Real f3 = f(m-x2_*h);
+        const Real f4 = f(m+x2_*h);
+        const Real f5 = f(m-x3_*h);
+        const Real f6 = f(m+x3_*h);
+
         Real acc=h*(0.0158271919734801831*(y1+y13)
-                  +0.0942738402188500455*(f(m-x1_*h)+f(m+x1_*h))
+                  +0.0942738402188500455*(f1+f2)
                   +0.1550719873365853963*(y3+y11)
-                  +0.1888215739601824544*(f(m-x2_*h)+ f(m+x2_*h))
+                  +0.1888215739601824544*(f3+f4)
                   +0.1997734052268585268*(y5+y9) 
-                  +0.2249264653333395270*(f(m-x3_*h)+f(m+x3_*h))
+                  +0.2249264653333395270*(f5+f6)
                   +0.2426110719014077338*y7);  
         
         increaseNumberOfEvaluations(13);
-        QL_REQUIRE(acc != 0.0, "can not calculate absolute accuracy from "
-                               "relative accuracy");
+        if (acc == 0.0 && (   f1 != 0.0 || f2 != 0.0 || f3 != 0.0
+                           || f4 != 0.0 || f5 != 0.0 || f6 != 0.0)) {
+            QL_FAIL("can not calculate absolute accuracy "
+                    "from relative accuracy");
+        }
 
         Real r = 1.0;
         if (useConvergenceEstimate_) {

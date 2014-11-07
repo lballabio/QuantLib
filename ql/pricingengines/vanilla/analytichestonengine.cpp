@@ -36,7 +36,14 @@
 #pragma warning(disable: 4180)
 #endif
 
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
 #include <boost/lambda/if.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic pop
+#endif
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 
@@ -295,6 +302,7 @@ namespace QuantLib {
     : GenericModelEngine<HestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
+      evaluations_(0),
       cpxLog_     (Gatheral),
       integration_(new Integration(
                           Integration::gaussLaguerre(integrationOrder))) {
@@ -306,6 +314,7 @@ namespace QuantLib {
     : GenericModelEngine<HestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
+      evaluations_(0),
       cpxLog_(Gatheral),
       integration_(new Integration(Integration::gaussLobatto(
                               relTolerance, Null<Real>(), maxEvaluations))) {
@@ -318,6 +327,7 @@ namespace QuantLib {
     : GenericModelEngine<HestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
+      evaluations_(0),
       cpxLog_(cpxLog),
       integration_(new Integration(integration)) {
         QL_REQUIRE(   cpxLog_ != BranchCorrection
