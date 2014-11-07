@@ -17,8 +17,8 @@
  * granted, provided that this notice is preserved.
  * ===========================================================================
  */
-#ifndef primitivepolynomials_h
-#define primitivepolynomials_h
+#ifndef primitivepolynomials_hpp
+#define primitivepolynomials_hpp
 
 /* This file is provided for the use with Sobol' sequences of higher
  * dimensions. The dimensionality of the Sobol' sequence can be extended to
@@ -81,7 +81,7 @@
  * encoded as  13  [ (1)1101(1) ]  in the array for degree 5.
  */
 
-/* Example: replace primitivepolynomials.c provided by QuantLib standard
+/* Example: replace primitivepolynomials.cpp provided by QuantLib standard
  * distribution with the 8129334 polinomials version and
  * comment out the line below if you want absolutely all of the
  * provided primitive polynomials modulo two.

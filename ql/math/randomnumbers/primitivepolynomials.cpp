@@ -18,7 +18,7 @@
    =========================================================================
 */
 
-#include <ql/math/randomnumbers/primitivepolynomials.h>
+#include <ql/math/randomnumbers/primitivepolynomials.hpp>
 
 static const long PrimitivePolynomialDegree01[]={
 0, /* x+1 (1)(1) */
