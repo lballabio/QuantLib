@@ -19,6 +19,7 @@
 #include "utilities.hpp"
 #include <ql/experimental/amortizingbonds/amortizingfixedratebond.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 #include <iostream>
 
 using namespace QuantLib;
