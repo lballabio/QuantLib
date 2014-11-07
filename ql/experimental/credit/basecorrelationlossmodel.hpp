@@ -200,7 +200,7 @@ namespace QuantLib {
     would be possible.
     */
     template<>
-    void BaseCorrelationLossModel<GaussianLHPLossModel, 
+    inline void BaseCorrelationLossModel<GaussianLHPLossModel, 
         BilinearInterpolation>::setupModels() const 
     {
         // on this assignment any previous registration with the attach and 
@@ -215,7 +215,7 @@ namespace QuantLib {
     }
 
     template<>
-    void BaseCorrelationLossModel<GaussianBinomialLossModel, 
+    inline void BaseCorrelationLossModel<GaussianBinomialLossModel, 
         BilinearInterpolation>::setupModels() const 
     {
         boost::shared_ptr<GaussianConstantLossLM> lmA = 
@@ -239,7 +239,7 @@ namespace QuantLib {
     }
 
     template<>
-    void BaseCorrelationLossModel<TBinomialLossModel, 
+    inline void BaseCorrelationLossModel<TBinomialLossModel, 
         BilinearInterpolation>::setupModels() const 
     {
         boost::shared_ptr<TConstantLossLM> lmA = 
@@ -266,7 +266,7 @@ namespace QuantLib {
     base model works all right, its the link here.
     */
     template<>
-    void BaseCorrelationLossModel<IHGaussPoolLossModel, 
+    inline void BaseCorrelationLossModel<IHGaussPoolLossModel, 
         BilinearInterpolation>::setupModels() const 
     {
         boost::shared_ptr<GaussianConstantLossLM> lmA = 
