@@ -52,14 +52,6 @@
 #include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmspreadpayoffinnervalue.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-#include <boost/lambda/lambda.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
 #include <deque>
 
 using namespace QuantLib;
@@ -83,6 +75,16 @@ namespace {
             new ExtOUWithJumpsProcess(ouProcess, x0[1], beta,
                                       jumpIntensity, eta));
     }
+
+    class linear {
+        Real alpha, beta;
+      public:
+        linear(Real alpha, Real beta) : alpha(alpha), beta(beta) {}
+        Real operator()(Real x) const {
+            return alpha + beta*x;
+        }
+    };
+
 }
 
 
@@ -135,7 +137,7 @@ void VPPTest::testGemanRoncoroniProcess() {
     const Real alphaG    = 1.0;
     const Real x0G       = 1.1;
 
-    boost::function<Real (Real)> f = alphaG + betaG*boost::lambda::_1;
+    boost::function<Real (Real)> f = linear(alphaG, betaG);
 
     boost::shared_ptr<StochasticProcess1D> eouProcess(
         new ExtendedOrnsteinUhlenbeckProcess(speed, vol, x0G, f,
@@ -284,7 +286,7 @@ void VPPTest::testKlugeExtOUSpreadOption() {
 
     boost::shared_ptr<ExtOUWithJumpsProcess>
                                            klugeProcess = createKlugeProcess();
-    boost::function<Real (Real)> f = alphaG + betaG*boost::lambda::_1;
+    boost::function<Real (Real)> f = linear(alphaG, betaG);
 
     boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> extOUProcess(
         new ExtendedOrnsteinUhlenbeckProcess(speed, vol, x0G, f,

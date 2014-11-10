@@ -30,15 +30,6 @@
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/termstructures/volatility/abcd.hpp>
 #include <ql/math/integrals/twodimensionalintegral.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-#include <boost/lambda/bind.hpp>
-#include <boost/lambda/lambda.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -148,6 +139,24 @@ void IntegralTest::testTwoDimensionalIntegration() {
     }
 }
 
+namespace {
+
+    class sineF {
+      public:
+        Real operator()(Real x) const {
+            return std::exp(-0.5*(x - M_PI_2/100));
+        }
+    };
+
+    class cosineF {
+      public:
+        Real operator()(Real x) const {
+            return std::exp(-0.5*x);
+        }
+    };
+
+}
+
 void IntegralTest::testFolinIntegration() {
     BOOST_TEST_MESSAGE("Testing Folin's integral formulae...");
 
@@ -161,20 +170,15 @@ void IntegralTest::testFolinIntegration() {
     const Real t = 100;
     const Real o = M_PI_2/t;
 
-    const boost::function<Real(Real)> sineF = boost::lambda::bind(
-        std::ptr_fun<Real,Real>(std::exp), -0.5*(boost::lambda::_1 - o));
-    const boost::function<Real(Real)> cosineF = boost::lambda::bind(
-        std::ptr_fun<Real,Real>(std::exp), -0.5*boost::lambda::_1);
-
     const Real tol = 1e-12;
 
     for (Size i=0; i < LENGTH(nr); ++i) {
         const Size n = nr[i];
         const Real calculatedCosine
-            = FilonIntegral(FilonIntegral::Cosine, t, n)(cosineF,0,2*M_PI);
+            = FilonIntegral(FilonIntegral::Cosine, t, n)(cosineF(),0,2*M_PI);
         const Real calculatedSine
             = FilonIntegral(FilonIntegral::Sine, t, n)
-                (sineF, o,2*M_PI + o);
+                (sineF(), o,2*M_PI + o);
 
         if (std::fabs(calculatedCosine-expected[i]) > tol) {
             BOOST_FAIL(std::setprecision(10)
