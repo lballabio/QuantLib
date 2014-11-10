@@ -138,24 +138,6 @@ namespace QuantLib {
             return notionals;
         }
 
-        //std::vector<Real> sinkingRedemptions(const Period& maturityTenor,
-        //                                     const Frequency& sinkingFrequency,
-        //                                     Rate couponRate,
-        //                                     Real initialNotional) {
-
-        //    std::vector<Real> notionals =
-        //        sinkingNotionals(maturityTenor, sinkingFrequency,
-        //                         couponRate, initialNotional);
-        //    Size nPeriods = notionals.size()-1;
-        //    std::vector<Real> redemptions(nPeriods);
-
-        //    for(Size i = 0; i < nPeriods; ++i) {
-        //        redemptions[i] =
-        //            (notionals[i] - notionals[i+1]) / initialNotional * 100;
-        //    }
-        //    return redemptions;
-        //}
-
     }
 
 
