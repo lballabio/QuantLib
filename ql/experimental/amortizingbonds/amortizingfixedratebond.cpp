@@ -174,7 +174,9 @@ namespace QuantLib {
       frequency_(sinkingFrequency),
       dayCounter_(accrualDayCounter) {
 
-       QL_REQUIRE(bondTenor.length() > 0, "Bond Tenor length must be positive. " << bondTenor.length() << " is not allowed.");
+        QL_REQUIRE(bondTenor.length() > 0,
+                   "bond tenor must be positive. "
+                   << bondTenor << " is not allowed.");
         maturityDate_ = startDate + bondTenor;
 
         cashflows_ =
