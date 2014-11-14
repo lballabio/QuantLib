@@ -141,4 +141,9 @@ namespace QuantLib {
 
         return retVal;
     }
+
+    const std::vector<boost::shared_ptr<Fdm1dMesher> >&
+        FdmMesherComposite::getFdm1dMeshers() const {
+        return  mesher_;
+    }
 }

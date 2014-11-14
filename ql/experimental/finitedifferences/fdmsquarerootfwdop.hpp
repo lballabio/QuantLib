@@ -34,11 +34,13 @@ namespace QuantLib {
 
     class FdmSquareRootFwdOp : public FdmLinearOpComposite {
       public:
+        enum TransformationType { Plain, Power };
+
         FdmSquareRootFwdOp(
             const boost::shared_ptr<FdmMesher>& mesher,
             Real kappa, Real theta, Real sigma,
             Size direction,
-            bool transform = false);
+            TransformationType type = Plain);
 
         Size size()    const;
         void setTime(Time t1, Time t2);
@@ -77,7 +79,7 @@ namespace QuantLib {
         const Size direction_;
         const Real kappa_, theta_, sigma_;
         const Real alpha_;
-        const bool transform_;
+        const TransformationType transform_;
         boost::shared_ptr<ModTripleBandLinearOp> mapX_;
         Array v_, vq_, vmq_;
     };

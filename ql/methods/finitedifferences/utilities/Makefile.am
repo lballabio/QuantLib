@@ -11,6 +11,7 @@ this_include_HEADERS = \
 	fdmdividendhandler.hpp \
 	fdmindicesonboundary.hpp \
 	fdminnervaluecalculator.hpp \
+	fdmmesherintegral.hpp \
 	fdmquantohelper.hpp \
 	fdmtimedepdirichletboundary.hpp
 
@@ -21,6 +22,7 @@ libFdmUtils_la_SOURCES = \
 	fdmdividendhandler.cpp \
 	fdmindicesonboundary.cpp \
 	fdminnervaluecalculator.cpp \
+	fdmmesherintegral.cpp \
 	fdmquantohelper.cpp \
 	fdmtimedepdirichletboundary.cpp
 

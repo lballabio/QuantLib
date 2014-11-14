@@ -409,7 +409,6 @@ namespace QuantLib {
           default:
             QL_FAIL("unknown option type");
         }
-
     }
 
     void AnalyticHestonEngine::calculate() const
