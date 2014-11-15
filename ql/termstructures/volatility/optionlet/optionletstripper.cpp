@@ -28,10 +28,13 @@ namespace QuantLib {
     OptionletStripper::OptionletStripper(
             const boost::shared_ptr<CapFloorTermVolSurface>& termVolSurface,
             const boost::shared_ptr<IborIndex>& iborIndex,
-            const Handle<YieldTermStructure>& discount)
-    : termVolSurface_(termVolSurface),
+            const Real displacement,
+            const Model& model,
+            const Handle<YieldTermStructure>& discount) 
+   : termVolSurface_(termVolSurface),
       iborIndex_(iborIndex), discount_(discount),
-      nStrikes_(termVolSurface->strikes().size()) {
+      nStrikes_(termVolSurface->strikes().size()), 
+      displacement_(displacement), model_(model) {
         
         registerWith(termVolSurface);
         registerWith(iborIndex_);
@@ -143,5 +146,24 @@ namespace QuantLib {
 
     boost::shared_ptr<IborIndex> OptionletStripper::iborIndex() const {
         return iborIndex_;
+    }
+
+    const Real OptionletStripper::displacement() const {
+        return displacement_;
+    }
+
+    const OptionletStripper::Model& OptionletStripper::model() const{
+        return model_;
+    }
+
+    std::ostream& operator<<(std::ostream& out, const OptionletStripper::Model& mod) {
+        switch (mod) {
+            case OptionletStripper::Normal:
+                return out << "Normal";
+            case OptionletStripper::ShiftedLognormal:
+                return out << "ShiftedLognormal";
+            default:
+                QL_FAIL("unknown Model");
+        }
     }
 }

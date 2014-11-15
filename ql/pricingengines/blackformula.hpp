@@ -216,6 +216,24 @@ namespace QuantLib {
                                    Real bachelierPrice,
                                    Real discount = 1.0);
 
+    /*! Bachelier formula for standard deviation derivative
+        \warning instead of volatility it uses standard deviation, i.e.
+                 volatility*sqrt(timeToMaturity), and it returns the
+                 derivative with respect to the standard deviation.
+                 If T is the time to maturity Black vega would be
+                 blackStdDevDerivative(strike, forward, stdDev)*sqrt(T)
+    */
+
+    Real bachelierBlackFormulaStdDevDerivative(Real strike,
+                                                Real forward,
+                                                Real stdDev,
+                                                Real discount = 1.0);
+
+    Real bachelierBlackFormulaStdDevDerivative(const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+                                                Real forward,
+                                                Real stdDev,
+                                                Real discount = 1.0);
+
 }
 
 #endif

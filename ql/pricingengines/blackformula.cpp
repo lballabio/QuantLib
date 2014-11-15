@@ -460,4 +460,34 @@ namespace QuantLib {
 
         return impliedBpvol;
     }
+
+
+        Real bachelierBlackFormulaStdDevDerivative(Rate strike,
+                                      Rate forward,
+                                      Real stdDev,
+                                      Real discount)
+    {
+        QL_REQUIRE(stdDev>=0.0,
+                   "stdDev (" << stdDev << ") must be non-negative");
+        QL_REQUIRE(discount>0.0,
+                   "discount (" << discount << ") must be positive");
+
+        if (stdDev==0.0)
+            return 0.0;
+
+        Real d1 = (forward - strike)/stdDev;
+        return discount *
+            CumulativeNormalDistribution().derivative(d1);
+    }
+
+    Real bachelierBlackFormulaStdDevDerivative(
+                        const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+                        Real forward,
+                        Real stdDev,
+                        Real discount) {
+        return bachelierBlackFormulaStdDevDerivative(payoff->strike(), forward,
+                                     stdDev, discount);
+    }
+
+
 }

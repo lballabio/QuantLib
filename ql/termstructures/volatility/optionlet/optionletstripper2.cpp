@@ -36,7 +36,9 @@ namespace QuantLib {
             const boost::shared_ptr<OptionletStripper1>& optionletStripper1,
             const Handle<CapFloorTermVolCurve>& atmCapFloorTermVolCurve)
     : OptionletStripper(optionletStripper1->termVolSurface(),
-                        optionletStripper1->iborIndex()),
+                        optionletStripper1->iborIndex(),
+                        optionletStripper1->displacement(),
+                        optionletStripper1->model()),
       stripper1_(optionletStripper1),
       atmCapFloorTermVolCurve_(atmCapFloorTermVolCurve),
       dc_(stripper1_->termVolSurface()->dayCounter()),
