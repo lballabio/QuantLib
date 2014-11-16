@@ -42,7 +42,7 @@ class SviInterpolatedSmileSection : public SmileSection, public LazyObject {
         const Date &optionDate, const Handle<Quote> &forward,
         const std::vector<Rate> &strikes, bool hasFloatingStrikes,
         const Handle<Quote> &atmVolatility,
-        const std::vector<Handle<Quote>> &volHandles, Real a, Real b,
+        const std::vector<Handle<Quote> > &volHandles, Real a, Real b,
         Real sigma, Real rho, Real m, bool aIsFixed, bool bIsFixed,
         bool sigmaIsFixed, bool rhoIsFixed, bool mIsFixed,
         bool vegaWeighted = true,
@@ -98,7 +98,7 @@ class SviInterpolatedSmileSection : public SmileSection, public LazyObject {
     //! Market data
     const Handle<Quote> forward_;
     const Handle<Quote> atmVolatility_;
-    std::vector<Handle<Quote>> volHandles_;
+    std::vector<Handle<Quote> > volHandles_;
     mutable std::vector<Rate> strikes_;
     //! Only strikes corresponding to valid market data
     mutable std::vector<Rate> actualStrikes_;
