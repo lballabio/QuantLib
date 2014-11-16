@@ -78,7 +78,7 @@ template <typename Evaluation> struct ZabrSpecs {
     Real dilationFactor() { return 0.001; }
     Array inverse(const Array &y, const std::vector<bool> &,
                   const std::vector<Real> &, const Real) {
-        Array x(4);
+        Array x(5);
         x[0] = std::sqrt(y[0] - eps1());
         // y_[1] = std::tan(M_PI*(x[1] - 0.5))/dilationFactor();
         x[1] = std::sqrt(-std::log(y[1]));
@@ -89,7 +89,7 @@ template <typename Evaluation> struct ZabrSpecs {
     }
     Array direct(const Array &x, const std::vector<bool> &,
                  const std::vector<Real> &, const Real) {
-        Array y(4);
+        Array y(5);
         y[0] = std::fabs(x[0]) < 5.0 ? x[0] * x[0] + eps1()
                                      : (10.0 * x[0] - 25.0) + eps1();
         // y_[1] = std::atan(dilationFactor_*x[1])/M_PI + 0.5;
