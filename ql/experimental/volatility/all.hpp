@@ -9,9 +9,12 @@
 #include <ql/experimental/volatility/extendedblackvariancesurface.hpp>
 #include <ql/experimental/volatility/interestratevolsurface.hpp>
 #include <ql/experimental/volatility/noarbsabr.hpp>
+#include <ql/experimental/volatility/noarbsabrinterpolatedsmilesection.hpp>
 #include <ql/experimental/volatility/noarbsabrinterpolation.hpp>
 #include <ql/experimental/volatility/noarbsabrsmilesection.hpp>
-#include <ql/experimental/volatility/noarbsabrinterpolatedsmilesection.hpp>
 #include <ql/experimental/volatility/sabrvolsurface.hpp>
+#include <ql/experimental/volatility/sviinterpolatedsmilesection.hpp>
+#include <ql/experimental/volatility/sviinterpolation.hpp>
+#include <ql/experimental/volatility/svismilesection.hpp>
 #include <ql/experimental/volatility/volcube.hpp>
 
