@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2008 Klaus Spanderen
+ Copyright (C) 2014 Johannes Göttker-Schnetmann
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -38,8 +39,17 @@ public:
     static void testSquareRootZeroFlowBC();
     static void testTransformedZeroFlowBC();
     static void testSquareRootEvolveWithStationaryDensity();
+    static void testSquareRootLogEvolveWithStationaryDensity();
     static void testSquareRootFokkerPlanckFwdEquation();
     static void testHestonFokkerPlanckFwdEquation();
+    static void testHestonFokkerPlanckFwdEquationPower(double rho);
+    static void testHestonFokkerPlanckFwdEquationLog(double rho);
+    static void testHestonFokkerPlanckFwdEquationPowerRhoNull();
+    static void testHestonFokkerPlanckFwdEquationPowerRhoMinusZeroNine();
+    static void testHestonFokkerPlanckFwdEquationLogRhoNull();
+    static void testHestonFokkerPlanckFwdEquationLogRhoMinusZeroNine();
+    static void testHestonFokkerPlanckFwdEquationLogLVLeverage();
+    static void testBlackScholesFokkerPlanckFwdEquationLocalVol();
 
     static boost::unit_test_framework::test_suite* suite();
     static boost::unit_test_framework::test_suite* experimental();

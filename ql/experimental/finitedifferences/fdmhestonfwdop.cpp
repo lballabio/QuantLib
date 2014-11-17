@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2012, 2013 Klaus Spanderen
+ Copyright (C) 2014 Johannes Göttker-Schnetmann
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -20,6 +21,8 @@
 /*! \file fdmhestonfwdop.cpp
 */
 
+#include <boost/unordered/unordered_map.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
@@ -29,13 +32,16 @@
 #include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
 #include <ql/experimental/finitedifferences/modtriplebandlinearop.hpp>
 
+#include <ostream>
+
 namespace QuantLib {
 
     FdmHestonFwdOp::FdmHestonFwdOp(
             const boost::shared_ptr<FdmMesher>& mesher,
             const boost::shared_ptr<HestonProcess>& process,
-            FdmSquareRootFwdOp::TransformationType type)
-    : type_ (type),
+            FdmSquareRootFwdOp::TransformationType type,
+            const boost::shared_ptr<Interpolation2D> & leverageFct)
+    : type_(type),
       kappa_(process->kappa()),
       theta_(process->theta()),
       sigma_(process->sigma()),
@@ -43,42 +49,66 @@ namespace QuantLib {
       v0_   (process->v0()),
       rTS_  (process->riskFreeRate().currentLink()),
       qTS_  (process->dividendYield().currentLink()),
+      leverageFct_(leverageFct),
+      mesher_(mesher),
+      x_    (Array(Exp(mesher->locations(0)))),
       varianceValues_(0.5*mesher->locations(1)),
       dxMap_ (new FirstDerivativeOp(0, mesher)),
       dxxMap_(new ModTripleBandLinearOp(TripleBandLinearOp(
-          SecondDerivativeOp(0, mesher).mult(0.5*mesher->locations(1))))),
+          type == FdmSquareRootFwdOp::Log ?
+            SecondDerivativeOp(0, mesher).mult(0.5*Exp(mesher->locations(1)))
+          : SecondDerivativeOp(0, mesher).mult(0.5*mesher->locations(1))
+          ))),
+      boundary_(new ModTripleBandLinearOp(TripleBandLinearOp(SecondDerivativeOp(0, mesher).mult(Array(mesher->locations(0).size(), 0.0))))),
       mapX_  (new TripleBandLinearOp(0, mesher)),
       mapY_  (new FdmSquareRootFwdOp(mesher,kappa_,theta_,sigma_, 1, type)),
       correlation_(new NinePointLinearOp(
-          SecondOrderMixedDerivativeOp(0, 1, mesher)
-              .mult(rho_*sigma_*mesher->locations(1))))
+          type == FdmSquareRootFwdOp::Log ?
+              SecondOrderMixedDerivativeOp(0, 1, mesher)
+              .mult(Array(mesher->layout()->size(), rho_*sigma_))
+            : SecondOrderMixedDerivativeOp(0, 1, mesher)
+              .mult(rho_*sigma_*mesher->locations(1))
+           ))
     {
         const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+        //std::cout << "x-array" << x_ << std::endl;
+        // zero flux boundary condition
+        const Size n = layout->dim()[1];
+        const Real lowerBoundaryFactor = mapY_->lowerBoundaryFactor(type);
+        const Real upperBoundaryFactor = mapY_->upperBoundaryFactor(type);
 
-        if (type_ == FdmSquareRootFwdOp::Plain) {
-            // zero flux boundary condition
-            const Size n = layout->dim()[1];
-            const Real alpha = 2*rho_*mapY_->v(0)/sigma_*mapY_->f0();
-            const Real beta  = 2*rho_*mapY_->v(n)/sigma_*mapY_->f1();
-            ModTripleBandLinearOp fDx(FirstDerivativeOp(0, mesher));
+        const Real logFacLow = type == FdmSquareRootFwdOp::Log ? exp(mapY_->v(0)) : 1.0;
+        const Real logFacUpp = type == FdmSquareRootFwdOp::Log ? exp(mapY_->v(n+1)) : 1.0;
 
-            const FdmLinearOpIterator endIter = layout->end();
-            for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
-                    ++iter) {
-                if (iter.coordinates()[1] == 0) {
-                    const Size idx = iter.index();
+        const Real alpha = -2*rho_/sigma_*lowerBoundaryFactor*logFacLow; 
+        const Real beta  = -2*rho_/sigma_*upperBoundaryFactor*logFacUpp; 
 
-                    dxxMap_->upper()[idx] += alpha*fDx.upper()[idx];
-                    dxxMap_->diag()[idx]  += alpha*fDx.diag()[idx];
+        ModTripleBandLinearOp fDx(FirstDerivativeOp(0, mesher));
+
+        const FdmLinearOpIterator endIter = layout->end();
+        for (FdmLinearOpIterator iter = layout->begin(); iter != endIter; ++iter) {
+            if (iter.coordinates()[1] == 0) {
+                const Size idx = iter.index();
+                if (!leverageFct_) {
+                    dxxMap_->upper()[idx]+= alpha*fDx.upper()[idx];
+                    dxxMap_->diag()[idx] += alpha*fDx.diag()[idx];
                     dxxMap_->lower()[idx] += alpha*fDx.lower()[idx];
                 }
-                else if (iter.coordinates()[1] == n-1) {
-                    const Size idx = iter.index();
+                boundary_->upper()[idx]= alpha*fDx.upper()[idx];
+                boundary_->diag()[idx] = alpha*fDx.diag()[idx];
+                boundary_->lower()[idx] = alpha*fDx.lower()[idx];
+            }
+            else if (iter.coordinates()[1] == n-1) {
+                const Size idx = iter.index();
 
-                    dxxMap_->upper()[idx] += beta*fDx.upper()[idx];
-                    dxxMap_->diag()[idx]  += beta*fDx.diag()[idx];
+                if (!leverageFct_) {
+                    dxxMap_->upper()[idx]+= beta*fDx.upper()[idx];
+                    dxxMap_->diag()[idx] += beta*fDx.diag()[idx];
                     dxxMap_->lower()[idx] += beta*fDx.lower()[idx];
                 }
+                boundary_->upper()[idx]= beta*fDx.upper()[idx];
+                boundary_->diag()[idx] = beta*fDx.diag()[idx];
+                boundary_->lower()[idx] = beta*fDx.lower()[idx];
             }
         }
     }
@@ -90,19 +120,60 @@ namespace QuantLib {
     void FdmHestonFwdOp::setTime(Time t1, Time t2){
         const Rate r = rTS_->forwardRate(t1, t2, Continuous).rate();
         const Rate q = qTS_->forwardRate(t1, t2, Continuous).rate();
-
-        mapX_->axpyb( - r + q + rho_*sigma_ + varianceValues_, *dxMap_,
-                     *dxxMap_, Array());
+        if (leverageFct_) {
+            L_ = getLeverageFctSlice(t1, t2);
+            Array Lsquare = L_*L_;
+            if (type_ == FdmSquareRootFwdOp::Plain) { 
+                mapX_->axpyb( Array(1, -r + q), *dxMap_,
+                    dxxMap_->multR(Lsquare).add(boundary_->multR(L_))
+                    .add(dxMap_->multR(rho_*sigma_*L_))
+                    .add(dxMap_->mult(varianceValues_).multR(Lsquare)), Array());
+            } else if (type_ == FdmSquareRootFwdOp::Power) {
+                mapX_->axpyb( Array(1, -r + q), *dxMap_,
+                    dxxMap_->multR(Lsquare).add(boundary_->multR(L_))
+                    .add(dxMap_->multR(rho_*2.0*kappa_*theta_/(sigma_)*L_))
+                    .add(dxMap_->mult(varianceValues_).multR(Lsquare)), Array());
+            } else if (type_ == FdmSquareRootFwdOp::Log) {
+                mapX_->axpyb( Array(1, -r + q), *dxMap_,
+                    dxxMap_->multR(Lsquare).add(boundary_->multR(L_))
+                    .add(dxMap_->mult(0.5*Exp(2.0*varianceValues_)).multR(Lsquare)), Array());
+            }
+        }
+        else {
+            if (type_ == FdmSquareRootFwdOp::Plain) {
+                mapX_->axpyb( - r + q + rho_*sigma_ + varianceValues_, *dxMap_,
+                        *dxxMap_, Array());
+            } else if (type_ == FdmSquareRootFwdOp::Power) {
+                mapX_->axpyb( - r + q + rho_*2.0*kappa_*theta_/(sigma_) + varianceValues_, *dxMap_,
+                        *dxxMap_, Array());
+            } else if (type_ == FdmSquareRootFwdOp::Log) {
+                mapX_->axpyb( - r + q + 0.5*Exp(2.0*varianceValues_), *dxMap_,
+                        *dxxMap_, Array());
+            }
+        }
     }
 
     Disposable<Array> FdmHestonFwdOp::apply(const Array& u) const {
-        return mapX_->apply(u)
-                + mapY_->apply(u)
-                + correlation_->apply(u);
+        if (leverageFct_) {
+            return mapX_->apply(u)
+                    + mapY_->apply(u)
+                    + correlation_->apply(L_*u);
+        } 
+        else {
+            return mapX_->apply(u)
+                    + mapY_->apply(u)
+                    + correlation_->apply(u);
+        }
     }
 
     Disposable<Array> FdmHestonFwdOp::apply_mixed(const Array& u) const{
-        return correlation_->apply(u);
+        if (leverageFct_) {
+            return correlation_->apply(L_*u);
+        }
+        else
+        {
+            return correlation_->apply(u);
+        }
     }
 
     Disposable<Array> FdmHestonFwdOp::apply_direction(
@@ -126,6 +197,45 @@ namespace QuantLib {
         }
         else
             QL_FAIL("direction too large");
+    }
+
+    Disposable<Array> FdmHestonFwdOp::getLeverageFctSlice(Time t1, Time t2) const {
+        const boost::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
+        Array v(layout->size(), 1.0);
+        typedef boost::unordered_map<Real, Real> map;
+        map x;
+        //std::cout << "Get Leverage slice, t1=" << t1 << ", t2=" << t2 << std::endl;
+        //int missed = 0;
+        //int hit = 0;
+        if (leverageFct_) {
+            const FdmLinearOpIterator endIter = layout->end();
+
+            for (FdmLinearOpIterator iter = layout->begin();
+                 iter!=endIter; ++iter) {
+                const Size i = iter.index();
+                if (x.find(x_[i]) == x.end()) {
+                    Time time = 0.5*(t1+t2);
+                    Real spot = x_[i];
+                    if (!leverageFct_->isInRange(time, spot)) {
+                        if (time < leverageFct_->xMin()) time = leverageFct_->xMin();
+                        if (time > leverageFct_->xMax()) time = leverageFct_->xMax();
+                        if (spot < leverageFct_->yMin()) spot = leverageFct_->yMin();
+                        if (spot > leverageFct_->yMax()) spot = leverageFct_->yMax();
+                    }
+                    Real value = leverageFct_->operator()(time, spot, true);
+                    if (value < 0.01) value = 0.01;
+                    x[x_[i]] = v[i] = value;
+                    //missed++;
+                } 
+                else {
+                    v[i] = x[x_[i]];
+                    //hit++;
+                }
+            }
+        }
+        //std::cout << "cache missed: " << missed << " hit: " << hit << std::endl;
+        //std::cout << "leverage slice : " << v << std::endl;
+        return v;
     }
 
     Disposable<Array> FdmHestonFwdOp::preconditioner(

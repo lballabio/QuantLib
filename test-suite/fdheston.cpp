@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
-  Copyright (C) 2008, 2009 Klaus Spanderen
+  Copyright (C) 2008, 2009, 2014 Klaus Spanderen
+  Copyright (C) 2014 Johannes Göttker-Schnetmann
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,6 +22,7 @@
 #include "utilities.hpp"
 
 #include <ql/quotes/simplequote.hpp>
+#include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
@@ -32,18 +34,20 @@
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/distributions/gammadistribution.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
-#include <ql/math/integrals/trapezoidintegral.hpp>
 #include <ql/math/integrals/discreteintegrals.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
+#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
@@ -55,20 +59,19 @@
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmmesherintegral.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/experimental/finitedifferences/fdmblackscholesfwdop.hpp>
-#include <ql/experimental/finitedifferences/fdmsquarerootfwdop.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
+#include <ql/experimental/finitedifferences/fdmsquarerootfwdop.hpp>
+#include <ql/experimental/finitedifferences/fdmblackscholesfwdop.hpp>
+#include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
+
+#include <boost/assign/std/vector.hpp>
 #include <boost/math/special_functions/gamma.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
 #include <boost/math/distributions/non_central_chi_squared.hpp>
 
+#include <boost/bind.hpp>
+
 using namespace QuantLib;
+using namespace boost::assign;
 using boost::unit_test_framework::test_suite;
 
 namespace {
@@ -817,8 +820,17 @@ namespace {
         const Real alpha = 2*kappa*theta/(sigma*sigma);
         const Real beta = alpha/theta;
 
-        return std::pow(beta, alpha)*std::pow(v, alpha-1.0)
+        return std::pow(beta, alpha)*std::pow(v, alpha-1) //
                 *std::exp(-beta*v-GammaFunction().logValue(alpha));
+    }
+
+	Real stationaryLogProbabilityFct(Real kappa, Real theta,
+                                   Real sigma, Real z) {
+        const Real alpha = 2*kappa*theta/(sigma*sigma);
+        const Real beta = alpha/theta;
+
+        return std::pow(beta, alpha)*std::exp(z*alpha) 
+                *std::exp(-beta*std::exp(z)-GammaFunction().logValue(alpha));
     }
 
     class StationaryDistributionFct : public std::unary_function<Real,Real> {
@@ -1012,6 +1024,7 @@ void FdHestonTest::testSquareRootEvolveWithStationaryDensity() {
     const Real eps = 1e-2;
 
     for (Real sigma = 0.2; sigma < 2.01; sigma+=0.1) {
+        const Real alpha = (1.0 - 2*kappa*theta/(sigma*sigma));
         const Real vMin
             = invStationaryDistributionFct(kappa, theta, sigma, eps);
         const Real vMax
@@ -1022,15 +1035,27 @@ void FdHestonTest::testSquareRootEvolveWithStationaryDensity() {
                     new Uniform1dMesher(vMin, vMax, vGrid))));
 
         const Array v = mesher->locations(0);
+        const FdmSquareRootFwdOp::TransformationType transform = 
+            (sigma < 0.75) ? 
+               FdmSquareRootFwdOp::Plain : 
+               FdmSquareRootFwdOp::Power;
+
+        Array vq (v.size());
+        Array vmq(v.size());
+        for (Size i=0; i < v.size(); ++i) {
+            vmq[i] = 1.0/(vq[i] = std::pow(v[i], alpha));
+        }
 
         Array p(vGrid);
-        for (Size i=0; i < v.size(); ++i)
+        for (Size i=0; i < v.size(); ++i) {
             p[i] =  stationaryProbabilityFct(kappa, theta, sigma, v[i]);
+            if (transform == FdmSquareRootFwdOp::Power)
+                p[i] *= vq[i];
+        }
 
         const boost::shared_ptr<FdmSquareRootFwdOp> op(
-            new FdmSquareRootFwdOp(mesher, kappa, theta, sigma, 0,
-                                   (sigma < 0.75) ? FdmSquareRootFwdOp::Plain
-                                                        : FdmSquareRootFwdOp::Power));
+            new FdmSquareRootFwdOp(mesher, kappa, theta,
+                                   sigma, 0, transform));
 
         const Array eP = p;
 
@@ -1044,13 +1069,150 @@ void FdHestonTest::testSquareRootEvolveWithStationaryDensity() {
         }
 
         const Real expected = 1-2*eps;
-        const Real alpha = 1-2*kappa*theta/(sigma*sigma);
+
+        if (transform == FdmSquareRootFwdOp::Power)        
+            for (Size i=0; i < v.size(); ++i) {
+                p[i] *= vmq[i];
+            }
+
         const Real calculated = GaussLobattoIntegral(1000000, 1e-6)(
                                         q_fct(v,p,alpha), v.front(), v.back());
 
         const Real tol = 0.005;
         if (std::fabs(calculated-expected) > tol) {
             BOOST_ERROR("failed to reproduce stationary probability function"
+                    << "\n    calculated: " << calculated
+                    << "\n    expected:   " << expected
+                    << "\n    tolerance:  " << tol);
+        }
+    }
+}
+
+void FdHestonTest::testSquareRootLogEvolveWithStationaryDensity() {
+    BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation "
+                       "for the square root log process with stationary density...");
+
+    // Documentation for this test case:
+    // nowhere yet :)
+    SavedSettings backup;
+
+    const Real kappa = 2.5;
+    const Real theta = 0.2;
+    const Size vGrid = 1000;
+    const Real eps = 5e-2;
+
+    for (Real sigma = 0.2; sigma < 2.01; sigma+=0.1) {
+        //BOOST_TEST_MESSAGE("testing log process sigma =  " << sigma << "\n");
+        const Real vMin
+            = invStationaryDistributionFct(kappa, theta, sigma, eps);
+        const Real vMax
+            = invStationaryDistributionFct(kappa, theta, sigma, 1-eps);
+
+        //const boost::shared_ptr<FdmMesher> mesher(
+        //    new FdmMesherComposite(boost::shared_ptr<Fdm1dMesher>(
+        //            new Uniform1dMesher(log(vgMin), log(vgMax), vGrid))));
+
+        //Real eta = sigma*sigma/kappa/theta/2.0;
+        Real beta = 0.075;
+        Real betaTheta = 0.02;
+        if (sigma > 1.6) {
+            beta = 0.01;
+            betaTheta = 0.5;
+        } else if (sigma > 1.5) {
+            beta = 0.01;
+            betaTheta = 0.5;
+        } else if (sigma > 1.4) {
+            //beta = 20.0/(log(vgMax)-log(vgMin))/(pow(eta,5.0));
+            beta = 0.03;
+            betaTheta = 0.1;
+        }
+        //BOOST_TEST_MESSAGE("beta " << beta 
+        //);
+        const std::pair<Real, Real>& cPoints
+                     = (std::pair<double, double>(log(vMin), beta));  // 0.075
+        std::vector<Real> critialPoints;
+        critialPoints.push_back(log(vMin));
+        std::vector<boost::tuple<Real, Real, bool> > critPoints;
+        critPoints.push_back(boost::tuple<Real, Real, bool>(log(vMin), beta, true));
+        critPoints.push_back(boost::tuple<Real, Real, bool>(log(theta), 0.075, true));
+        const boost::shared_ptr<FdmMesher> mesher2(
+            new FdmMesherComposite(boost::shared_ptr<Fdm1dMesher>(
+                    new Concentrating1dMesher(log(vMin), log(vMax), vGrid, cPoints, false))));
+        const boost::shared_ptr<FdmMesher> mesher(
+            new FdmMesherComposite(boost::shared_ptr<Fdm1dMesher>(
+                    new Concentrating1dMesher(log(vMin), log(vMax), vGrid, critPoints))));
+        //const boost::shared_ptr<FdmMesher> mesher(
+        //    new FdmMesherComposite(boost::shared_ptr<Fdm1dMesher>(
+        //            new MultiConcentrating1dMesher(log(vMin), 
+        //                                           log(vMax), 
+        //                                           vGrid, 
+        //                                           critialPoints, 
+        //                                           beta)
+        //                                           )));
+        
+        const Array v = mesher->locations(0);
+        const Array mv = mesher2->locations(0);
+        //BOOST_TEST_MESSAGE("v[] \n" 
+        //    << v << "\n" << mv << "\n " << ((log(vMax)-log(vMin))/0.075)
+        //);
+
+        Array p(vGrid);
+        for (Size i=0; i < v.size(); ++i)
+            p[i] =  stationaryLogProbabilityFct(kappa, theta, sigma, v[i]);
+
+        //BOOST_TEST_MESSAGE("p[] " 
+        //    << p << "\n"
+        //);
+
+        const boost::shared_ptr<FdmSquareRootFwdOp> op(
+            new FdmSquareRootFwdOp(mesher, kappa, theta,
+                                   sigma, 0, 
+                                   FdmSquareRootFwdOp::Log));
+
+        //BOOST_TEST_MESSAGE("got operator\n");
+        const Array eP = p;
+
+        const Size n = 100;
+        const Time dt = 0.01;
+        FdmBoundaryConditionSet bcSet;
+        //bcSet.push_back(boost::shared_ptr<FdmDirichletBoundary>(
+        //    new FdmDirichletBoundary(mesher, 0.0, 0,
+        //                        FdmDirichletBoundary::Upper)));
+        //bcSet.push_back(boost::shared_ptr<FdmDirichletBoundary>(
+        //    new FdmDirichletBoundary(mesher, 0.0, 0,
+        //                        FdmDirichletBoundary::Lower)));
+
+//        DouglasScheme evolver(0.5, op, bcSet);
+        DouglasScheme evolver(0.5, op);
+        evolver.setStep(dt);
+
+        for (Size i=1; i <= n; ++i) {
+            //const Real alpha = 1-2*kappa*theta/(sigma*sigma);
+            //const Array vv(Exp(v));
+            //Real calculated = GaussLobattoIntegral(1000000, 1e-6)(
+            //                            q_fct(v,p,1), log(vMin), log(vMax));
+            //BOOST_TEST_MESSAGE("t " << (i-1)*dt << " integral " << calculated << "\n" 
+            //    << p << "\n"
+            //);
+            evolver.step(p, i*dt);
+        }
+
+        const Real expected = 1-2*eps;
+
+        const Real alpha = 1-2*kappa*theta/(sigma*sigma);
+        const Real calculated = GaussLobattoIntegral(1000000, 1e-6)(
+                                        q_fct(v,p,1), log(vMin), log(vMax));
+
+        const Real calculated1 = GaussLobattoIntegral(1000000, 1e-6)(
+                                        q_fct(v,eP,1), log(vMin), log(vMax));
+
+        const Real tol = 0.005;
+        BOOST_TEST_MESSAGE("sigma " << sigma << ", " << calculated-expected 
+        );
+        if (std::fabs(calculated-expected) > tol) {
+            BOOST_ERROR("failed to reproduce stationary probability function for "
+                    << "\n    sigma:      " << sigma
+                    << "\n    calculated1:" << calculated1
                     << "\n    calculated: " << calculated
                     << "\n    expected:   " << expected
                     << "\n    tolerance:  " << tol);
@@ -1086,7 +1248,7 @@ void FdHestonTest::testSquareRootFokkerPlanckFwdEquation() {
     const Array x(mesher->locations(0));
 
     const boost::shared_ptr<FdmSquareRootFwdOp> op(
-        new FdmSquareRootFwdOp(mesher, kappa, theta, sigma, 0));
+        new FdmSquareRootFwdOp(mesher, kappa, theta, sigma, 0)); //!
 
     const Time dt = maturity/tGrid;
     const Size n = 5;
@@ -1151,11 +1313,197 @@ namespace {
         return FdmMesherIntegral(mesher,
                                  DiscreteSimpsonIntegral()).integrate(p);
     }
+
+    Real hestonPxBoundary(
+    	Time maturity, Real eps,
+    	const boost::shared_ptr<HestonModel>& model) {
+
+        const AnalyticPDFHestonEngine pdfEngine(model);
+        const Real sInit = model->process()->s0()->value();
+        const Real xMin = Brent().solve(
+        	boost::bind(std::minus<Real>(),
+        		boost::bind(&AnalyticPDFHestonEngine::cdf,
+        					&pdfEngine, _1, maturity), eps),
+        				sInit*1e-3, sInit, QL_EPSILON, 10*sInit);
+
+        return xMin;
+    }
 }
 
 void FdHestonTest::testHestonFokkerPlanckFwdEquation() {
     BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation "
                        "for the Heston process...");
+
+    SavedSettings backup;
+
+    const DayCounter dc = ActualActual();
+    const Date todaysDate = Date(28, Dec, 2014);
+    Settings::instance().evaluationDate() = todaysDate;
+
+    std::vector<Period> maturities;
+    maturities+=Period(1, Months),
+    			Period(3, Months), Period(6, Months), Period(9, Months),
+    			Period(1, Years), Period(2, Years), Period(3, Years),
+    			Period(4, Years), Period(5, Years);
+
+    const Date maturityDate = todaysDate + maturities.back();
+    const Time maturity = dc.yearFraction(todaysDate, maturityDate);
+
+    const Real s0 = 100;
+    const Real x0 = std::log(s0);
+    const Rate r = 0.01;
+    const Rate q = 0.02;
+
+    const Real kappa =  1.0;
+    const Real theta =  0.05;
+    const Real rho   = -0.75;
+    const Real sigma =  std::sqrt(0.2);
+    const Real v0    =  theta;
+    const Real alpha = 1.0 - 2*kappa*theta/(sigma*sigma);
+
+    const Handle<Quote> spot(boost::shared_ptr<Quote>(new SimpleQuote(s0)));
+    const Handle<YieldTermStructure> rTS(flatRate(r, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(q, dc));
+
+    const boost::shared_ptr<HestonProcess> process(
+        new HestonProcess(rTS, qTS, spot, v0, kappa, theta, sigma, rho));
+
+    const boost::shared_ptr<HestonModel> model(new HestonModel(process));
+
+    const boost::shared_ptr<PricingEngine> engine(
+        new AnalyticHestonEngine(model));
+
+    const Size xGrid = 201;
+    const Size vGrid = 501;
+    const Size tGridPerYear = 25;
+
+    const Real upperBound
+        = std::log(invStationaryDistributionFct(kappa, theta, sigma, 0.9995));
+    const Real upperBoundDensity = 100;
+    const Real lowerBound = std::log(0.00001);
+    const Real lowerBoundDensity = 1.0;
+    const Real v0Center = std::log(v0);
+    const Real v0Density = 10.0;
+
+    const FdmSquareRootFwdOp::TransformationType transformationType
+        = FdmSquareRootFwdOp::Log;
+
+    std::vector<boost::tuple<Real, Real, bool> > cPoints;
+    cPoints += boost::make_tuple(lowerBound, lowerBoundDensity, false);
+    		   boost::make_tuple(v0Center, v0Density, true),
+    		   boost::make_tuple(upperBound, upperBoundDensity, false);
+
+    const boost::shared_ptr<Fdm1dMesher> varianceMesher(
+        new Concentrating1dMesher(lowerBound, upperBound,
+        						  vGrid, cPoints, 1e-12));
+
+    const Real sLowerBound
+    	= std::log(hestonPxBoundary(maturity, 0.0001, model));
+    const Real sUpperBound
+    	= std::log(hestonPxBoundary(maturity, 1-0.0001,model));
+
+    const boost::shared_ptr<Fdm1dMesher> spotMesher(
+    	new Concentrating1dMesher(sLowerBound, sUpperBound, xGrid,
+    		std::make_pair(x0, 0.1), true));
+
+    const boost::shared_ptr<FdmMesherComposite>
+        mesher(new FdmMesherComposite(spotMesher, varianceMesher));
+
+	const boost::shared_ptr<FdmLinearOpComposite> hestonFwdOp(
+		new FdmHestonFwdOp(mesher, process, transformationType));
+
+    HundsdorferScheme evolver(FdmSchemeDesc::Hundsdorfer().theta,
+                              FdmSchemeDesc::Hundsdorfer().mu, hestonFwdOp);
+
+    // step one days using non-correlated process
+    const Time eT = 1.5/365;
+    Array p(mesher->layout()->size(), 0.0);
+
+    const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+    for (FdmLinearOpIterator iter = layout->begin(); iter != layout->end();
+        ++iter) {
+        const Real x = mesher->location(iter, 0);
+        const Real v = mesher->location(iter, 1);
+        const Real p_v = (transformationType == FdmSquareRootFwdOp::Log)
+        	? squareRootGreensFct(v0, kappa, theta, sigma, eT, std::exp(v))
+        		*std::exp(v)
+        	: squareRootGreensFct(v0, kappa, theta, sigma, eT, v);
+
+        const Real p_x = 1.0/(std::sqrt(M_TWOPI*v0*eT))
+                * std::exp(-0.5*square<Real>()(x - x0)/(v0*eT));
+
+        p[iter.index()] = (transformationType == FdmSquareRootFwdOp::Power)
+        	? p_v*p_x*std::pow(v, alpha) : p_v*p_x;
+    }
+
+    const Real strikes[] = { 50, 80, 90, 100, 110, 120, 150, 200 };
+
+    std::cout << "expiry date\t avg diff\t"
+    		  << " min diff\t max diff" << std::endl;
+
+    Time t=eT;
+    for (std::vector<Period>::const_iterator iter = maturities.begin();
+    		iter != maturities.end(); ++iter) {
+
+    	// calculate step size
+    	const Date nextMaturityDate = todaysDate + *iter;
+    	const Time nextMaturityTime
+    		= dc.yearFraction(todaysDate, nextMaturityDate);
+
+    	Time dt = (nextMaturityTime - t)/tGridPerYear;
+    	evolver.setStep(dt);
+
+		for (Size i=0; i < tGridPerYear; ++i, t+=dt) {
+			evolver.step(p, t+dt);
+		}
+
+		Real avg=0, min=QL_MAX_REAL, max=0;
+		for (Size i=0; i < LENGTH(strikes); ++i) {
+			const Real strike = strikes[i];
+			const boost::shared_ptr<StrikedTypePayoff> payoff(
+				new PlainVanillaPayoff((strike > s0) ? Option::Call :
+													   Option::Put, strike));
+
+			Array pd(p.size());
+			for (FdmLinearOpIterator iter = layout->begin();
+				iter != layout->end(); ++iter) {
+				const Size idx = iter.index();
+				const Real s = std::exp(mesher->location(iter, 0));
+
+				pd[idx] = payoff->operator()(s)*p[idx];
+		        if (transformationType == FdmSquareRootFwdOp::Power) {
+		            const Real v = mesher->location(iter, 1);
+		            pd[idx] *= std::pow(v, -alpha);
+		        }
+			}
+
+			const Real calculated = fokkerPlanckPrice2D(pd, mesher)
+				* rTS->discount(nextMaturityDate);
+
+		    const boost::shared_ptr<Exercise> exercise(
+		        new EuropeanExercise(nextMaturityDate));
+
+			VanillaOption option(payoff, exercise);
+			option.setPricingEngine(engine);
+
+			const Real expected = option.NPV();
+			const Real diff = std::fabs(expected - calculated);
+
+			avg+=diff;
+			min=std::min(diff, min);
+			max=std::max(diff, max);
+		}
+
+		std::cout << io::iso_date(nextMaturityDate) << "\t "
+				  << QL_FIXED << std::setprecision(5)
+				  << avg/LENGTH(strikes) << "\t "
+				  << min << "\t " << max << std::endl;
+    }
+}
+
+void FdHestonTest::testHestonFokkerPlanckFwdEquationPower(double rho) {
+    BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation "
+                       "for the Heston process Power Transformation with rho="  <<  rho << " ...");
 
     SavedSettings backup;
 
@@ -1173,9 +1521,12 @@ void FdHestonTest::testHestonFokkerPlanckFwdEquation() {
 
     const Real kappa =  1.0;
     const Real theta =  0.05;
-    const Real rho   = -0.75;
-    const Real sigma =  std::sqrt(0.1);
+    //const Real rho   = -0.0;
+    const Real sigma =  0.447;
     const Real v0    =  theta;
+    const Real alpha = (1.0 - 2*kappa*theta/(sigma*sigma));
+
+    const FdmSquareRootFwdOp::TransformationType transform = FdmSquareRootFwdOp::Power;
 
     const Handle<Quote> spot(boost::shared_ptr<Quote>(new SimpleQuote(s0)));
     const Handle<YieldTermStructure> rTS(flatRate(r, dc));
@@ -1193,9 +1544,7 @@ void FdHestonTest::testHestonFokkerPlanckFwdEquation() {
     const Real lowerBound = 0.0001;
 
     const boost::shared_ptr<Fdm1dMesher> varianceMesher(
-       		new Concentrating1dMesher(lowerBound, upperBound, vGrid,
-                std::pair<Real,Real>(lowerBound, 0.00001)));
-
+        new Concentrating1dMesher(lowerBound, upperBound, vGrid, std::pair<Real,Real>(lowerBound, 0.00001)));
     const boost::shared_ptr<Fdm1dMesher> equityMesher(
         new FdmBlackScholesMesher(
             xGrid,
@@ -1213,20 +1562,20 @@ void FdHestonTest::testHestonFokkerPlanckFwdEquation() {
 
     const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
     for (FdmLinearOpIterator iter = layout->begin(); iter != layout->end();
-            ++iter) {
+        ++iter) {
         const Real x = mesher->location(iter, 0);
         const Real v = mesher->location(iter, 1);
-
         const Real p_v = squareRootGreensFct(v0, kappa, theta,    sigma, eT, v);
         const Real p_x = 1.0/(std::sqrt(M_TWOPI*v0*eT))
-            * std::exp(-0.5*square<Real>()(x - x0)/(v0*eT));
-
+                * std::exp(-0.5*square<Real>()(x - x0)/(v0*eT));
         p[iter.index()] = p_v*p_x;
+        if (transform == FdmSquareRootFwdOp::Power)
+            p[iter.index()] *= pow(v, alpha);
     }
-
     const Time dt = (maturity-eT)/tGrid;
+
     const boost::shared_ptr<FdmLinearOpComposite> hestonFwdOp(
-        new FdmHestonFwdOp(mesher, process));
+        new FdmHestonFwdOp(mesher, process, transform));
 
     HundsdorferScheme evolver(FdmSchemeDesc::Hundsdorfer().theta,
                               FdmSchemeDesc::Hundsdorfer().mu,
@@ -1234,6 +1583,7 @@ void FdHestonTest::testHestonFokkerPlanckFwdEquation() {
 
     Time t=dt;
     evolver.setStep(dt);
+
     for (Size i=0; i < tGrid; ++i, t+=dt) {
         evolver.step(p, t);
     }
@@ -1250,8 +1600,169 @@ void FdHestonTest::testHestonFokkerPlanckFwdEquation() {
     for (Size i=0; i < LENGTH(strikes); ++i) {
         const Real strike = strikes[i];
         const boost::shared_ptr<StrikedTypePayoff> payoff(
-            new PlainVanillaPayoff((strike > s0) ? Option::Call
-            		                             : Option::Put, strike));
+            new PlainVanillaPayoff((strike > s0) ? Option::Call : 
+                                                    Option::Put, strike));
+
+        Array pd(p.size());
+        for (FdmLinearOpIterator iter = layout->begin();
+            iter != layout->end(); ++iter) {
+            const Size idx = iter.index();
+            const Real s = std::exp(mesher->location(iter, 0));
+            const Real v = mesher->location(iter, 1);
+
+            pd[idx] = payoff->operator()(s)*p[idx];
+            if (transform == FdmSquareRootFwdOp::Power)
+                pd[idx] *= pow(v, -alpha);
+
+        }
+
+        const Real calculated
+            = fokkerPlanckPrice2D(pd, mesher)*rTS->discount(maturityDate);
+
+        VanillaOption option(payoff, exercise);
+        option.setPricingEngine(engine);
+        const Real expected = option.NPV();
+        BOOST_TEST_MESSAGE("strike " << strikes[i] << ", " << calculated << ", " << expected 
+        );
+
+        const Real tol = 10.1;
+        if (std::fabs(expected - calculated ) > tol) {
+            BOOST_FAIL("failed to reproduce Heston prices at"
+                       << "\n   strike      " << strike
+                       << QL_FIXED << std::setprecision(5)
+                       << "\n   calculated: " << calculated
+                       << "\n   expected:   " << expected
+                       << "\n   tolerance:  " << tol);
+        }
+    }
+}
+
+void FdHestonTest::testHestonFokkerPlanckFwdEquationLog(double rho) {
+    BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation "
+                       "for the Heston process Log Transformation with rho="  <<  rho << " ...");
+
+    SavedSettings backup;
+
+    const DayCounter dc = ActualActual();
+    const Date todaysDate = Date(28, Dec, 2012);
+    Settings::instance().evaluationDate() = todaysDate;
+
+    const Date maturityDate = todaysDate + Period(1, Years);
+    const Time maturity = dc.yearFraction(todaysDate, maturityDate);
+
+    const Real s0 = 100;
+    const Real x0 = std::log(s0);
+    const Rate r = 0.10;
+    const Rate q = 0.05;
+
+    const Real kappa =  1.0;
+    const Real theta =  0.05;
+    //const Real rho   = -0.0;
+    const Real sigma =  0.447;
+    const Real v0    =  log(theta);
+    const Real alpha = (1.0 - 2*kappa*theta/(sigma*sigma));
+
+    const FdmSquareRootFwdOp::TransformationType transform = FdmSquareRootFwdOp::Log;
+
+    const Handle<Quote> spot(boost::shared_ptr<Quote>(new SimpleQuote(s0)));
+    const Handle<YieldTermStructure> rTS(flatRate(r, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(q, dc));
+
+    boost::shared_ptr<HestonProcess> process(
+        new HestonProcess(rTS, qTS, spot, exp(v0), kappa, theta, sigma, rho));
+
+    const Size xGrid = 201;
+    const Size vGrid = 501;
+    const Size tGrid = 25;
+
+    const Real upperBound
+        = log(invStationaryDistributionFct(kappa, theta, sigma, 0.999));
+    const Real lowerBound = log(0.0001);
+
+    const Real beta = 0.075;
+    std::vector<boost::tuple<Real, Real, bool> > critPoints;
+    critPoints.push_back(boost::tuple<Real, Real, bool>(lowerBound, beta, true));
+    critPoints.push_back(boost::tuple<Real, Real, bool>(v0, 0.075, true));
+    const boost::shared_ptr<Fdm1dMesher> varianceMesher(
+            new Concentrating1dMesher(lowerBound, upperBound, vGrid, critPoints));
+
+    //const boost::shared_ptr<Fdm1dMesher> varianceMesher(
+    //    new Concentrating1dMesher(lowerBound, upperBound, vGrid, std::pair<Real,Real>(lowerBound, 0.01)));
+    const boost::shared_ptr<Fdm1dMesher> equityMesher(
+        new FdmBlackScholesMesher(
+            xGrid,
+            FdmBlackScholesMesher::processHelper(
+              process->s0(), process->dividendYield(),
+              process->riskFreeRate(), 1.4*std::sqrt(exp(v0))),
+              maturity, s0));
+
+    const boost::shared_ptr<FdmMesherComposite>
+        mesher(new FdmMesherComposite(equityMesher, varianceMesher));
+
+    // step two days using non-correlated process
+    const Time eT = 2.0/365;
+    Array p(mesher->layout()->size(), 0.0);
+    //BOOST_TEST_MESSAGE("smooting delta function.." 
+    //);
+
+    const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+    for (FdmLinearOpIterator iter = layout->begin(); iter != layout->end();
+        ++iter) {
+        const Real x = mesher->location(iter, 0);
+        const Real v = mesher->location(iter, 1);
+        const Real p_v = squareRootGreensFct(exp(v0), kappa, theta,    sigma, eT, exp(v))*exp(v);
+        const Real p_x = 1.0/(std::sqrt(M_TWOPI*exp(v0)*eT))
+                * std::exp(-0.5*square<Real>()(x - x0)/(exp(v0)*eT));
+        p[iter.index()] = p_v*p_x;
+    }
+    const Time dt = (maturity-eT)/tGrid;
+
+    //const Size xIdx = xGrid/2;
+    //const Size vIdx
+    //    = std::distance(varianceMesher->locations().begin(),
+    //                    std::lower_bound(varianceMesher->locations().begin(),
+    //                                     varianceMesher->locations().end(),
+    //                                     v0));
+    //const Real dx = 0.5*(equityMesher->location(xIdx+1)
+    //                     - equityMesher->location(xIdx-1));
+    //const Real dy = 0.5*(varianceMesher->location(vIdx+1)
+    //                     - varianceMesher->location(vIdx-1));
+
+    //p[xIdx + vIdx*xGrid] = 1.0/(dx*dy);
+
+    const boost::shared_ptr<FdmLinearOpComposite> hestonFwdOp(
+        new FdmHestonFwdOp(mesher, process, transform));
+
+    HundsdorferScheme evolver(FdmSchemeDesc::Hundsdorfer().theta,
+                              FdmSchemeDesc::Hundsdorfer().mu,
+                              hestonFwdOp);
+
+    Time t=dt;
+    evolver.setStep(dt);
+
+    //BOOST_TEST_MESSAGE("start evolve, p=\n" << p 
+    //);testHestonFokkerPlanckFwdEquationLog
+    for (Size i=0; i < tGrid; ++i, t+=dt) {
+        evolver.step(p, t);
+    }
+    //BOOST_TEST_MESSAGE("finished evolve, p=\n" << p 
+    //);
+
+    const boost::shared_ptr<PricingEngine> engine(
+        new AnalyticHestonEngine(boost::shared_ptr<HestonModel>(
+            new HestonModel(process))));
+
+    const boost::shared_ptr<Exercise> exercise(
+        new EuropeanExercise(maturityDate));
+
+    const Real strikes[] = { 50, 80, 90, 100, 110, 120, 150, 200 };
+
+    for (Size i=0; i < LENGTH(strikes); ++i) {
+        const Real strike = strikes[i];
+
+        const boost::shared_ptr<StrikedTypePayoff> payoff(
+            new PlainVanillaPayoff((strike > s0) ? Option::Call : 
+                                                    Option::Put, strike));
 
         Array pd(p.size());
         for (FdmLinearOpIterator iter = layout->begin();
@@ -1268,8 +1779,10 @@ void FdHestonTest::testHestonFokkerPlanckFwdEquation() {
         VanillaOption option(payoff, exercise);
         option.setPricingEngine(engine);
         const Real expected = option.NPV();
+        BOOST_TEST_MESSAGE("strike " << strikes[i] << ", " << calculated << ", " << expected 
+        );
 
-        const Real tol = 0.1;
+        const Real tol = 10.1;
         if (std::fabs(expected - calculated ) > tol) {
             BOOST_FAIL("failed to reproduce Heston prices at"
                        << "\n   strike      " << strike
@@ -1280,6 +1793,457 @@ void FdHestonTest::testHestonFokkerPlanckFwdEquation() {
         }
     }
 }
+
+void FdHestonTest::testHestonFokkerPlanckFwdEquationPowerRhoNull() {
+    testHestonFokkerPlanckFwdEquationPower(0.0);
+}
+
+void FdHestonTest::testHestonFokkerPlanckFwdEquationPowerRhoMinusZeroNine() {
+    testHestonFokkerPlanckFwdEquationPower(-0.9);
+}
+
+void FdHestonTest::testHestonFokkerPlanckFwdEquationLogRhoNull() {
+    testHestonFokkerPlanckFwdEquationLog(0.0);
+}
+
+void FdHestonTest::testHestonFokkerPlanckFwdEquationLogRhoMinusZeroNine() {
+    testHestonFokkerPlanckFwdEquationLog(-0.9);
+}
+
+namespace {
+    boost::shared_ptr<BicubicSpline> createFlatLeverageFct(Matrix & surface, const std::vector<Real> & strikes, const std::vector<Real> & times, Real flatVol) {
+        for (Size i=0; i < strikes.size(); ++i)
+            for (Size j=0; j < times.size(); ++j) {
+                surface[i][j] = flatVol;
+            }
+
+        boost::shared_ptr<BicubicSpline> leverage = boost::shared_ptr<BicubicSpline> (
+                new BicubicSpline(times.begin(), times.end(),
+                                  strikes.begin(), strikes.end(),
+                                  surface));
+        return leverage;
+    }
+
+    boost::shared_ptr<BicubicSpline> createLeverageFctFromVolSurface(
+            boost::shared_ptr<BlackScholesMertonProcess> lvProcess,
+            const std::vector<Real>& strikes,
+            const std::vector<Date>& dates,
+            std::vector<Time>& times,
+            Matrix & surface) {
+        std::cout << "calculating lv surface" << std::endl;
+        const boost::shared_ptr<LocalVolTermStructure> localVol
+        	= lvProcess->localVolatility().currentLink();
+
+        const DayCounter dc = localVol->dayCounter();
+        const Date todaysDate = Settings::instance().evaluationDate();
+
+        QL_REQUIRE(times.size() == dates.size(), "mismatch");
+
+        for (Size i=0; i < times.size(); ++i) {
+        	times[i] = dc.yearFraction(todaysDate, dates[i]);
+        }
+
+        std::cout << "got link" << std::endl;
+        for (Size i=0; i < strikes.size(); ++i) {
+            std::cout << "spot: " << strikes[i] << " : ";
+            for (Size j=0; j < dates.size(); ++j) {
+                try {
+                    surface[i][j] = localVol->localVol(dates[j], strikes[i], true);
+                } catch (Error&) {
+                    surface[i][j] = 0.2;
+                }
+                std::cout //<< "(" << i << ", " << j << ") (" << strikes[i] << ", " << times[j] << ") : "
+                    << surface[i][j] << ", " ; // << std::endl;
+            }
+            std::cout << std::endl;
+        }
+
+        boost::shared_ptr<BicubicSpline> leverage
+        	= boost::shared_ptr<BicubicSpline> (
+                new BicubicSpline(times.begin(), times.end(),
+                                  strikes.begin(), strikes.end(),
+                                  surface));
+        leverage->disableExtrapolation();
+        return leverage;
+    }
+
+    boost::tuple<std::vector<Real>, std::vector<Date>,
+    			 boost::shared_ptr<BlackVarianceSurface> >
+    	createSmoothImpliedVol(const DayCounter& dc, const Calendar& cal) {
+
+    	const Date todaysDate = Settings::instance().evaluationDate();
+
+        Integer times[] = { 13, 41, 75, 165, 256, 345, 524, 703 };
+        std::vector<Date> dates;
+        for (Size i = 0; i < 8; ++i) {
+            Date date = todaysDate + times[i];
+            dates.push_back(date);
+        }
+
+        Real tmp[] = { 2.222222222, 11.11111111, 44.44444444, 75.55555556, 80, 84.44444444, 88.88888889, 93.33333333, 97.77777778, 100,
+                       102.2222222, 106.6666667, 111.1111111, 115.5555556, 120, 124.4444444, 166.6666667, 222.2222222, 444.4444444, 666.6666667
+             };
+        const std::vector<Real> surfaceStrikes(tmp, tmp+LENGTH(tmp));
+
+		Volatility v[] =
+		  { 1.015873, 1.015873, 1.015873, 0.89729, 0.796493, 0.730914, 0.631335, 0.568895,
+			0.711309, 0.711309, 0.711309, 0.641309, 0.635593, 0.583653, 0.508045, 0.463182,
+			0.516034, 0.500534, 0.500534, 0.500534, 0.448706, 0.416661, 0.375470, 0.353442,
+			0.516034, 0.482263, 0.447713, 0.387703, 0.355064, 0.337438, 0.316966, 0.306859,
+			0.497587, 0.464373, 0.430764, 0.374052, 0.344336, 0.328607, 0.310619, 0.301865,
+			0.479511, 0.446815, 0.414194, 0.361010, 0.334204, 0.320301, 0.304664, 0.297180,
+			0.461866, 0.429645, 0.398092, 0.348638, 0.324680, 0.312512, 0.299082, 0.292785,
+			0.444801, 0.413014, 0.382634, 0.337026, 0.315788, 0.305239, 0.293855, 0.288660,
+			0.428604, 0.397219, 0.368109, 0.326282, 0.307555, 0.298483, 0.288972, 0.284791,
+			0.420971, 0.389782, 0.361317, 0.321274, 0.303697, 0.295302, 0.286655, 0.282948,
+			0.413749, 0.382754, 0.354917, 0.316532, 0.300016, 0.292251, 0.284420, 0.281164,
+			0.400889, 0.370272, 0.343525, 0.307904, 0.293204, 0.286549, 0.280189, 0.277767,
+			0.390685, 0.360399, 0.334344, 0.300507, 0.287149, 0.281380, 0.276271, 0.274588,
+			0.383477, 0.353434, 0.327580, 0.294408, 0.281867, 0.276746, 0.272655, 0.271617,
+			0.379106, 0.349214, 0.323160, 0.289618, 0.277362, 0.272641, 0.269332, 0.268846,
+			0.377073, 0.347258, 0.320776, 0.286077, 0.273617, 0.269057, 0.266293, 0.266265,
+			0.399925, 0.369232, 0.338895, 0.289042, 0.265509, 0.255589, 0.249308, 0.249665,
+			0.423432, 0.406891, 0.373720, 0.314667, 0.281009, 0.263281, 0.246451, 0.242166,
+			0.453704, 0.453704, 0.453704, 0.381255, 0.334578, 0.305527, 0.268909, 0.251367,
+			0.517748, 0.517748, 0.517748, 0.416577, 0.364770, 0.331595, 0.287423, 0.264285 };
+
+		Matrix blackVolMatrix(surfaceStrikes.size(), dates.size());
+		for (Size i=0; i < surfaceStrikes.size(); ++i)
+			for (Size j=0; j < dates.size(); ++j) {
+				blackVolMatrix[i][j] = v[i*(dates.size())+j];
+			}
+
+		const boost::shared_ptr<BlackVarianceSurface> volTS(
+			new BlackVarianceSurface(todaysDate, cal,
+									 dates,
+									 surfaceStrikes, blackVolMatrix,
+									 dc));
+		volTS->setInterpolation<Bicubic>();
+
+		return boost::make_tuple(surfaceStrikes, dates, volTS);
+    }
+}
+
+void FdHestonTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
+    BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation "
+                       "for the Heston process Log Transformation with leverage LV limiting case...");
+
+    SavedSettings backup;
+
+    const DayCounter dc = ActualActual();
+    //const Date todaysDate = Date(28, Dec, 2012);
+    const Date todaysDate(5, July, 2002);
+    Settings::instance().evaluationDate() = todaysDate;
+
+    const Date maturityDate = todaysDate + Period(1, Years);
+    const Time maturity = dc.yearFraction(todaysDate, maturityDate);
+
+    const Real s0 = 100;
+    const Real x0 = std::log(s0);
+    const Rate r = 0.0;
+    const Rate q = 0.00;
+
+    const Real kappa =  1.0;
+    const Real theta =  1.0;
+    const Real rho   = -0.0;
+    const Real sigma =  0.01;
+    const Real v0    =  theta;
+
+    const FdmSquareRootFwdOp::TransformationType transform
+    	= FdmSquareRootFwdOp::Plain;
+
+    const DayCounter dayCounter = Actual365Fixed();
+    const Calendar calendar = TARGET();
+
+    const Handle<Quote> spot(boost::shared_ptr<Quote>(new SimpleQuote(s0)));
+    const Handle<YieldTermStructure> rTS(flatRate(todaysDate, r, dayCounter));
+    const Handle<YieldTermStructure> qTS(flatRate(todaysDate, q, dayCounter));
+
+    boost::shared_ptr<HestonProcess> hestonProcess(
+        new HestonProcess(rTS, qTS, spot, v0, kappa, theta, sigma, rho));
+
+    const Size xGrid = 201;
+    const Size vGrid = 501;
+    const Size tGrid = 50;
+
+    const Real upperBound
+        = invStationaryDistributionFct(kappa, theta, sigma, 0.99);
+    const Real lowerBound
+    	= invStationaryDistributionFct(kappa, theta, sigma, 0.01);
+
+    const Real beta = 10.0;
+    std::vector<boost::tuple<Real, Real, bool> > critPoints;
+    critPoints.push_back(boost::tuple<Real, Real, bool>(lowerBound, beta, true));
+    critPoints.push_back(boost::tuple<Real, Real, bool>(v0, beta/100, true));
+    critPoints.push_back(boost::tuple<Real, Real, bool>(upperBound, beta, true));
+    const boost::shared_ptr<Fdm1dMesher> varianceMesher(
+            new Concentrating1dMesher(lowerBound, upperBound, vGrid, critPoints));
+
+//    const boost::shared_ptr<Fdm1dMesher> equityMesher(
+//        new FdmBlackScholesMesher(
+//            xGrid,
+//            FdmBlackScholesMesher::processHelper(
+//              hestonProcess->s0(), hestonProcess->dividendYield(),
+//              hestonProcess->riskFreeRate(), 2.0),
+//              maturity, s0));
+
+    const boost::shared_ptr<Fdm1dMesher> equityMesher(
+    	new Concentrating1dMesher(std::log(1), std::log(600.0), xGrid,
+    		std::make_pair(x0, 0.001), true));
+
+    const boost::shared_ptr<FdmMesherComposite>
+        mesher(new FdmMesherComposite(equityMesher, varianceMesher));
+
+    const boost::tuple<std::vector<Real>, std::vector<Date>,
+        	     boost::shared_ptr<BlackVarianceSurface> > smoothSurface =
+        createSmoothImpliedVol(dayCounter, calendar);
+    const boost::shared_ptr<BlackScholesMertonProcess> lvProcess(
+        new BlackScholesMertonProcess(spot, qTS, rTS,
+        	Handle<BlackVolTermStructure>(smoothSurface.get<2>())));
+
+    // step two days using non-correlated process
+    const Time eT = 2.0/365;
+    Array p(mesher->layout()->size(), 0.0);
+    //BOOST_TEST_MESSAGE("smooting delta function.."
+    //);
+
+    Real v=-Null<Real>(), p_v;
+    const Real bsV0 = square<Real>()(
+    	lvProcess->blackVolatility()->blackVol(0.0, s0, true));
+
+    const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+    for (FdmLinearOpIterator iter = layout->begin(); iter != layout->end();
+        ++iter) {
+        const Real x = mesher->location(iter, 0);
+        if (v != mesher->location(iter, 1)) {
+        	v = mesher->location(iter, 1);
+        	p_v = squareRootGreensFct(v0, kappa, theta, sigma, eT, v);
+        }
+        const Real p_x = 1.0/(std::sqrt(M_TWOPI*bsV0*eT))
+                * std::exp(-0.5*square<Real>()(x - x0)/(bsV0*eT));
+        p[iter.index()] = p_v*p_x;
+    }
+    const Time dt = (maturity-eT)/tGrid;
+
+
+    //--- test LV/leverage
+
+    Real denseStrikes[] =
+    { 2.222222222, 11.11111111, 20, 25, 30, 35, 40, 44.44444444, 50, 55, 60, 65, 70, 75.55555556, 80, 84.44444444, 88.88888889, 93.33333333, 97.77777778, 100,
+      102.2222222, 106.6666667, 111.1111111, 115.5555556, 120, 124.4444444, 166.6666667, 222.2222222, 444.4444444, 666.6666667 };
+
+    const std::vector<Real> ds(denseStrikes, denseStrikes+LENGTH(denseStrikes));
+
+    Matrix surface(ds.size(), smoothSurface.get<1>().size());
+    std::vector<Time> times(surface.columns());
+
+    boost::shared_ptr<BicubicSpline> leverage
+    	= createLeverageFctFromVolSurface(lvProcess, ds,
+    		smoothSurface.get<1>(), times, surface);
+
+    const boost::shared_ptr<PricingEngine> lvEngine(
+        new AnalyticEuropeanEngine(lvProcess));
+    //--- LV structures for comparison calculation
+
+    const boost::shared_ptr<FdmLinearOpComposite> hestonFwdOp(
+        new FdmHestonFwdOp(mesher, hestonProcess, transform, leverage));
+
+    HundsdorferScheme evolver(FdmSchemeDesc::Hundsdorfer().theta,
+                              FdmSchemeDesc::Hundsdorfer().mu,
+                              hestonFwdOp);
+
+    Time t=dt;
+    evolver.setStep(dt);
+
+    BOOST_TEST_MESSAGE("start evolve\n");
+    for (Size i=0; i < tGrid; ++i, t+=dt) {
+        evolver.step(p, t);
+    }
+    BOOST_TEST_MESSAGE("finished evolve\n");
+
+    const boost::shared_ptr<Exercise> exercise(
+        new EuropeanExercise(maturityDate));
+
+    //const Real strikes[] = { 44.4, 80, 93.3, 100, 111.1, 120, 166.6, 222.2 };
+
+    //for (Size s=0; i < LENGTH(strikes); ++i) {
+    for (Size strike=3; strike < 200.0; ++strike) {
+        //const Real strike = strikes[i];
+
+        const boost::shared_ptr<StrikedTypePayoff> payoff(
+            new CashOrNothingPayoff(Option::Put, strike, 1.0));
+
+
+//        const boost::shared_ptr<StrikedTypePayoff> payoff(
+//            new PlainVanillaPayoff((strike > s0) ? Option::Call :
+//                                                   Option::Put, strike));
+
+        Array pd(p.size());
+        for (FdmLinearOpIterator iter = layout->begin();
+            iter != layout->end(); ++iter) {
+            const Size idx = iter.index();
+            const Real s = std::exp(mesher->location(iter, 0));
+
+            pd[idx] = payoff->operator()(s)*p[idx];
+        }
+
+        const Real calculated
+            = fokkerPlanckPrice2D(pd, mesher)*rTS->discount(maturityDate);
+
+        const boost::shared_ptr<PricingEngine> fdmEngine(
+        	new FdBlackScholesVanillaEngine(lvProcess, 25, 200, 0,
+        									FdmSchemeDesc::Douglas(), true,0.2));
+
+        VanillaOption option(payoff, exercise);
+//        option.setPricingEngine(fdmEngine);
+//        const Real expectedHeston = option.NPV();
+        option.setPricingEngine(fdmEngine);
+        const Real expectedLV = option.NPV();
+        BOOST_TEST_MESSAGE("strike " << strike << " " << calculated << " " << expectedLV);// << ",\t (" << expectedHeston << ")");
+
+        //const Real tol = 1000.1;
+        //if (std::fabs(expected - calculated ) > tol) {
+        //    BOOST_FAIL("failed to reproduce Heston prices at"
+        //               << "\n   strike      " << strike
+        //               << QL_FIXED << std::setprecision(5)
+        //               << "\n   calculated: " << calculated
+        //               << "\n   expected:   " << expected
+        //               << "\n   tolerance:  " << tol);
+        //}
+    }
+}
+
+
+void FdHestonTest::testBlackScholesFokkerPlanckFwdEquationLocalVol() {
+    BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation for BS Local Vol process...");
+
+    SavedSettings backup;
+
+    const DayCounter dc = ActualActual();
+    const Date todaysDate(5, July, 2014);
+    Settings::instance().evaluationDate() = todaysDate;
+
+    const Real s0 = 100;
+    const Real x0 = std::log(s0);
+    const Rate r = 0.035;
+    const Rate q = 0.01;
+
+    const Calendar calendar = TARGET();
+    const DayCounter dayCounter = Actual365Fixed();
+
+    const boost::shared_ptr<YieldTermStructure> rTS1(
+        flatRate(todaysDate, r, dayCounter));
+    const boost::shared_ptr<YieldTermStructure> qTS1(
+        flatRate(todaysDate, q, dayCounter));
+
+    boost::tuple<std::vector<Real>, std::vector<Date>,
+        	     boost::shared_ptr<BlackVarianceSurface> > smoothImpliedVol =
+   		createSmoothImpliedVol(dayCounter, calendar);
+
+    const std::vector<Real>& strikes = smoothImpliedVol.get<0>();
+    const std::vector<Date>& dates = smoothImpliedVol.get<1>();
+    const Handle<BlackVolTermStructure> vTS = Handle<BlackVolTermStructure>(
+    	createSmoothImpliedVol(dayCounter, calendar).get<2>());
+
+    const Size xGrid = 2*100+1;
+    const Size tGrid = 400;
+
+    const Handle<Quote> spot(boost::shared_ptr<Quote>(new SimpleQuote(s0)));
+    const Handle<YieldTermStructure> qTS(qTS1);
+    const Handle<YieldTermStructure> rTS(rTS1);
+    const boost::shared_ptr<BlackScholesMertonProcess> process(
+        new BlackScholesMertonProcess(spot, qTS, rTS, vTS));
+
+    const boost::shared_ptr<PricingEngine> engine(
+        new AnalyticEuropeanEngine(process));
+
+    for (Size i=1; i < dates.size(); ++i) {
+        for (Size j=3; j < strikes.size()-5; j+=5) {
+
+            const Date& exDate = dates[i];
+            const Date maturityDate = exDate;
+            const Time maturity = dc.yearFraction(todaysDate, maturityDate);
+            const boost::shared_ptr<Exercise> exercise(
+                                                 new EuropeanExercise(exDate));
+
+            const boost::shared_ptr<FdmMesher> uniformMesher(
+                new FdmMesherComposite(boost::shared_ptr<Fdm1dMesher>(
+                    new FdmBlackScholesMesher(xGrid, process, maturity, s0))));
+            //-- operator --
+            const boost::shared_ptr<FdmLinearOpComposite> uniformBSFwdOp(
+                new FdmBlackScholesFwdOp(uniformMesher, process, s0, true, 0.2));
+
+            const boost::shared_ptr<FdmMesher> concentratedMesher(
+                new FdmMesherComposite(boost::shared_ptr<Fdm1dMesher>(
+                    new FdmBlackScholesMesher(xGrid, process, maturity, s0,
+                                              Null<Real>(), Null<Real>(), 0.0001, 1.5,
+                                              std::pair<Real, Real>(s0, 0.1)))));
+
+            //-- operator --
+            const boost::shared_ptr<FdmLinearOpComposite> concentratedBSFwdOp(
+                new FdmBlackScholesFwdOp(concentratedMesher, process, s0, true, 0.2));
+
+            const boost::shared_ptr<FdmMesher> shiftedMesher(
+                new FdmMesherComposite(boost::shared_ptr<Fdm1dMesher>(
+                    new FdmBlackScholesMesher(xGrid, process, maturity, s0,
+                                              Null<Real>(), Null<Real>(), 0.0001, 1.5,
+                                              std::pair<Real, Real>(s0*1.1, 0.2)))));
+
+            //-- operator --
+            const boost::shared_ptr<FdmLinearOpComposite> shiftedBSFwdOp(
+                new FdmBlackScholesFwdOp(shiftedMesher, process, s0, true, 0.2));
+
+            const boost::shared_ptr<StrikedTypePayoff> payoff(
+                new PlainVanillaPayoff(Option::Call, strikes[j]));
+
+            VanillaOption option(payoff, exercise);
+            option.setPricingEngine(engine);
+
+            const Real expected = option.NPV();
+            const Real calcUniform
+                = fokkerPlanckPrice1D(uniformMesher, uniformBSFwdOp,
+                                      payoff, x0, maturity, tGrid)*rTS->discount(maturityDate);
+            const Real calcConcentrated
+                = fokkerPlanckPrice1D(concentratedMesher, concentratedBSFwdOp,
+                                      payoff, x0, maturity, tGrid)*rTS->discount(maturityDate);
+            const Real calcShifted
+                = fokkerPlanckPrice1D(shiftedMesher, shiftedBSFwdOp,
+                                      payoff, x0, maturity, tGrid)*rTS->discount(maturityDate);
+            const Real tol = 0.05;
+
+            BOOST_TEST_MESSAGE("date " << dates[i] << " strike " << strikes[j] << ", " << calcUniform  << ", " << calcConcentrated  << ", " << calcShifted << ", " << expected
+            );
+            if (std::fabs(expected - calcUniform) > tol) {
+                BOOST_FAIL("failed to reproduce european option price "
+                           << "with an uniform mesher"
+                           << "\n   strike:     " << strikes[i]
+                           << QL_FIXED << std::setprecision(8)
+                           << "\n   calculated: " << calcUniform
+                           << "\n   expected:   " << expected
+                           << "\n   tolerance:  " << tol);
+            }
+            if (std::fabs(expected - calcConcentrated) > tol) {
+                BOOST_FAIL("failed to reproduce european option price "
+                           << "with a concentrated mesher"
+                           << "\n   strike:     " << strikes[i]
+                           << QL_FIXED << std::setprecision(8)
+                           << "\n   calculated: " << calcConcentrated
+                           << "\n   expected:   " << expected
+                           << "\n   tolerance:  " << tol);
+            }
+            if (std::fabs(expected - calcShifted) > tol) {
+                BOOST_FAIL("failed to reproduce european option price "
+                           << "with a shifted mesher"
+                           << "\n   strike:     " << strikes[i]
+                           << QL_FIXED << std::setprecision(8)
+                           << "\n   calculated: " << calcShifted
+                           << "\n   expected:   " << expected
+                           << "\n   tolerance:  " << tol);
+            }
+        }
+    }
+}
+
 
 test_suite* FdHestonTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Finite Difference Heston tests");
@@ -1298,16 +2262,33 @@ test_suite* FdHestonTest::suite() {
 
 test_suite* FdHestonTest::experimental() {
     test_suite* suite = BOOST_TEST_SUITE("Finite Difference Heston tests");
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &FdHestonTest::testBlackScholesFokkerPlanckFwdEquation));
+//    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testSquareRootZeroFlowBC));
+//    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testTransformedZeroFlowBC));
+//    suite->add(QUANTLIB_TEST_CASE(
+//          &FdHestonTest::testSquareRootEvolveWithStationaryDensity));
+//    suite->add(QUANTLIB_TEST_CASE(
+//          &FdHestonTest::testSquareRootLogEvolveWithStationaryDensity));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &FdHestonTest::testSquareRootFokkerPlanckFwdEquation));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &FdHestonTest::testHestonFokkerPlanckFwdEquation));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &FdHestonTest::testHestonFokkerPlanckFwdEquationPowerRhoNull));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &FdHestonTest::testHestonFokkerPlanckFwdEquationLogRhoNull));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &FdHestonTest::testHestonFokkerPlanckFwdEquationPowerRhoMinusZeroNine));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &FdHestonTest::testHestonFokkerPlanckFwdEquationLogRhoMinusZeroNine));
+
+
     suite->add(QUANTLIB_TEST_CASE(
-        &FdHestonTest::testBlackScholesFokkerPlanckFwdEquation));
-    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testSquareRootZeroFlowBC));
-    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testTransformedZeroFlowBC));
-    suite->add(QUANTLIB_TEST_CASE(
-          &FdHestonTest::testSquareRootEvolveWithStationaryDensity));
-    suite->add(QUANTLIB_TEST_CASE(
-        &FdHestonTest::testSquareRootFokkerPlanckFwdEquation));
-    suite->add(QUANTLIB_TEST_CASE(
-        &FdHestonTest::testHestonFokkerPlanckFwdEquation));
+        &FdHestonTest::testHestonFokkerPlanckFwdEquationLogLVLeverage));
+
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &FdHestonTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
 
     return suite;
 }
