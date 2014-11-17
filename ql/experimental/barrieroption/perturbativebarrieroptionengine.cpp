@@ -512,7 +512,6 @@ namespace {
         double result;
         double aa,caux,caux1;
         double sigmarho[4],limit[4],epsi;
-        double tvtl(int jj,double limit[4],double sigmarho[4],double epsi);
 
         epsi=1.e-12;
         limit[1]=(a+b*(tt-p))/POW(2.0*(tt-p),0.5);
@@ -609,8 +608,6 @@ namespace {
         static double sigmarho[4],limit[4];
         static int idx;
         double epsi;
-        double derivn3(double[],double[], int );
-        double tvtl(int ,double[],double[],double);
 
         epsi=1.e-12;
         limit[1]=(ax+bx*(tt-p))/POW(2.0*(tt-p),0.5);
@@ -999,7 +996,6 @@ namespace {
         //
         static double  T, CEN, FC, WID, RESG, RESK;
 
-        double  STUDNT(int, double );
         static double result;
         //
         //        The abscissae and weights are given for the interval (-1,1);
@@ -1151,7 +1147,6 @@ namespace {
         static double  TPI, ORS, HRK, KRH, BVT, SNU;
         static double  GMPH, GMPK, XNKH, XNHK, QHRK, HKN, HPK, HKRN;
         static double  BTNCKH, BTNCHK, BTPDKH, BTPDHK, ONE, EPS;
-        double STUDNT(int , double );
         static double result;
         ONE = 1;
         EPS = 1e-15;
@@ -1248,7 +1243,6 @@ namespace {
             Computes Plackett formula integrand
           */
           static double DT, FT, BT,result;
-          double STUDNT(int, double);
 
           result = 0.0;
           DT = RR*( RR - POW(( RA - RB ),2) - 2*RA*RB*( 1 - R ) );

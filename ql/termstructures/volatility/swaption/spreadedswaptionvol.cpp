@@ -30,6 +30,7 @@ namespace QuantLib {
     : SwaptionVolatilityStructure(baseVol->businessDayConvention(),
                                   baseVol->dayCounter()),
       baseVol_(baseVol), spread_(spread) {
+          enableExtrapolation(baseVol->allowsExtrapolation());
           registerWith(baseVol_);
           registerWith(spread_);
     }

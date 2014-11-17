@@ -391,11 +391,10 @@ namespace QuantLib {
 
         // prob of losses less or equal to
         Real suma = hist.frequency(0);
-        distrib.insert(std::make_pair<Real, Probability>(0., suma ));
+        distrib.insert(std::make_pair(0., suma));
         for(Size i=1; i<hist.bins(); i++) {
             suma += hist.frequency(i);
-            distrib.insert(std::make_pair<Real, Probability>(hist.breaks()[i-1],
-                suma ));
+            distrib.insert(std::make_pair( hist.breaks()[i-1], suma ));
         }
         return distrib;
     }
@@ -574,18 +573,19 @@ namespace QuantLib {
         //      sfinal = 0;
         for(Size delta=1; delta < quantilePosition; delta++) {
             Real cached = 
-                incompleteBetaFunction(s, nSims_+1-s, percentile, 1.e-8, 500);
+                incompleteBetaFunction(Real(s), Real(nSims_+1-s),
+				                       percentile, 1.e-8, 500);
             Real pMinus = 
             /* There was a fix in the repository on the gammadistribution. It 
             might impact these, it might be neccesary to multiply these values 
             by '-1'*/
-                incompleteBetaFunction(r+1, nSims_-r, percentile, 1.e-8, 500)
-                -
-                cached;
+                incompleteBetaFunction(Real(r+1), Real(nSims_-r),
+				                       percentile, 1.e-8, 500)
+                - cached;
             Real pPlus  = 
-                incompleteBetaFunction(r, nSims_-r+1, percentile, 1.e-8, 500)
-                -
-                cached;
+                incompleteBetaFunction(Real(r), Real(nSims_-r+1),
+				                       percentile, 1.e-8, 500)
+                - cached;
             if((pMinus > confInterval) && !rLocked ) {
                 // rfinal = r + 1;
                rLocked = true;
