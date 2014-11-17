@@ -1,7 +1,7 @@
 [Project]
 FileName=testsuite.dev
 Name=QuantLib-test-suite
-UnitCount=258
+UnitCount=260
 Type=1
 Ver=1
 ObjFiles=
@@ -2619,6 +2619,26 @@ BuildCmd=
 
 [Unit258]
 FileName=binaryoption.hpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit259]
+FileName=amortizingbond.cpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit260]
+FileName=amortizingbond.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1

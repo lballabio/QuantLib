@@ -890,8 +890,8 @@ void BarrierOptionTest::testLocalVolAndHestonComparison() {
                    << "\n    strike:     " << payoff->strike()
                    << "\n    barrier:    " << barrier
                    << "\n    maturity:   " << exDate
-                   << "\n    calculated: " << calculatedHestonNPV
-                   << "\n    expected:   " << expectedHestonNPV);
+                   << "\n    calculated: " << calculatedLocalVolNPV
+                   << "\n    expected:   " << expectedLocalVolNPV);
     }
 }
 

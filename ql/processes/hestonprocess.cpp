@@ -168,11 +168,19 @@ namespace QuantLib {
                      );
         }
 
-        Real ch(const HestonProcess& process,
-                Real x, Real u, Real nu_0, Real nu_t, Time dt) {
-            return M_2_PI*std::sin(u*x)/u
+        class ch {
+            const HestonProcess& process;
+            Real x, nu_0, nu_t;
+            Time dt;
+          public:
+            ch(const HestonProcess& process,
+               Real x, Real nu_0, Real nu_t, Time dt)
+            : process(process), x(x), nu_0(nu_0), nu_t(nu_t), dt(dt) {}
+            Real operator()(Real u) const {
+                return M_2_PI*std::sin(u*x)/u
                     * Phi(process, u, nu_0, nu_t, dt).real();
-        }
+            }
+        };
 
         Real pade(Real x, const Real* nominator, const Real* denominator, Size m) {
             Real n=0.0, d=0.0;
@@ -293,9 +301,8 @@ namespace QuantLib {
 
                 return (x < upper)
                     ? std::max(0.0, std::min(1.0,
-                        gaussLaguerreIntegration(
-                            boost::lambda::bind(&ch, process, x,
-                                boost::lambda::_1, nu_0, nu_t, dt))))
+                        gaussLaguerreIntegration(ch(process, x,
+                                                    nu_0, nu_t, dt))))
                     : 1.0;
               }
               case HestonProcess::BroadieKayaExactSchemeLobatto:
@@ -305,11 +312,10 @@ namespace QuantLib {
                 while (std::abs(Phi(process, upper,nu_0,nu_t,dt)/upper)
                         >  eps) upper*=2.0;
 
-                return (x < upper)
-                    ? std::max(0.0, std::min(1.0,
+                return x < upper ?
+                    std::max(0.0, std::min(1.0,
                         GaussLobattoIntegral(Null<Size>(), eps)(
-                            boost::lambda::bind(&ch, process, x,
-                                boost::lambda::_1, nu_0, nu_t, dt),
+                            ch(process, x, nu_0, nu_t, dt),
                             QL_EPSILON, upper)))
                     : 1.0;
               }

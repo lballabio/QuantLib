@@ -31,6 +31,17 @@
 
 namespace QuantLib {
 
+class NoArbSabrModel::integrand {
+    const NoArbSabrModel* model;
+    Real strike;
+  public:
+    integrand(const NoArbSabrModel* model, Real strike)
+    : model(model), strike(strike) {}
+    Real operator()(Real f) const {
+        return std::max(f - strike, 0.0) * model->p(f);
+    }
+};
+
 NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
                                const Real alpha, const Real beta, const Real nu,
                                const Real rho)
@@ -102,10 +113,8 @@ Real NoArbSabrModel::optionPrice(const Real strike) const {
     if (p(std::max(forward_, strike)) < detail::NoArbSabrModel::density_threshold)
         return 0.0;
     return (1.0 - absProb_) *
-           (integrator_->operator()(
-                boost::lambda::bind(&NoArbSabrModel::integrand, this, strike,
-                                    boost::lambda::_1),
-                strike, std::max(fmax_, 2.0 * strike)) /
+        ((*integrator_)(integrand(this, strike),
+                        strike, std::max(fmax_, 2.0 * strike)) /
             numericalIntegralOverP_);
 }
 
@@ -114,23 +123,18 @@ Real NoArbSabrModel::digitalOptionPrice(const Real strike) const {
         return 1.0;
     if (p(std::max(forward_, strike)) < detail::NoArbSabrModel::density_threshold)
         return 0.0;
-    return (1.0 - absProb_) * (integrator_->operator()(
-                                   boost::lambda::bind(&NoArbSabrModel::p, this,
-                                                       boost::lambda::_1),
-                                   strike, std::max(fmax_, 2.0 * strike)) /
-                               numericalIntegralOverP_);
+    return (1.0 - absProb_)
+        * ((*integrator_)(std::bind1st(std::mem_fun(&NoArbSabrModel::p), this),
+                          strike, std::max(fmax_, 2.0 * strike)) /
+           numericalIntegralOverP_);
 }
 
 Real NoArbSabrModel::forwardError(const Real forward) const {
     forward_ = forward * forward + detail::NoArbSabrModel::strike_min;
-    numericalIntegralOverP_ = integrator_->operator()(
-        boost::lambda::bind(&NoArbSabrModel::p, this, boost::lambda::_1), fmin_,
-        fmax_);
+    numericalIntegralOverP_ = (*integrator_)(
+        std::bind1st(std::mem_fun(&NoArbSabrModel::p), this),
+        fmin_, fmax_);
     return optionPrice(0.0) - externalForward_;
-}
-
-Real NoArbSabrModel::integrand(const Real strike, const Real f) const {
-    return std::max(f - strike, 0.0) * p(f);
 }
 
 Real NoArbSabrModel::p(const Real f) const {

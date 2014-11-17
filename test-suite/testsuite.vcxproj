@@ -627,6 +627,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="americanoption.cpp" />
+    <ClCompile Include="amortizingbond.cpp" />
     <ClCompile Include="array.cpp" />
     <ClCompile Include="asianoptions.cpp" />
     <ClCompile Include="assetswap.cpp" />
@@ -758,6 +759,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="americanoption.hpp" />
+    <ClInclude Include="amortizingbond.hpp" />
     <ClInclude Include="array.hpp" />
     <ClInclude Include="asianoptions.hpp" />
     <ClInclude Include="assetswap.hpp" />

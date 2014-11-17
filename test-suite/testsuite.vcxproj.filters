@@ -14,6 +14,9 @@
     <ClCompile Include="americanoption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="amortizingbond.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="array.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -399,6 +402,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="americanoption.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="amortizingbond.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="array.hpp">

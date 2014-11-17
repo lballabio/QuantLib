@@ -36,20 +36,45 @@
 #pragma warning(disable: 4180)
 #endif
 
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-#include <boost/lambda/if.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
-#include <boost/lambda/bind.hpp>
-#include <boost/lambda/lambda.hpp>
-
-using namespace boost::lambda;
-
 namespace QuantLib {
+
+    namespace {
+
+        class integrand1 {
+          private:
+            Real c_inf;
+            boost::function<Real(Real)> f;
+          public:
+            integrand1(Real c_inf,
+                       boost::function<Real(Real)> f)
+            : c_inf(c_inf), f(f) {}
+            Real operator()(Real x) const {
+                if ((x+1.0)*c_inf > QL_EPSILON) {
+                    return f(-std::log(0.5*x+0.5)/c_inf)/((x+1.0)*c_inf);
+                } else {
+                    return 0.0;
+                }
+            }
+        };
+
+        class integrand2 {
+          private:
+            Real c_inf;
+            boost::function<Real(Real)> f;
+          public:
+            integrand2(Real c_inf,
+                       boost::function<Real(Real)> f)
+            : c_inf(c_inf), f(f) {}
+            Real operator()(Real x) const {
+                if (x*c_inf > QL_EPSILON) {
+                    return f(-std::log(x)/c_inf)/(x*c_inf);
+                } else {
+                    return 0.0;
+                }
+            }
+        };
+
+    }
 
     // helper class for integration
     class AnalyticHestonEngine::Fj_Helper
@@ -536,35 +561,19 @@ namespace QuantLib {
 
         switch(intAlgo_) {
           case GaussLaguerre:
-            retVal = gaussianQuadrature_->operator()(f);
+            retVal = (*gaussianQuadrature_)(f);
             break;
           case GaussLegendre:
           case GaussChebyshev:
           case GaussChebyshev2nd:
-            retVal = gaussianQuadrature_->operator()(
-                boost::function1<Real, Real>(
-                    if_then_else_return ( (boost::lambda::_1+1.0)*c_inf 
-                                          > QL_EPSILON,
-                        boost::lambda::bind(f, -boost::lambda::bind(
-                            std::ptr_fun<Real,Real>(std::log),
-                            0.5*boost::lambda::_1+0.5 )/c_inf )
-                                          /((boost::lambda::_1+1.0)*c_inf),
-                        boost::lambda::bind(constant<Real, Real>(0.0), 
-                                            boost::lambda::_1))));
+            retVal = (*gaussianQuadrature_)(integrand1(c_inf, f));
             break;
           case Simpson:
           case Trapezoid:
           case GaussLobatto:
           case GaussKronrod:
-            retVal = integrator_->operator()(
-                boost::function1<Real, Real>(
-                    if_then_else_return ( boost::lambda::_1*c_inf > QL_EPSILON,
-                        boost::lambda::bind(f,-boost::lambda::bind(
-                            std::ptr_fun<Real,Real>(std::log), 
-                            boost::lambda::_1)/c_inf) /(boost::lambda::_1*c_inf),
-                        boost::lambda::bind(constant<Real, Real>(0.0), 
-                                            boost::lambda::_1))),
-                0.0, 1.0);
+            retVal = (*integrator_)(integrand2(c_inf, f),
+                                    0.0, 1.0);
             break;
           default:
               QL_FAIL("unknwon integration algorithm");

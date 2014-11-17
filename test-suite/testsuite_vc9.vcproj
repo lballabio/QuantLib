@@ -860,6 +860,10 @@
 				>
 			</File>
 			<File
+				RelativePath="amortizingbond.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\array.cpp"
 				>
 			</File>
@@ -1374,6 +1378,10 @@
 			>
 			<File
 				RelativePath="americanoption.hpp"
+				>
+			</File>
+			<File
+				RelativePath="amortizingbond.hpp"
 				>
 			</File>
 			<File

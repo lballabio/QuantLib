@@ -3520,7 +3520,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit350]
-FileName=ql\math\randomnumbers\primitivepolynomials.c
+FileName=ql\math\randomnumbers\primitivepolynomials.cpp
 CompileCpp=1
 Folder=math/randomnumbers
 Compile=1
@@ -3530,7 +3530,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit351]
-FileName=ql\math\randomnumbers\primitivepolynomials.h
+FileName=ql\math\randomnumbers\primitivepolynomials.hpp
 CompileCpp=1
 Folder=math/randomnumbers
 Compile=1
