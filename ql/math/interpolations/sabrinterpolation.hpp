@@ -109,10 +109,10 @@ namespace detail {
         Array direct(const Array &x, const std::vector<bool>&,
                      const std::vector<Real>&, const Real) {
             Array y(4);
-            y[0] = std::fabs(x[0]) < 5.0 ? x[0] * x[0] + eps1() : (10.0*x[0]-25.0) + eps1();
+            y[0] = std::fabs(x[0]) < 5.0 ? x[0] * x[0] + eps1() : (10.0*std::fabs(x[0])-25.0) + eps1();
             // y_[1] = std::atan(dilationFactor_*x[1])/M_PI + 0.5;
             y[1] = std::fabs(x[1]) < -std::log(eps1()) ? std::exp(-(x[1] * x[1])) : eps1();
-            y[2] = std::fabs(x[2]) < 5.0 ? x[2] * x[2] + eps1() : (10.0*x[2]-25.0) + eps1();
+            y[2] = std::fabs(x[2]) < 5.0 ? x[2] * x[2] + eps1() : (10.0*std::fabs(x[2])-25.0) + eps1();
             y[3] = std::fabs(x[3]) < 2.5 * M_PI
                                      ? eps2() * std::sin(x[3])
                                      : eps2() * (x[3] > 0.0 ? 1.0 : (-1.0));
