@@ -18,7 +18,16 @@
 
 /*! \page history Version history
 
-    <strong>Release 1.4 - February, 2014</strong>
+    <strong>Release 1.4.1 - November 2014</strong>
+
+    QuantLib 1.4.1 is a compatibility release. It fixes a number of
+    compilation errors that surfaced when using QuantLib 1.4 with
+    Clang 3.5 and Boost 1.57. Thanks to Tim Smith for the heads-up.
+
+    If you are not using Clang, you don't need to upgrade from
+    QuantLib 1.4 to 1.4.1.
+
+    <strong>Release 1.4 - February 26th, 2014</strong>
 
     PORTABILITY
     - Boost 1.39 or later is now required.
