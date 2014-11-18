@@ -118,17 +118,18 @@ void PeriodTest::testWeeksDaysAlgebra() {
         BOOST_ERROR("normalization error: SevenDays.units()" <<
                     " is " << SevenDays.units() <<
                     " instead of " << Days);
-
-    Period NormalizedSevenDays(7, Days);
-    NormalizedSevenDays.normalize();
-    if (NormalizedSevenDays.length()!=1)
-        BOOST_ERROR("normalization error: NormalizedSevenDays.length()" <<
-                    " is " << NormalizedSevenDays.length() <<
-                    " instead of 1");
-    if (NormalizedSevenDays.units()!=Weeks)
-        BOOST_ERROR("normalization error: NormalizedSevenDays.units()" <<
-                    " is " << NormalizedSevenDays.units() <<
-                    " instead of " << Weeks);
+    
+    // removed 7D-1W normalization
+    //Period NormalizedSevenDays(7, Days);
+    //NormalizedSevenDays.normalize();
+    //if (NormalizedSevenDays.length()!=1)
+    //    BOOST_ERROR("normalization error: NormalizedSevenDays.length()" <<
+    //                " is " << NormalizedSevenDays.length() <<
+    //                " instead of 1");
+    //if (NormalizedSevenDays.units()!=Weeks)
+    //    BOOST_ERROR("normalization error: NormalizedSevenDays.units()" <<
+    //                " is " << NormalizedSevenDays.units() <<
+    //                " instead of " << Weeks);
 
 }
 
