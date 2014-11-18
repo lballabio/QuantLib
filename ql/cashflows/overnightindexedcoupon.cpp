@@ -132,7 +132,12 @@ namespace QuantLib {
 
         // value dates
         Date evalDate = Settings::instance().evaluationDate();
-        Date tmpEndDate = telescopicValueDates ? std::min( std::max(evalDate, startDate) + 7 , endDate) : endDate;
+        Date tmpEndDate =
+            telescopicValueDates
+                ? overnightIndex->fixingCalendar().adjust(
+                      std::min(std::max(evalDate, startDate) + 7, endDate),
+                      Following)
+                : endDate;
         Schedule sch =
             MakeSchedule()
                 .from(startDate)
@@ -145,7 +150,11 @@ namespace QuantLib {
         valueDates_ = sch.dates();
 
         if(telescopicValueDates) {
-            Date tmp = overnightIndex->fixingCalendar().adjust(endDate,overnightIndex->businessDayConvention());
+            // ensure two dates at the tail
+            Date tmp = overnightIndex->fixingCalendar().advance(endDate, -1, Days, Preceding);
+            if(tmp != valueDates_.back())
+                valueDates_.push_back(tmp);
+            tmp = overnightIndex->fixingCalendar().adjust(endDate,overnightIndex->businessDayConvention());
             if(tmp != valueDates_.back())
                 valueDates_.push_back(tmp);
         }
