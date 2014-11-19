@@ -42,6 +42,8 @@
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/experimental/volatility/noarbsabrinterpolation.hpp>
 #include <boost/foreach.hpp>
+#include <boost/assign/std/vector.hpp>
+
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -1173,8 +1175,6 @@ void InterpolationTest::testForwardFlat() {
     }
 }
 
-
-
 void InterpolationTest::testSabrInterpolation(){
 
     BOOST_TEST_MESSAGE("Testing Sabr interpolation...");
@@ -1877,6 +1877,110 @@ void InterpolationTest::testNoArbSabrInterpolation(){
 
 }
 
+
+void InterpolationTest::testSabrSingleCases() {
+
+    BOOST_TEST_MESSAGE("Testing Sabr calibration single cases...");
+
+    // case #1
+    // this fails with an exception thrown in 1.4, fixed in 1.5
+
+    using namespace boost::assign;
+    std::vector<Real> strikes, vols;
+    strikes += 0.01, 0.01125, 0.0125, 0.01375, 0.0150;
+    vols += 0.1667, 0.2020, 0.2785, 0.3279, 0.3727;
+
+    Real tte = 0.3833;
+    Real forward = 0.011025;
+
+    SABRInterpolation s0(strikes.begin(), strikes.end(), vols.begin(), tte, forward,
+                         Null<Real>(), 0.25, Null<Real>(), Null<Real>(),
+                         false, true, false, false);
+    s0.update();
+
+    if (s0.maxError() > 0.01 || s0.rmsError() > 0.01) {
+        BOOST_ERROR("Sabr case #1 failed with max error ("
+                      << s0.maxError() << ") and rms error (" << s0.rmsError()
+                      << "), both should be < 0.01");
+    }
+
+}
+
+void InterpolationTest::testTransformations() {
+
+    BOOST_TEST_MESSAGE("Testing Sabr and NoArbSabr transformation functions ...");
+
+    Real size = 25.0; // test inputs from [-size,size]^4
+
+    Size N = 1E5;
+
+    Array x(4), y(4), z(4);
+    std::vector<Real> s;
+    std::vector<bool> fixed(4, false);
+    std::vector<Real> params(4, 0.0);
+    Real forward = 0.03;
+
+    HaltonRsg h(4, 42, false, false);
+
+    for (Size i = 0; i < 1E6; ++i) {
+
+        s = h.nextSequence().value;
+        for (Size j = 0; j < 4; ++j)
+            x[j] = 2.0 * size * s[j] - size;
+
+        // sabr
+        y = detail::SABRSpecs().direct(x, fixed, params, forward);
+        validateSabrParameters(y[0], y[1], y[2], y[3]);
+        z = detail::SABRSpecs().inverse(y, fixed, params, forward);
+        z = detail::SABRSpecs().direct(z, fixed, params, forward);
+        if (!close(z[0], y[0], N) || !close(z[1], y[1], N) || !close(z[2], y[2], N) ||
+            !close(z[3], y[3], N))
+            BOOST_ERROR("SabrInterpolation: direct(inverse("
+                        << y[0] << "," << y[1] << "," << y[2] << "," << y[3]
+                        << ")) = (" << z[0] << "," << z[1] << "," << z[2] << ","
+                        << z[3] << "), difference is (" << z[0] - y[0] << ","
+                        << z[1] - y[1] << "," << z[2] - y[2] << ","
+                        << z[3] - y[3] << ")");
+
+        // noarb sabr
+        y = detail::NoArbSabrSpecs().direct(x, fixed, params, forward);
+
+        // we can not invoke the constructor, this would be too slow, so
+        // we copy the parameter check here ...
+        Real alpha = y[0];
+        Real beta = y[1];
+        Real nu = y[2];
+        Real rho = y[3];
+        QL_REQUIRE(beta >= detail::NoArbSabrModel::beta_min &&
+                       beta <= detail::NoArbSabrModel::beta_max,
+                   "beta (" << beta << ") out of bounds");
+        Real sigmaI = alpha * std::pow(forward, beta - 1.0);
+        QL_REQUIRE(sigmaI >= detail::NoArbSabrModel::sigmaI_min &&
+                       sigmaI <= detail::NoArbSabrModel::sigmaI_max,
+                   "sigmaI = alpha*forward^(beta-1.0) ("
+                       << sigmaI << ") out of bounds, alpha=" << alpha
+                       << " beta=" << beta << " forward=" << forward);
+        QL_REQUIRE(nu >= detail::NoArbSabrModel::nu_min &&
+                       nu <= detail::NoArbSabrModel::nu_max,
+                   "nu (" << nu << ") out of bounds");
+        QL_REQUIRE(rho >= detail::NoArbSabrModel::rho_min &&
+                       rho <= detail::NoArbSabrModel::rho_max,
+                   "rho (" << rho << ") out of bounds");
+
+        z = detail::NoArbSabrSpecs().inverse(y, fixed, params, forward);
+        z = detail::NoArbSabrSpecs().direct(z, fixed, params, forward);
+        if (!close(z[0], y[0], N) || !close(z[1], y[1], N) || !close(z[2], y[2], N) ||
+            !close(z[3], y[3], N))
+            BOOST_ERROR("NoArbSabrInterpolation: direct(inverse("
+                        << y[0] << "," << y[1] << "," << y[2] << "," << y[3]
+                        << ")) = (" << z[0] << "," << z[1] << "," << z[2] << ","
+                        << z[3] << "), difference is (" << z[0] - y[0] << ","
+                        << z[1] - y[1] << "," << z[2] - y[2] << ","
+                        << z[3] - y[3] << ")");
+    }
+
+}
+
 test_suite* InterpolationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
 
@@ -1907,5 +2011,7 @@ test_suite* InterpolationTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
                             &InterpolationTest::testRichardsonExtrapolation));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testNoArbSabrInterpolation));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSabrSingleCases));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testTransformations));
     return suite;
 }
