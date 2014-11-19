@@ -329,7 +329,11 @@ void NoArbSabrModel::checkAbsorptionMatrix() {
     std::size_t seed = 0;
     for (Size i = 0; i < 1209600; ++i)
         boost::hash_combine(seed, detail::sabrabsprob[i]);
-    QL_REQUIRE(seed == 8940976986331216656L, "absorption matrix is invalid");
+    std::size_t expected =
+        sizeof(std::size_t) == 8 ?
+        8940976986331216656L :
+        1225169178L;
+    QL_REQUIRE(seed == expected, "absorption matrix is invalid");
 }
 
 } // namespace QuantLib
