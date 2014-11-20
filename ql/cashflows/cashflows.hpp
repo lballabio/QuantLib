@@ -30,6 +30,7 @@
 #include <ql/cashflows/duration.hpp>
 #include <ql/cashflow.hpp>
 #include <ql/interestrate.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <boost/shared_ptr.hpp>
 
 namespace QuantLib {
@@ -145,6 +146,16 @@ namespace QuantLib {
                         const YieldTermStructure& discountCurve,
                         bool includeSettlementDateFlows,
                         Date settlementDate = Date(),
+                        Date npvDate = Date());
+        //! NPV of the cash flows.
+        /*! The NPV is the sum of the cash flows, each discounted
+            according to the given term structure. The pointer to
+            the first relevant one is provided for computational
+            efficiency
+        */
+        static Real npv(const Leg& leg,
+                        Leg::const_iterator firstRelevantCashflow,
+                        const YieldTermStructure& discountCurve,
                         Date npvDate = Date());
         //! Basis-point sensitivity of the cash flows.
         /*! The result is the change in NPV due to a uniform
@@ -401,6 +412,19 @@ namespace QuantLib {
         //@}
 
     };
+
+    inline Real CashFlows::npv(const Leg& leg,
+                               Leg::const_iterator i,
+                               const YieldTermStructure& discountCurve,
+                               Date npvDate) {
+        Real totalNPV = 0.0;
+        for (; i<leg.end(); ++i) {
+            CashFlow& cf = *(*i);
+            totalNPV += cf.amount() * discountCurve.discount(cf.date());
+        }
+
+        return totalNPV/discountCurve.discount(npvDate);
+    }
 
 }
 
