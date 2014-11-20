@@ -553,11 +553,11 @@ namespace QuantLib {
                                              includeSettlementDateFlows,
                                              settlementDate);
 
-        QL_REQUIRE(i != leg.end(), "no cashflows: impossible atm rate");
+        QL_REQUIRE(i != leg.end(), "no cashflows left: impossible atm rate");
 
         if ((*i)->tradingExCoupon(settlementDate)) {
             ++i;
-            QL_REQUIRE(i != leg.end(), "no cashflows: impossible atm rate");
+            QL_REQUIRE(i != leg.end(), "no cashflows left: impossible atm rate");
         }
 
         Real npv = 0.0;
@@ -629,9 +629,10 @@ namespace QuantLib {
             Date refStartDate, refEndDate;
             const DayCounter& dc = y.dayCounter();
             for (; i<leg.end(); ++i) {
-                Real c = (*i)->amount();
+                CashFlow& cf = *(*i);
+                Real c = cf.amount();
 
-                Date couponDate = (*i)->date();
+                Date couponDate = cf.date();
                 shared_ptr<Coupon> coupon =
                     boost::dynamic_pointer_cast<Coupon>((*i));
                 if (coupon) {
@@ -695,9 +696,10 @@ namespace QuantLib {
             Date refStartDate, refEndDate;
             const DayCounter& dc = y.dayCounter();
             for (; i<leg.end(); ++i) {
-                Real c = (*i)->amount();
+                CashFlow& cf = *(*i);
+                Real c = cf.amount();
 
-                Date couponDate = (*i)->date();
+                Date couponDate = cf.date();
                 shared_ptr<Coupon> coupon =
                     boost::dynamic_pointer_cast<Coupon>((*i));
                 if (coupon) {
@@ -894,8 +896,9 @@ namespace QuantLib {
         Date refStartDate, refEndDate;
 
         for (; i<leg.end(); ++i) {
-            Date couponDate = (*i)->date();
-            Real amount = (*i)->amount();
+            CashFlow& cf = *(*i);
+            Date couponDate = cf.date();
+            Real amount = cf.amount();
 
             shared_ptr<Coupon> coupon =
                 boost::dynamic_pointer_cast<Coupon>((*i));
@@ -1076,9 +1079,10 @@ namespace QuantLib {
         Date lastDate = npvDate;
         Date refStartDate, refEndDate;
         for (; i<leg.end(); ++i) {
-            Real c = (*i)->amount();
+            CashFlow& cf = *(*i);
+            Real c = cf.amount();
 
-            Date couponDate = (*i)->date();
+            Date couponDate = cf.date();
             shared_ptr<Coupon> coupon =
                 boost::dynamic_pointer_cast<Coupon>((*i));
             if (coupon) {

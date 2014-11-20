@@ -24,6 +24,11 @@
 
 #include <ql/userconfig.hpp>
 
+// first things first
+#if (_MSC_VER < 1400)
+#  error "versions of Visual C++ prior to VC++8 (2005) are not supported"
+#endif
+
 /*******************************************
    System configuration section:
    do not modify the following definitions.
@@ -42,52 +47,35 @@
 
 // leave outside here common configs
 
-#define QL_PATCH_MSVC  // more granularity below
+#define QL_PATCH_MSVC
+// more granularity for when we need to work around a given version:
+#if (_MSC_VER == 1400)
+#  define QL_PATCH_MSVC80
+#elif (_MSC_VER == 1500)
+#  define QL_PATCH_MSVC90
+#elif (_MSC_VER >= 1600)
+#  define QL_PATCH_MSVC100
+#endif
 
 // prevent auto-link of Boost libs such as serialization
 #define BOOST_ALL_NO_LIB
 
-// select toolset:
-#if (_MSC_VER < 1400)
-#  error "versions of Visual C++ prior to VC++8 (2005) are not supported"
-#elif (_MSC_VER == 1400)
-// move inside here configs specific to VC++ 8 (2005)
+// This holds for all supported versions
+#define QL_WORKING_BOOST_STREAMS
+
+#if (_MSC_VER == 1400) || (_MSC_VER == 1500)
+// warning management for VC++ 8 and 9
 #  ifndef _SCL_SECURE_NO_DEPRECATE
 #    define _SCL_SECURE_NO_DEPRECATE
 #  endif
 #  ifndef _CRT_SECURE_NO_DEPRECATE
 #    define _CRT_SECURE_NO_DEPRECATE
 #  endif
-#  define QL_PATCH_MSVC80
-#  define QL_WORKING_BOOST_STREAMS
-// see the corresponding pragmas in the 7.1 section
+// Sending a size_t to an output stream causes a warning.
+// We disable it and rely on other compilers to catch genuine problems.
 #  pragma warning(disable: 4267)
+// same for Boost.Function using a supposedly non-standard extension.
 #  pragma warning(disable: 4224)
-// non-ASCII characters - Disabling this warning here is ineffective
-// and the change has been made instead under project properties
-//#  pragma warning(disable: 4819)
-#elif (_MSC_VER == 1500)
-// move inside here configs specific to VC++ 9 (2008)
-#  ifndef _SCL_SECURE_NO_DEPRECATE
-#    define _SCL_SECURE_NO_DEPRECATE
-#  endif
-#  ifndef _CRT_SECURE_NO_DEPRECATE
-#    define _CRT_SECURE_NO_DEPRECATE
-#  endif
-#  define QL_PATCH_MSVC90
-#  define QL_WORKING_BOOST_STREAMS
-// see the corresponding pragmas in the 7.1 section
-#  pragma warning(disable: 4267)
-#  pragma warning(disable: 4224)
-#elif (_MSC_VER == 1600)
-// move inside here configs specific to VC++ 10 (2010)
-#  define QL_PATCH_MSVC100
-#  define QL_WORKING_BOOST_STREAMS
-#else
-// Microsoft compiler we still don't know about.
-// We treat it the same way as the latest and hope for the better.
-#  define QL_PATCH_MSVC100
-#  define QL_WORKING_BOOST_STREAMS
 #endif
 
 // Compilation on the x64 platform throws a lot of warnings assigning
@@ -99,11 +87,7 @@
 #endif
 
 #ifndef _CPPRTTI
-#   if (_MSC_VER >= 1300) // VC++ 7.0 (.Net) and later
-#       error Enable Run-Time Type Info (Property Pages | C/C++ | Language)
-#   else
-#       error Enable Run-Time Type Information (Project Settings | C/C++ | C++ Language)
-#   endif
+#   error Enable Run-Time Type Info (Property Pages | C/C++ | Language)
 #endif
 
 #endif

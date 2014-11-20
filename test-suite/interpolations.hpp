@@ -50,6 +50,8 @@ class InterpolationTest {
     static void testBicubicUpdate();
     static void testRichardsonExtrapolation();
     static void testNoArbSabrInterpolation();
+    static void testSabrSingleCases();
+    static void testTransformations();
 
     static boost::unit_test_framework::test_suite* suite();
 };
