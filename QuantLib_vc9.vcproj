@@ -2782,6 +2782,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\math\distributions\bivariatestudenttdistribution.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\distributions\bivariatestudenttdistribution.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\distributions\chisquaredistribution.cpp"
 					>
 				</File>

@@ -834,6 +834,7 @@
     <ClInclude Include="ql\math\distributions\all.hpp" />
     <ClInclude Include="ql\math\distributions\binomialdistribution.hpp" />
     <ClInclude Include="ql\math\distributions\bivariatenormaldistribution.hpp" />
+    <ClInclude Include="ql\math\distributions\bivariatestudenttdistribution.hpp" />
     <ClInclude Include="ql\math\distributions\chisquaredistribution.hpp" />
     <ClInclude Include="ql\math\distributions\gammadistribution.hpp" />
     <ClInclude Include="ql\math\distributions\normaldistribution.hpp" />
@@ -1908,6 +1909,7 @@
     <ClCompile Include="ql\math\statistics\histogram.cpp" />
     <ClCompile Include="ql\math\statistics\incrementalstatistics.cpp" />
     <ClCompile Include="ql\math\distributions\bivariatenormaldistribution.cpp" />
+    <ClCompile Include="ql\math\distributions\bivariatestudenttdistribution.cpp" />
     <ClCompile Include="ql\math\distributions\chisquaredistribution.cpp" />
     <ClCompile Include="ql\math\distributions\gammadistribution.cpp" />
     <ClCompile Include="ql\math\distributions\normaldistribution.cpp" />

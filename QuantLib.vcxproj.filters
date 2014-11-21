@@ -1035,6 +1035,9 @@
     <ClInclude Include="ql\math\distributions\bivariatenormaldistribution.hpp">
       <Filter>math\distributions</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\distributions\bivariatestudenttdistribution.hpp">
+      <Filter>math\distributions</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\distributions\chisquaredistribution.hpp">
       <Filter>math\distributions</Filter>
     </ClInclude>
@@ -4260,6 +4263,9 @@
       <Filter>math\statistics</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\distributions\bivariatenormaldistribution.cpp">
+      <Filter>math\distributions</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\distributions\bivariatestudenttdistribution.cpp">
       <Filter>math\distributions</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\distributions\chisquaredistribution.cpp">
