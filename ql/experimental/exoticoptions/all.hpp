@@ -15,6 +15,7 @@
 #include <ql/experimental/exoticoptions/complexchooseroption.hpp>
 #include <ql/experimental/exoticoptions/compoundoption.hpp>
 #include <ql/experimental/exoticoptions/continuousarithmeticasianlevyengine.hpp>
+#include <ql/experimental/exoticoptions/continuousarithmeticasianvecerengine.hpp>
 #include <ql/experimental/exoticoptions/everestoption.hpp>
 #include <ql/experimental/exoticoptions/himalayaoption.hpp>
 #include <ql/experimental/exoticoptions/holderextensibleoption.hpp>

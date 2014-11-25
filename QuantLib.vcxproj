@@ -1477,6 +1477,7 @@
     <ClInclude Include="ql\experimental\exoticoptions\analyticwriterextensibleoptionengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\complexchooseroption.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\continuousarithmeticasianlevyengine.hpp" />
+    <ClInclude Include="ql\experimental\exoticoptions\continuousarithmeticasianvecerengine.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\everestoption.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\himalayaoption.hpp" />
     <ClInclude Include="ql\experimental\exoticoptions\holderextensibleoption.hpp" />
@@ -2358,6 +2359,7 @@
     <ClCompile Include="ql\experimental\exoticoptions\analyticwriterextensibleoptionengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\complexchooseroption.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\continuousarithmeticasianlevyengine.cpp" />
+    <ClCompile Include="ql\experimental\exoticoptions\continuousarithmeticasianvecerengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\everestoption.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\himalayaoption.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\holderextensibleoption.cpp" />
