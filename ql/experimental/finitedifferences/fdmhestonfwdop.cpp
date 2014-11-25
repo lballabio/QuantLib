@@ -70,7 +70,6 @@ namespace QuantLib {
 	   mesher_(mesher)
     {
         const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
-        //std::cout << "x-array" << x_ << std::endl;
         // zero flux boundary condition
         const Size n = layout->dim()[1];
         const Real lowerBoundaryFactor = mapY_->lowerBoundaryFactor(type);
@@ -126,7 +125,8 @@ namespace QuantLib {
                 mapX_->axpyb( Array(1, -r + q), *dxMap_,
                     dxxMap_->multR(Lsquare).add(boundary_->multR(L_))
                     .add(dxMap_->multR(rho_*sigma_*L_))
-                    .add(dxMap_->mult(varianceValues_).multR(Lsquare)), Array());
+                    .add(dxMap_->mult(varianceValues_).multR(Lsquare)), 
+                              Array());
             } else if (type_ == FdmSquareRootFwdOp::Power) {
                 mapX_->axpyb( Array(1, -r + q), *dxMap_,
                     dxxMap_->multR(Lsquare).add(boundary_->multR(L_))
@@ -135,7 +135,8 @@ namespace QuantLib {
             } else if (type_ == FdmSquareRootFwdOp::Log) {
                 mapX_->axpyb( Array(1, -r + q), *dxMap_,
                     dxxMap_->multR(Lsquare).add(boundary_->multR(L_))
-                    .add(dxMap_->mult(0.5*Exp(2.0*varianceValues_)).multR(Lsquare)), Array());
+                    .add(dxMap_->mult(0.5*Exp(2.0*varianceValues_)).multR(Lsquare)), 
+                              Array());
             }
         }
         else {
@@ -143,8 +144,8 @@ namespace QuantLib {
                 mapX_->axpyb( - r + q + rho_*sigma_ + varianceValues_, *dxMap_,
                         *dxxMap_, Array());
             } else if (type_ == FdmSquareRootFwdOp::Power) {
-                mapX_->axpyb( - r + q + rho_*2.0*kappa_*theta_/(sigma_) + varianceValues_, *dxMap_,
-                        *dxxMap_, Array());
+                mapX_->axpyb( - r + q + rho_*2.0*kappa_*theta_/(sigma_) + varianceValues_, 
+                              *dxMap_, *dxxMap_, Array());
             } else if (type_ == FdmSquareRootFwdOp::Log) {
                 mapX_->axpyb( - r + q + 0.5*Exp(2.0*varianceValues_), *dxMap_,
                         *dxxMap_, Array());
