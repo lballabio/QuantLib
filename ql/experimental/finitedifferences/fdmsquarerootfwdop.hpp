@@ -28,6 +28,9 @@
 #include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
 
 namespace QuantLib {
+	Real squareRootProcessGreensFct(Real v0, Real kappa, Real theta,
+									Real sigma, Real t, Real x);
+
     class FdmMesher;
     class SquareRootProcess;
     class TripleBandLinearOp;

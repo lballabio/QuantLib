@@ -40,7 +40,7 @@ namespace QuantLib {
             const boost::shared_ptr<FdmMesher>& mesher,
             const boost::shared_ptr<HestonProcess>& process,
             FdmSquareRootFwdOp::TransformationType type,
-            const boost::shared_ptr<Interpolation2D> & leverageFct)
+            const boost::shared_ptr<Interpolation2D>& leverageFct)
     : type_(type),
       kappa_(process->kappa()),
       theta_(process->theta()),
@@ -49,9 +49,6 @@ namespace QuantLib {
       v0_   (process->v0()),
       rTS_  (process->riskFreeRate().currentLink()),
       qTS_  (process->dividendYield().currentLink()),
-      leverageFct_(leverageFct),
-      mesher_(mesher),
-      x_    (Array(Exp(mesher->locations(0)))),
       varianceValues_(0.5*mesher->locations(1)),
       dxMap_ (new FirstDerivativeOp(0, mesher)),
       dxxMap_(new ModTripleBandLinearOp(TripleBandLinearOp(
@@ -68,7 +65,9 @@ namespace QuantLib {
               .mult(Array(mesher->layout()->size(), rho_*sigma_))
             : SecondOrderMixedDerivativeOp(0, 1, mesher)
               .mult(rho_*sigma_*mesher->locations(1))
-           ))
+           )),
+	   leverageFct_(leverageFct),
+	   mesher_(mesher)
     {
         const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
         //std::cout << "x-array" << x_ << std::endl;
@@ -199,48 +198,39 @@ namespace QuantLib {
             QL_FAIL("direction too large");
     }
 
-    Disposable<Array> FdmHestonFwdOp::getLeverageFctSlice(Time t1, Time t2) const {
-        const boost::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
-        Array v(layout->size(), 1.0);
-        typedef boost::unordered_map<Real, Real> map;
-        map x;
-        //std::cout << "Get Leverage slice, t1=" << t1 << ", t2=" << t2 << std::endl;
-        //int missed = 0;
-        //int hit = 0;
-        if (leverageFct_) {
-            const FdmLinearOpIterator endIter = layout->end();
-
-            for (FdmLinearOpIterator iter = layout->begin();
-                 iter!=endIter; ++iter) {
-                const Size i = iter.index();
-                if (x.find(x_[i]) == x.end()) {
-                    Time time = 0.5*(t1+t2);
-                    Real spot = x_[i];
-                    if (!leverageFct_->isInRange(time, spot)) {
-                        if (time < leverageFct_->xMin()) time = leverageFct_->xMin();
-                        if (time > leverageFct_->xMax()) time = leverageFct_->xMax();
-                        if (spot < leverageFct_->yMin()) spot = leverageFct_->yMin();
-                        if (spot > leverageFct_->yMax()) spot = leverageFct_->yMax();
-                    }
-                    Real value = leverageFct_->operator()(time, spot, true);
-                    if (value < 0.01) value = 0.01;
-                    x[x_[i]] = v[i] = value;
-                    //missed++;
-                } 
-                else {
-                    v[i] = x[x_[i]];
-                    //hit++;
-                }
-            }
-        }
-        //std::cout << "cache missed: " << missed << " hit: " << hit << std::endl;
-        //std::cout << "leverage slice : " << v << std::endl;
-        return v;
-    }
-
     Disposable<Array> FdmHestonFwdOp::preconditioner(
         const Array& u, Real dt) const{
         return solve_splitting(0, u, dt);
+    }
+
+    Disposable<Array> FdmHestonFwdOp::getLeverageFctSlice(Time t1, Time t2)
+    const {
+    	const boost::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
+        Array v(layout->size(), 1.0);
+
+        if (!leverageFct_)
+        	return v;
+
+		const Real t = 0.5*(t1+t2);
+		const Time time = std::min(leverageFct_->xMax(),
+							  	   std::max(leverageFct_->xMin(), t));
+
+		const FdmLinearOpIterator endIter = layout->end();
+		for (FdmLinearOpIterator iter = layout->begin();
+			 iter!=endIter; ++iter) {
+			const Size nx = iter.coordinates()[0];
+
+			if (iter.coordinates()[1] == 0) {
+				const Real x = std::exp(mesher_->location(iter, 0));
+				const Real spot = std::min(leverageFct_->yMax(),
+										   std::max(leverageFct_->yMin(), x));
+				v[nx] = std::max(0.01, (*leverageFct_)(time, spot, true));
+			}
+			else {
+				v[iter.index()] = v[nx];
+			}
+		}
+        return v;
     }
 
 #if !defined(QL_NO_UBLAS_SUPPORT)

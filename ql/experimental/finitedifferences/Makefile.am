@@ -13,6 +13,7 @@ this_include_HEADERS = \
 	fdmextoujumpmodelinnervalue.hpp \
 	fdmextoujumpop.hpp \
 	fdmextoujumpsolver.hpp \
+	fdmhestongreensfct.hpp \
 	fdmhestonfwdop.hpp \
 	fdmklugeextouop.hpp \
 	fdmklugeextousolver.hpp \
@@ -38,6 +39,7 @@ libMultiDimFDM_la_SOURCES = \
 	fdmextendedornsteinuhlenbeckop.cpp \
 	fdmextoujumpop.cpp \
 	fdmextoujumpsolver.cpp \
+	fdmhestongreensfct.cpp \
 	fdmhestonfwdop.cpp \
 	fdmklugeextouop.cpp \
 	fdmsquarerootfwdop.cpp \

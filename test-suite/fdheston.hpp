@@ -42,14 +42,9 @@ public:
     static void testSquareRootLogEvolveWithStationaryDensity();
     static void testSquareRootFokkerPlanckFwdEquation();
     static void testHestonFokkerPlanckFwdEquation();
-    static void testHestonFokkerPlanckFwdEquationPower(double rho);
-    static void testHestonFokkerPlanckFwdEquationLog(double rho);
-    static void testHestonFokkerPlanckFwdEquationPowerRhoNull();
-    static void testHestonFokkerPlanckFwdEquationPowerRhoMinusZeroNine();
-    static void testHestonFokkerPlanckFwdEquationLogRhoNull();
-    static void testHestonFokkerPlanckFwdEquationLogRhoMinusZeroNine();
     static void testHestonFokkerPlanckFwdEquationLogLVLeverage();
     static void testBlackScholesFokkerPlanckFwdEquationLocalVol();
+    static void testLSVCalibration();
 
     static boost::unit_test_framework::test_suite* suite();
     static boost::unit_test_framework::test_suite* experimental();

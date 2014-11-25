@@ -17,8 +17,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/math/functional.hpp>
 #include <ql/math/modifiedbessel.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <ql/math/integrals/segmentintegral.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
@@ -35,6 +37,7 @@
 #pragma GCC diagnostic pop
 #endif
 #include <boost/lambda/lambda.hpp>
+#include <boost/math/distributions/non_central_chi_squared.hpp>
 
 #include <complex>
 
@@ -168,19 +171,35 @@ namespace QuantLib {
                      );
         }
 
-        class ch {
-            const HestonProcess& process;
-            Real x, nu_0, nu_t;
-            Time dt;
-          public:
-            ch(const HestonProcess& process,
-               Real x, Real nu_0, Real nu_t, Time dt)
-            : process(process), x(x), nu_0(nu_0), nu_t(nu_t), dt(dt) {}
-            Real operator()(Real u) const {
-                return M_2_PI*std::sin(u*x)/u
+        Real ch(const HestonProcess& process,
+                Real x, Real u, Real nu_0, Real nu_t, Time dt) {
+            return M_2_PI*std::sin(u*x)/u
                     * Phi(process, u, nu_0, nu_t, dt).real();
-            }
-        };
+        }
+
+        Real ph(const HestonProcess& process,
+                Real x, Real u, Real nu_0, Real nu_t, Time dt) {
+            return M_2_PI*std::cos(u*x)*Phi(process, u, nu_0, nu_t, dt).real();
+        }
+
+        Real int_ph(const HestonProcess& process,
+                    Real a, Real x, Real y, Real nu_0, Real nu_t, Time t) {
+            static const GaussLaguerreIntegration gaussLaguerreIntegration(128);
+
+            const Real rho   = process.rho();
+            const Real kappa = process.kappa();
+            const Real sigma = process.sigma();
+            const Real x0    = std::log(process.s0()->value());
+
+            return gaussLaguerreIntegration(
+                boost::lambda::bind(&ph, process, y,
+                                       boost::lambda::_1, nu_0, nu_t, t))
+                / std::sqrt(2*M_PI*(1-rho*rho)*y)
+                * std::exp(-0.5*square<Real>()(  x - x0 - a
+                                               + y*(0.5-rho*kappa/sigma))
+                           /(y*(1-rho*rho)));
+        }
+
 
         Real pade(Real x, const Real* nominator, const Real* denominator, Size m) {
             Real n=0.0, d=0.0;
@@ -301,8 +320,9 @@ namespace QuantLib {
 
                 return (x < upper)
                     ? std::max(0.0, std::min(1.0,
-                        gaussLaguerreIntegration(ch(process, x,
-                                                    nu_0, nu_t, dt))))
+                        gaussLaguerreIntegration(
+                            boost::lambda::bind(&ch, process, x,
+                                boost::lambda::_1, nu_0, nu_t, dt))))
                     : 1.0;
               }
               case HestonProcess::BroadieKayaExactSchemeLobatto:
@@ -312,10 +332,11 @@ namespace QuantLib {
                 while (std::abs(Phi(process, upper,nu_0,nu_t,dt)/upper)
                         >  eps) upper*=2.0;
 
-                return x < upper ?
-                    std::max(0.0, std::min(1.0,
+                return (x < upper)
+                    ? std::max(0.0, std::min(1.0,
                         GaussLobattoIntegral(Null<Size>(), eps)(
-                            ch(process, x, nu_0, nu_t, dt),
+                            boost::lambda::bind(&ch, process, x,
+                                boost::lambda::_1, nu_0, nu_t, dt),
                             QL_EPSILON, upper)))
                     : 1.0;
               }
@@ -345,6 +366,43 @@ namespace QuantLib {
             }
         }
     }
+
+    Real HestonProcess::pdf(Real x, Real v, Time t, Real eps) const {
+         const Real k = sigma_*sigma_*(1-std::exp(-kappa_*t))/(4*kappa_);
+         const Real a = std::log(  dividendYield_->discount(t)
+                                   / riskFreeRate_->discount(t))
+                      + rho_/sigma_*(v - v0_ - kappa_*theta_*t);
+
+         const Real x0 = std::log(s0()->value());
+         Real upper = std::max(0.1, -(x-x0-a)/(0.5-rho_*kappa_/sigma_)), f=0, df=1;
+
+         while (df > 0.0 || f > 0.1*eps) {
+             const Real f1 = x-x0-a+upper*(0.5-rho_*kappa_/sigma_);
+             const Real f2 = -0.5*f1*f1/(upper*(1-rho_*rho_));
+
+             df = 1/std::sqrt(2*M_PI*(1-rho_*rho_))
+                 * ( -0.5/(upper*std::sqrt(upper))*std::exp(f2)
+                    + 1/std::sqrt(upper)*std::exp(f2)*(-0.5/(1-rho_*rho_))
+                           *(-1/(upper*upper)*f1*f1
+                             + 2/upper*f1*(0.5-rho_*kappa_/sigma_)));
+
+             f = std::exp(f2)/ std::sqrt(2*M_PI*(1-rho_*rho_)*upper);
+             upper*=1.5;
+         }
+
+         upper = 2.0*cornishFisherEps(*this, v0_, v, t,1e-3);
+
+         return SegmentIntegral(100)(
+             boost::lambda::bind(&int_ph, *this, a, x,
+                                      boost::lambda::_1, v0_, v, t),
+               QL_EPSILON, upper)
+               * boost::math::pdf(
+                     boost::math::non_central_chi_squared_distribution<Real>(
+                         4*theta_*kappa_/(sigma_*sigma_),
+                         4*kappa_*std::exp(-kappa_*t)
+                         /((sigma_*sigma_)*(1-std::exp(-kappa_*t)))*v0_),
+                     v/k) / k;
+     }
 
     Disposable<Array> HestonProcess::evolve(Time t0, const Array& x0,
                                             Time dt, const Array& dw) const {
