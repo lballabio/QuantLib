@@ -1681,8 +1681,7 @@ void FdHestonTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
     SavedSettings backup;
 
     const DayCounter dc = ActualActual();
-    //const Date todaysDate = Date(28, Dec, 2012);
-    const Date todaysDate(5, July, 2002);
+    const Date todaysDate = Date(28, Dec, 2012);
     Settings::instance().evaluationDate() = todaysDate;
 
     const Date maturityDate = todaysDate + Period(1, Years);
@@ -1691,12 +1690,12 @@ void FdHestonTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
     const Real s0 = 100;
     const Real x0 = std::log(s0);
     const Rate r = 0.0;
-    const Rate q = 0.00;
+    const Rate q = 0.0;
 
     const Real kappa =  1.0;
     const Real theta =  1.0;
-    const Real rho   = -0.0;
-    const Real sigma =  0.01;
+    const Real rho   = -0.75;
+    const Real sigma =  0.02;
     const Real v0    =  theta;
 
     const FdmSquareRootFwdOp::TransformationType transform
@@ -1713,8 +1712,8 @@ void FdHestonTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
         new HestonProcess(rTS, qTS, spot, v0, kappa, theta, sigma, rho));
 
     const Size xGrid = 201;
-    const Size vGrid = 501;
-    const Size tGrid = 50;
+    const Size vGrid = 401;
+    const Size tGrid = 25;
 
     const Real upperBound
         = invStationaryDistributionFct(kappa, theta, sigma, 0.99);
@@ -1729,17 +1728,10 @@ void FdHestonTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
     const boost::shared_ptr<Fdm1dMesher> varianceMesher(
             new Concentrating1dMesher(lowerBound, upperBound, vGrid, critPoints));
 
-//    const boost::shared_ptr<Fdm1dMesher> equityMesher(
-//        new FdmBlackScholesMesher(
-//            xGrid,
-//            FdmBlackScholesMesher::processHelper(
-//              hestonProcess->s0(), hestonProcess->dividendYield(),
-//              hestonProcess->riskFreeRate(), 2.0),
-//              maturity, s0));
 
     const boost::shared_ptr<Fdm1dMesher> equityMesher(
-    	new Concentrating1dMesher(std::log(1), std::log(600.0), xGrid,
-    		std::make_pair(x0, 0.001), true));
+    	new Concentrating1dMesher(std::log(2), std::log(600.0), xGrid,
+    		std::make_pair(x0+0.005, 0.1), true));
 
     const boost::shared_ptr<FdmMesherComposite>
         mesher(new FdmMesherComposite(equityMesher, varianceMesher));
@@ -1753,11 +1745,11 @@ void FdHestonTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
 
     // step two days using non-correlated process
     const Time eT = 2.0/365;
-    Array p(mesher->layout()->size(), 0.0);
-    //BOOST_TEST_MESSAGE("smooting delta function.."
-    //);
+
+
 
     Real v=-Null<Real>(), p_v;
+    Array p(mesher->layout()->size(), 0.0);
     const Real bsV0 = square<Real>()(
     	lvProcess->blackVolatility()->blackVol(0.0, s0, true));
 
@@ -1776,11 +1768,13 @@ void FdHestonTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
     const Time dt = (maturity-eT)/tGrid;
 
 
-    //--- test LV/leverage
 
     Real denseStrikes[] =
-    { 2.222222222, 11.11111111, 20, 25, 30, 35, 40, 44.44444444, 50, 55, 60, 65, 70, 75.55555556, 80, 84.44444444, 88.88888889, 93.33333333, 97.77777778, 100,
-      102.2222222, 106.6666667, 111.1111111, 115.5555556, 120, 124.4444444, 166.6666667, 222.2222222, 444.4444444, 666.6666667 };
+    { 2.222222222, 11.11111111, 20, 25, 30, 35, 40,
+      44.44444444, 50, 55, 60, 65, 70, 75.55555556,
+      80, 84.44444444, 88.88888889, 93.33333333, 97.77777778, 100,
+      102.2222222, 106.6666667, 111.1111111, 115.5555556, 120,
+      124.4444444, 166.6666667, 222.2222222, 444.4444444, 666.6666667 };
 
     const std::vector<Real> ds(denseStrikes, denseStrikes+LENGTH(denseStrikes));
 
@@ -1793,7 +1787,6 @@ void FdHestonTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
 
     const boost::shared_ptr<PricingEngine> lvEngine(
         new AnalyticEuropeanEngine(lvProcess));
-    //--- LV structures for comparison calculation
 
     const boost::shared_ptr<FdmLinearOpComposite> hestonFwdOp(
         new FdmHestonFwdOp(mesher, hestonProcess, transform, leverage));
@@ -1805,28 +1798,24 @@ void FdHestonTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
     Time t=dt;
     evolver.setStep(dt);
 
-    BOOST_TEST_MESSAGE("start evolve\n");
     for (Size i=0; i < tGrid; ++i, t+=dt) {
         evolver.step(p, t);
     }
-    BOOST_TEST_MESSAGE("finished evolve\n");
 
     const boost::shared_ptr<Exercise> exercise(
         new EuropeanExercise(maturityDate));
 
-    //const Real strikes[] = { 44.4, 80, 93.3, 100, 111.1, 120, 166.6, 222.2 };
 
-    //for (Size s=0; i < LENGTH(strikes); ++i) {
-    for (Size strike=3; strike < 200.0; ++strike) {
-        //const Real strike = strikes[i];
+    const boost::shared_ptr<PricingEngine> fdmEngine(
+    	new FdBlackScholesVanillaEngine(lvProcess, 50, 201, 0,
+    									FdmSchemeDesc::Douglas(), true,0.2));
+
+    for (Size strike=5; strike < 200.0; ++strike) {
 
         const boost::shared_ptr<StrikedTypePayoff> payoff(
             new CashOrNothingPayoff(Option::Put, strike, 1.0));
 
 
-//        const boost::shared_ptr<StrikedTypePayoff> payoff(
-//            new PlainVanillaPayoff((strike > s0) ? Option::Call :
-//                                                   Option::Put, strike));
 
         Array pd(p.size());
         for (FdmLinearOpIterator iter = layout->begin();
@@ -1840,27 +1829,23 @@ void FdHestonTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
         const Real calculated
             = fokkerPlanckPrice2D(pd, mesher)*rTS->discount(maturityDate);
 
-        const boost::shared_ptr<PricingEngine> fdmEngine(
-        	new FdBlackScholesVanillaEngine(lvProcess, 25, 200, 0,
-        									FdmSchemeDesc::Douglas(), true,0.2));
 
         VanillaOption option(payoff, exercise);
-//        option.setPricingEngine(fdmEngine);
-//        const Real expectedHeston = option.NPV();
         option.setPricingEngine(fdmEngine);
-        const Real expectedLV = option.NPV();
-        BOOST_TEST_MESSAGE("strike " << strike << " " << calculated << " " << expectedLV);// << ",\t (" << expectedHeston << ")");
 
-        //const Real tol = 1000.1;
-        //if (std::fabs(expected - calculated ) > tol) {
-        //    BOOST_FAIL("failed to reproduce Heston prices at"
-        //               << "\n   strike      " << strike
-        //               << QL_FIXED << std::setprecision(5)
-        //               << "\n   calculated: " << calculated
-        //               << "\n   expected:   " << expected
-        //               << "\n   tolerance:  " << tol);
-        //}
+        const Real expected = option.NPV();
+
+        const Real tol = 0.015;
+        if (std::fabs(expected - calculated ) > tol) {
+            BOOST_FAIL("failed to reproduce Heston prices at"
+                       << "\n   strike      " << strike
+                       << QL_FIXED << std::setprecision(5)
+                       << "\n   calculated: " << calculated
+                       << "\n   expected:   " << expected
+                       << "\n   tolerance:  " << tol);
     }
+}
+
 }
 
 
@@ -1961,8 +1946,6 @@ void FdHestonTest::testBlackScholesFokkerPlanckFwdEquationLocalVol() {
                                       payoff, x0, maturity, tGrid)*rTS->discount(maturityDate);
             const Real tol = 0.05;
 
-            BOOST_TEST_MESSAGE("date " << dates[i] << " strike " << strikes[j] << ", " << calcUniform  << ", " << calcConcentrated  << ", " << calcShifted << ", " << expected
-            );
             if (std::fabs(expected - calcUniform) > tol) {
                 BOOST_FAIL("failed to reproduce european option price "
                            << "with an uniform mesher"
@@ -1997,7 +1980,7 @@ void FdHestonTest::testBlackScholesFokkerPlanckFwdEquationLocalVol() {
 namespace {
 	Volatility safeLocalVolAccess(
 		const boost::shared_ptr<LocalVolSurface>& localVol,
-		Time t,	Real spot, Volatility override = 0.2) {
+		Time t,	Real spot, Volatility override = 0.3) {
 
 		return 0.3;
 
@@ -2022,12 +2005,12 @@ void FdHestonTest::testLSVCalibration() {
     const Calendar calendar = TARGET();
     const DayCounter dayCounter = Actual365Fixed();
 
-    const Size nMonths = 6*12;
+    const Size nMonths = 12;
     std::vector<Date> maturityDates;
     std::vector<Time> maturities;
     maturities.reserve(nMonths);
     maturityDates.reserve(nMonths);
-    for (Size i=0; i < nMonths; ++i) {
+    for (Size i=1; i <= nMonths; ++i) {
     	maturityDates.push_back(todaysDate + Period(i, Months));
     	maturities.push_back(
     		dayCounter.yearFraction(todaysDate, maturityDates.back()));
@@ -2041,11 +2024,17 @@ void FdHestonTest::testLSVCalibration() {
     const Rate r = 0.035;
     const Rate q = 0.01;
 
-    const Real v0    = 0.195662;
+//    const Real v0    = 0.195662;
+//    const Real kappa = 1.0;
+//    const Real theta = 0.3; //0.0745911;
+//    const Real sigma = 0.25;//0.4882;
+//    const Real rho   =-0.511493;
+
+    const Real v0    = 0.19;
     const Real kappa = 1.0;
-    const Real theta = 0.3; //0.0745911;
-    const Real sigma = 0.25;//0.4882;
-    const Real rho   =-0.511493;
+	const Real theta = 0.06; //0.0745911;
+	const Real sigma = 0.20;//0.4882;
+	const Real rho   = -0.5;
 
     const Handle<YieldTermStructure> rTS(
         flatRate(todaysDate, r, dayCounter));
@@ -2102,9 +2091,9 @@ void FdHestonTest::testLSVCalibration() {
     const boost::shared_ptr<FdmMesherComposite>
         mesher(new FdmMesherComposite(spotMesher, varianceMesher));
 
-    const Time eT = 2.0/365;
+    const Time eT = 5.0/365;
     // greens function uses ATM local vol for the equity part
-    const Volatility atmLv = localVol->localVol(0.0, s0, true);
+    const Volatility atmLv = safeLocalVolAccess(localVol, 0.0, s0);
     Array p = FdmHestonGreensFct(mesher,
     	boost::shared_ptr<HestonProcess>(new HestonProcess(
     	    rTS, qTS, spot, atmLv*atmLv, kappa, theta, sigma, rho)),
@@ -2116,8 +2105,8 @@ void FdHestonTest::testLSVCalibration() {
     TimeGrid timeGrid(mandatoryTimeSteps.begin(), mandatoryTimeSteps.end(),
     				  maturity*tGridPerYear);
 
-    const Array x(spotMesher->locations().begin(),
-    			  spotMesher->locations().end());
+    const Array x(Exp(Array(spotMesher->locations().begin(),
+    			  	  	  	spotMesher->locations().end())));
     const Array v(varianceMesher->locations().begin(),
     			  varianceMesher->locations().end());
     const Array tMesh(timeGrid.begin()+1, timeGrid.end());
@@ -2134,7 +2123,7 @@ void FdHestonTest::testLSVCalibration() {
     							  x.begin(), x.end(), L));
 
 	const boost::shared_ptr<FdmLinearOpComposite> hestonFwdOp(
-		new FdmHestonFwdOp(mesher, hestonProcess, trafoType));
+		new FdmHestonFwdOp(mesher, hestonProcess, trafoType, leverageFct));
 
     HundsdorferScheme evolver(FdmSchemeDesc::Hundsdorfer().theta,
                               FdmSchemeDesc::Hundsdorfer().mu, hestonFwdOp);
@@ -2151,20 +2140,29 @@ void FdHestonTest::testLSVCalibration() {
     		const Real pInt = DiscreteSimpsonIntegral()(v, pSlice);
     		const Real vpInt = DiscreteSimpsonIntegral()(v, v*pSlice);
 
-    		const Real spot = std::exp(x[j]);
+    		const Real spot = x[j];
     		const Real scale = pInt/vpInt;
     		const Real l = (scale >= 0.0)
     			? safeLocalVolAccess(localVol, t, spot)*std::sqrt(scale)
     		    : 1.0;
 
-    		std::cout << std::max(0.0, std::min(10.0,l)) << ", ";
 
-    		std::fill(L.row_begin(j)+i, L.row_end(j), l);
+    		std::fill(L.row_begin(j)+i, L.row_end(j),
+    		    				  std::min(5.0, std::max(0.01, l)));
     	}
-    	std::cout << std::endl;
 
     	evolver.setStep(dt);
     	evolver.step(p, t);
+    }
+
+	for (Size j=0; j < x.size(); ++j) {
+		Array pSlice(vGrid);
+		for (Size k=0; k < vGrid; ++k)
+			pSlice[k] = p[j + k*xGrid];
+
+		const Real pInt = DiscreteSimpsonIntegral()(v, pSlice);
+
+		std::cout << tMesh.back() << " " << std::log(x[j]) << " " << pInt << std::endl;
     }
 }
 
