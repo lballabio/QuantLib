@@ -141,10 +141,6 @@
 #define QL_MAX_REAL            ((std::numeric_limits<QL_REAL>::max)())
 #define QL_MIN_POSITIVE_REAL   ((std::numeric_limits<QL_REAL>::min)())
 #define QL_EPSILON             ((std::numeric_limits<QL_REAL>::epsilon)())
-#define QL_INFINITY                                                            \
-    ((std::numeric_limits<QL_REAL>::has_infinity                               \
-          ? std::numeric_limits<QL_REAL>::infinity()                           \
-          : QL_MAX_REAL))
 // specific values---these should fit into any Integer or Real
 #define QL_NULL_INTEGER        ((std::numeric_limits<int>::max)())
 #define QL_NULL_REAL           ((std::numeric_limits<float>::max)())
