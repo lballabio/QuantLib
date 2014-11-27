@@ -265,10 +265,10 @@ namespace QuantLib {
         Real e_0_T = stateProcess_->expectation(0.0, 0.0, T);
 
         if (t < QL_EPSILON) {
-            stdDev_0_t = 0.0;
+            //stdDev_0_t = 0.0;
             stdDev_t_T = stdDev_0_T;
-            e_0_t = 0.0;
-            x_t = 0.0;
+            //e_0_t = 0.0;
+            //x_t = 0.0;
             e_t_T = e_0_T;
         } else {
             stdDev_0_t = stateProcess_->stdDeviation(0.0, 0.0, t);

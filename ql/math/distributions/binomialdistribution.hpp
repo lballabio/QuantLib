@@ -86,9 +86,11 @@ namespace QuantLib {
     : n_(n) {
 
         if (p==0.0) {
+            logP_ = -QL_MAX_REAL;
             logOneMinusP_ = 0.0;
         } else if (p==1.0) {
             logP_ = 0.0;
+            logOneMinusP_ = -QL_MAX_REAL;
         } else {
             QL_REQUIRE(p>0, "negative p not allowed");
             QL_REQUIRE(p<1.0, "p>1.0 not allowed");
