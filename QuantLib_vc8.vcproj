@@ -2435,6 +2435,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\math\distributions\bivariatestudenttdistribution.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\distributions\bivariatestudenttdistribution.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\distributions\chisquaredistribution.cpp"
 					>
 				</File>
@@ -7172,6 +7180,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\exoticoptions\continuousarithmeticasianlevyengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\continuousarithmeticasianvecerengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\exoticoptions\continuousarithmeticasianvecerengine.hpp"
 					>
 				</File>
 				<File

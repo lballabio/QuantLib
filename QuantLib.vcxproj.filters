@@ -1035,6 +1035,9 @@
     <ClInclude Include="ql\math\distributions\bivariatenormaldistribution.hpp">
       <Filter>math\distributions</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\distributions\bivariatestudenttdistribution.hpp">
+      <Filter>math\distributions</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\distributions\chisquaredistribution.hpp">
       <Filter>math\distributions</Filter>
     </ClInclude>
@@ -1152,7 +1155,7 @@
     <ClInclude Include="ql\math\randomnumbers\mt19937uniformrng.hpp">
       <Filter>math\randomnumbers</Filter>
     </ClInclude>
-    <ClInclude Include="ql\math\randomnumbers\primitivepolynomials.h">
+    <ClInclude Include="ql\math\randomnumbers\primitivepolynomials.hpp">
       <Filter>math\randomnumbers</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\randomnumbers\randomizedlds.hpp">
@@ -2922,6 +2925,9 @@
     <ClInclude Include="ql\experimental\exoticoptions\continuousarithmeticasianlevyengine.hpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\exoticoptions\continuousarithmeticasianvecerengine.hpp">
+      <Filter>experimental\exoticoptions</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\exoticoptions\everestoption.hpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClInclude>
@@ -4262,6 +4268,9 @@
     <ClCompile Include="ql\math\distributions\bivariatenormaldistribution.cpp">
       <Filter>math\distributions</Filter>
     </ClCompile>
+    <ClCompile Include="ql\math\distributions\bivariatestudenttdistribution.cpp">
+      <Filter>math\distributions</Filter>
+    </ClCompile>
     <ClCompile Include="ql\math\distributions\chisquaredistribution.cpp">
       <Filter>math\distributions</Filter>
     </ClCompile>
@@ -4346,7 +4355,7 @@
     <ClCompile Include="ql\math\randomnumbers\mt19937uniformrng.cpp">
       <Filter>math\randomnumbers</Filter>
     </ClCompile>
-    <ClCompile Include="ql\math\randomnumbers\primitivepolynomials.c">
+    <ClCompile Include="ql\math\randomnumbers\primitivepolynomials.cpp">
       <Filter>math\randomnumbers</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\randomnumbers\seedgenerator.cpp">
@@ -5559,6 +5568,9 @@
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\continuousarithmeticasianlevyengine.cpp">
+      <Filter>experimental\exoticoptions</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\exoticoptions\continuousarithmeticasianvecerengine.cpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\everestoption.cpp">
