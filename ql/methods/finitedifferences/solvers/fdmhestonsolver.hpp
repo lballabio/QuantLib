@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008, 2009 Ralph Schreyer
- Copyright (C) 2008, 2009, 2011 Klaus Spanderen
+ Copyright (C) 2008, 2009, 2011, 2014 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,6 +26,7 @@
 #define quantlib_fdm_heston_solver_hpp
 
 #include <ql/handle.hpp>
+#include <ql/math/interpolations/interpolation2d.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmquantohelper.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmsolverdesc.hpp>
@@ -44,7 +45,9 @@ namespace QuantLib {
             const FdmSolverDesc& solverDesc,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
             const Handle<FdmQuantoHelper>& quantoHelper
-                                                = Handle<FdmQuantoHelper>());
+                                                = Handle<FdmQuantoHelper>(),
+            const boost::shared_ptr<Interpolation2D>& leverageFct
+            	= boost::shared_ptr<Interpolation2D>());
 
         Real valueAt(Real s, Real v) const;
         Real thetaAt(Real s, Real v) const;
@@ -68,6 +71,7 @@ namespace QuantLib {
         const FdmSolverDesc solverDesc_;
         const FdmSchemeDesc schemeDesc_;
         const Handle<FdmQuantoHelper> quantoHelper_;
+        const boost::shared_ptr<Interpolation2D> leverageFct_;
 
         mutable boost::shared_ptr<Fdm2DimSolver> solver_;
     };

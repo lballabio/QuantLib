@@ -35,8 +35,10 @@ namespace QuantLib {
 	FdmHestonGreensFct::FdmHestonGreensFct(
 		const boost::shared_ptr<FdmMesher>& mesher,
 		const boost::shared_ptr<HestonProcess>& process,
-        FdmSquareRootFwdOp::TransformationType trafoType_)
-    : mesher_(mesher),
+        FdmSquareRootFwdOp::TransformationType trafoType_,
+		const Real l0)
+    : l0_(l0),
+      mesher_(mesher),
       process_(process),
       trafoType_(trafoType_) { }
 
@@ -47,7 +49,7 @@ namespace QuantLib {
 
 		const Real s0    = process_->s0()->value();
 		const Real v0    = process_->v0();
-		const Real x0    = std::log(s0) + (r-q-0.5*v0)*t ;
+		const Real x0    = std::log(s0) + (r-q-0.5*v0*l0_*l0_)*t;
 
   		const Real rho   = process_->rho();
 		const Real theta = process_->theta();
@@ -70,7 +72,7 @@ namespace QuantLib {
 	          case ZeroCorrelation:
 	          {
 	  			const Real p_x = 1.0/(std::sqrt(M_TWOPI*v0*t))
-	  	                * std::exp(-0.5*square<Real>()(x - x0)/(v0*t));
+	  	                * std::exp(-0.5*square<Real>()(x - x0)/(v0*l0_*l0_*t));
 	  			const Real p_v = squareRootProcessGreensFct(v0, kappa, theta,
 	  														sigma, t, v);
 	  			retVal = p_v*p_x;
@@ -81,7 +83,7 @@ namespace QuantLib {
 	          break;
 	          case Gaussian:
 	          {
-	        	const Real sd_x = std::sqrt(v0*t);
+	        	const Real sd_x = l0_*std::sqrt(v0*t);
 	        	const Real sd_v = sigma*std::sqrt(v0*t);
 	        	const Real z0 = v0 + kappa*(theta - v0)*t;
 	        	retVal = 1.0/(M_TWOPI*sd_x*sd_v*std::sqrt(1-rho*rho))
