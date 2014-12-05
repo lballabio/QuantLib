@@ -162,10 +162,6 @@ ZabrModel::fdPrice(const std::vector<Real> &strikes) const {
 
     // Boundary conditions
     FdmBoundaryConditionSet boundaries;
-    boundaries.push_back(boost::shared_ptr<BoundaryCondition<FdmLinearOp> >(
-        new FdmDirichletBoundary(
-            // for strike = start call is worth forward - start
-            mesher, forward_ - start, 0, FdmDirichletBoundary::Lower)));
 
     // initial values
     Array rhs(mesher->layout()->size());
@@ -294,12 +290,7 @@ Real ZabrModel::fullFdPrice(const Real strike) const {
 
     // Boundary conditions
     FdmBoundaryConditionSet boundaries;
-    boost::shared_ptr<FdmDirichletBoundary> b_dirichlet(
-        new FdmDirichletBoundary(
-            mesher, 0.0, 0,
-            FdmDirichletBoundary::Lower)); // call is worth zero for forward = 0
 
-    boundaries.push_back(b_dirichlet);
     boost::shared_ptr<FdmZabrOp> map(
         new FdmZabrOp(mesher, beta_, nu_, rho_, gamma_));
     FdmBackwardSolver solver(map, boundaries,
