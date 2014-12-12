@@ -107,6 +107,17 @@ namespace QuantLib {
         QL_REQUIRE(centralIndex < k_.size() - 1 && centralIndex > 1,
                    "Atm point in moneyness grid ("
                        << centralIndex << ") too close to boundary.");
+
+        // shift central index to the right if necessary
+        // (sometimes even the atm point lies in an arbitrageable area)
+
+        while (!af(centralIndex, centralIndex, centralIndex + 1) &&
+               centralIndex < k_.size() - 1)
+            centralIndex++;
+
+        QL_REQUIRE(centralIndex < k_.size(),
+                   "central index is at right boundary")
+
         leftIndex_ = centralIndex;
         rightIndex_ = centralIndex;
 
@@ -179,7 +190,7 @@ namespace QuantLib {
         if (i >= i1)
             return true;
         Real q2 = (c_[i + 1] - c_[i]) / (k_[i + 1] - k_[i]);
-        if (q1 <= q2)
+        if (q1 <= q2 && q2 <= 0.0)
             return true;
         return false;
     }
