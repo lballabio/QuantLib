@@ -632,8 +632,11 @@ namespace QuantLib {
                 modelOutputs_.marketZerorate_.push_back(
                     termStructure()->zeroRate(times_[i], QuantLib::Continuous,
                                               QuantLib::Annual));
+                // we need to put a small positive time here since the zerobond
+                // implementation optimizes the case t=0.0 then using the
+                // initial yts
                 modelOutputs_.modelZerorate_.push_back(
-                    -std::log(zerobond(times_[i])) / times_[i]);
+                    -std::log(zerobond(times_[i], 1.0E-10)) / times_[i]);
             }
 
             // volatility surface
