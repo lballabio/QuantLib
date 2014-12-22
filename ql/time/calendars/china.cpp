@@ -62,6 +62,7 @@ namespace QuantLib {
             || (y == 2012 && (d == 2 || d == 3) && m == January)
             || (y == 2013 && d <= 3 && m == January)
             || (y == 2014 && d == 1 && m == January)
+            || (y == 2015 && d <= 3 && m == January)
             // Chinese New Year
             || (y == 2004 && d >= 19 && d <= 28 && m == January)
             || (y == 2005 && d >=  7 && d <= 15 && m == February)
@@ -76,6 +77,7 @@ namespace QuantLib {
             || (y == 2013 && d >= 11 && d <= 15 && m == February)
             || (y == 2014 && d >= 31 && m == January)
             || (y == 2014 && d <= 6 && m == February)
+            || (y == 2015 && d >= 18 && d <= 24 && m == February)
             // Ching Ming Festival
             || (y <= 2008 && d == 4 && m == April)
             || (y == 2009 && d == 6 && m == April)
@@ -84,6 +86,7 @@ namespace QuantLib {
             || (y == 2012 && d >= 2 && d <= 4 && m == April)
             || (y == 2013 && d >= 4 && d <= 5 && m == April)
             || (y == 2014 && d == 7 && m == April)
+            || (y == 2015 && d >= 5 && d <= 6 && m == April)
             // Labor Day
             || (y <= 2007 && d >= 1 && d <= 7 && m == May)
             || (y == 2008 && d >= 1 && d <= 2 && m == May)
@@ -95,6 +98,7 @@ namespace QuantLib {
             || (y == 2013 && ((d >= 29 && m == April) ||
                               (d == 1 && m == May)))
             || (y == 2014 && d >= 1 && d <=3 && m == May)
+            || (y == 2015 && d == 1 && m == May)
             // Tuen Ng Festival
             || (y <= 2008 && d == 9 && m == June)
             || (y == 2009 && (d == 28 || d == 29) && m == May)
@@ -103,6 +107,7 @@ namespace QuantLib {
             || (y == 2012 && d >= 22 && d <= 24 && m == June)
             || (y == 2013 && d >= 10 && d <= 12 && m == June)
             || (y == 2014 && d == 2 && m == June)
+            || (y == 2015 && d == 22 && m == June)
             // Mid-Autumn Festival
             || (y <= 2008 && d == 15 && m == September)
             || (y == 2010 && d >= 22 && d <= 24 && m == September)
@@ -110,6 +115,7 @@ namespace QuantLib {
             || (y == 2012 && d == 30 && m == September)
             || (y == 2013 && d >= 19 && d <= 20 && m == September)
             || (y == 2014 && d == 8 && m == September)
+            || (y == 2015 && d == 27 && m == September)
             // National Day
             || (y <= 2007 && d >= 1 && d <= 7 && m == October)
             || (y == 2008 && ((d >= 29 && m == September) ||
@@ -120,6 +126,7 @@ namespace QuantLib {
             || (y == 2012 && d >= 1 && d <= 7 && m == October)
             || (y == 2013 && d >= 1 && d <= 7 && m == October)
             || (y == 2014 && d >= 1 && d <= 7 && m == October)
+            || (y == 2015 && d >= 1 && d <= 7 && m == October)
             )
             return false;
         return true;
@@ -208,7 +215,12 @@ namespace QuantLib {
             Date(8,February,2014),
             Date(4,May,2014),
             Date(28,September,2014),
-            Date(11,October,2014)
+            Date(11,October,2014),
+            // 2015
+            Date(4,January,2015),
+            Date(15,February,2015),
+            Date(28,February,2015),
+            Date(10,October,2015)
         };
         static const Size n =
             sizeof(working_weekends)/sizeof(working_weekends[0]);
