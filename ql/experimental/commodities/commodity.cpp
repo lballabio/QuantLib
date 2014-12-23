@@ -50,7 +50,7 @@ namespace QuantLib {
         for (SecondaryCostAmounts::const_iterator i = secondaryCostAmounts.begin();
              i != secondaryCostAmounts.end(); ++i) {
             Real amount = i->second.value();
-            if (currencyCode.empty())
+            if (currencyCode == "")
                 currencyCode = i->second.currency().code();
             totalAmount += amount;
             out << std::setw(28) << std::left << i->first
