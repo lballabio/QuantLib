@@ -22,12 +22,25 @@
 
 namespace QuantLib {
 
-    Russia::Russia() {
+    Russia::Russia(Russia::Market market) {
         // all calendar instances share the same implementation
         // instance
         static boost::shared_ptr<Calendar::Impl> settlementImpl(
                                                   new Russia::SettlementImpl);
-        impl_ = settlementImpl;
+        static boost::shared_ptr<Calendar::Impl> exchangeImpl(
+          new Russia::ExchangeImpl);
+        
+        switch (market)
+        {
+        case Settlement:
+          impl_ = settlementImpl;
+          break;
+        case Exchange:
+          impl_ = exchangeImpl;
+          break;
+        default:
+          QL_FAIL("unknown market");
+        }
     }
 
 
@@ -60,4 +73,106 @@ namespace QuantLib {
         return true;
     }
 
+  bool Russia::ExchangeImpl::isHoliday2015(const Date& date) const
+  {
+    Month month = date.month();
+    Day d = date.dayOfMonth();
+    switch (month) {
+    case 1: return (d == 1 || d == 2 || d == 3 || d == 4 || d == 7 || d == 10 || d == 11 || d == 17 || d == 18 || d == 24 || d == 25 || d == 31);
+    case 2: return (d == 1 || d == 7 || d == 8 || d == 14 || d == 15 || d == 21 || d == 22 || d == 23 || d == 28);
+    case 3: return (d == 1 || d == 7 || d == 8 || d == 9 || d == 14 || d == 15 || d == 21 || d == 22 || d == 28 || d == 29);
+    case 4: return (d == 4 || d == 5 || d == 11 || d == 12 || d == 18 || d == 19 || d == 25 || d == 26);
+    case 5: return (d == 1 || d == 2 || d == 3 || d == 9 || d == 10 || d == 11 || d == 16 || d == 17 || d == 23 || d == 24 || d == 30 || d == 31);
+    case 6: return (d == 6 || d == 7 || d == 12 || d == 13 || d == 14 || d == 20 || d == 21 || d == 27 || d == 28);
+    case 7: return (d == 4 || d == 5 || d == 11 || d == 12 || d == 18 || d == 19 || d == 25 || d == 26);
+    case 8: return (d == 1 || d == 2 || d == 8 || d == 9 || d == 15 || d == 16 || d == 22 || d == 23 || d == 29 || d == 30);
+    case 9: return (d == 5 || d == 6 || d == 12 || d == 13 || d == 19 || d == 20 || d == 26 || d == 27);
+    case 10: return (d == 3 || d == 4 || d == 10 || d == 11 || d == 17 || d == 18 || d == 24 || d == 25 || d == 31);
+    case 11: return (d == 1 || d == 4 || d == 7 || d == 8 || d == 14 || d == 15 || d == 21 || d == 22 || d == 28 || d == 29);
+    case 12: return (d == 5 || d == 6 || d == 12 || d == 13 || d == 19 || d == 20 || d == 26 || d == 27 || d == 31);
+    }
+    return false;
+  }
+
+  bool Russia::ExchangeImpl::isHoliday2014(const Date& date) const
+  {
+    Month month = date.month();
+    Day d = date.dayOfMonth();
+    switch (month) {
+    case 1: return (d == 1 || d == 2 || d == 3 || d == 4 || d == 5 || d == 7 || d == 11 || d == 12 || d == 18 || d == 19 || d == 25 || d == 26);
+    case 2: return (d == 1 || d == 2 || d == 8 || d == 9 || d == 15 || d == 16 || d == 22 || d == 23);
+    case 3: return (d == 1 || d == 2 || d == 8 || d == 9 || d == 10 || d == 15 || d == 16 || d == 22 || d == 23 || d == 29 || d == 30);
+    case 4: return (d == 5 || d == 6 || d == 12 || d == 13 || d == 19 || d == 20 || d == 26 || d == 27);
+    case 5: return (d == 1 || d == 3 || d == 4 || d == 9 || d == 10 || d == 11 || d == 17 || d == 18 || d == 24 || d == 25 || d == 31);
+    case 6: return (d == 1 || d == 7 || d == 8 || d == 12 || d == 14 || d == 15 || d == 21 || d == 22 || d == 28 || d == 29);
+    case 7: return (d == 5 || d == 6 || d == 12 || d == 13 || d == 19 || d == 20 || d == 26 || d == 27);
+    case 8: return (d == 2 || d == 3 || d == 9 || d == 10 || d == 16 || d == 17 || d == 23 || d == 24 || d == 30 || d == 31);
+    case 9: return (d == 6 || d == 7 || d == 13 || d == 14 || d == 20 || d == 21 || d == 27 || d == 28);
+    case 10: return (d == 4 || d == 5 || d == 11 || d == 12 || d == 18 || d == 19 || d == 25 || d == 26);
+    case 11: return (d == 1 || d == 2 || d == 4 || d == 8 || d == 9 || d == 15 || d == 16 || d == 22 || d == 23 || d == 29 || d == 30);
+    case 12: return (d == 6 || d == 7 || d == 13 || d == 14 || d == 20 || d == 21 || d == 27 || d == 28 || d == 31);
+    }
+    return false;
+  }
+
+  bool Russia::ExchangeImpl::isHoliday2013(const Date& date) const
+  {
+    Month month = date.month();
+    Day d = date.dayOfMonth();
+    switch (month) {
+    case 1: return (d == 1 || d == 2 || d == 3 || d == 4 || d == 5 || d == 6 || d == 7 || d == 12 || d == 13 || d == 19 || d == 20 || d == 26 || d == 27);
+    case 2: return (d == 2 || d == 3 || d == 9 || d == 10 || d == 16 || d == 17 || d == 23 || d == 24);
+    case 3: return (d == 2 || d == 3 || d == 8 || d == 9 || d == 10 || d == 16 || d == 17 || d == 23 || d == 24 || d == 30 || d == 31);
+    case 4: return (d == 6 || d == 7 || d == 13 || d == 14 || d == 20 || d == 21 || d == 27 || d == 28);
+    case 5: return (d == 1 || d == 4 || d == 5 || d == 9 || d == 11 || d == 12 || d == 18 || d == 19 || d == 25 || d == 26);
+    case 6: return (d == 1 || d == 2 || d == 8 || d == 9 || d == 12 || d == 15 || d == 16 || d == 22 || d == 23 || d == 29 || d == 30);
+    case 7: return (d == 6 || d == 7 || d == 13 || d == 14 || d == 20 || d == 21 || d == 27 || d == 28);
+    case 8: return (d == 3 || d == 4 || d == 10 || d == 11 || d == 17 || d == 18 || d == 24 || d == 25 || d == 31);
+    case 9: return (d == 1 || d == 7 || d == 8 || d == 14 || d == 15 || d == 21 || d == 22 || d == 28 || d == 29);
+    case 10: return (d == 5 || d == 6 || d == 12 || d == 13 || d == 19 || d == 20 || d == 26 || d == 27);
+    case 11: return (d == 2 || d == 3 || d == 4 || d == 9 || d == 10 || d == 16 || d == 17 || d == 23 || d == 24 || d == 30);
+    case 12: return (d == 1 || d == 7 || d == 8 || d == 14 || d == 15 || d == 21 || d == 22 || d == 28 || d == 29 || d == 31);
+    }
+    return false;
+  }
+
+  bool Russia::ExchangeImpl::isHoliday2012(const Date& date) const
+  {
+    Month month = date.month();
+    Day d = date.dayOfMonth();
+    switch (month) {
+    case 1: return (d == 1 || d == 2 || d == 7 || d == 8 || d == 14 || d == 15 || d == 21 || d == 22 || d == 28 || d == 29);
+    case 2: return (d == 4 || d == 5 || d == 11 || d == 12 || d == 18 || d == 19 || d == 23 || d == 25 || d == 26);
+    case 3: return (d == 3 || d == 4 || d == 8 || d == 9 || d == 10 || d == 17 || d == 18 || d == 24 || d == 25 || d == 31);
+    case 4: return (d == 1 || d == 7 || d == 8 || d == 14 || d == 15 || d == 21 || d == 22 || d == 29 || d == 30);
+    case 5: return (d == 1 || d == 6 || d == 9 || d == 13 || d == 19 || d == 20 || d == 26 || d == 27);
+    case 6: return (d == 2 || d == 3 || d == 10 || d == 11 || d == 12 || d == 16 || d == 17 || d == 23 || d == 24 || d == 30);
+    case 7: return (d == 1 || d == 7 || d == 8 || d == 14 || d == 15 || d == 21 || d == 22 || d == 28 || d == 29);
+    case 8: return (d == 4 || d == 5 || d == 11 || d == 12 || d == 18 || d == 19 || d == 25 || d == 26);
+    case 9: return (d == 1 || d == 2 || d == 8 || d == 9 || d == 15 || d == 16 || d == 22 || d == 23 || d == 29 || d == 30);
+    case 10: return (d == 6 || d == 7 || d == 13 || d == 14 || d == 20 || d == 21 || d == 27 || d == 28);
+    case 11: return (d == 3 || d == 4 || d == 5 || d == 10 || d == 11 || d == 17 || d == 18 || d == 24 || d == 25);
+    case 12: return (d == 1 || d == 2 || d == 8 || d == 9 || d == 15 || d == 16 || d == 22 || d == 23 || d == 29 || d == 30 || d == 31);
+    }
+    return false;
+  }
+
+  bool Russia::ExchangeImpl::isBusinessDay(const Date& date) const
+  {
+    // the exchange was formally established 2011, so data is only available
+    // from 2012 to present
+    auto year = date.year();
+
+    switch (year)
+    {
+    case 2012: return !isHoliday2012(date);
+    case 2013: return !isHoliday2013(date);
+    case 2014: return !isHoliday2014(date);
+    case 2015: return !isHoliday2015(date);
+    default: 
+      std::ostringstream oss;
+      oss << "MOEX calendar for the year " << year << " does not exist.";
+      QL_FAIL(oss.str());
+    }
+  }
 }
