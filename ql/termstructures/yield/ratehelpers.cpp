@@ -22,6 +22,7 @@
 
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/time/imm.hpp>
+#include <ql/time/calendars/jointcalendar.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/quote.hpp>
@@ -660,9 +661,13 @@ namespace QuantLib {
     }
 
     void BMASwapRateHelper::initializeDates() {
-        earliestDate_ = calendar_.advance(evaluationDate_,
-                                          settlementDays_*Days,
-                                          Following);
+        // if the evaluation date is not a business day
+        // then move to the next business day
+        JointCalendar jc(calendar_,
+                         iborIndex_->fixingCalendar());
+        Date referenceDate = jc.adjust(evaluationDate_);
+        earliestDate_ =
+            calendar_.advance(referenceDate, settlementDays_ * Days, Following);
 
         Date maturity = earliestDate_ + tenor_;
 
