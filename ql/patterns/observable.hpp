@@ -78,6 +78,10 @@ namespace QuantLib {
             registered with when they need to notify any changes.
         */
         virtual void update() = 0;
+        /*! register with all observables of a given observer. Note
+            that this does not include registering with the observer
+            itself. */
+        void registerWithObservables(const boost::shared_ptr<Observer>&);
       private:
         std::set<boost::shared_ptr<Observable> > observables_;
         typedef std::set<boost::shared_ptr<Observable> >::iterator iterator;
@@ -169,6 +173,15 @@ namespace QuantLib {
             return observables_.insert(h);
         }
         return std::make_pair(observables_.end(), false);
+    }
+
+    inline void
+    Observer::registerWithObservables(const boost::shared_ptr<Observer> &o) {
+        if (o) {
+            iterator i;
+            for (i = o->observables_.begin(); i != o->observables_.end(); ++i)
+                registerWith(*i);
+        }
     }
 
     inline

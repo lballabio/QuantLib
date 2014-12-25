@@ -28,6 +28,7 @@ namespace QuantLib {
         const boost::shared_ptr<Exercise> &exercise)
         : Option(boost::shared_ptr<Payoff>(), exercise), swap_(swap) {
         registerWith(swap_);
+        registerWithObservables(swap_);
     }
 
     bool FloatFloatSwaption::isExpired() const {
