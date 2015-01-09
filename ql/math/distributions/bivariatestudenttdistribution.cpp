@@ -52,8 +52,6 @@ namespace QuantLib {
         Real P_n(Real h, Real k, Natural n, Real rho) {
             Real unCor = 1.0 - rho*rho;
 
-            Real res;
-
             Real div = 4 * std::sqrt(n * M_PI);
             Real xHK = f_x(n, h, k, rho);
             Real xKH = f_x(n, k, h, rho);
@@ -118,7 +116,7 @@ namespace QuantLib {
                 Real hk = h * k;
                 Real hkcn = hk + rho * n;
                 Real sqrtExpr = std::sqrt(h*h - 2 * rho * hk + k*k + n * unCor);
-                res = arctan(std::sqrt(Real(n)) * (-(h + k) * hkcn - (hk - n) * sqrtExpr),
+                Real res = arctan(std::sqrt(Real(n)) * (-(h + k) * hkcn - (hk - n) * sqrtExpr),
                                   (hk - n) * hkcn - n * (h + k) * sqrtExpr ) / M_TWOPI;
 
                 if (n > 1) {

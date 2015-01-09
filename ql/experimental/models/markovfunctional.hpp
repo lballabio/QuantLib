@@ -308,6 +308,10 @@ namespace QuantLib {
                                                     : fixParameters);
         }
 
+        void update() {
+            LazyObject::update();
+        }
+
       protected:
 
         const Real numeraireImpl(const Time t, const Real y,
@@ -336,10 +340,6 @@ namespace QuantLib {
             std::vector<bool> c(volatilities_.size(), false);
             c[0] = true;
             return c;
-        }
-
-        void update() {
-            LazyObject::update();
         }
 
       private:
