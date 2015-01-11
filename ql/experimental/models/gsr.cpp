@@ -157,6 +157,13 @@ namespace QuantLib {
                 PiecewiseConstantParameter(volsteptimes_, NoConstraint());
         }
 
+        for (Size i = 0; i < sigma_.size(); i++) {
+            sigma_.setParam(i, volatilities_[i]->value());
+        }
+        for (Size i = 0; i < reversion_.size(); i++) {
+            reversion_.setParam(i, reversions_[i]->value());
+        }
+
         stateProcess_ = boost::shared_ptr<GsrProcess>(new GsrProcess(
             volsteptimesArray_, sigma_.params(), reversion_.params(), T));
 
@@ -169,7 +176,6 @@ namespace QuantLib {
         for(Size i=0;i<volatilities_.size();++i)
             registerWith(volatilities_[i]);
 
-        updateState();
     }
 
     const Real Gsr::zerobondImpl(const Time T, const Time t, const Real y,
