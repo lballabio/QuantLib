@@ -29,6 +29,8 @@
 #include <ql/experimental/math/tcopulapolicy.hpp>
 #include <ql/math/randomnumbers/boxmullergaussianrng.hpp>
 #include <ql/experimental/math/polarstudenttrng.hpp>
+#include <ql/handle.hpp>
+#include <ql/quote.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
