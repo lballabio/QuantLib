@@ -21,18 +21,15 @@
 #ifndef quantlib_gaussian_lhp_lossmodel_hpp
 #define quantlib_gaussian_lhp_lossmodel_hpp
 
-#include <numeric>
-
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
-
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/experimental/credit/recoveryratequote.hpp>
 #include <ql/quotes/simplequote.hpp>
-
 #include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/math/latentmodel.hpp>
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
+#include <numeric>
 
 /* Intended to replace GaussianLHPCDOEngine in 
     ql/experimental/credit/syntheticcdoengines.hpp

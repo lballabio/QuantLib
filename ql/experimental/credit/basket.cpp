@@ -18,12 +18,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <boost/make_shared.hpp>
-
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/credit/loss.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
+#include <boost/make_shared.hpp>
 
 using namespace std;
 

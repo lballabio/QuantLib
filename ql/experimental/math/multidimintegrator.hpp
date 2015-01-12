@@ -20,14 +20,12 @@
 #ifndef quantlib_math_multidimintegrator_hpp
 #define quantlib_math_multidimintegrator_hpp
 
-#include <vector>
-
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
-
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
 #include <ql/math/integrals/integral.hpp>
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
+#include <vector>
 
 namespace QuantLib {
 

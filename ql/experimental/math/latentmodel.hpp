@@ -20,24 +20,21 @@
 #ifndef quantlib_latent_model_hpp
 #define quantlib_latent_model_hpp
 
-#include <vector>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
-#include <boost/lambda/lambda.hpp>
-#include <boost/lambda/construct.hpp>
-#include <boost/make_shared.hpp>
-
 #include <ql/experimental/math/multidimquadrature.hpp>
 #include <ql/experimental/math/multidimintegrator.hpp>
 #include <ql/math/integrals/trapezoidintegral.hpp>
-
 #include <ql/math/randomnumbers/randomsequencegenerator.hpp>
-
 // for template spezs
 #include <ql/experimental/math/gaussiancopulapolicy.hpp>
 #include <ql/experimental/math/tcopulapolicy.hpp>
 #include <ql/math/randomnumbers/boxmullergaussianrng.hpp>
 #include <ql/experimental/math/polarstudenttrng.hpp>
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
+#include <boost/lambda/lambda.hpp>
+#include <boost/lambda/construct.hpp>
+#include <boost/make_shared.hpp>
+#include <vector>
 
 /*! \file latentmodel.hpp
     \brief Generic multifactor latent variable model.

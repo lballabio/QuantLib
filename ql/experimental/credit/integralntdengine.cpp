@@ -17,12 +17,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <numeric>
-
 #include <ql/experimental/credit/integralntdengine.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/experimental/credit/basket.hpp>
+#include <numeric>
 
 namespace QuantLib {
 
