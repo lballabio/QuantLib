@@ -2811,6 +2811,9 @@
     <ClInclude Include="ql\experimental\volatility\sabrvolsurface.hpp">
       <Filter>experimental\volatility</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\volatility\swaptionvolcube1a.hpp">
+      <Filter>experimental\volatility</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\volatility\volcube.hpp">
       <Filter>experimental\volatility</Filter>
     </ClInclude>

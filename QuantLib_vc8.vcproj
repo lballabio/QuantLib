@@ -7427,6 +7427,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\volatility\swaptionvolcube1a.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\volatility\volcube.cpp"
 					>
 				</File>

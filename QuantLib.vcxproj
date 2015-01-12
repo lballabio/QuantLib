@@ -1443,6 +1443,7 @@
     <ClInclude Include="ql\experimental\volatility\noarbsabrinterpolation.hpp" />
     <ClInclude Include="ql\experimental\volatility\noarbsabrsmilesection.hpp" />
     <ClInclude Include="ql\experimental\volatility\sabrvolsurface.hpp" />
+    <ClInclude Include="ql\experimental\volatility\swaptionvolcube1a.hpp" />
     <ClInclude Include="ql\experimental\volatility\volcube.hpp" />
     <ClInclude Include="ql\experimental\callablebonds\all.hpp" />
     <ClInclude Include="ql\experimental\callablebonds\blackcallablebondengine.hpp" />

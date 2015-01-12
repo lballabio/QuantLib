@@ -20216,3 +20216,13 @@ Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
+
+[Unit2016]
+FileName=ql\experimental\volatility\swaptionvolcube1a.hpp
+CompileCpp=1
+Folder=experimental/volatility
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
