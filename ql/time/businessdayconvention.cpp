@@ -33,8 +33,8 @@ namespace QuantLib {
             return out << "Following";
           case ModifiedFollowing:
             return out << "Modified Following";
-		  case HalfMonthModifiedFollowing:
-			return out << "Half-Month Modified Following";
+          case HalfMonthModifiedFollowing:
+            return out << "Half-Month Modified Following";
           case Preceding:
             return out << "Preceding";
           case ModifiedPreceding:

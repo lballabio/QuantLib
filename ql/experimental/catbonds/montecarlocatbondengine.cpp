@@ -73,7 +73,7 @@ namespace QuantLib {
 
     Real MonteCarloCatBondEngine::npv(bool includeSettlementDateFlows, Date settlementDate, Date npvDate, Real& lossProbability, Real &exhaustionProbability, Real& expectedLoss) const
     {
-	    const size_t MAX_PATHS = 10000; //TODO
+        const size_t MAX_PATHS = 10000; //TODO
         lossProbability =  0.0;
         exhaustionProbability = 0.0;
         expectedLoss = 0.0;

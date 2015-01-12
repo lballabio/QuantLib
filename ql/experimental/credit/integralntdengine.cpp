@@ -156,7 +156,7 @@ namespace QuantLib {
             }
         }
 
-		// The upfront might be due before the curve ref date...
+        // The upfront might be due before the curve ref date...
         if (!arguments_.premiumLeg[0]->hasOccurred(today))
             results_.upfrontPremiumValue =
                 arguments_.basket->remainingNotional() 

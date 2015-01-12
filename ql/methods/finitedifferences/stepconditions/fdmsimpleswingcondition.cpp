@@ -38,7 +38,7 @@ namespace QuantLib {
     void FdmSimpleSwingCondition::applyTo(Array& a, Time t) const {
         const std::vector<Time>::const_iterator iter
             = std::find(exerciseTimes_.begin(), exerciseTimes_.end(), t);
-		const Size maxExerciseValue=mesher_->layout()->dim()[swingDirection_]-1;
+        const Size maxExerciseValue=mesher_->layout()->dim()[swingDirection_]-1;
 
         if (iter != exerciseTimes_.end()) {
             Array retVal= a;

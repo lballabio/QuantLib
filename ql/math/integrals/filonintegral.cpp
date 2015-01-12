@@ -30,58 +30,58 @@
 #include <cmath>
 
 namespace QuantLib {
-	FilonIntegral::FilonIntegral(Type type, Real t, Size intervals)
-	: Integrator(Null<Real>(), intervals+1),
-	  type_(type),
-	  t_(t),
-	  intervals_(intervals),
-	  n_        (intervals/2){
-		QL_REQUIRE( !(intervals_ & 1), "number of intervals must be even");
-	}
+    FilonIntegral::FilonIntegral(Type type, Real t, Size intervals)
+    : Integrator(Null<Real>(), intervals+1),
+      type_(type),
+      t_(t),
+      intervals_(intervals),
+      n_        (intervals/2){
+        QL_REQUIRE( !(intervals_ & 1), "number of intervals must be even");
+    }
 
     Real FilonIntegral::integrate(const boost::function<Real (Real)>& f,
-                   	   	   	   	  Real a, Real b) const {
-    	const Real h = (b-a)/(2*n_);
-    	Array x(2*n_+1, a, h);
+                                  Real a, Real b) const {
+        const Real h = (b-a)/(2*n_);
+        Array x(2*n_+1, a, h);
 
-    	const Real theta = t_*h;
-    	const Real theta2 = theta*theta;
-    	const Real theta3 = theta2*theta;
+        const Real theta = t_*h;
+        const Real theta2 = theta*theta;
+        const Real theta3 = theta2*theta;
 
-    	const Real alpha = 1/theta + std::sin(2*theta)/(2*theta2)
-    		- 2*square<Real>()(std::sin(theta))/theta3;
-    	const Real beta = 2*( (1+square<Real>()(std::cos(theta)))/theta2
-    		- std::sin(2*theta)/theta3);
-    	const Real gamma = 4*(std::sin(theta)/theta3 - std::cos(theta)/theta2);
+        const Real alpha = 1/theta + std::sin(2*theta)/(2*theta2)
+            - 2*square<Real>()(std::sin(theta))/theta3;
+        const Real beta = 2*( (1+square<Real>()(std::cos(theta)))/theta2
+            - std::sin(2*theta)/theta3);
+        const Real gamma = 4*(std::sin(theta)/theta3 - std::cos(theta)/theta2);
 
-    	Array v(x.size());
-    	std::transform(x.begin(), x.end(), v.begin(), f);
+        Array v(x.size());
+        std::transform(x.begin(), x.end(), v.begin(), f);
 
-    	boost::function<Real(Real)> f1, f2;
-    	switch(type_) {
-    	  case Cosine:
-    		f1 = std::ptr_fun<Real,Real>(std::sin);
-    		f2 = std::ptr_fun<Real,Real>(std::cos);
-    		break;
-    	  case Sine:
-      		f1 = std::ptr_fun<Real,Real>(std::cos);
-      		f2 = std::ptr_fun<Real,Real>(std::sin);
-      		break;
-    	  default:
-    		QL_FAIL("unknown integration type");
-    	}
+        boost::function<Real(Real)> f1, f2;
+        switch(type_) {
+          case Cosine:
+            f1 = std::ptr_fun<Real,Real>(std::sin);
+            f2 = std::ptr_fun<Real,Real>(std::cos);
+            break;
+          case Sine:
+            f1 = std::ptr_fun<Real,Real>(std::cos);
+            f2 = std::ptr_fun<Real,Real>(std::sin);
+            break;
+          default:
+            QL_FAIL("unknown integration type");
+        }
 
-		Real c_2n_1 = 0.0;
-		Real c_2n = v[0]*f2(t_*a)
-			- 0.5*(v[2*n_]*f2(t_*b) + v[0]*f2(t_*a));
+        Real c_2n_1 = 0.0;
+        Real c_2n = v[0]*f2(t_*a)
+            - 0.5*(v[2*n_]*f2(t_*b) + v[0]*f2(t_*a));
 
-		for (Size i=1; i <= n_; ++i) {
-			c_2n   += v[2*i]  *f2(t_*x[2*i]);
-			c_2n_1 += v[2*i-1]*f2(t_*x[2*i-1]);
-		}
+        for (Size i=1; i <= n_; ++i) {
+            c_2n   += v[2*i]  *f2(t_*x[2*i]);
+            c_2n_1 += v[2*i-1]*f2(t_*x[2*i-1]);
+        }
 
-		return h*(alpha*(v[2*n_]*f1(t_*x[2*n_]) - v[0]*f1(t_*x[0]))
-				  *((type_ == Cosine) ? 1.0 : -1.0)
-				 + beta*c_2n + gamma*c_2n_1);
+        return h*(alpha*(v[2*n_]*f1(t_*x[2*n_]) - v[0]*f1(t_*x[0]))
+                  *((type_ == Cosine) ? 1.0 : -1.0)
+                 + beta*c_2n + gamma*c_2n_1);
     }
 }

@@ -99,27 +99,26 @@ namespace QuantLib {
         OneAssetOption::arguments::validate();
 
         QL_REQUIRE(barrierType.size() == 2, "2 barrier type should be given");
-		QL_REQUIRE(barrier.size() == 2, "2 barrier should be given");
+        QL_REQUIRE(barrier.size() == 2, "2 barrier should be given");
         QL_REQUIRE(rebate.size() == 2, "2 rebate should be given");
 
-		switch (barrierType[0]) {
+        switch (barrierType[0]) {
           case Barrier::DownIn:
-			  QL_REQUIRE(barrierType[1] == Barrier::UpIn, "both barrier type should be In");
-			  break;
+              QL_REQUIRE(barrierType[1] == Barrier::UpIn, "both barrier type should be In");
+              break;
           case Barrier::UpIn:
-			  QL_FAIL("rearrange the order of barrier types as L/H");
-			  break;
+              QL_FAIL("rearrange the order of barrier types as L/H");
+              break;
           case Barrier::DownOut:
-			  QL_REQUIRE(barrierType[1] == Barrier::UpOut, "both barrier type should be Out");
-			  break;
+              QL_REQUIRE(barrierType[1] == Barrier::UpOut, "both barrier type should be Out");
+              break;
           case Barrier::UpOut:
-			  QL_FAIL("rearrange the order of barrier types as L/H");
+              QL_FAIL("rearrange the order of barrier types as L/H");
             break;
           default:
             QL_FAIL("unknown type");
         }
-		QL_REQUIRE(barrier[0] < barrier[1], "rearrange the order of barriers as L/H");
-		
+        QL_REQUIRE(barrier[0] < barrier[1], "rearrange the order of barriers as L/H");
     }
 
     bool DoubleBarrierOption::engine::triggered(Real underlying) const {

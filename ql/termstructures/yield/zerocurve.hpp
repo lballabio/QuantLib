@@ -280,7 +280,7 @@ namespace QuantLib {
                        "two dates correspond to the same time "
                        "under this curve's day count convention");
 
-			// adjusting zero rates to match continuous compounding
+            // adjusting zero rates to match continuous compounding
             if (compounding != Continuous)
             {
                 InterestRate r(this->data_[i], dayCounter(), compounding, frequency);

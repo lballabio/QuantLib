@@ -97,7 +97,7 @@ namespace QuantLib {
         const Time t = process->time(arguments_.exercise->lastDate());
 
         const Real xMax = 10 * std::sqrt(process->theta()*t
-        	+ (process->v0() - process->theta())*(1-std::exp(-process->kappa()*t)));
+            + (process->v0() - process->theta())*(1-std::exp(-process->kappa()*t)));
 
         results_.value = GaussLobattoIntegral(nIterations_, eps_)
             (boost::bind(&AnalyticPDFHestonEngine::weightedPayoff, this,_1, t),

@@ -43,11 +43,11 @@ namespace QuantLib {
       public:
         AnalyticDoubleBarrierEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-			int series = 5);
+            int series = 5);
         void calculate() const;
       private:
         boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
-		const int series_;
+        const int series_;
         CumulativeNormalDistribution f_;
         // helper methods
         Real underlying() const;
@@ -61,7 +61,7 @@ namespace QuantLib {
         DiscountFactor riskFreeDiscount() const;
         Rate dividendYield() const;
         DiscountFactor dividendDiscount() const;
-		Real D(Real X, Real lambda, Real sigma, Real T) const;
+        Real D(Real X, Real lambda, Real sigma, Real T) const;
 
     };
 
