@@ -1912,7 +1912,7 @@ void InterpolationTest::testTransformations() {
 
     Real size = 25.0; // test inputs from [-size,size]^4
 
-    Size N = 1E5;
+    Size N = 100000;
 
     Array x(4), y(4), z(4);
     std::vector<Real> s;
