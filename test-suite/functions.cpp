@@ -226,7 +226,7 @@ void FunctionsTest::testModifiedBesselFunctions() {
 }
 
 void FunctionsTest::testWeightedModifiedBesselFunctions() {
-    BOOST_TEST_MESSAGE("Testing weighted modified Bessel functions ...");
+    BOOST_TEST_MESSAGE("Testing weighted modified Bessel functions...");
     Real nu = -5.0;
     while (nu <= 5.0) {
         Real x = 0.1;
