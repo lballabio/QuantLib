@@ -34,6 +34,7 @@ class TermStructureTest {
     static void testFSpreadedObs();
     static void testZSpreaded();
     static void testZSpreadedObs();
+    static void testCreateWithNullUnderlying();
     static void testLinkToNullUnderlying();
     static boost::unit_test_framework::test_suite* suite();
 };

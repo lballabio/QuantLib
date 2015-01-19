@@ -84,12 +84,8 @@ namespace QuantLib {
                                           Frequency freq,
                                           const DayCounter& dc)
     : originalCurve_(h), spread_(spread), comp_(comp), freq_(freq), dc_(dc) {
-        //QL_REQUIRE(h->dayCounter()==dc_,
-        //           "spread daycounter (" << dc_ <<
-        //           ") must be the same of the curve to be spreaded (" <<
-        //           originalCurve_->dayCounter() <<
-        //           ")");
-        enableExtrapolation(originalCurve_->allowsExtrapolation());
+        if (!originalCurve_.empty())
+            enableExtrapolation(originalCurve_->allowsExtrapolation());
         registerWith(originalCurve_);
         registerWith(spread_);
     }
@@ -121,6 +117,7 @@ namespace QuantLib {
     inline void ZeroSpreadedTermStructure::update() {
         if (!originalCurve_.empty()) {
             YieldTermStructure::update();
+            enableExtrapolation(originalCurve_->allowsExtrapolation());
         } else {
             /* The implementation inherited from YieldTermStructure
                asks for our reference date, which we don't have since
