@@ -58,7 +58,7 @@ namespace QuantLib {
     */
     HKDCurrency::HKDCurrency() {
         static boost::shared_ptr<Data> hkdData(
-                                  new Data("Honk Kong dollar", "HKD", 344,
+                                  new Data("Hong Kong dollar", "HKD", 344,
                                            "HK$", "", 100,
                                            Rounding(),
                                            "%3% %1$.2f"));
