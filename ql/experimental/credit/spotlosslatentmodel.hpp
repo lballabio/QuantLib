@@ -203,7 +203,7 @@ namespace QuantLib {
         const std::vector<Real>& mktFactors) const 
     {
     #if defined(QL_EXTRA_SAFETY_CHECKS)
-        QL_REQUIRE(mktFactors.size() == numFactors(), 
+        QL_REQUIRE(mktFactors.size() == this->numFactors(), 
         "Realization of market factors and latent model size do not match");
     #endif
         const boost::shared_ptr<Pool>& pool = basket_->pool();
