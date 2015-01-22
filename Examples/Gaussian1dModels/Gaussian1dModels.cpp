@@ -22,6 +22,14 @@
 
 using namespace QuantLib;
 
+#if defined(QL_ENABLE_SESSIONS)
+namespace QuantLib {
+
+    Integer sessionId() { return 0; }
+
+}
+#endif
+
 // helper function that prints a basket of calibrating swaptions to std::cout
 
 void
