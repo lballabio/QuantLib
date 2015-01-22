@@ -48,7 +48,7 @@ class Gaussian1dSmileSection : public SmileSection {
     Gaussian1dSmileSection(
         const Date &fixingDate, const boost::shared_ptr<IborIndex> &swapIndex,
         const boost::shared_ptr<Gaussian1dModel> &model, const DayCounter &dc,
-        const boost::shared_ptr<Gaussian1dCapFloorEngine> swaptionEngine =
+        const boost::shared_ptr<Gaussian1dCapFloorEngine> capEngine =
             boost::shared_ptr<Gaussian1dCapFloorEngine>());
 
     // the minimum strike is zero only because we are
