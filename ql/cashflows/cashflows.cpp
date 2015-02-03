@@ -505,20 +505,21 @@ namespace QuantLib {
             return;
         }
 
-        BPSCalculator calc(discountCurve);
         for (Size i=0; i<leg.size(); ++i) {
             CashFlow& cf = *leg[i];
+            boost::shared_ptr<Coupon> cp = boost::dynamic_pointer_cast<Coupon>(leg[i]);
             if (!cf.hasOccurred(settlementDate,
                                 includeSettlementDateFlows) &&
                 !cf.tradingExCoupon(settlementDate)) {
-                npv += cf.amount() *
-                       discountCurve.discount(cf.date());
-                cf.accept(calc);
+                Real df = discountCurve.discount(cf.date());
+                npv += cf.amount() * df;
+                if(cp != NULL)
+                    bps += cp->nominal() * cp->accrualPeriod() * df;
             }
         }
         DiscountFactor d = discountCurve.discount(npvDate);
         npv /= d;
-        bps = basisPoint_ * calc.bps() / d;
+        bps = basisPoint_ * bps / d;
     }
 
     Rate CashFlows::atmRate(const Leg& leg,
