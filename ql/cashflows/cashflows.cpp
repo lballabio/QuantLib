@@ -507,10 +507,11 @@ namespace QuantLib {
 
         for (Size i=0; i<leg.size(); ++i) {
             CashFlow& cf = *leg[i];
-            boost::shared_ptr<Coupon> cp = boost::dynamic_pointer_cast<Coupon>(leg[i]);
             if (!cf.hasOccurred(settlementDate,
                                 includeSettlementDateFlows) &&
                 !cf.tradingExCoupon(settlementDate)) {
+                boost::shared_ptr<Coupon> cp =
+                    boost::dynamic_pointer_cast<Coupon>(leg[i]);
                 Real df = discountCurve.discount(cf.date());
                 npv += cf.amount() * df;
                 if(cp != NULL)
