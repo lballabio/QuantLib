@@ -518,7 +518,7 @@ namespace QuantLib {
         /*! Constructs a LM with an arbitrary number of latent variables 
           depending only on one random factor but contributing to each latent
           variable through different weights.
-            @param factorsWeights Ordering is factorWeights_[iVariable]
+            @param factorsWeight Ordering is factorWeights_[iVariable]
             @param ini Initialization variables. Trait type from the copula 
               policy to allow for static policies (this solution needs to be 
               revised, possibly drop the static policy and create a policy 

@@ -60,8 +60,6 @@ namespace QuantLib {
         /*!
         @param factorWeights Latent model independent factors weights for each 
             variable.
-        @param quadOrder The order of the quadrature to integrate the 
-            model (sole integrator by now).
         @param ini Copula initialization if any.
 
         \warning Baskets with realized defaults not tested/WIP.
@@ -145,7 +143,7 @@ namespace QuantLib {
         @param invCumYProb Inverse cumul of the unconditional probability of 
           default, has to follow the same copula law for results to be coherent
         @param iName desired name.
-        @param mktFactors Value of LM independent factors.
+        @param m Value of LM independent factors.
         */
         Probability conditionalDefaultProbabilityInvP(Real invCumYProb, 
             Size iName, 

@@ -106,7 +106,7 @@ namespace QuantLib {
         the base class for the default sample and the LM owned here for the RR 
         model sample. This sample only makes sense if it led to a default.
         @param allFactors All sampled factors, default and RR valiables.
-        @param iVar The index of the name for which we want the RR sample
+        @param iName The index of the name for which we want the RR sample
 
         \todo Write vector version for all names' RRs 
         */
