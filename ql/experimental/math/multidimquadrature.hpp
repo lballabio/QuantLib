@@ -20,12 +20,10 @@
 #ifndef quantlib_math_multidimquadrature_hpp
 #define quantlib_math_multidimquadrature_hpp
 
+#include <ql/math/integrals/gaussianquadratures.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
 #include <boost/lambda/bind.hpp>
-
-#include <ql/types.hpp>
-#include <ql/math/integrals/gaussianquadratures.hpp>
 
 namespace QuantLib {
 

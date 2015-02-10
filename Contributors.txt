@@ -9,8 +9,10 @@ Toyin Akin
 Marius Akre
 Mario Aleppo
 Grzegorz Andruszkiewicz
+Driss Aouad
 Jose Aparicio
 Sercan Atalik
+Ahmed Ayadi
 Lluis Pujol Bajador
 Nabila Barkati
 Clément Barret
@@ -24,6 +26,7 @@ Sylvain Bertrand
 Manas Bhatt
 David Binderman
 Theo Boafo
+Francois Botha
 Delphine Bouthier
 Fakher Braham
 Joe Byers
@@ -58,6 +61,7 @@ Chiara Fornarola
 Silvia Frasson
 Andreas Gaida
 Matteo Gallivanoni
+Riccardo Ghetta
 Roman Gitlin
 Nick Glass
 Marek Glowacki
@@ -81,11 +85,13 @@ Norbert Irmer
 Mike Jake
 Rahul Kanchi
 Andrey Karpov
+Michal Kaut
 Tomoya Kawanishi
 Gary Kennedy
 Matt Knox
 Andrew Kolesnikov
 Silakhdar Krikeb
+Nathan Kruck
 Yan Kuang
 Allen Kuo
 Paul Laderoute
@@ -103,6 +109,7 @@ John Maiden
 Katiuscia Manzoni
 Francesca Mariani
 Slava Mazur
+Paolo Mazzocchi
 Enrico Michelotti
 Andre Miemiec
 Raso Mirko
@@ -124,10 +131,13 @@ Marcello Pietrobon
 Adrien Pinatton
 Gianni Piolanti
 Sebastian Poloczek
+Nolan Potier
 Mario Pucci
 Ian Qsong
 Paul Rädle
+Alexandre Radicchi
 J. Erik Radmall
+Ilyas Rahbaoui
 Fabio Ramponi
 Maria Cristina Recchioni
 Dimitri Reiswich
@@ -140,6 +150,7 @@ Tamas Sashalmi
 Peter Schmitteckert
 Ralph Schreyer
 David Schwartz
+Giacomo Sergio
 Simon Shakeshaft
 Michael Sharpe
 Kirill Shemyakin

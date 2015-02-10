@@ -20,14 +20,12 @@
 #ifndef quantlib_math_multidimintegrator_hpp
 #define quantlib_math_multidimintegrator_hpp
 
-#include <vector>
-
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
-
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
 #include <ql/math/integrals/integral.hpp>
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
+#include <vector>
 
 namespace QuantLib {
 
@@ -115,7 +113,7 @@ namespace QuantLib {
         mutable std::vector<Real> varBuffer_;
 
     };
-	
+
     // spez last call/dimension
     template<>
     Real inline MultidimIntegral::vectorBinder<0> (
@@ -127,15 +125,15 @@ namespace QuantLib {
         varBuffer_[0] = z;
         return f(varBuffer_);
     }
-	
+
     template<>
     void inline MultidimIntegral::spawnFcts<1>() const {
         integrationLevelEntries_[0] = 
             boost::bind(&MultidimIntegral::integrate<0>, this, _1, _2, _3);
     }
-	
-	template<int nT>
-	inline Real MultidimIntegral::integrate(
+
+    template<int nT>
+    inline Real MultidimIntegral::integrate(
         const boost::function<Real (const std::vector<Real>&)>& f,
         const std::vector<Real>& a,
         const std::vector<Real>& b) const 
@@ -156,7 +154,7 @@ namespace QuantLib {
         varBuffer_[T_N] = z;
         return integrate<T_N-1>(f, a, b);
     }
-		
+
     template<Size depth>
     void MultidimIntegral::spawnFcts() const {
         integrationLevelEntries_[depth-1] =
@@ -164,7 +162,7 @@ namespace QuantLib {
             _1, _2, _3);
         spawnFcts<depth-1>();
     }
-		
+
 }
 
 #endif

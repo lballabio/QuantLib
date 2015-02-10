@@ -38,22 +38,22 @@ namespace QuantLib {
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
             const Handle<Quote>& currentAverage,
             Date startDate,
-			Size timeSteps = 100,
-			Size assetSteps = 100,
-			Real z_min = -1.0,
-			Real z_max = 1.0);
+            Size timeSteps = 100,
+            Size assetSteps = 100,
+            Real z_min = -1.0,
+            Real z_max = 1.0);
         void calculate() const;
       protected:
         // Replication of average by holding this amount in assets
-		Real cont_strategy(Time t, Time T1,Time T2,Real v, Real r) const; 
+        Real cont_strategy(Time t, Time T1,Time T2,Real v, Real r) const; 
       private:
         boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Handle<Quote> currentAverage_ ;
         Date startDate_;
-		Real z_min_;
-		Real z_max_;
-		Size timeSteps_;
-		Size assetSteps_;
+        Real z_min_;
+        Real z_max_;
+        Size timeSteps_;
+        Size assetSteps_;
     };
 
 }

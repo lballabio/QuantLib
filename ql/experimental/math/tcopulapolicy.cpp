@@ -18,11 +18,9 @@
 */
 
 #include <ql/experimental/math/tcopulapolicy.hpp>
-
+#include <boost/bind.hpp>
 #include <numeric>
 #include <algorithm>
-
-#include <boost/bind.hpp>
 
 namespace QuantLib {
 

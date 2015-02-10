@@ -58,7 +58,7 @@ namespace QuantLib {
         CNYCurrency();
     };
 
-    //! Honk Kong dollar
+    //! Hong Kong dollar
     /*! The ISO three-letter code is HKD; the numeric code is 344.
         It is divided in 100 cents.
 

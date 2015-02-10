@@ -20,18 +20,15 @@
 #ifndef quantlib_binomial_loss_model_hpp
 #define quantlib_binomial_loss_model_hpp
 
-#include <algorithm>
-#include <numeric>
-
-#include <boost/lambda/lambda.hpp>
-#include <boost/lambda/bind.hpp>
-#include <boost/bind.hpp>
-
 #include <ql/handle.hpp>
-
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
+#include <boost/lambda/lambda.hpp>
+#include <boost/lambda/bind.hpp>
+#include <boost/bind.hpp>
+#include <algorithm>
+#include <numeric>
 
 namespace QuantLib {
 

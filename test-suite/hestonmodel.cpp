@@ -1423,7 +1423,7 @@ void HestonModelTest::testExpansionOnAlanLewisReference() {
 }
 
 void HestonModelTest::testExpansionOnFordeReference() {
-    BOOST_TEST_MESSAGE("Testing expansion on Alan Lewis reference prices...");
+    BOOST_TEST_MESSAGE("Testing expansion on Forde reference prices...");
 
     SavedSettings backup;
 

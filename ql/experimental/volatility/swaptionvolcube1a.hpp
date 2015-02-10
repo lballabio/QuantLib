@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2014 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,27 +17,27 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_term_structures_hpp
-#define quantlib_test_term_structures_hpp
+/*! \file swaptionvolcube1a.hpp
+    \brief Swaption volatility cube, fit-early-interpolate-later approach
+           using the No Arbitrage Sabr model (Doust)
+*/
 
-#include <boost/test/unit_test.hpp>
+#ifndef quantlib_swaption_volcube_1a_hpp
+#define quantlib_swaption_volcube_1a_hpp
 
-/* remember to document new and/or updated tests in the Doxygen
-   comment block of the corresponding class */
+#include <ql/termstructures/volatility/swaption/swaptionvolcube1.hpp>
+#include <ql/experimental/volatility/noarbsabrinterpolation.hpp>
 
-class TermStructureTest {
-  public:
-    static void testReferenceChange();
-    static void testImplied();
-    static void testImpliedObs();
-    static void testFSpreaded();
-    static void testFSpreadedObs();
-    static void testZSpreaded();
-    static void testZSpreadedObs();
-    static void testCreateWithNullUnderlying();
-    static void testLinkToNullUnderlying();
-    static boost::unit_test_framework::test_suite* suite();
-};
+namespace QuantLib {
 
+    struct SwaptionVolCubeNoArbSabrModel {
+        typedef NoArbSabrInterpolation Interpolation;
+        typedef NoArbSabrSmileSection SmileSection;
+    };
+
+    typedef SwaptionVolCube1x<SwaptionVolCubeNoArbSabrModel> SwaptionVolCube1a;
+
+}
 
 #endif
+

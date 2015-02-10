@@ -5,7 +5,7 @@ QuantLib is
     Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
 
     Copyright (C) 2002, 2003, 2004 Decillion Pty(Ltd)
-    Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012 Ferdinando Ametrano
+    Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2014 Ferdinando Ametrano
 
     Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2014 StatPro Italia srl
     Copyright (C) 2003, 2004, 2007 Neil Firth
@@ -51,7 +51,7 @@ QuantLib is
     Copyright (C) 2007, 2008, 2009, 2010, 2011 Chris Kenyon
     Copyright (C) 2007 Gang Liang
 
-    Copyright (C) 2008, 2009 Jose Aparicio
+    Copyright (C) 2008, 2009, 2014 Jose Aparicio
     Copyright (C) 2008 Yee Man Chan
     Copyright (C) 2008, 2011 Charles Chongseok Hyun
     Copyright (C) 2008 Piero Del Boca
@@ -64,11 +64,11 @@ QuantLib is
     Copyright (C) 2008 Simon Ibbotson
     Copyright (C) 2008 John Maiden
     Copyright (C) 2008 Francesca Mariani
-    Copyright (C) 2008, 2009, 2010, 2011, 2012 Master IMAFA - Polytech'Nice Sophia - Université de Nice Sophia Antipolis
+    Copyright (C) 2008, 2009, 2010, 2011, 2012, 2014 Master IMAFA - Polytech'Nice Sophia - Université de Nice Sophia Antipolis
     Copyright (C) 2008, 2009 Andrea Odetti
     Copyright (C) 2008 J. Erik Radmall
     Copyright (C) 2008 Maria Cristina Recchioni
-    Copyright (C) 2008, 2009, 2012 Ralph Schreyer
+    Copyright (C) 2008, 2009, 2012, 2014 Ralph Schreyer
     Copyright (C) 2008 Roland Stamm
     Copyright (C) 2008 Francesco Zirilli
 
@@ -95,7 +95,7 @@ QuantLib is
     Copyright (C) 2010 Alessandro Roveda
     Copyright (C) 2010 SunTrust Bank
 
-    Copyright (C) 2011, 2013 Fabien Le Floc'h
+    Copyright (C) 2011, 2013, 2014 Fabien Le Floc'h
 
     Copyright (C) 2012, 2013 Grzegorz Andruszkiewicz
     Copyright (C) 2012, 2013, 2014 Peter Caspers
@@ -105,8 +105,14 @@ QuantLib is
     Copyright (C) 2012 Samuel Tebege
 
     Copyright (C) 2013 BGC Partners L.P.
-    Copyright (C) 2013 Cheng Li
+    Copyright (C) 2013, 2014 Cheng Li
     Copyright (C) 2013 Yue Tian
+
+    Copyright (C) 2014 Francois Botha
+    Copyright (C) 2014 Bernd Lewerenz
+    Copyright (C) 2014 Michal Kaut
+    Copyright (C) 2014 Paolo Mazzocchi
+    Copyright (C) 2014 Thema Consulting SA
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo
 Methods in Finance".

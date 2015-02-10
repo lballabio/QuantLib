@@ -20,14 +20,12 @@
 #ifndef quantlib_gaussian_copula_policy_hpp
 #define quantlib_gaussian_copula_policy_hpp
 
+#include <ql/utilities/disposable.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
+#include <boost/bind.hpp>
 #include <vector>
 #include <numeric>
 #include <algorithm>
-
-#include <boost/bind.hpp>
-
-#include <ql/utilities/disposable.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
 
 namespace QuantLib {
 

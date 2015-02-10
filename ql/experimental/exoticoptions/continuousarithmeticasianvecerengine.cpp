@@ -196,7 +196,7 @@ namespace QuantLib {
             } // End Time Loop
 
             DownRounding Rounding(0);
-            Integer lowerI = Rounding( (Z_0-z_min_)/h);
+            Integer lowerI = Integer(Rounding( (Z_0-z_min_)/h));
             // Interpolate solution
             Real pv;
 

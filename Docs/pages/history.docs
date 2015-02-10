@@ -18,7 +18,121 @@
 
 /*! \page history Version history
 
-    <strong>Release 1.4.1 - November 2014</strong>
+    <strong>Release 1.5 - February 2015</strong>
+
+    QuantLib 1.5 includes about 60 pull requests from several
+    contributors, ranging from small bug fixes to relevant new
+    additions to the library.
+
+    PORTABILITY
+    - Unified project files for Visual Studio 10 and above.  Different
+      solutions are still provided for Visual Studio 10, 11 and 12.
+
+    DATE/TIME
+    - Added China Inter-Bank calendar (thanks to Cheng Li).
+    - Added half-month modified following convention (thanks to Paolo
+      Mazzocchi).
+    - Added a few more historical closings for NYSE.
+    - Updated the Hong Kong and China calendar for 2015.
+    - Updated list of ECB dates up to the first two dates for 2016 (thanks
+      to Paolo Mazzocchi).
+
+    INSTRUMENTS
+    - Improved Storage and Swing engine (thanks to Klaus Spanderen).
+    - Fixed behavior of the Bjerksund Stensland engine for very small
+      volatilities (thanks to Klaus Spanderen).
+    - Add Heston expansion engine for European options (thanks to Fabien
+      Le Floc'h).
+    - Caps, floors and swaptions can use a displacement in
+      implied-volatility calculation.
+    - Added partial-time fixed and floating strike lookback options
+      (thanks to Francois Botha).
+    - Added binary barrier options (thanks to Riccardo Ghetta).
+    - Added binomial engine for barrier options (thanks to Riccardo Ghetta).
+    - Added Vecer engine for continuous-averaging Asian options (thanks to
+      Bernd Lewerenz).
+
+    CASH FLOWS
+    - Added ex-coupon feature to fixed-rate bonds, CPI bonds and bond
+      helpers (thanks to Francois Botha).
+    - Fix calculation of sinking notionals when the coupon rate is very
+      near 0 (thanks to Cheng Li).
+
+    INDEXES
+    - Added Shanghai Inter-bank Offering Rate index (thanks to Cheng Li).
+    - Added Fed Fund index.
+    - Added South-African CPI (thanks to Francois Botha).
+
+    TERM STRUCTURES
+    - Improvement to CMS market calibration: enabled use of general coupon
+      pricers, added calibration to a term structure of betas (thanks to
+      Peter Caspers).
+    - InterpolatedZeroCurve can be passed rates with any compounding
+      convention and frequency (thanks to Alexandre Radicchi).
+    - Bond helpers can now use quotes for either clean or dirty prices
+      (thanks to Francois Botha).
+    - Added CPI bond helper (thanks to Francois Botha).
+    - Better handling in rate helpers of evaluation dates which are not
+      business dates.
+    - Spreaded curves allow extrapolation if their underlying curve does
+      (thanks to Peter Caspers).
+    - Fixed inflation-rate interpolation (thanks to Amine Ifri).
+
+    MATH
+    - Added generation of student-t distributed random numbers
+      (thanks to Jose Aparicio).
+    - Added Folin's integration methods (thanks to Klaus Spanderen).
+    - Added mixed backward-flat/linear interpolation (thanks to Peter
+      Caspers).
+    - Improved performance of matrix multiplication (thanks to Peter
+      Caspers).
+    - Fixed wrong primitive calculation in mixed interpolation (thanks to
+      Peter Caspers).
+    - Fixed corner case for finite-difference Newton solver leading to
+      infinite derivative (thanks to Peter Caspers).
+    - Added Maddock's cumulative normal distribution (thanks to Klaus
+      Spanderen).
+    - Added bivariate cumulative student t distribution (thanks to Michal
+      Kaut).
+
+    LATTICES
+    - Calculate option delta/gamma on binomial trees using Hull formulas
+      (thanks to Riccardo Ghetta).
+
+    MISCELLANEA
+    - A number of small performance improvements (thanks to Michael Sharpe).
+
+    EXAMPLES
+    - Added example for Gaussian 1-D models (thanks to Peter Caspers).
+    - Added examples for latent models and basket losses (thanks to Jose
+      Aparicio).
+    - Added example for multi-dimensional integral (thanks to Jose Aparicio).
+
+    DEPRECATED CLASSES
+    - Removed deprecated Domain and Surface classes.
+
+    EXPERIMENTAL FOLDER
+
+    The ql/experimental folder contains code which is still not fully
+    integrated with the library or even fully tested, but is released in
+    order to get user feedback.  Experimental classes are considered
+    unstable; their interfaces might change in future releases.
+
+    Changes and new contributions for this release were:
+    - Extended credit risk plus model (thanks to Peter Caspers).
+    - No-arbitrage Sabr model with corresponding volatility-cube, smile
+      section and interpolation classes (thanks to Peter Caspers).
+    - A number of latent models for basket losses (thanks to Jose Aparicio).
+    - Complex chooser option (thanks to Nathan Kruck, Ahmed Ayadi and
+      Nolan Potier from the IMAFA program at Polytech'Nice Sophia).
+    - Holder-extensible option (thanks to Nathan Kruck, Ahmed Ayadi and
+      Nolan Potier from the IMAFA program at Polytech'Nice Sophia).
+    - Partial-time barrier option (thanks to Nathan Kruck, Ahmed Ayadi and
+      Nolan Potier from the IMAFA program at Polytech'Nice Sophia).
+    - Two-asset correlation option (thanks to Ilyas Rahbaoui and Driss
+      Aouad from the IMAFA program at Polytech'Nice Sophia).
+
+    <strong>Release 1.4.1 - November 17th, 2014</strong>
 
     QuantLib 1.4.1 is a compatibility release. It fixes a number of
     compilation errors that surfaced when using QuantLib 1.4 with
@@ -154,13 +268,6 @@
     - Added modified Bessel functions (thanks to Klaus Spanderen).
 
     EXPERIMENTAL FOLDER
-
-    The ql/experimental folder contains code which is still not fully
-    integrated with the library or even fully tested, but is released in
-    order to get user feedback.  Experimental classes are considered
-    unstable; their interfaces might change in future releases.
-
-    Changes and new contributions for this release were:
     - Deprecated features were removed from experimental code.
     - Added initial implementation of catastrophe bond (thanks to
       Grzegorz Andruszkiewicz).

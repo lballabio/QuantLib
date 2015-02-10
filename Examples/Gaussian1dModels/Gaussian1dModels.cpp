@@ -22,6 +22,14 @@
 
 using namespace QuantLib;
 
+#if defined(QL_ENABLE_SESSIONS)
+namespace QuantLib {
+
+    Integer sessionId() { return 0; }
+
+}
+#endif
+
 // helper function that prints a basket of calibrating swaptions to std::cout
 
 void
@@ -108,27 +116,11 @@ void printTiming(const Timer& timer) {
               << "\n(this step took " << seconds << "s)" << std::endl;
 }
 
-bool interactive = true;
-
-void waitForKey() {
-    if (interactive) {
-        std::cout << "\n [Press RETURN to continue...] ";
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    }
-}
-
 // here the main part of the code starts
 
 int main(int argc, char *argv[]) {
 
     try {
-
-        for (int i=1; i<argc; ++i) {
-            if (std::string(argv[i]) == "--batch") {
-                interactive = false;
-                break;
-            }
-        }
 
         std::cout << "\nGaussian1dModel Examples" << std::endl;
 
@@ -174,8 +166,6 @@ int main(int argc, char *argv[]) {
         std::cout
             << "\nFor the volatility we assume a flat swaption volatility at "
             << volLevel << std::endl;
-
-        waitForKey();
 
         Real strike = 0.04;
         std::cout << "\nWe consider a standard 10y bermudan payer swaption "
@@ -247,8 +237,6 @@ int main(int argc, char *argv[]) {
 
         std::cout << "\nThe resulting basket looks as follows:" << std::endl;
 
-        waitForKey();
-
         boost::shared_ptr<SwapIndex> swapBase =
             boost::make_shared<EuriborSwapIsdaFixA>(10 * Years, yts6m, ytsOis);
 
@@ -261,8 +249,6 @@ int main(int argc, char *argv[]) {
         printBasket(basket);
         printTiming(timer);
 
-        waitForKey();
-
         std::cout
             << "\nLet's calibrate our model to this basket. We use a "
                "specialized"
@@ -270,8 +256,6 @@ int main(int argc, char *argv[]) {
                "to"
                "\nthe calibrating vanilla swaptions. The result of this is as "
                "follows:" << std::endl;
-
-        waitForKey();
 
         for (Size i = 0; i < basket.size(); ++i)
             basket[i]->setPricingEngine(swaptionEngine);
@@ -286,8 +270,6 @@ int main(int argc, char *argv[]) {
 
         printModelCalibration(basket, gsr->volatility());
         printTiming(timer);
-
-        waitForKey();
 
         std::cout << "\nFinally we price our bermudan swaption in the "
                      "calibrated model:" << std::endl;
@@ -309,8 +291,6 @@ int main(int argc, char *argv[]) {
                "\nthe exotics underlying match with the calibrating swaption's"
                "\nunderlying. Let's try this in our case." << std::endl;
 
-        waitForKey();
-
         timer.start();
         basket = swaption->calibrationBasket(
             swapBase, *swaptionVol,
@@ -319,8 +299,6 @@ int main(int argc, char *argv[]) {
 
         printBasket(basket);
         printTiming(timer);
-
-        waitForKey();
 
         std::cout
             << "\nThe calibrated nominal is close to the exotics nominal."
@@ -331,8 +309,6 @@ int main(int argc, char *argv[]) {
         std::cout << "\nLet's see how this affects the exotics npv. The "
                      "\nrecalibrated model is:" << std::endl;
 
-        waitForKey();
-
         for (Size i = 0; i < basket.size(); ++i)
             basket[i]->setPricingEngine(swaptionEngine);
 
@@ -342,8 +318,6 @@ int main(int argc, char *argv[]) {
 
         printModelCalibration(basket, gsr->volatility());
         printTiming(timer);
-
-        waitForKey();
 
         std::cout << "\nAnd the bermudan's price becomes:" << std::endl;
 
@@ -381,7 +355,6 @@ int main(int argc, char *argv[]) {
 
         swaption2->setPricingEngine(nonstandardSwaptionEngine);
 
-        waitForKey();
         timer.start();
         basket = swaption2->calibrationBasket(
             swapBase, *swaptionVol,
@@ -391,13 +364,9 @@ int main(int argc, char *argv[]) {
         printBasket(basket);
         printTiming(timer);
 
-        waitForKey();
-
         std::cout << "\nThe notional is weighted over the underlying exercised "
                      "\ninto and the maturity is adjusted downwards. The rate"
                      "\non the other hand is not affected." << std::endl;
-
-        waitForKey();
 
         std::cout
             << "\nYou can also price exotic bond's features. If you have e.g. a"
@@ -437,8 +406,6 @@ int main(int argc, char *argv[]) {
 
         swaption3->setPricingEngine(nonstandardSwaptionEngine2);
 
-        waitForKey();
-
         timer.start();
 
         basket = swaption3->calibrationBasket(
@@ -448,8 +415,6 @@ int main(int argc, char *argv[]) {
 
         printBasket(basket);
         printTiming(timer);
-
-        waitForKey();
 
         std::cout
             << "\nNote that nominals are not exactly 1.0 here. This is"
@@ -463,8 +428,6 @@ int main(int argc, char *argv[]) {
         for (Size i = 0; i < basket.size(); i++)
             basket[i]->setPricingEngine(swaptionEngine);
 
-        waitForKey();
-
         timer.start();
         gsr->calibrateVolatilitiesIterative(basket, method, ec);
         Real npv3 = swaption3->NPV();
@@ -474,8 +437,6 @@ int main(int argc, char *argv[]) {
                   << npv3 << std::endl;
         printTiming(timer);
 
-        waitForKey();
-
         std::cout
             << "\nUp to now, no credit spread is included in the pricing."
                "\nWe can do so by specifying an oas in the pricing engine."
@@ -483,8 +444,6 @@ int main(int argc, char *argv[]) {
                "\nthe calibration basket." << std::endl;
 
         oas.linkTo(oas100);
-
-        waitForKey();
 
         timer.start();
         basket = swaption3->calibrationBasket(
@@ -494,16 +453,12 @@ int main(int argc, char *argv[]) {
         printBasket(basket);
         printTiming(timer);
 
-        waitForKey();
-
         std::cout
             << "\nThe adjusted basket takes the credit spread into account."
                "\nThis is consistent to a hedge where you would have a"
                "\nmargin on the float leg around 100bp,too." << std::endl;
 
         std::cout << "\nThe npv becomes:" << std::endl;
-
-        waitForKey();
 
         for (Size i = 0; i < basket.size(); i++)
             basket[i]->setPricingEngine(swaptionEngine);
@@ -516,8 +471,6 @@ int main(int argc, char *argv[]) {
         std::cout << "\nBond's bermudan call right npv (oas = 100bp) = "
                   << std::setprecision(6) << npv4 << std::endl;
         printTiming(timer);
-
-        waitForKey();
 
         std::cout << "\nThe next instrument we look at is a CMS 10Y vs Euribor "
                      "\n6M swaption. The maturity is again 10 years and the option"
@@ -561,8 +514,6 @@ int main(int argc, char *argv[]) {
 
         underlying4->setPricingEngine(swapPricer);
 
-        waitForKey();
-
         timer.start();
         Real npv5 = underlying4->NPV();
         timer.stop();
@@ -575,12 +526,9 @@ int main(int argc, char *argv[]) {
                   << std::endl;
 
         printTiming(timer);
-        waitForKey();
 
         std::cout << "\nWe generate a naive calibration basket and calibrate "
                      "\nthe GSR model to it:" << std::endl;
-
-        waitForKey();
 
         timer.start();
         basket = swaption4->calibrationBasket(swapBase, *swaptionVol,
@@ -596,7 +544,6 @@ int main(int argc, char *argv[]) {
 
         std::cout << "\nThe npv of the bermudan swaption is" << std::endl;
 
-        waitForKey();
         timer.start();
         Real npv6 = swaption4->NPV();
         timer.stop();
@@ -605,12 +552,8 @@ int main(int argc, char *argv[]) {
                   << npv6 << std::endl;
         printTiming(timer);
 
-        waitForKey();
-
         std::cout << "\nIn this case it is also interesting to look at the "
                      "\nunderlying swap npv in the GSR model." << std::endl;
-
-        waitForKey();
 
         std::cout << "\nFloat swap NPV (GSR) = " << std::setprecision(6)
                   << swaption4->result<Real>("underlyingValue") << std::endl;
@@ -647,8 +590,6 @@ int main(int argc, char *argv[]) {
 
         swaption4->setPricingEngine(floatEngineMarkov);
 
-        waitForKey();
-
         timer.start();
         Real npv7 = swaption4->NPV();
         timer.stop();
@@ -665,20 +606,14 @@ int main(int argc, char *argv[]) {
                   << "\nmodel did its job to match our input smile. For this"
                   << "\nwe look at the underlying npv under the Markov model" << std::endl;
 
-        waitForKey();
-
         std::cout << "\nFloat swap NPV (Markov) = " << std::setprecision(6)
                   << swaption4->result<Real>("underlyingValue") << std::endl;
-
-        waitForKey();
 
         std::cout << "\nThis is closer to our terminal swap rate model price."
                      "\nA perfect match is not expected anyway, because the"
                      "\ndynamics of the underlying rate in the linear"
                      "\nmodel is different from the Markov model, of"
                      "\ncourse." << std::endl;
-
-        waitForKey();
 
         std::cout << "\nThe Markov model can not only calibrate to the"
                      "\nunderlying smile, but has at the same time a"
@@ -694,8 +629,6 @@ int main(int argc, char *argv[]) {
         for (Size i = 0; i < basket.size(); ++i)
             basket[i]->setPricingEngine(swaptionEngineMarkov);
 
-        waitForKey();
-
         timer.start();
         markov->calibrate(basket, method, ec);
         timer.stop();
@@ -703,13 +636,9 @@ int main(int argc, char *argv[]) {
         printModelCalibration(basket, markov->volatility());
         printTiming(timer);
 
-        waitForKey();
-
         std::cout << "\nNow let's have a look again at the underlying pricing."
                      "\nIt shouldn't have changed much, because the underlying"
                      "\nsmile is still matched." << std::endl;
-
-        waitForKey();
 
         timer.start();
         Real npv8 = swaption4->result<Real>("underlyingValue");
@@ -719,8 +648,6 @@ int main(int argc, char *argv[]) {
         printTiming(timer);
 
         std::cout << "\nThis is close to the previous value as expected." << std::endl;
-
-        waitForKey();
 
         std::cout << "\nAs a final remark we note that the calibration to"
                   << "\ncoterminal swaptions is not particularly reasonable"
@@ -732,11 +659,7 @@ int main(int argc, char *argv[]) {
                   << "\nit will most probably underestimate the market value"
                   << "\nby construction." << std::endl;
 
-        waitForKey();
-
         std::cout << "\nThat was it. Thank you for running this demo. Bye." << std::endl;
-
-        waitForKey();
 
     }
     catch (QuantLib::Error e) {
