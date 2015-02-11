@@ -44,16 +44,6 @@ namespace QuantLib {
             constructors.
         */
         //@{
-        /*! \warning term structures initialized by means of this
-                     constructor must manage their own reference date
-                     by overriding the referenceDate() method.
-            \deprecated
-        */
-        QL_DEPRECATED
-        BlackVolTermStructure(const Calendar& cal,
-                              BusinessDayConvention bdc = Following,
-                              const DayCounter& dc = DayCounter());
-
         //! default constructor
         /*! \warning term structures initialized by means of this
                      constructor must manage their own reference date
@@ -146,16 +136,6 @@ namespace QuantLib {
             constructors.
         */
         //@{
-        /*! \warning term structures initialized by means of this
-                     constructor must manage their own reference date
-                     by overriding the referenceDate() method.
-            \deprecated
-        */
-        QL_DEPRECATED
-        BlackVolatilityTermStructure(const Calendar& cal,
-                                     BusinessDayConvention bdc = Following,
-                                     const DayCounter& dc = DayCounter());
-
         //! default constructor
         /*! \warning term structures initialized by means of this
                      constructor must manage their own reference date
@@ -201,16 +181,6 @@ namespace QuantLib {
             constructors.
         */
         //@{
-        /*! \warning term structures initialized by means of this
-                     constructor must manage their own reference date
-                     by overriding the referenceDate() method.
-            \deprecated
-        */
-        QL_DEPRECATED
-        BlackVarianceTermStructure(const Calendar& cal,
-                                   BusinessDayConvention bdc = Following,
-                                   const DayCounter& dc = DayCounter());
-
         //! default constructor
         /*! \warning term structures initialized by means of this
                      constructor must manage their own reference date

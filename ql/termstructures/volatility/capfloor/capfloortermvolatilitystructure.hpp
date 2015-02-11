@@ -43,16 +43,6 @@ namespace QuantLib {
         /*! \warning term structures initialized by means of this
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
-            \deprecated
-        */
-        QL_DEPRECATED
-        CapFloorTermVolatilityStructure(const Calendar& cal,
-                                        BusinessDayConvention bdc,
-                                        const DayCounter& dc = DayCounter());
-
-        /*! \warning term structures initialized by means of this
-                     constructor must manage their own reference date
-                     by overriding the referenceDate() method.
         */
         CapFloorTermVolatilityStructure(BusinessDayConvention bdc,
                                         const DayCounter& dc = DayCounter());

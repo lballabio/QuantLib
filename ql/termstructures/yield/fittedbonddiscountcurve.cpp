@@ -90,59 +90,6 @@ namespace QuantLib {
     }
 
 
-    FittedBondDiscountCurve::FittedBondDiscountCurve (
-                 Natural settlementDays,
-                 const Calendar& calendar,
-                 const vector<shared_ptr<FixedRateBondHelper> >& bondHelpers,
-                 const DayCounter& dayCounter,
-                 const FittingMethod& fittingMethod,
-                 Real accuracy,
-                 Size maxEvaluations,
-                 const Array& guess,
-                 Real simplexLambda)
-    : YieldTermStructure(settlementDays, calendar, dayCounter),
-      accuracy_(accuracy),
-      maxEvaluations_(maxEvaluations),
-      simplexLambda_(simplexLambda),
-      guessSolution_(guess),
-      bondHelpers_(bondHelpers.size()),
-      fittingMethod_(fittingMethod) {
-
-        for (Size i=0; i<bondHelpers_.size(); ++i) {
-            bondHelpers_[i] = boost::dynamic_pointer_cast<BondHelper>(bondHelpers[i]);
-        }
-
-        fittingMethod_->curve_ = this;
-        setup();
-    }
-
-
-    FittedBondDiscountCurve::FittedBondDiscountCurve (
-                 const Date& referenceDate,
-                 const vector<shared_ptr<FixedRateBondHelper> >& bondHelpers,
-                 const DayCounter& dayCounter,
-                 const FittingMethod& fittingMethod,
-                 Real accuracy,
-                 Size maxEvaluations,
-                 const Array& guess,
-                 Real simplexLambda)
-    : YieldTermStructure(referenceDate, Calendar(), dayCounter),
-      accuracy_(accuracy),
-      maxEvaluations_(maxEvaluations),
-      simplexLambda_(simplexLambda),
-      guessSolution_(guess),
-      bondHelpers_(bondHelpers.size()),
-      fittingMethod_(fittingMethod) {
-
-        for (Size i=0; i<bondHelpers_.size(); ++i) {
-            bondHelpers_[i] = boost::dynamic_pointer_cast<BondHelper>(bondHelpers[i]);
-        }
-
-        fittingMethod_->curve_ = this;
-        setup();
-    }
-
-
     void FittedBondDiscountCurve::performCalculations() const {
 
         QL_REQUIRE(!bondHelpers_.empty(), "no bondHelpers given");
