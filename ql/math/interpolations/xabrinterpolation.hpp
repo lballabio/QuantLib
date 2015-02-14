@@ -107,7 +107,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
         const boost::shared_ptr<EndCriteria> &endCriteria,
         const boost::shared_ptr<OptimizationMethod> &optMethod,
         const Real errorAccept, const bool useMaxError, const Size maxGuesses)
-        : Interpolation::templateImpl<I1, I2>(xBegin, xEnd, yBegin),
+        : Interpolation::templateImpl<I1, I2>(xBegin, xEnd, yBegin, 1),
           XABRCoeffHolder<Model>(t, forward, params, paramIsFixed),
           endCriteria_(endCriteria), optMethod_(optMethod),
           errorAccept_(errorAccept), useMaxError_(useMaxError),
