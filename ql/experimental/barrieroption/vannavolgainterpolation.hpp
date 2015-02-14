@@ -33,6 +33,51 @@
 namespace QuantLib {
 
     namespace detail {
+        template<class I1, class I2> class VannaVolgaInterpolationImpl;
+    }
+
+    //! %Vanna Volga interpolation between discrete points
+    class VannaVolgaInterpolation : public Interpolation {
+      public:
+        /*! \pre the \f$ x \f$ values must be sorted. */
+        template <class I1, class I2>
+        VannaVolgaInterpolation(const I1& xBegin, const I1& xEnd,
+                            const I2& yBegin,
+                            Real spot,
+                            DiscountFactor dDiscount,
+                            DiscountFactor fDiscount,
+                            Time T) {
+            impl_ = boost::make_shared<
+                detail::VannaVolgaInterpolationImpl<I1,I2> >(
+                    xBegin, xEnd, yBegin,
+                    spot, dDiscount, fDiscount, T);
+            impl_->update();
+        }
+    };
+
+    //! %VannaVolga-interpolation factory and traits
+    class VannaVolga {
+      public:
+        VannaVolga(Real spot,
+                   DiscountFactor dDiscount,
+                   DiscountFactor fDiscount,
+                   Time T)
+        :spot_(spot), dDiscount_(dDiscount), fDiscount_(fDiscount), T_(T)
+        {}
+        template <class I1, class I2>
+        Interpolation interpolate(const I1& xBegin, const I1& xEnd,
+                                  const I2& yBegin) const {
+            return VannaVolgaInterpolation(xBegin, xEnd, yBegin, spot_, dDiscount_, fDiscount_, T_);
+        }
+        static const Size requiredPoints = 3;
+      private:
+        Real spot_;
+        DiscountFactor dDiscount_;
+        DiscountFactor fDiscount_;
+        Time T_;
+    };
+
+    namespace detail {
 
         template <class I1, class I2>
         class VannaVolgaInterpolationImpl
@@ -44,9 +89,9 @@ namespace QuantLib {
                                     DiscountFactor dDiscount,
                                     DiscountFactor fDiscount,
                                     Time T)
-            : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
-              spot_(spot), dDiscount_(dDiscount), fDiscount_(fDiscount), T_(T)
-            {
+            : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin,
+                                                 VannaVolga::requiredPoints),
+              spot_(spot), dDiscount_(dDiscount), fDiscount_(fDiscount), T_(T) {
                 QL_REQUIRE(this->xEnd_-this->xBegin_ == 3,
                     "Vanna Volga Interpolator only interpolates 3 volatilities in strike space");
             }
@@ -61,7 +106,7 @@ namespace QuantLib {
                 }
             }
             Real value(Real k) const {
-                Real x1 = vega(k)/vegas[0] 
+                Real x1 = vega(k)/vegas[0]
                     * (log(this->xBegin_[1]/k) * log(this->xBegin_[2]/k))
                     / (log(this->xBegin_[1]/this->xBegin_[0]) * log(this->xBegin_[2]/this->xBegin_[0]));
                 Real x2 = vega(k)/vegas[1]
@@ -105,46 +150,6 @@ namespace QuantLib {
         };
 
     }
-
-    //! %Vanna Volga interpolation between discrete points
-    class VannaVolgaInterpolation : public Interpolation {
-      public:
-        /*! \pre the \f$ x \f$ values must be sorted. */
-        template <class I1, class I2>
-        VannaVolgaInterpolation(const I1& xBegin, const I1& xEnd,
-                            const I2& yBegin,
-                            Real spot,
-                            DiscountFactor dDiscount,
-                            DiscountFactor fDiscount,
-                            Time T) {
-            impl_ = boost::make_shared<
-                detail::VannaVolgaInterpolationImpl<I1,I2> >(
-                    xBegin, xEnd, yBegin,
-                    spot, dDiscount, fDiscount, T);
-            impl_->update();
-        }
-    };
-
-    //! %VannaVolga-interpolation factory and traits
-    class VannaVolga {
-      public:
-        VannaVolga(Real spot,
-                   DiscountFactor dDiscount,
-                   DiscountFactor fDiscount,
-                   Time T)
-        :spot_(spot), dDiscount_(dDiscount), fDiscount_(fDiscount), T_(T)
-        {}
-        template <class I1, class I2>
-        Interpolation interpolate(const I1& xBegin, const I1& xEnd,
-                                  const I2& yBegin) const {
-            return VannaVolgaInterpolation(xBegin, xEnd, yBegin, spot_, dDiscount_, fDiscount_, T_);
-        }
-      private:
-        Real spot_;
-        DiscountFactor dDiscount_;
-        DiscountFactor fDiscount_;
-        Time T_;
-    };
 
 }
 
