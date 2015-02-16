@@ -86,7 +86,7 @@ template <typename Evaluation> struct ZabrSpecs {
         x[2] = y[2] < 25.0 + eps1() ? std::sqrt(y[2] - eps1())
                                     : (y[2] - eps1() + 25.0) / 10.0;
         x[3] = std::asin(y[3] / eps2());
-        x[4] = std::sqrt(y[0]);
+        x[4] = y[4] < 4.0 ? std::sqrt(y[4]) : (y[4] + 4.0) / 4.0;
         return x;
     }
     Array direct(const Array &x, const std::vector<bool> &,
@@ -103,7 +103,7 @@ template <typename Evaluation> struct ZabrSpecs {
         y[3] = std::fabs(x[3]) < 2.5 * M_PI
                    ? eps2() * std::sin(x[3])
                    : eps2() * (x[3] > 0.0 ? 1.0 : (-1.0));
-        y[4] = std::fabs(x[4]) < 2.0 ? x[0] * x[0] : 4.0 * x[0] - 4.0;
+        y[4] = std::fabs(x[4]) < 2.0 ? x[4] * x[4] : 4.0 * std::fabs(x[4]) - 4.0;
         return y;
     }
     typedef ZabrSmileSection<Evaluation> type;
