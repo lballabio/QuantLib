@@ -196,7 +196,7 @@ namespace QuantLib {
 
 
     Real IvopTwoDim(Real eps, Real chi, Real theta, Real /*rho*/,
-                    Real v0, double tau, Real rtax,
+                    Real v0, Time tau, Real rtax,
                     const boost::function<Real(Real)>& payoff) {
 
         Real ss=0.0;
