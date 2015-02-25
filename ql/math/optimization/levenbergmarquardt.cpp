@@ -49,7 +49,7 @@ namespace QuantLib {
         initCostValues_ = P.costFunction().values(x_);
         int m = initCostValues_.size();
         int n = x_.size();
-        boost::scoped_array<double> xx(new double[n]);
+        boost::scoped_array<double> xx(new Real[n]);
         std::copy(x_.begin(), x_.end(), xx.get());
         boost::scoped_array<double> fvec(new double[m]);
         boost::scoped_array<double> diag(new double[n]);
@@ -83,11 +83,11 @@ namespace QuantLib {
         MINPACK::LmdifCostFunction lmdifCostFunction = 
             boost::bind(&LevenbergMarquardt::fcn, this, _1, _2, _3, _4, _5);
         MINPACK::lmdif(m, n, xx.get(), fvec.get(),
-                       static_cast<double>(endCriteria.functionEpsilon()),
-                       static_cast<double>(xtol_),
-                       static_cast<double>(gtol_),
-                       static_cast<int>(endCriteria.maxIterations()),
-                       static_cast<double>(epsfcn_),
+                       endCriteria.functionEpsilon(),
+                       xtol_,
+                       gtol_,
+                       endCriteria.maxIterations(),
+                       epsfcn_,
                        diag.get(), mode, factor,
                        nprint, &info, &nfev, fjac.get(),
                        ldfjac, ipvt.get(), qtf.get(),
