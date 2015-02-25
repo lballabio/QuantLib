@@ -347,7 +347,7 @@ namespace {
         boost::shared_ptr<QuantLib::Payoff> payoff;
         payoff_adapter(boost::shared_ptr<QuantLib::Payoff> payoff)
         : payoff(payoff) {}
-        double operator()(double S) const {
+        Real operator()(double S) const {
             return (*payoff)(S);
         }
     };

@@ -1462,7 +1462,7 @@ namespace QuantLib {
                     boost::shared_ptr<GeneralizedBlackScholesProcess> process)
             : r(*(process->riskFreeRate())),
               q(*(process->dividendYield())) {}
-            double operator()(double t1,double t2) const {
+            Real operator()(double t1,double t2) const {
                 Real alpha = r->forwardRate(t1,t2,Continuous)
                            - q->forwardRate(t1,t2,Continuous);
                 return alpha * (t2-t1);
@@ -1502,7 +1502,7 @@ namespace QuantLib {
                     boost::shared_ptr<GeneralizedBlackScholesProcess> process)
             : v(*(process->blackVolatility())),
               s(process->x0()) {}
-            double operator()(double t1,double t2) const {
+            Real operator()(double t1,double t2) const {
                 return v->blackForwardVariance(t1,t2,s,true);
             }
         };
