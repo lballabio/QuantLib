@@ -114,7 +114,7 @@ namespace QuantLib {
         }
 
         Size nextBatch;
-        double order;
+        Real order;
         result_type error(mcModel_->sampleAccumulator().errorEstimate());
         while (maxError(error) > tolerance) {
             QL_REQUIRE(sampleNumber<maxSamples,
