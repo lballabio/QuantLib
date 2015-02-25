@@ -51,21 +51,21 @@ namespace QuantLib {
         int n = x_.size();
         boost::scoped_array<Real> xx(new Real[n]);
         std::copy(x_.begin(), x_.end(), xx.get());
-        boost::scoped_array<double> fvec(new double[m]);
-        boost::scoped_array<double> diag(new double[n]);
+        boost::scoped_array<Real> fvec(new Real[m]);
+        boost::scoped_array<Real> diag(new Real[n]);
         int mode = 1;
-        double factor = 1;
+        Real factor = 1;
         int nprint = 0;
         int info = 0;
         int nfev =0;
-        boost::scoped_array<double> fjac(new double[m*n]);
+        boost::scoped_array<Real> fjac(new Real[m*n]);
         int ldfjac = m;
         boost::scoped_array<int> ipvt(new int[n]);
-        boost::scoped_array<double> qtf(new double[n]);
-        boost::scoped_array<double> wa1(new double[n]);
-        boost::scoped_array<double> wa2(new double[n]);
-        boost::scoped_array<double> wa3(new double[n]);
-        boost::scoped_array<double> wa4(new double[m]);
+        boost::scoped_array<Real> qtf(new Real[n]);
+        boost::scoped_array<Real> wa1(new Real[n]);
+        boost::scoped_array<Real> wa2(new Real[n]);
+        boost::scoped_array<Real> wa3(new Real[n]);
+        boost::scoped_array<Real> wa4(new Real[m]);
         // requirements; check here to get more detailed error messages.
         QL_REQUIRE(n > 0, "no variables given");
         QL_REQUIRE(m >= n,
@@ -117,7 +117,7 @@ namespace QuantLib {
         return ecType;
     }
 
-    void LevenbergMarquardt::fcn(int, int n, double* x, double* fvec, int*) {
+    void LevenbergMarquardt::fcn(int, int n, Real* x, Real* fvec, int*) {
         Array xt(n);
         std::copy(x, x+n, xt.begin());
         // constraint handling needs some improvement in the future:

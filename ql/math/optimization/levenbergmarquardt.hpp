@@ -45,8 +45,8 @@ namespace QuantLib {
         virtual Integer getInfo() const;
         void fcn(int m,
                  int n,
-                 double* x,
-                 double* fvec,
+                 Real* x,
+                 Real* fvec,
                  int* iflag);
       private:
         Problem* currentProblem_;
