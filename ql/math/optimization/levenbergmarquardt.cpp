@@ -49,7 +49,7 @@ namespace QuantLib {
         initCostValues_ = P.costFunction().values(x_);
         int m = initCostValues_.size();
         int n = x_.size();
-        boost::scoped_array<double> xx(new Real[n]);
+        boost::scoped_array<Real> xx(new Real[n]);
         std::copy(x_.begin(), x_.end(), xx.get());
         boost::scoped_array<double> fvec(new double[m]);
         boost::scoped_array<double> diag(new double[n]);
