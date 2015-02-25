@@ -87,7 +87,7 @@ namespace QuantLib {
     {
         // caplet first
         Real df = currentState.discountRatio(currentIndex_ + period_, currentIndex_);
-        double tau = rateTimes_[currentIndex_+period_]- rateTimes_[currentIndex_];
+        Time tau = rateTimes_[currentIndex_+period_]- rateTimes_[currentIndex_];
         Real forward = (1.0/df-1.0)/tau;
         Real value = (*forwardPayOffs_[productIndex_])(forward);
         value *= tau*currentState.discountRatio(currentIndex_+period_,currentIndex_);
@@ -107,7 +107,7 @@ namespace QuantLib {
         Real Pn = currentState.discountRatio(currentIndex_ + numberPeriods*period_, currentIndex_);
         for (unsigned long i=0; i < numberPeriods; ++i)
         {
-            double tau = rateTimes_[currentIndex_+(i+1)*period_]- rateTimes_[currentIndex_+i*period_];
+            Time tau = rateTimes_[currentIndex_+(i+1)*period_]- rateTimes_[currentIndex_+i*period_];
             B+= tau*currentState.discountRatio(currentIndex_+(i+1)*period_,currentIndex_);
         }
 
