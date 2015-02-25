@@ -230,9 +230,9 @@ namespace QuantLib {
                always is absolute: regardless of the lowerBoundContinuationValue_ (this could be changed)
                but it still honours "canExercise"
              */
-            double sumOptimized = 0.0;
-            double sumNoExercise = 0.0;
-            double sumAlwaysExercise = 0.0; // always, if allowed
+            Real sumOptimized = 0.0;
+            Real sumNoExercise = 0.0;
+            Real sumAlwaysExercise = 0.0; // always, if allowed
 
             for (Size j = 0, k = 0; j < n; ++j) {
                 sumNoExercise += prices[j];
