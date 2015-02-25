@@ -375,7 +375,7 @@ namespace {
         Real value(const Array& x) const {
             Real fx = 0.0;
             for (Size i=0; i<x.size(); ++i) {
-                fx += floor(x[i])*floor(x[i]);
+                fx += std::floor(x[i])*std::floor(x[i]);
             }
             return fx;
         }
