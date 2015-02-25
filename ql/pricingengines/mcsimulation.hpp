@@ -114,7 +114,7 @@ namespace QuantLib {
         }
 
         Size nextBatch;
-        Real order;
+        double order;
         result_type error(mcModel_->sampleAccumulator().errorEstimate());
         while (maxError(error) > tolerance) {
             QL_REQUIRE(sampleNumber<maxSamples,
@@ -125,8 +125,8 @@ namespace QuantLib {
             // conservative estimate of how many samples are needed
             order = maxError(error*error)/tolerance/tolerance;
             nextBatch =
-                Size(std::max<Real>(static_cast<Real>(sampleNumber)*order*0.8-static_cast<Real>(sampleNumber),
-                                    static_cast<Real>(minSamples)));
+                Size(std::max<double>(static_cast<double>(sampleNumber)*order*0.8 - static_cast<double>(sampleNumber),
+                                    static_cast<double>(minSamples)));
 
             // do not exceed maxSamples
             nextBatch = std::min(nextBatch, maxSamples-sampleNumber);
