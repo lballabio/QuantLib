@@ -196,7 +196,7 @@ namespace QuantLib {
                 / (avgLgd * bsktSize);
         // model parameters:
         Real m = avgProb * bsktSize;
-        Real floorAveProb = std::min(Real(bsktSize-1), floor(Real(m)));
+        Real floorAveProb = std::min(Real(bsktSize-1), std::floor(Real(m)));
         Real ceilAveProb = floorAveProb + 1.;
         // nu_A
         Real varianceBinom = avgProb * (1. - avgProb)/bsktSize;
