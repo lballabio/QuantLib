@@ -479,7 +479,7 @@ namespace QuantLib {
                 opt2[1] = alpha;
                 opt2[2] = beta;
                 opt2[0] = omega;
-                double fCost = QL_MAX_REAL;
+                Real fCost = QL_MAX_REAL;
                 if (constraints.test(opt2) && (fCost = cost.value(opt2)) < fCost2)
                     fCost2 = fCost;
             } catch (const std::exception &) {
