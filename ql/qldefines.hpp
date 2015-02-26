@@ -50,6 +50,10 @@
 #define QL_BIG_INTEGER long
 #define QL_REAL double
 
+/* In AD mode, QL_REAL_VALUE is the underlying value type of QL_REAL;
+   in non-AD mode, QL_REAL_VALUE is the QL_REAL type itself
+*/
+#define QL_REAL_VALUE double
 
 /*! \defgroup macros QuantLib macros
 
