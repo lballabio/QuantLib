@@ -35,7 +35,7 @@ namespace QuantLib {
     */
     class MfStateProcess : public StochasticProcess1D {
       public:
-        MfStateProcess(double reversion, const Array &times, const Array &vols);
+        MfStateProcess(Real reversion, const Array &times, const Array &vols);
 
         //! \name StochasticProcess interface
         //@{
