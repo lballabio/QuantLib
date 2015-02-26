@@ -69,7 +69,7 @@ namespace QuantLib {
                 if (s_ < QL_EPSILON)
                     return std::max(f_ - k, 0.0) + a_ * k + b_;
                 boost::math::normal normal;
-                Real d1 = log(f_ / k) / s_ + s_ / 2.0;
+                Real d1 = std::log(f_ / k) / s_ + s_ / 2.0;
                 Real d2 = d1 - s_;
                 return f_ * boost::math::cdf(normal, d1) -
                        k * boost::math::cdf(normal, d2) + a_ * k + b_;
@@ -85,10 +85,10 @@ namespace QuantLib {
                 boost::math::normal normal;
                 Real d20 = boost::math::quantile(normal, -c0p_ + a);
                 Real d21 = boost::math::quantile(normal, -c1p_ + a);
-                Real alpha = (d20 - d21) / (log(k0_) - log(k1_));
-                Real beta = d20 - alpha * log(k0_);
+                Real alpha = (d20 - d21) / (std::log(k0_) - std::log(k1_));
+                Real beta = d20 - alpha * std::log(k0_);
                 s_ = -1.0 / alpha;
-                f_ = exp(s_ * (beta + s_ / 2.0));
+                f_ = std::exp(s_ * (beta + s_ / 2.0));
                 QL_REQUIRE(f_ < QL_KAHALE_FMAX, "dummy"); // this is caught
                 cFunction cTmp(f_, s_, a, 0.0);
                 b_ = c0_ - cTmp(k0_);
@@ -105,7 +105,7 @@ namespace QuantLib {
                 s = std::max(s, 0.0);
                 boost::math::normal normal;
                 Real d20 = boost::math::quantile(normal, -c0p_);
-                f_ = k0_ * exp(s * d20 + s * s / 2.0);
+                f_ = k0_ * std::exp(s * d20 + s * s / 2.0);
                 QL_REQUIRE(f_ < QL_KAHALE_FMAX, "dummy"); // this is caught
                 cFunction c(f_, s, 0.0, 0.0);
                 return c(k0_) - c0_;
@@ -121,7 +121,7 @@ namespace QuantLib {
                 s = std::max(s, 0.0);
                 boost::math::normal normal;
                 Real d21 = boost::math::quantile(normal, -c1p_);
-                f_ = k1_ * exp(s * d21 + s * s / 2.0);
+                f_ = k1_ * std::exp(s * d21 + s * s / 2.0);
                 QL_REQUIRE(f_ < QL_KAHALE_FMAX, "dummy"); // this is caught
                 b_ = c0_ - f_;
                 cFunction c(f_, s, 0.0, b_);

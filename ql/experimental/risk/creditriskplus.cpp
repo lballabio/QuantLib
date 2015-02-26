@@ -211,7 +211,7 @@ namespace QuantLib {
         // compute loss distribution
 
         loss_.clear();
-        loss_.push_back(pow(1.0 - pC_, alphaC_)); // A(0)
+        loss_.push_back(std::pow(1.0 - pC_, alphaC_)); // A(0)
 
         Real res;
         for (unsigned long n = 0; n < upperIndex_ - 1; ++n) { // compute A(n+1)

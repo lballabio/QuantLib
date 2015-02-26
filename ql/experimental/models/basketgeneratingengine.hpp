@@ -151,10 +151,10 @@ namespace QuantLib {
                 // transformations
                 int type = type_; // start with same type as non standard
                                   // underlying (1 means payer, -1 receiver)
-                Real nominal = fabs(v[0]);
+                Real nominal = std::fabs(v[0]);
                 if (v[0] < 0.0)
                     type *= -1;
-                Real maturity = std::min(fabs(v[1]), maxMaturity_);
+                Real maturity = std::min(std::fabs(v[1]), maxMaturity_);
 
                 Real fixedRate = v[2]; // allow for negative rates explicitly
                 // (though it might not be reasonable for calibration depending
