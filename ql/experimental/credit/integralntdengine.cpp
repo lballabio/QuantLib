@@ -57,7 +57,7 @@ namespace QuantLib {
                         d);
                 Probability defaultProb = 
                     std::accumulate(probsTriggering.begin(), 
-                    probsTriggering.end(), 0.);
+                    probsTriggering.end(), Real(0.));
                 // OVERKILL???? 1-probAtleastNevents is enough
 
 */
@@ -87,7 +87,7 @@ namespace QuantLib {
                         d0);
                 Probability defProb0 = std::accumulate(probsTriggering.begin(), 
                 ///OVERKILL????
-                    probsTriggering.end(), 0.);
+                    probsTriggering.end(), Real(0.));
 */
                 Probability defProb0 = arguments_.basket->probAtLeastNEvents(
                         arguments_.ntdOrder, d0);
@@ -110,7 +110,7 @@ namespace QuantLib {
                             arguments_.basket->probsBeingNthEvent(
                                 arguments_.ntdOrder, d);
                         defProb1 = std::accumulate(probsTriggering1.begin(), 
-                            probsTriggering1.end(), 0.);
+                            probsTriggering1.end(), Real(0.));
                         /*Recoveries might differ along names, depending on 
                         which name is triggering the contract the loss will be 
                         different  
