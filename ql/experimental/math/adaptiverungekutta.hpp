@@ -104,7 +104,7 @@ namespace QuantLib {
         const Real a2,a3,a4,a5,a6,
                    b21,b31,b32,b41,b42,b43,b51,b52,b53,b54,b61,b62,b63,b64,b65,
                    c1,c3,c4,c6,dc1,dc3,dc4,dc5,dc6;
-        const Real ADAPTIVERK_MAXSTP, ADAPTIVERK_TINY, ADAPTIVERK_SAFETY,
+        const double ADAPTIVERK_MAXSTP, ADAPTIVERK_TINY, ADAPTIVERK_SAFETY,
                    ADAPTIVERK_PGROW, ADAPTIVERK_PSHRINK, ADAPTIVERK_ERRCON;
     };
 
