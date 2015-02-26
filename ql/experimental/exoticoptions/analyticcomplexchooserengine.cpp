@@ -22,6 +22,10 @@
 #include <ql/exercise.hpp>
 #include <boost/make_shared.hpp>
 
+using std::pow;
+using std::log;
+using std::exp;
+
 namespace QuantLib {
 
     AnalyticComplexChooserEngine::AnalyticComplexChooserEngine(

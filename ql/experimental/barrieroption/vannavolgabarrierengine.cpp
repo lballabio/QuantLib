@@ -29,6 +29,9 @@
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <boost/make_shared.hpp>
 
+using std::pow;
+using std::log;
+
 namespace QuantLib {
 
     VannaVolgaBarrierEngine::VannaVolgaBarrierEngine(
