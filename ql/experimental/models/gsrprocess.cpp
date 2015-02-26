@@ -19,6 +19,9 @@
 
 #include <ql/experimental/models/gsrprocess.hpp>
 
+using std::exp;
+using std::pow;
+
 namespace QuantLib {
 
     GsrProcess::GsrProcess(const Array &times, const Array &vols,

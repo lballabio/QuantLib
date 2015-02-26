@@ -26,6 +26,9 @@
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/instruments/payoffs.hpp>
 
+using std::exp;
+using std::pow;
+
 namespace QuantLib {
 
 
