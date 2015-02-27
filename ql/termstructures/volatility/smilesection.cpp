@@ -22,6 +22,8 @@
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/settings.hpp>
 
+using std::sqrt;
+
 namespace QuantLib {
 
     void SmileSection::update() {

@@ -29,6 +29,8 @@
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 
+using std::sqrt;
+
 namespace QuantLib {
 
     VannaVolgaDoubleBarrierEngine::VannaVolgaDoubleBarrierEngine(

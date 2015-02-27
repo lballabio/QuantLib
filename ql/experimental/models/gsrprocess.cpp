@@ -21,6 +21,7 @@
 
 using std::exp;
 using std::pow;
+using std::sqrt;
 
 namespace QuantLib {
 

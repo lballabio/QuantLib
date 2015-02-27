@@ -22,6 +22,8 @@
 
 #include <boost/make_shared.hpp>
 
+using std::sqrt;
+
 namespace QuantLib {
 
     CumulativeNormalDistribution const GaussianLHPLossModel::phi_ = 

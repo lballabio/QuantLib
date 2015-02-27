@@ -24,6 +24,7 @@
 #include <ql/pricingengines/blackformula.hpp>
 
 using std::exp;
+using std::sqrt;
 
 namespace QuantLib {
 

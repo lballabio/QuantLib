@@ -19,6 +19,8 @@
 
 #include <ql/experimental/models/kahalesmilesection.hpp>
 
+using std::sqrt;
+
 namespace QuantLib {
 
     KahaleSmileSection::KahaleSmileSection(

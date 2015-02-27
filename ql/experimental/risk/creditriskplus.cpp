@@ -20,6 +20,8 @@
 #include <ql/experimental/risk/creditriskplus.hpp>
 #include <map>
 
+using std::sqrt;
+
 namespace QuantLib {
 
     CreditRiskPlus::CreditRiskPlus(
