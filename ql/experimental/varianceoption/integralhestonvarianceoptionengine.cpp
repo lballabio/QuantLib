@@ -52,7 +52,7 @@ namespace QuantLib {
     typedef std::complex<Real> Complex;
 
     Real IvopOneDim(Real eps, Real chi, Real theta, Real /*rho*/,
-                      Real v0, Real eprice, double tau, Real rtax)
+                      Real v0, Real eprice, Time tau, Real rtax)
     {
         Real ss=0.0;
         boost::scoped_array<double> xiv(new double[2048*2048+1]);

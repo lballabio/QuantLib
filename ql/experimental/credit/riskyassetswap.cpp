@@ -122,7 +122,7 @@ namespace QuantLib {
             do {
                 Real disc = yieldTS_->discount (d);
                 Real dd   = defaultTS_->defaultDensity (d, true);
-                double dcf  = defaultTS_->dayCounter().yearFraction (d0, d);
+                Real dcf  = defaultTS_->dayCounter().yearFraction (d0, d);
 
                 recoveryValue  += disc * dd * dcf;
 
