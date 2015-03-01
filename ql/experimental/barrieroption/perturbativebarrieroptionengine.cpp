@@ -1489,8 +1489,8 @@ namespace QuantLib {
                     boost::shared_ptr<GeneralizedBlackScholesProcess> process)
             : v(*(process->blackVolatility())),
               s(process->x0()) {}
-            double operator()(double t) const {
-                double sigma = v->blackForwardVol(t,t,s,true);
+            Real operator()(double t) const {
+                Real sigma = v->blackForwardVol(t,t,s,true);
                 return sigma*sigma;
             }
         };

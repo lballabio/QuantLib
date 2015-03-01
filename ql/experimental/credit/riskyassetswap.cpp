@@ -120,8 +120,8 @@ namespace QuantLib {
                 d = defaultTS_->referenceDate();
             Date d0 = d;
             do {
-                double disc = yieldTS_->discount (d);
-                double dd   = defaultTS_->defaultDensity (d, true);
+                Real disc = yieldTS_->discount (d);
+                Real dd   = defaultTS_->defaultDensity (d, true);
                 double dcf  = defaultTS_->dayCounter().yearFraction (d0, d);
 
                 recoveryValue  += disc * dd * dcf;
