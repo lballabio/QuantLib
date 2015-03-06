@@ -41,6 +41,8 @@ namespace QuantLib {
             return out << "Modified Preceding";
           case Unadjusted:
             return out << "Unadjusted";
+          case Nearest:
+            return out << "Nearest";
           default:
             QL_FAIL("unknown BusinessDayConvention (" << Integer(b) << ")");
         }

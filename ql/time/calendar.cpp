@@ -72,6 +72,17 @@ namespace QuantLib {
             if (c == ModifiedPreceding && d1.month() != d.month()) {
                 return adjust(d,Following);
             }
+        } else if (c == Nearest) {
+            Date d2 = d;
+            while (isHoliday(d1) && isHoliday(d2))
+            {
+                d1++;
+                d2--;
+            }
+            if (isHoliday(d1))
+                return d2;
+            else
+                return d1;
         } else {
             QL_FAIL("unknown business-day convention");
         }

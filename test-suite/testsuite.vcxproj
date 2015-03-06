@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (static runtime)|Win32">
@@ -641,6 +641,7 @@
     <ClCompile Include="blackformula.cpp" />
     <ClCompile Include="bonds.cpp" />
     <ClCompile Include="brownianbridge.cpp" />
+    <ClCompile Include="businessdayconventions.cpp" />
     <ClCompile Include="calendars.cpp" />
     <ClCompile Include="capfloor.cpp" />
     <ClCompile Include="capflooredcoupon.cpp" />
@@ -773,6 +774,7 @@
     <ClInclude Include="blackformula.hpp" />
     <ClInclude Include="bonds.hpp" />
     <ClInclude Include="brownianbridge.hpp" />
+    <ClInclude Include="businessdayconventions.hpp" />
     <ClInclude Include="calendars.hpp" />
     <ClInclude Include="capfloor.hpp" />
     <ClInclude Include="capflooredcoupon.hpp" />
