@@ -81,12 +81,10 @@ template <typename Evaluation> struct ZabrSpecs {
         Array x(5);
         x[0] = y[0] < 25.0 + eps1() ? std::sqrt(y[0] - eps1())
                                     : (y[0] - eps1() + 25.0) / 10.0;
-        // y_[1] = std::tan(M_PI*(x[1] - 0.5))/dilationFactor();
         x[1] = std::sqrt(-std::log(y[1]));
-        x[2] = y[2] < 25.0 + eps1() ? std::sqrt(y[2] - eps1())
-                                    : (y[2] - eps1() + 25.0) / 10.0;
+        x[2] = std::tan(M_PI*(y[4]/5.0-0.5));
         x[3] = std::asin(y[3] / eps2());
-        x[4] = y[4] < 4.0 ? std::sqrt(y[4]) : (y[4] + 4.0) / 4.0;
+        x[4] = std::tan(M_PI*(y[4]/1.9-0.5));
         return x;
     }
     Array direct(const Array &x, const std::vector<bool> &,
@@ -94,16 +92,16 @@ template <typename Evaluation> struct ZabrSpecs {
         Array y(5);
         y[0] = std::fabs(x[0]) < 5.0 ? x[0] * x[0] + eps1()
                                      : (10.0 * std::fabs(x[0]) - 25.0) + eps1();
-        // y_[1] = std::atan(dilationFactor_*x[1])/M_PI + 0.5;
         y[1] = std::fabs(x[1]) < std::sqrt(-std::log(eps1()))
                    ? std::exp(-(x[1] * x[1]))
                    : eps1();
-        y[2] = std::fabs(x[2]) < 5.0 ? x[2] * x[2] + eps1()
-                                     : (10.0 * std::fabs(x[2]) - 25.0) + eps1();
+        // limit nu to 5.00
+        y[2] = (std::atan(x[2])/M_PI + 0.5) * 5.0;
         y[3] = std::fabs(x[3]) < 2.5 * M_PI
                    ? eps2() * std::sin(x[3])
                    : eps2() * (x[3] > 0.0 ? 1.0 : (-1.0));
-        y[4] = std::fabs(x[4]) < 2.0 ? x[4] * x[4] : 4.0 * std::fabs(x[4]) - 4.0;
+        // limit gamma to 1.9
+        y[4] = (std::atan(x[4])/M_PI + 0.5) * 1.9;
         return y;
     }
     typedef ZabrSmileSection<Evaluation> type;
