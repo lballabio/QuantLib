@@ -19,7 +19,7 @@
 
 #include <ql/indexes/ibor/fedfunds.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
-#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/currencies/america.hpp>
 
 namespace QuantLib {
@@ -28,6 +28,6 @@ namespace QuantLib {
     : OvernightIndex("FedFunds", 0,
                      USDCurrency(),
                      UnitedStates(UnitedStates::Settlement),
-                     Actual365Fixed(), h) {}
+                     Actual360(), h) {}
 
 }
