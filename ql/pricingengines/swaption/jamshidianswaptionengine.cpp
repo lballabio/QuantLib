@@ -35,11 +35,10 @@ namespace QuantLib {
 
         Real operator()(Rate x) const {
             Real value = strike_;
-            Real discountBondMaturity = model_->discountBond(maturity_, valueTime_, x);
             Size size = times_.size();
             for (Size i=0; i<size; i++) {
                 Real dbValue =
-                    model_->discountBond(maturity_, times_[i], x) / discountBondMaturity;
+                    model_->discountBond(maturity_, times_[i], x) / model_->discountBond(maturity_, valueTime_, x);
                 value -= amounts_[i]*dbValue;
             }
             return value;
@@ -103,14 +102,13 @@ namespace QuantLib {
         Size size = arguments_.fixedCoupons.size();
 
         Real value = 0.0;
-        Real discountBondMaturity = model_->discountBond(maturity, valueTime, rStar);
         for (Size i=0; i<size; i++) {
             Real fixedPayTime =
                 dayCounter.yearFraction(referenceDate,
                                         arguments_.fixedPayDates[i]);
             Real strike = model_->discountBond(maturity,
                                                fixedPayTime,
-                                               rStar) / discountBondMaturity;
+                                               rStar) / model_->discountBond(maturity, valueTime, rStar);
             Real dboValue = model_->discountBondOption(
                                                w, strike, maturity, valueTime,
                                                fixedPayTime);
