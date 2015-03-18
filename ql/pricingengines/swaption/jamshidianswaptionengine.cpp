@@ -108,7 +108,7 @@ namespace QuantLib {
                                         arguments_.fixedPayDates[i]);
             Real strike = model_->discountBond(maturity,
                                                fixedPayTime,
-                                               rStar) / model_->discountBond(maturity, valueTime, rStar);
+                                               rStar) / model_->discountBond(maturity,valueTime,rStar);
             Real dboValue = model_->discountBondOption(
                                                w, strike, maturity, valueTime,
                                                fixedPayTime);
