@@ -5,6 +5,7 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     cmsspreadcoupon.hpp \
+    digitalcmsspreadcoupon.hpp \
     lognormalcmsspreadpricer.hpp \
     lineartsrpricer.hpp \
     proxyibor.hpp \
@@ -15,6 +16,7 @@ this_include_HEADERS = \
 
 libCoupons_la_SOURCES = \
     cmsspreadcoupon.cpp \
+    digitalcmsspreadcoupon.cpp \
     lognormalcmsspreadpricer.cpp \
     lineartsrpricer.cpp \
     proxyibor.cpp \
