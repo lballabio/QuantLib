@@ -30,6 +30,8 @@
 #include <ql/cashflows/cmscoupon.hpp>
 #include <ql/time/schedule.hpp>
 
+#include <boost/make_shared.hpp>
+
 namespace QuantLib {
 
     //! Cms-rate coupon with digital digital call/put option
@@ -46,7 +48,7 @@ namespace QuantLib {
                       bool isPutATMIncluded = false,
                       Rate putDigitalPayoff = Null<Rate>(),
                       const boost::shared_ptr<DigitalReplication>& replication =
-                                     boost::shared_ptr<DigitalReplication>());
+                                     boost::make_shared<DigitalReplication>());
 
         //! \name Visitability
         //@{
@@ -85,7 +87,7 @@ namespace QuantLib {
         DigitalCmsLeg& withPutPayoffs(const std::vector<Rate>& payoffs);
         DigitalCmsLeg& withReplication(
                     const boost::shared_ptr<DigitalReplication>& replication =
-                                     boost::shared_ptr<DigitalReplication>());
+                                     boost::make_shared<DigitalReplication>());
         operator Leg() const;
       private:
         Schedule schedule_;
