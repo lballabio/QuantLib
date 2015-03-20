@@ -36,6 +36,9 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+using std::pow;
+using std::cos;
+
 namespace {
 
     struct NamedOptimizationMethod;

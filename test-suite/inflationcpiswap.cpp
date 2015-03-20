@@ -45,6 +45,7 @@ using namespace boost::unit_test_framework;
 
 #include <iostream>
 
+using std::fabs;
 
 namespace {
     struct Datum {

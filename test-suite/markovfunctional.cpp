@@ -54,6 +54,8 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+using std::fabs;
+
 void MarkovFunctionalTest::testMfStateProcess() {
 
     const Real tolerance = 1E-10;
