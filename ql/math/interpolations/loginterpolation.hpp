@@ -205,7 +205,7 @@ namespace QuantLib {
                                  const I2& yBegin,
                                  const Interpolator& factory = Interpolator())
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin,
-                                                 LogLinear::requiredPoints),
+                                                 Interpolator::requiredPoints),
               logY_(xEnd-xBegin) {
                 interpolation_ = factory.interpolate(this->xBegin_,
                                                      this->xEnd_,
