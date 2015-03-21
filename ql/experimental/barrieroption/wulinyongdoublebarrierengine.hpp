@@ -17,14 +17,14 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analyticdoublebarrierengine.hpp
-    \brief Analytic double-barrier option engine
+/*! \file WulinYongDoubleBarrierEngine.hpp
+    \brief Wulin Suo, Yong Wang double-barrier option engine
 */
 
-#ifndef quantlib_analytic_double_barrier_engine_hpp
-#define quantlib_analytic_double_barrier_engine_hpp
+#ifndef wulin_yong_double_barrier_engine_hpp
+#define wulin_yong_double_barrier_engine_hpp
 
-#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
+#include <ql/instruments/doublebarrieroption.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 
@@ -39,9 +39,9 @@ namespace QuantLib {
         \test the correctness of the returned value is tested by
               reproducing results available in literature.
     */
-    class AnalyticDoubleBarrierEngine : public DoubleBarrierOption::engine {
+    class WulinYongDoubleBarrierEngine : public DoubleBarrierOption::engine {
       public:
-        AnalyticDoubleBarrierEngine(
+        WulinYongDoubleBarrierEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
             int series = 5);
         void calculate() const;

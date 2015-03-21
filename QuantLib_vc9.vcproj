@@ -8782,19 +8782,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\barrieroption\analyticdoublebarrierengine.cpp"
+					RelativePath=".\ql\experimental\barrieroption\wulinyongdoublebarrierengine.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\barrieroption\analyticdoublebarrierengine.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\barrieroption\doublebarrieroption.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\barrieroption\doublebarrieroption.hpp"
+					RelativePath=".\ql\experimental\barrieroption\wulinyongdoublebarrierengine.hpp"
 					>
 				</File>
 				<File

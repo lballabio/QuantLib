@@ -19,8 +19,8 @@
 
 #include <ql/experimental/barrieroption/vannavolgadoublebarrierengine.hpp>
 #include <ql/experimental/barrieroption/vannavolgainterpolation.hpp>
-#include <ql/experimental/barrieroption/analyticdoublebarrierengine.hpp>
-#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
+#include <ql/experimental/barrieroption/wulinyongdoublebarrierengine.hpp>
+#include <ql/instruments/doublebarrieroption.hpp>
 #include <ql/experimental/fx/blackdeltacalculator.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/math/matrix.hpp>
@@ -73,6 +73,10 @@ namespace QuantLib {
          const Real spotShift_delta = 0.0001 * spotFX_->value();
          const Real sigmaShift_vanna = 0.0001;
 
+         QL_REQUIRE(arguments_.barrierType==DoubleBarrier::KnockIn || 
+                    arguments_.barrierType==DoubleBarrier::KnockOut, 
+                    "Only same type barrier supported");
+
          Handle<Quote> x0Quote(  //used for shift
              boost::make_shared<SimpleQuote>(spotFX_->value()));
          Handle<Quote> atmVolQuote( //used for shift
@@ -90,7 +94,7 @@ namespace QuantLib {
                                  Handle<BlackVolTermStructure>(blackVolTS));
 
          boost::shared_ptr<PricingEngine> engineBS =
-             boost::make_shared<AnalyticDoubleBarrierEngine>(stochProcess,
+             boost::make_shared<WulinYongDoubleBarrierEngine>(stochProcess,
                                                              series_);
 
          BlackDeltaCalculator blackDeltaCalculatorAtm(
@@ -134,16 +138,16 @@ namespace QuantLib {
                                       domesticTS_->discount(T_));
 
          //already out
-         if((x0Quote->value() > arguments_.barrier[1] || x0Quote->value() < arguments_.barrier[0])
-             && arguments_.barrierType[0] == Barrier::DownOut){
+         if((x0Quote->value() > arguments_.barrier_hi || x0Quote->value() < arguments_.barrier_lo)
+             && arguments_.barrierType == DoubleBarrier::KnockOut){
                  results_.value = 0.0;
                  results_.additionalResults["VanillaPrice"] = adaptVanDelta_? bsPriceWithSmile_ : vanillaOption;
                  results_.additionalResults["BarrierInPrice"] = adaptVanDelta_? bsPriceWithSmile_ : vanillaOption;
                  results_.additionalResults["BarrierOutPrice"] = 0.0;
          }
          //already in
-         else if((x0Quote->value() > arguments_.barrier[1] || x0Quote->value() < arguments_.barrier[0])
-                  && arguments_.barrierType[0] == Barrier::DownIn){
+         else if((x0Quote->value() > arguments_.barrier_hi || x0Quote->value() < arguments_.barrier_lo)
+                  && arguments_.barrierType == DoubleBarrier::KnockIn){
                  results_.value = adaptVanDelta_? bsPriceWithSmile_ : vanillaOption;
                  results_.additionalResults["VanillaPrice"] = adaptVanDelta_? bsPriceWithSmile_ : vanillaOption;
                  results_.additionalResults["BarrierInPrice"] = adaptVanDelta_? bsPriceWithSmile_ : vanillaOption;
@@ -157,7 +161,8 @@ namespace QuantLib {
                  boost::shared_ptr<StrikedTypePayoff> payoff
                      = boost::static_pointer_cast<StrikedTypePayoff> (arguments_.payoff);
                  DoubleBarrierOption doubleBarrierOption(arguments_.barrierType,
-                                             arguments_.barrier,
+                                             arguments_.barrier_lo,
+                                             arguments_.barrier_hi,
                                              arguments_.rebate,
                                              payoff,
                                              arguments_.exercise);
@@ -289,8 +294,8 @@ namespace QuantLib {
                  b[2] = volgaBarBS;
                  Array q = inverse(A) * b;
 
-                 Real H = arguments_.barrier[1];
-                 Real L = arguments_.barrier[0];
+                 Real H = arguments_.barrier_hi;
+                 Real L = arguments_.barrier_lo;
                  Real theta_tilt_minus = ((domesticTS_->zeroRate(T_, Continuous) - foreignTS_->zeroRate(T_, Continuous))/atmVol_->value() - atmVol_->value()/2.0)*std::sqrt(T_);
                  Real h = 1.0/atmVol_->value() * std::log(H/x0Quote->value())/std::sqrt(T_);
                  Real l = 1.0/atmVol_->value() * std::log(L/x0Quote->value())/std::sqrt(T_);
@@ -325,7 +330,7 @@ namespace QuantLib {
                      inPrice = vanillaOption - outPrice;
                  }
 
-                 if(arguments_.barrierType[0] == Barrier::DownOut)
+                 if(arguments_.barrierType == DoubleBarrier::KnockOut)
                     results_.value = outPrice;
                  else
                     results_.value = inPrice;

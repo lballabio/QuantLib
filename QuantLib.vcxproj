@@ -1625,8 +1625,7 @@
     <ClInclude Include="ql\experimental\amortizingbonds\amortizingfixedratebond.hpp" />
     <ClInclude Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\all.hpp" />
-    <ClInclude Include="ql\experimental\barrieroption\analyticdoublebarrierengine.hpp" />
-    <ClInclude Include="ql\experimental\barrieroption\doublebarrieroption.hpp" />
+    <ClInclude Include="ql\experimental\barrieroption\wulinyongdoublebarrierengine.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\perturbativebarrieroptionengine.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\vannavolgabarrierengine.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\vannavolgadoublebarrierengine.hpp" />
@@ -2475,8 +2474,7 @@
     <ClCompile Include="ql\experimental\amortizingbonds\amortizingcmsratebond.cpp" />
     <ClCompile Include="ql\experimental\amortizingbonds\amortizingfixedratebond.cpp" />
     <ClCompile Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.cpp" />
-    <ClCompile Include="ql\experimental\barrieroption\analyticdoublebarrierengine.cpp" />
-    <ClCompile Include="ql\experimental\barrieroption\doublebarrieroption.cpp" />
+    <ClCompile Include="ql\experimental\barrieroption\wulinyongdoublebarrierengine.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\perturbativebarrieroptionengine.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\vannavolgabarrierengine.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\vannavolgadoublebarrierengine.cpp" />

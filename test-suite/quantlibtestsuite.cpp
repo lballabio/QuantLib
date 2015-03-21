@@ -356,6 +356,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(AmortizingBondTest::suite());
     test->add(AsianOptionTest::experimental());
     test->add(BarrierOptionTest::experimental());
+    test->add(DoubleBarrierOptionTest::experimental());
     test->add(BlackDeltaCalculatorTest::suite());
     test->add(CatBondTest::suite());
     test->add(CdoTest::suite());

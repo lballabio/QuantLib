@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/barrieroption/analyticdoublebarrierengine.hpp>
+#include <ql/experimental/barrieroption/wulinyongdoublebarrierengine.hpp>
 #include <ql/instruments/europeanoption.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/exercise.hpp>
@@ -25,14 +25,14 @@
 
 namespace QuantLib {
 
-    AnalyticDoubleBarrierEngine::AnalyticDoubleBarrierEngine(
+    WulinYongDoubleBarrierEngine::WulinYongDoubleBarrierEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
             int series)
     : process_(process), series_(series) {
         registerWith(process_);
     }
 
-    void AnalyticDoubleBarrierEngine::calculate() const {
+    void WulinYongDoubleBarrierEngine::calculate() const {
 
         boost::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
@@ -45,9 +45,13 @@ namespace QuantLib {
         QL_REQUIRE(S >= 0.0, "negative or null underlying given");
         QL_REQUIRE(!triggered(S), "barrier touched");
 
-        std::vector<Barrier::Type> barrierType = arguments_.barrierType;
-        Real L = arguments_.barrier[0];
-        Real H = arguments_.barrier[1];
+        DoubleBarrier::Type barrierType = arguments_.barrierType;
+        QL_REQUIRE(barrierType == DoubleBarrier::KnockOut || 
+                   barrierType == DoubleBarrier::KnockIn,
+                   "only KnockIn and KnockOut options supported");
+
+        Real L = arguments_.barrier_lo;
+        Real H = arguments_.barrier_hi;
         Real K_up = std::min(H, K);
         Real K_down = std::max(L, K);
         Time T = residualTime();
@@ -59,8 +63,8 @@ namespace QuantLib {
         Real mu = rd - rf - vol*vol/2.0;
         Real sgn = mu > 0 ? 1.0 :(mu < 0 ? -1.0: 0.0);
         //rebate
-        Real R_L = arguments_.rebate[0];
-        Real R_H = arguments_.rebate[1];
+        Real R_L = arguments_.rebate;
+        Real R_H = arguments_.rebate;
 
         //european option
         EuropeanOption europeanOption(payoff, arguments_.exercise);
@@ -116,64 +120,58 @@ namespace QuantLib {
         }
 
         //rebate paid at maturity
-        if(barrierType[0] == Barrier::DownOut){
+        if(barrierType == DoubleBarrier::KnockOut)
             results_.value = barrierOut ;
-            results_.additionalResults["vanilla"] = european;
-            results_.additionalResults["barrierOut"] = barrierOut;
-            results_.additionalResults["barrierIn"] = european - barrierOut;
-        }
-        else{
-            results_.value = barrierOut;
-            results_.additionalResults["vanilla"] = european;
-            results_.additionalResults["barrierOut"] = barrierOut;
-            results_.additionalResults["barrierIn"] = european - barrierOut;
-        }
-
+        else
+            results_.value = european - barrierOut;
+        results_.additionalResults["vanilla"] = european;
+        results_.additionalResults["barrierOut"] = barrierOut;
+        results_.additionalResults["barrierIn"] = european - barrierOut;
     }
 
 
-    Real AnalyticDoubleBarrierEngine::underlying() const {
+    Real WulinYongDoubleBarrierEngine::underlying() const {
         return process_->x0();
     }
 
-    Real AnalyticDoubleBarrierEngine::strike() const {
+    Real WulinYongDoubleBarrierEngine::strike() const {
         boost::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
         return payoff->strike();
     }
 
-    Time AnalyticDoubleBarrierEngine::residualTime() const {
+    Time WulinYongDoubleBarrierEngine::residualTime() const {
         return process_->time(arguments_.exercise->lastDate());
     }
 
-    Volatility AnalyticDoubleBarrierEngine::volatility() const {
+    Volatility WulinYongDoubleBarrierEngine::volatility() const {
         return process_->blackVolatility()->blackVol(residualTime(), strike());
     }
 
-    Real AnalyticDoubleBarrierEngine::stdDeviation() const {
+    Real WulinYongDoubleBarrierEngine::stdDeviation() const {
         return volatility() * std::sqrt(residualTime());
     }
 
-    Rate AnalyticDoubleBarrierEngine::riskFreeRate() const {
+    Rate WulinYongDoubleBarrierEngine::riskFreeRate() const {
         return process_->riskFreeRate()->zeroRate(residualTime(), Continuous,
                                                   NoFrequency);
     }
 
-    DiscountFactor AnalyticDoubleBarrierEngine::riskFreeDiscount() const {
+    DiscountFactor WulinYongDoubleBarrierEngine::riskFreeDiscount() const {
         return process_->riskFreeRate()->discount(residualTime());
     }
 
-    Rate AnalyticDoubleBarrierEngine::dividendYield() const {
+    Rate WulinYongDoubleBarrierEngine::dividendYield() const {
         return process_->dividendYield()->zeroRate(residualTime(),
                                                    Continuous, NoFrequency);
     }
 
-    DiscountFactor AnalyticDoubleBarrierEngine::dividendDiscount() const {
+    DiscountFactor WulinYongDoubleBarrierEngine::dividendDiscount() const {
         return process_->dividendYield()->discount(residualTime());
     }
 
-    Real AnalyticDoubleBarrierEngine::D(Real X, Real lambda, Real sigma, Real T) const {
+    Real WulinYongDoubleBarrierEngine::D(Real X, Real lambda, Real sigma, Real T) const {
         return (std::log(X) + lambda * T)/(sigma * std::sqrt(T));
     }
 
