@@ -51,23 +51,22 @@ namespace QuantLib {
       public:
         AnalyticPDFHestonEngine(
             const boost::shared_ptr<HestonModel>& model,
-            Real eps = 1e-6,
-            Size nIterations = 100000ul,
-            Real xMax = Null<Real>());
+            Real gaussLobattoEps = 1e-6,
+            Size gaussLobattoIntegrationOrder = 10000ul);
         void calculate() const;
 
-        // reduced probability,
-        // hidden variable \nu is integrated out.
-        Real Pv(Real s_0, Real s_t, Time t) const;
 
         // reduced probability in x_t = ln(s_t/s_0) - (r-q)*t
         Real Pv(Real x_t, Time t) const;
 
+        // cumulative distribution function Pr(s_t < s)
+        Real cdf(Real s, Time t) const;
+
       private:
         Real weightedPayoff(Real x_t, Time t) const;
 
-        const Real eps_, xMax_;
-        const Size nIterations_;
+        const Size gaussLobattoIntegrationOrder_;
+        const Real gaussLobattoEps_;
 
         const boost::shared_ptr<HestonModel> model_;
     };

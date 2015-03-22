@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2014 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,28 +17,29 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_integrals_hpp
-#define quantlib_test_integrals_hpp
+/*! \file discreteintegrasl.hpp
+    \brief integrals on non uniform grids
+*/
 
-#include <boost/test/unit_test.hpp>
+#ifndef quantlib_discrete_integrals_hpp
+#define quantlib_discrete_integrals_hpp
 
-/* remember to document new and/or updated tests in the Doxygen
-   comment block of the corresponding class */
+#include <ql/math/array.hpp>
 
-class IntegralTest {
-  public:
-    static void testSegment();
-    static void testTrapezoid();
-    static void testMidPointTrapezoid();
-    static void testSimpson();
-    static void testGaussKronrodAdaptive();
-    static void testGaussKronrodNonAdaptive();
-    static void testGaussLobatto();
-    static void testTwoDimensionalIntegration();
-    static void testFolinIntegration();
-    static void testDiscreteIntegrals();
-    static boost::unit_test_framework::test_suite* suite();
-};
+namespace QuantLib {
 
+    /*! References:
+        Levy, D. Numerical Integration
+        http://www2.math.umd.edu/~dlevy/classes/amsc466/lecture-notes/integration-chap.pdf
+    */
+    class DiscreteTrapezoidIntegral {
+      public:
+        Real operator()(const Array& x, const Array& f) const;
+    };
 
+    class DiscreteSimpsonIntegral {
+      public:
+        Real operator()(const Array& x, const Array& f) const;
+    };
+}
 #endif

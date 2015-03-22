@@ -26,10 +26,12 @@
 #include <ql/math/integrals/trapezoidintegral.hpp>
 #include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
+#include <ql/math/integrals/discreteintegrals.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/termstructures/volatility/abcd.hpp>
 #include <ql/math/integrals/twodimensionalintegral.hpp>
+#include <boost/lambda/lambda.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -195,6 +197,48 @@ void IntegralTest::testFolinIntegration() {
     }
 }
 
+void IntegralTest::testDiscreteIntegrals() {
+    BOOST_TEST_MESSAGE("Testing discrete integral formulae...");
+
+    using boost::lambda::_1;
+
+    Array x(6), f(6);
+    x[0] = 1.0; x[1] = 2.02; x[2] = 2.34; x[3] = 3.3; x[4] = 4.2; x[5] = 4.6;
+
+    const boost::function<Real (Real) > f1 = 1.2*_1*_1+3.2*_1+3.1;
+    const boost::function<Real (Real) > f2
+        = 4.3*(_1-x[2])*(_1-x[2])-6.2*(_1-x[2]) + f1(x[2]);
+
+    std::transform(x.begin(), x.begin()+3, f.begin(),   f1);
+    std::transform(x.begin()+3, x.end(),   f.begin()+3, f2);
+
+    const Real expectedSimpson =
+        16.0401216 + 30.4137528 + 0.2*f2(4.2) + 0.2*f2(4.6);
+    const Real expectedTrapezoid =
+          0.5*(f1(1.0)  + f1(2.02))*1.02
+        + 0.5*(f1(2.02) + f1(2.34))*0.32
+        + 0.5*(f2(2.34) + f2(3.3) )*0.96
+        + 0.5*(f2(3.3)  + f2(4.2) )*0.9
+        + 0.5*(f2(4.2)  + f2(4.6) )*0.4;
+
+    const Real calculatedSimpson =  DiscreteSimpsonIntegral()(x, f);
+    const Real calculatedTrapezoid = DiscreteTrapezoidIntegral()(x, f);
+
+    const Real tol = 1e-12;
+    if (std::fabs(calculatedSimpson-expectedSimpson) > tol) {
+        BOOST_FAIL(std::setprecision(16)
+            << "discrete Simpson integration failed: "
+            << "\n    calculated: " << calculatedSimpson
+            << "\n    expected:   " << expectedSimpson);
+    }
+
+    if (std::fabs(calculatedTrapezoid-expectedTrapezoid) > tol) {
+        BOOST_FAIL(std::setprecision(16)
+            << "discrete Trapezoid integration failed: "
+            << "\n    calculated: " << calculatedTrapezoid
+            << "\n    expected:   " << expectedTrapezoid);
+    }
+}
 
 test_suite* IntegralTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Integration tests");
@@ -207,6 +251,7 @@ test_suite* IntegralTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testGaussLobatto));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testTwoDimensionalIntegration));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testFolinIntegration));
+    suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testDiscreteIntegrals));
     return suite;
 }
 
