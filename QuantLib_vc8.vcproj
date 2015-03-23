@@ -5479,11 +5479,23 @@
 					>
 				</File>
 				<File
+					RelativePath="ql\pricingengines\barrier\binomialdoublebarrierengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath="ql\pricingengines\barrier\discretizedbarrieroption.cpp"
 					>
 				</File>
 				<File
 					RelativePath="ql\pricingengines\barrier\discretizedbarrieroption.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\pricingengines\barrier\discretizeddoublebarrieroption.cpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\pricingengines\barrier\discretizeddoublebarrieroption.hpp"
 					>
 				</File>
 				<File

@@ -9,7 +9,9 @@ this_include_HEADERS = \
 	analyticdoublebarrierbinaryengine.hpp \
 	analyticdoublebarriergine.hpp \
     binomialbarrierengine.hpp \
+    binomialdoublebarrierengine.hpp \
     discretizedbarrieroption.hpp \
+    discretizeddoublebarrieroption.hpp \
 	fdblackscholesbarrierengine.hpp \
 	fdblackscholesrebateengine.hpp \
 	fdhestonbarrierengine.hpp \
@@ -22,6 +24,7 @@ libBarrierEngines_la_SOURCES = \
 	analyticdoublebarrierbinaryengine.cpp \
 	analyticdoublebarriergine.hpp \
     discretizedbarrieroption.cpp \
+    discretizeddoublebarrieroption.cpp \
 	fdblackscholesbarrierengine.cpp \
 	fdblackscholesrebateengine.cpp \
 	fdhestonbarrierengine.cpp \

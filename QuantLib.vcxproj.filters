@@ -3930,6 +3930,12 @@
     <ClInclude Include="ql\pricingengines\barrier\analyticdoublebarrierbinaryengine.hpp">
       <Filter>pricingengines\barrier</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\barrier\binomialdoublebarrierengine.hpp">
+      <Filter>pricingengines\barrier</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\barrier\discretizeddoublebarrieroption.hpp">
+      <Filter>pricingengines\barrier</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -6106,6 +6112,9 @@
       <Filter>methods\finitedifferences\solvers</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\barrier\analyticdoublebarrierbinaryengine.cpp">
+      <Filter>pricingengines\barrier</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\barrier\discretizeddoublebarrieroption.cpp">
       <Filter>pricingengines\barrier</Filter>
     </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\solvers\fdm3dimsolver.cpp">
