@@ -42,10 +42,7 @@ namespace QuantLib {
         }
         Rate forecastFixing(const Date& fixingDate) const;
         Rate pastFixing(const Date& fixingDate) const;
-        void checkNativeFixingsAllowed() {
-            QL_FAIL("native fixings not allowed in swap spread index, refer to "
-                    "underlying indices instead");
-        }
+        bool allowsNativeFixings() { return false; }
         //@}
 
         //! \name Inspectors

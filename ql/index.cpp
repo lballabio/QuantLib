@@ -47,4 +47,11 @@ namespace QuantLib {
         IndexManager::instance().clearHistory(name());
     }
 
+    void Index::checkNativeFixingsAllowed() {
+        QL_REQUIRE(allowsNativeFixings(),
+                   "native fixings not allowed for " << name()
+                   << "; refer to underlying indices instead");
+    }
+
 }
+
