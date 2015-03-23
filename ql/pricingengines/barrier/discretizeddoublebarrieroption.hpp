@@ -31,6 +31,11 @@
 
 namespace QuantLib {
 
+    //! Standard discretized option helper class
+    /*! This class is used with the BinomialDoubleBarrierEngine to
+        implement a standard binomial algorithm for double barrier
+        options
+    */
     class DiscretizedDoubleBarrierOption : public DiscretizedAsset {
       public:
         DiscretizedDoubleBarrierOption(const DoubleBarrierOption::arguments&,
@@ -41,6 +46,10 @@ namespace QuantLib {
 
         const Array& vanilla() const { 
             return vanilla_.values(); 
+        }
+
+        const DoubleBarrierOption::arguments& arguments() const {
+           return arguments_;
         }
 
         virtual std::vector<Time> mandatoryTimes() const {
@@ -54,6 +63,33 @@ namespace QuantLib {
         DoubleBarrierOption::arguments arguments_;
         std::vector<Time> stoppingTimes_;
         DiscretizedVanillaOption vanilla_; 
+    };
+
+    //! Derman-Kani-Ergener-Bardhan discretized option helper class
+    /*! This class is used with the BinomialDoubleBarrierEngine to
+        implement the enhanced binomial algorithm of E.Derman, I.Kani,
+        D.Ergener, I.Bardhan ("Enhanced Numerical Methods for Options with
+        Barriers", 1995)
+
+        \note This algorithm is only suitable if the payoff can be approximated 
+        linearly, e.g. is not usable for cash-or-nothing payoffs.
+    */
+    class DiscretizedDermanKaniDoubleBarrierOption : public DiscretizedAsset {
+      public:
+        DiscretizedDermanKaniDoubleBarrierOption(const DoubleBarrierOption::arguments&,
+                                 const StochasticProcess& process,
+                                 const TimeGrid& grid = TimeGrid());
+
+        void reset(Size size);
+
+        std::vector<Time> mandatoryTimes() const {
+            return unenhanced_.mandatoryTimes();
+        }
+      protected:
+        void postAdjustValuesImpl();
+      private:
+        void adjustBarrier(Array &optvalues, const Array &grid);
+        DiscretizedDoubleBarrierOption unenhanced_;
     };
 }
 

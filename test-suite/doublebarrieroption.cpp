@@ -323,13 +323,14 @@ void DoubleBarrierOptionTest::testEuropeanHaugValues() {
         }
 
         engine = boost::shared_ptr<PricingEngine>(
-              new BinomialDoubleBarrierEngine<CoxRossRubinstein>(stochProcess, 
+              new BinomialDoubleBarrierEngine<CoxRossRubinstein,
+                              DiscretizedDoubleBarrierOption>(stochProcess, 
                                                                  300));
         opt.setPricingEngine(engine);
         calculated = opt.NPV();
         expected = values[i].result;
         error = std::fabs(calculated-expected);
-        double tol = 0.3;
+        double tol = 0.28;
         if (error>tol) {
             REPORT_FAILURE("Binomial value", values[i].barrierType, 
                            values[i].barrierlo, values[i].barrierhi, payoff, 
@@ -338,6 +339,22 @@ void DoubleBarrierOptionTest::testEuropeanHaugValues() {
                            tol);
         }
 
+        engine = boost::shared_ptr<PricingEngine>(
+              new BinomialDoubleBarrierEngine<CoxRossRubinstein,
+                           DiscretizedDermanKaniDoubleBarrierOption>(
+                                                stochProcess, 300));
+        opt.setPricingEngine(engine);
+        calculated = opt.NPV();
+        expected = values[i].result;
+        error = std::fabs(calculated-expected);
+        tol = 0.033; // error one order of magnitude lower than plain binomial
+        if (error>tol) {
+            REPORT_FAILURE("Binomial (Derman) value", values[i].barrierType, 
+                           values[i].barrierlo, values[i].barrierhi, payoff, 
+                           exercise, values[i].s, values[i].q, values[i].r, 
+                           today, values[i].v, expected, calculated, error, 
+                           tol);
+        }
     }
 }
 

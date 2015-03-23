@@ -38,17 +38,21 @@ namespace QuantLib {
     //! Pricing engine for double barrier options using binomial trees
     /*! \ingroup barrierengines
 
+        \note This engine requires a the discretized option classes. 
+        By default uses a standard binomial implementation, but it can
+        also work with DiscretizedDermanKaniDoubleBarrierOption to
+        implement a Derman-Kani optimization.
+
         \test the correctness of the returned values is tested by
               checking it against analytic results.
     */
-    template <class T>
+    template <class T, class D = DiscretizedDoubleBarrierOption>
     class BinomialDoubleBarrierEngine : public DoubleBarrierOption::engine {
       public:
         BinomialDoubleBarrierEngine(
              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size timeSteps,
-             bool use_boyle_lau = true)
-        : process_(process), timeSteps_(timeSteps), use_boyle_lau_(use_boyle_lau) {
+             Size timeSteps)
+        : process_(process), timeSteps_(timeSteps) {
             QL_REQUIRE(timeSteps>0,
                        "timeSteps must be positive, " << timeSteps <<
                        " not allowed");
@@ -58,14 +62,13 @@ namespace QuantLib {
       private:
         boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size timeSteps_;
-        bool use_boyle_lau_;
     };
 
 
     // template definitions
 
-    template <class T>
-    void BinomialDoubleBarrierEngine<T>::calculate() const {
+    template <class T, class D>
+    void BinomialDoubleBarrierEngine<T,D>::calculate() const {
 
         DayCounter rfdc  = process_->riskFreeRate()->dayCounter();
         DayCounter divdc = process_->dividendYield()->dayCounter();
@@ -113,7 +116,7 @@ namespace QuantLib {
         boost::shared_ptr<BlackScholesLattice<T> > lattice(
             new BlackScholesLattice<T>(tree, r, maturity, timeSteps_));
         
-        DiscretizedDoubleBarrierOption option(arguments_, *process_, grid);
+        D option(arguments_, *process_, grid);
         option.initialize(lattice, maturity);
 
         // Partial derivatives calculated from various points in the

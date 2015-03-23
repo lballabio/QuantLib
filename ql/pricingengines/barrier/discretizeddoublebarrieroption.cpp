@@ -121,4 +121,82 @@ namespace QuantLib {
         }
     }
 
+
+
+    DiscretizedDermanKaniDoubleBarrierOption::DiscretizedDermanKaniDoubleBarrierOption(
+                                         const DoubleBarrierOption::arguments& args,
+                                         const StochasticProcess& process,
+                                         const TimeGrid& grid)
+    : unenhanced_(args, process, grid) {
+    }
+
+    void DiscretizedDermanKaniDoubleBarrierOption::reset(Size size) {
+        unenhanced_.initialize(method(), time());
+        values_ = Array(size, 0.0);
+        adjustValues();
+    }
+
+    void DiscretizedDermanKaniDoubleBarrierOption::postAdjustValuesImpl() {
+        unenhanced_.rollback(time());
+
+        Array grid = method()->grid(time());
+        unenhanced_.checkBarrier(values_, grid); // compute payoffs
+        adjustBarrier(values_, grid);
+    }
+
+    void DiscretizedDermanKaniDoubleBarrierOption::adjustBarrier(Array &optvalues, const Array &grid) {
+        Real barrier_lo = unenhanced_.arguments().barrier_lo;
+        Real barrier_hi = unenhanced_.arguments().barrier_hi;
+        Real rebate = unenhanced_.arguments().rebate;
+        switch (unenhanced_.arguments().barrierType) {
+           case DoubleBarrier::KnockIn:
+              for (Size j=0; j<optvalues.size()-1; ++j) {
+                  if (grid[j]<=barrier_lo && grid[j+1] > barrier_lo) {
+                     // grid[j+1] above barrier_lo, grid[j] under (in),
+                     // interpolate optvalues[j+1]
+                     Real ltob = (barrier_lo-grid[j]);
+                     Real htob = (grid[j+1]-barrier_lo);
+                     Real htol = (grid[j+1]-grid[j]);
+                     Real u1 = unenhanced_.values()[j+1];
+                     Real t1 = unenhanced_.vanilla()[j+1];
+                     optvalues[j+1] = std::max(0.0, (ltob*t1+htob*u1)/htol); // derman std
+                  }
+                  else if (grid[j] < barrier_hi && grid[j+1] >= barrier_hi) {
+                     // grid[j+1] above barrier_hi (in), grid[j] under, 
+                     // interpolate optvalues[j]
+                     Real ltob = (barrier_hi-grid[j]);
+                     Real htob = (grid[j+1]-barrier_hi);
+                     Real htol = (grid[j+1]-grid[j]);
+                     Real u = unenhanced_.values()[j];
+                     Real t = unenhanced_.vanilla()[j];
+                     optvalues[j] = std::max(0.0, (ltob*u+htob*t)/htol); // derman std
+                  }
+              }
+              break;
+           case DoubleBarrier::KnockOut:
+              for (Size j=0; j<optvalues.size()-1; ++j) {
+                  if (grid[j]<=barrier_lo && grid[j+1] > barrier_lo) {
+                     // grid[j+1] above barrier_lo, grid[j] under (out),
+                     // interpolate optvalues[j+1]
+                     double a = (barrier_lo-grid[j])*rebate;
+                     double b = (grid[j+1]-barrier_lo)*unenhanced_.values()[j+1];
+                     double c = (grid[j+1]-grid[j]);
+                     optvalues[j+1] = std::max(0.0, (a+b)/c);
+                  }
+                  else if (grid[j] < barrier_hi && grid[j+1] >= barrier_hi) {
+                     // grid[j+1] above barrier_hi (out), grid[j] under, 
+                     // interpolate optvalues[j]
+                     double a = (barrier_hi-grid[j])*unenhanced_.values()[j];
+                     double b = (grid[j+1]-barrier_hi)*rebate;
+                     double c = (grid[j+1]-grid[j]);
+                     optvalues[j] = std::max(0.0, (a+b)/c);
+                  }
+              }
+              break;
+           default:
+              QL_FAIL("unsupported barrier type");
+              break;
+        }
+    }
+
 }
