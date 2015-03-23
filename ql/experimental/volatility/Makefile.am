@@ -20,7 +20,11 @@ this_include_HEADERS = \
     sviinterpolation.hpp \
     svismilesection.hpp \
     swaptionvolcube1a.hpp \
-    volcube.hpp
+    volcube.hpp \
+    zabr.hpp \
+    zabrinterpolatedsmilesection.hpp \
+    zabrinterpolation.hpp \
+    zabrsmilesection.hpp
 
 libVolatility_la_SOURCES = \
     abcdatmvolcurve.cpp \
@@ -37,7 +41,8 @@ libVolatility_la_SOURCES = \
     sabrvolsurface.cpp \
     sviinterpolatedsmilesection.cpp \
     svismilesection.cpp \
-    volcube.cpp
+    volcube.cpp \
+    zabr.cpp
 
 noinst_LTLIBRARIES = libVolatility.la
 
