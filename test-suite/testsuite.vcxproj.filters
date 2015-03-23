@@ -128,6 +128,9 @@
     <ClCompile Include="doublebarrieroption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="doublebinaryoption.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="europeanoption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -519,6 +522,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="doublebarrieroption.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="doublebinaryoption.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="europeanoption.hpp">

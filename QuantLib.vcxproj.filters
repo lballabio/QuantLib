@@ -3927,6 +3927,9 @@
     <ClInclude Include="ql\pricingengines\vanilla\analytich1hwengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\barrier\analyticdoublebarrierbinaryengine.hpp">
+      <Filter>pricingengines\barrier</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -6101,6 +6104,9 @@
     </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\solvers\fdm2dimsolver.cpp">
       <Filter>methods\finitedifferences\solvers</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\barrier\analyticdoublebarrierbinaryengine.cpp">
+      <Filter>pricingengines\barrier</Filter>
     </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\solvers\fdm3dimsolver.cpp">
       <Filter>methods\finitedifferences\solvers</Filter>
