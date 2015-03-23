@@ -27,7 +27,7 @@ SviInterpolatedSmileSection::SviInterpolatedSmileSection(
     const Date &optionDate, const Handle<Quote> &forward,
     const std::vector<Rate> &strikes, bool hasFloatingStrikes,
     const Handle<Quote> &atmVolatility,
-    const std::vector<Handle<Quote>> &volHandles, Real a, Real b, Real sigma,
+    const std::vector<Handle<Quote> > &volHandles, Real a, Real b, Real sigma,
     Real rho, Real m, bool isAFixed, bool isBFixed, bool isSigmaFixed,
     bool isRhoFixed, bool isMFixed, bool vegaWeighted,
     const boost::shared_ptr<EndCriteria> &endCriteria,
