@@ -133,26 +133,6 @@ namespace QuantLib {
         Handle<SwaptionVolatilityStructure> swaptionVol_;
     };
 
-    //! base pricer for vanilla CMS spread coupons
-    class CmsSpreadCouponPricer : public FloatingRateCouponPricer {
-      public:
-        CmsSpreadCouponPricer(const Handle<Quote> &correlation = Handle<Quote>())
-            : correlation_(correlation) { registerWith(correlation_); }
-
-        Handle<Quote> correlation() const{
-            return correlation_;
-        }
-        void setCorrelation(const Handle<Quote> &correlation = Handle<Quote>()) {
-            unregisterWith(correlation_);
-            correlation_ = correlation;
-            registerWith(correlation_);
-            update();
-        }
-      private:
-        Handle<Quote> correlation_;
-    };
-
-
     /*! (CMS) coupon pricer that has a mean reversion parameter which can be
       used to calibrate to cms market quotes */
     class MeanRevertingPricer {

@@ -21,13 +21,13 @@
 
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
-#include <ql/experimental/coupons/cmsspreadcoupon.hpp>
-#include <ql/experimental/coupons/digitalcmsspreadcoupon.hpp>
 #include <ql/cashflows/digitalcoupon.hpp>
 #include <ql/cashflows/digitalcmscoupon.hpp>
 #include <ql/cashflows/digitaliborcoupon.hpp>
 #include <ql/cashflows/rangeaccrual.hpp>
 #include <ql/experimental/coupons/subperiodcoupons.hpp> /* internal */
+#include <ql/experimental/coupons/cmsspreadcoupon.hpp>  /* internal */
+#include <ql/experimental/coupons/digitalcmsspreadcoupon.hpp>  /* internal */
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 

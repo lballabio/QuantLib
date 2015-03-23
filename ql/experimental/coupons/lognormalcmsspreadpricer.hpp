@@ -23,8 +23,8 @@
 #ifndef quantlib_lognormal_cmsspread_pricer_hpp
 #define quantlib_lognormal_cmsspread_pricer_hpp
 
-#include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/cmscoupon.hpp>
+#include <ql/experimental/coupons/cmsspreadcoupon.hpp>
 #include <ql/experimental/coupons/swapspreadindex.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>

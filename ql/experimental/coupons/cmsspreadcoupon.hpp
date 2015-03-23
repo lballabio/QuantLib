@@ -24,6 +24,7 @@
 
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
+#include <ql/cashflows/couponpricer.hpp>
 #include <ql/experimental/coupons/swapspreadindex.hpp>
 #include <ql/time/schedule.hpp>
 
@@ -129,6 +130,31 @@ namespace QuantLib {
         std::vector<Spread> spreads_;
         std::vector<Rate> caps_, floors_;
         bool inArrears_, zeroPayments_;
+    };
+
+
+    //! base pricer for vanilla CMS spread coupons
+    class CmsSpreadCouponPricer : public FloatingRateCouponPricer {
+      public:
+        CmsSpreadCouponPricer(
+                           const Handle<Quote> &correlation = Handle<Quote>())
+        : correlation_(correlation) {
+            registerWith(correlation_);
+        }
+
+        Handle<Quote> correlation() const{
+            return correlation_;
+        }
+
+        void setCorrelation(
+                         const Handle<Quote> &correlation = Handle<Quote>()) {
+            unregisterWith(correlation_);
+            correlation_ = correlation;
+            registerWith(correlation_);
+            update();
+        }
+      private:
+        Handle<Quote> correlation_;
     };
 
 }
