@@ -26,6 +26,8 @@
 #include <ql/cashflows/digitaliborcoupon.hpp>
 #include <ql/cashflows/rangeaccrual.hpp>
 #include <ql/experimental/coupons/subperiodcoupons.hpp> /* internal */
+#include <ql/experimental/coupons/cmsspreadcoupon.hpp>  /* internal */
+#include <ql/experimental/coupons/digitalcmsspreadcoupon.hpp>  /* internal */
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 
@@ -130,10 +132,13 @@ namespace QuantLib {
                              public Visitor<Coupon>,
                              public Visitor<IborCoupon>,
                              public Visitor<CmsCoupon>,
+                             public Visitor<CmsSpreadCoupon>,
                              public Visitor<CappedFlooredIborCoupon>,
                              public Visitor<CappedFlooredCmsCoupon>,
+                             public Visitor<CappedFlooredCmsSpreadCoupon>,
                              public Visitor<DigitalIborCoupon>,
                              public Visitor<DigitalCmsCoupon>,
+                             public Visitor<DigitalCmsSpreadCoupon>,
                              public Visitor<RangeAccrualFloatersCoupon>,
                              public Visitor<SubPeriodsCoupon> {
           private:
@@ -149,8 +154,11 @@ namespace QuantLib {
             void visit(CappedFlooredIborCoupon& c);
             void visit(DigitalIborCoupon& c);
             void visit(CmsCoupon& c);
+            void visit(CmsSpreadCoupon& c);
             void visit(CappedFlooredCmsCoupon& c);
+            void visit(CappedFlooredCmsSpreadCoupon& c);
             void visit(DigitalCmsCoupon& c);
+            void visit(DigitalCmsSpreadCoupon& c);
             void visit(RangeAccrualFloatersCoupon& c);
             void visit(SubPeriodsCoupon& c);
         };
@@ -195,6 +203,14 @@ namespace QuantLib {
             c.setPricer(cmsCouponPricer);
         }
 
+        void PricerSetter::visit(CmsSpreadCoupon& c) {
+            const boost::shared_ptr<CmsSpreadCouponPricer> cmsSpreadCouponPricer =
+                boost::dynamic_pointer_cast<CmsSpreadCouponPricer>(pricer_);
+            QL_REQUIRE(cmsSpreadCouponPricer,
+                       "pricer not compatible with CMS spread coupon");
+            c.setPricer(cmsSpreadCouponPricer);
+        }
+
         void PricerSetter::visit(CappedFlooredCmsCoupon& c) {
             const boost::shared_ptr<CmsCouponPricer> cmsCouponPricer =
                 boost::dynamic_pointer_cast<CmsCouponPricer>(pricer_);
@@ -203,12 +219,28 @@ namespace QuantLib {
             c.setPricer(cmsCouponPricer);
         }
 
+        void PricerSetter::visit(CappedFlooredCmsSpreadCoupon& c) {
+            const boost::shared_ptr<CmsSpreadCouponPricer> cmsSpreadCouponPricer =
+                boost::dynamic_pointer_cast<CmsSpreadCouponPricer>(pricer_);
+            QL_REQUIRE(cmsSpreadCouponPricer,
+                       "pricer not compatible with CMS spread coupon");
+            c.setPricer(cmsSpreadCouponPricer);
+        }
+
         void PricerSetter::visit(DigitalCmsCoupon& c) {
             const boost::shared_ptr<CmsCouponPricer> cmsCouponPricer =
                 boost::dynamic_pointer_cast<CmsCouponPricer>(pricer_);
             QL_REQUIRE(cmsCouponPricer,
                        "pricer not compatible with CMS coupon");
             c.setPricer(cmsCouponPricer);
+        }
+
+        void PricerSetter::visit(DigitalCmsSpreadCoupon& c) {
+            const boost::shared_ptr<CmsSpreadCouponPricer> cmsSpreadCouponPricer =
+                boost::dynamic_pointer_cast<CmsSpreadCouponPricer>(pricer_);
+            QL_REQUIRE(cmsSpreadCouponPricer,
+                       "pricer not compatible with CMS spread coupon");
+            c.setPricer(cmsSpreadCouponPricer);
         }
 
         void PricerSetter::visit(RangeAccrualFloatersCoupon& c) {
