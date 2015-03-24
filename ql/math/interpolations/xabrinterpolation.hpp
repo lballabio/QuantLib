@@ -252,7 +252,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
     }
 
     // calculate weighted differences
-    Disposable<Array> interpolationErrors(const Array &) const {
+    Disposable<Array> interpolationErrors() const {
         Array results(this->xEnd_ - this->xBegin_);
         std::vector<Real>::const_iterator x = this->xBegin_;
         Array::iterator r = results.begin();
@@ -301,7 +301,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
             for (Size i = 0; i < xabr_->params_.size(); ++i)
                 xabr_->params_[i] = y[i];
             xabr_->updateModelInstance();
-            return xabr_->interpolationErrors(x);
+            return xabr_->interpolationErrors();
         }
 
       private:
