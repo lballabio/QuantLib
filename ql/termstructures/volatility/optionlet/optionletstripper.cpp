@@ -28,14 +28,19 @@ namespace QuantLib {
     OptionletStripper::OptionletStripper(
             const boost::shared_ptr<CapFloorTermVolSurface>& termVolSurface,
             const boost::shared_ptr<IborIndex>& iborIndex,
-            const Real displacement,
-            const Model& model,
-            const Handle<YieldTermStructure>& discount) 
+            const Handle<YieldTermStructure>& discount, 
+            Model model,
+            Real displacement) 
    : termVolSurface_(termVolSurface),
-      iborIndex_(iborIndex), discount_(discount),
-      nStrikes_(termVolSurface->strikes().size()), 
-      displacement_(displacement), model_(model) {
-        
+     iborIndex_(iborIndex), discount_(discount),
+     nStrikes_(termVolSurface->strikes().size()), 
+     model_(model), displacement_(displacement) {
+
+        if (model_ == Normal) {
+            QL_REQUIRE(displacement_ == 0.0,
+                       "non-null displacement is not allowed with Normal model");
+        }
+
         registerWith(termVolSurface);
         registerWith(iborIndex_);
         registerWith(discount_);
@@ -148,11 +153,11 @@ namespace QuantLib {
         return iborIndex_;
     }
 
-    const Real OptionletStripper::displacement() const {
+    Real OptionletStripper::displacement() const {
         return displacement_;
     }
 
-    const OptionletStripper::Model& OptionletStripper::model() const{
+    OptionletStripper::Model OptionletStripper::model() const{
         return model_;
     }
 

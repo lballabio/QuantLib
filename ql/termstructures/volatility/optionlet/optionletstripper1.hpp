@@ -48,8 +48,8 @@ namespace QuantLib {
                            Real accuracy = 1.0e-6, Natural maxIter = 100,
                            const Handle<YieldTermStructure> &discount =
                                Handle<YieldTermStructure>(),
-                           const Model &model = ShiftedLognormal,
-                           const Real displacement = 0);
+                           Model model = ShiftedLognormal,
+                           Real displacement = 0.0);
 
         const Matrix& capFloorPrices() const;
         const Matrix& capFloorVolatilities() const;

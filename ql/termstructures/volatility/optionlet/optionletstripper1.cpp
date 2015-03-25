@@ -40,9 +40,9 @@ namespace QuantLib {
             Real accuracy,
             Natural maxIter,
             const Handle<YieldTermStructure>& discount,
-            const Model& model,
-            const Real displacement)         
-        : OptionletStripper(termVolSurface, index, displacement, model, discount),
+            Model model,
+            Real displacement)
+    : OptionletStripper(termVolSurface, index, discount, model, displacement),
       volQuotes_(nOptionletTenors_,
                  std::vector<shared_ptr<SimpleQuote> >(nStrikes_)),
       floatingSwitchStrike_(switchStrike==Null<Rate>() ? true : false),
@@ -130,8 +130,7 @@ namespace QuantLib {
                                        iborIndex_, strikes[j],
                                        0 * Days).withPricingEngine(engine);
                     } else {
-                      QL_REQUIRE(false, "Model not implemented. Model was "
-                                            << model_);
+                      QL_FAIL("unknown model: " << model_);
                     }
                 }
             }
@@ -171,8 +170,7 @@ namespace QuantLib {
                             optionletTimes_[i], optionletPrices_[i][j],
                             optionletAnnuity);
                   } else {
-                    QL_REQUIRE(false, "Model not implemted. Model was "
-                                          << model_);
+                    QL_FAIL("Unknown model: " << model_);
                   }
                 }
                 catch (std::exception &e) {
