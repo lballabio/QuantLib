@@ -124,7 +124,7 @@ namespace QuantLib {
                       shared_ptr<BachelierCapFloorEngine> engine(
                           new BachelierCapFloorEngine(
                               discountCurve, Handle<Quote>(volQuotes_[i][j]),
-                              dc, displacement_));
+                              dc));
                       capFloors_[i][j] =
                           MakeCapFloor(capFloorType, capFloorLengths_[i],
                                        iborIndex_, strikes[j],

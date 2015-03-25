@@ -28,8 +28,7 @@ namespace QuantLib {
     BachelierCapFloorEngine::BachelierCapFloorEngine(
                               const Handle<YieldTermStructure>& discountCurve,
                               Volatility v,
-                              const DayCounter& dc,
-                              Real displacement)
+                              const DayCounter& dc)
     : discountCurve_(discountCurve),
       vol_(boost::shared_ptr<OptionletVolatilityStructure>(new
           ConstantOptionletVolatility(0, NullCalendar(), Following, v, dc))) {
@@ -39,8 +38,7 @@ namespace QuantLib {
     BachelierCapFloorEngine::BachelierCapFloorEngine(
                               const Handle<YieldTermStructure>& discountCurve,
                               const Handle<Quote>& v,
-                              const DayCounter& dc,
-                              Real displacement)
+                              const DayCounter& dc)
     : discountCurve_(discountCurve),
       vol_(boost::shared_ptr<OptionletVolatilityStructure>(new
           ConstantOptionletVolatility(0, NullCalendar(), Following, v, dc))) {
@@ -50,8 +48,7 @@ namespace QuantLib {
 
     BachelierCapFloorEngine::BachelierCapFloorEngine(
                        const Handle<YieldTermStructure>& discountCurve,
-                       const Handle<OptionletVolatilityStructure>& volatility,
-                       Real displacement)
+                       const Handle<OptionletVolatilityStructure>& volatility)
     : discountCurve_(discountCurve), vol_(volatility) {
         registerWith(discountCurve_);
         registerWith(vol_);
