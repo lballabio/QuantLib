@@ -26,10 +26,10 @@
 #include <ql/instruments/quantovanillaoption.hpp>
 #include <ql/instruments/quantoforwardvanillaoption.hpp>
 #include <ql/instruments/quantobarrieroption.hpp>
-#include <ql/instruments/quantodoublebarrieroption.hpp>
+#include <ql/experimental/barrieroption/quantodoublebarrieroption.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
-#include <ql/pricingengines/barrier/analyticdoublebarrierengine.hpp>
+#include <ql/experimental/barrieroption/analyticdoublebarrierengine.hpp>
 #include <ql/pricingengines/quanto/quantoengine.hpp>
 #include <ql/pricingengines/forward/forwardperformanceengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>

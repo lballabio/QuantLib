@@ -3,12 +3,8 @@
 
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/pricingengines/barrier/analyticbinarybarrierengine.hpp>
-#include <ql/pricingengines/barrier/analyticdoublebarrierbinaryengine.hpp>
-#include <ql/pricingengines/barrier/analyticdoublebarrierengine.hpp>
 #include <ql/pricingengines/barrier/binomialbarrierengine.hpp>
-#include <ql/pricingengines/barrier/binomialdoublebarrierengine.hpp>
 #include <ql/pricingengines/barrier/discretizedbarrieroption.hpp>
-#include <ql/pricingengines/barrier/discretizeddoublebarrieroption.hpp>
 #include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
 #include <ql/pricingengines/barrier/fdblackscholesrebateengine.hpp>
 #include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>

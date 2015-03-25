@@ -17,9 +17,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/doublebarrieroption.hpp>
+#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
+#include <ql/experimental/barrieroption/analyticdoublebarrierengine.hpp>
 #include <ql/instruments/impliedvolatility.hpp>
-#include <ql/pricingengines/barrier/analyticdoublebarrierengine.hpp>
 #include <ql/exercise.hpp>
 #include <boost/scoped_ptr.hpp>
 

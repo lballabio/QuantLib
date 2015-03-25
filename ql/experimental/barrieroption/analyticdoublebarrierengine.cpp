@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/barrier/analyticdoublebarrierengine.hpp>
+#include <ql/experimental/barrieroption/analyticdoublebarrierengine.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/exercise.hpp>
 

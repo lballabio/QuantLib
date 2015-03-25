@@ -40,6 +40,7 @@ QL_TESTS = \
 	digitaloption.hpp digitaloption.cpp \
 	distributions.hpp distributions.cpp \
 	dividendoption.hpp dividendoption.cpp \
+	doublebarrieroption.hpp doublebarrieroption.cpp \
 	doublebinaryoption.hpp doublebinaryoption.cpp \
 	europeanoption.hpp europeanoption.cpp \
 	everestoption.hpp everestoption.cpp \

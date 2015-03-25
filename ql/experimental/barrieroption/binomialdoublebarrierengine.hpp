@@ -27,11 +27,10 @@
 #include <ql/methods/lattices/binomialtree.hpp>
 #include <ql/methods/lattices/bsmlattice.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/pricingengines/barrier/discretizeddoublebarrieroption.hpp>
+#include <ql/experimental/barrieroption/discretizeddoublebarrieroption.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
-#include <iostream>
 
 namespace QuantLib {
 
@@ -155,7 +154,6 @@ namespace QuantLib {
         // Finally, rollback to t=0
         option.rollback(0.0);
         Real p0 = option.presentValue();
-        Real s1 = lattice->underlying(1, 1);
 
         results_.value = p0;
         results_.delta = delta;

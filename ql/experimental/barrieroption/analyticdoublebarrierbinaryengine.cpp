@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/barrier/analyticdoublebarrierbinaryengine.hpp>
+#include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
 #include <ql/exercise.hpp>
 
 namespace QuantLib {

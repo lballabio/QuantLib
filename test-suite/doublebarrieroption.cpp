@@ -24,10 +24,10 @@
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
-#include <ql/instruments/doublebarrieroption.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/pricingengines/barrier/analyticdoublebarrierengine.hpp>
-#include <ql/pricingengines/barrier/binomialdoublebarrierengine.hpp>
+#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
+#include <ql/experimental/barrieroption/analyticdoublebarrierengine.hpp>
+#include <ql/experimental/barrieroption/binomialdoublebarrierengine.hpp>
 #include <ql/experimental/barrieroption/wulinyongdoublebarrierengine.hpp>
 #include <ql/experimental/barrieroption/vannavolgadoublebarrierengine.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
@@ -137,7 +137,6 @@ void DoubleBarrierOptionTest::testEuropeanHaugValues() {
     BOOST_MESSAGE("Testing double barrier european options against Haug's values...");
 
     Exercise::Type european = Exercise::European;
-    Exercise::Type american = Exercise::American;
     NewBarrierOptionData values[] = {
         /* The data below are from
           "The complete guide to option pricing formulas 2nd Ed",E.G. Haug, McGraw-Hill, p.156 and following. 

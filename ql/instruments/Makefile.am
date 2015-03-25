@@ -25,8 +25,6 @@ this_include_HEADERS = \
 	dividendbarrieroption.hpp \
     dividendschedule.hpp \
     dividendvanillaoption.hpp \
-    doublebarrieroption.hpp \
-    doublebarriertype.hpp \
     europeanoption.hpp \
     fixedratebondforward.hpp \
     forward.hpp \
@@ -46,7 +44,6 @@ this_include_HEADERS = \
     overnightindexedswap.hpp \
     payoffs.hpp \
     quantobarrieroption.hpp \
-    quantodoublebarrieroption.hpp \
     quantoforwardvanillaoption.hpp \
     quantovanillaoption.hpp \
     stickyratchet.hpp \
@@ -79,8 +76,6 @@ libInstruments_la_SOURCES = \
     creditdefaultswap.cpp \
 	dividendbarrieroption.cpp \
     dividendvanillaoption.cpp \
-    doublebarrieroption.cpp \
-    doublebarriertype.cpp \
     europeanoption.cpp \
     fixedratebondforward.cpp \
     forward.cpp \
@@ -100,7 +95,6 @@ libInstruments_la_SOURCES = \
     overnightindexedswap.cpp \
     payoffs.cpp \
     quantobarrieroption.cpp \
-    quantodoublebarrieroption.cpp \
     quantoforwardvanillaoption.cpp \
     quantovanillaoption.cpp \
     stickyratchet.cpp \

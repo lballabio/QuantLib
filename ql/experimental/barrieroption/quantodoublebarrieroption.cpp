@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/quantodoublebarrieroption.hpp>
+#include <ql/experimental/barrieroption/quantodoublebarrieroption.hpp>
 
 namespace QuantLib {
 

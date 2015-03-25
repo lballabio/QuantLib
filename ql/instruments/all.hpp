@@ -20,8 +20,6 @@
 #include <ql/instruments/dividendbarrieroption.hpp>
 #include <ql/instruments/dividendschedule.hpp>
 #include <ql/instruments/dividendvanillaoption.hpp>
-#include <ql/instruments/doublebarrieroption.hpp>
-#include <ql/instruments/doublebarriertype.hpp>
 #include <ql/instruments/europeanoption.hpp>
 #include <ql/instruments/fixedratebondforward.hpp>
 #include <ql/instruments/forward.hpp>
@@ -41,7 +39,6 @@
 #include <ql/instruments/overnightindexedswap.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/instruments/quantobarrieroption.hpp>
-#include <ql/instruments/quantodoublebarrieroption.hpp>
 #include <ql/instruments/quantoforwardvanillaoption.hpp>
 #include <ql/instruments/quantovanillaoption.hpp>
 #include <ql/instruments/stickyratchet.hpp>

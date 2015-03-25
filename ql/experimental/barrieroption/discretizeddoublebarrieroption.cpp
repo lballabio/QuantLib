@@ -17,12 +17,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/barrier/discretizeddoublebarrieroption.hpp>
+#include <ql/experimental/barrieroption/discretizeddoublebarrieroption.hpp>
 #include <vector>
 
 namespace QuantLib {
-
-
 
     DiscretizedDoubleBarrierOption::DiscretizedDoubleBarrierOption(
                                          const DoubleBarrierOption::arguments& args,

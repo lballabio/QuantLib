@@ -23,9 +23,9 @@ Copyright (C) 2012 Thema Consulting SA (Programmer: Riccardo Ghetta)
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/instruments/doublebarrieroption.hpp>
-#include <ql/pricingengines/barrier/AnalyticDoubleBarrierBinaryEngine.hpp>
-#include <ql/pricingengines/barrier/binomialdoublebarrierengine.hpp>
+#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
+#include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
+#include <ql/experimental/barrieroption/binomialdoublebarrierengine.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;
