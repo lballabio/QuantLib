@@ -37,6 +37,7 @@ class QuantoOptionTest {
     static void testBarrierValues();
     static void testDoubleBarrierValues();
     static boost::unit_test_framework::test_suite* suite();
+    static boost::unit_test_framework::test_suite* experimental();
 };
 
 

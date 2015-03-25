@@ -1044,7 +1044,6 @@ void QuantoOptionTest::testDoubleBarrierValues()  {
 
 test_suite* QuantoOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Quanto option tests");
-    suite->add(QUANTLIB_TEST_CASE(&QuantoOptionTest::testDoubleBarrierValues));
     suite->add(QUANTLIB_TEST_CASE(&QuantoOptionTest::testValues));
     suite->add(QUANTLIB_TEST_CASE(&QuantoOptionTest::testGreeks));
     suite->add(QUANTLIB_TEST_CASE(&QuantoOptionTest::testForwardValues));
@@ -1052,6 +1051,12 @@ test_suite* QuantoOptionTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
                             &QuantoOptionTest::testForwardPerformanceValues));
     suite->add(QUANTLIB_TEST_CASE(&QuantoOptionTest::testBarrierValues));
+    return suite;
+}
+
+test_suite* QuantoOptionTest::experimental() {
+    test_suite* suite = BOOST_TEST_SUITE("Experimental quanto option tests");
+    suite->add(QUANTLIB_TEST_CASE(&QuantoOptionTest::testDoubleBarrierValues));
     return suite;
 }
 
