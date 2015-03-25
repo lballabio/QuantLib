@@ -8235,11 +8235,31 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\barrieroption\analyticdoublebarrierbinaryengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\barrieroption\analyticdoublebarrierbinaryengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\barrieroption\analyticdoublebarrierengine.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\experimental\barrieroption\analyticdoublebarrierengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\barrieroption\binomialdoublebarrierengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\barrieroption\discretizeddoublebarrieroption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\barrieroption\discretizeddoublebarrieroption.hpp"
 					>
 				</File>
 				<File
@@ -8251,11 +8271,27 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\barrieroption\doublebarriertype.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\barrieroption\doublebarriertype.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\barrieroption\perturbativebarrieroptionengine.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\experimental\barrieroption\perturbativebarrieroptionengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\barrieroption\quantodoublebarrieroption.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\barrieroption\quantodoublebarrieroption.hpp"
 					>
 				</File>
 				<File
@@ -8267,15 +8303,19 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\barrieroption\vannavolgadoublebarrierengine.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\experimental\barrieroption\vannavolgadoublebarrierengine.hpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\experimental\barrieroption\vannavolgainterpolation.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\barrieroption\wulinyongdoublebarrierengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\barrieroption\wulinyongdoublebarrierengine.hpp"
 					>
 				</File>
 			</Filter>

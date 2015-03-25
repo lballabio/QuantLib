@@ -81,6 +81,8 @@
 #include "digitaloption.hpp"
 #include "distributions.hpp"
 #include "dividendoption.hpp"
+#include "doublebarrieroption.hpp"
+#include "doublebinaryoption.hpp"
 #include "europeanoption.hpp"
 #include "everestoption.hpp"
 #include "exchangerate.hpp"
@@ -355,6 +357,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(AmortizingBondTest::suite());
     test->add(AsianOptionTest::experimental());
     test->add(BarrierOptionTest::experimental());
+    test->add(DoubleBarrierOptionTest::experimental());
     test->add(BlackDeltaCalculatorTest::suite());
     test->add(CatBondTest::suite());
     test->add(CdoTest::suite());
@@ -364,6 +367,8 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CompoundOptionTest::suite());
     test->add(ConvertibleBondTest::suite());
     test->add(CreditRiskPlusTest::suite());
+    test->add(DoubleBarrierOptionTest::suite());
+    test->add(DoubleBinaryOptionTest::suite());
     test->add(EuropeanOptionTest::experimental());
     test->add(EverestOptionTest::suite());
     test->add(ExtendedTreesTest::suite());
@@ -381,6 +386,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(OdeTest::suite());
     test->add(PagodaOptionTest::suite());
     test->add(PartialTimeBarrierOptionTest::suite());
+    test->add(QuantoOptionTest::experimental());
     test->add(SpreadOptionTest::suite());
     test->add(SwingOptionTest::suite());
     test->add(TwoAssetBarrierOptionTest::suite());

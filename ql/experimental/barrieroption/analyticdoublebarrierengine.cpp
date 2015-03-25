@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2013 Yue Tian
+ Copyright (C) 2015 Thema Consulting SA
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,10 +18,8 @@
 */
 
 #include <ql/experimental/barrieroption/analyticdoublebarrierengine.hpp>
-#include <ql/instruments/europeanoption.hpp>
-#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/exercise.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -34,101 +32,54 @@ namespace QuantLib {
 
     void AnalyticDoubleBarrierEngine::calculate() const {
 
+        QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
+                   "this engine handles only european options");
+
         boost::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
-        QL_REQUIRE(payoff->strike()>0.0,
+
+        Real strike = payoff->strike();
+        QL_REQUIRE(strike>0.0,
                    "strike must be positive");
 
-        Real K = payoff->strike();
-        Real S = process_->x0();
-        QL_REQUIRE(S >= 0.0, "negative or null underlying given");
-        QL_REQUIRE(!triggered(S), "barrier touched");
+        Real spot = underlying();
+        QL_REQUIRE(spot >= 0.0, "negative or null underlying given");
+        QL_REQUIRE(!triggered(spot), "barrier(s) already touched");
 
-        std::vector<Barrier::Type> barrierType = arguments_.barrierType;
-        Real L = arguments_.barrier[0];
-        Real H = arguments_.barrier[1];
-        Real K_up = std::min(H, K);
-        Real K_down = std::max(L, K);
-        Time T = residualTime();
-        Real rd = riskFreeRate();
-        Real dd = riskFreeDiscount();
-        Real rf = dividendYield();
-        Real df = dividendDiscount();
-        Real vol = volatility();
-        Real mu = rd - rf - vol*vol/2.0;
-        Real sgn = mu > 0 ? 1.0 :(mu < 0 ? -1.0: 0.0);
-        //rebate
-        Real R_L = arguments_.rebate[0];
-        Real R_H = arguments_.rebate[1];
+        DoubleBarrier::Type barrierType = arguments_.barrierType;
 
-        //european option
-        EuropeanOption europeanOption(payoff, arguments_.exercise);
-        boost::shared_ptr<PricingEngine> analyticEuropeanEngine =
-            boost::make_shared<AnalyticEuropeanEngine>(process_);
-        europeanOption.setPricingEngine(analyticEuropeanEngine);
-        Real european = europeanOption.NPV();
-
-        Real barrierOut = 0;
-        Real rebateIn = 0;
-        for(int n = -series_; n < series_; n++){
-            Real d1 = D(S/H*std::pow(L/H, 2.0*n), vol*vol+mu, vol, T);
-            Real d2 = d1 - vol*std::sqrt(T);
-            Real g1 = D(H/S*std::pow(L/H, 2.0*n - 1.0), vol*vol+mu, vol, T);
-            Real g2 = g1 - vol*std::sqrt(T);
-            Real h1 = D(S/H*std::pow(L/H, 2.0*n - 1.0), vol*vol+mu, vol, T);
-            Real h2 = h1 - vol*std::sqrt(T);
-            Real k1 = D(L/S*std::pow(L/H, 2.0*n - 1.0), vol*vol+mu, vol, T);
-            Real k2 = k1 - vol*std::sqrt(T);
-            Real d1_down = D(S/K_down*std::pow(L/H, 2.0*n), vol*vol+mu, vol, T);
-            Real d2_down = d1_down - vol*std::sqrt(T);
-            Real d1_up = D(S/K_up*std::pow(L/H, 2.0*n), vol*vol+mu, vol, T);
-            Real d2_up = d1_up - vol*std::sqrt(T);
-            Real k1_down = D((H*H)/(K_down*S)*std::pow(L/H, 2.0*n), vol*vol+mu, vol, T);
-            Real k2_down = k1_down - vol*std::sqrt(T);
-            Real k1_up = D((H*H)/(K_up*S)*std::pow(L/H, 2.0*n), vol*vol+mu, vol, T);
-            Real k2_up = k1_up - vol*std::sqrt(T);
-
-            if( payoff->optionType() == Option::Call) {
-                barrierOut += std::pow(L/H, 2.0 * n * mu/(vol*vol))*
-                            (df*S*std::pow(L/H, 2.0*n)*(f_(d1_down)-f_(d1))
-                            -dd*K*(f_(d2_down)-f_(d2))
-                            -df*std::pow(L/H, 2.0*n)*H*H/S*std::pow(H/S, 2.0*mu/(vol*vol))*(f_(k1_down)-f_(k1))
-                            +dd*K*std::pow(H/S,2.0*mu/(vol*vol))*(f_(k2_down)-f_(k2)));
-            }
-            else if(payoff->optionType() == Option::Put){
-                barrierOut += std::pow(L/H, 2.0 * n * mu/(vol*vol))*
-                            (dd*K*(f_(h2)-f_(d2_up))
-                            -df*S*std::pow(L/H, 2.0*n)*(f_(h1)-f_(d1_up))
-                            -dd*K*std::pow(H/S,2.0*mu/(vol*vol))*(f_(g2)-f_(k2_up))
-                            +df*std::pow(L/H, 2.0*n)*H*H/S*std::pow(H/S, 2.0*mu/(vol*vol))*(f_(g1)-f_(k1_up)));
-            }
-            else {
-                QL_FAIL("option type not recognized");
-            }
-
-            Real v1 = D(H/S*std::pow(H/L, 2.0*n), -mu, vol, T);
-            Real v2 = D(H/S*std::pow(H/L, 2.0*n), mu, vol, T);
-            Real v3 = D(S/L*std::pow(H/L, 2.0*n), -mu, vol, T);
-            Real v4 = D(S/L*std::pow(H/L, 2.0*n), mu, vol, T);
-            rebateIn +=  dd * R_H * sgn * (std::pow(L/H, 2.0*n*mu/(vol*vol)) * f_(sgn * v1) - std::pow(H/S, 2.0*mu/(vol*vol)) * f_(-sgn * v2))
-                       + dd * R_L * sgn * (std::pow(L/S, 2.0*mu/(vol*vol)) * f_(-sgn * v3) - std::pow(H/L, 2.0*n*mu/(vol*vol)) * f_(sgn * v4));
+        if (triggered(spot)) {
+           if (barrierType == DoubleBarrier::KnockIn)
+               results_.value = vanillaEquivalent();  // knocked in
+           else
+               results_.value = 0.0;  // knocked out
+        } else {
+           switch (payoff->optionType()) {
+             case Option::Call:
+               switch (barrierType) {
+                 case DoubleBarrier::KnockIn:
+                   results_.value = callKI();
+                   break;
+                 case DoubleBarrier::KnockOut:
+                   results_.value = callKO();
+                   break;
+               }
+               break;
+             case Option::Put:
+               switch (barrierType) {
+                 case DoubleBarrier::KnockIn:
+                   results_.value = putKI();
+                   break;
+                 case DoubleBarrier::KnockOut:
+                   results_.value = putKO();
+                   break;
+               }
+               break;
+             default:
+               QL_FAIL("unknown type");
+           }
         }
-
-        //rebate paid at maturity
-        if(barrierType[0] == Barrier::DownOut){
-            results_.value = barrierOut ;
-            results_.additionalResults["vanilla"] = european;
-            results_.additionalResults["barrierOut"] = barrierOut;
-            results_.additionalResults["barrierIn"] = european - barrierOut;
-        }
-        else{
-            results_.value = barrierOut;
-            results_.additionalResults["vanilla"] = european;
-            results_.additionalResults["barrierOut"] = barrierOut;
-            results_.additionalResults["barrierIn"] = european - barrierOut;
-        }
-
     }
 
 
@@ -151,8 +102,20 @@ namespace QuantLib {
         return process_->blackVolatility()->blackVol(residualTime(), strike());
     }
 
+    Real AnalyticDoubleBarrierEngine::volatilitySquared() const {
+        return volatility() * volatility();
+    }
+
     Real AnalyticDoubleBarrierEngine::stdDeviation() const {
         return volatility() * std::sqrt(residualTime());
+    }
+
+    Real AnalyticDoubleBarrierEngine::barrierLo() const {
+        return arguments_.barrier_lo;
+    }
+
+    Real AnalyticDoubleBarrierEngine::barrierHi() const {
+        return arguments_.barrier_hi;
     }
 
     Rate AnalyticDoubleBarrierEngine::riskFreeRate() const {
@@ -173,9 +136,100 @@ namespace QuantLib {
         return process_->dividendYield()->discount(residualTime());
     }
 
-    Real AnalyticDoubleBarrierEngine::D(Real X, Real lambda, Real sigma, Real T) const {
-        return (std::log(X) + lambda * T)/(sigma * std::sqrt(T));
+    Rate AnalyticDoubleBarrierEngine::costOfCarry() const {
+        return riskFreeRate() - dividendYield();
     }
 
+    Real AnalyticDoubleBarrierEngine::vanillaEquivalent() const {
+        // Call KI equates to vanilla - callKO
+        Real spot = process_->stateVariable()->value();
+        boost::shared_ptr<StrikedTypePayoff> payoff =
+            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        Real variance =
+            process_->blackVolatility()->blackVariance(
+                                              arguments_.exercise->lastDate(),
+                                              payoff->strike());
+        Real forwardPrice = underlying() * dividendDiscount() / riskFreeDiscount();
+        //Real forwardPrice = underlying() / dividendDiscount();
+        BlackCalculator black(payoff, forwardPrice, stdDeviation(), riskFreeDiscount());
+        Real vanilla = black.value();
+        if (vanilla < 0.0)
+           vanilla = 0.0;
+        return vanilla;
+    }
+
+    Real AnalyticDoubleBarrierEngine::callKO() const {
+       // N.B. for flat barriers mu3=mu1 and mu2=0
+       Real mu1 = 2 * costOfCarry() / volatilitySquared() + 1;
+       Real bsigma = (costOfCarry() + volatilitySquared() / 2.0) * residualTime() / stdDeviation();
+
+       Real acc1 = 0;
+       Real acc2 = 0;
+       for (int n = -series_ ; n <= series_ ; ++n) {
+          Real L2n = std::pow(barrierLo(), 2 * n);
+          Real U2n = std::pow(barrierHi(), 2 * n);
+          Real d1 = std::log( underlying()* U2n / (strike() * L2n) ) / stdDeviation() + bsigma;
+          Real d2 = std::log( underlying()* U2n / (barrierHi() * L2n) ) / stdDeviation() + bsigma;
+          Real d3 = std::log( std::pow(barrierLo(), 2 * n + 2) / (strike() * underlying() * U2n) ) / stdDeviation() + bsigma;
+          Real d4 = std::log( std::pow(barrierLo(), 2 * n + 2) / (barrierHi() * underlying() * U2n) ) / stdDeviation() + bsigma;
+
+          acc1 += std::pow( std::pow(barrierHi(), n) / std::pow(barrierLo(), n), mu1 ) * 
+                  (f_(d1) - f_(d2)) -
+                  std::pow( std::pow(barrierLo(), n+1) / (std::pow(barrierHi(), n) * underlying()), mu1 ) * 
+                  (f_(d3) - f_(d4));
+
+          acc2 += std::pow( std::pow(barrierHi(), n) / std::pow(barrierLo(), n), mu1-2) * 
+                  (f_(d1 - stdDeviation()) - f_(d2 - stdDeviation())) -
+                  std::pow( std::pow(barrierLo(), n+1) / (std::pow(barrierHi(), n) * underlying()), mu1-2 ) * 
+                  (f_(d3-stdDeviation()) - f_(d4-stdDeviation()));
+       }
+
+       Real rend = std::exp( dividendYield() * residualTime());
+       Real kov = underlying() * rend * acc1 - strike() * riskFreeDiscount() * acc2;
+       return std::max(0.0, kov);
+    }
+    
+    Real AnalyticDoubleBarrierEngine::callKI() const {
+        // Call KI equates to vanilla - callKO
+        return std::max(0.0, vanillaEquivalent() - callKO());
+    }
+
+    Real AnalyticDoubleBarrierEngine::putKO() const {
+       Real mu1 = 2 * costOfCarry() / volatilitySquared() + 1;
+       Real bsigma = (costOfCarry() + volatilitySquared() / 2.0) * residualTime() / stdDeviation();
+
+       Real acc1 = 0;
+       Real acc2 = 0;
+       for (int n = -series_ ; n <= series_ ; ++n) {
+          Real L2n = std::pow(barrierLo(), 2 * n);
+          Real U2n = std::pow(barrierHi(), 2 * n);
+          Real y1 = std::log( underlying()* U2n / (std::pow(barrierLo(), 2 * n + 1)) ) / stdDeviation() + bsigma;
+          Real y2 = std::log( underlying()* U2n / (strike() * L2n) ) / stdDeviation() + bsigma;
+          Real y3 = std::log( std::pow(barrierLo(), 2 * n + 2) / (barrierLo() * underlying() * U2n) ) / stdDeviation() + bsigma;
+          Real y4 = std::log( std::pow(barrierLo(), 2 * n + 2) / (strike() * underlying() * U2n) ) / stdDeviation() + bsigma;
+
+          acc1 += std::pow( std::pow(barrierHi(), n) / std::pow(barrierLo(), n), mu1-2) * 
+                  (f_(y1 - stdDeviation()) - f_(y2 - stdDeviation())) -
+                  std::pow( std::pow(barrierLo(), n+1) / (std::pow(barrierHi(), n) * underlying()), mu1-2 ) * 
+                  (f_(y3-stdDeviation()) - f_(y4-stdDeviation()));
+
+          acc2 += std::pow( std::pow(barrierHi(), n) / std::pow(barrierLo(), n), mu1 ) * 
+                  (f_(y1) - f_(y2)) -
+                  std::pow( std::pow(barrierLo(), n+1) / (std::pow(barrierHi(), n) * underlying()), mu1 ) * 
+                  (f_(y3) - f_(y4));
+
+       }
+
+       Real rend = std::exp( dividendYield() * residualTime());
+       Real kov = strike() * riskFreeDiscount() * acc1 - underlying() * rend  * acc2;
+       return std::max(0.0, kov);
+    }
+    
+    Real AnalyticDoubleBarrierEngine::putKI() const {
+        // Put KI equates to vanilla - putKO
+        return std::max(0.0, vanillaEquivalent() - putKO());
+    }
+
+    
 }
 

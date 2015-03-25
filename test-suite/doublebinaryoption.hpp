@@ -1,9 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 Ferdinando Ametrano
- Copyright (C) 2004 StatPro Italia srl
- Copyright (C) 2008 Paul Farrington
+ Copyright (C) 2015 Thema Consulting SA
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,25 +17,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_quanto_option_hpp
-#define quantlib_test_quanto_option_hpp
+#ifndef quantlib_test_double_binary_option_hpp
+#define quantlib_test_double_binary_option_hpp
 
 #include <boost/test/unit_test.hpp>
 
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
 
-class QuantoOptionTest {
+class DoubleBinaryOptionTest {
   public:
-    static void testValues();
-    static void testGreeks();
-    static void testForwardValues();
-    static void testForwardGreeks();
-    static void testForwardPerformanceValues();
-    static void testBarrierValues();
-    static void testDoubleBarrierValues();
+    static void testHaugValues();
     static boost::unit_test_framework::test_suite* suite();
-    static boost::unit_test_framework::test_suite* experimental();
 };
 
 

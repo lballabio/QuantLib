@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2015 Thema Consulting SA
+ Copyright (C) 2013 Yue Tian
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,14 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analyticdoublebarrierengine.hpp
-    \brief Analytic double barrier european option engines
-
-  ! Valid only if strike is in barrier range
+/*! \file WulinYongDoubleBarrierEngine.hpp
+    \brief Wulin Suo, Yong Wang double-barrier option engine
 */
 
-#ifndef quantlib_analytic_double_barrier_engine_hpp
-#define quantlib_analytic_double_barrier_engine_hpp
+#ifndef wulin_yong_double_barrier_engine_hpp
+#define wulin_yong_double_barrier_engine_hpp
 
 #include <ql/experimental/barrieroption/doublebarrieroption.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
@@ -32,50 +30,39 @@
 
 namespace QuantLib {
 
-    //! Pricing engine for double barrier european options using analytical formulae
-    /*! The formulas are taken from "The complete guide to option pricing formulas 2nd Ed",
-         E.G. Haug, McGraw-Hill, p.156 and following.
-         Implements the Ikeda and Kunitomo series (see "Pricing Options with 
-         Curved Boundaries" Mathematical Finance 2/1992").
-         This code handles only flat barriers
+    //! Pricing engine for barrier options using analytical formulae
+    /*! The formulas are taken from "Barrier Option Pricing",
+         Wulin Suo, Yong Wang.
 
         \ingroup barrierengines
-
-        \note the formula holds only when strike is in the barrier range
 
         \test the correctness of the returned value is tested by
               reproducing results available in literature.
     */
-    class AnalyticDoubleBarrierEngine : public DoubleBarrierOption::engine {
+    class WulinYongDoubleBarrierEngine : public DoubleBarrierOption::engine {
       public:
-        AnalyticDoubleBarrierEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process, 
+        WulinYongDoubleBarrierEngine(
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
             int series = 5);
         void calculate() const;
       private:
         boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        const int series_;
         CumulativeNormalDistribution f_;
-        int series_;
         // helper methods
         Real underlying() const;
         Real strike() const;
         Time residualTime() const;
         Volatility volatility() const;
-        Real volatilitySquared() const;
-        Real barrierLo() const;
-        Real barrierHi() const;
+        Real barrier() const;
         Real rebate() const;
         Real stdDeviation() const;
         Rate riskFreeRate() const;
         DiscountFactor riskFreeDiscount() const;
         Rate dividendYield() const;
-        Rate costOfCarry() const;
         DiscountFactor dividendDiscount() const;
-        Real vanillaEquivalent() const;
-        Real callKO() const;
-        Real putKO() const;
-        Real callKI() const;
-        Real putKI() const;
+        Real D(Real X, Real lambda, Real sigma, Real T) const;
+
     };
 
 }

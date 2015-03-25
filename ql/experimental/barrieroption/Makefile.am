@@ -4,19 +4,29 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
-    analyticdoublebarrierengine.hpp \
+    analyticdoublebarrierbinaryengine.hpp \
+	analyticdoublebarrierengine.hpp \
+    binomialdoublebarrierengine.hpp \
+    discretizeddoublebarrieroption.hpp \
     doublebarrieroption.hpp \
+    doublebarriertype.hpp \
     perturbativebarrieroptionengine.hpp \
+    quantodoublebarrieroption.hpp \
     vannavolgabarrierengine.hpp \
     vannavolgadoublebarrierengine.hpp \
-    vannavolgainterpolation.hpp
+    vannavolgainterpolation.hpp \
+    wulinyongdoublebarrierengine.hpp
 
 libBarrierOption_la_SOURCES = \
-    analyticdoublebarrierengine.cpp \
+    analyticdoublebarrierbinaryengine.cpp \
+	analyticdoublebarrierengine.cpp \
+    discretizeddoublebarrieroption.cpp \
     doublebarrieroption.cpp \
+    doublebarriertype.cpp \
     perturbativebarrieroptionengine.cpp \
+    quantodoublebarrieroption.cpp \
     vannavolgabarrierengine.cpp \
-    vannavolgadoublebarrierengine.cpp
+    wulinyongdoublebarrierengine.cpp
 
 noinst_LTLIBRARIES = libBarrierOption.la
 

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2013 Yue Tian
+ Copyright (C) 2015 Thema Consulting SA
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,24 +17,22 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file doublebarrieroption.hpp
-    \brief Double-barrier option on a single asset
+/*! \file DoubleBarrierOption.hpp
+    \brief double Barrier european option on a single asset
 */
 
 #ifndef quantlib_double_barrier_option_hpp
 #define quantlib_double_barrier_option_hpp
 
 #include <ql/instruments/oneassetoption.hpp>
-#include <ql/instruments/barriertype.hpp>
+#include <ql/experimental/barrieroption/doublebarriertype.hpp>
 #include <ql/instruments/payoffs.hpp>
-
-#include <vector>
 
 namespace QuantLib {
 
     class GeneralizedBlackScholesProcess;
 
-    //! %Barrier option on a single asset.
+    //! %Double Barrier option on a single asset.
     /*! The analytic pricing engine will be used if none if passed.
 
         \ingroup instruments
@@ -43,9 +41,10 @@ namespace QuantLib {
       public:
         class arguments;
         class engine;
-        DoubleBarrierOption(std::vector<Barrier::Type> barrierType,
-                      std::vector<Real> barrier,
-                      std::vector<Real> rebate,
+        DoubleBarrierOption(DoubleBarrier::Type barrierType,
+                      Real barrier_lo,
+                      Real barrier_hi,
+                      Real rebate,
                       const boost::shared_ptr<StrikedTypePayoff>& payoff,
                       const boost::shared_ptr<Exercise>& exercise);
         void setupArguments(PricingEngine::arguments*) const;
@@ -61,22 +60,24 @@ namespace QuantLib {
              Volatility maxVol = 4.0) const;
       protected:
         // arguments
-        std::vector<Barrier::Type> barrierType_;
-        std::vector<Real> barrier_;
-        std::vector<Real> rebate_;
+        DoubleBarrier::Type barrierType_;
+        Real barrier_lo_;
+        Real barrier_hi_;
+        Real rebate_;
     };
 
-    //! %Arguments for barrier option calculation
+    //! %Arguments for double barrier option calculation
     class DoubleBarrierOption::arguments : public OneAssetOption::arguments {
       public:
         arguments();
-        std::vector<Barrier::Type> barrierType;
-        std::vector<Real> barrier;
-        std::vector<Real> rebate;
+        DoubleBarrier::Type barrierType;
+        Real barrier_lo;
+        Real barrier_hi;
+        Real rebate;
         void validate() const;
     };
 
-    //! %Barrier-option %engine base class
+    //! %Double-Barrier-option %engine base class
     class DoubleBarrierOption::engine
         : public GenericEngine<DoubleBarrierOption::arguments,
                                DoubleBarrierOption::results> {

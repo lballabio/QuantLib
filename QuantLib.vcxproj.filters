@@ -3357,13 +3357,28 @@
     <ClInclude Include="ql\experimental\barrieroption\all.hpp">
       <Filter>experimental\barrieroption</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\barrieroption\analyticdoublebarrierbinaryengine.hpp">
+      <Filter>experimental\barrieroption</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\barrieroption\analyticdoublebarrierengine.hpp">
+      <Filter>experimental\barrieroption</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\barrieroption\binomialdoublebarrierengine.hpp">
+      <Filter>experimental\barrieroption</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\barrieroption\discretizeddoublebarrieroption.hpp">
       <Filter>experimental\barrieroption</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\barrieroption\doublebarrieroption.hpp">
       <Filter>experimental\barrieroption</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\barrieroption\doublebarriertype.hpp">
+      <Filter>experimental\barrieroption</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\barrieroption\perturbativebarrieroptionengine.hpp">
+      <Filter>experimental\barrieroption</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\barrieroption\quantodoublebarrieroption.hpp">
       <Filter>experimental\barrieroption</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\barrieroption\vannavolgabarrierengine.hpp">
@@ -3373,6 +3388,9 @@
       <Filter>experimental\barrieroption</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\barrieroption\vannavolgainterpolation.hpp">
+      <Filter>experimental\barrieroption</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\barrieroption\wulinyongdoublebarrierengine.hpp">
       <Filter>experimental\barrieroption</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\convertiblebonds\all.hpp">
@@ -5894,19 +5912,31 @@
     <ClCompile Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.cpp">
       <Filter>experimental\amortizingbonds</Filter>
     </ClCompile>
+    <ClCompile Include="ql\experimental\barrieroption\analyticdoublebarrierbinaryengine.cpp">
+      <Filter>experimental\barrieroption</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\barrieroption\analyticdoublebarrierengine.cpp">
+      <Filter>experimental\barrieroption</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\barrieroption\discretizeddoublebarrieroption.cpp">
       <Filter>experimental\barrieroption</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\barrieroption\doublebarrieroption.cpp">
       <Filter>experimental\barrieroption</Filter>
     </ClCompile>
+    <ClCompile Include="ql\experimental\barrieroption\doublebarriertype.cpp">
+      <Filter>experimental\barrieroption</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\barrieroption\perturbativebarrieroptionengine.cpp">
+      <Filter>experimental\barrieroption</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\barrieroption\quantodoublebarrieroption.cpp">
       <Filter>experimental\barrieroption</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\barrieroption\vannavolgabarrierengine.cpp">
       <Filter>experimental\barrieroption</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\barrieroption\vannavolgadoublebarrierengine.cpp">
+    <ClCompile Include="ql\experimental\barrieroption\wulinyongdoublebarrierengine.cpp">
       <Filter>experimental\barrieroption</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\convertiblebonds\convertiblebond.cpp">

@@ -1012,6 +1012,14 @@
 				>
 			</File>
 			<File
+				RelativePath="doublebarrieroption.cpp"
+				>
+			</File>
+			<File
+				RelativePath="doublebinaryoption.cpp"
+				>
+			</File>
+			<File
 				RelativePath="europeanoption.cpp"
 				>
 			</File>
@@ -1530,6 +1538,14 @@
 			</File>
 			<File
 				RelativePath=".\dividendoption.hpp"
+				>
+			</File>
+			<File
+				RelativePath="doublebarrieroption.hpp"
+				>
+			</File>
+			<File
+				RelativePath="doublebinaryoption.hpp"
 				>
 			</File>
 			<File
