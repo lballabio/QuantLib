@@ -23,6 +23,7 @@
 #include <ql/termstructures/volatility/optionlet/optionletstripper1.hpp>
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+#include <ql/pricingengines/capfloor/bacheliercapfloorengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/quotes/simplequote.hpp>
@@ -38,8 +39,10 @@ namespace QuantLib {
             Rate switchStrike,
             Real accuracy,
             Natural maxIter,
-            const Handle<YieldTermStructure>& discount)
-    : OptionletStripper(termVolSurface, index, discount),
+            const Handle<YieldTermStructure>& discount,
+            Model model,
+            Real displacement)
+    : OptionletStripper(termVolSurface, index, discount, model, displacement),
       volQuotes_(nOptionletTenors_,
                  std::vector<shared_ptr<SimpleQuote> >(nStrikes_)),
       floatingSwitchStrike_(switchStrike==Null<Rate>() ? true : false),
@@ -108,15 +111,27 @@ namespace QuantLib {
                 for (Size i=0; i<nOptionletTenors_; ++i) {
                     volQuotes_[i][j] = shared_ptr<SimpleQuote>(new
                                                                 SimpleQuote());
-                    shared_ptr<BlackCapFloorEngine> engine(new
-                        BlackCapFloorEngine(
-                                        discountCurve,
-                                        Handle<Quote>(volQuotes_[i][j]),
-                                        dc));
-                    capFloors_[i][j] = MakeCapFloor(capFloorType,
-                                                    capFloorLengths_[i], iborIndex_,
-                                                    strikes[j], 0*Days)
-                        .withPricingEngine(engine);
+                    if (model_ == ShiftedLognormal) {
+                      shared_ptr<BlackCapFloorEngine> engine(
+                          new BlackCapFloorEngine(
+                              discountCurve, Handle<Quote>(volQuotes_[i][j]),
+                              dc, displacement_));
+                      capFloors_[i][j] =
+                          MakeCapFloor(capFloorType, capFloorLengths_[i],
+                                       iborIndex_, strikes[j],
+                                       0 * Days).withPricingEngine(engine);
+                    } else if (model_ == Normal) {
+                      shared_ptr<BachelierCapFloorEngine> engine(
+                          new BachelierCapFloorEngine(
+                              discountCurve, Handle<Quote>(volQuotes_[i][j]),
+                              dc));
+                      capFloors_[i][j] =
+                          MakeCapFloor(capFloorType, capFloorLengths_[i],
+                                       iborIndex_, strikes[j],
+                                       0 * Days).withPricingEngine(engine);
+                    } else {
+                      QL_FAIL("unknown model: " << model_);
+                    }
                 }
             }
             capFlooMatrixNotInitialized_ = false;
@@ -142,15 +157,23 @@ namespace QuantLib {
                     discountCurve->discount(optionletPaymentDates_[i]);
                 DiscountFactor optionletAnnuity=optionletAccrualPeriods_[i]*d;
                 try {
+                  if (model_ == ShiftedLognormal) {
+                    optionletStDevs_[i][j] = blackFormulaImpliedStdDev(
+                        optionletType, strikes[j], atmOptionletRate_[i],
+                        optionletPrices_[i][j], optionletAnnuity, displacement_,
+                        optionletStDevs_[i][j], accuracy_, maxIter_);
+                  } else if (model_ == Normal) {
                     optionletStDevs_[i][j] =
-                        blackFormulaImpliedStdDev(optionletType,
-                                                  strikes[j],
-                                                  atmOptionletRate_[i],
-                                                  optionletPrices_[i][j],
-                                                  optionletAnnuity, 0.0,
-                                                  optionletStDevs_[i][j],
-                                                  accuracy_, maxIter_);
-                } catch (std::exception& e) {
+                        std::sqrt(optionletTimes_[i]) *
+                        bachelierBlackFormulaImpliedVol(
+                            optionletType, strikes[j], atmOptionletRate_[i],
+                            optionletTimes_[i], optionletPrices_[i][j],
+                            optionletAnnuity);
+                  } else {
+                    QL_FAIL("Unknown model: " << model_);
+                  }
+                }
+                catch (std::exception &e) {
                     QL_FAIL("could not bootstrap optionlet:"
                             "\n type:    " << optionletType <<
                             "\n strike:  " << io::rate(strikes[j]) <<
