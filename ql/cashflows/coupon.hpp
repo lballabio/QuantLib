@@ -91,6 +91,7 @@ namespace QuantLib {
         Real nominal_;
         Date accrualStartDate_,accrualEndDate_, refPeriodStart_,refPeriodEnd_;
         Date exCouponDate_;
+        mutable Real accrualPeriod_;
     };
 
 
