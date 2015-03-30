@@ -1,6 +1,8 @@
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
  Copyright (C) 2013 Gary Kennedy
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -54,11 +56,74 @@ void BlackFormulaTest::testBachelierImpliedVol(){
     return;
 }
 
+void BlackFormulaTest::testChambersImpliedVol() {
+
+    BOOST_TEST_MESSAGE("Testing Chambers-Nawalkha implied vol approximation...");
+
+    Option::Type types[] = {Option::Call, Option::Put};
+    Real displacements[] = {0.0000, 0.0010, 0.0050, 0.0100, 0.0200};
+    Real forwards[] = {-0.0010, 0.0000, 0.0050, 0.0100, 0.0200, 0.0500};
+    Real strikes[] = {-0.0100, -0.0050, -0.0010, 0.0000, 0.0010, 0.0050,
+                      0.0100,  0.0200,  0.0500,  0.1000};
+    Real stdDevs[] = {0.10, 0.15, 0.20, 0.30, 0.50, 0.60, 0.70,
+                      0.80, 1.00, 1.50, 2.00};
+    Real discounts[] = {1.00, 0.95, 0.80, 1.10};
+
+    Real tol = 5.0E-4;
+
+    for (Size i1 = 0; i1 < LENGTH(types); ++i1) {
+        for (Size i2 = 0; i2 < LENGTH(displacements); ++i2) {
+            for (Size i3 = 0; i3 < LENGTH(forwards); ++i3) {
+                for (Size i4 = 0; i4 < LENGTH(strikes); ++i4) {
+                    for (Size i5 = 0; i5 < LENGTH(stdDevs); ++i5) {
+                        for (Size i6 = 0; i6 < LENGTH(discounts); ++i6) {
+                            if (forwards[i3] + displacements[i2] > 0.0 &&
+                                strikes[i4] + displacements[i2] > 0.0) {
+                                Real premium = blackFormula(
+                                    types[i1], strikes[i4], forwards[i3],
+                                    stdDevs[i5], discounts[i6],
+                                    displacements[i2]);
+                                Real atmPremium = blackFormula(
+                                    types[i1], forwards[i3], forwards[i3],
+                                    stdDevs[i5], discounts[i6],
+                                    displacements[i2]);
+                                Real iStdDev =
+                                    blackFormulaImpliedStdDevChambers(
+                                        types[i1], strikes[i4], forwards[i3],
+                                        premium, atmPremium, discounts[i6],
+                                        displacements[i2]);
+                                Real moneyness = (strikes[i4] + displacements[i2]) /
+                                             (forwards[i3] + displacements[i2]);
+                                if(moneyness > 1.0) moneyness = 1.0 / moneyness;
+                                Real error = (iStdDev - stdDevs[i5]) / stdDevs[i5] * moneyness;
+                                if(error > tol)
+                                    BOOST_ERROR(
+                                        "Failed to verify Chambers-Nawalkha "
+                                        "approximation for "
+                                        << types[i1]
+                                        << " displacement=" << displacements[i2]
+                                        << " forward=" << forwards[i3]
+                                        << " strike=" << strikes[i4]
+                                        << " discount=" << discounts[i6]
+                                        << " stddev=" << stdDevs[i5]
+                                        << " result=" << iStdDev
+                                        << " exceeds maximum error tolerance");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 test_suite* BlackFormulaTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Black formula tests");
 
     suite->add(QUANTLIB_TEST_CASE(
         &BlackFormulaTest::testBachelierImpliedVol));
+    suite->add(QUANTLIB_TEST_CASE(
+        &BlackFormulaTest::testChambersImpliedVol));
 
     return suite;
 }

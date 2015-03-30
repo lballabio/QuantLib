@@ -1,6 +1,8 @@
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 Gary Kennedy
+ Copyright (C) 2013 Gary Kennedy
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,6 +27,7 @@
 class BlackFormulaTest {
   public:
     static void testBachelierImpliedVol();
+    static void testChambersImpliedVol();
     static boost::unit_test_framework::test_suite* suite();
 };
 
