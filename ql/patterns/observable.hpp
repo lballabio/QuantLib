@@ -69,7 +69,11 @@ namespace QuantLib {
         virtual ~Observer();
         // observer interface
         std::pair<std::set<boost::shared_ptr<Observable> >::iterator, bool>
-                            registerWith(const boost::shared_ptr<Observable>&);
+        registerWith(const boost::shared_ptr<Observable>&);
+        /*! register with all observables of a given observer. Note
+            that this does not include registering with the observer
+            itself. */
+        void registerWithObservables(const boost::shared_ptr<Observer>&);
         Size unregisterWith(const boost::shared_ptr<Observable>&);
         void unregisterWithAll();
         /*! This method must be implemented in derived classes. An
@@ -78,10 +82,6 @@ namespace QuantLib {
             registered with when they need to notify any changes.
         */
         virtual void update() = 0;
-        /*! register with all observables of a given observer. Note
-            that this does not include registering with the observer
-            itself. */
-        void registerWithObservables(const boost::shared_ptr<Observer>&);
       private:
         std::set<boost::shared_ptr<Observable> > observables_;
         typedef std::set<boost::shared_ptr<Observable> >::iterator iterator;
