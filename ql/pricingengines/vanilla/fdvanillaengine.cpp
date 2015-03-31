@@ -43,12 +43,11 @@ namespace QuantLib {
         QL_REQUIRE(args, "incorrect argument type");
         exerciseDate_ = args->exercise->lastDate();
         payoff_ = args->payoff;
-        requiredGridValue_ =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff_)->strike();
     }
 
     void FDVanillaEngine::setGridLimits(Real center, Time t) const {
         QL_REQUIRE(center > 0.0, "negative or null underlying given");
+        QL_REQUIRE(t > 0.0, "negative or zero residual time");
         center_ = center;
         Size newGridPoints = safeGridPoints(gridPoints_, t);
         if (newGridPoints > intrinsicValues_.size()) {
