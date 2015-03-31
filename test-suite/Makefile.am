@@ -16,6 +16,7 @@ QL_TESTS = \
 	blackformula.hpp blackformula.cpp \
 	bonds.hpp bonds.cpp \
 	brownianbridge.hpp brownianbridge.cpp \
+	businessdayconventions.hpp businessdayconventions.cpp \
 	calendars.hpp calendars.cpp \
 	capfloor.hpp capfloor.cpp \
 	capflooredcoupon.hpp capflooredcoupon.cpp \
