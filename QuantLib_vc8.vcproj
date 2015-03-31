@@ -1082,6 +1082,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\methods\finitedifferences\utilities\fdmmesherintegral.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\utilities\fdmmesherintegral.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\methods\finitedifferences\utilities\fdmquantohelper.cpp"
 						>
 					</File>
@@ -2484,6 +2492,14 @@
 				>
 				<File
 					RelativePath=".\ql\math\integrals\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\integrals\discreteintegrals.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\integrals\discreteintegrals.hpp"
 					>
 				</File>
 				<File
@@ -5803,6 +5819,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\capfloor\bacheliercapfloorengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\capfloor\bacheliercapfloorengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\pricingengines\capfloor\blackcapfloorengine.cpp"
 					>
 				</File>
@@ -6883,6 +6907,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmdupire1dop.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmdupire1dop.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmexpextouinnervaluecalculator.hpp"
 					>
 				</File>
@@ -6976,6 +7008,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmvppstepconditionfactory.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmzabrop.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmzabrop.hpp"
 					>
 				</File>
 				<File
@@ -7427,6 +7467,26 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\volatility\sviinterpolatedsmilesection.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\sviinterpolatedsmilesection.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\sviinterpolation.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\svismilesection.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\svismilesection.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\volatility\swaptionvolcube1a.hpp"
 					>
 				</File>
@@ -7438,6 +7498,26 @@
 					RelativePath=".\ql\experimental\volatility\volcube.hpp"
 					>
 				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\zabr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\zabr.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\zabrinterpolatedsmilesection.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\zabrinterpolation.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\zabrsmilesection.hpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="coupons"
@@ -7447,11 +7527,35 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\coupons\cmsspreadcoupon.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\coupons\cmsspreadcoupon.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\coupons\digitalcmsspreadcoupon.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\coupons\digitalcmsspreadcoupon.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\coupons\lineartsrpricer.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\experimental\coupons\lineartsrpricer.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\coupons\lognormalcmsspreadpricer.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\coupons\lognormalcmsspreadpricer.hpp"
 					>
 				</File>
 				<File
@@ -7471,11 +7575,27 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\coupons\strippedcapflooredcoupon.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\coupons\strippedcapflooredcoupon.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\coupons\subperiodcoupons.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\experimental\coupons\subperiodcoupons.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\coupons\swapspreadindex.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\coupons\swapspreadindex.hpp"
 					>
 				</File>
 			</Filter>
@@ -8591,11 +8711,27 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\models\gaussian1dsmilesection.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\gaussian1dsmilesection.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\models\gaussian1dswaptionengine.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\experimental\models\gaussian1dswaptionengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\gaussian1dswaptionvolatility.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\gaussian1dswaptionvolatility.hpp"
 					>
 				</File>
 				<File
