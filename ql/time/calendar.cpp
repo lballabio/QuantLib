@@ -55,16 +55,16 @@ namespace QuantLib {
             || c == HalfMonthModifiedFollowing) {
             while (isHoliday(d1))
                 d1++;
-                if (c == ModifiedFollowing 
-                    || c == HalfMonthModifiedFollowing) {
-                    if (d1.month() != d.month()) {
+            if (c == ModifiedFollowing 
+                || c == HalfMonthModifiedFollowing) {
+                if (d1.month() != d.month()) {
+                    return adjust(d, Preceding);
+                }
+                if (c == HalfMonthModifiedFollowing) {
+                    if (d.dayOfMonth() <= 15 && d1.dayOfMonth() > 15) {
                         return adjust(d, Preceding);
                     }
-                    if (c == HalfMonthModifiedFollowing) {
-                        if (d.dayOfMonth() <= 15 && d1.dayOfMonth() > 15) {
-                            return adjust(d, Preceding);
-                        }
-                    }
+                }
             }
         } else if (c == Preceding || c == ModifiedPreceding) {
             while (isHoliday(d1))
@@ -72,6 +72,17 @@ namespace QuantLib {
             if (c == ModifiedPreceding && d1.month() != d.month()) {
                 return adjust(d,Following);
             }
+        } else if (c == Nearest) {
+            Date d2 = d;
+            while (isHoliday(d1) && isHoliday(d2))
+            {
+                d1++;
+                d2--;
+            }
+            if (isHoliday(d1))
+                return d2;
+            else
+                return d1;
         } else {
             QL_FAIL("unknown business-day convention");
         }
