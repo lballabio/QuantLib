@@ -37,6 +37,8 @@ using namespace std;
 
 namespace QuantLib {
 
+    namespace {
+
     Real ND2(Real a, Real b, Real rho);
 
     Real H1, H2,  H3, R23, RUA, RUB, AR, RUC;
@@ -1438,13 +1440,6 @@ namespace QuantLib {
         return(result);
 
     }
-
-}
-
-
-namespace QuantLib {
-
-    namespace {
 
         struct integr_adapter {
             boost::shared_ptr<YieldTermStructure> r;

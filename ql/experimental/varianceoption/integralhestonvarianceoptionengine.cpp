@@ -29,6 +29,8 @@
 
 namespace QuantLib {
 
+    namespace {
+
     /*
      *****************************************************************
      **
@@ -352,10 +354,7 @@ namespace QuantLib {
         }
     };
 
-}
-
-
-namespace QuantLib {
+    }
 
     IntegralHestonVarianceOptionEngine::IntegralHestonVarianceOptionEngine(
                               const boost::shared_ptr<HestonProcess>& process)
