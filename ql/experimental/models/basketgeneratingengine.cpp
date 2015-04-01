@@ -26,6 +26,9 @@
 #include <ql/quotes/simplequote.hpp>
 #include <boost/make_shared.hpp>
 
+using std::exp;
+using std::fabs;
+
 namespace QuantLib {
 
     Disposable<std::vector<boost::shared_ptr<CalibrationHelper> > >

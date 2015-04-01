@@ -161,7 +161,7 @@ namespace QuantLib {
         // past or future fixing is managed in InterestRateIndex::fixing()
 
         Size nCount = initialValues_.size();
-        double dAvgRate = 0.0, dTotalCvg = 0.0, dTotalPayment = 0.0;
+        Real dAvgRate = 0.0, dTotalCvg = 0.0, dTotalPayment = 0.0;
         for (Size i=0; i<nCount; i++) {
             dTotalPayment += initialValues_[i] * observationCvg_[i];
             dTotalCvg += observationCvg_[i];
@@ -176,10 +176,10 @@ namespace QuantLib {
     Real CompoundingRatePricer::swapletPrice() const {
         // past or future fixing is managed in InterestRateIndex::fixing()
 
-        double dNotional = 1.0;
+        Real dNotional = 1.0;
 
         Size nCount = initialValues_.size();
-        double dCompRate = 0.0, dTotalCvg = 0.0, dTotalPayment = 0.0;
+        Real dCompRate = 0.0, dTotalCvg = 0.0, dTotalPayment = 0.0;
         for (Size i=0; i<nCount; i++) {
             dTotalPayment = initialValues_[i] * observationCvg_[i]*dNotional;
             dNotional += dTotalPayment;

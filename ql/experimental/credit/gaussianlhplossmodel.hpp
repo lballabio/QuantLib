@@ -73,8 +73,8 @@ namespace QuantLib {
             const std::vector<Real>& recoveries);
 
         void update() {
-            sqrt1minuscorrel_ = sqrt(1.-correl_->value());
-            beta_ = sqrt(correl_->value());
+            sqrt1minuscorrel_ = std::sqrt(1.-correl_->value());
+            beta_ = std::sqrt(correl_->value());
             biphi_ = BivariateCumulativeNormalDistribution(
                 -beta_);
             // tell basket to notify instruments, etc, we are invalid

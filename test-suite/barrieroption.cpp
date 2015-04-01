@@ -48,6 +48,8 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+using std::sqrt;
+
 #define REPORT_FAILURE(greekName, barrierType, barrier, rebate, payoff, \
                        exercise, s, q, r, today, v, expected, calculated, \
                        error, tolerance) \

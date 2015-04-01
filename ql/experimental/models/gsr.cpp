@@ -198,7 +198,7 @@ namespace QuantLib {
                                    termStructure()->discount(t, true)
                              : yts->discount(T, true) / yts->discount(t, true);
 
-        return d * exp(-x * gtT - 0.5 * p->y(t) * gtT * gtT);
+        return d * std::exp(-x * gtT - 0.5 * p->y(t) * gtT * gtT);
     }
 
     const Real Gsr::numeraireImpl(const Time t, const Real y,

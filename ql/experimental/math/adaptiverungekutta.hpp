@@ -104,7 +104,7 @@ namespace QuantLib {
         const Real a2,a3,a4,a5,a6,
                    b21,b31,b32,b41,b42,b43,b51,b52,b53,b54,b61,b62,b63,b64,b65,
                    c1,c3,c4,c6,dc1,dc3,dc4,dc5,dc6;
-        const Real ADAPTIVERK_MAXSTP, ADAPTIVERK_TINY, ADAPTIVERK_SAFETY,
+        const double ADAPTIVERK_MAXSTP, ADAPTIVERK_TINY, ADAPTIVERK_SAFETY,
                    ADAPTIVERK_PGROW, ADAPTIVERK_PSHRINK, ADAPTIVERK_ERRCON;
     };
 
@@ -192,7 +192,7 @@ namespace QuantLib {
                 errmax=std::max(errmax,std::abs(yerr[i]/yScale[i]));
             errmax/=eps;
             if (errmax>1.0) {
-                htemp=ADAPTIVERK_SAFETY*h*pow(errmax,ADAPTIVERK_PSHRINK);
+                htemp=ADAPTIVERK_SAFETY*h*std::pow(errmax,ADAPTIVERK_PSHRINK);
                 h = (h>=0.0 ? std::max(htemp,h/10) : std::min(htemp,h/10));
                 xnew=x+h;
                 if (xnew==x)
@@ -201,7 +201,7 @@ namespace QuantLib {
                 continue;
             } else {
                 if (errmax>ADAPTIVERK_ERRCON)
-                    hnext=ADAPTIVERK_SAFETY*h*pow(errmax,ADAPTIVERK_PGROW);
+                    hnext=ADAPTIVERK_SAFETY*h*std::pow(errmax,ADAPTIVERK_PGROW);
                 else
                     hnext=5.0*h;
                 x+=(hdid=h);

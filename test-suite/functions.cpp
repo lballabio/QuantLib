@@ -27,6 +27,8 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+using std::exp;
+
 void FunctionsTest::testFactorial() {
 
     BOOST_TEST_MESSAGE("Testing factorial numbers...");

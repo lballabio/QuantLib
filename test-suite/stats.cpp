@@ -51,7 +51,7 @@ namespace {
                        << "    calculated: " << s.samples() << "\n"
                        << "    expected:   " << LENGTH(data));
 
-        expected = std::accumulate(weights,weights+LENGTH(weights),0.0);
+        expected = std::accumulate(weights,weights+LENGTH(weights),Real(0.0));
         calculated = s.weightSum();
         if (calculated != expected)
             BOOST_FAIL(name << ": wrong sum of weights\n"
@@ -143,7 +143,7 @@ namespace {
                        << "    calculated: " << ss.samples() << "\n"
                        << "    expected:   " << LENGTH(data));
 
-        expected = std::accumulate(weights,weights+LENGTH(weights),0.0);
+        expected = std::accumulate(weights,weights+LENGTH(weights),Real(0.0));
         if (ss.weightSum() != expected)
             BOOST_FAIL("SequenceStatistics<" << name << ">: "
                        << "wrong sum of weights\n"

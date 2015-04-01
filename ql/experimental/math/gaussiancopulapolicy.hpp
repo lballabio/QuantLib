@@ -87,7 +87,7 @@ namespace QuantLib {
           depending on those values.
         */
         Probability density(const std::vector<Real>& m) const {
-            return std::accumulate(m.begin(), m.end(), 1., 
+            return std::accumulate(m.begin(), m.end(), Real(1.), 
                 boost::bind(std::multiplies<Real>(), _1, 
                     boost::bind(density_, _2)));
         }

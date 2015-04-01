@@ -43,6 +43,8 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+using std::fabs;
+
 void LowDiscrepancyTest::testSeedGenerator() {
     BOOST_TEST_MESSAGE("Testing random-seed generator...");
     SeedGenerator::instance().get();

@@ -83,7 +83,7 @@ void RiskStatisticsTest::testResults() {
 
             // weightSum()
             tolerance = 1e-10;
-            expected = std::accumulate(weights.begin(),weights.end(),0.0);
+            expected = std::accumulate(weights.begin(),weights.end(),Real(0.0));
             calculated = igs.weightSum();
             if (std::fabs(calculated-expected) > tolerance)
                 BOOST_FAIL("IncrementalGaussianStatistics: "

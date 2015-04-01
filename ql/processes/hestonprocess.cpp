@@ -490,7 +490,7 @@ namespace QuantLib {
                 - 0.5*vds + rho_*vdw;
 
             const Volatility sig = std::sqrt((1-rho_*rho_)*vds);
-            const Real s = x0[0]*exp(mu + sig*dw[0]);
+            const Real s = x0[0]*std::exp(mu + sig*dw[0]);
 
             retVal[0] = s;
             retVal[1] = nu_t;

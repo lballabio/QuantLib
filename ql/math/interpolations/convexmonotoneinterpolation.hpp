@@ -537,7 +537,7 @@ namespace QuantLib {
                     Real dAv = bAv*bAv - 4.0*aAv*cAv;
                     if (dAv >= 0.0) {
                         splitRegion_ = true;
-                        Real avRoot = (-bAv - sqrt(dAv))/(2*aAv);
+                        Real avRoot = (-bAv - std::sqrt(dAv))/(2*aAv);
 
                         xRatio_ = fAverage_ / avRoot;
                         xScaling_ *= xRatio_;

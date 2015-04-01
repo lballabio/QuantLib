@@ -20,6 +20,8 @@
 #include <ql/experimental/risk/creditriskplus.hpp>
 #include <map>
 
+using std::sqrt;
+
 namespace QuantLib {
 
     CreditRiskPlus::CreditRiskPlus(
@@ -121,7 +123,7 @@ namespace QuantLib {
         std::map<unsigned long, Real, std::less<unsigned long> >::iterator iter;
 
         for (Size k = 0; k < m_; ++k) {
-            unsigned long exUnit = (unsigned long)(floor(0.5 + exposure_[k] / unit_)); // round
+            unsigned long exUnit = (unsigned long)(std::floor(0.5 + exposure_[k] / unit_)); // round
             if (exposure_[k] > 0 && exUnit == 0)
                 exUnit = 1; // but avoid zero exposure
             if (exUnit > maxNu_)
@@ -211,7 +213,7 @@ namespace QuantLib {
         // compute loss distribution
 
         loss_.clear();
-        loss_.push_back(pow(1.0 - pC_, alphaC_)); // A(0)
+        loss_.push_back(std::pow(1.0 - pC_, alphaC_)); // A(0)
 
         Real res;
         for (unsigned long n = 0; n < upperIndex_ - 1; ++n) { // compute A(n+1)

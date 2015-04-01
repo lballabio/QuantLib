@@ -168,7 +168,7 @@ void LinearLeastSquaresRegressionTest::testMultiDimRegression() {
     }
 
     // much simpler
-    LinearRegression m1(x, y, 1.0);
+    LinearRegression m1(x, y, Real(1.0));
 
     for (Size i=0; i < m1.dim(); ++i) {
         if (m1.standardErrors()[i] > tolerance) {

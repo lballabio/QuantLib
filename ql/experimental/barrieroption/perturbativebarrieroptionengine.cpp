@@ -23,6 +23,7 @@
 #include <ql/experimental/barrieroption/perturbativebarrieroptionengine.hpp>
 #include <ql/exercise.hpp>
 #include <ql/errors.hpp>
+#include <ql/types.hpp>
 #include <boost/function.hpp>
 #include <cmath>
 #include <algorithm>
@@ -31,58 +32,60 @@ using namespace std;
 
 #define SIGN(a,b) ((b) >= 0.0 ? fabs(a) : -fabs(a))
 #define ABS(x) (((x) < 0) ? -(x) : (x))
-#define POW(x,y) pow( (double) (x), (double) (y))
+#define POW(x,y) pow( (Real) (x), (Real) (y))
 #define PI 3.14159265358979324
 
-namespace {
+namespace QuantLib {
 
-    double ND2(double a, double b, double rho);
+    namespace {
 
-    double H1, H2,  H3, R23, RUA, RUB, AR, RUC;
+    Real ND2(Real a, Real b, Real rho);
+
+    Real H1, H2,  H3, R23, RUA, RUB, AR, RUC;
     int NUC;
 
     // standard normal cumulative distribution function
-    double PHID(double Z);
+    Real PHID(Real Z);
 
     // Functions used to compute the first order approximation
-    double ff(double p,double tt,double a, double b, double gm);
-    double v(double p, double tt,double a,double b,double gm);
-    double llold(double p,double tt, double a, double b,
-                 double c, double gm);
+    Real ff(Real p,Real tt,Real a, Real b, Real gm);
+    Real v(Real p, Real tt,Real a,Real b,Real gm);
+    Real llold(Real p,Real tt, Real a, Real b,
+                 Real c, Real gm);
 
     // Functions used to compute the second order approximation
-    double derivn3(double limit[4],double sigmarho[4], int idx);
-    double ddvv(double s, double p, double tt, double a,
-                double b, double gm);
-    double ddff(double s, double p,double tt,double a,double b,double gm);
-    double dll(double s,double p,double tt,double a,double b,
-               double c,double gm);
-    double ddll(double s,double p,double tt, double ax, double bx,
-                double c, double gm);
-    double dvv(double s,double p,double tt,double a,double b,double gm);
-    double dff(double s, double p,double tt,double a,double b,double gm);
-    double tvtl(int jj,double limit[4],double sigmarho[4],double epsi);
+    Real derivn3(Real limit[4],Real sigmarho[4], int idx);
+    Real ddvv(Real s, Real p, Real tt, Real a,
+                Real b, Real gm);
+    Real ddff(Real s, Real p,Real tt,Real a,Real b,Real gm);
+    Real dll(Real s,Real p,Real tt,Real a,Real b,
+               Real c,Real gm);
+    Real ddll(Real s,Real p,Real tt, Real ax, Real bx,
+                Real c, Real gm);
+    Real dvv(Real s,Real p,Real tt,Real a,Real b,Real gm);
+    Real dff(Real s, Real p,Real tt,Real a,Real b,Real gm);
+    Real tvtl(int jj,Real limit[4],Real sigmarho[4],Real epsi);
 
-    double BarrierUPD(double kprice, double stock, double hbarr,
-                      double taumin, double taumax, int iord, int igm,
-                      boost::function<double(double, double)> integr,
-                      boost::function<double(double, double)> integalpha,
-                      boost::function<double(double, double)> integs,
-                      boost::function<double(double)> alpha,
-                      boost::function<double(double)> sigmaq)
+    Real BarrierUPD(Real kprice, Real stock, Real hbarr,
+                      Real taumin, Real taumax, int iord, int igm,
+                      boost::function<Real(Real, Real)> integr,
+                      boost::function<Real(Real, Real)> integalpha,
+                      boost::function<Real(Real, Real)> integs,
+                      boost::function<Real(Real)> alpha,
+                      boost::function<Real(Real)> sigmaq)
     {
-        double v0=0.0, v1=0.0, v1p=0.0, v2p=0.0, v2pp=0.0, gm=0.0;
+        Real v0=0.0, v1=0.0, v1p=0.0, v2p=0.0, v2pp=0.0, gm=0.0;
         int i=0,j=0;
-        double tmp=0.0, e1=0.0, e2=0.0, e3=0.0, e4=0.0;
-        double xstar=0.0, s0=0.0;
-        double sigmat=0.0, disc=0.0, d1=0.0,d2=0.0,d3=0.0,d4=0.0;
-        double et=0.0,tt=0.0, dt=0.0,p=0.0;
+        Real tmp=0.0, e1=0.0, e2=0.0, e3=0.0, e4=0.0;
+        Real xstar=0.0, s0=0.0;
+        Real sigmat=0.0, disc=0.0, d1=0.0,d2=0.0,d3=0.0,d4=0.0;
+        Real et=0.0,tt=0.0, dt=0.0,p=0.0;
         int npoint,npoint2;
         static double pi= 3.14159265358979324;
-        double dsqpi;
-        double caux=0.0,ccaux=0.0;
-        double auxnew=0.0;
-        double x=0.0,b=0.0,c=0.0;
+        Real dsqpi;
+        Real caux=0.0,ccaux=0.0;
+        Real auxnew=0.0;
+        Real x=0.0,b=0.0,c=0.0;
 
         if(igm==0) {
             gm=0.0;
@@ -221,7 +224,7 @@ namespace {
           !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         */
 
-        double v2,dtp, tmp1,s,caux2;
+        Real v2,dtp, tmp1,s,caux2;
         v2=0.0;
 
         for(i=1;i<=npoint;i++) {
@@ -291,7 +294,7 @@ namespace {
     }
 
 
-    double PHID(double Z){
+    Real PHID(Real Z){
         /*
          *     Normal distribution probabilities accurate to 1D-15.
          *     Z = number of standard deviations from the mean.
@@ -303,9 +306,9 @@ namespace {
          *     Hart, J.F. et al, 'Computer Approximations', Wiley, 1968
          *
          */
-        double P0, P1, P2, P3, P4, P5, P6;
-        double Q0, Q1, Q2, Q3, Q4, Q5, Q6, Q7;
-        double P, EXPNTL, CUTOFF, ROOTPI, ZABS;
+        Real P0, P1, P2, P3, P4, P5, P6;
+        Real Q0, Q1, Q2, Q3, Q4, Q5, Q6, Q7;
+        Real P, EXPNTL, CUTOFF, ROOTPI, ZABS;
 
         P0 = 220.2068679123761;
         P1 = 221.2135961699311;
@@ -369,10 +372,10 @@ namespace {
       !! Function F(p,tt,a,b,gm)
       !!
     */
-    double ff(double p,double tt,double a, double b, double gm) {
-        double phid;
-        double aa, caux;
-        double ppi= 3.14159265358979324;
+    Real ff(Real p,Real tt,Real a, Real b, Real gm) {
+        Real phid;
+        Real aa, caux;
+        Real ppi= 3.14159265358979324;
 
         aa=-(b*p-b*tt+a)/POW(2.0*(tt-p),0.5);
 
@@ -389,10 +392,10 @@ namespace {
       !! Function  E(p,tt,a,b,gm)
       !!
     */
-    double v(double p, double tt,double a,double b,double gm)
+    Real v(Real p, Real tt,Real a,Real b,Real gm)
     {
-        double result;
-        double aa,caux;
+        Real result;
+        Real aa,caux;
 
         aa=-(p*(a-b)+b*tt)/POW(2.0*p*tt*(tt-p),0.5);
         caux=PHID(aa);
@@ -408,11 +411,11 @@ namespace {
       !! Fuction L(p,tt,a,b,c,gm)
       !!
     */
-    double llold(double p,double tt, double a, double b,double c, double gm){
-        double bvnd;
-        double xx,yy,rho,caux;
-        double ppi= 3.14159265358979324;
-        double aa;
+    Real llold(Real p,Real tt, Real a, Real b,Real c, Real gm){
+        Real bvnd;
+        Real xx,yy,rho,caux;
+        Real ppi= 3.14159265358979324;
+        Real aa;
 
         xx=(-a+b*(tt-p))/POW(2.0*(tt-p),0.5);
         yy=(-a+b*tt+c)/POW(2.0*tt,0.5);
@@ -438,12 +441,12 @@ namespace {
       !! Function  D_E(s,p,tt,a,b,gm)
       !!
     */
-    double dvv(double s,double p,double tt,double a,double b,double gm)
+    Real dvv(Real s,Real p,Real tt,Real a,Real b,Real gm)
     {
         double ppi= 3.14159265358979324;
-        double result;
-        double aa,caux,caux1,caux2;
-        double xx,yy,rho;
+        Real result;
+        Real aa,caux,caux1,caux2;
+        Real xx,yy,rho;
 
         aa=(a*p+b*(tt-p))/POW(2.0*p*tt*(tt-p),0.5);
         caux=PHID(aa);
@@ -474,11 +477,11 @@ namespace {
       !! Function D_F(s,p,tt,a,b,gm)
       !!
     */
-    double dff(double s, double p,double tt,double a,double b,double gm)
+    Real dff(Real s, Real p,Real tt,Real a,Real b,Real gm)
     {
-        double result;
-        double aa,caux,caux1,caux2;
-        double xx,yy,rho;
+        Real result;
+        Real aa,caux,caux1,caux2;
+        Real xx,yy,rho;
 
         xx=(a-b*(tt-p))/POW(2.0*(tt-p),0.5);
         caux=-PHID(xx)*exp(-0.5*a*b);
@@ -507,11 +510,11 @@ namespace {
       !! Function D_L(s,p,a,b,c,gm)
       !!
     */
-    double dll(double s,double p,double tt,double a,double b,double c,double gm)
+    Real dll(Real s,Real p,Real tt,Real a,Real b,Real c,Real gm)
     {
-        double result;
-        double aa,caux,caux1;
-        double sigmarho[4],limit[4],epsi;
+        Real result;
+        Real aa,caux,caux1;
+        Real sigmarho[4],limit[4],epsi;
 
         epsi=1.e-12;
         limit[1]=(a+b*(tt-p))/POW(2.0*(tt-p),0.5);
@@ -545,11 +548,11 @@ namespace {
       !! Derivative with respect to a of the function D_F(s,p,tt,a,b,gm)
       !!
     */
-    double ddff(double s, double p,double tt,double a,double b,double gm)
+    Real ddff(Real s, Real p,Real tt,Real a,Real b,Real gm)
     {
-        double aa,caux,caux1,caux2,caux3,caux4;
-        double xx,yy,rho;
-        double result;
+        Real aa,caux,caux1,caux2,caux3,caux4;
+        Real xx,yy,rho;
+        Real result;
         double ppi= 3.14159265358979324;
 
         xx=(a-b*(tt-p))/POW(2.0*(tt-p),0.5);
@@ -601,13 +604,13 @@ namespace {
       !! Derivative with respect to a of the function D_L(s,p,tt,a,b,c,gm)
       !!
     */
-    double ddll(double s,double p,double tt, double ax, double bx,double c, double gm)
+    Real ddll(Real s,Real p,Real tt, Real ax, Real bx,Real c, Real gm)
     {
-        static double result;
-        static double aa,caux,caux1;
-        static double sigmarho[4],limit[4];
+        static Real result;
+        static Real aa,caux,caux1;
+        static Real sigmarho[4],limit[4];
         static int idx;
-        double epsi;
+        Real epsi;
 
         epsi=1.e-12;
         limit[1]=(ax+bx*(tt-p))/POW(2.0*(tt-p),0.5);
@@ -664,12 +667,12 @@ namespace {
       !!   Derivative with respect to a of the function D_E(s,p,tt,a,b,gm)
       !!
     */
-    double ddvv(double s, double p, double tt, double a, double b, double gm)
+    Real ddvv(Real s, Real p, Real tt, Real a, Real b, Real gm)
     {
-        static double result;
-        static double aa,caux,caux1,caux2,caux6;
-        static double caux3,caux4,caux5,aux;
-        static double xx,yy,rho;
+        static Real result;
+        static Real aa,caux,caux1,caux2,caux6;
+        static Real caux3,caux4,caux5,aux;
+        static Real xx,yy,rho;
         static double ppi= 3.14159265358979324;
 
         aa=(a*p+b*(tt-p))/POW(2.0*p*tt*(tt-p),0.5);
@@ -729,12 +732,12 @@ namespace {
       !! distribution with respect to one of the integration limits
       !!
     */
-    double derivn3(double limit[4],double sigmarho[4], int idx)
+    Real derivn3(Real limit[4],Real sigmarho[4], int idx)
     {
-        static double aa;
-        static double xx,yy,rho,sc;
+        static Real aa;
+        static Real xx,yy,rho,sc;
         static double  ppi= 3.14159265358979324;
-        static double deriv;
+        static Real deriv;
         sc=POW(2.0*ppi,0.5);
 
         if(idx==1)
@@ -773,17 +776,17 @@ namespace {
     }
 
 
-    double BVTL(int NU, double DH, double DK, double RRR );
-    double TVTMFN(double X, double H1, double H2, double H3,
-                  double R23, double RUA, double RUB, double AR,
-                  double RUC, int NUC);
-    double ADONET(double ZRO,double ONE,double EPS,
-                  double(*TVTMFN)(double X, double H1, double H2,
-                                  double H3, double R23, double RUA,
-                                  double RUB, double AR, double RUC,
+    Real BVTL(int NU, Real DH, Real DK, Real RRR );
+    Real TVTMFN(Real X, Real H1, Real H2, Real H3,
+                  Real R23, Real RUA, Real RUB, Real AR,
+                  Real RUC, int NUC);
+    Real ADONET(Real ZRO,Real ONE,Real EPS,
+                  Real(*TVTMFN)(Real X, Real H1, Real H2,
+                                  Real H3, Real R23, Real RUA,
+                                  Real RUB, Real AR, Real RUC,
                                   int NUC));
 
-    double tvtl(int NU, double limit[], double sigmarho[],double epsi)
+    Real tvtl(int NU, Real limit[], Real sigmarho[],Real epsi)
     {
         /*
           A function for computing trivariate normal and t-probabilities.
@@ -823,9 +826,9 @@ namespace {
 
         */
 
-        static double result;
-        static double  ONE=1.0, ZRO=0.0, EPS,  TVT;
-        static double PT, R12, R13;
+        static Real result;
+        static Real  ONE=1.0, ZRO=0.0, EPS,  TVT;
+        static Real PT, R12, R13;
         static double ppi= 3.14159265358979324;
         EPS = max( 1.e-14, epsi );
         PT=ppi/2.0;
@@ -893,19 +896,19 @@ namespace {
         return(result);
     }
 
-    void SINCS(double v1,double& v2, double& v3);
-    double PNTGND(int , double ,double ,double ,
-                  double ,double ,double ,double );
+    void SINCS(Real v1,Real& v2, Real& v3);
+    Real PNTGND(int , Real ,Real ,Real ,
+                  Real ,Real ,Real ,Real );
 
-    double TVTMFN(double X, double H1, double H2, double H3, double R23,
-                  double RUA, double RUB, double AR,double RUC, int NUC ){
+    Real TVTMFN(Real X, Real H1, Real H2, Real H3, Real R23,
+                  Real RUA, Real RUB, Real AR,Real RUC, int NUC ){
         /*
           Computes Plackett formula integrands
         */
 
-        static double R12=0.0, RR2=0, R13=0.0, RR3=0.0, R=0.0, RR=0.0;
-        const double ZRO = 0.0;
-        double result = 0.0;
+        static Real R12=0.0, RR2=0, R13=0.0, RR3=0.0, R=0.0, RR=0.0;
+        const Real ZRO = 0.0;
+        Real result = 0.0;
 
         SINCS( RUA*X, R12, RR2 );
         SINCS( RUB*X, R13, RR3 );
@@ -922,12 +925,12 @@ namespace {
     //
 
 
-    void SINCS(double X, double& SX, double& CS )
+    void SINCS(Real X, Real& SX, Real& CS )
     {
         /*
           Computes SIN(X), COS(X)^2, with series approx. for |X| near PI/2
         */
-        static double PT, EE;
+        static Real PT, EE;
         PT = 1.57079632679489661923132169163975;
         EE = POW(( PT - fabs(X) ),2);
 
@@ -945,18 +948,18 @@ namespace {
     }
     //
 
-    double KRNRDT(double, double,
-                  double(*TVTMFN)(double, double, double, double,
-                                  double, double, double, double, double, int),
-                  double& );
+    Real KRNRDT(Real, Real,
+                  Real(*TVTMFN)(Real, Real, Real, Real,
+                                  Real, Real, Real, Real, Real, int),
+                  Real& );
 
-    double ADONET(double A,double B, double TOL,double(*TVTMFN)(double X, double H1, double H2, double H3, double R23, double RUA, double RUB, double AR, double RUC, int NUC)){
+    Real ADONET(Real A,Real B, Real TOL,Real(*TVTMFN)(Real X, Real H1, Real H2, Real H3, Real R23, Real RUA, Real RUB, Real AR, Real RUC, int NUC)){
         //
         //     One Dimensional Globally Adaptive Integration Function
         //
         int NL=100, I, IM, IP;
-        static double EI[101], AI[101], BI[101], FI[101], FIN;
-        static double result,ERR;
+        static Real EI[101], AI[101], BI[101], FI[101], FIN;
+        static Real result,ERR;
 
 
         AI[1] = A;
@@ -989,14 +992,14 @@ namespace {
     }
     //
 
-    double KRNRDT(double A, double B,double(*TVTMFN)(double X, double H1, double H2, double H3, double R23, double RUA, double RUB, double AR, double RUC, int NUC),double& ERR ){
+    Real KRNRDT(Real A, Real B,Real(*TVTMFN)(Real X, Real H1, Real H2, Real H3, Real R23, Real RUA, Real RUB, Real AR, Real RUC, int NUC),Real& ERR ){
 
         //
         //     Kronrod Rule
         //
-        static double  T, CEN, FC, WID, RESG, RESK;
+        static Real  T, CEN, FC, WID, RESG, RESK;
 
-        static double result;
+        static Real result;
         //
         //        The abscissae and weights are given for the interval (-1,1);
         //        only positive abscissae and corresponding weights are given.
@@ -1009,7 +1012,7 @@ namespace {
         //
         int J, N=11;
 
-        static double  WG[7], WGK[13], XGK[13];
+        static Real  WG[7], WGK[13], XGK[13];
 
         WG[1]= 0.2729250867779007;
         WG[2]=0.05566856711617449;
@@ -1074,15 +1077,15 @@ namespace {
     }
 
     //
-    double  STUDNT(int NU, double T )
+    Real  STUDNT(int NU, Real T )
     {
         /*
           Student t Distribution Function
         */
         static int J;
-        static double  ZRO=0.0, ONE=1.0;
-        static double  CSSTHE, SNTHE, POLYN, TT, TS, RN;
-        static double result;
+        static Real  ZRO=0.0, ONE=1.0;
+        static Real  CSSTHE, SNTHE, POLYN, TT, TS, RN;
+        static Real result;
 
 
         if ( NU < 1 ) result= PHID( T );
@@ -1114,7 +1117,7 @@ namespace {
     }
 
     //
-    double BVTL(int NU, double DH, double DK, double R )
+    Real BVTL(int NU, Real DH, Real DK, Real R )
     {
         /*
           A function for computing bivariate t probabilities.
@@ -1144,10 +1147,10 @@ namespace {
           R   correlation coefficient
         */
         static int  J, HS, KS;
-        static double  TPI, ORS, HRK, KRH, BVT, SNU;
-        static double  GMPH, GMPK, XNKH, XNHK, QHRK, HKN, HPK, HKRN;
-        static double  BTNCKH, BTNCHK, BTPDKH, BTPDHK, ONE, EPS;
-        static double result;
+        static Real  TPI, ORS, HRK, KRH, BVT, SNU;
+        static Real  GMPH, GMPK, XNKH, XNHK, QHRK, HKN, HPK, HKRN;
+        static Real  BTNCKH, BTNCHK, BTPDKH, BTPDHK, ONE, EPS;
+        static Real result;
         ONE = 1;
         EPS = 1e-15;
         if ( NU <1 ) result = ND2( -DH, -DK, R );
@@ -1238,11 +1241,11 @@ namespace {
 
 
 
-      double PNTGND(int NUC, double BA, double BB, double BC, double RA, double RB, double R, double RR) {
+      Real PNTGND(int NUC, Real BA, Real BB, Real BC, Real RA, Real RB, Real R, Real RR) {
           /*
             Computes Plackett formula integrand
           */
-          static double DT, FT, BT,result;
+          static Real DT, FT, BT,result;
 
           result = 0.0;
           DT = RR*( RR - POW(( RA - RB ),2) - 2*RA*RB*( 1 - R ) );
@@ -1265,7 +1268,7 @@ namespace {
 
 
     //***********************************************************
-    double ND2(double a, double b, double rho ){
+    Real ND2(Real a, Real b, Real rho ){
         /*
          *     A function for computing bivariate normal probabilities.
          *     This function is based on the method described by
@@ -1294,11 +1297,11 @@ namespace {
          *   R   DOUBLE PRECISION, correlation coefficient
          */
         static double TWOPI = 6.283185307179586;
-        static double result, DK, DH, R;
+        static Real result, DK, DH, R;
         static int I, IS, LG, NG;
 
-        static double XL[11][4], WL[11][4], AS, AA, BB, C, D, RS, XS, BVN;
-        static double SN, ASR, H, K, BS, HS, HK;
+        static Real XL[11][4], WL[11][4], AS, AA, BB, C, D, RS, XS, BVN;
+        static Real SN, ASR, H, K, BS, HS, HK;
         //  Gauss Legendre Points and Weights, N =  6
         //  DATA ( W(I,1), X(I,1), I = 1,3) /
         WL[1][1]=0.1713244923791705;
@@ -1438,19 +1441,12 @@ namespace {
 
     }
 
-}
-
-
-namespace QuantLib {
-
-    namespace {
-
         struct integr_adapter {
             boost::shared_ptr<YieldTermStructure> r;
             integr_adapter(
                     boost::shared_ptr<GeneralizedBlackScholesProcess> process)
             : r(*(process->riskFreeRate())) {}
-            double operator()(double t1,double t2) const {
+            Real operator()(Real t1,Real t2) const {
                 return r->forwardRate(t1,t2,Continuous) * (t2-t1);
             }
         };
@@ -1462,7 +1458,7 @@ namespace QuantLib {
                     boost::shared_ptr<GeneralizedBlackScholesProcess> process)
             : r(*(process->riskFreeRate())),
               q(*(process->dividendYield())) {}
-            double operator()(double t1,double t2) const {
+            Real operator()(Real t1,Real t2) const {
                 Real alpha = r->forwardRate(t1,t2,Continuous)
                            - q->forwardRate(t1,t2,Continuous);
                 return alpha * (t2-t1);
@@ -1476,7 +1472,7 @@ namespace QuantLib {
                     boost::shared_ptr<GeneralizedBlackScholesProcess> process)
             : r(*(process->riskFreeRate())),
               q(*(process->dividendYield())) {}
-            double operator()(double t) const {
+            Real operator()(Real t) const {
                 return r->forwardRate(t,t,Continuous)
                      - q->forwardRate(t,t,Continuous);
             }
@@ -1489,8 +1485,8 @@ namespace QuantLib {
                     boost::shared_ptr<GeneralizedBlackScholesProcess> process)
             : v(*(process->blackVolatility())),
               s(process->x0()) {}
-            double operator()(double t) const {
-                double sigma = v->blackForwardVol(t,t,s,true);
+            Real operator()(Real t) const {
+                Real sigma = v->blackForwardVol(t,t,s,true);
                 return sigma*sigma;
             }
         };
@@ -1502,7 +1498,7 @@ namespace QuantLib {
                     boost::shared_ptr<GeneralizedBlackScholesProcess> process)
             : v(*(process->blackVolatility())),
               s(process->x0()) {}
-            double operator()(double t1,double t2) const {
+            Real operator()(Real t1,Real t2) const {
                 return v->blackForwardVariance(t1,t2,s,true);
             }
         };

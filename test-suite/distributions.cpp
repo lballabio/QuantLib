@@ -182,7 +182,7 @@ namespace {
         for (int i = 0; i<10;i++) {
             Real cdf0 = bvn(x,y);
             y = y + tolerance;
-            double cdf1 = bvn(x,y);
+            Real cdf1 = bvn(x,y);
             if (cdf0 > cdf1) {
                 BOOST_ERROR(tag << " cdf must be decreasing in the tails\n"
                             << QL_SCIENTIFIC

@@ -490,7 +490,7 @@ namespace QuantLib {
                 losses.end())) / static_cast<Real>(nSims_);
 
         return ( perctlInf * (1.-percent-probOverQ) +//<-correction term
-            std::accumulate(losses.begin() + position, losses.end(), 0.)/nSims_
+            std::accumulate(losses.begin() + position, losses.end(), Real(0.))/nSims_
                 )/(1.-percent);
 
         /* Alternative ESF definition; find the first loss larger than the

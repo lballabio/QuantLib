@@ -43,8 +43,8 @@ namespace QuantLib {
             for (Size j = 0; j < P.currentValue().size(); ++j)
                 diffGradientWithHessianApplied[i] += inverseHessian_[i][j] * diffGradient[j];
 
-        double fac, fae, fad;
-        double sumdg, sumxi;
+        Real fac, fae, fad;
+        Real sumdg, sumxi;
 
         fac = fae = sumdg = sumxi = 0.;
         for (Size i = 0; i < P.currentValue().size(); ++i)

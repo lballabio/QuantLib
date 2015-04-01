@@ -32,6 +32,8 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+using std::sqrt;
+
 namespace {
 
     Integer timeToDays(Time t) {

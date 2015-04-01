@@ -268,7 +268,7 @@ namespace QuantLib {
 
     Real NumericHaganPricer::integrate(Real a,
         Real b, const ConundrumIntegrand& integrand) const {
-            double result =.0;
+            Real result =.0;
             //double abserr =.0;
             //double alpha = 1.0;
 

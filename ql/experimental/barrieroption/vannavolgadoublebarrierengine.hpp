@@ -86,6 +86,8 @@ namespace QuantLib {
 
            virtual void calculate() const {
 
+               using std::sqrt;
+
                const Real sigmaShift_vega = 0.001;
                const Real sigmaShift_volga = 0.0001;
                const Real spotShift_delta = 0.0001 * spotFX_->value();

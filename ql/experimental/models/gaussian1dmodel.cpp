@@ -20,6 +20,8 @@
 
 #include <ql/experimental/models/gaussian1dmodel.hpp>
 
+using std::exp;
+
 namespace QuantLib {
 
     const Real

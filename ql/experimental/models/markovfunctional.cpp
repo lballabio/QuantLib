@@ -144,7 +144,7 @@ namespace QuantLib {
         normalIntegralW_ = gaussHermite.weights();
         for (Size i = 0; i < normalIntegralX_.size(); i++) {
             normalIntegralW_[i] *=
-                exp(-normalIntegralX_[i] * normalIntegralX_[i]) * M_1_SQRTPI;
+                std::exp(-normalIntegralX_[i] * normalIntegralX_[i]) * M_1_SQRTPI;
             normalIntegralX_[i] *= M_SQRT2;
         }
 

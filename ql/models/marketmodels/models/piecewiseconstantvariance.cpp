@@ -41,7 +41,7 @@ namespace QuantLib {
         QL_REQUIRE(i<variances().size(),
                    "invalid step index");
         return std::accumulate(variances().begin(),
-                               variances().begin()+i+1, 0.0);
+                               variances().begin()+i+1, Real(0.0));
     }
 
     Volatility PiecewiseConstantVariance::totalVolatility(Size i) const {
