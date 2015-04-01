@@ -1,9 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Cristina Duminuco
- Copyright (C) 2007 Giorgio Facchinetti
- Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,26 +17,26 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file digitaliborcoupon.hpp
-    \brief Ibor-rate coupon with digital call/put option
+/*! \file digitalcmsspreadcoupon.hpp
+    \brief Cms-spread-rate coupon with digital call/put option
 */
 
-#ifndef quantlib_digital_ibor_coupon_hpp
-#define quantlib_digital_ibor_coupon_hpp
+#ifndef quantlib_digital_cmsspread_coupon_hpp
+#define quantlib_digital_cmsspread_coupon_hpp
 
 #include <ql/cashflows/digitalcoupon.hpp>
-#include <ql/cashflows/iborcoupon.hpp>
+#include <ql/experimental/coupons/cmsspreadcoupon.hpp>
 #include <ql/time/schedule.hpp>
 
 #include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
-    //! Ibor rate coupon with digital digital call/put option
-    class DigitalIborCoupon : public DigitalCoupon {
+    //! Cms-spread-rate coupon with digital digital call/put option
+    class DigitalCmsSpreadCoupon : public DigitalCoupon {
       public:
-        DigitalIborCoupon(
-            const boost::shared_ptr<IborCoupon> &underlying,
+        DigitalCmsSpreadCoupon(
+            const boost::shared_ptr<CmsSpreadCoupon> &underlying,
             Rate callStrike = Null<Rate>(),
             Position::Type callPosition = Position::Long,
             bool isCallATMIncluded = false,
@@ -58,41 +56,42 @@ namespace QuantLib {
 
 
     //! helper class building a sequence of digital ibor-rate coupons
-    class DigitalIborLeg {
+    class DigitalCmsSpreadLeg {
       public:
-        DigitalIborLeg(const Schedule& schedule,
-                       const boost::shared_ptr<IborIndex>& index);
-        DigitalIborLeg& withNotionals(Real notional);
-        DigitalIborLeg& withNotionals(const std::vector<Real>& notionals);
-        DigitalIborLeg& withPaymentDayCounter(const DayCounter&);
-        DigitalIborLeg& withPaymentAdjustment(BusinessDayConvention);
-        DigitalIborLeg& withFixingDays(Natural fixingDays);
-        DigitalIborLeg& withFixingDays(const std::vector<Natural>& fixingDays);
-        DigitalIborLeg& withGearings(Real gearing);
-        DigitalIborLeg& withGearings(const std::vector<Real>& gearings);
-        DigitalIborLeg& withSpreads(Spread spread);
-        DigitalIborLeg& withSpreads(const std::vector<Spread>& spreads);
-        DigitalIborLeg& inArrears(bool flag = true);
-        DigitalIborLeg& withCallStrikes(Rate strike);
-        DigitalIborLeg& withCallStrikes(const std::vector<Rate>& strikes);
-        DigitalIborLeg& withLongCallOption(Position::Type);
-        DigitalIborLeg& withCallATM(bool flag = true);
-        DigitalIborLeg& withCallPayoffs(Rate payoff);
-        DigitalIborLeg& withCallPayoffs(const std::vector<Rate>& payoffs);
-        DigitalIborLeg& withPutStrikes(Rate strike);
-        DigitalIborLeg& withPutStrikes(const std::vector<Rate>& strikes);
-        DigitalIborLeg& withLongPutOption(Position::Type);
-        DigitalIborLeg& withPutATM(bool flag = true);
-        DigitalIborLeg& withPutPayoffs(Rate payoff);
-        DigitalIborLeg& withPutPayoffs(const std::vector<Rate>& payoffs);
-        DigitalIborLeg &withReplication(
+        DigitalCmsSpreadLeg(const Schedule& schedule,
+                      const boost::shared_ptr<SwapSpreadIndex>& index);
+        DigitalCmsSpreadLeg& withNotionals(Real notional);
+        DigitalCmsSpreadLeg& withNotionals(const std::vector<Real>& notionals);
+        DigitalCmsSpreadLeg& withPaymentDayCounter(const DayCounter&);
+        DigitalCmsSpreadLeg& withPaymentAdjustment(BusinessDayConvention);
+        DigitalCmsSpreadLeg& withFixingDays(Natural fixingDays);
+        DigitalCmsSpreadLeg& withFixingDays(const std::vector<Natural>& fixingDays);
+        DigitalCmsSpreadLeg& withGearings(Real gearing);
+        DigitalCmsSpreadLeg& withGearings(const std::vector<Real>& gearings);
+        DigitalCmsSpreadLeg& withSpreads(Spread spread);
+        DigitalCmsSpreadLeg& withSpreads(const std::vector<Spread>& spreads);
+        DigitalCmsSpreadLeg& inArrears(bool flag = true);
+        DigitalCmsSpreadLeg& withCallStrikes(Rate strike);
+        DigitalCmsSpreadLeg& withCallStrikes(const std::vector<Rate>& strikes);
+        DigitalCmsSpreadLeg& withLongCallOption(Position::Type);
+        DigitalCmsSpreadLeg& withCallATM(bool flag = true);
+        DigitalCmsSpreadLeg& withCallPayoffs(Rate payoff);
+        DigitalCmsSpreadLeg& withCallPayoffs(const std::vector<Rate>& payoffs);
+        DigitalCmsSpreadLeg& withPutStrikes(Rate strike);
+        DigitalCmsSpreadLeg& withPutStrikes(const std::vector<Rate>& strikes);
+        DigitalCmsSpreadLeg& withLongPutOption(Position::Type);
+        DigitalCmsSpreadLeg& withPutATM(bool flag = true);
+        DigitalCmsSpreadLeg& withPutPayoffs(Rate payoff);
+        DigitalCmsSpreadLeg& withPutPayoffs(const std::vector<Rate>& payoffs);
+        DigitalCmsSpreadLeg& withReplication(
             const boost::shared_ptr<DigitalReplication> &replication =
                 boost::shared_ptr<DigitalReplication>(
                     new DigitalReplication()));
+
         operator Leg() const;
       private:
         Schedule schedule_;
-        boost::shared_ptr<IborIndex> index_;
+        boost::shared_ptr<SwapSpreadIndex> index_;
         std::vector<Real> notionals_;
         DayCounter paymentDayCounter_;
         BusinessDayConvention paymentAdjustment_;

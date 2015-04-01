@@ -38,17 +38,17 @@ namespace QuantLib {
     class DigitalCmsCoupon : public DigitalCoupon {
       public:
         DigitalCmsCoupon(
-                      const boost::shared_ptr<CmsCoupon>& underlying,
-                      Rate callStrike = Null<Rate>(),
-                      Position::Type callPosition = Position::Long,
-                      bool isCallATMIncluded = false,
-                      Rate callDigitalPayoff = Null<Rate>(),
-                      Rate putStrike = Null<Rate>(),
-                      Position::Type putPosition = Position::Long,
-                      bool isPutATMIncluded = false,
-                      Rate putDigitalPayoff = Null<Rate>(),
-                      const boost::shared_ptr<DigitalReplication>& replication =
-                                     boost::make_shared<DigitalReplication>());
+            const boost::shared_ptr<CmsCoupon> &underlying,
+            Rate callStrike = Null<Rate>(),
+            Position::Type callPosition = Position::Long,
+            bool isCallATMIncluded = false,
+            Rate callDigitalPayoff = Null<Rate>(),
+            Rate putStrike = Null<Rate>(),
+            Position::Type putPosition = Position::Long,
+            bool isPutATMIncluded = false, Rate putDigitalPayoff = Null<Rate>(),
+            const boost::shared_ptr<DigitalReplication> &replication =
+                boost::shared_ptr<DigitalReplication>(
+                    new DigitalReplication()));
 
         //! \name Visitability
         //@{
@@ -86,8 +86,9 @@ namespace QuantLib {
         DigitalCmsLeg& withPutPayoffs(Rate payoff);
         DigitalCmsLeg& withPutPayoffs(const std::vector<Rate>& payoffs);
         DigitalCmsLeg& withReplication(
-                    const boost::shared_ptr<DigitalReplication>& replication =
-                                     boost::make_shared<DigitalReplication>());
+            const boost::shared_ptr<DigitalReplication> &replication =
+                boost::shared_ptr<DigitalReplication>(
+                    new DigitalReplication()));
         operator Leg() const;
       private:
         Schedule schedule_;
