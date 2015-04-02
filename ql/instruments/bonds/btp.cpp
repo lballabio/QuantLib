@@ -69,7 +69,7 @@ namespace QuantLib {
              Real redemption,
              const Date& startDate,
              const Date& issueDate)
-    : FixedRateBond(2, 100.0,
+    : FixedRateBond(3, 100.0,
                     Schedule(startDate,
                              maturityDate, 6*Months,
                              NullCalendar(), Unadjusted, Unadjusted,
