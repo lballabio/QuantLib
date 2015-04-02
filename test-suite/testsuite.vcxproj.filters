@@ -125,6 +125,12 @@
     <ClCompile Include="dividendoption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="doublebarrieroption.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="doublebinaryoption.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="europeanoption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -399,6 +405,12 @@
     <ClCompile Include="binaryoption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="businessdayconventions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zabr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="americanoption.hpp">
@@ -513,6 +525,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="dividendoption.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="doublebarrieroption.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="doublebinaryoption.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="europeanoption.hpp">
@@ -789,6 +807,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="binaryoption.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="businessdayconventions.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zabr.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

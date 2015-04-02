@@ -23,6 +23,8 @@
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/quotes/simplequote.hpp>
 
+using std::exp;
+
 namespace QuantLib {
 
     const Real

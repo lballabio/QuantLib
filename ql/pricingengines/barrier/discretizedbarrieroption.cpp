@@ -177,9 +177,9 @@ namespace QuantLib {
                   if (grid[j]<=barrier && grid[j+1] > barrier) {
                       // grid[j+1] above barrier, grid[j] under (out),
                       // interpolate optvalues[j+1]
-                      double a = (barrier-grid[j])*rebate;
-                      double b = (grid[j+1]-barrier)*unenhanced_.values()[j+1];
-                      double c = (grid[j+1]-grid[j]);
+                      Real a = (barrier-grid[j])*rebate;
+                      Real b = (grid[j+1]-barrier)*unenhanced_.values()[j+1];
+                      Real c = (grid[j+1]-grid[j]);
                       optvalues[j+1] = std::max(0.0, (a+b)/c);
                   }
               }
@@ -203,9 +203,9 @@ namespace QuantLib {
                   if (grid[j] < barrier && grid[j+1] >= barrier) {
                       // grid[j+1] above barrier (out), grid[j] under, 
                       // interpolate optvalues[j]
-                      double a = (barrier-grid[j])*unenhanced_.values()[j];
-                      double b = (grid[j+1]-barrier)*rebate;
-                      double c = (grid[j+1]-grid[j]);
+                      Real a = (barrier-grid[j])*unenhanced_.values()[j];
+                      Real b = (grid[j+1]-barrier)*rebate;
+                      Real c = (grid[j+1]-grid[j]);
                       optvalues[j] = std::max(0.0, (a+b)/c);
                   }
               }

@@ -27,6 +27,9 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+using std::exp;
+using std::sin;
+
 namespace {
 
     struct ode1 {

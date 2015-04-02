@@ -27,6 +27,8 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+using std::exp;
+
 void FunctionsTest::testFactorial() {
 
     BOOST_TEST_MESSAGE("Testing factorial numbers...");
@@ -226,7 +228,7 @@ void FunctionsTest::testModifiedBesselFunctions() {
 }
 
 void FunctionsTest::testWeightedModifiedBesselFunctions() {
-    BOOST_TEST_MESSAGE("Testing weighted modified Bessel functions ...");
+    BOOST_TEST_MESSAGE("Testing weighted modified Bessel functions...");
     Real nu = -5.0;
     while (nu <= 5.0) {
         Real x = 0.1;

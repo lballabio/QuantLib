@@ -312,7 +312,7 @@ int main(int, char* []) {
 
         std::cout << dblrule << std::endl;
 
-        Real seconds = timer.elapsed();
+        double seconds = timer.elapsed();
         Integer hours = int(seconds/3600);
         seconds -= hours * 3600;
         Integer minutes = int(seconds/60);

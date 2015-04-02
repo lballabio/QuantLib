@@ -26,6 +26,9 @@
 #include <ql/quotes/simplequote.hpp>
 #include <boost/make_shared.hpp>
 
+using std::exp;
+using std::fabs;
+
 namespace QuantLib {
 
     Disposable<std::vector<boost::shared_ptr<CalibrationHelper> > >
@@ -45,10 +48,10 @@ namespace QuantLib {
 
         std::vector<boost::shared_ptr<CalibrationHelper> > result;
 
-        Size minIdxAlive =
+        Size minIdxAlive = static_cast<Size>(
             std::upper_bound(exercise->dates().begin(), exercise->dates().end(),
                              Settings::instance().evaluationDate()) -
-            exercise->dates().begin();
+            exercise->dates().begin());
 
         boost::shared_ptr<RebatedExercise> rebEx =
             boost::dynamic_pointer_cast<RebatedExercise>(exercise);

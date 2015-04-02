@@ -33,8 +33,10 @@ namespace QuantLib {
 
     FdmHestonFwdOp::FdmHestonFwdOp(
             const boost::shared_ptr<FdmMesher>& mesher,
-            const boost::shared_ptr<HestonProcess>& process)
-    : kappa_(process->kappa()),
+            const boost::shared_ptr<HestonProcess>& process,
+            FdmSquareRootFwdOp::TransformationType type)
+    : type_ (type),
+      kappa_(process->kappa()),
       theta_(process->theta()),
       sigma_(process->sigma()),
       rho_  (process->rho()),
@@ -46,35 +48,37 @@ namespace QuantLib {
       dxxMap_(new ModTripleBandLinearOp(TripleBandLinearOp(
           SecondDerivativeOp(0, mesher).mult(0.5*mesher->locations(1))))),
       mapX_  (new TripleBandLinearOp(0, mesher)),
-      mapY_  (new FdmSquareRootFwdOp(mesher,kappa_,theta_,sigma_, 1)),
+      mapY_  (new FdmSquareRootFwdOp(mesher,kappa_,theta_,sigma_, 1, type)),
       correlation_(new NinePointLinearOp(
           SecondOrderMixedDerivativeOp(0, 1, mesher)
               .mult(rho_*sigma_*mesher->locations(1))))
     {
         const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
 
-        // zero flux boundary condition
-        const Size n = layout->dim()[1];
-        const Real alpha = 2*rho_*mapY_->v(0)/sigma_*mapY_->f0();
-        const Real beta  = 2*rho_*mapY_->v(n)/sigma_*mapY_->f1();
-        ModTripleBandLinearOp fDx(FirstDerivativeOp(0, mesher));
+        if (type_ == FdmSquareRootFwdOp::Plain) {
+            // zero flux boundary condition
+            const Size n = layout->dim()[1];
+            const Real alpha = 2*rho_*mapY_->v(0)/sigma_*mapY_->f0();
+            const Real beta  = 2*rho_*mapY_->v(n)/sigma_*mapY_->f1();
+            ModTripleBandLinearOp fDx(FirstDerivativeOp(0, mesher));
 
-        const FdmLinearOpIterator endIter = layout->end();
-        for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
-                ++iter) {
-            if (iter.coordinates()[1] == 0) {
-                const Size idx = iter.index();
+            const FdmLinearOpIterator endIter = layout->end();
+            for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
+                    ++iter) {
+                if (iter.coordinates()[1] == 0) {
+                    const Size idx = iter.index();
 
-                dxxMap_->upper()[idx]+= alpha*fDx.upper()[idx];
-                dxxMap_->diag()[idx] += alpha*fDx.diag()[idx];
-                dxxMap_->lower()[idx] += alpha*fDx.lower()[idx];
-            }
-            else if (iter.coordinates()[1] == n-1) {
-                const Size idx = iter.index();
+                    dxxMap_->upper()[idx] += alpha*fDx.upper()[idx];
+                    dxxMap_->diag()[idx]  += alpha*fDx.diag()[idx];
+                    dxxMap_->lower()[idx] += alpha*fDx.lower()[idx];
+                }
+                else if (iter.coordinates()[1] == n-1) {
+                    const Size idx = iter.index();
 
-                dxxMap_->upper()[idx]+= beta*fDx.upper()[idx];
-                dxxMap_->diag()[idx] += beta*fDx.diag()[idx];
-                dxxMap_->lower()[idx] += beta*fDx.lower()[idx];
+                    dxxMap_->upper()[idx] += beta*fDx.upper()[idx];
+                    dxxMap_->diag()[idx]  += beta*fDx.diag()[idx];
+                    dxxMap_->lower()[idx] += beta*fDx.lower()[idx];
+                }
             }
         }
     }

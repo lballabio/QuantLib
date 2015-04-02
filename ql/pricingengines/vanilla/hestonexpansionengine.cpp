@@ -44,6 +44,11 @@
 
 using namespace boost::lambda;
 
+using std::exp;
+using std::pow;
+using std::log;
+using std::sqrt;
+
 namespace QuantLib {
 
     HestonExpansionEngine::HestonExpansionEngine(

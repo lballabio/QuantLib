@@ -44,6 +44,8 @@
 using namespace QuantLib;
 using boost::unit_test_framework::test_suite;
 
+using std::fabs;
+
 void GsrTest::testGsrProcess() {
 
     BOOST_MESSAGE("Testing GSR process...");

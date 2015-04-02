@@ -49,7 +49,7 @@ namespace QuantLib {
     }
 
     Real CalibrationHelper::calibrationError() {
-        double error;
+        Real error;
         
         switch (calibrationErrorType_) {
           case RelativePriceError:

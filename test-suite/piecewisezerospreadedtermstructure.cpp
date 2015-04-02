@@ -404,7 +404,7 @@ void PiecewiseZeroSpreadedTermStructureTest::testSetInterpolationFactory() {
 
     Real tolerance = 1e-9;
     Real expectedRate = vars.termStructure->zeroRate(t,vars.compounding) +
-                        0.026065770863;
+                        Real(0.026065770863);
 
     if (std::fabs(interpolatedZeroRate - expectedRate) > tolerance)
         BOOST_ERROR(
@@ -476,7 +476,7 @@ void PiecewiseZeroSpreadedTermStructureTest::testQuoteChanging() {
     Rate interpolatedZeroRate = spreadedTermStructure->zeroRate(t,vars.compounding);
     Real tolerance = 1e-9;
     Real expectedRate = vars.termStructure->zeroRate(t,vars.compounding) +
-                        0.03;
+                        Real(0.03);
 
     if (std::fabs(interpolatedZeroRate - expectedRate) > tolerance)
         BOOST_ERROR(
@@ -489,7 +489,7 @@ void PiecewiseZeroSpreadedTermStructureTest::testQuoteChanging() {
 
     interpolatedZeroRate = spreadedTermStructure->zeroRate(t,vars.compounding);
     expectedRate = vars.termStructure->zeroRate(t,vars.compounding) +
-                   0.025;
+                   Real(0.025);
 
     if (std::fabs(interpolatedZeroRate - expectedRate) > tolerance)
         BOOST_ERROR(

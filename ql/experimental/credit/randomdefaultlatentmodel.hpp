@@ -268,18 +268,18 @@ namespace QuantLib {
         // casted to natural to avoid warning, we have just checked the sign
         Natural val = d.serialNumber() - today.serialNumber();
 
-		std::vector<Probability> hitsByDate(basketSize, 0.);
+        std::vector<Probability> hitsByDate(basketSize, 0.);
         for(Size iSim=0; iSim < nSims_; iSim++) {
             const std::vector<simEvent<D<C, URNG> > >& events = getSim(iSim);
             std::map<unsigned short, unsigned short> namesDefaulting;
             for(Size iEvt=0; iEvt < events.size(); iEvt++) {
                 // if event is within time horizon...
                 if(val > events[iEvt].dayFromRef)
-					//...count it. notice insertion sorts by date.
-					namesDefaulting.insert(std::make_pair<unsigned short,
+                    //...count it. notice insertion sorts by date.
+                    namesDefaulting.insert(std::make_pair<unsigned short,
                       unsigned short>(events[iEvt].dayFromRef,
                         events[iEvt].nameIdx));
-			}
+            }
             if(namesDefaulting.size() >= n) {
                 std::map<unsigned short, unsigned short>::const_iterator
                     itdefs = namesDefaulting.begin();
@@ -490,7 +490,7 @@ namespace QuantLib {
                 losses.end())) / static_cast<Real>(nSims_);
 
         return ( perctlInf * (1.-percent-probOverQ) +//<-correction term
-            std::accumulate(losses.begin() + position, losses.end(), 0.)/nSims_
+            std::accumulate(losses.begin() + position, losses.end(), Real(0.))/nSims_
                 )/(1.-percent);
 
         /* Alternative ESF definition; find the first loss larger than the
@@ -585,17 +585,17 @@ namespace QuantLib {
         for(Size delta=1; delta < quantilePosition; delta++) {
             Real cached =
                 incompleteBetaFunction(Real(s), Real(nSims_+1-s),
-				                       percentile, 1.e-8, 500);
+                                       percentile, 1.e-8, 500);
             Real pMinus =
             /* There was a fix in the repository on the gammadistribution. It
             might impact these, it might be neccesary to multiply these values
             by '-1'*/
                 incompleteBetaFunction(Real(r+1), Real(nSims_-r),
-				                       percentile, 1.e-8, 500)
+                                       percentile, 1.e-8, 500)
                 - cached;
             Real pPlus  =
                 incompleteBetaFunction(Real(r), Real(nSims_-r+1),
-				                       percentile, 1.e-8, 500)
+                                       percentile, 1.e-8, 500)
                 - cached;
             if((pMinus > confInterval) && !rLocked ) {
                 // rfinal = r + 1;

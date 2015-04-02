@@ -32,47 +32,7 @@
 namespace QuantLib {
 
     namespace detail {
-
-        template <class I1, class I2, class Interpolator>
-        class LogInterpolationImpl
-            : public Interpolation::templateImpl<I1,I2> {
-          public:
-            LogInterpolationImpl(const I1& xBegin, const I1& xEnd,
-                                 const I2& yBegin,
-                                 const Interpolator& factory = Interpolator())
-            : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
-              logY_(xEnd-xBegin) {
-                interpolation_ = factory.interpolate(this->xBegin_,
-                                                     this->xEnd_,
-                                                     logY_.begin());
-            }
-            void update() {
-                for (Size i=0; i<logY_.size(); ++i) {
-                    QL_REQUIRE(this->yBegin_[i]>0.0,
-                               "invalid value (" << this->yBegin_[i]
-                               << ") at index " << i);
-                    logY_[i] = std::log(this->yBegin_[i]);
-                }
-                interpolation_.update();
-            }
-            Real value(Real x) const {
-                return std::exp(interpolation_(x, true));
-            }
-            Real primitive(Real) const {
-                QL_FAIL("LogInterpolation primitive not implemented");
-            }
-            Real derivative(Real x) const {
-                return value(x)*interpolation_.derivative(x, true);
-            }
-            Real secondDerivative(Real x) const {
-                return derivative(x)*interpolation_.derivative(x, true) +
-                            value(x)*interpolation_.secondDerivative(x, true);
-            }
-          private:
-            std::vector<Real> logY_;
-            Interpolation interpolation_;
-        };
-
+        template<class I1, class I2, class I> class LogInterpolationImpl;
     }
 
     //! %log-linear interpolation between discrete points
@@ -234,6 +194,51 @@ namespace QuantLib {
                                 CubicInterpolation::SecondDerivative, 0.0,
                                 CubicInterpolation::SecondDerivative, 0.0) {}
     };
+
+    namespace detail {
+
+        template <class I1, class I2, class Interpolator>
+        class LogInterpolationImpl
+            : public Interpolation::templateImpl<I1,I2> {
+          public:
+            LogInterpolationImpl(const I1& xBegin, const I1& xEnd,
+                                 const I2& yBegin,
+                                 const Interpolator& factory = Interpolator())
+            : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin,
+                                                 Interpolator::requiredPoints),
+              logY_(xEnd-xBegin) {
+                interpolation_ = factory.interpolate(this->xBegin_,
+                                                     this->xEnd_,
+                                                     logY_.begin());
+            }
+            void update() {
+                for (Size i=0; i<logY_.size(); ++i) {
+                    QL_REQUIRE(this->yBegin_[i]>0.0,
+                               "invalid value (" << this->yBegin_[i]
+                               << ") at index " << i);
+                    logY_[i] = std::log(this->yBegin_[i]);
+                }
+                interpolation_.update();
+            }
+            Real value(Real x) const {
+                return std::exp(interpolation_(x, true));
+            }
+            Real primitive(Real) const {
+                QL_FAIL("LogInterpolation primitive not implemented");
+            }
+            Real derivative(Real x) const {
+                return value(x)*interpolation_.derivative(x, true);
+            }
+            Real secondDerivative(Real x) const {
+                return derivative(x)*interpolation_.derivative(x, true) +
+                            value(x)*interpolation_.secondDerivative(x, true);
+            }
+          private:
+            std::vector<Real> logY_;
+            Interpolation interpolation_;
+        };
+
+    }
 
 }
 

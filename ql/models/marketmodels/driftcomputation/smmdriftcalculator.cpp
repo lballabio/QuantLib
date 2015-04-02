@@ -102,7 +102,7 @@ namespace QuantLib {
           }
 
 
-        double numeraireRatio = cs.discountRatio(numberOfRates_,numeraire_);
+        Real numeraireRatio = cs.discountRatio(numberOfRates_, numeraire_);
 
 // change to work for general numeraire
         for (Size k=0; k<numberOfFactors_; ++k) {

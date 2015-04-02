@@ -20,14 +20,12 @@
 #ifndef quantlib_gaussian_copula_policy_hpp
 #define quantlib_gaussian_copula_policy_hpp
 
+#include <ql/utilities/disposable.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
+#include <boost/bind.hpp>
 #include <vector>
 #include <numeric>
 #include <algorithm>
-
-#include <boost/bind.hpp>
-
-#include <ql/utilities/disposable.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
 
 namespace QuantLib {
 
@@ -89,7 +87,7 @@ namespace QuantLib {
           depending on those values.
         */
         Probability density(const std::vector<Real>& m) const {
-            return std::accumulate(m.begin(), m.end(), 1., 
+            return std::accumulate(m.begin(), m.end(), Real(1.), 
                 boost::bind(std::multiplies<Real>(), _1, 
                     boost::bind(density_, _2)));
         }

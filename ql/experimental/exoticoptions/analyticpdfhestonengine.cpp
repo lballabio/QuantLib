@@ -22,7 +22,6 @@
 */
 
 #include <ql/math/functional.hpp>
-#include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
 
@@ -38,54 +37,94 @@
 #endif
 
 #include <cmath>
+#include <complex>
 
 namespace QuantLib {
 
     namespace {
-        struct Hestonp {
+        struct HestonParams {
             Real v0, kappa, theta, sigma, rho;
         };
 
-        std::complex<Real> gamma(const Hestonp& p, Real p_x) {
+        HestonParams getHestonParams(
+            const boost::shared_ptr<HestonModel>& model) {
+            const HestonParams p = { model->v0(),    model->kappa(),
+                                     model->theta(), model->sigma(),
+                                     model->rho() };
+            return p;
+        }
+
+        std::complex<Real> gamma(const HestonParams& p, Real p_x) {
             return std::complex<Real>(p.kappa, p.rho*p.sigma*p_x);
         }
 
-        std::complex<Real> omega(const Hestonp& p, Real p_x) {
+        std::complex<Real> omega(const HestonParams& p, Real p_x) {
            const std::complex<Real> g = gamma(p, p_x);
            return std::sqrt(g*g
                   + p.sigma*p.sigma*std::complex<Real>(p_x*p_x, -p_x));
         }
 
-        std::complex<Real> cpx_pv(const Hestonp& p, Real p_x, Real x, Time t){
-            const Real sigma2 = p.sigma*p.sigma;
-            const std::complex<Real> g = gamma(p, p_x);
-            const std::complex<Real> o = omega(p, p_x);
+        class CpxPv_Helper
+            : public std::unary_function<Real, Real > {
+          public:
+            CpxPv_Helper(const HestonParams& p, Real x, Time t)
+              : p_(p), t_(t), x_(x),
+                c_inf_(std::min(10.0, std::max(0.0001,
+                      std::sqrt(1.0-square<Real>()(p_.rho))/p_.sigma))
+                      *(p_.v0 + p_.kappa*p_.theta*t))  {}
 
-            return
-                std::exp(std::complex<Real>(0.0, p_x*x)
-                         - p.v0*std::complex<Real>(p_x*p_x, -p_x)
-                           /(g+o*std::cosh(0.5*o*t)/std::sinh(0.5*o*t))
-                         + p.kappa*g*p.theta*t/sigma2)
-                /std::pow(std::cosh(0.5*o*t)+g/o*std::sinh(0.5*o*t),
-                          2.0*p.kappa*p.theta/sigma2);
-        }
+            Real operator()(Real x) const {
+                return std::real(transformPhi(x));
+            }
 
-        Real zero_pv(const Hestonp& p, Real p_x, Real x, Time t){
-            return std::abs(cpx_pv(p, p_x, x, t))-QL_EPSILON;
-        }
+            Real p0(Real p_x) const {
+                if (p_x < QL_EPSILON) {
+                    return 0.0;
+                }
 
-        Real pv(const Hestonp& p, Real p_x, Real x, Time t){
-            return cpx_pv(p, p_x, x, t).real();
-        }
+                const Real u_x = std::max(QL_EPSILON, -std::log(p_x)/c_inf_);
+                return std::real(phi(u_x)
+                        *std::exp(std::complex<Real>(0.0, -2*u_x*x_))
+                        /((p_x*c_inf_)*std::complex<Real>(0.0, u_x)));
+            }
+
+          private:
+            std::complex<Real> transformPhi(Real x) const {
+                if (x < QL_EPSILON) {
+                    return std::complex<Real>(0.0, 0.0);
+                }
+
+                const Real u_x = -std::log(x)/c_inf_;
+                return phi(u_x)/(x*c_inf_);
+            }
+
+            std::complex<Real> phi(Real p_x) const {
+                const Real sigma2 = p_.sigma*p_.sigma;
+                const std::complex<Real> g = gamma(p_, p_x);
+                const std::complex<Real> o = omega(p_, p_x);
+                const std::complex<Real> gamma = (g-o)/(g+o);
+
+                return 2.0*std::exp(std::complex<Real>(0.0, p_x*x_)
+                        - p_.v0*std::complex<Real>(p_x*p_x, -p_x)
+                          /(g+o*(1.0+std::exp(-o*t_))/(1.0-std::exp(-o*t_)))
+                         +p_.kappa*p_.theta/sigma2*(
+                           (g-o)*t_ - 2.0*std::log((1.0-gamma*std::exp(-o*t_))
+                                                               /(1.0-gamma))));
+            }
+
+            const HestonParams& p_;
+            const Time t_;
+            const Real x_, c_inf_;
+        };
     }
 
     AnalyticPDFHestonEngine::AnalyticPDFHestonEngine(
         const boost::shared_ptr<HestonModel>& model,
-        Real eps, Size nIterations, Real xMax)
-    : eps_(eps), xMax_(xMax),
-      nIterations_(nIterations),
-      model_(model) {
-    }
+        Real gaussLobattoEps,
+        Size gaussLobattoIntegrationOrder)
+    : gaussLobattoIntegrationOrder_(gaussLobattoIntegrationOrder),
+      gaussLobattoEps_(gaussLobattoEps),
+      model_(model) {  }
 
     void AnalyticPDFHestonEngine::calculate() const {
         // this is an European option pricer
@@ -96,36 +135,36 @@ namespace QuantLib {
 
         const Time t = process->time(arguments_.exercise->lastDate());
 
-        const Real xMax = 10 * std::sqrt(process->theta()*t
-        	+ (process->v0() - process->theta())*(1-std::exp(-process->kappa()*t)));
+        const Real xMax = 8.0 * std::sqrt(process->theta()*t
+            + (process->v0() - process->theta())
+                *(1-std::exp(-process->kappa()*t))/process->kappa());
 
-        results_.value = GaussLobattoIntegral(nIterations_, eps_)
-            (boost::bind(&AnalyticPDFHestonEngine::weightedPayoff, this,_1, t),
-             -xMax, xMax);
+        results_.value = GaussLobattoIntegral(
+            gaussLobattoIntegrationOrder_, gaussLobattoEps_)(
+            boost::bind(&AnalyticPDFHestonEngine::weightedPayoff, this,_1, t),
+                         -xMax, xMax);
     }
 
-    Real AnalyticPDFHestonEngine::Pv(Real s_0, Real s_t, Time t) const {
+    Real AnalyticPDFHestonEngine::Pv(Real x_t, Time t) const {
+        return GaussLobattoIntegral(
+            gaussLobattoIntegrationOrder_, 0.1*gaussLobattoEps_)(
+                CpxPv_Helper(getHestonParams(model_), x_t, t),
+                0.0, 1.0)/M_TWOPI;
+    }
+
+    Real AnalyticPDFHestonEngine::cdf(Real s, Time t) const {
         const boost::shared_ptr<HestonProcess>& process = model_->process();
         const DiscountFactor d=  process->riskFreeRate()->discount(t)
                                / process->dividendYield()->discount(t);
-        const Real x_t = std::log(d * s_t/s_0);
 
-        return Pv(x_t, t);
-    }
+        const Real s_t = process->s0()->value()/d;
+        const Real x = std::log(s_t/s);
 
-
-    Real AnalyticPDFHestonEngine::Pv(Real x_t, Time t) const {
-        const Hestonp p = { model_->v0(),
-                            model_->kappa(),
-                            model_->theta(),
-                            model_->sigma(),
-                            model_->rho() };
-        Real xMax = (xMax_ != Null<Real>()) ? xMax_
-            : Brent().solve(boost::bind(&zero_pv, p, _1, x_t, t),
-                            0.01, 1.0, 1.0);
-
-        return GaussLobattoIntegral(nIterations_, 0.1*eps_)
-               (boost::bind(&pv, p, _1, x_t, t), -xMax, xMax)/M_TWOPI;
+        return GaussLobattoIntegral(
+            gaussLobattoIntegrationOrder_, gaussLobattoEps_)(
+                boost::bind(&CpxPv_Helper::p0,
+                    CpxPv_Helper(getHestonParams(model_), x, t), _1),
+                0.0, 1.0)/M_TWOPI + 0.5;
     }
 
     Real AnalyticPDFHestonEngine::weightedPayoff(Real x_t, Time t) const {

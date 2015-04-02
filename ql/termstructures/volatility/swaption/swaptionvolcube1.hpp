@@ -36,7 +36,6 @@
 #include <ql/math/interpolations/flatextrapolation2d.hpp>
 #include <ql/math/interpolations/backwardflatlinearinterpolation.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
-#include <ql/experimental/volatility/noarbsabrinterpolation.hpp>
 #include <ql/quote.hpp>
 
 #include <boost/make_shared.hpp>
@@ -1151,17 +1150,6 @@ namespace QuantLib {
     };
 
     typedef SwaptionVolCube1x<SwaptionVolCubeSabrModel> SwaptionVolCube1;
-
-    //======================================================================//
-    //                      SwaptionVolCube1a (NoArbSabr)                    //
-    //======================================================================//
-
-    struct SwaptionVolCubeNoArbSabrModel {
-        typedef NoArbSabrInterpolation Interpolation;
-        typedef NoArbSabrSmileSection SmileSection;
-    };
-
-    typedef SwaptionVolCube1x<SwaptionVolCubeNoArbSabrModel> SwaptionVolCube1a;
 
 }
 

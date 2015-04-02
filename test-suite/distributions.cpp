@@ -182,7 +182,7 @@ namespace {
         for (int i = 0; i<10;i++) {
             Real cdf0 = bvn(x,y);
             y = y + tolerance;
-            double cdf1 = bvn(x,y);
+            Real cdf1 = bvn(x,y);
             if (cdf0 > cdf1) {
                 BOOST_ERROR(tag << " cdf must be decreasing in the tails\n"
                             << QL_SCIENTIFIC
@@ -431,7 +431,7 @@ void DistributionTest::testBivariateCumulativeStudent() {
         "Testing bivariate cumulative Student t distribution...");
 
     Real xs[14] = { 0.00,  0.50,  1.00,  1.50,  2.00,  2.50, 3.00, 4.00,  5.00,  6.00,  7.00,  8.00, 9.00, 10.00 };
-    Real ns[20] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 60, 90, 120, 150, 300, 600 };
+    Natural ns[20] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 60, 90, 120, 150, 300, 600 };
     // Part of table 1 from the reference paper
     Real expected1[280] = {
         0.33333,  0.50000,  0.63497,  0.72338,  0.78063,  0.81943,  0.84704,  0.88332,  0.90590,  0.92124,  0.93231,  0.94066,  0.94719,  0.95243,

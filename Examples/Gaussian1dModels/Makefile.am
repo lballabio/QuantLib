@@ -22,7 +22,7 @@ EXTRA_DIST = \
 examples: Gaussian1dModels$(EXEEXT)
 
 check-examples: examples
-	./Gaussian1dModels$(EXEEXT) --batch
+	./Gaussian1dModels$(EXEEXT)
 
 dist-hook:
 	mkdir -p $(distdir)/bin

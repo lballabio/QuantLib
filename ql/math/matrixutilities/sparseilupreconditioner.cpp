@@ -171,9 +171,9 @@ namespace QuantLib {
             y[i] = b[i]/L_(i,i);
             for (Integer j=lBands_.size()-1;
                  j>=0 && i-Integer(lBands_[j]) <= i-1; --j) {
-            	const Integer k = i-Integer(lBands_[j]);
-            	if (k >= 0)
-                	y[i]-=L_(i,k)*y[k]/L_(i,i);
+                const Integer k = i-Integer(lBands_[j]);
+                if (k >= 0)
+                    y[i]-=L_(i,k)*y[k]/L_(i,i);
             }
         }
         return y;

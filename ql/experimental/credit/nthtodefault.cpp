@@ -45,8 +45,8 @@ namespace QuantLib {
       upfrontRate_(upfrontRate), 
       dayCounter_(dayCounter), settlePremiumAccrual_(settlePremiumAccrual)
     {
-		QL_REQUIRE(n_ <= basket_->size(), 
-			"NTD order provided is larger than the basket size.");
+        QL_REQUIRE(n_ <= basket_->size(), 
+                   "NTD order provided is larger than the basket size.");
 
         // Basket inception must lie before contract protection start.
         QL_REQUIRE(basket->refDate() <= premiumSchedule.startDate(),

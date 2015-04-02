@@ -489,7 +489,7 @@ namespace QuantLib {
         // factor reduction
         Real enough = componentRetainedPercentage *
                       std::accumulate(eigenValues.begin(),
-                                      eigenValues.end(), 0.0);
+                                      eigenValues.end(), Real(0.0));
         if (componentRetainedPercentage == 1.0) {
             // numerical glitches might cause some factors to be discarded
             enough *= 1.1;

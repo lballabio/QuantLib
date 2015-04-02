@@ -19,6 +19,10 @@
 
 #include <ql/experimental/models/gsrprocess.hpp>
 
+using std::exp;
+using std::pow;
+using std::sqrt;
+
 namespace QuantLib {
 
     GsrProcess::GsrProcess(const Array &times, const Array &vols,
@@ -354,15 +358,15 @@ namespace QuantLib {
     }
 
     const int GsrProcess::lowerIndex(Time t) const {
-        return (const int)(std::upper_bound(times_.begin(), times_.end(), t) -
+        return static_cast<int>(std::upper_bound(times_.begin(), times_.end(), t) -
                            times_.begin());
     }
 
     const int GsrProcess::upperIndex(Time t) const {
         if (t < QL_EPSILON)
             return 0;
-        return (const int)(std::upper_bound(times_.begin(), times_.end(), t - QL_EPSILON) -
-                           times_.begin() + 1);
+        return static_cast<int>(std::upper_bound(times_.begin(), times_.end(), t - QL_EPSILON) -
+                                times_.begin()) + 1;
     }
 
     const Real GsrProcess::cappedTime(Size index, Real cap) const {

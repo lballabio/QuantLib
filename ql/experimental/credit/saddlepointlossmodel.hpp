@@ -250,7 +250,7 @@ namespace QuantLib {
         /*! Conditional (on the mkt factor) prob of a loss fraction of the the 
                 tranched portfolio.
 
-            @param lossFraction Fraction over the tranche notional. In [0,1]
+            @param trancheLossFract Fraction over the tranche notional. In [0,1]
         */
         Probability probOverLossCond( 
             const std::vector<Real>& invUncondProbs,

@@ -32,6 +32,7 @@
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/math/integrals/discreteintegrals.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
@@ -45,9 +46,11 @@
 #include <ql/methods/finitedifferences/schemes/craigsneydscheme.hpp>
 #include <ql/methods/finitedifferences/meshers/uniformgridmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/methods/finitedifferences/operators/fdmblackscholesop.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmmesherintegral.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
@@ -1316,6 +1319,62 @@ void FdmLinearOpTest::testSparseMatrixZeroAssignment() {
 #endif
 }
 
+void FdmLinearOpTest::testFdmMesherIntegral() {
+    BOOST_TEST_MESSAGE("Testing integrals over meshers functions...");
+
+    const boost::shared_ptr<FdmMesherComposite> mesher(
+        new FdmMesherComposite(
+            boost::shared_ptr<Fdm1dMesher>(new Concentrating1dMesher(
+                -1, 1.6, 21, std::pair<Real, Real>(0, 0.1))),
+            boost::shared_ptr<Fdm1dMesher>(new Concentrating1dMesher(
+                -3, 4, 11, std::pair<Real, Real>(1, 0.01))),
+            boost::shared_ptr<Fdm1dMesher>(new Concentrating1dMesher(
+                -2, 1, 5, std::pair<Real, Real>(0.5, 0.1)))));
+
+    const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+
+    Array f(mesher->layout()->size());
+    for (FdmLinearOpIterator iter = layout->begin();
+        iter != layout->end(); ++iter) {
+        const Real x = mesher->location(iter, 0);
+        const Real y = mesher->location(iter, 1);
+        const Real z = mesher->location(iter, 2);
+
+        f[iter.index()] = x*x + 3*y*y - 3*z*z
+                        + 2*x*y - x*z - 3*y*z
+                        + 4*x - y - 3*z + 2 ;
+    }
+
+    const Real tol = 1e-12;
+
+    // Simpson's rule has to be exact here, Mathematica code gives
+    // Integrate[x*x+3*y*y-3*z*z+2*x*y-x*z-3*y*z+4*x-y-3*z+2,
+    //           {x, -1, 16/10}, {y, -3, 4}, {z, -2, 1}]
+    const Real expectedSimpson = 876.512;
+    const Real calculatedSimpson
+        = FdmMesherIntegral(mesher, DiscreteSimpsonIntegral()).integrate(f);
+
+    if (std::fabs(calculatedSimpson - expectedSimpson) > tol*expectedSimpson) {
+        BOOST_FAIL(std::setprecision(16)
+            << "discrete mesher integration using Simpson's rule failed: "
+            << "\n    calculated: " << calculatedSimpson
+            << "\n    expected:   " << expectedSimpson);
+    }
+
+    const Real expectedTrapezoid = 917.0148209153263;
+    const Real calculatedTrapezoid
+        = FdmMesherIntegral(mesher, DiscreteTrapezoidIntegral()).integrate(f);
+
+    if (std::fabs(calculatedTrapezoid - expectedTrapezoid)
+    		> tol*expectedTrapezoid) {
+        BOOST_FAIL(std::setprecision(16)
+            << "discrete mesher integration using Trapezoid rule failed: "
+            << "\n    calculated: " << calculatedTrapezoid
+            << "\n    expected:   " << expectedTrapezoid);
+    }
+}
+
+
 test_suite* FdmLinearOpTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("linear operator tests");
 
@@ -1342,6 +1401,7 @@ test_suite* FdmLinearOpTest::suite() {
         QUANTLIB_TEST_CASE(&FdmLinearOpTest::testSpareMatrixReference));
     suite->add(
         QUANTLIB_TEST_CASE(&FdmLinearOpTest::testSparseMatrixZeroAssignment));
+    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmMesherIntegral));
 
     return suite;
     

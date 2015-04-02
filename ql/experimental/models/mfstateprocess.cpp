@@ -21,7 +21,7 @@
 
 namespace QuantLib {
 
-    MfStateProcess::MfStateProcess(double reversion, const Array &times,
+    MfStateProcess::MfStateProcess(Real reversion, const Array &times,
                                    const Array &vols)
         : reversion_(reversion), reversionZero_(false), times_(times),
           vols_(vols) {
@@ -74,7 +74,7 @@ namespace QuantLib {
         Size j = std::upper_bound(times_.begin(), times_.end(), t + dt) -
                  times_.begin();
 
-        double v = 0.0;
+        Real v = 0.0;
 
         for (Size k = i; k < j; k++) {
             if (reversionZero_)

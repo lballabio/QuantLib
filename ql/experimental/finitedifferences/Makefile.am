@@ -8,6 +8,7 @@ this_include_HEADERS = \
     fdextoujumpvanillaengine.hpp \
 	fdklugeextouspreadengine.hpp \
 	fdmblackscholesfwdop.hpp \
+	fdmdupire1dop.hpp \
 	fdmexpextouinnervaluecalculator.hpp \
 	fdmextendedornsteinuhlenbeckop.hpp \
 	fdmextoujumpmodelinnervalue.hpp \
@@ -23,6 +24,7 @@ this_include_HEADERS = \
 	fdmvppstartlimitstepcondition.hpp \
 	fdmvppstepcondition.hpp \
 	fdmvppstepconditionfactory.hpp \
+	fdmzabrop.hpp \
 	fdsimpleextoujumpswingengine.hpp \
     fdsimpleextoustorageengine.hpp \
 	fdsimpleklugeextouvppengine.hpp \
@@ -35,6 +37,7 @@ libMultiDimFDM_la_SOURCES = \
     fdextoujumpvanillaengine.cpp \
 	fdklugeextouspreadengine.cpp \
 	fdmblackscholesfwdop.cpp \
+	fdmdupire1dop.cpp \
 	fdmextendedornsteinuhlenbeckop.cpp \
 	fdmextoujumpop.cpp \
 	fdmextoujumpsolver.cpp \
@@ -44,6 +47,7 @@ libMultiDimFDM_la_SOURCES = \
 	fdmvppstartlimitstepcondition.cpp \
 	fdmvppstepcondition.cpp \
 	fdmvppstepconditionfactory.cpp \
+	fdmzabrop.cpp \
 	fdsimpleextoujumpswingengine.cpp \
     fdsimpleextoustorageengine.cpp \
     fdsimpleklugeextouvppengine.cpp \

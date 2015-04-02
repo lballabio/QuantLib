@@ -34,8 +34,8 @@ namespace QuantLib {
         const Size n = M.columns();
 
         boost::scoped_array<int> lipvt(new int[n]);
-        boost::scoped_array<double> rdiag(new double[n]);
-        boost::scoped_array<double> wa(new double[n]);
+        boost::scoped_array<Real> rdiag(new Real[n]);
+        boost::scoped_array<Real> wa(new Real[n]);
 
         MINPACK::qrfac(m, n, mT.begin(), 0, (pivot)?1:0,
                        lipvt.get(), n, rdiag.get(), rdiag.get(), wa.get());
@@ -108,8 +108,8 @@ namespace QuantLib {
         Matrix aT = transpose(a);
         Matrix rT = transpose(r);
 
-        boost::scoped_array<double> sdiag(new double[n]);
-        boost::scoped_array<double> wa(new double[n]);
+        boost::scoped_array<Real> sdiag(new Real[n]);
+        boost::scoped_array<Real> wa(new Real[n]);
 
         Array ld(n, 0.0);
         if (!d.empty()) {

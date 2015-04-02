@@ -3,6 +3,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
+	discreteintegrals.hpp \
 	filonintegral.hpp \
 	gausslobattointegral.hpp \
 	gaussianorthogonalpolynomial.hpp \
@@ -15,6 +16,7 @@ this_include_HEADERS = \
 	twodimensionalintegral.hpp
 
 libIntegrals_la_SOURCES = \
+	discreteintegrals.cpp \
 	filonintegral.cpp \
 	gausslobattointegral.cpp \
 	gaussianorthogonalpolynomial.cpp \

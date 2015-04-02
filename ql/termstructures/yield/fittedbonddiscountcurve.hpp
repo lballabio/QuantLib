@@ -109,31 +109,6 @@ namespace QuantLib {
                  Size maxEvaluations = 10000,
                  const Array &guess = Array(),
                  Real simplexLambda = 1.0);
-        //! reference date based on current evaluation date
-        /*! \deprecated */
-        QL_DEPRECATED
-        FittedBondDiscountCurve(
-                 Natural settlementDays,
-                 const Calendar& calendar,
-                 const std::vector<boost::shared_ptr<FixedRateBondHelper> >& bonds,
-                 const DayCounter& dayCounter,
-                 const FittingMethod& fittingMethod,
-                 Real accuracy = 1.0e-10,
-                 Size maxEvaluations = 10000,
-                 const Array& guess = Array(),
-                 Real simplexLambda = 1.0);
-        //! curve reference date fixed for life of curve
-        /*! \deprecated */
-        QL_DEPRECATED
-        FittedBondDiscountCurve(
-                 const Date &referenceDate,
-                 const std::vector<boost::shared_ptr<FixedRateBondHelper> >& bonds,
-                 const DayCounter& dayCounter,
-                 const FittingMethod& fittingMethod,
-                 Real accuracy = 1.0e-10,
-                 Size maxEvaluations = 10000,
-                 const Array &guess = Array(),
-                 Real simplexLambda = 1.0);
         //@}
 
         //! \name Inspectors

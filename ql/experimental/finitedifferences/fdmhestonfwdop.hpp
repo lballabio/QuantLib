@@ -40,7 +40,9 @@ namespace QuantLib {
       public:
         FdmHestonFwdOp(
             const boost::shared_ptr<FdmMesher>& mesher,
-            const boost::shared_ptr<HestonProcess>& process);
+            const boost::shared_ptr<HestonProcess>& process,
+            FdmSquareRootFwdOp::TransformationType type
+                = FdmSquareRootFwdOp::Plain);
 
         Size size() const;
         void setTime(Time t1, Time t2);
@@ -58,6 +60,7 @@ namespace QuantLib {
         Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const;
 #endif
       private:
+        const FdmSquareRootFwdOp::TransformationType type_;
         const Real kappa_, theta_, sigma_, rho_, v0_;
 
         const boost::shared_ptr<YieldTermStructure> rTS_;

@@ -43,6 +43,8 @@ public:
     static void testCrankNicolsonWithDamping();
     static void testSpareMatrixReference();
     static void testSparseMatrixZeroAssignment();
+    static void testFdmMesherIntegral();
+
     static boost::unit_test_framework::test_suite* suite();
 };
 

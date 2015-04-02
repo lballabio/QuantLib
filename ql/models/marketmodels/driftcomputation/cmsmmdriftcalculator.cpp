@@ -90,7 +90,7 @@ namespace QuantLib {
             for (Integer j=static_cast<Integer>(numberOfRates_)-2;
                  j>=static_cast<Integer>(alive_)-1; --j)
             {
-                double sr = cs.cmSwapRate(j+1,spanningFwds_);
+                Real sr = cs.cmSwapRate(j+1,spanningFwds_);
                 Integer endIndex =
                     std::min<Integer>(j + static_cast<Integer>(spanningFwds_) + 1,
                              static_cast<Integer>(numberOfRates_));

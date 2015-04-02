@@ -232,7 +232,7 @@ namespace QuantLib {
             }
 
             // we also get an extra linear part, this corresponds to row i, and columns j>i+1, and transpose
-            double extraLinearPart=0.0;
+            Real extraLinearPart=0.0;
             for (Size k = i+1; k < numberOfSteps; ++k)
             {
                     extraLinearPart+=invertedZedMatrix[i-1][k] *

@@ -52,13 +52,13 @@ namespace QuantLib {
         data_ = cnyData;
     }
 
-    // Honk Kong dollar
+    // Hong Kong dollar
     /* The ISO three-letter code is HKD; the numeric code is 344.
       It is divided in 100 cents.
     */
     HKDCurrency::HKDCurrency() {
         static boost::shared_ptr<Data> hkdData(
-                                  new Data("Honk Kong dollar", "HKD", 344,
+                                  new Data("Hong Kong dollar", "HKD", 344,
                                            "HK$", "", 100,
                                            Rounding(),
                                            "%3% %1$.2f"));

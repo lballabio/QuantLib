@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analytictwoassetcorrelationoptionengine.hpp
+/*! \file analytictwoassetcorrelationengine.hpp
     \brief Analytic engine for two-asset correlation options
 */
 

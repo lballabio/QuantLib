@@ -194,7 +194,7 @@ void Solver1DTest::testNewtonSafe() {
 }
 
 void Solver1DTest::testFiniteDifferenceNewtonSafe() {
-    BOOST_TEST_MESSAGE("Testing Finite Difference Newton-safe solver...");
+    BOOST_TEST_MESSAGE("Testing finite-difference Newton-safe solver...");
     test_solver(FiniteDifferenceNewtonSafe(), "FiniteDifferenceNewtonSafe", Null<Real>());
 }
 

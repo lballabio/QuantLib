@@ -272,8 +272,8 @@ void CreditDefaultSwapTest::testCachedMarketValue() {
                           new MidPointCdsEngine(piecewiseFlatHazardRate,
                                                 recoveryRate,discountCurve)));
 
-    double calculatedNpv = cds.NPV();
-    double calculatedFairRate = cds.fairSpread();
+    Real calculatedNpv = cds.NPV();
+    Real calculatedFairRate = cds.fairSpread();
 
     double npv = -1.364048777;        // from Bloomberg we have 98.15598868 - 100.00;
     double fairRate =  0.0248429452; // from Bloomberg we have 0.0258378;

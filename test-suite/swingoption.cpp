@@ -438,7 +438,7 @@ void SwingOptionTest::testExtOUJumpSwingOption() {
 
             Real npCashFlows
                 = std::accumulate(exerciseValues.begin(),
-                                  exerciseValues.begin()+exerciseRights, 0.0);
+                                  exerciseValues.begin()+exerciseRights, Real(0.0));
             npv.add(npCashFlows);
         }
 

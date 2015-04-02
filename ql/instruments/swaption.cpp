@@ -106,6 +106,7 @@ namespace QuantLib {
     : Option(boost::shared_ptr<Payoff>(), exercise), swap_(swap),
       settlementType_(delivery) {
         registerWith(swap_);
+        registerWithObservables(swap_);
     }
 
     bool Swaption::isExpired() const {

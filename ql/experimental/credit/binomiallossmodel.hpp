@@ -20,18 +20,15 @@
 #ifndef quantlib_binomial_loss_model_hpp
 #define quantlib_binomial_loss_model_hpp
 
-#include <algorithm>
-#include <numeric>
-
-#include <boost/lambda/lambda.hpp>
-#include <boost/lambda/bind.hpp>
-#include <boost/bind.hpp>
-
 #include <ql/handle.hpp>
-
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
+#include <boost/lambda/lambda.hpp>
+#include <boost/lambda/bind.hpp>
+#include <boost/bind.hpp>
+#include <algorithm>
+#include <numeric>
 
 namespace QuantLib {
 
@@ -185,7 +182,7 @@ namespace QuantLib {
             bsktNots.begin(), std::back_inserter(lgdsLeft), 
             std::multiplies<Real>());
         Real avgLgd = 
-            std::accumulate(lgdsLeft.begin(), lgdsLeft.end(), 0.) / bsktSize;
+            std::accumulate(lgdsLeft.begin(), lgdsLeft.end(), Real(0.)) / bsktSize;
 
         std::vector<Probability> condDefProb(bsktSize, 0.);
         for(Size j=0; j<bsktSize; j++)//transform
@@ -199,7 +196,7 @@ namespace QuantLib {
                 / (avgLgd * bsktSize);
         // model parameters:
         Real m = avgProb * bsktSize;
-        Real floorAveProb = std::min(Real(bsktSize-1), floor(Real(m)));
+        Real floorAveProb = std::min(Real(bsktSize-1), std::floor(Real(m)));
         Real ceilAveProb = floorAveProb + 1.;
         // nu_A
         Real varianceBinom = avgProb * (1. - avgProb)/bsktSize;
@@ -275,12 +272,12 @@ namespace QuantLib {
         */
         std::vector<Real> fractionalEL = expConditionalLgd(d, mktFctrs);
         Real notBskt = std::accumulate(reminingNots.begin(), 
-            reminingNots.end(), 0.);
+            reminingNots.end(), Real(0.));
         std::vector<Real> lgdsLeft;
         std::transform(fractionalEL.begin(), fractionalEL.end(), 
             reminingNots.begin(), std::back_inserter(lgdsLeft),
             boost::lambda::_1 * boost::lambda::_2 / notBskt);
-        return std::accumulate(lgdsLeft.begin(), lgdsLeft.end(), 0.) 
+        return std::accumulate(lgdsLeft.begin(), lgdsLeft.end(), Real(0.)) 
             / bsktSize;
     }
 

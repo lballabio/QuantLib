@@ -1701,7 +1701,7 @@ void InterpolationTest::testRichardsonExtrapolation() {
 
 void InterpolationTest::testNoArbSabrInterpolation(){
 
-    BOOST_TEST_MESSAGE("Testing noarb-Sabr interpolation...");
+    BOOST_TEST_MESSAGE("Testing no-arbitrage Sabr interpolation...");
 
     // Test SABR function against input volatilities
     Real tolerance = 1.0e-12;
@@ -1908,11 +1908,11 @@ void InterpolationTest::testSabrSingleCases() {
 
 void InterpolationTest::testTransformations() {
 
-    BOOST_TEST_MESSAGE("Testing Sabr and NoArbSabr transformation functions ...");
+    BOOST_TEST_MESSAGE("Testing Sabr and no-arbitrage Sabr transformation functions...");
 
     Real size = 25.0; // test inputs from [-size,size]^4
 
-    Size N = 1E5;
+    Size N = 100000;
 
     Array x(4), y(4), z(4);
     std::vector<Real> s;

@@ -22,6 +22,8 @@
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/settings.hpp>
 
+using std::sqrt;
+
 namespace QuantLib {
 
     void SmileSection::update() {
@@ -69,7 +71,7 @@ namespace QuantLib {
                    "smile section must provide atm level to compute option price");
         // for zero strike, return option price even if outside
         // minstrike, maxstrike interval
-        return blackFormula(type,strike,atm, fabs(strike) < QL_EPSILON ?
+        return blackFormula(type,strike,atm, std::fabs(strike) < QL_EPSILON ?
                             0.2 : sqrt(variance(strike)),discount);
     }
 

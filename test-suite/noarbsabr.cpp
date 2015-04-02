@@ -50,7 +50,7 @@ void checkD0(const Real sigmaI, const Real beta, const Real rho, const Real nu,
 
 void NoArbSabrTest::testAbsorptionMatrix() {
 
-    BOOST_TEST_MESSAGE("Testing noarb-sabr absorption matrix ...");
+    BOOST_TEST_MESSAGE("Testing no-arbitrage Sabr absorption matrix...");
 
     // check some points explicitly against the external file's contents
 

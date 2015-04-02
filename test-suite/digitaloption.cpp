@@ -38,7 +38,7 @@ using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 #define REPORT_FAILURE(greekName, payoff, exercise, s, q, r, today, \
-                       v, expected, calculated, error, tolerance) \
+                       v, expected, calculated, error, tolerance, knockin) \
     BOOST_FAIL(exerciseTypeToString(exercise) << " " \
                << payoff->optionType() << " option with " \
                << payoffTypeToString(payoff) << " payoff:\n" \
@@ -52,7 +52,8 @@ using namespace boost::unit_test_framework;
                << "    expected   " << greekName << ": " << expected << "\n" \
                << "    calculated " << greekName << ": " << calculated << "\n"\
                << "    error:            " << error << "\n" \
-               << "    tolerance:        " << tolerance);
+               << "    tolerance:        " << tolerance << "\n" \
+               << "    knock_in:         " << knockin);
 
 namespace {
 
@@ -66,6 +67,7 @@ namespace {
         Volatility v;  // volatility
         Real result;   // expected result
         Real tol;      // tolerance
+        bool knockin;  // true if knock-in
     };
 
 }
@@ -78,7 +80,7 @@ void DigitalOptionTest::testCashOrNothingEuropeanValues() {
     DigitalOptionData values[] = {
         // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 88
         //        type, strike,  spot,    q,    r,    t,  vol,  value, tol
-        { Option::Put,   80.00, 100.0, 0.06, 0.06, 0.75, 0.35, 2.6710, 1e-4 }
+        { Option::Put,   80.00, 100.0, 0.06, 0.06, 0.75, 0.35, 2.6710, 1e-4, true }
     };
 
     DayCounter dc = Actual360();
@@ -121,7 +123,7 @@ void DigitalOptionTest::testCashOrNothingEuropeanValues() {
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
                            values[i].r, today, values[i].v, values[i].result,
-                           calculated, error, values[i].tol);
+                           calculated, error, values[i].tol, values[i].knockin);
         }
     }
 }
@@ -133,7 +135,7 @@ void DigitalOptionTest::testAssetOrNothingEuropeanValues() {
     // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 90
     DigitalOptionData values[] = {
         //        type, strike, spot,    q,    r,    t,  vol,   value, tol
-        { Option::Put,   65.00, 70.0, 0.05, 0.07, 0.50, 0.27, 20.2069, 1e-4 }
+        { Option::Put,   65.00, 70.0, 0.05, 0.07, 0.50, 0.27, 20.2069, 1e-4, true }
     };
 
     DayCounter dc = Actual360();
@@ -176,7 +178,7 @@ void DigitalOptionTest::testAssetOrNothingEuropeanValues() {
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
                            values[i].r, today, values[i].v, values[i].result,
-                           calculated, error, values[i].tol);
+                           calculated, error, values[i].tol, values[i].knockin);
         }
     }
 }
@@ -188,7 +190,7 @@ void DigitalOptionTest::testGapEuropeanValues() {
     // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 88
     DigitalOptionData values[] = {
         //        type, strike, spot,    q,    r,    t,  vol,   value, tol
-        { Option::Call,  50.00, 50.0, 0.00, 0.09, 0.50, 0.20, -0.0053, 1e-4 }
+        { Option::Call,  50.00, 50.0, 0.00, 0.09, 0.50, 0.20, -0.0053, 1e-4, true }
     };
 
     DayCounter dc = Actual360();
@@ -231,7 +233,7 @@ void DigitalOptionTest::testGapEuropeanValues() {
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
                            values[i].r, today, values[i].v, values[i].result,
-                           calculated, error, values[i].tol);
+                           calculated, error, values[i].tol, values[i].knockin);
         }
     }
 }
@@ -244,18 +246,18 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
     DigitalOptionData values[] = {
         //        type, strike,   spot,    q,    r,   t,  vol,   value, tol
         // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 95, case 1,2
-        { Option::Put,  100.00, 105.00, 0.00, 0.10, 0.5, 0.20,  9.7264, 1e-4 },
-        { Option::Call, 100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 11.6553, 1e-4 },
+        { Option::Put,  100.00, 105.00, 0.00, 0.10, 0.5, 0.20,  9.7264, 1e-4,  true},
+        { Option::Call, 100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 11.6553, 1e-4,  true},
 
         // the following cases are not taken from a reference paper or book
         // in the money options (guaranteed immediate payoff)
-        { Option::Call, 100.00, 105.00, 0.00, 0.10, 0.5, 0.20, 15.0000, 1e-16},
-        { Option::Put,  100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 15.0000, 1e-16},
+        { Option::Call, 100.00, 105.00, 0.00, 0.10, 0.5, 0.20, 15.0000, 1e-16, true},
+        { Option::Put,  100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 15.0000, 1e-16, true},
         // non null dividend (cross-tested with MC simulation)
-        { Option::Put,  100.00, 105.00, 0.20, 0.10, 0.5, 0.20, 12.2715, 1e-4 },
-        { Option::Call, 100.00,  95.00, 0.20, 0.10, 0.5, 0.20,  8.9109, 1e-4 },
-        { Option::Call, 100.00, 105.00, 0.20, 0.10, 0.5, 0.20, 15.0000, 1e-16},
-        { Option::Put,  100.00,  95.00, 0.20, 0.10, 0.5, 0.20, 15.0000, 1e-16}
+        { Option::Put,  100.00, 105.00, 0.20, 0.10, 0.5, 0.20, 12.2715, 1e-4,  true},
+        { Option::Call, 100.00,  95.00, 0.20, 0.10, 0.5, 0.20,  8.9109, 1e-4,  true},
+        { Option::Call, 100.00, 105.00, 0.20, 0.10, 0.5, 0.20, 15.0000, 1e-16, true},
+        { Option::Put,  100.00,  95.00, 0.20, 0.10, 0.5, 0.20, 15.0000, 1e-16, true}
     };
 
     DayCounter dc = Actual360();
@@ -299,7 +301,7 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, amExercise, values[i].s,
                            values[i].q, values[i].r, today, values[i].v,
-                           values[i].result, calculated, error, values[i].tol);
+                           values[i].result, calculated, error, values[i].tol, values[i].knockin);
         }
     }
 }
@@ -312,16 +314,16 @@ void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
     DigitalOptionData values[] = {
         //        type, strike,   spot,    q,    r,   t,  vol,   value, tol
         // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 95, case 3,4
-        { Option::Put,  100.00, 105.00, 0.00, 0.10, 0.5, 0.20, 64.8426, 1e-04 }, // Haug value is wrong here, Haug VBA code is right
-        { Option::Call, 100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 77.7017, 1e-04 }, // Haug value is wrong here, Haug VBA code is right
+        { Option::Put,  100.00, 105.00, 0.00, 0.10, 0.5, 0.20, 64.8426, 1e-04, true }, // Haug value is wrong here, Haug VBA code is right
+        { Option::Call, 100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 77.7017, 1e-04, true }, // Haug value is wrong here, Haug VBA code is right
         // data from Haug VBA code results
-        { Option::Put,  100.00, 105.00, 0.01, 0.10, 0.5, 0.20, 65.7811, 1e-04 },
-        { Option::Call, 100.00,  95.00, 0.01, 0.10, 0.5, 0.20, 76.8858, 1e-04 },
+        { Option::Put,  100.00, 105.00, 0.01, 0.10, 0.5, 0.20, 65.7811, 1e-04, true },
+        { Option::Call, 100.00,  95.00, 0.01, 0.10, 0.5, 0.20, 76.8858, 1e-04, true },
         // in the money options  (guaranteed immediate payoff = spot)
-        { Option::Call, 100.00, 105.00, 0.00, 0.10, 0.5, 0.20,105.0000, 1e-16 },
-        { Option::Put,  100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 95.0000, 1e-16 },
-        { Option::Call, 100.00, 105.00, 0.01, 0.10, 0.5, 0.20,105.0000, 1e-16 },
-        { Option::Put,  100.00,  95.00, 0.01, 0.10, 0.5, 0.20, 95.0000, 1e-16 }
+        { Option::Call, 100.00, 105.00, 0.00, 0.10, 0.5, 0.20,105.0000, 1e-16, true },
+        { Option::Put,  100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 95.0000, 1e-16, true },
+        { Option::Call, 100.00, 105.00, 0.01, 0.10, 0.5, 0.20,105.0000, 1e-16, true },
+        { Option::Put,  100.00,  95.00, 0.01, 0.10, 0.5, 0.20, 95.0000, 1e-16, true }
     };
 
     DayCounter dc = Actual360();
@@ -365,7 +367,7 @@ void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, amExercise, values[i].s,
                            values[i].q, values[i].r, today, values[i].v,
-                           values[i].result, calculated, error, values[i].tol);
+                           values[i].result, calculated, error, values[i].tol, values[i].knockin);
         }
     }
 }
@@ -377,12 +379,16 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
 
     DigitalOptionData values[] = {
         //        type, strike,   spot,    q,    r,   t,  vol,   value, tol
-        // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 95, case 1,2
-        { Option::Put,  100.00, 105.00, 0.00, 0.10, 0.5, 0.20,  9.3604, 1e-4 },
-        { Option::Call, 100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 11.2223, 1e-4 },
+        // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 95, case 5,6,9,10
+        { Option::Put,  100.00, 105.00, 0.00, 0.10, 0.5, 0.20,  9.3604, 1e-4, true },
+        { Option::Call, 100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 11.2223, 1e-4, true },
+        { Option::Put,  100.00, 105.00, 0.00, 0.10, 0.5, 0.20,  4.9081, 1e-4, false },
+        { Option::Call, 100.00,  95.00, 0.00, 0.10, 0.5, 0.20,  3.0461, 1e-4, false },
         // in the money options (guaranteed discounted payoff)
-        { Option::Call, 100.00, 105.00, 0.00, 0.10, 0.5, 0.20, 15.0000*std::exp(-0.05), 1e-12 },
-        { Option::Put,  100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 15.0000*std::exp(-0.05), 1e-12 }
+        { Option::Call, 100.00, 105.00, 0.00, 0.10, 0.5, 0.20, 15.0000*std::exp(-0.05), 1e-12, true },
+        { Option::Put,  100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 15.0000*std::exp(-0.05), 1e-12, true },
+        // out of bonds case
+        { Option::Call,   2.37,   2.33, 0.07, 0.43,0.19,0.005,  0.0000, 1e-4, false },
     };
 
     DayCounter dc = Actual360();
@@ -416,8 +422,11 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
-        boost::shared_ptr<PricingEngine> engine(
-                             new AnalyticDigitalAmericanEngine(stochProcess));
+        boost::shared_ptr<PricingEngine> engine;
+        if (values[i].knockin)
+           engine.reset(new AnalyticDigitalAmericanEngine(stochProcess));
+        else
+           engine.reset(new AnalyticDigitalAmericanKOEngine(stochProcess));
 
         VanillaOption opt(payoff, amExercise);
         opt.setPricingEngine(engine);
@@ -427,7 +436,7 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, amExercise, values[i].s,
                            values[i].q, values[i].r, today, values[i].v,
-                           values[i].result, calculated, error, values[i].tol);
+                           values[i].result, calculated, error, values[i].tol, values[i].knockin);
         }
     }
 }
@@ -439,18 +448,20 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
 
     DigitalOptionData values[] = {
         //        type, strike,   spot,    q,    r,   t,  vol,   value, tol
-        // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 95, case 3,4
-        { Option::Put,  100.00, 105.00, 0.00, 0.10, 0.5, 0.20, 64.8426, 1e-04 },
-        { Option::Call, 100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 77.7017, 1e-04 },
+        // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 95, case 7,8,11,12
+        { Option::Put,  100.00, 105.00, 0.00, 0.10, 0.5, 0.20, 64.8426, 1e-04, true },
+        { Option::Call, 100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 77.7017, 1e-04, true },
+        { Option::Put,  100.00, 105.00, 0.00, 0.10, 0.5, 0.20, 40.1574, 1e-04, false },
+        { Option::Call, 100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 17.2983, 1e-04, false },
         // data from Haug VBA code results
-        { Option::Put,  100.00, 105.00, 0.01, 0.10, 0.5, 0.20, 65.5291, 1e-04 },
-        { Option::Call, 100.00,  95.00, 0.01, 0.10, 0.5, 0.20, 76.5951, 1e-04 },
+        { Option::Put,  100.00, 105.00, 0.01, 0.10, 0.5, 0.20, 65.5291, 1e-04, true },
+        { Option::Call, 100.00,  95.00, 0.01, 0.10, 0.5, 0.20, 76.5951, 1e-04, true },
         // in the money options (guaranteed discounted payoff = forward * riskFreeDiscount
         //                                                    = spot * dividendDiscount)
-        { Option::Call, 100.00, 105.00, 0.00, 0.10, 0.5, 0.20,105.0000, 1e-12 },
-        { Option::Put,  100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 95.0000, 1e-12 },
-        { Option::Call, 100.00, 105.00, 0.01, 0.10, 0.5, 0.20,105.0000*std::exp(-0.005), 1e-12 },
-        { Option::Put,  100.00,  95.00, 0.01, 0.10, 0.5, 0.20, 95.0000*std::exp(-0.005), 1e-12 }
+        { Option::Call, 100.00, 105.00, 0.00, 0.10, 0.5, 0.20,105.0000, 1e-12, true },
+        { Option::Put,  100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 95.0000, 1e-12, true },
+        { Option::Call, 100.00, 105.00, 0.01, 0.10, 0.5, 0.20,105.0000*std::exp(-0.005), 1e-12, true },
+        { Option::Put,  100.00,  95.00, 0.01, 0.10, 0.5, 0.20, 95.0000*std::exp(-0.005), 1e-12, true }
     };
 
     DayCounter dc = Actual360();
@@ -484,8 +495,11 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
-        boost::shared_ptr<PricingEngine> engine(
-                             new AnalyticDigitalAmericanEngine(stochProcess));
+        boost::shared_ptr<PricingEngine> engine;
+        if (values[i].knockin)
+           engine.reset(new AnalyticDigitalAmericanEngine(stochProcess));
+        else
+           engine.reset(new AnalyticDigitalAmericanKOEngine(stochProcess));
 
         VanillaOption opt(payoff, amExercise);
         opt.setPricingEngine(engine);
@@ -495,7 +509,7 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, amExercise, values[i].s,
                            values[i].q, values[i].r, today, values[i].v,
-                           values[i].result, calculated, error, values[i].tol);
+                           values[i].result, calculated, error, values[i].tol, values[i].knockin);
         }
     }
 }
@@ -555,6 +569,7 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
 
     boost::shared_ptr<PricingEngine> engines[] = { euroEngine, amEngine };
 
+    bool knockin=true;
     for (Size j=0; j<LENGTH(engines); j++) {
       for (Size i1=0; i1<LENGTH(types); i1++) {
         for (Size i6=0; i6<LENGTH(strikes); i6++) {
@@ -653,7 +668,7 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
                           if (error > tol) {
                               REPORT_FAILURE(greek, payoff, exercise,
                                              u, q, r, today, v,
-                                             expct, calcl, error, tol);
+                                             expct, calcl, error, tol, knockin);
                           }
                       }
                   }
@@ -678,8 +693,8 @@ void DigitalOptionTest::testMCCashAtHit() {
 
     DigitalOptionData values[] = {
         //        type, strike,   spot,    q,    r,   t,  vol,   value, tol
-        { Option::Put,  100.00, 105.00, 0.20, 0.10, 0.5, 0.20, 12.2715, 1e-2 },
-        { Option::Call, 100.00,  95.00, 0.20, 0.10, 0.5, 0.20,  8.9109, 1e-2 }
+        { Option::Put,  100.00, 105.00, 0.20, 0.10, 0.5, 0.20, 12.2715, 1e-2, true },
+        { Option::Call, 100.00,  95.00, 0.20, 0.10, 0.5, 0.20,  8.9109, 1e-2, true }
     };
 
     DayCounter dc = Actual360();
@@ -734,7 +749,7 @@ void DigitalOptionTest::testMCCashAtHit() {
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, amExercise, values[i].s,
                            values[i].q, values[i].r, today, values[i].v,
-                           values[i].result, calculated, error, values[i].tol);
+                           values[i].result, calculated, error, values[i].tol, values[i].knockin);
         }
     }
 }

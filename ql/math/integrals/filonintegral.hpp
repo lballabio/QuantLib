@@ -34,18 +34,18 @@ namespace QuantLib {
         calculated by means of Filon's sine and cosine integrals
     */
 
-	/*! References:
-		Abramowitz, M. and Stegun, I. A. (Eds.).
-		Handbook of Mathematical Functions with Formulas, Graphs,
-		and Mathematical Tables, 9th printing. New York: Dover,
-		pp. 890-891, 1972.
+    /*! References:
+        Abramowitz, M. and Stegun, I. A. (Eds.).
+        Handbook of Mathematical Functions with Formulas, Graphs,
+        and Mathematical Tables, 9th printing. New York: Dover,
+        pp. 890-891, 1972.
 
         \test the correctness of the result is tested by checking it
               against known good values.
     */
     class FilonIntegral : public Integrator {
       public:
-    	enum Type { Sine, Cosine };
+        enum Type { Sine, Cosine };
         FilonIntegral(Type type, Real t, Size intervals);
 
       protected:

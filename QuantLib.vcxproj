@@ -138,7 +138,6 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>false</IntrinsicFunctions>
@@ -163,6 +162,7 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -182,7 +182,6 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>false</IntrinsicFunctions>
@@ -207,6 +206,7 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -226,7 +226,6 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <AdditionalIncludeDirectories>.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -249,6 +248,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -268,7 +268,6 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <AdditionalIncludeDirectories>.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -291,6 +290,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>      
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -310,7 +310,6 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|Win32'">
     <ClCompile>
-      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>false</IntrinsicFunctions>
@@ -335,6 +334,7 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -354,7 +354,6 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'">
     <ClCompile>
-      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>false</IntrinsicFunctions>
@@ -379,6 +378,7 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -398,7 +398,6 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|Win32'">
     <ClCompile>
-      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <AdditionalIncludeDirectories>.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -421,6 +420,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -440,7 +440,6 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|x64'">
     <ClCompile>
-      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <AdditionalIncludeDirectories>.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -463,6 +462,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -489,6 +489,7 @@
     <ClInclude Include="ql\experimental\finitedifferences\fdextoujumpvanillaengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdklugeextouspreadengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmblackscholesfwdop.hpp" />
+    <ClInclude Include="ql\experimental\finitedifferences\fdmdupire1dop.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmexpextouinnervaluecalculator.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmextendedornsteinuhlenbeckop.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmextoujumpmodelinnervalue.hpp" />
@@ -504,6 +505,7 @@
     <ClInclude Include="ql\experimental\finitedifferences\fdmvppstartlimitstepcondition.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmvppstepcondition.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmvppstepconditionfactory.hpp" />
+    <ClInclude Include="ql\experimental\finitedifferences\fdmzabrop.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdsimpleextoujumpswingengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdsimpleextoustorageengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdsimpleklugeextouvppengine.hpp" />
@@ -597,6 +599,7 @@
     <ClInclude Include="ql\methods\finitedifferences\utilities\fdmdividendhandler.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\utilities\fdmindicesonboundary.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\utilities\fdminnervaluecalculator.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\utilities\fdmmesherintegral.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\utilities\fdmquantohelper.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\utilities\fdmtimedepdirichletboundary.hpp" />
     <ClInclude Include="ql\methods\montecarlo\all.hpp" />
@@ -841,6 +844,7 @@
     <ClInclude Include="ql\math\distributions\poissondistribution.hpp" />
     <ClInclude Include="ql\math\distributions\studenttdistribution.hpp" />
     <ClInclude Include="ql\math\integrals\all.hpp" />
+    <ClInclude Include="ql\math\integrals\discreteintegrals.hpp" />
     <ClInclude Include="ql\math\integrals\filonintegral.hpp" />
     <ClInclude Include="ql\math\integrals\gaussianorthogonalpolynomial.hpp" />
     <ClInclude Include="ql\math\integrals\gaussianquadratures.hpp" />
@@ -1310,6 +1314,7 @@
     <ClInclude Include="ql\pricingengines\vanilla\mcvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\capfloor\all.hpp" />
     <ClInclude Include="ql\pricingengines\capfloor\analyticcapfloorengine.hpp" />
+    <ClInclude Include="ql\pricingengines\capfloor\bacheliercapfloorengine.hpp" />
     <ClInclude Include="ql\pricingengines\capfloor\blackcapfloorengine.hpp" />
     <ClInclude Include="ql\pricingengines\capfloor\discretizedcapfloor.hpp" />
     <ClInclude Include="ql\pricingengines\capfloor\mchullwhiteengine.hpp" />
@@ -1443,7 +1448,15 @@
     <ClInclude Include="ql\experimental\volatility\noarbsabrinterpolation.hpp" />
     <ClInclude Include="ql\experimental\volatility\noarbsabrsmilesection.hpp" />
     <ClInclude Include="ql\experimental\volatility\sabrvolsurface.hpp" />
+    <ClInclude Include="ql\experimental\volatility\sviinterpolatedsmilesection.hpp" />
+    <ClInclude Include="ql\experimental\volatility\sviinterpolation.hpp" />
+    <ClInclude Include="ql\experimental\volatility\svismilesection.hpp" />
+    <ClInclude Include="ql\experimental\volatility\swaptionvolcube1a.hpp" />
     <ClInclude Include="ql\experimental\volatility\volcube.hpp" />
+    <ClInclude Include="ql\experimental\volatility\zabr.hpp" />
+    <ClInclude Include="ql\experimental\volatility\zabrinterpolatedsmilesection.hpp" />
+    <ClInclude Include="ql\experimental\volatility\zabrinterpolation.hpp" />
+    <ClInclude Include="ql\experimental\volatility\zabrsmilesection.hpp" />
     <ClInclude Include="ql\experimental\callablebonds\all.hpp" />
     <ClInclude Include="ql\experimental\callablebonds\blackcallablebondengine.hpp" />
     <ClInclude Include="ql\experimental\callablebonds\callablebond.hpp" />
@@ -1457,10 +1470,15 @@
     <ClInclude Include="ql\experimental\catbonds\montecarlocatbondengine.hpp" />
     <ClInclude Include="ql\experimental\catbonds\riskynotional.hpp" />
     <ClInclude Include="ql\experimental\coupons\all.hpp" />
+    <ClInclude Include="ql\experimental\coupons\cmsspreadcoupon.hpp" />
+    <ClInclude Include="ql\experimental\coupons\digitalcmsspreadcoupon.hpp" />
     <ClInclude Include="ql\experimental\coupons\lineartsrpricer.hpp" />
+    <ClInclude Include="ql\experimental\coupons\lognormalcmsspreadpricer.hpp" />
     <ClInclude Include="ql\experimental\coupons\proxyibor.hpp" />
     <ClInclude Include="ql\experimental\coupons\quantocouponpricer.hpp" />
+    <ClInclude Include="ql\experimental\coupons\strippedcapflooredcoupon.hpp" />
     <ClInclude Include="ql\experimental\coupons\subperiodcoupons.hpp" />
+    <ClInclude Include="ql\experimental\coupons\swapspreadindex.hpp" />
     <ClInclude Include="ql\experimental\fx\all.hpp" />
     <ClInclude Include="ql\experimental\fx\blackdeltacalculator.hpp" />
     <ClInclude Include="ql\experimental\fx\deltavolquote.hpp" />
@@ -1537,7 +1555,6 @@
     <ClInclude Include="ql\experimental\credit\spotlosslatentmodel.hpp" />
     <ClInclude Include="ql\experimental\credit\spreadedhazardratecurve.hpp" />
     <ClInclude Include="ql\experimental\credit\syntheticcdo.hpp" />
-    <ClInclude Include="ql\experimental\finitedifferences\all.hpp" />
     <ClInclude Include="ql\experimental\mcbasket\adaptedpathpayoff.hpp" />
     <ClInclude Include="ql\experimental\mcbasket\all.hpp" />
     <ClInclude Include="ql\experimental\mcbasket\longstaffschwartzmultipathpricer.hpp" />
@@ -1557,7 +1574,9 @@
     <ClInclude Include="ql\experimental\models\gaussian1dfloatfloatswaptionengine.hpp" />
     <ClInclude Include="ql\experimental\models\gaussian1djamshidianswaptionengine.hpp" />
     <ClInclude Include="ql\experimental\models\gaussian1dnonstandardswaptionengine.hpp" />
+    <ClInclude Include="ql\experimental\models\gaussian1dsmilesection.hpp" />
     <ClInclude Include="ql\experimental\models\gaussian1dswaptionengine.hpp" />
+    <ClInclude Include="ql\experimental\models\gaussian1dswaptionvolatility.hpp" />
     <ClInclude Include="ql\experimental\models\gsr.hpp" />
     <ClInclude Include="ql\experimental\models\gsrprocess.hpp" />
     <ClInclude Include="ql\experimental\models\kahalesmilesection.hpp" />
@@ -1620,12 +1639,18 @@
     <ClInclude Include="ql\experimental\amortizingbonds\amortizingfixedratebond.hpp" />
     <ClInclude Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\all.hpp" />
+    <ClInclude Include="ql\experimental\barrieroption\analyticdoublebarrierbinaryengine.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\analyticdoublebarrierengine.hpp" />
+    <ClInclude Include="ql\experimental\barrieroption\binomialdoublebarrierengine.hpp" />
+    <ClInclude Include="ql\experimental\barrieroption\discretizeddoublebarrieroption.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\doublebarrieroption.hpp" />
+    <ClInclude Include="ql\experimental\barrieroption\doublebarriertype.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\perturbativebarrieroptionengine.hpp" />
+    <ClInclude Include="ql\experimental\barrieroption\quantodoublebarrieroption.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\vannavolgabarrierengine.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\vannavolgadoublebarrierengine.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\vannavolgainterpolation.hpp" />
+    <ClInclude Include="ql\experimental\barrieroption\wulinyongdoublebarrierengine.hpp" />
     <ClInclude Include="ql\experimental\convertiblebonds\all.hpp" />
     <ClInclude Include="ql\experimental\convertiblebonds\binomialconvertibleengine.hpp" />
     <ClInclude Include="ql\experimental\convertiblebonds\convertiblebond.hpp" />
@@ -1702,10 +1727,12 @@
     <ClCompile Include="ql\cashflows\cpicoupon.cpp" />
     <ClCompile Include="ql\cashflows\cpicouponpricer.cpp" />
     <ClCompile Include="ql\experimental\exercise\rebatedexercise.cpp" />
+    <ClInclude Include="ql\experimental\finitedifferences\all.hpp" />
     <ClCompile Include="ql\experimental\finitedifferences\dynprogvppintrinsicvalueengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdextoujumpvanillaengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdklugeextouspreadengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmblackscholesfwdop.cpp" />
+    <ClCompile Include="ql\experimental\finitedifferences\fdmdupire1dop.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmextendedornsteinuhlenbeckop.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmextoujumpop.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmextoujumpsolver.cpp" />
@@ -1715,6 +1742,7 @@
     <ClCompile Include="ql\experimental\finitedifferences\fdmvppstartlimitstepcondition.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmvppstepcondition.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmvppstepconditionfactory.cpp" />
+    <ClCompile Include="ql\experimental\finitedifferences\fdmzabrop.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdsimpleextoujumpswingengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdsimpleextoustorageengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdsimpleklugeextouvppengine.cpp" />
@@ -1787,6 +1815,7 @@
     <ClCompile Include="ql\methods\finitedifferences\utilities\fdmdividendhandler.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\utilities\fdmindicesonboundary.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\utilities\fdminnervaluecalculator.cpp" />
+    <ClCompile Include="ql\methods\finitedifferences\utilities\fdmmesherintegral.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\utilities\fdmquantohelper.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\utilities\fdmtimedepdirichletboundary.cpp" />
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp" />
@@ -1915,6 +1944,7 @@
     <ClCompile Include="ql\math\distributions\gammadistribution.cpp" />
     <ClCompile Include="ql\math\distributions\normaldistribution.cpp" />
     <ClCompile Include="ql\math\distributions\studenttdistribution.cpp" />
+    <ClCompile Include="ql\math\integrals\discreteintegrals.cpp" />
     <ClCompile Include="ql\math\integrals\filonintegral.cpp" />
     <ClCompile Include="ql\math\integrals\gaussianorthogonalpolynomial.cpp" />
     <ClCompile Include="ql\math\integrals\gaussianquadratures.cpp" />
@@ -2224,6 +2254,7 @@
     <ClCompile Include="ql\pricingengines\vanilla\mcdigitalengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\mchestonhullwhiteengine.cpp" />
     <ClCompile Include="ql\pricingengines\capfloor\analyticcapfloorengine.cpp" />
+    <ClCompile Include="ql\pricingengines\capfloor\bacheliercapfloorengine.cpp" />
     <ClCompile Include="ql\pricingengines\capfloor\blackcapfloorengine.cpp" />
     <ClCompile Include="ql\pricingengines\capfloor\discretizedcapfloor.cpp" />
     <ClCompile Include="ql\pricingengines\capfloor\mchullwhiteengine.cpp" />
@@ -2330,7 +2361,10 @@
     <ClCompile Include="ql\experimental\volatility\noarbsabrinterpolatedsmilesection.cpp" />
     <ClCompile Include="ql\experimental\volatility\noarbsabrsmilesection.cpp" />
     <ClCompile Include="ql\experimental\volatility\sabrvolsurface.cpp" />
+    <ClCompile Include="ql\experimental\volatility\sviinterpolatedsmilesection.cpp" />
+    <ClCompile Include="ql\experimental\volatility\svismilesection.cpp" />
     <ClCompile Include="ql\experimental\volatility\volcube.cpp" />
+    <ClCompile Include="ql\experimental\volatility\zabr.cpp" />
     <ClCompile Include="ql\experimental\callablebonds\blackcallablebondengine.cpp" />
     <ClCompile Include="ql\experimental\callablebonds\callablebond.cpp" />
     <ClCompile Include="ql\experimental\callablebonds\callablebondconstantvol.cpp" />
@@ -2341,10 +2375,15 @@
     <ClCompile Include="ql\experimental\catbonds\catrisk.cpp" />
     <ClCompile Include="ql\experimental\catbonds\montecarlocatbondengine.cpp" />
     <ClCompile Include="ql\experimental\catbonds\riskynotional.cpp" />
+    <ClCompile Include="ql\experimental\coupons\cmsspreadcoupon.cpp" />
+    <ClCompile Include="ql\experimental\coupons\digitalcmsspreadcoupon.cpp" />
     <ClCompile Include="ql\experimental\coupons\lineartsrpricer.cpp" />
+    <ClCompile Include="ql\experimental\coupons\lognormalcmsspreadpricer.cpp" />
     <ClCompile Include="ql\experimental\coupons\proxyibor.cpp" />
     <ClCompile Include="ql\experimental\coupons\quantocouponpricer.cpp" />
+    <ClCompile Include="ql\experimental\coupons\strippedcapflooredcoupon.cpp" />
     <ClCompile Include="ql\experimental\coupons\subperiodcoupons.cpp" />
+    <ClCompile Include="ql\experimental\coupons\swapspreadindex.cpp" />
     <ClCompile Include="ql\experimental\fx\blackdeltacalculator.cpp" />
     <ClCompile Include="ql\experimental\fx\deltavolquote.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticamericanmargrabeengine.cpp" />
@@ -2416,7 +2455,9 @@
     <ClCompile Include="ql\experimental\models\gaussian1dfloatfloatswaptionengine.cpp" />
     <ClCompile Include="ql\experimental\models\gaussian1djamshidianswaptionengine.cpp" />
     <ClCompile Include="ql\experimental\models\gaussian1dnonstandardswaptionengine.cpp" />
+    <ClCompile Include="ql\experimental\models\gaussian1dsmilesection.cpp" />
     <ClCompile Include="ql\experimental\models\gaussian1dswaptionengine.cpp" />
+    <ClCompile Include="ql\experimental\models\gaussian1dswaptionvolatility.cpp" />
     <ClCompile Include="ql\experimental\models\gsr.cpp" />
     <ClCompile Include="ql\experimental\models\gsrprocess.cpp" />
     <ClCompile Include="ql\experimental\models\kahalesmilesection.cpp" />
@@ -2466,11 +2507,15 @@
     <ClCompile Include="ql\experimental\amortizingbonds\amortizingcmsratebond.cpp" />
     <ClCompile Include="ql\experimental\amortizingbonds\amortizingfixedratebond.cpp" />
     <ClCompile Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.cpp" />
+    <ClCompile Include="ql\experimental\barrieroption\analyticdoublebarrierbinaryengine.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\analyticdoublebarrierengine.cpp" />
+    <ClCompile Include="ql\experimental\barrieroption\discretizeddoublebarrieroption.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\doublebarrieroption.cpp" />
+    <ClCompile Include="ql\experimental\barrieroption\doublebarriertype.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\perturbativebarrieroptionengine.cpp" />
+    <ClCompile Include="ql\experimental\barrieroption\quantodoublebarrieroption.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\vannavolgabarrierengine.cpp" />
-    <ClCompile Include="ql\experimental\barrieroption\vannavolgadoublebarrierengine.cpp" />
+    <ClCompile Include="ql\experimental\barrieroption\wulinyongdoublebarrierengine.cpp" />
     <ClCompile Include="ql\experimental\convertiblebonds\convertiblebond.cpp" />
     <ClCompile Include="ql\experimental\convertiblebonds\discretizedconvertible.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticcompoundoptionengine.cpp" />

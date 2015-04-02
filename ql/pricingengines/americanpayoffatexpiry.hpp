@@ -37,7 +37,8 @@ namespace QuantLib {
                           DiscountFactor discount,
                           DiscountFactor dividendDiscount,
                           Real variance,
-                          const boost::shared_ptr<StrikedTypePayoff>& payoff);
+                          const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                          bool knock_in = true);
         Real value() const;
       private:
         Real spot_;
@@ -47,23 +48,22 @@ namespace QuantLib {
         Real forward_;
         Volatility stdDev_;
 
-        Real strike_, K_, DKDstrike_;
+        Real strike_, K_;
 
         Real mu_, log_H_S_;
 
-        Real D1_, D2_, cum_d1_, cum_d2_;
-
-        Real alpha_, beta_, DalphaDd1_, DbetaDd2_;
+        Real D1_, D2_, cum_d1_, cum_d2_, n_d1_, n_d2_;
 
         bool inTheMoney_;
-        Real Y_, DYDstrike_, X_, DXDstrike_;
+        Real Y_, X_;
+        bool knock_in_;
     };
 
 
     // inline definitions
 
     inline Real AmericanPayoffAtExpiry::value() const {
-        return discount_ * K_ * (Y_ * alpha_ + X_ * beta_);
+        return discount_ * K_ * (X_ * cum_d1_ + Y_ * cum_d2_);
     }
 
 }

@@ -12,11 +12,19 @@ this_include_HEADERS = \
     extendedblackvariancesurface.hpp \
     interestratevolsurface.hpp \
     noarbsabr.hpp \
+    noarbsabrinterpolatedsmilesection.hpp \
     noarbsabrinterpolation.hpp \
     noarbsabrsmilesection.hpp \
-    noarbsabrinterpolatedsmilesection.hpp \
     sabrvolsurface.hpp \
-    volcube.hpp
+    sviinterpolatedsmilesection.hpp \
+    sviinterpolation.hpp \
+    svismilesection.hpp \
+    swaptionvolcube1a.hpp \
+    volcube.hpp \
+    zabr.hpp \
+    zabrinterpolatedsmilesection.hpp \
+    zabrinterpolation.hpp \
+    zabrsmilesection.hpp
 
 libVolatility_la_SOURCES = \
     abcdatmvolcurve.cpp \
@@ -28,10 +36,13 @@ libVolatility_la_SOURCES = \
     interestratevolsurface.cpp \
     noarbsabr.cpp \
     noarbsabrabsprobs.cpp \
-    noarbsabrsmilesection.cpp \
     noarbsabrinterpolatedsmilesection.cpp \
+    noarbsabrsmilesection.cpp \
     sabrvolsurface.cpp \
-    volcube.cpp
+    sviinterpolatedsmilesection.cpp \
+    svismilesection.cpp \
+    volcube.cpp \
+    zabr.cpp
 
 noinst_LTLIBRARIES = libVolatility.la
 

@@ -24,29 +24,28 @@ namespace QuantLib {
 
     AmericanPayoffAtExpiry::AmericanPayoffAtExpiry(
          Real spot, DiscountFactor discount, DiscountFactor dividendDiscount,
-         Real variance, const boost::shared_ptr<StrikedTypePayoff>& payoff)
+         Real variance, const boost::shared_ptr<StrikedTypePayoff>& payoff,
+         bool knock_in)
     : spot_(spot), discount_(discount), dividendDiscount_(dividendDiscount),
-      variance_(variance) {
+      variance_(variance), knock_in_(knock_in) {
 
         QL_REQUIRE(spot_>0.0,
-                   "positive spot_ value required");
-
-        forward_ = spot_ * dividendDiscount_ / discount_;
+                   "positive spot value required");
 
         QL_REQUIRE(discount_>0.0,
                    "positive discount required");
 
         QL_REQUIRE(dividendDiscount_>0.0,
-                   "positive dividend discount_ required");
+                   "positive dividend discount required");
 
         QL_REQUIRE(variance_>=0.0,
-                   "negative variance_ not allowed");
+                   "negative variance not allowed");
 
         stdDev_ = std::sqrt(variance_);
 
         Option::Type type   = payoff->optionType();
         strike_ = payoff->strike();
-
+        forward_ = spot_ * dividendDiscount_ / discount_;
 
         mu_ = std::log(dividendDiscount_/discount_)/variance_ - 0.5;
 
@@ -55,7 +54,6 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<CashOrNothingPayoff>(payoff);
         if (coo) {
             K_ = coo->cashPayoff();
-            DKDstrike_ = 0.0;
         }
 
         // binary asset-or-nothing payoff?
@@ -63,64 +61,101 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff);
         if (aoo) {
             K_ = forward_;
-            DKDstrike_ = 0.0;
             mu_ += 1.0;
         }
 
 
         log_H_S_ = std::log(strike_/spot_);
+        double log_S_H_ = std::log(spot_/strike_);
 
-        Real n_d1, n_d2;
+        double eta;
+        double phi;
+        switch (type) {
+            case Option::Call:
+                if (knock_in_) {
+                   // up-and-in cash-(at-expiry)-or-nothing option
+                   // a.k.a. american call with cash-or-nothing payoff
+                   eta = -1.0;
+                   phi =  1.0;
+                } else {
+                   // up-and-out cash-(at-expiry)-or-nothing option
+				   eta = -1.0;
+				   phi = -1.0;
+                }
+                break;
+            case Option::Put:
+               if (knock_in_) {
+                   // down-and-in cash-(at-expiry)-or-nothing option
+                   // a.k.a. american put with cash-or-nothing payoff
+                   eta =  1.0;
+                   phi = -1.0;
+                } else {
+                   // down-and-out cash-(at-expiry)-or-nothing option
+				   eta =  1.0;
+				   phi =  1.0;
+                }
+                break;
+            default:
+                QL_FAIL("invalid option type");
+         }
+
+
         if (variance_>=QL_EPSILON) {
-            D1_ = log_H_S_/stdDev_ + mu_*stdDev_;
-            D2_ = D1_ - 2.0*mu_*stdDev_;
+            D1_ = phi*(log_S_H_/stdDev_ + mu_*stdDev_);
+            D2_ = eta*(log_H_S_/stdDev_ + mu_*stdDev_);
+
             CumulativeNormalDistribution f;
             cum_d1_ = f(D1_);
             cum_d2_ = f(D2_);
-            n_d1 = f.derivative(D1_);
-            n_d2 = f.derivative(D2_);
+            n_d1_ = f.derivative(D1_);
+            n_d2_ = f.derivative(D2_);
         } else {
-            if (log_H_S_>0) {
+            if (log_S_H_ * phi >0)
                 cum_d1_= 1.0;
-                cum_d2_= 1.0;
-            } else {
+            else
                 cum_d1_= 0.0;
+            if (log_H_S_ * eta >0)
+                cum_d2_= 1.0;
+            else
                 cum_d2_= 0.0;
-            }
-            n_d1 = 0.0;
-            n_d2 = 0.0;
+            n_d1_ = 0.0;
+            n_d2_ = 0.0;
         }
 
 
         switch (type) {
-            // up-and-in cash-(at-hit)-or-nothing option
-            // a.k.a. american call with cash-or-nothing payoff
             case Option::Call:
-                if (strike_>spot_) {
-                    alpha_     = 1.0-cum_d2_;//  N(-d2)
-                    DalphaDd1_ =    -  n_d2; // -n( d2)
-                    beta_      = 1.0-cum_d1_;//  N(-d1)
-                    DbetaDd2_  =    -  n_d1; // -n( d1)
-                } else {
-                    alpha_     = 0.5;
-                    DalphaDd1_ = 0.0;
-                    beta_      = 0.5;
-                    DbetaDd2_  = 0.0;
+                if (strike_<=spot_) {
+                    if (knock_in_) {
+                        // up-and-in cash-(at-expiry)-or-nothing option
+                        // a.k.a. american call with cash-or-nothing payoff
+                        cum_d1_     = 0.5;
+                        cum_d2_     = 0.5;
+                    } else {
+                        // up-and-out cash-(at-expiry)-or-nothing option
+                        // already knocked out
+                        cum_d1_     = 0.0;
+                        cum_d2_     = 0.0;
+                    }
+                    n_d1_       = 0.0;
+                    n_d2_       = 0.0;
                 }
                 break;
-            // down-and-in cash-(at-hit)-or-nothing option
-            // a.k.a. american put with cash-or-nothing payoff
             case Option::Put:
-                if (strike_<spot_) {
-                    alpha_     =     cum_d2_;//  N(d2)
-                    DalphaDd1_ =       n_d2; //  n(d2)
-                    beta_      =     cum_d1_;//  N(d1)
-                    DbetaDd2_  =       n_d1; //  n(d1)
-                } else {
-                    alpha_     = 0.5;
-                    DalphaDd1_ = 0.0;
-                    beta_      = 0.5;
-                    DbetaDd2_  = 0.0;
+				if (strike_>=spot_) {
+                    if (knock_in_) {
+					    // down-and-in cash-(at-expiry)-or-nothing option
+					    // a.k.a. american put with cash-or-nothing payoff
+                        cum_d1_     = 0.5;
+                        cum_d2_     = 0.5;
+                    } else {
+					    // down-and-out cash-(at-expiry)-or-nothing option
+                        // already knocked out
+                        cum_d1_     = 0.0;
+                        cum_d2_     = 0.0;
+                    }
+                    n_d1_       = 0.0;
+                    n_d2_       = 0.0;
                 }
                 break;
             default:
@@ -131,16 +166,17 @@ namespace QuantLib {
         inTheMoney_ = (type==Option::Call && strike_<spot_) ||
                       (type==Option::Put  && strike_>spot_);
         if (inTheMoney_) {
-            Y_         = 1.0;
-            X_         = 1.0;
-            DYDstrike_ = 0.0;
-            DXDstrike_ = 0.0;
-        } else {
+            X_ = 1.0;
             Y_ = 1.0;
-            X_ = std::pow(Real(strike_/spot_), Real(2.0*mu_));
-//            DXDstrike_ = ......;
+        } else {
+            X_ = 1.0;
+            if (cum_d2_ == 0.0)
+                Y_ = 0.0; // check needed on some extreme cases
+            else
+                Y_ = std::pow(Real(strike_/spot_), Real(2.0*mu_));
         }
-
+        if (!knock_in_)
+           Y_ *= -1.0; 
     }
 
 }

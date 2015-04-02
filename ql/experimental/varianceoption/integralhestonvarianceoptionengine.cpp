@@ -27,7 +27,9 @@
 #include <boost/scoped_array.hpp>
 #include <complex>
 
-namespace {
+namespace QuantLib {
+
+    namespace {
 
     /*
      *****************************************************************
@@ -49,18 +51,18 @@ namespace {
      ****************************************************************
      */
 
-    typedef std::complex<double> Complex;
+    typedef std::complex<Real> Complex;
 
-    double IvopOneDim(double eps, double chi, double theta, double /*rho*/,
-                      double v0, double eprice, double tau, double rtax)
+    Real IvopOneDim(Real eps, Real chi, Real theta, Real /*rho*/,
+                      Real v0, Real eprice, Time tau, Real rtax)
     {
-        double ss=0.0;
+        Real ss=0.0;
         boost::scoped_array<double> xiv(new double[2048*2048+1]);
         double nris=0.0;
         int j=0,mm=0;
         double pi=0,pi2=0;
         double dstep=0;
-        double option=0, impart=0;
+        Real option=0, impart=0;
 
         boost::scoped_array<Complex> ff(new Complex[2048*2048]);
         Complex xi;
@@ -74,7 +76,7 @@ namespace {
          **   i0: initial integrated variance i0=0
          **********************************************************
          */
-        double i0=0.0;
+        Real i0=0.0;
         //s=2.0*chi*theta/(eps*eps)-1.0;
 
         //s=s+1;
@@ -87,7 +89,7 @@ namespace {
 
         pi= 3.14159265358979324;
         pi2=2.0*pi;
-        double s=2.0*chi*theta/(eps*eps)-1.0;
+        Real s=2.0*chi*theta/(eps*eps)-1.0;
         /*
          ****************************************
          ** Note that s must be greater than zero
@@ -195,23 +197,23 @@ namespace {
 
 
 
-    double IvopTwoDim(double eps, double chi, double theta, double /*rho*/,
-                    double v0, double tau, double rtax,
-                    const boost::function<double(double)>& payoff) {
+    Real IvopTwoDim(Real eps, Real chi, Real theta, Real /*rho*/,
+                    Real v0, Time tau, Real rtax,
+                    const boost::function<Real(Real)>& payoff) {
 
-        double ss=0.0;
+        Real ss=0.0;
         boost::scoped_array<double> xiv(new double[2048*2048+1]);
-        boost::scoped_array<double> ivet(new double[2048*2048+1]);
+        boost::scoped_array<double> ivet(new double[2048 * 2048 + 1]);
         double nris=0.0;
         int j=0,mm=0,k=0;
         double pi=0,pi2=0;
 
         double dstep=0;
-        double ip=0;
-        double payoffval=0;
-        double option=0/*, impart=0*/;
+        Real ip=0;
+        Real payoffval=0;
+        Real option=0/*, impart=0*/;
 
-        double sumr=0;//,sumi=0;
+        Real sumr=0;//,sumi=0;
         Complex dxi,z;
 
         boost::scoped_array<Complex> ff(new Complex[2048*2048]);
@@ -226,7 +228,7 @@ namespace {
          **   i0: initial integrated variance i0=0
          **********************************************************
          */
-        double i0=0.0;
+        Real i0=0.0;
 
         /*
          *************************************************
@@ -237,7 +239,7 @@ namespace {
         pi= 3.14159265358979324;
         pi2=2.0*pi;
 
-        double s=2.0*chi*theta/(eps*eps)-1.0;
+        Real s=2.0*chi*theta/(eps*eps)-1.0;
         /*
          ****************************************
          ** Note that s must be greater than zero
@@ -347,15 +349,12 @@ namespace {
         boost::shared_ptr<QuantLib::Payoff> payoff;
         payoff_adapter(boost::shared_ptr<QuantLib::Payoff> payoff)
         : payoff(payoff) {}
-        double operator()(double S) const {
+        Real operator()(Real S) const {
             return (*payoff)(S);
         }
     };
 
-}
-
-
-namespace QuantLib {
+    }
 
     IntegralHestonVarianceOptionEngine::IntegralHestonVarianceOptionEngine(
                               const boost::shared_ptr<HestonProcess>& process)

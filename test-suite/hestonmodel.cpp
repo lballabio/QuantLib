@@ -1244,8 +1244,8 @@ void HestonModelTest::testAnalyticPDFHestonEngine() {
     Settings::instance().evaluationDate() = settlementDate;
 
     const DayCounter dayCounter = Actual365Fixed();
-    const Handle<YieldTermStructure> riskFreeTS(flatRate(0.05 , dayCounter));
-    const Handle<YieldTermStructure> dividendTS(flatRate(0.075, dayCounter));
+    const Handle<YieldTermStructure> riskFreeTS(flatRate(0.07, dayCounter));
+    const Handle<YieldTermStructure> dividendTS(flatRate(0.185, dayCounter));
 
     const Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
 
@@ -1261,13 +1261,14 @@ void HestonModelTest::testAnalyticPDFHestonEngine() {
                               s0, v0, kappa, theta, sigma, rho))));
 
     const Real tol = 1e-6;
-    const boost::shared_ptr<PricingEngine> pdfEngine(
+    const boost::shared_ptr<AnalyticPDFHestonEngine> pdfEngine(
         new AnalyticPDFHestonEngine(model, tol));
 
     const boost::shared_ptr<PricingEngine> analyticEngine(
         new AnalyticHestonEngine(model, 192));
 
     const Date maturityDate(5, July, 2014);
+    const Time maturity = dayCounter.yearFraction(settlementDate, maturityDate);
     const boost::shared_ptr<Exercise> exercise(
         new EuropeanExercise(maturityDate));
 
@@ -1297,7 +1298,7 @@ void HestonModelTest::testAnalyticPDFHestonEngine() {
     }
 
     // 2. digital call option (approx. with a call spread)
-    for (Real strike=40; strike < 190; strike+=20) {
+    for (Real strike=40; strike < 190; strike+=10) {
         VanillaOption digitalOption(
             boost::shared_ptr<StrikedTypePayoff>(
                 new CashOrNothingPayoff(Option::Call, strike, 1.0)),
@@ -1327,7 +1328,23 @@ void HestonModelTest::testAnalyticPDFHestonEngine() {
                 << "\n    expected   : " << expected
                 << "\n    calculated : " << calculated
                 << "\n    diff       : " << std::fabs(calculated-expected)
-                << "\n    tol        ; " << tol);
+                << "\n    tol        : " << tol);
+        }
+
+        const DiscountFactor d = riskFreeTS->discount(maturityDate);
+        const Real expectedCDF = 1.0 - expected/d;
+        const Real calculatedCDF = pdfEngine->cdf(strike, maturity);
+
+        if (std::fabs(expectedCDF - calculatedCDF) > tol) {
+            BOOST_FAIL(
+                   "failed to reproduce cumulative distribution function"
+                << "\n    strike        : " << strike
+                << "\n    expected CDF  : " << expectedCDF
+                << "\n    calculated CDF: " << calculatedCDF
+                << "\n    diff          : "
+                << std::fabs(calculatedCDF-expectedCDF)
+                << "\n    tol           : " << tol);
+
         }
     }
 }
@@ -1423,7 +1440,7 @@ void HestonModelTest::testExpansionOnAlanLewisReference() {
 }
 
 void HestonModelTest::testExpansionOnFordeReference() {
-    BOOST_TEST_MESSAGE("Testing expansion on Alan Lewis reference prices...");
+    BOOST_TEST_MESSAGE("Testing expansion on Forde reference prices...");
 
     SavedSettings backup;
 

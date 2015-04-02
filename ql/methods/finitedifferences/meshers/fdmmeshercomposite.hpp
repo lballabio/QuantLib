@@ -59,6 +59,9 @@ namespace QuantLib {
         Real location(const FdmLinearOpIterator& iter, Size direction) const;
         Disposable<Array> locations(Size direction) const;
 
+        const std::vector<boost::shared_ptr<Fdm1dMesher> >&
+            getFdm1dMeshers() const;
+
       private:
         const std::vector<boost::shared_ptr<Fdm1dMesher> > mesher_;
     };

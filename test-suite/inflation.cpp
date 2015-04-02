@@ -47,6 +47,9 @@ using boost::unit_test_framework::test_suite;
 
 using namespace QuantLib;
 
+using std::fabs;
+using std::pow;
+
 namespace {
 
     struct Datum {

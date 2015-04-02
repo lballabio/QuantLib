@@ -395,7 +395,7 @@ public:
 
 // verify than if engine
 void ForwardOptionTest::testGreeksInitialization() {
-   BOOST_TEST_MESSAGE("Testing forward option greeks initialization ...");
+   BOOST_TEST_MESSAGE("Testing forward option greeks initialization...");
 
    DayCounter dc = Actual360();
    Date today = Date::todaysDate();

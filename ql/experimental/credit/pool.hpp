@@ -24,9 +24,9 @@
 #ifndef quantlib_pool_hpp
 #define quantlib_pool_hpp
 
-#include <map>
 #include <ql/utilities/disposable.hpp>
 #include <ql/experimental/credit/issuer.hpp>
+#include <map>
 
 namespace QuantLib {
 

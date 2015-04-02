@@ -916,6 +916,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\businessdayconventions.cpp"
+				>
+			</File>
+			<File
 				RelativePath="calendars.cpp"
 				>
 			</File>
@@ -1009,6 +1013,14 @@
 			</File>
 			<File
 				RelativePath=".\dividendoption.cpp"
+				>
+			</File>
+			<File
+				RelativePath="doublebarrieroption.cpp"
+				>
+			</File>
+			<File
+				RelativePath="doublebinaryoption.cpp"
 				>
 			</File>
 			<File
@@ -1371,6 +1383,10 @@
 				RelativePath=".\vpp.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\zabr.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -1434,6 +1450,10 @@
 			</File>
 			<File
 				RelativePath=".\brownianbridge.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\businessdayconventions.hpp"
 				>
 			</File>
 			<File
@@ -1530,6 +1550,14 @@
 			</File>
 			<File
 				RelativePath=".\dividendoption.hpp"
+				>
+			</File>
+			<File
+				RelativePath="doublebarrieroption.hpp"
+				>
+			</File>
+			<File
+				RelativePath="doublebinaryoption.hpp"
 				>
 			</File>
 			<File
@@ -1894,6 +1922,10 @@
 			</File>
 			<File
 				RelativePath=".\vpp.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\zabr.hpp"
 				>
 			</File>
 		</Filter>
