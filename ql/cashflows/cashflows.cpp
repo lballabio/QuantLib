@@ -860,14 +860,12 @@ namespace QuantLib {
         Leg::const_iterator i = nextCashFlow(leg,
                                              includeSettlementDateFlows,
                                              settlementDate);
+
+        if ((*i)->tradingExCoupon(settlementDate))
+            ++i;
+
         if (i == leg.end())
             return 0.0;
-
-        if ((*i)->tradingExCoupon(settlementDate)) {
-            ++i;
-            if (i == leg.end())
-                return 0.0;
-        }
 
         Real npv = 0.0;
         DiscountFactor discount = 1.0;
