@@ -30,8 +30,6 @@
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/time/schedule.hpp>
 
-#include <boost/make_shared.hpp>
-
 namespace QuantLib {
 
     //! Ibor rate coupon with digital digital call/put option

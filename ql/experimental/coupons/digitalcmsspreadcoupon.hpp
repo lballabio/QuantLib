@@ -28,8 +28,6 @@
 #include <ql/experimental/coupons/cmsspreadcoupon.hpp>
 #include <ql/time/schedule.hpp>
 
-#include <boost/make_shared.hpp>
-
 namespace QuantLib {
 
     //! Cms-spread-rate coupon with digital digital call/put option
