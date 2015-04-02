@@ -3,7 +3,6 @@
 /*
  Copyright (C) 2004 FIMAT Group
  Copyright (C) 2007, 2009, 2010, 2011 StatPro Italia srl
- Copyright (C) 2014 Paolo Mazzocchi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
