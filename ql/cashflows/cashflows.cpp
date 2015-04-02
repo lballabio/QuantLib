@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2005, 2006 StatPro Italia srl
  Copyright (C) 2005 Charles Whitmore
- Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012 Ferdinando Ametrano
+ Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2014 Ferdinando Ametrano
  Copyright (C) 2008 Toyin Akin
 
  This file is part of QuantLib, a free-software/open-source library
@@ -95,7 +95,7 @@ namespace QuantLib {
 
         Leg::const_reverse_iterator i;
         for (i = leg.rbegin(); i<leg.rend(); ++i) {
-            if ((*i)->hasOccurred(settlementDate, includeSettlementDateFlows) )
+            if ((*i)->hasOccurred(settlementDate, includeSettlementDateFlows))
                 return i;
         }
         return leg.rend();
@@ -456,14 +456,11 @@ namespace QuantLib {
         Leg::const_iterator i = nextCashFlow(leg,
                                              includeSettlementDateFlows,
                                              settlementDate);
+        if ((*i)->tradingExCoupon(settlementDate))
+            ++i;
+
         if (i == leg.end())
             return 0.0;
-
-        if ((*i)->tradingExCoupon(settlementDate)) {
-            ++i;
-            if (i == leg.end())
-                return 0.0;
-        }
 
         return npv(leg, i, discountCurve, npvDate);
     }
@@ -483,14 +480,11 @@ namespace QuantLib {
         Leg::const_iterator i = nextCashFlow(leg,
                                              includeSettlementDateFlows,
                                              settlementDate);
+        if ((*i)->tradingExCoupon(settlementDate))
+            ++i;
+
         if (i == leg.end())
             return 0.0;
-
-        if ((*i)->tradingExCoupon(settlementDate)) {
-            ++i;
-            if (i == leg.end())
-                return 0.0;
-        }
 
         BPSCalculator calc(discountCurve);
         for (; i<leg.end(); ++i)
@@ -512,17 +506,12 @@ namespace QuantLib {
         Leg::const_iterator i = nextCashFlow(leg,
                                              includeSettlementDateFlows,
                                              settlementDate);
+        if ((*i)->tradingExCoupon(settlementDate))
+            ++i;
+
         if (i == leg.end()) {
             bps = 0.0;
             return;
-        }
-
-        if ((*i)->tradingExCoupon(settlementDate)) {
-            ++i;
-            if (i == leg.end()) {
-                bps = 0.0;
-                return;
-            }
         }
 
         BPSCalculator calc(discountCurve);
@@ -553,12 +542,10 @@ namespace QuantLib {
                                              includeSettlementDateFlows,
                                              settlementDate);
 
-        QL_REQUIRE(i != leg.end(), "no cashflows left: impossible atm rate");
-
-        if ((*i)->tradingExCoupon(settlementDate)) {
+        if ((*i)->tradingExCoupon(settlementDate))
             ++i;
-            QL_REQUIRE(i != leg.end(), "no cashflows left: impossible atm rate");
-        }
+
+        QL_REQUIRE(i != leg.end(), "no cashflows left: impossible atm rate");
 
         Real npv = 0.0;
         BPSCalculator calc(discountCurve);
@@ -613,14 +600,11 @@ namespace QuantLib {
             Leg::const_iterator i = CashFlows::nextCashFlow(
                             leg, includeSettlementDateFlows, settlementDate);
 
+            if ((*i)->tradingExCoupon(settlementDate))
+                ++i;
+
             if (i == leg.end())
                 return 0.0;
-
-            if ((*i)->tradingExCoupon(settlementDate)) {
-                ++i;
-                if (i == leg.end())
-                    return 0.0;
-            }
 
             Real P = 0.0;
             Real dPdy = 0.0;
@@ -678,14 +662,11 @@ namespace QuantLib {
             Leg::const_iterator i = CashFlows::nextCashFlow(
                             leg, includeSettlementDateFlows, settlementDate);
 
+            if ((*i)->tradingExCoupon(settlementDate))
+                ++i;
+
             if (i == leg.end())
                 return 0.0;
-
-            if ((*i)->tradingExCoupon(settlementDate)) {
-                ++i;
-                if (i == leg.end())
-                    return 0.0;
-            }
 
             Real P = 0.0;
             Time t = 0.0;
@@ -814,14 +795,12 @@ namespace QuantLib {
                 Leg::const_iterator i = CashFlows::nextCashFlow(leg_,
                                 includeSettlementDateFlows_, settlementDate_);
 
-                QL_REQUIRE(i != leg_.end(),
-                                "no cashflows: IRR cannot be computed");
-
-                if ((*i)->tradingExCoupon(settlementDate_)) {
+                if ((*i)->tradingExCoupon(settlementDate_))
                     ++i;
-                    QL_REQUIRE(i != leg_.end(),
-                                "no cashflows: IRR cannot be computed");
-                }
+
+                QL_REQUIRE(i != leg_.end(),
+                    "no cashflows: IRR cannot be computed");
+
                 for (; i<leg_.end(); ++i) {
                     Integer thisSign = sign((*i)->amount());
                     if (lastSign * thisSign < 0) // sign change
@@ -1060,14 +1039,11 @@ namespace QuantLib {
         Leg::const_iterator i = CashFlows::nextCashFlow(
                         leg, includeSettlementDateFlows, settlementDate);
 
+        if ((*i)->tradingExCoupon(settlementDate))
+            ++i;
+
         if (i == leg.end())
             return 0.0;
-
-        if ((*i)->tradingExCoupon(settlementDate)) {
-            ++i;
-            if (i == leg.end())
-                return 0.0;
-        }
 
         const DayCounter& dc = y.dayCounter();
 
