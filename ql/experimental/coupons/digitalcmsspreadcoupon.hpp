@@ -28,25 +28,23 @@
 #include <ql/experimental/coupons/cmsspreadcoupon.hpp>
 #include <ql/time/schedule.hpp>
 
-#include <boost/make_shared.hpp>
-
 namespace QuantLib {
 
     //! Cms-spread-rate coupon with digital digital call/put option
     class DigitalCmsSpreadCoupon : public DigitalCoupon {
       public:
         DigitalCmsSpreadCoupon(
-                      const boost::shared_ptr<CmsSpreadCoupon>& underlying,
-                      Rate callStrike = Null<Rate>(),
-                      Position::Type callPosition = Position::Long,
-                      bool isCallATMIncluded = false,
-                      Rate callDigitalPayoff = Null<Rate>(),
-                      Rate putStrike = Null<Rate>(),
-                      Position::Type putPosition = Position::Long,
-                      bool isPutATMIncluded = false,
-                      Rate putDigitalPayoff = Null<Rate>(),
-                      const boost::shared_ptr<DigitalReplication>& replication =
-                                     boost::make_shared<DigitalReplication>());
+            const boost::shared_ptr<CmsSpreadCoupon> &underlying,
+            Rate callStrike = Null<Rate>(),
+            Position::Type callPosition = Position::Long,
+            bool isCallATMIncluded = false,
+            Rate callDigitalPayoff = Null<Rate>(),
+            Rate putStrike = Null<Rate>(),
+            Position::Type putPosition = Position::Long,
+            bool isPutATMIncluded = false,
+            Rate putDigitalPayoff = Null<Rate>(),
+            const boost::shared_ptr<DigitalReplication> &replication =
+                boost::shared_ptr<DigitalReplication>(new DigitalReplication));
 
         //! \name Visitability
         //@{
@@ -84,8 +82,9 @@ namespace QuantLib {
         DigitalCmsSpreadLeg& withPutPayoffs(Rate payoff);
         DigitalCmsSpreadLeg& withPutPayoffs(const std::vector<Rate>& payoffs);
         DigitalCmsSpreadLeg& withReplication(
-                    const boost::shared_ptr<DigitalReplication>& replication =
-                                     boost::shared_ptr<DigitalReplication>());
+            const boost::shared_ptr<DigitalReplication> &replication =
+                boost::shared_ptr<DigitalReplication>(new DigitalReplication));
+
         operator Leg() const;
       private:
         Schedule schedule_;
