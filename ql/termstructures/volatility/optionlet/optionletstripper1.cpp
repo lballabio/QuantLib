@@ -41,14 +41,15 @@ namespace QuantLib {
             Natural maxIter,
             const Handle<YieldTermStructure>& discount,
             VolatilityNature nature,
-            Real displacement)
+            Real displacement,
+            bool dontThrow)
     : OptionletStripper(termVolSurface, index, discount, nature, displacement),
       volQuotes_(nOptionletTenors_,
                  std::vector<shared_ptr<SimpleQuote> >(nStrikes_)),
       floatingSwitchStrike_(switchStrike==Null<Rate>() ? true : false),
       capFlooMatrixNotInitialized_(true),
       switchStrike_(switchStrike),
-      accuracy_(accuracy), maxIter_(maxIter) {
+      accuracy_(accuracy), maxIter_(maxIter), dontThrow_(dontThrow) {
 
         capFloorPrices_ = Matrix(nOptionletTenors_, nStrikes_);
         optionletPrices_ = Matrix(nOptionletTenors_, nStrikes_);
@@ -174,15 +175,17 @@ namespace QuantLib {
                   }
                 }
                 catch (std::exception &e) {
-                    optionletStDevs_[i][j]=0.0;
-                    // QL_FAIL("could not bootstrap optionlet:"
-                    //         "\n type:    " << optionletType <<
-                    //         "\n strike:  " << io::rate(strikes[j]) <<
-                    //         "\n atm:     " << io::rate(atmOptionletRate_[i]) <<
-                    //         "\n price:   " << optionletPrices_[i][j] <<
-                    //         "\n annuity: " << optionletAnnuity <<
-                    //         "\n expiry:  " << optionletDates_[i] <<
-                    //         "\n error:   " << e.what());
+                    if(dontThrow_)
+                        optionletStDevs_[i][j]=0.0;
+                    else
+                        QL_FAIL("could not bootstrap optionlet:"
+                            "\n type:    " << optionletType <<
+                            "\n strike:  " << io::rate(strikes[j]) <<
+                            "\n atm:     " << io::rate(atmOptionletRate_[i]) <<
+                            "\n price:   " << optionletPrices_[i][j] <<
+                            "\n annuity: " << optionletAnnuity <<
+                            "\n expiry:  " << optionletDates_[i] <<
+                            "\n error:   " << e.what());
                 }
                 optionletVolatilities_[i][j] = optionletStDevs_[i][j] /
                                                 std::sqrt(optionletTimes_[i]);
