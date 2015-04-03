@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -34,12 +35,18 @@ namespace QuantLib {
 
     class PricingEngine;
 
-    //! liquid market instrument used during calibration
-    class CalibrationHelper : public LazyObject {
+    //! abstract base class for calibration helpers
+    class CalibrationHelperBase {
+      public:
+        //! returns the error resulting from the model valuation
+        virtual Real calibrationError() = 0;
+    };
+
+    //! liquid black76 market instrument used during calibration
+    class CalibrationHelper : public LazyObject, public CalibrationHelperBase {
       public:
         enum CalibrationErrorType {
                             RelativePriceError, PriceError, ImpliedVolError};
-          
         CalibrationHelper(const Handle<Quote>& volatility,
                           const Handle<YieldTermStructure>& termStructure,
                           CalibrationErrorType calibrationErrorType 
@@ -64,7 +71,7 @@ namespace QuantLib {
         virtual Real modelValue() const = 0;
 
         //! returns the error resulting from the model valuation
-        virtual Real calibrationError();
+        Real calibrationError();
 
         virtual void addTimesTo(std::list<Time>& times) const = 0;
 

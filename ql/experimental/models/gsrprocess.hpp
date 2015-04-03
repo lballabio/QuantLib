@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2013, 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -42,7 +42,7 @@ namespace QuantLib {
     class GsrProcess : public ForwardMeasureProcess1D {
       public:
         GsrProcess(const Array &times, const Array &vols,
-                   const Array &reversions, const Real T = 60.0);
+                   const Array &reversions, const Array &adjusters, const Real T = 60.0);
         //! \name StochasticProcess1D interface
         //@{
         Real x0() const;
@@ -67,6 +67,7 @@ namespace QuantLib {
         const Array &times_;
         const Array &vols_;
         const Array &reversions_;
+        const Array &adjusters_;
 
       private:
         Real expectationp1(Time t0, Real x0,

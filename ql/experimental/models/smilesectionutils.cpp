@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2013, 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -63,14 +63,16 @@ namespace QuantLib {
         else
             tmp = std::vector<Real>(moneynessGrid);
 
+        Real shift = section.shift();
+
         if (tmp[0] > QL_EPSILON) {
             m_.push_back(0.0);
-            k_.push_back(0.0);
+            k_.push_back(-shift);
         }
 
         bool minStrikeAdded = false, maxStrikeAdded = false;
         for (Size i = 0; i < tmp.size(); i++) {
-            Real k = tmp[i] * f_;
+            Real k = tmp[i] * (f_ + shift) - shift;
             if (tmp[i] <= QL_EPSILON ||
                 (k >= section.minStrike() && k <= section.maxStrike())) {
                 if (!minStrikeAdded || !close(k, section.minStrike())) {
@@ -83,19 +85,19 @@ namespace QuantLib {
                      // we put the respective endpoint in our grid
                      // in order to not loose too much information
                 if (k < section.minStrike() && !minStrikeAdded) {
-                    m_.push_back(section.minStrike() / f_);
+                    m_.push_back((section.minStrike()+shift) / f_);
                     k_.push_back(section.minStrike());
                     minStrikeAdded = true;
                 }
                 if (k > section.maxStrike() && !maxStrikeAdded) {
-                    m_.push_back(section.maxStrike() / f_);
+                    m_.push_back((section.maxStrike()+shift)/ f_);
                     k_.push_back(section.maxStrike());
                     maxStrikeAdded = true;
                 }
             }
         }
 
-        c_.push_back(f_);
+        c_.push_back(f_ + shift);
 
         for (Size i = 1; i < k_.size(); i++) {
             c_.push_back(section.optionPrice(k_[i], Option::Call, 1.0));
@@ -168,6 +170,7 @@ namespace QuantLib {
                    "arbitrage free region must at least contain two "
                    "points (only index is "
                        << leftIndex_ << ")");
+
     }
 
     const std::pair<Real, Real> SmileSectionUtils::arbitragefreeRegion() const {

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2013, 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,7 +30,6 @@
 
 #include <ql/pricingengines/genericmodelengine.hpp>
 
-
 namespace QuantLib {
 
     //! One factor model float float swaption engine
@@ -53,6 +52,10 @@ namespace QuantLib {
          of the underlying (as seen from "today") including
          all fixings greater (or greater equal depending
          on includeTodaysExercise) today.
+
+         Note that adjusters (if active) are applied always
+         to the float coupons of the first leg and only this
+         leg.
    */
 
     class Gaussian1dFloatFloatSwaptionEngine
@@ -61,6 +64,11 @@ namespace QuantLib {
                                     FloatFloatSwaption::arguments,
                                     FloatFloatSwaption::results> {
       public:
+        enum Probabilities {
+            None,
+            Naive,
+            Digital
+        };
 
         Gaussian1dFloatFloatSwaptionEngine(
             const boost::shared_ptr<Gaussian1dModel> &model,
@@ -71,7 +79,9 @@ namespace QuantLib {
                 Handle<Quote>(), // continously compounded w.r.t. yts daycounter
             const Handle<YieldTermStructure> &discountCurve =
                 Handle<YieldTermStructure>(),
-            const bool includeTodaysExercise = false)
+            const bool includeTodaysExercise = false,
+            const Probabilities probabilities = None,
+            const bool adjusted = false)
             : BasketGeneratingEngine(model, oas, discountCurve),
               GenericModelEngine<Gaussian1dModel, FloatFloatSwaption::arguments,
                                  FloatFloatSwaption::results>(model),
@@ -79,7 +89,8 @@ namespace QuantLib {
               extrapolatePayoff_(extrapolatePayoff),
               flatPayoffExtrapolation_(flatPayoffExtrapolation), model_(model),
               oas_(oas), discountCurve_(discountCurve),
-              includeTodaysExercise_(includeTodaysExercise) {
+              includeTodaysExercise_(includeTodaysExercise),
+              probabilities_(probabilities), adjusted_(adjusted) {
 
             if (!discountCurve_.empty())
                 registerWith(discountCurve_);
@@ -89,6 +100,11 @@ namespace QuantLib {
         }
 
         void calculate() const;
+
+        Handle<YieldTermStructure> discountingCurve() const {
+            return discountCurve_.empty() ? model_->termStructure()
+                                          : discountCurve_;
+        }
 
       protected:
         const Real underlyingNpv(const Date &expiry, const Real y) const;
@@ -104,14 +120,16 @@ namespace QuantLib {
         const Handle<Quote> oas_;
         const Handle<YieldTermStructure> discountCurve_;
         const bool includeTodaysExercise_;
+        const Probabilities probabilities_;
+        const bool adjusted_;
 
         const std::pair<Real, Real>
         npvs(const Date &expiry, const Real y,
-             const bool includeExerciseOnxpiry) const;
+             const bool includeExerciseOnxpiry,
+             const bool considerProbabilities=false) const;
 
         mutable boost::shared_ptr<RebatedExercise> rebatedExercise_;
     };
-
 }
 
 #endif

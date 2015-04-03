@@ -56,6 +56,12 @@ namespace QuantLib {
                                     NonstandardSwaption::arguments,
                                     NonstandardSwaption::results> {
       public:
+        enum Probabilities {
+            None,
+            Naive,
+            Digital
+        };
+
         Gaussian1dNonstandardSwaptionEngine(
             const boost::shared_ptr<Gaussian1dModel> &model,
             const int integrationPoints = 64, const Real stddevs = 7.0,
@@ -65,7 +71,8 @@ namespace QuantLib {
                                                         // compounded w.r.t. yts
                                                         // daycounter
             const Handle<YieldTermStructure> &discountCurve =
-                Handle<YieldTermStructure>())
+                Handle<YieldTermStructure>(),
+            const Probabilities probabilities = None)
             : BasketGeneratingEngine(model, oas, discountCurve),
               GenericModelEngine<Gaussian1dModel,
                                  NonstandardSwaption::arguments,
@@ -73,7 +80,8 @@ namespace QuantLib {
               integrationPoints_(integrationPoints), stddevs_(stddevs),
               extrapolatePayoff_(extrapolatePayoff),
               flatPayoffExtrapolation_(flatPayoffExtrapolation),
-              discountCurve_(discountCurve), oas_(oas) {
+              discountCurve_(discountCurve), oas_(oas),
+              probabilities_(probabilities) {
 
             if (!oas_.empty())
                 registerWith(oas_);
@@ -96,6 +104,7 @@ namespace QuantLib {
         const bool extrapolatePayoff_, flatPayoffExtrapolation_;
         const Handle<YieldTermStructure> discountCurve_;
         const Handle<Quote> oas_;
+        const Probabilities probabilities_;
     };
 }
 

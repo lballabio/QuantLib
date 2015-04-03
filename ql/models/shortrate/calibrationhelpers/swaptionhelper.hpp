@@ -44,7 +44,8 @@ namespace QuantLib {
                        CalibrationHelper::CalibrationErrorType errorType
                                       = CalibrationHelper::RelativePriceError,
                        const Real strike = Null<Real>(),
-                       const Real nominal = 1.0);
+                       const Real nominal = 1.0,
+                       const Real shift = 0.0);
 
         SwaptionHelper(const Date& exerciseDate,
                        const Period& length,
@@ -57,7 +58,8 @@ namespace QuantLib {
                        CalibrationHelper::CalibrationErrorType errorType
                                       = CalibrationHelper::RelativePriceError,
                        const Real strike = Null<Real>(),
-                       const Real nominal = 1.0);
+                       const Real nominal = 1.0,
+                       const Real shift = 0.0);
 
         SwaptionHelper(const Date& exerciseDate,
                        const Date& endDate,
@@ -70,7 +72,8 @@ namespace QuantLib {
                        CalibrationHelper::CalibrationErrorType errorType
                                       = CalibrationHelper::RelativePriceError,
                        const Real strike = Null<Real>(),
-                       const Real nominal = 1.0);
+                       const Real nominal = 1.0,
+                       const Real shift = 0.0);
 
         virtual void addTimesTo(std::list<Time>& times) const;
         virtual Real modelValue() const;
@@ -85,7 +88,7 @@ namespace QuantLib {
         const Period maturity_, length_, fixedLegTenor_;
         const boost::shared_ptr<IborIndex> index_;
         const DayCounter fixedLegDayCounter_, floatingLegDayCounter_;
-        const Real strike_, nominal_;
+        const Real strike_, nominal_, shift_;
         mutable Rate exerciseRate_;
         mutable boost::shared_ptr<VanillaSwap> swap_;
         mutable boost::shared_ptr<Swaption> swaption_;

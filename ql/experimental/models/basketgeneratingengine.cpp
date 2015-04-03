@@ -84,6 +84,7 @@ namespace QuantLib {
                     atmVol = sec->volatility(0.03);
                 else
                     atmVol = sec->volatility(atmStrike);
+                Real shift = sec->shift();
 
                 helper = boost::shared_ptr<SwaptionHelper>(new SwaptionHelper(
                     expiry, underlyingLastDate(),
@@ -95,7 +96,7 @@ namespace QuantLib {
                     standardSwapBase->exogenousDiscount()
                         ? standardSwapBase->discountingTermStructure()
                         : standardSwapBase->forwardingTermStructure(),
-                    CalibrationHelper::RelativePriceError, Null<Real>(), 1.0));
+                    CalibrationHelper::RelativePriceError, Null<Real>(), 1.0, shift));
 
                 break;
             }
@@ -197,19 +198,25 @@ namespace QuantLib {
                 Period matPeriod =
                     years * Years + months * Months; //+days*Days;
 
+                boost::shared_ptr<SmileSection> sec =
+                    swaptionVolatility->smileSection(expiry, matPeriod, true);
+                Real shift = sec->shift();
+
                 // we have to floor the strike of the calibration instrument,
                 // see warning in the header
-                solution[2] = std::max(solution[2], 0.00001); // floor at 0.1bp
+                solution[2] = std::max(
+                    solution[2], 0.00001 - shift); // floor at 0.1bp - shift
 
                 // also the calibrated nominal may be zero, so we floor it, too
                 solution[0] =
                     std::max(solution[0], 0.000001); // float at 0.01bp
 
+                Real vol = sec->volatility(solution[2]);
+
                 helper = boost::shared_ptr<SwaptionHelper>(new SwaptionHelper(
                     expiry, matPeriod,
                     Handle<Quote>(boost::make_shared<SimpleQuote>(
-                        swaptionVolatility->volatility(
-                            expiry, matPeriod, solution[2], true))),
+                                      vol)),
                     standardSwapBase->iborIndex(),
                     standardSwapBase->fixedLegTenor(),
                     standardSwapBase->dayCounter(),
@@ -218,7 +225,7 @@ namespace QuantLib {
                         ? standardSwapBase->discountingTermStructure()
                         : standardSwapBase->forwardingTermStructure(),
                     CalibrationHelper::RelativePriceError, solution[2],
-                    fabs(solution[0])));
+                    fabs(solution[0]),shift));
                 break;
             }
 

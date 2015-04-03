@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2013, 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -38,7 +38,7 @@ namespace QuantLib {
       public:
         CalibrationFunction(
                   CalibratedModel* model,
-                  const std::vector<boost::shared_ptr<CalibrationHelper> >&
+                  const std::vector<boost::shared_ptr<CalibrationHelperBase> >&
                                                                   instruments,
                   const std::vector<Real>& weights,
                   const Projection& projection)
@@ -71,13 +71,29 @@ namespace QuantLib {
 
       private:
         boost::shared_ptr<CalibratedModel> model_;
-        const std::vector<boost::shared_ptr<CalibrationHelper> >& instruments_;
+        const std::vector<boost::shared_ptr<CalibrationHelperBase> >& instruments_;
         std::vector<Real> weights_;
         const Projection projection_;
     };
 
     void CalibratedModel::calibrate(
         const std::vector<boost::shared_ptr<CalibrationHelper> >& instruments,
+        OptimizationMethod& method,
+        const EndCriteria& endCriteria,
+        const Constraint& additionalConstraint,
+        const std::vector<Real>& weights,
+        const std::vector<bool>& fixParameters) {
+        std::vector<boost::shared_ptr<CalibrationHelperBase> > tmp;
+        for(Size i=0;i<instruments.size();++i) {
+            tmp.push_back(boost::static_pointer_cast<CalibrationHelperBase>(
+                instruments[i]));
+        }
+        calibrate(tmp, method, endCriteria, additionalConstraint, weights,
+                  fixParameters);
+    }
+
+    void CalibratedModel::calibrate(
+        const std::vector<boost::shared_ptr<CalibrationHelperBase> >& instruments,
         OptimizationMethod& method,
         const EndCriteria& endCriteria,
         const Constraint& additionalConstraint,
@@ -117,6 +133,16 @@ namespace QuantLib {
 
     Real CalibratedModel::value(const Array& params,
        const std::vector<boost::shared_ptr<CalibrationHelper> >& instruments) {
+        std::vector<boost::shared_ptr<CalibrationHelperBase> > tmp;
+        for(Size i=0;i<instruments.size();++i) {
+            tmp.push_back(boost::static_pointer_cast<CalibrationHelperBase>(
+                instruments[i]));
+        }
+        return value(params,tmp);
+    }
+
+    Real CalibratedModel::value(const Array& params,
+       const std::vector<boost::shared_ptr<CalibrationHelperBase> >& instruments) {
         std::vector<Real> w = std::vector<Real>(instruments.size(), 1.0);
         Projection p(params);
         CalibrationFunction f(this, instruments, w, p);

@@ -46,6 +46,14 @@ namespace QuantLib {
         - by defining the lower and upper bound to be the strike where
           undeflated (!) payer resp. receiver prices are below a given
           threshold
+        - by specificying a number of standard deviations to cover
+          using a Black Scholes process with an atm volatility as
+          a benchmark
+        In every case the lower and upper bound are applied though.
+        In case the smile section is shifted lognormal, the specified
+        lower and upper bound are applied to strike + shift so that
+        e.g. a zero lower bound always refers to the lower bound of
+        the rates in the shifted lognormal model.
     */
 
     class LinearTsrPricer : public CmsCouponPricer, public MeanRevertingPricer {
@@ -56,8 +64,8 @@ namespace QuantLib {
 
             Settings()
                 : strategy_(RateBound), vegaRatio_(0.01),
-                  priceThreshold_(1.0E-8), lowerRateBound_(0.0001),
-                  upperRateBound_(2.0000) {}
+                  priceThreshold_(1.0E-8), stdDevs_(3.0),
+                  lowerRateBound_(0.0001), upperRateBound_(2.0000) {}
 
             Settings &withRateBound(const Real lowerRateBound = 0.0001,
                                     const Real upperRateBound = 2.0000) {
@@ -87,15 +95,27 @@ namespace QuantLib {
                 return *this;
             }
 
+            Settings &withBSStdDevs(const Real stdDevs = 3.0,
+                                    const Real lowerRateBound = 0.0001,
+                                    const Real upperRateBound = 2.0000) {
+                strategy_ = BSStdDevs;
+                stdDevs_ = stdDevs;
+                lowerRateBound_ = lowerRateBound;
+                upperRateBound_ = upperRateBound;
+                return *this;
+            }
+
             enum Strategy {
                 RateBound,
                 VegaRatio,
-                PriceThreshold
+                PriceThreshold,
+                BSStdDevs
             };
 
             Strategy strategy_;
             Real vegaRatio_;
             Real priceThreshold_;
+            Real stdDevs_;
             Real lowerRateBound_, upperRateBound_;
         };
 
@@ -184,6 +204,8 @@ namespace QuantLib {
         Settings settings_;
         DayCounter volDayCounter_;
         boost::shared_ptr<Integrator> integrator_;
+
+        Real shiftedLowerBound_, shiftedUpperBound_;
     };
 }
 

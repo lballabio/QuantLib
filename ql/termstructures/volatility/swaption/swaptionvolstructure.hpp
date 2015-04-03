@@ -157,6 +157,12 @@ namespace QuantLib {
         //! the largest swapLength for which the term structure can return vols
         Time maxSwapLength() const;
         //@}
+        //@{
+        //! shift size for displaced lognormal volatility
+        virtual Real shift(Time optionTime, Time swapLength) const {
+            return 0.0;
+        }
+        //@}
         //! implements the conversion between swap tenor and swap (time) length
         Time swapLength(const Period& swapTenor) const;
         //! implements the conversion between swap dates and swap (time) length

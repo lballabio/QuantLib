@@ -73,9 +73,29 @@ namespace QuantLib {
             Date optionDate = optionDateFromTenor(optionTenor);
             return atmStrike(optionDate, swapTenor);
         }
+		Handle<SwaptionVolatilityStructure> atmVol() const { return atmVol_; }
+        const std::vector<Spread>& strikeSpreads() const { return strikeSpreads_; }
+        const std::vector<std::vector<Handle<Quote> > >& volSpreads() const { return volSpreads_; }
+        const boost::shared_ptr<SwapIndex> swapIndexBase() const { return swapIndexBase_; }
+        const boost::shared_ptr<SwapIndex> shortSwapIndexBase() const { return shortSwapIndexBase_; }
+        const bool vegaWeightedSmileFit() const { return vegaWeightedSmileFit_; }
         //@}
+        //! \name LazyObject interface
+        //@{
+        void performCalculations() const {
+            QL_REQUIRE(nStrikes_ >= requiredNumberOfStrikes(),
+                       "too few strikes (" << nStrikes_
+                                           << ") required are at least "
+                                           << requiredNumberOfStrikes());
+            SwaptionVolatilityDiscrete::performCalculations();
+        }
+        //@}
+        Real shift(Time optionTime, Time swapLength) const {
+            return atmVol_->shift(optionTime,swapLength);
+        }
       protected:
         void registerWithVolatilitySpread();
+        virtual Size requiredNumberOfStrikes() const { return 2; }
         Volatility volatilityImpl(Time optionTime,
                                   Time swapLength,
                                   Rate strike) const;
