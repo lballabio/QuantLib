@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2006 Klaus Spanderen
  Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2015 Thema Consulting SA
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -151,6 +152,15 @@ void MCLongstaffSchwartzEngineTest::testAmericanOption() {
             boost::shared_ptr<YieldTermStructure>(
                 new FlatForward(settlementDate, dividendYield, dayCounter)));
 
+    // expected results for exercise probability, evaluated with third-party
+    // product (using Cox-Rubinstein binomial tree)
+    Matrix expectedExProb(2, 3);
+    expectedExProb[0][0] = 0.48013; // (price: 2.105)
+    expectedExProb[0][1] = 0.51678; // (price: 3.451)
+    expectedExProb[0][2] = 0.54598; // (price: 4.807)
+    expectedExProb[1][0] = 0.75549; // (price: 4.505)
+    expectedExProb[1][1] = 0.67569; // (price: 5.764)
+    expectedExProb[1][2] = 0.65562; // (price: 7.138)
 
     LsmBasisSystem::PolynomType polynomTypes[]
         = { LsmBasisSystem::Monomial, LsmBasisSystem::Laguerre,
@@ -191,17 +201,28 @@ void MCLongstaffSchwartzEngineTest::testAmericanOption() {
             // FLOATING_POINT_EXCEPTION
             const Real calculated = americanOption.NPV();
             const Real errorEstimate = americanOption.errorEstimate();
+            const Real exerciseProbability =
+                americanOption.result<QuantLib::Real>("exerciseProbability");
 
             americanOption.setPricingEngine(boost::shared_ptr<PricingEngine>(
                         new FDAmericanEngine<CrankNicolson>(stochasticProcess,
                                                             401, 200)));
             const Real expected = americanOption.NPV();
 
+            // Check price
             if (std::fabs(calculated - expected) > 2.34*errorEstimate) {
                 BOOST_ERROR("Failed to reproduce american option prices"
                             << "\n    expected: " << expected
                             << "\n    calculated:   " << calculated
                             << " +/- " << errorEstimate);
+            }
+
+            // Check exercise probability (tolerance 1.5%)
+            if (std::fabs(exerciseProbability - expectedExProb[i][j]) > 0.015) {
+                BOOST_ERROR("Failed to reproduce american option "
+                            << "exercise probability"
+                            << "\n    expected: " << expectedExProb[i][j]
+                            << "\n    calculated:   " << exerciseProbability);
             }
         }
     }
