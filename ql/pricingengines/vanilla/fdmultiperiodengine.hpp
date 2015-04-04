@@ -185,6 +185,13 @@ namespace QuantLib {
         results->delta = prices_.firstDerivativeAtCenter();
         results->gamma = prices_.secondDerivativeAtCenter();
         results->additionalResults["priceCurve"] = prices_;
+        if (model_->prevDt() > 0.0) {
+            SampledCurve thetaCurve = prices_;
+            thetaCurve.values() =
+                (prices_.values() - model_->prevValue()) / 
+                model_->prevDt(); 
+            results->additionalResults["thetaCurve"] = thetaCurve;  
+        }
     }
 
     template <template <class> class Scheme>

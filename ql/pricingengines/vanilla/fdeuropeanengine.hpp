@@ -81,8 +81,13 @@ namespace QuantLib {
                                            results_.delta,
                                            results_.gamma);
         results_.additionalResults["priceCurve"] = prices_;
+        if (model.prevDt() > 0.0) {
+            SampledCurve thetaCurve = prices_;
+            thetaCurve.values() = 
+                (prices_.values() - model.prevValue()) / model.prevDt();
+            results_.additionalResults["thetaCurve"] = thetaCurve;
+        }
     }
-
 }
 
 
