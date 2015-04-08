@@ -57,9 +57,9 @@ namespace QuantLib {
              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size timeSteps)
         : process_(process), timeSteps_(timeSteps) {
-            QL_REQUIRE(timeSteps>0,
-                       "timeSteps must be positive, " << timeSteps <<
-                       " not allowed");
+            QL_REQUIRE(timeSteps >= 2,
+                       "at least 2 time steps required, "
+                       << timeSteps << " provided");
             registerWith(process_);
         }
         void calculate() const;
