@@ -221,7 +221,7 @@ Real ZabrModel::fullFdPrice(const Real strike) const {
 
     const Size sizef = 100;
     const Size sizev = 100;
-    const Size steps = 24 * expiryTime_;
+    const Size steps = Size(24 * expiryTime_); // Size(24 * expiryTime_ + 1)?
     const Size dampingSteps = 5;
     const Real densityf = 0.1;
     const Real densityv = 0.1;
