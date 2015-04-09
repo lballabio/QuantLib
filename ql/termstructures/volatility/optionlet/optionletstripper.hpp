@@ -88,8 +88,8 @@ namespace QuantLib {
         mutable std::vector<Time> optionletAccrualPeriods_;
 
         std::vector<Period> capFloorLengths_;
-        Real displacement_;
         Model model_;
+        Real displacement_;
     };
 
     /*! \relates OptionletStripper::Model */
