@@ -159,12 +159,13 @@ namespace QuantLib {
 
         Size maxIterations = Traits::maxIterations()-1;
 
+        // there might be a valid curve state to use as guess
+        bool validData = validCurve_;
+
         for (Size iteration=0; ; ++iteration) {
             previousData_ = ts_->data_;
 
             for (Size i=1; i<=alive_; ++i) { // pillar loop
-
-                bool validData = validCurve_ || iteration>0;
 
                 // bracket root and calculate guess
                 Real min = Traits::minValueAfter(i, ts_, validData,
@@ -203,7 +204,12 @@ namespace QuantLib {
                     else
                         firstSolver_.solve(*errors_[i], accuracy,guess,min,max);
                 } catch (std::exception &e) {
-                    validCurve_ = false;
+                    // the previous curve state could have been a bad guess
+                    // let's restart without using it
+                    if (validCurve_) {
+                        validCurve_ = validData = false;
+                        continue;
+                    }
                     QL_FAIL(io::ordinal(iteration+1) << " iteration: failed "
                             "at " << io::ordinal(i) << " alive instrument, "
                             "maturity " << errors_[i]->helper()->latestDate()<<
@@ -214,8 +220,6 @@ namespace QuantLib {
 
             if (!Interpolator::global)
                 break;     // no need for convergence loop
-            else if (iteration==0)
-                continue; // at least one more iteration to convergence check
 
             // exit condition
             Real change = std::fabs(data[1]-previousData_[1]);
@@ -228,6 +232,8 @@ namespace QuantLib {
                        "convergence not reached after " << iteration <<
                        " iterations; last improvement " << change <<
                        ", required accuracy " << accuracy);
+
+            validData = true;
         }
         validCurve_ = true;
     }
