@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,6 +26,7 @@
 #define quantlib_optimization_costfunction_h
 
 #include <ql/math/array.hpp>
+#include <ql/math/matrix.hpp>
 
 namespace QuantLib {
 
@@ -58,6 +60,31 @@ namespace QuantLib {
                                       const Array& x) const {
             gradient(grad, x);
             return value(x);
+        }
+
+        //! method to overload to compute J_f, the jacobian of
+        // the cost function with respect to x
+        virtual void jacobian(Matrix &jac, const Array &x) const {
+            Real eps = finiteDifferenceEpsilon();
+            Array xx(x), fp, fm;
+            for(Size i=0; i<x.size(); ++i) {
+                xx[i] += eps;
+                fp = values(xx);
+                xx[i] -= 2.0*eps;
+                fm = values(xx);
+                for(Size j=0; j<fp.size(); ++j) {
+                    jac[j][i] = 0.5*(fp[j]-fm[j])/eps;
+                }
+                xx[i] = x[i];
+            }
+        }
+
+        //! method to overload to compute J_f, the jacobian of
+        // the cost function with respect to x and also the cost function
+        virtual Disposable<Array> valuesAndJacobian(Matrix &jac,
+                                                    const Array &x) const {
+            jacobian(jac,x);
+            return values(x);
         }
 
         //! Default epsilon for finite difference method :
