@@ -156,7 +156,7 @@ namespace QuantLib {
         static Real npv(const Leg& leg,
                         Leg::const_iterator firstRelevantCashflow,
                         const YieldTermStructure& discountCurve,
-                        Date npvDate = Date());
+                        Date npvDate);
         //! Basis-point sensitivity of the cash flows.
         /*! The result is the change in NPV due to a uniform
             1-basis-point change in the rate paid by the cash
