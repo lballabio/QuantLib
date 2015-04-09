@@ -151,7 +151,7 @@ namespace QuantLib {
         /*! The NPV is the sum of the cash flows, each discounted
             according to the given term structure. The pointer to
             the first relevant one is provided for computational
-            efficiency
+            efficiency, assuming ordered cashflows
         */
         static Real npv(const Leg& leg,
                         Leg::const_iterator firstRelevantCashflow,
