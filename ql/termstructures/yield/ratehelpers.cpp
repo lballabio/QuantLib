@@ -169,9 +169,9 @@ namespace QuantLib {
         Rate convAdj = convAdj_.empty() ? 0.0 : convAdj_->value();
         // There are more things in heaven and earth, Horatio,
         // Than are dreamt of in your philosophy.
-        //QL_ENSURE(convAdj >= 0.0,
-        //          "Negative (" << convAdj <<
-        //          ") futures convexity adjustment");
+        // QL_ENSURE(convAdj >= 0.0,
+        //           "Negative (" << convAdj <<
+        //           ") futures convexity adjustment");
         Rate futureRate = forwardRate + convAdj;
         return 100.0 * (1.0 - futureRate);
     }
