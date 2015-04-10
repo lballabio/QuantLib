@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2005, 2006 StatPro Italia srl
  Copyright (C) 2005 Charles Whitmore
- Copyright (C) 2007, 2008, 2009, 2010, 2011, 2014 Ferdinando Ametrano
+ Copyright (C) 2007, 2008, 2009, 2010, 2011 Ferdinando Ametrano
  Copyright (C) 2008 Toyin Akin
 
  This file is part of QuantLib, a free-software/open-source library
@@ -30,7 +30,6 @@
 #include <ql/cashflows/duration.hpp>
 #include <ql/cashflow.hpp>
 #include <ql/interestrate.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
 #include <boost/shared_ptr.hpp>
 
 namespace QuantLib {
@@ -147,16 +146,6 @@ namespace QuantLib {
                         bool includeSettlementDateFlows,
                         Date settlementDate = Date(),
                         Date npvDate = Date());
-        //! NPV of the cash flows.
-        /*! The NPV is the sum of the cash flows, each discounted
-            according to the given term structure. The pointer to
-            the first relevant one is provided for computational
-            efficiency, assuming ordered cashflows
-        */
-        static Real npv(const Leg& leg,
-                        Leg::const_iterator firstRelevantCashflow,
-                        const YieldTermStructure& discountCurve,
-                        Date npvDate);
         //! Basis-point sensitivity of the cash flows.
         /*! The result is the change in NPV due to a uniform
             1-basis-point change in the rate paid by the cash
@@ -412,19 +401,6 @@ namespace QuantLib {
         //@}
 
     };
-
-    inline Real CashFlows::npv(const Leg& leg,
-                               Leg::const_iterator i,
-                               const YieldTermStructure& discountCurve,
-                               Date npvDate) {
-        Real totalNPV = 0.0;
-        for (; i<leg.end(); ++i) {
-            CashFlow& cf = *(*i);
-            totalNPV += cf.amount() * discountCurve.discount(cf.date());
-        }
-
-        return totalNPV/discountCurve.discount(npvDate);
-    }
 
 }
 
