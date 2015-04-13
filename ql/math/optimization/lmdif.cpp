@@ -1123,7 +1123,8 @@ void lmdif(int m,int n,Real* x,Real* fvec,Real ftol,
       int nprint, int* info,int* nfev,Real* fjac,
       int ldfjac,int* ipvt,Real* qtf,
       Real* wa1,Real* wa2,Real* wa3,Real* wa4,
-      const QuantLib::MINPACK::LmdifCostFunction& fcn)
+      const QuantLib::MINPACK::LmdifCostFunction& fcn,
+      const QuantLib::MINPACK::LmdifCostFunction& jacFcn)
 {
 /*
 *     **********
@@ -1296,7 +1297,7 @@ void lmdif(int m,int n,Real* x,Real* fvec,Real ftol,
 *
 *     subprograms called
 *
-*   user-supplied ...... fcn
+*   user-supplied ...... fcn, jacFcn
 *
 *   minpack-supplied ... dpmpar,enorm,fdjac2,lmpar,qrfac
 *
@@ -1363,7 +1364,10 @@ L30:
 *    calculate the jacobian matrix.
 */
 iflag = 2;
-fdjac2(m,n,x,fvec,fjac,ldfjac,&iflag,epsfcn,wa4, fcn);
+if(jacFcn != 0) // use user supplied jacobian calculation
+    jacFcn(m,n,x,fjac,&iflag);
+else
+    fdjac2(m,n,x,fvec,fjac,ldfjac,&iflag,epsfcn,wa4, fcn);
 *nfev += n;
 if(iflag < 0)
     goto L300;

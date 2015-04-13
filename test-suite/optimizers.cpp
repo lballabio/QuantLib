@@ -108,6 +108,7 @@ namespace {
 
     enum OptimizationMethodType {simplex,
                                  levenbergMarquardt,
+                                 levenbergMarquardt2,
                                  conjugateGradient,
                                  steepestDescent,
                                  bfgs};
@@ -118,6 +119,8 @@ namespace {
             return "Simplex";
           case levenbergMarquardt:
             return "Levenberg Marquardt";
+          case levenbergMarquardt2:
+            return "Levenberg Marquardt (cost function's jacbobian)";
           case conjugateGradient:
             return "Conjugate Gradient";
           case steepestDescent:
@@ -150,6 +153,12 @@ namespace {
                 new LevenbergMarquardt(levenbergMarquardtEpsfcn,
                                        levenbergMarquardtXtol,
                                        levenbergMarquardtGtol));
+          case levenbergMarquardt2:
+            return boost::shared_ptr<OptimizationMethod>(
+                new LevenbergMarquardt(levenbergMarquardtEpsfcn,
+                                       levenbergMarquardtXtol,
+                                       levenbergMarquardtGtol,
+                                       true));
           case conjugateGradient:
             return boost::shared_ptr<OptimizationMethod>(new ConjugateGradient);
           case steepestDescent:
@@ -225,7 +234,8 @@ namespace {
                             gradientNormEpsilons_.back())));
         // Set optimization methods for optimizer
         OptimizationMethodType optimizationMethodTypes[] = {
-            simplex, levenbergMarquardt, conjugateGradient, bfgs//, steepestDescent
+            simplex, levenbergMarquardt, levenbergMarquardt2, conjugateGradient,
+            bfgs //, steepestDescent
         };
         Real simplexLambda = 0.1;                   // characteristic search length for simplex
         Real levenbergMarquardtEpsfcn = 1.0e-8;     // parameters specific for Levenberg-Marquardt
