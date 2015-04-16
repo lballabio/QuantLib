@@ -1098,50 +1098,26 @@ void FdHestonTest::testSquareRootLogEvolveWithStationaryDensity() {
 
     for (Real sigma = 0.2; sigma < 2.01; sigma+=0.1) {
         //BOOST_TEST_MESSAGE("testing log process sigma =  " << sigma << "\n");
+        const Real lowerLimit = 0.001; 
+        // should not go to very large negative values, distributions flattens with sigma
+        // causing numerical instabilities log/exp evaluations
         const Real vMin = std::max(
-            0.001,invStationaryDistributionFct(kappa, theta, sigma, eps));
+            lowerLimit, invStationaryDistributionFct(kappa, theta, sigma, eps));
+        const Real lowEps = std::max(eps, StationaryDistributionFct(kappa, theta, sigma)(lowerLimit));
 
+        const Real expected = 1-eps-lowEps;
         const Real vMax
             = invStationaryDistributionFct(kappa, theta, sigma, 1-eps);
 
-        //const boost::shared_ptr<FdmMesher> mesher(
-        //    new FdmMesherComposite(boost::shared_ptr<Fdm1dMesher>(
-        //            new Uniform1dMesher(log(vgMin), log(vgMax), vGrid))));
-
-        //Real eta = sigma*coutsigma/kappa/theta/2.0;
-        Real beta = 0.075;
-        Real betaTheta = 0.02;
-        if (sigma > 1.6) {
-            beta = 0.01;
-            betaTheta = 0.5;
-        } else if (sigma > 1.5) {
-            beta = 0.01;
-            betaTheta = 0.5;
-        } else if (sigma > 1.4) {
-            //beta = 20.0/(log(vgMax)-log(vgMin))/(pow(eta,5.0));
-            beta = 0.03;
-            betaTheta = 0.1;
-        }
-        //BOOST_TEST_MESSAGE("beta " << beta 
-        //);
-        const std::pair<Real, Real>& cPoints
-                     = (std::pair<double, double>(log(vMin), beta));  // 0.075
         std::vector<Real> critialPoints;
-//        critialPoints.push_back(log(vMin));
         std::vector<boost::tuple<Real, Real, bool> > critPoints;
         critPoints.push_back(boost::tuple<Real, Real, bool>(log(vMin), 0.001, false));
-//        critPoints.push_back(boost::tuple<Real, Real, bool>(log(vMax), 1.0, false));
 
         const boost::shared_ptr<FdmMesherComposite> mesher(
             new FdmMesherComposite(boost::shared_ptr<Fdm1dMesher>(
                 new Uniform1dMesher(log(vMin), log(vMax), vGrid))));
-//                    new Concentrating1dMesher(log(vMin), log(vMax), vGrid, critPoints))));
 
         const Array v = mesher->locations(0);
-
-//        for (Size i=0; i < v.size(); ++i)
-//            std::cout << v[i] << ", ";
-//        std::cout << std::endl;
 
         Array p(vGrid);
         for (Size i=0; i < v.size(); ++i)
@@ -1151,9 +1127,7 @@ void FdHestonTest::testSquareRootLogEvolveWithStationaryDensity() {
             new FdmSquareRootFwdOp(mesher, kappa, theta,
                                    sigma, 0, 
                                    FdmSquareRootFwdOp::Log));
-
-        const Array eP = p;
-
+        
         const Size n = 100;
         const Time dt = 0.01;
         FdmBoundaryConditionSet bcSet;
@@ -1161,42 +1135,23 @@ void FdHestonTest::testSquareRootLogEvolveWithStationaryDensity() {
         evolver.setStep(dt);
 
         for (Size i=1; i <= n; ++i) {
-            //const Real alpha = 1-2*kappa*theta/(sigma*sigma);
-            //const Array vv(Exp(v));
-            //Real calculated = GaussLobattoIntegral(1000000, 1e-6)(
-            //                            q_fct(v,p,1), log(vMin), log(vMax));
-            //BOOST_TEST_MESSAGE("t " << (i-1)*dt << " integral " << calculated << "\n" 
-            //    << p << "\n"
-            //);
             evolver.step(p, i*dt);
         }
 
-        const Real expected = 1-2*eps;
-//        const Real calculated = GaussLobattoIntegral(1000000, 1e-6)(
-//                                        q_fct(v,p,1), log(vMin), log(vMax));
-//
-//        const Real calculated1 = GaussLobattoIntegral(1000000, 1e-6)(
-//                                        q_fct(v,eP,1), log(vMin), log(vMax));
-
         const Real calculated
             = FdmMesherIntegral(mesher, DiscreteSimpsonIntegral()).integrate(p);
-        const Real calculated1 = FdmMesherIntegral(mesher, DiscreteSimpsonIntegral()).integrate(eP);
 
-
-        std::cout << std::fabs(calculated - calculated1) << ", " ;
-//        const Real tol = 0.005;
-//        BOOST_TEST_MESSAGE("sigma " << sigma << ", " << calculated-expected
-//        );
-//        if (std::fabs(calculated-expected) > tol) {
-//            BOOST_ERROR("failed to reproduce stationary probability function for "
-//                    << "\n    sigma:      " << sigma
-//                    << "\n    calculated1:" << calculated1
-//                    << "\n    calculated: " << calculated
-//                    << "\n    expected:   " << expected
-//                    << "\n    tolerance:  " << tol);
-//        }
+        const Real tol = 0.005;
+        BOOST_TEST_MESSAGE("sigma " << sigma << ", " << calculated-expected
+        );
+        if (std::fabs(calculated-expected) > tol) {
+            BOOST_ERROR("failed to reproduce stationary probability function for "
+                    << "\n    sigma:      " << sigma
+                    << "\n    calculated: " << calculated
+                    << "\n    expected:   " << expected
+                    << "\n    tolerance:  " << tol);
+        }
     }
-    std::cout << std::endl;
 }
 
 void FdHestonTest::testSquareRootFokkerPlanckFwdEquation() {
@@ -1498,6 +1453,21 @@ namespace {
                 avg+=diff;
                 min=std::min(diff, min);
                 max=std::max(diff, max);
+                const Real tol = 0.015;
+                if (std::fabs(diff) > tol) {
+                    BOOST_FAIL("failed to reproduce Heston SLV prices at"
+                              << "\n   strike      " << strike
+                              << "\n   kappa       " << kappa
+                              << "\n   theta       " << theta
+                              << "\n   rho         " << rho
+                              << "\n   sigma       " << sigma
+                              << "\n   v0          " << v0
+                              << "\n   transform   " << transformationType
+                              << QL_FIXED << std::setprecision(5)
+                              << "\n   calculated: " << calculated
+                              << "\n   expected:   " << expected
+                              << "\n   tolerance:  " << tol);
+                }
             }
 
             std::cout << io::iso_date(nextMaturityDate) << "\t "
@@ -1574,7 +1544,6 @@ namespace {
             const std::vector<Date>& dates,
             std::vector<Time>& times,
             Matrix & surface) {
-        std::cout << "calculating lv surface" << std::endl;
         const boost::shared_ptr<LocalVolTermStructure> localVol
             = lvProcess->localVolatility().currentLink();
 
@@ -1587,19 +1556,14 @@ namespace {
             times[i] = dc.yearFraction(todaysDate, dates[i]);
         }
 
-        std::cout << "got link" << std::endl;
         for (Size i=0; i < strikes.size(); ++i) {
-            std::cout << "spot: " << strikes[i] << " : ";
             for (Size j=0; j < dates.size(); ++j) {
                 try {
                     surface[i][j] = localVol->localVol(dates[j], strikes[i], true);
                 } catch (Error&) {
                     surface[i][j] = 0.2;
                 }
-                std::cout //<< "(" << i << ", " << j << ") (" << strikes[i] << ", " << times[j] << ") : "
-                    << surface[i][j] << ", " ; // << std::endl;
             }
-            std::cout << std::endl;
         }
 
         boost::shared_ptr<BicubicSpline> leverage
@@ -1760,11 +1724,11 @@ void FdHestonTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
 
 
     Real denseStrikes[] =
-    { 2.222222222, 11.11111111, 20, 25, 30, 35, 40,
-      44.44444444, 50, 55, 60, 65, 70, 75.55555556,
-      80, 84.44444444, 88.88888889, 93.33333333, 97.77777778, 100,
-      102.2222222, 106.6666667, 111.1111111, 115.5555556, 120,
-      124.4444444, 166.6666667, 222.2222222, 444.4444444, 666.6666667 };
+        { 2.222222222, 11.11111111, 20, 25, 30, 35, 40,
+          44.44444444, 50, 55, 60, 65, 70, 75.55555556,
+          80, 84.44444444, 88.88888889, 93.33333333, 97.77777778, 100,
+          102.2222222, 106.6666667, 111.1111111, 115.5555556, 120,
+          124.4444444, 166.6666667, 222.2222222, 444.4444444, 666.6666667 };
 
     const std::vector<Real> ds(denseStrikes, denseStrikes+LENGTH(denseStrikes));
 
@@ -1970,7 +1934,7 @@ namespace {
         const Calendar calendar = TARGET();
         const DayCounter dayCounter = Actual365Fixed();
 
-        const Size nMonths = 5*12;
+        const Size nMonths = 12;//5*12;
         std::vector<Date> maturityDates;
         std::vector<Time> maturities;
         maturities.reserve(nMonths);
@@ -2017,37 +1981,36 @@ namespace {
         Real lowerBound, upperBound;
 
         switch (trafoType) {
-        case FdmSquareRootFwdOp::Log:
-          {
-            upperBound = std::log(
-                invStationaryDistributionFct(kappa, theta, sigma, 0.9995));
-            lowerBound = std::log(0.0000025);
-
-            const Real v0Center = std::log(v0);
-            const Real v0Density = 10.0;
-            const Real upperBoundDensity = 100;
-            const Real lowerBoundDensity = 1.0;
-            cPoints += boost::make_tuple(lowerBound, lowerBoundDensity, false);
-                       boost::make_tuple(v0Center, v0Density, true),
-                       boost::make_tuple(upperBound, upperBoundDensity, false);
-          }
-        break;
-        case FdmSquareRootFwdOp::Plain:
-          {
-            upperBound = std::max(1.25*v0,
+            case FdmSquareRootFwdOp::Log:
+              {
+                upperBound = std::log(
+                    invStationaryDistributionFct(kappa, theta, sigma, 0.9995));
+                lowerBound = std::log(0.0000025);
+                const Real v0Center = std::log(v0);
+                const Real v0Density = 10.0;
+                const Real upperBoundDensity = 100;
+                const Real lowerBoundDensity = 1.0;
+                cPoints += boost::make_tuple(lowerBound, lowerBoundDensity, false);
+                          boost::make_tuple(v0Center, v0Density, true),
+                          boost::make_tuple(upperBound, upperBoundDensity, false);
+              }
+            break;
+            case FdmSquareRootFwdOp::Plain:
+              {
+                upperBound = std::max(1.25*v0,
                     invStationaryDistributionFct(kappa, theta, sigma, 0.995));
-            lowerBound = std::min(0.75*v0,
+                lowerBound = std::min(0.75*v0,
                     invStationaryDistributionFct(kappa, theta, sigma, 1e-5));
 
-            const Real v0Center = v0;
-            const Real v0Density = 0.08;
-            const Real lowerBoundDensity = 0.05;
-            cPoints += boost::make_tuple(lowerBound, lowerBoundDensity, false),
-                       boost::make_tuple(v0Center, v0Density, true);
-          }
-        break;
-        default:
-            QL_FAIL("transformation type is not implemented");
+                const Real v0Center = v0;
+                const Real v0Density = 0.08;
+                const Real lowerBoundDensity = 0.05;
+                cPoints += boost::make_tuple(lowerBound, lowerBoundDensity, false),
+                    boost:: make_tuple(v0Center, v0Density, true);
+              }
+            break;
+            default:
+                QL_FAIL("transformation type is not implemented");
         }
 
         const boost::shared_ptr<Fdm1dMesher> varianceMesher(
@@ -2056,7 +2019,7 @@ namespace {
 
         const Volatility localVol = 0.3;
 
-        const Real sEps = 1e-4;
+        const Real sEps = 1e-3;
         const Real normInvEps = InverseCumulativeNormal()(1-sEps);
 
         const Real sLowerBound = x0 - normInvEps*localVol*std::sqrt(maturity);
@@ -2104,18 +2067,17 @@ namespace {
                              FdmSchemeDesc::Hundsdorfer().mu, hestonFwdOp);
 
         CraigSneydScheme cs(FdmSchemeDesc::CraigSneyd().theta,
-                FdmSchemeDesc::CraigSneyd().mu, hestonFwdOp );
+                    FdmSchemeDesc::CraigSneyd().mu, hestonFwdOp );
 
         ModifiedCraigSneydScheme mcg(
-            FdmSchemeDesc::ModifiedCraigSneyd().theta,
-            FdmSchemeDesc::ModifiedCraigSneyd().mu,    hestonFwdOp);
+                    FdmSchemeDesc::ModifiedCraigSneyd().theta,
+        FdmSchemeDesc::ModifiedCraigSneyd().mu, hestonFwdOp);
 
         DouglasScheme ds(0.5, hestonFwdOp);
         ImplicitEulerScheme ie(hestonFwdOp,
                                ImplicitEulerScheme::bc_set(), 1e-4);
 
         for (Size i=1; i < tMesh.size(); ++i) {
-            std::cout << i<< std::endl;
             const Time t = tMesh.at(i);
             const Time dt = t - tMesh.at(i-1);
 
@@ -2127,8 +2089,8 @@ namespace {
                 const Real pInt = DiscreteSimpsonIntegral()(v, pSlice);
 
                 const Real vpInt = (trafoType == FdmSquareRootFwdOp::Log)
-                    ? DiscreteSimpsonIntegral()(v, Exp(v)*pSlice)
-                    : DiscreteSimpsonIntegral()(v, v*pSlice);
+                          ? DiscreteSimpsonIntegral()(v, Exp(v)*pSlice)
+                          : DiscreteSimpsonIntegral()(v, v*pSlice);
 
                 const Real scale = pInt/vpInt;
                 const Real l = (scale >= 0.0)
@@ -2182,18 +2144,18 @@ namespace {
 
             const Real calculated = DiscreteSimpsonIntegral()(v, pSlice);
 
-            const Real tol = 1e-2;
-            if (std::fabs(expected-calculated) > tol) {
-                BOOST_FAIL("failed to reproduce probability "
-                           << "\n   strike      " << x[j]
-                           << QL_FIXED << std::setprecision(5)
-                           << "\n   calculated: " << calculated
-                           << "\n   expected:   " << expected
-                           << "\n   tolerance:  " << tol);
-            }
-            std::cout << tMesh.back() << " " << std::log(x[j])
-                      << " " << (*leverageFct)(maturity, x[j])
-                      << " " << calculated << " " << expected << std::endl;
+            const Real tol = 2e-2;
+//            if (std::fabs(expected-calculated) > tol) {
+//                BOOST_FAIL("failed to reproduce probability "
+//                           << "\n   strike      " << x[j]
+//                           << QL_FIXED << std::setprecision(5)
+//                           << "\n   calculated: " << calculated
+//                           << "\n   expected:   " << expected
+//                           << "\n   tolerance:  " << tol);
+//            }
+//            std::cout << tMesh.back() << " " << std::log(x[j])
+//                      << " " << (*leverageFct)(maturity, x[j])
+//                      << " " << calculated << " " << expected << std::endl;
         }
 
         const boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
@@ -2208,7 +2170,7 @@ namespace {
             new AnalyticHestonEngine(hestonModel, 192));
 
         const Real strikes[] = { 50, 75, 80, 90, 100, 110, 125, 150, 200 };
-        const Real times[] = { 1, 3, 6, 9, 12, 15, 18, 24, 36, 48, 60 };
+        const Real times[] = { 1, 3, 6, 9, 12 };//, 15, 18, 24, 36, 48, 60 };
 
         for (Size t=0; t < LENGTH(times); ++t) {
             const Date expiry = todaysDate +  Period(times[t], Months);
@@ -2218,17 +2180,14 @@ namespace {
             const boost::shared_ptr<PricingEngine> slvEngine(
                 new FdHestonVanillaEngine(hestonModel,
                     std::max(100.0, 101*times[t]/12.0), 201, 101, 0,
-                    FdmSchemeDesc::Hundsdorfer(),
-                    leverageFct));
+                        FdmSchemeDesc::Hundsdorfer(),
+                        leverageFct));
 
 
             for (Size s=0; s < LENGTH(strikes); ++s) {
                 const Real strike = strikes[s];
                 const Time time
                     = rTS->dayCounter().yearFraction(todaysDate, expiry);
-//                std::cout << "strike " << strike << " "
-//                          << times[t] << " "
-//                          << (*leverageFct)(time, strike) << std::endl;
 
                 const boost::shared_ptr<StrikedTypePayoff> payoff(
                     new PlainVanillaPayoff(
@@ -2251,14 +2210,27 @@ namespace {
                         Handle<BlackVolTermStructure>(flatVol(localVol,
                                                       dayCounter))));
 
-                std::cout << "strike " << strike << " "
-                          << times[t] << " "
-                          << expected << " " << vega << " "
-                          << calculated << " "
-                          << localVol + (calculated-expected)/vega
-                          << " " << pureHeston << " "
-                          << option.impliedVolatility(pureHeston, bp)
+                std::cout << "strike " << QL_FIXED << std::setprecision(0)
+                          << strike << "\t "
+                          << std::setprecision(0) << times[t] << "\t "
+                          << std::setprecision(8) << expected << " "
+                          << std::setprecision(8) << vega << " "
+                          << std::setprecision(8) << calculated << " "
+                          << std::setprecision(8) << localVol + (calculated-expected)/vega
+                          << " "
+                          << std::setprecision(8) << pureHeston << " "
+                          << std::setprecision(8) << option.impliedVolatility(pureHeston, bp)
                           << std::endl;
+//                const Real tol = 0.002; // 20bp
+//                if (std::fabs((calculated-expected)/vega) > tol) {
+//                    BOOST_FAIL("failed to reproduce round trip vola "
+//                              << "\n   strike      " << strike
+//                              << "\n   time        " << times[t]
+//                              << QL_FIXED << std::setprecision(5)
+//                              << "\n   calculated: " << localVol + (calculated-expected)/vega
+//                              << "\n   expected:   " << localVol
+//                              << "\n   tolerance:  " << tol);
+//                }
             }
         }
     }
@@ -2271,12 +2243,12 @@ void FdHestonTest::testLSVCalibration() {
     FokkerPlanckFwdTestCase testCases[] = {
 //        {
 //            100.0, 0.035, 0.01,
-//            0.19, 1.0, 0.1, -0.75, 0.2,
+//            0.1, 1.0, 0.1, -0.75, 0.2,
 //            201, 501, 201,
 //            FdmSquareRootFwdOp::Plain,
 //            FdmHestonGreensFct::Gaussian,
 //            FdmSchemeDesc::HundsdorferType
-//        },
+//        }
 //        {
 //            100.0, 0.035, 0.01,
 //            0.19, 1.0, 0.1, -0.75, 0.2,
@@ -2333,10 +2305,19 @@ void FdHestonTest::testLSVCalibration() {
 //            FdmHestonGreensFct::Gaussian,
 //            FdmSchemeDesc::ModifiedCraigSneydType
 //        }
+// original case, need more time steps for 5 bp roundtrip accuracy
+//        {
+//            100.0, 0.035, 0.01,
+//            0.06, 1.0, 0.06, -0.75, std::sqrt(0.2),
+//            201, 501, 401,
+//            FdmSquareRootFwdOp::Log,
+//            FdmHestonGreensFct::Gaussian,
+//            FdmSchemeDesc::ModifiedCraigSneydType
+//        }
         {
             100.0, 0.035, 0.01,
             0.06, 1.0, 0.06, -0.75, std::sqrt(0.2),
-            201, 501, 401,
+            401, 501, 1001,
             FdmSquareRootFwdOp::Log,
             FdmHestonGreensFct::Gaussian,
             FdmSchemeDesc::ModifiedCraigSneydType

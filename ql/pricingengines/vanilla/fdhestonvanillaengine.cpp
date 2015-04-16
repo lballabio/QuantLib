@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008, 2009 Ralph Schreyer
- Copyright (C) 2008, 2009, 2014 Klaus Spanderen
+ Copyright (C) 2008, 2009 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -72,7 +72,7 @@ namespace QuantLib {
                       process->s0(), process->dividendYield(), 
                       process->riskFreeRate(), varianceMesher->volaEstimate()),
                       maturity, payoff->strike(),
-                      Null<Real>(), Null<Real>(), 0.0001, 1.5, 
+                      Null<Real>(), Null<Real>(), 0.0001, 2.0,
                       std::pair<Real, Real>(payoff->strike(), 0.1)));
         }
         else {
