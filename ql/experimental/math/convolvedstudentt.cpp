@@ -189,8 +189,8 @@ namespace QuantLib {
         Real xMax = 1.e6;
         return sign *
             Brent().solve(boost::bind(std::bind2nd(std::minus<Real>(),
-            effectiveq), boost::bind<Real>(
-                &CumulativeBehrensFisher::operator (),
+            effectiveq), boost::bind(
+                &CumulativeBehrensFisher::operator(),
                 distrib_, _1)), accuracy_, (xMin+xMax)/2., xMin, xMax);
     }
 
