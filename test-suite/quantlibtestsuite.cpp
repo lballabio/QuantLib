@@ -288,8 +288,8 @@ test_suite* init_unit_test_suite(int, char* []) {
 //    test->add(EuropeanOptionTest::suite());
 //    test->add(ExchangeRateTest::suite());
 //    test->add(FastFourierTransformTest::suite());
-//    test->add(FdHestonTest::suite());
-//    test->add(FdmLinearOpTest::suite());
+    test->add(FdHestonTest::suite());
+    test->add(FdmLinearOpTest::suite());
 //    test->add(ForwardOptionTest::suite());
 //    test->add(FunctionsTest::suite());
 //    test->add(GARCHTest::suite());
