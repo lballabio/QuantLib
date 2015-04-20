@@ -18,9 +18,7 @@
 */
 
 #include <boost/function.hpp>
-#include <boost/lambda/lambda.hpp>
-//#include <boost/lambda/if.hpp>
-#include <boost/lambda/bind.hpp>
+#include <boost/bind.hpp>
 
 #include <ql/experimental/volatility/zabr.hpp>
 #include <ql/termstructures/volatility/sabr.hpp>
@@ -74,9 +72,8 @@ ZabrModel::lognormalVolatility(const std::vector<Real> &strikes) const {
     std::vector<Real> x_ = x(strikes);
     std::vector<Real> result(strikes.size());
     std::transform(strikes.begin(), strikes.end(), x_.begin(), result.begin(),
-                   boost::lambda::bind(&ZabrModel::lognormalVolatilityHelper,
-                                       this, boost::lambda::_1,
-                                       boost::lambda::_2));
+                   boost::bind(&ZabrModel::lognormalVolatilityHelper,
+                               this, _1, _2));
     return result;
 }
 
@@ -96,8 +93,8 @@ ZabrModel::normalVolatility(const std::vector<Real> &strikes) const {
     std::vector<Real> x_ = x(strikes);
     std::vector<Real> result(strikes.size());
     std::transform(strikes.begin(), strikes.end(), x_.begin(), result.begin(),
-                   boost::lambda::bind(&ZabrModel::normalVolatilityHelper, this,
-                                       boost::lambda::_1, boost::lambda::_2));
+                   boost::bind(&ZabrModel::normalVolatilityHelper, this,
+                               _1, _2));
     return result;
 }
 
@@ -117,8 +114,8 @@ ZabrModel::localVolatility(const std::vector<Real> &f) const {
     std::vector<Real> x_ = x(f);
     std::vector<Real> result(f.size());
     std::transform(f.begin(), f.end(), x_.begin(), result.begin(),
-                   boost::lambda::bind(&ZabrModel::localVolatilityHelper, this,
-                                       boost::lambda::_1, boost::lambda::_2));
+                   boost::bind(&ZabrModel::localVolatilityHelper, this,
+                               _1, _2));
     return result;
 }
 
@@ -332,7 +329,7 @@ ZabrModel::x(const std::vector<Real> &strikes) const {
                                       // the constructor
     std::vector<Real> y(strikes.size()), result(strikes.size());
     std::transform(strikes.rbegin(), strikes.rend(), y.begin(),
-                   boost::lambda::bind(&ZabrModel::y, this, boost::lambda::_1));
+                   boost::bind(&ZabrModel::y, this, _1));
 
     if (close(gamma_, 1.0)) {
         for (Size m = 0; m < y.size(); m++) {
@@ -353,9 +350,7 @@ ZabrModel::x(const std::vector<Real> &strikes) const {
             Real y0 = 0.0, u0 = 0.0;
             for (int m = ynz + (dir == -1 ? -1 : 0);
                  dir == -1 ? m >= 0 : m < (int)y.size(); m += dir) {
-                Real u = rk(boost::lambda::bind(&ZabrModel::F, this,
-                                                boost::lambda::_1,
-                                                boost::lambda::_2),
+                Real u = rk(boost::bind(&ZabrModel::F, this, _1, _2),
                             u0, y0, y[m]);
                 result[y.size() - 1 - m] = u * pow(alpha_, 1.0 - gamma_);
                 u0 = u;
