@@ -96,6 +96,7 @@
 #include "gjrgarchmodel.hpp"
 #include "gsr.hpp"
 #include "hestonmodel.hpp"
+#include "hestonslvmodel.hpp"
 #include "himalayaoption.hpp"
 #include "hybridhestonhullwhiteprocess.hpp"
 #include "inflation.hpp"
@@ -288,8 +289,8 @@ test_suite* init_unit_test_suite(int, char* []) {
 //    test->add(EuropeanOptionTest::suite());
 //    test->add(ExchangeRateTest::suite());
 //    test->add(FastFourierTransformTest::suite());
-    test->add(FdHestonTest::suite());
-    test->add(FdmLinearOpTest::suite());
+//    test->add(FdHestonTest::suite());
+//    test->add(FdmLinearOpTest::suite());
 //    test->add(ForwardOptionTest::suite());
 //    test->add(FunctionsTest::suite());
 //    test->add(GARCHTest::suite());
@@ -367,9 +368,10 @@ test_suite* init_unit_test_suite(int, char* []) {
 //    test->add(EverestOptionTest::suite());
 //    test->add(ExtendedTreesTest::suite());
 //    test->add(ExtensibleOptionsTest::suite());
-    test->add(FdHestonTest::experimental());
+//    test->add(FdHestonTest::experimental());
 //    test->add(GsrTest::suite());
 //    test->add(HestonModelTest::experimental());
+    test->add(HestonSLVModelTest::experimental());
 //    test->add(HimalayaOptionTest::suite());
 //    test->add(InflationCPICapFloorTest::suite());
 //    test->add(InflationVolTest::suite());

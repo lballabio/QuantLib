@@ -35,20 +35,8 @@ public:
     static void testFdmHestonEuropeanWithDividends();
     static void testFdmHestonConvergence();
     static void testFdmHestonBlackScholes();
-    static void testBlackScholesFokkerPlanckFwdEquation();
-    static void testSquareRootZeroFlowBC();
-    static void testTransformedZeroFlowBC();
-    static void testSquareRootEvolveWithStationaryDensity();
-    static void testSquareRootLogEvolveWithStationaryDensity();
-    static void testSquareRootFokkerPlanckFwdEquation();
-    static void testHestonFokkerPlanckFwdEquation();
-    static void testHestonFokkerPlanckFwdEquationLogLVLeverage();
-    static void testBlackScholesFokkerPlanckFwdEquationLocalVol();
-    static void testLSVCalibration();
 
     static boost::unit_test_framework::test_suite* suite();
-    static boost::unit_test_framework::test_suite* experimental();
-
 };
 
 #endif

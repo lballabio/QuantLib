@@ -55,6 +55,7 @@ QL_TESTS = \
 	gjrgarchmodel.hpp gjrgarchmodel.cpp \
 	gsr.hpp gsr.cpp \
 	hestonmodel.hpp hestonmodel.cpp \
+	hestonslvmodel.hpp hestonslvmodel.cpp \
 	himalayaoption.hpp himalayaoption.cpp \
 	hybridhestonhullwhiteprocess.hpp hybridhestonhullwhiteprocess.cpp \
 	inflation.hpp inflation.cpp \
