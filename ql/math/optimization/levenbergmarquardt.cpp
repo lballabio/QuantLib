@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Klaus Spanderen
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,8 +34,10 @@ namespace QuantLib {
 
     LevenbergMarquardt::LevenbergMarquardt(Real epsfcn,
                                            Real xtol,
-                                           Real gtol)
-    : info_(0), epsfcn_(epsfcn), xtol_(xtol), gtol_(gtol) {}
+                                           Real gtol,
+                                           bool useCostFunctionsJacobian)
+        : info_(0), epsfcn_(epsfcn), xtol_(xtol), gtol_(gtol),
+          useCostFunctionsJacobian_(useCostFunctionsJacobian) {}
 
     Integer LevenbergMarquardt::getInfo() const {
         return info_;
@@ -49,6 +52,10 @@ namespace QuantLib {
         initCostValues_ = P.costFunction().values(x_);
         int m = initCostValues_.size();
         int n = x_.size();
+        if(useCostFunctionsJacobian_) {
+            initJacobian_ = Matrix(m,n);
+            P.costFunction().jacobian(initJacobian_, x_);
+        }
         boost::scoped_array<Real> xx(new Real[n]);
         std::copy(x_.begin(), x_.end(), xx.get());
         boost::scoped_array<Real> fvec(new Real[m]);
@@ -80,8 +87,13 @@ namespace QuantLib {
 
         // call lmdif to minimize the sum of the squares of m functions
         // in n variables by the Levenberg-Marquardt algorithm.
-        MINPACK::LmdifCostFunction lmdifCostFunction = 
+        MINPACK::LmdifCostFunction lmdifCostFunction =
             boost::bind(&LevenbergMarquardt::fcn, this, _1, _2, _3, _4, _5);
+        MINPACK::LmdifCostFunction lmdifJacFunction =
+            useCostFunctionsJacobian_
+                ? boost::bind(&LevenbergMarquardt::jacFcn, this, _1, _2, _3,
+                              _4, _5)
+                : MINPACK::LmdifCostFunction(NULL);
         MINPACK::lmdif(m, n, xx.get(), fvec.get(),
                        endCriteria.functionEpsilon(),
                        xtol_,
@@ -92,7 +104,8 @@ namespace QuantLib {
                        nprint, &info, &nfev, fjac.get(),
                        ldfjac, ipvt.get(), qtf.get(),
                        wa1.get(), wa2.get(), wa3.get(), wa4.get(),
-                       lmdifCostFunction);
+                       lmdifCostFunction,
+                       lmdifJacFunction);
         info_ = info;
         // check requirements & endCriteria evaluation
         QL_REQUIRE(info != 0, "MINPACK: improper input parameters");
@@ -113,7 +126,7 @@ namespace QuantLib {
         std::copy(xx.get(), xx.get()+n, x_.begin());
         P.setCurrentValue(x_);
         P.setFunctionValue(P.costFunction().value(x_));
-        
+
         return ecType;
     }
 
@@ -130,5 +143,20 @@ namespace QuantLib {
         }
     }
 
-}
+    void LevenbergMarquardt::jacFcn(int m, int n, Real* x, Real* fjac, int*) {
+        Array xt(n);
+        std::copy(x, x+n, xt.begin());
+        // constraint handling needs some improvement in the future:
+        // starting point should not be close to a constraint violation
+        if (currentProblem_->constraint().test(xt)) {
+            Matrix tmp(m,n);
+            currentProblem_->costFunction().jacobian(tmp, xt);
+            Matrix tmpT = transpose(tmp);
+            std::copy(tmpT.begin(), tmpT.end(), fjac);
+        } else {
+            Matrix tmpT = transpose(initJacobian_);
+            std::copy(tmpT.begin(), tmpT.end(), fjac);
+        }
+    }
 
+}
