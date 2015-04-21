@@ -108,6 +108,7 @@ namespace QuantLib {
     void Period::normalize() {
         if (length_!=0)
             switch (units_) {
+              // 7 business days are not equal to 1 week
               case Months:
                 if (!(length_%12)) {
                     length_/=12;
