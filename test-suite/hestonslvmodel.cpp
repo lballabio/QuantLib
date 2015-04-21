@@ -697,7 +697,7 @@ namespace {
 
     struct FokkerPlanckFwdTestCase {
         const Real s0, r, q, v0, kappa, theta, rho, sigma;
-        const Size xGrid, vGrid, tGridPerYear;
+        const Size xGrid, vGrid, tGridPerYear, tMinGridPerYear;
         const Real avgEps, eps;
         const FdmSquareRootFwdOp::TransformationType trafoType;
         const FdmHestonGreensFct::Algorithm greensAlgorithm;
@@ -933,7 +933,7 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquation() {
         {
             100.0, 0.01, 0.02,
             0.05, 1.0, 0.05, -0.75, std::sqrt(0.2),
-            101, 401, 25,
+            101, 401, 25, 25,
 			0.02, 0.05,
             FdmSquareRootFwdOp::Power,
             FdmHestonGreensFct::Gaussian,
@@ -942,7 +942,7 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquation() {
         {
             100.0, 0.01, 0.02,
             0.05, 1.0, 0.05, -0.75, std::sqrt(0.2),
-            201, 501, 10,
+            201, 501, 10, 10,
 			0.005, 0.02,
             FdmSquareRootFwdOp::Log,
             FdmHestonGreensFct::Gaussian,
@@ -951,7 +951,7 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquation() {
 	    {
 			100.0, 0.01, 0.02,
 			0.05, 1.0, 0.05, -0.75, std::sqrt(0.2),
-			201, 501, 25,
+			201, 501, 25, 25,
 			0.01, 0.03,
 			FdmSquareRootFwdOp::Log,
 			FdmHestonGreensFct::ZeroCorrelation,
@@ -960,7 +960,7 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquation() {
         {
             100.0, 0.01, 0.02,
             0.05, 1.0, 0.05, -0.75, std::sqrt(0.05),
-            401, 501, 5,
+            401, 501, 5, 5,
 			0.01, 0.02,
             FdmSquareRootFwdOp::Plain,
             FdmHestonGreensFct::Gaussian,
@@ -1422,7 +1422,8 @@ namespace {
 
         const Size xGrid = testCase.xGrid;
         const Size vGrid = testCase.vGrid;
-        const Size tGridPerYear = testCase.tGridPerYear;
+        const Size tMaxGridPerYear = testCase.tGridPerYear;
+        const Size tMinGridPerYear = testCase.tMinGridPerYear;
 
         const FdmSquareRootFwdOp::TransformationType trafoType
             = testCase.trafoType;
@@ -1493,8 +1494,16 @@ namespace {
         std::vector<Time> mandatoryTimeSteps(1, eT);
         std::copy(maturities.begin(), maturities.end(),
                   std::back_inserter(mandatoryTimeSteps));
-        TimeGrid timeGrid(mandatoryTimeSteps.begin(), mandatoryTimeSteps.end(),
-                          maturity*tGridPerYear);
+
+        const Time smallStep = 1.0/tMaxGridPerYear;
+        const Time largeStep = 1.0/tMinGridPerYear;
+
+        for (Real t = smallStep; t < maturities.back();
+        	t+= smallStep + (largeStep-smallStep)*(1-exp(-kappa*t)) ) {
+        	mandatoryTimeSteps.push_back(t);
+        }
+
+        TimeGrid timeGrid(mandatoryTimeSteps.begin(), mandatoryTimeSteps.end());
 
         const Array x(Exp(Array(spotMesher->locations().begin(),
                                       spotMesher->locations().end())));
@@ -1647,7 +1656,7 @@ namespace {
                 const Real expected = option.NPV();
                 const Real vega = option.vega();
 
-                option.setPricingEngine(hestonEngine);
+//                option.setPricingEngine(hestonEngine);
 //                const Real pureHeston = option.NPV();
 //
 //                const boost::shared_ptr<GeneralizedBlackScholesProcess> bp(
@@ -1689,7 +1698,7 @@ void HestonSLVModelTest::testLSVCalibration() {
         {
             100.0, 0.035, 0.01,
             0.1, 1.0, 0.1, -0.75, 0.2,
-            201, 801, 401,
+            201, 801, 401, 401,
 			0.002, 0.002,
             FdmSquareRootFwdOp::Plain,
             FdmHestonGreensFct::Gaussian,
@@ -1698,7 +1707,7 @@ void HestonSLVModelTest::testLSVCalibration() {
         {
             100.0, 0.035, 0.01,
             0.19, 1.0, 0.1, -0.75, 0.2,
-            201, 801, 401,
+            201, 801, 401, 401,
 			0.0025, 0.0025,
             FdmSquareRootFwdOp::Plain,
             FdmHestonGreensFct::Gaussian,
@@ -1707,7 +1716,7 @@ void HestonSLVModelTest::testLSVCalibration() {
         {
             100.0, 0.035, 0.01,
             0.19, 1.0, 0.1, -0.75, 0.2,
-            101, 401, 51,
+            101, 401, 51, 51,
 			0.005, 0.005,
             FdmSquareRootFwdOp::Plain,
             FdmHestonGreensFct::Gaussian,
@@ -1717,7 +1726,7 @@ void HestonSLVModelTest::testLSVCalibration() {
         {
             100.0, 0.035, 0.01,
             0.06, 1.0, 0.06, -0.75, std::sqrt(0.2),
-            201, 501, 1001,
+            201, 501, 1001, 50,
 			0.002, 0.002,
             FdmSquareRootFwdOp::Log,
             FdmHestonGreensFct::Gaussian,
@@ -1734,22 +1743,22 @@ test_suite* HestonSLVModelTest::experimental() {
     test_suite* suite = BOOST_TEST_SUITE(
     	"Heston Stochastic Local Volatility tests");
 
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation));
-    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testSquareRootZeroFlowBC));
-    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testTransformedZeroFlowBC));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testSquareRootEvolveWithStationaryDensity));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testSquareRootFokkerPlanckFwdEquation));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquation));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation));
+//    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testSquareRootZeroFlowBC));
+//    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testTransformedZeroFlowBC));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testSquareRootEvolveWithStationaryDensity));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testSquareRootFokkerPlanckFwdEquation));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquation));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
 
     suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testLSVCalibration));
 
