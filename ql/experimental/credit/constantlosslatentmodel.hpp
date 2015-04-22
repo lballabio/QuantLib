@@ -44,7 +44,10 @@ namespace QuantLib {
             const std::vector<Real>& recoveries,
             LatentModelIntegrationType::LatentModelIntegrationType integralType,
             const typename copulaPolicy::initTraits& ini = 
-                copulaPolicy::initTraits()            
+#if defined(__GNUC__)
+                typename
+#endif
+                copulaPolicy::initTraits()
             ) 
         : DefaultLatentModel<copulaPolicy>(factorWeights, integralType, ini),
           recoveries_(recoveries) {

@@ -95,6 +95,9 @@ namespace QuantLib {
             const Handle<BaseCorrelationTermStructure<Corr2DInt_T> >& correlTS,
             const std::vector<Real>& recoveries,
             const typename BaseModel_T::copulaType::initTraits& traits = 
+#if defined(__GNUC__)
+                typename
+#endif
                 BaseModel_T::copulaType::initTraits()
             )
         : localCorrelationAttach_(boost::shared_ptr<SimpleQuote>(
