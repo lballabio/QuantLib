@@ -19,10 +19,10 @@
 
 #include "markovfunctional.hpp"
 #include "utilities.hpp"
-#include <ql/experimental/models/mfstateprocess.hpp>
-#include <ql/experimental/models/markovfunctional.hpp>
-#include <ql/experimental/models/gaussian1dswaptionengine.hpp>
-#include <ql/experimental/models/gaussian1dcapfloorengine.hpp>
+#include <ql/processes/mfstateprocess.hpp>
+#include <ql/models/shortrate/onefactormodels/markovfunctional.hpp>
+#include <ql/pricingengines/swaption/gaussian1dswaptionengine.hpp>
+#include <ql/pricingengines/capfloor/gaussian1dcapfloorengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionconstantvol.hpp>

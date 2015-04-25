@@ -12,11 +12,13 @@ this_include_HEADERS = \
 	g2process.hpp \
 	geometricbrownianprocess.hpp \
 	gjrgarchprocess.hpp \
+	gsrprocess.hpp \
 	hestonprocess.hpp \
 	hullwhiteprocess.hpp \
 	hybridhestonhullwhiteprocess.hpp \
 	jointstochasticprocess.hpp \
 	merton76process.hpp \
+	mfstateprocess.hpp \
 	ornsteinuhlenbeckprocess.hpp \
 	squarerootprocess.hpp \
 	stochasticprocessarray.hpp
@@ -30,11 +32,13 @@ libProcesses_la_SOURCES = \
 	g2process.cpp \
 	geometricbrownianprocess.cpp \
 	gjrgarchprocess.cpp \
+	gsrprocess.cpp \
 	hestonprocess.cpp \
 	hullwhiteprocess.cpp \
 	hybridhestonhullwhiteprocess.cpp \
 	jointstochasticprocess.cpp \
 	merton76process.cpp \
+	mfstateprocess.cpp \
 	ornsteinuhlenbeckprocess.cpp \
 	squarerootprocess.cpp \
 	stochasticprocessarray.cpp
