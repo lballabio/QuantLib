@@ -1534,57 +1534,126 @@ namespace {
 
         DouglasScheme ds(0.5, hestonFwdOp);
         ImplicitEulerScheme ie(hestonFwdOp,
-                               ImplicitEulerScheme::bc_set(), 1e-3);
+                               ImplicitEulerScheme::bc_set(), 1e-1);
 
         for (Size i=1; i < tMesh.size(); ++i) {
             const Time t = tMesh.at(i);
             const Time dt = t - tMesh.at(i-1);
 
-            for (Size j=0; j < x.size(); ++j) {
-                Array pSlice(vGrid);
-                for (Size k=0; k < vGrid; ++k)
-                    pSlice[k] = p[j + k*xGrid];
+            Array pn = p;
+            for (Size r=0; r < 2; ++r) {
+				for (Size j=0; j < x.size(); ++j) {
+					Array pSlice(vGrid);
+					for (Size k=0; k < vGrid; ++k)
+						pSlice[k] = pn[j + k*xGrid];
 
-                const Real pInt = DiscreteSimpsonIntegral()(v, pSlice);
+					const Real pInt = DiscreteSimpsonIntegral()(v, pSlice);
 
-                const Real vpInt = (trafoType == FdmSquareRootFwdOp::Log)
-                          ? DiscreteSimpsonIntegral()(v, Exp(v)*pSlice)
-                          : DiscreteSimpsonIntegral()(v, v*pSlice);
+					const Real vpInt = (trafoType == FdmSquareRootFwdOp::Log)
+							  ? DiscreteSimpsonIntegral()(v, Exp(v)*pSlice)
+							  : DiscreteSimpsonIntegral()(v, v*pSlice);
 
-                const Real scale = pInt/vpInt;
-                const Real l = (scale >= 0.0)
-                    ? localVol*std::sqrt(scale)
-                    : 1.0;
+					const Real scale = pInt/vpInt;
 
-                std::fill(L.row_begin(j)+i, L.row_end(j),
-                          std::min(5.0, std::max(0.01, l)));
-            }
+					const Real l = (scale >= 0.0)
+						? localVol*std::sqrt(scale)
+						: 1.0;
 
-            switch (testCase.schemeType) {
-              case FdmSchemeDesc::DouglasType:
-                ds.setStep(dt);
-                ds.step(p, t);
-              break;
-              case FdmSchemeDesc::HundsdorferType:
-                hs.setStep(dt);
-                hs.step(p, t);
-              break;
-              case FdmSchemeDesc::CraigSneydType:
-                cs.setStep(dt);
-                cs.step(p, t);
-              break;
-              case FdmSchemeDesc::ImplicitEulerType:
-                ie.setStep(dt);
-                ie.step(p, t);
-              break;
-              case FdmSchemeDesc::ModifiedCraigSneydType:
-                mcg.setStep(dt);
-                mcg.step(p, t);
-              break;
-              default:
-                QL_FAIL("scheme is not implemented");
-            }
+					std::fill(L.row_begin(j)+i,
+							  std::min(L.row_begin(j)+i+1, L.row_end(j)),
+							  std::min(5.0, std::max(0.01, l)));
+
+//					const Real l = (pInt >= 1e-8)
+//						? localVol*std::sqrt(scale)
+//						: Null<Real>();
+//
+//					std::fill(L.row_begin(j)+i,
+//							  std::min(L.row_begin(j)+i+1, L.row_end(j)), l);
+				}
+//
+//				for (Size j=x.size()/2; j < x.size(); ++j) {
+//					if (L[j][i] == Null<Real>()) {
+//						L[j][i] = L[j-1][i];
+//						std::fill(L.row_begin(j)+i,
+//								  std::min(L.row_begin(j)+i+1, L.row_end(j)),
+//								  L[j][i]);
+//					}
+//				}
+//
+//				for (Integer j=x.size()/2; j >=0; --j) {
+//					if (L[j][i] == Null<Real>()) {
+//						L[j][i] = L[j+1][i];
+//						std::fill(L.row_begin(j)+i,
+//								  std::min(L.row_begin(j)+i+1, L.row_end(j)),
+//								  L[j][i]);
+//					}
+//				}
+
+
+				// smoothing
+	            const Volatility stdDev = localVol*std::sqrt(t);
+	            const Real xm
+	                = std::log(s0*qTS->discount(t)/rTS->discount(t))
+	                    -0.5*stdDev*stdDev;
+
+	            const Real normInvEps = InverseCumulativeNormal()(1-1e-4);
+
+	            const Real sLowerBound = std::max(
+	            		x.front(), std::exp(xm - normInvEps*stdDev));
+	            const Real sUpperBound = std::min(
+	            		x.back(), std::exp(xm + normInvEps*stdDev));
+
+	            const Real lowerL = (*leverageFct)(t, sLowerBound);
+	            const Real upperL = (*leverageFct)(t, sUpperBound);
+
+				for (Size j=0; j < x.size(); ++j) {
+					if (x[j] < sLowerBound)
+						std::fill(L.row_begin(j)+i,
+								  std::min(L.row_begin(j)+i+1, L.row_end(j)),
+								  lowerL);
+					else if (x[j] > sUpperBound)
+						std::fill(L.row_begin(j)+i,
+								  std::min(L.row_begin(j)+i+1, L.row_end(j)),
+								  upperL);
+					else if (L[j][i] == Null<Real>())
+						std::cout << t << " ouch" << std::endl;
+				}
+
+				pn = p;
+				switch (testCase.schemeType) {
+				  case FdmSchemeDesc::DouglasType:
+					ds.setStep(dt);
+					ds.step(pn, t);
+				  break;
+				  case FdmSchemeDesc::HundsdorferType:
+					hs.setStep(dt);
+					hs.step(pn, t);
+				  break;
+				  case FdmSchemeDesc::CraigSneydType:
+					cs.setStep(dt);
+					cs.step(pn, t);
+				  break;
+				  case FdmSchemeDesc::ImplicitEulerType:
+					ie.setStep(dt);
+					ie.step(pn, t);
+				  break;
+				  case FdmSchemeDesc::ModifiedCraigSneydType:
+					mcg.setStep(dt);
+					mcg.step(pn, t);
+				  break;
+				  default:
+					QL_FAIL("scheme is not implemented");
+				}
+			}
+            p = pn;
+
+//    		for (Size j=0; j < x.size(); ++j) {
+//    			std::cout << (*leverageFct)(t, x[j]) << " ";
+//    		}
+//    		std::cout << std::endl << std::endl;
+
         }
+
 
         const Real xm
             = std::log(s0*qTS->discount(maturity)/rTS->discount(maturity))
@@ -1656,14 +1725,14 @@ namespace {
                 const Real expected = option.NPV();
                 const Real vega = option.vega();
 
-//                option.setPricingEngine(hestonEngine);
-//                const Real pureHeston = option.NPV();
-//
-//                const boost::shared_ptr<GeneralizedBlackScholesProcess> bp(
-//                    new GeneralizedBlackScholesProcess(spot, qTS, rTS,
-//                        Handle<BlackVolTermStructure>(flatVol(localVol,
-//                                                      dayCounter))));
-//
+                option.setPricingEngine(hestonEngine);
+                const Real pureHeston = option.NPV();
+
+                const boost::shared_ptr<GeneralizedBlackScholesProcess> bp(
+                    new GeneralizedBlackScholesProcess(spot, qTS, rTS,
+                        Handle<BlackVolTermStructure>(flatVol(localVol,
+                                                      dayCounter))));
+
 //                std::cout << "strike " << QL_FIXED << std::setprecision(0)
 //                          << strike << "\t "
 //                          << std::setprecision(0) << times[t] << "\t "
@@ -1675,6 +1744,7 @@ namespace {
 //                          << std::setprecision(8) << pureHeston << " "
 //                          << std::setprecision(8) << option.impliedVolatility(pureHeston, bp)
 //                          << std::endl;
+
                 const Real tol = testCase.eps; // 20bp
                 if (std::fabs((calculated-expected)/vega) > tol) {
                     BOOST_FAIL("failed to reproduce round trip vola "
