@@ -61,10 +61,12 @@ namespace QuantLib {
         boost::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
         const BasketGeneratingEngine::CalibrationBasketType basketType) const {
 
-        calculate();
         boost::shared_ptr<BasketGeneratingEngine> engine =
             boost::dynamic_pointer_cast<BasketGeneratingEngine>(engine_);
         QL_REQUIRE(engine, "engine is not a basket generating engine");
+        engine_->reset();
+        setupArguments(engine_->getArguments());
+        engine_->getArguments()->validate();
         return engine->calibrationBasket(exercise_, standardSwapBase,
                                          swaptionVolatility, basketType);
     }
