@@ -1704,8 +1704,8 @@ namespace {
 
             const boost::shared_ptr<PricingEngine> slvEngine(
                 new FdHestonVanillaEngine(hestonModel,
-                    std::max(100.0, 101*times[t]/12.0), 201, 101, 0,
-                        FdmSchemeDesc::Hundsdorfer(),
+                    std::max(31.0, 51*times[t]/12.0), 201, 51, 0,
+                        FdmSchemeDesc::ModifiedCraigSneyd(),
                         leverageFct));
 
 
@@ -1725,13 +1725,13 @@ namespace {
                 const Real expected = option.NPV();
                 const Real vega = option.vega();
 
-                option.setPricingEngine(hestonEngine);
-                const Real pureHeston = option.NPV();
-
-                const boost::shared_ptr<GeneralizedBlackScholesProcess> bp(
-                    new GeneralizedBlackScholesProcess(spot, qTS, rTS,
-                        Handle<BlackVolTermStructure>(flatVol(localVol,
-                                                      dayCounter))));
+//                option.setPricingEngine(hestonEngine);
+//                const Real pureHeston = option.NPV();
+//
+//                const boost::shared_ptr<GeneralizedBlackScholesProcess> bp(
+//                    new GeneralizedBlackScholesProcess(spot, qTS, rTS,
+//                        Handle<BlackVolTermStructure>(flatVol(localVol,
+//                                                      dayCounter))));
 
 //                std::cout << "strike " << QL_FIXED << std::setprecision(0)
 //                          << strike << "\t "
@@ -1745,7 +1745,7 @@ namespace {
 //                          << std::setprecision(8) << option.impliedVolatility(pureHeston, bp)
 //                          << std::endl;
 
-                const Real tol = testCase.eps; // 20bp
+                const Real tol = testCase.eps;
                 if (std::fabs((calculated-expected)/vega) > tol) {
                     BOOST_FAIL("failed to reproduce round trip vola "
                               << "\n   strike      " << strike
@@ -1767,37 +1767,40 @@ void HestonSLVModelTest::testLSVCalibration() {
     FokkerPlanckFwdTestCase testCases[] = {
         {
             100.0, 0.035, 0.01,
-            0.1, 1.0, 0.1, -0.75, 0.2,
-            201, 801, 401, 401,
-			0.002, 0.002,
+            0.10, 1.0, 0.1, -0.75, 0.2,
+            101, 401, 101, 51,
+			0.00075, 0.00075,
             FdmSquareRootFwdOp::Plain,
             FdmHestonGreensFct::Gaussian,
             FdmSchemeDesc::ModifiedCraigSneydType
         },
         {
             100.0, 0.035, 0.01,
-            0.19, 1.0, 0.1, -0.75, 0.2,
-            201, 801, 401, 401,
-			0.0025, 0.0025,
+            0.12, 1.0, 0.1, -0.75, 0.2,
+            101, 401, 101, 51,
+			0.0005, 0.0005,
             FdmSquareRootFwdOp::Plain,
             FdmHestonGreensFct::Gaussian,
             FdmSchemeDesc::CraigSneydType
         },
         {
+        	// main reason for the high tolerance is v0=0.19
+        	// and pricing of the vanilla option does not work
+        	// very well with this high value
             100.0, 0.035, 0.01,
             0.19, 1.0, 0.1, -0.75, 0.2,
-            101, 401, 51, 51,
-			0.005, 0.005,
+            101, 401, 201, 101,
+			0.003, 0.003,
             FdmSquareRootFwdOp::Plain,
             FdmHestonGreensFct::Gaussian,
-            FdmSchemeDesc::ImplicitEulerType
+            FdmSchemeDesc::HundsdorferType
         },
 // original case, need more time steps for 5 bp roundtrip accuracy
         {
             100.0, 0.035, 0.01,
             0.06, 1.0, 0.06, -0.75, std::sqrt(0.2),
-            201, 501, 1001, 50,
-			0.002, 0.002,
+            201, 501, 101, 51,
+			0.0005, 0.0005,
             FdmSquareRootFwdOp::Log,
             FdmHestonGreensFct::Gaussian,
             FdmSchemeDesc::ModifiedCraigSneydType
@@ -1813,22 +1816,22 @@ test_suite* HestonSLVModelTest::experimental() {
     test_suite* suite = BOOST_TEST_SUITE(
     	"Heston Stochastic Local Volatility tests");
 
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation));
-//    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testSquareRootZeroFlowBC));
-//    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testTransformedZeroFlowBC));
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testSquareRootEvolveWithStationaryDensity));
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity));
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testSquareRootFokkerPlanckFwdEquation));
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquation));
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage));
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation));
+    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testSquareRootZeroFlowBC));
+    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testTransformedZeroFlowBC));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testSquareRootEvolveWithStationaryDensity));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testSquareRootFokkerPlanckFwdEquation));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquation));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
 
     suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testLSVCalibration));
 
