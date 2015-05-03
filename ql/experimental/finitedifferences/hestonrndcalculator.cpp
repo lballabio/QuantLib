@@ -34,7 +34,6 @@
 #pragma GCC diagnostic pop
 #endif
 
-#include <cmath>
 #include <complex>
 
 namespace QuantLib {
