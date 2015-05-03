@@ -4,6 +4,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    bsmrndcalculator.hpp \
     dynprogvppintrinsicvalueengine.hpp \
     fdextoujumpvanillaengine.hpp \
 	fdklugeextouspreadengine.hpp \
@@ -28,10 +29,13 @@ this_include_HEADERS = \
     fdsimpleextoustorageengine.hpp \
 	fdsimpleklugeextouvppengine.hpp \
 	glued1dmesher.hpp \
+	hestonrndcalculator.hpp \
 	modtriplebandlinearop.hpp \
+	riskneutraldensitycalculator.hpp \
 	vanillavppoption.hpp
 
 libMultiDimFDM_la_SOURCES = \
+    bsmrndcalculator.cpp \
 	dynprogvppintrinsicvalueengine.cpp \
     fdextoujumpvanillaengine.cpp \
 	fdklugeextouspreadengine.cpp \
@@ -50,6 +54,8 @@ libMultiDimFDM_la_SOURCES = \
     fdsimpleextoustorageengine.cpp \
     fdsimpleklugeextouvppengine.cpp \
 	glued1dmesher.cpp \
+	hestonrndcalculator.cpp \
+	riskneutraldensitycalculator.cpp \
 	vanillavppoption.cpp
 
 noinst_LTLIBRARIES = libMultiDimFDM.la

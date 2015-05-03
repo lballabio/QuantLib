@@ -143,6 +143,7 @@
 #include "piecewisezerospreadedtermstructure.hpp"
 #include "quantooption.hpp"
 #include "quotes.hpp"
+#include "riskneutraldensitycalculator.hpp"
 #include "riskstats.hpp"
 #include "rngtraits.hpp"
 #include "rounding.hpp"
@@ -330,6 +331,7 @@ test_suite* init_unit_test_suite(int, char* []) {
 //    test->add(PiecewiseZeroSpreadedTermStructureTest::suite());
 //    test->add(QuantoOptionTest::suite());
 //    test->add(QuoteTest::suite());
+    test->add(RiskNeutralDensityCalculatorTest::suite());
 //    test->add(RiskStatisticsTest::suite());
 //    test->add(RngTraitsTest::suite());
 //    test->add(RoundingTest::suite());
@@ -371,7 +373,7 @@ test_suite* init_unit_test_suite(int, char* []) {
 //    test->add(FdHestonTest::experimental());
 //    test->add(GsrTest::suite());
 //    test->add(HestonModelTest::experimental());
-    test->add(HestonSLVModelTest::experimental());
+//    test->add(HestonSLVModelTest::experimental());
 //    test->add(HimalayaOptionTest::suite());
 //    test->add(InflationCPICapFloorTest::suite());
 //    test->add(InflationVolTest::suite());

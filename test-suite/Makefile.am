@@ -103,6 +103,7 @@ QL_TESTS = \
 	quantooption.hpp quantooption.cpp \
 	quotes.hpp quotes.cpp \
 	rangeaccrual.hpp rangeaccrual.cpp \
+	riskneutraldensitycalculator.hpp riskneutraldensitycalculator.cpp \
 	riskstats.hpp riskstats.cpp \
 	rngtraits.hpp rngtraits.cpp \
 	rounding.hpp rounding.cpp \
