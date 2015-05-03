@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -62,6 +63,10 @@ namespace QuantLib {
             return QL_MAX_REAL;
         }
         //@}
+        //! \name additional methods
+        //@{
+        Real variance(Time t, Real dt) const;
+        //@}
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
@@ -105,6 +110,14 @@ namespace QuantLib {
         Real derivative = (var2-var1)/dt;
         return std::sqrt(derivative);
     }
+
+    /*! exact total variance between t and t+dt */
+    inline Real LocalVolCurve::variance(Time t, Real dt) const {
+        const Real dummy = 0.01;
+        return blackVarianceCurve_->blackVariance(t+dt,dummy,true)-
+            blackVarianceCurve_->blackVariance(t,dummy,true);
+    }
+
 
 }
 
