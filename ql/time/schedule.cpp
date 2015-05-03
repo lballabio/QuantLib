@@ -70,8 +70,7 @@ namespace QuantLib {
                        boost::optional<DateGeneration::Rule> rule,
                        boost::optional<bool> endOfMonth,
                        const std::vector<bool>& isRegular)
-    : fullInterface_(false),
-      tenor_(tenor), calendar_(calendar),
+    : tenor_(tenor), calendar_(calendar),
       convention_(convention),
       terminationDateConvention_(terminationDateConvention),
       rule_(rule), endOfMonth_(endOfMonth),
@@ -94,8 +93,7 @@ namespace QuantLib {
                        bool endOfMonth,
                        const Date& first,
                        const Date& nextToLast)
-    : fullInterface_(true),
-      tenor_(tenor), calendar_(cal),
+    : tenor_(tenor), calendar_(cal),
       convention_(convention),
       terminationDateConvention_(terminationDateConvention),
       rule_(rule), endOfMonth_(endOfMonth),
