@@ -1375,6 +1375,77 @@ void FdmLinearOpTest::testFdmMesherIntegral() {
 }
 
 
+void FdmLinearOpTest::testFdmMultiConcentratingMesherConsistency() {
+    BOOST_TEST_MESSAGE("Testing consistency of concentrating "
+                       "1d meshers functions...");
+
+    const Real tol = 1e-8;
+    const Real y_min = 0.5;
+    const Real y_max = 5.0;
+    const Size size = 100;
+
+    std::vector<boost::tuple<Real, Real, bool> > cPoints;
+    cPoints.push_back(boost::tuple<Real, Real, bool>(1.0, 0.01, false));
+
+    Concentrating1dMesher multiConcentratingMesher(
+        y_min, y_max, size, cPoints, tol/size);
+
+    Concentrating1dMesher refMesher(
+        y_min, y_max, size, std::make_pair<Real, Real>(1.0, 0.01));
+
+    for (Size i=0; i < size; ++i) {
+        const Real expected = refMesher.location(i);
+        const Real calculated = multiConcentratingMesher.location(i);
+        if (std::fabs(calculated - expected) > tol) {
+            BOOST_FAIL(std::setprecision(16)
+                << "multi concentrating mesher does not "
+                << "reproduce single concentrating mesher results: "
+                << "\n    index     : " << i
+                << "\n    calculated: " << calculated
+                << "\n    expected:   " << expected);
+        }
+    }
+}
+
+
+void FdmLinearOpTest::testFdmConcentratingMesherRequiredPoints() {
+    BOOST_TEST_MESSAGE("Testing required points of concentrating "
+                       "1d meshers functions...");
+
+    const Real tol = 1e-8;
+    const Real y_min = 0.5;
+    const Real y_max = 5.0;
+    const Size size = 100;
+
+    std::vector<boost::tuple<Real, Real, bool> > cPoints;
+    cPoints.push_back(boost::tuple<Real, Real, bool>(2.0, 10,  false));
+    cPoints.push_back(boost::tuple<Real, Real, bool>(2.01, 10,  true));
+    cPoints.push_back(boost::tuple<Real, Real, bool>(4.999, 0.00005, true));
+    cPoints.push_back(boost::tuple<Real, Real, bool>(1.0, 0.01, true));
+
+    Concentrating1dMesher mesher(y_min, y_max, size, cPoints, tol/size);
+
+    const std::vector<Real> l = mesher.locations();
+    for (Size i=0; i < cPoints.size(); ++i) {
+        if (cPoints[i].get<2>()) {
+            if (std::find_if(l.begin(), l.end(),
+                boost::bind(close_enough, _1, cPoints[i].get<0>())) == l.end()) {
+                BOOST_FAIL("can not find required point"
+                    << "\n    point : " << cPoints[i].get<0>());
+            }
+        }
+    }
+    if (   !close_enough(l.front(), y_min, 10)
+        || !close_enough(l.back(), y_max, 10)) {
+        BOOST_FAIL(std::setprecision(16)
+                << "start and/or end points are not met"
+                << "\n    y_min     : " << y_min
+                << "\n    mesher min: " << l.front()
+                << "\n    y_max     : " << y_max
+                << "\n    mesher max: " << l.back());
+    }
+}
+
 test_suite* FdmLinearOpTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("linear operator tests");
 
@@ -1402,6 +1473,10 @@ test_suite* FdmLinearOpTest::suite() {
     suite->add(
         QUANTLIB_TEST_CASE(&FdmLinearOpTest::testSparseMatrixZeroAssignment));
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmMesherIntegral));
+    suite->add(QUANTLIB_TEST_CASE(
+        &FdmLinearOpTest::testFdmMultiConcentratingMesherConsistency));
+    suite->add(QUANTLIB_TEST_CASE(
+        &FdmLinearOpTest::testFdmConcentratingMesherRequiredPoints));
 
     return suite;
     

@@ -58,6 +58,7 @@ QL_TESTS = \
 	gjrgarchmodel.hpp gjrgarchmodel.cpp \
 	gsr.hpp gsr.cpp \
 	hestonmodel.hpp hestonmodel.cpp \
+	hestonslvmodel.hpp hestonslvmodel.cpp \
 	himalayaoption.hpp himalayaoption.cpp \
 	hybridhestonhullwhiteprocess.hpp hybridhestonhullwhiteprocess.cpp \
 	inflation.hpp inflation.cpp \
@@ -105,6 +106,7 @@ QL_TESTS = \
 	quantooption.hpp quantooption.cpp \
 	quotes.hpp quotes.cpp \
 	rangeaccrual.hpp rangeaccrual.cpp \
+	riskneutraldensitycalculator.hpp riskneutraldensitycalculator.cpp \
 	riskstats.hpp riskstats.cpp \
 	rngtraits.hpp rngtraits.cpp \
 	rounding.hpp rounding.cpp \
