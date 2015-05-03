@@ -40,7 +40,7 @@ namespace QuantLib {
     class LocalVolCurve;
 
     //! Generalized Black-Scholes stochastic process
-    /*! This class describes the stochastic process S governed by
+    /*! This class describes the stochastic process ln(S) governed by
         \f[
             d\ln S(t, S) = (r(t) - q(t) - \frac{\sigma(t, S)^2}{2}) dt
                      + \sigma dW_t.
@@ -96,7 +96,7 @@ namespace QuantLib {
     };
 
     //! Black-Scholes (1973) stochastic process
-    /*! This class describes the stochastic process S for a stock given by
+    /*! This class describes the stochastic process ln(S) for a stock given by
         \f[
             d\ln S(t, S) = (r(t) - \frac{\sigma(t, S)^2}{2}) dt + \sigma dW_t.
         \f]
@@ -114,7 +114,7 @@ namespace QuantLib {
     };
 
     //! Merton (1973) extension to the Black-Scholes stochastic process
-    /*! This class describes the stochastic process S for a stock or
+    /*! This class describes the stochastic process ln(S) for a stock or
         stock index paying a continuous dividend yield given by
         \f[
             d\ln S(t, S) = (r(t) - q(t) - \frac{\sigma(t, S)^2}{2}) dt
@@ -135,7 +135,7 @@ namespace QuantLib {
     };
 
     //! Black (1976) stochastic process
-    /*! This class describes the stochastic process S for a forward or
+    /*! This class describes the stochastic process ln(S) for a forward or
         futures contract given by
         \f[
             d\ln S(t, S) = -\frac{\sigma(t, S)^2}{2} dt + \sigma dW_t.
@@ -154,7 +154,7 @@ namespace QuantLib {
     };
 
     //! Garman-Kohlhagen (1983) stochastic process
-    /*! This class describes the stochastic process S for an exchange
+    /*! This class describes the stochastic process ln(S) for an exchange
         rate given by
         \f[
             d\ln S(t, S) = (r(t) - r_f(t) - \frac{\sigma(t, S)^2}{2}) dt
