@@ -56,17 +56,17 @@ namespace QuantLib {
         void calculate() const;
 
 
-        // probability in x_t = ln(s_t)
+        // reduced probability in x_t = ln(s_t/s_0) - (r-q)*t
         Real Pv(Real x_t, Time t) const;
 
-        // cumulative distribution function Pr(x < X)
-        Real cdf(Real X, Time t) const;
+        // cumulative distribution function Pr(s_t < s)
+        Real cdf(Real s, Time t) const;
 
       private:
         Real weightedPayoff(Real x_t, Time t) const;
 
-        const Size maxIntegrationIterations_;
-        const Real integrationEps_;
+        const Size gaussLobattoIntegrationOrder_;
+        const Real gaussLobattoEps_;
 
         const boost::shared_ptr<HestonModel> model_;
     };

@@ -2,6 +2,8 @@
 
 /*
  Copyright (C) 2012, 2013 Klaus Spanderen
+ Copyright (C) 2014 Johannes Göttker-Schnetmann
+
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,13 +32,18 @@
 #include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
 
 namespace QuantLib {
+	Real squareRootProcessGreensFct(Real v0, Real kappa, Real theta,
+									Real sigma, Real t, Real x);
 
     class FdmBlackScholesFwdOp : public FdmLinearOpComposite {
       public:
         FdmBlackScholesFwdOp(
             const boost::shared_ptr<FdmMesher>& mesher,
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            Real strike, Size direction);
+            Real strike, 
+            bool localVol = false,
+            Real illegalLocalVolOverwrite = -Null<Real>(),
+            Size direction = 0);
 
         Size size() const;
         void setTime(Time t1, Time t2);
@@ -62,6 +69,7 @@ namespace QuantLib {
         const TripleBandLinearOp dxxMap_;
         TripleBandLinearOp mapT_;
         const Real strike_;
+        const Real illegalLocalVolOverwrite_;
         const Size direction_;
     };
 }
