@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 StatPro Italia srl
- Copyright (C) 2007, 2008, 2009 Ferdinando Ametrano
+ Copyright (C) 2007, 2008, 2009, 2015 Ferdinando Ametrano
  Copyright (C) 2007, 2009 Roland Lichters
 
  This file is part of QuantLib, a free-software/open-source library
@@ -223,6 +223,14 @@ namespace QuantLib {
                        const Period& fwdStart = 0*Days,
                        // exogenous discounting curve
                        const Handle<YieldTermStructure>& discountingCurve
+                                            = Handle<YieldTermStructure>(),
+                       Natural settlementDays = Null<Natural>());
+        SwapRateHelper(Rate rate,
+                       const boost::shared_ptr<SwapIndex>& swapIndex,
+                       const Handle<Quote>& spread = Handle<Quote>(),
+                       const Period& fwdStart = 0*Days,
+                       // exogenous discounting curve
+                       const Handle<YieldTermStructure>& discountingCurve
                                             = Handle<YieldTermStructure>());
         SwapRateHelper(Rate rate,
                        const Period& tenor,
@@ -237,14 +245,8 @@ namespace QuantLib {
                        const Period& fwdStart = 0*Days,
                        // exogenous discounting curve
                        const Handle<YieldTermStructure>& discountingCurve
-                                            = Handle<YieldTermStructure>());
-        SwapRateHelper(Rate rate,
-                       const boost::shared_ptr<SwapIndex>& swapIndex,
-                       const Handle<Quote>& spread = Handle<Quote>(),
-                       const Period& fwdStart = 0*Days,
-                       // exogenous discounting curve
-                       const Handle<YieldTermStructure>& discountingCurve
-                                            = Handle<YieldTermStructure>());
+                                            = Handle<YieldTermStructure>(),
+                       Natural settlementDays = Null<Natural>());
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -262,6 +264,7 @@ namespace QuantLib {
         //@}
       protected:
         void initializeDates();
+        Natural settlDays_;
         Period tenor_;
         Calendar calendar_;
         BusinessDayConvention fixedConvention_;

@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 StatPro Italia srl
- Copyright (C) 2007, 2008, 2009 Ferdinando Ametrano
+ Copyright (C) 2007, 2008, 2009, 2015 Ferdinando Ametrano
  Copyright (C) 2007, 2009 Roland Lichters
 
  This file is part of QuantLib, a free-software/open-source library
@@ -460,6 +460,7 @@ namespace QuantLib {
                                    const Period& fwdStart,
                                    const Handle<YieldTermStructure>& discount)
     : RelativeDateRateHelper(rate),
+      settlDays_(swapIndex->fixingDays()),
       tenor_(swapIndex->tenor()), calendar_(swapIndex->fixingCalendar()),
       fixedConvention_(swapIndex->fixedLegConvention()),
       fixedFrequency_(swapIndex->fixedLegTenor().frequency()),
@@ -488,16 +489,48 @@ namespace QuantLib {
                                    const shared_ptr<IborIndex>& iborIndex,
                                    const Handle<Quote>& spread,
                                    const Period& fwdStart,
-                                   const Handle<YieldTermStructure>& discount)
+                                   const Handle<YieldTermStructure>& discount,
+                                   Natural settlementDays)
     : RelativeDateRateHelper(rate),
+      settlDays_(settlementDays),
       tenor_(tenor), calendar_(calendar),
       fixedConvention_(fixedConvention),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
       spread_(spread),
       fwdStart_(fwdStart), discountHandle_(discount) {
+
+        if (settlDays_==Null<Natural>())
+            settlDays_ = iborIndex->fixingDays();
+
         // take fixing into account
         iborIndex_ = iborIndex->clone(termStructureHandle_);
+        // We want to be notified of changes of fixings, but we don't
+        // want notifications from termStructureHandle_ (they would
+        // interfere with bootstrapping.)
+        iborIndex_->unregisterWith(termStructureHandle_);
+
+        registerWith(iborIndex_);
+        registerWith(spread_);
+        registerWith(discountHandle_);
+        initializeDates();
+    }
+
+    SwapRateHelper::SwapRateHelper(Rate rate,
+                                   const shared_ptr<SwapIndex>& swapIndex,
+                                   const Handle<Quote>& spread,
+                                   const Period& fwdStart,
+                                   const Handle<YieldTermStructure>& discount)
+    : RelativeDateRateHelper(rate),
+      settlDays_(swapIndex->fixingDays()),
+      tenor_(swapIndex->tenor()), calendar_(swapIndex->fixingCalendar()),
+      fixedConvention_(swapIndex->fixedLegConvention()),
+      fixedFrequency_(swapIndex->fixedLegTenor().frequency()),
+      fixedDayCount_(swapIndex->dayCounter()),
+      spread_(spread),
+      fwdStart_(fwdStart), discountHandle_(discount) {
+        // take fixing into account
+        iborIndex_ = swapIndex->iborIndex()->clone(termStructureHandle_);
         // We want to be notified of changes of fixings, but we don't
         // want notifications from termStructureHandle_ (they would
         // interfere with bootstrapping.)
@@ -518,41 +551,22 @@ namespace QuantLib {
                                    const shared_ptr<IborIndex>& iborIndex,
                                    const Handle<Quote>& spread,
                                    const Period& fwdStart,
-                                   const Handle<YieldTermStructure>& discount)
+                                   const Handle<YieldTermStructure>& discount,
+                                   Natural settlementDays)
     : RelativeDateRateHelper(rate),
+      settlDays_(settlementDays),
       tenor_(tenor), calendar_(calendar),
       fixedConvention_(fixedConvention),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
       spread_(spread),
       fwdStart_(fwdStart), discountHandle_(discount) {
+
+        if (settlDays_==Null<Natural>())
+            settlDays_ = iborIndex->fixingDays();
+
         // take fixing into account
         iborIndex_ = iborIndex->clone(termStructureHandle_);
-        // We want to be notified of changes of fixings, but we don't
-        // want notifications from termStructureHandle_ (they would
-        // interfere with bootstrapping.)
-        iborIndex_->unregisterWith(termStructureHandle_);
-
-        registerWith(iborIndex_);
-        registerWith(spread_);
-        registerWith(discountHandle_);
-        initializeDates();
-    }
-
-    SwapRateHelper::SwapRateHelper(Rate rate,
-                                   const shared_ptr<SwapIndex>& swapIndex,
-                                   const Handle<Quote>& spread,
-                                   const Period& fwdStart,
-                                   const Handle<YieldTermStructure>& discount)
-    : RelativeDateRateHelper(rate),
-      tenor_(swapIndex->tenor()), calendar_(swapIndex->fixingCalendar()),
-      fixedConvention_(swapIndex->fixedLegConvention()),
-      fixedFrequency_(swapIndex->fixedLegTenor().frequency()),
-      fixedDayCount_(swapIndex->dayCounter()),
-      spread_(spread),
-      fwdStart_(fwdStart), discountHandle_(discount) {
-        // take fixing into account
-        iborIndex_ = swapIndex->iborIndex()->clone(termStructureHandle_);
         // We want to be notified of changes of fixings, but we don't
         // want notifications from termStructureHandle_ (they would
         // interfere with bootstrapping.)
@@ -571,6 +585,7 @@ namespace QuantLib {
         // 2. input discount curve Handle might be empty now but it could
         //    be assigned a curve later; use a RelinkableHandle here
         swap_ = MakeVanillaSwap(tenor_, iborIndex_, 0.0, fwdStart_)
+            .withSettlementDays(settlDays_)
             .withDiscountingTermStructure(discountRelinkableHandle_)
             .withFixedLegDayCount(fixedDayCount_)
             .withFixedLegTenor(Period(fixedFrequency_))
