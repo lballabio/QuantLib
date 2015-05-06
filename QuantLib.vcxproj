@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (static runtime)|Win32">
@@ -290,7 +290,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>      
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -1204,6 +1204,7 @@
     <ClInclude Include="ql\termstructures\credit\piecewisedefaultcurve.hpp" />
     <ClInclude Include="ql\termstructures\credit\probabilitytraits.hpp" />
     <ClInclude Include="ql\termstructures\credit\survivalprobabilitystructure.hpp" />
+    <ClInclude Include="ql\time\asx.hpp" />
     <ClInclude Include="ql\utilities\all.hpp" />
     <ClInclude Include="ql\utilities\clone.hpp" />
     <ClInclude Include="ql\utilities\dataformatters.hpp" />
@@ -2188,6 +2189,7 @@
     <ClCompile Include="ql\termstructures\credit\flathazardrate.cpp" />
     <ClCompile Include="ql\termstructures\credit\hazardratestructure.cpp" />
     <ClCompile Include="ql\termstructures\credit\survivalprobabilitystructure.cpp" />
+    <ClCompile Include="ql\time\asx.cpp" />
     <ClCompile Include="ql\utilities\dataformatters.cpp" />
     <ClCompile Include="ql\utilities\dataparsers.cpp" />
     <ClCompile Include="ql\utilities\tracing.cpp" />
