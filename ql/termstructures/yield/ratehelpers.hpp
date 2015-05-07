@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 StatPro Italia srl
- Copyright (C) 2007, 2008, 2009 Ferdinando Ametrano
+ Copyright (C) 2007, 2008, 2009, 2015 Ferdinando Ametrano
  Copyright (C) 2007, 2009 Roland Lichters
 
  This file is part of QuantLib, a free-software/open-source library
@@ -21,7 +21,7 @@
 */
 
 /*! \file ratehelpers.hpp
-    \brief deposit, FRA, futures, and swap rate helpers
+    \brief deposit, FRA, futures, and various swap rate helpers
 */
 
 #ifndef quantlib_ratehelpers_hpp
@@ -199,6 +199,7 @@ namespace QuantLib {
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
 
+
     //! Rate helper for bootstrapping over swap rates
     /*! \todo use input SwapIndex to create the swap */
     class SwapRateHelper : public RelativeDateRateHelper {
@@ -276,6 +277,7 @@ namespace QuantLib {
         RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
     };
 
+
     //! Rate helper for bootstrapping over BMA swap rates
     class BMASwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -313,6 +315,54 @@ namespace QuantLib {
         boost::shared_ptr<BMASwap> swap_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
+
+
+    //! Rate helper for bootstrapping over Fx Swap rates
+    class FxSwapRateHelper : public RelativeDateRateHelper {
+      public:
+        FxSwapRateHelper(const Handle<Quote>& fx,
+                         const Handle<Quote>& spot,
+                         const Period& tenor,
+                         Natural fixingDays,
+                         const Calendar& calendar,
+                         BusinessDayConvention convention,
+                         bool endOfMonth,
+                         bool isCurrencyPairCollateralBased,                   
+                         const Handle<YieldTermStructure>& collateralCurve);
+        //! \name RateHelper interface
+        //@{
+        Real impliedQuote() const;
+        void setTermStructure(YieldTermStructure*);
+        //@}
+        //! \name FxSwapRateHelper inspectors
+        //@{
+        Real spot() const { return spot_->value(); }
+        Period tenor() const { return tenor_; }
+        Natural fixingDays() const { return fixingDays_; }
+        Calendar calendar() const { return cal_; }
+        BusinessDayConvention businessDayConvention() const { return conv_; }
+        bool endOfMonth() const { return eom_; }
+        //@}
+        //! \name Visitability
+        //@{
+        void accept(AcyclicVisitor&);
+        //@}
+    private:
+        void initializeDates();
+        Handle<Quote> spot_;
+        Period tenor_;
+        Natural fixingDays_;
+        Calendar cal_;
+        BusinessDayConvention conv_;
+        bool eom_;
+        bool isCurrencyPairCollateralBased_;
+
+        RelinkableHandle<YieldTermStructure> termStructureHandle_;
+
+        Handle<YieldTermStructure> collHandle_;
+        RelinkableHandle<YieldTermStructure> collRelinkableHandle_;
+    };
+
 
 
     // inline
