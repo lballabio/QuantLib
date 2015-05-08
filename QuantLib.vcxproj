@@ -521,6 +521,7 @@
     <ClInclude Include="ql\instruments\cpicapfloor.hpp" />
     <ClInclude Include="ql\instruments\cpiswap.hpp" />
     <ClInclude Include="ql\instruments\dividendbarrieroption.hpp" />
+    <ClInclude Include="ql\instruments\futures.hpp" />
     <ClInclude Include="ql\instruments\vanillastorageoption.hpp" />
     <ClInclude Include="ql\instruments\vanillaswingoption.hpp" />
     <ClInclude Include="ql\math\matrixutilities\bicgstab.hpp" />
@@ -1758,6 +1759,7 @@
     <ClCompile Include="ql\instruments\cpicapfloor.cpp" />
     <ClCompile Include="ql\instruments\cpiswap.cpp" />
     <ClCompile Include="ql\instruments\dividendbarrieroption.cpp" />
+    <ClCompile Include="ql\instruments\futures.cpp" />
     <ClCompile Include="ql\instruments\vanillaswingoption.cpp" />
     <ClCompile Include="ql\math\matrixutilities\bicgstab.cpp" />
     <ClCompile Include="ql\math\matrixutilities\sparseilupreconditioner.cpp" />

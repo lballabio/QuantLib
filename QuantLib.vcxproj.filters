@@ -3984,6 +3984,9 @@
     <ClInclude Include="ql\time\asx.hpp">
       <Filter>time</Filter>
     </ClInclude>
+    <ClInclude Include="ql\instruments\futures.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -6410,6 +6413,9 @@
     </ClCompile>
     <ClCompile Include="ql\time\asx.cpp">
       <Filter>time</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\instruments\futures.cpp">
+      <Filter>instruments</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
