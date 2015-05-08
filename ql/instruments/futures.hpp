@@ -35,8 +35,8 @@ namespace QuantLib {
         inside the Futures Instrument class, when this will be available...
     */
     enum FuturesType {
-        IMM, /*!< Chicago Mercantile Internation Money Market, i.e. third Wednesday of March, June September, December */
-        ASX, /*!< Australian Security Exchange, i.e. second Friday of March, June September, December */
+        IMM, /*!< Chicago Mercantile Internation Money Market, i.e. third Wednesday of March, June, September, December */
+        ASX, /*!< Australian Security Exchange, i.e. second Friday of March, June, September, December */
     };
 
     /*! \relates FuturesType */

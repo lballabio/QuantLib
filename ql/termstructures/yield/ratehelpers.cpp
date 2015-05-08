@@ -57,9 +57,11 @@ namespace QuantLib {
         case IMM:
             QL_REQUIRE(IMM::isIMMdate(iborStartDate, false),
                        iborStartDate << " is not a valid IMM date");
+            break;
         case ASX:
             QL_REQUIRE(ASX::isASXdate(iborStartDate, false),
                        iborStartDate << " is not a valid ASX date");
+            break;
         default:
             QL_FAIL("unknown FuturesType (" << Integer(type) << ")");
         }
@@ -87,9 +89,11 @@ namespace QuantLib {
         case IMM:
             QL_REQUIRE(IMM::isIMMdate(iborStartDate, false),
                 iborStartDate << " is not a valid IMM date");
+            break;
         case ASX:
             QL_REQUIRE(ASX::isASXdate(iborStartDate, false),
                 iborStartDate << " is not a valid ASX date");
+            break;
         default:
             QL_FAIL("unknown FuturesType (" << Integer(type) << ")");
         }
@@ -123,6 +127,7 @@ namespace QuantLib {
                            iborStartDate << ")");
                 latestDate_ = iborEndDate;
             }
+            break;
         case ASX:
             QL_REQUIRE(ASX::isASXdate(iborStartDate, false),
                        iborStartDate << " is not a valid ASX date");
@@ -139,6 +144,7 @@ namespace QuantLib {
                           iborStartDate << ")");
                 latestDate_ = iborEndDate;
             }
+            break;
         default:
             QL_FAIL("unknown FuturesType (" << Integer(type) << ")");
         }
@@ -175,6 +181,7 @@ namespace QuantLib {
                            iborStartDate << ")");
                 latestDate_ = iborEndDate;
             }
+            break;
         case ASX:
             QL_REQUIRE(ASX::isASXdate(iborStartDate, false),
                 iborStartDate << " is not a valid ASX date");
@@ -191,6 +198,7 @@ namespace QuantLib {
                            iborStartDate << ")");
                 latestDate_ = iborEndDate;
             }
+            break;
         default:
             QL_FAIL("unknown FuturesType (" << Integer(type) << ")");
         }
@@ -209,9 +217,11 @@ namespace QuantLib {
         case IMM:
             QL_REQUIRE(IMM::isIMMdate(iborStartDate, false),
                        iborStartDate << " is not a valid IMM date");
+            break;
         case ASX:
             QL_REQUIRE(ASX::isASXdate(iborStartDate, false),
                        iborStartDate << " is not a valid ASX date");
+            break;
         default:
             QL_FAIL("unknown FuturesType (" << Integer(type) << ")");
         }
@@ -236,9 +246,11 @@ namespace QuantLib {
         case IMM:
             QL_REQUIRE(IMM::isIMMdate(iborStartDate, false),
                 iborStartDate << " is not a valid IMM date");
+            break;
         case ASX:
             QL_REQUIRE(ASX::isASXdate(iborStartDate, false),
                 iborStartDate << " is not a valid ASX date");
+            break;
         default:
             QL_FAIL("unknown FuturesType (" << Integer(type) << ")");
         }
