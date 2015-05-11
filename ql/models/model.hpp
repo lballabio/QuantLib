@@ -110,7 +110,7 @@ namespace QuantLib {
         const boost::shared_ptr<Constraint>& constraint() const;
 
         //! Returns end criteria result
-        EndCriteria::Type endCriteria() const { return endCriteria_; }
+        EndCriteria::Type endCriteria() const { return shortRateEndCriteria_; }
 
         //! Returns array of arguments on which calibration is done
         Disposable<Array> params() const;
@@ -121,7 +121,7 @@ namespace QuantLib {
         virtual void generateArguments() {}
         std::vector<Parameter> arguments_;
         boost::shared_ptr<Constraint> constraint_;
-        EndCriteria::Type endCriteria_;
+        EndCriteria::Type shortRateEndCriteria_;
 
       private:
         //! Constraint imposed on arguments
@@ -146,7 +146,7 @@ namespace QuantLib {
     inline Real AffineModel::discountBondOption(Option::Type type,
                                                 Real strike,
                                                 Time maturity,
-                                                Time , // not used... ?!?!
+                                                Time,
                                                 Time bondMaturity) const {
         return discountBondOption(type, strike, maturity, bondMaturity);
     }
