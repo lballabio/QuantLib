@@ -3,7 +3,8 @@
 /*
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008, 2014 Klaus Spanderen
+ Copyright (C) 2008, 2014, 2015 Klaus Spanderen
+ Copyright (C) 2015 Johannes Goettker-Schnetmann
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,7 +33,7 @@ namespace QuantLib {
         const boost::shared_ptr<YieldTermStructure>& rTS,
         const boost::shared_ptr<YieldTermStructure>& qTS,
         const boost::shared_ptr<FdmQuantoHelper>& quantoHelper,
-        const boost::shared_ptr<Interpolation2D>& leverageFct)
+        const boost::shared_ptr<FixedLocalVolSurface>& leverageFct)
     : varianceValues_(0.5*mesher->locations(1)),
       dxMap_ (FirstDerivativeOp(0, mesher)),
       dxxMap_(SecondDerivativeOp(0, mesher).mult(0.5*mesher->locations(1))),
@@ -86,8 +87,8 @@ namespace QuantLib {
         	return v;
         }
 		const Real t = 0.5*(t1+t2);
-		const Time time = std::min(leverageFct_->xMax(),
-							  	   std::max(leverageFct_->xMin(), t));
+		const Time time = std::min(leverageFct_->maxTime(),
+							  	   std::max(leverageFct_->minTime(), t));
 
 		const FdmLinearOpIterator endIter = layout->end();
 		for (FdmLinearOpIterator iter = layout->begin();
@@ -96,9 +97,9 @@ namespace QuantLib {
 
 			if (iter.coordinates()[1] == 0) {
 				const Real x = std::exp(mesher_->location(iter, 0));
-				const Real spot = std::min(leverageFct_->yMax(),
-										   std::max(leverageFct_->yMin(), x));
-				v[nx] = std::max(0.01, (*leverageFct_)(time, spot, true));
+				const Real spot = std::min(leverageFct_->maxStrike(),
+										   std::max(leverageFct_->minStrike(), x));
+				v[nx] = std::max(0.01, leverageFct_->localVol(time, spot, true));
 			}
 			else {
 				v[iter.index()] = v[nx];
@@ -137,7 +138,7 @@ namespace QuantLib {
         const boost::shared_ptr<FdmMesher>& mesher,
         const boost::shared_ptr<HestonProcess> & hestonProcess,
         const boost::shared_ptr<FdmQuantoHelper>& quantoHelper,
-        const boost::shared_ptr<Interpolation2D>& leverageFct)
+        const boost::shared_ptr<FixedLocalVolSurface>& leverageFct)
     : correlationMap_(SecondOrderMixedDerivativeOp(0, 1, mesher)
                         .mult(hestonProcess->rho()*hestonProcess->sigma()
                                 *mesher->locations(1))),

@@ -18,8 +18,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <iostream>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
+#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
 
 namespace QuantLib {
@@ -29,10 +31,9 @@ namespace QuantLib {
 			Date d(referenceDate);
 			while(dc.yearFraction(referenceDate, d+=Period(1, Years)) < t);
 			d-=Period(1, Years);
-			while(dc.yearFraction(referenceDate, d+=Period(1, Month)) < t);
-			d-=Period(1, Month);
+			while(dc.yearFraction(referenceDate, d+=Period(1, Months)) < t);
+			d-=Period(1, Months);
 			while(dc.yearFraction(referenceDate, d++) < t);
-
 			return d;
 		}
 	}
@@ -48,6 +49,7 @@ namespace QuantLib {
 	: LocalVolTermStructure(referenceDate, NullCalendar(),
 							Following, dayCounter),
 	  maxDate_(dates.back()),
+	  minDate_(dates.front()),
 	  strikes_(strikes),
 	  localVolMatrix_(localVolMatrix),
       lowerExtrapolation_(lowerExtrapolation),
@@ -61,6 +63,7 @@ namespace QuantLib {
             times_[j] = timeFromReference(dates[j]);
 
         checkSurface();
+//        setInterpolation<Bicubic>();
         setInterpolation<Bilinear>();
 	}
 
@@ -74,7 +77,8 @@ namespace QuantLib {
 		Extrapolation upperExtrapolation)
 	: LocalVolTermStructure(referenceDate, NullCalendar(),
 							Following, dayCounter),
-	  maxDate_(time2Date(referenceDate, dayCounter, times_.back())),
+	  maxDate_(time2Date(referenceDate, dayCounter, times.back())),
+	  minDate_(time2Date(referenceDate, dayCounter, times.front())),
 	  strikes_(strikes),
 	  localVolMatrix_(localVolMatrix),
 	  times_(times),
@@ -84,7 +88,7 @@ namespace QuantLib {
         QL_REQUIRE(times_[0]>=0, "cannot have times[0] < 0");
 
         checkSurface();
-        setInterpolation<Bilinear>();
+        setInterpolation<Bicubic>();
 	}
 
 	void FixedLocalVolSurface::checkSurface() {
@@ -106,6 +110,15 @@ namespace QuantLib {
     Date FixedLocalVolSurface::maxDate() const {
     	return maxDate_;
     }
+    Date FixedLocalVolSurface::minDate() const {
+    	return minDate_;
+    }
+    Time FixedLocalVolSurface::minTime() const {
+    	return times_.front();
+    }
+    Time FixedLocalVolSurface::maxTime() const {
+    	return times_.back();
+    }
     Real FixedLocalVolSurface::minStrike() const {
     	return strikes_.front();
     }
@@ -124,6 +137,6 @@ namespace QuantLib {
 
         t = std::min(times_.back(), std::max(t, times_.front()));
 
-        return localVolSurface_(times_.back(), strike, true);
+        return localVolSurface_(t, strike, true);
     }
 }

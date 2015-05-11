@@ -21,6 +21,8 @@
 #include "hestonslvmodel.hpp"
 #include "utilities.hpp"
 
+#include <iomanip>
+
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
@@ -975,27 +977,26 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquation() {
 
 
 namespace {
-    boost::shared_ptr<BicubicSpline> createFlatLeverageFct(Matrix & surface, const std::vector<Real> & strikes, const std::vector<Real> & times, Real flatVol) {
+    boost::shared_ptr<FixedLocalVolSurface> createFlatLeverageFct(Matrix & surface,
+		const std::vector<Real> & strikes, const std::vector<Real> & times,
+		Real flatVol) {
         for (Size i=0; i < strikes.size(); ++i)
             for (Size j=0; j < times.size(); ++j) {
                 surface[i][j] = flatVol;
             }
 
-        boost::shared_ptr<BicubicSpline> leverage = boost::shared_ptr<BicubicSpline> (
-                new BicubicSpline(times.begin(), times.end(),
-                                  strikes.begin(), strikes.end(),
-                                  surface));
+        boost::shared_ptr<FixedLocalVolSurface> leverage = boost::shared_ptr<FixedLocalVolSurface>(
+            new FixedLocalVolSurface(Settings::instance().evaluationDate().value(), times,
+                                     strikes, surface, ActualActual()));
         return leverage;
     }
 
-    boost::shared_ptr<BicubicSpline> createLeverageFctFromVolSurface(
+    boost::shared_ptr<FixedLocalVolSurface> createLeverageFctFromVolSurface(
             boost::shared_ptr<BlackScholesMertonProcess> lvProcess,
-            const std::vector<Real>& strikes,
-            const std::vector<Date>& dates,
-            std::vector<Time>& times,
-            Matrix & surface) {
-        const boost::shared_ptr<LocalVolTermStructure> localVol
-            = lvProcess->localVolatility().currentLink();
+            const std::vector<Real>& strikes, const std::vector<Date>& dates,
+            std::vector<Time>& times, Matrix & surface) {
+        const boost::shared_ptr<LocalVolTermStructure> localVol =
+            lvProcess->localVolatility().currentLink();
 
         const DayCounter dc = localVol->dayCounter();
         const Date todaysDate = Settings::instance().evaluationDate();
@@ -1015,13 +1016,10 @@ namespace {
                 }
             }
         }
-
-        boost::shared_ptr<BicubicSpline> leverage
-            = boost::shared_ptr<BicubicSpline> (
-                new BicubicSpline(times.begin(), times.end(),
-                                  strikes.begin(), strikes.end(),
-                                  surface));
-        leverage->disableExtrapolation();
+        boost::shared_ptr<FixedLocalVolSurface> leverage 
+            = boost::shared_ptr<FixedLocalVolSurface>(
+                new FixedLocalVolSurface(todaysDate, times, strikes, surface, dc));
+        //leverage->disableExtrapolation();
         return leverage;
     }
 
@@ -1185,8 +1183,8 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
     Matrix surface(ds.size(), smoothSurface.get<1>().size());
     std::vector<Time> times(surface.columns());
 
-    boost::shared_ptr<BicubicSpline> leverage
-        = createLeverageFctFromVolSurface(lvProcess, ds,
+    boost::shared_ptr<FixedLocalVolSurface> leverage =
+        createLeverageFctFromVolSurface(lvProcess, ds,
             smoothSurface.get<1>(), times, surface);
 
     const boost::shared_ptr<PricingEngine> lvEngine(
@@ -1507,17 +1505,19 @@ namespace {
 
         const Array x(Exp(Array(spotMesher->locations().begin(),
                                       spotMesher->locations().end())));
+        const std::vector<Real> tmpSpots(x.begin(), x.end());
         const Array v(varianceMesher->locations().begin(),
                       varianceMesher->locations().end());
         const Array tMesh(timeGrid.begin()+1, timeGrid.end());
+        const std::vector<Time> tmpTimes(tMesh.begin(), tMesh.end());
         Matrix L(x.size(), tMesh.size());
 
         for (Size i=0; i < x.size(); ++i) {
             std::fill(L.row_begin(i), L.row_end(i), l0);
         }
-        boost::shared_ptr<Interpolation2D> leverageFct(
-            new BilinearInterpolation(tMesh.begin(), tMesh.end(),
-                                      x.begin(), x.end(), L));
+        boost::shared_ptr<FixedLocalVolSurface> leverageFct(
+            new FixedLocalVolSurface(todaysDate, tmpTimes, tmpSpots, L,
+                                     dayCounter));
 
         const boost::shared_ptr<FdmLinearOpComposite> hestonFwdOp(
             new FdmHestonFwdOp(mesher, hestonProcess, trafoType, leverageFct));
@@ -1542,26 +1542,26 @@ namespace {
 
             Array pn = p;
             for (Size r=0; r < 2; ++r) {
-				for (Size j=0; j < x.size(); ++j) {
-					Array pSlice(vGrid);
-					for (Size k=0; k < vGrid; ++k)
-						pSlice[k] = pn[j + k*xGrid];
+                for (Size j=0; j < x.size(); ++j) {
+                    Array pSlice(vGrid);
+                    for (Size k=0; k < vGrid; ++k)
+                        pSlice[k] = pn[j + k*xGrid];
 
-					const Real pInt = DiscreteSimpsonIntegral()(v, pSlice);
+                    const Real pInt = DiscreteSimpsonIntegral()(v, pSlice);
 
-					const Real vpInt = (trafoType == FdmSquareRootFwdOp::Log)
-							  ? DiscreteSimpsonIntegral()(v, Exp(v)*pSlice)
-							  : DiscreteSimpsonIntegral()(v, v*pSlice);
+                    const Real vpInt = (trafoType == FdmSquareRootFwdOp::Log)
+                      ? DiscreteSimpsonIntegral()(v, Exp(v)*pSlice)
+                      : DiscreteSimpsonIntegral()(v, v*pSlice);
 
-					const Real scale = pInt/vpInt;
+                    const Real scale = pInt/vpInt;
 
-					const Real l = (scale >= 0.0)
-						? localVol*std::sqrt(scale)
-						: 1.0;
+                    const Real l = (scale >= 0.0)
+                      ? localVol*std::sqrt(scale)
+                      : 1.0;
 
-					std::fill(L.row_begin(j)+i,
-							  std::min(L.row_begin(j)+i+1, L.row_end(j)),
-							  std::min(5.0, std::max(0.01, l)));
+                    std::fill(leverageFct->matrix().row_begin(j)+i,
+                      std::min(leverageFct->matrix().row_begin(j)+i+1, leverageFct->matrix().row_end(j)),
+                      std::min(5.0, std::max(0.01, l)));
 
 //					const Real l = (pInt >= 1e-8)
 //						? localVol*std::sqrt(scale)
@@ -1590,61 +1590,61 @@ namespace {
 //				}
 
 
-				// smoothing
-	            const Volatility stdDev = localVol*std::sqrt(t);
-	            const Real xm
-	                = std::log(s0*qTS->discount(t)/rTS->discount(t))
-	                    -0.5*stdDev*stdDev;
+// smoothing
+                const Volatility stdDev = localVol*std::sqrt(t);
+                const Real xm
+                    = std::log(s0*qTS->discount(t)/rTS->discount(t))
+                        -0.5*stdDev*stdDev;
 
-	            const Real normInvEps = InverseCumulativeNormal()(1-1e-4);
+                const Real normInvEps = InverseCumulativeNormal()(1-1e-4);
 
-	            const Real sLowerBound = std::max(
-	            		x.front(), std::exp(xm - normInvEps*stdDev));
-	            const Real sUpperBound = std::min(
-	            		x.back(), std::exp(xm + normInvEps*stdDev));
+                const Real sLowerBound = std::max(
+                    x.front(), std::exp(xm - normInvEps*stdDev));
+                const Real sUpperBound = std::min(
+                    x.back(), std::exp(xm + normInvEps*stdDev));
 
-	            const Real lowerL = (*leverageFct)(t, sLowerBound);
-	            const Real upperL = (*leverageFct)(t, sUpperBound);
+                const Real lowerL = leverageFct->localVol(t, sLowerBound);
+                const Real upperL = leverageFct->localVol(t, sUpperBound);
 
-				for (Size j=0; j < x.size(); ++j) {
-					if (x[j] < sLowerBound)
-						std::fill(L.row_begin(j)+i,
-								  std::min(L.row_begin(j)+i+1, L.row_end(j)),
-								  lowerL);
-					else if (x[j] > sUpperBound)
-						std::fill(L.row_begin(j)+i,
-								  std::min(L.row_begin(j)+i+1, L.row_end(j)),
-								  upperL);
-					else if (L[j][i] == Null<Real>())
-						std::cout << t << " ouch" << std::endl;
-				}
+                for (Size j=0; j < x.size(); ++j) {
+                    if (x[j] < sLowerBound)
+                        std::fill(leverageFct->matrix().row_begin(j)+i,
+                          std::min(leverageFct->matrix().row_begin(j)+i+1, leverageFct->matrix().row_end(j)),
+                          lowerL);
+                    else if (x[j] > sUpperBound)
+                        std::fill(leverageFct->matrix().row_begin(j)+i,
+                          std::min(leverageFct->matrix().row_begin(j)+i+1, leverageFct->matrix().row_end(j)),
+                          upperL);
+                    else if (leverageFct->matrix()[j][i] == Null<Real>())
+                        std::cout << t << " ouch" << std::endl;
+                }
 
-				pn = p;
-				switch (testCase.schemeType) {
-				  case FdmSchemeDesc::DouglasType:
-					ds.setStep(dt);
-					ds.step(pn, t);
-				  break;
-				  case FdmSchemeDesc::HundsdorferType:
-					hs.setStep(dt);
-					hs.step(pn, t);
-				  break;
-				  case FdmSchemeDesc::CraigSneydType:
-					cs.setStep(dt);
-					cs.step(pn, t);
-				  break;
-				  case FdmSchemeDesc::ImplicitEulerType:
-					ie.setStep(dt);
-					ie.step(pn, t);
-				  break;
-				  case FdmSchemeDesc::ModifiedCraigSneydType:
-					mcg.setStep(dt);
-					mcg.step(pn, t);
-				  break;
-				  default:
-					QL_FAIL("scheme is not implemented");
-				}
-			}
+                pn = p;
+                switch (testCase.schemeType) {
+                  case FdmSchemeDesc::DouglasType:
+                    ds.setStep(dt);
+                    ds.step(pn, t);
+                  break;
+                  case FdmSchemeDesc::HundsdorferType:
+                      hs.setStep(dt);
+                      hs.step(pn, t);
+                  break;
+                  case FdmSchemeDesc::CraigSneydType:
+                    cs.setStep(dt);
+                    cs.step(pn, t);
+                  break;
+                    case FdmSchemeDesc::ImplicitEulerType:
+                    ie.setStep(dt);
+                    ie.step(pn, t);
+                  break;
+                  case FdmSchemeDesc::ModifiedCraigSneydType:
+                    mcg.setStep(dt);
+                    mcg.step(pn, t);
+                  break;
+                    default:
+                  QL_FAIL("scheme is not implemented");
+                }
+            }
             p = pn;
 
 //    		for (Size j=0; j < x.size(); ++j) {
@@ -1725,25 +1725,25 @@ namespace {
                 const Real expected = option.NPV();
                 const Real vega = option.vega();
 
-//                option.setPricingEngine(hestonEngine);
-//                const Real pureHeston = option.NPV();
-//
-//                const boost::shared_ptr<GeneralizedBlackScholesProcess> bp(
-//                    new GeneralizedBlackScholesProcess(spot, qTS, rTS,
-//                        Handle<BlackVolTermStructure>(flatVol(localVol,
-//                                                      dayCounter))));
+                option.setPricingEngine(hestonEngine);
+                const Real pureHeston = option.NPV();
 
-//                std::cout << "strike " << QL_FIXED << std::setprecision(0)
-//                          << strike << "\t "
-//                          << std::setprecision(0) << times[t] << "\t "
-//                          << std::setprecision(8) << expected << " "
-//                          << std::setprecision(8) << vega << " "
-//                          << std::setprecision(8) << calculated << " "
-//                          << std::setprecision(8) << localVol + (calculated-expected)/vega
-//                          << " "
-//                          << std::setprecision(8) << pureHeston << " "
-//                          << std::setprecision(8) << option.impliedVolatility(pureHeston, bp)
-//                          << std::endl;
+                const boost::shared_ptr<GeneralizedBlackScholesProcess> bp(
+                    new GeneralizedBlackScholesProcess(spot, qTS, rTS,
+                        Handle<BlackVolTermStructure>(flatVol(localVol,
+                                                      dayCounter))));
+
+                std::cout << "strike " << QL_FIXED << std::setprecision(0)
+                          << strike << "\t "
+                          << std::setprecision(0) << times[t] << "\t "
+                          << std::setprecision(8) << expected << " "
+                          << std::setprecision(8) << vega << " "
+                          << std::setprecision(8) << calculated << " "
+                          << std::setprecision(8) << localVol + (calculated-expected)/vega
+                          << " "
+                          << std::setprecision(8) << pureHeston << " "
+                          << std::setprecision(8) << option.impliedVolatility(pureHeston, bp)
+                          << std::endl;
 
                 const Real tol = testCase.eps;
                 if (std::fabs((calculated-expected)/vega) > tol) {
@@ -1762,7 +1762,6 @@ namespace {
 
 
 void HestonSLVModelTest::testLSVCalibration() {
-    BOOST_TEST_MESSAGE("Testing stochastic local volatility calibration...");
 
     FokkerPlanckFwdTestCase testCases[] = {
         {
@@ -1784,13 +1783,13 @@ void HestonSLVModelTest::testLSVCalibration() {
             FdmSchemeDesc::CraigSneydType
         },
         {
-        	// main reason for the high tolerance is v0=0.19
-        	// and pricing of the vanilla option does not work
-        	// very well with this high value
+            // main reason for the high tolerance is v0=0.19
+            // and pricing of the vanilla option does not work
+            // very well with this high value
             100.0, 0.035, 0.01,
             0.19, 1.0, 0.1, -0.75, 0.2,
             101, 401, 201, 101,
-			0.003, 0.003,
+            0.003, 0.003,
             FdmSquareRootFwdOp::Plain,
             FdmHestonGreensFct::Gaussian,
             FdmSchemeDesc::HundsdorferType
@@ -1800,7 +1799,7 @@ void HestonSLVModelTest::testLSVCalibration() {
             100.0, 0.035, 0.01,
             0.06, 1.0, 0.06, -0.75, std::sqrt(0.2),
             201, 501, 101, 51,
-			0.0005, 0.0005,
+            0.0005, 0.0005,
             FdmSquareRootFwdOp::Log,
             FdmHestonGreensFct::Gaussian,
             FdmSchemeDesc::ModifiedCraigSneydType
@@ -1808,6 +1807,7 @@ void HestonSLVModelTest::testLSVCalibration() {
     };
 
     for (Size i=0; i < LENGTH(testCases); ++i) {
+        BOOST_TEST_MESSAGE("Testing stochastic local volatility calibration case " << i << " ...");
         lsvCalibrationTest(testCases[i]);
     }
 }

@@ -3,7 +3,8 @@
 /*
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008, 2014 Klaus Spanderen
+ Copyright (C) 2008, 2014, 2015 Klaus Spanderen
+ Copyright (C) 2015 Johannes Goettker-Schnetmann
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,12 +28,12 @@
 #define quantlib_fdm_heston_op_hpp
 
 #include <ql/processes/hestonprocess.hpp>
-#include <ql/math/interpolations/interpolation2d.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmquantohelper.hpp>
 #include <ql/methods/finitedifferences/operators/firstderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/triplebandlinearop.hpp>
 #include <ql/methods/finitedifferences/operators/ninepointlinearop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
+#include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
 
 namespace QuantLib {
 
@@ -43,8 +44,8 @@ namespace QuantLib {
             const boost::shared_ptr<YieldTermStructure>& rTS,
             const boost::shared_ptr<YieldTermStructure>& qTS,
             const boost::shared_ptr<FdmQuantoHelper>& quantoHelper,
-            const boost::shared_ptr<Interpolation2D>& leverageFct
-            	= boost::shared_ptr<Interpolation2D>());
+            const boost::shared_ptr<FixedLocalVolSurface>& leverageFct
+            	= boost::shared_ptr<FixedLocalVolSurface>());
 
         void setTime(Time t1, Time t2);
         const TripleBandLinearOp& getMap() const;
@@ -61,7 +62,7 @@ namespace QuantLib {
         const boost::shared_ptr<FdmMesher> mesher_;
         const boost::shared_ptr<YieldTermStructure> rTS_, qTS_;
         const boost::shared_ptr<FdmQuantoHelper> quantoHelper_;
-        const boost::shared_ptr<Interpolation2D> leverageFct_;
+        const boost::shared_ptr<FixedLocalVolSurface> leverageFct_;
     };
 
     class FdmHestonVariancePart {
@@ -89,8 +90,8 @@ namespace QuantLib {
             const boost::shared_ptr<HestonProcess>& hestonProcess,
             const boost::shared_ptr<FdmQuantoHelper>& quantoHelper
                 = boost::shared_ptr<FdmQuantoHelper>(),
-            const boost::shared_ptr<Interpolation2D>& leverageFct
-            	= boost::shared_ptr<Interpolation2D>());
+            const boost::shared_ptr<FixedLocalVolSurface>& leverageFct
+            	= boost::shared_ptr<FixedLocalVolSurface>());
 
         Size size() const;
         void setTime(Time t1, Time t2);
@@ -111,7 +112,7 @@ namespace QuantLib {
         NinePointLinearOp correlationMap_;
         FdmHestonVariancePart dyMap_;
         FdmHestonEquityPart dxMap_;
-        const boost::shared_ptr<Interpolation2D> leverageFct_;
+        const boost::shared_ptr<FixedLocalVolSurface> leverageFct_;
     };
 }
 

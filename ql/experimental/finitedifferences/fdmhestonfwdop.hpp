@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2012, 2013 Klaus Spanderen
- Copyright (C) 2014 Johannes Göttker-Schnetmann
+ Copyright (C) 2012, 2013, 2015 Klaus Spanderen
+ Copyright (C) 2014, 2015 Johannes Göttker-Schnetmann
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,7 +28,7 @@
 #include <ql/types.hpp>
 #include <ql/experimental/finitedifferences/fdmsquarerootfwdop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
-#include <ql/math/interpolations/interpolation2d.hpp>
+#include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
 
 namespace QuantLib {
 
@@ -46,7 +46,7 @@ namespace QuantLib {
             const boost::shared_ptr<HestonProcess>& process,
             FdmSquareRootFwdOp::TransformationType type 
                 = FdmSquareRootFwdOp::Plain,
-            const boost::shared_ptr<Interpolation2D> & leverageFct = boost::shared_ptr<Interpolation2D> ());
+            const boost::shared_ptr<FixedLocalVolSurface> & leverageFct = boost::shared_ptr<FixedLocalVolSurface> ());
         // first index of leverageFunction is time, second is spot
 
         Size size() const;
@@ -83,7 +83,7 @@ namespace QuantLib {
 
         const boost::shared_ptr<NinePointLinearOp> correlation_;
 
-        const boost::shared_ptr<Interpolation2D>& leverageFct_;
+        const boost::shared_ptr<FixedLocalVolSurface>& leverageFct_;
         const boost::shared_ptr<FdmMesher> mesher_;
         const Array x_;
     };
