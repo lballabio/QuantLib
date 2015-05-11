@@ -29,8 +29,8 @@ namespace QuantLib {
 			Date d(referenceDate);
 			while(dc.yearFraction(referenceDate, d+=Period(1, Years)) < t);
 			d-=Period(1, Years);
-			while(dc.yearFraction(referenceDate, d+=Period(1, Month)) < t);
-			d-=Period(1, Month);
+			while(dc.yearFraction(referenceDate, d+=Period(1, Months)) < t);
+			d-=Period(1, Months);
 			while(dc.yearFraction(referenceDate, d++) < t);
 
 			return d;
