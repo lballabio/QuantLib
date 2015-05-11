@@ -69,6 +69,17 @@ namespace QuantLib {
         HKDCurrency();
     };
 
+    //! Indonesian Rupiah
+    /*! The ISO three-letter code is IDR; the numeric code is 360.
+        It is divided in 100 sen.
+
+        \ingroup currencies
+    */
+    class IDRCurrency : public Currency {
+      public:
+        IDRCurrency();
+    };
+
     //! Israeli shekel
     /*! The ISO three-letter code is ILS; the numeric code is 376.
         It is divided in 100 agorot.
@@ -146,6 +157,17 @@ namespace QuantLib {
         KWDCurrency();
     };
 
+    //! Malaysian Ringgit
+    /*! The ISO three-letter code is MYR; the numeric code is 458.
+        It is divided in 100 sen.
+
+        \ingroup currencies
+    */
+    class MYRCurrency : public Currency {
+      public:
+        MYRCurrency();
+    };
+
     //! Nepal rupee
     /*! The ISO three-letter code is NPR; the numeric code is 524.
         It is divided in 100 paise.
@@ -210,6 +232,17 @@ namespace QuantLib {
     class TWDCurrency : public Currency {
       public:
         TWDCurrency();
+    };
+
+    //! Vietnamese Dong
+    /*! The ISO three-letter code is VND; the numeric code is 704.
+        It was divided in 100 xu.
+
+        \ingroup currencies
+    */
+    class VNDCurrency : public Currency {
+      public:
+        VNDCurrency();
     };
 
 }
