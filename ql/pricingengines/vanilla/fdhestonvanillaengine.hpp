@@ -27,11 +27,11 @@
 #define quantlib_fd_heston_vanilla_engine_hpp
 
 #include <ql/instruments/dividendvanillaoption.hpp>
-#include <ql/math/interpolations/interpolation2d.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/pricingengines/genericmodelengine.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmsolverdesc.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
+#include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
 
 namespace QuantLib {
 
@@ -54,8 +54,8 @@ namespace QuantLib {
             Size tGrid = 100, Size xGrid = 100, 
             Size vGrid = 50, Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-			const boost::shared_ptr<Interpolation2D>& leverageFct
-				= boost::shared_ptr<Interpolation2D>());
+			const boost::shared_ptr<FixedLocalVolSurface>& leverageFct
+				= boost::shared_ptr<FixedLocalVolSurface>());
 
         void calculate() const;
         
@@ -69,7 +69,7 @@ namespace QuantLib {
       private:
         const Size tGrid_, xGrid_, vGrid_, dampingSteps_;
         const FdmSchemeDesc schemeDesc_;
-        const boost::shared_ptr<Interpolation2D> leverageFct_;
+        const boost::shared_ptr<FixedLocalVolSurface> leverageFct_;
         
         std::vector<Real> strikes_;
         mutable std::vector<std::pair<DividendVanillaOption::arguments,

@@ -3,7 +3,8 @@
 /*
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008, 2009 Ralph Schreyer
- Copyright (C) 2008, 2009, 2011, 2014 Klaus Spanderen
+ Copyright (C) 2008, 2009, 2011, 2014, 2015 Klaus Spanderen
+ Copyright (C) 2015 Johannes Goettker-Schnetmann
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,7 +32,7 @@ namespace QuantLib {
         const FdmSolverDesc& solverDesc,
         const FdmSchemeDesc& schemeDesc,
         const Handle<FdmQuantoHelper>& quantoHelper,
-        const boost::shared_ptr<Interpolation2D>& leverageFct)
+        const boost::shared_ptr<FixedLocalVolSurface>& leverageFct)
     : process_(process),
       solverDesc_(solverDesc),
       schemeDesc_(schemeDesc),

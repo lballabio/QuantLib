@@ -56,6 +56,9 @@ namespace QuantLib {
                                 InterpolatorDefaultExtrapolation);
 
         Date maxDate() const;
+        Date minDate() const;
+        Time maxTime() const;
+        Time minTime() const;
         Real minStrike() const;
         Real maxStrike() const;
 
@@ -73,6 +76,7 @@ namespace QuantLib {
         Volatility localVolImpl(Time t, Real strike) const;
 
         const Date maxDate_;
+        const Date minDate_;
         const std::vector<Real> strikes_;
         const Matrix localVolMatrix_;
         std::vector<Time> times_;
