@@ -36,7 +36,7 @@ namespace QuantLib {
       calendar_(overnightIndex->fixingCalendar()),
       paymentFrequency_(Annual),
       rule_(DateGeneration::Backward),
-      endOfMonth_(1*Months<=swapTenor && swapTenor<=2*Years ? true : false),
+      endOfMonth_(false),
       type_(OvernightIndexedSwap::Payer), nominal_(1.0),
       overnightSpread_(0.0),
       fixedDayCount_(overnightIndex->dayCounter()) {}

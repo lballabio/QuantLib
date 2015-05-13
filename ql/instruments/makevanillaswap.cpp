@@ -82,7 +82,7 @@ namespace QuantLib {
         if (terminationDate_ != Date()) {
             endDate = terminationDate_;
         } else {
-            if (floatEndOfMonth_) {
+            if (floatEndOfMonth_ && startDate.isEndOfMonth(startDate)) {
                 endDate = floatCalendar_.advance(startDate, swapTenor_,
                                                  ModifiedFollowing,
                                                  floatEndOfMonth_);
