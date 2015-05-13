@@ -45,8 +45,9 @@ namespace QuantLib {
         </ul>
 
         Holidays for the Moscow Exchange (MOEX) taken from http://moex.com/s726 and related pages.
-        These holidays are <em>not</em> consistent year-to-year, and are only available
-        for dates since the introduction of the MOEX 'brand'.
+        These holidays are <em>not</em> consistent year-to-year, may or may not correlate to
+		public holidays, and are only available for dates since the introduction of the MOEX 'brand'
+		(a merger of the stock and futures markets).
 
         \ingroup calendars
     */

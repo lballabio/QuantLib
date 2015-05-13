@@ -75,86 +75,108 @@ namespace QuantLib {
 
   bool Russia::ExchangeImpl::isHoliday2015(const Date& date) const
   {
-    Month month = date.month();
-    Day d = date.dayOfMonth();
-    switch (month) {
-    case 1: return (d == 1 || d == 2 || d == 3 || d == 4 || d == 7 || d == 10 || d == 11 || d == 17 || d == 18 || d == 24 || d == 25 || d == 31);
-    case 2: return (d == 1 || d == 7 || d == 8 || d == 14 || d == 15 || d == 21 || d == 22 || d == 23 || d == 28);
-    case 3: return (d == 1 || d == 7 || d == 8 || d == 9 || d == 14 || d == 15 || d == 21 || d == 22 || d == 28 || d == 29);
-    case 4: return (d == 4 || d == 5 || d == 11 || d == 12 || d == 18 || d == 19 || d == 25 || d == 26);
-    case 5: return (d == 1 || d == 2 || d == 3 || d == 9 || d == 10 || d == 11 || d == 16 || d == 17 || d == 23 || d == 24 || d == 30 || d == 31);
-    case 6: return (d == 6 || d == 7 || d == 12 || d == 13 || d == 14 || d == 20 || d == 21 || d == 27 || d == 28);
-    case 7: return (d == 4 || d == 5 || d == 11 || d == 12 || d == 18 || d == 19 || d == 25 || d == 26);
-    case 8: return (d == 1 || d == 2 || d == 8 || d == 9 || d == 15 || d == 16 || d == 22 || d == 23 || d == 29 || d == 30);
-    case 9: return (d == 5 || d == 6 || d == 12 || d == 13 || d == 19 || d == 20 || d == 26 || d == 27);
-    case 10: return (d == 3 || d == 4 || d == 10 || d == 11 || d == 17 || d == 18 || d == 24 || d == 25 || d == 31);
-    case 11: return (d == 1 || d == 4 || d == 7 || d == 8 || d == 14 || d == 15 || d == 21 || d == 22 || d == 28 || d == 29);
-    case 12: return (d == 5 || d == 6 || d == 12 || d == 13 || d == 19 || d == 20 || d == 26 || d == 27 || d == 31);
-    }
-    return false;
+	  Month month = date.month();
+	  Day d = date.dayOfMonth();
+	  Weekday wd = date.weekday();
+
+	  if (wd == Saturday || wd == Sunday)
+	  {
+		  return true;
+	  }
+	  else {
+		  switch (month) {
+		  case Jan: return d != 1 && d != 2 && d != 7;
+		  case Feb: return d != 23;
+		  case Mar: return d != 9;
+		  case May: return d != 1 && d != 4 && d != 11;
+		  case Jun: return d != 12;
+		  case Nov: return d != 4;
+		  case Dec: return d != 31;
+		  default: return false;
+		  }
+	  }
+
   }
 
   bool Russia::ExchangeImpl::isHoliday2014(const Date& date) const
   {
-    Month month = date.month();
-    Day d = date.dayOfMonth();
-    switch (month) {
-    case 1: return (d == 1 || d == 2 || d == 3 || d == 4 || d == 5 || d == 7 || d == 11 || d == 12 || d == 18 || d == 19 || d == 25 || d == 26);
-    case 2: return (d == 1 || d == 2 || d == 8 || d == 9 || d == 15 || d == 16 || d == 22 || d == 23);
-    case 3: return (d == 1 || d == 2 || d == 8 || d == 9 || d == 10 || d == 15 || d == 16 || d == 22 || d == 23 || d == 29 || d == 30);
-    case 4: return (d == 5 || d == 6 || d == 12 || d == 13 || d == 19 || d == 20 || d == 26 || d == 27);
-    case 5: return (d == 1 || d == 3 || d == 4 || d == 9 || d == 10 || d == 11 || d == 17 || d == 18 || d == 24 || d == 25 || d == 31);
-    case 6: return (d == 1 || d == 7 || d == 8 || d == 12 || d == 14 || d == 15 || d == 21 || d == 22 || d == 28 || d == 29);
-    case 7: return (d == 5 || d == 6 || d == 12 || d == 13 || d == 19 || d == 20 || d == 26 || d == 27);
-    case 8: return (d == 2 || d == 3 || d == 9 || d == 10 || d == 16 || d == 17 || d == 23 || d == 24 || d == 30 || d == 31);
-    case 9: return (d == 6 || d == 7 || d == 13 || d == 14 || d == 20 || d == 21 || d == 27 || d == 28);
-    case 10: return (d == 4 || d == 5 || d == 11 || d == 12 || d == 18 || d == 19 || d == 25 || d == 26);
-    case 11: return (d == 1 || d == 2 || d == 4 || d == 8 || d == 9 || d == 15 || d == 16 || d == 22 || d == 23 || d == 29 || d == 30);
-    case 12: return (d == 6 || d == 7 || d == 13 || d == 14 || d == 20 || d == 21 || d == 27 || d == 28 || d == 31);
-    }
-    return false;
+	  Month month = date.month();
+	  Day d = date.dayOfMonth();
+	  Weekday wd = date.weekday();
+
+	  if (wd == Saturday || wd == Sunday)
+	  {
+		  return true;
+	  }
+	  else {
+		  switch (month) {
+		  case Jan: return d != 1 && d != 2 && d != 3 && d != 7;
+		  case Mar: return d != 10;
+		  case May: return d != 1 && d != 9;
+		  case Jun: return d != 12;
+		  case Nov: return d != 4;
+		  case Dec: return d != 31;
+		  default: return false;
+		  }
+	  }
+
   }
 
   bool Russia::ExchangeImpl::isHoliday2013(const Date& date) const
   {
-    Month month = date.month();
-    Day d = date.dayOfMonth();
-    switch (month) {
-    case 1: return (d == 1 || d == 2 || d == 3 || d == 4 || d == 5 || d == 6 || d == 7 || d == 12 || d == 13 || d == 19 || d == 20 || d == 26 || d == 27);
-    case 2: return (d == 2 || d == 3 || d == 9 || d == 10 || d == 16 || d == 17 || d == 23 || d == 24);
-    case 3: return (d == 2 || d == 3 || d == 8 || d == 9 || d == 10 || d == 16 || d == 17 || d == 23 || d == 24 || d == 30 || d == 31);
-    case 4: return (d == 6 || d == 7 || d == 13 || d == 14 || d == 20 || d == 21 || d == 27 || d == 28);
-    case 5: return (d == 1 || d == 4 || d == 5 || d == 9 || d == 11 || d == 12 || d == 18 || d == 19 || d == 25 || d == 26);
-    case 6: return (d == 1 || d == 2 || d == 8 || d == 9 || d == 12 || d == 15 || d == 16 || d == 22 || d == 23 || d == 29 || d == 30);
-    case 7: return (d == 6 || d == 7 || d == 13 || d == 14 || d == 20 || d == 21 || d == 27 || d == 28);
-    case 8: return (d == 3 || d == 4 || d == 10 || d == 11 || d == 17 || d == 18 || d == 24 || d == 25 || d == 31);
-    case 9: return (d == 1 || d == 7 || d == 8 || d == 14 || d == 15 || d == 21 || d == 22 || d == 28 || d == 29);
-    case 10: return (d == 5 || d == 6 || d == 12 || d == 13 || d == 19 || d == 20 || d == 26 || d == 27);
-    case 11: return (d == 2 || d == 3 || d == 4 || d == 9 || d == 10 || d == 16 || d == 17 || d == 23 || d == 24 || d == 30);
-    case 12: return (d == 1 || d == 7 || d == 8 || d == 14 || d == 15 || d == 21 || d == 22 || d == 28 || d == 29 || d == 31);
-    }
-    return false;
+	  Month month = date.month();
+	  Day d = date.dayOfMonth();
+	  Weekday wd = date.weekday();
+
+	  if (wd == Saturday || wd == Sunday)
+	  {
+		  return true;
+	  }
+	  else {
+		  switch (month) {
+		  case Jan: return d != 1 && d != 2 && d != 3 && d != 4 && d != 7;
+		  case Mar: return d != 8;
+		  case May: return d != 1 && d != 9;
+		  case Jun: return d != 12;
+		  case Nov: return d != 4;
+		  case Dec: return d != 31;
+		  default: return false;
+		  }
+	  }
+
   }
 
   bool Russia::ExchangeImpl::isHoliday2012(const Date& date) const
   {
-    Month month = date.month();
-    Day d = date.dayOfMonth();
-    switch (month) {
-    case 1: return (d == 1 || d == 2 || d == 7 || d == 8 || d == 14 || d == 15 || d == 21 || d == 22 || d == 28 || d == 29);
-    case 2: return (d == 4 || d == 5 || d == 11 || d == 12 || d == 18 || d == 19 || d == 23 || d == 25 || d == 26);
-    case 3: return (d == 3 || d == 4 || d == 8 || d == 9 || d == 10 || d == 17 || d == 18 || d == 24 || d == 25 || d == 31);
-    case 4: return (d == 1 || d == 7 || d == 8 || d == 14 || d == 15 || d == 21 || d == 22 || d == 29 || d == 30);
-    case 5: return (d == 1 || d == 6 || d == 9 || d == 13 || d == 19 || d == 20 || d == 26 || d == 27);
-    case 6: return (d == 2 || d == 3 || d == 10 || d == 11 || d == 12 || d == 16 || d == 17 || d == 23 || d == 24 || d == 30);
-    case 7: return (d == 1 || d == 7 || d == 8 || d == 14 || d == 15 || d == 21 || d == 22 || d == 28 || d == 29);
-    case 8: return (d == 4 || d == 5 || d == 11 || d == 12 || d == 18 || d == 19 || d == 25 || d == 26);
-    case 9: return (d == 1 || d == 2 || d == 8 || d == 9 || d == 15 || d == 16 || d == 22 || d == 23 || d == 29 || d == 30);
-    case 10: return (d == 6 || d == 7 || d == 13 || d == 14 || d == 20 || d == 21 || d == 27 || d == 28);
-    case 11: return (d == 3 || d == 4 || d == 5 || d == 10 || d == 11 || d == 17 || d == 18 || d == 24 || d == 25);
-    case 12: return (d == 1 || d == 2 || d == 8 || d == 9 || d == 15 || d == 16 || d == 22 || d == 23 || d == 29 || d == 30 || d == 31);
-    }
-    return false;
+	  Month month = date.month();
+	  Day d = date.dayOfMonth();
+	  Weekday wd = date.weekday();
+
+	  if (wd == Saturday || wd == Sunday)
+	  {
+		  switch (month)
+		  {
+		  case Mar: return d != 11;
+		  case Apr: return d != 28;
+		  case May: return d != 5 && d != 12;
+		  case Jun: return d != 9;
+		  default: return true;
+		  }
+	  }
+	  else {
+		  switch (month) {
+		  case Jan: return d != 2;
+		  case Feb: return d != 23;
+		  case Mar: return d != 8 && d != 9;
+		  case Apr: return d != 30;
+		  case May: return d != 1 && d != 9;
+		  case Jun: return d != 11 && d != 12;
+		  case Nov: return d != 5;
+		  case Dec: return d != 31;
+		  default: return false;
+		  }
+	  }
+
   }
 
   bool Russia::ExchangeImpl::isBusinessDay(const Date& date) const
