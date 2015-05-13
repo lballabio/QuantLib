@@ -85,17 +85,16 @@ namespace QuantLib {
 	  }
 	  else {
 		  switch (month) {
-		  case Jan: return d != 1 && d != 2 && d != 7;
-		  case Feb: return d != 23;
-		  case Mar: return d != 9;
-		  case May: return d != 1 && d != 4 && d != 11;
-		  case Jun: return d != 12;
-		  case Nov: return d != 4;
-		  case Dec: return d != 31;
+		  case Jan: return d == 1 || d == 2 || d == 7;
+		  case Feb: return d == 23;
+		  case Mar: return d == 9;
+		  case May: return d == 1 || d == 4 || d == 11;
+		  case Jun: return d == 12;
+		  case Nov: return d == 4;
+		  case Dec: return d == 31;
 		  default: return false;
 		  }
 	  }
-
   }
 
   bool Russia::ExchangeImpl::isHoliday2014(const Date& date) const
@@ -110,12 +109,12 @@ namespace QuantLib {
 	  }
 	  else {
 		  switch (month) {
-		  case Jan: return d != 1 && d != 2 && d != 3 && d != 7;
-		  case Mar: return d != 10;
-		  case May: return d != 1 && d != 9;
-		  case Jun: return d != 12;
-		  case Nov: return d != 4;
-		  case Dec: return d != 31;
+		  case Jan: return d == 1 || d == 2 || d == 3 || d == 7;
+		  case Mar: return d == 10;
+		  case May: return d == 1 || d == 9;
+		  case Jun: return d == 12;
+		  case Nov: return d == 4;
+		  case Dec: return d == 31;
 		  default: return false;
 		  }
 	  }
@@ -134,16 +133,15 @@ namespace QuantLib {
 	  }
 	  else {
 		  switch (month) {
-		  case Jan: return d != 1 && d != 2 && d != 3 && d != 4 && d != 7;
-		  case Mar: return d != 8;
-		  case May: return d != 1 && d != 9;
-		  case Jun: return d != 12;
-		  case Nov: return d != 4;
-		  case Dec: return d != 31;
+		  case Jan: return d == 1 || d == 2 || d == 3 || d == 4 || d == 7;
+		  case Mar: return d == 8;
+		  case May: return d == 1 || d == 9;
+		  case Jun: return d == 12;
+		  case Nov: return d == 4;
+		  case Dec: return d == 31;
 		  default: return false;
 		  }
 	  }
-
   }
 
   bool Russia::ExchangeImpl::isHoliday2012(const Date& date) const
@@ -165,14 +163,14 @@ namespace QuantLib {
 	  }
 	  else {
 		  switch (month) {
-		  case Jan: return d != 2;
-		  case Feb: return d != 23;
-		  case Mar: return d != 8 && d != 9;
-		  case Apr: return d != 30;
-		  case May: return d != 1 && d != 9;
-		  case Jun: return d != 11 && d != 12;
-		  case Nov: return d != 5;
-		  case Dec: return d != 31;
+		  case Jan: return d == 2;
+		  case Feb: return d == 23;
+		  case Mar: return d == 8 || d == 9;
+		  case Apr: return d == 30;
+		  case May: return d == 1 || d == 9;
+		  case Jun: return d == 11 || d == 12;
+		  case Nov: return d == 5;
+		  case Dec: return d == 31;
 		  default: return false;
 		  }
 	  }
