@@ -127,6 +127,8 @@ namespace QuantLib {
             || (y == 2013 && d >= 1 && d <= 7 && m == October)
             || (y == 2014 && d >= 1 && d <= 7 && m == October)
             || (y == 2015 && d >= 1 && d <= 7 && m == October)
+            // 70th anniversary of the victory of anti-Japaneses war
+            || (y == 2015 && d >= 3 && d <= 4 && m == September)
             )
             return false;
         return true;
@@ -220,6 +222,7 @@ namespace QuantLib {
             Date(4,January,2015),
             Date(15,February,2015),
             Date(28,February,2015),
+            Date(6,September,2015),
             Date(10,October,2015)
         };
         static const Size n =
