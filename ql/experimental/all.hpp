@@ -9,7 +9,6 @@
 #include <ql/experimental/convertiblebonds/all.hpp>
 #include <ql/experimental/coupons/all.hpp>
 #include <ql/experimental/credit/all.hpp>
-#include <ql/experimental/exercise/all.hpp>
 #include <ql/experimental/exoticoptions/all.hpp>
 #include <ql/experimental/finitedifferences/all.hpp>
 #include <ql/experimental/fx/all.hpp>
@@ -17,7 +16,6 @@
 #include <ql/experimental/lattices/all.hpp>
 #include <ql/experimental/math/all.hpp>
 #include <ql/experimental/mcbasket/all.hpp>
-#include <ql/experimental/models/all.hpp>
 #include <ql/experimental/processes/all.hpp>
 #include <ql/experimental/risk/all.hpp>
 #include <ql/experimental/shortrate/all.hpp>
