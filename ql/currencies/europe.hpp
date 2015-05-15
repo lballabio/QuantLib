@@ -214,6 +214,17 @@ namespace QuantLib {
         RONCurrency();
     };
 
+    //! Russian ruble
+    /*! The ISO three-letter code is RUB; the numeric code is 643.
+        It is divided in 100 kopeyki.
+
+        \ingroup currencies
+    */
+    class RUBCurrency : public Currency {
+      public:
+        RUBCurrency();
+    };
+
     //! Swedish krona
     /*! The ISO three-letter code is SEK; the numeric code is 752.
         It is divided in 100 öre.

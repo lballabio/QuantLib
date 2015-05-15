@@ -300,6 +300,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(GARCHTest::suite());
     test->add(GaussianQuadraturesTest::suite());
     test->add(GJRGARCHModelTest::suite());
+    test->add(GsrTest::suite());
     test->add(HestonModelTest::suite());
     test->add(HybridHestonHullWhiteProcessTest::suite());
     test->add(InflationTest::suite());
@@ -320,10 +321,12 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(MarketModelSmmCapletAlphaCalibrationTest::suite());
     test->add(MarketModelSmmCapletCalibrationTest::suite());
     test->add(MarketModelSmmCapletHomoCalibrationTest::suite());
+    test->add(MarkovFunctionalTest::suite());
     test->add(MatricesTest::suite());
     test->add(MCLongstaffSchwartzEngineTest::suite());
     test->add(MersenneTwisterTest::suite());
     test->add(MoneyTest::suite());
+    test->add(OdeTest::suite());
     test->add(OperatorTest::suite());
     test->add(OptimizersTest::suite());
     test->add(OptionletStripperTest::suite());
@@ -376,16 +379,13 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ExtendedTreesTest::suite());
     test->add(ExtensibleOptionsTest::suite());
     test->add(FdHestonTest::experimental());
-    test->add(GsrTest::suite());
     test->add(HestonModelTest::experimental());
     test->add(HimalayaOptionTest::suite());
     test->add(InflationCPICapFloorTest::suite());
     test->add(InflationVolTest::suite());
     test->add(MargrabeOptionTest::suite());
-    test->add(MarkovFunctionalTest::suite());
     test->add(NoArbSabrTest::suite());
     test->add(NthToDefaultTest::suite());
-    test->add(OdeTest::suite());
     test->add(PagodaOptionTest::suite());
     test->add(PartialTimeBarrierOptionTest::suite());
     test->add(QuantoOptionTest::experimental());

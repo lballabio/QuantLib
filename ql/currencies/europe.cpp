@@ -248,6 +248,20 @@ namespace QuantLib {
         data_ = ronData;
     }
 
+    // Russian ruble
+    /* The ISO three-letter code is RUB; the numeric code is 643.
+       It is divided in 100 kopeyki.
+    */
+    RUBCurrency::RUBCurrency() {
+        static boost::shared_ptr<Data> rubData(
+                                      new Data("Russian ruble",
+                                               "RUB", 643,
+                                               "", "", 100,
+                                               Rounding(),
+                                               "%1$.2f %2%"));
+        data_ = rubData;
+    }
+
     // Swedish krona
     /* The ISO three-letter code is SEK; the numeric code is 752.
        It is divided in 100 öre.
