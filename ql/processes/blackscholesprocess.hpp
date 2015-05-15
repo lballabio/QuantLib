@@ -90,9 +90,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> riskFreeRate_, dividendYield_;
         Handle<BlackVolTermStructure> blackVolatility_;
         mutable RelinkableHandle<LocalVolTermStructure> localVolatility_;
-        mutable bool updated_;
-        mutable boost::shared_ptr<LocalVolCurve> localVolCurve_;
-        mutable boost::shared_ptr<LocalConstantVol> localConstantVol_;
+        mutable bool updated_, isStrikeIndependent_;
     };
 
     //! Black-Scholes (1973) stochastic process

@@ -78,11 +78,10 @@ namespace QuantLib {
     Real GeneralizedBlackScholesProcess::evolve(Time t0, Real x0,
                                                 Time dt, Real dw) const {
         localVolatility(); // trigger update if necessary
-        if (localConstantVol_ != NULL || localVolCurve_ != NULL) {
+        if (isStrikeIndependent_) {
             // in case of a curve we can calculate exact values
-            Real variance = localConstantVol_ != NULL
-                ? localConstantVol_->variance(t0, dt)
-                                : localVolCurve_->variance(t0, dt);
+            Real variance = blackVolatility_->blackVariance(t0 + dt, 0.01) -
+                            blackVolatility_->blackVariance(t0, 0.01);
             Real drift = (riskFreeRate_->forwardRate(t0, t0 + dt, Continuous,
                                                      NoFrequency, true) -
                           dividendYield_->forwardRate(t0, t0 + dt, Continuous,
@@ -127,6 +126,7 @@ namespace QuantLib {
     const Handle<LocalVolTermStructure>&
     GeneralizedBlackScholesProcess::localVolatility() const {
         if (!updated_) {
+            isStrikeIndependent_=true;
 
             // constant Black vol?
             boost::shared_ptr<BlackConstantVol> constVol =
@@ -134,12 +134,10 @@ namespace QuantLib {
                                                           *blackVolatility());
             if (constVol) {
                 // ok, the local vol is constant too.
-                localConstantVol_ = boost::make_shared<LocalConstantVol>(
+                localVolatility_.linkTo(boost::make_shared<LocalConstantVol>(
                     constVol->referenceDate(),
                     constVol->blackVol(0.0, x0_->value()),
-                    constVol->dayCounter());
-                localVolCurve_ = NULL;
-                localVolatility_.linkTo(localConstantVol_);
+                    constVol->dayCounter()));
                 updated_ = true;
                 return localVolatility_;
             }
@@ -150,10 +148,8 @@ namespace QuantLib {
                                                           *blackVolatility());
             if (volCurve) {
                 // ok, we can use the optimized algorithm
-                localVolCurve_ = boost::make_shared<LocalVolCurve>(
-                    Handle<BlackVarianceCurve>(volCurve));
-                localConstantVol_ = NULL;
-                localVolatility_.linkTo(localVolCurve_);
+                localVolatility_.linkTo(boost::make_shared<LocalVolCurve>(
+                    Handle<BlackVarianceCurve>(volCurve)));
                 updated_ = true;
                 return localVolatility_;
             }
@@ -162,9 +158,8 @@ namespace QuantLib {
             localVolatility_.linkTo(
                 boost::make_shared<LocalVolSurface>(blackVolatility_, riskFreeRate_,
                                                     dividendYield_, x0_->value()));
-            localConstantVol_ = NULL;
-            localVolCurve_ = NULL;
             updated_ = true;
+            isStrikeIndependent_ = false;
             return localVolatility_;
 
         } else {
