@@ -47,6 +47,7 @@ namespace QuantLib {
         <li>Ching Ming Festival</li>
         <li>Tuen Ng Festival</li>
         <li>Mid-Autumn Festival</li>
+        <li>70th anniversary of the victory of anti-Japaneses war</li>
         </ul>
 
         SSE data from <http://www.sse.com.cn/>
