@@ -2,7 +2,6 @@
 
 /*
  Copyright (C) 2002, 2003, 2004 Ferdinando Ametrano
- Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -63,10 +62,6 @@ namespace QuantLib {
         Real minStrike() const { return QL_MIN_REAL; }
         Real maxStrike() const { return QL_MAX_REAL; }
         //@}
-        //! \name additional methods
-        //@{
-        Real variance(Time t, Real dt) const;
-        //@}
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
@@ -122,11 +117,6 @@ namespace QuantLib {
 
     inline Volatility LocalConstantVol::localVolImpl(Time, Real) const {
         return volatility_->value();
-    }
-
-    /*! exact total variance between t and t+dt */
-    inline Real LocalConstantVol::variance(Time t, Real dt) const {
-        return volatility_->value()*volatility_->value()*dt;
     }
 
 }
