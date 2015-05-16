@@ -45,8 +45,8 @@ namespace QuantLib {
             checked for plausibility in any sense. */
         Schedule(const std::vector<Date>&,
                  const Calendar& calendar = NullCalendar(),
-                 boost::optional<BusinessDayConvention>
-                                    convention = boost::none,
+                 const BusinessDayConvention
+                                    convention = Unadjusted,
                  boost::optional<BusinessDayConvention>
                      terminationDateConvention = boost::none,
                  const boost::optional<Period> tenor = boost::none,
@@ -104,8 +104,8 @@ namespace QuantLib {
       private:
         boost::optional<Period> tenor_;
         Calendar calendar_;
-        boost::optional<BusinessDayConvention> convention_,
-                                               terminationDateConvention_;
+        BusinessDayConvention convention_;
+        boost::optional<BusinessDayConvention> terminationDateConvention_;
         boost::optional<DateGeneration::Rule> rule_;
         boost::optional<bool> endOfMonth_;
         Date firstDate_, nextToLastDate_;
@@ -183,7 +183,7 @@ namespace QuantLib {
     }
 
     inline BusinessDayConvention Schedule::businessDayConvention() const {
-        return *convention_;
+        return convention_;
     }
 
     inline BusinessDayConvention

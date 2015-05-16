@@ -63,7 +63,7 @@ namespace QuantLib {
 
     Schedule::Schedule(const std::vector<Date>& dates,
                        const Calendar& calendar,
-                       boost::optional<BusinessDayConvention> convention,
+                       BusinessDayConvention convention,
                        boost::optional<BusinessDayConvention>
                                          terminationDateConvention,
                        const boost::optional<Period> tenor,
