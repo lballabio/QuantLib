@@ -5782,14 +5782,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\pricingengines\basket\fd2dblackscholesvanillaengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\pricingengines\basket\fd2dblackscholesvanillaengine.hpp"
-					>
-				</File>
-				<File
 					RelativePath="ql\pricingengines\barrier\analyticbinarybarrierengine.cpp"
 					>
 				</File>
@@ -5807,6 +5799,14 @@
 				</File>
 				<File
 					RelativePath="ql\pricingengines\barrier\discretizedbarrieroption.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\basket\fd2dblackscholesvanillaengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\basket\fd2dblackscholesvanillaengine.hpp"
 					>
 				</File>
 				<File
@@ -6519,6 +6519,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\time\asx.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\time\asx.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\time\businessdayconvention.cpp"
 				>
 			</File>
@@ -7182,10 +7190,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\volatility\sabrvolsurface.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\experimental\volatility\noarbsabr.cpp"
 					>
 				</File>
@@ -7215,6 +7219,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\volatility\noarbsabrsmilesection.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\sabrvolsurface.cpp"
 					>
 				</File>
 				<File
@@ -7742,15 +7750,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\basecorrelationlossmodel.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\basecorrelationstructure.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\basecorrelationstructure.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\credit\basecorrelationlossmodel.hpp"
 					>
 				</File>
 				<File
