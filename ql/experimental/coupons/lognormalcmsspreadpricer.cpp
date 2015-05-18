@@ -26,6 +26,8 @@
 #include <ql/experimental/coupons/cmsspreadcoupon.hpp>
 #include <ql/math/integrals/kronrodintegral.hpp>
 
+using std::sqrt;
+
 namespace QuantLib {
 
     LognormalCmsSpreadPricer::LognormalCmsSpreadPricer(

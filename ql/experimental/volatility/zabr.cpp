@@ -38,6 +38,8 @@
 #include <ql/experimental/finitedifferences/fdmdupire1dop.hpp>
 #include <ql/experimental/finitedifferences/fdmzabrop.hpp>
 
+using std::pow;
+
 namespace QuantLib {
 
 ZabrModel::ZabrModel(const Real expiryTime, const Real forward,
