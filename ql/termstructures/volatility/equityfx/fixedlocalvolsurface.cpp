@@ -88,8 +88,8 @@ namespace QuantLib {
         QL_REQUIRE(times_[0]>=0, "cannot have times[0] < 0");
 
         checkSurface();
-        //        setInterpolation<Bicubic>();
-                setInterpolation<Bilinear>();
+//        setInterpolation<Bicubic>();
+		setInterpolation<Bilinear>();
 	}
 
 	void FixedLocalVolSurface::checkSurface() {
