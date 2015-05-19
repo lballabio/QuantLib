@@ -36,7 +36,6 @@
 #include <ql/math/interpolations/flatextrapolation2d.hpp>
 #include <ql/math/interpolations/backwardflatlinearinterpolation.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
-#include <ql/experimental/volatility/noarbsabrinterpolation.hpp>
 #include <ql/quote.hpp>
 
 #include <boost/make_shared.hpp>
@@ -47,8 +46,6 @@
 #ifndef SWAPTIONVOLCUBE_TOL
     #define SWAPTIONVOLCUBE_TOL 100.0e-4
 #endif
-
-#define MINSTRIKE 0.0001
 
 namespace QuantLib {
 
@@ -132,7 +129,8 @@ namespace QuantLib {
             const Real errorAccept = Null<Real>(),
             const bool useMaxError = false,
             const Size maxGuesses = 50,
-            const bool backwardFlat = false);
+            const bool backwardFlat = false,
+            const Real cutoffStrike = 0.0001);
         //! \name LazyObject interface
         //@{
         void performCalculations() const;
@@ -194,6 +192,7 @@ namespace QuantLib {
         const bool useMaxError_;
         const Size maxGuesses_;
         const bool backwardFlat_;
+        const Real cutoffStrike_;
 
         class PrivateObserver : public Observer {
           public:
@@ -230,7 +229,8 @@ namespace QuantLib {
         Real maxErrorTolerance,
         const boost::shared_ptr<OptimizationMethod> &optMethod,
         const Real errorAccept, const bool useMaxError, const Size maxGuesses,
-        const bool backwardFlat)
+        const bool backwardFlat,
+        const Real cutoffStrike)
         : SwaptionVolatilityCube(atmVolStructure, optionTenors, swapTenors,
                                  strikeSpreads, volSpreads, swapIndexBase,
                                  shortSwapIndexBase, vegaWeightedSmileFit),
@@ -239,7 +239,7 @@ namespace QuantLib {
           isAtmCalibrated_(isAtmCalibrated), endCriteria_(endCriteria),
           optMethod_(optMethod),
           useMaxError_(useMaxError), maxGuesses_(maxGuesses),
-          backwardFlat_(backwardFlat) {
+          backwardFlat_(backwardFlat), cutoffStrike_(cutoffStrike) {
 
         if (maxErrorTolerance != Null<Rate>()) {
             maxErrorTolerance_ = maxErrorTolerance;
@@ -356,7 +356,7 @@ namespace QuantLib {
                 volatilities.clear();
                 for (Size i=0; i<nStrikes_; i++){
                     Real strike = atmForward+strikeSpreads_[i];
-                    if(strike>=MINSTRIKE) {
+                    if(strike>=cutoffStrike_) {
                         strikes.push_back(strike);
                         volatilities.push_back(tmpMarketVolCube[i][j][k]);
                     }
@@ -466,7 +466,7 @@ namespace QuantLib {
             volatilities.clear();
             for (Size i=0; i<nStrikes_; i++){
                 Real strike = atmForward+strikeSpreads_[i];
-                if(strike>=MINSTRIKE) {
+                if(strike>=cutoffStrike_) {
                     strikes.push_back(strike);
                     volatilities.push_back(tmpMarketVolCube[i][j][k]);
                 }
@@ -733,7 +733,7 @@ namespace QuantLib {
         }
 
         for (Size k=0; k<nStrikes_; k++){
-            const Real strike = std::max(atmForward + strikeSpreads_[k],MINSTRIKE);
+            const Real strike = std::max(atmForward + strikeSpreads_[k],cutoffStrike_);
             const Real moneyness = atmForward/strike;
 
             Matrix strikes(2,2,0.);
@@ -1150,17 +1150,6 @@ namespace QuantLib {
     };
 
     typedef SwaptionVolCube1x<SwaptionVolCubeSabrModel> SwaptionVolCube1;
-
-    //======================================================================//
-    //                      SwaptionVolCube1a (NoArbSabr)                    //
-    //======================================================================//
-
-    struct SwaptionVolCubeNoArbSabrModel {
-        typedef NoArbSabrInterpolation Interpolation;
-        typedef NoArbSabrSmileSection SmileSection;
-    };
-
-    typedef SwaptionVolCube1x<SwaptionVolCubeNoArbSabrModel> SwaptionVolCube1a;
 
 }
 

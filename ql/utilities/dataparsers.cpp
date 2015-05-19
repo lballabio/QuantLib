@@ -121,35 +121,6 @@ namespace QuantLib {
         return list;
     }
 
-
-    Date DateParser::parse(const std::string& str, const std::string& fmt) {
-        std::vector<std::string> slist;
-        std::vector<std::string> flist;
-        Integer d=0, m=0, y=0;
-
-        slist = split(str,'/');
-        flist = split(fmt,'/');
-        if (slist.size() != flist.size())
-            return Null<Date>();
-        Size i;
-        for (i=0;i<flist.size();i++) {
-            std::string sub = flist[i];
-            if (boost::algorithm::to_lower_copy(sub) == "dd")
-                //  d = boost::lexical_cast<Integer>(slist[i]);
-                d = io::to_integer(slist[i]);
-            else if (boost::algorithm::to_lower_copy(sub) == "mm")
-                //     m = boost::lexical_cast<Integer>(slist[i]);
-                m = io::to_integer( slist[i]);
-            else if (boost::algorithm::to_lower_copy(sub) == "yyyy") {
-                //     y = boost::lexical_cast<Integer>(slist[i]);
-                y = io::to_integer(slist[i]);
-                if (y < 100)
-                    y += 2000;
-            }
-        }
-        return Date(d,Month(m),y);
-    }
-
     Date DateParser::parseFormatted(const std::string& str,
                                     const std::string& fmt) {
         using namespace boost::gregorian;

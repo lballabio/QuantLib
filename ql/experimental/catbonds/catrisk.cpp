@@ -24,9 +24,9 @@
 namespace QuantLib {
 
     namespace {
-	    Integer round(Real r) {
-		    return (r > 0.0) ? Integer(floor(r + 0.5)) : Integer(ceil(r - 0.5));
-	    }
+        Integer round(Real r) {
+            return (r > 0.0) ? Integer(std::floor(r + 0.5)) : Integer(std::ceil(r - 0.5));
+        }
     }
 
     EventSetSimulation::EventSetSimulation(boost::shared_ptr<std::vector<std::pair<Date, Real> > > events, 
@@ -45,19 +45,18 @@ namespace QuantLib {
         }
         periodEnd_ = Date(end_.dayOfMonth(), end_.month(), periodStart_.year()+years_);
         while(i_<events_->size() && (*events_)[i_].first<periodStart_) ++i_; //i points to the first element after the start of the relevant period.
-		
     }
 
     bool EventSetSimulation::nextPath(std::vector< std::pair< Date, Real > >& path) {
-	    path.resize(0);
+        path.resize(0);
         if(periodEnd_>eventsEnd_) //Ran out of event data 
             return false;
 
-	    while(i_<events_->size() && (*events_)[i_].first<periodStart_) {
-		    ++i_; //skip the elements between the previous period and this period
-	    }
+        while(i_<events_->size() && (*events_)[i_].first<periodStart_) {
+            ++i_; //skip the elements between the previous period and this period
+        }
         while(i_<events_->size()  && (*events_)[i_].first<=periodEnd_){
-		    std::pair<Date, Real> e(events_->at(i_).first+(start_.year() - periodStart_.year())*Years, events_->at(i_).second);
+            std::pair<Date, Real> e(events_->at(i_).first+(start_.year() - periodStart_.year())*Years, events_->at(i_).second);
             path.push_back(e);
             ++i_; //i points to the first element after the start of the relevant period.
         }
@@ -121,15 +120,15 @@ namespace QuantLib {
                  Real years, 
                  Real mean, 
                  Real stdDev) 
-    : maxLoss_(maxLoss), lambda_(1.0/years) {	
+    : maxLoss_(maxLoss), lambda_(1.0/years) {
         QL_REQUIRE(mean<maxLoss, "Mean "<<mean<<"of the loss distribution must be less than the maximum loss "<<maxLoss);
-		Real normalizedMean = mean/maxLoss;
-		Real normalizedVar = stdDev*stdDev/(maxLoss*maxLoss);
-		QL_REQUIRE(normalizedVar<normalizedMean*(1.0-normalizedMean), "Standard deviation of "<<stdDev<<" is impossible to achieve in gamma distribution with mean "<<mean);
+        Real normalizedMean = mean/maxLoss;
+        Real normalizedVar = stdDev*stdDev/(maxLoss*maxLoss);
+        QL_REQUIRE(normalizedVar<normalizedMean*(1.0-normalizedMean), "Standard deviation of "<<stdDev<<" is impossible to achieve in gamma distribution with mean "<<mean);
         Real nu = normalizedMean*(1.0-normalizedMean)/normalizedVar - 1.0;
-		alpha_=normalizedMean*nu;
+        alpha_=normalizedMean*nu;
         beta_=(1.0-normalizedMean)*nu;
-	}
+    }
 
     boost::shared_ptr<CatSimulation> BetaRisk::newSimulation(const Date& start, const Date& end) const {
         return boost::make_shared<BetaRiskSimulation>(start, end, maxLoss_, lambda_, alpha_, beta_);

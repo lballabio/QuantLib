@@ -21,13 +21,6 @@
 
 namespace QuantLib {
 
-    BlackVolTermStructure::BlackVolTermStructure(const Calendar& cal,
-                                                 BusinessDayConvention bdc,
-                                                 const DayCounter& dc)
-    : VolatilityTermStructure(bdc, dc) {
-        calendar_ = cal;
-    }
-
     BlackVolTermStructure::BlackVolTermStructure(BusinessDayConvention bdc,
                                                  const DayCounter& dc)
     : VolatilityTermStructure(bdc, dc) {}
@@ -121,14 +114,6 @@ namespace QuantLib {
     }
 
     BlackVolatilityTermStructure::BlackVolatilityTermStructure(
-                                                    const Calendar& cal,
-                                                    BusinessDayConvention bdc,
-                                                    const DayCounter& dc)
-    : BlackVolTermStructure(bdc, dc) {
-        calendar_ = cal;
-    }
-
-    BlackVolatilityTermStructure::BlackVolatilityTermStructure(
                                                     BusinessDayConvention bdc,
                                                     const DayCounter& dc)
     : BlackVolTermStructure(bdc, dc) {}
@@ -146,14 +131,6 @@ namespace QuantLib {
                                                     BusinessDayConvention bdc,
                                                     const DayCounter& dc)
     : BlackVolTermStructure(settlementDays, cal, bdc, dc) {}
-
-    BlackVarianceTermStructure::BlackVarianceTermStructure(
-                                                    const Calendar& cal,
-                                                    BusinessDayConvention bdc,
-                                                    const DayCounter& dc)
-    : BlackVolTermStructure(bdc, dc) {
-        calendar_ = cal;
-    }
 
     BlackVarianceTermStructure::BlackVarianceTermStructure(
                                                     BusinessDayConvention bdc,

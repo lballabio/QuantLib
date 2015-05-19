@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Klaus Spanderen
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,8 +34,10 @@ namespace QuantLib {
 
     LevenbergMarquardt::LevenbergMarquardt(Real epsfcn,
                                            Real xtol,
-                                           Real gtol)
-    : info_(0), epsfcn_(epsfcn), xtol_(xtol), gtol_(gtol) {}
+                                           Real gtol,
+                                           bool useCostFunctionsJacobian)
+        : info_(0), epsfcn_(epsfcn), xtol_(xtol), gtol_(gtol),
+          useCostFunctionsJacobian_(useCostFunctionsJacobian) {}
 
     Integer LevenbergMarquardt::getInfo() const {
         return info_;
@@ -49,23 +52,27 @@ namespace QuantLib {
         initCostValues_ = P.costFunction().values(x_);
         int m = initCostValues_.size();
         int n = x_.size();
-        boost::scoped_array<double> xx(new double[n]);
+        if(useCostFunctionsJacobian_) {
+            initJacobian_ = Matrix(m,n);
+            P.costFunction().jacobian(initJacobian_, x_);
+        }
+        boost::scoped_array<Real> xx(new Real[n]);
         std::copy(x_.begin(), x_.end(), xx.get());
-        boost::scoped_array<double> fvec(new double[m]);
-        boost::scoped_array<double> diag(new double[n]);
+        boost::scoped_array<Real> fvec(new Real[m]);
+        boost::scoped_array<Real> diag(new Real[n]);
         int mode = 1;
-        double factor = 1;
+        Real factor = 1;
         int nprint = 0;
         int info = 0;
         int nfev =0;
-        boost::scoped_array<double> fjac(new double[m*n]);
+        boost::scoped_array<Real> fjac(new Real[m*n]);
         int ldfjac = m;
         boost::scoped_array<int> ipvt(new int[n]);
-        boost::scoped_array<double> qtf(new double[n]);
-        boost::scoped_array<double> wa1(new double[n]);
-        boost::scoped_array<double> wa2(new double[n]);
-        boost::scoped_array<double> wa3(new double[n]);
-        boost::scoped_array<double> wa4(new double[m]);
+        boost::scoped_array<Real> qtf(new Real[n]);
+        boost::scoped_array<Real> wa1(new Real[n]);
+        boost::scoped_array<Real> wa2(new Real[n]);
+        boost::scoped_array<Real> wa3(new Real[n]);
+        boost::scoped_array<Real> wa4(new Real[m]);
         // requirements; check here to get more detailed error messages.
         QL_REQUIRE(n > 0, "no variables given");
         QL_REQUIRE(m >= n,
@@ -80,19 +87,25 @@ namespace QuantLib {
 
         // call lmdif to minimize the sum of the squares of m functions
         // in n variables by the Levenberg-Marquardt algorithm.
-        MINPACK::LmdifCostFunction lmdifCostFunction = 
+        MINPACK::LmdifCostFunction lmdifCostFunction =
             boost::bind(&LevenbergMarquardt::fcn, this, _1, _2, _3, _4, _5);
+        MINPACK::LmdifCostFunction lmdifJacFunction =
+            useCostFunctionsJacobian_
+                ? boost::bind(&LevenbergMarquardt::jacFcn, this, _1, _2, _3,
+                              _4, _5)
+                : MINPACK::LmdifCostFunction(NULL);
         MINPACK::lmdif(m, n, xx.get(), fvec.get(),
-                       static_cast<double>(endCriteria.functionEpsilon()),
-                       static_cast<double>(xtol_),
-                       static_cast<double>(gtol_),
-                       static_cast<int>(endCriteria.maxIterations()),
-                       static_cast<double>(epsfcn_),
+                       endCriteria.functionEpsilon(),
+                       xtol_,
+                       gtol_,
+                       endCriteria.maxIterations(),
+                       epsfcn_,
                        diag.get(), mode, factor,
                        nprint, &info, &nfev, fjac.get(),
                        ldfjac, ipvt.get(), qtf.get(),
                        wa1.get(), wa2.get(), wa3.get(), wa4.get(),
-                       lmdifCostFunction);
+                       lmdifCostFunction,
+                       lmdifJacFunction);
         info_ = info;
         // check requirements & endCriteria evaluation
         QL_REQUIRE(info != 0, "MINPACK: improper input parameters");
@@ -113,11 +126,11 @@ namespace QuantLib {
         std::copy(xx.get(), xx.get()+n, x_.begin());
         P.setCurrentValue(x_);
         P.setFunctionValue(P.costFunction().value(x_));
-        
+
         return ecType;
     }
 
-    void LevenbergMarquardt::fcn(int, int n, double* x, double* fvec, int*) {
+    void LevenbergMarquardt::fcn(int, int n, Real* x, Real* fvec, int*) {
         Array xt(n);
         std::copy(x, x+n, xt.begin());
         // constraint handling needs some improvement in the future:
@@ -130,5 +143,20 @@ namespace QuantLib {
         }
     }
 
-}
+    void LevenbergMarquardt::jacFcn(int m, int n, Real* x, Real* fjac, int*) {
+        Array xt(n);
+        std::copy(x, x+n, xt.begin());
+        // constraint handling needs some improvement in the future:
+        // starting point should not be close to a constraint violation
+        if (currentProblem_->constraint().test(xt)) {
+            Matrix tmp(m,n);
+            currentProblem_->costFunction().jacobian(tmp, xt);
+            Matrix tmpT = transpose(tmp);
+            std::copy(tmpT.begin(), tmpT.end(), fjac);
+        } else {
+            Matrix tmpT = transpose(initJacobian_);
+            std::copy(tmpT.begin(), tmpT.end(), fjac);
+        }
+    }
 
+}

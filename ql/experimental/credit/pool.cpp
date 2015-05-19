@@ -17,11 +17,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <boost/bind.hpp>
-
 #include <ql/experimental/credit/pool.hpp>
-
-using namespace std;
+#include <boost/bind.hpp>
+#include <iterator>
 
 namespace QuantLib {
 

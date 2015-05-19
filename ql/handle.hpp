@@ -75,12 +75,6 @@ namespace QuantLib {
         explicit Handle(const boost::shared_ptr<T>& p = boost::shared_ptr<T>(),
                         bool registerAsObserver = true)
         : link_(new Link(p,registerAsObserver)) {}
-
-        /*! \deprecated */
-        QL_DEPRECATED
-        explicit Handle(T* p,
-                        bool registerAsObserver = true)
-        : link_(new Link(boost::shared_ptr<T>(p),registerAsObserver)) {}
         //@}
         //! dereferencing
         const boost::shared_ptr<T>& currentLink() const;

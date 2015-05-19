@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2006 Warren Chou
  Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2014 Francois Botha
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +28,7 @@
 
 #include <ql/instruments/oneassetoption.hpp>
 #include <ql/instruments/payoffs.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 
@@ -62,6 +64,72 @@ namespace QuantLib {
         Real minmax_;
     };
 
+    //! Continuous-partial-floating lookback option
+    /*! From http://help.rmetrics.org/fExoticOptions/LookbackOptions.html :
+
+        For a partial-time floating strike lookback option, the
+        lookback period starts at time zero and ends at an arbitrary
+        date before expiration. Except for the partial lookback
+        period, the option is similar to a floating strike lookback
+        option. The partial-time floating strike lookback option is
+        cheaper than a similar standard floating strike lookback
+        option. Partial-time floating strike lookback options can be
+        priced analytically using a model introduced by Heynen and Kat
+        (1994).
+
+        \ingroup instruments
+    */
+    class ContinuousPartialFloatingLookbackOption : public ContinuousFloatingLookbackOption {
+      public:
+        class arguments;
+        class engine;
+        ContinuousPartialFloatingLookbackOption(
+                          Real currentMinmax,
+                          Real lambda,
+                          Date lookbackPeriodEnd,
+                          const boost::shared_ptr<TypePayoff>& payoff,
+                          const boost::shared_ptr<Exercise>& exercise);
+        void setupArguments(PricingEngine::arguments*) const;
+      protected:
+        // arguments
+        Real lambda_;
+        Date lookbackPeriodEnd_;
+    };
+
+    //! Continuous-partial-fixed lookback option
+    /*! From http://help.rmetrics.org/fExoticOptions/LookbackOptions.html :
+
+        For a partial-time fixed strike lookback option, the lookback
+        period starts at a predetermined date after the initialization
+        date of the option.  The partial-time fixed strike lookback
+        call option payoff is given by the difference between the
+        maximum observed price of the underlying asset during the
+        lookback period and the fixed strike price. The partial-time
+        fixed strike lookback put option payoff is given by the
+        difference between the fixed strike price and the minimum
+        observed price of the underlying asset during the lookback
+        period. The partial-time fixed strike lookback option is
+        cheaper than a similar standard fixed strike lookback
+        option. Partial-time fixed strike lookback options can be
+        priced analytically using a model introduced by Heynen and Kat
+        (1994).
+
+        \ingroup instruments
+    */
+    class ContinuousPartialFixedLookbackOption : public ContinuousFixedLookbackOption {
+      public:
+        class arguments;
+        class engine;
+        ContinuousPartialFixedLookbackOption(
+                          Date lookbackPeriodStart,
+                          const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                          const boost::shared_ptr<Exercise>& exercise);
+        void setupArguments(PricingEngine::arguments*) const;
+      protected:
+        // arguments
+        Date lookbackPeriodStart_;
+    };
+
     //! %Arguments for continuous floating lookback option calculation
     class ContinuousFloatingLookbackOption::arguments
         : public OneAssetOption::arguments {
@@ -78,6 +146,23 @@ namespace QuantLib {
         void validate() const;
     };
 
+    //! %Arguments for continuous partial floating lookback option calculation
+    class ContinuousPartialFloatingLookbackOption::arguments
+        : public ContinuousFloatingLookbackOption::arguments {
+      public:
+        Real lambda;
+        Date lookbackPeriodEnd;
+        void validate() const;
+    };
+
+    //! %Arguments for continuous partial fixed lookback option calculation
+    class ContinuousPartialFixedLookbackOption::arguments
+        : public ContinuousFixedLookbackOption::arguments {
+      public:
+        Date lookbackPeriodStart;
+        void validate() const;
+    };
+
     //! %Continuous floating lookback %engine base class
     class ContinuousFloatingLookbackOption::engine
         : public GenericEngine<ContinuousFloatingLookbackOption::arguments,
@@ -88,6 +173,15 @@ namespace QuantLib {
         : public GenericEngine<ContinuousFixedLookbackOption::arguments,
                                ContinuousFixedLookbackOption::results> {};
 
+    //! %Continuous partial floating lookback %engine base class
+    class ContinuousPartialFloatingLookbackOption::engine
+        : public GenericEngine<ContinuousPartialFloatingLookbackOption::arguments,
+                               ContinuousPartialFloatingLookbackOption::results> {};
+
+    //! %Continuous partial fixed lookback %engine base class
+    class ContinuousPartialFixedLookbackOption::engine
+        : public GenericEngine<ContinuousPartialFixedLookbackOption::arguments,
+                               ContinuousPartialFixedLookbackOption::results> {};
 }
 
 

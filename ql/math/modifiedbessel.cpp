@@ -68,8 +68,10 @@ namespace QuantLib {
                 T s1=T(1.0), s2=T(1.0);
                 for (Size k=1; k < 30; ++k) {
                     sign*=-1;
-                    na_k*=(4*nu*nu-(2*k-1)*(2*k-1));
-                    da_k*=(8.0*k)*x;
+                    na_k *= (4.0 * nu * nu -
+                             (2.0 * static_cast<Real>(k) - 1.0) *
+                                 (2.0 * static_cast<Real>(k) - 1.0));
+                    da_k *= (8.0 * k) * x;
                     const T a_k = na_k/da_k;
 
                     s2+=a_k;

@@ -41,12 +41,13 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given (data available for
-        2004-2013 only):
+        2004-2015 only):
         <ul>
         <li>Chinese New Year</li>
         <li>Ching Ming Festival</li>
         <li>Tuen Ng Festival</li>
         <li>Mid-Autumn Festival</li>
+        <li>70th anniversary of the victory of anti-Japaneses war</li>
         </ul>
 
         SSE data from <http://www.sse.com.cn/>

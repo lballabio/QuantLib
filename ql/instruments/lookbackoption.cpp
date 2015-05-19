@@ -77,5 +77,76 @@ namespace QuantLib {
                    << minmax << " not allowed");
     }
 
+    ContinuousPartialFloatingLookbackOption::ContinuousPartialFloatingLookbackOption(
+        Real minmax,
+        Real lambda,
+        Date lookbackPeriodEnd,
+        const boost::shared_ptr<TypePayoff>& payoff,
+        const boost::shared_ptr<Exercise>& exercise)
+    : ContinuousFloatingLookbackOption(minmax, payoff, exercise),
+      lambda_(lambda),
+      lookbackPeriodEnd_(lookbackPeriodEnd) {}
+
+    void ContinuousPartialFloatingLookbackOption::setupArguments(
+                                       PricingEngine::arguments* args) const {
+
+        ContinuousFloatingLookbackOption::setupArguments(args);
+
+        ContinuousPartialFloatingLookbackOption::arguments* moreArgs =
+            dynamic_cast<ContinuousPartialFloatingLookbackOption::arguments*>(args);
+        QL_REQUIRE(moreArgs != 0, "wrong argument type");
+        moreArgs->lambda = lambda_;
+        moreArgs->lookbackPeriodEnd = lookbackPeriodEnd_;
+    }
+
+    void ContinuousPartialFloatingLookbackOption::arguments::validate() const {
+
+        ContinuousFloatingLookbackOption::arguments::validate();
+
+        boost::shared_ptr<EuropeanExercise> europeanExercise =
+            boost::dynamic_pointer_cast<EuropeanExercise>(exercise);
+        QL_REQUIRE(lookbackPeriodEnd <= europeanExercise->lastDate(), 
+            "lookback start date must be earlier than exercise date");
+        
+        boost::shared_ptr<FloatingTypePayoff> floatingTypePayoff =
+            boost::dynamic_pointer_cast<FloatingTypePayoff>(payoff);
+        
+        if (floatingTypePayoff->optionType() == Option::Call) {
+            QL_REQUIRE(lambda >= 1.0,
+                       "lambda should be greater than or equal to 1 for calls");
+        }
+        if (floatingTypePayoff->optionType() == Option::Put) {
+            QL_REQUIRE(lambda <= 1.0,
+                       "lambda should be smaller than or equal to 1 for puts");
+        }
+    }
+
+    ContinuousPartialFixedLookbackOption::ContinuousPartialFixedLookbackOption(
+        Date lookbackPeriodStart,
+        const boost::shared_ptr<StrikedTypePayoff>& payoff,
+        const boost::shared_ptr<Exercise>& exercise)
+    : ContinuousFixedLookbackOption(0, payoff, exercise),
+      lookbackPeriodStart_(lookbackPeriodStart) {}
+
+    void ContinuousPartialFixedLookbackOption::setupArguments(
+                                       PricingEngine::arguments* args) const {
+
+        ContinuousFixedLookbackOption::setupArguments(args);
+
+        ContinuousPartialFixedLookbackOption::arguments* moreArgs =
+            dynamic_cast<ContinuousPartialFixedLookbackOption::arguments*>(args);
+        QL_REQUIRE(moreArgs != 0, "wrong argument type");
+        moreArgs->lookbackPeriodStart = lookbackPeriodStart_;
+    }
+
+    void ContinuousPartialFixedLookbackOption::arguments::validate() const {
+
+        ContinuousFixedLookbackOption::arguments::validate();
+
+        boost::shared_ptr<EuropeanExercise> europeanExercise =
+            boost::dynamic_pointer_cast<EuropeanExercise>(exercise);
+        QL_REQUIRE(lookbackPeriodStart <= europeanExercise->lastDate(), 
+            "lookback start date must be earlier than exercise date");
+    }
 }
 

@@ -231,7 +231,7 @@ namespace QuantLib {
             lgds.push_back(notionals_[i]*(1.-copula_->recoveries()[i]));
         lgdsTmp = lgds;
         ///////////////std::remove(lgds.begin(), lgds.end(), 0.);
-		lgds.erase(std::remove(lgds.begin(), lgds.end(), 0.), lgds.end());
+        lgds.erase(std::remove(lgds.begin(), lgds.end(), 0.), lgds.end());
         lossUnit_ = *(std::min_element(lgds.begin(), lgds.end()))
             / nBuckets_;
         for(Size i=0; i<remainingBsktSize_; i++)

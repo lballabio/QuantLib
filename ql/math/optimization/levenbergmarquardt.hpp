@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Klaus Spanderen
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,12 +33,23 @@ namespace QuantLib {
     /*! This implementation is based on MINPACK
         (<http://www.netlib.org/minpack>,
         <http://www.netlib.org/cephes/linalg.tgz>)
+        It has a built in fd scheme to compute
+        the jacobian, which is used by default.
+        If useCostFunctionsJacobian is true the
+        corresponding method in the cost function
+        of the problem is used instead. Note that
+        the default implementation of the jacobian
+        in CostFunction uses a central difference
+        (oder 2, but requiring more function
+        evaluations) compared to the forward
+        difference implemented here (order 1).
     */
     class LevenbergMarquardt : public OptimizationMethod {
       public:
         LevenbergMarquardt(Real epsfcn = 1.0e-8,
                            Real xtol = 1.0e-8,
-                           Real gtol = 1.0e-8);
+                           Real gtol = 1.0e-8,
+                           bool useCostFunctionsJacobian = false);
         virtual EndCriteria::Type minimize(Problem& P,
                                            const EndCriteria& endCriteria //= EndCriteria()
                                            );
@@ -45,14 +57,22 @@ namespace QuantLib {
         virtual Integer getInfo() const;
         void fcn(int m,
                  int n,
-                 double* x,
-                 double* fvec,
+                 Real* x,
+                 Real* fvec,
                  int* iflag);
+        void jacFcn(int m,
+                 int n,
+                 Real* x,
+                 Real* fjac,
+                 int* iflag);
+
       private:
         Problem* currentProblem_;
         Array initCostValues_;
+        Matrix initJacobian_;
         mutable Integer info_;
         const Real epsfcn_, xtol_, gtol_;
+        bool useCostFunctionsJacobian_;
     };
 
 }

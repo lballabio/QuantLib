@@ -26,6 +26,9 @@
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/instruments/payoffs.hpp>
 
+using std::exp;
+using std::pow;
+
 namespace QuantLib {
 
 
@@ -120,7 +123,7 @@ namespace QuantLib {
                 *(9*la*la*n+8*n+15*la*N+pow<4>(la)*n+pow<5>(la)*N
                   +10*pow<3>(la)*N)
                 - 6*b1*b1*b2*la - 6*b3*b1*b1*(n+la*N)
-                - 12*b2*b2*b1*(3*la+::pow(la,3)); // ok
+                - 12*b2*b2*b1*(3*la+std::pow(la,3)); // ok
             z1 = b1 + b2*(3+la*la) + b3*(la*n+3*N+la*la*N); // ok
             z2 = b1*b1 + b2*b2*(15+pow<4>(la)+18*la*la)
                 + (b3*b3+2*b2*b3)*(pow<3>(la)*n+17*la*n+15*N

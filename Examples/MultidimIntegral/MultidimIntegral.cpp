@@ -8,6 +8,14 @@
 using namespace QuantLib;
 using namespace std;
 
+#if defined(QL_ENABLE_SESSIONS)
+namespace QuantLib {
+
+    Integer sessionId() { return 0; }
+
+}
+#endif
+
 // Correct value is: (e^{-.25} \sqrt{\pi})^{dimension}
 struct integrand {
     Real operator()(const std::vector<Real>& arg) const {
@@ -34,8 +42,7 @@ int main() {
     Real exactSol = std::pow(std::exp(-.25) * 
         std::sqrt(M_PI), static_cast<Real>(dimension));
 
-    boost::function<Real(const std::vector<Real>& arg)> f;
-    f = boost::cref(integrand());
+    boost::function<Real(const std::vector<Real>& arg)> f = integrand();
     GaussianQuadMultidimIntegrator intg(dimension, 15);
 
     timer.restart();

@@ -91,7 +91,7 @@ namespace QuantLib
                 Size zIndex = rate -startIndex;
                 for (Size f =0; f < factors; ++f)
                 {
-                    double sum=0.0;
+                    Real sum=0.0;
                     for (Size rate2 = startIndex; rate2<endIndex; ++rate2)
                     {
                         Size zIndex2 = rate2-startIndex;

@@ -52,17 +52,30 @@ namespace QuantLib {
         data_ = cnyData;
     }
 
-    // Honk Kong dollar
+    // Hong Kong dollar
     /* The ISO three-letter code is HKD; the numeric code is 344.
       It is divided in 100 cents.
     */
     HKDCurrency::HKDCurrency() {
         static boost::shared_ptr<Data> hkdData(
-                                  new Data("Honk Kong dollar", "HKD", 344,
+                                  new Data("Hong Kong dollar", "HKD", 344,
                                            "HK$", "", 100,
                                            Rounding(),
                                            "%3% %1$.2f"));
         data_ = hkdData;
+    }
+
+    // Indonesian Rupiah
+    /* The ISO three-letter code is IDR; the numeric code is 360.
+       It is divided in 100 sen.
+    */
+    IDRCurrency::IDRCurrency() {
+        static boost::shared_ptr<Data> idrData(
+                                    new Data("Indonesian Rupiah", "IDR", 360,
+                                             "Rp", "", 100,
+                                             Rounding(),
+                                             "%3% %1$.2f"));
+        data_ = idrData;
     }
 
     // Israeli shekel
@@ -156,6 +169,20 @@ namespace QuantLib {
         data_ = kwdData;
     }
 
+    // Malaysian Ringgit
+    /* The ISO three-letter code is MYR; the numeric code is 458.
+       It is divided in 100 sen.
+    */
+    MYRCurrency::MYRCurrency() {
+        static boost::shared_ptr<Data> myrData(
+                                       new Data("Malaysian Ringgit",
+                                                "MYR", 458,
+                                                "RM", "", 100,
+                                                Rounding(),
+                                                "%3% %1$.2f"));
+        data_ = myrData;
+    }
+
     // Nepal rupee
     /* The ISO three-letter code is NPR; the numeric code is 524.
        It is divided in 100 paise.
@@ -231,6 +258,19 @@ namespace QuantLib {
                                               "NT$", "", 100,
                                               Rounding(),
                                               "%3% %1$.2f"));
+        data_ = twdData;
+    }
+
+    // Vietnamese Dong
+    /* The ISO three-letter code is VND; the numeric code is 704.
+       It was divided in 100 xu.
+    */
+    VNDCurrency::VNDCurrency() {
+        static boost::shared_ptr<Data> twdData(
+                                     new Data("Vietnamese Dong", "VND", 704,
+                                              "", "", 100,
+                                              Rounding(),
+                                              "%1$.0f %3%"));
         data_ = twdData;
     }
 

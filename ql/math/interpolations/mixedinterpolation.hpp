@@ -31,64 +31,7 @@
 namespace QuantLib {
 
     namespace detail {
-
-        template <class I1, class I2, class Interpolator1, class Interpolator2>
-        class MixedInterpolationImpl
-            : public Interpolation::templateImpl<I1,I2> {
-          public:
-            MixedInterpolationImpl(const I1& xBegin, const I1& xEnd,
-                                   const I2& yBegin, Size n,
-                                   const Interpolator1& factory1 = Interpolator1(),
-                                   const Interpolator2& factory2 = Interpolator2())
-            : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
-              n_(n) {
-
-                xBegin2_ = this->xBegin_+n;
-
-                QL_REQUIRE(xBegin2_<this->xEnd_,
-                           "too large n (" << n << ") for " <<
-                           this->xEnd_-this->xBegin_ << "-element x sequence");
-
-                interpolation1_ = factory1.interpolate(this->xBegin_,
-                                                       this->xEnd_,
-                                                       this->yBegin_);
-                interpolation2_ = factory2.interpolate(this->xBegin_,
-                                                       this->xEnd_,
-                                                       this->yBegin_);
-            }
-            void update() {
-                interpolation1_.update();
-                interpolation2_.update();
-            }
-            Real value(Real x) const {
-                if (x<*(this->xBegin2_))
-                    return interpolation1_(x, true);
-                return interpolation2_(x, true);
-            }
-            Real primitive(Real x) const {
-                if (x<*(this->xBegin2_))
-                    return interpolation1_.primitive(x, true);
-                return interpolation2_.primitive(x, true) -
-                    interpolation2_.primitive(*xBegin2_, true) +
-                    interpolation1_.primitive(*xBegin2_, true);
-            }
-            Real derivative(Real x) const {
-                if (x<*(this->xBegin2_))
-                    return interpolation1_.derivative(x, true);
-                return interpolation2_.derivative(x, true);
-            }
-            Real secondDerivative(Real x) const {
-                if (x<*(this->xBegin2_))
-                    return interpolation1_.secondDerivative(x, true);
-                return interpolation2_.secondDerivative(x, true);
-            }
-            Size switchIndex() { return n_; }
-          private:
-            I1 xBegin2_;
-            Size n_;
-            Interpolation interpolation1_, interpolation2_;
-        };
-
+        template<class I1, class I2, class Ia, class Ib> class MixedInterpolationImpl;
     }
 
     //! mixed linear/cubic interpolation between discrete points
@@ -224,6 +167,68 @@ namespace QuantLib {
                                         CubicInterpolation::SecondDerivative, 0.0,
                                         CubicInterpolation::SecondDerivative, 0.0) {}
     };
+
+    namespace detail {
+
+        template <class I1, class I2, class Interpolator1, class Interpolator2>
+        class MixedInterpolationImpl
+            : public Interpolation::templateImpl<I1,I2> {
+          public:
+            MixedInterpolationImpl(const I1& xBegin, const I1& xEnd,
+                                   const I2& yBegin, Size n,
+                                   const Interpolator1& factory1 = Interpolator1(),
+                                   const Interpolator2& factory2 = Interpolator2())
+            : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin,
+              std::max<Size>(Interpolator1::requiredPoints,Interpolator2::requiredPoints)),
+              n_(n) {
+
+                xBegin2_ = this->xBegin_+n;
+
+                QL_REQUIRE(xBegin2_<this->xEnd_,
+                           "too large n (" << n << ") for " <<
+                           this->xEnd_-this->xBegin_ << "-element x sequence");
+
+                interpolation1_ = factory1.interpolate(this->xBegin_,
+                                                       this->xEnd_,
+                                                       this->yBegin_);
+                interpolation2_ = factory2.interpolate(this->xBegin_,
+                                                       this->xEnd_,
+                                                       this->yBegin_);
+            }
+            void update() {
+                interpolation1_.update();
+                interpolation2_.update();
+            }
+            Real value(Real x) const {
+                if (x<*(this->xBegin2_))
+                    return interpolation1_(x, true);
+                return interpolation2_(x, true);
+            }
+            Real primitive(Real x) const {
+                if (x<*(this->xBegin2_))
+                    return interpolation1_.primitive(x, true);
+                return interpolation2_.primitive(x, true) -
+                    interpolation2_.primitive(*xBegin2_, true) +
+                    interpolation1_.primitive(*xBegin2_, true);
+            }
+            Real derivative(Real x) const {
+                if (x<*(this->xBegin2_))
+                    return interpolation1_.derivative(x, true);
+                return interpolation2_.derivative(x, true);
+            }
+            Real secondDerivative(Real x) const {
+                if (x<*(this->xBegin2_))
+                    return interpolation1_.secondDerivative(x, true);
+                return interpolation2_.secondDerivative(x, true);
+            }
+            Size switchIndex() { return n_; }
+          private:
+            I1 xBegin2_;
+            Size n_;
+            Interpolation interpolation1_, interpolation2_;
+        };
+
+    }
 
 }
 

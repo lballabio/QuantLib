@@ -126,13 +126,14 @@ class NoArbSabrModel {
     private:
     Real p(const Real f) const;
     Real forwardError(const Real forward) const;
-    Real integrand(const Real strike, const Real f) const;
     const Real expiryTime_, externalForward_;
     const Real alpha_, beta_, nu_, rho_;
     Real absProb_, fmin_, fmax_;
     mutable Real forward_, numericalIntegralOverP_;
     mutable Real numericalForward_;
     boost::shared_ptr<GaussLobattoIntegral> integrator_;
+    class integrand;
+    friend class integrand;
 };
 
 namespace detail {

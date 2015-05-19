@@ -82,8 +82,9 @@ namespace QuantLib {
             Size nSims = 0,
             Real accuracy = 1.e-6, 
             BigNatural seed = 2863311530)
-        : RandomLM<RandomLossLM, copulaPolicy, USNG>(copula->numFactors(), copula->size(), copula->copula(), 
-            nSims, seed),
+        : RandomLM< ::QuantLib::RandomLossLM, copulaPolicy, USNG>
+            (copula->numFactors(), copula->size(), copula->copula(), 
+                nSims, seed),
           copula_(copula), accuracy_(accuracy)
     {
         // redundant through basket?
@@ -94,17 +95,11 @@ namespace QuantLib {
         /* While this works on g++, VC9 refuses to compile it.
         Not completely sure whos right; individually making friends of the 
         calling members or writting explicitly the derived class T parameters 
-        throws the same errors. It might not work either for other versions of
-        MS compilers; in that case this test has to be extended to 
-        !defined(_MSC_VER)
+        throws the same errors.
         The access is then open to the member fucntions.
         */
-#if !defined(QL_PATCH_MSVC90)
-        friend class RandomLM<RandomLossLM, copulaPolicy, USNG>;
+        friend class RandomLM< ::QuantLib::RandomLossLM, copulaPolicy, USNG>;
     protected:
-#else
-    public:
-#endif
         void nextSample(const std::vector<Real>& values) const;
 
         // see note on randomdefaultlatentmodel

@@ -31,6 +31,36 @@
 namespace QuantLib {
 
     namespace detail {
+        template<class I1, class I2> class LinearInterpolationImpl;
+    }
+
+    //! %Linear interpolation between discrete points
+    class LinearInterpolation : public Interpolation {
+      public:
+        /*! \pre the \f$ x \f$ values must be sorted. */
+        template <class I1, class I2>
+        LinearInterpolation(const I1& xBegin, const I1& xEnd,
+                            const I2& yBegin) {
+            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+                detail::LinearInterpolationImpl<I1,I2>(xBegin, xEnd,
+                                                       yBegin));
+            impl_->update();
+        }
+    };
+
+    //! %Linear-interpolation factory and traits
+    class Linear {
+      public:
+        template <class I1, class I2>
+        Interpolation interpolate(const I1& xBegin, const I1& xEnd,
+                                  const I2& yBegin) const {
+            return LinearInterpolation(xBegin, xEnd, yBegin);
+        }
+        static const bool global = false;
+        static const Size requiredPoints = 2;
+    };
+
+    namespace detail {
 
         template <class I1, class I2>
         class LinearInterpolationImpl
@@ -38,7 +68,8 @@ namespace QuantLib {
           public:
             LinearInterpolationImpl(const I1& xBegin, const I1& xEnd,
                                     const I2& yBegin)
-            : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
+            : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin,
+                                                 Linear::requiredPoints),
               primitiveConst_(xEnd-xBegin), s_(xEnd-xBegin) {}
             void update() {
                 primitiveConst_[0] = 0.0;
@@ -71,32 +102,6 @@ namespace QuantLib {
         };
 
     }
-
-    //! %Linear interpolation between discrete points
-    class LinearInterpolation : public Interpolation {
-      public:
-        /*! \pre the \f$ x \f$ values must be sorted. */
-        template <class I1, class I2>
-        LinearInterpolation(const I1& xBegin, const I1& xEnd,
-                            const I2& yBegin) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(new
-                detail::LinearInterpolationImpl<I1,I2>(xBegin, xEnd,
-                                                       yBegin));
-            impl_->update();
-        }
-    };
-
-    //! %Linear-interpolation factory and traits
-    class Linear {
-      public:
-        template <class I1, class I2>
-        Interpolation interpolate(const I1& xBegin, const I1& xEnd,
-                                  const I2& yBegin) const {
-            return LinearInterpolation(xBegin, xEnd, yBegin);
-        }
-        static const bool global = false;
-        static const Size requiredPoints = 2;
-    };
 
 }
 

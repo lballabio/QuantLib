@@ -31,6 +31,17 @@
 
 namespace QuantLib {
 
+class NoArbSabrModel::integrand {
+    const NoArbSabrModel* model;
+    Real strike;
+  public:
+    integrand(const NoArbSabrModel* model, Real strike)
+    : model(model), strike(strike) {}
+    Real operator()(Real f) const {
+        return std::max(f - strike, 0.0) * model->p(f);
+    }
+};
+
 NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
                                const Real alpha, const Real beta, const Real nu,
                                const Real rho)
@@ -102,10 +113,8 @@ Real NoArbSabrModel::optionPrice(const Real strike) const {
     if (p(std::max(forward_, strike)) < detail::NoArbSabrModel::density_threshold)
         return 0.0;
     return (1.0 - absProb_) *
-           (integrator_->operator()(
-                boost::lambda::bind(&NoArbSabrModel::integrand, this, strike,
-                                    boost::lambda::_1),
-                strike, std::max(fmax_, 2.0 * strike)) /
+        ((*integrator_)(integrand(this, strike),
+                        strike, std::max(fmax_, 2.0 * strike)) /
             numericalIntegralOverP_);
 }
 
@@ -114,23 +123,18 @@ Real NoArbSabrModel::digitalOptionPrice(const Real strike) const {
         return 1.0;
     if (p(std::max(forward_, strike)) < detail::NoArbSabrModel::density_threshold)
         return 0.0;
-    return (1.0 - absProb_) * (integrator_->operator()(
-                                   boost::lambda::bind(&NoArbSabrModel::p, this,
-                                                       boost::lambda::_1),
-                                   strike, std::max(fmax_, 2.0 * strike)) /
-                               numericalIntegralOverP_);
+    return (1.0 - absProb_)
+        * ((*integrator_)(std::bind1st(std::mem_fun(&NoArbSabrModel::p), this),
+                          strike, std::max(fmax_, 2.0 * strike)) /
+           numericalIntegralOverP_);
 }
 
 Real NoArbSabrModel::forwardError(const Real forward) const {
     forward_ = forward * forward + detail::NoArbSabrModel::strike_min;
-    numericalIntegralOverP_ = integrator_->operator()(
-        boost::lambda::bind(&NoArbSabrModel::p, this, boost::lambda::_1), fmin_,
-        fmax_);
+    numericalIntegralOverP_ = (*integrator_)(
+        std::bind1st(std::mem_fun(&NoArbSabrModel::p), this),
+        fmin_, fmax_);
     return optionPrice(0.0) - externalForward_;
-}
-
-Real NoArbSabrModel::integrand(const Real strike, const Real f) const {
-    return std::max(f - strike, 0.0) * p(f);
 }
 
 Real NoArbSabrModel::p(const Real f) const {
@@ -213,8 +217,8 @@ Real D0Interpolator::operator()() const {
     // we do not need to check the indices here, because this is already
     // done in the NoArbSabr constructor
 
-    int tauInd = std::upper_bound(tauG_.begin(), tauG_.end(), expiryTime_) -
-                  tauG_.begin();
+    Size tauInd = std::upper_bound(tauG_.begin(), tauG_.end(), expiryTime_) -
+                                   tauG_.begin();
     if (tauInd == tauG_.size())
         --tauInd; // tau at upper bound
     Real expiryTimeTmp = expiryTime_;
@@ -240,21 +244,21 @@ Real D0Interpolator::operator()() const {
     if (rhoInd == 0) {
         rhoInd++;
     }
-    if (rhoInd == rhoG_.size()) {
+    if (rhoInd == static_cast<int>(rhoG_.size())) {
         rhoInd--;
     }
     Real rhoL =
         (rho_ - rhoG_[rhoInd - 1]) / (rhoG_[rhoInd] - rhoG_[rhoInd - 1]);
 
     // for nu = 0 we know phi = 0.5*z_F^2
-    int nuInd = std::upper_bound(nuG_.begin(), nuG_.end(), nu_) - nuG_.begin();
+    Size nuInd = std::upper_bound(nuG_.begin(), nuG_.end(), nu_) - nuG_.begin();
     if (nuInd == nuG_.size())
         --nuInd; // nu at upper bound
     Real tmpNuG = nuInd > 0 ? nuG_[nuInd - 1] : 0.0;
     Real nuL = (nu_ - tmpNuG) / (nuG_[nuInd] - tmpNuG);
 
     // for beta = 1 we know phi = 0.0
-    int betaInd =
+    Size betaInd =
         std::upper_bound(betaG_.begin(), betaG_.end(), beta_) - betaG_.begin();
     Real tmpBetaG;
     if (betaInd == betaG_.size())
@@ -325,7 +329,11 @@ void NoArbSabrModel::checkAbsorptionMatrix() {
     std::size_t seed = 0;
     for (Size i = 0; i < 1209600; ++i)
         boost::hash_combine(seed, detail::sabrabsprob[i]);
-    QL_REQUIRE(seed == 8940976986331216656L, "absorption matrix is invalid");
+    std::size_t expected =
+        sizeof(std::size_t) == 8 ?
+        8940976986331216656L :
+        1225169178L;
+    QL_REQUIRE(seed == expected, "absorption matrix is invalid");
 }
 
 } // namespace QuantLib

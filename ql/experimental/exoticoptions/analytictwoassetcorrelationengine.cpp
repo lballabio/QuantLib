@@ -21,6 +21,8 @@
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/exercise.hpp>
 
+using std::log;
+
 namespace QuantLib {
 
     AnalyticTwoAssetCorrelationEngine::AnalyticTwoAssetCorrelationEngine(

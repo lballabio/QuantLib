@@ -30,6 +30,131 @@
 namespace QuantLib {
 
     namespace detail {
+        template<class I1, class I2> class ConvexMonotoneImpl;
+        class SectionHelper;
+    }
+
+    //! Convex monotone yield-curve interpolation method.
+    /*! Enhances implementation of the convex monotone method
+        described in "Interpolation Methods for Curve Construction" by
+        Hagan & West AMF Vol 13, No2 2006.
+
+        A setting of monotonicity = 1 and quadraticity = 0 will
+        reproduce the basic Hagan/West method. However, this can
+        produce excessive gradients which can mean P&L swings for some
+        curves.  Setting monotonicity < 1 and/or quadraticity > 0
+        produces smoother curves.  Extra enhancement to avoid negative
+        values (if required) is in place.
+    */
+    template <class I1, class I2>
+    class ConvexMonotoneInterpolation : public Interpolation {
+        typedef std::map<Real, boost::shared_ptr<detail::SectionHelper> >
+                                                                   helper_map;
+      public:
+        ConvexMonotoneInterpolation(const I1& xBegin, const I1& xEnd,
+                                    const I2& yBegin, Real quadraticity,
+                                    Real monotonicity, bool forcePositive,
+                                    bool flatFinalPeriod = false,
+                                    const helper_map& preExistingHelpers =
+                                                               helper_map()) {
+            impl_ = boost::shared_ptr<Interpolation::Impl>(
+                   new detail::ConvexMonotoneImpl<I1,I2>(xBegin,
+                                                         xEnd,
+                                                         yBegin,
+                                                         quadraticity,
+                                                         monotonicity,
+                                                         forcePositive,
+                                                         flatFinalPeriod,
+                                                         preExistingHelpers));
+            impl_->update();
+        }
+
+        ConvexMonotoneInterpolation(Interpolation& interp)
+        : Interpolation(interp) {}
+
+        std::map<Real, boost::shared_ptr<detail::SectionHelper> >
+        getExistingHelpers() {
+            boost::shared_ptr<detail::ConvexMonotoneImpl<I1,I2> > derived =
+                boost::dynamic_pointer_cast<detail::ConvexMonotoneImpl<I1,I2>,
+                                            Interpolation::Impl>(impl_);
+            return derived->getExistingHelpers();
+        }
+    };
+
+    //! Convex-monotone interpolation factory and traits
+    class ConvexMonotone {
+      public:
+        static const bool global = true;
+        static const Size requiredPoints = 2;
+        static const Size dataSizeAdjustment = 1;
+
+        explicit ConvexMonotone(Real quadraticity = 0.3,
+                                Real monotonicity = 0.7,
+                                bool forcePositive = true)
+        : quadraticity_(quadraticity), monotonicity_(monotonicity),
+          forcePositive_(forcePositive) {}
+
+        template <class I1, class I2>
+        Interpolation interpolate(const I1& xBegin, const I1& xEnd,
+                                  const I2& yBegin) const {
+            return ConvexMonotoneInterpolation<I1,I2>(xBegin, xEnd, yBegin,
+                                                      quadraticity_,
+                                                      monotonicity_,
+                                                      forcePositive_,
+                                                      false);
+        }
+
+        template <class I1, class I2>
+        Interpolation localInterpolate(const I1& xBegin, const I1& xEnd,
+                                       const I2& yBegin, Size localisation,
+                                       Interpolation& prevInterpolation,
+                                       Size finalSize) const {
+            Size length = std::distance(xBegin, xEnd);
+            if (length - localisation == 1) { // the first time this
+                                              // function is called
+                if (length == finalSize) {
+                    return ConvexMonotoneInterpolation<I1,I2>(xBegin, xEnd,
+                                                              yBegin,
+                                                              quadraticity_,
+                                                              monotonicity_,
+                                                              forcePositive_,
+                                                              false);
+                } else {
+                    return ConvexMonotoneInterpolation<I1,I2>(xBegin, xEnd,
+                                                              yBegin,
+                                                              quadraticity_,
+                                                              monotonicity_,
+                                                              forcePositive_,
+                                                              true);
+                }
+            }
+
+            ConvexMonotoneInterpolation<I1,I2> interp(prevInterpolation);
+            if (length == finalSize) {
+                return ConvexMonotoneInterpolation<I1,I2>(
+                                                 xBegin, xEnd, yBegin,
+                                                 quadraticity_,
+                                                 monotonicity_,
+                                                 forcePositive_,
+                                                 false,
+                                                 interp.getExistingHelpers());
+            } else {
+                return ConvexMonotoneInterpolation<I1,I2>(
+                                                 xBegin, xEnd, yBegin,
+                                                 quadraticity_,
+                                                 monotonicity_,
+                                                 forcePositive_,
+                                                 true,
+                                                 interp.getExistingHelpers());
+            }
+        }
+      private:
+        Real quadraticity_, monotonicity_;
+        bool forcePositive_;
+    };
+
+
+    namespace detail {
 
         class SectionHelper {
           public:
@@ -60,7 +185,8 @@ namespace QuantLib {
                                bool forcePositive,
                                bool constantLastPeriod,
                                const helper_map& preExistingHelpers)
-            : Interpolation::templateImpl<I1,I2>(xBegin,xEnd,yBegin),
+            : Interpolation::templateImpl<I1,I2>(xBegin,xEnd,yBegin,
+                                                 ConvexMonotone::requiredPoints),
               preSectionHelpers_(preExistingHelpers),
               forcePositive_(forcePositive),
               constantLastPeriod_(constantLastPeriod),
@@ -411,7 +537,7 @@ namespace QuantLib {
                     Real dAv = bAv*bAv - 4.0*aAv*cAv;
                     if (dAv >= 0.0) {
                         splitRegion_ = true;
-                        Real avRoot = (-bAv - sqrt(dAv))/(2*aAv);
+                        Real avRoot = (-bAv - std::sqrt(dAv))/(2*aAv);
 
                         xRatio_ = fAverage_ / avRoot;
                         xScaling_ *= xRatio_;
@@ -733,127 +859,6 @@ namespace QuantLib {
         }
 
     }
-
-
-    //! Convex monotone yield-curve interpolation method.
-    /*! Enhances implementation of the convex monotone method
-        described in "Interpolation Methods for Curve Construction" by
-        Hagan & West AMF Vol 13, No2 2006.
-
-        A setting of monotonicity = 1 and quadraticity = 0 will
-        reproduce the basic Hagan/West method. However, this can
-        produce excessive gradients which can mean P&L swings for some
-        curves.  Setting monotonicity < 1 and/or quadraticity > 0
-        produces smoother curves.  Extra enhancement to avoid negative
-        values (if required) is in place.
-    */
-    template <class I1, class I2>
-    class ConvexMonotoneInterpolation : public Interpolation {
-        typedef std::map<Real, boost::shared_ptr<detail::SectionHelper> >
-                                                                   helper_map;
-      public:
-        ConvexMonotoneInterpolation(const I1& xBegin, const I1& xEnd,
-                                    const I2& yBegin, Real quadraticity,
-                                    Real monotonicity, bool forcePositive,
-                                    bool flatFinalPeriod = false,
-                                    const helper_map& preExistingHelpers =
-                                                               helper_map()) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(
-                   new detail::ConvexMonotoneImpl<I1,I2>(xBegin,
-                                                         xEnd,
-                                                         yBegin,
-                                                         quadraticity,
-                                                         monotonicity,
-                                                         forcePositive,
-                                                         flatFinalPeriod,
-                                                         preExistingHelpers));
-            impl_->update();
-        }
-
-        ConvexMonotoneInterpolation(Interpolation& interp)
-        : Interpolation(interp) {}
-
-        std::map<Real, boost::shared_ptr<detail::SectionHelper> >
-        getExistingHelpers() {
-            boost::shared_ptr<detail::ConvexMonotoneImpl<I1,I2> > derived =
-                boost::dynamic_pointer_cast<detail::ConvexMonotoneImpl<I1,I2>,
-                                            Interpolation::Impl>(impl_);
-            return derived->getExistingHelpers();
-        }
-    };
-
-
-    //! Convex-monotone interpolation factory and traits
-    class ConvexMonotone {
-      public:
-        static const bool global = true;
-        static const Size requiredPoints = 2;
-        static const Size dataSizeAdjustment = 1;
-
-        explicit ConvexMonotone(Real quadraticity = 0.3,
-                                Real monotonicity = 0.7,
-                                bool forcePositive = true)
-        : quadraticity_(quadraticity), monotonicity_(monotonicity),
-          forcePositive_(forcePositive) {}
-
-        template <class I1, class I2>
-        Interpolation interpolate(const I1& xBegin, const I1& xEnd,
-                                  const I2& yBegin) const {
-            return ConvexMonotoneInterpolation<I1,I2>(xBegin, xEnd, yBegin,
-                                                      quadraticity_,
-                                                      monotonicity_,
-                                                      forcePositive_,
-                                                      false);
-        }
-
-        template <class I1, class I2>
-        Interpolation localInterpolate(const I1& xBegin, const I1& xEnd,
-                                       const I2& yBegin, Size localisation,
-                                       Interpolation& prevInterpolation,
-                                       Size finalSize) const {
-            Size length = std::distance(xBegin, xEnd);
-            if (length - localisation == 1) { // the first time this
-                                              // function is called
-                if (length == finalSize) {
-                    return ConvexMonotoneInterpolation<I1,I2>(xBegin, xEnd,
-                                                              yBegin,
-                                                              quadraticity_,
-                                                              monotonicity_,
-                                                              forcePositive_,
-                                                              false);
-                } else {
-                    return ConvexMonotoneInterpolation<I1,I2>(xBegin, xEnd,
-                                                              yBegin,
-                                                              quadraticity_,
-                                                              monotonicity_,
-                                                              forcePositive_,
-                                                              true);
-                }
-            }
-
-            ConvexMonotoneInterpolation<I1,I2> interp(prevInterpolation);
-            if (length == finalSize) {
-                return ConvexMonotoneInterpolation<I1,I2>(
-                                                 xBegin, xEnd, yBegin,
-                                                 quadraticity_,
-                                                 monotonicity_,
-                                                 forcePositive_,
-                                                 false,
-                                                 interp.getExistingHelpers());
-            } else {
-                return ConvexMonotoneInterpolation<I1,I2>(
-                                                 xBegin, xEnd, yBegin,
-                                                 quadraticity_,
-                                                 monotonicity_,
-                                                 forcePositive_,
-                                                 true,
-                                                 interp.getExistingHelpers());
-            }
-        }
-      private:
-        Real quadraticity_, monotonicity_;
-        bool forcePositive_;
-    };
 
 }
 

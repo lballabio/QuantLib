@@ -28,11 +28,19 @@ namespace QuantLib {
     OptionletStripper::OptionletStripper(
             const boost::shared_ptr<CapFloorTermVolSurface>& termVolSurface,
             const boost::shared_ptr<IborIndex>& iborIndex,
-            const Handle<YieldTermStructure>& discount)
-    : termVolSurface_(termVolSurface),
-      iborIndex_(iborIndex), discount_(discount),
-      nStrikes_(termVolSurface->strikes().size()) {
-        
+            const Handle<YieldTermStructure>& discount, 
+            Model model,
+            Real displacement) 
+   : termVolSurface_(termVolSurface),
+     iborIndex_(iborIndex), discount_(discount),
+     nStrikes_(termVolSurface->strikes().size()), 
+     model_(model), displacement_(displacement) {
+
+        if (model_ == Normal) {
+            QL_REQUIRE(displacement_ == 0.0,
+                       "non-null displacement is not allowed with Normal model");
+        }
+
         registerWith(termVolSurface);
         registerWith(iborIndex_);
         registerWith(discount_);
@@ -143,5 +151,24 @@ namespace QuantLib {
 
     boost::shared_ptr<IborIndex> OptionletStripper::iborIndex() const {
         return iborIndex_;
+    }
+
+    Real OptionletStripper::displacement() const {
+        return displacement_;
+    }
+
+    OptionletStripper::Model OptionletStripper::model() const{
+        return model_;
+    }
+
+    std::ostream& operator<<(std::ostream& out, const OptionletStripper::Model& mod) {
+        switch (mod) {
+            case OptionletStripper::Normal:
+                return out << "Normal";
+            case OptionletStripper::ShiftedLognormal:
+                return out << "ShiftedLognormal";
+            default:
+                QL_FAIL("unknown Model");
+        }
     }
 }

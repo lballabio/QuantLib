@@ -20,18 +20,15 @@
 #ifndef quantlib_binomial_loss_model_hpp
 #define quantlib_binomial_loss_model_hpp
 
-#include <algorithm>
-#include <numeric>
-
-#include <boost/lambda/lambda.hpp>
-#include <boost/lambda/bind.hpp>
-#include <boost/bind.hpp>
-
 #include <ql/handle.hpp>
-
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
+#include <boost/lambda/lambda.hpp>
+#include <boost/lambda/bind.hpp>
+#include <boost/bind.hpp>
+#include <algorithm>
+#include <numeric>
 
 namespace QuantLib {
 
@@ -86,8 +83,11 @@ namespace QuantLib {
             expectedDistribution(const Date& date) const {
             // precal date conditional magnitudes:
             std::vector<Real> notionals = basket_->remainingNotionals(date);
-            std::vector<Probability> probs = 
+            std::vector<Probability> invProbs = 
                 basket_->remainingProbabilities(date);
+            for(Size iName=0; iName<invProbs.size(); iName++)
+                invProbs[iName] = 
+                    copula_->inverseCumulativeY(invProbs[iName], iName);
 
             return copula_->integratedExpectedValue(
                 boost::function<Disposable<std::vector<Real> > (
@@ -97,7 +97,7 @@ namespace QuantLib {
                         this,
                         boost::cref(date), //d,
                         boost::cref(notionals),
-                        boost::cref(probs),
+                        boost::cref(invProbs),
                         _1)
                     )
                 );
@@ -141,7 +141,7 @@ namespace QuantLib {
                 // expected exposures at the passed date, no wrong way means
                 //  no dependence of the exposure with the mkt factor 
                 const std::vector<Real>& bsktNots,
-                const std::vector<Probability>& uncondDefProb, 
+                const std::vector<Real>& uncondDefProbInv, 
                             const std::vector<Real>&  mktFactor) const;
     protected:
         const boost::shared_ptr<LLM> copula_;
@@ -161,7 +161,7 @@ namespace QuantLib {
     Disposable<std::vector<Real> > BinomialLossModel<LLM>::lossProbability(
         const Date& date, 
         const std::vector<Real>& bsktNots,
-        const std::vector<Probability>& uncondDefProb, 
+        const std::vector<Real>& uncondDefProbInv, 
         const std::vector<Real>& mktFactors) const 
     {   // the model as it is does not model the exposures conditional to the 
         //   mkt factr, otherwise this needs revision
@@ -182,16 +182,13 @@ namespace QuantLib {
             bsktNots.begin(), std::back_inserter(lgdsLeft), 
             std::multiplies<Real>());
         Real avgLgd = 
-            std::accumulate(lgdsLeft.begin(), lgdsLeft.end(), 0.) / bsktSize;
+            std::accumulate(lgdsLeft.begin(), lgdsLeft.end(), Real(0.)) / bsktSize;
 
         std::vector<Probability> condDefProb(bsktSize, 0.);
         for(Size j=0; j<bsktSize; j++)//transform
-            // \todo Call these with the precomputed inverse of the 
-            //    probabilities and avoid the precaclculation, it has to be 
-            //    done from the caller of this method.
             condDefProb[j] = 
-                copula_->conditionalDefaultProbability(uncondDefProb[j], j, 
-                    mktFactors);
+                copula_->conditionalDefaultProbabilityInvP(uncondDefProbInv[j],
+                    j, mktFactors);
         // of full portfolio:
         Real avgProb = avgLgd <= QL_EPSILON ? 0. : // only if all are 0
                 std::inner_product(condDefProb.begin(), 
@@ -199,7 +196,7 @@ namespace QuantLib {
                 / (avgLgd * bsktSize);
         // model parameters:
         Real m = avgProb * bsktSize;
-        Real floorAveProb = std::min(bsktSize-1, static_cast<Size>(floor(m)));
+        Real floorAveProb = std::min(Real(bsktSize-1), std::floor(Real(m)));
         Real ceilAveProb = floorAveProb + 1.;
         // nu_A
         Real varianceBinom = avgProb * (1. - avgProb)/bsktSize;
@@ -275,12 +272,12 @@ namespace QuantLib {
         */
         std::vector<Real> fractionalEL = expConditionalLgd(d, mktFctrs);
         Real notBskt = std::accumulate(reminingNots.begin(), 
-            reminingNots.end(), 0.);
+            reminingNots.end(), Real(0.));
         std::vector<Real> lgdsLeft;
         std::transform(fractionalEL.begin(), fractionalEL.end(), 
             reminingNots.begin(), std::back_inserter(lgdsLeft),
             boost::lambda::_1 * boost::lambda::_2 / notBskt);
-        return std::accumulate(lgdsLeft.begin(), lgdsLeft.end(), 0.) 
+        return std::accumulate(lgdsLeft.begin(), lgdsLeft.end(), Real(0.)) 
             / bsktSize;
     }
 
@@ -316,11 +313,11 @@ namespace QuantLib {
         const Date& d, 
         const std::vector<Real>& lossVals, 
         const std::vector<Real>& bsktNots,
-        const std::vector<Probability>& uncondDefProbs,
+        const std::vector<Real>& uncondDefProbsInv,
         const std::vector<Real>& mkf) const {
 
         std::vector<Real> condLProb = 
-            lossProbability(d, bsktNots, uncondDefProbs, mkf);
+            lossProbability(d, bsktNots, uncondDefProbsInv, mkf);
         // \to do: move to a do-while over attach to detach
         Real suma = 0.;
         for(Size i=0; i<lossVals.size(); i++) { 
@@ -335,7 +332,11 @@ namespace QuantLib {
     Real BinomialLossModel<LLM>::expectedTrancheLoss(const Date& d) const {
         std::vector<Real> lossVals  = lossPoints(d);
         std::vector<Real> notionals = basket_->remainingNotionals(d);
-        std::vector<Probability> probs = basket_->remainingProbabilities(d);
+        std::vector<Probability> invProbs = 
+            basket_->remainingProbabilities(d);
+        for(Size iName=0; iName<invProbs.size(); iName++)
+            invProbs[iName] = 
+                copula_->inverseCumulativeY(invProbs[iName], iName);
             
         return copula_->integratedExpectedValue(
             boost::function<Real (const std::vector<Real>& v1)>(
@@ -344,7 +345,7 @@ namespace QuantLib {
                             boost::cref(d), 
                             boost::cref(lossVals), 
                             boost::cref(notionals), 
-                            boost::cref(probs), 
+                            boost::cref(invProbs), 
                             _1))
             );
     }
@@ -359,7 +360,7 @@ namespace QuantLib {
         std::vector<Real> values  = expectedDistribution(d);
         Real sum = 0.;
         for(Size i=0; i<lossPts.size(); i++) {
-            distrib.insert(std::make_pair<Real, Probability>(lossPts[i], 
+            distrib.insert(std::make_pair(lossPts[i], 
                 //capped, some situations giving a very small probability over 1
                 std::min(sum+values[i],1.)
                 ));

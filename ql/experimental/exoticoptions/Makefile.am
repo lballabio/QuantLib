@@ -18,6 +18,7 @@ this_include_HEADERS = \
     complexchooseroption.hpp \
     compoundoption.hpp \
     continuousarithmeticasianlevyengine.hpp \
+    continuousarithmeticasianvecerengine.hpp \
     everestoption.hpp \
     himalayaoption.hpp \
     holderextensibleoption.hpp \
@@ -49,6 +50,7 @@ libExoticOptions_la_SOURCES = \
     complexchooseroption.cpp \
     compoundoption.cpp \
     continuousarithmeticasianlevyengine.cpp \
+    continuousarithmeticasianvecerengine.cpp \
     everestoption.cpp \
     himalayaoption.cpp \
     holderextensibleoption.cpp \

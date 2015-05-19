@@ -6,6 +6,7 @@ this_include_HEADERS = \
 	all.hpp \
 	binomialdistribution.hpp \
 	bivariatenormaldistribution.hpp \
+	bivariatestudenttdistribution.hpp \
 	chisquaredistribution.hpp \
 	gammadistribution.hpp \
 	normaldistribution.hpp \
@@ -14,6 +15,7 @@ this_include_HEADERS = \
 
 libDistributions_la_SOURCES = \
 	bivariatenormaldistribution.cpp \
+	bivariatestudenttdistribution.cpp \
 	chisquaredistribution.cpp \
 	gammadistribution.cpp \
 	normaldistribution.cpp \

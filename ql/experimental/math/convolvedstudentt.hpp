@@ -20,12 +20,11 @@
 #ifndef convolved_student_t_hpp
 #define convolved_student_t_hpp
 
+#include <ql/types.hpp>
+#include <ql/utilities/disposable.hpp>
 #include <vector>
 #include <numeric>
 #include <functional>
-
-#include <ql/types.hpp>
-#include <ql/utilities/disposable.hpp>
 
 namespace QuantLib {
 

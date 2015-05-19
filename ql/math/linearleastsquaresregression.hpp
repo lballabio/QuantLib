@@ -52,7 +52,7 @@ namespace QuantLib {
           public:
             typedef typename xContainer::value_type ArgumentType;
             LinearFcts (const xContainer &x, Real intercept) {
-                if (intercept)
+                if (intercept != 0.0)
                     v.push_back(constant<ArgumentType, Real>(intercept));
                 v.push_back(identity<ArgumentType>());
             }
@@ -71,7 +71,7 @@ namespace QuantLib {
           public:
             typedef typename xContainer::value_type ArgumentType;
             LinearFcts (const xContainer &x, Real intercept) {
-                if (intercept)
+                if (intercept != 0.0)
                     v.push_back(constant<ArgumentType, Real>(intercept));
                 Size m = x.begin()->size();
                 for (Size i = 0; i < m; ++i)

@@ -377,13 +377,14 @@ void SwaptionVolatilityCubeTest::testObservability() {
                                                        vars.cube.tenors.swaps[j],
                                                        dummyStrike + vars.cube.strikeSpreads[k],
                                                        false);
-                if (v0 != v1)
+                if (std::fabs(v0 - v1) > 1e-14)
                     BOOST_ERROR(description <<
                                 " option tenor = " << vars.cube.tenors.options[i] <<
                                 " swap tenor = " << vars.cube.tenors.swaps[j] <<
                                 " strike = " << io::rate(dummyStrike+vars.cube.strikeSpreads[k])<<
                                 "  v0 = " << io::volatility(v0) <<
-                                "  v1 = " << io::volatility(v1));
+                                "  v1 = " << io::volatility(v1) <<
+                                "  error = " << std::fabs(v1-v0));
             }
         }
     }
@@ -426,13 +427,14 @@ void SwaptionVolatilityCubeTest::testObservability() {
                                                        vars.cube.tenors.swaps[j],
                                                        dummyStrike + vars.cube.strikeSpreads[k],
                                                        false);
-                if (v0 != v1)
+                if (std::fabs(v0 - v1) > 1e-14)
                     BOOST_ERROR(description <<
                                 " option tenor = " << vars.cube.tenors.options[i] <<
                                 " swap tenor = " << vars.cube.tenors.swaps[j] <<
                                 " strike = " << io::rate(dummyStrike+vars.cube.strikeSpreads[k])<<
                                 "  v0 = " << io::volatility(v0) <<
-                                "  v1 = " << io::volatility(v1));
+                                "  v1 = " << io::volatility(v1) <<
+                                "  error = " << std::fabs(v1-v0));
             }
         }
     }

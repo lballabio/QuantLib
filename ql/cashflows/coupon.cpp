@@ -34,7 +34,7 @@ namespace QuantLib {
     : paymentDate_(paymentDate), nominal_(nominal), 
       accrualStartDate_(accrualStartDate), accrualEndDate_(accrualEndDate),
       refPeriodStart_(refPeriodStart), refPeriodEnd_(refPeriodEnd),
-      exCouponDate_(exCouponDate) {
+      exCouponDate_(exCouponDate), accrualPeriod_(Null<Real>()) {
         if (refPeriodStart_ == Date())
             refPeriodStart_ = accrualStartDate_;
         if (refPeriodEnd_ == Date())
@@ -42,10 +42,11 @@ namespace QuantLib {
     }
 
     Time Coupon::accrualPeriod() const {
-        return dayCounter().yearFraction(accrualStartDate_,
-                                         accrualEndDate_,
-                                         refPeriodStart_,
-                                         refPeriodEnd_);
+        if (accrualPeriod_ == Null<Real>())
+            accrualPeriod_ =
+                dayCounter().yearFraction(accrualStartDate_, accrualEndDate_,
+                                          refPeriodStart_, refPeriodEnd_);
+        return accrualPeriod_;
     }
 
     BigInteger Coupon::accrualDays() const {

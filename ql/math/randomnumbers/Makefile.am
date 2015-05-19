@@ -15,7 +15,7 @@ this_include_HEADERS = \
 	latticerules.hpp \
 	lecuyeruniformrng.hpp \
 	mt19937uniformrng.hpp \
-	primitivepolynomials.h \
+	primitivepolynomials.hpp \
 	randomizedlds.hpp \
 	randomsequencegenerator.hpp \
 	ranluxuniformrng.hpp \
@@ -32,7 +32,7 @@ libRandomNumbers_la_SOURCES = \
 	latticerules.cpp \
 	lecuyeruniformrng.cpp \
 	mt19937uniformrng.cpp \
-	primitivepolynomials.c \
+	primitivepolynomials.cpp \
 	seedgenerator.cpp \
 	sobolbrownianbridgersg.cpp \
 	sobolrsg.cpp

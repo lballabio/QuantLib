@@ -22,6 +22,7 @@
 
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/time/imm.hpp>
+#include <ql/time/calendars/jointcalendar.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/quote.hpp>
@@ -166,9 +167,9 @@ namespace QuantLib {
         Rate forwardRate = (termStructure_->discount(earliestDate_) /
             termStructure_->discount(latestDate_)-1.0)/yearFraction_;
         Rate convAdj = convAdj_.empty() ? 0.0 : convAdj_->value();
-        QL_ENSURE(convAdj >= 0.0,
-                  "Negative (" << convAdj <<
-                  ") futures convexity adjustment");
+        // Convexity, as FRA/futures adjustment, has been used in the
+        // past to take into account futures margining vs FRA.
+        // Therefore, there's no requirement for it to be non-negative.
         Rate futureRate = forwardRate + convAdj;
         return 100.0 * (1.0 - futureRate);
     }
@@ -660,9 +661,13 @@ namespace QuantLib {
     }
 
     void BMASwapRateHelper::initializeDates() {
-        earliestDate_ = calendar_.advance(evaluationDate_,
-                                          settlementDays_*Days,
-                                          Following);
+        // if the evaluation date is not a business day
+        // then move to the next business day
+        JointCalendar jc(calendar_,
+                         iborIndex_->fixingCalendar());
+        Date referenceDate = jc.adjust(evaluationDate_);
+        earliestDate_ =
+            calendar_.advance(referenceDate, settlementDays_ * Days, Following);
 
         Date maturity = earliestDate_ + tenor_;
 

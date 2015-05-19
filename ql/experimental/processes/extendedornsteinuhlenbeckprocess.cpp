@@ -20,19 +20,23 @@
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/processes/ornsteinuhlenbeckprocess.hpp>
 #include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-#include <boost/lambda/bind.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
-#include <boost/lambda/lambda.hpp>
-
-using namespace boost::lambda;
 
 namespace QuantLib {
+
+    namespace {
+
+        class integrand {
+            boost::function<Real (Real)> b;
+            Real speed;
+          public:
+            integrand(const boost::function<Real (Real)>& b, Real speed)
+            : b(b), speed(speed) {}
+            Real operator()(Real x) const {
+                return b(x) * std::exp(speed*x);
+            }
+        };
+
+    }
 
     ExtendedOrnsteinUhlenbeckProcess::ExtendedOrnsteinUhlenbeckProcess(
                                         Real speed, Volatility vol, Real x0,
@@ -101,10 +105,8 @@ namespace QuantLib {
           case GaussLobatto:
               return ouProcess_->expectation(t0, x0, dt)
                   + speed_*std::exp(-speed_*(t0+dt))
-                  * GaussLobattoIntegral(100000, intEps_)(
-                         boost::lambda::bind(b_, boost::lambda::_1)
-                        *boost::lambda::bind(std::ptr_fun<Real, Real>(std::exp),
-                                          speed_*boost::lambda::_1), t0, t0+dt);
+                  * GaussLobattoIntegral(100000, intEps_)(integrand(b_, speed_),
+                                                          t0, t0+dt);
             break;
           default:
             QL_FAIL("unknown discretization scheme");

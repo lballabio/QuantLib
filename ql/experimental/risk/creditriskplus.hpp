@@ -24,12 +24,10 @@
 #ifndef quantlib_creditriskplus_hpp
 #define quantlib_creditriskplus_hpp
 
-#include <vector>
-
 #include <ql/qldefines.hpp>
 #include <ql/types.hpp>
 #include <ql/math/matrix.hpp>
-
+#include <vector>
 
 namespace QuantLib {
 

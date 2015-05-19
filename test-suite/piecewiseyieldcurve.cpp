@@ -435,7 +435,7 @@ namespace {
         bmaIndex->addFixing(lastFixing, 0.03);
 
         vars.termStructure = boost::shared_ptr<YieldTermStructure>(new
-            PiecewiseYieldCurve<T,I,B>(vars.settlement, vars.bmaHelpers,
+            PiecewiseYieldCurve<T,I,B>(vars.today, vars.bmaHelpers,
                                        Actual360(),
                                        1.0e-12,
                                        interpolator));

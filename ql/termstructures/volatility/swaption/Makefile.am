@@ -6,6 +6,7 @@ this_include_HEADERS = \
     all.hpp \
     cmsmarket.hpp \
     cmsmarketcalibration.hpp \
+    gaussian1dswaptionvolatility.hpp \
     spreadedswaptionvol.hpp \
     swaptionconstantvol.hpp \
     swaptionvolcube.hpp \
@@ -18,6 +19,7 @@ this_include_HEADERS = \
 libSwaptionVol_la_SOURCES = \
     cmsmarket.cpp \
     cmsmarketcalibration.cpp \
+    gaussian1dswaptionvolatility.cpp \
     spreadedswaptionvol.cpp \
     swaptionconstantvol.cpp \
     swaptionvolcube.cpp \

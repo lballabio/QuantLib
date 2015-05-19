@@ -23,6 +23,9 @@
 #include <ql/methods/lattices/trinomialtree.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 
+using std::exp;
+using std::sqrt;
+
 namespace QuantLib {
 
     HullWhite::HullWhite(const Handle<YieldTermStructure>& termStructure,
