@@ -9126,6 +9126,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\math\numericaldifferentiation.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\numericaldifferentiation.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\math\polarstudenttrng.hpp"
 					>
 				</File>
