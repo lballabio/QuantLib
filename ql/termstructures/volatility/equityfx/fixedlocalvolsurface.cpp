@@ -63,7 +63,8 @@ namespace QuantLib {
             times_[j] = timeFromReference(dates[j]);
 
         checkSurface();
-        setInterpolation<Bicubic>();
+//        setInterpolation<Bicubic>();
+        setInterpolation<Bilinear>();
 	}
 
 	FixedLocalVolSurface::FixedLocalVolSurface(
@@ -87,7 +88,8 @@ namespace QuantLib {
         QL_REQUIRE(times_[0]>=0, "cannot have times[0] < 0");
 
         checkSurface();
-        setInterpolation<Bicubic>();
+        //        setInterpolation<Bicubic>();
+                setInterpolation<Bilinear>();
 	}
 
 	void FixedLocalVolSurface::checkSurface() {
@@ -136,6 +138,6 @@ namespace QuantLib {
 
         t = std::min(times_.back(), std::max(t, times_.front()));
 
-        return localVolSurface_(times_.back(), strike, true);
+        return localVolSurface_(t, strike, true);
     }
 }
