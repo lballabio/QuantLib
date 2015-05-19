@@ -26,7 +26,6 @@ this_include_HEADERS = \
 	lexicographicalview.hpp \
 	linearleastsquaresregression.hpp \
 	matrix.hpp \
-	numericaldifferentiation.hpp \
 	modifiedbessel.hpp \
 	primenumbers.hpp \
 	quadratic.hpp \
@@ -45,7 +44,6 @@ libMath_la_SOURCES = \
 	incompletegamma.cpp \
 	matrix.cpp \
 	modifiedbessel.cpp \
-	numericaldifferentiation.cpp \
 	primenumbers.cpp \
 	quadratic.cpp \
 	richardsonextrapolation.cpp \

@@ -29,7 +29,7 @@
 #include <ql/processes/hullwhiteprocess.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/hybridhestonhullwhiteprocess.hpp>
-#include <ql/math/numericaldifferentiation.hpp>
+#include <ql/experimental/math/numericaldifferentiation.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>

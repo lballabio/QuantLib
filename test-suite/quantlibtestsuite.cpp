@@ -317,7 +317,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(MCLongstaffSchwartzEngineTest::suite());
     test->add(MersenneTwisterTest::suite());
     test->add(MoneyTest::suite());
-    test->add(NumericalDifferentiationTest::suite());
     test->add(OperatorTest::suite());
     test->add(OptimizersTest::suite());
     test->add(OptionletStripperTest::suite());
@@ -375,6 +374,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(MarkovFunctionalTest::suite());
     test->add(NoArbSabrTest::suite());
     test->add(NthToDefaultTest::suite());
+    test->add(NumericalDifferentiationTest::suite());
     test->add(OdeTest::suite());
     test->add(PagodaOptionTest::suite());
     test->add(PartialTimeBarrierOptionTest::suite());
