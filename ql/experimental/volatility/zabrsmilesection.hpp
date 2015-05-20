@@ -145,7 +145,7 @@ template <typename Evaluation>
 void ZabrSmileSection<Evaluation>::init(const std::vector<Real> &moneyness,
                                         ZabrLocalVolatility) {
 
-    QL_REQUIRE(params_.size() == 5,
+    QL_REQUIRE(params_.size() >= 5,
                "zabr expects 5 parameters (alpha,beta,nu,rho,gamma) but ("
                    << params_.size() << ") given");
 

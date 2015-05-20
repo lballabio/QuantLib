@@ -40,8 +40,8 @@ NoArbSabrSmileSection::NoArbSabrSmileSection(
 }
 
 void NoArbSabrSmileSection::init() {
-    QL_REQUIRE(params_.size() == 4,
-               "sabr expects 4 parameters (alpha,beta,nu,rho,gamma) but ("
+    QL_REQUIRE(params_.size() >= 4,
+               "sabr expects 4 parameters (alpha,beta,nu,rho) but ("
                    << params_.size() << ") given");
     model_ =
         boost::make_shared<NoArbSabrModel>(exerciseTime(), forward_, params_[0],
