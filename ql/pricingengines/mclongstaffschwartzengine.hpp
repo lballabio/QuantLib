@@ -25,6 +25,7 @@
 #ifndef quantlib_mc_longstaff_schwartz_engine_hpp
 #define quantlib_mc_longstaff_schwartz_engine_hpp
 
+#include <ql/exercise.hpp>
 #include <ql/pricingengines/mcsimulation.hpp>
 #include <ql/methods/montecarlo/longstaffschwartzpathpricer.hpp>
 
@@ -170,13 +171,26 @@ namespace QuantLib {
     inline
     TimeGrid MCLongstaffSchwartzEngine<GenericEngine,MC,RNG,S>::timeGrid()
         const {
-        Date lastExerciseDate = this->arguments_.exercise->lastDate();
-        Time t = process_->time(lastExerciseDate);
+        std::vector<Time> requiredTimes;
+        if (this->arguments_.exercise->type() == Exercise::American) {
+            Date lastExerciseDate = this->arguments_.exercise->lastDate();
+            requiredTimes.push_back(process_->time(lastExerciseDate));
+        } else {
+            for (Size i = 0; i < this->arguments_.exercise->dates().size();
+                 ++i) {
+                Time t = process_->time(this->arguments_.exercise->date(i));
+                if (t > 0.0)
+                    requiredTimes.push_back(t);
+            }
+        }
         if (this->timeSteps_ != Null<Size>()) {
-            return TimeGrid(t, this->timeSteps_);
+            return TimeGrid(requiredTimes.begin(), requiredTimes.end(),
+                            this->timeSteps_);
         } else if (this->timeStepsPerYear_ != Null<Size>()) {
-            Size steps = static_cast<Size>(this->timeStepsPerYear_*t);
-            return TimeGrid(t, std::max<Size>(steps, 1));
+            Size steps = static_cast<Size>(this->timeStepsPerYear_ *
+                                           requiredTimes.back());
+            return TimeGrid(requiredTimes.begin(), requiredTimes.end(),
+                            std::max<Size>(steps, 1));
         } else {
             QL_FAIL("time steps not specified");
         }
