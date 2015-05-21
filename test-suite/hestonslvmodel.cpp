@@ -1725,25 +1725,25 @@ namespace {
                 const Real expected = option.NPV();
                 const Real vega = option.vega();
 
-                option.setPricingEngine(hestonEngine);
-                const Real pureHeston = option.NPV();
+//                option.setPricingEngine(hestonEngine);
+//                const Real pureHeston = option.NPV();
 
-                const boost::shared_ptr<GeneralizedBlackScholesProcess> bp(
-                    new GeneralizedBlackScholesProcess(spot, qTS, rTS,
-                        Handle<BlackVolTermStructure>(flatVol(localVol,
-                                                      dayCounter))));
-
-                std::cout << "strike " << QL_FIXED << std::setprecision(0)
-                          << strike << "\t "
-                          << std::setprecision(0) << times[t] << "\t "
-                          << std::setprecision(8) << expected << " "
-                          << std::setprecision(8) << vega << " "
-                          << std::setprecision(8) << calculated << " "
-                          << std::setprecision(8) << localVol + (calculated-expected)/vega
-                          << " "
-                          << std::setprecision(8) << pureHeston << " "
-                          << std::setprecision(8) << option.impliedVolatility(pureHeston, bp)
-                          << std::endl;
+//                const boost::shared_ptr<GeneralizedBlackScholesProcess> bp(
+//                    new GeneralizedBlackScholesProcess(spot, qTS, rTS,
+//                        Handle<BlackVolTermStructure>(flatVol(localVol,
+//                                                      dayCounter))));
+//
+//                std::cout << "strike " << QL_FIXED << std::setprecision(0)
+//                          << strike << "\t "
+//                          << std::setprecision(0) << times[t] << "\t "
+//                          << std::setprecision(8) << expected << " "
+//                          << std::setprecision(8) << vega << " "
+//                          << std::setprecision(8) << calculated << " "
+//                          << std::setprecision(8) << localVol + (calculated-expected)/vega
+//                          << " "
+//                          << std::setprecision(8) << pureHeston << " "
+//                          << std::setprecision(8) << option.impliedVolatility(pureHeston, bp)
+//                          << std::endl;
 
                 const Real tol = testCase.eps;
                 if (std::fabs((calculated-expected)/vega) > tol) {
