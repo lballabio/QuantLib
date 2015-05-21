@@ -743,18 +743,19 @@ namespace QuantLib {
             RateHelper::accept(v);
     }
 
-    FxSwapRateHelper::FxSwapRateHelper(const Handle<Quote>& fx,
-                                       const Handle<Quote>& spot,
+    FxSwapRateHelper::FxSwapRateHelper(const Handle<Quote>& fwdPoint,
+                                       const Handle<Quote>& spotFx,
                                        const Period& tenor,
                                        Natural fixingDays,
                                        const Calendar& calendar,
                                        BusinessDayConvention convention,
                                        bool endOfMonth,
-                                       bool isCurrPairCollBased,
+                                       bool isFxBaseCurrencyCollateralCurrency,
                                        const Handle<YieldTermStructure>& coll)
-    : RelativeDateRateHelper(fx), spot_(spot), tenor_(tenor),
+                                       : RelativeDateRateHelper(fwdPoint), spot_(spotFx), tenor_(tenor),
       fixingDays_(fixingDays), cal_(calendar), conv_(convention),
-      eom_(endOfMonth), isCurrencyPairCollateralBased_(isCurrPairCollBased),
+      eom_(endOfMonth),
+      isFxBaseCurrencyCollateralCurrency_(isFxBaseCurrencyCollateralCurrency),
       collHandle_(coll) {
         registerWith(spot_);
         registerWith(collHandle_);
@@ -774,10 +775,6 @@ namespace QuantLib {
 
         QL_REQUIRE(!collHandle_.empty(), "collateral term structure not set");
         
-        Integer unitFx = 1;
-        if (!isCurrencyPairCollateralBased_) { 
-            unitFx = -1;
-        } 
         DiscountFactor d1 = collHandle_->discount(earliestDate_);
         DiscountFactor d2 = collHandle_->discount(latestDate_);
         Real collRatio = d1 / d2;
@@ -785,7 +782,11 @@ namespace QuantLib {
         d2 = termStructureHandle_->discount(latestDate_);
         Real ratio = d1 / d2;
         Real spot = spot_->value();
-        return (std::pow((ratio/collRatio), unitFx)-1) * spot;
+        if (isFxBaseCurrencyCollateralCurrency_) {
+            return (ratio/collRatio-1)*spot;
+        } else {
+            return (collRatio/ratio-1)*spot;
+        }
     }
 
     void FxSwapRateHelper::setTermStructure(YieldTermStructure* t) {

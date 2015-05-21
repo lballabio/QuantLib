@@ -318,16 +318,20 @@ namespace QuantLib {
 
 
     //! Rate helper for bootstrapping over Fx Swap rates
+    /*! fwdFx = spotFx + fwdPoint
+        isFxBaseCurrencyCollateralCurrency indicates if the base currency
+        of the fx currency pair is the one used as collateral 
+    */
     class FxSwapRateHelper : public RelativeDateRateHelper {
       public:
-        FxSwapRateHelper(const Handle<Quote>& fx,
-                         const Handle<Quote>& spot,
+        FxSwapRateHelper(const Handle<Quote>& fwdPoint,
+                         const Handle<Quote>& spotFx,
                          const Period& tenor,
                          Natural fixingDays,
                          const Calendar& calendar,
                          BusinessDayConvention convention,
                          bool endOfMonth,
-                         bool isCurrencyPairCollateralBased,                   
+                         bool isFxBaseCurrencyCollateralCurrency,                   
                          const Handle<YieldTermStructure>& collateralCurve);
         //! \name RateHelper interface
         //@{
@@ -342,6 +346,8 @@ namespace QuantLib {
         Calendar calendar() const { return cal_; }
         BusinessDayConvention businessDayConvention() const { return conv_; }
         bool endOfMonth() const { return eom_; }
+        bool isFxBaseCurrencyCollateralCurrency() const {
+                                return isFxBaseCurrencyCollateralCurrency_; }
         //@}
         //! \name Visitability
         //@{
@@ -355,7 +361,7 @@ namespace QuantLib {
         Calendar cal_;
         BusinessDayConvention conv_;
         bool eom_;
-        bool isCurrencyPairCollateralBased_;
+        bool isFxBaseCurrencyCollateralCurrency_;
 
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
 
