@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 RiskMap srl
+Copyright (C) 2015 Ferdinando Ametrano
+Copyright (C) 2015 Maddalena Zanzi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,24 +18,21 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_dates_hpp
-#define quantlib_test_dates_hpp
+#include <ql/instruments/futures.hpp>
+#include <ql/types.hpp>
+#include <ql/errors.hpp>
 
-#include <boost/test/unit_test.hpp>
+namespace QuantLib {
 
-/* remember to document new and/or updated tests in the Doxygen
-   comment block of the corresponding class */
+    std::ostream& operator<<(std::ostream& out, FuturesType f) {
+        switch (f) {
+        case IMM:
+            return out << "IMM";
+        case ASX:
+            return out << "ASX";
+        default:
+            QL_FAIL("unknown FuturesType (" << Integer(f) << ")");
+        }
+    }
 
-class DateTest {
-  public:
-    static void testConsistency();
-    static void ecbDates();
-    static void immDates();
-    static void asxDates();
-    static void isoDates();
-    static void parseDates();
-    static boost::unit_test_framework::test_suite* suite();
-};
-
-
-#endif
+}
