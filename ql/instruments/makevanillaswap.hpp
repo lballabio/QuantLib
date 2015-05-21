@@ -49,6 +49,8 @@ namespace QuantLib {
         MakeVanillaSwap& receiveFixed(bool flag = true);
         MakeVanillaSwap& withType(VanillaSwap::Type type);
         MakeVanillaSwap& withNominal(Real n);
+
+        MakeVanillaSwap& withSettlementDays(Natural settlDays);
         MakeVanillaSwap& withEffectiveDate(const Date&);
         MakeVanillaSwap& withTerminationDate(const Date&);
         MakeVanillaSwap& withRule(DateGeneration::Rule r);
@@ -86,6 +88,7 @@ namespace QuantLib {
         Rate fixedRate_;
         Period forwardStart_;
 
+        Natural settlDays_;
         Date effectiveDate_, terminationDate_;
         Calendar fixedCalendar_, floatCalendar_;
 

@@ -26,15 +26,17 @@
 #include <ql/time/schedule.hpp>
 #include <ql/currencies/europe.hpp>
 
+using boost::shared_ptr;
+
 namespace QuantLib {
 
     MakeVanillaSwap::MakeVanillaSwap(const Period& swapTenor,
-                                     const boost::shared_ptr<IborIndex>& index,
+                                     const shared_ptr<IborIndex>& index,
                                      Rate fixedRate,
                                      const Period& forwardStart)
     : swapTenor_(swapTenor), iborIndex_(index),
       fixedRate_(fixedRate), forwardStart_(forwardStart),
-      effectiveDate_(Date()),
+      settlDays_(iborIndex_->fixingDays()),
       fixedCalendar_(index->fixingCalendar()),
       floatCalendar_(index->fixingCalendar()),
       type_(VanillaSwap::Payer), nominal_(1.0),
@@ -48,18 +50,14 @@ namespace QuantLib {
       fixedFirstDate_(Date()), fixedNextToLastDate_(Date()),
       floatFirstDate_(Date()), floatNextToLastDate_(Date()),
       floatSpread_(0.0),
-      floatDayCount_(index->dayCounter()),
-      engine_(new DiscountingSwapEngine(iborIndex_->forwardingTermStructure(),
-                                        false))
-    {
-    }
+      floatDayCount_(index->dayCounter()) {}
 
     MakeVanillaSwap::operator VanillaSwap() const {
-        boost::shared_ptr<VanillaSwap> swap = *this;
+        shared_ptr<VanillaSwap> swap = *this;
         return *swap;
     }
 
-    MakeVanillaSwap::operator boost::shared_ptr<VanillaSwap>() const {
+    MakeVanillaSwap::operator shared_ptr<VanillaSwap>() const {
 
         Date startDate;
         if (effectiveDate_ != Date())
@@ -69,9 +67,8 @@ namespace QuantLib {
             // if the evaluation date is not a business day
             // then move to the next business day
             refDate = floatCalendar_.adjust(refDate);
-            Natural fixingDays = iborIndex_->fixingDays();
             Date spotDate = floatCalendar_.advance(refDate,
-                                                   fixingDays*Days);
+                                                   settlDays_*Days);
             startDate = spotDate+forwardStart_;
             if (forwardStart_.length()<0)
                 startDate = floatCalendar_.adjust(startDate,
@@ -82,10 +79,17 @@ namespace QuantLib {
         }
 
         Date endDate;
-        if (terminationDate_ != Date())
+        if (terminationDate_ != Date()) {
             endDate = terminationDate_;
-        else
-            endDate = startDate+swapTenor_;
+        } else {
+            if (floatEndOfMonth_ && startDate.isEndOfMonth(startDate)) {
+                endDate = floatCalendar_.advance(startDate, swapTenor_,
+                                                 ModifiedFollowing,
+                                                 floatEndOfMonth_);
+            } else {
+                endDate = startDate+swapTenor_;
+            }
+        }
 
         Period fixedTenor;
         if (fixedTenor_ != Period())
@@ -129,26 +133,45 @@ namespace QuantLib {
 
         Rate usedFixedRate = fixedRate_;
         if (fixedRate_ == Null<Rate>()) {
-            QL_REQUIRE(!iborIndex_->forwardingTermStructure().empty(),
-                       "null term structure set to this instance of " <<
-                       iborIndex_->name());
             VanillaSwap temp(type_, nominal_,
                              fixedSchedule,
                              0.0, // fixed rate
                              fixedDayCount,
                              floatSchedule, iborIndex_,
                              floatSpread_, floatDayCount_);
-            temp.setPricingEngine(engine_);
+            if (engine_ == 0) {
+                Handle<YieldTermStructure> disc =
+                                        iborIndex_->forwardingTermStructure();
+                QL_REQUIRE(!disc.empty(),
+                           "null term structure set to this instance of " <<
+                           iborIndex_->name());
+                bool includeSettlementDateFlows = false;
+                shared_ptr<PricingEngine> engine(new
+                    DiscountingSwapEngine(disc, includeSettlementDateFlows));
+                temp.setPricingEngine(engine);
+            } else
+                temp.setPricingEngine(engine_);
+
             usedFixedRate = temp.fairRate();
         }
 
-        boost::shared_ptr<VanillaSwap> swap(new
+        shared_ptr<VanillaSwap> swap(new
             VanillaSwap(type_, nominal_,
                         fixedSchedule,
                         usedFixedRate, fixedDayCount,
                         floatSchedule,
                         iborIndex_, floatSpread_, floatDayCount_));
-        swap->setPricingEngine(engine_);
+
+        if (engine_ == 0) {
+            Handle<YieldTermStructure> disc =
+                                    iborIndex_->forwardingTermStructure();
+            bool includeSettlementDateFlows = false;
+            shared_ptr<PricingEngine> engine(new
+                DiscountingSwapEngine(disc, includeSettlementDateFlows));
+            swap->setPricingEngine(engine);
+        } else
+            swap->setPricingEngine(engine_);
+
         return swap;
     }
 
@@ -164,6 +187,12 @@ namespace QuantLib {
 
     MakeVanillaSwap& MakeVanillaSwap::withNominal(Real n) {
         nominal_ = n;
+        return *this;
+    }
+
+    MakeVanillaSwap& MakeVanillaSwap::withSettlementDays(Natural settlDays) {
+        settlDays_ = settlDays;
+        effectiveDate_ = Date();
         return *this;
     }
 
@@ -187,15 +216,15 @@ namespace QuantLib {
     }
 
     MakeVanillaSwap& MakeVanillaSwap::withDiscountingTermStructure(
-                const Handle<YieldTermStructure>& disc) {
+                                        const Handle<YieldTermStructure>& d) {
         bool includeSettlementDateFlows = false;
-        engine_ = boost::shared_ptr<PricingEngine>(new
-            DiscountingSwapEngine(disc, includeSettlementDateFlows));
+        engine_ = shared_ptr<PricingEngine>(new
+            DiscountingSwapEngine(d, includeSettlementDateFlows));
         return *this;
     }
 
     MakeVanillaSwap& MakeVanillaSwap::withPricingEngine(
-                             const boost::shared_ptr<PricingEngine>& engine) {
+                             const shared_ptr<PricingEngine>& engine) {
         engine_ = engine;
         return *this;
     }
