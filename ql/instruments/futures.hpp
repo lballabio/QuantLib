@@ -42,6 +42,8 @@ namespace QuantLib {
     /*! \relates FuturesType */
     std::ostream& operator<<(std::ostream&, FuturesType);
 
+    // Futures Instrument to be implemented here
+
 }
 
 #endif
