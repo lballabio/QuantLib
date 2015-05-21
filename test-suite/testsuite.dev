@@ -1,7 +1,7 @@
 [Project]
 FileName=testsuite.dev
 Name=QuantLib-test-suite
-UnitCount=268
+UnitCount=270
 Type=1
 Ver=1
 ObjFiles=
@@ -2719,6 +2719,26 @@ BuildCmd=
 
 [Unit268]
 FileName=zabr.hpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit269]
+FileName=numericaldifferentiation.cpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit270]
+FileName=numericaldifferentiation.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1

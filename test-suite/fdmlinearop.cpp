@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008, 2009, 2010 Klaus Spanderen
+ Copyright (C) 2008, 2009, 2010, 2015 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,6 +29,7 @@
 #include <ql/processes/hullwhiteprocess.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/hybridhestonhullwhiteprocess.hpp>
+#include <ql/experimental/math/numericaldifferentiation.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
@@ -148,8 +149,6 @@ void FdmLinearOpTest::testFdmLinearOpLayout() {
 
     BOOST_TEST_MESSAGE("Testing indexing of a linear operator...");
 
-    SavedSettings backup;
-
     Size dims[] = {5,7,8};
     const std::vector<Size> dim(dims, dims+LENGTH(dims));
 
@@ -223,8 +222,6 @@ void FdmLinearOpTest::testUniformGridMesher() {
 
     BOOST_TEST_MESSAGE("Testing uniform grid mesher...");
 
-    SavedSettings backup;
-
     Size dims[] = {5,7,8};
     const std::vector<Size> dim(dims, dims+LENGTH(dims));
 
@@ -255,11 +252,8 @@ void FdmLinearOpTest::testFirstDerivativesMapApply() {
 
     BOOST_TEST_MESSAGE("Testing application of first-derivatives map...");
 
-        SavedSettings backup;
-
     Size dims[] = {400, 100, 50};
     const std::vector<Size> dim(dims, dims+LENGTH(dims));
-
 
     boost::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
 
@@ -319,9 +313,7 @@ void FdmLinearOpTest::testSecondDerivativesMapApply() {
 
     BOOST_TEST_MESSAGE("Testing application of second-derivatives map...");
 
-        SavedSettings backup;
-
-        Size dims[] = {50, 50, 50};
+    Size dims[] = {50, 50, 50};
     const std::vector<Size> dim(dims, dims+LENGTH(dims));
 
     boost::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
@@ -404,12 +396,188 @@ void FdmLinearOpTest::testSecondDerivativesMapApply() {
 
 }
 
+void FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids() {
+#ifndef QL_NO_UBLAS_SUPPORT
+    BOOST_TEST_MESSAGE("Testing finite differences coefficients...");
+
+    const boost::shared_ptr<Fdm1dMesher> mesherX(
+        new Concentrating1dMesher(-2.0, 3.0, 50, std::make_pair(0.5, 0.01)));
+    const boost::shared_ptr<Fdm1dMesher> mesherY(
+        new Concentrating1dMesher(0.5, 5.0, 25, std::make_pair(0.5, 0.1)));
+    const boost::shared_ptr<Fdm1dMesher> mesherZ(
+        new Concentrating1dMesher(-1.0, 2.0, 31, std::make_pair(1.5, 0.01)));
+
+    const boost::shared_ptr<FdmMesher> meshers(
+        new FdmMesherComposite(mesherX, mesherY, mesherZ));
+
+    const boost::shared_ptr<FdmLinearOpLayout> layout = meshers->layout();
+    const FdmLinearOpIterator endIter = layout->end();
+
+    const Real tol = 1e-13;
+    for (Size direction=0; direction < 3; ++direction) {
+
+        const SparseMatrix dfdx
+            = FirstDerivativeOp(direction, meshers).toMatrix();
+        const SparseMatrix d2fdx2
+            = SecondDerivativeOp(direction, meshers).toMatrix();
+
+        const Array gridPoints = meshers->locations(direction);
+
+        for (FdmLinearOpIterator iter=layout->begin();
+            iter != endIter; ++iter) {
+
+            const Size c = iter.coordinates()[direction];
+            const Size index   = iter.index();
+            const Size indexM1 = layout->neighbourhood(iter,direction,-1);
+            const Size indexP1 = layout->neighbourhood(iter,direction,+1);
+
+            // test only if not on the boundary
+            if (c == 0) {
+                Array twoPoints(2);
+                twoPoints[0] = 0.0;
+                twoPoints[1] = gridPoints.at(indexP1)-gridPoints.at(index);
+
+                const Array ndWeights1st = NumericalDifferentiation(
+                    boost::function<Real(Real)>(), 1 , twoPoints).weights();
+
+                const Real beta1  = dfdx(index, index);
+                const Real gamma1 = dfdx(index, indexP1);
+                if (   std::fabs((beta1  - ndWeights1st.at(0))/beta1) > tol
+                    || std::fabs((gamma1 - ndWeights1st.at(1))/gamma1) > tol) {
+                    BOOST_FAIL("can not reproduce the weights of the "
+                               "first order derivative operator "
+                               "on the lower boundary"
+                            << "\n expected beta:    " << ndWeights1st.at(0)
+                            << "\n calculated beta:  " << beta1
+                            << "\n difference beta:  "
+                            << beta1 - ndWeights1st.at(0)
+                            << "\n expected gamma:   " << ndWeights1st.at(1)
+                            << "\n calculated gamma: " << gamma1
+                            << "\n difference gamma: "
+                            << gamma1 - ndWeights1st.at(1));
+                }
+
+                // free boundary condition by default
+                const Real beta2  = d2fdx2(index, index);
+                const Real gamma2 = d2fdx2(index, indexP1);
+
+                if (   std::fabs(beta2)  > QL_EPSILON
+                    || std::fabs(gamma2) > QL_EPSILON) {
+                    BOOST_FAIL("can not reproduce the weights of the "
+                               "second order derivative operator "
+                               "on the lower boundary"
+                            << "\n expected beta:    " << 0.0
+                            << "\n calculated beta:  " << beta2
+                            << "\n expected gamma:   " << 0.0
+                            << "\n calculated gamma: " << gamma2);
+                }
+            }
+            else if (c == layout->dim()[direction]-1) {
+                Array twoPoints(2);
+                twoPoints[0] = gridPoints.at(indexM1)-gridPoints.at(index);
+                twoPoints[1] = 0.0;
+
+                const Array ndWeights1st = NumericalDifferentiation(
+                    boost::function<Real(Real)>(), 1 , twoPoints).weights();
+
+                const Real alpha1 = dfdx(index, indexM1);
+                const Real beta1  = dfdx(index, index);
+                if (   std::fabs((alpha1 - ndWeights1st.at(0))/alpha1) > tol
+                    || std::fabs((beta1  - ndWeights1st.at(1))/beta1) > tol) {
+                    BOOST_FAIL("can not reproduce the weights of the "
+                               "first order derivative operator "
+                               "on the upper boundary"
+                            << "\n expected alpha:   " << ndWeights1st.at(0)
+                            << "\n calculated alpha: " << alpha1
+                            << "\n difference alpha: "
+                            << alpha1 - ndWeights1st.at(0)
+                            << "\n expected beta:    " << ndWeights1st.at(1)
+                            << "\n calculated beta:  " << beta1
+                            << "\n difference beta:  "
+                            << beta1 - ndWeights1st.at(1));
+                }
+
+                // free boundary condition by default
+                const Real alpha2 = d2fdx2(index, indexM1);
+                const Real beta2  = d2fdx2(index, index);
+
+                if (   std::fabs(alpha2)  > QL_EPSILON
+                    || std::fabs(beta2) > QL_EPSILON) {
+                    BOOST_FAIL("can not reproduce the weights of the "
+                               "second order derivative operator "
+                               "on the upper boundary"
+                            << "\n expected alpha:   " << 0.0
+                            << "\n calculated alpha: " << alpha2
+                            << "\n expected beta:    " << 0.0
+                            << "\n calculated beta:  " << beta2);
+                }
+            }
+            else {
+                Array threePoints(3);
+                threePoints[0] = gridPoints.at(indexM1)-gridPoints.at(index);
+                threePoints[1] = 0.0;
+                threePoints[2] = gridPoints.at(indexP1)-gridPoints.at(index);
+
+                const Array ndWeights1st = NumericalDifferentiation(
+                    boost::function<Real(Real)>(), 1 , threePoints).weights();
+
+                const Real alpha1 = dfdx(index, indexM1);
+                const Real beta1  = dfdx(index, index);
+                const Real gamma1 = dfdx(index, indexP1);
+
+                if (   std::fabs((alpha1 - ndWeights1st.at(0))/alpha1) > tol
+                    || std::fabs((beta1  - ndWeights1st.at(1))/beta1) > tol
+                    || std::fabs((gamma1 - ndWeights1st.at(2))/gamma1) > tol) {
+                    BOOST_FAIL("can not reproduce the weights of the "
+                               "first order derivative operator"
+                            << "\n expected alpha:   " << ndWeights1st.at(0)
+                            << "\n calculated alpha: " << alpha1
+                            << "\n difference alpha: "
+                            << alpha1 - ndWeights1st.at(0)
+                            << "\n expected beta:    " << ndWeights1st.at(1)
+                            << "\n calculated beta:  " << beta1
+                            << "\n difference beta:  "
+                            << beta1 - ndWeights1st.at(1)
+                            << "\n expected gamma:   " << ndWeights1st.at(2)
+                            << "\n calculated gamma: " << gamma1
+                            << "\n difference gamma: "
+                            << gamma1 - ndWeights1st.at(2));
+                }
+
+                const Array ndWeights2nd = NumericalDifferentiation(
+                    boost::function<Real(Real)>(), 2 , threePoints).weights();
+
+                const Real alpha2 = d2fdx2(index, indexM1);
+                const Real beta2  = d2fdx2(index, index);
+                const Real gamma2 = d2fdx2(index, indexP1);
+                if (   std::fabs((alpha2 - ndWeights2nd.at(0))/alpha2) > tol
+                    || std::fabs((beta2  - ndWeights2nd.at(1))/beta2) > tol
+                    || std::fabs((gamma2 - ndWeights2nd.at(2))/gamma2) > tol) {
+                    BOOST_FAIL("can not reproduce the weights of the "
+                               "second order derivative operator"
+                            << "\n expected alpha:   " << ndWeights2nd.at(0)
+                            << "\n calculated alpha: " << alpha2
+                            << "\n difference alpha: "
+                            << alpha2 - ndWeights2nd.at(0)
+                            << "\n expected beta:    " << ndWeights2nd.at(1)
+                            << "\n calculated beta:  " << beta2
+                            << "\n difference beta:  "
+                            << beta2 - ndWeights2nd.at(1)
+                            << "\n expected gamma:   " << ndWeights2nd.at(2)
+                            << "\n calculated gamma: " << gamma2
+                            << "\n difference gamma: "
+                            << gamma2 - ndWeights2nd.at(2));
+                }
+            }
+        }
+    }
+#endif
+}
+
 void FdmLinearOpTest::testSecondOrderMixedDerivativesMapApply() {
 
     BOOST_TEST_MESSAGE(
         "Testing application of second-order mixed-derivatives map...");
-
-        SavedSettings backup;
 
     Size dims[] = {50, 50, 50};
     const std::vector<Size> dim(dims, dims+LENGTH(dims));
@@ -509,8 +677,6 @@ void FdmLinearOpTest::testSecondOrderMixedDerivativesMapApply() {
 void FdmLinearOpTest::testTripleBandMapSolve() {
 
     BOOST_TEST_MESSAGE("Testing triple-band map solution...");
-
-    SavedSettings backup;
 
     Size dims[] = {100, 400};
     const std::vector<Size> dim(dims, dims+LENGTH(dims));
@@ -1091,8 +1257,6 @@ void FdmLinearOpTest::testBiCGstab() {
     BOOST_TEST_MESSAGE("Testing bi-conjugated gradient stabilized algorithm "
                        "with Heston operator...");
 
-    SavedSettings backup;
-    
     const Size n=41, m=21;
     const Real theta = 1.0;
     boost::numeric::ublas::compressed_matrix<Real> a(n*m, n*m);
@@ -1366,7 +1530,7 @@ void FdmLinearOpTest::testFdmMesherIntegral() {
         = FdmMesherIntegral(mesher, DiscreteTrapezoidIntegral()).integrate(f);
 
     if (std::fabs(calculatedTrapezoid - expectedTrapezoid)
-    		> tol*expectedTrapezoid) {
+            > tol*expectedTrapezoid) {
         BOOST_FAIL(std::setprecision(16)
             << "discrete mesher integration using Trapezoid rule failed: "
             << "\n    calculated: " << calculatedTrapezoid
@@ -1387,7 +1551,9 @@ test_suite* FdmLinearOpTest::suite() {
     suite->add(
         QUANTLIB_TEST_CASE(&FdmLinearOpTest::testSecondDerivativesMapApply));
     suite->add(QUANTLIB_TEST_CASE(
-            &FdmLinearOpTest::testSecondOrderMixedDerivativesMapApply));
+        &FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids));
+    suite->add(QUANTLIB_TEST_CASE(
+        &FdmLinearOpTest::testSecondOrderMixedDerivativesMapApply));
     suite->add(
         QUANTLIB_TEST_CASE(&FdmLinearOpTest::testTripleBandMapSolve));
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmHestonBarrier));
