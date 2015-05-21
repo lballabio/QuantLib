@@ -64,6 +64,9 @@
     <Filter Include="math\copulas">
       <UniqueIdentifier>{fe3e871d-733d-4497-9d95-fa5248f1b5ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="math\ode">
+      <UniqueIdentifier>{8ee72e86-e0bd-4390-b4ef-8a60dad32991}</UniqueIdentifier>
+    </Filter>
     <Filter Include="patterns">
       <UniqueIdentifier>{0a0e9ecd-4c8e-4e72-8195-123ef41301be}</UniqueIdentifier>
     </Filter>
@@ -250,9 +253,6 @@
     <Filter Include="experimental\fx">
       <UniqueIdentifier>{936a8947-d2c0-4bdd-95c5-8b52daf92cc4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="experimental\exercise">
-      <UniqueIdentifier>{8ee72e86-e0bd-4390-b4ef-8a60dad32991}</UniqueIdentifier>
-    </Filter>
     <Filter Include="experimental\exoticoptions">
       <UniqueIdentifier>{7d489132-7d03-49f7-bad4-bde084e20bbe}</UniqueIdentifier>
     </Filter>
@@ -264,9 +264,6 @@
     </Filter>
     <Filter Include="experimental\mcbasket">
       <UniqueIdentifier>{51b20bfb-087c-4623-be3c-647010d4e809}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="experimental\models">
-      <UniqueIdentifier>{40d94aa5-3cb4-4add-992d-611c19c1e11f}</UniqueIdentifier>
     </Filter>
     <Filter Include="experimental\processes">
       <UniqueIdentifier>{fffa1e10-7b29-41f9-a775-b2bb61638f39}</UniqueIdentifier>
@@ -2889,8 +2886,8 @@
     <ClInclude Include="ql\experimental\coupons\digitalcmsspreadcoupon.hpp">
       <Filter>experimental\coupons</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\coupons\lineartsrpricer.hpp">
-      <Filter>experimental\coupons</Filter>
+    <ClInclude Include="ql\cashflows\lineartsrpricer.hpp">
+      <Filter>cashflows</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\coupons\lognormalcmsspreadpricer.hpp">
       <Filter>experimental\coupons</Filter>
@@ -2918,12 +2915,6 @@
     </ClInclude>
     <ClInclude Include="ql\experimental\fx\deltavolquote.hpp">
       <Filter>experimental\fx</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\exercise\all.hpp">
-      <Filter>experimental\exercise</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\exercise\rebatedexercise.hpp">
-      <Filter>experimental\exercise</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\exoticoptions\all.hpp">
       <Filter>experimental\exoticoptions</Filter>
@@ -3174,71 +3165,71 @@
     <ClInclude Include="ql\experimental\mcbasket\pathpayoff.hpp">
       <Filter>experimental\mcbasket</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\all.hpp">
-      <Filter>experimental\models</Filter>
+    <ClInclude Include="ql\math\ode\all.hpp">
+      <Filter>math\ode</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\atmadjustedsmilesection.hpp">
-      <Filter>experimental\models</Filter>
+    <ClInclude Include="ql\termstructures\volatility\atmadjustedsmilesection.hpp">
+      <Filter>termstructures\volatility</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\atmsmilesection.hpp">
-      <Filter>experimental\models</Filter>
+    <ClInclude Include="ql\termstructures\volatility\atmsmilesection.hpp">
+      <Filter>termstructures\volatility</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\basketgeneratingengine.hpp">
-      <Filter>experimental\models</Filter>
+    <ClInclude Include="ql\pricingengines\swaption\basketgeneratingengine.hpp">
+      <Filter>pricingengines\swaption</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\floatfloatswap.hpp">
-      <Filter>experimental\models</Filter>
+    <ClInclude Include="ql\instruments\floatfloatswap.hpp">
+      <Filter>instruments</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\floatfloatswaption.hpp">
-      <Filter>experimental\models</Filter>
+    <ClInclude Include="ql\instruments\floatfloatswaption.hpp">
+      <Filter>instruments</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\gaussian1dcapfloorengine.hpp">
-      <Filter>experimental\models</Filter>
+    <ClInclude Include="ql\pricingengines\capfloor\gaussian1dcapfloorengine.hpp">
+      <Filter>pricingengines\capfloor</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\gaussian1dfloatfloatswaptionengine.hpp">
-      <Filter>experimental\models</Filter>
+    <ClInclude Include="ql\pricingengines\swaption\gaussian1dfloatfloatswaptionengine.hpp">
+      <Filter>pricingengines\swaption</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\gaussian1djamshidianswaptionengine.hpp">
-      <Filter>experimental\models</Filter>
+    <ClInclude Include="ql\pricingengines\swaption\gaussian1djamshidianswaptionengine.hpp">
+      <Filter>pricingengines\swaption</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\gaussian1dmodel.hpp">
-      <Filter>experimental\models</Filter>
+    <ClInclude Include="ql\models\shortrate\onefactormodels\gaussian1dmodel.hpp">
+      <Filter>models\shortrate\onefactormodels</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\gaussian1dnonstandardswaptionengine.hpp">
-      <Filter>experimental\models</Filter>
+    <ClInclude Include="ql\pricingengines\swaption\gaussian1dnonstandardswaptionengine.hpp">
+      <Filter>pricingengines\swaption</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\gaussian1dsmilesection.hpp">
-      <Filter>experimental\models</Filter>
+    <ClInclude Include="ql\termstructures\volatility\gaussian1dsmilesection.hpp">
+      <Filter>termstructures\volatility</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\gaussian1dswaptionengine.hpp">
-      <Filter>experimental\models</Filter>
+    <ClInclude Include="ql\pricingengines\swaption\gaussian1dswaptionengine.hpp">
+      <Filter>pricingengines\swaption</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\gaussian1dswaptionvolatility.hpp">
-      <Filter>experimental\models</Filter>
+    <ClInclude Include="ql\termstructures\volatility\swaption\gaussian1dswaptionvolatility.hpp">
+      <Filter>termstructures\volatility\swaption</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\gsr.hpp">
-      <Filter>experimental\models</Filter>
+    <ClInclude Include="ql\models\shortrate\onefactormodels\gsr.hpp">
+      <Filter>models\shortrate\onefactormodels</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\gsrprocess.hpp">
-      <Filter>experimental\models</Filter>
+    <ClInclude Include="ql\processes\gsrprocess.hpp">
+      <Filter>processes</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\kahalesmilesection.hpp">
-      <Filter>experimental\models</Filter>
+    <ClInclude Include="ql\termstructures\volatility\kahalesmilesection.hpp">
+      <Filter>termstructures\volatility</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\markovfunctional.hpp">
-      <Filter>experimental\models</Filter>
+    <ClInclude Include="ql\models\shortrate\onefactormodels\markovfunctional.hpp">
+      <Filter>models\shortrate\onefactormodels</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\mfstateprocess.hpp">
-      <Filter>experimental\models</Filter>
+    <ClInclude Include="ql\processes\mfstateprocess.hpp">
+      <Filter>processes</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\nonstandardswap.hpp">
-      <Filter>experimental\models</Filter>
+    <ClInclude Include="ql\instruments\nonstandardswap.hpp">
+      <Filter>instruments</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\nonstandardswaption.hpp">
-      <Filter>experimental\models</Filter>
+    <ClInclude Include="ql\instruments\nonstandardswaption.hpp">
+      <Filter>instruments</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\smilesectionutils.hpp">
-      <Filter>experimental\models</Filter>
+    <ClInclude Include="ql\termstructures\volatility\smilesectionutils.hpp">
+      <Filter>termstructures\volatility</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\processes\all.hpp">
       <Filter>experimental\processes</Filter>
@@ -3492,8 +3483,8 @@
     <ClInclude Include="ql\experimental\math\all.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\math\adaptiverungekutta.hpp">
-      <Filter>experimental\math</Filter>
+    <ClInclude Include="ql\math\ode\adaptiverungekutta.hpp">
+      <Filter>math\ode</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\math\claytoncopularng.hpp">
       <Filter>experimental\math</Filter>
@@ -3522,11 +3513,14 @@
     <ClInclude Include="ql\experimental\math\multidimquadrature.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\math\numericaldifferentiation.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\math\polarstudenttrng.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\math\simulatedannealing.hpp">
-      <Filter>experimental\math</Filter>
+    <ClInclude Include="ql\math\optimization\simulatedannealing.hpp">
+      <Filter>math\optimization</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\math\tcopulapolicy.hpp">
       <Filter>experimental\math</Filter>
@@ -3554,6 +3548,7 @@
     <ClInclude Include="ql\event.hpp" />
     <ClInclude Include="ql\exchangerate.hpp" />
     <ClInclude Include="ql\exercise.hpp" />
+    <ClInclude Include="ql\rebatedexercise.hpp" />
     <ClInclude Include="ql\grid.hpp" />
     <ClInclude Include="ql\handle.hpp" />
     <ClInclude Include="ql\index.hpp" />
@@ -5612,8 +5607,8 @@
     <ClCompile Include="ql\experimental\coupons\digitalcmsspreadcoupon.cpp">
       <Filter>experimental\coupons</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\coupons\lineartsrpricer.cpp">
-      <Filter>experimental\coupons</Filter>
+    <ClCompile Include="ql\cashflows\lineartsrpricer.cpp">
+      <Filter>cashflows</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\coupons\lognormalcmsspreadpricer.cpp">
       <Filter>experimental\coupons</Filter>
@@ -5638,9 +5633,6 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\fx\deltavolquote.cpp">
       <Filter>experimental\fx</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\exercise\rebatedexercise.cpp">
-      <Filter>experimental\exercise</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\analyticamericanmargrabeengine.cpp">
       <Filter>experimental\exoticoptions</Filter>
@@ -5819,68 +5811,68 @@
     <ClCompile Include="ql\experimental\mcbasket\pathmultiassetoption.cpp">
       <Filter>experimental\mcbasket</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\atmadjustedsmilesection.cpp">
-      <Filter>experimental\models</Filter>
+    <ClCompile Include="ql\termstructures\volatility\atmadjustedsmilesection.cpp">
+      <Filter>termstructures\volatility</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\atmsmilesection.cpp">
-      <Filter>experimental\models</Filter>
+    <ClCompile Include="ql\termstructures\volatility\atmsmilesection.cpp">
+      <Filter>termstructures\volatility</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\basketgeneratingengine.cpp">
-      <Filter>experimental\models</Filter>
+    <ClCompile Include="ql\pricingengines\swaption\basketgeneratingengine.cpp">
+      <Filter>pricingengines\swaption</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\floatfloatswap.cpp">
-      <Filter>experimental\models</Filter>
+    <ClCompile Include="ql\instruments\floatfloatswap.cpp">
+      <Filter>instruments</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\floatfloatswaption.cpp">
-      <Filter>experimental\models</Filter>
+    <ClCompile Include="ql\instruments\floatfloatswaption.cpp">
+      <Filter>instruments</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\gaussian1dcapfloorengine.cpp">
-      <Filter>experimental\models</Filter>
+    <ClCompile Include="ql\pricingengines\capfloor\gaussian1dcapfloorengine.cpp">
+      <Filter>pricingengines\capfloor</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\gaussian1dfloatfloatswaptionengine.cpp">
-      <Filter>experimental\models</Filter>
+    <ClCompile Include="ql\pricingengines\swaption\gaussian1dfloatfloatswaptionengine.cpp">
+      <Filter>pricingengines\swaption</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\gaussian1djamshidianswaptionengine.cpp">
-      <Filter>experimental\models</Filter>
+    <ClCompile Include="ql\pricingengines\swaption\gaussian1djamshidianswaptionengine.cpp">
+      <Filter>pricingengines\swaption</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\gaussian1dmodel.cpp">
-      <Filter>experimental\models</Filter>
+    <ClCompile Include="ql\models\shortrate\onefactormodels\gaussian1dmodel.cpp">
+      <Filter>models\shortrate\onefactormodels</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\gaussian1dnonstandardswaptionengine.cpp">
-      <Filter>experimental\models</Filter>
+    <ClCompile Include="ql\pricingengines\swaption\gaussian1dnonstandardswaptionengine.cpp">
+      <Filter>pricingengines\swaption</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\gaussian1dsmilesection.cpp">
-      <Filter>experimental\models</Filter>
+    <ClCompile Include="ql\termstructures\volatility\gaussian1dsmilesection.cpp">
+      <Filter>termstructures\volatility</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\gaussian1dswaptionengine.cpp">
-      <Filter>experimental\models</Filter>
+    <ClCompile Include="ql\pricingengines\swaption\gaussian1dswaptionengine.cpp">
+      <Filter>pricingengines\swaption</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\gaussian1dswaptionvolatility.cpp">
-      <Filter>experimental\models</Filter>
+    <ClCompile Include="ql\termstructures\volatility\swaption\gaussian1dswaptionvolatility.cpp">
+      <Filter>termstructures\volatility\swaption</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\gsr.cpp">
-      <Filter>experimental\models</Filter>
+    <ClCompile Include="ql\models\shortrate\onefactormodels\gsr.cpp">
+      <Filter>models\shortrate\onefactormodels</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\gsrprocess.cpp">
-      <Filter>experimental\models</Filter>
+    <ClCompile Include="ql\processes\gsrprocess.cpp">
+      <Filter>processes</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\kahalesmilesection.cpp">
-      <Filter>experimental\models</Filter>
+    <ClCompile Include="ql\termstructures\volatility\kahalesmilesection.cpp">
+      <Filter>termstructures\volatility</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\markovfunctional.cpp">
-      <Filter>experimental\models</Filter>
+    <ClCompile Include="ql\models\shortrate\onefactormodels\markovfunctional.cpp">
+      <Filter>models\shortrate\onefactormodels</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\mfstateprocess.cpp">
-      <Filter>experimental\models</Filter>
+    <ClCompile Include="ql\processes\mfstateprocess.cpp">
+      <Filter>processes</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\nonstandardswap.cpp">
-      <Filter>experimental\models</Filter>
+    <ClCompile Include="ql\instruments\nonstandardswap.cpp">
+      <Filter>instruments</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\nonstandardswaption.cpp">
-      <Filter>experimental\models</Filter>
+    <ClCompile Include="ql\instruments\nonstandardswaption.cpp">
+      <Filter>instruments</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\smilesectionutils.cpp">
-      <Filter>experimental\models</Filter>
+    <ClCompile Include="ql\termstructures\volatility\smilesectionutils.cpp">
+      <Filter>termstructures\volatility</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\processes\extendedblackscholesprocess.cpp">
       <Filter>experimental\processes</Filter>
@@ -6062,6 +6054,9 @@
     <ClCompile Include="ql\experimental\math\multidimquadrature.cpp">
       <Filter>experimental\math</Filter>
     </ClCompile>
+    <ClCompile Include="ql\experimental\math\numericaldifferentiation.cpp">
+      <Filter>experimental\math</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\math\tcopulapolicy.cpp">
       <Filter>experimental\math</Filter>
     </ClCompile>
@@ -6078,6 +6073,7 @@
     <ClCompile Include="ql\event.cpp" />
     <ClCompile Include="ql\exchangerate.cpp" />
     <ClCompile Include="ql\exercise.cpp" />
+    <ClCompile Include="ql\rebatedexercise.cpp" />
     <ClCompile Include="ql\index.cpp" />
     <ClCompile Include="ql\interestrate.cpp" />
     <ClCompile Include="ql\money.cpp" />

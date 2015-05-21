@@ -23,7 +23,7 @@
 
 
 #include <ql/experimental/math/expm.hpp>
-#include <ql/experimental/math/adaptiverungekutta.hpp>
+#include <ql/math/ode/adaptiverungekutta.hpp>
 
 #include <numeric>
 #include <algorithm>

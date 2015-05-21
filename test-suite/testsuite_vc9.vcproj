@@ -1216,6 +1216,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\numericaldifferentiation.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ode.cpp"
 				>
 			</File>
@@ -1750,6 +1754,10 @@
 			</File>
 			<File
 				RelativePath=".\nthtodefault.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\numericaldifferentiation.hpp"
 				>
 			</File>
 			<File
