@@ -38,6 +38,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 using boost::shared_ptr;
+using std::vector;
 
 namespace {
 
@@ -81,7 +82,7 @@ namespace {
             Size deposits = LENGTH(depositData),
                 swaps = LENGTH(swapData);
 
-            std::vector<shared_ptr<RateHelper> > instruments(
+            vector<shared_ptr<RateHelper> > instruments(
                                                               deposits+swaps);
             for (Size i=0; i<deposits; i++) {
                 instruments[i] = shared_ptr<RateHelper>(new
@@ -135,12 +136,12 @@ void TermStructureTest::testReferenceChange() {
     Integer days[] = { 10, 30, 60, 120, 360, 720 };
     Size i;
 
-    std::vector<DiscountFactor> expected(LENGTH(days));
+    vector<DiscountFactor> expected(LENGTH(days));
     for (i=0; i<LENGTH(days); i++)
         expected[i] = vars.termStructure->discount(today+days[i]);
 
     Settings::instance().evaluationDate() = today+30;
-    std::vector<DiscountFactor> calculated(LENGTH(days));
+    vector<DiscountFactor> calculated(LENGTH(days));
     for (i=0; i<LENGTH(days); i++)
         calculated[i] = vars.termStructure->discount(today+30+days[i]);
 
