@@ -37,7 +37,7 @@ namespace QuantLib {
         CompositeDiscountCurve inherits reference date, Calendar, and
         settlement days from the first curve, max date from the second one.
 
-        \warning The two curves must have same DayCount.
+        \warning The two curves must have same DayCounter.
 
         \note This term structure will remain linked to the original
               structures, i.e., any changes in the latters will be
@@ -46,7 +46,10 @@ namespace QuantLib {
         \ingroup yieldtermstructures
 
         \test
-        - todo
+        - the correctness of the returned values is tested by
+          checking them against numerical calculations.
+        - observability against changes in the underlying term
+          structure is checked.
     */
     class CompositeDiscountCurve : public YieldTermStructure {
       public:
