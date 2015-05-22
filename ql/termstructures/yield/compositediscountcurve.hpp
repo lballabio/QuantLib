@@ -32,7 +32,7 @@ namespace QuantLib {
     /*! The CompositeDiscountCurve joins two different curves at a given join
         date, with the discount factor at the join date being the one from
         the first curve. The second curve is joined rescaling its discount
-        factor at the join date.
+        factors with continuity at the join date.
 
         CompositeDiscountCurve inherits reference date, Calendar, and
         settlement days from the first curve, max date from the second one.
