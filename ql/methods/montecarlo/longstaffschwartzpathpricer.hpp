@@ -69,6 +69,8 @@ namespace QuantLib {
 
         Real operator()(const PathType& path) const;
         virtual void calibrate();
+        const boost::scoped_array<Array>& coefficients() { return coeff_; }
+        const std::vector<boost::function1<Real, StateType> >& basisSystem() { return v_; }
 
       protected:
         bool  calibrationPhase_;
@@ -80,6 +82,8 @@ namespace QuantLib {
 
         mutable std::vector<PathType> paths_;
         const   std::vector<boost::function1<Real, StateType> > v_;
+
+        const Size len_;
     };
 
     template <class PathType> inline
@@ -92,7 +96,8 @@ namespace QuantLib {
       pathPricer_(pathPricer),
       coeff_     (new Array[times.size()-1]),
       dF_        (new DiscountFactor[times.size()-1]),
-      v_         (pathPricer_->basisSystem()) {
+      v_         (pathPricer_->basisSystem()),
+      len_       (times.size()) {
 
         for (Size i=0; i<times.size()-1; ++i) {
             dF_[i] =   termStructure->discount(times[i+1])
@@ -110,9 +115,8 @@ namespace QuantLib {
             return 0.0;
         }
 
-        const Size len = EarlyExerciseTraits<PathType>::pathLength(path);
-        Real price = (*pathPricer_)(path, len-1);
-        for (Size i=len-2; i>0; --i) {
+        Real price = (*pathPricer_)(path, len_-1);
+        for (Size i=len_-2; i>0; --i) {
             price*=dF_[i];
 
             const Real exercise = (*pathPricer_)(path, i);
@@ -137,14 +141,13 @@ namespace QuantLib {
     void LongstaffSchwartzPathPricer<PathType>::calibrate() {
         const Size n = paths_.size();
         Array prices(n), exercise(n);
-        const Size len = EarlyExerciseTraits<PathType>::pathLength(paths_[0]);
 
         for (Size i=0; i<n; ++i)
-            prices[i] = (*pathPricer_)(paths_[i], len-1);
+            prices[i] = (*pathPricer_)(paths_[i], len_-1);
 
         std::vector<Real>      y;
         std::vector<StateType> x;
-        for (Size i=len-2; i>0; --i) {
+        for (Size i=len_-2; i>0; --i) {
             y.clear();
             x.clear();
 
