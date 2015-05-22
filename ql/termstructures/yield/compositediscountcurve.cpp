@@ -33,39 +33,65 @@ namespace QuantLib {
       allowExtrapolation_(allowExtrapolation) {
         registerWith(first_);
         registerWith(second_);
+
+        if (!first_.empty() && !second_.empty()) {
+            checkFirst();
+            checkSecond();
+        } else {
+            if (!first_.empty())
+                checkFirst();
+            if (!second_.empty())
+                checkSecond();
+        }
     }
 
-
-    DiscountFactor CompositeDiscountCurve::discountImpl(Time t) const {
-
+    void CompositeDiscountCurve::checkFirst() const {
         QL_REQUIRE(first_->referenceDate()<=joinDate_,
                    "first discount curve reference date (" <<
-                   first_->referenceDate() << ") must be not greater than join "
-                   "date (" << joinDate_ << ")");
+                   first_->referenceDate() <<
+                   ") must be not greater than join date (" <<
+                   joinDate_ << ")");
         QL_REQUIRE(first_->maxDate()>=joinDate_ || allowExtrapolatedJunction_,
                    "first discount curve max date (" << first_->maxDate() <<
                    ") is earlier than join date (" << joinDate_ <<
                    ") and extrapolated junction is not allowed");
+    }
+
+    void CompositeDiscountCurve::checkSecond() const {
+        QL_REQUIRE(second_->referenceDate()<=joinDate_,
+                   "second discount curve reference date (" <<
+                   second_->referenceDate() <<
+                   ") must be not greater than join date (" <<
+                   joinDate_ << ")");
+        QL_REQUIRE(second_->maxDate()>=joinDate_ || allowExtrapolation_,
+                   "second discount curve max date (" << second_->maxDate() <<
+                   ") is earlier than join date (" << joinDate_ << ")");
+    }
+
+    void CompositeDiscountCurve::checkDayCount() const {
+            QL_REQUIRE(second_->dayCounter()==first_->dayCounter(),
+                       "DayCounter mismatch between composed curves: " <<
+                       "first curve has " << first_->dayCounter() << ", " <<
+                       "second curve has " << second_->dayCounter());
+    }
+
+    DiscountFactor CompositeDiscountCurve::discountImpl(Time t) const {
+
+        #ifdef QL_EXTRA_SAFETY_CHECKS
+            checkFirst();
+        #endif
         Time joinTime = first_->timeFromReference(joinDate_);
         if (t<=joinTime)
             return first_->discount(t, allowExtrapolatedJunction_);
 
-        QL_REQUIRE(second_->dayCounter()==first_->dayCounter(),
-                   "DayCounter mismatch between composed curves: " <<
-                   "first curve has " << first_->dayCounter() << ", " <<
-                   "second curve has " << second_->dayCounter());
-        QL_REQUIRE(second_->referenceDate()<=joinDate_,
-                   "second discount curve reference date (" <<
-                   second_->referenceDate() << ") must be not greater than join "
-                   "date (" << joinDate_ << ")");
-        QL_REQUIRE(second_->maxDate()>=joinDate_ || allowExtrapolation_,
-                   "second discount curve max date (" << second_->maxDate() <<
-                   ") is earlier than join date (" << joinDate_ << ")");
+        #ifdef QL_EXTRA_SAFETY_CHECKS
+            checkSecond();
+            checkDayCount();
+        #endif
         DiscountFactor firstDisc =
-                    first_->discount(joinTime, allowExtrapolatedJunction_);
-        joinTime = second_->timeFromReference(joinDate_);
+                    first_->discount(joinDate_, allowExtrapolatedJunction_);
         DiscountFactor secondDisc =
-                    second_->discount(joinTime, allowExtrapolation_);
+                    second_->discount(joinDate_, allowExtrapolation_);
         return second_->discount(t,allowExtrapolation_) / secondDisc*firstDisc;
     }
 

@@ -37,6 +37,7 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+using boost::shared_ptr;
 
 namespace {
 
@@ -50,8 +51,8 @@ namespace {
         // common data
         Calendar calendar;
         Natural settlementDays;
-        boost::shared_ptr<YieldTermStructure> termStructure;
-        boost::shared_ptr<YieldTermStructure> dummyTermStructure;
+        shared_ptr<YieldTermStructure> termStructure;
+        shared_ptr<YieldTermStructure> dummyTermStructure;
 
         // cleanup
         SavedSettings backup;
@@ -80,17 +81,17 @@ namespace {
             Size deposits = LENGTH(depositData),
                 swaps = LENGTH(swapData);
 
-            std::vector<boost::shared_ptr<RateHelper> > instruments(
+            std::vector<shared_ptr<RateHelper> > instruments(
                                                               deposits+swaps);
             for (Size i=0; i<deposits; i++) {
-                instruments[i] = boost::shared_ptr<RateHelper>(new
+                instruments[i] = shared_ptr<RateHelper>(new
                     DepositRateHelper(depositData[i].rate/100,
                                       depositData[i].n*depositData[i].units,
                                       settlementDays, calendar,
                                       ModifiedFollowing, true,
                                       Actual360()));
             }
-            boost::shared_ptr<IborIndex> index(new IborIndex("dummy",
+            shared_ptr<IborIndex> index(new IborIndex("dummy",
                                                              6*Months,
                                                              settlementDays,
                                                              Currency(),
@@ -99,17 +100,17 @@ namespace {
                                                              false,
                                                              Actual360()));
             for (Size i=0; i<swaps; ++i) {
-                instruments[i+deposits] = boost::shared_ptr<RateHelper>(new
+                instruments[i+deposits] = shared_ptr<RateHelper>(new
                     SwapRateHelper(swapData[i].rate/100,
                                    swapData[i].n*swapData[i].units,
                                    calendar,
                                    Annual, Unadjusted, Thirty360(),
                                    index));
             }
-            termStructure = boost::shared_ptr<YieldTermStructure>(new
+            termStructure = shared_ptr<YieldTermStructure>(new
                 PiecewiseYieldCurve<Discount,LogLinear>(settlement,
                                                         instruments, Actual360()));
-            dummyTermStructure = boost::shared_ptr<YieldTermStructure>(new
+            dummyTermStructure = shared_ptr<YieldTermStructure>(new
                 PiecewiseYieldCurve<Discount,LogLinear>(settlement,
                                                         instruments, Actual360()));
         }
@@ -124,9 +125,9 @@ void TermStructureTest::testReferenceChange() {
 
     CommonVars vars;
 
-    boost::shared_ptr<SimpleQuote> flatRate (new SimpleQuote);
+    shared_ptr<SimpleQuote> flatRate (new SimpleQuote);
     Handle<Quote> flatRateHandle(flatRate);
-    vars.termStructure = boost::shared_ptr<YieldTermStructure>(
+    vars.termStructure = shared_ptr<YieldTermStructure>(
                           new FlatForward(vars.settlementDays, NullCalendar(),
                                           flatRateHandle, Actual360()));
     Date today = Settings::instance().evaluationDate();
@@ -165,7 +166,7 @@ void TermStructureTest::testImplied() {
     Date newSettlement = vars.calendar.advance(newToday,
                                                vars.settlementDays,Days);
     Date testDate = newSettlement + 5*Years;
-    boost::shared_ptr<YieldTermStructure> implied(
+    shared_ptr<YieldTermStructure> implied(
         new ImpliedTermStructure(Handle<YieldTermStructure>(vars.termStructure),
                                  newSettlement));
     DiscountFactor baseDiscount = vars.termStructure->discount(newSettlement);
@@ -190,7 +191,7 @@ void TermStructureTest::testImpliedObs() {
     Date newSettlement = vars.calendar.advance(newToday,
                                                vars.settlementDays,Days);
     RelinkableHandle<YieldTermStructure> h;
-    boost::shared_ptr<YieldTermStructure> implied(
+    shared_ptr<YieldTermStructure> implied(
                                   new ImpliedTermStructure(h, newSettlement));
     Flag flag;
     flag.registerWith(implied);
@@ -208,17 +209,14 @@ void TermStructureTest::testComposite() {
     Date refDate = vars.termStructure->referenceDate();
     Date joinDate = refDate + 3*Years;
     Date testDate = joinDate + 5*Years;
-    RelinkableHandle<YieldTermStructure> second;
-    boost::shared_ptr<YieldTermStructure> flat(new
-        FlatForward(refDate, 0.05, Actual360()));
-    second.linkTo(flat);
-    boost::shared_ptr<YieldTermStructure> joined(new
-        CompositeDiscountCurve(Handle<YieldTermStructure>(vars.termStructure),
-                               second, joinDate, false, false));
+    Handle<YieldTermStructure> first(vars.termStructure);
+    Handle<YieldTermStructure> second(shared_ptr<YieldTermStructure>(new
+        FlatForward(refDate, 0.05, Actual360())));
+    CompositeDiscountCurve joined(first, second, joinDate, false, false);
 
     Real tolerance = 1.0e-14;
-    DiscountFactor joinDiscount = joined->discount(refDate);
-    DiscountFactor firstDiscount = vars.termStructure->discount(refDate);
+    DiscountFactor joinDiscount = joined.discount(refDate);
+    DiscountFactor firstDiscount = first->discount(refDate);
     if (std::fabs(joinDiscount - firstDiscount) > tolerance)
         BOOST_ERROR("\ndiscount mismatch between first curve and joined curve"
                     " at reference date " << refDate <<
@@ -227,8 +225,8 @@ void TermStructureTest::testComposite() {
                     "\n first curve: " << firstDiscount <<
                     "\n   tolerance: " << tolerance);
 
-    joinDiscount = joined->discount(joinDate);
-    firstDiscount = vars.termStructure->discount(joinDate);
+    joinDiscount = joined.discount(joinDate);
+    firstDiscount = first->discount(joinDate);
     if (std::fabs(joinDiscount - firstDiscount) > tolerance)
         BOOST_ERROR("\ndiscount mismatch between first curve and joined curve"
                     " at join date " << joinDate <<
@@ -241,7 +239,7 @@ void TermStructureTest::testComposite() {
     DiscountFactor secondDiscount = second->discount(testDate);
     DiscountFactor expected = secondDiscount /
                         secondDiscountJoinDate * firstDiscount;
-    joinDiscount = joined->discount(testDate);
+    joinDiscount = joined.discount(testDate);
     if (std::fabs(joinDiscount - expected) > tolerance)
         BOOST_ERROR("\nunexpected discount at test date " << testDate <<
                     QL_FIXED << std::setprecision(16) <<
@@ -261,8 +259,11 @@ void TermStructureTest::testCompositeObs() {
 
     Date refDate = vars.termStructure->referenceDate();
     Date joinDate = refDate + 3*Years;
-    RelinkableHandle<YieldTermStructure> first, second;
-    boost::shared_ptr<YieldTermStructure> joined(new
+    RelinkableHandle<YieldTermStructure> first;
+    shared_ptr<SimpleQuote> quote(new SimpleQuote(0.05));
+    Handle<YieldTermStructure> second(shared_ptr<YieldTermStructure>(new
+        FlatForward(refDate, Handle<Quote>(quote), Actual360())));
+    shared_ptr<YieldTermStructure> joined(new
         CompositeDiscountCurve(first, second, joinDate, false, false));
 
     Flag flag;
@@ -272,9 +273,7 @@ void TermStructureTest::testCompositeObs() {
         BOOST_ERROR("\nCompositeDiscountCurve was not notified of first curve change");
 
     flag.lower();
-    boost::shared_ptr<YieldTermStructure> flat(new
-        FlatForward(refDate, 0.05, Actual360()));
-    second.linkTo(flat);
+    quote->setValue(0.51);
     if (!flag.isUp())
         BOOST_ERROR("\nCompositeDiscountCurve was not notified of second curve change");
 
@@ -287,9 +286,9 @@ void TermStructureTest::testFSpreaded() {
     CommonVars vars;
 
     Real tolerance = 1.0e-10;
-    boost::shared_ptr<Quote> me(new SimpleQuote(0.01));
+    shared_ptr<Quote> me(new SimpleQuote(0.01));
     Handle<Quote> mh(me);
-    boost::shared_ptr<YieldTermStructure> spreaded(
+    shared_ptr<YieldTermStructure> spreaded(
         new ForwardSpreadedTermStructure(
             Handle<YieldTermStructure>(vars.termStructure),mh));
     Date testDate = vars.termStructure->referenceDate() + 5*Years;
@@ -315,10 +314,10 @@ void TermStructureTest::testFSpreadedObs() {
 
     CommonVars vars;
 
-    boost::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
+    shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
     Handle<Quote> mh(me);
     RelinkableHandle<YieldTermStructure> h; //(vars.dummyTermStructure);
-    boost::shared_ptr<YieldTermStructure> spreaded(
+    shared_ptr<YieldTermStructure> spreaded(
         new ForwardSpreadedTermStructure(h,mh));
     Flag flag;
     flag.registerWith(spreaded);
@@ -338,9 +337,9 @@ void TermStructureTest::testZSpreaded() {
     CommonVars vars;
 
     Real tolerance = 1.0e-10;
-    boost::shared_ptr<Quote> me(new SimpleQuote(0.01));
+    shared_ptr<Quote> me(new SimpleQuote(0.01));
     Handle<Quote> mh(me);
-    boost::shared_ptr<YieldTermStructure> spreaded(
+    shared_ptr<YieldTermStructure> spreaded(
         new ZeroSpreadedTermStructure(
             Handle<YieldTermStructure>(vars.termStructure),mh));
     Date testDate = vars.termStructure->referenceDate() + 5*Years;
@@ -363,11 +362,11 @@ void TermStructureTest::testZSpreadedObs() {
 
     CommonVars vars;
 
-    boost::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
+    shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
     Handle<Quote> mh(me);
     RelinkableHandle<YieldTermStructure> h(vars.dummyTermStructure);
 
-    boost::shared_ptr<YieldTermStructure> spreaded(
+    shared_ptr<YieldTermStructure> spreaded(
         new ZeroSpreadedTermStructure(h,mh));
     Flag flag;
     flag.registerWith(spreaded);
@@ -387,10 +386,10 @@ void TermStructureTest::testCreateWithNullUnderlying() {
 
     CommonVars vars;
 
-    Handle<Quote> spread(boost::shared_ptr<Quote>(new SimpleQuote(0.01)));
+    Handle<Quote> spread(shared_ptr<Quote>(new SimpleQuote(0.01)));
     RelinkableHandle<YieldTermStructure> underlying;
     // this shouldn't throw
-    boost::shared_ptr<YieldTermStructure> spreaded(
+    shared_ptr<YieldTermStructure> spreaded(
         new ZeroSpreadedTermStructure(underlying,spread));
     // if we do this, the curve can work.
     underlying.linkTo(vars.termStructure);
@@ -405,15 +404,15 @@ void TermStructureTest::testLinkToNullUnderlying() {
 
     CommonVars vars;
 
-    Handle<Quote> spread(boost::shared_ptr<Quote>(new SimpleQuote(0.01)));
+    Handle<Quote> spread(shared_ptr<Quote>(new SimpleQuote(0.01)));
     RelinkableHandle<YieldTermStructure> underlying(vars.termStructure);
-    boost::shared_ptr<YieldTermStructure> spreaded(
+    shared_ptr<YieldTermStructure> spreaded(
         new ZeroSpreadedTermStructure(underlying,spread));
     // check that we can use it
     spreaded->referenceDate();
     // if we do this, the curve can't work anymore. But it shouldn't
     // throw as long as we don't try to use it.
-    underlying.linkTo(boost::shared_ptr<YieldTermStructure>());
+    underlying.linkTo(shared_ptr<YieldTermStructure>());
 }
 
 test_suite* TermStructureTest::suite() {

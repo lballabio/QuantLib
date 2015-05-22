@@ -69,6 +69,9 @@ namespace QuantLib {
         DiscountFactor discountImpl(Time) const;
         //@}
       private:
+        void checkFirst() const;
+        void checkSecond() const;
+        void checkDayCount() const;
         Handle<YieldTermStructure> first_, second_;
         Date joinDate_;
         bool allowExtrapolatedJunction_, allowExtrapolation_;
