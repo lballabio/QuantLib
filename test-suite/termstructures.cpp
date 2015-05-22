@@ -23,6 +23,7 @@
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yield/impliedtermstructure.hpp>
+#include <ql/termstructures/yield/compositediscountcurve.hpp>
 #include <ql/termstructures/yield/forwardspreadedtermstructure.hpp>
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -198,6 +199,87 @@ void TermStructureTest::testImpliedObs() {
         BOOST_ERROR("Observer was not notified of term structure change");
 }
 
+void TermStructureTest::testComposite() {
+
+    BOOST_TEST_MESSAGE("Testing consistency of composite discount curve...");
+
+    CommonVars vars;
+
+    Date refDate = vars.termStructure->referenceDate();
+    Date joinDate = refDate + 3*Years;
+    Date testDate = joinDate + 5*Years;
+    RelinkableHandle<YieldTermStructure> second;
+    boost::shared_ptr<YieldTermStructure> flat(new
+        FlatForward(refDate, 0.05, Actual360()));
+    second.linkTo(flat);
+    boost::shared_ptr<YieldTermStructure> joined(new
+        CompositeDiscountCurve(Handle<YieldTermStructure>(vars.termStructure),
+                               second, joinDate, false, false));
+
+    Real tolerance = 1.0e-14;
+    DiscountFactor joinDiscount = joined->discount(refDate);
+    DiscountFactor firstDiscount = vars.termStructure->discount(refDate);
+    if (std::fabs(joinDiscount - firstDiscount) > tolerance)
+        BOOST_ERROR("\ndiscount mismatch between first curve and joined curve"
+                    " at reference date " << refDate <<
+                    QL_FIXED << std::setprecision(16) <<
+                    "\n  join curve: " << joinDiscount <<
+                    "\n first curve: " << firstDiscount <<
+                    "\n   tolerance: " << tolerance);
+
+    joinDiscount = joined->discount(joinDate);
+    firstDiscount = vars.termStructure->discount(joinDate);
+    if (std::fabs(joinDiscount - firstDiscount) > tolerance)
+        BOOST_ERROR("\ndiscount mismatch between first curve and joined curve"
+                    " at join date " << joinDate <<
+                    QL_FIXED << std::setprecision(16) <<
+                    "\n  join curve: " << joinDiscount <<
+                    "\n first curve: " << firstDiscount <<
+                    "\n   tolerance: " << tolerance);
+
+    DiscountFactor secondDiscountJoinDate = second->discount(joinDate);
+    DiscountFactor secondDiscount = second->discount(testDate);
+    DiscountFactor expected = secondDiscount /
+                        secondDiscountJoinDate * firstDiscount;
+    joinDiscount = joined->discount(testDate);
+    if (std::fabs(joinDiscount - expected) > tolerance)
+        BOOST_ERROR("\nunexpected discount at test date " << testDate <<
+                    QL_FIXED << std::setprecision(16) <<
+                    "\n   join curve at test date: " << joinDiscount <<
+                    "\n     expected at test date: " << expected <<
+                    "\n                 tolerance: " << tolerance <<
+                    "\n  first curve at join date: " << firstDiscount <<
+                    "\n second curve at join date: " << secondDiscountJoinDate <<
+                    "\n second curve at test date: " << secondDiscount);
+}
+
+void TermStructureTest::testCompositeObs() {
+
+    BOOST_TEST_MESSAGE("Testing observability of composite discount curve...");
+
+    CommonVars vars;
+
+    Date refDate = vars.termStructure->referenceDate();
+    Date joinDate = refDate + 3*Years;
+    RelinkableHandle<YieldTermStructure> first, second;
+    boost::shared_ptr<YieldTermStructure> joined(new
+        CompositeDiscountCurve(first, second, joinDate, false, false));
+
+    Flag flag;
+    flag.registerWith(joined);
+    first.linkTo(vars.termStructure);
+    if (!flag.isUp())
+        BOOST_ERROR("\nCompositeDiscountCurve was not notified of first curve change");
+
+    flag.lower();
+    boost::shared_ptr<YieldTermStructure> flat(new
+        FlatForward(refDate, 0.05, Actual360()));
+    second.linkTo(flat);
+    if (!flag.isUp())
+        BOOST_ERROR("\nCompositeDiscountCurve was not notified of second curve change");
+
+}
+
 void TermStructureTest::testFSpreaded() {
 
     BOOST_TEST_MESSAGE("Testing consistency of forward-spreaded term structure...");
@@ -339,6 +421,8 @@ test_suite* TermStructureTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testReferenceChange));
     suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testImplied));
     suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testImpliedObs));
+    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testComposite));
+    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testCompositeObs));
     suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testFSpreaded));
     suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testFSpreadedObs));
     suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testZSpreaded));

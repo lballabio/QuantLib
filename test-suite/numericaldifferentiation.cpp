@@ -278,7 +278,7 @@ namespace {
         for (Size i=1; i < n; ++i) {
             const Real fact = Factorial::get(i);
             for (Size j=0; j < n; ++j)
-                m[i][j] = std::pow(q[j], i) / fact;
+                m[i][j] = std::pow(q[j], Integer(i)) / fact;
         }
 
         Array b(n, 0.0);
