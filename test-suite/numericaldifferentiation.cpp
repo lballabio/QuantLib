@@ -69,7 +69,8 @@ namespace {
             BOOST_FAIL("Failed to reproduce " << comment
                         << " order derivative"
                         << "\n    calculated: " << calculated
-                        << "\n    expected:   " << expected
+                        << "\n      expected: " << expected
+                        << "\n     tolerance: " << tol
                         << "\n    difference: "
                         << expected - calculated);
     }
