@@ -29,9 +29,15 @@
 namespace QuantLib {
 
     //! Composite discount curve joining two different curves at a given date
-    /*! The CompositeDiscountCurve inherits reference date, DayCounter,
-        Calendar, and settlement days from the first curve,
-        max date from the second one.
+    /*! The CompositeDiscountCurve joins two different curves at a given join
+        date, with the discount factor at the join date being the one from
+        the first curve. The second curve is joined rescaling its discount
+        factor at the join date.
+
+        CompositeDiscountCurve inherits reference date, Calendar, and
+        settlement days from the first curve, max date from the second one.
+
+        \warning The two curves must have same DayCount.
 
         \note This term structure will remain linked to the original
               structures, i.e., any changes in the latters will be
