@@ -1727,7 +1727,7 @@ namespace {
 
 //                option.setPricingEngine(hestonEngine);
 //                const Real pureHeston = option.NPV();
-
+//
 //                const boost::shared_ptr<GeneralizedBlackScholesProcess> bp(
 //                    new GeneralizedBlackScholesProcess(spot, qTS, rTS,
 //                        Handle<BlackVolTermStructure>(flatVol(localVol,
