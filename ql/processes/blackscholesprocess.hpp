@@ -40,11 +40,14 @@ namespace QuantLib {
     class LocalVolCurve;
 
     //! Generalized Black-Scholes stochastic process
-    /*! This class describes the stochastic process ln(S) governed by
+    /*! This class describes the stochastic process \f$ S \f$ governed by
         \f[
-            d\ln S(t, S) = (r(t) - q(t) - \frac{\sigma(t, S)^2}{2}) dt
+            d\ln S(t) = (r(t) - q(t) - \frac{\sigma(t, S)^2}{2}) dt
                      + \sigma dW_t.
         \f]
+
+        \warning while the interface is expressed in terms of \f$ S \f$,
+                 the internal calculations work on \f$ ln S \f$.
 
         \ingroup processes
     */
@@ -94,10 +97,14 @@ namespace QuantLib {
     };
 
     //! Black-Scholes (1973) stochastic process
-    /*! This class describes the stochastic process ln(S) for a stock given by
+    /*! This class describes the stochastic process \f$ S \f$ for a stock
+        given by
         \f[
-            d\ln S(t, S) = (r(t) - \frac{\sigma(t, S)^2}{2}) dt + \sigma dW_t.
+            d\ln S(t) = (r(t) - \frac{\sigma(t, S)^2}{2}) dt + \sigma dW_t.
         \f]
+
+        \warning while the interface is expressed in terms of \f$ S \f$,
+                 the internal calculations work on \f$ ln S \f$.
 
         \ingroup processes
     */
@@ -133,11 +140,14 @@ namespace QuantLib {
     };
 
     //! Black (1976) stochastic process
-    /*! This class describes the stochastic process ln(S) for a forward or
-        futures contract given by
+    /*! This class describes the stochastic process \f$ S \f$ for a
+        forward or futures contract given by
         \f[
-            d\ln S(t, S) = -\frac{\sigma(t, S)^2}{2} dt + \sigma dW_t.
+            d\ln S(t) = -\frac{\sigma(t, S)^2}{2} dt + \sigma dW_t.
         \f]
+
+        \warning while the interface is expressed in terms of \f$ S \f$,
+                 the internal calculations work on \f$ ln S \f$.
 
         \ingroup processes
     */
@@ -152,12 +162,15 @@ namespace QuantLib {
     };
 
     //! Garman-Kohlhagen (1983) stochastic process
-    /*! This class describes the stochastic process ln(S) for an exchange
+    /*! This class describes the stochastic process \f$ S \f$ for an exchange
         rate given by
         \f[
-            d\ln S(t, S) = (r(t) - r_f(t) - \frac{\sigma(t, S)^2}{2}) dt
+            d\ln S(t) = (r(t) - r_f(t) - \frac{\sigma(t, S)^2}{2}) dt
                      + \sigma dW_t.
         \f]
+
+        \warning while the interface is expressed in terms of \f$ S \f$,
+                 the internal calculations work on \f$ ln S \f$.
 
         \ingroup processes
     */
