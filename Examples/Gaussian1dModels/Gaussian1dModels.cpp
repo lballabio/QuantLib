@@ -506,20 +506,18 @@ int main(int argc, char *argv[]) {
                "\n6M swaption. The maturity is again 10 years and the option"
                "\nis exercisable on a yearly basis" << std::endl;
 
-        boost::shared_ptr<FloatFloatSwap> underlying4 =
-            boost::make_shared<FloatFloatSwap>(
+        boost::shared_ptr<FloatFloatSwap> underlying4(new FloatFloatSwap(
                 VanillaSwap::Payer, 1.0, 1.0, fixedSchedule, swapBase,
                 Thirty360(), floatingSchedule, euribor6m, Actual360(), false,
-                false, 1.0, 0.0, Null<Real>(), Null<Real>(), 1.0, 0.0010);
+                false, 1.0, 0.0, Null<Real>(), Null<Real>(), 1.0, 0.0010));
 
         boost::shared_ptr<FloatFloatSwaption> swaption4 =
             boost::make_shared<FloatFloatSwaption>(underlying4, exercise);
 
         boost::shared_ptr<Gaussian1dFloatFloatSwaptionEngine>
-            floatSwaptionEngine =
-                boost::make_shared<Gaussian1dFloatFloatSwaptionEngine>(
+            floatSwaptionEngine(new Gaussian1dFloatFloatSwaptionEngine(
                     gsr, 64, 7.0, true, false, Handle<Quote>(), ytsOis, true,
-                    Gaussian1dFloatFloatSwaptionEngine::None, true);
+                    Gaussian1dFloatFloatSwaptionEngine::None, true));
 
         swaption4->setPricingEngine(floatSwaptionEngine);
 
@@ -535,8 +533,7 @@ int main(int argc, char *argv[]) {
         const Leg &leg1 = underlying4->leg(1);
         boost::shared_ptr<CmsCouponPricer> cmsPricer =
             boost::make_shared<LinearTsrPricer>(swaptionVol, reversionQuote);
-        boost::shared_ptr<IborCouponPricer> iborPricer =
-            boost::make_shared<BlackIborCouponPricer>();
+        boost::shared_ptr<IborCouponPricer> iborPricer(new BlackIborCouponPricer);
 
         setCouponPricer(leg0, cmsPricer);
         setCouponPricer(leg1, iborPricer);
