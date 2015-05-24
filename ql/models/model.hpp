@@ -99,14 +99,6 @@ namespace QuantLib {
             satisfied in addition to the constraints of the model.
         */
         virtual void calibrate(
-                   const std::vector<boost::shared_ptr<CalibrationHelperBase> >&,
-                   OptimizationMethod& method,
-                   const EndCriteria& endCriteria,
-                   const Constraint& constraint = Constraint(),
-                   const std::vector<Real>& weights = std::vector<Real>(),
-                   const std::vector<bool>& fixParameters = std::vector<bool>());
-        // for backward compatibility
-        virtual void calibrate(
                    const std::vector<boost::shared_ptr<CalibrationHelper> >&,
                    OptimizationMethod& method,
                    const EndCriteria& endCriteria,
@@ -114,9 +106,6 @@ namespace QuantLib {
                    const std::vector<Real>& weights = std::vector<Real>(),
                    const std::vector<bool>& fixParameters = std::vector<bool>());
 
-        Real value(const Array& params,
-                   const std::vector<boost::shared_ptr<CalibrationHelperBase> >&);
-        // for backward compatibility
         Real value(const Array& params,
                    const std::vector<boost::shared_ptr<CalibrationHelper> >&);
 

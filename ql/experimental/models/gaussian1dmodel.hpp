@@ -85,8 +85,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
 
     const Real zerobond(
         const Time T, const Time t = 0.0, const Real y = 0.0,
-        const Handle<YieldTermStructure> &yts = Handle<YieldTermStructure>(),
-        const bool adjusted = false) const;
+        const Handle<YieldTermStructure> &yts = Handle<YieldTermStructure>()) const;
 
     const Real numeraire(const Date &referenceDate, const Real y = 0.0,
                          const Handle<YieldTermStructure> &yts =
@@ -95,8 +94,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
     const Real zerobond(
         const Date &maturity, const Date &referenceDate = Null<Date>(),
         const Real y = 0.0,
-        const Handle<YieldTermStructure> &yts = Handle<YieldTermStructure>(),
-        const bool adjusted = false) const;
+        const Handle<YieldTermStructure> &yts = Handle<YieldTermStructure>()) const;
 
     const Real zerobondOption(
         const Option::Type &type, const Date &expiry, const Date &valueDate,
@@ -105,26 +103,22 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
         const Handle<YieldTermStructure> &yts = Handle<YieldTermStructure>(),
         const Real yStdDevs = 7.0, const Size yGridPoints = 64,
         const bool extrapolatePayoff = true,
-        const bool flatPayoffExtrapolation = false,
-        const bool adjusted = false) const;
+        const bool flatPayoffExtrapolation = false) const;
 
     const Real forwardRate(
         const Date &fixing, const Date &referenceDate = Null<Date>(),
         const Real y = 0.0,
-        boost::shared_ptr<IborIndex> iborIdx = boost::shared_ptr<IborIndex>(),
-        const bool adjusted = false) const;
+        boost::shared_ptr<IborIndex> iborIdx = boost::shared_ptr<IborIndex>()) const;
 
     const Real swapRate(
         const Date &fixing, const Period &tenor,
         const Date &referenceDate = Null<Date>(), const Real y = 0.0,
-        boost::shared_ptr<SwapIndex> swapIdx = boost::shared_ptr<SwapIndex>(),
-        const bool adjusted = false) const;
+        boost::shared_ptr<SwapIndex> swapIdx = boost::shared_ptr<SwapIndex>()) const;
 
     const Real swapAnnuity(
         const Date &fixing, const Period &tenor,
         const Date &referenceDate = Null<Date>(), const Real y = 0.0,
-        boost::shared_ptr<SwapIndex> swapIdx = boost::shared_ptr<SwapIndex>(),
-        const bool adjusted = false) const;
+        boost::shared_ptr<SwapIndex> swapIdx = boost::shared_ptr<SwapIndex>()) const;
 
     /*! Computes the integral
     \f[ {2\pi}^{-0.5} \int_{a}^{b} p(x) \exp{-0.5*x*x} \mathrm{d}x \f]
@@ -203,8 +197,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
                   const Handle<YieldTermStructure> &yts) const = 0;
 
     virtual const Real zerobondImpl(const Time T, const Time t, const Real y,
-                                    const Handle<YieldTermStructure> &yts,
-                                    const bool adjusted) const = 0;
+                                    const Handle<YieldTermStructure> &yts) const = 0;
 
     void performCalculations() const {
         evaluationDate_ = Settings::instance().evaluationDate();
@@ -255,9 +248,8 @@ Gaussian1dModel::numeraire(const Time t, const Real y,
 
 inline const Real
 Gaussian1dModel::zerobond(const Time T, const Time t, const Real y,
-                          const Handle<YieldTermStructure> &yts,
-                          const bool adjusted) const {
-    return zerobondImpl(T, t, y, yts, adjusted);
+                          const Handle<YieldTermStructure> &yts) const {
+    return zerobondImpl(T, t, y, yts);
 }
 
 inline const Real
@@ -269,14 +261,13 @@ Gaussian1dModel::numeraire(const Date &referenceDate, const Real y,
 
 inline const Real
 Gaussian1dModel::zerobond(const Date &maturity, const Date &referenceDate,
-                          const Real y, const Handle<YieldTermStructure> &yts,
-                          const bool adjusted) const {
+                          const Real y, const Handle<YieldTermStructure> &yts) const {
 
     return zerobond(termStructure()->timeFromReference(maturity),
                     referenceDate != Null<Date>()
                         ? termStructure()->timeFromReference(referenceDate)
                         : 0.0,
-                    y, yts, adjusted);
+                    y, yts);
 }
 }
 

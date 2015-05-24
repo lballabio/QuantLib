@@ -35,15 +35,8 @@ namespace QuantLib {
 
     class PricingEngine;
 
-    //! abstract base class for calibration helpers
-    class CalibrationHelperBase {
-      public:
-        //! returns the error resulting from the model valuation
-        virtual Real calibrationError() = 0;
-    };
-
-    //! liquid black76 market instrument used during calibration
-    class CalibrationHelper : public LazyObject, public CalibrationHelperBase {
+    //! liquid market instrument used during calibration
+    class CalibrationHelper : public LazyObject {
       public:
         enum CalibrationErrorType {
                             RelativePriceError, PriceError, ImpliedVolError};
@@ -71,7 +64,7 @@ namespace QuantLib {
         virtual Real modelValue() const = 0;
 
         //! returns the error resulting from the model valuation
-        Real calibrationError();
+        virtual Real calibrationError();
 
         virtual void addTimesTo(std::list<Time>& times) const = 0;
 

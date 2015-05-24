@@ -3,7 +3,6 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
-    adjusterhelper.hpp \
     all.hpp \
     atmadjustedsmilesection.hpp \
     atmsmilesection.hpp \
@@ -28,7 +27,6 @@ this_include_HEADERS = \
     smilesectionutils.hpp
 
 libModels_la_SOURCES = \
-    adjusterhelper.cpp \
     atmadjustedsmilesection.cpp \
     atmsmilesection.cpp \
     basketgeneratingengine.cpp \

@@ -465,13 +465,12 @@ namespace QuantLib {
                                 if(ibor1 != NULL) {
                                     estFixing = model_->forwardRate(
                                         arguments_.leg1FixingDates[j], event0,
-                                        zk, ibor1, adjusted_);
+                                        zk, ibor1);
                                 }
                                 if(cms1 != NULL) {
                                     estFixing = model_->swapRate(
                                         arguments_.leg1FixingDates[j],
-                                        cms1->tenor(), event0, zk, cms1,
-                                        adjusted_);
+                                        cms1->tenor(), event0, zk, cms1);
                                 }
                                 if (cmsspread1 != NULL)
                                     estFixing =
@@ -481,16 +480,14 @@ namespace QuantLib {
                                                 cmsspread1->swapIndex1()
                                                     ->tenor(),
                                                 event0, zk,
-                                                cmsspread1->swapIndex1(),
-                                                adjusted_) +
+                                                cmsspread1->swapIndex1()) +
                                         cmsspread1->gearing2() *
                                             model_->swapRate(
                                                 arguments_.leg1FixingDates[j],
                                                 cmsspread1->swapIndex2()
                                                     ->tenor(),
                                                 event0, zk,
-                                                cmsspread1->swapIndex2(),
-                                                adjusted_);
+                                                cmsspread1->swapIndex2());
                                 Real rate =
                                     arguments_.leg1Spreads[j] +
                                     arguments_.leg1Gearings[j] * estFixing;

@@ -42,7 +42,7 @@ namespace QuantLib {
     class GsrProcess : public ForwardMeasureProcess1D {
       public:
         GsrProcess(const Array &times, const Array &vols,
-                   const Array &reversions, const Array &adjusters, const Real T = 60.0);
+                   const Array &reversions, const Real T = 60.0);
         //! \name StochasticProcess1D interface
         //@{
         Real x0() const;
@@ -67,7 +67,6 @@ namespace QuantLib {
         const Array &times_;
         const Array &vols_;
         const Array &reversions_;
-        const Array &adjusters_;
 
       private:
         Real expectationp1(Time t0, Real x0,

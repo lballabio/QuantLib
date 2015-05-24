@@ -336,8 +336,7 @@ namespace QuantLib {
                                  const Handle<YieldTermStructure> &yts) const;
 
         const Real zerobondImpl(const Time T, const Time t, const Real y,
-                                const Handle<YieldTermStructure> &yts,
-                                const bool adjusted) const;
+                                const Handle<YieldTermStructure> &yts) const;
 
         void generateArguments() {
             // if calculate triggers performCalculations, updateNumeraireTabulations

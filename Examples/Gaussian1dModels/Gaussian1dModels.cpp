@@ -98,31 +98,6 @@ void printModelCalibration(
         std::cout << std::setw(20) << " " << volatility.back() << std::endl;
 }
 
-void printModelAdjuster(
-    const std::vector<boost::shared_ptr<CalibrationHelperBase> > &basket,
-    const Array &adjuster) {
-
-    std::cout << "\n" << std::left << std::setw(20) << "Expiry" << std::setw(14)
-              << "Adjuster" << std::setw(20) << "Model price" << std::setw(20)
-              << "Reference price" << std::endl
-              << std::setprecision(4);
-    std::cout << "===================="
-                 "===================="
-                 "===================="
-                 "====================" << std::endl;
-
-    for (Size j = 0; j < basket.size(); ++j) {
-        boost::shared_ptr<AdjusterHelper> helper =
-            boost::dynamic_pointer_cast<AdjusterHelper>(basket[j]);
-        Date expiry = helper->fixingDate();
-        std::ostringstream expiryString;
-        expiryString << expiry;
-        std::cout << std::setw(20) << expiryString.str() << std::setw(14)
-                  << adjuster[j] << std::setw(20) << helper->modelValue()
-                  << std::setw(20) << helper->referenceValue() << std::endl;
-    }
-}
-
 // helper function that prints timing information to std::cout
 
 class Timer {
@@ -231,7 +206,6 @@ int main(int argc, char *argv[]) {
         std::vector<Date> stepDates(exerciseDates.begin(),
                                     exerciseDates.end() - 1);
         std::vector<Real> sigmas(stepDates.size() + 1, 0.01);
-        std::vector<Real> adjusters(stepDates.size() + 1, 1.0);
         Real reversion = 0.01;
 
         std::cout << "\nThe reversion is just kept constant at a level of "
@@ -246,7 +220,7 @@ int main(int argc, char *argv[]) {
                "engine)." << std::endl;
 
         boost::shared_ptr<Gsr> gsr = boost::make_shared<Gsr>(
-            yts6m, stepDates, sigmas, reversion, 60.0, adjusters);
+            yts6m, stepDates, sigmas, reversion);
 
         boost::shared_ptr<PricingEngine> swaptionEngine =
             boost::make_shared<Gaussian1dSwaptionEngine>(gsr, 64, 7.0, true,
@@ -516,8 +490,7 @@ int main(int argc, char *argv[]) {
 
         boost::shared_ptr<Gaussian1dFloatFloatSwaptionEngine>
             floatSwaptionEngine(new Gaussian1dFloatFloatSwaptionEngine(
-                    gsr, 64, 7.0, true, false, Handle<Quote>(), ytsOis, true,
-                    Gaussian1dFloatFloatSwaptionEngine::None, true));
+                    gsr, 64, 7.0, true, false, Handle<Quote>(), ytsOis, true));
 
         swaption4->setPricingEngine(floatSwaptionEngine);
 
@@ -691,48 +664,6 @@ int main(int argc, char *argv[]) {
                   << "\nEuribor 6M rate. Since the Markov model is one factor"
                   << "\nit will most probably underestimate the market value"
                   << "\nby construction." << std::endl;
-
-        std::cout << "\nThere is a way to enforce the underlying match"
-                  << "\nwe saw in the Markov model also in the Gsr model"
-                  << "\nby so called internal adjusters. These are factors"
-                  << "\nfor the model volatility used in case the exotic"
-                  << "\ncoupons in question (here the CMS coupons) are"
-                  << "\nevaluated. The factors are calibrated such that"
-                  << "\na reference market price (here the price from"
-                  << "\nthe linear replication model) is matched." << std::endl;
-
-        swaption4->setPricingEngine(floatSwaptionEngine);
-
-        std::vector<boost::shared_ptr<CalibrationHelperBase> > adjusterBasket;
-        for (Size i = 0; i < leg0.size(); ++i) {
-            boost::shared_ptr<CmsCoupon> coupon =
-                boost::dynamic_pointer_cast<CmsCoupon>(leg0[i]);
-            if (coupon->fixingDate() > refDate) {
-                boost::shared_ptr<AdjusterHelper> tmp =
-                    boost::make_shared<AdjusterHelper>(
-                        swapBase, coupon->fixingDate(), coupon->date());
-                tmp->setCouponPricer(cmsPricer);
-                tmp->setPricingEngine(floatSwaptionEngine);
-                adjusterBasket.push_back(tmp);
-            }
-        }
-
-        std::cout << "\nWe calibrate adjusters in our setup here:" << std::endl;
-
-        timer.start();
-        gsr->calibrateAdjustersIterative(adjusterBasket, method, ec);
-        timer.stop();
-        printModelAdjuster(adjusterBasket, gsr->adjuster());
-        printTiming(timer);
-
-        std::cout << "\nThe resulting option and underlying value" 
-                  << "\nin the adjusted Gsr model are:" << std::endl;
-
-        Real npv9 = swaption4->NPV();
-        Real npv10 = swaption4->result<Real>("underlyingValue");
-        std::cout << std::setprecision(6)
-                  << "GSR (adjusted) option value = " << npv9 << std::endl;
-        std::cout << "GSR (adjusted) underlying value = " << npv10 << std::endl;
 
         std::cout << "\nThat was it. Thank you for running this demo. Bye."
                   << std::endl;
