@@ -58,8 +58,10 @@ typedef SviSmileSection SviWrapper;
 
 struct SviSpecs {
     Size dimension() { return 5; }
-    void defaultValues(std::vector<Real> &params, std::vector<bool> &paramIsFixed,
-                       const Real &forward, const Real expiryTime) {
+    void defaultValues(std::vector<Real> &params,
+                       std::vector<bool> &paramIsFixed, const Real &forward,
+                       const Real expiryTime,
+                       const std::vector<Real> &addParams) {
         if (params[2] == Null<Real>())
             params[2] = 0.1;
         if (params[3] == Null<Real>())
@@ -80,7 +82,7 @@ struct SviSpecs {
     }
     void guess(Array &values, const std::vector<bool> &paramIsFixed,
                const Real &forward, const Real expiryTime,
-               const std::vector<Real> &r) {
+               const std::vector<Real> &r, const std::vector<Real> &addParams) {
         Size j = 0;
         if (!paramIsFixed[2])
             values[2] = r[j++] + eps1();
@@ -127,9 +129,14 @@ struct SviSpecs {
                    y[1] * y[2] * std::sqrt(1.0 - y[3] * y[3]);
         return y;
     }
+    Real weight(const Real strike, const Real forward, const Real stdDev,
+                const std::vector<Real> &addParams) {
+        return blackFormulaStdDevDerivative(strike, forward, stdDev, 1.0);
+    }
     typedef SviWrapper type;
     boost::shared_ptr<type> instance(const Time t, const Real &forward,
-                                     const std::vector<Real> &params) {
+                                     const std::vector<Real> &params,
+                                     const std::vector<Real> &addParams) {
         return boost::make_shared<type>(t, forward, params);
     }
 };
