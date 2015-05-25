@@ -17,29 +17,26 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file volatilitynature.hpp
-    \brief volatility nature descriptions
+/*! \file volatilitytype.hpp
+    \brief volatility types
 */
 
-#ifndef quantlib_volatility_nature_hpp
-#define quantlib_volatility_nature_hpp
+#ifndef quantlib_volatility_type_hpp
+#define quantlib_volatility_type_hpp
 
 namespace QuantLib {
 
-    enum VolatilityNature { ShiftedLognormal, Normal };
+    enum VolatilityType { ShiftedLognormal, Normal };
 
     inline std::ostream& operator<<(std::ostream& out,
-                             const VolatilityNature &n) {
-        switch(n) {
-        case Normal:
+                                    const VolatilityType& t) {
+        switch(t) {
+          case Normal:
             return out << "Normal";
-            break;
-        case ShiftedLognormal:
+          case ShiftedLognormal:
             return out << "ShiftedLognormal";
-            break;
-        default:
-            return out << "Unknown volatility nature (" << n << ")";
-            break;
+          default:
+            return out << "Unknown volatility type (" << t << ")";
         }
     };
 

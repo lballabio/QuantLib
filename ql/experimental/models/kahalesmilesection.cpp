@@ -36,7 +36,7 @@ namespace QuantLib {
 
         // only shifted lognormal smile sections are supported
 
-        QL_REQUIRE(source->nature() == ShiftedLognormal,
+        QL_REQUIRE(source->volatilityType() == ShiftedLognormal,
                    "KahaleSmileSection only supports shifted lognormal source "
                    "sections");
 

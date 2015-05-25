@@ -45,9 +45,9 @@ namespace QuantLib {
     SmileSection::SmileSection(const Date& d,
                                const DayCounter& dc,
                                const Date& referenceDate,
-                               const VolatilityNature nature,
+                               const VolatilityType type,
                                const Rate shift)
-        : exerciseDate_(d), dc_(dc), nature_(nature), shift_(shift) {
+        : exerciseDate_(d), dc_(dc), volatilityType_(type), shift_(shift) {
         isFloating_ = referenceDate==Date();
         if (isFloating_) {
             registerWith(Settings::instance().evaluationDate());
@@ -59,10 +59,10 @@ namespace QuantLib {
 
     SmileSection::SmileSection(Time exerciseTime,
                                const DayCounter& dc,
-                               const VolatilityNature nature,
+                               const VolatilityType type,
                                const Rate shift)
     : isFloating_(false), referenceDate_(Date()),
-      dc_(dc), exerciseTime_(exerciseTime), nature_(nature), shift_(shift) {
+      dc_(dc), exerciseTime_(exerciseTime), volatilityType_(type), shift_(shift) {
         QL_REQUIRE(exerciseTime_>=0.0,
                    "expiry time must be positive: " <<
                    exerciseTime_ << " not allowed");
@@ -77,7 +77,7 @@ namespace QuantLib {
         // if lognormal or shifted lognormal,
         // for strike at -shift, return option price even if outside
         // minstrike, maxstrike interval
-        if(nature() == ShiftedLognormal)
+        if (volatilityType() == ShiftedLognormal)
             return blackFormula(type,strike,atm, fabs(strike+shift()) < QL_EPSILON ?
                             0.2 : sqrt(variance(strike)),discount,shift());
         else
@@ -88,7 +88,7 @@ namespace QuantLib {
                                           Option::Type type,
                                           Real discount,
                                           Real gap) const {
-        Real m = nature() == ShiftedLognormal ? -shift() : -QL_MAX_REAL;
+        Real m = volatilityType() == ShiftedLognormal ? -shift() : -QL_MAX_REAL;
         Real kl = std::max(strike-gap/2.0,m);
         Real kr = kl+gap;
         return (type==Option::Call ? 1.0 : -1.0) *
@@ -96,7 +96,7 @@ namespace QuantLib {
     }
 
     Real SmileSection::density(Rate strike, Real discount, Real gap) const {
-        Real m = nature() == ShiftedLognormal ? -shift() : -QL_MAX_REAL;
+        Real m = volatilityType() == ShiftedLognormal ? -shift() : -QL_MAX_REAL;
         Real kl = std::max(strike-gap/2.0,m);
         Real kr = kl+gap;
         return (digitalOptionPrice(kl,Option::Call,discount,gap) -
@@ -107,7 +107,7 @@ namespace QuantLib {
         Real atm = atmLevel();
         QL_REQUIRE(atm != Null<Real>(),
                    "smile section must provide atm level to compute option vega");
-        if(nature() == ShiftedLognormal)
+        if (volatilityType() == ShiftedLognormal)
             return blackFormulaVolDerivative(strike,atmLevel(),
                                              sqrt(variance(strike)),
                                              exerciseTime(),discount,shift())*0.01;
@@ -115,8 +115,9 @@ namespace QuantLib {
             QL_FAIL("vega for normal smilesection not yet implemented");
     }
 
-    Real SmileSection::volatility(Rate strike, VolatilityNature nature, Real shift) const {
-        if(nature == nature_ && close(shift,this->shift()))
+    Real SmileSection::volatility(Rate strike, VolatilityType volatilityType,
+                                  Real shift) const {
+        if(volatilityType == volatilityType_ && close(shift,this->shift()))
             return volatility(strike);
         Real atm = atmLevel();
         QL_REQUIRE(atm != Null<Real>(),
@@ -124,7 +125,7 @@ namespace QuantLib {
         Option::Type type = strike >= atm ? Option::Call : Option::Put;
         Real premium = optionPrice(strike,type);
         Real premiumAtm = optionPrice(atm,type);
-        if (nature == ShiftedLognormal) {
+        if (volatilityType == ShiftedLognormal) {
             try {
                 return blackFormulaImpliedStdDev(type, strike, atm, premium,
                                                  1.0, shift) /

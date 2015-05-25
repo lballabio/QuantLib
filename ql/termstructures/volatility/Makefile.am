@@ -15,7 +15,7 @@ this_include_HEADERS = \
     sabrsmilesection.hpp \
     smilesection.hpp \
     spreadedsmilesection.hpp \
-    volatilitynature.hpp
+    volatilitytype.hpp
 
 libVolTermStructures_la_SOURCES = \
     abcd.cpp \

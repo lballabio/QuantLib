@@ -42,7 +42,9 @@ namespace QuantLib {
         Time exerciseTime() const { return source_->exerciseTime(); }
         const DayCounter& dayCounter() const { return source_->dayCounter(); }
         const Date& referenceDate() const { return source_->referenceDate(); }
-        const VolatilityNature nature() const { return source_->nature(); }
+        const VolatilityType volatilityType() const {
+            return source_->volatilityType();
+        }
         const Rate shift() const { return source_->shift(); }
 
       protected:

@@ -29,14 +29,14 @@ namespace QuantLib {
             const boost::shared_ptr<CapFloorTermVolSurface>& termVolSurface,
             const boost::shared_ptr<IborIndex>& iborIndex,
             const Handle<YieldTermStructure>& discount, 
-            VolatilityNature nature,
+            VolatilityType type,
             Real displacement) 
    : termVolSurface_(termVolSurface),
      iborIndex_(iborIndex), discount_(discount),
      nStrikes_(termVolSurface->strikes().size()), 
-     nature_(nature), displacement_(displacement) {
+     volatilityType_(type), displacement_(displacement) {
 
-        if (nature_ == Normal) {
+        if (volatilityType_ == Normal) {
             QL_REQUIRE(displacement_ == 0.0,
                        "non-null displacement is not allowed with Normal model");
         }
@@ -157,8 +157,8 @@ namespace QuantLib {
         return displacement_;
     }
 
-    VolatilityNature OptionletStripper::nature() const{
-        return nature_;
+    VolatilityType OptionletStripper::volatilityType() const{
+        return volatilityType_;
     }
 
 }

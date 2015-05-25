@@ -48,7 +48,7 @@ namespace QuantLib {
                            Real accuracy = 1.0e-6, Natural maxIter = 100,
                            const Handle<YieldTermStructure> &discount =
                                Handle<YieldTermStructure>(),
-                           VolatilityNature nature = ShiftedLognormal,
+                           VolatilityType type = ShiftedLognormal,
                            Real displacement = 0.0,
                            bool dontThrow = false);
 
