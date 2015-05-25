@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2012 StatPro Italia srl
+ Copyright (C) 2015 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,23 +17,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_schedule_hpp
-#define quantlib_test_schedule_hpp
+#ifndef quantlib_test_numerical_differentiation_hpp
+#define quantlib_test_numerical_differentiation_hpp
 
 #include <boost/test/unit_test.hpp>
 
-/* remember to document new and/or updated tests in the Doxygen
-   comment block of the corresponding class */
-
-class ScheduleTest {
+class NumericalDifferentiationTest {
   public:
-    static void testDailySchedule();
-    static void testEndDateWithEomAdjustment();
-    static void testDatesPastEndDateWithEomAdjustment();
-    static void testForwardDatesWithEomAdjustment();
-    static void testBackwardDatesWithEomAdjustment();
-    static void testDoubleFirstDateWithEomAdjustment();
-    static void testDateConstructor();
+    static void testTabulatedCentralScheme();
+    static void testTabulatedBackwardScheme();
+    static void testTabulatedForwardScheme();
+    static void testIrregularSchemeFirstOrder();
+    static void testIrregularSchemeSecondOrder();
+    static void testDerivativesOfSineFunction();
+    static void testCoefficientBasedOnVandermonde();
     static boost::unit_test_framework::test_suite* suite();
 };
 

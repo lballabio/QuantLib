@@ -1678,6 +1678,7 @@
     <ClInclude Include="ql\experimental\math\latentmodel.hpp" />
     <ClInclude Include="ql\experimental\math\multidimintegrator.hpp" />
     <ClInclude Include="ql\experimental\math\multidimquadrature.hpp" />
+    <ClInclude Include="ql\experimental\math\numericaldifferentiation.hpp" />
     <ClInclude Include="ql\experimental\math\polarstudenttrng.hpp" />
     <ClInclude Include="ql\math\optimization\simulatedannealing.hpp" />
     <ClInclude Include="ql\experimental\math\tcopulapolicy.hpp" />
@@ -2526,6 +2527,7 @@
     <ClCompile Include="ql\experimental\math\gaussiancopulapolicy.cpp" />
     <ClCompile Include="ql\experimental\math\multidimintegrator.cpp" />
     <ClCompile Include="ql\experimental\math\multidimquadrature.cpp" />
+    <ClCompile Include="ql\experimental\math\numericaldifferentiation.cpp" />
     <ClCompile Include="ql\experimental\math\tcopulapolicy.cpp" />
     <ClCompile Include="ql\experimental\math\zigguratrng.cpp" />
     <ClCompile Include="ql\cashflow.cpp" />

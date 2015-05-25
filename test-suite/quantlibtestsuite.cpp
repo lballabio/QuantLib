@@ -132,6 +132,7 @@
 #include "money.hpp"
 #include "noarbsabr.hpp"
 #include "nthtodefault.hpp"
+#include "numericaldifferentiation.hpp"
 #include "ode.hpp"
 #include "operators.hpp"
 #include "optimizers.hpp"
@@ -386,6 +387,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(MargrabeOptionTest::suite());
     test->add(NoArbSabrTest::suite());
     test->add(NthToDefaultTest::suite());
+    test->add(NumericalDifferentiationTest::suite());
     test->add(PagodaOptionTest::suite());
     test->add(PartialTimeBarrierOptionTest::suite());
     test->add(QuantoOptionTest::experimental());

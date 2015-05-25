@@ -3513,6 +3513,9 @@
     <ClInclude Include="ql\experimental\math\multidimquadrature.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\math\numericaldifferentiation.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\math\polarstudenttrng.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
@@ -6049,6 +6052,9 @@
       <Filter>experimental\math</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\math\multidimquadrature.cpp">
+      <Filter>experimental\math</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\math\numericaldifferentiation.cpp">
       <Filter>experimental\math</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\math\tcopulapolicy.cpp">
