@@ -28,7 +28,7 @@
 #include <ql/termstructures/volatility/smilesection.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/experimental/volatility/zabr.hpp>
-#include <ql/experimental/models/smilesectionutils.hpp>
+#include <ql/termstructures/volatility/smilesectionutils.hpp>
 #include <vector>
 
 namespace QuantLib {

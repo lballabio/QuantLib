@@ -31,7 +31,7 @@
 #include <ql/math/comparison.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
-#include <ql/experimental/math/adaptiverungekutta.hpp>
+#include <ql/math/ode/adaptiverungekutta.hpp>
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
 
 #include <boost/bind.hpp>

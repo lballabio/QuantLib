@@ -22,6 +22,7 @@ this_include_HEADERS = \
     projectedcostfunction.hpp \
     projection.hpp \
     simplex.hpp \
+    simulatedannealing.hpp \
     spherecylinder.hpp \
     steepestdescent.hpp
 
