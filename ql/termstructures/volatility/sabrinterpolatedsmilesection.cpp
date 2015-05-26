@@ -1,8 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
-Copyright (C) 2007 Cristina Duminuco
-Copyright (C) 2006 François du Vignaud
+ Copyright (C) 2007 Cristina Duminuco
+ Copyright (C) 2006 François du Vignaud
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -37,8 +38,9 @@ namespace QuantLib {
                 bool vegaWeighted,
                 const boost::shared_ptr<EndCriteria>& endCriteria,
                 const boost::shared_ptr<OptimizationMethod>& method,
-                const DayCounter& dc)
-         : SmileSection(optionDate, dc),
+                const DayCounter& dc,
+                const Real shift)
+           : SmileSection(optionDate, dc, Date(), ShiftedLognormal, shift),
            forward_(forward), atmVolatility_(atmVolatility),
            volHandles_(volHandles), strikes_(strikes), actualStrikes_(strikes),
            hasFloatingStrikes_(hasFloatingStrikes), vols_(volHandles.size()),
@@ -68,8 +70,9 @@ namespace QuantLib {
                bool vegaWeighted,
                const boost::shared_ptr<EndCriteria>& endCriteria,
                const boost::shared_ptr<OptimizationMethod>& method,
-               const DayCounter& dc)
-         : SmileSection(optionDate, dc),
+               const DayCounter& dc,
+               const Real shift)
+    : SmileSection(optionDate, dc, Date(), ShiftedLognormal, shift),
            forward_(Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(forward)))),
            atmVolatility_(Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(atmVolatility)))),
            volHandles_(volHandles.size()), strikes_(strikes), actualStrikes_(strikes),
@@ -93,7 +96,7 @@ namespace QuantLib {
                      exerciseTime(), forwardValue_,
                      alpha_, beta_, nu_, rho_,
                      isAlphaFixed_, isBetaFixed_, isNuFixed_, isRhoFixed_, vegaWeighted_,
-                     endCriteria_, method_));
+                     endCriteria_, method_, 0.0020, false, 50, shift()));
          swap(tmp, sabrInterpolation_);
     }
 

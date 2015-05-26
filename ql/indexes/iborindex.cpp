@@ -58,14 +58,6 @@ namespace QuantLib {
                                         endOfMonth_);
     }
 
-    BusinessDayConvention IborIndex::businessDayConvention() const {
-        return convention_;
-    }
-
-    Handle<YieldTermStructure> IborIndex::forwardingTermStructure() const {
-        return termStructure_;
-    }
-
     boost::shared_ptr<IborIndex> IborIndex::clone(
                                const Handle<YieldTermStructure>& h) const {
         return boost::shared_ptr<IborIndex>(

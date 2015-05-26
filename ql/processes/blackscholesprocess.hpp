@@ -4,6 +4,7 @@
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2004, 2005, 2006, 2007, 2009 StatPro Italia srl
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -35,12 +36,18 @@
 
 namespace QuantLib {
 
+    class LocalConstantVol;
+    class LocalVolCurve;
+
     //! Generalized Black-Scholes stochastic process
-    /*! This class describes the stochastic process governed by
+    /*! This class describes the stochastic process \f$ S \f$ governed by
         \f[
-            dS(t, S) = (r(t) - q(t) - \frac{\sigma(t, S)^2}{2}) dt
+            d\ln S(t) = (r(t) - q(t) - \frac{\sigma(t, S)^2}{2}) dt
                      + \sigma dW_t.
         \f]
+
+        \warning while the interface is expressed in terms of \f$ S \f$,
+                 the internal calculations work on \f$ ln S \f$.
 
         \ingroup processes
     */
@@ -86,14 +93,18 @@ namespace QuantLib {
         Handle<YieldTermStructure> riskFreeRate_, dividendYield_;
         Handle<BlackVolTermStructure> blackVolatility_;
         mutable RelinkableHandle<LocalVolTermStructure> localVolatility_;
-        mutable bool updated_;
+        mutable bool updated_, isStrikeIndependent_;
     };
 
     //! Black-Scholes (1973) stochastic process
-    /*! This class describes the stochastic process for a stock given by
+    /*! This class describes the stochastic process \f$ S \f$ for a stock
+        given by
         \f[
-            dS(t, S) = (r(t) - \frac{\sigma(t, S)^2}{2}) dt + \sigma dW_t.
+            d\ln S(t) = (r(t) - \frac{\sigma(t, S)^2}{2}) dt + \sigma dW_t.
         \f]
+
+        \warning while the interface is expressed in terms of \f$ S \f$,
+                 the internal calculations work on \f$ ln S \f$.
 
         \ingroup processes
     */
@@ -108,10 +119,10 @@ namespace QuantLib {
     };
 
     //! Merton (1973) extension to the Black-Scholes stochastic process
-    /*! This class describes the stochastic process for a stock or
+    /*! This class describes the stochastic process ln(S) for a stock or
         stock index paying a continuous dividend yield given by
         \f[
-            dS(t, S) = (r(t) - q(t) - \frac{\sigma(t, S)^2}{2}) dt
+            d\ln S(t, S) = (r(t) - q(t) - \frac{\sigma(t, S)^2}{2}) dt
                      + \sigma dW_t.
         \f]
 
@@ -129,11 +140,14 @@ namespace QuantLib {
     };
 
     //! Black (1976) stochastic process
-    /*! This class describes the stochastic process for a forward or
-        futures contract given by
+    /*! This class describes the stochastic process \f$ S \f$ for a
+        forward or futures contract given by
         \f[
-            dS(t, S) = \frac{\sigma(t, S)^2}{2} dt + \sigma dW_t.
+            d\ln S(t) = -\frac{\sigma(t, S)^2}{2} dt + \sigma dW_t.
         \f]
+
+        \warning while the interface is expressed in terms of \f$ S \f$,
+                 the internal calculations work on \f$ ln S \f$.
 
         \ingroup processes
     */
@@ -148,12 +162,15 @@ namespace QuantLib {
     };
 
     //! Garman-Kohlhagen (1983) stochastic process
-    /*! This class describes the stochastic process for an exchange
+    /*! This class describes the stochastic process \f$ S \f$ for an exchange
         rate given by
         \f[
-            dS(t, S) = (r(t) - r_f(t) - \frac{\sigma(t, S)^2}{2}) dt
+            d\ln S(t) = (r(t) - r_f(t) - \frac{\sigma(t, S)^2}{2}) dt
                      + \sigma dW_t.
         \f]
+
+        \warning while the interface is expressed in terms of \f$ S \f$,
+                 the internal calculations work on \f$ ln S \f$.
 
         \ingroup processes
     */
