@@ -44,7 +44,7 @@ namespace QuantLib {
 			const boost::shared_ptr<YieldTermStructure>& rTS,
 			const boost::shared_ptr<YieldTermStructure>& qTS,
 			const boost::shared_ptr<LocalVolTermStructure>& localVol,
-			Size xGrid = 101, Size tGrid = 51, Real eps = 1e-5);
+			Size xGrid = 101, Size tGrid = 51, Real eps = 1e-10);
 
 		LocalVolRNDCalculator(
 			const boost::shared_ptr<Quote>& spot,
@@ -52,7 +52,7 @@ namespace QuantLib {
 			const boost::shared_ptr<YieldTermStructure>& qTS,
 			const boost::shared_ptr<LocalVolTermStructure>& localVol,
 			const boost::shared_ptr<TimeGrid>& timeGrid,
-			Size xGrid = 101, Real eps = 1e-5);
+			Size xGrid = 101, Real eps = 1e-10);
 
 		Real pdf(Real x, Time t) const;
 		Real cdf(Real x, Time t) const;
@@ -63,6 +63,8 @@ namespace QuantLib {
 
 	  protected:
 		void performCalculations() const;
+
+		static Disposable<Array> rescalePDF(const Array& x, const Array& p);
 
 	  private:
 		const Size xGrid_, tGrid_;

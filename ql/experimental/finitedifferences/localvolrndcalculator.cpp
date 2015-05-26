@@ -25,10 +25,19 @@
 #include <ql/quote.hpp>
 #include <ql/timegrid.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/integrals/discreteintegrals.hpp>
+#include <ql/math/integrals/gausslobattointegral.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/methods/finitedifferences/schemes/douglasscheme.hpp>
+#include <ql/experimental/finitedifferences/fdmlocalvolfwdop.hpp>
 #include <ql/experimental/finitedifferences/localvolrndcalculator.hpp>
+
+#include <boost/make_shared.hpp>
+#include <iostream>
 
 namespace QuantLib {
 	LocalVolRNDCalculator::LocalVolRNDCalculator(
@@ -113,30 +122,110 @@ namespace QuantLib {
 
 	void LocalVolRNDCalculator::performCalculations() const {
 		const Time sT = timeGrid_->at(1);
-		const Time ep = std::min(sT, 1.0/365);
+		Time t = std::min(sT, 1.0/365);
 
-		const Volatility vol = localVol_->localVol(0.5*ep, spot_->value());
+		const Volatility vol = localVol_->localVol(0.5*t, spot_->value());
 
 		const Volatility stdDev = vol * std::sqrt(sT);
-		const Real xm = - 0.5 * stdDev * stdDev +
+		Real xm = - 0.5 * stdDev * stdDev +
 			std::log(spot_->value() * qTS_->discount(sT)/rTS_->discount(sT));
 
 		const Real normInvEps = InverseCumulativeNormal()(1 - eps_);
-		const Real sLowerBound = xm - normInvEps * stdDev;
-		const Real sUpperBound = xm + normInvEps * stdDev;
+		Real sLowerBound = xm - normInvEps * stdDev;
+		Real sUpperBound = xm + normInvEps * stdDev;
 
-		const boost::shared_ptr<Fdm1dMesher> mesher(
+		boost::shared_ptr<Fdm1dMesher> mesher(
 			new Concentrating1dMesher(sLowerBound, sUpperBound, xGrid_,
-				std::make_pair(xm, 0.1), true));
+				std::make_pair(xm, 0.05), true));
 
 	    Array p(mesher->size());
-	    GaussianDistribution gaussianPDF(xm, vol * std::sqrt(ep));
+	    Array x(mesher->locations().begin(), mesher->locations().end());
+
+	    GaussianDistribution gaussianPDF(xm, vol * std::sqrt(t));
+
 	    for (Size idx=0; idx < p.size(); ++idx) {
-	        const Real x = mesher->location(idx);
-	        p[idx] = gaussianPDF(x);
+	        p[idx] = gaussianPDF(x[idx]);
 	    }
+	    p = rescalePDF(x, p);
 
+	    QL_REQUIRE(x.size() > 10, "x grid is too small. "
+	    						  "Minimum size is greater than 10");
 
+	    const Size b = std::max(Size(5), Size(x.size()*0.05));
+
+	    boost::shared_ptr<DouglasScheme> evolver(
+	    	new DouglasScheme(0.5,
+				boost::make_shared<FdmLocalVolFwdOp>(
+					boost::make_shared<FdmMesherComposite>(mesher),
+					spot_, rTS_, qTS_, localVol_)));
+
+	    for (Size i=1; i < timeGrid_->size(); ++i) {
+	    	const Time dt = timeGrid_->at(i) - t;
+	    	if (dt < QL_EPSILON)
+	    		break; // too small step
+
+	    	// leaking probability mass?
+	    	const Real maxLeftValue =
+	    		std::max(std::fabs(*std::min_element(p.begin(), p.begin()+b)),
+	    				 std::fabs(*std::max_element(p.begin(), p.begin()+b)));
+	    	const Real maxRightValue =
+	    		std::max(std::fabs(*std::min_element(p.end()-b, p.end())),
+	    				 std::fabs(*std::max_element(p.end()-b, p.end())));
+
+	    	if (std::max(maxLeftValue, maxRightValue) > eps_) {
+	    		const Real oldLowerBound = sLowerBound;
+	    	    const Real oldUpperBound = sUpperBound;
+
+	    		if (maxLeftValue > eps_)
+	    			sLowerBound *= 0.9;
+	    		if (maxRightValue > eps_)
+	    			sUpperBound *= 1.1;
+
+	    		std::cout << "regrid " << sLowerBound << " " << sUpperBound << " " << i << std::endl;
+
+	    		mesher = boost::shared_ptr<Fdm1dMesher>(
+	    			new Concentrating1dMesher(sLowerBound, sUpperBound, xGrid_,
+	    				std::make_pair(xm, 0.05), true));
+
+	    	    const CubicNaturalSpline pSpline(x.begin(), x.end(), p.begin());
+	    	    const Array xn(mesher->locations().begin(),
+	    	    			   mesher->locations().end());
+	    	    Array pn(xn.size(), 0.0);
+
+	    	    for (Size j=0; j < xn.size(); ++j) {
+	    	    	if (xn[j] >= oldLowerBound && xn[j] <= oldUpperBound)
+	    	    		pn[j] = pSpline(xn[j]);
+	    	    }
+
+		    	x = xn;
+		    	p = rescalePDF(xn, pn);
+
+			    evolver = boost::make_shared<DouglasScheme>(0.5,
+			    	boost::make_shared<FdmLocalVolFwdOp>(
+						boost::make_shared<FdmMesherComposite>(mesher),
+						spot_, rTS_, qTS_, localVol_));
+	    	}
+	    	rescalePDF(Array(x), Array(p));
+
+	        evolver->setStep(dt);
+			evolver->step(p, t + dt);
+			t+=dt;
+	    }
+	}
+
+	Disposable<Array> LocalVolRNDCalculator::rescalePDF(
+		const Array& x, const Array& p) {
+
+	    const CubicNaturalSpline pSpline(x.begin(), x.end(), p.begin());
+
+		//const Real scale = DiscreteSimpsonIntegral()(x, p);
+
+		const Real scale = GaussLobattoIntegral(10000, 100*QL_EPSILON)(pSpline, x.front(), x.back());
+
+		std::cout << "rescale factor is " << scale << std::endl;
+
+		Array retVal = p*(1/scale);
+		return retVal;
 	}
 }
 

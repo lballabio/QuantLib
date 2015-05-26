@@ -21,6 +21,7 @@
 #include "riskneutraldensitycalculator.hpp"
 #include "utilities.hpp"
 
+#include <ql/timegrid.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/processes/hestonprocess.hpp>
@@ -233,7 +234,7 @@ namespace {
 void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
     BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation "
     				   "for local volatility process to calculate "
-    				   "risk netural densities ...");
+    				   "risk neutral densities ...");
 
     SavedSettings backup;
 
@@ -257,9 +258,12 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
 	const boost::shared_ptr<LocalVolTermStructure> localVol(
 		new HyperbolicLocalVolatility(s0, beta, sig));
 
-	const boost::shared_ptr<LocalVolRNDCalculator> rndCalc(
-		new LocalVolRNDCalculator(spot, rTS, qTS, localVol));
+	const boost::shared_ptr<TimeGrid> timeGrid(new TimeGrid(1.0, 51));
 
+	const boost::shared_ptr<LocalVolRNDCalculator> rndCalc(
+		new LocalVolRNDCalculator(spot, rTS, qTS, localVol, timeGrid));
+
+	rndCalc->pdf(1.0, 1.0);
 	//std::cout << rndCalc->cdf(std::log(s0), 1.0) << std::endl;
 }
 
