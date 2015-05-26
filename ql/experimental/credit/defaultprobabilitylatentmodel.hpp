@@ -68,9 +68,6 @@ namespace QuantLib {
             const std::vector<std::vector<Real> >& factorWeights,
             LatentModelIntegrationType::LatentModelIntegrationType integralType,
             const typename copulaPolicy::initTraits& ini = 
-#if defined(__GNUC__)
-                typename
-#endif
                 copulaPolicy::initTraits()
             ) 
         : LatentModel<copulaPolicy>(factorWeights, ini),

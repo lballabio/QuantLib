@@ -66,9 +66,6 @@ namespace QuantLib {
             Real modelA,
             LatentModelIntegrationType::LatentModelIntegrationType integralType,
             const typename copulaPolicy::initTraits& ini = 
-#if defined(__GNUC__)
-                typename
-#endif
                 copulaPolicy::initTraits()
             ); 
 
