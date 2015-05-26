@@ -4,7 +4,6 @@
 #include <ql/experimental/coupons/cmsspreadcoupon.hpp>
 #include <ql/experimental/coupons/digitalcmsspreadcoupon.hpp>
 #include <ql/experimental/coupons/lognormalcmsspreadpricer.hpp>
-#include <ql/experimental/coupons/lineartsrpricer.hpp>
 #include <ql/experimental/coupons/proxyibor.hpp>
 #include <ql/experimental/coupons/quantocouponpricer.hpp>
 #include <ql/experimental/coupons/strippedcapflooredcoupon.hpp>

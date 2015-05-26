@@ -29,6 +29,7 @@
 #include <ql/prices.hpp>
 #include <ql/pricingengine.hpp>
 #include <ql/quote.hpp>
+#include <ql/rebatedexercise.hpp>
 #include <ql/settings.hpp>
 #include <ql/stochasticprocess.hpp>
 #include <ql/termstructure.hpp>

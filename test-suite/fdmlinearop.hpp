@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008 Klaus Spanderen
+ Copyright (C) 2008, 2015 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,6 +33,7 @@ public:
     static void testUniformGridMesher();
     static void testFirstDerivativesMapApply();
     static void testSecondDerivativesMapApply();
+    static void testDerivativeWeightsOnNonUniformGrids();
     static void testSecondOrderMixedDerivativesMapApply();
     static void testTripleBandMapSolve();
     static void testFdmHestonBarrier();

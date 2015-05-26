@@ -91,6 +91,7 @@ QL_TESTS = \
 	money.hpp money.cpp \
 	noarbsabr.hpp noarbsabr.cpp \
 	nthtodefault.hpp nthtodefault.cpp \
+	numericaldifferentiation.hpp numericaldifferentiation.cpp \
 	ode.hpp ode.cpp \
 	operators.hpp operators.cpp \
 	optimizers.hpp optimizers.cpp \

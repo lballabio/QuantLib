@@ -8,6 +8,7 @@ this_include_HEADERS = \
     blackcapfloorengine.hpp \
     bacheliercapfloorengine.hpp \
     discretizedcapfloor.hpp \
+    gaussian1dcapfloorengine.hpp \
     mchullwhiteengine.hpp \
     treecapfloorengine.hpp
 
@@ -16,6 +17,7 @@ libCapFloorEngines_la_SOURCES = \
     blackcapfloorengine.cpp \
     bacheliercapfloorengine.cpp \
     discretizedcapfloor.cpp \
+    gaussian1dcapfloorengine.cpp \
     mchullwhiteengine.cpp \
     treecapfloorengine.cpp
 

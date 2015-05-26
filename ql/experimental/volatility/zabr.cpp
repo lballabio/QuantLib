@@ -25,7 +25,7 @@
 #include <ql/errors.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/experimental/math/adaptiverungekutta.hpp>
+#include <ql/math/ode/adaptiverungekutta.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/meshers/fdm1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>

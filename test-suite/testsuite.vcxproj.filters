@@ -266,6 +266,9 @@
     <ClCompile Include="nthtodefault.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="numericaldifferentiation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="ode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -666,6 +669,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="nthtodefault.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="numericaldifferentiation.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ode.hpp">

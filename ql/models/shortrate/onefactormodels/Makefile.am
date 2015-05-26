@@ -7,14 +7,20 @@ this_include_HEADERS = \
     blackkarasinski.hpp \
     coxingersollross.hpp \
     extendedcoxingersollross.hpp \
+    gaussian1dmodel.hpp \
+    gsr.hpp \
     hullwhite.hpp \
+    markovfunctional.hpp \
     vasicek.hpp
 
 libOneFactorModels_la_SOURCES = \
     blackkarasinski.cpp \
     coxingersollross.cpp \
     extendedcoxingersollross.cpp \
+    gaussian1dmodel.cpp \
+    gsr.cpp \
     hullwhite.cpp \
+    markovfunctional.cpp \
     vasicek.cpp
 
 noinst_LTLIBRARIES = libOneFactorModels.la

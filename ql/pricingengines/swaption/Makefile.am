@@ -4,8 +4,13 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    basketgeneratingengine.hpp \
     blackswaptionengine.hpp \
     discretizedswaption.hpp \
+    gaussian1dfloatfloatswaptionengine.hpp \
+    gaussian1djamshidianswaptionengine.hpp \
+    gaussian1dnonstandardswaptionengine.hpp \
+    gaussian1dswaptionengine.hpp \
     g2swaptionengine.hpp \
     jamshidianswaptionengine.hpp \
     fdg2swaptionengine.hpp \
@@ -13,8 +18,13 @@ this_include_HEADERS = \
     treeswaptionengine.hpp
 
 libSwaptionEngines_la_SOURCES = \
+    basketgeneratingengine.cpp \
     blackswaptionengine.cpp \
     discretizedswaption.cpp \
+    gaussian1dfloatfloatswaptionengine.cpp \
+    gaussian1djamshidianswaptionengine.cpp \
+    gaussian1dnonstandardswaptionengine.cpp \
+    gaussian1dswaptionengine.cpp \
     jamshidianswaptionengine.cpp \
     fdg2swaptionengine.cpp \
     fdhullwhiteswaptionengine.cpp \

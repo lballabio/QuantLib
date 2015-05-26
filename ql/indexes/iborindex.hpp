@@ -103,6 +103,15 @@ namespace QuantLib {
 
     // inline
 
+    inline BusinessDayConvention IborIndex::businessDayConvention() const {
+        return convention_;
+    }
+
+    inline Handle<YieldTermStructure>
+    IborIndex::forwardingTermStructure() const {
+        return termStructure_;
+    }
+
     inline Rate IborIndex::forecastFixing(const Date& d1,
                                           const Date& d2,
                                           Time t) const {
