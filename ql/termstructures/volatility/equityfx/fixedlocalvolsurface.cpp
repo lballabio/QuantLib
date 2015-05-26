@@ -28,6 +28,7 @@ namespace QuantLib {
 
 	namespace {
 		Date time2Date(const Date referenceDate, const DayCounter& dc, Time t) {
+			t-=1e4*QL_EPSILON; // add a small buffer for rounding errors
 			Date d(referenceDate);
 			while(dc.yearFraction(referenceDate, d+=Period(1, Years)) < t);
 			d-=Period(1, Years);

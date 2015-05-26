@@ -71,6 +71,7 @@ namespace QuantLib {
             notifyObservers();
         }
 
+        Matrix & matrix() {return localVolMatrix_;}
 
       protected:
         Volatility localVolImpl(Time t, Real strike) const;
@@ -78,7 +79,7 @@ namespace QuantLib {
         const Date maxDate_;
         const Date minDate_;
         const std::vector<Real> strikes_;
-        const Matrix localVolMatrix_;
+        Matrix localVolMatrix_;
         std::vector<Time> times_;
         Interpolation2D localVolSurface_;
         Extrapolation lowerExtrapolation_, upperExtrapolation_;

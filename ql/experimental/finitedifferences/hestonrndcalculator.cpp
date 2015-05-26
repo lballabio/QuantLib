@@ -19,9 +19,11 @@
 */
 
 #include <ql/math/functional.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/processes/hestonprocess.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
-
+#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/experimental/finitedifferences/bsmrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/hestonrndcalculator.hpp>
 
@@ -153,10 +155,20 @@ namespace {
 		const Volatility expVol
 			= std::sqrt(theta + (v0-theta)*(1-std::exp(-kappa*t))/(t*kappa));
 
-		const Real guess = BSMRNDCalculator(x0_, expVol,
-			hestonProcess_->riskFreeRate().currentLink(),
-			hestonProcess_->dividendYield().currentLink())
-			.invcdf(p, t);
+		const boost::shared_ptr<BlackScholesMertonProcess> bsmProcess(
+			new BlackScholesMertonProcess(
+				hestonProcess_->s0(),
+				hestonProcess_->dividendYield(),
+				hestonProcess_->riskFreeRate(),
+				Handle<BlackVolTermStructure>(
+					boost::shared_ptr<BlackVolTermStructure>(
+						new BlackConstantVol(
+							hestonProcess_->riskFreeRate()->referenceDate(),
+							NullCalendar(),
+							expVol,
+							hestonProcess_->riskFreeRate()->dayCounter())))));
+
+		const Real guess = BSMRNDCalculator(bsmProcess).invcdf(p, t);
 
 		return RiskNeutralDensityCalculator::InvCDFHelper(
 			this, guess, 0.1*integrationEps_, maxIntegrationIterations_)

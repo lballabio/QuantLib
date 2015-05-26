@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2012, 2013 Klaus Spanderen
- Copyright (C) 2014 Johannes Göttker-Schnetmann
+ Copyright (C) 2015 Johannes Göttker-Schnetmann
+ Copyright (C) 2015 Klaus Spanderen
 
 
  This file is part of QuantLib, a free-software/open-source library
@@ -19,12 +19,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdmblackscholesfwdop.hpp
-    \brief Black Scholes linear operator for the Fokker-Planck forward equation
+/*! \file fdmlocalvolfwdop.hpp
+    \brief local volatility linear operator for the Fokker-Planck forward equation
 */
 
-#ifndef quantlib_fdm_black_scholes_fwd_op_hpp
-#define quantlib_fdm_black_scholes_fwd_op_hpp
+#ifndef quantlib_fdm_local_vol_fwd_op_hpp
+#define quantlib_fdm_local_vol_fwd_op_hpp
 
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/methods/finitedifferences/operators/firstderivativeop.hpp>
@@ -33,13 +33,14 @@
 
 namespace QuantLib {
 
-class FdmBlackScholesFwdOp : public FdmLinearOpComposite {
+    class FdmLocalVolFwdOp : public FdmLinearOpComposite {
       public:
-        FdmBlackScholesFwdOp(
+        FdmLocalVolFwdOp(
             const boost::shared_ptr<FdmMesher>& mesher,
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            Real strike, 
-            bool localVol = false,
+			const boost::shared_ptr<Quote>& spot,
+			const boost::shared_ptr<YieldTermStructure>& rTS,
+			const boost::shared_ptr<YieldTermStructure>& qTS,
+			const boost::shared_ptr<LocalVolTermStructure>& localVol,
             Real illegalLocalVolOverwrite = -Null<Real>(),
             Size direction = 0);
 
@@ -60,13 +61,11 @@ class FdmBlackScholesFwdOp : public FdmLinearOpComposite {
       private:
         const boost::shared_ptr<FdmMesher> mesher_;
         const boost::shared_ptr<YieldTermStructure> rTS_, qTS_;
-        const boost::shared_ptr<BlackVolTermStructure> volTS_;
         const boost::shared_ptr<LocalVolTermStructure> localVol_;
         const Array x_;
         const FirstDerivativeOp  dxMap_;
         const TripleBandLinearOp dxxMap_;
         TripleBandLinearOp mapT_;
-        const Real strike_;
         const Real illegalLocalVolOverwrite_;
         const Size direction_;
     };

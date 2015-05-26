@@ -19,6 +19,7 @@ this_include_HEADERS = \
 	fdmhestonfwdop.hpp \
 	fdmklugeextouop.hpp \
 	fdmklugeextousolver.hpp \
+	fdmlocalvolfwdop.hpp \
 	fdmsimple2dextousolver.hpp \
     fdmsimple3dextoujumpsolver.hpp \
 	fdmspreadpayoffinnervalue.hpp \
@@ -32,6 +33,7 @@ this_include_HEADERS = \
 	fdsimpleklugeextouvppengine.hpp \
 	glued1dmesher.hpp \
 	hestonrndcalculator.hpp \
+	localvolrndcalculator.hpp \
 	modtriplebandlinearop.hpp \
 	riskneutraldensitycalculator.hpp \
 	vanillavppoption.hpp
@@ -49,6 +51,7 @@ libMultiDimFDM_la_SOURCES = \
 	fdmhestongreensfct.cpp \
 	fdmhestonfwdop.cpp \
 	fdmklugeextouop.cpp \
+	fdmlocalvolfwdop.cpp \
 	fdmsquarerootfwdop.cpp \
 	fdmvppstartlimitstepcondition.cpp \
 	fdmvppstepcondition.cpp \
@@ -59,6 +62,7 @@ libMultiDimFDM_la_SOURCES = \
     fdsimpleklugeextouvppengine.cpp \
 	glued1dmesher.cpp \
 	hestonrndcalculator.cpp \
+	localvolrndcalculator.cpp \
 	riskneutraldensitycalculator.cpp \
 	vanillavppoption.cpp
 

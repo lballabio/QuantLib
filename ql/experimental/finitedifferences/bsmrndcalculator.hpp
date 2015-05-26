@@ -29,15 +29,12 @@
 #include <ql/experimental/finitedifferences/riskneutraldensitycalculator.hpp>
 
 namespace QuantLib {
-	class YieldTermStructure;
+	class GeneralizedBlackScholesProcess;
 
 	class BSMRNDCalculator : public RiskNeutralDensityCalculator {
 	public:
 		BSMRNDCalculator(
-			const Real x0, // x0 = ln(S_0)
-			const Volatility vol,
-			const boost::shared_ptr<YieldTermStructure>& rTS,
-			const boost::shared_ptr<YieldTermStructure>& qTS);
+			const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
 
 		// x = ln(S)
 		Real pdf(Real x, Time t) const;
@@ -47,10 +44,7 @@ namespace QuantLib {
 	private:
 		std::pair<Real, Volatility> distributionParams(Real x, Time t) const;
 
-		const Real x0_;
-		const Volatility vol_;
-		const boost::shared_ptr<YieldTermStructure> rTS_;
-		const boost::shared_ptr<YieldTermStructure> qTS_;
+		const boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
 	};
 }
 

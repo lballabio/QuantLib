@@ -23,7 +23,7 @@
     	   Black-Scholes-Merton model with constant volatility
 */
 
-#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/experimental/finitedifferences/bsmrndcalculator.hpp>
 
@@ -32,17 +32,16 @@
 namespace QuantLib {
 
 	BSMRNDCalculator::BSMRNDCalculator(
-		const Real x0,
-		const Volatility vol,
-		const boost::shared_ptr<YieldTermStructure>& rTS,
-		const boost::shared_ptr<YieldTermStructure>& qTS)
-	: x0_(x0), vol_(vol), rTS_(rTS), qTS_(qTS) {}
+		const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+	: process_(process) { }
 
 	std::pair<Real, Volatility>
 	BSMRNDCalculator::distributionParams(Real x, Time t) const {
-		const Volatility stdDev = vol_*std::sqrt(t);
-		const Real mean = x0_ - 0.5*stdDev*stdDev
-			+ std::log(qTS_->discount(t)/rTS_->discount(t));
+		const Volatility stdDev =
+			process_->blackVolatility()->blackVol(t, std::exp(x))*std::sqrt(t);
+		const Real mean = std::log(process_->x0()) - 0.5*stdDev*stdDev
+			+ std::log(  process_->dividendYield()->discount(t)
+					   / process_->riskFreeRate()->discount(t));
 
 		return std::make_pair(mean, stdDev);
 	}

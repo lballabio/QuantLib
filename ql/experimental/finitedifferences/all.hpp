@@ -16,6 +16,7 @@
 #include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
 #include <ql/experimental/finitedifferences/fdmklugeextouop.hpp>
 #include <ql/experimental/finitedifferences/fdmklugeextousolver.hpp>
+#include <ql/experimental/finitedifferences/fdmlocalvolfwdop.hpp>
 #include <ql/experimental/finitedifferences/fdmsimple2dextousolver.hpp>
 #include <ql/experimental/finitedifferences/fdmsimple3dextoujumpsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmspreadpayoffinnervalue.hpp>
@@ -29,6 +30,7 @@
 #include <ql/experimental/finitedifferences/fdsimpleklugeextouvppengine.hpp>
 #include <ql/experimental/finitedifferences/glued1dmesher.hpp>
 #include <ql/experimental/finitedifferences/hestonrndcalculator.hpp>
+#include <ql/experimental/finitedifferences/localvolrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/modtriplebandlinearop.hpp>
 #include <ql/experimental/finitedifferences/riskneutraldensitycalculator.hpp>
 #include <ql/experimental/finitedifferences/vanillavppoption.hpp>

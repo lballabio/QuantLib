@@ -30,6 +30,7 @@ class RiskNeutralDensityCalculatorTest {
   public:
 	static void testDensityAgainstOptionPrices();
 	static void testBSMagainstHestonRND();
+	static void testLocalVolatilityRND();
     static boost::unit_test_framework::test_suite* suite();
 };
 

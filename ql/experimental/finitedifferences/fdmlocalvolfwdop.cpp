@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2012, 2013 Klaus Spanderen
- Copyright (C) 2014 Johannes Göttker-Schnetmann
+ Copyright (C) 2015 Johannes Göttker-Schnetmann
+ Copyright (C) 2015 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,79 +22,67 @@
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
-#include <ql/experimental/finitedifferences/fdmblackscholesfwdop.hpp>
+#include <ql/experimental/finitedifferences/fdmlocalvolfwdop.hpp>
 
 namespace QuantLib {
 
-    FdmBlackScholesFwdOp::FdmBlackScholesFwdOp(
+	FdmLocalVolFwdOp::FdmLocalVolFwdOp(
         const boost::shared_ptr<FdmMesher>& mesher,
-        const boost::shared_ptr<GeneralizedBlackScholesProcess> & bsProcess,
-        Real strike,
-		bool localVol,
-		Real illegalLocalVolOverwrite,
+		const boost::shared_ptr<Quote>& spot,
+		const boost::shared_ptr<YieldTermStructure>& rTS,
+		const boost::shared_ptr<YieldTermStructure>& qTS,
+		const boost::shared_ptr<LocalVolTermStructure>& localVol,
+        Real illegalLocalVolOverwrite,
         Size direction)
     : mesher_(mesher),
-      rTS_   (bsProcess->riskFreeRate().currentLink()),
-      qTS_   (bsProcess->dividendYield().currentLink()),
-      volTS_ (bsProcess->blackVolatility().currentLink()),
-	  localVol_((localVol) ? bsProcess->localVolatility().currentLink()
-	                       : boost::shared_ptr<LocalVolTermStructure>()),
+      rTS_   (rTS),
+      qTS_   (qTS),
+	  localVol_(localVol),
 	  x_ ((localVol) ? Array(Exp(mesher->locations(direction))) : Array()),
       dxMap_ (FirstDerivativeOp(direction, mesher)),
       dxxMap_(SecondDerivativeOp(direction, mesher)),
       mapT_  (direction, mesher),
-      strike_(strike),
 	  illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
       direction_(direction) {
     }
 
-    void FdmBlackScholesFwdOp::setTime(Time t1, Time t2) {
+    void FdmLocalVolFwdOp::setTime(Time t1, Time t2) {
         const Rate r = rTS_->forwardRate(t1, t2, Continuous).rate();
         const Rate q = qTS_->forwardRate(t1, t2, Continuous).rate();
 
-		if (localVol_) {
-			const boost::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
-			const FdmLinearOpIterator endIter = layout->end();
+		const boost::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
+		const FdmLinearOpIterator endIter = layout->end();
 
-			Array v(layout->size());
-			for (FdmLinearOpIterator iter = layout->begin();
-				iter != endIter; ++iter) {
-				const Size i = iter.index();
+		Array v(layout->size());
+		for (FdmLinearOpIterator iter = layout->begin();
+			iter != endIter; ++iter) {
+			const Size i = iter.index();
 
+			try {
+				v[i] = square<Real>()(
+					localVol_->localVol(0.5*(t1+t2), x_[i], true));
+			} catch (Error& e) {
 				if (illegalLocalVolOverwrite_ < 0.0) {
-					v[i] = square<Real>()(
-						localVol_->localVol(0.5*(t1+t2), x_[i], true));
+					throw;
 				}
 				else {
-					try {
-						v[i] = square<Real>()(
-							localVol_->localVol(0.5*(t1+t2), x_[i], true));
-					} catch (Error&) {
-						v[i] = square<Real>()(illegalLocalVolOverwrite_);
-					}
+					v[i] = square<Real>()(illegalLocalVolOverwrite_);
 				}
 			}
-			mapT_.axpyb(Array(1, 1.0), dxMap_.multR(- r + q + 0.5*v),
-						dxxMap_.multR(0.5*v), Array(1, 0.0));
 		}
-		else {
-			const Real v
-				= volTS_->blackForwardVariance(t1, t2, strike_)/(t2-t1);
-			mapT_.axpyb(Array(1, - r + q + 0.5*v), dxMap_,
-						dxxMap_.mult(0.5*Array(mesher_->layout()->size(), v)),
-						Array(1, 0.0));
-		}
-    }
+		mapT_.axpyb(Array(1, 1.0), dxMap_.multR(- r + q + 0.5*v),
+					dxxMap_.multR(0.5*v), Array(1, 0.0));
+	}
 
-    Size FdmBlackScholesFwdOp::size() const {
+    Size FdmLocalVolFwdOp::size() const {
         return 1u;
     }
 
-    Disposable<Array> FdmBlackScholesFwdOp::apply(const Array& u) const {
+    Disposable<Array> FdmLocalVolFwdOp::apply(const Array& u) const {
         return mapT_.apply(u);
     }
 
-    Disposable<Array> FdmBlackScholesFwdOp::apply_direction(
+    Disposable<Array> FdmLocalVolFwdOp::apply_direction(
         Size direction, const Array& r) const {
         if (direction == direction_)
             return mapT_.apply(r);
@@ -104,12 +92,12 @@ namespace QuantLib {
         }
     }
 
-    Disposable<Array> FdmBlackScholesFwdOp::apply_mixed(const Array& r) const {
+    Disposable<Array> FdmLocalVolFwdOp::apply_mixed(const Array& r) const {
         Array retVal(r.size(), 0.0);
         return retVal;
     }
 
-    Disposable<Array> FdmBlackScholesFwdOp::solve_splitting(
+    Disposable<Array> FdmLocalVolFwdOp::solve_splitting(
         Size direction, const Array& r, Real dt) const {
         if (direction == direction_)
             return mapT_.solve_splitting(r, dt, 1.0);
@@ -119,14 +107,14 @@ namespace QuantLib {
         }
     }
 
-    Disposable<Array> FdmBlackScholesFwdOp::preconditioner(
+    Disposable<Array> FdmLocalVolFwdOp::preconditioner(
         const Array& r, Real dt) const {
         return solve_splitting(direction_, r, dt);
     }
 
 #if !defined(QL_NO_UBLAS_SUPPORT)
     Disposable<std::vector<SparseMatrix> >
-    FdmBlackScholesFwdOp::toMatrixDecomp() const {
+    FdmLocalVolFwdOp::toMatrixDecomp() const {
         std::vector<SparseMatrix> retVal(1, mapT_.toMatrix());
         return retVal;
     }

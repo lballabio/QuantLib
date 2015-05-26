@@ -21,14 +21,16 @@
 #include "riskneutraldensitycalculator.hpp"
 #include "utilities.hpp"
 
+#include <ql/math/functional.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/processes/hestonprocess.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <experimental/finitedifferences/bsmrndcalculator.hpp>
 #include <experimental/finitedifferences/hestonrndcalculator.hpp>
+#include <experimental/finitedifferences/localvolrndcalculator.hpp>
 
 #include <boost/make_shared.hpp>
-#include <iostream>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -39,21 +41,26 @@ void RiskNeutralDensityCalculatorTest::testDensityAgainstOptionPrices() {
     SavedSettings backup;
 
     const DayCounter dayCounter = Actual365Fixed();
-    const Date settlementDate = Settings::instance().evaluationDate();
+    const Date todaysDate = Settings::instance().evaluationDate();
 
     const Real s0 = 100;
-    const Real x0 = std::log(s0);
+    const Handle<Quote> spot(
+    	boost::shared_ptr<SimpleQuote>(new SimpleQuote(s0)));
+
     const Rate r = 0.075;
     const Rate q = 0.04;
     const Volatility v = 0.27;
 
-	const boost::shared_ptr<YieldTermStructure> rTS(
-    	flatRate(settlementDate, r, dayCounter));
+	const Handle<YieldTermStructure> rTS(flatRate(todaysDate, r, dayCounter));
 
-    const boost::shared_ptr<YieldTermStructure> qTS(
-    	flatRate(settlementDate, q, dayCounter));
+    const Handle<YieldTermStructure> qTS(flatRate(todaysDate, q, dayCounter));
 
-    const BSMRNDCalculator bsm(x0, v, rTS, qTS);
+    const boost::shared_ptr<BlackScholesMertonProcess> bsmProcess(
+    	new BlackScholesMertonProcess(
+    		spot, qTS, rTS,
+			Handle<BlackVolTermStructure>(flatVol(v, dayCounter))));
+
+    const BSMRNDCalculator bsm(bsmProcess);
     const Time times[] = { 0.5, 1.0, 2.0 };
     const Real strikes[] = { 75.0, 100.0, 150.0 };
 
@@ -108,10 +115,12 @@ void RiskNeutralDensityCalculatorTest::testBSMagainstHestonRND() {
     SavedSettings backup;
 
     const DayCounter dayCounter = Actual365Fixed();
-    const Date settlementDate = Settings::instance().evaluationDate();
+    const Date todaysDate = Settings::instance().evaluationDate();
 
     const Real s0 = 10;
-    const Real x0 = std::log(s0);
+    const Handle<Quote> spot(
+    	boost::shared_ptr<SimpleQuote>(new SimpleQuote(s0)));
+
     const Rate r = 0.155;
     const Rate q = 0.0721;
     const Volatility v = 0.27;
@@ -122,18 +131,19 @@ void RiskNeutralDensityCalculatorTest::testBSMagainstHestonRND() {
     const Real v0 = v*v;
     const Real sigma = 0.0001;
 
-	const boost::shared_ptr<YieldTermStructure> rTS(
-    	flatRate(settlementDate, r, dayCounter));
+	const Handle<YieldTermStructure> rTS(flatRate(todaysDate, r, dayCounter));
 
-    const boost::shared_ptr<YieldTermStructure> qTS(
-    	flatRate(settlementDate, q, dayCounter));
+    const Handle<YieldTermStructure> qTS(flatRate(todaysDate, q, dayCounter));
 
-    const BSMRNDCalculator bsm(x0, v, rTS, qTS);
+    const boost::shared_ptr<BlackScholesMertonProcess> bsmProcess(
+    	new BlackScholesMertonProcess(
+    		spot, qTS, rTS,
+			Handle<BlackVolTermStructure>(flatVol(v, dayCounter))));
+
+    const BSMRNDCalculator bsm(bsmProcess);
     const HestonRNDCalculator heston(
     	boost::make_shared<HestonProcess>(
-    		Handle<YieldTermStructure>(rTS),
-			Handle<YieldTermStructure>(qTS),
-    	    Handle<Quote>(boost::make_shared<SimpleQuote>(s0)),
+    		rTS, qTS, spot,
     		v0, kappa, theta, sigma, rho), 1e-8);
 
     const Time times[] = { 0.5, 1.0, 2.0 };
@@ -189,16 +199,80 @@ void RiskNeutralDensityCalculatorTest::testBSMagainstHestonRND() {
     		}
     	}
     }
-
-
 }
+
+namespace {
+	// see Peter Jaeckel, Hyperbolic local volatility
+	// http://www.jaeckel.org/HyperbolicLocalVolatility.pdf
+	class HyperbolicLocalVolatility : public LocalVolTermStructure {
+	  public:
+		HyperbolicLocalVolatility(Real s0, Real beta, Volatility sig)
+	  	: LocalVolTermStructure(Following, Actual365Fixed()),
+		  s0_(s0), b_(beta), sig_(sig) {}
+
+		Date maxDate() const { return Date::maxDate(); }
+		Rate minStrike() const { return 0.0; }
+		Rate maxStrike() const { return QL_MAX_REAL; }
+
+	  private:
+		Volatility localVolImpl(Time, Real s) const {
+			const Real x = s/s0_;
+			const Real b2 = b_*b_;
+
+			const Real h = (1 - b_+b2)/b_ * x
+				+ (b_-1)/b_*(std::sqrt(x*x + b2*square<Real>()(1-x)) - b_);
+
+			return sig_*h;
+		}
+
+		const Real s0_, b_;
+		const Volatility sig_;
+	};
+}
+
+void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
+    BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation "
+    				   "for local volatility process to calculate "
+    				   "risk netural densities ...");
+
+    SavedSettings backup;
+
+    const DayCounter dayCounter = Actual365Fixed();
+    const Date todaysDate = Date(28, Dec, 2012);
+    Settings::instance().evaluationDate() = todaysDate;
+
+    const Rate r    = 0.05;
+    const Rate q    = 0.025;
+    const Real s0   = 100;
+    const Real beta = 0.25;
+    const Real sig  = 0.25;
+
+	const boost::shared_ptr<Quote> spot(
+		boost::make_shared<SimpleQuote>(s0));
+	const boost::shared_ptr<YieldTermStructure> rTS(
+		flatRate(todaysDate, r, dayCounter));
+	const boost::shared_ptr<YieldTermStructure> qTS(
+		flatRate(todaysDate, q, dayCounter));
+
+	const boost::shared_ptr<LocalVolTermStructure> localVol(
+		new HyperbolicLocalVolatility(s0, beta, sig));
+
+	const boost::shared_ptr<LocalVolRNDCalculator> rndCalc(
+		new LocalVolRNDCalculator(spot, rTS, qTS, localVol));
+
+	//std::cout << rndCalc->cdf(std::log(s0), 1.0) << std::endl;
+}
+
+
 
 test_suite* RiskNeutralDensityCalculatorTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Risk neutral density calculator tests");
-    suite->add(QUANTLIB_TEST_CASE(
-    	&RiskNeutralDensityCalculatorTest::testDensityAgainstOptionPrices));
 
     suite->add(QUANTLIB_TEST_CASE(
-        	&RiskNeutralDensityCalculatorTest::testBSMagainstHestonRND));
+    	&RiskNeutralDensityCalculatorTest::testDensityAgainstOptionPrices));
+    suite->add(QUANTLIB_TEST_CASE(
+        &RiskNeutralDensityCalculatorTest::testBSMagainstHestonRND));
+    suite->add(QUANTLIB_TEST_CASE(
+    	&RiskNeutralDensityCalculatorTest::testLocalVolatilityRND));
     return suite;
 }
