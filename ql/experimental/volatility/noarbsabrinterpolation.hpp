@@ -42,40 +42,40 @@ struct NoArbSabrSpecs {
     Real eps() { return 0.000001; }
     void defaultValues(std::vector<Real> &params,
                        std::vector<bool> &paramIsFixed, const Real &forward,
-                       const Real expiryTime) {
-        SABRSpecs().defaultValues(params, paramIsFixed, forward, expiryTime);
+                       const Real expiryTime, const std::vector<Real> &addParams) {
+        SABRSpecs().defaultValues(params, paramIsFixed, forward, expiryTime, addParams);
         // check if alpha / beta is admissable, otherwise adjust
         // if possible (i.e. not fixed, otherwise an exception will
         // be thrown from the model constructor anyway)
-        Real sigmaI = params[0] * std::pow(forward,params[1] - 1.0);
+        Real sigmaI = params[0] * std::pow(forward, params[1] - 1.0);
         if (sigmaI < detail::NoArbSabrModel::sigmaI_min) {
             if (!paramIsFixed[0])
-                params[0] = detail::NoArbSabrModel::sigmaI_min * (1.0+eps()) /
+                params[0] = detail::NoArbSabrModel::sigmaI_min * (1.0 + eps()) /
                             std::pow(forward, params[1] - 1.0);
             else {
                 if (!paramIsFixed[1])
                     params[1] = 1.0 +
                                 std::log(detail::NoArbSabrModel::sigmaI_min *
-                                         (1.0+eps()) / params[0]) /
+                                         (1.0 + eps()) / params[0]) /
                                     std::log(forward);
             }
         }
         if (sigmaI > detail::NoArbSabrModel::sigmaI_max) {
             if (!paramIsFixed[0])
-                params[0] = detail::NoArbSabrModel::sigmaI_max * (1.0-eps()) /
+                params[0] = detail::NoArbSabrModel::sigmaI_max * (1.0 - eps()) /
                             std::pow(forward, params[1] - 1.0);
             else {
                 if (!paramIsFixed[1])
                     params[1] = 1.0 +
                                 std::log(detail::NoArbSabrModel::sigmaI_max *
-                                         (1.0-eps()) / params[0]) /
+                                         (1.0 - eps()) / params[0]) /
                                     std::log(forward);
             }
         }
     }
     void guess(Array &values, const std::vector<bool> &paramIsFixed,
                const Real &forward, const Real expiryTime,
-               const std::vector<Real> &r) {
+               const std::vector<Real> &r, const std::vector<Real> &) {
         Size j = 0;
         if (!paramIsFixed[1])
             values[1] = detail::NoArbSabrModel::beta_min +
@@ -87,7 +87,7 @@ struct NoArbSabrSpecs {
                           (detail::NoArbSabrModel::sigmaI_max -
                            detail::NoArbSabrModel::sigmaI_min) *
                               r[j++];
-            sigmaI *= (1.0-eps());
+            sigmaI *= (1.0 - eps());
             sigmaI += eps() / 2.0;
             values[0] = sigmaI / std::pow(forward, values[1] - 1.0);
         }
@@ -147,13 +147,13 @@ struct NoArbSabrSpecs {
             if (sigmaI < detail::NoArbSabrModel::sigmaI_min) {
                 y[1] = (1.0 +
                         std::log(detail::NoArbSabrModel::sigmaI_min *
-                                 (1.0+eps()) / y[0]) /
+                                 (1.0 + eps()) / y[0]) /
                             std::log(forward));
             }
             if (sigmaI > detail::NoArbSabrModel::sigmaI_max) {
                 y[1] = (1.0 +
                         std::log(detail::NoArbSabrModel::sigmaI_max *
-                                 (1.0-eps()) / y[0]) /
+                                 (1.0 - eps()) / y[0]) /
                             std::log(forward));
             }
         } else {
@@ -179,9 +179,14 @@ struct NoArbSabrSpecs {
                        (std::atan(x[3]) + M_PI / 2.0) / M_PI;
         return y;
     }
+    Real weight(const Real strike, const Real forward, const Real stdDev,
+                const std::vector<Real> &addParams) {
+        return blackFormulaStdDevDerivative(strike, forward, stdDev, 1.0);
+    }
     typedef NoArbSabrWrapper type;
     boost::shared_ptr<type> instance(const Time t, const Real &forward,
-                                     const std::vector<Real> &params) {
+                                     const std::vector<Real> &params,
+                                     const std::vector<Real> &) {
         return boost::make_shared<type>(t, forward, params);
     }
 };
@@ -204,8 +209,9 @@ class NoArbSabrInterpolation : public Interpolation {
         const boost::shared_ptr<OptimizationMethod> &optMethod =
             boost::shared_ptr<OptimizationMethod>(),
         const Real errorAccept = 0.0020, const bool useMaxError = false,
-        const Size maxGuesses = 50) {
+        const Size maxGuesses = 50, const Real shift = 0.0) {
 
+        QL_REQUIRE(shift==0.0,"NoArbSabrInterpolation for non zero shift not implemented");
         impl_ = boost::shared_ptr<Interpolation::Impl>(
             new detail::XABRInterpolationImpl<I1, I2, detail::NoArbSabrSpecs>(
                 xBegin, xEnd, yBegin, t, forward,

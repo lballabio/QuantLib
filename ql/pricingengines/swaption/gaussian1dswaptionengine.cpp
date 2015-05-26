@@ -52,6 +52,18 @@ namespace QuantLib {
         Array z = model_->yGrid(stddevs_, integrationPoints_);
         Array p(z.size(), 0.0);
 
+        // for probability computation
+        std::vector<Array> npvp0, npvp1;
+        if (probabilities_ != None) {
+            for (Size i = 0; i < static_cast<Size>(idx - minIdxAlive + 2); ++i) {
+                Array npvTmp0(2 * integrationPoints_ + 1, 0.0);
+                Array npvTmp1(2 * integrationPoints_ + 1, 0.0);
+                npvp0.push_back(npvTmp0);
+                npvp1.push_back(npvTmp1);
+            }
+        }
+        // end probabkility computation
+
         Date expiry1 = Null<Date>(), expiry0;
         Time expiry1Time = Null<Real>(), expiry0Time;
 
@@ -156,6 +168,85 @@ namespace QuantLib {
 
                 npv0[k] = price;
 
+                // for probability computation
+                if (probabilities_ != None) {
+                    for (Size m = 0; m < npvp0.size(); m++) {
+                        Real price = 0.0;
+                        if (expiry1Time != Null<Real>()) {
+                            Array yg = model_->yGrid(
+                                stddevs_, integrationPoints_, expiry1Time,
+                                expiry0Time, expiry0 > settlement ? z[k] : 0.0);
+                            CubicInterpolation payoff0(
+                                z.begin(), z.end(), npvp1[m].begin(),
+                                CubicInterpolation::Spline, true,
+                                CubicInterpolation::Lagrange, 0.0,
+                                CubicInterpolation::Lagrange, 0.0);
+                            for (Size i = 0; i < yg.size(); i++) {
+                                p[i] = payoff0(yg[i], true);
+                            }
+                            CubicInterpolation payoff1(
+                                z.begin(), z.end(), p.begin(),
+                                CubicInterpolation::Spline, true,
+                                CubicInterpolation::Lagrange, 0.0,
+                                CubicInterpolation::Lagrange, 0.0);
+                            for (Size i = 0; i < z.size() - 1; i++) {
+                                price +=
+                                    model_->gaussianShiftedPolynomialIntegral(
+                                        0.0, payoff1.cCoefficients()[i],
+                                        payoff1.bCoefficients()[i],
+                                        payoff1.aCoefficients()[i], p[i], z[i],
+                                        z[i], z[i + 1]);
+                            }
+                            if (extrapolatePayoff_) {
+                                if (flatPayoffExtrapolation_) {
+                                    price +=
+                                        model_
+                                            ->gaussianShiftedPolynomialIntegral(
+                                                  0.0, 0.0, 0.0, 0.0,
+                                                  p[z.size() - 2],
+                                                  z[z.size() - 2],
+                                                  z[z.size() - 1], 100.0);
+                                    price +=
+                                        model_
+                                            ->gaussianShiftedPolynomialIntegral(
+                                                  0.0, 0.0, 0.0, 0.0, p[0],
+                                                  z[0], -100.0, z[0]);
+                                } else {
+                                    if (type == Option::Call)
+                                        price +=
+                                            model_
+                                                ->gaussianShiftedPolynomialIntegral(
+                                                      0.0,
+                                                      payoff1.cCoefficients()
+                                                          [z.size() - 2],
+                                                      payoff1.bCoefficients()
+                                                          [z.size() - 2],
+                                                      payoff1.aCoefficients()
+                                                          [z.size() - 2],
+                                                      p[z.size() - 2],
+                                                      z[z.size() - 2],
+                                                      z[z.size() - 1], 100.0);
+                                    if (type == Option::Put)
+                                        price +=
+                                            model_
+                                                ->gaussianShiftedPolynomialIntegral(
+                                                      0.0,
+                                                      payoff1
+                                                          .cCoefficients()[0],
+                                                      payoff1
+                                                          .bCoefficients()[0],
+                                                      payoff1
+                                                          .aCoefficients()[0],
+                                                      p[0], z[0], -100.0, z[0]);
+                                }
+                            }
+                        }
+
+                        npvp0[m][k] = price;
+                    }
+                }
+                // end probability computation
+
                 if (expiry0 > settlement) {
                     Real floatingLegNpv = 0.0;
                     for (Size l = k1; l < arguments_.floatingCoupons.size();
@@ -177,20 +268,74 @@ namespace QuantLib {
                             model_->zerobond(arguments_.fixedPayDates[l],
                                              expiry0, z[k], discountCurve_);
                     }
-                    npv0[k] = std::max(npv0[k],
-                                       (type == Option::Call ? 1.0 : -1.0) *
-                                           (floatingLegNpv - fixedLegNpv) /
+                    Real exerciseValue =
+                        (type == Option::Call ? 1.0 : -1.0) *
+                        (floatingLegNpv - fixedLegNpv) /
+                        model_->numeraire(expiry0Time, z[k], discountCurve_);
+
+                    // for probability computation
+                    if (probabilities_ != None) {
+                        if (idx == static_cast<int>(
+                                       arguments_.exercise->dates().size()) -
+                                       1) // if true we are at the latest date,
+                                          // so we init
+                                          // the no call probability
+                            npvp0.back()[k] =
+                                probabilities_ == Naive
+                                    ? 1.0
+                                    : 1.0 / (model_->zerobond(expiry0Time, 0.0,
+                                                              0.0,
+                                                              discountCurve_) *
+                                             model_->numeraire(expiry0, z[k],
+                                                               discountCurve_));
+                        if (exerciseValue >= npv0[k]) {
+                            npvp0[idx - minIdxAlive][k] =
+                                probabilities_ == Naive
+                                    ? 1.0
+                                    : 1.0 /
+                                          (model_->zerobond(expiry0Time, 0.0,
+                                                            0.0,
+                                                            discountCurve_) *
                                            model_->numeraire(expiry0Time, z[k],
                                                              discountCurve_));
+                            for (Size ii = idx - minIdxAlive + 1;
+                                 ii < npvp0.size(); ii++)
+                                npvp0[ii][k] = 0.0;
+                        }
+                    }
+                    // end probability computation
+
+                    npv0[k] = std::max(npv0[k], exerciseValue);
                 }
             }
 
             npv1.swap(npv0);
+
+            // for probability computation
+            if (probabilities_ != None) {
+                for (Size i = 0; i < npvp0.size(); i++)
+                    npvp1[i].swap(npvp0[i]);
+            }
+            // end probability computation
+
             expiry1 = expiry0;
             expiry1Time = expiry0Time;
 
         } while (--idx >= minIdxAlive - 1);
 
         results_.value = npv1[0] * model_->numeraire(0.0, 0.0, discountCurve_);
+
+        // for probability computation
+        if (probabilities_ != None) {
+            std::vector<Real> prob(npvp0.size());
+            for (Size i = 0; i < npvp0.size(); i++) {
+                prob[i] = npvp1[i][0] *
+                          (probabilities_ == Naive
+                               ? 1.0
+                               : model_->numeraire(0.0, 0.0, discountCurve_));
+            }
+            results_.additionalResults["probabilities"] = prob;
+        }
+        // end probability computation
     }
 }
