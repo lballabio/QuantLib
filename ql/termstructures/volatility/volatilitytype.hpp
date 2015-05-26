@@ -24,6 +24,8 @@
 #ifndef quantlib_volatility_type_hpp
 #define quantlib_volatility_type_hpp
 
+#include <ql/qldefines.hpp>
+
 namespace QuantLib {
 
     enum VolatilityType { ShiftedLognormal, Normal };

@@ -17,10 +17,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <boost/make_shared.hpp>
-
 #include <ql/experimental/coupons/strippedcapflooredcoupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
+#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
