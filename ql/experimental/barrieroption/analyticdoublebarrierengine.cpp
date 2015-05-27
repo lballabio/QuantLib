@@ -142,15 +142,9 @@ namespace QuantLib {
 
     Real AnalyticDoubleBarrierEngine::vanillaEquivalent() const {
         // Call KI equates to vanilla - callKO
-        Real spot = process_->stateVariable()->value();
         boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
-        Real variance =
-            process_->blackVolatility()->blackVariance(
-                                              arguments_.exercise->lastDate(),
-                                              payoff->strike());
         Real forwardPrice = underlying() * dividendDiscount() / riskFreeDiscount();
-        //Real forwardPrice = underlying() / dividendDiscount();
         BlackCalculator black(payoff, forwardPrice, stdDeviation(), riskFreeDiscount());
         Real vanilla = black.value();
         if (vanilla < 0.0)
