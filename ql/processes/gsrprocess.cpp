@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2013, 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,10 +25,10 @@ using std::sqrt;
 
 namespace QuantLib {
 
-    GsrProcess::GsrProcess(const Array &times, const Array &vols,
-                           const Array &reversions, const Real T)
-        : ForwardMeasureProcess1D(T), times_(times), vols_(vols),
-          reversions_(reversions), revZero_(reversions.size(), false) {
+GsrProcess::GsrProcess(const Array &times, const Array &vols,
+                       const Array &reversions, const Real T)
+    : ForwardMeasureProcess1D(T), times_(times), vols_(vols),
+      reversions_(reversions), revZero_(reversions.size(), false) {
         QL_REQUIRE(times.size() == vols.size() - 1,
                    "number of volatilities ("
                        << vols.size() << ") compared to number of times ("

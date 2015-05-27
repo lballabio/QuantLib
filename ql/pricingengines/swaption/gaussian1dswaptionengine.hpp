@@ -44,19 +44,26 @@ namespace QuantLib {
         : public GenericModelEngine<Gaussian1dModel, Swaption::arguments,
                                     Swaption::results> {
       public:
+        enum Probabilities {
+            None,
+            Naive,
+            Digital
+        };
+
         Gaussian1dSwaptionEngine(
             const boost::shared_ptr<Gaussian1dModel> &model,
             const int integrationPoints = 64, const Real stddevs = 7.0,
             const bool extrapolatePayoff = true,
             const bool flatPayoffExtrapolation = false,
             const Handle<YieldTermStructure> &discountCurve =
-                Handle<YieldTermStructure>())
+                Handle<YieldTermStructure>(),
+            const Probabilities probabilities = None)
             : GenericModelEngine<Gaussian1dModel, Swaption::arguments,
                                  Swaption::results>(model),
               integrationPoints_(integrationPoints), stddevs_(stddevs),
               extrapolatePayoff_(extrapolatePayoff),
               flatPayoffExtrapolation_(flatPayoffExtrapolation),
-              discountCurve_(discountCurve) {
+              discountCurve_(discountCurve), probabilities_(probabilities) {
 
             if (!discountCurve_.empty())
                 registerWith(discountCurve_);
@@ -69,8 +76,8 @@ namespace QuantLib {
         const Real stddevs_;
         const bool extrapolatePayoff_, flatPayoffExtrapolation_;
         const Handle<YieldTermStructure> discountCurve_;
+        const Probabilities probabilities_;
     };
 }
 
 #endif
-

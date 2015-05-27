@@ -1851,6 +1851,9 @@
     <ClInclude Include="ql\termstructures\volatility\spreadedsmilesection.hpp">
       <Filter>termstructures\volatility</Filter>
     </ClInclude>
+    <ClInclude Include="ql\termstructures\volatility\volatilitytype.hpp">
+      <Filter>termstructures\volatility</Filter>
+    </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\capfloor\all.hpp">
       <Filter>termstructures\volatility\capfloor</Filter>
     </ClInclude>

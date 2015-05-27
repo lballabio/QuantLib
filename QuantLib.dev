@@ -20676,3 +20676,13 @@ Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
+
+[Unit2061]
+FileName=ql\termstructures\volatility\volatilitytype.hpp
+CompileCpp=1
+Folder=termstructures/volatility
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=

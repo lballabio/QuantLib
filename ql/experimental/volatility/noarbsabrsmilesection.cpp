@@ -26,16 +26,17 @@
 namespace QuantLib {
 
 NoArbSabrSmileSection::NoArbSabrSmileSection(
-    Time timeToExpiry, Rate forward, const std::vector<Real> &sabrParams)
+    Time timeToExpiry, Rate forward, const std::vector<Real> &sabrParams,
+    Real shift)
     : SmileSection(timeToExpiry, DayCounter()), forward_(forward),
-      params_(sabrParams) {
+      params_(sabrParams), shift_(shift) {
     init();
 }
 
 NoArbSabrSmileSection::NoArbSabrSmileSection(
     const Date &d, Rate forward, const std::vector<Real> &sabrParams,
-    const DayCounter &dc)
-    : SmileSection(d, dc, Date()), forward_(forward), params_(sabrParams) {
+    const DayCounter &dc, Real shift)
+    : SmileSection(d, dc, Date()), forward_(forward), params_(sabrParams), shift_(shift) {
     init();
 }
 
@@ -43,13 +44,18 @@ void NoArbSabrSmileSection::init() {
     QL_REQUIRE(params_.size() == 4,
                "sabr expects 4 parameters (alpha,beta,nu,rho,gamma) but ("
                    << params_.size() << ") given");
+    QL_REQUIRE(forward_ > 0.0, "forward (" << forward_ << ") must be positive");
+    QL_REQUIRE(
+        shift_ == 0.0,
+        "shift (" << shift_
+                  << ") must be zero, other shifts are not implemented yet");
     model_ =
         boost::make_shared<NoArbSabrModel>(exerciseTime(), forward_, params_[0],
                                            params_[1], params_[2], params_[3]);
 }
 
 Real NoArbSabrSmileSection::optionPrice(Rate strike, Option::Type type,
-                                   Real discount) const {
+                                        Real discount) const {
     Real call = model_->optionPrice(strike);
     return discount *
            (type == Option::Call ? call : call - (forward_ - strike));
@@ -61,8 +67,7 @@ Real NoArbSabrSmileSection::digitalOptionPrice(Rate strike, Option::Type type,
     return discount * (type == Option::Call ? call : 1.0 - call);
 }
 
-Real NoArbSabrSmileSection::density(Rate strike, Real discount,
-                                    Real) const {
+Real NoArbSabrSmileSection::density(Rate strike, Real discount, Real) const {
     return discount * model_->density(strike);
 }
 
@@ -81,13 +86,12 @@ Real NoArbSabrSmileSection::volatilityImpl(Rate strike) const {
             std::sqrt(exerciseTime());
     } catch (...) {
     }
-    if(impliedVol == 0.0)
+    if (impliedVol == 0.0)
         // fall back on Hagan 2002 expansion
         impliedVol =
             unsafeSabrVolatility(strike, forward_, exerciseTime(), params_[0],
                                  params_[1], params_[2], params_[3]);
 
     return impliedVol;
-
 }
 } // namespace QuantLib

@@ -38,13 +38,13 @@ namespace QuantLib {
     class ConstantLossLatentmodel : public DefaultLatentModel<copulaPolicy> {
     private:
         const std::vector<Real> recoveries_;
+        typedef typename copulaPolicy::initTraits initTraits;
     public:
         ConstantLossLatentmodel(
             const std::vector<std::vector<Real> >& factorWeights,
             const std::vector<Real>& recoveries,
             LatentModelIntegrationType::LatentModelIntegrationType integralType,
-            const typename copulaPolicy::initTraits& ini = 
-                copulaPolicy::initTraits()            
+            const initTraits& ini = initTraits()            
             ) 
         : DefaultLatentModel<copulaPolicy>(factorWeights, integralType, ini),
           recoveries_(recoveries) {
@@ -58,8 +58,7 @@ namespace QuantLib {
             const std::vector<Real>& recoveries,
             LatentModelIntegrationType::LatentModelIntegrationType integralType,
             Size nVariables,
-            const typename copulaPolicy::initTraits& ini = 
-                copulaPolicy::initTraits()            
+            const initTraits& ini = initTraits()            
             ) 
         : DefaultLatentModel<copulaPolicy>(mktCorrel, nVariables,
                                            integralType, ini),
