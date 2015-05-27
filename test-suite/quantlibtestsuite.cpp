@@ -382,9 +382,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(EverestOptionTest::suite());
     test->add(ExtendedTreesTest::suite());
     test->add(ExtensibleOptionsTest::suite());
-    test->add(GsrTest::suite());
-    test->add(HestonModelTest::experimental());
-    test->add(GsrTest::suite());
     test->add(HestonModelTest::experimental());
     test->add(HestonSLVModelTest::experimental());
     test->add(HimalayaOptionTest::suite());

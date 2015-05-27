@@ -38,7 +38,7 @@ namespace QuantLib {
     : OptionletStripper(optionletStripper1->termVolSurface(),
                         optionletStripper1->iborIndex(),
                         Handle<YieldTermStructure>(),
-                        optionletStripper1->model(),
+                        optionletStripper1->volatilityType(),
                         optionletStripper1->displacement()),
       stripper1_(optionletStripper1),
       atmCapFloorTermVolCurve_(atmCapFloorTermVolCurve),

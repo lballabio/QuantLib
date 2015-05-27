@@ -48,8 +48,9 @@ namespace QuantLib {
                            Real accuracy = 1.0e-6, Natural maxIter = 100,
                            const Handle<YieldTermStructure> &discount =
                                Handle<YieldTermStructure>(),
-                           Model model = ShiftedLognormal,
-                           Real displacement = 0.0);
+                           VolatilityType type = ShiftedLognormal,
+                           Real displacement = 0.0,
+                           bool dontThrow = false);
 
         const Matrix& capFloorPrices() const;
         const Matrix& capFloorVolatilities() const;
@@ -72,6 +73,7 @@ namespace QuantLib {
         mutable Rate switchStrike_;
         Real accuracy_;
         Natural maxIter_;
+        bool dontThrow_;
     };
 
 }

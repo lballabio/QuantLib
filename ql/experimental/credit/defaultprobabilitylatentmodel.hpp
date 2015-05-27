@@ -56,6 +56,8 @@ namespace QuantLib {
         //  for notifications, still...
         mutable boost::shared_ptr<Basket> basket_;
         boost::shared_ptr<LMIntegration> integration_;
+    private:
+        typedef typename copulaPolicy::initTraits initTraits;
     public:
         /*!
         @param factorWeights Latent model independent factors weights for each 
@@ -67,8 +69,7 @@ namespace QuantLib {
         DefaultLatentModel(
             const std::vector<std::vector<Real> >& factorWeights,
             LatentModelIntegrationType::LatentModelIntegrationType integralType,
-            const typename copulaPolicy::initTraits& ini = 
-                copulaPolicy::initTraits()
+            const initTraits& ini = initTraits()
             ) 
         : LatentModel<copulaPolicy>(factorWeights, ini),
           integration_(LatentModel<copulaPolicy>::IntegrationFactory::
@@ -78,9 +79,8 @@ namespace QuantLib {
             const Handle<Quote>& mktCorrel,
             Size nVariables,
             LatentModelIntegrationType::LatentModelIntegrationType integralType,
-            const typename copulaPolicy::initTraits& ini = 
-                copulaPolicy::initTraits()
-                )
+            const initTraits& ini = initTraits()
+            )
         : LatentModel<copulaPolicy>(mktCorrel, nVariables, ini),
           integration_(LatentModel<copulaPolicy>::IntegrationFactory::
             createLMIntegration(1, integralType))

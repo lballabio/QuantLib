@@ -4566,6 +4566,10 @@
 					RelativePath=".\ql\termstructures\volatility\spreadedsmilesection.hpp"
 					>
 				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\volatilitytype.hpp"
+					>
+				</File>
 				<Filter
 					Name="capfloor"
 					>

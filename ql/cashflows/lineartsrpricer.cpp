@@ -132,6 +132,10 @@ namespace QuantLib {
             boost::shared_ptr<SmileSection> sectionTmp =
                 swaptionVolatility()->smileSection(fixingDate_, swapTenor_);
 
+            // adjust bounds by section's shift
+            shiftedLowerBound_ = settings_.lowerRateBound_ - sectionTmp->shift();
+            shiftedUpperBound_ = settings_.upperRateBound_ - sectionTmp->shift();
+
             // if the section does not provide an atm level, we enhance it to
             // have one, no need to exit with an exception ...
 
@@ -176,10 +180,10 @@ namespace QuantLib {
             a = swapRateValue_;
             min = referenceStrike;
             b = max = k =
-                std::min(smileSection_->maxStrike(), settings_.upperRateBound_);
+                std::min(smileSection_->maxStrike(), shiftedUpperBound_);
         } else {
             a = min = k =
-                std::max(smileSection_->minStrike(), settings_.lowerRateBound_);
+                std::max(smileSection_->minStrike(), shiftedLowerBound_);
             b = swapRateValue_;
             max = referenceStrike;
         }
@@ -206,10 +210,10 @@ namespace QuantLib {
             a = swapRateValue_;
             min = referenceStrike;
             b = max = k =
-                std::min(smileSection_->maxStrike(), settings_.upperRateBound_);
+                std::min(smileSection_->maxStrike(), shiftedUpperBound_);
         } else {
             a = min = k =
-                std::max(smileSection_->minStrike(), settings_.lowerRateBound_);
+                std::max(smileSection_->minStrike(), shiftedLowerBound_);
             b = swapRateValue_;
             max = referenceStrike;
         }
@@ -230,9 +234,9 @@ namespace QuantLib {
     Real LinearTsrPricer::optionletPrice(Option::Type optionType,
                                          Real strike) const {
 
-        if (optionType == Option::Call && strike >= settings_.upperRateBound_)
+        if (optionType == Option::Call && strike >= shiftedUpperBound_)
             return 0.0;
-        if (optionType == Option::Put && strike <= settings_.lowerRateBound_)
+        if (optionType == Option::Put && strike <= shiftedLowerBound_)
             return 0.0;
 
         // determine lower or upper integration bound (depending on option type)
@@ -243,9 +247,9 @@ namespace QuantLib {
 
         case Settings::RateBound: {
             if (optionType == Option::Call)
-                upper = settings_.upperRateBound_;
+                upper = shiftedUpperBound_;
             else
-                lower = settings_.lowerRateBound_;
+                lower = shiftedLowerBound_;
             break;
         }
 
@@ -255,9 +259,9 @@ namespace QuantLib {
             Real bound =
                 strikeFromVegaRatio(settings_.vegaRatio_, optionType, strike);
             if (optionType == Option::Call)
-                upper = std::min(bound, settings_.upperRateBound_);
+                upper = std::min(bound, shiftedUpperBound_);
             else
-                lower = std::max(bound, settings_.lowerRateBound_);
+                lower = std::max(bound, shiftedLowerBound_);
             break;
         }
 
@@ -267,9 +271,28 @@ namespace QuantLib {
             Real bound =
                 strikeFromPrice(settings_.vegaRatio_, optionType, strike);
             if (optionType == Option::Call)
-                upper = std::min(bound, settings_.upperRateBound_);
+                upper = std::min(bound, shiftedUpperBound_);
             else
-                lower = std::max(bound, settings_.lowerRateBound_);
+                lower = std::max(bound, shiftedLowerBound_);
+            break;
+        }
+
+        case Settings::BSStdDevs : {
+            Real atm = smileSection_->atmLevel();
+            Real atmVol = smileSection_->volatility(atm);
+            Real shift = smileSection_->shift();
+            Real upperTmp =
+                (atm + shift) * std::exp(settings_.stdDevs_ * atmVol -
+                                         0.5 * atmVol * atmVol *
+                                             smileSection_->exerciseTime()) -
+                shift;
+            Real lowerTmp =
+                (atm + shift) * std::exp(-settings_.stdDevs_ * atmVol -
+                                         0.5 * atmVol * atmVol *
+                                             smileSection_->exerciseTime()) -
+                shift;
+            upper = std::min(upperTmp - shift, shiftedUpperBound_);
+            lower = std::max(lowerTmp - shift, shiftedLowerBound_);
             break;
         }
 

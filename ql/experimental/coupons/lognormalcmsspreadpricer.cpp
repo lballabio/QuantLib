@@ -25,6 +25,7 @@
 #include <ql/experimental/coupons/lognormalcmsspreadpricer.hpp>
 #include <ql/experimental/coupons/cmsspreadcoupon.hpp>
 #include <ql/math/integrals/kronrodintegral.hpp>
+#include <ql/termstructures/volatility/swaption/swaptionvolcube.hpp>
 
 namespace QuantLib {
 
@@ -161,10 +162,26 @@ namespace QuantLib {
                     key, std::make_pair(adjustedRate1_, adjustedRate2_)));
             }
 
-            vol1_ = cmsPricer_->swaptionVolatility()->volatility(
-                fixingDate_, index_->swapIndex1()->tenor(), swapRate1_);
-            vol2_ = cmsPricer_->swaptionVolatility()->volatility(
-                fixingDate_, index_->swapIndex2()->tenor(), swapRate2_);
+            boost::shared_ptr<SwaptionVolatilityStructure> swvol =
+                *cmsPricer_->swaptionVolatility();
+            boost::shared_ptr<SwaptionVolatilityCube> swcub =
+                boost::dynamic_pointer_cast<SwaptionVolatilityCube>(swvol);
+
+            if (swcub == NULL) {
+                vol1_ = swvol->volatility(
+                    fixingDate_, index_->swapIndex1()->tenor(), swapRate1_);
+                vol2_ = swvol->volatility(
+                    fixingDate_, index_->swapIndex1()->tenor(), swapRate2_);
+            } else {
+                vol1_ = swcub->smileSection(fixingDate_,
+                                            index_->swapIndex1()->tenor())
+                            ->volatility(swapRate1_,
+                                         ShiftedLognormal, 0.0);
+                vol2_ = swcub->smileSection(fixingDate_,
+                                            index_->swapIndex2()->tenor())
+                            ->volatility(swapRate2_,
+                                         ShiftedLognormal, 0.0);
+            }
 
             mu1_ = 1.0 / fixingTime_ * std::log(adjustedRate1_ / swapRate1_);
             mu2_ = 1.0 / fixingTime_ * std::log(adjustedRate2_ / swapRate2_);
