@@ -1872,6 +1872,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\instruments\futures.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\futures.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\instruments\impliedvolatility.cpp"
 				>
 			</File>
@@ -6357,6 +6365,14 @@
 			>
 			<File
 				RelativePath=".\ql\time\all.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\time\asx.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\time\asx.hpp"
 				>
 			</File>
 			<File

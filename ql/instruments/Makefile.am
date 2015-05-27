@@ -32,6 +32,7 @@ this_include_HEADERS = \
     forward.hpp \
     forwardrateagreement.hpp \
     forwardvanillaoption.hpp \
+    futures.hpp \
     impliedvolatility.hpp \
     inflationcapfloor.hpp \
     lookbackoption.hpp \
@@ -87,6 +88,7 @@ libInstruments_la_SOURCES = \
     forward.cpp \
     forwardrateagreement.cpp \
     forwardvanillaoption.cpp \
+    futures.cpp \
     impliedvolatility.cpp \
     inflationcapfloor.cpp \
     lookbackoption.cpp \

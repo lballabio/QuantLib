@@ -5,6 +5,7 @@
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 StatPro Italia srl
  Copyright (C) 2007, 2008, 2009, 2015 Ferdinando Ametrano
  Copyright (C) 2007, 2009 Roland Lichters
+ Copyright (C) 2015 Maddalena Zanzi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,6 +31,7 @@
 #include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/instruments/bmaswap.hpp>
+#include <ql/instruments/futures.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/daycounter.hpp>
 
@@ -46,39 +48,45 @@ namespace QuantLib {
     class FuturesRateHelper : public RateHelper {
       public:
         FuturesRateHelper(const Handle<Quote>& price,
-                          const Date& immDate,
+                          const Date& iborStartDate,
                           Natural lengthInMonths,
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           bool endOfMonth,
                           const DayCounter& dayCounter,
-                          const Handle<Quote>& convexityAdjustment = Handle<Quote>());
+                          const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
+                          Futures::Type type = Futures::IMM);
         FuturesRateHelper(Real price,
-                          const Date& immDate,
+                          const Date& iborStartDate,
                           Natural lengthInMonths,
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           bool endOfMonth,
                           const DayCounter& dayCounter,
-                          Rate convexityAdjustment = 0.0);
+                          Rate convexityAdjustment = 0.0,
+                          Futures::Type type = Futures::IMM);
         FuturesRateHelper(const Handle<Quote>& price,
-                          const Date& immStartDate,
+                          const Date& iborStartDate,
+                          const Date& iborEndDate,
+                          const DayCounter& dayCounter,
+                          const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
+                          Futures::Type type = Futures::IMM);
+        FuturesRateHelper(Real price,
+                          const Date& iborStartDate,
                           const Date& endDate,
                           const DayCounter& dayCounter,
-                          const Handle<Quote>& convexityAdjustment = Handle<Quote>());
-        FuturesRateHelper(Real price,
-                          const Date& immStartDate,
-                          const Date& endDate,
-                          const DayCounter& dayCounter,
-                          Rate convexityAdjustment = 0.0);
+                          Rate convexityAdjustment = 0.0,
+                          Futures::Type type = Futures::IMM);
         FuturesRateHelper(const Handle<Quote>& price,
-                          const Date& immDate,
+                          const Date& iborStartDate,
                           const boost::shared_ptr<IborIndex>& iborIndex,
-                          const Handle<Quote>& convexityAdjustment = Handle<Quote>());
+                          const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
+                          Futures::Type type = Futures::IMM);
         FuturesRateHelper(Real price,
-                          const Date& immDate,
+                          const Date& iborStartDate,
                           const boost::shared_ptr<IborIndex>& iborIndex,
-                          Rate convexityAdjustment = 0.0);
+                          Rate convexityAdjustment = 0.0,
+                          Futures::Type type = Futures::IMM);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
