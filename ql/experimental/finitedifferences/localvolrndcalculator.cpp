@@ -26,7 +26,6 @@
 #include <ql/timegrid.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/integrals/discreteintegrals.hpp>
-#include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
@@ -54,8 +53,8 @@ namespace QuantLib {
 	  rTS_     (rTS),
 	  qTS_     (qTS),
 	  timeGrid_(new TimeGrid(localVol->maxTime(), tGrid)),
-	  x_       (new Matrix(tGrid, xGrid)),
-	  vols_    (new Matrix(tGrid, xGrid)) {
+	  xm_      (new Matrix(tGrid, xGrid)),
+	  pm_      (new Matrix(tGrid, xGrid)) {
 		registerWith(spot_);
 		registerWith(rTS_);
 		registerWith(qTS_);
@@ -77,8 +76,8 @@ namespace QuantLib {
 	  rTS_     (rTS),
 	  qTS_     (qTS),
 	  timeGrid_(timeGrid),
-	  x_       (new Matrix(tGrid_, xGrid_)),
-	  vols_    (new Matrix(tGrid_, xGrid_)) {
+	  xm_      (new Matrix(tGrid_, xGrid_)),
+	  pm_      (new Matrix(tGrid_, xGrid_)) {
 		registerWith(spot_);
 		registerWith(rTS_);
 		registerWith(qTS_);
@@ -104,14 +103,14 @@ namespace QuantLib {
         calculate();
 
 		const Size idx = timeGrid_->index(t);
-		QL_REQUIRE(idx <= x_->rows(), "inconsistent time " << t << " given");
+		QL_REQUIRE(idx <= xm_->rows(), "inconsistent time " << t << " given");
 
 		if (idx > 0) {
-			Array retVal(x_->row_begin(idx-1), x_->row_end(idx-1));
+			Array retVal(xm_->row_begin(idx-1), xm_->row_end(idx-1));
 			return retVal;
 		}
 		else {
-			Array retVal(x_->columns(), std::log(spot_->value()));
+			Array retVal(xm_->columns(), std::log(spot_->value()));
 			return retVal;
 		}
 	}
@@ -126,9 +125,9 @@ namespace QuantLib {
 
 		const Volatility vol = localVol_->localVol(0.5*t, spot_->value());
 
-		const Volatility stdDev = vol * std::sqrt(sT);
+		const Volatility stdDev = vol * std::sqrt(t);
 		Real xm = - 0.5 * stdDev * stdDev +
-			std::log(spot_->value() * qTS_->discount(sT)/rTS_->discount(sT));
+			std::log(spot_->value() * qTS_->discount(t)/rTS_->discount(t));
 
 		const Real normInvEps = InverseCumulativeNormal()(1 - eps_);
 		Real sLowerBound = xm - normInvEps * stdDev;
@@ -159,10 +158,12 @@ namespace QuantLib {
 					boost::make_shared<FdmMesherComposite>(mesher),
 					spot_, rTS_, qTS_, localVol_)));
 
-	    for (Size i=1; i < timeGrid_->size(); ++i) {
+	    pFct_.resize(tGrid_);
+
+	    for (Size i=1; i <= tGrid_; ++i) {
 	    	const Time dt = timeGrid_->at(i) - t;
 	    	if (dt < QL_EPSILON)
-	    		break; // too small step
+	    		continue; // too small step
 
 	    	// leaking probability mass?
 	    	const Real maxLeftValue =
@@ -176,12 +177,16 @@ namespace QuantLib {
 	    		const Real oldLowerBound = sLowerBound;
 	    	    const Real oldUpperBound = sUpperBound;
 
-	    		if (maxLeftValue > eps_)
-	    			sLowerBound *= 0.9;
-	    		if (maxRightValue > eps_)
-	    			sUpperBound *= 1.1;
+	    		xm = DiscreteSimpsonIntegral()(x, x*p);
 
-	    		std::cout << "regrid " << sLowerBound << " " << sUpperBound << " " << i << std::endl;
+	    		if (maxLeftValue > eps_)
+	    			sLowerBound -= 0.1*xm;
+	    		if (maxRightValue > eps_)
+	    			sUpperBound += 0.1*xm;
+
+	    		std::cout << "regrid " << maxLeftValue << " "
+	    				  << sLowerBound << " " << sUpperBound
+	    				  << " " << std::exp(xm) << " " << t << std::endl;
 
 	    		mesher = boost::shared_ptr<Fdm1dMesher>(
 	    			new Concentrating1dMesher(sLowerBound, sUpperBound, xGrid_,
@@ -210,6 +215,11 @@ namespace QuantLib {
 	        evolver->setStep(dt);
 			evolver->step(p, t + dt);
 			t+=dt;
+
+			std::copy(x.begin(), x.end(), xm_->row_begin(i-1));
+			std::copy(p.begin(), p.end(), pm_->row_begin(i-1));
+			pFct_[i-1] = boost::make_shared<CubicNaturalSpline>(
+				xm_->row_begin(i-1), xm_->row_end(i-1), pm_->row_begin(i-1));
 	    }
 	}
 
@@ -218,9 +228,9 @@ namespace QuantLib {
 
 	    const CubicNaturalSpline pSpline(x.begin(), x.end(), p.begin());
 
-		//const Real scale = DiscreteSimpsonIntegral()(x, p);
+		const Real scale = DiscreteSimpsonIntegral()(x, p);
 
-		const Real scale = GaussLobattoIntegral(10000, 100*QL_EPSILON)(pSpline, x.front(), x.back());
+		//const Real scale = GaussLobattoIntegral(10000, 100*QL_EPSILON)(pSpline, x.front(), x.back());
 
 		std::cout << "rescale factor is " << scale << std::endl;
 

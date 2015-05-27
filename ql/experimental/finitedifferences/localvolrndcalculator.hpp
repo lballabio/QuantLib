@@ -28,12 +28,15 @@
 #include <ql/math/matrix.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/patterns/lazyobject.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/experimental/finitedifferences/riskneutraldensitycalculator.hpp>
+
+#include <vector>
 
 namespace QuantLib {
 	class Quote;
 	class TimeGrid;
-	class YieldTermStructure;
+	class Interpolation;
 	class LocalVolTermStructure;
 
 	class LocalVolRNDCalculator : public RiskNeutralDensityCalculator,
@@ -44,7 +47,7 @@ namespace QuantLib {
 			const boost::shared_ptr<YieldTermStructure>& rTS,
 			const boost::shared_ptr<YieldTermStructure>& qTS,
 			const boost::shared_ptr<LocalVolTermStructure>& localVol,
-			Size xGrid = 101, Size tGrid = 51, Real eps = 1e-10);
+			Size xGrid = 101, Size tGrid = 51, Real eps = 1e-6);
 
 		LocalVolRNDCalculator(
 			const boost::shared_ptr<Quote>& spot,
@@ -52,7 +55,7 @@ namespace QuantLib {
 			const boost::shared_ptr<YieldTermStructure>& qTS,
 			const boost::shared_ptr<LocalVolTermStructure>& localVol,
 			const boost::shared_ptr<TimeGrid>& timeGrid,
-			Size xGrid = 101, Real eps = 1e-10);
+			Size xGrid = 101, Real eps = 1e-6);
 
 		Real pdf(Real x, Time t) const;
 		Real cdf(Real x, Time t) const;
@@ -74,7 +77,8 @@ namespace QuantLib {
 		const boost::shared_ptr<YieldTermStructure> rTS_;
 		const boost::shared_ptr<YieldTermStructure> qTS_;
 		const boost::shared_ptr<TimeGrid> timeGrid_;
-		const boost::shared_ptr<Matrix> x_, vols_;
+		const boost::shared_ptr<Matrix> xm_, pm_;
+		mutable std::vector<boost::shared_ptr<Interpolation> > pFct_;
 	};
 }
 

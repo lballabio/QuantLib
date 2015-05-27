@@ -258,13 +258,13 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
 	const boost::shared_ptr<LocalVolTermStructure> localVol(
 		new HyperbolicLocalVolatility(s0, beta, sig));
 
-	const boost::shared_ptr<TimeGrid> timeGrid(new TimeGrid(1.0, 51));
+	const boost::shared_ptr<TimeGrid> timeGrid(new TimeGrid(1.0, 26));
 
 	const boost::shared_ptr<LocalVolRNDCalculator> rndCalc(
 		new LocalVolRNDCalculator(spot, rTS, qTS, localVol, timeGrid));
 
 	rndCalc->pdf(1.0, 1.0);
-	//std::cout << rndCalc->cdf(std::log(s0), 1.0) << std::endl;
+//	std::cout << rndCalc->x(timeGrid->at(26)+1) << std::endl;
 }
 
 
