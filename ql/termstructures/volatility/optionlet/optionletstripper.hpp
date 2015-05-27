@@ -27,6 +27,7 @@
 
 #include <ql/termstructures/volatility/optionlet/strippedoptionletbase.hpp>
 #include <ql/termstructures/volatility/capfloor/capfloortermvolsurface.hpp>
+#include <ql/termstructures/volatility/volatilitytype.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
@@ -40,7 +41,6 @@ namespace QuantLib {
       public:
         //! \name StrippedOptionletBase interface
         //@{
-        enum Model { Normal, ShiftedLognormal };
         const std::vector<Rate>& optionletStrikes(Size i) const;
         const std::vector<Volatility>& optionletVolatilities(Size i) const;
 
@@ -62,14 +62,14 @@ namespace QuantLib {
         boost::shared_ptr<CapFloorTermVolSurface> termVolSurface() const;
         boost::shared_ptr<IborIndex> iborIndex() const;
         Real displacement() const;
-        Model model() const;
+        VolatilityType volatilityType() const;
 
       protected:
         OptionletStripper(const boost::shared_ptr<CapFloorTermVolSurface>&,
                           const boost::shared_ptr<IborIndex>& iborIndex_,
                           const Handle<YieldTermStructure>& discount =
                                                  Handle<YieldTermStructure>(),
-                          Model model = ShiftedLognormal,
+                          VolatilityType type = ShiftedLognormal,
                           Real displacement = 0.0);
         boost::shared_ptr<CapFloorTermVolSurface> termVolSurface_;
         boost::shared_ptr<IborIndex> iborIndex_;
@@ -88,13 +88,9 @@ namespace QuantLib {
         mutable std::vector<Time> optionletAccrualPeriods_;
 
         std::vector<Period> capFloorLengths_;
-        Model model_;
+        VolatilityType volatilityType_;
         Real displacement_;
     };
-
-    /*! \relates OptionletStripper::Model */
-    std::ostream& operator<<(std::ostream&,
-                             const OptionletStripper::Model &);
 
 }
 

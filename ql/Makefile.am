@@ -48,6 +48,7 @@ this_include_HEADERS = \
 	qldefines.hpp \
 	quantlib.hpp \
 	quote.hpp \
+	rebatedexercise.hpp \
 	settings.hpp \
 	stochasticprocess.hpp \
 	termstructure.hpp \
@@ -70,6 +71,7 @@ libQuantLib_la_SOURCES = \
     money.cpp \
     position.cpp \
     prices.cpp \
+	rebatedexercise.cpp \
     settings.cpp \
 	stochasticprocess.cpp \
 	termstructure.cpp \

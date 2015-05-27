@@ -19,13 +19,13 @@
 
 #include "gsr.hpp"
 #include "utilities.hpp"
-#include <ql/experimental/models/gsrprocess.hpp>
-#include <ql/experimental/models/gsr.hpp>
-#include <ql/experimental/models/nonstandardswap.hpp>
-#include <ql/experimental/models/nonstandardswaption.hpp>
-#include <ql/experimental/models/gaussian1dswaptionengine.hpp>
-#include <ql/experimental/models/gaussian1djamshidianswaptionengine.hpp>
-#include <ql/experimental/models/gaussian1dnonstandardswaptionengine.hpp>
+#include <ql/processes/gsrprocess.hpp>
+#include <ql/models/shortrate/onefactormodels/gsr.hpp>
+#include <ql/instruments/nonstandardswap.hpp>
+#include <ql/instruments/nonstandardswaption.hpp>
+#include <ql/pricingengines/swaption/gaussian1dswaptionengine.hpp>
+#include <ql/pricingengines/swaption/gaussian1djamshidianswaptionengine.hpp>
+#include <ql/pricingengines/swaption/gaussian1dnonstandardswaptionengine.hpp>
 #include <ql/indexes/swap/euriborswap.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/target.hpp>

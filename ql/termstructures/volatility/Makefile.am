@@ -8,22 +8,33 @@ this_include_HEADERS = \
     all.hpp \
     abcd.hpp \
     abcdcalibration.hpp \
+    atmadjustedsmilesection.hpp \
+    atmsmilesection.hpp \
     flatsmilesection.hpp \
+    gaussian1dsmilesection.hpp \
     interpolatedsmilesection.hpp \
+    kahalesmilesection.hpp \
     sabr.hpp \
     sabrinterpolatedsmilesection.hpp \
     sabrsmilesection.hpp \
     smilesection.hpp \
-    spreadedsmilesection.hpp
+    smilesectionutils.hpp \
+    spreadedsmilesection.hpp \
+    volatilitytype.hpp
 
 libVolTermStructures_la_SOURCES = \
     abcd.cpp \
     abcdcalibration.cpp \
+    atmadjustedsmilesection.cpp \
+    atmsmilesection.cpp \
     flatsmilesection.cpp \
+    gaussian1dsmilesection.cpp \
+    kahalesmilesection.cpp \
     sabr.cpp \
     sabrinterpolatedsmilesection.cpp \
     sabrsmilesection.cpp \
     smilesection.cpp \
+    smilesectionutils.cpp \
     spreadedsmilesection.cpp
 
 libVolTermStructures_la_LIBADD = \

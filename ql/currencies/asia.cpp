@@ -268,7 +268,7 @@ namespace QuantLib {
     VNDCurrency::VNDCurrency() {
         static boost::shared_ptr<Data> twdData(
                                      new Data("Vietnamese Dong", "VND", 704,
-                                              "₫", "", 100,
+                                              "", "", 100,
                                               Rounding(),
                                               "%1$.0f %3%"));
         data_ = twdData;

@@ -30,17 +30,19 @@
 
 namespace QuantLib {
 
-    //! Futures type enumeration
-    /*! These conventions specify the kind of futures type. It should be moved
-        inside the Futures Instrument class, when this will be available...
-    */
-    enum FuturesType {
-        IMM, /*!< Chicago Mercantile Internation Money Market, i.e. third Wednesday of March, June, September, December */
-        ASX, /*!< Australian Security Exchange, i.e. second Friday of March, June, September, December */
+    struct Futures {
+        //! Futures type enumeration
+        /*! These conventions specify the kind of futures type. */
+        enum Type {
+            IMM, /*!< Chicago Mercantile Internation Money Market, i.e.
+                      third Wednesday of March, June, September, December */
+            ASX, /*!< Australian Security Exchange, i.e. second Friday
+                      of March, June, September, December */
+        };
     };
 
-    /*! \relates FuturesType */
-    std::ostream& operator<<(std::ostream&, FuturesType);
+    /*! \relates Futures */
+    std::ostream& operator<<(std::ostream&, Futures::Type);
 
 }
 
