@@ -51,19 +51,19 @@ namespace QuantLib {
                                          bool endOfMonth,
                                          const DayCounter& dayCounter,
                                          const Handle<Quote>& convAdj,
-                                         FuturesType type)
+                                         Futures::Type type)
     : RateHelper(price), convAdj_(convAdj) {
         switch (type) {
-        case IMM:
+          case Futures::IMM:
             QL_REQUIRE(IMM::isIMMdate(iborStartDate, false),
                        iborStartDate << " is not a valid IMM date");
             break;
-        case ASX:
+          case Futures::ASX:
             QL_REQUIRE(ASX::isASXdate(iborStartDate, false),
                        iborStartDate << " is not a valid ASX date");
             break;
-        default:
-            QL_FAIL("unknown FuturesType (" << Integer(type) << ")");
+          default:
+            QL_FAIL("unknown futures type (" << Integer(type) << ")");
         }
         earliestDate_ = iborStartDate;
         latestDate_ = calendar.advance(iborStartDate, lengthInMonths*Months,
@@ -81,21 +81,21 @@ namespace QuantLib {
                                          bool endOfMonth,
                                          const DayCounter& dayCounter,
                                          Rate convAdj,
-                                         FuturesType type)
+                                         Futures::Type type)
     : RateHelper(price),
       convAdj_(Handle<Quote>(shared_ptr<Quote>(new SimpleQuote(convAdj))))
     {
         switch (type) {
-        case IMM:
+          case Futures::IMM:
             QL_REQUIRE(IMM::isIMMdate(iborStartDate, false),
                 iborStartDate << " is not a valid IMM date");
             break;
-        case ASX:
+          case Futures::ASX:
             QL_REQUIRE(ASX::isASXdate(iborStartDate, false),
                 iborStartDate << " is not a valid ASX date");
             break;
-        default:
-            QL_FAIL("unknown FuturesType (" << Integer(type) << ")");
+          default:
+            QL_FAIL("unknown futures type (" << Integer(type) << ")");
         }
         earliestDate_ = iborStartDate;
         latestDate_ = calendar.advance(iborStartDate, lengthInMonths*Months,
@@ -108,10 +108,10 @@ namespace QuantLib {
                                          const Date& iborEndDate,
                                          const DayCounter& dayCounter,
                                          const Handle<Quote>& convAdj,
-                                         FuturesType type)
+                                         Futures::Type type)
     : RateHelper(price), convAdj_(convAdj) {
         switch (type) {
-        case IMM:
+          case Futures::IMM:
             QL_REQUIRE(IMM::isIMMdate(iborStartDate, false),
                        iborStartDate << " is not a valid IMM date");
             if (iborEndDate == Date()) {
@@ -128,7 +128,7 @@ namespace QuantLib {
                 latestDate_ = iborEndDate;
             }
             break;
-        case ASX:
+          case Futures::ASX:
             QL_REQUIRE(ASX::isASXdate(iborStartDate, false),
                        iborStartDate << " is not a valid ASX date");
             if (iborEndDate == Date()) {
@@ -145,8 +145,8 @@ namespace QuantLib {
                 latestDate_ = iborEndDate;
             }
             break;
-        default:
-            QL_FAIL("unknown FuturesType (" << Integer(type) << ")");
+          default:
+            QL_FAIL("unknown futures type (" << Integer(type) << ")");
         }
         earliestDate_ = iborStartDate;
 
@@ -160,12 +160,12 @@ namespace QuantLib {
                                          const Date& iborEndDate,
                                          const DayCounter& dayCounter,
                                          Rate convAdj,
-                                         FuturesType type)
+                                         Futures::Type type)
     : RateHelper(price),
       convAdj_(Handle<Quote>(shared_ptr<Quote>(new SimpleQuote(convAdj))))
     {
         switch (type) {
-        case IMM:
+          case Futures::IMM:
             QL_REQUIRE(IMM::isIMMdate(iborStartDate, false),
                        iborStartDate << " is not a valid IMM date");
             if (iborEndDate == Date()) {
@@ -182,7 +182,7 @@ namespace QuantLib {
                 latestDate_ = iborEndDate;
             }
             break;
-        case ASX:
+          case Futures::ASX:
             QL_REQUIRE(ASX::isASXdate(iborStartDate, false),
                 iborStartDate << " is not a valid ASX date");
             if (iborEndDate == Date()) {
@@ -199,8 +199,8 @@ namespace QuantLib {
                 latestDate_ = iborEndDate;
             }
             break;
-        default:
-            QL_FAIL("unknown FuturesType (" << Integer(type) << ")");
+          default:
+            QL_FAIL("unknown futures type (" << Integer(type) << ")");
         }
         earliestDate_ = iborStartDate;
 
@@ -208,22 +208,22 @@ namespace QuantLib {
     }
 
     FuturesRateHelper::FuturesRateHelper(const Handle<Quote>& price,
-        const Date& iborStartDate,
+                                         const Date& iborStartDate,
                                          const shared_ptr<IborIndex>& i,
                                          const Handle<Quote>& convAdj,
-                                         FuturesType type)
+                                         Futures::Type type)
     : RateHelper(price), convAdj_(convAdj) {
         switch (type) {
-        case IMM:
+          case Futures::IMM:
             QL_REQUIRE(IMM::isIMMdate(iborStartDate, false),
                        iborStartDate << " is not a valid IMM date");
             break;
-        case ASX:
+          case Futures::ASX:
             QL_REQUIRE(ASX::isASXdate(iborStartDate, false),
                        iborStartDate << " is not a valid ASX date");
             break;
-        default:
-            QL_FAIL("unknown FuturesType (" << Integer(type) << ")");
+          default:
+            QL_FAIL("unknown futures type (" << Integer(type) << ")");
         }
         earliestDate_ = iborStartDate;
         const Calendar& cal = i->fixingCalendar();
@@ -238,21 +238,21 @@ namespace QuantLib {
                                          const Date& iborStartDate,
                                          const shared_ptr<IborIndex>& i,
                                          Rate convAdj,
-                                         FuturesType type)
+                                         Futures::Type type)
     : RateHelper(price),
       convAdj_(Handle<Quote>(shared_ptr<Quote>(new SimpleQuote(convAdj))))
     {
         switch (type) {
-        case IMM:
+          case Futures::IMM:
             QL_REQUIRE(IMM::isIMMdate(iborStartDate, false),
                 iborStartDate << " is not a valid IMM date");
             break;
-        case ASX:
+          case Futures::ASX:
             QL_REQUIRE(ASX::isASXdate(iborStartDate, false),
                 iborStartDate << " is not a valid ASX date");
             break;
-        default:
-            QL_FAIL("unknown FuturesType (" << Integer(type) << ")");
+          default:
+            QL_FAIL("unknown futures type (" << Integer(type) << ")");
         }
         earliestDate_ = iborStartDate;
         const Calendar& cal = i->fixingCalendar();
