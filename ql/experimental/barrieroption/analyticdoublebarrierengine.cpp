@@ -64,6 +64,13 @@ namespace QuantLib {
                  case DoubleBarrier::KnockOut:
                    results_.value = callKO();
                    break;
+                 case DoubleBarrier::KIKO:
+                 case DoubleBarrier::KOKI:
+                   QL_FAIL("unsupported double-barrier type: "
+                           << barrierType);
+                 default:
+                   QL_FAIL("unknown double-barrier type: "
+                           << barrierType);
                }
                break;
              case Option::Put:
@@ -74,6 +81,13 @@ namespace QuantLib {
                  case DoubleBarrier::KnockOut:
                    results_.value = putKO();
                    break;
+                 case DoubleBarrier::KIKO:
+                 case DoubleBarrier::KOKI:
+                   QL_FAIL("unsupported double-barrier type: "
+                           << barrierType);
+                 default:
+                   QL_FAIL("unknown double-barrier type: "
+                           << barrierType);
                }
                break;
              default:
