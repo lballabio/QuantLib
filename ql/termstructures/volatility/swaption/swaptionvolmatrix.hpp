@@ -4,6 +4,7 @@
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2006 François du Vignaud
  Copyright (C) 2006, 2008 Ferdinando Ametrano
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -58,7 +59,10 @@ namespace QuantLib {
                     const std::vector<Period>& optionTenors,
                     const std::vector<Period>& swapTenors,
                     const std::vector<std::vector<Handle<Quote> > >& vols,
-                    const DayCounter& dayCounter);
+                    const DayCounter& dayCounter,
+                    const bool flatExtrapolation = false,
+                    const std::vector<std::vector<Real> >& shifts
+                    = std::vector<std::vector<Real> >());
         //! fixed reference date, floating market data
         SwaptionVolatilityMatrix(
                     const Date& referenceDate,
@@ -67,7 +71,10 @@ namespace QuantLib {
                     const std::vector<Period>& optionTenors,
                     const std::vector<Period>& swapTenors,
                     const std::vector<std::vector<Handle<Quote> > >& vols,
-                    const DayCounter& dayCounter);
+                    const DayCounter& dayCounter,
+                    const bool flatExtrapolation = false,
+                    const std::vector<std::vector<Real> >& shifts
+                    = std::vector<std::vector<Real> >());
         //! floating reference date, fixed market data
         SwaptionVolatilityMatrix(
                     const Calendar& calendar,
@@ -75,7 +82,9 @@ namespace QuantLib {
                     const std::vector<Period>& optionTenors,
                     const std::vector<Period>& swapTenors,
                     const Matrix& volatilities,
-                    const DayCounter& dayCounter);
+                    const DayCounter& dayCounter,
+                    const bool flatExtrapolation = false,
+                    const Matrix& shifts = Matrix());
         //! fixed reference date, fixed market data
         SwaptionVolatilityMatrix(
                     const Date& referenceDate,
@@ -84,13 +93,17 @@ namespace QuantLib {
                     const std::vector<Period>& optionTenors,
                     const std::vector<Period>& swapTenors,
                     const Matrix& volatilities,
-                    const DayCounter& dayCounter);
+                    const DayCounter& dayCounter,
+                    const bool flatExtrapolation = false,
+                    const Matrix& shifts = Matrix());
         // fixed reference date and fixed market data, option dates
         SwaptionVolatilityMatrix(const Date& referenceDate,
                                  const std::vector<Date>& optionDates,
                                  const std::vector<Period>& swapTenors,
                                  const Matrix& volatilities,
-                                 const DayCounter& dayCounter);
+                                 const DayCounter& dayCounter,
+                                 const bool flatExtrapolation = false,
+                                 const Matrix& shifts = Matrix());
         //! \name LazyObject interface
         //@{
         void performCalculations() const;
@@ -133,13 +146,21 @@ namespace QuantLib {
         Volatility volatilityImpl(Time optionTime,
                                   Time swapLength,
                                   Rate strike) const;
+        Real shift(Time optionTime, Time swapLength) const {
+            calculate();
+            Real tmp = interpolationShifts_(swapLength, optionTime, true);
+            return tmp;
+        }
       private:
         void checkInputs(Size volRows,
-                         Size volsColumns) const;
+                         Size volsColumns,
+                         Size shiftRows,
+                         Size shiftsColumns) const;
         void registerWithMarketData();
         std::vector<std::vector<Handle<Quote> > > volHandles_;
-        mutable Matrix volatilities_;
-        Interpolation2D interpolation_;
+        std::vector<std::vector<Real> > shiftValues_;
+        mutable Matrix volatilities_, shifts_;
+        Interpolation2D interpolation_, interpolationShifts_;
     };
 
     // inline definitions

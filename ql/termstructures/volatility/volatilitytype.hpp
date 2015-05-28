@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,24 +17,33 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_dates_hpp
-#define quantlib_test_dates_hpp
+/*! \file volatilitytype.hpp
+    \brief volatility types
+*/
 
-#include <boost/test/unit_test.hpp>
+#ifndef quantlib_volatility_type_hpp
+#define quantlib_volatility_type_hpp
 
-/* remember to document new and/or updated tests in the Doxygen
-   comment block of the corresponding class */
+#include <ql/qldefines.hpp>
+#include <ostream>
 
-class DateTest {
-  public:
-    static void testConsistency();
-    static void ecbDates();
-    static void immDates();
-    static void asxDates();
-    static void isoDates();
-    static void parseDates();
-    static boost::unit_test_framework::test_suite* suite();
-};
+namespace QuantLib {
+
+    enum VolatilityType { ShiftedLognormal, Normal };
+
+    inline std::ostream& operator<<(std::ostream& out,
+                                    const VolatilityType& t) {
+        switch(t) {
+          case Normal:
+            return out << "Normal";
+          case ShiftedLognormal:
+            return out << "ShiftedLognormal";
+          default:
+            return out << "Unknown volatility type (" << t << ")";
+        }
+    };
+
+}
 
 
 #endif
