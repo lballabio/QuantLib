@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file WulinYongDoubleBarrierEngine.hpp
+/*! \file wulinyongdoublebarrierengine.hpp
     \brief Wulin Suo, Yong Wang double-barrier option engine
 */
 

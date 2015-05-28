@@ -316,7 +316,7 @@ namespace QuantLib {
             notional, which aggregated add up to the requested loss value.
             Notice then that it refers to the total portfolio, not the tranched
             basket.
-            \to do  Fix this.
+            \todo  Fix this.
             \par
             see equation 8 in <b>VAR: who contributes and how much?</b> by 
             R.Martin, K.Thompson, and C. Browne in Risk Magazine, August 2001
