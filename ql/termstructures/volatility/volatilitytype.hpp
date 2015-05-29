@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2012 StatPro Italia srl
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,25 +17,33 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_schedule_hpp
-#define quantlib_test_schedule_hpp
+/*! \file volatilitytype.hpp
+    \brief volatility types
+*/
 
-#include <boost/test/unit_test.hpp>
+#ifndef quantlib_volatility_type_hpp
+#define quantlib_volatility_type_hpp
 
-/* remember to document new and/or updated tests in the Doxygen
-   comment block of the corresponding class */
+#include <ql/qldefines.hpp>
+#include <ostream>
 
-class ScheduleTest {
-  public:
-    static void testDailySchedule();
-    static void testEndDateWithEomAdjustment();
-    static void testDatesPastEndDateWithEomAdjustment();
-    static void testForwardDatesWithEomAdjustment();
-    static void testBackwardDatesWithEomAdjustment();
-    static void testDoubleFirstDateWithEomAdjustment();
-    static void testDateConstructor();
-    static boost::unit_test_framework::test_suite* suite();
-};
+namespace QuantLib {
+
+    enum VolatilityType { ShiftedLognormal, Normal };
+
+    inline std::ostream& operator<<(std::ostream& out,
+                                    const VolatilityType& t) {
+        switch(t) {
+          case Normal:
+            return out << "Normal";
+          case ShiftedLognormal:
+            return out << "ShiftedLognormal";
+          default:
+            return out << "Unknown volatility type (" << t << ")";
+        }
+    };
+
+}
 
 
 #endif

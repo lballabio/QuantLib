@@ -36,7 +36,7 @@ namespace QuantLib {
                                      const Period& forwardStart)
     : swapTenor_(swapTenor), iborIndex_(index),
       fixedRate_(fixedRate), forwardStart_(forwardStart),
-      settlDays_(iborIndex_->fixingDays()),
+      settlementDays_(iborIndex_->fixingDays()),
       fixedCalendar_(index->fixingCalendar()),
       floatCalendar_(index->fixingCalendar()),
       type_(VanillaSwap::Payer), nominal_(1.0),
@@ -68,7 +68,7 @@ namespace QuantLib {
             // then move to the next business day
             refDate = floatCalendar_.adjust(refDate);
             Date spotDate = floatCalendar_.advance(refDate,
-                                                   settlDays_*Days);
+                                                   settlementDays_*Days);
             startDate = spotDate+forwardStart_;
             if (forwardStart_.length()<0)
                 startDate = floatCalendar_.adjust(startDate,
@@ -190,8 +190,8 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeVanillaSwap& MakeVanillaSwap::withSettlementDays(Natural settlDays) {
-        settlDays_ = settlDays;
+    MakeVanillaSwap& MakeVanillaSwap::withSettlementDays(Natural settlementDays) {
+        settlementDays_ = settlementDays;
         effectiveDate_ = Date();
         return *this;
     }

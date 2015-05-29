@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Mario Pucci
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,8 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file smilesection.hpp
-    \brief Smile section base class
+/*! \file sabrsmilesection.hpp
+    \brief sabr smile section class
 */
 
 #ifndef quantlib_sabr_smile_section_hpp
@@ -34,19 +35,21 @@ namespace QuantLib {
       public:
         SabrSmileSection(Time timeToExpiry,
                          Rate forward,
-                         const std::vector<Real>& sabrParameters);
+                         const std::vector<Real>& sabrParameters,
+                         const Real shift = 0.0);
         SabrSmileSection(const Date& d,
                          Rate forward,
                          const std::vector<Real>& sabrParameters,
-                         const DayCounter& dc = Actual365Fixed());
-        Real minStrike () const { return 0.0; }
+                         const DayCounter& dc = Actual365Fixed(),
+                         const Real shift = 0.0);
+        Real minStrike () const { return -shift_; }
         Real maxStrike () const { return QL_MAX_REAL; }
         Real atmLevel() const { return forward_; }
       protected:
         Real varianceImpl(Rate strike) const;
         Volatility volatilityImpl(Rate strike) const;
       private:
-        Real alpha_, beta_, nu_, rho_, forward_;
+        Real alpha_, beta_, nu_, rho_, forward_, shift_;
     };
 
 

@@ -278,7 +278,7 @@ namespace {
                 immDate = IMM::nextDate(immDate, false);
                 immFutHelpers[i] = boost::shared_ptr<RateHelper>(new
                     FuturesRateHelper(r, immDate, euribor3m, Handle<Quote>(),
-                                      FuturesType::IMM));
+                                      Futures::IMM));
             }
             Date asxDate = Date();
             for (Size i = 0; i<asxFuts; i++) {
@@ -286,7 +286,7 @@ namespace {
                 asxDate = ASX::nextDate(asxDate, false);
                 asxFutHelpers[i] = boost::shared_ptr<RateHelper>(new
                     FuturesRateHelper(r, asxDate, euribor3m, Handle<Quote>(),
-                                      FuturesType::ASX));
+                                      Futures::ASX));
             }
 
             for (Size i=0; i<bonds; i++) {

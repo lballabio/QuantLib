@@ -24,14 +24,14 @@ Copyright (C) 2015 Maddalena Zanzi
 
 namespace QuantLib {
 
-    std::ostream& operator<<(std::ostream& out, FuturesType f) {
+    std::ostream& operator<<(std::ostream& out, Futures::Type f) {
         switch (f) {
-        case IMM:
+          case Futures::IMM:
             return out << "IMM";
-        case ASX:
+          case Futures::ASX:
             return out << "ASX";
-        default:
-            QL_FAIL("unknown FuturesType (" << Integer(f) << ")");
+          default:
+            QL_FAIL("unknown futures type (" << Integer(f) << ")");
         }
     }
 

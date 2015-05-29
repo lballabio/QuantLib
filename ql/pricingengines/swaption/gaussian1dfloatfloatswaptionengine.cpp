@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2013, 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,6 +18,7 @@
 */
 
 #include <ql/pricingengines/swaption/gaussian1dfloatfloatswaptionengine.hpp>
+#include <ql/experimental/coupons/swapspreadindex.hpp> // internal
 
 namespace QuantLib {
 
@@ -26,7 +27,9 @@ namespace QuantLib {
         Date settlement = model_->termStructure()->referenceDate();
 
         if (arguments_.exercise->dates().back() <=
-            settlement) { // swaption is expired, possibly generated swap is not
+            settlement) { // swaption is expired,
+                          // possibly generated swap
+                          // is not
                           // valued
             results_.value = 0.0;
             return;
@@ -36,7 +39,7 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<RebatedExercise>(arguments_.exercise);
 
         std::pair<Real, Real> result =
-            npvs(settlement, 0.0, includeTodaysExercise_);
+            npvs(settlement, 0.0, includeTodaysExercise_, true);
 
         results_.value = result.first;
         results_.additionalResults["underlyingValue"] = result.second;
@@ -68,6 +71,7 @@ namespace QuantLib {
             arguments_.leg1ResetDates.begin();
 
         // very simple initial guess
+        // check guess for nominal and weighted maturity !
 
         Array initial(3);
         Real nominalSum1 = 0.0;
@@ -92,8 +96,8 @@ namespace QuantLib {
 
     // calculate npv and underlying npv as of expiry date
     const std::pair<Real, Real> Gaussian1dFloatFloatSwaptionEngine::npvs(
-        const Date &expiry, const Real y,
-        const bool includeExerciseOnExpiry) const {
+        const Date &expiry, const Real y, const bool includeExerciseOnExpiry,
+        const bool considerProbabilities) const {
 
         // pricing
 
@@ -138,6 +142,25 @@ namespace QuantLib {
         Array z = model_->yGrid(stddevs_, integrationPoints_);
         Array p(z.size(), 0.0), pa(z.size(), 0.0);
 
+        // for probability computation
+        std::vector<Array> npvp0, npvp1;
+        // how many active exercise dates are there ?
+        Size noEx =  arguments_.exercise->dates().size() -
+            (std::upper_bound(arguments_.exercise->dates().begin(),
+                         arguments_.exercise->dates().end(),
+                         expiry - (includeExerciseOnExpiry ? 1 : 0)) -
+             arguments_.exercise->dates().begin());
+        Size exIdx = noEx; // current exercise index
+        if (considerProbabilities && probabilities_ != None) {
+            for (Size i = 0; i < noEx+1 ; ++i) {
+                Array npvTmp0(2 * integrationPoints_ + 1, 0.0);
+                Array npvTmp1(2 * integrationPoints_ + 1, 0.0);
+                npvp0.push_back(npvTmp0);
+                npvp1.push_back(npvTmp1);
+            }
+        }
+        // end probabkility computation
+
         Date event1 = Null<Date>(), event0;
         Time event1Time = Null<Real>(), event0Time;
 
@@ -147,15 +170,19 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<IborIndex>(arguments_.index1);
         boost::shared_ptr<SwapIndex> cms1 =
             boost::dynamic_pointer_cast<SwapIndex>(arguments_.index1);
+        boost::shared_ptr<SwapSpreadIndex> cmsspread1 =
+            boost::dynamic_pointer_cast<SwapSpreadIndex>(arguments_.index1);
         boost::shared_ptr<IborIndex> ibor2 =
             boost::dynamic_pointer_cast<IborIndex>(arguments_.index2);
         boost::shared_ptr<SwapIndex> cms2 =
             boost::dynamic_pointer_cast<SwapIndex>(arguments_.index2);
+        boost::shared_ptr<SwapSpreadIndex> cmsspread2 =
+            boost::dynamic_pointer_cast<SwapSpreadIndex>(arguments_.index2);
 
-        QL_REQUIRE(ibor1 != NULL || cms1 != NULL,
-                   "index1 must be ibor or swap index");
-        QL_REQUIRE(ibor2 != NULL || cms2 != NULL,
-                   "index2 must be ibor or swap index");
+        QL_REQUIRE(ibor1 != NULL || cms1 != NULL || cmsspread1 != NULL,
+                   "index1 must be ibor or swap or swap spread index");
+        QL_REQUIRE(ibor2 != NULL || cms2 != NULL || cmsspread2 != NULL,
+                   "index2 must be ibor or swap or swap spread index");
 
         do {
 
@@ -314,6 +341,96 @@ namespace QuantLib {
                 npv0[k] = price;
                 npv0a[k] = pricea;
 
+                // for probability computation
+                if (considerProbabilities && probabilities_ != None) {
+                    for (Size m = 0; m < npvp0.size(); m++) {
+                        Real price = 0.0;
+                        if (event1Time != Null<Real>()) {
+                            Real zSpreadDf =
+                                oas_.empty()
+                                    ? 1.0
+                                    : std::exp(-oas_->value() *
+                                               (event1Time - event0Time));
+                            Array yg = model_->yGrid(
+                                stddevs_, integrationPoints_, event1Time,
+                                event0Time, event0 > expiry ? z[k] : 0.0);
+                            CubicInterpolation payoff0(
+                                z.begin(), z.end(), npvp1[m].begin(),
+                                CubicInterpolation::Spline, true,
+                                CubicInterpolation::Lagrange, 0.0,
+                                CubicInterpolation::Lagrange, 0.0);
+                            for (Size i = 0; i < yg.size(); i++) {
+                                p[i] = payoff0(yg[i], true);
+                            }
+                            CubicInterpolation payoff1(
+                                z.begin(), z.end(), p.begin(),
+                                CubicInterpolation::Spline, true,
+                                CubicInterpolation::Lagrange, 0.0,
+                                CubicInterpolation::Lagrange, 0.0);
+                            for (Size i = 0; i < z.size() - 1; i++) {
+                                price +=
+                                    model_->gaussianShiftedPolynomialIntegral(
+                                        0.0, payoff1.cCoefficients()[i],
+                                        payoff1.bCoefficients()[i],
+                                        payoff1.aCoefficients()[i], p[i], z[i],
+                                        z[i], z[i + 1]) *
+                                    zSpreadDf;
+                            }
+                            if (extrapolatePayoff_) {
+                                if (flatPayoffExtrapolation_) {
+                                    price +=
+                                        model_
+                                            ->gaussianShiftedPolynomialIntegral(
+                                                  0.0, 0.0, 0.0, 0.0,
+                                                  p[z.size() - 2],
+                                                  z[z.size() - 2],
+                                                  z[z.size() - 1], 100.0) *
+                                        zSpreadDf;
+                                    price +=
+                                        model_
+                                            ->gaussianShiftedPolynomialIntegral(
+                                                  0.0, 0.0, 0.0, 0.0, p[0],
+                                                  z[0], -100.0, z[0]) *
+                                        zSpreadDf;
+                                } else {
+                                    if (type == Option::Call)
+                                        price +=
+                                            model_
+                                                ->gaussianShiftedPolynomialIntegral(
+                                                      0.0,
+                                                      payoff1.cCoefficients()
+                                                          [z.size() - 2],
+                                                      payoff1.bCoefficients()
+                                                          [z.size() - 2],
+                                                      payoff1.aCoefficients()
+                                                          [z.size() - 2],
+                                                      p[z.size() - 2],
+                                                      z[z.size() - 2],
+                                                      z[z.size() - 1], 100.0) *
+                                            zSpreadDf;
+                                    if (type == Option::Put)
+                                        price +=
+                                            model_
+                                                ->gaussianShiftedPolynomialIntegral(
+                                                      0.0,
+                                                      payoff1
+                                                          .cCoefficients()[0],
+                                                      payoff1
+                                                          .bCoefficients()[0],
+                                                      payoff1
+                                                          .aCoefficients()[0],
+                                                      p[0], z[0], -100.0,
+                                                      z[0]) *
+                                            zSpreadDf;
+                                }
+                            }
+                        }
+
+                        npvp0[m][k] = price;
+                    }
+                }
+                // end probability computation
+
                 // event date calculations
 
                 if (isEventDate) {
@@ -344,19 +461,36 @@ namespace QuantLib {
                             if (arguments_.leg1IsRedemptionFlow[j]) {
                                 amount = arguments_.leg1Coupons[j];
                             } else {
+                                Real estFixing = 0.0;
+                                if(ibor1 != NULL) {
+                                    estFixing = model_->forwardRate(
+                                        arguments_.leg1FixingDates[j], event0,
+                                        zk, ibor1);
+                                }
+                                if(cms1 != NULL) {
+                                    estFixing = model_->swapRate(
+                                        arguments_.leg1FixingDates[j],
+                                        cms1->tenor(), event0, zk, cms1);
+                                }
+                                if (cmsspread1 != NULL)
+                                    estFixing =
+                                        cmsspread1->gearing1() *
+                                            model_->swapRate(
+                                                arguments_.leg1FixingDates[j],
+                                                cmsspread1->swapIndex1()
+                                                    ->tenor(),
+                                                event0, zk,
+                                                cmsspread1->swapIndex1()) +
+                                        cmsspread1->gearing2() *
+                                            model_->swapRate(
+                                                arguments_.leg1FixingDates[j],
+                                                cmsspread1->swapIndex2()
+                                                    ->tenor(),
+                                                event0, zk,
+                                                cmsspread1->swapIndex2());
                                 Real rate =
                                     arguments_.leg1Spreads[j] +
-                                    arguments_.leg1Gearings[j] *
-                                        (ibor1 != NULL
-                                             ? model_->forwardRate(
-                                                   arguments_.leg1FixingDates
-                                                       [j],
-                                                   event0, zk, ibor1)
-                                             : model_->swapRate(
-                                                   arguments_.leg1FixingDates
-                                                       [j],
-                                                   cms1->tenor(), event0, zk,
-                                                   cms1));
+                                    arguments_.leg1Gearings[j] * estFixing;
                                 if (arguments_.leg1CappedRates[j] !=
                                     Null<Real>())
                                     rate = std::min(
@@ -411,19 +545,30 @@ namespace QuantLib {
                             if (arguments_.leg2IsRedemptionFlow[j]) {
                                 amount = arguments_.leg2Coupons[j];
                             } else {
+                                Real estFixing = 0.0;
+                                if(ibor2 != NULL)
+                                    estFixing = model_->forwardRate(arguments_.leg2FixingDates[j],event0,zk,ibor2);
+                                if(cms2 != NULL)
+                                    estFixing = model_->swapRate(arguments_.leg2FixingDates[j],cms2->tenor(),event0,zk,cms2);
+                                if (cmsspread2 != NULL)
+                                    estFixing =
+                                        cmsspread2->gearing1() *
+                                            model_->swapRate(
+                                                arguments_.leg2FixingDates[j],
+                                                cmsspread2->swapIndex1()
+                                                    ->tenor(),
+                                                event0, zk,
+                                                cmsspread2->swapIndex1()) +
+                                        cmsspread2->gearing2() *
+                                            model_->swapRate(
+                                                arguments_.leg2FixingDates[j],
+                                                cmsspread2->swapIndex2()
+                                                    ->tenor(),
+                                                event0, zk,
+                                                cmsspread2->swapIndex2());
                                 Real rate =
                                     arguments_.leg2Spreads[j] +
-                                    arguments_.leg2Gearings[j] *
-                                        (ibor2 != NULL
-                                             ? model_->forwardRate(
-                                                   arguments_.leg2FixingDates
-                                                       [j],
-                                                   event0, zk, ibor2)
-                                             : model_->swapRate(
-                                                   arguments_.leg2FixingDates
-                                                       [j],
-                                                   cms2->tenor(), event0, zk,
-                                                   cms1));
+                                    arguments_.leg2Gearings[j] * estFixing;
                                 if (arguments_.leg2CappedRates[j] !=
                                     Null<Real>())
                                     rate = std::min(
@@ -463,8 +608,7 @@ namespace QuantLib {
                         Date rebateDate = event0;
                         if (rebatedExercise_ != NULL) {
                             rebate = rebatedExercise_->rebate(j);
-                            rebateDate =
-                                rebatedExercise_->rebatePaymentDate(j);
+                            rebateDate = rebatedExercise_->rebatePaymentDate(j);
                             zSpreadDf =
                                 oas_.empty()
                                     ? 1.0
@@ -474,19 +618,62 @@ namespace QuantLib {
                                                     .yearFraction(event0,
                                                                   rebateDate)));
                         }
-                        npv0[k] = std::max(
-                            npv0[k],
+                        Real exerciseValue =
                             (type == Option::Call ? 1.0 : -1.0) * npv0a[k] +
-                                rebate * model_->zerobond(rebateDate, event0) *
-                                    zSpreadDf /
-                                    model_->numeraire(event0Time, zk,
-                                                      discountCurve_));
+                            rebate * model_->zerobond(rebateDate, event0) *
+                                zSpreadDf / model_->numeraire(event0Time, zk,
+                                                              discountCurve_);
+
+                        if (considerProbabilities && probabilities_ != None) {
+                            if (exIdx == noEx) {
+                                // if true we are at the latest date,
+                                // so we init
+                                // the no call probability
+                                npvp0.back()[k] =
+                                    probabilities_ == Naive
+                                        ? 1.0
+                                        : 1.0 / (model_->zerobond(
+                                                     event0Time, 0.0, 0.0,
+                                                     discountCurve_) *
+                                                 model_->numeraire(
+                                                     event0, z[k],
+                                                     discountCurve_));
+                            }
+                            if (exerciseValue >= npv0[k]) {
+                                npvp0[exIdx-1][k] =
+                                    probabilities_ == Naive
+                                        ? 1.0
+                                        : 1.0 / (model_->zerobond(
+                                                     event0Time, 0.0, 0.0,
+                                                     discountCurve_) *
+                                                 model_->numeraire(
+                                                     event0Time, z[k],
+                                                     discountCurve_));
+                                for (Size ii = exIdx; ii < noEx+1; ++ii)
+                                    npvp0[ii][k] = 0.0;
+                            }
+                        }
+                        // end probability computation
+
+                        npv0[k] = std::max(npv0[k], exerciseValue);
                     }
                 }
             }
 
+            if(isExercise)
+                --exIdx;
+
             npv1.swap(npv0);
             npv1a.swap(npv0a);
+
+            // for probability computation
+            if(considerProbabilities && probabilities_ != None) {
+                for(Size i=0;i<npvp0.size();++i) {
+                    npvp1[i].swap(npvp0[i]);
+                }
+            }
+            // end probability computation
+
             event1 = event0;
             event1Time = event0Time;
 
@@ -497,7 +684,19 @@ namespace QuantLib {
             npv1a[0] * model_->numeraire(event1Time, y, discountCurve_) *
                 (type == Option::Call ? 1.0 : -1.0));
 
+        // for probability computation
+        if (considerProbabilities && probabilities_ != None) {
+            std::vector<Real> prob(noEx+1);
+            for (Size i = 0; i < noEx+1; i++) {
+                prob[i] = npvp1[i][0] *
+                          (probabilities_ == Naive
+                               ? 1.0
+                               : model_->numeraire(0.0, 0.0, discountCurve_));
+            }
+            results_.additionalResults["probabilities"] = prob;
+        }
+        // end probability computation
+
         return res;
     }
-
 }

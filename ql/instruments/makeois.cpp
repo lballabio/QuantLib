@@ -32,7 +32,7 @@ namespace QuantLib {
                      const Period& forwardStart)
     : swapTenor_(swapTenor), overnightIndex_(overnightIndex),
       fixedRate_(fixedRate), forwardStart_(forwardStart),
-      settlDays_(2),
+      settlementDays_(2),
       calendar_(overnightIndex->fixingCalendar()),
       paymentFrequency_(Annual),
       rule_(DateGeneration::Backward),
@@ -57,7 +57,7 @@ namespace QuantLib {
             // then move to the next business day
             refDate = calendar_.adjust(refDate);
             Date spotDate = calendar_.advance(refDate,
-                                              settlDays_*Days);
+                                              settlementDays_*Days);
             startDate = spotDate+forwardStart_;
             if (forwardStart_.length()<0)
                 startDate = calendar_.adjust(startDate, Preceding);
@@ -142,8 +142,8 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeOIS& MakeOIS::withSettlementDays(Natural settlDays) {
-        settlDays_ = settlDays;
+    MakeOIS& MakeOIS::withSettlementDays(Natural settlementDays) {
+        settlementDays_ = settlementDays;
         effectiveDate_ = Date();
         return *this;
     }

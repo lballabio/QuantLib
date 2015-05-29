@@ -55,7 +55,7 @@ namespace QuantLib {
                           bool endOfMonth,
                           const DayCounter& dayCounter,
                           const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
-                          FuturesType type = IMM);
+                          Futures::Type type = Futures::IMM);
         FuturesRateHelper(Real price,
                           const Date& iborStartDate,
                           Natural lengthInMonths,
@@ -64,29 +64,29 @@ namespace QuantLib {
                           bool endOfMonth,
                           const DayCounter& dayCounter,
                           Rate convexityAdjustment = 0.0,
-                          FuturesType type = IMM);
+                          Futures::Type type = Futures::IMM);
         FuturesRateHelper(const Handle<Quote>& price,
                           const Date& iborStartDate,
                           const Date& iborEndDate,
                           const DayCounter& dayCounter,
                           const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
-                          FuturesType type = IMM);
+                          Futures::Type type = Futures::IMM);
         FuturesRateHelper(Real price,
                           const Date& iborStartDate,
                           const Date& endDate,
                           const DayCounter& dayCounter,
                           Rate convexityAdjustment = 0.0,
-                          FuturesType type = IMM);
+                          Futures::Type type = Futures::IMM);
         FuturesRateHelper(const Handle<Quote>& price,
                           const Date& iborStartDate,
                           const boost::shared_ptr<IborIndex>& iborIndex,
                           const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
-                          FuturesType type = IMM);
+                          Futures::Type type = Futures::IMM);
         FuturesRateHelper(Real price,
                           const Date& iborStartDate,
                           const boost::shared_ptr<IborIndex>& iborIndex,
                           Rate convexityAdjustment = 0.0,
-                          FuturesType type = IMM);
+                          Futures::Type type = Futures::IMM);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -272,7 +272,7 @@ namespace QuantLib {
         //@}
       protected:
         void initializeDates();
-        Natural settlDays_;
+        Natural settlementDays_;
         Period tenor_;
         Calendar calendar_;
         BusinessDayConvention fixedConvention_;

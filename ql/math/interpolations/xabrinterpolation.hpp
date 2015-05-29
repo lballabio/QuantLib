@@ -50,11 +50,12 @@ namespace detail {
 template <typename Model> class XABRCoeffHolder {
   public:
     XABRCoeffHolder(const Time t, const Real &forward, std::vector<Real> params,
-                    std::vector<bool> paramIsFixed)
+                    std::vector<bool> paramIsFixed, std::vector<Real> addParams)
         : t_(t), forward_(forward), params_(params),
           paramIsFixed_(paramIsFixed.size(), false),
           weights_(std::vector<Real>()), error_(Null<Real>()),
-          maxError_(Null<Real>()), XABREndCriteria_(EndCriteria::None) {
+          maxError_(Null<Real>()), XABREndCriteria_(EndCriteria::None),
+          addParams_(addParams) {
         QL_REQUIRE(t > 0.0, "expiry time must be positive: " << t
                                                              << " not allowed");
         QL_REQUIRE(params.size() == Model().dimension(),
@@ -70,16 +71,13 @@ template <typename Model> class XABRCoeffHolder {
             if (params[i] != Null<Real>())
                 paramIsFixed_[i] = paramIsFixed[i];
         }
-        Model().defaultValues(params_, paramIsFixed_, forward_, t_);
+        Model().defaultValues(params_, paramIsFixed_, forward_, t_, addParams_);
         updateModelInstance();
     }
     virtual ~XABRCoeffHolder() {}
 
     void updateModelInstance() {
-        // forward might have changed
-        QL_REQUIRE(forward_ > 0.0,
-                   "forward must be positive: " << forward_ << " not allowed");
-        modelInstance_ = Model().instance(t_, forward_, params_);
+        modelInstance_ = Model().instance(t_, forward_, params_, addParams_);
     }
 
     /*! Expiry, Forward */
@@ -94,6 +92,8 @@ template <typename Model> class XABRCoeffHolder {
     EndCriteria::Type XABREndCriteria_;
     /*! Model instance (if required) */
     boost::shared_ptr<typename Model::type> modelInstance_;
+    /*! additional parameters */
+    std::vector<Real> addParams_;
 };
 
 template <class I1, class I2, typename Model>
@@ -106,9 +106,10 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
         std::vector<bool> paramIsFixed, bool vegaWeighted,
         const boost::shared_ptr<EndCriteria> &endCriteria,
         const boost::shared_ptr<OptimizationMethod> &optMethod,
-        const Real errorAccept, const bool useMaxError, const Size maxGuesses)
+        const Real errorAccept, const bool useMaxError, const Size maxGuesses,
+        const std::vector<Real> addParams = std::vector<Real>())
         : Interpolation::templateImpl<I1, I2>(xBegin, xEnd, yBegin, 1),
-          XABRCoeffHolder<Model>(t, forward, params, paramIsFixed),
+          XABRCoeffHolder<Model>(t, forward, params, paramIsFixed, addParams),
           endCriteria_(endCriteria), optMethod_(optMethod),
           errorAccept_(errorAccept), useMaxError_(useMaxError),
           maxGuesses_(maxGuesses), forward_(forward),
@@ -123,7 +124,8 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
             endCriteria_ = boost::shared_ptr<EndCriteria>(
                 new EndCriteria(60000, 100, 1e-8, 1e-8, 1e-8));
         }
-        this->weights_ = std::vector<Real>(xEnd - xBegin, 1.0 / (xEnd - xBegin));
+        this->weights_ =
+            std::vector<Real>(xEnd - xBegin, 1.0 / (xEnd - xBegin));
     }
 
     void update() {
@@ -141,8 +143,8 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
             Real weightsSum = 0.0;
             for (; x != this->xEnd_; ++x, ++y) {
                 Real stdDev = std::sqrt((*y) * (*y) * this->t_);
-                this->weights_.push_back(
-                    blackFormulaStdDevDerivative(*x, forward_, stdDev));
+                this->weights_.push_back(Model().weight(*x, forward_, stdDev,
+                                                        this->addParams_));
                 weightsSum += this->weights_.back();
             }
             // weight normalization
@@ -181,7 +183,8 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
 
                 if (iterations > 0) {
                     HaltonRsg::sample_type s = halton.nextSequence();
-                    Model().guess(guess, this->paramIsFixed_, forward_, this->t_, s.value);
+                    Model().guess(guess, this->paramIsFixed_, forward_,
+                                  this->t_, s.value, this->addParams_);
                     for (Size i = 0; i < this->paramIsFixed_.size(); ++i)
                         if (this->paramIsFixed_[i])
                             guess[i] = this->params_[i];
@@ -191,7 +194,8 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
                     guess, this->paramIsFixed_, this->params_, forward_));
 
                 ProjectedCostFunction constrainedXABRError(
-                    costFunction, inversedTransformatedGuess, this->paramIsFixed_);
+                    costFunction, inversedTransformatedGuess,
+                    this->paramIsFixed_);
 
                 Array projectedGuess(
                     constrainedXABRError.project(inversedTransformatedGuess));
@@ -227,8 +231,6 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
     }
 
     Real value(Real x) const {
-        QL_REQUIRE(x > 0.0, "strike must be positive: " << io::rate(x)
-                                                        << " not allowed");
         return this->modelInstance_->volatility(x);
     }
 
@@ -267,7 +269,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
     Real interpolationError() const {
         Size n = this->xEnd_ - this->xBegin_;
         Real squaredError = interpolationSquaredError();
-        return std::sqrt(n * squaredError / (n - 1));
+        return std::sqrt(n * squaredError / (n==1 ? 1 : (n - 1)));
     }
 
     Real interpolationMaxError() const {
@@ -289,7 +291,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
         Real value(const Array &x) const {
             const Array y = Model().direct(x, xabr_->paramIsFixed_,
                                            xabr_->params_, xabr_->forward_);
-            for (Size i = 0; i <xabr_-> params_.size(); ++i)
+            for (Size i = 0; i < xabr_->params_.size(); ++i)
                 xabr_->params_[i] = y[i];
             xabr_->updateModelInstance();
             return xabr_->interpolationSquaredError();

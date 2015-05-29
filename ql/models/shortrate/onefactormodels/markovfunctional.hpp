@@ -94,7 +94,12 @@ namespace QuantLib {
       input smile or accumulating numerical errors in very long term calibrations.
       The former point is adressed by smile pretreatment options. The latter point
       may be tackled by higher values for the numerical parameters possibly
-      together with NTL high precision computing. */
+      together with NTL high precision computing. 
+
+      When using a shifted lognormal smile input the lower rate bound is adjusted
+      by the shift so that a lower bound of 0.0 always corresponds to the lower
+      bound of the shifted distribution.
+*/
 
     class MarkovFunctional : public Gaussian1dModel, public CalibratedModel {
 
@@ -128,7 +133,7 @@ namespace QuantLib {
                     addAdjustment(KahaleSmile);
 
                 if ((adjustments_ & KahaleSmile) != 0 &&
-                    (adjustments_ & SmileDeleteArbitragePoints)) {
+                    (adjustments_ & SmileDeleteArbitragePoints) != 0) {
                     addAdjustment(KahaleInterpolation);
                 }
 
@@ -312,6 +317,19 @@ namespace QuantLib {
             LazyObject::update();
         }
 
+        // returns the indices of the af region from the last smile update
+        const std::vector<std::pair<Size,Size> > arbitrageIndices() const {
+            calculate();
+            return arbitrageIndices_;
+        }
+
+        // forces the indices of the af region (useful for sensitivity calculation)
+        // if an empty vector is given, the dynamic calculation is used again
+        void forceArbitrageIndices(const std::vector<std::pair<Size,Size> >& indices) {
+            forcedArbitrageIndices_ = indices;
+            this->update();
+        }
+
       protected:
 
         const Real numeraireImpl(const Time t, const Real y,
@@ -358,7 +376,8 @@ namespace QuantLib {
 
         const Real marketSwapRate(const Date &expiry, const CalibrationPoint &p,
                                   const Real digitalPrice,
-                                  const Real guess = 0.03) const;
+                                  const Real guess = 0.03,
+                                  const Real shift = 0.0) const;
         const Real marketDigitalPrice(const Date &expiry,
                                       const CalibrationPoint &p,
                                       const Option::Type &type,
@@ -470,6 +489,9 @@ namespace QuantLib {
 
         Array normalIntegralX_;
         Array normalIntegralW_;
+
+        mutable std::vector<std::pair<Size,Size> > arbitrageIndices_;
+        std::vector<std::pair<Size,Size> > forcedArbitrageIndices_;
     };
 
     std::ostream &operator<<(std::ostream &out,
