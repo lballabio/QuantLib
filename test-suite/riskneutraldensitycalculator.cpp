@@ -22,11 +22,17 @@
 #include "utilities.hpp"
 
 #include <ql/timegrid.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/math/functional.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
+#include <ql/instruments/vanillaoption.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
+#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
+#include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
 #include <experimental/finitedifferences/bsmrndcalculator.hpp>
 #include <experimental/finitedifferences/hestonrndcalculator.hpp>
 #include <experimental/finitedifferences/localvolrndcalculator.hpp>
@@ -203,32 +209,78 @@ void RiskNeutralDensityCalculatorTest::testBSMagainstHestonRND() {
 }
 
 namespace {
-	// see Peter Jaeckel, Hyperbolic local volatility
-	// http://www.jaeckel.org/HyperbolicLocalVolatility.pdf
-	class HyperbolicLocalVolatility : public LocalVolTermStructure {
+	// see Svetlana Borovkova, Ferry J. Permana
+	// Implied volatility in oil markets
+	// http://www.researchgate.net/publication/46493859_Implied_volatility_in_oil_markets
+	class DumasParametricVolSurface : public BlackVolatilityTermStructure {
 	  public:
-		HyperbolicLocalVolatility(Real s0, Real beta, Volatility sig)
-	  	: LocalVolTermStructure(Following, Actual365Fixed()),
-		  s0_(s0), b_(beta), sig_(sig) {}
+		DumasParametricVolSurface(
+			Real b1, Real b2, Real b3, Real b4, Real b5,
+			const boost::shared_ptr<Quote>& spot,
+			const boost::shared_ptr<YieldTermStructure>& rTS,
+			const boost::shared_ptr<YieldTermStructure>& qTS)
+	    : BlackVolatilityTermStructure(Following, rTS->dayCounter()),
+		  b1_(b1), b2_(b2), b3_(b3), b4_(b4), b5_(b5),
+		  spot_(spot), rTS_(rTS), qTS_(qTS) {}
 
 		Date maxDate() const { return Date::maxDate(); }
 		Rate minStrike() const { return 0.0; }
 		Rate maxStrike() const { return QL_MAX_REAL; }
 
-	  private:
-		Volatility localVolImpl(Time, Real s) const {
-			const Real x = s/s0_;
-			const Real b2 = b_*b_;
+	  protected:
+		Volatility blackVolImpl(Time t, Real strike) const {
+			QL_REQUIRE(t >= 0.0, "t must be >= 0");
 
-			const Real h = (1 - b_+b2)/b_ * x
-				+ (b_-1)/b_*(std::sqrt(x*x + b2*square<Real>()(1-x)) - b_);
+			if (t < QL_EPSILON)
+				return b1_;
 
-			return sig_*h;
+			const Real fwd = spot_->value()*qTS_->discount(t)/rTS_->discount(t);
+			const Real mn = std::log(fwd/strike)/std::sqrt(t);
+
+			return b1_ + b2_*mn + b3_*mn*mn + b4_*t + b5_*mn*t;
 		}
 
-		const Real s0_, b_;
-		const Volatility sig_;
+	  private:
+		const Real b1_, b2_, b3_, b4_, b5_;
+		const boost::shared_ptr<Quote> spot_;
+		const boost::shared_ptr<YieldTermStructure> rTS_;
+		const boost::shared_ptr<YieldTermStructure> qTS_;
 	};
+
+	class ProbWeightedPayoff : public std::unary_function<Real, Real> {
+	  public:
+		ProbWeightedPayoff(
+			Time t,
+			const boost::shared_ptr<Payoff>& payoff,
+			const boost::shared_ptr<RiskNeutralDensityCalculator>& calc)
+	  : t_(t), payoff_(payoff), calc_(calc) {}
+
+		Real operator()(Real x) const {
+			return calc_->pdf(x, t_) * (*payoff_)(std::exp(x));
+		}
+
+	  private:
+		const Real t_;
+		const boost::shared_ptr<Payoff> payoff_;
+		const boost::shared_ptr<RiskNeutralDensityCalculator> calc_;
+	};
+
+	Disposable<std::vector<Time> > adaptiveTimeGrid(
+		Size maxStepsPerYear, Size minStepsPerYear, Real decay, Time endTime) {
+		const Time maxDt = 1.0/maxStepsPerYear;
+		const Time minDt = 1.0/minStepsPerYear;
+
+		Time t=0.0;
+		std::vector<Time> times(1, t);
+		while (t < endTime) {
+			const Time dt = maxDt*std::exp(-decay*t)
+						  + minDt*(1.0-std::exp(-decay*t));
+			t+=dt;
+			times.push_back(std::min(endTime, t));
+		}
+
+		return times;
+	}
 }
 
 void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
@@ -238,15 +290,15 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
 
     SavedSettings backup;
 
+    const Calendar nullCalendar = NullCalendar();
     const DayCounter dayCounter = Actual365Fixed();
     const Date todaysDate = Date(28, Dec, 2012);
     Settings::instance().evaluationDate() = todaysDate;
 
-    const Rate r    = 0.05;
-    const Rate q    = 0.025;
-    const Real s0   = 100;
-    const Real beta = 0.25;
-    const Real sig  = 0.25;
+    const Rate r       = 0.015;
+    const Rate q       = 0.025;
+    const Real s0      = 100;
+    const Volatility v = 0.25;
 
 	const boost::shared_ptr<Quote> spot(
 		boost::make_shared<SimpleQuote>(s0));
@@ -255,16 +307,166 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
 	const boost::shared_ptr<YieldTermStructure> qTS(
 		flatRate(todaysDate, q, dayCounter));
 
-	const boost::shared_ptr<LocalVolTermStructure> localVol(
-		new HyperbolicLocalVolatility(s0, beta, sig));
+	const boost::shared_ptr<TimeGrid> timeGrid(new TimeGrid(1.0, 101));
 
-	const boost::shared_ptr<TimeGrid> timeGrid(new TimeGrid(1.0, 26));
+	const boost::shared_ptr<LocalVolRNDCalculator> constVolCalc(
+		new LocalVolRNDCalculator(
+			spot, rTS, qTS,
+			boost::make_shared<LocalConstantVol>(todaysDate, v, dayCounter),
+			timeGrid, 201));
 
-	const boost::shared_ptr<LocalVolRNDCalculator> rndCalc(
-		new LocalVolRNDCalculator(spot, rTS, qTS, localVol, timeGrid));
+	const Real rTol = 0.01, atol = 0.005;
+	for (Time t=0.1; t < 0.99; t+=0.015) {
+		const Volatility stdDev = v * std::sqrt(t);
+		const Real xm = - 0.5 * stdDev * stdDev +
+			std::log(s0 * qTS->discount(t)/rTS->discount(t));
 
-	rndCalc->pdf(1.0, 1.0);
-//	std::cout << rndCalc->x(timeGrid->at(26)+1) << std::endl;
+		const GaussianDistribution gaussianPDF(xm, stdDev);
+		const CumulativeNormalDistribution gaussianCDF(xm, stdDev);
+		const InverseCumulativeNormal gaussianInvCDF(xm, stdDev);
+
+	    for (Real x = xm - 3*stdDev; x < xm + 3*stdDev; x+=0.05) {
+		    const Real expectedPDF = gaussianPDF(x);
+		    const Real calculatedPDF = constVolCalc->pdf(x, t);
+		    const Real absDiffPDF = std::fabs(expectedPDF - calculatedPDF);
+
+		    if (absDiffPDF > atol || absDiffPDF/expectedPDF > rTol) {
+    			BOOST_FAIL("failed to reproduce forward probability density"
+    					<< "\n   time:       " << t
+						<< "\n   spot        " << std::exp(x)
+    					<< "\n   calculated: " << calculatedPDF
+						<< "\n   expected:   " << expectedPDF
+						<< "\n   abs diff:   " << absDiffPDF
+						<< "\n   rel diff:   " << absDiffPDF/expectedPDF
+						<< "\n   abs tol:    " << atol
+						<< "\n   rel tol:    " << rTol);
+    		}
+
+		    const Real expectedCDF =  gaussianCDF(x);
+		    const Real calculatedCDF = constVolCalc->cdf(x, t);
+		    const Real absDiffCDF = std::fabs(expectedCDF - calculatedCDF);
+
+		    if (absDiffCDF > atol) {
+    			BOOST_FAIL("failed to reproduce forward "
+    					"cumulative probability density"
+    					<< "\n   time:       " << t
+						<< "\n   spot        " << std::exp(x)
+    					<< "\n   calculated: " << calculatedCDF
+						<< "\n   expected:   " << expectedCDF
+						<< "\n   abs diff:   " << absDiffCDF
+						<< "\n   abs tol:    " << atol);
+    		}
+
+		    const Real expectedX = x;
+		    const Real calculatedX = constVolCalc->invcdf(expectedCDF, t);
+		    const Real absDiffX = std::fabs(expectedX - calculatedX);
+
+		    if (absDiffX > atol || absDiffX/expectedX > rTol) {
+		    	BOOST_FAIL("failed to reproduce "
+		    			"inverse cumulative probability density"
+    					<< "\n   time:       " << t
+						<< "\n   spot        " << std::exp(x)
+    					<< "\n   calculated: " << calculatedX
+						<< "\n   expected:   " << expectedX
+						<< "\n   abs diff:   " << absDiffX
+						<< "\n   abs tol:    " << atol);
+		    }
+	    }
+	}
+
+	const Time tl = timeGrid->at(timeGrid->size()-5);
+	const Real xl = constVolCalc->x(tl).front();
+	if (!(   constVolCalc->pdf(xl+0.0001, tl) > 0.0
+		  && constVolCalc->pdf(xl-0.0001, tl) == 0.0)) {
+		BOOST_FAIL("probability outside interpolation range is not zero");
+	}
+
+	const Real b1 = 0.25;
+	const Real b2 = 0.03;
+	const Real b3 = 0.005;
+	const Real b4 = -0.02;
+	const Real b5 = -0.005;
+
+	const boost::shared_ptr<DumasParametricVolSurface> dumasVolSurface(
+		new DumasParametricVolSurface(b1, b2, b3, b4, b5, spot, rTS, qTS));
+
+	const boost::shared_ptr<BlackScholesMertonProcess> bsmProcess(
+		new BlackScholesMertonProcess(
+			Handle<Quote>(spot),
+			Handle<YieldTermStructure>(qTS),
+			Handle<YieldTermStructure>(rTS),
+			Handle<BlackVolTermStructure>(dumasVolSurface)));
+
+	const boost::shared_ptr<LocalVolTermStructure> localVolSurface
+		= bsmProcess->localVolatility().currentLink();
+
+	const std::vector<Time> adaptiveGrid
+		= adaptiveTimeGrid(400, 50, 5.0, 3.0);
+
+	const boost::shared_ptr<TimeGrid> dumasTimeGrid(
+		new TimeGrid(adaptiveGrid.begin(), adaptiveGrid.end()));
+
+	const boost::shared_ptr<LocalVolRNDCalculator> dumasVolCalc(
+		new LocalVolRNDCalculator(
+			spot, rTS, qTS, localVolSurface, dumasTimeGrid, 401, 1e-8, b1));
+
+	const Real strikes[] = { 25, 50, 95, 100, 105, 150, 200, 400 };
+	const Date maturityDates[] = {
+		todaysDate + Period(1, Weeks),   todaysDate + Period(1, Months),
+		todaysDate + Period(3, Months),  todaysDate + Period(6, Months),
+		todaysDate + Period(12, Months), todaysDate + Period(18, Months),
+		todaysDate + Period(2, Years),   todaysDate + Period(3, Years) };
+	const std::vector<Date> maturities(
+		maturityDates, maturityDates + LENGTH(maturityDates));
+
+
+	for (Size i=0; i < maturities.size(); ++i) {
+		const Time expiry
+			= rTS->dayCounter().yearFraction(todaysDate, maturities[i]);
+
+		const boost::shared_ptr<PricingEngine> engine(
+			new FdBlackScholesVanillaEngine(
+				bsmProcess, std::max(Size(51), Size(expiry*101)),
+				201, 0, FdmSchemeDesc::Douglas(), true, b1));
+
+		const boost::shared_ptr<Exercise> exercise(
+			new EuropeanExercise(maturities[i]));
+
+		for (Size k=0; k < LENGTH(strikes); ++k) {
+			const Real strike = strikes[k];
+			const boost::shared_ptr<StrikedTypePayoff> payoff(
+				new PlainVanillaPayoff(
+					(strike > spot->value()) ? Option::Call : Option::Put
+					, strike));
+
+			VanillaOption option(payoff, exercise);
+			option.setPricingEngine(engine);
+			const Real expected = option.NPV();
+
+			const Time tx = std::max(dumasTimeGrid->at(1),
+									 dumasTimeGrid->closestTime(expiry));
+			const Array x  = dumasVolCalc->x(tx);
+
+			const ProbWeightedPayoff probWeightedPayoff(
+				expiry, payoff, dumasVolCalc);
+
+			const DiscountFactor df = rTS->discount(expiry);
+			const Real calculated =	GaussLobattoIntegral(10000, 1e-10)(
+				probWeightedPayoff, x.front(), x.back()) * df;
+
+			const Real absDiff = std::fabs(expected - calculated);
+
+			if (absDiff > 0.5*atol) {
+				BOOST_FAIL("failed to reproduce option prices for"
+						<< "\n   expiry:     " << expiry
+						<< "\n   strike:     " << strike
+						<< "\n   expected:   " << expected
+						<< "\n   calculated: " << calculated
+						<< "\n   diff:       " << absDiff
+						<< "\n   abs tol:    " << atol);
+			}
+		}
+	}
 }
 
 

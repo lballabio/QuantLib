@@ -33,6 +33,7 @@
 #endif
 
 #include <boost/function.hpp>
+#include <iostream>
 
 namespace QuantLib {
 	RiskNeutralDensityCalculator::InvCDFHelper::InvCDFHelper(
@@ -49,14 +50,13 @@ namespace QuantLib {
 
         Size evaluations = maxEvaluations_;
 		Real upper = guess_, lower = guess_;
+
 		if (guessCDF < p)
-			while (calculator_->cdf(upper*=2.0, t) < p && evaluations > 0) {
-				lower*=2.0;
+			while (calculator_->cdf(upper*=1.5, t) < p && evaluations > 0) {
 				--evaluations;
 			}
 		else
-			while (calculator_->cdf(lower*=0.5, t) > p && evaluations > 0) {
-				upper*=0.5;
+			while (calculator_->cdf(lower*=0.75, t) > p && evaluations > 0) {
 				--evaluations;
 			}
 

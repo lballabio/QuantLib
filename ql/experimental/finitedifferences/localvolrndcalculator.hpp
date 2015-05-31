@@ -47,7 +47,11 @@ namespace QuantLib {
 			const boost::shared_ptr<YieldTermStructure>& rTS,
 			const boost::shared_ptr<YieldTermStructure>& qTS,
 			const boost::shared_ptr<LocalVolTermStructure>& localVol,
-			Size xGrid = 101, Size tGrid = 51, Real eps = 1e-6);
+			Size xGrid = 101, Size tGrid = 51,
+			Real eps = 1e-6,
+			Real illegalLocalVolOverwrite = -Null<Real>(),
+			Size maxIter = 10000,
+			Time gaussianStepSize = -Null<Time>());
 
 		LocalVolRNDCalculator(
 			const boost::shared_ptr<Quote>& spot,
@@ -55,7 +59,11 @@ namespace QuantLib {
 			const boost::shared_ptr<YieldTermStructure>& qTS,
 			const boost::shared_ptr<LocalVolTermStructure>& localVol,
 			const boost::shared_ptr<TimeGrid>& timeGrid,
-			Size xGrid = 101, Real eps = 1e-6);
+			Size xGrid = 101,
+			Real eps = 1e-6,
+			Real illegalLocalVolOverwrite = -Null<Real>(),
+			Size maxIter = 10000,
+			Time gaussianStepSize = -Null<Time>());
 
 		Real pdf(Real x, Time t) const;
 		Real cdf(Real x, Time t) const;
@@ -67,11 +75,16 @@ namespace QuantLib {
 	  protected:
 		void performCalculations() const;
 
-		static Disposable<Array> rescalePDF(const Array& x, const Array& p);
-
 	  private:
+		Real probabilityInterpolation(Size idx, Real x) const;
+		Disposable<Array> rescalePDF(const Array& x, const Array& p) const;
+
+
 		const Size xGrid_, tGrid_;
 		const Real eps_;
+		const Real illegalLocalVolOverwrite_;
+		const Size maxIter_;
+		const Time gaussianStepSize_;
 		const boost::shared_ptr<Quote> spot_;
 		const boost::shared_ptr<LocalVolTermStructure> localVol_;
 		const boost::shared_ptr<YieldTermStructure> rTS_;
