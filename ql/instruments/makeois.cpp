@@ -36,7 +36,7 @@ namespace QuantLib {
       calendar_(overnightIndex->fixingCalendar()),
       paymentFrequency_(Annual),
       rule_(DateGeneration::Backward),
-      endOfMonth_(false),
+      endOfMonth_(true),
       type_(OvernightIndexedSwap::Payer), nominal_(1.0),
       overnightSpread_(0.0),
       fixedDayCount_(overnightIndex->dayCounter()) {}
@@ -69,7 +69,7 @@ namespace QuantLib {
         if (terminationDate_ != Date()) {
             endDate = terminationDate_;
         } else {
-            if (endOfMonth_ && startDate.isEndOfMonth(startDate)) {
+            if (endOfMonth_ && calendar_.isEndOfMonth(startDate)) {
                 endDate = calendar_.advance(startDate, swapTenor_,
                     ModifiedFollowing, endOfMonth_);
             } else {
