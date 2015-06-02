@@ -35,8 +35,10 @@
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/integrals/discreteintegrals.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
+#include <ql/models/equity/hestonslvmodel.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
+#include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
@@ -66,6 +68,7 @@
 #include <boost/math/special_functions/gamma.hpp>
 
 #include <boost/bind.hpp>
+#include <boost/make_shared.hpp>
 
 using namespace QuantLib;
 using namespace boost::assign;
@@ -978,20 +981,6 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquation() {
 
 
 namespace {
-    boost::shared_ptr<FixedLocalVolSurface> createFlatLeverageFct(Matrix & surface,
-		const std::vector<Real> & strikes, const std::vector<Real> & times,
-		Real flatVol) {
-        for (Size i=0; i < strikes.size(); ++i)
-            for (Size j=0; j < times.size(); ++j) {
-                surface[i][j] = flatVol;
-            }
-
-        boost::shared_ptr<FixedLocalVolSurface> leverage = boost::shared_ptr<FixedLocalVolSurface>(
-            new FixedLocalVolSurface(Settings::instance().evaluationDate().value(), times,
-                                     strikes, surface, ActualActual()));
-        return leverage;
-    }
-
     boost::shared_ptr<FixedLocalVolSurface> createLeverageFctFromVolSurface(
             boost::shared_ptr<BlackScholesMertonProcess> lvProcess,
             const std::vector<Real>& strikes, const std::vector<Date>& dates,
@@ -1763,7 +1752,7 @@ namespace {
 }
 
 
-void HestonSLVModelTest::testLSVCalibration() {
+void HestonSLVModelTest::testSLVCalibration() {
 
     FokkerPlanckFwdTestCase testCases[] = {
         {
@@ -1814,28 +1803,74 @@ void HestonSLVModelTest::testLSVCalibration() {
     }
 }
 
+void HestonSLVModelTest::testHestonSLVModel() {
+    SavedSettings backup;
+
+    const Date todaysDate(2, June, 2015);
+    Settings::instance().evaluationDate() = todaysDate;
+    const Date finalDate(2, June, 2020);
+
+    const Calendar calendar = TARGET();
+    const DayCounter dc = Actual365Fixed();
+
+    const Real s0 = 100;
+    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(s0));
+
+    const Rate r = 0.02;
+    const Rate q = 0.03;
+
+    const Real kappa = 1.0;
+    const Real theta = 0.09;
+    const Real rho   = -0.75;
+    const Real sigma = 0.1;
+    const Real v0    = 0.09;
+    const Volatility lv = 0.2;
+
+    const Handle<YieldTermStructure> rTS(flatRate(r, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(q, dc));
+
+    const boost::shared_ptr<HestonProcess> hestonProcess(
+    	new HestonProcess(rTS, qTS, spot, v0, kappa, theta, sigma, rho));
+
+    const Handle<HestonModel> hestonModel(
+    	boost::make_shared<HestonModel>(hestonProcess));
+
+    const Handle<LocalVolTermStructure> localVol(
+    	boost::make_shared<LocalConstantVol>(todaysDate, lv, dc));
+
+    const HestonSLVFokkerPlanckFdmParams params =
+    	{ finalDate, 201, 201, 1000, 100, 5.0,
+    	  1e-6, -Null<Real>(), 10000, -Null<Real>()};
+
+    HestonSLVModel slvModel(localVol, hestonModel, params);
+
+
+    slvModel.leverageFunction();
+}
+
+
 test_suite* HestonSLVModelTest::experimental() {
     test_suite* suite = BOOST_TEST_SUITE(
     	"Heston Stochastic Local Volatility tests");
 
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation));
-    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testSquareRootZeroFlowBC));
-    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testTransformedZeroFlowBC));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testSquareRootEvolveWithStationaryDensity));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testSquareRootFokkerPlanckFwdEquation));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquation));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
-
-    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testLSVCalibration));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation));
+//    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testSquareRootZeroFlowBC));
+//    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testTransformedZeroFlowBC));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testSquareRootEvolveWithStationaryDensity));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testSquareRootFokkerPlanckFwdEquation));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquation));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
+//    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testSLVCalibration));
+    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testHestonSLVModel));
 
 
     return suite;

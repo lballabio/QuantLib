@@ -71,6 +71,7 @@ namespace QuantLib {
 
 		Disposable<Array> x(Time t) const; // ln(s) grid
 		boost::shared_ptr<TimeGrid> timeGrid() const;
+		Disposable<std::vector<Size> > rescaleTimeSteps() const;
 
 	  protected:
 		void performCalculations() const;
@@ -91,6 +92,7 @@ namespace QuantLib {
 		const boost::shared_ptr<YieldTermStructure> qTS_;
 		const boost::shared_ptr<TimeGrid> timeGrid_;
 		const boost::shared_ptr<Matrix> xm_, pm_;
+		mutable std::vector<Size> rescaleTimeSteps_;
 		mutable std::vector<boost::shared_ptr<Interpolation> > pFct_;
 	};
 }

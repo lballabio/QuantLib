@@ -26,29 +26,49 @@
 #define quantlib_heston_slv_model_hpp
 
 #include <ql/handle.hpp>
+#include <ql/patterns/lazyobject.hpp>
 #include <ql/patterns/observable.hpp>
 
 namespace QuantLib {
 
+class SimpleQuote;
 	class HestonModel;
 	class LocalVolTermStructure;
-	class SimpleQuote;
 
-	class HestonSLVModel : public virtual Observer, public virtual Observable {
+	struct HestonSLVFokkerPlanckFdmParams {
+		const Date finalCalibrationMaturity;
+		const Size xGrid, vGrid;
+		const Size tMaxStepsPerYear, tMinStepsPerYear;
+		const Real tStepNumberDecay;
+		const Real epsProbability;
+		const Real undefinedlLocalVolOverwrite;
+		const Size maxIntegrationIterations;
+		const Time firstAnalyticalStepTime;
+	};
+
+	class HestonSLVModel : public LazyObject {
       public:
-        HestonSLVModel(const Handle<HestonModel>& hestonModel,
-        			   const Handle<LocalVolTermStructure>& localVol,
-					   const Handle<SimpleQuote>& eta);
+        HestonSLVModel(
+        	const Handle<LocalVolTermStructure>& localVol,
+ 		    const Handle<HestonModel>& hestonModel,
+ 		    const HestonSLVFokkerPlanckFdmParams& params,
+		    const std::vector<Date>& mandatoryDates = std::vector<Date>());
+
         void update();
 
-        boost::shared_ptr<Quote> eta() const;
         boost::shared_ptr<HestonProcess> hestonProcess() const;
         boost::shared_ptr<LocalVolTermStructure> localVol() const;
+        boost::shared_ptr<LocalVolTermStructure> leverageFunction() const;
 
       protected:
-        const Handle<HestonModel> hestonModel_;
+        void performCalculations() const;
+
         const Handle<LocalVolTermStructure> localVol_;
-        const Handle<SimpleQuote> eta_;
+        const Handle<HestonModel> hestonModel_;
+        const HestonSLVFokkerPlanckFdmParams params_;
+        const std::vector<Date> mandatoryDates_;
+
+        mutable boost::shared_ptr<LocalVolTermStructure> leverageFunction_;
     };
 }
 

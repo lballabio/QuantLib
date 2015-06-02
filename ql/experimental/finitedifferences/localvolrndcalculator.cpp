@@ -215,6 +215,8 @@ namespace QuantLib {
 	}
 
 	void LocalVolRNDCalculator::performCalculations() const {
+		rescaleTimeSteps_.clear();
+
 		const Time sT = timeGrid_->at(1);
 		Time t = std::min(sT, (gaussianStepSize_ > 0.0) ? gaussianStepSize_
 													    : 0.5*sT);
@@ -269,15 +271,39 @@ namespace QuantLib {
 	    				 std::fabs(*std::max_element(p.end()-b, p.end())));
 
 	    	if (std::max(maxLeftValue, maxRightValue) > eps_) {
+	    		rescaleTimeSteps_.push_back(i);
+
 	    		const Real oldLowerBound = sLowerBound;
 	    	    const Real oldUpperBound = sUpperBound;
 
 	    		xm = DiscreteSimpsonIntegral()(x, x*p);
+                Array vols(x.size());
+                for (Size j=0; j < vols.size(); ++j) {
+                	try {
+                		vols[j] = localVol_->localVol(t + dt, std::exp(x[j]));
+                	} catch (Error& e) {
+						if (illegalLocalVolOverwrite_ < 0.0) {
+							throw;
+						}
+						else {
+							vols[j] = illegalLocalVolOverwrite_;
+						}
+                	}
+                }
+                const Real vm = DiscreteSimpsonIntegral()(x, vols)
+                	/(x.back() - x.front());
+
+                const Size scalingSteps
+					= std::max(3, Integer(0.01*timeGrid_->size()));
+                const Real scalingFactor
+					= std::sqrt(timeGrid_->at(
+						std::min(timeGrid_->size(), i+scalingSteps)))
+                	 * vm;
 
 	    		if (maxLeftValue > eps_)
-	    			sLowerBound -= 0.1*xm;
+	    			sLowerBound -= scalingFactor*xm;
 	    		if (maxRightValue > eps_)
-	    			sUpperBound += 0.1*xm;
+	    			sUpperBound += scalingFactor*xm;
 
 	    		mesher = boost::shared_ptr<Fdm1dMesher>(
 	    			new Concentrating1dMesher(sLowerBound, sUpperBound, xGrid_,
@@ -316,6 +342,14 @@ namespace QuantLib {
 			pFct_[i-1] = boost::make_shared<CubicNaturalSpline>(
 				xm_->row_begin(i-1), xm_->row_end(i-1), pm_->row_begin(i-1));
 	    }
+	}
+
+
+	Disposable<std::vector<Size> > LocalVolRNDCalculator::rescaleTimeSteps()
+	const {
+		calculate();
+
+		return rescaleTimeSteps_;
 	}
 
 	Real LocalVolRNDCalculator::probabilityInterpolation(
