@@ -20,12 +20,11 @@
 /*! \file lognormalcmsspreadpricer.cpp
 */
 
-#include <boost/make_shared.hpp>
-
 #include <ql/experimental/coupons/lognormalcmsspreadpricer.hpp>
 #include <ql/experimental/coupons/cmsspreadcoupon.hpp>
 #include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolcube.hpp>
+#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

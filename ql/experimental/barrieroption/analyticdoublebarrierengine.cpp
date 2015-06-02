@@ -64,6 +64,13 @@ namespace QuantLib {
                  case DoubleBarrier::KnockOut:
                    results_.value = callKO();
                    break;
+                 case DoubleBarrier::KIKO:
+                 case DoubleBarrier::KOKI:
+                   QL_FAIL("unsupported double-barrier type: "
+                           << barrierType);
+                 default:
+                   QL_FAIL("unknown double-barrier type: "
+                           << barrierType);
                }
                break;
              case Option::Put:
@@ -74,6 +81,13 @@ namespace QuantLib {
                  case DoubleBarrier::KnockOut:
                    results_.value = putKO();
                    break;
+                 case DoubleBarrier::KIKO:
+                 case DoubleBarrier::KOKI:
+                   QL_FAIL("unsupported double-barrier type: "
+                           << barrierType);
+                 default:
+                   QL_FAIL("unknown double-barrier type: "
+                           << barrierType);
                }
                break;
              default:
@@ -142,15 +156,9 @@ namespace QuantLib {
 
     Real AnalyticDoubleBarrierEngine::vanillaEquivalent() const {
         // Call KI equates to vanilla - callKO
-        Real spot = process_->stateVariable()->value();
         boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
-        Real variance =
-            process_->blackVolatility()->blackVariance(
-                                              arguments_.exercise->lastDate(),
-                                              payoff->strike());
         Real forwardPrice = underlying() * dividendDiscount() / riskFreeDiscount();
-        //Real forwardPrice = underlying() / dividendDiscount();
         BlackCalculator black(payoff, forwardPrice, stdDeviation(), riskFreeDiscount());
         Real vanilla = black.value();
         if (vanilla < 0.0)

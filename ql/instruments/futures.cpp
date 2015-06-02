@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2015 Peter Caspers
+Copyright (C) 2015 Ferdinando Ametrano
+Copyright (C) 2015 Maddalena Zanzi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,33 +18,21 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file volatilitytype.hpp
-    \brief volatility types
-*/
-
-#ifndef quantlib_volatility_type_hpp
-#define quantlib_volatility_type_hpp
-
-#include <ql/qldefines.hpp>
-#include <ostream>
+#include <ql/instruments/futures.hpp>
+#include <ql/types.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 
-    enum VolatilityType { ShiftedLognormal, Normal };
-
-    inline std::ostream& operator<<(std::ostream& out,
-                                    const VolatilityType& t) {
-        switch(t) {
-          case Normal:
-            return out << "Normal";
-          case ShiftedLognormal:
-            return out << "ShiftedLognormal";
+    std::ostream& operator<<(std::ostream& out, Futures::Type f) {
+        switch (f) {
+          case Futures::IMM:
+            return out << "IMM";
+          case Futures::ASX:
+            return out << "ASX";
           default:
-            return out << "Unknown volatility type (" << t << ")";
+            QL_FAIL("unknown futures type (" << Integer(f) << ")");
         }
-    };
+    }
 
 }
-
-
-#endif
