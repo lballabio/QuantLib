@@ -71,6 +71,7 @@ namespace QuantLib {
             if(requireCPoint) {
                 const Real z0 = - c1 / (c2-c1);
                 const Real u0 = static_cast<int>(z0*(size-1)+0.5) / ((Real)(size-1));
+                std::vector<Real> u, z;
                 if (u0 > 0.0) {
                     u.push_back(0.0);
                     z.push_back(0.0);
