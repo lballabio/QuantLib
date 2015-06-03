@@ -59,14 +59,15 @@ namespace QuantLib {
         //! access to integration:
         const boost::shared_ptr<LMIntegration>& 
             integration() const { return integration_; }
+    private:
+        typedef typename copulaPolicy::initTraits initTraits;
     public:
         SpotRecoveryLatentModel(
             const std::vector<std::vector<Real> >& factorWeights,
             const std::vector<Real>& recoveries,
             Real modelA,
             LatentModelIntegrationType::LatentModelIntegrationType integralType,
-            const typename copulaPolicy::initTraits& ini = 
-                copulaPolicy::initTraits()
+            const initTraits& ini = initTraits()
             ); 
 
         void resetBasket(const boost::shared_ptr<Basket> basket) const;

@@ -4,7 +4,7 @@
  Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2004, 2007 StatPro Italia srl
  Copyright (C) 2008 Paul Farrington
- Copyright (C) 2012 Thema Consulting SA (developer: Riccardo Ghetta)
+ Copyright (C) 2014 Thema Consulting SA
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/

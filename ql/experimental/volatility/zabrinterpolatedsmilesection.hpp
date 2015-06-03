@@ -25,14 +25,13 @@
 #define quantlib_zabr_interpolated_smile_section_hpp
 
 #include <ql/handle.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/termstructures/volatility/smilesection.hpp>
 #include <ql/experimental/volatility/zabrinterpolation.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 
 namespace QuantLib {
-
-class Quote;
 
 template <typename Evaluation>
 class ZabrInterpolatedSmileSection : public SmileSection, public LazyObject {

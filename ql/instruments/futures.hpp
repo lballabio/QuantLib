@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2014 Klaus Spanderen
+ Copyright (C) 2015 Ferdinando Ametrano
+ Copyright (C) 2015 Maddalena Zanzi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,29 +18,32 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file discreteintegrals.hpp
-    \brief integrals on non uniform grids
+/*! \file futures.hpp
+    \brief Futures
 */
 
-#ifndef quantlib_discrete_integrals_hpp
-#define quantlib_discrete_integrals_hpp
+#ifndef quantlib_futures_hpp
+#define quantlib_futures_hpp
 
-#include <ql/math/array.hpp>
+#include <ql/qldefines.hpp>
+#include <iosfwd>
 
 namespace QuantLib {
 
-    /*! References:
-        Levy, D. Numerical Integration
-        http://www2.math.umd.edu/~dlevy/classes/amsc466/lecture-notes/integration-chap.pdf
-    */
-    class DiscreteTrapezoidIntegral {
-      public:
-        Real operator()(const Array& x, const Array& f) const;
+    struct Futures {
+        //! Futures type enumeration
+        /*! These conventions specify the kind of futures type. */
+        enum Type {
+            IMM, /*!< Chicago Mercantile Internation Money Market, i.e.
+                      third Wednesday of March, June, September, December */
+            ASX, /*!< Australian Security Exchange, i.e. second Friday
+                      of March, June, September, December */
+        };
     };
 
-    class DiscreteSimpsonIntegral {
-      public:
-        Real operator()(const Array& x, const Array& f) const;
-    };
+    /*! \relates Futures */
+    std::ostream& operator<<(std::ostream&, Futures::Type);
+
 }
+
 #endif

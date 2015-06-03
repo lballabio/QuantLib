@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file DoubleBarrierOption.hpp
+/*! \file doublebarrieroption.hpp
     \brief double Barrier european option on a single asset
 */
 

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdmdupire1d.hpp
+/*! \file fdmdupire1dop.hpp
     \brief Dupire local volatility pricing operator
         Note that time is reversed in order to make backward solvers work
 */

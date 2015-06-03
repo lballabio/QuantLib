@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2013, 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,10 +27,18 @@ namespace QuantLib {
         const boost::shared_ptr<SmileSection> source, const Real atm,
         const bool interpolate, const bool exponentialExtrapolation,
         const bool deleteArbitragePoints,
-        const std::vector<Real> &moneynessGrid, const Real gap)
+        const std::vector<Real> &moneynessGrid, const Real gap,
+        const int forcedLeftIndex, const int forcedRightIndex)
         : SmileSection(*source), source_(source), moneynessGrid_(moneynessGrid),
           gap_(gap), interpolate_(interpolate),
-          exponentialExtrapolation_(exponentialExtrapolation) {
+          exponentialExtrapolation_(exponentialExtrapolation),
+        forcedLeftIndex_(forcedLeftIndex), forcedRightIndex_(forcedRightIndex) {
+
+        // only shifted lognormal smile sections are supported
+
+        QL_REQUIRE(source->volatilityType() == ShiftedLognormal,
+                   "KahaleSmileSection only supports shifted lognormal source "
+                   "sections");
 
         ssutils_ = boost::shared_ptr<SmileSectionUtils>(new SmileSectionUtils(
             *source, moneynessGrid, atm, deleteArbitragePoints));
@@ -39,6 +47,15 @@ namespace QuantLib {
         k_ = ssutils_->strikeGrid();
         c_ = ssutils_->callPrices();
         f_ = ssutils_->atmLevel();
+
+        // for shifted smile sections we shift the forward and the strikes
+        // and do as if we were in a lognormal setting
+
+        for(Size i=0;i<k_.size();++i) {
+            k_[i] += shift();
+        }
+
+        f_ += shift();
 
         compute();
     }
@@ -71,11 +88,8 @@ namespace QuantLib {
                 if (interpolate_)
                     c1p = (secl + sec) / 2;
                 else {
-                    c1p = (blackFormula(Option::Call, k1 + gap_, f_,
-                                        sqrt(source_->variance(k1 + gap_))) -
-                           blackFormula(Option::Call, k1, f_,
-                                        sqrt(source_->variance(k1)))) /
-                          gap_;
+                    c1p = -source_->digitalOptionPrice(
+                        k1 - shift() + gap_ / 2.0, Option::Call, 1.0, gap_);
                     QL_REQUIRE(secl < c1p && c1p <= 0.0, "dummy");
                     // can not extrapolate so throw exception which is caught
                     // below
@@ -92,8 +106,13 @@ namespace QuantLib {
                 // which are not monotonic or greater than 1.0
                 // due to numerical effects. Move to the next index in
                 // these cases.
-                Real dig = digitalOptionPrice(k1 / 2.0);
+                Real dig = digitalOptionPrice((k1 - shift()) / 2.0, Option::Call,
+                                              1.0, gap_);
                 QL_REQUIRE(dig >= -c1p && dig <= 1.0, "dummy");
+                if(static_cast<int>(leftIndex_) < forcedLeftIndex_) {
+                    leftIndex_++;
+                    success = false;
+                }
             }
             catch (...) {
                 leftIndex_++;
@@ -168,11 +187,8 @@ namespace QuantLib {
                     cp0 = 0.5 * (c_[rightIndex_] - c_[rightIndex_ - 1]) /
                           (k_[rightIndex_] - k_[rightIndex_ - 1]);
                 else {
-                    cp0 = (blackFormula(Option::Call, k0, f_,
-                                        sqrt(source_->variance(k0))) -
-                           blackFormula(Option::Call, k0 - gap_, f_,
-                                        sqrt(source_->variance(k0 - gap_)))) /
-                          gap_;
+                    cp0 = -source_->digitalOptionPrice(
+                        k0 - shift() - gap_ / 2.0, Option::Call, 1.0, gap_);
                 }
                 boost::shared_ptr<cFunction> cFct;
                 if (exponentialExtrapolation_) {
@@ -196,6 +212,10 @@ namespace QuantLib {
                 rightIndex_--;
                 success = false;
             }
+            if(static_cast<int>(rightIndex_) > forcedRightIndex_) {
+                rightIndex_--;
+                success = false;
+            }
         } while (!success && rightIndex_ > leftIndex_);
 
         QL_REQUIRE(
@@ -209,30 +229,30 @@ namespace QuantLib {
         // option prices are directly available, so implement this function
         // rather than use smileSection
         // standard implementation
-        strike = std::max(strike, QL_KAHALE_EPS);
-        int i = index(strike);
+        Real shifted_strike = std::max(strike + shift(), QL_KAHALE_EPS);
+        int i = index(shifted_strike);
         if (interpolate_ ||
             (i == 0 || i == (int)(rightIndex_ - leftIndex_ + 1)))
             return discount *
                    (type == Option::Call
-                        ? cFunctions_[i]->operator()(strike)
-                        : cFunctions_[i]->operator()(strike) + strike - f_);
+                        ? cFunctions_[i]->operator()(shifted_strike)
+                        : cFunctions_[i]->operator()(shifted_strike) + shifted_strike - f_);
         else
             return source_->optionPrice(strike, type, discount);
     }
 
     Real KahaleSmileSection::volatilityImpl(Rate strike) const {
-        strike = std::max(strike, QL_KAHALE_EPS);
-        int i = index(strike);
+        Real shifted_strike = std::max(strike + shift(), QL_KAHALE_EPS);
+        int i = index(shifted_strike);
         if (!interpolate_ &&
             !(i == 0 || i == (int)(rightIndex_ - leftIndex_ + 1)))
             return source_->volatility(strike);
-        Real c = cFunctions_[i]->operator()(strike);
+        Real c = cFunctions_[i]->operator()(shifted_strike);
         Real vol = 0.0;
         try {
-            Option::Type type = strike >= f_ ? Option::Call : Option::Put;
+            Option::Type type = shifted_strike >= f_ ? Option::Call : Option::Put;
             vol = blackFormulaImpliedStdDev(
-                      type, strike, f_,
+                      type, shifted_strike, f_,
                       type == Option::Put ? strike - f_ + c : c) /
                   sqrt(exerciseTime());
         }

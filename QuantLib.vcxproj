@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (static runtime)|Win32">
@@ -290,7 +290,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>      
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -520,6 +520,7 @@
     <ClInclude Include="ql\instruments\cpicapfloor.hpp" />
     <ClInclude Include="ql\instruments\cpiswap.hpp" />
     <ClInclude Include="ql\instruments\dividendbarrieroption.hpp" />
+    <ClInclude Include="ql\instruments\futures.hpp" />
     <ClInclude Include="ql\instruments\vanillastorageoption.hpp" />
     <ClInclude Include="ql\instruments\vanillaswingoption.hpp" />
     <ClInclude Include="ql\math\matrixutilities\bicgstab.hpp" />
@@ -1123,6 +1124,7 @@
     <ClInclude Include="ql\termstructures\volatility\sabrsmilesection.hpp" />
     <ClInclude Include="ql\termstructures\volatility\smilesection.hpp" />
     <ClInclude Include="ql\termstructures\volatility\spreadedsmilesection.hpp" />
+    <ClInclude Include="ql\termstructures\volatility\volatilitytype.hpp" />
     <ClInclude Include="ql\termstructures\volatility\capfloor\all.hpp" />
     <ClInclude Include="ql\termstructures\volatility\capfloor\capfloortermvolatilitystructure.hpp" />
     <ClInclude Include="ql\termstructures\volatility\capfloor\capfloortermvolcurve.hpp" />
@@ -1203,6 +1205,7 @@
     <ClInclude Include="ql\termstructures\credit\piecewisedefaultcurve.hpp" />
     <ClInclude Include="ql\termstructures\credit\probabilitytraits.hpp" />
     <ClInclude Include="ql\termstructures\credit\survivalprobabilitystructure.hpp" />
+    <ClInclude Include="ql\time\asx.hpp" />
     <ClInclude Include="ql\utilities\all.hpp" />
     <ClInclude Include="ql\utilities\clone.hpp" />
     <ClInclude Include="ql\utilities\dataformatters.hpp" />
@@ -1757,6 +1760,7 @@
     <ClCompile Include="ql\instruments\cpicapfloor.cpp" />
     <ClCompile Include="ql\instruments\cpiswap.cpp" />
     <ClCompile Include="ql\instruments\dividendbarrieroption.cpp" />
+    <ClCompile Include="ql\instruments\futures.cpp" />
     <ClCompile Include="ql\instruments\vanillaswingoption.cpp" />
     <ClCompile Include="ql\math\matrixutilities\bicgstab.cpp" />
     <ClCompile Include="ql\math\matrixutilities\sparseilupreconditioner.cpp" />
@@ -2188,6 +2192,7 @@
     <ClCompile Include="ql\termstructures\credit\flathazardrate.cpp" />
     <ClCompile Include="ql\termstructures\credit\hazardratestructure.cpp" />
     <ClCompile Include="ql\termstructures\credit\survivalprobabilitystructure.cpp" />
+    <ClCompile Include="ql\time\asx.cpp" />
     <ClCompile Include="ql\utilities\dataformatters.cpp" />
     <ClCompile Include="ql\utilities\dataparsers.cpp" />
     <ClCompile Include="ql\utilities\tracing.cpp" />

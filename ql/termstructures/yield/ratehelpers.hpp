@@ -31,6 +31,7 @@
 #include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/instruments/bmaswap.hpp>
+#include <ql/instruments/futures.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/daycounter.hpp>
 
@@ -47,39 +48,45 @@ namespace QuantLib {
     class FuturesRateHelper : public RateHelper {
       public:
         FuturesRateHelper(const Handle<Quote>& price,
-                          const Date& immDate,
+                          const Date& iborStartDate,
                           Natural lengthInMonths,
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           bool endOfMonth,
                           const DayCounter& dayCounter,
-                          const Handle<Quote>& convexityAdjustment = Handle<Quote>());
+                          const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
+                          Futures::Type type = Futures::IMM);
         FuturesRateHelper(Real price,
-                          const Date& immDate,
+                          const Date& iborStartDate,
                           Natural lengthInMonths,
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           bool endOfMonth,
                           const DayCounter& dayCounter,
-                          Rate convexityAdjustment = 0.0);
+                          Rate convexityAdjustment = 0.0,
+                          Futures::Type type = Futures::IMM);
         FuturesRateHelper(const Handle<Quote>& price,
-                          const Date& immStartDate,
+                          const Date& iborStartDate,
+                          const Date& iborEndDate,
+                          const DayCounter& dayCounter,
+                          const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
+                          Futures::Type type = Futures::IMM);
+        FuturesRateHelper(Real price,
+                          const Date& iborStartDate,
                           const Date& endDate,
                           const DayCounter& dayCounter,
-                          const Handle<Quote>& convexityAdjustment = Handle<Quote>());
-        FuturesRateHelper(Real price,
-                          const Date& immStartDate,
-                          const Date& endDate,
-                          const DayCounter& dayCounter,
-                          Rate convexityAdjustment = 0.0);
+                          Rate convexityAdjustment = 0.0,
+                          Futures::Type type = Futures::IMM);
         FuturesRateHelper(const Handle<Quote>& price,
-                          const Date& immDate,
+                          const Date& iborStartDate,
                           const boost::shared_ptr<IborIndex>& iborIndex,
-                          const Handle<Quote>& convexityAdjustment = Handle<Quote>());
+                          const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
+                          Futures::Type type = Futures::IMM);
         FuturesRateHelper(Real price,
-                          const Date& immDate,
+                          const Date& iborStartDate,
                           const boost::shared_ptr<IborIndex>& iborIndex,
-                          Rate convexityAdjustment = 0.0);
+                          Rate convexityAdjustment = 0.0,
+                          Futures::Type type = Futures::IMM);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -225,6 +232,14 @@ namespace QuantLib {
                        const Period& fwdStart = 0*Days,
                        // exogenous discounting curve
                        const Handle<YieldTermStructure>& discountingCurve
+                                            = Handle<YieldTermStructure>(),
+                       Natural settlementDays = Null<Natural>());
+        SwapRateHelper(Rate rate,
+                       const boost::shared_ptr<SwapIndex>& swapIndex,
+                       const Handle<Quote>& spread = Handle<Quote>(),
+                       const Period& fwdStart = 0*Days,
+                       // exogenous discounting curve
+                       const Handle<YieldTermStructure>& discountingCurve
                                             = Handle<YieldTermStructure>());
         SwapRateHelper(Rate rate,
                        const Period& tenor,
@@ -239,14 +254,8 @@ namespace QuantLib {
                        const Period& fwdStart = 0*Days,
                        // exogenous discounting curve
                        const Handle<YieldTermStructure>& discountingCurve
-                                            = Handle<YieldTermStructure>());
-        SwapRateHelper(Rate rate,
-                       const boost::shared_ptr<SwapIndex>& swapIndex,
-                       const Handle<Quote>& spread = Handle<Quote>(),
-                       const Period& fwdStart = 0*Days,
-                       // exogenous discounting curve
-                       const Handle<YieldTermStructure>& discountingCurve
-                                            = Handle<YieldTermStructure>());
+                                            = Handle<YieldTermStructure>(),
+                       Natural settlementDays = Null<Natural>());
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -264,6 +273,7 @@ namespace QuantLib {
         //@}
       protected:
         void initializeDates();
+        Natural settlementDays_;
         Period tenor_;
         Calendar calendar_;
         BusinessDayConvention fixedConvention_;

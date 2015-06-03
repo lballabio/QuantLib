@@ -111,9 +111,9 @@ namespace QuantLib {
                 attach, detach);
         }
 
-        /*!  @param remaining fraction in live tranche units, not portfolio as 
-        a fraction of the remaining(live) tranche (i.e. a_remaining=0% and 
-        det_remaining=100%) 
+        /*!  @param remainingLossFraction fraction in live tranche
+             units, not portfolio as a fraction of the remaining(live)
+             tranche (i.e. a_remaining=0% and det_remaining=100%)
         */
         Real probOverLoss(const Date& d, Real remainingLossFraction) const;
 

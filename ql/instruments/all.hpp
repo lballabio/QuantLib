@@ -27,6 +27,7 @@
 #include <ql/instruments/forward.hpp>
 #include <ql/instruments/forwardrateagreement.hpp>
 #include <ql/instruments/forwardvanillaoption.hpp>
+#include <ql/instruments/futures.hpp>
 #include <ql/instruments/impliedvolatility.hpp>
 #include <ql/instruments/inflationcapfloor.hpp>
 #include <ql/instruments/lookbackoption.hpp>
