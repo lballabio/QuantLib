@@ -32,7 +32,6 @@ Fakher Braham
 Joe Byers
 Xavier Caron
 Marine Casanova
-Peter Caspers
 Antoine Cellerier
 Yee Man Chan
 Aurelien Chanudet
@@ -70,6 +69,7 @@ Johannes Göttker-Schnetmann
 Henri Gough
 Richard Gould
 Florent Grenier
+Matthias Groncki
 Sebastien Gurrieri
 Tawanda Gwena
 Cavit Hafizoglu
@@ -116,12 +116,14 @@ Raso Mirko
 Radu Mondescu
 Bart Mosley
 Tiziano Müller
+Dmitri Nesteruk
 Billy Ng
 Bojan Nikolic
 Jean Nkeng
 Adrian O'Neill
 Andrea Odetti
 Mike Parker
+Giorgio Pazmandi
 Guillaume Pealat
 Gilbert Peffer
 Walter Penschke
@@ -173,6 +175,7 @@ Stephen Wong
 Bernd Johannes Wuebben
 Sun Xiuxin
 Jeff Yu
+Maddalena Zanzi
 Francesco Zirilli
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo
