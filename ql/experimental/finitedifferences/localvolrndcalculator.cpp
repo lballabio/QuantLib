@@ -69,7 +69,7 @@ namespace QuantLib {
 	  rTS_     (rTS),
 	  qTS_     (qTS),
 	  timeGrid_(new TimeGrid(localVol->maxTime(), tGrid)),
-	  xm_      (new Matrix(tGrid, xGrid)),
+	  xm_      (tGrid),
 	  pm_      (new Matrix(tGrid, xGrid)) {
 		registerWith(spot_);
 		registerWith(rTS_);
@@ -99,7 +99,7 @@ namespace QuantLib {
 	  rTS_     (rTS),
 	  qTS_     (qTS),
 	  timeGrid_(timeGrid),
-	  xm_      (new Matrix(tGrid_, xGrid_)),
+	  xm_      (tGrid_),
 	  pm_      (new Matrix(tGrid_, xGrid_)) {
 		registerWith(spot_);
 		registerWith(rTS_);
@@ -157,8 +157,8 @@ namespace QuantLib {
 		const Size idx = (tc > t) ? timeGrid_->index(tc)
 								  : timeGrid_->index(tc)+1;
 
-		Real xl = xm_->row_begin(idx)[0];
-		const Real xr = xm_->row_begin(idx)[xGrid_-1];
+		Real xl = xm_[idx]->locations().front();
+		const Real xr = xm_[idx]->locations().back();
 
 		if (x < xl)
 			return 0.0;
@@ -183,7 +183,8 @@ namespace QuantLib {
 		else {
 			Array xp(xGrid_);
 			const Size idx = timeGrid_->index(closeGridTime)-1;
-			const Array x(xm_->row_begin(idx), xm_->row_end(idx));
+			const Array x(xm_[idx]->locations().begin(),
+						  xm_[idx]->locations().end());
 
 			std::transform(x.begin(), x.end(), pm_->row_begin(idx), xp.begin(),
 						   std::multiplies<Real>());
@@ -198,14 +199,15 @@ namespace QuantLib {
         calculate();
 
 		const Size idx = timeGrid_->index(t);
-		QL_REQUIRE(idx <= xm_->rows(), "inconsistent time " << t << " given");
+		QL_REQUIRE(idx <= xm_.size(), "inconsistent time " << t << " given");
 
 		if (idx > 0) {
-			Array retVal(xm_->row_begin(idx-1), xm_->row_end(idx-1));
+			Array retVal(xm_[idx-1]->locations().begin(),
+						 xm_[idx-1]->locations().end());
 			return retVal;
 		}
 		else {
-			Array retVal(xm_->columns(), std::log(spot_->value()));
+			Array retVal(xGrid_, std::log(spot_->value()));
 			return retVal;
 		}
 	}
@@ -337,10 +339,12 @@ namespace QuantLib {
 				p = rescalePDF(x, p);
 			}
 
-			std::copy(x.begin(), x.end(), xm_->row_begin(i-1));
+			xm_[i-1] = mesher;
 			std::copy(p.begin(), p.end(), pm_->row_begin(i-1));
 			pFct_[i-1] = boost::make_shared<CubicNaturalSpline>(
-				xm_->row_begin(i-1), xm_->row_end(i-1), pm_->row_begin(i-1));
+				xm_[i-1]->locations().begin(),
+				xm_[i-1]->locations().end(),
+				pm_->row_begin(i-1));
 	    }
 	}
 
@@ -356,7 +360,8 @@ namespace QuantLib {
 		Size idx, Real x) const {
 		calculate();
 
-		if (x < (*xm_)[idx][0] || x > (*xm_)[idx][xGrid_-1])
+		if (   x < xm_[idx]->locations().front()
+			|| x > xm_[idx]->locations().back())
 			return 0.0;
 		else
 			return (*pFct_[idx])(x);

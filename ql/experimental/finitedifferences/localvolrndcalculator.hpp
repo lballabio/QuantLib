@@ -29,12 +29,12 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/methods/finitedifferences/meshers/fdm1dmesher.hpp>
 #include <ql/experimental/finitedifferences/riskneutraldensitycalculator.hpp>
 
 #include <vector>
 
 namespace QuantLib {
-	class Quote;
 	class TimeGrid;
 	class Interpolation;
 	class LocalVolTermStructure;
@@ -91,7 +91,8 @@ namespace QuantLib {
 		const boost::shared_ptr<YieldTermStructure> rTS_;
 		const boost::shared_ptr<YieldTermStructure> qTS_;
 		const boost::shared_ptr<TimeGrid> timeGrid_;
-		const boost::shared_ptr<Matrix> xm_, pm_;
+		mutable std::vector<boost::shared_ptr<Fdm1dMesher> > xm_;
+		const boost::shared_ptr<Matrix> pm_;
 		mutable std::vector<Size> rescaleTimeSteps_;
 		mutable std::vector<boost::shared_ptr<Interpolation> > pFct_;
 	};

@@ -27,8 +27,7 @@
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopiterator.hpp>
 #include <ql/experimental/finitedifferences/fdmhestongreensfct.hpp>
-
-#include <iostream>
+#include <ql/experimental/finitedifferences/squarerootprocessrndcalculator.hpp>
 
 namespace QuantLib {
 
@@ -73,8 +72,9 @@ namespace QuantLib {
 	          {
 	  			const Real p_x = 1.0/(std::sqrt(M_TWOPI*v0*t))
 	  	                * std::exp(-0.5*square<Real>()(x - x0)/(v0*l0_*l0_*t));
-	  			const Real p_v = squareRootProcessGreensFct(v0, kappa, theta,
-	  														sigma, t, v);
+	  			const Real p_v = SquareRootProcessRNDCalculator(
+	  				v0, kappa, theta, sigma).pdf(v, t);
+
 	  			retVal = p_v*p_x;
 	          }
 		      break;
@@ -109,9 +109,6 @@ namespace QuantLib {
 	          default:
 	        	QL_FAIL("unknown transformation type");
 	        }
-
-//	        std::cout << x << " " << v << " " << retVal
-//	        		<< " "<<  retVal << std::endl;
 
 	        p[iter.index()] = retVal;
 	    }

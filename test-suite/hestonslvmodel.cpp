@@ -62,6 +62,7 @@
 #include <ql/experimental/finitedifferences/fdmblackscholesfwdop.hpp>
 #include <ql/experimental/finitedifferences/fdmlocalvolfwdop.hpp>
 #include <ql/experimental/finitedifferences/fdmhestongreensfct.hpp>
+#include <ql/experimental/finitedifferences/squarerootprocessrndcalculator.hpp>
 #include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
 
 #include <boost/assign/std/vector.hpp>
@@ -245,15 +246,6 @@ void HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation() {
 
 
 namespace {
-    Real stationaryProbabilityFct(Real kappa, Real theta,
-                                   Real sigma, Real v) {
-        const Real alpha = 2*kappa*theta/(sigma*sigma);
-        const Real beta = alpha/theta;
-
-        return std::pow(beta, alpha)*std::pow(v, alpha-1) //
-                *std::exp(-beta*v-GammaFunction().logValue(alpha));
-    }
-
     Real stationaryLogProbabilityFct(Real kappa, Real theta,
                                    Real sigma, Real z) {
         const Real alpha = 2*kappa*theta/(sigma*sigma);
@@ -261,29 +253,6 @@ namespace {
 
         return std::pow(beta, alpha)*std::exp(z*alpha)
                 *std::exp(-beta*std::exp(z)-GammaFunction().logValue(alpha));
-    }
-
-    class StationaryDistributionFct : public std::unary_function<Real,Real> {
-      public:
-        StationaryDistributionFct(Real kappa, Real theta, Real sigma)
-        : kappa_(kappa), theta_(theta), sigma_(sigma) {}
-
-        Real operator()(Real v) const {
-            const Real alpha = 2*kappa_*theta_/(sigma_*sigma_);
-            const Real beta = alpha/theta_;
-
-            return boost::math::gamma_p(alpha, beta*v);
-        }
-      private:
-        const Real kappa_, theta_, sigma_;
-    };
-
-    Real invStationaryDistributionFct(Real kappa, Real theta,
-                                      Real sigma, Real q) {
-        const Real alpha = 2*kappa*theta/(sigma*sigma);
-        const Real beta = alpha/theta;
-
-        return boost::math::gamma_p_inv(alpha, q)/beta;
     }
 }
 
@@ -316,16 +285,14 @@ void HestonSLVModelTest::testSquareRootZeroFlowBC() {
         const Real v1  = v + h;
         const Real v2  = v + 2*h;
 
-        const Real pm2
-            = squareRootProcessGreensFct(v_0, kappa, theta, sigma, t, vm2);
-        const Real pm1
-            = squareRootProcessGreensFct(v_0, kappa, theta, sigma, t, vm1);
-        const Real p0
-            = squareRootProcessGreensFct(v_0, kappa, theta, sigma, t, v0);
-        const Real p1
-            = squareRootProcessGreensFct(v_0, kappa, theta, sigma, t, v1);
-        const Real p2
-            = squareRootProcessGreensFct(v_0, kappa, theta, sigma, t, v2);
+        const SquareRootProcessRNDCalculator rndCalculator(
+        	v_0, kappa, theta, sigma);
+
+        const Real pm2 = rndCalculator.pdf(vm2, t);
+        const Real pm1 = rndCalculator.pdf(vm1, t);
+        const Real p0  = rndCalculator.pdf(v0 , t);
+        const Real p1  = rndCalculator.pdf(v1 , t);
+        const Real p2  = rndCalculator.pdf(v2 , t);
 
         // test derivatives
         const Real flowSym2Order = sigma*sigma*v0/(4*h)*(p1-pm1)
@@ -367,10 +334,10 @@ namespace {
         const Real qMax = 0.99;
         const Real dq = (qMax-qMin)/(vGrid-1);
 
+        const SquareRootProcessRNDCalculator rnd(theta, kappa, theta, sigma);
         std::vector<Real> v(vGrid);
         for (Size i=0; i < vGrid; ++i) {
-            v[i] = invStationaryDistributionFct(kappa, theta,
-                                                sigma, qMin + i*dq);
+            v[i] = rnd.stationary_invcdf(qMin + i*dq);
         }
 
         return boost::shared_ptr<FdmMesher>(
@@ -396,8 +363,9 @@ void HestonSLVModelTest::testTransformedZeroFlowBC() {
     const Array v = mesher->locations(0);
 
     Array p(vGrid);
+    const SquareRootProcessRNDCalculator rnd(theta, kappa, theta, sigma);
     for (Size i=0; i < v.size(); ++i)
-        p[i] =  stationaryProbabilityFct(kappa, theta, sigma, v[i]);
+        p[i] =  rnd.stationary_pdf(v[i]);
 
 
     const Real alpha = 1.0 - 2*kappa*theta/(sigma*sigma);
@@ -460,10 +428,10 @@ void HestonSLVModelTest::testSquareRootEvolveWithStationaryDensity() {
 
     for (Real sigma = 0.2; sigma < 2.01; sigma+=0.1) {
         const Real alpha = (1.0 - 2*kappa*theta/(sigma*sigma));
-        const Real vMin
-            = invStationaryDistributionFct(kappa, theta, sigma, eps);
-        const Real vMax
-            = invStationaryDistributionFct(kappa, theta, sigma, 1-eps);
+
+        const SquareRootProcessRNDCalculator rnd(theta, kappa, theta, sigma);
+        const Real vMin = rnd.stationary_invcdf(eps);
+        const Real vMax = rnd.stationary_invcdf(1-eps);
 
         const boost::shared_ptr<FdmMesher> mesher(
             new FdmMesherComposite(boost::shared_ptr<Fdm1dMesher>(
@@ -483,7 +451,7 @@ void HestonSLVModelTest::testSquareRootEvolveWithStationaryDensity() {
 
         Array p(vGrid);
         for (Size i=0; i < v.size(); ++i) {
-            p[i] =  stationaryProbabilityFct(kappa, theta, sigma, v[i]);
+            p[i] =  rnd.stationary_pdf(v[i]);
             if (transform == FdmSquareRootFwdOp::Power)
                 p[i] *= vq[i];
         }
@@ -541,13 +509,14 @@ void HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity() {
         const Real lowerLimit = 0.001;
         // should not go to very large negative values, distributions flattens with sigma
         // causing numerical instabilities log/exp evaluations
-        const Real vMin = std::max(
-            lowerLimit, invStationaryDistributionFct(kappa, theta, sigma, eps));
-        const Real lowEps = std::max(eps, StationaryDistributionFct(kappa, theta, sigma)(lowerLimit));
+
+        const SquareRootProcessRNDCalculator rnd(theta, kappa, theta, sigma);
+
+        const Real vMin = std::max(lowerLimit, rnd.stationary_invcdf(eps));
+        const Real lowEps = std::max(eps, rnd.stationary_cdf(lowerLimit));
 
         const Real expected = 1-eps-lowEps;
-        const Real vMax
-            = invStationaryDistributionFct(kappa, theta, sigma, 1-eps);
+        const Real vMax = rnd.stationary_invcdf(1-eps);
 
         std::vector<Real> critialPoints;
         std::vector<boost::tuple<Real, Real, bool> > critPoints;
@@ -626,9 +595,9 @@ void HestonSLVModelTest::testSquareRootFokkerPlanckFwdEquation() {
     const Size n = 5;
 
     Array p(xGrid);
+    SquareRootProcessRNDCalculator rndCalculator(v0, kappa, theta, sigma);
     for (Size i=0; i < p.size(); ++i) {
-        p[i] = squareRootProcessGreensFct(v0, kappa, theta,
-                                   sigma, n*dt, x[i]);
+        p[i] = rndCalculator.pdf(x[i], n*dt);
     }
     Array q = Pow(x, alpha)*p;
 
@@ -644,8 +613,7 @@ void HestonSLVModelTest::testSquareRootFokkerPlanckFwdEquation() {
 
     Array y(x.size());
     for (Size i=0; i < x.size(); ++i) {
-        const Real expected = squareRootProcessGreensFct(v0, kappa, theta,
-                                                  sigma, maturity, x[i]);
+        const Real expected = rndCalculator.pdf(x[i], maturity);
 
         const Real calculated = p[i];
         if (std::fabs(expected - calculated) > tol) {
@@ -760,11 +728,11 @@ namespace {
         Real lowerBound, upperBound;
         std::vector<boost::tuple<Real, Real, bool> > cPoints;
 
+        const SquareRootProcessRNDCalculator rnd(v0, kappa, theta, sigma);
         switch (transformationType) {
         case FdmSquareRootFwdOp::Log:
           {
-            upperBound = std::log(
-                invStationaryDistributionFct(kappa, theta, sigma, 0.9995));
+            upperBound = std::log(rnd.stationary_invcdf(0.9995));
             lowerBound = std::log(0.00001);
 
             const Real v0Center = std::log(v0);
@@ -778,9 +746,8 @@ namespace {
         break;
         case FdmSquareRootFwdOp::Plain:
           {
-            upperBound =
-                invStationaryDistributionFct(kappa, theta, sigma, 0.9995);
-            lowerBound = invStationaryDistributionFct(kappa, theta, sigma, 1e-5);
+            upperBound = rnd.stationary_invcdf(0.9995);
+            lowerBound = rnd.stationary_invcdf(1e-5);
 
             const Real v0Center = v0;
             const Real v0Density = 0.1;
@@ -791,8 +758,7 @@ namespace {
         break;
         case FdmSquareRootFwdOp::Power:
           {
-              upperBound =
-                  invStationaryDistributionFct(kappa, theta, sigma, 0.9995);
+            upperBound = rnd.stationary_invcdf(0.9995);
             lowerBound = 0.000075;
 
             const Real v0Center = v0;
@@ -1111,10 +1077,10 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
     const Size vGrid = 401;
     const Size tGrid = 25;
 
-    const Real upperBound
-        = invStationaryDistributionFct(kappa, theta, sigma, 0.99);
-    const Real lowerBound
-        = invStationaryDistributionFct(kappa, theta, sigma, 0.01);
+    const SquareRootProcessRNDCalculator rnd(v0, kappa, theta, sigma);
+
+    const Real upperBound = rnd.stationary_invcdf(0.99);
+    const Real lowerBound = rnd.stationary_invcdf(0.01);
 
     const Real beta = 10.0;
     std::vector<boost::tuple<Real, Real, bool> > critPoints;
@@ -1146,19 +1112,20 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
     const Real bsV0 = square<Real>()(
         lvProcess->blackVolatility()->blackVol(0.0, s0, true));
 
-     const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
-     for (FdmLinearOpIterator iter = layout->begin(); iter != layout->end();
-             ++iter) {
-         const Real x = mesher->location(iter, 0);
-         if (v != mesher->location(iter, 1)) {
-             v = mesher->location(iter, 1);
-             p_v = squareRootProcessGreensFct(v0, kappa, theta, sigma, eT, v);
-         }
-         const Real p_x = 1.0/(std::sqrt(M_TWOPI*bsV0*eT))
-           * std::exp(-0.5*square<Real>()(x - x0)/(bsV0*eT));
-         p[iter.index()] = p_v*p_x;
-     }
-     const Time dt = (maturity-eT)/tGrid;
+    SquareRootProcessRNDCalculator rndCalculator(v0, kappa, theta, sigma);
+    const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+    for (FdmLinearOpIterator iter = layout->begin(); iter != layout->end();
+         ++iter) {
+        const Real x = mesher->location(iter, 0);
+        if (v != mesher->location(iter, 1)) {
+            v = mesher->location(iter, 1);
+            p_v = rndCalculator.pdf(v, eT);
+        }
+        const Real p_x = 1.0/(std::sqrt(M_TWOPI*bsV0*eT))
+            * std::exp(-0.5*square<Real>()(x - x0)/(bsV0*eT));
+        p[iter.index()] = p_v*p_x;
+    }
+    const Time dt = (maturity-eT)/tGrid;
 
 
     Real denseStrikes[] =
@@ -1420,11 +1387,12 @@ namespace {
         std::vector<boost::tuple<Real, Real, bool> > cPoints;
         Real lowerBound, upperBound;
 
+        const SquareRootProcessRNDCalculator rnd(v0, kappa, theta, sigma);
+
         switch (trafoType) {
             case FdmSquareRootFwdOp::Log:
               {
-                upperBound = std::log(
-                    invStationaryDistributionFct(kappa, theta, sigma, 0.9995));
+                upperBound = std::log(rnd.stationary_invcdf(0.9995));
                 lowerBound = std::log(0.0000025);
                 const Real v0Center = std::log(v0);
                 const Real v0Density = 1.0;
@@ -1437,10 +1405,8 @@ namespace {
             break;
             case FdmSquareRootFwdOp::Plain:
               {
-                upperBound = std::max(1.25*v0,
-                    invStationaryDistributionFct(kappa, theta, sigma, 0.995));
-                lowerBound = std::min(0.75*v0,
-                    invStationaryDistributionFct(kappa, theta, sigma, 1e-5));
+                upperBound = std::max(1.25*v0, rnd.stationary_invcdf(0.995));
+                lowerBound = std::min(0.75*v0, rnd.stationary_invcdf(1e-5));
 
                 const Real v0Center = v0;
                 const Real v0Density = 0.01;
@@ -1853,23 +1819,23 @@ test_suite* HestonSLVModelTest::experimental() {
     test_suite* suite = BOOST_TEST_SUITE(
     	"Heston Stochastic Local Volatility tests");
 
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation));
-//    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testSquareRootZeroFlowBC));
-//    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testTransformedZeroFlowBC));
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testSquareRootEvolveWithStationaryDensity));
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity));
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testSquareRootFokkerPlanckFwdEquation));
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquation));
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage));
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
-//    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testSLVCalibration));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation));
+    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testSquareRootZeroFlowBC));
+    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testTransformedZeroFlowBC));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testSquareRootEvolveWithStationaryDensity));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testSquareRootFokkerPlanckFwdEquation));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquation));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
+    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testSLVCalibration));
     suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testHestonSLVModel));
 
 

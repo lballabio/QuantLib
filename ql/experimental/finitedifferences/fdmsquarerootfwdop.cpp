@@ -37,19 +37,6 @@
 
 namespace QuantLib {
 
-	Real squareRootProcessGreensFct(Real v0, Real kappa, Real theta,
-			 	 	 	 	 	 	Real sigma, Real t, Real x) {
-		const Real ncp = 4*kappa*std::exp(-kappa*t)
-			/((sigma*sigma)*(1-std::exp(-kappa*t)))*v0;
-		const Real df  = 4*theta*kappa/(sigma*sigma);
-		const Real k   = sigma*sigma*(1-std::exp(-kappa*t))/(4*kappa);
-
-		const boost::math::non_central_chi_squared_distribution<Real>
-			dist(df, ncp);
-
-		return boost::math::pdf(dist, x/k) / k;
-	}
-
     FdmSquareRootFwdOp::FdmSquareRootFwdOp(
         const boost::shared_ptr<FdmMesher>& mesher,
         Real kappa, Real theta, Real sigma,

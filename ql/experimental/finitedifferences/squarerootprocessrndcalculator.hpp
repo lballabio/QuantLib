@@ -18,21 +18,33 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_risk_neutral_density_calculator_hpp
-#define quantlib_test_risk_neutral_density_calculator_hpp
+/*! \file bsmrndcalculator.hpp
+    \brief risk neutral terminal density calculator for the square root process
+*/
 
-#include <boost/test/unit_test.hpp>
+#ifndef quantlib_square_rootprocess_risk_neutral_density_calculator_hpp
+#define quantlib_square_rootprocess_risk_neutral_density_calculator_hpp
 
-/* remember to document new and/or updated tests in the Doxygen
-   comment block of the corresponding class */
+#include <ql/experimental/finitedifferences/riskneutraldensitycalculator.hpp>
 
-class RiskNeutralDensityCalculatorTest {
-  public:
-	static void testDensityAgainstOptionPrices();
-	static void testBSMagainstHestonRND();
-	static void testLocalVolatilityRND();
-	static void testSquareRootProcessRND();
-    static boost::unit_test_framework::test_suite* suite();
-};
+namespace QuantLib {
+	class SquareRootProcessRNDCalculator
+		: public RiskNeutralDensityCalculator {
+	public:
+		SquareRootProcessRNDCalculator(
+			Real v0, Real kappa, Real theta, Real sigma);
+
+		Real pdf(Real v, Time t) const;
+		Real cdf(Real v, Time t) const;
+		Real invcdf(Real q, Time t) const;
+
+		Real stationary_pdf(Real v) const;
+		Real stationary_cdf(Real v) const;
+		Real stationary_invcdf(Real q) const;
+
+	private:
+		const Real v0_, kappa_, theta_, d_, df_;
+	};
+}
 
 #endif

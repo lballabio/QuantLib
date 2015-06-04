@@ -33,9 +33,19 @@
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
-#include <experimental/finitedifferences/bsmrndcalculator.hpp>
-#include <experimental/finitedifferences/hestonrndcalculator.hpp>
-#include <experimental/finitedifferences/localvolrndcalculator.hpp>
+#include <ql/experimental/finitedifferences/bsmrndcalculator.hpp>
+#include <ql/experimental/finitedifferences/hestonrndcalculator.hpp>
+#include <ql/experimental/finitedifferences/localvolrndcalculator.hpp>
+#include <ql/experimental/finitedifferences/squarerootprocessrndcalculator.hpp>
+
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
+#include <boost/bind.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic pop
+#endif
 
 #include <boost/make_shared.hpp>
 
@@ -469,6 +479,97 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
 	}
 }
 
+void RiskNeutralDensityCalculatorTest::testSquareRootProcessRND() {
+    BOOST_TEST_MESSAGE("Testing probability density for a square root process...");
+
+    struct SquareRootProcessParams {
+		const Real v0, kappa, theta, sigma;
+    };
+
+    const SquareRootProcessParams params[]
+		= { { 0.17, 1.0, 0.09, 0.5 },
+            { 1.0, 0.6, 0.1, 0.75 },
+			{ 0.005, 0.6, 0.1, 0.05 } };
+
+    for (Size i=0; i < LENGTH(params); ++i) {
+        const SquareRootProcessRNDCalculator rndCalculator(
+        	params[i].v0, params[i].kappa, params[i].theta, params[i].sigma);
+
+        const Time t = 0.75;
+    	const Time tInfty = 60.0/params[i].kappa;
+
+    	const Real tol = 1e-12;
+        for (Real v = 1e-5; v < 1.0; v+=(v < params[i].theta) ? 0.005 : 0.1) {
+
+        	const Real cdfCalculated = rndCalculator.cdf(v, t);
+        	const Real cdfExpected = GaussLobattoIntegral(10000, 0.1*tol)(
+        		boost::bind(&SquareRootProcessRNDCalculator::pdf,
+        			&rndCalculator, _1, t), 0, v);
+
+        	if (std::fabs(cdfCalculated - cdfExpected) > tol) {
+				BOOST_FAIL("failed to calculate cdf"
+						<< "\n   t:          " << t
+						<< "\n   v:          " << v
+						<< "\n   calculated: " << cdfCalculated
+						<< "\n   expected:   " << cdfExpected
+						<< "\n   diff:       " << cdfCalculated - cdfExpected
+						<< "\n   tolerance:  " << tol);
+        	}
+
+        	if (cdfExpected < (1-1e-6) && cdfExpected > 1e-6) {
+				const Real vCalculated = rndCalculator.invcdf(cdfCalculated, t);
+
+				if (std::fabs(v - vCalculated) > tol) {
+					BOOST_FAIL("failed to calculate round trip cdf <-> invcdf"
+							<< "\n   t:          " << t
+							<< "\n   v:          " << v
+							<< "\n   cdf:        " << cdfExpected
+							<< "\n   calculated: " << vCalculated
+							<< "\n   diff:       " << v - vCalculated
+							<< "\n   tolerance:  " << tol);
+				}
+        	}
+
+        	const Real statPdfCalculated = rndCalculator.pdf(v, tInfty);
+        	const Real statPdfExpected = rndCalculator.stationary_pdf(v);
+
+        	if (std::fabs(statPdfCalculated - statPdfExpected) > tol) {
+				BOOST_FAIL("failed to calculate stationary pdf"
+						<< "\n   v:          " << v
+						<< "\n   calculated: " << statPdfCalculated
+						<< "\n   expected:   " << statPdfExpected
+						<< "\n   diff:       " << statPdfCalculated - statPdfExpected
+						<< "\n   tolerance:  " << tol);
+        	}
+
+        	const Real statCdfCalculated = rndCalculator.cdf(v, tInfty);
+        	const Real statCdfExpected = rndCalculator.stationary_cdf(v);
+
+        	if (std::fabs(statCdfCalculated - statCdfExpected) > tol) {
+				BOOST_FAIL("failed to calculate stationary cdf"
+						<< "\n   v:          " << v
+						<< "\n   calculated: " << statCdfCalculated
+						<< "\n   expected:   " << statCdfExpected
+						<< "\n   diff:       " << statCdfCalculated - statCdfExpected
+						<< "\n   tolerance:  " << tol);
+        	}
+        }
+
+        for (Real q = 1e-5; q < 1.0; q+=0.001) {
+        	const Real statInvCdfCalculated = rndCalculator.invcdf(q, tInfty);
+        	const Real statInvCdfExpected = rndCalculator.stationary_invcdf(q);
+
+        	if (std::fabs(statInvCdfCalculated - statInvCdfExpected) > tol) {
+				BOOST_FAIL("failed to calculate stationary inverse of cdf"
+						<< "\n   q:          " << q
+						<< "\n   calculated: " << statInvCdfCalculated
+						<< "\n   expected:   " << statInvCdfExpected
+						<< "\n   diff:       " << statInvCdfCalculated - statInvCdfExpected
+						<< "\n   tolerance:  " << tol);
+        	}
+        }
+    }
+}
 
 
 test_suite* RiskNeutralDensityCalculatorTest::suite() {
@@ -480,5 +581,7 @@ test_suite* RiskNeutralDensityCalculatorTest::suite() {
         &RiskNeutralDensityCalculatorTest::testBSMagainstHestonRND));
     suite->add(QUANTLIB_TEST_CASE(
     	&RiskNeutralDensityCalculatorTest::testLocalVolatilityRND));
+    suite->add(QUANTLIB_TEST_CASE(
+    	&RiskNeutralDensityCalculatorTest::testSquareRootProcessRND));
     return suite;
 }

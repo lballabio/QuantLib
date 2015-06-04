@@ -36,6 +36,7 @@ this_include_HEADERS = \
 	localvolrndcalculator.hpp \
 	modtriplebandlinearop.hpp \
 	riskneutraldensitycalculator.hpp \
+	squarerootprocessrndcalculator.hpp \
 	vanillavppoption.hpp
 
 libMultiDimFDM_la_SOURCES = \
@@ -64,6 +65,7 @@ libMultiDimFDM_la_SOURCES = \
 	hestonrndcalculator.cpp \
 	localvolrndcalculator.cpp \
 	riskneutraldensitycalculator.cpp \
+	squarerootprocessrndcalculator.cpp \
 	vanillavppoption.cpp
 
 noinst_LTLIBRARIES = libMultiDimFDM.la

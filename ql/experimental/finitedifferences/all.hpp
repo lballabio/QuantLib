@@ -33,5 +33,6 @@
 #include <ql/experimental/finitedifferences/localvolrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/modtriplebandlinearop.hpp>
 #include <ql/experimental/finitedifferences/riskneutraldensitycalculator.hpp>
+#include <ql/experimental/finitedifferences/squarerootprocessrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/vanillavppoption.hpp>
 
