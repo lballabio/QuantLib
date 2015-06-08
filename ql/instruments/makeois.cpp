@@ -198,7 +198,7 @@ namespace QuantLib {
 
     MakeOIS& MakeOIS::withEndOfMonth(bool flag) {
         endOfMonth_ = flag;
-        isDefaultEOM_ = true;
+        isDefaultEOM_ = false;
         return *this;
     }
 

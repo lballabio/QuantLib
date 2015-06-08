@@ -113,7 +113,7 @@ namespace QuantLib {
                      (curr == AUDCurrency() && swapTenor_ < 4 * Years)))
                 fixedTenor = Period(3, Months);
             else
-                QL_FAIL("unknow fixed leg default tenor for " << curr);
+                QL_FAIL("unknown fixed leg default tenor for " << curr);
         }
 
         Schedule fixedSchedule(startDate, endDate,
@@ -143,7 +143,7 @@ namespace QuantLib {
                      curr == AUDCurrency() || curr == HKDCurrency())
                 fixedDayCount = Actual365Fixed();
             else
-                QL_FAIL("unknow fixed leg day counter for " << curr);
+                QL_FAIL("unknown fixed leg day counter for " << curr);
         }
 
         Rate usedFixedRate = fixedRate_;
