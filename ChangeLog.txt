@@ -1,3 +1,71 @@
+commit 359257290fdc6101c651b7e7cd6284ab100d0cce
+Merge: 09b56e5 358f8f4
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 8 Jun 2015 15:28:34 +0200
+
+    Merge pull request #256.
+
+commit 24f8f913f9bbf6cb79107ab99fbde8c0c870126d
+Author: Paolo Mazzocchi <mazzocchip@live.it>
+Date:   Mon, 8 Jun 2015 12:37:15 +0200
+
+    copyright updated
+
+ QuantLib/ql/instruments/makeois.cpp         | 3 ++-
+ QuantLib/ql/instruments/makevanillaswap.cpp | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+commit 1f59dfc091cf730c269192e89a46881b064cbffd
+Author: Paolo Mazzocchi <mazzocchip@live.it>
+Date:   Mon, 8 Jun 2015 12:33:19 +0200
+
+    fixed two typos and a bug
+
+ QuantLib/ql/instruments/makeois.cpp         | 2 +-
+ QuantLib/ql/instruments/makevanillaswap.cpp | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 2cb0ea614ac3d60e1b7dd944476b735869a20cd6
+Author: Paolo Mazzocchi <mazzocchip@live.it>
+Date:   Mon, 8 Jun 2015 12:27:36 +0200
+
+    explicit handling of fixed leg market convention defaults
+
+ QuantLib/ql/instruments/makevanillaswap.cpp | 49 +++++++++++++++++++----------
+ 1 file changed, 32 insertions(+), 17 deletions(-)
+
+commit fb1d7376e364f74721bf7bb5b867c307b6f2f386
+Author: Paolo Mazzocchi <mazzocchip@live.it>
+Date:   Mon, 8 Jun 2015 11:43:09 +0200
+
+    EOM Rule: smart default value for OIS, TRUE only if start date is EOM
+
+ QuantLib/ql/instruments/makeois.cpp | 29 +++++++++++++++++------------
+ QuantLib/ql/instruments/makeois.hpp |  2 +-
+ 2 files changed, 18 insertions(+), 13 deletions(-)
+
+commit 358f8f4ee990f28dc3f2eb669895b80cde405b64
+Author: Ferdinando Ametrano <nando@ametrano.net>
+Date:   Mon, 8 Jun 2015 11:00:18 +0200
+
+    avoided degenerate schedules; ignored EndOfMonth for tenor below 1M
+
+ QuantLib/ql/time/schedule.cpp | 33 ++++++++++++++++++++++-----------
+ 1 file changed, 22 insertions(+), 11 deletions(-)
+
+commit fe43575a9858afcb9a154698c5ad5ecdb370e3f3
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 4 Jun 2015 13:29:40 +0200
+
+    Update changes and contributors.
+
+ QuantLib/Authors.txt             |    1 +
+ QuantLib/ChangeLog.txt           | 7870 +++++++++++++-------------------------
+ QuantLib/Contributors.txt        |    5 +-
+ QuantLib/Docs/pages/history.docs |  111 +-
+ QuantLib/News.txt                |  179 +-
+ 5 files changed, 2873 insertions(+), 5293 deletions(-)
+
 commit d4972a07b7a4155efe22403602af9c68cd1dd866
 Merge: e2c59e9 8640bf8
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
