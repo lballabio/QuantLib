@@ -1,3 +1,28 @@
+commit c05d5c942aff8b518ac0ba3756dc6daf8d3731e9
+Merge: d8fb96f 8e5ba43
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 9 Jun 2015 09:46:38 +0200
+
+    Merge pull request #259.
+
+commit 8e5ba43a82656ebe875680ef9d617816c699cec0
+Author: Cheng Li <scrappedprince.li@gmail.com>
+Date:   Tue, 9 Jun 2015 14:09:39 +0800
+
+    Fix Chinese new year bug in 2010
+
+ QuantLib/ql/time/calendars/china.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit d8fb96f759a78f9930fb0d4288ec36068b5e3b76
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 8 Jun 2015 15:42:10 +0200
+
+    Update changelog.
+
+ QuantLib/ChangeLog.txt | 68 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 68 insertions(+)
+
 commit 359257290fdc6101c651b7e7cd6284ab100d0cce
 Merge: 09b56e5 358f8f4
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
