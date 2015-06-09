@@ -71,7 +71,7 @@ namespace QuantLib {
             || (y == 2007 && d >= 17 && d <= 25 && m == February)
             || (y == 2008 && d >= 6 && d <= 12 && m == February)
             || (y == 2009 && d >= 26 && d <= 30 && m == January)
-            || (y == 2010 && d >= 15 && d <= 19 && m == January)
+            || (y == 2010 && d >= 15 && d <= 19 && m == February)
             || (y == 2011 && d >= 2 && d <= 8 && m == February)
             || (y == 2012 && d >= 23 && d <= 28 && m == January)
             || (y == 2013 && d >= 11 && d <= 15 && m == February)
