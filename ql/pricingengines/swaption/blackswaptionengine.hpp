@@ -42,20 +42,20 @@ namespace QuantLib {
 
     class Quote;
 
-    /*! Generic Black-typed-formula swaption engine
+    /*! Generic Black-style-formula swaption engine
         This is the base class for the Black and Bachelier swaption engines */
     template<class Spec>
-    class BlackTypedSwaptionEngine : public Swaption::engine {
+    class BlackStyleSwaptionEngine : public Swaption::engine {
       public:
-        BlackTypedSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
+        BlackStyleSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
                             Volatility vol,
                             const DayCounter& dc = Actual365Fixed(),
                             Real displacement = 0.0);
-        BlackTypedSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
+        BlackStyleSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
                             const Handle<Quote>& vol,
                             const DayCounter& dc = Actual365Fixed(),
                             Real displacement = 0.0);
-        BlackTypedSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
+        BlackStyleSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
                             const Handle<SwaptionVolatilityStructure>& vol,
                             Real displacement = 0.0);
         void calculate() const;
@@ -117,7 +117,7 @@ namespace QuantLib {
     */
 
     class BlackSwaptionEngine
-        : public BlackTypedSwaptionEngine<detail::Black76Spec> {
+        : public BlackStyleSwaptionEngine<detail::Black76Spec> {
       public:
         BlackSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
                             Volatility vol,
@@ -141,7 +141,7 @@ namespace QuantLib {
     */
 
     class BachelierBlackSwaptionEngine
-        : public BlackTypedSwaptionEngine<detail::BachelierSpec> {
+        : public BlackStyleSwaptionEngine<detail::BachelierSpec> {
       public:
         BachelierBlackSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
                             Volatility vol,
@@ -156,7 +156,7 @@ namespace QuantLib {
     // implementation
 
     template<class Spec>
-    BlackTypedSwaptionEngine<Spec>::BlackTypedSwaptionEngine(
+    BlackStyleSwaptionEngine<Spec>::BlackStyleSwaptionEngine(
         const Handle<YieldTermStructure> &discountCurve, Volatility vol,
         const DayCounter &dc, Real displacement)
         : discountCurve_(discountCurve),
@@ -168,7 +168,7 @@ namespace QuantLib {
     }
 
     template<class Spec>
-    BlackTypedSwaptionEngine<Spec>::BlackTypedSwaptionEngine(
+    BlackStyleSwaptionEngine<Spec>::BlackStyleSwaptionEngine(
         const Handle<YieldTermStructure> &discountCurve,
         const Handle<Quote> &vol, const DayCounter &dc, Real displacement)
         : discountCurve_(discountCurve),
@@ -181,7 +181,7 @@ namespace QuantLib {
     }
 
     template<class Spec>
-    BlackTypedSwaptionEngine<Spec>::BlackTypedSwaptionEngine(
+    BlackStyleSwaptionEngine<Spec>::BlackStyleSwaptionEngine(
         const Handle<YieldTermStructure> &discountCurve,
         const Handle<SwaptionVolatilityStructure> &volatility,
         Real displacement)
@@ -192,7 +192,7 @@ namespace QuantLib {
     }
 
     template<class Spec>
-    void BlackTypedSwaptionEngine<Spec>::calculate() const {
+    void BlackStyleSwaptionEngine<Spec>::calculate() const {
         static const Spread basisPoint = 1.0e-4;
 
         Date exerciseDate = arguments_.exercise->date(0);
