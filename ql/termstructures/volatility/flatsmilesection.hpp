@@ -38,11 +38,13 @@ namespace QuantLib {
                          const DayCounter& dc,
                          const Date& referenceDate = Date(),
                          Real atmLevel = Null<Rate>(),
+                         VolatilityType type = ShiftedLognormal,
                          Real shift = 0.0);
         FlatSmileSection(Time exerciseTime,
                          Volatility vol,
                          const DayCounter& dc,
                          Real atmLevel = Null<Rate>(),
+                         VolatilityType type = ShiftedLognormal,
                          Real shift = 0.0);
         //! \name SmileSection interface
         //@{

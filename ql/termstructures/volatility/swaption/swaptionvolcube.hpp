@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -92,6 +93,9 @@ namespace QuantLib {
         //@}
         Real shift(Time optionTime, Time swapLength) const {
             return atmVol_->shift(optionTime,swapLength);
+        }
+        VolatilityType volatilityType() const {
+            return atmVol_->volatilityType();
         }
       protected:
         void registerWithVolatilitySpread();

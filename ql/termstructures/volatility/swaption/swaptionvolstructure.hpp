@@ -4,6 +4,7 @@
  Copyright (C) 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
  Copyright (C) 2006, 2008 Ferdinando Ametrano
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +28,7 @@
 #define quantlib_swaption_volatility_structure_hpp
 
 #include <ql/termstructures/voltermstructure.hpp>
+#include <ql/termstructures/volatility/volatilitytype.hpp>
 
 namespace QuantLib {
 
@@ -160,7 +162,14 @@ namespace QuantLib {
         //@{
         //! shift size for displaced lognormal volatility
         virtual Real shift(Time optionTime, Time swapLength) const {
+            QL_REQUIRE(
+                volatilityType() == ShiftedLognormal,
+                "shift parameter only makes sense for lognormal volatilities");
             return 0.0;
+        }
+        //! volatility type
+        virtual VolatilityType volatilityType() const {
+            return ShiftedLognormal;
         }
         //@}
         //! implements the conversion between swap tenor and swap (time) length

@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,6 +27,8 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/indexes/iborindex.hpp>
 
+#include <boost/make_shared.hpp>
+
 namespace QuantLib {
 
     SwaptionHelper::SwaptionHelper(const Period& maturity,
@@ -37,12 +40,13 @@ namespace QuantLib {
                               const DayCounter& floatingLegDayCounter,
                               const Handle<YieldTermStructure>& termStructure,
                               CalibrationHelper::CalibrationErrorType errorType,
-                              const Real strike, const Real nominal, const Real shift)
-    : CalibrationHelper(volatility,termStructure, errorType),
+                              const Real strike, const Real nominal,
+                              const VolatilityType type, const Real shift)
+    : CalibrationHelper(volatility,termStructure, errorType, type, shift),
         exerciseDate_(Null<Date>()), endDate_(Null<Date>()),
         maturity_(maturity), length_(length), fixedLegTenor_(fixedLegTenor), index_(index),
         fixedLegDayCounter_(fixedLegDayCounter), floatingLegDayCounter_(floatingLegDayCounter),
-        strike_(strike), nominal_(nominal), shift_(shift)
+        strike_(strike), nominal_(nominal), shift_(shift), volatilityType_(type)
     {
 
         registerWith(index_);
@@ -59,12 +63,13 @@ namespace QuantLib {
                               const DayCounter& floatingLegDayCounter,
                               const Handle<YieldTermStructure>& termStructure,
                               CalibrationHelper::CalibrationErrorType errorType,
-                              const Real strike, const Real nominal, const Real shift)
-    : CalibrationHelper(volatility,termStructure, errorType),
+                              const Real strike, const Real nominal,
+                              const VolatilityType type, const Real shift)
+    : CalibrationHelper(volatility,termStructure, errorType, type, shift),
         exerciseDate_(exerciseDate), endDate_(Null<Date>()),
         maturity_(0*Days), length_(length), fixedLegTenor_(fixedLegTenor), index_(index),
         fixedLegDayCounter_(fixedLegDayCounter), floatingLegDayCounter_(floatingLegDayCounter),
-        strike_(strike), nominal_(nominal), shift_(shift)
+        strike_(strike), nominal_(nominal), shift_(shift), volatilityType_(type)
     {
 
         registerWith(index_);
@@ -81,12 +86,13 @@ namespace QuantLib {
                               const DayCounter& floatingLegDayCounter,
                               const Handle<YieldTermStructure>& termStructure,
                               CalibrationHelper::CalibrationErrorType errorType,
-                              const Real strike, const Real nominal, const Real shift)
-    : CalibrationHelper(volatility,termStructure, errorType),
+                              const Real strike, const Real nominal,
+                              const VolatilityType type, const Real shift)
+    : CalibrationHelper(volatility,termStructure, errorType, type, shift),
         exerciseDate_(exerciseDate), endDate_(endDate),
         maturity_(0*Days), length_(0*Days), fixedLegTenor_(fixedLegTenor), index_(index),
         fixedLegDayCounter_(fixedLegDayCounter), floatingLegDayCounter_(floatingLegDayCounter),
-        strike_(strike), nominal_(nominal), shift_(shift)
+        strike_(strike), nominal_(nominal), shift_(shift), volatilityType_(type)
     {
 
         registerWith(index_);
@@ -114,9 +120,21 @@ namespace QuantLib {
     Real SwaptionHelper::blackPrice(Volatility sigma) const {
         calculate();
         Handle<Quote> vol(boost::shared_ptr<Quote>(new SimpleQuote(sigma)));
-        boost::shared_ptr<PricingEngine> black(new
-        BlackSwaptionEngine(termStructure_, vol, Actual365Fixed(), shift_));
-        swaption_->setPricingEngine(black);
+        boost::shared_ptr<PricingEngine> engine;
+        switch(volatilityType_) {
+        case ShiftedLognormal:
+            engine = boost::make_shared<BlackSwaptionEngine>(
+                termStructure_, vol, Actual365Fixed(), shift_);
+            break;
+        case Normal:
+            engine = boost::make_shared<BachelierBlackSwaptionEngine>(
+                termStructure_, vol, Actual365Fixed());
+            break;
+        default:
+            QL_FAIL("can not construct engine: " << volatilityType_);
+            break;
+        }
+        swaption_->setPricingEngine(engine);
         Real value = swaption_->NPV();
         swaption_->setPricingEngine(engine_);
         return value;
