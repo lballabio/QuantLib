@@ -1,9 +1,10 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006, 2007, 2010, 2014 Ferdinando Ametrano
+ Copyright (C) 2006, 2007, 2010, 2014l, 2015 Ferdinando Ametrano
  Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2015 Paolo Mazzocchi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,9 +23,14 @@
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/schedule.hpp>
+#include <ql/currencies/america.hpp>
+#include <ql/currencies/asia.hpp>
 #include <ql/currencies/europe.hpp>
+#include <ql/currencies/oceania.hpp>
 
 using boost::shared_ptr;
 
@@ -78,30 +84,37 @@ namespace QuantLib {
                                                   Following);
         }
 
-        Date endDate;
-        if (terminationDate_ != Date()) {
-            endDate = terminationDate_;
-        } else {
-            if (floatEndOfMonth_ && startDate.isEndOfMonth(startDate)) {
-                endDate = floatCalendar_.advance(startDate, swapTenor_,
+        Date endDate = terminationDate_;
+        if (endDate == Date()) {
+            if (floatEndOfMonth_)
+                endDate = floatCalendar_.advance(startDate,
+                                                 swapTenor_,
                                                  ModifiedFollowing,
                                                  floatEndOfMonth_);
-            } else {
-                endDate = startDate+swapTenor_;
-            }
+            else
+                endDate = startDate + swapTenor_;
         }
 
+        const Currency& curr = iborIndex_->currency();
         Period fixedTenor;
         if (fixedTenor_ != Period())
             fixedTenor = fixedTenor_;
         else {
-            const Currency& curr = iborIndex_->currency();
-            if (curr == EURCurrency())
+            if ((curr == EURCurrency()) ||
+                (curr == USDCurrency()) ||
+                (curr == CHFCurrency()) ||
+                (curr == SEKCurrency()) ||
+                (curr == GBPCurrency() && swapTenor_ <= 1 * Years))
                 fixedTenor = Period(1, Years);
-            else if (curr == GBPCurrency())
+            else if ((curr == GBPCurrency() && swapTenor_ > 1 * Years) ||
+                (curr == JPYCurrency()) ||
+                (curr == AUDCurrency() && swapTenor_ >= 4 * Years))
                 fixedTenor = Period(6, Months);
+            else if ((curr == HKDCurrency() ||
+                     (curr == AUDCurrency() && swapTenor_ < 4 * Years)))
+                fixedTenor = Period(3, Months);
             else
-                fixedTenor = Period(1, Years);
+                QL_FAIL("unknown fixed leg default tenor for " << curr);
         }
 
         Schedule fixedSchedule(startDate, endDate,
@@ -122,13 +135,16 @@ namespace QuantLib {
         if (fixedDayCount_ != DayCounter())
             fixedDayCount = fixedDayCount_;
         else {
-            const Currency& curr = iborIndex_->currency();
-            if (curr == EURCurrency())
+            if (curr == USDCurrency())
+                fixedDayCount = Actual360();
+            else if (curr == EURCurrency() || curr == CHFCurrency() ||
+                     curr == SEKCurrency())
                 fixedDayCount = Thirty360(Thirty360::BondBasis);
-            else if (curr == GBPCurrency())
+            else if (curr == GBPCurrency() || curr == JPYCurrency() ||
+                     curr == AUDCurrency() || curr == HKDCurrency())
                 fixedDayCount = Actual365Fixed();
             else
-                fixedDayCount = Thirty360(Thirty360::BondBasis);
+                QL_FAIL("unknown fixed leg day counter for " << curr);
         }
 
         Rate usedFixedRate = fixedRate_;
