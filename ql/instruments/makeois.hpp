@@ -76,7 +76,7 @@ namespace QuantLib {
 
         Frequency paymentFrequency_;
         DateGeneration::Rule rule_;
-        bool endOfMonth_;
+        bool endOfMonth_, isDefaultEOM_;
 
         OvernightIndexedSwap::Type type_;
         Real nominal_;
