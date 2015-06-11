@@ -2652,7 +2652,7 @@
     <ClInclude Include="ql\time\calendars\poland.hpp">
       <Filter>time\calendars</Filter>
     </ClInclude>
-	<ClInclude Include="ql\time\calendars\romania.hpp">
+    <ClInclude Include="ql\time\calendars\romania.hpp">
       <Filter>time\calendars</Filter>
     </ClInclude>
     <ClInclude Include="ql\time\calendars\russia.hpp">
@@ -5439,7 +5439,7 @@
     <ClCompile Include="ql\time\calendars\poland.cpp">
       <Filter>time\calendars</Filter>
     </ClCompile>
-	<ClCompile Include="ql\time\calendars\romania.cpp">
+    <ClCompile Include="ql\time\calendars\romania.cpp">
       <Filter>time\calendars</Filter>
     </ClCompile>
     <ClCompile Include="ql\time\calendars\russia.cpp">
@@ -5850,7 +5850,7 @@
     <ClCompile Include="ql\pricingengines\swaption\gaussian1djamshidianswaptionengine.cpp">
       <Filter>pricingengines\swaption</Filter>
     </ClCompile>
-	<ClCompile Include="ql\models\shortrate\onefactormodels\gaussian1dmodel.cpp">
+    <ClCompile Include="ql\models\shortrate\onefactormodels\gaussian1dmodel.cpp">
       <Filter>models\shortrate\onefactormodels</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\swaption\gaussian1dnonstandardswaptionengine.cpp">
@@ -5865,7 +5865,7 @@
     <ClCompile Include="ql\termstructures\volatility\swaption\gaussian1dswaptionvolatility.cpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClCompile>
-	<ClCompile Include="ql\models\shortrate\onefactormodels\gsr.cpp">
+    <ClCompile Include="ql\models\shortrate\onefactormodels\gsr.cpp">
       <Filter>models\shortrate\onefactormodels</Filter>
     </ClCompile>
     <ClCompile Include="ql\processes\gsrprocess.cpp">
@@ -5874,7 +5874,7 @@
     <ClCompile Include="ql\termstructures\volatility\kahalesmilesection.cpp">
       <Filter>termstructures\volatility</Filter>
     </ClCompile>
-	<ClCompile Include="ql\models\shortrate\onefactormodels\markovfunctional.cpp">
+    <ClCompile Include="ql\models\shortrate\onefactormodels\markovfunctional.cpp">
       <Filter>models\shortrate\onefactormodels</Filter>
     </ClCompile>
     <ClCompile Include="ql\processes\mfstateprocess.cpp">
