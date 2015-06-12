@@ -1872,6 +1872,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\instruments\futures.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\futures.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\instruments\impliedvolatility.cpp"
 				>
 			</File>
@@ -4566,6 +4574,10 @@
 					RelativePath=".\ql\termstructures\volatility\spreadedsmilesection.hpp"
 					>
 				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\volatilitytype.hpp"
+					>
+				</File>
 				<Filter
 					Name="capfloor"
 					>
@@ -6353,6 +6365,14 @@
 			>
 			<File
 				RelativePath=".\ql\time\all.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\time\asx.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\time\asx.hpp"
 				>
 			</File>
 			<File
@@ -8768,6 +8788,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\math\multidimquadrature.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\numericaldifferentiation.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\numericaldifferentiation.hpp"
 					>
 				</File>
 				<File

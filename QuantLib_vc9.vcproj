@@ -106,6 +106,92 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Release|x64"
+			OutputDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
+				Optimization="2"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="false"
+				FavorSizeOrSpeed="1"
+				AdditionalIncludeDirectories="."
+				PreprocessorDefinitions="NDEBUG;_LIB;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				DisableLanguageExtensions="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\QuantLib.pch"
+				AssemblerListingLocation=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ObjectFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				BrowseInformation="0"
+				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+				Description="Make build directory"
+				CommandLine="if not exist lib mkdir lib"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile=".\lib\QuantLib-vc90-$(PlatformName)-mt.lib"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="false"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
@@ -169,6 +255,90 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile=".\lib\QuantLib-vc90-mt-gd.lib"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="false"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
+				Optimization="0"
+				EnableIntrinsicFunctions="false"
+				AdditionalIncludeDirectories="."
+				PreprocessorDefinitions="_DEBUG;_LIB;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				DisableLanguageExtensions="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\QuantLib.pch"
+				AssemblerListingLocation=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ObjectFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				BrowseInformation="0"
+				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+				Description="Make build directory"
+				CommandLine="if not exist lib mkdir lib"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile=".\lib\QuantLib-vc90-$(PlatformName)-mt-gd.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -276,260 +446,6 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug (static runtime)|Win32"
-			OutputDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalOptions="/MP"
-				Optimization="0"
-				EnableIntrinsicFunctions="false"
-				AdditionalIncludeDirectories="."
-				PreprocessorDefinitions="_DEBUG;WIN32;_LIB;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
-				DisableLanguageExtensions="false"
-				ForceConformanceInForLoopScope="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\QuantLib.pch"
-				AssemblerListingLocation=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				ObjectFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				BrowseInformation="0"
-				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="3"
-				CompileAs="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-				Description="Make build directory"
-				CommandLine="if not exist lib mkdir lib"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc90-mt-sgd.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				SuppressStartupBanner="false"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|x64"
-			OutputDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalOptions="/MP"
-				Optimization="2"
-				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="false"
-				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="."
-				PreprocessorDefinitions="NDEBUG;_LIB;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
-				StringPooling="true"
-				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="true"
-				DisableLanguageExtensions="false"
-				ForceConformanceInForLoopScope="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\QuantLib.pch"
-				AssemblerListingLocation=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				ObjectFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				BrowseInformation="0"
-				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-				CompileAs="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-				Description="Make build directory"
-				CommandLine="if not exist lib mkdir lib"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc90-$(PlatformName)-mt.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				SuppressStartupBanner="false"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug|x64"
-			OutputDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalOptions="/MP"
-				Optimization="0"
-				EnableIntrinsicFunctions="false"
-				AdditionalIncludeDirectories="."
-				PreprocessorDefinitions="_DEBUG;_LIB;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				DisableLanguageExtensions="false"
-				ForceConformanceInForLoopScope="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\QuantLib.pch"
-				AssemblerListingLocation=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				ObjectFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				BrowseInformation="0"
-				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-				DebugInformationFormat="3"
-				CompileAs="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-				Description="Make build directory"
-				CommandLine="if not exist lib mkdir lib"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc90-$(PlatformName)-mt-gd.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				SuppressStartupBanner="false"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
 			Name="Release (static runtime)|x64"
 			OutputDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
@@ -596,6 +512,90 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile=".\lib\QuantLib-vc90-$(PlatformName)-mt-s.lib"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="false"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug (static runtime)|Win32"
+			OutputDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\build\vc90\$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
+				Optimization="0"
+				EnableIntrinsicFunctions="false"
+				AdditionalIncludeDirectories="."
+				PreprocessorDefinitions="_DEBUG;WIN32;_LIB;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				DisableLanguageExtensions="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\QuantLib.pch"
+				AssemblerListingLocation=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ObjectFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				ProgramDataBaseFileName=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				BrowseInformation="0"
+				BrowseInformationFile=".\build\vc90\$(PlatformName)\$(ConfigurationName)\"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="3"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+				Description="Make build directory"
+				CommandLine="if not exist lib mkdir lib"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile=".\lib\QuantLib-vc90-mt-sgd.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -2216,6 +2216,14 @@
 			</File>
 			<File
 				RelativePath=".\ql\instruments\forwardvanillaoption.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\futures.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\futures.hpp"
 				>
 			</File>
 			<File
@@ -4921,6 +4929,10 @@
 					RelativePath=".\ql\termstructures\volatility\spreadedsmilesection.hpp"
 					>
 				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatility\volatilitytype.hpp"
+					>
+				</File>
 				<Filter
 					Name="capfloor"
 					>
@@ -5926,14 +5938,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\pricingengines\basket\fd2dblackscholesvanillaengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\pricingengines\basket\fd2dblackscholesvanillaengine.hpp"
-					>
-				</File>
-				<File
 					RelativePath="ql\pricingengines\barrier\analyticbinarybarrierengine.cpp"
 					>
 				</File>
@@ -5951,6 +5955,14 @@
 				</File>
 				<File
 					RelativePath="ql\pricingengines\barrier\discretizedbarrieroption.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\basket\fd2dblackscholesvanillaengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\basket\fd2dblackscholesvanillaengine.hpp"
 					>
 				</File>
 				<File
@@ -6711,6 +6723,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\time\asx.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\time\asx.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\time\businessdayconvention.cpp"
 				>
 			</File>
@@ -7374,10 +7394,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\volatility\sabrvolsurface.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\experimental\volatility\noarbsabr.cpp"
 					>
 				</File>
@@ -7407,6 +7423,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\volatility\noarbsabrsmilesection.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\sabrvolsurface.cpp"
 					>
 				</File>
 				<File
@@ -7910,15 +7930,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\basecorrelationlossmodel.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\basecorrelationstructure.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\basecorrelationstructure.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\credit\basecorrelationlossmodel.hpp"
 					>
 				</File>
 				<File
@@ -9123,6 +9143,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\math\multidimquadrature.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\numericaldifferentiation.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\numericaldifferentiation.hpp"
 					>
 				</File>
 				<File

@@ -25,6 +25,7 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
+#include <ql/experimental/coupons/cmsspreadcoupon.hpp> // internal
 #include <ql/indexes/iborindex.hpp>
 #include <ql/indexes/swapindex.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
@@ -230,9 +231,15 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<SwapIndex>(index1_);
         boost::shared_ptr<SwapIndex> cms2 =
             boost::dynamic_pointer_cast<SwapIndex>(index2_);
+        boost::shared_ptr<SwapSpreadIndex> cmsspread1 =
+            boost::dynamic_pointer_cast<SwapSpreadIndex>(index1_);
+        boost::shared_ptr<SwapSpreadIndex> cmsspread2 =
+            boost::dynamic_pointer_cast<SwapSpreadIndex>(index2_);
 
-        QL_REQUIRE(ibor1 != NULL || cms1 != NULL, "index1 must be ibor or cms");
-        QL_REQUIRE(ibor2 != NULL || cms2 != NULL, "index2 must be ibor or cms");
+        QL_REQUIRE(ibor1 != NULL || cms1 != NULL || cmsspread1 != NULL,
+                   "index1 must be ibor or cms or cms spread");
+        QL_REQUIRE(ibor2 != NULL || cms2 != NULL || cmsspread2 != NULL,
+                   "index2 must be ibor or cms");
 
         if (ibor1) {
             IborLeg leg(schedule1_, ibor1);
@@ -278,6 +285,34 @@ namespace QuantLib {
 
         if (cms2) {
             CmsLeg leg(schedule2_, cms2);
+            leg = leg.withNotionals(nominal2_)
+                      .withPaymentDayCounter(dayCount2_)
+                      .withPaymentAdjustment(paymentConvention2_)
+                      .withSpreads(spread2_)
+                      .withGearings(gearing2_);
+            if (cappedRate2_[0] != Null<Real>())
+                leg = leg.withCaps(cappedRate2_);
+            if (flooredRate2_[0] != Null<Real>())
+                leg = leg.withFloors(flooredRate2_);
+            legs_[1] = leg;
+        }
+
+        if (cmsspread1) {
+            CmsSpreadLeg leg(schedule1_, cmsspread1);
+            leg = leg.withNotionals(nominal1_)
+                      .withPaymentDayCounter(dayCount1_)
+                      .withPaymentAdjustment(paymentConvention1_)
+                      .withSpreads(spread1_)
+                      .withGearings(gearing1_);
+            if (cappedRate1_[0] != Null<Real>())
+                leg = leg.withCaps(cappedRate1_);
+            if (flooredRate1_[0] != Null<Real>())
+                leg = leg.withFloors(flooredRate1_);
+            legs_[0] = leg;
+        }
+
+        if (cmsspread2) {
+            CmsSpreadLeg leg(schedule2_, cmsspread2);
             leg = leg.withNotionals(nominal2_)
                       .withPaymentDayCounter(dayCount2_)
                       .withPaymentAdjustment(paymentConvention2_)

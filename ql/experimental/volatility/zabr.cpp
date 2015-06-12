@@ -17,9 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
-
 #include <ql/experimental/volatility/zabr.hpp>
 #include <ql/termstructures/volatility/sabr.hpp>
 #include <ql/errors.hpp>
@@ -37,6 +34,8 @@
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmdupire1dop.hpp>
 #include <ql/experimental/finitedifferences/fdmzabrop.hpp>
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
 
 using std::pow;
 

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file discreteintegrasl.hpp
+/*! \file discreteintegrals.hpp
     \brief integrals on non uniform grids
 */
 

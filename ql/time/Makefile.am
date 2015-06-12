@@ -6,6 +6,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    asx.hpp \
     businessdayconvention.hpp \
     calendar.hpp \
     date.hpp \
@@ -20,6 +21,7 @@ this_include_HEADERS = \
     weekday.hpp
 
 libTime_la_SOURCES = \
+    asx.cpp \
     businessdayconvention.cpp \
     calendar.cpp \
     date.cpp \

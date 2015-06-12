@@ -147,7 +147,7 @@ template <typename Evaluation>
 void ZabrSmileSection<Evaluation>::init(const std::vector<Real> &moneyness,
                                         ZabrLocalVolatility) {
 
-    QL_REQUIRE(params_.size() == 5,
+    QL_REQUIRE(params_.size() >= 5,
                "zabr expects 5 parameters (alpha,beta,nu,rho,gamma) but ("
                    << params_.size() << ") given");
 
@@ -173,7 +173,7 @@ void ZabrSmileSection<Evaluation>::init(const std::vector<Real> &moneyness,
         Real f = tmp[i] * forward_;
         if (f > 0.0) {
             if (!firstStrike) {
-                for (Size j = 1; j < fdRefinement_; j++) {
+                for (Size j = 1; j <= fdRefinement_; ++j) {
                     strikes_.push_back(lastF +
                                        ((double)j) * (f - lastF) /
                                            (fdRefinement_ + 1));

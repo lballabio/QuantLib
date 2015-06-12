@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="methods">
@@ -1851,6 +1851,9 @@
     <ClInclude Include="ql\termstructures\volatility\spreadedsmilesection.hpp">
       <Filter>termstructures\volatility</Filter>
     </ClInclude>
+    <ClInclude Include="ql\termstructures\volatility\volatilitytype.hpp">
+      <Filter>termstructures\volatility</Filter>
+    </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\capfloor\all.hpp">
       <Filter>termstructures\volatility\capfloor</Filter>
     </ClInclude>
@@ -3513,6 +3516,9 @@
     <ClInclude Include="ql\experimental\math\multidimquadrature.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\math\numericaldifferentiation.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\math\polarstudenttrng.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
@@ -3972,6 +3978,12 @@
     </ClInclude>
     <ClInclude Include="ql\pricingengines\vanilla\analytich1hwengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\time\asx.hpp">
+      <Filter>time</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\instruments\futures.hpp">
+      <Filter>instruments</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -6051,6 +6063,9 @@
     <ClCompile Include="ql\experimental\math\multidimquadrature.cpp">
       <Filter>experimental\math</Filter>
     </ClCompile>
+    <ClCompile Include="ql\experimental\math\numericaldifferentiation.cpp">
+      <Filter>experimental\math</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\math\tcopulapolicy.cpp">
       <Filter>experimental\math</Filter>
     </ClCompile>
@@ -6368,7 +6383,6 @@
     <ClCompile Include="ql\experimental\finitedifferences\glued1dmesher.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
-
     <ClCompile Include="ql\experimental\finitedifferences\fdmblackscholesfwdop.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
@@ -6395,6 +6409,12 @@
     </ClCompile>
     <ClCompile Include="ql\pricingengines\vanilla\analytich1hwengine.cpp">
       <Filter>pricingengines\vanilla</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\time\asx.cpp">
+      <Filter>time</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\instruments\futures.cpp">
+      <Filter>instruments</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

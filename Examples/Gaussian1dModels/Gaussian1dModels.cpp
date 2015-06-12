@@ -25,19 +25,18 @@ using namespace QuantLib;
 #if defined(QL_ENABLE_SESSIONS)
 namespace QuantLib {
 
-    Integer sessionId() { return 0; }
-
+Integer sessionId() { return 0; }
 }
 #endif
 
 // helper function that prints a basket of calibrating swaptions to std::cout
 
-void
-printBasket(const std::vector<boost::shared_ptr<CalibrationHelper> > &basket) {
+void printBasket(
+    const std::vector<boost::shared_ptr<CalibrationHelper> > &basket) {
     std::cout << "\n" << std::left << std::setw(20) << "Expiry" << std::setw(20)
               << "Maturity" << std::setw(20) << "Nominal" << std::setw(14)
               << "Rate" << std::setw(12) << "Pay/Rec" << std::setw(14)
-              << "Market ivol" << std::fixed << std::setprecision(4)
+              << "Market ivol" << std::fixed << std::setprecision(6)
               << std::endl;
     std::cout << "===================="
                  "===================="
@@ -74,7 +73,7 @@ void printModelCalibration(
               << "Model sigma" << std::setw(20) << "Model price"
               << std::setw(20) << "market price" << std::setw(14)
               << "Model ivol" << std::setw(14) << "Market ivol" << std::fixed
-              << std::setprecision(4) << std::endl;
+              << std::setprecision(6) << std::endl;
     std::cout << "===================="
                  "===================="
                  "===================="
@@ -104,16 +103,17 @@ void printModelCalibration(
 class Timer {
     boost::timer timer_;
     double elapsed_;
+
   public:
     void start() { timer_ = boost::timer(); }
     void stop() { elapsed_ = timer_.elapsed(); }
     double elapsed() const { return elapsed_; }
 };
 
-void printTiming(const Timer& timer) {
+void printTiming(const Timer &timer) {
     double seconds = timer.elapsed();
-    std::cout << std::fixed << std::setprecision(1)
-              << "\n(this step took " << seconds << "s)" << std::endl;
+    std::cout << std::fixed << std::setprecision(1) << "\n(this step took "
+              << seconds << "s)" << std::endl;
 }
 
 // here the main part of the code starts
@@ -125,7 +125,8 @@ int main(int argc, char *argv[]) {
         std::cout << "\nGaussian1dModel Examples" << std::endl;
 
         std::cout << "\nThis is some example code showing how to use the GSR "
-                     "\n(Gaussian short rate) and Markov Functional model." << std::endl;
+                     "\n(Gaussian short rate) and Markov Functional model."
+                  << std::endl;
 
         Timer timer;
 
@@ -169,7 +170,8 @@ int main(int argc, char *argv[]) {
 
         Real strike = 0.04;
         std::cout << "\nWe consider a standard 10y bermudan payer swaption "
-                     "\nwith yearly exercises at a strike of " << strike << std::endl;
+                     "\nwith yearly exercises at a strike of " << strike
+                  << std::endl;
 
         Date effectiveDate = TARGET().advance(refDate, 2 * Days);
         Date maturityDate = TARGET().advance(effectiveDate, 10 * Years);
@@ -185,7 +187,7 @@ int main(int argc, char *argv[]) {
         boost::shared_ptr<NonstandardSwap> underlying =
             boost::make_shared<NonstandardSwap>(VanillaSwap(
                 VanillaSwap::Payer, 1.0, fixedSchedule, strike, Thirty360(),
-                floatingSchedule, euribor6m, 0.0, Actual360()));
+                floatingSchedule, euribor6m, 0.00, Actual360()));
 
         std::vector<Date> exerciseDates;
         for (Size i = 1; i < 10; ++i)
@@ -211,13 +213,14 @@ int main(int argc, char *argv[]) {
 
         std::cout
             << "\nThe model's curve is set to the 6m forward curve. Note that "
-               "\nthe model adapts automatically to other curves where appropriate "
+               "\nthe model adapts automatically to other curves where "
+               "appropriate "
                "\n(e.g. if an index requires a different forwarding curve) or "
-               "\nwhere explicitly specified (e.g. in a swaption pricing engine)."
-            << std::endl;
+               "\nwhere explicitly specified (e.g. in a swaption pricing "
+               "engine)." << std::endl;
 
-        boost::shared_ptr<Gsr> gsr =
-            boost::make_shared<Gsr>(yts6m, stepDates, sigmas, reversion);
+        boost::shared_ptr<Gsr> gsr = boost::make_shared<Gsr>(
+            yts6m, stepDates, sigmas, reversion);
 
         boost::shared_ptr<PricingEngine> swaptionEngine =
             boost::make_shared<Gaussian1dSwaptionEngine>(gsr, 64, 7.0, true,
@@ -433,8 +436,8 @@ int main(int argc, char *argv[]) {
         Real npv3 = swaption3->NPV();
         timer.stop();
 
-        std::cout << "\nBond's bermudan call right npv = " << std::setprecision(6)
-                  << npv3 << std::endl;
+        std::cout << "\nBond's bermudan call right npv = "
+                  << std::setprecision(6) << npv3 << std::endl;
         printTiming(timer);
 
         std::cout
@@ -472,22 +475,22 @@ int main(int argc, char *argv[]) {
                   << std::setprecision(6) << npv4 << std::endl;
         printTiming(timer);
 
-        std::cout << "\nThe next instrument we look at is a CMS 10Y vs Euribor "
-                     "\n6M swaption. The maturity is again 10 years and the option"
-                     "\nis exercisable on a yearly basis" << std::endl;
+        std::cout
+            << "\nThe next instrument we look at is a CMS 10Y vs Euribor "
+               "\n6M swaption. The maturity is again 10 years and the option"
+               "\nis exercisable on a yearly basis" << std::endl;
 
-        boost::shared_ptr<FloatFloatSwap> underlying4 =
-            boost::make_shared<FloatFloatSwap>(
+        boost::shared_ptr<FloatFloatSwap> underlying4(new FloatFloatSwap(
                 VanillaSwap::Payer, 1.0, 1.0, fixedSchedule, swapBase,
-                Thirty360(), floatingSchedule, euribor6m, Actual360());
+                Thirty360(), floatingSchedule, euribor6m, Actual360(), false,
+                false, 1.0, 0.0, Null<Real>(), Null<Real>(), 1.0, 0.0010));
 
         boost::shared_ptr<FloatFloatSwaption> swaption4 =
             boost::make_shared<FloatFloatSwaption>(underlying4, exercise);
 
         boost::shared_ptr<Gaussian1dFloatFloatSwaptionEngine>
-        floatSwaptionEngine =
-            boost::make_shared<Gaussian1dFloatFloatSwaptionEngine>(
-                gsr, 64, 7.0, true, false, Handle<Quote>(), ytsOis, true);
+            floatSwaptionEngine(new Gaussian1dFloatFloatSwaptionEngine(
+                    gsr, 64, 7.0, true, false, Handle<Quote>(), ytsOis, true));
 
         swaption4->setPricingEngine(floatSwaptionEngine);
 
@@ -503,8 +506,7 @@ int main(int argc, char *argv[]) {
         const Leg &leg1 = underlying4->leg(1);
         boost::shared_ptr<CmsCouponPricer> cmsPricer =
             boost::make_shared<LinearTsrPricer>(swaptionVol, reversionQuote);
-        boost::shared_ptr<IborCouponPricer> iborPricer =
-            boost::make_shared<BlackIborCouponPricer>();
+        boost::shared_ptr<IborCouponPricer> iborPricer(new BlackIborCouponPricer);
 
         setCouponPricer(leg0, cmsPricer);
         setCouponPricer(leg1, iborPricer);
@@ -567,7 +569,8 @@ int main(int argc, char *argv[]) {
                   << "\ngiven underlying smile (as long as it is arbitrage"
                   << "\nfree). We try this now. Of course the usual use case"
                   << "\nis not to calibrate to a flat smile as in our simple"
-                  << "\nexample, still it should be possible, of course..." << std::endl;
+                  << "\nexample, still it should be possible, of course..."
+                  << std::endl;
 
         std::vector<Date> markovStepDates(exerciseDates.begin(),
                                           exerciseDates.end());
@@ -584,9 +587,10 @@ int main(int argc, char *argv[]) {
             boost::make_shared<Gaussian1dSwaptionEngine>(markov, 8, 5.0, true,
                                                          false, ytsOis);
         boost::shared_ptr<Gaussian1dFloatFloatSwaptionEngine>
-        floatEngineMarkov =
-            boost::make_shared<Gaussian1dFloatFloatSwaptionEngine>(
-                markov, 16, 7.0, true, false, Handle<Quote>(), ytsOis, true);
+            floatEngineMarkov =
+                boost::make_shared<Gaussian1dFloatFloatSwaptionEngine>(
+                    markov, 16, 7.0, true, false, Handle<Quote>(), ytsOis,
+                    true);
 
         swaption4->setPricingEngine(floatEngineMarkov);
 
@@ -604,7 +608,8 @@ int main(int argc, char *argv[]) {
 
         std::cout << "\nMore interesting is the question how well the Markov"
                   << "\nmodel did its job to match our input smile. For this"
-                  << "\nwe look at the underlying npv under the Markov model" << std::endl;
+                  << "\nwe look at the underlying npv under the Markov model"
+                  << std::endl;
 
         std::cout << "\nFloat swap NPV (Markov) = " << std::setprecision(6)
                   << swaption4->result<Real>("underlyingValue") << std::endl;
@@ -647,7 +652,8 @@ int main(int argc, char *argv[]) {
                   << npv8 << std::endl;
         printTiming(timer);
 
-        std::cout << "\nThis is close to the previous value as expected." << std::endl;
+        std::cout << "\nThis is close to the previous value as expected."
+                  << std::endl;
 
         std::cout << "\nAs a final remark we note that the calibration to"
                   << "\ncoterminal swaptions is not particularly reasonable"
@@ -659,15 +665,14 @@ int main(int argc, char *argv[]) {
                   << "\nit will most probably underestimate the market value"
                   << "\nby construction." << std::endl;
 
-        std::cout << "\nThat was it. Thank you for running this demo. Bye." << std::endl;
+        std::cout << "\nThat was it. Thank you for running this demo. Bye."
+                  << std::endl;
 
-    }
-    catch (QuantLib::Error e) {
+    } catch (QuantLib::Error e) {
         std::cout << "terminated with a ql exception: " << e.what()
                   << std::endl;
         return 1;
-    }
-    catch (std::exception e) {
+    } catch (std::exception e) {
         std::cout << "terminated with a general exception: " << e.what()
                   << std::endl;
         return 1;

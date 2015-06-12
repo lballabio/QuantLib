@@ -90,12 +90,13 @@ namespace QuantLib {
     template <class BaseModel_T, class Corr2DInt_T>
     class BaseCorrelationLossModel : public DefaultLossModel, 
         public virtual Observer {
+    private:
+        typedef typename BaseModel_T::copulaType::initTraits initTraits;
     public:
         BaseCorrelationLossModel(
             const Handle<BaseCorrelationTermStructure<Corr2DInt_T> >& correlTS,
             const std::vector<Real>& recoveries,
-            const typename BaseModel_T::copulaType::initTraits& traits = 
-                BaseModel_T::copulaType::initTraits()
+            const initTraits& traits = initTraits()
             )
         : localCorrelationAttach_(boost::shared_ptr<SimpleQuote>(
             new SimpleQuote(0.))),

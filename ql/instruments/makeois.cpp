@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2009, 2014 Ferdinando Ametrano
+ Copyright (C) 2009, 2014, 2015 Ferdinando Ametrano
+ Copyright (C) 2015 Paolo Mazzocchi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,30 +23,32 @@
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/schedule.hpp>
 
+using boost::shared_ptr;
+
 namespace QuantLib {
 
     MakeOIS::MakeOIS(const Period& swapTenor,
-                     const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                     const shared_ptr<OvernightIndex>& overnightIndex,
                      Rate fixedRate,
                      const Period& forwardStart)
     : swapTenor_(swapTenor), overnightIndex_(overnightIndex),
       fixedRate_(fixedRate), forwardStart_(forwardStart),
-      fixingDays_(2), paymentFrequency_(Annual),
+      settlementDays_(2),
+      calendar_(overnightIndex->fixingCalendar()),
+      paymentFrequency_(Annual),
       rule_(DateGeneration::Backward),
-      endOfMonth_(1*Months<=swapTenor && swapTenor<=2*Years ? true : false),
+      // any value here for endOfMonth_ would not be actually used
+      isDefaultEOM_(true),
       type_(OvernightIndexedSwap::Payer), nominal_(1.0),
       overnightSpread_(0.0),
-      fixedDayCount_(overnightIndex->dayCounter()),
-      engine_(new DiscountingSwapEngine(overnightIndex_->forwardingTermStructure())) {}
+      fixedDayCount_(overnightIndex->dayCounter()) {}
 
     MakeOIS::operator OvernightIndexedSwap() const {
-        boost::shared_ptr<OvernightIndexedSwap> ois = *this;
+        shared_ptr<OvernightIndexedSwap> ois = *this;
         return *ois;
     }
 
-    MakeOIS::operator boost::shared_ptr<OvernightIndexedSwap>() const {
-
-        const Calendar& calendar = overnightIndex_->fixingCalendar();
+    MakeOIS::operator shared_ptr<OvernightIndexedSwap>() const {
 
         Date startDate;
         if (effectiveDate_ != Date())
@@ -54,58 +57,78 @@ namespace QuantLib {
             Date refDate = Settings::instance().evaluationDate();
             // if the evaluation date is not a business day
             // then move to the next business day
-            refDate = calendar.adjust(refDate);
-            Date spotDate = calendar.advance(refDate,
-                                             fixingDays_*Days);
+            refDate = calendar_.adjust(refDate);
+            Date spotDate = calendar_.advance(refDate,
+                                              settlementDays_*Days);
             startDate = spotDate+forwardStart_;
+            if (forwardStart_.length()<0)
+                startDate = calendar_.adjust(startDate, Preceding);
+            else
+                startDate = calendar_.adjust(startDate, Following);
         }
 
-        Date endDate;
-        if (terminationDate_ != Date()) {
-            endDate = terminationDate_;
-        } else {
-            if (endOfMonth_) {
-                endDate = calendar.advance(startDate, swapTenor_,
-                                           ModifiedFollowing,
-                                           endOfMonth_);
-            } else {
-                endDate = startDate+swapTenor_;
-            }
+        // OIS end of month default
+        bool usedEndOfMonth = 
+            isDefaultEOM_ ? calendar_.isEndOfMonth(startDate) : endOfMonth_;
+
+        Date endDate = terminationDate_;
+        if (endDate == Date()) {
+            if (usedEndOfMonth)
+                endDate = calendar_.advance(startDate,
+                                            swapTenor_,
+                                            ModifiedFollowing,
+                                            usedEndOfMonth);
+            else
+                endDate = startDate + swapTenor_;
         }
 
         Schedule schedule(startDate, endDate,
                           Period(paymentFrequency_),
-                          calendar,
+                          calendar_,
                           ModifiedFollowing,
                           ModifiedFollowing,
                           rule_,
-                          endOfMonth_);
+                          usedEndOfMonth);
 
         Rate usedFixedRate = fixedRate_;
         if (fixedRate_ == Null<Rate>()) {
-            QL_REQUIRE(!overnightIndex_->forwardingTermStructure().empty(),
-                       "null term structure set to this instance of " <<
-                       overnightIndex_->name());
             OvernightIndexedSwap temp(type_, nominal_,
                                       schedule,
                                       0.0, // fixed rate
                                       fixedDayCount_,
                                       overnightIndex_, overnightSpread_);
-            // ATM on the forecasting curve
-            bool includeSettlementDateFlows = false;
-            temp.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                new DiscountingSwapEngine(
-                                   overnightIndex_->forwardingTermStructure(),
-                                   includeSettlementDateFlows)));
+            if (engine_ == 0) {
+                Handle<YieldTermStructure> disc =
+                                    overnightIndex_->forwardingTermStructure();
+                QL_REQUIRE(!disc.empty(),
+                           "null term structure set to this instance of " <<
+                           overnightIndex_->name());
+                bool includeSettlementDateFlows = false;
+                shared_ptr<PricingEngine> engine(new
+                    DiscountingSwapEngine(disc, includeSettlementDateFlows));
+                temp.setPricingEngine(engine);
+            } else
+                temp.setPricingEngine(engine_);
+
             usedFixedRate = temp.fairRate();
         }
 
-        boost::shared_ptr<OvernightIndexedSwap> ois(new
+        shared_ptr<OvernightIndexedSwap> ois(new
             OvernightIndexedSwap(type_, nominal_,
                                  schedule,
                                  usedFixedRate, fixedDayCount_,
                                  overnightIndex_, overnightSpread_));
-        ois->setPricingEngine(engine_);
+
+        if (engine_ == 0) {
+            Handle<YieldTermStructure> disc =
+                                overnightIndex_->forwardingTermStructure();
+            bool includeSettlementDateFlows = false;
+            shared_ptr<PricingEngine> engine(new
+                DiscountingSwapEngine(disc, includeSettlementDateFlows));
+            ois->setPricingEngine(engine);
+        } else
+            ois->setPricingEngine(engine_);
+
         return ois;
     }
 
@@ -124,8 +147,8 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeOIS& MakeOIS::withSettlementDays(Natural fixingDays) {
-        fixingDays_ = fixingDays;
+    MakeOIS& MakeOIS::withSettlementDays(Natural settlementDays) {
+        settlementDays_ = settlementDays;
         effectiveDate_ = Date();
         return *this;
     }
@@ -156,9 +179,16 @@ namespace QuantLib {
     }
 
     MakeOIS& MakeOIS::withDiscountingTermStructure(
-                const Handle<YieldTermStructure>& discountingTermStructure) {
-        engine_ = boost::shared_ptr<PricingEngine>(new
-                            DiscountingSwapEngine(discountingTermStructure));
+                                        const Handle<YieldTermStructure>& d) {
+        bool includeSettlementDateFlows = false;
+        engine_ = shared_ptr<PricingEngine>(new
+            DiscountingSwapEngine(d, includeSettlementDateFlows));
+        return *this;
+    }
+
+    MakeOIS& MakeOIS::withPricingEngine(
+                             const shared_ptr<PricingEngine>& engine) {
+        engine_ = engine;
         return *this;
     }
 
@@ -169,6 +199,7 @@ namespace QuantLib {
 
     MakeOIS& MakeOIS::withEndOfMonth(bool flag) {
         endOfMonth_ = flag;
+        isDefaultEOM_ = false;
         return *this;
     }
 

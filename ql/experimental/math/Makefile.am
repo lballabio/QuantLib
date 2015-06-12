@@ -13,6 +13,7 @@ this_include_HEADERS = \
     latentmodel.hpp \
     multidimintegrator.hpp \
     multidimquadrature.hpp \
+    numericaldifferentiation.hpp \
     polarstudenttrng.hpp \
     tcopulapolicy.hpp \
     zigguratrng.hpp
@@ -23,6 +24,7 @@ libMath_la_SOURCES = \
     gaussiancopulapolicy.cpp \
     multidimintegrator.cpp \
     multidimquadrature.cpp \
+    numericaldifferentiation.cpp \
     tcopulapolicy.cpp \
     zigguratrng.cpp
 
