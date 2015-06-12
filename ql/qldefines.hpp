@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
+ Copyright (C) 2015 CompatibL
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -48,7 +49,30 @@
 */
 #define QL_INTEGER int
 #define QL_BIG_INTEGER long
-#define QL_REAL double
+
+/* Define Real as TapeDouble in adjoint algorithmic differentiation (AAD) mode.
+
+   To avoid having to make extensive changes to the AAD backend or QuantLib,
+   AAD support is implemented through an intermediate inline class TapeDouble,
+   defined in the tapescript folder at the QuantLib project root.
+   The class TapeDouble is supplied with all necessary functions and
+   operators to serve as a drop-in substitute for Real in QuantLib.
+
+   At this time, the following TapeDouble backends are supported:
+
+     0. No backend, inner type is regular double (define CL_TAPE_NOAD)
+     1. CppAD, github.com/coin-or/CppAD (define CL_TAPE_CPPAD)
+     2. ADOL-C, projects.coin-or.org/ADOL-C (define CL_TAPE_ADOLC)
+*/
+
+#if defined(CL_TAPE_NOAD) || defined(CL_TAPE_CPPAD) || defined(CL_TAPE_ADOLC)
+// Add (project root)/tapescript/cpp to the include path
+#   include <ql/ad.hpp>
+#   define QL_REAL cl::TapeDouble
+#else
+// Standard QuantLib setting with Real defined as regular double
+#   define QL_REAL double
+#endif
 
 
 /*! \defgroup macros QuantLib macros

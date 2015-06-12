@@ -20,6 +20,8 @@
 #include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
 #include <ql/exercise.hpp>
 
+using std::fabs;
+
 namespace QuantLib {
 
    // number of iterations ...
@@ -108,7 +110,7 @@ namespace QuantLib {
 
         // Check if convergence is sufficiently fast (for extreme parameters with big alpha the convergence can be very
         // poor, see for example Hui "One-touch double barrier binary option value")
-        QL_REQUIRE(fabs(term) < requiredConvergence, "serie did not converge sufficiently fast");
+        QL_REQUIRE(std::fabs(term) < requiredConvergence, "serie did not converge sufficiently fast");
 
         if (barrierType == DoubleBarrier::KnockOut)
            return std::max(tot, 0.0); // KO
