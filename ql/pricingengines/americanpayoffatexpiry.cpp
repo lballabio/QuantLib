@@ -66,7 +66,7 @@ namespace QuantLib {
 
 
         log_H_S_ = std::log(strike_/spot_);
-        double log_S_H_ = std::log(spot_/strike_);
+        Real log_S_H_ = std::log(spot_/strike_);
 
         double eta;
         double phi;

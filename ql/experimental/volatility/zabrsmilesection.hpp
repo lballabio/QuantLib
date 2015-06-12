@@ -31,6 +31,8 @@
 #include <ql/termstructures/volatility/smilesectionutils.hpp>
 #include <vector>
 
+using std::exp;
+
 namespace QuantLib {
 
 // Evaluation Tags
