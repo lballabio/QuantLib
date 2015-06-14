@@ -213,12 +213,12 @@ namespace QuantLib {
         Array p = FdmHestonGreensFct(mesher, hestonProcess, trafoType, lv0)
             .get(timeGrid->at(1), params_.greensAlgorithm);
 
-        boost::shared_ptr<Matrix> L(new Matrix(xGrid, timeGrid->size()));
-        boost::shared_ptr<LocalVolTermStructure> leverageFct(
-            new FixedLocalVolSurface(
-                referenceDate,
-                std::vector<Time>(timeGrid->begin(), timeGrid->end()),
-                ds, L))
+//        boost::shared_ptr<Matrix> L(new Matrix(xGrid, timeGrid->size()));
+//        boost::shared_ptr<LocalVolTermStructure> leverageFct(
+//            new FixedLocalVolSurface(
+//                referenceDate,
+//                std::vector<Time>(timeGrid->begin(), timeGrid->end()),
+//                ds, L))
 
 
 //        const boost::shared_ptr<FdmLinearOpComposite> hestonFwdOp(
