@@ -87,8 +87,7 @@ namespace QuantLib {
         	return v;
         }
 		const Real t = 0.5*(t1+t2);
-		const Time time = std::min(leverageFct_->maxTime(),
-							  	   std::max(leverageFct_->minTime(), t));
+		const Time time = std::min(leverageFct_->maxTime(), t);
 
 		const FdmLinearOpIterator endIter = layout->end();
 		for (FdmLinearOpIterator iter = layout->begin();

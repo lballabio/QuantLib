@@ -38,7 +38,7 @@ namespace QuantLib {
         FixedLocalVolSurface(const Date& referenceDate,
                              const std::vector<Date>& dates,
                              const std::vector<Real>& strikes,
-                             const Matrix& localVolMatrix,
+                             const boost::shared_ptr<Matrix>& localVolMatrix,
                              const DayCounter& dayCounter,
                              Extrapolation lowerExtrapolation =
                                 InterpolatorDefaultExtrapolation,
@@ -48,7 +48,7 @@ namespace QuantLib {
         FixedLocalVolSurface(const Date& referenceDate,
                              const std::vector<Time>& times,
                              const std::vector<Real>& strikes,
-                             const Matrix& localVolMatrix,
+                             const boost::shared_ptr<Matrix>& localVolMatrix,
                              const DayCounter& dayCounter,
                              Extrapolation lowerExtrapolation =
                                 InterpolatorDefaultExtrapolation,
@@ -58,7 +58,6 @@ namespace QuantLib {
         Date maxDate() const;
         Date minDate() const;
         Time maxTime() const;
-        Time minTime() const;
         Real minStrike() const;
         Real maxStrike() const;
 
@@ -67,11 +66,9 @@ namespace QuantLib {
             localVolSurface_ =
                 i.interpolate(times_.begin(), times_.end(),
                               strikes_.begin(), strikes_.end(),
-                              localVolMatrix_);
+                              *localVolMatrix_);
             notifyObservers();
         }
-
-        Matrix & matrix() {return localVolMatrix_;}
 
       protected:
         Volatility localVolImpl(Time t, Real strike) const;
@@ -79,7 +76,7 @@ namespace QuantLib {
         const Date maxDate_;
         const Date minDate_;
         const std::vector<Real> strikes_;
-        Matrix localVolMatrix_;
+        const boost::shared_ptr<Matrix> localVolMatrix_;
         std::vector<Time> times_;
         Interpolation2D localVolSurface_;
         Extrapolation lowerExtrapolation_, upperExtrapolation_;

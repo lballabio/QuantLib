@@ -43,7 +43,7 @@ namespace QuantLib {
 		const Date& referenceDate,
 		const std::vector<Date>& dates,
 		const std::vector<Real>& strikes,
-		const Matrix& localVolMatrix,
+		const boost::shared_ptr<Matrix>& localVolMatrix,
 		const DayCounter& dayCounter,
 		Extrapolation lowerExtrapolation,
 		Extrapolation upperExtrapolation)
@@ -64,7 +64,6 @@ namespace QuantLib {
             times_[j] = timeFromReference(dates[j]);
 
         checkSurface();
-//        setInterpolation<Bicubic>();
         setInterpolation<Bilinear>();
 	}
 
@@ -72,7 +71,7 @@ namespace QuantLib {
     	const Date& referenceDate,
 		const std::vector<Time>& times,
 		const std::vector<Real>& strikes,
-		const Matrix& localVolMatrix,
+		const boost::shared_ptr<Matrix>& localVolMatrix,
 		const DayCounter& dayCounter,
 		Extrapolation lowerExtrapolation,
 		Extrapolation upperExtrapolation)
@@ -89,14 +88,13 @@ namespace QuantLib {
         QL_REQUIRE(times_[0]>=0, "cannot have times[0] < 0");
 
         checkSurface();
-//        setInterpolation<Bicubic>();
 		setInterpolation<Bilinear>();
 	}
 
 	void FixedLocalVolSurface::checkSurface() {
-        QL_REQUIRE(times_.size()==localVolMatrix_.columns(),
+        QL_REQUIRE(times_.size()==localVolMatrix_->columns(),
                    "mismatch between date vector and vol matrix colums");
-        QL_REQUIRE(strikes_.size()==localVolMatrix_.rows(),
+        QL_REQUIRE(strikes_.size()==localVolMatrix_->rows(),
                    "mismatch between money-strike vector and vol matrix rows");
 
         for (Size j=1; j<times_.size(); j++) {
@@ -114,9 +112,6 @@ namespace QuantLib {
     }
     Date FixedLocalVolSurface::minDate() const {
     	return minDate_;
-    }
-    Time FixedLocalVolSurface::minTime() const {
-    	return times_.front();
     }
     Time FixedLocalVolSurface::maxTime() const {
     	return times_.back();

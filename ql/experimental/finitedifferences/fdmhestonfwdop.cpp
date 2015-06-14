@@ -40,7 +40,7 @@ namespace QuantLib {
             const boost::shared_ptr<FdmMesher>& mesher,
             const boost::shared_ptr<HestonProcess>& process,
             FdmSquareRootFwdOp::TransformationType type,
-            const boost::shared_ptr<FixedLocalVolSurface>& leverageFct)
+            const boost::shared_ptr<LocalVolTermStructure>& leverageFct)
     : type_(type),
       kappa_(process->kappa()),
       theta_(process->theta()),
@@ -213,8 +213,8 @@ namespace QuantLib {
         	return v;
 
 		const Real t = 0.5*(t1+t2);
-		const Time time = std::min(leverageFct_->maxTime(),
-							  	   std::max(leverageFct_->minTime(), t));
+		const Time time = std::min(leverageFct_->maxTime(), t);
+							  	   //std::max(leverageFct_->minTime(), t));
 
 		const FdmLinearOpIterator endIter = layout->end();
 		for (FdmLinearOpIterator iter = layout->begin();

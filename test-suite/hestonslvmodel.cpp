@@ -947,10 +947,12 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquation() {
 
 
 namespace {
-    boost::shared_ptr<FixedLocalVolSurface> createLeverageFctFromVolSurface(
-            boost::shared_ptr<BlackScholesMertonProcess> lvProcess,
-            const std::vector<Real>& strikes, const std::vector<Date>& dates,
-            std::vector<Time>& times, Matrix & surface) {
+    boost::shared_ptr<Matrix> createLocalVolMatrixFromProcess(
+        boost::shared_ptr<BlackScholesMertonProcess> lvProcess,
+        const std::vector<Real>& strikes,
+        const std::vector<Date>& dates,
+        std::vector<Time>& times) {
+
         const boost::shared_ptr<LocalVolTermStructure> localVol =
             lvProcess->localVolatility().currentLink();
 
@@ -963,20 +965,20 @@ namespace {
             times[i] = dc.yearFraction(todaysDate, dates[i]);
         }
 
+        boost::shared_ptr<Matrix> surface(
+            new Matrix(strikes.size(), dates.size()));
+
         for (Size i=0; i < strikes.size(); ++i) {
             for (Size j=0; j < dates.size(); ++j) {
                 try {
-                    surface[i][j] = localVol->localVol(dates[j], strikes[i], true);
+                    (*surface)[i][j] = localVol->localVol(dates[j], strikes[i], true);
                 } catch (Error&) {
-                    surface[i][j] = 0.2;
+                    (*surface)[i][j] = 0.2;
                 }
             }
         }
-        boost::shared_ptr<FixedLocalVolSurface> leverage 
-            = boost::shared_ptr<FixedLocalVolSurface>(
-                new FixedLocalVolSurface(todaysDate, times, strikes, surface, dc));
-        //leverage->disableExtrapolation();
-        return leverage;
+
+        return surface;
     }
 
     boost::tuple<std::vector<Real>, std::vector<Date>,
@@ -1140,9 +1142,12 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
     Matrix surface(ds.size(), smoothSurface.get<1>().size());
     std::vector<Time> times(surface.columns());
 
-    boost::shared_ptr<FixedLocalVolSurface> leverage =
-        createLeverageFctFromVolSurface(lvProcess, ds,
-            smoothSurface.get<1>(), times, surface);
+    const std::vector<Date> dates = smoothSurface.get<1>();
+    boost::shared_ptr<Matrix> m = createLocalVolMatrixFromProcess(
+        lvProcess, ds, dates, times);
+
+    const boost::shared_ptr<FixedLocalVolSurface> leverage(
+        new FixedLocalVolSurface(todaysDate, dates, ds, m, dc));
 
     const boost::shared_ptr<PricingEngine> lvEngine(
         new AnalyticEuropeanEngine(lvProcess));
@@ -1467,10 +1472,10 @@ namespace {
                       varianceMesher->locations().end());
         const Array tMesh(timeGrid.begin()+1, timeGrid.end());
         const std::vector<Time> tmpTimes(tMesh.begin(), tMesh.end());
-        Matrix L(x.size(), tMesh.size());
+        boost::shared_ptr<Matrix> L(new Matrix(x.size(), tMesh.size()));
 
         for (Size i=0; i < x.size(); ++i) {
-            std::fill(L.row_begin(i), L.row_end(i), l0);
+            std::fill(L->row_begin(i), L->row_end(i), l0);
         }
         boost::shared_ptr<FixedLocalVolSurface> leverageFct(
             new FixedLocalVolSurface(todaysDate, tmpTimes, tmpSpots, L,
@@ -1516,8 +1521,8 @@ namespace {
                       ? localVol*std::sqrt(scale)
                       : 1.0;
 
-                    std::fill(leverageFct->matrix().row_begin(j)+i,
-                      std::min(leverageFct->matrix().row_begin(j)+i+1, leverageFct->matrix().row_end(j)),
+                    std::fill(L->row_begin(j)+i,
+                      std::min(L->row_begin(j)+i+1, L->row_end(j)),
                       std::min(5.0, std::max(0.01, l)));
 
 //					const Real l = (pInt >= 1e-8)
@@ -1565,14 +1570,14 @@ namespace {
 
                 for (Size j=0; j < x.size(); ++j) {
                     if (x[j] < sLowerBound)
-                        std::fill(leverageFct->matrix().row_begin(j)+i,
-                          std::min(leverageFct->matrix().row_begin(j)+i+1, leverageFct->matrix().row_end(j)),
+                        std::fill(L->row_begin(j)+i,
+                          std::min(L->row_begin(j)+i+1, L->row_end(j)),
                           lowerL);
                     else if (x[j] > sUpperBound)
-                        std::fill(leverageFct->matrix().row_begin(j)+i,
-                          std::min(leverageFct->matrix().row_begin(j)+i+1, leverageFct->matrix().row_end(j)),
+                        std::fill(L->row_begin(j)+i,
+                          std::min(L->row_begin(j)+i+1, L->row_end(j)),
                           upperL);
-                    else if (leverageFct->matrix()[j][i] == Null<Real>())
+                    else if ((*L)[j][i] == Null<Real>())
                         std::cout << t << " ouch" << std::endl;
                 }
 
@@ -1837,6 +1842,7 @@ test_suite* HestonSLVModelTest::experimental() {
     suite->add(QUANTLIB_TEST_CASE(
         &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
     suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testSLVCalibration));
+
     suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testHestonSLVModel));
 
 

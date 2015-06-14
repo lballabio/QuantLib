@@ -34,31 +34,31 @@
 namespace QuantLib {
 
 class SimpleQuote;
-	class HestonModel;
-	class LocalVolTermStructure;
+    class HestonModel;
+    class LocalVolTermStructure;
 
-	struct HestonSLVFokkerPlanckFdmParams {
-		const Date finalCalibrationMaturity;
-		const Size xGrid, vGrid;
-		const Size tMaxStepsPerYear, tMinStepsPerYear;
-		const Real tStepNumberDecay;
+    struct HestonSLVFokkerPlanckFdmParams {
+        const Date finalCalibrationMaturity;
+        const Size xGrid, vGrid;
+        const Size tMaxStepsPerYear, tMinStepsPerYear;
+        const Real tStepNumberDecay;
 
-		// local volatility forward equation
-		const Real epsProbability;
-		const Real undefinedlLocalVolOverwrite;
-		const Size maxIntegrationIterations;
+        // local volatility forward equation
+        const Real epsProbability;
+        const Real undefinedlLocalVolOverwrite;
+        const Size maxIntegrationIterations;
 
-		// algorithm to get to the start configuration at time point one
-		const FdmHestonGreensFct::Algorithm greensAlgorithm;
-	};
+        // algorithm to get to the start configuration at time point one
+        const FdmHestonGreensFct::Algorithm greensAlgorithm;
+    };
 
-	class HestonSLVModel : public LazyObject {
+    class HestonSLVModel : public LazyObject {
       public:
         HestonSLVModel(
-        	const Handle<LocalVolTermStructure>& localVol,
- 		    const Handle<HestonModel>& hestonModel,
- 		    const HestonSLVFokkerPlanckFdmParams& params,
-		    const std::vector<Date>& mandatoryDates = std::vector<Date>());
+            const Handle<LocalVolTermStructure>& localVol,
+             const Handle<HestonModel>& hestonModel,
+             const HestonSLVFokkerPlanckFdmParams& params,
+            const std::vector<Date>& mandatoryDates = std::vector<Date>());
 
         void update();
 

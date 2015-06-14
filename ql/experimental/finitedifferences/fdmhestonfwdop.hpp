@@ -28,7 +28,7 @@
 #include <ql/types.hpp>
 #include <ql/experimental/finitedifferences/fdmsquarerootfwdop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
-#include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
+#include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 
 namespace QuantLib {
 
@@ -46,8 +46,8 @@ namespace QuantLib {
             const boost::shared_ptr<HestonProcess>& process,
             FdmSquareRootFwdOp::TransformationType type 
                 = FdmSquareRootFwdOp::Plain,
-            const boost::shared_ptr<FixedLocalVolSurface> & leverageFct = boost::shared_ptr<FixedLocalVolSurface> ());
-        // first index of leverageFunction is time, second is spot
+            const boost::shared_ptr<LocalVolTermStructure> & leverageFct
+                = boost::shared_ptr<LocalVolTermStructure>());
 
         Size size() const;
         void setTime(Time t1, Time t2);
@@ -83,7 +83,7 @@ namespace QuantLib {
 
         const boost::shared_ptr<NinePointLinearOp> correlation_;
 
-        const boost::shared_ptr<FixedLocalVolSurface>& leverageFct_;
+        const boost::shared_ptr<LocalVolTermStructure>& leverageFct_;
         const boost::shared_ptr<FdmMesher> mesher_;
         const Array x_;
     };

@@ -219,8 +219,6 @@ namespace QuantLib {
 	void LocalVolRNDCalculator::performCalculations() const {
 		rescaleTimeSteps_.clear();
 
-		std::cout << "1b" << std::endl;
-
 		const Time sT = timeGrid_->at(1);
 		Time t = std::min(sT, (gaussianStepSize_ > 0.0) ? gaussianStepSize_
 													    : 0.5*sT);
