@@ -23,6 +23,9 @@
 #include <ql/pricingengines/blackformula.hpp>
 #include <boost/make_shared.hpp>
 
+using std::fabs;
+using std::sqrt;
+
 namespace QuantLib {
 
 Gaussian1dSmileSection::Gaussian1dSmileSection(

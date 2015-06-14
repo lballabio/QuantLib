@@ -29,6 +29,7 @@
     - Added Moscow Exchange calendar (thanks to Dmitri Nesteruk).
     - Added 70th anniversary of anti-Japanese day to Chinese calendar
       (thanks to Cheng Li).
+    - Fixed Chinese New Year date for 2010 (thanks to Cheng Li).
     - Added nearest-trading-day business day convention (thanks to
       Francois Botha).
     - Prevented normalization of a 7-days period to a 1-week period, since
