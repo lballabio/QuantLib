@@ -385,7 +385,7 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
 	}
 
 	const Time tl = timeGrid->at(timeGrid->size()-5);
-	const Real xl = constVolCalc->x(tl).front();
+	const Real xl = constVolCalc->mesher(tl)->locations().front();
 	if (!(   constVolCalc->pdf(xl+0.0001, tl) > 0.0
 		  && constVolCalc->pdf(xl-0.0001, tl) == 0.0)) {
 		BOOST_FAIL("probability outside interpolation range is not zero");
@@ -455,7 +455,7 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
 
 			const Time tx = std::max(dumasTimeGrid->at(1),
 									 dumasTimeGrid->closestTime(expiry));
-			const Array x  = dumasVolCalc->x(tx);
+			const std::vector<Real> x = dumasVolCalc->mesher(tx)->locations();
 
 			const ProbWeightedPayoff probWeightedPayoff(
 				expiry, payoff, dumasVolCalc);

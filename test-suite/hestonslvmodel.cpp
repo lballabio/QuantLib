@@ -1788,7 +1788,7 @@ void HestonSLVModelTest::testHestonSLVModel() {
     const Real kappa = 1.0;
     const Real theta = 0.09;
     const Real rho   = -0.75;
-    const Real sigma = 0.1;
+    const Real sigma = 0.2;
     const Real v0    = 0.09;
     const Volatility lv = 0.2;
 
@@ -1805,8 +1805,9 @@ void HestonSLVModelTest::testHestonSLVModel() {
     	boost::make_shared<LocalConstantVol>(todaysDate, lv, dc));
 
     const HestonSLVFokkerPlanckFdmParams params =
-    	{ finalDate, 201, 201, 1000, 100, 5.0,
-    	  1e-6, -Null<Real>(), 10000, -Null<Real>()};
+    	{ finalDate, 201, 101, 1000, 100, 5.0,
+    	  1e-6, -Null<Real>(), 10000,
+		  FdmHestonGreensFct::ZeroCorrelation};
 
     HestonSLVModel slvModel(localVol, hestonModel, params);
 

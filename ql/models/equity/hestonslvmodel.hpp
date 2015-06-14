@@ -28,6 +28,8 @@
 #include <ql/handle.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/patterns/observable.hpp>
+#include <ql/experimental/finitedifferences/fdmhestongreensfct.hpp>
+
 
 namespace QuantLib {
 
@@ -40,10 +42,14 @@ class SimpleQuote;
 		const Size xGrid, vGrid;
 		const Size tMaxStepsPerYear, tMinStepsPerYear;
 		const Real tStepNumberDecay;
+
+		// local volatility forward equation
 		const Real epsProbability;
 		const Real undefinedlLocalVolOverwrite;
 		const Size maxIntegrationIterations;
-		const Time firstAnalyticalStepTime;
+
+		// algorithm to get to the start configuration at time point one
+		const FdmHestonGreensFct::Algorithm greensAlgorithm;
 	};
 
 	class HestonSLVModel : public LazyObject {

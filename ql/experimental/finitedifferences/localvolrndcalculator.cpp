@@ -31,6 +31,7 @@
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/predefined1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/schemes/douglasscheme.hpp>
 #include <ql/experimental/finitedifferences/fdmlocalvolfwdop.hpp>
@@ -195,20 +196,19 @@ namespace QuantLib {
 		}
 	}
 
-	Disposable<Array> LocalVolRNDCalculator::x(Time t) const {
+	boost::shared_ptr<Fdm1dMesher>
+	LocalVolRNDCalculator::mesher(Time t) const {
         calculate();
 
 		const Size idx = timeGrid_->index(t);
 		QL_REQUIRE(idx <= xm_.size(), "inconsistent time " << t << " given");
 
 		if (idx > 0) {
-			Array retVal(xm_[idx-1]->locations().begin(),
-						 xm_[idx-1]->locations().end());
-			return retVal;
+			return xm_[idx-1];
 		}
 		else {
-			Array retVal(xGrid_, std::log(spot_->value()));
-			return retVal;
+			return boost::make_shared<Predefined1dMesher>(
+				std::vector<Real>(xGrid_, std::log(spot_->value())));
 		}
 	}
 
@@ -218,6 +218,8 @@ namespace QuantLib {
 
 	void LocalVolRNDCalculator::performCalculations() const {
 		rescaleTimeSteps_.clear();
+
+		std::cout << "1b" << std::endl;
 
 		const Time sT = timeGrid_->at(1);
 		Time t = std::min(sT, (gaussianStepSize_ > 0.0) ? gaussianStepSize_
@@ -251,7 +253,7 @@ namespace QuantLib {
 	    QL_REQUIRE(x.size() > 10, "x grid is too small. "
 	    						  "Minimum size is greater than 10");
 
-	    const Size b = std::max(Size(4), Size(x.size()*0.04));
+	    const Size b = std::max(Size(1), Size(x.size()*0.04));
 
 	    boost::shared_ptr<DouglasScheme> evolver(
 	    	new DouglasScheme(0.5,
@@ -292,14 +294,16 @@ namespace QuantLib {
 						}
                 	}
                 }
+
                 const Real vm = DiscreteSimpsonIntegral()(x, vols)
                 	/(x.back() - x.front());
 
                 const Size scalingSteps
 					= std::max(3, Integer(0.01*timeGrid_->size()));
+
                 const Real scalingFactor
 					= std::sqrt(timeGrid_->at(
-						std::min(timeGrid_->size(), i+scalingSteps)))
+						std::min(timeGrid_->size()-1, i+scalingSteps)))
                 	 * vm;
 
 	    		if (maxLeftValue > eps_)
@@ -330,7 +334,6 @@ namespace QuantLib {
 						spot_, rTS_, qTS_,
 						localVol_, illegalLocalVolOverwrite_));
 	    	}
-
 	        evolver->setStep(dt);
 			t+=dt;
 

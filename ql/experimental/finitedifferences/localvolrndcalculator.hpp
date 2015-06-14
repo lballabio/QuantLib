@@ -36,6 +36,7 @@
 
 namespace QuantLib {
 	class TimeGrid;
+	class Fdm1dMesher;
 	class Interpolation;
 	class LocalVolTermStructure;
 
@@ -69,8 +70,8 @@ namespace QuantLib {
 		Real cdf(Real x, Time t) const;
 		Real invcdf(Real p, Time t) const;
 
-		Disposable<Array> x(Time t) const; // ln(s) grid
 		boost::shared_ptr<TimeGrid> timeGrid() const;
+		boost::shared_ptr<Fdm1dMesher> mesher(Time t) const;
 		Disposable<std::vector<Size> > rescaleTimeSteps() const;
 
 	  protected:

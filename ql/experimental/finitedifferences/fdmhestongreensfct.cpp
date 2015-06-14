@@ -70,8 +70,9 @@ namespace QuantLib {
 	        switch (algorithm) {
 	          case ZeroCorrelation:
 	          {
-	  			const Real p_x = 1.0/(std::sqrt(M_TWOPI*v0*t))
-	  	                * std::exp(-0.5*square<Real>()(x - x0)/(v0*l0_*l0_*t));
+				const Real sd_x = l0_*std::sqrt(v0*t);
+	  			const Real p_x = M_1_SQRTPI*M_SQRT1_2/sd_x
+	  	                * std::exp(-0.5*square<Real>()((x - x0)/sd_x));
 	  			const Real p_v = SquareRootProcessRNDCalculator(
 	  				v0, kappa, theta, sigma).pdf(v, t);
 
