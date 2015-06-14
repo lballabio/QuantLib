@@ -5,6 +5,7 @@
  Copyright (C) 2007 François du Vignaud
  Copyright (C) 2007 Katiuscia Manzoni
  Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2015 Michael von den Driesch
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -53,6 +54,7 @@ namespace QuantLib {
                            bool dontThrow = false);
 
         const Matrix& capFloorPrices() const;
+        const Matrix& capletVols() const;
         const Matrix& capFloorVolatilities() const;
         const Matrix& optionletPrices() const;
         Rate switchStrike() const;
@@ -64,7 +66,7 @@ namespace QuantLib {
       private:
         mutable Matrix capFloorPrices_, optionletPrices_;
         mutable Matrix capFloorVols_;
-        mutable Matrix optionletStDevs_;
+        mutable Matrix optionletStDevs_, capletVols_;
 
         mutable CapFloorMatrix capFloors_;
         mutable std::vector<std::vector<boost::shared_ptr<SimpleQuote> > > volQuotes_;

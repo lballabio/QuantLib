@@ -4,6 +4,7 @@
  Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006, 2007 StatPro Italia srl
+ Copyright (C) 2015 Michael von den Driesch
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -58,6 +59,10 @@ namespace QuantLib {
                        Real displacement)
     : discountCurve_(discountCurve), vol_(volatility),
       displacement_(displacement) {
+        QL_REQUIRE(vol_->optionletStripper()->volatilityType() == ShiftedLognormal, 
+                    "BlackCapFloorEngine should only be used for vol surfaces stripped with shifted log normal model. Options were stripped with model "<<vol_->optionletStripper()->volatilityType());
+        QL_REQUIRE(vol_->optionletStripper()->displacement() == displacement_, 
+                    "Displacement used for stripping and provided for pricing differ. Model displacement was : " << vol_->optionletStripper()->displacement());
         registerWith(discountCurve_);
         registerWith(vol_);
     }
