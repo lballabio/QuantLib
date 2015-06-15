@@ -26,34 +26,8 @@
 namespace QuantLib {
 
     AbcdFunction::AbcdFunction(Real a, Real b, Real c, Real d)
-    : a_(a), b_(b), c_(c), d_(d) {
+    : AbcdMathFunction(a, b, c, d) {
         validateAbcdParameters(a, b, c, d);
-    }
-
-    Real AbcdFunction::operator()(Time u) const {
-        return u<0 ? 0.0 : (a_ + b_*u)*std::exp(-c_*u) + d_;
-    }
-
-    Real AbcdFunction::maximumLocation() const {
-        if (b_<=0) {
-            return 0.0;
-        } else {
-            if((b_-c_*a_)/(c_*b_)>0) {
-                return (b_-c_*a_)/(c_*b_);
-            } else
-                return 0.0;
-        }
-    }
-
-    Real AbcdFunction::maximumVolatility() const {
-        if (b_<=0) {
-            return shortTermVolatility();
-        } else {
-            if ((b_-c_*a_)/(c_*b_) > 0.0) {
-                return b_/c_*std::exp(-1.0 +c_*a_/b_) + d_;
-            } else
-                return shortTermVolatility();
-        }
     }
 
     Real AbcdFunction::volatility(Time tMin, Time tMax, Time T) const {

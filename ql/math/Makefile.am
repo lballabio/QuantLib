@@ -7,6 +7,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
+	abcdmathfunction.hpp \
 	all.hpp \
 	array.hpp \
 	autocovariance.hpp \
@@ -36,6 +37,7 @@ this_include_HEADERS = \
 	transformedgrid.hpp
 
 libMath_la_SOURCES = \
+	abcdmathfunction.cpp \
 	bernsteinpolynomial.cpp \
 	beta.cpp \
 	bspline.cpp \
