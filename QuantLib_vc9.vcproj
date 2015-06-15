@@ -2627,6 +2627,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\math\polynomialmathfunction.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\math\polynomialmathfunction.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\math\primenumbers.cpp"
 				>
 			</File>
@@ -2668,6 +2676,14 @@
 			</File>
 			<File
 				RelativePath=".\ql\math\solver1d.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\math\tartaglia.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\math\tartaglia.hpp"
 				>
 			</File>
 			<File
