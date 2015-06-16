@@ -43,7 +43,6 @@ namespace QuantLib {
         //@}
         Real minStrike() const;
         Real maxStrike() const;
-        boost::shared_ptr<OptionletStripper> optionletStripper() const;
       protected:
         boost::shared_ptr<SmileSection> smileSectionImpl(Time t) const;
         Volatility volatilityImpl(Time t,
@@ -89,11 +88,6 @@ namespace QuantLib {
     inline
     Volatility CapletVarianceCurve::volatilityImpl(Time t, Rate r) const {
         return blackCurve_.blackVol(t, r, true);
-    }
-
-    inline boost::shared_ptr<OptionletStripper> CapletVarianceCurve::optionletStripper() const {
-        boost::shared_ptr<OptionletStripper> tmp;
-        return tmp;
     }
 
 }

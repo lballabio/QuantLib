@@ -32,6 +32,7 @@ class OptionletStripperTest {
     static void testFlatTermVolatilityStripping1();
     static void testTermVolatilityStripping1();
 	static void testTermVolatilityStrippingNormalVol();    
+    static void testTermVolatilityStrippingShiftedLogNormalVol();
     static void testFlatTermVolatilityStripping2();
     static void testTermVolatilityStripping2();
     static boost::unit_test_framework::test_suite* suite();

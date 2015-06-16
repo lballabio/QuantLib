@@ -76,7 +76,7 @@ struct CommonVars{
 
         CommonVars() {
             accuracy = 1.0e-7;
-            tolerance = 2.5e-8;
+            tolerance = 2.5e-5;
         }
 
         void setTermStructure() {
@@ -581,6 +581,81 @@ void OptionletStripperTest::testTermVolatilityStrippingNormalVol() {
     }
 }
 
+void OptionletStripperTest::testTermVolatilityStrippingShiftedLogNormalVol() {
+
+    BOOST_TEST_MESSAGE(
+        "Testing forward/forward vol stripping from non-flat normal vol term "
+        "vol surface for normal vol setup using OptionletStripper1 class...");
+
+    CommonVars vars;
+    Real shift = 0.03;
+    Settings::instance().evaluationDate() = Date(30, April, 2015);
+
+    vars.setRealCapFloorTermVolSurface();
+
+    shared_ptr< IborIndex > iborIndex(new Euribor6M(vars.forwardingYTS));
+
+    boost::shared_ptr< OptionletStripper > optionletStripper1(
+        new OptionletStripper1(vars.capFloorVolRealSurface, iborIndex,
+                               Null< Rate >(), vars.accuracy, 100,
+                               vars.discountingYTS, ShiftedLognormal, shift, true));
+
+    QL_REQUIRE(optionletStripper1 != NULL,
+               "Could not create optionletStripper");
+
+    boost::shared_ptr< StrippedOptionletAdapter > strippedOptionletAdapter =
+        boost::shared_ptr< StrippedOptionletAdapter >(
+            new StrippedOptionletAdapter(optionletStripper1));
+
+    QL_REQUIRE(optionletStripper1 != NULL,
+               "Could not create StrippedOptionletAdapter");
+
+    Handle< OptionletVolatilityStructure > vol(strippedOptionletAdapter);
+
+    vol->enableExtrapolation();
+
+    boost::shared_ptr< BlackCapFloorEngine > strippedVolEngine(
+        new BlackCapFloorEngine(vars.discountingYTS, vol, shift));
+    QL_REQUIRE(strippedVolEngine != NULL, "Could not create strippedVolEngine");
+
+    boost::shared_ptr< CapFloor > cap;
+    for (Size tenorIndex = 0; tenorIndex < vars.optionTenors.size();
+         ++tenorIndex) {
+        for (Size strikeIndex = 0; strikeIndex < vars.strikes.size();
+             ++strikeIndex) {
+            cap = MakeCapFloor(CapFloor::Cap, vars.optionTenors[tenorIndex],
+                               iborIndex, vars.strikes[strikeIndex],
+                               0 * Days).withPricingEngine(strippedVolEngine);
+
+            Real priceFromStrippedVolatility = cap->NPV();
+
+            boost::shared_ptr< PricingEngine >
+                blackCapFloorEngineConstantVolatility(
+                    new BlackCapFloorEngine(
+                        vars.discountingYTS,
+                        vars.termV[tenorIndex][strikeIndex], 
+                        vars.capFloorVolRealSurface->dayCounter(), shift));
+
+            cap->setPricingEngine(blackCapFloorEngineConstantVolatility);
+            Real priceFromConstantVolatility = cap->NPV();
+
+            Real error = std::fabs(priceFromStrippedVolatility -
+                                   priceFromConstantVolatility);
+            if (error > vars.tolerance)
+                BOOST_FAIL(
+                    "\noption tenor:       "
+                    << vars.optionTenors[tenorIndex] << "\nstrike:             "
+                    << io::rate(vars.strikes[strikeIndex])
+                    << "\nstripped vol price: "
+                    << io::rate(priceFromStrippedVolatility)
+                    << "\nconstant vol price: "
+                    << io::rate(priceFromConstantVolatility)
+                    << "\nerror:              " << io::rate(error)
+                    << "\ntolerance:          " << io::rate(vars.tolerance));
+        }
+    }
+}
+
 void OptionletStripperTest::testFlatTermVolatilityStripping2() {
 
   BOOST_TEST_MESSAGE(
@@ -726,5 +801,7 @@ test_suite* OptionletStripperTest::suite() {
         &OptionletStripperTest::testTermVolatilityStripping2));
     suite->add(QUANTLIB_TEST_CASE(
         &OptionletStripperTest::testTermVolatilityStrippingNormalVol));
+    suite->add(QUANTLIB_TEST_CASE(
+        &OptionletStripperTest::testTermVolatilityStrippingShiftedLogNormalVol));
     return suite;
 }

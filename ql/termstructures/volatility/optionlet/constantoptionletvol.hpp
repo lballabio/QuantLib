@@ -67,7 +67,6 @@ namespace QuantLib {
         Real minStrike() const;
         Real maxStrike() const;
         //@}
-        boost::shared_ptr<OptionletStripper> optionletStripper() const;
       protected:
         boost::shared_ptr<SmileSection> smileSectionImpl(const Date& d) const;
         boost::shared_ptr<SmileSection> smileSectionImpl(Time) const;
@@ -90,11 +89,6 @@ namespace QuantLib {
 
     inline Real ConstantOptionletVolatility::maxStrike() const {
         return QL_MAX_REAL;
-    }
-
-    inline boost::shared_ptr<OptionletStripper> ConstantOptionletVolatility::optionletStripper() const {
-        boost::shared_ptr<OptionletStripper> tmp;        
-        return tmp;
     }
 
 }
