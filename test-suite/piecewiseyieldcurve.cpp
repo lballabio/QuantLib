@@ -276,6 +276,11 @@ namespace {
             for (Size i = 0; i<immFuts; i++) {
                 Handle<Quote> r(immFutPrices[i]);
                 immDate = IMM::nextDate(immDate, false);
+                // if the fixing is before the evaluation date, we
+                // just jump forward by one future maturity
+                if (euribor3m->fixingDate(immDate) <
+                    Settings::instance().evaluationDate())
+                    immDate = IMM::nextDate(immDate, false);
                 immFutHelpers[i] = boost::shared_ptr<RateHelper>(new
                     FuturesRateHelper(r, immDate, euribor3m, Handle<Quote>(),
                                       Futures::IMM));
@@ -284,6 +289,11 @@ namespace {
             for (Size i = 0; i<asxFuts; i++) {
                 Handle<Quote> r(asxFutPrices[i]);
                 asxDate = ASX::nextDate(asxDate, false);
+                // if the fixing is before the evaluation date, we
+                // just jump forward by one future maturity
+                if (euribor3m->fixingDate(asxDate) <
+                    Settings::instance().evaluationDate())
+                    asxDate = ASX::nextDate(asxDate, false);
                 asxFutHelpers[i] = boost::shared_ptr<RateHelper>(new
                     FuturesRateHelper(r, asxDate, euribor3m, Handle<Quote>(),
                                       Futures::ASX));
@@ -447,6 +457,11 @@ namespace {
         Date immStart = Date();
         for (Size i = 0; i<vars.immFuts; i++) {
             immStart = IMM::nextDate(immStart, false);
+            // if the fixing is before the evaluation date, we
+            // just jump forward by one future maturity
+            if (euribor3m->fixingDate(immStart) <
+                Settings::instance().evaluationDate())
+                immStart = IMM::nextDate(immStart, false);
             Date end = vars.calendar.advance(immStart, 3, Months,
                 euribor3m->businessDayConvention(),
                 euribor3m->endOfMonth());
@@ -474,6 +489,11 @@ namespace {
         Date asxStart = Date();
         for (Size i = 0; i<vars.asxFuts; i++) {
             asxStart = ASX::nextDate(asxStart, false);
+            // if the fixing is before the evaluation date, we
+            // just jump forward by one future maturity
+            if (euribor3m->fixingDate(asxStart) <
+                Settings::instance().evaluationDate())
+                asxStart = ASX::nextDate(asxStart, false);
             Date end = vars.calendar.advance(asxStart, 3, Months,
                 euribor3m->businessDayConvention(),
                 euribor3m->endOfMonth());

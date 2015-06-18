@@ -61,9 +61,16 @@ namespace QuantLib {
             if(requireCPoint) {
                 const Real z0 = - c1 / (c2-c1);
                 const Real u0 = static_cast<int>(z0*(size-1)+0.5) / ((Real)(size-1));
-                
-                u.push_back(0.0); u.push_back(u0); u.push_back(1.0);
-                z.push_back(0.0); z.push_back(z0); z.push_back(1.0);
+                if (u0 > 0.0) {
+                    u.push_back(0.0);
+                    z.push_back(0.0);
+                }
+                u.push_back(u0);
+                z.push_back(z0);
+                if (u0 < 1.0) {
+                    u.push_back(1.0);
+                    z.push_back(1.0);
+                }
                 transform = boost::shared_ptr<Interpolation>(
                     new LinearInterpolation(u.begin(), u.end(), z.begin()));
             }

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006, 2007, 2008, 2010, 2011 Ferdinando Ametrano
+ Copyright (C) 2006, 2007, 2008, 2010, 2011, 2015 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2009, 2012 StatPro Italia srl
 
@@ -93,10 +93,9 @@ namespace QuantLib {
                        bool endOfMonth,
                        const Date& first,
                        const Date& nextToLast)
-    : tenor_(tenor), calendar_(cal),
-      convention_(convention),
-      terminationDateConvention_(terminationDateConvention),
-      rule_(rule), endOfMonth_(endOfMonth),
+    : tenor_(tenor), calendar_(cal), convention_(convention),
+      terminationDateConvention_(terminationDateConvention), rule_(rule),
+      endOfMonth_(tenor<1*Months ? false : endOfMonth),
       firstDate_(first==effectiveDate ? Date() : first),
       nextToLastDate_(nextToLast==terminationDate ? Date() : nextToLast)
     {
@@ -210,7 +209,7 @@ namespace QuantLib {
             if (nextToLastDate_ != Date()) {
                 dates_.insert(dates_.begin(), nextToLastDate_);
                 Date temp = nullCalendar.advance(seed,
-                    -periods*(*tenor_), convention, endOfMonth);
+                    -periods*(*tenor_), convention, *endOfMonth_);
                 if (temp!=nextToLastDate_)
                     isRegular_.insert(isRegular_.begin(), false);
                 else
@@ -224,7 +223,7 @@ namespace QuantLib {
 
             for (;;) {
                 Date temp = nullCalendar.advance(seed,
-                    -periods*(*tenor_), convention, endOfMonth);
+                    -periods*(*tenor_), convention, *endOfMonth_);
                 if (temp < exitDate) {
                     if (firstDate_ != Date() &&
                         (calendar_.adjust(dates_.front(),convention)!=
@@ -257,7 +256,7 @@ namespace QuantLib {
           case DateGeneration::ThirdWednesday:
           case DateGeneration::OldCDS:
           case DateGeneration::CDS:
-            QL_REQUIRE(!endOfMonth,
+            QL_REQUIRE(!*endOfMonth_,
                        "endOfMonth convention incompatible with " << *rule_ <<
                        " date generation rule");
           // fall through
@@ -275,7 +274,7 @@ namespace QuantLib {
             if (firstDate_!=Date()) {
                 dates_.push_back(firstDate_);
                 Date temp = nullCalendar.advance(seed, periods*(*tenor_),
-                                                 convention, endOfMonth);
+                                                 convention, *endOfMonth_);
                 if (temp!=firstDate_)
                     isRegular_.push_back(false);
                 else
@@ -307,7 +306,7 @@ namespace QuantLib {
 
             for (;;) {
                 Date temp = nullCalendar.advance(seed, periods*(*tenor_),
-                                                 convention, endOfMonth);
+                                                 convention, *endOfMonth_);
                 if (temp > exitDate) {
                     if (nextToLastDate_ != Date() &&
                         (calendar_.adjust(dates_.back(),convention)!=
@@ -355,7 +354,7 @@ namespace QuantLib {
                                              dates_[i].month(),
                                              dates_[i].year());
 
-        if (endOfMonth && calendar_.isEndOfMonth(seed)) {
+        if (*endOfMonth_ && calendar_.isEndOfMonth(seed)) {
             // adjust to end of month
             if (convention == Unadjusted) {
                 for (Size i=1; i<dates_.size()-1; ++i)
@@ -414,6 +413,18 @@ namespace QuantLib {
             dates_.erase(dates_.begin());
             isRegular_.erase(isRegular_.begin());
         }
+
+        QL_ENSURE(dates_.size()>1,
+            "degenerate single date (" << dates_[0] << ") schedule" <<
+            "\n seed date: " << seed <<
+            "\n exit date: " << exitDate <<
+            "\n effective date: " << effectiveDate <<
+            "\n first date: " << first <<
+            "\n next to last date: " << nextToLast <<
+            "\n termination date: " << terminationDate <<
+            "\n generation rule: " << *rule_ <<
+            "\n end of month: " << *endOfMonth_);
+
     }
 
 

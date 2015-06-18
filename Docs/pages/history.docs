@@ -18,11 +18,108 @@
 
 /*! \page history Version history
 
-    <strong>Release 1.5 - February 2015</strong>
+    <strong>Release 1.6 - June 2015</strong>
 
-    QuantLib 1.5 includes about 60 pull requests from several
-    contributors, ranging from small bug fixes to relevant new
-    additions to the library.
+    PORTABILITY
+    - Enable successful compilation with Boost 1.58 and either gcc or clang.
+    - Enable multi-processor compilation on Visual C++ as a project switch
+      (thanks to Giorgio Pazmandi).
+
+    DATE/TIME
+    - Added Moscow Exchange calendar (thanks to Dmitri Nesteruk).
+    - Added 70th anniversary of anti-Japanese day to Chinese calendar
+      (thanks to Cheng Li).
+    - Fixed Chinese New Year date for 2010 (thanks to Cheng Li).
+    - Added nearest-trading-day business day convention (thanks to
+      Francois Botha).
+    - Prevented normalization of a 7-days period to a 1-week period, since
+      this doesn't apply to business days (thanks to Paolo Mazzocchi).
+    - Allowed schedules built with a vector of dates to be used for coupon
+      generation, given that the required information was provided (thanks
+      to Peter Caspers).
+    - Added support for Australian Security Exchange (ASX) dates (thanks
+      to Maddalena Zanzi).
+    - Added ECB dates for April and June 2016 (thanks to Paolo Mazzocchi).
+
+    INSTRUMENTS
+    - Extended digital American options to handle knock-off case (thanks
+      to Riccardo Ghetta).
+    - Extended barrier options to handle KIKO/KOKI barriers (thanks to
+      Riccardo Ghetta).
+    - Added Ikeda/Kunitomo engine, binomial engine and binary/digital
+      engine for double-barrier option (thanks to Riccardo Ghetta).
+    - Added Bachelier engine for caps/floors based on normal volatility
+      (thanks to Michael von den Driesch).
+    - Allowed non strike/type payoffs in finite-differences engine for
+      vanilla options (thanks to Joseph Wang).
+    - Fixed settlement days of BTP bonds.
+    - Fixed generation of schedule for OIS and vanilla swaps.
+    - Added support for ASX dates to futures rate helper (thanks to
+      Maddalena Zanzi).
+
+    MODELS
+    - Moved Markov functional model, GSR model, Gaussian 1D model and
+      related engines, processes and term structures from the experimental
+      folder to the code library (thanks to Peter Caspers).
+
+    CASH FLOWS
+    - Added CMS-spread coupons, including digital (thanks to Peter Caspers).
+
+    INDEXES
+    - Added CMS-spread index (thanks to Peter Caspers).
+    - Fixed day-count convention for Fed Funds rate.
+
+    TERM STRUCTURES
+    - Fixed bug where a valid previous curve state could be a bad guess
+      for the next and lead to a bootstrap failure.
+    - Allow negative adjustment for futures rate helpers (thanks to Paolo
+      Mazzocchi).
+
+    VOLATILITY
+    - Added support for normal and displaced lognormal volatility to
+      optionlet stripper (thanks to Michael von den Driesch).
+    - Allowed calibration of the alpha of the SABR model to the ATM point
+      while keeping beta, nu and rho fixed (thanks to Peter Caspers).
+    - Added Chambers-Nawalkha implied-volatility approximation (thanks to
+      Peter Caspers).
+    - Added displaced lognormal swaption volatilities (thanks to Peter
+      Caspers).
+    - Allowed the optionlet boostrap to continue if one caplet can no be
+      matched (thanks to Peter Caspers).
+    - Added flat-extrapolation option to swaption ATM volatility matrix
+      (thanks to Peter Caspers).
+    - Implied swaption volatility cube for Gaussian 1-D model (thanks to
+      Peter Caspers).
+
+    MATH
+    - Allowed user-defined Jacobian in optimization (thanks to Peter Caspers).
+
+    MISCELLANEA
+    - Added IDR, MYR, RUB and VND currencies (thanks to Lucy King).
+
+    DEPRECATED FEATURES
+    - Removed deprecated methods and constructors from the
+      BlackVarianceTermStructure, BlackVolTermStructure,
+      CapFloorTermVolatilityStructure, DateParser,
+      FittedBondDiscountCurve, GeneralLinearLeastSquares, Handle,
+      LocalVolTermStructure, OptionletVolatilityStructure, Settings,
+      SwaptionVolatilityStructure and VolatilityTermStructure classes.
+
+    EXPERIMENTAL FOLDER
+
+    The ql/experimental folder contains code which is still not fully
+    integrated with the library or even fully tested, but is released in
+    order to get user feedback.  Experimental classes are considered
+    unstable; their interfaces might change in future releases.
+
+    Changes and new contributions for this release were:
+    - Finite-difference meshers based on multi-dimensional integrals
+      (thanks to Klaus Spanderen).
+    - SVI interpolation and a corresponding smile section (thanks to Peter
+      Caspers).
+    - ZABR volatility model (thanks to Peter Caspers).
+
+    <strong>Release 1.5 - February 10th, 2015</strong>
 
     PORTABILITY
     - Unified project files for Visual Studio 10 and above.  Different
@@ -112,13 +209,6 @@
     - Removed deprecated Domain and Surface classes.
 
     EXPERIMENTAL FOLDER
-
-    The ql/experimental folder contains code which is still not fully
-    integrated with the library or even fully tested, but is released in
-    order to get user feedback.  Experimental classes are considered
-    unstable; their interfaces might change in future releases.
-
-    Changes and new contributions for this release were:
     - Extended credit risk plus model (thanks to Peter Caspers).
     - No-arbitrage Sabr model with corresponding volatility-cube, smile
       section and interpolation classes (thanks to Peter Caspers).

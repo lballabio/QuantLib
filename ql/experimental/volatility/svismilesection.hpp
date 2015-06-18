@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file svismilesmilesection.hpp
+/*! \file svismilesection.hpp
     \brief svi smile section
 */
 
