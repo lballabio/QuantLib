@@ -26,7 +26,9 @@
 #define quantlib_fixed_local_vol_surface_hpp
 
 #include <ql/math/matrix.hpp>
-#include <ql/math/interpolations/interpolation2d.hpp>
+#include <ql/math/interpolation.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
+
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 
 namespace QuantLib {
@@ -63,10 +65,11 @@ namespace QuantLib {
 
         template <class Interpolator>
         void setInterpolation(const Interpolator& i = Interpolator()) {
-            localVolSurface_ =
-                i.interpolate(times_.begin(), times_.end(),
-                              strikes_.begin(), strikes_.end(),
-                              *localVolMatrix_);
+            for (Size j=0; j < times_.size(); ++j) {
+                localVolInterpol_[j] = i.interpolate(
+                    strikes_[j]->begin(), strikes_[j]->end(),
+                    localVolMatrix_->column_begin(j));
+            }
             notifyObservers();
         }
 
@@ -75,10 +78,11 @@ namespace QuantLib {
 
         const Date maxDate_;
         const Date minDate_;
-        const std::vector<Real> strikes_;
-        const boost::shared_ptr<Matrix> localVolMatrix_;
         std::vector<Time> times_;
-        Interpolation2D localVolSurface_;
+        const boost::shared_ptr<Matrix> localVolMatrix_;
+        const std::vector<boost::shared_ptr<std::vector<Real> > > strikes_;
+
+        std::vector<Interpolation> localVolInterpol_;
         Extrapolation lowerExtrapolation_, upperExtrapolation_;
 
       private:

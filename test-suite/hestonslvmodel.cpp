@@ -1525,6 +1525,7 @@ namespace {
                       std::min(L->row_begin(j)+i+1, L->row_end(j)),
                       std::min(5.0, std::max(0.01, l)));
 
+                    leverageFct->setInterpolation(Linear());
 //					const Real l = (pInt >= 1e-8)
 //						? localVol*std::sqrt(scale)
 //						: Null<Real>();
@@ -1580,6 +1581,7 @@ namespace {
                     else if ((*L)[j][i] == Null<Real>())
                         std::cout << t << " ouch" << std::endl;
                 }
+                leverageFct->setInterpolation(Linear());
 
                 pn = p;
                 switch (testCase.schemeType) {
@@ -1815,7 +1817,6 @@ void HestonSLVModelTest::testHestonSLVModel() {
 		  FdmHestonGreensFct::ZeroCorrelation};
 
     HestonSLVModel slvModel(localVol, hestonModel, params);
-
 
     slvModel.leverageFunction();
 }

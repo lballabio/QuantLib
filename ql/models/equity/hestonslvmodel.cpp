@@ -24,7 +24,7 @@
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/models/equity/hestonslvmodel.hpp>
 #include <ql/math/integrals/discreteintegrals.hpp>
-#include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
+#include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
 #include <ql/methods/finitedifferences/meshers/predefined1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
@@ -213,12 +213,13 @@ namespace QuantLib {
         Array p = FdmHestonGreensFct(mesher, hestonProcess, trafoType, lv0)
             .get(timeGrid->at(1), params_.greensAlgorithm);
 
-//        boost::shared_ptr<Matrix> L(new Matrix(xGrid, timeGrid->size()));
+        boost::shared_ptr<Matrix> L(new Matrix(xGrid, timeGrid->size()));
 //        boost::shared_ptr<LocalVolTermStructure> leverageFct(
 //            new FixedLocalVolSurface(
 //                referenceDate,
 //                std::vector<Time>(timeGrid->begin(), timeGrid->end()),
-//                ds, L))
+//                localVolRND.mesher(timeGrid->back())->locations(), L,
+//                dc));
 
 
 //        const boost::shared_ptr<FdmLinearOpComposite> hestonFwdOp(
