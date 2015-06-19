@@ -615,7 +615,7 @@ void OptionletStripperTest::testTermVolatilityStrippingShiftedLogNormalVol() {
     vol->enableExtrapolation();
 
     boost::shared_ptr< BlackCapFloorEngine > strippedVolEngine(
-        new BlackCapFloorEngine(vars.discountingYTS, vol, shift));
+        new BlackCapFloorEngine(vars.discountingYTS, vol));
     QL_REQUIRE(strippedVolEngine != NULL, "Could not create strippedVolEngine");
 
     boost::shared_ptr< CapFloor > cap;

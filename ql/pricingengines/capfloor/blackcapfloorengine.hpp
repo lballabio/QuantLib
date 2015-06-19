@@ -47,7 +47,7 @@ namespace QuantLib {
                             Real displacement = 0.0);
         BlackCapFloorEngine(const Handle<YieldTermStructure>& discountCurve,
                             const Handle<OptionletVolatilityStructure>& vol,
-                            Real displacement = 0.0);
+                            Real displacement = Null<Real>());
         void calculate() const;
         Handle<YieldTermStructure> termStructure() { return discountCurve_; }
         Handle<OptionletVolatilityStructure> volatility() { return vol_; }
