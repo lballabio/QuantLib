@@ -222,7 +222,6 @@ namespace QuantLib {
 		const Time sT = timeGrid_->at(1);
 		Time t = std::min(sT, (gaussianStepSize_ > 0.0) ? gaussianStepSize_
 													    : 0.5*sT);
-
 		const Volatility vol = localVol_->localVol(0.0, spot_->value());
 
 		const Volatility stdDev = vol * std::sqrt(t);

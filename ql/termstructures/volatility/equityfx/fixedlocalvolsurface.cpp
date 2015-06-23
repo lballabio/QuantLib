@@ -24,7 +24,7 @@
 #include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
 
 #include <boost/make_shared.hpp>
-#include <stdio.h>
+
 namespace QuantLib {
 
 	namespace {
@@ -94,6 +94,34 @@ namespace QuantLib {
 		setInterpolation<Linear>();
 	}
 
+	FixedLocalVolSurface::FixedLocalVolSurface(
+        const Date& referenceDate,
+        const std::vector<Time>& times,
+        const std::vector<boost::shared_ptr<std::vector<Real> > > & strikes,
+        const boost::shared_ptr<Matrix>& localVolMatrix,
+        const DayCounter& dayCounter,
+        Extrapolation lowerExtrapolation,
+        Extrapolation upperExtrapolation)
+	: LocalVolTermStructure(
+	          referenceDate, NullCalendar(), Following, dayCounter),
+      maxDate_(time2Date(referenceDate, dayCounter, times.back())),
+      minDate_(time2Date(referenceDate, dayCounter, times.front())),
+      times_(times),
+      localVolMatrix_(localVolMatrix),
+      strikes_(strikes),
+      localVolInterpol_(times.size()),
+      lowerExtrapolation_(lowerExtrapolation),
+      upperExtrapolation_(upperExtrapolation) {
+
+        QL_REQUIRE(times_[0]>=0, "cannot have times[0] < 0");
+        QL_REQUIRE(times.size() == strikes.size(),
+             "need strikes for every time step");
+
+        checkSurface();
+        setInterpolation<Linear>();
+    }
+
+
 	void FixedLocalVolSurface::checkSurface() {
         QL_REQUIRE(times_.size()==localVolMatrix_->columns(),
                    "mismatch between date vector and vol matrix colums");
@@ -110,8 +138,8 @@ namespace QuantLib {
 
         for (Size i=0; i < strikes_.size(); ++i)
             for (Size j=1; j<strikes_[i]->size(); j++) {
-                QL_REQUIRE(strikes_[i]->at(j)>strikes_[i]->at(j-1),
-                           "strikes must be sorted and unique!");
+                QL_REQUIRE(strikes_[i]->at(j)>=strikes_[i]->at(j-1),
+                           "strikes must be sorted");
             }
 	}
 
@@ -142,7 +170,6 @@ namespace QuantLib {
 
         t = std::min(times_.back(), std::max(t, times_.front()));
 
-
         const Size idx = std::distance(times_.begin(),
             std::lower_bound(times_.begin(), times_.end(), t));
 
@@ -150,8 +177,26 @@ namespace QuantLib {
             return localVolInterpol_[idx](strike, true);
         }
         else {
-            const Real a = localVolInterpol_[idx-1](strike, true);
-            const Real b = localVolInterpol_[idx](strike, true);
+            Real lowerStrike = strike, upperStrike = strike;
+            if (lowerExtrapolation_ == ConstantExtrapolation) {
+                if (strike < strikes_[idx-1]->front())
+                    lowerStrike = strikes_[idx]->front();
+                if (strike < strikes_[idx]->front())
+                    upperStrike = strikes_[idx]->front();
+            }
+
+            if (upperExtrapolation_ == ConstantExtrapolation) {
+                if (strike > strikes_[idx-1]->back())
+                    lowerStrike = strikes_[idx-1]->back();
+                if (strike > strikes_[idx]->back())
+                    upperStrike = strikes_[idx]->back();
+            }
+
+            const Real a =
+                (strikes_[idx-1]->front() < strikes_[idx-1]->back())
+                ? localVolInterpol_[idx-1](lowerStrike, true)
+                : (*localVolMatrix_)[localVolMatrix_->rows()/2][0];
+            const Real b = localVolInterpol_[idx](upperStrike, true);
 
             return a + (b-a)/(times_[idx]-times_[idx-1])*(t-times_[idx-1]);
         }

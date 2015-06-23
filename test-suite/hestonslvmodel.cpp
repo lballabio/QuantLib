@@ -1521,9 +1521,11 @@ namespace {
                       ? localVol*std::sqrt(scale)
                       : 1.0;
 
-                    std::fill(L->row_begin(j)+i,
-                      std::min(L->row_begin(j)+i+1, L->row_end(j)),
-                      std::min(5.0, std::max(0.01, l)));
+//                    std::fill(L->row_begin(j)+i,
+//                      std::min(L->row_begin(j)+i+1, L->row_end(j)),
+//                      std::min(5.0, std::max(0.01, l)));
+
+                    (*L)[j][i] = std::min(5.0, std::max(0.01, l));
 
                     leverageFct->setInterpolation(Linear());
 //					const Real l = (pInt >= 1e-8)
