@@ -2,13 +2,13 @@
 QuantLib is a cross-platform, free/open-source quantitative finance C++
 library for modeling, pricing, trading, and risk management in real-life.
 
-Version 1.6 has been released and is available for download at
+Version 1.7 has been released and is available for download at
 <http://quantlib.org/download.shtml>.
 
 Please log any problems you have with this release in the SourceForge
 bug tracker at
 <http://sourceforge.net/tracker/?group_id=12740&atid=112740>
-specifying that you're using QuantLib 1.6.
+specifying that you're using QuantLib 1.7.
 
         The QuantLib group
 
