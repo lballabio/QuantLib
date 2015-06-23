@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Klaus Spanderen
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -94,7 +95,7 @@ namespace QuantLib {
         const boost::shared_ptr<YieldTermStructure>& termStructure)
     : calibrationPhase_(true),
       pathPricer_(pathPricer),
-      coeff_     (new Array[times.size()-1]),
+      coeff_     (new Array[times.size()-2]),
       dF_        (new DiscountFactor[times.size()-1]),
       v_         (pathPricer_->basisSystem()),
       len_       (times.size()) {
@@ -125,7 +126,7 @@ namespace QuantLib {
 
                 Real continuationValue = 0.0;
                 for (Size l=0; l<v_.size(); ++l) {
-                    continuationValue += coeff_[i][l] * v_[l](regValue);
+                    continuationValue += coeff_[i-1][l] * v_[l](regValue);
                 }
 
                 if (continuationValue < exercise) {
@@ -162,12 +163,12 @@ namespace QuantLib {
             }
 
             if (v_.size() <=  x.size()) {
-                coeff_[i] = GeneralLinearLeastSquares(x, y, v_).coefficients();
+                coeff_[i-1] = GeneralLinearLeastSquares(x, y, v_).coefficients();
             }
             else {
             // if number of itm paths is smaller then the number of
             // calibration functions then early exercise if exerciseValue > 0
-                coeff_[i] = Array(v_.size(), 0.0);
+                coeff_[i-1] = Array(v_.size(), 0.0);
             }
 
             for (Size j=0, k=0; j<n; ++j) {
@@ -175,7 +176,7 @@ namespace QuantLib {
                 if (exercise[j]>0.0) {
                     Real continuationValue = 0.0;
                     for (Size l=0; l<v_.size(); ++l) {
-                        continuationValue += coeff_[i][l] * v_[l](x[k]);
+                        continuationValue += coeff_[i-1][l] * v_[l](x[k]);
                     }
                     if (continuationValue < exercise[j]) {
                         prices[j] = exercise[j];
