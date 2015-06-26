@@ -1,140 +1,131 @@
 
-Changes for QuantLib 1.5:
+Changes for QuantLib 1.6:
 =========================
 
-QuantLib 1.5 includes about 60 pull requests from several
-contributors, ranging from small bug fixes to relevant new additions
-to the library.
+QuantLib 1.6 includes over 50 pull requests from several contributors.
 
 The most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt.
 
+
 PORTABILITY
 
-- Unified project files for Visual Studio 10 and above.  Different
-  solutions are still provided for Visual Studio 10, 11 and 12.
+- Enable successful compilation with Boost 1.58 and either gcc or clang.
+
+- Enable multi-processor compilation on Visual C++ as a project switch
+  (thanks to Giorgio Pazmandi).
 
 DATE/TIME
 
-- Added China Inter-Bank calendar (thanks to Cheng Li).
+- Added Moscow Exchange calendar (thanks to Dmitri Nesteruk).
 
-- Added half-month modified following convention (thanks to Paolo
-  Mazzocchi).
+- Added 70th anniversary of anti-Japanese day to Chinese calendar
+  (thanks to Cheng Li).
 
-- Added a few more historical closings for NYSE.
+- Fixed Chinese New Year date for 2010 (thanks to Cheng Li).
 
-- Updated the Hong Kong and China calendar for 2015.
+- Added nearest-trading-day business day convention (thanks to
+  Francois Botha).
 
-- Updated list of ECB dates up to the first two dates for 2016 (thanks
-  to Paolo Mazzocchi).
+- Prevented normalization of a 7-days period to a 1-week period, since
+  this doesn't apply to business days (thanks to Paolo Mazzocchi).
+
+- Allowed schedules built with a vector of dates to be used for coupon
+  generation, given that the required information was provided (thanks
+  to Peter Caspers).
+
+- Added support for Australian Security Exchange (ASX) dates (thanks
+  to Maddalena Zanzi).
+
+- Added ECB dates for April and June 2016 (thanks to Paolo Mazzocchi).
 
 INSTRUMENTS
 
-- Improved Storage and Swing engine (thanks to Klaus Spanderen).
+- Extended digital American options to handle knock-off case (thanks
+  to Riccardo Ghetta).
 
-- Fixed behavior of the Bjerksund Stensland engine for very small
-  volatilities (thanks to Klaus Spanderen).
+- Extended barrier options to handle KIKO/KOKI barriers (thanks to
+  Riccardo Ghetta).
 
-- Add Heston expansion engine for European options (thanks to Fabien
-  Le Floc'h).
+- Added Ikeda/Kunitomo engine, binomial engine and binary/digital
+  engine for double-barrier option (thanks to Riccardo Ghetta).
 
-- Caps, floors and swaptions can use a displacement in
-  implied-volatility calculation.
+- Added Bachelier engine for caps/floors based on normal volatility
+  (thanks to Michael von den Driesch).
 
-- Added partial-time fixed and floating strike lookback options
-  (thanks to Francois Botha).
+- Allowed non strike/type payoffs in finite-differences engine for
+  vanilla options (thanks to Joseph Wang).
 
-- Added binary barrier options (thanks to Riccardo Ghetta).
+- Fixed settlement days of BTP bonds.
 
-- Added binomial engine for barrier options (thanks to Riccardo Ghetta).
+- Fixed generation of schedule for OIS and vanilla swaps.
 
-- Added Vecer engine for continuous-averaging Asian options (thanks to
-  Bernd Lewerenz).
+- Added support for ASX dates to futures rate helper (thanks to
+  Maddalena Zanzi).
+
+MODELS
+
+- Moved Markov functional model, GSR model, Gaussian 1D model and
+  related engines, processes and term structures from the experimental
+  folder to the code library (thanks to Peter Caspers).
 
 CASH FLOWS
 
-- Added ex-coupon feature to fixed-rate bonds, CPI bonds and bond
-  helpers (thanks to Francois Botha).
-
-- Fix calculation of sinking notionals when the coupon rate is very
-  near 0 (thanks to Cheng Li).
+- Added CMS-spread coupons, including digital (thanks to Peter Caspers).
 
 INDEXES
 
-- Added Shanghai Inter-bank Offering Rate index (thanks to Cheng Li).
+- Added CMS-spread index (thanks to Peter Caspers).
 
-- Added Fed Fund index.
-
-- Added South-African CPI (thanks to Francois Botha).
+- Fixed day-count convention for Fed Funds rate.
 
 TERM STRUCTURES
 
-- Improvement to CMS market calibration: enabled use of general coupon
-  pricers, added calibration to a term structure of betas (thanks to
+- Fixed bug where a valid previous curve state could be a bad guess
+  for the next and lead to a bootstrap failure.
+
+- Allow negative adjustment for futures rate helpers (thanks to Paolo
+  Mazzocchi).
+
+VOLATILITY
+
+- Added support for normal and displaced lognormal volatility to
+  optionlet stripper (thanks to Michael von den Driesch).
+
+- Allowed calibration of the alpha of the SABR model to the ATM point
+  while keeping beta, nu and rho fixed (thanks to Peter Caspers).
+
+- Added Chambers-Nawalkha implied-volatility approximation (thanks to
   Peter Caspers).
 
-- InterpolatedZeroCurve can be passed rates with any compounding
-  convention and frequency (thanks to Alexandre Radicchi).
+- Added displaced lognormal swaption volatilities (thanks to Peter
+  Caspers).
 
-- Bond helpers can now use quotes for either clean or dirty prices
-  (thanks to Francois Botha).
+- Allowed the optionlet boostrap to continue if one caplet can no be
+  matched (thanks to Peter Caspers).
 
-- Added CPI bond helper (thanks to Francois Botha).
-
-- Better handling in rate helpers of evaluation dates which are not
-  business dates.
-
-- Spreaded curves allow extrapolation if their underlying curve does
+- Added flat-extrapolation option to swaption ATM volatility matrix
   (thanks to Peter Caspers).
 
-- Fixed inflation-rate interpolation (thanks to Amine Ifri).
+- Implied swaption volatility cube for Gaussian 1-D model (thanks to
+  Peter Caspers).
 
 MATH
 
-- Added generation of student-t distributed random numbers
-  (thanks to Jose Aparicio).
-
-- Added Folin's integration methods (thanks to Klaus Spanderen).
-
-- Added mixed backward-flat/linear interpolation (thanks to Peter
-  Caspers).
-
-- Improved performance of matrix multiplication (thanks to Peter
-  Caspers).
-
-- Fixed wrong primitive calculation in mixed interpolation (thanks to
-  Peter Caspers).
-
-- Fixed corner case for finite-difference Newton solver leading to
-  infinite derivative (thanks to Peter Caspers).
-
-- Added Maddock's cumulative normal distribution (thanks to Klaus
-  Spanderen).
-
-- Added bivariate cumulative student t distribution (thanks to Michal
-  Kaut).
-
-LATTICES
-
-- Calculate option delta/gamma on binomial trees using Hull formulas
-  (thanks to Riccardo Ghetta).
+- Allowed user-defined Jacobian in optimization (thanks to Peter Caspers).
 
 MISCELLANEA
 
-- A number of small performance improvements (thanks to Michael Sharpe).
+- Added IDR, MYR, RUB and VND currencies (thanks to Lucy King).
 
-EXAMPLES
+DEPRECATED FEATURES
 
-- Added example for Gaussian 1-D models (thanks to Peter Caspers).
-
-- Added examples for latent models and basket losses (thanks to Jose
-  Aparicio).
-
-- Added example for multi-dimensional integral (thanks to Jose Aparicio).
-
-DEPRECATED CLASSES
-
-- Removed deprecated Domain and Surface classes.
+- Removed deprecated methods and constructors from the
+  BlackVarianceTermStructure, BlackVolTermStructure,
+  CapFloorTermVolatilityStructure, DateParser,
+  FittedBondDiscountCurve, GeneralLinearLeastSquares, Handle,
+  LocalVolTermStructure, OptionletVolatilityStructure, Settings,
+  SwaptionVolatilityStructure and VolatilityTermStructure classes.
 
 EXPERIMENTAL FOLDER
 
@@ -145,22 +136,10 @@ unstable; their interfaces might change in future releases.
 
 Changes and new contributions for this release were:
 
-- Extended credit risk plus model (thanks to Peter Caspers).
+- Finite-difference meshers based on multi-dimensional integrals
+  (thanks to Klaus Spanderen).
 
-- No-arbitrage Sabr model with corresponding volatility-cube, smile
-  section and interpolation classes (thanks to Peter Caspers).
+- SVI interpolation and a corresponding smile section (thanks to Peter
+  Caspers).
 
-- A number of latent models for basket losses (thanks to Jose Aparicio).
-
-- Complex chooser option (thanks to Nathan Kruck, Ahmed Ayadi and
-  Nolan Potier from the IMAFA program at Polytech'Nice Sophia).
-
-- Holder-extensible option (thanks to Nathan Kruck, Ahmed Ayadi and
-  Nolan Potier from the IMAFA program at Polytech'Nice Sophia).
-
-- Partial-time barrier option (thanks to Nathan Kruck, Ahmed Ayadi and
-  Nolan Potier from the IMAFA program at Polytech'Nice Sophia).
-
-- Two-asset correlation option (thanks to Ilyas Rahbaoui and Driss
-  Aouad from the IMAFA program at Polytech'Nice Sophia).
-
+- ZABR volatility model (thanks to Peter Caspers).

@@ -37,6 +37,8 @@
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
 
+using std::pow;
+
 namespace QuantLib {
 
 ZabrModel::ZabrModel(const Real expiryTime, const Real forward,

@@ -1,6 +1,7 @@
 Ferdinando Ametrano, Banca IMI SpA, administrator
 Luigi Ballabio, StatPro Italia srl, administrator
 Marco Bianchetti, Banca IMI SpA
+Peter Caspers
 Nicolas Di Césaré
 Dirk Eddelbuettel
 Neil Firth, Mathematical Institute, University of Oxford

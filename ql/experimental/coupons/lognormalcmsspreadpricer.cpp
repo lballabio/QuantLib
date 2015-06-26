@@ -26,6 +26,8 @@
 #include <ql/termstructures/volatility/swaption/swaptionvolcube.hpp>
 #include <boost/make_shared.hpp>
 
+using std::sqrt;
+
 namespace QuantLib {
 
     LognormalCmsSpreadPricer::LognormalCmsSpreadPricer(

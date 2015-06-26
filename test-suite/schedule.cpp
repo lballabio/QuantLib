@@ -212,7 +212,7 @@ void ScheduleTest::testDoubleFirstDateWithEomAdjustment() {
 
 void ScheduleTest::testDateConstructor() {
     BOOST_TEST_MESSAGE("Testing the constructor taking a vector of dates and "
-                       "possibly additional meta information");
+                       "possibly additional meta information...");
 
     std::vector<Date> dates;
     dates.push_back(Date(16, May, 2015));
