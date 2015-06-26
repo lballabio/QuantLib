@@ -70,10 +70,13 @@ namespace QuantLib {
 
         Real operator()(const PathType& path) const;
         virtual void calibrate();
-        const boost::scoped_array<Array>& coefficients() { return coeff_; }
-        const std::vector<boost::function1<Real, StateType> >& basisSystem() { return v_; }
 
       protected:
+        virtual void post_processing(const Size i,
+                                     const std::vector<StateType> &x_itm,
+                                     const std::vector<Real> &y_itm,
+                                     const std::vector<StateType> &x_otm,
+                                     const std::vector<Real> &y_otm) {}
         bool  calibrationPhase_;
         const boost::shared_ptr<EarlyExercisePathPricer<PathType> >
             pathPricer_;
@@ -146,11 +149,13 @@ namespace QuantLib {
         for (Size i=0; i<n; ++i)
             prices[i] = (*pathPricer_)(paths_[i], len_-1);
 
-        std::vector<Real>      y;
-        std::vector<StateType> x;
+        std::vector<Real>      y, y_otm;
+        std::vector<StateType> x, x_otm;
         for (Size i=len_-2; i>0; --i) {
             y.clear();
             x.clear();
+            x_otm.clear();
+            y_otm.clear();
 
             //roll back step
             for (Size j=0; j<n; ++j) {
@@ -159,8 +164,14 @@ namespace QuantLib {
                 if (exercise[j]>0.0) {
                     x.push_back(pathPricer_->state(paths_[j], i));
                     y.push_back(dF_[i]*prices[j]);
+                } else {
+                    x_otm.push_back(pathPricer_->state(paths_[j], i));
+                    y_otm.push_back(dF_[i] * prices[j]);
                 }
             }
+
+            // optional post processing step
+            post_processing(i, x, y, x_otm, y_otm);
 
             if (v_.size() <=  x.size()) {
                 coeff_[i-1] = GeneralLinearLeastSquares(x, y, v_).coefficients();
