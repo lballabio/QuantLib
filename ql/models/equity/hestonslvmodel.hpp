@@ -56,8 +56,8 @@ class SimpleQuote;
       public:
         HestonSLVModel(
             const Handle<LocalVolTermStructure>& localVol,
-             const Handle<HestonModel>& hestonModel,
-             const HestonSLVFokkerPlanckFdmParams& params,
+            const Handle<HestonModel>& hestonModel,
+            const HestonSLVFokkerPlanckFdmParams& params,
             const std::vector<Date>& mandatoryDates = std::vector<Date>());
 
         void update();
