@@ -73,10 +73,9 @@ namespace QuantLib {
 
       protected:
         virtual void post_processing(const Size i,
-                                     const std::vector<StateType> &x_itm,
-                                     const std::vector<Real> &y_itm,
-                                     const std::vector<StateType> &x_otm,
-                                     const std::vector<Real> &y_otm) {}
+                                     const std::vector<StateType> &state,
+                                     const std::vector<Real> &price,
+                                     const std::vector<Real> &exercise) {}
         bool  calibrationPhase_;
         const boost::shared_ptr<EarlyExercisePathPricer<PathType> >
             pathPricer_;
@@ -145,33 +144,31 @@ namespace QuantLib {
     void LongstaffSchwartzPathPricer<PathType>::calibrate() {
         const Size n = paths_.size();
         Array prices(n), exercise(n);
+        std::vector<StateType> p_state(n);
+        std::vector<Real> p_price(n), p_exercise(n);
 
-        for (Size i=0; i<n; ++i)
-            prices[i] = (*pathPricer_)(paths_[i], len_-1);
+        for (Size i=0; i<n; ++i) {
+            p_state[i] = pathPricer_->state(paths_[i],len_-1);
+            prices[i] = p_price[i] = (*pathPricer_)(paths_[i], len_-1);
+            p_exercise[i] = prices[i];
+        }
 
-        std::vector<Real>      y, y_otm;
-        std::vector<StateType> x, x_otm;
+        post_processing(len_ - 1, p_state, p_price, p_exercise);
+
+        std::vector<Real>      y;
+        std::vector<StateType> x;
         for (Size i=len_-2; i>0; --i) {
             y.clear();
             x.clear();
-            x_otm.clear();
-            y_otm.clear();
 
             //roll back step
             for (Size j=0; j<n; ++j) {
                 exercise[j]=(*pathPricer_)(paths_[j], i);
-
                 if (exercise[j]>0.0) {
                     x.push_back(pathPricer_->state(paths_[j], i));
                     y.push_back(dF_[i]*prices[j]);
-                } else {
-                    x_otm.push_back(pathPricer_->state(paths_[j], i));
-                    y_otm.push_back(dF_[i] * prices[j]);
                 }
             }
-
-            // optional post processing step
-            post_processing(i, x, y, x_otm, y_otm);
 
             if (v_.size() <=  x.size()) {
                 coeff_[i-1] = GeneralLinearLeastSquares(x, y, v_).coefficients();
@@ -194,7 +191,12 @@ namespace QuantLib {
                     }
                     ++k;
                 }
+                p_state[j] = pathPricer_->state(paths_[j],i);
+                p_price[j] = prices[j];
+                p_exercise[j] = exercise[j];
             }
+
+            post_processing(i, p_state, p_price, p_exercise);
         }
 
         // remove calibration paths and release memory
