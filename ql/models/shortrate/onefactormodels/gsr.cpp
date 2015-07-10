@@ -26,10 +26,10 @@ namespace QuantLib {
 Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
          const std::vector<Date> &volstepdates,
          const std::vector<Real> &volatilities, const Real reversion,
-         const Real T)
-    : Gaussian1dModel(termStructure), CalibratedModel(2),
+         const Real T, const std::vector<Real> &adjusters)
+    : Gaussian1dModel(termStructure), CalibratedModel(3),
       reversion_(arguments_[0]), sigma_(arguments_[1]),
-      volstepdates_(volstepdates) {
+      adjuster_(arguments_[2]), volstepdates_(volstepdates) {
 
     QL_REQUIRE(!termStructure.empty(), "yield term structure handle is empty");
 
@@ -39,6 +39,11 @@ Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
             Handle<Quote>(boost::make_shared<SimpleQuote>(volatilities[i]));
     reversions_.resize(1);
     reversions_[0] = Handle<Quote>(boost::make_shared<SimpleQuote>(reversion));
+    adjusters_.resize(adjusters.size() > 0 ? adjusters.size()
+                                           : volatilities.size());
+    for (Size i = 0; i < adjusters_.size(); ++i)
+        adjusters_[i] = Handle<Quote>(boost::make_shared<SimpleQuote>(
+            adjusters.size() > i ? adjusters[i] : 1.0));
 
     initialize(T);
 }
@@ -46,10 +51,11 @@ Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
 Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
          const std::vector<Date> &volstepdates,
          const std::vector<Real> &volatilities,
-         const std::vector<Real> &reversions, const Real T)
-    : Gaussian1dModel(termStructure), CalibratedModel(2),
+         const std::vector<Real> &reversions, const Real T,
+         const std::vector<Real> &adjusters)
+    : Gaussian1dModel(termStructure), CalibratedModel(3),
       reversion_(arguments_[0]), sigma_(arguments_[1]),
-      volstepdates_(volstepdates) {
+      adjuster_(arguments_[2]), volstepdates_(volstepdates) {
 
     QL_REQUIRE(!termStructure.empty(), "yield term structure handle is empty");
 
@@ -61,6 +67,11 @@ Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
     for (Size i = 0; i < reversions.size(); ++i)
         reversions_[i] =
             Handle<Quote>(boost::make_shared<SimpleQuote>(reversions[i]));
+    adjusters_.resize(adjusters.size() > 0 ? adjusters.size()
+                                           : volatilities.size());
+    for (Size i = 0; i < adjusters_.size(); ++i)
+        adjusters_[i] = Handle<Quote>(boost::make_shared<SimpleQuote>(
+            adjusters.size() > i ? adjusters[i] : 1.0));
 
     initialize(T);
 }
@@ -68,11 +79,18 @@ Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
 Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
          const std::vector<Date> &volstepdates,
          const std::vector<Handle<Quote> > &volatilities,
-         const Handle<Quote> reversion, const Real T)
-    : Gaussian1dModel(termStructure), CalibratedModel(2),
+         const Handle<Quote> reversion, const Real T,
+         const std::vector<Handle<Quote> > &adjusters)
+    : Gaussian1dModel(termStructure), CalibratedModel(3),
       reversion_(arguments_[0]), sigma_(arguments_[1]),
-      volatilities_(volatilities),
+      adjuster_(arguments_[2]), volatilities_(volatilities),
       reversions_(std::vector<Handle<Quote> >(1, reversion)),
+      adjusters_(
+          adjusters.size() > 0
+              ? adjusters
+              : std::vector<Handle<Quote> >(
+                    volatilities.size(),
+                    Handle<Quote>(boost::make_shared<SimpleQuote>(1.0)))),
       volstepdates_(volstepdates) {
 
     QL_REQUIRE(!termStructure.empty(), "yield term structure handle is empty");
@@ -82,10 +100,18 @@ Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
 Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
          const std::vector<Date> &volstepdates,
          const std::vector<Handle<Quote> > &volatilities,
-         const std::vector<Handle<Quote> > &reversions, const Real T)
-    : Gaussian1dModel(termStructure), CalibratedModel(2),
+         const std::vector<Handle<Quote> > &reversions, const Real T,
+         const std::vector<Handle<Quote> > &adjusters)
+    : Gaussian1dModel(termStructure), CalibratedModel(3),
       reversion_(arguments_[0]), sigma_(arguments_[1]),
-      volatilities_(volatilities), reversions_(reversions),
+      adjuster_(arguments_[2]), volatilities_(volatilities),
+      reversions_(reversions),
+      adjusters_(
+          adjusters.size() > 0
+              ? adjusters
+              : std::vector<Handle<Quote> >(
+                    volatilities.size(),
+                    Handle<Quote>(boost::make_shared<SimpleQuote>(1.0)))),
       volstepdates_(volstepdates) {
 
     QL_REQUIRE(!termStructure.empty(), "yield term structure handle is empty");
@@ -110,16 +136,36 @@ void Gsr::updateTimes() const {
     }
     if (stateProcess_ != NULL)
         boost::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
+    if (adjustedStateProcess_ != NULL)
+        boost::static_pointer_cast<GsrProcess>(adjustedStateProcess_)
+            ->flushCache();
 }
 
-void Gsr::updateState() const {
+void Gsr::updateVolatility() {
     for (Size i = 0; i < sigma_.size(); i++) {
         sigma_.setParam(i, volatilities_[i]->value());
     }
+    boost::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
+    boost::static_pointer_cast<GsrProcess>(adjustedStateProcess_)->flushCache();
+    update();
+}
+
+void Gsr::updateReversion() {
     for (Size i = 0; i < reversion_.size(); i++) {
         reversion_.setParam(i, reversions_[i]->value());
     }
     boost::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
+    boost::static_pointer_cast<GsrProcess>(adjustedStateProcess_)->flushCache();
+    update();
+}
+
+void Gsr::updateAdjuster() {
+    for (Size i = 0; i < adjuster_.size(); i++) {
+        adjuster_.setParam(i, adjusters_[i]->value());
+    }
+    boost::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
+    boost::static_pointer_cast<GsrProcess>(adjustedStateProcess_)->flushCache();
+    update();
 }
 
 void Gsr::initialize(Real T) {
@@ -132,8 +178,16 @@ void Gsr::initialize(Real T) {
                "there must be n+1 volatilities ("
                    << volatilities_.size() << ") for n volatility step times ("
                    << volsteptimes_.size() << ")");
-    // sigma_ = PiecewiseConstantParameter(volsteptimes_,PositiveConstraint());
+    QL_REQUIRE(adjusters_.size() == volatilities_.size(),
+               "there must be as many adjusters ("
+                   << adjusters_.size() << ") as volatilities ("
+                   << volatilities_.size() << ")");
+    // sigma_ =
+    // PiecewiseConstantParameter(volsteptimes_,PositiveConstraint());
     sigma_ = PiecewiseConstantParameter(volsteptimes_, NoConstraint());
+    adjuster_ = PiecewiseConstantParameter(volsteptimes_, PositiveConstraint());
+    unitAdjuster_ =
+        PiecewiseConstantParameter(volsteptimes_, PositiveConstraint());
 
     QL_REQUIRE(reversions_.size() == 1 ||
                    reversions_.size() == volsteptimes_.size() + 1,
@@ -149,25 +203,46 @@ void Gsr::initialize(Real T) {
     for (Size i = 0; i < sigma_.size(); i++) {
         sigma_.setParam(i, volatilities_[i]->value());
     }
+    for (Size i = 0; i < adjuster_.size(); i++) {
+        adjuster_.setParam(i, adjusters_[i]->value());
+        unitAdjuster_.setParam(i, 1.0);
+    }
     for (Size i = 0; i < reversion_.size(); i++) {
         reversion_.setParam(i, reversions_[i]->value());
     }
 
-    stateProcess_ = boost::shared_ptr<GsrProcess>(
-        new GsrProcess(volsteptimesArray_, sigma_.params(), reversion_.params(), T));
+    stateProcess_ = boost::shared_ptr<GsrProcess>(new GsrProcess(
+        volsteptimesArray_, sigma_.params(), reversion_.params(),
+        unitAdjuster_.params(), T, termStructure()->referenceDate(),
+        termStructure()->dayCounter()));
+
+    adjustedStateProcess_ = boost::shared_ptr<GsrProcess>(
+        new GsrProcess(volsteptimesArray_, sigma_.params(), reversion_.params(),
+                       adjuster_.params(), T, termStructure()->referenceDate(),
+                       termStructure()->dayCounter()));
 
     registerWith(termStructure());
 
     registerWith(stateProcess_);
+    registerWith(adjustedStateProcess_);
+
+    volatilityObserver_ = boost::make_shared<VolatilityObserver>(this);
+    reversionObserver_ = boost::make_shared<ReversionObserver>(this);
+    adjusterObserver_ = boost::make_shared<AdjusterObserver>(this);
+
     for (Size i = 0; i < reversions_.size(); ++i)
-        registerWith(reversions_[i]);
+        reversionObserver_->registerWith(reversions_[i]);
 
     for (Size i = 0; i < volatilities_.size(); ++i)
-        registerWith(volatilities_[i]);
+        volatilityObserver_->registerWith(volatilities_[i]);
+
+    for (Size i = 0; i < adjusters_.size(); ++i)
+        adjusterObserver_->registerWith(adjusters_[i]);
 }
 
 const Real Gsr::zerobondImpl(const Time T, const Time t, const Real y,
-                             const Handle<YieldTermStructure> &yts) const {
+                             const Handle<YieldTermStructure> &yts,
+                             const bool adjusted) const {
 
     calculate();
 
@@ -176,7 +251,9 @@ const Real Gsr::zerobondImpl(const Time T, const Time t, const Real y,
                            : yts->discount(T, true);
 
     boost::shared_ptr<GsrProcess> p =
-        boost::dynamic_pointer_cast<GsrProcess>(stateProcess_);
+        adjusted
+            ? boost::dynamic_pointer_cast<GsrProcess>(adjustedStateProcess_)
+            : boost::dynamic_pointer_cast<GsrProcess>(stateProcess_);
 
     Real x = y * stateProcess_->stdDeviation(0.0, 0.0, t) +
              stateProcess_->expectation(0.0, 0.0, t);
@@ -203,7 +280,6 @@ const Real Gsr::numeraireImpl(const Time t, const Real y,
                    ? this->termStructure()->discount(p->getForwardMeasureTime(),
                                                      true)
                    : yts->discount(p->getForwardMeasureTime());
-    return zerobond(p->getForwardMeasureTime(), t, y, yts);
+    return zerobond(p->getForwardMeasureTime(), t, y, yts, false);
 }
-
 }
