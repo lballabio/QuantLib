@@ -27,7 +27,7 @@ Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
          const std::vector<Date> &volstepdates,
          const std::vector<Real> &volatilities, const Real reversion,
          const Real T)
-    : Gaussian1dModel(termStructure), CalibratedModel(3),
+    : Gaussian1dModel(termStructure), CalibratedModel(2),
       reversion_(arguments_[0]), sigma_(arguments_[1]),
       volstepdates_(volstepdates) {
 
@@ -47,7 +47,7 @@ Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
          const std::vector<Date> &volstepdates,
          const std::vector<Real> &volatilities,
          const std::vector<Real> &reversions, const Real T)
-    : Gaussian1dModel(termStructure), CalibratedModel(3),
+    : Gaussian1dModel(termStructure), CalibratedModel(2),
       reversion_(arguments_[0]), sigma_(arguments_[1]),
       volstepdates_(volstepdates) {
 
@@ -69,7 +69,7 @@ Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
          const std::vector<Date> &volstepdates,
          const std::vector<Handle<Quote> > &volatilities,
          const Handle<Quote> reversion, const Real T)
-    : Gaussian1dModel(termStructure), CalibratedModel(3),
+    : Gaussian1dModel(termStructure), CalibratedModel(2),
       reversion_(arguments_[0]), sigma_(arguments_[1]),
       volatilities_(volatilities),
       reversions_(std::vector<Handle<Quote> >(1, reversion)),
@@ -83,7 +83,7 @@ Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
          const std::vector<Date> &volstepdates,
          const std::vector<Handle<Quote> > &volatilities,
          const std::vector<Handle<Quote> > &reversions, const Real T)
-    : Gaussian1dModel(termStructure), CalibratedModel(3),
+    : Gaussian1dModel(termStructure), CalibratedModel(2),
       reversion_(arguments_[0]), sigma_(arguments_[1]),
       volatilities_(volatilities), reversions_(reversions),
       volstepdates_(volstepdates) {

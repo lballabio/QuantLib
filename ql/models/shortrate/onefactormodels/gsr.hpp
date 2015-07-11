@@ -70,7 +70,7 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
 
     // calibration constraints
 
-    // fixed reversions and adjusters, only volatilities are free
+    // fixed reversions, only volatilities are free
     Disposable<std::vector<bool> > FixedReversions() {
         std::vector<bool> res(reversions_.size(), true);
         std::vector<bool> vol(volatilities_.size(), false);
@@ -78,7 +78,7 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
         return res;
     }
 
-    // fixed volatilities and adjusters, only reversions are free
+    // fixed volatilities, only reversions are free
     Disposable<std::vector<bool> > FixedVolatilities() {
         std::vector<bool> res(reversions_.size(), false);
         std::vector<bool> vol(volatilities_.size(), true);
