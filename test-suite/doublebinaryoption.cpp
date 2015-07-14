@@ -71,7 +71,7 @@ namespace {
 
 void DoubleBinaryOptionTest::testHaugValues() {
 
-    BOOST_MESSAGE("Testing cash-or-nothing double barrier options against Haug's values...");
+    BOOST_TEST_MESSAGE("Testing cash-or-nothing double barrier options against Haug's values...");
 
     DoubleBinaryOptionData values[] = {
         /* The data below are from

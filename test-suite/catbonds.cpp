@@ -191,7 +191,7 @@ namespace {
 }
 
 void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
-    BOOST_MESSAGE("Testing floating-rate cat bond against risk-free floating-rate bond...");
+    BOOST_TEST_MESSAGE("Testing floating-rate cat bond against risk-free floating-rate bond...");
 
     CommonVars vars;
 
@@ -370,7 +370,7 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
 
 
 void CatBondTest::testCatBondInDoomScenario() {
-    BOOST_MESSAGE("Testing floating-rate cat bond in a doom scenario (certain default)...");
+    BOOST_TEST_MESSAGE("Testing floating-rate cat bond in a doom scenario (certain default)...");
 
     CommonVars vars;
 
@@ -433,7 +433,7 @@ void CatBondTest::testCatBondInDoomScenario() {
 
 
 void CatBondTest::testCatBondWithDoomOnceInTenYears() {
-    BOOST_MESSAGE("Testing floating-rate cat bond in a doom once in 10 years scenario...");
+    BOOST_TEST_MESSAGE("Testing floating-rate cat bond in a doom once in 10 years scenario...");
 
     CommonVars vars;
 
@@ -514,7 +514,7 @@ void CatBondTest::testCatBondWithDoomOnceInTenYears() {
 }
 
 void CatBondTest::testCatBondWithDoomOnceInTenYearsProportional() {
-    BOOST_MESSAGE("Testing floating-rate cat bond in a doom once in 10 years scenario with proportional notional reduction...");
+    BOOST_TEST_MESSAGE("Testing floating-rate cat bond in a doom once in 10 years scenario with proportional notional reduction...");
 
     CommonVars vars;
 
@@ -594,7 +594,7 @@ void CatBondTest::testCatBondWithDoomOnceInTenYearsProportional() {
 
 
 void CatBondTest::testCatBondWithGeneratedEventsProportional() {
-    BOOST_MESSAGE("Testing floating-rate cat bond in a generated scenario with proportional notional reduction...");
+    BOOST_TEST_MESSAGE("Testing floating-rate cat bond in a generated scenario with proportional notional reduction...");
 
     CommonVars vars;
 
