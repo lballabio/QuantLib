@@ -611,7 +611,7 @@ void InflationTest::testZeroTermStructure() {
 }
 
 void InflationTest::testZeroIndexFutureFixing() {
-    BOOST_MESSAGE("Testing that zero inflation indices forecast future fixings...");
+    BOOST_TEST_MESSAGE("Testing that zero inflation indices forecast future fixings...");
 
     SavedSettings backup;
     IndexHistoryCleaner cleaner;

@@ -48,7 +48,7 @@ using std::fabs;
 
 void GsrTest::testGsrProcess() {
 
-    BOOST_MESSAGE("Testing GSR process...");
+    BOOST_TEST_MESSAGE("Testing GSR process...");
 
     Date refDate = Settings::instance().evaluationDate();
 
@@ -164,7 +164,7 @@ void GsrTest::testGsrProcess() {
 
 void GsrTest::testGsrModel() {
 
-    BOOST_MESSAGE("Testing GSR model...");
+    BOOST_TEST_MESSAGE("Testing GSR model...");
 
     Date refDate = Settings::instance().evaluationDate();
 

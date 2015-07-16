@@ -957,7 +957,7 @@ void QuantoOptionTest::testBarrierValues()  {
 
 void QuantoOptionTest::testDoubleBarrierValues()  {
 
-    BOOST_MESSAGE("Testing quanto-double-barrier option values...");
+    BOOST_TEST_MESSAGE("Testing quanto-double-barrier option values...");
 
     SavedSettings backup;
 

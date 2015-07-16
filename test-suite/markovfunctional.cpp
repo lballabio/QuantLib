@@ -59,7 +59,7 @@ using std::fabs;
 void MarkovFunctionalTest::testMfStateProcess() {
 
     const Real tolerance = 1E-10;
-    BOOST_MESSAGE("Testing Markov functional state process...");
+    BOOST_TEST_MESSAGE("Testing Markov functional state process...");
 
     Array times1(0), vols1(1, 1.0);
     MfStateProcess sp1(0.00, times1, vols1);
@@ -664,7 +664,7 @@ namespace {
 
 void MarkovFunctionalTest::testKahaleSmileSection() {
 
-    BOOST_MESSAGE("Testing Kahale smile section...");
+    BOOST_TEST_MESSAGE("Testing Kahale smile section...");
 
     const Real tol = 1E-8;
 
@@ -877,7 +877,7 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
     const Real tol1 =
         0.0001; // 1bp tolerance for model call put premia vs. market premia
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing Markov functional calibration to one instrument set...");
 
     Date savedEvalDate = Settings::instance().evaluationDate();
@@ -935,7 +935,7 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
     MarkovFunctional::ModelOutputs outputs1 =
         mf1->modelOutputs(); // this costs a lot of time, so only use it if you
                              // want to check the calibration
-    // BOOST_MESSAGE(outputs1);
+    // BOOST_TEST_MESSAGE(outputs1);
 
     for (Size i = 0; i < outputs1.expiries_.size(); i++) {
         if (fabs(outputs1.marketZerorate_[i] - outputs1.modelZerorate_[i]) >
@@ -982,7 +982,7 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
             .withSmileMoneynessCheckpoints(money)));
 
     MarkovFunctional::ModelOutputs outputs2 = mf2->modelOutputs();
-    // BOOST_MESSAGE(outputs2);
+    // BOOST_TEST_MESSAGE(outputs2);
 
     for (Size i = 0; i < outputs2.expiries_.size(); i++) {
         if (fabs(outputs2.marketZerorate_[i] - outputs2.modelZerorate_[i]) >
@@ -1028,7 +1028,7 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
             .withSmileMoneynessCheckpoints(money)));
 
     MarkovFunctional::ModelOutputs outputs3 = mf3->modelOutputs();
-    // BOOST_MESSAGE(outputs3);
+    // BOOST_TEST_MESSAGE(outputs3);
     // outputSurfaces(mf3,md0Yts_);
 
     for (Size i = 0; i < outputs3.expiries_.size(); i++) {
@@ -1075,7 +1075,7 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
                                  .withSmileMoneynessCheckpoints(money)));
 
     MarkovFunctional::ModelOutputs outputs4 = mf4->modelOutputs();
-    // BOOST_MESSAGE(outputs4);
+    // BOOST_TEST_MESSAGE(outputs4);
 
     for (Size i = 0; i < outputs4.expiries_.size(); i++) {
         if (fabs(outputs4.marketZerorate_[i] - outputs4.modelZerorate_[i]) >
@@ -1116,7 +1116,7 @@ void MarkovFunctionalTest::testVanillaEngines() {
     // different from the calibration approach where 0 fixing days must be used.
     // therefore higher errors compared to the calibration results are expected.
 
-    BOOST_MESSAGE("Testing Markov functional vanilla engines...");
+    BOOST_TEST_MESSAGE("Testing Markov functional vanilla engines...");
 
     Date savedEvalDate = Settings::instance().evaluationDate();
     Date referenceDate(14, November, 2012);
@@ -1168,7 +1168,7 @@ void MarkovFunctionalTest::testVanillaEngines() {
             .withSmileMoneynessCheckpoints(money)));
 
     MarkovFunctional::ModelOutputs outputs1 = mf1->modelOutputs();
-    // BOOST_MESSAGE(outputs1);
+    // BOOST_TEST_MESSAGE(outputs1);
 
     boost::shared_ptr<Gaussian1dSwaptionEngine> mfSwaptionEngine1(
         new Gaussian1dSwaptionEngine(mf1, 64, 7.0));
@@ -1232,7 +1232,7 @@ void MarkovFunctionalTest::testVanillaEngines() {
             .withSmileMoneynessCheckpoints(money)));
 
     MarkovFunctional::ModelOutputs outputs2 = mf2->modelOutputs();
-    // BOOST_MESSAGE(outputs2);
+    // BOOST_TEST_MESSAGE(outputs2);
 
     boost::shared_ptr<BlackCapFloorEngine> blackCapFloorEngine2(
         new BlackCapFloorEngine(flatYts_, flatOptionletVts_));
@@ -1289,7 +1289,7 @@ void MarkovFunctionalTest::testVanillaEngines() {
         new BlackSwaptionEngine(md0Yts_, md0SwaptionVts_));
 
     MarkovFunctional::ModelOutputs outputs3 = mf3->modelOutputs();
-    // BOOST_MESSAGE(outputs3);
+    // BOOST_TEST_MESSAGE(outputs3);
 
     for (Size i = 0; i < outputs3.expiries_.size(); i++) {
         for (Size j = 0; j < outputs3.smileStrikes_[0].size(); j++) {
@@ -1362,7 +1362,7 @@ void MarkovFunctionalTest::testVanillaEngines() {
         ));
 
     MarkovFunctional::ModelOutputs outputs4 = mf4->modelOutputs();
-    // BOOST_MESSAGE(outputs4);
+    // BOOST_TEST_MESSAGE(outputs4);
 
     boost::shared_ptr<BlackCapFloorEngine> blackCapFloorEngine4(
         new BlackCapFloorEngine(md0Yts_, md0OptionletVts_));
@@ -1410,7 +1410,7 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
 
     const Real tol1 = 0.1; // 0.1 times vega tolerance for model vs. market in
                            // second instrument set
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing Markov functional calibration to two instrument sets...");
 
     Date savedEvalDate = Settings::instance().evaluationDate();
@@ -1545,7 +1545,7 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
         ch1[i].setPricingEngine(mfSwaptionEngine1);
         Real mfPrice = ch1[i].NPV();
         if (fabs(blackPrice - mfPrice) / blackVega > tol1)
-            BOOST_MESSAGE("Basket 1 / flat yts, vts: Secondary instrument set "
+            BOOST_TEST_MESSAGE("Basket 1 / flat yts, vts: Secondary instrument set "
                           "calibration failed for instrument #"
                           << i << " black premium is " << blackPrice
                           << " while model premium is " << mfPrice
@@ -1553,7 +1553,7 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
     }
 
     // MarkovFunctional::ModelOutputs outputs1 = mf1->modelOutputs();
-    // BOOST_MESSAGE(outputs1);
+    // BOOST_TEST_MESSAGE(outputs1);
 
     // Calibration Basket 1 / real yts, vts / Secondary calibration set consists
     // of coterminal swaptions
@@ -1654,7 +1654,7 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
         ch2[i].setPricingEngine(mfSwaptionEngine2);
         Real mfPrice = ch2[i].NPV();
         if (fabs(blackPrice - mfPrice) / blackVega > tol1)
-            BOOST_MESSAGE("Basket 1 / real yts, vts: Secondary instrument set "
+            BOOST_TEST_MESSAGE("Basket 1 / real yts, vts: Secondary instrument set "
                           "calibration failed for instrument #"
                           << i << " black premium is " << blackPrice
                           << " while model premium is " << mfPrice
@@ -1662,7 +1662,7 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
     }
 
     // MarkovFunctional::ModelOutputs outputs2 = mf2->modelOutputs();
-    // BOOST_MESSAGE(outputs2);
+    // BOOST_TEST_MESSAGE(outputs2);
 
     Settings::instance().evaluationDate() = savedEvalDate;
 }
@@ -1671,7 +1671,7 @@ void MarkovFunctionalTest::testBermudanSwaption() {
 
     Real tol0 = 0.0001; // 1bp tolerance against cached values
 
-    BOOST_MESSAGE("Testing Markov functional Bermudan swaption engine...");
+    BOOST_TEST_MESSAGE("Testing Markov functional Bermudan swaption engine...");
 
     Date savedEvalDate = Settings::instance().evaluationDate();
     Date referenceDate(14, November, 2012);

@@ -90,7 +90,7 @@ namespace {
 
 void BinaryOptionTest::testCashOrNothingHaugValues() {
 
-    BOOST_MESSAGE("Testing cash-or-nothing barrier options against Haug's values...");
+    BOOST_TEST_MESSAGE("Testing cash-or-nothing barrier options against Haug's values...");
 
     BinaryOptionData values[] = {
         /* The data below are from
@@ -192,7 +192,7 @@ void BinaryOptionTest::testCashOrNothingHaugValues() {
 
 void BinaryOptionTest::testAssetOrNothingHaugValues() {
 
-    BOOST_MESSAGE("Testing asset-or-nothing barrier options against Haug's values...");
+    BOOST_TEST_MESSAGE("Testing asset-or-nothing barrier options against Haug's values...");
 
     BinaryOptionData values[] = {
         /* The data below are from
