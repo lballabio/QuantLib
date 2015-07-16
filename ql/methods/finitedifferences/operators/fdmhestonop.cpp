@@ -33,7 +33,7 @@ namespace QuantLib {
         const boost::shared_ptr<YieldTermStructure>& rTS,
         const boost::shared_ptr<YieldTermStructure>& qTS,
         const boost::shared_ptr<FdmQuantoHelper>& quantoHelper,
-        const boost::shared_ptr<FixedLocalVolSurface>& leverageFct)
+        const boost::shared_ptr<LocalVolTermStructure>& leverageFct)
     : varianceValues_(0.5*mesher->locations(1)),
       dxMap_ (FirstDerivativeOp(0, mesher)),
       dxxMap_(SecondDerivativeOp(0, mesher).mult(0.5*mesher->locations(1))),
@@ -137,7 +137,7 @@ namespace QuantLib {
         const boost::shared_ptr<FdmMesher>& mesher,
         const boost::shared_ptr<HestonProcess> & hestonProcess,
         const boost::shared_ptr<FdmQuantoHelper>& quantoHelper,
-        const boost::shared_ptr<FixedLocalVolSurface>& leverageFct)
+        const boost::shared_ptr<LocalVolTermStructure>& leverageFct)
     : correlationMap_(SecondOrderMixedDerivativeOp(0, 1, mesher)
                         .mult(hestonProcess->rho()*hestonProcess->sigma()
                                 *mesher->locations(1))),

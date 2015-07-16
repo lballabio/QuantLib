@@ -32,7 +32,7 @@ namespace QuantLib {
         const FdmSolverDesc& solverDesc,
         const FdmSchemeDesc& schemeDesc,
         const Handle<FdmQuantoHelper>& quantoHelper,
-        const boost::shared_ptr<FixedLocalVolSurface>& leverageFct)
+        const boost::shared_ptr<LocalVolTermStructure>& leverageFct)
     : process_(process),
       solverDesc_(solverDesc),
       schemeDesc_(schemeDesc),

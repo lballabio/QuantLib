@@ -116,7 +116,6 @@ namespace QuantLib {
         QL_REQUIRE(times_[0]>=0, "cannot have times[0] < 0");
         QL_REQUIRE(times.size() == strikes.size(),
              "need strikes for every time step");
-
         checkSurface();
         setInterpolation<Linear>();
     }
@@ -160,14 +159,6 @@ namespace QuantLib {
     }
 
     Volatility FixedLocalVolSurface::localVolImpl(Time t, Real strike) const {
-
-        if (strike < strikes_.front()->front()
-            && lowerExtrapolation_ == ConstantExtrapolation)
-            strike = strikes_.front()->front();
-        if (strike > strikes_.front()->back()
-            && upperExtrapolation_ == ConstantExtrapolation)
-            strike = strikes_.front()->back();
-
         t = std::min(times_.back(), std::max(t, times_.front()));
 
         const Size idx = std::distance(times_.begin(),

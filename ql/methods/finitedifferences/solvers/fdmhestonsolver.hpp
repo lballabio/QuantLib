@@ -32,7 +32,7 @@
 #include <ql/methods/finitedifferences/solvers/fdmsolverdesc.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
-#include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
+#include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 
 namespace QuantLib {
 
@@ -47,8 +47,8 @@ namespace QuantLib {
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
             const Handle<FdmQuantoHelper>& quantoHelper
                                                 = Handle<FdmQuantoHelper>(),
-            const boost::shared_ptr<FixedLocalVolSurface>& leverageFct
-            	= boost::shared_ptr<FixedLocalVolSurface>());
+            const boost::shared_ptr<LocalVolTermStructure>& leverageFct
+            	= boost::shared_ptr<LocalVolTermStructure>());
 
         Real valueAt(Real s, Real v) const;
         Real thetaAt(Real s, Real v) const;
@@ -72,7 +72,7 @@ namespace QuantLib {
         const FdmSolverDesc solverDesc_;
         const FdmSchemeDesc schemeDesc_;
         const Handle<FdmQuantoHelper> quantoHelper_;
-        const boost::shared_ptr<FixedLocalVolSurface> leverageFct_;
+        const boost::shared_ptr<LocalVolTermStructure> leverageFct_;
 
         mutable boost::shared_ptr<Fdm2DimSolver> solver_;
     };

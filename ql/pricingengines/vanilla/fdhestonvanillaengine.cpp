@@ -38,7 +38,7 @@ namespace QuantLib {
             const boost::shared_ptr<HestonModel>& model,
             Size tGrid, Size xGrid, Size vGrid, Size dampingSteps,
             const FdmSchemeDesc& schemeDesc,
-            const boost::shared_ptr<FixedLocalVolSurface>& leverageFct)
+            const boost::shared_ptr<LocalVolTermStructure>& leverageFct)
     : GenericModelEngine<HestonModel,
                         DividendVanillaOption::arguments,
                         DividendVanillaOption::results>(model),

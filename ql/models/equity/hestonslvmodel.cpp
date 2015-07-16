@@ -23,8 +23,10 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/models/equity/hestonslvmodel.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/integrals/discreteintegrals.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
+#include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 #include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
 #include <ql/methods/finitedifferences/meshers/predefined1dmesher.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
@@ -42,6 +44,7 @@
 #include <boost/assign/std/vector.hpp>
 
 #include <functional>
+#include <iostream>
 
 using namespace boost::assign;
 
@@ -49,20 +52,57 @@ namespace QuantLib {
 
     namespace {
         boost::shared_ptr<Fdm1dMesher> varianceMesher(
-            const SquareRootProcessRNDCalculator& rnd, Time t, Size vGrid) {
+            const SquareRootProcessRNDCalculator& rnd, Time t, Size vGrid,
+                Real v0, FdmSquareRootFwdOp::TransformationType trafoType) {
+            switch (trafoType) {
+                case FdmSquareRootFwdOp::Log:
+                  {
+                    std::vector<boost::tuple<Real, Real, bool> > cPoints;
+                    const Real eps = 5e-4;
+//                    const Real lowerBound = std::max(
+//                            std::log(rnd.invcdf(eps, t)),
+//                            std::log(0.0000025));
+//                    const Real upperBound = std::log(rnd.invcdf(1-eps, t));
+                    const Real lowerBound = std::log(0.0000025);
+                    const Real upperBound = std::log(rnd.stationary_invcdf(1-eps));
+                    const Real v0Center = std::log(v0);
+                    const Real v0Density = 1.0;
+                    const Real upperBoundDensity = 100;
+                    const Real lowerBoundDensity = 1.0;
+                    cPoints += boost::make_tuple(lowerBound, lowerBoundDensity, false);
+                              boost::make_tuple(v0Center, v0Density, true),
+                              boost::make_tuple(upperBound, upperBoundDensity, false);
+                    return boost::make_shared<Concentrating1dMesher>(
+                        lowerBound, upperBound, vGrid, cPoints, 1e-8);
+                  }
+                break;
+                case FdmSquareRootFwdOp::Plain:
+                  {
+                      const Real eps = 1e-4;
+                      const Real lowerBound = rnd.invcdf(eps, t);
+                      const Real upperBound = rnd.invcdf(1-eps, t);
 
-            const Real eps = 1e-4;
-            const Real lowerBound = rnd.invcdf(eps, t);
-            const Real upperBound = rnd.invcdf(1-eps, t);
+                      std::vector<boost::tuple<Real, Real, bool> > cPoints;
 
-            std::vector<boost::tuple<Real, Real, bool> > cPoints;
+                      const Real lowerBoundDensity = 0.1;
+                      cPoints += boost::make_tuple(
+                          lowerBound, lowerBoundDensity, false);
 
-            const Real lowerBoundDensity = 0.1;
-            cPoints += boost::make_tuple(
-                lowerBound, lowerBoundDensity, false);
-
-            return boost::make_shared<Concentrating1dMesher>(
-                lowerBound, upperBound, vGrid, cPoints, 1e-8);
+                      return boost::make_shared<Concentrating1dMesher>(
+                          lowerBound, upperBound, vGrid, cPoints, 1e-8);
+//                    upperBound = std::max(1.25*v0, rnd.stationary_invcdf(0.995));
+//                    lowerBound = std::min(0.75*v0, rnd.stationary_invcdf(1e-5));
+//
+//                    const Real v0Center = v0;
+//                    const Real v0Density = 0.01;
+//                    const Real lowerBoundDensity = 0.05;
+//                    cPoints += boost::make_tuple(lowerBound, lowerBoundDensity, false),
+//                        boost:: make_tuple(v0Center, v0Density, true);
+                  }
+                break;
+                default:
+                    QL_FAIL("transformation type is not implemented");
+            }
         }
 
         Disposable<Array> rescalePDF(
@@ -217,15 +257,37 @@ namespace QuantLib {
             params_.undefinedlLocalVolOverwrite,
             params_.maxIntegrationIterations);
 
+        std::cout << "eps for grid limits=" << params_.epsProbability << std::endl;
+
         const std::vector<Size> rescaleSteps
             = localVolRND.rescaleTimeSteps();
 
         const SquareRootProcessRNDCalculator squareRootRnd(
             v0, kappa, theta, sigma);
 
+        const FdmSquareRootFwdOp::TransformationType trafoType
+//          = FdmSquareRootFwdOp::Plain;
+//            = FdmSquareRootFwdOp::Power;
+          = FdmSquareRootFwdOp::Log;
+
         std::vector<boost::shared_ptr<Fdm1dMesher> > xMesher, vMesher;
         xMesher.reserve(timeGrid->size());
         vMesher.reserve(timeGrid->size());
+
+//--------------------------------
+//        const Real sEps = 1e-3;
+//        const Real normInvEps = InverseCumulativeNormal()(1-sEps);
+//        const Real x0 = std::log(spot->value());
+//        const Time maturity = 2.0;
+//        const Real localVol = localVol_->localVol(0.0, spot->value());
+//
+//        const Real sLowerBound = x0 - normInvEps*localVol*std::sqrt(maturity);
+//        const Real sUpperBound = x0 + normInvEps*localVol*std::sqrt(maturity);
+//
+//        const boost::shared_ptr<Fdm1dMesher> spotMesher(
+//            new Concentrating1dMesher(sLowerBound, sUpperBound, xGrid,
+//                std::make_pair(x0, 0.1), true));
+//--------------------------------
 
         xMesher.push_back(localVolRND.mesher(0.0));
         vMesher.push_back(boost::make_shared<Predefined1dMesher>(
@@ -233,10 +295,11 @@ namespace QuantLib {
 
         xMesher.push_back(localVolRND.mesher(timeGrid->at(1)));
         vMesher.push_back(
-            varianceMesher(squareRootRnd, timeGrid->at(1), vGrid));
+            varianceMesher(squareRootRnd, timeGrid->at(1), vGrid, v0, trafoType));
 
         for (Size i=2; i < timeGrid->size(); ++i) {
             xMesher.push_back(localVolRND.mesher(timeGrid->at(i)));
+//            xMesher.push_back(spotMesher);
 
             const Size idx = std::distance(rescaleSteps.begin(),
                 std::lower_bound(rescaleSteps.begin(),
@@ -247,7 +310,7 @@ namespace QuantLib {
                     (idx < rescaleSteps.size())
                         ? timeGrid->at(rescaleSteps[idx])
                         : timeGrid->back(),
-                    vGrid));
+                    vGrid, v0, trafoType));
             else
                 vMesher.push_back(vMesher.back());
         }
@@ -257,17 +320,19 @@ namespace QuantLib {
             = boost::make_shared<FdmMesherComposite>(
                 xMesher.at(1), vMesher.at(1));
 
-        const FdmSquareRootFwdOp::TransformationType trafoType
-            = FdmSquareRootFwdOp::Plain;
-
         const Volatility lv0
             = localVol_->localVol(0.0, spot->value())/std::sqrt(v0);
 
         boost::shared_ptr<Matrix> L(new Matrix(xGrid, timeGrid->size()));
 
+        // just preliminarily put something other than zero into the matrix
+        //std::fill(L->begin(),L->end(), 0.45);
+
         const Real l0 = lv0/std::sqrt(v0);
         std::fill(L->column_begin(0),L->column_end(0), l0);
         std::fill(L->column_begin(1),L->column_end(1), l0);
+
+        std::cout << "initial vols: lv0: " << lv0 << ", l0: " << l0 << std::endl;
 
         // create strikes from meshers
         std::vector<boost::shared_ptr<std::vector<Real> > > vStrikes(
@@ -281,20 +346,27 @@ namespace QuantLib {
                            std::ptr_fun<Real, Real>(std::exp));
         }
 
-        boost::shared_ptr<LocalVolTermStructure> leverageFct(
+        boost::shared_ptr<FixedLocalVolSurface> leverageFct(
             new FixedLocalVolSurface(referenceDate, times, vStrikes, L, dc));
 
-        const boost::shared_ptr<FdmLinearOpComposite> hestonFwdOp(
+        boost::shared_ptr<FdmLinearOpComposite> hestonFwdOp(
             new FdmHestonFwdOp(mesher, hestonProcess,
                                trafoType, leverageFct));
 
-        ModifiedCraigSneydScheme mcg(
+        boost::shared_ptr<ModifiedCraigSneydScheme> mcg(
+                new ModifiedCraigSneydScheme(
             FdmSchemeDesc::ModifiedCraigSneyd().theta,
-            FdmSchemeDesc::ModifiedCraigSneyd().mu, hestonFwdOp);
+            FdmSchemeDesc::ModifiedCraigSneyd().mu, hestonFwdOp));
 
         Array p = FdmHestonGreensFct(mesher, hestonProcess, trafoType, lv0)
             .get(timeGrid->at(1), params_.greensAlgorithm);
 
+        // just a test for the reshape function at the moment
+        // needs to implement the evolver of the PDF
+        std::cout << "initial integral " <<
+            FdmMesherIntegral(
+                mesher, DiscreteSimpsonIntegral()).integrate(p)
+                << std::endl;
         for (Size i = 2; i < times.size(); ++i) {
             const Time t = timeGrid->at(i);
             const Time dt = t - timeGrid->at(i-1);
@@ -318,30 +390,164 @@ namespace QuantLib {
             std::cout << rescaleSteps[i] << " ";
         std::cout << std::endl;
 
-//            Array pn = p;
-//            for (Size r=0; r < 2; ++r) {
-//                const std::vector<Real>& x = xMesher[i]->locations();
-//
-//                for (Size j=0; j < x.size(); ++j) {
-//                    Array pSlice(vGrid);
-//                    for (Size k=0; k < vGrid; ++k)
-//                        pSlice[k] = pn[j + k*xGrid];
-//
-//                    const Real pInt = DiscreteSimpsonIntegral()(v, pSlice);
-//
-//                    const Real vpInt = (trafoType == FdmSquareRootFwdOp::Log)
-//                      ? DiscreteSimpsonIntegral()(v, Exp(v)*pSlice)
-//                      : DiscreteSimpsonIntegral()(v, v*pSlice);
-//
-//                    const Real scale = pInt/vpInt;
-//
-//                    const Real l = (scale >= 0.0)
-//                      ? localVol*std::sqrt(scale)
-//                      : 1.0;
-//
-//
-//        }
-    }
+//////////////////////////////////////
+        // calculate leverage function
+        //Array
+        mesher = boost::make_shared<FdmMesherComposite>(
+                xMesher.at(1), vMesher.at(1));
+        p = FdmHestonGreensFct(mesher, hestonProcess, trafoType, lv0)
+            .get(timeGrid->at(1), params_.greensAlgorithm);
+        std::cout << "initial integral " <<
+            FdmMesherIntegral(
+                mesher, DiscreteSimpsonIntegral()).integrate(p)
+                << std::endl;
+        for (Size i=2; i < times.size(); ++i) {
+            const Time t = timeGrid->at(i);
+            const Time dt = t - timeGrid->at(i-1);
 
+            if (std::find(rescaleSteps.begin(), rescaleSteps.end(), i)
+                != rescaleSteps.end()) {
+                std::cout << "pre reshape step " << i << " " <<
+                    FdmMesherIntegral(
+                        mesher, DiscreteSimpsonIntegral()).integrate(p)
+                        << std::endl;
+                const boost::shared_ptr<FdmMesherComposite> newMesher(
+                    new FdmMesherComposite(xMesher[i], vMesher[i]));
+
+                p = reshapePDF<Bilinear>(p, mesher, newMesher);
+                mesher = newMesher;
+
+                std::cout << "t=" << t << std::endl
+                          << "x("
+                          << mesher->locations(0).front()
+                          << ", "
+                          << mesher->locations(0).back()
+                          << "), v("
+                          << mesher->locations(1).front()
+                          << ", "
+                          << mesher->locations(1).back()
+                          << ") xn="
+                          << mesher->getFdm1dMeshers()[0]->locations().size()
+                          << " vn="
+                          << mesher->getFdm1dMeshers()[1]->locations().size()
+                          << std::endl;
+                std::cout << "x("
+                          << std::exp(mesher->locations(0).front())
+                          << ", "
+                          << std::exp(mesher->locations(0).back())
+                          << "), v("
+                          << std::exp(mesher->locations(1).front())
+                          << ", "
+                          << std::exp(mesher->locations(1).back())
+                          << ")"
+                          << std::endl;
+
+                std::cout << "reshape step " << i << " " <<
+                    FdmMesherIntegral(
+                        mesher, DiscreteSimpsonIntegral()).integrate(p)
+                        << std::endl;
+                //p = rescalePDF(p, mesher);
+                hestonFwdOp = boost::shared_ptr<FdmLinearOpComposite>(
+                                new FdmHestonFwdOp(mesher, hestonProcess,
+                                               trafoType, leverageFct));
+                mcg = boost::shared_ptr<ModifiedCraigSneydScheme>(
+                        new ModifiedCraigSneydScheme(
+                    FdmSchemeDesc::ModifiedCraigSneyd().theta,
+                    FdmSchemeDesc::ModifiedCraigSneyd().mu, hestonFwdOp));
+            }
+            //std::cout << "reshape finished" << std::endl;
+
+            Array pn = p;
+            const Array x(Exp(
+                    Array(
+                      mesher->getFdm1dMeshers()[0]->locations().begin(),
+                      mesher->getFdm1dMeshers()[0]->locations().end())));
+            const Array v(
+                    mesher->getFdm1dMeshers()[1]->locations().begin(),
+                    mesher->getFdm1dMeshers()[1]->locations().end());
+
+            for (Size r=0; r < 2; ++r) {
+                for (Size j=0; j < x.size(); ++j) {
+
+                    Array pSlice(vGrid);
+                    for (Size k=0; k < vGrid; ++k)
+                        pSlice[k] = pn[j + k*xGrid];
+
+                    const Real pInt = DiscreteSimpsonIntegral()(v, pSlice);
+
+                    const Real vpInt = (trafoType == FdmSquareRootFwdOp::Log)
+                      ? DiscreteSimpsonIntegral()(v, Exp(v)*pSlice)
+                      : DiscreteSimpsonIntegral()(v, v*pSlice);
+
+                    const Real scale = pInt/vpInt;
+                    const Volatility localVol
+                        = localVol_->localVol(t, x[j]);
+
+                    const Real l = (scale >= 0.0)
+                      ? localVol*std::sqrt(scale)
+                      : 1.0;
+
+                    (*L)[j][i] = std::min(5.0, std::max(0.01, l));
+
+                    leverageFct->setInterpolation(Linear());
+                }
+
+// smoothing
+                // TODO: Need to determine localvol at lower and upper bound!
+                const Volatility localVol
+                    = localVol_->localVol(t, x[x.size()/2]);
+                const Volatility stdDev = localVol*std::sqrt(t);
+                const Real xm
+                    = std::log(spot->value()*qTS->discount(t)/rTS->discount(t))
+                        -0.5*stdDev*stdDev;
+
+                const Real normInvEps = InverseCumulativeNormal()(1-1e-4);
+
+                const Real sLowerBound = std::max(
+                    x.front(), std::exp(xm - normInvEps*stdDev));
+                const Real sUpperBound = std::min(
+                    x.back(), std::exp(xm + normInvEps*stdDev));
+
+                const Real lowerL = leverageFct->localVol(t, sLowerBound);
+                const Real upperL = leverageFct->localVol(t, sUpperBound);
+
+                for (Size j=0; j < x.size(); ++j) {
+                    if (x[j] < sLowerBound)
+                        std::fill(L->row_begin(j)+i,
+                          std::min(L->row_begin(j)+i+1, L->row_end(j)),
+                          lowerL);
+                    else if (x[j] > sUpperBound)
+                        std::fill(L->row_begin(j)+i,
+                          std::min(L->row_begin(j)+i+1, L->row_end(j)),
+                          upperL);
+                    else if ((*L)[j][i] == Null<Real>())
+                        std::cout << t << " ouch" << std::endl;
+                }
+                leverageFct->setInterpolation(Linear());
+
+                pn = p;
+                mcg->setStep(dt);
+                mcg->step(pn, t);
+            }
+            p = pn;
+
+//          for (Size j=0; j < x.size(); ++j) {
+//              std::cout << (*leverageFct)(t, x[j]) << " ";
+//          }
+//          std::cout << std::endl << std::endl;
+
+        }
+//////////////////////////////////////
+        for (Size i = 0; i < 1 /*vStrikes.size()*/; i++) {
+            std::cout << "Grid at time " << times[i] << " : " << std::endl;
+            for (Size j = 0; j < vStrikes[i]->size(); j++) {
+                std::cout << (*vStrikes[i])[j] << ", ";
+            }
+            std::cout << std::endl;
+        }
+        std::cout << std::endl;
+
+        leverageFunction_ = leverageFct;
+    }
 }
 

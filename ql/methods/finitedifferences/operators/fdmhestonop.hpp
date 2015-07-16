@@ -33,7 +33,7 @@
 #include <ql/methods/finitedifferences/operators/triplebandlinearop.hpp>
 #include <ql/methods/finitedifferences/operators/ninepointlinearop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
-#include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
+#include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 
 namespace QuantLib {
 
@@ -44,8 +44,8 @@ namespace QuantLib {
             const boost::shared_ptr<YieldTermStructure>& rTS,
             const boost::shared_ptr<YieldTermStructure>& qTS,
             const boost::shared_ptr<FdmQuantoHelper>& quantoHelper,
-            const boost::shared_ptr<FixedLocalVolSurface>& leverageFct
-            	= boost::shared_ptr<FixedLocalVolSurface>());
+            const boost::shared_ptr<LocalVolTermStructure>& leverageFct
+            	= boost::shared_ptr<LocalVolTermStructure>());
 
         void setTime(Time t1, Time t2);
         const TripleBandLinearOp& getMap() const;
@@ -62,7 +62,7 @@ namespace QuantLib {
         const boost::shared_ptr<FdmMesher> mesher_;
         const boost::shared_ptr<YieldTermStructure> rTS_, qTS_;
         const boost::shared_ptr<FdmQuantoHelper> quantoHelper_;
-        const boost::shared_ptr<FixedLocalVolSurface> leverageFct_;
+        const boost::shared_ptr<LocalVolTermStructure> leverageFct_;
     };
 
     class FdmHestonVariancePart {
@@ -90,8 +90,8 @@ namespace QuantLib {
             const boost::shared_ptr<HestonProcess>& hestonProcess,
             const boost::shared_ptr<FdmQuantoHelper>& quantoHelper
                 = boost::shared_ptr<FdmQuantoHelper>(),
-            const boost::shared_ptr<FixedLocalVolSurface>& leverageFct
-            	= boost::shared_ptr<FixedLocalVolSurface>());
+            const boost::shared_ptr<LocalVolTermStructure>& leverageFct
+            	= boost::shared_ptr<LocalVolTermStructure>());
 
         Size size() const;
         void setTime(Time t1, Time t2);
@@ -112,7 +112,7 @@ namespace QuantLib {
         NinePointLinearOp correlationMap_;
         FdmHestonVariancePart dyMap_;
         FdmHestonEquityPart dxMap_;
-        const boost::shared_ptr<FixedLocalVolSurface> leverageFct_;
+        const boost::shared_ptr<LocalVolTermStructure> leverageFct_;
     };
 }
 
