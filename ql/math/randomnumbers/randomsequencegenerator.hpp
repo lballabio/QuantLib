@@ -50,6 +50,7 @@ namespace QuantLib {
     class RandomSequenceGenerator {
       public:
         typedef Sample<std::vector<Real> > sample_type;
+        enum { allowsMultiThreading = 0 };
         RandomSequenceGenerator(Size dimensionality,
                                 const RNG& rng)
         : dimensionality_(dimensionality), rng_(rng),
@@ -65,7 +66,7 @@ namespace QuantLib {
           sequence_(std::vector<Real> (dimensionality), 1.0),
           int32Sequence_(dimensionality) {}
 
-        const sample_type& nextSequence() const {
+        const sample_type& nextSequence(unsigned int ignored = 0) const {
             sequence_.weight = 1.0;
             for (Size i=0; i<dimensionality_; i++) {
                 typename RNG::sample_type x(rng_.next());
@@ -74,7 +75,7 @@ namespace QuantLib {
             }
             return sequence_;
         }
-        std::vector<BigNatural> nextInt32Sequence() const {
+        std::vector<BigNatural> nextInt32Sequence(unsigned int ignored = 0) const {
             for (Size i=0; i<dimensionality_; i++) {
                 int32Sequence_[i] = rng_.nextInt32();
             }

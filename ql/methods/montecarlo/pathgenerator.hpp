@@ -4,6 +4,7 @@
  Copyright (C) 2002, 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -56,19 +57,19 @@ namespace QuantLib {
                       bool brownianBridge);
         //! \name inspectors
         //@{
-        const sample_type& next() const;
-        const sample_type& antithetic() const;
+        const sample_type& next(unsigned int threadId = 0) const;
+        const sample_type& antithetic(unsigned int threadId = 0) const;
         Size size() const { return dimension_; }
         const TimeGrid& timeGrid() const { return timeGrid_; }
         //@}
       private:
-        const sample_type& next(bool antithetic) const;
+        const sample_type& next(bool antithetic, int threadId = 0) const;
         bool brownianBridge_;
         GSG generator_;
         Size dimension_;
         TimeGrid timeGrid_;
         boost::shared_ptr<StochasticProcess1D> process_;
-        mutable sample_type next_;
+        mutable std::vector<sample_type> next_;
         mutable std::vector<Real> temp_;
         BrownianBridge bb_;
     };
@@ -86,7 +87,8 @@ namespace QuantLib {
     : brownianBridge_(brownianBridge), generator_(generator),
       dimension_(generator_.dimension()), timeGrid_(length, timeSteps),
       process_(boost::dynamic_pointer_cast<StochasticProcess1D>(process)),
-      next_(Path(timeGrid_),1.0), temp_(dimension_), bb_(timeGrid_) {
+      next_(std::vector<sample_type>(Path(timeGrid_),1.0), GSG::maxNumberOfThreads), 
+      temp_(dimension_), bb_(timeGrid_) {
         QL_REQUIRE(dimension_==timeSteps,
                    "sequence generator dimensionality (" << dimension_
                    << ") != timeSteps (" << timeSteps << ")");
@@ -101,7 +103,8 @@ namespace QuantLib {
     : brownianBridge_(brownianBridge), generator_(generator),
       dimension_(generator_.dimension()), timeGrid_(timeGrid),
       process_(boost::dynamic_pointer_cast<StochasticProcess1D>(process)),
-      next_(Path(timeGrid_),1.0), temp_(dimension_), bb_(timeGrid_) {
+      next_(std::vector<sample_type>(Path(timeGrid_),1.0), GSG::maxNumberOfThreads),
+      temp_(dimension_), bb_(timeGrid_) {
         QL_REQUIRE(dimension_==timeGrid_.size()-1,
                    "sequence generator dimensionality (" << dimension_
                    << ") != timeSteps (" << timeGrid_.size()-1 << ")");
@@ -109,24 +112,24 @@ namespace QuantLib {
 
     template <class GSG>
     const typename PathGenerator<GSG>::sample_type&
-    PathGenerator<GSG>::next() const {
-        return next(false);
+    PathGenerator<GSG>::next(unsigned int threadId = 0) const {
+        return next(false, threadId);
     }
 
     template <class GSG>
     const typename PathGenerator<GSG>::sample_type&
     PathGenerator<GSG>::antithetic() const {
-        return next(true);
+        return next(true, threadId);
     }
 
     template <class GSG>
     const typename PathGenerator<GSG>::sample_type&
-    PathGenerator<GSG>::next(bool antithetic) const {
+    PathGenerator<GSG>::next(bool antithetic, unsigned int threadId) const {
 
         typedef typename GSG::sample_type sequence_type;
         const sequence_type& sequence_ =
-            antithetic ? generator_.lastSequence()
-                       : generator_.nextSequence();
+            antithetic ? generator_.lastSequence(threadId)
+                       : generator_.nextSequence(threadId);
 
         if (brownianBridge_) {
             bb_.transform(sequence_.value.begin(),

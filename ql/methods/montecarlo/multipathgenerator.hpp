@@ -5,6 +5,7 @@
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2003, 2004, 2005 StatPro Italia srl
  Copyright (C) 2005 Klaus Spanderen
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -54,14 +55,14 @@ namespace QuantLib {
                            const TimeGrid&,
                            GSG generator,
                            bool brownianBridge = false);
-        const sample_type& next() const;
-        const sample_type& antithetic() const;
+        const sample_type& next(unsigned int threadId = 0) const;
+        const sample_type& antithetic(unsigned int threadId = 0) const;
       private:
-        const sample_type& next(bool antithetic) const;
+        const sample_type& next(bool antithetic, unsigned int threadId = 0) const;
         bool brownianBridge_;
         boost::shared_ptr<StochasticProcess> process_;
         GSG generator_;
-        mutable sample_type next_;
+        mutable std::vector<sample_type> next_;
     };
 
 
@@ -74,7 +75,9 @@ namespace QuantLib {
                    GSG generator,
                    bool brownianBridge)
     : brownianBridge_(brownianBridge), process_(process),
-      generator_(generator), next_(MultiPath(process->size(), times), 1.0) {
+      generator_(generator), 
+      next_(std::vector<sample_type>(MultiPath(process->size(), times), 1.0),
+                                     GSG::maxNumberOfThreads) {
 
         QL_REQUIRE(generator_.dimension() ==
                    process->factors()*(times.size()-1),
@@ -89,19 +92,19 @@ namespace QuantLib {
 
     template <class GSG>
     inline const typename MultiPathGenerator<GSG>::sample_type&
-    MultiPathGenerator<GSG>::next() const {
-        return next(false);
+    MultiPathGenerator<GSG>::next(unsigned int threadId) const {
+        return next(false, threadId);
     }
 
     template <class GSG>
     inline const typename MultiPathGenerator<GSG>::sample_type&
-    MultiPathGenerator<GSG>::antithetic() const {
-        return next(true);
+    MultiPathGenerator<GSG>::antithetic(unsigned int threadId) const {
+        return next(true, threadId);
     }
 
     template <class GSG>
     const typename MultiPathGenerator<GSG>::sample_type&
-    MultiPathGenerator<GSG>::next(bool antithetic) const {
+    MultiPathGenerator<GSG>::next(bool antithetic, unsigned int threadId) const {
 
         if (brownianBridge_) {
 
@@ -111,8 +114,8 @@ namespace QuantLib {
 
             typedef typename GSG::sample_type sequence_type;
             const sequence_type& sequence_ =
-                antithetic ? generator_.lastSequence()
-                           : generator_.nextSequence();
+                antithetic ? generator_.lastSequence(threadId)
+                           : generator_.nextSequence(threadId);
 
             Size m = process_->size();
             Size n = process_->factors();

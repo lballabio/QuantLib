@@ -4,6 +4,7 @@
  Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2004 Walter Penschke
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,7 +27,6 @@
 #ifndef quantlib_rng_traits_hpp
 #define quantlib_rng_traits_hpp
 
-#include <ql/methods/montecarlo/pathgenerator.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/math/randomnumbers/inversecumulativerng.hpp>
 #include <ql/math/randomnumbers/randomsequencegenerator.hpp>
@@ -48,6 +48,7 @@ namespace QuantLib {
         typedef InverseCumulativeRsg<ursg_type,IC> rsg_type;
         // more traits
         enum { allowsErrorEstimate = 1 };
+        enum { maxNumberofThreads = 1 };
         // factory
         static rsg_type make_sequence_generator(Size dimension,
                                                 BigNatural seed) {
@@ -85,6 +86,7 @@ namespace QuantLib {
         typedef InverseCumulativeRsg<ursg_type,IC> rsg_type;
         // more traits
         enum { allowsErrorEstimate = 0 };
+        enum { allowsMultiThreading = 0 };
         // factory
         static rsg_type make_sequence_generator(Size dimension,
                                                 BigNatural seed) {
