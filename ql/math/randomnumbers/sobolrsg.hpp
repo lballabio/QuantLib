@@ -109,6 +109,7 @@ namespace QuantLib {
     class SobolRsg {
       public:
         typedef Sample<std::vector<Real> > sample_type;
+        static const Size maxNumberOfThreads = 1;
         enum DirectionIntegers {
             Unit, Jaeckel, SobolLevitan, SobolLevitanLemieux,
             JoeKuoD5, JoeKuoD6, JoeKuoD7,
@@ -119,15 +120,15 @@ namespace QuantLib {
                  DirectionIntegers directionIntegers = Jaeckel);
         /*! skip to the n-th sample in the low-discrepancy sequence */
         void skipTo(unsigned long n);
-        const std::vector<unsigned long>& nextInt32Sequence() const;
-        const SobolRsg::sample_type& nextSequence() const {
+        const std::vector<unsigned long>& nextInt32Sequence(unsigned int ignored = 0) const;
+        const SobolRsg::sample_type& nextSequence(unsigned int ignored = 0) const {
             const std::vector<unsigned long>& v = nextInt32Sequence();
             // normalize to get a double in (0,1)
             for (Size k=0; k<dimensionality_; ++k)
                 sequence_.value[k] = v[k] * normalizationFactor_;
             return sequence_;
         }
-        const sample_type& lastSequence() const { return sequence_; }
+        const sample_type& lastSequence(unsigned int ignored = 0) const { return sequence_; }
         Size dimension() const { return dimensionality_; }
       private:
         static const int bits_;

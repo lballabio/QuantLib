@@ -47,8 +47,8 @@ namespace QuantLib {
                   unsigned long seed = 0,
                   bool randomStart = true,
                   bool randomShift = false);
-        const sample_type& nextSequence() const;
-        const sample_type& lastSequence() const {
+        const sample_type& nextSequence(unsigned int ignored = 0) const;
+        const sample_type& lastSequence(unsigned int ignored = 0) const {
             return sequence_;
         }
         Size dimension() const {return dimensionality_;}

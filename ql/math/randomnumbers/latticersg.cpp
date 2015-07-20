@@ -42,7 +42,7 @@ namespace QuantLib
         i_+=n;
     }
 
-    const LatticeRsg::sample_type& LatticeRsg::nextSequence()
+    const LatticeRsg::sample_type& LatticeRsg::nextSequence(unsigned int ignored)
     {
         for (Size j=0; j < dimensionality_; ++j)
         {

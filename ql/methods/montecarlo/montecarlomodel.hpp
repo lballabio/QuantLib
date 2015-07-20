@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,6 +29,12 @@
 #include <ql/methods/montecarlo/mctraits.hpp>
 #include <ql/math/statistics/statistics.hpp>
 #include <boost/shared_ptr.hpp>
+
+#include <iostream>
+
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 namespace QuantLib {
 
@@ -94,38 +101,52 @@ namespace QuantLib {
     // inline definitions
     template <template <class> class MC, class RNG, class S>
     inline void MonteCarloModel<MC,RNG,S>::addSamples(Size samples) {
+
+        unsigned int threadId = 0;
+
+#pragma omp parallel for firstprivate(threadId) schedule(static) if(RNG::maxNumberOfThreads > 1)
         for(Size j = 1; j <= samples; j++) {
 
-            sample_type path = pathGenerator_->next();
-            result_type price = (*pathPricer_)(path.value);
+#ifdef _OPENMP
+            if (RNG::maxNumberOfThreads > 1)
+                threadId = omp_get_thread_num();
+#endif
+
+            sample_type path;
+            path = pathGenerator_->next(threadId);
+
+            result_type price;
+            price = (*pathPricer_)(path.value);
 
             if (isControlVariate_) {
                 if (!cvPathGenerator_) {
                     price += cvOptionValue_-(*cvPathPricer_)(path.value);
                 }
                 else {
-                    sample_type cvPath = cvPathGenerator_->next();
+                    sample_type cvPath = cvPathGenerator_->next(threadId);
                     price += cvOptionValue_-(*cvPathPricer_)(cvPath.value);
                 }
             }
 
             if (isAntitheticVariate_) {
-                path = pathGenerator_->antithetic();
-                result_type price2 = (*pathPricer_)(path.value);
+                path = pathGenerator_->antithetic(threadId);
+                result_type price2;
+                price2 = (*pathPricer_)(path.value);
                 if (isControlVariate_) {
                     if (!cvPathGenerator_)
                         price2 += cvOptionValue_-(*cvPathPricer_)(path.value);
                     else {
-                        sample_type cvPath = cvPathGenerator_->antithetic();
+                        sample_type cvPath = cvPathGenerator_->antithetic(threadId);
                         price2 += cvOptionValue_-(*cvPathPricer_)(cvPath.value);
                     }
                 }
-
+#pragma omp critical
                 sampleAccumulator_.add((price+price2)/2.0, path.weight);
             } else {
+#pragma omp critical
                 sampleAccumulator_.add(price, path.weight);
             }
-        }
+        } // for samples
     }
 
     template <template <class> class MC, class RNG, class S>

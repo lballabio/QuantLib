@@ -36,7 +36,7 @@ namespace QuantLib {
     }
 
     const SobolBrownianBridgeRsg::sample_type&
-    SobolBrownianBridgeRsg::nextSequence() const {
+    SobolBrownianBridgeRsg::nextSequence(unsigned int ignored) const {
         gen_.nextPath();
         std::vector<Real> output(factors_);
         for (Size i=0; i < steps_; ++i) {
@@ -49,7 +49,7 @@ namespace QuantLib {
     }
 
     const SobolBrownianBridgeRsg::sample_type&
-    SobolBrownianBridgeRsg::lastSequence() const {
+    SobolBrownianBridgeRsg::lastSequence(unsigned int ignored) const {
         return seq_;
     }
 

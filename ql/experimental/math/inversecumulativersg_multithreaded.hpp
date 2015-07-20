@@ -55,13 +55,20 @@ namespace QuantLib {
 template <class USG_MT, class IC> class InverseCumulativeRsgMultiThreaded {
   public:
     typedef Sample<std::vector<Real> > sample_type;
-    explicit InverseCumulativeRsg(
+    static const Size maxNumberOfThreads = USG_MT::maxNumberOfThreads;
+    explicit InverseCumulativeRsgMultiThreaded(
         const USG_MT &uniformSequenceGeneratorMultiThreaded);
-    InverseCumulativeRsg(const USG_MT &uniformSequenceGeneratorMultiThreaded,
-                         const IC &inverseCumulative);
+    InverseCumulativeRsgMultiThreaded(
+        const USG_MT &uniformSequenceGeneratorMultiThreaded,
+        const IC &inverseCumulative);
     //! returns next sample from the inverse cumulative distribution
     const sample_type &nextSequence(unsigned int threadId) const;
-    const sample_type &lastSequence(unsigned int threadId) const { return x_[threadId]; }
+    const sample_type &lastSequence(unsigned int threadId) const {
+        QL_REQUIRE(threadId < USG_MT::maxNumberOfThreads,
+                   "thread id (" << threadId << ") out of bounds [0..."
+                                 << USG_MT::maxNumberOfThreads);
+        return x_[threadId];
+    }
     Size dimension() const { return dimension_; }
 
   private:
@@ -72,29 +79,41 @@ template <class USG_MT, class IC> class InverseCumulativeRsgMultiThreaded {
 };
 
 template <class USG_MT, class IC>
-InverseCumulativeRsg<USG_MT, IC>::InverseCumulativeRsg(const USG_MT &usg_mt)
+InverseCumulativeRsgMultiThreaded<
+    USG_MT, IC>::InverseCumulativeRsgMultiThreaded(const USG_MT &usg_mt)
     : uniformSequenceGeneratorMultiThreaded_(usg_mt),
-      dimension_(uniformSequenceGenerator_.dimension()),
-      x_(std::vector<sample_type>(sample_type(std::vector<Real>(dimension_), 1.0),USG_MT::maxNumberOfThreads) {}
+      dimension_(uniformSequenceGeneratorMultiThreaded_.dimension()),
+      x_(std::vector<sample_type>(USG_MT::maxNumberOfThreads, 
+         sample_type(std::vector<Real>(dimension_), 1.0))) {
+}
 
 template <class USG_MT, class IC>
-InverseCumulativeRsg<USG_MT, IC>::InverseCumulativeRsg(const USG_MT &usg,
-                                                    const IC &inverseCum)
-    : uniformSequenceGenerator_(usg),
-      dimension_(uniformSequenceGenerator_.dimension()),
-      x_(std::vector<sample_type>(sample_type(std::vector<Real>(dimension_), 1.0),USG_MT::maxNumberOfThreads),
+InverseCumulativeRsgMultiThreaded<
+    USG_MT, IC>::InverseCumulativeRsgMultiThreaded(const USG_MT &usg_mt,
+                                                   const IC &inverseCum)
+    : uniformSequenceGeneratorMultiThreaded_(usg_mt),
+      dimension_(uniformSequenceGeneratorMultiThreaded_.dimension()),
+      x_(std::vector<sample_type>(USG_MT::maxNumberOfThreads, 
+         sample_type(std::vector<Real>(dimension_), 1.0))),
       ICD_(inverseCum) {}
 
 template <class USG_MT, class IC>
-inline const typename InverseCumulativeRsg<USG_MT, IC>::sample_type &
-InverseCumulativeRsg<USG_MT, IC>::nextSequence(unsigned int threadId) const {
+inline const typename InverseCumulativeRsgMultiThreaded<USG_MT,
+                                                        IC>::sample_type &
+InverseCumulativeRsgMultiThreaded<USG_MT, IC>::nextSequence(
+    unsigned int threadId) const {
+
+    QL_REQUIRE(threadId < USG_MT::maxNumberOfThreads,
+               "thread id (" << threadId << ") out of bounds [0..."
+                             << USG_MT::maxNumberOfThreads);
     typename USG_MT::sample_type sample =
-        uniformSequenceGenerator_.nextSequence();
+        uniformSequenceGeneratorMultiThreaded_.nextSequence(threadId);
     x_[threadId].weight = sample.weight;
     for (Size i = 0; i < dimension_; i++) {
         x_[threadId].value[i] = ICD_(sample.value[i]);
     }
     return x_[threadId];
+
 }
 
 } // namespace QuantLib

@@ -50,7 +50,7 @@ namespace QuantLib {
     class RandomSequenceGenerator {
       public:
         typedef Sample<std::vector<Real> > sample_type;
-        enum { allowsMultiThreading = 0 };
+        static const Size maxNumberOfThreads = 1;
         RandomSequenceGenerator(Size dimensionality,
                                 const RNG& rng)
         : dimensionality_(dimensionality), rng_(rng),

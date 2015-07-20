@@ -32,6 +32,7 @@ namespace QuantLib {
     class SobolBrownianBridgeRsg {
       public:
         typedef Sample<std::vector<Real> > sample_type;
+        static const Size maxNumberOfThreads = 1;
 
         SobolBrownianBridgeRsg(Size factors, Size steps,
                                SobolBrownianGenerator::Ordering ordering
@@ -40,8 +41,8 @@ namespace QuantLib {
                                SobolRsg::DirectionIntegers directionIntegers
                                    = SobolRsg::JoeKuoD7);
 
-        const sample_type& nextSequence() const;
-        const sample_type& lastSequence() const;
+        const sample_type& nextSequence(unsigned int ignored = 0) const;
+        const sample_type& lastSequence(unsigned int ignored = 0) const;
         Size dimension() const;
 
       private:

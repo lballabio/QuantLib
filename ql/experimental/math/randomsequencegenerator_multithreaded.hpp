@@ -48,26 +48,36 @@ namespace QuantLib {
 
     \warning do not use with low-discrepancy sequence generator.
 */
+
 template <class RNG_MT> class RandomSequenceGeneratorMultiThreaded {
   public:
     typedef Sample<std::vector<Real> > sample_type;
-    enum { maxNumberOfThreads = RNG_MT::maxNumberOfThreads };
-    RandomSequenceGenerator(Size dimensionality, const RNG_MT &rng_mt)
+    static const Size maxNumberOfThreads = RNG_MT::maxNumberOfThreads;
+    RandomSequenceGeneratorMultiThreaded(Size dimensionality,
+                                         const RNG_MT &rng_mt)
         : dimensionality_(dimensionality), rng_mt_(rng_mt),
-          sequence_(
-              std::vector<sample_type>(sample_type(std::vector<Real>(dimensionality), 1.0),
-                                       maxNumberOfThreads),
-              int32Sequence_(std:.vector<BigNatural>(dimensionality),RNG_MT::maxNumberOfThreads) {
+          sequence_(std::vector<sample_type>(maxNumberOfThreads,
+              sample_type(std::vector<Real>(dimensionality), 1.0))),
+          int32Sequence_(std::vector<std::vector<BigNatural> >(
+                         RNG_MT::maxNumberOfThreads,
+                         std::vector<BigNatural>(dimensionality))) {
         QL_REQUIRE(dimensionality > 0, "dimensionality must be greater than 0");
     }
 
-    RandomSequenceGenerator(Size dimensionality, BigNatural seed = 0)
+    RandomSequenceGeneratorMultiThreaded(Size dimensionality,
+                                         BigNatural seed = 0)
         : dimensionality_(dimensionality), rng_mt_(seed),
-          sequence_(std::vector<Real>(dimensionality), 1.0),
-          int32Sequence_(std:.vector<BigNatural>(dimensionality),RNG_MT::maxNumberOfThreads) {}
+          sequence_(std::vector<sample_type>(maxNumberOfThreads,
+              sample_type(std::vector<Real>(dimensionality), 1.0))),
+          int32Sequence_(std::vector<std::vector<BigNatural> >(
+                         RNG_MT::maxNumberOfThreads,
+                         std::vector<BigNatural>(dimensionality))) {}
 
     const sample_type &nextSequence(unsigned int threadId) const {
-        sequence_.weight = 1.0;
+        QL_REQUIRE(threadId < RNG_MT::maxNumberOfThreads,
+                   "thread id (" << threadId << ") out of bounds [0..."
+                                 << RNG_MT::maxNumberOfThreads);
+        sequence_[threadId].weight = 1.0;
         for (Size i = 0; i < dimensionality_; i++) {
             typename RNG_MT::sample_type x(rng_mt_.next(threadId));
             sequence_[threadId].value[i] = x.value;
@@ -75,22 +85,31 @@ template <class RNG_MT> class RandomSequenceGeneratorMultiThreaded {
         }
         return sequence_[threadId];
     }
-    std::vector<BigNatural> nextInt32Sequence(unsigned int threadId) const {
-        for (Size i = 0; i < dimensionality_; i++) {
-            int32Sequence_[threadId][i] = rng_ {threadId].nextInt32();
-            }
-            return int32Sequence_[threadId];
-        }
-        const sample_type &lastSequence(unsigned int threadId) const {
-            return sequence_[threadId];
-        }
-        Size dimension() const { return dimensionality_; }
 
-      private:
-        Size dimensionality_;
-        RNG_MT rng_mt_;
-        mutable std::vector<sample_type> sequence_;
-        mutable std::vector<std::vector<BigNatural> > int32Sequence_;
+    std::vector<BigNatural> nextInt32Sequence(unsigned int threadId) const {
+        QL_REQUIRE(threadId < RNG_MT::maxNumberOfThreads,
+                   "thread id (" << threadId << ") out of bounds [0..."
+                                 << RNG_MT::maxNumberOfThreads);
+        for (Size i = 0; i < dimensionality_; i++) {
+            int32Sequence_[threadId][i] = rng_mt_[threadId].nextInt32(threadId);
+        }
+        return int32Sequence_[threadId];
+    }
+
+    const sample_type &lastSequence(unsigned int threadId) const {
+        QL_REQUIRE(threadId < RNG_MT::maxNumberOfThreads,
+                   "thread id (" << threadId << ") out of bounds [0..."
+                                 << RNG_MT::maxNumberOfThreads);
+        return sequence_[threadId];
+    }
+
+    Size dimension() const { return dimensionality_; }
+
+  private:
+    Size dimensionality_;
+    RNG_MT rng_mt_;
+    mutable std::vector<sample_type> sequence_;
+    mutable std::vector<std::vector<BigNatural> > int32Sequence_;
 };
 
 } // namespace QuantLib

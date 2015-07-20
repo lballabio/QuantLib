@@ -48,7 +48,7 @@ namespace QuantLib {
         typedef InverseCumulativeRsg<ursg_type,IC> rsg_type;
         // more traits
         enum { allowsErrorEstimate = 1 };
-        enum { maxNumberofThreads = 1 };
+        static const Size maxNumberOfThreads = 1;
         // factory
         static rsg_type make_sequence_generator(Size dimension,
                                                 BigNatural seed) {
@@ -86,7 +86,7 @@ namespace QuantLib {
         typedef InverseCumulativeRsg<ursg_type,IC> rsg_type;
         // more traits
         enum { allowsErrorEstimate = 0 };
-        enum { allowsMultiThreading = 0 };
+        static const Size maxNumberOfThreads = 1;
         // factory
         static rsg_type make_sequence_generator(Size dimension,
                                                 BigNatural seed) {

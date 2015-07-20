@@ -54,7 +54,7 @@ namespace QuantLib {
 
     }
 
-    const HaltonRsg::sample_type& HaltonRsg::nextSequence() const {
+    const HaltonRsg::sample_type& HaltonRsg::nextSequence(unsigned int ignored) const {
         ++sequenceCounter_;
         unsigned long b, k;
         double f, h;

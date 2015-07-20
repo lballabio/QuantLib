@@ -34,14 +34,15 @@ namespace QuantLib {
     {
       public:
         typedef Sample<std::vector<Real> > sample_type;
-         LatticeRsg(Size dimensionality,
+        static const Size maxNumberOfThreads = 1;
+        LatticeRsg(Size dimensionality,
              const std::vector<Real>& z,
              Size N);
         /*! skip to the n-th sample in the low-discrepancy sequence */
         void skipTo(unsigned long n);
-        const LatticeRsg::sample_type& nextSequence();     
+        const LatticeRsg::sample_type& nextSequence(unsigned int ignored = 0);     
         Size dimension() const { return dimensionality_; }
-        const sample_type& lastSequence() const { return sequence_; }
+        const sample_type& lastSequence(unsigned int igenored = 0) const { return sequence_; }
 
       private:
         Size dimensionality_;

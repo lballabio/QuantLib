@@ -56,6 +56,7 @@ namespace QuantLib {
     class InverseCumulativeRsg {
       public:
         typedef Sample<std::vector<Real> > sample_type;
+        static const Size maxNumberOfThreads = 1;
         explicit InverseCumulativeRsg(const USG& uniformSequenceGenerator);
         InverseCumulativeRsg(const USG& uniformSequenceGenerator,
                              const IC& inverseCumulative);

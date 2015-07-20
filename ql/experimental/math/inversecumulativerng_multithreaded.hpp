@@ -57,7 +57,7 @@ template <class RNG_MT, class IC> class InverseCumulativeRngMultiThreaded {
     explicit InverseCumulativeRngMultiThreaded(
         const RNG_MT &uniformGeneratorMultiThreaded);
     //! returns a sample from a Gaussian distribution
-    sample_type next(int threadId = 0) const;
+    sample_type next(unsigned int threadId = 0) const;
 
   private:
     RNG_MT uniformGeneratorMultiThreaded_;
@@ -65,12 +65,14 @@ template <class RNG_MT, class IC> class InverseCumulativeRngMultiThreaded {
 };
 
 template <class RNG_MT, class IC>
-InverseCumulativeRng<RNG, IC>::InverseCumulativeRng(const RNG_MT &ug_mt)
+InverseCumulativeRngMultiThreaded<
+    RNG_MT, IC>::InverseCumulativeRngMultiThreaded(const RNG_MT &ug_mt)
     : uniformGeneratorMultiThreaded_(ug_mt) {}
 
 template <class RNG_MT, class IC>
-inline typename InverseCumulativeRng<RNG_MT, IC>::sample_type
-InverseCumulativeRng<RNG, IC>::next(int threadId) const {
+inline typename InverseCumulativeRngMultiThreaded<RNG_MT, IC>::sample_type
+InverseCumulativeRngMultiThreaded<RNG_MT, IC>::next(
+    unsigned int threadId) const {
     typename RNG_MT::sample_type sample =
         uniformGeneratorMultiThreaded_.next(threadId);
     return sample_type(ICND_(sample.value), sample.weight);

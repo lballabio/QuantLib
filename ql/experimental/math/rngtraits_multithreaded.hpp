@@ -27,7 +27,7 @@
 #include <ql/experimental/math/mersennetwister_multithreaded.hpp>
 #include <ql/experimental/math/inversecumulativerng_multithreaded.hpp>
 #include <ql/experimental/math/randomsequencegenerator_multithreaded.hpp>
-#include <ql/math/randomnumbers/inversecumulativersg_multithreaded.hpp>
+#include <ql/experimental/math/inversecumulativersg_multithreaded.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/distributions/poissondistribution.hpp>
 
@@ -37,18 +37,18 @@ namespace QuantLib {
 
 template <class URNG_MT, class IC> struct GenericPseudoRandomMultiThreaded {
     // typedefs
-    typedef URNG_MT urng_mt_type;
-    typedef InverseCumulativeRngMultiThreaded<urng_mt_type, IC> rng_mt_type;
-    typedef RandomSequenceGeneratorMultiThreaded<urng_mt_type, IC> ursg_mt_type;
+    typedef URNG_MT urng_type;
+    typedef InverseCumulativeRngMultiThreaded<urng_type, IC> rng_type;
+    typedef RandomSequenceGeneratorMultiThreaded<urng_type> ursg_type;
     typedef InverseCumulativeRsgMultiThreaded<ursg_type,IC> rsg_type;
     // more traits
     enum { allowsErrorEstimate = 1 };
-    enum { maxNumberOfThreads = URNG_MT::maxNumberOfThreads };
+    static const Size maxNumberOfThreads = URNG_MT::maxNumberOfThreads;
     // factory
-    static rsg_mt_type make_sequence_generator(Size dimension,
-                                               BugNatural seed) {
-        ursg_mt_type g(dimension, seed);
-        return (icInstance ? rsg_mt_type(g, *icInstance) : rsg_type(g));
+    static rsg_type make_sequence_generator(Size dimension,
+                                               BigNatural seed) {
+        ursg_type g(dimension, seed);
+        return (icInstance ? rsg_type(g, *icInstance) : rsg_type(g));
     }
     // data
     static boost::shared_ptr<IC> icInstance;
@@ -60,11 +60,11 @@ boost::shared_ptr<IC> GenericPseudoRandomMultiThreaded<URNG_MT, IC>::icInstance;
 
 //! default traits for pseudo-random number generator
 typedef GenericPseudoRandomMultiThreaded<MersenneTwisterMultiThreaded,
-                                         InverseCumulativeNormal> PseudoRandom;
+                                         InverseCumulativeNormal> PseudoRandomMultiThreaded;
 
 //! traits for Poisson-distributed pseudo-random number generation
 typedef GenericPseudoRandomMultiThreaded<
-    MersenneTwisterMultiThreaded, InverseCumulativePoisson> PoissonPseudoRandom;
+    MersenneTwisterMultiThreaded, InverseCumulativePoisson> PoissonPseudoRandomMultiThreaded;
 
 
 } // namespace QuantLib

@@ -76,8 +76,8 @@ namespace QuantLib {
                    bool brownianBridge)
     : brownianBridge_(brownianBridge), process_(process),
       generator_(generator), 
-      next_(std::vector<sample_type>(MultiPath(process->size(), times), 1.0),
-                                     GSG::maxNumberOfThreads) {
+      next_(std::vector<sample_type>(GSG::maxNumberOfThreads,
+            sample_type(MultiPath(process->size(), times), 1.0))) {
 
         QL_REQUIRE(generator_.dimension() ==
                    process->factors()*(times.size()-1),
@@ -106,6 +106,10 @@ namespace QuantLib {
     const typename MultiPathGenerator<GSG>::sample_type&
     MultiPathGenerator<GSG>::next(bool antithetic, unsigned int threadId) const {
 
+        QL_REQUIRE(threadId < GSG::maxNumberOfThreads,
+                   "thread id (" << threadId << ") out of bounds [0..."
+                                 << GSG::maxNumberOfThreads);
+
         if (brownianBridge_) {
 
             QL_FAIL("Brownian bridge not supported");
@@ -120,14 +124,14 @@ namespace QuantLib {
             Size m = process_->size();
             Size n = process_->factors();
 
-            MultiPath& path = next_.value;
+            MultiPath& path = next_[threadId].value;
 
             Array asset = process_->initialValues();
             for (Size j=0; j<m; j++)
                 path[j].front() = asset[j];
 
             Array temp(n);
-            next_.weight = sequence_.weight;
+            next_[threadId].weight = sequence_.weight;
 
             const TimeGrid& timeGrid = path[0].timeGrid();
             Time t, dt;
@@ -149,7 +153,7 @@ namespace QuantLib {
                 for (Size j=0; j<m; j++)
                     path[j][i] = asset[j];
             }
-            return next_;
+            return next_[threadId];
         }
     }
 

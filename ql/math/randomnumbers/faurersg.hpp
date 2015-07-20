@@ -46,21 +46,22 @@ namespace QuantLib {
     class FaureRsg {
       public:
         typedef Sample<std::vector<Real> > sample_type;
+        static const Size maxNumberOfThreads = 1;
         FaureRsg(Size dimensionality);
-        const std::vector<long int>& nextIntSequence() const {
+        const std::vector<long int>& nextIntSequence(unsigned int ignored = 0) const {
             generateNextIntSequence();
             return integerSequence_;
         }
-        const std::vector<long int>& lastIntSequence() const {
+        const std::vector<long int>& lastIntSequence(unsigned int ignored = 0) const {
             return integerSequence_;
         }
-        const sample_type& nextSequence() const {
+        const sample_type& nextSequence(unsigned int ignored = 0) const {
             generateNextIntSequence();
             for (Size i=0; i<dimensionality_; i++)
                 sequence_.value[i] = integerSequence_[i]/normalizationFactor_;
             return sequence_;
         }
-        const sample_type& lastSequence() const { return sequence_; }
+        const sample_type& lastSequence(unsigned int ignored = 0) const { return sequence_; }
         Size dimension() const { return dimensionality_; }
       private:
         void generateNextIntSequence() const;

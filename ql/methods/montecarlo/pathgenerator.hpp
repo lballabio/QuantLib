@@ -63,14 +63,14 @@ namespace QuantLib {
         const TimeGrid& timeGrid() const { return timeGrid_; }
         //@}
       private:
-        const sample_type& next(bool antithetic, int threadId = 0) const;
+        const sample_type& next(bool antithetic, unsigned int threadId = 0) const;
         bool brownianBridge_;
         GSG generator_;
         Size dimension_;
         TimeGrid timeGrid_;
         boost::shared_ptr<StochasticProcess1D> process_;
         mutable std::vector<sample_type> next_;
-        mutable std::vector<Real> temp_;
+        mutable std::vector<std::vector<Real> > temp_;
         BrownianBridge bb_;
     };
 
@@ -87,8 +87,9 @@ namespace QuantLib {
     : brownianBridge_(brownianBridge), generator_(generator),
       dimension_(generator_.dimension()), timeGrid_(length, timeSteps),
       process_(boost::dynamic_pointer_cast<StochasticProcess1D>(process)),
-      next_(std::vector<sample_type>(Path(timeGrid_),1.0), GSG::maxNumberOfThreads), 
-      temp_(dimension_), bb_(timeGrid_) {
+      next_(std::vector<sample_type>(GSG::maxNumberOfThreads,
+                                     sample_type(Path(timeGrid_),1.0))),
+      temp_(GSG::maxNumberOfThreads,std::vector<Real>(dimension_)), bb_(timeGrid_) {
         QL_REQUIRE(dimension_==timeSteps,
                    "sequence generator dimensionality (" << dimension_
                    << ") != timeSteps (" << timeSteps << ")");
@@ -103,8 +104,9 @@ namespace QuantLib {
     : brownianBridge_(brownianBridge), generator_(generator),
       dimension_(generator_.dimension()), timeGrid_(timeGrid),
       process_(boost::dynamic_pointer_cast<StochasticProcess1D>(process)),
-      next_(std::vector<sample_type>(Path(timeGrid_),1.0), GSG::maxNumberOfThreads),
-      temp_(dimension_), bb_(timeGrid_) {
+      next_(std::vector<sample_type>(GSG::maxNumberOfThreads,
+                                     sample_type(Path(timeGrid_),1.0))),
+      temp_(GSG::maxNumberOfThreads,std::vector<Real>(dimension_)), bb_(timeGrid_) {
         QL_REQUIRE(dimension_==timeGrid_.size()-1,
                    "sequence generator dimensionality (" << dimension_
                    << ") != timeSteps (" << timeGrid_.size()-1 << ")");
@@ -112,19 +114,22 @@ namespace QuantLib {
 
     template <class GSG>
     const typename PathGenerator<GSG>::sample_type&
-    PathGenerator<GSG>::next(unsigned int threadId = 0) const {
+    PathGenerator<GSG>::next(unsigned int threadId) const {
         return next(false, threadId);
     }
 
     template <class GSG>
     const typename PathGenerator<GSG>::sample_type&
-    PathGenerator<GSG>::antithetic() const {
+    PathGenerator<GSG>::antithetic(unsigned int threadId) const {
         return next(true, threadId);
     }
 
     template <class GSG>
     const typename PathGenerator<GSG>::sample_type&
     PathGenerator<GSG>::next(bool antithetic, unsigned int threadId) const {
+        QL_REQUIRE(threadId < GSG::maxNumberOfThreads,
+                   "thread id (" << threadId << ") out of bounds [0..."
+                                 << GSG::maxNumberOfThreads);
 
         typedef typename GSG::sample_type sequence_type;
         const sequence_type& sequence_ =
@@ -134,27 +139,26 @@ namespace QuantLib {
         if (brownianBridge_) {
             bb_.transform(sequence_.value.begin(),
                           sequence_.value.end(),
-                          temp_.begin());
+                          temp_[threadId].begin());
         } else {
             std::copy(sequence_.value.begin(),
                       sequence_.value.end(),
-                      temp_.begin());
+                      temp_[threadId].begin());
         }
 
-        next_.weight = sequence_.weight;
+        next_[threadId].weight = sequence_.weight;
 
-        Path& path = next_.value;
+        Path& path = next_[threadId].value;
         path.front() = process_->x0();
 
         for (Size i=1; i<path.length(); i++) {
             Time t = timeGrid_[i-1];
             Time dt = timeGrid_.dt(i-1);
             path[i] = process_->evolve(t, path[i-1], dt,
-                                       antithetic ? -temp_[i-1] :
-                                                     temp_[i-1]);
+                                       antithetic ? -temp_[threadId][i-1] :
+                                                     temp_[threadId][i-1]);
         }
-
-        return next_;
+        return next_[threadId];
     }
 
 }
