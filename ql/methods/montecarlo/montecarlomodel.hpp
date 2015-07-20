@@ -112,8 +112,7 @@ namespace QuantLib {
                 threadId = omp_get_thread_num();
 #endif
 
-            sample_type path;
-            path = pathGenerator_->next(threadId);
+            sample_type path = pathGenerator_->next(threadId);
 
             result_type price;
             price = (*pathPricer_)(path.value);
