@@ -52,6 +52,11 @@ namespace QuantLib {
         provide the additional control option, namely the option path
         pricer and the option value.
 
+        When using multithreading (by enabling OpenMP *and* using a
+        multithreaded RNG) it must be ensured that both the path pricer
+        and the process (used for path generation) are implemented in a
+        thread safe way.
+
         \ingroup mcarlo
     */
     template <template <class> class MC, class RNG, class S = Statistics>
