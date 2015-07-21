@@ -130,6 +130,7 @@
 #include "mclongstaffschwartzengine.hpp"
 #include "mersennetwister.hpp"
 #include "money.hpp"
+#include "montecarlo_multithreaded.hpp"
 #include "noarbsabr.hpp"
 #include "nthtodefault.hpp"
 #include "numericaldifferentiation.hpp"
@@ -385,6 +386,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(InflationCPICapFloorTest::suite());
     test->add(InflationVolTest::suite());
     test->add(MargrabeOptionTest::suite());
+    test->add(MonteCarloMultiThreadedTest::suite());
     test->add(NoArbSabrTest::suite());
     test->add(NthToDefaultTest::suite());
     test->add(NumericalDifferentiationTest::suite());
