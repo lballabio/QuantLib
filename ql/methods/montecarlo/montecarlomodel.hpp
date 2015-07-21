@@ -30,8 +30,6 @@
 #include <ql/math/statistics/statistics.hpp>
 #include <boost/shared_ptr.hpp>
 
-#include <iostream>
-
 #ifdef _OPENMP
 #include <omp.h>
 #endif
