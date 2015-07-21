@@ -91,7 +91,7 @@ void MonteCarloMultiThreadedTest::testHestonEngine() {
     engine = MakeMCEuropeanHestonEngine<PseudoRandomMultiThreaded>(process)
                  .withStepsPerYear(11)
                  .withAntitheticVariate()
-                 .withSamples(5000000)
+                 .withSamples(500000)
                  .withSeed(1234);
 
     option.setPricingEngine(engine);
