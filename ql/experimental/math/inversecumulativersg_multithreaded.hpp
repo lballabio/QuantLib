@@ -66,7 +66,7 @@ template <class USG_MT, class IC> class InverseCumulativeRsgMultiThreaded {
     const sample_type &lastSequence(unsigned int threadId) const {
         QL_REQUIRE(threadId < USG_MT::maxNumberOfThreads,
                    "thread id (" << threadId << ") out of bounds [0..."
-                                 << USG_MT::maxNumberOfThreads);
+                                 << USG_MT::maxNumberOfThreads - 1 << "]");
         return x_[threadId];
     }
     Size dimension() const { return dimension_; }
@@ -83,9 +83,9 @@ InverseCumulativeRsgMultiThreaded<
     USG_MT, IC>::InverseCumulativeRsgMultiThreaded(const USG_MT &usg_mt)
     : uniformSequenceGeneratorMultiThreaded_(usg_mt),
       dimension_(uniformSequenceGeneratorMultiThreaded_.dimension()),
-      x_(std::vector<sample_type>(USG_MT::maxNumberOfThreads, 
-         sample_type(std::vector<Real>(dimension_), 1.0))) {
-}
+      x_(std::vector<sample_type>(
+          USG_MT::maxNumberOfThreads,
+          sample_type(std::vector<Real>(dimension_), 1.0))) {}
 
 template <class USG_MT, class IC>
 InverseCumulativeRsgMultiThreaded<
@@ -93,8 +93,9 @@ InverseCumulativeRsgMultiThreaded<
                                                    const IC &inverseCum)
     : uniformSequenceGeneratorMultiThreaded_(usg_mt),
       dimension_(uniformSequenceGeneratorMultiThreaded_.dimension()),
-      x_(std::vector<sample_type>(USG_MT::maxNumberOfThreads, 
-         sample_type(std::vector<Real>(dimension_), 1.0))),
+      x_(std::vector<sample_type>(
+          USG_MT::maxNumberOfThreads,
+          sample_type(std::vector<Real>(dimension_), 1.0))),
       ICD_(inverseCum) {}
 
 template <class USG_MT, class IC>
@@ -105,7 +106,7 @@ InverseCumulativeRsgMultiThreaded<USG_MT, IC>::nextSequence(
 
     QL_REQUIRE(threadId < USG_MT::maxNumberOfThreads,
                "thread id (" << threadId << ") out of bounds [0..."
-                             << USG_MT::maxNumberOfThreads);
+               << USG_MT::maxNumberOfThreads - 1 << "]");
     typename USG_MT::sample_type sample =
         uniformSequenceGeneratorMultiThreaded_.nextSequence(threadId);
     x_[threadId].weight = sample.weight;
@@ -113,7 +114,6 @@ InverseCumulativeRsgMultiThreaded<USG_MT, IC>::nextSequence(
         x_[threadId].value[i] = ICD_(sample.value[i]);
     }
     return x_[threadId];
-
 }
 
 } // namespace QuantLib

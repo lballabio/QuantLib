@@ -56,27 +56,29 @@ template <class RNG_MT> class RandomSequenceGeneratorMultiThreaded {
     RandomSequenceGeneratorMultiThreaded(Size dimensionality,
                                          const RNG_MT &rng_mt)
         : dimensionality_(dimensionality), rng_mt_(rng_mt),
-          sequence_(std::vector<sample_type>(maxNumberOfThreads,
+          sequence_(std::vector<sample_type>(
+              maxNumberOfThreads,
               sample_type(std::vector<Real>(dimensionality), 1.0))),
           int32Sequence_(std::vector<std::vector<BigNatural> >(
-                         RNG_MT::maxNumberOfThreads,
-                         std::vector<BigNatural>(dimensionality))) {
+              RNG_MT::maxNumberOfThreads,
+              std::vector<BigNatural>(dimensionality))) {
         QL_REQUIRE(dimensionality > 0, "dimensionality must be greater than 0");
     }
 
     RandomSequenceGeneratorMultiThreaded(Size dimensionality,
                                          BigNatural seed = 0)
         : dimensionality_(dimensionality), rng_mt_(seed),
-          sequence_(std::vector<sample_type>(maxNumberOfThreads,
+          sequence_(std::vector<sample_type>(
+              maxNumberOfThreads,
               sample_type(std::vector<Real>(dimensionality), 1.0))),
           int32Sequence_(std::vector<std::vector<BigNatural> >(
-                         RNG_MT::maxNumberOfThreads,
-                         std::vector<BigNatural>(dimensionality))) {}
+              RNG_MT::maxNumberOfThreads,
+              std::vector<BigNatural>(dimensionality))) {}
 
     const sample_type &nextSequence(unsigned int threadId) const {
         QL_REQUIRE(threadId < RNG_MT::maxNumberOfThreads,
                    "thread id (" << threadId << ") out of bounds [0..."
-                                 << RNG_MT::maxNumberOfThreads);
+                                 << RNG_MT::maxNumberOfThreads - 1 << "]");
         sequence_[threadId].weight = 1.0;
         for (Size i = 0; i < dimensionality_; i++) {
             typename RNG_MT::sample_type x(rng_mt_.next(threadId));
@@ -89,7 +91,7 @@ template <class RNG_MT> class RandomSequenceGeneratorMultiThreaded {
     std::vector<BigNatural> nextInt32Sequence(unsigned int threadId) const {
         QL_REQUIRE(threadId < RNG_MT::maxNumberOfThreads,
                    "thread id (" << threadId << ") out of bounds [0..."
-                                 << RNG_MT::maxNumberOfThreads);
+                                 << RNG_MT::maxNumberOfThreads - 1 << "]");
         for (Size i = 0; i < dimensionality_; i++) {
             int32Sequence_[threadId][i] = rng_mt_[threadId].nextInt32(threadId);
         }
@@ -99,7 +101,7 @@ template <class RNG_MT> class RandomSequenceGeneratorMultiThreaded {
     const sample_type &lastSequence(unsigned int threadId) const {
         QL_REQUIRE(threadId < RNG_MT::maxNumberOfThreads,
                    "thread id (" << threadId << ") out of bounds [0..."
-                                 << RNG_MT::maxNumberOfThreads);
+                                 << RNG_MT::maxNumberOfThreads - 1 << "]");
         return sequence_[threadId];
     }
 
