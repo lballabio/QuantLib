@@ -89,6 +89,8 @@ typedef struct {
 
 // to store a precomputed mt instance
 struct MersenneTwisterDynamicRngDescription {
+    uint32_t creatorSeed_; // just to make it reproduceable
+    uint16_t id_;          // just to make it reproducable
     int w, p;
     uint32_t aaa;
     int mm, nn, rr, ww;
@@ -97,6 +99,33 @@ struct MersenneTwisterDynamicRngDescription {
     uint32_t maskB, maskC;
     int i;
 };
+
+// output description as struct that can
+// be used to setup an instance by a
+// template parameter
+inline std::ostream &operator<<(std::ostream &out,
+                                const MersenneTwisterDynamicRngDescription &d) {
+    return out << "struct Mtdesc {\n"
+               << "/* created with creator seed " << d.creatorSeed_
+               << " and id " << d.id_ << " */\n"
+               << "static const int w = " << d.w << ";\n"
+               << "static const int p = " << d.p << ";\n"
+               << "static const uint32_t aaa = " << d.aaa << "UL;\n"
+               << "static const int mm = " << d.mm << ";\n"
+               << "static const int nn = " << d.nn << ";\n"
+               << "static const int rr = " << d.rr << ";\n"
+               << "static const int ww = " << d.ww << ";\n"
+               << "static const uint32_t wmask = " << d.wmask << "UL;\n"
+               << "static const uint32_t umask = " << d.umask << "UL;\n"
+               << "static const uint32_t lmask = " << d.lmask << "UL;\n"
+               << "static const int shift0 = " << d.shift0 << ";\n"
+               << "static const int shift1 = " << d.shift1 << ";\n"
+               << "static const int shiftB = " << d.shiftB << ";\n"
+               << "static const int shiftC = " << d.shiftC << ";\n"
+               << "static const uint32_t maskB = " << d.maskB << "UL;\n"
+               << "static const uint32_t maskC = " << d.maskC << "UL;\n"
+               << "};\n";
+}
 
 // Use this class only if you want to dynamically create a mt during runtime
 // It is faster to use precomputed instances with the class
@@ -140,6 +169,8 @@ class MersenneTwisterDynamicRng {
     MersenneTwisterDynamicRng(const MersenneTwisterDynamicRng &);
     MersenneTwisterDynamicRng &operator=(const MersenneTwisterDynamicRng &);
     const int w_, p_;
+    uint32_t creatorSeed_;
+    uint16_t id_;
     mt_detail::mt_struct *m_;
 };
 
@@ -224,7 +255,7 @@ Real MersenneTwisterCustomRng<Description>::nextReal() {
 
 template <class Description>
 void MersenneTwisterCustomRng<Description>::discard(uint64_t z) {
-    for(;z!=0ULL;--z)
+    for (; z != 0ULL; --z)
         // genrant_mt
         if (i_++ >= Description::nn) {
             twist();
@@ -600,7 +631,7 @@ struct Mtdesc9941_7 {
 };
 
 // 8 instances with p=521, w=32 created with creator-seed 42
-// and ids 4138, 4139, 4140, 4141, 4142, 4143, 4144, 4145
+// and ids 4137, 4138, 4139, 4141, 4142, 4143, 4144, 4145
 
 struct Mtdesc521_0 {
     static const int w = 32;

@@ -87,7 +87,7 @@ void MersenneTwisterDynamicRng::discard(uint64_t z) {
 MersenneTwisterDynamicRng::MersenneTwisterDynamicRng(const int w, const int p,
                                                      const uint32_t creatorSeed,
                                                      const uint16_t id, const uint32_t seed)
-    : w_(w), p_(p) {
+    : w_(w), p_(p), creatorSeed_(creatorSeed), id_(id) {
     QL_REQUIRE(mt_detail::proper_mersenne_exponent(p) == 1,
                "exponent (" << p << ") not allowed");
     QL_REQUIRE(w == 31 || w == 32, "word size (" << w << ") must be 31 or 32");
@@ -120,11 +120,12 @@ MersenneTwisterDynamicRng::MersenneTwisterDynamicRng(
 
 MersenneTwisterDynamicRngDescription
 MersenneTwisterDynamicRng::description() const {
-    QL_REQUIRE(m_ != NULL,"not a valid mt instance");
+    QL_REQUIRE(m_ != NULL, "not a valid mt instance");
     MersenneTwisterDynamicRngDescription des = {
-        w_,         p_,         m_->aaa,   m_->mm,    m_->nn,     m_->rr,
-        m_->ww,     m_->wmask,  m_->umask, m_->lmask, m_->shift0, m_->shift1,
-        m_->shiftB, m_->shiftC, m_->maskB, m_->maskC, m_->i};
+        creatorSeed_, id_,       w_,         p_,         m_->aaa,
+        m_->mm,       m_->nn,    m_->rr,     m_->ww,     m_->wmask,
+        m_->umask,    m_->lmask, m_->shift0, m_->shift1, m_->shiftB,
+        m_->shiftC,   m_->maskB, m_->maskC,  m_->i};
     return des;
 }
 
