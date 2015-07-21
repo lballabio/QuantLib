@@ -118,6 +118,14 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<HestonProcess>(this->process_);
         QL_REQUIRE(process, "Heston process required");
 
+        // ensure that both termstructures are calcuated when
+        // using omp multi threading (there are yield ts which
+        // are not lazy objects, so we can not just call
+        // recalculate())
+#ifdef _OPENMP
+        process->riskFreeRate()->discount(QL_MIN_POSITIVE_REAL);
+        process->dividendYield()->discount(QL_MIN_POSITIVE_REAL);
+#endif
         return boost::shared_ptr<
             typename MCEuropeanHestonEngine<RNG,S>::path_pricer_type>(
                    new EuropeanHestonPathPricer(
