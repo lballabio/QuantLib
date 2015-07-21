@@ -55,7 +55,7 @@ namespace QuantLib {
         When using multithreading (by enabling OpenMP *and* using a
         multithreaded RNG) it must be ensured that both the path pricer
         and the process (used for path generation) are implemented in a
-        thread safe way.
+        thread safe way (w.r.t. omp parallelization).
 
         \ingroup mcarlo
     */
