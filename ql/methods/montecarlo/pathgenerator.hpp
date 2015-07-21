@@ -129,7 +129,7 @@ namespace QuantLib {
     PathGenerator<GSG>::next(bool antithetic, unsigned int threadId) const {
         QL_REQUIRE(threadId < GSG::maxNumberOfThreads,
                    "thread id (" << threadId << ") out of bounds [0..."
-                                 << GSG::maxNumberOfThreads);
+                   << GSG::maxNumberOfThreads - 1 << "]");
 
         typedef typename GSG::sample_type sequence_type;
         const sequence_type& sequence_ =
