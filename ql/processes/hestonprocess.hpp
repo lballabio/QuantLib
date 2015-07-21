@@ -86,6 +86,7 @@ namespace QuantLib {
 
       private:
         Real varianceDistribution(Real v, Real dw, Time dt) const;
+        Real ompThreadSafeRate(Time t0, Time t1) const;
 
         Handle<YieldTermStructure> riskFreeRate_, dividendYield_;
         Handle<Quote> s0_;
