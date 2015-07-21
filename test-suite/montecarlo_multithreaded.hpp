@@ -25,11 +25,10 @@
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
 
-class MonteCarloMultithreadedTest {
+class MonteCarloMultiThreadedTest {
   public:
     static void testHestonEngine();
-    static boost::unit_test_framework::test_suite* suite();
+    static boost::unit_test_framework::test_suite *suite();
 };
-
 
 #endif

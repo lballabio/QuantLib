@@ -47,13 +47,14 @@ void MonteCarloMultiThreadedTest::testHestonEngine() {
 
 #if !defined(_OPENMP)
 
-    BOOST_TEST_MESSAGE("Skipping multithreaded Monte Carlo Heston engine test, because OpenMP is not enabled");
+    BOOST_TEST_MESSAGE("Skipping multithreaded Monte Carlo Heston engine test, "
+                       "because OpenMP is not enabled");
 
 #else
 
-    // this is taken from the Heston model tests 
-    BOOST_TEST_MESSAGE(
-                "Testing multithreaded Monte Carlo Heston engine against cached values...");
+    // this is taken from the Heston model tests
+    BOOST_TEST_MESSAGE("Testing multithreaded Monte Carlo Heston engine "
+                       "against cached values...");
 
     SavedSettings backup;
 
@@ -64,7 +65,7 @@ void MonteCarloMultiThreadedTest::testHestonEngine() {
     Date exerciseDate(28, March, 2005);
 
     boost::shared_ptr<StrikedTypePayoff> payoff(
-                                   new PlainVanillaPayoff(Option::Put, 1.05));
+        new PlainVanillaPayoff(Option::Put, 1.05));
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
     Handle<YieldTermStructure> riskFreeTS(flatRate(0.7, dayCounter));
@@ -72,9 +73,9 @@ void MonteCarloMultiThreadedTest::testHestonEngine() {
 
     Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(1.05)));
 
-    boost::shared_ptr<HestonProcess> process(new HestonProcess(
-                   riskFreeTS, dividendTS, s0, 0.3, 1.16, 0.2, 0.8, 0.8,
-                   HestonProcess::QuadraticExponentialMartingale));
+    boost::shared_ptr<HestonProcess> process(
+        new HestonProcess(riskFreeTS, dividendTS, s0, 0.3, 1.16, 0.2, 0.8, 0.8,
+                          HestonProcess::QuadraticExponentialMartingale));
 
     VanillaOption option(payoff, exercise);
 
@@ -82,16 +83,16 @@ void MonteCarloMultiThreadedTest::testHestonEngine() {
 
     // use a multithreaded RNG and more samples than in the original test
     // to produce some traffic
-    
+
     // PseudoRandomMultiThreaded can only handle 8 threads
-    if(omp_get_num_threads() > 8)
+    if (omp_get_max_threads() > 8)
         omp_set_num_threads(8);
 
     engine = MakeMCEuropeanHestonEngine<PseudoRandomMultiThreaded>(process)
-        .withStepsPerYear(11)
-        .withAntitheticVariate()
-        .withSamples(500000)
-        .withSeed(1234);
+                 .withStepsPerYear(11)
+                 .withAntitheticVariate()
+                 .withSamples(5000000)
+                 .withSeed(1234);
 
     option.setPricingEngine(engine);
 
@@ -100,11 +101,14 @@ void MonteCarloMultiThreadedTest::testHestonEngine() {
     Real errorEstimate = option.errorEstimate();
     Real tolerance = 7.5e-4;
 
-    if (std::fabs(calculated - expected) > 2.34*errorEstimate) {
+    BOOST_MESSAGE("calculated NPV = " << calculated
+                                      << " error = " << errorEstimate);
+
+    if (std::fabs(calculated - expected) > 2.34 * errorEstimate) {
         BOOST_ERROR("Failed to reproduce cached price"
                     << "\n    calculated: " << calculated
-                    << "\n    expected:   " << expected
-                    << " +/- " << errorEstimate);
+                    << "\n    expected:   " << expected << " +/- "
+                    << errorEstimate);
     }
 
     if (errorEstimate > tolerance) {
@@ -114,12 +118,13 @@ void MonteCarloMultiThreadedTest::testHestonEngine() {
     }
 
 #endif
-
 }
 
-test_suite* MonteCarloMultithreadedTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Monte carlo multithreaded tests");
+test_suite *MonteCarloMultiThreadedTest::suite() {
+    test_suite *suite = BOOST_TEST_SUITE("Monte carlo multithreaded tests");
 
-    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testHestonEngine));
+    suite->add(
+        QUANTLIB_TEST_CASE(&MonteCarloMultiThreadedTest::testHestonEngine));
 
+    return suite;
 }
