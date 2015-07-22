@@ -304,130 +304,10 @@ void MersenneTwisterCustomRng<Description>::twist() {
 
 // precomputed instances
 
-// 8 instances with p=19937, w=32 created with creator-seed 42
-// and ids 4138, 4139, 4140, 4142, 4143, 4144, 4145, 4146
+// 8 instances with p=19937, w=32
 
 struct Mtdesc19937_0 {
-    static const int w = 32;
-    static const int p = 19937;
-    static const uint32_t aaa = 2760052778UL;
-    static const int mm = 312;
-    static const int nn = 624;
-    static const int rr = 31;
-    static const int ww = 32;
-    static const uint32_t wmask = 4294967295UL;
-    static const uint32_t umask = 2147483648UL;
-    static const uint32_t lmask = 2147483647UL;
-    static const int shift0 = 12;
-    static const int shift1 = 18;
-    static const int shiftB = 7;
-    static const int shiftC = 15;
-    static const uint32_t maskB = 861204096UL;
-    static const uint32_t maskC = 3721887744UL;
-    // static const int i = 624;
-};
-
-struct Mtdesc19937_1 {
-    static const int w = 32;
-    static const int p = 19937;
-    static const uint32_t aaa = 2708803627UL;
-    static const int mm = 312;
-    static const int nn = 624;
-    static const int rr = 31;
-    static const int ww = 32;
-    static const uint32_t wmask = 4294967295UL;
-    static const uint32_t umask = 2147483648UL;
-    static const uint32_t lmask = 2147483647UL;
-    static const int shift0 = 12;
-    static const int shift1 = 18;
-    static const int shiftB = 7;
-    static const int shiftC = 15;
-    static const uint32_t maskB = 995441536UL;
-    static const uint32_t maskC = 4158029824UL;
-    // static const int i = 624;
-};
-
-struct Mtdesc19937_2 {
-    static const int w = 32;
-    static const int p = 19937;
-    static const uint32_t aaa = 2902986796UL;
-    static const int mm = 312;
-    static const int nn = 624;
-    static const int rr = 31;
-    static const int ww = 32;
-    static const uint32_t wmask = 4294967295UL;
-    static const uint32_t umask = 2147483648UL;
-    static const uint32_t lmask = 2147483647UL;
-    static const int shift0 = 12;
-    static const int shift1 = 18;
-    static const int shiftB = 7;
-    static const int shiftC = 15;
-    static const uint32_t maskB = 2607987584UL;
-    static const uint32_t maskC = 4149641216UL;
-    // static const int i = 624;
-};
-
-struct Mtdesc19937_3 {
-    static const int w = 32;
-    static const int p = 19937;
-    static const uint32_t aaa = 3431665710UL;
-    static const int mm = 312;
-    static const int nn = 624;
-    static const int rr = 31;
-    static const int ww = 32;
-    static const uint32_t wmask = 4294967295UL;
-    static const uint32_t umask = 2147483648UL;
-    static const uint32_t lmask = 2147483647UL;
-    static const int shift0 = 12;
-    static const int shift1 = 18;
-    static const int shiftB = 7;
-    static const int shiftC = 15;
-    static const uint32_t maskB = 827782784UL;
-    static const uint32_t maskC = 3621027840UL;
-    // static const int i = 624;
-};
-
-struct Mtdesc19937_4 {
-    static const int w = 32;
-    static const int p = 19937;
-    static const uint32_t aaa = 3975614511UL;
-    static const int mm = 312;
-    static const int nn = 624;
-    static const int rr = 31;
-    static const int ww = 32;
-    static const uint32_t wmask = 4294967295UL;
-    static const uint32_t umask = 2147483648UL;
-    static const uint32_t lmask = 2147483647UL;
-    static const int shift0 = 12;
-    static const int shift1 = 18;
-    static const int shiftB = 7;
-    static const int shiftC = 15;
-    static const uint32_t maskB = 3142380672UL;
-    static const uint32_t maskC = 4023877632UL;
-    // static const int i = 624;
-};
-
-struct Mtdesc19937_5 {
-    static const int w = 32;
-    static const int p = 19937;
-    static const uint32_t aaa = 3342274608UL;
-    static const int mm = 312;
-    static const int nn = 624;
-    static const int rr = 31;
-    static const int ww = 32;
-    static const uint32_t wmask = 4294967295UL;
-    static const uint32_t umask = 2147483648UL;
-    static const uint32_t lmask = 2147483647UL;
-    static const int shift0 = 12;
-    static const int shift1 = 18;
-    static const int shiftB = 7;
-    static const int shiftC = 15;
-    static const uint32_t maskB = 1860665216UL;
-    static const uint32_t maskC = 4117987328UL;
-    // static const int i = 624;
-};
-
-struct Mtdesc19937_6 {
+    /* created with creator seed 42 and id 4145 */
     static const int w = 32;
     static const int p = 19937;
     static const uint32_t aaa = 2711425073UL;
@@ -444,10 +324,30 @@ struct Mtdesc19937_6 {
     static const int shiftC = 15;
     static const uint32_t maskB = 4007967616UL;
     static const uint32_t maskC = 2008121344UL;
-    // static const int i = 624;
 };
 
-struct Mtdesc19937_7 {
+struct Mtdesc19937_1 {
+    /* created with creator seed 42 and id 4147 */
+    static const int w = 32;
+    static const int p = 19937;
+    static const uint32_t aaa = 2990673971UL;
+    static const int mm = 312;
+    static const int nn = 624;
+    static const int rr = 31;
+    static const int ww = 32;
+    static const uint32_t wmask = 4294967295UL;
+    static const uint32_t umask = 2147483648UL;
+    static const uint32_t lmask = 2147483647UL;
+    static const int shift0 = 12;
+    static const int shift1 = 18;
+    static const int shiftB = 7;
+    static const int shiftC = 15;
+    static const uint32_t maskB = 769062528UL;
+    static const uint32_t maskC = 3470098432UL;
+};
+
+struct Mtdesc19937_2 {
+    /* created with creator seed 42 and id 4146 */
     static const int w = 32;
     static const int p = 19937;
     static const uint32_t aaa = 3279884338UL;
@@ -464,133 +364,112 @@ struct Mtdesc19937_7 {
     static const int shiftC = 15;
     static const uint32_t maskB = 3151424896UL;
     static const uint32_t maskC = 3749019648UL;
-    // static const int i = 624;
 };
 
-// 8 instances with p=9941, w=32 created with creator-seed 42
-// and ids 4138, 4139, 4140, 4141, 4142, 4143, 4144, 4145
+struct Mtdesc19937_3 {
+    /* created with creator seed 42 and id 4140 */
+    static const int w = 32;
+    static const int p = 19937;
+    static const uint32_t aaa = 2902986796UL;
+    static const int mm = 312;
+    static const int nn = 624;
+    static const int rr = 31;
+    static const int ww = 32;
+    static const uint32_t wmask = 4294967295UL;
+    static const uint32_t umask = 2147483648UL;
+    static const uint32_t lmask = 2147483647UL;
+    static const int shift0 = 12;
+    static const int shift1 = 18;
+    static const int shiftB = 7;
+    static const int shiftC = 15;
+    static const uint32_t maskB = 2607987584UL;
+    static const uint32_t maskC = 4149641216UL;
+};
+
+struct Mtdesc19937_4 {
+    /* created with creator seed 42 and id 4143 */
+    static const int w = 32;
+    static const int p = 19937;
+    static const uint32_t aaa = 3975614511UL;
+    static const int mm = 312;
+    static const int nn = 624;
+    static const int rr = 31;
+    static const int ww = 32;
+    static const uint32_t wmask = 4294967295UL;
+    static const uint32_t umask = 2147483648UL;
+    static const uint32_t lmask = 2147483647UL;
+    static const int shift0 = 12;
+    static const int shift1 = 18;
+    static const int shiftB = 7;
+    static const int shiftC = 15;
+    static const uint32_t maskB = 3142380672UL;
+    static const uint32_t maskC = 4023877632UL;
+};
+
+struct Mtdesc19937_5 {
+    /* created with creator seed 42 and id 4142 */
+    static const int w = 32;
+    static const int p = 19937;
+    static const uint32_t aaa = 3431665710UL;
+    static const int mm = 312;
+    static const int nn = 624;
+    static const int rr = 31;
+    static const int ww = 32;
+    static const uint32_t wmask = 4294967295UL;
+    static const uint32_t umask = 2147483648UL;
+    static const uint32_t lmask = 2147483647UL;
+    static const int shift0 = 12;
+    static const int shift1 = 18;
+    static const int shiftB = 7;
+    static const int shiftC = 15;
+    static const uint32_t maskB = 827782784UL;
+    static const uint32_t maskC = 3621027840UL;
+};
+
+struct Mtdesc19937_6 {
+    /* created with creator seed 42 and id 4138 */
+    static const int w = 32;
+    static const int p = 19937;
+    static const uint32_t aaa = 2760052778UL;
+    static const int mm = 312;
+    static const int nn = 624;
+    static const int rr = 31;
+    static const int ww = 32;
+    static const uint32_t wmask = 4294967295UL;
+    static const uint32_t umask = 2147483648UL;
+    static const uint32_t lmask = 2147483647UL;
+    static const int shift0 = 12;
+    static const int shift1 = 18;
+    static const int shiftB = 7;
+    static const int shiftC = 15;
+    static const uint32_t maskB = 861204096UL;
+    static const uint32_t maskC = 3721887744UL;
+};
+
+struct Mtdesc19937_7 {
+    /* created with creator seed 42 and id 4139 */
+    static const int w = 32;
+    static const int p = 19937;
+    static const uint32_t aaa = 2708803627UL;
+    static const int mm = 312;
+    static const int nn = 624;
+    static const int rr = 31;
+    static const int ww = 32;
+    static const uint32_t wmask = 4294967295UL;
+    static const uint32_t umask = 2147483648UL;
+    static const uint32_t lmask = 2147483647UL;
+    static const int shift0 = 12;
+    static const int shift1 = 18;
+    static const int shiftB = 7;
+    static const int shiftC = 15;
+    static const uint32_t maskB = 995441536UL;
+    static const uint32_t maskC = 4158029824UL;
+};
+
+// 8 instances with p=9941, w=32
 
 struct Mtdesc9941_0 {
-    static const int w = 32;
-    static const int p = 9941;
-    static const uint32_t aaa = 3834843177UL;
-    static const int mm = 155;
-    static const int nn = 311;
-    static const int rr = 11;
-    static const int ww = 32;
-    static const uint32_t wmask = 4294967295UL;
-    static const uint32_t umask = 4294965248UL;
-    static const uint32_t lmask = 2047UL;
-    static const int shift0 = 12;
-    static const int shift1 = 18;
-    static const int shiftB = 7;
-    static const int shiftC = 15;
-    static const uint32_t maskB = 2599779968UL;
-    static const uint32_t maskC = 4160585728UL;
-    // static const int i = 311;
-};
-
-struct Mtdesc9941_1 {
-    static const int w = 32;
-    static const int p = 9941;
-    static const uint32_t aaa = 3864399914UL;
-    static const int mm = 155;
-    static const int nn = 311;
-    static const int rr = 11;
-    static const int ww = 32;
-    static const uint32_t wmask = 4294967295UL;
-    static const uint32_t umask = 4294965248UL;
-    static const uint32_t lmask = 2047UL;
-    static const int shift0 = 12;
-    static const int shift1 = 18;
-    static const int shiftB = 7;
-    static const int shiftC = 15;
-    static const uint32_t maskB = 2339864448UL;
-    static const uint32_t maskC = 4009656320UL;
-    // static const int i = 311;
-};
-
-struct Mtdesc9941_2 {
-    static const int w = 32;
-    static const int p = 9941;
-    static const uint32_t aaa = 2904821803UL;
-    static const int mm = 155;
-    static const int nn = 311;
-    static const int rr = 11;
-    static const int ww = 32;
-    static const uint32_t wmask = 4294967295UL;
-    static const uint32_t umask = 4294965248UL;
-    static const uint32_t lmask = 2047UL;
-    static const int shift0 = 12;
-    static const int shift1 = 18;
-    static const int shiftB = 7;
-    static const int shiftC = 15;
-    static const uint32_t maskB = 3668671104UL;
-    static const uint32_t maskC = 4022960128UL;
-    // static const int i = 311;
-};
-
-struct Mtdesc9941_3 {
-    static const int w = 32;
-    static const int p = 9941;
-    static const uint32_t aaa = 2782138412UL;
-    static const int mm = 155;
-    static const int nn = 311;
-    static const int rr = 11;
-    static const int ww = 32;
-    static const uint32_t wmask = 4294967295UL;
-    static const uint32_t umask = 4294965248UL;
-    static const uint32_t lmask = 2047UL;
-    static const int shift0 = 12;
-    static const int shift1 = 18;
-    static const int shiftB = 7;
-    static const int shiftC = 15;
-    static const uint32_t maskB = 981172096UL;
-    static const uint32_t maskC = 4140892160UL;
-    // static const int i = 311;
-};
-
-struct Mtdesc9941_4 {
-    static const int w = 32;
-    static const int p = 9941;
-    static const uint32_t aaa = 2208960557UL;
-    static const int mm = 155;
-    static const int nn = 311;
-    static const int rr = 11;
-    static const int ww = 32;
-    static const uint32_t wmask = 4294967295UL;
-    static const uint32_t umask = 4294965248UL;
-    static const uint32_t lmask = 2047UL;
-    static const int shift0 = 12;
-    static const int shift1 = 18;
-    static const int shiftB = 7;
-    static const int shiftC = 15;
-    static const uint32_t maskB = 1721326464UL;
-    static const uint32_t maskC = 4025843712UL;
-    // static const int i = 311;
-};
-
-struct Mtdesc9941_5 {
-    static const int w = 32;
-    static const int p = 9941;
-    static const uint32_t aaa = 3664318510UL;
-    static const int mm = 155;
-    static const int nn = 311;
-    static const int rr = 11;
-    static const int ww = 32;
-    static const uint32_t wmask = 4294967295UL;
-    static const uint32_t umask = 4294965248UL;
-    static const uint32_t lmask = 2047UL;
-    static const int shift0 = 12;
-    static const int shift1 = 18;
-    static const int shiftB = 7;
-    static const int shiftC = 15;
-    static const uint32_t maskB = 1701666688UL;
-    static const uint32_t maskC = 3203727360UL;
-    // static const int i = 311;
-};
-
-struct Mtdesc9941_6 {
+    /* created with creator seed 42 and id 4143 */
     static const int w = 32;
     static const int p = 9941;
     static const uint32_t aaa = 3040612399UL;
@@ -607,10 +486,30 @@ struct Mtdesc9941_6 {
     static const int shiftC = 15;
     static const uint32_t maskB = 1933540096UL;
     static const uint32_t maskC = 4157898752UL;
-    // static const int i = 311;
 };
 
-struct Mtdesc9941_7 {
+struct Mtdesc9941_1 {
+    /* created with creator seed 42 and id 4140 */
+    static const int w = 32;
+    static const int p = 9941;
+    static const uint32_t aaa = 2782138412UL;
+    static const int mm = 155;
+    static const int nn = 311;
+    static const int rr = 11;
+    static const int ww = 32;
+    static const uint32_t wmask = 4294967295UL;
+    static const uint32_t umask = 4294965248UL;
+    static const uint32_t lmask = 2047UL;
+    static const int shift0 = 12;
+    static const int shift1 = 18;
+    static const int shiftB = 7;
+    static const int shiftC = 15;
+    static const uint32_t maskB = 981172096UL;
+    static const uint32_t maskC = 4140892160UL;
+};
+
+struct Mtdesc9941_2 {
+    /* created with creator seed 42 and id 4144 */
     static const int w = 32;
     static const int p = 9941;
     static const uint32_t aaa = 2874019888UL;
@@ -627,16 +526,115 @@ struct Mtdesc9941_7 {
     static const int shiftC = 15;
     static const uint32_t maskB = 592805760UL;
     static const uint32_t maskC = 4008509440UL;
-    // static const int i = 311;
 };
 
-// 8 instances with p=521, w=32 created with creator-seed 42
-// and ids 4137, 4138, 4139, 4141, 4142, 4143, 4144, 4145
+struct Mtdesc9941_3 {
+    /* created with creator seed 42 and id 4138 */
+    static const int w = 32;
+    static const int p = 9941;
+    static const uint32_t aaa = 3864399914UL;
+    static const int mm = 155;
+    static const int nn = 311;
+    static const int rr = 11;
+    static const int ww = 32;
+    static const uint32_t wmask = 4294967295UL;
+    static const uint32_t umask = 4294965248UL;
+    static const uint32_t lmask = 2047UL;
+    static const int shift0 = 12;
+    static const int shift1 = 18;
+    static const int shiftB = 7;
+    static const int shiftC = 15;
+    static const uint32_t maskB = 2339864448UL;
+    static const uint32_t maskC = 4009656320UL;
+};
+
+struct Mtdesc9941_4 {
+    /* created with creator seed 42 and id 4139 */
+    static const int w = 32;
+    static const int p = 9941;
+    static const uint32_t aaa = 2904821803UL;
+    static const int mm = 155;
+    static const int nn = 311;
+    static const int rr = 11;
+    static const int ww = 32;
+    static const uint32_t wmask = 4294967295UL;
+    static const uint32_t umask = 4294965248UL;
+    static const uint32_t lmask = 2047UL;
+    static const int shift0 = 12;
+    static const int shift1 = 18;
+    static const int shiftB = 7;
+    static const int shiftC = 15;
+    static const uint32_t maskB = 3668671104UL;
+    static const uint32_t maskC = 4022960128UL;
+};
+
+struct Mtdesc9941_5 {
+    /* created with creator seed 42 and id 4146 */
+    static const int w = 32;
+    static const int p = 9941;
+    static const uint32_t aaa = 4196995122UL;
+    static const int mm = 155;
+    static const int nn = 311;
+    static const int rr = 11;
+    static const int ww = 32;
+    static const uint32_t wmask = 4294967295UL;
+    static const uint32_t umask = 4294965248UL;
+    static const uint32_t lmask = 2047UL;
+    static const int shift0 = 12;
+    static const int shift1 = 18;
+    static const int shiftB = 7;
+    static const int shiftC = 15;
+    static const uint32_t maskB = 1705631104UL;
+    static const uint32_t maskC = 3219619840UL;
+};
+
+struct Mtdesc9941_6 {
+    /* created with creator seed 42 and id 4147 */
+    static const int w = 32;
+    static const int p = 9941;
+    static const uint32_t aaa = 3764391987UL;
+    static const int mm = 155;
+    static const int nn = 311;
+    static const int rr = 11;
+    static const int ww = 32;
+    static const uint32_t wmask = 4294967295UL;
+    static const uint32_t umask = 4294965248UL;
+    static const uint32_t lmask = 2047UL;
+    static const int shift0 = 12;
+    static const int shift1 = 18;
+    static const int shiftB = 7;
+    static const int shiftC = 15;
+    static const uint32_t maskB = 3149782912UL;
+    static const uint32_t maskC = 4009066496UL;
+};
+
+struct Mtdesc9941_7 {
+    /* created with creator seed 42 and id 4141 */
+    static const int w = 32;
+    static const int p = 9941;
+    static const uint32_t aaa = 2208960557UL;
+    static const int mm = 155;
+    static const int nn = 311;
+    static const int rr = 11;
+    static const int ww = 32;
+    static const uint32_t wmask = 4294967295UL;
+    static const uint32_t umask = 4294965248UL;
+    static const uint32_t lmask = 2047UL;
+    static const int shift0 = 12;
+    static const int shift1 = 18;
+    static const int shiftB = 7;
+    static const int shiftC = 15;
+    static const uint32_t maskB = 1721326464UL;
+    static const uint32_t maskC = 4025843712UL;
+};
+
+// 8 instances with p=521, w=32
 
 struct Mtdesc521_0 {
+    /* created with creator seed 42 and id 4149 */
     static const int w = 32;
     static const int p = 521;
-    static const uint32_t aaa = 3900969001UL;
+    static const uint32_t aaa = 2177306677UL;
     static const int mm = 8;
     static const int nn = 17;
     static const int rr = 23;
@@ -648,12 +646,12 @@ struct Mtdesc521_0 {
     static const int shift1 = 18;
     static const int shiftB = 7;
     static const int shiftC = 15;
-    static const uint32_t maskB = 3954522752UL;
-    static const uint32_t maskC = 4292182016UL;
-    // static const int i = 17;
+    static const uint32_t maskB = 1263876864UL;
+    static const uint32_t maskC = 4294246400UL;
 };
 
 struct Mtdesc521_1 {
+    /* created with creator seed 42 and id 4138 */
     static const int w = 32;
     static const int p = 521;
     static const uint32_t aaa = 3929280554UL;
@@ -670,30 +668,10 @@ struct Mtdesc521_1 {
     static const int shiftC = 15;
     static const uint32_t maskB = 653613952UL;
     static const uint32_t maskC = 4288479232UL;
-    // static const int i = 17;
 };
 
 struct Mtdesc521_2 {
-    static const int w = 32;
-    static const int p = 521;
-    static const uint32_t aaa = 2886799403UL;
-    static const int mm = 8;
-    static const int nn = 17;
-    static const int rr = 23;
-    static const int ww = 32;
-    static const uint32_t wmask = 4294967295UL;
-    static const uint32_t umask = 4286578688UL;
-    static const uint32_t lmask = 8388607UL;
-    static const int shift0 = 12;
-    static const int shift1 = 18;
-    static const int shiftB = 7;
-    static const int shiftC = 15;
-    static const uint32_t maskB = 1991326336UL;
-    static const uint32_t maskC = 4294901760UL;
-    // static const int i = 17;
-};
-
-struct Mtdesc521_3 {
+    /* created with creator seed 42 and id 4140 */
     static const int w = 32;
     static const int p = 521;
     static const uint32_t aaa = 3792113708UL;
@@ -710,13 +688,13 @@ struct Mtdesc521_3 {
     static const int shiftC = 15;
     static const uint32_t maskB = 1999985280UL;
     static const uint32_t maskC = 4292182016UL;
-    // static const int i = 17;
 };
 
-struct Mtdesc521_4 {
+struct Mtdesc521_3 {
+    /* created with creator seed 42 and id 4146 */
     static const int w = 32;
     static const int p = 521;
-    static const uint32_t aaa = 3332837421UL;
+    static const uint32_t aaa = 2733314098UL;
     static const int mm = 8;
     static const int nn = 17;
     static const int rr = 23;
@@ -728,12 +706,32 @@ struct Mtdesc521_4 {
     static const int shift1 = 18;
     static const int shiftB = 7;
     static const int shiftC = 15;
-    static const uint32_t maskB = 2006399872UL;
-    static const uint32_t maskC = 4284841984UL;
-    // static const int i = 17;
+    static const uint32_t maskB = 2800016000UL;
+    static const uint32_t maskC = 4292182016UL;
+};
+
+struct Mtdesc521_4 {
+    /* created with creator seed 42 and id 4148 */
+    static const int w = 32;
+    static const int p = 521;
+    static const uint32_t aaa = 2777092148UL;
+    static const int mm = 8;
+    static const int nn = 17;
+    static const int rr = 23;
+    static const int ww = 32;
+    static const uint32_t wmask = 4294967295UL;
+    static const uint32_t umask = 4286578688UL;
+    static const uint32_t lmask = 8388607UL;
+    static const int shift0 = 12;
+    static const int shift1 = 18;
+    static const int shiftB = 7;
+    static const int shiftC = 15;
+    static const uint32_t maskB = 3875330688UL;
+    static const uint32_t maskC = 4292182016UL;
 };
 
 struct Mtdesc521_5 {
+    /* created with creator seed 42 and id 4142 */
     static const int w = 32;
     static const int p = 521;
     static const uint32_t aaa = 3349024814UL;
@@ -750,13 +748,13 @@ struct Mtdesc521_5 {
     static const int shiftC = 15;
     static const uint32_t maskB = 3061111680UL;
     static const uint32_t maskC = 4288479232UL;
-    // static const int i = 17;
 };
 
 struct Mtdesc521_6 {
+    /* created with creator seed 42 and id 4139 */
     static const int w = 32;
     static const int p = 521;
-    static const uint32_t aaa = 3498119215UL;
+    static const uint32_t aaa = 2886799403UL;
     static const int mm = 8;
     static const int nn = 17;
     static const int rr = 23;
@@ -768,15 +766,15 @@ struct Mtdesc521_6 {
     static const int shift1 = 18;
     static const int shiftB = 7;
     static const int shiftC = 15;
-    static const uint32_t maskB = 1987918464UL;
-    static const uint32_t maskC = 4292182016UL;
-    // static const int i = 17;
+    static const uint32_t maskB = 1991326336UL;
+    static const uint32_t maskC = 4294901760UL;
 };
 
 struct Mtdesc521_7 {
+    /* created with creator seed 42 and id 4141 */
     static const int w = 32;
     static const int p = 521;
-    static const uint32_t aaa = 3774287920UL;
+    static const uint32_t aaa = 3332837421UL;
     static const int mm = 8;
     static const int nn = 17;
     static const int rr = 23;
@@ -788,9 +786,8 @@ struct Mtdesc521_7 {
     static const int shift1 = 18;
     static const int shiftB = 7;
     static const int shiftC = 15;
-    static const uint32_t maskB = 662134656UL;
-    static const uint32_t maskC = 4257546240UL;
-    // static const int i = 17;
+    static const uint32_t maskB = 2006399872UL;
+    static const uint32_t maskC = 4284841984UL;
 };
 
 namespace mt_detail {
