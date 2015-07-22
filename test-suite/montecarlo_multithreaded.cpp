@@ -121,9 +121,11 @@ void MonteCarloMultiThreadedTest::testDynamicCreatorWrapper() {
 
     BOOST_TEST_MESSAGE("Testing dynamic creator wrapper ...");
 
-    // reference results with original dcmt library 0.6.2
-    // dynamically created mt, creator seed = 4138, w = 32, p = 521,
-    // first 500 generated random numbers (seed = 42), code snippet:
+    // Reference results obtained from the original dcmt library 0.6.2
+    // A mersenne twister instance is dynamically created using
+    // a creator seed 42, w = 32, p = 521 and id = 4138 and the first
+    // 500 random numbers are generated.
+    // The essential code for this is
     // mt_struct *mts = get_mt_parameter_id_st(32, 521, 4138, 42);
     // sgenrand_mt(1234, mts);
     // x = genrand_mt(mts);
@@ -222,8 +224,8 @@ void MonteCarloMultiThreadedTest::testDynamicCreatorWrapper() {
     MersenneTwisterDynamicRng mt2(desc, 1234);
 
     // set up a dynamically created mt by a template parameter
-    // (this is precomputed and should be identical to mt1 and mt2,
-    // see dynamiccreator.hpp for more details)
+    // (this was precomputed and should be identical to mt1 and mt2,
+    // see the documentation in dynamiccreator.hpp)
     MersenneTwisterCustomRng<Mtdesc521_1> mt3(1234);
 
     for (Size i = 0; i < 500; ++i) {
