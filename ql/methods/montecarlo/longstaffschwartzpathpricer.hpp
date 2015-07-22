@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Klaus Spanderen
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -42,6 +43,10 @@
 #endif
 
 #include <boost/function.hpp>
+
+#if defined(_OPENMP)
+#include <omp.h>
+#endif
 
 namespace QuantLib {
 
