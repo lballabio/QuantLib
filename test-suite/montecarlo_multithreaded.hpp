@@ -28,6 +28,7 @@
 class MonteCarloMultiThreadedTest {
   public:
     static void testHestonEngine();
+    static void testAmericanOption();
     static void testDynamicCreatorWrapper();
     static boost::unit_test_framework::test_suite *suite();
 };

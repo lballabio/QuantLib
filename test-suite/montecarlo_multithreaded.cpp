@@ -19,7 +19,14 @@
 
 #include "montecarlo_multithreaded.hpp"
 #include "utilities.hpp"
+#include <ql/instruments/vanillaoption.hpp>
 #include <ql/processes/hestonprocess.hpp>
+#include <ql/processes/stochasticprocessarray.hpp>
+#include <ql/methods/montecarlo/lsmbasissystem.hpp>
+#include <ql/pricingengines/mclongstaffschwartzengine.hpp>
+#include <ql/pricingengines/vanilla/fdamericanengine.hpp>
+#include <ql/pricingengines/vanilla/mcamericanengine.hpp>
+#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/pricingengines/vanilla/mceuropeanhestonengine.hpp>
 #include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
@@ -115,6 +122,104 @@ void MonteCarloMultiThreadedTest::testHestonEngine() {
     }
 
 #endif
+}
+
+void MonteCarloMultiThreadedTest::testAmericanOption() {
+#if !defined(_OPENMP)
+
+    BOOST_TEST_MESSAGE(
+        "Skipping multithreaded Monte Carlo LongstaffSchwartz engine test, "
+        "because OpenMP is not enabled");
+
+#else
+
+    // this is taken from the Longstaff Schwartz engine tests
+    BOOST_TEST_MESSAGE(
+        "Testing multithreaded Monte Carlo LongstaffSchwartz engine "
+        "against fd engine ...");
+
+#endif
+
+    SavedSettings backup;
+
+    // most of the example taken from the EquityOption.cpp
+    const Option::Type type(Option::Put);
+    const Real underlying = 36;
+    const Spread dividendYield = 0.00;
+    const Rate riskFreeRate = 0.06;
+    const Volatility volatility = 0.20;
+
+    const Date todaysDate(15, May, 1998);
+    const Date settlementDate(17, May, 1998);
+    Settings::instance().evaluationDate() = todaysDate;
+
+    const Date maturity(17, May, 1999);
+    const DayCounter dayCounter = Actual365Fixed();
+
+    boost::shared_ptr<Exercise> americanExercise(
+        new AmericanExercise(settlementDate, maturity));
+
+    // bootstrap the yield/dividend/vol curves
+    Handle<YieldTermStructure> flatTermStructure(
+        boost::shared_ptr<YieldTermStructure>(
+            new FlatForward(settlementDate, riskFreeRate, dayCounter)));
+    Handle<YieldTermStructure> flatDividendTS(
+        boost::shared_ptr<YieldTermStructure>(
+            new FlatForward(settlementDate, dividendYield, dayCounter)));
+
+    LsmBasisSystem::PolynomType polynomTypes[] = {
+        LsmBasisSystem::Monomial, LsmBasisSystem::Laguerre,
+        LsmBasisSystem::Hermite, LsmBasisSystem::Hyperbolic,
+        LsmBasisSystem::Chebyshev2nd};
+
+    // expected values, precalculated with
+    // FDAmericanEngine<CrankNicolson>(stochasticProcess, 401, 200);
+    Real expected[2][3] = {{2.0868301995, 3.43021667169, 4.78542893195},
+                           {4.48541742599, 5.73674283486, 7.1076949469}};
+
+    for (Integer i = 0; i < 2; ++i) {
+        for (Integer j = 0; j < 3; ++j) {
+            Handle<BlackVolTermStructure> flatVolTS(
+                boost::shared_ptr<BlackVolTermStructure>(
+                    new BlackConstantVol(settlementDate, NullCalendar(),
+                                         volatility + 0.1 * j, dayCounter)));
+
+            boost::shared_ptr<StrikedTypePayoff> payoff(
+                new PlainVanillaPayoff(type, underlying + 4 * i));
+
+            Handle<Quote> underlyingH(
+                boost::shared_ptr<Quote>(new SimpleQuote(underlying)));
+
+            boost::shared_ptr<GeneralizedBlackScholesProcess> stochasticProcess(
+                new GeneralizedBlackScholesProcess(
+                    underlyingH, flatDividendTS, flatTermStructure, flatVolTS));
+
+            VanillaOption americanOption(payoff, americanExercise);
+
+            boost::shared_ptr<PricingEngine> mcengine =
+                MakeMCAmericanEngine<PseudoRandomMultiThreaded>(
+                    stochasticProcess)
+                    .withSteps(75)
+                    .withAntitheticVariate()
+                    .withAbsoluteTolerance(0.02)
+                    .withSeed(42)
+                    .withPolynomOrder(3)
+                    .withBasisSystem(
+                        polynomTypes[0 * (i * 3 + j) % LENGTH(polynomTypes)]);
+
+            americanOption.setPricingEngine(mcengine);
+            // FLOATING_POINT_EXCEPTION
+            const Real calculated = americanOption.NPV();
+            const Real errorEstimate = americanOption.errorEstimate();
+
+            if (std::fabs(calculated - expected[i][j]) > 2.34 * errorEstimate) {
+                BOOST_ERROR("Failed to reproduce american option prices"
+                            << "\n    expected: " << expected
+                            << "\n    calculated:   " << calculated << " +/- "
+                            << errorEstimate);
+            }
+        }
+    }
 }
 
 void MonteCarloMultiThreadedTest::testDynamicCreatorWrapper() {
@@ -255,6 +360,8 @@ test_suite *MonteCarloMultiThreadedTest::suite() {
 
     suite->add(
         QUANTLIB_TEST_CASE(&MonteCarloMultiThreadedTest::testHestonEngine));
+    suite->add(
+        QUANTLIB_TEST_CASE(&MonteCarloMultiThreadedTest::testAmericanOption));
     suite->add(QUANTLIB_TEST_CASE(
         &MonteCarloMultiThreadedTest::testDynamicCreatorWrapper));
 
