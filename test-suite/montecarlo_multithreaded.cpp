@@ -177,6 +177,10 @@ void MonteCarloMultiThreadedTest::testAmericanOption() {
     Real expected[2][3] = {{2.0868301995, 3.43021667169, 4.78542893195},
                            {4.48541742599, 5.73674283486, 7.1076949469}};
 
+    // PseudoRandomMultiThreaded can only handle 8 threads
+    if (omp_get_max_threads() > 8)
+        omp_set_num_threads(8);
+
     for (Integer i = 0; i < 2; ++i) {
         for (Integer j = 0; j < 3; ++j) {
             Handle<BlackVolTermStructure> flatVolTS(
