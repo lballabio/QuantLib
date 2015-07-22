@@ -179,6 +179,12 @@ namespace QuantLib {
             new AmericanPathPricer(this->arguments_.payoff,
                                    polynomOrder_, polynomType_));
 
+// ensure that all termstructures are calculated when
+// using omp multi threading
+#ifdef _OPENMP
+        process->evolve(0.0,0.0,QL_MIN_POSITIVE_REAL,0.0);
+#endif
+
         return boost::shared_ptr<LongstaffSchwartzPathPricer<Path> > (
              new LongstaffSchwartzPathPricer<Path>(
                                       this->timeGrid(),
