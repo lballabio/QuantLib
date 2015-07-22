@@ -117,8 +117,7 @@ namespace QuantLib {
 
             sample_type path = pathGenerator_->next(threadId);
 
-            result_type price;
-            price = (*pathPricer_)(path.value);
+            result_type price = (*pathPricer_)(path.value);
 
             if (isControlVariate_) {
                 if (!cvPathGenerator_) {
@@ -132,8 +131,7 @@ namespace QuantLib {
 
             if (isAntitheticVariate_) {
                 path = pathGenerator_->antithetic(threadId);
-                result_type price2;
-                price2 = (*pathPricer_)(path.value);
+                result_type price2 = (*pathPricer_)(path.value);
                 if (isControlVariate_) {
                     if (!cvPathGenerator_)
                         price2 += cvOptionValue_-(*cvPathPricer_)(path.value);
