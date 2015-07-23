@@ -143,6 +143,11 @@ namespace QuantLib {
                 oldMesher->getFdm1dMeshers()[1]->locations().begin(),
                 oldMesher->getFdm1dMeshers()[1]->locations().end(), m);
 
+            const Real newXmin = *(newMesher->getFdm1dMeshers()[0]->locations().begin());
+            const Real newXmax = *(newMesher->getFdm1dMeshers()[0]->locations().end()-1);
+            const Real newVmin = *(newMesher->getFdm1dMeshers()[1]->locations().begin());
+            const Real newVmax = *(newMesher->getFdm1dMeshers()[1]->locations().end()-1);
+
             Array pNew(p.size());
             const FdmLinearOpIterator endIter = newLayout->end();
             for (FdmLinearOpIterator iter = newLayout->begin();
@@ -152,7 +157,36 @@ namespace QuantLib {
 
                 if (   x > interpol.xMax() || x < interpol.xMin()
                     || v > interpol.yMax() || v < interpol.yMin() ) {
-                    pNew[iter.index()] = 0;
+//                    pNew[iter.index()] = 0;
+                    const Real xParam = std::max(interpol.xMin(), std::min(interpol.xMax(), x));
+                    const Real vParam = std::max(interpol.yMin(), std::min(interpol.yMax(), v));
+
+                    const Real xScale =
+                            (x > interpol.xMax() && newXmax > interpol.xMax())?
+                                    (newXmax-x)/(newXmax-interpol.xMax()) :
+                            (x < interpol.xMin() && interpol.xMin() < newXmin)?
+                                     (x-newXmin)/(interpol.xMin()-newXmin)
+                            :0.0;
+                    const Real vScale =
+                            (v > interpol.yMax() && newVmax > interpol.yMax())?
+                                    (newVmax-v)/(newVmax-interpol.yMax()) :
+                            (v < interpol.yMin() && interpol.yMin() < newVmin)?
+                                     (v-newVmin)/(interpol.yMin()-newVmin)
+                            :0.0;
+                    //std::cout << "xScale=" << xScale << ", vScale=" << vScale << std::endl;
+
+//                    if (xScale*vScale >= 0.0) {
+//                        std::cout << "xScale=" << xScale << ", vScale=" << vScale << std::endl;
+//                        std::cout << "x=" << x << ", v=" << v << std::endl;
+//                        std::cout << "xMax=" << interpol.xMax() << ", xMin=" << interpol.xMin() << std::endl;
+//                        std::cout << "xMax=" << newXmax << ", xMin=" << newXmin << std::endl;
+//                        std::cout << "vMax=" << interpol.yMax() << ", vMin=" << interpol.yMin() << std::endl;
+//                        std::cout << "vMax=" << newVmax << ", vMin=" << newVmin << std::endl;
+//                    }
+
+                    // expect flat extrapolation
+                    pNew[iter.index()] = interpol(xParam, vParam)*xScale*vScale;
+//                    std::cout << x << ", " << v << " pNew=" << pNew[iter.index()] << std::endl;
                 }
                 else {
                     pNew[iter.index()] = interpol(x, v);
@@ -466,7 +500,8 @@ namespace QuantLib {
                     mesher->getFdm1dMeshers()[1]->locations().begin(),
                     mesher->getFdm1dMeshers()[1]->locations().end());
 
-            for (Size r=0; r < 2; ++r) {
+            // predictor corrector steps
+            for (Size r=0; r < 3; ++r) {
                 for (Size j=0; j < x.size(); ++j) {
 
                     Array pSlice(vGrid);
