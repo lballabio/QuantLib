@@ -1862,7 +1862,7 @@ void InterpolationTest::testNoArbSabrInterpolation(){
                             }
 
                             if (failed)
-                                BOOST_MESSAGE("\nnoarb-Sabr calibration failure:" <<
+                                BOOST_TEST_MESSAGE("\nnoarb-Sabr calibration failure:" <<
                                            "\n    isAlphaFixed:    " << isAlphaFixed[k_a] <<
                                            "\n    isBetaFixed:     " << isBetaFixed[k_b] <<
                                            "\n    isNuFixed:       " << isNuFixed[k_n] <<
