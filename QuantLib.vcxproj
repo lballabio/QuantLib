@@ -1209,7 +1209,6 @@
     <ClInclude Include="ql\termstructures\credit\probabilitytraits.hpp" />
     <ClInclude Include="ql\termstructures\credit\survivalprobabilitystructure.hpp" />
     <ClInclude Include="ql\time\asx.hpp" />
-    <ClInclude Include="ql\time\calendars\israel.hpp" />
     <ClInclude Include="ql\utilities\all.hpp" />
     <ClInclude Include="ql\utilities\clone.hpp" />
     <ClInclude Include="ql\utilities\dataformatters.hpp" />
@@ -1391,6 +1390,7 @@
     <ClInclude Include="ql\time\calendars\iceland.hpp" />
     <ClInclude Include="ql\time\calendars\india.hpp" />
     <ClInclude Include="ql\time\calendars\indonesia.hpp" />
+    <ClInclude Include="ql\time\calendars\israel.hpp" />
     <ClInclude Include="ql\time\calendars\italy.hpp" />
     <ClInclude Include="ql\time\calendars\japan.hpp" />
     <ClInclude Include="ql\time\calendars\jointcalendar.hpp" />
@@ -2197,7 +2197,6 @@
     <ClCompile Include="ql\termstructures\credit\hazardratestructure.cpp" />
     <ClCompile Include="ql\termstructures\credit\survivalprobabilitystructure.cpp" />
     <ClCompile Include="ql\time\asx.cpp" />
-    <ClCompile Include="ql\time\calendars\israel.cpp" />
     <ClCompile Include="ql\utilities\dataformatters.cpp" />
     <ClCompile Include="ql\utilities\dataparsers.cpp" />
     <ClCompile Include="ql\utilities\tracing.cpp" />
@@ -2320,6 +2319,7 @@
     <ClCompile Include="ql\time\calendars\iceland.cpp" />
     <ClCompile Include="ql\time\calendars\india.cpp" />
     <ClCompile Include="ql\time\calendars\indonesia.cpp" />
+    <ClCompile Include="ql\time\calendars\israel.cpp" />
     <ClCompile Include="ql\time\calendars\italy.cpp" />
     <ClCompile Include="ql\time\calendars\japan.cpp" />
     <ClCompile Include="ql\time\calendars\jointcalendar.cpp" />
