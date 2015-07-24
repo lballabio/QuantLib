@@ -4,6 +4,7 @@
  Copyright (C) 2004 FIMAT Group
  Copyright (C) 2007 StatPro Italia srl
  Copyright (C) 2008 Charles Chongseok Hyun
+ Copyright (C) 2015 Riccardo Barone
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -44,11 +45,12 @@ namespace QuantLib {
         <li>Constitution Day, July 17th (until 2007)</li>
         <li>Liberation Day, August 15th</li>
         <li>National Fondation Day, October 3th</li>
+        <li>Hangeul Day, October 9th (from 2013)</li>
         <li>Christmas Day, December 25th</li>
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2004-2014 only:)
+        (data available for 2004-2032 only:)
         <ul>
         <li>Lunar New Year, the last day of the previous lunar year</li>
         <li>Election Days</li>
