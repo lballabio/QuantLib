@@ -3985,6 +3985,9 @@
     <ClInclude Include="ql\instruments\futures.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
+    <ClInclude Include="ql\time\calendars\israel.hpp">
+      <Filter>time\calendars</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -6415,6 +6418,9 @@
     </ClCompile>
     <ClCompile Include="ql\instruments\futures.cpp">
       <Filter>instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\time\calendars\israel.cpp">
+      <Filter>time\calendars</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -16,6 +16,7 @@
 #include <ql/time/calendars/iceland.hpp>
 #include <ql/time/calendars/india.hpp>
 #include <ql/time/calendars/indonesia.hpp>
+#include <ql/time/calendars/israel.hpp>
 #include <ql/time/calendars/italy.hpp>
 #include <ql/time/calendars/japan.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>
