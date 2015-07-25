@@ -82,23 +82,19 @@ namespace QuantLib {
           sampleAccumulator_(sampleAccumulator),
           isAntitheticVariate_(antitheticVariate),
           cvPathPricer_(cvPathPricer), cvOptionValue_(cvOptionValue),
-          cvPathGenerator_(cvPathGenerator) {
-            if (!cvPathPricer_)
-                isControlVariate_ = false;
-            else
-                isControlVariate_ = true;
-        }
+          isControlVariate_(cvPathPricer_!=NULL),
+          cvPathGenerator_(cvPathGenerator) {}
         void addSamples(Size samples);
         const stats_type& sampleAccumulator(void) const;
       private:
-        boost::shared_ptr<path_generator_type> pathGenerator_;
-        boost::shared_ptr<path_pricer_type> pathPricer_;
+        const boost::shared_ptr<path_generator_type> pathGenerator_;
+        const boost::shared_ptr<path_pricer_type> pathPricer_;
         stats_type sampleAccumulator_;
-        bool isAntitheticVariate_;
-        boost::shared_ptr<path_pricer_type> cvPathPricer_;
-        result_type cvOptionValue_;
-        bool isControlVariate_;
-        boost::shared_ptr<path_generator_type> cvPathGenerator_;
+        const bool isAntitheticVariate_;
+        const boost::shared_ptr<path_pricer_type> cvPathPricer_;
+        const result_type cvOptionValue_;
+        const bool isControlVariate_;
+        const boost::shared_ptr<path_generator_type> cvPathGenerator_;
     };
 
     // inline definitions
