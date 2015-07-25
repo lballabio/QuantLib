@@ -18,6 +18,8 @@
 */
 
 #include <ql/pricingengines/swaption/gaussian1dswaptionengine.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/payoff.hpp>
 
 namespace QuantLib {
 

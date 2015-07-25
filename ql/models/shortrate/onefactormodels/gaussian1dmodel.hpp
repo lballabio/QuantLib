@@ -29,8 +29,6 @@
 
 #include <ql/models/model.hpp>
 #include <ql/models/parameter.hpp>
-#include <ql/math/interpolation.hpp>
-#include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/indexes/swapindex.hpp>
 #include <ql/instruments/vanillaswap.hpp>

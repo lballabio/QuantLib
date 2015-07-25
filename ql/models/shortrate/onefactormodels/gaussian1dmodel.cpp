@@ -18,6 +18,8 @@
 */
 
 #include <ql/models/shortrate/onefactormodels/gaussian1dmodel.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/payoff.hpp>
 
 using std::exp;
 

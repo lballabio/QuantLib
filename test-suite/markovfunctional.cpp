@@ -34,6 +34,7 @@
 #include <ql/termstructures/volatility/optionlet/optionletstripper1.hpp>
 #include <ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp>
 #include <ql/termstructures/volatility/interpolatedsmilesection.hpp>
+#include <ql/termstructures/volatility/kahalesmilesection.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/indexes/swap/euriborswap.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
@@ -49,7 +50,6 @@
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
 #include <ql/models/shortrate/calibrationhelpers/caphelper.hpp>
-#include <ql/math/optimization/conjugategradient.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
