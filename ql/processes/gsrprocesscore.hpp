@@ -39,7 +39,7 @@ namespace detail {
 class GsrProcessCore {
   public:
     GsrProcessCore(const Array &times, const Array &vols,
-                   const Array &reversions, const Array &adjusters,
+                   const Array &reversions,
                    const Real T = 60.0);
 
     // conditional expectation, x0 dependent part
@@ -82,7 +82,7 @@ class GsrProcessCore {
     const Real rev(Size index) const;
     const bool revZero(Size index) const;
 
-    const Array &times_, &vols_, &reversions_, &adjusters_;
+    const Array &times_, &vols_, &reversions_;
 
     mutable std::map<std::pair<Real, Real>, Real> cache1_, cache2a_, cache2b_,
         cache3_, cache5_;

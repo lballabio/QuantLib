@@ -24,18 +24,13 @@ namespace QuantLib {
 namespace detail {
 
 GsrProcessCore::GsrProcessCore(const Array &times, const Array &vols,
-                               const Array &reversions, const Array &adjusters,
-                               const Real T)
+                               const Array &reversions, const Real T)
     : times_(times), vols_(vols), reversions_(reversions),
-      adjusters_(adjusters), T_(T), revZero_(reversions.size(), false) {
+      T_(T), revZero_(reversions.size(), false) {
 
     QL_REQUIRE(times.size() == vols.size() - 1,
                "number of volatilities ("
                    << vols.size() << ") compared to number of times ("
-                   << times_.size() << " must be bigger by one");
-    QL_REQUIRE(times.size() == adjusters.size() - 1,
-               "number of adjusters ("
-                   << adjusters.size() << ") compared to number of times ("
                    << times_.size() << " must be bigger by one");
     QL_REQUIRE(times.size() == reversions.size() - 1 || reversions.size() == 1,
                "number of reversions ("
@@ -347,8 +342,8 @@ const Real GsrProcessCore::time2(const Size index) const {
 
 const Real GsrProcessCore::vol(const Size index) const {
     if (index >= vols_.size())
-        return vols_.back() * adjusters_.back();
-    return vols_[index] * adjusters_[index];
+        return vols_.back();
+    return vols_[index];
 }
 
 const Real GsrProcessCore::rev(const Size index) const {

@@ -40,7 +40,7 @@ namespace QuantLib {
     class GsrProcess : public ForwardMeasureProcess1D {
       public:
         GsrProcess(const Array &times, const Array &vols,
-                   const Array &reversions, const Array &adjusters, const Real T = 60.0,
+                   const Array &reversions, const Real T = 60.0,
                    const Date &referenceDate = Null<Date>(), const DayCounter &dc = DayCounter());
         //! \name StochasticProcess1D interface
         //@{
