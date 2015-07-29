@@ -75,10 +75,11 @@ namespace QuantLib {
         localVolatility(); // trigger update
         if(isStrikeIndependent_) {
             // exact value for curves
-            return x0 * exp(riskFreeRate_->forwardRate(t0, t0 + dt, Continuous,
-                                                       NoFrequency, true) -
-                            dividendYield_->forwardRate(t0, t0 + dt, Continuous,
-                                                        NoFrequency, true));
+            return x0 *
+                   exp(dt * (riskFreeRate_->forwardRate(t0, t0 + dt, Continuous,
+                                                        NoFrequency, true) -
+                             dividendYield_->forwardRate(
+                                 t0, t0 + dt, Continuous, NoFrequency, true)));
         } else {
             QL_FAIL("not implemented");
         }
