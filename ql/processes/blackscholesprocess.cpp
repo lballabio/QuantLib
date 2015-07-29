@@ -104,7 +104,7 @@ namespace QuantLib {
                    blackVolatility_->blackVariance(t0, 0.01);
         }
         else{
-            return discretization_->diffusion(*this,t0,x0,dt);
+            return discretization_->variance(*this,t0,x0,dt);
         }
     }
 
