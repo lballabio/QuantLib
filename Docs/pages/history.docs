@@ -18,7 +18,14 @@
 
 /*! \page history Version history
 
-    <strong>Release 1.6 - June 2015</strong>
+    <strong>Release 1.6.1 - July 2015</strong>
+
+    QuantLib 1.6.1 is a compatibility release. It adds out-of-the-box
+    support for the newly released Visual Studio 2015, and avoids use
+    of deprecated Boost macros that will be removed in the upcoming
+    Boost 1.59.0 release.
+
+    <strong>Release 1.6 - June 23rd, 2015</strong>
 
     PORTABILITY
     - Enable successful compilation with Boost 1.58 and either gcc or clang.
