@@ -667,9 +667,8 @@ void FdHestonTest::testFdmHestonIntradayPricing() {
     option.setPricingEngine(fdm);
 
     const Real gammaExpected[] = {
-        1.46775,1.54715,1.641,1.75431,1.89488,
-        2.07574,2.32075,2.67978,3.28205,4.64154
-    };
+        1.46702, 1.54638, 1.64018, 1.75343, 1.89393,
+        2.0747, 2.31959, 2.67844, 3.28041, 4.63922  };
 
     for (Size i = 0; i < 10; ++i) {
         const Date now(17, May, 2014, 15, i*15, 0);
