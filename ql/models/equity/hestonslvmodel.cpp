@@ -66,10 +66,10 @@ namespace QuantLib {
                     const Real lowerBound = std::log(0.0000025);
                     const Real upperBound = std::log(rnd.stationary_invcdf(1-eps));
                     const Real v0Center = std::log(v0);
-                    const Real v0Density = 1.0;
-                    const Real upperBoundDensity = 100;
-                    const Real lowerBoundDensity = 1.0;
-                    cPoints += boost::make_tuple(lowerBound, lowerBoundDensity, false);
+                    const Real v0Density = t<0.5? 0.7 : 1.0;
+                    const Real upperBoundDensity = 1.0;
+                    const Real lowerBoundDensity = 0.1; // 0.1
+                    cPoints += boost::make_tuple(lowerBound, lowerBoundDensity, false),
                               boost::make_tuple(v0Center, v0Density, true),
                               boost::make_tuple(upperBound, upperBoundDensity, false);
                     return boost::make_shared<Concentrating1dMesher>(
@@ -157,36 +157,36 @@ namespace QuantLib {
 
                 if (   x > interpol.xMax() || x < interpol.xMin()
                     || v > interpol.yMax() || v < interpol.yMin() ) {
-//                    pNew[iter.index()] = 0;
-                    const Real xParam = std::max(interpol.xMin(), std::min(interpol.xMax(), x));
-                    const Real vParam = std::max(interpol.yMin(), std::min(interpol.yMax(), v));
-
-                    const Real xScale =
-                            (x > interpol.xMax() && newXmax > interpol.xMax())?
-                                    (newXmax-x)/(newXmax-interpol.xMax()) :
-                            (x < interpol.xMin() && interpol.xMin() < newXmin)?
-                                     (x-newXmin)/(interpol.xMin()-newXmin)
-                            :0.0;
-                    const Real vScale =
-                            (v > interpol.yMax() && newVmax > interpol.yMax())?
-                                    (newVmax-v)/(newVmax-interpol.yMax()) :
-                            (v < interpol.yMin() && interpol.yMin() < newVmin)?
-                                     (v-newVmin)/(interpol.yMin()-newVmin)
-                            :0.0;
-                    //std::cout << "xScale=" << xScale << ", vScale=" << vScale << std::endl;
-
-//                    if (xScale*vScale >= 0.0) {
-//                        std::cout << "xScale=" << xScale << ", vScale=" << vScale << std::endl;
-//                        std::cout << "x=" << x << ", v=" << v << std::endl;
-//                        std::cout << "xMax=" << interpol.xMax() << ", xMin=" << interpol.xMin() << std::endl;
-//                        std::cout << "xMax=" << newXmax << ", xMin=" << newXmin << std::endl;
-//                        std::cout << "vMax=" << interpol.yMax() << ", vMin=" << interpol.yMin() << std::endl;
-//                        std::cout << "vMax=" << newVmax << ", vMin=" << newVmin << std::endl;
-//                    }
-
-                    // expect flat extrapolation
-                    pNew[iter.index()] = interpol(xParam, vParam)*xScale*vScale;
-//                    std::cout << x << ", " << v << " pNew=" << pNew[iter.index()] << std::endl;
+                    pNew[iter.index()] = 0;
+//                    const Real xParam = std::max(interpol.xMin(), std::min(interpol.xMax(), x));
+//                    const Real vParam = std::max(interpol.yMin(), std::min(interpol.yMax(), v));
+//
+//                    const Real xScale =
+//                            (x > interpol.xMax() && newXmax > interpol.xMax())?
+//                                    (newXmax-x)/(newXmax-interpol.xMax()) :
+//                            (x < interpol.xMin() && interpol.xMin() < newXmin)?
+//                                     (x-newXmin)/(interpol.xMin()-newXmin)
+//                            :1.0;
+//                    const Real vScale =
+//                            (v > interpol.yMax() && newVmax > interpol.yMax())?
+//                                    (newVmax-v)/(newVmax-interpol.yMax()) :
+//                            (v < interpol.yMin() && interpol.yMin() < newVmin)?
+//                                     (v-newVmin)/(interpol.yMin()-newVmin)
+//                            :1.0;
+//                    //std::cout << "xScale=" << xScale << ", vScale=" << vScale << std::endl;
+//
+////                    if (xScale*vScale >= 0.0) {
+////                        std::cout << "xScale=" << xScale << ", vScale=" << vScale << std::endl;
+////                        std::cout << "x=" << x << ", v=" << v << std::endl;
+////                        std::cout << "xMax=" << interpol.xMax() << ", xMin=" << interpol.xMin() << std::endl;
+////                        std::cout << "xMax=" << newXmax << ", xMin=" << newXmin << std::endl;
+////                        std::cout << "vMax=" << interpol.yMax() << ", vMin=" << interpol.yMin() << std::endl;
+////                        std::cout << "vMax=" << newVmax << ", vMin=" << newVmin << std::endl;
+////                    }
+//
+//                    // expect flat extrapolation
+//                    pNew[iter.index()] = interpol(xParam, vParam)*xScale*vScale;
+////                    std::cout << x << ", " << v << " pNew=" << pNew[iter.index()] << std::endl;
                 }
                 else {
                     pNew[iter.index()] = interpol(x, v);
@@ -300,9 +300,7 @@ namespace QuantLib {
             v0, kappa, theta, sigma);
 
         const FdmSquareRootFwdOp::TransformationType trafoType
-//          = FdmSquareRootFwdOp::Plain;
-//            = FdmSquareRootFwdOp::Power;
-          = FdmSquareRootFwdOp::Log;
+          = params_.trafoType;
 
         std::vector<boost::shared_ptr<Fdm1dMesher> > xMesher, vMesher;
         xMesher.reserve(timeGrid->size());
@@ -362,7 +360,7 @@ namespace QuantLib {
         // just preliminarily put something other than zero into the matrix
         //std::fill(L->begin(),L->end(), 0.45);
 
-        const Real l0 = lv0/std::sqrt(v0);
+        const Real l0 = lv0; ///std::sqrt(v0);
         std::fill(L->column_begin(0),L->column_end(0), l0);
         std::fill(L->column_begin(1),L->column_end(1), l0);
 

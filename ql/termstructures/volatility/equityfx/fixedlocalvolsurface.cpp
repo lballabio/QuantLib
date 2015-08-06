@@ -168,28 +168,30 @@ namespace QuantLib {
             return localVolInterpol_[idx](strike, true);
         }
         else {
-            Real lowerStrike = strike, upperStrike = strike;
+            Real earlierStrike = strike, laterStrike = strike;
             if (lowerExtrapolation_ == ConstantExtrapolation) {
                 if (strike < strikes_[idx-1]->front())
-                    lowerStrike = strikes_[idx]->front();
+                    earlierStrike = strikes_[idx-1]->front();
                 if (strike < strikes_[idx]->front())
-                    upperStrike = strikes_[idx]->front();
+                    laterStrike = strikes_[idx]->front();
             }
 
             if (upperExtrapolation_ == ConstantExtrapolation) {
                 if (strike > strikes_[idx-1]->back())
-                    lowerStrike = strikes_[idx-1]->back();
+                    earlierStrike = strikes_[idx-1]->back();
                 if (strike > strikes_[idx]->back())
-                    upperStrike = strikes_[idx]->back();
+                    laterStrike = strikes_[idx]->back();
             }
 
-            const Real a =
+            const Real earlyVol =
                 (strikes_[idx-1]->front() < strikes_[idx-1]->back())
-                ? localVolInterpol_[idx-1](lowerStrike, true)
+                ? localVolInterpol_[idx-1](earlierStrike, true)
                 : (*localVolMatrix_)[localVolMatrix_->rows()/2][0];
-            const Real b = localVolInterpol_[idx](upperStrike, true);
+            const Real laterVol = localVolInterpol_[idx](laterStrike, true);
 
-            return a + (b-a)/(times_[idx]-times_[idx-1])*(t-times_[idx-1]);
+            return earlyVol
+                    + (laterVol-earlyVol)/(times_[idx]-times_[idx-1])
+                      *(t-times_[idx-1]);
         }
     }
 }

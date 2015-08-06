@@ -742,7 +742,7 @@ namespace {
             const Real v0Density = 10.0;
             const Real upperBoundDensity = 100;
             const Real lowerBoundDensity = 1.0;
-            cPoints += boost::make_tuple(lowerBound, lowerBoundDensity, false);
+            cPoints += boost::make_tuple(lowerBound, lowerBoundDensity, false),
                        boost::make_tuple(v0Center, v0Density, true),
                        boost::make_tuple(upperBound, upperBoundDensity, false);
           }
@@ -907,6 +907,8 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquation() {
     FokkerPlanckFwdTestCase testCases[] = {
         {
             100.0, 0.01, 0.02,
+            // Feller constraint violated, high vol-of-vol case
+            // \frac{2\kappa\theta}{\sigma^2} = 2.0 * 1.0 * 0.05 / 0.2 = 0.5 < 1
             0.05, 1.0, 0.05, -0.75, std::sqrt(0.2),
             101, 401, 25, 25,
 			0.02, 0.05,
@@ -916,6 +918,8 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquation() {
         },
         {
             100.0, 0.01, 0.02,
+            // Feller constraint violated, high vol-of-vol case
+            // \frac{2\kappa\theta}{\sigma^2} = 2.0 * 1.0 * 0.05 / 0.2 = 0.5 < 1
             0.05, 1.0, 0.05, -0.75, std::sqrt(0.2),
             201, 501, 10, 10,
 			0.005, 0.02,
@@ -925,6 +929,8 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquation() {
         },
 	    {
 			100.0, 0.01, 0.02,
+            // Feller constraint violated, high vol-of-vol case
+            // \frac{2\kappa\theta}{\sigma^2} = 2.0 * 1.0 * 0.05 / 0.2 = 0.5 < 1
 			0.05, 1.0, 0.05, -0.75, std::sqrt(0.2),
 			201, 501, 25, 25,
 			0.01, 0.03,
@@ -934,6 +940,8 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquation() {
 	    },
         {
             100.0, 0.01, 0.02,
+            // Feller constraint fulfilled, low vol-of-vol case
+            // \frac{2\kappa\theta}{\sigma^2} = 2.0 * 1.0 * 0.05 / 0.05 = 2.0 > 1
             0.05, 1.0, 0.05, -0.75, std::sqrt(0.05),
             401, 501, 5, 5,
 			0.01, 0.02,
@@ -1407,7 +1415,7 @@ namespace {
                 const Real v0Density = 1.0;
                 const Real upperBoundDensity = 100;
                 const Real lowerBoundDensity = 1.0;
-                cPoints += boost::make_tuple(lowerBound, lowerBoundDensity, false);
+                cPoints += boost::make_tuple(lowerBound, lowerBoundDensity, false),
                           boost::make_tuple(v0Center, v0Density, true),
                           boost::make_tuple(upperBound, upperBoundDensity, false);
               }
@@ -1866,7 +1874,9 @@ void HestonSLVModelTest::testHestonSLVModel() {
     const HestonSLVFokkerPlanckFdmParams params =
         { finalDate, 201, 501, 5000, 20, 3.0,
           1e-2, -Null<Real>(), 10000,
-          FdmHestonGreensFct::Gaussian};
+          FdmHestonGreensFct::Gaussian,
+          FdmSquareRootFwdOp::Log
+        };
 //    struct FokkerPlanckFwdTestCase {
 //        const Real s0, r, q, v0, kappa, theta, rho, sigma;
 //        const Size xGrid, vGrid, tGridPerYear, tMinGridPerYear;
@@ -1973,7 +1983,7 @@ void HestonSLVModelTest::testHestonSLVModel() {
     const Real times[] = { 3, 6, 9, 12, 18, 24, 36, 48, 60 };
 
     std::cout << "strike\tmaturity\texpected calculated pureHeston "
-              << "hestonImplied vega slvImpl" << std::endl;
+              << "hestonImplied vega slvImpl diff(bp)" << std::endl;
     for (Size t=0; t < LENGTH(times); ++t) {
         const Date expiry = todaysDate +  Period(times[t], Months);
         const boost::shared_ptr<Exercise> exercise(
@@ -2019,7 +2029,8 @@ void HestonSLVModelTest::testHestonSLVModel() {
                           << std::setprecision(8) << option.impliedVolatility(pureHeston, bp)
                           << " "
                           << std::setprecision(8) << vega << " "
-                          << std::setprecision(8) << lv + (calculated-expected)/vega
+                          << std::setprecision(8) << lv + (calculated-expected)/vega << " "
+                          << std::setprecision(1) << (calculated-expected)/vega*1e4
                           << std::endl;
 
             const Real tol = 0.0005; //0.0005; //testCase.eps;
@@ -2058,8 +2069,8 @@ test_suite* HestonSLVModelTest::experimental() {
 //        &HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity));
 //    suite->add(QUANTLIB_TEST_CASE(
 //        &HestonSLVModelTest::testSquareRootFokkerPlanckFwdEquation));
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquation));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquation));
 //    suite->add(QUANTLIB_TEST_CASE(
 //        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage));
 //    suite->add(QUANTLIB_TEST_CASE(

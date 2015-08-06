@@ -50,6 +50,7 @@ class SimpleQuote;
 
         // algorithm to get to the start configuration at time point one
         const FdmHestonGreensFct::Algorithm greensAlgorithm;
+        const FdmSquareRootFwdOp::TransformationType trafoType;
     };
 
     class HestonSLVModel : public LazyObject {
