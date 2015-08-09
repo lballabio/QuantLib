@@ -209,30 +209,30 @@ namespace QuantLib {
             x = curve_->guessSolution_;
         }
 
-        //workaround for backwards compatibility
-        boost::shared_ptr<OptimizationMethod> optimization = optimizationMethod_;
-        if(!optimization)
-        {
-            optimization = boost::make_shared<Simplex>(curve_->simplexLambda_);
+        if(curve_->maxEvaluations_ > 0){
+            //workaround for backwards compatibility
+            boost::shared_ptr<OptimizationMethod> optimization = optimizationMethod_;
+            if(!optimization){
+                optimization = boost::make_shared<Simplex>(curve_->simplexLambda_);
+            }
+            Problem problem(costFunction, constraint, x);
+
+            Real rootEpsilon = curve_->accuracy_;
+            Real functionEpsilon =  curve_->accuracy_;
+            Real gradientNormEpsilon = curve_->accuracy_;
+
+            EndCriteria endCriteria(curve_->maxEvaluations_,
+                                    curve_->maxStationaryStateIterations_,
+                                    rootEpsilon,
+                                    functionEpsilon,
+                                    gradientNormEpsilon);
+
+            optimization->minimize(problem,endCriteria);
+            solution_ = problem.currentValue();
+
+            numberOfIterations_ = problem.functionEvaluation();
+            costValue_ = problem.functionValue();
         }
-        Problem problem(costFunction, constraint, x);
-
-        Real rootEpsilon = curve_->accuracy_;
-        Real functionEpsilon =  curve_->accuracy_;
-        Real gradientNormEpsilon = curve_->accuracy_;
-
-        EndCriteria endCriteria(curve_->maxEvaluations_,
-                                curve_->maxStationaryStateIterations_,
-                                rootEpsilon,
-                                functionEpsilon,
-                                gradientNormEpsilon);
-
-        optimization->minimize(problem,endCriteria);
-        solution_ = problem.currentValue();
-
-        numberOfIterations_ = problem.functionEvaluation();
-        costValue_ = problem.functionValue();
-
         // save the results as the guess solution, in case of recalculation
         curve_->guessSolution_ = solution_;
     }
