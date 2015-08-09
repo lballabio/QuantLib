@@ -1,8 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2009 Ferdinando Ametrano
  Copyright (C) 2007 Allen Kuo
+ Copyright (C) 2009 Ferdinando Ametrano
+ Copyright (C) 2015 Andres Hernandez
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,6 +27,7 @@
 #define quantlib_fitted_bond_discount_curve_hpp
 
 #include <ql/termstructures/yield/bondhelpers.hpp>
+#include <ql/math/optimization/method.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/math/array.hpp>
 #include <ql/utilities/clone.hpp>
@@ -98,7 +100,8 @@ namespace QuantLib {
                  Real accuracy = 1.0e-10,
                  Size maxEvaluations = 10000,
                  const Array& guess = Array(),
-                 Real simplexLambda = 1.0);
+                 Real simplexLambda = 1.0,
+                 Size maxStationaryStateIterations = 100);
         //! curve reference date fixed for life of curve
         FittedBondDiscountCurve(
                  const Date &referenceDate,
@@ -108,7 +111,8 @@ namespace QuantLib {
                  Real accuracy = 1.0e-10,
                  Size maxEvaluations = 10000,
                  const Array &guess = Array(),
-                 Real simplexLambda = 1.0);
+                 Real simplexLambda = 1.0,
+                 Size maxStationaryStateIterations = 100);
         //@}
 
         //! \name Inspectors
@@ -136,6 +140,8 @@ namespace QuantLib {
         Size maxEvaluations_;
         // sets the scale in the (Simplex) optimization routine
         Real simplexLambda_;
+        // max number of evaluations where no improvement to solution is made
+        Size maxStationaryStateIterations_;
         // a guess solution may be passed into the constructor to speed calcs
         Array guessSolution_;
         mutable Date maxDate_;
@@ -147,12 +153,21 @@ namespace QuantLib {
     //! Base fitting method used to construct a fitted bond discount curve
     /*! This base class provides the specific methodology/strategy
         used to construct a FittedBondDiscountCurve.  Derived classes
-        need only define the virtual function discountFunction() based
+        need only define the virtual function discountFunctionImpl() based
         on the particular fitting method to be implemented, as well as
         size(), the number of variables to be solved for/optimized. The
         generic fitting methodology implemented here can be termed
         nonlinear, in contrast to (typically faster, computationally)
         linear fitting method.
+
+        Optional parameters for FittingMethod include an Array of
+        weights, which will be used as weights to each bond. If not given
+        or empty, then the bonds will be weighted by inverse duration
+
+        To fit a spread curve, provide a discount curve as an input
+        parameter. The discount factor calculated by this curve then
+        becomes the discount factor from the underlying curve times the
+        discount factor of the spread curve.
 
         \todo derive the special-case class LinearFittingMethods from
               FittingMethod. A linear fitting to a set of basis
@@ -189,15 +204,22 @@ namespace QuantLib {
         virtual std::auto_ptr<FittingMethod> clone() const = 0;
       protected:
         //! constructor
-        FittingMethod(bool constrainAtZero = true);
+        FittingMethod(bool constrainAtZero = true, const Array& weights = Array(),
+                      const Handle<YieldTermStructure>& discountingCurve
+                                          = Handle<YieldTermStructure>(),
+                      boost::shared_ptr<OptimizationMethod> optimizationMethod
+                                          = boost::shared_ptr<OptimizationMethod>());
         //! rerun every time instruments/referenceDate changes
-        void init();
+        virtual void init();
+        //! discount function called by FittedBondDiscountCurve
+        DiscountFactor discountFunction(const Array& x,
+                                        Time t) const;
         //! derived classes must set this
         /*! user-defined discount curve, as a function of time and an
             array of unknown fitting coefficients \f$ x_i \f$.
         */
-        virtual DiscountFactor discountFunction(const Array& x,
-                                                Time t) const = 0;
+        virtual DiscountFactor discountFunctionImpl(const Array& x,
+                                                    Time t) const = 0;
 
         //! constrains discount function to unity at \f$ T=0 \f$, if true
         bool constrainAtZero_;
@@ -222,6 +244,12 @@ namespace QuantLib {
         Integer numberOfIterations_;
         // final value for the minimized cost function
         Real costValue_;
+        // adjustment in case underlying discount curve has different reference date
+        DiscountFactor rebase_;
+        // discount curve from on top of which the spread will be calculated
+        Handle<YieldTermStructure> discountingCurve_;
+        // optimization method to be used, if none provided use Simplex
+        boost::shared_ptr<OptimizationMethod> optimizationMethod_;
     };
 
     // inline

@@ -45,11 +45,16 @@ namespace QuantLib {
     class ExponentialSplinesFitting
         : public FittedBondDiscountCurve::FittingMethod {
       public:
-        ExponentialSplinesFitting(bool constrainAtZero = true);
+        ExponentialSplinesFitting(bool constrainAtZero = true,
+                                  const Array& weights = Array(),
+                                  const Handle<YieldTermStructure>& discountingCurve
+                                          = Handle<YieldTermStructure>(),
+                                  boost::shared_ptr<OptimizationMethod> optimizationMethod
+                                          = boost::shared_ptr<OptimizationMethod>());
         std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
       private:
         Size size() const;
-        DiscountFactor discountFunction(const Array& x, Time t) const;
+        DiscountFactor discountFunctionImpl(const Array& x, Time t) const;
     };
 
 
@@ -66,11 +71,15 @@ namespace QuantLib {
     class NelsonSiegelFitting
         : public FittedBondDiscountCurve::FittingMethod {
       public:
-        NelsonSiegelFitting();
+        NelsonSiegelFitting(const Array& weights = Array(),
+                            const Handle<YieldTermStructure>& discountingCurve
+                                   = Handle<YieldTermStructure>(),
+                            boost::shared_ptr<OptimizationMethod> optimizationMethod
+                                          = boost::shared_ptr<OptimizationMethod>());
         std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
       private:
         Size size() const;
-        DiscountFactor discountFunction(const Array& x, Time t) const;
+        DiscountFactor discountFunctionImpl(const Array& x, Time t) const;
     };
 
 
@@ -89,11 +98,15 @@ namespace QuantLib {
     class SvenssonFitting
         : public FittedBondDiscountCurve::FittingMethod {
       public:
-        SvenssonFitting();
+        SvenssonFitting(const Array& weights = Array(),
+                        const Handle<YieldTermStructure>& discountingCurve
+                               = Handle<YieldTermStructure>(),
+                        boost::shared_ptr<OptimizationMethod> optimizationMethod
+                               = boost::shared_ptr<OptimizationMethod>());
         std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
       private:
         Size size() const;
-        DiscountFactor discountFunction(const Array& x, Time t) const;
+        DiscountFactor discountFunctionImpl(const Array& x, Time t) const;
     };
 
 
@@ -120,13 +133,18 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         CubicBSplinesFitting(const std::vector<Time>& knotVector,
-                             bool constrainAtZero = true);
+                             bool constrainAtZero = true,
+                             const Array& weights = Array(),
+                             const Handle<YieldTermStructure>& discountingCurve
+                                     = Handle<YieldTermStructure>(),
+                             boost::shared_ptr<OptimizationMethod> optimizationMethod
+                                     = boost::shared_ptr<OptimizationMethod>());
         //! cubic B-spline basis functions
         Real basisFunction(Integer i, Time t) const;
         std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
       private:
         Size size() const;
-        DiscountFactor discountFunction(const Array& x, Time t) const;
+        DiscountFactor discountFunctionImpl(const Array& x, Time t) const;
         BSpline splines_;
         Size size_;
         //! N_th basis function coefficient to solve for when d(0)=1
@@ -148,11 +166,16 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         SimplePolynomialFitting(Natural degree,
-                                bool constrainAtZero = true);
+                                bool constrainAtZero = true,
+                                const Array& weights = Array(),
+                                const Handle<YieldTermStructure>& discountingCurve
+                                       = Handle<YieldTermStructure>(),
+                                boost::shared_ptr<OptimizationMethod> optimizationMethod
+                                       = boost::shared_ptr<OptimizationMethod>());
         std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
       private:
         Size size() const;
-        DiscountFactor discountFunction(const Array& x, Time t) const;
+        DiscountFactor discountFunctionImpl(const Array& x, Time t) const;
         Size size_;
     };
 

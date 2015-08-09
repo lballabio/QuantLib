@@ -18,6 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <boost/make_shared.hpp>
+
 #include <ql/termstructures/yield/fittedbonddiscountcurve.hpp>
 #include <ql/pricingengines/bond/bondfunctions.hpp>
 #include <ql/math/optimization/simplex.hpp>
@@ -54,11 +56,13 @@ namespace QuantLib {
                  Real accuracy,
                  Size maxEvaluations,
                  const Array& guess,
-                 Real simplexLambda)
+                 Real simplexLambda,
+                 Size maxStationaryStateIterations)
     : YieldTermStructure(settlementDays, calendar, dayCounter),
       accuracy_(accuracy),
       maxEvaluations_(maxEvaluations),
       simplexLambda_(simplexLambda),
+      maxStationaryStateIterations_(maxStationaryStateIterations),
       guessSolution_(guess),
       bondHelpers_(bondHelpers),
       fittingMethod_(fittingMethod) {
@@ -76,11 +80,13 @@ namespace QuantLib {
                  Real accuracy,
                  Size maxEvaluations,
                  const Array& guess,
-                 Real simplexLambda)
+                 Real simplexLambda,
+                 Size maxStationaryStateIterations)
     : YieldTermStructure(referenceDate, Calendar(), dayCounter),
       accuracy_(accuracy),
       maxEvaluations_(maxEvaluations),
       simplexLambda_(simplexLambda),
+      maxStationaryStateIterations_(maxStationaryStateIterations),
       guessSolution_(guess),
       bondHelpers_(bondHelpers),
       fittingMethod_(fittingMethod) {
@@ -122,11 +128,21 @@ namespace QuantLib {
     }
 
 
-    FittedBondDiscountCurve::FittingMethod::FittingMethod(bool constrainAtZero)
-    : constrainAtZero_(constrainAtZero) {}
+    FittedBondDiscountCurve::FittingMethod::FittingMethod(bool constrainAtZero, const Array& weights,
+                                                          const Handle<YieldTermStructure>& discountingCurve,
+                                                          boost::shared_ptr<OptimizationMethod> optimizationMethod)
+    : constrainAtZero_(constrainAtZero), weights_(weights), rebase_(1.0),
+      discountingCurve_(discountingCurve), optimizationMethod_(optimizationMethod) {}
 
 
     void FittedBondDiscountCurve::FittingMethod::init() {
+        //In case discount curve is given and has a different reference date,
+        //discount to this curve's reference date
+        if(!discountingCurve_.empty() && curve_->referenceDate() != discountingCurve_->referenceDate()){
+            rebase_ = discountingCurve_->discount(curve_->referenceDate());
+        } else{
+            rebase_ = 1.0;
+        }
 
         // yield conventions
         DayCounter yieldDC = curve_->dayCounter();
@@ -136,36 +152,49 @@ namespace QuantLib {
         Size n = curve_->bondHelpers_.size();
         costFunction_ = shared_ptr<FittingCost>(new FittingCost(this));
         costFunction_->firstCashFlow_.resize(n);
-        weights_ = Array(n);
-        Real squaredSum = 0.0;
-        for (Size i=0; i<curve_->bondHelpers_.size(); ++i) {
-            shared_ptr<Bond> bond = curve_->bondHelpers_[i]->bond();
+        if(weights_.size() != n)
+        {
+            weights_ = Array(n);
+            Real squaredSum = 0.0;
+            for (Size i=0; i<curve_->bondHelpers_.size(); ++i) {
+                shared_ptr<Bond> bond = curve_->bondHelpers_[i]->bond();
 
-            Leg leg = bond->cashflows();
-            Real cleanPrice = curve_->bondHelpers_[i]->quote()->value();
-            
-            Date bondSettlement = bond->settlementDate();
-            Rate ytm = BondFunctions::yield(*bond, cleanPrice,
+                Leg leg = bond->cashflows();
+                Real cleanPrice = curve_->bondHelpers_[i]->quote()->value();
+
+                Date bondSettlement = bond->settlementDate();
+                Rate ytm = BondFunctions::yield(*bond, cleanPrice,
                                             yieldDC, yieldComp, yieldFreq,
                                             bondSettlement);
 
-            Time dur = BondFunctions::duration(*bond, ytm,
+                Time dur = BondFunctions::duration(*bond, ytm,
                                                yieldDC, yieldComp, yieldFreq,
                                                Duration::Modified,
                                                bondSettlement);
-            weights_[i] = 1.0/dur;
-            squaredSum += weights_[i]*weights_[i];
+                weights_[i] = 1.0/dur;
+                squaredSum += weights_[i]*weights_[i];
 
-            const Leg& cf = bond->cashflows();
-            for (Size k=0; k<cf.size(); ++k) {
-                if (!cf[k]->hasOccurred(bondSettlement, false)) {
-                    costFunction_->firstCashFlow_[i] = k;
-                    break;
+                const Leg& cf = bond->cashflows();
+                for (Size k=0; k<cf.size(); ++k) {
+                    if (!cf[k]->hasOccurred(bondSettlement, false)) {
+                        costFunction_->firstCashFlow_[i] = k;
+                        break;
+                    }
                 }
             }
+            weights_ /= std::sqrt(squaredSum);
         }
-        weights_ /= std::sqrt(squaredSum);
+    }
 
+
+    DiscountFactor FittedBondDiscountCurve::FittingMethod::discountFunction(const Array& x,
+                                                                            Time t) const{
+        DiscountFactor d = discountFunctionImpl(x, t);
+        if(!discountingCurve_.empty())
+        {
+            d *= discountingCurve_->discount(t, true)/rebase_;
+        }
+        return d;
     }
 
 
@@ -180,21 +209,25 @@ namespace QuantLib {
             x = curve_->guessSolution_;
         }
 
-        Simplex simplex(curve_->simplexLambda_);
+        //workaround for backwards compatibility
+        boost::shared_ptr<OptimizationMethod> optimization = optimizationMethod_;
+        if(!optimization)
+        {
+            optimization = boost::make_shared<Simplex>(curve_->simplexLambda_);
+        }
         Problem problem(costFunction, constraint, x);
 
-        Natural maxStationaryStateIterations = 100;
         Real rootEpsilon = curve_->accuracy_;
         Real functionEpsilon =  curve_->accuracy_;
         Real gradientNormEpsilon = curve_->accuracy_;
 
         EndCriteria endCriteria(curve_->maxEvaluations_,
-                                maxStationaryStateIterations,
+                                curve_->maxStationaryStateIterations_,
                                 rootEpsilon,
                                 functionEpsilon,
                                 gradientNormEpsilon);
 
-        simplex.minimize(problem,endCriteria);
+        optimization->minimize(problem,endCriteria);
         solution_ = problem.currentValue();
 
         numberOfIterations_ = problem.functionEvaluation();
@@ -250,8 +283,37 @@ namespace QuantLib {
     Disposable<Array>
     FittedBondDiscountCurve::FittingMethod::FittingCost::values(
                                                        const Array &x) const {
-        Array y(1, value(x));
-        return y;
+        Date refDate  = fittingMethod_->curve_->referenceDate();
+        const DayCounter& dc = fittingMethod_->curve_->dayCounter();
+        Size n = fittingMethod_->curve_->bondHelpers_.size();
+        Array values(n);
+        for (Size i=0; i<n; ++i) {
+
+            shared_ptr<Bond> bond =
+                            fittingMethod_->curve_->bondHelpers_[i]->bond();
+            Date bondSettlement = bond->settlementDate();
+
+            // CleanPrice_i = sum( cf_k * d(t_k) ) - accruedAmount
+            Real modelPrice = - bond->accruedAmount(bondSettlement);
+            const Leg& cf = bond->cashflows();
+            for (Size k=firstCashFlow_[i]; k<cf.size(); ++k) {
+                Time tenor = dc.yearFraction(refDate, cf[k]->date());
+                modelPrice += cf[k]->amount() *
+                                    fittingMethod_->discountFunction(x, tenor);
+            }
+
+            // adjust price (NPV) for forward settlement
+            if (bondSettlement != refDate ) {
+                Time tenor = dc.yearFraction(refDate, bondSettlement);
+                modelPrice /= fittingMethod_->discountFunction(x, tenor);
+            }
+            Real marketPrice =
+                fittingMethod_->curve_->bondHelpers_[i]->quote()->value();
+            Real error = modelPrice - marketPrice;
+            Real weightedError = fittingMethod_->weights_[i] * error;
+            values[i] = weightedError * weightedError;
+        }
+        return values;
     }
 
 }
