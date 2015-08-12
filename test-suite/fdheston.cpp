@@ -629,6 +629,8 @@ void FdHestonTest::testFdmHestonConvergence() {
 }
 
 void FdHestonTest::testFdmHestonIntradayPricing() {
+#ifdef QL_HIGH_RESOLUTION_DATE
+
     BOOST_TEST_MESSAGE("Testing FDM Heston intraday pricing ...");
 
     SavedSettings backup;
@@ -688,6 +690,7 @@ void FdHestonTest::testFdmHestonIntradayPricing() {
                     << "\n   calculated: "<<  gammaCalculated);
         }
     }
+#endif
 }
 
 

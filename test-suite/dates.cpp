@@ -376,6 +376,8 @@ void DateTest::parseDates() {
 }
 
 void DateTest::intraday() {
+#ifdef QL_HIGH_RESOLUTION_DATE
+
     BOOST_TEST_MESSAGE("Testing intraday information of dates...");
 
     const Date d1 = Date(12, February, 2015, 10, 45, 12, 1234, 76253);
@@ -426,7 +428,10 @@ void DateTest::intraday() {
 
     BOOST_CHECK_MESSAGE(s.str() == std::string("2015-02-07T01:04:02,003004"),
         "datetime to string failed to reproduce expected result");
+
+#endif
 }
+
 
 test_suite* DateTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Date tests");

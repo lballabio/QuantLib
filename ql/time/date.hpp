@@ -1,3 +1,4 @@
+
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
@@ -35,8 +36,10 @@
 #include <utility>
 #include <functional>
 
+#ifdef QL_HIGH_RESOLUTION_DATE
 #include <boost/date_time/posix_time/ptime.hpp>
 #include <boost/date_time/posix_time/posix_time_duration.hpp>
+#endif
 
 namespace QuantLib {
 
@@ -78,6 +81,7 @@ namespace QuantLib {
     /*! \ingroup datetime */
     typedef Integer Year;
 
+#ifdef QL_HIGH_RESOLUTION_DATE
     //! Hour number
     /*! \ingroup datetime */
     typedef boost::posix_time::hours::hour_type Hour;
@@ -99,6 +103,7 @@ namespace QuantLib {
     /*! \ingroup datetime */
     typedef boost::posix_time::time_duration::fractional_seconds_type
         Microsecond;
+#endif
 
     //! Concrete date class
     /*! This class provides methods to inspect dates as well as methods and
@@ -118,16 +123,19 @@ namespace QuantLib {
         //@{
         //! Default constructor returning a null date.
         Date();
+        //! Constructor taking a serial number as given by Applix or Excel.
+        explicit Date(BigInteger serialNumber);
+        //! More traditional constructor.
+        Date(Day d, Month m, Year y);
 
+#ifdef QL_HIGH_RESOLUTION_DATE
         //! Constructor taking boost posix date time object
         explicit Date(const boost::posix_time::ptime& localTime);
         //! More traditional constructor.
-        Date(Day d, Month m, Year y);
         Date(Day d, Month m, Year y,
              Hour hours, Minute minutes, Second seconds,
              Millisecond millisec = 0, Microsecond microsec = 0);
-        //! Constructor taking a serial number as given by Applix or Excel.
-        explicit Date(BigInteger serialNumber);
+#endif
         //@}
 
         //! \name inspectors
@@ -138,6 +146,9 @@ namespace QuantLib {
         Day dayOfYear() const;
         Month month() const;
         Year year() const;
+        BigInteger serialNumber() const;
+
+#ifdef QL_HIGH_RESOLUTION_DATE
         Hour hours() const;
         Minute minutes() const;
         Second seconds() const;
@@ -146,9 +157,9 @@ namespace QuantLib {
 
         Time fractionOfDay() const;
         Time fractionOfSecond() const;
-        BigInteger serialNumber() const;
 
         const boost::posix_time::ptime& dateTime() const;
+#endif
         //@}
 
         //! \name date algebra
@@ -183,10 +194,6 @@ namespace QuantLib {
         //@{
         //! today's date.
         static Date todaysDate();
-        //! local date time, based on the time zone settings of the computer
-        static Date localDateTime();
-        //! UTC date time
-        static Date universalDateTime();
         //! earliest allowed date
         static Date minDate();
         //! latest allowed date
@@ -215,11 +222,33 @@ namespace QuantLib {
 							   Weekday w,
 							   Month m,
 							   Year y);
+
+#ifdef QL_HIGH_RESOLUTION_DATE
+        //! local date time, based on the time zone settings of the computer
+        static Date localDateTime();
+        //! UTC date time
+        static Date universalDateTime();
+
         //! underlying resolution of the  posix date time object
         static Size ticksPerSecond();
+#endif
+
         //@}
+
       private:
+        static BigInteger minimumSerialNumber();
+        static BigInteger maximumSerialNumber();
+        static void checkSerialNumber(BigInteger serialNumber);
+
+#ifdef QL_HIGH_RESOLUTION_DATE
         boost::posix_time::ptime dateTime_;
+#else
+        BigInteger serialNumber_;
+        static Date advance(const Date& d, Integer units, TimeUnit);
+        static Integer monthLength(Month m, bool leapYear);
+        static Integer monthOffset(Month m, bool leapYear);
+        static BigInteger yearOffset(Year y);
+#endif
     };
 
     /*! \relates Date
@@ -267,12 +296,6 @@ namespace QuantLib {
         };
         std::ostream& operator<<(std::ostream&, const iso_date_holder&);
 
-        struct iso_datetime_holder {
-            iso_datetime_holder(const Date& d) : d(d) {}
-            Date d;
-        };
-        std::ostream& operator<<(std::ostream&, const iso_datetime_holder&);
-
         struct formatted_date_holder {
             formatted_date_holder(const Date& d, const std::string& f)
             : d(d), f(f) {}
@@ -281,6 +304,14 @@ namespace QuantLib {
         };
         std::ostream& operator<<(std::ostream&,
                                  const formatted_date_holder&);
+
+#ifdef QL_HIGH_RESOLUTION_DATE
+        struct iso_datetime_holder {
+            iso_datetime_holder(const Date& d) : d(d) {}
+            Date d;
+        };
+        std::ostream& operator<<(std::ostream&, const iso_datetime_holder&);
+#endif
     }
 
     namespace io {
@@ -297,14 +328,17 @@ namespace QuantLib {
         /*! \ingroup manips */
         detail::iso_date_holder iso_date(const Date&);
 
-        //! output datetimes in ISO format (yyyy-mm-dd)
-        /*! \ingroup manips */
-        detail::iso_datetime_holder iso_datetime(const Date&);
-
         //! output dates in user defined format using boost date functionality
         /*! \ingroup manips */
         detail::formatted_date_holder formatted_date(const Date&,
                                                      const std::string& fmt);
+
+#ifdef QL_HIGH_RESOLUTION_DATE
+        //! output datetimes in ISO format (YYYY-MM-DDThh:mm:ss,SSSSSS)
+        /*! \ingroup manips */
+        detail::iso_datetime_holder iso_datetime(const Date&);
+#endif
+
     }
 
     //! specialization of Null template for the Date class
@@ -314,7 +348,86 @@ namespace QuantLib {
         Null() {}
         operator Date() const { return Date(); }
     };
-}
 
+
+#ifndef QL_HIGH_RESOLUTION_DATE
+    // inline definitions
+
+    inline Weekday Date::weekday() const {
+        Integer w = serialNumber_ % 7;
+        return Weekday(w == 0 ? 7 : w);
+    }
+
+    inline Day Date::dayOfMonth() const {
+        return dayOfYear() - monthOffset(month(),isLeap(year()));
+    }
+
+    inline Day Date::dayOfYear() const {
+        return serialNumber_ - yearOffset(year());
+    }
+
+    inline BigInteger Date::serialNumber() const {
+        return serialNumber_;
+    }
+
+    inline Date Date::operator+(BigInteger days) const {
+        return Date(serialNumber_+days);
+    }
+
+    inline Date Date::operator-(BigInteger days) const {
+        return Date(serialNumber_-days);
+    }
+
+    inline Date Date::operator+(const Period& p) const {
+        return advance(*this,p.length(),p.units());
+    }
+
+    inline Date Date::operator-(const Period& p) const {
+        return advance(*this,-p.length(),p.units());
+    }
+
+    inline Date Date::endOfMonth(const Date& d) {
+        Month m = d.month();
+        Year y = d.year();
+        return Date(monthLength(m, isLeap(y)), m, y);
+    }
+
+    inline bool Date::isEndOfMonth(const Date& d) {
+       return (d.dayOfMonth() == monthLength(d.month(), isLeap(d.year())));
+    }
+
+    inline BigInteger operator-(const Date& d1, const Date& d2) {
+        return d1.serialNumber()-d2.serialNumber();
+    }
+
+    inline Time daysBetween(const Date& d1, const Date& d2) {
+        return Time(d2-d1);
+    }
+
+    inline bool operator==(const Date& d1, const Date& d2) {
+        return (d1.serialNumber() == d2.serialNumber());
+    }
+
+    inline bool operator!=(const Date& d1, const Date& d2) {
+        return (d1.serialNumber() != d2.serialNumber());
+    }
+
+    inline bool operator<(const Date& d1, const Date& d2) {
+        return (d1.serialNumber() < d2.serialNumber());
+    }
+
+    inline bool operator<=(const Date& d1, const Date& d2) {
+        return (d1.serialNumber() <= d2.serialNumber());
+    }
+
+    inline bool operator>(const Date& d1, const Date& d2) {
+        return (d1.serialNumber() > d2.serialNumber());
+    }
+
+    inline bool operator>=(const Date& d1, const Date& d2) {
+        return (d1.serialNumber() >= d2.serialNumber());
+    }
+#endif
+}
 
 #endif

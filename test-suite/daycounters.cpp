@@ -427,6 +427,8 @@ void DayCounterTest::testThirty360_EurobondBasis() {
 }
 
 void DayCounterTest::testIntraday() {
+#ifdef QL_HIGH_RESOLUTION_DATE
+
     BOOST_TEST_MESSAGE("Testing intraday behavior of day counter ...");
 
     const Date d1(12, February, 2015);
@@ -452,8 +454,8 @@ void DayCounterTest::testIntraday() {
             std::fabs(dc.yearFraction(d2, d1) + expected) < tol,
             "can not reproduce result for day counter " << dc.name());
     }
+#endif
 }
-
 
 
 test_suite* DayCounterTest::suite() {
@@ -465,6 +467,7 @@ test_suite* DayCounterTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testThirty360_BondBasis));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testThirty360_EurobondBasis));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testIntraday));
+
     return suite;
 }
 

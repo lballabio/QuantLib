@@ -72,4 +72,9 @@
 //#   define QL_ENABLE_SESSIONS
 #endif
 
+/* Define this to enable a date resolution down to microseconds and
+   allow for accurate intraday pricing.*/
+#ifndef QL_HIGH_RESOLUTION_DATE
+//#    define QL_HIGH_RESOLUTION_DATE
+#endif
 #endif
