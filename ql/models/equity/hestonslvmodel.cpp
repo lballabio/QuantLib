@@ -35,6 +35,7 @@
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmmesherintegral.hpp>
 #include <ql/methods/finitedifferences/schemes/modifiedcraigsneydscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/hundsdorferscheme.hpp>
 
 #include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
 #include <ql/experimental/finitedifferences/localvolrndcalculator.hpp>
@@ -45,6 +46,8 @@
 
 #include <functional>
 #include <iostream>
+
+//#include <RInside.h>
 
 using namespace boost::assign;
 
@@ -59,16 +62,14 @@ namespace QuantLib {
                   {
                     std::vector<boost::tuple<Real, Real, bool> > cPoints;
                     const Real eps = 5e-4;
-//                    const Real lowerBound = std::max(
-//                            std::log(rnd.invcdf(eps, t)),
-//                            std::log(0.0000025));
-//                    const Real upperBound = std::log(rnd.invcdf(1-eps, t));
-                    const Real lowerBound = std::log(0.0000025);
-                    const Real upperBound = std::log(rnd.stationary_invcdf(1-eps));
+                    const Real lowerBound = std::max(
+                            std::log(rnd.invcdf(eps, t)),
+                            std::log(0.0000025));
+                    const Real upperBound = std::log(rnd.invcdf(1-eps/10, t));
                     const Real v0Center = std::log(v0);
-                    const Real v0Density = t<0.5? 0.7 : 1.0;
+                    const Real v0Density = t<0.08? 0.05 : 1.0;
                     const Real upperBoundDensity = 1.0;
-                    const Real lowerBoundDensity = 0.1; // 0.1
+                    const Real lowerBoundDensity = 0.1;//(t < 0.08)? 1.0 : 0.05; // 0.1
                     cPoints += boost::make_tuple(lowerBound, lowerBoundDensity, false),
                               boost::make_tuple(v0Center, v0Density, true),
                               boost::make_tuple(upperBound, upperBoundDensity, false);
@@ -90,14 +91,6 @@ namespace QuantLib {
 
                       return boost::make_shared<Concentrating1dMesher>(
                           lowerBound, upperBound, vGrid, cPoints, 1e-8);
-//                    upperBound = std::max(1.25*v0, rnd.stationary_invcdf(0.995));
-//                    lowerBound = std::min(0.75*v0, rnd.stationary_invcdf(1e-5));
-//
-//                    const Real v0Center = v0;
-//                    const Real v0Density = 0.01;
-//                    const Real lowerBoundDensity = 0.05;
-//                    cPoints += boost::make_tuple(lowerBound, lowerBoundDensity, false),
-//                        boost:: make_tuple(v0Center, v0Density, true);
                   }
                 break;
                 default:
@@ -143,11 +136,6 @@ namespace QuantLib {
                 oldMesher->getFdm1dMeshers()[1]->locations().begin(),
                 oldMesher->getFdm1dMeshers()[1]->locations().end(), m);
 
-            const Real newXmin = *(newMesher->getFdm1dMeshers()[0]->locations().begin());
-            const Real newXmax = *(newMesher->getFdm1dMeshers()[0]->locations().end()-1);
-            const Real newVmin = *(newMesher->getFdm1dMeshers()[1]->locations().begin());
-            const Real newVmax = *(newMesher->getFdm1dMeshers()[1]->locations().end()-1);
-
             Array pNew(p.size());
             const FdmLinearOpIterator endIter = newLayout->end();
             for (FdmLinearOpIterator iter = newLayout->begin();
@@ -158,35 +146,6 @@ namespace QuantLib {
                 if (   x > interpol.xMax() || x < interpol.xMin()
                     || v > interpol.yMax() || v < interpol.yMin() ) {
                     pNew[iter.index()] = 0;
-//                    const Real xParam = std::max(interpol.xMin(), std::min(interpol.xMax(), x));
-//                    const Real vParam = std::max(interpol.yMin(), std::min(interpol.yMax(), v));
-//
-//                    const Real xScale =
-//                            (x > interpol.xMax() && newXmax > interpol.xMax())?
-//                                    (newXmax-x)/(newXmax-interpol.xMax()) :
-//                            (x < interpol.xMin() && interpol.xMin() < newXmin)?
-//                                     (x-newXmin)/(interpol.xMin()-newXmin)
-//                            :1.0;
-//                    const Real vScale =
-//                            (v > interpol.yMax() && newVmax > interpol.yMax())?
-//                                    (newVmax-v)/(newVmax-interpol.yMax()) :
-//                            (v < interpol.yMin() && interpol.yMin() < newVmin)?
-//                                     (v-newVmin)/(interpol.yMin()-newVmin)
-//                            :1.0;
-//                    //std::cout << "xScale=" << xScale << ", vScale=" << vScale << std::endl;
-//
-////                    if (xScale*vScale >= 0.0) {
-////                        std::cout << "xScale=" << xScale << ", vScale=" << vScale << std::endl;
-////                        std::cout << "x=" << x << ", v=" << v << std::endl;
-////                        std::cout << "xMax=" << interpol.xMax() << ", xMin=" << interpol.xMin() << std::endl;
-////                        std::cout << "xMax=" << newXmax << ", xMin=" << newXmin << std::endl;
-////                        std::cout << "vMax=" << interpol.yMax() << ", vMin=" << interpol.yMin() << std::endl;
-////                        std::cout << "vMax=" << newVmax << ", vMin=" << newVmin << std::endl;
-////                    }
-//
-//                    // expect flat extrapolation
-//                    pNew[iter.index()] = interpol(xParam, vParam)*xScale*vScale;
-////                    std::cout << x << ", " << v << " pNew=" << pNew[iter.index()] << std::endl;
                 }
                 else {
                     pNew[iter.index()] = interpol(x, v);
@@ -231,6 +190,8 @@ namespace QuantLib {
     }
 
     void HestonSLVModel::performCalculations() const {
+        //RInside R(0, NULL);
+
         const boost::shared_ptr<HestonProcess> hestonProcess
             = hestonModel_->process();
         const boost::shared_ptr<Quote> spot
@@ -306,43 +267,22 @@ namespace QuantLib {
         xMesher.reserve(timeGrid->size());
         vMesher.reserve(timeGrid->size());
 
-//--------------------------------
-//        const Real sEps = 1e-3;
-//        const Real normInvEps = InverseCumulativeNormal()(1-sEps);
-//        const Real x0 = std::log(spot->value());
-//        const Time maturity = 2.0;
-//        const Real localVol = localVol_->localVol(0.0, spot->value());
-//
-//        const Real sLowerBound = x0 - normInvEps*localVol*std::sqrt(maturity);
-//        const Real sUpperBound = x0 + normInvEps*localVol*std::sqrt(maturity);
-//
-//        const boost::shared_ptr<Fdm1dMesher> spotMesher(
-//            new Concentrating1dMesher(sLowerBound, sUpperBound, xGrid,
-//                std::make_pair(x0, 0.1), true));
-//--------------------------------
-
         xMesher.push_back(localVolRND.mesher(0.0));
         vMesher.push_back(boost::make_shared<Predefined1dMesher>(
             std::vector<Real>(vGrid, v0)));
 
-        xMesher.push_back(localVolRND.mesher(timeGrid->at(1)));
-        vMesher.push_back(
-            varianceMesher(squareRootRnd, timeGrid->at(1), vGrid, v0, trafoType));
-
-        for (Size i=2; i < timeGrid->size(); ++i) {
+        Size rescaleIdx = 0;
+        for (Size i=1; i < timeGrid->size(); ++i) {
             xMesher.push_back(localVolRND.mesher(timeGrid->at(i)));
-//            xMesher.push_back(spotMesher);
 
-            const Size idx = std::distance(rescaleSteps.begin(),
-                std::lower_bound(rescaleSteps.begin(),
-                                 rescaleSteps.end(), i));
-
-            if (i == rescaleSteps[idx-1]+1)
+            if (i == rescaleSteps[rescaleIdx]) {
+                ++rescaleIdx;
                 vMesher.push_back(varianceMesher(squareRootRnd,
-                    (idx < rescaleSteps.size())
-                        ? timeGrid->at(rescaleSteps[idx])
+                    (rescaleIdx < rescaleSteps.size())
+                        ? timeGrid->at(rescaleSteps[rescaleIdx])
                         : timeGrid->back(),
                     vGrid, v0, trafoType));
+            }
             else
                 vMesher.push_back(vMesher.back());
         }
@@ -357,10 +297,7 @@ namespace QuantLib {
 
         boost::shared_ptr<Matrix> L(new Matrix(xGrid, timeGrid->size()));
 
-        // just preliminarily put something other than zero into the matrix
-        //std::fill(L->begin(),L->end(), 0.45);
-
-        const Real l0 = lv0; ///std::sqrt(v0);
+        const Real l0 = lv0;
         std::fill(L->column_begin(0),L->column_end(0), l0);
         std::fill(L->column_begin(1),L->column_end(1), l0);
 
@@ -390,6 +327,12 @@ namespace QuantLib {
             FdmSchemeDesc::ModifiedCraigSneyd().theta,
             FdmSchemeDesc::ModifiedCraigSneyd().mu, hestonFwdOp));
 
+//        boost::shared_ptr<HundsdorferScheme> mcg(
+//            new HundsdorferScheme(
+//                FdmSchemeDesc::Hundsdorfer().theta,
+//                FdmSchemeDesc::Hundsdorfer().mu,
+//                hestonFwdOp));
+
         Array p = FdmHestonGreensFct(mesher, hestonProcess, trafoType, lv0)
             .get(timeGrid->at(1), params_.greensAlgorithm);
 
@@ -403,8 +346,8 @@ namespace QuantLib {
             const Time t = timeGrid->at(i);
             const Time dt = t - timeGrid->at(i-1);
 
-            if (std::find(rescaleSteps.begin(), rescaleSteps.end(), i)
-                != rescaleSteps.end()) {
+            if (mesher->getFdm1dMeshers()[0] != xMesher[i] ||
+                mesher->getFdm1dMeshers()[1] != vMesher[i]) {
                 const boost::shared_ptr<FdmMesherComposite> newMesher(
                     new FdmMesherComposite(xMesher[i], vMesher[i]));
 
@@ -437,8 +380,8 @@ namespace QuantLib {
             const Time t = timeGrid->at(i);
             const Time dt = t - timeGrid->at(i-1);
 
-            if (std::find(rescaleSteps.begin(), rescaleSteps.end(), i)
-                != rescaleSteps.end()) {
+            if (   mesher->getFdm1dMeshers()[0] != xMesher[i]
+                || mesher->getFdm1dMeshers()[1] != vMesher[i]) {
                 std::cout << "pre reshape step " << i << " " <<
                     FdmMesherIntegral(
                         mesher, DiscreteSimpsonIntegral()).integrate(p)
@@ -451,43 +394,43 @@ namespace QuantLib {
 
                 std::cout << "t=" << t << std::endl
                           << "x("
-                          << mesher->locations(0).front()
+                          << mesher->getFdm1dMeshers()[0]->locations().front()
                           << ", "
-                          << mesher->locations(0).back()
+                          << mesher->getFdm1dMeshers()[0]->locations().back()
                           << "), v("
-                          << mesher->locations(1).front()
+                          << mesher->getFdm1dMeshers()[1]->locations().front()
                           << ", "
-                          << mesher->locations(1).back()
+                          << mesher->getFdm1dMeshers()[1]->locations().back()
                           << ") xn="
                           << mesher->getFdm1dMeshers()[0]->locations().size()
                           << " vn="
                           << mesher->getFdm1dMeshers()[1]->locations().size()
-                          << std::endl;
-                std::cout << "x("
-                          << std::exp(mesher->locations(0).front())
-                          << ", "
-                          << std::exp(mesher->locations(0).back())
-                          << "), v("
-                          << std::exp(mesher->locations(1).front())
-                          << ", "
-                          << std::exp(mesher->locations(1).back())
-                          << ")"
                           << std::endl;
 
                 std::cout << "reshape step " << i << " " <<
                     FdmMesherIntegral(
                         mesher, DiscreteSimpsonIntegral()).integrate(p)
                         << std::endl;
-                //p = rescalePDF(p, mesher);
+
+                p = rescalePDF(p, mesher);
+
                 hestonFwdOp = boost::shared_ptr<FdmLinearOpComposite>(
                                 new FdmHestonFwdOp(mesher, hestonProcess,
                                                trafoType, leverageFct));
+
+
                 mcg = boost::shared_ptr<ModifiedCraigSneydScheme>(
                         new ModifiedCraigSneydScheme(
                     FdmSchemeDesc::ModifiedCraigSneyd().theta,
                     FdmSchemeDesc::ModifiedCraigSneyd().mu, hestonFwdOp));
+
+//                mcg = boost::shared_ptr<HundsdorferScheme>(
+//                    new HundsdorferScheme(
+//                        FdmSchemeDesc::Hundsdorfer().theta,
+//                        FdmSchemeDesc::Hundsdorfer().mu,
+//                        hestonFwdOp));
+
             }
-            //std::cout << "reshape finished" << std::endl;
 
             Array pn = p;
             const Array x(Exp(
@@ -525,7 +468,6 @@ namespace QuantLib {
                     leverageFct->setInterpolation(Linear());
                 }
 
-// smoothing
                 // TODO: Need to determine localvol at lower and upper bound!
                 const Volatility localVol
                     = localVol_->localVol(t, x[x.size()/2]);
@@ -563,11 +505,48 @@ namespace QuantLib {
                 mcg->step(pn, t);
             }
             p = pn;
+            p = rescalePDF(p, mesher);
 
-//          for (Size j=0; j < x.size(); ++j) {
-//              std::cout << (*leverageFct)(t, x[j]) << " ";
-//          }
-//          std::cout << std::endl << std::endl;
+
+//            std::vector<Real> xR(vGrid), y(vGrid), vq(vGrid);
+//            std::copy(v.begin(), v.end(), xR.begin());
+//
+//            Array xSlice(xGrid);
+//            for (Size k=0; k < vGrid; ++k) {
+//                for (Size j=0; j < x.size(); ++j)
+//                    xSlice[j] = pn[j + k*xGrid];
+//
+//                y[k] = DiscreteSimpsonIntegral()(Log(x), xSlice);
+//                vq[k] = squareRootRnd.pdf(std::exp(v[k]), t)*std::exp(v[k]);
+//            }
+
+
+//            std::vector<Real> xR(xGrid), y(xGrid), vq(xGrid);
+//            const Array xl(Log(x));
+//            std::copy(xl.begin(), xl.end(), xR.begin());
+//            for (Size j=0; j < x.size(); ++j) {
+//
+//                Array pSlice(vGrid);
+//                for (Size k=0; k < vGrid; ++k)
+//                    pSlice[k] = p[j + k*xGrid];
+//
+//                y[j] = DiscreteSimpsonIntegral()(v, pSlice);
+//                vq[j] = localVolRND.pdf(std::log(x[j]), t);
+//            }
+//
+//            R["x"] = xR;
+//            R["y"] = y;
+//            R["t"] = t;
+//            R["v"] = vq;
+//
+//            std::string rScript[] = {
+//                    "plot(x,y, type='l',main=t, col=\"blue\")",
+//                    "points(x,v,type='l')"
+//            };
+//
+//            for (Size i=0; i < sizeof(rScript)/sizeof(std::string); ++i) {
+//                R.parseEvalQ(rScript[i]);
+//            }
 
         }
 //////////////////////////////////////

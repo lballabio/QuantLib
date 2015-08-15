@@ -1872,7 +1872,7 @@ void HestonSLVModelTest::testHestonSLVModel() {
 //          1e-6, -Null<Real>(), 10000,
 //          FdmHestonGreensFct::ZeroCorrelation};
     const HestonSLVFokkerPlanckFdmParams params =
-        { finalDate, 201, 501, 5000, 20, 3.0,
+        { finalDate, 201, 301, 5000, 25, 3.0,
           1e-2, -Null<Real>(), 10000,
           FdmHestonGreensFct::Gaussian,
           FdmSquareRootFwdOp::Log
@@ -2033,7 +2033,7 @@ void HestonSLVModelTest::testHestonSLVModel() {
                           << std::setprecision(1) << (calculated-expected)/vega*1e4
                           << std::endl;
 
-            const Real tol = 0.0005; //0.0005; //testCase.eps;
+            const Real tol = 0.0005;//testCase.eps;
             if (std::fabs((calculated-expected)/vega) > tol) {
                 std::cout << "failed to reproduce round trip vola "
                           << "\n   strike      " << strike
@@ -2069,8 +2069,8 @@ test_suite* HestonSLVModelTest::experimental() {
 //        &HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity));
 //    suite->add(QUANTLIB_TEST_CASE(
 //        &HestonSLVModelTest::testSquareRootFokkerPlanckFwdEquation));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquation));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquation));
 //    suite->add(QUANTLIB_TEST_CASE(
 //        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage));
 //    suite->add(QUANTLIB_TEST_CASE(
