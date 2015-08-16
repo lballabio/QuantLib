@@ -28,26 +28,23 @@
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 #include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
-#include <ql/methods/finitedifferences/meshers/predefined1dmesher.hpp>
+#include <ql/methods/finitedifferences/schemes/all.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/meshers/predefined1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmmesherintegral.hpp>
-#include <ql/methods/finitedifferences/schemes/modifiedcraigsneydscheme.hpp>
-#include <ql/methods/finitedifferences/schemes/hundsdorferscheme.hpp>
-
 #include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
 #include <ql/experimental/finitedifferences/localvolrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/squarerootprocessrndcalculator.hpp>
 
+#include <boost/scoped_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/assign/std/vector.hpp>
 
 #include <functional>
 #include <iostream>
-
-//#include <RInside.h>
 
 using namespace boost::assign;
 
@@ -65,11 +62,11 @@ namespace QuantLib {
                     const Real lowerBound = std::max(
                             std::log(rnd.invcdf(eps, t)),
                             std::log(0.0000025));
-                    const Real upperBound = std::log(rnd.invcdf(1-eps/10, t));
+                    const Real upperBound = std::log(rnd.invcdf(1-0.1*eps, t));
                     const Real v0Center = std::log(v0);
-                    const Real v0Density = t<0.08? 0.05 : 1.0;
+                    const Real v0Density = 1.0;
                     const Real upperBoundDensity = 1.0;
-                    const Real lowerBoundDensity = 0.1;//(t < 0.08)? 1.0 : 0.05; // 0.1
+                    const Real lowerBoundDensity = 0.1;
                     cPoints += boost::make_tuple(lowerBound, lowerBoundDensity, false),
                               boost::make_tuple(v0Center, v0Density, true),
                               boost::make_tuple(upperBound, upperBoundDensity, false);
@@ -154,6 +151,65 @@ namespace QuantLib {
 
             return pNew;
         }
+
+        class FdmScheme {
+          public:
+            virtual ~FdmScheme() {}
+            virtual void step(Array& a, Time t) = 0;
+            virtual void setStep(Time dt) = 0;
+        };
+
+        template <class T>
+        class FdmSchemeWrapper : public FdmScheme {
+          public:
+            explicit FdmSchemeWrapper(T* scheme)
+            : scheme_(scheme) { }
+
+            void step(Array& a, Time t) {
+                scheme_->step(a, t);
+            }
+            void setStep(Time dt) {
+                scheme_->setStep(dt);
+            }
+
+          private:
+            const boost::scoped_ptr<T> scheme_;
+        };
+
+        boost::shared_ptr<FdmScheme> fdmSchemeFactory(
+            const FdmSchemeDesc desc,
+            const boost::shared_ptr<FdmLinearOpComposite>& op) {
+
+            switch (desc.type) {
+              case FdmSchemeDesc::HundsdorferType:
+                  return boost::shared_ptr<FdmScheme>(
+                      new FdmSchemeWrapper<HundsdorferScheme>(
+                          new HundsdorferScheme(desc.theta, desc.mu, op)));
+              case FdmSchemeDesc::DouglasType:
+                  return boost::shared_ptr<FdmScheme>(
+                      new FdmSchemeWrapper<DouglasScheme>(
+                          new DouglasScheme(desc.theta, op)));
+              case FdmSchemeDesc::CraigSneydType:
+                  return boost::shared_ptr<FdmScheme>(
+                      new FdmSchemeWrapper<CraigSneydScheme>(
+                          new CraigSneydScheme(desc.theta, desc.mu, op)));
+              case FdmSchemeDesc::ModifiedCraigSneydType:
+                  return boost::shared_ptr<FdmScheme>(
+                     new FdmSchemeWrapper<ModifiedCraigSneydScheme>(
+                          new ModifiedCraigSneydScheme(
+                              desc.theta, desc.mu, op)));
+              case FdmSchemeDesc::ImplicitEulerType:
+                  return boost::shared_ptr<FdmScheme>(
+                      new FdmSchemeWrapper<ImplicitEulerScheme>(
+                          new ImplicitEulerScheme(op)));
+              case FdmSchemeDesc::ExplicitEulerType:
+                  return boost::shared_ptr<FdmScheme>(
+                      new FdmSchemeWrapper<ExplicitEulerScheme>(
+                          new ExplicitEulerScheme(op)));
+              default:
+                  QL_FAIL("Unknown scheme type");
+            }
+        }
     }
 
     HestonSLVModel::HestonSLVModel(
@@ -190,8 +246,6 @@ namespace QuantLib {
     }
 
     void HestonSLVModel::performCalculations() const {
-        //RInside R(0, NULL);
-
         const boost::shared_ptr<HestonProcess> hestonProcess
             = hestonModel_->process();
         const boost::shared_ptr<Quote> spot
@@ -252,8 +306,6 @@ namespace QuantLib {
             params_.undefinedlLocalVolOverwrite,
             params_.maxIntegrationIterations);
 
-        std::cout << "eps for grid limits=" << params_.epsProbability << std::endl;
-
         const std::vector<Size> rescaleSteps
             = localVolRND.rescaleTimeSteps();
 
@@ -301,8 +353,6 @@ namespace QuantLib {
         std::fill(L->column_begin(0),L->column_end(0), l0);
         std::fill(L->column_begin(1),L->column_end(1), l0);
 
-        std::cout << "initial vols: lv0: " << lv0 << ", l0: " << l0 << std::endl;
-
         // create strikes from meshers
         std::vector<boost::shared_ptr<std::vector<Real> > > vStrikes(
               timeGrid->size());
@@ -315,67 +365,22 @@ namespace QuantLib {
                            std::ptr_fun<Real, Real>(std::exp));
         }
 
-        boost::shared_ptr<FixedLocalVolSurface> leverageFct(
+        const boost::shared_ptr<FixedLocalVolSurface> leverageFct(
             new FixedLocalVolSurface(referenceDate, times, vStrikes, L, dc));
 
         boost::shared_ptr<FdmLinearOpComposite> hestonFwdOp(
             new FdmHestonFwdOp(mesher, hestonProcess,
                                trafoType, leverageFct));
 
-        boost::shared_ptr<ModifiedCraigSneydScheme> mcg(
-                new ModifiedCraigSneydScheme(
-            FdmSchemeDesc::ModifiedCraigSneyd().theta,
-            FdmSchemeDesc::ModifiedCraigSneyd().mu, hestonFwdOp));
-
-//        boost::shared_ptr<HundsdorferScheme> mcg(
-//            new HundsdorferScheme(
-//                FdmSchemeDesc::Hundsdorfer().theta,
-//                FdmSchemeDesc::Hundsdorfer().mu,
-//                hestonFwdOp));
-
         Array p = FdmHestonGreensFct(mesher, hestonProcess, trafoType, lv0)
             .get(timeGrid->at(1), params_.greensAlgorithm);
 
-        // just a test for the reshape function at the moment
-        // needs to implement the evolver of the PDF
-        std::cout << "initial integral " <<
-            FdmMesherIntegral(
-                mesher, DiscreteSimpsonIntegral()).integrate(p)
-                << std::endl;
-        for (Size i = 2; i < times.size(); ++i) {
-            const Time t = timeGrid->at(i);
-            const Time dt = t - timeGrid->at(i-1);
-
-            if (mesher->getFdm1dMeshers()[0] != xMesher[i] ||
-                mesher->getFdm1dMeshers()[1] != vMesher[i]) {
-                const boost::shared_ptr<FdmMesherComposite> newMesher(
-                    new FdmMesherComposite(xMesher[i], vMesher[i]));
-
-                p = reshapePDF<Bilinear>(p, mesher, newMesher);
-                mesher = newMesher;
-
-                std::cout << "reshape step " << i << " " <<
-                    FdmMesherIntegral(
-                        newMesher, DiscreteSimpsonIntegral()).integrate(p)
-                        << std::endl;
-            }
-        }
-
-        for (Size i=0; i < rescaleSteps.size(); ++i)
-            std::cout << rescaleSteps[i] << " ";
-        std::cout << std::endl;
-
-//////////////////////////////////////
-        // calculate leverage function
-        //Array
         mesher = boost::make_shared<FdmMesherComposite>(
                 xMesher.at(1), vMesher.at(1));
+
         p = FdmHestonGreensFct(mesher, hestonProcess, trafoType, lv0)
             .get(timeGrid->at(1), params_.greensAlgorithm);
-        std::cout << "initial integral " <<
-            FdmMesherIntegral(
-                mesher, DiscreteSimpsonIntegral()).integrate(p)
-                << std::endl;
+
         for (Size i=2; i < times.size(); ++i) {
             const Time t = timeGrid->at(i);
             const Time dt = t - timeGrid->at(i-1);
@@ -417,19 +422,6 @@ namespace QuantLib {
                 hestonFwdOp = boost::shared_ptr<FdmLinearOpComposite>(
                                 new FdmHestonFwdOp(mesher, hestonProcess,
                                                trafoType, leverageFct));
-
-
-                mcg = boost::shared_ptr<ModifiedCraigSneydScheme>(
-                        new ModifiedCraigSneydScheme(
-                    FdmSchemeDesc::ModifiedCraigSneyd().theta,
-                    FdmSchemeDesc::ModifiedCraigSneyd().mu, hestonFwdOp));
-
-//                mcg = boost::shared_ptr<HundsdorferScheme>(
-//                    new HundsdorferScheme(
-//                        FdmSchemeDesc::Hundsdorfer().theta,
-//                        FdmSchemeDesc::Hundsdorfer().mu,
-//                        hestonFwdOp));
-
             }
 
             Array pn = p;
@@ -443,8 +435,10 @@ namespace QuantLib {
 
             // predictor corrector steps
             for (Size r=0; r < 3; ++r) {
-                for (Size j=0; j < x.size(); ++j) {
+                const boost::shared_ptr<FdmScheme> fdmScheme(
+                    fdmSchemeFactory(params_.schemeDesc, hestonFwdOp));
 
+                for (Size j=0; j < x.size(); ++j) {
                     Array pSlice(vGrid);
                     for (Size k=0; k < vGrid; ++k)
                         pSlice[k] = pn[j + k*xGrid];
@@ -501,63 +495,13 @@ namespace QuantLib {
                 leverageFct->setInterpolation(Linear());
 
                 pn = p;
-                mcg->setStep(dt);
-                mcg->step(pn, t);
+
+                fdmScheme->setStep(dt);
+                fdmScheme->step(pn, t);
             }
             p = pn;
             p = rescalePDF(p, mesher);
-
-
-//            std::vector<Real> xR(vGrid), y(vGrid), vq(vGrid);
-//            std::copy(v.begin(), v.end(), xR.begin());
-//
-//            Array xSlice(xGrid);
-//            for (Size k=0; k < vGrid; ++k) {
-//                for (Size j=0; j < x.size(); ++j)
-//                    xSlice[j] = pn[j + k*xGrid];
-//
-//                y[k] = DiscreteSimpsonIntegral()(Log(x), xSlice);
-//                vq[k] = squareRootRnd.pdf(std::exp(v[k]), t)*std::exp(v[k]);
-//            }
-
-
-//            std::vector<Real> xR(xGrid), y(xGrid), vq(xGrid);
-//            const Array xl(Log(x));
-//            std::copy(xl.begin(), xl.end(), xR.begin());
-//            for (Size j=0; j < x.size(); ++j) {
-//
-//                Array pSlice(vGrid);
-//                for (Size k=0; k < vGrid; ++k)
-//                    pSlice[k] = p[j + k*xGrid];
-//
-//                y[j] = DiscreteSimpsonIntegral()(v, pSlice);
-//                vq[j] = localVolRND.pdf(std::log(x[j]), t);
-//            }
-//
-//            R["x"] = xR;
-//            R["y"] = y;
-//            R["t"] = t;
-//            R["v"] = vq;
-//
-//            std::string rScript[] = {
-//                    "plot(x,y, type='l',main=t, col=\"blue\")",
-//                    "points(x,v,type='l')"
-//            };
-//
-//            for (Size i=0; i < sizeof(rScript)/sizeof(std::string); ++i) {
-//                R.parseEvalQ(rScript[i]);
-//            }
-
         }
-//////////////////////////////////////
-        for (Size i = 0; i < 1 /*vStrikes.size()*/; i++) {
-            std::cout << "Grid at time " << times[i] << " : " << std::endl;
-            for (Size j = 0; j < vStrikes[i]->size(); j++) {
-                std::cout << (*vStrikes[i])[j] << ", ";
-            }
-            std::cout << std::endl;
-        }
-        std::cout << std::endl;
 
         leverageFunction_ = leverageFct;
     }

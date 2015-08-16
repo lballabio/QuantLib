@@ -28,6 +28,7 @@
 #include <ql/handle.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/patterns/observable.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmhestongreensfct.hpp>
 
 
@@ -51,6 +52,9 @@ class SimpleQuote;
         // algorithm to get to the start configuration at time point one
         const FdmHestonGreensFct::Algorithm greensAlgorithm;
         const FdmSquareRootFwdOp::TransformationType trafoType;
+
+        // define finite difference scheme
+        const FdmSchemeDesc schemeDesc;
     };
 
     class HestonSLVModel : public LazyObject {
