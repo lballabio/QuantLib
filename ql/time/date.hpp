@@ -1,4 +1,3 @@
-
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
@@ -219,9 +218,9 @@ namespace QuantLib {
             see http://www.cpearson.com/excel/DateTimeWS.htm
         */
         static Date nthWeekday(Size n,
-							   Weekday w,
-							   Month m,
-							   Year y);
+                               Weekday w,
+                               Month m,
+                               Year y);
 
 #ifdef QL_HIGH_RESOLUTION_DATE
         //! local date time, based on the time zone settings of the computer
