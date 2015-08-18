@@ -155,21 +155,29 @@ namespace QuantLib {
 
 		// get the left side of the integral
 		const Time tc = timeGrid_->closestTime(t);
-		const Size idx = (tc > t) ? timeGrid_->index(tc)
-								  : timeGrid_->index(tc)+1;
+		const Size idx = (tc > t) ? timeGrid_->index(tc)-1
+		    : std::min(xm_.size()-1, timeGrid_->index(tc));
 
 		Real xl = xm_[idx]->locations().front();
-		const Real xr = xm_[idx]->locations().back();
+		Real xr = xm_[idx]->locations().back();
 
 		if (x < xl)
 			return 0.0;
 		else if (x > xr)
 			return 1.0;
 
-		while (pdf(xl, t) > 0.1*eps_) xl*=0.9;
+		// left or right hand integral
+		if (x > 0.5*(xr+xl)) {
+		    while (pdf(xr, t) > 0.01*eps_) xr*=1.1;
+            return 1.0-GaussLobattoIntegral(maxIter_, 0.1*eps_)(
+                boost::bind(&LocalVolRNDCalculator::pdf, this, _1, t), x, xr);
+		}
+		else {
+            while (pdf(xl, t) > 0.01*eps_) xl*=0.9;
 
-		return GaussLobattoIntegral(maxIter_, 0.1*eps_)(
-			boost::bind(&LocalVolRNDCalculator::pdf, this, _1, t), xl, x);
+            return GaussLobattoIntegral(maxIter_, 0.1*eps_)(
+                boost::bind(&LocalVolRNDCalculator::pdf, this, _1, t), xl, x);
+		}
 	}
 
 	Real LocalVolRNDCalculator::invcdf(Real p, Time t) const {
@@ -184,13 +192,13 @@ namespace QuantLib {
 		else {
 			Array xp(xGrid_);
 			const Size idx = timeGrid_->index(closeGridTime)-1;
+
 			const Array x(xm_[idx]->locations().begin(),
 						  xm_[idx]->locations().end());
-
 			std::transform(x.begin(), x.end(), pm_->row_begin(idx), xp.begin(),
 						   std::multiplies<Real>());
-			const Real xm = DiscreteSimpsonIntegral()(x, xp);
 
+			const Real xm = DiscreteSimpsonIntegral()(x, xp);
 			return RiskNeutralDensityCalculator::InvCDFHelper(
 				this, xm, 0.1*eps_, maxIter_).inverseCDF(p, t);
 		}

@@ -1872,7 +1872,7 @@ void HestonSLVModelTest::testHestonSLVModel() {
 //          1e-6, -Null<Real>(), 10000,
 //          FdmHestonGreensFct::ZeroCorrelation};
     const HestonSLVFokkerPlanckFdmParams params =
-        { finalDate, 201, 301, 2000, 25, 3.0,
+        { finalDate, 201, 301, 5000, 25, 3.0,
           1e-2, -Null<Real>(), 10000,
           FdmHestonGreensFct::Gaussian,
           FdmSquareRootFwdOp::Log,

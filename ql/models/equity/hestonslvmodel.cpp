@@ -463,19 +463,10 @@ namespace QuantLib {
                 }
 
                 // TODO: Need to determine localvol at lower and upper bound!
-                const Volatility localVol
-                    = localVol_->localVol(t, x[x.size()/2]);
-                const Volatility stdDev = localVol*std::sqrt(t);
-                const Real xm
-                    = std::log(spot->value()*qTS->discount(t)/rTS->discount(t))
-                        -0.5*stdDev*stdDev;
-
-                const Real normInvEps = InverseCumulativeNormal()(1-1e-4);
-
-                const Real sLowerBound = std::max(
-                    x.front(), std::exp(xm - normInvEps*stdDev));
-                const Real sUpperBound = std::min(
-                    x.back(), std::exp(xm + normInvEps*stdDev));
+                const Real sLowerBound = std::max(x.front(),
+                    std::exp(localVolRND.invcdf(1e-3, t)));
+                const Real sUpperBound = std::min(x.back(),
+                    std::exp(localVolRND.invcdf(1-1e-3, t)));
 
                 const Real lowerL = leverageFct->localVol(t, sLowerBound);
                 const Real upperL = leverageFct->localVol(t, sUpperBound);
@@ -490,7 +481,7 @@ namespace QuantLib {
                           std::min(L->row_begin(j)+i+1, L->row_end(j)),
                           upperL);
                     else if ((*L)[j][i] == Null<Real>())
-                        std::cout << t << " ouch" << std::endl;
+                        QL_FAIL("internal error");
                 }
                 leverageFct->setInterpolation(Linear());
 
@@ -500,7 +491,7 @@ namespace QuantLib {
                 fdmScheme->step(pn, t);
             }
             p = pn;
-            p = rescalePDF(p, mesher);
+            //p = rescalePDF(p, mesher);
         }
 
         leverageFunction_ = leverageFct;
