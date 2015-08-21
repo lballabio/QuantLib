@@ -125,7 +125,7 @@ namespace {
                 Period maturity((int)((t[m]+3)/7.), Weeks); // round to weeks
                 options.push_back(boost::shared_ptr<CalibrationHelper>(
                         new HestonModelHelper(maturity, calendar,
-                                              s0->value(), strike[s], vol,
+                                              s0, strike[s], vol,
                                               riskFreeTS, dividendYield,
                                           CalibrationHelper::ImpliedVolError)));
             }
@@ -187,7 +187,7 @@ void HestonModelTest::testBlackCalibration() {
 
         options.push_back(boost::shared_ptr<CalibrationHelper>(
                           new HestonModelHelper(optionMaturities[i], calendar,
-                                                s0->value(), strikePrice, vol,
+                                                s0, strikePrice, vol,
                                                 riskFreeTS, dividendTS)));
         }
     }

@@ -1298,12 +1298,16 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
                                         new EuropeanExercise(today + maturity));
 
         for (Size j=0; j < LENGTH(strikes); ++j) {
-            boost::shared_ptr<StrikedTypePayoff> payoff(
-                             new PlainVanillaPayoff(Option::Call, strikes[j]));
+            boost::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(
+                strikes[j] * rTS->discount(maturities[i]) >=
+                        s0->value() * qTS->discount(maturities[i])
+                    ? Option::Call
+                    : Option::Put,
+                strikes[j]));
             RelinkableHandle<Quote> v(boost::shared_ptr<Quote>(
                                    new SimpleQuote(vol[i*LENGTH(strikes)+j])));
             options.push_back(boost::shared_ptr<CalibrationHelper>(
-                new HestonModelHelper(maturity, calendar,s0->value(), 
+                new HestonModelHelper(maturity, calendar, s0,
                                       strikes[j], v, rTS, qTS,
                                       CalibrationHelper::PriceError)));
             const Real marketValue = options.back()->marketValue();
@@ -1369,7 +1373,7 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
             Handle<Quote> v(boost::shared_ptr<Quote>(
                                    new SimpleQuote(vol[i*LENGTH(strikes)+js])));
             options.push_back(boost::shared_ptr<CalibrationHelper>(
-                new HestonModelHelper(maturity, calendar, s0->value(), 
+                new HestonModelHelper(maturity, calendar, s0,
                                       strikes[js], v, rTS, qTS,
                                       CalibrationHelper::PriceError)));
             
