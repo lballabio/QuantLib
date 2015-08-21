@@ -81,14 +81,14 @@ namespace QuantLib {
             || ((d == 21 || d == 22 || d == 23) && m == January  && y == 2004)
             || ((d ==  8 || d ==  9 || d == 10) && m == February && y == 2005)
             || ((d == 28 || d == 29 || d == 30) && m == January  && y == 2006)
-            || (d == 19 && m == February && y == 2007)
+            || ( d == 19                        && m == February && y == 2007)
             || ((d ==  6 || d ==  7 || d ==  8) && m == February && y == 2008)
             || ((d == 25 || d == 26 || d == 27) && m == January  && y == 2009)
             || ((d == 13 || d == 14 || d == 15) && m == February && y == 2010)
             || ((d ==  2 || d ==  3 || d ==  4) && m == February && y == 2011)
-            || ((d == 23 || d == 24) && m == January && y == 2012)
-            || (d == 11 && m == February && y == 2013)
-            || ((d == 30 || d == 31) && m == January && y == 2014)
+            || ((d == 23 || d == 24)            && m == January  && y == 2012)
+            || ( d == 11                        && m == February && y == 2013)
+            || ((d == 30 || d == 31)            && m == January  && y == 2014)
             || ((d == 18 || d == 19 || d == 20) && m == February && y == 2015)
             || ((d ==  7 || d ==  8 || d ==  9) && m == February && y == 2016)
             || ((d == 27 || d == 28 || d == 29) && m == January  && y == 2017)
@@ -109,16 +109,17 @@ namespace QuantLib {
             || ((d ==  2 || d ==  3 || d ==  4) && m == February && y == 2030)
             || ((d == 22 || d == 23 || d == 24) && m == January  && y == 2031)
             || ((d == 10 || d == 11 || d == 12) && m == February && y == 2032)
+
             // Election Days
-            || (d == 15 && m == April && y == 2004)    // National Assembly
-            || (d == 31 && m == May && y == 2006)      // Regional election
+            || (d == 15 && m == April    && y == 2004) // National Assembly
+            || (d == 31 && m == May      && y == 2006) // Regional election
             || (d == 19 && m == December && y == 2007) // Presidency
-            || (d ==  9 && m == April && y == 2008)    // National Assembly
-            || (d ==  2 && m == June && y == 2010)     // Local election
-            || (d == 11 && m == April && y == 2012)    // National Assembly
+            || (d ==  9 && m == April    && y == 2008) // National Assembly
+            || (d ==  2 && m == June     && y == 2010) // Local election
+            || (d == 11 && m == April    && y == 2012) // National Assembly
             || (d == 19 && m == December && y == 2012) // Presidency
-            || (d ==  4 && m == June && y == 2014)     // Local election
-            || (d == 13 && m == April && y == 2016)    // National Assembly
+            || (d ==  4 && m == June     && y == 2014) // Local election
+            || (d == 13 && m == April    && y == 2016) // National Assembly
             // Buddha's birthday
             || (d == 26 && m == May   && y == 2004)
             || (d == 15 && m == May   && y == 2005)
@@ -149,6 +150,10 @@ namespace QuantLib {
             || (d ==  9 && m == May   && y == 2030)
             || (d == 28 && m == May   && y == 2031)
             || (d == 16 && m == May   && y == 2032)
+
+            // Special holiday: 70 years from Independence Day
+            || (d == 14 && m == August && y == 2015)
+
             // Harvest Moon Day
             || ((d == 27 || d == 28 || d == 29) && m == September && y == 2004)
             || ((d == 17 || d == 18 || d == 19) && m == September && y == 2005)
@@ -161,7 +166,7 @@ namespace QuantLib {
             || ((d == 1)                        && m == October   && y == 2012)
             || ((d == 18 || d == 19 || d == 20) && m == September && y == 2013)
             || ((d ==  8 || d ==  9 || d == 10) && m == September && y == 2014)
-            || ((d == 26 || d == 27 || d == 28) && m == September && y == 2015)
+            || ((d == 28 || d == 29)            && m == September && y == 2015)
             || ((d == 14 || d == 15 || d == 16) && m == September && y == 2016)
             || ((d ==  3 || d ==  4 || d ==  5) && m == October   && y == 2017)
             || ((d == 23 || d == 24 || d == 25) && m == September && y == 2018)
