@@ -84,6 +84,8 @@ namespace QuantLib {
                 && y >= 2003)
             || ((d == 20 || (d == 21 && w == Monday)) && m == July
                 && y >= 1996 && y < 2003)
+            // Mountain Day (from 2016)
+            || (d == 11 && m == August && y >= 2016)
             // Respect for the Aged Day (3rd Monday in September),
             // was September 15th until 2003
             || (w == Monday && (d >= 15 && d <= 21) && m == September
