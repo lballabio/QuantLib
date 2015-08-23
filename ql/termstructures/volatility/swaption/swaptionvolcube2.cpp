@@ -108,6 +108,9 @@ namespace QuantLib {
                                              atmForward,
                                              Linear(),
                                              Actual365Fixed(),
+                                             // to be replaced with volatilityType()
+                                             // when merging PR 264
+                                             ShiftedLognormal,
                                              shift));
     }
 }

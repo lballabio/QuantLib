@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005 Klaus Spanderen
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -35,7 +36,9 @@ namespace QuantLib {
         CapletVarianceCurve(const Date& referenceDate,
                             const std::vector<Date>& dates,
                             const std::vector<Volatility>& capletVolCurve,
-                            const DayCounter& dayCounter);
+                            const DayCounter& dayCounter,
+                            VolatilityType type = ShiftedLognormal,
+                            Real displacement = 0.0);
         //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const;
@@ -43,19 +46,25 @@ namespace QuantLib {
         //@}
         Real minStrike() const;
         Real maxStrike() const;
+        const VolatilityType volatilityType() const;
+        const Real displacement() const;
       protected:
         boost::shared_ptr<SmileSection> smileSectionImpl(Time t) const;
         Volatility volatilityImpl(Time t,
                                   Rate) const;
       private:
         BlackVarianceCurve blackCurve_;
+        VolatilityType type_;
+        Real displacement_;
     };
 
     inline CapletVarianceCurve::CapletVarianceCurve(
                                 const Date& referenceDate,
                                 const std::vector<Date>& dates,
                                 const std::vector<Volatility>& capletVolCurve,
-                                const DayCounter& dayCounter)
+                                const DayCounter& dayCounter,
+                                VolatilityType type,
+                                Real displacement)
     : OptionletVolatilityStructure(referenceDate, Calendar(), Following),
       blackCurve_(referenceDate, dates, capletVolCurve, dayCounter, false) {}
 
@@ -88,6 +97,16 @@ namespace QuantLib {
     inline
     Volatility CapletVarianceCurve::volatilityImpl(Time t, Rate r) const {
         return blackCurve_.blackVol(t, r, true);
+    }
+
+    inline
+    const VolatilityType CapletVarianceCurve::volatilityType() const {
+        return type_;
+    }
+
+    inline
+    const Real CapletVarianceCurve::displacement() const {
+        return displacement_;
     }
 
 }

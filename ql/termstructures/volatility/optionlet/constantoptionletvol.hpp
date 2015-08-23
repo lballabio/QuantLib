@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2008 Ferdinando Ametrano
  Copyright (C) 2004, 2005, 2007 StatPro Italia srl
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -39,25 +40,33 @@ namespace QuantLib {
                                     const Calendar& cal,
                                     BusinessDayConvention bdc,
                                     const Handle<Quote>& volatility,
-                                    const DayCounter& dc);
+                                    const DayCounter& dc,
+                                    VolatilityType type = ShiftedLognormal,
+                                    Real displacement = 0.0);
         //! fixed reference date, floating market data
         ConstantOptionletVolatility(const Date& referenceDate,
                                     const Calendar& cal,
                                     BusinessDayConvention bdc,
                                     const Handle<Quote>& volatility,
-                                    const DayCounter& dc);
+                                    const DayCounter& dc,
+                                    VolatilityType type = ShiftedLognormal,
+                                    Real displacement = 0.0);
         //! floating reference date, fixed market data
         ConstantOptionletVolatility(Natural settlementDays,
                                     const Calendar& cal,
                                     BusinessDayConvention bdc,
                                     Volatility volatility,
-                                    const DayCounter& dc);
+                                    const DayCounter& dc,
+                                    VolatilityType type = ShiftedLognormal,
+                                    Real displacement = 0.0);
         //! fixed reference date, fixed market data
         ConstantOptionletVolatility(const Date& referenceDate,
                                     const Calendar& cal,
                                     BusinessDayConvention bdc,
                                     Volatility volatility,
-                                    const DayCounter& dc);
+                                    const DayCounter& dc,
+                                    VolatilityType type = ShiftedLognormal,
+                                    Real displacement = 0.0);
         //! \name TermStructure interface
         //@{
         Date maxDate() const;
@@ -67,6 +76,8 @@ namespace QuantLib {
         Real minStrike() const;
         Real maxStrike() const;
         //@}
+        const VolatilityType volatilityType() const;
+        const Real displacement() const;
       protected:
         boost::shared_ptr<SmileSection> smileSectionImpl(const Date& d) const;
         boost::shared_ptr<SmileSection> smileSectionImpl(Time) const;
@@ -74,6 +85,8 @@ namespace QuantLib {
                                   Rate) const;
       private:
         Handle<Quote> volatility_;
+        VolatilityType type_;
+        Real displacement_;
     };
 
 
@@ -89,6 +102,14 @@ namespace QuantLib {
 
     inline Real ConstantOptionletVolatility::maxStrike() const {
         return QL_MAX_REAL;
+    }
+
+    inline const VolatilityType ConstantOptionletVolatility::volatilityType() const {
+        return type_;
+    }
+
+    inline const Real ConstantOptionletVolatility::displacement() const {
+        return displacement_;
     }
 
 }

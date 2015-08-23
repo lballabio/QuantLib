@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -61,16 +62,16 @@ namespace QuantLib {
         const std::vector<Time>& optionletAccrualPeriods() const;
         boost::shared_ptr<CapFloorTermVolSurface> termVolSurface() const;
         boost::shared_ptr<IborIndex> iborIndex() const;
-        Real displacement() const;
-        VolatilityType volatilityType() const;
+        const Real displacement() const;
+        const VolatilityType volatilityType() const;
 
       protected:
         OptionletStripper(const boost::shared_ptr<CapFloorTermVolSurface>&,
                           const boost::shared_ptr<IborIndex>& iborIndex_,
                           const Handle<YieldTermStructure>& discount =
                                                  Handle<YieldTermStructure>(),
-                          VolatilityType type = ShiftedLognormal,
-                          Real displacement = 0.0);
+                          const VolatilityType type = ShiftedLognormal,
+                          const Real displacement = 0.0);
         boost::shared_ptr<CapFloorTermVolSurface> termVolSurface_;
         boost::shared_ptr<IborIndex> iborIndex_;
         Handle<YieldTermStructure> discount_;
@@ -88,8 +89,8 @@ namespace QuantLib {
         mutable std::vector<Time> optionletAccrualPeriods_;
 
         std::vector<Period> capFloorLengths_;
-        VolatilityType volatilityType_;
-        Real displacement_;
+        const VolatilityType volatilityType_;
+        const Real displacement_;
     };
 
 }

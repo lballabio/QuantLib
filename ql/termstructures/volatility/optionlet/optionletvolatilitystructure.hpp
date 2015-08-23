@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,6 +27,7 @@
 #define quantlib_optionlet_volatility_structure_hpp
 
 #include <ql/termstructures/voltermstructure.hpp>
+#include <ql/termstructures/volatility/volatilitytype.hpp>
 
 namespace QuantLib {
 
@@ -99,6 +101,8 @@ namespace QuantLib {
         boost::shared_ptr<SmileSection> smileSection(Time optionTime,
                                                      bool extr = false) const;
         //@}
+        virtual const VolatilityType volatilityType() const;
+        virtual const Real displacement() const;
       protected:
         virtual boost::shared_ptr<SmileSection> smileSectionImpl(
                                                 const Date& optionDate) const;
@@ -201,6 +205,14 @@ namespace QuantLib {
     OptionletVolatilityStructure::volatilityImpl(const Date& optionDate,
                                                  Rate strike) const {
         return volatilityImpl(timeFromReference(optionDate), strike);
+    }
+
+    inline const VolatilityType OptionletVolatilityStructure::volatilityType() const {
+        return ShiftedLognormal;
+    }
+
+    inline const Real OptionletVolatilityStructure::displacement() const {
+        return 0.0;
     }
 
 }

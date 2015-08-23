@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2008 Ferdinando Ametrano
  Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -35,12 +36,16 @@ namespace QuantLib {
                         const std::vector<Date>& optionletDates,
                         const vector<Rate>& strikes,
                         const vector<vector<Handle<Quote> > >& v,
-                        const DayCounter& dc)
+                        const DayCounter& dc,
+                        VolatilityType type,
+                        Real displacement)
     : calendar_(calendar),
       settlementDays_(settlementDays),
       businessDayConvention_(bdc),
       dc_(dc),
       iborIndex_(iborIndex),
+      type_(type),
+      displacement_(displacement),
       nOptionletDates_(optionletDates.size()),
       optionletDates_(optionletDates),
       optionletTimes_(nOptionletDates_),
@@ -153,6 +158,14 @@ namespace QuantLib {
 
     BusinessDayConvention StrippedOptionlet::businessDayConvention() const {
         return businessDayConvention_;
+    }
+
+    const VolatilityType StrippedOptionlet::volatilityType() const {
+        return type_;
+    }
+
+    const Real StrippedOptionlet::displacement() const {
+        return displacement_;
     }
 
 }

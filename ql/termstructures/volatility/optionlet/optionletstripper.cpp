@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,8 +30,8 @@ namespace QuantLib {
             const boost::shared_ptr<CapFloorTermVolSurface>& termVolSurface,
             const boost::shared_ptr<IborIndex>& iborIndex,
             const Handle<YieldTermStructure>& discount, 
-            VolatilityType type,
-            Real displacement) 
+            const VolatilityType type,
+            const Real displacement)
    : termVolSurface_(termVolSurface),
      iborIndex_(iborIndex), discount_(discount),
      nStrikes_(termVolSurface->strikes().size()), 
@@ -153,11 +154,11 @@ namespace QuantLib {
         return iborIndex_;
     }
 
-    Real OptionletStripper::displacement() const {
+    const Real OptionletStripper::displacement() const {
         return displacement_;
     }
 
-    VolatilityType OptionletStripper::volatilityType() const{
+    const VolatilityType OptionletStripper::volatilityType() const{
         return volatilityType_;
     }
 

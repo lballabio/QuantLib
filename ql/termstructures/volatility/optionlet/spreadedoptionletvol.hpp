@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2008 Ferdinando Ametrano
  Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -51,6 +52,8 @@ namespace QuantLib {
         Calendar calendar() const;
         Natural settlementDays() const;
         //@}
+        const VolatilityType volatilityType() const;
+        const Real displacement() const;
       protected:
         // All virtual methods of base classes must be forwarded
         //! \name OptionletVolatilityStructure interface
@@ -100,6 +103,14 @@ namespace QuantLib {
     
     inline Rate SpreadedOptionletVolatility::maxStrike() const {
         return baseVol_->maxStrike();
+    }
+
+    inline const VolatilityType SpreadedOptionletVolatility::volatilityType() const {
+        return baseVol_->volatilityType();
+    }
+
+    inline const Real SpreadedOptionletVolatility::displacement() const {
+        return baseVol_->displacement();
     }
 
 }

@@ -5,6 +5,7 @@
  Copyright (C) 2007 François du Vignaud
  Copyright (C) 2007 Katiuscia Manzoni
  Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -40,8 +41,8 @@ namespace QuantLib {
             Real accuracy,
             Natural maxIter,
             const Handle<YieldTermStructure>& discount,
-            VolatilityType type,
-            Real displacement,
+            const VolatilityType type,
+            const Real displacement,
             bool dontThrow)
     : OptionletStripper(termVolSurface, index, discount, type, displacement),
       volQuotes_(nOptionletTenors_,

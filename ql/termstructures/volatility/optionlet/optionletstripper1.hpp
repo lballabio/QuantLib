@@ -5,6 +5,7 @@
  Copyright (C) 2007 François du Vignaud
  Copyright (C) 2007 Katiuscia Manzoni
  Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -48,8 +49,8 @@ namespace QuantLib {
                            Real accuracy = 1.0e-6, Natural maxIter = 100,
                            const Handle<YieldTermStructure> &discount =
                                Handle<YieldTermStructure>(),
-                           VolatilityType type = ShiftedLognormal,
-                           Real displacement = 0.0,
+                           const VolatilityType type = ShiftedLognormal,
+                           const Real displacement = 0.0,
                            bool dontThrow = false);
 
         const Matrix& capFloorPrices() const;

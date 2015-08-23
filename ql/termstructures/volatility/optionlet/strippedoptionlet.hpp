@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2008 Ferdinando Ametrano
  Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -43,7 +44,9 @@ namespace QuantLib {
                           const std::vector<Date>& optionletDates,
                           const std::vector<Rate>& strikes,
                           const std::vector<std::vector<Handle<Quote> > >&,
-                          const DayCounter& dc);
+                          const DayCounter& dc,
+                          VolatilityType type = ShiftedLognormal,
+                          Real displacement = 0.0);
         //! \name StrippedOptionletBase interface
         //@{
         const std::vector<Rate>& optionletStrikes(Size i) const;
@@ -60,6 +63,8 @@ namespace QuantLib {
         Natural settlementDays() const;
         BusinessDayConvention businessDayConvention() const;
         //@}
+        const VolatilityType volatilityType() const;
+        const Real displacement() const;
       private:
         void checkInputs() const;
         void registerWithMarketData();
@@ -70,6 +75,8 @@ namespace QuantLib {
         BusinessDayConvention businessDayConvention_;
         DayCounter dc_;
         boost::shared_ptr<IborIndex> iborIndex_;
+        VolatilityType type_;
+        Real displacement_;
 
         Size nOptionletDates_;
         std::vector<Date> optionletDates_;
