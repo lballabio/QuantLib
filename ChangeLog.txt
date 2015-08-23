@@ -1,3 +1,59 @@
+commit 9ce350205de37908259b15250f15a5e7bc901f64
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 14 Jul 2015 17:22:41 +0200
+
+    Avoid use of deprecated Boost macro.
+    
+    BOOST_MESSAGE will disappear in Boost 1.59.
+
+ QuantLib/test-suite/barrieroption.cpp              |  2 +-
+ QuantLib/test-suite/binaryoption.cpp               |  4 +--
+ QuantLib/test-suite/catbonds.cpp                   | 10 +++---
+ QuantLib/test-suite/doublebarrieroption.cpp        |  4 +--
+ QuantLib/test-suite/doublebinaryoption.cpp         |  2 +-
+ QuantLib/test-suite/gsr.cpp                        |  4 +--
+ QuantLib/test-suite/inflation.cpp                  |  2 +-
+ QuantLib/test-suite/interpolations.cpp             |  2 +-
+ QuantLib/test-suite/markovfunctional.cpp           | 36 +++++++++++-----------
+ .../piecewisezerospreadedtermstructure.cpp         | 20 ++++++------
+ QuantLib/test-suite/quantooption.cpp               |  2 +-
+ 11 files changed, 44 insertions(+), 44 deletions(-)
+
+commit dde6aab53c24dd4053e0fe74a6609a0535bad2ff
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 7 Jul 2015 15:18:03 +0200
+
+    Add support for VC++ 2015 (VC14).
+    
+    We had tried to support the next version, but we had assumed that
+    the version number would be 13.  Microsoft decided it's 14 instead.
+
+ QuantLib/Makefile.am       |   1 +
+ QuantLib/QuantLib.props    |   2 +
+ QuantLib/QuantLib_vc14.sln | 363 +++++++++++++++++++++++++++++++++++++++++++++
+ QuantLib/ql/auto_link.hpp  |   2 +-
+ 4 files changed, 367 insertions(+), 1 deletion(-)
+
+commit a36a54ff7b0e8ea41cada5cc3f43f81c05c83783
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 23 Jun 2015 11:37:53 +0200
+
+    Bump version number up to 1.6.1.
+
+ QuantLib/Announce.txt   | 4 ++--
+ QuantLib/configure.ac   | 2 +-
+ QuantLib/ql/version.hpp | 8 ++++----
+ 3 files changed, 7 insertions(+), 7 deletions(-)
+
+commit 73e19576ed65927efe88e5e6e20052f6b1c7e5b8
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 19 Jun 2015 16:05:45 +0200
+
+    Update changelog.
+
+ QuantLib/ChangeLog.txt | 43 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
+
 commit e0cd1680e0121dc429f537e2040b987c215e2e16
 Author: Paolo Mazzocchi <mazzocchip@live.it>
 Date:   Thu, 18 Jun 2015 15:27:22 +0200
