@@ -55,7 +55,6 @@ namespace QuantLib {
         //@{
         const Period& maxSwapTenor() const;
         //@}
-        Real shift(Time optionTime, Time swapLength) const;
         VolatilityType volatilityType() const;
       protected:
         //! \name SwaptionVolatilityStructure interface
@@ -72,6 +71,7 @@ namespace QuantLib {
         Volatility volatilityImpl(Time optionTime,
                                   Time swapLength,
                                   Rate strike) const;
+        Real shiftImpl(Time optionTime, Time swapLength) const;
         //@}
       private:
         const Handle<SwaptionVolatilityStructure> baseVol_;
@@ -114,9 +114,9 @@ namespace QuantLib {
         return baseVol_->maxSwapTenor();
     }
 
-    inline Real SpreadedSwaptionVolatility::shift(Time optionTime,
+    inline Real SpreadedSwaptionVolatility::shiftImpl(Time optionTime,
                                                   Time swapLength) const {
-        return baseVol_->shift(optionTime, swapLength);
+        return baseVol_->shift(optionTime, swapLength, true);
     }
 
     inline VolatilityType SpreadedSwaptionVolatility::volatilityType() const {

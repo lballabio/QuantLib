@@ -141,14 +141,7 @@ namespace QuantLib {
                                   interpolation_.locateX(swapLength));
         }
         //@}
-        Real shift(Time optionTime, Time swapLength) const {
-            calculate();
-            Real tmp = interpolationShifts_(swapLength, optionTime, true);
-            return tmp;
-        }
-        VolatilityType volatilityType() const {
-            return volatilityType_;
-        }
+        VolatilityType volatilityType() const;
       protected:
         // defining the following method would break CMS test suite
         // to be further investigated
@@ -159,6 +152,7 @@ namespace QuantLib {
         Volatility volatilityImpl(Time optionTime,
                                   Time swapLength,
                                   Rate strike) const;
+        Real shiftImpl(Time optionTime, Time swapLength) const;
       private:
         void checkInputs(Size volRows,
                          Size volsColumns,
@@ -197,6 +191,16 @@ namespace QuantLib {
         return interpolation_(swapLength, optionTime, true);
     }
 
-}
+    inline VolatilityType SwaptionVolatilityMatrix::volatilityType() const {
+        return volatilityType_;
+    }
+
+    inline Real SwaptionVolatilityMatrix::shiftImpl(Time optionTime,
+                                                    Time swapLength) const {
+        calculate();
+        Real tmp = interpolationShifts_(swapLength, optionTime, true);
+        return tmp;
+    }
+} // namespace QuantLib
 
 #endif

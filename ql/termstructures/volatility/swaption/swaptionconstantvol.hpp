@@ -81,15 +81,8 @@ namespace QuantLib {
         //@{
         const Period& maxSwapTenor() const;
         //@}
-        Real shift(Time optionTime, Time swapLength) {
-            // consistency check
-            SwaptionVolatilityStructure::shift(optionTime, swapLength);
-            return shift_;
-        }
         //! volatility type
-        virtual VolatilityType volatilityType() const {
-            return volatilityType_;
-        }
+        VolatilityType volatilityType() const;
       protected:
         boost::shared_ptr<SmileSection> smileSectionImpl(const Date&,
                                                          const Period&) const;
@@ -101,6 +94,7 @@ namespace QuantLib {
         Volatility volatilityImpl(Time,
                                   Time,
                                   Rate) const;
+        Real shiftImpl(Time optionTime, Time swapLength) const;
       private:
         Handle<Quote> volatility_;
         Period maxSwapTenor_;
@@ -125,6 +119,16 @@ namespace QuantLib {
 
     inline const Period& ConstantSwaptionVolatility::maxSwapTenor() const {
         return maxSwapTenor_;
+    }
+
+    inline VolatilityType ConstantSwaptionVolatility::volatilityType() const {
+        return volatilityType_;
+    }
+
+    inline Real ConstantSwaptionVolatility::shiftImpl(Time optionTime, Time swapLength) const {
+        // consistency check
+        SwaptionVolatilityStructure::shiftImpl(optionTime, swapLength);
+        return shift_;
     }
 
 }
