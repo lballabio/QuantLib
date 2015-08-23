@@ -66,7 +66,8 @@ namespace QuantLib {
                                 VolatilityType type,
                                 Real displacement)
     : OptionletVolatilityStructure(referenceDate, Calendar(), Following),
-      blackCurve_(referenceDate, dates, capletVolCurve, dayCounter, false) {}
+      blackCurve_(referenceDate, dates, capletVolCurve, dayCounter, false),
+      type_(type), displacement_(displacement) {}
 
     inline DayCounter CapletVarianceCurve::dayCounter() const {
         return blackCurve_.dayCounter();
