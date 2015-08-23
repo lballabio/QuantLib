@@ -86,6 +86,8 @@ namespace QuantLib {
             || ((d == 23 || d == 24) && m == January && y == 2012)
             || (d == 11 && m == February && y == 2013)
             || ((d == 30 || d == 31) && m == January && y == 2014)
+            || ((d == 18 || d == 19 || d == 20) && m == February && y == 2015)
+            || ((d == 8 || d == 9) && m == February && y == 2016)
             // Election Days
             || (d == 15 && m == April && y == 2004)    // National Assembly
             || (d == 31 && m == May && y == 2006)      // Regional election
@@ -107,6 +109,9 @@ namespace QuantLib {
             || (d == 28 && m == May && y == 2012)
             || (d == 17 && m == May && y == 2013)
             || (d == 6 && m == May && y == 2014)
+            || (d == 25 && m == May && y == 2015)
+            // Special holiday: 70 years from Independence Day
+            || (d == 14 && m == August && y == 2015)
             // Harvest Moon Day
             || ((d == 27 || d == 28 || d == 29) && m == September && y == 2004)
             || ((d == 17 || d == 18 || d == 19) && m == September && y == 2005)
@@ -119,9 +124,12 @@ namespace QuantLib {
             || (d == 1 && m == October && y == 2012)
             || ((d == 18 || d == 19 || d == 20) && m == September && y == 2013)
             || ((d == 8 || d == 9 || d == 10) && m == September && y == 2014)
+            || ((d == 28 || d == 29) && m == September && y == 2015)
+            || ((d == 14 || d == 15 || d == 16) && m == September && y == 2016)
             // Hangul Proclamation of Korea
             || (d == 9 && m == October && y == 2013)
             || (d == 9 && m == October && y == 2014)
+            || (d == 9 && m == October && y == 2015)
             )
             return false;
 
@@ -149,6 +157,7 @@ namespace QuantLib {
             || (d == 31 && m == December && y == 2012)
             || (d == 31 && m == December && y == 2013)
             || (d == 31 && m == December && y == 2014)
+            || (d == 31 && m == December && y == 2015)
             )
             return false;
 
