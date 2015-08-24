@@ -53,38 +53,44 @@ namespace QuantLib {
     namespace {
         boost::shared_ptr<Fdm1dMesher> varianceMesher(
             const SquareRootProcessRNDCalculator& rnd, Time t, Size vGrid,
-                Real v0, FdmSquareRootFwdOp::TransformationType trafoType) {
-            switch (trafoType) {
+                Real v0, const HestonSLVFokkerPlanckFdmParams& params) {
+
+            std::vector<boost::tuple<Real, Real, bool> > cPoints;
+
+            switch (params.trafoType) {
                 case FdmSquareRootFwdOp::Log:
                   {
-                    std::vector<boost::tuple<Real, Real, bool> > cPoints;
-                    const Real eps = 5e-4;
                     const Real lowerBound = std::max(
-                            std::log(rnd.invcdf(eps, t)),
+                            std::log(rnd.invcdf(params.vLowerEps, t)),
                             std::log(0.0000025));
-                    const Real upperBound = std::log(rnd.invcdf(1-0.1*eps, t));
+                    const Real upperBound
+                        = std::log(rnd.invcdf(1.0-params.vUpperEps, t));
                     const Real v0Center = std::log(v0);
-                    const Real v0Density = 1.0;
-                    const Real upperBoundDensity = 1.0;
-                    const Real lowerBoundDensity = 0.1;
-                    cPoints += boost::make_tuple(lowerBound, lowerBoundDensity, false),
-                              boost::make_tuple(v0Center, v0Density, true),
-                              boost::make_tuple(upperBound, upperBoundDensity, false);
+                    const Real v0Density = params.v0Density;
+                    const Real upperBoundDensity = params.vUpperBoundDensity;
+                    const Real lowerBoundDensity = params.vLowerBoundDensity;
+                    cPoints +=
+                        boost::make_tuple(lowerBound, lowerBoundDensity, false),
+                        boost::make_tuple(v0Center, v0Density, true),
+                        boost::make_tuple(upperBound, upperBoundDensity, false);
+
                     return boost::make_shared<Concentrating1dMesher>(
                         lowerBound, upperBound, vGrid, cPoints, 1e-8);
                   }
                 break;
                 case FdmSquareRootFwdOp::Plain:
                   {
-                      const Real eps = 1e-4;
-                      const Real lowerBound = rnd.invcdf(eps, t);
-                      const Real upperBound = rnd.invcdf(1-eps, t);
-
-                      std::vector<boost::tuple<Real, Real, bool> > cPoints;
-
-                      const Real lowerBoundDensity = 0.1;
-                      cPoints += boost::make_tuple(
-                          lowerBound, lowerBoundDensity, false);
+                      const Real lowerBound = rnd.invcdf(params.vLowerEps, t);
+                      const Real upperBound
+                          = rnd.invcdf(1.0-params.vUpperEps, t);
+                      const Real v0Center = std::log(v0);
+                      const Real v0Density = params.v0Density;
+                      const Real upperBoundDensity = params.vUpperBoundDensity;
+                      const Real lowerBoundDensity = params.vLowerBoundDensity;
+                      cPoints +=
+                          boost::make_tuple(lowerBound, lowerBoundDensity, false),
+                          boost::make_tuple(v0Center, v0Density, false),
+                          boost::make_tuple(upperBound, upperBoundDensity, false);
 
                       return boost::make_shared<Concentrating1dMesher>(
                           lowerBound, upperBound, vGrid, cPoints, 1e-8);
@@ -215,10 +221,12 @@ namespace QuantLib {
     HestonSLVModel::HestonSLVModel(
         const Handle<LocalVolTermStructure>& localVol,
         const Handle<HestonModel>& hestonModel,
+        const Date& endDate,
         const HestonSLVFokkerPlanckFdmParams& params,
         const std::vector<Date>& mandatoryDates)
         : localVol_(localVol),
           hestonModel_(hestonModel),
+          endDate_(endDate),
           params_(params),
           mandatoryDates_(mandatoryDates) {
 
@@ -268,9 +276,9 @@ namespace QuantLib {
         const Date referenceDate = rTS->referenceDate();
 
         const Time T = dc.yearFraction(
-            referenceDate, params_.finalCalibrationMaturity);
+            referenceDate, endDate_);
 
-        QL_REQUIRE(referenceDate < params_.finalCalibrationMaturity,
+        QL_REQUIRE(referenceDate < endDate_,
             "reference date must be smaller than final calibration date");
 
         QL_REQUIRE(localVol_->maxTime() >= T,
@@ -302,7 +310,8 @@ namespace QuantLib {
         const LocalVolRNDCalculator localVolRND(
             spot, rTS, qTS, localVol_.currentLink(),
             timeGrid, xGrid,
-            params_.epsProbability,
+            params_.x0Density,
+            params_.localVolEpsProb,
             params_.undefinedlLocalVolOverwrite,
             params_.maxIntegrationIterations);
 
@@ -333,7 +342,7 @@ namespace QuantLib {
                     (rescaleIdx < rescaleSteps.size())
                         ? timeGrid->at(rescaleSteps[rescaleIdx])
                         : timeGrid->back(),
-                    vGrid, v0, trafoType));
+                    vGrid, v0, params_));
             }
             else
                 vMesher.push_back(vMesher.back());
@@ -434,7 +443,7 @@ namespace QuantLib {
                     mesher->getFdm1dMeshers()[1]->locations().end());
 
             // predictor corrector steps
-            for (Size r=0; r < 3; ++r) {
+            for (Size r=0; r < params_.predictionCorretionSteps; ++r) {
                 const boost::shared_ptr<FdmScheme> fdmScheme(
                     fdmSchemeFactory(params_.schemeDesc, hestonFwdOp));
 
@@ -464,9 +473,9 @@ namespace QuantLib {
 
                 // TODO: Need to determine localvol at lower and upper bound!
                 const Real sLowerBound = std::max(x.front(),
-                    std::exp(localVolRND.invcdf(1e-3, t)));
+                    std::exp(localVolRND.invcdf(params_.leverageFctPropEps, t)));
                 const Real sUpperBound = std::min(x.back(),
-                    std::exp(localVolRND.invcdf(1-1e-3, t)));
+                    std::exp(localVolRND.invcdf(1-params_.leverageFctPropEps, t)));
 
                 const Real lowerL = leverageFct->localVol(t, sLowerBound);
                 const Real upperL = leverageFct->localVol(t, sUpperBound);
@@ -491,7 +500,7 @@ namespace QuantLib {
                 fdmScheme->step(pn, t);
             }
             p = pn;
-            //p = rescalePDF(p, mesher);
+            p = rescalePDF(p, mesher);
         }
 
         leverageFunction_ = leverageFct;

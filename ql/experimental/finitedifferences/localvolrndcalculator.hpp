@@ -49,7 +49,8 @@ namespace QuantLib {
 			const boost::shared_ptr<YieldTermStructure>& qTS,
 			const boost::shared_ptr<LocalVolTermStructure>& localVol,
 			Size xGrid = 101, Size tGrid = 51,
-			Real eps = 1e-6,
+			Real x0Density = 0.1,
+			Real localVolProbEps = 1e-6,
 			Real illegalLocalVolOverwrite = -Null<Real>(),
 			Size maxIter = 10000,
 			Time gaussianStepSize = -Null<Time>());
@@ -61,6 +62,7 @@ namespace QuantLib {
 			const boost::shared_ptr<LocalVolTermStructure>& localVol,
 			const boost::shared_ptr<TimeGrid>& timeGrid,
 			Size xGrid = 101,
+			Real x0Density = 0.1,
 			Real eps = 1e-6,
 			Real illegalLocalVolOverwrite = -Null<Real>(),
 			Size maxIter = 10000,
@@ -83,7 +85,8 @@ namespace QuantLib {
 
 
 		const Size xGrid_, tGrid_;
-		const Real eps_;
+		const Real x0Density_;
+		const Real localVolProbEps_;
 		const Real illegalLocalVolOverwrite_;
 		const Size maxIter_;
 		const Time gaussianStepSize_;

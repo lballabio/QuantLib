@@ -892,10 +892,6 @@ namespace {
                         << "\n   average diff: " << avg
                         << "\n   tolerance:  " << testCase.avgEps);
             }
-//            std::cout << io::iso_date(nextMaturityDate) << "\t "
-//					  << QL_FIXED << std::setprecision(5)
-//					  << avg << "\t "
-//					  << min << "\t " << max << std::endl;
         }
     }
 }
@@ -1346,371 +1342,106 @@ void HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol() {
 	}
 }
 
-namespace {
-    void lsvCalibrationTest(const FokkerPlanckFwdTestCase& testCase,
-                            const Real lv) {
-        SavedSettings backup;
 
-        const Date todaysDate(5, July, 2014);
+namespace {
+    const HestonSLVFokkerPlanckFdmParams logParams =
+        { 401, 601, 2000, 25, 2.0, 3,
+          0.1, 1e-3, -Null<Real>(), 10000,
+          1e-5, 1e-4, 1.0, 0.8, 0.1, 1e-5,
+          FdmHestonGreensFct::Gaussian,
+          FdmSquareRootFwdOp::Log,
+          FdmSchemeDesc::ModifiedCraigSneyd()
+        };
+
+    const HestonSLVFokkerPlanckFdmParams plainParams =
+        { 201, 301, 1000, 25, 3.0, 2,
+          0.1, 1e-4, -Null<Real>(), 10000,
+          1e-8, 1e-8, 1.0, 1.0, 1.0, 1e-6,
+          FdmHestonGreensFct::Gaussian,
+          FdmSquareRootFwdOp::Plain,
+          FdmSchemeDesc::ModifiedCraigSneyd()
+        };
+
+    struct HestonModelParams {
+        const Rate r, q;
+        const Real kappa, theta, rho, sigma, v0;
+    };
+
+    struct HestonSLVTestCase {
+        const HestonModelParams hestonParams;
+        const HestonSLVFokkerPlanckFdmParams fdmParams;
+    };
+
+
+    void lsvCalibrationTest(const HestonSLVTestCase& testCase) {
+        const Date todaysDate(2, June, 2015);
         Settings::instance().evaluationDate() = todaysDate;
+        const Date finalDate(2, June, 2020);
 
         const Calendar calendar = TARGET();
-        const DayCounter dayCounter = Actual365Fixed();
+        const DayCounter dc = Actual365Fixed();
 
-        const Size nMonths = 24;//5*12;
-        std::vector<Date> maturityDates;
-        std::vector<Time> maturities;
-        maturities.reserve(nMonths);
-        maturityDates.reserve(nMonths);
-        for (Size i=1; i <= nMonths; ++i) {
-            maturityDates.push_back(todaysDate + Period(i, Months));
-            maturities.push_back(
-                dayCounter.yearFraction(todaysDate, maturityDates.back()));
-        }
-        const Time maturity = maturities.back();
+        const Real s0 = 100;
+        const Handle<Quote> spot(boost::make_shared<SimpleQuote>(s0));
 
-        const Real s0 = testCase.s0;
-        const Real x0 = std::log(s0);
-        const Handle<Quote> spot(boost::shared_ptr<Quote>(new SimpleQuote(s0)));
+        const Rate r = testCase.hestonParams.r;
+        const Rate q = testCase.hestonParams.q;
 
-        const Rate r = testCase.r;
-        const Rate q = testCase.q;
+        const Real kappa = testCase.hestonParams.kappa;
+        const Real theta = testCase.hestonParams.theta;
+        const Real rho   = testCase.hestonParams.rho;
+        const Real sigma = testCase.hestonParams.sigma;
+        const Real v0    = testCase.hestonParams.v0;
+        const Volatility lv = 0.3;
 
-        const Real v0    = testCase.v0;
-        const Real kappa = testCase.kappa;
-        const Real theta = testCase.theta;
-        const Real sigma = testCase.sigma;
-        const Real rho   = testCase.rho;
-
-        const Handle<YieldTermStructure> rTS(
-            flatRate(todaysDate, r, dayCounter));
-        const Handle<YieldTermStructure> qTS(
-            flatRate(todaysDate, q, dayCounter));
+        const Handle<YieldTermStructure> rTS(flatRate(r, dc));
+        const Handle<YieldTermStructure> qTS(flatRate(q, dc));
 
         const boost::shared_ptr<HestonProcess> hestonProcess(
             new HestonProcess(rTS, qTS, spot, v0, kappa, theta, sigma, rho));
 
-        const boost::shared_ptr<HestonModel> hestonModel(
-            new HestonModel(hestonProcess));
+        const Handle<HestonModel> hestonModel(
+            boost::make_shared<HestonModel>(hestonProcess));
 
-        const Size xGrid = testCase.xGrid;
-        const Size vGrid = testCase.vGrid;
-        const Size tMaxGridPerYear = testCase.tGridPerYear;
-        const Size tMinGridPerYear = testCase.tMinGridPerYear;
+        const Handle<LocalVolTermStructure> localVol(
+            boost::make_shared<LocalConstantVol>(todaysDate, lv, dc));
 
-        const FdmSquareRootFwdOp::TransformationType trafoType
-            = testCase.trafoType;
+        const HestonSLVModel slvModel(
+             localVol, hestonModel, finalDate, testCase.fdmParams);
 
-        std::vector<boost::tuple<Real, Real, bool> > cPoints;
-        Real lowerBound, upperBound;
+        // this includes a calibration of the leverage function!
+        boost::shared_ptr<LocalVolTermStructure>
+            l = slvModel.leverageFunction();
 
-        const SquareRootProcessRNDCalculator rnd(v0, kappa, theta, sigma);
-
-        switch (trafoType) {
-            case FdmSquareRootFwdOp::Log:
-              {
-                upperBound = std::log(rnd.stationary_invcdf(0.9995));
-                lowerBound = std::log(0.0000025);
-                const Real v0Center = std::log(v0);
-                const Real v0Density = 1.0;
-                const Real upperBoundDensity = 100;
-                const Real lowerBoundDensity = 1.0;
-                cPoints += boost::make_tuple(lowerBound, lowerBoundDensity, false),
-                          boost::make_tuple(v0Center, v0Density, true),
-                          boost::make_tuple(upperBound, upperBoundDensity, false);
-              }
-            break;
-            case FdmSquareRootFwdOp::Plain:
-              {
-                upperBound = std::max(1.25*v0, rnd.stationary_invcdf(0.995));
-                lowerBound = std::min(0.75*v0, rnd.stationary_invcdf(1e-5));
-
-                const Real v0Center = v0;
-                const Real v0Density = 0.01;
-                const Real lowerBoundDensity = 0.05;
-                cPoints += boost::make_tuple(lowerBound, lowerBoundDensity, false),
-                    boost:: make_tuple(v0Center, v0Density, true);
-              }
-            break;
-            default:
-                QL_FAIL("transformation type is not implemented");
-        }
-
-        const boost::shared_ptr<Fdm1dMesher> varianceMesher(
-            new Concentrating1dMesher(lowerBound, upperBound,
-                                      vGrid, cPoints, 1e-8));
-
-        const Volatility localVol = lv;
-
-        const Real sEps = 1e-3;
-        const Real normInvEps = InverseCumulativeNormal()(1-sEps);
-
-        const Real sLowerBound = x0 - normInvEps*localVol*std::sqrt(maturity);
-        const Real sUpperBound = x0 + normInvEps*localVol*std::sqrt(maturity);
-
-        const boost::shared_ptr<Fdm1dMesher> spotMesher(
-            new Concentrating1dMesher(sLowerBound, sUpperBound, xGrid,
-                std::make_pair(x0, 0.1), true));
-
-        const boost::shared_ptr<FdmMesherComposite>
-            mesher(new FdmMesherComposite(spotMesher, varianceMesher));
-
-        const Time eT = 2.0/365;
-        const Real l0 = localVol/std::sqrt(v0);
-        // greens function uses ATM local vol for the equity part
-        Array p = FdmHestonGreensFct(mesher,
-            boost::shared_ptr<HestonProcess>(new HestonProcess(
-                rTS, qTS, spot, v0, kappa, theta, sigma, rho)),
-                trafoType, l0).get(eT, testCase.greensAlgorithm);
-
-        std::vector<Time> mandatoryTimeSteps(1, eT);
-        std::copy(maturities.begin(), maturities.end(),
-                  std::back_inserter(mandatoryTimeSteps));
-
-        const Time smallStep = 1.0/tMaxGridPerYear;
-        const Time largeStep = 1.0/tMinGridPerYear;
-
-        for (Real t = smallStep; t < maturities.back();
-        	t+= smallStep + (largeStep-smallStep)*(1-exp(-kappa*t)) ) {
-        	mandatoryTimeSteps.push_back(t);
-        }
-
-        TimeGrid timeGrid(mandatoryTimeSteps.begin(), mandatoryTimeSteps.end());
-
-        const Array x(Exp(Array(spotMesher->locations().begin(),
-                                      spotMesher->locations().end())));
-        const std::vector<Real> tmpSpots(x.begin(), x.end());
-        const Array v(varianceMesher->locations().begin(),
-                      varianceMesher->locations().end());
-        const Array tMesh(timeGrid.begin()+1, timeGrid.end());
-        const std::vector<Time> tmpTimes(tMesh.begin(), tMesh.end());
-        boost::shared_ptr<Matrix> L(new Matrix(x.size(), tMesh.size()));
-
-        std::cout << "calibration test grid t=" << maturity << std::endl
-                << "x(" << x.front() << ", " << x.back() << "), "
-                << "v(" << v.front() << ", " << v.back() << ")" << std::endl;
-
-        for (Size i=0; i < x.size(); ++i) {
-            std::fill(L->row_begin(i), L->row_end(i), l0);
-        }
-        boost::shared_ptr<FixedLocalVolSurface> leverageFct(
-            new FixedLocalVolSurface(todaysDate, tmpTimes, tmpSpots, L,
-                                     dayCounter));
-
-        const boost::shared_ptr<FdmLinearOpComposite> hestonFwdOp(
-            new FdmHestonFwdOp(mesher, hestonProcess, trafoType, leverageFct));
-
-        HundsdorferScheme hs(FdmSchemeDesc::Hundsdorfer().theta,
-                             FdmSchemeDesc::Hundsdorfer().mu, hestonFwdOp);
-
-        CraigSneydScheme cs(FdmSchemeDesc::CraigSneyd().theta,
-                    FdmSchemeDesc::CraigSneyd().mu, hestonFwdOp );
-
-        ModifiedCraigSneydScheme mcg(
-                    FdmSchemeDesc::ModifiedCraigSneyd().theta,
-        FdmSchemeDesc::ModifiedCraigSneyd().mu, hestonFwdOp);
-
-        DouglasScheme ds(0.5, hestonFwdOp);
-        ImplicitEulerScheme ie(hestonFwdOp,
-                               ImplicitEulerScheme::bc_set(), 1e-1);
-
-        //============================================
-        // step 1:
-        // calculate leverage function
-        for (Size i=1; i < tMesh.size(); ++i) {
-            const Time t = tMesh.at(i);
-            const Time dt = t - tMesh.at(i-1);
-
-            Array pn = p;
-            for (Size r=0; r < 2; ++r) {
-                for (Size j=0; j < x.size(); ++j) {
-                    Array pSlice(vGrid);
-                    for (Size k=0; k < vGrid; ++k)
-                        pSlice[k] = pn[j + k*xGrid];
-
-                    const Real pInt = DiscreteSimpsonIntegral()(v, pSlice);
-
-                    const Real vpInt = (trafoType == FdmSquareRootFwdOp::Log)
-                      ? DiscreteSimpsonIntegral()(v, Exp(v)*pSlice)
-                      : DiscreteSimpsonIntegral()(v, v*pSlice);
-
-                    const Real scale = pInt/vpInt;
-
-                    const Real l = (scale >= 0.0)
-                      ? localVol*std::sqrt(scale)
-                      : 1.0;
-
-//                    std::fill(L->row_begin(j)+i,
-//                      std::min(L->row_begin(j)+i+1, L->row_end(j)),
-//                      std::min(5.0, std::max(0.01, l)));
-
-                    (*L)[j][i] = std::min(5.0, std::max(0.01, l));
-
-                    leverageFct->setInterpolation(Linear());
-//					const Real l = (pInt >= 1e-8)
-//						? localVol*std::sqrt(scale)
-//						: Null<Real>();
-//
-//					std::fill(L.row_begin(j)+i,
-//							  std::min(L.row_begin(j)+i+1, L.row_end(j)), l);
-				}
-//
-//				for (Size j=x.size()/2; j < x.size(); ++j) {
-//					if (L[j][i] == Null<Real>()) {
-//						L[j][i] = L[j-1][i];
-//						std::fill(L.row_begin(j)+i,
-//								  std::min(L.row_begin(j)+i+1, L.row_end(j)),
-//								  L[j][i]);
-//					}
-//				}
-//
-//				for (Integer j=x.size()/2; j >=0; --j) {
-//					if (L[j][i] == Null<Real>()) {
-//						L[j][i] = L[j+1][i];
-//						std::fill(L.row_begin(j)+i,
-//								  std::min(L.row_begin(j)+i+1, L.row_end(j)),
-//								  L[j][i]);
-//					}
-//				}
-
-
-// smoothing
-                const Volatility stdDev = localVol*std::sqrt(t);
-                const Real xm
-                    = std::log(s0*qTS->discount(t)/rTS->discount(t))
-                        -0.5*stdDev*stdDev;
-
-                const Real normInvEps = InverseCumulativeNormal()(1-1e-4);
-
-                const Real sLowerBound = std::max(
-                    x.front(), std::exp(xm - normInvEps*stdDev));
-                const Real sUpperBound = std::min(
-                    x.back(), std::exp(xm + normInvEps*stdDev));
-
-                const Real lowerL = leverageFct->localVol(t, sLowerBound);
-                const Real upperL = leverageFct->localVol(t, sUpperBound);
-
-                for (Size j=0; j < x.size(); ++j) {
-                    if (x[j] < sLowerBound)
-                        std::fill(L->row_begin(j)+i,
-                          std::min(L->row_begin(j)+i+1, L->row_end(j)),
-                          lowerL);
-                    else if (x[j] > sUpperBound)
-                        std::fill(L->row_begin(j)+i,
-                          std::min(L->row_begin(j)+i+1, L->row_end(j)),
-                          upperL);
-                    else if ((*L)[j][i] == Null<Real>())
-                        std::cout << t << " ouch" << std::endl;
-                }
-                leverageFct->setInterpolation(Linear());
-
-                pn = p;
-                switch (testCase.schemeType) {
-                  case FdmSchemeDesc::DouglasType:
-                    ds.setStep(dt);
-                    ds.step(pn, t);
-                  break;
-                  case FdmSchemeDesc::HundsdorferType:
-                      hs.setStep(dt);
-                      hs.step(pn, t);
-                  break;
-                  case FdmSchemeDesc::CraigSneydType:
-                    cs.setStep(dt);
-                    cs.step(pn, t);
-                  break;
-                    case FdmSchemeDesc::ImplicitEulerType:
-                    ie.setStep(dt);
-                    ie.step(pn, t);
-                  break;
-                  case FdmSchemeDesc::ModifiedCraigSneydType:
-                    mcg.setStep(dt);
-                    mcg.step(pn, t);
-                  break;
-                    default:
-                  QL_FAIL("scheme is not implemented");
-                }
-            }
-            p = pn;
-        }
-
-        //============================================
-        // step 2:
-        // test if probability distribution of the slv model
-        // matches the one from the (fixed) lv input to see
-        // if the calibration worked correctly
-        const Real xm
-            = std::log(s0*qTS->discount(maturity)/rTS->discount(maturity))
-                -0.5*localVol*localVol*maturity;
-        for (Size j=0; j < x.size(); ++j) {
-            Array pSlice(vGrid);
-            for (Size k=0; k < vGrid; ++k)
-                pSlice[k] = p[j + k*xGrid];
-
-            const Real xl = std::log(x[j]);
-
-            const Volatility stdDev = localVol*std::sqrt(maturity);
-            const Real expected
-                = M_SQRT1_2*M_1_SQRTPI/stdDev
-                    * std::exp(-0.5*square<Real>()((xl - xm)/stdDev));
-
-            const Real calculated = DiscreteSimpsonIntegral()(v, pSlice);
-
-            const Real tol = 2e-2;
-            if (std::fabs(expected-calculated) > tol) {
-                BOOST_FAIL("failed to reproduce probability "
-                           << "\n   strike      " << x[j]
-                           << QL_FIXED << std::setprecision(5)
-                           << "\n   calculated: " << calculated
-                           << "\n   expected:   " << expected
-                           << "\n   tolerance:  " << tol);
-            }
-        }
-
-        // print the leverage function
-        for (Time time = 0; time < leverageFct->maxTime(); time = time+(time<2.0?0.1:1.0)) {
-            std::cout << time << " ";
-        }
-        std::cout << std::endl;
-        Real eps = 1e-2;
-        //for (Rate strike = l->minStrike(); strike < l->maxStrike();  strike=strike+50) {
-        for (Rate strike = s0/10; strike < s0*2.1; strike=strike+s0/10) {
-            std::cout << strike << " : ";
-            for (Time time = 0; time < leverageFct->maxTime(); time = time+(time<2.0?0.1:1.0)) {
-                std::cout << leverageFct->localVol(std::max(time, eps), strike, true) << " ";
-            }
-            std::cout << std::endl;
-        }
-        //============================================
-        // step 3:
-        // test if prices of vanilla options match
-        // under both models
         const boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
             new GeneralizedBlackScholesProcess(spot, qTS, rTS,
-                Handle<BlackVolTermStructure>(flatVol(localVol,
-                                              dayCounter))));
+                Handle<BlackVolTermStructure>(flatVol(lv, dc))));
 
         const boost::shared_ptr<PricingEngine> analyticEngine(
             new AnalyticEuropeanEngine(bsProcess));
 
         const boost::shared_ptr<PricingEngine> hestonEngine(
-            new AnalyticHestonEngine(hestonModel, 192));
+            new AnalyticHestonEngine(*hestonModel, 164));
 
-        const Real strikes[] = { 75, 80, 90, 100, 110, 125, 150 };
-        const Real times[] = { 3, 6, 9, 12, 18, 24 };
+        const Real strikes[] = { 50, 75, 80, 90, 100, 110, 125, 150, 175 };
+        const Real times[] = { 3, 6, 9, 12, 24, 36, 60 };
 
         std::cout << "strike\tmaturity\texpected calculated pureHeston "
-                  << "hestonImplied vega slvImpl" << std::endl;
+                  << "hestonImplied vega slvImpl diff(bp)" << std::endl;
+
         for (Size t=0; t < LENGTH(times); ++t) {
             const Date expiry = todaysDate +  Period(times[t], Months);
             const boost::shared_ptr<Exercise> exercise(
                 new EuropeanExercise(expiry));
 
             const boost::shared_ptr<PricingEngine> slvEngine(
-                new FdHestonVanillaEngine(hestonModel,
-                    std::max(31.0, 51*times[t]/12.0), 201, 51, 0,
-                        FdmSchemeDesc::ModifiedCraigSneyd(),
-                        leverageFct));
-
+                (times[t] <= 3) ?
+                    new FdHestonVanillaEngine(*hestonModel,
+                        std::max(101.0, 51*times[t]/12.0), 401, 101, 0,
+                            FdmSchemeDesc::ModifiedCraigSneyd(), l)
+                :   new FdHestonVanillaEngine(*hestonModel,
+                        std::max(51.0, 51*times[t]/12.0), 201, 101, 0,
+                            FdmSchemeDesc::ModifiedCraigSneyd(), l));
 
             for (Size s=0; s < LENGTH(strikes); ++s) {
                 const Real strike = strikes[s];
@@ -1728,36 +1459,44 @@ namespace {
                 const Real expected = option.NPV();
                 const Real vega = option.vega();
 
-                //------------------------------
-                option.setPricingEngine(hestonEngine);
-                const Real pureHeston = option.NPV();
+                //---------------------------------------
+                    option.setPricingEngine(hestonEngine);
+                    const Real pureHeston = option.NPV();
 
-                const boost::shared_ptr<GeneralizedBlackScholesProcess> bp(
-                    new GeneralizedBlackScholesProcess(spot, qTS, rTS,
-                        Handle<BlackVolTermStructure>(flatVol(localVol,
-                                                      dayCounter))));
+                    const boost::shared_ptr<GeneralizedBlackScholesProcess> bp(
+                        new GeneralizedBlackScholesProcess(spot, qTS, rTS,
+                            Handle<BlackVolTermStructure>(flatVol(lv,
+                                                          dc))));
 
-                std::cout << QL_FIXED << std::setprecision(0)
-                          << strike << "\t "
-                          << std::setprecision(0) << times[t] << "\t "
-                          << std::setprecision(8) << expected << " "
-                          << std::setprecision(8) << calculated << " "
-                          << std::setprecision(8) << pureHeston << " "
-                          << std::setprecision(8) << option.impliedVolatility(pureHeston, bp)
-                          << " "
-                          << std::setprecision(8) << vega << " "
-                          << std::setprecision(8) << localVol + (calculated-expected)/vega
-                          << std::endl;
+                    std::cout << QL_FIXED << std::setprecision(0)
+                              << strike << "\t "
+                              << std::setprecision(0) << times[t] << "\t "
+                              << std::setprecision(8) << expected << " "
+                              << std::setprecision(8) << calculated << " "
+                              << std::setprecision(8) << pureHeston << " "
+                              << std::setprecision(8) << option.impliedVolatility(pureHeston, bp)
+                              << " "
+                              << std::setprecision(8) << vega << " "
+                              << std::setprecision(8) << lv + (calculated-expected)/vega << " "
+                              << std::setprecision(1) << (calculated-expected)/vega*1e4
+                              << std::endl;
 
-                const Real tol = testCase.eps;
+                const Real tol = 0.0005;//testCase.eps;
                 if (std::fabs((calculated-expected)/vega) > tol) {
-                    BOOST_FAIL("failed to reproduce round trip vola "
+                    std::cout << "failed to reproduce round trip vola "
                               << "\n   strike      " << strike
                               << "\n   time        " << times[t]
                               << QL_FIXED << std::setprecision(5)
-                              << "\n   calculated: " << localVol + (calculated-expected)/vega
-                              << "\n   expected:   " << localVol
-                              << "\n   tolerance:  " << tol);
+                              << "\n   calculated: " << lv + (calculated-expected)/vega
+                              << "\n   expected:   " << lv
+                              << "\n   tolerance:  " << tol << std::endl;
+    //                BOOST_FAIL("failed to reproduce round trip vola "
+    //                          << "\n   strike      " << strike
+    //                          << "\n   time        " << times[t]
+    //                          << QL_FIXED << std::setprecision(5)
+    //                          << "\n   calculated: " << lv + (calculated-expected)/vega
+    //                          << "\n   expected:   " << lv
+    //                          << "\n   tolerance:  " << tol);
                 }
             }
         }
@@ -1765,294 +1504,21 @@ namespace {
 }
 
 
-void HestonSLVModelTest::testSLVCalibration() {
-// const Real localVol should be added to the test case for the calibration tests
-// but currently collides with the other use of the FokkerPlanckFwdTestCase
-// as a pure Heston test case
-    FokkerPlanckFwdTestCase testCases[] = {
-        {
-            100.0, 0.035, 0.01,
-            0.10, 1.0, 0.1, -0.75, 0.2,
-            101, 401, 101, 51,
-			0.00075, 0.00075,
-            FdmSquareRootFwdOp::Plain,
-            FdmHestonGreensFct::Gaussian,
-            FdmSchemeDesc::ModifiedCraigSneydType
-        },
-        {
-            100.0, 0.035, 0.01,
-            0.12, 1.0, 0.1, -0.75, 0.2,
-            101, 401, 101, 51,
-			0.0005, 0.0005,
-            FdmSquareRootFwdOp::Plain,
-            FdmHestonGreensFct::Gaussian,
-            FdmSchemeDesc::CraigSneydType
-        },
-        {
-            // main reason for the high tolerance is v0=0.19
-            // and pricing of the vanilla option does not work
-            // very well with this high value
-            100.0, 0.035, 0.01,
-            0.19, 1.0, 0.1, -0.75, 0.2,
-            101, 401, 201, 101,
-            0.003, 0.003,
-            FdmSquareRootFwdOp::Plain,
-            FdmHestonGreensFct::Gaussian,
-            FdmSchemeDesc::HundsdorferType
-        },
-// original case, need more time steps for 5 bp roundtrip accuracy
-        {
-            100.0, 0.035, 0.01,
-            0.06, 1.0, 0.06, -0.75, std::sqrt(0.2),
-            201, 501, 101, 51,
-            0.0005, 0.0005,
-            FdmSquareRootFwdOp::Log,
-            FdmHestonGreensFct::Gaussian,
-            FdmSchemeDesc::ModifiedCraigSneydType
-        }
-    };
-
-    for (Size i=0; i < LENGTH(testCases); ++i) {
-        BOOST_TEST_MESSAGE("Testing stochastic local volatility calibration case " << i << " ...");
-        lsvCalibrationTest(testCases[i], 0.3);
-    }
-}
 
 void HestonSLVModelTest::testHestonSLVModel() {
     SavedSettings backup;
 
-    const Date todaysDate(2, June, 2015);
-    Settings::instance().evaluationDate() = todaysDate;
-    const Date finalDate(2, June, 2020);
+    const HestonSLVTestCase testCases[] = {
+        { {0.035, 0.01, 1.0, 0.06, -0.75, 0.1, 0.09}, plainParams},
+        { {0.035, 0.01, 1.0, 0.06, -0.75, std::sqrt(0.2), 0.09}, logParams }
+    };
 
-    const Calendar calendar = TARGET();
-    const DayCounter dc = Actual365Fixed();
 
-    const Real s0 = 100;
-    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(s0));
-
-    const Rate r = 0.035; //0.02;
-    const Rate q = 0.01; //0.03;
-
-    const Real kappa = 1.0;
-    const Real theta = 0.06; //0.09;
-    const Real rho   = -0.75;
-    const Real sigma = sqrt(0.2); // 0.2
-    const Real v0    = 0.06; //0.09;
-    const Volatility lv = 0.3;
-
-    const Handle<YieldTermStructure> rTS(flatRate(r, dc));
-    const Handle<YieldTermStructure> qTS(flatRate(q, dc));
-
-    const boost::shared_ptr<HestonProcess> hestonProcess(
-    	new HestonProcess(rTS, qTS, spot, v0, kappa, theta, sigma, rho));
-
-    const Handle<HestonModel> hestonModel(
-    	boost::make_shared<HestonModel>(hestonProcess));
-
-    const Handle<LocalVolTermStructure> localVol(
-    	boost::make_shared<LocalConstantVol>(todaysDate, lv, dc));
-
-//    struct HestonSLVFokkerPlanckFdmParams {
-//        const Date finalCalibrationMaturity;
-//        const Size xGrid, vGrid;
-//        const Size tMaxStepsPerYear, tMinStepsPerYear;
-//        const Real tStepNumberDecay;
-//
-//        // local volatility forward equation
-//        const Real epsProbability;
-//        const Real undefinedlLocalVolOverwrite;
-//        const Size maxIntegrationIterations;
-//
-//        // algorithm to get to the start configuration at time point one
-//        const FdmHestonGreensFct::Algorithm greensAlgorithm;
-//    };
-//    const HestonSLVFokkerPlanckFdmParams params =
-//        { finalDate, 201, 101, 1000, 100, 5.0,
-//          1e-6, -Null<Real>(), 10000,
-//          FdmHestonGreensFct::ZeroCorrelation};
-    const HestonSLVFokkerPlanckFdmParams params =
-        { finalDate, 201, 301, 5000, 25, 3.0,
-          1e-2, -Null<Real>(), 10000,
-          FdmHestonGreensFct::Gaussian,
-          FdmSquareRootFwdOp::Log,
-          FdmSchemeDesc::ModifiedCraigSneyd()
-        };
-//    struct FokkerPlanckFwdTestCase {
-//        const Real s0, r, q, v0, kappa, theta, rho, sigma;
-//        const Size xGrid, vGrid, tGridPerYear, tMinGridPerYear;
-//        const Real avgEps, eps;
-//        const FdmSquareRootFwdOp::TransformationType trafoType;
-//        const FdmHestonGreensFct::Algorithm greensAlgorithm;
-//        const FdmSchemeDesc::FdmSchemeType schemeType;
-//    };
-//    {
-//        100.0, 0.035, 0.01,
-//        0.06, 1.0, 0.06, -0.75, std::sqrt(0.2),
-//        201, 501, 101, 51,
-//        0.0005, 0.0005,
-//        FdmSquareRootFwdOp::Log,
-//        FdmHestonGreensFct::Gaussian,
-//        FdmSchemeDesc::ModifiedCraigSneydType
-//    }
-
-    HestonSLVModel slvModel(localVol, hestonModel, params);
-
-    // this includes a calibration of the leverage function!
-    boost::shared_ptr<LocalVolTermStructure>
-        l = slvModel.leverageFunction();
-
-    // print the leverage function
-    for (Time time = 0; time < l->maxTime(); time = time+(time<2.0?0.1:1.0)) {
-        std::cout << time << " ";
+    for (Size i=0; i < LENGTH(testCases); ++i) {
+        BOOST_TEST_MESSAGE("Testing stochastic local volatility calibration case " << i << " ...");
+        lsvCalibrationTest(testCases[i]);
     }
-    std::cout << std::endl;
-    Real eps = 1e-2;
-    for (Rate strike = s0/10; strike < s0*2.1; strike=strike+s0/10) {
-        std::cout << strike << " : ";
-        for (Time time = 0; time < l->maxTime(); time = time+(time<2.0?0.1:1.0)) {
-            std::cout << l->localVol(std::max(time, eps), strike, true) << " ";
-        }
-        std::cout << std::endl;
-    }
-    //============================================
-    // step 2:
-    // test if probability distribution of the slv model
-    // matches the one from the (fixed) lv input to see
-    // if the calibration worked correctly
-//    const Date todaysDate(5, July, 2014);
-//    Settings::instance().evaluationDate() = todaysDate;
-//
-//    const Calendar calendar = TARGET();
-//    const DayCounter dayCounter = Actual365Fixed();
-//
-//    const Size nMonths = 24;//5*12;
-//    std::vector<Date> maturityDates;
-//    std::vector<Time> maturities;
-//    maturities.reserve(nMonths);
-//    maturityDates.reserve(nMonths);
-//    for (Size i=1; i <= nMonths; ++i) {
-//        maturityDates.push_back(todaysDate + Period(i, Months));
-//        maturities.push_back(
-//            dayCounter.yearFraction(todaysDate, maturityDates.back()));
-//    }
-//    const Time maturity = maturities.back();
-//    const Real xm
-//        = std::log(s0*qTS->discount(maturity)/rTS->discount(maturity))
-//            -0.5*localVol*localVol*maturity;
-//    for (Size j=0; j < x.size(); ++j) {
-//        Array pSlice(vGrid);
-//        for (Size k=0; k < vGrid; ++k)
-//            pSlice[k] = p[j + k*xGrid];
-//
-//        const Real xl = std::log(x[j]);
-//
-//        const Volatility stdDev = localVol*std::sqrt(maturity);
-//        const Real expected
-//            = M_SQRT1_2*M_1_SQRTPI/stdDev
-//                * std::exp(-0.5*square<Real>()((xl - xm)/stdDev));
-//
-//        const Real calculated = DiscreteSimpsonIntegral()(v, pSlice);
-//
-//        const Real tol = 2e-2;
-//        if (std::fabs(expected-calculated) > tol) {
-//            BOOST_FAIL("failed to reproduce probability "
-//                       << "\n   strike      " << x[j]
-//                       << QL_FIXED << std::setprecision(5)
-//                       << "\n   calculated: " << calculated
-//                       << "\n   expected:   " << expected
-//                       << "\n   tolerance:  " << tol);
-//        }
-//    }
 
-    //============================================
-    // step 3:
-    // test if prices of vanilla options match
-    // under both models
-    const boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
-        new GeneralizedBlackScholesProcess(spot, qTS, rTS,
-            Handle<BlackVolTermStructure>(flatVol(lv,
-                                          dc))));
-
-    const boost::shared_ptr<PricingEngine> analyticEngine(
-        new AnalyticEuropeanEngine(bsProcess));
-
-    const boost::shared_ptr<PricingEngine> hestonEngine(
-        new AnalyticHestonEngine(*hestonModel, 192));
-
-    const Real strikes[] = { 75, 80, 90, 100, 110, 125, 150 };
-    const Real times[] = { 3, 6, 9, 12, 18, 24, 36, 48, 60 };
-
-    std::cout << "strike\tmaturity\texpected calculated pureHeston "
-              << "hestonImplied vega slvImpl diff(bp)" << std::endl;
-    for (Size t=0; t < LENGTH(times); ++t) {
-        const Date expiry = todaysDate +  Period(times[t], Months);
-        const boost::shared_ptr<Exercise> exercise(
-            new EuropeanExercise(expiry));
-
-        const boost::shared_ptr<PricingEngine> slvEngine(
-            new FdHestonVanillaEngine(*hestonModel,
-                std::max(31.0, 51*times[t]/12.0), 201, 51, 0,
-                    FdmSchemeDesc::ModifiedCraigSneyd(), l));
-
-
-        for (Size s=0; s < LENGTH(strikes); ++s) {
-            const Real strike = strikes[s];
-
-            const boost::shared_ptr<StrikedTypePayoff> payoff(
-                new PlainVanillaPayoff(
-                    (strike > s0) ? Option::Call : Option::Put, strike));
-
-            VanillaOption option(payoff, exercise);
-
-            option.setPricingEngine(slvEngine);
-            const Real calculated = option.NPV();
-
-            option.setPricingEngine(analyticEngine);
-            const Real expected = option.NPV();
-            const Real vega = option.vega();
-
-            //---------------------------------------
-                option.setPricingEngine(hestonEngine);
-                const Real pureHeston = option.NPV();
-
-                const boost::shared_ptr<GeneralizedBlackScholesProcess> bp(
-                    new GeneralizedBlackScholesProcess(spot, qTS, rTS,
-                        Handle<BlackVolTermStructure>(flatVol(lv,
-                                                      dc))));
-
-                std::cout << QL_FIXED << std::setprecision(0)
-                          << strike << "\t "
-                          << std::setprecision(0) << times[t] << "\t "
-                          << std::setprecision(8) << expected << " "
-                          << std::setprecision(8) << calculated << " "
-                          << std::setprecision(8) << pureHeston << " "
-                          << std::setprecision(8) << option.impliedVolatility(pureHeston, bp)
-                          << " "
-                          << std::setprecision(8) << vega << " "
-                          << std::setprecision(8) << lv + (calculated-expected)/vega << " "
-                          << std::setprecision(1) << (calculated-expected)/vega*1e4
-                          << std::endl;
-
-            const Real tol = 0.0005;//testCase.eps;
-            if (std::fabs((calculated-expected)/vega) > tol) {
-                std::cout << "failed to reproduce round trip vola "
-                          << "\n   strike      " << strike
-                          << "\n   time        " << times[t]
-                          << QL_FIXED << std::setprecision(5)
-                          << "\n   calculated: " << lv + (calculated-expected)/vega
-                          << "\n   expected:   " << lv
-                          << "\n   tolerance:  " << tol << std::endl;
-//                BOOST_FAIL("failed to reproduce round trip vola "
-//                          << "\n   strike      " << strike
-//                          << "\n   time        " << times[t]
-//                          << QL_FIXED << std::setprecision(5)
-//                          << "\n   calculated: " << lv + (calculated-expected)/vega
-//                          << "\n   expected:   " << lv
-//                          << "\n   tolerance:  " << tol);
-            }
-        }
-    }
 }
 
 

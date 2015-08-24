@@ -55,13 +55,15 @@ namespace QuantLib {
 		const boost::shared_ptr<YieldTermStructure>& qTS,
 		const boost::shared_ptr<LocalVolTermStructure>& localVol,
 		Size xGrid, Size tGrid,
+		Real x0Density,
 		Real eps,
 		Real illegalLocalVolOverwrite,
 		Size maxIter,
 		Time gaussianStepSize)
 	: xGrid_   (xGrid),
 	  tGrid_   (tGrid),
-	  eps_     (eps),
+	  x0Density_(x0Density),
+	  localVolProbEps_(eps),
 	  illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
 	  maxIter_ (maxIter),
 	  gaussianStepSize_(gaussianStepSize),
@@ -85,13 +87,15 @@ namespace QuantLib {
 		const boost::shared_ptr<LocalVolTermStructure>& localVol,
 		const boost::shared_ptr<TimeGrid>& timeGrid,
 		Size xGrid,
+		Real x0Density,
 		Real eps,
 		Real illegalLocalVolOverwrite,
 		Size maxIter,
 		Time gaussianStepSize)
 	: xGrid_   (xGrid),
 	  tGrid_   (timeGrid->size()-1),
-	  eps_     (eps),
+	  x0Density_(x0Density),
+	  localVolProbEps_(eps),
 	  illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
 	  maxIter_ (maxIter),
 	  gaussianStepSize_(gaussianStepSize),
@@ -168,14 +172,14 @@ namespace QuantLib {
 
 		// left or right hand integral
 		if (x > 0.5*(xr+xl)) {
-		    while (pdf(xr, t) > 0.01*eps_) xr*=1.1;
-            return 1.0-GaussLobattoIntegral(maxIter_, 0.1*eps_)(
+		    while (pdf(xr, t) > 0.01*localVolProbEps_) xr*=1.1;
+            return 1.0-GaussLobattoIntegral(maxIter_, 0.1*localVolProbEps_)(
                 boost::bind(&LocalVolRNDCalculator::pdf, this, _1, t), x, xr);
 		}
 		else {
-            while (pdf(xl, t) > 0.01*eps_) xl*=0.9;
+            while (pdf(xl, t) > 0.01*localVolProbEps_) xl*=0.9;
 
-            return GaussLobattoIntegral(maxIter_, 0.1*eps_)(
+            return GaussLobattoIntegral(maxIter_, 0.1*localVolProbEps_)(
                 boost::bind(&LocalVolRNDCalculator::pdf, this, _1, t), xl, x);
 		}
 	}
@@ -186,7 +190,7 @@ namespace QuantLib {
 		const Time closeGridTime(timeGrid_->closestTime(t));
 		if (closeGridTime == 0.0) {
 			return RiskNeutralDensityCalculator::InvCDFHelper(
-				this, std::log(spot_->value()), 0.1*eps_, maxIter_)
+				this, std::log(spot_->value()), 0.1*localVolProbEps_, maxIter_)
 				.inverseCDF(p, t);
 		}
 		else {
@@ -200,7 +204,7 @@ namespace QuantLib {
 
 			const Real xm = DiscreteSimpsonIntegral()(x, xp);
 			return RiskNeutralDensityCalculator::InvCDFHelper(
-				this, xm, 0.1*eps_, maxIter_).inverseCDF(p, t);
+				this, xm, 0.1*localVolProbEps_, maxIter_).inverseCDF(p, t);
 		}
 	}
 
@@ -237,13 +241,13 @@ namespace QuantLib {
 			std::log(spot_->value() * qTS_->discount(t)/rTS_->discount(t));
 
 		const Volatility stdDevOfFirstStep = vol * std::sqrt(sT);
-		const Real normInvEps = InverseCumulativeNormal()(1 - eps_);
+		const Real normInvEps = InverseCumulativeNormal()(1 - localVolProbEps_);
 		Real sLowerBound = xm - normInvEps * stdDevOfFirstStep;
 		Real sUpperBound = xm + normInvEps * stdDevOfFirstStep;
 
 		boost::shared_ptr<Fdm1dMesher> mesher(
 			new Concentrating1dMesher(sLowerBound, sUpperBound, xGrid_,
-				std::make_pair(xm, 0.1), true));
+				std::make_pair(xm, x0Density_), true));
 
 	    Array p(mesher->size());
 	    Array x(mesher->locations().begin(), mesher->locations().end());
@@ -279,7 +283,7 @@ namespace QuantLib {
 	    		std::max(std::fabs(*std::min_element(p.end()-b, p.end())),
 	    				 std::fabs(*std::max_element(p.end()-b, p.end())));
 
-	    	if (std::max(maxLeftValue, maxRightValue) > eps_) {
+	    	if (std::max(maxLeftValue, maxRightValue) > localVolProbEps_) {
 	    		rescaleTimeSteps_.push_back(i);
 
 	    		const Real oldLowerBound = sLowerBound;
@@ -311,9 +315,9 @@ namespace QuantLib {
 						std::min(timeGrid_->size()-1, i+scalingSteps)))
                 	 * vm;
 
-	    		if (maxLeftValue > eps_)
+	    		if (maxLeftValue > localVolProbEps_)
 	    			sLowerBound -= scalingFactor*xm;
-	    		if (maxRightValue > eps_)
+	    		if (maxRightValue > localVolProbEps_)
 	    			sUpperBound += scalingFactor*xm;
 
 	    		mesher = boost::shared_ptr<Fdm1dMesher>(

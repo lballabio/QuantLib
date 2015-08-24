@@ -39,15 +39,24 @@ class SimpleQuote;
     class LocalVolTermStructure;
 
     struct HestonSLVFokkerPlanckFdmParams {
-        const Date finalCalibrationMaturity;
         const Size xGrid, vGrid;
         const Size tMaxStepsPerYear, tMinStepsPerYear;
         const Real tStepNumberDecay;
 
+        const Size predictionCorretionSteps;
+
         // local volatility forward equation
-        const Real epsProbability;
+        const Real x0Density;
+        const Real localVolEpsProb;
         const Real undefinedlLocalVolOverwrite;
         const Size maxIntegrationIterations;
+
+        // variance mesher definition
+        const Real vUpperEps, vLowerEps;
+        const Real v0Density, vUpperBoundDensity, vLowerBoundDensity;
+
+        // do not calculate leverage function if prob is smaller than eps
+        const Real leverageFctPropEps;
 
         // algorithm to get to the start configuration at time point one
         const FdmHestonGreensFct::Algorithm greensAlgorithm;
@@ -62,6 +71,7 @@ class SimpleQuote;
         HestonSLVModel(
             const Handle<LocalVolTermStructure>& localVol,
             const Handle<HestonModel>& hestonModel,
+            const Date& endDate,
             const HestonSLVFokkerPlanckFdmParams& params,
             const std::vector<Date>& mandatoryDates = std::vector<Date>());
 
@@ -76,6 +86,7 @@ class SimpleQuote;
 
         const Handle<LocalVolTermStructure> localVol_;
         const Handle<HestonModel> hestonModel_;
+        const Date endDate_;
         const HestonSLVFokkerPlanckFdmParams params_;
         const std::vector<Date> mandatoryDates_;
 
