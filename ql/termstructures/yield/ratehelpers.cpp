@@ -539,7 +539,12 @@ namespace QuantLib {
                                periodToStart_,
                                iborIndex_->businessDayConvention(),
                                iborIndex_->endOfMonth());
-        latestDate_ = iborIndex_->maturityDate(earliestDate_);
+        // end date is calculated from spot date
+        latestDate_ = iborIndex_->fixingCalendar().advance(
+                             spotDate,
+                             periodToStart_ + iborIndex_->tenor(),
+                             iborIndex_->businessDayConvention(),
+                             iborIndex_->endOfMonth());
         fixingDate_ = iborIndex_->fixingDate(earliestDate_);
     }
 
