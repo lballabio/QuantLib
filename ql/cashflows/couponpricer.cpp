@@ -90,10 +90,13 @@ namespace QuantLib {
             Real stdDev =
                 std::sqrt(capletVolatility()->blackVariance(fixingDate,
                                                             effStrike));
-            Rate fixing = blackFormula(optionType,
-                                       effStrike,
-                                       adjustedFixing(),
-                                       stdDev);
+            Real shift = capletVolatility()->displacement();
+            bool shiftedLn = capletVolatility()->volatilityType() == ShiftedLognormal;
+            Rate fixing =
+                shiftedLn ? blackFormula(optionType, effStrike,
+                                         adjustedFixing(), stdDev, 1.0, shift)
+                          : bachelierBlackFormula(optionType, effStrike,
+                                                  adjustedFixing(), stdDev, 1.0);
             return fixing * accrualPeriod_ * discount_;
         }
     }
