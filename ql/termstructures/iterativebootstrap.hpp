@@ -218,8 +218,12 @@ namespace QuantLib {
                 }
             }
 
-            if (!Interpolator::global)
-                break;     // no need for convergence loop
+            // cannot exit here, not even when the interpolator is local!
+            //
+            // a convergence loop is always needed when the pillar date is
+            // before the instrument's latest relevant date; e.g. in the case
+            // of FRAs: a pillar date equal to the FRA end date can be before
+            // the end date of the relevant underlying Ibor fixing
 
             // exit condition
             Real change = std::fabs(data[1]-previousData_[1]);
