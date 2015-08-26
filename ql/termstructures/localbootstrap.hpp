@@ -144,13 +144,14 @@ namespace QuantLib {
             Date m1 = ts_->instruments_[i-1]->pillarDate(),
                  m2 = ts_->instruments_[i]->pillarDate();
             QL_REQUIRE(m1 != m2,
-                       "two instruments have the same maturity ("<< m1 <<")");
+                       "two instruments have the same pillar date ("<<m1<<")");
         }
 
         // check that there is no instruments with invalid quote
         for (Size i=0; i<nInsts; ++i)
             QL_REQUIRE(ts_->instruments_[i]->quote()->isValid(),
                        io::ordinal(i+1) << " instrument (maturity: " <<
+                       ts_->instruments_[i]->maturityDate() << ", pillar: " <<
                        ts_->instruments_[i]->pillarDate() <<
                        ") has an invalid quote");
 
