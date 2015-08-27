@@ -26,7 +26,7 @@ namespace QuantLib {
     Israel::Israel(Israel::Market market) {
         // all calendar instances share the same implementation instance
         static boost::shared_ptr<Calendar::Impl> SettlementImpl(
-                                        new Israel::SettlementImpl);
+                                        new Israel::TelAvivImpl);
         static boost::shared_ptr<Calendar::Impl> TelAvivImpl(
                                         new Israel::TelAvivImpl);
         switch (market) {
@@ -39,22 +39,6 @@ namespace QuantLib {
         default:
             QL_FAIL("unknown market");
         }
-    }
-
-    bool Israel::SettlementImpl::isWeekend(Weekday w) const {
-        return w == Saturday || w == Sunday;
-    }
-
-    bool Israel::SettlementImpl::isBusinessDay(const Date& date) const {
-        Weekday w = date.weekday();
-        Day d = date.dayOfMonth();
-        Month m = date.month();
-        Year y = date.year();
-
-        if (isWeekend(w))
-            return false;
-
-        return true;
     }
 
     bool Israel::TelAvivImpl::isWeekend(Weekday w) const {

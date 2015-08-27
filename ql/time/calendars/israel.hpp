@@ -29,17 +29,9 @@
 
 namespace QuantLib {
 
-    /*! Due to the lack of reliable sources, was created an empty Israel
-        calendar with only weekend settings and a Tel Aviv calendar with
-        settings as in the official sources.
-    */
-
     //! Israel calendar
-    /*! Public holidays:
-        <ul>
-        <li>Saturdays</li>
-        <li>Sundays</li>
-        </ul>
+    /*! Due to the lack of reliable sources, the settlement calendar
+        has the same holidays as the Tel Aviv stock-exchange.
 
         Holidays for the Tel-Aviv Stock Exchange
         (data from <http://www.tase.co.il>):
@@ -68,14 +60,8 @@ namespace QuantLib {
     */
     class Israel : public Calendar {
       private:
-        class SettlementImpl : public Calendar::Impl {
-          public:
-            std::string name() const { return "Israel"; }
-            bool isWeekend(Weekday) const;
-            bool isBusinessDay(const Date&) const;
-        };
         class TelAvivImpl : public Calendar::Impl {
-        public:
+          public:
             std::string name() const { return "Tel Aviv stock exchange"; }
             bool isWeekend(Weekday) const;
             bool isBusinessDay(const Date&) const;
