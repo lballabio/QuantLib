@@ -6655,6 +6655,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\time\calendars\romania.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\romania.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\time\calendars\russia.cpp"
 					>
 				</File>
