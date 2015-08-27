@@ -51,7 +51,7 @@ namespace QuantLib {
         Size n_;
         Brent firstSolver_;
         FiniteDifferenceNewtonSafe solver_;
-        mutable bool initialized_, validCurve_;
+        mutable bool initialized_, validCurve_, loopRequired_;
         mutable Size firstAliveHelper_, alive_;
         mutable std::vector<Real> previousData_;
         mutable std::vector<boost::shared_ptr<BootstrapError<Curve> > > errors_;
@@ -62,7 +62,8 @@ namespace QuantLib {
 
     template <class Curve>
     IterativeBootstrap<Curve>::IterativeBootstrap()
-        : ts_(0), initialized_(false), validCurve_(false) {}
+        : ts_(0), initialized_(false), validCurve_(false), 
+          loopRequired_(Interpolator::global) {}
 
     template <class Curve>
     void IterativeBootstrap<Curve>::setup(Curve* ts) {
@@ -82,7 +83,6 @@ namespace QuantLib {
         // ensure helpers are sorted
         std::sort(ts_->instruments_.begin(), ts_->instruments_.end(),
                   detail::BootstrapHelperSorter());
-
         // skip expired helpers
         Date firstDate = Traits::initialDate(ts_);
         QL_REQUIRE(ts_->instruments_[n_-1]->pillarDate()>firstDate,
@@ -106,7 +106,7 @@ namespace QuantLib {
         times[0] = ts_->timeFromReference(dates[0]);
 
         // this should be made a TermStructure member
-        Date maxDate = firstDate;
+        Date latestRelevantDate, maxDate = firstDate;
         // pillar counter: i
         // helper counter: j
         for (Size i=1, j=firstAliveHelper_; j<n_; ++i, ++j) {
@@ -118,15 +118,21 @@ namespace QuantLib {
             QL_REQUIRE(dates[i-1]!=dates[i],
                        "more than one instrument with pillar " << dates[i]);
 
+            latestRelevantDate = helper->latestRelevantDate();
             // check that the helper is really extending the curve, i.e. that
             // pillar-sorted helpers are also sorted by latestRelevantDate
-            QL_REQUIRE(helper->latestRelevantDate() > maxDate,
+            QL_REQUIRE(latestRelevantDate > maxDate,
                        io::ordinal(j+1) << " instrument (pillar: " <<
-                       helper->pillarDate() << ") has latestRelevantDate (" <<
-                       helper->latestRelevantDate() << ") before or equal to "
+                       dates[i] << ") has latestRelevantDate (" <<
+                       latestRelevantDate << ") before or equal to "
                        "previous instrument's latestRelevantDate (" <<
                        maxDate << ")");
-            maxDate = helper->latestRelevantDate();
+            maxDate = latestRelevantDate;
+
+            // when a pillar date is different from the last relevant date the
+            // convergence loop is required even if the Interpolator is local
+            if (dates[i] != latestRelevantDate)
+                loopRequired_ = true;
 
             errors_[i] = boost::shared_ptr<BootstrapError<Curve> >(new
                 BootstrapError<Curve>(ts_, helper, i));
@@ -235,12 +241,8 @@ namespace QuantLib {
                 }
             }
 
-            // cannot exit here, not even when the interpolator is local!
-            //
-            // a convergence loop is always needed when the pillar date is
-            // before the instrument's latest relevant date; e.g. in the case
-            // of FRAs: a pillar date equal to the FRA end date can be before
-            // the end date of the relevant underlying Ibor fixing
+            if (!loopRequired_)
+                 break;
 
             // exit condition
             Real change = std::fabs(data[1]-previousData_[1]);
