@@ -24,6 +24,7 @@
 #include <ql/time/calendars/norway.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/calendars/poland.hpp>
+#include <ql/time/calendars/romania.hpp>
 #include <ql/time/calendars/russia.hpp>
 #include <ql/time/calendars/saudiarabia.hpp>
 #include <ql/time/calendars/singapore.hpp>

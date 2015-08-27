@@ -27,6 +27,7 @@ this_include_HEADERS = \
 	norway.hpp \
 	nullcalendar.hpp \
 	poland.hpp \
+	romania.hpp \
 	russia.hpp \
 	saudiarabia.hpp \
 	singapore.hpp \
@@ -66,6 +67,7 @@ libCalendars_la_SOURCES = \
 	newzealand.cpp \
 	norway.cpp \
 	poland.cpp \
+	romania.cpp \
 	russia.cpp \
 	saudiarabia.cpp \
 	singapore.cpp \

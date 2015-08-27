@@ -1398,6 +1398,7 @@
     <ClInclude Include="ql\time\calendars\norway.hpp" />
     <ClInclude Include="ql\time\calendars\nullcalendar.hpp" />
     <ClInclude Include="ql\time\calendars\poland.hpp" />
+    <ClInclude Include="ql\time\calendars\romania.hpp" />
     <ClInclude Include="ql\time\calendars\russia.hpp" />
     <ClInclude Include="ql\time\calendars\saudiarabia.hpp" />
     <ClInclude Include="ql\time\calendars\singapore.hpp" />
@@ -2325,6 +2326,7 @@
     <ClCompile Include="ql\time\calendars\newzealand.cpp" />
     <ClCompile Include="ql\time\calendars\norway.cpp" />
     <ClCompile Include="ql\time\calendars\poland.cpp" />
+    <ClCompile Include="ql\time\calendars\romania.cpp" />
     <ClCompile Include="ql\time\calendars\russia.cpp" />
     <ClCompile Include="ql\time\calendars\saudiarabia.cpp" />
     <ClCompile Include="ql\time\calendars\singapore.cpp" />
