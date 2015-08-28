@@ -31,6 +31,8 @@ namespace QuantLib {
     //! %Secant 1-D solver
     /*! \test the correctness of the returned values is tested by
               checking them against known good results.
+
+        \ingroup solvers
     */
     class Secant : public Solver1D<Secant> {
       public:

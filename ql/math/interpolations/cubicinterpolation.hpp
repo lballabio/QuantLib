@@ -97,6 +97,7 @@ namespace QuantLib {
 
         \test to be adapted from old ones.
 
+        \ingroup interpolations
     */
     class CubicInterpolation : public Interpolation {
       public:
@@ -303,6 +304,7 @@ namespace QuantLib {
     };
 
     //! %Cubic interpolation factory and traits
+    /*! \ingroup interpolations */
     class Cubic {
       public:
         Cubic(CubicInterpolation::DerivativeApprox da

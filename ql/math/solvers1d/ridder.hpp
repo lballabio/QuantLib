@@ -31,6 +31,8 @@ namespace QuantLib {
     //! %Ridder 1-D solver
     /*! \test the correctness of the returned values is tested by
               checking them against known good results.
+
+        \ingroup solvers
     */
     class Ridder : public Solver1D<Ridder> {
       public:
