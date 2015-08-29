@@ -114,7 +114,6 @@ namespace QuantLib {
         QL_REQUIRE(downsideSamples() > 1, "sample number <= 1, unsufficient");
         Real n = static_cast<Real>(downsideSamples());
         Real r1 = n / (n - 1.0);
-        Real r2 = n / downsideWeightSum();
         return r1 *
                boost::accumulators::extract_result<
                    boost::accumulators::tag::moment<2> >(downsideAcc_);
@@ -133,8 +132,8 @@ namespace QuantLib {
     }
 
     void IncrementalStatistics::reset() {
-        acc_ = acc0_;
-        downsideAcc_ = downsideAcc0_;
+        acc_ = accumulator_set();
+        downsideAcc_ = downside_accumulator_set();
     }
 
 }

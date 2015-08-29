@@ -151,7 +151,7 @@ namespace QuantLib {
         void reset();
         //@}
      private:
-       boost::accumulators::accumulator_set<
+       typedef boost::accumulators::accumulator_set<
            Real,
            boost::accumulators::stats<
                boost::accumulators::tag::count, boost::accumulators::tag::min,
@@ -161,15 +161,15 @@ namespace QuantLib {
                boost::accumulators::tag::weighted_skewness,
                boost::accumulators::tag::weighted_kurtosis,
                boost::accumulators::tag::sum_of_weights_kahan>,
-           Real> acc_,
-           acc0_;
-       boost::accumulators::accumulator_set<
-           Real, boost::accumulators::stats<
-                     boost::accumulators::tag::count,
-                     boost::accumulators::tag::weighted_moment<2>,
-                     boost::accumulators::tag::sum_of_weights_kahan>,
-           Real> downsideAcc_,
-           downsideAcc0_;
+           Real> accumulator_set;
+        accumulator_set acc_;
+        typedef boost::accumulators::accumulator_set<
+            Real, boost::accumulators::stats<
+                      boost::accumulators::tag::count,
+                      boost::accumulators::tag::weighted_moment<2>,
+                      boost::accumulators::tag::sum_of_weights_kahan>,
+            Real> downside_accumulator_set;
+        downside_accumulator_set downsideAcc_;
     };
 
 }
