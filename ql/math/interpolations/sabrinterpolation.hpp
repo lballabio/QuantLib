@@ -148,6 +148,7 @@ struct SABRSpecs {
 }
 
 //! %SABR smile interpolation between discrete volatility points.
+/*! \ingroup interpolations */
 class SABRInterpolation : public Interpolation {
   public:
     template <class I1, class I2>
@@ -195,6 +196,7 @@ class SABRInterpolation : public Interpolation {
 };
 
 //! %SABR interpolation factory and traits
+/*! \ingroup interpolations */
 class SABR {
   public:
     SABR(Time t, Real forward, Real alpha, Real beta, Real nu, Real rho,

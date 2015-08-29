@@ -34,6 +34,7 @@ namespace QuantLib {
     }
 
     //! Forward-flat interpolation between discrete points
+    /*! \ingroup interpolations */
     class ForwardFlatInterpolation : public Interpolation {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
@@ -48,6 +49,7 @@ namespace QuantLib {
     };
 
     //! Forward-flat interpolation factory and traits
+    /*! \ingroup interpolations */
     class ForwardFlat {
       public:
         template <class I1, class I2>

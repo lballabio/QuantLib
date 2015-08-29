@@ -148,6 +148,8 @@ namespace QuantLib {
 
         The kernel in the implementation is kept general, although a Gaussian
         is considered in the cited text.
+
+        \ingroup interpolations
     */
     class KernelInterpolation : public Interpolation {
       public:

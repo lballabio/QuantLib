@@ -37,6 +37,8 @@ namespace QuantLib {
         \code
             RNG::sample_type RNG::next() const;
         \endcode
+
+        \ingroup optimizers
     */
 
     template <class RNG = MersenneTwisterUniformRng>

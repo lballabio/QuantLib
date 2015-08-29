@@ -36,6 +36,7 @@ namespace QuantLib {
     }
 
     //! %log-linear interpolation between discrete points
+    /*! \ingroup interpolations */
     class LogLinearInterpolation : public Interpolation {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
@@ -50,6 +51,7 @@ namespace QuantLib {
     };
 
     //! log-linear interpolation factory and traits
+    /*! \ingroup interpolations */
     class LogLinear {
       public:
         template <class I1, class I2>
@@ -62,6 +64,7 @@ namespace QuantLib {
     };
 
     //! %log-cubic interpolation between discrete points
+    /*! \ingroup interpolations */
     class LogCubicInterpolation : public Interpolation {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
@@ -85,6 +88,7 @@ namespace QuantLib {
     };
 
     //! log-cubic interpolation factory and traits
+    /*! \ingroup interpolations */
     class LogCubic {
       public:
         LogCubic(CubicInterpolation::DerivativeApprox da,
