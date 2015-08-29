@@ -572,7 +572,7 @@ void RiskNeutralDensityCalculatorTest::testSquareRootProcessRND() {
 }
 
 
-test_suite* RiskNeutralDensityCalculatorTest::suite() {
+test_suite* RiskNeutralDensityCalculatorTest::experimental() {
     test_suite* suite = BOOST_TEST_SUITE("Risk neutral density calculator tests");
 
     suite->add(QUANTLIB_TEST_CASE(

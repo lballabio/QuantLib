@@ -1538,23 +1538,22 @@ test_suite* HestonSLVModelTest::experimental() {
     test_suite* suite = BOOST_TEST_SUITE(
     	"Heston Stochastic Local Volatility tests");
 
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation));
-//    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testSquareRootZeroFlowBC));
-//    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testTransformedZeroFlowBC));
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testSquareRootEvolveWithStationaryDensity));
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity));
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testSquareRootFokkerPlanckFwdEquation));
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquation));
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage));
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
-//    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testSLVCalibration));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation));
+    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testSquareRootZeroFlowBC));
+    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testTransformedZeroFlowBC));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testSquareRootEvolveWithStationaryDensity));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testSquareRootFokkerPlanckFwdEquation));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquation));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
 
     suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testHestonSLVModel));
 

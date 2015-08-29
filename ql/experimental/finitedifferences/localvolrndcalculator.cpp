@@ -294,7 +294,7 @@ namespace QuantLib {
                 for (Size j=0; j < vols.size(); ++j) {
                 	try {
                 		vols[j] = localVol_->localVol(t + dt, std::exp(x[j]));
-                	} catch (Error& e) {
+                	} catch (Error&) {
 						if (illegalLocalVolOverwrite_ < 0.0) {
 							throw;
 						}

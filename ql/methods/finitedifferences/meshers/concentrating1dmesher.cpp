@@ -138,7 +138,7 @@ namespace QuantLib {
 
         bool equal_on_first(const std::pair<Real, Real>& p1,
                             const std::pair<Real, Real>& p2) {
-            return close_enough(p1.first, p2.first, 1000.0);
+            return close_enough(p1.first, p2.first, 1000);
         }
     }
 
