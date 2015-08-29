@@ -322,8 +322,7 @@ namespace QuantLib {
         const DayCounter dc = rTS->dayCounter();
         const Date referenceDate = rTS->referenceDate();
 
-        const Time T = dc.yearFraction(
-            referenceDate, endDate_);
+        const Time T = dc.yearFraction(referenceDate, endDate_);
 
         QL_REQUIRE(referenceDate < endDate_,
             "reference date must be smaller than final calibration date");
@@ -337,7 +336,7 @@ namespace QuantLib {
 
         Time t=0.0;
         std::vector<Time> times(1, t);
-        times.reserve(T*params_.tMinStepsPerYear);
+        times.reserve(Size(T*params_.tMinStepsPerYear));
         while (t < T) {
             const Real decayFactor = std::exp(-params_.tStepNumberDecay*t);
             const Time dt = maxDt*decayFactor + minDt*(1.0-decayFactor);
