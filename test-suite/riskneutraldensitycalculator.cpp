@@ -418,7 +418,7 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
 
 	const boost::shared_ptr<LocalVolRNDCalculator> dumasVolCalc(
 		new LocalVolRNDCalculator(
-			spot, rTS, qTS, localVolSurface, dumasTimeGrid, 401, 1e-8, b1));
+			spot, rTS, qTS, localVolSurface, dumasTimeGrid, 401, 0.1, 1e-8, b1));
 
 	const Real strikes[] = { 25, 50, 95, 100, 105, 150, 200, 400 };
 	const Date maturityDates[] = {
@@ -467,7 +467,7 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
 			const Real absDiff = std::fabs(expected - calculated);
 
 			if (absDiff > 0.5*atol) {
-				BOOST_FAIL("failed to reproduce option prices for"
+				BOOST_ERROR("failed to reproduce option prices for"
 						<< "\n   expiry:     " << expiry
 						<< "\n   strike:     " << strike
 						<< "\n   expected:   " << expected
