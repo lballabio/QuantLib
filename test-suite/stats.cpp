@@ -4,6 +4,7 @@
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2003 RiskMap srl
  Copyright (C) 2005 Gary Kennedy
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,6 +27,10 @@
 #include <ql/math/statistics/gaussianstatistics.hpp>
 #include <ql/math/statistics/sequencestatistics.hpp>
 #include <ql/math/statistics/convergencestatistics.hpp>
+#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
+#include <ql/math/randomnumbers/inversecumulativerng.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/comparison.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;
@@ -321,13 +326,71 @@ void StatisticsTest::testConvergenceStatistics() {
     checkConvergence<Statistics>(std::string("Statistics"));
 }
 
+#define TEST_INC_STAT(expr, expected)                                          \
+    if (!close_enough(expr, expected))                                         \
+        BOOST_ERROR(std::setprecision(16)                                      \
+                    << std::scientific << #expr << " (" << expr                \
+                    << ") can not be reproduced against cached result ("       \
+                    << expected << ")");
 
+void StatisticsTest::testIncrementalStatistics() {
+
+    BOOST_TEST_MESSAGE("Testing incremental statistics...");
+
+    // With QuantLib 1.7 IncrementalStatistics was changed to
+    // a wrapper to the boost accumulator library. This is
+    // a test of the new implementation against results from
+    // the old one.
+
+    MersenneTwisterUniformRng mt(42);
+
+    IncrementalStatistics stat;
+
+    for (Size i = 0; i < 500000; ++i) {
+        Real x = 2.0 * (mt.nextReal() - 0.5) * 1234.0;
+        Real w = mt.nextReal();
+        stat.add(x, w);
+    }
+
+    TEST_INC_STAT(stat.samples(), 500000);
+    TEST_INC_STAT(stat.weightSum(), 2.5003623600676749e+05);
+    TEST_INC_STAT(stat.mean(), 4.9122325964293845e-01);
+    TEST_INC_STAT(stat.variance(),  5.0706503959683329e+05);
+    TEST_INC_STAT(stat.standardDeviation(),  7.1208499464378076e+02);
+    TEST_INC_STAT(stat.errorEstimate(), 1.0070402569876076e+00);
+    TEST_INC_STAT(stat.skewness(), -1.7360169326720038e-03);
+    TEST_INC_STAT(stat.kurtosis(), -1.1990742562085395e+00);
+    TEST_INC_STAT(stat.min(), -1.2339945045639761e+03);
+    TEST_INC_STAT(stat.max(),  1.2339958308008499e+03);
+    TEST_INC_STAT(stat.downsideVariance(), 5.0786776146975247e+05);
+    TEST_INC_STAT(stat.downsideDeviation(),  7.1264841364431061e+02);
+
+    // This is a test for numerical stability,
+    // where the old implementation fails
+
+    InverseCumulativeRng<MersenneTwisterUniformRng,InverseCumulativeNormal> normal_gen(mt);
+
+    IncrementalStatistics stat2;
+
+    for (Size i = 0; i < 500000; ++i) {
+        Real x = normal_gen.next().value * 1E-1 + 1E8;
+        Real w = 1.0;
+        stat2.add(x, w);
+    }
+
+    Real tol = 1E-5;
+
+    if(std::fabs( stat2.variance() - 1E-2 ) > tol)
+        BOOST_ERROR("variance (" << stat2.variance()
+                                 << ") out of expected range " << 1E-2 << " +- "
+                                 << tol);
+}
 
 test_suite* StatisticsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Statistics tests");
     suite->add(QUANTLIB_TEST_CASE(&StatisticsTest::testStatistics));
     suite->add(QUANTLIB_TEST_CASE(&StatisticsTest::testSequenceStatistics));
     suite->add(QUANTLIB_TEST_CASE(&StatisticsTest::testConvergenceStatistics));
+    suite->add(QUANTLIB_TEST_CASE(&StatisticsTest::testIncrementalStatistics));
     return suite;
 }
-
