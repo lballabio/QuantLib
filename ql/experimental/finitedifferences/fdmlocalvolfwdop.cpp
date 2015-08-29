@@ -26,23 +26,23 @@
 
 namespace QuantLib {
 
-	FdmLocalVolFwdOp::FdmLocalVolFwdOp(
+    FdmLocalVolFwdOp::FdmLocalVolFwdOp(
         const boost::shared_ptr<FdmMesher>& mesher,
-		const boost::shared_ptr<Quote>& spot,
-		const boost::shared_ptr<YieldTermStructure>& rTS,
-		const boost::shared_ptr<YieldTermStructure>& qTS,
-		const boost::shared_ptr<LocalVolTermStructure>& localVol,
+        const boost::shared_ptr<Quote>& spot,
+        const boost::shared_ptr<YieldTermStructure>& rTS,
+        const boost::shared_ptr<YieldTermStructure>& qTS,
+        const boost::shared_ptr<LocalVolTermStructure>& localVol,
         Real illegalLocalVolOverwrite,
         Size direction)
     : mesher_(mesher),
       rTS_   (rTS),
       qTS_   (qTS),
-	  localVol_(localVol),
-	  x_ ((localVol) ? Array(Exp(mesher->locations(direction))) : Array()),
+      localVol_(localVol),
+      x_ ((localVol) ? Array(Exp(mesher->locations(direction))) : Array()),
       dxMap_ (FirstDerivativeOp(direction, mesher)),
       dxxMap_(SecondDerivativeOp(direction, mesher)),
       mapT_  (direction, mesher),
-	  illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
+      illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
       direction_(direction) {
     }
 
@@ -50,29 +50,29 @@ namespace QuantLib {
         const Rate r = rTS_->forwardRate(t1, t2, Continuous).rate();
         const Rate q = qTS_->forwardRate(t1, t2, Continuous).rate();
 
-		const boost::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
-		const FdmLinearOpIterator endIter = layout->end();
+        const boost::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
+        const FdmLinearOpIterator endIter = layout->end();
 
-		Array v(layout->size());
-		for (FdmLinearOpIterator iter = layout->begin();
-			iter != endIter; ++iter) {
-			const Size i = iter.index();
+        Array v(layout->size());
+        for (FdmLinearOpIterator iter = layout->begin();
+            iter != endIter; ++iter) {
+            const Size i = iter.index();
 
-			try {
-				v[i] = square<Real>()(
-					localVol_->localVol(0.5*(t1+t2), x_[i], true));
-			} catch (Error& e) {
-				if (illegalLocalVolOverwrite_ < 0.0) {
-					throw;
-				}
-				else {
-					v[i] = square<Real>()(illegalLocalVolOverwrite_);
-				}
-			}
-		}
-		mapT_.axpyb(Array(1, 1.0), dxMap_.multR(- r + q + 0.5*v),
-					dxxMap_.multR(0.5*v), Array(1, 0.0));
-	}
+            try {
+                v[i] = square<Real>()(
+                    localVol_->localVol(0.5*(t1+t2), x_[i], true));
+            } catch (Error& e) {
+                if (illegalLocalVolOverwrite_ < 0.0) {
+                    throw;
+                }
+                else {
+                    v[i] = square<Real>()(illegalLocalVolOverwrite_);
+                }
+            }
+        }
+        mapT_.axpyb(Array(1, 1.0), dxMap_.multR(- r + q + 0.5*v),
+                    dxxMap_.multR(0.5*v), Array(1, 0.0));
+    }
 
     Size FdmLocalVolFwdOp::size() const {
         return 1u;

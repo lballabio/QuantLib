@@ -27,36 +27,36 @@
 
 namespace QuantLib {
 
-	namespace {
-		Date time2Date(const Date referenceDate, const DayCounter& dc, Time t) {
-			t-=1e4*QL_EPSILON; // add a small buffer for rounding errors
-			Date d(referenceDate);
-			while(dc.yearFraction(referenceDate, d+=Period(1, Years)) < t);
-			d-=Period(1, Years);
-			while(dc.yearFraction(referenceDate, d+=Period(1, Months)) < t);
-			d-=Period(1, Months);
-			while(dc.yearFraction(referenceDate, d++) < t);
-			return d;
-		}
-	}
+    namespace {
+        Date time2Date(const Date referenceDate, const DayCounter& dc, Time t) {
+            t-=1e4*QL_EPSILON; // add a small buffer for rounding errors
+            Date d(referenceDate);
+            while(dc.yearFraction(referenceDate, d+=Period(1, Years)) < t);
+            d-=Period(1, Years);
+            while(dc.yearFraction(referenceDate, d+=Period(1, Months)) < t);
+            d-=Period(1, Months);
+            while(dc.yearFraction(referenceDate, d++) < t);
+            return d;
+        }
+    }
 
-	FixedLocalVolSurface::FixedLocalVolSurface(
-		const Date& referenceDate,
-		const std::vector<Date>& dates,
-		const std::vector<Real>& strikes,
-		const boost::shared_ptr<Matrix>& localVolMatrix,
-		const DayCounter& dayCounter,
-		Extrapolation lowerExtrapolation,
-		Extrapolation upperExtrapolation)
-	: LocalVolTermStructure(
-	      referenceDate, NullCalendar(), Following, dayCounter),
-	  maxDate_(dates.back()),
-	  minDate_(dates.front()),
+    FixedLocalVolSurface::FixedLocalVolSurface(
+        const Date& referenceDate,
+        const std::vector<Date>& dates,
+        const std::vector<Real>& strikes,
+        const boost::shared_ptr<Matrix>& localVolMatrix,
+        const DayCounter& dayCounter,
+        Extrapolation lowerExtrapolation,
+        Extrapolation upperExtrapolation)
+    : LocalVolTermStructure(
+          referenceDate, NullCalendar(), Following, dayCounter),
+      maxDate_(dates.back()),
+      minDate_(dates.front()),
       localVolMatrix_(localVolMatrix),
-	  strikes_(dates.size(),boost::make_shared<std::vector<Real> >(strikes)),
+      strikes_(dates.size(),boost::make_shared<std::vector<Real> >(strikes)),
       localVolInterpol_(dates.size()),
       lowerExtrapolation_(lowerExtrapolation),
-	  upperExtrapolation_(upperExtrapolation) {
+      upperExtrapolation_(upperExtrapolation) {
 
         QL_REQUIRE(dates[0]>=referenceDate,
                    "cannot have dates[0] < referenceDate");
@@ -67,34 +67,34 @@ namespace QuantLib {
 
         checkSurface();
         setInterpolation<Linear>();
-	}
+    }
 
-	FixedLocalVolSurface::FixedLocalVolSurface(
-    	const Date& referenceDate,
-		const std::vector<Time>& times,
-		const std::vector<Real>& strikes,
-		const boost::shared_ptr<Matrix>& localVolMatrix,
-		const DayCounter& dayCounter,
-		Extrapolation lowerExtrapolation,
-		Extrapolation upperExtrapolation)
-	: LocalVolTermStructure(
-	      referenceDate, NullCalendar(), Following, dayCounter),
-	  maxDate_(time2Date(referenceDate, dayCounter, times.back())),
-	  minDate_(time2Date(referenceDate, dayCounter, times.front())),
+    FixedLocalVolSurface::FixedLocalVolSurface(
+        const Date& referenceDate,
+        const std::vector<Time>& times,
+        const std::vector<Real>& strikes,
+        const boost::shared_ptr<Matrix>& localVolMatrix,
+        const DayCounter& dayCounter,
+        Extrapolation lowerExtrapolation,
+        Extrapolation upperExtrapolation)
+    : LocalVolTermStructure(
+          referenceDate, NullCalendar(), Following, dayCounter),
+      maxDate_(time2Date(referenceDate, dayCounter, times.back())),
+      minDate_(time2Date(referenceDate, dayCounter, times.front())),
       times_(times),
       localVolMatrix_(localVolMatrix),
-	  strikes_(times.size(),boost::make_shared<std::vector<Real> >(strikes)),
-	  localVolInterpol_(times.size()),
+      strikes_(times.size(),boost::make_shared<std::vector<Real> >(strikes)),
+      localVolInterpol_(times.size()),
       lowerExtrapolation_(lowerExtrapolation),
-	  upperExtrapolation_(upperExtrapolation) {
+      upperExtrapolation_(upperExtrapolation) {
 
         QL_REQUIRE(times_[0]>=0, "cannot have times[0] < 0");
 
         checkSurface();
-		setInterpolation<Linear>();
-	}
+        setInterpolation<Linear>();
+    }
 
-	FixedLocalVolSurface::FixedLocalVolSurface(
+    FixedLocalVolSurface::FixedLocalVolSurface(
         const Date& referenceDate,
         const std::vector<Time>& times,
         const std::vector<boost::shared_ptr<std::vector<Real> > > & strikes,
@@ -102,8 +102,8 @@ namespace QuantLib {
         const DayCounter& dayCounter,
         Extrapolation lowerExtrapolation,
         Extrapolation upperExtrapolation)
-	: LocalVolTermStructure(
-	          referenceDate, NullCalendar(), Following, dayCounter),
+    : LocalVolTermStructure(
+              referenceDate, NullCalendar(), Following, dayCounter),
       maxDate_(time2Date(referenceDate, dayCounter, times.back())),
       minDate_(time2Date(referenceDate, dayCounter, times.front())),
       times_(times),
@@ -121,7 +121,7 @@ namespace QuantLib {
     }
 
 
-	void FixedLocalVolSurface::checkSurface() {
+    void FixedLocalVolSurface::checkSurface() {
         QL_REQUIRE(times_.size()==localVolMatrix_->columns(),
                    "mismatch between date vector and vol matrix colums");
         for (Size i=0; i < strikes_.size(); ++i) {
@@ -140,22 +140,22 @@ namespace QuantLib {
                 QL_REQUIRE(strikes_[i]->at(j)>=strikes_[i]->at(j-1),
                            "strikes must be sorted");
             }
-	}
+    }
 
     Date FixedLocalVolSurface::maxDate() const {
-    	return maxDate_;
+        return maxDate_;
     }
     Date FixedLocalVolSurface::minDate() const {
-    	return minDate_;
+        return minDate_;
     }
     Time FixedLocalVolSurface::maxTime() const {
-    	return times_.back();
+        return times_.back();
     }
     Real FixedLocalVolSurface::minStrike() const {
-    	return strikes_.back()->front();
+        return strikes_.back()->front();
     }
     Real FixedLocalVolSurface::maxStrike() const {
-    	return strikes_.back()->back();
+        return strikes_.back()->back();
     }
 
     Volatility FixedLocalVolSurface::localVolImpl(Time t, Real strike) const {

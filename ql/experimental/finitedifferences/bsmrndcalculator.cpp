@@ -20,7 +20,7 @@
 
 /*! \file bsmrndcalculator.hpp
     \brief risk neutral terminal density calculator for the
-    	   Black-Scholes-Merton model with constant volatility
+           Black-Scholes-Merton model with constant volatility
 */
 
 #include <ql/processes/blackscholesprocess.hpp>
@@ -31,33 +31,33 @@
 
 namespace QuantLib {
 
-	BSMRNDCalculator::BSMRNDCalculator(
-		const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
-	: process_(process) { }
+    BSMRNDCalculator::BSMRNDCalculator(
+        const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+    : process_(process) { }
 
-	std::pair<Real, Volatility>
-	BSMRNDCalculator::distributionParams(Real x, Time t) const {
-		const Volatility stdDev =
-			process_->blackVolatility()->blackVol(t, std::exp(x))*std::sqrt(t);
-		const Real mean = std::log(process_->x0()) - 0.5*stdDev*stdDev
-			+ std::log(  process_->dividendYield()->discount(t)
-					   / process_->riskFreeRate()->discount(t));
+    std::pair<Real, Volatility>
+    BSMRNDCalculator::distributionParams(Real x, Time t) const {
+        const Volatility stdDev =
+            process_->blackVolatility()->blackVol(t, std::exp(x))*std::sqrt(t);
+        const Real mean = std::log(process_->x0()) - 0.5*stdDev*stdDev
+            + std::log(  process_->dividendYield()->discount(t)
+                       / process_->riskFreeRate()->discount(t));
 
-		return std::make_pair(mean, stdDev);
-	}
+        return std::make_pair(mean, stdDev);
+    }
 
-	Real BSMRNDCalculator::pdf(Real x, Time t) const {
-		std::pair<Real, Volatility> p = distributionParams(x, t);
-		return NormalDistribution(p.first, p.second)(x);
-	}
+    Real BSMRNDCalculator::pdf(Real x, Time t) const {
+        std::pair<Real, Volatility> p = distributionParams(x, t);
+        return NormalDistribution(p.first, p.second)(x);
+    }
 
-	Real BSMRNDCalculator::cdf(Real x, Time t) const {
-		std::pair<Real, Volatility> p = distributionParams(x, t);
-		return CumulativeNormalDistribution(p.first, p.second)(x);
-	}
+    Real BSMRNDCalculator::cdf(Real x, Time t) const {
+        std::pair<Real, Volatility> p = distributionParams(x, t);
+        return CumulativeNormalDistribution(p.first, p.second)(x);
+    }
 
-	Real BSMRNDCalculator::invcdf(Real x, Time t) const {
-		std::pair<Real, Volatility> p = distributionParams(x, t);
-		return InvCumulativeNormalDistribution(p.first, p.second)(x);
-	}
+    Real BSMRNDCalculator::invcdf(Real x, Time t) const {
+        std::pair<Real, Volatility> p = distributionParams(x, t);
+        return InvCumulativeNormalDistribution(p.first, p.second)(x);
+    }
 }

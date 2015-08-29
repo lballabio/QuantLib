@@ -48,7 +48,7 @@ namespace QuantLib {
             const Handle<FdmQuantoHelper>& quantoHelper
                                                 = Handle<FdmQuantoHelper>(),
             const boost::shared_ptr<LocalVolTermStructure>& leverageFct
-            	= boost::shared_ptr<LocalVolTermStructure>());
+                = boost::shared_ptr<LocalVolTermStructure>());
 
         Real valueAt(Real s, Real v) const;
         Real thetaAt(Real s, Real v) const;

@@ -37,10 +37,10 @@ namespace QuantLib {
       public:
         FdmLocalVolFwdOp(
             const boost::shared_ptr<FdmMesher>& mesher,
-			const boost::shared_ptr<Quote>& spot,
-			const boost::shared_ptr<YieldTermStructure>& rTS,
-			const boost::shared_ptr<YieldTermStructure>& qTS,
-			const boost::shared_ptr<LocalVolTermStructure>& localVol,
+            const boost::shared_ptr<Quote>& spot,
+            const boost::shared_ptr<YieldTermStructure>& rTS,
+            const boost::shared_ptr<YieldTermStructure>& qTS,
+            const boost::shared_ptr<LocalVolTermStructure>& localVol,
             Real illegalLocalVolOverwrite = -Null<Real>(),
             Size direction = 0);
 

@@ -163,7 +163,7 @@ namespace QuantLib {
         const Real a = -(2*h(n-1)+h(n))/zetam(n);
         const Real alpha = sigma_*sigma_*v(n)/zetam(n) - mu(n)*h(n)/zetam(n);
         const Real nu = a*v(n-1) + (2*kappa_*(v(n-1)-theta_) + sigma_*sigma_)
-                        				/(sigma_*sigma_);
+                                        /(sigma_*sigma_);
 
         return alpha/nu*v(n-1);
     }

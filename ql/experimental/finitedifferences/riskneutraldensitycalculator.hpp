@@ -28,28 +28,28 @@
 #include <ql/types.hpp>
 
 namespace QuantLib {
-	class RiskNeutralDensityCalculator {
-	  public:
-		virtual Real pdf(Real x, Time t) const = 0;
-		virtual Real cdf(Real x, Time t) const = 0;
-		virtual Real invcdf(Real p, Time t) const = 0;
+    class RiskNeutralDensityCalculator {
+      public:
+        virtual Real pdf(Real x, Time t) const = 0;
+        virtual Real cdf(Real x, Time t) const = 0;
+        virtual Real invcdf(Real p, Time t) const = 0;
 
-		virtual ~RiskNeutralDensityCalculator() {}
+        virtual ~RiskNeutralDensityCalculator() {}
 
-	  protected:
-		class InvCDFHelper {
-		  public:
-			InvCDFHelper(const RiskNeutralDensityCalculator* calculator,
-						 Real guess, Real accuracy, Size maxEvaluations);
+      protected:
+        class InvCDFHelper {
+          public:
+            InvCDFHelper(const RiskNeutralDensityCalculator* calculator,
+                         Real guess, Real accuracy, Size maxEvaluations);
 
-			Real inverseCDF(Real p, Time t) const;
-		  private:
-			const RiskNeutralDensityCalculator* const calculator_;
-			const Real guess_;
-			const Real accuracy_;
-			const Size maxEvaluations_;
-		};
-	};
+            Real inverseCDF(Real p, Time t) const;
+          private:
+            const RiskNeutralDensityCalculator* const calculator_;
+            const Real guess_;
+            const Real accuracy_;
+            const Size maxEvaluations_;
+        };
+    };
 }
 
 #endif

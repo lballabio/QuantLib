@@ -74,36 +74,36 @@ namespace QuantLib {
             const Array Lsquare = L_*L_;
 
             mapT_.axpyb(r - q - varianceValues_*Lsquare, dxMap_,
-            		    dxxMap_.mult(Lsquare), Array(1, -0.5*r));
+                        dxxMap_.mult(Lsquare), Array(1, -0.5*r));
         }
     }
 
     Disposable<Array> FdmHestonEquityPart::getLeverageFctSlice(Time t1, Time t2)
     const {
-    	const boost::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
+        const boost::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
         Array v(layout->size(), 1.0);
 
         if (!leverageFct_) {
-        	return v;
+            return v;
         }
-		const Real t = 0.5*(t1+t2);
-		const Time time = std::min(leverageFct_->maxTime(), t);
+        const Real t = 0.5*(t1+t2);
+        const Time time = std::min(leverageFct_->maxTime(), t);
 
-		const FdmLinearOpIterator endIter = layout->end();
-		for (FdmLinearOpIterator iter = layout->begin();
-			 iter!=endIter; ++iter) {
-			const Size nx = iter.coordinates()[0];
+        const FdmLinearOpIterator endIter = layout->end();
+        for (FdmLinearOpIterator iter = layout->begin();
+             iter!=endIter; ++iter) {
+            const Size nx = iter.coordinates()[0];
 
-			if (iter.coordinates()[1] == 0) {
-				const Real x = std::exp(mesher_->location(iter, 0));
-				const Real spot = std::min(leverageFct_->maxStrike(),
-										   std::max(leverageFct_->minStrike(), x));
-				v[nx] = std::max(0.01, leverageFct_->localVol(time, spot, true));
-			}
-			else {
-				v[iter.index()] = v[nx];
-			}
-		}
+            if (iter.coordinates()[1] == 0) {
+                const Real x = std::exp(mesher_->location(iter, 0));
+                const Real spot = std::min(leverageFct_->maxStrike(),
+                                           std::max(leverageFct_->minStrike(), x));
+                v[nx] = std::max(0.01, leverageFct_->localVol(time, spot, true));
+            }
+            else {
+                v[iter.index()] = v[nx];
+            }
+        }
         return v;
     }
 

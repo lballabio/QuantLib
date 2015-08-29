@@ -212,16 +212,16 @@ namespace QuantLib {
     }
 
     Disposable<TripleBandLinearOp> TripleBandLinearOp::multR(const Array& u) const {
-		const boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
-		const Size size = layout->size();
-		QL_REQUIRE(u.size() == size, "inconsistent size of rhs");
+        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+        const Size size = layout->size();
+        QL_REQUIRE(u.size() == size, "inconsistent size of rhs");
         TripleBandLinearOp retVal(direction_, mesher_);
 
         #pragma omp parallel for
         for (Size i=0; i < size; ++i) {
-			const Real sm1 = i > 0? u[i-1] : 1.0;
+            const Real sm1 = i > 0? u[i-1] : 1.0;
             const Real s0 = u[i];
-			const Real sp1 = i < size-1? u[i+1] : 1.0;
+            const Real sp1 = i < size-1? u[i+1] : 1.0;
             retVal.lower_[i]= lower_[i]*sm1;
             retVal.diag_[i] = diag_[i]*s0;
             retVal.upper_[i]= upper_[i]*sp1;
@@ -230,7 +230,7 @@ namespace QuantLib {
         return retVal;
     }
 
-	Disposable<TripleBandLinearOp> TripleBandLinearOp::add(const Array& u) const {
+    Disposable<TripleBandLinearOp> TripleBandLinearOp::add(const Array& u) const {
 
         TripleBandLinearOp retVal(direction_, mesher_);
 

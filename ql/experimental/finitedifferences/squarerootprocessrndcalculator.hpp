@@ -28,23 +28,23 @@
 #include <ql/experimental/finitedifferences/riskneutraldensitycalculator.hpp>
 
 namespace QuantLib {
-	class SquareRootProcessRNDCalculator
-		: public RiskNeutralDensityCalculator {
-	public:
-		SquareRootProcessRNDCalculator(
-			Real v0, Real kappa, Real theta, Real sigma);
+    class SquareRootProcessRNDCalculator
+        : public RiskNeutralDensityCalculator {
+    public:
+        SquareRootProcessRNDCalculator(
+            Real v0, Real kappa, Real theta, Real sigma);
 
-		Real pdf(Real v, Time t) const;
-		Real cdf(Real v, Time t) const;
-		Real invcdf(Real q, Time t) const;
+        Real pdf(Real v, Time t) const;
+        Real cdf(Real v, Time t) const;
+        Real invcdf(Real q, Time t) const;
 
-		Real stationary_pdf(Real v) const;
-		Real stationary_cdf(Real v) const;
-		Real stationary_invcdf(Real q) const;
+        Real stationary_pdf(Real v) const;
+        Real stationary_cdf(Real v) const;
+        Real stationary_invcdf(Real q) const;
 
-	private:
-		const Real v0_, kappa_, theta_, d_, df_;
-	};
+    private:
+        const Real v0_, kappa_, theta_, d_, df_;
+    };
 }
 
 #endif

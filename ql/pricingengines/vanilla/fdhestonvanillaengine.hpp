@@ -54,8 +54,8 @@ namespace QuantLib {
             Size tGrid = 100, Size xGrid = 100, 
             Size vGrid = 50, Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-			const boost::shared_ptr<LocalVolTermStructure>& leverageFct
-				= boost::shared_ptr<LocalVolTermStructure>());
+            const boost::shared_ptr<LocalVolTermStructure>& leverageFct
+                = boost::shared_ptr<LocalVolTermStructure>());
 
         void calculate() const;
         

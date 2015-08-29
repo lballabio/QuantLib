@@ -20,7 +20,7 @@
 
 /*! \file bsmrndcalculator.hpp
     \brief risk neutral terminal density calculator for the
-    	   Black-Scholes-Merton model with constant volatility
+           Black-Scholes-Merton model with constant volatility
 */
 
 #ifndef quantlib_bsm_risk_neutral_density_calculator_hpp
@@ -29,23 +29,23 @@
 #include <ql/experimental/finitedifferences/riskneutraldensitycalculator.hpp>
 
 namespace QuantLib {
-	class GeneralizedBlackScholesProcess;
+    class GeneralizedBlackScholesProcess;
 
-	class BSMRNDCalculator : public RiskNeutralDensityCalculator {
-	public:
-		BSMRNDCalculator(
-			const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
+    class BSMRNDCalculator : public RiskNeutralDensityCalculator {
+    public:
+        BSMRNDCalculator(
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
 
-		// x = ln(S)
-		Real pdf(Real x, Time t) const;
-		Real cdf(Real x, Time t) const;
-		Real invcdf(Real q, Time t) const;
+        // x = ln(S)
+        Real pdf(Real x, Time t) const;
+        Real cdf(Real x, Time t) const;
+        Real invcdf(Real q, Time t) const;
 
-	private:
-		std::pair<Real, Volatility> distributionParams(Real x, Time t) const;
+    private:
+        std::pair<Real, Volatility> distributionParams(Real x, Time t) const;
 
-		const boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
-	};
+        const boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+    };
 }
 
 #endif

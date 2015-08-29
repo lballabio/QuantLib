@@ -33,7 +33,7 @@
 
 namespace QuantLib {
 
-	class FixedLocalVolSurface : public LocalVolTermStructure {
+    class FixedLocalVolSurface : public LocalVolTermStructure {
       public:
         enum Extrapolation { ConstantExtrapolation,
                              InterpolatorDefaultExtrapolation };

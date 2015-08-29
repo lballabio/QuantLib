@@ -71,21 +71,21 @@ namespace QuantLib {
     }
 
     Real AnalyticPDFHestonEngine::Pv(Real x_t, Time t) const {
-    	return HestonRNDCalculator(
-    		model_->process(), integrationEps_, maxIntegrationIterations_)
-    			.pdf(x_t, t);
+        return HestonRNDCalculator(
+            model_->process(), integrationEps_, maxIntegrationIterations_)
+                .pdf(x_t, t);
     }
 
     Real AnalyticPDFHestonEngine::cdf(Real s, Time t) const {
-    	const Real x_t = std::log(s);
-    	return HestonRNDCalculator(
-    		model_->process(), integrationEps_, maxIntegrationIterations_)
-    			.cdf(x_t, t);
+        const Real x_t = std::log(s);
+        return HestonRNDCalculator(
+            model_->process(), integrationEps_, maxIntegrationIterations_)
+                .cdf(x_t, t);
     }
 
     Real AnalyticPDFHestonEngine::weightedPayoff(Real x_t, Time t) const {
         const DiscountFactor rD
-			= model_->process()->riskFreeRate()->discount(t);
+            = model_->process()->riskFreeRate()->discount(t);
 
         const Real s_t = std::exp(x_t);
         const Real payoff = (*arguments_.payoff)(s_t);

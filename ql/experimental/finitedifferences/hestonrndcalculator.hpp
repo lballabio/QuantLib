@@ -20,7 +20,7 @@
 
 /*! \file Heston rndcalculator.hpp
     \brief risk neutral terminal density calculator for the
-    	   Heston stochastic volatility model
+           Heston stochastic volatility model
 */
 
 #ifndef quantlib_heston_risk_neutral_density_calculator_hpp
@@ -29,7 +29,7 @@
 #include <ql/experimental/finitedifferences/riskneutraldensitycalculator.hpp>
 
 namespace QuantLib {
-	class HestonProcess;
+    class HestonProcess;
 
     //! Risk neutral terminal probability density for the Heston model
 
@@ -41,26 +41,26 @@ namespace QuantLib {
         http://arxiv.org/pdf/cond-mat/0203046.pdf
      */
 
-	class HestonRNDCalculator : public RiskNeutralDensityCalculator {
-	public:
-		HestonRNDCalculator(
-			const boost::shared_ptr<HestonProcess>& hestonProcess,
-	        Real integrationEps= 1e-6,
+    class HestonRNDCalculator : public RiskNeutralDensityCalculator {
+    public:
+        HestonRNDCalculator(
+            const boost::shared_ptr<HestonProcess>& hestonProcess,
+            Real integrationEps= 1e-6,
             Size maxIntegrationIterations = 10000ul);
 
-		// x=ln(S)
-		Real pdf(Real x, Time t) const;
-		Real cdf(Real x, Time t) const;
-		Real invcdf(Real q, Time t) const;
+        // x=ln(S)
+        Real pdf(Real x, Time t) const;
+        Real cdf(Real x, Time t) const;
+        Real invcdf(Real q, Time t) const;
 
-	private:
-		Real x_t(Real x, Time t) const;
+    private:
+        Real x_t(Real x, Time t) const;
 
-		const boost::shared_ptr<HestonProcess> hestonProcess_;
-		const Real x0_;
-		const Real integrationEps_;
-		const Size maxIntegrationIterations_;
-	};
+        const boost::shared_ptr<HestonProcess> hestonProcess_;
+        const Real x0_;
+        const Real integrationEps_;
+        const Size maxIntegrationIterations_;
+    };
 }
 
 #endif

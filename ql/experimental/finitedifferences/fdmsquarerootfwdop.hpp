@@ -35,7 +35,7 @@ namespace QuantLib {
 
     class FdmSquareRootFwdOp : public FdmLinearOpComposite {
       public:
-    	enum TransformationType { Plain, Power, Log };
+        enum TransformationType { Plain, Power, Log };
 
         FdmSquareRootFwdOp(
             const boost::shared_ptr<FdmMesher>& mesher,

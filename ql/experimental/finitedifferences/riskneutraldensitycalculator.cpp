@@ -36,39 +36,39 @@
 #include <iostream>
 
 namespace QuantLib {
-	RiskNeutralDensityCalculator::InvCDFHelper::InvCDFHelper(
-		const RiskNeutralDensityCalculator* calculator,
-		Real guess, Real accuracy, Size maxEvaluations)
-	: calculator_(calculator),
-	  guess_(guess),
-	  accuracy_(accuracy),
-	  maxEvaluations_(maxEvaluations) { }
+    RiskNeutralDensityCalculator::InvCDFHelper::InvCDFHelper(
+        const RiskNeutralDensityCalculator* calculator,
+        Real guess, Real accuracy, Size maxEvaluations)
+    : calculator_(calculator),
+      guess_(guess),
+      accuracy_(accuracy),
+      maxEvaluations_(maxEvaluations) { }
 
-	Real RiskNeutralDensityCalculator::InvCDFHelper::inverseCDF(Real p, Time t)
-	const {
-		const Real guessCDF = calculator_->cdf(guess_, t);
+    Real RiskNeutralDensityCalculator::InvCDFHelper::inverseCDF(Real p, Time t)
+    const {
+        const Real guessCDF = calculator_->cdf(guess_, t);
 
         Size evaluations = maxEvaluations_;
-		Real upper = guess_, lower = guess_;
+        Real upper = guess_, lower = guess_;
 
-		if (guessCDF < p)
-			while (calculator_->cdf(upper*=1.5, t) < p && evaluations > 0) {
-				--evaluations;
-			}
-		else
-			while (calculator_->cdf(lower*=0.75, t) > p && evaluations > 0) {
-				--evaluations;
-			}
+        if (guessCDF < p)
+            while (calculator_->cdf(upper*=1.5, t) < p && evaluations > 0) {
+                --evaluations;
+            }
+        else
+            while (calculator_->cdf(lower*=0.75, t) > p && evaluations > 0) {
+                --evaluations;
+            }
 
-		QL_REQUIRE(evaluations, "could not calculate interval");
+        QL_REQUIRE(evaluations, "could not calculate interval");
 
-		const boost::function<Real(Real)> cdf
-			= boost::bind(&RiskNeutralDensityCalculator::cdf,
-						  calculator_, _1, t);
+        const boost::function<Real(Real)> cdf
+            = boost::bind(&RiskNeutralDensityCalculator::cdf,
+                          calculator_, _1, t);
 
         Brent solver;
         solver.setMaxEvaluations(evaluations);
         return solver.solve(compose(std::bind2nd(std::minus<Real>(), p), cdf),
                             accuracy_, 0.5*(lower + upper), lower, upper);
-	}
+    }
 }
