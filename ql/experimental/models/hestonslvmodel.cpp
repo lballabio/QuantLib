@@ -22,7 +22,6 @@
 #include <ql/timegrid.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
-#include <ql/models/equity/hestonslvmodel.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/integrals/discreteintegrals.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
@@ -35,6 +34,7 @@
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmmesherintegral.hpp>
+#include <ql/experimental/models/hestonslvmodel.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
 #include <ql/experimental/finitedifferences/localvolrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/squarerootprocessrndcalculator.hpp>

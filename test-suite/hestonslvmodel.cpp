@@ -35,7 +35,6 @@
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/integrals/discreteintegrals.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
-#include <ql/models/equity/hestonslvmodel.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
 #include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
@@ -58,6 +57,7 @@
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmmesherintegral.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/experimental/models/hestonslvmodel.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
 #include <ql/experimental/finitedifferences/fdmsquarerootfwdop.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesfwdop.hpp>
