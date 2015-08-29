@@ -57,18 +57,21 @@ namespace QuantLib {
 
             std::vector<boost::tuple<Real, Real, bool> > cPoints;
 
+            const Real v0Density = params.v0Density;
+            const Real upperBoundDensity = params.vUpperBoundDensity;
+            const Real lowerBoundDensity = params.vLowerBoundDensity;
+
             switch (params.trafoType) {
                 case FdmSquareRootFwdOp::Log:
                   {
                     const Real lowerBound = std::max(
                             std::log(rnd.invcdf(params.vLowerEps, t)),
-                            std::log(0.0000025));
+                            std::log(params.vMin));
                     const Real upperBound
                         = std::log(rnd.invcdf(1.0-params.vUpperEps, t));
+
                     const Real v0Center = std::log(v0);
-                    const Real v0Density = params.v0Density;
-                    const Real upperBoundDensity = params.vUpperBoundDensity;
-                    const Real lowerBoundDensity = params.vLowerBoundDensity;
+
                     cPoints +=
                         boost::make_tuple(lowerBound, lowerBoundDensity, false),
                         boost::make_tuple(v0Center, v0Density, true),
@@ -80,33 +83,77 @@ namespace QuantLib {
                 break;
                 case FdmSquareRootFwdOp::Plain:
                   {
-                      const Real lowerBound = rnd.invcdf(params.vLowerEps, t);
+                      const Real lowerBound = std::max(
+                           rnd.invcdf(params.vLowerEps, t), params.vMin);
                       const Real upperBound
                           = rnd.invcdf(1.0-params.vUpperEps, t);
-                      const Real v0Center = std::log(v0);
-                      const Real v0Density = params.v0Density;
-                      const Real upperBoundDensity = params.vUpperBoundDensity;
-                      const Real lowerBoundDensity = params.vLowerBoundDensity;
+
+                      const Real v0Center = v0;
+
                       cPoints +=
                           boost::make_tuple(lowerBound, lowerBoundDensity, false),
-                          boost::make_tuple(v0Center, v0Density, false),
+                          boost::make_tuple(v0Center, v0Density, true),
                           boost::make_tuple(upperBound, upperBoundDensity, false);
 
                       return boost::make_shared<Concentrating1dMesher>(
                           lowerBound, upperBound, vGrid, cPoints, 1e-8);
                   }
                 break;
+                case FdmSquareRootFwdOp::Power:
+                {
+                    const Real lowerBound = std::max(
+                        rnd.invcdf(params.vLowerEps, t), params.vMin);
+                    const Real upperBound
+                        = rnd.invcdf(1.0-params.vUpperEps, t);
+
+                    const Real v0Center = v0;
+
+                    cPoints +=
+                        boost::make_tuple(lowerBound, lowerBoundDensity, false),
+                        boost::make_tuple(v0Center, v0Density, true),
+                        boost::make_tuple(upperBound, upperBoundDensity, false);
+
+                    return boost::make_shared<Concentrating1dMesher>(
+                        lowerBound, upperBound, vGrid, cPoints, 1e-8);
+                }
+                break;
                 default:
                     QL_FAIL("transformation type is not implemented");
             }
         }
 
+        Real integratePDF(const Array& p,
+                          const boost::shared_ptr<FdmMesherComposite>& mesher,
+                          FdmSquareRootFwdOp::TransformationType trafoType,
+                          Real alpha) {
+
+            if (trafoType != FdmSquareRootFwdOp::Power) {
+                return FdmMesherIntegral(
+                        mesher, DiscreteSimpsonIntegral()).integrate(p);
+            }
+            else {
+                Array tp(p.size());
+                const FdmLinearOpIterator end = mesher->layout()->end();
+                for (FdmLinearOpIterator iter = mesher->layout()->begin();
+                    iter != end; ++iter) {
+                    const Size idx = iter.index();
+                    const Real nu = mesher->location(iter, 1);
+
+                    tp[idx] = p[idx]*std::pow(nu, alpha-1);
+                }
+
+                return FdmMesherIntegral(
+                        mesher, DiscreteSimpsonIntegral()).integrate(tp);
+            }
+        }
+
+
         Disposable<Array> rescalePDF(
             const Array& p,
-            const boost::shared_ptr<FdmMesherComposite>& mesher) {
+            const boost::shared_ptr<FdmMesherComposite>& mesher,
+            FdmSquareRootFwdOp::TransformationType trafoType, Real alpha) {
 
-            Array retVal = p/FdmMesherIntegral(
-                mesher, DiscreteSimpsonIntegral()).integrate(p);
+            Array retVal = p/integratePDF(p, mesher, trafoType, alpha);
 
             return retVal;
         }
@@ -267,7 +314,7 @@ namespace QuantLib {
         const Real kappa = hestonProcess->kappa();
         const Real theta = hestonProcess->theta();
         const Real sigma = hestonProcess->sigma();
-        const Real rho   = hestonProcess->rho();
+        const Real alpha = 2*kappa*theta/(sigma*sigma);
 
         const Size xGrid = params_.xGrid;
         const Size vGrid = params_.vGrid;
@@ -397,8 +444,7 @@ namespace QuantLib {
             if (   mesher->getFdm1dMeshers()[0] != xMesher[i]
                 || mesher->getFdm1dMeshers()[1] != vMesher[i]) {
                 std::cout << "pre reshape step " << i << " " <<
-                    FdmMesherIntegral(
-                        mesher, DiscreteSimpsonIntegral()).integrate(p)
+                        integratePDF(p, mesher, trafoType, alpha)
                         << std::endl;
                 const boost::shared_ptr<FdmMesherComposite> newMesher(
                     new FdmMesherComposite(xMesher[i], vMesher[i]));
@@ -422,11 +468,10 @@ namespace QuantLib {
                           << std::endl;
 
                 std::cout << "reshape step " << i << " " <<
-                    FdmMesherIntegral(
-                        mesher, DiscreteSimpsonIntegral()).integrate(p)
+                        integratePDF(p, mesher, trafoType, alpha)
                         << std::endl;
 
-                p = rescalePDF(p, mesher);
+                p = rescalePDF(p, mesher, trafoType, alpha);
 
                 hestonFwdOp = boost::shared_ptr<FdmLinearOpComposite>(
                                 new FdmHestonFwdOp(mesher, hestonProcess,
@@ -452,10 +497,14 @@ namespace QuantLib {
                     for (Size k=0; k < vGrid; ++k)
                         pSlice[k] = pn[j + k*xGrid];
 
-                    const Real pInt = DiscreteSimpsonIntegral()(v, pSlice);
+                    const Real pInt = (trafoType == FdmSquareRootFwdOp::Power)
+                       ? DiscreteSimpsonIntegral()(v, Pow(v, alpha-1)*pSlice)
+                       : DiscreteSimpsonIntegral()(v, pSlice);
 
                     const Real vpInt = (trafoType == FdmSquareRootFwdOp::Log)
                       ? DiscreteSimpsonIntegral()(v, Exp(v)*pSlice)
+                      : (trafoType == FdmSquareRootFwdOp::Power)
+                      ? DiscreteSimpsonIntegral()(v, Pow(v, alpha)*pSlice)
                       : DiscreteSimpsonIntegral()(v, v*pSlice);
 
                     const Real scale = pInt/vpInt;
@@ -466,7 +515,7 @@ namespace QuantLib {
                       ? localVol*std::sqrt(scale)
                       : 1.0;
 
-                    (*L)[j][i] = std::min(5.0, std::max(0.01, l));
+                    (*L)[j][i] = std::min(50.0, std::max(0.001, l));
 
                     leverageFct->setInterpolation(Linear());
                 }
@@ -500,7 +549,7 @@ namespace QuantLib {
                 fdmScheme->step(pn, t);
             }
             p = pn;
-            p = rescalePDF(p, mesher);
+            p = rescalePDF(p, mesher, trafoType, alpha);
         }
 
         leverageFunction_ = leverageFct;

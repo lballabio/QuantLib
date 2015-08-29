@@ -52,8 +52,8 @@ class SimpleQuote;
         const Size maxIntegrationIterations;
 
         // variance mesher definition
-        const Real vUpperEps, vLowerEps;
-        const Real v0Density, vUpperBoundDensity, vLowerBoundDensity;
+        const Real vLowerEps, vUpperEps, vMin;
+        const Real v0Density, vLowerBoundDensity, vUpperBoundDensity;
 
         // do not calculate leverage function if prob is smaller than eps
         const Real leverageFctPropEps;

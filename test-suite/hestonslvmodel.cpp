@@ -1344,24 +1344,6 @@ void HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol() {
 
 
 namespace {
-    const HestonSLVFokkerPlanckFdmParams logParams =
-        { 401, 601, 2000, 25, 2.0, 3,
-          0.1, 1e-3, -Null<Real>(), 10000,
-          1e-5, 1e-4, 1.0, 0.8, 0.1, 1e-5,
-          FdmHestonGreensFct::Gaussian,
-          FdmSquareRootFwdOp::Log,
-          FdmSchemeDesc::ModifiedCraigSneyd()
-        };
-
-    const HestonSLVFokkerPlanckFdmParams plainParams =
-        { 201, 301, 1000, 25, 3.0, 2,
-          0.1, 1e-4, -Null<Real>(), 10000,
-          1e-8, 1e-8, 1.0, 1.0, 1.0, 1e-6,
-          FdmHestonGreensFct::Gaussian,
-          FdmSquareRootFwdOp::Plain,
-          FdmSchemeDesc::ModifiedCraigSneyd()
-        };
-
     struct HestonModelParams {
         const Rate r, q;
         const Real kappa, theta, rho, sigma, v0;
@@ -1423,7 +1405,7 @@ namespace {
         const boost::shared_ptr<PricingEngine> hestonEngine(
             new AnalyticHestonEngine(*hestonModel, 164));
 
-        const Real strikes[] = { 50, 75, 80, 90, 100, 110, 125, 150, 175 };
+        const Real strikes[] = { 50, 75, 80, 90, 100, 110, 125, 150 };
         const Real times[] = { 3, 6, 9, 12, 24, 36, 60 };
 
         std::cout << "strike\tmaturity\texpected calculated pureHeston "
@@ -1508,9 +1490,39 @@ namespace {
 void HestonSLVModelTest::testHestonSLVModel() {
     SavedSettings backup;
 
+    const HestonSLVFokkerPlanckFdmParams plainParams =
+        { 201, 301, 1000, 25, 3.0, 2,
+          0.1, 1e-4, -Null<Real>(), 10000,
+          1e-8, 1e-8, 0.0, 1.0, 1.0, 1.0, 1e-6,
+          FdmHestonGreensFct::Gaussian,
+          FdmSquareRootFwdOp::Plain,
+          FdmSchemeDesc::ModifiedCraigSneyd()
+        };
+
+    const HestonSLVFokkerPlanckFdmParams logParams =
+        { 301, 601, 2000, 30, 2.0, 2,
+          0.1, 1e-4, -Null<Real>(), 10000,
+          1e-5, 1e-5, 0.0000025, 1.0, 0.1, 0.9, 1e-5,
+          FdmHestonGreensFct::Gaussian,
+          FdmSquareRootFwdOp::Log,
+          FdmSchemeDesc::ModifiedCraigSneyd()
+        };
+
+    const HestonSLVFokkerPlanckFdmParams powerParams =
+        { 401, 801, 2000, 30, 2.0, 2,
+          0.1, 1e-3, -Null<Real>(), 10000,
+          1e-6, 1e-6, 0.001, 1.0, 0.001, 1.0, 1e-5,
+          FdmHestonGreensFct::Gaussian,
+          FdmSquareRootFwdOp::Power,
+          FdmSchemeDesc::ModifiedCraigSneyd()
+        };
+
+
     const HestonSLVTestCase testCases[] = {
         { {0.035, 0.01, 1.0, 0.06, -0.75, 0.1, 0.09}, plainParams},
-        { {0.035, 0.01, 1.0, 0.06, -0.75, std::sqrt(0.2), 0.09}, logParams }
+        { {0.035, 0.01, 1.0, 0.06, -0.75, std::sqrt(0.2), 0.09}, logParams },
+        { {0.035, 0.01, 1.0, 0.09, -0.75, std::sqrt(0.2), 0.06}, logParams },
+        { {0.035, 0.01, 1.0, 0.06, -0.75, 0.2, 0.09}, powerParams }
     };
 
 
