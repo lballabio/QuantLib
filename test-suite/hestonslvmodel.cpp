@@ -1406,7 +1406,7 @@ namespace {
             new AnalyticHestonEngine(*hestonModel, 164));
 
         const Real strikes[] = { 50, 75, 80, 90, 100, 110, 125, 150 };
-        const Real times[] = { 3, 6, 9, 12, 24, 36, 60 };
+        const Size times[] = { 3, 6, 9, 12, 24, 36, 60 };
 
         std::cout << "strike\tmaturity\texpected calculated pureHeston "
                   << "hestonImplied vega slvImpl diff(bp)" << std::endl;
@@ -1418,11 +1418,11 @@ namespace {
 
             const boost::shared_ptr<PricingEngine> slvEngine(
                 (times[t] <= 3) ?
-                    new FdHestonVanillaEngine(*hestonModel,
-                        std::max(101.0, 51*times[t]/12.0), 401, 101, 0,
+                    new FdHestonVanillaEngine(hestonModel.currentLink(),
+                        Size(std::max(101.0, 51*times[t]/12.0)), 401, 101, 0,
                             FdmSchemeDesc::ModifiedCraigSneyd(), l)
-                :   new FdHestonVanillaEngine(*hestonModel,
-                        std::max(51.0, 51*times[t]/12.0), 201, 101, 0,
+                :   new FdHestonVanillaEngine(hestonModel.currentLink(),
+                        Size(std::max(51.0, 51*times[t]/12.0)), 201, 101, 0,
                             FdmSchemeDesc::ModifiedCraigSneyd(), l));
 
             for (Size s=0; s < LENGTH(strikes); ++s) {
