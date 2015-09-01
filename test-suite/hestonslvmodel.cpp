@@ -1100,7 +1100,7 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
             new Concentrating1dMesher(lowerBound, upperBound, vGrid, critPoints));
 
     const boost::shared_ptr<Fdm1dMesher> equityMesher(
-        new Concentrating1dMesher(std::log(2), std::log(600.0), xGrid,
+        new Concentrating1dMesher(std::log(2.0), std::log(600.0), xGrid,
             std::make_pair(x0+0.005, 0.1), true));
 
     const boost::shared_ptr<FdmMesherComposite>
@@ -1180,9 +1180,9 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
         new FdBlackScholesVanillaEngine(lvProcess, 50, 201, 0,
                                         FdmSchemeDesc::Douglas(), true,0.2));
 
-    for (Size strike=5; strike < 200.0; ++strike) {
+    for (Size strike=5; strike < 200; ++strike) {
         const boost::shared_ptr<StrikedTypePayoff> payoff(
-            new CashOrNothingPayoff(Option::Put, strike, 1.0));
+            new CashOrNothingPayoff(Option::Put, Real(strike), 1.0));
 
         Array pd(p.size());
         for (FdmLinearOpIterator iter = layout->begin();
@@ -1532,7 +1532,6 @@ void HestonSLVModelTest::testHestonSLVModel() {
     }
 
 }
-
 
 test_suite* HestonSLVModelTest::experimental() {
     test_suite* suite = BOOST_TEST_SUITE(
