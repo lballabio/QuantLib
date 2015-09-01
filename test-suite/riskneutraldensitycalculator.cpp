@@ -498,11 +498,11 @@ void RiskNeutralDensityCalculatorTest::testSquareRootProcessRND() {
         const Time t = 0.75;
         const Time tInfty = 60.0/params[i].kappa;
 
-        const Real tol = 1e-12;
+        const Real tol = 1e-10;
         for (Real v = 1e-5; v < 1.0; v+=(v < params[i].theta) ? 0.005 : 0.1) {
 
             const Real cdfCalculated = rndCalculator.cdf(v, t);
-            const Real cdfExpected = GaussLobattoIntegral(10000, 0.1*tol)(
+            const Real cdfExpected = GaussLobattoIntegral(10000, 0.01*tol)(
                 boost::bind(&SquareRootProcessRNDCalculator::pdf,
                     &rndCalculator, _1, t), 0, v);
 

@@ -33,7 +33,6 @@
 #endif
 
 #include <boost/function.hpp>
-#include <iostream>
 
 namespace QuantLib {
     RiskNeutralDensityCalculator::InvCDFHelper::InvCDFHelper(

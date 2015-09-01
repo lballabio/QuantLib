@@ -1408,9 +1408,6 @@ namespace {
         const Real strikes[] = { 50, 75, 80, 90, 100, 110, 125, 150 };
         const Size times[] = { 3, 6, 9, 12, 24, 36, 60 };
 
-        std::cout << "strike\tmaturity\texpected calculated pureHeston "
-                  << "hestonImplied vega slvImpl diff(bp)" << std::endl;
-
         for (Size t=0; t < LENGTH(times); ++t) {
             const Date expiry = todaysDate +  Period(times[t], Months);
             const boost::shared_ptr<Exercise> exercise(
@@ -1441,44 +1438,40 @@ namespace {
                 const Real expected = option.NPV();
                 const Real vega = option.vega();
 
-                //---------------------------------------
-                    option.setPricingEngine(hestonEngine);
-                    const Real pureHeston = option.NPV();
+                option.setPricingEngine(hestonEngine);
+                const Real pureHeston = option.NPV();
 
-                    const boost::shared_ptr<GeneralizedBlackScholesProcess> bp(
-                        new GeneralizedBlackScholesProcess(spot, qTS, rTS,
-                            Handle<BlackVolTermStructure>(flatVol(lv,
-                                                          dc))));
+                const boost::shared_ptr<GeneralizedBlackScholesProcess> bp(
+                    new GeneralizedBlackScholesProcess(spot, qTS, rTS,
+                        Handle<BlackVolTermStructure>(flatVol(lv,
+                                                      dc))));
 
-                    std::cout << QL_FIXED << std::setprecision(0)
-                              << strike << "\t "
-                              << std::setprecision(0) << times[t] << "\t "
-                              << std::setprecision(8) << expected << " "
-                              << std::setprecision(8) << calculated << " "
-                              << std::setprecision(8) << pureHeston << " "
-                              << std::setprecision(8) << option.impliedVolatility(pureHeston, bp)
-                              << " "
-                              << std::setprecision(8) << vega << " "
-                              << std::setprecision(8) << lv + (calculated-expected)/vega << " "
-                              << std::setprecision(1) << (calculated-expected)/vega*1e4
-                              << std::endl;
+//                std::cout << QL_FIXED << std::setprecision(0)
+//                          << strike << "\t "
+//                          << std::setprecision(0) << times[t] << "\t "
+//                          << std::setprecision(8) << expected << " "
+//                          << std::setprecision(8) << calculated << " "
+//                          << std::setprecision(8) << pureHeston << " "
+//                          << std::setprecision(8) << option.impliedVolatility(pureHeston, bp)
+//                          << " "
+//                          << std::setprecision(8) << vega << " "
+//                          << std::setprecision(8) << lv + (calculated-expected)/vega << " "
+//                          << std::setprecision(1) << (calculated-expected)/vega*1e4
+//                          << std::endl;
 
                 const Real tol = 0.0005;//testCase.eps;
                 if (std::fabs((calculated-expected)/vega) > tol) {
-                    std::cout << "failed to reproduce round trip vola "
-                              << "\n   strike      " << strike
-                              << "\n   time        " << times[t]
+                    BOOST_FAIL("failed to reproduce round trip vola "
+                              << "\n   strike         " << strike
+                              << "\n   time           " << times[t]
+                              << "\n   expected NPV   " << expected
+                              << "\n   calculated NPV " << calculated
+                              << "\n   vega           " << vega
                               << QL_FIXED << std::setprecision(5)
-                              << "\n   calculated: " << lv + (calculated-expected)/vega
-                              << "\n   expected:   " << lv
-                              << "\n   tolerance:  " << tol << std::endl;
-    //                BOOST_FAIL("failed to reproduce round trip vola "
-    //                          << "\n   strike      " << strike
-    //                          << "\n   time        " << times[t]
-    //                          << QL_FIXED << std::setprecision(5)
-    //                          << "\n   calculated: " << lv + (calculated-expected)/vega
-    //                          << "\n   expected:   " << lv
-    //                          << "\n   tolerance:  " << tol);
+                              << "\n   calculated:    " << lv + (calculated-expected)/vega
+                              << "\n   expected:      " << lv
+                              << "\n   diff  (in bp)  " << (calculated-expected)/vega*1e4
+                              << "\n   tolerance:     " << tol);
                 }
             }
         }
@@ -1555,7 +1548,6 @@ test_suite* HestonSLVModelTest::experimental() {
         &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
 
     suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testHestonSLVModel));
-
 
     return suite;
 }

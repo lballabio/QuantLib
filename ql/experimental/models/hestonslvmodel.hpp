@@ -31,6 +31,7 @@
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmhestongreensfct.hpp>
 
+#include <list>
 
 namespace QuantLib {
 
@@ -73,6 +74,7 @@ class SimpleQuote;
             const Handle<HestonModel>& hestonModel,
             const Date& endDate,
             const HestonSLVFokkerPlanckFdmParams& params,
+            const bool logging = false,
             const std::vector<Date>& mandatoryDates = std::vector<Date>());
 
         void update();
@@ -80,6 +82,14 @@ class SimpleQuote;
         boost::shared_ptr<HestonProcess> hestonProcess() const;
         boost::shared_ptr<LocalVolTermStructure> localVol() const;
         boost::shared_ptr<LocalVolTermStructure> leverageFunction() const;
+
+        struct LogEntry {
+            const Time t;
+            const boost::shared_ptr<Array> prob;
+            const boost::shared_ptr<FdmMesherComposite> xMesher, vMesher;
+        };
+
+        const std::list<LogEntry>& logEntries() const;
 
       protected:
         void performCalculations() const;
@@ -91,6 +101,9 @@ class SimpleQuote;
         const std::vector<Date> mandatoryDates_;
 
         mutable boost::shared_ptr<LocalVolTermStructure> leverageFunction_;
+
+        const bool logging_;
+        mutable std::list<LogEntry> logEntries_;
     };
 }
 

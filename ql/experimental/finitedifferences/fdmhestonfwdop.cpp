@@ -32,8 +32,6 @@
 #include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
 #include <ql/experimental/finitedifferences/modtriplebandlinearop.hpp>
 
-#include <ostream>
-
 namespace QuantLib {
 
     FdmHestonFwdOp::FdmHestonFwdOp(

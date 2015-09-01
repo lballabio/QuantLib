@@ -37,7 +37,6 @@
 #include <boost/bind.hpp>
 #include <cmath>
 
-#include <iostream>
 // asinh is missing in WIN32 (and possibly on other compilers)
 #if !defined(QL_HAVE_ASINH)
 #define asinh(x) std::log(x + std::sqrt(x * x + 1))

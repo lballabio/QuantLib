@@ -44,7 +44,6 @@
 #include <boost/assign/std/vector.hpp>
 
 #include <functional>
-#include <iostream>
 
 using namespace boost::assign;
 
@@ -270,12 +269,14 @@ namespace QuantLib {
         const Handle<HestonModel>& hestonModel,
         const Date& endDate,
         const HestonSLVFokkerPlanckFdmParams& params,
+        const bool logging,
         const std::vector<Date>& mandatoryDates)
         : localVol_(localVol),
           hestonModel_(hestonModel),
           endDate_(endDate),
           params_(params),
-          mandatoryDates_(mandatoryDates) {
+          mandatoryDates_(mandatoryDates),
+          logging_(logging) {
 
         registerWith(hestonModel_);
         registerWith(localVol_);
@@ -301,6 +302,8 @@ namespace QuantLib {
     }
 
     void HestonSLVModel::performCalculations() const {
+        logEntries_.clear();
+
         const boost::shared_ptr<HestonProcess> hestonProcess
             = hestonModel_->process();
         const boost::shared_ptr<Quote> spot
@@ -436,39 +439,22 @@ namespace QuantLib {
         p = FdmHestonGreensFct(mesher, hestonProcess, trafoType, lv0)
             .get(timeGrid->at(1), params_.greensAlgorithm);
 
+        if (logging_) {
+            LogEntry entry = {t, boost::shared_ptr<Array>(new Array(p)), mesher};
+            logEntries_.push_back(entry);
+        }
+
         for (Size i=2; i < times.size(); ++i) {
             const Time t = timeGrid->at(i);
             const Time dt = t - timeGrid->at(i-1);
 
             if (   mesher->getFdm1dMeshers()[0] != xMesher[i]
                 || mesher->getFdm1dMeshers()[1] != vMesher[i]) {
-                std::cout << "pre reshape step " << i << " " <<
-                        integratePDF(p, mesher, trafoType, alpha)
-                        << std::endl;
                 const boost::shared_ptr<FdmMesherComposite> newMesher(
                     new FdmMesherComposite(xMesher[i], vMesher[i]));
 
                 p = reshapePDF<Bilinear>(p, mesher, newMesher);
                 mesher = newMesher;
-
-                std::cout << "t=" << t << std::endl
-                          << "x("
-                          << mesher->getFdm1dMeshers()[0]->locations().front()
-                          << ", "
-                          << mesher->getFdm1dMeshers()[0]->locations().back()
-                          << "), v("
-                          << mesher->getFdm1dMeshers()[1]->locations().front()
-                          << ", "
-                          << mesher->getFdm1dMeshers()[1]->locations().back()
-                          << ") xn="
-                          << mesher->getFdm1dMeshers()[0]->locations().size()
-                          << " vn="
-                          << mesher->getFdm1dMeshers()[1]->locations().size()
-                          << std::endl;
-
-                std::cout << "reshape step " << i << " " <<
-                        integratePDF(p, mesher, trafoType, alpha)
-                        << std::endl;
 
                 p = rescalePDF(p, mesher, trafoType, alpha);
 
@@ -519,7 +505,6 @@ namespace QuantLib {
                     leverageFct->setInterpolation(Linear());
                 }
 
-                // TODO: Need to determine localvol at lower and upper bound!
                 const Real sLowerBound = std::max(x.front(),
                     std::exp(localVolRND.invcdf(params_.leverageFctPropEps, t)));
                 const Real sUpperBound = std::min(x.back(),
@@ -549,9 +534,20 @@ namespace QuantLib {
             }
             p = pn;
             p = rescalePDF(p, mesher, trafoType, alpha);
+
+            if (logging_) {
+                const LogEntry entry = {
+                    t, boost::shared_ptr<Array>(new Array(p)), mesher};
+                logEntries_.push_back(entry);
+            }
         }
 
         leverageFunction_ = leverageFct;
+    }
+
+    const std::list<HestonSLVModel::LogEntry>& HestonSLVModel::logEntries()
+    const {
+        return logEntries_;
     }
 }
 
