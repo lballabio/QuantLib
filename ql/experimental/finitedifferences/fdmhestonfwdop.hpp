@@ -83,7 +83,7 @@ namespace QuantLib {
 
         const boost::shared_ptr<NinePointLinearOp> correlation_;
 
-        const boost::shared_ptr<LocalVolTermStructure>& leverageFct_;
+        const boost::shared_ptr<LocalVolTermStructure> leverageFct_;
         const boost::shared_ptr<FdmMesher> mesher_;
         const Array x_;
     };

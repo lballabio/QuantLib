@@ -72,7 +72,6 @@
 #include <boost/bind.hpp>
 #include <boost/make_shared.hpp>
 
-#include <iostream>
 
 using namespace QuantLib;
 using namespace boost::assign;
@@ -400,19 +399,17 @@ namespace {
     class q_fct : public std::unary_function<Real, Real> {
       public:
         q_fct(const Array& v, const Array& p, const Real alpha)
-        : v_(v), q_(Pow(v, alpha)*p), alpha_(alpha) {
-            spline_ = boost::shared_ptr<CubicInterpolation>(
-                new CubicNaturalSpline(v_.begin(), v_.end(), q_.begin()));
+        : v_(v), q_(Pow(v, alpha)*p), alpha_(alpha),
+		  spline_(new CubicNaturalSpline(v_.begin(), v_.end(), q_.begin())) {
         }
 
-        Real operator()(Real v) {
+        Real operator()(Real v) const {
             return (*spline_)(v, true)*std::pow(v, -alpha_);
         }
       private:
-
         const Array v_, q_;
         const Real alpha_;
-        boost::shared_ptr<CubicInterpolation> spline_;
+        const boost::shared_ptr<CubicNaturalSpline> spline_;
     };
 }
 
@@ -481,8 +478,10 @@ void HestonSLVModelTest::testSquareRootEvolveWithStationaryDensity() {
                 p[i] *= vmq[i];
             }
 
+		const q_fct f(v, p, alpha);
+
         const Real calculated = GaussLobattoIntegral(1000000, 1e-6)(
-                                        q_fct(v,p,alpha), v.front(), v.back());
+                                        f, v.front(), v.back());
 
         const Real tol = 0.005;
         if (std::fabs(calculated-expected) > tol) {
@@ -508,7 +507,6 @@ void HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity() {
     const Real eps = 1e-2;
 
     for (Real sigma = 0.2; sigma < 2.01; sigma+=0.1) {
-        //BOOST_TEST_MESSAGE("testing log process sigma =  " << sigma << "\n");
         const Real lowerLimit = 0.001;
         // should not go to very large negative values, distributions flattens with sigma
         // causing numerical instabilities log/exp evaluations
@@ -822,8 +820,8 @@ namespace {
             for (Size i=0; i < tGridPerYear; ++i, t+=dt) {
                 evolver.step(p, t+dt);
             }
-
-            Real avg=0, min=QL_MAX_REAL, max=0;
+			
+			Real avg=0, min=QL_MAX_REAL, max=0;
             for (Size i=0; i < LENGTH(strikes); ++i) {
                 const Real strike = strikes[i];
                 const boost::shared_ptr<StrikedTypePayoff> payoff(
@@ -1530,7 +1528,7 @@ test_suite* HestonSLVModelTest::experimental() {
     test_suite* suite = BOOST_TEST_SUITE(
         "Heston Stochastic Local Volatility tests");
 
-    suite->add(QUANTLIB_TEST_CASE(
+	suite->add(QUANTLIB_TEST_CASE(
         &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation));
     suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testSquareRootZeroFlowBC));
     suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testTransformedZeroFlowBC));
@@ -1539,15 +1537,14 @@ test_suite* HestonSLVModelTest::experimental() {
     suite->add(QUANTLIB_TEST_CASE(
         &HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity));
     suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testSquareRootFokkerPlanckFwdEquation));
+        &HestonSLVModelTest::testSquareRootFokkerPlanckFwdEquation));	
     suite->add(QUANTLIB_TEST_CASE(
         &HestonSLVModelTest::testHestonFokkerPlanckFwdEquation));
     suite->add(QUANTLIB_TEST_CASE(
         &HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage));
     suite->add(QUANTLIB_TEST_CASE(
         &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
-
     suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testHestonSLVModel));
 
-    return suite;
+	return suite;
 }
