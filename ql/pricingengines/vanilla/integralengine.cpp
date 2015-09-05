@@ -24,8 +24,8 @@
 
 namespace QuantLib {
 
-    namespace {
-
+    namespace detail {
+      namespace IntegralEngine {
         class Integrand : std::unary_function<Real,Real> {
           public:
             Integrand(const boost::shared_ptr<Payoff>& payoff,
@@ -45,6 +45,7 @@ namespace QuantLib {
             Rate drift_;
             Real variance_;
         };
+      }
     }
 
     IntegralEngine::IntegralEngine(
@@ -73,9 +74,9 @@ namespace QuantLib {
             process_->riskFreeRate()->discount(arguments_.exercise->lastDate());
         Rate drift = std::log(dividendDiscount/riskFreeDiscount)-0.5*variance;
 
-        Integrand f(arguments_.payoff,
-                    process_->stateVariable()->value(),
-                    drift, variance);
+        detail::IntegralEngine::Integrand f(arguments_.payoff,
+                                           process_->stateVariable()->value(),
+                                           drift, variance);
         SegmentIntegral integrator(5000);
 
         Real infinity = 10.0*std::sqrt(variance);
