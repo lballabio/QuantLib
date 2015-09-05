@@ -1704,7 +1704,7 @@ void InterpolationTest::testNoArbSabrInterpolation(){
     BOOST_TEST_MESSAGE("Testing no-arbitrage Sabr interpolation...");
 
     // Test SABR function against input volatilities
-    Real tolerance = 1.0e-12;
+    Real tolerance = 3.0e-10;
     std::vector<Real> strikes(31);
     std::vector<Real> volatilities(31), volatilities2(31);
     // input strikes
