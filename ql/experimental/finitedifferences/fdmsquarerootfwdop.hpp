@@ -92,7 +92,7 @@ namespace QuantLib {
         const Real alpha_;
         const TransformationType transform_;
         boost::shared_ptr<ModTripleBandLinearOp> mapX_;
-        Array v_, vq_, vmq_;
+        Array v_;
     };
 }
 

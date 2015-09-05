@@ -1400,9 +1400,6 @@ namespace {
         const boost::shared_ptr<PricingEngine> analyticEngine(
             new AnalyticEuropeanEngine(bsProcess));
 
-        const boost::shared_ptr<PricingEngine> hestonEngine(
-            new AnalyticHestonEngine(*hestonModel, 164));
-
         const Real strikes[] = { 50, 75, 80, 90, 100, 110, 125, 150 };
         const Size times[] = { 3, 6, 9, 12, 24, 36, 60 };
 
@@ -1436,9 +1433,6 @@ namespace {
                 const Real expected = option.NPV();
                 const Real vega = option.vega();
 
-                option.setPricingEngine(hestonEngine);
-                const Real pureHeston = option.NPV();
-
                 const boost::shared_ptr<GeneralizedBlackScholesProcess> bp(
                     new GeneralizedBlackScholesProcess(spot, qTS, rTS,
                         Handle<BlackVolTermStructure>(flatVol(lv,
@@ -1449,8 +1443,6 @@ namespace {
 //                          << std::setprecision(0) << times[t] << "\t "
 //                          << std::setprecision(8) << expected << " "
 //                          << std::setprecision(8) << calculated << " "
-//                          << std::setprecision(8) << pureHeston << " "
-//                          << std::setprecision(8) << option.impliedVolatility(pureHeston, bp)
 //                          << " "
 //                          << std::setprecision(8) << vega << " "
 //                          << std::setprecision(8) << lv + (calculated-expected)/vega << " "
@@ -1544,7 +1536,9 @@ test_suite* HestonSLVModelTest::experimental() {
         &HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage));
     suite->add(QUANTLIB_TEST_CASE(
         &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
-    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testHestonSLVModel));
+
+    // this test takes very long
+    //suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testHestonSLVModel));
 
 	return suite;
 }

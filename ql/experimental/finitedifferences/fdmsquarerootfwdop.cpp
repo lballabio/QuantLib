@@ -69,16 +69,13 @@ namespace QuantLib {
                     .mult(0.5*sigma*sigma*Exp(-mesher->locations(direction))))
                     .add(kappa*theta*Exp(-mesher->locations(direction))))
             ),
-      v_  (mesher->layout()->dim()[direction_]),
-      vq_ (mesher->layout()->size()),
-      vmq_(mesher->layout()->size()) {
+      v_  (mesher->layout()->dim()[direction_]) {
 
         const FdmLinearOpIterator endIter = mesher->layout()->end();
         for (FdmLinearOpIterator iter = mesher->layout()->begin();
             iter != endIter; ++iter) {
             const Real v = mesher->location(iter, direction_);
             v_[iter.coordinates()[direction_]] = v;
-            vmq_[iter.index()] = 1.0/(vq_[iter.index()] = std::pow(v, alpha_));
         }
 
         // zero flux boundary condition
@@ -303,12 +300,7 @@ namespace QuantLib {
     }
 
     Disposable<Array> FdmSquareRootFwdOp::apply(const Array& p) const {
-        if (true || transform_ != Power) {
-            return mapX_->apply(p);
-        }
-        else {
-            return vmq_*mapX_->apply(vq_*p);
-        }
+        return mapX_->apply(p);
     }
 
     Disposable<Array> FdmSquareRootFwdOp::apply_mixed(const Array& r) const {
@@ -318,12 +310,7 @@ namespace QuantLib {
     Disposable<Array> FdmSquareRootFwdOp::apply_direction(
         Size direction, const Array& r) const {
         if (direction == direction_) {
-            if (true || transform_ != Power) {
-                return mapX_->apply(r);
-            }
-            else {
-                return vmq_*mapX_->apply(vq_*r);
-            }
+            return mapX_->apply(r);
         }
         else {
             Array retVal(r.size(), 0.0);
@@ -333,12 +320,7 @@ namespace QuantLib {
     Disposable<Array> FdmSquareRootFwdOp::solve_splitting(
         Size direction, const Array& r, Real dt) const {
         if (direction == direction_) {
-            if (true || transform_ != Power) {
-                return mapX_->solve_splitting(r, dt, 1.0);
-            }
-            else {
-                return vmq_*mapX_->solve_splitting(vq_*r, dt, 1.0);
-            }
+            return mapX_->solve_splitting(r, dt, 1.0);
         }
         else {
             Array retVal(r);
@@ -348,12 +330,7 @@ namespace QuantLib {
 
     Disposable<Array> FdmSquareRootFwdOp::preconditioner(
         const Array& r, Real dt) const {
-        if (true || transform_ != Power) {
-            return solve_splitting(direction_, r, dt);
-        }
-        else {
-            return vmq_*solve_splitting(direction_, vq_*r, dt);
-        }
+        return solve_splitting(direction_, r, dt);
     }
 
     #if !defined(QL_NO_UBLAS_SUPPORT)
