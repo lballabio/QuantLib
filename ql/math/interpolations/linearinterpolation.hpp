@@ -35,6 +35,7 @@ namespace QuantLib {
     }
 
     //! %Linear interpolation between discrete points
+    /*! \ingroup interpolations */
     class LinearInterpolation : public Interpolation {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
@@ -49,6 +50,7 @@ namespace QuantLib {
     };
 
     //! %Linear-interpolation factory and traits
+    /*! \ingroup interpolations */
     class Linear {
       public:
         template <class I1, class I2>
