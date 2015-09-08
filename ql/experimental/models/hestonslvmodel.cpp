@@ -51,8 +51,9 @@ namespace QuantLib {
 
     namespace {
         boost::shared_ptr<Fdm1dMesher> varianceMesher(
-            const SquareRootProcessRNDCalculator& rnd, Time t, Size vGrid,
-                Real v0, const HestonSLVFokkerPlanckFdmParams& params) {
+            const SquareRootProcessRNDCalculator& rnd,
+            Time t0, Time t1, Size vGrid,
+            Real v0, const HestonSLVFokkerPlanckFdmParams& params) {
 
             std::vector<boost::tuple<Real, Real, bool> > cPoints;
 
@@ -60,14 +61,22 @@ namespace QuantLib {
             const Real upperBoundDensity = params.vUpperBoundDensity;
             const Real lowerBoundDensity = params.vLowerBoundDensity;
 
+            Real lowerBound = Null<Real>(), upperBound = -Null<Real>();
+
+            for (Size i=0; i <= 10; ++i) {
+                const Time t = t0 + i/10.0*(t1-t0);
+                lowerBound = std::min(
+                    lowerBound, rnd.invcdf(params.vLowerEps, t));
+                upperBound = std::max(
+                    upperBound, rnd.invcdf(1.0-params.vUpperEps, t));
+            }
+
+            lowerBound = std::max(lowerBound, params.vMin);
             switch (params.trafoType) {
                 case FdmSquareRootFwdOp::Log:
                   {
-                    const Real lowerBound = std::max(
-                            std::log(rnd.invcdf(params.vLowerEps, t)),
-                            std::log(params.vMin));
-                    const Real upperBound
-                        = std::log(rnd.invcdf(1.0-params.vUpperEps, t));
+                    lowerBound = std::log(lowerBound);
+                    upperBound = std::log(upperBound);
 
                     const Real v0Center = std::log(v0);
 
@@ -82,11 +91,6 @@ namespace QuantLib {
                 break;
                 case FdmSquareRootFwdOp::Plain:
                   {
-                      const Real lowerBound = std::max(
-                           rnd.invcdf(params.vLowerEps, t), params.vMin);
-                      const Real upperBound
-                          = rnd.invcdf(1.0-params.vUpperEps, t);
-
                       const Real v0Center = v0;
 
                       cPoints +=
@@ -100,11 +104,6 @@ namespace QuantLib {
                 break;
                 case FdmSquareRootFwdOp::Power:
                 {
-                    const Real lowerBound = std::max(
-                        rnd.invcdf(params.vLowerEps, t), params.vMin);
-                    const Real upperBound
-                        = rnd.invcdf(1.0-params.vUpperEps, t);
-
                     const Real v0Center = v0;
 
                     cPoints +=
@@ -337,14 +336,14 @@ namespace QuantLib {
         const Time maxDt = 1.0/params_.tMaxStepsPerYear;
         const Time minDt = 1.0/params_.tMinStepsPerYear;
 
-        Time t=0.0;
-        std::vector<Time> times(1, t);
+        Time tIdx=0.0;
+        std::vector<Time> times(1, tIdx);
         times.reserve(Size(T*params_.tMinStepsPerYear));
-        while (t < T) {
-            const Real decayFactor = std::exp(-params_.tStepNumberDecay*t);
+        while (tIdx < T) {
+            const Real decayFactor = std::exp(-params_.tStepNumberDecay*tIdx);
             const Time dt = maxDt*decayFactor + minDt*(1.0-decayFactor);
 
-            times.push_back(std::min(T, t+=dt));
+            times.push_back(std::min(T, tIdx+=dt));
         }
 
         for (Size i=0; i < mandatoryDates_.size(); ++i) {
@@ -361,7 +360,6 @@ namespace QuantLib {
             timeGrid, xGrid,
             params_.x0Density,
             params_.localVolEpsProb,
-            params_.undefinedlLocalVolOverwrite,
             params_.maxIntegrationIterations);
 
         const std::vector<Size> rescaleSteps
@@ -388,6 +386,7 @@ namespace QuantLib {
             if (i == rescaleSteps[rescaleIdx]) {
                 ++rescaleIdx;
                 vMesher.push_back(varianceMesher(squareRootRnd,
+                    timeGrid->at(rescaleSteps[rescaleIdx-1]),
                     (rescaleIdx < rescaleSteps.size())
                         ? timeGrid->at(rescaleSteps[rescaleIdx])
                         : timeGrid->back(),
@@ -413,7 +412,7 @@ namespace QuantLib {
 
         // create strikes from meshers
         std::vector<boost::shared_ptr<std::vector<Real> > > vStrikes(
-              timeGrid->size());
+            timeGrid->size());
 
         for (Size i=0; i < timeGrid->size(); ++i) {
             vStrikes[i] = boost::make_shared<std::vector<Real> >(xGrid);
@@ -427,20 +426,20 @@ namespace QuantLib {
             new FixedLocalVolSurface(referenceDate, times, vStrikes, L, dc));
 
         boost::shared_ptr<FdmLinearOpComposite> hestonFwdOp(
-            new FdmHestonFwdOp(mesher, hestonProcess,
-                               trafoType, leverageFct));
+            new FdmHestonFwdOp(mesher, hestonProcess, trafoType, leverageFct));
 
         Array p = FdmHestonGreensFct(mesher, hestonProcess, trafoType, lv0)
             .get(timeGrid->at(1), params_.greensAlgorithm);
 
         mesher = boost::make_shared<FdmMesherComposite>(
-                xMesher.at(1), vMesher.at(1));
+            xMesher.at(1), vMesher.at(1));
 
         p = FdmHestonGreensFct(mesher, hestonProcess, trafoType, lv0)
             .get(timeGrid->at(1), params_.greensAlgorithm);
 
         if (logging_) {
-            LogEntry entry = {t, boost::shared_ptr<Array>(new Array(p)), mesher};
+            const LogEntry entry = { timeGrid->at(1),
+                boost::shared_ptr<Array>(new Array(p)), mesher };
             logEntries_.push_back(entry);
         }
 
@@ -465,8 +464,7 @@ namespace QuantLib {
 
             Array pn = p;
             const Array x(Exp(
-                    Array(
-                      mesher->getFdm1dMeshers()[0]->locations().begin(),
+                Array(mesher->getFdm1dMeshers()[0]->locations().begin(),
                       mesher->getFdm1dMeshers()[0]->locations().end())));
             const Array v(
                     mesher->getFdm1dMeshers()[1]->locations().begin(),
@@ -493,12 +491,10 @@ namespace QuantLib {
                       : DiscreteSimpsonIntegral()(v, v*pSlice);
 
                     const Real scale = pInt/vpInt;
-                    const Volatility localVol
-                        = localVol_->localVol(t, x[j]);
+                    const Volatility localVol = localVol_->localVol(t, x[j]);
 
                     const Real l = (scale >= 0.0)
-                      ? localVol*std::sqrt(scale)
-                      : 1.0;
+                      ? localVol*std::sqrt(scale) : 1.0;
 
                     (*L)[j][i] = std::min(50.0, std::max(0.001, l));
 
@@ -506,9 +502,11 @@ namespace QuantLib {
                 }
 
                 const Real sLowerBound = std::max(x.front(),
-                    std::exp(localVolRND.invcdf(params_.leverageFctPropEps, t)));
+                    std::exp(localVolRND.invcdf(
+                        params_.leverageFctPropEps, t)));
                 const Real sUpperBound = std::min(x.back(),
-                    std::exp(localVolRND.invcdf(1-params_.leverageFctPropEps, t)));
+                    std::exp(localVolRND.invcdf(
+                        1.0-params_.leverageFctPropEps, t)));
 
                 const Real lowerL = leverageFct->localVol(t, sLowerBound);
                 const Real upperL = leverageFct->localVol(t, sUpperBound);
@@ -536,8 +534,8 @@ namespace QuantLib {
             p = rescalePDF(p, mesher, trafoType, alpha);
 
             if (logging_) {
-                const LogEntry entry = {
-                    t, boost::shared_ptr<Array>(new Array(p)), mesher};
+                const LogEntry entry
+                    = { t, boost::shared_ptr<Array>(new Array(p)), mesher };
                 logEntries_.push_back(entry);
             }
         }
@@ -547,6 +545,7 @@ namespace QuantLib {
 
     const std::list<HestonSLVModel::LogEntry>& HestonSLVModel::logEntries()
     const {
+        performCalculations();
         return logEntries_;
     }
 }

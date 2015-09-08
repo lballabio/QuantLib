@@ -57,14 +57,12 @@ namespace QuantLib {
         Size xGrid, Size tGrid,
         Real x0Density,
         Real eps,
-        Real illegalLocalVolOverwrite,
         Size maxIter,
         Time gaussianStepSize)
     : xGrid_   (xGrid),
       tGrid_   (tGrid),
       x0Density_(x0Density),
       localVolProbEps_(eps),
-      illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
       maxIter_ (maxIter),
       gaussianStepSize_(gaussianStepSize),
       spot_       (spot),
@@ -89,14 +87,12 @@ namespace QuantLib {
         Size xGrid,
         Real x0Density,
         Real eps,
-        Real illegalLocalVolOverwrite,
         Size maxIter,
         Time gaussianStepSize)
     : xGrid_   (xGrid),
       tGrid_   (timeGrid->size()-1),
       x0Density_(x0Density),
       localVolProbEps_(eps),
-      illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
       maxIter_ (maxIter),
       gaussianStepSize_(gaussianStepSize),
       spot_    (spot),
@@ -268,7 +264,7 @@ namespace QuantLib {
             new DouglasScheme(0.5,
                 boost::make_shared<FdmLocalVolFwdOp>(
                     boost::make_shared<FdmMesherComposite>(mesher),
-                    spot_, rTS_, qTS_, localVol_, illegalLocalVolOverwrite_)));
+                    spot_, rTS_, qTS_, localVol_)));
 
         pFct_.resize(tGrid_);
 
@@ -292,16 +288,7 @@ namespace QuantLib {
                 xm = DiscreteSimpsonIntegral()(x, x*p);
                 Array vols(x.size());
                 for (Size j=0; j < vols.size(); ++j) {
-                    try {
-                        vols[j] = localVol_->localVol(t + dt, std::exp(x[j]));
-                    } catch (Error&) {
-                        if (illegalLocalVolOverwrite_ < 0.0) {
-                            throw;
-                        }
-                        else {
-                            vols[j] = illegalLocalVolOverwrite_;
-                        }
-                    }
+                    vols[j] = localVol_->localVol(t + dt, std::exp(x[j]));
                 }
 
                 const Real vm = DiscreteSimpsonIntegral()(x, vols)
@@ -340,8 +327,7 @@ namespace QuantLib {
                 evolver = boost::make_shared<DouglasScheme>(0.5,
                     boost::make_shared<FdmLocalVolFwdOp>(
                         boost::make_shared<FdmMesherComposite>(mesher),
-                        spot_, rTS_, qTS_,
-                        localVol_, illegalLocalVolOverwrite_));
+                        spot_, rTS_, qTS_, localVol_));
             }
             evolver->setStep(dt);
             t+=dt;

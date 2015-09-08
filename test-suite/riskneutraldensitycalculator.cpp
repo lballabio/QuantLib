@@ -33,6 +33,7 @@
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
+#include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
 #include <ql/experimental/finitedifferences/bsmrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/hestonrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/localvolrndcalculator.hpp>
@@ -408,7 +409,11 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
             Handle<BlackVolTermStructure>(dumasVolSurface)));
 
     const boost::shared_ptr<LocalVolTermStructure> localVolSurface
-        = bsmProcess->localVolatility().currentLink();
+        = boost::make_shared<NoExceptLocalVolSurface>(
+              Handle<BlackVolTermStructure>(dumasVolSurface),
+              Handle<YieldTermStructure>(rTS),
+              Handle<YieldTermStructure>(qTS),
+              Handle<Quote>(spot), b1);
 
     const std::vector<Time> adaptiveGrid
         = adaptiveTimeGrid(400, 50, 5.0, 3.0);
@@ -418,7 +423,7 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
 
     const boost::shared_ptr<LocalVolRNDCalculator> dumasVolCalc(
         new LocalVolRNDCalculator(
-            spot, rTS, qTS, localVolSurface, dumasTimeGrid, 401, 0.1, 1e-8, b1));
+            spot, rTS, qTS, localVolSurface, dumasTimeGrid, 401, 0.1, 1e-8));
 
     const Real strikes[] = { 25, 50, 95, 100, 105, 150, 200, 400 };
     const Date maturityDates[] = {

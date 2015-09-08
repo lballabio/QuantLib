@@ -51,7 +51,6 @@ namespace QuantLib {
 			Size xGrid = 101, Size tGrid = 51,
 			Real x0Density = 0.1,
 			Real localVolProbEps = 1e-6,
-			Real illegalLocalVolOverwrite = -Null<Real>(),
 			Size maxIter = 10000,
 			Time gaussianStepSize = -Null<Time>());
 
@@ -64,7 +63,6 @@ namespace QuantLib {
 			Size xGrid = 101,
 			Real x0Density = 0.1,
 			Real eps = 1e-6,
-			Real illegalLocalVolOverwrite = -Null<Real>(),
 			Size maxIter = 10000,
 			Time gaussianStepSize = -Null<Time>());
 
@@ -87,7 +85,6 @@ namespace QuantLib {
 		const Size xGrid_, tGrid_;
 		const Real x0Density_;
 		const Real localVolProbEps_;
-		const Real illegalLocalVolOverwrite_;
 		const Size maxIter_;
 		const Time gaussianStepSize_;
 		const boost::shared_ptr<Quote> spot_;

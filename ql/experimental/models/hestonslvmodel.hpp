@@ -49,7 +49,6 @@ class SimpleQuote;
         // local volatility forward equation
         const Real x0Density;
         const Real localVolEpsProb;
-        const Real undefinedlLocalVolOverwrite;
         const Size maxIntegrationIterations;
 
         // variance mesher definition
@@ -86,7 +85,7 @@ class SimpleQuote;
         struct LogEntry {
             const Time t;
             const boost::shared_ptr<Array> prob;
-            const boost::shared_ptr<FdmMesherComposite> xMesher, vMesher;
+            const boost::shared_ptr<FdmMesherComposite> mesher;
         };
 
         const std::list<LogEntry>& logEntries() const;

@@ -37,6 +37,7 @@
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
+#include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
@@ -400,7 +401,7 @@ namespace {
       public:
         q_fct(const Array& v, const Array& p, const Real alpha)
         : v_(v), q_(Pow(v, alpha)*p), alpha_(alpha),
-		  spline_(new CubicNaturalSpline(v_.begin(), v_.end(), q_.begin())) {
+          spline_(new CubicNaturalSpline(v_.begin(), v_.end(), q_.begin())) {
         }
 
         Real operator()(Real v) const {
@@ -478,7 +479,7 @@ void HestonSLVModelTest::testSquareRootEvolveWithStationaryDensity() {
                 p[i] *= vmq[i];
             }
 
-		const q_fct f(v, p, alpha);
+        const q_fct f(v, p, alpha);
 
         const Real calculated = GaussLobattoIntegral(1000000, 1e-6)(
                                         f, v.front(), v.back());
@@ -820,8 +821,8 @@ namespace {
             for (Size i=0; i < tGridPerYear; ++i, t+=dt) {
                 evolver.step(p, t+dt);
             }
-			
-			Real avg=0, min=QL_MAX_REAL, max=0;
+
+            Real avg=0, min=QL_MAX_REAL, max=0;
             for (Size i=0; i < LENGTH(strikes); ++i) {
                 const Real strike = strikes[i];
                 const boost::shared_ptr<StrikedTypePayoff> payoff(
@@ -937,7 +938,7 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquation() {
             // Feller constraint fulfilled, low vol-of-vol case
             // \frac{2\kappa\theta}{\sigma^2} = 2.0 * 1.0 * 0.05 / 0.05 = 2.0 > 1
             0.05, 1.0, 0.05, -0.75, std::sqrt(0.05),
-            401, 501, 5, 5,
+            201, 401, 5, 5,
             0.01, 0.02,
             FdmSquareRootFwdOp::Plain,
             FdmHestonGreensFct::Gaussian,
@@ -1036,7 +1037,9 @@ namespace {
             new BlackVarianceSurface(todaysDate, cal,
                                      dates,
                                      surfaceStrikes, blackVolMatrix,
-                                     dc));
+                                     dc,
+                                     BlackVarianceSurface::ConstantExtrapolation,
+                                     BlackVarianceSurface::ConstantExtrapolation));
         volTS->setInterpolation<Bicubic>();
 
         return boost::make_tuple(surfaceStrikes, dates, volTS);
@@ -1178,7 +1181,7 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
         new FdBlackScholesVanillaEngine(lvProcess, 50, 201, 0,
                                         FdmSchemeDesc::Douglas(), true,0.2));
 
-    for (Size strike=5; strike < 200; ++strike) {
+    for (Size strike=5; strike < 200; strike+=10) {
         const boost::shared_ptr<StrikedTypePayoff> payoff(
             new CashOrNothingPayoff(Option::Put, Real(strike), 1.0));
 
@@ -1229,9 +1232,9 @@ void HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol() {
     const Calendar calendar = TARGET();
     const DayCounter dayCounter = Actual365Fixed();
 
-    const boost::shared_ptr<YieldTermStructure> rTS(
+    const Handle<YieldTermStructure> rTS(
             flatRate(todaysDate, r, dayCounter));
-    const boost::shared_ptr<YieldTermStructure> qTS(
+    const Handle<YieldTermStructure> qTS(
             flatRate(todaysDate, q, dayCounter));
 
     boost::tuple<std::vector<Real>, std::vector<Date>,
@@ -1243,25 +1246,21 @@ void HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol() {
     const Handle<BlackVolTermStructure> vTS = Handle<BlackVolTermStructure>(
             createSmoothImpliedVol(dayCounter, calendar).get<2>());
 
-    const Size xGrid = 2 * 100 + 1;
-    const Size tGrid = 400;
+    const Size xGrid = 101;
+    const Size tGrid = 51;
 
-    const boost::shared_ptr<Quote> spot(new SimpleQuote(s0));
+    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(s0));
     const boost::shared_ptr<BlackScholesMertonProcess> process(
-        new BlackScholesMertonProcess(
-            Handle<Quote>(spot),
-            Handle<YieldTermStructure>(qTS),
-            Handle<YieldTermStructure>(rTS), vTS));
+        new BlackScholesMertonProcess(spot, qTS, rTS, vTS));
 
     const boost::shared_ptr<LocalVolTermStructure> localVol(
-        process->localVolatility().currentLink());
+        boost::make_shared<NoExceptLocalVolSurface>(vTS, rTS, qTS, spot, 0.2));
 
     const boost::shared_ptr<PricingEngine> engine(
             new AnalyticEuropeanEngine(process));
 
-    for (Size i = 1; i < dates.size(); ++i) {
-        for (Size j = 3; j < strikes.size() - 5; j += 5) {
-
+    for (Size i = 1; i < dates.size(); i += 2) {
+        for (Size j = 3; j < strikes.size() - 3; j += 2) {
             const Date& exDate = dates[i];
             const Date maturityDate = exDate;
             const Time maturity = dc.yearFraction(todaysDate, maturityDate);
@@ -1277,7 +1276,7 @@ void HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol() {
             //-- operator --
             const boost::shared_ptr<FdmLinearOpComposite> uniformBSFwdOp(
                 new FdmLocalVolFwdOp(
-                    uniformMesher, spot, rTS, qTS, localVol, 0.2));
+                    uniformMesher, *spot, *rTS, *qTS, localVol));
 
             const boost::shared_ptr<FdmMesher> concentratedMesher(
                 new FdmMesherComposite(
@@ -1290,7 +1289,7 @@ void HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol() {
             //-- operator --
             const boost::shared_ptr<FdmLinearOpComposite> concentratedBSFwdOp(
                 new FdmLocalVolFwdOp(
-                    concentratedMesher, spot, rTS, qTS, localVol, 0.2));
+                    concentratedMesher, *spot, *rTS, *qTS, localVol));
 
             const boost::shared_ptr<FdmMesher> shiftedMesher(
                 new FdmMesherComposite(
@@ -1304,7 +1303,7 @@ void HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol() {
             //-- operator --
             const boost::shared_ptr<FdmLinearOpComposite> shiftedBSFwdOp(
                 new FdmLocalVolFwdOp(
-                    shiftedMesher, spot, rTS, qTS, localVol, 0.2));
+                    shiftedMesher, *spot, *rTS, *qTS, localVol));
 
             const boost::shared_ptr<StrikedTypePayoff> payoff(
                     new PlainVanillaPayoff(Option::Call, strikes[j]));
@@ -1475,7 +1474,7 @@ void HestonSLVModelTest::testHestonSLVModel() {
 
     const HestonSLVFokkerPlanckFdmParams plainParams =
         { 201, 301, 1000, 25, 3.0, 2,
-          0.1, 1e-4, -Null<Real>(), 10000,
+          0.1, 1e-4, 10000,
           1e-8, 1e-8, 0.0, 1.0, 1.0, 1.0, 1e-6,
           FdmHestonGreensFct::Gaussian,
           FdmSquareRootFwdOp::Plain,
@@ -1484,7 +1483,7 @@ void HestonSLVModelTest::testHestonSLVModel() {
 
     const HestonSLVFokkerPlanckFdmParams logParams =
         { 301, 601, 2000, 30, 2.0, 2,
-          0.1, 1e-4, -Null<Real>(), 10000,
+          0.1, 1e-4, 10000,
           1e-5, 1e-5, 0.0000025, 1.0, 0.1, 0.9, 1e-5,
           FdmHestonGreensFct::Gaussian,
           FdmSquareRootFwdOp::Log,
@@ -1493,7 +1492,7 @@ void HestonSLVModelTest::testHestonSLVModel() {
 
     const HestonSLVFokkerPlanckFdmParams powerParams =
         { 401, 801, 2000, 30, 2.0, 2,
-          0.1, 1e-3, -Null<Real>(), 10000,
+          0.1, 1e-3, 10000,
           1e-6, 1e-6, 0.001, 1.0, 0.001, 1.0, 1e-5,
           FdmHestonGreensFct::Gaussian,
           FdmSquareRootFwdOp::Power,
@@ -1516,11 +1515,111 @@ void HestonSLVModelTest::testHestonSLVModel() {
 
 }
 
+void HestonSLVModelTest::testLocalVolsvSLVPropDensity() {
+    BOOST_TEST_MESSAGE("Testing local volatility vs SLV model");
+
+    SavedSettings backup;
+    const DayCounter dc = ActualActual();
+    const Date todaysDate(5, Oct, 2015);
+    const Date finalDate = todaysDate + Period(1, Years);
+    Settings::instance().evaluationDate() = todaysDate;
+
+    const Real s0 = 100;
+    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(s0));
+    const Rate r = 0.01;
+    const Rate q = 0.02;
+
+    const Calendar calendar = TARGET();
+    const DayCounter dayCounter = Actual365Fixed();
+
+    const Handle<YieldTermStructure> rTS(
+        flatRate(todaysDate, r, dayCounter));
+    const Handle<YieldTermStructure> qTS(
+        flatRate(todaysDate, q, dayCounter));
+
+    const Handle<BlackVolTermStructure> vTS = Handle<BlackVolTermStructure>(
+        createSmoothImpliedVol(dayCounter, calendar).get<2>());
+
+    // Heston parameter from implied calibration
+    const Real kappa =  2.0;
+    const Real theta =  0.074;
+    const Real rho   = -0.51;
+    const Real sigma =  0.8;
+    const Real v0    =  0.1974;
+
+    const boost::shared_ptr<HestonProcess> hestonProcess(
+        new HestonProcess(rTS, qTS, spot, v0, kappa, theta, sigma, rho));
+
+    const Handle<HestonModel> hestonModel(
+        boost::make_shared<HestonModel>(hestonProcess));
+
+    const Handle<LocalVolTermStructure> localVol(
+        boost::make_shared<NoExceptLocalVolSurface>(vTS, rTS, qTS, spot, 0.3));
+    localVol->enableExtrapolation(true);
+
+    const Size vGrid = 601;
+    const Size xGrid = 301;
+
+    const HestonSLVFokkerPlanckFdmParams fdmParams = {
+        xGrid, vGrid, 1000, 41, 3.0, 2,
+        0.1, 1e-4, 10000,
+        1e-5, 1e-5, 0.0000025,
+        1.0, 0.1, 0.9, 1e-5,
+        FdmHestonGreensFct::Gaussian,
+        FdmSquareRootFwdOp::Log,
+        FdmSchemeDesc::ModifiedCraigSneyd()
+    };
+
+    const HestonSLVModel slvModel(
+         localVol, hestonModel, finalDate, fdmParams, true);
+
+    const std::list<HestonSLVModel::LogEntry>& logEntries
+        = slvModel.logEntries();
+
+    const SquareRootProcessRNDCalculator squareRootRndCalculator(
+        v0, kappa, theta, sigma);
+
+    for (std::list<HestonSLVModel::LogEntry>::const_iterator iter
+             = logEntries.begin(); iter != logEntries.end(); ++iter) {
+
+        const Time t = iter->t;
+        if (t > 0.2) {
+            const Array x(
+                iter->mesher->getFdm1dMeshers().at(0)->locations().begin(),
+                iter->mesher->getFdm1dMeshers().at(0)->locations().end());
+            const std::vector<Real>& z
+                = iter->mesher->getFdm1dMeshers().at(1)->locations();
+
+            const boost::shared_ptr<Array>& prob = iter->prob;
+
+            for (Size i=0; i < z.size(); ++i) {
+                const Real pCalc = DiscreteSimpsonIntegral()(
+                    x, Array(prob->begin()+i*xGrid,
+                             prob->begin()+(i+1)*xGrid));
+
+                const Real expected
+                    = squareRootRndCalculator.pdf(std::exp(z[i]), t);
+                const Real calculated = pCalc/std::exp(z[i]);
+
+                if (   std::fabs(expected-calculated) > 0.01
+                    && std::fabs((expected-calculated)/expected) > 0.05) {
+                    BOOST_ERROR("failed to reproduce probability at "
+                            << "\n  v :          " << std::exp(z[i])
+                            << "\n  t :          " << t
+                            << "\n  expected :   " << expected
+                            << "\n  calculated : " << calculated);
+                }
+            }
+        }
+    }
+
+}
+
 test_suite* HestonSLVModelTest::experimental() {
     test_suite* suite = BOOST_TEST_SUITE(
         "Heston Stochastic Local Volatility tests");
 
-	suite->add(QUANTLIB_TEST_CASE(
+    suite->add(QUANTLIB_TEST_CASE(
         &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation));
     suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testSquareRootZeroFlowBC));
     suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testTransformedZeroFlowBC));
@@ -1529,7 +1628,7 @@ test_suite* HestonSLVModelTest::experimental() {
     suite->add(QUANTLIB_TEST_CASE(
         &HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity));
     suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testSquareRootFokkerPlanckFwdEquation));	
+        &HestonSLVModelTest::testSquareRootFokkerPlanckFwdEquation));
     suite->add(QUANTLIB_TEST_CASE(
         &HestonSLVModelTest::testHestonFokkerPlanckFwdEquation));
     suite->add(QUANTLIB_TEST_CASE(
@@ -1537,8 +1636,11 @@ test_suite* HestonSLVModelTest::experimental() {
     suite->add(QUANTLIB_TEST_CASE(
         &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
 
-    // this test takes very long
-    //suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testHestonSLVModel));
+//    this test takes very long
+//    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testHestonSLVModel));
 
-	return suite;
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testLocalVolsvSLVPropDensity));
+
+    return suite;
 }

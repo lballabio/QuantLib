@@ -41,7 +41,6 @@ namespace QuantLib {
             const boost::shared_ptr<YieldTermStructure>& rTS,
             const boost::shared_ptr<YieldTermStructure>& qTS,
             const boost::shared_ptr<LocalVolTermStructure>& localVol,
-            Real illegalLocalVolOverwrite = -Null<Real>(),
             Size direction = 0);
 
         Size size() const;
@@ -66,7 +65,6 @@ namespace QuantLib {
         const FirstDerivativeOp  dxMap_;
         const TripleBandLinearOp dxxMap_;
         TripleBandLinearOp mapT_;
-        const Real illegalLocalVolOverwrite_;
         const Size direction_;
     };
 }

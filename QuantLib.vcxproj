@@ -1124,6 +1124,7 @@
     <ClInclude Include="ql\termstructures\iterativebootstrap.hpp" />
     <ClInclude Include="ql\termstructures\localbootstrap.hpp" />
     <ClInclude Include="ql\termstructures\volatility\equityfx\fixedlocalvolsurface.hpp" />
+    <ClInclude Include="ql\termstructures\volatility\equityfx\noexceptlocalvolsurface.hpp" />
     <ClInclude Include="ql\termstructures\voltermstructure.hpp" />
     <ClInclude Include="ql\termstructures\yieldtermstructure.hpp" />
     <ClInclude Include="ql\termstructures\volatility\abcd.hpp" />

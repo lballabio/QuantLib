@@ -38,6 +38,7 @@ public:
     static void testHestonFokkerPlanckFwdEquationLogLVLeverage();
     static void testBlackScholesFokkerPlanckFwdEquationLocalVol();
     static void testHestonSLVModel();
+    static void testLocalVolsvSLVPropDensity();
 
     static boost::unit_test_framework::test_suite* experimental();
 

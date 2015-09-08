@@ -13,7 +13,8 @@ this_include_HEADERS = \
     localconstantvol.hpp \
     localvolcurve.hpp \
     localvolsurface.hpp \
-    localvoltermstructure.hpp
+    localvoltermstructure.hpp \
+    noexceptlocalvolsurface.hpp
 
 libEquityFxVol_la_SOURCES = \
     blackvariancecurve.cpp \

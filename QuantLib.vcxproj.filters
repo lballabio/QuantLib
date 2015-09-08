@@ -4021,6 +4021,9 @@
     <ClInclude Include="ql\experimental\finitedifferences\fdmlocalvolfwdop.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
+    <ClInclude Include="ql\termstructures\volatility\equityfx\noexceptlocalvolsurface.hpp">
+      <Filter>termstructures\volatility\equityfx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
