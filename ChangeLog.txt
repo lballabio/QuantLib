@@ -1,3 +1,38 @@
+commit a8bc4dc03af038259f49463639061a83a7622c70
+Author: Cheng.Li <cheng.li@datayes.com>
+Date:   Mon, 17 Aug 2015 13:35:22 +0800
+
+    Avoided the ambiguous call to tolerance in boost 1.59.
+    
+    Backported from #292.
+
+ QuantLib/test-suite/garch.cpp                 | 2 +-
+ QuantLib/test-suite/integrals.cpp             | 2 +-
+ QuantLib/test-suite/tqreigendecomposition.cpp | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+commit d69cf67c0033d3f9e76c312ee22886d16706b4ec
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 3 Aug 2015 12:34:08 +0200
+
+    Bump version number to 1.6.2.
+
+ QuantLib/Announce.txt   | 4 ++--
+ QuantLib/configure.ac   | 2 +-
+ QuantLib/ql/version.hpp | 8 ++++----
+ 3 files changed, 7 insertions(+), 7 deletions(-)
+
+commit 4e34799eb4587de6f9f908080fb3009cb7495126
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 15 Jul 2015 12:05:56 +0200
+
+    Update changelog and news.
+
+ QuantLib/ChangeLog.txt           |  56 +++++++++++++++
+ QuantLib/Docs/pages/history.docs |   9 ++-
+ QuantLib/News.txt                | 148 ++-------------------------------------
+ 3 files changed, 70 insertions(+), 143 deletions(-)
+
 commit 9ce350205de37908259b15250f15a5e7bc901f64
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Tue, 14 Jul 2015 17:22:41 +0200
