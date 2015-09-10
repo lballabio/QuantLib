@@ -3994,9 +3994,6 @@
     <ClInclude Include="ql\instruments\futures.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\math\goldstein.hpp">
-      <Filter>experimental\math</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
