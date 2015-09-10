@@ -32,8 +32,8 @@ namespace QuantLib {
         GoldsteinLineSearch(Real eps = 1e-8,
                             Real alpha = 0.05,
                             Real beta = 0.65,
-                            Real extropolation = 1.5)
-        : LineSearch(eps), alpha_(alpha), beta_(beta), extropolation_(extropolation) {}
+                            Real extrapolation = 1.5)
+        : LineSearch(eps), alpha_(alpha), beta_(beta), extrapolation_(extrapolation) {}
 
         //! Perform line search
         Real operator()(Problem& P,             // Optimization problem
@@ -43,7 +43,7 @@ namespace QuantLib {
 
       private:
         Real alpha_, beta_;
-        Real extropolation_;
+        Real extrapolation_;
     };
 }
 

@@ -59,7 +59,7 @@ namespace QuantLib {
             
             // calculate the new step
             if (close_enough(tr, 0.0))
-                t *= extropolation_;
+                t *= extrapolation_;
             else
                 t = (tl + tr) / 2.0;
 
