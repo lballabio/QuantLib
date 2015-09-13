@@ -271,16 +271,16 @@ namespace QuantLib {
         std::vector<Probability> hitsByDate(basketSize, 0.);
         for(Size iSim=0; iSim < nSims_; iSim++) {
             const std::vector<simEvent<D<C, URNG> > >& events = getSim(iSim);
-            std::map<unsigned int, unsigned int> namesDefaulting;
+            std::map<unsigned short, unsigned short> namesDefaulting;
             for(Size iEvt=0; iEvt < events.size(); iEvt++) {
                 // if event is within time horizon...
                 if(val > events[iEvt].dayFromRef)
                     //...count it. notice insertion sorts by date.
-                    namesDefaulting.insert(std::make_pair<unsigned int, unsigned int>
-                        (events[iEvt].dayFromRef,events[iEvt].nameIdx));
+                    namesDefaulting.insert(std::make_pair(events[iEvt].dayFromRef,
+                        events[iEvt].nameIdx));
             }
             if(namesDefaulting.size() >= n) {
-                std::map<unsigned int, unsigned int>::const_iterator
+                std::map<unsigned short, unsigned short>::const_iterator
                     itdefs = namesDefaulting.begin();
                 // locate nth default in time:
                 std::advance(itdefs, n-1);
