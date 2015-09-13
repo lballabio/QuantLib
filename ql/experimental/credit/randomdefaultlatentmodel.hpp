@@ -276,7 +276,8 @@ namespace QuantLib {
                 // if event is within time horizon...
                 if(val > events[iEvt].dayFromRef)
                     //...count it. notice insertion sorts by date.
-                    namesDefaulting.insert(std::make_pair(events[iEvt].dayFromRef,
+                    namesDefaulting.insert(std::make_pair<unsigned short,
+                      unsigned short>(events[iEvt].dayFromRef,
                         events[iEvt].nameIdx));
             }
             if(namesDefaulting.size() >= n) {
