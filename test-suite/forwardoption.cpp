@@ -398,8 +398,7 @@ void ForwardOptionTest::testGreeksInitialization() {
    BOOST_TEST_MESSAGE("Testing forward option greeks initialization...");
 
    DayCounter dc = Actual360();
-   Date today = Date::todaysDate();
-   Settings::instance().evaluationDate() = today;
+   Date today = Settings::instance().evaluationDate();
 
    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
