@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,6 +26,7 @@
 #define quantlib_segment_integral_h
 
 #include <ql/math/integrals/integral.hpp>
+#include <ql/math/comparison.hpp>
 #include <ql/errors.hpp>
 
 namespace QuantLib {
@@ -63,6 +65,8 @@ namespace QuantLib {
     SegmentIntegral::integrate(const boost::function<Real (Real)>& f,
                                Real a,
                                Real b) const {
+        if(close_enough(a,b))
+            return 0.0;
         Real dx = (b-a)/intervals_;
         Real sum = 0.5*(f(a)+f(b));
         Real end = b - 0.5*dx;
