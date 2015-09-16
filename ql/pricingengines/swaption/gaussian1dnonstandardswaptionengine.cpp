@@ -22,6 +22,8 @@
 #include <ql/utilities/disposable.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/payoff.hpp>
 
 using std::exp;
 

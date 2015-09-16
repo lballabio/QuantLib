@@ -18,6 +18,8 @@
 */
 
 #include <ql/pricingengines/capfloor/gaussian1dcapfloorengine.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/payoff.hpp>
 
 namespace QuantLib {
 

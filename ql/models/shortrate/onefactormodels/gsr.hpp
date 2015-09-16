@@ -24,15 +24,8 @@
 #ifndef quantlib_gsr_hpp
 #define quantlib_gsr_hpp
 
-#include <ql/time/schedule.hpp>
-#include <ql/math/integrals/simpsonintegral.hpp>
-#include <ql/math/integrals/gausslobattointegral.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
-
 #include <ql/models/shortrate/onefactormodels/gaussian1dmodel.hpp>
 #include <ql/processes/gsrprocess.hpp>
-
-#include <boost/math/special_functions.hpp>
 
 namespace QuantLib {
 
