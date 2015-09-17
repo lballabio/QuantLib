@@ -112,14 +112,20 @@ void Gsr::updateTimes() const {
         boost::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
 }
 
-void Gsr::updateState() const {
+void Gsr::updateVolatility() {
     for (Size i = 0; i < sigma_.size(); i++) {
         sigma_.setParam(i, volatilities_[i]->value());
     }
+    boost::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
+    update();
+}
+
+void Gsr::updateReversion() {
     for (Size i = 0; i < reversion_.size(); i++) {
         reversion_.setParam(i, reversions_[i]->value());
     }
     boost::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
+    update();
 }
 
 void Gsr::initialize(Real T) {
@@ -132,7 +138,8 @@ void Gsr::initialize(Real T) {
                "there must be n+1 volatilities ("
                    << volatilities_.size() << ") for n volatility step times ("
                    << volsteptimes_.size() << ")");
-    // sigma_ = PiecewiseConstantParameter(volsteptimes_,PositiveConstraint());
+    // sigma_ =
+    // PiecewiseConstantParameter(volsteptimes_,PositiveConstraint());
     sigma_ = PiecewiseConstantParameter(volsteptimes_, NoConstraint());
 
     QL_REQUIRE(reversions_.size() == 1 ||
@@ -153,17 +160,21 @@ void Gsr::initialize(Real T) {
         reversion_.setParam(i, reversions_[i]->value());
     }
 
-    stateProcess_ = boost::shared_ptr<GsrProcess>(
-        new GsrProcess(volsteptimesArray_, sigma_.params(), reversion_.params(), T));
+    stateProcess_ = boost::shared_ptr<GsrProcess>(new GsrProcess(
+        volsteptimesArray_, sigma_.params(), reversion_.params(), T));
 
     registerWith(termStructure());
 
     registerWith(stateProcess_);
+
+    volatilityObserver_ = boost::make_shared<VolatilityObserver>(this);
+    reversionObserver_ = boost::make_shared<ReversionObserver>(this);
+
     for (Size i = 0; i < reversions_.size(); ++i)
-        registerWith(reversions_[i]);
+        reversionObserver_->registerWith(reversions_[i]);
 
     for (Size i = 0; i < volatilities_.size(); ++i)
-        registerWith(volatilities_[i]);
+        volatilityObserver_->registerWith(volatilities_[i]);
 }
 
 const Real Gsr::zerobondImpl(const Time T, const Time t, const Real y,
@@ -205,5 +216,4 @@ const Real Gsr::numeraireImpl(const Time t, const Real y,
                    : yts->discount(p->getForwardMeasureTime());
     return zerobond(p->getForwardMeasureTime(), t, y, yts);
 }
-
 }
