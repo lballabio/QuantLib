@@ -1636,7 +1636,7 @@ test_suite* HestonSLVModelTest::experimental() {
     suite->add(QUANTLIB_TEST_CASE(
         &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
 
-//    this test takes very long
+//    these test takes very long
 //    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testHestonSLVModel));
 
 //    suite->add(QUANTLIB_TEST_CASE(
