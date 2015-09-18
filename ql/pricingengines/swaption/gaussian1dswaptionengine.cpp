@@ -18,6 +18,8 @@
 */
 
 #include <ql/pricingengines/swaption/gaussian1dswaptionengine.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/payoff.hpp>
 
 namespace QuantLib {
 
@@ -93,6 +95,9 @@ namespace QuantLib {
             // this is known to work for the gsr and markov functional
             // model implementations of Gaussian1dModel
 #ifdef _OPENMP
+            if (expiry1Time != Null<Real>())
+                model_->yGrid(stddevs_, integrationPoints_, expiry1Time,
+                              expiry0Time, 0.0);
             if (expiry0 > settlement) {
                 for (Size l = k1; l < arguments_.floatingCoupons.size(); l++) {
                     model_->forwardRate(arguments_.floatingFixingDates[l],

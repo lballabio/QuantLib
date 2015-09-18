@@ -5,6 +5,7 @@
  Copyright (C) 2007 François du Vignaud
  Copyright (C) 2007 Katiuscia Manzoni
  Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2015 Michael von den Driesch
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -83,7 +84,7 @@ namespace QuantLib {
             optionletAccrualPeriods_[i] = lFRC->accrualPeriod();
             optionletTimes_[i] = dc.yearFraction(referenceDate,
                                                  optionletDates_[i]);
-            atmOptionletRate_[i] = iborIndex_->fixing(optionletDates_[i]);
+            atmOptionletRate_[i] = lFRC->indexFixing();
         }
 
         if (floatingSwitchStrike_ && capFlooMatrixNotInitialized_) {

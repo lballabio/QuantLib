@@ -29,6 +29,7 @@
 #include <ql/time/calendars/unitedkingdom.hpp>
 #include <ql/time/calendars/australia.hpp>
 #include <ql/time/calendars/brazil.hpp>
+#include <ql/time/calendars/southafrica.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/daycounters/actual360.hpp>
@@ -1295,6 +1296,88 @@ void BondTest::testExCouponAustralianBond() {
     }
 }
 
+/// <summary>
+/// Test calculation of South African R2048 bond
+/// This requires the use of the Schedule to be constructed
+/// with a custom date vector
+/// </summary>
+void BondTest::testBondFromScheduleWithDateVector()
+{
+    BOOST_TEST_MESSAGE("Testing South African R2048 bond price using Schedule constructor with Date vector...");
+    SavedSettings backup;
+
+    //When pricing bond from Yield To Maturity, use NullCalendar()
+    Calendar calendar = NullCalendar();
+
+    Natural settlementDays = 3;
+
+    Date issueDate(29, June, 2012);
+    Date today(7, September, 2015);
+    Date evaluationDate = calendar.adjust(today);
+    Date settlementDate = calendar.advance(evaluationDate, settlementDays * Days);
+    Settings::instance().evaluationDate() = evaluationDate;
+
+    // For the schedule to generate correctly for Feb-28's, make maturity date on Feb 29
+    Date maturityDate(29, February, 2048);
+
+    Rate coupon = 0.0875;
+    Compounding comp = Compounded;
+    Frequency freq = Semiannual;
+    DayCounter dc = ActualActual(ActualActual::Bond);
+
+    // Yield as quoted in market
+    InterestRate yield(0.09185, dc, comp, freq);
+    
+    Period tenor = 6 * Months;
+    Period exCouponPeriod = 10 * Days;
+
+    // Generate coupon dates for 31 Aug and end of Feb each year
+    // For leap years, this will generate 29 Feb, but the bond
+    // actually pays coupons on 28 Feb, regardsless of whether
+    // it is a leap year or not. 
+    Schedule schedule(issueDate, maturityDate, tenor,
+        NullCalendar(), Unadjusted, Unadjusted,
+        DateGeneration::Backward, true);
+
+    // Adjust the 29 Feb's to 28 Feb
+    std::vector<Date> dates;
+    for (Size i = 0; i < schedule.size(); ++i) {
+        Date d = schedule.date(i);
+        if (d.month() == February && d.dayOfMonth() == 29)
+            dates.push_back(Date(28, February, d.year()));
+        else
+            dates.push_back(d);
+    }
+
+    schedule = Schedule(dates, 
+                        schedule.calendar(),
+                        schedule.businessDayConvention(),
+                        schedule.terminationDateBusinessDayConvention(),
+                        schedule.tenor(),
+                        schedule.rule(),
+                        schedule.endOfMonth(),
+                        schedule.isRegular());
+
+    FixedRateBond bond(
+        0, 
+        100.0,
+        schedule,
+        std::vector<Rate>(1, coupon),
+        dc, Following, 100.0,
+        issueDate, calendar, 
+        exCouponPeriod, calendar, Unadjusted, false);
+
+    Real calculatedPrice = BondFunctions::dirtyPrice(bond, yield, settlementDate);
+    Real expectedPrice = 95.75706;
+    Real tolerance = 1e-5;
+    if (std::fabs(calculatedPrice - expectedPrice) > tolerance) {
+        BOOST_FAIL("failed to reproduce R2048 dirty price"
+            << QL_FIXED << std::setprecision(5)
+            << "\n  expected:   " << expectedPrice
+            << "\n  calculated: " << calculatedPrice);
+    }
+}
+
 
 test_suite* BondTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Bond tests");
@@ -1310,6 +1393,7 @@ test_suite* BondTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testBrazilianCached));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testExCouponGilt));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testExCouponAustralianBond));
+    suite->add(QUANTLIB_TEST_CASE(&BondTest::testBondFromScheduleWithDateVector));
     return suite;
 }
 
