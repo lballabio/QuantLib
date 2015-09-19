@@ -1006,10 +1006,10 @@ namespace {
         const std::vector<Real> surfaceStrikes(tmp, tmp+LENGTH(tmp));
 
         Volatility v[] =
-          { 1.015873, 1.015873, 1.015873, 0.89729, 0.796493, 0.730914, 0.631335, 0.568895,
-            0.711309, 0.711309, 0.711309, 0.641309, 0.635593, 0.583653, 0.508045, 0.463182,
-            0.516034, 0.500534, 0.500534, 0.500534, 0.448706, 0.416661, 0.375470, 0.353442,
-            0.516034, 0.482263, 0.447713, 0.387703, 0.355064, 0.337438, 0.316966, 0.306859,
+          { 1.015873, 1.015873, 0.915873, 0.89729, 0.796493, 0.730914, 0.631335, 0.568895,
+            0.851309, 0.821309, 0.781309, 0.641309, 0.635593, 0.583653, 0.508045, 0.463182,
+            0.686034, 0.630534, 0.590534, 0.500534, 0.448706, 0.416661, 0.375470, 0.353442,
+            0.526034, 0.482263, 0.447713, 0.387703, 0.355064, 0.337438, 0.316966, 0.306859,
             0.497587, 0.464373, 0.430764, 0.374052, 0.344336, 0.328607, 0.310619, 0.301865,
             0.479511, 0.446815, 0.414194, 0.361010, 0.334204, 0.320301, 0.304664, 0.297180,
             0.461866, 0.429645, 0.398092, 0.348638, 0.324680, 0.312512, 0.299082, 0.292785,
@@ -1557,11 +1557,11 @@ void HestonSLVModelTest::testLocalVolsvSLVPropDensity() {
         boost::make_shared<NoExceptLocalVolSurface>(vTS, rTS, qTS, spot, 0.3));
     localVol->enableExtrapolation(true);
 
-    const Size vGrid = 601;
+    const Size vGrid = 1001;
     const Size xGrid = 301;
 
     const HestonSLVFokkerPlanckFdmParams fdmParams = {
-        xGrid, vGrid, 1000, 41, 3.0, 2,
+        xGrid, vGrid, 2000, 101, 3.0, 2,
         0.1, 1e-4, 10000,
         1e-5, 1e-5, 0.0000025,
         1.0, 0.1, 0.9, 1e-5,
@@ -1602,7 +1602,7 @@ void HestonSLVModelTest::testLocalVolsvSLVPropDensity() {
                 const Real calculated = pCalc/std::exp(z[i]);
 
                 if (   std::fabs(expected-calculated) > 0.01
-                    && std::fabs((expected-calculated)/expected) > 0.05) {
+                    && std::fabs((expected-calculated)/expected) > 0.04) {
                     BOOST_ERROR("failed to reproduce probability at "
                             << "\n  v :          " << std::exp(z[i])
                             << "\n  t :          " << t
