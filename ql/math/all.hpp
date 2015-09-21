@@ -20,6 +20,8 @@
 #include <ql/math/linearleastsquaresregression.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/math/modifiedbessel.hpp>
+#include <ql/math/pascaltriangle.hpp>
+#include <ql/math/polynomialmathfunction.hpp>
 #include <ql/math/primenumbers.hpp>
 #include <ql/math/quadratic.hpp>
 #include <ql/math/rounding.hpp>
