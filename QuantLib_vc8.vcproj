@@ -2280,6 +2280,22 @@
 				>
 			</File>
 			<File
+				RelativePath="ql\math\pascaltriangle.cpp"
+				>
+			</File>
+			<File
+				RelativePath="ql\math\pascaltriangle.hpp"
+				>
+			</File>
+			<File
+				RelativePath="ql\math\polynomialmathfunction.cpp"
+				>
+			</File>
+			<File
+				RelativePath="ql\math\polynomialmathfunction.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\math\primenumbers.cpp"
 				>
 			</File>
