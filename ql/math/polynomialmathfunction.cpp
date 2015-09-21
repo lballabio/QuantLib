@@ -19,7 +19,7 @@
 */
 
 #include <ql/math/polynomialmathfunction.hpp>
-#include <ql/math/tartaglia.hpp>
+#include <ql/math/pascaltriangle.hpp>
 
 namespace QuantLib {
 
@@ -81,7 +81,7 @@ namespace QuantLib {
             tau = 1.0;
             for (Size j=i; j<order_; ++j) {
                 tau *= dt;
-                eqs_[i][j] = (tau * Tartaglia::get(j + 1)[i]) / (j + 1);
+                eqs_[i][j] = (tau * PascalTriangle::get(j + 1)[i]) / (j + 1);
             }
         }
     }

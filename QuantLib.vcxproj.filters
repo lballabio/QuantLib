@@ -3979,7 +3979,7 @@
     <ClInclude Include="ql\math\polynomialmathfunction.hpp">
       <Filter>math</Filter>
     </ClInclude>
-    <ClInclude Include="ql\math\tartaglia.hpp">
+    <ClInclude Include="ql\math\pascaltriangle.hpp">
       <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="ql\models\shortrate\onefactormodels\gaussian1dmodel.hpp">
@@ -6416,7 +6416,7 @@
     <ClCompile Include="ql\math\polynomialmathfunction.cpp">
       <Filter>math</Filter>
     </ClCompile>
-    <ClCompile Include="ql\math\tartaglia.cpp">
+    <ClCompile Include="ql\math\pascaltriangle.cpp">
       <Filter>math</Filter>
     </ClCompile>
     <ClCompile Include="ql\models\shortrate\onefactormodels\gaussian1dmodel.cpp">

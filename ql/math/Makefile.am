@@ -27,6 +27,7 @@ this_include_HEADERS = \
 	linearleastsquaresregression.hpp \
 	matrix.hpp \
 	modifiedbessel.hpp \
+	pascaltriangle.hpp \
 	polynomialmathfunction.hpp \
 	primenumbers.hpp \
 	quadratic.hpp \
@@ -34,7 +35,6 @@ this_include_HEADERS = \
 	richardsonextrapolation.hpp \
 	sampledcurve.hpp \
 	solver1d.hpp \
-	tartaglia.hpp \
 	transformedgrid.hpp
 
 libMath_la_SOURCES = \
@@ -46,13 +46,13 @@ libMath_la_SOURCES = \
 	incompletegamma.cpp \
 	matrix.cpp \
 	modifiedbessel.cpp \
+	pascaltriangle.cpp \
 	polynomialmathfunction.cpp \
 	primenumbers.cpp \
 	quadratic.cpp \
 	richardsonextrapolation.cpp \
 	rounding.cpp \
-	sampledcurve.cpp \
-	tartaglia.cpp
+	sampledcurve.cpp
 
 libMath_la_LIBADD = \
     copulas/libCopulas.la \

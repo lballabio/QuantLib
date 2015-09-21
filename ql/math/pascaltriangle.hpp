@@ -18,25 +18,25 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file tartaglia.hpp
-    \brief Tartaglia coefficients calculator
+/*! \file pascaltriangle.hpp
+    \brief Pascal triangle coefficients calculator
 */
 
-#ifndef quantlib_tartaglia_h
-#define quantlib_tartaglia_h
+#ifndef quantlib_pascal_triangle_hpp
+#define quantlib_pascal_triangle_hpp
 
 #include <ql/types.hpp>
 #include <vector>
 
 namespace QuantLib {
 
-    //! Tartaglia coefficients calculator
-    class Tartaglia {
+    //! Pascal triangle coefficients calculator
+    class PascalTriangle {
       public:
         //! Get and store one vector of coefficients after another.
         static const std::vector<BigNatural>& get(Size order);
       private:
-        Tartaglia() {}
+        PascalTriangle() {}
         static void nextOrder();
         static std::vector<std::vector<BigNatural> > coefficients_;
     };

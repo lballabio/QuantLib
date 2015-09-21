@@ -18,14 +18,14 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/math/tartaglia.hpp>
+#include <ql/math/pascaltriangle.hpp>
 #include <iterator>
 
 namespace QuantLib {
 
-    std::vector<std::vector<BigNatural> > Tartaglia::coefficients_;
+    std::vector<std::vector<BigNatural> > PascalTriangle::coefficients_;
 
-    const std::vector<BigNatural>& Tartaglia::get(Size order) {
+    const std::vector<BigNatural>& PascalTriangle::get(Size order) {
         if (coefficients_.empty()) {
             // order zero mandatory for bootstrap
             coefficients_.push_back(std::vector<BigNatural>(1, 1));
@@ -41,7 +41,7 @@ namespace QuantLib {
         return coefficients_[order];
     }
 
-    void Tartaglia::nextOrder() {
+    void PascalTriangle::nextOrder() {
         Size order = coefficients_.size();
         coefficients_.push_back(std::vector<BigNatural>(order+1));
         coefficients_[order][0] = coefficients_[order][order] = 1;
