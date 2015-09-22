@@ -37,7 +37,8 @@ namespace QuantLib {
         <li>Sundays</li>
         <li>New Year's Day, January 1st (possibly moved to Monday if
             actually on Sunday, or to Friday if on Saturday)</li>
-        <li>Martin Luther King's birthday, third Monday in January</li>
+        <li>Martin Luther King's birthday, third Monday in January (since
+            1983)</li>
         <li>Presidents' Day (a.k.a. Washington's birthday),
             third Monday in February</li>
         <li>Memorial Day, last Monday in May</li>
@@ -83,7 +84,8 @@ namespace QuantLib {
         <li>Sundays</li>
         <li>New Year's Day, January 1st (possibly moved to Monday if
             actually on Sunday)</li>
-        <li>Martin Luther King's birthday, third Monday in January</li>
+        <li>Martin Luther King's birthday, third Monday in January (since
+            1983)</li>
         <li>Presidents' Day (a.k.a. Washington's birthday),
             third Monday in February</li>
         <li>Good Friday</li>
