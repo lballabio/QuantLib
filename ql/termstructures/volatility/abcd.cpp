@@ -26,9 +26,7 @@
 namespace QuantLib {
 
     AbcdFunction::AbcdFunction(Real a, Real b, Real c, Real d)
-    : AbcdMathFunction(a, b, c, d) {
-        validateAbcdParameters(a, b, c, d);
-    }
+    : AbcdMathFunction(a, b, c, d) {}
 
     Real AbcdFunction::volatility(Time tMin, Time tMax, Time T) const {
         if (tMax==tMin)

@@ -68,7 +68,7 @@ namespace QuantLib {
       vegaWeighted_(vegaWeighted),
       times_(t), blackVols_(blackVols) {
 
-        validateAbcdParameters(a, b, c, d);
+        AbcdMathFunction::validate(a, b, c, d);
 
         QL_REQUIRE(blackVols.size()==t.size(),
                        "mismatch between number of times (" << t.size() <<
@@ -149,7 +149,7 @@ namespace QuantLib {
             Array transfResult(projectedAbcdCostFunction.include(projectedResult));
 
             Array result = transformation_->direct(transfResult);
-            validateAbcdParameters(a_, b_, c_, d_);
+            AbcdMathFunction::validate(a_, b_, c_, d_);
             a_ = result[0];
             b_ = result[1];
             c_ = result[2];

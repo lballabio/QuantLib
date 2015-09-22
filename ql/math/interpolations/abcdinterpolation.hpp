@@ -68,7 +68,7 @@ namespace QuantLib {
                     dIsFixed_ = dIsFixed;
                 else d_ = 0.17;
 
-               validateAbcdParameters(a, b, c, d);
+                AbcdMathFunction::validate(a, b, c, d);
             }
             virtual ~AbcdCoeffHolder() {}
             Real a_, b_, c_, d_;
