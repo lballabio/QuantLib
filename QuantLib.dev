@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=2074
+UnitCount=2076
 Type=2
 Ver=1
 ObjFiles=
@@ -20799,6 +20799,26 @@ BuildCmd=
 
 [Unit2074]
 FileName=ql\math\polynomialmathfunction.hpp
+CompileCpp=1
+Folder=math
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit2075]
+FileName=ql\math\abcdmathfunction.cpp
+CompileCpp=1
+Folder=math
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit2076]
+FileName=ql\math\abcdmathfunction.hpp
 CompileCpp=1
 Folder=math
 Compile=1
