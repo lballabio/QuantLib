@@ -34,51 +34,19 @@ namespace QuantLib {
 
     // to constrained <- from unconstrained
     Array AbcdCalibration::AbcdParametersTransformation::direct(const Array& x) const {
-        // b <- ~b
         y_[1] = x[1];
-
-        // c <- ~c with c>=0
-        //y_[2] = x[2]*x[2];
-        //y_[2] = std::abs(x[2]);
         y_[2] = std::exp(x[2]);
-
-        // d <- ~d with d>=0
-        //y_[3] = x[3]*x[3];
-        //y_[3] = std::abs(x[3]);
         y_[3] = std::exp(x[3]);
-        //y_[3] = std::exp(-x[3]*x[3]); 1>=d>0
-
-        // a <- ~a with a+d>=0
-        //y_[0] = x[0]*x[0] - y_[3];
-        //y_[0] = std::abs(x[0]) - y_[3];
         y_[0] = std::exp(x[0]) - y_[3];
-        //y_[0] = std::exp(-x[0]*x[0]) - y_[3]; // 1>=a>0
-
         return y_;
     }
 
     // to unconstrained <- from constrained
     Array AbcdCalibration::AbcdParametersTransformation::inverse(const Array& x) const {
-        // ~b <- b
         y_[1] = x[1];
-
-        // ~c <- c with c>=0
-        //y_[2] = std::sqrt(x[2]); // arbitrary sign for y_
-        //y_[2] = x[2]; // arbitrary sign for y_
         y_[2] = std::log(x[2]);
-
-        // ~d <- d with d>=0
-        //y_[3] = std::sqrt(x[3]); // arbitrary sign for y_
-        //y_[3] = x[3]; // arbitrary sign for y_
         y_[3] = std::log(x[3]);
-        //y_[3] = std::sqrt(-std::log(x[3])); // arbitrary sign for y_, 1>=d>0
-
-        // ~a <- a with a+d>=0
-        //y_[0] = std::sqrt(x[0] + x[3]); // arbitrary sign for y_
-        //y_[0] = (x[0] + x[3]); // arbitrary sign for y_
         y_[0] = std::log(x[0] + x[3]);
-        //y_[0] = std::sqrt(-std::log(x[0] + x[3])); // arbitrary sign for y_, 1>=a>0
-
         return y_;
     }
 
