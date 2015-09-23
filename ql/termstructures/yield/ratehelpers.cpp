@@ -320,29 +320,21 @@ namespace QuantLib {
     DepositRateHelper::DepositRateHelper(const Handle<Quote>& rate,
                                          const shared_ptr<IborIndex>& i)
     : RelativeDateRateHelper(rate) {
-        // do not use clone, as we do not want to take fixing into account
-        iborIndex_ = shared_ptr<IborIndex>(new
-            IborIndex("no-fix", // never take fixing into account
-                      i->tenor(), i->fixingDays(), Currency(),
-                      i->fixingCalendar(), i->businessDayConvention(),
-                      i->endOfMonth(), i->dayCounter(), termStructureHandle_));
+        iborIndex_ = i->clone(termStructureHandle_);
         initializeDates();
     }
 
     DepositRateHelper::DepositRateHelper(Rate rate,
                                          const shared_ptr<IborIndex>& i)
     : RelativeDateRateHelper(rate) {
-        // do not use clone, as we do not want to take fixing into account
-        iborIndex_ = shared_ptr<IborIndex>(new
-            IborIndex("no-fix", // never take fixing into account
-                      i->tenor(), i->fixingDays(), Currency(),
-                      i->fixingCalendar(), i->businessDayConvention(),
-                      i->endOfMonth(), i->dayCounter(), termStructureHandle_));
+        iborIndex_ = i->clone(termStructureHandle_);
         initializeDates();
     }
 
     Real DepositRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
+        // the forecast fixing flag is set to true because
+        // we do not want to take fixing into account
         return iborIndex_->fixing(fixingDate_, true);
     }
 
@@ -362,8 +354,7 @@ namespace QuantLib {
         // then move to the next business day
         Date referenceDate =
             iborIndex_->fixingCalendar().adjust(evaluationDate_);
-        earliestDate_ = iborIndex_->fixingCalendar().advance(
-            referenceDate, iborIndex_->fixingDays()*Days);
+        earliestDate_ = iborIndex_->valueDate(referenceDate);
         latestDate_ = iborIndex_->maturityDate(earliestDate_);
         fixingDate_ = iborIndex_->fixingDate(earliestDate_);
     }
