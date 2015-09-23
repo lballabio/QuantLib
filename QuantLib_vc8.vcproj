@@ -5332,6 +5332,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\processes\gsrprocesscore.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\processes\gsrprocesscore.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\processes\hestonprocess.cpp"
 				>
 			</File>
