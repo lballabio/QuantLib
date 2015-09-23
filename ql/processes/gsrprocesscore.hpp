@@ -72,6 +72,9 @@ class GsrProcessCore {
     // reset cache
     void flushCache() const;
 
+  protected:
+    const Array &times_, &vols_, &reversions_;
+
   private:
     const int lowerIndex(Time t) const;
     const int upperIndex(Time t) const;
@@ -81,8 +84,6 @@ class GsrProcessCore {
     const Real vol(Size index) const;
     const Real rev(Size index) const;
     const bool revZero(Size index) const;
-
-    const Array &times_, &vols_, &reversions_;
 
     mutable std::map<std::pair<Real, Real>, Real> cache1_, cache2a_, cache2b_,
         cache3_, cache5_;
