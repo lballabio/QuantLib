@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="methods">
@@ -3216,6 +3216,9 @@
     <ClInclude Include="ql\processes\gsrprocess.hpp">
       <Filter>processes</Filter>
     </ClInclude>
+    <ClInclude Include="ql\processes\gsrprocesscore.hpp">
+      <Filter>processes</Filter>
+    </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\kahalesmilesection.hpp">
       <Filter>termstructures\volatility</Filter>
     </ClInclude>
@@ -5863,6 +5866,9 @@
       <Filter>models\shortrate\onefactormodels</Filter>
     </ClCompile>
     <ClCompile Include="ql\processes\gsrprocess.cpp">
+      <Filter>processes</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\processes\gsrprocesscore.cpp">
       <Filter>processes</Filter>
     </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\kahalesmilesection.cpp">
