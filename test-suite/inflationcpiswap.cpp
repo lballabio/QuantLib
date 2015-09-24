@@ -361,7 +361,7 @@ void CPISwapTest::consistency() {
                testInfLegNPV << " vs " << zisV.legNPV(0));
 
     Real diff = fabs(1-zisV.NPV()/4191660.0);
-    QL_REQUIRE(diff<1e-5,
+    QL_REQUIRE(diff<3e-5,
                "failed stored consistency value test, ratio = " << diff);
 
     // remove circular refernce
