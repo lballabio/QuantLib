@@ -75,8 +75,8 @@ namespace QuantLib {
       terminationDateConvention_(terminationDateConvention),
       rule_(rule),
       dates_(dates), isRegular_(isRegular) {
-        
-        if (endOfMonth_ != boost::none && tenor < 1 * Months)
+
+        if (tenor != boost::none && tenor < 1 * Months)
             endOfMonth_ = false;
         else
             endOfMonth_ = endOfMonth;
