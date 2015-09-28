@@ -55,11 +55,10 @@ namespace QuantLib {
       private:
         Volatility vol_;
         Real atmLevel_;
-        Real shift_;
     };
 
     inline Real FlatSmileSection::minStrike () const {
-        return QL_MIN_REAL - shift_;
+        return QL_MIN_REAL - shift();
     }
 
     inline Real FlatSmileSection::maxStrike () const {

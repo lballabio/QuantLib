@@ -58,13 +58,15 @@ namespace QuantLib {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth();
         Month m = date.month();
+        Year y = date.year();
         if (isWeekend(w)
             // New Year's Day (possibly moved to Monday if on Sunday)
             || ((d == 1 || (d == 2 && w == Monday)) && m == January)
             // (or to Friday if on Saturday)
             || (d == 31 && w == Friday && m == December)
             // Martin Luther King's birthday (third Monday in January)
-            || ((d >= 15 && d <= 21) && w == Monday && m == January)
+            || ((d >= 15 && d <= 21) && w == Monday && m == January
+                && y >= 1983)
             // Washington's birthday (third Monday in February)
             || ((d >= 15 && d <= 21) && w == Monday && m == February)
             // Memorial Day (last Monday in May)
@@ -183,7 +185,8 @@ namespace QuantLib {
             // New Year's Day (possibly moved to Monday if on Sunday)
             || ((d == 1 || (d == 2 && w == Monday)) && m == January)
             // Martin Luther King's birthday (third Monday in January)
-            || ((d >= 15 && d <= 21) && w == Monday && m == January)
+            || ((d >= 15 && d <= 21) && w == Monday && m == January
+                && y >= 1983)
             // Washington's birthday (third Monday in February)
             || ((d >= 15 && d <= 21) && w == Monday && m == February)
             // Good Friday

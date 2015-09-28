@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2008 Ferdinando Ametrano
  Copyright (C) 2007, 2008 Laurent Hoffmann
+ Copyright (C) 2015 Michael von den Driesch
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -65,7 +66,7 @@ namespace {
 
         CommonVars() {
             accuracy = 1.0e-6;
-            tolerance = 2.5e-5;
+            tolerance = 2.5e-8;
         }
 
         void setTermStructure() {
