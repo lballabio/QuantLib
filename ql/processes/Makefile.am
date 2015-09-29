@@ -13,6 +13,7 @@ this_include_HEADERS = \
 	geometricbrownianprocess.hpp \
 	gjrgarchprocess.hpp \
 	gsrprocess.hpp \
+	gsrprocesscore.hpp \
 	hestonprocess.hpp \
 	hullwhiteprocess.hpp \
 	hybridhestonhullwhiteprocess.hpp \
@@ -33,6 +34,7 @@ libProcesses_la_SOURCES = \
 	geometricbrownianprocess.cpp \
 	gjrgarchprocess.cpp \
 	gsrprocess.cpp \
+	gsrprocesscore.cpp \
 	hestonprocess.cpp \
 	hullwhiteprocess.cpp \
 	hybridhestonhullwhiteprocess.cpp \

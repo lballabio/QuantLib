@@ -1587,6 +1587,7 @@
     <ClInclude Include="ql\pricingengines\swaption\gaussian1dswaptionengine.hpp" />
     <ClInclude Include="ql\termstructures\volatility\swaption\gaussian1dswaptionvolatility.hpp" />
     <ClInclude Include="ql\processes\gsrprocess.hpp" />
+    <ClInclude Include="ql\processes\gsrprocesscore.hpp" />
     <ClInclude Include="ql\termstructures\volatility\kahalesmilesection.hpp" />
     <ClInclude Include="ql\processes\mfstateprocess.hpp" />
     <ClInclude Include="ql\instruments\nonstandardswap.hpp" />
@@ -2477,6 +2478,7 @@
     <ClCompile Include="ql\pricingengines\swaption\gaussian1dswaptionengine.cpp" />
     <ClCompile Include="ql\termstructures\volatility\swaption\gaussian1dswaptionvolatility.cpp" />
     <ClCompile Include="ql\processes\gsrprocess.cpp" />
+    <ClCompile Include="ql\processes\gsrprocesscore.cpp" />
     <ClCompile Include="ql\termstructures\volatility\kahalesmilesection.cpp" />
     <ClCompile Include="ql\processes\mfstateprocess.cpp" />
     <ClCompile Include="ql\instruments\nonstandardswap.cpp" />

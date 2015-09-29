@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005 Klaus Spanderen
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,7 +33,6 @@ namespace QuantLib {
     //! calibration helper for Heston model
     class HestonModelHelper : public CalibrationHelper {
       public:
-        // constructor for ATM option
         HestonModelHelper(const Period& maturity,
                           const Calendar& calendar,
                           const Real s0,
@@ -43,17 +43,31 @@ namespace QuantLib {
                           CalibrationHelper::CalibrationErrorType errorType
                                     = CalibrationHelper::RelativePriceError);
 
+        HestonModelHelper(const Period& maturity,
+                          const Calendar& calendar,
+                          const Handle<Quote>& s0,
+                          const Real strikePrice,
+                          const Handle<Quote>& volatility,
+                          const Handle<YieldTermStructure>& riskFreeRate,
+                          const Handle<YieldTermStructure>& dividendYield,
+                          CalibrationHelper::CalibrationErrorType errorType
+                                    = CalibrationHelper::RelativePriceError);
+
         void addTimesTo(std::list<Time>&) const {}
+        void performCalculations() const;
         Real modelValue() const;
         Real blackPrice(Real volatility) const;
-        Time maturity() const  { return tau_; }
+        Time maturity() const  { calculate(); return tau_; }
       private:
-        Handle<YieldTermStructure> dividendYield_;
-        boost::shared_ptr<VanillaOption> option_;
-        const Date exerciseDate_;
-        const Time tau_;
-        const Real s0_;
+        const Period maturity_;
+        const Calendar calendar_;
+        const Handle<Quote> s0_;
         const Real strikePrice_;
+        const Handle<YieldTermStructure> dividendYield_;
+        mutable Date exerciseDate_;
+        mutable Time tau_;
+        mutable Option::Type type_;
+        mutable boost::shared_ptr<VanillaOption> option_;
     };
 
 }

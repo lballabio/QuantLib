@@ -145,7 +145,7 @@ namespace QuantLib {
                            const int forcedLeftIndex = -1,
                            const int forcedRightIndex = QL_MAX_INTEGER);
 
-        Real minStrike() const { return 0.0; }
+        Real minStrike() const { return -shift(); }
         Real maxStrike() const { return QL_MAX_REAL; }
         Real atmLevel() const { return f_; }
         const Date& exerciseDate() const { return source_->exerciseDate(); }
