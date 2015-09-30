@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003 RiskMap srl
  Copyright (C) 2005 Gary Kennedy
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,6 +32,7 @@ class StatisticsTest {
     static void testStatistics();
     static void testSequenceStatistics();
     static void testConvergenceStatistics();
+    static void testIncrementalStatistics();
     static boost::unit_test_framework::test_suite* suite();
 };
 
