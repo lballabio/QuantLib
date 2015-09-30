@@ -61,6 +61,7 @@ namespace QuantLib {
         <li>All Souls Day, November 2nd</li>
         <li>Republic Day, November 15th</li>
         <li>Black Consciousness Day, November 20th (since 2007)</li>
+        <li>Christmas Eve, December 24th</li>
         <li>Christmas, December 25th</li>
         <li>Passion of Christ</li>
         <li>Carnival</li>
