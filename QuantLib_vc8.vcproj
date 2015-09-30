@@ -2991,6 +2991,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\math\optimization\goldstein.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\optimization\goldstein.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\optimization\leastsquare.cpp"
 					>
 				</File>
