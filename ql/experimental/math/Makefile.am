@@ -10,7 +10,6 @@ this_include_HEADERS = \
     farliegumbelmorgensterncopularng.hpp \
     frankcopularng.hpp \
     gaussiancopulapolicy.hpp \
-    goldstein.hpp \
     latentmodel.hpp \
     multidimintegrator.hpp \
     multidimquadrature.hpp \
@@ -23,7 +22,6 @@ libMath_la_SOURCES = \
     convolvedstudentt.cpp \
     expm.cpp \
     gaussiancopulapolicy.cpp \
-    goldstein.cpp \
     multidimintegrator.cpp \
     multidimquadrature.cpp \
     numericaldifferentiation.cpp \

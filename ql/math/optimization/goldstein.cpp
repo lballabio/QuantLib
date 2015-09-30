@@ -16,12 +16,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/math/goldstein.hpp>
+#include <ql/math/optimization/goldstein.hpp>
 #include <ql/math/optimization/method.hpp>
 #include <ql/math/optimization/problem.hpp>
 #include <ql/math/comparison.hpp>
 
 namespace QuantLib {
+
     Real GoldsteinLineSearch::operator()(Problem& P, 
                                          EndCriteria::Type& ecType, 
                                          const EndCriteria& endCriteria, 

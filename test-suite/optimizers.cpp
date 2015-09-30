@@ -33,7 +33,7 @@
 #include <ql/math/optimization/costfunction.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/math/optimization/differentialevolution.hpp>
-#include <ql/experimental/math/goldstein.hpp>
+#include <ql/math/optimization/goldstein.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

@@ -11,6 +11,7 @@ this_include_HEADERS = \
     costfunction.hpp \
     differentialevolution.hpp \
     endcriteria.hpp \
+    goldstein.hpp \
     leastsquare.hpp \
     levenbergmarquardt.hpp \
     linesearch.hpp \
@@ -33,6 +34,7 @@ libOptimization_la_SOURCES = \
     constraint.cpp \
     differentialevolution.cpp \
     endcriteria.cpp \
+    goldstein.cpp \
     leastsquare.cpp \
     levenbergmarquardt.cpp \
     linesearch.cpp \

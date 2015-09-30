@@ -26,6 +26,7 @@
 #include <ql/math/optimization/linesearch.hpp>
 
 namespace QuantLib {
+
     class GoldsteinLineSearch : public LineSearch {
       public:
         //! Default constructor
@@ -45,6 +46,7 @@ namespace QuantLib {
         Real alpha_, beta_;
         Real extrapolation_;
     };
+
 }
 
-#endif 
+#endif

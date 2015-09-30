@@ -1227,6 +1227,9 @@
     <ClInclude Include="ql\math\optimization\endcriteria.hpp">
       <Filter>math\optimization</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\optimization\goldstein.hpp">
+      <Filter>math\optimization</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\optimization\leastsquare.hpp">
       <Filter>math\optimization</Filter>
     </ClInclude>
@@ -3510,9 +3513,6 @@
     <ClInclude Include="ql\experimental\math\gaussiancopulapolicy.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\math\goldstein.hpp">
-      <Filter>experimental\math</Filter>
-    </ClInclude>
     <ClInclude Include="ql\experimental\math\latentmodel.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
@@ -4486,6 +4486,9 @@
       <Filter>math\optimization</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\optimization\endcriteria.cpp">
+      <Filter>math\optimization</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\optimization\goldstein.cpp">
       <Filter>math\optimization</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\optimization\leastsquare.cpp">
@@ -6079,9 +6082,6 @@
       <Filter>experimental\math</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\math\gaussiancopulapolicy.cpp">
-      <Filter>experimental\math</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\math\goldstein.cpp">
       <Filter>experimental\math</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\math\multidimintegrator.cpp">

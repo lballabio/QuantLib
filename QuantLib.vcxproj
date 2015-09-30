@@ -904,6 +904,7 @@
     <ClInclude Include="ql\math\optimization\constraint.hpp" />
     <ClInclude Include="ql\math\optimization\costfunction.hpp" />
     <ClInclude Include="ql\math\optimization\endcriteria.hpp" />
+    <ClInclude Include="ql\math\optimization\goldstein.hpp" />
     <ClInclude Include="ql\math\optimization\leastsquare.hpp" />
     <ClInclude Include="ql\math\optimization\levenbergmarquardt.hpp" />
     <ClInclude Include="ql\math\optimization\linesearch.hpp" />
@@ -1684,7 +1685,6 @@
     <ClInclude Include="ql\experimental\math\farliegumbelmorgensterncopularng.hpp" />
     <ClInclude Include="ql\experimental\math\frankcopularng.hpp" />
     <ClInclude Include="ql\experimental\math\gaussiancopulapolicy.hpp" />
-    <ClInclude Include="ql\experimental\math\goldstein.hpp" />
     <ClInclude Include="ql\experimental\math\latentmodel.hpp" />
     <ClInclude Include="ql\experimental\math\multidimintegrator.hpp" />
     <ClInclude Include="ql\experimental\math\multidimquadrature.hpp" />
@@ -1991,6 +1991,7 @@
     <ClCompile Include="ql\math\optimization\conjugategradient.cpp" />
     <ClCompile Include="ql\math\optimization\constraint.cpp" />
     <ClCompile Include="ql\math\optimization\endcriteria.cpp" />
+    <ClCompile Include="ql\math\optimization\goldstein.cpp" />
     <ClCompile Include="ql\math\optimization\leastsquare.cpp" />
     <ClCompile Include="ql\math\optimization\levenbergmarquardt.cpp" />
     <ClCompile Include="ql\math\optimization\linesearch.cpp" />
@@ -2543,7 +2544,6 @@
     <ClCompile Include="ql\experimental\math\convolvedstudentt.cpp" />
     <ClCompile Include="ql\experimental\math\expm.cpp" />
     <ClCompile Include="ql\experimental\math\gaussiancopulapolicy.cpp" />
-    <ClCompile Include="ql\experimental\math\goldstein.cpp" />
     <ClCompile Include="ql\experimental\math\multidimintegrator.cpp" />
     <ClCompile Include="ql\experimental\math\multidimquadrature.cpp" />
     <ClCompile Include="ql\experimental\math\numericaldifferentiation.cpp" />
