@@ -73,8 +73,14 @@ namespace QuantLib {
     : tenor_(tenor), calendar_(calendar),
       convention_(convention),
       terminationDateConvention_(terminationDateConvention),
-      rule_(rule), endOfMonth_(endOfMonth),
+      rule_(rule),
       dates_(dates), isRegular_(isRegular) {
+
+        if (tenor != boost::none && tenor < 1 * Months)
+            endOfMonth_ = false;
+        else
+            endOfMonth_ = endOfMonth;
+
         QL_REQUIRE(
             isRegular_.size() == 0 || isRegular_.size() == dates.size() - 1,
             "isRegular size ("
