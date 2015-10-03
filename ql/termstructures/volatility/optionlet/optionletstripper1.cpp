@@ -87,7 +87,7 @@ namespace QuantLib {
             atmOptionletRate_[i] = lFRC->indexFixing();
         }
 
-        if (floatingSwitchStrike_ && capFlooMatrixNotInitialized_) {
+        if (floatingSwitchStrike_) {
             Rate averageAtmOptionletRate = 0.0;
             for (Size i=0; i<nOptionletTenors_; ++i) {
                 averageAtmOptionletRate += atmOptionletRate_[i];
