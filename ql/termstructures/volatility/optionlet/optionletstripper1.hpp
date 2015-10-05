@@ -29,7 +29,6 @@
 #define quantlib_optionletstripper1_hpp
 
 #include <ql/termstructures/volatility/optionlet/optionletstripper.hpp>
-#include <ql/instruments/capfloor.hpp>
 
 namespace QuantLib {
 
