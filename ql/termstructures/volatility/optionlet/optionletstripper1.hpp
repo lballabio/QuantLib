@@ -34,6 +34,8 @@
 namespace QuantLib {
 
     class SimpleQuote;
+    class CapFloor;
+    class PricingEngine;
 
     typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapFloorMatrix;
 
@@ -69,7 +71,7 @@ namespace QuantLib {
 
         mutable CapFloorMatrix capFloors_;
         mutable std::vector<std::vector<boost::shared_ptr<SimpleQuote> > > volQuotes_;
-        mutable std::vector<std::vector<boost::shared_ptr<CapFloor::engine> > > capFloorEngines_;
+        mutable std::vector<std::vector<boost::shared_ptr<PricingEngine> > > capFloorEngines_;
         bool floatingSwitchStrike_;
         mutable bool capFlooMatrixNotInitialized_;
         mutable Rate switchStrike_;

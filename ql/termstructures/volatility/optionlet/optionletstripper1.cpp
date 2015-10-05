@@ -24,6 +24,7 @@
 #include <ql/termstructures/volatility/optionlet/optionletstripper1.hpp>
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+#include <ql/pricingengine.hpp>
 #include <ql/pricingengines/capfloor/bacheliercapfloorengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/indexes/iborindex.hpp>
@@ -60,7 +61,7 @@ namespace QuantLib {
         optionletStDevs_ = Matrix(nOptionletTenors_, nStrikes_, firstGuess);
 
         capFloors_ = CapFloorMatrix(nOptionletTenors_);
-        capFloorEngines_ = std::vector<std::vector<boost::shared_ptr<CapFloor::engine> > >(nOptionletTenors_);
+        capFloorEngines_ = std::vector<std::vector<boost::shared_ptr<PricingEngine> > >(nOptionletTenors_);
     }
 
     void OptionletStripper1::performCalculations() const {
