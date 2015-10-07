@@ -75,7 +75,7 @@
 /* Define this to enable the thread-safe observer pattern. You should
    enable it if you want to use QuantLib via the SWIG layer within
    the JVM or .NET eco system or any environment with an
-   async garbage collector
+   async garbage collector */
 #ifndef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
 //#    define QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
 #endif
