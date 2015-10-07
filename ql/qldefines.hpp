@@ -110,7 +110,11 @@
     #endif
 #endif
 
-
+#ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+    #if BOOST_VERSION < 105800
+        #error Boost version 1.58 or higher is required for the thread-safe observer pattern
+    #endif
+#endif
 // ensure that needed math constants are defined
 #include <ql/mathconstants.hpp>
 
