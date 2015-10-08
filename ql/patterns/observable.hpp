@@ -4,6 +4,7 @@
 Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 Copyright (C) 2011, 2012 Ferdinando Ametrano
+Copyright (C) 2013 Chris Higgs
 Copyright (C) 2015 Klaus Spanderen
 
 
@@ -32,8 +33,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/types.hpp>
 
 #include <boost/shared_ptr.hpp>
-
-#include <set>
+#include <boost/unordered_set.hpp>
 
 #ifndef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
 namespace QuantLib {
@@ -55,10 +55,10 @@ namespace QuantLib {
         */
         void notifyObservers();
       private:
-        typedef std::set<Observer*>::iterator iterator;
+        typedef boost::unordered_set<Observer*>::iterator iterator;
         std::pair<iterator, bool> registerObserver(Observer*);
         Size unregisterObserver(Observer*);
-        std::set<Observer*> observers_;
+        boost::unordered_set<Observer*> observers_;
     };
 
     //! Object that gets notified when a given observable changes
@@ -71,7 +71,7 @@ namespace QuantLib {
         Observer& operator=(const Observer&);
         virtual ~Observer();
         // observer interface
-        std::pair<std::set<boost::shared_ptr<Observable> >::iterator, bool>
+        std::pair<boost::unordered_set<boost::shared_ptr<Observable> >::iterator, bool>
         registerWith(const boost::shared_ptr<Observable>&);
         /*! register with all observables of a given observer. Note
             that this does not include registering with the observer
@@ -86,8 +86,8 @@ namespace QuantLib {
         */
         virtual void update() = 0;
       private:
-        std::set<boost::shared_ptr<Observable> > observables_;
-        typedef std::set<boost::shared_ptr<Observable> >::iterator iterator;
+        boost::unordered_set<boost::shared_ptr<Observable> > observables_;
+        typedef boost::unordered_set<boost::shared_ptr<Observable> >::iterator iterator;
     };
 
 
@@ -114,7 +114,7 @@ namespace QuantLib {
         return *this;
     }
 
-    inline std::pair<std::set<Observer*>::iterator, bool>
+    inline std::pair<boost::unordered_set<Observer*>::iterator, bool>
     Observable::registerObserver(Observer* o) {
         return observers_.insert(o);
     }
@@ -169,7 +169,7 @@ namespace QuantLib {
             (*i)->unregisterObserver(this);
     }
 
-    inline std::pair<std::set<boost::shared_ptr<Observable> >::iterator, bool>
+    inline std::pair<boost::unordered_set<boost::shared_ptr<Observable> >::iterator, bool>
     Observer::registerWith(const boost::shared_ptr<Observable>& h) {
         if (h) {
             h->registerObserver(this);
@@ -208,6 +208,8 @@ namespace QuantLib {
 #include <boost/thread/recursive_mutex.hpp>
 #include <boost/enable_shared_from_this.hpp>
 
+#include <boost/unordered_set.hpp>
+
 namespace QuantLib {
 
     class Observable;
@@ -223,7 +225,7 @@ namespace QuantLib {
         Observer& operator=(const Observer&);
         virtual ~Observer();
         // observer interface
-        std::pair<std::set<boost::shared_ptr<Observable> >::iterator, bool>
+        std::pair<boost::unordered_set<boost::shared_ptr<Observable> >::iterator, bool>
         registerWith(const boost::shared_ptr<Observable>&);
         /*! register with all observables of a given observer. Note
             that this does not include registering with the observer
@@ -276,8 +278,8 @@ namespace QuantLib {
         boost::shared_ptr<Proxy> proxy_;
         mutable boost::recursive_mutex mutex_;
 
-        std::set<boost::shared_ptr<Observable> > observables_;
-        typedef std::set<boost::shared_ptr<Observable> >::iterator iterator;
+        boost::unordered_set<boost::shared_ptr<Observable> > observables_;
+        typedef boost::unordered_set<boost::shared_ptr<Observable> >::iterator iterator;
     };
 
     //! Object that notifies its changes to a set of observers
@@ -387,7 +389,7 @@ namespace QuantLib {
             (*i)->unregisterObserver(proxy_);
     }
 
-    inline std::pair<std::set<boost::shared_ptr<Observable> >::iterator, bool>
+    inline std::pair<boost::unordered_set<boost::shared_ptr<Observable> >::iterator, bool>
     Observer::registerWith(const boost::shared_ptr<Observable>& h) {
         boost::lock_guard<boost::recursive_mutex> lock(mutex_);
         if (!proxy_) {
