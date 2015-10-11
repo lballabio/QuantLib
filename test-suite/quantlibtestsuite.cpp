@@ -142,6 +142,7 @@
 #include "noarbsabr.hpp"
 #include "nthtodefault.hpp"
 #include "numericaldifferentiation.hpp"
+#include "observable.hpp"
 #include "ode.hpp"
 #include "operators.hpp"
 #include "optimizers.hpp"
@@ -336,6 +337,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(MCLongstaffSchwartzEngineTest::suite());
     test->add(MersenneTwisterTest::suite());
     test->add(MoneyTest::suite());
+    test->add(ObservableTest::suite());
     test->add(OdeTest::suite());
     test->add(OperatorTest::suite());
     test->add(OptimizersTest::suite());

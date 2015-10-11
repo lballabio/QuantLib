@@ -92,6 +92,7 @@ QL_TESTS = \
 	noarbsabr.hpp noarbsabr.cpp \
 	nthtodefault.hpp nthtodefault.cpp \
 	numericaldifferentiation.hpp numericaldifferentiation.cpp \
+	observable.hpp observable.cpp \
 	ode.hpp ode.cpp \
 	operators.hpp operators.cpp \
 	optimizers.hpp optimizers.cpp \
