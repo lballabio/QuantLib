@@ -10,6 +10,7 @@
 #include <ql/processes/geometricbrownianprocess.hpp>
 #include <ql/processes/gjrgarchprocess.hpp>
 #include <ql/processes/gsrprocess.hpp>
+#include <ql/processes/gsrprocesscore.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/processes/hullwhiteprocess.hpp>
 #include <ql/processes/hybridhestonhullwhiteprocess.hpp>

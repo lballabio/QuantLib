@@ -219,27 +219,29 @@ namespace QuantLib {
         Real squaredError = 0.0;
         Size n = fittingMethod_->curve_->bondHelpers_.size();
         for (Size i=0; i<n; ++i) {
+            shared_ptr<BondHelper> helper =
+                fittingMethod_->curve_->bondHelpers_[i];
 
-            shared_ptr<Bond> bond =
-                            fittingMethod_->curve_->bondHelpers_[i]->bond();
+            shared_ptr<Bond> bond = helper->bond();
             Date bondSettlement = bond->settlementDate();
 
             // CleanPrice_i = sum( cf_k * d(t_k) ) - accruedAmount
-            Real modelPrice = - bond->accruedAmount(bondSettlement);
+            Real modelPrice = 0.0;
             const Leg& cf = bond->cashflows();
             for (Size k=firstCashFlow_[i]; k<cf.size(); ++k) {
                 Time tenor = dc.yearFraction(refDate, cf[k]->date());
                 modelPrice += cf[k]->amount() *
                                     fittingMethod_->discountFunction(x, tenor);
             }
+            if (helper->useCleanPrice())
+                modelPrice -= bond->accruedAmount(bondSettlement);
 
             // adjust price (NPV) for forward settlement
             if (bondSettlement != refDate ) {
                 Time tenor = dc.yearFraction(refDate, bondSettlement);
                 modelPrice /= fittingMethod_->discountFunction(x, tenor);
             }
-            Real marketPrice =
-                fittingMethod_->curve_->bondHelpers_[i]->quote()->value();
+            Real marketPrice = helper->quote()->value();
             Real error = modelPrice - marketPrice;
             Real weightedError = fittingMethod_->weights_[i] * error;
             squaredError += weightedError * weightedError;

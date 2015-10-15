@@ -8,6 +8,7 @@
 #include <ql/math/optimization/costfunction.hpp>
 #include <ql/math/optimization/differentialevolution.hpp>
 #include <ql/math/optimization/endcriteria.hpp>
+#include <ql/math/optimization/goldstein.hpp>
 #include <ql/math/optimization/leastsquare.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/optimization/linesearch.hpp>

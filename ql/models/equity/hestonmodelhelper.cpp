@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2005 Klaus Spanderen
  Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,6 +26,8 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/exercise.hpp>
 
+#include <boost/make_shared.hpp>
+
 namespace QuantLib {
 
     HestonModelHelper::HestonModelHelper(
@@ -37,37 +40,56 @@ namespace QuantLib {
                             const Handle<YieldTermStructure>& dividendYield,
                             CalibrationHelper::CalibrationErrorType errorType)
     : CalibrationHelper(volatility, riskFreeRate, errorType),
-      dividendYield_(dividendYield),
-      exerciseDate_(calendar.advance(riskFreeRate->referenceDate(),
-                                     maturity)),
-      tau_(riskFreeRate->dayCounter().yearFraction(
-                               riskFreeRate->referenceDate(), exerciseDate_)),
-      s0_(s0), strikePrice_(strikePrice) {
+      maturity_(maturity), calendar_(calendar),
+      s0_(Handle<Quote>(boost::make_shared<SimpleQuote>(s0))),
+      strikePrice_(strikePrice), dividendYield_(dividendYield) {
+        registerWith(dividendYield);
+    }
 
+    HestonModelHelper::HestonModelHelper(
+                            const Period& maturity,
+                            const Calendar& calendar,
+                            const Handle<Quote>& s0,
+                            const Real strikePrice,
+                            const Handle<Quote>& volatility,
+                            const Handle<YieldTermStructure>& riskFreeRate,
+                            const Handle<YieldTermStructure>& dividendYield,
+                            CalibrationHelper::CalibrationErrorType errorType)
+    : CalibrationHelper(volatility, riskFreeRate, errorType),
+      maturity_(maturity), calendar_(calendar), s0_(s0),
+      strikePrice_(strikePrice), dividendYield_(dividendYield) {
+        registerWith(s0);
+        registerWith(dividendYield);
+    }
+
+    void HestonModelHelper::performCalculations() const {
+        exerciseDate_ =
+            calendar_.advance(termStructure_->referenceDate(), maturity_);
+        tau_ = termStructure_->timeFromReference(exerciseDate_);
+        type_ = strikePrice_ * termStructure_->discount(tau_) >=
+                        s0_->value() * dividendYield_->discount(tau_)
+                    ? Option::Call
+                    : Option::Put;
         boost::shared_ptr<StrikedTypePayoff> payoff(
-                          new PlainVanillaPayoff(Option::Call, strikePrice_));
-
-        boost::shared_ptr<Exercise> exercise(
-                                         new EuropeanExercise(exerciseDate_));
-
-        option_ = boost::shared_ptr<VanillaOption>(
-                           new VanillaOption(payoff, exercise));
-
-        marketValue_ = blackPrice(volatility->value());
+            new PlainVanillaPayoff(type_, strikePrice_));
+        boost::shared_ptr<Exercise> exercise =
+            boost::make_shared<EuropeanExercise>(exerciseDate_);
+        option_ = boost::make_shared<VanillaOption>(payoff, exercise);
+        CalibrationHelper::performCalculations();
     }
 
     Real HestonModelHelper::modelValue() const {
+        calculate();
         option_->setPricingEngine(engine_);
         return option_->NPV();
     }
 
-    Real HestonModelHelper::blackPrice(Real sigma) const {
-        const Real volatility = sigma*std::sqrt(maturity());
-        return blackFormula(Option::Call,
-            strikePrice_*termStructure_->discount(tau_),
-            s0_*dividendYield_->discount(tau_),
-            volatility);
+    Real HestonModelHelper::blackPrice(Real volatility) const {
+        calculate();
+        const Real stdDev = volatility * std::sqrt(maturity());
+        return blackFormula(
+            type_, strikePrice_ * termStructure_->discount(tau_),
+            s0_->value() * dividendYield_->discount(tau_), stdDev);
     }
-
 }
 

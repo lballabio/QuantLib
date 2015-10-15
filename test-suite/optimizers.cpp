@@ -23,6 +23,7 @@
 
 #include "optimizers.hpp"
 #include "utilities.hpp"
+#include <boost/make_shared.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/optimization/conjugategradient.hpp>
@@ -32,6 +33,7 @@
 #include <ql/math/optimization/costfunction.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/math/optimization/differentialevolution.hpp>
+#include <ql/math/optimization/goldstein.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -110,8 +112,11 @@ namespace {
                                  levenbergMarquardt,
                                  levenbergMarquardt2,
                                  conjugateGradient,
+                                 conjugateGradient_goldstein,
                                  steepestDescent,
-                                 bfgs};
+                                 steepestDescent_goldstein,
+                                 bfgs,
+                                 bfgs_goldstein};
 
     std::string optimizationMethodTypeToString(OptimizationMethodType type) {
         switch (type) {
@@ -127,6 +132,12 @@ namespace {
             return "Steepest Descent";
           case bfgs:
             return "BFGS";
+          case conjugateGradient_goldstein:
+              return "Conjugate Gradient (Goldstein line search)";
+          case steepestDescent_goldstein:
+              return "Steepest Descent (Goldstein line search)";
+          case bfgs_goldstein:
+              return "BFGS (Goldstein line search)";
           default:
             QL_FAIL("unknown OptimizationMethod type");
         }
@@ -165,6 +176,12 @@ namespace {
             return boost::shared_ptr<OptimizationMethod>(new SteepestDescent);
           case bfgs:
             return boost::shared_ptr<OptimizationMethod>(new BFGS);
+          case conjugateGradient_goldstein:
+              return boost::shared_ptr<OptimizationMethod>(new ConjugateGradient(boost::make_shared<GoldsteinLineSearch>()));
+          case steepestDescent_goldstein:
+              return boost::shared_ptr<OptimizationMethod>(new SteepestDescent(boost::make_shared<GoldsteinLineSearch>()));
+          case bfgs_goldstein:
+              return boost::shared_ptr<OptimizationMethod>(new BFGS(boost::make_shared<GoldsteinLineSearch>()));
           default:
             QL_FAIL("unknown OptimizationMethod type");
         }

@@ -1,9 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 RiskMap srl
- Copyright (C) 2005 Gary Kennedy
- Copyright (C) 2015 Peter Caspers
+ Copyright (C) 2015 Ferdinando Ametrano
+ Copyright (C) 2015 Paolo Mazzocchi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,23 +18,29 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_statistics_hpp
-#define quantlib_test_statistics_hpp
+/*! \file pascaltriangle.hpp
+    \brief Pascal triangle coefficients calculator
+*/
 
-#include <boost/test/unit_test.hpp>
+#ifndef quantlib_pascal_triangle_hpp
+#define quantlib_pascal_triangle_hpp
 
-/* remember to document new and/or updated tests in the Doxygen
-   comment block of the corresponding class */
+#include <ql/types.hpp>
+#include <vector>
 
-class StatisticsTest {
-  public:
-    static void testStatistics();
-    static void testSequenceStatistics();
-    static void testConvergenceStatistics();
-    static void testIncrementalStatistics();
-    static boost::unit_test_framework::test_suite* suite();
-};
+namespace QuantLib {
 
+    //! Pascal triangle coefficients calculator
+    class PascalTriangle {
+      public:
+        //! Get and store one vector of coefficients after another.
+        static const std::vector<BigNatural>& get(Size order);
+      private:
+        PascalTriangle() {}
+        static void nextOrder();
+        static std::vector<std::vector<BigNatural> > coefficients_;
+    };
+
+}
 
 #endif
-
