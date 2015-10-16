@@ -33,6 +33,7 @@ class DateTest {
     static void asxDates();
     static void isoDates();
     static void parseDates();
+    static void intraday();
     static boost::unit_test_framework::test_suite* suite();
 };
 
