@@ -164,11 +164,6 @@ namespace QuantLib {
         weights, which will be used as weights to each bond. If not given
         or empty, then the bonds will be weighted by inverse duration
 
-        To fit a spread curve, provide a discount curve as an input
-        parameter. The discount factor calculated by this curve then
-        becomes the discount factor from the underlying curve times the
-        discount factor of the spread curve.
-
         \todo derive the special-case class LinearFittingMethods from
               FittingMethod. A linear fitting to a set of basis
               functions \f$ b_i(t) \f$ is any fitting of the form
@@ -202,24 +197,22 @@ namespace QuantLib {
         Real minimumCostValue() const;
         //! clone of the current object
         virtual std::auto_ptr<FittingMethod> clone() const = 0;
+		//! return whether there is a constraint at zero
+		bool constrainAtZero() const;
+		//! return weights being used
+		Array weights() const;
+		//! return optimization method being used
+		boost::shared_ptr<OptimizationMethod> optimizationMethod() const;
       protected:
         //! constructor
         FittingMethod(bool constrainAtZero = true, const Array& weights = Array(),
-                      const Handle<YieldTermStructure>& discountingCurve
-                                          = Handle<YieldTermStructure>(),
                       boost::shared_ptr<OptimizationMethod> optimizationMethod
                                           = boost::shared_ptr<OptimizationMethod>());
         //! rerun every time instruments/referenceDate changes
         virtual void init();
         //! discount function called by FittedBondDiscountCurve
-        DiscountFactor discountFunction(const Array& x,
-                                        Time t) const;
-        //! derived classes must set this
-        /*! user-defined discount curve, as a function of time and an
-            array of unknown fitting coefficients \f$ x_i \f$.
-        */
-        virtual DiscountFactor discountFunctionImpl(const Array& x,
-                                                    Time t) const = 0;
+        virtual DiscountFactor discountFunction(const Array& x,
+                                                Time t) const = 0;
 
         //! constrains discount function to unity at \f$ T=0 \f$, if true
         bool constrainAtZero_;
@@ -244,10 +237,6 @@ namespace QuantLib {
         Integer numberOfIterations_;
         // final value for the minimized cost function
         Real costValue_;
-        // adjustment in case underlying discount curve has different reference date
-        DiscountFactor rebase_;
-        // discount curve from on top of which the spread will be calculated
-        Handle<YieldTermStructure> discountingCurve_;
         // optimization method to be used, if none provided use Simplex
         boost::shared_ptr<OptimizationMethod> optimizationMethod_;
     };
@@ -297,7 +286,19 @@ namespace QuantLib {
     inline Array FittedBondDiscountCurve::FittingMethod::solution() const {
         return solution_;
     }
+	
+	inline bool FittedBondDiscountCurve::FittingMethod::constrainAtZero() const {
+		return constrainAtZero_;
+	}
+	
+	inline Array FittedBondDiscountCurve::FittingMethod::weights() const {
+		return weights_;
+	}
 
+	inline boost::shared_ptr<OptimizationMethod> 
+	FittedBondDiscountCurve::FittingMethod::optimizationMethod() const {
+		return optimizationMethod_;
+	}
 }
 
 #endif

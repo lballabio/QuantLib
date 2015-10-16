@@ -136,14 +136,6 @@ namespace QuantLib {
 
 
     void FittedBondDiscountCurve::FittingMethod::init() {
-        //In case discount curve is given and has a different reference date,
-        //discount to this curve's reference date
-        if(!discountingCurve_.empty() && curve_->referenceDate() != discountingCurve_->referenceDate()){
-            rebase_ = discountingCurve_->discount(curve_->referenceDate());
-        } else{
-            rebase_ = 1.0;
-        }
-
         // yield conventions
         DayCounter yieldDC = curve_->dayCounter();
         Compounding yieldComp = Compounded;

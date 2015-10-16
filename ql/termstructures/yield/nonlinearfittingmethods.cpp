@@ -26,9 +26,8 @@ namespace QuantLib {
 
     ExponentialSplinesFitting::ExponentialSplinesFitting(bool constrainAtZero,
                                                          const Array& weights,
-                                                         const Handle<YieldTermStructure>& discountingCurve,
                                                          boost::shared_ptr<OptimizationMethod> optimizationMethod)
-    : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, discountingCurve, optimizationMethod) {}
+    : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, optimizationMethod) {}
 
     std::auto_ptr<FittedBondDiscountCurve::FittingMethod>
     ExponentialSplinesFitting::clone() const {
@@ -40,7 +39,7 @@ namespace QuantLib {
         return constrainAtZero_ ? 9 : 10;
     }
 
-    DiscountFactor ExponentialSplinesFitting::discountFunctionImpl(const Array& x,
+    DiscountFactor ExponentialSplinesFitting::discountFunction(const Array& x,
                                                                Time t) const {
         DiscountFactor d = 0.0;
         Size N = size();
@@ -68,9 +67,8 @@ namespace QuantLib {
 
 
     NelsonSiegelFitting::NelsonSiegelFitting(const Array& weights,
-                                             const Handle<YieldTermStructure>& discountingCurve,
                                              boost::shared_ptr<OptimizationMethod> optimizationMethod)
-    : FittedBondDiscountCurve::FittingMethod(true, weights, discountingCurve, optimizationMethod) {}
+    : FittedBondDiscountCurve::FittingMethod(true, weights, optimizationMethod) {}
 
     std::auto_ptr<FittedBondDiscountCurve::FittingMethod>
     NelsonSiegelFitting::clone() const {
@@ -82,7 +80,7 @@ namespace QuantLib {
         return 4;
     }
 
-    DiscountFactor NelsonSiegelFitting::discountFunctionImpl(const Array& x,
+    DiscountFactor NelsonSiegelFitting::discountFunction(const Array& x,
                                                          Time t) const {
         Real kappa = x[size()-1];
         Real zeroRate = x[0] + (x[1] + x[2])*
@@ -95,9 +93,8 @@ namespace QuantLib {
 
 
     SvenssonFitting::SvenssonFitting(const Array& weights,
-                                     const Handle<YieldTermStructure>& discountingCurve,
                                      boost::shared_ptr<OptimizationMethod> optimizationMethod)
-    : FittedBondDiscountCurve::FittingMethod(true, weights, discountingCurve, optimizationMethod) {}
+    : FittedBondDiscountCurve::FittingMethod(true, weights, optimizationMethod) {}
 
     std::auto_ptr<FittedBondDiscountCurve::FittingMethod>
     SvenssonFitting::clone() const {
@@ -109,7 +106,7 @@ namespace QuantLib {
         return 6;
     }
 
-    DiscountFactor SvenssonFitting::discountFunctionImpl(const Array& x,
+    DiscountFactor SvenssonFitting::discountFunction(const Array& x,
                                                      Time t) const {
         Real kappa = x[size()-2];
         Real kappa_1 = x[size()-1];
@@ -128,9 +125,8 @@ namespace QuantLib {
     CubicBSplinesFitting::CubicBSplinesFitting(const std::vector<Time>& knots,
                                                bool constrainAtZero,
                                                const Array& weights,
-                                               const Handle<YieldTermStructure>& discountingCurve,
                                                boost::shared_ptr<OptimizationMethod> optimizationMethod)
-    : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, discountingCurve, optimizationMethod),
+    : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, optimizationMethod),
       splines_(3, knots.size()-5, knots) {
 
         QL_REQUIRE(knots.size() >= 8,
@@ -166,7 +162,7 @@ namespace QuantLib {
         return size_;
     }
 
-    DiscountFactor CubicBSplinesFitting::discountFunctionImpl(const Array& x,
+    DiscountFactor CubicBSplinesFitting::discountFunction(const Array& x,
                                                           Time t) const {
         DiscountFactor d = 0.0;
 
@@ -198,9 +194,8 @@ namespace QuantLib {
     SimplePolynomialFitting::SimplePolynomialFitting(Natural degree,
                                                      bool constrainAtZero,
                                                      const Array& weights,
-                                                     const Handle<YieldTermStructure>& discountingCurve,
                                                      boost::shared_ptr<OptimizationMethod> optimizationMethod)
-    : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, discountingCurve, optimizationMethod),
+    : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, optimizationMethod),
       size_(constrainAtZero ? degree : degree+1) {}
 
     std::auto_ptr<FittedBondDiscountCurve::FittingMethod>
@@ -213,7 +208,7 @@ namespace QuantLib {
         return size_;
     }
 
-    DiscountFactor SimplePolynomialFitting::discountFunctionImpl(const Array& x,
+    DiscountFactor SimplePolynomialFitting::discountFunction(const Array& x,
                                                              Time t) const {
         DiscountFactor d = 0.0;
 
@@ -227,6 +222,35 @@ namespace QuantLib {
         }
         return d;
     }
+	
+	SpreadFittingMethod::SpreadFittingMethod(shared_ptr<FittingMethod> method,
+                        Handle<YieldTermStructure> discountCurve)
+    : FittedBondDiscountCurve::FittingMethod(method ? method->constrainAtZero() : true, method ? method->weights() : Array(), 
+											 method ? method->optimizationMethod() : boost::shared_ptr<OptimizationMethod>()),
+      method_(method), discountingCurve_(discountCurve) {
+		QL_REQUIRE(!method, "Fitting method is empty");
+		QL_REQUIRE(!discountingCurve_.empty(), "Discounting curve cannot be empty");
+		//In case discount curve is given and has a different reference date,
+        //discount to this curve's reference date
+        if(curve_->referenceDate() != discountingCurve_->referenceDate()){
+            rebase_ = discountingCurve_->discount(curve_->referenceDate());
+        } else{
+            rebase_ = 1.0;
+        }
+	}
 
+    std::auto_ptr<FittedBondDiscountCurve::FittingMethod>
+    SpreadFittingMethod::clone() const {
+        return std::auto_ptr<FittedBondDiscountCurve::FittingMethod>(
+                                          new SpreadFittingMethod(*this));
+    }
+
+    Size SpreadFittingMethod::size() const {
+        return method_->size();
+    }
+
+	DiscountFactor SpreadFittingMethod::discountFunction(const Array& x, Time t) const{
+        return method_->discountFunction(x, t)*discountingCurve_->discount(t, true)/rebase_;
+    }
 }
 

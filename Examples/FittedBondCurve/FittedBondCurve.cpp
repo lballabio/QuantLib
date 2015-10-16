@@ -464,7 +464,7 @@ int main(int, char* []) {
         printOutput("(e) Svensson", ts5);
 
         Handle<YieldTermStructure> discountCurve = getDiscountCurve();
-        NelsonSiegelFitting nelsonSiegelSpread(Array(), discountCurve);
+        SpreadFittingMethod nelsonSiegelSpread(make_shared<NelsonSiegelFitting>(), discountCurve);
         boost::shared_ptr<FittedBondDiscountCurve> ts6 (
                         new FittedBondDiscountCurve(curveSettlementDays,
                                                     calendar,
