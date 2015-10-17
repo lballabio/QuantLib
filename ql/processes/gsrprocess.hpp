@@ -40,7 +40,7 @@ namespace QuantLib {
     class GsrProcess : public ForwardMeasureProcess1D {
       public:
         GsrProcess(const Array &times, const Array &vols,
-                   const Array &reversions, const Real T = 60.0,
+                   const Array &reversions, const Array &adjusters, const Real T = 60.0,
                    const Date &referenceDate = Null<Date>(), const DayCounter &dc = DayCounter());
         //! \name StochasticProcess1D interface
         //@{
@@ -56,6 +56,12 @@ namespace QuantLib {
         void setForwardMeasureTime(Time t);
         //@}
         //! additional inspectors
+        const Array& times() const { return core_.times(); }
+        const Array& volatility() const { return core_.vols(); }
+        const Array& reversion() const { return core_.reversions(); }
+        const Array& adjuster() const { return core_.adjusters(); }
+        Date referenceDate() const { return referenceDate_; }
+        DayCounter dayCounter() const { return dc_; }
         Real sigma(Time t) const;
         Real reversion(Time t) const;
         Real y(Time t) const;

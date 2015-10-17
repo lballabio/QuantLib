@@ -387,11 +387,11 @@ namespace QuantLib {
                                               expiry0, z[k],
                                               arguments_.swap->iborIndex()) +
                                       arguments_.floatingSpreads[l]);
-                        floatingLegNpv +=
-                            amount *
-                            model_->zerobond(arguments_.floatingPayDates[l],
-                                             expiry0, z[k], discountCurve_) *
-                            zSpreadDf;
+                        floatingLegNpv += amount *
+                                          model_->deflatedZerobond(
+                                              arguments_.floatingPayDates[l],
+                                              expiry0, z[k], discountCurve_) *
+                                          zSpreadDf;
                     }
                     Real fixedLegNpv = 0.0;
                     for (Size l = j1; l < arguments_.fixedCoupons.size(); l++) {
@@ -405,11 +405,11 @@ namespace QuantLib {
                                            .yearFraction(
                                                 expiry0,
                                                 arguments_.fixedPayDates[l])));
-                        fixedLegNpv +=
-                            arguments_.fixedCoupons[l] *
-                            model_->zerobond(arguments_.fixedPayDates[l],
-                                             expiry0, z[k], discountCurve_) *
-                            zSpreadDf;
+                        fixedLegNpv += arguments_.fixedCoupons[l] *
+                                       model_->deflatedZerobond(
+                                           arguments_.fixedPayDates[l], expiry0,
+                                           z[k], discountCurve_) *
+                                       zSpreadDf;
                     }
                     Real rebate = 0.0;
                     Real zSpreadDf = 1.0;
@@ -429,11 +429,9 @@ namespace QuantLib {
                     Real exerciseValue =
                         ((type == Option::Call ? 1.0 : -1.0) *
                              (floatingLegNpv - fixedLegNpv) +
-                         rebate * model_->zerobond(rebateDate, expiry0, z[k],
+                         rebate * model_->deflatedZerobond(rebateDate, expiry0, z[k],
                                                    discountCurve_) *
-                             zSpreadDf) /
-                        model_->numeraire(expiry0Time, z[k], discountCurve_);
-
+                         zSpreadDf);
                     // for probability computation
                     if (probabilities_ != None) {
                         if (idx == static_cast<int>(

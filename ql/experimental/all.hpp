@@ -16,6 +16,7 @@
 #include <ql/experimental/lattices/all.hpp>
 #include <ql/experimental/math/all.hpp>
 #include <ql/experimental/mcbasket/all.hpp>
+#include <ql/experimental/models/all.hpp>
 #include <ql/experimental/processes/all.hpp>
 #include <ql/experimental/risk/all.hpp>
 #include <ql/experimental/shortrate/all.hpp>

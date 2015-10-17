@@ -55,8 +55,6 @@ namespace QuantLib {
 
                 Real f = arguments_.nominals[i] * arguments_.gearings[i];
                 Date fixingDate = arguments_.fixingDates[i];
-                Time fixingTime =
-                    model_->termStructure()->timeFromReference(fixingDate);
 
                 Real strike;
 
@@ -77,22 +75,22 @@ namespace QuantLib {
                                     arguments_.accrualTimes[i] *
                                     model_->forwardRate(fixingDate, fixingDate,
                                                         z[j], iborIndex) *
-                                    model_->zerobond(paymentDate, fixingDate,
-                                                     z[j], discountCurve_);
+                                    model_->deflatedZerobond(paymentDate,
+                                                             fixingDate, z[j],
+                                                             discountCurve_);
                             else
                                 floatingLegNpv =
-                                    (model_->zerobond(valueDate, fixingDate,
-                                                      z[j]) -
-                                     model_->zerobond(paymentDate, fixingDate,
-                                                      z[j]));
+                                    (model_->deflatedZerobond(
+                                         valueDate, fixingDate, z[j]) -
+                                     model_->deflatedZerobond(
+                                         paymentDate, fixingDate, z[j]));
                             Real fixedLegNpv =
                                 arguments_.capRates[i] *
                                 arguments_.accrualTimes[i] *
-                                model_->zerobond(paymentDate, fixingDate, z[j]);
+                                model_->deflatedZerobond(paymentDate,
+                                                         fixingDate, z[j]);
                             p[j] =
-                                std::max((floatingLegNpv - fixedLegNpv), 0.0) /
-                                model_->numeraire(fixingTime, z[j],
-                                                  discountCurve_);
+                                std::max((floatingLegNpv - fixedLegNpv), 0.0);
                         }
                         CubicInterpolation payoff(
                             z.begin(), z.end(), p.begin(),
@@ -149,22 +147,22 @@ namespace QuantLib {
                                     arguments_.accrualTimes[i] *
                                     model_->forwardRate(fixingDate, fixingDate,
                                                         z[j], iborIndex) *
-                                    model_->zerobond(paymentDate, fixingDate,
-                                                     z[j], discountCurve_);
+                                    model_->deflatedZerobond(paymentDate,
+                                                             fixingDate, z[j],
+                                                             discountCurve_);
                             else
                                 floatingLegNpv =
-                                    (model_->zerobond(valueDate, fixingDate,
-                                                      z[j]) -
-                                     model_->zerobond(paymentDate, fixingDate,
-                                                      z[j]));
+                                    (model_->deflatedZerobond(
+                                         valueDate, fixingDate, z[j]) -
+                                     model_->deflatedZerobond(
+                                         paymentDate, fixingDate, z[j]));
                             Real fixedLegNpv =
                                 arguments_.floorRates[i] *
                                 arguments_.accrualTimes[i] *
-                                model_->zerobond(paymentDate, fixingDate, z[j]);
+                                model_->deflatedZerobond(paymentDate,
+                                                         fixingDate, z[j]);
                             p[j] =
-                                std::max(-(floatingLegNpv - fixedLegNpv), 0.0) /
-                                model_->numeraire(fixingTime, z[j],
-                                                  discountCurve_);
+                                std::max(-(floatingLegNpv - fixedLegNpv), 0.0);
                         }
                         CubicInterpolation payoff(
                             z.begin(), z.end(), p.begin(),

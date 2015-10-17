@@ -799,7 +799,8 @@ namespace QuantLib {
 
     const Real
     MarkovFunctional::zerobondImpl(const Time T, const Time t, const Real y,
-                                   const Handle<YieldTermStructure> &yts) const {
+                                   const Handle<YieldTermStructure> &yts,
+                                   const bool adjusted) const {
 
         if (t == 0.0)
             return yts.empty() ? this->termStructure()->discount(T, true)
@@ -811,11 +812,17 @@ namespace QuantLib {
                                      termStructure()->discount(T)));
     }
 
-    const Real MarkovFunctional::deflatedZerobond(Time T, Time t,
-                                                  Real y) const {
-
+    const Real MarkovFunctional::deflatedZerobondImpl(
+        const Time T, const Time t, const Real y,
+        const Handle<YieldTermStructure> &yts, const bool adjusted) const {
+        if (t == 0.0)
+            return yts.empty() ? this->termStructure()->discount(T, true)
+                               : yts->discount(T, true);
         Array ya(1, y);
-        return deflatedZerobondArray(T, t, ya)[0];
+        return deflatedZerobondArray(T, t, ya)[0] *
+               (yts.empty() ? 1.0 : (yts->discount(T) / yts->discount(t) *
+                                     termStructure()->discount(t) /
+                                     termStructure()->discount(T)));
     }
 
     const Real MarkovFunctional::marketSwapRate(const Date &expiry,

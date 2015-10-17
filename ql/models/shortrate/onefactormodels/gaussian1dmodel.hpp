@@ -19,6 +19,14 @@
 
 /*! \file gaussian1dmodel.hpp
     \brief basic interface for one factor interest rate models
+
+    TODO as it turns out it is not optimal for all implementations to work
+    with the normalized state variable y instead of the original x (e.g.
+    in the monte carlo swaption engine or in the lgm model), revisit this
+
+    TODO check if registration with the evaluation date is needed, shouldn't
+    it be enough to register with the termstructure (as it is done in derived
+    classes)
 */
 
 // uncomment to enable NTL support (see below for more details and references)
@@ -83,7 +91,13 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
 
     const Real zerobond(
         const Time T, const Time t = 0.0, const Real y = 0.0,
-        const Handle<YieldTermStructure> &yts = Handle<YieldTermStructure>()) const;
+        const Handle<YieldTermStructure> &yts = Handle<YieldTermStructure>(),
+        const bool adjusted = false) const;
+
+    const Real deflatedZerobond(
+        const Time T, const Time t = 0.0, const Real y = 0.0,
+        const Handle<YieldTermStructure> &yts = Handle<YieldTermStructure>(),
+        const bool adjusted = false) const;
 
     const Real numeraire(const Date &referenceDate, const Real y = 0.0,
                          const Handle<YieldTermStructure> &yts =
@@ -92,7 +106,14 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
     const Real zerobond(
         const Date &maturity, const Date &referenceDate = Null<Date>(),
         const Real y = 0.0,
-        const Handle<YieldTermStructure> &yts = Handle<YieldTermStructure>()) const;
+        const Handle<YieldTermStructure> &yts = Handle<YieldTermStructure>(),
+        const bool adjusted = false) const;
+
+    const Real deflatedZerobond(
+        const Date &maturity, const Date &referenceDate = Null<Date>(),
+        const Real y = 0.0,
+        const Handle<YieldTermStructure> &yts = Handle<YieldTermStructure>(),
+        const bool adjusted = false) const;
 
     const Real zerobondOption(
         const Option::Type &type, const Date &expiry, const Date &valueDate,
@@ -101,22 +122,32 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
         const Handle<YieldTermStructure> &yts = Handle<YieldTermStructure>(),
         const Real yStdDevs = 7.0, const Size yGridPoints = 64,
         const bool extrapolatePayoff = true,
-        const bool flatPayoffExtrapolation = false) const;
+        const bool flatPayoffExtrapolation = false,
+        const bool adjusted = false) const;
 
     const Real forwardRate(
         const Date &fixing, const Date &referenceDate = Null<Date>(),
         const Real y = 0.0,
-        boost::shared_ptr<IborIndex> iborIdx = boost::shared_ptr<IborIndex>()) const;
+        boost::shared_ptr<IborIndex> iborIdx = boost::shared_ptr<IborIndex>(),
+        const bool adjusted = false) const;
 
     const Real swapRate(
         const Date &fixing, const Period &tenor,
         const Date &referenceDate = Null<Date>(), const Real y = 0.0,
-        boost::shared_ptr<SwapIndex> swapIdx = boost::shared_ptr<SwapIndex>()) const;
+        boost::shared_ptr<SwapIndex> swapIdx = boost::shared_ptr<SwapIndex>(),
+        const bool adjusted = false) const;
 
     const Real swapAnnuity(
         const Date &fixing, const Period &tenor,
         const Date &referenceDate = Null<Date>(), const Real y = 0.0,
-        boost::shared_ptr<SwapIndex> swapIdx = boost::shared_ptr<SwapIndex>()) const;
+        boost::shared_ptr<SwapIndex> swapIdx = boost::shared_ptr<SwapIndex>(),
+        const bool adjusted = false) const;
+
+    const Real deflatedSwapAnnuity(
+        const Date &fixing, const Period &tenor,
+        const Date &referenceDate = Null<Date>(), const Real y = 0.0,
+        boost::shared_ptr<SwapIndex> swapIdx = boost::shared_ptr<SwapIndex>(),
+        const bool adjusted = false) const;
 
     /*! Computes the integral
     \f[ {2\pi}^{-0.5} \int_{a}^{b} p(x) \exp{-0.5*x*x} \mathrm{d}x \f]
@@ -148,7 +179,19 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
                                   const Real T = 1.0, const Real t = 0,
                                   const Real y = 0) const;
 
+    /*! Computes the standardized model state from the original one
+        We use that the standard deviation is independent of $x$ here ! */
+    const Real y(const Real x, const Time t) {
+        return (x - stateProcess_->expectation(0.0, 0.0, t)) /
+               stateProcess_->stdDeviation(0.0, 0.0, t);
+    }
+
   private:
+    const Real swapAnnuityImpl(const Date &fixing, const Period &tenor,
+                               const Date &referenceDate, const Real y,
+                               boost::shared_ptr<SwapIndex> swapIdx,
+                               const bool adjusted, const bool deflated) const;
+
     // It is of great importance for performance reasons to cache underlying
     // swaps generated from indexes. In addition the indexes may only be given
     // as templates for the conventions with the tenor replaced by the actual
@@ -195,7 +238,22 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
                   const Handle<YieldTermStructure> &yts) const = 0;
 
     virtual const Real zerobondImpl(const Time T, const Time t, const Real y,
-                                    const Handle<YieldTermStructure> &yts) const = 0;
+                                    const Handle<YieldTermStructure> &yts,
+                                    const bool adjusted) const = 0;
+
+    /* a default implementation is given, but in some cases (as e.g.
+       for the LGM model) it may be more efficient to provide an
+       own implementation */
+    virtual const Real
+    deflatedZerobondImpl(const Time T, const Time t, const Real y,
+                         const Handle<YieldTermStructure> &yts,
+                         const bool adjusted) const;
+
+    /* return true in implementations if deflatedZerobond is computed
+       more efficiently than zerobond */
+    virtual bool preferDeflatedZerobond() const {
+        return false;
+    }
 
     void performCalculations() const {
         evaluationDate_ = Settings::instance().evaluationDate();
@@ -246,8 +304,23 @@ Gaussian1dModel::numeraire(const Time t, const Real y,
 
 inline const Real
 Gaussian1dModel::zerobond(const Time T, const Time t, const Real y,
-                          const Handle<YieldTermStructure> &yts) const {
-    return zerobondImpl(T, t, y, yts);
+                          const Handle<YieldTermStructure> &yts,
+                          const bool adjusted) const {
+    return zerobondImpl(T, t, y, yts, adjusted);
+}
+
+inline const Real
+Gaussian1dModel::deflatedZerobond(const Time T, const Time t, const Real y,
+                                  const Handle<YieldTermStructure> &yts,
+                                  const bool adjusted) const {
+    return deflatedZerobondImpl(T, t, y, yts, adjusted);
+}
+
+inline const Real
+Gaussian1dModel::deflatedZerobondImpl(const Time T, const Time t, const Real y,
+                                      const Handle<YieldTermStructure> &yts,
+                                      const bool adjusted) const {
+    return zerobondImpl(T, t, y, yts, adjusted) / numeraire(t, y, yts);
 }
 
 inline const Real
@@ -259,14 +332,27 @@ Gaussian1dModel::numeraire(const Date &referenceDate, const Real y,
 
 inline const Real
 Gaussian1dModel::zerobond(const Date &maturity, const Date &referenceDate,
-                          const Real y, const Handle<YieldTermStructure> &yts) const {
+                          const Real y, const Handle<YieldTermStructure> &yts,
+                          const bool adjusted) const {
 
     return zerobond(termStructure()->timeFromReference(maturity),
                     referenceDate != Null<Date>()
                         ? termStructure()->timeFromReference(referenceDate)
                         : 0.0,
-                    y, yts);
+                    y, yts, adjusted);
 }
+
+inline const Real Gaussian1dModel::deflatedZerobond(
+    const Date &maturity, const Date &referenceDate, const Real y,
+    const Handle<YieldTermStructure> &yts, const bool adjusted) const {
+
+    return deflatedZerobond(
+        termStructure()->timeFromReference(maturity),
+        referenceDate != Null<Date>()
+            ? termStructure()->timeFromReference(referenceDate)
+            : 0.0,
+        y, yts, adjusted);
 }
+} // namespace QuantLib
 
 #endif

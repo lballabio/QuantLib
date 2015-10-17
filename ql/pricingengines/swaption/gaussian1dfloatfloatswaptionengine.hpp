@@ -52,6 +52,10 @@ namespace QuantLib {
          of the underlying (as seen from "today") including
          all fixings greater (or greater equal depending
          on includeTodaysExercise) today.
+
+         Note that adjusters (if active) are applied always
+         to the float coupons of the first leg and only this
+         leg.
    */
 
     class Gaussian1dFloatFloatSwaptionEngine
@@ -76,7 +80,8 @@ namespace QuantLib {
             const Handle<YieldTermStructure> &discountCurve =
                 Handle<YieldTermStructure>(),
             const bool includeTodaysExercise = false,
-            const Probabilities probabilities = None)
+            const Probabilities probabilities = None,
+            const bool adjusted = false)
             : BasketGeneratingEngine(model, oas, discountCurve),
               GenericModelEngine<Gaussian1dModel, FloatFloatSwaption::arguments,
                                  FloatFloatSwaption::results>(model),
@@ -85,7 +90,7 @@ namespace QuantLib {
               flatPayoffExtrapolation_(flatPayoffExtrapolation), model_(model),
               oas_(oas), discountCurve_(discountCurve),
               includeTodaysExercise_(includeTodaysExercise),
-              probabilities_(probabilities) {
+              probabilities_(probabilities), adjusted_(adjusted) {
 
             if (!discountCurve_.empty())
                 registerWith(discountCurve_);
@@ -116,6 +121,7 @@ namespace QuantLib {
         const Handle<YieldTermStructure> discountCurve_;
         const bool includeTodaysExercise_;
         const Probabilities probabilities_;
+        const bool adjusted_;
 
         const std::pair<Real, Real>
         npvs(const Date &expiry, const Real y,

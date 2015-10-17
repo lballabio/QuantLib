@@ -314,6 +314,7 @@ AC_CONFIG_FILES([
     ql/experimental/lattices/Makefile
     ql/experimental/math/Makefile
     ql/experimental/mcbasket/Makefile
+    ql/experimental/models/Makefile
     ql/experimental/processes/Makefile
     ql/experimental/risk/Makefile
     ql/experimental/shortrate/Makefile

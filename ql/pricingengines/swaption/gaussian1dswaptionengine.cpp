@@ -263,20 +263,20 @@ namespace QuantLib {
                              model_->forwardRate(
                                  arguments_.floatingFixingDates[l], expiry0,
                                  z[k], arguments_.swap->iborIndex())) *
-                            model_->zerobond(arguments_.floatingPayDates[l],
-                                             expiry0, z[k], discountCurve_);
+                            model_->deflatedZerobond(
+                                arguments_.floatingPayDates[l], expiry0, z[k],
+                                discountCurve_);
                     }
                     Real fixedLegNpv = 0.0;
                     for (Size l = j1; l < arguments_.fixedCoupons.size(); l++) {
-                        fixedLegNpv +=
-                            arguments_.fixedCoupons[l] *
-                            model_->zerobond(arguments_.fixedPayDates[l],
-                                             expiry0, z[k], discountCurve_);
+                        fixedLegNpv += arguments_.fixedCoupons[l] *
+                                       model_->deflatedZerobond(
+                                           arguments_.fixedPayDates[l], expiry0,
+                                           z[k], discountCurve_);
                     }
                     Real exerciseValue =
                         (type == Option::Call ? 1.0 : -1.0) *
-                        (floatingLegNpv - fixedLegNpv) /
-                        model_->numeraire(expiry0Time, z[k], discountCurve_);
+                        (floatingLegNpv - fixedLegNpv);
 
                     // for probability computation
                     if (probabilities_ != None) {

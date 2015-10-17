@@ -69,6 +69,25 @@ namespace QuantLib {
         QL_REQUIRE(exercise, "exercise not set");
     }
 
+    void NonstandardSwaption::results::reset() {
+        Instrument::results::reset();
+        proxy = boost::shared_ptr<NonstandardSwaption::Proxy>();
+    }
+
+    void NonstandardSwaption::fetchResults(const PricingEngine::results *r) const {
+        Instrument::fetchResults(r);
+        const NonstandardSwaption::results *results = dynamic_cast<const NonstandardSwaption::results *>(r);
+        QL_REQUIRE(results != 0,"wrong results type");
+        proxy_ = results->proxy;
+    }
+
+    boost::shared_ptr<ProxyInstrument::ProxyDescription> NonstandardSwaption::proxy() const {
+        calculate();
+        QL_REQUIRE(proxy_ != NULL, "no proxy available");
+        proxy_->validate();
+        return proxy_;
+    }
+
     Disposable<std::vector<boost::shared_ptr<CalibrationHelper> > >
     NonstandardSwaption::calibrationBasket(
         boost::shared_ptr<SwapIndex> standardSwapBase,

@@ -467,12 +467,13 @@ namespace QuantLib {
                                 if(ibor1 != NULL) {
                                     estFixing = model_->forwardRate(
                                         arguments_.leg1FixingDates[j], event0,
-                                        zk, ibor1);
+                                        zk, ibor1, adjusted_);
                                 }
                                 if(cms1 != NULL) {
                                     estFixing = model_->swapRate(
                                         arguments_.leg1FixingDates[j],
-                                        cms1->tenor(), event0, zk, cms1);
+                                        cms1->tenor(), event0, zk, cms1,
+                                        adjusted_);
                                 }
                                 if (cmsspread1 != NULL)
                                     estFixing =
@@ -482,14 +483,16 @@ namespace QuantLib {
                                                 cmsspread1->swapIndex1()
                                                     ->tenor(),
                                                 event0, zk,
-                                                cmsspread1->swapIndex1()) +
+                                                cmsspread1->swapIndex1(),
+                                                adjusted_) +
                                         cmsspread1->gearing2() *
                                             model_->swapRate(
                                                 arguments_.leg1FixingDates[j],
                                                 cmsspread1->swapIndex2()
                                                     ->tenor(),
                                                 event0, zk,
-                                                cmsspread1->swapIndex2());
+                                                cmsspread1->swapIndex2(),
+                                                adjusted_);
                                 Real rate =
                                     arguments_.leg1Spreads[j] +
                                     arguments_.leg1Gearings[j] * estFixing;
@@ -505,13 +508,11 @@ namespace QuantLib {
                                          arguments_.leg1AccrualTimes[j];
                             }
 
-                            npv0a[k] -=
-                                amount *
-                                model_->zerobond(arguments_.leg1PayDates[j],
-                                                 event0, zk, discountCurve_) /
-                                model_->numeraire(event0Time, zk,
-                                                  discountCurve_) *
-                                zSpreadDf;
+                            npv0a[k] -= amount *
+                                        model_->deflatedZerobond(
+                                            arguments_.leg1PayDates[j], event0,
+                                            zk, discountCurve_) *
+                                        zSpreadDf;
 
                             if (j < arguments_.leg1FixingDates.size() - 1) {
                                 j++;
@@ -583,13 +584,11 @@ namespace QuantLib {
                                          arguments_.leg2AccrualTimes[j];
                             }
 
-                            npv0a[k] +=
-                                amount *
-                                model_->zerobond(arguments_.leg2PayDates[j],
-                                                 event0, zk, discountCurve_) /
-                                model_->numeraire(event0Time, zk,
-                                                  discountCurve_) *
-                                zSpreadDf;
+                            npv0a[k] += amount *
+                                        model_->deflatedZerobond(
+                                            arguments_.leg2PayDates[j], event0,
+                                            zk, discountCurve_) *
+                                        zSpreadDf;
                             if (j < arguments_.leg2FixingDates.size() - 1) {
                                 j++;
                                 done =
@@ -622,9 +621,10 @@ namespace QuantLib {
                         }
                         Real exerciseValue =
                             (type == Option::Call ? 1.0 : -1.0) * npv0a[k] +
-                            rebate * model_->zerobond(rebateDate, event0) *
-                                zSpreadDf / model_->numeraire(event0Time, zk,
-                                                              discountCurve_);
+                            rebate *
+                                model_->deflatedZerobond(rebateDate, event0, zk,
+                                                         discountCurve_) *
+                                zSpreadDf;
 
                         if (considerProbabilities && probabilities_ != None) {
                             if (exIdx == noEx) {
