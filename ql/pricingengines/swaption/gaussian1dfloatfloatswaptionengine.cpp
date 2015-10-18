@@ -550,9 +550,13 @@ namespace QuantLib {
                             } else {
                                 Real estFixing = 0.0;
                                 if(ibor2 != NULL)
-                                    estFixing = model_->forwardRate(arguments_.leg2FixingDates[j],event0,zk,ibor2);
+                                    estFixing = model_->forwardRate(
+                                        arguments_.leg2FixingDates[j], event0,
+                                        zk, ibor2);
                                 if(cms2 != NULL)
-                                    estFixing = model_->swapRate(arguments_.leg2FixingDates[j],cms2->tenor(),event0,zk,cms2);
+                                    estFixing = model_->swapRate(
+                                        arguments_.leg2FixingDates[j],
+                                        cms2->tenor(), event0, zk, cms2);
                                 if (cmsspread2 != NULL)
                                     estFixing =
                                         cmsspread2->gearing1() *
