@@ -77,8 +77,7 @@ namespace QuantLib {
         QL_REQUIRE(residualTime>0.0,
                    "expiration time must be > 0");
 
-        Option::Type type   = payoff_->optionType();
-        Real strike = payoff_->strike();
+        // Option::Type type   = payoff_->optionType(); // this is not used ?
         Real cash = payoff_->cashPayoff();
         Real barrier_lo = arguments_.barrier_lo;
         Real barrier_hi = arguments_.barrier_hi;
