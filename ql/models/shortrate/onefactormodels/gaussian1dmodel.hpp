@@ -97,6 +97,8 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
     const Real deflatedZerobond(
         const Time T, const Time t = 0.0, const Real y = 0.0,
         const Handle<YieldTermStructure> &yts = Handle<YieldTermStructure>(),
+        const Handle<YieldTermStructure> &ytsNumeraire =
+            Handle<YieldTermStructure>(),
         const bool adjusted = false) const;
 
     const Real numeraire(const Date &referenceDate, const Real y = 0.0,
@@ -113,6 +115,8 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
         const Date &maturity, const Date &referenceDate = Null<Date>(),
         const Real y = 0.0,
         const Handle<YieldTermStructure> &yts = Handle<YieldTermStructure>(),
+        const Handle<YieldTermStructure> &ytsNumeraire =
+            Handle<YieldTermStructure>(),
         const bool adjusted = false) const;
 
     const Real zerobondOption(
@@ -147,7 +151,9 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
         const Date &fixing, const Period &tenor,
         const Date &referenceDate = Null<Date>(), const Real y = 0.0,
         boost::shared_ptr<SwapIndex> swapIdx = boost::shared_ptr<SwapIndex>(),
-        const bool adjusted = false) const;
+        const bool adjusted = false,
+        const Handle<YieldTermStructure> &ytsNumeraire =
+            Handle<YieldTermStructure>()) const;
 
     /*! Computes the integral
     \f[ {2\pi}^{-0.5} \int_{a}^{b} p(x) \exp{-0.5*x*x} \mathrm{d}x \f]
@@ -187,10 +193,12 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
     }
 
   private:
-    const Real swapAnnuityImpl(const Date &fixing, const Period &tenor,
-                               const Date &referenceDate, const Real y,
-                               boost::shared_ptr<SwapIndex> swapIdx,
-                               const bool adjusted, const bool deflated) const;
+    const Real
+    swapAnnuityImpl(const Date &fixing, const Period &tenor,
+                    const Date &referenceDate, const Real y,
+                    boost::shared_ptr<SwapIndex> swapIdx, const bool adjusted,
+                    const bool deflated,
+                    const Handle<YieldTermStructure> &ytsNumeraire) const;
 
     // It is of great importance for performance reasons to cache underlying
     // swaps generated from indexes. In addition the indexes may only be given
@@ -247,6 +255,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
     virtual const Real
     deflatedZerobondImpl(const Time T, const Time t, const Real y,
                          const Handle<YieldTermStructure> &yts,
+                         const Handle<YieldTermStructure> &ytsNumeraire,
                          const bool adjusted) const;
 
     /* return true in implementations if deflatedZerobond is computed
@@ -312,15 +321,17 @@ Gaussian1dModel::zerobond(const Time T, const Time t, const Real y,
 inline const Real
 Gaussian1dModel::deflatedZerobond(const Time T, const Time t, const Real y,
                                   const Handle<YieldTermStructure> &yts,
+                                  const Handle<YieldTermStructure> &ytsNumeraire,
                                   const bool adjusted) const {
-    return deflatedZerobondImpl(T, t, y, yts, adjusted);
+    return deflatedZerobondImpl(T, t, y, yts, ytsNumeraire, adjusted);
 }
 
 inline const Real
 Gaussian1dModel::deflatedZerobondImpl(const Time T, const Time t, const Real y,
                                       const Handle<YieldTermStructure> &yts,
+                                      const Handle<YieldTermStructure> &ytsNumeraire,
                                       const bool adjusted) const {
-    return zerobondImpl(T, t, y, yts, adjusted) / numeraire(t, y, yts);
+    return zerobondImpl(T, t, y, yts, adjusted) / numeraire(t, y, ytsNumeraire);
 }
 
 inline const Real
@@ -344,14 +355,16 @@ Gaussian1dModel::zerobond(const Date &maturity, const Date &referenceDate,
 
 inline const Real Gaussian1dModel::deflatedZerobond(
     const Date &maturity, const Date &referenceDate, const Real y,
-    const Handle<YieldTermStructure> &yts, const bool adjusted) const {
+    const Handle<YieldTermStructure> &yts,
+    const Handle<YieldTermStructure> &ytsNumeraire,
+    const bool adjusted) const {
 
     return deflatedZerobond(
         termStructure()->timeFromReference(maturity),
         referenceDate != Null<Date>()
             ? termStructure()->timeFromReference(referenceDate)
             : 0.0,
-        y, yts, adjusted);
+        y, yts, ytsNumeraire, adjusted);
 }
 } // namespace QuantLib
 

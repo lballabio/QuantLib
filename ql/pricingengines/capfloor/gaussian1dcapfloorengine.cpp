@@ -75,9 +75,9 @@ namespace QuantLib {
                                     arguments_.accrualTimes[i] *
                                     model_->forwardRate(fixingDate, fixingDate,
                                                         z[j], iborIndex) *
-                                    model_->deflatedZerobond(paymentDate,
-                                                             fixingDate, z[j],
-                                                             discountCurve_);
+                                    model_->deflatedZerobond(
+                                        paymentDate, fixingDate, z[j],
+                                        discountCurve_, discountCurve_);
                             else
                                 floatingLegNpv =
                                     (model_->deflatedZerobond(
@@ -147,9 +147,9 @@ namespace QuantLib {
                                     arguments_.accrualTimes[i] *
                                     model_->forwardRate(fixingDate, fixingDate,
                                                         z[j], iborIndex) *
-                                    model_->deflatedZerobond(paymentDate,
-                                                             fixingDate, z[j],
-                                                             discountCurve_);
+                                    model_->deflatedZerobond(
+                                        paymentDate, fixingDate, z[j],
+                                        discountCurve_, discountCurve_);
                             else
                                 floatingLegNpv =
                                     (model_->deflatedZerobond(

@@ -49,9 +49,12 @@ const Real Gaussian1dModel::forwardRate(const Date &fixing,
     Real dcf = iborIdx->dayCounter().yearFraction(valueDate, endDate);
 
     return preferDeflatedZerobond()
-               ? (deflatedZerobond(valueDate, referenceDate, y, yts, adjusted) -
-                  deflatedZerobond(endDate, referenceDate, y, yts, adjusted)) /
+               ? (deflatedZerobond(valueDate, referenceDate, y, yts,
+                                   Handle<YieldTermStructure>(), adjusted) -
+                  deflatedZerobond(endDate, referenceDate, y, yts,
+                                   Handle<YieldTermStructure>(), adjusted)) /
                      (dcf * deflatedZerobond(endDate, referenceDate, y, yts,
+                                             Handle<YieldTermStructure>(),
                                              adjusted))
                : (zerobond(valueDate, referenceDate, y, yts, adjusted) -
                   zerobond(endDate, referenceDate, y, yts, adjusted)) /
@@ -95,7 +98,7 @@ const Real Gaussian1dModel::swapRate(const Date &fixing, const Period &tenor,
     Real annuity =
         preferDeflatedZerobond()
             ? deflatedSwapAnnuity(fixing, tenor, referenceDate, y, swapIdx,
-                                  adjusted)
+                                  adjusted, Handle<YieldTermStructure>())
             : swapAnnuity(fixing, tenor, referenceDate, y, swapIdx, adjusted);
 
     Rate floatleg = 0.0;
@@ -104,11 +107,13 @@ const Real Gaussian1dModel::swapRate(const Date &fixing, const Period &tenor,
         floatleg =
             preferDeflatedZerobond()
                 ? deflatedZerobond(sched.dates().front(), referenceDate, y,
+                                   Handle<YieldTermStructure>(),
                                    Handle<YieldTermStructure>(), adjusted) -
                       deflatedZerobond(sched.calendar().adjust(
                                            sched.dates().back(),
                                            underlying->paymentConvention()),
                                        referenceDate, y,
+                                       Handle<YieldTermStructure>(),
                                        Handle<YieldTermStructure>(), adjusted)
                 : zerobond(sched.dates().front(), referenceDate, y,
                            Handle<YieldTermStructure>(), adjusted) -
@@ -123,14 +128,18 @@ const Real Gaussian1dModel::swapRate(const Date &fixing, const Period &tenor,
             floatleg +=
                 preferDeflatedZerobond()
                     ? (deflatedZerobond(floatSched[i - 1], referenceDate, y,
-                                        ytsf, adjusted) /
+                                        ytsf, Handle<YieldTermStructure>(),
+                                        adjusted) /
                            deflatedZerobond(floatSched[i], referenceDate, y,
-                                            ytsf, adjusted) -
+                                            ytsf, Handle<YieldTermStructure>(),
+                                            adjusted) -
                        1.0) *
                           deflatedZerobond(floatSched.calendar().adjust(
                                                floatSched[i],
                                                underlying->paymentConvention()),
-                                           referenceDate, y, ytsd, adjusted)
+                                           referenceDate, y, ytsd,
+                                           Handle<YieldTermStructure>(),
+                                           adjusted)
                     : (zerobond(floatSched[i - 1], referenceDate, y, ytsf,
                                 adjusted) /
                            zerobond(floatSched[i], referenceDate, y, ytsf,
@@ -150,21 +159,21 @@ const Real Gaussian1dModel::swapAnnuity(const Date &fixing, const Period &tenor,
                                         boost::shared_ptr<SwapIndex> swapIdx,
                                         const bool adjusted) const {
     return swapAnnuityImpl(fixing, tenor, referenceDate, y, swapIdx, adjusted,
-                           true);
+                           false, Handle<YieldTermStructure>());
 }
 
-const Real Gaussian1dModel::deflatedSwapAnnuity(const Date &fixing, const Period &tenor,
-                                        const Date &referenceDate, const Real y,
-                                        boost::shared_ptr<SwapIndex> swapIdx,
-                                        const bool adjusted) const {
+const Real Gaussian1dModel::deflatedSwapAnnuity(
+    const Date &fixing, const Period &tenor, const Date &referenceDate,
+    const Real y, boost::shared_ptr<SwapIndex> swapIdx, const bool adjusted,
+    const Handle<YieldTermStructure> &ytsNumeraire) const {
     return swapAnnuityImpl(fixing, tenor, referenceDate, y, swapIdx, adjusted,
-                           true);
+                           true,ytsNumeraire);
 }
 
-const Real Gaussian1dModel::swapAnnuityImpl(const Date &fixing, const Period &tenor,
-                                        const Date &referenceDate, const Real y,
-                                        boost::shared_ptr<SwapIndex> swapIdx,
-                                        const bool adjusted, const bool deflated) const {
+const Real Gaussian1dModel::swapAnnuityImpl(
+    const Date &fixing, const Period &tenor, const Date &referenceDate,
+    const Real y, boost::shared_ptr<SwapIndex> swapIdx, const bool adjusted,
+    const bool deflated, const Handle<YieldTermStructure> &ytsNumeraire) const {
 
     QL_REQUIRE(swapIdx != NULL, "no swap index given");
 
@@ -186,7 +195,7 @@ const Real Gaussian1dModel::swapAnnuityImpl(const Date &fixing, const Period &te
                  ? deflatedZerobond(
                        sched.calendar().adjust(sched.date(j),
                                                underlying->paymentConvention()),
-                       referenceDate, y, ytsd, adjusted)
+                       referenceDate, y, ytsd, ytsNumeraire, adjusted)
                  : zerobond(sched.calendar().adjust(
                                 sched.date(j), underlying->paymentConvention()),
                             referenceDate, y, ytsd, adjusted)) *

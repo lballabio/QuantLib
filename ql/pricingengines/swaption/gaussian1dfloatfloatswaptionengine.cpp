@@ -511,7 +511,7 @@ namespace QuantLib {
                             npv0a[k] -= amount *
                                         model_->deflatedZerobond(
                                             arguments_.leg1PayDates[j], event0,
-                                            zk, discountCurve_) *
+                                            zk, discountCurve_, discountCurve_) *
                                         zSpreadDf;
 
                             if (j < arguments_.leg1FixingDates.size() - 1) {
@@ -587,7 +587,7 @@ namespace QuantLib {
                             npv0a[k] += amount *
                                         model_->deflatedZerobond(
                                             arguments_.leg2PayDates[j], event0,
-                                            zk, discountCurve_) *
+                                            zk, discountCurve_, discountCurve_) *
                                         zSpreadDf;
                             if (j < arguments_.leg2FixingDates.size() - 1) {
                                 j++;
@@ -623,6 +623,7 @@ namespace QuantLib {
                             (type == Option::Call ? 1.0 : -1.0) * npv0a[k] +
                             rebate *
                                 model_->deflatedZerobond(rebateDate, event0, zk,
+                                                         discountCurve_,
                                                          discountCurve_) *
                                 zSpreadDf;
 

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2013, 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -265,14 +265,15 @@ namespace QuantLib {
                                  z[k], arguments_.swap->iborIndex())) *
                             model_->deflatedZerobond(
                                 arguments_.floatingPayDates[l], expiry0, z[k],
-                                discountCurve_);
+                                discountCurve_, discountCurve_);
                     }
                     Real fixedLegNpv = 0.0;
                     for (Size l = j1; l < arguments_.fixedCoupons.size(); l++) {
-                        fixedLegNpv += arguments_.fixedCoupons[l] *
-                                       model_->deflatedZerobond(
-                                           arguments_.fixedPayDates[l], expiry0,
-                                           z[k], discountCurve_);
+                        fixedLegNpv +=
+                            arguments_.fixedCoupons[l] *
+                            model_->deflatedZerobond(
+                                arguments_.fixedPayDates[l], expiry0, z[k],
+                                discountCurve_, discountCurve_);
                     }
                     Real exerciseValue =
                         (type == Option::Call ? 1.0 : -1.0) *

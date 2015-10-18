@@ -339,6 +339,7 @@ namespace QuantLib {
         const Real deflatedZerobondImpl(const Time T, const Time t,
                                         const Real y,
                                         const Handle<YieldTermStructure> &yts,
+                                        const Handle<YieldTermStructure> &ytsNumeraire,
                                         const bool adjusted) const;
 
         bool preferDeflatedZerobond() const { return true; }
