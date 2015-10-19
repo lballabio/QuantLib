@@ -43,7 +43,6 @@ namespace QuantLib {
         Real S = process_->x0();
         Real b;
         Real v;
-        Real r = riskFreeRate(choosingTime());
         Real Xc = arguments_.strikeCall;
         Real Xp = arguments_.strikePut;
         Time T = choosingTime();
@@ -68,7 +67,7 @@ namespace QuantLib {
         Real rho1 = sqrt(T / Tc);
         Real rho2 = sqrt(T / Tp);
         b = riskFreeRate(callMaturity()) - dividendYield(callMaturity());
-        r = riskFreeRate(callMaturity());
+        Real r = riskFreeRate(callMaturity());
         Real ComplexChooser = S * exp((b - r)*Tc) *  BivariateCumulativeNormalDistributionDr78(rho1)(d1, y1)
             - Xc * exp(-r*Tc)*BivariateCumulativeNormalDistributionDr78(rho1)(d2, y1 - v * sqrt(Tc)) ;
         b = riskFreeRate(putMaturity()) - dividendYield(putMaturity());

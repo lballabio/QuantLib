@@ -31,7 +31,7 @@ namespace QuantLib {
         Constraint& constraint = P.constraint();
         succeed_=true;
         bool maxIter = false;
-        Real qtold, t = t_ini;
+        Real /*qtold,*/ t = t_ini; // see below, this is never used ?
         Size loopNumber = 0;
 
         Real q0 = P.functionValue();
@@ -65,7 +65,7 @@ namespace QuantLib {
                 t = (tl + tr) / 2.0;
 
             // Store old value of the function
-            qtold = qt_;
+            // qtold = qt_; // this is never used ?
             // New point value
             xtd_ = P.currentValue();
             t = update(xtd_, searchDirection_, t, constraint);

@@ -202,7 +202,6 @@ namespace QuantLib {
         Day d = date.dayOfMonth();
         Weekday w = date.weekday();
         Month m = date.month();
-        Year y = date.year();
 
         if (// Year-end closing
             ((((d == 29 || d == 30) && w == Friday) || d == 31) 
