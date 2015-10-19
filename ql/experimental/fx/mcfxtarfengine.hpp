@@ -508,7 +508,7 @@ template <class RNG, class S> void McFxTarfEngine<RNG, S>::calculate() const {
 
             // copy the data to the final vectors used for the regression
             for (Size ii = 0; ii < xTmp.size(); ++ii) {
-                if (xTmp[i].first <= cutoff) {
+                if (xTmp[ii].first <= cutoff) {
                     xTmp1.push_back(xTmp[ii].first);
                     yTmp1.push_back(xTmp[ii].second);
                 } else {
