@@ -49,20 +49,12 @@ void FxTarfEngine::calculate() const {
             discount_->discount(arguments_.schedule.date(nextPaymentIndex));
     }
 
-    // case where only one fixing is left which is today or everything is
-    // fixed already
+    // is everything fixed <= today ?
 
-    if (arguments_.openFixingDates.back() <= today) {
-        Real lastFixingNpv = 0.0;
-        if (arguments_.openFixingDates.back() == today) {
-            lastFixingNpv =
-                arguments_.instrument->payout(arguments_.index->fixing(
-                    arguments_.openFixingDates.back())) *
-                arguments_.sourceNominal * discount_->discount(today);
-        }
-        results_.value = unsettledAmountNpv_ + lastFixingNpv;
+    if (arguments_.openFixingDates.size() == 0 ||
+        arguments_.openFixingDates.back() <= today) {
+        results_.value = unsettledAmountNpv_;
         results_.errorEstimate = 0.0;
-        return;
     }
 
     // we have at least one fixing left which is tommorow or later

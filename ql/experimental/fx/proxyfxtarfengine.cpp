@@ -32,6 +32,9 @@ void ProxyFxTarfEngine::calculate() const {
     // handle the trivial cases
     FxTarfEngine::calculate();
 
+    if(results_.value != Null<Real>())
+        return;
+
     // determine the number of open fixings
     Date today = Settings::instance().evaluationDate();
 
@@ -71,14 +74,6 @@ void ProxyFxTarfEngine::calculate() const {
                    << accInd << ") out of range given by the proxy (0..."
                    << proxy_->accBucketLimits.size() << ")");
 
-    // logging
-    // std::cerr << "proxy engine: use function (openFixingsIndex, accIndex) =
-    // ("
-    //           << (numberOpenFixings - 1) << "," << accInd
-    //           << ") discount(last payment date=" << proxy_->lastPaymentDate
-    //           << ") is " << discount_->discount(proxy_->lastPaymentDate)
-    //           << std::endl;
-
     // set the core (trusted) region as addtional result
     // todo in case of interpolation we should return the intersection of
     // the core regions of the adjacent nodes
@@ -114,16 +109,10 @@ void ProxyFxTarfEngine::calculate() const {
             boost::make_shared<LinearInterpolation>(accumulatedAmounts.begin(),
                                                     accumulatedAmounts.end(),
                                                     proxies.begin());
-        // for(Size i=0;i<data.columns();++i) {
-        //     std::cerr << *(data.row_begin(0)+i) << "-";
-        // }
         in->enableExtrapolation();
         results_.value = in->operator()(arguments_.accumulatedAmount) *
                              discount_->discount(proxy_->lastPaymentDate) +
                          unsettledAmountNpv_;
-        // std::cerr << "interpolated amount (accumulatedAmount=" <<
-        // arguments_.accumulatedAmount << " = " <<
-        // in->operator()(arguments_.accumulatedAmount) << std::endl;
     }
 } // calculate
 } // namespace QuantLib

@@ -61,8 +61,9 @@ bool FxTarf::isExpired() const {
 std::pair<Real, bool> FxTarf::accumulatedAmountAndSettlement() const {
     Real acc = accumulatedAmount_.empty() ? 0.0 : accumulatedAmount_->value();
     int i = 1;
-    while (detail::simple_event(index_->fixingDate(schedule_.date(i)))
-               .hasOccurred()) {
+    while (i < schedule_.dates().size() &&
+           index_->fixingDate(schedule_.date(i)) <=
+               Settings::instance().evaluationDate()) {
         if (accumulatedAmount_.empty()) {
             payout(index_->fixing(index_->fixingDate(schedule_.date(i))), acc);
         }
@@ -90,8 +91,8 @@ Real FxTarf::lastAmount() const {
             return lastAmount_->value();
     }
     int i = 1;
-    while (detail::simple_event(index_->fixingDate(schedule_.date(i)))
-               .hasOccurred()) {
+    while (index_->fixingDate(schedule_.date(i)) <=
+           Settings::instance().evaluationDate()) {
         ++i;
     }
     return i > 1 ? payout(index_->fixing(
@@ -145,7 +146,7 @@ void FxTarf::setupArguments(PricingEngine::arguments *args) const {
     openPaymentDates_.clear();
     for (Size i = 1; i < schedule_.size(); ++i) {
         Date fixingTmp = index_->fixingDate(schedule_.date(i));
-        if (!detail::simple_event(fixingTmp).hasOccurred()) {
+        if (fixingTmp > Settings::instance().evaluationDate()) {
             openFixingDates_.push_back(fixingTmp);
             openPaymentDates_.push_back(schedule_.date(i));
         }
