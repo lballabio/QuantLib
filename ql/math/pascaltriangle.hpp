@@ -1,10 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004, 2005, 2006, 2007 Ferdinando Ametrano
- Copyright (C) 2006 Katiuscia Manzoni
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2015 Ferdinando Ametrano
+ Copyright (C) 2015 Paolo Mazzocchi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -20,34 +18,28 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file timeunit.hpp
-    \brief TimeUnit enumeration
+/*! \file pascaltriangle.hpp
+    \brief Pascal triangle coefficients calculator
 */
 
-#ifndef quantlib_timeunit_hpp
-#define quantlib_timeunit_hpp
+#ifndef quantlib_pascal_triangle_hpp
+#define quantlib_pascal_triangle_hpp
 
-#include <ql/qldefines.hpp>
-#include <iosfwd>
+#include <ql/types.hpp>
+#include <vector>
 
 namespace QuantLib {
 
-    //! Units used to describe time periods
-    /*! \ingroup datetime */
-    enum TimeUnit { Days,
-                    Weeks,
-                    Months,
-                    Years,
-                    Hours,
-                    Minutes,
-                    Seconds,
-                    Milliseconds,
-					Microseconds
+    //! Pascal triangle coefficients calculator
+    class PascalTriangle {
+      public:
+        //! Get and store one vector of coefficients after another.
+        static const std::vector<BigNatural>& get(Size order);
+      private:
+        PascalTriangle() {}
+        static void nextOrder();
+        static std::vector<std::vector<BigNatural> > coefficients_;
     };
-
-    /*! \relates TimeUnit */
-    std::ostream& operator<<(std::ostream&,
-                             const TimeUnit&);
 
 }
 

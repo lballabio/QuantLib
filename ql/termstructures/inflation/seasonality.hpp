@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2008 Piero Del Boca
  Copyright (C) 2009 Chris Kenyon
+ Copyright (C) 2015 Bernd Lewerenz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -161,6 +162,26 @@ namespace QuantLib {
                                                const Date &curveBaseDate, bool isZeroRate) const;
     };
 
+
+    class KerkhofSeasonality : public MultiplicativePriceSeasonality {
+      public:
+        KerkhofSeasonality(const Date& seasonalityBaseDate,
+                           const std::vector<Rate> seasonalityFactors)
+        : MultiplicativePriceSeasonality(seasonalityBaseDate,Monthly,
+                                         seasonalityFactors) {}
+
+        /*Rate correctZeroRate(const Date &d, const Rate r,
+                               const InflationTermStructure& iTS) const;*/
+        Real seasonalityFactor(const Date &to) const;
+      protected:
+        virtual Rate seasonalityCorrection(Rate rate,
+                                           const Date& atDate,
+                                           const DayCounter& dc,
+                                           const Date& curveBaseDate,
+                                           bool isZeroRate) const;
+    };
+
 }  // end of namespace QuantLib
+
 #endif
 

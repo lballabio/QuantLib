@@ -7,7 +7,6 @@
  Copyright (C) 2007, 2009 Roland Lichters
  Copyright (C) 2015 Maddalena Zanzi
 
-
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -321,37 +320,32 @@ namespace QuantLib {
     DepositRateHelper::DepositRateHelper(const Handle<Quote>& rate,
                                          const shared_ptr<IborIndex>& i)
     : RelativeDateRateHelper(rate) {
-        // do not use clone, as we do not want to take fixing into account
-        iborIndex_ = shared_ptr<IborIndex>(new
-            IborIndex("no-fix", // never take fixing into account
-                      i->tenor(), i->fixingDays(), Currency(),
-                      i->fixingCalendar(), i->businessDayConvention(),
-                      i->endOfMonth(), i->dayCounter(), termStructureHandle_));
+        iborIndex_ = i->clone(termStructureHandle_);
         initializeDates();
     }
 
     DepositRateHelper::DepositRateHelper(Rate rate,
                                          const shared_ptr<IborIndex>& i)
     : RelativeDateRateHelper(rate) {
-        // do not use clone, as we do not want to take fixing into account
-        iborIndex_ = shared_ptr<IborIndex>(new
-            IborIndex("no-fix", // never take fixing into account
-                      i->tenor(), i->fixingDays(), Currency(),
-                      i->fixingCalendar(), i->businessDayConvention(),
-                      i->endOfMonth(), i->dayCounter(), termStructureHandle_));
+        iborIndex_ = i->clone(termStructureHandle_);
         initializeDates();
     }
 
     Real DepositRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
+        // the forecast fixing flag is set to true because
+        // we do not want to take fixing into account
         return iborIndex_->fixing(fixingDate_, true);
     }
 
     void DepositRateHelper::setTermStructure(YieldTermStructure* t) {
-        // no need to register---the index is not lazy
-        termStructureHandle_.linkTo(
-                         shared_ptr<YieldTermStructure>(t,no_deletion),
-                         false);
+        // do not set the relinkable handle as an observer -
+        // force recalculation when needed---the index is not lazy
+        bool observer = false;
+
+        shared_ptr<YieldTermStructure> temp(t, no_deletion);
+        termStructureHandle_.linkTo(temp, observer);
+
         RelativeDateRateHelper::setTermStructure(t);
     }
 
@@ -360,8 +354,7 @@ namespace QuantLib {
         // then move to the next business day
         Date referenceDate =
             iborIndex_->fixingCalendar().adjust(evaluationDate_);
-        earliestDate_ = iborIndex_->fixingCalendar().advance(
-            referenceDate, iborIndex_->fixingDays()*Days);
+        earliestDate_ = iborIndex_->valueDate(referenceDate);
         latestDate_ = iborIndex_->maturityDate(earliestDate_);
         fixingDate_ = iborIndex_->fixingDate(earliestDate_);
     }
@@ -520,10 +513,13 @@ namespace QuantLib {
     }
 
     void FraRateHelper::setTermStructure(YieldTermStructure* t) {
-        // no need to register---the index is not lazy
-        termStructureHandle_.linkTo(
-                         shared_ptr<YieldTermStructure>(t,no_deletion),
-                         false);
+        // do not set the relinkable handle as an observer -
+        // force recalculation when needed---the index is not lazy
+        bool observer = false;
+
+        shared_ptr<YieldTermStructure> temp(t, no_deletion);
+        termStructureHandle_.linkTo(temp, observer);
+
         RelativeDateRateHelper::setTermStructure(t);
     }
 
@@ -827,9 +823,11 @@ namespace QuantLib {
     void BMASwapRateHelper::setTermStructure(YieldTermStructure* t) {
         // do not set the relinkable handle as an observer -
         // force recalculation when needed
-        termStructureHandle_.linkTo(
-                         shared_ptr<YieldTermStructure>(t,no_deletion),
-                         false);
+        bool observer = false;
+
+        shared_ptr<YieldTermStructure> temp(t, no_deletion);
+        termStructureHandle_.linkTo(temp, observer);
+
         RelativeDateRateHelper::setTermStructure(t);
     }
 
@@ -843,6 +841,74 @@ namespace QuantLib {
     void BMASwapRateHelper::accept(AcyclicVisitor& v) {
         Visitor<BMASwapRateHelper>* v1 =
             dynamic_cast<Visitor<BMASwapRateHelper>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            RateHelper::accept(v);
+    }
+
+    FxSwapRateHelper::FxSwapRateHelper(const Handle<Quote>& fwdPoint,
+                                       const Handle<Quote>& spotFx,
+                                       const Period& tenor,
+                                       Natural fixingDays,
+                                       const Calendar& calendar,
+                                       BusinessDayConvention convention,
+                                       bool endOfMonth,
+                                       bool isFxBaseCurrencyCollateralCurrency,
+                                       const Handle<YieldTermStructure>& coll)
+                                       : RelativeDateRateHelper(fwdPoint), spot_(spotFx), tenor_(tenor),
+      fixingDays_(fixingDays), cal_(calendar), conv_(convention),
+      eom_(endOfMonth),
+      isFxBaseCurrencyCollateralCurrency_(isFxBaseCurrencyCollateralCurrency),
+      collHandle_(coll) {
+        registerWith(spot_);
+        registerWith(collHandle_);
+        initializeDates();
+    }
+
+    void FxSwapRateHelper::initializeDates() {
+        // if the evaluation date is not a business day
+        // then move to the next business day
+        Date refDate = cal_.adjust(evaluationDate_);
+        earliestDate_ = cal_.advance(refDate, fixingDays_*Days);
+        latestDate_ = cal_.advance(earliestDate_, tenor_, conv_, eom_);
+    }
+
+    Real FxSwapRateHelper::impliedQuote() const {
+        QL_REQUIRE(termStructure_ != 0, "term structure not set");
+
+        QL_REQUIRE(!collHandle_.empty(), "collateral term structure not set");
+        
+        DiscountFactor d1 = collHandle_->discount(earliestDate_);
+        DiscountFactor d2 = collHandle_->discount(latestDate_);
+        Real collRatio = d1 / d2;
+        d1 = termStructureHandle_->discount(earliestDate_);
+        d2 = termStructureHandle_->discount(latestDate_);
+        Real ratio = d1 / d2;
+        Real spot = spot_->value();
+        if (isFxBaseCurrencyCollateralCurrency_) {
+            return (ratio/collRatio-1)*spot;
+        } else {
+            return (collRatio/ratio-1)*spot;
+        }
+    }
+
+    void FxSwapRateHelper::setTermStructure(YieldTermStructure* t) {
+        // do not set the relinkable handle as an observer -
+        // force recalculation when needed
+        bool observer = false;
+
+        shared_ptr<YieldTermStructure> temp(t, no_deletion);
+        termStructureHandle_.linkTo(temp, observer);
+
+        collRelinkableHandle_.linkTo(*collHandle_, observer);
+
+        RelativeDateRateHelper::setTermStructure(t);
+    }
+
+    void FxSwapRateHelper::accept(AcyclicVisitor& v) {
+        Visitor<FxSwapRateHelper>* v1 =
+            dynamic_cast<Visitor<FxSwapRateHelper>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else

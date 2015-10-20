@@ -30,6 +30,7 @@
 #include <ql/instruments/dividendvanillaoption.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
@@ -599,6 +600,71 @@ void FdHestonTest::testFdmHestonConvergence() {
     }
 }
 
+void FdHestonTest::testFdmHestonIntradayPricing() {
+#ifdef QL_HIGH_RESOLUTION_DATE
+
+    BOOST_TEST_MESSAGE("Testing FDM Heston intraday pricing ...");
+
+    SavedSettings backup;
+
+    const Calendar calendar = TARGET();
+    const Option::Type type(Option::Put);
+    const Real underlying = 36;
+    const Real strike = underlying;
+    const Spread dividendYield = 0.00;
+    const Rate riskFreeRate = 0.06;
+    const Real v0    = 0.2;
+    const Real kappa = 1.0;
+    const Real theta = v0;
+    const Real sigma = 0.0065;
+    const Real rho   = -0.75;
+    const DayCounter dayCounter = Actual365Fixed();
+
+    const Date maturity(17, May, 2014, 17, 30, 0);
+
+    const boost::shared_ptr<Exercise> europeanExercise(
+        new EuropeanExercise(maturity));
+    const boost::shared_ptr<StrikedTypePayoff> payoff(
+        new PlainVanillaPayoff(type, strike));
+    VanillaOption option(payoff, europeanExercise);
+
+    const Handle<Quote> s0(
+         boost::shared_ptr<Quote>(new SimpleQuote(underlying)));
+    RelinkableHandle<BlackVolTermStructure> flatVolTS;
+    RelinkableHandle<YieldTermStructure> flatTermStructure, flatDividendTS;
+    const boost::shared_ptr<HestonProcess> process(
+        new HestonProcess(flatTermStructure, flatDividendTS, s0,
+              v0, kappa, theta, sigma, rho));
+    const boost::shared_ptr<HestonModel> model(new HestonModel(process));
+    const boost::shared_ptr<PricingEngine> fdm(
+        new FdHestonVanillaEngine(model, 20, 100, 26, 0));
+    option.setPricingEngine(fdm);
+
+    const Real gammaExpected[] = {
+        1.46702, 1.54638, 1.64018, 1.75343, 1.89393,
+        2.0747, 2.31959, 2.67844, 3.28041, 4.63922  };
+
+    for (Size i = 0; i < 10; ++i) {
+        const Date now(17, May, 2014, 15, i*15, 0);
+        Settings::instance().evaluationDate() = now;
+
+        flatTermStructure.linkTo(boost::shared_ptr<YieldTermStructure>(
+            new FlatForward(now, riskFreeRate, dayCounter)));
+        flatDividendTS.linkTo(boost::shared_ptr<YieldTermStructure>(
+            new FlatForward(now, dividendYield, dayCounter)));
+
+        const Real gammaCalculated = option.gamma();
+        if (std::fabs(gammaCalculated - gammaExpected[i]) > 1e-5) {
+            BOOST_FAIL("unable to reproduce intraday gamma values at time "
+                    << "\n   timestamp : " << io::iso_datetime(now)
+                    << "\n   expiry    : " << io::iso_datetime(maturity)
+                    << "\n   expected  : " << gammaExpected[i]
+                    << "\n   calculated: "<<  gammaCalculated);
+        }
+    }
+#endif
+}
+
 test_suite* FdHestonTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Finite Difference Heston tests");
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBarrier));
@@ -610,6 +676,8 @@ test_suite* FdHestonTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
                     &FdHestonTest::testFdmHestonEuropeanWithDividends));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonConvergence));
+    suite->add(QUANTLIB_TEST_CASE(
+        &FdHestonTest::testFdmHestonIntradayPricing));
     return suite;
 }
 

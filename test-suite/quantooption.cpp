@@ -963,11 +963,11 @@ void QuantoOptionTest::testDoubleBarrierValues()  {
 
     QuantoDoubleBarrierOptionData values[] = {
          // barrierType,           bar.lo, bar.hi, rebate,         type, spot,  strk,    q,   r,    T,  vol, fx rate, fx vol, corr, result, tol
-        { DoubleBarrier::KnockOut,   50.0,  150.0,      0, Option::Call,  100, 100.0, 0.00, 0.1, 0.25, 0.15,    0.05,    0.2,  0.3,  5.1413, 1.0e-4},
-        { DoubleBarrier::KnockOut,   90.0,  110.0,      0, Option::Call,  100, 100.0, 0.00, 0.1, 0.50, 0.15,    0.05,    0.2,  0.3,  1.4408, 1.0e-4},
-        { DoubleBarrier::KnockOut,   90.0,  110.0,      0, Option::Put,   100, 100.0, 0.00, 0.1, 0.25, 0.15,    0.05,    0.2,  0.3,  0.2345, 1.0e-4},
-        { DoubleBarrier::KnockIn,    80.0,  120.0,      0, Option::Call,  100, 102.0, 0.00, 0.1, 0.25, 0.25,    0.05,    0.2,  0.3,  1.5983, 1.0e-4},
-        { DoubleBarrier::KnockIn,    80.0,  120.0,      0, Option::Call,  100, 102.0, 0.00, 0.1, 0.50, 0.15,    0.05,    0.2,  0.3,  0.0000, 1.0e-4},
+        { DoubleBarrier::KnockOut,   50.0,  150.0,      0, Option::Call,  100, 100.0, 0.00, 0.1, 0.25, 0.15,    0.05,    0.2,  0.3,  3.4623, 1.0e-4},
+        { DoubleBarrier::KnockOut,   90.0,  110.0,      0, Option::Call,  100, 100.0, 0.00, 0.1, 0.50, 0.15,    0.05,    0.2,  0.3,  0.5236, 1.0e-4},
+        { DoubleBarrier::KnockOut,   90.0,  110.0,      0, Option::Put,   100, 100.0, 0.00, 0.1, 0.25, 0.15,    0.05,    0.2,  0.3,  1.1320, 1.0e-4},
+        { DoubleBarrier::KnockIn,    80.0,  120.0,      0, Option::Call,  100, 102.0, 0.00, 0.1, 0.25, 0.25,    0.05,    0.2,  0.3,  2.6313, 1.0e-4},
+        { DoubleBarrier::KnockIn,    80.0,  120.0,      0, Option::Call,  100, 102.0, 0.00, 0.1, 0.50, 0.15,    0.05,    0.2,  0.3,  1.9305, 1.0e-4},
     };
 
     DayCounter dc = Actual360();

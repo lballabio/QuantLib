@@ -29,6 +29,7 @@
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/generallinearleastsquares.hpp>
+#include <ql/math/statistics/generalstatistics.hpp>
 #include <ql/methods/montecarlo/pathpricer.hpp>
 #include <ql/methods/montecarlo/earlyexercisepathpricer.hpp>
 

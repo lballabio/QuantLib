@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -20,6 +21,8 @@
 
 /*! \file incrementalstatistics.hpp
     \brief statistics tool based on incremental accumulation
+           in the meantime, this is just a wrapper to the boost
+           accumulator library, kept for backward compatibility
 */
 
 #ifndef quantlib_incremental_statistics_hpp
@@ -28,15 +31,27 @@
 #include <ql/utilities/null.hpp>
 #include <ql/errors.hpp>
 
+#include <boost/accumulators/accumulators.hpp>
+#include <boost/accumulators/statistics/stats.hpp>
+#include <boost/accumulators/statistics/count.hpp>
+#include <boost/accumulators/statistics/sum.hpp>
+#include <boost/accumulators/statistics/sum_kahan.hpp>
+#include <boost/accumulators/statistics/min.hpp>
+#include <boost/accumulators/statistics/max.hpp>
+#include <boost/accumulators/statistics/weighted_mean.hpp>
+#include <boost/accumulators/statistics/weighted_variance.hpp>
+#include <boost/accumulators/statistics/weighted_skewness.hpp>
+#include <boost/accumulators/statistics/weighted_kurtosis.hpp>
+#include <boost/accumulators/statistics/weighted_moment.hpp>
+
 namespace QuantLib {
 
     //! Statistics tool based on incremental accumulation
     /*! It can accumulate a set of data and return statistics (e.g: mean,
-        variance, skewness, kurtosis, error estimation, etc.)
-
-        \warning high moments are numerically unstable for high
-                 average/standardDeviation ratios.
+        variance, skewness, kurtosis, error estimation, etc.).
+        This class is a wrapper to the boost accumulator library.
     */
+
     class IncrementalStatistics {
       public:
         typedef Real value_type;
@@ -92,6 +107,12 @@ namespace QuantLib {
         /*! returns the maximum sample value */
         Real max() const;
 
+        //! number of negative samples collected
+        Size downsideSamples() const;
+
+        //! sum of data weights for negative samples
+        Real downsideWeightSum() const;
+
         /*! returns the downside variance, defined as
             \f[ \frac{N}{N-1} \times \frac{ \sum_{i=1}^{N}
                 \theta \times x_i^{2}}{ \sum_{i=1}^{N} w_i} \f],
@@ -129,12 +150,26 @@ namespace QuantLib {
         //! resets the data to a null set
         void reset();
         //@}
-      protected:
-        Size sampleNumber_, downsideSampleNumber_;
-        Real sampleWeight_, downsideSampleWeight_;
-        Real sum_, quadraticSum_, downsideQuadraticSum_,
-            cubicSum_, fourthPowerSum_;
-        Real min_, max_;
+     private:
+       typedef boost::accumulators::accumulator_set<
+           Real,
+           boost::accumulators::stats<
+               boost::accumulators::tag::count, boost::accumulators::tag::min,
+               boost::accumulators::tag::max,
+               boost::accumulators::tag::weighted_mean,
+               boost::accumulators::tag::weighted_variance,
+               boost::accumulators::tag::weighted_skewness,
+               boost::accumulators::tag::weighted_kurtosis,
+               boost::accumulators::tag::sum_of_weights_kahan>,
+           Real> accumulator_set;
+        accumulator_set acc_;
+        typedef boost::accumulators::accumulator_set<
+            Real, boost::accumulators::stats<
+                      boost::accumulators::tag::count,
+                      boost::accumulators::tag::weighted_moment<2>,
+                      boost::accumulators::tag::sum_of_weights_kahan>,
+            Real> downside_accumulator_set;
+        downside_accumulator_set downsideAcc_;
     };
 
 }

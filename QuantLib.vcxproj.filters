@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="methods">
@@ -861,6 +861,9 @@
     <ClInclude Include="ql\math\all.hpp">
       <Filter>math</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\abcdmathfunction.hpp">
+      <Filter>math</Filter>
+    </ClInclude>	
     <ClInclude Include="ql\math\array.hpp">
       <Filter>math</Filter>
     </ClInclude>
@@ -1225,6 +1228,9 @@
       <Filter>math\optimization</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\optimization\endcriteria.hpp">
+      <Filter>math\optimization</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\math\optimization\goldstein.hpp">
       <Filter>math\optimization</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\optimization\leastsquare.hpp">
@@ -3204,9 +3210,6 @@
     <ClInclude Include="ql\pricingengines\swaption\gaussian1djamshidianswaptionengine.hpp">
       <Filter>pricingengines\swaption</Filter>
     </ClInclude>
-    <ClInclude Include="ql\models\shortrate\onefactormodels\gaussian1dmodel.hpp">
-      <Filter>models\shortrate\onefactormodels</Filter>
-    </ClInclude>
     <ClInclude Include="ql\pricingengines\swaption\gaussian1dnonstandardswaptionengine.hpp">
       <Filter>pricingengines\swaption</Filter>
     </ClInclude>
@@ -3219,17 +3222,14 @@
     <ClInclude Include="ql\termstructures\volatility\swaption\gaussian1dswaptionvolatility.hpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClInclude>
-    <ClInclude Include="ql\models\shortrate\onefactormodels\gsr.hpp">
-      <Filter>models\shortrate\onefactormodels</Filter>
-    </ClInclude>
     <ClInclude Include="ql\processes\gsrprocess.hpp">
+      <Filter>processes</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\processes\gsrprocesscore.hpp">
       <Filter>processes</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\kahalesmilesection.hpp">
       <Filter>termstructures\volatility</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\models\shortrate\onefactormodels\markovfunctional.hpp">
-      <Filter>models\shortrate\onefactormodels</Filter>
     </ClInclude>
     <ClInclude Include="ql\processes\mfstateprocess.hpp">
       <Filter>processes</Filter>
@@ -4023,6 +4023,20 @@
     </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\equityfx\noexceptlocalvolsurface.hpp">
       <Filter>termstructures\volatility\equityfx</Filter>
+    <ClInclude Include="ql\math\polynomialmathfunction.hpp">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\math\pascaltriangle.hpp">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\models\shortrate\onefactormodels\gaussian1dmodel.hpp">
+      <Filter>models\shortrate\onefactormodels</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\models\shortrate\onefactormodels\gsr.hpp">
+      <Filter>models\shortrate\onefactormodels</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\models\shortrate\onefactormodels\markovfunctional.hpp">
+      <Filter>models\shortrate\onefactormodels</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -4338,6 +4352,9 @@
     <ClCompile Include="ql\instruments\bonds\zerocouponbond.cpp">
       <Filter>instruments\bonds</Filter>
     </ClCompile>
+    <ClCompile Include="ql\math\abcdmathfunction.cpp">
+      <Filter>math</Filter>
+    </ClCompile>	
     <ClCompile Include="ql\math\bernsteinpolynomial.cpp">
       <Filter>math</Filter>
     </ClCompile>
@@ -4501,6 +4518,9 @@
       <Filter>math\optimization</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\optimization\endcriteria.cpp">
+      <Filter>math\optimization</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\optimization\goldstein.cpp">
       <Filter>math\optimization</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\optimization\leastsquare.cpp">
@@ -5889,9 +5909,6 @@
     <ClCompile Include="ql\pricingengines\swaption\gaussian1djamshidianswaptionengine.cpp">
       <Filter>pricingengines\swaption</Filter>
     </ClCompile>
-    <ClCompile Include="ql\models\shortrate\onefactormodels\gaussian1dmodel.cpp">
-      <Filter>models\shortrate\onefactormodels</Filter>
-    </ClCompile>
     <ClCompile Include="ql\pricingengines\swaption\gaussian1dnonstandardswaptionengine.cpp">
       <Filter>pricingengines\swaption</Filter>
     </ClCompile>
@@ -5904,17 +5921,14 @@
     <ClCompile Include="ql\termstructures\volatility\swaption\gaussian1dswaptionvolatility.cpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClCompile>
-    <ClCompile Include="ql\models\shortrate\onefactormodels\gsr.cpp">
-      <Filter>models\shortrate\onefactormodels</Filter>
-    </ClCompile>
     <ClCompile Include="ql\processes\gsrprocess.cpp">
+      <Filter>processes</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\processes\gsrprocesscore.cpp">
       <Filter>processes</Filter>
     </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\kahalesmilesection.cpp">
       <Filter>termstructures\volatility</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\models\shortrate\onefactormodels\markovfunctional.cpp">
-      <Filter>models\shortrate\onefactormodels</Filter>
     </ClCompile>
     <ClCompile Include="ql\processes\mfstateprocess.cpp">
       <Filter>processes</Filter>
@@ -6487,6 +6501,20 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\finitedifferences\fdmlocalvolfwdop.cpp">
       <Filter>experimental\finitedifferences</Filter>
+    <ClCompile Include="ql\math\polynomialmathfunction.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\pascaltriangle.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\models\shortrate\onefactormodels\gaussian1dmodel.cpp">
+      <Filter>models\shortrate\onefactormodels</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\models\shortrate\onefactormodels\gsr.cpp">
+      <Filter>models\shortrate\onefactormodels</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\models\shortrate\onefactormodels\markovfunctional.cpp">
+      <Filter>models\shortrate\onefactormodels</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

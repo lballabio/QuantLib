@@ -2168,6 +2168,14 @@
 			Name="math"
 			>
 			<File
+				RelativePath=".\ql\math\abcdmathfunction.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\math\abcdmathfunction.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\math\all.hpp"
 				>
 			</File>
@@ -2277,6 +2285,22 @@
 			</File>
 			<File
 				RelativePath="ql\math\modifiedbessel.hpp"
+				>
+			</File>
+			<File
+				RelativePath="ql\math\pascaltriangle.cpp"
+				>
+			</File>
+			<File
+				RelativePath="ql\math\pascaltriangle.hpp"
+				>
+			</File>
+			<File
+				RelativePath="ql\math\polynomialmathfunction.cpp"
+				>
+			</File>
+			<File
+				RelativePath="ql\math\polynomialmathfunction.hpp"
 				>
 			</File>
 			<File
@@ -2964,6 +2988,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\math\optimization\endcriteria.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\optimization\goldstein.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\optimization\goldstein.hpp"
 					>
 				</File>
 				<File
@@ -5305,6 +5337,14 @@
 			</File>
 			<File
 				RelativePath=".\ql\processes\gsrprocess.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\processes\gsrprocesscore.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\processes\gsrprocesscore.hpp"
 				>
 			</File>
 			<File
