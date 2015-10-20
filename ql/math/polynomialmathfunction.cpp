@@ -89,7 +89,6 @@ namespace QuantLib {
     std::vector<Real> 
          PolynomialFunction::definiteIntegralCoefficients(Time t,
                                                           Time t2) const {
-        Time dt = t2 - t;
         Array k(c_.begin(), c_.end());
         initializeEqs_(t, t2);
         Array coeff = eqs_ * k;
@@ -100,7 +99,6 @@ namespace QuantLib {
     std::vector<Real>
         PolynomialFunction::definiteDerivativeCoefficients(Time t,
                                                            Time t2) const {
-        Time dt = t2 - t;
         Array k(c_.begin(), c_.end());
         initializeEqs_(t, t2);
         Array coeff = inverse(eqs_) * k;

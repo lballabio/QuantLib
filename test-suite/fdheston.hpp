@@ -35,6 +35,7 @@ public:
     static void testFdmHestonEuropeanWithDividends();
     static void testFdmHestonConvergence();
     static void testFdmHestonBlackScholes();
+    static void testFdmHestonIntradayPricing();
 
     static boost::unit_test_framework::test_suite* suite();
 };
