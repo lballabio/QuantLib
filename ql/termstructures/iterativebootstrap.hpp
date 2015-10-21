@@ -105,7 +105,6 @@ namespace QuantLib {
         dates[0] = firstDate;
         times[0] = ts_->timeFromReference(dates[0]);
 
-        // this should be made a TermStructure member
         Date latestRelevantDate, maxDate = firstDate;
         // pillar counter: i
         // helper counter: j
@@ -137,6 +136,7 @@ namespace QuantLib {
             errors_[i] = boost::shared_ptr<BootstrapError<Curve> >(new
                 BootstrapError<Curve>(ts_, helper, i));
         }
+        ts_->maxDate_ = maxDate;
 
         // set initial guess only if the current curve cannot be used as guess
         if (!validCurve_ || ts_->data_.size()!=alive_+1) {

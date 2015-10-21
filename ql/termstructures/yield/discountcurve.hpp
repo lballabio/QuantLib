@@ -114,12 +114,9 @@ namespace QuantLib {
 
     template <class T>
     inline Date InterpolatedDiscountCurve<T>::maxDate() const {
-        // +7 is just a patch to partially (but safely) deal with a pillar date
-        // possibly not being equal to BootstrapHelper's maturity or latest
-        // relevant date. A better (non-backward-compatible) solution would be
-        //if (maxDate_ != Date())
-        //    return maxDate_;
-        return dates_.back() + 7;
+        if (this->maxDate_ != Date())
+            return this->maxDate_;
+        return dates_.back();
     }
 
     template <class T>
