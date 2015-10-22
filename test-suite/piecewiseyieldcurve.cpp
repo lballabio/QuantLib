@@ -776,7 +776,7 @@ void PiecewiseYieldCurveTest::testObservability() {
     for (Size i=0; i<vars.deposits+vars.swaps; i++) {
         Time testTime =
             Actual360().yearFraction(vars.settlement,
-                                     vars.instruments[i]->latestDate());
+                                     vars.instruments[i]->pillarDate());
         DiscountFactor discount = vars.termStructure->discount(testTime);
         f.lower();
         vars.rates[i]->setValue(vars.rates[i]->value()*1.01);

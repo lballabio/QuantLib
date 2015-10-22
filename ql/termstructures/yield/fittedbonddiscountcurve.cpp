@@ -112,7 +112,7 @@ namespace QuantLib {
                        io::ordinal(i+1) << " bond non tradable at " <<
                        bondSettlement << " settlement date (maturity"
                        " being " << bond->maturityDate() << ")");
-            maxDate_ = std::max(maxDate_, bondHelpers_[i]->latestDate());
+            maxDate_ = std::max(maxDate_, bondHelpers_[i]->pillarDate());
             bondHelpers_[i]->setTermStructure(
                                   const_cast<FittedBondDiscountCurve*>(this));
         }
