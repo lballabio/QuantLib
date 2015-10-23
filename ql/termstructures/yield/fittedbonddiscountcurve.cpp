@@ -189,7 +189,11 @@ namespace QuantLib {
 
 		if(curve_->maxEvaluations_ == 0)
 		{
-			//don't calculate, simply use given parameters to provide a fitted curve
+			//Don't calculate, simply use given parameters to provide a fitted curve.
+			//This turns the fittedbonddiscountcurve into an evaluator of the parametric
+			//curve, for example allowing to use the parameters for a credit spread curve
+			//calculated with bonds in one currency to be coupled to a discount curve in 
+			//another currency. 
 			return;
 		}
 		

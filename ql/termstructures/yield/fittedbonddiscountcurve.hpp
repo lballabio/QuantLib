@@ -153,7 +153,7 @@ namespace QuantLib {
     //! Base fitting method used to construct a fitted bond discount curve
     /*! This base class provides the specific methodology/strategy
         used to construct a FittedBondDiscountCurve.  Derived classes
-        need only define the virtual function discountFunctionImpl() based
+        need only define the virtual function discountFunction() based
         on the particular fitting method to be implemented, as well as
         size(), the number of variables to be solved for/optimized. The
         generic fitting methodology implemented here can be termed
