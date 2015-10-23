@@ -81,14 +81,17 @@ namespace QuantLib {
                             else
                                 floatingLegNpv =
                                     (model_->deflatedZerobond(
-                                         valueDate, fixingDate, z[j]) -
+                                         valueDate, fixingDate, z[j],
+                                         discountCurve_, discountCurve_) -
                                      model_->deflatedZerobond(
-                                         paymentDate, fixingDate, z[j]));
+                                         paymentDate, fixingDate, z[j],
+                                         discountCurve_, discountCurve_));
                             Real fixedLegNpv =
                                 arguments_.capRates[i] *
                                 arguments_.accrualTimes[i] *
-                                model_->deflatedZerobond(paymentDate,
-                                                         fixingDate, z[j]);
+                                model_->deflatedZerobond(
+                                    paymentDate, fixingDate, z[j],
+                                    discountCurve_, discountCurve_);
                             p[j] =
                                 std::max((floatingLegNpv - fixedLegNpv), 0.0);
                         }
@@ -153,14 +156,17 @@ namespace QuantLib {
                             else
                                 floatingLegNpv =
                                     (model_->deflatedZerobond(
-                                         valueDate, fixingDate, z[j]) -
+                                         valueDate, fixingDate, z[j],
+                                         discountCurve_, discountCurve_) -
                                      model_->deflatedZerobond(
-                                         paymentDate, fixingDate, z[j]));
+                                         paymentDate, fixingDate, z[j],
+                                         discountCurve_, discountCurve_));
                             Real fixedLegNpv =
                                 arguments_.floorRates[i] *
                                 arguments_.accrualTimes[i] *
-                                model_->deflatedZerobond(paymentDate,
-                                                         fixingDate, z[j]);
+                                model_->deflatedZerobond(
+                                    paymentDate, fixingDate, z[j],
+                                    discountCurve_, discountCurve_);
                             p[j] =
                                 std::max(-(floatingLegNpv - fixedLegNpv), 0.0);
                         }

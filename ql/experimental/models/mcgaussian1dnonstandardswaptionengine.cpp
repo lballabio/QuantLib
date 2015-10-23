@@ -134,7 +134,7 @@ Real Gaussian1dNonstandardSwaptionPathPricer::operator()(const Path &path,
         floatingLegNpv +=
             amount *
             model_->deflatedZerobond(arguments_->floatingPayDates[l], exDate,
-                                     state, discount_) *
+                                     state, discount_, discount_) *
             zSpreadDf;
     }
     Real fixedLegNpv = 0.0;
@@ -145,10 +145,11 @@ Real Gaussian1dNonstandardSwaptionPathPricer::operator()(const Path &path,
                 : std::exp(-oas_->value() *
                            (model_->termStructure()->dayCounter().yearFraction(
                                exDate, arguments_->fixedPayDates[l])));
-        fixedLegNpv += arguments_->fixedCoupons[l] *
-                       model_->deflatedZerobond(arguments_->fixedPayDates[l],
-                                                exDate, state, discount_) *
-                       zSpreadDf;
+        fixedLegNpv +=
+            arguments_->fixedCoupons[l] *
+            model_->deflatedZerobond(arguments_->fixedPayDates[l], exDate,
+                                     state, discount_, discount_) *
+            zSpreadDf;
     }
     Real rebate = 0.0;
     Real zSpreadDf = 1.0;
@@ -163,13 +164,14 @@ Real Gaussian1dNonstandardSwaptionPathPricer::operator()(const Path &path,
                            (model_->termStructure()->dayCounter().yearFraction(
                                exDate, rebateDate)));
     }
-    Real exerciseValue = std::max(
-        ((arguments_->type == VanillaSwap::Payer ? 1.0 : -1.0) *
-             (floatingLegNpv - fixedLegNpv) +
-         rebate *
-             model_->deflatedZerobond(rebateDate, exDate, state, discount_) *
-             zSpreadDf),
-        0.0);
+    Real exerciseValue =
+        std::max(((arguments_->type == VanillaSwap::Payer ? 1.0 : -1.0) *
+                      (floatingLegNpv - fixedLegNpv) +
+                  rebate *
+                      model_->deflatedZerobond(rebateDate, exDate, state,
+                                               discount_, discount_) *
+                      zSpreadDf),
+                 0.0);
 
     return exerciseValue;
 }
