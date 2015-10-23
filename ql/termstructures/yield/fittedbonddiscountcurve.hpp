@@ -203,6 +203,8 @@ namespace QuantLib {
 		Array weights() const;
 		//! return optimization method being used
 		boost::shared_ptr<OptimizationMethod> optimizationMethod() const;
+		//! open discountFunction to public
+		DiscountFactor discount(const Array& x, Time t) const;
       protected:
         //! constructor
         FittingMethod(bool constrainAtZero = true, const Array& weights = Array(),
@@ -298,6 +300,11 @@ namespace QuantLib {
 	inline boost::shared_ptr<OptimizationMethod> 
 	FittedBondDiscountCurve::FittingMethod::optimizationMethod() const {
 		return optimizationMethod_;
+	}
+
+	inline DiscountFactor 
+	FittedBondDiscountCurve::FittingMethod::discount(const Array& x, Time t) const {
+		return discountFunction(x, t);
 	}
 }
 

@@ -223,12 +223,12 @@ namespace QuantLib {
         return d;
     }
 	
-	SpreadFittingMethod::SpreadFittingMethod(shared_ptr<FittingMethod> method,
+	SpreadFittingMethod::SpreadFittingMethod(boost::shared_ptr<FittingMethod> method,
                         Handle<YieldTermStructure> discountCurve)
     : FittedBondDiscountCurve::FittingMethod(method ? method->constrainAtZero() : true, method ? method->weights() : Array(), 
 											 method ? method->optimizationMethod() : boost::shared_ptr<OptimizationMethod>()),
       method_(method), discountingCurve_(discountCurve) {
-		QL_REQUIRE(!method, "Fitting method is empty");
+		QL_REQUIRE(method, "Fitting method is empty");
 		QL_REQUIRE(!discountingCurve_.empty(), "Discounting curve cannot be empty");
 		//In case discount curve is given and has a different reference date,
         //discount to this curve's reference date
@@ -250,7 +250,7 @@ namespace QuantLib {
     }
 
 	DiscountFactor SpreadFittingMethod::discountFunction(const Array& x, Time t) const{
-        return method_->discountFunction(x, t)*discountingCurve_->discount(t, true)/rebase_;
+        return method_->discount(x, t)*discountingCurve_->discount(t, true)/rebase_;
     }
 }
 

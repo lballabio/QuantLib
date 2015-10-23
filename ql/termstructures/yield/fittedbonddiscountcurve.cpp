@@ -122,17 +122,14 @@ namespace QuantLib {
             bondHelpers_[i]->setTermStructure(
                                   const_cast<FittedBondDiscountCurve*>(this));
         }
-
         fittingMethod_->init();
         fittingMethod_->calculate();
     }
 
 
     FittedBondDiscountCurve::FittingMethod::FittingMethod(bool constrainAtZero, const Array& weights,
-                                                          const Handle<YieldTermStructure>& discountingCurve,
                                                           boost::shared_ptr<OptimizationMethod> optimizationMethod)
-    : constrainAtZero_(constrainAtZero), weights_(weights), rebase_(1.0),
-      discountingCurve_(discountingCurve), optimizationMethod_(optimizationMethod) {}
+    : constrainAtZero_(constrainAtZero), weights_(weights), optimizationMethod_(optimizationMethod) {}
 
 
     void FittedBondDiscountCurve::FittingMethod::init() {
@@ -144,7 +141,7 @@ namespace QuantLib {
         Size n = curve_->bondHelpers_.size();
         costFunction_ = shared_ptr<FittingCost>(new FittingCost(this));
         costFunction_->firstCashFlow_.resize(n);
-        if(weights_.size() != n)
+        if(weights_.empty())
         {
             weights_ = Array(n);
             Real squaredSum = 0.0;
@@ -176,19 +173,8 @@ namespace QuantLib {
             }
             weights_ /= std::sqrt(squaredSum);
         }
+		QL_REQUIRE(weights_.size() == n, "Given weights do not cover all boostrapping helpers");
     }
-
-
-    DiscountFactor FittedBondDiscountCurve::FittingMethod::discountFunction(const Array& x,
-                                                                            Time t) const{
-        DiscountFactor d = discountFunctionImpl(x, t);
-        if(!discountingCurve_.empty())
-        {
-            d *= discountingCurve_->discount(t, true)/rebase_;
-        }
-        return d;
-    }
-
 
     void FittedBondDiscountCurve::FittingMethod::calculate() {
 
@@ -201,30 +187,35 @@ namespace QuantLib {
             x = curve_->guessSolution_;
         }
 
-        if(curve_->maxEvaluations_ > 0){
-            //workaround for backwards compatibility
-            boost::shared_ptr<OptimizationMethod> optimization = optimizationMethod_;
-            if(!optimization){
-                optimization = boost::make_shared<Simplex>(curve_->simplexLambda_);
-            }
-            Problem problem(costFunction, constraint, x);
+		if(curve_->maxEvaluations_ == 0)
+		{
+			//don't calculate, simply use given parameters to provide a fitted curve
+			return;
+		}
+		
+        //workaround for backwards compatibility
+        boost::shared_ptr<OptimizationMethod> optimization = optimizationMethod_;
+        if(!optimization){
+		    optimization = boost::make_shared<Simplex>(curve_->simplexLambda_);
+		}
+		Problem problem(costFunction, constraint, x);
 
-            Real rootEpsilon = curve_->accuracy_;
-            Real functionEpsilon =  curve_->accuracy_;
-            Real gradientNormEpsilon = curve_->accuracy_;
+		Real rootEpsilon = curve_->accuracy_;
+        Real functionEpsilon =  curve_->accuracy_;
+        Real gradientNormEpsilon = curve_->accuracy_;
 
-            EndCriteria endCriteria(curve_->maxEvaluations_,
-                                    curve_->maxStationaryStateIterations_,
-                                    rootEpsilon,
-                                    functionEpsilon,
-                                    gradientNormEpsilon);
+        EndCriteria endCriteria(curve_->maxEvaluations_,
+                                curve_->maxStationaryStateIterations_,
+                                rootEpsilon,
+                                functionEpsilon,
+                                gradientNormEpsilon);
 
-            optimization->minimize(problem,endCriteria);
-            solution_ = problem.currentValue();
+        optimization->minimize(problem,endCriteria);
+        solution_ = problem.currentValue();
 
-            numberOfIterations_ = problem.functionEvaluation();
-            costValue_ = problem.functionValue();
-        }
+        numberOfIterations_ = problem.functionEvaluation();
+        costValue_ = problem.functionValue();
+
         // save the results as the guess solution, in case of recalculation
         curve_->guessSolution_ = solution_;
     }
@@ -237,37 +228,10 @@ namespace QuantLib {
 
     Real FittedBondDiscountCurve::FittingMethod::FittingCost::value(
                                                        const Array& x) const {
-
-        Date refDate  = fittingMethod_->curve_->referenceDate();
-        const DayCounter& dc = fittingMethod_->curve_->dayCounter();
-
         Real squaredError = 0.0;
-        Size n = fittingMethod_->curve_->bondHelpers_.size();
-        for (Size i=0; i<n; ++i) {
-
-            shared_ptr<Bond> bond =
-                            fittingMethod_->curve_->bondHelpers_[i]->bond();
-            Date bondSettlement = bond->settlementDate();
-
-            // CleanPrice_i = sum( cf_k * d(t_k) ) - accruedAmount
-            Real modelPrice = - bond->accruedAmount(bondSettlement);
-            const Leg& cf = bond->cashflows();
-            for (Size k=firstCashFlow_[i]; k<cf.size(); ++k) {
-                Time tenor = dc.yearFraction(refDate, cf[k]->date());
-                modelPrice += cf[k]->amount() *
-                                    fittingMethod_->discountFunction(x, tenor);
-            }
-
-            // adjust price (NPV) for forward settlement
-            if (bondSettlement != refDate ) {
-                Time tenor = dc.yearFraction(refDate, bondSettlement);
-                modelPrice /= fittingMethod_->discountFunction(x, tenor);
-            }
-            Real marketPrice =
-                fittingMethod_->curve_->bondHelpers_[i]->quote()->value();
-            Real error = modelPrice - marketPrice;
-            Real weightedError = fittingMethod_->weights_[i] * error;
-            squaredError += weightedError * weightedError;
+		Array vals = values(x);
+		for (Size i = 0; i<vals.size(); ++i) {
+            squaredError += vals[i];
         }
         return squaredError;
     }
@@ -281,7 +245,7 @@ namespace QuantLib {
         Array values(n);
         for (Size i=0; i<n; ++i) {
 
-            shared_ptr<Bond> bond =
+            boost::shared_ptr<Bond> bond =
                             fittingMethod_->curve_->bondHelpers_[i]->bond();
             Date bondSettlement = bond->settlementDate();
 

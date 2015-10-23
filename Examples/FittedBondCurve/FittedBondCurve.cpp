@@ -42,6 +42,7 @@
 #include <boost/timer.hpp>
 #include <iostream>
 #include <iomanip>
+#include <boost/make_shared.hpp>
 
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
@@ -464,7 +465,7 @@ int main(int, char* []) {
         printOutput("(e) Svensson", ts5);
 
         Handle<YieldTermStructure> discountCurve = getDiscountCurve();
-        SpreadFittingMethod nelsonSiegelSpread(make_shared<NelsonSiegelFitting>(), discountCurve);
+        SpreadFittingMethod nelsonSiegelSpread(boost::make_shared<NelsonSiegelFitting>(), discountCurve);
         boost::shared_ptr<FittedBondDiscountCurve> ts6 (
                         new FittedBondDiscountCurve(curveSettlementDays,
                                                     calendar,

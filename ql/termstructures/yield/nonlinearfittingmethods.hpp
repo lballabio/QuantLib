@@ -27,6 +27,7 @@
 
 #include <ql/termstructures/yield/fittedbonddiscountcurve.hpp>
 #include <ql/math/bspline.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace QuantLib {
 
@@ -176,14 +177,14 @@ namespace QuantLib {
     class SpreadFittingMethod
         : public FittedBondDiscountCurve::FittingMethod {
       public:
-         SpreadFittingMethod(shared_ptr<FittingMethod> method,
+         SpreadFittingMethod(boost::shared_ptr<FittingMethod> method,
                         Handle<YieldTermStructure> discountCurve);
         std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
       private:
         Size size() const;
         DiscountFactor discountFunction(const Array& x, Time t) const;
 		// underlying parametric method
-		shared_ptr<FittingMethod> method_;
+		boost::shared_ptr<FittingMethod> method_;
         // adjustment in case underlying discount curve has different reference date
         DiscountFactor rebase_;
         // discount curve from on top of which the spread will be calculated
