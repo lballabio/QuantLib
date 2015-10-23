@@ -60,7 +60,7 @@ bool FxTarf::isExpired() const {
 
 std::pair<Real, bool> FxTarf::accumulatedAmountAndSettlement() const {
     Real acc = accumulatedAmount_.empty() ? 0.0 : accumulatedAmount_->value();
-    int i = 1;
+    Size i = 1;
     while (i < schedule_.dates().size() &&
            index_->fixingDate(schedule_.date(i)) <=
                Settings::instance().evaluationDate()) {
