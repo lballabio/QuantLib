@@ -56,12 +56,10 @@ namespace QuantLib {
         // dates already build in lag of index/instrument
         // these are the dates of the values of the index
         // that fix the capfloor
-          earliestDate_ =
-          boost::dynamic_pointer_cast<YoYInflationCoupon>(yoyCapFloor_->yoyLeg().front())
-          ->fixingDate();
-          latestDate_ =
-          boost::dynamic_pointer_cast<YoYInflationCoupon>(yoyCapFloor_->yoyLeg().back())
-          ->fixingDate();
+          earliestDate_ = boost::dynamic_pointer_cast<YoYInflationCoupon>(
+              yoyCapFloor_->yoyLeg().front())->fixingDate();
+          latestDate_ = boost::dynamic_pointer_cast<YoYInflationCoupon>(
+              yoyCapFloor_->yoyLeg().back())->fixingDate();
 
         // each reprice is resetting the inflation surf in the
         // pricer... so set the pricer
