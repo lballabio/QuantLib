@@ -306,6 +306,7 @@ namespace QuantLib {
 	FittedBondDiscountCurve::FittingMethod::discount(const Array& x, Time t) const {
 		return discountFunction(x, t);
 	}
+
 }
 
 #endif

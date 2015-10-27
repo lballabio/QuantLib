@@ -535,7 +535,7 @@ int main(int, char* []) {
                  << 100.*parRate(*ts5,keyDates,dc)  << " | "
                  // Nelson-Siegel Spreaded
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*parRate(*ts3,keyDates,dc) << endl;
+                 << 100.*parRate(*ts6,keyDates,dc) << endl;
         }
 
         cout << endl << endl << endl;

@@ -230,13 +230,6 @@ namespace QuantLib {
       method_(method), discountingCurve_(discountCurve) {
 		QL_REQUIRE(method, "Fitting method is empty");
 		QL_REQUIRE(!discountingCurve_.empty(), "Discounting curve cannot be empty");
-		//In case discount curve is given and has a different reference date,
-        //discount to this curve's reference date
-        if(curve_->referenceDate() != discountingCurve_->referenceDate()){
-            rebase_ = discountingCurve_->discount(curve_->referenceDate());
-        } else{
-            rebase_ = 1.0;
-        }
 	}
 
     std::auto_ptr<FittedBondDiscountCurve::FittingMethod>
@@ -252,5 +245,18 @@ namespace QuantLib {
 	DiscountFactor SpreadFittingMethod::discountFunction(const Array& x, Time t) const{
         return method_->discount(x, t)*discountingCurve_->discount(t, true)/rebase_;
     }
+
+	void SpreadFittingMethod::init(){
+		//In case discount curve has a different reference date,
+		//discount to this curve's reference date
+		if (curve_->referenceDate() != discountingCurve_->referenceDate()){
+			rebase_ = discountingCurve_->discount(curve_->referenceDate());
+		}
+		else{
+			rebase_ = 1.0;
+		}
+		//Call regular init
+		FittedBondDiscountCurve::FittingMethod::init();
+	}
 }
 

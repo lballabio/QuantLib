@@ -180,7 +180,9 @@ namespace QuantLib {
          SpreadFittingMethod(boost::shared_ptr<FittingMethod> method,
                         Handle<YieldTermStructure> discountCurve);
         std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
-      private:
+	protected:
+		void init();
+	  private:
         Size size() const;
         DiscountFactor discountFunction(const Array& x, Time t) const;
 		// underlying parametric method
