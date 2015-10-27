@@ -33,6 +33,15 @@
 #  include <boost/config/auto_link.hpp>
 #  undef BOOST_LIB_NAME
 
+#ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+#  define BOOST_LIB_NAME boost_system
+#  include <boost/config/auto_link.hpp>
+#  undef BOOST_LIB_NAME
+#  define BOOST_LIB_NAME boost_thread
+#  include <boost/config/auto_link.hpp>
+#  undef BOOST_LIB_NAME
+#endif
+
 /* uncomment the following lines to unmask floating-point exceptions.
    See http://www.wilmott.com/messageview.cfm?catid=10&threadid=9481
 */
@@ -133,6 +142,7 @@
 #include "noarbsabr.hpp"
 #include "nthtodefault.hpp"
 #include "numericaldifferentiation.hpp"
+#include "observable.hpp"
 #include "ode.hpp"
 #include "operators.hpp"
 #include "optimizers.hpp"
@@ -327,6 +337,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(MCLongstaffSchwartzEngineTest::suite());
     test->add(MersenneTwisterTest::suite());
     test->add(MoneyTest::suite());
+    test->add(ObservableTest::suite());
     test->add(OdeTest::suite());
     test->add(OperatorTest::suite());
     test->add(OptimizersTest::suite());

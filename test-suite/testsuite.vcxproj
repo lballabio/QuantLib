@@ -719,6 +719,7 @@
     <ClCompile Include="noarbsabr.cpp" />
     <ClCompile Include="nthtodefault.cpp" />
     <ClCompile Include="numericaldifferentiation.cpp" />
+    <ClCompile Include="observable.cpp" />
     <ClCompile Include="ode.cpp" />
     <ClCompile Include="operators.cpp" />
     <ClCompile Include="optimizers.cpp" />
@@ -856,6 +857,7 @@
     <ClInclude Include="noarbsabr.hpp" />
     <ClInclude Include="nthtodefault.hpp" />
     <ClInclude Include="numericaldifferentiation.hpp" />
+    <ClInclude Include="observable.hpp" />
     <ClInclude Include="ode.hpp" />
     <ClInclude Include="operators.hpp" />
     <ClInclude Include="optimizers.hpp" />

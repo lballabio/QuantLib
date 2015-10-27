@@ -92,6 +92,7 @@ QL_TESTS = \
 	noarbsabr.hpp noarbsabr.cpp \
 	nthtodefault.hpp nthtodefault.cpp \
 	numericaldifferentiation.hpp numericaldifferentiation.cpp \
+	observable.hpp observable.cpp \
 	ode.hpp ode.cpp \
 	operators.hpp operators.cpp \
 	optimizers.hpp optimizers.cpp \
@@ -200,11 +201,11 @@ endif
 
 quantlib_test_suite_SOURCES = ${QL_TESTS}
 quantlib_test_suite_LDADD = libUnitMain.la ${top_builddir}/ql/libQuantLib.la \
-                            -l${BOOST_UNIT_TEST_LIB}
+                            -l${BOOST_UNIT_TEST_LIB} ${BOOST_THREAD_LIB}
 
 quantlib_benchmark_SOURCES = ${QL_BENCHMARKS}
 quantlib_benchmark_LDADD = libUnitMain.la ${top_builddir}/ql/libQuantLib.la \
-                           -l${BOOST_UNIT_TEST_LIB}
+                           -l${BOOST_UNIT_TEST_LIB} ${BOOST_THREAD_LIB}
 
 TESTS = quantlib-test-suite$(EXEEXT)
 TESTS_ENVIRONMENT = BOOST_TEST_LOG_LEVEL=message
