@@ -9,6 +9,8 @@ this_include_HEADERS = \
     blackvariancesurface.hpp \
     blackvoltermstructure.hpp \
     fixedlocalvolsurface.hpp \
+    gridmodellocalvolsurface.hpp \
+    hestonblackvolsurface.hpp \
     impliedvoltermstructure.hpp \
     localconstantvol.hpp \
     localvolcurve.hpp \
@@ -21,6 +23,8 @@ libEquityFxVol_la_SOURCES = \
     blackvariancesurface.cpp \
     blackvoltermstructure.cpp \
     fixedlocalvolsurface.cpp \
+    gridmodellocalvolsurface.cpp \
+    hestonblackvolsurface.cpp \
     localvolsurface.cpp \
     localvoltermstructure.cpp
 

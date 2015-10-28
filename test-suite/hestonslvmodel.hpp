@@ -39,6 +39,8 @@ public:
     static void testBlackScholesFokkerPlanckFwdEquationLocalVol();
     static void testHestonSLVModel();
     static void testLocalVolsvSLVPropDensity();
+    static void testBarrierPricingViaHestonLocalVol();
+    static void testBarrierPricingMixedModels();
 
     static boost::unit_test_framework::test_suite* experimental();
 

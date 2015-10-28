@@ -68,7 +68,6 @@ namespace QuantLib {
 
 
         Date maxDate() const;
-        Date minDate() const;
         Time maxTime() const;
         Real minStrike() const;
         Real maxStrike() const;
@@ -87,7 +86,6 @@ namespace QuantLib {
         Volatility localVolImpl(Time t, Real strike) const;
 
         const Date maxDate_;
-        const Date minDate_;
         std::vector<Time> times_;
         const boost::shared_ptr<Matrix> localVolMatrix_;
         const std::vector<boost::shared_ptr<std::vector<Real> > > strikes_;

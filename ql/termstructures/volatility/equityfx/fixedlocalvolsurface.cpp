@@ -50,7 +50,6 @@ namespace QuantLib {
     : LocalVolTermStructure(
           referenceDate, NullCalendar(), Following, dayCounter),
       maxDate_(dates.back()),
-      minDate_(dates.front()),
       localVolMatrix_(localVolMatrix),
       strikes_(dates.size(),boost::make_shared<std::vector<Real> >(strikes)),
       localVolInterpol_(dates.size()),
@@ -79,7 +78,6 @@ namespace QuantLib {
     : LocalVolTermStructure(
           referenceDate, NullCalendar(), Following, dayCounter),
       maxDate_(time2Date(referenceDate, dayCounter, times.back())),
-      minDate_(time2Date(referenceDate, dayCounter, times.front())),
       times_(times),
       localVolMatrix_(localVolMatrix),
       strikes_(times.size(),boost::make_shared<std::vector<Real> >(strikes)),
@@ -104,7 +102,6 @@ namespace QuantLib {
     : LocalVolTermStructure(
               referenceDate, NullCalendar(), Following, dayCounter),
       maxDate_(time2Date(referenceDate, dayCounter, times.back())),
-      minDate_(time2Date(referenceDate, dayCounter, times.front())),
       times_(times),
       localVolMatrix_(localVolMatrix),
       strikes_(strikes),
@@ -143,9 +140,6 @@ namespace QuantLib {
 
     Date FixedLocalVolSurface::maxDate() const {
         return maxDate_;
-    }
-    Date FixedLocalVolSurface::minDate() const {
-        return minDate_;
     }
     Time FixedLocalVolSurface::maxTime() const {
         return times_.back();

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (static runtime)|Win32">
@@ -789,7 +789,7 @@
     <ClInclude Include="ql\instruments\bonds\floatingratebond.hpp" />
     <ClInclude Include="ql\instruments\bonds\zerocouponbond.hpp" />
     <ClInclude Include="ql\math\all.hpp" />
-    <ClInclude Include="ql\math\abcdmathfunction.hpp" />	
+    <ClInclude Include="ql\math\abcdmathfunction.hpp" />
     <ClInclude Include="ql\math\array.hpp" />
     <ClInclude Include="ql\math\autocovariance.hpp" />
     <ClInclude Include="ql\math\bernsteinpolynomial.hpp" />
@@ -1128,6 +1128,8 @@
     <ClInclude Include="ql\termstructures\iterativebootstrap.hpp" />
     <ClInclude Include="ql\termstructures\localbootstrap.hpp" />
     <ClInclude Include="ql\termstructures\volatility\equityfx\fixedlocalvolsurface.hpp" />
+    <ClInclude Include="ql\termstructures\volatility\equityfx\gridmodellocalvolsurface.hpp" />
+    <ClInclude Include="ql\termstructures\volatility\equityfx\hestonblackvolsurface.hpp" />
     <ClInclude Include="ql\termstructures\volatility\equityfx\noexceptlocalvolsurface.hpp" />
     <ClInclude Include="ql\termstructures\voltermstructure.hpp" />
     <ClInclude Include="ql\termstructures\yieldtermstructure.hpp" />
@@ -1744,7 +1746,6 @@
     <ClInclude Include="ql\volatilitymodel.hpp" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <ClCompile Include="ql\experimental\finitedifferences\bsmrndcalculator.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmhestongreensfct.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmlocalvolfwdop.cpp" />
@@ -1753,10 +1754,8 @@
     <ClCompile Include="ql\experimental\finitedifferences\riskneutraldensitycalculator.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\squarerootprocessrndcalculator.cpp" />
     <ClCompile Include="ql\experimental\models\hestonslvmodel.cpp" />
-=======
     <ClCompile Include="ql\math\polynomialmathfunction.cpp" />
     <ClCompile Include="ql\math\pascaltriangle.cpp" />
->>>>>>> 1b08087cd0a38a26bf84e25e9e110508b2153ab9
     <ClCompile Include="ql\rebatedexercise.cpp" />
     <ClInclude Include="ql\experimental\finitedifferences\all.hpp" />
     <ClCompile Include="ql\experimental\finitedifferences\dynprogvppintrinsicvalueengine.cpp" />
@@ -2174,6 +2173,8 @@
     <ClCompile Include="ql\termstructures\defaulttermstructure.cpp" />
     <ClCompile Include="ql\termstructures\inflationtermstructure.cpp" />
     <ClCompile Include="ql\termstructures\volatility\equityfx\fixedlocalvolsurface.cpp" />
+    <ClCompile Include="ql\termstructures\volatility\equityfx\gridmodellocalvolsurface.cpp" />
+    <ClCompile Include="ql\termstructures\volatility\equityfx\hestonblackvolsurface.cpp" />
     <ClCompile Include="ql\termstructures\voltermstructure.cpp" />
     <ClCompile Include="ql\termstructures\yieldtermstructure.cpp" />
     <ClCompile Include="ql\termstructures\volatility\abcd.cpp" />

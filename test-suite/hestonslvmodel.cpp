@@ -28,21 +28,29 @@
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <ql/instruments/barrieroption.hpp>
 #include <ql/math/distributions/gammadistribution.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/integrals/discreteintegrals.hpp>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
+#include <ql/models/equity/hestonmodelhelper.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
 #include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
+#include <ql/termstructures/volatility/equityfx/gridmodellocalvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
+#include <ql/termstructures/volatility/equityfx/localvolsurface.hpp>
+#include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
+#include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>
+#include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
@@ -1612,7 +1620,234 @@ void HestonSLVModelTest::testLocalVolsvSLVPropDensity() {
             }
         }
     }
+}
 
+
+void HestonSLVModelTest::testBarrierPricingViaHestonLocalVol() {
+    BOOST_TEST_MESSAGE("Testing calibration via vanilla options...");
+
+    SavedSettings backup;
+    const DayCounter dc = ActualActual();
+    const Date todaysDate(5, Nov, 2015);
+    Settings::instance().evaluationDate() = todaysDate;
+
+    const Real s0 = 100;
+    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(s0));
+    const Rate r = 0.1;
+    const Rate q = 0.025;
+
+    const Real kappa =  2.0;
+    const Real theta =  0.09;
+    const Real rho   = -0.75;
+    const Real sigma =  0.8;
+    const Real v0    =  0.19;
+
+    const Handle<YieldTermStructure> rTS(flatRate(r, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(q, dc));
+
+    const boost::shared_ptr<HestonProcess> hestonProcess(
+        new HestonProcess(rTS, qTS, spot, v0, kappa, theta, sigma, rho));
+
+    const Handle<HestonModel> hestonModel(
+        boost::make_shared<HestonModel>(hestonProcess));
+
+    const Handle<BlackVolTermStructure> surf(
+        boost::make_shared<HestonBlackVolSurface>(hestonModel));
+
+    const Real strikeValues[] = { 50, 75, 100, 125, 150, 200, 400 };
+    const Period maturities[] = {
+        Period(1, Months), Period(2,Months),
+        Period(3, Months), Period(4, Months),
+        Period(5, Months), Period(6, Months),
+        Period(9, Months), Period(1, Years),
+        Period(18, Months), Period(2, Years),
+        Period(3, Years), Period(5, Years) };
+
+    const boost::shared_ptr<LocalVolSurface> localVolSurface(
+        new LocalVolSurface(surf, rTS, qTS, spot));
+
+    const boost::shared_ptr<PricingEngine> hestonEngine(
+        new AnalyticHestonEngine(hestonModel.currentLink(), 164));
+
+    for (Size i=0; i < LENGTH(strikeValues); ++i) {
+        for (Size j=0; j < LENGTH(maturities); ++j) {
+            const Real strike = strikeValues[i];
+            const Date exerciseDate = todaysDate+maturities[j];
+            const Time t = dc.yearFraction(todaysDate, exerciseDate);
+
+            const Volatility impliedVol = surf->blackVol(t, strike, true);
+
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>
+                bsProcess(new GeneralizedBlackScholesProcess(
+                    spot, qTS, rTS,
+                    Handle<BlackVolTermStructure>(flatVol(impliedVol, dc))));
+
+            const boost::shared_ptr<PricingEngine> analyticEngine(
+                new AnalyticEuropeanEngine(bsProcess));
+
+            const boost::shared_ptr<Exercise> exercise(
+                new EuropeanExercise(exerciseDate));
+            const boost::shared_ptr<StrikedTypePayoff> payoff(
+                new PlainVanillaPayoff(
+                    spot->value() < strike ? Option::Call : Option::Put,
+                    strike));
+
+            const boost::shared_ptr<PricingEngine> localVolEngine(
+                new FdBlackScholesVanillaEngine(bsProcess, 201, 801, 0,
+                    FdmSchemeDesc::Douglas(), true));
+
+            VanillaOption option(payoff, exercise);
+
+            option.setPricingEngine(analyticEngine);
+            const Real analyticNPV = option.NPV();
+
+            option.setPricingEngine(hestonEngine);
+            const Real hestonNPV = option.NPV();
+
+            option.setPricingEngine(localVolEngine);
+            const Real localVolNPV = option.NPV();
+
+            const Real tol = 1e-3;
+            if (std::fabs(analyticNPV - hestonNPV) > tol)
+                BOOST_ERROR("Heston and BS price do not match "
+                        << "\n  Heston :       " << hestonNPV
+                        << "\n  Black-Scholes: " << analyticNPV
+                        << "\n  diff :   "
+                        << std::fabs(analyticNPV - hestonNPV));
+
+            if (std::fabs(analyticNPV - localVolNPV) > tol)
+                BOOST_ERROR("LocalVol and BS price do not match "
+                        << "\n  LocalVol :     " << localVolNPV
+                        << "\n  Black-Scholes: " << analyticNPV
+                        << "\n  diff :   "
+                        << std::fabs(analyticNPV - localVolNPV));
+        }
+    }
+}
+
+void HestonSLVModelTest::testBarrierPricingMixedModels() {
+    BOOST_TEST_MESSAGE("Testing Barrier pricing with mixed models...");
+
+    SavedSettings backup;
+    const DayCounter dc = ActualActual();
+    const Date todaysDate(5, Nov, 2015);
+    const Date exerciseDate = todaysDate + Period(1, Years);
+    Settings::instance().evaluationDate() = todaysDate;
+
+    const Real s0 = 100;
+    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(s0));
+    const Rate r = 0.05;
+    const Rate q = 0.02;
+
+    const Real kappa =  2.0;
+    const Real theta =  0.09;
+    const Real rho   = -0.75;
+    const Real sigma =  0.4;
+    const Real v0    =  0.19;
+
+    const Handle<YieldTermStructure> rTS(flatRate(r, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(q, dc));
+
+    const boost::shared_ptr<HestonProcess> hestonProcess(
+        new HestonProcess(rTS, qTS, spot, v0, kappa, theta, sigma, rho));
+
+    const Handle<HestonModel> hestonModel(
+        boost::make_shared<HestonModel>(hestonProcess));
+
+    const Handle<BlackVolTermStructure> impliedVolSurf(
+        boost::make_shared<HestonBlackVolSurface>(hestonModel));
+
+    const Handle<LocalVolTermStructure> localVolSurf(
+        boost::make_shared<NoExceptLocalVolSurface>(
+            impliedVolSurf, rTS, qTS, spot, 0.3));
+
+    const boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
+        boost::make_shared<GeneralizedBlackScholesProcess>(
+            spot, qTS, rTS, impliedVolSurf));
+
+    const boost::shared_ptr<Exercise> exercise(
+        boost::make_shared<EuropeanExercise>(exerciseDate));
+    const boost::shared_ptr<StrikedTypePayoff> payoff(
+        boost::make_shared<PlainVanillaPayoff>(Option::Put, s0));
+
+    const boost::shared_ptr<PricingEngine> hestonEngine(
+        boost::make_shared<FdHestonBarrierEngine>(
+            hestonModel.currentLink(), 26, 101, 51));
+
+    const boost::shared_ptr<PricingEngine> localEngine(
+        boost::make_shared<FdBlackScholesBarrierEngine>(
+            bsProcess, 26, 101, 0, FdmSchemeDesc::Douglas(), true, 0.3));
+
+    const Real barrier = 10.0;
+    BarrierOption barrierOption(
+        Barrier::DownOut, barrier, 0.0, payoff, exercise);
+
+    barrierOption.setPricingEngine(hestonEngine);
+    const Real hestonDeltaCalculated = barrierOption.delta();
+
+    barrierOption.setPricingEngine(localEngine);
+    const Real localDeltaCalculated = barrierOption.delta();
+
+    const Real localDeltaExpected =  -0.439068;
+    const Real hestonDeltaExpected = -0.342059;
+    const Real tol = 0.0001;
+    if (std::fabs(hestonDeltaExpected - hestonDeltaCalculated) > tol) {
+        BOOST_ERROR("Heston Delta does not match"
+                << "\n calculated : " << hestonDeltaCalculated
+                << "\n expected   : " << hestonDeltaExpected);
+    }
+    if (std::fabs(localDeltaExpected - localDeltaCalculated) > tol) {
+        BOOST_ERROR("Local Vol Delta does not match"
+                << "\n calculated : " << localDeltaCalculated
+                << "\n expected   : " << localDeltaExpected);
+    }
+
+    const HestonSLVFokkerPlanckFdmParams params =
+        { 51, 201, 1000, 100, 3.0, 2,
+          0.1, 1e-4, 10000,
+          1e-8, 1e-8, 0.0, 1.0, 1.0, 1.0, 1e-6,
+          FdmHestonGreensFct::Gaussian,
+          FdmSquareRootFwdOp::Plain,
+          FdmSchemeDesc::ModifiedCraigSneyd()
+        };
+
+    const Real eta[] = { 0.1, 0.2, 0.3, 0.4,
+                         0.5, 0.6, 0.7, 0.8, 0.9, 1.0 };
+
+    const Real slvDeltaExpected[] = {
+        -0.429475, -0.419749, -0.410055, -0.400339,
+        -0.390616, -0.380888, -0.371156, -0.361425,
+        -0.351699, -0.341995 };
+
+    for (Size i=0; i < LENGTH(eta); ++i) {
+        const Handle<HestonModel> modHestonModel(
+            boost::make_shared<HestonModel>(
+                boost::make_shared<HestonProcess>(
+                    rTS, qTS, spot, v0, kappa, theta, eta[i]*sigma, rho)));
+
+        const HestonSLVModel slvModel(
+            localVolSurf, modHestonModel, exerciseDate, params);
+
+        const boost::shared_ptr<LocalVolTermStructure>
+            leverageFct = slvModel.leverageFunction();
+
+        const boost::shared_ptr<PricingEngine> slvEngine(
+            boost::make_shared<FdHestonBarrierEngine>(
+                modHestonModel.currentLink(), 201, 801, 201, 0,
+                FdmSchemeDesc::Hundsdorfer(), leverageFct));
+
+        BarrierOption barrierOption(
+            Barrier::DownOut, barrier, 0.0, payoff, exercise);
+
+        barrierOption.setPricingEngine(slvEngine);
+        const Real slvDeltaCalculated = barrierOption.delta();
+
+        if (std::fabs(slvDeltaExpected[i] - slvDeltaCalculated) > tol) {
+            BOOST_ERROR("Stochastic Local Vol Delta does not match"
+                    << "\n calculated : " << slvDeltaCalculated
+                    << "\n expected   : " << slvDeltaExpected);
+        }
+    }
 }
 
 test_suite* HestonSLVModelTest::experimental() {
@@ -1635,12 +1870,16 @@ test_suite* HestonSLVModelTest::experimental() {
         &HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage));
     suite->add(QUANTLIB_TEST_CASE(
         &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testBarrierPricingViaHestonLocalVol));
 
 //    these test takes very long
 //    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testHestonSLVModel));
-
 //    suite->add(QUANTLIB_TEST_CASE(
 //        &HestonSLVModelTest::testLocalVolsvSLVPropDensity));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testBarrierPricingMixedModels));
+
 
     return suite;
 }
