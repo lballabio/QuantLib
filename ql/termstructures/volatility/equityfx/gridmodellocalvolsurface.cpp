@@ -93,8 +93,6 @@ namespace QuantLib {
                        localVolMatrix->begin(),
                        boost::bind(&Parameter::operator(), _1, 0.0));
 
-        std::cout << transpose(*localVolMatrix) << std::endl;
-
         localVol_ = boost::make_shared<FixedLocalVolSurface>(
                 referenceDate_,
                 times_,
