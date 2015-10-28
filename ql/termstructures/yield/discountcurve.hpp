@@ -3,7 +3,8 @@
 /*
  Copyright (C) 2002, 2003 Decillion Pty(Ltd)
  Copyright (C) 2005, 2006, 2008, 2009 StatPro Italia srl
- Copyright (C) 2009 Ferdinando Ametrano
+ Copyright (C) 2009, 2015 Ferdinando Ametrano
+ Copyright (C) 2015 Paolo Mazzocchi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -113,6 +114,8 @@ namespace QuantLib {
 
     template <class T>
     inline Date InterpolatedDiscountCurve<T>::maxDate() const {
+        if (this->maxDate_ != Date())
+            return this->maxDate_;
         return dates_.back();
     }
 
