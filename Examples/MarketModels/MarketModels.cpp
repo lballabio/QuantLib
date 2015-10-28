@@ -44,6 +44,19 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 using namespace QuantLib;
 
+#ifdef BOOST_MSVC
+#  ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+#    include <ql/auto_link.hpp>
+#    define BOOST_LIB_NAME boost_system
+#    include <boost/config/auto_link.hpp>
+#    undef BOOST_LIB_NAME
+#    define BOOST_LIB_NAME boost_thread
+#    include <boost/config/auto_link.hpp>
+#    undef BOOST_LIB_NAME
+#  endif
+#endif
+
+
 #if defined(QL_ENABLE_SESSIONS)
 namespace QuantLib {
 

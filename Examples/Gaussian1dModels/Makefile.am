@@ -8,7 +8,7 @@ else
 noinst_PROGRAMS = Gaussian1dModels
 endif
 Gaussian1dModels_SOURCES = Gaussian1dModels.cpp
-Gaussian1dModels_LDADD = ../../ql/libQuantLib.la
+Gaussian1dModels_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     Gaussian1dModels.dev \
