@@ -64,7 +64,7 @@ Rate parRate(const YieldTermStructure& yts,
     Time dt;
     for (Size i=1; i<dates.size(); ++i) {
         dt = resultDayCounter.yearFraction(dates[i-1], dates[i]);
-        QL_REQUIRE(dt>0.0, "unsorted dates");
+        QL_REQUIRE(dt>=0.0, "unsorted dates");
         sum += yts.discount(dates[i]) * dt;
     }
     Real result = yts.discount(dates.front()) - yts.discount(dates.back());
