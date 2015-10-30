@@ -281,8 +281,9 @@ Handle<YieldTermStructure> getDiscountCurve(){
     depoFRASwapInstruments.push_back(s5y);
     depoFRASwapInstruments.push_back(s10y);
     depoFRASwapInstruments.push_back(s15y);
-    return Handle<YieldTermStructure>(boost::make_shared<PiecewiseYieldCurve<Discount,LogLinear> >(
-                                       settlementDate, depoFRASwapInstruments,
+    return Handle<YieldTermStructure>(
+        boost::make_shared<PiecewiseYieldCurve<Discount,LogLinear> >(
+                                       0, calendar, depoFRASwapInstruments,
                                        termStructureDayCounter,
                                        tolerance));
 }
@@ -562,6 +563,8 @@ int main(int, char* []) {
 
         printOutput("(e) Svensson", ts5);
 
+        printOutput("(f) Nelson-Siegel spreaded", ts6);
+
         cout << endl
              << endl;
 
@@ -572,7 +575,9 @@ int main(int, char* []) {
              << setw(6) << "(a)" << " | "
              << setw(6) << "(b)" << " | "
              << setw(6) << "(c)" << " | "
-             << setw(6) << "(d)" << endl;
+             << setw(6) << "(d)" << " | "
+             << setw(6) << "(e)" << " | "
+             << setw(6) << "(f)" << endl;
 
         for (Size i=0; i<instrumentsA.size(); i++) {
 
@@ -612,7 +617,10 @@ int main(int, char* []) {
                  << 100.*parRate(*ts4,keyDates,dc) << " | "
                  // Svensson
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*parRate(*ts5,keyDates,dc) << endl;
+                 << 100.*parRate(*ts5,keyDates,dc) << " | "
+                 // Nelson-Siegel Spreaded
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*parRate(*ts6,keyDates,dc) << endl;
         }
 
         cout << endl << endl << endl;
@@ -696,6 +704,16 @@ int main(int, char* []) {
 
         printOutput("(e) Svensson", ts55);
 
+        boost::shared_ptr<FittedBondDiscountCurve> ts66 (
+                        new FittedBondDiscountCurve(curveSettlementDays,
+                                                    calendar,
+                                                    instrumentsA,
+                                                    dc,
+                                                    nelsonSiegelSpread,
+                                                    tolerance,
+                                                    max));
+
+        printOutput("(f) Nelson-Siegel spreaded", ts66);
 
         cout << setw(6) << "tenor" << " | "
              << setw(6) << "coupon" << " | "
@@ -704,7 +722,8 @@ int main(int, char* []) {
              << setw(6) << "(b)" << " | "
              << setw(6) << "(c)" << " | "
              << setw(6) << "(d)" << " | "
-             << setw(6) << "(e)" << endl;
+             << setw(6) << "(e)" << " | "
+             << setw(6) << "(f)" << endl;
 
         for (Size i=0; i<instrumentsA.size(); i++) {
 
@@ -744,7 +763,10 @@ int main(int, char* []) {
                  << 100.*parRate(*ts44,keyDates,dc) << " | "
                  // Svensson
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*parRate(*ts55,keyDates,dc) << endl;
+                 << 100.*parRate(*ts55,keyDates,dc) << " | "
+                 // Nelson-Siegel Spreaded
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*parRate(*ts66,keyDates,dc) << endl;
         }
 
 
@@ -782,7 +804,8 @@ int main(int, char* []) {
              << setw(6) << "(b)" << " | "
              << setw(6) << "(c)" << " | "
              << setw(6) << "(d)" << " | "
-             << setw(6) << "(e)" << endl;
+             << setw(6) << "(e)" << " | "
+             << setw(6) << "(f)" << endl;
 
         for (Size i=0; i<instrumentsA.size(); i++) {
 
@@ -822,7 +845,10 @@ int main(int, char* []) {
                  << 100.*parRate(*ts44,keyDates,dc) << " | "
                  // Svensson
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*parRate(*ts55,keyDates,dc) << endl;
+                 << 100.*parRate(*ts55,keyDates,dc) << " | "
+                 // Nelson-Siegel Spreaded
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*parRate(*ts66,keyDates,dc) << endl;
         }
 
 
