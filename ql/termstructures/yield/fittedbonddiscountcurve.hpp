@@ -234,6 +234,8 @@ namespace QuantLib {
         void calculate();
         // array of normalized (duration) weights, one for each bond helper
         Array weights_;
+        // whether or not the weights should be calculated internally
+        bool calculateWeights_;
         // total number of iterations used in the optimization routine
         // (possibly including gradient evaluations)
         Integer numberOfIterations_;
