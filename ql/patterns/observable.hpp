@@ -307,14 +307,12 @@ namespace QuantLib {
 #include <boost/thread/locks.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/recursive_mutex.hpp>
-#include <boost/signals2/signal_type.hpp>
 #include <boost/smart_ptr/owner_less.hpp>
 #include <boost/enable_shared_from_this.hpp>
 
 #include <set>
 
 namespace QuantLib {
-
     class Observable;
     class ObservableSettings;
 
@@ -389,6 +387,10 @@ namespace QuantLib {
         set_type observables_;
     };
 
+	namespace detail {
+		class Signal;
+	}
+
     //! Object that notifies its changes to a set of observers
     /*! \ingroup patterns */
     class Observable {
@@ -411,12 +413,7 @@ namespace QuantLib {
         void registerObserver(const boost::shared_ptr<Observer::Proxy>&);
         void unregisterObserver(const boost::shared_ptr<Observer::Proxy>&);
 
-        typedef boost::signals2::signal_type<
-            void(),
-            boost::signals2::keywords::mutex_type<boost::recursive_mutex> >
-            ::type signal_type;
-
-        signal_type sig_;
+        boost::shared_ptr<detail::Signal> sig_;
 
         set_type observers_;
         mutable boost::recursive_mutex mutex_;
@@ -500,22 +497,14 @@ namespace QuantLib {
         }
     }
 
-    inline Observable::Observable()
-    : settings_(ObservableSettings::instance()) {}
-
-    inline Observable::Observable(const Observable&)
-    : settings_(ObservableSettings::instance()) {
-        // the observer set is not copied; no observer asked to
-        // register with this object
-    }
 
     /*! \warning notification is sent before the copy constructor has
-                 a chance of actually change the data
-                 members. Therefore, observers whose update() method
-                 tries to use their observables will not see the
-                 updated values. It is suggested that the update()
-                 method just raise a flag in order to trigger
-                a later recalculation.
+             a chance of actually change the data
+             members. Therefore, observers whose update() method
+             tries to use their observables will not see the
+             updated values. It is suggested that the update()
+             method just raise a flag in order to trigger
+            a later recalculation.
     */
     inline Observable& Observable::operator=(const Observable& o) {
         // as above, the observer set is not copied. Moreover,
@@ -524,54 +513,6 @@ namespace QuantLib {
             notifyObservers();
         return *this;
     }
-
-    inline void Observable::registerObserver(
-        const boost::shared_ptr<Observer::Proxy>& observerProxy) {
-        {
-            boost::lock_guard<boost::recursive_mutex> lock(mutex_);
-            observers_.insert(observerProxy);
-        }
-
-        signal_type::slot_type slot(&Observer::Proxy::update,
-                                    observerProxy.get());
-        sig_.connect(slot.track(observerProxy));
-    }
-
-    inline void Observable::unregisterObserver(
-        const boost::shared_ptr<Observer::Proxy>& observerProxy) {
-        {
-            boost::lock_guard<boost::recursive_mutex> lock(mutex_);
-            observers_.erase(observerProxy);
-        }
-
-        if (settings_.updatesDeferred()) {
-            boost::lock_guard<boost::mutex> sLock(settings_.mutex_);
-            if (settings_.updatesDeferred()) {
-                settings_.unregisterDeferredObserver(observerProxy);
-            }
-        }
-
-        sig_.disconnect(boost::bind(&Observer::Proxy::update,
-                        observerProxy.get()));
-    }
-
-    inline void Observable::notifyObservers() {
-        if (settings_.updatesEnabled()) {
-            return sig_();
-        }
-
-        boost::lock_guard<boost::mutex> sLock(settings_.mutex_);
-        if (settings_.updatesEnabled()) {
-            return sig_();
-        }
-        else if (settings_.updatesDeferred()) {
-            boost::lock_guard<boost::recursive_mutex> lock(mutex_);
-            // if updates are only deferred, flag this for later notification
-            // these are held centrally by the settings singleton
-            settings_.registerDeferredObservers(observers_);
-        }
-    }
-
 
     inline Observer::Observer(const Observer& o) {
         proxy_.reset(new Proxy(this));
