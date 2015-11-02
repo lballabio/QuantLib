@@ -18,8 +18,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <boost/make_shared.hpp>
-
 #include <ql/termstructures/yield/fittedbonddiscountcurve.hpp>
 #include <ql/pricingengines/bond/bondfunctions.hpp>
 #include <ql/math/optimization/simplex.hpp>
@@ -28,6 +26,7 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/time/daycounters/simpledaycounter.hpp>
+#include <boost/make_shared.hpp>
 
 using boost::shared_ptr;
 using std::vector;
