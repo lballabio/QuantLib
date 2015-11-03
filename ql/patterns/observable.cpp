@@ -19,15 +19,82 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
 
-#include <ql/qldefines.hpp>
-
-#ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
-
 #include <ql/patterns/observable.hpp>
+
+#ifndef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+
+namespace QuantLib {
+
+    void ObservableSettings::enableUpdates() {
+        updatesEnabled_  = true;
+        updatesDeferred_ = false;
+
+        // if there are outstanding deferred updates, do the notification
+        if (deferredObservers_.size()) {
+            bool successful = true;
+            std::string errMsg;
+
+            for (iterator i=deferredObservers_.begin();
+                i!=deferredObservers_.end(); ++i) {
+                try {
+                    (*i)->update();
+                } catch (std::exception& e) {
+                    successful = false;
+                    errMsg = e.what();
+                } catch (...) {
+                    successful = false;
+                }
+            }
+
+            deferredObservers_.clear();
+
+            QL_ENSURE(successful,
+                  "could not notify one or more observers: " << errMsg);
+        }
+    }
+
+
+    void Observable::notifyObservers() {
+        if (!settings_.updatesEnabled()) {
+            // if updates are only deferred, flag this for later notification
+            // these are held centrally by the settings singleton
+            settings_.registerDeferredObservers(observers_);
+        }
+        else if (observers_.size()) {
+            bool successful = true;
+            std::string errMsg;
+            for (iterator i=observers_.begin(); i!=observers_.end(); ++i) {
+                try {
+                    (*i)->update();
+                } catch (std::exception& e) {
+                    // quite a dilemma. If we don't catch the exception,
+                    // other observers will not receive the notification
+                    // and might be left in an incorrect state. If we do
+                    // catch it and continue the loop (as we do here) we
+                    // lose the exception. The least evil might be to try
+                    // and notify all observers, while raising an
+                    // exception if something bad happened.
+                    successful = false;
+                    errMsg = e.what();
+                } catch (...) {
+                    successful = false;
+                }
+            }
+            QL_ENSURE(successful,
+                  "could not notify one or more observers: " << errMsg);
+        }
+    }
+
+}
+
+#else
+
 #include <boost/signals2/signal_type.hpp>
 
 namespace QuantLib {
+
     namespace detail {
+
         class Signal {
           public:
             typedef boost::signals2::signal_type<
@@ -50,6 +117,7 @@ namespace QuantLib {
           private:
             signal_type sig_;
         };
+
     }
 
     void Observable::registerObserver(
@@ -109,5 +177,7 @@ namespace QuantLib {
         // the observer set is not copied; no observer asked to
         // register with this object
     }
+
 }
+
 #endif

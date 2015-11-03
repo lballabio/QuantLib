@@ -39,7 +39,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 #ifndef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
 
-// Boost libraries prio to 1.47 have a bug in the hash function,
+// Boost libraries prior to 1.47 have a bug in the hash function,
 // which makes boost::unordered_set very inefficient if the key is of type
 // boost::shared_ptr. In this case fall back to std::set.
 #if BOOST_VERSION < 104700
@@ -143,6 +143,7 @@ namespace QuantLib {
 
 
     // inline definitions
+
     inline void ObservableSettings::registerDeferredObservers(
         const boost::unordered_set<Observer*>& observers) {
         if (updatesDeferred()) {
@@ -152,34 +153,6 @@ namespace QuantLib {
 
     inline void ObservableSettings::unregisterDeferredObserver(Observer* o) {
         deferredObservers_.erase(o);
-    }
-
-    inline void ObservableSettings::enableUpdates() {
-        updatesEnabled_  = true;
-        updatesDeferred_ = false;
-
-        // if there are outstanding deferred updates, do the notification
-        if (deferredObservers_.size()) {
-            bool successful = true;
-            std::string errMsg;
-
-            for (iterator i=deferredObservers_.begin();
-                i!=deferredObservers_.end(); ++i) {
-                try {
-                    (*i)->update();
-                } catch (std::exception& e) {
-                    successful = false;
-                    errMsg = e.what();
-                } catch (...) {
-                    successful = false;
-                }
-            }
-
-            deferredObservers_.clear();
-
-            QL_ENSURE(successful,
-                  "could not notify one or more observers: " << errMsg);
-        }
     }
 
     inline Observable::Observable(const Observable&)
@@ -214,37 +187,6 @@ namespace QuantLib {
             settings_.unregisterDeferredObserver(o);
 
         return observers_.erase(o);
-    }
-
-    inline void Observable::notifyObservers() {
-        if (!settings_.updatesEnabled()) {
-            // if updates are only deferred, flag this for later notification
-            // these are held centrally by the settings singleton
-            settings_.registerDeferredObservers(observers_);
-        }
-        else if (observers_.size()) {
-            bool successful = true;
-            std::string errMsg;
-            for (iterator i=observers_.begin(); i!=observers_.end(); ++i) {
-                try {
-                    (*i)->update();
-                } catch (std::exception& e) {
-                    // quite a dilemma. If we don't catch the exception,
-                    // other observers will not receive the notification
-                    // and might be left in an incorrect state. If we do
-                    // catch it and continue the loop (as we do here) we
-                    // lose the exception. The least evil might be to try
-                    // and notify all observers, while raising an
-                    // exception if something bad happened.
-                    successful = false;
-                    errMsg = e.what();
-                } catch (...) {
-                    successful = false;
-                }
-            }
-            QL_ENSURE(successful,
-                  "could not notify one or more observers: " << errMsg);
-        }
     }
 
 
@@ -299,6 +241,7 @@ namespace QuantLib {
             (*i)->unregisterObserver(this);
         observables_.clear();
     }
+
 }
 
 #else
@@ -309,10 +252,10 @@ namespace QuantLib {
 #include <boost/thread/recursive_mutex.hpp>
 #include <boost/smart_ptr/owner_less.hpp>
 #include <boost/enable_shared_from_this.hpp>
-
 #include <set>
 
 namespace QuantLib {
+
     class Observable;
     class ObservableSettings;
 
@@ -456,6 +399,7 @@ namespace QuantLib {
 
 
     // inline definitions
+
     inline void ObservableSettings::registerDeferredObservers(
         const Observable::set_type& observers) {
         deferredObservers_.insert(observers.begin(), observers.end());
