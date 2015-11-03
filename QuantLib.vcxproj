@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (static runtime)|Win32">
@@ -781,7 +781,7 @@
     <ClInclude Include="ql\instruments\bonds\floatingratebond.hpp" />
     <ClInclude Include="ql\instruments\bonds\zerocouponbond.hpp" />
     <ClInclude Include="ql\math\all.hpp" />
-    <ClInclude Include="ql\math\abcdmathfunction.hpp" />	
+    <ClInclude Include="ql\math\abcdmathfunction.hpp" />
     <ClInclude Include="ql\math\array.hpp" />
     <ClInclude Include="ql\math\autocovariance.hpp" />
     <ClInclude Include="ql\math\bernsteinpolynomial.hpp" />
@@ -1736,6 +1736,7 @@
   <ItemGroup>
     <ClCompile Include="ql\math\polynomialmathfunction.cpp" />
     <ClCompile Include="ql\math\pascaltriangle.cpp" />
+    <ClCompile Include="ql\patterns\observable.cpp" />
     <ClCompile Include="ql\rebatedexercise.cpp" />
     <ClInclude Include="ql\experimental\finitedifferences\all.hpp" />
     <ClCompile Include="ql\experimental\finitedifferences\dynprogvppintrinsicvalueengine.cpp" />

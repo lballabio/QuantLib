@@ -3575,6 +3575,10 @@
 				>
 			</File>
 			<File
+				RelativePath="ql\patterns\observable.cpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\patterns\observable.hpp"
 				>
 			</File>
