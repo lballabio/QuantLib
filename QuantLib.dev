@@ -20866,3 +20866,13 @@ Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
+
+[Unit2081]
+FileName=ql\patterns\observable.cpp
+CompileCpp=1
+Folder=patterns
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
