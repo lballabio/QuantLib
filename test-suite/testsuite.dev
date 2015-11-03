@@ -2747,3 +2747,22 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
+[Unit271]
+FileName=observable.cpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit272]
+FileName=observable.hpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=

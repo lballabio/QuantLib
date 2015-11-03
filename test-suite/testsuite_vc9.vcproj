@@ -1220,6 +1220,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\observable.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ode.cpp"
 				>
 			</File>
@@ -1758,6 +1762,10 @@
 			</File>
 			<File
 				RelativePath=".\numericaldifferentiation.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\observable.hpp"
 				>
 			</File>
 			<File
