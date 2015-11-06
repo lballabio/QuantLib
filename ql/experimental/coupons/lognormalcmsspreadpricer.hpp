@@ -40,11 +40,19 @@ namespace QuantLib {
     /*! The swap rate adjustments are computed using the given
         volatility structures for the underlyings in every case
         (w.r.t. volatility type and shift).
+
         For the bivariate spread model, the volatility type and
         the shifts can be inherited (default), or explicitly
         specified. In the latter case the type, and (if lognormal)
         the shifts must be given (or are defaulted to zero, if not
         given).
+
+        References:
+
+        Brigo, Mercurio: Interst Rate Models - Theory and Practice,
+        2nd Edition, Springer, 2006, chapter 13.6.2
+
+        http://ssrn.com/abstract=2686998
     */
 
     class LognormalCmsSpreadPricer : public CmsSpreadCouponPricer {
