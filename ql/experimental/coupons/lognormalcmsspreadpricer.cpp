@@ -97,7 +97,7 @@ namespace QuantLib {
 
     const Real LognormalCmsSpreadPricer::integrand_normal(const Real x) const {
 
-        // this is http://ssrn.com/abstract=2686998, with x = s / sqrt(2)
+        // this is http://ssrn.com/abstract=2686998, 3.20 with x = s / sqrt(2)
 
         Real s = M_SQRT2 * x;
 
