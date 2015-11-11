@@ -92,7 +92,6 @@ namespace QuantLib {
         } else if(igm==1) {
             gm=integalpha(taumin,taumax)/(0.5*integs(taumin,taumax));
         } else {
-            igm=0;
             gm=0.0;
         }
 
@@ -282,7 +281,6 @@ namespace QuantLib {
                 v2pp=v2pp-exp(gm*s)*gm*hbarr*caux;
 
                 v2p=v2p+(alpha(tmp1)-gm*0.5*sigmaq(tmp1))*v2pp;
-                v2pp=0.0;
             }
 
             v2=v2+v2p*(alpha(tmp)-gm*0.5*sigmaq(tmp))*dtp;
