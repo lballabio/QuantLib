@@ -169,8 +169,7 @@ namespace QuantLib {
               !! Function E(p,tt,a,b,gm)
               !!
             */
-            caux=v(p,tt,x,xstar,gm)+v(p,tt,x,-xstar,gm)-v(p,tt,-x,xstar,gm);
-            ccaux=ccaux-v(p,tt,-x,-xstar,gm);
+            ccaux=v(p,tt,x,xstar,gm)+v(p,tt,x,-xstar,gm)-v(p,tt,-x,xstar,gm)-v(p,tt,-x,-xstar,gm);
             auxnew=ccaux*(-kprice*exp(-xstar*0.5*(1.0-gm))+hbarr*exp(xstar*0.5*(1.0+gm)));
             v1p=v1p+auxnew;
             /*
