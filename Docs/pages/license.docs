@@ -108,15 +108,20 @@
     Copyright (C) 2012 Samuel Tebege
 
     Copyright (C) 2013 BGC Partners L.P.
-    Copyright (C) 2013, 2014 Cheng Li
+    Copyright (C) 2013, 2014, 2015 Cheng Li
     Copyright (C) 2013 Yue Tian
 
     Copyright (C) 2014 Francois Botha
-    Copyright (C) 2014 Bernd Lewerenz
+    Copyright (C) 2014, 2015 Bernd Lewerenz
     Copyright (C) 2014 Michal Kaut
     Copyright (C) 2014, 2015 Paolo Mazzocchi
     Copyright (C) 2014, 2015 Thema Consulting SA
-    Copyright (C) 2014 Michael von den Driesch
+    Copyright (C) 2014, 2015 Michael von den Driesch
+
+    Copyright (C) 2015 Riccardo Barone
+    Copyright (C) 2015 CompatibL
+    Copyright (C) 2015 Johannes Goettker-Schnetmann
+    Copyright (C) 2015 Andres Hernandez
     Copyright (C) 2015 Maddalena Zanzi
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo
