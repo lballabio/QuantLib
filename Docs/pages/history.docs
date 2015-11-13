@@ -18,6 +18,99 @@
 
 /*! \page history Version history
 
+    <strong>Release 1.7 - November 2015</strong>
+
+    INTEREST RATES
+    - Added rate helper to bootstrap on cross-currency swaps (thanks
+      to Maddalena Zanzi). The curve to be bootstrapped can be the one
+      for either of the two currencies.
+    - Added the possibility for bootstrap helpers to define their
+      pillar date in different ways (thanks to Paolo Mazzocchi).  For
+      each helper, the date of the corresponding node can be defined
+      as the maturity date of the corresponding instrument, as the
+      latest date used on the term structure to price the instrument,
+      or as a custom date. Currently, the feature is enabled for FRAs
+      and swaps.
+    - Added the possibility to pass weight when fitting a bond
+      discount curve. Also, it is now possible to fit a spread over an
+      existing term structure (thanks to Andres Hernandez).
+
+    INFLATION
+    - Added Kerkhof seasonality model (thanks to Bernd Lewerenz).
+    - Retrieve inflation fixings from the first day of the month
+      (thanks to Gerardo Ballabio). This avoids the need to store them
+      for each day of the corresponding month.
+
+    VOLATILITY
+    - Improve consistency between caplet stripping and pricing (thanks
+      to Michael von den Driesch)
+
+    INSTRUMENTS
+    - Fixed usage of dividend yield in double-barrier formula (Thanks
+      to Dean Raf for the heads-up).
+    - Fixed perturbation formula for barrier options.
+
+    MODELS
+    - Refine update behavior of GSR model. Depending on the market
+      change, only the appropriate recalculations are performed
+      (thanks to Peter Caspers).
+    - Improve calibration of Heston model (thanks to Peter Caspers).
+
+    MONTE CARLO
+    - Added the possibility to return the estimated exercise
+      probability from a Longstaff-Schwartz engine (thanks to Giorgio
+      Pazmandi).
+
+    SETTINGS
+    - Added the possibility to temporarily disable notifications to
+      observers (thanks to Chris Higgs). When re-enabled, any pending
+      notifications are sent.
+
+    DATE/TIME
+    - Added Romanian and Israelian calendars (thanks to Riccardo
+      Barone).
+    - Added ECB reserve maintenance periods for 2016 (thanks to Paolo
+      Mazzocchi).
+    - Updated South Korean calendar until the end of 2032 (thanks to
+      Paolo Mazzocchi and Faycal El Karaa).
+    - Added new Mountain Day holiday for Japan (thanks to Aaron
+      Stephanic for the heads-up).
+    - Remove MLK day from list of US holidays before 1983 (thanks to
+      John Orford for the heads-up).
+    - Added Christmas Eve to BOVESPA holidays (thanks to Daniel Beren
+      for the heads-up).
+
+    MATH
+    - Added polynomial and abcd functions.
+    - Added Pascal triangle coefficients.
+    - Replaced home-grown implementation of incremental statistics
+      with Boost implementation (thanks to Peter Caspers).
+    - Added Goldstein line-search method (thanks to Cheng Li).
+
+    NEW OPT-IN FEATURES
+
+    These features are disabled by default and can be enabled by
+    defining a macro or passing a flag to `./configure`.  Feedback is
+    appreciated.
+
+    - Added intraday component to dates (thanks to Klaus Spanderen).
+      Date specifications now include hours, minutes, seconds,
+      milliseconds and microseconds.  Day counters are aware of the
+      added data and include them in results.
+      The feature can be enabled by uncommenting the
+      `QL_HIGH_RESOLUTION_DATE` macro in `ql/userconfig.hpp` on Visual
+      C++ or by passing the `--enable-intraday` flag to `./configure`
+      on other systems.
+    - Added thread-safe implementation of the Observer pattern (thanks
+      to Klaus Spanderen). This can be used to avoid crashes when
+      using QuantLib from languages (such as C# or Java) that run a
+      garbage collector in a separate thread.
+      The feature requires Boost 1.58 or later and can be enabled by
+      uncommenting the `QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN` macro
+      in `ql/userconfig.hpp` on Visual C++ or by passing the
+      `--enable-thread-safe-observer-pattern` to `./configure` on
+      other systems.
+
     <strong>Release 1.6.2 - September 2015</strong>
 
     QuantLib 1.6.2 is a compatibility release. It solves an ambiguous
