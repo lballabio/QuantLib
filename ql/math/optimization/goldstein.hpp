@@ -16,7 +16,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file Goldstein.hpp
+/*! \file goldstein.hpp
     \brief Goldstein and Price line-search class
 */
 
