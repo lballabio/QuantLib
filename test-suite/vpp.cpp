@@ -909,6 +909,7 @@ void VPPTest::testKlugeExtOUMatrixDecomposition() {
         new FdmKlugeExtOUOp(mesher, klugeOUProcess,
                             flatRate(today, 0.0, ActualActual()),
                             FdmBoundaryConditionSet(), 16));
+    op->setTime(0.1, 0.2);
 
     Array x(mesher->layout()->size());
 
