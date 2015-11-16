@@ -54,7 +54,7 @@ namespace QuantLib {
         const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> process_;
         const boost::shared_ptr<YieldTermStructure> rTS_;
         const Size tGrid_, xGrid_, yGrid_;
-        const boost::shared_ptr<Shape>& shape_;
+        const boost::shared_ptr<Shape> shape_;
         const FdmSchemeDesc schemeDesc_;
     };
 }
