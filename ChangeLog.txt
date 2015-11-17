@@ -1,3 +1,43 @@
+commit 44838ca539168ea45092e4634e857c9d07b62926
+Merge: 88496b0 d4cfe8b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 16 Nov 2015 18:06:22 +0100
+
+    Merge pull request #356.
+
+commit d4cfe8b93fb8a8488763b05a2429eedf6d47bd9d
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Mon, 16 Nov 2015 17:03:31 +0100
+
+    store shared pointer not a reference to a shared pointer in storage
+    engine
+
+ .../ql/experimental/finitedifferences/fdsimpleextoustorageengine.hpp    | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit fad76c3bb17068846a14512cbea6a3ac4a5ed26b
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Sun, 15 Nov 2015 23:01:41 +0100
+
+    set time on finite difference operator to avoid uninitialised values in
+    test case
+
+ QuantLib/test-suite/vpp.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 88496b021887b656659754c1b2964b2152f50321
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 13 Nov 2015 16:31:31 +0100
+
+    Update changelogs, news and contributors.
+
+ QuantLib/ChangeLog.txt           | 4802 +++++++++++---------------------------
+ QuantLib/Contributors.txt        |    4 +
+ QuantLib/Docs/pages/authors.docs |    4 +
+ QuantLib/Docs/pages/history.docs |   93 +
+ QuantLib/News.txt                |  123 +-
+ 5 files changed, 1539 insertions(+), 3487 deletions(-)
+
 commit 746d47a40cf6078a7ba2534ad0e9d57828835600
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Thu, 12 Nov 2015 16:38:05 +0100
