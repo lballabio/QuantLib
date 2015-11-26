@@ -79,6 +79,24 @@ namespace QuantLib {
         DiscountFactor discountFunction(const Array& x, Time t) const;
     };
 
+	//! Nelson-Siegel bounded fitting method
+	/*! Fits a Nelson-Siegel discount function
+		but the parameters are 
+	*/
+	class NelsonSiegelBoundedFitting
+		: public FittedBondDiscountCurve::FittingMethod {
+	public:
+		NelsonSiegelBoundedFitting(const Array& weights = Array(),
+			boost::shared_ptr<OptimizationMethod> optimizationMethod
+			= boost::shared_ptr<OptimizationMethod>(),
+			Real lowerKappa = 0.01, Real upperKappa = 30.0);
+		std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
+	private:
+		Real lowerKappa_, upperKappa_;
+		Size size() const;
+		DiscountFactor discountFunction(const Array& x, Time t) const;
+	};
+
 
     //! Svensson Fitting method
     /*! Fits a discount function to the form

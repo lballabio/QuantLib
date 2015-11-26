@@ -91,6 +91,35 @@ namespace QuantLib {
         return d;
     }
 
+	NelsonSiegelBoundedFitting::NelsonSiegelBoundedFitting(const Array& weights,
+		boost::shared_ptr<OptimizationMethod> optimizationMethod,
+		Real lowerKappa, Real upperKappa)
+		: FittedBondDiscountCurve::FittingMethod(true, weights, optimizationMethod),
+		lowerKappa_(lowerKappa), upperKappa_(upperKappa){}
+
+	std::auto_ptr<FittedBondDiscountCurve::FittingMethod>
+		NelsonSiegelBoundedFitting::clone() const {
+		return std::auto_ptr<FittedBondDiscountCurve::FittingMethod>(
+			new NelsonSiegelBoundedFitting(*this));
+	}
+
+	Size NelsonSiegelBoundedFitting::size() const {
+		return 4;
+	}
+
+	DiscountFactor NelsonSiegelBoundedFitting::discountFunction(const Array& x,
+		Time t) const {
+		Real kappa = lowerKappa_ + upperKappa_ / (1.0 + exp(-x[3]));
+		Real x0 = exp(x[0]),
+			x1 = 0.0 + 0.05 / (1.0 + exp(-x[1])) - x0,
+			x2 = exp(x[2]) + x1;
+		Real zeroRate = x0 + (x1 + x2)*
+			(1.0 - std::exp(-kappa*t)) /
+			((kappa + QL_EPSILON)*(t + QL_EPSILON)) -
+			x2*std::exp(-kappa*t);
+		return std::exp(-zeroRate * t);
+	}
+
 
     SvenssonFitting::SvenssonFitting(const Array& weights,
                                      boost::shared_ptr<OptimizationMethod> optimizationMethod)
