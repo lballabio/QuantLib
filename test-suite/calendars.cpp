@@ -1293,7 +1293,8 @@ void CalendarTest::testRussia()
   
   std::vector<Date> hol = Calendar::holidayList(c, 
     Date(1, January, 2012),
-    Date(31, December, 2016)); // only dates for which calendars are available
+    Date(31, December, 2016), // only dates for which calendars are available
+    true); // include week-ends since lists are exhaustive
   for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
     if (hol[i] != expectedHol[i])
       BOOST_FAIL("expected holiday was " << expectedHol[i]
