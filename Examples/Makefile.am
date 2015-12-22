@@ -8,6 +8,7 @@ SUBDIRS = \
     CallableBonds \
     CDS \
     ConvertibleBonds \
+    CVAIRS \
     DiscreteHedging \
     EquityOption \
     FittedBondCurve \

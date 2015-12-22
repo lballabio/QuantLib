@@ -75,6 +75,7 @@ Examples/Bonds/Bonds
 Examples/CDS/CDS
 Examples/CallableBonds/CallableBonds
 Examples/ConvertibleBonds/ConvertibleBonds
+Examples/CVAIRS/CVAIRS
 Examples/DiscreteHedging/DiscreteHedging
 Examples/EquityOption/EquityOption
 Examples/FRA/FRA

@@ -455,6 +455,7 @@ AC_CONFIG_FILES([
     Examples/CallableBonds/Makefile
     Examples/CDS/Makefile
     Examples/ConvertibleBonds/Makefile
+    Examples/CVAIRS/Makefile
     Examples/DiscreteHedging/Makefile
     Examples/EquityOption/Makefile
     Examples/FittedBondCurve/Makefile
