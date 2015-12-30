@@ -92,7 +92,6 @@ namespace QuantLib {
         } else if(igm==1) {
             gm=integalpha(taumin,taumax)/(0.5*integs(taumin,taumax));
         } else {
-            igm=0;
             gm=0.0;
         }
 
@@ -170,8 +169,7 @@ namespace QuantLib {
               !! Function E(p,tt,a,b,gm)
               !!
             */
-            caux=v(p,tt,x,xstar,gm)+v(p,tt,x,-xstar,gm)-v(p,tt,-x,xstar,gm);
-            ccaux=ccaux-v(p,tt,-x,-xstar,gm);
+            ccaux=v(p,tt,x,xstar,gm)+v(p,tt,x,-xstar,gm)-v(p,tt,-x,xstar,gm)-v(p,tt,-x,-xstar,gm);
             auxnew=ccaux*(-kprice*exp(-xstar*0.5*(1.0-gm))+hbarr*exp(xstar*0.5*(1.0+gm)));
             v1p=v1p+auxnew;
             /*
@@ -282,7 +280,6 @@ namespace QuantLib {
                 v2pp=v2pp-exp(gm*s)*gm*hbarr*caux;
 
                 v2p=v2p+(alpha(tmp1)-gm*0.5*sigmaq(tmp1))*v2pp;
-                v2pp=0.0;
             }
 
             v2=v2+v2p*(alpha(tmp)-gm*0.5*sigmaq(tmp))*dtp;

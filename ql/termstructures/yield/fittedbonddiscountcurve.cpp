@@ -26,6 +26,7 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/time/daycounters/simpledaycounter.hpp>
+#include <boost/make_shared.hpp>
 
 using boost::shared_ptr;
 using std::vector;
@@ -54,11 +55,13 @@ namespace QuantLib {
                  Real accuracy,
                  Size maxEvaluations,
                  const Array& guess,
-                 Real simplexLambda)
+                 Real simplexLambda,
+                 Size maxStationaryStateIterations)
     : YieldTermStructure(settlementDays, calendar, dayCounter),
       accuracy_(accuracy),
       maxEvaluations_(maxEvaluations),
       simplexLambda_(simplexLambda),
+      maxStationaryStateIterations_(maxStationaryStateIterations),
       guessSolution_(guess),
       bondHelpers_(bondHelpers),
       fittingMethod_(fittingMethod) {
@@ -76,11 +79,13 @@ namespace QuantLib {
                  Real accuracy,
                  Size maxEvaluations,
                  const Array& guess,
-                 Real simplexLambda)
+                 Real simplexLambda,
+                 Size maxStationaryStateIterations)
     : YieldTermStructure(referenceDate, Calendar(), dayCounter),
       accuracy_(accuracy),
       maxEvaluations_(maxEvaluations),
       simplexLambda_(simplexLambda),
+      maxStationaryStateIterations_(maxStationaryStateIterations),
       guessSolution_(guess),
       bondHelpers_(bondHelpers),
       fittingMethod_(fittingMethod) {
@@ -116,18 +121,20 @@ namespace QuantLib {
             bondHelpers_[i]->setTermStructure(
                                   const_cast<FittedBondDiscountCurve*>(this));
         }
-
         fittingMethod_->init();
         fittingMethod_->calculate();
     }
 
 
-    FittedBondDiscountCurve::FittingMethod::FittingMethod(bool constrainAtZero)
-    : constrainAtZero_(constrainAtZero) {}
+    FittedBondDiscountCurve::FittingMethod::FittingMethod(
+                     bool constrainAtZero,
+                     const Array& weights,
+                     boost::shared_ptr<OptimizationMethod> optimizationMethod)
+    : constrainAtZero_(constrainAtZero), weights_(weights),
+      calculateWeights_(weights.empty()), optimizationMethod_(optimizationMethod) {}
 
 
     void FittedBondDiscountCurve::FittingMethod::init() {
-
         // yield conventions
         DayCounter yieldDC = curve_->dayCounter();
         Compounding yieldComp = Compounded;
@@ -136,27 +143,11 @@ namespace QuantLib {
         Size n = curve_->bondHelpers_.size();
         costFunction_ = shared_ptr<FittingCost>(new FittingCost(this));
         costFunction_->firstCashFlow_.resize(n);
-        weights_ = Array(n);
-        Real squaredSum = 0.0;
+
         for (Size i=0; i<curve_->bondHelpers_.size(); ++i) {
             shared_ptr<Bond> bond = curve_->bondHelpers_[i]->bond();
-
-            Leg leg = bond->cashflows();
-            Real cleanPrice = curve_->bondHelpers_[i]->quote()->value();
-            
-            Date bondSettlement = bond->settlementDate();
-            Rate ytm = BondFunctions::yield(*bond, cleanPrice,
-                                            yieldDC, yieldComp, yieldFreq,
-                                            bondSettlement);
-
-            Time dur = BondFunctions::duration(*bond, ytm,
-                                               yieldDC, yieldComp, yieldFreq,
-                                               Duration::Modified,
-                                               bondSettlement);
-            weights_[i] = 1.0/dur;
-            squaredSum += weights_[i]*weights_[i];
-
             const Leg& cf = bond->cashflows();
+            Date bondSettlement = bond->settlementDate();
             for (Size k=0; k<cf.size(); ++k) {
                 if (!cf[k]->hasOccurred(bondSettlement, false)) {
                     costFunction_->firstCashFlow_[i] = k;
@@ -164,10 +155,35 @@ namespace QuantLib {
                 }
             }
         }
-        weights_ /= std::sqrt(squaredSum);
 
+        if (calculateWeights_) {
+            if (weights_.empty())
+                weights_ = Array(n);
+
+            Real squaredSum = 0.0;
+            for (Size i=0; i<curve_->bondHelpers_.size(); ++i) {
+                shared_ptr<Bond> bond = curve_->bondHelpers_[i]->bond();
+
+                Real cleanPrice = curve_->bondHelpers_[i]->quote()->value();
+
+                Date bondSettlement = bond->settlementDate();
+                Rate ytm = BondFunctions::yield(*bond, cleanPrice,
+                                                yieldDC, yieldComp, yieldFreq,
+                                                bondSettlement);
+
+                Time dur = BondFunctions::duration(*bond, ytm,
+                                                   yieldDC, yieldComp, yieldFreq,
+                                                   Duration::Modified,
+                                                   bondSettlement);
+                weights_[i] = 1.0/dur;
+                squaredSum += weights_[i]*weights_[i];
+            }
+            weights_ /= std::sqrt(squaredSum);
+        }
+
+        QL_REQUIRE(weights_.size() == n,
+                   "Given weights do not cover all boostrapping helpers");
     }
-
 
     void FittedBondDiscountCurve::FittingMethod::calculate() {
 
@@ -180,21 +196,34 @@ namespace QuantLib {
             x = curve_->guessSolution_;
         }
 
-        Simplex simplex(curve_->simplexLambda_);
-        Problem problem(costFunction, constraint, x);
+		if(curve_->maxEvaluations_ == 0)
+		{
+			//Don't calculate, simply use given parameters to provide a fitted curve.
+			//This turns the fittedbonddiscountcurve into an evaluator of the parametric
+			//curve, for example allowing to use the parameters for a credit spread curve
+			//calculated with bonds in one currency to be coupled to a discount curve in 
+			//another currency. 
+			return;
+		}
+		
+        //workaround for backwards compatibility
+        boost::shared_ptr<OptimizationMethod> optimization = optimizationMethod_;
+        if(!optimization){
+		    optimization = boost::make_shared<Simplex>(curve_->simplexLambda_);
+		}
+		Problem problem(costFunction, constraint, x);
 
-        Natural maxStationaryStateIterations = 100;
-        Real rootEpsilon = curve_->accuracy_;
+		Real rootEpsilon = curve_->accuracy_;
         Real functionEpsilon =  curve_->accuracy_;
         Real gradientNormEpsilon = curve_->accuracy_;
 
         EndCriteria endCriteria(curve_->maxEvaluations_,
-                                maxStationaryStateIterations,
+                                curve_->maxStationaryStateIterations_,
                                 rootEpsilon,
                                 functionEpsilon,
                                 gradientNormEpsilon);
 
-        simplex.minimize(problem,endCriteria);
+        optimization->minimize(problem,endCriteria);
         solution_ = problem.currentValue();
 
         numberOfIterations_ = problem.functionEvaluation();
@@ -212,12 +241,21 @@ namespace QuantLib {
 
     Real FittedBondDiscountCurve::FittingMethod::FittingCost::value(
                                                        const Array& x) const {
+        Real squaredError = 0.0;
+		Array vals = values(x);
+		for (Size i = 0; i<vals.size(); ++i) {
+            squaredError += vals[i];
+        }
+        return squaredError;
+    }
 
+    Disposable<Array>
+    FittedBondDiscountCurve::FittingMethod::FittingCost::values(
+                                                       const Array &x) const {
         Date refDate  = fittingMethod_->curve_->referenceDate();
         const DayCounter& dc = fittingMethod_->curve_->dayCounter();
-
-        Real squaredError = 0.0;
         Size n = fittingMethod_->curve_->bondHelpers_.size();
+        Array values(n);
         for (Size i=0; i<n; ++i) {
             shared_ptr<BondHelper> helper =
                 fittingMethod_->curve_->bondHelpers_[i];
@@ -244,16 +282,9 @@ namespace QuantLib {
             Real marketPrice = helper->quote()->value();
             Real error = modelPrice - marketPrice;
             Real weightedError = fittingMethod_->weights_[i] * error;
-            squaredError += weightedError * weightedError;
+            values[i] = weightedError * weightedError;
         }
-        return squaredError;
-    }
-
-    Disposable<Array>
-    FittedBondDiscountCurve::FittingMethod::FittingCost::values(
-                                                       const Array &x) const {
-        Array y(1, value(x));
-        return y;
+        return values;
     }
 
 }

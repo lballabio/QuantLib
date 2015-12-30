@@ -8,7 +8,7 @@ else
 noinst_PROGRAMS = LatentModel
 endif
 LatentModel_SOURCES = LatentModel.cpp
-LatentModel_LDADD = ../../ql/libQuantLib.la
+LatentModel_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     LatentModel.dev \

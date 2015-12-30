@@ -8,7 +8,7 @@ else
 noinst_PROGRAMS = BasketLosses
 endif
 BasketLosses_SOURCES = BasketLosses.cpp
-BasketLosses_LDADD = ../../ql/libQuantLib.la
+BasketLosses_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     BasketLosses.dev \

@@ -8,7 +8,7 @@ else
 noinst_PROGRAMS = SwapValuation
 endif
 SwapValuation_SOURCES = swapvaluation.cpp
-SwapValuation_LDADD = ../../ql/libQuantLib.la
+SwapValuation_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     Swap.dev \

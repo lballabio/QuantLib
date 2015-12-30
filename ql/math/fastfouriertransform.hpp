@@ -87,7 +87,7 @@ namespace QuantLib {
                 typename std::iterator_traits<RandomAccessIterator>::value_type
                                                                        complex;
             const std::size_t order = cs_.size();
-            const std::size_t N = 1 << order;
+            const std::size_t N = std::size_t(1 << order);
             std::size_t i = 0;
             for (; inBegin != inEnd; ++i, ++inBegin) {
                 *(out + bit_reverse(i, order)) = *inBegin;

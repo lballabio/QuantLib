@@ -35,7 +35,6 @@
 #include <boost/accumulators/statistics/stats.hpp>
 #include <boost/accumulators/statistics/count.hpp>
 #include <boost/accumulators/statistics/sum.hpp>
-#include <boost/accumulators/statistics/sum_kahan.hpp>
 #include <boost/accumulators/statistics/min.hpp>
 #include <boost/accumulators/statistics/max.hpp>
 #include <boost/accumulators/statistics/weighted_mean.hpp>
@@ -160,14 +159,14 @@ namespace QuantLib {
                boost::accumulators::tag::weighted_variance,
                boost::accumulators::tag::weighted_skewness,
                boost::accumulators::tag::weighted_kurtosis,
-               boost::accumulators::tag::sum_of_weights_kahan>,
+               boost::accumulators::tag::sum_of_weights>,
            Real> accumulator_set;
         accumulator_set acc_;
         typedef boost::accumulators::accumulator_set<
             Real, boost::accumulators::stats<
                       boost::accumulators::tag::count,
                       boost::accumulators::tag::weighted_moment<2>,
-                      boost::accumulators::tag::sum_of_weights_kahan>,
+                      boost::accumulators::tag::sum_of_weights>,
             Real> downside_accumulator_set;
         downside_accumulator_set downsideAcc_;
     };

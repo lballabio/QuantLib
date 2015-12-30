@@ -44,33 +44,33 @@
     #define BOOST_ENABLE_ASSERT_HANDLER
 #endif
 
-/* eventually these will go into userconfig.hpp.
+/* This allows one to include a given file at this point by
+   passing it as a compiler define (e.g., -DQL_INCLUDE_FIRST=foo.hpp).
+
+   The idea is to provide a hook for defining QL_REAL and at the
+   same time including any necessary headers for the new type.
+*/
+#define INCLUDE_FILE(F) INCLUDE_FILE__(F)
+#define INCLUDE_FILE_(F) #F
+#ifdef QL_INCLUDE_FIRST
+#    include INCLUDE_FILE(QL_INCLUDE_FIRST)
+#endif
+#undef INCLUDE_FILE_
+#undef INCLUDE_FILE
+
+/* Eventually these might go into userconfig.hpp.
    For the time being, we hard code them here.
+   They can be overridden by passing the #define to the compiler.
 */
-#define QL_INTEGER int
-#define QL_BIG_INTEGER long
+#ifndef QL_INTEGER
+#    define QL_INTEGER int
+#endif
 
-/* Define Real as TapeDouble in adjoint algorithmic differentiation (AAD) mode.
+#ifndef QL_BIG_INTEGER
+#    define QL_BIG_INTEGER long
+#endif
 
-   To avoid having to make extensive changes to the AAD backend or QuantLib,
-   AAD support is implemented through an intermediate inline class TapeDouble,
-   defined in the tapescript folder at the QuantLib project root.
-   The class TapeDouble is supplied with all necessary functions and
-   operators to serve as a drop-in substitute for Real in QuantLib.
-
-   At this time, the following TapeDouble backends are supported:
-
-     0. No backend, inner type is regular double (define CL_TAPE_NOAD)
-     1. CppAD, github.com/coin-or/CppAD (define CL_TAPE_CPPAD)
-     2. ADOL-C, projects.coin-or.org/ADOL-C (define CL_TAPE_ADOLC)
-*/
-
-#if defined(CL_TAPE_NOAD) || defined(CL_TAPE_CPPAD) || defined(CL_TAPE_ADOLC)
-// Add (project root)/tapescript/cpp to the include path
-#   include <ql/ad.hpp>
-#   define QL_REAL cl::TapeDouble
-#else
-// Standard QuantLib setting with Real defined as regular double
+#ifndef QL_REAL
 #   define QL_REAL double
 #endif
 
@@ -110,7 +110,11 @@
     #endif
 #endif
 
-
+#ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+    #if BOOST_VERSION < 105800
+        #error Boost version 1.58 or higher is required for the thread-safe observer pattern
+    #endif
+#endif
 // ensure that needed math constants are defined
 #include <ql/mathconstants.hpp>
 

@@ -8,7 +8,7 @@ else
 noinst_PROGRAMS = MultidimIntegral
 endif
 MultidimIntegral_SOURCES = MultidimIntegral.cpp
-MultidimIntegral_LDADD = ../../ql/libQuantLib.la
+MultidimIntegral_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     MultidimIntegral.dev \

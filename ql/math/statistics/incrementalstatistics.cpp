@@ -35,7 +35,7 @@ namespace QuantLib {
 
     Real IncrementalStatistics::weightSum() const {
         return boost::accumulators::extract_result<
-            boost::accumulators::tag::sum_of_weights_kahan>(acc_);
+            boost::accumulators::tag::sum_of_weights>(acc_);
     }
 
     Real IncrementalStatistics::mean() const {
@@ -106,7 +106,7 @@ namespace QuantLib {
 
     Real IncrementalStatistics::downsideWeightSum() const {
         return boost::accumulators::extract_result<
-            boost::accumulators::tag::sum_of_weights_kahan>(downsideAcc_);
+            boost::accumulators::tag::sum_of_weights>(downsideAcc_);
     }
 
     Real IncrementalStatistics::downsideVariance() const {

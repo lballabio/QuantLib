@@ -8,7 +8,7 @@ else
 noinst_PROGRAMS = ConvertibleBonds
 endif
 ConvertibleBonds_SOURCES = ConvertibleBonds.cpp
-ConvertibleBonds_LDADD = ../../ql/libQuantLib.la
+ConvertibleBonds_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     ConvertibleBonds.dev \

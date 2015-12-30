@@ -25,6 +25,7 @@
 #define quantlib_interpolated_curve_hpp
 
 #include <ql/math/interpolation.hpp>
+#include <ql/time/date.hpp>
 #include <vector>
 
 namespace QuantLib {

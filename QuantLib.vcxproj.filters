@@ -6542,5 +6542,8 @@
     <ClCompile Include="ql\termstructures\volatility\equityfx\hestonblackvolsurface.cpp">
       <Filter>termstructures\volatility\equityfx</Filter>
     </ClCompile>
+    <ClCompile Include="ql\patterns\observable.cpp">
+      <Filter>patterns</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
