@@ -489,6 +489,7 @@
     <ClInclude Include="ql\experimental\finitedifferences\riskneutraldensitycalculator.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\squarerootprocessrndcalculator.hpp" />
     <ClInclude Include="ql\experimental\models\hestonslvmodel.hpp" />
+    <ClInclude Include="ql\experimental\models\hestonslvmcmodel.hpp" />
     <ClInclude Include="ql\math\polynomialmathfunction.hpp" />
     <ClInclude Include="ql\math\pascaltriangle.hpp" />
     <ClInclude Include="ql\rebatedexercise.hpp" />
@@ -524,6 +525,7 @@
     <ClInclude Include="ql\experimental\processes\extouwithjumpsprocess.hpp" />
     <ClInclude Include="ql\experimental\processes\gemanroncoroniprocess.hpp" />
     <ClInclude Include="ql\experimental\processes\klugeextouprocess.hpp" />
+    <ClInclude Include="ql\experimental\processes\hestonslvprocess.hpp" />
     <ClInclude Include="ql\instruments\bonds\cpibond.hpp" />
     <ClInclude Include="ql\instruments\cpicapfloor.hpp" />
     <ClInclude Include="ql\instruments\cpiswap.hpp" />
@@ -1754,6 +1756,7 @@
     <ClCompile Include="ql\experimental\finitedifferences\riskneutraldensitycalculator.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\squarerootprocessrndcalculator.cpp" />
     <ClCompile Include="ql\experimental\models\hestonslvmodel.cpp" />
+    <ClCompile Include="ql\experimental\models\hestonslvmcmodel.cpp" />
     <ClCompile Include="ql\math\polynomialmathfunction.cpp" />
     <ClCompile Include="ql\math\pascaltriangle.cpp" />
     <ClCompile Include="ql\rebatedexercise.cpp" />
@@ -1783,6 +1786,7 @@
     <ClCompile Include="ql\experimental\processes\extouwithjumpsprocess.cpp" />
     <ClCompile Include="ql\experimental\processes\gemanroncoroniprocess.cpp" />
     <ClCompile Include="ql\experimental\processes\klugeextouprocess.cpp" />
+    <ClCompile Include="ql\experimental\processes\hestonslvprocess.cpp" />
     <ClCompile Include="ql\instruments\bonds\cpibond.cpp" />
     <ClCompile Include="ql\instruments\cpicapfloor.cpp" />
     <ClCompile Include="ql\instruments\cpiswap.cpp" />

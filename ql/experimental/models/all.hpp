@@ -2,4 +2,5 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/experimental/models/hestonslvmodel.hpp>
+#include <ql/experimental/models/hestonslvmcmodel.hpp>
 

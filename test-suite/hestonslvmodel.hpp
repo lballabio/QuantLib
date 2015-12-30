@@ -41,6 +41,8 @@ public:
     static void testLocalVolsvSLVPropDensity();
     static void testBarrierPricingViaHestonLocalVol();
     static void testBarrierPricingMixedModels();
+    static void testMonteCarloVsFdmPricing();
+    static void testMonteCarloCalibration();
 
     static boost::unit_test_framework::test_suite* experimental();
 

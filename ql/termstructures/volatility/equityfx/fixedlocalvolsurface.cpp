@@ -187,4 +187,49 @@ namespace QuantLib {
                       *(t-times_[idx-1]);
         }
     }
+
+    void FixedLocalVolSurface::write(std::ostream& o) const {
+
+        o << referenceDate().serialNumber() << std::endl;
+        o << times_.size() << std::endl;
+        o << strikes_.front()->size() << std::endl;
+
+        o << std::scientific << std::setprecision(12);
+
+        for (Size i=0; i < times_.size(); ++i) {
+            o << times_[i] << std::endl;
+            const boost::shared_ptr<std::vector<Real> > strikes = strikes_[i];
+
+            for (Size j=0; j < strikes->size(); ++j)
+                o << (*strikes)[j] << " "
+                  << (*localVolMatrix_)[j][i] << std::endl;
+        }
+    }
+
+    boost::shared_ptr<FixedLocalVolSurface>
+    FixedLocalVolSurface::read(std::istream& in, const DayCounter& dc) {
+        BigInteger serialNumber;
+        in >> serialNumber;
+        const Date referenceDate(serialNumber);
+
+        Size nTimes, nStrikes;
+        in >> nTimes >> nStrikes;
+
+        std::vector<Time> times(nTimes);
+        std::vector<boost::shared_ptr<std::vector<Real> > > strikes;
+
+        boost::shared_ptr<Matrix> m(new Matrix(nStrikes, nTimes));
+        for (Size i=0; i < times.size(); ++i) {
+            strikes.push_back(boost::shared_ptr<std::vector<Real> >(
+                new std::vector<Real>(nStrikes)));
+
+            in >> times[i];
+
+            for (Size j=0; j < nStrikes; ++j)
+                in >> (*strikes.back())[j] >> (*m)[j][i];
+        }
+
+        return boost::shared_ptr<FixedLocalVolSurface>(
+            new FixedLocalVolSurface(referenceDate, times, strikes, m, dc));
+    }
 }

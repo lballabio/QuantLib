@@ -4,10 +4,12 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
-    hestonslvmodel.hpp
+    hestonslvmodel.hpp \
+    hestonslvmcmodel.hpp
 
 libModels_la_SOURCES = \
-    hestonslvmodel.cpp
+    hestonslvmodel.cpp \
+    hestonslvmcmodel.cpp
     
 noinst_LTLIBRARIES = libModels.la
 

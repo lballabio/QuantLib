@@ -82,6 +82,10 @@ namespace QuantLib {
             notifyObservers();
         }
 
+        void write(std::ostream& o) const;
+        static boost::shared_ptr<FixedLocalVolSurface> read(
+            std::istream& i, const DayCounter& dc);
+
       protected:
         Volatility localVolImpl(Time t, Real strike) const;
 
