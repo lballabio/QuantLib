@@ -469,4 +469,5 @@ AC_CONFIG_FILES([
     test-suite/Makefile])
 AC_CONFIG_FILES([quantlib-config],[chmod +x quantlib-config])
 AC_CONFIG_FILES([QuantLib.spec])
+AC_CONFIG_FILES([quantlib.pc])
 AC_OUTPUT

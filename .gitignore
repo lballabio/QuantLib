@@ -14,6 +14,7 @@ ql/config.hpp.in
 ql/stamp-h1
 elc-stamp
 quantlib.elc
+quantlib.pc
 QuantLib.spec
 Docs/.time-stamp
 Docs/.time-stamp-html
