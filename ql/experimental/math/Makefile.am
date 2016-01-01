@@ -8,12 +8,17 @@ this_include_HEADERS = \
     convolvedstudentt.hpp \
     expm.hpp \
     farliegumbelmorgensterncopularng.hpp \
+    fireflyalgorithm.hpp \
     frankcopularng.hpp \
     gaussiancopulapolicy.hpp \
+    hybridsimulatedannealing.hpp \
+    isotropicrandomwalk.hpp \
     latentmodel.hpp \
+    levyflightdistribution.hpp \
     multidimintegrator.hpp \
     multidimquadrature.hpp \
     numericaldifferentiation.hpp \
+    particleswarmoptimization.hpp \
     polarstudenttrng.hpp \
     tcopulapolicy.hpp \
     zigguratrng.hpp
@@ -21,10 +26,13 @@ this_include_HEADERS = \
 libMath_la_SOURCES = \
     convolvedstudentt.cpp \
     expm.cpp \
+    fireflyalgorithm.cpp \
     gaussiancopulapolicy.cpp \
+    hybridsimulatedannealing.cpp \
     multidimintegrator.cpp \
     multidimquadrature.cpp \
     numericaldifferentiation.cpp \
+    particleswarmoptimization.cpp \
     tcopulapolicy.cpp \
     zigguratrng.cpp
 
