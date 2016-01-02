@@ -86,6 +86,7 @@ namespace QuantLib {
         //Variables for DE
         Array z(N_, 0.0);
         Size indexBest, indexR1, indexR2;
+        uniform_integer::param_type nParam(0, N_ - 1);
 
         //Set best value & position
         Real bestValue = values_[0].first;
@@ -131,8 +132,9 @@ namespace QuantLib {
                     Array& x   = x_[index];
                     Array& xR1 = x_[indexR1];
                     Array& xR2 = x_[indexR2];
+					Size rIndex = drawIndex_(nParam);
                     for (Size j = 0; j < N_; j++) {
-                        if (rng_.nextReal() <= crossover_) {
+                        if (j == rIndex || rng_.nextReal() <= crossover_) {
                             //Change x[j] according to crossover
                             z[j] = xBest[j] + mutation_*(xR1[j] - xR2[j]);
                         } else {
