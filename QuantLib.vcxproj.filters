@@ -4006,6 +4006,24 @@
     <ClInclude Include="ql\models\shortrate\onefactormodels\markovfunctional.hpp">
       <Filter>models\shortrate\onefactormodels</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\math\fireflyalgorithm.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\math\hybridsimulatedannealing.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\math\hybridsimulatedannealingfunctors.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\math\isotropicrandomwalk.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\math\levyflightdistribution.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\math\particleswarmoptimization.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -6460,6 +6478,12 @@
     </ClCompile>
     <ClCompile Include="ql\patterns\observable.cpp">
       <Filter>patterns</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\math\fireflyalgorithm.cpp">
+      <Filter>experimental\math</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\math\particleswarmoptimization.cpp">
+      <Filter>experimental\math</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
