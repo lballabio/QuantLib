@@ -78,8 +78,11 @@
 #include <ql/experimental/finitedifferences/fdmhestongreensfct.hpp>
 #include <ql/experimental/finitedifferences/localvolrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/squarerootprocessrndcalculator.hpp>
+#include <ql/experimental/finitedifferences/fdhestondoublebarrierengine.hpp>
 #include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
 #include <ql/experimental/processes/hestonslvprocess.hpp>
+#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
+#include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
 
 #include <boost/assign/std/vector.hpp>
 #include <boost/math/special_functions/gamma.hpp>
@@ -2035,23 +2038,6 @@ void HestonSLVModelTest::testMonteCarloCalibration() {
     const Handle<YieldTermStructure> rTS(flatRate(r, dc));
     const Handle<YieldTermStructure> qTS(flatRate(q, dc));
 
-    std::vector<Time> expiries;
-    const Period timeStepPeriod = Period(2, Days);
-    for (Date expiry = todaysDate + timeStepPeriod;
-        expiry < maturityDate; expiry+=timeStepPeriod) {
-        expiries.push_back(dc.yearFraction(todaysDate, expiry));
-    }
-    const boost::shared_ptr<TimeGrid> timeGrid(
-        boost::make_shared<TimeGrid>(expiries.begin(), expiries.end()));
-
-    // first build the true local vol surface from another Heston model
-//    const boost::shared_ptr<LocalVolTermStructure> localVol
-//        = getFixedLocalVolFromHeston(
-//              boost::make_shared<HestonModel>(
-//                  boost::make_shared<HestonProcess>(rTS, qTS,
-//                      spot, 0.07, 1.0, 0.08, 0.3, -0.85)),
-//              timeGrid);
-
     const boost::shared_ptr<LocalVolTermStructure> localVol
           = boost::make_shared<LocalConstantVol>(todaysDate, 0.3, dc);
 
@@ -2069,15 +2055,17 @@ void HestonSLVModelTest::testMonteCarloCalibration() {
     const boost::shared_ptr<HestonModel> hestonModel
         = boost::make_shared<HestonModel>(hestonProcess);
 
-    const Size nSim  = 400000;
+    const Size nSims[]  = { 40000 };
     const Size xGrids[] = { 10, 20, 50, 100, 150, 200, 300,
                             400, 500, 600, 800, 1000, 1250, 1500,
                             2000, 3000, 4000};
 
+    for (Size m=0; m < LENGTH(nSims); ++m)
     for (Size n=0; n < LENGTH(xGrids); ++n) {
+        const Size nSim = nSims[m];
         const Size xGrid = xGrids[n];
 
-        const bool sobol = false;
+        const bool sobol = true;
 
         const boost::shared_ptr<LocalVolTermStructure> leverageFct =
             HestonSLVMCModel(
@@ -2102,8 +2090,7 @@ void HestonSLVModelTest::testMonteCarloCalibration() {
             todaysDate + Period(1, Months),  todaysDate + Period(2, Months),
             todaysDate + Period(3, Months),  todaysDate + Period(6, Months),
             todaysDate + Period(12, Months), todaysDate + Period(18, Months),
-            todaysDate + Period(24, Months) /*, todaysDate + Period(36, Months),
-            todaysDate + Period(48, Months), todaysDate + Period(60, Months)*/
+            todaysDate + Period(24, Months)
         };
 
 
@@ -2142,9 +2129,6 @@ void HestonSLVModelTest::testMonteCarloCalibration() {
 
                     const Real diff = std::fabs(fdmNPV-bsNPV)/bsVega*1e4;
 
-//                    std::cout << maturity << " " << strike << " " << bsNPV
-//                              << " " << diff << std::endl;
-
                     qualityFactor+=diff;
                     maxQualityFactor = std::max(maxQualityFactor, diff);
                     ++nValues;
@@ -2152,9 +2136,128 @@ void HestonSLVModelTest::testMonteCarloCalibration() {
             }
         }
 
-        std::cout << xGrid << " " << qualityFactor/nValues
+        std::cout << nSim << " " << xGrid << " " << qualityFactor/nValues
                   << " " << maxQualityFactor << std::endl;
     }
+}
+
+void HestonSLVModelTest::testMoustacheGraph() {
+    BOOST_TEST_MESSAGE(
+        "Testing Double touch pricing with SLV and mixing...");
+
+    SavedSettings backup;
+
+    const DayCounter dc = ActualActual();
+    const Date todaysDate(5, Jan, 2016);
+    const Date maturityDate = todaysDate + Period(1, Years);
+    Settings::instance().evaluationDate() = todaysDate;
+
+    const Real s0 = 100;
+    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(s0));
+    const Rate r = 0.02;
+    const Rate q = 0.01;
+
+    // parameter of the "calibrated" Heston model
+    const Real kappa =   1.0;
+    const Real theta =   0.06;
+    const Real rho   =  -0.8;
+    const Real sigma =   0.8;
+    const Real v0    =   0.09;
+
+    const Handle<YieldTermStructure> rTS(flatRate(r, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(q, dc));
+
+    const boost::shared_ptr<HestonModel> hestonModel(
+        boost::make_shared<HestonModel>(
+            boost::make_shared<HestonProcess>(
+                rTS, qTS, spot, v0, kappa, theta, sigma, rho)));
+
+    const boost::shared_ptr<Exercise> europeanExercise(
+        boost::make_shared<EuropeanExercise>(maturityDate));
+
+    VanillaOption vanillaOption(
+        boost::make_shared<PlainVanillaPayoff>(Option::Call, s0),
+        europeanExercise);
+
+    vanillaOption.setPricingEngine(
+        boost::make_shared<AnalyticHestonEngine>(hestonModel));
+
+    const Volatility implVol = vanillaOption.impliedVolatility(
+        vanillaOption.NPV(),
+        boost::make_shared<GeneralizedBlackScholesProcess>(spot, qTS, rTS,
+            Handle<BlackVolTermStructure>(flatVol(std::sqrt(theta), dc))));
+
+    const boost::shared_ptr<PricingEngine> analyticEngine(
+        boost::make_shared<AnalyticDoubleBarrierBinaryEngine>(
+            boost::make_shared<GeneralizedBlackScholesProcess>(
+                spot, qTS, rTS,
+                Handle<BlackVolTermStructure>(flatVol(implVol, dc)))));
+
+    std::vector<Time> expiries;
+    const Period timeStepPeriod = Period(1, Weeks);
+    for (Date expiry = todaysDate + timeStepPeriod;
+        expiry <= maturityDate; expiry+=timeStepPeriod) {
+        expiries.push_back(dc.yearFraction(todaysDate, expiry));
+    }
+
+    const boost::shared_ptr<TimeGrid> timeGrid(
+        boost::make_shared<TimeGrid>(expiries.begin(), expiries.end()));
+
+    // first build the true local vol surface from another Heston model
+    const Handle<LocalVolTermStructure> localVol(
+        getFixedLocalVolFromHeston(hestonModel, timeGrid));
+
+    const boost::shared_ptr<BrownianGeneratorFactory> sobolGeneratorFactory(
+        boost::make_shared<SobolBrownianGeneratorFactory>(
+            SobolBrownianGenerator::Diagonal,
+            1234ul, SobolRsg::JoeKuoD7));
+
+    const Size xGrid = 251;
+    const Size nSim  = 400000;
+
+    const Real etas[] = { 1.0, 0.75, 0.5, 0.25, 0.001 };
+
+    std::cout << "eta dist bsNPV slvNPV" << std::endl;
+    for (Size i=0; i < LENGTH(etas); ++i) {
+        const Real eta = etas[i];
+
+        const Handle<HestonModel> modHestonModel(
+            boost::make_shared<HestonModel>(
+                boost::make_shared<HestonProcess>(
+                    rTS, qTS, spot, v0, kappa, theta, eta*sigma, rho)));
+
+        const boost::shared_ptr<LocalVolTermStructure> leverageFct =
+            HestonSLVMCModel(localVol, modHestonModel, sobolGeneratorFactory,
+                             maturityDate, 182, xGrid, nSim)
+                .leverageFunction();
+
+        const boost::shared_ptr<PricingEngine> fdEngine(
+            boost::make_shared<FdHestonDoubleBarrierEngine>(
+                modHestonModel.currentLink(), 101, 201, 51, 1,
+                FdmSchemeDesc::Hundsdorfer(), leverageFct));
+
+        for (Real d=4.0; d < 101.0; d+=0.5) {
+            const Real dist = d;
+
+            const Real barrier_lo = std::max(s0 - dist, 1e-2);
+            const Real barrier_hi = s0 + dist;
+            DoubleBarrierOption doubleBarrier(
+                DoubleBarrier::KnockOut, barrier_lo, barrier_hi, 0.0,
+                boost::make_shared<CashOrNothingPayoff>(
+                    Option::Call, 0.0, 1.0),
+                europeanExercise);
+
+            doubleBarrier.setPricingEngine(analyticEngine);
+            const Real bsNPV = doubleBarrier.NPV();
+
+            doubleBarrier.setPricingEngine(fdEngine);
+            const Real slvNPV = doubleBarrier.NPV();
+
+            std::cout << eta << " " << dist << " "
+                      << bsNPV << " " << slvNPV << std::endl;
+        }
+    }
+
 }
 
 
@@ -2162,32 +2265,34 @@ test_suite* HestonSLVModelTest::experimental() {
     test_suite* suite = BOOST_TEST_SUITE(
         "Heston Stochastic Local Volatility tests");
 
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation));
-    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testSquareRootZeroFlowBC));
-    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testTransformedZeroFlowBC));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testSquareRootEvolveWithStationaryDensity));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testSquareRootFokkerPlanckFwdEquation));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquation));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testBarrierPricingViaHestonLocalVol));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation));
+//    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testSquareRootZeroFlowBC));
+//    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testTransformedZeroFlowBC));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testSquareRootEvolveWithStationaryDensity));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testSquareRootFokkerPlanckFwdEquation));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquation));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testBarrierPricingViaHestonLocalVol));
+//
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testMonteCarloVsFdmPricing));
 
     suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testMonteCarloVsFdmPricing));
+        &HestonSLVModelTest::testMoustacheGraph));
 
 //    these test takes very long
 //    suite->add(QUANTLIB_TEST_CASE(
 //        &HestonSLVModelTest::testMonteCarloCalibration));
-
 //    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testHestonSLVModel));
 //    suite->add(QUANTLIB_TEST_CASE(
 //        &HestonSLVModelTest::testLocalVolsvSLVPropDensity));

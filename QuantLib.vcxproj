@@ -498,6 +498,7 @@
     <ClInclude Include="ql\experimental\finitedifferences\fdklugeextouspreadengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmblackscholesfwdop.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmdupire1dop.hpp" />
+    <ClInclude Include="ql\experimental\finitedifferences\fdhestondoublebarrierengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmexpextouinnervaluecalculator.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmextendedornsteinuhlenbeckop.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmextoujumpmodelinnervalue.hpp" />
@@ -1767,6 +1768,7 @@
     <ClCompile Include="ql\experimental\finitedifferences\fdklugeextouspreadengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmblackscholesfwdop.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmdupire1dop.cpp" />
+    <ClCompile Include="ql\experimental\finitedifferences\fdhestondoublebarrierengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmextendedornsteinuhlenbeckop.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmextoujumpop.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmextoujumpsolver.cpp" />

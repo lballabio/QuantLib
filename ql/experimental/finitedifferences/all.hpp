@@ -12,6 +12,7 @@
 #include <ql/experimental/finitedifferences/fdmextoujumpmodelinnervalue.hpp>
 #include <ql/experimental/finitedifferences/fdmextoujumpop.hpp>
 #include <ql/experimental/finitedifferences/fdmextoujumpsolver.hpp>
+#include <ql/experimental/finitedifferences/fdhestondoublebarrierengine.hpp>
 #include <ql/experimental/finitedifferences/fdmhestongreensfct.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
 #include <ql/experimental/finitedifferences/fdmklugeextouop.hpp>

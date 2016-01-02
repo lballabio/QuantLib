@@ -15,6 +15,7 @@ this_include_HEADERS = \
 	fdmextoujumpmodelinnervalue.hpp \
 	fdmextoujumpop.hpp \
 	fdmextoujumpsolver.hpp \
+	fdhestondoublebarrierengine.hpp \
 	fdmhestongreensfct.hpp \
 	fdmhestonfwdop.hpp \
 	fdmklugeextouop.hpp \
@@ -49,6 +50,7 @@ libMultiDimFDM_la_SOURCES = \
 	fdmextendedornsteinuhlenbeckop.cpp \
 	fdmextoujumpop.cpp \
 	fdmextoujumpsolver.cpp \
+	fdhestondoublebarrierengine.cpp \
 	fdmhestongreensfct.cpp \
 	fdmhestonfwdop.cpp \
 	fdmklugeextouop.cpp \

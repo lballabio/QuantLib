@@ -43,6 +43,7 @@ public:
     static void testBarrierPricingMixedModels();
     static void testMonteCarloVsFdmPricing();
     static void testMonteCarloCalibration();
+    static void testMoustacheGraph();
 
     static boost::unit_test_framework::test_suite* experimental();
 

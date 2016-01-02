@@ -3616,6 +3616,9 @@
     <ClInclude Include="ql\experimental\finitedifferences\fdmdupire1dop.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdhestondoublebarrierengine.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\finitedifferences\fdmextendedornsteinuhlenbeckop.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
@@ -6183,6 +6186,9 @@
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\finitedifferences\fdmdupire1dop.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdhestondoublebarrierengine.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\finitedifferences\fdmextendedornsteinuhlenbeckop.cpp">
