@@ -101,27 +101,6 @@ namespace QuantLib {
             const Real p = (psi-1)/(psi+1);
             const Real beta = (1-p)/m;
             const Real u = CumulativeNormalDistribution()(dw[1]);
-            const Real ex = std::exp(-kappa_*dt);
-
-            const Real m  =  theta_+(x0[1]-theta_)*ex;
-            const Real s2 =  x0[1]*sigma_*sigma_*ex/kappa_*(1-ex)
-                           + theta_*sigma_*sigma_/(2*kappa_)*(1-ex)*(1-ex);
-            const Real psi = s2/(m*m);
-
-            if (psi < 1.5) {
-                const Real b2 = 2/psi-1+std::sqrt(2/psi*(2/psi-1));
-                const Real b  = std::sqrt(b2);
-                const Real a  = m/(1+b2);
-
-                retVal[1] = a*(b+dw[1])*(b+dw[1]);
-            }
-            else {
-                const Real p = (psi-1)/(psi+1);
-                const Real beta = (1-p)/m;
-                const Real u = CumulativeNormalDistribution()(dw[1]);
-
-                retVal[1] = ((u <= p) ? 0.0 : std::log((1-p)/(1-u))/beta);
-            }
 
             retVal[1] = ((u <= p) ? 0.0 : std::log((1-p)/(1-u))/beta);
         }
