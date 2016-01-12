@@ -1,0 +1,2 @@
+add_executable(Examples_DiscreteHedging DiscreteHedging.cpp)
+target_link_libraries(Examples_DiscreteHedging quantlib)

@@ -1,0 +1,2 @@
+add_executable(Examples_Replication Replication.cpp)
+target_link_libraries(Examples_Replication quantlib)

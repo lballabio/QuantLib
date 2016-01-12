@@ -1,0 +1,2 @@
+add_executable(Examples_BasketLosses BasketLosses.cpp)
+target_link_libraries(Examples_BasketLosses quantlib)

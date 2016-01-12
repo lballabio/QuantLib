@@ -1,0 +1,2 @@
+add_executable(Examples_Swap swapvaluation.cpp)
+target_link_libraries(Examples_Swap quantlib)

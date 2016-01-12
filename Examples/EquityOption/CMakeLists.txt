@@ -1,0 +1,2 @@
+add_executable(Examples_EquityOption EquityOption.cpp)
+target_link_libraries(Examples_EquityOption quantlib)

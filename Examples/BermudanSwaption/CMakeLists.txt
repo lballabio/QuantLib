@@ -1,0 +1,2 @@
+add_executable(Examples_BermudanSwaption BermudanSwaption.cpp)
+target_link_libraries(Examples_BermudanSwaption quantlib)

@@ -1,0 +1,2 @@
+add_executable(Examples_CDS CDS.cpp)
+target_link_libraries(Examples_CDS quantlib)

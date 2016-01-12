@@ -1,0 +1,2 @@
+add_executable(Examples_CallableBonds CallableBonds.cpp)
+target_link_libraries(Examples_CallableBonds quantlib)
