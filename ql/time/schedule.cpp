@@ -58,6 +58,12 @@ namespace QuantLib {
             }
             return result;
         }
+
+        bool allowsEndOfMonth(const Period& tenor) {
+            return (tenor.units() == Months || tenor.units() == Years)
+                && tenor >= 1*Months;
+        }
+
     }
 
 
@@ -76,7 +82,7 @@ namespace QuantLib {
       rule_(rule),
       dates_(dates), isRegular_(isRegular) {
 
-        if (tenor != boost::none && tenor < 1 * Months)
+        if (tenor != boost::none && !allowsEndOfMonth(*tenor))
             endOfMonth_ = false;
         else
             endOfMonth_ = endOfMonth;
@@ -101,7 +107,7 @@ namespace QuantLib {
                        const Date& nextToLast)
     : tenor_(tenor), calendar_(cal), convention_(convention),
       terminationDateConvention_(terminationDateConvention), rule_(rule),
-      endOfMonth_(tenor<1*Months ? false : endOfMonth),
+      endOfMonth_(allowsEndOfMonth(tenor) ? endOfMonth : false),
       firstDate_(first==effectiveDate ? Date() : first),
       nextToLastDate_(nextToLast==terminationDate ? Date() : nextToLast)
     {
