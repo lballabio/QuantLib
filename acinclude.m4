@@ -201,38 +201,38 @@ AC_DEFUN([QL_CHECK_BOOST_TEST_THREAD_SIGNALS2_SYSTEM],
  CC_BASENAME=`basename $CC`
  CC_VERSION=`echo "__GNUC__ __GNUC_MINOR__" | $CC -E -x c - | tail -n 1 | $SED -e "s/ //"`
  for boost_thread_lib in "-lboost_thread-$CC_BASENAME$CC_VERSION -lboost_system-$CC_BASENAME$CC_VERSION" \
- 						 "-lboost_thread-$CC_BASENAME -lboost_system-$CC_BASENAME" \
- 						 "-lboost_thread -lboost_system" \
- 						 "-lboost_thread-mt-$CC_BASENAME$CC_VERSION -lboost_system-mt-$CC_BASENAME$CC_VERSION" \
- 						 "-lboost_thread-$CC_BASENAME$CC_VERSION-mt -lboost_system-$CC_BASENAME$CC_VERSION-mt" \
- 						 "-lboost_thread-x$CC_BASENAME$CC_VERSION-mt -lboost_system-x$CC_BASENAME$CC_VERSION-mt" \
- 						 "-lboost_thread-mt-$CC_BASENAME -lboost_system-mt-$CC_BASENAME" \
- 						 "-lboost_thread-$CC_BASENAME-mt -lboost_system-$CC_BASENAME-mt" \
- 						 "-lboost_thread-mt -lboost_system-mt"; do
-	 LIBS="$ql_original_LIBS $boost_thread_lib"
-	 CXXFLAGS="$ql_original_CXXFLAGS -pthread"
-	 boost_thread_found=no
-	 AC_LINK_IFELSE([AC_LANG_SOURCE(
-	     [@%:@include <boost/thread/locks.hpp>
-	      @%:@include <boost/thread/recursive_mutex.hpp>
-	      @%:@include <boost/signals2/signal.hpp>
-	      
-	      #ifndef BOOST_THREAD_PLATFORM_PTHREAD
-	      #error only pthread is supported on this plattform
-	      #endif
-	
-	      int main() {
-	        boost::recursive_mutex m;
-	        boost::lock_guard<boost::recursive_mutex> lock(m);
-	  
-	        boost::signals2::signal<void()> sig;
-	  
-	        return 0;
-	      }
-	     ])],
-	     [boost_thread_found=$boost_thread_lib
-	      break],
-	     [])
+                          "-lboost_thread-$CC_BASENAME -lboost_system-$CC_BASENAME" \
+                          "-lboost_thread -lboost_system" \
+                          "-lboost_thread-mt-$CC_BASENAME$CC_VERSION -lboost_system-mt-$CC_BASENAME$CC_VERSION" \
+                          "-lboost_thread-$CC_BASENAME$CC_VERSION-mt -lboost_system-$CC_BASENAME$CC_VERSION-mt" \
+                          "-lboost_thread-x$CC_BASENAME$CC_VERSION-mt -lboost_system-x$CC_BASENAME$CC_VERSION-mt" \
+                          "-lboost_thread-mt-$CC_BASENAME -lboost_system-mt-$CC_BASENAME" \
+                          "-lboost_thread-$CC_BASENAME-mt -lboost_system-$CC_BASENAME-mt" \
+                          "-lboost_thread-mt -lboost_system-mt"; do
+     LIBS="$ql_original_LIBS $boost_thread_lib"
+     CXXFLAGS="$ql_original_CXXFLAGS -pthread"
+     boost_thread_found=no
+     AC_LINK_IFELSE([AC_LANG_SOURCE(
+         [@%:@include <boost/thread/locks.hpp>
+          @%:@include <boost/thread/recursive_mutex.hpp>
+          @%:@include <boost/signals2/signal.hpp>
+          
+          #ifndef BOOST_THREAD_PLATFORM_PTHREAD
+          #error only pthread is supported on this plattform
+          #endif
+    
+          int main() {
+            boost::recursive_mutex m;
+            boost::lock_guard<boost::recursive_mutex> lock(m);
+      
+            boost::signals2::signal<void()> sig;
+      
+            return 0;
+          }
+         ])],
+         [boost_thread_found=$boost_thread_lib
+          break],
+         [])
  done
  LIBS="$ql_original_LIBS"
  CXXFLAGS="$ql_original_CXXFLAGS"
@@ -249,8 +249,6 @@ AC_DEFUN([QL_CHECK_BOOST_TEST_THREAD_SIGNALS2_SYSTEM],
      AC_SUBST([CXXFLAGS],["${CXXFLAGS} -pthread"])
  fi
 ])
-     
-])
 
 # QL_CHECK_BOOST_TEST_INTERPROCESS
 # ------------------------
@@ -260,39 +258,38 @@ AC_DEFUN([QL_CHECK_BOOST_TEST_INTERPROCESS],
  AC_REQUIRE([AC_PROG_CC])
  AC_REQUIRE([QL_CHECK_BOOST_TEST_THREAD_SIGNALS2_SYSTEM])
  ql_original_LIBS=$LIBS
- boost_interprocess_found=no
- boost_interprocess_lib="-lrt"
- LIBS="$ql_original_LIBS $boost_thread_lib $boost_interprocess_lib"
- AC_LINK_IFELSE([AC_LANG_SOURCE(
-     [@%:@include <boost/interprocess/ipc/message_queue.hpp>
-
-      using namespace boost::interprocess;
-      int main() {
-        message_queue mq(open_or_create,"message_queue",100,100);
-        message_queue::remove("message_queue");
+ for boost_interprocess_lib in "" "-lrt"; do 
+     LIBS="$ql_original_LIBS $boost_thread_lib $boost_interprocess_lib"
+     boost_interprocess_found=no
         
-        return 0;
-      }
-     ])],
-     [boost_interprocess_found=$boost_interprocess_lib
-      break],
-     [])
+	 AC_LINK_IFELSE([AC_LANG_SOURCE(
+         [@%:@include <boost/interprocess/ipc/message_queue.hpp>
+ 
+          using namespace boost::interprocess;
+          int main() {
+            message_queue mq(open_or_create,"message_queue",100,100);
+            message_queue::remove("message_queue");
+         
+            return 0;
+          }
+         ])],
+         [boost_interprocess_found=$boost_interprocess_lib
+          break],
+         [])
+ done
  LIBS="$ql_original_LIBS"
      
  if test "$boost_interprocess_found" = no ; then
      AC_MSG_RESULT([no])
      AC_SUBST([BOOST_INTERPROCESS_LIB],[""])
-     AC_MSG_ERROR([librt (real-time extensions) was not found. 
-         This library is required to use boost interprocess and to use the parallel unit test runner.
-         Please notice that the parallel unit test runner does not work under OSX.])
+     AC_MSG_ERROR([The boost library interprocess does not work on this system 
+         but is required to use the parallel unit test runner.])
  else
      AC_MSG_RESULT([yes])
      AC_SUBST([BOOST_INTERPROCESS_LIB],[$boost_interprocess_lib])
  fi
 ])
      
-])
-
 
 # QL_CHECK_BOOST_TEST_STREAM
 # --------------------------

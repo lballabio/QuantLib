@@ -72,9 +72,9 @@ using namespace boost::unit_test_framework;
 
 
 namespace {
-	int worker(const std::string& cmd) {
-		return system(cmd.c_str());
-	}
+    int worker(const std::string& cmd) {
+        return system(cmd.c_str());
+    }
 
     counter_t test_enabled(test_unit_id id) {
         test_case_counter tcc;
@@ -179,282 +179,282 @@ int main( int argc, char* argv[] )
     const char* const testResultQueueName = "test_result_queue";
     const char* const testRuntimeLogName  = "test_runtime_log_queue";
 
-	const std::string clientModeStr = "--client_mode=true";
-	const bool clientMode = (std::string(argv[argc-1]) == clientModeStr);
+    const std::string clientModeStr = "--client_mode=true";
+    const bool clientMode = (std::string(argv[argc-1]) == clientModeStr);
 
     unsigned int priority;
     message_queue::size_type recvd_size;
 
     try {
-		if (!clientMode) {
-			std::map<std::string, Time> runTimeLog;
-
-			std::ifstream in(profileFileName);
-			if (in.good()) {
-				for (std::string line; std::getline(in, line);) {
-					std::vector<std::string> tok;
-					boost::split(tok, line, boost::is_any_of(" "));
-
-					QL_REQUIRE(tok.size() == 2,
-						"every line should consists of two entries");
-					runTimeLog[tok[0]] = boost::lexical_cast<Time>(tok[1]);
-				}
-			}
-			in.close();
-
-			unsigned nProc = boost::thread::hardware_concurrency();
-
-		    std::stringstream cmd;
-			cmd << "\"" << argv[0] << "\" ";
-
-			std::vector<char*> localArgs(1, argv[0]);
-
-			for( int i = 1; i < argc; ++i ) {
-				const std::string arg(argv[i]); 
-
-				// check for number of processes
-				std::vector<std::string> tok;
-				boost::split(tok, arg, boost::is_any_of("="));
-				if (tok.size() == 2 && tok[0] == "--nProc") {
-					nProc = boost::lexical_cast<unsigned>(tok[1]);
-				}
-				else if (arg != "--build_info=yes") {
-					cmd << arg << " ";				
-					localArgs.push_back(argv[i]);
-				}
-			}
-
-			cmd << clientModeStr;
-
-			framework::init(init_unit_test_suite,
-			                localArgs.size(), &localArgs[0]);
-			framework::finalize_setup_phase();
-
-			framework::impl::s_frk_state().deduce_run_status(
-				framework::master_test_suite().p_id);
-
-			TestCaseCollector tcc;
-			traverse_test_tree(framework::master_test_suite(), tcc , true);
-
-			s_log_impl().stream() << "Total number of test cases: "
-				<< tcc.numberOfTests() << std::endl;
-
-			s_log_impl().stream() << "Total number of worker processes: "
-				<< nProc << std::endl;
-
-			message_queue::remove(testUnitIdQueueName);
-			message_queue mq(create_only, testUnitIdQueueName,
-				tcc.numberOfTests() + nProc, sizeof(TestCaseId));
-
-			message_queue::remove(testResultQueueName);
-			message_queue rq(create_only, testResultQueueName, nProc,
-				sizeof(QualifiedTestResults));
-
-			message_queue::remove(testRuntimeLogName);
-			message_queue lq(create_only, testRuntimeLogName, nProc,
-				sizeof(RuntimeLog));
-
-			// run root test cases in master process
-			const std::list<test_unit_id> qlRoot
-				= (tcc.map().count(tcc.testSuiteId()))
-					? tcc.map().find(tcc.testSuiteId())->second
-					: std::list<test_unit_id>();
-
-			std::stringstream logBuf;
-			std::streambuf* const oldBuf = s_log_impl().stream().rdbuf();
-			s_log_impl().stream().rdbuf(logBuf.rdbuf());
-
-			for (std::list<test_unit_id>::const_iterator iter = qlRoot.begin();
-				std::distance(qlRoot.begin(), iter) < int(qlRoot.size())-1;
-				++iter) {
-
-				framework::impl::s_frk_state().execute_test_tree(*iter);
-			}
-			output_logstream(s_log_impl().stream(), oldBuf, logBuf);
-			s_log_impl().stream().rdbuf(oldBuf);
-
-			// fork worker processes
-		    boost::thread_group threadGroup;
-			for (unsigned i=0; i < nProc; ++i) {
-				threadGroup.create_thread(boost::bind(worker, cmd.str()));
-			}
-
-			struct mutex_remove {
-				~mutex_remove() { named_mutex::remove(namesLogMutexName); }
-			} mutex_remover;
-
-			struct queue_remove {
-				queue_remove(const char* name) : name_(name) { }
-				~queue_remove() { message_queue::remove(name_); }
-
-			private:
-				const char* const name_;
-			} queue_remover1(testUnitIdQueueName),
-				queue_remover2(testResultQueueName),
-				queue_remover3(testRuntimeLogName);
-
-			std::multimap<Time, test_unit_id> testsSortedByRunTime;
-
-			for (TestCaseCollector::id_map_t::const_iterator
-				p_it = tcc.map().begin();
-				p_it != tcc.map().end(); ++p_it) {
-
-				if (p_it->first != tcc.testSuiteId()) {
-					for (std::list<test_unit_id>::const_iterator
-						it =  p_it->second.begin();
-						it != p_it->second.end(); ++it) {
-
-						const std::string name
-							= framework::get(*it, TUT_ANY).p_name;
-
-						if (runTimeLog.count(name)) {
-							testsSortedByRunTime.insert(
-								std::make_pair(runTimeLog[name], *it));
-						}
-						else {
-							testsSortedByRunTime.insert(
-								std::make_pair(
-									std::numeric_limits<Time>::max(), *it));
-						}
-					}
-				}
-			}
-
-			std::list<test_unit_id> ids;
-			for (std::multimap<Time, test_unit_id>::const_iterator
-				iter = testsSortedByRunTime.begin();
-				iter != testsSortedByRunTime.end(); ++iter) {
-
-				ids.push_front(iter->second);
-			}
-			QL_REQUIRE(ids.size() + qlRoot.size() == tcc.numberOfTests(),
-				"missing test case in distrubtion list");
+        if (!clientMode) {
+            std::map<std::string, Time> runTimeLog;
+
+            std::ifstream in(profileFileName);
+            if (in.good()) {
+                for (std::string line; std::getline(in, line);) {
+                    std::vector<std::string> tok;
+                    boost::split(tok, line, boost::is_any_of(" "));
+
+                    QL_REQUIRE(tok.size() == 2,
+                        "every line should consists of two entries");
+                    runTimeLog[tok[0]] = boost::lexical_cast<Time>(tok[1]);
+                }
+            }
+            in.close();
+
+            unsigned nProc = boost::thread::hardware_concurrency();
+
+            std::stringstream cmd;
+            cmd << "\"" << argv[0] << "\" ";
+
+            std::vector<char*> localArgs(1, argv[0]);
+
+            for( int i = 1; i < argc; ++i ) {
+                const std::string arg(argv[i]);
+
+                // check for number of processes
+                std::vector<std::string> tok;
+                boost::split(tok, arg, boost::is_any_of("="));
+                if (tok.size() == 2 && tok[0] == "--nProc") {
+                    nProc = boost::lexical_cast<unsigned>(tok[1]);
+                }
+                else if (arg != "--build_info=yes") {
+                    cmd << arg << " ";
+                    localArgs.push_back(argv[i]);
+                }
+            }
+
+            cmd << clientModeStr;
+
+            framework::init(init_unit_test_suite,
+                            localArgs.size(), &localArgs[0]);
+            framework::finalize_setup_phase();
+
+            framework::impl::s_frk_state().deduce_run_status(
+                framework::master_test_suite().p_id);
+
+            TestCaseCollector tcc;
+            traverse_test_tree(framework::master_test_suite(), tcc , true);
+
+            s_log_impl().stream() << "Total number of test cases: "
+                << tcc.numberOfTests() << std::endl;
+
+            s_log_impl().stream() << "Total number of worker processes: "
+                << nProc << std::endl;
+
+            message_queue::remove(testUnitIdQueueName);
+            message_queue mq(create_only, testUnitIdQueueName,
+                tcc.numberOfTests() + nProc, sizeof(TestCaseId));
+
+            message_queue::remove(testResultQueueName);
+            message_queue rq(create_only, testResultQueueName, nProc,
+                sizeof(QualifiedTestResults));
+
+            message_queue::remove(testRuntimeLogName);
+            message_queue lq(create_only, testRuntimeLogName, nProc,
+                sizeof(RuntimeLog));
+
+            // run root test cases in master process
+            const std::list<test_unit_id> qlRoot
+                = (tcc.map().count(tcc.testSuiteId()))
+                    ? tcc.map().find(tcc.testSuiteId())->second
+                    : std::list<test_unit_id>();
+
+            std::stringstream logBuf;
+            std::streambuf* const oldBuf = s_log_impl().stream().rdbuf();
+            s_log_impl().stream().rdbuf(logBuf.rdbuf());
+
+            for (std::list<test_unit_id>::const_iterator iter = qlRoot.begin();
+                std::distance(qlRoot.begin(), iter) < int(qlRoot.size())-1;
+                ++iter) {
+
+                framework::impl::s_frk_state().execute_test_tree(*iter);
+            }
+            output_logstream(s_log_impl().stream(), oldBuf, logBuf);
+            s_log_impl().stream().rdbuf(oldBuf);
+
+            // fork worker processes
+            boost::thread_group threadGroup;
+            for (unsigned i=0; i < nProc; ++i) {
+                threadGroup.create_thread(boost::bind(worker, cmd.str()));
+            }
+
+            struct mutex_remove {
+                ~mutex_remove() { named_mutex::remove(namesLogMutexName); }
+            } mutex_remover;
+
+            struct queue_remove {
+                queue_remove(const char* name) : name_(name) { }
+                ~queue_remove() { message_queue::remove(name_); }
+
+            private:
+                const char* const name_;
+            } queue_remover1(testUnitIdQueueName),
+                queue_remover2(testResultQueueName),
+                queue_remover3(testRuntimeLogName);
+
+            std::multimap<Time, test_unit_id> testsSortedByRunTime;
+
+            for (TestCaseCollector::id_map_t::const_iterator
+                p_it = tcc.map().begin();
+                p_it != tcc.map().end(); ++p_it) {
+
+                if (p_it->first != tcc.testSuiteId()) {
+                    for (std::list<test_unit_id>::const_iterator
+                        it =  p_it->second.begin();
+                        it != p_it->second.end(); ++it) {
+
+                        const std::string name
+                            = framework::get(*it, TUT_ANY).p_name;
+
+                        if (runTimeLog.count(name)) {
+                            testsSortedByRunTime.insert(
+                                std::make_pair(runTimeLog[name], *it));
+                        }
+                        else {
+                            testsSortedByRunTime.insert(
+                                std::make_pair(
+                                    std::numeric_limits<Time>::max(), *it));
+                        }
+                    }
+                }
+            }
+
+            std::list<test_unit_id> ids;
+            for (std::multimap<Time, test_unit_id>::const_iterator
+                iter = testsSortedByRunTime.begin();
+                iter != testsSortedByRunTime.end(); ++iter) {
+
+                ids.push_front(iter->second);
+            }
+            QL_REQUIRE(ids.size() + qlRoot.size() == tcc.numberOfTests(),
+                "missing test case in distrubtion list");
 
-			testsSortedByRunTime.clear();
-
-			for (std::list<test_unit_id>::const_iterator iter = ids.begin();
-				iter != ids.end(); ++iter) {
-				const TestCaseId id = { *iter, false };
-				mq.send(&id, sizeof(TestCaseId), 0);
-			}
+            testsSortedByRunTime.clear();
+
+            for (std::list<test_unit_id>::const_iterator iter = ids.begin();
+                iter != ids.end(); ++iter) {
+                const TestCaseId id = { *iter, false };
+                mq.send(&id, sizeof(TestCaseId), 0);
+            }
 
-			const TestCaseId id = { 0, true };
-			for (unsigned i = 0; i < nProc; ++i) {
-				mq.send(&id, sizeof(TestCaseId), 0);
-			}
+            const TestCaseId id = { 0, true };
+            for (unsigned i = 0; i < nProc; ++i) {
+                mq.send(&id, sizeof(TestCaseId), 0);
+            }
 
-			for(unsigned i = 0; i < ids.size(); ++i) {
-				QualifiedTestResults remoteResults;
+            for(unsigned i = 0; i < ids.size(); ++i) {
+                QualifiedTestResults remoteResults;
 
-				rq.receive(&remoteResults,
-					sizeof(QualifiedTestResults), recvd_size, priority);
+                rq.receive(&remoteResults,
+                    sizeof(QualifiedTestResults), recvd_size, priority);
 
-				boost::unit_test::s_rc_impl().m_results_store[remoteResults.id]
-					= remoteResults.results;
-			}
+                boost::unit_test::s_rc_impl().m_results_store[remoteResults.id]
+                    = remoteResults.results;
+            }
 
-			if (!qlRoot.empty()) {
-				std::streambuf* const oldBuf = s_log_impl().stream().rdbuf();
-				s_log_impl().stream().rdbuf(logBuf.rdbuf());
+            if (!qlRoot.empty()) {
+                std::streambuf* const oldBuf = s_log_impl().stream().rdbuf();
+                s_log_impl().stream().rdbuf(logBuf.rdbuf());
 
-				const test_unit_id id = qlRoot.back();
-				framework::impl::s_frk_state().execute_test_tree(id);
+                const test_unit_id id = qlRoot.back();
+                framework::impl::s_frk_state().execute_test_tree(id);
 
-				output_logstream(s_log_impl().stream(), oldBuf, logBuf);
-				s_log_impl().stream().rdbuf(oldBuf);
-			}
+                output_logstream(s_log_impl().stream(), oldBuf, logBuf);
+                s_log_impl().stream().rdbuf(oldBuf);
+            }
 
-			TestCaseReportAggregator tca;
-			traverse_test_tree(framework::master_test_suite(), tca , true);
+            TestCaseReportAggregator tca;
+            traverse_test_tree(framework::master_test_suite(), tca , true);
 
-			results_reporter::make_report();
+            results_reporter::make_report();
 
-			RuntimeLog log;
-			for (unsigned i=0; i < ids.size(); ++i) {
-				lq.receive(&log, sizeof(RuntimeLog), recvd_size, priority);
-				runTimeLog[std::string(log.testCaseName)] = log.time;
-			}
+            RuntimeLog log;
+            for (unsigned i=0; i < ids.size(); ++i) {
+                lq.receive(&log, sizeof(RuntimeLog), recvd_size, priority);
+                runTimeLog[std::string(log.testCaseName)] = log.time;
+            }
 
-			std::ofstream out(
-				profileFileName, std::ios::out | std::ios::trunc);
-			out << std::setprecision(6);
-			for (std::map<std::string, QuantLib::Time>::const_iterator
-				iter = runTimeLog.begin(); iter != runTimeLog.end(); ++iter) {
-				out << iter->first << " " << iter->second << std::endl;
-			}
-			out.close();
+            std::ofstream out(
+                profileFileName, std::ios::out | std::ios::trunc);
+            out << std::setprecision(6);
+            for (std::map<std::string, QuantLib::Time>::const_iterator
+                iter = runTimeLog.begin(); iter != runTimeLog.end(); ++iter) {
+                out << iter->first << " " << iter->second << std::endl;
+            }
+            out.close();
 
-			threadGroup.join_all();
-		}
-		else {
-			std::stringstream logBuf;
-			std::streambuf* const oldBuf = s_log_impl().stream().rdbuf();
-			s_log_impl().stream().rdbuf(logBuf.rdbuf());
+            threadGroup.join_all();
+        }
+        else {
+            std::stringstream logBuf;
+            std::streambuf* const oldBuf = s_log_impl().stream().rdbuf();
+            s_log_impl().stream().rdbuf(logBuf.rdbuf());
 
-			framework::init(init_unit_test_suite, argc-1, argv );
-			framework::finalize_setup_phase();
+            framework::init(init_unit_test_suite, argc-1, argv );
+            framework::finalize_setup_phase();
 
-			framework::impl::s_frk_state().deduce_run_status(
-				framework::master_test_suite().p_id);
+            framework::impl::s_frk_state().deduce_run_status(
+                framework::master_test_suite().p_id);
 
-			logBuf.str(std::string());
+            logBuf.str(std::string());
 
-			message_queue mq(open_only, testUnitIdQueueName);
+            message_queue mq(open_only, testUnitIdQueueName);
 
-			TestCaseId id;
-			mq.receive(&id, sizeof(TestCaseId), recvd_size, priority);
+            TestCaseId id;
+            mq.receive(&id, sizeof(TestCaseId), recvd_size, priority);
 
-			typedef std::list<std::pair<std::string, QuantLib::Time> >
-				run_time_list_type;
-			run_time_list_type runTimeLogs;
+            typedef std::list<std::pair<std::string, QuantLib::Time> >
+                run_time_list_type;
+            run_time_list_type runTimeLogs;
 
-			message_queue rq(open_only, testResultQueueName);
+            message_queue rq(open_only, testResultQueueName);
 
-			while (!id.terminate) {
-				boost::timer t;
+            while (!id.terminate) {
+                boost::timer t;
 
-				BOOST_TEST_FOREACH( test_observer*, to,
-				    framework::impl::s_frk_state().m_observers )
-					framework::impl::s_frk_state().m_aux_em.vexecute(
-					    boost::bind( &test_observer::test_start, to, 1 ) );
+                BOOST_TEST_FOREACH( test_observer*, to,
+                    framework::impl::s_frk_state().m_observers )
+                    framework::impl::s_frk_state().m_aux_em.vexecute(
+                        boost::bind( &test_observer::test_start, to, 1 ) );
 
-				framework::impl::s_frk_state().execute_test_tree( id.id );
+                framework::impl::s_frk_state().execute_test_tree( id.id );
 
-				BOOST_TEST_REVERSE_FOREACH( test_observer*, to,
-					framework::impl::s_frk_state().m_observers )
-				    to->test_finish();
+                BOOST_TEST_REVERSE_FOREACH( test_observer*, to,
+                    framework::impl::s_frk_state().m_observers )
+                    to->test_finish();
 
-				runTimeLogs.push_back(std::make_pair(
-					framework::get(id.id, TUT_ANY).p_name, t.elapsed()));
+                runTimeLogs.push_back(std::make_pair(
+                    framework::get(id.id, TUT_ANY).p_name, t.elapsed()));
 
-				output_logstream(s_log_impl().stream(), oldBuf, logBuf);
+                output_logstream(s_log_impl().stream(), oldBuf, logBuf);
 
-				QualifiedTestResults results
-					= { id.id,
-					    boost::unit_test::results_collector.results(id.id) };
-				rq.send(&results, sizeof(QualifiedTestResults), 0);
+                QualifiedTestResults results
+                    = { id.id,
+                        boost::unit_test::results_collector.results(id.id) };
+                rq.send(&results, sizeof(QualifiedTestResults), 0);
 
-				mq.receive(&id, sizeof(TestCaseId), recvd_size, priority);
-			}
+                mq.receive(&id, sizeof(TestCaseId), recvd_size, priority);
+            }
 
 
-			output_logstream(s_log_impl().stream(), oldBuf, logBuf);
-			s_log_impl().stream().rdbuf(oldBuf);
+            output_logstream(s_log_impl().stream(), oldBuf, logBuf);
+            s_log_impl().stream().rdbuf(oldBuf);
 
-			RuntimeLog log;
-			log.testCaseName[sizeof(log.testCaseName)-1] = '\0';
+            RuntimeLog log;
+            log.testCaseName[sizeof(log.testCaseName)-1] = '\0';
 
-			message_queue lq(open_only, testRuntimeLogName);
-			for (run_time_list_type::const_iterator iter = runTimeLogs.begin();
-				iter != runTimeLogs.end(); ++iter) {
-				log.time = iter->second;
+            message_queue lq(open_only, testRuntimeLogName);
+            for (run_time_list_type::const_iterator iter = runTimeLogs.begin();
+                iter != runTimeLogs.end(); ++iter) {
+                log.time = iter->second;
 
-				std::strncpy(log.testCaseName, iter->first.c_str(),
-					sizeof(log.testCaseName)-1);
+                std::strncpy(log.testCaseName, iter->first.c_str(),
+                    sizeof(log.testCaseName)-1);
 
-				lq.send(&log, sizeof(RuntimeLog), 0);
-			}
-		}
+                lq.send(&log, sizeof(RuntimeLog), 0);
+            }
+        }
     }
     catch(QuantLib::Error &ex) {
         std::cerr << "QuantLib exception: " << ex.what() << std::endl;
