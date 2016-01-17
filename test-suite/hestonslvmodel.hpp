@@ -44,6 +44,7 @@ public:
     static void testMonteCarloVsFdmPricing();
     static void testMonteCarloCalibration();
     static void testMoustacheGraph();
+    static void testForwardSkew();
 
     static boost::unit_test_framework::test_suite* experimental();
 

@@ -29,12 +29,16 @@
 #include <ql/math/functional.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/instruments/barrieroption.hpp>
+#include <ql/instruments/forwardvanillaoption.hpp>
+#include <ql/instruments/impliedvolatility.hpp>
 #include <ql/math/distributions/gammadistribution.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/integrals/discreteintegrals.hpp>
+#include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/math/randomnumbers/sobolbrownianbridgersg.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/models/equity/hestonmodelhelper.hpp>
@@ -53,6 +57,7 @@
 #include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/mceuropeanhestonengine.hpp>
+#include <ql/pricingengines/forward/forwardengine.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
@@ -2141,6 +2146,135 @@ void HestonSLVModelTest::testMonteCarloCalibration() {
     }
 }
 
+
+void HestonSLVModelTest::testForwardSkew() {
+    BOOST_TEST_MESSAGE("Testing Forward Skew...");
+
+    SavedSettings backup;
+
+    const DayCounter dc = ActualActual();
+    const Date todaysDate(5, Jan, 2017);
+    const Date maturityDate = todaysDate + Period(2, Years);
+    Settings::instance().evaluationDate() = todaysDate;
+
+    const Real s0 = 100;
+    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(s0));
+    const Rate r = 0.05;
+    const Rate q = 0.02;
+
+    const Handle<YieldTermStructure> rTS(flatRate(r, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(q, dc));
+
+    const boost::shared_ptr<LocalVolTermStructure> localVol
+          = boost::make_shared<LocalConstantVol>(todaysDate, 0.3, dc);
+
+    // parameter of the "calibrated" Heston model
+    const Real kappa =   2.0;
+    const Real theta =   0.06;
+    const Real rho   =  -0.75;
+    const Real sigma =   0.4;
+    const Real v0    =   0.09;
+
+    const boost::shared_ptr<HestonProcess> hestonProcess
+        = boost::make_shared<HestonProcess>(
+            rTS, qTS, spot, v0, kappa, theta, sigma, rho);
+
+    const boost::shared_ptr<HestonModel> hestonModel
+        = boost::make_shared<HestonModel>(hestonProcess);
+
+    const Size nSim = 65536;
+    const Size xGrid = 200;
+
+    const bool sobol = true;
+
+    const boost::shared_ptr<LocalVolTermStructure> leverageFct =
+        HestonSLVMCModel(
+            Handle<LocalVolTermStructure>(localVol),
+            Handle<HestonModel>(hestonModel),
+            sobol ? boost::shared_ptr<BrownianGeneratorFactory>(
+                        new SobolBrownianGeneratorFactory(
+                            SobolBrownianGenerator::Diagonal,
+                            1234ul, SobolRsg::JoeKuoD7))
+                  : boost::shared_ptr<BrownianGeneratorFactory>(
+                          new MTBrownianGeneratorFactory(1234ul)),
+            maturityDate, 182, xGrid, nSim).leverageFunction();
+
+    const boost::shared_ptr<HestonSLVProcess> slvProcess(
+        boost::make_shared<HestonSLVProcess>(hestonProcess, leverageFct));
+
+    const Date resetDate = todaysDate + Period(12, Months);
+    const Time resetTime = dc.yearFraction(todaysDate, resetDate);
+    const Time maturityTime = dc.yearFraction(todaysDate, maturityDate);
+    std::vector<Time> mandatoryTimes;
+    mandatoryTimes.push_back(resetTime);
+    mandatoryTimes.push_back(maturityTime);
+
+    const Size tSteps = 200;
+    const TimeGrid grid(mandatoryTimes.begin(), mandatoryTimes.end(), tSteps);
+    const Size resetIndex = grid.closestIndex(resetTime);
+
+    typedef SobolBrownianBridgeRsg rsg_type;
+    typedef MultiPathGenerator<rsg_type>::sample_type sample_type;
+
+    const Size factors = slvProcess->factors();
+    rsg_type rsg = rsg_type(factors, tSteps);
+    MultiPathGenerator<rsg_type> generator(slvProcess, grid, rsg, false);
+
+    const Real strikes[] = { 0.5, 0.7, 0.8, 0.9, 1.0, 1.1, 1.25, 1.5, 1.75, 2.0 };
+    std::vector<GeneralStatistics> stats(LENGTH(strikes));
+
+    for (Size i=0; i < 5*nSim; ++i) {
+        const sample_type& path =  generator.next();
+
+        const Real S_t = path.value[0][resetIndex-1];
+        const Real S_T = path.value[0][tSteps-1];
+
+        for (Size j=0; j < LENGTH(strikes); ++j) {
+            const Real strike = strikes[j];
+            if (strike < 1.0)
+                stats[j].add(S_t * std::max(0.0, strike - S_T/S_t));
+            else
+                stats[j].add(S_t * std::max(0.0, S_T/S_t - strike));
+        }
+    }
+
+    const boost::shared_ptr<Exercise> exercise(
+        boost::make_shared<EuropeanExercise>(maturityDate));
+
+    const boost::shared_ptr<SimpleQuote> vol(
+        boost::make_shared<SimpleQuote>(0.3));
+    const Handle<BlackVolTermStructure> volTS(flatVol(todaysDate, vol, dc));
+
+    const boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
+        new GeneralizedBlackScholesProcess(spot, qTS, rTS, volTS));
+
+    const boost::shared_ptr<PricingEngine> fwdEngine(
+        boost::make_shared<ForwardVanillaEngine<AnalyticEuropeanEngine> >(
+            bsProcess));
+
+    const DiscountFactor df = rTS->discount(grid.back());
+
+    for (Size j=0; j < LENGTH(strikes); ++j) {
+        const Real strike = strikes[j];
+        const Real npv = stats[j].mean() * df;
+
+        const boost::shared_ptr<StrikedTypePayoff> payoff(
+            boost::make_shared<PlainVanillaPayoff>(
+                (strike < 1.0) ? Option::Put : Option::Call, strike));
+
+        const boost::shared_ptr<ForwardVanillaOption> fwdOption(
+            boost::make_shared<ForwardVanillaOption>(
+                strike, resetDate, payoff, exercise));
+
+        const Volatility implVol =
+            detail::ImpliedVolatilityHelper::calculate(
+                *fwdOption, *fwdEngine, *vol, npv, 1e-8, 200, 1e-4, 2.0);
+
+        std::cout << implVol << " ";
+    }
+    std::cout << std::endl;
+}
+
 void HestonSLVModelTest::testMoustacheGraph() {
     BOOST_TEST_MESSAGE(
         "Testing Double touch pricing with SLV and mixing...");
@@ -2287,8 +2421,12 @@ test_suite* HestonSLVModelTest::experimental() {
 //    suite->add(QUANTLIB_TEST_CASE(
 //        &HestonSLVModelTest::testMonteCarloVsFdmPricing));
 
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testMoustacheGraph));
+
     suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testMoustacheGraph));
+        &HestonSLVModelTest::testForwardSkew));
+
 
 //    these test takes very long
 //    suite->add(QUANTLIB_TEST_CASE(
