@@ -119,6 +119,7 @@ QuantLib is
     Copyright (C) 2015 CompatibL
     Copyright (C) 2015 Johannes Goettker-Schnetmann
     Copyright (C) 2015 Andres Hernandez
+    Copyright (C) 2015 Dmitri Nesteruk
     Copyright (C) 2015 Maddalena Zanzi
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo
