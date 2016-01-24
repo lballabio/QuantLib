@@ -1494,7 +1494,7 @@ namespace {
 
 
 
-void HestonSLVModelTest::testHestonSLVModel() {
+void HestonSLVModelTest::testFDMCalibration() {
     SavedSettings backup;
 
     const HestonSLVFokkerPlanckFdmParams plainParams =
@@ -1869,7 +1869,8 @@ void HestonSLVModelTest::testBarrierPricingMixedModels() {
 
 void HestonSLVModelTest::testMonteCarloVsFdmPricing() {
     BOOST_TEST_MESSAGE(
-        "Testing Monte-Carlo vs FDM Pricing for Heston SLV models...");
+        "Testing Monte-Carlo vs FDM Pricing for "
+        "Heston SLV models...");
 
     SavedSettings backup;
     const DayCounter dc = ActualActual();
@@ -2047,7 +2048,7 @@ void HestonSLVModelTest::testMonteCarloCalibration() {
           = boost::make_shared<LocalConstantVol>(todaysDate, 0.3, dc);
 
     // parameter of the "calibrated" Heston model
-    const Real kappa =   2.0;
+    const Real kappa =   1.0;
     const Real theta =   0.06;
     const Real rho   =  -0.75;
     const Real sigma =   0.4;
@@ -2098,7 +2099,6 @@ void HestonSLVModelTest::testMonteCarloCalibration() {
             todaysDate + Period(24, Months)
         };
 
-
         Real qualityFactor = 0.0;
         Real maxQualityFactor = 0.0;
         Size nValues = 0u;
@@ -2147,8 +2147,9 @@ void HestonSLVModelTest::testMonteCarloCalibration() {
 }
 
 
-void HestonSLVModelTest::testForwardSkew() {
-    BOOST_TEST_MESSAGE("Testing Forward Skew...");
+void HestonSLVModelTest::testForwardSkewSLV() {
+    BOOST_TEST_MESSAGE("Testing the implied volatility skew of "
+        "forward starting options in SLV model...");
 
     SavedSettings backup;
 
@@ -2161,36 +2162,39 @@ void HestonSLVModelTest::testForwardSkew() {
     const Handle<Quote> spot(boost::make_shared<SimpleQuote>(s0));
     const Rate r = 0.05;
     const Rate q = 0.02;
+    const Volatility flatLocalVol = 0.3;
 
     const Handle<YieldTermStructure> rTS(flatRate(r, dc));
     const Handle<YieldTermStructure> qTS(flatRate(q, dc));
 
-    const boost::shared_ptr<LocalVolTermStructure> localVol
-          = boost::make_shared<LocalConstantVol>(todaysDate, 0.3, dc);
+    const Handle<LocalVolTermStructure> localVol(
+        boost::make_shared<LocalConstantVol>(todaysDate, flatLocalVol, dc));
 
     // parameter of the "calibrated" Heston model
     const Real kappa =   2.0;
     const Real theta =   0.06;
     const Real rho   =  -0.75;
-    const Real sigma =   0.4;
+    const Real sigma =   0.3;
     const Real v0    =   0.09;
 
     const boost::shared_ptr<HestonProcess> hestonProcess
         = boost::make_shared<HestonProcess>(
             rTS, qTS, spot, v0, kappa, theta, sigma, rho);
 
-    const boost::shared_ptr<HestonModel> hestonModel
-        = boost::make_shared<HestonModel>(hestonProcess);
+    const Handle<HestonModel> hestonModel(
+        boost::make_shared<HestonModel>(hestonProcess));
 
-    const Size nSim = 65536;
-    const Size xGrid = 200;
+
+    // Monte-Carlo calibration
+    const Size nSim = 20000;
+    const Size xGrid = 100;
 
     const bool sobol = true;
 
-    const boost::shared_ptr<LocalVolTermStructure> leverageFct =
+    const boost::shared_ptr<LocalVolTermStructure> leverageFctMC =
         HestonSLVMCModel(
-            Handle<LocalVolTermStructure>(localVol),
-            Handle<HestonModel>(hestonModel),
+            localVol,
+            hestonModel,
             sobol ? boost::shared_ptr<BrownianGeneratorFactory>(
                         new SobolBrownianGeneratorFactory(
                             SobolBrownianGenerator::Diagonal,
@@ -2199,8 +2203,25 @@ void HestonSLVModelTest::testForwardSkew() {
                           new MTBrownianGeneratorFactory(1234ul)),
             maturityDate, 182, xGrid, nSim).leverageFunction();
 
-    const boost::shared_ptr<HestonSLVProcess> slvProcess(
-        boost::make_shared<HestonSLVProcess>(hestonProcess, leverageFct));
+    const boost::shared_ptr<HestonSLVProcess> mcSlvProcess(
+        boost::make_shared<HestonSLVProcess>(hestonProcess, leverageFctMC));
+
+    // finite difference calibration
+    const HestonSLVFokkerPlanckFdmParams logParams = {
+        201, 401, 500, 30, 2.0, 2,
+        0.1, 1e-4, 10000,
+        1e-5, 1e-5, 0.0000025, 1.0, 0.1, 0.9, 1e-5,
+        FdmHestonGreensFct::Gaussian,
+        FdmSquareRootFwdOp::Log,
+        FdmSchemeDesc::ModifiedCraigSneyd()
+    };
+
+    const boost::shared_ptr<LocalVolTermStructure> leverageFctFDM =
+        HestonSLVModel(
+            localVol, hestonModel, maturityDate, logParams).leverageFunction();
+
+    const boost::shared_ptr<HestonSLVProcess> fdmSlvProcess(
+        boost::make_shared<HestonSLVProcess>(hestonProcess, leverageFctFDM));
 
     const Date resetDate = todaysDate + Period(12, Months);
     const Time resetTime = dc.yearFraction(todaysDate, resetDate);
@@ -2216,25 +2237,39 @@ void HestonSLVModelTest::testForwardSkew() {
     typedef SobolBrownianBridgeRsg rsg_type;
     typedef MultiPathGenerator<rsg_type>::sample_type sample_type;
 
-    const Size factors = slvProcess->factors();
-    rsg_type rsg = rsg_type(factors, tSteps);
-    MultiPathGenerator<rsg_type> generator(slvProcess, grid, rsg, false);
+    const Size factors = mcSlvProcess->factors();
 
-    const Real strikes[] = { 0.5, 0.7, 0.8, 0.9, 1.0, 1.1, 1.25, 1.5, 1.75, 2.0 };
-    std::vector<GeneralStatistics> stats(LENGTH(strikes));
+    std::vector<boost::shared_ptr<MultiPathGenerator<rsg_type> > > pathGen;
+    pathGen.push_back(
+        boost::make_shared<MultiPathGenerator<rsg_type> >(
+            mcSlvProcess, grid, rsg_type(factors, tSteps), false));
+    pathGen.push_back(
+        boost::make_shared<MultiPathGenerator<rsg_type> >(
+            fdmSlvProcess, grid, rsg_type(factors, tSteps), false));
 
-    for (Size i=0; i < 5*nSim; ++i) {
-        const sample_type& path =  generator.next();
+    const Real strikes[] = {
+        0.5, 0.7, 0.8, 0.9, 1.0, 1.1, 1.25, 1.5, 1.75, 2.0
+    };
 
-        const Real S_t = path.value[0][resetIndex-1];
-        const Real S_T = path.value[0][tSteps-1];
+    std::vector<std::vector<GeneralStatistics> >
+        stats(2, std::vector<GeneralStatistics>(LENGTH(strikes)));
 
-        for (Size j=0; j < LENGTH(strikes); ++j) {
-            const Real strike = strikes[j];
-            if (strike < 1.0)
-                stats[j].add(S_t * std::max(0.0, strike - S_T/S_t));
-            else
-                stats[j].add(S_t * std::max(0.0, S_T/S_t - strike));
+    for (Size i=0; i < 2*nSim; ++i) {
+        for (Size k= 1; k < 2; ++k) {
+            const sample_type& path = pathGen[k]->next();
+
+            const Real S_t = path.value[0][resetIndex-1];
+            const Real S_T = path.value[0][tSteps-1];
+
+            std::cout << S_t << " " << S_T << std::endl;
+
+            for (Size j=0; j < LENGTH(strikes); ++j) {
+                const Real strike = strikes[j];
+                if (strike < 1.0)
+                    stats[k][j].add(S_t * std::max(0.0, strike - S_T/S_t));
+                else
+                    stats[k][j].add(S_t * std::max(0.0, S_T/S_t - strike));
+            }
         }
     }
 
@@ -2242,7 +2277,7 @@ void HestonSLVModelTest::testForwardSkew() {
         boost::make_shared<EuropeanExercise>(maturityDate));
 
     const boost::shared_ptr<SimpleQuote> vol(
-        boost::make_shared<SimpleQuote>(0.3));
+        boost::make_shared<SimpleQuote>(flatLocalVol));
     const Handle<BlackVolTermStructure> volTS(flatVol(todaysDate, vol, dc));
 
     const boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
@@ -2256,7 +2291,9 @@ void HestonSLVModelTest::testForwardSkew() {
 
     for (Size j=0; j < LENGTH(strikes); ++j) {
         const Real strike = strikes[j];
-        const Real npv = stats[j].mean() * df;
+        const Real npv = stats[1][j].mean() * df;
+
+        std::cout << strike << " " << stats[0][j].mean() * df << stats[1][j].mean() * df << std::endl;
 
         const boost::shared_ptr<StrikedTypePayoff> payoff(
             boost::make_shared<PlainVanillaPayoff>(
@@ -2277,9 +2314,18 @@ void HestonSLVModelTest::testForwardSkew() {
 
 void HestonSLVModelTest::testMoustacheGraph() {
     BOOST_TEST_MESSAGE(
-        "Testing Double touch pricing with SLV and mixing...");
+        "Testing double no touch pricing with SLV and mixing...");
 
     SavedSettings backup;
+
+    /*
+     A more detailed description of this test case can found on
+     https://hpcquantlib.wordpress.com/2016/01/10/monte-carlo-calibration-of-the-heston-stochastic-local-volatiltiy-model/
+
+     The comparison of Black-Scholes and SLV prices is derived
+     from figure 8.8 in Iain J. Clark's book,
+     Foreign Exchange Option Pricing: A Practitioner’s Guide
+    */
 
     const DayCounter dc = ActualActual();
     const Date todaysDate(5, Jan, 2016);
@@ -2346,52 +2392,65 @@ void HestonSLVModelTest::testMoustacheGraph() {
             SobolBrownianGenerator::Diagonal,
             1234ul, SobolRsg::JoeKuoD7));
 
-    const Size xGrid = 251;
-    const Size nSim  = 400000;
+    const Size xGrid = 100;
+    const Size nSim  = 10000;
 
-    const Real etas[] = { 1.0, 0.75, 0.5, 0.25, 0.001 };
+    const Real eta = 0.90;
 
-    std::cout << "eta dist bsNPV slvNPV" << std::endl;
-    for (Size i=0; i < LENGTH(etas); ++i) {
-        const Real eta = etas[i];
+    const Handle<HestonModel> modHestonModel(
+        boost::make_shared<HestonModel>(
+            boost::make_shared<HestonProcess>(
+                rTS, qTS, spot, v0, kappa, theta, eta*sigma, rho)));
 
-        const Handle<HestonModel> modHestonModel(
-            boost::make_shared<HestonModel>(
-                boost::make_shared<HestonProcess>(
-                    rTS, qTS, spot, v0, kappa, theta, eta*sigma, rho)));
+    const boost::shared_ptr<LocalVolTermStructure> leverageFct =
+        HestonSLVMCModel(localVol, modHestonModel, sobolGeneratorFactory,
+                         maturityDate, 182, xGrid, nSim)
+            .leverageFunction();
 
-        const boost::shared_ptr<LocalVolTermStructure> leverageFct =
-            HestonSLVMCModel(localVol, modHestonModel, sobolGeneratorFactory,
-                             maturityDate, 182, xGrid, nSim)
-                .leverageFunction();
+    const boost::shared_ptr<PricingEngine> fdEngine(
+        boost::make_shared<FdHestonDoubleBarrierEngine>(
+            modHestonModel.currentLink(), 51, 201, 51, 1,
+            FdmSchemeDesc::Hundsdorfer(), leverageFct));
 
-        const boost::shared_ptr<PricingEngine> fdEngine(
-            boost::make_shared<FdHestonDoubleBarrierEngine>(
-                modHestonModel.currentLink(), 101, 201, 51, 1,
-                FdmSchemeDesc::Hundsdorfer(), leverageFct));
+    const Real expected[] = {
+         0.033426, 0.114141, 0.131870, 0.095647, 0.046355, 0.005770,-0.019238,
+        -0.029286,-0.029651,-0.025181,-0.019208,-0.013401,-0.008404,-0.004473,
+        -0.001526, 0.000488, 0.001670, 0.001991
+    };
+    const Real tol = 1e-5;
 
-        for (Real d=4.0; d < 101.0; d+=0.5) {
-            const Real dist = d;
+    for (Size i=0; i < 18; ++i) {
+        const Real dist = 10+5*i;
 
-            const Real barrier_lo = std::max(s0 - dist, 1e-2);
-            const Real barrier_hi = s0 + dist;
-            DoubleBarrierOption doubleBarrier(
-                DoubleBarrier::KnockOut, barrier_lo, barrier_hi, 0.0,
-                boost::make_shared<CashOrNothingPayoff>(
-                    Option::Call, 0.0, 1.0),
-                europeanExercise);
+        const Real barrier_lo = std::max(s0 - dist, 1e-2);
+        const Real barrier_hi = s0 + dist;
+        DoubleBarrierOption doubleBarrier(
+            DoubleBarrier::KnockOut, barrier_lo, barrier_hi, 0.0,
+            boost::make_shared<CashOrNothingPayoff>(
+                Option::Call, 0.0, 1.0),
+            europeanExercise);
 
-            doubleBarrier.setPricingEngine(analyticEngine);
-            const Real bsNPV = doubleBarrier.NPV();
+        doubleBarrier.setPricingEngine(analyticEngine);
+        const Real bsNPV = doubleBarrier.NPV();
 
-            doubleBarrier.setPricingEngine(fdEngine);
-            const Real slvNPV = doubleBarrier.NPV();
+        doubleBarrier.setPricingEngine(fdEngine);
+        const Real slvNPV = doubleBarrier.NPV();
 
-            std::cout << eta << " " << dist << " "
-                      << bsNPV << " " << slvNPV << std::endl;
+        const Real diff = slvNPV - bsNPV;
+        if (std::fabs(diff - expected[i]) > tol) {
+            BOOST_ERROR(
+                "Failed to reproduce price difference for a Double-No-Touch"
+                << "option between Black-Scholes and "
+                << "Heston Stochastic Local Volatility model"
+                << "\n Barrier Low        : " << barrier_lo
+                << "\n Barrier High       : " << barrier_hi
+                << "\n Black-Scholes Price: " << bsNPV
+                << "\n Heston SLV Price   : " << slvNPV
+                << "\n diff               : " << diff
+                << "\n expected diff      : " << expected[i]
+                << "\n tolerance          : " << tol);
         }
     }
-
 }
 
 
@@ -2417,21 +2476,19 @@ test_suite* HestonSLVModelTest::experimental() {
 //        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
 //    suite->add(QUANTLIB_TEST_CASE(
 //        &HestonSLVModelTest::testBarrierPricingViaHestonLocalVol));
-//
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &HestonSLVModelTest::testMoustacheGraph));
 //    suite->add(QUANTLIB_TEST_CASE(
 //        &HestonSLVModelTest::testMonteCarloVsFdmPricing));
 
     suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testMoustacheGraph));
-
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testForwardSkew));
+        &HestonSLVModelTest::testForwardSkewSLV));
 
 
 //    these test takes very long
 //    suite->add(QUANTLIB_TEST_CASE(
 //        &HestonSLVModelTest::testMonteCarloCalibration));
-//    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testHestonSLVModel));
+//    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testFDMCalibration));
 //    suite->add(QUANTLIB_TEST_CASE(
 //        &HestonSLVModelTest::testLocalVolsvSLVPropDensity));
 //    suite->add(QUANTLIB_TEST_CASE(

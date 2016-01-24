@@ -37,14 +37,14 @@ public:
     static void testHestonFokkerPlanckFwdEquation();
     static void testHestonFokkerPlanckFwdEquationLogLVLeverage();
     static void testBlackScholesFokkerPlanckFwdEquationLocalVol();
-    static void testHestonSLVModel();
+    static void testFDMCalibration();
     static void testLocalVolsvSLVPropDensity();
     static void testBarrierPricingViaHestonLocalVol();
     static void testBarrierPricingMixedModels();
     static void testMonteCarloVsFdmPricing();
     static void testMonteCarloCalibration();
     static void testMoustacheGraph();
-    static void testForwardSkew();
+    static void testForwardSkewSLV();
 
     static boost::unit_test_framework::test_suite* experimental();
 
