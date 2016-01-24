@@ -2421,8 +2421,8 @@ test_suite* HestonSLVModelTest::experimental() {
 //    suite->add(QUANTLIB_TEST_CASE(
 //        &HestonSLVModelTest::testMonteCarloVsFdmPricing));
 
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testMoustacheGraph));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testMoustacheGraph));
 
     suite->add(QUANTLIB_TEST_CASE(
         &HestonSLVModelTest::testForwardSkew));
