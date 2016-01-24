@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,6 +27,7 @@
 
 #include <ql/models/calibrationhelper.hpp>
 #include <ql/instruments/swaption.hpp>
+#include <ql/termstructures/volatility/volatilitytype.hpp>
 
 namespace QuantLib {
 
@@ -45,6 +47,7 @@ namespace QuantLib {
                                       = CalibrationHelper::RelativePriceError,
                        const Real strike = Null<Real>(),
                        const Real nominal = 1.0,
+                       const VolatilityType type = ShiftedLognormal,
                        const Real shift = 0.0);
 
         SwaptionHelper(const Date& exerciseDate,
@@ -59,6 +62,7 @@ namespace QuantLib {
                                       = CalibrationHelper::RelativePriceError,
                        const Real strike = Null<Real>(),
                        const Real nominal = 1.0,
+                       const VolatilityType type = ShiftedLognormal,
                        const Real shift = 0.0);
 
         SwaptionHelper(const Date& exerciseDate,
@@ -73,6 +77,7 @@ namespace QuantLib {
                                       = CalibrationHelper::RelativePriceError,
                        const Real strike = Null<Real>(),
                        const Real nominal = 1.0,
+                       const VolatilityType type = ShiftedLognormal,
                        const Real shift = 0.0);
 
         virtual void addTimesTo(std::list<Time>& times) const;
@@ -89,6 +94,7 @@ namespace QuantLib {
         const boost::shared_ptr<IborIndex> index_;
         const DayCounter fixedLegDayCounter_, floatingLegDayCounter_;
         const Real strike_, nominal_, shift_;
+        const VolatilityType volatilityType_;
         mutable Rate exerciseRate_;
         mutable boost::shared_ptr<VanillaSwap> swap_;
         mutable boost::shared_ptr<Swaption> swaption_;

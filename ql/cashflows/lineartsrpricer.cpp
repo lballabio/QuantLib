@@ -281,16 +281,24 @@ namespace QuantLib {
             Real atm = smileSection_->atmLevel();
             Real atmVol = smileSection_->volatility(atm);
             Real shift = smileSection_->shift();
-            Real upperTmp =
-                (atm + shift) * std::exp(settings_.stdDevs_ * atmVol -
-                                         0.5 * atmVol * atmVol *
-                                             smileSection_->exerciseTime()) -
-                shift;
-            Real lowerTmp =
-                (atm + shift) * std::exp(-settings_.stdDevs_ * atmVol -
-                                         0.5 * atmVol * atmVol *
-                                             smileSection_->exerciseTime()) -
-                shift;
+            Real lowerTmp, upperTmp;
+            if (smileSection_->volatilityType() == ShiftedLognormal) {
+                upperTmp = (atm + shift) *
+                               std::exp(settings_.stdDevs_ * atmVol -
+                                        0.5 * atmVol * atmVol *
+                                            smileSection_->exerciseTime()) -
+                           shift;
+                lowerTmp = (atm + shift) *
+                               std::exp(-settings_.stdDevs_ * atmVol -
+                                        0.5 * atmVol * atmVol *
+                                            smileSection_->exerciseTime()) -
+                           shift;
+            } else {
+                Real tmp = settings_.stdDevs_ * atmVol *
+                           std::sqrt(smileSection_->exerciseTime());
+                upperTmp = atm + tmp;
+                lowerTmp = atm - tmp;
+            }
             upper = std::min(upperTmp - shift, shiftedUpperBound_);
             lower = std::max(lowerTmp - shift, shiftedLowerBound_);
             break;
