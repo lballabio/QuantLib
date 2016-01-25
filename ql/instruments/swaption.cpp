@@ -63,12 +63,10 @@ namespace QuantLib {
             // at first ImpliedVolHelper::operator()(Volatility x) call
             vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(-1.0));
             Handle<Quote> h(vol_);
-            boost::shared_ptr<PricingEngine> engine_;
             if (type == Normal) {
                 engine_ = boost::make_shared<BachelierBlackSwaptionEngine>(
                     discountCurve_, h, Actual365Fixed());
             } else {
-
                 engine_ = boost::make_shared<BlackSwaptionEngine>(
                     discountCurve_, h, Actual365Fixed(), displacement);
             }
