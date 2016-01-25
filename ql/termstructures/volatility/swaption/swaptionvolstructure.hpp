@@ -386,7 +386,7 @@ namespace QuantLib {
         return shiftImpl(optionTime, swapLength);
     }
 
-    inline Volatility
+    inline Real
     SwaptionVolatilityStructure::shift(Time optionTime,
                                             const Period& swapTenor,
                                             bool extrapolate) const {
@@ -396,7 +396,7 @@ namespace QuantLib {
         return shiftImpl(optionTime, length);
     }
 
-    inline Volatility
+    inline Real
     SwaptionVolatilityStructure::shift(Time optionTime,
                                             Time swapLength,
                                             bool extrapolate) const {
