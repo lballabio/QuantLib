@@ -170,7 +170,7 @@ namespace QuantLib {
     }
 
     inline Rate SwaptionVolatilityMatrix::minStrike() const {
-        return QL_MIN_REAL;
+        return -QL_MAX_REAL;
     }
 
     inline Rate SwaptionVolatilityMatrix::maxStrike() const {
