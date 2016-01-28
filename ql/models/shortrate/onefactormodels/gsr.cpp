@@ -177,7 +177,7 @@ void Gsr::initialize(Real T) {
         volatilityObserver_->registerWith(volatilities_[i]);
 }
 
-const Real Gsr::zerobondImpl(const Time T, const Time t, const Real y,
+Real Gsr::zerobondImpl(const Time T, const Time t, const Real y,
                              const Handle<YieldTermStructure> &yts) const {
 
     calculate();
@@ -201,7 +201,7 @@ const Real Gsr::zerobondImpl(const Time T, const Time t, const Real y,
     return d * exp(-x * gtT - 0.5 * p->y(t) * gtT * gtT);
 }
 
-const Real Gsr::numeraireImpl(const Time t, const Real y,
+Real Gsr::numeraireImpl(const Time t, const Real y,
                               const Handle<YieldTermStructure> &yts) const {
 
     calculate();

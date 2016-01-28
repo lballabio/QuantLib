@@ -121,6 +121,6 @@ namespace QuantLib {
         retVal[3] = corrMap_.toMatrix() + klugeDecomp[2];
 
         return retVal;
-    };
+    }
 #endif
 }

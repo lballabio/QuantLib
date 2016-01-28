@@ -25,7 +25,7 @@ using std::exp;
 
 namespace QuantLib {
 
-const Real Gaussian1dModel::forwardRate(const Date &fixing,
+Real Gaussian1dModel::forwardRate(const Date &fixing,
                                         const Date &referenceDate, const Real y,
                                         boost::shared_ptr<IborIndex> iborIdx) const {
 
@@ -52,7 +52,7 @@ const Real Gaussian1dModel::forwardRate(const Date &fixing,
            (dcf * zerobond(endDate, referenceDate, y, yts));
 }
 
-const Real Gaussian1dModel::swapRate(const Date &fixing, const Period &tenor,
+Real Gaussian1dModel::swapRate(const Date &fixing, const Period &tenor,
                                      const Date &referenceDate, const Real y,
                                      boost::shared_ptr<SwapIndex> swapIdx) const {
 
@@ -110,7 +110,7 @@ const Real Gaussian1dModel::swapRate(const Date &fixing, const Period &tenor,
     return floatleg / annuity;
 }
 
-const Real Gaussian1dModel::swapAnnuity(const Date &fixing, const Period &tenor,
+Real Gaussian1dModel::swapAnnuity(const Date &fixing, const Period &tenor,
                                         const Date &referenceDate, const Real y,
                                         boost::shared_ptr<SwapIndex> swapIdx) const {
 
@@ -138,7 +138,7 @@ const Real Gaussian1dModel::swapAnnuity(const Date &fixing, const Period &tenor,
     return annuity;
 }
 
-const Real Gaussian1dModel::zerobondOption(
+Real Gaussian1dModel::zerobondOption(
     const Option::Type &type, const Date &expiry, const Date &valueDate,
     const Date &maturity, const Rate strike, const Date &referenceDate,
     const Real y, const Handle<YieldTermStructure> &yts, const Real yStdDevs,
@@ -202,7 +202,7 @@ const Real Gaussian1dModel::zerobondOption(
     return numeraire(referenceTime, y, yts) * price;
 }
 
-const Real Gaussian1dModel::gaussianPolynomialIntegral(
+Real Gaussian1dModel::gaussianPolynomialIntegral(
     const Real a, const Real b, const Real c, const Real d, const Real e,
     const Real y0, const Real y1) {
 
@@ -235,7 +235,7 @@ const Real Gaussian1dModel::gaussianPolynomialIntegral(
 #endif
 }
 
-const Real Gaussian1dModel::gaussianShiftedPolynomialIntegral(
+Real Gaussian1dModel::gaussianShiftedPolynomialIntegral(
     const Real a, const Real b, const Real c, const Real d, const Real e,
     const Real h, const Real x0, const Real x1) {
     return gaussianPolynomialIntegral(

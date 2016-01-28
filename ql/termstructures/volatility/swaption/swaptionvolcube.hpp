@@ -78,7 +78,7 @@ namespace QuantLib {
         const std::vector<std::vector<Handle<Quote> > >& volSpreads() const { return volSpreads_; }
         const boost::shared_ptr<SwapIndex> swapIndexBase() const { return swapIndexBase_; }
         const boost::shared_ptr<SwapIndex> shortSwapIndexBase() const { return shortSwapIndexBase_; }
-        const bool vegaWeightedSmileFit() const { return vegaWeightedSmileFit_; }
+        bool vegaWeightedSmileFit() const { return vegaWeightedSmileFit_; }
         //@}
         //! \name LazyObject interface
         //@{

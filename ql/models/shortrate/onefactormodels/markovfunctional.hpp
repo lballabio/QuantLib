@@ -325,10 +325,10 @@ namespace QuantLib {
 
       protected:
 
-        const Real numeraireImpl(const Time t, const Real y,
+        Real numeraireImpl(const Time t, const Real y,
                                  const Handle<YieldTermStructure> &yts) const;
 
-        const Real zerobondImpl(const Time T, const Time t, const Real y,
+        Real zerobondImpl(const Time T, const Time t, const Real y,
                                 const Handle<YieldTermStructure> &yts) const;
 
         void generateArguments() {
@@ -367,11 +367,11 @@ namespace QuantLib {
                                           const Period &tenor);
         void makeCapletCalibrationPoint(const Date &expiry);
 
-        const Real marketSwapRate(const Date &expiry, const CalibrationPoint &p,
+        Real marketSwapRate(const Date &expiry, const CalibrationPoint &p,
                                   const Real digitalPrice,
                                   const Real guess = 0.03,
                                   const Real shift = 0.0) const;
-        const Real marketDigitalPrice(const Date &expiry,
+        Real marketDigitalPrice(const Date &expiry,
                                       const CalibrationPoint &p,
                                       const Option::Type &type,
                                       const Real strike) const;
@@ -383,7 +383,7 @@ namespace QuantLib {
         const Disposable<Array> zerobondArray(const Time T, const Time t,
                                               const Array &y) const;
 
-        const Real deflatedZerobond(const Time T, const Time t = 0.0,
+        Real deflatedZerobond(const Time T, const Time t = 0.0,
                                     const Real y = 0.0) const;
 
         // the following methods (tagged internal) are indended only to produce
@@ -392,20 +392,20 @@ namespace QuantLib {
         // calibration there is on direct way to use the usual pricing engines
         // for this purpose
 
-        const Real forwardRateInternal(
+        Real forwardRateInternal(
             const Date &fixing, const Date &referenceDate = Null<Date>(),
             const Real y = 0.0, const bool zeroFixingDays = false,
             boost::shared_ptr<IborIndex> iborIdx =
                 boost::shared_ptr<IborIndex>()) const;
 
-        const Real swapRateInternal(const Date &fixing, const Period &tenor,
+        Real swapRateInternal(const Date &fixing, const Period &tenor,
                                     const Date &referenceDate = Null<Date>(),
                                     const Real y = 0.0,
                                     const bool zeroFixingDays = false,
                                     boost::shared_ptr<SwapIndex> swapIdx =
                                         boost::shared_ptr<SwapIndex>()) const;
 
-        const Real
+        Real
         swapAnnuityInternal(const Date &fixing, const Period &tenor,
                             const Date &referenceDate = Null<Date>(),
                             const Real y = 0.0,
@@ -413,14 +413,14 @@ namespace QuantLib {
                             boost::shared_ptr<SwapIndex> swapIdx =
                                 boost::shared_ptr<SwapIndex>()) const;
 
-        const Real capletPriceInternal(
+        Real capletPriceInternal(
             const Option::Type &type, const Date &expiry, const Rate strike,
             const Date &referenceDate = Null<Date>(), const Real y = 0.0,
             const bool zeroFixingDays = false,
             boost::shared_ptr<IborIndex> iborIdx =
                 boost::shared_ptr<IborIndex>()) const;
 
-        const Real swaptionPriceInternal(
+        Real swaptionPriceInternal(
             const Option::Type &type, const Date &expiry, const Period &tenor,
             const Rate strike, const Date &referenceDate = Null<Date>(),
             const Real y = 0.0, const bool zeroFixingDays = false,
