@@ -158,7 +158,10 @@ namespace QuantLib {
             std::lower_bound(times_.begin(), times_.end(), t));
 
         if (close_enough(t, times_[idx])) {
-            return localVolInterpol_[idx](strike, true);
+            if (strikes_[idx]->front() < strikes_[idx]->back())
+                return localVolInterpol_[idx](strike, true);
+            else
+                return (*localVolMatrix_)[localVolMatrix_->rows()/2][idx];
         }
         else {
             Real earlierStrike = strike, laterStrike = strike;
@@ -179,7 +182,7 @@ namespace QuantLib {
             const Real earlyVol =
                 (strikes_[idx-1]->front() < strikes_[idx-1]->back())
                 ? localVolInterpol_[idx-1](earlierStrike, true)
-                : (*localVolMatrix_)[localVolMatrix_->rows()/2][0];
+                : (*localVolMatrix_)[localVolMatrix_->rows()/2][idx-1];
             const Real laterVol = localVolInterpol_[idx](laterStrike, true);
 
             return earlyVol

@@ -34,7 +34,7 @@
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmmesherintegral.hpp>
-#include <ql/experimental/models/hestonslvmodel.hpp>
+#include <ql/experimental/models/hestonslvfdmmodel.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
 #include <ql/experimental/finitedifferences/localvolrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/squarerootprocessrndcalculator.hpp>
@@ -263,7 +263,7 @@ namespace QuantLib {
         }
     }
 
-    HestonSLVModel::HestonSLVModel(
+    HestonSLVFDMModel::HestonSLVFDMModel(
         const Handle<LocalVolTermStructure>& localVol,
         const Handle<HestonModel>& hestonModel,
         const Date& endDate,
@@ -281,26 +281,26 @@ namespace QuantLib {
         registerWith(localVol_);
     }
 
-    void HestonSLVModel::update() {
+    void HestonSLVFDMModel::update() {
         notifyObservers();
     }
 
-    boost::shared_ptr<HestonProcess> HestonSLVModel::hestonProcess() const {
+    boost::shared_ptr<HestonProcess> HestonSLVFDMModel::hestonProcess() const {
         return hestonModel_->process();
     }
 
-    boost::shared_ptr<LocalVolTermStructure> HestonSLVModel::localVol() const {
+    boost::shared_ptr<LocalVolTermStructure> HestonSLVFDMModel::localVol() const {
         return localVol_.currentLink();
     }
 
     boost::shared_ptr<LocalVolTermStructure>
-    HestonSLVModel::leverageFunction() const {
+    HestonSLVFDMModel::leverageFunction() const {
         calculate();
 
         return leverageFunction_;
     }
 
-    void HestonSLVModel::performCalculations() const {
+    void HestonSLVFDMModel::performCalculations() const {
         logEntries_.clear();
 
         const boost::shared_ptr<HestonProcess> hestonProcess
@@ -543,7 +543,7 @@ namespace QuantLib {
         leverageFunction_ = leverageFct;
     }
 
-    const std::list<HestonSLVModel::LogEntry>& HestonSLVModel::logEntries()
+    const std::list<HestonSLVFDMModel::LogEntry>& HestonSLVFDMModel::logEntries()
     const {
         performCalculations();
         return logEntries_;

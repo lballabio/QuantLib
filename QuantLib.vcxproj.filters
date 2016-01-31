@@ -4015,7 +4015,7 @@
     <ClInclude Include="ql\experimental\finitedifferences\squarerootprocessrndcalculator.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\hestonslvmodel.hpp">
+    <ClInclude Include="ql\experimental\models\hestonslvfdmmodel.hpp">
       <Filter>experimental\models</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\models\hestonslvmcmodel.hpp">
@@ -6512,7 +6512,7 @@
     <ClCompile Include="ql\experimental\finitedifferences\squarerootprocessrndcalculator.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\hestonslvmodel.cpp">
+    <ClCompile Include="ql\experimental\models\hestonslvfdmmodel.cpp">
       <Filter>experimental\models</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\models\hestonslvmcmodel.cpp">

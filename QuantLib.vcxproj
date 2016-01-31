@@ -488,7 +488,7 @@
     <ClInclude Include="ql\experimental\finitedifferences\localvolrndcalculator.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\riskneutraldensitycalculator.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\squarerootprocessrndcalculator.hpp" />
-    <ClInclude Include="ql\experimental\models\hestonslvmodel.hpp" />
+    <ClInclude Include="ql\experimental\models\hestonslvfdmmodel.hpp" />
     <ClInclude Include="ql\experimental\models\hestonslvmcmodel.hpp" />
     <ClInclude Include="ql\math\polynomialmathfunction.hpp" />
     <ClInclude Include="ql\math\pascaltriangle.hpp" />
@@ -1756,7 +1756,7 @@
     <ClCompile Include="ql\experimental\finitedifferences\localvolrndcalculator.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\riskneutraldensitycalculator.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\squarerootprocessrndcalculator.cpp" />
-    <ClCompile Include="ql\experimental\models\hestonslvmodel.cpp" />
+    <ClCompile Include="ql\experimental\models\hestonslvfdmmodel.cpp" />
     <ClCompile Include="ql\experimental\models\hestonslvmcmodel.cpp" />
     <ClCompile Include="ql\math\polynomialmathfunction.cpp" />
     <ClCompile Include="ql\math\pascaltriangle.cpp" />
