@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2008 Ferdinando Ametrano
  Copyright (C) 2007, 2008 Laurent Hoffmann
- Copyright (C) 2015 Michael von den Driesch
+ Copyright (C) 2015, 2016 Michael von den Driesch
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -502,6 +502,46 @@ void OptionletStripperTest::testTermVolatilityStripping2() {
   }
 }
 
+void OptionletStripperTest::testSwitchStrike() {
+    BOOST_TEST_MESSAGE("Testing switch strike level and recalibration of level "
+                       "in case of curve relinking ...");
+
+    CommonVars vars;
+    Settings::instance().evaluationDate() = Date(28, October, 2013);
+    vars.setCapFloorTermVolSurface();
+
+    RelinkableHandle< YieldTermStructure > yieldTermStructure;
+    yieldTermStructure.linkTo(boost::shared_ptr< FlatForward >(
+        new FlatForward(0, vars.calendar, 0.03, vars.dayCounter)));
+
+    shared_ptr< IborIndex > iborIndex(new Euribor6M(yieldTermStructure));
+
+    boost::shared_ptr< OptionletStripper1 > optionletStripper1(
+        new OptionletStripper1(vars.capFloorVolSurface, iborIndex,
+                               Null< Rate >(), vars.accuracy));
+
+    Real error = std::fabs(optionletStripper1->switchStrike() - 0.02981223);
+    if (error > vars.tolerance)
+        BOOST_FAIL("\nSwitchstrike not correctly computed:  "
+                   << "\nexpected switch strike: " << io::rate(0.02981223)
+                   << "\ncomputed switch strike: "
+                   << io::rate(optionletStripper1->switchStrike())
+                   << "\nerror:         " << io::rate(error)
+                   << "\ntolerance:     " << io::rate(vars.tolerance));
+
+    yieldTermStructure.linkTo(boost::shared_ptr< FlatForward >(
+        new FlatForward(0, vars.calendar, 0.05, vars.dayCounter)));
+
+    error = std::fabs(optionletStripper1->switchStrike() - 0.0499371);
+    if (error > vars.tolerance)
+        BOOST_FAIL("\nSwitchstrike not correctly computed:  "
+                   << "\nexpected switch strike: " << io::rate(0.0499371)
+                   << "\ncomputed switch strike: "
+                   << io::rate(optionletStripper1->switchStrike())
+                   << "\nerror:         " << io::rate(error)
+                   << "\ntolerance:     " << io::rate(vars.tolerance));
+}
+
 test_suite* OptionletStripperTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("OptionletStripper Tests");
     suite->add(QUANTLIB_TEST_CASE(
@@ -512,5 +552,7 @@ test_suite* OptionletStripperTest::suite() {
                    &OptionletStripperTest::testFlatTermVolatilityStripping2));
     suite->add(QUANTLIB_TEST_CASE(
                        &OptionletStripperTest::testTermVolatilityStripping2));
+    suite->add(QUANTLIB_TEST_CASE(
+                       &OptionletStripperTest::testSwitchStrike));
     return suite;
 }
