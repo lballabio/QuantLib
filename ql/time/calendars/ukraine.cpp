@@ -54,7 +54,9 @@ namespace QuantLib {
             // Constitution Day
             || (d == 28 && m == June)
             // Independence Day
-            || (d == 24 && m == August))
+            || (d == 24 && m == August)
+            // Defender's Day
+            || (d == 14 && m == October))
             return false;
         return true;
     }
