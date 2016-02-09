@@ -511,7 +511,18 @@ namespace QuantLib {
         data_ = skkData;
     }
 
-
+    // Ukrainian hryvnia
+    /* The ISO three-letter code is UAH; the numeric code is 980.
+       It is divided in 100 kopiykas.
+     */
+    UAHCurrency::UAHCurrency() {
+        static boost::shared_ptr<Data> uahData(
+                                     new Data("Ukrainian hryvnia", "UAH", 980,
+                                              "hrn", "", 100,
+                                              Rounding(),
+                                              "%1$.2f %3%"));
+        data_ = uahData;
+    }
 }
 
 
