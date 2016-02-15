@@ -145,26 +145,41 @@ namespace QuantLib {
                            const Period& availabilityLag,
                            const Currency& currency,
                            const Handle<ZeroInflationTermStructure>& ts =
-                                        Handle<ZeroInflationTermStructure>());
+                                        Handle<ZeroInflationTermStructure>(),
+                           bool forecastWhenPossible = false);
+
 
         //! \name Index interface
         //@{
         /*! \warning the forecastTodaysFixing parameter (required by
                      the Index interface) is currently ignored.
         */
+        Rate fixing(const Date& fixingDate) const;
+
         Rate fixing(const Date& fixingDate,
-                    bool forecastTodaysFixing = false) const;
+                    bool forecastTodaysFixing) const;
+
+        Rate fixing(const Date& fixingDate,
+                    const Date& referenceDate) const;
+
+        Rate fixing(const Date& fixingDate,
+                    const Date& referenceDate,
+                    bool forecastTodaysFixing) const;
+        
         //@}
         //! \name Other methods
         //@{
         Handle<ZeroInflationTermStructure> zeroInflationTermStructure() const;
         boost::shared_ptr<ZeroInflationIndex> clone(
                            const Handle<ZeroInflationTermStructure>& h) const;
+        bool forecastWhenPossible() const;
         //@}
       private:
+        bool forecastTodaysFixing(const Date& fixingDate) const;
         bool needsForecast(const Date& fixingDate) const;
         Rate forecastFixing(const Date& fixingDate) const;
         Handle<ZeroInflationTermStructure> zeroInflation_;
+        bool forecastWhenPossible_;
     };
 
     //! Base class for year-on-year inflation indices.

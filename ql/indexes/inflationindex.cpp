@@ -70,23 +70,46 @@ namespace QuantLib {
                       Frequency frequency,
                       const Period& availabilityLag,
                       const Currency& currency,
-                      const Handle<ZeroInflationTermStructure>& zeroInflation)
-    : InflationIndex(familyName, region, revised, interpolated,
+                      const Handle<ZeroInflationTermStructure>& zeroInflation,
+                      bool forecastWhenPossible)
+        : InflationIndex(familyName, region, revised, interpolated,
                      frequency, availabilityLag, currency),
-      zeroInflation_(zeroInflation) {
+      zeroInflation_(zeroInflation),
+      forecastWhenPossible_(forecastWhenPossible) {
         registerWith(zeroInflation_);
     }
 
+    bool ZeroInflationIndex::forecastTodaysFixing(const Date& fixingDate) const {
+        return forecastWhenPossible_ && fixingDate >= zeroInflationTermStructure()->baseDate();
+    }
+
+
+    Rate ZeroInflationIndex::fixing(const Date& fixingDate) const {
+        return fixing(fixingDate, fixingDate);
+    }
+
     Rate ZeroInflationIndex::fixing(const Date& aFixingDate,
-                                    bool /*forecastTodaysFixing*/) const {
-        if (!needsForecast(aFixingDate)) {
+                                    bool forecastTodaysFixing) const {
+        return fixing(aFixingDate, aFixingDate, forecastTodaysFixing);
+    }
+
+    Rate ZeroInflationIndex::fixing(const Date& fixingDate,
+                                    const Date& referenceDate) const {
+        return fixing(fixingDate, referenceDate, forecastTodaysFixing(fixingDate));
+    }
+    
+    Rate ZeroInflationIndex::fixing(const Date& aFixingDate,
+                                    const Date& referenceDate,
+                                    bool forecastTodaysFixing) const {
+        if (!forecastTodaysFixing && !needsForecast(aFixingDate)) {
             std::pair<Date,Date> lim = inflationPeriod(aFixingDate, frequency_);
             const TimeSeries<Real>& ts = timeSeries();
             Real pastFixing = ts[lim.first];
             QL_REQUIRE(pastFixing != Null<Real>(),
                        "Missing " << name() << " fixing for " << lim.first);
             Real theFixing = pastFixing;
-            if (interpolated_) {
+            //Interpolate only when necessary
+            if (interpolated_ && referenceDate > lim.first) {
                 // fixings stored on first day of every period
                 if (aFixingDate == lim.first) {
                     // we don't actually need the next fixing
@@ -95,10 +118,12 @@ namespace QuantLib {
                     Real pastFixing2 = ts[lim.second+1];
                     QL_REQUIRE(pastFixing2 != Null<Real>(),
                                "Missing " << name() << " fixing for " << lim.second+1);
+
+                    std::pair<Date, Date> reference_period_lim = inflationPeriod(referenceDate + zeroInflationTermStructure()->observationLag(), frequency_);
                     // now linearly interpolate
-                    Real daysInPeriod = lim.second+1 - lim.first;
+                    Real daysInPeriod = reference_period_lim.second + 1 - reference_period_lim.first;
                     theFixing = pastFixing
-                        + (pastFixing2-pastFixing)*(aFixingDate-lim.first)/daysInPeriod;
+                        + (pastFixing2 - pastFixing)*(referenceDate - lim.first) / daysInPeriod;
                 }
             }
             return theFixing;
@@ -151,9 +176,10 @@ namespace QuantLib {
     Rate ZeroInflationIndex::forecastFixing(const Date& fixingDate) const {
         // the term structure is relative to the fixing value at the base date.
         Date baseDate = zeroInflation_->baseDate();
+        Date referenceDate = zeroInflation_->referenceDate();
         QL_REQUIRE(!needsForecast(baseDate),
                    name() << " index fixing at base date is not available");
-        Real baseFixing = fixing(baseDate);
+        Real baseFixing = fixing(baseDate, false); // or referenceDate to false
         Date effectiveFixingDate;
         if (interpolated()) {
             effectiveFixingDate = fixingDate;
@@ -182,6 +208,10 @@ namespace QuantLib {
                       new ZeroInflationIndex(familyName_, region_, revised_,
                                              interpolated_, frequency_,
                                              availabilityLag_, currency_, h));
+    }
+
+    bool ZeroInflationIndex::forecastWhenPossible() const {
+        return forecastWhenPossible_;
     }
 
     // these still need to be fixed to latest versions
