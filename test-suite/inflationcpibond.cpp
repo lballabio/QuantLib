@@ -387,11 +387,11 @@ void InflationCPIBondTest::testZABondsReferencePeriod() {
 
 
 test_suite* InflationCPIBondTest::suite() {
-	test_suite* suite = BOOST_TEST_SUITE("CPI bond tests");
+    test_suite* suite = BOOST_TEST_SUITE("CPI bond tests");
 
-	suite->add(QUANTLIB_TEST_CASE(&InflationCPIBondTest::testCleanPrice));
-	suite->add(QUANTLIB_TEST_CASE(&InflationCPIBondTest::testZABondsReferencePeriod));
+    suite->add(QUANTLIB_TEST_CASE(&InflationCPIBondTest::testCleanPrice));
+    suite->add(QUANTLIB_TEST_CASE(&InflationCPIBondTest::testZABondsReferencePeriod));
 
-	return suite;
+    return suite;
 }
 
