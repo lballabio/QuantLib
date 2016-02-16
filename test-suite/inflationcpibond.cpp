@@ -66,11 +66,11 @@ namespace {
         for (Size i=0; i<N; i++) {
             Date maturity = iiData[i].date;
             Handle<Quote> quote(boost::shared_ptr<Quote>(
-                                new SimpleQuote(iiData[i].rate / 100.0)));
+                                new SimpleQuote(iiData[i].rate/100.0)));
             boost::shared_ptr<Helper> h(
-                new ZeroCouponInflationSwapHelper(quote, observationLag,
-                                                  maturity, calendar,
-                                                  bdc, dc, ii));
+                      new ZeroCouponInflationSwapHelper(quote, observationLag,
+                                                        maturity, calendar,
+                                                        bdc, dc, ii));
             instruments.push_back(h);
         }
         return instruments;
@@ -161,7 +161,7 @@ namespace {
             cpiTS.linkTo(boost::shared_ptr<ZeroInflationTermStructure>(
                   new PiecewiseZeroInflationCurve<Linear>(
                          evaluationDate, calendar, dayCounter, observationLag,
-                         ii->frequency(), ii->interpolated(), baseZeroRate,
+                         ii->frequency(),ii->interpolated(), baseZeroRate,
                          Handle<YieldTermStructure>(yTS), helpers)));
         }
 
@@ -271,7 +271,7 @@ void InflationCPIBondTest::testCleanPrice() {
     BusinessDayConvention fixedPaymentConvention = ModifiedFollowing;
     Calendar fixedPaymentCalendar = UnitedKingdom();
     boost::shared_ptr<ZeroInflationIndex> fixedIndex = common.ii;
-    Period contractObservationLag = Period(3, Months);
+    Period contractObservationLag = Period(3,Months);
     CPI::InterpolationType observationInterpolation = CPI::Flat;
     Natural settlementDays = 3;
     bool growthOnly = true;
@@ -282,7 +282,7 @@ void InflationCPIBondTest::testCleanPrice() {
     Date endDate(2, October, 2052);
     Schedule fixedSchedule =
         MakeSchedule().from(startDate).to(endDate)
-                      .withTenor(Period(6, Months))
+                      .withTenor(Period(6,Months))
                       .withCalendar(UnitedKingdom())
                       .withConvention(Unadjusted)
                       .backwards();
