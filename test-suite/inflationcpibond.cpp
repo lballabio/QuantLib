@@ -1,21 +1,21 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
-Copyright (C) 2011 Chris Kenyon
-Copyright (C) 2012 StatPro Italia srl
-
-This file is part of QuantLib, a free-software/open-source library
-for financial quantitative analysts and developers - http://quantlib.org/
-
-QuantLib is free software: you can redistribute it and/or modify it
-under the terms of the QuantLib license.  You should have received a
-copy of the license along with this program; if not, please email
-<quantlib-dev@lists.sf.net>. The license is also available online at
-<http://quantlib.org/license.shtml>.
-
-This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the license for more details.
+ Copyright (C) 2011 Chris Kenyon
+ Copyright (C) 2012 StatPro Italia srl
+ 
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+ 
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/license.shtml>.
+ 
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
 #include "inflationcpibond.hpp"
@@ -63,14 +63,14 @@ namespace {
         const DayCounter& dc) {
 
         std::vector<boost::shared_ptr<Helper> > instruments;
-        for (Size i = 0; i < N; i++) {
+        for (Size i=0; i<N; i++) {
             Date maturity = iiData[i].date;
             Handle<Quote> quote(boost::shared_ptr<Quote>(
-                new SimpleQuote(iiData[i].rate / 100.0)));
+                                new SimpleQuote(iiData[i].rate / 100.0)));
             boost::shared_ptr<Helper> h(
                 new ZeroCouponInflationSwapHelper(quote, observationLag,
-                    maturity, calendar,
-                    bdc, dc, ii));
+                                                  maturity, calendar,
+                                                  bdc, dc, ii));
             instruments.push_back(h);
         }
         return instruments;
@@ -105,11 +105,11 @@ namespace {
             Settings::instance().evaluationDate() = evaluationDate;
             dayCounter = ActualActual();
 
-            Date from(20, Jul, 2007);
+            Date from(20, July, 2007);
             Date to(20, November, 2009);
             Schedule rpiSchedule =
                 MakeSchedule().from(from).to(to)
-                .withTenor(1 * Months)
+                .withTenor(1*Months)
                 .withCalendar(UnitedKingdom())
                 .withConvention(ModifiedFollowing);
 
@@ -123,15 +123,15 @@ namespace {
                 212.9, 210.1, 211.4, 211.3, 211.5,
                 212.8, 213.4, 213.4, 213.4, 214.4
             };
-            for (Size i = 0; i < LENGTH(fixData); ++i) {
+            for (Size i=0; i<LENGTH(fixData); ++i) {
                 ii->addFixing(rpiSchedule[i], fixData[i]);
             }
 
             yTS.linkTo(boost::shared_ptr<YieldTermStructure>(
-                new FlatForward(evaluationDate, 0.05, dayCounter)));
+                          new FlatForward(evaluationDate, 0.05, dayCounter)));
 
             // now build the zero inflation curve
-            observationLag = Period(2, Months);
+            observationLag = Period(2,Months);
 
             Datum zciisData[] = {
                 { Date(25, November, 2010), 3.0495 },
@@ -155,14 +155,14 @@ namespace {
 
             std::vector<boost::shared_ptr<Helper> > helpers =
                 makeHelpers(zciisData, LENGTH(zciisData), ii,
-                    observationLag, calendar, convention, dayCounter);
+                            observationLag, calendar, convention, dayCounter);
 
-            Rate baseZeroRate = zciisData[0].rate / 100.0;
+            Rate baseZeroRate = zciisData[0].rate/100.0;
             cpiTS.linkTo(boost::shared_ptr<ZeroInflationTermStructure>(
-                new PiecewiseZeroInflationCurve<Linear>(
-                    evaluationDate, calendar, dayCounter, observationLag,
-                    ii->frequency(), ii->interpolated(), baseZeroRate,
-                    Handle<YieldTermStructure>(yTS), helpers)));
+                  new PiecewiseZeroInflationCurve<Linear>(
+                         evaluationDate, calendar, dayCounter, observationLag,
+                         ii->frequency(), ii->interpolated(), baseZeroRate,
+                         Handle<YieldTermStructure>(yTS), helpers)));
         }
 
         // teardown
@@ -282,28 +282,28 @@ void InflationCPIBondTest::testCleanPrice() {
     Date endDate(2, October, 2052);
     Schedule fixedSchedule =
         MakeSchedule().from(startDate).to(endDate)
-        .withTenor(Period(6, Months))
-        .withCalendar(UnitedKingdom())
-        .withConvention(Unadjusted)
-        .backwards();
+                      .withTenor(Period(6, Months))
+                      .withCalendar(UnitedKingdom())
+                      .withConvention(Unadjusted)
+                      .backwards();
 
     CPIBond bond(settlementDays, notional, growthOnly,
-        baseCPI, contractObservationLag, fixedIndex,
-        observationInterpolation, fixedSchedule,
-        fixedRates, fixedDayCount, fixedPaymentConvention);
+                 baseCPI, contractObservationLag, fixedIndex,
+                 observationInterpolation, fixedSchedule,
+                 fixedRates, fixedDayCount, fixedPaymentConvention);
 
     boost::shared_ptr<DiscountingBondEngine> engine(
-        new DiscountingBondEngine(common.yTS));
+                                 new DiscountingBondEngine(common.yTS));
     bond.setPricingEngine(engine);
 
     Real storedPrice = 383.01816406;
     Real calculated = bond.cleanPrice();
     Real tolerance = 1.0e-8;
-    if (std::fabs(calculated - storedPrice) > tolerance) {
+    if (std::fabs(calculated-storedPrice) > tolerance) {
         BOOST_FAIL("failed to reproduce expected CPI-bond clean price"
-            << QL_FIXED << std::setprecision(12)
-            << "\n  expected:   " << storedPrice
-            << "\n  calculated: " << calculated);
+                   << QL_FIXED << std::setprecision(12)
+                   << "\n  expected:   " << storedPrice
+                   << "\n  calculated: " << calculated);
     }
 }
 
