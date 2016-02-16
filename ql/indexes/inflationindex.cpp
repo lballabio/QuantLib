@@ -179,7 +179,7 @@ namespace QuantLib {
         Date referenceDate = zeroInflation_->referenceDate();
         QL_REQUIRE(!needsForecast(baseDate),
                    name() << " index fixing at base date is not available");
-        Real baseFixing = fixing(baseDate, false); // or referenceDate to false
+        Real baseFixing = fixing(baseDate, false);
         Date effectiveFixingDate;
         if (interpolated()) {
             effectiveFixingDate = fixingDate;
