@@ -47,130 +47,130 @@ using namespace boost::unit_test_framework;
 
 namespace {
 
-	struct Datum {
-		Date date;
-		Rate rate;
-	};
+    struct Datum {
+        Date date;
+        Rate rate;
+    };
 
-	typedef BootstrapHelper<ZeroInflationTermStructure> Helper;
+    typedef BootstrapHelper<ZeroInflationTermStructure> Helper;
 
-	std::vector<boost::shared_ptr<Helper> > makeHelpers(
-		Datum iiData[], Size N,
-		const boost::shared_ptr<ZeroInflationIndex>& ii,
-		const Period& observationLag,
-		const Calendar& calendar,
-		const BusinessDayConvention& bdc,
-		const DayCounter& dc) {
+    std::vector<boost::shared_ptr<Helper> > makeHelpers(
+        Datum iiData[], Size N,
+        const boost::shared_ptr<ZeroInflationIndex>& ii,
+        const Period& observationLag,
+        const Calendar& calendar,
+        const BusinessDayConvention& bdc,
+        const DayCounter& dc) {
 
-		std::vector<boost::shared_ptr<Helper> > instruments;
-		for (Size i = 0; i<N; i++) {
-			Date maturity = iiData[i].date;
-			Handle<Quote> quote(boost::shared_ptr<Quote>(
-				new SimpleQuote(iiData[i].rate / 100.0)));
-			boost::shared_ptr<Helper> h(
-				new ZeroCouponInflationSwapHelper(quote, observationLag,
-					maturity, calendar,
-					bdc, dc, ii));
-			instruments.push_back(h);
-		}
-		return instruments;
-	}
+        std::vector<boost::shared_ptr<Helper> > instruments;
+        for (Size i = 0; i < N; i++) {
+            Date maturity = iiData[i].date;
+            Handle<Quote> quote(boost::shared_ptr<Quote>(
+                new SimpleQuote(iiData[i].rate / 100.0)));
+            boost::shared_ptr<Helper> h(
+                new ZeroCouponInflationSwapHelper(quote, observationLag,
+                    maturity, calendar,
+                    bdc, dc, ii));
+            instruments.push_back(h);
+        }
+        return instruments;
+    }
 
 
-	struct UKCommonVars {
+    struct UKCommonVars {
 
-		Calendar calendar;
-		BusinessDayConvention convention;
-		Date evaluationDate;
-		Period observationLag;
-		DayCounter dayCounter;
+        Calendar calendar;
+        BusinessDayConvention convention;
+        Date evaluationDate;
+        Period observationLag;
+        DayCounter dayCounter;
 
-		boost::shared_ptr<UKRPI> ii;
+        boost::shared_ptr<UKRPI> ii;
 
-		RelinkableHandle<YieldTermStructure> yTS;
-		RelinkableHandle<ZeroInflationTermStructure> cpiTS;
+        RelinkableHandle<YieldTermStructure> yTS;
+        RelinkableHandle<ZeroInflationTermStructure> cpiTS;
 
-		// cleanup
+        // cleanup
 
-		SavedSettings backup;
-		IndexHistoryCleaner cleaner;
+        SavedSettings backup;
+        IndexHistoryCleaner cleaner;
 
-		// setup
-		UKCommonVars() {
-			// usual setup
-			calendar = UnitedKingdom();
-			convention = ModifiedFollowing;
-			Date today(25, November, 2009);
-			evaluationDate = calendar.adjust(today);
-			Settings::instance().evaluationDate() = evaluationDate;
-			dayCounter = ActualActual();
+        // setup
+        UKCommonVars() {
+            // usual setup
+            calendar = UnitedKingdom();
+            convention = ModifiedFollowing;
+            Date today(25, November, 2009);
+            evaluationDate = calendar.adjust(today);
+            Settings::instance().evaluationDate() = evaluationDate;
+            dayCounter = ActualActual();
 
-			Date from(20, Jul, 2007);
-			Date to(20, November, 2009);
-			Schedule rpiSchedule =
-				MakeSchedule().from(from).to(to)
-				.withTenor(1 * Months)
-				.withCalendar(UnitedKingdom())
-				.withConvention(ModifiedFollowing);
+            Date from(20, Jul, 2007);
+            Date to(20, November, 2009);
+            Schedule rpiSchedule =
+                MakeSchedule().from(from).to(to)
+                .withTenor(1 * Months)
+                .withCalendar(UnitedKingdom())
+                .withConvention(ModifiedFollowing);
 
-			bool interp = false;
-			ii = boost::shared_ptr<UKRPI>(new UKRPI(interp, cpiTS));
+            bool interp = false;
+            ii = boost::shared_ptr<UKRPI>(new UKRPI(interp, cpiTS));
 
-			Real fixData[] = {
-				206.1, 207.3, 208.0, 208.9, 209.7, 210.9,
-				209.8, 211.4, 212.1, 214.0, 215.1, 216.8,
-				216.5, 217.2, 218.4, 217.7, 216,
-				212.9, 210.1, 211.4, 211.3, 211.5,
-				212.8, 213.4, 213.4, 213.4, 214.4
-			};
-			for (Size i = 0; i<LENGTH(fixData); ++i) {
-				ii->addFixing(rpiSchedule[i], fixData[i]);
-			}
+            Real fixData[] = {
+                206.1, 207.3, 208.0, 208.9, 209.7, 210.9,
+                209.8, 211.4, 212.1, 214.0, 215.1, 216.8,
+                216.5, 217.2, 218.4, 217.7, 216,
+                212.9, 210.1, 211.4, 211.3, 211.5,
+                212.8, 213.4, 213.4, 213.4, 214.4
+            };
+            for (Size i = 0; i < LENGTH(fixData); ++i) {
+                ii->addFixing(rpiSchedule[i], fixData[i]);
+            }
 
-			yTS.linkTo(boost::shared_ptr<YieldTermStructure>(
-				new FlatForward(evaluationDate, 0.05, dayCounter)));
+            yTS.linkTo(boost::shared_ptr<YieldTermStructure>(
+                new FlatForward(evaluationDate, 0.05, dayCounter)));
 
-			// now build the zero inflation curve
-			observationLag = Period(2, Months);
+            // now build the zero inflation curve
+            observationLag = Period(2, Months);
 
-			Datum zciisData[] = {
-				{ Date(25, November, 2010), 3.0495 },
-				{ Date(25, November, 2011), 2.93 },
-				{ Date(26, November, 2012), 2.9795 },
-				{ Date(25, November, 2013), 3.029 },
-				{ Date(25, November, 2014), 3.1425 },
-				{ Date(25, November, 2015), 3.211 },
-				{ Date(25, November, 2016), 3.2675 },
-				{ Date(25, November, 2017), 3.3625 },
-				{ Date(25, November, 2018), 3.405 },
-				{ Date(25, November, 2019), 3.48 },
-				{ Date(25, November, 2021), 3.576 },
-				{ Date(25, November, 2024), 3.649 },
-				{ Date(26, November, 2029), 3.751 },
-				{ Date(27, November, 2034), 3.77225 },
-				{ Date(25, November, 2039), 3.77 },
-				{ Date(25, November, 2049), 3.734 },
-				{ Date(25, November, 2059), 3.714 },
-			};
+            Datum zciisData[] = {
+                { Date(25, November, 2010), 3.0495 },
+                { Date(25, November, 2011), 2.93 },
+                { Date(26, November, 2012), 2.9795 },
+                { Date(25, November, 2013), 3.029 },
+                { Date(25, November, 2014), 3.1425 },
+                { Date(25, November, 2015), 3.211 },
+                { Date(25, November, 2016), 3.2675 },
+                { Date(25, November, 2017), 3.3625 },
+                { Date(25, November, 2018), 3.405 },
+                { Date(25, November, 2019), 3.48 },
+                { Date(25, November, 2021), 3.576 },
+                { Date(25, November, 2024), 3.649 },
+                { Date(26, November, 2029), 3.751 },
+                { Date(27, November, 2034), 3.77225 },
+                { Date(25, November, 2039), 3.77 },
+                { Date(25, November, 2049), 3.734 },
+                { Date(25, November, 2059), 3.714 },
+            };
 
-			std::vector<boost::shared_ptr<Helper> > helpers =
-				makeHelpers(zciisData, LENGTH(zciisData), ii,
-					observationLag, calendar, convention, dayCounter);
+            std::vector<boost::shared_ptr<Helper> > helpers =
+                makeHelpers(zciisData, LENGTH(zciisData), ii,
+                    observationLag, calendar, convention, dayCounter);
 
-			Rate baseZeroRate = zciisData[0].rate / 100.0;
-			cpiTS.linkTo(boost::shared_ptr<ZeroInflationTermStructure>(
-				new PiecewiseZeroInflationCurve<Linear>(
-					evaluationDate, calendar, dayCounter, observationLag,
-					ii->frequency(), ii->interpolated(), baseZeroRate,
-					Handle<YieldTermStructure>(yTS), helpers)));
-		}
+            Rate baseZeroRate = zciisData[0].rate / 100.0;
+            cpiTS.linkTo(boost::shared_ptr<ZeroInflationTermStructure>(
+                new PiecewiseZeroInflationCurve<Linear>(
+                    evaluationDate, calendar, dayCounter, observationLag,
+                    ii->frequency(), ii->interpolated(), baseZeroRate,
+                    Handle<YieldTermStructure>(yTS), helpers)));
+        }
 
-		// teardown
-		~UKCommonVars() {
-			// break circular references and allow curves to be destroyed
-			cpiTS.linkTo(boost::shared_ptr<ZeroInflationTermStructure>());
-		}
-	};
+        // teardown
+        ~UKCommonVars() {
+            // break circular references and allow curves to be destroyed
+            cpiTS.linkTo(boost::shared_ptr<ZeroInflationTermStructure>());
+        }
+    };
 
     struct ZACommonVars {
 
@@ -263,48 +263,48 @@ namespace {
 
 
 void InflationCPIBondTest::testCleanPrice() {
-	UKCommonVars common;
+    UKCommonVars common;
 
-	Real notional = 1000000.0;
-	std::vector<Rate> fixedRates(1, 0.1);
-	DayCounter fixedDayCount = Actual365Fixed();
-	BusinessDayConvention fixedPaymentConvention = ModifiedFollowing;
-	Calendar fixedPaymentCalendar = UnitedKingdom();
-	boost::shared_ptr<ZeroInflationIndex> fixedIndex = common.ii;
-	Period contractObservationLag = Period(3, Months);
-	CPI::InterpolationType observationInterpolation = CPI::Flat;
-	Natural settlementDays = 3;
-	bool growthOnly = true;
+    Real notional = 1000000.0;
+    std::vector<Rate> fixedRates(1, 0.1);
+    DayCounter fixedDayCount = Actual365Fixed();
+    BusinessDayConvention fixedPaymentConvention = ModifiedFollowing;
+    Calendar fixedPaymentCalendar = UnitedKingdom();
+    boost::shared_ptr<ZeroInflationIndex> fixedIndex = common.ii;
+    Period contractObservationLag = Period(3, Months);
+    CPI::InterpolationType observationInterpolation = CPI::Flat;
+    Natural settlementDays = 3;
+    bool growthOnly = true;
 
-	Real baseCPI = 206.1;
-	// set the schedules
-	Date startDate(2, October, 2007);
-	Date endDate(2, October, 2052);
-	Schedule fixedSchedule =
-		MakeSchedule().from(startDate).to(endDate)
-		.withTenor(Period(6, Months))
-		.withCalendar(UnitedKingdom())
-		.withConvention(Unadjusted)
-		.backwards();
+    Real baseCPI = 206.1;
+    // set the schedules
+    Date startDate(2, October, 2007);
+    Date endDate(2, October, 2052);
+    Schedule fixedSchedule =
+        MakeSchedule().from(startDate).to(endDate)
+        .withTenor(Period(6, Months))
+        .withCalendar(UnitedKingdom())
+        .withConvention(Unadjusted)
+        .backwards();
 
-	CPIBond bond(settlementDays, notional, growthOnly,
-		baseCPI, contractObservationLag, fixedIndex,
-		observationInterpolation, fixedSchedule,
-		fixedRates, fixedDayCount, fixedPaymentConvention);
+    CPIBond bond(settlementDays, notional, growthOnly,
+        baseCPI, contractObservationLag, fixedIndex,
+        observationInterpolation, fixedSchedule,
+        fixedRates, fixedDayCount, fixedPaymentConvention);
 
-	boost::shared_ptr<DiscountingBondEngine> engine(
-		new DiscountingBondEngine(common.yTS));
-	bond.setPricingEngine(engine);
+    boost::shared_ptr<DiscountingBondEngine> engine(
+        new DiscountingBondEngine(common.yTS));
+    bond.setPricingEngine(engine);
 
-	Real storedPrice = 383.01816406;
-	Real calculated = bond.cleanPrice();
-	Real tolerance = 1.0e-8;
-	if (std::fabs(calculated - storedPrice) > tolerance) {
-		BOOST_FAIL("failed to reproduce expected CPI-bond clean price"
-			<< QL_FIXED << std::setprecision(12)
-			<< "\n  expected:   " << storedPrice
-			<< "\n  calculated: " << calculated);
-	}
+    Real storedPrice = 383.01816406;
+    Real calculated = bond.cleanPrice();
+    Real tolerance = 1.0e-8;
+    if (std::fabs(calculated - storedPrice) > tolerance) {
+        BOOST_FAIL("failed to reproduce expected CPI-bond clean price"
+            << QL_FIXED << std::setprecision(12)
+            << "\n  expected:   " << storedPrice
+            << "\n  calculated: " << calculated);
+    }
 }
 
 void InflationCPIBondTest::testZABondsReferencePeriod() {
@@ -324,13 +324,13 @@ void InflationCPIBondTest::testZABondsReferencePeriod() {
     };
 
     test_case cases[] = {
-        { Date( 9, Jun, 2010), Date(31, Jan, 2017), 0.0250, 0.00825, 110.440000, true,  134.22128 }, // R211 bond
+        { Date(9, Jun, 2010), Date(31, Jan, 2017), 0.0250, 0.00825, 110.440000, true,  134.22128 }, // R211 bond
         { Date(17, Jun, 2010), Date(31, Jan, 2022), 0.0275, 0.01445, 110.680000, true,  141.22928 }, // R212 bond
-        { Date(30, May, 2001), Date( 7, Dec, 2023), 0.0550, 0.01525,  65.050400, false, 293.22573 }, // R197 bond
-        { Date( 4, Jul, 2012), Date(31, Jan, 2025), 0.0200, 0.01515, 122.648387, true,  122.97651 }, // I2025 bond
+        { Date(30, May, 2001), Date(7, Dec, 2023), 0.0550, 0.01525,  65.050400, false, 293.22573 }, // R197 bond
+        { Date(4, Jul, 2012), Date(31, Jan, 2025), 0.0200, 0.01515, 122.648387, true,  122.97651 }, // I2025 bond
         { Date(27, Sep, 2007), Date(31, Mar, 2028), 0.0260, 0.01625,  89.275000, true,  181.44388 }, // R210 bond
-        { Date(20, Aug, 2003), Date( 7, Dec, 2033), 0.0345, 0.01780,  76.822578, false, 238.29050 }, // R202 bond
-        { Date( 4, Jul, 2012), Date(31, Jan, 2038), 0.0225, 0.01810, 122.648384, true,  127.49386 }, // I2038 bond
+        { Date(20, Aug, 2003), Date(7, Dec, 2033), 0.0345, 0.01780,  76.822578, false, 238.29050 }, // R202 bond
+        { Date(4, Jul, 2012), Date(31, Jan, 2038), 0.0225, 0.01810, 122.648384, true,  127.49386 }, // I2038 bond
         { Date(17, Jul, 2013), Date(31, Mar, 2046), 0.0250, 0.01950, 130.129074, true,  126.14694 }, // I2046 bond
         { Date(11, Jul, 2012), Date(31, Dec, 2050), 0.0250, 0.01925, 122.761292, true,  135.41703 }  // I2050 bond
     };
@@ -342,7 +342,7 @@ void InflationCPIBondTest::testZABondsReferencePeriod() {
     CPI::InterpolationType observationInterpolation = CPI::Linear;
     bool growthOnly = false;
 
-    for (Size i = 0; i<LENGTH(cases); ++i) {
+    for (Size i = 0; i < LENGTH(cases); ++i) {
         Schedule schedule(
             cases[i].issueDate,
             cases[i].maturityDate,
