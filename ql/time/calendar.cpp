@@ -26,6 +26,7 @@
 namespace QuantLib {
 
     void Calendar::addHoliday(const Date& d) {
+        QL_REQUIRE(impl_, "no implementation provided");
         // if d was a genuine holiday previously removed, revert the change
         impl_->removedHolidays.erase(d);
         // if it's already a holiday, leave the calendar alone.
@@ -35,6 +36,7 @@ namespace QuantLib {
     }
 
     void Calendar::removeHoliday(const Date& d) {
+        QL_REQUIRE(impl_, "no implementation provided");
         // if d was an artificially-added holiday, revert the change
         impl_->addedHolidays.erase(d);
         // if it's already a business day, leave the calendar alone.
