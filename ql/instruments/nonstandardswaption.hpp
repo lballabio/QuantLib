@@ -32,62 +32,109 @@
 #include <ql/termstructures/volatility/swaption/swaptionvolstructure.hpp>
 #include <ql/models/calibrationhelper.hpp>
 #include <ql/utilities/disposable.hpp>
+#include <ql/experimental/fx/proxyinstrument.hpp>
 
 namespace QuantLib {
 
-    //! nonstandard swaption class
-    /*! \ingroup instruments
-    */
+//! nonstandard swaption class
+/*! \ingroup instruments
+*/
 
-    class NonstandardSwaption : public Option {
-      public:
-        class arguments;
-        class engine;
-        NonstandardSwaption(const Swaption &fromSwaption);
-        NonstandardSwaption(const boost::shared_ptr<NonstandardSwap> &swap,
-                            const boost::shared_ptr<Exercise> &exercise,
-                            Settlement::Type delivery = Settlement::Physical);
+class NonstandardSwaption : public Option, public ProxyInstrument {
+  public:
+    class arguments;
+    class results;
+    class engine;
 
-        //! \name Instrument interface
-        //@{
-        bool isExpired() const;
-        void setupArguments(PricingEngine::arguments *) const;
-        //@}
-        //! \name Inspectors
-        //@{
-        VanillaSwap::Type type() const { return swap_->type(); }
-
-        const boost::shared_ptr<NonstandardSwap> &underlyingSwap() const {
-            return swap_;
+    //! proxy description
+    struct Proxy : ProxyDescription {
+        struct ProxyFunction {
+            // Function taking the model state and
+            // returning the value.
+            virtual Real operator()(const Real state) const = 0;
+        };
+        // open exercise expiry dates
+        std::vector<Date> expiryDates;
+        // original evaluation date
+        Date origEvalDate;
+        // original model
+        boost::shared_ptr<Gaussian1dModel> model;
+        // original discount curve (if given)
+        Handle<YieldTermStructure> discount;
+        // original oas (if given)
+        Handle<Quote> oas;
+        // regression functions model state => deflated npv
+        // currently only models with one dimensional state
+        // are supported
+        std::vector<boost::shared_ptr<ProxyFunction> > regression;
+        void validate() const {
+            QL_REQUIRE(regression.size() == expiryDates.size(),
+                       "Number of regression functions ("
+                           << regression.size()
+                           << ") does not match number of exercise dates ("
+                           << expiryDates.size() << ")");
+            QL_REQUIRE(model != NULL, "no model given");
         }
-        //@}
-        Disposable<std::vector<boost::shared_ptr<CalibrationHelper> > >
-        calibrationBasket(
-            boost::shared_ptr<SwapIndex> standardSwapBase,
-            boost::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
-            const BasketGeneratingEngine::CalibrationBasketType basketType =
-                BasketGeneratingEngine::MaturityStrikeByDeltaGamma) const;
-
-      private:
-        // arguments
-        boost::shared_ptr<NonstandardSwap> swap_;
-        Settlement::Type settlementType_;
     };
 
-    //! %Arguments for nonstandard swaption calculation
-    class NonstandardSwaption::arguments : public NonstandardSwap::arguments,
-                                           public Option::arguments {
-      public:
-        arguments() {}
-        boost::shared_ptr<NonstandardSwap> swap;
-        Settlement::Type settlementType;
-        void validate() const;
-    };
+    NonstandardSwaption(const Swaption &fromSwaption);
+    NonstandardSwaption(const boost::shared_ptr<NonstandardSwap> &swap,
+                        const boost::shared_ptr<Exercise> &exercise,
+                        Settlement::Type delivery = Settlement::Physical);
 
-    //! base class for nonstandard swaption engines
-    class NonstandardSwaption::engine
-        : public GenericEngine<NonstandardSwaption::arguments,
-                               NonstandardSwaption::results> {};
+    //! \name Instrument interface
+    //@{
+    bool isExpired() const;
+    void setupArguments(PricingEngine::arguments *) const;
+    void fetchResults(const PricingEngine::results *) const;
+    //@}
+    //! \name Inspectors
+    //@{
+    VanillaSwap::Type type() const { return swap_->type(); }
+
+    const boost::shared_ptr<NonstandardSwap> &underlyingSwap() const {
+        return swap_;
+    }
+    //@}
+
+    //! description for proxy pricing
+    boost::shared_ptr<ProxyDescription> proxy() const;
+
+    Disposable<std::vector<boost::shared_ptr<CalibrationHelper> > >
+    calibrationBasket(
+        boost::shared_ptr<SwapIndex> standardSwapBase,
+        boost::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
+        const BasketGeneratingEngine::CalibrationBasketType basketType =
+            BasketGeneratingEngine::MaturityStrikeByDeltaGamma) const;
+
+  private:
+    // arguments
+    boost::shared_ptr<NonstandardSwap> swap_;
+    Settlement::Type settlementType_;
+    // proxy pricing information
+    mutable boost::shared_ptr<ProxyDescription> proxy_;
+};
+
+//! %Arguments for nonstandard swaption calculation
+class NonstandardSwaption::arguments : public NonstandardSwap::arguments,
+                                       public Option::arguments {
+  public:
+    arguments() {}
+    boost::shared_ptr<NonstandardSwap> swap;
+    Settlement::Type settlementType;
+    void validate() const;
+};
+
+class NonstandardSwaption::results : public Option::results {
+  public:
+    void reset();
+    boost::shared_ptr<NonstandardSwaption::Proxy> proxy;
+};
+
+//! base class for nonstandard swaption engines
+class NonstandardSwaption::engine
+    : public GenericEngine<NonstandardSwaption::arguments,
+                           NonstandardSwaption::results> {};
 }
 
 #endif

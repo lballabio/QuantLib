@@ -22,11 +22,11 @@
 namespace QuantLib {
 
     GsrProcess::GsrProcess(const Array &times, const Array &vols,
-                       const Array &reversions,
+                       const Array &reversions, const Array &adjusters,
                        const Real T, const Date &referenceDate,
                        const DayCounter &dc)
     : ForwardMeasureProcess1D(T),
-      core_(times,vols,reversions,T),
+      core_(times,vols,reversions,adjusters,T),
       referenceDate_(referenceDate), dc_(dc) {
         flushCache();
     }

@@ -39,7 +39,7 @@ namespace detail {
 class GsrProcessCore {
   public:
     GsrProcessCore(const Array &times, const Array &vols,
-                   const Array &reversions,
+                   const Array &reversions, const Array &adjusters,
                    const Real T = 60.0);
 
     // conditional expectation, x0 dependent part
@@ -72,8 +72,11 @@ class GsrProcessCore {
     // reset cache
     void flushCache() const;
 
-  protected:
-    const Array &times_, &vols_, &reversions_;
+    // some more inspectors
+    const Array& times() const { return times_; }
+    const Array& vols() const { return vols_; }
+    const Array& reversions() const { return reversions_; }
+    const Array& adjusters() const { return adjusters_; }
 
   private:
     const int lowerIndex(Time t) const;
@@ -84,6 +87,8 @@ class GsrProcessCore {
     const Real vol(Size index) const;
     const Real rev(Size index) const;
     const bool revZero(Size index) const;
+
+    const Array &times_, &vols_, &reversions_, &adjusters_;
 
     mutable std::map<std::pair<Real, Real>, Real> cache1_, cache2a_, cache2b_,
         cache3_, cache5_;

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2013, 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -389,8 +389,9 @@ namespace QuantLib {
                                       arguments_.floatingSpreads[l]);
                         floatingLegNpv +=
                             amount *
-                            model_->zerobond(arguments_.floatingPayDates[l],
-                                             expiry0, z[k], discountCurve_) *
+                            model_->deflatedZerobond(
+                                arguments_.floatingPayDates[l], expiry0, z[k],
+                                discountCurve_, discountCurve_) *
                             zSpreadDf;
                     }
                     Real fixedLegNpv = 0.0;
@@ -407,8 +408,9 @@ namespace QuantLib {
                                                 arguments_.fixedPayDates[l])));
                         fixedLegNpv +=
                             arguments_.fixedCoupons[l] *
-                            model_->zerobond(arguments_.fixedPayDates[l],
-                                             expiry0, z[k], discountCurve_) *
+                            model_->deflatedZerobond(
+                                arguments_.fixedPayDates[l], expiry0, z[k],
+                                discountCurve_, discountCurve_) *
                             zSpreadDf;
                     }
                     Real rebate = 0.0;
@@ -429,11 +431,11 @@ namespace QuantLib {
                     Real exerciseValue =
                         ((type == Option::Call ? 1.0 : -1.0) *
                              (floatingLegNpv - fixedLegNpv) +
-                         rebate * model_->zerobond(rebateDate, expiry0, z[k],
-                                                   discountCurve_) *
-                             zSpreadDf) /
-                        model_->numeraire(expiry0Time, z[k], discountCurve_);
-
+                         rebate *
+                             model_->deflatedZerobond(rebateDate, expiry0, z[k],
+                                                      discountCurve_,
+                                                      discountCurve_) *
+                             zSpreadDf);
                     // for probability computation
                     if (probabilities_ != None) {
                         if (idx == static_cast<int>(

@@ -136,21 +136,6 @@ namespace QuantLib {
                 QL_REQUIRE(npv * npv + delta * delta + gamma * gamma > 0.0,
                            "(npv,delta,gamma) must have a positive norm");
 
-                // debug output
-                // std::cout << "EXOTIC npv " << npv << " delta " << delta
-                //           << " gamma " << gamma << std::endl;
-                // Real xtmp = -5.0;
-                // std::cout
-                //     << "********************************************EXERCISE "
-                //     << expiry << " ******************" << std::endl;
-                // std::cout << "globalExoticNpv;";
-                // while (xtmp <= 5.0 + QL_EPSILON) {
-                //     std::cout << underlyingNpv(expiry, xtmp) << ";";
-                //     xtmp += 0.1;
-                // }
-                // std::cout << std::endl;
-                // end debug output
-
                 // play safe, we restrict the maximum maturity so to easily fit
                 // in the date class restriction
                 Real maxMaturity =

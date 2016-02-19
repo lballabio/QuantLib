@@ -784,10 +784,11 @@ namespace QuantLib {
         const Time t, const Real y,
         const Handle<YieldTermStructure> &yts) const {
 
-        if (t == 0)
+        if (close(t, 0.0)) {
             return yts.empty()
                        ? this->termStructure()->discount(numeraireTime(), true)
                        : yts->discount(numeraireTime());
+        }
 
         Array ya(1, y);
         return numeraireArray(t, ya)[0] *
@@ -799,11 +800,13 @@ namespace QuantLib {
 
     const Real
     MarkovFunctional::zerobondImpl(const Time T, const Time t, const Real y,
-                                   const Handle<YieldTermStructure> &yts) const {
+                                   const Handle<YieldTermStructure> &yts,
+                                   const bool adjusted) const {
 
-        if (t == 0.0)
+        if (close(t, 0.0)) {
             return yts.empty() ? this->termStructure()->discount(T, true)
                                : yts->discount(T, true);
+        }
         Array ya(1, y);
         return zerobondArray(T, t, ya)[0] *
                (yts.empty() ? 1.0 : (yts->discount(T) / yts->discount(t) *
@@ -811,11 +814,27 @@ namespace QuantLib {
                                      termStructure()->discount(T)));
     }
 
-    const Real MarkovFunctional::deflatedZerobond(Time T, Time t,
-                                                  Real y) const {
-
+    const Real MarkovFunctional::deflatedZerobondImpl(
+        const Time T, const Time t, const Real y,
+        const Handle<YieldTermStructure> &yts,
+        const Handle<YieldTermStructure> &ytsNumeraire,
+        const bool adjusted) const {
+        if (close(t, 0.0)) {
+            return (yts.empty() ? this->termStructure()->discount(T, true)
+                                : yts->discount(T, true)) /
+                   numeraire(0.0, 0.0, ytsNumeraire);
+        }
         Array ya(1, y);
-        return deflatedZerobondArray(T, t, ya)[0];
+        return deflatedZerobondArray(T, t, ya)[0] *
+               (yts.empty() ? 1.0 : (yts->discount(T) / yts->discount(t) *
+                                     termStructure()->discount(t) /
+                                     termStructure()->discount(T))) /
+               (ytsNumeraire.empty()
+                    ? 1.0
+                    : (ytsNumeraire->discount(numeraireTime()) /
+                       ytsNumeraire->discount(t) *
+                       termStructure()->discount(t) /
+                       termStructure()->discount(numeraireTime())));
     }
 
     const Real MarkovFunctional::marketSwapRate(const Date &expiry,
