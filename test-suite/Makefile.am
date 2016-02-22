@@ -215,6 +215,7 @@ benchmark: quantlib-benchmark$(EXEEXT)
 	BOOST_TEST_LOG_LEVEL=message ./quantlib-benchmark$(EXEEXT)
 
 EXTRA_DIST = \
+	CMakeLists.txt \
 	README.txt \
 	testsuite_vc8.vcproj \
 	testsuite_vc9.vcproj \
@@ -226,6 +227,7 @@ else
 
 EXTRA_DIST = \
 	${QL_TESTS} \
+	CMakeLists.txt \
 	quantlibbenchmark.cpp \
 	README.txt \
 	testsuite_vc8.vcproj \
