@@ -1376,6 +1376,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\paralleltestrunner.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\partialtimebarrieroption.hpp"
 				>
 			</File>
