@@ -66,7 +66,7 @@ namespace QuantLib {
     }
 
     Real LinearTsrPricer::singularTerms(const Option::Type type,
-                                              const Real strike) const {
+                                        const Real strike) const {
 
         Real omega = (type == Option::Call ? 1.0 : -1.0);
         Real s1 = std::max(omega * (swapRateValue_ - strike), 0.0) *

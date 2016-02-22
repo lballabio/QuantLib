@@ -326,10 +326,10 @@ namespace QuantLib {
       protected:
 
         Real numeraireImpl(const Time t, const Real y,
-                                 const Handle<YieldTermStructure> &yts) const;
+                           const Handle<YieldTermStructure> &yts) const;
 
         Real zerobondImpl(const Time T, const Time t, const Real y,
-                                const Handle<YieldTermStructure> &yts) const;
+                          const Handle<YieldTermStructure> &yts) const;
 
         void generateArguments() {
             // if calculate triggers performCalculations, updateNumeraireTabulations
@@ -368,13 +368,13 @@ namespace QuantLib {
         void makeCapletCalibrationPoint(const Date &expiry);
 
         Real marketSwapRate(const Date &expiry, const CalibrationPoint &p,
-                                  const Real digitalPrice,
-                                  const Real guess = 0.03,
-                                  const Real shift = 0.0) const;
+                            const Real digitalPrice,
+                            const Real guess = 0.03,
+                            const Real shift = 0.0) const;
         Real marketDigitalPrice(const Date &expiry,
-                                      const CalibrationPoint &p,
-                                      const Option::Type &type,
-                                      const Real strike) const;
+                                const CalibrationPoint &p,
+                                const Option::Type &type,
+                                const Real strike) const;
 
         const Disposable<Array>
         deflatedZerobondArray(const Time T, const Time t, const Array &y) const;
@@ -384,7 +384,7 @@ namespace QuantLib {
                                               const Array &y) const;
 
         Real deflatedZerobond(const Time T, const Time t = 0.0,
-                                    const Real y = 0.0) const;
+                              const Real y = 0.0) const;
 
         // the following methods (tagged internal) are indended only to produce
         // the volatility diagnostics in the model outputs
@@ -399,10 +399,10 @@ namespace QuantLib {
                 boost::shared_ptr<IborIndex>()) const;
 
         Real swapRateInternal(const Date &fixing, const Period &tenor,
-                                    const Date &referenceDate = Null<Date>(),
-                                    const Real y = 0.0,
-                                    const bool zeroFixingDays = false,
-                                    boost::shared_ptr<SwapIndex> swapIdx =
+                              const Date &referenceDate = Null<Date>(),
+                              const Real y = 0.0,
+                              const bool zeroFixingDays = false,
+                              boost::shared_ptr<SwapIndex> swapIdx =
                                         boost::shared_ptr<SwapIndex>()) const;
 
         Real

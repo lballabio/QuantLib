@@ -81,7 +81,7 @@ namespace QuantLib {
         virtual ~BasketGeneratingEngine() {}
 
         virtual Real underlyingNpv(const Date &expiry,
-                                         const Real y) const = 0;
+                                   const Real y) const = 0;
 
         virtual VanillaSwap::Type underlyingType() const = 0;
 

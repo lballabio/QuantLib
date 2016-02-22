@@ -134,10 +134,10 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
 
   protected:
     Real numeraireImpl(const Time t, const Real y,
-                             const Handle<YieldTermStructure> &yts) const;
+                       const Handle<YieldTermStructure> &yts) const;
 
     Real zerobondImpl(const Time T, const Time t, const Real y,
-                            const Handle<YieldTermStructure> &yts) const;
+                      const Handle<YieldTermStructure> &yts) const;
 
     void generateArguments() {
         boost::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();

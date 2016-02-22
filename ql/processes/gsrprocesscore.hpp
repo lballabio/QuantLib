@@ -44,7 +44,7 @@ class GsrProcessCore {
 
     // conditional expectation, x0 dependent part
     Real expectation_x0dep_part(const Time w, const Real xw,
-                                      const Time dt) const;
+                                const Time dt) const;
 
     // conditional expectation, x0 independent part
     // in the risk neutral measure

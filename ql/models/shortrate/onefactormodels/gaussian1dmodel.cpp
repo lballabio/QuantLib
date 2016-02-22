@@ -26,8 +26,8 @@ using std::exp;
 namespace QuantLib {
 
 Real Gaussian1dModel::forwardRate(const Date &fixing,
-                                        const Date &referenceDate, const Real y,
-                                        boost::shared_ptr<IborIndex> iborIdx) const {
+                                  const Date &referenceDate, const Real y,
+                                  boost::shared_ptr<IborIndex> iborIdx) const {
 
     QL_REQUIRE(iborIdx != NULL, "no ibor index given");
 
@@ -53,8 +53,8 @@ Real Gaussian1dModel::forwardRate(const Date &fixing,
 }
 
 Real Gaussian1dModel::swapRate(const Date &fixing, const Period &tenor,
-                                     const Date &referenceDate, const Real y,
-                                     boost::shared_ptr<SwapIndex> swapIdx) const {
+                               const Date &referenceDate, const Real y,
+                               boost::shared_ptr<SwapIndex> swapIdx) const {
 
     QL_REQUIRE(swapIdx != NULL, "no swap index given");
 
@@ -111,8 +111,8 @@ Real Gaussian1dModel::swapRate(const Date &fixing, const Period &tenor,
 }
 
 Real Gaussian1dModel::swapAnnuity(const Date &fixing, const Period &tenor,
-                                        const Date &referenceDate, const Real y,
-                                        boost::shared_ptr<SwapIndex> swapIdx) const {
+                                  const Date &referenceDate, const Real y,
+                                  boost::shared_ptr<SwapIndex> swapIdx) const {
 
     QL_REQUIRE(swapIdx != NULL, "no swap index given");
 

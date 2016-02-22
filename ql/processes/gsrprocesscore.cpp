@@ -62,7 +62,7 @@ void GsrProcessCore::flushCache() const {
 }
 
 Real GsrProcessCore::expectation_x0dep_part(const Time w, const Real xw,
-                                                  const Time dt) const {
+                                            const Time dt) const {
     Real t = w + dt;
     std::pair<Real, Real> key;
     key = std::make_pair(w, t);
@@ -79,7 +79,7 @@ Real GsrProcessCore::expectation_x0dep_part(const Time w, const Real xw,
 }
 
 Real GsrProcessCore::expectation_rn_part(const Time w,
-                                               const Time dt) const {
+                                         const Time dt) const {
 
     Real t = w + dt;
 
@@ -152,7 +152,7 @@ Real GsrProcessCore::expectation_rn_part(const Time w,
 } // expectation_rn_part
 
 Real GsrProcessCore::expectation_tf_part(const Time w,
-                                               const Time dt) const {
+                                         const Time dt) const {
 
     Real t = w + dt;
 
@@ -326,7 +326,7 @@ Real GsrProcessCore::cappedTime(const Size index, const Real cap) const {
 }
 
 Real GsrProcessCore::flooredTime(const Size index,
-                                       const Real floor) const {
+                                 const Real floor) const {
     return floor != Null<Real>() ? std::max(floor, time2(index)) : time2(index);
 }
 

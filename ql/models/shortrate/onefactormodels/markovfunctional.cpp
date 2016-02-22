@@ -812,17 +812,17 @@ namespace QuantLib {
     }
 
     Real MarkovFunctional::deflatedZerobond(Time T, Time t,
-                                                  Real y) const {
+                                            Real y) const {
 
         Array ya(1, y);
         return deflatedZerobondArray(T, t, ya)[0];
     }
 
     Real MarkovFunctional::marketSwapRate(const Date &expiry,
-                                                const CalibrationPoint &p,
-                                                const Real digitalPrice,
-                                                const Real guess,
-                                                const Real shift) const {
+                                          const CalibrationPoint &p,
+                                          const Real digitalPrice,
+                                          const Real guess,
+                                          const Real shift) const {
 
         ZeroHelper z(this, expiry, p, digitalPrice);
         Brent b;
@@ -835,9 +835,9 @@ namespace QuantLib {
     }
 
     Real MarkovFunctional::marketDigitalPrice(const Date &expiry,
-                                                    const CalibrationPoint &p,
-                                                    const Option::Type &type,
-                                                    const Real strike) const {
+                                              const CalibrationPoint &p,
+                                              const Option::Type &type,
+                                              const Real strike) const {
 
         return p.smileSection_->digitalOptionPrice(strike, type, p.annuity_,
                                                    modelSettings_.digitalGap_);
@@ -974,9 +974,9 @@ namespace QuantLib {
 
     Real
     MarkovFunctional::swapRateInternal(const Date &fixing, const Period &tenor,
-                                  const Date &referenceDate, const Real y,
-                                  bool zeroFixingDays,
-                                  boost::shared_ptr<SwapIndex> swapIdx) const {
+                                       const Date &referenceDate, const Real y,
+                                       bool zeroFixingDays,
+                                       boost::shared_ptr<SwapIndex> swapIdx) const {
 
         calculate();
 

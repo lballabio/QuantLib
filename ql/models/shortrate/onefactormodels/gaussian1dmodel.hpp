@@ -78,7 +78,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
     const boost::shared_ptr<StochasticProcess1D> stateProcess() const;
 
     Real numeraire(const Time t, const Real y = 0.0,
-                         const Handle<YieldTermStructure> &yts =
+                   const Handle<YieldTermStructure> &yts =
                              Handle<YieldTermStructure>()) const;
 
     Real zerobond(
@@ -86,7 +86,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
         const Handle<YieldTermStructure> &yts = Handle<YieldTermStructure>()) const;
 
     Real numeraire(const Date &referenceDate, const Real y = 0.0,
-                         const Handle<YieldTermStructure> &yts =
+                   const Handle<YieldTermStructure> &yts =
                              Handle<YieldTermStructure>()) const;
 
     Real zerobond(
@@ -124,9 +124,9 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
     \f[ p(x) = ax^4+bx^3+cx^2+dx+e \f].
     */
     static Real gaussianPolynomialIntegral(const Real a, const Real b,
-                                                 const Real c, const Real d,
-                                                 const Real e, const Real x0,
-                                                 const Real x1);
+                                           const Real c, const Real d,
+                                           const Real e, const Real x0,
+                                           const Real x1);
 
     /*! Computes the integral
     \f[ {2\pi}^{-0.5} \int_{a}^{b} p(x) \exp{-0.5*x*x} \mathrm{d}x \f]
@@ -195,7 +195,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
                   const Handle<YieldTermStructure> &yts) const = 0;
 
     virtual Real zerobondImpl(const Time T, const Time t, const Real y,
-                                    const Handle<YieldTermStructure> &yts) const = 0;
+                              const Handle<YieldTermStructure> &yts) const = 0;
 
     void performCalculations() const {
         evaluationDate_ = Settings::instance().evaluationDate();

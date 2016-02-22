@@ -178,7 +178,7 @@ void Gsr::initialize(Real T) {
 }
 
 Real Gsr::zerobondImpl(const Time T, const Time t, const Real y,
-                             const Handle<YieldTermStructure> &yts) const {
+                       const Handle<YieldTermStructure> &yts) const {
 
     calculate();
 
@@ -202,7 +202,7 @@ Real Gsr::zerobondImpl(const Time T, const Time t, const Real y,
 }
 
 Real Gsr::numeraireImpl(const Time t, const Real y,
-                              const Handle<YieldTermStructure> &yts) const {
+                        const Handle<YieldTermStructure> &yts) const {
 
     calculate();
 
