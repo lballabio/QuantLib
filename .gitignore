@@ -89,7 +89,6 @@ Examples/Gaussian1dModels/Gaussian1dModels
 Examples/Replication/Replication
 Examples/Repo/Repo
 Examples/Swap/SwapValuation
-test-suite/main.cpp
 test-suite/quantlib-test-suite
 test-suite/quantlib-benchmark
 test-suite/bin/*.exp
