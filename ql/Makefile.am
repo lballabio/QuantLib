@@ -99,6 +99,7 @@ libQuantLib_la_LIBADD = \
     utilities/libUtilities.la
 
 EXTRA_DIST= \
+	CMakeLists.txt \
 	config.ansi.hpp \
 	config.msvc.hpp \
 	config.mingw.hpp \

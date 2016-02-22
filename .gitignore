@@ -15,6 +15,7 @@ ql/stamp-h1
 elc-stamp
 quantlib.elc
 QuantLib.spec
+CMakeCache.txt
 Docs/.time-stamp
 Docs/.time-stamp-html
 Docs/.time-stamp-online
@@ -67,6 +68,8 @@ testCaseCollection.xml
 *.pch
 *.idb
 *.ipch
+CMakeFiles
+*.cmake
 
 # Outputs
 Examples/BasketLosses/BasketLosses
@@ -86,7 +89,6 @@ Examples/Gaussian1dModels/Gaussian1dModels
 Examples/Replication/Replication
 Examples/Repo/Repo
 Examples/Swap/SwapValuation
-test-suite/main.cpp
 test-suite/quantlib-test-suite
 test-suite/quantlib-benchmark
 test-suite/bin/*.exp

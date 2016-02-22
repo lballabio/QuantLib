@@ -17,6 +17,7 @@ EXTRA_DIST = \
 	Authors.txt \
 	Bugs.txt \
 	ChangeLog.txt \
+	CMakeLists.txt \
 	Contributors.txt \
 	LICENSE.TXT \
 	News.txt \
