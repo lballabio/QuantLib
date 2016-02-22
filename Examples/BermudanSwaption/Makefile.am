@@ -16,6 +16,7 @@ EXTRA_DIST = \
     BermudanSwaption_vc9.vcproj \
     BermudanSwaption.vcxproj \
     BermudanSwaption.vcxproj.filters \
+    CMakeLists.txt \
     ReadMe.txt
 
 .PHONY: examples check-examples
