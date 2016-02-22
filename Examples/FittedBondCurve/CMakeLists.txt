@@ -1,2 +1,2 @@
-add_executable(Examples_FittedBondCurve FittedBondCurve.cpp)
-target_link_libraries(Examples_FittedBondCurve quantlib)
+add_executable(FittedBondCurve FittedBondCurve.cpp)
+target_link_libraries(FittedBondCurve QuantLib)

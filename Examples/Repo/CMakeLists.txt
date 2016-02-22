@@ -1,2 +1,2 @@
-add_executable(Examples_Repo Repo.cpp)
-target_link_libraries(Examples_Repo quantlib)
+add_executable(Repo Repo.cpp)
+target_link_libraries(Repo QuantLib)

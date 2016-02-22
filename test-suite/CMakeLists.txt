@@ -5,8 +5,8 @@ list(REMOVE_ITEM TEST_SUITE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/quantlibbenchmark.
 
 find_package (Boost COMPONENTS unit_test_framework REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
-set (TEST test-suite)
+set (TEST quantlib-test-suite)
 add_executable (${TEST} ${TEST_SUITE_FILES})
-target_link_libraries (${TEST} quantlib ${Boost_LIBRARIES})
+target_link_libraries (${TEST} QuantLib ${Boost_LIBRARIES})
 enable_testing ()
 add_test (${TEST} ${TEST})

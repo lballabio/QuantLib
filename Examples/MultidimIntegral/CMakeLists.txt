@@ -1,2 +1,2 @@
-add_executable(Examples_MultidimIntegral MultidimIntegral.cpp)
-target_link_libraries(Examples_MultidimIntegral quantlib)
+add_executable(MultidimIntegral MultidimIntegral.cpp)
+target_link_libraries(MultidimIntegral QuantLib)

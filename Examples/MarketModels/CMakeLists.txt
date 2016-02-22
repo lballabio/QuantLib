@@ -1,2 +1,2 @@
-add_executable(Examples_MarketModels MarketModels.cpp)
-target_link_libraries(Examples_MarketModels quantlib)
+add_executable(MarketModels MarketModels.cpp)
+target_link_libraries(MarketModels QuantLib)

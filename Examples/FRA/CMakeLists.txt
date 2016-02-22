@@ -1,2 +1,2 @@
-add_executable(Examples_FRA FRA.cpp)
-target_link_libraries(Examples_FRA quantlib)
+add_executable(FRA FRA.cpp)
+target_link_libraries(FRA QuantLib)

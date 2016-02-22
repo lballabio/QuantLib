@@ -1,2 +1,2 @@
-add_executable(Examples_CDS CDS.cpp)
-target_link_libraries(Examples_CDS quantlib)
+add_executable(CDS CDS.cpp)
+target_link_libraries(CDS QuantLib)
