@@ -58,10 +58,10 @@ namespace QuantLib {
         Volatility volatility(Rate strike) const;
         virtual Real atmLevel() const = 0;
         virtual const Date& exerciseDate() const { return exerciseDate_; }
-        virtual const VolatilityType volatilityType() const {
+        virtual VolatilityType volatilityType() const {
             return volatilityType_;
         }
-        virtual const Rate shift() const { return shift_; }
+        virtual Rate shift() const { return shift_; }
         virtual const Date& referenceDate() const;
         virtual Time exerciseTime() const { return exerciseTime_; }
         virtual const DayCounter& dayCounter() const { return dc_; }

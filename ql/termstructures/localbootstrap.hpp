@@ -141,17 +141,18 @@ namespace QuantLib {
 
         // check that there is no instruments with the same maturity
         for (Size i=1; i<nInsts; ++i) {
-            Date m1 = ts_->instruments_[i-1]->latestDate(),
-                 m2 = ts_->instruments_[i]->latestDate();
+            Date m1 = ts_->instruments_[i-1]->pillarDate(),
+                 m2 = ts_->instruments_[i]->pillarDate();
             QL_REQUIRE(m1 != m2,
-                       "two instruments have the same maturity ("<< m1 <<")");
+                       "two instruments have the same pillar date ("<<m1<<")");
         }
 
         // check that there is no instruments with invalid quote
         for (Size i=0; i<nInsts; ++i)
             QL_REQUIRE(ts_->instruments_[i]->quote()->isValid(),
                        io::ordinal(i+1) << " instrument (maturity: " <<
-                       ts_->instruments_[i]->latestDate() <<
+                       ts_->instruments_[i]->maturityDate() << ", pillar: " <<
+                       ts_->instruments_[i]->pillarDate() <<
                        ") has an invalid quote");
 
         // setup instruments
@@ -177,7 +178,7 @@ namespace QuantLib {
         ts_->dates_[0] = Traits::initialDate(ts_);
         ts_->times_[0] = ts_->timeFromReference(ts_->dates_[0]);
         for (Size i=0; i<nInsts; ++i) {
-            ts_->dates_[i+1] = ts_->instruments_[i]->latestDate();
+            ts_->dates_[i+1] = ts_->instruments_[i]->pillarDate();
             ts_->times_[i+1] = ts_->timeFromReference(ts_->dates_[i+1]);
             if (!validCurve_)
                 ts_->data_[i+1] = ts_->data_[i];

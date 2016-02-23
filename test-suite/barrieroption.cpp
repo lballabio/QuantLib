@@ -849,7 +849,7 @@ void BarrierOptionTest::testLocalVolAndHestonComparison() {
 
 
 void BarrierOptionTest::testVannaVolgaSimpleBarrierValues() {
-    BOOST_MESSAGE("Testing barrier FX options against Vanna/Volga values...");
+    BOOST_TEST_MESSAGE("Testing barrier FX options against Vanna/Volga values...");
 
     SavedSettings backup;
 

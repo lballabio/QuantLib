@@ -90,6 +90,7 @@ libQuantLib_la_LIBADD = \
     math/libMath.la \
     methods/libMethods.la \
     models/libModels.la \
+    patterns/libPatterns.la \
     pricingengines/libPricingEngines.la \
     processes/libProcesses.la \
     quotes/libQuotes.la \
@@ -98,6 +99,7 @@ libQuantLib_la_LIBADD = \
     utilities/libUtilities.la
 
 EXTRA_DIST= \
+	CMakeLists.txt \
 	config.ansi.hpp \
 	config.msvc.hpp \
 	config.mingw.hpp \

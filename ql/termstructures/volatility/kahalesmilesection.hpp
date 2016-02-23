@@ -145,17 +145,17 @@ namespace QuantLib {
                            const int forcedLeftIndex = -1,
                            const int forcedRightIndex = QL_MAX_INTEGER);
 
-        Real minStrike() const { return 0.0; }
+        Real minStrike() const { return -shift(); }
         Real maxStrike() const { return QL_MAX_REAL; }
         Real atmLevel() const { return f_; }
         const Date& exerciseDate() const { return source_->exerciseDate(); }
         Time exerciseTime() const { return source_->exerciseTime(); }
         const DayCounter& dayCounter() const { return source_->dayCounter(); }
         const Date& referenceDate() const { return source_->referenceDate(); }
-        const VolatilityType volatilityType() const {
+        VolatilityType volatilityType() const {
             return source_->volatilityType();
         }
-        const Real shift() const { return source_->shift(); }
+        Real shift() const { return source_->shift(); }
 
         Real leftCoreStrike() const { return k_[leftIndex_]; }
         Real rightCoreStrike() const { return k_[rightIndex_]; }

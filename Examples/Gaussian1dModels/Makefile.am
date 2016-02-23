@@ -8,9 +8,10 @@ else
 noinst_PROGRAMS = Gaussian1dModels
 endif
 Gaussian1dModels_SOURCES = Gaussian1dModels.cpp
-Gaussian1dModels_LDADD = ../../ql/libQuantLib.la
+Gaussian1dModels_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
+    CMakeLists.txt \
     Gaussian1dModels.dev \
     Gaussian1dModels_vc8.vcproj \
     Gaussian1dModels_vc9.vcproj \

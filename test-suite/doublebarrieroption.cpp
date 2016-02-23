@@ -134,7 +134,7 @@ namespace {
 
 void DoubleBarrierOptionTest::testEuropeanHaugValues() {
 
-    BOOST_MESSAGE("Testing double barrier european options against Haug's values...");
+    BOOST_TEST_MESSAGE("Testing double barrier european options against Haug's values...");
 
     Exercise::Type european = Exercise::European;
     NewBarrierOptionData values[] = {
@@ -358,7 +358,7 @@ void DoubleBarrierOptionTest::testEuropeanHaugValues() {
 }
 
 void DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues() {
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
          "Testing double-barrier FX options against Vanna/Volga values...");
 
     SavedSettings backup;

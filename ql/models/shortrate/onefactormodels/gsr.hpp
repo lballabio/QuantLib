@@ -24,15 +24,8 @@
 #ifndef quantlib_gsr_hpp
 #define quantlib_gsr_hpp
 
-#include <ql/time/schedule.hpp>
-#include <ql/math/integrals/simpsonintegral.hpp>
-#include <ql/math/integrals/gausslobattointegral.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
-
 #include <ql/models/shortrate/onefactormodels/gaussian1dmodel.hpp>
 #include <ql/processes/gsrprocess.hpp>
-
-#include <boost/math/special_functions.hpp>
 
 namespace QuantLib {
 
@@ -62,14 +55,15 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
         const std::vector<Handle<Quote> > &volatilities,
         const std::vector<Handle<Quote> > &reversions, const Real T = 60.0);
 
-    const Real numeraireTime() const;
-    const void numeraireTime(const Real T);
+    Real numeraireTime() const;
+    void numeraireTime(const Real T);
 
     const Array &reversion() const { return reversion_.params(); }
     const Array &volatility() const { return sigma_.params(); }
 
     // calibration constraints
 
+    // fixed reversions, only volatilities are free
     Disposable<std::vector<bool> > FixedReversions() {
         std::vector<bool> res(reversions_.size(), true);
         std::vector<bool> vol(volatilities_.size(), false);
@@ -77,6 +71,7 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
         return res;
     }
 
+    // fixed volatilities, only reversions are free
     Disposable<std::vector<bool> > FixedVolatilities() {
         std::vector<bool> res(reversions_.size(), false);
         std::vector<bool> vol(volatilities_.size(), true);
@@ -88,8 +83,7 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
         QL_REQUIRE(i < volatilities_.size(),
                    "volatility with index " << i << " does not exist (0..."
                                             << volatilities_.size() - 1 << ")");
-        std::vector<bool> res(reversions_.size() + volatilities_.size(),
-                              true);
+        std::vector<bool> res(reversions_.size() + volatilities_.size(), true);
         res[reversions_.size() + i] = false;
         return res;
     }
@@ -98,8 +92,7 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
         QL_REQUIRE(i < reversions_.size(),
                    "reversion with index " << i << " does not exist (0..."
                                            << reversions_.size() - 1 << ")");
-        std::vector<bool> res(reversions_.size() + volatilities_.size(),
-                              true);
+        std::vector<bool> res(reversions_.size() + volatilities_.size(), true);
         res[i] = false;
         return res;
     }
@@ -140,11 +133,11 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
     }
 
   protected:
-    const Real numeraireImpl(const Time t, const Real y,
-                             const Handle<YieldTermStructure> &yts) const;
+    Real numeraireImpl(const Time t, const Real y,
+                       const Handle<YieldTermStructure> &yts) const;
 
-    const Real zerobondImpl(const Time T, const Time t, const Real y,
-                            const Handle<YieldTermStructure> &yts) const;
+    Real zerobondImpl(const Time T, const Time t, const Real y,
+                      const Handle<YieldTermStructure> &yts) const;
 
     void generateArguments() {
         boost::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
@@ -156,31 +149,47 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
     void performCalculations() const {
         Gaussian1dModel::performCalculations();
         updateTimes();
-        updateState();
     }
 
   private:
     void updateTimes() const;
-    void updateState() const;
+    void updateVolatility();
+    void updateReversion();
+
     void initialize(Real);
 
     Parameter &reversion_, &sigma_;
 
     std::vector<Handle<Quote> > volatilities_;
     std::vector<Handle<Quote> > reversions_;
-    std::vector<Date> volstepdates_; // this is shared between vols and reversions
-                                     // in case of piecewise reversions
+    std::vector<Date> volstepdates_; // this is shared between vols,
+                                     // adjusters and reverisons in
+                                     // case of piecewise reversions
     mutable std::vector<Time> volsteptimes_;
     mutable Array volsteptimesArray_; // FIXME this is redundant (just a copy of
                                       // volsteptimes_)
+
+    struct VolatilityObserver : public Observer {
+        VolatilityObserver(Gsr *p) : p_(p) {}
+        void update() { p_->updateVolatility(); }
+        Gsr *p_;
+    };
+    struct ReversionObserver : public Observer {
+        ReversionObserver(Gsr *p) : p_(p) {}
+        void update() { p_->updateReversion(); }
+        Gsr *p_;
+    };
+
+    boost::shared_ptr<VolatilityObserver> volatilityObserver_;
+    boost::shared_ptr<ReversionObserver> reversionObserver_;
 };
 
-inline const Real Gsr::numeraireTime() const {
+inline Real Gsr::numeraireTime() const {
     return boost::dynamic_pointer_cast<GsrProcess>(stateProcess_)
         ->getForwardMeasureTime();
 }
 
-inline const void Gsr::numeraireTime(const Real T) {
+inline void Gsr::numeraireTime(const Real T) {
     boost::dynamic_pointer_cast<GsrProcess>(stateProcess_)
         ->setForwardMeasureTime(T);
 }

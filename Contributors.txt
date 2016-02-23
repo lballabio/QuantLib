@@ -14,7 +14,9 @@ Jose Aparicio
 Sercan Atalik
 Ahmed Ayadi
 Lluis Pujol Bajador
+Gerardo Ballabio
 Nabila Barkati
+Riccardo Barone
 Clément Barret
 Christopher Baus
 Thomas Becker
@@ -74,6 +76,8 @@ Sebastien Gurrieri
 Tawanda Gwena
 Cavit Hafizoglu
 Michael Heckl
+Andres Hernandez
+Chris Higgs
 Laurent Hoffmann
 Xiangyu Hong
 Benoît Houzelle

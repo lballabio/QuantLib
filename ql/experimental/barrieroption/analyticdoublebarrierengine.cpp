@@ -192,7 +192,7 @@ namespace QuantLib {
                   (f_(d3-stdDeviation()) - f_(d4-stdDeviation()));
        }
 
-       Real rend = std::exp( dividendYield() * residualTime());
+       Real rend = std::exp(-dividendYield() * residualTime());
        Real kov = underlying() * rend * acc1 - strike() * riskFreeDiscount() * acc2;
        return std::max(0.0, kov);
     }
@@ -228,7 +228,7 @@ namespace QuantLib {
 
        }
 
-       Real rend = std::exp( dividendYield() * residualTime());
+       Real rend = std::exp(-dividendYield() * residualTime());
        Real kov = strike() * riskFreeDiscount() * acc1 - underlying() * rend  * acc2;
        return std::max(0.0, kov);
     }

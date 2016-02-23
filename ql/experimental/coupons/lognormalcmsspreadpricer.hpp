@@ -95,8 +95,8 @@ namespace QuantLib {
         void initialize(const FloatingRateCoupon &coupon);
         Real optionletPrice(Option::Type optionType, Real strike) const;
 
-        const Real integrand(const Real) const;
-        const Real integrand_normal(const Real) const;
+        Real integrand(const Real) const;
+        Real integrand_normal(const Real) const;
 
         boost::shared_ptr<CmsCouponPricer> cmsPricer_;
 

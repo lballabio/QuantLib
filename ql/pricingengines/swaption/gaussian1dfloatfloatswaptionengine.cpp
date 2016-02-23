@@ -19,6 +19,8 @@
 
 #include <ql/pricingengines/swaption/gaussian1dfloatfloatswaptionengine.hpp>
 #include <ql/experimental/coupons/swapspreadindex.hpp> // internal
+#include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/payoff.hpp>
 
 namespace QuantLib {
 
@@ -45,13 +47,13 @@ namespace QuantLib {
         results_.additionalResults["underlyingValue"] = result.second;
     }
 
-    const Real
+    Real
     Gaussian1dFloatFloatSwaptionEngine::underlyingNpv(const Date &expiry,
                                                       const Real y) const {
         return npvs(expiry, y, true).second;
     }
 
-    const VanillaSwap::Type
+    VanillaSwap::Type
     Gaussian1dFloatFloatSwaptionEngine::underlyingType() const {
         return arguments_.swap->type();
     }

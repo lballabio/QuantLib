@@ -35,6 +35,7 @@ namespace QuantLib {
     }
 
     //! mixed linear/cubic interpolation between discrete points
+    /*! \ingroup interpolations */
     class MixedLinearCubicInterpolation : public Interpolation {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
@@ -60,6 +61,7 @@ namespace QuantLib {
     };
 
     //! mixed linear/cubic interpolation factory and traits
+    /*! \ingroup interpolations */
     class MixedLinearCubic {
       public:
         MixedLinearCubic(Size n,

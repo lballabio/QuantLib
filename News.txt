@@ -1,145 +1,21 @@
 
-Changes for QuantLib 1.6:
-=========================
+Changes for QuantLib 1.7.1:
+===========================
 
-QuantLib 1.6 includes over 50 pull requests from several contributors.
+QuantLib 1.7.1 is a bug-fix release for version 1.7.
 
-The most notable changes are included below.
-A detailed list of changes is available in ChangeLog.txt.
+- an unneeded dependency on the Boost.Thread library had slipped into
+  version 1.7. It is now removed (thanks to GitHub user MattPD).
 
+- Trying to build a schedule with a 4-weeks tenor would fail. This is
+  now fixed (thanks to GitHub user smallnamespace for the heads-up).
 
-PORTABILITY
+- A couple of errors in the list of past holidays for the Russian MOEX
+  calendar was fixed, and the list of holidays for 2016 was added
+  (thanks to Dmitri Nesteruk).
 
-- Enable successful compilation with Boost 1.58 and either gcc or clang.
+- Chinese holidays for 2016 were updated (thanks to Cheng Li).
 
-- Enable multi-processor compilation on Visual C++ as a project switch
-  (thanks to Giorgio Pazmandi).
+- The correct curve is now used when calculating the at-the-money swap
+  rate while building swaptions (thanks to Peter Caspers).
 
-DATE/TIME
-
-- Added Moscow Exchange calendar (thanks to Dmitri Nesteruk).
-
-- Added 70th anniversary of anti-Japanese day to Chinese calendar
-  (thanks to Cheng Li).
-
-- Fixed Chinese New Year date for 2010 (thanks to Cheng Li).
-
-- Added nearest-trading-day business day convention (thanks to
-  Francois Botha).
-
-- Prevented normalization of a 7-days period to a 1-week period, since
-  this doesn't apply to business days (thanks to Paolo Mazzocchi).
-
-- Allowed schedules built with a vector of dates to be used for coupon
-  generation, given that the required information was provided (thanks
-  to Peter Caspers).
-
-- Added support for Australian Security Exchange (ASX) dates (thanks
-  to Maddalena Zanzi).
-
-- Added ECB dates for April and June 2016 (thanks to Paolo Mazzocchi).
-
-INSTRUMENTS
-
-- Extended digital American options to handle knock-off case (thanks
-  to Riccardo Ghetta).
-
-- Extended barrier options to handle KIKO/KOKI barriers (thanks to
-  Riccardo Ghetta).
-
-- Added Ikeda/Kunitomo engine, binomial engine and binary/digital
-  engine for double-barrier option (thanks to Riccardo Ghetta).
-
-- Added Bachelier engine for caps/floors based on normal volatility
-  (thanks to Michael von den Driesch).
-
-- Allowed non strike/type payoffs in finite-differences engine for
-  vanilla options (thanks to Joseph Wang).
-
-- Fixed settlement days of BTP bonds.
-
-- Fixed generation of schedule for OIS and vanilla swaps.
-
-- Added support for ASX dates to futures rate helper (thanks to
-  Maddalena Zanzi).
-
-MODELS
-
-- Moved Markov functional model, GSR model, Gaussian 1D model and
-  related engines, processes and term structures from the experimental
-  folder to the code library (thanks to Peter Caspers).
-
-CASH FLOWS
-
-- Added CMS-spread coupons, including digital (thanks to Peter Caspers).
-
-INDEXES
-
-- Added CMS-spread index (thanks to Peter Caspers).
-
-- Fixed day-count convention for Fed Funds rate.
-
-TERM STRUCTURES
-
-- Fixed bug where a valid previous curve state could be a bad guess
-  for the next and lead to a bootstrap failure.
-
-- Allow negative adjustment for futures rate helpers (thanks to Paolo
-  Mazzocchi).
-
-VOLATILITY
-
-- Added support for normal and displaced lognormal volatility to
-  optionlet stripper (thanks to Michael von den Driesch).
-
-- Allowed calibration of the alpha of the SABR model to the ATM point
-  while keeping beta, nu and rho fixed (thanks to Peter Caspers).
-
-- Added Chambers-Nawalkha implied-volatility approximation (thanks to
-  Peter Caspers).
-
-- Added displaced lognormal swaption volatilities (thanks to Peter
-  Caspers).
-
-- Allowed the optionlet boostrap to continue if one caplet can no be
-  matched (thanks to Peter Caspers).
-
-- Added flat-extrapolation option to swaption ATM volatility matrix
-  (thanks to Peter Caspers).
-
-- Implied swaption volatility cube for Gaussian 1-D model (thanks to
-  Peter Caspers).
-
-MATH
-
-- Allowed user-defined Jacobian in optimization (thanks to Peter Caspers).
-
-MISCELLANEA
-
-- Added IDR, MYR, RUB and VND currencies (thanks to Lucy King).
-
-DEPRECATED FEATURES
-
-- Removed deprecated methods and constructors from the
-  BlackVarianceTermStructure, BlackVolTermStructure,
-  CapFloorTermVolatilityStructure, DateParser,
-  FittedBondDiscountCurve, GeneralLinearLeastSquares, Handle,
-  LocalVolTermStructure, OptionletVolatilityStructure, Settings,
-  SwaptionVolatilityStructure and VolatilityTermStructure classes.
-
-EXPERIMENTAL FOLDER
-
-The ql/experimental folder contains code which is still not fully
-integrated with the library or even fully tested, but is released in
-order to get user feedback.  Experimental classes are considered
-unstable; their interfaces might change in future releases.
-
-Changes and new contributions for this release were:
-
-- Finite-difference meshers based on multi-dimensional integrals
-  (thanks to Klaus Spanderen).
-
-- SVI interpolation and a corresponding smile section (thanks to Peter
-  Caspers).
-
-- ZABR volatility model (thanks to Peter Caspers).

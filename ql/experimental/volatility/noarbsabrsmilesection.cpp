@@ -41,8 +41,8 @@ NoArbSabrSmileSection::NoArbSabrSmileSection(
 }
 
 void NoArbSabrSmileSection::init() {
-    QL_REQUIRE(params_.size() == 4,
-               "sabr expects 4 parameters (alpha,beta,nu,rho,gamma) but ("
+    QL_REQUIRE(params_.size() >= 4,
+               "sabr expects 4 parameters (alpha,beta,nu,rho) but ("
                    << params_.size() << ") given");
     QL_REQUIRE(forward_ > 0.0, "forward (" << forward_ << ") must be positive");
     QL_REQUIRE(

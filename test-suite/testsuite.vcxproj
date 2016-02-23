@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (static runtime)|Win32">
@@ -217,6 +217,7 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>false</SuppressStartupBanner>
@@ -445,6 +446,7 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>false</SuppressStartupBanner>
@@ -717,6 +719,7 @@
     <ClCompile Include="noarbsabr.cpp" />
     <ClCompile Include="nthtodefault.cpp" />
     <ClCompile Include="numericaldifferentiation.cpp" />
+    <ClCompile Include="observable.cpp" />
     <ClCompile Include="ode.cpp" />
     <ClCompile Include="operators.cpp" />
     <ClCompile Include="optimizers.cpp" />
@@ -854,6 +857,7 @@
     <ClInclude Include="noarbsabr.hpp" />
     <ClInclude Include="nthtodefault.hpp" />
     <ClInclude Include="numericaldifferentiation.hpp" />
+    <ClInclude Include="observable.hpp" />
     <ClInclude Include="ode.hpp" />
     <ClInclude Include="operators.hpp" />
     <ClInclude Include="optimizers.hpp" />
@@ -862,6 +866,7 @@
     <ClInclude Include="pagodaoption.hpp" />
     <ClInclude Include="partialtimebarrieroption.hpp" />
     <ClInclude Include="pathgenerator.hpp" />
+    <ClInclude Include="paralleltestrunner.hpp" />    
     <ClInclude Include="period.hpp" />
     <ClInclude Include="piecewiseyieldcurve.hpp" />
     <ClInclude Include="piecewisezerospreadedtermstructure.hpp" />

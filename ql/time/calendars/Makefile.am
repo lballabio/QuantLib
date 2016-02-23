@@ -19,6 +19,7 @@ this_include_HEADERS = \
 	iceland.hpp \
 	india.hpp \
 	indonesia.hpp \
+	israel.hpp \
 	italy.hpp \
 	japan.hpp \
 	jointcalendar.hpp \
@@ -27,6 +28,7 @@ this_include_HEADERS = \
 	norway.hpp \
 	nullcalendar.hpp \
 	poland.hpp \
+	romania.hpp \
 	russia.hpp \
 	saudiarabia.hpp \
 	singapore.hpp \
@@ -59,6 +61,7 @@ libCalendars_la_SOURCES = \
 	iceland.cpp \
 	india.cpp \
 	indonesia.cpp \
+	israel.cpp \
 	italy.cpp \
 	japan.cpp \
 	jointcalendar.cpp \
@@ -66,6 +69,7 @@ libCalendars_la_SOURCES = \
 	newzealand.cpp \
 	norway.cpp \
 	poland.cpp \
+	romania.cpp \
 	russia.cpp \
 	saudiarabia.cpp \
 	singapore.cpp \

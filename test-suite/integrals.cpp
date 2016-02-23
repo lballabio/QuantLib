@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -34,7 +35,7 @@
 #include <boost/lambda/lambda.hpp>
 
 using namespace QuantLib;
-using namespace boost::unit_test_framework;
+using boost::unit_test_framework::test_suite;
 
 namespace {
 
@@ -74,39 +75,52 @@ namespace {
                    AbcdFunction(0.07, 0.07, 0.5, 0.1).covariance(5.0, 6.0, 8.0, 10.0));
     }
 
+    template <class T>
+    void testDegeneratedDomain(const T& I) {
+        testSingle(I, "f(x) = 0 over [1, 1 + macheps]",
+                   constant<Real, Real>(0.0), 1.0, 1.0 + QL_EPSILON, 0.0);
+    }
+
 }
 
 
 void IntegralTest::testSegment() {
     BOOST_TEST_MESSAGE("Testing segment integration...");
     testSeveral(SegmentIntegral(10000));
+    testDegeneratedDomain(SegmentIntegral(10000));
 }
 
 void IntegralTest::testTrapezoid() {
     BOOST_TEST_MESSAGE("Testing trapezoid integration...");
     testSeveral(TrapezoidIntegral<Default>(tolerance, 10000));
+    testDegeneratedDomain(TrapezoidIntegral<Default>(tolerance, 10000));
 }
 
 void IntegralTest::testMidPointTrapezoid() {
     BOOST_TEST_MESSAGE("Testing mid-point trapezoid integration...");
     testSeveral(TrapezoidIntegral<MidPoint>(tolerance, 10000));
+    testDegeneratedDomain(TrapezoidIntegral<MidPoint>(tolerance, 10000));
 }
 
 void IntegralTest::testSimpson() {
     BOOST_TEST_MESSAGE("Testing Simpson integration...");
     testSeveral(SimpsonIntegral(tolerance, 10000));
+    testDegeneratedDomain(SimpsonIntegral(tolerance, 10000));
 }
 
 void IntegralTest::testGaussKronrodAdaptive() {
     BOOST_TEST_MESSAGE("Testing adaptive Gauss-Kronrod integration...");
     Size maxEvaluations = 1000;
     testSeveral(GaussKronrodAdaptive(tolerance, maxEvaluations));
+    testDegeneratedDomain(GaussKronrodAdaptive(tolerance, maxEvaluations));
 }
 
 void IntegralTest::testGaussLobatto() {
     BOOST_TEST_MESSAGE("Testing adaptive Gauss-Lobatto integration...");
     Size maxEvaluations = 1000;
     testSeveral(GaussLobattoIntegral(maxEvaluations, tolerance));
+    // on degenerated domain [1,1+macheps] an exception is thrown
+    // which is also ok, but not tested here
 }
 
 void IntegralTest::testGaussKronrodNonAdaptive() {
@@ -117,6 +131,7 @@ void IntegralTest::testGaussKronrodNonAdaptive() {
     GaussKronrodNonAdaptive gaussKronrodNonAdaptive(precision, maxEvaluations,
                                                     relativeAccuracy);
     testSeveral(gaussKronrodNonAdaptive);
+    testDegeneratedDomain(gaussKronrodNonAdaptive);
 }
 
 void IntegralTest::testTwoDimensionalIntegration() {

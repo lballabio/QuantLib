@@ -58,6 +58,12 @@ namespace QuantLib {
             }
             return result;
         }
+
+        bool allowsEndOfMonth(const Period& tenor) {
+            return (tenor.units() == Months || tenor.units() == Years)
+                && tenor >= 1*Months;
+        }
+
     }
 
 
@@ -73,8 +79,14 @@ namespace QuantLib {
     : tenor_(tenor), calendar_(calendar),
       convention_(convention),
       terminationDateConvention_(terminationDateConvention),
-      rule_(rule), endOfMonth_(endOfMonth),
+      rule_(rule),
       dates_(dates), isRegular_(isRegular) {
+
+        if (tenor != boost::none && !allowsEndOfMonth(*tenor))
+            endOfMonth_ = false;
+        else
+            endOfMonth_ = endOfMonth;
+
         QL_REQUIRE(
             isRegular_.size() == 0 || isRegular_.size() == dates.size() - 1,
             "isRegular size ("
@@ -95,7 +107,7 @@ namespace QuantLib {
                        const Date& nextToLast)
     : tenor_(tenor), calendar_(cal), convention_(convention),
       terminationDateConvention_(terminationDateConvention), rule_(rule),
-      endOfMonth_(tenor<1*Months ? false : endOfMonth),
+      endOfMonth_(allowsEndOfMonth(tenor) ? endOfMonth : false),
       firstDate_(first==effectiveDate ? Date() : first),
       nextToLastDate_(nextToLast==terminationDate ? Date() : nextToLast)
     {
@@ -417,7 +429,7 @@ namespace QuantLib {
         QL_ENSURE(dates_.size()>1,
             "degenerate single date (" << dates_[0] << ") schedule" <<
             "\n seed date: " << seed <<
-            "\n exit date: " << exit <<
+            "\n exit date: " << exitDate <<
             "\n effective date: " << effectiveDate <<
             "\n first date: " << first <<
             "\n next to last date: " << nextToLast <<

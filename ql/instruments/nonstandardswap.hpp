@@ -66,8 +66,8 @@ namespace QuantLib {
 
         const Schedule &floatingSchedule() const;
         const boost::shared_ptr<IborIndex> &iborIndex() const;
-        const Spread spread() const;
-        const Real gearing() const;
+        Spread spread() const;
+        Real gearing() const;
         const DayCounter &floatingDayCount() const;
 
         BusinessDayConvention paymentConvention() const;
@@ -173,9 +173,9 @@ namespace QuantLib {
         return iborIndex_;
     }
 
-    inline const Spread NonstandardSwap::spread() const { return spread_; }
+    inline Spread NonstandardSwap::spread() const { return spread_; }
 
-    inline const Real NonstandardSwap::gearing() const { return gearing_; }
+    inline Real NonstandardSwap::gearing() const { return gearing_; }
 
     inline const DayCounter &NonstandardSwap::floatingDayCount() const {
         return floatingDayCount_;

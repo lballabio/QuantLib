@@ -8,9 +8,10 @@ else
 noinst_PROGRAMS = LatentModel
 endif
 LatentModel_SOURCES = LatentModel.cpp
-LatentModel_LDADD = ../../ql/libQuantLib.la
+LatentModel_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
+    CMakeLists.txt \
     LatentModel.dev \
     LatentModel_vc8.vcproj \
     LatentModel_vc9.vcproj \

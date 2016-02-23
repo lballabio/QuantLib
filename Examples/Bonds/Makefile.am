@@ -8,7 +8,7 @@ else
 noinst_PROGRAMS = Bonds
 endif
 Bonds_SOURCES = Bonds.cpp
-Bonds_LDADD = ../../ql/libQuantLib.la
+Bonds_LDADD = ../../ql/libQuantLib.la  ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     Bonds.dev \
@@ -16,6 +16,7 @@ EXTRA_DIST = \
     Bonds_vc9.vcproj \
     Bonds.vcxproj \
     Bonds.vcxproj.filters \
+    CMakeLists.txt \
     ReadMe.txt
 
 .PHONY: examples check-examples

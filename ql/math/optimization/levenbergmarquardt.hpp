@@ -43,6 +43,8 @@ namespace QuantLib {
         (oder 2, but requiring more function
         evaluations) compared to the forward
         difference implemented here (order 1).
+
+        \ingroup optimizers
     */
     class LevenbergMarquardt : public OptimizationMethod {
       public:

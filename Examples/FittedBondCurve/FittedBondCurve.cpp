@@ -2,6 +2,7 @@
 
 /*!
  Copyright (C) 2007 Allen Kuo
+ Copyright (C) 2015 Andres Hernandez
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -41,11 +42,25 @@
 #include <boost/timer.hpp>
 #include <iostream>
 #include <iomanip>
+#include <boost/make_shared.hpp>
 
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
 using namespace std;
 using namespace QuantLib;
+
+#ifdef BOOST_MSVC
+#  ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+#    include <ql/auto_link.hpp>
+#    define BOOST_LIB_NAME boost_system
+#    include <boost/config/auto_link.hpp>
+#    undef BOOST_LIB_NAME
+#    define BOOST_LIB_NAME boost_thread
+#    include <boost/config/auto_link.hpp>
+#    undef BOOST_LIB_NAME
+#  endif
+#endif
+
 
 #if defined(QL_ENABLE_SESSIONS)
 namespace QuantLib {
@@ -62,7 +77,7 @@ Rate parRate(const YieldTermStructure& yts,
     Time dt;
     for (Size i=1; i<dates.size(); ++i) {
         dt = resultDayCounter.yearFraction(dates[i-1], dates[i]);
-        QL_REQUIRE(dt>0.0, "unsorted dates");
+        QL_REQUIRE(dt>=0.0, "unsorted dates");
         sum += yts.discount(dates[i]) * dt;
     }
     Real result = yts.discount(dates.front()) - yts.discount(dates.back());
@@ -118,7 +133,7 @@ int main(int, char* []) {
         BusinessDayConvention convention = ModifiedFollowing;
         Real redemption = 100.0;
 
-        Calendar calendar = NullCalendar();
+        Calendar calendar = TARGET();
         Date today = calendar.adjust(Date::todaysDate());
         Date origToday = today;
         Settings::instance().evaluationDate() = today;
@@ -259,6 +274,24 @@ int main(int, char* []) {
 
         printOutput("(e) Svensson", ts5);
 
+        Handle<YieldTermStructure> discountCurve(
+            boost::make_shared<FlatForward>(
+                                    curveSettlementDays, calendar, 0.01, dc));
+        SpreadFittingMethod nelsonSiegelSpread(
+                                    boost::make_shared<NelsonSiegelFitting>(),
+                                    discountCurve);
+
+        boost::shared_ptr<FittedBondDiscountCurve> ts6 (
+                        new FittedBondDiscountCurve(curveSettlementDays,
+                                                    calendar,
+                                                    instrumentsA,
+                                                    dc,
+                                                    nelsonSiegelSpread,
+                                                    tolerance,
+                                                    max));
+
+        printOutput("(f) Nelson-Siegel spreaded", ts6);
+
 
         cout << "Output par rates for each curve. In this case, "
              << endl
@@ -273,7 +306,8 @@ int main(int, char* []) {
              << setw(6) << "(b)" << " | "
              << setw(6) << "(c)" << " | "
              << setw(6) << "(d)" << " | "
-             << setw(6) << "(e)" << endl;
+             << setw(6) << "(e)" << " | "
+             << setw(6) << "(f)" << endl;
 
         for (Size i=0; i<instrumentsA.size(); i++) {
 
@@ -313,7 +347,10 @@ int main(int, char* []) {
                  << 100.*parRate(*ts4,keyDates,dc) << " | "
                  // Svensson
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*parRate(*ts5,keyDates,dc) << endl;
+                 << 100.*parRate(*ts5,keyDates,dc)  << " | "
+                 // Nelson-Siegel Spreaded
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*parRate(*ts6,keyDates,dc) << endl;
         }
 
         cout << endl << endl << endl;
@@ -340,6 +377,8 @@ int main(int, char* []) {
 
         printOutput("(e) Svensson", ts5);
 
+        printOutput("(f) Nelson-Siegel spreaded", ts6);
+
         cout << endl
              << endl;
 
@@ -350,7 +389,9 @@ int main(int, char* []) {
              << setw(6) << "(a)" << " | "
              << setw(6) << "(b)" << " | "
              << setw(6) << "(c)" << " | "
-             << setw(6) << "(d)" << endl;
+             << setw(6) << "(d)" << " | "
+             << setw(6) << "(e)" << " | "
+             << setw(6) << "(f)" << endl;
 
         for (Size i=0; i<instrumentsA.size(); i++) {
 
@@ -390,7 +431,10 @@ int main(int, char* []) {
                  << 100.*parRate(*ts4,keyDates,dc) << " | "
                  // Svensson
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*parRate(*ts5,keyDates,dc) << endl;
+                 << 100.*parRate(*ts5,keyDates,dc) << " | "
+                 // Nelson-Siegel Spreaded
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*parRate(*ts6,keyDates,dc) << endl;
         }
 
         cout << endl << endl << endl;
@@ -474,6 +518,16 @@ int main(int, char* []) {
 
         printOutput("(e) Svensson", ts55);
 
+        boost::shared_ptr<FittedBondDiscountCurve> ts66 (
+                        new FittedBondDiscountCurve(curveSettlementDays,
+                                                    calendar,
+                                                    instrumentsA,
+                                                    dc,
+                                                    nelsonSiegelSpread,
+                                                    tolerance,
+                                                    max));
+
+        printOutput("(f) Nelson-Siegel spreaded", ts66);
 
         cout << setw(6) << "tenor" << " | "
              << setw(6) << "coupon" << " | "
@@ -482,7 +536,8 @@ int main(int, char* []) {
              << setw(6) << "(b)" << " | "
              << setw(6) << "(c)" << " | "
              << setw(6) << "(d)" << " | "
-             << setw(6) << "(e)" << endl;
+             << setw(6) << "(e)" << " | "
+             << setw(6) << "(f)" << endl;
 
         for (Size i=0; i<instrumentsA.size(); i++) {
 
@@ -522,7 +577,10 @@ int main(int, char* []) {
                  << 100.*parRate(*ts44,keyDates,dc) << " | "
                  // Svensson
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*parRate(*ts55,keyDates,dc) << endl;
+                 << 100.*parRate(*ts55,keyDates,dc) << " | "
+                 // Nelson-Siegel Spreaded
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*parRate(*ts66,keyDates,dc) << endl;
         }
 
 
@@ -560,7 +618,8 @@ int main(int, char* []) {
              << setw(6) << "(b)" << " | "
              << setw(6) << "(c)" << " | "
              << setw(6) << "(d)" << " | "
-             << setw(6) << "(e)" << endl;
+             << setw(6) << "(e)" << " | "
+             << setw(6) << "(f)" << endl;
 
         for (Size i=0; i<instrumentsA.size(); i++) {
 
@@ -600,7 +659,10 @@ int main(int, char* []) {
                  << 100.*parRate(*ts44,keyDates,dc) << " | "
                  // Svensson
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*parRate(*ts55,keyDates,dc) << endl;
+                 << 100.*parRate(*ts55,keyDates,dc) << " | "
+                 // Nelson-Siegel Spreaded
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*parRate(*ts66,keyDates,dc) << endl;
         }
 
 

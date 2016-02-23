@@ -45,6 +45,8 @@ namespace QuantLib {
         curves.  Setting monotonicity < 1 and/or quadraticity > 0
         produces smoother curves.  Extra enhancement to avoid negative
         values (if required) is in place.
+
+        \ingroup interpolations
     */
     template <class I1, class I2>
     class ConvexMonotoneInterpolation : public Interpolation {
@@ -82,6 +84,7 @@ namespace QuantLib {
     };
 
     //! Convex-monotone interpolation factory and traits
+    /*! \ingroup interpolations */
     class ConvexMonotone {
       public:
         static const bool global = true;

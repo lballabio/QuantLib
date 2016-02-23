@@ -8,14 +8,15 @@ else
 noinst_PROGRAMS = BasketLosses
 endif
 BasketLosses_SOURCES = BasketLosses.cpp
-BasketLosses_LDADD = ../../ql/libQuantLib.la
+BasketLosses_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     BasketLosses.dev \
     BasketLosses_vc8.vcproj \
     BasketLosses_vc9.vcproj \
     BasketLosses.vcxproj \
-    BasketLosses.vcxproj.filters
+    BasketLosses.vcxproj.filters \
+    CMakeLists.txt
 
 .PHONY: examples check-examples
 

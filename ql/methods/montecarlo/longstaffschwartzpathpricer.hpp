@@ -2,6 +2,8 @@
 
 /*
  Copyright (C) 2006 Klaus Spanderen
+ Copyright (C) 2015 Peter Caspers
+ Copyright (C) 2015 Thema Consulting SA
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +29,7 @@
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/generallinearleastsquares.hpp>
+#include <ql/math/statistics/generalstatistics.hpp>
 #include <ql/methods/montecarlo/pathpricer.hpp>
 #include <ql/methods/montecarlo/earlyexercisepathpricer.hpp>
 
@@ -70,16 +73,26 @@ namespace QuantLib {
         Real operator()(const PathType& path) const;
         virtual void calibrate();
 
+        Real exerciseProbability() const;
+
       protected:
+        virtual void post_processing(const Size i,
+                                     const std::vector<StateType> &state,
+                                     const std::vector<Real> &price,
+                                     const std::vector<Real> &exercise) {}
         bool  calibrationPhase_;
         const boost::shared_ptr<EarlyExercisePathPricer<PathType> >
             pathPricer_;
+
+        mutable QuantLib::GeneralStatistics exerciseProbability_;
 
         boost::scoped_array<Array> coeff_;
         boost::scoped_array<DiscountFactor> dF_;
 
         mutable std::vector<PathType> paths_;
         const   std::vector<boost::function1<Real, StateType> > v_;
+
+        const Size len_;
     };
 
     template <class PathType> inline
@@ -90,9 +103,10 @@ namespace QuantLib {
         const boost::shared_ptr<YieldTermStructure>& termStructure)
     : calibrationPhase_(true),
       pathPricer_(pathPricer),
-      coeff_     (new Array[times.size()-1]),
+      coeff_     (new Array[times.size()-2]),
       dF_        (new DiscountFactor[times.size()-1]),
-      v_         (pathPricer_->basisSystem()) {
+      v_         (pathPricer_->basisSystem()),
+      len_       (times.size()) {
 
         for (Size i=0; i<times.size()-1; ++i) {
             dF_[i] =   termStructure->discount(times[i+1])
@@ -110,9 +124,12 @@ namespace QuantLib {
             return 0.0;
         }
 
-        const Size len = EarlyExerciseTraits<PathType>::pathLength(path);
-        Real price = (*pathPricer_)(path, len-1);
-        for (Size i=len-2; i>0; --i) {
+        Real price = (*pathPricer_)(path, len_-1);
+
+        // Initialize with exercise on last date
+        bool exercised = (price != 0.0);
+
+        for (Size i=len_-2; i>0; --i) {
             price*=dF_[i];
 
             const Real exercise = (*pathPricer_)(path, i);
@@ -121,14 +138,19 @@ namespace QuantLib {
 
                 Real continuationValue = 0.0;
                 for (Size l=0; l<v_.size(); ++l) {
-                    continuationValue += coeff_[i][l] * v_[l](regValue);
+                    continuationValue += coeff_[i-1][l] * v_[l](regValue);
                 }
 
                 if (continuationValue < exercise) {
                     price = exercise;
+
+                    // Esercised
+                    exercised = true;
                 }
             }
         }
+
+        exerciseProbability_.add(exercised ? 1.0 : 0.0);
 
         return price*dF_[0];
     }
@@ -137,21 +159,26 @@ namespace QuantLib {
     void LongstaffSchwartzPathPricer<PathType>::calibrate() {
         const Size n = paths_.size();
         Array prices(n), exercise(n);
-        const Size len = EarlyExerciseTraits<PathType>::pathLength(paths_[0]);
+        std::vector<StateType> p_state(n);
+        std::vector<Real> p_price(n), p_exercise(n);
 
-        for (Size i=0; i<n; ++i)
-            prices[i] = (*pathPricer_)(paths_[i], len-1);
+        for (Size i=0; i<n; ++i) {
+            p_state[i] = pathPricer_->state(paths_[i],len_-1);
+            prices[i] = p_price[i] = (*pathPricer_)(paths_[i], len_-1);
+            p_exercise[i] = prices[i];
+        }
+
+        post_processing(len_ - 1, p_state, p_price, p_exercise);
 
         std::vector<Real>      y;
         std::vector<StateType> x;
-        for (Size i=len-2; i>0; --i) {
+        for (Size i=len_-2; i>0; --i) {
             y.clear();
             x.clear();
 
             //roll back step
             for (Size j=0; j<n; ++j) {
                 exercise[j]=(*pathPricer_)(paths_[j], i);
-
                 if (exercise[j]>0.0) {
                     x.push_back(pathPricer_->state(paths_[j], i));
                     y.push_back(dF_[i]*prices[j]);
@@ -159,12 +186,12 @@ namespace QuantLib {
             }
 
             if (v_.size() <=  x.size()) {
-                coeff_[i] = GeneralLinearLeastSquares(x, y, v_).coefficients();
+                coeff_[i-1] = GeneralLinearLeastSquares(x, y, v_).coefficients();
             }
             else {
             // if number of itm paths is smaller then the number of
             // calibration functions then early exercise if exerciseValue > 0
-                coeff_[i] = Array(v_.size(), 0.0);
+                coeff_[i-1] = Array(v_.size(), 0.0);
             }
 
             for (Size j=0, k=0; j<n; ++j) {
@@ -172,14 +199,19 @@ namespace QuantLib {
                 if (exercise[j]>0.0) {
                     Real continuationValue = 0.0;
                     for (Size l=0; l<v_.size(); ++l) {
-                        continuationValue += coeff_[i][l] * v_[l](x[k]);
+                        continuationValue += coeff_[i-1][l] * v_[l](x[k]);
                     }
                     if (continuationValue < exercise[j]) {
                         prices[j] = exercise[j];
                     }
                     ++k;
                 }
+                p_state[j] = pathPricer_->state(paths_[j],i);
+                p_price[j] = prices[j];
+                p_exercise[j] = exercise[j];
             }
+
+            post_processing(i, p_state, p_price, p_exercise);
         }
 
         // remove calibration paths and release memory
@@ -188,6 +220,13 @@ namespace QuantLib {
         // entering the calculation phase
         calibrationPhase_ = false;
     }
+
+    template <class PathType> inline
+    Real LongstaffSchwartzPathPricer<PathType>::exerciseProbability() const {
+        return exerciseProbability_.mean();
+    }
+
+
 }
 
 

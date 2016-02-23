@@ -67,9 +67,8 @@ namespace QuantLib {
         };
       public:
         //! Russian calendars
-        enum Market {
-          Settlement, //!< generic settlement calendar
-          MOEX,       //!< Moscow Exchange calendar
+        enum Market { Settlement, //!< generic settlement calendar
+                      MOEX        //!< Moscow Exchange calendar
         };
         Russia(Market = Settlement);
     };

@@ -17,6 +17,7 @@ EXTRA_DIST = \
 	Authors.txt \
 	Bugs.txt \
 	ChangeLog.txt \
+	CMakeLists.txt \
 	Contributors.txt \
 	LICENSE.TXT \
 	News.txt \
@@ -30,6 +31,7 @@ EXTRA_DIST = \
 	QuantLib_vc10.sln \
 	QuantLib_vc11.sln \
 	QuantLib_vc12.sln \
+	QuantLib_vc14.sln \
 	QuantLib.vcxproj \
 	QuantLib.vcxproj.filters \
 	Readme.txt \

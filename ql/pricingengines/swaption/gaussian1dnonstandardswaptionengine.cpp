@@ -22,12 +22,14 @@
 #include <ql/utilities/disposable.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/payoff.hpp>
 
 using std::exp;
 
 namespace QuantLib {
 
-    const Real
+    Real
     Gaussian1dNonstandardSwaptionEngine::underlyingNpv(const Date &expiry,
                                                        const Real y) const {
 
@@ -86,7 +88,7 @@ namespace QuantLib {
         return type * npv;
     }
 
-    const VanillaSwap::Type
+    VanillaSwap::Type
     Gaussian1dNonstandardSwaptionEngine::underlyingType() const {
         return arguments_.swap->type();
     }

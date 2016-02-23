@@ -8,7 +8,7 @@ else
 noinst_PROGRAMS = BermudanSwaption
 endif
 BermudanSwaption_SOURCES = BermudanSwaption.cpp
-BermudanSwaption_LDADD = ../../ql/libQuantLib.la
+BermudanSwaption_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     BermudanSwaption.dev \
@@ -16,6 +16,7 @@ EXTRA_DIST = \
     BermudanSwaption_vc9.vcproj \
     BermudanSwaption.vcxproj \
     BermudanSwaption.vcxproj.filters \
+    CMakeLists.txt \
     ReadMe.txt
 
 .PHONY: examples check-examples

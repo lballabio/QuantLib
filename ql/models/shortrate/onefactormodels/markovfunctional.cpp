@@ -19,6 +19,14 @@
 
 #include <ql/models/shortrate/onefactormodels/markovfunctional.hpp>
 #include <ql/termstructures/volatility/smilesectionutils.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/math/solvers1d/brent.hpp>
+#include <ql/math/integrals/gaussianquadratures.hpp>
+#include <ql/termstructures/volatility/smilesection.hpp>
+#include <ql/termstructures/volatility/sabrinterpolatedsmilesection.hpp>
+#include <ql/termstructures/volatility/kahalesmilesection.hpp>
+#include <ql/termstructures/volatility/atmadjustedsmilesection.hpp>
+#include <ql/termstructures/volatility/atmsmilesection.hpp>
 
 namespace QuantLib {
 
@@ -433,61 +441,6 @@ namespace QuantLib {
                         i->second.smileSection_->shift(),
                     Option::Call, i->second.annuity_,
                     modelSettings_.digitalGap_);
-
-            // output smile for testing
-            // boost::shared_ptr<SmileSection> sec1 =
-            // i->second.rawSmileSection_;
-            // boost::shared_ptr<KahaleSmileSection> sec2 =
-            //     boost::dynamic_pointer_cast<KahaleSmileSection>(i->second.smileSection_);
-            // const std::vector<double> &money =
-            // modelSettings_.smileMoneynessCheckpoints_;
-            // SmileSectionUtils sutils(*sec1, money);
-            // std::cout
-            //     <<
-            // "-------------------------------------------------------------------"
-            //     << std::endl;
-            // std::cout << "Smile for expiry " << i->first << " tenor " <<
-            // i->second.tenor_
-            //           << " atm is " << i->second.atm_ << std::endl;
-            // std::cout << "Arbitrage free region " <<
-            // sutils.arbitragefreeRegion().first
-            //           << " ... " << sutils.arbitragefreeRegion().second <<
-            // std::endl;
-            // if (sec2)
-            //     std::cout << "Kahale core region    " <<
-            // sec2->leftCoreStrike()
-            //               << " ... " << sec2->rightCoreStrike() << std::endl;
-            // std::cout <<
-            // "strike;rawVol;rawVar;rawCall;Call;rawDigial;Digital;"
-            //     "rawDensity;Density;callDiff;Arb" << std::endl;
-            // Real strike = 0.00001 - sec1->shift();
-            // while (strike <= 0.20 + 1E-8) {
-            //     std::cout << strike << ";" << sec1->volatility(strike) << ";"
-            //               << sec1->variance(strike) << ";" <<
-            // sec1->optionPrice(strike)
-            //               << ";" << (sec2 ? sec2->optionPrice(strike) : 0.0)
-            // << ";"
-            //               << sec1->digitalOptionPrice(strike) << ";"
-            //               << (sec2 ? sec2->digitalOptionPrice(strike) : 0.0)
-            // << ";"
-            //               << sec1->density(strike) << ";"
-            //               << (sec2 ? sec2->density(strike) : 0.0) << ";"
-            //               << (sec2
-            //                   ? sec1->optionPrice(strike) -
-            // sec2->optionPrice(strike)
-            //                   : 0.0) << ";" << ((sec2 ? sec2->density(strike)
-            //                                      : sec1->density(strike)) <
-            // 0.0
-            //                                     ? "**********"
-            //                                     : "") << std::endl;
-            //     strike += 0.0010;
-            // }
-            // std::cout
-            //     <<
-            // "-------------------------------------------------------------------"
-            //     << std::endl;
-            // end output smile
-
             ++pointIndex;
         }
     }
@@ -827,7 +780,7 @@ namespace QuantLib {
         return result;
     }
 
-    const Real MarkovFunctional::numeraireImpl(
+    Real MarkovFunctional::numeraireImpl(
         const Time t, const Real y,
         const Handle<YieldTermStructure> &yts) const {
 
@@ -844,7 +797,7 @@ namespace QuantLib {
                                termStructure()->discount(numeraireTime())));
     }
 
-    const Real
+    Real
     MarkovFunctional::zerobondImpl(const Time T, const Time t, const Real y,
                                    const Handle<YieldTermStructure> &yts) const {
 
@@ -858,18 +811,18 @@ namespace QuantLib {
                                      termStructure()->discount(T)));
     }
 
-    const Real MarkovFunctional::deflatedZerobond(Time T, Time t,
-                                                  Real y) const {
+    Real MarkovFunctional::deflatedZerobond(Time T, Time t,
+                                            Real y) const {
 
         Array ya(1, y);
         return deflatedZerobondArray(T, t, ya)[0];
     }
 
-    const Real MarkovFunctional::marketSwapRate(const Date &expiry,
-                                                const CalibrationPoint &p,
-                                                const Real digitalPrice,
-                                                const Real guess,
-                                                const Real shift) const {
+    Real MarkovFunctional::marketSwapRate(const Date &expiry,
+                                          const CalibrationPoint &p,
+                                          const Real digitalPrice,
+                                          const Real guess,
+                                          const Real shift) const {
 
         ZeroHelper z(this, expiry, p, digitalPrice);
         Brent b;
@@ -881,10 +834,10 @@ namespace QuantLib {
         return solution;
     }
 
-    const Real MarkovFunctional::marketDigitalPrice(const Date &expiry,
-                                                    const CalibrationPoint &p,
-                                                    const Option::Type &type,
-                                                    const Real strike) const {
+    Real MarkovFunctional::marketDigitalPrice(const Date &expiry,
+                                              const CalibrationPoint &p,
+                                              const Option::Type &type,
+                                              const Real strike) const {
 
         return p.smileSection_->digitalOptionPrice(strike, type, p.annuity_,
                                                    modelSettings_.digitalGap_);
@@ -997,7 +950,7 @@ namespace QuantLib {
         return out;
     }
 
-    const Real MarkovFunctional::forwardRateInternal(
+    Real MarkovFunctional::forwardRateInternal(
         const Date &fixing, const Date &referenceDate, const Real y,
         const bool zeroFixingDays, boost::shared_ptr<IborIndex> iborIdx) const {
 
@@ -1019,11 +972,11 @@ namespace QuantLib {
                (dcf * zerobond(endDate, referenceDate, y));
     }
 
-    const Real
+    Real
     MarkovFunctional::swapRateInternal(const Date &fixing, const Period &tenor,
-                                  const Date &referenceDate, const Real y,
-                                  bool zeroFixingDays,
-                                  boost::shared_ptr<SwapIndex> swapIdx) const {
+                                       const Date &referenceDate, const Real y,
+                                       bool zeroFixingDays,
+                                       boost::shared_ptr<SwapIndex> swapIdx) const {
 
         calculate();
 
@@ -1046,7 +999,7 @@ namespace QuantLib {
         return atm;
     }
 
-    const Real MarkovFunctional::swapAnnuityInternal(
+    Real MarkovFunctional::swapAnnuityInternal(
         const Date &fixing, const Period &tenor, const Date &referenceDate,
         const Real y, const bool zeroFixingDays,
         boost::shared_ptr<SwapIndex> swapIdx) const {
@@ -1074,7 +1027,7 @@ namespace QuantLib {
         return annuity;
     }
 
-    const Real MarkovFunctional::swaptionPriceInternal(
+    Real MarkovFunctional::swaptionPriceInternal(
         const Option::Type &type, const Date &expiry, const Period &tenor,
         const Rate strike, const Date &referenceDate, const Real y,
         const bool zeroFixingDays, boost::shared_ptr<SwapIndex> swapIdx) const {
@@ -1141,7 +1094,7 @@ namespace QuantLib {
         return numeraire(referenceTime, y) * price;
     }
 
-    const Real MarkovFunctional::capletPriceInternal(
+    Real MarkovFunctional::capletPriceInternal(
         const Option::Type &type, const Date &expiry, const Rate strike,
         const Date &referenceDate, const Real y, const bool zeroFixingDays,
         boost::shared_ptr<IborIndex> iborIdx) const {

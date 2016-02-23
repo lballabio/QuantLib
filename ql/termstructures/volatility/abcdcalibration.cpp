@@ -1,10 +1,11 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2015 Ferdinando Ametrano
  Copyright (C) 2006 Cristina Duminuco
  Copyright (C) 2005, 2006 Klaus Spanderen
  Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2015 Paolo Mazzocchi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,6 +32,26 @@
 
 namespace QuantLib {
 
+    // to constrained <- from unconstrained
+    Array AbcdCalibration::AbcdParametersTransformation::direct(const Array& x) const {
+        y_[1] = x[1];
+        y_[2] = std::exp(x[2]);
+        y_[3] = std::exp(x[3]);
+        y_[0] = std::exp(x[0]) - y_[3];
+        return y_;
+    }
+
+    // to unconstrained <- from constrained
+    Array AbcdCalibration::AbcdParametersTransformation::inverse(const Array& x) const {
+        y_[1] = x[1];
+        y_[2] = std::log(x[2]);
+        y_[3] = std::log(x[3]);
+        y_[0] = std::log(x[0] + x[3]);
+        return y_;
+    }
+
+    // to constrained <- from unconstrained
+
     AbcdCalibration::AbcdCalibration(
                const std::vector<Real>& t,
                const std::vector<Real>& blackVols,
@@ -47,21 +68,31 @@ namespace QuantLib {
       vegaWeighted_(vegaWeighted),
       times_(t), blackVols_(blackVols) {
 
+        AbcdMathFunction::validate(a, b, c, d);
+
         QL_REQUIRE(blackVols.size()==t.size(),
                        "mismatch between number of times (" << t.size() <<
                        ") and blackVols (" << blackVols.size() << ")");
 
         // if no optimization method or endCriteria is provided, we provide one
-        if (!optMethod_)
+        if (!optMethod_) {
+            Real epsfcn = 1.0e-8;
+            Real xtol = 1.0e-8;
+            Real gtol = 1.0e-8;
+            bool useCostFunctionsJacobian = false;
             optMethod_ = boost::shared_ptr<OptimizationMethod>(new
-                LevenbergMarquardt(1e-8, 1e-8, 1e-8));
-            //method_ = boost::shared_ptr<OptimizationMethod>(new
-            //    Simplex(0.01));
-        if (!endCriteria_)
-            //endCriteria_ = boost::shared_ptr<EndCriteria>(new
-            //    EndCriteria(60000, 100, 1e-8, 1e-8, 1e-8));
+                LevenbergMarquardt(epsfcn, xtol, gtol, useCostFunctionsJacobian));
+        }
+        if (!endCriteria_) {
+            Size maxIterations = 10000;
+            Size maxStationaryStateIterations = 1000;
+            Real rootEpsilon = 1.0e-8;
+            Real functionEpsilon = 0.3e-4;     // Why 0.3e-4 ?
+            Real gradientNormEpsilon = 0.3e-4; // Why 0.3e-4 ?
             endCriteria_ = boost::shared_ptr<EndCriteria>(new
-                EndCriteria(1000, 100, 1.0e-8, 0.3e-4, 0.3e-4));   // Why 0.3e-4 ?
+                EndCriteria(maxIterations, maxStationaryStateIterations,
+                            rootEpsilon, functionEpsilon, gradientNormEpsilon));
+        }
     }
 
     void AbcdCalibration::compute() {
@@ -118,31 +149,14 @@ namespace QuantLib {
             Array transfResult(projectedAbcdCostFunction.include(projectedResult));
 
             Array result = transformation_->direct(transfResult);
+            AbcdMathFunction::validate(a_, b_, c_, d_);
             a_ = result[0];
             b_ = result[1];
             c_ = result[2];
             d_ = result[3];
 
-            validateAbcdParameters(a_, b_, c_, d_);
         }
     }
-
-    Real AbcdCalibration::a() const {
-        return a_;
-    }
-
-    Real AbcdCalibration::b() const {
-        return b_;
-    }
-
-    Real AbcdCalibration::c() const {
-        return c_;
-    }
-
-    Real AbcdCalibration::d() const {
-        return d_;
-    }
-
 
     Real AbcdCalibration::value(Real x) const {
         return abcdBlackVolatility(x,a_,b_,c_,d_);
@@ -165,7 +179,7 @@ namespace QuantLib {
         Real error, squaredError = 0.0;
         for (Size i=0; i<times_.size() ; i++) {
             error = (value(times_[i]) - blackVols_[i]);
-            squaredError += error * error *(weights_[i]);
+            squaredError += error * error * weights_[i];
         }
         return std::sqrt(n*squaredError/(n-1));
     }

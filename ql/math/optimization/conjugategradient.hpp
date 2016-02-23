@@ -38,6 +38,11 @@ namespace QuantLib {
         Search direction \f$ d_i = - f'(x_i) + c_i*d_{i-1} \f$
         where \f$ c_i = ||f'(x_i)||^2/||f'(x_{i-1})||^2 \f$
         and \f$ d_1 = - f'(x_1) \f$
+
+        This optimization method requires the knowledge of
+        the gradient of the cost function.
+
+        \ingroup optimizers
     */
     class ConjugateGradient: public LineSearchBasedMethod {
       public:
