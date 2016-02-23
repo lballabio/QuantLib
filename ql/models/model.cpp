@@ -35,7 +35,7 @@ namespace QuantLib {
     CalibratedModel::CalibratedModel(Size nArguments)
     : arguments_(nArguments),
       constraint_(new PrivateConstraint(arguments_)),
-      shortRateEndCriteria_(EndCriteria::None) {}
+      endCriteria_(EndCriteria::None) {}
 
     class CalibratedModel::CalibrationFunction : public CostFunction {
       public:
@@ -104,10 +104,10 @@ namespace QuantLib {
         CalibrationFunction f(this,instruments,w,proj);
         ProjectedConstraint pc(c,proj);
         Problem prob(f, pc, proj.project(prms));
-        shortRateEndCriteria_ = method.minimize(prob, endCriteria);
+        endCriteria_ = method.minimize(prob, endCriteria);
         Array result(prob.currentValue());
         setParams(proj.include(result));
-        Array shortRateProblemValues_ = prob.values(result);
+        problemValues_ = prob.values(result);
 
         notifyObservers();
     }
