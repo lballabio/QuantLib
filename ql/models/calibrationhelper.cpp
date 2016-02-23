@@ -70,11 +70,10 @@ namespace QuantLib {
               Volatility implied;
               if (modelPrice <= lowerPrice)
                   implied = minVol;
+              else if (modelPrice >= upperPrice)
+                  implied = maxVol;
               else
-                  if (modelPrice >= upperPrice)
-                      implied = maxVol;
-                  else
-                      implied = this->impliedVolatility(
+                  implied = this->impliedVolatility(
                                           modelPrice, 1e-12, 5000, minVol, maxVol);
               error = implied - volatility_->value();
             }
