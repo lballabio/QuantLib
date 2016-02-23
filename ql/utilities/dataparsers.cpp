@@ -107,20 +107,6 @@ namespace QuantLib {
         return Period(n, units);
     }
 
-    std::vector<std::string> DateParser::split(const std::string& str,
-                                               char delim) {
-        std::vector<std::string> list;
-        Size sx= str.find(delim), so=0;
-
-        while (sx != std::string::npos) {
-            list.push_back(str.substr(so,sx));
-            so += sx+1;
-            sx = str.substr(so).find(delim);
-        }
-        list.push_back(str.substr(so));
-        return list;
-    }
-
     Date DateParser::parseFormatted(const std::string& str,
                                     const std::string& fmt) {
         using namespace boost::gregorian;
