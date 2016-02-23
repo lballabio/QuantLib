@@ -25,36 +25,44 @@
 
 namespace QuantLib {
 
-    BlackSwaptionEngine::BlackSwaptionEngine(const Handle<YieldTermStructure> &discountCurve,
+    BlackSwaptionEngine::BlackSwaptionEngine(
+                        const Handle<YieldTermStructure> &discountCurve,
                         Volatility vol, const DayCounter &dc,
                         Real displacement)
-        : BlackStyleSwaptionEngine<detail::Black76Spec>(discountCurve, vol, dc,
-                                                displacement) {}
-    BlackSwaptionEngine::BlackSwaptionEngine(const Handle<YieldTermStructure> &discountCurve,
+    : detail::BlackStyleSwaptionEngine<detail::Black76Spec>(discountCurve, vol, dc,
+                                                            displacement) {}
+
+    BlackSwaptionEngine::BlackSwaptionEngine(
+                        const Handle<YieldTermStructure> &discountCurve,
                         const Handle<Quote> &vol,
                         const DayCounter &dc,
                         Real displacement)
-        : BlackStyleSwaptionEngine<detail::Black76Spec>(discountCurve, vol, dc,
-                                                displacement) {}
-    BlackSwaptionEngine::BlackSwaptionEngine(const Handle<YieldTermStructure> &discountCurve,
+    : detail::BlackStyleSwaptionEngine<detail::Black76Spec>(discountCurve, vol, dc,
+                                                            displacement) {}
+
+    BlackSwaptionEngine::BlackSwaptionEngine(
+                        const Handle<YieldTermStructure> &discountCurve,
                         const Handle<SwaptionVolatilityStructure> &vol,
                         Real displacement)
-        : BlackStyleSwaptionEngine<detail::Black76Spec>(discountCurve, vol,
-                                                displacement) {}
+    : detail::BlackStyleSwaptionEngine<detail::Black76Spec>(discountCurve, vol,
+                                                            displacement) {}
 
     BachelierBlackSwaptionEngine::BachelierBlackSwaptionEngine(
         const Handle<YieldTermStructure> &discountCurve, Volatility vol,
         const DayCounter &dc)
-        : BlackStyleSwaptionEngine<detail::BachelierSpec>(discountCurve, vol,
-                                                          dc, 0.0) {}
+    : detail::BlackStyleSwaptionEngine<detail::BachelierSpec>(discountCurve, vol,
+                                                              dc, 0.0) {}
+
     BachelierBlackSwaptionEngine::BachelierBlackSwaptionEngine(
         const Handle<YieldTermStructure> &discountCurve,
         const Handle<Quote> &vol, const DayCounter &dc)
-        : BlackStyleSwaptionEngine<detail::BachelierSpec>(discountCurve, vol,
-                                                          dc, 0.0) {}
+    : detail::BlackStyleSwaptionEngine<detail::BachelierSpec>(discountCurve, vol,
+                                                              dc, 0.0) {}
+
     BachelierBlackSwaptionEngine::BachelierBlackSwaptionEngine(
         const Handle<YieldTermStructure> &discountCurve,
         const Handle<SwaptionVolatilityStructure> &vol)
-        : BlackStyleSwaptionEngine<detail::BachelierSpec>(discountCurve, vol,
-                                                          0.0) {}
+    : detail::BlackStyleSwaptionEngine<detail::BachelierSpec>(discountCurve, vol,
+                                                              0.0) {}
+
 } // namespace QuantLib

@@ -42,6 +42,8 @@ namespace QuantLib {
 
     class Quote;
 
+    namespace detail {
+
     /*! Generic Black-style-formula swaption engine
         This is the base class for the Black and Bachelier swaption engines */
     template<class Spec>
@@ -69,8 +71,6 @@ namespace QuantLib {
       protected:
         Real displacement_;
     };
-
-    namespace detail {
 
     // shifted lognormal type engine
     struct Black76Spec {
@@ -107,9 +107,9 @@ namespace QuantLib {
         }
     };
 
-    } // anonymous namespace
+    } // namespace detail
 
-    //! Shifted Lognpormal Black-formula swaption engine
+    //! Shifted Lognormal Black-formula swaption engine
     /*! \ingroup swaptionengines
 
         \warning The engine assumes that the exercise date equals the
@@ -117,7 +117,7 @@ namespace QuantLib {
     */
 
     class BlackSwaptionEngine
-        : public BlackStyleSwaptionEngine<detail::Black76Spec> {
+        : public detail::BlackStyleSwaptionEngine<detail::Black76Spec> {
       public:
         BlackSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
                             Volatility vol,
@@ -141,7 +141,7 @@ namespace QuantLib {
     */
 
     class BachelierBlackSwaptionEngine
-        : public BlackStyleSwaptionEngine<detail::BachelierSpec> {
+        : public detail::BlackStyleSwaptionEngine<detail::BachelierSpec> {
       public:
         BachelierBlackSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
                             Volatility vol,
@@ -154,6 +154,8 @@ namespace QuantLib {
     };
 
     // implementation
+
+    namespace detail {
 
     template<class Spec>
     BlackStyleSwaptionEngine<Spec>::BlackStyleSwaptionEngine(
@@ -271,6 +273,8 @@ namespace QuantLib {
             strike, atmForward, stdDev, exerciseTime, annuity, displacement_);
     }
 
-} // namespace QuantLib
+    }  // namespace detail
+
+}
 
 #endif
