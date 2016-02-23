@@ -43,31 +43,31 @@ class GsrProcessCore {
                    const Real T = 60.0);
 
     // conditional expectation, x0 dependent part
-    const Real expectation_x0dep_part(const Time w, const Real xw,
-                                      const Time dt) const;
+    Real expectation_x0dep_part(const Time w, const Real xw,
+                                const Time dt) const;
 
     // conditional expectation, x0 independent part
     // in the risk neutral measure
-    const Real expectation_rn_part(const Time w, const Time dt) const;
+    Real expectation_rn_part(const Time w, const Time dt) const;
 
     // conditional expectation, drift adjustment for
     // the T-forward measure
-    const Real expectation_tf_part(const Time w, const Time dt) const;
+    Real expectation_tf_part(const Time w, const Time dt) const;
 
     // conditional variance
-    const Real variance(const Time w, const Time dt) const;
+    Real variance(const Time w, const Time dt) const;
 
     // y(t)
-    const Real y(const Time t) const;
+    Real y(const Time t) const;
 
     // G(t,w)
-    const Real G(const Time t, const Time w) const;
+    Real G(const Time t, const Time w) const;
 
     // sigma
-    const Real sigma(const Time t) const;
+    Real sigma(const Time t) const;
 
     // reversion
-    const Real reversion(const Time t) const;
+    Real reversion(const Time t) const;
 
     // reset cache
     void flushCache() const;
@@ -76,14 +76,14 @@ class GsrProcessCore {
     const Array &times_, &vols_, &reversions_;
 
   private:
-    const int lowerIndex(Time t) const;
-    const int upperIndex(Time t) const;
-    const Real time2(Size index) const;
-    const Real cappedTime(Size index, Real cap = Null<Real>()) const;
-    const Real flooredTime(Size index, Real floor = Null<Real>()) const;
-    const Real vol(Size index) const;
-    const Real rev(Size index) const;
-    const bool revZero(Size index) const;
+    int lowerIndex(Time t) const;
+    int upperIndex(Time t) const;
+    Real time2(Size index) const;
+    Real cappedTime(Size index, Real cap = Null<Real>()) const;
+    Real flooredTime(Size index, Real floor = Null<Real>()) const;
+    Real vol(Size index) const;
+    Real rev(Size index) const;
+    bool revZero(Size index) const;
 
     mutable std::map<std::pair<Real, Real>, Real> cache1_, cache2a_, cache2b_,
         cache3_, cache5_;
@@ -94,11 +94,11 @@ class GsrProcessCore {
 
 // inline definitions
 
-inline const Real GsrProcessCore::sigma(const Time t) const {
+inline Real GsrProcessCore::sigma(const Time t) const {
     return vol(lowerIndex(t));
 }
 
-inline const Real GsrProcessCore::reversion(const Time t) const {
+inline Real GsrProcessCore::reversion(const Time t) const {
     return rev(lowerIndex(t));
 }
 

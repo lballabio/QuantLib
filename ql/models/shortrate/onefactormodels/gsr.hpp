@@ -55,8 +55,8 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
         const std::vector<Handle<Quote> > &volatilities,
         const std::vector<Handle<Quote> > &reversions, const Real T = 60.0);
 
-    const Real numeraireTime() const;
-    const void numeraireTime(const Real T);
+    Real numeraireTime() const;
+    void numeraireTime(const Real T);
 
     const Array &reversion() const { return reversion_.params(); }
     const Array &volatility() const { return sigma_.params(); }
@@ -133,11 +133,11 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
     }
 
   protected:
-    const Real numeraireImpl(const Time t, const Real y,
-                             const Handle<YieldTermStructure> &yts) const;
+    Real numeraireImpl(const Time t, const Real y,
+                       const Handle<YieldTermStructure> &yts) const;
 
-    const Real zerobondImpl(const Time T, const Time t, const Real y,
-                            const Handle<YieldTermStructure> &yts) const;
+    Real zerobondImpl(const Time T, const Time t, const Real y,
+                      const Handle<YieldTermStructure> &yts) const;
 
     void generateArguments() {
         boost::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
@@ -184,12 +184,12 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
     boost::shared_ptr<ReversionObserver> reversionObserver_;
 };
 
-inline const Real Gsr::numeraireTime() const {
+inline Real Gsr::numeraireTime() const {
     return boost::dynamic_pointer_cast<GsrProcess>(stateProcess_)
         ->getForwardMeasureTime();
 }
 
-inline const void Gsr::numeraireTime(const Real T) {
+inline void Gsr::numeraireTime(const Real T) {
     boost::dynamic_pointer_cast<GsrProcess>(stateProcess_)
         ->setForwardMeasureTime(T);
 }

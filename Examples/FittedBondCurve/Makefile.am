@@ -11,6 +11,7 @@ FittedBondCurve_SOURCES = FittedBondCurve.cpp
 FittedBondCurve_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
+    CMakeLists.txt \
     FittedBondCurve.dev \
     FittedBondCurve_vc8.vcproj \
     FittedBondCurve_vc9.vcproj \
