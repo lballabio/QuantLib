@@ -101,13 +101,12 @@ namespace QuantLib {
                 atmVol + volSpreadsInterpolator_[i](length, optionTime)));
         }
         Real shift = atmVol_->shift(optionTime,length);
-        return boost::shared_ptr<SmileSection>(new
-            InterpolatedSmileSection<Linear>(optionTime,
-                                             strikes,
-                                             stdDevs,
-                                             atmForward,
-                                             Linear(),
-                                             Actual365Fixed(),
-                                             shift));
+        return boost::shared_ptr< SmileSection >(
+            new InterpolatedSmileSection< Linear >(
+                optionTime, strikes, stdDevs, atmForward, Linear(),
+                Actual365Fixed(),
+                // to be replaced with volatilityType()
+                // when merging PR 264
+                ShiftedLognormal, shift)) ;
     }
 }

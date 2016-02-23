@@ -4,7 +4,7 @@
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
  Copyright (C) 2003, 2004 Ferdinando Ametrano
-
+ Copyright (C) 2015 Michael von den Driesch
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -46,6 +46,9 @@ namespace QuantLib {
         Matrix(Size rows, Size columns);
         //! creates the matrix and fills it with <tt>value</tt>
         Matrix(Size rows, Size columns, Real value);
+        //! creates the matrix and fills it with <tt>values</tt>.
+        //! values are used in a <tt>row by row</tt> fashion.
+        Matrix(Size rows, Size columns, const std::vector< Real > &values);
         Matrix(const Matrix&);
         Matrix(const Disposable<Matrix>&);
         Matrix& operator=(const Matrix&);
@@ -192,6 +195,13 @@ namespace QuantLib {
     : data_(rows*columns > 0 ? new Real[rows*columns] : (Real*)(0)),
       rows_(rows), columns_(columns) {
         std::fill(begin(),end(),value);
+    }
+
+    inline Matrix::Matrix(Size rows, Size columns,
+                          const std::vector< Real > &values)
+        : data_(rows * columns > 0 ? new Real[rows * columns] : (Real *)(0)),
+          rows_(rows), columns_(columns) {
+        std::copy(values.begin(), values.end(), begin());
     }
 
     inline Matrix::Matrix(const Matrix& from)

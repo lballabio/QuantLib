@@ -5,6 +5,8 @@
  Copyright (C) 2007 François du Vignaud
  Copyright (C) 2007 Katiuscia Manzoni
  Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2015 Peter Caspers
+ Copyright (C) 2015 Michael von den Driesch
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -42,17 +44,18 @@ namespace QuantLib {
     */
     class OptionletStripper1 : public OptionletStripper {
       public:
-        OptionletStripper1(const boost::shared_ptr<CapFloorTermVolSurface> &,
-                           const boost::shared_ptr<IborIndex> &index,
-                           Rate switchStrikes = Null<Rate>(),
+        OptionletStripper1(const boost::shared_ptr< CapFloorTermVolSurface > &,
+                           const boost::shared_ptr< IborIndex > &index,
+                           Rate switchStrikes = Null< Rate >(),
                            Real accuracy = 1.0e-6, Natural maxIter = 100,
-                           const Handle<YieldTermStructure> &discount =
-                               Handle<YieldTermStructure>(),
-                           VolatilityType type = ShiftedLognormal,
-                           Real displacement = 0.0,
+                           const Handle< YieldTermStructure > &discount =
+                               Handle< YieldTermStructure >(),
+                           const VolatilityType type = ShiftedLognormal,
+                           const Real displacement = 0.0,
                            bool dontThrow = false);
 
         const Matrix& capFloorPrices() const;
+        const Matrix &capletVols() const;
         const Matrix& capFloorVolatilities() const;
         const Matrix& optionletPrices() const;
         Rate switchStrike() const;
@@ -64,7 +67,7 @@ namespace QuantLib {
       private:
         mutable Matrix capFloorPrices_, optionletPrices_;
         mutable Matrix capFloorVols_;
-        mutable Matrix optionletStDevs_;
+        mutable Matrix optionletStDevs_, capletVols_;
 
         mutable CapFloorMatrix capFloors_;
         mutable std::vector<std::vector<boost::shared_ptr<SimpleQuote> > > volQuotes_;
