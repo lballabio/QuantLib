@@ -70,15 +70,15 @@ namespace QuantLib {
                                       (Date(6, November, 2011))
                                       (Date(26, October, 2012))
                                       (Date(15, October, 2013))
-                                      (Date(5, October, 2014))
-                                      (Date(23, September, 2015))
+                                      (Date(4, October, 2014))
+                                      (Date(24, September, 2015))
                                       (Date(11, September, 2016))
                                       (Date(1, September, 2017))
-                                      (Date(21, August, 2018))
-                                      (Date(11, August, 2019))
+                                      (Date(23, August, 2018))
+                                      (Date(12, August, 2019))
                                       (Date(31, July, 2020))
                                       (Date(20, July, 2021))
-                                      (Date(18, July, 2022));
+                                      (Date(10, July, 2022));
 
             for (std::vector<Date>::iterator p = EidAlAdha.begin();
                                              p != EidAlAdha.end(); ++p) {
@@ -89,19 +89,18 @@ namespace QuantLib {
             return false;
         }
 
-        bool isEidUlFitr(Date d) {
+        bool isEidAlFitr(Date d) {
             // Eid al Fitr dates taken from:
             // https://en.wikipedia.org/wiki/Eid_al-Fitr#In_the_Gregorian_calendar
-            static std::vector<Date> EidUlFitr =
-                boost::assign::list_of(Date(7, April, 1998))
-                                      (Date(16, Dec, 2001))
+            static std::vector<Date> EidAlFitr =
+                boost::assign::list_of(Date(16, Dec, 2001))
                                       (Date(5, Dec, 2002))
                                       (Date(25, Nov, 2003))
-                                      (Date(14, Nov, 2004))
+                                      (Date(13, Nov, 2004))
                                       (Date(3, Nov, 2005))
                                       (Date(23, Oct, 2006))
-                                      (Date(13, Oct, 2007))
-                                      (Date(1, Oct, 2008))
+                                      (Date(12, Oct, 2007))
+                                      (Date(30, Sep, 2008))
                                       (Date(20, Sep, 2009))
                                       (Date(10, Sep, 2010))
                                       (Date(30, Aug, 2011))
@@ -124,8 +123,8 @@ namespace QuantLib {
                                       (Date(26, Feb, 2028))
                                       (Date(14, Feb, 2029));
 
-            for (std::vector<Date>::iterator p = EidUlFitr.begin();
-                                             p != EidUlFitr.end(); ++p) {
+            for (std::vector<Date>::iterator p = EidAlFitr.begin();
+                                             p != EidAlFitr.end(); ++p) {
                 if (d >= *p -1 && d <= *p + 4) {
                     return true;
                 }
@@ -159,7 +158,7 @@ namespace QuantLib {
 
         if (isTrueWeekend(date)
             || isEidAlAdha(date)
-            || isEidUlFitr(date)
+            || isEidAlFitr(date)
             // National Day
             || (d == 23 && m == September)
             // other one-shot holidays
