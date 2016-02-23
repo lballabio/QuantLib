@@ -46,7 +46,7 @@ namespace QuantLib {
         exerciseDate_(Null<Date>()), endDate_(Null<Date>()),
         maturity_(maturity), length_(length), fixedLegTenor_(fixedLegTenor), index_(index),
         fixedLegDayCounter_(fixedLegDayCounter), floatingLegDayCounter_(floatingLegDayCounter),
-        strike_(strike), nominal_(nominal), shift_(shift), volatilityType_(type)
+        strike_(strike), nominal_(nominal)
     {
 
         registerWith(index_);
@@ -69,7 +69,7 @@ namespace QuantLib {
         exerciseDate_(exerciseDate), endDate_(Null<Date>()),
         maturity_(0*Days), length_(length), fixedLegTenor_(fixedLegTenor), index_(index),
         fixedLegDayCounter_(fixedLegDayCounter), floatingLegDayCounter_(floatingLegDayCounter),
-        strike_(strike), nominal_(nominal), shift_(shift), volatilityType_(type)
+        strike_(strike), nominal_(nominal)
     {
 
         registerWith(index_);
@@ -92,7 +92,7 @@ namespace QuantLib {
         exerciseDate_(exerciseDate), endDate_(endDate),
         maturity_(0*Days), length_(0*Days), fixedLegTenor_(fixedLegTenor), index_(index),
         fixedLegDayCounter_(fixedLegDayCounter), floatingLegDayCounter_(floatingLegDayCounter),
-        strike_(strike), nominal_(nominal), shift_(shift), volatilityType_(type)
+        strike_(strike), nominal_(nominal)
     {
 
         registerWith(index_);
