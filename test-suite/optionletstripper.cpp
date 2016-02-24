@@ -373,7 +373,9 @@ struct CommonVars {
                        0.62, 0.63, 0.63, 0.63, 0.65, 0.66, 0.66,0.68, 0.72, 0.74, 0.80, 0.93, 1.25, 
                        0.62, 0.62, 0.62, 0.62,0.66, 0.67, 0.67, 0.67, 0.72, 0.72, 0.78, 0.90, 1.25;
 
-            termV = Matrix(optionTenors.size(), strikes.size(), rawVols) / 100;
+            termV = Matrix(optionTenors.size(), strikes.size());
+            std::copy(rawVols.begin(), rawVols.end(), termV.begin());
+            termV /= 100;
 
             capFloorVolRealSurface =
                 boost::shared_ptr< CapFloorTermVolSurface >(
