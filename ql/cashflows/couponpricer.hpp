@@ -106,11 +106,9 @@ namespace QuantLib {
                            timingAdjustment_ == BivariateLognormal,
                        "unknown timing adjustment (code " << timingAdjustment_
                                                           << ")");
-            if (!correlation_.empty())
-                registerWith(correlation_);
+            registerWith(correlation_);
         };
         virtual void initialize(const FloatingRateCoupon& coupon);
-        /* */
         Real swapletPrice() const;
         Rate swapletRate() const;
         Real capletPrice(Rate effectiveCap) const;
