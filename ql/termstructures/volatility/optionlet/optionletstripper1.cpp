@@ -6,6 +6,7 @@
  Copyright (C) 2007 Katiuscia Manzoni
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2015 Michael von den Driesch
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -34,26 +35,21 @@ using boost::shared_ptr;
 
 namespace QuantLib {
 
-    OptionletStripper1::OptionletStripper1(
-            const shared_ptr<CapFloorTermVolSurface>& termVolSurface,
-            const shared_ptr<IborIndex>& index,
-            Rate switchStrike,
-            Real accuracy,
-            Natural maxIter,
-            const Handle<YieldTermStructure>& discount,
-            VolatilityType type,
-            Real displacement,
-            bool dontThrow)
+OptionletStripper1::OptionletStripper1(
+    const shared_ptr< CapFloorTermVolSurface > &termVolSurface,
+    const shared_ptr< IborIndex > &index, Rate switchStrike, Real accuracy,
+    Natural maxIter, const Handle< YieldTermStructure > &discount,
+    const VolatilityType type, const Real displacement, bool dontThrow)
     : OptionletStripper(termVolSurface, index, discount, type, displacement),
       volQuotes_(nOptionletTenors_,
-                 std::vector<shared_ptr<SimpleQuote> >(nStrikes_)),
-      floatingSwitchStrike_(switchStrike==Null<Rate>() ? true : false),
-      capFlooMatrixNotInitialized_(true),
-      switchStrike_(switchStrike),
+                 std::vector< shared_ptr< SimpleQuote > >(nStrikes_)),
+      floatingSwitchStrike_(switchStrike == Null< Rate >() ? true : false),
+      capFlooMatrixNotInitialized_(true), switchStrike_(switchStrike),
       accuracy_(accuracy), maxIter_(maxIter), dontThrow_(dontThrow) {
 
         capFloorPrices_ = Matrix(nOptionletTenors_, nStrikes_);
         optionletPrices_ = Matrix(nOptionletTenors_, nStrikes_);
+        capletVols_ = Matrix(nOptionletTenors_, nStrikes_);
         capFloorVols_ = Matrix(nOptionletTenors_, nStrikes_);
         Real firstGuess = 0.14; // guess is only used for shifted lognormal vols
         optionletStDevs_ = Matrix(nOptionletTenors_, nStrikes_, firstGuess);
@@ -193,6 +189,11 @@ namespace QuantLib {
             }
         }
 
+    }
+
+    const Matrix &OptionletStripper1::capletVols() const {
+        calculate();
+        return capletVols_;
     }
 
     const Matrix& OptionletStripper1::capFloorPrices() const {
