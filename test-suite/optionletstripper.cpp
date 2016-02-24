@@ -35,7 +35,6 @@
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <boost/assign/std/vector.hpp>
-#include <iostream>
 #include <algorithm>
 #include <iterator>
 
@@ -620,7 +619,6 @@ void OptionletStripperTest::testTermVolatilityStrippingShiftedLogNormalVol() {
     QL_REQUIRE(strippedVolEngine != NULL, "Could not create strippedVolEngine");
 
     boost::shared_ptr< CapFloor > cap;
-    std::cout << "\ntenor, strike, vol, npv, npv_const";
     for (Size strikeIndex = 0; strikeIndex < vars.strikes.size();
          ++strikeIndex) {
         for (Size tenorIndex = 0; tenorIndex < vars.optionTenors.size();
@@ -638,13 +636,6 @@ void OptionletStripperTest::testTermVolatilityStrippingShiftedLogNormalVol() {
 
             cap->setPricingEngine(blackCapFloorEngineConstantVolatility);
             Real priceFromConstantVolatility = cap->NPV();
-
-            std::cout<<"\n"<<
-                vars.optionTenors[tenorIndex]<<", "<<
-                vars.strikes[strikeIndex]<<", "<<
-                io::rate(vars.termV[tenorIndex][strikeIndex])<<", "<<
-                io::rate(priceFromStrippedVolatility)<<", "<<
-                io::rate(priceFromConstantVolatility);
 
             Real error = std::fabs(priceFromStrippedVolatility -
                                    priceFromConstantVolatility);
