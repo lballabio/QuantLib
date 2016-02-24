@@ -21,7 +21,13 @@
 #include <ql/types.hpp>
 #include <ql/settings.hpp>
 #include <ql/version.hpp>
+
+#ifdef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
+#include "paralleltestrunner.hpp"
+#else
 #include <boost/test/unit_test.hpp>
+#endif
+
 #include <boost/timer.hpp>
 
 /* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
@@ -29,9 +35,12 @@
 */
 #ifdef BOOST_MSVC
 #  include <ql/auto_link.hpp>
+
+#ifndef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
 #  define BOOST_LIB_NAME boost_unit_test_framework
 #  include <boost/config/auto_link.hpp>
 #  undef BOOST_LIB_NAME
+#endif
 
 #ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
 #  define BOOST_LIB_NAME boost_system

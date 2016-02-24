@@ -3513,6 +3513,9 @@
     <ClInclude Include="ql\experimental\math\gaussiancopulapolicy.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\math\laplaceinterpolation.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\math\latentmodel.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>

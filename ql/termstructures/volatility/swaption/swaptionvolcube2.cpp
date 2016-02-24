@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Katiuscia Manzoni
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -101,12 +102,14 @@ namespace QuantLib {
                 atmVol + volSpreadsInterpolator_[i](length, optionTime)));
         }
         Real shift = atmVol_->shift(optionTime,length);
-        return boost::shared_ptr< SmileSection >(
-            new InterpolatedSmileSection< Linear >(
-                optionTime, strikes, stdDevs, atmForward, Linear(),
-                Actual365Fixed(),
-                // to be replaced with volatilityType()
-                // when merging PR 264
-                ShiftedLognormal, shift)) ;
+        return boost::shared_ptr<SmileSection>(new
+            InterpolatedSmileSection<Linear>(optionTime,
+                                             strikes,
+                                             stdDevs,
+                                             atmForward,
+                                             Linear(),
+                                             Actual365Fixed(),
+                                             volatilityType(),
+                                             shift));
     }
 }

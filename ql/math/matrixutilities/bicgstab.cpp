@@ -27,34 +27,34 @@
 
 namespace QuantLib {
 
-    BiCGstab::BiCGstab(const BiCGstab::MatrixMult& A, 
+    BiCGstab::BiCGstab(const BiCGstab::MatrixMult& A,
                        Size maxIter, Real relTol,
-                       const BiCGstab::MatrixMult& preConditioner) 
-    : A_(A), M_(preConditioner), 
+                       const BiCGstab::MatrixMult& preConditioner)
+    : A_(A), M_(preConditioner),
       maxIter_(maxIter), relTol_(relTol) {
     }
-        
+
     BiCGStabResult BiCGstab::solve(const Array& b, const Array& x0) const {
         Real bnorm2 = norm2(b);
-        if (bnorm2 == 0.0) { 
+        if (bnorm2 == 0.0) {
             BiCGStabResult result = { 0, 0.0, b};
             return result;
         }
-        
+
         Array x = ((!x0.empty()) ? x0 : Array(b.size(), 0.0));
         Array r = b - A_(x);
-        
+
         Array rTld = r;
         Array p, pTld, v, s, sTld, t;
         Real omega = 1.0;
         Real rho, rhoTld=1.0;
         Real alpha=0.0, beta;
-        Real error=Null<Real>();
+        Real error=norm2(r)/bnorm2;
 
         Size i;
         for (i=0; i < maxIter_ && error >= relTol_; ++i) {
            rho = DotProduct(rTld, r);
-           if  (rho == 0.0 || omega == 0.0) 
+           if  (rho == 0.0 || omega == 0.0)
                break;
 
            if (i) {
@@ -64,9 +64,9 @@ namespace QuantLib {
            else {
               p = r;
            }
-       
+
            pTld = ((M_)? M_(p) : p);
-           v     = A_(pTld); 
+           v     = A_(pTld);
 
            alpha = rho/DotProduct(rTld, v);
            s     = r-alpha*v;
@@ -75,7 +75,7 @@ namespace QuantLib {
               error = norm2(s)/bnorm2;
               break;
            }
-           
+
            sTld = ((M_) ? M_(s) : s);
            t = A_(sTld);
            omega = DotProduct(t,s)/DotProduct(t,t);
@@ -87,11 +87,11 @@ namespace QuantLib {
 
         QL_REQUIRE(i < maxIter_, "max number of iterations exceeded");
         QL_REQUIRE(error < relTol_, "could not converge");
-                       
+
         BiCGStabResult result = { i, error, x};
         return result;
     }
-        
+
     Real BiCGstab::norm2(const Array& a) const {
         return std::sqrt(DotProduct(a, a));
     }
