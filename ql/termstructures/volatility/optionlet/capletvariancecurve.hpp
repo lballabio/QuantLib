@@ -46,8 +46,8 @@ namespace QuantLib {
         //@}
         Real minStrike() const;
         Real maxStrike() const;
-        const VolatilityType volatilityType() const;
-        const Real displacement() const;
+        VolatilityType volatilityType() const;
+        Real displacement() const;
 
       protected:
         boost::shared_ptr<SmileSection> smileSectionImpl(Time t) const;
@@ -98,11 +98,11 @@ namespace QuantLib {
         return blackCurve_.blackVol(t, r, true);
     }
 
-    inline const VolatilityType CapletVarianceCurve::volatilityType() const {
+    inline VolatilityType CapletVarianceCurve::volatilityType() const {
         return type_;
     }
 
-    inline const Real CapletVarianceCurve::displacement() const {
+    inline Real CapletVarianceCurve::displacement() const {
         return displacement_;
     }
 }

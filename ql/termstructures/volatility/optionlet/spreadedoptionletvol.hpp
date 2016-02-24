@@ -55,8 +55,8 @@ namespace QuantLib {
         Calendar calendar() const;
         Natural settlementDays() const;
         //@}
-        const VolatilityType volatilityType() const;
-        const Real displacement() const;
+        VolatilityType volatilityType() const;
+        Real displacement() const;
 
       protected:
         // All virtual methods of base classes must be forwarded
@@ -109,12 +109,12 @@ namespace QuantLib {
         return baseVol_->maxStrike();
     }
 
-    inline const VolatilityType
+    inline VolatilityType
     SpreadedOptionletVolatility::volatilityType() const {
         return baseVol_->volatilityType();
     }
 
-    inline const Real SpreadedOptionletVolatility::displacement() const {
+    inline Real SpreadedOptionletVolatility::displacement() const {
         return baseVol_->displacement();
     }
 }

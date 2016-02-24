@@ -62,8 +62,8 @@ namespace QuantLib {
         const std::vector<Time>& optionletAccrualPeriods() const;
         boost::shared_ptr<CapFloorTermVolSurface> termVolSurface() const;
         boost::shared_ptr<IborIndex> iborIndex() const;
-        const Real displacement() const;
-        const VolatilityType volatilityType() const;
+        Real displacement() const;
+        VolatilityType volatilityType() const;
 
       protected:
         OptionletStripper(const boost::shared_ptr< CapFloorTermVolSurface > &,

@@ -103,8 +103,8 @@ namespace QuantLib {
         boost::shared_ptr<SmileSection> smileSection(Time optionTime,
                                                      bool extr = false) const;
         //@}
-        virtual const VolatilityType volatilityType() const;
-        virtual const Real displacement() const;
+        virtual VolatilityType volatilityType() const;
+        virtual Real displacement() const;
 
       protected:
         virtual boost::shared_ptr<SmileSection> smileSectionImpl(
@@ -210,12 +210,12 @@ namespace QuantLib {
         return volatilityImpl(timeFromReference(optionDate), strike);
     }
 
-    inline const VolatilityType
+    inline VolatilityType
     OptionletVolatilityStructure::volatilityType() const {
         return ShiftedLognormal;
     }
 
-    inline const Real OptionletVolatilityStructure::displacement() const {
+    inline Real OptionletVolatilityStructure::displacement() const {
         return 0.0;
     }
 }

@@ -72,8 +72,8 @@ namespace QuantLib {
         Real minStrike() const;
         Real maxStrike() const;
         //@}
-        const VolatilityType volatilityType() const;
-        const Real displacement() const;
+        VolatilityType volatilityType() const;
+        Real displacement() const;
 
       protected:
         boost::shared_ptr<SmileSection> smileSectionImpl(const Date& d) const;
@@ -101,12 +101,12 @@ namespace QuantLib {
         return QL_MAX_REAL;
     }
 
-    inline const VolatilityType
+    inline VolatilityType
     ConstantOptionletVolatility::volatilityType() const {
         return type_;
     }
 
-    inline const Real ConstantOptionletVolatility::displacement() const {
+    inline Real ConstantOptionletVolatility::displacement() const {
         return displacement_;
     }
 }

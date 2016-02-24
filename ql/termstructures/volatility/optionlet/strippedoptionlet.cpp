@@ -148,9 +148,12 @@ StrippedOptionlet::StrippedOptionlet(
         return businessDayConvention_;
     }
 
-    const VolatilityType StrippedOptionlet::volatilityType() const {
+    VolatilityType StrippedOptionlet::volatilityType() const {
         return type_;
     }
 
-    const Real StrippedOptionlet::displacement() const { return displacement_; }
+    Real StrippedOptionlet::displacement() const {
+        return displacement_;
+    }
+
 }

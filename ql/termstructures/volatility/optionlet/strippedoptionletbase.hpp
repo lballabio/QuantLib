@@ -57,9 +57,10 @@ namespace QuantLib {
         virtual Calendar calendar() const = 0;
         virtual Natural settlementDays() const = 0;
         virtual BusinessDayConvention businessDayConvention() const = 0;
-        virtual const VolatilityType volatilityType() const = 0;
-        virtual const Real displacement() const = 0;
+        virtual VolatilityType volatilityType() const = 0;
+        virtual Real displacement() const = 0;
     };
+
 }
 
 #endif

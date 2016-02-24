@@ -137,11 +137,11 @@ namespace QuantLib {
         return optionletStripper_->optionletFixingDates().back();
     }
 
-    const VolatilityType StrippedOptionletAdapter::volatilityType() const {
+    VolatilityType StrippedOptionletAdapter::volatilityType() const {
         return optionletStripper_->volatilityType();
     }
 
-    const Real StrippedOptionletAdapter::displacement() const {
+    Real StrippedOptionletAdapter::displacement() const {
         return optionletStripper_->displacement();
     }
 }

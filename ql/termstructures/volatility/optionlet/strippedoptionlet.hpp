@@ -63,8 +63,8 @@ namespace QuantLib {
         Natural settlementDays() const;
         BusinessDayConvention businessDayConvention() const;
         //@}
-        const VolatilityType volatilityType() const;
-        const Real displacement() const;
+        VolatilityType volatilityType() const;
+        Real displacement() const;
 
       private:
         void checkInputs() const;

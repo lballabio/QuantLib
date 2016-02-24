@@ -152,9 +152,11 @@ OptionletStripper::OptionletStripper(
         return iborIndex_;
     }
 
-    const Real OptionletStripper::displacement() const { return displacement_; }
+    Real OptionletStripper::displacement() const {
+        return displacement_;
+    }
 
-    const VolatilityType OptionletStripper::volatilityType() const {
+    VolatilityType OptionletStripper::volatilityType() const {
         return volatilityType_;
     }
 

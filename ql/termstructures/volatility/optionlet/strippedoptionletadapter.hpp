@@ -58,8 +58,8 @@ namespace QuantLib {
         void performCalculations() const;
         boost::shared_ptr< OptionletStripper > optionletStripper() const;
         //@}
-        const VolatilityType volatilityType() const;
-        const Real displacement() const;
+        VolatilityType volatilityType() const;
+        Real displacement() const;
 
       protected:
         //! \name OptionletVolatilityStructure interface
