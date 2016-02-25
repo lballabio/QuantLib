@@ -15,6 +15,8 @@ this_include_HEADERS = \
     multidimintegrator.hpp \
     multidimquadrature.hpp \
     numericaldifferentiation.hpp \
+    piecewisefunction.hpp \
+    piecewiseintegral.hpp \
     polarstudenttrng.hpp \
     tcopulapolicy.hpp \
     zigguratrng.hpp
@@ -26,6 +28,7 @@ libMath_la_SOURCES = \
     multidimintegrator.cpp \
     multidimquadrature.cpp \
     numericaldifferentiation.cpp \
+    piecewiseintegral.cpp \
     tcopulapolicy.cpp \
     zigguratrng.cpp
 
