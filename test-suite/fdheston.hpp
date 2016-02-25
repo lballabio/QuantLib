@@ -34,6 +34,7 @@ public:
     static void testFdmHestonEuropeanWithDividends();
     static void testFdmHestonConvergence();
     static void testFdmHestonBlackScholes();
+    static void testFdmHestonIntradayPricing();
     static void testBlackScholesFokkerPlanckFwdEquation();
     static void testSquareRootZeroFlowBC();
     static void testTransformedZeroFlowBC();

@@ -4,6 +4,7 @@
  Copyright (C) 2003 RiskMap srl
  Copyright (C) 2006 Piter Dias
  Copyright (C) 2012 Simon Shakeshaft
+ Copyright (c) 2015 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,13 +22,16 @@
 
 #include "daycounters.hpp"
 #include "utilities.hpp"
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/one.hpp>
 #include <ql/time/daycounters/simpledaycounter.hpp>
 #include <ql/time/daycounters/business252.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/calendars/brazil.hpp>
 #include <ql/time/period.hpp>
+
 #include <iomanip>
 
 using namespace QuantLib;
@@ -422,6 +426,38 @@ void DayCounterTest::testThirty360_EurobondBasis() {
     }
 }
 
+void DayCounterTest::testIntraday() {
+#ifdef QL_HIGH_RESOLUTION_DATE
+
+    BOOST_TEST_MESSAGE("Testing intraday behavior of day counter ...");
+
+    const Date d1(12, February, 2015);
+    const Date d2(14, February, 2015, 12, 34, 17, 1, 230298);
+
+    const Time tol = 100*QL_EPSILON;
+
+    const DayCounter dayCounters[]
+        = { ActualActual(), Actual365Fixed(), Actual360() };
+
+    for (Size i=0; i < LENGTH(dayCounters); ++i) {
+        const DayCounter dc = dayCounters[i];
+
+        const Time expected = ((12*60 + 34)*60 + 17 + 0.231298)
+                             * dc.yearFraction(d1, d1+1)/86400
+                             + dc.yearFraction(d1, d1+2);
+
+        BOOST_CHECK_MESSAGE(
+            std::fabs(dc.yearFraction(d1, d2) - expected) < tol,
+            "can not reproduce result for day counter " << dc.name());
+
+        BOOST_CHECK_MESSAGE(
+            std::fabs(dc.yearFraction(d2, d1) + expected) < tol,
+            "can not reproduce result for day counter " << dc.name());
+    }
+#endif
+}
+
+
 test_suite* DayCounterTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Day counter tests");
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActual));
@@ -430,6 +466,8 @@ test_suite* DayCounterTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testBusiness252));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testThirty360_BondBasis));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testThirty360_EurobondBasis));
+    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testIntraday));
+
     return suite;
 }
 

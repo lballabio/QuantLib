@@ -352,7 +352,10 @@ void StatisticsTest::testIncrementalStatistics() {
         stat.add(x, w);
     }
 
-    TEST_INC_STAT(stat.samples(), 500000);
+    if (stat.samples() != 500000)
+        BOOST_ERROR("stat.samples()  (" << stat.samples()
+                    << ") can not be reproduced against cached result ("
+                    << 500000 << ")");
     TEST_INC_STAT(stat.weightSum(), 2.5003623600676749e+05);
     TEST_INC_STAT(stat.mean(), 4.9122325964293845e-01);
     TEST_INC_STAT(stat.variance(),  5.0706503959683329e+05);

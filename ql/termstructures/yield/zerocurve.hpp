@@ -2,7 +2,8 @@
 
 /*
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 StatPro Italia srl
- Copyright (C) 2009 Ferdinando Ametrano
+ Copyright (C) 2009, 2015 Ferdinando Ametrano
+ Copyright (C) 2015 Paolo Mazzocchi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -117,6 +118,8 @@ namespace QuantLib {
 
     template <class T>
     inline Date InterpolatedZeroCurve<T>::maxDate() const {
+        if (this->maxDate_ != Date())
+           return this->maxDate_;
         return dates_.back();
     }
 

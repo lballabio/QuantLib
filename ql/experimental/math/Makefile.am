@@ -10,6 +10,7 @@ this_include_HEADERS = \
     farliegumbelmorgensterncopularng.hpp \
     frankcopularng.hpp \
     gaussiancopulapolicy.hpp \
+    laplaceinterpolation.hpp \
     latentmodel.hpp \
     multidimintegrator.hpp \
     multidimquadrature.hpp \

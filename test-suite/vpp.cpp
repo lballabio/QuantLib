@@ -705,7 +705,8 @@ void VPPTest::testVPPPricing() {
     }
     npv.reset();
 
-    // Test: Longstaff Schwartz least square Monte-Carlo
+    // Test: Longstaff Schwartz least squares Monte-Carlo
+    // implementation is not strictly correct but saves some coding
     const Size nCalibrationTrails = 1000u;
     std::vector<sample_type> calibrationPaths;
     std::vector<boost::shared_ptr<FdmVPPStepCondition> > stepConditions;
@@ -909,6 +910,7 @@ void VPPTest::testKlugeExtOUMatrixDecomposition() {
         new FdmKlugeExtOUOp(mesher, klugeOUProcess,
                             flatRate(today, 0.0, ActualActual()),
                             FdmBoundaryConditionSet(), 16));
+    op->setTime(0.1, 0.2);
 
     Array x(mesher->layout()->size());
 

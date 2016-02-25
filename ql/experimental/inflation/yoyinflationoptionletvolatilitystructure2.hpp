@@ -28,6 +28,7 @@
 #include <ql/math/interpolation.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/termstructures/inflationtermstructure.hpp>
+#include <ql/termstructures/interpolatedcurve.hpp>
 #include <ql/termstructures/volatility/inflation/yoyinflationoptionletvolatilitystructure.hpp>
 
 namespace QuantLib {
@@ -36,7 +37,8 @@ namespace QuantLib {
     /*! Interpolated in T direction and constant in K direction. */
     template <class Interpolator1D>
     class InterpolatedYoYOptionletVolatilityCurve
-    : public YoYOptionletVolatilitySurface {
+        : public YoYOptionletVolatilitySurface,
+          protected InterpolatedCurve<Interpolator1D> {
     public:
         //! \name Constructor
         //@{
@@ -45,8 +47,7 @@ namespace QuantLib {
             on the dates <b>but</b> they are relative to a start date
             earlier than the reference date as always for inflation.
         */
-        InterpolatedYoYOptionletVolatilityCurve(
-                                                Natural settlementDays,
+        InterpolatedYoYOptionletVolatilityCurve(Natural settlementDays,
                                                 const Calendar&,
                                                 BusinessDayConvention bdc,
                                                 const DayCounter& dc,
@@ -57,7 +58,8 @@ namespace QuantLib {
                                                 const std::vector<Volatility> &v,
                                                 Rate minStrike,
                                                 Rate maxStrike,
-                                                const Interpolator1D &interpolator = Interpolator1D());
+                                                const Interpolator1D &i =
+                                                            Interpolator1D());
         //@}
 
         virtual ~InterpolatedYoYOptionletVolatilityCurve() {}
@@ -70,16 +72,15 @@ namespace QuantLib {
         virtual Real maxStrike() const {return maxStrike_;}
         virtual Date maxDate() const {
             //FIXME approx
-            return optionDateFromTenor(
-                                       Period((int)ceil(interpolation_.xMax()),Years));
+            return optionDateFromTenor(Period((int)ceil(this->interpolation_.xMax()),Years));
         }
         //@}
 
         //! \name Bootstrap interface
         //@{
-        virtual const std::vector<Time>& times() const {return times_;}
+        virtual const std::vector<Time>& times() const {return this->times_;}
         virtual const std::vector<Date>& dates() const {return dates_;}
-        virtual const std::vector<Real>& data() const {return data_;}
+        virtual const std::vector<Real>& data() const {return this->data_;}
         virtual std::vector<std::pair<Date, Real> > nodes() const {return nodes_;}
         //@}
 
@@ -87,8 +88,7 @@ namespace QuantLib {
         // we need a second constructor for when we have no data
         // this is protected as we only expect to use it in the
         // piecewise versions
-        InterpolatedYoYOptionletVolatilityCurve(
-                                                Natural settlementDays,
+        InterpolatedYoYOptionletVolatilityCurve(Natural settlementDays,
                                                 const Calendar&,
                                                 BusinessDayConvention bdc,
                                                 const DayCounter& dc,
@@ -98,22 +98,17 @@ namespace QuantLib {
                                                 Rate minStrike,
                                                 Rate maxStrike,
                                                 Volatility baseYoYVolatility,
-                                                const Interpolator1D &interpolator = Interpolator1D());
+                                                const Interpolator1D &i =
+                                                            Interpolator1D());
 
         // we do specify data representation here
         // because the bootstrapper needs this specifically
         mutable std::vector<Date> dates_;
-        mutable std::vector<Time> times_;
-        mutable std::vector<Real> data_;
         std::vector<std::pair<Date, Real> > nodes_;
         //@}
 
         //! implements the actual volatility calculation in derived classes
         virtual Volatility volatilityImpl(Time length, Rate strike) const;
-
-        // must have this name to work with bootstrap
-        Interpolator1D interpolator_;
-        mutable Interpolation interpolation_;
 
         Rate minStrike_, maxStrike_;
     };
@@ -133,12 +128,11 @@ namespace QuantLib {
                                             const std::vector<Volatility> &v,
                                             Rate minStrike,
                                             Rate maxStrike,
-                                            const Interpolator1D &interpolator)
+                                            const Interpolator1D &i)
     : YoYOptionletVolatilitySurface(settlementDays, cal, bdc, dc, lag,
                                     frequency, indexIsInterpolated),
-    dates_(d), data_(v),
-    interpolator_(interpolator),
-    minStrike_(minStrike), maxStrike_(maxStrike) {
+      InterpolatedCurve<Interpolator1D>(i),
+      dates_(d), minStrike_(minStrike), maxStrike_(maxStrike) {
         QL_REQUIRE(d.size() == v.size(),
                    "must have same number of dates and vols: "
                    << d.size() << " vs " << v.size());
@@ -146,18 +140,16 @@ namespace QuantLib {
                    "must have at least two dates: " << d.size());
 
         for (Size i = 0; i < d.size(); i++ ){
-            times_.push_back( this->timeFromReference(dates_[i]) );
-            nodes_.push_back( std::make_pair( dates_[i], data_[i]) );
+            this->times_.push_back( this->timeFromReference(dates_[i]) );
+            this->data_.push_back(v[i]),
+            nodes_.push_back( std::make_pair( dates_[i], this->data_[i]) );
         }
 
-        interpolation_ =
-        interpolator_.interpolate(times_.begin(),
-                                  times_.end(),
-                                  data_.begin() );
+        this->setupInterpolation();
         // set the base vol level to that predicted by the interpolation
         // this is allowed by the extrapolation
         Time baseTime = this->timeFromReference(baseDate());
-        setBaseLevel(interpolation_(baseTime,true));
+        setBaseLevel(this->interpolation_(baseTime,true));
     }
 
 
@@ -173,10 +165,11 @@ namespace QuantLib {
                                             Rate minStrike,
                                             Rate maxStrike,
                                             Volatility baseYoYVolatility,
-                                            const Interpolator1D &interpolator)
+                                            const Interpolator1D &i)
     : YoYOptionletVolatilitySurface(settlementDays, cal, bdc, dc, lag,
                                     frequency, indexIsInterpolated),
-    interpolator_(interpolator), minStrike_(minStrike), maxStrike_(maxStrike) {
+      InterpolatedCurve<Interpolator1D>(i),
+      minStrike_(minStrike), maxStrike_(maxStrike) {
         // don't have the data yet except for the base volatility
         // must set to communicate with bootstrap
         setBaseLevel(baseYoYVolatility);
@@ -189,7 +182,7 @@ namespace QuantLib {
     inline Volatility InterpolatedYoYOptionletVolatilityCurve<Interpolator1D>::
     volatilityImpl(const Time t,
                    Rate) const {
-        return interpolation_(t);
+        return this->interpolation_(t);
     }
 
 } // namespace QuantLib

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006, 2007, 2010, 2014l, 2015 Ferdinando Ametrano
+ Copyright (C) 2006, 2007, 2010, 2014, 2015 Ferdinando Ametrano
  Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2006 StatPro Italia srl
  Copyright (C) 2015 Paolo Mazzocchi

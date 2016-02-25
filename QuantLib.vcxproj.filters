@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="methods">
@@ -860,7 +860,7 @@
     </ClInclude>
     <ClInclude Include="ql\math\abcdmathfunction.hpp">
       <Filter>math</Filter>
-    </ClInclude>	
+    </ClInclude>
     <ClInclude Include="ql\math\array.hpp">
       <Filter>math</Filter>
     </ClInclude>
@@ -3513,6 +3513,9 @@
     <ClInclude Include="ql\experimental\math\gaussiancopulapolicy.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\math\laplaceinterpolation.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\math\latentmodel.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
@@ -4322,7 +4325,7 @@
     </ClCompile>
     <ClCompile Include="ql\math\abcdmathfunction.cpp">
       <Filter>math</Filter>
-    </ClCompile>	
+    </ClCompile>
     <ClCompile Include="ql\math\bernsteinpolynomial.cpp">
       <Filter>math</Filter>
     </ClCompile>
@@ -6457,6 +6460,9 @@
     </ClCompile>
     <ClCompile Include="ql\models\shortrate\onefactormodels\markovfunctional.cpp">
       <Filter>models\shortrate\onefactormodels</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\patterns\observable.cpp">
+      <Filter>patterns</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

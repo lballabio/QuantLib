@@ -803,6 +803,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\observable.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ode.cpp"
 				>
 			</File>
@@ -1344,6 +1348,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\observable.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ode.hpp"
 				>
 			</File>
@@ -1365,6 +1373,10 @@
 			</File>
 			<File
 				RelativePath=".\pagodaoption.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\paralleltestrunner.hpp"
 				>
 			</File>
 			<File

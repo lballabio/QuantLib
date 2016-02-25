@@ -142,7 +142,7 @@ namespace QuantLib {
                                                      CPICapFloor::results> {
     };
 
-};
+}
 
 
 #endif

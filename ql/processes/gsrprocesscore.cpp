@@ -61,8 +61,8 @@ void GsrProcessCore::flushCache() const {
     cache5_.clear();
 }
 
-const Real GsrProcessCore::expectation_x0dep_part(const Time w, const Real xw,
-                                                  const Time dt) const {
+Real GsrProcessCore::expectation_x0dep_part(const Time w, const Real xw,
+                                            const Time dt) const {
     Real t = w + dt;
     std::pair<Real, Real> key;
     key = std::make_pair(w, t);
@@ -78,8 +78,8 @@ const Real GsrProcessCore::expectation_x0dep_part(const Time w, const Real xw,
     return res2 * xw;
 }
 
-const Real GsrProcessCore::expectation_rn_part(const Time w,
-                                               const Time dt) const {
+Real GsrProcessCore::expectation_rn_part(const Time w,
+                                         const Time dt) const {
 
     Real t = w + dt;
 
@@ -151,8 +151,8 @@ const Real GsrProcessCore::expectation_rn_part(const Time w,
     return res;
 } // expectation_rn_part
 
-const Real GsrProcessCore::expectation_tf_part(const Time w,
-                                               const Time dt) const {
+Real GsrProcessCore::expectation_tf_part(const Time w,
+                                         const Time dt) const {
 
     Real t = w + dt;
 
@@ -229,7 +229,7 @@ const Real GsrProcessCore::expectation_tf_part(const Time w,
     return res;
 } // expectation_tf_part
 
-const Real GsrProcessCore::variance(const Time w, const Time dt) const {
+Real GsrProcessCore::variance(const Time w, const Time dt) const {
 
     Real t = w + dt;
 
@@ -259,7 +259,7 @@ const Real GsrProcessCore::variance(const Time w, const Time dt) const {
     return res;
 }
 
-const Real GsrProcessCore::y(const Time t) const {
+Real GsrProcessCore::y(const Time t) const {
     Real key;
     key = t;
     std::map<Real, Real>::const_iterator k = cache4_.find(key);
@@ -283,7 +283,7 @@ const Real GsrProcessCore::y(const Time t) const {
     return res;
 }
 
-const Real GsrProcessCore::G(const Time t, const Time w) const {
+Real GsrProcessCore::G(const Time t, const Time w) const {
     std::pair<Real, Real> key;
     key = std::make_pair(w, t);
     std::map<std::pair<Real, Real>, Real>::const_iterator k = cache5_.find(key);
@@ -307,12 +307,12 @@ const Real GsrProcessCore::G(const Time t, const Time w) const {
     return res;
 }
 
-const int GsrProcessCore::lowerIndex(const Time t) const {
+int GsrProcessCore::lowerIndex(const Time t) const {
     return static_cast<int>(std::upper_bound(times_.begin(), times_.end(), t) -
                             times_.begin());
 }
 
-const int GsrProcessCore::upperIndex(const Time t) const {
+int GsrProcessCore::upperIndex(const Time t) const {
     if (t < QL_MIN_POSITIVE_REAL)
         return 0;
     return static_cast<int>(
@@ -321,16 +321,16 @@ const int GsrProcessCore::upperIndex(const Time t) const {
            1;
 }
 
-const Real GsrProcessCore::cappedTime(const Size index, const Real cap) const {
+Real GsrProcessCore::cappedTime(const Size index, const Real cap) const {
     return cap != Null<Real>() ? std::min(cap, time2(index)) : time2(index);
 }
 
-const Real GsrProcessCore::flooredTime(const Size index,
-                                       const Real floor) const {
+Real GsrProcessCore::flooredTime(const Size index,
+                                 const Real floor) const {
     return floor != Null<Real>() ? std::max(floor, time2(index)) : time2(index);
 }
 
-const Real GsrProcessCore::time2(const Size index) const {
+Real GsrProcessCore::time2(const Size index) const {
     if (index == 0)
         return 0.0;
     if (index > times_.size())
@@ -340,19 +340,19 @@ const Real GsrProcessCore::time2(const Size index) const {
     return times_[index - 1];
 }
 
-const Real GsrProcessCore::vol(const Size index) const {
+Real GsrProcessCore::vol(const Size index) const {
     if (index >= vols_.size())
         return vols_.back();
     return vols_[index];
 }
 
-const Real GsrProcessCore::rev(const Size index) const {
+Real GsrProcessCore::rev(const Size index) const {
     if (index >= reversions_.size())
         return reversions_.back();
     return reversions_[index];
 }
 
-const bool GsrProcessCore::revZero(const Size index) const {
+bool GsrProcessCore::revZero(const Size index) const {
     if (index >= revZero_.size())
         return revZero_.back();
     return revZero_[index];

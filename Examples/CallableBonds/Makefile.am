@@ -8,7 +8,7 @@ else
 noinst_PROGRAMS = CallableBonds
 endif
 CallableBonds_SOURCES = CallableBonds.cpp
-CallableBonds_LDADD = ../../ql/libQuantLib.la
+CallableBonds_LDADD = ../../ql/libQuantLib.la  ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     CallableBonds.dev \
@@ -16,6 +16,7 @@ EXTRA_DIST = \
     CallableBonds_vc9.vcproj \
     CallableBonds.vcxproj \
     CallableBonds.vcxproj.filters \
+    CMakeLists.txt \
     ReadMe.txt
 
 .PHONY: examples check-examples

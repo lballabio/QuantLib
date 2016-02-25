@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([QuantLib], [1.7],
+AC_INIT([QuantLib], [1.8],
         [quantlib-dev@lists.sourceforge.net],
         [QuantLib])
 AC_PREREQ(2.62)
@@ -253,6 +253,50 @@ if test "$ql_use_sessions" = "yes" ; then
 fi
 AC_MSG_RESULT([$ql_use_sessions])
 
+AC_MSG_CHECKING([whether to enable thread-safe observer pattern])
+AC_ARG_ENABLE([thread-safe-observer-pattern],
+              AC_HELP_STRING([--enable-thread-safe-observer-pattern],
+                             [If enabled, thread-safe version of the 
+                              observer pattern will be used. You should 
+                              enable it if you want to use QuantLib 
+                              via the SWIG layer within the JVM or .NET 
+                              eco system or any environment with an 
+                              async garbage collector.]),
+              [ql_use_tsop=$enableval],
+              [ql_use_tsop=no])
+AC_MSG_RESULT([$ql_use_tsop])
+if test "$ql_use_tsop" = "yes" ; then
+   AC_DEFINE([QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN],[1],
+             [Define this if you want to enable 
+              thread-safe observer pattern.])
+   QL_CHECK_BOOST_VERSION_1_58_OR_HIGHER
+   QL_CHECK_BOOST_TEST_THREAD_SIGNALS2_SYSTEM
+else
+   AC_SUBST([BOOST_THREAD_LIB],[""])
+fi
+
+AC_MSG_CHECKING([whether to enable parallel unit test runner])
+AC_ARG_ENABLE([parallel-unit-test-runner],
+              AC_HELP_STRING([--enable-parallel-unit-test-runner],
+                             [If enabled, a parallel unit test runner is used 
+                              to execute the C++ test suite. This will reduce 
+                              the runtime on multi core CPUs.]),
+              [ql_use_parallel_test=$enableval],
+              [ql_use_parallel_test=no])
+AC_MSG_RESULT([$ql_use_parallel_test])
+if test "$ql_use_parallel_test" = "yes" ; then
+   AC_DEFINE([QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER],[1],
+             [Define this if you want to enable 
+              the parallel unit test runner.])
+   QL_CHECK_BOOST_VERSION_1_59_OR_HIGHER
+   if test "$ql_use_tsop" != "yes" ; then
+      QL_CHECK_BOOST_TEST_THREAD_SIGNALS2_SYSTEM
+   fi
+   QL_CHECK_BOOST_TEST_INTERPROCESS
+else
+   AC_SUBST([BOOST_THREAD_LIB],[""])
+fi
+
 AC_MSG_CHECKING([whether to install examples])
 AC_ARG_ENABLE([examples],
               AC_HELP_STRING([--enable-examples],
@@ -276,6 +320,26 @@ AC_ARG_ENABLE([benchmark],
               [ql_install_benchmark=no])
 AM_CONDITIONAL(AUTO_BENCHMARK, test "$ql_install_benchmark" != "no")
 AC_MSG_RESULT([$ql_install_benchmark])
+
+AC_MSG_CHECKING([whether to enable intraday date and daycounters])
+AC_ARG_ENABLE([intraday],
+              AC_HELP_STRING([--enable-intraday],
+                             [If enabled, date objects will support an intraday 
+                              datetime resolution down to microseconds. 
+                              Strickly monotone daycounters (Actual360, 
+                              Actual365Fixed and ActualActual) will take 
+                              the additional information into account 
+                              and allow for accurate intraday pricing. 
+                              If disabled (the default) the smallest 
+                              resolution of date objects will be a single day.
+                              Intraday datetime resolution is experimental.]),
+              [ql_use_intraday=$enableval],
+              [ql_use_intraday=no])
+if test "$ql_use_intraday" = "yes" ; then
+   AC_DEFINE([QL_HIGH_RESOLUTION_DATE],[1],
+             [Define this if you want to enable high resolution date class.])
+fi
+AC_MSG_RESULT([$ql_use_intraday])
 
 
 # manual configurations for specific hosts
@@ -342,12 +406,12 @@ AC_CONFIG_FILES([
     ql/math/statistics/Makefile
     ql/methods/Makefile
     ql/methods/finitedifferences/Makefile    
-	ql/methods/finitedifferences/meshers/Makefile
-	ql/methods/finitedifferences/operators/Makefile
-	ql/methods/finitedifferences/schemes/Makefile
-	ql/methods/finitedifferences/solvers/Makefile
-	ql/methods/finitedifferences/stepconditions/Makefile
-	ql/methods/finitedifferences/utilities/Makefile
+    ql/methods/finitedifferences/meshers/Makefile
+    ql/methods/finitedifferences/operators/Makefile
+    ql/methods/finitedifferences/schemes/Makefile
+    ql/methods/finitedifferences/solvers/Makefile
+    ql/methods/finitedifferences/stepconditions/Makefile
+    ql/methods/finitedifferences/utilities/Makefile
     ql/methods/lattices/Makefile
     ql/methods/montecarlo/Makefile
     ql/models/Makefile
@@ -427,4 +491,5 @@ AC_CONFIG_FILES([
     test-suite/Makefile])
 AC_CONFIG_FILES([quantlib-config],[chmod +x quantlib-config])
 AC_CONFIG_FILES([QuantLib.spec])
+AC_CONFIG_FILES([quantlib.pc])
 AC_OUTPUT

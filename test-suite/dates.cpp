@@ -5,6 +5,7 @@
  Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2003 RiskMap srl
  Copyright (C) 2015 Maddalena Zanzi
+ Copyright (c) 2015 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +28,8 @@
 #include <ql/time/ecb.hpp>
 #include <ql/time/asx.hpp>
 #include <ql/utilities/dataparsers.hpp>
+
+#include <sstream>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -372,6 +375,64 @@ void DateTest::parseDates() {
     }
 }
 
+void DateTest::intraday() {
+#ifdef QL_HIGH_RESOLUTION_DATE
+
+    BOOST_TEST_MESSAGE("Testing intraday information of dates...");
+
+    const Date d1 = Date(12, February, 2015, 10, 45, 12, 1234, 76253);
+
+    BOOST_CHECK_MESSAGE(d1.year() == 2015, "failed to reproduce year");
+    BOOST_CHECK_MESSAGE(d1.month() == February, "failed to reproduce month");
+    BOOST_CHECK_MESSAGE(d1.dayOfMonth() == 12, "failed to reproduce day");
+    BOOST_CHECK_MESSAGE(d1.hours() == 10, "failed to reproduce hour of day");
+    BOOST_CHECK_MESSAGE(d1.minutes() == 45,
+        "failed to reproduce minute of hour");
+    BOOST_CHECK_MESSAGE(d1.seconds() == 13,
+        "failed to reproduce second of minute");
+
+    if (Date::ticksPerSecond() == 1000)
+        BOOST_CHECK_MESSAGE(d1.fractionOfSecond() == 0.234,
+            "failed to reproduce fraction of second");
+    else if (Date::ticksPerSecond() >= 1000000)
+        BOOST_CHECK_MESSAGE(d1.fractionOfSecond() == (234000 + 76253)/1000000.0,
+        "failed to reproduce fraction of second");
+
+    if (Date::ticksPerSecond() >= 1000)
+        BOOST_CHECK_MESSAGE(d1.milliseconds() == 234 + 76,
+            "failed to reproduce number of milliseconds");
+
+    if (Date::ticksPerSecond() >= 1000000)
+        BOOST_CHECK_MESSAGE(d1.microseconds() == 253,
+            "failed to reproduce number of microseconds");
+
+    const Date d2 = Date(28, February, 2015, 50, 165, 476, 1234, 253);
+    BOOST_CHECK_MESSAGE(d2.year() == 2015, "failed to reproduce year");
+    BOOST_CHECK_MESSAGE(d2.month() == March, "failed to reproduce month");
+    BOOST_CHECK_MESSAGE(d2.dayOfMonth() == 2, "failed to reproduce day");
+    BOOST_CHECK_MESSAGE(d2.hours() == 4, "failed to reproduce hour of day");
+    BOOST_CHECK_MESSAGE(d2.minutes() == 52,
+        "failed to reproduce minute of hour");
+    BOOST_CHECK_MESSAGE(d2.seconds() == 57,
+        "failed to reproduce second of minute");
+
+    if (Date::ticksPerSecond() >= 1000)
+        BOOST_CHECK_MESSAGE(d2.milliseconds() == 234,
+            "failed to reproduce number of milliseconds");
+    if (Date::ticksPerSecond() >= 1000000)
+        BOOST_CHECK_MESSAGE(d2.microseconds() == 253,
+            "failed to reproduce number of microseconds");
+
+    std::ostringstream s;
+    s << io::iso_datetime(Date(7, February, 2015, 1, 4, 2, 3, 4));
+
+    BOOST_CHECK_MESSAGE(s.str() == std::string("2015-02-07T01:04:02,003004"),
+        "datetime to string failed to reproduce expected result");
+
+#endif
+}
+
+
 test_suite* DateTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Date tests");
     suite->add(QUANTLIB_TEST_CASE(&DateTest::testConsistency));
@@ -380,6 +441,8 @@ test_suite* DateTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&DateTest::asxDates));
     suite->add(QUANTLIB_TEST_CASE(&DateTest::isoDates));
     suite->add(QUANTLIB_TEST_CASE(&DateTest::parseDates));
+    suite->add(QUANTLIB_TEST_CASE(&DateTest::intraday));
+
     return suite;
 }
 

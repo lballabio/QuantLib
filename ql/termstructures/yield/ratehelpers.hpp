@@ -6,6 +6,7 @@
  Copyright (C) 2007, 2008, 2009, 2015 Ferdinando Ametrano
  Copyright (C) 2007, 2009 Roland Lichters
  Copyright (C) 2015 Maddalena Zanzi
+ Copyright (C) 2015 Paolo Mazzocchi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -153,7 +154,9 @@ namespace QuantLib {
                       const Calendar& calendar,
                       BusinessDayConvention convention,
                       bool endOfMonth,
-                      const DayCounter& dayCounter);
+                      const DayCounter& dayCounter,
+                      Pillar::Choice pillar = Pillar::LastRelevantDate,
+                      Date customPillarDate = Date());
         FraRateHelper(Rate rate,
                       Natural monthsToStart,
                       Natural monthsToEnd,
@@ -161,13 +164,19 @@ namespace QuantLib {
                       const Calendar& calendar,
                       BusinessDayConvention convention,
                       bool endOfMonth,
-                      const DayCounter& dayCounter);
+                      const DayCounter& dayCounter,
+                      Pillar::Choice pillar = Pillar::LastRelevantDate,
+                      Date customPillarDate = Date());
         FraRateHelper(const Handle<Quote>& rate,
                       Natural monthsToStart,
-                      const boost::shared_ptr<IborIndex>& iborIndex);
+                      const boost::shared_ptr<IborIndex>& iborIndex,
+                      Pillar::Choice pillar = Pillar::LastRelevantDate,
+                      Date customPillarDate = Date());
         FraRateHelper(Rate rate,
                       Natural monthsToStart,
-                      const boost::shared_ptr<IborIndex>& iborIndex);
+                      const boost::shared_ptr<IborIndex>& iborIndex,
+                      Pillar::Choice pillar = Pillar::LastRelevantDate,
+                      Date customPillarDate = Date());
         FraRateHelper(const Handle<Quote>& rate,
                       Period periodToStart,
                       Natural lengthInMonths,
@@ -175,7 +184,9 @@ namespace QuantLib {
                       const Calendar& calendar,
                       BusinessDayConvention convention,
                       bool endOfMonth,
-                      const DayCounter& dayCounter);
+                      const DayCounter& dayCounter,
+                      Pillar::Choice pillar = Pillar::LastRelevantDate,
+                      Date customPillarDate = Date());
         FraRateHelper(Rate rate,
                       Period periodToStart,
                       Natural lengthInMonths,
@@ -183,13 +194,19 @@ namespace QuantLib {
                       const Calendar& calendar,
                       BusinessDayConvention convention,
                       bool endOfMonth,
-                      const DayCounter& dayCounter);
+                      const DayCounter& dayCounter,
+                      Pillar::Choice pillar = Pillar::LastRelevantDate,
+                      Date customPillarDate = Date());
         FraRateHelper(const Handle<Quote>& rate,
                       Period periodToStart,
-                      const boost::shared_ptr<IborIndex>& iborIndex);
+                      const boost::shared_ptr<IborIndex>& iborIndex,
+                      Pillar::Choice pillar = Pillar::LastRelevantDate,
+                      Date customPillarDate = Date());
         FraRateHelper(Rate rate,
                       Period periodToStart,
-                      const boost::shared_ptr<IborIndex>& iborIndex);
+                      const boost::shared_ptr<IborIndex>& iborIndex,
+                      Pillar::Choice pillar = Pillar::LastRelevantDate,
+                      Date customPillarDate = Date());
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -203,6 +220,7 @@ namespace QuantLib {
         void initializeDates();
         Date fixingDate_;
         Period periodToStart_;
+        Pillar::Choice pillarChoice_;
         boost::shared_ptr<IborIndex> iborIndex_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
@@ -218,7 +236,9 @@ namespace QuantLib {
                        const Period& fwdStart = 0*Days,
                        // exogenous discounting curve
                        const Handle<YieldTermStructure>& discountingCurve
-                                            = Handle<YieldTermStructure>());
+                                               = Handle<YieldTermStructure>(),
+                       Pillar::Choice pillar = Pillar::LastRelevantDate,
+                       Date customPillarDate = Date());
         SwapRateHelper(const Handle<Quote>& rate,
                        const Period& tenor,
                        const Calendar& calendar,
@@ -233,14 +253,18 @@ namespace QuantLib {
                        // exogenous discounting curve
                        const Handle<YieldTermStructure>& discountingCurve
                                             = Handle<YieldTermStructure>(),
-                       Natural settlementDays = Null<Natural>());
+                       Natural settlementDays = Null<Natural>(),
+                       Pillar::Choice pillar = Pillar::LastRelevantDate,
+                       Date customPillarDate = Date());
         SwapRateHelper(Rate rate,
                        const boost::shared_ptr<SwapIndex>& swapIndex,
                        const Handle<Quote>& spread = Handle<Quote>(),
                        const Period& fwdStart = 0*Days,
                        // exogenous discounting curve
                        const Handle<YieldTermStructure>& discountingCurve
-                                            = Handle<YieldTermStructure>());
+                                            = Handle<YieldTermStructure>(),
+                       Pillar::Choice pillar = Pillar::LastRelevantDate,
+                       Date customPillarDate = Date());
         SwapRateHelper(Rate rate,
                        const Period& tenor,
                        const Calendar& calendar,
@@ -255,7 +279,9 @@ namespace QuantLib {
                        // exogenous discounting curve
                        const Handle<YieldTermStructure>& discountingCurve
                                             = Handle<YieldTermStructure>(),
-                       Natural settlementDays = Null<Natural>());
+                       Natural settlementDays = Null<Natural>(),
+                       Pillar::Choice pillar = Pillar::LastRelevantDate,
+                       Date customPillarDate = Date());
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -275,6 +301,7 @@ namespace QuantLib {
         void initializeDates();
         Natural settlementDays_;
         Period tenor_;
+        Pillar::Choice pillarChoice_;
         Calendar calendar_;
         BusinessDayConvention fixedConvention_;
         Frequency fixedFrequency_;

@@ -3228,6 +3228,10 @@
 				>
 			</File>
 			<File
+				RelativePath="ql\patterns\observable.cpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\patterns\observable.hpp"
 				>
 			</File>
@@ -8824,6 +8828,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\math\gaussiancopulapolicy.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\laplaceinterpolation.hpp"
 					>
 				</File>
 				<File

@@ -39,12 +39,14 @@ namespace QuantLib {
 
         // the one and only stationary point...
         Time zeroFirstDerivative = 1.0/c-a/b;
-        if (zeroFirstDerivative>=0.0) // ... is a minimum
+        if (zeroFirstDerivative>=0.0) {
+            // ... is a minimum
             // must be abcd(zeroFirstDerivative)>=0
             QL_REQUIRE(b>=-(d*c)/std::exp(c*a/b-1.0),
                        "b (" << b << ") less than " <<
                        -(d*c)/std::exp(c*a/b-1.0) << ": negative function"
                        " value at stationary point " << zeroFirstDerivative);
+        }
 
     }
 
@@ -66,7 +68,7 @@ namespace QuantLib {
     }
 
     AbcdMathFunction::AbcdMathFunction(Real aa, Real bb, Real cc, Real dd)
-    : abcd_(4), a_(aa), b_(bb), c_(cc), d_(dd), dabcd_(4) {
+    : a_(aa), b_(bb), c_(cc), d_(dd), abcd_(4), dabcd_(4) {
         abcd_[0]=a_;
         abcd_[1]=b_;
         abcd_[2]=c_;
