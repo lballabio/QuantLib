@@ -68,11 +68,13 @@ namespace QuantLib {
         /*! \todo revise extrapolation */
         Real diffusion(Time t, Real x) const;
         Real apply(Real x0, Real dx) const;
-        /*! \warning raises a "not implemented" exception.  It should
-                     be rewritten to return the expectation E(S) of
-                     the process, not exp(E(log S)).
+        /*! \warning in general raises a "not implemented" exception.
+                     It should be rewritten to return the expectation E(S)
+                     of the process, not exp(E(log S)).
         */
         Real expectation(Time t0, Real x0, Time dt) const;
+        Real stdDeviation(Time t0, Real x0, Time dt) const;
+        Real variance(Time t0, Real x0, Time dt) const;
         Real evolve(Time t0, Real x0, Time dt, Real dw) const;
         //@}
         Time time(const Date&) const;
