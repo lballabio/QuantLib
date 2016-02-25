@@ -147,9 +147,9 @@ namespace QuantLib {
 
       private:
 
-        const Real GsrG(const Date &d) const;
-        const Real singularTerms(const Option::Type type, const Real strike) const;
-        const Real integrand(const Real strike) const;
+        Real GsrG(const Date &d) const;
+        Real singularTerms(const Option::Type type, const Real strike) const;
+        Real integrand(const Real strike) const;
         Real a_, b_;
 
         class VegaRatioHelper {

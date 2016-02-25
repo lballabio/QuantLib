@@ -54,7 +54,7 @@ namespace QuantLib {
         privateObserver_->registerWith(cmsPricer_);
     }
 
-    const Real LognormalCmsSpreadPricer::integrand(const Real x) const {
+    Real LognormalCmsSpreadPricer::integrand(const Real x) const {
 
         // this is Brigo, 13.16.2 with x = v/sqrt(2)
 

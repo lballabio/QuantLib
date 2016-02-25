@@ -15,7 +15,8 @@ EXTRA_DIST = \
     BasketLosses_vc8.vcproj \
     BasketLosses_vc9.vcproj \
     BasketLosses.vcxproj \
-    BasketLosses.vcxproj.filters
+    BasketLosses.vcxproj.filters \
+    CMakeLists.txt
 
 .PHONY: examples check-examples
 

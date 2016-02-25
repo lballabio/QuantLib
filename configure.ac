@@ -275,6 +275,28 @@ else
    AC_SUBST([BOOST_THREAD_LIB],[""])
 fi
 
+AC_MSG_CHECKING([whether to enable parallel unit test runner])
+AC_ARG_ENABLE([parallel-unit-test-runner],
+              AC_HELP_STRING([--enable-parallel-unit-test-runner],
+                             [If enabled, a parallel unit test runner is used 
+                              to execute the C++ test suite. This will reduce 
+                              the runtime on multi core CPUs.]),
+              [ql_use_parallel_test=$enableval],
+              [ql_use_parallel_test=no])
+AC_MSG_RESULT([$ql_use_parallel_test])
+if test "$ql_use_parallel_test" = "yes" ; then
+   AC_DEFINE([QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER],[1],
+             [Define this if you want to enable 
+              the parallel unit test runner.])
+   QL_CHECK_BOOST_VERSION_1_59_OR_HIGHER
+   if test "$ql_use_tsop" != "yes" ; then
+      QL_CHECK_BOOST_TEST_THREAD_SIGNALS2_SYSTEM
+   fi
+   QL_CHECK_BOOST_TEST_INTERPROCESS
+else
+   AC_SUBST([BOOST_THREAD_LIB],[""])
+fi
+
 AC_MSG_CHECKING([whether to install examples])
 AC_ARG_ENABLE([examples],
               AC_HELP_STRING([--enable-examples],
@@ -384,12 +406,12 @@ AC_CONFIG_FILES([
     ql/math/statistics/Makefile
     ql/methods/Makefile
     ql/methods/finitedifferences/Makefile    
-	ql/methods/finitedifferences/meshers/Makefile
-	ql/methods/finitedifferences/operators/Makefile
-	ql/methods/finitedifferences/schemes/Makefile
-	ql/methods/finitedifferences/solvers/Makefile
-	ql/methods/finitedifferences/stepconditions/Makefile
-	ql/methods/finitedifferences/utilities/Makefile
+    ql/methods/finitedifferences/meshers/Makefile
+    ql/methods/finitedifferences/operators/Makefile
+    ql/methods/finitedifferences/schemes/Makefile
+    ql/methods/finitedifferences/solvers/Makefile
+    ql/methods/finitedifferences/stepconditions/Makefile
+    ql/methods/finitedifferences/utilities/Makefile
     ql/methods/lattices/Makefile
     ql/methods/montecarlo/Makefile
     ql/models/Makefile
