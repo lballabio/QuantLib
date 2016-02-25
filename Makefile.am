@@ -12,6 +12,9 @@ endif
 m4datadir = $(datadir)/aclocal
 dist_m4data_DATA = quantlib.m4
 
+pkgconfigdir = $(libdir)/pkgconfig
+nodist_pkgconfig_DATA = quantlib.pc
+
 EXTRA_DIST = \
 	Announce.txt \
 	Authors.txt \

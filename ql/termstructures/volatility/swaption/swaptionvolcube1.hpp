@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2006, 2007 Giorgio Facchinetti
- Copyright (C) 2014 Peter Caspers
+ Copyright (C) 2014, 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -241,6 +241,11 @@ namespace QuantLib {
           optMethod_(optMethod),
           useMaxError_(useMaxError), maxGuesses_(maxGuesses),
           backwardFlat_(backwardFlat), cutoffStrike_(cutoffStrike) {
+
+        // the current implementations are all lognormal, if we have
+        // a normal one, we can move this check to the implementing classes
+        QL_REQUIRE(atmVolStructure->volatilityType() == ShiftedLognormal,
+                   "vol cubes of type 1 require a lognormal atm surface");
 
         if (maxErrorTolerance != Null<Rate>()) {
             maxErrorTolerance_ = maxErrorTolerance;

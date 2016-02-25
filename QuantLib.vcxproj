@@ -1685,6 +1685,7 @@
     <ClInclude Include="ql\experimental\math\farliegumbelmorgensterncopularng.hpp" />
     <ClInclude Include="ql\experimental\math\frankcopularng.hpp" />
     <ClInclude Include="ql\experimental\math\gaussiancopulapolicy.hpp" />
+    <ClInclude Include="ql\experimental\math\laplaceinterpolation.hpp" />
     <ClInclude Include="ql\experimental\math\latentmodel.hpp" />
     <ClInclude Include="ql\experimental\math\multidimintegrator.hpp" />
     <ClInclude Include="ql\experimental\math\multidimquadrature.hpp" />

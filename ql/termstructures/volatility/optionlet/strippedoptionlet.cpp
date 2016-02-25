@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2008 Ferdinando Ametrano
  Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,30 +28,22 @@ using std::vector;
 
 namespace QuantLib {
 
-    StrippedOptionlet::StrippedOptionlet(
-                        Natural settlementDays,
-                        const Calendar& calendar,
-                        BusinessDayConvention bdc,
-                        const boost::shared_ptr<IborIndex>& iborIndex,
-                        const std::vector<Date>& optionletDates,
-                        const vector<Rate>& strikes,
-                        const vector<vector<Handle<Quote> > >& v,
-                        const DayCounter& dc)
-    : calendar_(calendar),
-      settlementDays_(settlementDays),
-      businessDayConvention_(bdc),
-      dc_(dc),
-      iborIndex_(iborIndex),
-      nOptionletDates_(optionletDates.size()),
-      optionletDates_(optionletDates),
-      optionletTimes_(nOptionletDates_),
+StrippedOptionlet::StrippedOptionlet(
+    Natural settlementDays, const Calendar &calendar, BusinessDayConvention bdc,
+    const boost::shared_ptr< IborIndex > &iborIndex,
+    const std::vector< Date > &optionletDates, const vector< Rate > &strikes,
+    const vector< vector< Handle< Quote > > > &v, const DayCounter &dc,
+    VolatilityType type, Real displacement)
+    : calendar_(calendar), settlementDays_(settlementDays),
+      businessDayConvention_(bdc), dc_(dc), iborIndex_(iborIndex), type_(type),
+      displacement_(displacement), nOptionletDates_(optionletDates.size()),
+      optionletDates_(optionletDates), optionletTimes_(nOptionletDates_),
       optionletAtmRates_(nOptionletDates_),
-      optionletStrikes_(nOptionletDates_, strikes),
-      nStrikes_(strikes.size()),
+      optionletStrikes_(nOptionletDates_, strikes), nStrikes_(strikes.size()),
       optionletVolQuotes_(v),
-      optionletVolatilities_(nOptionletDates_, vector<Volatility>(nStrikes_))
-      
-    {
+      optionletVolatilities_(nOptionletDates_, vector< Volatility >(nStrikes_))
+
+{
         checkInputs();
         registerWith(Settings::instance().evaluationDate());
         registerWithMarketData();
@@ -153,6 +146,14 @@ namespace QuantLib {
 
     BusinessDayConvention StrippedOptionlet::businessDayConvention() const {
         return businessDayConvention_;
+    }
+
+    VolatilityType StrippedOptionlet::volatilityType() const {
+        return type_;
+    }
+
+    Real StrippedOptionlet::displacement() const {
+        return displacement_;
     }
 
 }

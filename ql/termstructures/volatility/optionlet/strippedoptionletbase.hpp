@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,6 +29,8 @@
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/time/businessdayconvention.hpp>
 #include <ql/types.hpp>
+#include <ql/termstructures/volatility/volatilitytype.hpp>
+
 #include <vector>
 
 namespace QuantLib {
@@ -54,7 +57,10 @@ namespace QuantLib {
         virtual Calendar calendar() const = 0;
         virtual Natural settlementDays() const = 0;
         virtual BusinessDayConvention businessDayConvention() const = 0;
+        virtual VolatilityType volatilityType() const = 0;
+        virtual Real displacement() const = 0;
     };
+
 }
 
 #endif
