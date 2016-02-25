@@ -9186,6 +9186,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\math\laplaceinterpolation.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\math\latentmodel.hpp"
 					>
 				</File>

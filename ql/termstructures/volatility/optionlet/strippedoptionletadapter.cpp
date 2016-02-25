@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2007 Katiuscia Manzoni
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -42,15 +43,24 @@ namespace QuantLib {
 
     boost::shared_ptr<SmileSection>
     StrippedOptionletAdapter::smileSectionImpl(Time t) const {
-         std::vector<Rate> optionletStrikes = optionletStripper_->optionletStrikes(0); // strikes are the same for all times ?!
-         std::vector<Real> stddevs;
-         for(Size i=0;i<optionletStrikes.size();i++) {
-             stddevs.push_back(volatilityImpl(t,optionletStrikes[i])*std::sqrt(t));
-         }
-         // Extrapolation may be a problem with splines, but since minStrike() and maxStrike() are set, we assume that no one will use stddevs for strikes outside these strikes
-         CubicInterpolation::BoundaryCondition bc = optionletStrikes.size()>=4 ? CubicInterpolation::Lagrange : CubicInterpolation::SecondDerivative;
-         return boost::shared_ptr<SmileSection>(new InterpolatedSmileSection<Cubic>(t,optionletStrikes,stddevs,Null<Real>(),
-                                                            Cubic(CubicInterpolation::Spline,false,bc,0.0,bc,0.0)));
+        std::vector< Rate > optionletStrikes =
+            optionletStripper_->optionletStrikes(
+                0); // strikes are the same for all times ?!
+        std::vector< Real > stddevs;
+        for (Size i = 0; i < optionletStrikes.size(); i++) {
+            stddevs.push_back(volatilityImpl(t, optionletStrikes[i]) *
+                              std::sqrt(t));
+        }
+        // Extrapolation may be a problem with splines, but since minStrike()
+        // and maxStrike() are set, we assume that no one will use stddevs for
+        // strikes outside these strikes
+        CubicInterpolation::BoundaryCondition bc =
+            optionletStrikes.size() >= 4 ? CubicInterpolation::Lagrange
+                                         : CubicInterpolation::SecondDerivative;
+        return boost::make_shared< InterpolatedSmileSection< Cubic > >(
+            t, optionletStrikes, stddevs, Null< Real >(),
+            Cubic(CubicInterpolation::Spline, false, bc, 0.0, bc, 0.0),
+            Actual365Fixed(), volatilityType(), displacement());
     }
 
     Volatility StrippedOptionletAdapter::volatilityImpl(Time length,
@@ -127,4 +137,11 @@ namespace QuantLib {
         return optionletStripper_->optionletFixingDates().back();
     }
 
+    VolatilityType StrippedOptionletAdapter::volatilityType() const {
+        return optionletStripper_->volatilityType();
+    }
+
+    Real StrippedOptionletAdapter::displacement() const {
+        return optionletStripper_->displacement();
+    }
 }
