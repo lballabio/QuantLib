@@ -47,15 +47,6 @@ namespace QuantLib {
 
     class DateParser {
       public:
-        /*! Was used by a deprecated method that was since removed.
-            It should have been a private utility method to begin with.
-
-            \deprecated
-        */
-        QL_DEPRECATED
-        static std::vector<std::string> split(const std::string& str,
-                                              char delim);
-
         //! Parses a string in a used-defined format.
         /*! This method uses the parsing functions from
             Boost.Date_Time and supports the same formats.

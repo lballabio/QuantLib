@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="methods">
@@ -3513,6 +3513,9 @@
     <ClInclude Include="ql\experimental\math\gaussiancopulapolicy.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\math\laplaceinterpolation.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\math\latentmodel.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
@@ -3523,6 +3526,12 @@
       <Filter>experimental\math</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\math\numericaldifferentiation.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\math\piecewisefunction.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\math\piecewiseintegral.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\math\polarstudenttrng.hpp">
@@ -6091,6 +6100,9 @@
       <Filter>experimental\math</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\math\numericaldifferentiation.cpp">
+      <Filter>experimental\math</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\math\piecewiseintegral.cpp">
       <Filter>experimental\math</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\math\tcopulapolicy.cpp">

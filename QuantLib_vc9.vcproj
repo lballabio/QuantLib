@@ -9186,6 +9186,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\math\laplaceinterpolation.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\math\latentmodel.hpp"
 					>
 				</File>
@@ -9211,6 +9215,18 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\math\numericaldifferentiation.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\piecewisefunction.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\piecewiseintegral.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\piecewiseintegral.hpp"
 					>
 				</File>
 				<File

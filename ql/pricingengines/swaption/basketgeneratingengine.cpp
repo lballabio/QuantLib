@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2013, 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -96,7 +96,8 @@ namespace QuantLib {
                     standardSwapBase->exogenousDiscount()
                         ? standardSwapBase->discountingTermStructure()
                         : standardSwapBase->forwardingTermStructure(),
-                    CalibrationHelper::RelativePriceError, Null<Real>(), 1.0, shift));
+                    CalibrationHelper::RelativePriceError, Null<Real>(), 1.0,
+                    swaptionVolatility->volatilityType() ,shift));
 
                 break;
             }
@@ -225,7 +226,7 @@ namespace QuantLib {
                         ? standardSwapBase->discountingTermStructure()
                         : standardSwapBase->forwardingTermStructure(),
                     CalibrationHelper::RelativePriceError, solution[2],
-                    fabs(solution[0]),shift));
+                    fabs(solution[0]), swaptionVolatility->volatilityType(), shift));
                 break;
             }
 

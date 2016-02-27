@@ -65,31 +65,31 @@ grep -o -E 'FileName=.*' test-suite/testsuite.dev \
 
 # write out differences...
 
-echo 'Visual Studio 8:' > sync.report
-diff -b ql.vc8.files ql.ref.files >> sync.report
-diff -b test-suite.vc8.files test-suite.ref.files >> sync.report
+echo 'Visual Studio 8:'
+diff -b ql.vc8.files ql.ref.files
+diff -b test-suite.vc8.files test-suite.ref.files
 
-echo '' >> sync.report
-echo '' >> sync.report
-echo 'Visual Studio 9:' >> sync.report
-diff -b ql.vc9.files ql.ref.files >> sync.report
-diff -b test-suite.vc9.files test-suite.ref.files >> sync.report
+echo ''
+echo ''
+echo 'Visual Studio 9:'
+diff -b ql.vc9.files ql.ref.files
+diff -b test-suite.vc9.files test-suite.ref.files
 
-echo '' >> sync.report
-echo '' >> sync.report
-echo 'Visual Studio 10 and above:' >> sync.report
-echo 'project:' >> sync.report
-diff -b ql.vcx.files ql.ref.files >> sync.report
-diff -b test-suite.vcx.files test-suite.ref.files >> sync.report
-echo 'filters:' >> sync.report
-diff -b ql.vcx.filters ql.ref.files >> sync.report
-diff -b test-suite.vcx.filters test-suite.ref.files >> sync.report
+echo ''
+echo ''
+echo 'Visual Studio 10 and above:'
+echo 'project:'
+diff -b ql.vcx.files ql.ref.files
+diff -b test-suite.vcx.files test-suite.ref.files
+echo 'filters:'
+diff -b ql.vcx.filters ql.ref.files
+diff -b test-suite.vcx.filters test-suite.ref.files
 
-echo '' >> sync.report
-echo '' >> sync.report
-echo 'Dev-C++:' >> sync.report
-diff -b ql.devcpp.files ql.ref.files >> sync.report
-diff -b test-suite.devcpp.files test-suite.ref.files >> sync.report
+echo ''
+echo ''
+echo 'Dev-C++:'
+diff -b ql.devcpp.files ql.ref.files
+diff -b test-suite.devcpp.files test-suite.ref.files
 
 # ...and cleanup
 rm -f ql.ref.files test-suite.ref.files
@@ -98,6 +98,4 @@ rm -f ql.vc9.files test-suite.vc9.files
 rm -f ql.vcx.files test-suite.vcx.files
 rm -f ql.vcx.filters test-suite.vcx.filters
 rm -f ql.devcpp.files test-suite.devcpp.files
-
-cat sync.report
 

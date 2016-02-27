@@ -6,6 +6,7 @@
  Copyright (C) 2006 Marco Bianchetti
  Copyright (C) 2007 StatPro Italia srl
  Copyright (C) 2014 Ferdinando Ametrano
+ Copyright (C) 2016 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,6 +32,7 @@
 #include <ql/option.hpp>
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/termstructures/volatility/volatilitytype.hpp>
 
 namespace QuantLib {
 
@@ -93,7 +95,8 @@ namespace QuantLib {
                               Natural maxEvaluations = 100,
                               Volatility minVol = 1.0e-7,
                               Volatility maxVol = 4.0,
-                              Real displacement = 0.0) const;
+                              Real displacement = 0.0,
+                              VolatilityType type = ShiftedLognormal) const;
       private:
         // arguments
         boost::shared_ptr<VanillaSwap> swap_;
