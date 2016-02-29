@@ -103,7 +103,7 @@ namespace QuantLib {
             Date maturityDate(startDate + maturityTenor);
             Schedule retVal(startDate, maturityDate, freqPeriod,
                             paymentCalendar, Unadjusted, Unadjusted,
-                            DateGeneration::Backward, false);
+                            DateGeneration::Forward, false);
             return retVal;
         }
 
