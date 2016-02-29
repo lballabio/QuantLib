@@ -20,6 +20,7 @@
 
 #include <ql/types.hpp>
 #include <ql/settings.hpp>
+#include <ql/utilities/dataparsers.hpp>
 #include <ql/version.hpp>
 #include <boost/test/unit_test.hpp>
 #include <boost/timer.hpp>
@@ -200,7 +201,7 @@ namespace {
                   << seconds << " s\n" << std::endl;
     }
 
-    void configure() {
+    void configure(QuantLib::Date evaluationDate) {
         /* if needed, a subset of the lines below can be
            uncommented and/or changed to run the test suite with a
            different configuration. In the future, we'll need a
@@ -208,19 +209,10 @@ namespace {
            couple of command-line flags for the test suite?)
         */
 
-        //QuantLib::Settings::instance().includeReferenceDateCashFlows() = true;
-        //QuantLib::Settings::instance().includeTodaysCashFlows() = boost::none;
+        // QuantLib::Settings::instance().includeReferenceDateCashFlows() = true;
+        // QuantLib::Settings::instance().includeTodaysCashFlows() = boost::none;
 
-        /* does not throw evaluation date dependent errors */
-        QuantLib::Settings::instance().evaluationDate() =
-            QuantLib::Date(16, QuantLib::Sep, 2015);
-
-        /* throws 3 evaluation date dependent errors
-           (in MarketModelSmmCapletCalibrationTest,
-           MarketModelSmmCapletAlphaCalibrationTest and
-           MarketModelSmmAlphaCalibrationTest) */
-        // QuantLib::Settings::instance().evaluationDate() =
-        //     QuantLib::Date(29, QuantLib::Aug, 2015);
+        QuantLib::Settings::instance().evaluationDate() = evaluationDate;
     }
 
 }
@@ -233,9 +225,38 @@ namespace QuantLib {
 }
 #endif
 
+QuantLib::Date evaluation_date(int argc, char** argv) {
+    /*! Dead simple parser:
+        - passing --date=YYYY-MM-DD causes the test suite to run on
+          that date;
+        - passing --date=today causes it to run on today's date;
+        - passing nothing causes it to run on a known date for which
+          there should be no date-dependent errors as far as we know.
+
+        Dates that should eventually be checked include:
+        - 2015-08-29 causes three tests to fail;
+        - 2016-02-29 causes two tests to fail.
+    */
+
+    QuantLib::Date knownGoodDefault =
+        QuantLib::Date(16, QuantLib::September, 2015);
+
+    for (int i=1; i<argc; ++i) {
+        std::string arg = argv[i];
+        if (arg == "--date=today")
+            return QuantLib::Date::todaysDate();
+        else if (arg.substr(0, 7) == "--date=")
+            return QuantLib::DateParser::parseISO(arg.substr(7));
+    }
+    return knownGoodDefault;
+}
+
+
 test_suite* init_unit_test_suite(int, char* []) {
 
-    configure();
+    int argc = boost::unit_test::framework::master_test_suite().argc;
+    char **argv = boost::unit_test::framework::master_test_suite().argv;
+    configure(evaluation_date(argc, argv));
 
     const QuantLib::Settings& settings = QuantLib::Settings::instance();
     std::ostringstream header;
