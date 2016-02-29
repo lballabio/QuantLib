@@ -237,39 +237,49 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     configure();
 
-    std::ostringstream settingsDesc;
-    settingsDesc << QuantLib::Settings::instance();
-    std::string header =
+    const QuantLib::Settings& settings = QuantLib::Settings::instance();
+    std::ostringstream header;
+    header <<
         " Testing "
-            #ifdef BOOST_MSVC
-            QL_LIB_NAME
-            #else
-            "QuantLib " QL_VERSION
-            #endif
+        #ifdef BOOST_MSVC
+        QL_LIB_NAME
+        #else
+        "QuantLib " QL_VERSION
+        #endif
         "\n  QL_NEGATIVE_RATES "
-            #ifdef QL_NEGATIVE_RATES
-            "       defined"
-            #else
-            "     undefined"
-            #endif
+        #ifdef QL_NEGATIVE_RATES
+        "       defined"
+        #else
+        "     undefined"
+        #endif
         "\n  QL_EXTRA_SAFETY_CHECKS "
-            #ifdef QL_EXTRA_SAFETY_CHECKS
-            "  defined"
-            #else
-            "undefined"
-            #endif
+        #ifdef QL_EXTRA_SAFETY_CHECKS
+        "  defined"
+        #else
+        "undefined"
+        #endif
         "\n  QL_USE_INDEXED_COUPON "
-            #ifdef QL_USE_INDEXED_COUPON
-            "   defined"
-            #else
-            " undefined"
-            #endif
-        "\n" + settingsDesc.str()
-         ;
+        #ifdef QL_USE_INDEXED_COUPON
+        "   defined"
+        #else
+        " undefined"
+        #endif
+        "\n"
+           << "evaluation date is " << settings.evaluationDate() << ",\n"
+           << (settings.includeReferenceDateEvents()
+               ? "reference date events are included,\n"
+               : "reference date events are excluded,\n")
+           << (settings.includeTodaysCashFlows()
+               ? "today's cashflows are included,\n"
+               : "today's cashflows are excluded,\n")
+           << (settings.enforcesTodaysHistoricFixings()
+               ? "today's historic fixings are enforced"
+               : "today's historic fixings are not enforced");
+
     std::string rule = std::string(41, '=');
 
     BOOST_TEST_MESSAGE(rule);
-    BOOST_TEST_MESSAGE(header);
+    BOOST_TEST_MESSAGE(header.str());
     BOOST_TEST_MESSAGE(rule);
     test_suite* test = BOOST_TEST_SUITE("QuantLib test suite");
 

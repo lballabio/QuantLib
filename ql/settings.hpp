@@ -174,18 +174,6 @@ namespace QuantLib {
         return enforcesTodaysHistoricFixings_;
     }
 
-    inline std::ostream &operator<<(std::ostream &out, const Settings &s) {
-        return out << "evaluation date is " << s.evaluationDate() << ",\n"
-                   << (s.includeReferenceDateEvents()
-                           ? "reference date events are included,\n"
-                           : "reference date events are excluded,\n")
-                   << (s.includeTodaysCashFlows()
-                           ? "today's cashflows are included,\n"
-                           : "today's cashflows are excluded,\n")
-                   << (s.enforcesTodaysHistoricFixings()
-                           ? "today's historic fixings are enforced"
-                           : "today's historic fixings are not enforced");
-    }
 }
 
 #endif
