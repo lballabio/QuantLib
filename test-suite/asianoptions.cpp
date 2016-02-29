@@ -92,7 +92,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
     // data from "Option Pricing Formulas", Haug, pag.96-97
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(80.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(-0.03));
@@ -189,7 +189,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
     Volatility vols[] = { 0.11, 0.50, 1.20 };
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
     Settings::instance().evaluationDate() = today;
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
@@ -331,7 +331,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice() {
     // Clewlow, Strickland, p.118-123
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.03));
@@ -390,7 +390,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAverageStrike() {
               "Testing analytic discrete geometric average-strike Asians...");
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.03));
@@ -453,7 +453,7 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
     // Clewlow, Strickland, p.118-123
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.03));
@@ -607,7 +607,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
    };
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.03));
@@ -762,7 +762,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAverageStrike() {
     };
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.03));
@@ -849,7 +849,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
     Volatility vols[] = { 0.11, 0.50, 1.20 };
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
     Settings::instance().evaluationDate() = today;
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
@@ -995,7 +995,7 @@ void AsianOptionTest::testPastFixings() {
     BOOST_TEST_MESSAGE("Testing use of past fixings in Asian options...");
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.03));
@@ -1174,7 +1174,7 @@ void AsianOptionTest::testLevyEngine() {
     };
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     for (Size l=0; l<LENGTH(cases); l++) {
 
@@ -1261,9 +1261,9 @@ void AsianOptionTest::testVecerEngine() {
         { 2.0, 0.05,   0.5,  2.0, 2, 0.350095, 2.0e-4 }
     };
 
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
     DayCounter dayCounter = Actual360();
-    
+
     Option::Type type = Option::Call;
     Handle<YieldTermStructure> q(flatRate(today, 0.0, dayCounter));
 
@@ -1280,7 +1280,7 @@ void AsianOptionTest::testVecerEngine() {
                                                     dayCounter));
         boost::shared_ptr<BlackScholesMertonProcess> process =
             boost::make_shared<BlackScholesMertonProcess>(u, q, r, sigma);
-        
+
         Date maturity = today + cases[i].length*360;
         boost::shared_ptr<Exercise> exercise =
             boost::make_shared<EuropeanExercise>(maturity);
@@ -1338,4 +1338,3 @@ test_suite* AsianOptionTest::experimental() {
     suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testVecerEngine));
     return suite;
 }
-
