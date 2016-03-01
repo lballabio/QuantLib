@@ -237,6 +237,7 @@ void MatricesTest::testQRDecomposition() {
         Matrix Q, R;
         bool pivot = true;
         const Matrix& A = testMatrices[j];
+
         const std::vector<Size> ipvt = qrDecomposition(A, Q, R, pivot);
 
         Matrix P(A.columns(), A.columns(), 0.0);
@@ -271,8 +272,16 @@ void MatricesTest::testQRSolve() {
     for (Size i=0; i < std::min(bigM.rows(), bigM.columns()); ++i) {
         bigM[i][i] = i+1.0;
     }
-    Matrix testMatrices[] = { M1, M2, M3, transpose(M3),
-                              M4, transpose(M4), M5, I, M7, bigM, transpose(bigM) };
+
+    Matrix randM(50, 200);
+    for (Size i=0; i < randM.rows(); ++i)
+        for (Size j=0; j < randM.columns(); ++j)
+            randM[i][j] = rng.next().value;
+
+    Matrix testMatrices[] = {M1, M2, M3, transpose(M3),
+                              M4, transpose(M4), M5, I, M7,
+                              bigM, transpose(bigM),
+                              randM, transpose(randM) };
 
     for (Size j = 0; j < LENGTH(testMatrices); j++) {
         const Matrix& A = testMatrices[j];

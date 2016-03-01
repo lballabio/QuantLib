@@ -86,4 +86,9 @@
 //#    define QL_HIGH_RESOLUTION_DATE
 #endif
 
+/* Define this to enable the parallel unit test runner */
+#ifndef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
+//#    define QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
+#endif
+
 #endif

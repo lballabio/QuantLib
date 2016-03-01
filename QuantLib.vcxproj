@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (static runtime)|Win32">
@@ -488,6 +488,8 @@
     <ClInclude Include="ql\experimental\finitedifferences\localvolrndcalculator.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\riskneutraldensitycalculator.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\squarerootprocessrndcalculator.hpp" />
+    <ClInclude Include="ql\experimental\models\all.hpp" />
+    <ClInclude Include="ql\experimental\models\hestonslvmodel.hpp" />
     <ClInclude Include="ql\experimental\models\hestonslvfdmmodel.hpp" />
     <ClInclude Include="ql\experimental\models\hestonslvmcmodel.hpp" />
     <ClInclude Include="ql\math\polynomialmathfunction.hpp" />
@@ -1700,10 +1702,13 @@
     <ClInclude Include="ql\experimental\math\farliegumbelmorgensterncopularng.hpp" />
     <ClInclude Include="ql\experimental\math\frankcopularng.hpp" />
     <ClInclude Include="ql\experimental\math\gaussiancopulapolicy.hpp" />
+    <ClInclude Include="ql\experimental\math\laplaceinterpolation.hpp" />
     <ClInclude Include="ql\experimental\math\latentmodel.hpp" />
     <ClInclude Include="ql\experimental\math\multidimintegrator.hpp" />
     <ClInclude Include="ql\experimental\math\multidimquadrature.hpp" />
     <ClInclude Include="ql\experimental\math\numericaldifferentiation.hpp" />
+    <ClInclude Include="ql\experimental\math\piecewisefunction.hpp" />
+    <ClInclude Include="ql\experimental\math\piecewiseintegral.hpp" />
     <ClInclude Include="ql\experimental\math\polarstudenttrng.hpp" />
     <ClInclude Include="ql\math\optimization\simulatedannealing.hpp" />
     <ClInclude Include="ql\experimental\math\tcopulapolicy.hpp" />
@@ -2577,6 +2582,7 @@
     <ClCompile Include="ql\experimental\math\multidimintegrator.cpp" />
     <ClCompile Include="ql\experimental\math\multidimquadrature.cpp" />
     <ClCompile Include="ql\experimental\math\numericaldifferentiation.cpp" />
+    <ClCompile Include="ql\experimental\math\piecewiseintegral.cpp" />
     <ClCompile Include="ql\experimental\math\tcopulapolicy.cpp" />
     <ClCompile Include="ql\experimental\math\zigguratrng.cpp" />
     <ClCompile Include="ql\cashflow.cpp" />

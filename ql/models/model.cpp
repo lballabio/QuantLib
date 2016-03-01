@@ -107,7 +107,7 @@ namespace QuantLib {
         shortRateEndCriteria_ = method.minimize(prob, endCriteria);
         Array result(prob.currentValue());
         setParams(proj.include(result));
-        Array shortRateProblemValues_ = prob.values(result);
+        problemValues_ = prob.values(result);
 
         notifyObservers();
     }

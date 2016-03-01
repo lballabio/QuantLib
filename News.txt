@@ -1,10 +1,21 @@
 
-Changes for QuantLib 1.6.2:
+Changes for QuantLib 1.7.1:
 ===========================
 
-QuantLib 1.6.2 is a compatibility release. It solves an ambiguous
-name resolution in the test-suite code when Visual Studio and the
-newly released Boost 1.59.0 are used together.
+QuantLib 1.7.1 is a bug-fix release for version 1.7.
 
-The library code did not change.
+- an unneeded dependency on the Boost.Thread library had slipped into
+  version 1.7. It is now removed (thanks to GitHub user MattPD).
+
+- Trying to build a schedule with a 4-weeks tenor would fail. This is
+  now fixed (thanks to GitHub user smallnamespace for the heads-up).
+
+- A couple of errors in the list of past holidays for the Russian MOEX
+  calendar was fixed, and the list of holidays for 2016 was added
+  (thanks to Dmitri Nesteruk).
+
+- Chinese holidays for 2016 were updated (thanks to Cheng Li).
+
+- The correct curve is now used when calculating the at-the-money swap
+  rate while building swaptions (thanks to Peter Caspers).
 

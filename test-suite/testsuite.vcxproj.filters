@@ -701,6 +701,9 @@
     <ClInclude Include="pagodaoption.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="paralleltestrunner.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="partialtimebarrieroption.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

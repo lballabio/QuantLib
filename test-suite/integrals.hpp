@@ -37,6 +37,7 @@ class IntegralTest {
     static void testTwoDimensionalIntegration();
     static void testFolinIntegration();
     static void testDiscreteIntegrals();
+    static void testPiecewiseIntegral();
     static boost::unit_test_framework::test_suite* suite();
 };
 

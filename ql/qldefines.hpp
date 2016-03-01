@@ -115,6 +115,13 @@
         #error Boost version 1.58 or higher is required for the thread-safe observer pattern
     #endif
 #endif
+
+#ifdef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
+    #if BOOST_VERSION < 105900
+        #error Boost version 1.59 or higher is required for the parallel unit test runner
+    #endif
+#endif
+
 // ensure that needed math constants are defined
 #include <ql/mathconstants.hpp>
 

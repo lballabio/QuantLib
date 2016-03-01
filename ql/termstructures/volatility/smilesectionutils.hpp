@@ -44,7 +44,7 @@ namespace QuantLib {
         const std::vector<Real> &moneyGrid() const { return m_; }
         const std::vector<Real> &strikeGrid() const { return k_; }
         const std::vector<Real> &callPrices() const { return c_; }
-        const Real atmLevel() const { return f_; }
+        Real atmLevel() const { return f_; }
 
       private:
         bool af(const Size i0, const Size i, const Size i1) const;

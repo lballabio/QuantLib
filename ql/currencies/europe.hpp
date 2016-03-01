@@ -469,6 +469,17 @@ namespace QuantLib {
         SKKCurrency();
     };
 
+    //! Ukrainian hryvnia
+    /*! The ISO three-letter code is UAH; the numeric code is 980.
+        It is divided in 100 kopiykas.
+
+        \ingroup currencies    
+     */
+    class UAHCurrency : public Currency {
+    public:
+        UAHCurrency();
+    };
+
 }
 
 #if defined(QL_PATCH_MSVC)
