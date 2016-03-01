@@ -1084,6 +1084,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\hestonslvmodel.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\himalayaoption.cpp"
 				>
 			</File>
@@ -1277,6 +1281,10 @@
 			</File>
 			<File
 				RelativePath=".\rangeaccrual.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\riskneutraldensitycalculator.cpp"
 				>
 			</File>
 			<File
@@ -1629,6 +1637,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\hestonslvmodel.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\himalayaoption.hpp"
 				>
 			</File>
@@ -1826,6 +1838,10 @@
 			</File>
 			<File
 				RelativePath=".\rangeaccrual.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\riskneutraldensitycalculator.hpp"
 				>
 			</File>
 			<File

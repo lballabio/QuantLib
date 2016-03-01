@@ -118,6 +118,7 @@
 #include "gjrgarchmodel.hpp"
 #include "gsr.hpp"
 #include "hestonmodel.hpp"
+#include "hestonslvmodel.hpp"
 #include "himalayaoption.hpp"
 #include "hybridhestonhullwhiteprocess.hpp"
 #include "inflation.hpp"
@@ -166,6 +167,7 @@
 #include "piecewisezerospreadedtermstructure.hpp"
 #include "quantooption.hpp"
 #include "quotes.hpp"
+#include "riskneutraldensitycalculator.hpp"
 #include "riskstats.hpp"
 #include "rngtraits.hpp"
 #include "rounding.hpp"
@@ -425,7 +427,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(VarianceSwapTest::suite());
     test->add(VolatilityModelsTest::suite());
 
-    // tests for experimental classes
+//    tests for experimental classes
     test->add(AmortizingBondTest::suite());
     test->add(AsianOptionTest::experimental());
     test->add(BarrierOptionTest::experimental());
@@ -445,8 +447,8 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(EverestOptionTest::suite());
     test->add(ExtendedTreesTest::suite());
     test->add(ExtensibleOptionsTest::suite());
-    test->add(FdHestonTest::experimental());
     test->add(HestonModelTest::experimental());
+    test->add(HestonSLVModelTest::experimental());
     test->add(HimalayaOptionTest::suite());
     test->add(InflationCPICapFloorTest::suite());
     test->add(InflationVolTest::suite());
@@ -457,6 +459,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(PagodaOptionTest::suite());
     test->add(PartialTimeBarrierOptionTest::suite());
     test->add(QuantoOptionTest::experimental());
+    test->add(RiskNeutralDensityCalculatorTest::experimental());
     test->add(SpreadOptionTest::suite());
     test->add(SwingOptionTest::suite());
     test->add(TwoAssetBarrierOptionTest::suite());
