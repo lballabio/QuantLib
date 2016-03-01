@@ -10,7 +10,7 @@ this_include_HEADERS = \
 libModels_la_SOURCES = \
     hestonslvfdmmodel.cpp \
     hestonslvmcmodel.cpp
-    
+
 noinst_LTLIBRARIES = libModels.la
 
 all.hpp: Makefile.am
