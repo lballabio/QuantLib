@@ -488,6 +488,7 @@
     <ClInclude Include="ql\experimental\finitedifferences\localvolrndcalculator.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\riskneutraldensitycalculator.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\squarerootprocessrndcalculator.hpp" />
+    <ClInclude Include="ql\experimental\models\all.hpp" />
     <ClInclude Include="ql\experimental\models\hestonslvmodel.hpp" />
     <ClInclude Include="ql\math\polynomialmathfunction.hpp" />
     <ClInclude Include="ql\math\pascaltriangle.hpp" />

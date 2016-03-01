@@ -4018,6 +4018,9 @@
     <ClInclude Include="ql\experimental\finitedifferences\squarerootprocessrndcalculator.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\models\all.hpp">
+      <Filter>experimental\models</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\models\hestonslvmodel.hpp">
       <Filter>experimental\models</Filter>
     </ClInclude>
