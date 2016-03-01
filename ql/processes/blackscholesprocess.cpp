@@ -69,25 +69,58 @@ namespace QuantLib {
         return x0 * std::exp(dx);
     }
 
-    Real GeneralizedBlackScholesProcess::expectation(Time,
-                                                     Real,
-                                                     Time) const {
-        QL_FAIL("not implemented");
+    Real GeneralizedBlackScholesProcess::expectation(Time t0,
+                                                     Real x0,
+                                                     Time dt) const {
+        localVolatility(); // trigger update
+        if(isStrikeIndependent_) {
+            // exact value for curves
+            return x0 *
+                   exp(dt * (riskFreeRate_->forwardRate(t0, t0 + dt, Continuous,
+                                                        NoFrequency, true) -
+                             dividendYield_->forwardRate(
+                                 t0, t0 + dt, Continuous, NoFrequency, true)));
+        } else {
+            QL_FAIL("not implemented");
+        }
+    }
+
+    Real GeneralizedBlackScholesProcess::stdDeviation(Time t0, Real x0, Time dt) const {
+        localVolatility(); // trigger update
+        if(isStrikeIndependent_) {
+            // exact value for curves
+            return std::sqrt(variance(t0,x0,dt));
+        }
+        else{
+            return discretization_->diffusion(*this,t0,x0,dt);
+        }
+    }
+
+    Real GeneralizedBlackScholesProcess::variance(Time t0, Real x0, Time dt) const {
+        localVolatility(); // trigger update
+        if(isStrikeIndependent_) {
+            // exact value for curves
+            return blackVolatility_->blackVariance(t0 + dt, 0.01) -
+                   blackVolatility_->blackVariance(t0, 0.01);
+        }
+        else{
+            return discretization_->variance(*this,t0,x0,dt);
+        }
     }
 
     Real GeneralizedBlackScholesProcess::evolve(Time t0, Real x0,
                                                 Time dt, Real dw) const {
-        localVolatility(); // trigger update if necessary
+        localVolatility(); // trigger update
         if (isStrikeIndependent_) {
-            // in case of a curve we can calculate exact values
-            Real variance = blackVolatility_->blackVariance(t0 + dt, 0.01) -
-                            blackVolatility_->blackVariance(t0, 0.01);
+            // exact value for curves
+            Real var = variance(t0, x0, dt);
             Real drift = (riskFreeRate_->forwardRate(t0, t0 + dt, Continuous,
                                                      NoFrequency, true) -
                           dividendYield_->forwardRate(t0, t0 + dt, Continuous,
                                                       NoFrequency, true)) *
-                dt - 0.5 * variance;
-            return x0 * std::exp( std::sqrt(variance) * dw + drift );
+                             dt -
+                         0.5 * var;
+            return apply(x0, std::sqrt(var) * dw + drift);
         } else
             return apply(x0, discretization_->drift(*this, t0, x0, dt) +
                                  stdDeviation(t0, x0, dt) * dw);

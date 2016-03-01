@@ -271,6 +271,24 @@ void ScheduleTest::testDateConstructor() {
         BOOST_ERROR("schedule2 has end of month flag false, expected true");
 }
 
+void ScheduleTest::testFourWeeksTenor() {
+    BOOST_TEST_MESSAGE(
+        "Testing that a four-weeks tenor works...");
+
+    try {
+        Schedule s =
+            MakeSchedule().from(Date(13,January,2016))
+                          .to(Date(4,May,2016))
+                          .withCalendar(TARGET())
+                          .withTenor(4*Weeks)
+                          .withConvention(Following)
+                          .forwards();
+    } catch (Error& e) {
+        BOOST_ERROR("A four-weeks tenor caused an exception: " << e.what());
+    }
+}
+
+
 test_suite* ScheduleTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Schedule tests");
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testDailySchedule));
@@ -284,6 +302,7 @@ test_suite* ScheduleTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
         &ScheduleTest::testDoubleFirstDateWithEomAdjustment));
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testDateConstructor));
+    suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testFourWeeksTenor));
     return suite;
 }
 

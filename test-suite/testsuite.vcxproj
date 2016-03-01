@@ -869,6 +869,7 @@
     <ClInclude Include="pagodaoption.hpp" />
     <ClInclude Include="partialtimebarrieroption.hpp" />
     <ClInclude Include="pathgenerator.hpp" />
+    <ClInclude Include="paralleltestrunner.hpp" />    
     <ClInclude Include="period.hpp" />
     <ClInclude Include="piecewiseyieldcurve.hpp" />
     <ClInclude Include="piecewisezerospreadedtermstructure.hpp" />

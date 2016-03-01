@@ -45,9 +45,9 @@ namespace QuantLib {
                             const Handle<Quote>& vol,
                             const DayCounter& dc = Actual365Fixed(),
                             Real displacement = 0.0);
-        BlackCapFloorEngine(const Handle<YieldTermStructure>& discountCurve,
-                            const Handle<OptionletVolatilityStructure>& vol,
-                            Real displacement = 0.0);
+        BlackCapFloorEngine(const Handle< YieldTermStructure > &discountCurve,
+                            const Handle< OptionletVolatilityStructure > &vol,
+                            Real displacement = Null< Real >());
         void calculate() const;
         Handle<YieldTermStructure> termStructure() { return discountCurve_; }
         Handle<OptionletVolatilityStructure> volatility() { return vol_; }

@@ -7,10 +7,13 @@
 #include <ql/experimental/math/farliegumbelmorgensterncopularng.hpp>
 #include <ql/experimental/math/frankcopularng.hpp>
 #include <ql/experimental/math/gaussiancopulapolicy.hpp>
+#include <ql/experimental/math/laplaceinterpolation.hpp>
 #include <ql/experimental/math/latentmodel.hpp>
 #include <ql/experimental/math/multidimintegrator.hpp>
 #include <ql/experimental/math/multidimquadrature.hpp>
 #include <ql/experimental/math/numericaldifferentiation.hpp>
+#include <ql/experimental/math/piecewisefunction.hpp>
+#include <ql/experimental/math/piecewiseintegral.hpp>
 #include <ql/experimental/math/polarstudenttrng.hpp>
 #include <ql/experimental/math/tcopulapolicy.hpp>
 #include <ql/experimental/math/zigguratrng.hpp>

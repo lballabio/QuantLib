@@ -16,6 +16,7 @@ EXTRA_DIST = \
     Bonds_vc9.vcproj \
     Bonds.vcxproj \
     Bonds.vcxproj.filters \
+    CMakeLists.txt \
     ReadMe.txt
 
 .PHONY: examples check-examples

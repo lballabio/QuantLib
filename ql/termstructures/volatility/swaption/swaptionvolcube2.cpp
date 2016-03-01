@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Katiuscia Manzoni
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -68,8 +69,7 @@ namespace QuantLib {
                                        Time swapLength) const {
 
         calculate();
-        Date optionDate = Date(static_cast<BigInteger>(
-            optionInterpolator_(optionTime)));
+        Date optionDate = optionDateFromTime(optionTime);
         Rounding rounder(0);
         Period swapTenor(static_cast<Integer>(rounder(swapLength*12.0)), Months);
         // ensure that option date is valid fixing date
@@ -108,6 +108,7 @@ namespace QuantLib {
                                              atmForward,
                                              Linear(),
                                              Actual365Fixed(),
+                                             volatilityType(),
                                              shift));
     }
 }
