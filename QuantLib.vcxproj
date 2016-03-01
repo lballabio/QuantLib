@@ -489,7 +489,8 @@
     <ClInclude Include="ql\experimental\finitedifferences\riskneutraldensitycalculator.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\squarerootprocessrndcalculator.hpp" />
     <ClInclude Include="ql\experimental\models\all.hpp" />
-    <ClInclude Include="ql\experimental\models\hestonslvmodel.hpp" />
+    <ClInclude Include="ql\experimental\models\hestonslvfdmmodel.hpp" />
+    <ClInclude Include="ql\experimental\models\hestonslvmcmodel.hpp" />
     <ClInclude Include="ql\math\polynomialmathfunction.hpp" />
     <ClInclude Include="ql\math\pascaltriangle.hpp" />
     <ClInclude Include="ql\rebatedexercise.hpp" />
@@ -498,6 +499,7 @@
     <ClInclude Include="ql\experimental\finitedifferences\fdklugeextouspreadengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmblackscholesfwdop.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmdupire1dop.hpp" />
+    <ClInclude Include="ql\experimental\finitedifferences\fdhestondoublebarrierengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmexpextouinnervaluecalculator.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmextendedornsteinuhlenbeckop.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmextoujumpmodelinnervalue.hpp" />
@@ -525,6 +527,7 @@
     <ClInclude Include="ql\experimental\processes\extouwithjumpsprocess.hpp" />
     <ClInclude Include="ql\experimental\processes\gemanroncoroniprocess.hpp" />
     <ClInclude Include="ql\experimental\processes\klugeextouprocess.hpp" />
+    <ClInclude Include="ql\experimental\processes\hestonslvprocess.hpp" />
     <ClInclude Include="ql\instruments\bonds\cpibond.hpp" />
     <ClInclude Include="ql\instruments\cpicapfloor.hpp" />
     <ClInclude Include="ql\instruments\cpiswap.hpp" />
@@ -1757,7 +1760,8 @@
     <ClCompile Include="ql\experimental\finitedifferences\localvolrndcalculator.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\riskneutraldensitycalculator.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\squarerootprocessrndcalculator.cpp" />
-    <ClCompile Include="ql\experimental\models\hestonslvmodel.cpp" />
+    <ClCompile Include="ql\experimental\models\hestonslvfdmmodel.cpp" />
+    <ClCompile Include="ql\experimental\models\hestonslvmcmodel.cpp" />
     <ClCompile Include="ql\math\polynomialmathfunction.cpp" />
     <ClCompile Include="ql\math\pascaltriangle.cpp" />
     <ClCompile Include="ql\patterns\observable.cpp" />
@@ -1768,6 +1772,7 @@
     <ClCompile Include="ql\experimental\finitedifferences\fdklugeextouspreadengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmblackscholesfwdop.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmdupire1dop.cpp" />
+    <ClCompile Include="ql\experimental\finitedifferences\fdhestondoublebarrierengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmextendedornsteinuhlenbeckop.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmextoujumpop.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmextoujumpsolver.cpp" />
@@ -1788,6 +1793,7 @@
     <ClCompile Include="ql\experimental\processes\extouwithjumpsprocess.cpp" />
     <ClCompile Include="ql\experimental\processes\gemanroncoroniprocess.cpp" />
     <ClCompile Include="ql\experimental\processes\klugeextouprocess.cpp" />
+    <ClCompile Include="ql\experimental\processes\hestonslvprocess.cpp" />
     <ClCompile Include="ql\instruments\bonds\cpibond.cpp" />
     <ClCompile Include="ql\instruments\cpicapfloor.cpp" />
     <ClCompile Include="ql\instruments\cpiswap.cpp" />

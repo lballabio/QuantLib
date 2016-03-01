@@ -8326,6 +8326,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdhestondoublebarrierengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdhestondoublebarrierengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdklugeextouspreadengine.cpp"
 					>
 				</File>
@@ -8606,11 +8614,19 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\models\hestonslvmodel.cpp"
+					RelativePath=".\ql\experimental\models\hestonslvfdmmodel.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\experimental\models\hestonslvmodel.hpp"
+					RelativePath=".\ql\experimental\models\hestonslvfdmmodel.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\hestonslvmcmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\hestonslvmcmodel.hpp"
 					>
 				</File>
 			</Filter>
@@ -8651,6 +8667,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\processes\gemanroncoroniprocess.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\processes\hestonslvprocess.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\processes\hestonslvprocess.hpp"
 					>
 				</File>
 				<File

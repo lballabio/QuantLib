@@ -67,9 +67,9 @@ class SimpleQuote;
         const FdmSchemeDesc schemeDesc;
     };
 
-    class HestonSLVModel : public LazyObject {
+    class HestonSLVFDMModel : public LazyObject {
       public:
-        HestonSLVModel(
+        HestonSLVFDMModel(
             const Handle<LocalVolTermStructure>& localVol,
             const Handle<HestonModel>& hestonModel,
             const Date& endDate,

@@ -3625,6 +3625,9 @@
     <ClInclude Include="ql\experimental\finitedifferences\fdmdupire1dop.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdhestondoublebarrierengine.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\finitedifferences\fdmextendedornsteinuhlenbeckop.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
@@ -3683,6 +3686,9 @@
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\processes\klugeextouprocess.hpp">
+      <Filter>experimental\processes</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\processes\hestonslvprocess.hpp">
       <Filter>experimental\processes</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\finitedifferences\fdsimpleklugeextouvppengine.hpp">
@@ -4021,7 +4027,10 @@
     <ClInclude Include="ql\experimental\models\all.hpp">
       <Filter>experimental\models</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\hestonslvmodel.hpp">
+    <ClInclude Include="ql\experimental\models\hestonslvfdmmodel.hpp">
+      <Filter>experimental\models</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\models\hestonslvmcmodel.hpp">
       <Filter>experimental\models</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\equityfx\fixedlocalvolsurface.hpp">
@@ -6194,6 +6203,9 @@
     <ClCompile Include="ql\experimental\finitedifferences\fdmdupire1dop.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdhestondoublebarrierengine.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\finitedifferences\fdmextendedornsteinuhlenbeckop.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
@@ -6234,6 +6246,9 @@
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\processes\klugeextouprocess.cpp">
+      <Filter>experimental\processes</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\processes\hestonslvprocess.cpp">
       <Filter>experimental\processes</Filter>
     </ClCompile>
     <ClCompile Include="ql\instruments\vanillaswingoption.cpp">
@@ -6512,7 +6527,10 @@
     <ClCompile Include="ql\experimental\finitedifferences\squarerootprocessrndcalculator.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\hestonslvmodel.cpp">
+    <ClCompile Include="ql\experimental\models\hestonslvfdmmodel.cpp">
+      <Filter>experimental\models</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\models\hestonslvmcmodel.cpp">
       <Filter>experimental\models</Filter>
     </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\equityfx\fixedlocalvolsurface.cpp">
