@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2012, 2013 Klaus Spanderen
+ Copyright (C) 2012, 2013, 2015 Klaus Spanderen
+ Copyright (C) 2014, 2015 Johannes Göttker-Schnetmann
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,8 +25,10 @@
 #ifndef quantlib_fdm_heston_fwd_op_hpp
 #define quantlib_fdm_heston_fwd_op_hpp
 
+#include <ql/types.hpp>
 #include <ql/experimental/finitedifferences/fdmsquarerootfwdop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
+#include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 
 namespace QuantLib {
 
@@ -41,8 +44,10 @@ namespace QuantLib {
         FdmHestonFwdOp(
             const boost::shared_ptr<FdmMesher>& mesher,
             const boost::shared_ptr<HestonProcess>& process,
-            FdmSquareRootFwdOp::TransformationType type
-                = FdmSquareRootFwdOp::Plain);
+            FdmSquareRootFwdOp::TransformationType type 
+                = FdmSquareRootFwdOp::Plain,
+            const boost::shared_ptr<LocalVolTermStructure> & leverageFct
+                = boost::shared_ptr<LocalVolTermStructure>());
 
         Size size() const;
         void setTime(Time t1, Time t2);
@@ -60,6 +65,7 @@ namespace QuantLib {
         Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const;
 #endif
       private:
+        Disposable<Array> getLeverageFctSlice(Time t1, Time t2) const;
         const FdmSquareRootFwdOp::TransformationType type_;
         const Real kappa_, theta_, sigma_, rho_, v0_;
 
@@ -69,11 +75,17 @@ namespace QuantLib {
         const Array varianceValues_;
         const boost::shared_ptr<FirstDerivativeOp> dxMap_;
         const boost::shared_ptr<ModTripleBandLinearOp> dxxMap_;
+        const boost::shared_ptr<ModTripleBandLinearOp> boundary_;
+        Array L_;
 
         const boost::shared_ptr<TripleBandLinearOp> mapX_;
         const boost::shared_ptr<FdmSquareRootFwdOp> mapY_;
 
         const boost::shared_ptr<NinePointLinearOp> correlation_;
+
+        const boost::shared_ptr<LocalVolTermStructure> leverageFct_;
+        const boost::shared_ptr<FdmMesher> mesher_;
+        const Array x_;
     };
 }
 

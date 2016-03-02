@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2008 Ferdinando Ametrano
  Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,6 +27,9 @@
 #define quantlib_spreaded_caplet_volstructure_h
 
 #include <ql/termstructures/volatility/optionlet/optionletvolatilitystructure.hpp>
+#include <ql/termstructures/volatility/optionlet/optionletstripper.hpp>
+#include <ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp>
+#include <boost/smart_ptr/shared_ptr.hpp>
 
 namespace QuantLib {
 
@@ -51,6 +55,9 @@ namespace QuantLib {
         Calendar calendar() const;
         Natural settlementDays() const;
         //@}
+        VolatilityType volatilityType() const;
+        Real displacement() const;
+
       protected:
         // All virtual methods of base classes must be forwarded
         //! \name OptionletVolatilityStructure interface
@@ -102,6 +109,14 @@ namespace QuantLib {
         return baseVol_->maxStrike();
     }
 
+    inline VolatilityType
+    SpreadedOptionletVolatility::volatilityType() const {
+        return baseVol_->volatilityType();
+    }
+
+    inline Real SpreadedOptionletVolatility::displacement() const {
+        return baseVol_->displacement();
+    }
 }
 
 #endif

@@ -47,13 +47,13 @@ namespace QuantLib {
         results_.additionalResults["underlyingValue"] = result.second;
     }
 
-    const Real
+    Real
     Gaussian1dFloatFloatSwaptionEngine::underlyingNpv(const Date &expiry,
                                                       const Real y) const {
         return npvs(expiry, y, true).second;
     }
 
-    const VanillaSwap::Type
+    VanillaSwap::Type
     Gaussian1dFloatFloatSwaptionEngine::underlyingType() const {
         return arguments_.swap->type();
     }

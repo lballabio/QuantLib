@@ -4690,6 +4690,30 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\fixedlocalvolsurface.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\fixedlocalvolsurface.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\gridmodellocalvolsurface.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\gridmodellocalvolsurface.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\hestonblackvolsurface.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\hestonblackvolsurface.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\termstructures\volatility\equityfx\impliedvoltermstructure.hpp"
 						>
 					</File>
@@ -4715,6 +4739,10 @@
 					</File>
 					<File
 						RelativePath=".\ql\termstructures\volatility\equityfx\localvoltermstructure.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\noexceptlocalvolsurface.hpp"
 						>
 					</File>
 				</Filter>
@@ -7131,6 +7159,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\bsmrndcalculator.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\bsmrndcalculator.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\dynprogvppintrinsicvalueengine.cpp"
 					>
 				</File>
@@ -7144,6 +7180,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdextoujumpvanillaengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdhestondoublebarrierengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdhestondoublebarrierengine.hpp"
 					>
 				</File>
 				<File
@@ -7211,6 +7255,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmhestongreensfct.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmhestongreensfct.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmklugeextouop.cpp"
 					>
 				</File>
@@ -7220,6 +7272,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdmklugeextousolver.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmlocalvolfwdop.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdmlocalvolfwdop.hpp"
 					>
 				</File>
 				<File
@@ -7307,7 +7367,39 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\hestonrndcalculator.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\hestonrndcalculator.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\localvolrndcalculator.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\localvolrndcalculator.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\modtriplebandlinearop.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\riskneutraldensitycalculator.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\riskneutraldensitycalculator.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\squarerootprocessrndcalculator.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\squarerootprocessrndcalculator.hpp"
 					>
 				</File>
 				<File
@@ -7316,6 +7408,30 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\vanillavppoption.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="models"
+				>
+				<File
+					RelativePath=".\ql\experimental\models\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\hestonslvfdmmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\hestonslvfdmmodel.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\hestonslvmcmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\hestonslvmcmodel.hpp"
 					>
 				</File>
 			</Filter>
@@ -7356,6 +7472,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\processes\gemanroncoroniprocess.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\processes\hestonslvprocess.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\processes\hestonslvprocess.hpp"
 					>
 				</File>
 				<File
@@ -8831,6 +8955,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\math\laplaceinterpolation.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\math\latentmodel.hpp"
 					>
 				</File>
@@ -8856,6 +8984,18 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\math\numericaldifferentiation.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\piecewisefunction.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\piecewiseintegral.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\piecewiseintegral.hpp"
 					>
 				</File>
 				<File

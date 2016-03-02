@@ -55,7 +55,7 @@ namespace QuantLib {
                 boost::make_shared<GaussKronrodNonAdaptive>(1E-10, 5000, 1E-10);
     }
 
-    const Real LinearTsrPricer::GsrG(const Date &d) const {
+    Real LinearTsrPricer::GsrG(const Date &d) const {
 
         Real yf = volDayCounter_.yearFraction(fixingDate_, d);
         if (std::fabs(meanReversion_->value()) < 1.0E-4)
@@ -65,8 +65,8 @@ namespace QuantLib {
                    meanReversion_->value();
     }
 
-    const Real LinearTsrPricer::singularTerms(const Option::Type type,
-                                              const Real strike) const {
+    Real LinearTsrPricer::singularTerms(const Option::Type type,
+                                        const Real strike) const {
 
         Real omega = (type == Option::Call ? 1.0 : -1.0);
         Real s1 = std::max(omega * (swapRateValue_ - strike), 0.0) *
@@ -78,7 +78,7 @@ namespace QuantLib {
         return s1 + s2;
     }
 
-    const Real LinearTsrPricer::integrand(const Real strike) const {
+    Real LinearTsrPricer::integrand(const Real strike) const {
         return 2.0 * a_ * smileSection_->optionPrice(
                               strike, strike < swapRateValue_ ? Option::Put
                                                               : Option::Call);
@@ -281,16 +281,24 @@ namespace QuantLib {
             Real atm = smileSection_->atmLevel();
             Real atmVol = smileSection_->volatility(atm);
             Real shift = smileSection_->shift();
-            Real upperTmp =
-                (atm + shift) * std::exp(settings_.stdDevs_ * atmVol -
-                                         0.5 * atmVol * atmVol *
-                                             smileSection_->exerciseTime()) -
-                shift;
-            Real lowerTmp =
-                (atm + shift) * std::exp(-settings_.stdDevs_ * atmVol -
-                                         0.5 * atmVol * atmVol *
-                                             smileSection_->exerciseTime()) -
-                shift;
+            Real lowerTmp, upperTmp;
+            if (smileSection_->volatilityType() == ShiftedLognormal) {
+                upperTmp = (atm + shift) *
+                               std::exp(settings_.stdDevs_ * atmVol -
+                                        0.5 * atmVol * atmVol *
+                                            smileSection_->exerciseTime()) -
+                           shift;
+                lowerTmp = (atm + shift) *
+                               std::exp(-settings_.stdDevs_ * atmVol -
+                                        0.5 * atmVol * atmVol *
+                                            smileSection_->exerciseTime()) -
+                           shift;
+            } else {
+                Real tmp = settings_.stdDevs_ * atmVol *
+                           std::sqrt(smileSection_->exerciseTime());
+                upperTmp = atm + tmp;
+                lowerTmp = atm - tmp;
+            }
             upper = std::min(upperTmp - shift, shiftedUpperBound_);
             lower = std::max(lowerTmp - shift, shiftedLowerBound_);
             break;

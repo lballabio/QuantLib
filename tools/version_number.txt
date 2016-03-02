@@ -1,0 +1,12 @@
+
+The current version number is 1.8; the hexadecimal version is 0x010800f0.
+
+The version number needs to be updated manually in:
+
+    QuantLib/Announce.txt
+    QuantLib/configure.ac
+    QuantLib/ql/version.hpp
+
+After modifying configure.ac, running ./autogen.sh and ./configure
+will update the version number in any other file that needs it.
+

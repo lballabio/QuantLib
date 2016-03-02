@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -57,8 +58,8 @@ namespace QuantLib {
         Natural settlementDays() const { return atmVol_->settlementDays(); }
         //! \name VolatilityTermStructure interface
         //@{
-        Rate minStrike() const { return 0.0; }
-        Rate maxStrike() const { return 1.0; }
+        Rate minStrike() const { return -QL_MAX_REAL; }
+        Rate maxStrike() const { return QL_MAX_REAL; }
         //@}
         //! \name SwaptionVolatilityStructure interface
         //@{
@@ -78,7 +79,7 @@ namespace QuantLib {
         const std::vector<std::vector<Handle<Quote> > >& volSpreads() const { return volSpreads_; }
         const boost::shared_ptr<SwapIndex> swapIndexBase() const { return swapIndexBase_; }
         const boost::shared_ptr<SwapIndex> shortSwapIndexBase() const { return shortSwapIndexBase_; }
-        const bool vegaWeightedSmileFit() const { return vegaWeightedSmileFit_; }
+        bool vegaWeightedSmileFit() const { return vegaWeightedSmileFit_; }
         //@}
         //! \name LazyObject interface
         //@{
@@ -90,9 +91,7 @@ namespace QuantLib {
             SwaptionVolatilityDiscrete::performCalculations();
         }
         //@}
-        Real shift(Time optionTime, Time swapLength) const {
-            return atmVol_->shift(optionTime,swapLength);
-        }
+        VolatilityType volatilityType() const;
       protected:
         void registerWithVolatilitySpread();
         virtual Size requiredNumberOfStrikes() const { return 2; }
@@ -102,6 +101,7 @@ namespace QuantLib {
         Volatility volatilityImpl(const Date& optionDate,
                                   const Period& swapTenor,
                                   Rate strike) const;
+        Real shiftImpl(Time optionTime, Time swapLength) const;
         Handle<SwaptionVolatilityStructure> atmVol_;
         Size nStrikes_;
         std::vector<Spread> strikeSpreads_;
@@ -113,6 +113,10 @@ namespace QuantLib {
     };
 
     // inline
+
+    inline VolatilityType SwaptionVolatilityCube::volatilityType() const {
+        return atmVol_->volatilityType();
+    }
 
     inline Volatility SwaptionVolatilityCube::volatilityImpl(
                                                         Time optionTime,
@@ -128,6 +132,10 @@ namespace QuantLib {
         return smileSectionImpl(optionDate, swapTenor)->volatility(strike);
     }
 
+    inline Real SwaptionVolatilityCube::shiftImpl(Time optionTime,
+                                                  Time swapLength) const {
+        return atmVol_->shift(optionTime, swapLength);
+    }
 }
 
 #endif

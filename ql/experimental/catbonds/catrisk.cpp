@@ -73,7 +73,7 @@ namespace QuantLib {
     EventSet::EventSet(boost::shared_ptr<std::vector<std::pair<Date, Real> > > events, 
                        Date eventsStart, 
                        Date eventsEnd) 
-    : events_(events), eventsStart_(eventsStart), eventsEnd_(eventsEnd) {};
+    : events_(events), eventsStart_(eventsStart), eventsEnd_(eventsEnd) {}
 
     boost::shared_ptr<CatSimulation> EventSet::newSimulation(const Date& start, const Date& end) const{
         return boost::make_shared<EventSetSimulation>(events_, eventsStart_, eventsEnd_, start, end);
