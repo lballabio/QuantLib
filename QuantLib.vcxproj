@@ -1363,6 +1363,7 @@
     <ClInclude Include="ql\pricingengines\bond\bondfunctions.hpp" />
     <ClInclude Include="ql\pricingengines\bond\discountingbondengine.hpp" />
     <ClInclude Include="ql\pricingengines\swap\all.hpp" />
+    <ClInclude Include="ql\pricingengines\swap\cvaswapengine.hpp" />
     <ClInclude Include="ql\pricingengines\swap\discountingswapengine.hpp" />
     <ClInclude Include="ql\pricingengines\swap\discretizedswap.hpp" />
     <ClInclude Include="ql\pricingengines\swap\treeswapengine.hpp" />
@@ -2325,6 +2326,7 @@
     <ClCompile Include="ql\pricingengines\lookback\analyticcontinuouspartialfloatinglookback.cpp" />
     <ClCompile Include="ql\pricingengines\bond\bondfunctions.cpp" />
     <ClCompile Include="ql\pricingengines\bond\discountingbondengine.cpp" />
+    <ClCompile Include="ql\pricingengines\swap\cvaswapengine.cpp" />
     <ClCompile Include="ql\pricingengines\swap\discountingswapengine.cpp" />
     <ClCompile Include="ql\pricingengines\swap\discretizedswap.cpp" />
     <ClCompile Include="ql\pricingengines\swap\treeswapengine.cpp" />

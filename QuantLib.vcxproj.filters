@@ -2496,6 +2496,9 @@
     <ClInclude Include="ql\pricingengines\swap\all.hpp">
       <Filter>pricingengines\swap</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\swap\cvaswapengine.hpp">
+      <Filter>pricingengines\swap</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\swap\discountingswapengine.hpp">
       <Filter>pricingengines\swap</Filter>
     </ClInclude>
@@ -5387,6 +5390,9 @@
     </ClCompile>
     <ClCompile Include="ql\pricingengines\bond\discountingbondengine.cpp">
       <Filter>pricingengines\bond</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\swap\cvaswapengine.cpp">
+      <Filter>pricingengines\swap</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\swap\discountingswapengine.cpp">
       <Filter>pricingengines\swap</Filter>

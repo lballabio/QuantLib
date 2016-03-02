@@ -6654,6 +6654,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\swap\cvaswapengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\swap\cvaswapengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\pricingengines\swap\discountingswapengine.cpp"
 					>
 				</File>
