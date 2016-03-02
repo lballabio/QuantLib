@@ -15,8 +15,7 @@ EXTRA_DIST = \
     CVAIRS_vc8.vcproj \
     CVAIRS_vc9.vcproj \
     CVAIRS.vcxproj \
-    CVAIRS.vcxproj.filters \
-    ReadMe.txt
+    CVAIRS.vcxproj.filters
 
 .PHONY: examples check-examples
 
