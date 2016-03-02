@@ -63,6 +63,7 @@ testCaseCollection.xml
 *.suo
 *.vcproj.*.user
 *.vcxproj.user
+*.VC.opendb
 *.log
 *.sdf
 *.opensdf
