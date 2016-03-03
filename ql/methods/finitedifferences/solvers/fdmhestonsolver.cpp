@@ -3,7 +3,8 @@
 /*
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008, 2009 Ralph Schreyer
- Copyright (C) 2008, 2009, 2011 Klaus Spanderen
+ Copyright (C) 2008, 2009, 2011, 2014, 2015 Klaus Spanderen
+ Copyright (C) 2015 Johannes Goettker-Schnetmann
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,11 +31,13 @@ namespace QuantLib {
         const Handle<HestonProcess>& process,
         const FdmSolverDesc& solverDesc,
         const FdmSchemeDesc& schemeDesc,
-        const Handle<FdmQuantoHelper>& quantoHelper)
+        const Handle<FdmQuantoHelper>& quantoHelper,
+        const boost::shared_ptr<LocalVolTermStructure>& leverageFct)
     : process_(process),
       solverDesc_(solverDesc),
       schemeDesc_(schemeDesc),
-      quantoHelper_(quantoHelper) {
+      quantoHelper_(quantoHelper),
+      leverageFct_(leverageFct){
 
         registerWith(process_);
         registerWith(quantoHelper_);
@@ -42,10 +45,11 @@ namespace QuantLib {
 
     void FdmHestonSolver::performCalculations() const {
         boost::shared_ptr<FdmLinearOpComposite> op(
-                new FdmHestonOp(
-                        solverDesc_.mesher, process_.currentLink(),
-                        (!quantoHelper_.empty()) ? quantoHelper_.currentLink()
-                                     : boost::shared_ptr<FdmQuantoHelper>()));
+            new FdmHestonOp(
+                solverDesc_.mesher, process_.currentLink(),
+                (!quantoHelper_.empty()) ? quantoHelper_.currentLink()
+                             : boost::shared_ptr<FdmQuantoHelper>(),
+                leverageFct_));
 
         solver_ = boost::shared_ptr<Fdm2DimSolver>(
                                new Fdm2DimSolver(solverDesc_, schemeDesc_, op));

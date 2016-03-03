@@ -34,8 +34,6 @@
 #include <ql/option.hpp>
 #include <ql/quotes/simplequote.hpp>
 
-#include <boost/make_shared.hpp>
-
 namespace QuantLib {
 
     class FloatingRateCoupon;
@@ -99,7 +97,8 @@ namespace QuantLib {
                 Handle< OptionletVolatilityStructure >(),
             const TimingAdjustment timingAdjustment = Black76,
             const Handle< Quote > correlation =
-                Handle< Quote >(boost::make_shared< SimpleQuote >(1.0)))
+                Handle< Quote >(boost::shared_ptr<Quote>(
+                                                   new SimpleQuote(1.0))))
             : IborCouponPricer(v), timingAdjustment_(timingAdjustment),
               correlation_(correlation) {
             QL_REQUIRE(timingAdjustment_ == Black76 ||

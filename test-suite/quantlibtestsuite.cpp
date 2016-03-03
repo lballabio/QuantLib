@@ -20,6 +20,7 @@
 
 #include <ql/types.hpp>
 #include <ql/settings.hpp>
+#include <ql/utilities/dataparsers.hpp>
 #include <ql/version.hpp>
 
 #ifdef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
@@ -117,6 +118,7 @@
 #include "gjrgarchmodel.hpp"
 #include "gsr.hpp"
 #include "hestonmodel.hpp"
+#include "hestonslvmodel.hpp"
 #include "himalayaoption.hpp"
 #include "hybridhestonhullwhiteprocess.hpp"
 #include "inflation.hpp"
@@ -165,6 +167,7 @@
 #include "piecewisezerospreadedtermstructure.hpp"
 #include "quantooption.hpp"
 #include "quotes.hpp"
+#include "riskneutraldensitycalculator.hpp"
 #include "riskstats.hpp"
 #include "rngtraits.hpp"
 #include "rounding.hpp"
@@ -219,16 +222,18 @@ namespace {
                   << seconds << " s\n" << std::endl;
     }
 
-    void configure() {
-        /* if needed, either or both the lines below can be
+    void configure(QuantLib::Date evaluationDate) {
+        /* if needed, a subset of the lines below can be
            uncommented and/or changed to run the test suite with a
            different configuration. In the future, we'll need a
            mechanism that doesn't force us to recompile (possibly a
            couple of command-line flags for the test suite?)
         */
 
-        //QuantLib::Settings::instance().includeReferenceDateCashFlows() = true;
-        //QuantLib::Settings::instance().includeTodaysCashFlows() = boost::none;
+        // QuantLib::Settings::instance().includeReferenceDateCashFlows() = true;
+        // QuantLib::Settings::instance().includeTodaysCashFlows() = boost::none;
+
+        QuantLib::Settings::instance().evaluationDate() = evaluationDate;
     }
 
 }
@@ -241,43 +246,86 @@ namespace QuantLib {
 }
 #endif
 
+QuantLib::Date evaluation_date(int argc, char** argv) {
+    /*! Dead simple parser:
+        - passing --date=YYYY-MM-DD causes the test suite to run on
+          that date;
+        - passing --date=today causes it to run on today's date;
+        - passing nothing causes it to run on a known date for which
+          there should be no date-dependent errors as far as we know.
+
+        Dates that should eventually be checked include:
+        - 2015-08-29 causes three tests to fail;
+        - 2016-02-29 causes two tests to fail.
+    */
+
+    QuantLib::Date knownGoodDefault =
+        QuantLib::Date(16, QuantLib::September, 2015);
+
+    for (int i=1; i<argc; ++i) {
+        std::string arg = argv[i];
+        if (arg == "--date=today")
+            return QuantLib::Date::todaysDate();
+        else if (arg.substr(0, 7) == "--date=")
+            return QuantLib::DateParser::parseISO(arg.substr(7));
+    }
+    return knownGoodDefault;
+}
+
+
 test_suite* init_unit_test_suite(int, char* []) {
 
-    std::string header =
+    int argc = boost::unit_test::framework::master_test_suite().argc;
+    char **argv = boost::unit_test::framework::master_test_suite().argv;
+    configure(evaluation_date(argc, argv));
+
+    const QuantLib::Settings& settings = QuantLib::Settings::instance();
+    std::ostringstream header;
+    header <<
         " Testing "
-            #ifdef BOOST_MSVC
-            QL_LIB_NAME
-            #else
-            "QuantLib " QL_VERSION
-            #endif
+        #ifdef BOOST_MSVC
+        QL_LIB_NAME
+        #else
+        "QuantLib " QL_VERSION
+        #endif
         "\n  QL_NEGATIVE_RATES "
-            #ifdef QL_NEGATIVE_RATES
-            "       defined"
-            #else
-            "     undefined"
-            #endif
+        #ifdef QL_NEGATIVE_RATES
+        "       defined"
+        #else
+        "     undefined"
+        #endif
         "\n  QL_EXTRA_SAFETY_CHECKS "
-            #ifdef QL_EXTRA_SAFETY_CHECKS
-            "  defined"
-            #else
-            "undefined"
-            #endif
+        #ifdef QL_EXTRA_SAFETY_CHECKS
+        "  defined"
+        #else
+        "undefined"
+        #endif
         "\n  QL_USE_INDEXED_COUPON "
-            #ifdef QL_USE_INDEXED_COUPON
-            "   defined"
-            #else
-            " undefined"
-            #endif
-         ;
-    std::string rule = std::string(35, '=');
+        #ifdef QL_USE_INDEXED_COUPON
+        "   defined"
+        #else
+        " undefined"
+        #endif
+        "\n"
+           << "evaluation date is " << settings.evaluationDate() << ",\n"
+           << (settings.includeReferenceDateEvents()
+               ? "reference date events are included,\n"
+               : "reference date events are excluded,\n")
+           << (settings.includeTodaysCashFlows()
+               ? "today's cashflows are included,\n"
+               : "today's cashflows are excluded,\n")
+           << (settings.enforcesTodaysHistoricFixings()
+               ? "today's historic fixings are enforced"
+               : "today's historic fixings are not enforced");
+
+    std::string rule = std::string(41, '=');
 
     BOOST_TEST_MESSAGE(rule);
-    BOOST_TEST_MESSAGE(header);
+    BOOST_TEST_MESSAGE(header.str());
     BOOST_TEST_MESSAGE(rule);
     test_suite* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(QUANTLIB_TEST_CASE(startTimer));
-    test->add(QUANTLIB_TEST_CASE(configure));
 
     test->add(AmericanOptionTest::suite());
     test->add(ArrayTest::suite());
@@ -379,7 +427,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(VarianceSwapTest::suite());
     test->add(VolatilityModelsTest::suite());
 
-    // tests for experimental classes
+//    tests for experimental classes
     test->add(AmortizingBondTest::suite());
     test->add(AsianOptionTest::experimental());
     test->add(BarrierOptionTest::experimental());
@@ -399,8 +447,8 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(EverestOptionTest::suite());
     test->add(ExtendedTreesTest::suite());
     test->add(ExtensibleOptionsTest::suite());
-    test->add(FdHestonTest::experimental());
     test->add(HestonModelTest::experimental());
+    test->add(HestonSLVModelTest::experimental());
     test->add(HimalayaOptionTest::suite());
     test->add(InflationCPICapFloorTest::suite());
     test->add(InflationVolTest::suite());
@@ -411,6 +459,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(PagodaOptionTest::suite());
     test->add(PartialTimeBarrierOptionTest::suite());
     test->add(QuantoOptionTest::experimental());
+    test->add(RiskNeutralDensityCalculatorTest::experimental());
     test->add(SpreadOptionTest::suite());
     test->add(SwingOptionTest::suite());
     test->add(TwoAssetBarrierOptionTest::suite());

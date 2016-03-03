@@ -3,7 +3,8 @@
 /*
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008 Klaus Spanderen
+ Copyright (C) 2008, 2014, 2015 Klaus Spanderen
+ Copyright (C) 2015 Johannes Goettker-Schnetmann
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,6 +33,7 @@
 #include <ql/methods/finitedifferences/operators/triplebandlinearop.hpp>
 #include <ql/methods/finitedifferences/operators/ninepointlinearop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
+#include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 
 namespace QuantLib {
 
@@ -41,13 +43,18 @@ namespace QuantLib {
             const boost::shared_ptr<FdmMesher>& mesher,
             const boost::shared_ptr<YieldTermStructure>& rTS,
             const boost::shared_ptr<YieldTermStructure>& qTS,
-            const boost::shared_ptr<FdmQuantoHelper>& quantoHelper);
+            const boost::shared_ptr<FdmQuantoHelper>& quantoHelper,
+            const boost::shared_ptr<LocalVolTermStructure>& leverageFct
+                = boost::shared_ptr<LocalVolTermStructure>());
 
         void setTime(Time t1, Time t2);
         const TripleBandLinearOp& getMap() const;
+        const Array& getL() const { return L_; }
 
       protected:
-        Array varianceValues_, volatilityValues_;
+        Disposable<Array> getLeverageFctSlice(Time t1, Time t2) const;
+
+        Array varianceValues_, volatilityValues_, L_;
         const FirstDerivativeOp  dxMap_;
         const TripleBandLinearOp dxxMap_;
         TripleBandLinearOp mapT_;
@@ -55,6 +62,7 @@ namespace QuantLib {
         const boost::shared_ptr<FdmMesher> mesher_;
         const boost::shared_ptr<YieldTermStructure> rTS_, qTS_;
         const boost::shared_ptr<FdmQuantoHelper> quantoHelper_;
+        const boost::shared_ptr<LocalVolTermStructure> leverageFct_;
     };
 
     class FdmHestonVariancePart {
@@ -81,7 +89,9 @@ namespace QuantLib {
             const boost::shared_ptr<FdmMesher>& mesher,
             const boost::shared_ptr<HestonProcess>& hestonProcess,
             const boost::shared_ptr<FdmQuantoHelper>& quantoHelper
-                                        = boost::shared_ptr<FdmQuantoHelper>());
+                = boost::shared_ptr<FdmQuantoHelper>(),
+            const boost::shared_ptr<LocalVolTermStructure>& leverageFct
+                = boost::shared_ptr<LocalVolTermStructure>());
 
         Size size() const;
         void setTime(Time t1, Time t2);
@@ -102,6 +112,7 @@ namespace QuantLib {
         NinePointLinearOp correlationMap_;
         FdmHestonVariancePart dyMap_;
         FdmHestonEquityPart dxMap_;
+        const boost::shared_ptr<LocalVolTermStructure> leverageFct_;
     };
 }
 

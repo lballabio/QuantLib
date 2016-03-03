@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2008 Klaus Spanderen
+ Copyright (C) 2014 Johannes Göttker-Schnetmann
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -35,16 +36,8 @@ public:
     static void testFdmHestonConvergence();
     static void testFdmHestonBlackScholes();
     static void testFdmHestonIntradayPricing();
-    static void testBlackScholesFokkerPlanckFwdEquation();
-    static void testSquareRootZeroFlowBC();
-    static void testTransformedZeroFlowBC();
-    static void testSquareRootEvolveWithStationaryDensity();
-    static void testSquareRootFokkerPlanckFwdEquation();
-    static void testHestonFokkerPlanckFwdEquation();
 
     static boost::unit_test_framework::test_suite* suite();
-    static boost::unit_test_framework::test_suite* experimental();
-
 };
 
 #endif

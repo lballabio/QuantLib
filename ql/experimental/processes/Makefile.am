@@ -8,6 +8,7 @@ this_include_HEADERS = \
     extendedblackscholesprocess.hpp \
     extendedornsteinuhlenbeckprocess.hpp \
     gemanroncoroniprocess.hpp \
+    hestonslvprocess.hpp \
     klugeextouprocess.hpp \
     vegastressedblackscholesprocess.hpp
 
@@ -16,6 +17,7 @@ libProcesses_la_SOURCES = \
     extendedblackscholesprocess.cpp \
     extendedornsteinuhlenbeckprocess.cpp \
     gemanroncoroniprocess.cpp \
+    hestonslvprocess.cpp \
     klugeextouprocess.cpp \
     vegastressedblackscholesprocess.cpp
 

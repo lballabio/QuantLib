@@ -3,7 +3,8 @@
 /*
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008 Klaus Spanderen
+ Copyright (C) 2008, 2014, 2015 Klaus Spanderen
+ Copyright (C) 2015 Johannes Goettker-Schnetmann
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,7 +32,8 @@ namespace QuantLib {
         const boost::shared_ptr<FdmMesher>& mesher,
         const boost::shared_ptr<YieldTermStructure>& rTS,
         const boost::shared_ptr<YieldTermStructure>& qTS,
-        const boost::shared_ptr<FdmQuantoHelper>& quantoHelper)
+        const boost::shared_ptr<FdmQuantoHelper>& quantoHelper,
+        const boost::shared_ptr<LocalVolTermStructure>& leverageFct)
     : varianceValues_(0.5*mesher->locations(1)),
       dxMap_ (FirstDerivativeOp(0, mesher)),
       dxxMap_(SecondDerivativeOp(0, mesher).mult(0.5*mesher->locations(1))),
@@ -39,7 +41,8 @@ namespace QuantLib {
       mesher_(mesher),
       rTS_(rTS),
       qTS_(qTS),
-      quantoHelper_(quantoHelper) {
+      quantoHelper_(quantoHelper),
+      leverageFct_(leverageFct) {
 
         // on the boundary s_min and s_max the second derivative
         // d^2V/dS^2 is zero and due to Ito's Lemma the variance term
@@ -67,9 +70,43 @@ namespace QuantLib {
                 dxMap_, dxxMap_, Array(1, -0.5*r));
         }
         else {
-            mapT_.axpyb(r - q - varianceValues_, dxMap_, dxxMap_, Array(1, -0.5*r));
+            L_ = getLeverageFctSlice(t1, t2);
+            const Array Lsquare = L_*L_;
+
+            mapT_.axpyb(r - q - varianceValues_*Lsquare, dxMap_,
+                        dxxMap_.mult(Lsquare), Array(1, -0.5*r));
         }
     }
+
+    Disposable<Array> FdmHestonEquityPart::getLeverageFctSlice(Time t1, Time t2)
+    const {
+        const boost::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
+        Array v(layout->size(), 1.0);
+
+        if (!leverageFct_) {
+            return v;
+        }
+        const Real t = 0.5*(t1+t2);
+        const Time time = std::min(leverageFct_->maxTime(), t);
+
+        const FdmLinearOpIterator endIter = layout->end();
+        for (FdmLinearOpIterator iter = layout->begin();
+             iter!=endIter; ++iter) {
+            const Size nx = iter.coordinates()[0];
+
+            if (iter.coordinates()[1] == 0) {
+                const Real x = std::exp(mesher_->location(iter, 0));
+                const Real spot = std::min(leverageFct_->maxStrike(),
+                                           std::max(leverageFct_->minStrike(), x));
+                v[nx] = std::max(0.01, leverageFct_->localVol(time, spot, true));
+            }
+            else {
+                v[iter.index()] = v[nx];
+            }
+        }
+        return v;
+    }
+
 
     const TripleBandLinearOp& FdmHestonEquityPart::getMap() const {
         return mapT_;
@@ -99,7 +136,8 @@ namespace QuantLib {
     FdmHestonOp::FdmHestonOp(
         const boost::shared_ptr<FdmMesher>& mesher,
         const boost::shared_ptr<HestonProcess> & hestonProcess,
-        const boost::shared_ptr<FdmQuantoHelper>& quantoHelper)
+        const boost::shared_ptr<FdmQuantoHelper>& quantoHelper,
+        const boost::shared_ptr<LocalVolTermStructure>& leverageFct)
     : correlationMap_(SecondOrderMixedDerivativeOp(0, 1, mesher)
                         .mult(hestonProcess->rho()*hestonProcess->sigma()
                                 *mesher->locations(1))),
@@ -110,7 +148,8 @@ namespace QuantLib {
       dxMap_(mesher,
              hestonProcess->riskFreeRate().currentLink(), 
              hestonProcess->dividendYield().currentLink(),
-             quantoHelper) {
+             quantoHelper, leverageFct),
+      leverageFct_(leverageFct) {
     }
 
 
@@ -125,7 +164,7 @@ namespace QuantLib {
 
     Disposable<Array> FdmHestonOp::apply(const Array& u) const {
         return dyMap_.getMap().apply(u) + dxMap_.getMap().apply(u)
-              + correlationMap_.apply(u);
+              + dxMap_.getL()*correlationMap_.apply(u);
     }
 
     Disposable<Array> FdmHestonOp::apply_direction(Size direction,
@@ -139,7 +178,7 @@ namespace QuantLib {
     }
 
     Disposable<Array> FdmHestonOp::apply_mixed(const Array& r) const {
-        return correlationMap_.apply(r);
+        return dxMap_.getL()*correlationMap_.apply(r);
     }
 
     Disposable<Array>

@@ -38,6 +38,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LatentModel", "Examples\Lat
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BasketLosses", "Examples\BasketLosses\BasketLosses.vcxproj", "{43A17E5B-EC94-4EB5-9D68-788BF234AE1F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CVAIRS", "Examples\CVAIRS\CVAIRS.vcxproj", "{D85EA161-361A-4CAC-8B77-39E174FCFFE2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug (static runtime)|Win32 = Debug (static runtime)|Win32
@@ -354,6 +356,22 @@ Global
 		{43A17E5B-EC94-4EB5-9D68-788BF234AE1F}.Release|Win32.Build.0 = Release|Win32
 		{43A17E5B-EC94-4EB5-9D68-788BF234AE1F}.Release|x64.ActiveCfg = Release|x64
 		{43A17E5B-EC94-4EB5-9D68-788BF234AE1F}.Release|x64.Build.0 = Release|x64
+		{D85EA161-361A-4CAC-8B77-39E174FCFFE2}.Debug (static runtime)|Win32.ActiveCfg = Debug (static runtime)|Win32
+		{D85EA161-361A-4CAC-8B77-39E174FCFFE2}.Debug (static runtime)|Win32.Build.0 = Debug (static runtime)|Win32
+		{D85EA161-361A-4CAC-8B77-39E174FCFFE2}.Debug (static runtime)|x64.ActiveCfg = Debug (static runtime)|x64
+		{D85EA161-361A-4CAC-8B77-39E174FCFFE2}.Debug (static runtime)|x64.Build.0 = Debug (static runtime)|x64
+		{D85EA161-361A-4CAC-8B77-39E174FCFFE2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D85EA161-361A-4CAC-8B77-39E174FCFFE2}.Debug|Win32.Build.0 = Debug|Win32
+		{D85EA161-361A-4CAC-8B77-39E174FCFFE2}.Debug|x64.ActiveCfg = Debug|x64
+		{D85EA161-361A-4CAC-8B77-39E174FCFFE2}.Debug|x64.Build.0 = Debug|x64
+		{D85EA161-361A-4CAC-8B77-39E174FCFFE2}.Release (static runtime)|Win32.ActiveCfg = Release (static runtime)|Win32
+		{D85EA161-361A-4CAC-8B77-39E174FCFFE2}.Release (static runtime)|Win32.Build.0 = Release (static runtime)|Win32
+		{D85EA161-361A-4CAC-8B77-39E174FCFFE2}.Release (static runtime)|x64.ActiveCfg = Release (static runtime)|x64
+		{D85EA161-361A-4CAC-8B77-39E174FCFFE2}.Release (static runtime)|x64.Build.0 = Release (static runtime)|x64
+		{D85EA161-361A-4CAC-8B77-39E174FCFFE2}.Release|Win32.ActiveCfg = Release|Win32
+		{D85EA161-361A-4CAC-8B77-39E174FCFFE2}.Release|Win32.Build.0 = Release|Win32
+		{D85EA161-361A-4CAC-8B77-39E174FCFFE2}.Release|x64.ActiveCfg = Release|x64
+		{D85EA161-361A-4CAC-8B77-39E174FCFFE2}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
