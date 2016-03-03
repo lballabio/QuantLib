@@ -216,7 +216,7 @@ namespace QuantLib {
             delta_(delta) {}
     protected:
         void walkImpl(Array & xRW) {
-            walkRandom_.nextReal<Real *>(&xRW[0]);
+            walkRandom_.nextReal(&xRW[0]);
             xRW *= delta_;
         }
         void init(FireflyAlgorithm *fa) {

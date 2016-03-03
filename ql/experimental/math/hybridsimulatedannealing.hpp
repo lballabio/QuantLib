@@ -29,6 +29,7 @@ Mathl. Comput. Modelling, 967-973, 1989
 #include <ql/math/optimization/problem.hpp>
 #include <ql/math/optimization/constraint.hpp>
 #include <ql/experimental/math/hybridsimulatedannealingfunctors.hpp>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
 
 namespace QuantLib {
 

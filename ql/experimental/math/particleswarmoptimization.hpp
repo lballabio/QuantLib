@@ -27,6 +27,12 @@ Computation, 6(2): 58–73.
 #ifndef quantlib_optimization_particleswarmoptimization_hpp
 #define quantlib_optimization_particleswarmoptimization_hpp
 
+#include <ql/math/optimization/problem.hpp>
+#include <ql/math/optimization/constraint.hpp>
+#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
+#include <ql/experimental/math/isotropicrandomwalk.hpp>
+#include <ql/experimental/math/levyflightdistribution.hpp>
+
 #include <boost/random/mersenne_twister.hpp>
 typedef boost::mt19937 base_generator_type;
 
@@ -37,12 +43,6 @@ typedef boost::random::uniform_int_distribution<QuantLib::Size> uniform_integer;
 #include <boost/random/uniform_int.hpp>
 typedef boost::uniform_int<unsigned long> uniform_integer;
 #endif
-
-#include <ql/math/optimization/problem.hpp>
-#include <ql/math/optimization/constraint.hpp>
-#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
-#include <ql/experimental/math/isotropicrandomwalk.hpp>
-#include <ql/experimental/math/levyflightdistribution.hpp>
 
 namespace QuantLib {
 
