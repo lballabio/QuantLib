@@ -62,7 +62,7 @@ namespace QuantLib {
                          = a[layout->neighbourhood(iter, swingDirection_, 1)];
                     
                     if (   currentValue < valuePlusOneExercise + cashflow
-                        || exercisesUsed + d <  minExercises_) {
+                        || exercisesUsed + d <=  minExercises_) {
                         retVal[iter.index()] = valuePlusOneExercise + cashflow;
                     }
                 }

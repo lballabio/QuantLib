@@ -20,6 +20,7 @@
 #include <ql/experimental/amortizingbonds/amortizingfixedratebond.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/settings.hpp>
 #include <iostream>
 
 using namespace QuantLib;
@@ -40,7 +41,7 @@ void AmortizingBondTest::testAmortizingFixedRateBond() {
 
 	Frequency freq = Monthly;
 
-	Date refDate = Date::todaysDate();
+	Date refDate = Settings::instance().evaluationDate();
 
 	const Real tolerance = 1.0e-6;
 

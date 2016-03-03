@@ -3,7 +3,8 @@
 /*
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008, 2009 Ralph Schreyer
- Copyright (C) 2008, 2009 Klaus Spanderen
+ Copyright (C) 2008, 2009, 2015 Klaus Spanderen
+ Copyright (C) 2015 Johannes Goettker-Schnetmann
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -36,13 +37,15 @@ namespace QuantLib {
     FdHestonVanillaEngine::FdHestonVanillaEngine(
             const boost::shared_ptr<HestonModel>& model,
             Size tGrid, Size xGrid, Size vGrid, Size dampingSteps,
-            const FdmSchemeDesc& schemeDesc)
+            const FdmSchemeDesc& schemeDesc,
+            const boost::shared_ptr<LocalVolTermStructure>& leverageFct)
     : GenericModelEngine<HestonModel,
                         DividendVanillaOption::arguments,
                         DividendVanillaOption::results>(model),
       tGrid_(tGrid), xGrid_(xGrid), 
       vGrid_(vGrid), dampingSteps_(dampingSteps),
-      schemeDesc_(schemeDesc) {
+      schemeDesc_(schemeDesc),
+      leverageFct_(leverageFct) {
     }
 
 
@@ -70,7 +73,7 @@ namespace QuantLib {
                       process->s0(), process->dividendYield(), 
                       process->riskFreeRate(), varianceMesher->volaEstimate()),
                       maturity, payoff->strike(),
-                      Null<Real>(), Null<Real>(), 0.0001, 1.5, 
+                      Null<Real>(), Null<Real>(), 0.0001, 2.0,
                       std::pair<Real, Real>(payoff->strike(), 0.1)));
         }
         else {
@@ -142,7 +145,8 @@ namespace QuantLib {
 
         boost::shared_ptr<FdmHestonSolver> solver(new FdmHestonSolver(
                     Handle<HestonProcess>(process),
-                    getSolverDesc(1.5), schemeDesc_));
+                    getSolverDesc(1.5), schemeDesc_,
+                    Handle<FdmQuantoHelper>(), leverageFct_));
 
         const Real v0   = process->v0();
         const Real spot = process->s0()->value();

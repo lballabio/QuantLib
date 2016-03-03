@@ -36,13 +36,15 @@ namespace QuantLib {
     FdHestonBarrierEngine::FdHestonBarrierEngine(
             const boost::shared_ptr<HestonModel>& model,
             Size tGrid, Size xGrid, Size vGrid, Size dampingSteps,
-            const FdmSchemeDesc& schemeDesc)
+            const FdmSchemeDesc& schemeDesc,
+            const boost::shared_ptr<LocalVolTermStructure>& leverageFct)
     : GenericModelEngine<HestonModel,
                         DividendBarrierOption::arguments,
                         DividendBarrierOption::results>(model),
       tGrid_(tGrid), xGrid_(xGrid), 
       vGrid_(vGrid), dampingSteps_(dampingSteps),
-      schemeDesc_(schemeDesc) {
+      schemeDesc_(schemeDesc),
+      leverageFct_(leverageFct) {
     }
 
     void FdHestonBarrierEngine::calculate() const {
@@ -130,7 +132,8 @@ namespace QuantLib {
                                      tGrid_, dampingSteps_ };
 
         boost::shared_ptr<FdmHestonSolver> solver(new FdmHestonSolver(
-                    Handle<HestonProcess>(process), solverDesc, schemeDesc_));
+                    Handle<HestonProcess>(process), solverDesc, schemeDesc_,
+                    Handle<FdmQuantoHelper>(), leverageFct_));
 
         const Real spot = process->s0()->value();
         results_.value = solver->valueAt(spot, process->v0());

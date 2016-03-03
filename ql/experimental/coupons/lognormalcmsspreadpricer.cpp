@@ -1,6 +1,6 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 /*
-  Copyright (C) 2014 Peter Caspers
+  Copyright (C) 2014, 2015 Peter Caspers
 
   This file is part of QuantLib, a free-software/open-source library
   for financial quantitative analysts and developers - http://quantlib.org/
@@ -34,7 +34,9 @@ namespace QuantLib {
         const boost::shared_ptr<CmsCouponPricer> cmsPricer,
         const Handle<Quote> &correlation,
         const Handle<YieldTermStructure> &couponDiscountCurve,
-        const Size integrationPoints)
+        const Size integrationPoints,
+        const boost::optional<VolatilityType> volatilityType,
+        const Real shift1, const Real shift2)
         : CmsSpreadCouponPricer(correlation), cmsPricer_(cmsPricer),
           couponDiscountCurve_(couponDiscountCurve) {
 
@@ -52,34 +54,67 @@ namespace QuantLib {
 
         privateObserver_ = boost::make_shared<PrivateObserver>(this);
         privateObserver_->registerWith(cmsPricer_);
+
+        if(volatilityType == boost::none) {
+            QL_REQUIRE(shift1 == Null<Real>() && shift2 == Null<Real>(),
+                       "if volatility type is inherited, no shifts should be "
+                       "specified");
+            inheritedVolatilityType_ = true;
+            volType_ = cmsPricer->swaptionVolatility()->volatilityType();
+        } else {
+            shift1_ = shift1 == Null<Real>() ? 0.0 : shift1;
+            shift2_ = shift2 == Null<Real>() ? 0.0 : shift2;
+            inheritedVolatilityType_ = false;
+            volType_ = *volatilityType;
+        }
     }
 
-    const Real LognormalCmsSpreadPricer::integrand(const Real x) const {
+    Real LognormalCmsSpreadPricer::integrand(const Real x) const {
 
-        // this is Brigo, 13.16.2 with x = v/sqrt(2)
+        // this is Brigo, 13.16.2 with x = v / sqrt(2)
 
         Real v = M_SQRT2 * x;
         Real h =
             k_ - b_ * s2_ * std::exp((m2_ - 0.5 * v2_ * v2_) * fixingTime_ +
-                                     v2_ * sqrt(fixingTime_) * v);
+                                     v2_ * std::sqrt(fixingTime_) * v);
         Real phi1, phi2;
         phi1 = cnd_->operator()(
             phi_ * (std::log(a_ * s1_ / h) +
                     (m1_ + (0.5 - rho_ * rho_) * v1_ * v1_) * fixingTime_ +
                     rho_ * v1_ * std::sqrt(fixingTime_) * v) /
-            (v1_ * sqrt(fixingTime_ * (1.0 - rho_ * rho_))));
+            (v1_ * std::sqrt(fixingTime_ * (1.0 - rho_ * rho_))));
         phi2 =
             cnd_->operator()(phi_ * (std::log(a_ * s1_ / h) +
                                      (m1_ - 0.5 * v1_ * v1_) * fixingTime_ +
                                      rho_ * v1_ * std::sqrt(fixingTime_) * v) /
-                             (v1_ * sqrt(fixingTime_ * (1.0 - rho_ * rho_))));
+                             (v1_ * std::sqrt(fixingTime_ * (1.0 - rho_ * rho_))));
         Real f = a_ * phi_ * s1_ *
                      std::exp(m1_ * fixingTime_ -
                               0.5 * rho_ * rho_ * v1_ * v1_ * fixingTime_ +
-                              rho_ * v1_ * sqrt(fixingTime_) * v) *
+                              rho_ * v1_ * std::sqrt(fixingTime_) * v) *
                      phi1 -
                  phi_ * h * phi2;
-        return 1.0 / M_SQRTPI * std::exp(-x * x) * f;
+        return std::exp(-x * x) * f;
+    }
+
+    Real LognormalCmsSpreadPricer::integrand_normal(const Real x) const {
+
+        // this is http://ssrn.com/abstract=2686998, 3.20 with x = s / sqrt(2)
+
+        Real s = M_SQRT2 * x;
+
+        Real beta =
+            phi_ *
+            (gearing1_ * adjustedRate1_ + gearing2_ * adjustedRate2_ - k_ +
+             std::sqrt(fixingTime_) *
+                 (rho_ * gearing1_ * vol1_ + gearing2_ * vol2_) * s);
+        Real f =
+            close_enough(alpha_, 0.0)
+                ? std::max(beta, 0.0)
+                : psi_ * alpha_ / (M_SQRTPI * M_SQRT2) *
+                          std::exp(-beta * beta / (2.0 * alpha_ * alpha_)) +
+                      beta * (1.0 - cnd_->operator()(-psi_ * beta / alpha_));
+        return std::exp(-x * x) * f;
     }
 
     void LognormalCmsSpreadPricer::flushCache() { cache_.clear(); }
@@ -168,7 +203,19 @@ namespace QuantLib {
             boost::shared_ptr<SwaptionVolatilityCube> swcub =
                 boost::dynamic_pointer_cast<SwaptionVolatilityCube>(swvol);
 
+            if(inheritedVolatilityType_ && volType_ == ShiftedLognormal) {
+                shift1_ =
+                    swvol->shift(fixingDate_, index_->swapIndex1()->tenor());
+                shift2_ =
+                    swvol->shift(fixingDate_, index_->swapIndex1()->tenor());
+            }
+
             if (swcub == NULL) {
+                // not a cube, just an atm surface given, so we can
+                // not easily convert volatilities and just forbid it
+                QL_REQUIRE(inheritedVolatilityType_,
+                           "if only an atm surface is given, the volatility "
+                           "type must be inherited");
                 vol1_ = swvol->volatility(
                     fixingDate_, index_->swapIndex1()->tenor(), swapRate1_);
                 vol2_ = swvol->volatility(
@@ -176,16 +223,20 @@ namespace QuantLib {
             } else {
                 vol1_ = swcub->smileSection(fixingDate_,
                                             index_->swapIndex1()->tenor())
-                            ->volatility(swapRate1_,
-                                         ShiftedLognormal, 0.0);
+                            ->volatility(swapRate1_, volType_, shift1_);
                 vol2_ = swcub->smileSection(fixingDate_,
                                             index_->swapIndex2()->tenor())
-                            ->volatility(swapRate2_,
-                                         ShiftedLognormal, 0.0);
+                            ->volatility(swapRate2_, volType_, shift2_);
             }
 
-            mu1_ = 1.0 / fixingTime_ * std::log(adjustedRate1_ / swapRate1_);
-            mu2_ = 1.0 / fixingTime_ * std::log(adjustedRate2_ / swapRate2_);
+            if(volType_ == ShiftedLognormal) {
+                mu1_ = 1.0 / fixingTime_ * std::log((adjustedRate1_ + shift1_) /
+                                                    (swapRate1_ + shift1_));
+                mu2_ = 1.0 / fixingTime_ * std::log((adjustedRate2_ + shift2_) /
+                                                    (swapRate2_ + shift2_));
+            }
+            // for the normal volatility case we do not need the drifts
+            // but rather use adjusted rates directly in the integrand
 
             rho_ = std::max(std::min(correlation()->value(), 0.9999),
                             -0.9999); // avoid division by zero in integrand
@@ -197,32 +248,46 @@ namespace QuantLib {
 
         phi_ = optionType == Option::Call ? 1.0 : -1.0;
         Real res = 0.0;
-        if (strike >= 0.0) {
-            a_ = gearing1_;
-            b_ = gearing2_;
-            s1_ = swapRate1_;
-            s2_ = swapRate2_;
-            m1_ = mu1_;
-            m2_ = mu2_;
-            v1_ = vol1_;
-            v2_ = vol2_;
-            k_ = strike;
+        if (volType_ == ShiftedLognormal) {
+            if (strike >= 0.0) {
+                a_ = gearing1_;
+                b_ = gearing2_;
+                s1_ = swapRate1_ + shift1_;
+                s2_ = swapRate2_ + shift2_;
+                m1_ = mu1_;
+                m2_ = mu2_;
+                v1_ = vol1_;
+                v2_ = vol2_;
+                k_ = strike + gearing1_ * shift1_ + gearing2_ * shift2_;
+            } else {
+                a_ = -gearing2_;
+                b_ = -gearing1_;
+                s1_ = swapRate2_ + shift1_;
+                s2_ = swapRate1_ + shift2_;
+                m1_ = mu2_;
+                m2_ = mu1_;
+                v1_ = vol2_;
+                v2_ = vol1_;
+                k_ = -strike - gearing1_ * shift1_ - gearing2_ * shift2_;
+                res += phi_ * (gearing1_ * adjustedRate1_ +
+                               gearing2_ * adjustedRate2_ - strike);
+            }
+            res +=
+                1.0 / M_SQRTPI *
+                integrator_->operator()(std::bind1st(
+                    std::mem_fun(&LognormalCmsSpreadPricer::integrand), this));
         } else {
-            a_ = -gearing2_;
-            b_ = -gearing1_;
-            s1_ = swapRate2_;
-            s2_ = swapRate1_;
-            m1_ = mu2_;
-            m2_ = mu1_;
-            v1_ = vol2_;
-            v2_ = vol1_;
-            k_ = -strike;
-            res += phi_ * (gearing1_ * adjustedRate1_ +
-                           gearing2_ * adjustedRate2_ - strike);
+            // normal volatility
+            k_ = strike;
+            alpha_ = phi_ * gearing1_ * vol1_ *
+                     std::sqrt(fixingTime_ * (1.0 - rho_ * rho_));
+            psi_ = alpha_ >= 0.0 ? 1.0 : -1.0;
+            res +=
+                1.0 / M_SQRTPI *
+                integrator_->operator()(std::bind1st(
+                    std::mem_fun(&LognormalCmsSpreadPricer::integrand_normal),
+                    this));
         }
-
-        res += integrator_->operator()(std::bind1st(
-            std::mem_fun(&LognormalCmsSpreadPricer::integrand), this));
         return res * couponDiscountCurve_->discount(paymentDate_) *
                coupon_->accrualPeriod();
     }

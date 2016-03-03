@@ -23,6 +23,7 @@
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/experimental/barrieroption/doublebarrieroption.hpp>
@@ -30,6 +31,7 @@
 #include <ql/experimental/barrieroption/binomialdoublebarrierengine.hpp>
 #include <ql/experimental/barrieroption/wulinyongdoublebarrierengine.hpp>
 #include <ql/experimental/barrieroption/vannavolgadoublebarrierengine.hpp>
+#include <ql/experimental/finitedifferences/fdhestondoublebarrierengine.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
@@ -38,6 +40,7 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/models/equity/hestonmodel.hpp>
 #include <boost/make_shared.hpp>
 
 using namespace QuantLib;
@@ -353,6 +356,31 @@ void DoubleBarrierOptionTest::testEuropeanHaugValues() {
                            exercise, values[i].s, values[i].q, values[i].r, 
                            today, values[i].v, expected, calculated, error, 
                            tol);
+        }
+
+        if (values[i].barrierType == DoubleBarrier::KnockOut) {
+            engine = boost::make_shared<FdHestonDoubleBarrierEngine>(
+                boost::make_shared<HestonModel>(
+                    boost::make_shared<HestonProcess>(
+                        Handle<YieldTermStructure>(rTS),
+                        Handle<YieldTermStructure>(qTS),
+                        Handle<Quote>(spot),
+                        square<Real>()(vol->value()), 1.0,
+                        square<Real>()(vol->value()), 0.001, 0.0)), 251, 76, 3);
+
+            opt.setPricingEngine(engine);
+            calculated = opt.NPV();
+            expected = values[i].result;
+            error = std::fabs(calculated-expected);
+
+            tol = 0.025; // error one order of magnitude lower than plain binomial
+            if (error>tol) {
+                REPORT_FAILURE("Heston value", values[i].barrierType,
+                               values[i].barrierlo, values[i].barrierhi, payoff,
+                               exercise, values[i].s, values[i].q, values[i].r,
+                               today, values[i].v, expected, calculated, error,
+                               tol);
+            }
         }
     }
 }
