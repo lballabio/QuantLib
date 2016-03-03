@@ -8951,6 +8951,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\math\fireflyalgorithm.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\fireflyalgorithm.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\math\frankcopularng.hpp"
 					>
 				</File>
@@ -8963,11 +8971,27 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\math\hybridsimulatedannealing.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\hybridsimulatedannealingfunctors.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\isotropicrandomwalk.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\math\laplaceinterpolation.hpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\experimental\math\latentmodel.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\levyflightdistribution.hpp"
 					>
 				</File>
 				<File
@@ -8992,6 +9016,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\math\numericaldifferentiation.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\particleswarmoptimization.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\particleswarmoptimization.hpp"
 					>
 				</File>
 				<File
