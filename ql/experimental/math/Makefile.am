@@ -12,6 +12,7 @@ this_include_HEADERS = \
     frankcopularng.hpp \
     gaussiancopulapolicy.hpp \
     hybridsimulatedannealing.hpp \
+    hybridsimulatedannealingfunctors.hpp \
     isotropicrandomwalk.hpp \
     latentmodel.hpp \
     levyflightdistribution.hpp \
@@ -28,7 +29,6 @@ libMath_la_SOURCES = \
     expm.cpp \
     fireflyalgorithm.cpp \
     gaussiancopulapolicy.cpp \
-    hybridsimulatedannealing.cpp \
     multidimintegrator.cpp \
     multidimquadrature.cpp \
     numericaldifferentiation.cpp \
