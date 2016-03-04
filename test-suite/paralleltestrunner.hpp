@@ -489,6 +489,12 @@ int main( int argc, char* argv[] )
     }
 
     framework::shutdown();
+
+    return runtime_config::no_result_code()
+        ? boost::exit_success
+        : results_collector.results(
+            framework::master_test_suite().p_id ).result_code();
+
 }
 
 #endif
