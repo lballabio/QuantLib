@@ -128,13 +128,13 @@ namespace QuantLib {
         QL_REQUIRE(floatingNominal_.size() == spread_.size(),
                    "Floating nominal size (" << floatingNominal_.size()
                                              << ") does not match spread size ("
-                                             << spread_.size() << ") - 1");
+                                             << spread_.size() << ")");
 
         QL_REQUIRE(floatingNominal_.size() == gearing_.size(),
                    "Floating nominal size ("
                        << floatingNominal_.size()
                        << ") does not match gearing size (" << gearing_.size()
-                       << ") - 1");
+                       << ")");
 
         // if the gearing is zero then the ibor leg will be set up with fixed
         // coupons which makes trouble here in this context. We therefore use
