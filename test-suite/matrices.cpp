@@ -4,6 +4,7 @@
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2007, 2008 Klaus Spanderen
  Copyright (C) 2007 Neil Firth
+ Copyright (C) 2016 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,6 +29,7 @@
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/math/matrixutilities/qrdecomposition.hpp>
 #include <ql/math/matrixutilities/basisincompleteordered.hpp>
+#include <ql/experimental/math/moorepenroseinverse.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -479,7 +481,39 @@ void MatricesTest::testOrthogonalProjection() {
 
 }
 
+void MatricesTest::testMoorePenroseInverse() {
+    // this is taken from
+    // http://de.mathworks.com/help/matlab/ref/pinv.html
+    Real tmp[8][6] = {{64, 2, 3, 61, 60, 6},    {9, 55, 54, 12, 13, 51},
+                      {17, 47, 46, 20, 21, 43}, {40, 26, 27, 37, 36, 30},
+                      {32, 34, 35, 29, 28, 38}, {41, 23, 22, 44, 45, 19},
+                      {49, 15, 14, 52, 53, 11}, {8, 58, 59, 5, 4, 62}};
+    Matrix A(8, 6);
+    for (Size i = 0; i < 8; ++i) {
+        for (Size j = 0; j < 6; ++j) {
+            A(i, j) = tmp[i][j];
+        }
+    }
 
+    Matrix P = moorePenroseInverse(A);
+    Array b(8, 260.0);
+    Array x = P*b;
+
+    Real cached[6] = {1.153846153846152, 1.461538461538463, 1.384615384615384,
+                      1.384615384615385, 1.461538461538462, 1.153846153846152};
+    Real tol = 500.0 * QL_EPSILON;
+
+    for (Size i = 0; i < 6; ++i) {
+        if (std::abs(x[i] - cached[i]) > tol) {
+            BOOST_FAIL("Failed to verify minimal norm solution obtained from "
+                       "Moore-Penrose-Inverse against cached results, component "
+                       << i << " is " << x[i] << ", expected " << cached[i]
+                       << ", difference " << x[i] - cached[i] << ", tolerance "
+                       << tol);
+        }
+    }
+
+}
 
 test_suite* MatricesTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Matrix tests");
@@ -495,6 +529,7 @@ test_suite* MatricesTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testInverse));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testDeterminant));
     #endif
+    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testMoorePenroseInverse));
     return suite;
 }
 
