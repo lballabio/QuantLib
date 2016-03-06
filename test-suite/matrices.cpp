@@ -513,6 +513,18 @@ void MatricesTest::testMoorePenroseInverse() {
         }
     }
 
+    Array y = A*x;
+    Real tol2 = 1000.0 * QL_EPSILON;
+    for (Size i = 0; i < 6; ++i) {
+        if (std::abs(y[i] - 260.0) > tol2) {
+            BOOST_FAIL(
+                "Failed to verify minimal norm solution obtained from "
+                "Moore-Penrose-Inverse when back-substituting, rhs component "
+                << i << " is " << y[i] << ", expected 260.0, difference "
+                << y[i] - 260.0 << ", tolerance " << tol2);
+        }
+    }
+
 }
 
 test_suite* MatricesTest::suite() {
