@@ -8971,6 +8971,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\math\moorepenroseinverse.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\math\multidimintegrator.cpp"
 					>
 				</File>

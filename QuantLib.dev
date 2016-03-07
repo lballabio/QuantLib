@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=2110
+UnitCount=2113
 Type=2
 Ver=1
 ObjFiles=
@@ -21231,6 +21231,16 @@ BuildCmd=
 FileName=ql\pricingengines\swap\cvaswapengine.hpp
 CompileCpp=1
 Folder=pricingengines/swap
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit2113]
+FileName=ql\experimental\math\moorepenroseinverse.hpp
+CompileCpp=1
+Folder=experimental/math
 Compile=1
 Link=1
 Priority=1000

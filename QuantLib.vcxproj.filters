@@ -3525,6 +3525,9 @@
     <ClInclude Include="ql\experimental\math\latentmodel.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\math\moorepenroseinverse.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\math\multidimintegrator.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
