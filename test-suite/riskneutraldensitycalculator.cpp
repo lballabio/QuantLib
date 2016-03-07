@@ -128,7 +128,7 @@ void RiskNeutralDensityCalculatorTest::testDensityAgainstOptionPrices() {
 }
 
 void RiskNeutralDensityCalculatorTest::testBSMagainstHestonRND() {
-    BOOST_TEST_MESSAGE("Testing Black-Scholes-Merton and Hston densities ...");
+    BOOST_TEST_MESSAGE("Testing Black-Scholes-Merton and Heston densities ...");
 
     SavedSettings backup;
 

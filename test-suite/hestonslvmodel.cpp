@@ -1142,7 +1142,7 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
     // step two days using non-correlated process
     const Time eT = 2.0/365;
 
-    Real v=-Null<Real>(), p_v;
+    Real v=-Null<Real>(), p_v(0.0);
     Array p(mesher->layout()->size(), 0.0);
     const Real bsV0 = square<Real>()(
         lvProcess->blackVolatility()->blackVol(0.0, s0, true));
@@ -2412,7 +2412,7 @@ void HestonSLVModelTest::testMoustacheGraph() {
             1234ul, SobolRsg::JoeKuoD7));
 
     const Size xGrid = 100;
-    const Size nSim  = 10000;
+    const Size nSim  = 40000;
 
     const Real eta = 0.90;
 
@@ -2432,11 +2432,11 @@ void HestonSLVModelTest::testMoustacheGraph() {
             FdmSchemeDesc::Hundsdorfer(), leverageFct));
 
     const Real expected[] = {
-         0.033426, 0.114141, 0.131870, 0.095647, 0.046355, 0.005770,-0.019238,
-        -0.029286,-0.029651,-0.025181,-0.019208,-0.013401,-0.008404,-0.004473,
-        -0.001526, 0.000488, 0.001670, 0.001991
+         0.0334, 0.1141, 0.1319, 0.0957, 0.0464, 0.0058,-0.0192,
+        -0.0293,-0.0297,-0.0251,-0.0192,-0.0134,-0.0084,-0.0045,
+        -0.0015, 0.0005, 0.0017, 0.0020
     };
-    const Real tol = 1e-5;
+    const Real tol = 7.5e-3;
 
     for (Size i=0; i < 18; ++i) {
         const Real dist = 10+5*i;
@@ -2458,7 +2458,7 @@ void HestonSLVModelTest::testMoustacheGraph() {
         const Real diff = slvNPV - bsNPV;
         if (std::fabs(diff - expected[i]) > tol) {
             BOOST_ERROR(
-                "Failed to reproduce price difference for a Double-No-Touch"
+                "Failed to reproduce price difference for a Double-No-Touch "
                 << "option between Black-Scholes and "
                 << "Heston Stochastic Local Volatility model"
                 << "\n Barrier Low        : " << barrier_lo
@@ -2499,12 +2499,10 @@ test_suite* HestonSLVModelTest::experimental() {
         &HestonSLVModelTest::testMonteCarloVsFdmPricing));
     suite->add(QUANTLIB_TEST_CASE(
         &HestonSLVModelTest::testMonteCarloCalibration));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testMoustacheGraph));
 
-    // this one needs to be investigated
-    // suite->add(QUANTLIB_TEST_CASE(
-    //     &HestonSLVModelTest::testMoustacheGraph));
-
-//    these test takes very long
+//    these tests take very long
 //    suite->add(QUANTLIB_TEST_CASE(
 //        &HestonSLVModelTest::testForwardSkewSLV));
 //    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testFDMCalibration));
