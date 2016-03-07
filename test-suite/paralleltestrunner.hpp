@@ -490,11 +490,15 @@ int main( int argc, char* argv[] )
 
     framework::shutdown();
 
+    #if BOOST_VERSION < 106000
     return runtime_config::no_result_code()
+    #else
+    // changed in Boost 1.60
+    return !runtime_config::get<bool>( runtime_config::RESULT_CODE )
+    #endif
         ? boost::exit_success
         : results_collector.results(
             framework::master_test_suite().p_id ).result_code();
-
 }
 
 #endif
