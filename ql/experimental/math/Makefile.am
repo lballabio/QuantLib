@@ -12,6 +12,7 @@ this_include_HEADERS = \
     gaussiancopulapolicy.hpp \
     laplaceinterpolation.hpp \
     latentmodel.hpp \
+    moorepenroseinverse.hpp \
     multidimintegrator.hpp \
     multidimquadrature.hpp \
     numericaldifferentiation.hpp \
