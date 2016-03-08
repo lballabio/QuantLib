@@ -34,6 +34,7 @@
 #include <ql/pricingengines/basket/fd2dblackscholesvanillaengine.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <boost/progress.hpp>
+#include <boost/bind.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -734,13 +735,8 @@ void BasketOptionTest::testTavellaValues() {
     }
 }
 
-void BasketOptionTest::testOneDAmericanValues() {
-
-    BOOST_TEST_MESSAGE("Testing basket American options against 1-D case...");
-
-    QL_TEST_START_TIMING
-
-    BasketOptionOneData values[] = {
+namespace {
+    BasketOptionOneData oneDataValues[] = {
         //        type, strike,   spot,    q,    r,    t,  vol,   value, tol
         { Option::Put, 100.00,  80.00,   0.0, 0.06,   0.5, 0.4,  21.6059, 1e-2 },
         { Option::Put, 100.00,  85.00,   0.0, 0.06,   0.5, 0.4,  18.0374, 1e-2 },
@@ -780,7 +776,14 @@ void BasketOptionTest::testOneDAmericanValues() {
         { Option::Put, 40.00, 44.00,   0.0, 0.06,   1.0, 0.4,  3.948, 1e-2 },
         { Option::Put, 40.00, 44.00,   0.0, 0.06,   2.0, 0.4,  5.647, 1e-2 }
     };
+}
 
+void BasketOptionTest::testOneDAmericanValues(unsigned from, unsigned to) {
+
+    BOOST_TEST_MESSAGE("Testing basket American options against 1-D case "
+                       "from " << from << " to " << to-1 <<  "...");
+
+    QL_TEST_START_TIMING
 
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
@@ -822,18 +825,18 @@ void BasketOptionTest::testOneDAmericanValues() {
         .withCalibrationSamples(requiredSamples/4)
         .withSeed(seed);
 
-    for (Size i=0; i<LENGTH(values); i++) {
+    for (Size i=from; i<to; i++) {
         boost::shared_ptr<PlainVanillaPayoff> payoff(new
-            PlainVanillaPayoff(values[i].type, values[i].strike));
+            PlainVanillaPayoff(oneDataValues[i].type, oneDataValues[i].strike));
 
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + Integer(oneDataValues[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(new AmericanExercise(today,
                                                                   exDate));
 
-        spot1 ->setValue(values[i].s);
-        vol1  ->setValue(values[i].v);
-        rRate ->setValue(values[i].r);
-        qRate ->setValue(values[i].q);
+        spot1 ->setValue(oneDataValues[i].s);
+        vol1  ->setValue(oneDataValues[i].v);
+        rRate ->setValue(oneDataValues[i].r);
+        qRate ->setValue(oneDataValues[i].q);
 
         BasketOption basketOption(// process,
                                   basketTypeToPayoff(MaxBasket, payoff),
@@ -841,13 +844,13 @@ void BasketOptionTest::testOneDAmericanValues() {
         basketOption.setPricingEngine(mcLSMCEngine);
 
         Real calculated = basketOption.NPV();
-        Real expected = values[i].result;
+        Real expected = oneDataValues[i].result;
         // Real errorEstimate = basketOption.errorEstimate();
-        Real relError = relativeError(calculated, expected, values[i].s);
+        Real relError = relativeError(calculated, expected, oneDataValues[i].s);
         // Real error = std::fabs(calculated-expected);
 
-        if (relError > values[i].tol) {
-            BOOST_FAIL("expected value: " << values[i].result << "\n"
+        if (relError > oneDataValues[i].tol) {
+            BOOST_FAIL("expected value: " << oneDataValues[i].result << "\n"
                        << "calculated:     " << calculated);
         }
 
@@ -950,7 +953,14 @@ test_suite* BasketOptionTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
                                &BasketOptionTest::testBarraquandThreeValues));
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testTavellaValues));
-    suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testOneDAmericanValues));
+
+    const Size nTestCases = std::min(Size(5), LENGTH(oneDataValues));
+    for (Size i=0; i < nTestCases; ++i) {
+        suite->add(QUANTLIB_TEST_CASE(
+            boost::bind(&BasketOptionTest::testOneDAmericanValues,
+                (i    *LENGTH(oneDataValues))/nTestCases,
+                ((i+1)*LENGTH(oneDataValues))/nTestCases)));
+    }
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testOddSamples));
 
     return suite;
