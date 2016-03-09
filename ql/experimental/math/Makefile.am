@@ -17,6 +17,7 @@ this_include_HEADERS = \
     laplaceinterpolation.hpp \
     latentmodel.hpp \
     levyflightdistribution.hpp \
+    moorepenroseinverse.hpp \
     multidimintegrator.hpp \
     multidimquadrature.hpp \
     numericaldifferentiation.hpp \

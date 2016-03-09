@@ -27,7 +27,7 @@
 
 class CdoTest {
   public:
-    static void testHW();
+    static void testHW(unsigned dataSet);
     static boost::unit_test_framework::test_suite* suite();
 };
 

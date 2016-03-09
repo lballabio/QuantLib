@@ -14,6 +14,7 @@
 #include <ql/experimental/math/laplaceinterpolation.hpp>
 #include <ql/experimental/math/latentmodel.hpp>
 #include <ql/experimental/math/levyflightdistribution.hpp>
+#include <ql/experimental/math/moorepenroseinverse.hpp>
 #include <ql/experimental/math/multidimintegrator.hpp>
 #include <ql/experimental/math/multidimquadrature.hpp>
 #include <ql/experimental/math/numericaldifferentiation.hpp>

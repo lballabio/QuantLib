@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=2120
+UnitCount=2121
 Type=2
 Ver=1
 ObjFiles=
@@ -21309,6 +21309,16 @@ BuildCmd=
 
 [Unit2120]
 FileName=ql\experimental\math\particleswarmoptimization.hpp
+CompileCpp=1
+Folder=experimental/math
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit2121]
+FileName=ql\experimental\math\moorepenroseinverse.hpp
 CompileCpp=1
 Folder=experimental/math
 Compile=1
