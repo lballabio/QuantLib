@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2016 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,6 +19,7 @@
 */
 
 #include <ql/math/matrixutilities/choleskydecomposition.hpp>
+#include <ql/math/comparison.hpp>
 
 namespace QuantLib {
 
@@ -52,8 +54,9 @@ namespace QuantLib {
                     // With positive semi-definite matrices is possible
                     // to have result[i][i]==0.0
                     // In this case sum happens to be zero as well
-                    result[j][i] =
-                        (sum==0.0 ? 0.0 : sum/result[i][i]);
+                    result[j][i] = close_enough(result[i][i], 0.0)
+                                       ? 0.0
+                                       : sum / result[i][i];
                 }
             }
         }
