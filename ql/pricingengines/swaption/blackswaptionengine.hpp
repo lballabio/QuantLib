@@ -140,17 +140,17 @@ namespace QuantLib {
                  start date of the passed swap.
     */
 
-    class BachelierBlackSwaptionEngine
+    class BachelierSwaptionEngine
         : public detail::BlackStyleSwaptionEngine<detail::BachelierSpec> {
       public:
-        BachelierBlackSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
-                            Volatility vol,
-                            const DayCounter& dc = Actual365Fixed());
-        BachelierBlackSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
-                            const Handle<Quote>& vol,
-                            const DayCounter& dc = Actual365Fixed());
-        BachelierBlackSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
-                            const Handle<SwaptionVolatilityStructure>& vol);
+        BachelierSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
+                                Volatility vol,
+                                const DayCounter& dc = Actual365Fixed());
+        BachelierSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
+                                const Handle<Quote>& vol,
+                                const DayCounter& dc = Actual365Fixed());
+        BachelierSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
+                                const Handle<SwaptionVolatilityStructure>& vol);
     };
 
     // implementation

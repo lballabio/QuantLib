@@ -109,6 +109,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/models/marketmodels/products/multistep/multisteppathwisewrapper.hpp>
 
 #include <boost/math/special_functions/fpclassify.hpp>
+#include <boost/bind.hpp>
 #include <sstream>
 
 #if defined(BOOST_MSVC)
@@ -287,16 +288,13 @@ namespace {
     }
 
 
-    enum MarketModelType { ExponentialCorrelationFlatVolatility,
-        ExponentialCorrelationAbcdVolatility/*,
-                                            CalibratedMM*/
-    };
 
-    std::string marketModelTypeToString(MarketModelType type) {
+
+    std::string marketModelTypeToString(MarketModelTest::MarketModelType type) {
         switch (type) {
-          case ExponentialCorrelationFlatVolatility:
+          case MarketModelTest::ExponentialCorrelationFlatVolatility:
               return "Exp. Corr. Flat Vol.";
-          case ExponentialCorrelationAbcdVolatility:
+          case MarketModelTest::ExponentialCorrelationAbcdVolatility:
               return "Exp. Corr. Abcd Vol.";
               //case CalibratedMM:
               //    return "CalibratedMarketModel";
@@ -309,7 +307,7 @@ namespace {
         bool logNormal,
         const EvolutionDescription& evolution,
         Size numberOfFactors,
-        MarketModelType marketModelType,
+        MarketModelTest::MarketModelType marketModelType,
         Spread forwardBump = 0.0,
         Volatility volBump = 0.0) {
 
@@ -343,7 +341,7 @@ namespace {
                 TimeHomogeneousForwardCorrelation(correlations,
                 evolution.rateTimes()));
             switch (marketModelType) {
-        case ExponentialCorrelationFlatVolatility:
+        case MarketModelTest::ExponentialCorrelationFlatVolatility:
             return boost::shared_ptr<MarketModel>(new
                 FlatVol(bumpedVols,
                 corr,
@@ -351,7 +349,7 @@ namespace {
                 numberOfFactors,
                 bumpedForwards,
                 std::vector<Spread>(bumpedForwards.size(), displacement)));
-        case ExponentialCorrelationAbcdVolatility:
+        case MarketModelTest::ExponentialCorrelationAbcdVolatility:
             return boost::shared_ptr<MarketModel>(new
                 AbcdVol(0.0,0.0,1.0,1.0,
                 bumpedVols,
@@ -1057,10 +1055,10 @@ void testMultiProductComposite(const MarketModelMultiProduct& product,
 
                                    EvolutionDescription evolution = product.evolution();
 
-                                   MarketModelType marketModels[] = {
+                                   MarketModelTest::MarketModelType marketModels[] = {
                                        // CalibratedMM,
-                                       ExponentialCorrelationFlatVolatility,
-                                       ExponentialCorrelationAbcdVolatility };
+                                           MarketModelTest::ExponentialCorrelationFlatVolatility,
+                                           MarketModelTest::ExponentialCorrelationAbcdVolatility };
                                        for (Size j=0; j<LENGTH(marketModels); j++) {
 
                                            Size testedFactors[] = { 4, 8,
@@ -1236,7 +1234,7 @@ void addCoterminalSwapsAndSwaptions(MultiProductComposite& product,
 
                                         EvolutionDescription evolution = productClone.evolution();
                                         Size factors = todaysForwards.size();
-                                        MarketModelType marketModelType = ExponentialCorrelationFlatVolatility;
+                                        MarketModelTest::MarketModelType marketModelType = MarketModelTest::ExponentialCorrelationFlatVolatility;
                                         boost::shared_ptr<MarketModel> marketModel =
                                             makeMarketModel(logNormal, evolution, factors, marketModelType);
                                         for (Size i=0; i<todaysForwards.size(); ++i) {
@@ -1774,9 +1772,14 @@ void MarketModelTest::testCallableSwapLS() {
         }
 }
 
-void MarketModelTest::testCallableSwapAnderson() {
+void MarketModelTest::testCallableSwapAnderson(
+    MarketModelType marketModelType, unsigned testedFactor) {
 
-    BOOST_TEST_MESSAGE("Pricing callable swap with Anderson exercise strategy in a LIBOR market model...");
+    BOOST_TEST_MESSAGE("Pricing callable swap with Anderson exercise "
+                       "strategy in a LIBOR market model for test factor "
+                        << testedFactor << " and model type "
+                        << marketModelTypeToString(marketModelType)
+                        << "...");
 
     setup();
 
@@ -1815,129 +1818,118 @@ void MarketModelTest::testCallableSwapAnderson() {
 
     EvolutionDescription evolution = dummyProduct.evolution();
 
-    MarketModelType marketModels[] = {
-        // CalibratedMM,
-        ExponentialCorrelationFlatVolatility,
-        ExponentialCorrelationAbcdVolatility };
-        for (Size j=0; j<LENGTH(marketModels); j++) {
+    Size factors = testedFactor;
 
-            Size testedFactors[] = { 4, 8,
-                todaysForwards.size()};
-            for (Size m=0; m<LENGTH(testedFactors); ++m) {
-                Size factors = testedFactors[m];
+    // Composite's ProductSuggested is the Terminal one
+    MeasureType measures[] = { // ProductSuggested,
+        // MoneyMarketPlus,
+        // MoneyMarket,
+        Terminal
+    };
+    for (Size k=0; k<LENGTH(measures); k++) {
+        std::vector<Size> numeraires = makeMeasure(dummyProduct, measures[k]);
+        bool logNormal = true;
+        boost::shared_ptr<MarketModel> marketModel =
+            makeMarketModel(logNormal, evolution, factors, marketModelType);
+        EvolverType evolvers[] = { Pc, Balland, Ipc };
+        boost::shared_ptr<MarketModelEvolver> evolver;
+        Size stop =
+            isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
+        for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
+            for (Size n=0; n<1; n++) {
+                //MTBrownianGeneratorFactory generatorFactory(seed_);
+                SobolBrownianGeneratorFactory generatorFactory(
+                    SobolBrownianGenerator::Diagonal, seed_);
+                evolver = makeMarketModelEvolver(marketModel,
+                    numeraires,
+                    generatorFactory,
+                    evolvers[i]);
+                std::ostringstream config;
+                config <<
+                    marketModelTypeToString(marketModelType) << ", " <<
+                    factors << (factors>1 ? (factors==todaysForwards.size() ? " (full) factors, " : " factors, ") : " factor,") <<
+                    measureTypeToString(measures[k]) << ", " <<
+                    evolverTypeToString(evolvers[i]) << ", " <<
+                    "MT BGF";
+                if (printReport_)
+                    BOOST_TEST_MESSAGE("    " << config.str());
+                // 1. calculate the exercise strategy
+                collectNodeData(*evolver,
+                    receiverSwap, parametricForm, nullRebate,
+                    control, trainingPaths_, collectedData);
+                Simplex om(0.01);
+                EndCriteria ec(1000, 100, 1e-8, 1e-16, 1e-8);
+                Size initialNumeraire = evolver->numeraires().front();
+                Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
+                Real firstPassValue = genericEarlyExerciseOptimization(
+                    collectedData, parametricForm, parameters, ec, om) *
+                    initialNumeraireValue;
+                if (printReport_)
+                    BOOST_TEST_MESSAGE("    initial estimate:  " << io::rate(firstPassValue));
+                ParametricExerciseAdapter exerciseStrategy(parametricForm, parameters);
 
-                // Composite's ProductSuggested is the Terminal one
-                MeasureType measures[] = { // ProductSuggested,
-                    // MoneyMarketPlus,
-                    // MoneyMarket,
-                    Terminal
-                };
-                for (Size k=0; k<LENGTH(measures); k++) {
-                    std::vector<Size> numeraires = makeMeasure(dummyProduct, measures[k]);
-                    bool logNormal = true;
-                    boost::shared_ptr<MarketModel> marketModel =
-                        makeMarketModel(logNormal, evolution, factors, marketModels[j]);
-                    EvolverType evolvers[] = { Pc, Balland, Ipc };
-                    boost::shared_ptr<MarketModelEvolver> evolver;
-                    Size stop =
-                        isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
-                    for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
-                        for (Size n=0; n<1; n++) {
-                            //MTBrownianGeneratorFactory generatorFactory(seed_);
-                            SobolBrownianGeneratorFactory generatorFactory(
-                                SobolBrownianGenerator::Diagonal, seed_);
-                            evolver = makeMarketModelEvolver(marketModel,
-                                numeraires,
-                                generatorFactory,
-                                evolvers[i]);
-                            std::ostringstream config;
-                            config <<
-                                marketModelTypeToString(marketModels[j]) << ", " <<
-                                factors << (factors>1 ? (factors==todaysForwards.size() ? " (full) factors, " : " factors, ") : " factor,") <<
-                                measureTypeToString(measures[k]) << ", " <<
-                                evolverTypeToString(evolvers[i]) << ", " <<
-                                "MT BGF";
-                            if (printReport_)
-                                BOOST_TEST_MESSAGE("    " << config.str());
-                            // 1. calculate the exercise strategy
-                            collectNodeData(*evolver,
-                                receiverSwap, parametricForm, nullRebate,
-                                control, trainingPaths_, collectedData);
-                            Simplex om(0.01);
-                            EndCriteria ec(1000, 100, 1e-8, 1e-16, 1e-8);
-                            Size initialNumeraire = evolver->numeraires().front();
-                            Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
-                            Real firstPassValue = genericEarlyExerciseOptimization(
-                                collectedData, parametricForm, parameters, ec, om) *
-                                initialNumeraireValue;
-                            if (printReport_)
-                                BOOST_TEST_MESSAGE("    initial estimate:  " << io::rate(firstPassValue));
-                            ParametricExerciseAdapter exerciseStrategy(parametricForm, parameters);
+                // 2. bermudan swaption to enter into the payer swap
+                CallSpecifiedMultiProduct bermudanProduct =
+                    CallSpecifiedMultiProduct(
+                    MultiStepNothing(evolution),
+                    exerciseStrategy, payerSwap);
 
-                            // 2. bermudan swaption to enter into the payer swap
-                            CallSpecifiedMultiProduct bermudanProduct =
-                                CallSpecifiedMultiProduct(
-                                MultiStepNothing(evolution),
-                                exerciseStrategy, payerSwap);
+                // 3. callable receiver swap
+                CallSpecifiedMultiProduct callableProduct =
+                    CallSpecifiedMultiProduct(
+                    receiverSwap, exerciseStrategy,
+                    ExerciseAdapter(nullRebate));
+                // lower bound: evolve all 4 products togheter
+                MultiProductComposite allProducts;
+                allProducts.add(payerSwap);
+                allProducts.add(receiverSwap);
+                allProducts.add(bermudanProduct);
+                allProducts.add(callableProduct);
+                allProducts.finalize();
+                boost::shared_ptr<SequenceStatisticsInc> stats =
+                    simulate(evolver, allProducts);
+                checkCallableSwap(*stats, config.str());
 
-                            // 3. callable receiver swap
-                            CallSpecifiedMultiProduct callableProduct =
-                                CallSpecifiedMultiProduct(
-                                receiverSwap, exerciseStrategy,
-                                ExerciseAdapter(nullRebate));
-                            // lower bound: evolve all 4 products togheter
-                            MultiProductComposite allProducts;
-                            allProducts.add(payerSwap);
-                            allProducts.add(receiverSwap);
-                            allProducts.add(bermudanProduct);
-                            allProducts.add(callableProduct);
-                            allProducts.finalize();
-                            boost::shared_ptr<SequenceStatisticsInc> stats =
-                                simulate(evolver, allProducts);
-                            checkCallableSwap(*stats, config.str());
-
-                            // upper bound
-                            //MTBrownianGeneratorFactory uFactory(seed_+142);
-                            SobolBrownianGeneratorFactory uFactory(
-                                SobolBrownianGenerator::Diagonal, seed_+142);
-                            evolver = makeMarketModelEvolver(marketModel,
-                                numeraires,
-                                uFactory,
-                                evolvers[i]);
-                            std::vector<boost::shared_ptr<MarketModelEvolver> >
-                                innerEvolvers;
-                            std::valarray<bool> isExerciseTime =
-                                isInSubset(evolution.evolutionTimes(),
-                                           exerciseStrategy.exerciseTimes());
-                            for (Size s=0; s < isExerciseTime.size(); ++s) {
-                                if (isExerciseTime[s]) {
-                                    MTBrownianGeneratorFactory iFactory(seed_+s);
-                                    boost::shared_ptr<MarketModelEvolver> e =
-                                        makeMarketModelEvolver(marketModel,
-                                        numeraires,
-                                        iFactory,
-                                        evolvers[i],
-                                        s);
-                                    innerEvolvers.push_back(e);
-                                }
-                            }
-                            UpperBoundEngine uEngine(evolver, innerEvolvers,
-                                receiverSwap, nullRebate,
-                                receiverSwap, nullRebate,
-                                exerciseStrategy,
-                                initialNumeraireValue);
-                            Statistics uStats;
-                            uEngine.multiplePathValues(uStats,255,256);
-                            Real delta = uStats.mean();
-                            Real deltaError = uStats.errorEstimate();
-                            if (printReport_)
-                                BOOST_TEST_MESSAGE("    upper bound delta: " << io::rate(delta) << " +- " << io::rate(deltaError));
-
-                        }
+                // upper bound
+                //MTBrownianGeneratorFactory uFactory(seed_+142);
+                SobolBrownianGeneratorFactory uFactory(
+                    SobolBrownianGenerator::Diagonal, seed_+142);
+                evolver = makeMarketModelEvolver(marketModel,
+                    numeraires,
+                    uFactory,
+                    evolvers[i]);
+                std::vector<boost::shared_ptr<MarketModelEvolver> >
+                    innerEvolvers;
+                std::valarray<bool> isExerciseTime =
+                    isInSubset(evolution.evolutionTimes(),
+                               exerciseStrategy.exerciseTimes());
+                for (Size s=0; s < isExerciseTime.size(); ++s) {
+                    if (isExerciseTime[s]) {
+                        MTBrownianGeneratorFactory iFactory(seed_+s);
+                        boost::shared_ptr<MarketModelEvolver> e =
+                            makeMarketModelEvolver(marketModel,
+                            numeraires,
+                            iFactory,
+                            evolvers[i],
+                            s);
+                        innerEvolvers.push_back(e);
                     }
                 }
+                UpperBoundEngine uEngine(evolver, innerEvolvers,
+                    receiverSwap, nullRebate,
+                    receiverSwap, nullRebate,
+                    exerciseStrategy,
+                    initialNumeraireValue);
+                Statistics uStats;
+                uEngine.multiplePathValues(uStats,255,256);
+                Real delta = uStats.mean();
+                Real deltaError = uStats.errorEstimate();
+                if (printReport_)
+                    BOOST_TEST_MESSAGE("    upper bound delta: " << io::rate(delta) << " +- " << io::rate(deltaError));
+
             }
         }
+    }
 }
 
 
@@ -4883,7 +4875,7 @@ test_suite* MarketModelTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testInverseFloater));
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCallableSwapLS));
- 
+
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testPathwiseVegas));
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testPathwiseMarketVegas));
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testPathwiseGreeks));
@@ -4896,8 +4888,20 @@ test_suite* MarketModelTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testOneStepNormalForwardsAndOptionlets));
 
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
-    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCallableSwapAnderson));
 
+    MarketModelType marketModels[] = {
+        ExponentialCorrelationFlatVolatility,
+        ExponentialCorrelationAbcdVolatility };
+
+    setup();
+    for (Size j=0; j<LENGTH(marketModels); j++) {
+        Size testedFactors[] = { 4, 8, todaysForwards.size()};
+        for (Size m=0; m<LENGTH(testedFactors); ++m) {
+            suite->add(QUANTLIB_TEST_CASE(
+                boost::bind(&MarketModelTest::testCallableSwapAnderson,
+                    marketModels[j],testedFactors[m])));
+        }
+    }
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testGreeks));
 
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));

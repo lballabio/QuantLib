@@ -187,7 +187,7 @@ namespace QuantLib {
                 termStructure_, vol, Actual365Fixed(), shift_);
             break;
         case Normal:
-            engine = boost::make_shared<BachelierBlackSwaptionEngine>(
+            engine = boost::make_shared<BachelierSwaptionEngine>(
                 termStructure_, vol, Actual365Fixed());
             break;
         default:

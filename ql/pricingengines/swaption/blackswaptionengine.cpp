@@ -47,19 +47,19 @@ namespace QuantLib {
     : detail::BlackStyleSwaptionEngine<detail::Black76Spec>(discountCurve, vol,
                                                             displacement) {}
 
-    BachelierBlackSwaptionEngine::BachelierBlackSwaptionEngine(
+    BachelierSwaptionEngine::BachelierSwaptionEngine(
         const Handle<YieldTermStructure> &discountCurve, Volatility vol,
         const DayCounter &dc)
     : detail::BlackStyleSwaptionEngine<detail::BachelierSpec>(discountCurve, vol,
                                                               dc, 0.0) {}
 
-    BachelierBlackSwaptionEngine::BachelierBlackSwaptionEngine(
+    BachelierSwaptionEngine::BachelierSwaptionEngine(
         const Handle<YieldTermStructure> &discountCurve,
         const Handle<Quote> &vol, const DayCounter &dc)
     : detail::BlackStyleSwaptionEngine<detail::BachelierSpec>(discountCurve, vol,
                                                               dc, 0.0) {}
 
-    BachelierBlackSwaptionEngine::BachelierBlackSwaptionEngine(
+    BachelierSwaptionEngine::BachelierSwaptionEngine(
         const Handle<YieldTermStructure> &discountCurve,
         const Handle<SwaptionVolatilityStructure> &vol)
     : detail::BlackStyleSwaptionEngine<detail::BachelierSpec>(discountCurve, vol,
