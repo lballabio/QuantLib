@@ -34,7 +34,7 @@ namespace QuantLib {
     //! %TRY %LIBOR rate
     /*! TRY LIBOR fixed by TBA.
 
-        See <http://www.trlibor.org/trlibor/english/default.asp>
+        See <http://www.trlibor.org/trlibor/english/>
 
         \todo check end-of-month adjustment.
     */
