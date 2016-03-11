@@ -208,20 +208,20 @@ namespace QuantLib {
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
         LogMixedLinearCubicInterpolation(const I1& xBegin, const I1& xEnd,
-                              const I2& yBegin, const Size n,
-                              CubicInterpolation::DerivativeApprox da,
-                              bool monotonic,
-                              CubicInterpolation::BoundaryCondition leftC,
-                              Real leftConditionValue,
-                              CubicInterpolation::BoundaryCondition rightC,
-                              Real rightConditionValue) {
+                                         const I2& yBegin, const Size n,
+                                         MixedInterpolation::Behavior behavior,
+                                         CubicInterpolation::DerivativeApprox da,
+                                         bool monotonic,
+                                         CubicInterpolation::BoundaryCondition leftC,
+                                         Real leftConditionValue,
+                                         CubicInterpolation::BoundaryCondition rightC,
+                                         Real rightConditionValue) {
             impl_ = boost::shared_ptr<Interpolation::Impl>(new
-                detail::LogMixedInterpolationImpl<I1, I2, Linear, Cubic>(
-                    xBegin, xEnd, yBegin, n,
-                    Linear(),
-                    Cubic(da, monotonic,
-                          leftC, leftConditionValue,
-                          rightC, rightConditionValue)));
+                detail::LogInterpolationImpl<I1, I2, MixedLinearCubic>(
+                    xBegin, xEnd, yBegin,
+                    MixedLinearCubic(n, behavior, da, monotonic,
+                                     leftC, leftConditionValue,
+                                     rightC, rightConditionValue)));
             impl_->update();
         }
     };
@@ -231,29 +231,32 @@ namespace QuantLib {
     class LogMixedLinearCubic {
       public:
         LogMixedLinearCubic(const Size n,
-                  CubicInterpolation::DerivativeApprox da,
-                  bool monotonic = true,
-                  CubicInterpolation::BoundaryCondition leftCondition
-                      = CubicInterpolation::SecondDerivative,
-                  Real leftConditionValue = 0.0,
-                  CubicInterpolation::BoundaryCondition rightCondition
-                      = CubicInterpolation::SecondDerivative,
-                  Real rightConditionValue = 0.0)
-        : n_(n), da_(da), monotonic_(monotonic),
+                            MixedInterpolation::Behavior behavior,
+                            CubicInterpolation::DerivativeApprox da,
+                            bool monotonic = true,
+                            CubicInterpolation::BoundaryCondition leftCondition
+                                = CubicInterpolation::SecondDerivative,
+                            Real leftConditionValue = 0.0,
+                            CubicInterpolation::BoundaryCondition rightCondition
+                                = CubicInterpolation::SecondDerivative,
+                            Real rightConditionValue = 0.0)
+        : n_(n), behavior_(behavior), da_(da), monotonic_(monotonic),
           leftType_(leftCondition), rightType_(rightCondition),
           leftValue_(leftConditionValue), rightValue_(rightConditionValue) {}
         template <class I1, class I2>
         Interpolation interpolate(const I1& xBegin, const I1& xEnd,
                                   const I2& yBegin) const {
-            return LogMixedLinearCubicInterpolation(xBegin, xEnd, yBegin, n_,
-                                         da_, monotonic_,
-                                         leftType_, leftValue_,
-                                         rightType_, rightValue_);
+            return LogMixedLinearCubicInterpolation(xBegin, xEnd, yBegin,
+                                                    n_, behavior_,
+                                                    da_, monotonic_,
+                                                    leftType_, leftValue_,
+                                                    rightType_, rightValue_);
         }
         static const bool global = true;
         static const Size requiredPoints = 3;
     private:
         Size n_;
+        MixedInterpolation::Behavior behavior_;
         CubicInterpolation::DerivativeApprox da_;
         bool monotonic_;
         CubicInterpolation::BoundaryCondition leftType_, rightType_;
@@ -266,14 +269,14 @@ namespace QuantLib {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
-        LogMixedLinearCubicNaturalSpline(const I1& xBegin,
-                              const I1& xEnd,
-                              const I2& yBegin,
-                              const Size n)
-        : LogMixedLinearCubicInterpolation(xBegin, xEnd, yBegin, n,
-                                CubicInterpolation::Spline, false,
-                                CubicInterpolation::SecondDerivative, 0.0,
-                                CubicInterpolation::SecondDerivative, 0.0) {}
+        LogMixedLinearCubicNaturalSpline(const I1& xBegin, const I1& xEnd,
+                                         const I2& yBegin, const Size n,
+                                         MixedInterpolation::Behavior behavior
+                                             = MixedInterpolation::ShareRanges)
+        : LogMixedLinearCubicInterpolation(xBegin, xEnd, yBegin, n, behavior,
+                                           CubicInterpolation::Spline, false,
+                                           CubicInterpolation::SecondDerivative, 0.0,
+                                           CubicInterpolation::SecondDerivative, 0.0) {}
     };
 
 
@@ -318,70 +321,6 @@ namespace QuantLib {
           private:
             std::vector<Real> logY_;
             Interpolation interpolation_;
-        };
-
-        template <class I1, class I2, class Interpolator1, class Interpolator2>
-        class LogMixedInterpolationImpl
-            : public Interpolation::templateImpl<I1, I2> {
-        public:
-            LogMixedInterpolationImpl(const I1& xBegin, const I1& xEnd,
-                                 const I2& yBegin, const Size n,
-                                 const Interpolator1& factory1 = Interpolator1(),
-                                 const Interpolator2& factory2 = Interpolator2())
-            : Interpolation::templateImpl<I1, I2>(xBegin, xEnd, yBegin,
-                                 std::max<Size>(Interpolator1::requiredPoints,
-                                        Interpolator2::requiredPoints)),
-              n_(n),
-              logY_(xEnd - xBegin) {
-
-                xBegin2_ = this->xBegin_ + n_;
-
-                QL_REQUIRE(xBegin2_<this->xEnd_,
-                           "too large n (" << n << ") for " <<
-                           this->xEnd_ - this->xBegin_ << "-element x sequence");
-
-                interpolation1_ = factory1.interpolate(this->xBegin_,
-                                                       this->xEnd_,
-                                                       logY_.begin());
-                interpolation2_ = factory2.interpolate(this->xBegin2_,
-                                                       this->xEnd_,
-                                                       logY_.begin() + n_);
-            }
-            void update() {
-                for (Size i = 0; i<logY_.size(); ++i) {
-                    QL_REQUIRE(this->yBegin_[i]>0.0,
-                               "invalid value (" << this->yBegin_[i]
-                               << ") at index " << i);
-                    logY_[i] = std::log(this->yBegin_[i]);
-                }
-                interpolation1_.update();
-                interpolation2_.update();
-            }
-            Real value(Real x) const {
-                if (x<*(this->xBegin2_))
-                        return std::exp(interpolation1_(x, true));
-                return std::exp(interpolation2_(x, true));
-            }
-            Real primitive(Real) const {
-                QL_FAIL("LogInterpolation primitive not implemented");
-            }
-            Real derivative(Real x) const {
-                if (x<*(this->xBegin2_))
-                        return value(x)*interpolation1_.derivative(x, true);
-                return value(x)*interpolation2_.derivative(x, true);
-            }
-            Real secondDerivative(Real x) const {
-                if (x<*(this->xBegin2_))
-                        return derivative(x)*interpolation1_.derivative(x, true) +
-                            value(x)*interpolation1_.secondDerivative(x, true);
-                return derivative(x)*interpolation2_.derivative(x, true) +
-                            value(x)*interpolation2_.secondDerivative(x, true);
-            }
-        private:
-            std::vector<Real> logY_;
-            Size n_;
-            Interpolation interpolation1_, interpolation2_;
-            I1 xBegin2_;
         };
 
     }
