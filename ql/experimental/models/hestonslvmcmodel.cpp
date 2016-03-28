@@ -46,6 +46,9 @@ namespace QuantLib {
       nBins_(nBins),
       calibrationPaths_(calibrationPaths) {
 
+        registerWith(localVol_);
+        registerWith(hestonModel_);
+
         const DayCounter dc = hestonModel_->process()->riskFreeRate()->dayCounter();
         const Date refDate = hestonModel_->process()->riskFreeRate()->referenceDate();
 
