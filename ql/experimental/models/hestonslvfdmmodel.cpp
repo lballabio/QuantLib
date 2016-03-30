@@ -270,15 +270,15 @@ namespace QuantLib {
         const HestonSLVFokkerPlanckFdmParams& params,
         const bool logging,
         const std::vector<Date>& mandatoryDates)
-        : localVol_(localVol),
-          hestonModel_(hestonModel),
-          endDate_(endDate),
-          params_(params),
-          mandatoryDates_(mandatoryDates),
-          logging_(logging) {
+    : localVol_(localVol),
+      hestonModel_(hestonModel),
+      endDate_(endDate),
+      params_(params),
+      mandatoryDates_(mandatoryDates),
+      logging_(logging) {
 
-        registerWith(hestonModel_);
         registerWith(localVol_);
+        registerWith(hestonModel_);
     }
 
     void HestonSLVFDMModel::update() {

@@ -49,7 +49,7 @@ namespace QuantLib {
             const Date& endDate,
             Size timeStepsPerYear = 365,
             Size nBins = 201,
-            Size calibrationPaths = (1 << 20),
+            Size calibrationPaths = (1 << 15),
             const std::vector<Date>& mandatoryDates = std::vector<Date>());
 
         void update();
