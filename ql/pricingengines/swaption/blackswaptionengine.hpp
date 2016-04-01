@@ -4,7 +4,7 @@
  Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006 StatPro Italia srl
- Copyright (C) 2015 Peter Caspers
+ Copyright (C) 2015, 2016 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -57,9 +57,12 @@ namespace QuantLib {
                             const Handle<Quote>& vol,
                             const DayCounter& dc = Actual365Fixed(),
                             Real displacement = 0.0);
+        /*! if displacement is Null<Real>(), it is read from the volatility
+          structure, the parameter can be removed once the deprecated methods
+          overriding the displacement are deleted */
         BlackStyleSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
                             const Handle<SwaptionVolatilityStructure>& vol,
-                            Real displacement = 0.0);
+                            Real displacement = Null<Real>());
         void calculate() const;
         Handle<YieldTermStructure> termStructure() { return discountCurve_; }
         Handle<SwaptionVolatilityStructure> volatility() { return vol_; }
@@ -69,6 +72,8 @@ namespace QuantLib {
         Handle<SwaptionVolatilityStructure> vol_;
 
       protected:
+        // can be removed once the deprecated methods overriding the
+        // displacement are deleted
         Real displacement_;
     };
 
@@ -128,8 +133,20 @@ namespace QuantLib {
                             const DayCounter& dc = Actual365Fixed(),
                             Real displacement = 0.0);
         BlackSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
+                            const Handle<SwaptionVolatilityStructure>& vol);
+
+        /*! \deprecated
+          overrides displacement from given volatility structure,
+          this is not recommended to do */
+        QL_DEPRECATED
+        BlackSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
                             const Handle<SwaptionVolatilityStructure>& vol,
-                            Real displacement = 0.0);
+                            Real displacement);
+
+        /*! \deprecated
+          might return Null<Real>(), if given by a volatility structure,
+          use volatility()->shift() to get the displacement instead */
+        QL_DEPRECATED
         Real displacement() { return displacement_; }
     };
 
@@ -261,16 +278,24 @@ namespace QuantLib {
         Real variance = vol_->blackVariance(exerciseDate,
                                                    swapLength,
                                                    strike);
+
+        // once the deprecated methods allowing to override the displacement
+        // are gone, we can avoid this and directly read the displacement
+        // from the volatility structure
+        Real displacement = displacement_ == Null<Real>()
+                                ? vol_->shift(exerciseDate, swapLength)
+                                : displacement_;
+
         Real stdDev = std::sqrt(variance);
         results_.additionalResults["stdDev"] = stdDev;
         Option::Type w = (arguments_.type==VanillaSwap::Payer) ?
                                                 Option::Call : Option::Put;
         results_.value = Spec().value(w, strike, atmForward, stdDev, annuity,
-                                                                displacement_);
+                                                                displacement);
 
         Time exerciseTime = vol_->timeFromReference(exerciseDate);
         results_.additionalResults["vega"] = Spec().vega(
-            strike, atmForward, stdDev, exerciseTime, annuity, displacement_);
+            strike, atmForward, stdDev, exerciseTime, annuity, displacement);
     }
 
     }  // namespace detail

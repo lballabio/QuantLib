@@ -5,7 +5,7 @@
  Copyright (C) 2006 Cristina Duminuco
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006, 2007 StatPro Italia srl
- Copyright (C) 2015 Peter Caspers
+ Copyright (C) 2015, 2016 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -42,10 +42,24 @@ namespace QuantLib {
 
     BlackSwaptionEngine::BlackSwaptionEngine(
                         const Handle<YieldTermStructure> &discountCurve,
+                        const Handle<SwaptionVolatilityStructure> &vol)
+    : detail::BlackStyleSwaptionEngine<detail::Black76Spec>(discountCurve, vol,
+                                                            Null<Real>()) {
+        QL_REQUIRE(vol->volatilityType() == ShiftedLognormal,
+                   "BlackSwaptionEngine requires (shifted) lognormal input "
+                   "volatility");
+    }
+
+    BlackSwaptionEngine::BlackSwaptionEngine(
+                        const Handle<YieldTermStructure> &discountCurve,
                         const Handle<SwaptionVolatilityStructure> &vol,
                         Real displacement)
     : detail::BlackStyleSwaptionEngine<detail::Black76Spec>(discountCurve, vol,
-                                                            displacement) {}
+                                                            displacement) {
+        QL_REQUIRE(vol->volatilityType() == ShiftedLognormal,
+                   "BlackSwaptionEngine requires (shifted) lognormal input "
+                   "volatility");
+    }
 
     BachelierSwaptionEngine::BachelierSwaptionEngine(
         const Handle<YieldTermStructure> &discountCurve, Volatility vol,
@@ -63,6 +77,9 @@ namespace QuantLib {
         const Handle<YieldTermStructure> &discountCurve,
         const Handle<SwaptionVolatilityStructure> &vol)
     : detail::BlackStyleSwaptionEngine<detail::BachelierSpec>(discountCurve, vol,
-                                                              0.0) {}
+                                                              0.0) {
+        QL_REQUIRE(vol->volatilityType() == Normal,
+                   "BachelierSwaptionEngine requires normal input volatility");
+    }
 
 } // namespace QuantLib
