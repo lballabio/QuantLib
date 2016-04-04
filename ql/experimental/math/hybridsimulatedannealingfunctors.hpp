@@ -24,9 +24,8 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #ifndef HYBRIDSIMULATEDANNEALINGFUNCTORS_H
 #define HYBRIDSIMULATEDANNEALINGFUNCTORS_H
 
-#include <cmath> //for log
-#include <algorithm> //for std::max
-#include <vector>
+#include <ql/math/array.hpp>
+#include <ql/math/randomnumbers/seedgenerator.hpp>
 
 #include <boost/random/mersenne_twister.hpp>
 typedef boost::mt19937 base_generator_type;
@@ -54,8 +53,9 @@ typedef boost::variate_generator<base_generator_type, normal_random > normal_var
 typedef boost::variate_generator<base_generator_type&, lognormal_random > lognormal_variate;
 typedef boost::variate_generator<base_generator_type&, cauchy_random > cauchy_variate;
 
-#include <ql/math/array.hpp>
-#include <ql/math/randomnumbers/seedgenerator.hpp>
+#include <cmath> //for log
+#include <algorithm> //for std::max
+#include <vector>
 
 namespace QuantLib
 {

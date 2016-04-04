@@ -17,8 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <boost/make_shared.hpp>
-
 #include <ql/pricingengines/swap/cvaswapengine.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
@@ -29,6 +27,7 @@
 #include <ql/termstructures/defaulttermstructure.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
+#include <boost/make_shared.hpp>
 
 namespace QuantLib {
   
