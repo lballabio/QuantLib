@@ -24,7 +24,6 @@
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/exercise.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
-#include <ql/termstructures/defaulttermstructure.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
 #include <boost/make_shared.hpp>

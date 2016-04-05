@@ -26,6 +26,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 #include <ql/math/array.hpp>
 #include <ql/math/randomnumbers/seedgenerator.hpp>
+#include <ql/math/optimization/problem.hpp>
 
 #include <boost/random/mersenne_twister.hpp>
 typedef boost::mt19937 base_generator_type;
