@@ -27,6 +27,10 @@ Computation, 6(2): 58–73.
 #ifndef quantlib_optimization_particleswarmoptimization_hpp
 #define quantlib_optimization_particleswarmoptimization_hpp
 
+#include <ql/qldefines.hpp>
+
+#if BOOST_VERSION >= 104700
+
 #include <ql/math/optimization/problem.hpp>
 #include <ql/math/optimization/constraint.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
@@ -36,13 +40,8 @@ Computation, 6(2): 58–73.
 #include <boost/random/mersenne_twister.hpp>
 typedef boost::mt19937 base_generator_type;
 
-#if BOOST_VERSION >= 104700
 #include <boost/random/uniform_int_distribution.hpp>
 typedef boost::random::uniform_int_distribution<QuantLib::Size> uniform_integer;
-#else
-#include <boost/random/uniform_int.hpp>
-typedef boost::uniform_int<unsigned long> uniform_integer;
-#endif
 
 namespace QuantLib {
 
@@ -411,5 +410,7 @@ namespace QuantLib {
     };
 
 }
+
+#endif
 
 #endif
