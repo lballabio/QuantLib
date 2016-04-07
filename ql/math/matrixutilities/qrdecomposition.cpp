@@ -61,7 +61,7 @@ namespace QuantLib {
             std::fill(q.begin(), q.end(), 0.0);
 
             Integer u = std::min(n,m);
-            for (Size i=0; i < u; ++i)
+            for (Integer i=0; i < u; ++i)
                 q[i][i] = 1.0;
 
             Array v(m);
