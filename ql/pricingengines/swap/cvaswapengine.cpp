@@ -39,8 +39,8 @@ namespace QuantLib {
       Real invstRecoveryRate)
   : baseSwapEngine_(Handle<PricingEngine>(
       boost::make_shared<DiscountingSwapEngine>(discountCurve))),
-    discountCurve_(discountCurve), 
     swaptionletEngine_(swaptionEngine),
+    discountCurve_(discountCurve),
     defaultTS_(ctptyDTS), 
     ctptyRecoveryRate_(ctptyRecoveryRate),
     invstDTS_(invstDTS.empty() ? Handle<DefaultProbabilityTermStructure>(
@@ -63,10 +63,10 @@ namespace QuantLib {
         Real invstRecoveryRate)
   : baseSwapEngine_(Handle<PricingEngine>(
       boost::make_shared<DiscountingSwapEngine>(discountCurve))),
-    discountCurve_(discountCurve), 
     swaptionletEngine_(Handle<PricingEngine>(
       boost::make_shared<BlackSwaptionEngine>(discountCurve,
         blackVol))),
+    discountCurve_(discountCurve),
     defaultTS_(ctptyDTS), 
     ctptyRecoveryRate_(ctptyRecoveryRate),
     invstDTS_(invstDTS.empty() ? Handle<DefaultProbabilityTermStructure>(
@@ -88,10 +88,10 @@ namespace QuantLib {
         Real invstRecoveryRate)
   : baseSwapEngine_(Handle<PricingEngine>(
       boost::make_shared<DiscountingSwapEngine>(discountCurve))),
-    discountCurve_(discountCurve), 
     swaptionletEngine_(Handle<PricingEngine>(
       boost::make_shared<BlackSwaptionEngine>(discountCurve,
         blackVol))),
+    discountCurve_(discountCurve),
     defaultTS_(ctptyDTS), 
     ctptyRecoveryRate_(ctptyRecoveryRate),
     invstDTS_(invstDTS.empty() ? Handle<DefaultProbabilityTermStructure>(
@@ -162,8 +162,8 @@ namespace QuantLib {
 	        arguments_.legs[1][0])->index());
 
       // Alternatively one could cap this period to, say, 1M 
-      Period swapPeriod = boost::dynamic_pointer_cast<FloatingRateCoupon>(
-        arguments_.legs[1][0])->index()->tenor();
+      // Period swapPeriod = boost::dynamic_pointer_cast<FloatingRateCoupon>(
+      //   arguments_.legs[1][0])->index()->tenor();
 
       Period baseSwapsTenor(arguments_.fixedPayDates.back().serialNumber() 
 	    - swapletStart.serialNumber(), Days);

@@ -240,8 +240,8 @@ namespace QuantLib {
         Size defaultClubs, Size totalClubs,
         Size maxClubs, Size minClubs,
         Size resetIteration, unsigned long seed) :
-        defaultClubs_(defaultClubs), totalClubs_(totalClubs),
-        maxClubs_(maxClubs), minClubs_(minClubs),
+        totalClubs_(totalClubs), maxClubs_(maxClubs),
+        minClubs_(minClubs), defaultClubs_(defaultClubs),
         iteration_(0), resetIteration_(resetIteration),
         bestByClub_(totalClubs, 0), worstByClub_(totalClubs, 0),
         generator_(seed), distribution_(1, totalClubs_) {
