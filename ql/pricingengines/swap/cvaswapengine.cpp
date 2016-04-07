@@ -121,11 +121,6 @@ namespace QuantLib {
         cumPutVal = 0.;
     // Vanilla swap so 0 leg is floater
 
-    std::vector<Date>::const_iterator iFD = 
-	arguments_.floatingFixingDates.begin(); 
-    std::vector<Date>::const_iterator endIt = 
-        arguments_.floatingFixingDates.end();
-
     std::vector<Date>::const_iterator nextFD = 
       arguments_.fixedPayDates.begin();
     Date swapletStart = priceDate;

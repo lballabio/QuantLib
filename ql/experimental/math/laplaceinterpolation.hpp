@@ -33,7 +33,7 @@
 
 namespace QuantLib {
 
-namespace {
+namespace detail {
 
 Disposable<Array> f_A(const SparseMatrix &g, const Array &x) {
     return prod(g, x);
@@ -148,7 +148,7 @@ template <class M> void laplaceInterpolation(M &A, Real relTol = 1E-6) {
     }
 
     // solve the equation (preconditioner is identiy)
-    Array s = BiCGstab(boost::bind(&f_A, g, _1), 10 * m * n, relTol)
+    Array s = BiCGstab(boost::bind(&detail::f_A, g, _1), 10 * m * n, relTol)
                   .solve(rhs, guess)
                   .x;
 

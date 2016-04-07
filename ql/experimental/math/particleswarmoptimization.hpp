@@ -240,7 +240,7 @@ namespace QuantLib {
       private:
         Real c0_, best_;
         Real minInertia_, maxInertia_;
-        Size M_, N_;
+        Size M_;
         Size sh_, sl_;
         Size adaptiveCounter;
         bool started_;
