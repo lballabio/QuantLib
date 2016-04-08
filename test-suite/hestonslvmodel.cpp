@@ -2446,7 +2446,7 @@ void HestonSLVModelTest::testMoustacheGraph() {
     const Real tol = 7.5e-3;
 
     for (Size i=0; i < 18; ++i) {
-        const Real dist = 10+5*i;
+        const Real dist = 10.0+5.0*i;
 
         const Real barrier_lo = std::max(s0 - dist, 1e-2);
         const Real barrier_hi = s0 + dist;
