@@ -193,9 +193,9 @@ namespace QuantLib
     };
 
     //! Boltzmann Probability
-    /*!    The probability of accepting a new point is sampled from a Boltzmann distribution
-    A point is accepted if \frac{1}{1+exp(-(current-new)/T)} > u
-    where u is drawn from a uniform distribution
+    /*!    The probability of accepting a new point is sampled from a Boltzmann distribution.
+    A point is accepted if \f$ \frac{1}{1+exp(-(current-new)/T)} > u \f$
+    where \f$ u \f$ is drawn from a uniform distribution.
     */
     class ProbabilityBoltzmann {
     public:

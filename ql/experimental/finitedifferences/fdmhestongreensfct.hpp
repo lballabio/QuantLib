@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdmhestongreenfct.cpp
+/*! \file fdmhestongreensfct.hpp
     \brief Heston Fokker-Planck Green's function
 */
 
