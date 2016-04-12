@@ -28,25 +28,23 @@
 
 #include <ql/math/matrixutilities/bicgstab.hpp>
 #include <ql/math/matrixutilities/sparsematrix.hpp>
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
 
 namespace QuantLib {
 
-namespace detail {
-
-Disposable<Array> f_A(const SparseMatrix &g, const Array &x) {
-    return prod(g, x);
-};
-
-} // namespace
-
 /*! reference: Numerical Recipes, 3rd edition, ch. 3.8
-    two dimensonal reconstruction of missing (i.e. null)
+    two dimensional reconstruction of missing (i.e. null)
     values using laplace interpolation assuming an
     equidistant grid */
 
 template <class M> void laplaceInterpolation(M &A, Real relTol = 1E-6) {
+
+    struct f_A {
+        const SparseMatrix &g;
+        f_A(const SparseMatrix &g) : g(g) {}
+        Disposable<Array> operator()(const Array &x) const {
+            return prod(g, x);
+        }
+    };
 
     Size m = A.rows();
     Size n = A.columns();
@@ -148,7 +146,7 @@ template <class M> void laplaceInterpolation(M &A, Real relTol = 1E-6) {
     }
 
     // solve the equation (preconditioner is identiy)
-    Array s = BiCGstab(boost::bind(&detail::f_A, g, _1), 10 * m * n, relTol)
+    Array s = BiCGstab(f_A(g), 10 * m * n, relTol)
                   .solve(rhs, guess)
                   .x;
 
