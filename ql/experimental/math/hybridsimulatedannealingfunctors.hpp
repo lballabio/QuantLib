@@ -169,7 +169,8 @@ namespace QuantLib
                 while (newPoint[i] < lower_[i] || newPoint[i] > upper_[i]) {
                     Real draw = uniform_();
                     Real sign = (0.5 < draw) - (draw < 0.5);
-                    Real y = sign*temp[i] * (std::pow(1.0 + 1.0 / temp[i], abs(2 * draw - 1.0)) - 1.0);
+                    Real y = sign*temp[i] * (std::pow(1.0 + 1.0 / temp[i],
+                                                      std::abs(2 * draw - 1.0)) - 1.0);
                     newPoint[i] = currentPoint[i] + y*(upper_[i] - lower_[i]);
                 }
             }
@@ -372,7 +373,7 @@ namespace QuantLib
             Array ofssetPoint(currentPoint);
             for (Size i = 0; i < N_; i++) {
                 ofssetPoint[i] += stepSize_;
-                finiteDiffs[i] = bounded_[i] * abs((problem_->value(ofssetPoint) - currentValue) / stepSize_);
+                finiteDiffs[i] = bounded_[i] * std::abs((problem_->value(ofssetPoint) - currentValue) / stepSize_);
                 ofssetPoint[i] -= stepSize_;
                 if (finiteDiffs[i] < minSize_)
                     finiteDiffs[i] = minSize_;
