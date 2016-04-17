@@ -117,7 +117,7 @@ namespace QuantLib {
         accrualPeriod(const Leg& leg,
                       bool includeSettlementDateFlows,
                       Date settlementDate = Date());
-        static BigInteger
+        static int_fast32_t
         accrualDays(const Leg& leg,
                     bool includeSettlementDateFlows,
                     Date settlementDate = Date());
@@ -125,7 +125,7 @@ namespace QuantLib {
         accruedPeriod(const Leg& leg,
                       bool includeSettlementDateFlows,
                       Date settlementDate = Date());
-        static BigInteger
+        static int_fast32_t
         accruedDays(const Leg& leg,
                     bool includeSettlementDateFlows,
                     Date settlementDate = Date());

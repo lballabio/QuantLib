@@ -299,7 +299,7 @@ namespace QuantLib {
                 Date next20th = nextTwentieth(effectiveDate, *rule_);
                 if (*rule_ == DateGeneration::OldCDS) {
                     // distance rule inforced in natural days
-                    static const BigInteger stubDays = 30;
+                    static const int_fast32_t stubDays = 30;
                     if (next20th - effectiveDate < stubDays) {
                         // +1 will skip this one and get the next
                         next20th = nextTwentieth(next20th + 1, *rule_);

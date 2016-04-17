@@ -333,7 +333,7 @@ namespace QuantLib {
         return 0;
     }
 
-    BigInteger CashFlows::accrualDays(const Leg& leg,
+    int_fast32_t CashFlows::accrualDays(const Leg& leg,
                                       bool includeSettlementDateFlows,
                                       Date settlementDate) {
         Leg::const_iterator cf = nextCashFlow(leg,
@@ -370,7 +370,7 @@ namespace QuantLib {
         return 0;
     }
 
-    BigInteger CashFlows::accruedDays(const Leg& leg,
+    int_fast32_t CashFlows::accruedDays(const Leg& leg,
                                       bool includeSettlementDateFlows,
                                       Date settlementDate) {
         if (settlementDate == Date())

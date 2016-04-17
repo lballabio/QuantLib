@@ -49,7 +49,7 @@ namespace QuantLib {
         return accrualPeriod_;
     }
 
-    BigInteger Coupon::accrualDays() const {
+    int_fast32_t Coupon::accrualDays() const {
         return dayCounter().dayCount(accrualStartDate_,
                                      accrualEndDate_);
     }
@@ -65,7 +65,7 @@ namespace QuantLib {
         }
     }
 
-    BigInteger Coupon::accruedDays(const Date& d) const {
+    int_fast32_t Coupon::accruedDays(const Date& d) const {
         if (d <= accrualStartDate_ || d > paymentDate_) {
             return 0;
         } else {

@@ -1580,7 +1580,7 @@ void CalendarTest::testBusinessDaysBetween() {
     testDates.push_back(Date(15,May,2006));
     testDates.push_back(Date(26,July,2006));
 
-    BigInteger expected[] = {
+    int_fast32_t expected[] = {
         1,
         321,
         152,

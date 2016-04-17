@@ -24,7 +24,7 @@ namespace QuantLib {
 
     namespace { DayCounter fallback = Thirty360(); }
 
-    BigInteger SimpleDayCounter::Impl::dayCount(const Date& d1,
+    int_fast32_t SimpleDayCounter::Impl::dayCount(const Date& d1,
                                                 const Date& d2) const {
         return fallback.dayCount(d1,d2);
     }

@@ -52,9 +52,9 @@ namespace QuantLib {
 #ifndef QL_HIGH_RESOLUTION_DATE
     // constructors
     Date::Date()
-    : serialNumber_(BigInteger(0)) {}
+    : serialNumber_(int_fast32_t(0)) {}
 
-    Date::Date(BigInteger serialNumber)
+    Date::Date(int_fast32_t serialNumber)
     : serialNumber_(serialNumber) {
         checkSerialNumber(serialNumber);
     }
@@ -94,8 +94,8 @@ namespace QuantLib {
         return y;
     }
 
-    Date& Date::operator+=(BigInteger days) {
-        BigInteger serial = serialNumber_ + days;
+    Date& Date::operator+=(int_fast32_t days) {
+        int_fast32_t serial = serialNumber_ + days;
         checkSerialNumber(serial);
         serialNumber_ = serial;
         return *this;
@@ -106,8 +106,8 @@ namespace QuantLib {
         return *this;
     }
 
-    Date& Date::operator-=(BigInteger days) {
-        BigInteger serial = serialNumber_ - days;
+    Date& Date::operator-=(int_fast32_t days) {
+        int_fast32_t serial = serialNumber_ - days;
         checkSerialNumber(serial);
         serialNumber_ = serial;
         return *this;
@@ -119,14 +119,14 @@ namespace QuantLib {
     }
 
     Date& Date::operator++() {
-        BigInteger serial = serialNumber_ + 1;
+        int_fast32_t serial = serialNumber_ + 1;
         checkSerialNumber(serial);
         serialNumber_ = serial;
         return *this;
     }
 
     Date& Date::operator--() {
-        BigInteger serial = serialNumber_ - 1;
+        int_fast32_t serial = serialNumber_ - 1;
         checkSerialNumber(serial);
         serialNumber_ = serial;
         return *this;
@@ -276,10 +276,10 @@ namespace QuantLib {
         return (leapYear? MonthLeapOffset[m-1] : MonthOffset[m-1]);
     }
 
-    BigInteger Date::yearOffset(Year y) {
+    int_fast32_t Date::yearOffset(Year y) {
         // the list of all December 31st in the preceding year
         // e.g. for 1901 yearOffset[1] is 366, that is, December 31 1900
-        static const BigInteger YearOffset[] = {
+        static const int_fast32_t YearOffset[] = {
             // 1900-1909
                 0,  366,  731, 1096, 1461, 1827, 2192, 2557, 2922, 3288,
             // 1910-1919
@@ -528,7 +528,7 @@ namespace QuantLib {
                millisec*(time_duration::ticks_per_second()/1000)
              + microsec*(time_duration::ticks_per_second()/1000000))) {}
 
-    Date::Date(BigInteger serialNumber)
+    Date::Date(int_fast32_t serialNumber)
     : dateTime_(
          serialNumberDateReference() +
          boost::gregorian::days(serialNumber)) {
@@ -598,8 +598,8 @@ namespace QuantLib {
         return time_duration::ticks_per_second();
     }
 
-    BigInteger Date::serialNumber() const {
-        const BigInteger n = (dateTime_.date()
+    int_fast32_t Date::serialNumber() const {
+        const int_fast32_t n = (dateTime_.date()
             - serialNumberDateReference()).days();
         checkSerialNumber(n);
 
@@ -608,7 +608,7 @@ namespace QuantLib {
 
     const ptime& Date::dateTime() const { return dateTime_; }
 
-    Date& Date::operator+=(BigInteger d) {
+    Date& Date::operator+=(int_fast32_t d) {
         dateTime_ += boost::gregorian::days(d);
         return *this;
     }
@@ -618,7 +618,7 @@ namespace QuantLib {
         return *this;
     }
 
-    Date& Date::operator-=(BigInteger d) {
+    Date& Date::operator-=(int_fast32_t d) {
         dateTime_ -= boost::gregorian::days(d);
         return *this;
     }
@@ -637,14 +637,14 @@ namespace QuantLib {
         return *this;
     }
 
-    Date Date::operator+(BigInteger days) const {
+    Date Date::operator+(int_fast32_t days) const {
         Date retVal(*this);
         retVal+=days;
 
         return retVal;
     }
 
-    Date Date::operator-(BigInteger days) const {
+    Date Date::operator-(int_fast32_t days) const {
         Date retVal(*this);
         retVal-=days;
 
@@ -693,12 +693,12 @@ namespace QuantLib {
     }
 
 
-    BigInteger operator-(const Date& d1, const Date& d2) {
+    int_fast32_t operator-(const Date& d1, const Date& d2) {
         return (d1.dateTime().date() - d2.dateTime().date()).days();
     }
 
     Time daysBetween(const Date& d1, const Date& d2) {
-        const BigInteger days = d2 - d1;
+        const int_fast32_t days = d2 - d1;
         return days + d2.fractionOfDay() - d1.fractionOfDay();
     }
 
@@ -727,15 +727,15 @@ namespace QuantLib {
     }
 #endif
 
-    BigInteger Date::minimumSerialNumber() {
+    int_fast32_t Date::minimumSerialNumber() {
         return 367;       // Jan 1st, 1901
     }
 
-    BigInteger Date::maximumSerialNumber() {
+    int_fast32_t Date::maximumSerialNumber() {
         return 109574;    // Dec 31st, 2199
     }
 
-    void Date::checkSerialNumber(BigInteger serialNumber) {
+    void Date::checkSerialNumber(int_fast32_t serialNumber) {
         QL_REQUIRE(serialNumber >= minimumSerialNumber() &&
                    serialNumber <= maximumSerialNumber(),
                    "Date's serial number (" << serialNumber << ") outside "

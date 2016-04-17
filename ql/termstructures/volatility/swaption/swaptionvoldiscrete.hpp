@@ -117,7 +117,7 @@ namespace QuantLib {
 
     inline const Date
     SwaptionVolatilityDiscrete::optionDateFromTime(Time optionTime) const {
-        return Date(static_cast<BigInteger>(optionInterpolator_(optionTime)));
+        return Date(static_cast<int_fast32_t>(optionInterpolator_(optionTime)));
     }
 
 }

@@ -70,7 +70,7 @@ namespace QuantLib {
         //! accrual period as fraction of year
         Time accrualPeriod() const;
         //! accrual period in days
-        BigInteger accrualDays() const;
+        int_fast32_t accrualDays() const;
         //! accrued rate
         virtual Rate rate() const = 0;
         //! day counter for accrual calculation
@@ -78,7 +78,7 @@ namespace QuantLib {
         //! accrued period as fraction of year at the given date
         Time accruedPeriod(const Date&) const;
         //! accrued days at the given date
-        BigInteger accruedDays(const Date&) const;
+        int_fast32_t accruedDays(const Date&) const;
         //! accrued amount at the given date
         virtual Real accruedAmount(const Date&) const = 0;
         //@}

@@ -25,8 +25,8 @@ namespace QuantLib {
 
     namespace {
 
-        typedef std::map<Year, std::map<Month, BigInteger> > Cache;
-        typedef std::map<Year, BigInteger> OuterCache;
+        typedef std::map<Year, std::map<Month, int_fast32_t> > Cache;
+        typedef std::map<Year, int_fast32_t> OuterCache;
         
         std::map<std::string, Cache> monthlyFigures_;
         std::map<std::string, OuterCache> yearlyFigures_;
@@ -39,7 +39,7 @@ namespace QuantLib {
             return d1.year() == d2.year() && d1.month() == d2.month();
         }
 
-        BigInteger businessDays(Cache& cache,
+        int_fast32_t businessDays(Cache& cache,
                                 const Calendar& calendar,
                                 Month month, Year year) {
             if (cache[year][month] == 0) {
@@ -51,13 +51,13 @@ namespace QuantLib {
             return cache[year][month];
         }
 
-        BigInteger businessDays(OuterCache& outerCache,
+        int_fast32_t businessDays(OuterCache& outerCache,
                                 Cache& cache,
                                 const Calendar& calendar,
                                 Year year) {
             if (outerCache[year] == 0) {
                 // calculate and store.
-                BigInteger total = 0;
+                int_fast32_t total = 0;
                 for (Integer i=1; i<=12; ++i) {
                     total += businessDays(cache,calendar,
                                           Month(i), year);
@@ -75,7 +75,7 @@ namespace QuantLib {
         return out.str();
     }
 
-    BigInteger Business252::Impl::dayCount(const Date& d1,
+    int_fast32_t Business252::Impl::dayCount(const Date& d1,
                                            const Date& d2) const {
         if (sameMonth(d1,d2) || d1 >= d2) {
             // we treat the case of d1 > d2 here, since we'd need a
@@ -85,7 +85,7 @@ namespace QuantLib {
             return calendar_.businessDaysBetween(d1, d2);
         } else if (sameYear(d1,d2)) {
             Cache& cache = monthlyFigures_[calendar_.name()];
-            BigInteger total = 0;
+            int_fast32_t total = 0;
             Date d;
             // first, we get to the beginning of next month.
             d = Date(1,d1.month(),d1.year()) + 1*Months;
@@ -103,7 +103,7 @@ namespace QuantLib {
         } else {
             Cache& cache = monthlyFigures_[calendar_.name()];
             OuterCache& outerCache = yearlyFigures_[calendar_.name()];
-            BigInteger total = 0;
+            int_fast32_t total = 0;
             Date d;
             // first, we get to the beginning of next year.
             // The first bit gets us to the end of this month...
