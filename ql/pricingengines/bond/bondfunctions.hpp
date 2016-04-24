@@ -91,11 +91,11 @@ namespace QuantLib {
                                        Date settlementDate = Date());
         static Time accrualPeriod(const Bond& bond,
                                   Date settlementDate = Date());
-        static int_fast32_t accrualDays(const Bond& bond,
+        static Date::serial_type accrualDays(const Bond& bond,
                                       Date settlementDate = Date());
         static Time accruedPeriod(const Bond& bond,
                                   Date settlementDate = Date());
-        static int_fast32_t accruedDays(const Bond& bond,
+        static Date::serial_type accruedDays(const Bond& bond,
                                       Date settlementDate = Date());
         static Real accruedAmount(const Bond& bond,
                                   Date settlementDate = Date());

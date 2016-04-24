@@ -185,7 +185,7 @@ namespace QuantLib {
                                         false, settlement);
     }
 
-    int_fast32_t BondFunctions::accrualDays(const Bond& bond,
+    Date::serial_type BondFunctions::accrualDays(const Bond& bond,
                                           Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();
@@ -211,7 +211,7 @@ namespace QuantLib {
                                         false, settlement);
     }
 
-    int_fast32_t BondFunctions::accruedDays(const Bond& bond,
+    Date::serial_type BondFunctions::accruedDays(const Bond& bond,
                                           Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();

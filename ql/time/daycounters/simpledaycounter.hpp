@@ -48,7 +48,7 @@ namespace QuantLib {
         class Impl : public DayCounter::Impl {
           public:
             std::string name() const { return "Simple"; }
-            int_fast32_t dayCount(const Date& d1,
+            Date::serial_type dayCount(const Date& d1,
                                 const Date& d2) const;
             Time yearFraction(const Date& d1,
                               const Date& d2,

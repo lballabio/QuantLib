@@ -40,7 +40,7 @@ namespace QuantLib {
             Calendar calendar_;
           public:
             std::string name() const;
-            int_fast32_t dayCount(const Date& d1,
+            Date::serial_type dayCount(const Date& d1,
                                 const Date& d2) const;
             Time yearFraction(const Date& d1,
                               const Date& d2,
