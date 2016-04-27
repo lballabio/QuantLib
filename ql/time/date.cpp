@@ -875,8 +875,8 @@ namespace QuantLib {
                         yyyy = d.year();
                 char filler = out.fill();
                 out << yyyy << "-";
-                out << std::setw(2) << std::setfill('0') << mm << "-";
-                out << std::setw(2) << std::setfill('0') << dd;
+                out << std::setw(2) << std::right << std::setfill('0') << mm << "-";
+                out << std::setw(2) << std::right << std::setfill('0') << dd;
                 out.fill(filler);
             }
             return out;
