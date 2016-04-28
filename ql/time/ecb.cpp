@@ -58,7 +58,7 @@ namespace QuantLib {
             , 42032, 42074, 42116, 42165, 42207, 42256, 42305, 42347// 2015
             // https://www.ecb.europa.eu/press/pr/date/2015/html/pr150622.en.html
             , 42396, 42445, 42487, 42529, 42578, 42627, 42669, 42718 // 2016
-            , 42760 // 2017
+            , 42760, /*source ICAP */ 42802, 42844, 42893, 42942 // 2017
         };
         if (knownDateSet.empty()) {
             Size n = sizeof(knownDatesArray)/sizeof(BigInteger);
