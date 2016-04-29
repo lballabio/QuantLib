@@ -1,3 +1,88 @@
+commit 0dfae9dd053d33123e9e1423f0b88a23f59e2220
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 29 Apr 2016 11:59:38 +0200
+
+    Add a few more holidays for South Korea.
+    
+    Thanks to Faycal El Karaa.
+
+ Docs/pages/history.docs          | 2 ++
+ News.txt                         | 2 ++
+ ql/time/calendars/southkorea.cpp | 7 ++++++-
+ ql/time/calendars/southkorea.hpp | 1 +
+ 4 files changed, 11 insertions(+), 1 deletion(-)
+
+commit 86d1695e93ba789da5c6d1eb3190e34cf75eac82
+Merge: 63fd2d2 4653570
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 27 Apr 2016 14:43:38 +0200
+
+    Merge pull request #83.
+
+commit 4653570196a6977a722b5a033d7e104f82cff1a4
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 27 Apr 2016 14:42:58 +0200
+
+    Add new files to distribution.
+
+ man/Makefile.am | 22 ++++++++++++++++------
+ 1 file changed, 16 insertions(+), 6 deletions(-)
+
+commit 85b713d30d9bb9b587b814a20fc4e428238b0f1f
+Author: Dirk Eddelbuettel <edd@debian.org>
+Date:   Wed, 27 Apr 2016 06:38:40 -0500
+
+    additional stubs for more examples
+
+ man/BasketLosses.1     | 37 +++++++++++++++++++++++++++++++++++++
+ man/Gaussian1dModels.1 | 37 +++++++++++++++++++++++++++++++++++++
+ man/LatentModel.1      | 37 +++++++++++++++++++++++++++++++++++++
+ man/MarketModels.1     | 14 ++++++--------
+ man/MultidimIntegral.1 | 37 +++++++++++++++++++++++++++++++++++++
+ 5 files changed, 154 insertions(+), 8 deletions(-)
+
+commit 9b7a4b77d4b714955b0de80446e30f101545ac12
+Author: Dirk Eddelbuettel <edd@debian.org>
+Date:   Tue, 26 Apr 2016 21:48:37 -0500
+
+    new (stub) CVAIRS manual page
+
+ man/CVAIRS.1 | 37 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
+
+commit 63fd2d236709876b98fe0ce5dc85363a2c8f0a1e
+Author: Peter Caspers <peter.caspers@quaternion.com>
+Date:   Tue, 26 Apr 2016 11:39:38 +0200
+
+    Avoid uses of Boost.Lambda.
+    
+    This prevents errors on some machines with Boost 1.57 installed.
+
+ ql/processes/hestonprocess.cpp | 30 ++++++++++++++++++------------
+ 1 file changed, 18 insertions(+), 12 deletions(-)
+
+commit f526d8a950237b580ad905d9a1c1bbf6fac88fa9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 20 Apr 2016 14:04:46 +0200
+
+    Change forecast for release date.
+
+ Docs/pages/history.docs | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 20293d9218c4a657e7906c0e9b0849ca66f82994
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 19 Apr 2016 22:52:22 +0200
+
+    Update ChangeLog, news and contributor list.
+
+ ChangeLog.txt           | 3300 ++++++++++++++++++++++++++++++++++++++++++++++-
+ Contributors.txt        |    3 +
+ Docs/pages/authors.docs |    3 +
+ Docs/pages/history.docs |  127 +-
+ News.txt                |  133 +-
+ 5 files changed, 3489 insertions(+), 77 deletions(-)
+
 commit c67601fe0c4f44e0f7017a50db4c150027f29dce
 Merge: 2cc8cb4 a3e4a63
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
