@@ -178,12 +178,8 @@ int main(int, char* []) {
         // fixed leg
         Frequency fixedLegFrequency = Quarterly;
         BusinessDayConvention fixedLegConvention = ModifiedFollowing;
-        BusinessDayConvention floatingLegConvention = ModifiedFollowing;
         DayCounter fixedLegDayCounter = ActualActual(ActualActual::ISDA);
         DayCounter floatingLegDayCounter = ActualActual(ActualActual::ISDA);
-        // floating leg
-        Frequency floatingLegFrequency = Quarterly;
-        Spread spread = 0.0;
 
         VanillaSwap::Type swapType = 
             //VanillaSwap::Receiver ;

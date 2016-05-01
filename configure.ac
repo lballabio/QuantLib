@@ -294,7 +294,7 @@ if test "$ql_use_parallel_test" = "yes" ; then
    fi
    QL_CHECK_BOOST_TEST_INTERPROCESS
 else
-   AC_SUBST([BOOST_THREAD_LIB],[""])
+   AC_SUBST([BOOST_INTERPROCESS_LIB],[""])
 fi
 
 AC_MSG_CHECKING([whether to install examples])

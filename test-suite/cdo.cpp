@@ -93,7 +93,7 @@ namespace {
 void CdoTest::testHW(unsigned dataSet) {
 
     BOOST_TEST_MESSAGE ("Testing CDO premiums against Hull-White values"
-                        " for data set " << dataSet << " ...");
+                        " for data set " << dataSet << "...");
 
     SavedSettings backup;
 

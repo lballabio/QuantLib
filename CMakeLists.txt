@@ -4,6 +4,11 @@ cmake_minimum_required()
 # directory of the project to includes
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
+find_package(Boost)
+if (Boost_FOUND)
+  include_directories(${Boost_INCLUDE_DIRS})
+endif (Boost_FOUND)
+
 add_subdirectory(Examples)
 add_subdirectory(ql)
 

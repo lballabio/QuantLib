@@ -886,7 +886,7 @@ namespace QuantLib {
         //  by the minimum/maximum attainable point. Typically the functionals
         //  to integrate will have a low dependency on this point.
         if(lossLevel < minLoss) return saddleMin;
-        static const Real deltaMax = 1.e-6; // 1.e-9;
+
         Real saddleMax = 1./(lgds[iNamMax]/remainingNotional_) * 
             std::log((lgds[iNamMax]/remainingNotional_
                 -deltaMin)*(1.-pMaxName)/(pMaxName*deltaMin));
@@ -1168,8 +1168,6 @@ namespace QuantLib {
         Real K4Saddle = cumulants.get<3>();
         /* see, for instance R.Martin "he saddle point method and portfolio 
         optionalities." in Risk December 2006 p.93 */
-        Real cum2DerCond = CumGen2ndDerivativeCond(invUncondPs,
-            saddlePt, mktFactor);
         //\todo the exponentials below are dangerous and agressive, tame them.
         return 
             (

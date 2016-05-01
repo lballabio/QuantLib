@@ -109,6 +109,7 @@ Gang Liang
 Robert Lopez
 André Louw
 Joao Paulo Magalhaes
+Jose Magana
 John Maiden
 Katiuscia Manzoni
 Francesca Mariani
@@ -124,6 +125,7 @@ Dmitri Nesteruk
 Billy Ng
 Bojan Nikolic
 Jean Nkeng
+Nikolai Nowaczyk
 Adrian O'Neill
 Andrea Odetti
 Mike Parker
@@ -172,6 +174,7 @@ Roland Stamm
 Edouard Tallent
 Marco Tarenghi
 Yue Tian
+Jayanth R. Varma
 François du Vignaud
 Qingxiao Wang
 Charles Whitmore

@@ -54,7 +54,7 @@ using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 void RiskNeutralDensityCalculatorTest::testDensityAgainstOptionPrices() {
-    BOOST_TEST_MESSAGE("Testing density against option prices ...");
+    BOOST_TEST_MESSAGE("Testing density against option prices...");
 
     SavedSettings backup;
 
@@ -128,7 +128,7 @@ void RiskNeutralDensityCalculatorTest::testDensityAgainstOptionPrices() {
 }
 
 void RiskNeutralDensityCalculatorTest::testBSMagainstHestonRND() {
-    BOOST_TEST_MESSAGE("Testing Black-Scholes-Merton and Heston densities ...");
+    BOOST_TEST_MESSAGE("Testing Black-Scholes-Merton and Heston densities...");
 
     SavedSettings backup;
 
@@ -297,7 +297,7 @@ namespace {
 void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
     BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation "
                        "for local volatility process to calculate "
-                       "risk neutral densities ...");
+                       "risk neutral densities...");
 
     SavedSettings backup;
 

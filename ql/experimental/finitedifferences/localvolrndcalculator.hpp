@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file localvolendcalculator.hpp
+/*! \file localvolrndcalculator.hpp
     \brief local volatility risk neutral terminal density calculation
 */
 

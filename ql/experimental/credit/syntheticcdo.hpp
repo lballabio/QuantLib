@@ -176,7 +176,6 @@ namespace QuantLib {
         DayCounter dayCounter_;
         BusinessDayConvention paymentConvention_;
 
-        mutable Rate fairPremium_;
         mutable Real premiumValue_;
         mutable Real protectionValue_;
         mutable Real upfrontPremiumValue_;

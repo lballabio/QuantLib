@@ -21,7 +21,6 @@
 /*! \file fdmhestonfwdop.cpp
 */
 
-#include <boost/unordered/unordered_map.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
@@ -31,6 +30,7 @@
 #include <ql/methods/finitedifferences/operators/secondordermixedderivativeop.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
 #include <ql/experimental/finitedifferences/modtriplebandlinearop.hpp>
+#include <boost/unordered/unordered_map.hpp>
 
 namespace QuantLib {
 
