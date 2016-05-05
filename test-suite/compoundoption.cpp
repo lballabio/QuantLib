@@ -111,7 +111,7 @@ void CompoundOptionTest::testPutCallParity(){
     Calendar calendar = TARGET();
 
     DayCounter dc = Actual360();
-    Date todaysDate = Date::todaysDate();
+    Date todaysDate = Settings::instance().evaluationDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
@@ -246,7 +246,7 @@ void CompoundOptionTest::testValues(){
     Calendar calendar = TARGET();
 
     DayCounter dc = Actual360();
-    Date todaysDate = Date::todaysDate();
+    Date todaysDate = Settings::instance().evaluationDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
