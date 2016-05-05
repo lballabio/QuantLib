@@ -1659,7 +1659,7 @@ void CalendarTest::testChinaIB() {
     if (k != (expectedWorkingWeekEnds.size()))
         BOOST_FAIL("there were " << expectedWorkingWeekEnds.size()
             << " expected working weekends, while there are " << k
-            << " calculated holidays");
+            << " calculated working weekends");
 }
 
 void CalendarTest::testEndOfMonth() {
