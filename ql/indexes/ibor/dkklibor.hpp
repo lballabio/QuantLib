@@ -33,9 +33,7 @@
 namespace QuantLib {
 
     //! %DKK %LIBOR rate
-    /*! Danish Krona LIBOR fixed by BBA.
-
-        See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
+    /*! Danish Krona LIBOR discontinued as of 2013.
     */
     class DKKLibor : public Libor {
       public:

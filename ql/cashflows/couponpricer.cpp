@@ -166,6 +166,8 @@ namespace QuantLib {
         class PricerSetter : public AcyclicVisitor,
                              public Visitor<CashFlow>,
                              public Visitor<Coupon>,
+                             public Visitor<FloatingRateCoupon>,
+                             public Visitor<CappedFlooredCoupon>,
                              public Visitor<IborCoupon>,
                              public Visitor<CmsCoupon>,
                              public Visitor<CmsSpreadCoupon>,
@@ -186,6 +188,8 @@ namespace QuantLib {
 
             void visit(CashFlow& c);
             void visit(Coupon& c);
+            void visit(FloatingRateCoupon& c);
+            void visit(CappedFlooredCoupon& c);
             void visit(IborCoupon& c);
             void visit(CappedFlooredIborCoupon& c);
             void visit(DigitalIborCoupon& c);
@@ -205,6 +209,14 @@ namespace QuantLib {
 
         void PricerSetter::visit(Coupon&) {
             // nothing to do
+        }
+
+        void PricerSetter::visit(FloatingRateCoupon& c) {
+            c.setPricer(pricer_);
+        }
+
+        void PricerSetter::visit(CappedFlooredCoupon& c) {
+            c.setPricer(pricer_);
         }
 
         void PricerSetter::visit(IborCoupon& c) {

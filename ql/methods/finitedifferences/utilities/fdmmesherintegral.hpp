@@ -33,8 +33,8 @@ namespace QuantLib {
       public:
         FdmMesherIntegral(
             const boost::shared_ptr<FdmMesherComposite>& mesher,
-            const boost::function<Real(const Array&,
-                                             const Array&)>& integrator1d);
+            const boost::function<Real(const Array&, const Array&)>&
+                integrator1d);
 
         Real integrate(const Array& f) const;
 

@@ -33,10 +33,7 @@
 namespace QuantLib {
 
     //! %CAD LIBOR rate
-    /*! Canadian Dollar LIBOR fixed by BBA.
-
-        See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
-
+    /*! Canadian Dollar LIBOR discontinued as of 2013.
         \warning This is the rate fixed in London by BBA. Use CDOR if
                  you're interested in the Canadian fixing by IDA.
     */

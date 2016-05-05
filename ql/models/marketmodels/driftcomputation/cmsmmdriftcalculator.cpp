@@ -32,7 +32,6 @@ namespace QuantLib {
                                 Size alive,
                                 Size spanningFwds)
     : numberOfRates_(taus.size()), numberOfFactors_(pseudo.columns()),
-      isFullFactor_(numberOfFactors_==numberOfRates_ ? true : false),
       numeraire_(numeraire), alive_(alive),
       displacements_(displacements), oneOverTaus_(taus.size()),
       pseudo_(pseudo), tmp_(taus.size(), 0.0),

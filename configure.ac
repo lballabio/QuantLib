@@ -294,7 +294,7 @@ if test "$ql_use_parallel_test" = "yes" ; then
    fi
    QL_CHECK_BOOST_TEST_INTERPROCESS
 else
-   AC_SUBST([BOOST_THREAD_LIB],[""])
+   AC_SUBST([BOOST_INTERPROCESS_LIB],[""])
 fi
 
 AC_MSG_CHECKING([whether to install examples])
@@ -378,6 +378,7 @@ AC_CONFIG_FILES([
     ql/experimental/lattices/Makefile
     ql/experimental/math/Makefile
     ql/experimental/mcbasket/Makefile
+    ql/experimental/models/Makefile
     ql/experimental/processes/Makefile
     ql/experimental/risk/Makefile
     ql/experimental/shortrate/Makefile
@@ -477,6 +478,7 @@ AC_CONFIG_FILES([
     Examples/CallableBonds/Makefile
     Examples/CDS/Makefile
     Examples/ConvertibleBonds/Makefile
+    Examples/CVAIRS/Makefile
     Examples/DiscreteHedging/Makefile
     Examples/EquityOption/Makefile
     Examples/FittedBondCurve/Makefile

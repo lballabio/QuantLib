@@ -414,6 +414,12 @@
     <ClCompile Include="zabr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="hestonslvmodel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="riskneutraldensitycalculator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="observable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -825,6 +831,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="zabr.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hestonslvmodel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="riskneutraldensitycalculator.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="observable.hpp">

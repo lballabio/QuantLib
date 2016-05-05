@@ -685,6 +685,7 @@
     <ClCompile Include="gjrgarchmodel.cpp" />
     <ClCompile Include="gsr.cpp" />
     <ClCompile Include="hestonmodel.cpp" />
+    <ClCompile Include="hestonslvmodel.cpp" />
     <ClCompile Include="himalayaoption.cpp" />
     <ClCompile Include="hybridhestonhullwhiteprocess.cpp" />
     <ClCompile Include="inflation.cpp" />
@@ -734,6 +735,7 @@
     <ClCompile Include="quantooption.cpp" />
     <ClCompile Include="quotes.cpp" />
     <ClCompile Include="rangeaccrual.cpp" />
+    <ClCompile Include="riskneutraldensitycalculator.cpp" />
     <ClCompile Include="riskstats.cpp" />
     <ClCompile Include="rngtraits.cpp" />
     <ClCompile Include="rounding.cpp" />
@@ -823,6 +825,7 @@
     <ClInclude Include="gjrgarchmodel.hpp" />
     <ClInclude Include="gsr.hpp" />
     <ClInclude Include="hestonmodel.hpp" />
+    <ClInclude Include="hestonslvmodel.hpp" />
     <ClInclude Include="himalayaoption.hpp" />
     <ClInclude Include="hybridhestonhullwhiteprocess.hpp" />
     <ClInclude Include="inflation.hpp" />
@@ -873,6 +876,7 @@
     <ClInclude Include="quantooption.hpp" />
     <ClInclude Include="quotes.hpp" />
     <ClInclude Include="rangeaccrual.hpp" />
+    <ClInclude Include="riskneutraldensitycalculator.hpp" />
     <ClInclude Include="riskstats.hpp" />
     <ClInclude Include="rngtraits.hpp" />
     <ClInclude Include="rounding.hpp" />

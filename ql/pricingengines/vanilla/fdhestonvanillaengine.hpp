@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008, 2009 Klaus Spanderen
+ Copyright (C) 2008, 2009, 2014 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,6 +31,7 @@
 #include <ql/pricingengines/genericmodelengine.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmsolverdesc.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
+#include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 
 namespace QuantLib {
 
@@ -52,7 +53,9 @@ namespace QuantLib {
             const boost::shared_ptr<HestonModel>& model,
             Size tGrid = 100, Size xGrid = 100, 
             Size vGrid = 50, Size dampingSteps = 0,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+            const boost::shared_ptr<LocalVolTermStructure>& leverageFct
+                = boost::shared_ptr<LocalVolTermStructure>());
 
         void calculate() const;
         
@@ -66,6 +69,7 @@ namespace QuantLib {
       private:
         const Size tGrid_, xGrid_, vGrid_, dampingSteps_;
         const FdmSchemeDesc schemeDesc_;
+        const boost::shared_ptr<LocalVolTermStructure> leverageFct_;
         
         std::vector<Real> strikes_;
         mutable std::vector<std::pair<DividendVanillaOption::arguments,
