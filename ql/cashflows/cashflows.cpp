@@ -827,7 +827,12 @@ namespace QuantLib {
             Date settlementDate_, npvDate_;
         };
 
-
+        struct CashFlowLess {
+            bool operator()(const boost::shared_ptr<CashFlow> &c,
+                            const boost::shared_ptr<CashFlow> &d) {
+                return c->date() < d->date();
+            }
+        };
 
     } // anonymous namespace ends here
 
@@ -846,24 +851,37 @@ namespace QuantLib {
         if (npvDate == Date())
             npvDate = settlementDate;
 
+        // use original leg if sorted, otherwise create
+        // a sorted copy and use that
+        const Leg *refLeg;
+        CashFlowLess cashFlowLess;
+        Leg tmp;
+        if (std::is_sorted(leg.begin(), leg.end(), cashFlowLess)) {
+            refLeg = &leg;
+        } else {
+            tmp = leg;
+            std::sort(tmp.begin(), tmp.end(), cashFlowLess);
+            refLeg = &tmp;
+        }
+
         Real npv = 0.0;
         DiscountFactor discount = 1.0;
         Date lastDate = npvDate;
         Date refStartDate, refEndDate;
 
-        for (Size i=0; i<leg.size(); ++i) {
-            if (leg[i]->hasOccurred(settlementDate,
+        for (Size i=0; i<refLeg->size(); ++i) {
+            if (refLeg->operator[](i)->hasOccurred(settlementDate,
                                     includeSettlementDateFlows))
                 continue;
 
-            Date couponDate = leg[i]->date();
-            Real amount = leg[i]->amount();
-            if (leg[i]->tradingExCoupon(settlementDate)) {
+            Date couponDate = refLeg->operator[](i)->date();
+            Real amount = refLeg->operator[](i)->amount();
+            if (refLeg->operator[](i)->tradingExCoupon(settlementDate)) {
                 amount = 0.0;
             }
 
             shared_ptr<Coupon> coupon =
-                boost::dynamic_pointer_cast<Coupon>(leg[i]);
+                boost::dynamic_pointer_cast<Coupon>(refLeg->operator[](i));
             if (coupon) {
                 refStartDate = coupon->referencePeriodStart();
                 refEndDate = coupon->referencePeriodEnd();
