@@ -17,6 +17,10 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/qldefines.hpp>
+
+#if BOOST_VERSION >= 104700
+
 #include <ql/experimental/math/fireflyalgorithm.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
 
@@ -85,7 +89,7 @@ namespace QuantLib {
         bool isFA = Mfa_ > 0 ? true : false;
         //Variables for DE
         Array z(N_, 0.0);
-        Size indexBest, indexR1, indexR2;
+        Size indexR1, indexR2;
         uniform_integer::param_type nParam(0, N_ - 1);
 
         //Set best value & position
@@ -229,3 +233,6 @@ namespace QuantLib {
         }
     }
 }
+
+#endif
+

@@ -24,9 +24,9 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #ifndef HYBRIDSIMULATEDANNEALINGFUNCTORS_H
 #define HYBRIDSIMULATEDANNEALINGFUNCTORS_H
 
-#include <cmath> //for log
-#include <algorithm> //for std::max
-#include <vector>
+#include <ql/math/array.hpp>
+#include <ql/math/randomnumbers/seedgenerator.hpp>
+#include <ql/math/optimization/problem.hpp>
 
 #include <boost/random/mersenne_twister.hpp>
 typedef boost::mt19937 base_generator_type;
@@ -54,8 +54,9 @@ typedef boost::variate_generator<base_generator_type, normal_random > normal_var
 typedef boost::variate_generator<base_generator_type&, lognormal_random > lognormal_variate;
 typedef boost::variate_generator<base_generator_type&, cauchy_random > cauchy_variate;
 
-#include <ql/math/array.hpp>
-#include <ql/math/randomnumbers/seedgenerator.hpp>
+#include <cmath> //for log
+#include <algorithm> //for std::max
+#include <vector>
 
 namespace QuantLib
 {
@@ -168,7 +169,8 @@ namespace QuantLib
                 while (newPoint[i] < lower_[i] || newPoint[i] > upper_[i]) {
                     Real draw = uniform_();
                     Real sign = (0.5 < draw) - (draw < 0.5);
-                    Real y = sign*temp[i] * (std::pow(1.0 + 1.0 / temp[i], abs(2 * draw - 1.0)) - 1.0);
+                    Real y = sign*temp[i] * (std::pow(1.0 + 1.0 / temp[i],
+                                                      std::abs(2 * draw - 1.0)) - 1.0);
                     newPoint[i] = currentPoint[i] + y*(upper_[i] - lower_[i]);
                 }
             }
@@ -192,9 +194,9 @@ namespace QuantLib
     };
 
     //! Boltzmann Probability
-    /*!    The probability of accepting a new point is sampled from a Boltzmann distribution
-    A point is accepted if \frac{1}{1+exp(-(current-new)/T)} > u
-    where u is drawn from a uniform distribution
+    /*!    The probability of accepting a new point is sampled from a Boltzmann distribution.
+    A point is accepted if \f$ \frac{1}{1+exp(-(current-new)/T)} > u \f$
+    where \f$ u \f$ is drawn from a uniform distribution.
     */
     class ProbabilityBoltzmann {
     public:
@@ -371,7 +373,7 @@ namespace QuantLib
             Array ofssetPoint(currentPoint);
             for (Size i = 0; i < N_; i++) {
                 ofssetPoint[i] += stepSize_;
-                finiteDiffs[i] = bounded_[i] * abs((problem_->value(ofssetPoint) - currentValue) / stepSize_);
+                finiteDiffs[i] = bounded_[i] * std::abs((problem_->value(ofssetPoint) - currentValue) / stepSize_);
                 ofssetPoint[i] -= stepSize_;
                 if (finiteDiffs[i] < minSize_)
                     finiteDiffs[i] = minSize_;
@@ -382,9 +384,11 @@ namespace QuantLib
                 Real tRatio = initialTemp_[i] / currTemp[i];
                 Real sRatio = finiteDiffMax / finiteDiffs[i];
                 if (sRatio*tRatio < functionTol_)
-                    steps[i] = std::pow(abs(log(functionTol_)), N_);
+                    steps[i] = std::pow(std::fabs(std::log(functionTol_)),
+                                        Integer(N_));
                 else
-                    steps[i] = std::pow(abs(log(sRatio*tRatio)), N_);
+                    steps[i] = std::pow(std::fabs(std::log(sRatio*tRatio)),
+                                        Integer(N_));
             }
         }
     private:

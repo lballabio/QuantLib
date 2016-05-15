@@ -22,10 +22,10 @@
 
 #include <ql/handle.hpp>
 #include <ql/instruments/vanillaswap.hpp>
+#include <ql/termstructures/defaulttermstructure.hpp>
 
 namespace QuantLib {
 
-    class DefaultProbabilityTermStructure;
     class YieldTermStructure;
     class Quote;
 

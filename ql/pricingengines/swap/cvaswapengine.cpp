@@ -17,8 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <boost/make_shared.hpp>
-
 #include <ql/pricingengines/swap/cvaswapengine.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
@@ -26,9 +24,9 @@
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/exercise.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
-#include <ql/termstructures/defaulttermstructure.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
+#include <boost/make_shared.hpp>
 
 namespace QuantLib {
   
@@ -41,8 +39,8 @@ namespace QuantLib {
       Real invstRecoveryRate)
   : baseSwapEngine_(Handle<PricingEngine>(
       boost::make_shared<DiscountingSwapEngine>(discountCurve))),
-    discountCurve_(discountCurve), 
     swaptionletEngine_(swaptionEngine),
+    discountCurve_(discountCurve),
     defaultTS_(ctptyDTS), 
     ctptyRecoveryRate_(ctptyRecoveryRate),
     invstDTS_(invstDTS.empty() ? Handle<DefaultProbabilityTermStructure>(
@@ -65,10 +63,10 @@ namespace QuantLib {
         Real invstRecoveryRate)
   : baseSwapEngine_(Handle<PricingEngine>(
       boost::make_shared<DiscountingSwapEngine>(discountCurve))),
-    discountCurve_(discountCurve), 
     swaptionletEngine_(Handle<PricingEngine>(
       boost::make_shared<BlackSwaptionEngine>(discountCurve,
         blackVol))),
+    discountCurve_(discountCurve),
     defaultTS_(ctptyDTS), 
     ctptyRecoveryRate_(ctptyRecoveryRate),
     invstDTS_(invstDTS.empty() ? Handle<DefaultProbabilityTermStructure>(
@@ -90,10 +88,10 @@ namespace QuantLib {
         Real invstRecoveryRate)
   : baseSwapEngine_(Handle<PricingEngine>(
       boost::make_shared<DiscountingSwapEngine>(discountCurve))),
-    discountCurve_(discountCurve), 
     swaptionletEngine_(Handle<PricingEngine>(
       boost::make_shared<BlackSwaptionEngine>(discountCurve,
         blackVol))),
+    discountCurve_(discountCurve),
     defaultTS_(ctptyDTS), 
     ctptyRecoveryRate_(ctptyRecoveryRate),
     invstDTS_(invstDTS.empty() ? Handle<DefaultProbabilityTermStructure>(
@@ -122,11 +120,6 @@ namespace QuantLib {
     Real cumOptVal = 0., 
         cumPutVal = 0.;
     // Vanilla swap so 0 leg is floater
-
-    std::vector<Date>::const_iterator iFD = 
-	arguments_.floatingFixingDates.begin(); 
-    std::vector<Date>::const_iterator endIt = 
-        arguments_.floatingFixingDates.end();
 
     std::vector<Date>::const_iterator nextFD = 
       arguments_.fixedPayDates.begin();
@@ -164,8 +157,8 @@ namespace QuantLib {
 	        arguments_.legs[1][0])->index());
 
       // Alternatively one could cap this period to, say, 1M 
-      Period swapPeriod = boost::dynamic_pointer_cast<FloatingRateCoupon>(
-        arguments_.legs[1][0])->index()->tenor();
+      // Period swapPeriod = boost::dynamic_pointer_cast<FloatingRateCoupon>(
+      //   arguments_.legs[1][0])->index()->tenor();
 
       Period baseSwapsTenor(arguments_.fixedPayDates.back().serialNumber() 
 	    - swapletStart.serialNumber(), Days);

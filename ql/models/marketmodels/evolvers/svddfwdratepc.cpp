@@ -36,7 +36,6 @@ namespace QuantLib {
     : marketModel_(marketModel),
       volProcess_(volProcess),
       firstVolatilityFactor_(firstVolatilityFactor),
-      volatilityFactorStep_(volatilityFactorStep),
       volFactorsPerStep_(volProcess->variatesPerStep()),
       numeraires_(numeraires),
       initialStep_(initialStep),

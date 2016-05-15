@@ -259,7 +259,7 @@ namespace QuantLib {
           samples_(Null<Size>()), maxSamples_(Null<Size>()),
           calibrationSamples_(2048), tolerance_(Null<Real>()), seed_(0),
           polynomOrder_(2), polynomType_(LsmBasisSystem::Monomial),
-          antitheticCalibration_(boost::none), seedCalibration_(Null<Real>()) {}
+          antitheticCalibration_(boost::none), seedCalibration_(Null<Size>()) {}
 
     template <class RNG, class S, class RNG_Calibration>
     inline MakeMCAmericanEngine<RNG, S, RNG_Calibration> &

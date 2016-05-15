@@ -26,6 +26,7 @@
 
 #include <ql/mathconstants.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
+#include <ql/math/array.hpp>
 #include <boost/random/variate_generator.hpp>
 
 namespace QuantLib {

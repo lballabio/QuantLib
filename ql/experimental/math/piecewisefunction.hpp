@@ -24,6 +24,7 @@
 #ifndef quantlib_piecewise_function_hpp
 #define quantlib_piecewise_function_hpp
 
+#include <ql/qldefines.hpp>
 #include <algorithm>
 
 /*! This defines a piecewise constant function which is RCLL and takes

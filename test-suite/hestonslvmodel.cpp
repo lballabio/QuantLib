@@ -94,7 +94,14 @@
 
 #include <boost/bind.hpp>
 #include <boost/make_shared.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
 #include <boost/multi_array.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic pop
+#endif
 
 #include <iostream>
 #include <fstream>
@@ -2439,7 +2446,7 @@ void HestonSLVModelTest::testMoustacheGraph() {
     const Real tol = 7.5e-3;
 
     for (Size i=0; i < 18; ++i) {
-        const Real dist = 10+5*i;
+        const Real dist = 10.0+5.0*i;
 
         const Real barrier_lo = std::max(s0 - dist, 1e-2);
         const Real barrier_hi = s0 + dist;

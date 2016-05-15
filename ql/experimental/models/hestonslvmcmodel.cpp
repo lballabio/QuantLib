@@ -27,7 +27,14 @@
 #include <ql/experimental/processes/hestonslvprocess.hpp>
 
 #include <boost/make_shared.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
 #include <boost/multi_array.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic pop
+#endif
 
 namespace QuantLib {
     HestonSLVMCModel::HestonSLVMCModel(
@@ -45,6 +52,9 @@ namespace QuantLib {
       endDate_(endDate),
       nBins_(nBins),
       calibrationPaths_(calibrationPaths) {
+
+        registerWith(localVol_);
+        registerWith(hestonModel_);
 
         const DayCounter dc = hestonModel_->process()->riskFreeRate()->dayCounter();
         const Date refDate = hestonModel_->process()->riskFreeRate()->referenceDate();
@@ -130,7 +140,6 @@ namespace QuantLib {
         const Size timeSteps = timeGrid_->size()-1;
 
         typedef boost::multi_array<Real, 3> path_type;
-        typedef path_type::index index_type;
         path_type paths(boost::extents[calibrationPaths_][timeSteps][2]);
 
         const boost::shared_ptr<BrownianGenerator> brownianGenerator =

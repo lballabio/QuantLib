@@ -32,11 +32,10 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
-#include <boost/lambda/bind.hpp>
+#include <boost/bind.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
-#include <boost/lambda/lambda.hpp>
 #include <boost/math/distributions/non_central_chi_squared.hpp>
 
 #include <complex>
@@ -192,8 +191,8 @@ namespace QuantLib {
             const Real x0    = std::log(process.s0()->value());
 
             return gaussLaguerreIntegration(
-                boost::lambda::bind(&ph, process, y,
-                                       boost::lambda::_1, nu_0, nu_t, t))
+                boost::bind(&ph, process, y,
+                            _1, nu_0, nu_t, t))
                 / std::sqrt(2*M_PI*(1-rho*rho)*y)
                 * std::exp(-0.5*square<Real>()(  x - x0 - a
                                                + y*(0.5-rho*kappa/sigma))
@@ -321,8 +320,8 @@ namespace QuantLib {
                 return (x < upper)
                     ? std::max(0.0, std::min(1.0,
                         gaussLaguerreIntegration(
-                            boost::lambda::bind(&ch, process, x,
-                                boost::lambda::_1, nu_0, nu_t, dt))))
+                            boost::bind(&ch, process, x,
+                                        _1, nu_0, nu_t, dt))))
                     : 1.0;
               }
               case HestonProcess::BroadieKayaExactSchemeLobatto:
@@ -335,8 +334,8 @@ namespace QuantLib {
                 return (x < upper)
                     ? std::max(0.0, std::min(1.0,
                         GaussLobattoIntegral(Null<Size>(), eps)(
-                            boost::lambda::bind(&ch, process, x,
-                                boost::lambda::_1, nu_0, nu_t, dt),
+                            boost::bind(&ch, process, x,
+                                        _1, nu_0, nu_t, dt),
                             QL_EPSILON, upper)))
                     : 1.0;
               }
@@ -367,6 +366,13 @@ namespace QuantLib {
         }
     }
 
+    Real cdf_nu_ds_minus_x(const HestonProcess &process, Real x, Real nu_0,
+                           Real nu_t, Time dt,
+                           HestonProcess::Discretization discretization,
+                           Real x0) {
+        return cdf_nu_ds(process, x, nu_0, nu_t, dt, discretization) - x0;
+    }
+
     Real HestonProcess::pdf(Real x, Real v, Time t, Real eps) const {
          const Real k = sigma_*sigma_*(1-std::exp(-kappa_*t))/(4*kappa_);
          const Real a = std::log(  dividendYield_->discount(t)
@@ -393,8 +399,8 @@ namespace QuantLib {
          upper = 2.0*cornishFisherEps(*this, v0_, v, t,1e-3);
 
          return SegmentIntegral(100)(
-             boost::lambda::bind(&int_ph, *this, a, x,
-                                      boost::lambda::_1, v0_, v, t),
+             boost::bind(&int_ph, *this, a, x,
+                         _1, v0_, v, t),
                QL_EPSILON, upper)
                * boost::math::pdf(
                      boost::math::non_central_chi_squared_distribution<Real>(
@@ -536,8 +542,8 @@ namespace QuantLib {
                 std::max(0.0, CumulativeNormalDistribution()(dw[2])));
 
             const Real vds = Brent().solve(
-                boost::lambda::bind(&cdf_nu_ds, *this, boost::lambda::_1,
-                                    nu_0, nu_t, dt, discretization_)-x,
+                boost::bind(&cdf_nu_ds_minus_x, *this, _1,
+                            nu_0, nu_t, dt, discretization_, x),
                 1e-5, theta_*dt, 0.1*theta_*dt);
 
             const Real vdw

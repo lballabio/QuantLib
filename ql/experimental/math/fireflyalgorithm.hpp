@@ -27,6 +27,10 @@ http://arxiv.org/pdf/1003.1464.pdf
 #ifndef quantlib_optimization_fireflyalgorithm_hpp
 #define quantlib_optimization_fireflyalgorithm_hpp
 
+#include <ql/qldefines.hpp>
+
+#if BOOST_VERSION >= 104700
+
 #include <ql/math/optimization/problem.hpp>
 #include <ql/math/optimization/constraint.hpp>
 #include <ql/experimental/math/isotropicrandomwalk.hpp>
@@ -37,15 +41,9 @@ http://arxiv.org/pdf/1003.1464.pdf
 typedef boost::mt19937 base_generator_type;
 
 #include <boost/random/normal_distribution.hpp>
-#if BOOST_VERSION >= 104700
 typedef boost::random::normal_distribution<QuantLib::Real> BoostNormalDistribution;
 #include <boost/random/uniform_int_distribution.hpp>
 typedef boost::random::uniform_int_distribution<QuantLib::Size> uniform_integer;
-#else
-typedef boost::normal_distribution<QuantLib::Real> BoostNormalDistribution;
-#include <boost/random/uniform_int.hpp>
-typedef boost::uniform_int<QuantLib::Size> uniform_integer;
-#endif
 #include <boost/random/variate_generator.hpp>
 typedef boost::variate_generator<base_generator_type, uniform_integer> variate_integer;
 
@@ -274,4 +272,7 @@ namespace QuantLib {
         Size iteration_;
     };
 }
+
+#endif
+
 #endif

@@ -30,7 +30,6 @@ namespace QuantLib {
                                     Size numeraire,
                                     Size alive)
     : numberOfRates_(taus.size()), numberOfFactors_(pseudo.columns()),
-      isFullFactor_(numberOfFactors_==numberOfRates_ ? true : false),
       numeraire_(numeraire), alive_(alive),
       displacements_(displacements), oneOverTaus_(taus.size()),
       pseudo_(pseudo),
