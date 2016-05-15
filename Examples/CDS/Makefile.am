@@ -16,6 +16,7 @@ EXTRA_DIST = \
     CDS_vc9.vcproj \
     CDS.vcxproj \
     CDS.vcxproj.filters \
+    CMakeLists.txt \
     ReadMe.txt
 
 .PHONY: examples check-examples

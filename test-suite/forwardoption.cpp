@@ -398,6 +398,7 @@ void ForwardOptionTest::testGreeksInitialization() {
    BOOST_TEST_MESSAGE("Testing forward option greeks initialization...");
 
    DayCounter dc = Actual360();
+   SavedSettings backup;
    Date today = Date::todaysDate();
    Settings::instance().evaluationDate() = today;
 

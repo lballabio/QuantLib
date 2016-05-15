@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2013, 2016 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -54,6 +54,18 @@ namespace QuantLib {
             const bool finalCapitalExchange = false,
             boost::optional<BusinessDayConvention> paymentConvention =
                 boost::none);
+        NonstandardSwap(
+            const VanillaSwap::Type type, const std::vector<Real> &fixedNominal,
+            const std::vector<Real> &floatingNominal,
+            const Schedule &fixedSchedule, const std::vector<Real> &fixedRate,
+            const DayCounter &fixedDayCount, const Schedule &floatingSchedule,
+            const boost::shared_ptr<IborIndex> &iborIndex,
+            const std::vector<Real> &gearing, const std::vector<Spread> &spread,
+            const DayCounter &floatingDayCount,
+            const bool intermediateCapitalExchange = false,
+            const bool finalCapitalExchange = false,
+            boost::optional<BusinessDayConvention> paymentConvention =
+                boost::none);
         //! \name Inspectors
         //@{
         VanillaSwap::Type type() const;
@@ -66,8 +78,10 @@ namespace QuantLib {
 
         const Schedule &floatingSchedule() const;
         const boost::shared_ptr<IborIndex> &iborIndex() const;
-        const Spread spread() const;
-        const Real gearing() const;
+        Spread spread() const;
+        Real gearing() const;
+        const std::vector<Spread>& spreads() const;
+        const std::vector<Real>& gearings() const;
         const DayCounter &floatingDayCount() const;
 
         BusinessDayConvention paymentConvention() const;
@@ -93,8 +107,9 @@ namespace QuantLib {
         DayCounter fixedDayCount_;
         Schedule floatingSchedule_;
         boost::shared_ptr<IborIndex> iborIndex_;
-        Spread spread_;
-        Real gearing_;
+        std::vector<Spread> spread_;
+        std::vector<Real> gearing_;
+        bool singleSpreadAndGearing_;
         DayCounter floatingDayCount_;
         BusinessDayConvention paymentConvention_;
         const bool intermediateCapitalExchange_;
@@ -173,9 +188,25 @@ namespace QuantLib {
         return iborIndex_;
     }
 
-    inline const Spread NonstandardSwap::spread() const { return spread_; }
+    inline Spread NonstandardSwap::spread() const {
+        QL_REQUIRE(singleSpreadAndGearing_,
+                   "spread is a vector, use spreads inspector instead");
+        return spread_.front();
+    }
 
-    inline const Real NonstandardSwap::gearing() const { return gearing_; }
+    inline Real NonstandardSwap::gearing() const {
+        QL_REQUIRE(singleSpreadAndGearing_,
+                   "gearing is a vector, use gearings inspector instead");
+        return gearing_.front();
+    }
+
+    inline const std::vector<Spread> &NonstandardSwap::spreads() const {
+        return spread_;
+    }
+
+    inline const std::vector<Real> &NonstandardSwap::gearings() const {
+        return gearing_;
+    }
 
     inline const DayCounter &NonstandardSwap::floatingDayCount() const {
         return floatingDayCount_;

@@ -4,6 +4,7 @@
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
  Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2015 Michael von den Driesch
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -113,6 +114,7 @@ namespace QuantLib {
         row_iterator operator[](Size);
         row_iterator at(Size);
         Disposable<Array> diagonal(void) const;
+        Real& operator()(Size i, Size j) const;
         //@}
 
         //! \name Inspectors
@@ -120,6 +122,8 @@ namespace QuantLib {
         Size rows() const;
         Size columns() const;
         bool empty() const;
+        Size size1() const;
+        Size size2() const;
         //@}
 
         //! \name Utilities
@@ -426,12 +430,16 @@ namespace QuantLib {
         return row_begin(i);
     }
 
-    inline Disposable<Array> Matrix::diagonal(void) const{
+    inline Disposable<Array> Matrix::diagonal(void) const {
         Size arraySize = std::min<Size>(rows(), columns());
         Array tmp(arraySize);
         for(Size i = 0; i < arraySize; i++)
             tmp[i] = (*this)[i][i];
         return tmp;
+    }
+
+    inline Real &Matrix::operator()(Size i, Size j) const {
+        return data_[i*columns()+j];
     }
 
     inline Size Matrix::rows() const {
@@ -440,6 +448,14 @@ namespace QuantLib {
 
     inline Size Matrix::columns() const {
         return columns_;
+    }
+
+    inline Size Matrix::size1() const {
+        return rows();
+    }
+
+    inline Size Matrix::size2() const {
+        return columns();
     }
 
     inline bool Matrix::empty() const {

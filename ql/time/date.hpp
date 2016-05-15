@@ -32,13 +32,14 @@
 #include <ql/time/period.hpp>
 #include <ql/time/weekday.hpp>
 #include <ql/utilities/null.hpp>
-#include <utility>
-#include <functional>
 
 #ifdef QL_HIGH_RESOLUTION_DATE
 #include <boost/date_time/posix_time/ptime.hpp>
 #include <boost/date_time/posix_time/posix_time_duration.hpp>
 #endif
+
+#include <utility>
+#include <functional>
 
 namespace QuantLib {
 

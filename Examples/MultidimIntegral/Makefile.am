@@ -11,6 +11,7 @@ MultidimIntegral_SOURCES = MultidimIntegral.cpp
 MultidimIntegral_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
+    CMakeLists.txt \
     MultidimIntegral.dev \
     MultidimIntegral_vc8.vcproj \
     MultidimIntegral_vc9.vcproj \

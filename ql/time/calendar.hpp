@@ -26,6 +26,7 @@
 #ifndef quantlib_calendar_hpp
 #define quantlib_calendar_hpp
 
+#include <ql/errors.hpp>
 #include <ql/time/date.hpp>
 #include <ql/time/businessdayconvention.hpp>
 #include <boost/shared_ptr.hpp>
@@ -189,10 +190,12 @@ namespace QuantLib {
     }
 
     inline std::string Calendar::name() const {
+        QL_REQUIRE(impl_, "no implementation provided");
         return impl_->name();
     }
 
     inline bool Calendar::isBusinessDay(const Date& d) const {
+        QL_REQUIRE(impl_, "no implementation provided");
         if (impl_->addedHolidays.find(d) != impl_->addedHolidays.end())
             return false;
         if (impl_->removedHolidays.find(d) != impl_->removedHolidays.end())
@@ -213,6 +216,7 @@ namespace QuantLib {
     }
 
     inline bool Calendar::isWeekend(Weekday w) const {
+        QL_REQUIRE(impl_, "no implementation provided");
         return impl_->isWeekend(w);
     }
 

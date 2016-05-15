@@ -124,7 +124,7 @@ namespace QuantLib {
         const Matrix& V = svd.V();
         const Matrix& U = svd.U();
         const Array& w = svd.singularValues();
-        const Real threshold = n*QL_EPSILON;
+        const Real threshold = n * QL_EPSILON * svd.singularValues()[0];
 
         for (i=0; i<m; ++i) {
             if (w[i] > threshold) {

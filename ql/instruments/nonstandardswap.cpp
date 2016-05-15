@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2013, 2016 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -42,8 +42,11 @@ namespace QuantLib {
                                        fromVanilla.fixedRate())),
           fixedDayCount_(fromVanilla.fixedDayCount()),
           floatingSchedule_(fromVanilla.floatingSchedule()),
-          iborIndex_(fromVanilla.iborIndex()), spread_(fromVanilla.spread()),
-          gearing_(1.0), floatingDayCount_(fromVanilla.floatingDayCount()),
+          iborIndex_(fromVanilla.iborIndex()),
+          spread_(std::vector<Real>(fromVanilla.floatingLeg().size(), fromVanilla.spread())),
+          gearing_(std::vector<Real>(fromVanilla.floatingLeg().size(), 1.0)),
+          singleSpreadAndGearing_(true),
+          floatingDayCount_(fromVanilla.floatingDayCount()),
           paymentConvention_(fromVanilla.paymentConvention()),
           intermediateCapitalExchange_(false), finalCapitalExchange_(false) {
 
@@ -63,45 +66,83 @@ namespace QuantLib {
           floatingNominal_(floatingNominal), fixedSchedule_(fixedSchedule),
           fixedRate_(fixedRate), fixedDayCount_(fixedDayCount),
           floatingSchedule_(floatingSchedule), iborIndex_(iborIndex),
-          spread_(spread), gearing_(gearing),
+          spread_(std::vector<Real>(floatingNominal.size(), spread)),
+          gearing_(std::vector<Real>(floatingNominal.size(), gearing)),
+          singleSpreadAndGearing_(true),
           floatingDayCount_(floatingDayCount),
           intermediateCapitalExchange_(intermediateCapitalExchange),
           finalCapitalExchange_(finalCapitalExchange) {
-
-        QL_REQUIRE(fixedNominal.size() == fixedRate.size(),
-                   "Fixed nominal size ("
-                       << fixedNominal.size()
-                       << ") does not match fixed rate size ("
-                       << fixedRate.size() << ")");
-
-        QL_REQUIRE(fixedNominal.size() == fixedSchedule.size() - 1,
-                   "Fixed nominal size (" << fixedNominal.size()
-                                          << ") does not match schedule size ("
-                                          << fixedSchedule.size() << ") - 1");
-
-        QL_REQUIRE(floatingNominal.size() == floatingSchedule.size() - 1,
-                   "Floating nominal size ("
-                       << floatingNominal.size()
-                       << ") does not match schedule size ("
-                       << floatingSchedule.size() << ") - 1");
 
         if (paymentConvention)
             paymentConvention_ = *paymentConvention;
         else
             paymentConvention_ = floatingSchedule_.businessDayConvention();
+        init();
+    }
 
-        // if the gearing is zero then the ibor leg will be set up with fixed
-        // coupons
-        // which makes trouble here in this context. We therefore use a dirty
-        // trick
-        // and enforce the gearing to be non zero.
-        if (close(gearing_, 0.0))
-            gearing_ = QL_EPSILON;
+    NonstandardSwap::NonstandardSwap(
+        const VanillaSwap::Type type, const std::vector<Real> &fixedNominal,
+        const std::vector<Real> &floatingNominal, const Schedule &fixedSchedule,
+        const std::vector<Real> &fixedRate, const DayCounter &fixedDayCount,
+        const Schedule &floatingSchedule,
+        const boost::shared_ptr<IborIndex> &iborIndex,
+        const std::vector<Real> &gearing, const std::vector<Spread> &spread,
+        const DayCounter &floatingDayCount,
+        const bool intermediateCapitalExchange, const bool finalCapitalExchange,
+        boost::optional<BusinessDayConvention> paymentConvention)
+        : Swap(2), type_(type), fixedNominal_(fixedNominal),
+          floatingNominal_(floatingNominal), fixedSchedule_(fixedSchedule),
+          fixedRate_(fixedRate), fixedDayCount_(fixedDayCount),
+          floatingSchedule_(floatingSchedule), iborIndex_(iborIndex),
+          spread_(spread), gearing_(gearing), singleSpreadAndGearing_(false),
+          floatingDayCount_(floatingDayCount),
+          intermediateCapitalExchange_(intermediateCapitalExchange),
+          finalCapitalExchange_(finalCapitalExchange) {
 
+        if (paymentConvention)
+            paymentConvention_ = *paymentConvention;
+        else
+            paymentConvention_ = floatingSchedule_.businessDayConvention();
         init();
     }
 
     void NonstandardSwap::init() {
+
+        QL_REQUIRE(fixedNominal_.size() == fixedRate_.size(),
+                   "Fixed nominal size ("
+                       << fixedNominal_.size()
+                       << ") does not match fixed rate size ("
+                       << fixedRate_.size() << ")");
+
+        QL_REQUIRE(fixedNominal_.size() == fixedSchedule_.size() - 1,
+                   "Fixed nominal size (" << fixedNominal_.size()
+                                          << ") does not match schedule size ("
+                                          << fixedSchedule_.size() << ") - 1");
+
+        QL_REQUIRE(floatingNominal_.size() == floatingSchedule_.size() - 1,
+                   "Floating nominal size ("
+                       << floatingNominal_.size()
+                       << ") does not match schedule size ("
+                       << floatingSchedule_.size() << ") - 1");
+
+        QL_REQUIRE(floatingNominal_.size() == spread_.size(),
+                   "Floating nominal size (" << floatingNominal_.size()
+                                             << ") does not match spread size ("
+                                             << spread_.size() << ")");
+
+        QL_REQUIRE(floatingNominal_.size() == gearing_.size(),
+                   "Floating nominal size ("
+                       << floatingNominal_.size()
+                       << ") does not match gearing size (" << gearing_.size()
+                       << ")");
+
+        // if the gearing is zero then the ibor leg will be set up with fixed
+        // coupons which makes trouble here in this context. We therefore use
+        // a dirty trick and enforce the gearing to be non zero.
+        for (Size i = 0; i < gearing_.size(); ++i) {
+            if (close(gearing_[i], 0.0))
+                gearing_[i] = QL_EPSILON;
+        }
 
         legs_[0] = FixedRateLeg(fixedSchedule_)
                        .withNotionals(fixedNominal_)

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2012, 2013 Klaus Spanderen
+ Copyright (C) 2014 Johannes Göttker-Schnetmann
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -34,7 +35,7 @@ namespace QuantLib {
 
     class FdmSquareRootFwdOp : public FdmLinearOpComposite {
       public:
-        enum TransformationType { Plain, Power };
+        enum TransformationType { Plain, Power, Log };
 
         FdmSquareRootFwdOp(
             const boost::shared_ptr<FdmMesher>& mesher,
@@ -56,19 +57,29 @@ namespace QuantLib {
 #if !defined(QL_NO_UBLAS_SUPPORT)
         Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const;
 #endif
-
-        Real f0() const;
-        Real f1() const;
+        Real lowerBoundaryFactor(TransformationType type = Plain) const;
+        Real upperBoundaryFactor(TransformationType type = Plain) const;
         Real v(Size i) const;
 
       private:
         void setLowerBC(const boost::shared_ptr<FdmMesher>& mesher);
         void setUpperBC(const boost::shared_ptr<FdmMesher>& mesher);
-        void setTransformLowerBC(const boost::shared_ptr<FdmMesher>& mesher);
-        void setTransformUpperBC(const boost::shared_ptr<FdmMesher>& mesher);
 
-        void getTransformCoeff(Real& alpha, Real& beta,
+        void getCoeff(Real& alpha, Real& beta,
                                Real& gamma, Size n) const;
+        void getCoeffPlain(Real& alpha, Real& beta,
+                               Real& gamma, Size n) const;
+        void getCoeffPower(Real& alpha, Real& beta,
+                               Real& gamma, Size n) const;
+        void getCoeffLog(Real& alpha, Real& beta,
+                               Real& gamma, Size n) const;
+
+        Real f0Plain() const;
+        Real f1Plain() const;
+        Real f0Power() const;
+        Real f1Power() const;
+        Real f0Log() const;
+        Real f1Log() const;
 
         Real h    (Size i) const;
         Real zetam(Size i) const;
@@ -78,10 +89,9 @@ namespace QuantLib {
 
         const Size direction_;
         const Real kappa_, theta_, sigma_;
-        const Real alpha_;
         const TransformationType transform_;
         boost::shared_ptr<ModTripleBandLinearOp> mapX_;
-        Array v_, vq_, vmq_;
+        Array v_;
     };
 }
 
