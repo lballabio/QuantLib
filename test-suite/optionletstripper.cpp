@@ -791,7 +791,7 @@ void OptionletStripperTest::testTermVolatilityStripping2() {
 
 void OptionletStripperTest::testSwitchStrike() {
     BOOST_TEST_MESSAGE("Testing switch strike level and recalibration of level "
-                       "in case of curve relinking ...");
+                       "in case of curve relinking...");
 
     CommonVars vars;
     Settings::instance().evaluationDate() = Date(28, October, 2013);

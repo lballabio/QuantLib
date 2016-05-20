@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file morepenroseinverse.hpp
+/*! \file moorepenroseinverse.hpp
     \brief Moore Penrose inverse of a real matrix
 */
 

@@ -6,35 +6,45 @@ EXTRA_DIST =
 
 if AUTO_EXAMPLES
 
-dist_man_MANS += BermudanSwaption.1 \
+dist_man_MANS += BasketLosses.1 \
+                 BermudanSwaption.1 \
                  Bonds.1 \
                  CallableBonds.1 \
                  CDS.1 \
                  ConvertibleBonds.1 \
+                 CVAIRS.1 \
                  DiscreteHedging.1 \
                  EquityOption.1 \
                  FittedBondCurve.1 \
                  FRA.1 \
+                 Gaussian1dModels.1 \
+                 LatentModel.1 \
                  MarketModels.1 \
-                 SwapValuation.1 \
+                 MultidimIntegral.1 \
                  Replication.1 \
-                 Repo.1
+                 Repo.1 \
+                 SwapValuation.1
 
 else
 
-EXTRA_DIST += BermudanSwaption.1 \
+EXTRA_DIST += BasketLosses.1 \
+              BermudanSwaption.1 \
               Bonds.1 \
               CallableBonds.1 \
               CDS.1 \
               ConvertibleBonds.1 \
+              CVAIRS.1 \
               DiscreteHedging.1 \
               EquityOption.1 \
               FittedBondCurve.1 \
               FRA.1 \
+              Gaussian1dModels.1 \
+              LatentModel.1 \
               MarketModels.1 \
-              SwapValuation.1 \
+              MultidimIntegral.1 \
               Replication.1 \
-              Repo.1
+              Repo.1 \
+              SwapValuation.1
 
 endif
 

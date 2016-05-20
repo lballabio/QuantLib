@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file Heston rndcalculator.hpp
+/*! \file hestonrndcalculator.hpp
     \brief risk neutral terminal density calculator for the
            Heston stochastic volatility model
 */
@@ -27,6 +27,7 @@
 #define quantlib_heston_risk_neutral_density_calculator_hpp
 
 #include <ql/experimental/finitedifferences/riskneutraldensitycalculator.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace QuantLib {
     class HestonProcess;

@@ -55,11 +55,11 @@ AC_DEFUN([QL_CHECK_BOOST_DEVEL],
 # ----------------------
 # Check whether the Boost installation is up to date
 AC_DEFUN([QL_CHECK_BOOST_VERSION],
-[AC_MSG_CHECKING([for Boost version >= 1.39])
+[AC_MSG_CHECKING([for Boost version >= 1.43])
  AC_REQUIRE([QL_CHECK_BOOST_DEVEL])
  AC_TRY_COMPILE(
     [@%:@include <boost/version.hpp>],
-    [@%:@if BOOST_VERSION < 103900
+    [@%:@if BOOST_VERSION < 104300
      @%:@error too old
      @%:@endif],
     [AC_MSG_RESULT([yes])],

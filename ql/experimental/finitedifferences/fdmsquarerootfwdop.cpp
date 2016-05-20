@@ -45,7 +45,6 @@ namespace QuantLib {
       kappa_(kappa),
       theta_(theta),
       sigma_(sigma),
-      alpha_(1.0 - 2*kappa_*theta_/(sigma_*sigma_)),
       transform_(transform),
       mapX_(transform == Plain ?
           new ModTripleBandLinearOp(FirstDerivativeOp(direction_, mesher)

@@ -64,7 +64,7 @@ namespace QuantLib {
             vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(-1.0));
             Handle<Quote> h(vol_);
             if (type == Normal) {
-                engine_ = boost::make_shared<BachelierBlackSwaptionEngine>(
+                engine_ = boost::make_shared<BachelierSwaptionEngine>(
                     discountCurve_, h, Actual365Fixed());
             } else {
                 engine_ = boost::make_shared<BlackSwaptionEngine>(
