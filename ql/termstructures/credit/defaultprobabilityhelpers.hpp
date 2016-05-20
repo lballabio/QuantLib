@@ -152,7 +152,7 @@ namespace QuantLib {
                         bool settlesAccrual = true,
                         bool paysAtDefaultTime = true,
                         const DayCounter& lastPeriodDayCounter = DayCounter(),
-                        bool reabtesAccrual = true,
+                        bool rebatesAccrual = true,
                         bool useIsdaEngine = false); // switch to true later on ?
 
         SpreadCdsHelper(Rate runningSpread,
