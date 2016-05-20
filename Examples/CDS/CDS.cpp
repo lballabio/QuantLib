@@ -274,8 +274,8 @@ std::copy(cdsSchedule.begin(), cdsSchedule.end(),
 // check if indexed coupon is defined (it should not to be 100% consistent with
 // the ISDA spec)
 
-#ifdef QL_INDEXED_COUPON
-    std::cout << "Warning: QL_INDEXED_COUPON is defined, which is not "
+#ifdef QL_USE_INDEXED_COUPON
+    std::cout << "Warning: QL_USED_INDEXED_COUPON is defined, which is not "
               << "precisely consistent with the specification of the ISDA rate "
               << "curve." << std::endl;
 #endif
@@ -477,7 +477,7 @@ void example03() {
                                               false, Actual360());
 
     // this index is probably not important since we are not using
-    // QL_INDEXED_COUPON - define it "isda compliant" anyway
+    // QL_USE_INDEXED_COUPON - define it "isda compliant" anyway
     boost::shared_ptr<IborIndex> euribor6m = boost::make_shared<IborIndex>(
         "IsdaIbor", 6 * Months, 2, EURCurrency(), WeekendsOnly(),
         ModifiedFollowing, false, Actual360());
