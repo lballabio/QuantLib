@@ -6,6 +6,7 @@
  Copyright (C) 2007 Katiuscia Manzoni
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2015 Michael von den Driesch
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,6 +25,7 @@
 #include <ql/termstructures/volatility/optionlet/optionletstripper1.hpp>
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+#include <ql/pricingengine.hpp>
 #include <ql/pricingengines/capfloor/bacheliercapfloorengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/indexes/iborindex.hpp>
@@ -34,31 +36,28 @@ using boost::shared_ptr;
 
 namespace QuantLib {
 
-    OptionletStripper1::OptionletStripper1(
-            const shared_ptr<CapFloorTermVolSurface>& termVolSurface,
-            const shared_ptr<IborIndex>& index,
-            Rate switchStrike,
-            Real accuracy,
-            Natural maxIter,
-            const Handle<YieldTermStructure>& discount,
-            VolatilityType type,
-            Real displacement,
-            bool dontThrow)
+OptionletStripper1::OptionletStripper1(
+    const shared_ptr< CapFloorTermVolSurface > &termVolSurface,
+    const shared_ptr< IborIndex > &index, Rate switchStrike, Real accuracy,
+    Natural maxIter, const Handle< YieldTermStructure > &discount,
+    const VolatilityType type, const Real displacement, bool dontThrow)
     : OptionletStripper(termVolSurface, index, discount, type, displacement),
       volQuotes_(nOptionletTenors_,
-                 std::vector<shared_ptr<SimpleQuote> >(nStrikes_)),
-      floatingSwitchStrike_(switchStrike==Null<Rate>() ? true : false),
-      capFlooMatrixNotInitialized_(true),
-      switchStrike_(switchStrike),
+                 std::vector< shared_ptr< SimpleQuote > >(nStrikes_)),
+      floatingSwitchStrike_(switchStrike == Null< Rate >() ? true : false),
+      capFlooMatrixNotInitialized_(true), switchStrike_(switchStrike),
       accuracy_(accuracy), maxIter_(maxIter), dontThrow_(dontThrow) {
 
         capFloorPrices_ = Matrix(nOptionletTenors_, nStrikes_);
         optionletPrices_ = Matrix(nOptionletTenors_, nStrikes_);
+        capletVols_ = Matrix(nOptionletTenors_, nStrikes_);
         capFloorVols_ = Matrix(nOptionletTenors_, nStrikes_);
+
         Real firstGuess = 0.14; // guess is only used for shifted lognormal vols
         optionletStDevs_ = Matrix(nOptionletTenors_, nStrikes_, firstGuess);
 
         capFloors_ = CapFloorMatrix(nOptionletTenors_);
+        capFloorEngines_ = std::vector<std::vector<boost::shared_ptr<PricingEngine> > >(nOptionletTenors_);
     }
 
     void OptionletStripper1::performCalculations() const {
@@ -87,7 +86,7 @@ namespace QuantLib {
             atmOptionletRate_[i] = lFRC->indexFixing();
         }
 
-        if (floatingSwitchStrike_ && capFlooMatrixNotInitialized_) {
+        if (floatingSwitchStrike_) {
             Rate averageAtmOptionletRate = 0.0;
             for (Size i=0; i<nOptionletTenors_; ++i) {
                 averageAtmOptionletRate += atmOptionletRate_[i];
@@ -103,34 +102,25 @@ namespace QuantLib {
         const std::vector<Rate>& strikes = termVolSurface_->strikes();
         // initialize CapFloorMatrix
         if (capFlooMatrixNotInitialized_) {
-            for (Size i=0; i<nOptionletTenors_; ++i)
+            for (Size i = 0; i < nOptionletTenors_; ++i) {
                 capFloors_[i].resize(nStrikes_);
+                capFloorEngines_[i].resize(nStrikes_);
+            }
             // construction might go here
             for (Size j=0; j<nStrikes_; ++j) {
-                // using out-of-the-money options
-                CapFloor::Type capFloorType = strikes[j] < switchStrike_ ?
-                                       CapFloor::Floor : CapFloor::Cap;
                 for (Size i=0; i<nOptionletTenors_; ++i) {
                     volQuotes_[i][j] = shared_ptr<SimpleQuote>(new
                                                                 SimpleQuote());
                     if (volatilityType_ == ShiftedLognormal) {
-                      shared_ptr<BlackCapFloorEngine> engine(
+                        capFloorEngines_[i][j]=boost::shared_ptr<BlackCapFloorEngine>(
                           new BlackCapFloorEngine(
                               discountCurve, Handle<Quote>(volQuotes_[i][j]),
                               dc, displacement_));
-                      capFloors_[i][j] =
-                          MakeCapFloor(capFloorType, capFloorLengths_[i],
-                                       iborIndex_, strikes[j],
-                                       0 * Days).withPricingEngine(engine);
                     } else if (volatilityType_ == Normal) {
-                      shared_ptr<BachelierCapFloorEngine> engine(
+                        capFloorEngines_[i][j]=boost::shared_ptr<BachelierCapFloorEngine>(
                           new BachelierCapFloorEngine(
                               discountCurve, Handle<Quote>(volQuotes_[i][j]),
                               dc));
-                      capFloors_[i][j] =
-                          MakeCapFloor(capFloorType, capFloorLengths_[i],
-                                       iborIndex_, strikes[j],
-                                       0 * Days).withPricingEngine(engine);
                     } else {
                       QL_FAIL("unknown volatility type: " << volatilityType_);
                     }
@@ -140,9 +130,11 @@ namespace QuantLib {
         }
 
         for (Size j=0; j<nStrikes_; ++j) {
-
-            Option::Type optionletType = strikes[j] < switchStrike_ ?
-                                   Option::Put : Option::Call;
+            // using out-of-the-money options
+            CapFloor::Type capFloorType =
+                strikes[j] < switchStrike_ ? CapFloor::Floor : CapFloor::Cap;
+            Option::Type optionletType =
+                strikes[j] < switchStrike_ ? Option::Put : Option::Call;
 
             Real previousCapFloorPrice = 0.0;
             for (Size i=0; i<nOptionletTenors_; ++i) {
@@ -150,7 +142,10 @@ namespace QuantLib {
                 capFloorVols_[i][j] = termVolSurface_->volatility(
                     capFloorLengths_[i], strikes[j], true);
                 volQuotes_[i][j]->setValue(capFloorVols_[i][j]);
-
+                capFloors_[i][j] =
+                    MakeCapFloor(capFloorType, capFloorLengths_[i],
+                                 iborIndex_, strikes[j], -0 * Days)
+                        .withPricingEngine(capFloorEngines_[i][j]);
                 capFloorPrices_[i][j] = capFloors_[i][j]->NPV();
                 optionletPrices_[i][j] = capFloorPrices_[i][j] -
                                                         previousCapFloorPrice;
@@ -193,6 +188,11 @@ namespace QuantLib {
             }
         }
 
+    }
+
+    const Matrix &OptionletStripper1::capletVols() const {
+        calculate();
+        return capletVols_;
     }
 
     const Matrix& OptionletStripper1::capFloorPrices() const {

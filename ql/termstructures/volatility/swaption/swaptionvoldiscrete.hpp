@@ -65,6 +65,8 @@ namespace QuantLib {
         //@{
         void performCalculations() const;
         //@}
+        //! additional inspectors
+        const Date optionDateFromTime(Time optionTime) const;
       protected:
         Size nOptionTenors_;
         std::vector<Period> optionTenors_;
@@ -111,6 +113,11 @@ namespace QuantLib {
     inline const std::vector<Time>&
     SwaptionVolatilityDiscrete::swapLengths() const {
         return swapLengths_;
+    }
+
+    inline const Date
+    SwaptionVolatilityDiscrete::optionDateFromTime(Time optionTime) const {
+        return Date(static_cast<BigInteger>(optionInterpolator_(optionTime)));
     }
 
 }

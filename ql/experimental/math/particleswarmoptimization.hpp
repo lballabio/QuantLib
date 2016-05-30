@@ -27,22 +27,21 @@ Computation, 6(2): 58–73.
 #ifndef quantlib_optimization_particleswarmoptimization_hpp
 #define quantlib_optimization_particleswarmoptimization_hpp
 
-#include <boost/random/mersenne_twister.hpp>
-typedef boost::mt19937 base_generator_type;
+#include <ql/qldefines.hpp>
 
 #if BOOST_VERSION >= 104700
-#include <boost/random/uniform_int_distribution.hpp>
-typedef boost::random::uniform_int_distribution<QuantLib::Size> uniform_integer;
-#else
-#include <boost/random/uniform_int.hpp>
-typedef boost::uniform_int<unsigned long> uniform_integer;
-#endif
 
 #include <ql/math/optimization/problem.hpp>
 #include <ql/math/optimization/constraint.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/experimental/math/isotropicrandomwalk.hpp>
 #include <ql/experimental/math/levyflightdistribution.hpp>
+
+#include <boost/random/mersenne_twister.hpp>
+typedef boost::mt19937 base_generator_type;
+
+#include <boost/random/uniform_int_distribution.hpp>
+typedef boost::random::uniform_int_distribution<QuantLib::Size> uniform_integer;
 
 namespace QuantLib {
 
@@ -241,7 +240,7 @@ namespace QuantLib {
       private:
         Real c0_, best_;
         Real minInertia_, maxInertia_;
-        Size M_, N_;
+        Size M_;
         Size sh_, sl_;
         Size adaptiveCounter;
         bool started_;
@@ -411,5 +410,7 @@ namespace QuantLib {
     };
 
 }
+
+#endif
 
 #endif

@@ -32,9 +32,15 @@
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/termstructures/volatility/abcd.hpp>
 #include <ql/math/integrals/twodimensionalintegral.hpp>
+#include <ql/experimental/math/piecewisefunction.hpp>
+#include <ql/experimental/math/piecewiseintegral.hpp>
+
+#include <boost/make_shared.hpp>
 #include <boost/lambda/lambda.hpp>
+#include <boost/assign/std/vector.hpp>
 
 using namespace QuantLib;
+using namespace boost::assign;
 using boost::unit_test_framework::test_suite;
 
 namespace {
@@ -261,6 +267,48 @@ void IntegralTest::testDiscreteIntegrals() {
     }
 }
 
+namespace {
+
+std::vector<Real> x, y;
+
+Real pw_fct(const Real t) { return QL_PIECEWISE_FUNCTION(x, y, t); }
+
+void pw_check(const Integrator &in, const Real a, const Real b,
+              const Real expected) {
+    Real calculated = in(pw_fct, a, b);
+    if (!close(calculated, expected))
+        BOOST_FAIL(std::setprecision(16)
+                   << "piecewise integration over [" << a << "," << b
+                   << "] failed: "
+                   << "\n   calculated: " << calculated
+                   << "\n   expected:   " << expected
+                   << "\n   difference: " << (calculated - expected));
+}
+} // empty namespace
+
+void IntegralTest::testPiecewiseIntegral() {
+    BOOST_TEST_MESSAGE("Testing piecewise integral...");
+    x += 1.0, 2.0, 3.0, 4.0, 5.0;
+    y += 1.0, 2.0, 3.0, 4.0, 5.0, 6.0;
+    boost::shared_ptr<Integrator> segment =
+        boost::make_shared<SegmentIntegral>(1);
+    boost::shared_ptr<Integrator> piecewise =
+        boost::make_shared<PiecewiseIntegral>(segment, x);
+    pw_check(*piecewise, -1.0, 0.0, 1.0);
+    pw_check(*piecewise, 0.0, 1.0, 1.0);
+    pw_check(*piecewise, 0.0, 1.5, 2.0);
+    pw_check(*piecewise, 0.0, 2.0, 3.0);
+    pw_check(*piecewise, 0.0, 2.5, 4.5);
+    pw_check(*piecewise, 0.0, 3.0, 6.0);
+    pw_check(*piecewise, 0.0, 4.0, 10.0);
+    pw_check(*piecewise, 0.0, 5.0, 15.0);
+    pw_check(*piecewise, 0.0, 6.0, 21.0);
+    pw_check(*piecewise, 0.0, 7.0, 27.0);
+    pw_check(*piecewise, 3.5, 4.5, 4.5);
+    pw_check(*piecewise, 5.0, 10.0, 30.0);
+    pw_check(*piecewise, 9.0, 10.0, 6.0);
+}
+
 test_suite* IntegralTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Integration tests");
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testSegment));
@@ -273,6 +321,7 @@ test_suite* IntegralTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testTwoDimensionalIntegration));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testFolinIntegration));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testDiscreteIntegrals));
+    suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testPiecewiseIntegral));
     return suite;
 }
 

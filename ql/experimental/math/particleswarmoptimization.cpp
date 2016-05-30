@@ -17,6 +17,10 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/qldefines.hpp>
+
+#if BOOST_VERSION >= 104700
+
 #include <ql/experimental/math/particleswarmoptimization.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
 
@@ -236,8 +240,8 @@ namespace QuantLib {
         Size defaultClubs, Size totalClubs,
         Size maxClubs, Size minClubs,
         Size resetIteration, unsigned long seed) :
-        defaultClubs_(defaultClubs), totalClubs_(totalClubs),
-        maxClubs_(maxClubs), minClubs_(minClubs),
+        totalClubs_(totalClubs), maxClubs_(maxClubs),
+        minClubs_(minClubs), defaultClubs_(defaultClubs),
         iteration_(0), resetIteration_(resetIteration),
         bestByClub_(totalClubs, 0), worstByClub_(totalClubs, 0),
         generator_(seed), distribution_(1, totalClubs_) {
@@ -392,3 +396,6 @@ namespace QuantLib {
         }
     }
 }
+
+#endif
+

@@ -59,7 +59,7 @@ void ChooserOptionTest::testAnalyticSimpleChooserEngine(){
        pages 39-40
     */
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     boost::shared_ptr<SimpleQuote> spot = boost::make_shared<SimpleQuote>(50.0);
     boost::shared_ptr<SimpleQuote> qRate = boost::make_shared<SimpleQuote>(0.0);

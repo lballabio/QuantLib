@@ -43,8 +43,9 @@ namespace QuantLib {
         <li>Victory Day, May 9th</li>
         <li>Constitution Day, June 28th</li>
         <li>Independence Day, August 24th</li>
+        <li>Defender's Day, October 14th (since 2015)</li>
         </ul>
-        Holidays falling on a Saturday or Sunday are moved to the
+        Holidays falling on a Saturday or Sunday might be moved to the
         following Monday.
 
         \ingroup calendars

@@ -1,121 +1,130 @@
 
-Changes for QuantLib 1.7:
+Changes for QuantLib 1.8:
 =========================
 
-QuantLib 1.7 includes over 50 pull requests from several contributors.
+QuantLib 1.8 includes 45 pull requests from several contributors.
 
 The most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt.
 
+PORTABILITY
+
+- The minimum required Boost version is now Boost 1.43 (May
+  2010). However, it is strongly suggested to use a recent version, or
+  at least Boost 1.48 (November 2011).
+
+- Added initial CMake support (thanks to Dmitri Nesteruk). This makes
+  it possible to compile QuantLib on CLion and other CMake-based
+  tools.
+
+- The build now generates and installs pkg-config file on Linux
+  systems (thanks to GitHub user njwhite).
 
 INTEREST RATES
 
-- Added rate helper to bootstrap on cross-currency swaps (thanks to
-  Maddalena Zanzi). The curve to be bootstrapped can be the one for
-  either of the two currencies.
-
-- Added the possibility for bootstrap helpers to define their pillar
-  date in different ways (thanks to Paolo Mazzocchi).  For each
-  helper, the date of the corresponding node can be defined as the
-  maturity date of the corresponding instrument, as the latest date
-  used on the term structure to price the instrument, or as a custom
-  date. Currently, the feature is enabled for FRAs and swaps.
-
-- Added the possibility to pass weight when fitting a bond discount
-  curve. Also, it is now possible to fit a spread over an existing
-  term structure (thanks to Andres Hernandez).
-
-INFLATION
-
-- Added Kerkhof seasonality model (thanks to Bernd Lewerenz).
-
-- Retrieve inflation fixings from the first day of the month (thanks
-  to Gerardo Ballabio). This avoids the need to store them for each
-  day of the corresponding month.
+- Fixed links to documentation for LIBOR indexes (thanks to Jose
+  Magana).
 
 VOLATILITY
 
-- Improve consistency between caplet stripping and pricing (thanks to
-  Michael von den Driesch)
+- Added the possibility to price swaptions and to calculate their
+  implied volatilities in a Black-like model with normal volatilities
+  as well as shifted lognormal (thanks to Peter Caspers).
+
+- Added the possibility to price caps in a Black-like model with
+  normal volatilities as well as shifted lognormal (thanks to Michael
+  von den Driesch).
+
+- Caplet strike is correctly recomputed during stripping (thanks to
+  Michael von den Driesch).
 
 INSTRUMENTS
 
-- Fixed usage of dividend yield in double-barrier formula (Thanks to
-  Dean Raf for the heads-up).
-
-- Fixed perturbation formula for barrier options.
+- Added basic CVA IRS pricing engine (stand alone, no portfolio; no
+  WWR, no collateral). Thanks to Jose Aparicio.
 
 MODELS
 
-- Refine update behavior of GSR model. Depending on the market change,
-  only the appropriate recalculations are performed (thanks to Peter
+- Black-Scholes processes now return the closed-formula expectation,
+  standard deviation and variance over long periods (thanks to Peter
   Caspers).
 
-- Improve calibration of Heston model (thanks to Peter Caspers).
+CURRENCIES
+
+- Added Ukrainian hryvnia (thanks to GitHub user maksym-studenets).
 
 MONTE CARLO
 
-- Added the possibility to return the estimated exercise probability
-  from a Longstaff-Schwartz engine (thanks to Giorgio Pazmandi).
-
-SETTINGS
-
-- Added the possibility to temporarily disable notifications to
-  observers (thanks to Chris Higgs). When re-enabled, any pending
-  notifications are sent.
+- Use different random-number generators for calibration and pricing
+  in Longstaff-Schwartz engine (thanks to Peter Caspers).
 
 DATE/TIME
 
-- Added Romanian and Israelian calendars (thanks to Riccardo Barone).
+- Added forecast dates for moving holidays to Saudi Arabia calendar up
+  to 2022 (thanks to Jayanth R. Varma).
 
-- Added ECB reserve maintenance periods for 2016 (thanks to Paolo
-  Mazzocchi).
+- Added new Ukrainian holiday, Defender's Day (thanks to GitHub user
+  maksym-studenets).
 
-- Updated South Korean calendar until the end of 2032 (thanks to Paolo
-  Mazzocchi and Faycal El Karaa).
-
-- Added new Mountain Day holiday for Japan (thanks to Aaron Stephanic
-  for the heads-up).
-
-- Remove MLK day from list of US holidays before 1983 (thanks to John
-  Orford for the heads-up).
-
-- Added Christmas Eve to BOVESPA holidays (thanks to Daniel Beren for
-  the heads-up).
+- Added a few more holidays for South Korea (thanks to Faycal El Karaa).
 
 MATH
 
-- Added polynomial and abcd functions.
+- Added mixed log interpolation (thanks to GitHub user sfondi).
 
-- Added Pascal triangle coefficients.
+- Avoid mixing different types while bit-shifting in fast Fourier
+  transform on 64-bit systems (thanks to Nikolai Nowaczyk).
 
-- Replaced home-grown implementation of incremental statistics with
-  Boost implementation (thanks to Peter Caspers).
+DEPRECATED FEATURES
 
-- Added Goldstein line-search method (thanks to Cheng Li).
+- Removed DateParser::split method (deprecated in version 1.6).
 
+TEST SUITE
+
+- The test suite is now run with a fixed evaluation date instead of
+  using today's date. This helps avoid transient errors due to
+  holidays. It is still possible to use today's date (or any other
+  date) by running it as:
+
+    $ quantlib-test-suite -- --date=today
+
+  or
+
+    $ quantlib-test-suite -- --date=2016-02-08
+
+  (Thanks to Peter Caspers.)
 
 NEW OPT-IN FEATURES
 
 These features are disabled by default and can be enabled by defining
 a macro or passing a flag to `./configure`.  Feedback is appreciated.
 
-- Added intraday component to dates (thanks to Klaus Spanderen).  Date
-  specifications now include hours, minutes, seconds, milliseconds and
-  microseconds.  Day counters are aware of the added data and include
-  them in results.
-  The feature can be enabled by uncommenting the
-  `QL_HIGH_RESOLUTION_DATE` macro in `ql/userconfig.hpp` on Visual C++
-  or by passing the `--enable-intraday` flag to `./configure` on other
-  systems.
+- Added a parallel unit-test runner (thanks to Klaus Spanderen). This
+  was successfully used under Linux, but problems were reported on Mac
+  OS X and occasionally on Visual C++ 2010.  The feature requires
+  Boost 1.59 or later and can be enabled by uncommenting the
+  `QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER` macro in `ql/userconfig.hpp`
+  on Visual C++ or by passing the `--enable-parallel-unit-test-runner`
+  to `./configure` on other systems.
 
-- Added thread-safe implementation of the Observer pattern (thanks to
-  Klaus Spanderen). This can be used to avoid crashes when using
-  QuantLib from languages (such as C# or Java) that run a garbage
-  collector in a separate thread.
-  The feature requires Boost 1.58 or later and can be enabled by
-  uncommenting the `QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN` macro in
-  `ql/userconfig.hpp` on Visual C++ or by passing the
-  `--enable-thread-safe-observer-pattern` to `./configure` on other
-  systems.
+EXPERIMENTAL FOLDER
 
+The ql/experimental folder contains code which is still not fully
+integrated with the library or even fully tested, but is released in
+order to get user feedback. Experimental classes are considered
+unstable; their interfaces might change in future releases.
+
+Changes and new contributions for this release were:
+
+- Stochastic local-volatility Heston model, (thanks to Klaus Spanderen
+  and Johannes Goettker-Schnetmann). Both a Monte Carlo and a
+  finite-difference calibration and calculation are provided.
+
+- Laplace interpolation (thanks to Peter Caspers).
+
+- Global optimizers: Hybrid Simulated Annealing, Particle Swarm
+  Optimization, Firefly Algorithm, and Differential Evolution (thanks
+  to Andres Hernandez).
+
+- A SVD-based calculation of the Moore-Penrose inverse matrix (thanks
+  to Peter Caspers).

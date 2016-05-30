@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2008 Ferdinando Ametrano
  Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -54,6 +55,7 @@ namespace QuantLib {
         //@{
         const Period& maxSwapTenor() const;
         //@}
+        VolatilityType volatilityType() const;
       protected:
         //! \name SwaptionVolatilityStructure interface
         //@{
@@ -69,6 +71,7 @@ namespace QuantLib {
         Volatility volatilityImpl(Time optionTime,
                                   Time swapLength,
                                   Rate strike) const;
+        Real shiftImpl(Time optionTime, Time swapLength) const;
         //@}
       private:
         const Handle<SwaptionVolatilityStructure> baseVol_;
@@ -110,6 +113,17 @@ namespace QuantLib {
     inline const Period& SpreadedSwaptionVolatility::maxSwapTenor() const {
         return baseVol_->maxSwapTenor();
     }
+
+    inline Real SpreadedSwaptionVolatility::shiftImpl(Time optionTime,
+                                                  Time swapLength) const {
+        return baseVol_->shift(optionTime, swapLength, true);
+    }
+
+    inline VolatilityType SpreadedSwaptionVolatility::volatilityType() const {
+        return baseVol_->volatilityType();
+    }
+
+
 
 }
 

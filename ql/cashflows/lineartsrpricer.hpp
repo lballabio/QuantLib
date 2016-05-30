@@ -54,6 +54,9 @@ namespace QuantLib {
         lower and upper bound are applied to strike + shift so that
         e.g. a zero lower bound always refers to the lower bound of
         the rates in the shifted lognormal model.
+        Note that for normal volatility input the lower rate bound
+        should probably be adjusted to an appropriate negative value,
+        there is no automatic adjustment in this case.
     */
 
     class LinearTsrPricer : public CmsCouponPricer, public MeanRevertingPricer {
@@ -147,9 +150,9 @@ namespace QuantLib {
 
       private:
 
-        const Real GsrG(const Date &d) const;
-        const Real singularTerms(const Option::Type type, const Real strike) const;
-        const Real integrand(const Real strike) const;
+        Real GsrG(const Date &d) const;
+        Real singularTerms(const Option::Type type, const Real strike) const;
+        Real integrand(const Real strike) const;
         Real a_, b_;
 
         class VegaRatioHelper {

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2010 StatPro Italia srl
+ Copyright (C) 2015 Dmitri Nesteruk
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -83,6 +84,12 @@ namespace QuantLib {
                   case June:  return d == 9;
                   default:    return false;
                 }
+              case 2016:
+                switch (month)
+                {
+                case February: return d == 20;
+                default: return false;
+                }
               default:
                 return false;
             }
@@ -95,7 +102,7 @@ namespace QuantLib {
                   case January: return d == 2;
                   case March:   return d == 9;
                   case April:   return d == 30;
-                  case June:    return d == 12;
+                  case June:    return d == 11;
                   default:      return false;
                 }
               case 2013:
@@ -112,8 +119,16 @@ namespace QuantLib {
               case 2015:
                 switch (month) {
                   case January: return d == 1 || d == 2 || d == 7;
-                  case May:     return d == 4;
                   default:      return false;
+                }
+              case 2016:
+                switch (month)
+                {
+                case January: return d == 1 || d == 7 || d == 8;
+                case May:     return d == 2 || d == 3;
+                case June:    return d == 13;
+                case December: return d == 30;
+                default:      return false;
                 }
               default:
                 return false;

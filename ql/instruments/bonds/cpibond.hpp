@@ -79,7 +79,7 @@ namespace QuantLib {
     };
 
 
-};
+}
 
 
 

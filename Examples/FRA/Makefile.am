@@ -8,9 +8,10 @@ else
 noinst_PROGRAMS = FRA
 endif
 FRA_SOURCES = FRA.cpp
-FRA_LDADD = ../../ql/libQuantLib.la -lboost_thread ${BOOST_THREAD_LIB}
+FRA_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
+    CMakeLists.txt \
     FRA.dev \
     FRA_vc8.vcproj \
     FRA_vc9.vcproj \

@@ -26,9 +26,11 @@
 
 #include <ql/mathconstants.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
+#include <ql/math/array.hpp>
 #include <boost/random/variate_generator.hpp>
 
 namespace QuantLib {
+
     //! Isotropic random walk
     /*! A variate is used to draw from a random element of a 
         probability distribution. The draw corresponds to the 
@@ -43,12 +45,15 @@ namespace QuantLib {
       public:
         typedef boost::variate_generator<Engine, Distribution> VariateGenerator;
         IsotropicRandomWalk(Engine eng, Distribution dist, Size dim, 
-                            const Array& weights = Array(dim, 1.0), 
+                            const Array& weights = Array(), 
                             unsigned long seed = 0) :
             variate_(eng, dist), rng_(seed), 
             weights_(weights), dim_(dim) {
-            QL_REQUIRE(dim_ == weights_.size(), "Invalid weights");
-        };
+            if (weights_.empty())
+                weights_ = Array(dim, 1.0);
+            else
+                QL_REQUIRE(dim_ == weights_.size(), "Invalid weights");
+        }
         template <class InputIterator>
         inline void nextReal(InputIterator first) const {
             Real radius = variate_();

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2014 Michael von den Driesch
+ Copyright (C) 2014, 2015 Michael von den Driesch
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,6 +21,7 @@
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
+#include <ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 
 namespace QuantLib {
@@ -50,6 +51,11 @@ namespace QuantLib {
                        const Handle<YieldTermStructure>& discountCurve,
                        const Handle<OptionletVolatilityStructure>& volatility)
     : discountCurve_(discountCurve), vol_(volatility) {
+        QL_REQUIRE(vol_->volatilityType() == Normal,
+                   "BachelierCapFloorEngine should only be used for vol "
+                   "surfaces stripped with normal model. Options were stripped "
+                   "with model "
+                       << vol_->volatilityType());
         registerWith(discountCurve_);
         registerWith(vol_);
     }

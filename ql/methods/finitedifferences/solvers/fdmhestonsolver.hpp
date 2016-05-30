@@ -3,7 +3,8 @@
 /*
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008, 2009 Ralph Schreyer
- Copyright (C) 2008, 2009, 2011 Klaus Spanderen
+ Copyright (C) 2008, 2009, 2011, 2014, 2015 Klaus Spanderen
+ Copyright (C) 2015 Johannes Goettker-Schnetmann
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,6 +32,7 @@
 #include <ql/methods/finitedifferences/solvers/fdmsolverdesc.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
+#include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 
 namespace QuantLib {
 
@@ -44,7 +46,9 @@ namespace QuantLib {
             const FdmSolverDesc& solverDesc,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
             const Handle<FdmQuantoHelper>& quantoHelper
-                                                = Handle<FdmQuantoHelper>());
+                                                = Handle<FdmQuantoHelper>(),
+            const boost::shared_ptr<LocalVolTermStructure>& leverageFct
+                = boost::shared_ptr<LocalVolTermStructure>());
 
         Real valueAt(Real s, Real v) const;
         Real thetaAt(Real s, Real v) const;
@@ -68,6 +72,7 @@ namespace QuantLib {
         const FdmSolverDesc solverDesc_;
         const FdmSchemeDesc schemeDesc_;
         const Handle<FdmQuantoHelper> quantoHelper_;
+        const boost::shared_ptr<LocalVolTermStructure> leverageFct_;
 
         mutable boost::shared_ptr<Fdm2DimSolver> solver_;
     };

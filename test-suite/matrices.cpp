@@ -4,6 +4,7 @@
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2007, 2008 Klaus Spanderen
  Copyright (C) 2007 Neil Firth
+ Copyright (C) 2016 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,12 +23,16 @@
 #include "matrices.hpp"
 #include "utilities.hpp"
 #include <ql/math/matrix.hpp>
+#include <ql/math/matrixutilities/choleskydecomposition.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 #include <ql/math/matrixutilities/svd.hpp>
 #include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/math/matrixutilities/qrdecomposition.hpp>
 #include <ql/math/matrixutilities/basisincompleteordered.hpp>
+#include <ql/experimental/math/moorepenroseinverse.hpp>
+
+#include <boost/math/special_functions/fpclassify.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -237,6 +242,7 @@ void MatricesTest::testQRDecomposition() {
         Matrix Q, R;
         bool pivot = true;
         const Matrix& A = testMatrices[j];
+
         const std::vector<Size> ipvt = qrDecomposition(A, Q, R, pivot);
 
         Matrix P(A.columns(), A.columns(), 0.0);
@@ -271,8 +277,16 @@ void MatricesTest::testQRSolve() {
     for (Size i=0; i < std::min(bigM.rows(), bigM.columns()); ++i) {
         bigM[i][i] = i+1.0;
     }
-    Matrix testMatrices[] = { M1, M2, M3, transpose(M3),
-                              M4, transpose(M4), M5, I, M7, bigM, transpose(bigM) };
+
+    Matrix randM(50, 200);
+    for (Size i=0; i < randM.rows(); ++i)
+        for (Size j=0; j < randM.columns(); ++j)
+            randM[i][j] = rng.next().value;
+
+    Matrix testMatrices[] = {M1, M2, M3, transpose(M3),
+                              M4, transpose(M4), M5, I, M7,
+                              bigM, transpose(bigM),
+                              randM, transpose(randM) };
 
     for (Size j = 0; j < LENGTH(testMatrices); j++) {
         const Matrix& A = testMatrices[j];
@@ -470,7 +484,122 @@ void MatricesTest::testOrthogonalProjection() {
 
 }
 
+void MatricesTest::testCholeskyDecomposition() {
 
+    BOOST_TEST_MESSAGE("Testing Cholesky Decomposition...");
+
+    // This test case fails prior to release 1.8
+
+    // The eigenvalues of this matrix are
+    // 0.0438523; 0.0187376; 0.000245617; 0.000127656; 8.35899e-05; 6.14215e-05;
+    // 1.94241e-05; 1.14417e-06; 9.79481e-18; 1.31141e-18; 5.81155e-19
+
+    Real tmp[11][11] = {
+        {6.4e-05, 5.28e-05, 2.28e-05, 0.00032, 0.00036, 6.4e-05,
+         6.3968010664e-06, 7.2e-05, 7.19460269899e-06, 1.2e-05,
+         1.19970004999e-06},
+        {5.28e-05, 0.000121, 1.045e-05, 0.00044, 0.000165, 2.2e-05,
+         2.19890036657e-06, 1.65e-05, 1.64876311852e-06, 1.1e-05,
+         1.09972504583e-06},
+        {2.28e-05, 1.045e-05, 9.025e-05, 0, 0.0001425, 9.5e-06,
+         9.49525158294e-07, 2.85e-05, 2.84786356835e-06, 4.75e-06,
+         4.74881269789e-07},
+        {0.00032, 0.00044, 0, 0.04, 0.009, 0.0008, 7.996001333e-05, 0.0006,
+         5.99550224916e-05, 0.0001, 9.99750041661e-06},
+        {0.00036, 0.000165, 0.0001425, 0.009, 0.0225, 0.0003, 2.99850049987e-05,
+         0.001125, 0.000112415667172, 0.000225, 2.24943759374e-05},
+        {6.4e-05, 2.2e-05, 9.5e-06, 0.0008, 0.0003, 0.0001, 9.99500166625e-06,
+         7.5e-05, 7.49437781145e-06, 2e-05, 1.99950008332e-06},
+        {6.3968010664e-06, 2.19890036657e-06, 9.49525158294e-07,
+         7.996001333e-05, 2.99850049987e-05, 9.99500166625e-06,
+         9.99000583083e-07, 7.49625124969e-06, 7.49063187129e-07,
+         1.99900033325e-06, 1.99850066645e-07},
+        {7.2e-05, 1.65e-05, 2.85e-05, 0.0006, 0.001125, 7.5e-05,
+         7.49625124969e-06, 0.000225, 2.24831334343e-05, 1.5e-05,
+         1.49962506249e-06},
+        {7.19460269899e-06, 1.64876311852e-06, 2.84786356835e-06,
+         5.99550224916e-05, 0.000112415667172, 7.49437781145e-06,
+         7.49063187129e-07, 2.24831334343e-05, 2.24662795123e-06,
+         1.49887556229e-06, 1.49850090584e-07},
+        {1.2e-05, 1.1e-05, 4.75e-06, 0.0001, 0.000225, 2e-05, 1.99900033325e-06,
+         1.5e-05, 1.49887556229e-06, 2.5e-05, 2.49937510415e-06},
+        {1.19970004999e-06, 1.09972504583e-06, 4.74881269789e-07,
+         9.99750041661e-06, 2.24943759374e-05, 1.99950008332e-06,
+         1.99850066645e-07, 1.49962506249e-06, 1.49850090584e-07,
+         2.49937510415e-06, 2.49875036451e-07}};
+
+    Matrix m(11,11);
+    for(Size i=0;i<11;++i) {
+        for(Size j=0;j<11;++j) {
+            m[i][j] = tmp[i][j];
+        }
+    }
+
+    Matrix c = CholeskyDecomposition(m,true);
+    Matrix m2 = c * transpose(c);
+
+    Real tol = 1.0E-12;
+    for(Size i=0;i<11;++i) {
+        for(Size j=0;j<11;++j) {
+            if(boost::math::isnan(m2[i][j])) {
+                BOOST_FAIL("Faield to verify Cholesky decomposition at (i,j)=("
+                           << i << "," << j << "), replicated value is nan");
+            }
+            // this does not detect nan values
+            if(std::abs(m[i][j]-m2[i][j]) > tol) {
+                BOOST_FAIL("Failed to verify Cholesky decomposition at (i,j)=("
+                           << i << "," << j << "), original value is "
+                           << m[i][j] << ", replicated value is " << m2[i][j]);
+            }
+        }
+    }
+}
+
+void MatricesTest::testMoorePenroseInverse() {
+    // this is taken from
+    // http://de.mathworks.com/help/matlab/ref/pinv.html
+    Real tmp[8][6] = {{64, 2, 3, 61, 60, 6},    {9, 55, 54, 12, 13, 51},
+                      {17, 47, 46, 20, 21, 43}, {40, 26, 27, 37, 36, 30},
+                      {32, 34, 35, 29, 28, 38}, {41, 23, 22, 44, 45, 19},
+                      {49, 15, 14, 52, 53, 11}, {8, 58, 59, 5, 4, 62}};
+    Matrix A(8, 6);
+    for (Size i = 0; i < 8; ++i) {
+        for (Size j = 0; j < 6; ++j) {
+            A(i, j) = tmp[i][j];
+        }
+    }
+
+    Matrix P = moorePenroseInverse(A);
+    Array b(8, 260.0);
+    Array x = P*b;
+
+    Real cached[6] = {1.153846153846152, 1.461538461538463, 1.384615384615384,
+                      1.384615384615385, 1.461538461538462, 1.153846153846152};
+    Real tol = 500.0 * QL_EPSILON;
+
+    for (Size i = 0; i < 6; ++i) {
+        if (std::abs(x[i] - cached[i]) > tol) {
+            BOOST_FAIL("Failed to verify minimal norm solution obtained from "
+                       "Moore-Penrose-Inverse against cached results, component "
+                       << i << " is " << x[i] << ", expected " << cached[i]
+                       << ", difference " << x[i] - cached[i] << ", tolerance "
+                       << tol);
+        }
+    }
+
+    Array y = A*x;
+    Real tol2 = 1000.0 * QL_EPSILON;
+    for (Size i = 0; i < 6; ++i) {
+        if (std::abs(y[i] - 260.0) > tol2) {
+            BOOST_FAIL(
+                "Failed to verify minimal norm solution obtained from "
+                "Moore-Penrose-Inverse when back-substituting, rhs component "
+                << i << " is " << y[i] << ", expected 260.0, difference "
+                << y[i] - 260.0 << ", tolerance " << tol2);
+        }
+    }
+
+}
 
 test_suite* MatricesTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Matrix tests");
@@ -486,6 +615,8 @@ test_suite* MatricesTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testInverse));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testDeterminant));
     #endif
+    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testCholeskyDecomposition));
+    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testMoorePenroseInverse));
     return suite;
 }
 

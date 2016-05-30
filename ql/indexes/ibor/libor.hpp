@@ -30,10 +30,10 @@
 
 namespace QuantLib {
 
-    //! base class for all BBA LIBOR indexes but the EUR, O/N, and S/N ones
-    /*! LIBOR fixed by BBA.
+    //! base class for all ICE LIBOR indexes but the EUR, O/N, and S/N ones
+    /*! LIBOR fixed by ICE.
 
-        See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
+        See <https://www.theice.com/marketdata/reports/170>.
     */
     class Libor : public IborIndex {
       public:
@@ -47,7 +47,7 @@ namespace QuantLib {
                                     Handle<YieldTermStructure>());
         /*! \name Date calculations
 
-            see http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1412
+            See <https://www.theice.com/marketdata/reports/170>.
             @{
         */
         Date valueDate(const Date& fixingDate) const;
@@ -68,9 +68,9 @@ namespace QuantLib {
     };
 
     //! base class for all O/N-S/N BBA LIBOR indexes but the EUR ones
-    /*! One day deposit LIBOR fixed by BBA.
+    /*! One day deposit LIBOR fixed by ICE.
 
-        See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
+        See <https://www.theice.com/marketdata/reports/170>.
     */
     class DailyTenorLibor : public IborIndex {
       public:
