@@ -3,6 +3,8 @@
 /*
  Copyright (C) 2009 Roland Lichters
  Copyright (C) 2009 Ferdinando Ametrano
+ Copyright (C) 2014 Yue Tian
+ Copyright (C) 2016 Stefano Fondi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,6 +30,8 @@
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/schedule.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/cashflows/couponpricer.hpp>
 
 namespace QuantLib {
 
@@ -96,6 +100,36 @@ namespace QuantLib {
         BusinessDayConvention paymentAdjustment_;
         std::vector<Real> gearings_;
         std::vector<Spread> spreads_;
+    };
+
+    /*! pricer for arithmetically averaged overnight indexed coupons
+    Reference: Katsumi Takada 2011, Valuation of Arithmetically Average of
+    Fed Funds Rates and Construction of the US Dollar Swap Yield Curve
+    */
+    class ArithmeticAveragedOvernightIndexedCouponPricer
+                                         : public FloatingRateCouponPricer {
+    public:
+        ArithmeticAveragedOvernightIndexedCouponPricer(
+            Real meanReversion = 0.03,
+            Real volatility = 0.00, // NO convexity adjustment by default
+            bool byApprox = false)
+        : byApprox_(byApprox), mrs_(meanReversion), vol_(volatility) {}
+
+        void initialize(const FloatingRateCoupon& coupon);
+        Rate swapletRate() const;
+        Real swapletPrice() const { QL_FAIL("swapletPrice not available"); }
+        Real capletPrice(Rate) const { QL_FAIL("capletPrice not available"); }
+        Rate capletRate(Rate) const { QL_FAIL("capletRate not available"); }
+        Real floorletPrice(Rate) const { QL_FAIL("floorletPrice not available"); }
+        Rate floorletRate(Rate) const { QL_FAIL("floorletRate not available"); }
+    protected:
+        Real convAdj1(Time ts, Time te) const;
+        Real convAdj2(Time ts, Time te) const;
+        const OvernightIndexedCoupon* coupon_;
+        bool byApprox_;
+        Real mrs_;
+        Real vol_;
+
     };
 
 }
