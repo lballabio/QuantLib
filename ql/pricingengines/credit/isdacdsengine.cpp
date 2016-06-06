@@ -202,12 +202,6 @@ namespace QuantLib {
 
         std::vector<Date> nodes(it0, it);
 
-        //debug
-        std::cout << "***debug engine - nodes ...:" << std::endl;
-        for(Size i=0;i<nodes.size();i++) {
-            std::cout << nodes[i] << std::endl;
-        }
-
         const Real nFix = (numericalFix_ == None ? 1E-50 : 0.0);
 
         // protection leg pricing (npv is always negative at this stage)
@@ -235,15 +229,12 @@ namespace QuantLib {
             Real P1 = discountCurve_->discount(d1);
             Real Q0 = probability_->survivalProbability(d0-1); // these are_ end_ of day probs
             Real Q1 = probability_->survivalProbability(d1-e);
-            std::cout << "period " << d0 << " to " << d1 << " q0=" << Q0 << " q1=" << Q1 << std::endl;
 
             Real fhat = std::log(P0) - std::log(P1);
             Real hhat = std::log(Q0) - std::log(Q1);
             Real fhphh = fhat + hhat;
-            // std::cout << " fhat=" << fhat << " hhat=" << hhat;
 
             if (fhphh < 1E-4 && numericalFix_ == Taylor) {
-                std::cout << "...applying numerical fix...." << std::endl;
                 Real fhphhq = fhphh * fhphh;
                 // terms up to (f+h)^3 seem more than enough,
                 // what exactly is implemented in the standard isda C code ?
@@ -253,7 +244,6 @@ namespace QuantLib {
             } else {
                 protectionNpv += hhat / (fhphh + nFix) * (P0 * Q0 - P1 * Q1);
             }
-            // std::cout << " cumProtNpv = " << protectionNpv << std::endl;
             d0 = d1;
         } while(d1<maturity);
 
@@ -262,7 +252,6 @@ namespace QuantLib {
 
         results_.defaultLegNPV = protectionNpv;
 
-        std::cout << "default leg npv = " << std::setprecision(12) << std::fixed << protectionNpv << std::endl;
 
         // premium leg pricing (npv is always positive at this stage)
 
@@ -285,8 +274,6 @@ namespace QuantLib {
                     coupon->amount() *
                     discountCurve_->discount(coupon->date()) *
                     probability_->survivalProbability(coupon->accrualEndDate());
-                // std::cout << "Coupon #" << i << " has amount " <<
-                // coupon->amount() << std::endl;
             }
 
             // default accruals
@@ -365,14 +352,10 @@ namespace QuantLib {
 			}
         }
 
-        std::cout << "premiumNPV=" << premiumNpv << " defaultAccruals=" <<
-         defaultAccrualNpv << std::endl;
 
         results_.couponLegNPV = premiumNpv + defaultAccrualNpv;
 
         // upfront flow npv
-
-        std::cout << "check1" << std::endl;
 
         Real upfPVO1 = 0.0;
         results_.upfrontNPV = 0.0;
@@ -383,7 +366,6 @@ namespace QuantLib {
                 discountCurve_->discount(arguments_.upfrontPayment->date());
             results_.upfrontNPV = upfPVO1 * arguments_.upfrontPayment->amount();
         }
-        std::cout << "check2" << std::endl;
 
         results_.accrualRebateNPV = 0.;
         if (arguments_.accrualRebate &&
@@ -403,14 +385,9 @@ namespace QuantLib {
             results_.couponLegNPV *= -1.0;
             results_.upfrontNPV *= -1.0;
         }
-        std::cout << "check3" << std::endl;
 
         results_.value = results_.defaultLegNPV + results_.couponLegNPV +
                          results_.upfrontNPV + results_.accrualRebateNPV;
-
-        // std::cout << "upfrontNPV=" << results_.upfrontNPV << " (amount=" << arguments_.upfrontPayment->amount() << ")" << std::endl;
-        std::cout << "accrualRebateNPV=" << results_.accrualRebateNPV << std::endl;
-        std::cout << " (amount=" << arguments_.accrualRebate->amount() << ")" << std::endl;
 
         results_.errorEstimate = Null<Real>();
 
