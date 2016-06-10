@@ -82,7 +82,7 @@ namespace QuantLib {
                                     lookback period and protection start here. 
                                     In the way it determines the dirty amount it
                                     is more like the trade execution date.
-			@param lastPeriodDayCounter Day-count convention for accrual in last period
+            @param lastPeriodDayCounter Day-count convention for accrual in last period
             @param rebatesAccrual  The protection seller pays the accrued 
                                     scheduled current coupon at the start 
                                     of the contract. The rebate date is not
@@ -100,7 +100,7 @@ namespace QuantLib {
                           const Date& protectionStart = Date(),
                           const boost::shared_ptr<Claim>& =
                                                   boost::shared_ptr<Claim>(),
-						  const DayCounter& lastPeriodDayCounter = DayCounter(),
+                          const DayCounter& lastPeriodDayCounter = DayCounter(),
                           const bool rebatesAccrual = true);
         //! CDS quoted as upfront and running spread
         /*! @param side  Whether the protection is bought or sold.
@@ -128,7 +128,7 @@ namespace QuantLib {
                                     rebate (if any) payments.
                                     Typically T+3, this is also the default 
                                     value.
-			@param lastPeriodDayCounter Day-count convention for accrual in last period
+            @param lastPeriodDayCounter Day-count convention for accrual in last period
             @param rebatesAccrual  The protection seller pays the accrued 
                                     scheduled current coupon at the start 
                                     of the contract. The rebate date is not
@@ -148,7 +148,7 @@ namespace QuantLib {
                           const Date& upfrontDate = Date(),
                           const boost::shared_ptr<Claim>& =
                                                   boost::shared_ptr<Claim>(),
-						  const DayCounter& lastPeriodDayCounter = DayCounter(),
+                          const DayCounter& lastPeriodDayCounter = DayCounter(),
                           const bool rebatesAccrual = true);
         //@}
         //! \name Instrument interface
@@ -194,7 +194,7 @@ namespace QuantLib {
         Real couponLegNPV() const;
         Real defaultLegNPV() const;
         Real upfrontNPV() const;
-		Real accrualRebateNPV() const;
+        Real accrualRebateNPV() const;
 
         //! Implied hazard rate calculation
         /*! \note This method performs the calculation with the
@@ -277,7 +277,7 @@ namespace QuantLib {
         mutable Real couponLegBPS_, couponLegNPV_;
         mutable Real upfrontBPS_, upfrontNPV_;
         mutable Real defaultLegNPV_;
-		mutable Real accrualRebateNPV_;
+        mutable Real accrualRebateNPV_;
     };
 
 

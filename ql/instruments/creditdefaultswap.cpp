@@ -57,7 +57,7 @@ namespace QuantLib {
             .withNotionals(notional)
             .withCouponRates(spread, dayCounter)
             .withPaymentAdjustment(convention)
-			.withLastPeriodDayCounter(lastPeriodDayCounter);
+            .withLastPeriodDayCounter(lastPeriodDayCounter);
 
         if(rebatesAccrual) {
             boost::shared_ptr<FixedRateCoupon> firstCoupon =
@@ -112,7 +112,7 @@ namespace QuantLib {
             .withNotionals(notional)
             .withCouponRates(runningSpread, dayCounter)
             .withPaymentAdjustment(convention)
-			.withLastPeriodDayCounter(lastPeriodDayCounter);
+            .withLastPeriodDayCounter(lastPeriodDayCounter);
 
         // If empty, adjust to T+3 standard settlement, alternatively add 
         //  an arbitrary date to the constructor
@@ -229,7 +229,7 @@ namespace QuantLib {
         defaultLegNPV_ = results->defaultLegNPV;
         upfrontNPV_ = results->upfrontNPV;
         upfrontBPS_ = results->upfrontBPS;
-		accrualRebateNPV_ = results->accrualRebateNPV;
+        accrualRebateNPV_ = results->accrualRebateNPV;
     }
 
     Rate CreditDefaultSwap::fairUpfront() const {
@@ -281,12 +281,12 @@ namespace QuantLib {
         return upfrontBPS_;
     }
 
-	Real CreditDefaultSwap::accrualRebateNPV() const {
-		calculate();
-		QL_REQUIRE(accrualRebateNPV_ != Null<Real>(),
-			       "accrual Rebate NPV not available");
-		return accrualRebateNPV_;
-	}
+    Real CreditDefaultSwap::accrualRebateNPV() const {
+        calculate();
+        QL_REQUIRE(accrualRebateNPV_ != Null<Real>(),
+                   "accrual Rebate NPV not available");
+        return accrualRebateNPV_;
+    }
 
     namespace {
 
@@ -403,7 +403,7 @@ namespace QuantLib {
         defaultLegNPV = Null<Real>();
         upfrontBPS = Null<Real>();
         upfrontNPV = Null<Real>();
-		accrualRebateNPV = Null<Real>();
+        accrualRebateNPV = Null<Real>();
     }
 
 }

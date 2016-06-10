@@ -253,7 +253,7 @@ namespace QuantLib {
                 nominal = notionals_[N-2];
             else
                 nominal = notionals_.back();
-			InterestRate r( rate.rate(), lastPeriodDC_.empty() ? 
+            InterestRate r( rate.rate(), lastPeriodDC_.empty() ? 
                 rate.dayCounter() : 
                 lastPeriodDC_ , rate.compounding(), rate.frequency() ); 
             if (schedule_.isRegular(N-1)) {
