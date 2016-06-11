@@ -984,6 +984,9 @@
     <ClInclude Include="ql\math\interpolations\linearinterpolation.hpp">
       <Filter>math\interpolations</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\interpolations\lagrangeinterpolation.hpp">
+      <Filter>math\interpolations</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\interpolations\loginterpolation.hpp">
       <Filter>math\interpolations</Filter>
     </ClInclude>
