@@ -112,7 +112,7 @@ void MultiCurveSensitivities::performCalculations() const {
       QL_FAIL("Application of shift to quote led to exception.");
     }
   }
-  Matrix result(origZeros_.size(), origZeros_.size(), sensiVector);
+  Matrix result(origZeros_.size(), origZeros_.size(), sensiVector.begin(), sensiVector.end());
   sensi_ = result;
   invSensi_ = inverse(sensi_);
 }

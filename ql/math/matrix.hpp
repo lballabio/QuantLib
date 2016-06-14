@@ -47,7 +47,8 @@ namespace QuantLib {
         //! creates the matrix and fills it with <tt>value</tt>
         Matrix(Size rows, Size columns, Real value);
         //! creates the matrix and fills it with <tt>values</tt> (row by row)
-        Matrix(Size rows, Size columns, const std::vector< Real > &values);
+        Matrix(Size rows, Size columns, std::vector< Real >::const_iterator start,
+               std::vector< Real >::const_iterator end);
         Matrix(const Matrix &);
         Matrix(const Disposable<Matrix>&);
         Matrix& operator=(const Matrix&);
@@ -199,12 +200,13 @@ namespace QuantLib {
         std::fill(begin(),end(),value);
     }
 
-    inline Matrix::Matrix(Size rows, Size columns,
-                          const std::vector< Real > &values)
-        : data_(rows * columns > 0 ? new Real[rows * columns] : (Real *)(0)),
-          rows_(rows), columns_(columns) {
-        QL_REQUIRE(rows*columns==values.size(), "Matrix size (rows*columns) does not fit size of values: (" << rows*columns <<", " << values.size()<<")");
-        std::copy(values.begin(), values.end(), begin());
+    inline Matrix::Matrix(Size rows, Size columns, std::vector< Real >::const_iterator start,
+                          std::vector< Real >::const_iterator end)
+        : data_(rows * columns > 0 ? new Real[rows * columns] : (Real *)(0)), rows_(rows), columns_(columns) {
+      QL_REQUIRE(rows * columns == std::distance(start, end),
+                 "Matrix size (rows*columns) does not fit size of values: (" << rows * columns << ", "
+                                                                             << std::distance(start, end) << ")");
+      std::copy(start, end, begin());
     }
 
     inline Matrix::Matrix(const Matrix& from)
