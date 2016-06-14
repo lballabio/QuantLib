@@ -98,14 +98,19 @@ void MultiCurveSensitivities::performCalculations() const {
   std::vector< Rate > sensiVector;
   origZeros_ = allZeros();
   for (std::vector< Handle< Quote > >::const_iterator it = allQuotes_.begin(); it != allQuotes_.end(); ++it) {
-    Rate bps = 1e-4;
+    Rate bps = +1e-4;
     Rate origQuote = (*it)->value();
     boost::shared_ptr< SimpleQuote > q = boost::dynamic_pointer_cast< SimpleQuote >((*it).currentLink());
     q->setValue(origQuote + bps);
-    std::vector< Rate > tmp(allZeros());
-    for (Size i = 0; i < tmp.size(); ++i)
-      sensiVector.push_back((tmp[i] - origZeros_[i]) / bps);
-    q->setValue(origQuote);
+    try {
+      std::vector< Rate > tmp(allZeros());
+      for (Size i = 0; i < tmp.size(); ++i)
+        sensiVector.push_back((tmp[i] - origZeros_[i]) / bps);
+      q->setValue(origQuote);
+    } catch (...) {
+      q->setValue(origQuote);
+      QL_FAIL("Application of shift to quote led to exception.");
+    }
   }
   Matrix result(origZeros_.size(), origZeros_.size(), sensiVector);
   sensi_ = result;
