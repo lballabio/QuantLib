@@ -1185,6 +1185,9 @@
     <ClInclude Include="ql\math\randomnumbers\sobolrsg.hpp">
       <Filter>math\randomnumbers</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\randomnumbers\stochasticcollocationinvcdf.hpp">
+      <Filter>math\randomnumbers</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\solvers1d\all.hpp">
       <Filter>math\solvers1D</Filter>
     </ClInclude>
@@ -4558,6 +4561,9 @@
       <Filter>math\randomnumbers</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\randomnumbers\sobolrsg.cpp">
+      <Filter>math\randomnumbers</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\randomnumbers\stochasticcollocationinvcdf.cpp">
       <Filter>math\randomnumbers</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\optimization\armijo.cpp">

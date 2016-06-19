@@ -22,7 +22,8 @@ this_include_HEADERS = \
 	rngtraits.hpp \
 	seedgenerator.hpp \
 	sobolbrownianbridgersg.hpp \
-	sobolrsg.hpp
+	sobolrsg.hpp \
+	stochasticcollocationinvcdf.hpp
 
 libRandomNumbers_la_SOURCES = \
     faurersg.cpp \
@@ -35,7 +36,8 @@ libRandomNumbers_la_SOURCES = \
 	primitivepolynomials.cpp \
 	seedgenerator.cpp \
 	sobolbrownianbridgersg.cpp \
-	sobolrsg.cpp
+	sobolrsg.cpp \
+	stochasticcollocationinvcdf.cpp
 
 noinst_LTLIBRARIES = libRandomNumbers.la
 

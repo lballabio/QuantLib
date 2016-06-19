@@ -907,6 +907,7 @@
     <ClInclude Include="ql\math\randomnumbers\rngtraits.hpp" />
     <ClInclude Include="ql\math\randomnumbers\seedgenerator.hpp" />
     <ClInclude Include="ql\math\randomnumbers\sobolrsg.hpp" />
+    <ClInclude Include="ql\math\randomnumbers\stochasticcollocationinvcdf.hpp" />
     <ClInclude Include="ql\math\solvers1d\all.hpp" />
     <ClInclude Include="ql\math\solvers1d\bisection.hpp" />
     <ClInclude Include="ql\math\solvers1d\brent.hpp" />
@@ -2028,6 +2029,7 @@
     <ClCompile Include="ql\math\randomnumbers\primitivepolynomials.cpp" />
     <ClCompile Include="ql\math\randomnumbers\seedgenerator.cpp" />
     <ClCompile Include="ql\math\randomnumbers\sobolrsg.cpp" />
+    <ClCompile Include="ql\math\randomnumbers\stochasticcollocationinvcdf.cpp" />
     <ClCompile Include="ql\math\optimization\armijo.cpp" />
     <ClCompile Include="ql\math\optimization\bfgs.cpp" />
     <ClCompile Include="ql\math\optimization\conjugategradient.cpp" />
