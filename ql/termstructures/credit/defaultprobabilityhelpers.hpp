@@ -95,7 +95,9 @@ namespace QuantLib {
             isdaAccrualBias_ = accrualBias;
             isdaForwardsInCouponPeriod_ = forwardsInCouponPeriod;
         }
-
+        boost::shared_ptr<CreditDefaultSwap> swap() const {
+            return swap_;
+        }
       protected:
         void update();
         void initializeDates();
