@@ -151,6 +151,7 @@
 #include "mersennetwister.hpp"
 #include "money.hpp"
 #include "noarbsabr.hpp"
+#include "normalclvmodel.hpp"
 #include "nthtodefault.hpp"
 #include "numericaldifferentiation.hpp"
 #include "observable.hpp"
@@ -454,6 +455,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(InflationVolTest::suite());
     test->add(MargrabeOptionTest::suite());
     test->add(NoArbSabrTest::suite());
+    test->add(NormalCLVModelTest::suite());
     test->add(NthToDefaultTest::suite());
     test->add(NumericalDifferentiationTest::suite());
     test->add(PagodaOptionTest::suite());
