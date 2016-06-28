@@ -30,6 +30,7 @@
 #include <ql/instrument.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/handle.hpp>
+#include <ql/termstructures/volatility/volatilitytype.hpp>
 
 namespace QuantLib {
 
@@ -83,14 +84,16 @@ namespace QuantLib {
         //@}
         Rate atmRate(const YieldTermStructure& discountCurve) const;
         //! implied term volatility
-        Volatility impliedVolatility(Real price,
-                                     const Handle<YieldTermStructure>& disc,
-                                     Volatility guess,
-                                     Real accuracy = 1.0e-4,
-                                     Natural maxEvaluations = 100,
-                                     Volatility minVol = 1.0e-7,
-                                     Volatility maxVol = 4.0,
-                                     Real displacement = 0.0) const;
+        Volatility impliedVolatility(
+                                 Real price,
+                                 const Handle<YieldTermStructure>& disc,
+                                 Volatility guess,
+                                 Real accuracy = 1.0e-4,
+                                 Natural maxEvaluations = 100,
+                                 Volatility minVol = 1.0e-7,
+                                 Volatility maxVol = 4.0,
+                                 Real displacement = 0.0,
+                                 VolatilityType type = ShiftedLognormal) const;
       private:
         Type type_;
         Leg floatingLeg_;
