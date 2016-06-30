@@ -63,12 +63,19 @@ namespace QuantLib {
             // at first ImpliedVolHelper::operator()(Volatility x) call
             vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(-1.0));
             Handle<Quote> h(vol_);
-            if (type == Normal) {
-                engine_ = boost::make_shared<BachelierSwaptionEngine>(
-                    discountCurve_, h, Actual365Fixed());
-            } else {
+
+            switch (type) {
+            case ShiftedLognormal:
                 engine_ = boost::make_shared<BlackSwaptionEngine>(
                     discountCurve_, h, Actual365Fixed(), displacement);
+                break;
+            case Normal:
+                engine_ = boost::make_shared<BachelierSwaptionEngine>(
+                    discountCurve_, h, Actual365Fixed());
+                break;
+            default:
+                QL_FAIL("unknown VolatilityType (" << type << ")");
+                break;
             }
             swaption.setupArguments(engine_->getArguments());
             results_ = dynamic_cast<const Instrument::results *>(
