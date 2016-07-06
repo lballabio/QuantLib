@@ -181,26 +181,8 @@ namespace QuantLib {
         if (castC2 != NULL)
             cDates = castC2->dates();
 
-        std::vector<Date> nodesTmp(yDates);
-        nodesTmp.insert(nodesTmp.end(), cDates.begin(), cDates.end());
-        std::sort(nodesTmp.begin(), nodesTmp.end());
-
-        // add protection start date and cut all nodes earlier than this date
-        // add maturity date and cut all nodes later than this date
-
-        std::vector<Date>::iterator it0 = std::upper_bound(
-            nodesTmp.begin(), nodesTmp.end(), effectiveProtectionStart - 1);
-        nodesTmp.insert(it0, effectiveProtectionStart);
-        std::vector<Date>::iterator it1 =
-            std::upper_bound(nodesTmp.begin(), nodesTmp.end(), maturity);
-        nodesTmp.insert(it1, maturity);
-
-        it0 = std::upper_bound(nodesTmp.begin(), nodesTmp.end(),
-                               effectiveProtectionStart - 1);
-        it1 = std::upper_bound(nodesTmp.begin(), nodesTmp.end(), maturity);
-        std::vector<Date>::iterator it = std::unique(it0, it1);
-
-        std::vector<Date> nodes(it0, it);
+        std::vector<Date> nodes(yDates.size() + cDates.size());
+        std::set_union(yDates.begin(), yDates.end(), cDates.begin(), cDates.end(), nodes.begin());
 
         const Real nFix = (numericalFix_ == None ? 1E-50 : 0.0);
 
@@ -208,27 +190,18 @@ namespace QuantLib {
 
         Real protectionNpv = 0.0;
 
-        Date d0 = effectiveProtectionStart;
-        // Size i =
-        //     (std::upper_bound(nodes.begin(), nodes.end(), d0) - nodes.begin()) -
-        //     1;
-        Size i=0;
+        Date d0 = effectiveProtectionStart-1;
         Date d1 = d0;
-
-        int e = 1;
+        std::vector<Date>::const_iterator it = std::upper_bound(nodes.begin(), nodes.end(),
+                                                                effectiveProtectionStart);
+        --it;
         do {
-            ++i;
-            d1 = std::min<Date>(nodes[i], maturity);
-            if(d1==maturity)
-                e=0;
-            // Real P0 = discountCurve_->discount(nodes[i]);
-            // Real P1 = discountCurve_->discount(nodes[i + 1]);
-            // Real Q0 = probability_->survivalProbability(nodes[i]);
-            // Real Q1 = probability_->survivalProbability(nodes[i + 1]);
+            ++it;
+            d1 = std::min<Date>(*it, maturity);
             Real P0 = discountCurve_->discount(d0);
             Real P1 = discountCurve_->discount(d1);
-            Real Q0 = probability_->survivalProbability(d0-1); // these are_ end_ of day probs
-            Real Q1 = probability_->survivalProbability(d1-e);
+            Real Q0 = probability_->survivalProbability(d0);
+            Real Q1 = probability_->survivalProbability(d1);
 
             Real fhat = std::log(P0) - std::log(P1);
             Real hhat = std::log(Q0) - std::log(Q1);
@@ -236,17 +209,15 @@ namespace QuantLib {
 
             if (fhphh < 1E-4 && numericalFix_ == Taylor) {
                 Real fhphhq = fhphh * fhphh;
-                // terms up to (f+h)^3 seem more than enough,
-                // what exactly is implemented in the standard isda C code ?
                 protectionNpv +=
                     P0 * Q0 * hhat * (1.0 - 0.5 * fhphh + 1.0 / 6.0 * fhphhq -
-                                      1.0 / 24.0 * fhphhq * fhphh);
+                                      1.0 / 24.0 * fhphhq * fhphh +
+                                      1.0 / 120 * fhphhq * fhphhq);
             } else {
                 protectionNpv += hhat / (fhphh + nFix) * (P0 * Q0 - P1 * Q1);
             }
             d0 = d1;
-        } while(d1<maturity);
-
+        } while(*it < maturity);
         protectionNpv *= arguments_.claim->amount(
             Null<Date>(), arguments_.notional, recoveryRate_);
 
@@ -347,7 +318,7 @@ namespace QuantLib {
                     }
                 }
                 Real eta = coupon->accrualPeriod() / (tend - tstart);
-                defaultAccrualNpv += defaultAccrThisNode * 
+                defaultAccrualNpv += defaultAccrThisNode *
 					coupon->amount() * eta;
 			}
         }
