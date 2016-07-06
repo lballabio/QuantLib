@@ -244,7 +244,7 @@ namespace QuantLib {
                 premiumNpv +=
                     coupon->amount() *
                     discountCurve_->discount(coupon->date()) *
-                    probability_->survivalProbability(coupon->accrualEndDate());
+                    probability_->survivalProbability(coupon->date()-1);
             }
 
             // default accruals
@@ -252,47 +252,35 @@ namespace QuantLib {
             if (!detail::simple_event(coupon->accrualEndDate())
                      .hasOccurred(effectiveProtectionStart, false)) {
                 Date start = std::max<Date>(coupon->accrualStartDate(),
-                                            effectiveProtectionStart);
-                Date end = coupon->accrualEndDate();
+                                            effectiveProtectionStart)-1;
+                Date end = coupon->date()-1;
                 Real tstart =
-                    discountCurve_->timeFromReference(start) -
-                    (accrualBias_ == HalfDayBias ? -1.0 / 730.0 : 0.0);
+                    discountCurve_->timeFromReference(coupon->accrualStartDate()-1) -
+                    (accrualBias_ == HalfDayBias ? 1.0 / 730.0 : 0.0);
                 Real tend = discountCurve_->timeFromReference(end);
                 std::vector<Date> localNodes;
+                localNodes.push_back(start);
+                //add intermediary nodes, if any
                 if (forwardsInCouponPeriod_ == Piecewise) {
                     std::vector<Date>::const_iterator it0 =
-                        std::upper_bound(nodes.begin(), nodes.end(), start - 1);
+                        std::upper_bound(nodes.begin(), nodes.end(), start);
                     std::vector<Date>::const_iterator it1 =
-                        std::upper_bound(nodes.begin(), nodes.end(), end);
-                    localNodes = std::vector<Date>(it0, it1);
-                    if (localNodes.size() == 0) {
-                        // both iterators point to the same element
-                        localNodes.push_back(start);
-                        localNodes.push_back(end);
-                    }
-                    if (start != *localNodes.begin())
-                        localNodes.insert(localNodes.begin(), start);
-                    if (end != localNodes.back())
-                        localNodes.insert(localNodes.end(), end);
-                } else { // setting flat => ignore intermediate curve nodes
-                    localNodes.push_back(start);
-                    localNodes.push_back(end);
+                        std::lower_bound(nodes.begin(), nodes.end(), end);
+                    localNodes.insert(localNodes.end(), it0, it1);
                 }
+                localNodes.push_back(end);
 
                 Real defaultAccrThisNode = 0.;
-                int e=1;
                 for (Size k = 0; k < localNodes.size() - 1; k++) {
-                    if(localNodes[k+1]==maturity)
-                        e=0;
                     Real t0 = discountCurve_->timeFromReference(localNodes[k]);
                     Real t1 =
                         discountCurve_->timeFromReference(localNodes[k + 1]);
                     Real P0 = discountCurve_->discount(localNodes[k]);
                     Real Q0 =
-                        probability_->survivalProbability(localNodes[k]-1);
+                        probability_->survivalProbability(localNodes[k]);
                     Real P1 = discountCurve_->discount(localNodes[k + 1]);
                     Real Q1 =
-                        probability_->survivalProbability(localNodes[k + 1]-e);
+                        probability_->survivalProbability(localNodes[k + 1]);
                     Real fhat = std::log(P0) - std::log(P1);
                     Real hhat = std::log(Q0) - std::log(Q1);
                     Real fhphh = fhat + hhat;
@@ -317,9 +305,8 @@ namespace QuantLib {
                              (t0 - tstart) * (P0 * Q0 - P1 * Q1));
                     }
                 }
-                Real eta = coupon->accrualPeriod() / (tend - tstart);
-                defaultAccrualNpv += defaultAccrThisNode *
-					coupon->amount() * eta;
+                defaultAccrualNpv += defaultAccrThisNode * arguments_.notional *
+                    coupon->rate() * 365. / 360.;
 			}
         }
 
