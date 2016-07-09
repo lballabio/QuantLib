@@ -33,9 +33,16 @@ namespace QuantLib {
     */
 
     namespace detail {
+        class UpdatedYInterpolation {
+          public:
+            virtual ~UpdatedYInterpolation() {}
+            virtual Real value(const Array& yValues, Real x) const = 0;
+        };
+
         template <class I1, class I2>
         class LagrangeInterpolationImpl
-            : public Interpolation::templateImpl<I1,I2> {
+            : public Interpolation::templateImpl<I1,I2>,
+              protected UpdatedYInterpolation {
 
           public:
             LagrangeInterpolationImpl(const I1& xBegin, const I1& xEnd,
@@ -65,21 +72,7 @@ namespace QuantLib {
             }
 
             Real value(Real x) const {
-                Real n=0.0, d=0.0;
-                for (Size i=0; i < n_; ++i) {
-                    const Real x_i = this->xBegin_[i];
-                    if (close_enough(x, x_i))
-                        return this->yBegin_[i];
-
-                    const Real alpha = lambda_[i]/(x-x_i);
-                    n += alpha * this->yBegin_[i];
-                    d += alpha;
-                }
-                return n/d;
-            }
-
-            Real primitive(Real) const {
-                QL_FAIL("LagrangeInterpolation primitive is not implemented");
+                return _value(this->yBegin_, x);
             }
 
             Real derivative(Real x) const {
@@ -107,9 +100,35 @@ namespace QuantLib {
                 return (nd * d - n * dd)/(d*d);
             }
 
-            Real secondDerivative(Real) const { QL_FAIL("not implemented"); }
+            Real primitive(Real) const {
+                QL_FAIL("LagrangeInterpolation primitive is not implemented");
+            }
+
+            Real secondDerivative(Real) const {
+                QL_FAIL("LagrangeInterpolation secondDerivative "
+                        "is not implemented");
+            }
+
+            Real value(const Array& y, Real x) const {
+                return _value(y.begin(), x);
+            }
 
             private:
+              template <class Iterator>
+              Real _value(const Iterator& yBegin, Real x) const {
+                  Real n=0.0, d=0.0;
+                  for (Size i=0; i < n_; ++i) {
+                      const Real x_i = this->xBegin_[i];
+                      if (close_enough(x, x_i))
+                          return yBegin[i];
+
+                      const Real alpha = lambda_[i]/(x-x_i);
+                      n += alpha * yBegin[i];
+                      d += alpha;
+                  }
+                  return n/d;
+              }
+
               const Size n_;
               Array lambda_;
         };
@@ -123,6 +142,12 @@ namespace QuantLib {
             impl_ = boost::make_shared<detail::LagrangeInterpolationImpl<I1,I2> >(
                 xBegin, xEnd, yBegin);
             impl_->update();
+        }
+
+        // interpolate with new set of y values for a new x value
+        Real value(const Array& y, Real x) const {
+            return boost::dynamic_pointer_cast<detail::UpdatedYInterpolation>
+                (impl_)->value(y, x);
         }
     };
 

@@ -638,7 +638,7 @@ namespace {
         : dist_(df, ncp) {}
 
         Real operator()(Real x) const {
-            boost::math::quantile(dist_, x);
+            return boost::math::quantile(dist_, x);
         }
       private:
         const boost::math::non_central_chi_squared_distribution<Real> dist_;

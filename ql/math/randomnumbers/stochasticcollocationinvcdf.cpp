@@ -23,7 +23,6 @@
 
 #include <ql/mathconstants.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
-#include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/randomnumbers/stochasticcollocationinvcdf.hpp>
 
 namespace QuantLib {

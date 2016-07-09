@@ -28,8 +28,12 @@
 #include <ql/exercise.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
+#include <ql/processes/ornsteinuhlenbeckprocess.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/math/interpolations/lagrangeinterpolation.hpp>
 
 #include <boost/function.hpp>
+#include <functional>
 
 namespace QuantLib {
     /*! References:
@@ -42,27 +46,70 @@ namespace QuantLib {
 
     class PricingEngine;
 
-    class NormalCLVMCModel : public LazyObject {
+    class NormalCLVModel : public LazyObject {
       public:
-        NormalCLVMCModel(
+        NormalCLVModel(
+            Size n,
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
+            const boost::shared_ptr<OrnsteinUhlenbeckProcess>& ouProcess,
             const std::vector<Date>& maturityDates);
 
-        void update();
-
         // cumulative distribution function of the BS process
-        Real F(const Date& maturityDate, Real x) const;
+        Real cdf(const Date& d, Real x) const;
 
+        // inverse cumulative distribution function of the BS process
+        Real invCDF(const Date& d, Real q) const;
+
+        // collocation points of the Ornstein-Uhlenbeck process
+        Disposable<Array> collocationPointsX(const Date& d) const;
+
+        // collocation points for the underlying Y
+        Disposable<Array> collocationPointsY(const Date& d) const;
+
+        // CLV mapping function
         boost::function<Real(Time, Real)> g() const;
-        const boost::shared_ptr<GeneralizedBlackScholesProcess>& process() const;
 
       protected:
         void performCalculations() const;
 
       private:
+        class MappingFunction : public std::binary_function<Time, Real, Real> {
+          public:
+            MappingFunction(const NormalCLVModel& model);
+
+            Real operator()(Time t, Real x) const;
+
+          private:
+            mutable Array y_;
+            const boost::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess_;
+
+            struct InterpolationData {
+                InterpolationData(const NormalCLVModel& model)
+                : s_(model.x_.size(), model.maturityDates_.size()),
+                  x_(model.x_),
+                  t_(model.maturityTimes_),
+                  lagrangeInterpl_(x_.begin(), x_.end(), x_.begin()) {}
+
+                Matrix s_;
+                std::vector<LinearInterpolation> interpl_;
+
+                const Array x_;
+                const std::vector<Time> t_;
+                const LagrangeInterpolation lagrangeInterpl_;
+            };
+
+            const boost::shared_ptr<InterpolationData> data_;
+        };
+
+
+        const Array x_;
         const boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess_;
-        const std::vector<Date>& maturityDates_;
+        const boost::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess_;
+        const std::vector<Date> maturityDates_;
         const boost::shared_ptr<PricingEngine> pricingEngine_;
+
+        std::vector<Time> maturityTimes_;
+        mutable boost::function<Real(Time, Real)> g_;
     };
 }
 

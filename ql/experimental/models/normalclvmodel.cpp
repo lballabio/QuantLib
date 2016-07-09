@@ -21,34 +21,50 @@
 */
 
 #include <ql/instruments/vanillaoption.hpp>
+#include <ql/math/functional.hpp>
+#include <ql/math/solvers1d/brent.hpp>
+#include <ql/math/integrals/gaussianquadratures.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-
 #include <ql/experimental/models/normalclvmodel.hpp>
 
+#include <boost/bind.hpp>
 #include <boost/make_shared.hpp>
+#include <stdio.h>
+#include <iostream>
 
 namespace QuantLib {
 
-    NormalCLVMCModel::NormalCLVMCModel(
+    NormalCLVModel::NormalCLVModel(
+        Size n,
         const boost::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
+        const boost::shared_ptr<OrnsteinUhlenbeckProcess>& ouProcess,
         const std::vector<Date>& maturityDates)
-    : bsProcess_(bsProcess),
+    : x_(M_SQRT2*GaussHermiteIntegration(n).x()),
+      bsProcess_    (bsProcess),
+      ouProcess_    (ouProcess),
       maturityDates_(maturityDates),
       pricingEngine_(boost::make_shared<AnalyticEuropeanEngine>(bsProcess_)) {
+
         registerWith(bsProcess_);
+        registerWith(ouProcess_);
+
+        maturityTimes_.reserve(maturityDates.size());
+        std::transform(maturityDates_.begin(), maturityDates_.end(),
+            std::back_inserter(maturityTimes_),
+            boost::bind(&GeneralizedBlackScholesProcess::time,
+                        bsProcess_, _1));
+        std::sort(maturityTimes_.begin(), maturityTimes_.end());
     }
 
-    void NormalCLVMCModel::update() {
-    }
-
-    Real NormalCLVMCModel::F(const Date& maturityDate, Real k) const {
-
+    Real NormalCLVModel::cdf(const Date& d, Real k) const {
         const DiscountFactor df
-            = bsProcess_->riskFreeRate()->discount(maturityDate);
+            = bsProcess_->riskFreeRate()->discount(d);
 
         VanillaOption option(
             boost::make_shared<PlainVanillaPayoff>(Option::Call, k),
-            boost::make_shared<EuropeanExercise>(maturityDate));
+            boost::make_shared<EuropeanExercise>(d));
 
         option.setPricingEngine(pricingEngine_);
 
@@ -57,23 +73,80 @@ namespace QuantLib {
 
         const Real dk = 1e-4*k;
         const Real dvol_dk
-            = ( volTS->blackVol(maturityDate, k+dk)
-               -volTS->blackVol(maturityDate, k-dk)) / (2*dk);
+            = (volTS->blackVol(d, k+dk) - volTS->blackVol(d, k-dk)) / (2*dk);
 
         return 1.0 + (  option.strikeSensitivity()
                       + option.vega() * dvol_dk) /df;
     }
 
-
-    boost::function<Real(Time, Real)> NormalCLVMCModel::g() const {
-        return boost::function<Real(Time, Real)>();
+    Real NormalCLVModel::invCDF(const Date& d, Real q) const {
+        return Brent().solve(
+            compose(std::bind2nd(std::minus<Real>(), q),
+                boost::function<Real(Real)>(
+                    boost::bind(&NormalCLVModel::cdf, this, d, _1))),
+            1e-10, bsProcess_->x0(), 0.05*bsProcess_->x0());
     }
 
-    const boost::shared_ptr<GeneralizedBlackScholesProcess>&
-    NormalCLVMCModel::process() const {
-        return bsProcess_;
+    Disposable<Array> NormalCLVModel::collocationPointsX(const Date& d) const {
+        const Time t = bsProcess_->time(d);
+
+        const Real expectation
+            = ouProcess_->expectation(0.0, ouProcess_->x0(), t);
+        const Real stdDeviation
+            = ouProcess_->stdDeviation(0.0, ouProcess_->x0(), t);
+
+        return expectation + stdDeviation*x_;
     }
 
-    void NormalCLVMCModel::performCalculations() const {
+    Disposable<Array> NormalCLVModel::collocationPointsY(const Date& d) const {
+        Array s(x_.size());
+
+        CumulativeNormalDistribution N;
+        for (Size i=0, n=s.size(); i < n; ++i) {
+            s[i] = invCDF(d, N(x_[i]));
+        }
+
+        return s;
+    }
+
+
+    boost::function<Real(Time, Real)> NormalCLVModel::g() const {
+        calculate();
+        return g_;
+    }
+
+    NormalCLVModel::MappingFunction::MappingFunction(
+        const NormalCLVModel& model)
+    : y_(model.x_.size()),
+      ouProcess_(model.ouProcess_),
+      data_(boost::make_shared<InterpolationData>(model)) {
+
+        for (Size i=0; i < data_->s_.columns(); ++i) {
+            const Array y = model.collocationPointsY(model.maturityDates_[i]);
+            std::copy(y.begin(), y.end(), data_->s_.column_begin(i));
+        }
+
+        for (Size i=0; i < data_->s_.rows(); ++i) {
+            data_->interpl_.push_back(
+                LinearInterpolation(data_->t_.begin(), data_->t_.end(),
+                                    data_->s_.row_begin(i)));
+        }
+    }
+
+    Real NormalCLVModel::MappingFunction::operator()(Time t, Real x) const {
+        for (Size i=0; i < y_.size(); ++i) {
+            y_[i] = data_->interpl_[i](t, true);
+        }
+
+        const Real expectation
+            = ouProcess_->expectation(0.0, ouProcess_->x0(), t);
+        const Real stdDeviation
+            = ouProcess_->stdDeviation(0.0, ouProcess_->x0(), t);
+
+        return data_->lagrangeInterpl_.value(y_, (x-expectation)/stdDeviation);
+    }
+
+    void NormalCLVModel::performCalculations() const {
+        g_ = boost::function<Real(Time, Real)>(MappingFunction(*this));
     }
 }
