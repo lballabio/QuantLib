@@ -30,6 +30,7 @@ class ScheduleTest {
     static void testDailySchedule();
     static void testEndDateWithEomAdjustment();
     static void testDatesPastEndDateWithEomAdjustment();
+    static void testDatesSameAsEndDateWithEomAdjustment();
     static void testForwardDatesWithEomAdjustment();
     static void testBackwardDatesWithEomAdjustment();
     static void testDoubleFirstDateWithEomAdjustment();
