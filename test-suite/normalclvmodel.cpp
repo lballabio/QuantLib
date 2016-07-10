@@ -34,7 +34,9 @@
 #include <ql/experimental/models/normalclvmodel.hpp>
 #include <ql/experimental/finitedifferences/bsmrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/hestonrndcalculator.hpp>
+#include <ql/experimental/finitedifferences/fdornsteinuhlenbeckvanillaengine.hpp>
 
+#include <boost/bind.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/assign/std/vector.hpp>
 
@@ -284,6 +286,22 @@ void NormalCLVModelTest::testIllustrative1DExample() {
     }
 }
 
+namespace {
+    class NormalCLVModelPayoff : public PlainVanillaPayoff {
+      public:
+        NormalCLVModelPayoff(Option::Type type, Real strike,
+                             const boost::function<Real(Real)> g)
+        : PlainVanillaPayoff(type, strike),
+          g_(g) { }
+
+        Real operator()(Real x) const {
+            return PlainVanillaPayoff::operator()(g_(x));
+        }
+
+      private:
+        const boost::function<Real(Real)> g_;
+    };
+}
 
 void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
     BOOST_TEST_MESSAGE("Testing Monte-Carlo BS option pricing ...");
@@ -303,7 +321,7 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
 
     // Ornstein-Uhlenbeck
     const Real speed = 2.3;
-    const Real level = 10;
+    const Real level = 100;
     const Real sigma = 0.35;
     const Real x0    = 100.0;
 
@@ -328,7 +346,7 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
     std::vector<Date> maturities;
     maturities += today + Period(6, Months), maturity;
 
-    const NormalCLVModel m(7, bsProcess, ouProcess, maturities);
+    const NormalCLVModel m(8, bsProcess, ouProcess, maturities);
     const boost::function<Real(Real, Real)> g = m.g();
 
     const Size nSims = 32767;
@@ -345,6 +363,7 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
         stat.add((*payoff)(s));
 
     }
+
     const Real calculated = stat.mean() * rTS->discount(maturity);
 
     VanillaOption option(payoff, exercise);
@@ -361,6 +380,17 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
                    << "\n    expected:   " << expected);
 
     }
+
+    VanillaOption clvOption(
+         boost::make_shared<NormalCLVModelPayoff>(
+             payoff->optionType(), payoff->strike(), boost::bind(g, t, _1)),
+         exercise);
+
+    clvOption.setPricingEngine(
+        boost::make_shared<FdOrnsteinUhlenbeckVanillaEngine>(
+            ouProcess, rTS.currentLink(), 50, 800));
+
+    std::cout << clvOption.NPV() << " " << expected << std::endl;
 }
 
 test_suite* NormalCLVModelTest::suite() {

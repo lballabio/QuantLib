@@ -31,8 +31,6 @@
 
 #include <boost/bind.hpp>
 #include <boost/make_shared.hpp>
-#include <stdio.h>
-#include <iostream>
 
 namespace QuantLib {
 
@@ -132,6 +130,7 @@ namespace QuantLib {
                                     data_->s_.row_begin(i)));
         }
     }
+
 
     Real NormalCLVModel::MappingFunction::operator()(Time t, Real x) const {
         for (Size i=0; i < y_.size(); ++i) {
