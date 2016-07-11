@@ -191,16 +191,16 @@ namespace QuantLib {
         Real protectionNpv = 0.0;
 
         Date d0 = effectiveProtectionStart-1;
-        Date d1 = d0;
+        Real P0 = discountCurve_->discount(d0);
+        Real Q0 = probability_->survivalProbability(d0);
+        Date d1;
         std::vector<Date>::const_iterator it = std::upper_bound(nodes.begin(), nodes.end(),
                                                                 effectiveProtectionStart);
         --it;
         do {
             ++it;
             d1 = std::min<Date>(*it, maturity);
-            Real P0 = discountCurve_->discount(d0);
             Real P1 = discountCurve_->discount(d1);
-            Real Q0 = probability_->survivalProbability(d0);
             Real Q1 = probability_->survivalProbability(d1);
 
             Real fhat = std::log(P0) - std::log(P1);
@@ -217,6 +217,8 @@ namespace QuantLib {
                 protectionNpv += hhat / (fhphh + nFix) * (P0 * Q0 - P1 * Q1);
             }
             d0 = d1;
+            P0 = P1;
+            Q0 = Q1;
         } while(*it < maturity);
         protectionNpv *= arguments_.claim->amount(
             Null<Date>(), arguments_.notional, recoveryRate_);
@@ -271,16 +273,15 @@ namespace QuantLib {
                 localNodes.push_back(end);
 
                 Real defaultAccrThisNode = 0.;
-                for (Size k = 0; k < localNodes.size() - 1; k++) {
-                    Real t0 = discountCurve_->timeFromReference(localNodes[k]);
-                    Real t1 =
-                        discountCurve_->timeFromReference(localNodes[k + 1]);
-                    Real P0 = discountCurve_->discount(localNodes[k]);
-                    Real Q0 =
-                        probability_->survivalProbability(localNodes[k]);
-                    Real P1 = discountCurve_->discount(localNodes[k + 1]);
-                    Real Q1 =
-                        probability_->survivalProbability(localNodes[k + 1]);
+                std::vector<Date>::const_iterator node = localNodes.begin();
+                Real t0 = discountCurve_->timeFromReference(*node);
+                Real P0 = discountCurve_->discount(*node);
+                Real Q0 = probability_->survivalProbability(*node);
+
+                for (++node; node != localNodes.end(); ++node) {
+                    Real t1 = discountCurve_->timeFromReference(*node);
+                    Real P1 = discountCurve_->discount(*node);
+                    Real Q1 = probability_->survivalProbability(*node);
                     Real fhat = std::log(P0) - std::log(P1);
                     Real hhat = std::log(Q0) - std::log(Q1);
                     Real fhphh = fhat + hhat;
@@ -304,6 +305,10 @@ namespace QuantLib {
                                           P1 * Q1) +
                              (t0 - tstart) * (P0 * Q0 - P1 * Q1));
                     }
+
+                    t0 = t1;
+                    P0 = P1;
+                    Q0 = Q1;
                 }
                 defaultAccrualNpv += defaultAccrThisNode * arguments_.notional *
                     coupon->rate() * 365. / 360.;
