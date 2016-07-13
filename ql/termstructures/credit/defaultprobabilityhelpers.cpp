@@ -51,7 +51,7 @@ namespace QuantLib {
           paysAtDefaultTime_(paysAtDefaultTime),
           lastPeriodDC_(lastPeriodDayCounter), rebatesAccrual_(rebatesAccrual),
           useIsdaEngine_(useIsdaEngine), isdaNumericalFix_(IsdaCdsEngine::Taylor),
-          isdaAccrualBias_(IsdaCdsEngine::NoBias),
+          isdaAccrualBias_(IsdaCdsEngine::HalfDayBias),
           isdaForwardsInCouponPeriod_(IsdaCdsEngine::Piecewise) {
 
         initializeDates();
