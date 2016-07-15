@@ -165,9 +165,14 @@ namespace QuantLib {
         boost::shared_ptr<FlatHazardRate> castC3 =
             boost::dynamic_pointer_cast<FlatHazardRate>(*probability_);
 
+        boost::shared_ptr<InterpolatedHazardRateCurve<BackwardFlat>> castC4 =
+            boost::dynamic_pointer_cast<
+            InterpolatedHazardRateCurve<BackwardFlat>>(*probability_);
+
         QL_REQUIRE(castY1 != NULL || castY2 != NULL || castY3 != NULL,
                    "Yield curve must be flat forward interpolated");
-        QL_REQUIRE(castC1 != NULL || castC2 != NULL || castC3 != NULL,
+        QL_REQUIRE(castC1 != NULL || castC2 != NULL || castC3 != NULL ||
+                   castC4 != NULL,
                    "Credit curve must be flat forward interpolated");
 
         std::vector<Date> yDates, cDates;
@@ -180,6 +185,8 @@ namespace QuantLib {
             cDates = castC1->dates();
         if (castC2 != NULL)
             cDates = castC2->dates();
+        if (castC4 != NULL)
+            cDates = castC4->dates();
 
         std::vector<Date> nodes(yDates.size() + cDates.size());
         std::set_union(yDates.begin(), yDates.end(), cDates.begin(), cDates.end(), nodes.begin());
