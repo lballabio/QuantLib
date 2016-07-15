@@ -217,7 +217,8 @@ namespace QuantLib {
                                const Handle<YieldTermStructure>& discountCurve,
                                const DayCounter& dayCounter,
                                Real recoveryRate = 0.4,
-                               Real accuracy = 1.0e-6) const;
+                               Real accuracy = 1.0e-6,
+                               bool useIsdaEngine = false) const;
 
         //! Conventional/standard upfront-to-spread conversion
         /*! Under a standard ISDA model and a set of standardised
@@ -252,7 +253,8 @@ namespace QuantLib {
         */
         Rate conventionalSpread(Real conventionalRecovery,
                                 const Handle<YieldTermStructure>& discountCurve,
-                                const DayCounter& dayCounter) const;
+                                const DayCounter& dayCounter,
+                                bool useIsdaEngine = false) const;
         //@}
       protected:
         //! \name Instrument interface

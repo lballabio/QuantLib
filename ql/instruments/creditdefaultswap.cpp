@@ -26,6 +26,7 @@
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
 #include <ql/pricingengines/credit/midpointcdsengine.hpp>
+#include <ql/pricingengines/credit/isdacdsengine.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
@@ -42,14 +43,14 @@ namespace QuantLib {
                                          bool paysAtDefaultTime,
                                          const Date& protectionStart,
                                          const boost::shared_ptr<Claim>& claim,
-                                         const DayCounter& lastPeriodDayCounter, 
+                                         const DayCounter& lastPeriodDayCounter,
                                          const bool rebatesAccrual)
     : side_(side), notional_(notional), upfront_(boost::none),
       runningSpread_(spread), settlesAccrual_(settlesAccrual),
       paysAtDefaultTime_(paysAtDefaultTime), claim_(claim),
       protectionStart_(protectionStart == Null<Date>() ? schedule[0] :
                                                          protectionStart) {
-        QL_REQUIRE((protectionStart_ <= schedule[0]) 
+        QL_REQUIRE((protectionStart_ <= schedule[0])
             || (schedule.rule() == DateGeneration::CDS),
                    "protection can not start after accrual");
 
@@ -72,15 +73,15 @@ namespace QuantLib {
                 Days, convention);
 
             accrualRebate_.reset(new SimpleCashFlow(
-                firstCoupon->accruedAmount(protectionStart_), 
+                firstCoupon->accruedAmount(protectionStart_),
                 rebateDate));
         }
 
         if (!claim_)
             claim_ = boost::shared_ptr<Claim>(new FaceValueClaim);
         registerWith(claim_);
-        // the upfront payment left intentionally unitialized to indicate 
-        //  this CDS has none.     
+        // the upfront payment left intentionally unitialized to indicate
+        //  this CDS has none.
 
         maturity_ = schedule.dates().back();
     }
@@ -97,14 +98,14 @@ namespace QuantLib {
                                          const Date& protectionStart,
                                          const Date& upfrontDate,
                                          const boost::shared_ptr<Claim>& claim,
-                                         const DayCounter& lastPeriodDayCounter, 
+                                         const DayCounter& lastPeriodDayCounter,
                                          const bool rebatesAccrual)
     : side_(side), notional_(notional), upfront_(upfront),
       runningSpread_(runningSpread), settlesAccrual_(settlesAccrual),
       paysAtDefaultTime_(paysAtDefaultTime), claim_(claim),
       protectionStart_(protectionStart == Null<Date>() ? schedule[0] :
                                                          protectionStart) {
-        QL_REQUIRE((protectionStart_ <= schedule[0]) 
+        QL_REQUIRE((protectionStart_ <= schedule[0])
             || (schedule.rule() == DateGeneration::CDS),
                    "protection can not start after accrual");
 
@@ -114,15 +115,15 @@ namespace QuantLib {
             .withPaymentAdjustment(convention)
             .withLastPeriodDayCounter(lastPeriodDayCounter);
 
-        // If empty, adjust to T+3 standard settlement, alternatively add 
+        // If empty, adjust to T+3 standard settlement, alternatively add
         //  an arbitrary date to the constructor
         Date effectiveUpfrontDate = upfrontDate == Null<Date>() ?
             schedule.calendar().advance(
-            schedule.calendar().adjust(protectionStart_, convention), 
+            schedule.calendar().adjust(protectionStart_, convention),
             2, Days, convention) : upfrontDate;
-        // '2' is used above since the protection start is assumed to be 
-        //   on trade_date + 1 
-        upfrontPayment_.reset(new SimpleCashFlow(notional*upfront, 
+        // '2' is used above since the protection start is assumed to be
+        //   on trade_date + 1
+        upfrontPayment_.reset(new SimpleCashFlow(notional*upfront,
             effectiveUpfrontDate));
 
         QL_REQUIRE(effectiveUpfrontDate >= protectionStart_,
@@ -131,13 +132,13 @@ namespace QuantLib {
         if(rebatesAccrual) {
             boost::shared_ptr<FixedRateCoupon> firstCoupon =
                 boost::dynamic_pointer_cast<FixedRateCoupon>(leg_[0]);
-            // adjust to T+3 standard settlement, alternatively add 
+            // adjust to T+3 standard settlement, alternatively add
             //  an arbitrary date to the constructor
 
             const Date& rebateDate = effectiveUpfrontDate;
 
             accrualRebate_.reset(new SimpleCashFlow(
-                firstCoupon->accruedAmount(protectionStart_), 
+                firstCoupon->accruedAmount(protectionStart_),
                 rebateDate));
         }
 
@@ -318,7 +319,8 @@ namespace QuantLib {
                                const Handle<YieldTermStructure>& discountCurve,
                                const DayCounter& dayCounter,
                                Real recoveryRate,
-                               Real accuracy) const {
+                               Real accuracy,
+                               bool useIsdaEngine) const {
 
         boost::shared_ptr<SimpleQuote> flatRate(new SimpleQuote(0.0));
 
@@ -327,13 +329,24 @@ namespace QuantLib {
                 FlatHazardRate(0, WeekendsOnly(),
                                Handle<Quote>(flatRate), dayCounter)));
 
-        MidPointCdsEngine engine(probability, recoveryRate, discountCurve);
-        setupArguments(engine.getArguments());
+        boost::shared_ptr<PricingEngine> engine;
+        if(useIsdaEngine) {
+            engine.reset(new IsdaCdsEngine(
+                             probability, recoveryRate, discountCurve,
+                             boost::none,
+                             IsdaCdsEngine::Taylor,
+                             IsdaCdsEngine::HalfDayBias,
+                             IsdaCdsEngine::Piecewise));
+        } else {
+            engine.reset(new MidPointCdsEngine(
+                        probability, recoveryRate, discountCurve));
+        }
+        setupArguments(engine->getArguments());
         const CreditDefaultSwap::results* results =
             dynamic_cast<const CreditDefaultSwap::results*>(
-                                                       engine.getResults());
+                engine->getResults());
 
-        ObjectiveFunction f(targetNPV, *flatRate, engine, results);
+        ObjectiveFunction f(targetNPV, *flatRate, *engine, results);
         Rate guess = 0.001;
         Rate step = guess*0.1;
 
@@ -344,24 +357,39 @@ namespace QuantLib {
     Rate CreditDefaultSwap::conventionalSpread(
                               Real conventionalRecovery,
                               const Handle<YieldTermStructure>& discountCurve,
-                              const DayCounter& dayCounter) const {
-        Rate flatHazardRate = impliedHazardRate(0.0,
-                                                discountCurve,
-                                                dayCounter,
-                                                conventionalRecovery);
+                              const DayCounter& dayCounter,
+                              bool useIsdaEngine) const {
+
+        boost::shared_ptr<SimpleQuote> flatRate(new SimpleQuote(0.0));
 
         Handle<DefaultProbabilityTermStructure> probability(
-            boost::shared_ptr<DefaultProbabilityTermStructure>(
-                             new FlatHazardRate(0, WeekendsOnly(),
-                                                flatHazardRate, dayCounter)));
+            boost::shared_ptr<DefaultProbabilityTermStructure>(new
+                FlatHazardRate(0, WeekendsOnly(),
+                               Handle<Quote>(flatRate), dayCounter)));
 
-        MidPointCdsEngine engine(probability, conventionalRecovery,
-                                 discountCurve, true);
-        setupArguments(engine.getArguments());
-        engine.calculate();
+        boost::shared_ptr<PricingEngine> engine;
+        if(useIsdaEngine) {
+            engine.reset(new IsdaCdsEngine(
+                             probability, conventionalRecovery, discountCurve,
+                             boost::none,
+                             IsdaCdsEngine::Taylor,
+                             IsdaCdsEngine::HalfDayBias,
+                             IsdaCdsEngine::Piecewise));
+        } else {
+            engine.reset(new MidPointCdsEngine(
+                             probability, conventionalRecovery, discountCurve));
+        }
+
+        setupArguments(engine->getArguments());
         const CreditDefaultSwap::results* results =
             dynamic_cast<const CreditDefaultSwap::results*>(
-                                                       engine.getResults());
+                                                       engine->getResults());
+
+        ObjectiveFunction f(0., *flatRate, *engine, results);
+        Rate guess = 0.001;
+        Rate step = guess*0.1;
+
+        Brent().solve(f, 1e-8, guess, step);
         return results->fairSpread;
     }
 
