@@ -141,52 +141,44 @@ namespace QuantLib {
             std::max<Date>(arguments_.protectionStart, evalDate + 1);
 
         // collect nodes from both curves and sort them
-
-        boost::shared_ptr<PiecewiseYieldCurve<Discount, LogLinear>> castY1 =
-            boost::dynamic_pointer_cast<
-                PiecewiseYieldCurve<Discount, LogLinear>>(*discountCurve_);
-
-        boost::shared_ptr<PiecewiseYieldCurve<ForwardRate, BackwardFlat>>
-        castY2 = boost::dynamic_pointer_cast<
-            PiecewiseYieldCurve<ForwardRate, BackwardFlat>>(*discountCurve_);
-
-        boost::shared_ptr<FlatForward> castY3 =
-            boost::dynamic_pointer_cast<FlatForward>(*discountCurve_);
-
-        boost::shared_ptr<PiecewiseDefaultCurve<SurvivalProbability, LogLinear>>
-        castC1 = boost::dynamic_pointer_cast<
-            PiecewiseDefaultCurve<SurvivalProbability, LogLinear>>(
-            *probability_);
-
-        boost::shared_ptr<PiecewiseDefaultCurve<HazardRate, BackwardFlat>>
-        castC2 = boost::dynamic_pointer_cast<
-            PiecewiseDefaultCurve<HazardRate, BackwardFlat>>(*probability_);
-
-        boost::shared_ptr<FlatHazardRate> castC3 =
-            boost::dynamic_pointer_cast<FlatHazardRate>(*probability_);
-
-        boost::shared_ptr<InterpolatedHazardRateCurve<BackwardFlat>> castC4 =
-            boost::dynamic_pointer_cast<
-            InterpolatedHazardRateCurve<BackwardFlat>>(*probability_);
-
-        QL_REQUIRE(castY1 != NULL || castY2 != NULL || castY3 != NULL,
-                   "Yield curve must be flat forward interpolated");
-        QL_REQUIRE(castC1 != NULL || castC2 != NULL || castC3 != NULL ||
-                   castC4 != NULL,
-                   "Credit curve must be flat forward interpolated");
-
         std::vector<Date> yDates, cDates;
 
-        if (castY1 != NULL)
+        if(boost::shared_ptr<PiecewiseYieldCurve<Discount, LogLinear>> castY1 =
+            boost::dynamic_pointer_cast<
+                PiecewiseYieldCurve<Discount, LogLinear>>(*discountCurve_)) {
             yDates = castY1->dates();
-        if (castY2 != NULL)
+        } else if(boost::shared_ptr<PiecewiseYieldCurve<ForwardRate, BackwardFlat>>
+        castY2 = boost::dynamic_pointer_cast<
+            PiecewiseYieldCurve<ForwardRate, BackwardFlat>>(*discountCurve_)) {
             yDates = castY2->dates();
-        if (castC1 != NULL)
+        } else if(boost::shared_ptr<FlatForward> castY3 =
+            boost::dynamic_pointer_cast<FlatForward>(*discountCurve_)) {
+        } else {
+            QL_FAIL("Yield curve must be flat forward interpolated");
+        }
+
+        if(boost::shared_ptr<PiecewiseDefaultCurve<SurvivalProbability, LogLinear>>
+        castC1 = boost::dynamic_pointer_cast<
+            PiecewiseDefaultCurve<SurvivalProbability, LogLinear>>(
+            *probability_)) {
             cDates = castC1->dates();
-        if (castC2 != NULL)
+        } else if(
+                boost::shared_ptr<PiecewiseDefaultCurve<HazardRate, BackwardFlat>>
+        castC2 = boost::dynamic_pointer_cast<
+            PiecewiseDefaultCurve<HazardRate, BackwardFlat>>(*probability_)) {
             cDates = castC2->dates();
-        if (castC4 != NULL)
-            cDates = castC4->dates();
+        } else if(
+        boost::shared_ptr<InterpolatedHazardRateCurve<BackwardFlat>> castC3 =
+            boost::dynamic_pointer_cast<
+            InterpolatedHazardRateCurve<BackwardFlat>>(*probability_)) {
+            cDates = castC3->dates();
+        } else if(
+        boost::shared_ptr<FlatHazardRate> castC4 =
+            boost::dynamic_pointer_cast<FlatHazardRate>(*probability_)) {
+        } else{
+            QL_FAIL("Credit curve must be flat forward interpolated");
+        }
+
 
         std::vector<Date> nodes(yDates.size() + cDates.size());
         std::set_union(yDates.begin(), yDates.end(), cDates.begin(), cDates.end(), nodes.begin());
