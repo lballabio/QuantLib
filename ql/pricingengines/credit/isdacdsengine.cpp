@@ -179,26 +179,32 @@ namespace QuantLib {
             QL_FAIL("Credit curve must be flat forward interpolated");
         }
 
+        std::vector<Date> nodes;
+        std::set_union(yDates.begin(), yDates.end(), cDates.begin(), cDates.end(), std::back_inserter(nodes));
 
-        std::vector<Date> nodes(yDates.size() + cDates.size());
-        std::set_union(yDates.begin(), yDates.end(), cDates.begin(), cDates.end(), nodes.begin());
 
+        if(nodes.empty()){
+            nodes.push_back(maturity);
+        }
         const Real nFix = (numericalFix_ == None ? 1E-50 : 0.0);
 
         // protection leg pricing (npv is always negative at this stage)
-
         Real protectionNpv = 0.0;
 
         Date d0 = effectiveProtectionStart-1;
         Real P0 = discountCurve_->discount(d0);
         Real Q0 = probability_->survivalProbability(d0);
         Date d1;
-        std::vector<Date>::const_iterator it = std::upper_bound(nodes.begin(), nodes.end(),
-                                                                effectiveProtectionStart);
-        --it;
-        do {
-            ++it;
-            d1 = std::min<Date>(*it, maturity);
+        std::vector<Date>::const_iterator it =
+            std::upper_bound(nodes.begin(), nodes.end(), effectiveProtectionStart);
+
+        for(;it != nodes.end(); ++it) {
+            if(*it > maturity) {
+                d1 = maturity;
+                it = nodes.end() - 1; //early exit
+            } else {
+                d1 = *it;
+            }
             Real P1 = discountCurve_->discount(d1);
             Real Q1 = probability_->survivalProbability(d1);
 
@@ -218,12 +224,11 @@ namespace QuantLib {
             d0 = d1;
             P0 = P1;
             Q0 = Q1;
-        } while(*it < maturity);
+        }
         protectionNpv *= arguments_.claim->amount(
             Null<Date>(), arguments_.notional, recoveryRate_);
 
         results_.defaultLegNPV = protectionNpv;
-
 
         // premium leg pricing (npv is always positive at this stage)
 
