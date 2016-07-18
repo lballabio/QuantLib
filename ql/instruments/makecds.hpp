@@ -26,6 +26,7 @@
 #define quantlib_makecds_hpp
 
 #include <ql/instruments/creditdefaultswap.hpp>
+#include <boost/optional.hpp>
 
 namespace QuantLib {
 
@@ -36,6 +37,7 @@ namespace QuantLib {
     class MakeCreditDefaultSwap {
       public:
         MakeCreditDefaultSwap(const Period &tenor, const Real couponRate);
+        MakeCreditDefaultSwap(const Date &termDate, const Real couponRate);
 
         operator CreditDefaultSwap() const;
         operator boost::shared_ptr<CreditDefaultSwap>() const;
@@ -53,7 +55,8 @@ namespace QuantLib {
       private:
         Protection::Side side_;
         Real nominal_;
-        Period tenor_;
+        boost::optional<Period> tenor_ = boost::none;
+        boost::optional<Date> termDate_ = boost::none;
         Period couponTenor_;
         Real couponRate_;
         Real upfrontRate_;

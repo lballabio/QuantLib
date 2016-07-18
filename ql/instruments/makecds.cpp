@@ -31,7 +31,11 @@ namespace QuantLib {
         : side_(Protection::Buyer), nominal_(1.0), tenor_(tenor),
           couponTenor_(3 * Months), couponRate_(couponRate), upfrontRate_(0.0),
           dayCounter_(Actual360()), lastPeriodDayCounter_(Actual360(true)) {}
-
+    MakeCreditDefaultSwap::MakeCreditDefaultSwap(const Date &termDate,
+                                                 const Real couponRate)
+        : side_(Protection::Buyer), nominal_(1.0), termDate_(termDate),
+          couponTenor_(3 * Months), couponRate_(couponRate), upfrontRate_(0.0),
+          dayCounter_(Actual360()), lastPeriodDayCounter_(Actual360(true)) {}
     MakeCreditDefaultSwap::operator CreditDefaultSwap() const {
         boost::shared_ptr<CreditDefaultSwap> swap = *this;
         return *swap;
@@ -43,7 +47,12 @@ namespace QuantLib {
         Date evaluation = Settings::instance().evaluationDate();
         Date start = evaluation + 1;
         Date upfrontDate = WeekendsOnly().adjust(evaluation + 3);
-        Date end = start + tenor_;
+        Date end;
+        if(tenor_) {
+            end = start + *tenor_;
+        } else {
+            end = *termDate_;
+        }
 
         Schedule schedule(start, end, couponTenor_, WeekendsOnly(), Following,
                           Unadjusted, DateGeneration::CDS, false, Date(),
