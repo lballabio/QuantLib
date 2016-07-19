@@ -46,7 +46,7 @@ namespace QuantLib {
 
         Date evaluation = Settings::instance().evaluationDate();
         Date start = evaluation + 1;
-        Date upfrontDate = WeekendsOnly().adjust(evaluation + 3);
+        Date upfrontDate = WeekendsOnly().advance(evaluation, 3 * Days);
         Date end;
         if(tenor_) {
             end = start + *tenor_;
