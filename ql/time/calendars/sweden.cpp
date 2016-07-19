@@ -40,8 +40,6 @@ namespace QuantLib {
             || (dd == em)
             // Ascension Thursday
             || (dd == em+38)
-            // Whit Monday
-            || (dd == em+49)
             // New Year's Day
             || (d == 1  && m == January)
             // Epiphany
