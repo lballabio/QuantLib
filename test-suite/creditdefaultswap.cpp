@@ -695,7 +695,7 @@ void CreditDefaultSwapTest::testIsdaEngine() {
 
             BOOST_CHECK_CLOSE(conventionalTrade->notional() * conventionalTrade->fairUpfront(),
                               markitValues[l],
-                              1e-5);
+                              1e-6);
 
             l++;
 

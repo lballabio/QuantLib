@@ -301,7 +301,7 @@ namespace QuantLib {
               engine_(engine), results_(results) {}
 
             Real operator()(Real guess) const {
-                quote_.setValue(guess);
+                quote_.setValue(std::exp(guess));
                 engine_.calculate();
                 return results_->value - target_;
             }
@@ -347,10 +347,10 @@ namespace QuantLib {
                 engine->getResults());
 
         ObjectiveFunction f(targetNPV, *flatRate, *engine, results);
-        Rate guess = 0.001;
-        Rate step = guess*0.1;
-
-        return Brent().solve(f, accuracy, guess, step);
+        //very close guess if targetNPV = 0.
+        Rate guess = std::log(runningSpread_ / (1 - recoveryRate) * 365./360.);
+        Real step = 0.2; //multiplicative step, equivalent to exp(0.2) factor
+        return std::exp(Brent().solve(f, accuracy, guess, step));
     }
 
 
@@ -386,8 +386,8 @@ namespace QuantLib {
                                                        engine->getResults());
 
         ObjectiveFunction f(0., *flatRate, *engine, results);
-        Rate guess = 0.001;
-        Rate step = guess*0.1;
+        Rate guess = std::log(runningSpread_ / (1 - conventionalRecovery) * 365./360.);
+        Real step = 0.2; //multiplicative step, equivalent to exp(0.2) factor
 
         Brent().solve(f, 1e-8, guess, step);
         return results->fairSpread;
