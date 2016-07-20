@@ -92,8 +92,18 @@ namespace QuantLib {
                                  Natural maxEvaluations = 100,
                                  Volatility minVol = 1.0e-7,
                                  Volatility maxVol = 4.0,
-                                 Real displacement = 0.0,
-                                 VolatilityType type = ShiftedLognormal) const;
+                                 VolatilityType type = ShiftedLognormal,
+                                 Real displacement = 0.0) const;
+        QL_DEPRECATED
+        Volatility impliedVolatility(
+                                 Real price,
+                                 const Handle<YieldTermStructure>& disc,
+                                 Volatility guess,
+                                 Real accuracy,
+                                 Natural maxEvaluations,
+                                 Volatility minVol,
+                                 Volatility maxVol,
+                                 Real displacement) const;
       private:
         Type type_;
         Leg floatingLeg_;
