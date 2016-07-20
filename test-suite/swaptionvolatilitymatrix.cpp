@@ -234,7 +234,8 @@ namespace {
                     Real npv = swaption.NPV();
                     actVol = swaption.impliedVolatility(npv, termStructure,
                                                         expVol*0.98, 1e-6,
-                                                        100, 10.0e-7, 4.0, 0.0);
+                                                        100, 10.0e-7, 4.0,
+                                                        ShiftedLognormal, 0.0);
                     error = std::abs(expVol-actVol);
                     Real tolerance2 = 0.000001;
                     if (error>tolerance2)
