@@ -42,7 +42,7 @@ namespace QuantLib {
 
             // Returns the exact number of days between 2 dates, excluding leap days
             Date::serial_type dayCount(const Date& d1,
-                                const Date& d2) const {
+                                       const Date& d2) const {
 
                 static const Integer MonthOffset[] = {
                     0,  31,  59,  90, 120, 151,  // Jan - Jun

@@ -186,7 +186,7 @@ namespace QuantLib {
     }
 
     Date::serial_type BondFunctions::accrualDays(const Bond& bond,
-                                          Date settlement) {
+                                                 Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();
 
@@ -212,7 +212,7 @@ namespace QuantLib {
     }
 
     Date::serial_type BondFunctions::accruedDays(const Bond& bond,
-                                          Date settlement) {
+                                                 Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();
 

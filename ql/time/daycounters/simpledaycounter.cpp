@@ -25,7 +25,7 @@ namespace QuantLib {
     namespace { DayCounter fallback = Thirty360(); }
 
     Date::serial_type SimpleDayCounter::Impl::dayCount(const Date& d1,
-                                                const Date& d2) const {
+                                                       const Date& d2) const {
         return fallback.dayCount(d1,d2);
     }
 

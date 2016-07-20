@@ -40,8 +40,8 @@ namespace QuantLib {
         }
 
         Date::serial_type businessDays(Cache& cache,
-                                const Calendar& calendar,
-                                Month month, Year year) {
+                                       const Calendar& calendar,
+                                       Month month, Year year) {
             if (cache[year][month] == 0) {
                 // calculate and store.
                 Date d1 = Date(1,month,year);
@@ -52,9 +52,9 @@ namespace QuantLib {
         }
 
         Date::serial_type businessDays(OuterCache& outerCache,
-                                Cache& cache,
-                                const Calendar& calendar,
-                                Year year) {
+                                       Cache& cache,
+                                       const Calendar& calendar,
+                                       Year year) {
             if (outerCache[year] == 0) {
                 // calculate and store.
                 Date::serial_type total = 0;
@@ -76,7 +76,7 @@ namespace QuantLib {
     }
 
     Date::serial_type Business252::Impl::dayCount(const Date& d1,
-                                           const Date& d2) const {
+                                                  const Date& d2) const {
         if (sameMonth(d1,d2) || d1 >= d2) {
             // we treat the case of d1 > d2 here, since we'd need a
             // second cache to get it right (our cached figures are

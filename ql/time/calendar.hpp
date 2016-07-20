@@ -140,9 +140,9 @@ namespace QuantLib {
             dates and returns the result.
         */
         Date::serial_type businessDaysBetween(const Date& from,
-                                       const Date& to,
-                                       bool includeFirst = true,
-                                       bool includeLast = false) const;
+                                              const Date& to,
+                                              bool includeFirst = true,
+                                              bool includeLast = false) const;
         //@}
 
       protected:

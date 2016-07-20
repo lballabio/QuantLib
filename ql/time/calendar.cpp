@@ -138,9 +138,9 @@ namespace QuantLib {
     }
 
     Date::serial_type Calendar::businessDaysBetween(const Date& from,
-                                             const Date& to,
-                                             bool includeFirst,
-                                             bool includeLast) const {
+                                                    const Date& to,
+                                                    bool includeFirst,
+                                                    bool includeLast) const {
         Date::serial_type wd = 0;
         if (from != to) {
             if (from < to) {

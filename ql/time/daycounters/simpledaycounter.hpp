@@ -49,7 +49,7 @@ namespace QuantLib {
           public:
             std::string name() const { return "Simple"; }
             Date::serial_type dayCount(const Date& d1,
-                                const Date& d2) const;
+                                       const Date& d2) const;
             Time yearFraction(const Date& d1,
                               const Date& d2,
                               const Date&,

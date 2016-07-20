@@ -61,7 +61,7 @@ namespace QuantLib {
           public:
             std::string name() const { return std::string("30/360 (Bond Basis)");}
             Date::serial_type dayCount(const Date& d1,
-                                const Date& d2) const;
+                                       const Date& d2) const;
             Time yearFraction(const Date& d1,
                               const Date& d2,
                               const Date&, 
@@ -72,7 +72,7 @@ namespace QuantLib {
           public:
             std::string name() const { return std::string("30E/360 (Eurobond Basis)");}
             Date::serial_type dayCount(const Date& d1,
-                                const Date& d2) const;
+                                       const Date& d2) const;
             Time yearFraction(const Date& d1,
                               const Date& d2,
                               const Date&,
