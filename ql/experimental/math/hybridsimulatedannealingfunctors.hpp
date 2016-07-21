@@ -67,8 +67,8 @@ namespace QuantLib
     class SamplerLogNormal
     {
     public:
-        SamplerLogNormal(unsigned long seed = 0) :
-            generator_(seed != 0 ? seed : SeedGenerator::instance().get()),
+        SamplerLogNormal(unsigned long seed = SeedGenerator::instance().get()) :
+            generator_(seed),
             distribution_(0.0, 1.0), gaussian_(generator_, distribution_) {};
         SamplerLogNormal(const SamplerLogNormal& sampler) : generator_(sampler.gaussian_.engine()),
             distribution_(sampler.gaussian_.distribution()),
@@ -93,8 +93,8 @@ namespace QuantLib
     class SamplerGaussian
     {
     public:
-        SamplerGaussian(unsigned long seed = 0) :
-            generator_(seed != 0 ? seed : SeedGenerator::instance().get()),
+        SamplerGaussian(unsigned long seed = SeedGenerator::instance().get()) :
+            generator_(seed),
             distribution_(0.0, 1.0), gaussian_(generator_, distribution_) {};
         SamplerGaussian(const SamplerGaussian& sampler) : generator_(sampler.gaussian_.engine()),
             distribution_(sampler.gaussian_.distribution()),
@@ -121,8 +121,8 @@ namespace QuantLib
     class SamplerCauchy
     {
     public:
-        SamplerCauchy(unsigned long seed) :
-            generator_(seed != 0 ? seed : SeedGenerator::instance().get()),
+        SamplerCauchy(unsigned long seed = SeedGenerator::instance().get()) :
+            generator_(seed),
             distribution_(0.0, 1.0), cauchy_(generator_, distribution_) {};
         SamplerCauchy(const SamplerCauchy& sampler) : generator_(sampler.cauchy_.engine()),
             distribution_(sampler.cauchy_.distribution()),
@@ -147,9 +147,9 @@ namespace QuantLib
     class SamplerVeryFastAnnealing
     {
     public:
-        SamplerVeryFastAnnealing(unsigned long seed, const Array &lower, const Array &upper) :
+        SamplerVeryFastAnnealing(const Array &lower, const Array &upper, unsigned long seed = SeedGenerator::instance().get()) :
             lower_(lower), upper_(upper),
-            generator_(seed != 0 ? seed : SeedGenerator::instance().get()),
+            generator_(seed),
             uniform_(generator_, distribution_) {
             QL_REQUIRE(lower_.size() == upper_.size(), "Incompatible input");
         };
@@ -200,8 +200,8 @@ namespace QuantLib
     */
     class ProbabilityBoltzmann {
     public:
-        ProbabilityBoltzmann(unsigned long seed) :
-            generator_(seed != 0 ? seed : SeedGenerator::instance().get()),
+        ProbabilityBoltzmann(unsigned long seed = SeedGenerator::instance().get()) :
+            generator_(seed),
             uniform_(generator_, distribution_) {};
         ProbabilityBoltzmann(const ProbabilityBoltzmann &probability) :
             generator_(probability.uniform_.engine()), distribution_(probability.uniform_.distribution()),
@@ -222,8 +222,8 @@ namespace QuantLib
     class ProbabilityBoltzmannDownhill
     {
     public:
-        ProbabilityBoltzmannDownhill(unsigned long seed = 0) :
-            generator_(seed != 0 ? seed : SeedGenerator::instance().get()),
+        ProbabilityBoltzmannDownhill(unsigned long seed = SeedGenerator::instance().get()) :
+            generator_(seed),
             uniform_(generator_, distribution_) {};
         ProbabilityBoltzmannDownhill(const ProbabilityBoltzmannDownhill& probability) :
             generator_(probability.uniform_.engine()), distribution_(probability.uniform_.distribution()),
@@ -290,16 +290,17 @@ namespace QuantLib
 
     class TemperatureExponential {
     public:
-        TemperatureExponential(Real initialTemp, Size dimension)
-            : initialTemp_(dimension, initialTemp) {}
+        TemperatureExponential(Real initialTemp, Size dimension, Real power = 0.95)
+            : initialTemp_(dimension, initialTemp), power_(power) {}
         inline void operator()(Array &newTemp, const Array &currTemp, const Array &steps) const {
             QL_REQUIRE(currTemp.size() == initialTemp_.size(), "Incompatible input");
             QL_REQUIRE(currTemp.size() == newTemp.size(), "Incompatible input");
             for (Size i = 0; i < initialTemp_.size(); i++)
-                newTemp[i] = initialTemp_[i] * std::pow(0.95, steps[i]);
+                newTemp[i] = initialTemp_[i] * std::pow(power_, steps[i]);
         }
     private:
         Array initialTemp_;
+        Real power_;
     };
     //! Temperature Very Fast Annealing
     /*!    For use with the Very Fast Annealing sampler

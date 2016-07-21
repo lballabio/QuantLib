@@ -17,8 +17,6 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/qldefines.hpp>
-
 #if BOOST_VERSION >= 104700
 
 #include <ql/experimental/math/particleswarmoptimization.hpp>
@@ -34,6 +32,7 @@ namespace QuantLib {
         topology_(topology),
         inertia_(inertia) {
         Real phi = c1 + c2;
+        QL_ENSURE(phi*phi - 4 * phi, "Invalid phi");
         c0_ = 2.0 / std::abs(2.0 - phi - sqrt(phi*phi - 4 * phi));
         c1_ = c0_*c1;
         c2_ = c0_*c2;
@@ -48,15 +47,17 @@ namespace QuantLib {
         topology_(topology), inertia_(inertia) {}
 
     void ParticleSwarmOptimization::startState(Problem &P, const EndCriteria &endCriteria) {
+        QL_REQUIRE(topology_, "Invalid topology");
+        QL_REQUIRE(inertia_, "Invalid inertia");
         N_ = P.currentValue().size();
         topology_->setSize(M_);
         inertia_->setSize(M_, N_, c0_, endCriteria);
         X_.reserve(M_);
         V_.reserve(M_);
         pBX_.reserve(M_);
-        pBF_ = Array(N_);
+        pBF_ = Array(M_);
         gBX_.reserve(M_);
-        gBF_ = Array(N_);
+        gBF_ = Array(M_);
         uX_ = P.constraint().upperBound(P.currentValue());
         lX_ = P.constraint().lowerBound(P.currentValue());
         Array bounds = uX_ - lX_;
@@ -148,7 +149,7 @@ namespace QuantLib {
                 }
                 //Evaluate x
                 Real f = P.value(x);
-                if (pBF_[i] < f) {
+                if (f < pBF_[i]) {
                     //Update personal best
                     pBF_[i] = f;
                     pB = x;

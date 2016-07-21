@@ -80,7 +80,7 @@ namespace QuantLib {
         HybridSimulatedAnnealing(const Sampler &sampler,
             const Probability &probability,
             const Temperature &temperature,
-            const Reannealing &reannealing,
+            const Reannealing &reannealing = ReannealingTrivial(),
             Real startTemperature = 200.0,
             Real endTemperature = 0.01,
             Size reAnnealSteps = 50,
@@ -219,8 +219,10 @@ namespace QuantLib {
         return ecType;
     }
 
-    typedef HybridSimulatedAnnealing<SamplerGaussian, ProbabilityBoltzmannDownhill, TemperatureExponential, ReannealingFiniteDifferences> GaussianSimulatedAnnealing;
-    typedef HybridSimulatedAnnealing<SamplerVeryFastAnnealing, ProbabilityBoltzmannDownhill, TemperatureVeryFastAnnealing, ReannealingFiniteDifferences> VeryFastSimulatedAnnealing;
+    typedef HybridSimulatedAnnealing<SamplerGaussian, ProbabilityBoltzmannDownhill, TemperatureExponential, ReannealingTrivial> GaussianSimulatedAnnealing;
+    typedef HybridSimulatedAnnealing<SamplerGaussian, ProbabilityBoltzmannDownhill, TemperatureExponential, ReannealingFiniteDifferences> GaussianSimulatedReAnnealing;
+    typedef HybridSimulatedAnnealing<SamplerVeryFastAnnealing, ProbabilityBoltzmannDownhill, TemperatureVeryFastAnnealing, ReannealingTrivial> VeryFastSimulatedAnnealing;
+    typedef HybridSimulatedAnnealing<SamplerVeryFastAnnealing, ProbabilityBoltzmannDownhill, TemperatureVeryFastAnnealing, ReannealingFiniteDifferences> VeryFastSimulatedReAnnealing;
 }
 
 #endif
