@@ -137,11 +137,11 @@ namespace QuantLib {
         return advance(d, p.length(), p.units(), c, endOfMonth);
     }
 
-    BigInteger Calendar::businessDaysBetween(const Date& from,
-                                             const Date& to,
-                                             bool includeFirst,
-                                             bool includeLast) const {
-        BigInteger wd = 0;
+    Date::serial_type Calendar::businessDaysBetween(const Date& from,
+                                                    const Date& to,
+                                                    bool includeFirst,
+                                                    bool includeLast) const {
+        Date::serial_type wd = 0;
         if (from != to) {
             if (from < to) {
                 // the last one is treated separately to avoid

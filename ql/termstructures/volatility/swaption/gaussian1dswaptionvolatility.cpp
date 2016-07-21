@@ -48,7 +48,7 @@ Gaussian1dSwaptionVolatility::smileSectionImpl(Time optionTime,
                                                Time swapLength) const {
     DateHelper hlp(*this, optionTime);
     NewtonSafe newton;
-    Date d(static_cast<BigInteger>(newton.solve(
+    Date d(static_cast<Date::serial_type>(newton.solve(
         hlp, 0.1,
         365.25 * optionTime + static_cast<Real>(referenceDate().serialNumber()),
         1.0)));
