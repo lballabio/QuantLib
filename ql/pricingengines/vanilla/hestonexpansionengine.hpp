@@ -55,10 +55,8 @@ namespace QuantLib {
                               HestonExpansionFormula formula);
 
         void calculate() const;
-        Size numberOfEvaluations() const;
 
       private:
-        mutable Size evaluations_;
         const HestonExpansionFormula formula_;
     };
 
