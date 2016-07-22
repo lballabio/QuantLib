@@ -835,12 +835,38 @@ namespace QuantLib {
 
     namespace detail {
 
+        struct FormatResetter {
+            // An instance of this object will have undefined behaviour
+            // if the object out passed in the constructor is destroyed
+            // before this instance
+            FormatResetter(std::ostream &out)
+                : out_(&out), flags_(out.flags()), filler_(out.fill()),
+                  loc_(out.getloc()) {
+                out << std::resetiosflags(
+                    std::ios_base::adjustfield | std::ios_base::basefield |
+                    std::ios_base::floatfield | std::ios_base::showbase |
+                    std::ios_base::showpos | std::ios_base::uppercase);
+                out << std::right;
+                out.imbue(std::locale(""));
+            }
+            ~FormatResetter() {
+                out_->flags(flags_);
+                out_->fill(filler_);
+                out_->imbue(loc_);
+            }
+            std::ostream *out_;
+            std::ios_base::fmtflags flags_;
+            char filler_;
+            std::locale loc_;
+        };
+
         std::ostream& operator<<(std::ostream& out,
                                  const short_date_holder& holder) {
             const Date& d = holder.d;
             if (d == Date()) {
                 out << "null date";
             } else {
+                FormatResetter resetter(out);
                 Integer dd = d.dayOfMonth(), mm = Integer(d.month()),
                         yyyy = d.year();
                 char filler = out.fill();
@@ -858,6 +884,7 @@ namespace QuantLib {
             if (d == Date()) {
                 out << "null date";
             } else {
+                FormatResetter resetter(out);
                 out << d.month() << " ";
                 out << io::ordinal(d.dayOfMonth()) << ", ";
                 out << d.year();
@@ -871,13 +898,12 @@ namespace QuantLib {
             if (d == Date()) {
                 out << "null date";
             } else {
+                FormatResetter resetter(out);
                 Integer dd = d.dayOfMonth(), mm = Integer(d.month()),
                         yyyy = d.year();
-                char filler = out.fill();
                 out << yyyy << "-";
                 out << std::setw(2) << std::setfill('0') << mm << "-";
                 out << std::setw(2) << std::setfill('0') << dd;
-                out.fill(filler);
             }
             return out;
         }
@@ -889,6 +915,7 @@ namespace QuantLib {
             if (d == Date()) {
                 out << "null date";
             } else {
+                FormatResetter resetter(out);
                 date boostDate(d.year(), d.month(), d.dayOfMonth());
                 out.imbue(std::locale(std::locale(),
                                       new date_facet(holder.f.c_str())));
@@ -903,6 +930,7 @@ namespace QuantLib {
             const Date& d = holder.d;
 
             out << io::iso_date(d) << "T";
+            FormatResetter resetter(out);
             Integer hh = d.hours(), mm = d.minutes(), s = d.seconds(),
                     millis = d.milliseconds(), micros = d.microseconds();
 
