@@ -25,6 +25,7 @@
 #include "utilities.hpp"
 #include <ql/time/calendar.hpp>
 #include <ql/time/calendars/brazil.hpp>
+#include <ql/time/calendars/china.hpp>
 #include <ql/time/calendars/germany.hpp>
 #include <ql/time/calendars/italy.hpp>
 #include <ql/time/calendars/russia.hpp>
@@ -1535,6 +1536,132 @@ void CalendarTest::testKoreaStockExchange() {
                    << " calculated holidays");
 }
 
+void CalendarTest::testChinaSSE() {
+    BOOST_TEST_MESSAGE("Testing China Shanghai Stock Exchange holiday list...");
+
+    std::vector<Date> expectedHol;
+
+    // China Shanghai Securities Exchange holiday list in the year 2014
+    expectedHol.push_back(Date(1, Jan, 2014));
+    expectedHol.push_back(Date(31, Jan, 2014));
+    expectedHol.push_back(Date(3, Feb, 2014));
+    expectedHol.push_back(Date(4, Feb, 2014));
+    expectedHol.push_back(Date(5, Feb, 2014));
+    expectedHol.push_back(Date(6, Feb, 2014));
+    expectedHol.push_back(Date(7, Apr, 2014));
+    expectedHol.push_back(Date(1, May, 2014));
+    expectedHol.push_back(Date(2, May, 2014));
+    expectedHol.push_back(Date(2, Jun, 2014));
+    expectedHol.push_back(Date(8, Sep, 2014));
+    expectedHol.push_back(Date(1, Oct, 2014));
+    expectedHol.push_back(Date(2, Oct, 2014));
+    expectedHol.push_back(Date(3, Oct, 2014));
+    expectedHol.push_back(Date(6, Oct, 2014));
+    expectedHol.push_back(Date(7, Oct, 2014));
+
+    // China Shanghai Securities Exchange holiday list in the year 2015
+    expectedHol.push_back(Date(1, Jan, 2015));
+    expectedHol.push_back(Date(2, Jan, 2015));
+    expectedHol.push_back(Date(18, Feb, 2015));
+    expectedHol.push_back(Date(19, Feb, 2015));
+    expectedHol.push_back(Date(20, Feb, 2015));
+    expectedHol.push_back(Date(23, Feb, 2015));
+    expectedHol.push_back(Date(24, Feb, 2015));
+    expectedHol.push_back(Date(6, Apr, 2015));
+    expectedHol.push_back(Date(1, May, 2015));
+    expectedHol.push_back(Date(22, Jun, 2015));
+    expectedHol.push_back(Date(3, Sep, 2015));
+    expectedHol.push_back(Date(4, Sep, 2015));
+    expectedHol.push_back(Date(1, Oct, 2015));
+    expectedHol.push_back(Date(2, Oct, 2015));
+    expectedHol.push_back(Date(5, Oct, 2015));
+    expectedHol.push_back(Date(6, Oct, 2015));
+    expectedHol.push_back(Date(7, Oct, 2015));
+
+    // China Shanghai Securities Exchange holiday list in the year 2016
+    expectedHol.push_back(Date(1, Jan, 2016));
+    expectedHol.push_back(Date(8, Feb, 2016));
+    expectedHol.push_back(Date(9, Feb, 2016));
+    expectedHol.push_back(Date(10, Feb, 2016));
+    expectedHol.push_back(Date(11, Feb, 2016));
+    expectedHol.push_back(Date(12, Feb, 2016));
+    expectedHol.push_back(Date(4, Apr, 2016));
+    expectedHol.push_back(Date(2, May, 2016));
+    expectedHol.push_back(Date(9, Jun, 2016));
+    expectedHol.push_back(Date(10, Jun, 2016));
+    expectedHol.push_back(Date(15, Sep, 2016));
+    expectedHol.push_back(Date(16, Sep, 2016));
+    expectedHol.push_back(Date(3, Oct, 2016));
+    expectedHol.push_back(Date(4, Oct, 2016));
+    expectedHol.push_back(Date(5, Oct, 2016));
+    expectedHol.push_back(Date(6, Oct, 2016));
+    expectedHol.push_back(Date(7, Oct, 2016));
+
+
+    Calendar c = China(China::SSE);
+    std::vector<Date> hol = Calendar::holidayList(c, Date(1, January, 2014),
+        Date(31, December, 2016));
+
+    for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
+        if (hol[i] != expectedHol[i])
+            BOOST_FAIL("expected holiday was " << expectedHol[i]
+                << " while calculated holiday is " << hol[i]);
+    }
+    if (hol.size() != expectedHol.size())
+        BOOST_FAIL("there were " << expectedHol.size()
+            << " expected holidays, while there are " << hol.size()
+            << " calculated holidays");
+}
+
+void CalendarTest::testChinaIB() {
+    BOOST_TEST_MESSAGE("Testing China Inter Bank working weekends list...");
+    
+    std::vector<Date> expectedWorkingWeekEnds;
+
+    // China Inter Bank working weekends list in the year 2014
+    expectedWorkingWeekEnds.push_back(Date(26, Jan, 2014));
+    expectedWorkingWeekEnds.push_back(Date(8, Feb, 2014));
+    expectedWorkingWeekEnds.push_back(Date(4, May, 2014));
+    expectedWorkingWeekEnds.push_back(Date(28, Sep, 2014));
+    expectedWorkingWeekEnds.push_back(Date(11, Oct, 2014));
+
+    // China Inter Bank working weekends list in the year 2015
+    expectedWorkingWeekEnds.push_back(Date(4, Jan, 2015));
+    expectedWorkingWeekEnds.push_back(Date(15, Feb, 2015));
+    expectedWorkingWeekEnds.push_back(Date(28, Feb, 2015));
+    expectedWorkingWeekEnds.push_back(Date(6, Sep, 2015));
+    expectedWorkingWeekEnds.push_back(Date(10, Oct, 2015));
+
+    // China Inter Bank working weekends list in the year 2016
+    expectedWorkingWeekEnds.push_back(Date(6, Feb, 2016));
+    expectedWorkingWeekEnds.push_back(Date(14, Feb, 2016));
+    expectedWorkingWeekEnds.push_back(Date(12, Jun, 2016));
+    expectedWorkingWeekEnds.push_back(Date(18, Sep, 2016));
+    expectedWorkingWeekEnds.push_back(Date(8, Oct, 2016));
+    expectedWorkingWeekEnds.push_back(Date(9, Oct, 2016));
+
+    Calendar c = China(China::IB);
+    Date start(1, Jan, 2014);
+    Date end(31, Dec, 2016);
+
+    Size k = 0;
+
+    while (start <= end) {
+        if (c.isBusinessDay(start) && c.isWeekend(start.weekday())) {
+            if (expectedWorkingWeekEnds[k] != start)
+                BOOST_FAIL("expected working weekend was " << expectedWorkingWeekEnds[k]
+                    << " while calculated working weekend is " << start);
+            ++k;
+        }
+        ++start;
+    }
+    
+    if (k != (expectedWorkingWeekEnds.size()))
+        BOOST_FAIL("there were " << expectedWorkingWeekEnds.size()
+            << " expected working weekends, while there are " << k
+            << " calculated working weekends");
+}
+
 void CalendarTest::testEndOfMonth() {
     BOOST_TEST_MESSAGE("Testing end-of-month calculation...");
 
@@ -1580,7 +1707,7 @@ void CalendarTest::testBusinessDaysBetween() {
     testDates.push_back(Date(15,May,2006));
     testDates.push_back(Date(26,July,2006));
 
-    BigInteger expected[] = {
+    Date::serial_type expected[] = {
         1,
         321,
         152,
@@ -1723,6 +1850,7 @@ void CalendarTest::testBespokeCalendars() {
 
 }
 
+
 test_suite* CalendarTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Calendar tests");
 
@@ -1749,6 +1877,9 @@ test_suite* CalendarTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testSouthKoreanSettlement));
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testKoreaStockExchange));
+
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testChinaSSE));
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testChinaIB));
 
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testModifiedCalendars));
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testJointCalendars));

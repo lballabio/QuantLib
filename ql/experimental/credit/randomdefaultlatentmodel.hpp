@@ -350,7 +350,7 @@ namespace QuantLib {
     {
         calculate();
         Date today = Settings::instance().evaluationDate();
-        BigInteger val = d.serialNumber() - today.serialNumber();
+        Date::serial_type val = d.serialNumber() - today.serialNumber();
 
         Real attachAmount = basket_->attachmentAmount();
         Real detachAmount = basket_->detachmentAmount();
@@ -363,7 +363,7 @@ namespace QuantLib {
             Real portfSimLoss=0.;
             for(Size iEvt=0; iEvt < events.size(); iEvt++) {
                 // if event is within time horizon...
-                if(val > static_cast<BigInteger>(events[iEvt].dayFromRef)) {
+                if(val > static_cast<Date::serial_type>(events[iEvt].dayFromRef)) {
                     Size iName = events[iEvt].nameIdx;
                     // ...and is contained in the basket.
                         portfSimLoss +=
@@ -406,7 +406,7 @@ namespace QuantLib {
         std::set<Real> keys;// attainable loss values
         keys.insert(0.);
         Date today = Settings::instance().evaluationDate();
-        BigInteger val = d.serialNumber() - today.serialNumber();
+        Date::serial_type val = d.serialNumber() - today.serialNumber();
         // redundant test? should have been tested by the basket caller?
         QL_REQUIRE(d >= today,
             "Requested percentile date must lie after computation date.");
@@ -420,7 +420,7 @@ namespace QuantLib {
 
             Real portfSimLoss=0.;
             for(Size iEvt=0; iEvt < events.size(); iEvt++) {
-                if(val > static_cast<BigInteger>(events[iEvt].dayFromRef)) {
+                if(val > static_cast<Date::serial_type>(events[iEvt].dayFromRef)) {
                     Size iName = events[iEvt].nameIdx;
           // test needed (here and the others) to reuse simulations:
           //          if(basket_->pool()->has(copula_->pool()->names()[iName]))
@@ -453,7 +453,7 @@ namespace QuantLib {
         Real attachAmount = basket_->attachmentAmount();
         Real detachAmount = basket_->detachmentAmount();
 
-        BigInteger val = d.serialNumber() - today.serialNumber();
+        Date::serial_type val = d.serialNumber() - today.serialNumber();
         if(val <= 0) return 0.;// plus basket realized losses
 
         //GenericRiskStatistics<GeneralStatistics> statsX;
@@ -462,7 +462,7 @@ namespace QuantLib {
             const std::vector<simEvent<D<C, URNG> > >& events = getSim(iSim);
             Real portfSimLoss=0.;
             for(Size iEvt=0; iEvt < events.size(); iEvt++) {
-                if(val > static_cast<BigInteger>(events[iEvt].dayFromRef)) {
+                if(val > static_cast<Date::serial_type>(events[iEvt].dayFromRef)) {
                     Size iName = events[iEvt].nameIdx;
                     // ...and is contained in the basket.
                     //if(basket_->pool()->has(copula_->pool()->names()[iName]))
@@ -548,12 +548,12 @@ namespace QuantLib {
 
         std::vector<Real> rankLosses;
         Date today = Settings::instance().evaluationDate();
-        BigInteger val = d.serialNumber() - today.serialNumber();
+        Date::serial_type val = d.serialNumber() - today.serialNumber();
         for(Size iSim=0; iSim < nSims_; iSim++) {
             const std::vector<simEvent<D<C, URNG> > >& events = getSim(iSim);
             Real portfSimLoss=0.;
             for(Size iEvt=0; iEvt < events.size(); iEvt++) {
-                if(val > static_cast<BigInteger>(events[iEvt].dayFromRef)) {
+                if(val > static_cast<Date::serial_type>(events[iEvt].dayFromRef)) {
                     Size iName = events[iEvt].nameIdx;
                  //   if(basket_->pool()->has(copula_->pool()->names()[iName]))
                         portfSimLoss +=
@@ -650,7 +650,7 @@ namespace QuantLib {
         std::vector<GeneralStatistics> splitStats(numLiveNames,
             GeneralStatistics());
         Date today = Settings::instance().evaluationDate();
-        BigInteger val = date.serialNumber() - today.serialNumber();
+        Date::serial_type val = date.serialNumber() - today.serialNumber();
 
         for(Size iSim=0; iSim < nSims_; iSim++) {
             const std::vector<simEvent<D<C, URNG> > >& events = getSim(iSim);
@@ -659,7 +659,7 @@ namespace QuantLib {
             std::vector<simEvent<D<C, URNG> > > splitEventsBuffer;
 
             for(Size iEvt=0; iEvt < events.size(); iEvt++) {
-                if(val > static_cast<BigInteger>(events[iEvt].dayFromRef)) {
+                if(val > static_cast<Date::serial_type>(events[iEvt].dayFromRef)) {
                     Size iName = events[iEvt].nameIdx;
                 // if(basket_->pool()->has(copula_->pool()->names()[iName])) {
                         portfSimLoss +=
