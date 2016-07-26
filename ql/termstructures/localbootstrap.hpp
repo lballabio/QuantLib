@@ -135,10 +135,6 @@ namespace QuantLib {
         validCurve_ = false;
         Size nInsts = ts_->instruments_.size();
 
-        // ensure rate helpers are sorted
-        std::sort(ts_->instruments_.begin(), ts_->instruments_.end(),
-                  detail::BootstrapHelperSorter());
-
         // check that there is no instruments with the same maturity
         for (Size i=1; i<nInsts; ++i) {
             Date m1 = ts_->instruments_[i-1]->pillarDate(),

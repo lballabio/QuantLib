@@ -80,9 +80,6 @@ namespace QuantLib {
 
     template <class Curve>
     void IterativeBootstrap<Curve>::initialize() const {
-        // ensure helpers are sorted
-        std::sort(ts_->instruments_.begin(), ts_->instruments_.end(),
-                  detail::BootstrapHelperSorter());
         // skip expired helpers
         Date firstDate = Traits::initialDate(ts_);
         QL_REQUIRE(ts_->instruments_[n_-1]->pillarDate()>firstDate,
