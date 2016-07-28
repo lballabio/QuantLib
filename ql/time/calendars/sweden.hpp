@@ -38,7 +38,7 @@ namespace QuantLib {
         <li>Good Friday</li>
         <li>Easter Monday</li>
         <li>Ascension</li>
-        <li>Whit(Pentecost) Monday </li>
+        <li>Whit(Pentecost) Monday (until 2004)</li>
         <li>May Day, May 1st</li>
         <li>National Day, June 6th</li>
         <li>Midsummer Eve (Friday between June 19-25)</li>
