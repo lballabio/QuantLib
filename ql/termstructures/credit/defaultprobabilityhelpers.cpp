@@ -177,10 +177,6 @@ namespace QuantLib {
         return swap_->fairSpread();
     }
 
-    void SpreadCdsHelper::initializeDates() {
-        CdsHelper::initializeDates();
-    }
-
     void SpreadCdsHelper::resetEngine() {
         swap_ = boost::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
             Protection::Buyer, 100.0, 0.01, schedule_, paymentConvention_,

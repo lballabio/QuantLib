@@ -98,8 +98,8 @@ namespace QuantLib {
         boost::shared_ptr<CreditDefaultSwap> swap() const {
             return swap_;
         }
+      void update();
       protected:
-        void update();
         void initializeDates();
         virtual void resetEngine() = 0;
         Period tenor_;
@@ -174,7 +174,6 @@ namespace QuantLib {
                         bool useIsdaEngine = false); // switch to true later on ?
         Real impliedQuote() const;
       private:
-        void initializeDates();
         void resetEngine();
     };
 
