@@ -67,6 +67,7 @@ namespace QuantLib {
                   const DayCounter& dayCounter,
                   Real recoveryRate,
                   const Handle<YieldTermStructure>& discountCurve,
+                  const Date& startDate = Date(),
                   bool settlesAccrual = true,
                   bool paysAtDefaultTime = true,
                   const DayCounter& lastPeriodDayCounter = DayCounter(),
@@ -82,6 +83,7 @@ namespace QuantLib {
                   const DayCounter& dayCounter,
                   Real recoveryRate,
                   const Handle<YieldTermStructure>& discountCurve,
+                  const Date& startDate = Date(),
                   bool settlesAccrual = true,
                   bool paysAtDefaultTime = true,
                   const DayCounter& lastPeriodDayCounter = DayCounter(),
@@ -125,6 +127,7 @@ namespace QuantLib {
         RelinkableHandle<DefaultProbabilityTermStructure> probability_;
         //! protection effective date.
         Date protectionStart_;
+        Date startDate_;
       private:
         // we need this method in order to be able to pass rate and credit helpers
         // to the standard isda engine and set the discount curve in the credit
@@ -151,6 +154,7 @@ namespace QuantLib {
                         const DayCounter& dayCounter,
                         Real recoveryRate,
                         const Handle<YieldTermStructure>& discountCurve,
+                        const Date& startDate = Date(),
                         bool settlesAccrual = true,
                         bool paysAtDefaultTime = true,
                         const DayCounter& lastPeriodDayCounter = DayCounter(),
@@ -167,6 +171,7 @@ namespace QuantLib {
                         const DayCounter& dayCounter, // ISDA: Actual/360
                         Real recoveryRate,
                         const Handle<YieldTermStructure>& discountCurve,
+                        const Date& startDate = Date(),
                         bool settlesAccrual = true,
                         bool paysAtDefaultTime = true,
                         const DayCounter& lastPeriodDayCounter = DayCounter(), // ISDA: Actual/360(inc)
@@ -192,6 +197,7 @@ namespace QuantLib {
                          const DayCounter& dayCounter,
                          Real recoveryRate,
                          const Handle<YieldTermStructure>& discountCurve,
+                         const Date& startDate = Date(),
                          Natural upfrontSettlementDays = 0,
                          bool settlesAccrual = true,
                          bool paysAtDefaultTime = true,
@@ -211,6 +217,7 @@ namespace QuantLib {
                          const DayCounter& dayCounter,
                          Real recoveryRate,
                          const Handle<YieldTermStructure>& discountCurve,
+                         const Date& startDate = Date(),
                          Natural upfrontSettlementDays = 0,
                          bool settlesAccrual = true,
                          bool paysAtDefaultTime = true,

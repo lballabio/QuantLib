@@ -40,6 +40,7 @@ namespace QuantLib {
                          DateGeneration::Rule rule,
                          const DayCounter &dayCounter, Real recoveryRate,
                          const Handle<YieldTermStructure> &discountCurve,
+                         const Date& startDate,
                          bool settlesAccrual, bool paysAtDefaultTime,
                          const DayCounter &lastPeriodDayCounter,
                          const bool rebatesAccrual, const bool useIsdaEngine)
@@ -47,8 +48,8 @@ namespace QuantLib {
           settlementDays_(settlementDays), calendar_(calendar),
           frequency_(frequency), paymentConvention_(paymentConvention),
           rule_(rule), dayCounter_(dayCounter), recoveryRate_(recoveryRate),
-          discountCurve_(discountCurve), settlesAccrual_(settlesAccrual),
-          paysAtDefaultTime_(paysAtDefaultTime),
+          discountCurve_(discountCurve), startDate_(startDate), schedule_(),
+          settlesAccrual_(settlesAccrual), paysAtDefaultTime_(paysAtDefaultTime),
           lastPeriodDC_(lastPeriodDayCounter), rebatesAccrual_(rebatesAccrual),
           useIsdaEngine_(useIsdaEngine), isdaNumericalFix_(IsdaCdsEngine::Taylor),
           isdaAccrualBias_(IsdaCdsEngine::HalfDayBias),
@@ -66,6 +67,7 @@ namespace QuantLib {
                          DateGeneration::Rule rule,
                          const DayCounter &dayCounter, Real recoveryRate,
                          const Handle<YieldTermStructure> &discountCurve,
+                         const Date& startDate,
                          bool settlesAccrual, bool paysAtDefaultTime,
                          const DayCounter &lastPeriodDayCounter,
                          const bool rebatesAccrual, const bool useIsdaEngine)
@@ -73,8 +75,8 @@ namespace QuantLib {
           settlementDays_(settlementDays), calendar_(calendar),
           frequency_(frequency), paymentConvention_(paymentConvention),
           rule_(rule), dayCounter_(dayCounter), recoveryRate_(recoveryRate),
-          discountCurve_(discountCurve), settlesAccrual_(settlesAccrual),
-          paysAtDefaultTime_(paysAtDefaultTime),
+          discountCurve_(discountCurve), startDate_(startDate), schedule_(),
+          settlesAccrual_(settlesAccrual), paysAtDefaultTime_(paysAtDefaultTime),
           lastPeriodDC_(lastPeriodDayCounter), rebatesAccrual_(rebatesAccrual),
           useIsdaEngine_(useIsdaEngine), isdaNumericalFix_(IsdaCdsEngine::Taylor),
           isdaAccrualBias_(IsdaCdsEngine::NoBias),
@@ -102,18 +104,37 @@ namespace QuantLib {
 
     void CdsHelper::initializeDates() {
         protectionStart_ = evaluationDate_ + settlementDays_;
-        Date startDate = calendar_.adjust(protectionStart_,
-                                          paymentConvention_);
-        //Date endDate = evaluationDate_ + tenor_; // see below
+        Date startDate, endDate;
+        if(startDate_ == Date()) {
+            startDate = calendar_.adjust(protectionStart_,
+                                         paymentConvention_);
+            if (rule_ == DateGeneration::CDS) { // for standard CDS ..
+                // .. the start date is not adjusted
+                startDate = protectionStart_;
+            }
+            // .. and (in any case) the end date rolls by 3 month as
+            //  soon as the trade date falls on an IMM date
+            // however, tarting 2015-12-21, Markit switched to semi annual roll
+            // instead of quarterly roll to better align with indices
+            Period tenor = tenor_;
+            if(evaluationDate_ >= Date(21, December, 2015)) {
+                Year currentYear = protectionStart_.year();
+                Date IMMmarch = Date(20, March, currentYear);
+                Date IMMjune = Date(20, June, currentYear);
+                Date IMMsept = Date(20, September, currentYear);
+                Date IMMdec = Date(20, December, currentYear);
+                if( (protectionStart_ > IMMjune && protectionStart_ <= IMMsept) ||
+                    (protectionStart_ <= IMMmarch || protectionStart_ > IMMdec) ) {
+                    tenor -= Period(3, Months);
+                }
+            }
+            endDate = protectionStart_ + tenor;
 
-        if (rule_ == DateGeneration::CDS) { // for standard CDS ..
-            // .. the start date is not adjusted
-            startDate = protectionStart_;
+        } else {
+            if(!schedule_.empty()) return; //no need to update schedule
+            startDate = calendar_.adjust(startDate_, paymentConvention_);
+            endDate = startDate_ + settlementDays_ + tenor_;
         }
-        // .. and (in any case) the end date rolls by 3 month as
-        //  soon as the trade date falls on an IMM date
-        Date endDate = protectionStart_ + tenor_;
-
         schedule_ =
             MakeSchedule().from(startDate)
                           .to(endDate)
@@ -139,6 +160,7 @@ namespace QuantLib {
                               const DayCounter& dayCounter,
                               Real recoveryRate,
                               const Handle<YieldTermStructure>& discountCurve,
+                              const Date& startDate,
                               bool settlesAccrual,
                               bool paysAtDefaultTime,
                               const DayCounter& lastPeriodDayCounter,
@@ -146,7 +168,7 @@ namespace QuantLib {
                               const bool useIsdaEngine)
     : CdsHelper(runningSpread, tenor, settlementDays, calendar,
                 frequency, paymentConvention, rule, dayCounter,
-                recoveryRate, discountCurve, settlesAccrual,
+                recoveryRate, discountCurve, startDate, settlesAccrual,
                 paysAtDefaultTime,lastPeriodDayCounter,rebatesAccrual,
                 useIsdaEngine) {}
 
@@ -161,6 +183,7 @@ namespace QuantLib {
                               const DayCounter& dayCounter,
                               Real recoveryRate,
                               const Handle<YieldTermStructure>& discountCurve,
+                              const Date& startDate,
                               bool settlesAccrual,
                               bool paysAtDefaultTime,
                               const DayCounter& lastPeriodDayCounter,
@@ -168,7 +191,7 @@ namespace QuantLib {
                               const bool useIsdaEngine)
     : CdsHelper(runningSpread, tenor, settlementDays, calendar,
                 frequency, paymentConvention, rule, dayCounter,
-                recoveryRate, discountCurve, settlesAccrual,
+                recoveryRate, discountCurve, startDate, settlesAccrual,
                 paysAtDefaultTime,lastPeriodDayCounter,rebatesAccrual,
                 useIsdaEngine) {}
 
@@ -178,10 +201,10 @@ namespace QuantLib {
     }
 
     void SpreadCdsHelper::resetEngine() {
-        swap_ = boost::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
+        swap_ = boost::make_shared<CreditDefaultSwap>(
             Protection::Buyer, 100.0, 0.01, schedule_, paymentConvention_,
             dayCounter_, settlesAccrual_, paysAtDefaultTime_, protectionStart_,
-            boost::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_));
+            boost::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_);
 
         if (useIsdaEngine_) {
             swap_->setPricingEngine(boost::make_shared<IsdaCdsEngine>(
@@ -208,6 +231,7 @@ namespace QuantLib {
                               const DayCounter& dayCounter,
                               Real recoveryRate,
                               const Handle<YieldTermStructure>& discountCurve,
+                              const Date& startDate,
                               Natural upfrontSettlementDays,
                               bool settlesAccrual,
                               bool paysAtDefaultTime,
@@ -216,7 +240,7 @@ namespace QuantLib {
                               const bool useIsdaEngine)
     : CdsHelper(upfront, tenor, settlementDays, calendar,
                 frequency, paymentConvention, rule, dayCounter,
-                recoveryRate, discountCurve, settlesAccrual,
+                recoveryRate, discountCurve, startDate, settlesAccrual,
                 paysAtDefaultTime, lastPeriodDayCounter, rebatesAccrual,
                 useIsdaEngine),
       upfrontSettlementDays_(upfrontSettlementDays),
@@ -236,6 +260,7 @@ namespace QuantLib {
                               const DayCounter& dayCounter,
                               Real recoveryRate,
                               const Handle<YieldTermStructure>& discountCurve,
+                              const Date& startDate,
                               Natural upfrontSettlementDays,
                               bool settlesAccrual,
                               bool paysAtDefaultTime,
@@ -244,7 +269,7 @@ namespace QuantLib {
                               const bool useIsdaEngine)
     : CdsHelper(upfrontSpread, tenor, settlementDays, calendar,
                 frequency, paymentConvention, rule, dayCounter,
-                recoveryRate, discountCurve, settlesAccrual,
+                recoveryRate, discountCurve, startDate, settlesAccrual,
                 paysAtDefaultTime, lastPeriodDayCounter, rebatesAccrual,
                 useIsdaEngine),
       upfrontSettlementDays_(upfrontSettlementDays),
@@ -260,11 +285,11 @@ namespace QuantLib {
     }
 
     void UpfrontCdsHelper::resetEngine() {
-        swap_ = boost::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
+        swap_ = boost::make_shared<CreditDefaultSwap>(
             Protection::Buyer, 100.0, 0.01, runningSpread_, schedule_,
             paymentConvention_, dayCounter_, settlesAccrual_,
             paysAtDefaultTime_, protectionStart_, upfrontDate_,
-            boost::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_));
+            boost::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_);
         if (useIsdaEngine_) {
             swap_->setPricingEngine(boost::make_shared<IsdaCdsEngine>(
                 probability_, recoveryRate_, discountCurve_, false,
