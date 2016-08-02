@@ -31,19 +31,19 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 namespace QuantLib {
 
-	//! %Aonia index
-	/*! Aonia (Australia Overnight Index Average) rate fixed by the RBA.
+    //! %Aonia index
+    /*! Aonia (Australia Overnight Index Average) rate fixed by the RBA.
 
-	See <http://www.isda.org/publications/pdf/Supplement-13-to-2000DefinitionsAnnex.pdf>.
-	*/
-	class Aonia : public OvernightIndex {
-	public:
-		Aonia(const Handle<YieldTermStructure>& h =
-			Handle<YieldTermStructure>())
-			:OvernightIndex("Aonia", 0, AUDCurrency(),
-				Australia(),
-				Actual365Fixed(), h) {}
-	};
+    See <http://www.isda.org/publications/pdf/Supplement-13-to-2000DefinitionsAnnex.pdf>.
+    */
+    class Aonia : public OvernightIndex {
+      public:
+        Aonia(const Handle<YieldTermStructure>& h =
+                              Handle<YieldTermStructure>())
+        : OvernightIndex("Aonia", 0, AUDCurrency(),
+                         Australia(),
+                         Actual365Fixed(), h) {}
+    };
 
 }
 

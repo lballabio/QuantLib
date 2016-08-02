@@ -31,20 +31,19 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 namespace QuantLib {
 
-	//! %Nzocr index
-	/*!  %Nzocr (New Zealand official cash rate) rate fixed by the RBNZ.
+    //! %Nzocr index
+    /*! %Nzocr (New Zealand official cash rate) rate fixed by the RBNZ.
 
-	See <http://www.rbnz.govt.nz/monetary-policy/official-cash-rate-decisions>.
-	*/
-
-	class Nzocr : public OvernightIndex {
-	public:
-		Nzocr(const Handle<YieldTermStructure>& h =
-			Handle<YieldTermStructure>())
-			:OvernightIndex("Nzocr", 0, NZDCurrency(),
-				NewZealand(),
-				Actual365Fixed(), h) {}
-	};
+        See <http://www.rbnz.govt.nz/monetary-policy/official-cash-rate-decisions>.
+    */
+    class Nzocr : public OvernightIndex {
+      public:
+        Nzocr(const Handle<YieldTermStructure>& h =
+                              Handle<YieldTermStructure>())
+        :OvernightIndex("Nzocr", 0, NZDCurrency(),
+                        NewZealand(),
+                        Actual365Fixed(), h) {}
+    };
 
 }
 
