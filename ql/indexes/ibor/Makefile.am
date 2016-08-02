@@ -4,7 +4,10 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    aonia.hpp \
     audlibor.hpp \
+    bbsw.hpp \
+    bkbm.hpp \
     cadlibor.hpp \
     cdor.hpp \
     chflibor.hpp \
@@ -18,6 +21,7 @@ this_include_HEADERS = \
     jpylibor.hpp \
     libor.hpp \
     nzdlibor.hpp \
+    nzocr.hpp \
     seklibor.hpp \
     shibor.hpp \
     sonia.hpp \
