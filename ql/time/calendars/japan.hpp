@@ -44,6 +44,7 @@ namespace QuantLib {
         <li>Holiday for a Nation, May 4th</li>
         <li>Children's Day, May 5th</li>
         <li>Marine Day, 3rd Monday in July</li>
+        <li>Mountain Day, August 11th (from 2016 onwards)</li>
         <li>Respect for the Aged Day, 3rd Monday in September</li>
         <li>Autumnal Equinox</li>
         <li>Health and Sports Day, 2nd Monday in October</li>

@@ -9,10 +9,14 @@ Toyin Akin
 Marius Akre
 Mario Aleppo
 Grzegorz Andruszkiewicz
+Driss Aouad
 Jose Aparicio
 Sercan Atalik
+Ahmed Ayadi
 Lluis Pujol Bajador
+Gerardo Ballabio
 Nabila Barkati
+Riccardo Barone
 Clément Barret
 Christopher Baus
 Thomas Becker
@@ -24,12 +28,12 @@ Sylvain Bertrand
 Manas Bhatt
 David Binderman
 Theo Boafo
+Francois Botha
 Delphine Bouthier
 Fakher Braham
 Joe Byers
 Xavier Caron
 Marine Casanova
-Peter Caspers
 Antoine Cellerier
 Yee Man Chan
 Aurelien Chanudet
@@ -58,6 +62,7 @@ Chiara Fornarola
 Silvia Frasson
 Andreas Gaida
 Matteo Gallivanoni
+Riccardo Ghetta
 Roman Gitlin
 Nick Glass
 Marek Glowacki
@@ -66,10 +71,13 @@ Johannes Göttker-Schnetmann
 Henri Gough
 Richard Gould
 Florent Grenier
+Matthias Groncki
 Sebastien Gurrieri
 Tawanda Gwena
 Cavit Hafizoglu
 Michael Heckl
+Andres Hernandez
+Chris Higgs
 Laurent Hoffmann
 Xiangyu Hong
 Benoît Houzelle
@@ -81,11 +89,13 @@ Norbert Irmer
 Mike Jake
 Rahul Kanchi
 Andrey Karpov
+Michal Kaut
 Tomoya Kawanishi
 Gary Kennedy
 Matt Knox
 Andrew Kolesnikov
 Silakhdar Krikeb
+Nathan Kruck
 Yan Kuang
 Allen Kuo
 Paul Laderoute
@@ -93,27 +103,33 @@ Yasmine Lahlou
 Fabien Le Floc'h
 James Lee
 Samuel Lerouge
+Bernd Lewerenz
 Cheng Li
 Gang Liang
 Robert Lopez
 André Louw
 Joao Paulo Magalhaes
+Jose Magana
 John Maiden
 Katiuscia Manzoni
 Francesca Mariani
 Slava Mazur
+Paolo Mazzocchi
 Enrico Michelotti
 Andre Miemiec
 Raso Mirko
 Radu Mondescu
 Bart Mosley
 Tiziano Müller
+Dmitri Nesteruk
 Billy Ng
 Bojan Nikolic
 Jean Nkeng
+Nikolai Nowaczyk
 Adrian O'Neill
 Andrea Odetti
 Mike Parker
+Giorgio Pazmandi
 Guillaume Pealat
 Gilbert Peffer
 Walter Penschke
@@ -123,10 +139,13 @@ Marcello Pietrobon
 Adrien Pinatton
 Gianni Piolanti
 Sebastian Poloczek
+Nolan Potier
 Mario Pucci
 Ian Qsong
 Paul Rädle
+Alexandre Radicchi
 J. Erik Radmall
+Ilyas Rahbaoui
 Fabio Ramponi
 Maria Cristina Recchioni
 Dimitri Reiswich
@@ -139,6 +158,7 @@ Tamas Sashalmi
 Peter Schmitteckert
 Ralph Schreyer
 David Schwartz
+Giacomo Sergio
 Simon Shakeshaft
 Michael Sharpe
 Kirill Shemyakin
@@ -146,6 +166,7 @@ Eugene Shevkoplyas
 Enrico Sirola
 Leon Sit
 Dale Smith
+Tim Smith
 Maxim Sokolov
 Niels Elken Sønderby
 Andreas Spengler
@@ -153,6 +174,7 @@ Roland Stamm
 Edouard Tallent
 Marco Tarenghi
 Yue Tian
+Jayanth R. Varma
 François du Vignaud
 Qingxiao Wang
 Charles Whitmore
@@ -160,6 +182,7 @@ Stephen Wong
 Bernd Johannes Wuebben
 Sun Xiuxin
 Jeff Yu
+Maddalena Zanzi
 Francesco Zirilli
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo

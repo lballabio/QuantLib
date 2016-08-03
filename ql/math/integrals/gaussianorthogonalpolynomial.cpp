@@ -107,7 +107,7 @@ namespace QuantLib {
         Real denom = (2.0*i+alpha_+beta_)*(2.0*i+alpha_+beta_+2);
 
         if (!denom) {
-            if (num) {
+            if (num != 0.0) {
                 QL_FAIL("can't compute a_k for jacobi integration\n");
             }
             else {
@@ -128,7 +128,7 @@ namespace QuantLib {
                    * ((2.0*i+alpha_+beta_)*(2.0*i+alpha_+beta_)-1);
 
         if (!denom) {
-            if (num) {
+            if (num != 0.0) {
                 QL_FAIL("can't compute b_k for jacobi integration\n");
             } else {
                 // l'Hospital

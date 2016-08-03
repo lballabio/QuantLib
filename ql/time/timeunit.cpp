@@ -35,6 +35,16 @@ namespace QuantLib {
                 return out << "Weeks";
             case Days:
                 return out << "Days";
+            case Hours:
+                return out << "Hours";
+            case Minutes:
+                return out << "Minutes";
+            case Seconds:
+                return out << "Seconds";
+            case Milliseconds:
+                return out << "Milliseconds";
+            case Microseconds:
+                return out << "Microseconds";
             default:
                 QL_FAIL("unknown TimeUnit");
         }

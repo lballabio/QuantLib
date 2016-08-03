@@ -65,7 +65,6 @@ namespace QuantLib {
         boost::shared_ptr<MarketModelVolProcess> volProcess_;
 
         Size firstVolatilityFactor_;
-        Size volatilityFactorStep_;
         Size volFactorsPerStep_;
 
         std::vector<Size> numeraires_;

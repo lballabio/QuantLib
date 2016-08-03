@@ -2,6 +2,8 @@
 
 /*
  Copyright (C) 2009 Ralph Schreyer
+ Copyright (C) 2014 Johannes Goettker-Schnetmann
+ Copyright (C) 2014 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,7 +28,11 @@
 
 #include <ql/methods/finitedifferences/meshers/fdm1dmesher.hpp>
 #include <ql/utilities/null.hpp>
+
+#include <boost/tuple/tuple.hpp>
+
 #include <utility>
+#include <vector>
 
 namespace QuantLib {
 
@@ -35,8 +41,13 @@ namespace QuantLib {
         Concentrating1dMesher(
             Real start, Real end, Size size,
             const std::pair<Real, Real>& cPoints
-                     = (std::pair<double, double>(Null<Real>(), Null<Real>())),
+                     = (std::pair<Real, Real>(Null<Real>(), Null<Real>())),
             const bool requireCPoint = false);
+
+        Concentrating1dMesher(
+            Real start, Real end, Size size,
+            const std::vector<boost::tuple<Real, Real, bool> >& cPoints,
+            Real tol = 1e-8);
     };
 }
 

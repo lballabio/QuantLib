@@ -6,11 +6,9 @@
 #include <ql/experimental/callablebonds/all.hpp>
 #include <ql/experimental/catbonds/all.hpp>
 #include <ql/experimental/commodities/all.hpp>
-#include <ql/experimental/compoundoption/all.hpp>
 #include <ql/experimental/convertiblebonds/all.hpp>
 #include <ql/experimental/coupons/all.hpp>
 #include <ql/experimental/credit/all.hpp>
-#include <ql/experimental/exercise/all.hpp>
 #include <ql/experimental/exoticoptions/all.hpp>
 #include <ql/experimental/finitedifferences/all.hpp>
 #include <ql/experimental/fx/all.hpp>

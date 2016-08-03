@@ -91,12 +91,12 @@ namespace QuantLib {
                                        Date settlementDate = Date());
         static Time accrualPeriod(const Bond& bond,
                                   Date settlementDate = Date());
-        static BigInteger accrualDays(const Bond& bond,
-                                      Date settlementDate = Date());
+        static Date::serial_type accrualDays(const Bond& bond,
+                                             Date settlementDate = Date());
         static Time accruedPeriod(const Bond& bond,
                                   Date settlementDate = Date());
-        static BigInteger accruedDays(const Bond& bond,
-                                      Date settlementDate = Date());
+        static Date::serial_type accruedDays(const Bond& bond,
+                                             Date settlementDate = Date());
         static Real accruedAmount(const Bond& bond,
                                   Date settlementDate = Date());
         //@}
@@ -121,6 +121,15 @@ namespace QuantLib {
                                const InterestRate& yield,
                                Date settlementDate = Date());
         static Real cleanPrice(const Bond& bond,
+                               Rate yield,
+                               const DayCounter& dayCounter,
+                               Compounding compounding,
+                               Frequency frequency,
+                               Date settlementDate = Date());
+        static Real dirtyPrice(const Bond& bond,
+                               const InterestRate& yield,
+                               Date settlementDate = Date());
+        static Real dirtyPrice(const Bond& bond,
                                Rate yield,
                                const DayCounter& dayCounter,
                                Compounding compounding,

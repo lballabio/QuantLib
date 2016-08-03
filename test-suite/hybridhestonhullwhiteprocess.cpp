@@ -50,8 +50,14 @@
 #include <ql/pricingengines/vanilla/analytichestonhullwhiteengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonhullwhitevanillaengine.hpp>
-
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
 #include <boost/bind.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic pop
+#endif
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -168,7 +174,6 @@ void HybridHestonHullWhiteProcessTest::testCompareBsmHWandHestonHW() {
     const Handle<Quote> spot(
                          boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
     std::vector<Date> dates;
-    std::vector<Time> times;
     std::vector<Rate> rates, divRates;
 
     for (Size i=0; i <= 40; ++i) {
@@ -176,7 +181,6 @@ void HybridHestonHullWhiteProcessTest::testCompareBsmHWandHestonHW() {
         // FLOATING_POINT_EXCEPTION
         rates.push_back(0.01 + 0.0002*std::exp(std::sin(i/4.0)));
         divRates.push_back(0.02 + 0.0001*std::exp(std::sin(i/5.0)));
-        times.push_back(dc.yearFraction(today, dates.back()));
     }
 
     const Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100)));
@@ -384,7 +388,6 @@ void HybridHestonHullWhiteProcessTest::testMcVanillaPricing() {
     // of the joint stochastic process
 
     std::vector<Date> dates;
-    std::vector<Time> times;
     std::vector<Rate> rates, divRates;
 
     for (Size i=0; i <= 40; ++i) {
@@ -392,7 +395,6 @@ void HybridHestonHullWhiteProcessTest::testMcVanillaPricing() {
         // FLOATING_POINT_EXCEPTION
         rates.push_back(0.03 + 0.0003*std::exp(std::sin(i/4.0)));
         divRates.push_back(0.02 + 0.0001*std::exp(std::sin(i/5.0)));
-        times.push_back(dc.yearFraction(today, dates.back()));
     }
 
     const Date maturity = today + Period(20, Years);
@@ -482,7 +484,6 @@ void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
     // of the joint stochastic process
 
     std::vector<Date> dates;
-    std::vector<Time> times;
     std::vector<Rate> rates, divRates;
 
     for (Size i=0; i <= 100; ++i) {
@@ -490,7 +491,6 @@ void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
         // FLOATING_POINT_EXCEPTION
         rates.push_back(0.02 + 0.0002*std::exp(std::sin(i/10.0)));
         divRates.push_back(0.02 + 0.0001*std::exp(std::sin(i/20.0)));
-        times.push_back(dc.yearFraction(today, dates.back()));
     }
 
     const Date maturity = today + Period(2, Years);
@@ -574,7 +574,6 @@ void HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing() {
     // of the joint stochastic process
 
     std::vector<Date> dates;
-    std::vector<Time> times;
     std::vector<Rate> rates, divRates;
 
     for (Size i=0; i <= 40; ++i) {
@@ -582,7 +581,6 @@ void HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing() {
         // FLOATING_POINT_EXCEPTION
         rates.push_back(0.03 + 0.0001*std::exp(std::sin(i/4.0)));
         divRates.push_back(0.02 + 0.0002*std::exp(std::sin(i/3.0)));
-        times.push_back(dc.yearFraction(today, dates.back()));
     }
 
     const Date maturity = today + Period(5, Years);
@@ -781,7 +779,6 @@ void HybridHestonHullWhiteProcessTest::testDiscretizationError() {
     // of the joint stochastic process
 
     std::vector<Date> dates;
-    std::vector<Time> times;
     std::vector<Rate> rates, divRates;
 
     for (Size i=0; i <= 31; ++i) {
@@ -789,7 +786,6 @@ void HybridHestonHullWhiteProcessTest::testDiscretizationError() {
         // FLOATING_POINT_EXCEPTION
         rates.push_back(0.04 + 0.0001*std::exp(std::sin(double(i))));
         divRates.push_back(0.04 + 0.0001*std::exp(std::sin(double(i))));
-        times.push_back(dc.yearFraction(today, dates.back()));
     }
 
     const Date maturity = today + Period(10, Years);
@@ -1292,12 +1288,16 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
                                         new EuropeanExercise(today + maturity));
 
         for (Size j=0; j < LENGTH(strikes); ++j) {
-            boost::shared_ptr<StrikedTypePayoff> payoff(
-                             new PlainVanillaPayoff(Option::Call, strikes[j]));
+            boost::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(
+                strikes[j] * rTS->discount(maturities[i]) >=
+                        s0->value() * qTS->discount(maturities[i])
+                    ? Option::Call
+                    : Option::Put,
+                strikes[j]));
             RelinkableHandle<Quote> v(boost::shared_ptr<Quote>(
                                    new SimpleQuote(vol[i*LENGTH(strikes)+j])));
             options.push_back(boost::shared_ptr<CalibrationHelper>(
-                new HestonModelHelper(maturity, calendar,s0->value(), 
+                new HestonModelHelper(maturity, calendar, s0,
                                       strikes[j], v, rTS, qTS,
                                       CalibrationHelper::PriceError)));
             const Real marketValue = options.back()->marketValue();
@@ -1363,7 +1363,7 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
             Handle<Quote> v(boost::shared_ptr<Quote>(
                                    new SimpleQuote(vol[i*LENGTH(strikes)+js])));
             options.push_back(boost::shared_ptr<CalibrationHelper>(
-                new HestonModelHelper(maturity, calendar, s0->value(), 
+                new HestonModelHelper(maturity, calendar, s0,
                                       strikes[js], v, rTS, qTS,
                                       CalibrationHelper::PriceError)));
             

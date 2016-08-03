@@ -21,11 +21,12 @@
 #include "utilities.hpp"
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/experimental/exoticoptions/simplechooseroption.hpp>
+#include <ql/experimental/exoticoptions/complexchooseroption.hpp>
 #include <ql/experimental/exoticoptions/analyticsimplechooserengine.hpp>
+#include <ql/experimental/exoticoptions/analyticcomplexchooserengine.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <boost/progress.hpp>
-#include <map>
+#include <boost/make_shared.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -58,36 +59,38 @@ void ChooserOptionTest::testAnalyticSimpleChooserEngine(){
        pages 39-40
     */
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
-    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(50.0));
-    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> spot = boost::make_shared<SimpleQuote>(50.0);
+    boost::shared_ptr<SimpleQuote> qRate = boost::make_shared<SimpleQuote>(0.0);
     boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.08));
+    boost::shared_ptr<SimpleQuote> rRate = boost::make_shared<SimpleQuote>(0.08);
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
+    boost::shared_ptr<SimpleQuote> vol = boost::make_shared<SimpleQuote>(0.25);
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
-    boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
-        BlackScholesMertonProcess(Handle<Quote>(spot),
+    boost::shared_ptr<BlackScholesMertonProcess> stochProcess =
+        boost::make_shared<BlackScholesMertonProcess>(
+                                  Handle<Quote>(spot),
                                   Handle<YieldTermStructure>(qTS),
                                   Handle<YieldTermStructure>(rTS),
-                                  Handle<BlackVolTermStructure>(volTS)));
+                                  Handle<BlackVolTermStructure>(volTS));
 
-    boost::shared_ptr<PricingEngine> engine(
-        new AnalyticSimpleChooserEngine(stochProcess));
+    boost::shared_ptr<PricingEngine> engine =
+        boost::make_shared<AnalyticSimpleChooserEngine>(stochProcess);
 
     Real strike = 50.0;
 
     Date exerciseDate = today + 180;
-    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+    boost::shared_ptr<Exercise> exercise =
+        boost::make_shared<EuropeanExercise>(exerciseDate);
 
     Date choosingDate = today + 90;
     SimpleChooserOption option(choosingDate,strike,exercise);
     option.setPricingEngine(engine);
 
     Real calculated = option.NPV();
-     Real expected = 6.1071;
+    Real expected = 6.1071;
     Real tolerance = 3e-5;
     if (std::fabs(calculated-expected) > tolerance) {
         REPORT_FAILURE("value", choosingDate,
@@ -98,11 +101,68 @@ void ChooserOptionTest::testAnalyticSimpleChooserEngine(){
 
 }
 
+
+void ChooserOptionTest::testAnalyticComplexChooserEngine(){
+    BOOST_TEST_MESSAGE("Testing analytic complex chooser option...");
+
+    /* The example below is from
+       "Complete Guide to Option Pricing Formulas", Espen Gaarder Haug
+    */
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
+    boost::shared_ptr<SimpleQuote> spot = boost::make_shared<SimpleQuote>(50.0);
+    boost::shared_ptr<SimpleQuote> qRate = boost::make_shared<SimpleQuote>(0.05);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate = boost::make_shared<SimpleQuote>(0.10);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol = boost::make_shared<SimpleQuote>(0.35);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+
+    boost::shared_ptr<BlackScholesMertonProcess> stochProcess =
+        boost::make_shared<BlackScholesMertonProcess>(
+                                  Handle<Quote>(spot),
+                                  Handle<YieldTermStructure>(qTS),
+                                  Handle<YieldTermStructure>(rTS),
+                                  Handle<BlackVolTermStructure>(volTS));
+
+    boost::shared_ptr<PricingEngine> engine =
+        boost::make_shared<AnalyticComplexChooserEngine>(stochProcess);
+
+    Real callStrike = 55.0;
+    Real putStrike = 48.0;
+
+    Date choosingDate = today + 90;
+    Date callExerciseDate = choosingDate + 180;
+    Date putExerciseDate = choosingDate + 210;
+    boost::shared_ptr<Exercise> callExercise =
+        boost::make_shared<EuropeanExercise>(callExerciseDate);
+    boost::shared_ptr<Exercise> putExercise =
+        boost::make_shared<EuropeanExercise>(putExerciseDate);
+
+    ComplexChooserOption option(choosingDate,callStrike,putStrike,
+                                callExercise,putExercise);
+    option.setPricingEngine(engine);
+
+    Real calculated = option.NPV();
+    Real expected = 6.0508;
+    Real error = std::fabs(calculated-expected);
+    Real tolerance = 1e-4;
+    if (error > tolerance) {
+        BOOST_ERROR("Failed to reproduce complex chooser option value"
+                    << "\n    expected:   " << expected
+                    << "\n    calculated: " << calculated
+                    << "\n    error:      " << error);
+    }
+}
+
 test_suite* ChooserOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Chooser option tests");
 
     suite->add(QUANTLIB_TEST_CASE(
         &ChooserOptionTest::testAnalyticSimpleChooserEngine));
+    suite->add(QUANTLIB_TEST_CASE(
+        &ChooserOptionTest::testAnalyticComplexChooserEngine));
 
     return suite;
 }

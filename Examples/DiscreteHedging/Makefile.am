@@ -8,16 +8,15 @@ else
 noinst_PROGRAMS = DiscreteHedging
 endif
 DiscreteHedging_SOURCES = DiscreteHedging.cpp
-DiscreteHedging_LDADD = ../../ql/libQuantLib.la
+DiscreteHedging_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
+    CMakeLists.txt \
     DiscreteHedging.dev \
     DiscreteHedging_vc8.vcproj \
     DiscreteHedging_vc9.vcproj \
-    DiscreteHedging_vc10.vcxproj \
-    DiscreteHedging_vc10.vcxproj.filters \
-    DiscreteHedging_vc11.vcxproj \
-    DiscreteHedging_vc11.vcxproj.filters \
+    DiscreteHedging.vcxproj \
+    DiscreteHedging.vcxproj.filters \
     ReadMe.txt
 
 .PHONY: examples check-examples

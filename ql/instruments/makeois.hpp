@@ -47,11 +47,13 @@ namespace QuantLib {
         MakeOIS& receiveFixed(bool flag = true);
         MakeOIS& withType(OvernightIndexedSwap::Type type);
         MakeOIS& withNominal(Real n);
-        MakeOIS& withSettlementDays(Natural fixingDays);
+
+        MakeOIS& withSettlementDays(Natural settlementDays);
         MakeOIS& withEffectiveDate(const Date&);
         MakeOIS& withTerminationDate(const Date&);
-        MakeOIS& withPaymentFrequency(Frequency f);
         MakeOIS& withRule(DateGeneration::Rule r);
+
+        MakeOIS& withPaymentFrequency(Frequency f);
         MakeOIS& withEndOfMonth(bool flag = true);
 
         MakeOIS& withFixedLegDayCount(const DayCounter& dc);
@@ -60,17 +62,21 @@ namespace QuantLib {
 
         MakeOIS& withDiscountingTermStructure(
                   const Handle<YieldTermStructure>& discountingTermStructure);
+        MakeOIS& withPricingEngine(
+                              const boost::shared_ptr<PricingEngine>& engine);
       private:
         Period swapTenor_;
         boost::shared_ptr<OvernightIndex> overnightIndex_;
         Rate fixedRate_;
         Period forwardStart_;
 
-        Natural fixingDays_;
+        Natural settlementDays_;
         Date effectiveDate_, terminationDate_;
+        Calendar calendar_;
+
         Frequency paymentFrequency_;
         DateGeneration::Rule rule_;
-        bool endOfMonth_;
+        bool endOfMonth_, isDefaultEOM_;
 
         OvernightIndexedSwap::Type type_;
         Real nominal_;

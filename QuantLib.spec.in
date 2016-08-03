@@ -30,8 +30,8 @@ and developers.
 %package devel
 Summary: The header files and the static library.
 Group: Development/Libraries
-Requires: QuantLib = %{version}, boost >= 1.39.0
-BuildRequires: boost-devel >= 1.39.0
+Requires: QuantLib = %{version}, boost >= 1.43.0
+BuildRequires: boost-devel >= 1.43.0
 
 %description devel
 QuantLib is an open source C++ library for financial quantitative analysts
@@ -43,8 +43,8 @@ use the QuantLib C++ libraries.
 %package test-suite
 Summary: The test-suite to check the setup of quantlib installation.
 Group: Development/Tools
-Requires: QuantLib = %{version}, boost-test >= 1.39.0
-BuildRequires: boost-test >= 1.39.0
+Requires: QuantLib = %{version}, boost-test >= 1.43.0
+BuildRequires: boost-test >= 1.43.0
 
 %description test-suite
 QuantLib is an open source C++ library for financial quantitative analysts

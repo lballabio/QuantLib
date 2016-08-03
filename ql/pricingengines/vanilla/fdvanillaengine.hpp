@@ -68,7 +68,6 @@ namespace QuantLib {
         boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size timeSteps_, gridPoints_;
         bool timeDependent_;
-        mutable Real requiredGridValue_;
         mutable Date exerciseDate_;
         mutable boost::shared_ptr<Payoff> payoff_;
         mutable TridiagonalOperator finiteDifferenceOperator_;

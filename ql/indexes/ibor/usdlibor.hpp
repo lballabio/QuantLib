@@ -33,9 +33,9 @@
 namespace QuantLib {
 
     //! %USD %LIBOR rate
-    /*! US Dollar LIBOR fixed by BBA.
+    /*! US Dollar LIBOR fixed by ICE.
 
-        See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
+        See <https://www.theice.com/marketdata/reports/170>.
     */
     class USDLibor : public Libor {
       public:
@@ -49,7 +49,7 @@ namespace QuantLib {
                 Actual360(), h) {}
     };
 
-    //! base class for the one day deposit BBA %USD %LIBOR indexes
+    //! base class for the one day deposit ICE %USD %LIBOR indexes
     class DailyTenorUSDLibor : public DailyTenorLibor {
       public:
         DailyTenorUSDLibor(Natural settlementDays,

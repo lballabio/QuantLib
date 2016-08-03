@@ -30,6 +30,9 @@
 
 class MarketModelTest {
   public:
+    enum MarketModelType { ExponentialCorrelationFlatVolatility,
+        ExponentialCorrelationAbcdVolatility/*, CalibratedMM*/
+    };
     static void testInverseFloater();
     static void testPeriodAdapter();
     static void testAllMultiStepProducts();
@@ -37,7 +40,8 @@ class MarketModelTest {
     static void testOneStepNormalForwardsAndOptionlets();
     static void testCallableSwapNaif();
     static void testCallableSwapLS();
-    static void testCallableSwapAnderson();
+    static void testCallableSwapAnderson(
+        MarketModelType marketModel, unsigned testedFactor);
     static void testGreeks();
     static void testPathwiseGreeks();
     static void testPathwiseVegas();

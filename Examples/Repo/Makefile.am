@@ -8,16 +8,15 @@ else
 noinst_PROGRAMS = Repo
 endif
 Repo_SOURCES = Repo.cpp
-Repo_LDADD = ../../ql/libQuantLib.la
+Repo_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
+    CMakeLists.txt \
     Repo.dev \
     Repo_vc8.vcproj \
     Repo_vc9.vcproj \
-    Repo_vc10.vcxproj \
-    Repo_vc10.vcxproj.filters \
-    Repo_vc11.vcxproj \
-    Repo_vc11.vcxproj.filters \
+    Repo.vcxproj \
+    Repo.vcxproj.filters \
     ReadMe.txt
 
 .PHONY: examples check-examples

@@ -23,7 +23,17 @@
 #include <ql/timeseries.hpp>
 #include <ql/prices.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
+
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
+
 #include <boost/unordered_map.hpp>
+
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic pop
+#endif
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -90,7 +100,7 @@ namespace boost {
     template<>
     struct hash<Date> : std::unary_function<Date, std::size_t> {
         size_t operator()(const Date& _Keyval) const {
-            return boost::hash<BigInteger>()(_Keyval.serialNumber());
+            return boost::hash<Date::serial_type>()(_Keyval.serialNumber());
         }
     };
 

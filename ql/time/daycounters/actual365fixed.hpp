@@ -50,7 +50,7 @@ namespace QuantLib {
                               const Date& d2,
                               const Date&,
                               const Date&) const {
-                return dayCount(d1,d2)/365.0;
+                return daysBetween(d1,d2)/365.0;
             }
         };
       public:

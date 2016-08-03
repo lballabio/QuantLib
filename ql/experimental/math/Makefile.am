@@ -4,17 +4,41 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
-    adaptiverungekutta.hpp \
     claytoncopularng.hpp \
+    convolvedstudentt.hpp \
     expm.hpp \
     farliegumbelmorgensterncopularng.hpp \
+    fireflyalgorithm.hpp \
     frankcopularng.hpp \
-	polarstudenttrng.hpp \
-    simulatedannealing.hpp \
+    gaussiancopulapolicy.hpp \
+    hybridsimulatedannealing.hpp \
+    hybridsimulatedannealingfunctors.hpp \
+    isotropicrandomwalk.hpp \
+    laplaceinterpolation.hpp \
+    latentmodel.hpp \
+    levyflightdistribution.hpp \
+    moorepenroseinverse.hpp \
+    multidimintegrator.hpp \
+    multidimquadrature.hpp \
+    numericaldifferentiation.hpp \
+    particleswarmoptimization.hpp \
+    piecewisefunction.hpp \
+    piecewiseintegral.hpp \
+    polarstudenttrng.hpp \
+    tcopulapolicy.hpp \
     zigguratrng.hpp
 
 libMath_la_SOURCES = \
-	expm.cpp \
+    convolvedstudentt.cpp \
+    expm.cpp \
+    fireflyalgorithm.cpp \
+    gaussiancopulapolicy.cpp \
+    multidimintegrator.cpp \
+    multidimquadrature.cpp \
+    numericaldifferentiation.cpp \
+    particleswarmoptimization.cpp \
+    piecewiseintegral.cpp \
+    tcopulapolicy.cpp \
     zigguratrng.cpp
 
 noinst_LTLIBRARIES = libMath.la

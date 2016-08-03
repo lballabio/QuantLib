@@ -43,8 +43,8 @@ namespace QuantLib {
         //! \note This is inherited from the event class
         virtual Date date() const = 0;
         //! returns true if an event has already occurred before a date
-        /*! overloads Event::hasOccurred in order to take QL_TODAYS_PAYMENTS
-            in account
+        /*! overloads Event::hasOccurred in order to take
+            Settings::includeTodaysCashflows in account
         */
         bool hasOccurred(
                     const Date& refDate = Date(),

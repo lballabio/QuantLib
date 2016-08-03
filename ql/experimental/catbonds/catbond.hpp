@@ -33,15 +33,15 @@
 
 namespace QuantLib {
 
-	class CatBond : public Bond
-	{
-	public:
+    class CatBond : public Bond
+    {
+    public:
         class arguments;
         class results;
         class engine;
 
-		CatBond(Natural settlementDays, 
-			    const Calendar& calendar,
+        CatBond(Natural settlementDays, 
+                const Calendar& calendar,
                 const Date& issueDate,
                 boost::shared_ptr<NotionalRisk> notionalRisk)       
                 : Bond(settlementDays, calendar, issueDate), 
@@ -61,7 +61,7 @@ namespace QuantLib {
         mutable Real lossProbability_;
         mutable Real exhaustionProbability_;
         mutable Real expectedLoss_;
-	};
+    };
 
     class CatBond::arguments : public Bond::arguments {
       public:
@@ -138,7 +138,6 @@ namespace QuantLib {
                          DateGeneration::Rule rule = DateGeneration::Backward,
                          bool endOfMonth = false);
     };
-	
 
 }
 

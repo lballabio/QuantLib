@@ -64,10 +64,6 @@ namespace QuantLib {
         //! modeling uncertainty as definied in Numerical Recipes
         const Array& error()          const { return err_;}
 
-        /*! \deprecated Use coefficients() instead */
-        QL_DEPRECATED
-        const Array& a() const     { return a_;  }
-
         Size size() const { return residuals_.size(); }
 
         Size dim() const { return a_.size(); }
@@ -128,7 +124,7 @@ namespace QuantLib {
         const Matrix& V = svd.V();
         const Matrix& U = svd.U();
         const Array& w = svd.singularValues();
-        const Real threshold = n*QL_EPSILON;
+        const Real threshold = n * QL_EPSILON * svd.singularValues()[0];
 
         for (i=0; i<m; ++i) {
             if (w[i] > threshold) {

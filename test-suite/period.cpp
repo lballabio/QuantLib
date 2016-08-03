@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007, 2014 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -118,18 +118,6 @@ void PeriodTest::testWeeksDaysAlgebra() {
         BOOST_ERROR("normalization error: SevenDays.units()" <<
                     " is " << SevenDays.units() <<
                     " instead of " << Days);
-
-    Period NormalizedSevenDays(7, Days);
-    NormalizedSevenDays.normalize();
-    if (NormalizedSevenDays.length()!=1)
-        BOOST_ERROR("normalization error: NormalizedSevenDays.length()" <<
-                    " is " << NormalizedSevenDays.length() <<
-                    " instead of 1");
-    if (NormalizedSevenDays.units()!=Weeks)
-        BOOST_ERROR("normalization error: NormalizedSevenDays.units()" <<
-                    " is " << NormalizedSevenDays.units() <<
-                    " instead of " << Weeks);
-
 }
 
 test_suite* PeriodTest::suite() {

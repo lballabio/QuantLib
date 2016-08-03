@@ -8,16 +8,15 @@ else
 noinst_PROGRAMS = SwapValuation
 endif
 SwapValuation_SOURCES = swapvaluation.cpp
-SwapValuation_LDADD = ../../ql/libQuantLib.la
+SwapValuation_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
+    CMakeLists.txt \
     Swap.dev \
     Swap_vc8.vcproj \
     Swap_vc9.vcproj \
-    Swap_vc10.vcxproj \
-    Swap_vc10.vcxproj.filters \
-    Swap_vc11.vcxproj \
-    Swap_vc11.vcxproj.filters \
+    Swap.vcxproj \
+    Swap.vcxproj.filters \
     README.txt
 
 .PHONY: examples check-examples

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2011 Klaus Spanderen
+ Copyright (C) 2014 Ralph Schreyer
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -37,18 +38,23 @@ namespace QuantLib {
         : public GenericEngine<VanillaStorageOption::arguments,
                                VanillaStorageOption::results> {
       public:
-          FdSimpleExtOUStorageEngine(
-                  const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& p,
-                  const boost::shared_ptr<YieldTermStructure>& rTS,
-                  Size tGrid = 50, Size xGrid = 100,
-                  const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
+        typedef std::vector<std::pair<Time, Real> > Shape;
+
+
+        FdSimpleExtOUStorageEngine(
+          const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& p,
+          const boost::shared_ptr<YieldTermStructure>& rTS,
+          Size tGrid = 50, Size xGrid = 100, Size yGrid = Null<Size>(),
+          const boost::shared_ptr<Shape>& shape = boost::shared_ptr<Shape>(),
+          const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
 
         void calculate() const;
 
       private:
         const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> process_;
         const boost::shared_ptr<YieldTermStructure> rTS_;
-        const Size tGrid_, xGrid_;
+        const Size tGrid_, xGrid_, yGrid_;
+        const boost::shared_ptr<Shape> shape_;
         const FdmSchemeDesc schemeDesc_;
     };
 }

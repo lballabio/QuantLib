@@ -4,6 +4,8 @@
  Copyright (C) 2004, 2009 Ferdinando Ametrano
  Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2015 Maddalena Zanzi
+ Copyright (c) 2015 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,7 +26,10 @@
 #include <ql/time/date.hpp>
 #include <ql/time/imm.hpp>
 #include <ql/time/ecb.hpp>
+#include <ql/time/asx.hpp>
 #include <ql/utilities/dataparsers.hpp>
+
+#include <sstream>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -147,22 +152,94 @@ void DateTest::immDates() {
     }
 }
 
+void DateTest::asxDates() {
+    BOOST_TEST_MESSAGE("Testing ASX dates...");
+
+    const std::string ASXcodes[] = {
+        "F0", "G0", "H0", "J0", "K0", "M0", "N0", "Q0", "U0", "V0", "X0", "Z0",
+        "F1", "G1", "H1", "J1", "K1", "M1", "N1", "Q1", "U1", "V1", "X1", "Z1",
+        "F2", "G2", "H2", "J2", "K2", "M2", "N2", "Q2", "U2", "V2", "X2", "Z2",
+        "F3", "G3", "H3", "J3", "K3", "M3", "N3", "Q3", "U3", "V3", "X3", "Z3",
+        "F4", "G4", "H4", "J4", "K4", "M4", "N4", "Q4", "U4", "V4", "X4", "Z4",
+        "F5", "G5", "H5", "J5", "K5", "M5", "N5", "Q5", "U5", "V5", "X5", "Z5",
+        "F6", "G6", "H6", "J6", "K6", "M6", "N6", "Q6", "U6", "V6", "X6", "Z6",
+        "F7", "G7", "H7", "J7", "K7", "M7", "N7", "Q7", "U7", "V7", "X7", "Z7",
+        "F8", "G8", "H8", "J8", "K8", "M8", "N8", "Q8", "U8", "V8", "X8", "Z8",
+        "F9", "G9", "H9", "J9", "K9", "M9", "N9", "Q9", "U9", "V9", "X9", "Z9"
+    };
+
+    Date counter = Date::minDate();
+    // 10 years of futures must not exceed Date::maxDate
+    Date last = Date::maxDate() - 121 * Months;
+    Date asx;
+
+    while (counter <= last) {
+        asx = ASX::nextDate(counter, false);
+
+        // check that asx is greater than counter
+        if (asx <= counter)
+            BOOST_FAIL("\n  "
+            << asx.weekday() << " " << asx
+            << " is not greater than "
+            << counter.weekday() << " " << counter);
+
+        // check that asx is an ASX date
+        if (!ASX::isASXdate(asx, false))
+            BOOST_FAIL("\n  "
+            << asx.weekday() << " " << asx
+            << " is not an ASX date (calculated from "
+            << counter.weekday() << " " << counter << ")");
+
+        // check that asx is <= to the next ASX date in the main cycle
+        if (asx>ASX::nextDate(counter, true))
+            BOOST_FAIL("\n  "
+            << asx.weekday() << " " << asx
+            << " is not less than or equal to the next future in the main cycle "
+            << ASX::nextDate(counter, true));
+
+        //// check that if counter is an ASX date, then asx==counter
+        //if (ASX::isASXdate(counter, false) && (asx!=counter))
+        //    BOOST_FAIL("\n  "
+        //               << counter.weekday() << " " << counter
+        //               << " is already an ASX date, while nextASX() returns "
+        //               << asx.weekday() << " " << asx);
+
+        // check that for every date ASXdate is the inverse of ASXcode
+        if (ASX::date(ASX::code(asx), counter) != asx)
+            BOOST_FAIL("\n  "
+            << ASX::code(asx)
+            << " at calendar day " << counter
+            << " is not the ASX code matching " << asx);
+
+        // check that for every date the 120 ASX codes refer to future dates
+        for (int i = 0; i<120; ++i) {
+            if (ASX::date(ASXcodes[i], counter)<counter)
+                BOOST_FAIL("\n  "
+                << ASX::date(ASXcodes[i], counter)
+                << " is wrong for " << ASXcodes[i]
+                << " at reference date " << counter);
+        }
+
+        counter = counter + 1;
+    }
+}
+
 void DateTest::testConsistency() {
 
     BOOST_TEST_MESSAGE("Testing dates...");
 
-    BigInteger minDate = Date::minDate().serialNumber()+1,
-               maxDate = Date::maxDate().serialNumber();
+    Date::serial_type minDate = Date::minDate().serialNumber()+1,
+                      maxDate = Date::maxDate().serialNumber();
 
-    BigInteger dyold = Date(minDate-1).dayOfYear(),
-               dold  = Date(minDate-1).dayOfMonth(),
-               mold  = Date(minDate-1).month(),
-               yold  = Date(minDate-1).year(),
-               wdold = Date(minDate-1).weekday();
+    Date::serial_type dyold = Date(minDate-1).dayOfYear(),
+                      dold  = Date(minDate-1).dayOfMonth(),
+                      mold  = Date(minDate-1).month(),
+                      yold  = Date(minDate-1).year(),
+                      wdold = Date(minDate-1).weekday();
 
-    for (BigInteger i=minDate; i<=maxDate; i++) {
+    for (Date::serial_type i=minDate; i<=maxDate; i++) {
         Date t(i);
-        BigInteger serial = t.serialNumber();
+        Date::serial_type serial = t.serialNumber();
 
         // check serial number consistency
         if (serial != i)
@@ -298,13 +375,74 @@ void DateTest::parseDates() {
     }
 }
 
+void DateTest::intraday() {
+#ifdef QL_HIGH_RESOLUTION_DATE
+
+    BOOST_TEST_MESSAGE("Testing intraday information of dates...");
+
+    const Date d1 = Date(12, February, 2015, 10, 45, 12, 1234, 76253);
+
+    BOOST_CHECK_MESSAGE(d1.year() == 2015, "failed to reproduce year");
+    BOOST_CHECK_MESSAGE(d1.month() == February, "failed to reproduce month");
+    BOOST_CHECK_MESSAGE(d1.dayOfMonth() == 12, "failed to reproduce day");
+    BOOST_CHECK_MESSAGE(d1.hours() == 10, "failed to reproduce hour of day");
+    BOOST_CHECK_MESSAGE(d1.minutes() == 45,
+        "failed to reproduce minute of hour");
+    BOOST_CHECK_MESSAGE(d1.seconds() == 13,
+        "failed to reproduce second of minute");
+
+    if (Date::ticksPerSecond() == 1000)
+        BOOST_CHECK_MESSAGE(d1.fractionOfSecond() == 0.234,
+            "failed to reproduce fraction of second");
+    else if (Date::ticksPerSecond() >= 1000000)
+        BOOST_CHECK_MESSAGE(d1.fractionOfSecond() == (234000 + 76253)/1000000.0,
+        "failed to reproduce fraction of second");
+
+    if (Date::ticksPerSecond() >= 1000)
+        BOOST_CHECK_MESSAGE(d1.milliseconds() == 234 + 76,
+            "failed to reproduce number of milliseconds");
+
+    if (Date::ticksPerSecond() >= 1000000)
+        BOOST_CHECK_MESSAGE(d1.microseconds() == 253,
+            "failed to reproduce number of microseconds");
+
+    const Date d2 = Date(28, February, 2015, 50, 165, 476, 1234, 253);
+    BOOST_CHECK_MESSAGE(d2.year() == 2015, "failed to reproduce year");
+    BOOST_CHECK_MESSAGE(d2.month() == March, "failed to reproduce month");
+    BOOST_CHECK_MESSAGE(d2.dayOfMonth() == 2, "failed to reproduce day");
+    BOOST_CHECK_MESSAGE(d2.hours() == 4, "failed to reproduce hour of day");
+    BOOST_CHECK_MESSAGE(d2.minutes() == 52,
+        "failed to reproduce minute of hour");
+    BOOST_CHECK_MESSAGE(d2.seconds() == 57,
+        "failed to reproduce second of minute");
+
+    if (Date::ticksPerSecond() >= 1000)
+        BOOST_CHECK_MESSAGE(d2.milliseconds() == 234,
+            "failed to reproduce number of milliseconds");
+    if (Date::ticksPerSecond() >= 1000000)
+        BOOST_CHECK_MESSAGE(d2.microseconds() == 253,
+            "failed to reproduce number of microseconds");
+
+    std::ostringstream s;
+    s << io::iso_datetime(Date(7, February, 2015, 1, 4, 2, 3, 4));
+
+    BOOST_CHECK_MESSAGE(s.str() == std::string("2015-02-07T01:04:02,003004"),
+        "datetime to string failed to reproduce expected result");
+
+#endif
+}
+
+
 test_suite* DateTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Date tests");
     suite->add(QUANTLIB_TEST_CASE(&DateTest::testConsistency));
     suite->add(QUANTLIB_TEST_CASE(&DateTest::ecbDates));
     suite->add(QUANTLIB_TEST_CASE(&DateTest::immDates));
+    suite->add(QUANTLIB_TEST_CASE(&DateTest::asxDates));
     suite->add(QUANTLIB_TEST_CASE(&DateTest::isoDates));
     suite->add(QUANTLIB_TEST_CASE(&DateTest::parseDates));
+    suite->add(QUANTLIB_TEST_CASE(&DateTest::intraday));
+
     return suite;
 }
 

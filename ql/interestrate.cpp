@@ -45,7 +45,7 @@ namespace QuantLib {
 
     Real InterestRate::compoundFactor(Time t) const {
 
-        QL_REQUIRE(t>=0.0, "negative time not allowed");
+        QL_REQUIRE(t>=0.0, "negative time (" << t << ") not allowed");
         QL_REQUIRE(r_ != Null<Rate>(), "null interest rate");
         switch (comp_) {
           case Simple:

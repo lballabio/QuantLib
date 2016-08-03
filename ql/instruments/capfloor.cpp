@@ -1,10 +1,11 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2014 Ferdinando Ametrano
  Copyright (C) 2006 François du Vignaud
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006, 2007 StatPro Italia srl
+ Copyright (C) 2016 Paolo Mazzocchi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,6 +23,7 @@
 
 #include <ql/instruments/capfloor.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+#include <ql/pricingengines/capfloor/bacheliercapfloorengine.hpp>
 #include <ql/math/solvers1d/newtonsafe.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/cashflows/cashflows.hpp>
@@ -38,7 +40,9 @@ namespace QuantLib {
           public:
             ImpliedVolHelper(const CapFloor&,
                              const Handle<YieldTermStructure>& discountCurve,
-                             Real targetValue);
+                             Real targetValue,
+                             Real displacement,
+                             VolatilityType type);
             Real operator()(Volatility x) const;
             Real derivative(Volatility x) const;
           private:
@@ -52,15 +56,32 @@ namespace QuantLib {
         ImpliedVolHelper::ImpliedVolHelper(
                               const CapFloor& cap,
                               const Handle<YieldTermStructure>& discountCurve,
-                              Real targetValue)
+                              Real targetValue,
+                              Real displacement,
+                              VolatilityType type)
         : discountCurve_(discountCurve), targetValue_(targetValue) {
 
             // set an implausible value, so that calculation is forced
             // at first ImpliedVolHelper::operator()(Volatility x) call
             vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(-1));
             Handle<Quote> h(vol_);
-            engine_ = boost::shared_ptr<PricingEngine>(new
-                                    BlackCapFloorEngine(discountCurve_, h));
+
+            switch (type) {
+            case ShiftedLognormal:
+                engine_ = boost::shared_ptr<PricingEngine>(new
+                    BlackCapFloorEngine(discountCurve_, h, Actual365Fixed(),
+                                                                displacement));
+                break;
+            case Normal:
+                engine_ = boost::shared_ptr<PricingEngine>(new
+                    BachelierCapFloorEngine(discountCurve_, h, 
+                                                            Actual365Fixed()));
+                break;
+            default:
+                QL_FAIL("unknown VolatilityType (" << type << ")");
+                break;
+            }
+
             cap.setupArguments(engine_->getArguments());
 
             results_ =
@@ -303,15 +324,30 @@ namespace QuantLib {
                                            Real accuracy,
                                            Natural maxEvaluations,
                                            Volatility minVol,
-                                           Volatility maxVol) const {
+                                           Volatility maxVol,
+                                           VolatilityType type,
+                                           Real displacement) const {
         //calculate();
         QL_REQUIRE(!isExpired(), "instrument expired");
 
-        ImpliedVolHelper f(*this, d, targetValue);
+        ImpliedVolHelper f(*this, d, targetValue, displacement, type);
         //Brent solver;
         NewtonSafe solver;
         solver.setMaxEvaluations(maxEvaluations);
         return solver.solve(f, accuracy, guess, minVol, maxVol);
+    }
+
+    Volatility CapFloor::impliedVolatility(Real targetValue,
+                                           const Handle<YieldTermStructure>& d,
+                                           Volatility guess,
+                                           Real accuracy,
+                                           Natural maxEvaluations,
+                                           Volatility minVol,
+                                           Volatility maxVol,
+                                           Real displacement) const {
+        return impliedVolatility(targetValue, d, guess, accuracy,
+                                 maxEvaluations, minVol, maxVol,
+                                 ShiftedLognormal, displacement);
     }
 
 }

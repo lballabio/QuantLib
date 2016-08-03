@@ -45,7 +45,7 @@ namespace QuantLib {
         public StepCondition<array_type> {
       public:
         void applyTo(Array &a, Time) const {
-            #pragma omp parallel for
+            //#pragma omp parallel for
             for (Size i = 0; i < a.size(); i++) {
                 a[i] =
                     applyToValue(a[i], getValue(a,i));

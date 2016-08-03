@@ -4,6 +4,7 @@
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2007 Cristina Duminuco
  Copyright (C) 2011 Ferdinando Ametrano
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,6 +27,8 @@
 #include <ql/cashflows/digitaliborcoupon.hpp>
 #include <ql/cashflows/rangeaccrual.hpp>
 #include <ql/experimental/coupons/subperiodcoupons.hpp> /* internal */
+#include <ql/experimental/coupons/cmsspreadcoupon.hpp>  /* internal */
+#include <ql/experimental/coupons/digitalcmsspreadcoupon.hpp>  /* internal */
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 
@@ -87,10 +90,15 @@ namespace QuantLib {
             Real stdDev =
                 std::sqrt(capletVolatility()->blackVariance(fixingDate,
                                                             effStrike));
-            Rate fixing = blackFormula(optionType,
-                                       effStrike,
-                                       adjustedFixing(),
-                                       stdDev);
+            Real shift = capletVolatility()->displacement();
+            bool shiftedLn =
+                capletVolatility()->volatilityType() == ShiftedLognormal;
+            Rate fixing =
+                shiftedLn
+                    ? blackFormula(optionType, effStrike, adjustedFixing(),
+                                   stdDev, 1.0, shift)
+                    : bachelierBlackFormula(optionType, effStrike,
+                                            adjustedFixing(), stdDev, 1.0);
             return fixing * accrualPeriod_ * discount_;
         }
     }
@@ -100,7 +108,7 @@ namespace QuantLib {
         if (fixing == Null<Rate>())
             fixing = coupon_->indexFixing();
 
-        if (!coupon_->isInArrears())
+        if (!coupon_->isInArrears() && timingAdjustment_ == Black76)
             return fixing;
 
         QL_REQUIRE(!capletVolatility().empty(),
@@ -109,14 +117,44 @@ namespace QuantLib {
         Date referenceDate = capletVolatility()->referenceDate();
         if (d1 <= referenceDate)
             return fixing;
-
-        // see Hull, 4th ed., page 550
         Date d2 = index_->valueDate(d1);
         Date d3 = index_->maturityDate(d2);
         Time tau = index_->dayCounter().yearFraction(d2, d3);
         Real variance = capletVolatility()->blackVariance(d1, fixing);
-        Spread adjustement = fixing*fixing*variance*tau/(1.0+fixing*tau);
-        return fixing + adjustement;
+
+        Real shift = capletVolatility()->displacement();
+        bool shiftedLn =
+            capletVolatility()->volatilityType() == ShiftedLognormal;
+
+        Spread adjustment = shiftedLn
+                                ? (fixing + shift) * (fixing + shift) *
+                                      variance * tau / (1.0 + fixing * tau)
+                                : variance * tau / (1.0 + fixing * tau);
+
+        if (timingAdjustment_ == BivariateLognormal) {
+            QL_REQUIRE(!correlation_.empty(), "no correlation given");
+            Date d4 = coupon_->date();
+            Date d5 = d4 >= d3 ? d3 : d2;
+            Time tau2 = index_->dayCounter().yearFraction(d5, d4);
+            if (d4 >= d3)
+                adjustment = 0.0;
+            // if d4 < d2 (payment before index start) we just apply the
+            // Black76 in arrears adjustment
+            if (tau2 > 0.0) {
+                Real fixing2 =
+                    (index_->forwardingTermStructure()->discount(d5) /
+                         index_->forwardingTermStructure()->discount(d4) -
+                     1.0) /
+                    tau2;
+                adjustment -= shiftedLn
+                                  ? correlation_->value() * tau2 * variance *
+                                        (fixing + shift) * (fixing2 + shift) /
+                                        (1.0 + fixing2 * tau2)
+                                  : correlation_->value() * tau2 * variance /
+                                        (1.0 + fixing2 * tau2);
+            }
+        }
+        return fixing + adjustment;
     }
 
 //===========================================================================//
@@ -128,12 +166,17 @@ namespace QuantLib {
         class PricerSetter : public AcyclicVisitor,
                              public Visitor<CashFlow>,
                              public Visitor<Coupon>,
+                             public Visitor<FloatingRateCoupon>,
+                             public Visitor<CappedFlooredCoupon>,
                              public Visitor<IborCoupon>,
                              public Visitor<CmsCoupon>,
+                             public Visitor<CmsSpreadCoupon>,
                              public Visitor<CappedFlooredIborCoupon>,
                              public Visitor<CappedFlooredCmsCoupon>,
+                             public Visitor<CappedFlooredCmsSpreadCoupon>,
                              public Visitor<DigitalIborCoupon>,
                              public Visitor<DigitalCmsCoupon>,
+                             public Visitor<DigitalCmsSpreadCoupon>,
                              public Visitor<RangeAccrualFloatersCoupon>,
                              public Visitor<SubPeriodsCoupon> {
           private:
@@ -145,12 +188,17 @@ namespace QuantLib {
 
             void visit(CashFlow& c);
             void visit(Coupon& c);
+            void visit(FloatingRateCoupon& c);
+            void visit(CappedFlooredCoupon& c);
             void visit(IborCoupon& c);
             void visit(CappedFlooredIborCoupon& c);
             void visit(DigitalIborCoupon& c);
             void visit(CmsCoupon& c);
+            void visit(CmsSpreadCoupon& c);
             void visit(CappedFlooredCmsCoupon& c);
+            void visit(CappedFlooredCmsSpreadCoupon& c);
             void visit(DigitalCmsCoupon& c);
+            void visit(DigitalCmsSpreadCoupon& c);
             void visit(RangeAccrualFloatersCoupon& c);
             void visit(SubPeriodsCoupon& c);
         };
@@ -161,6 +209,14 @@ namespace QuantLib {
 
         void PricerSetter::visit(Coupon&) {
             // nothing to do
+        }
+
+        void PricerSetter::visit(FloatingRateCoupon& c) {
+            c.setPricer(pricer_);
+        }
+
+        void PricerSetter::visit(CappedFlooredCoupon& c) {
+            c.setPricer(pricer_);
         }
 
         void PricerSetter::visit(IborCoupon& c) {
@@ -195,6 +251,14 @@ namespace QuantLib {
             c.setPricer(cmsCouponPricer);
         }
 
+        void PricerSetter::visit(CmsSpreadCoupon& c) {
+            const boost::shared_ptr<CmsSpreadCouponPricer> cmsSpreadCouponPricer =
+                boost::dynamic_pointer_cast<CmsSpreadCouponPricer>(pricer_);
+            QL_REQUIRE(cmsSpreadCouponPricer,
+                       "pricer not compatible with CMS spread coupon");
+            c.setPricer(cmsSpreadCouponPricer);
+        }
+
         void PricerSetter::visit(CappedFlooredCmsCoupon& c) {
             const boost::shared_ptr<CmsCouponPricer> cmsCouponPricer =
                 boost::dynamic_pointer_cast<CmsCouponPricer>(pricer_);
@@ -203,12 +267,28 @@ namespace QuantLib {
             c.setPricer(cmsCouponPricer);
         }
 
+        void PricerSetter::visit(CappedFlooredCmsSpreadCoupon& c) {
+            const boost::shared_ptr<CmsSpreadCouponPricer> cmsSpreadCouponPricer =
+                boost::dynamic_pointer_cast<CmsSpreadCouponPricer>(pricer_);
+            QL_REQUIRE(cmsSpreadCouponPricer,
+                       "pricer not compatible with CMS spread coupon");
+            c.setPricer(cmsSpreadCouponPricer);
+        }
+
         void PricerSetter::visit(DigitalCmsCoupon& c) {
             const boost::shared_ptr<CmsCouponPricer> cmsCouponPricer =
                 boost::dynamic_pointer_cast<CmsCouponPricer>(pricer_);
             QL_REQUIRE(cmsCouponPricer,
                        "pricer not compatible with CMS coupon");
             c.setPricer(cmsCouponPricer);
+        }
+
+        void PricerSetter::visit(DigitalCmsSpreadCoupon& c) {
+            const boost::shared_ptr<CmsSpreadCouponPricer> cmsSpreadCouponPricer =
+                boost::dynamic_pointer_cast<CmsSpreadCouponPricer>(pricer_);
+            QL_REQUIRE(cmsSpreadCouponPricer,
+                       "pricer not compatible with CMS spread coupon");
+            c.setPricer(cmsSpreadCouponPricer);
         }
 
         void PricerSetter::visit(RangeAccrualFloatersCoupon& c) {

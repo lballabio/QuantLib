@@ -38,7 +38,7 @@ namespace QuantLib {
 
     class TestCurve : public Curve {
     public:
-        Real operator()(Real x) const { return sin(x); }
+        Real operator()(Real x) const { return std::sin(x); }
     };
 
 }

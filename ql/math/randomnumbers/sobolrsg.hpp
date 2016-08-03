@@ -41,7 +41,7 @@ namespace QuantLib {
 
         21 200 primitive polynomials modulo two are provided in QuantLib.
         Jäckel has calculated 8 129 334 polynomials: if you need that many
-        dimensions you can replace the primitivepolynomials.c file included
+        dimensions you can replace the primitivepolynomials.cpp file included
         in QuantLib with the one provided in the CD of the "Monte Carlo
         Methods in Finance" book.
 

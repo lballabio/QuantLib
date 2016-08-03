@@ -24,11 +24,18 @@
 #include <ql/utilities/null.hpp>
 #include <ql/time/period.hpp>
 #include <ql/errors.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
 #ifndef x64
 #include <boost/lexical_cast.hpp>
 #endif
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic pop
+#endif
 #include <locale>
 #include <cctype>
 #if defined(BOOST_NO_STDC_NAMESPACE)
@@ -98,49 +105,6 @@ namespace QuantLib {
         }
 
         return Period(n, units);
-    }
-
-    std::vector<std::string> DateParser::split(const std::string& str,
-                                               char delim) {
-        std::vector<std::string> list;
-        Size sx= str.find(delim), so=0;
-
-        while (sx != std::string::npos) {
-            list.push_back(str.substr(so,sx));
-            so += sx+1;
-            sx = str.substr(so).find(delim);
-        }
-        list.push_back(str.substr(so));
-        return list;
-    }
-
-
-    Date DateParser::parse(const std::string& str, const std::string& fmt) {
-        std::vector<std::string> slist;
-        std::vector<std::string> flist;
-        Integer d=0, m=0, y=0;
-
-        slist = split(str,'/');
-        flist = split(fmt,'/');
-        if (slist.size() != flist.size())
-            return Null<Date>();
-        Size i;
-        for (i=0;i<flist.size();i++) {
-            std::string sub = flist[i];
-            if (boost::algorithm::to_lower_copy(sub) == "dd")
-                //  d = boost::lexical_cast<Integer>(slist[i]);
-                d = io::to_integer(slist[i]);
-            else if (boost::algorithm::to_lower_copy(sub) == "mm")
-                //     m = boost::lexical_cast<Integer>(slist[i]);
-                m = io::to_integer( slist[i]);
-            else if (boost::algorithm::to_lower_copy(sub) == "yyyy") {
-                //     y = boost::lexical_cast<Integer>(slist[i]);
-                y = io::to_integer(slist[i]);
-                if (y < 100)
-                    y += 2000;
-            }
-        }
-        return Date(d,Month(m),y);
     }
 
     Date DateParser::parseFormatted(const std::string& str,

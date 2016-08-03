@@ -123,31 +123,20 @@ namespace QuantLib {
             Real totalValue = std::pow(1.0+coupon, nPeriods);
             for(Size i = 0; i < (Size)nPeriods-1; ++i) {
                 compoundedInterest *= (1.0 + coupon);
-                Real currentNotional =
-                    initialNotional*(compoundedInterest - (compoundedInterest-1.0)/(1.0 - 1.0/totalValue));
+                Real currentNotional = 0.0;
+                if(coupon < 1.0e-12) {
+                    currentNotional =
+                       initialNotional*(1.0 - (i+1.0)/nPeriods);
+                }
+                else {
+                    currentNotional =
+                       initialNotional*(compoundedInterest - (compoundedInterest-1.0)/(1.0 - 1.0/totalValue));
+                }
                 notionals[i+1] = currentNotional;
             }
             notionals.back() = 0.0;
             return notionals;
         }
-
-        //std::vector<Real> sinkingRedemptions(const Period& maturityTenor,
-        //                                     const Frequency& sinkingFrequency,
-        //                                     Rate couponRate,
-        //                                     Real initialNotional) {
-
-        //    std::vector<Real> notionals =
-        //        sinkingNotionals(maturityTenor, sinkingFrequency,
-        //                         couponRate, initialNotional);
-        //    Size nPeriods = notionals.size()-1;
-        //    std::vector<Real> redemptions(nPeriods);
-
-        //    for(Size i = 0; i < nPeriods; ++i) {
-        //        redemptions[i] =
-        //            (notionals[i] - notionals[i+1]) / initialNotional * 100;
-        //    }
-        //    return redemptions;
-        //}
 
     }
 
@@ -167,6 +156,9 @@ namespace QuantLib {
       frequency_(sinkingFrequency),
       dayCounter_(accrualDayCounter) {
 
+        QL_REQUIRE(bondTenor.length() > 0,
+                   "bond tenor must be positive. "
+                   << bondTenor << " is not allowed.");
         maturityDate_ = startDate + bondTenor;
 
         cashflows_ =

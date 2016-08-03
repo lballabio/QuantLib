@@ -333,9 +333,9 @@ namespace QuantLib {
         return 0;
     }
 
-    BigInteger CashFlows::accrualDays(const Leg& leg,
-                                      bool includeSettlementDateFlows,
-                                      Date settlementDate) {
+    Date::serial_type CashFlows::accrualDays(const Leg& leg,
+                                             bool includeSettlementDateFlows,
+                                             Date settlementDate) {
         Leg::const_iterator cf = nextCashFlow(leg,
                                               includeSettlementDateFlows,
                                               settlementDate);
@@ -370,9 +370,9 @@ namespace QuantLib {
         return 0;
     }
 
-    BigInteger CashFlows::accruedDays(const Leg& leg,
-                                      bool includeSettlementDateFlows,
-                                      Date settlementDate) {
+    Date::serial_type CashFlows::accruedDays(const Leg& leg,
+                                             bool includeSettlementDateFlows,
+                                             Date settlementDate) {
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
 
@@ -505,20 +505,22 @@ namespace QuantLib {
             return;
         }
 
-        BPSCalculator calc(discountCurve);
         for (Size i=0; i<leg.size(); ++i) {
             CashFlow& cf = *leg[i];
             if (!cf.hasOccurred(settlementDate,
                                 includeSettlementDateFlows) &&
                 !cf.tradingExCoupon(settlementDate)) {
-                npv += cf.amount() *
-                       discountCurve.discount(cf.date());
-                cf.accept(calc);
+                boost::shared_ptr<Coupon> cp =
+                    boost::dynamic_pointer_cast<Coupon>(leg[i]);
+                Real df = discountCurve.discount(cf.date());
+                npv += cf.amount() * df;
+                if(cp != NULL)
+                    bps += cp->nominal() * cp->accrualPeriod() * df;
             }
         }
         DiscountFactor d = discountCurve.discount(npvDate);
         npv /= d;
-        bps = basisPoint_ * calc.bps() / d;
+        bps = basisPoint_ * bps / d;
     }
 
     Rate CashFlows::atmRate(const Leg& leg,

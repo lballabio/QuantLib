@@ -95,14 +95,13 @@ namespace QuantLib {
         // 4.1 Bermudan step conditions
         stoppingTimes.push_back(exerciseTimes);
 
-        const boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         boost::shared_ptr<FdmInnerValueCalculator> exerciseCalculator(
-                      new FdmExtOUJumpModelInnerValue(payoff, mesher, shape_));
+            new FdmExtOUJumpModelInnerValue(arguments_.payoff, mesher, shape_));
 
         stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
-                new FdmSimpleSwingCondition(exerciseTimes, mesher,
-                                            exerciseCalculator, 2)));
+            new FdmSimpleSwingCondition(
+                exerciseTimes, mesher, exerciseCalculator,
+                2, arguments_.minExerciseRights)));
 
         boost::shared_ptr<FdmStepConditionComposite> conditions(
                 new FdmStepConditionComposite(stoppingTimes, stepConditions));
@@ -123,16 +122,6 @@ namespace QuantLib {
         const Real x = process_->initialValues()[0];
         const Real y = process_->initialValues()[1];
 
-        std::vector< std::pair<Real, Real> > exerciseValues;
-        for (Size i=arguments_.minExerciseRights;
-             i <= arguments_.maxExerciseRights; ++i) {
-            const Real z = Real(i);
-            exerciseValues.push_back(std::pair<Real, Real>(
-                                       solver->valueAt(x, y, z), z));
-        }
-        const Real z = std::max_element(exerciseValues.begin(),
-                                        exerciseValues.end())->second;
-
-        results_.value = solver->valueAt(x, y, z);
+        results_.value = solver->valueAt(x, y, 0.0);
     }
 }

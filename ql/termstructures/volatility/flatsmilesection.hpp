@@ -4,6 +4,7 @@
  Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 François du Vignaud
  Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -36,11 +37,34 @@ namespace QuantLib {
                          Volatility vol,
                          const DayCounter& dc,
                          const Date& referenceDate = Date(),
-                         Real atmLevel = Null<Rate>());
+                         Real atmLevel = Null<Rate>(),
+                         VolatilityType type = ShiftedLognormal,
+                         Real shift = 0.0);
         FlatSmileSection(Time exerciseTime,
                          Volatility vol,
                          const DayCounter& dc,
-                         Real atmLevel = Null<Rate>());
+                         Real atmLevel = Null<Rate>(),
+                         VolatilityType type = ShiftedLognormal,
+                         Real shift = 0.0);
+        /*! \deprecated
+            Use the constructor taking an explicit volatility type
+        */
+        QL_DEPRECATED
+        FlatSmileSection(const Date& d,
+                         Volatility vol,
+                         const DayCounter& dc,
+                         const Date& referenceDate,
+                         Real atmLevel,
+                         Real shift);
+        /*! \deprecated
+            Use the constructor taking an explicit volatility type
+        */
+        QL_DEPRECATED
+        FlatSmileSection(Time exerciseTime,
+                         Volatility vol,
+                         const DayCounter& dc,
+                         Real atmLevel,
+                         Real shift);
         //! \name SmileSection interface
         //@{
         Real minStrike () const;
@@ -55,7 +79,7 @@ namespace QuantLib {
     };
 
     inline Real FlatSmileSection::minStrike () const {
-        return QL_MIN_REAL;
+        return QL_MIN_REAL - shift();
     }
 
     inline Real FlatSmileSection::maxStrike () const {

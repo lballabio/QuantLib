@@ -72,6 +72,25 @@
 //#   define QL_ENABLE_SESSIONS
 #endif
 
+/* Define this to enable the thread-safe observer pattern. You should
+   enable it if you want to use QuantLib via the SWIG layer within
+   the JVM or .NET eco system or any environment with an
+   async garbage collector */
+#ifndef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+//#    define QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+#endif
+
+/* Define this to enable a date resolution down to microseconds and
+   allow for accurate intraday pricing.*/
+#ifndef QL_HIGH_RESOLUTION_DATE
+//#    define QL_HIGH_RESOLUTION_DATE
+#endif
+
+/* Define this to enable the parallel unit test runner */
+#ifndef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
+//#    define QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
+#endif
+
 /* This is defined so that Singleton template is thread safe 
 only if the Boost version and architecture supports atomic address
 functionality without locks. Otherwise using atomic class may

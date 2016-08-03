@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2007, 2009 Klaus Spanderen
+ Copyright (C) 2005, 2007, 2009, 2014 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -83,6 +83,10 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& riskFreeRate() const;
 
         Time time(const Date&) const;
+
+        // probability densitiy function,
+        // semi-analytical solution of the Fokker-Planck equation in x=ln(s)
+        Real pdf(Real x, Real v, Time t, Real eps=1e-3) const;
 
       private:
         Real varianceDistribution(Real v, Real dw, Time dt) const;

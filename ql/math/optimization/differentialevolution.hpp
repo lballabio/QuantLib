@@ -55,6 +55,7 @@ namespace QuantLib {
 
 
     //! %OptimizationMethod using Differential Evolution algorithm
+    /*! \ingroup optimizers */
     class DifferentialEvolution: public OptimizationMethod {
       public:
         enum Strategy {

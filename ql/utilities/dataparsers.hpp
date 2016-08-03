@@ -47,18 +47,6 @@ namespace QuantLib {
 
     class DateParser {
       public:
-        static std::vector<std::string> split(const std::string& str,
-                                              char delim);
-        //! Parses a string in a simple format.
-        /*! The format must be a case-insensitive permutation of "dd",
-            "mm", and "yyyy" separated by slashes; for instance,
-            "dd/mm/yyyy", "MM/DD/YYYY" or "yyyy/mm/dd".
-
-            \deprecated
-        */
-        QL_DEPRECATED
-        static Date parse(const std::string& str, const std::string& fmt);
-
         //! Parses a string in a used-defined format.
         /*! This method uses the parsing functions from
             Boost.Date_Time and supports the same formats.

@@ -50,7 +50,7 @@ namespace QuantLib {
         std::partial_sort(population.begin(), population.begin() + 1, population.end(),
                           sort_by_cost());
         bestMemberEver_ = population.front();
-        Real fxOld = population.front().cost, fxNew = std::numeric_limits<Real>::max();
+        Real fxOld = population.front().cost;
         Size iteration = 0, stationaryPointIteration = 0;
 
         // main loop - calculate consecutive emerging populations
@@ -60,7 +60,7 @@ namespace QuantLib {
                               sort_by_cost());
             if (population.front().cost < bestMemberEver_.cost)
                 bestMemberEver_ = population.front();
-            fxNew = population.front().cost;
+            Real fxNew = population.front().cost;
             if (endCriteria.checkStationaryFunctionValue(fxOld, fxNew, stationaryPointIteration,
                                                          ecType))
                 break;

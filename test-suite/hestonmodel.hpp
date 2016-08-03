@@ -41,6 +41,8 @@ class HestonModelTest {
     static void testDAXCalibrationOfTimeDependentModel();
     static void testAlanLewisReferencePrices();
     static void testAnalyticPDFHestonEngine();
+    static void testExpansionOnAlanLewisReference();
+    static void testExpansionOnFordeReference();
     static boost::unit_test_framework::test_suite* suite();
     static boost::unit_test_framework::test_suite* experimental();
 };

@@ -85,8 +85,8 @@ namespace QuantLib {
                 // [maybe the equality should be enforced, since
                 // refPeriodStart < d1 <= d2 < refPeriodEnd
                 // could give wrong results] ???
-                return period*Real(dayCount(d1,d2)) /
-                    dayCount(refPeriodStart,refPeriodEnd);
+                return period*Real(daysBetween(d1,d2)) /
+                	daysBetween(refPeriodStart,refPeriodEnd);
             } else {
                 // here refPeriodStart is the next (maybe notional)
                 // payment date and refPeriodEnd is the second next
@@ -153,8 +153,8 @@ namespace QuantLib {
 
         Time sum = y2 - y1 - 1;
         // FLOATING_POINT_EXCEPTION
-        sum += dayCount(d1, Date(1,January,y1+1))/dib1;
-        sum += dayCount(Date(1,January,y2),d2)/dib2;
+        sum += daysBetween(d1, Date(1,January,y1+1))/dib1;
+        sum += daysBetween(Date(1,January,y2),d2)/dib2;
         return sum;
     }
 
@@ -194,7 +194,7 @@ namespace QuantLib {
                 den += 1.0;
         }
 
-        return sum+dayCount(d1, newD2)/den;
+        return sum+daysBetween(d1, newD2)/den;
     }
 
 }

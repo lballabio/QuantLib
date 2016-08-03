@@ -29,9 +29,11 @@
 namespace QuantLib {
 
     //! safe %Newton 1-D solver with finite difference derivatives
-    /*! 
+    /*!
         \test the correctness of the returned values is tested by
               checking them against known good results.
+
+        \ingroup solvers
     */
     class FiniteDifferenceNewtonSafe : public Solver1D<FiniteDifferenceNewtonSafe> {
       public:
@@ -66,9 +68,16 @@ namespace QuantLib {
                 if ((((root_-xh)*dfroot-froot)*
                      ((root_-xl)*dfroot-froot) > 0.0)
                     || (std::fabs(2.0*froot) > std::fabs(dxold*dfroot))) {
-
                     dx = (xh-xl)/2.0;
                     root_ = xl+dx;
+                    // if the root estimate just computed is close to the
+                    // previous one, we should calculate dfroot at root and
+                    // xh rather than root and rootold (xl instead of xh would
+                    // be just as good)
+                    if (close(root_, rootold, 2500)) {
+                        rootold = xh;
+                        frootold = f(xh);
+                    }
                 } else { // Newton
                     dx = froot/dfroot;
                     root_ -= dx;

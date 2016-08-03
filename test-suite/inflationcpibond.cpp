@@ -173,6 +173,8 @@ namespace {
 
 
 void InflationCPIBondTest::testCleanPrice() {
+    IndexManager::instance().clearHistories();
+  
     CommonVars common;
 
     Real notional = 1000000.0;

@@ -122,7 +122,7 @@ namespace QuantLib {
         closei = close.begin();
         highi = high.begin();
         lowi = low.begin();
-        for (i = d.begin(); i != d.end(); i++) {
+        for (i = d.begin(); i != d.end(); ++i) {
             retval[*i] = IntervalPrice(*openi, *closei, *highi, *lowi);
             ++openi; ++closei; ++highi; ++lowi;
         }
@@ -135,7 +135,7 @@ namespace QuantLib {
         std::vector<Real> returnval;
         returnval.reserve(ts.size());
         for (TimeSeries<IntervalPrice>::const_iterator i = ts.begin();
-             i != ts.end(); i++) {
+             i != ts.end(); ++i) {
             returnval.push_back(i->second.value(t));
         }
         return returnval;

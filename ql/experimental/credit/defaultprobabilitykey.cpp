@@ -23,7 +23,14 @@
 #pragma warning(push)
 #pragma warning(disable:4181)
 #endif
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
 #include <boost/lambda/lambda.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic pop
+#endif
 #if defined(QL_PATCH_MSVC80)
 #pragma warning(pop)
 #endif

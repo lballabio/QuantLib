@@ -12,26 +12,31 @@ endif
 m4datadir = $(datadir)/aclocal
 dist_m4data_DATA = quantlib.m4
 
+pkgconfigdir = $(libdir)/pkgconfig
+nodist_pkgconfig_DATA = quantlib.pc
+
 EXTRA_DIST = \
 	Announce.txt \
 	Authors.txt \
 	Bugs.txt \
 	ChangeLog.txt \
+	CMakeLists.txt \
 	Contributors.txt \
 	LICENSE.TXT \
 	News.txt \
 	QuantLib.dev \
+	QuantLib.props \
 	QuantLib.spec \
 	QuantLib_vc8.sln \
 	QuantLib_vc8.vcproj \
 	QuantLib_vc9.sln \
 	QuantLib_vc9.vcproj \
 	QuantLib_vc10.sln \
-	QuantLib_vc10.vcxproj \
-	QuantLib_vc10.vcxproj.filters \
 	QuantLib_vc11.sln \
-	QuantLib_vc11.vcxproj \
-	QuantLib_vc11.vcxproj.filters \
+	QuantLib_vc12.sln \
+	QuantLib_vc14.sln \
+	QuantLib.vcxproj \
+	QuantLib.vcxproj.filters \
 	Readme.txt \
 	autogen.sh
 

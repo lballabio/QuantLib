@@ -44,7 +44,7 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<Dividend> > items;
         items.reserve(dividendDates.size());
         for (dd = dividendDates.begin(), d = dividends.begin();
-             dd != dividendDates.end(); dd++, d++) {
+             dd != dividendDates.end(); ++dd, ++d) {
             items.push_back(boost::shared_ptr<Dividend>(new
                 FixedDividend(*d, *dd)));
         }

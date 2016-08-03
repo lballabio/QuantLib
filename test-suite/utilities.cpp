@@ -38,7 +38,10 @@ namespace QuantLib {
         CHECK_DOWNCAST(CashOrNothingPayoff, "cash-or-nothing");
         CHECK_DOWNCAST(AssetOrNothingPayoff, "asset-or-nothing");
         CHECK_DOWNCAST(SuperSharePayoff, "super-share");
+        CHECK_DOWNCAST(SuperFundPayoff, "super-fund");
+        CHECK_DOWNCAST(PercentageStrikePayoff, "percentage-strike");
         CHECK_DOWNCAST(GapPayoff, "gap");
+        CHECK_DOWNCAST(FloatingTypePayoff, "floating-type");
 
         QL_FAIL("unknown payoff type");
     }

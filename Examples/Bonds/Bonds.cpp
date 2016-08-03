@@ -31,6 +31,19 @@
 
 using namespace QuantLib;
 
+#ifdef BOOST_MSVC
+#  ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+#    include <ql/auto_link.hpp>
+#    define BOOST_LIB_NAME boost_system
+#    include <boost/config/auto_link.hpp>
+#    undef BOOST_LIB_NAME
+#    define BOOST_LIB_NAME boost_thread
+#    include <boost/config/auto_link.hpp>
+#    undef BOOST_LIB_NAME
+#  endif
+#endif
+
+
 #if defined(QL_ENABLE_SESSIONS)
 namespace QuantLib {
 
@@ -160,7 +173,7 @@ int main(int, char* []) {
         }
 
         // Definition of the rate helpers
-        std::vector<boost::shared_ptr<FixedRateBondHelper> > bondsHelpers;
+        std::vector<boost::shared_ptr<BondHelper> > bondsHelpers;
 
         for (Size i=0; i<numberOfBonds; i++) {
 
@@ -177,6 +190,16 @@ int main(int, char* []) {
                     Unadjusted,
                     redemption,
                     issueDates[i]));
+
+            // the above could also be done by creating a
+            // FixedRateBond instance and writing:
+            //
+            // boost::shared_ptr<BondHelper> bondHelper(
+            //         new BondHelper(quoteHandle[i], bond));
+            //
+            // This would also work for bonds that still don't have a
+            // specialized helper, such as floating-rate bonds.
+
 
             bondsHelpers.push_back(bondHelper);
         }
@@ -548,7 +571,7 @@ int main(int, char* []) {
          /* "Yield to Price"
             "Price to Yield" */
 
-         Real seconds = timer.elapsed();
+         double seconds = timer.elapsed();
          Integer hours = int(seconds/3600);
          seconds -= hours * 3600;
          Integer minutes = int(seconds/60);

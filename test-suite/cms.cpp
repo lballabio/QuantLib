@@ -29,7 +29,7 @@
 #include <ql/cashflows/capflooredcoupon.hpp>
 #include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/experimental/coupons/lineartsrpricer.hpp>
+#include <ql/cashflows/lineartsrpricer.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolcube2.hpp>
@@ -463,7 +463,7 @@ void CmsTest::testParity() {
                     caplet.setPricer(pricers[k]);
                     floorlet.setPricer(pricers[k]);
                     Real swapletPrice = swaplet.price(vars.termStructure) +
-                                  swaplet.accrualPeriod() * strike * discount;
+                                  nominal * swaplet.accrualPeriod() * strike * discount;
                     Real capletPrice = caplet.price(vars.termStructure);
                     Real floorletPrice = floorlet.price(vars.termStructure);
                     Real difference = std::fabs(capletPrice + floorletPrice -

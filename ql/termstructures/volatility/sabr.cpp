@@ -4,6 +4,7 @@
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Mario Pucci
  Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -66,6 +67,20 @@ namespace QuantLib {
         return (alpha/D)*multiplier*d;
     }
 
+    Real unsafeShiftedSabrVolatility(Rate strike,
+                              Rate forward,
+                              Time expiryTime,
+                              Real alpha,
+                              Real beta,
+                              Real nu,
+                              Real rho,
+                              Real shift) {
+
+        return unsafeSabrVolatility(strike+shift,forward+shift,expiryTime,
+                                    alpha,beta,nu,rho);
+
+    }
+
     void validateSabrParameters(Real alpha,
                                 Real beta,
                                 Real nu,
@@ -96,6 +111,25 @@ namespace QuantLib {
         validateSabrParameters(alpha, beta, nu, rho);
         return unsafeSabrVolatility(strike, forward, expiryTime,
                                     alpha, beta, nu, rho);
+    }
+
+    Real shiftedSabrVolatility(Rate strike,
+                                 Rate forward,
+                                 Time expiryTime,
+                                 Real alpha,
+                                 Real beta,
+                                 Real nu,
+                                 Real rho,
+                                 Real shift) {
+        QL_REQUIRE(strike + shift > 0.0, "strike+shift must be positive: "
+                   << io::rate(strike) << "+" << io::rate(shift) << " not allowed");
+        QL_REQUIRE(forward + shift > 0.0, "at the money forward rate + shift must be "
+                   "positive: " << io::rate(forward) << " " << io::rate(shift) << " not allowed");
+        QL_REQUIRE(expiryTime>=0.0, "expiry time must be non-negative: "
+                                   << expiryTime << " not allowed");
+        validateSabrParameters(alpha, beta, nu, rho);
+        return unsafeShiftedSabrVolatility(strike, forward, expiryTime,
+                                             alpha, beta, nu, rho,shift);
     }
 
 }

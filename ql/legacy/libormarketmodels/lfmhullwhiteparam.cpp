@@ -65,7 +65,7 @@ namespace QuantLib {
         const std::vector<Date> fixingDates = process->fixingDates();
 
         for (Size i = 1; i < size_; ++i) {
-            double cumVar = 0.0;
+            Real cumVar = 0.0;
             for (Size j = 1; j < i; ++j) {
                 cumVar +=  lambda[i-j-1] * lambda[i-j-1]
                          * (fixingTimes[j+1] - fixingTimes[j]);

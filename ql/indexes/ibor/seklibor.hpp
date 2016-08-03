@@ -34,9 +34,7 @@
 namespace QuantLib {
 
     //! %SEK %LIBOR rate
-    /*! Sweden Krone LIBOR fixed by BBA.
-
-        See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
+    /*! Sweden Krone LIBOR discontinued as of 2013.
     */
     class SEKLibor : public Libor {
       public:

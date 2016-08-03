@@ -4,6 +4,7 @@
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008 Ralph Schreyer
  Copyright (C) 2008 Klaus Spanderen
+ Copyright (C) 2014 Johannes Göttker-Schnetmann
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -48,6 +49,9 @@ namespace QuantLib {
                                           Real b = 1.0) const;
 
         Disposable<TripleBandLinearOp> mult(const Array& u) const;
+        // interpret u as the diagonal of a diagonal matrix, multiplied on LHS
+        Disposable<TripleBandLinearOp> multR(const Array& u) const;
+        // interpret u as the diagonal of a diagonal matrix, multiplied on RHS
         Disposable<TripleBandLinearOp> add(const TripleBandLinearOp& m) const;
         Disposable<TripleBandLinearOp> add(const Array& u) const;
 

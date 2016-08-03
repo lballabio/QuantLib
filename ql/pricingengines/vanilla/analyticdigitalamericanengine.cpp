@@ -58,7 +58,8 @@ namespace QuantLib {
 
         if(ex->payoffAtExpiry()) {
             AmericanPayoffAtExpiry pricer(spot, riskFreeDiscount,
-                                          dividendDiscount, variance, payoff);
+                                          dividendDiscount, variance, 
+                                          payoff, knock_in());
             results_.value = pricer.value();
         } else {
             AmericanPayoffAtHit pricer(spot, riskFreeDiscount,

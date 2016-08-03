@@ -55,11 +55,11 @@ AC_DEFUN([QL_CHECK_BOOST_DEVEL],
 # ----------------------
 # Check whether the Boost installation is up to date
 AC_DEFUN([QL_CHECK_BOOST_VERSION],
-[AC_MSG_CHECKING([for Boost version >= 1.39])
+[AC_MSG_CHECKING([for Boost version >= 1.43])
  AC_REQUIRE([QL_CHECK_BOOST_DEVEL])
  AC_TRY_COMPILE(
     [@%:@include <boost/version.hpp>],
-    [@%:@if BOOST_VERSION < 103900
+    [@%:@if BOOST_VERSION < 104300
      @%:@error too old
      @%:@endif],
     [AC_MSG_RESULT([yes])],
@@ -67,6 +67,42 @@ AC_DEFUN([QL_CHECK_BOOST_VERSION],
      AC_MSG_ERROR([outdated Boost installation])
     ])
 ])
+
+# QL_CHECK_BOOST_VERSION_1_58_OR_HIGHER
+# ----------------------
+# Check whether the Boost installation is version 1.58
+AC_DEFUN([QL_CHECK_BOOST_VERSION_1_58_OR_HIGHER],
+[AC_MSG_CHECKING([for Boost version >= 1.58])
+ AC_REQUIRE([QL_CHECK_BOOST_DEVEL])
+ AC_TRY_COMPILE(
+    [@%:@include <boost/version.hpp>],
+    [@%:@if BOOST_VERSION < 105800
+     @%:@error too old
+     @%:@endif],
+    [AC_MSG_RESULT([yes])],
+    [AC_MSG_RESULT([no])
+     AC_MSG_ERROR([Boost version 1.58 or higher is required for the thread-safe observer pattern])
+    ])
+])
+
+# QL_CHECK_BOOST_VERSION_1_59_OR_HIGHER
+# ----------------------
+# Check whether the Boost installation is version 1.59
+AC_DEFUN([QL_CHECK_BOOST_VERSION_1_59_OR_HIGHER],
+[AC_MSG_CHECKING([for Boost version >= 1.59])
+ AC_REQUIRE([QL_CHECK_BOOST_DEVEL])
+ AC_TRY_COMPILE(
+    [@%:@include <boost/version.hpp>],
+    [@%:@if BOOST_VERSION < 105900
+     @%:@error too old
+     @%:@endif],
+    [AC_MSG_RESULT([yes])],
+    [AC_MSG_RESULT([no])
+     AC_MSG_ERROR([Boost version 1.59 or higher is required for the parallel unit test runner.])
+    ])
+])
+
+
 
 # QL_CHECK_BOOST_UBLAS
 # --------------------
@@ -153,6 +189,107 @@ AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
      AC_SUBST([BOOST_UNIT_TEST_MAIN_CXXFLAGS],[$boost_defines])
  fi
 ])
+
+# QL_CHECK_BOOST_TEST_THREAD_SIGNALS2_SYSTEM
+# ------------------------
+# Check whether the Boost thread and system is available
+AC_DEFUN([QL_CHECK_BOOST_TEST_THREAD_SIGNALS2_SYSTEM],
+[AC_MSG_CHECKING([whether Boost thread, signals2 and system are available])
+ AC_REQUIRE([AC_PROG_CC])
+ ql_original_LIBS=$LIBS
+ ql_original_CXXFLAGS=$CXXFLAGS
+ CC_BASENAME=`basename $CC`
+ CC_VERSION=`echo "__GNUC__ __GNUC_MINOR__" | $CC -E -x c - | tail -n 1 | $SED -e "s/ //"`
+ for boost_thread_lib in "-lboost_thread-$CC_BASENAME$CC_VERSION -lboost_system-$CC_BASENAME$CC_VERSION" \
+                          "-lboost_thread-$CC_BASENAME -lboost_system-$CC_BASENAME" \
+                          "-lboost_thread -lboost_system" \
+                          "-lboost_thread-mt-$CC_BASENAME$CC_VERSION -lboost_system-mt-$CC_BASENAME$CC_VERSION" \
+                          "-lboost_thread-$CC_BASENAME$CC_VERSION-mt -lboost_system-$CC_BASENAME$CC_VERSION-mt" \
+                          "-lboost_thread-x$CC_BASENAME$CC_VERSION-mt -lboost_system-x$CC_BASENAME$CC_VERSION-mt" \
+                          "-lboost_thread-mt-$CC_BASENAME -lboost_system-mt-$CC_BASENAME" \
+                          "-lboost_thread-$CC_BASENAME-mt -lboost_system-$CC_BASENAME-mt" \
+                          "-lboost_thread-mt -lboost_system-mt"; do
+     LIBS="$ql_original_LIBS $boost_thread_lib"
+     CXXFLAGS="$ql_original_CXXFLAGS -pthread"
+     boost_thread_found=no
+     AC_LINK_IFELSE([AC_LANG_SOURCE(
+         [@%:@include <boost/thread/locks.hpp>
+          @%:@include <boost/thread/recursive_mutex.hpp>
+          @%:@include <boost/signals2/signal.hpp>
+          
+          #ifndef BOOST_THREAD_PLATFORM_PTHREAD
+          #error only pthread is supported on this plattform
+          #endif
+    
+          int main() {
+            boost::recursive_mutex m;
+            boost::lock_guard<boost::recursive_mutex> lock(m);
+      
+            boost::signals2::signal<void()> sig;
+      
+            return 0;
+          }
+         ])],
+         [boost_thread_found=$boost_thread_lib
+          break],
+         [])
+ done
+ LIBS="$ql_original_LIBS"
+ CXXFLAGS="$ql_original_CXXFLAGS"
+     
+ if test "$boost_thread_found" = no ; then
+     AC_MSG_RESULT([no])
+     AC_SUBST([BOOST_THREAD_LIB],[""])
+     AC_MSG_ERROR([Boost thread, signals2 and system libraries not found. 
+         These libraries are required by the thread-safe observer pattern
+         or by the parallel unit test runner.])
+ else
+     AC_MSG_RESULT([yes])
+     AC_SUBST([BOOST_THREAD_LIB],[$boost_thread_lib])
+     AC_SUBST([CXXFLAGS],["${CXXFLAGS} -pthread"])
+ fi
+])
+
+# QL_CHECK_BOOST_TEST_INTERPROCESS
+# ------------------------
+# Check whether the Boost interprocess is available
+AC_DEFUN([QL_CHECK_BOOST_TEST_INTERPROCESS],
+[AC_MSG_CHECKING([whether Boost interprocess is available])
+ AC_REQUIRE([AC_PROG_CC])
+ AC_REQUIRE([QL_CHECK_BOOST_TEST_THREAD_SIGNALS2_SYSTEM])
+ ql_original_LIBS=$LIBS
+ for boost_interprocess_lib in "" "-lrt"; do 
+     LIBS="$ql_original_LIBS $boost_thread_lib $boost_interprocess_lib"
+     boost_interprocess_found=no
+        
+	 AC_LINK_IFELSE([AC_LANG_SOURCE(
+         [@%:@include <boost/interprocess/ipc/message_queue.hpp>
+ 
+          using namespace boost::interprocess;
+          int main() {
+            message_queue mq(open_or_create,"message_queue",100,100);
+            message_queue::remove("message_queue");
+         
+            return 0;
+          }
+         ])],
+         [boost_interprocess_found=$boost_interprocess_lib
+          break],
+         [])
+ done
+ LIBS="$ql_original_LIBS"
+     
+ if test "$boost_interprocess_found" = no ; then
+     AC_MSG_RESULT([no])
+     AC_SUBST([BOOST_INTERPROCESS_LIB],[""])
+     AC_MSG_ERROR([The boost library interprocess does not work on this system 
+         but is required to use the parallel unit test runner.])
+ else
+     AC_MSG_RESULT([yes])
+     AC_SUBST([BOOST_INTERPROCESS_LIB],[$boost_interprocess_lib])
+ fi
+])
+     
 
 # QL_CHECK_BOOST_TEST_STREAM
 # --------------------------

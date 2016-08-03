@@ -33,6 +33,8 @@ class DistributionTest {
     static void testPoisson();
     static void testCumulativePoisson();
     static void testInverseCumulativePoisson();
+    static void testBivariateCumulativeStudent();
+    static void testBivariateCumulativeStudentVsBivariate();
     static boost::unit_test_framework::test_suite* suite();
 };
 

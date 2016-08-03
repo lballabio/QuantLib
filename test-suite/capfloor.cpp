@@ -59,8 +59,8 @@ namespace {
         SavedSettings backup;
 
         // setup
-        CommonVars() {
-            nominals = std::vector<Real>(1,100);
+        CommonVars()
+        : nominals(1,100) {
             frequency = Semiannual;
             index = boost::shared_ptr<IborIndex>(new Euribor6M(termStructure));
             calendar = index->fixingCalendar();
@@ -524,7 +524,9 @@ void CapFloorTest::testImpliedVolatility() {
                                                             vars.termStructure,
                                                             0.10,
                                                             tolerance,
-                                                            maxEvaluations);
+                                                            maxEvaluations,
+                                                            10.0e-7, 4.0,
+                                                            ShiftedLognormal, 0.0);
                         } catch (std::exception& e) {
                             // couldn't bracket?
                             capfloor->setPricingEngine(vars.makeEngine(0.0));

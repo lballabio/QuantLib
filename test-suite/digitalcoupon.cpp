@@ -58,7 +58,7 @@ namespace {
             nominal = 1000000.0;
             index = boost::shared_ptr<IborIndex>(new Euribor6M(termStructure));
             calendar = index->fixingCalendar();
-            today = calendar.adjust(Date::todaysDate());
+            today = calendar.adjust(Settings::instance().evaluationDate());
             Settings::instance().evaluationDate() = today;
             settlement = calendar.advance(today,fixingDays,Days);
             termStructure.linkTo(flatRate(settlement,0.05,Actual365Fixed()));
@@ -345,7 +345,7 @@ void DigitalCouponTest::testAssetOrNothingDeepInTheMoney() {
         targetPrice = underlying->price(vars.termStructure) + targetOptionPrice ;
         digitalPrice = digitalFlooredCoupon.price(vars.termStructure);
         error = std::fabs(targetPrice - digitalPrice);
-        tolerance = 2.0e-06;
+        tolerance = 2.5e-06;
         if (error>tolerance)
             BOOST_ERROR("\nFloating Coupon + Digital Put Option:" <<
                         "\nVolatility = " << io::rate(capletVolatility) <<
@@ -359,7 +359,7 @@ void DigitalCouponTest::testAssetOrNothingDeepInTheMoney() {
         replicationOptionPrice = digitalFlooredCoupon.putOptionRate() *
                                  vars.nominal * accrualPeriod * discount;
         error = std::abs(targetOptionPrice - replicationOptionPrice);
-        optionTolerance = 2.0e-06;
+        optionTolerance = 2.5e-06;
         if (error>optionTolerance)
             BOOST_ERROR("\nDigital Put Option:" <<
                         "\nVolatility = " << io::rate(capletVolatility) <<

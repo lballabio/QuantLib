@@ -33,9 +33,9 @@
 namespace QuantLib {
 
     //! %CHF %LIBOR rate
-    /*! Swiss Franc LIBOR fixed by BBA.
+    /*! Swiss Franc LIBOR fixed by ICE.
 
-        See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
+        See <https://www.theice.com/marketdata/reports/170>.
 
         \warning This is the rate fixed in London by BBA. Use ZIBOR if
                  you're interested in the Zurich fixing.

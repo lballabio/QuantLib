@@ -27,32 +27,39 @@
 #include <ql/time/date.hpp>
 #include <ql/errors.hpp>
 #include <boost/shared_ptr.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
 #include <boost/random.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic pop
+#endif
 #include <vector>
 
 namespace QuantLib {
 
     class CatSimulation {
       public:
-	    CatSimulation(Date start, 
+        CatSimulation(Date start, 
                       Date end) 
         : start_(start), end_(end) 
         {}
 
-	    virtual ~CatSimulation(){}
-	    virtual bool nextPath(std::vector<std::pair<Date, Real> > &path) = 0;
+        virtual ~CatSimulation(){}
+        virtual bool nextPath(std::vector<std::pair<Date, Real> > &path) = 0;
       protected:
-	    Date start_;
+        Date start_;
         Date end_;
     };
 
     class CatRisk {
       public:
-	    virtual ~CatRisk() {}
-	    virtual boost::shared_ptr<CatSimulation> newSimulation(const Date& start, const Date& end) const = 0;
+        virtual ~CatRisk() {}
+        virtual boost::shared_ptr<CatSimulation> newSimulation(const Date& start, const Date& end) const = 0;
     };
 
-    class EventSetSimulation : public CatSimulation {       	
+    class EventSetSimulation : public CatSimulation {
       public:
         EventSetSimulation(boost::shared_ptr<std::vector<std::pair<Date, Real> > > events, Date eventsStart, Date eventsEnd, Date start, Date end);
         virtual bool nextPath(std::vector<std::pair<Date, Real> > &path);
@@ -65,7 +72,6 @@ namespace QuantLib {
         Year years_;
         Date periodStart_;
         Date periodEnd_;
-        Year offsetYears_;
         unsigned int i_;
     };
 
@@ -79,24 +85,23 @@ namespace QuantLib {
       private:
         boost::shared_ptr<std::vector<std::pair<Date, Real> > > events_; 
         Date eventsStart_;
-	    Date eventsEnd_;
+        Date eventsEnd_;
     };
 
     class BetaRiskSimulation : public CatSimulation {
       public:
-	    BetaRiskSimulation(Date start, 
+        BetaRiskSimulation(Date start, 
                            Date end, 
                            Real maxLoss, 
                            Real lambda, 
                            Real alpha, 
                            Real beta) ;    
 
-	    virtual bool nextPath(std::vector<std::pair<Date, Real> > &path);
+        virtual bool nextPath(std::vector<std::pair<Date, Real> > &path);
         Real generateBeta();
     
       private:
-	    Real lambda_;
-	    Real maxLoss_;
+        Real maxLoss_;
     
         Integer dayCount_;
         Real yearFraction_;
@@ -109,18 +114,18 @@ namespace QuantLib {
 
     class BetaRisk : public CatRisk {
       public:
-	    BetaRisk(Real maxLoss, 
+        BetaRisk(Real maxLoss, 
                  Real years, 
                  Real mean, 
                  Real stdDev);
 
-	    virtual boost::shared_ptr<CatSimulation> newSimulation(const Date& start, const Date& end) const;
+        virtual boost::shared_ptr<CatSimulation> newSimulation(const Date& start, const Date& end) const;
 
       private:
         Real maxLoss_;
         Real lambda_;
-	    Real alpha_;
-	    Real beta_;
+        Real alpha_;
+        Real beta_;
     };
 
 }

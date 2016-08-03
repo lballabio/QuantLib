@@ -47,6 +47,9 @@ using boost::unit_test_framework::test_suite;
 
 using namespace QuantLib;
 
+using std::fabs;
+using std::pow;
+
 namespace {
 
     struct Datum {
@@ -608,7 +611,7 @@ void InflationTest::testZeroTermStructure() {
 }
 
 void InflationTest::testZeroIndexFutureFixing() {
-    BOOST_MESSAGE("Testing that zero inflation indices forecast future fixings...");
+    BOOST_TEST_MESSAGE("Testing that zero inflation indices forecast future fixings...");
 
     SavedSettings backup;
     IndexHistoryCleaner cleaner;

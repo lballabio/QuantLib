@@ -32,11 +32,20 @@
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
 #include <ql/experimental/finitedifferences/fdmextendedornsteinuhlenbeckop.hpp>
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
+#if defined(QL_NO_UBLAS_SUPPORT)
+
+#include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
+
+#else
 
 #if defined(QL_PATCH_MSVC)
 #pragma warning(push)
 #pragma warning(disable:4180)
+#endif
+
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
 
 #include <boost/numeric/ublas/vector.hpp>
@@ -44,6 +53,10 @@
 
 #if defined(QL_PATCH_MSVC)
 #pragma warning(pop)
+#endif
+
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic pop
 #endif
 
 #endif
@@ -178,7 +191,13 @@ namespace QuantLib {
 
         for (FdmBoundaryConditionSet::const_iterator iter=bcSet_.begin();
             iter < bcSet_.end(); ++iter) {
-            valueOfDerivative=(*iter)->applyAfterApplying(y, valueOfDerivative);
+            const boost::shared_ptr<FdmDirichletBoundary> dirichletBC =
+                 boost::dynamic_pointer_cast<FdmDirichletBoundary>(*iter);
+
+            if (dirichletBC != 0) {
+                valueOfDerivative=
+                    dirichletBC->applyAfterApplying(y, valueOfDerivative);
+            }
         }
 
         return std::exp(-u)*valueOfDerivative;

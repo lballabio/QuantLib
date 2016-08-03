@@ -26,7 +26,7 @@
 #include <ql/math/randomnumbers/haltonrsg.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/math/randomnumbers/seedgenerator.hpp>
-#include <ql/math/randomnumbers/primitivepolynomials.h>
+#include <ql/math/randomnumbers/primitivepolynomials.hpp>
 #include <ql/math/randomnumbers/randomizedlds.hpp>
 #include <ql/math/randomnumbers/randomsequencegenerator.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
@@ -42,6 +42,8 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+
+using std::fabs;
 
 void LowDiscrepancyTest::testSeedGenerator() {
     BOOST_TEST_MESSAGE("Testing random-seed generator...");

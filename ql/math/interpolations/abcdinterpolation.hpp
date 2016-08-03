@@ -68,7 +68,7 @@ namespace QuantLib {
                     dIsFixed_ = dIsFixed;
                 else d_ = 0.17;
 
-               validateAbcdParameters(a, b, c, d);
+                AbcdMathFunction::validate(a, b, c, d);
             }
             virtual ~AbcdCoeffHolder() {}
             Real a_, b_, c_, d_;
@@ -155,6 +155,7 @@ namespace QuantLib {
     }
 
     //! %Abcd interpolation between discrete points.
+    /*! \ingroup interpolations */
     class AbcdInterpolation : public Interpolation {
       public:
         /*! Constructor */
@@ -208,6 +209,7 @@ namespace QuantLib {
     };
 
     //! %Abcd interpolation factory and traits
+    /*! \ingroup interpolations */
     class Abcd {
       public:
         Abcd(Real a, Real b, Real c, Real d,

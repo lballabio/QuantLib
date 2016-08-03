@@ -28,7 +28,7 @@
 
 class CalendarTest {
   public:
-
+    static void testRussia();
     static void testBrazil();
 //    static void testItalySettlement();
     static void testItalyExchange();
@@ -50,6 +50,9 @@ class CalendarTest {
 
     static void testSouthKoreanSettlement();
     static void testKoreaStockExchange();
+
+    static void testChinaSSE();
+    static void testChinaIB();
 
     static void testModifiedCalendars();
     static void testJointCalendars();

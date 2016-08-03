@@ -8,16 +8,15 @@ else
 noinst_PROGRAMS = MarketModels
 endif
 MarketModels_SOURCES = MarketModels.cpp
-MarketModels_LDADD = ../../ql/libQuantLib.la
+MarketModels_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
+    CMakeLists.txt \
     MarketModels.dev \
     MarketModels_vc8.vcproj \
     MarketModels_vc9.vcproj \
-    MarketModels_vc10.vcxproj \
-    MarketModels_vc10.vcxproj.filters \
-    MarketModels_vc11.vcxproj \
-    MarketModels_vc11.vcxproj.filters
+    MarketModels.vcxproj \
+    MarketModels.vcxproj.filters
 
 .PHONY: examples check-examples
 

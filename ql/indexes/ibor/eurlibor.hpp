@@ -31,10 +31,10 @@
 
 namespace QuantLib {
 
-    //! base class for all BBA %EUR %LIBOR indexes but the O/N
-    /*! Euro LIBOR fixed by BBA.
+    //! base class for all ICE %EUR %LIBOR indexes but the O/N
+    /*! Euro LIBOR fixed by ICE.
 
-        See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
+        See <https://www.theice.com/marketdata/reports/170>.
 
         \warning This is the rate fixed in London by BBA. Use Euribor if
                  you're interested in the fixing by the ECB.
@@ -46,7 +46,7 @@ namespace QuantLib {
                                     Handle<YieldTermStructure>());
         /*! \name Date calculations
 
-            see http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1412
+            See <https://www.theice.com/marketdata/reports/170>.
             @{
         */
         Date valueDate(const Date& fixingDate) const;
@@ -56,13 +56,13 @@ namespace QuantLib {
         Calendar target_;
     };
 
-    //! base class for the one day deposit BBA %EUR %LIBOR indexes
-    /*! Euro O/N LIBOR fixed by BBA. It can be also used for T/N and S/N
-        indexes, even if such indexes do not have BBA fixing.
+    //! base class for the one day deposit ICE %EUR %LIBOR indexes
+    /*! Euro O/N LIBOR fixed by ICE. It can be also used for T/N and S/N
+        indexes, even if such indexes do not have ICE fixing.
 
-        See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
+        See <https://www.theice.com/marketdata/reports/170>.
 
-        \warning This is the rate fixed in London by BBA. Use Eonia if
+        \warning This is the rate fixed in London by ICE. Use Eonia if
                  you're interested in the fixing by the ECB.
     */
     class DailyTenorEURLibor : public IborIndex {

@@ -18,8 +18,8 @@
 */
 
 #include <ql/experimental/credit/pool.hpp>
-
-using namespace std;
+#include <boost/bind.hpp>
+#include <iterator>
 
 namespace QuantLib {
 
@@ -41,17 +41,24 @@ namespace QuantLib {
         return data_.find(name) != data_.end();
     }
 
-    void Pool::add (const std::string& name, const Issuer& issuer) {
+    void Pool::add (const std::string& name, const Issuer& issuer, 
+        const DefaultProbKey& contractTrigger) {
         if (!has(name)) {
             data_[name] = issuer;
             time_[name] = 0.0;
             names_.push_back(name);
+            defaultKeys_[name] = contractTrigger;
         }
     }
 
     const Issuer& Pool::get (const std::string& name) const {
         QL_REQUIRE(has(name), name + " not found");
         return data_.find(name)->second;
+    }
+
+    const DefaultProbKey& Pool::defaultKey (const std::string& name) const {
+        QL_REQUIRE(has(name), name + " not found");
+        return defaultKeys_.find(name)->second;
     }
 
     Real Pool::getTime (const std::string& name) const {
@@ -66,6 +73,15 @@ namespace QuantLib {
     const std::vector<std::string>& Pool::names() const {
         return names_;
     }
+
+    Disposable<std::vector<DefaultProbKey> > Pool::defaultKeys() const {
+        std::vector<DefaultProbKey> defaultKeys;
+        std::transform(defaultKeys_.begin(), defaultKeys_.end(),
+            std::back_inserter(defaultKeys), boost::bind(
+              &std::map<std::string, DefaultProbKey>::value_type::second, _1));
+        return defaultKeys;
+    }
+
 }
 
 
