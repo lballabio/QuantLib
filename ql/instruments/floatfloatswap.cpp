@@ -327,7 +327,7 @@ namespace QuantLib {
 
         if (intermediateCapitalExchange_) {
             for (Size i = 0; i < legs_[0].size() - 1; i++) {
-                Real cap = nominal1_[i + 1] - nominal1_[i];
+                Real cap = nominal1_[i] - nominal1_[i + 1];
                 if (!close(cap, 0.0)) {
                     std::vector<boost::shared_ptr<CashFlow> >::iterator it1 =
                         legs_[0].begin();
@@ -342,7 +342,7 @@ namespace QuantLib {
                 }
             }
             for (Size i = 0; i < legs_[1].size() - 1; i++) {
-                Real cap = nominal2_[i + 1] - nominal2_[i];
+                Real cap = nominal2_[i] - nominal2_[i + 1];
                 if (!close(cap, 0.0)) {
                     std::vector<boost::shared_ptr<CashFlow> >::iterator it1 =
                         legs_[1].begin();
