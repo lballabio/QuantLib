@@ -24,10 +24,39 @@
 #ifndef quantlib_singleton_hpp
 #define quantlib_singleton_hpp
 
+#include <ql/qldefines.hpp>
+
+#ifdef QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
+    #if defined(QL_ENABLE_SESSIONS)
+        #ifdef BOOST_MSVC
+            #pragma message(\
+                "Thread-safe singleton initialization not supported "  \
+                "when sessions are enabled.")
+        #else
+            #warning \
+                Thread-safe singleton initialization not supported \
+                when sessions are enabled.
+        #endif
+    #else
+        #include <boost/atomic.hpp>
+        #include <boost/thread/mutex.hpp>
+        #if !defined(BOOST_ATOMIC_ADDRESS_LOCK_FREE)
+            #ifdef BOOST_MSVC
+                #pragma message(\
+                    "Thread-safe singleton initialization "  \
+                    "may degrade performances.")
+            #else
+                #warning \
+                    Thread-safe singleton initialization \
+                    may degrade performances.
+            #endif
+        #endif
+        #define QL_SINGLETON_THREAD_SAFE_INIT
+    #endif
+#endif
+
 #include <ql/types.hpp>
 #include <boost/shared_ptr.hpp>
-#include <boost/atomic.hpp>
-#include <boost/thread/mutex.hpp>
 #if defined(QL_PATCH_MSVC)
     #pragma managed(push, off)
 #endif
@@ -80,12 +109,12 @@ namespace QuantLib {
     */
     template <class T>
     class Singleton : private boost::noncopyable {
-    #if (QL_MANAGED == 1) && !defined(QL_SINGLETON_THREAD_SAFE)
+    #if (QL_MANAGED == 1) && !defined(QL_SINGLETON_THREAD_SAFE_INIT)
       private:
         static std::map<Integer, boost::shared_ptr<T> > instances_;
     #endif
 
-    #if defined(QL_SINGLETON_THREAD_SAFE)
+    #if defined(QL_SINGLETON_THREAD_SAFE_INIT)
       private:
         static boost::atomic<T*> instance_;
         static boost::mutex mutex_;
@@ -100,12 +129,12 @@ namespace QuantLib {
 
     // static member definitions
     
-    #if (QL_MANAGED == 1) && !defined(QL_SINGLETON_THREAD_SAFE)
+    #if (QL_MANAGED == 1) && !defined(QL_SINGLETON_THREAD_SAFE_INIT)
       template <class T>
       std::map<Integer, boost::shared_ptr<T> > Singleton<T>::instances_;
     #endif
 
-    #if defined(QL_SINGLETON_THREAD_SAFE) 
+    #if defined(QL_SINGLETON_THREAD_SAFE_INIT) 
     template <class T>  boost::atomic<T*> Singleton<T>::instance_;
     template <class T> boost::mutex Singleton<T>::mutex_;
     #endif
@@ -115,7 +144,7 @@ namespace QuantLib {
     template <class T>
     T& Singleton<T>::instance() {
 
-        #if (QL_MANAGED == 0) && !defined(QL_SINGLETON_THREAD_SAFE)
+        #if (QL_MANAGED == 0) && !defined(QL_SINGLETON_THREAD_SAFE_INIT)
         static std::map<Integer, boost::shared_ptr<T> > instances_;
         #endif
 
@@ -125,11 +154,8 @@ namespace QuantLib {
           Integer id = 0;
         #endif
         
-        /*thread safe double checked locking pattern with atomic memory calls
-          boost::atomic may use locks and may cause a performance decrease so it
-          it is protected by the compiler define QL_SINGLETON_THREAD_SAFE
-          see userconfig.hpp*/
-        #if defined(QL_SINGLETON_THREAD_SAFE) 
+        // thread safe double checked locking pattern with atomic memory calls
+        #if defined(QL_SINGLETON_THREAD_SAFE_INIT) 
         T* instance =  instance_.load(boost::memory_order_consume);
         
         if (!instance) {
