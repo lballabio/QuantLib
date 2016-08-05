@@ -122,7 +122,7 @@ namespace QuantLib {
     class Date {
       public:
         //! serial number type
-        typedef int_fast32_t serial_type;
+        typedef boost::int_fast32_t serial_type;
         //! \name constructors
         //@{
         //! Default constructor returning a null date.
