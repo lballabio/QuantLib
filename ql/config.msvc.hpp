@@ -25,8 +25,8 @@
 #include <ql/userconfig.hpp>
 
 // first things first
-#if (_MSC_VER < 1400)
-#  error "versions of Visual C++ prior to VC++8 (2005) are not supported"
+#if (_MSC_VER < 1500)
+#  error "versions of Visual C++ prior to VC++9 (2008) are not supported"
 #endif
 
 /*******************************************
@@ -49,9 +49,7 @@
 
 #define QL_PATCH_MSVC
 // more granularity for when we need to work around a given version:
-#if (_MSC_VER == 1400)
-#  define QL_PATCH_MSVC80
-#elif (_MSC_VER == 1500)
+#if (_MSC_VER == 1500)
 #  define QL_PATCH_MSVC90
 #elif (_MSC_VER >= 1600)
 #  define QL_PATCH_MSVC100
@@ -63,8 +61,8 @@
 // This holds for all supported versions
 #define QL_WORKING_BOOST_STREAMS
 
-#if (_MSC_VER == 1400) || (_MSC_VER == 1500)
-// warning management for VC++ 8 and 9
+#if (_MSC_VER == 1500)
+// warning management for VC++ 9
 #  ifndef _SCL_SECURE_NO_DEPRECATE
 #    define _SCL_SECURE_NO_DEPRECATE
 #  endif
