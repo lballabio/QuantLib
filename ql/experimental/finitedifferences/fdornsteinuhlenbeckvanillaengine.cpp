@@ -61,10 +61,12 @@ namespace QuantLib {
             const boost::shared_ptr<OrnsteinUhlenbeckProcess>& process,
             const boost::shared_ptr<YieldTermStructure>& rTS,
             Size tGrid, Size xGrid, Size dampingSteps,
+            Real epsilon,
             const FdmSchemeDesc& schemeDesc)
     : process_(process),
       rTS_(rTS),
       tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
+      epsilon_(epsilon),
       schemeDesc_(schemeDesc) {
         registerWith(process_);
         registerWith(rTS);
@@ -83,7 +85,8 @@ namespace QuantLib {
             referenceDate, arguments_.exercise->lastDate());
 
         const boost::shared_ptr<Fdm1dMesher> equityMesher(
-            new FdmSimpleProcess1dMesher(xGrid_, process_, maturity, 1));
+            new FdmSimpleProcess1dMesher(
+                xGrid_, process_, maturity, 1, epsilon_));
 
         const boost::shared_ptr<FdmMesher> mesher (
             new FdmMesherComposite(equityMesher));

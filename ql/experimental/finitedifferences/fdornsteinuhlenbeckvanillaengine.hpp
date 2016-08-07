@@ -41,6 +41,7 @@ namespace QuantLib {
             const boost::shared_ptr<OrnsteinUhlenbeckProcess>&,
             const boost::shared_ptr<YieldTermStructure>& rTS,
             Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
+            Real epsilon = 0.0001,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
 
         void calculate() const;
@@ -49,6 +50,7 @@ namespace QuantLib {
         const boost::shared_ptr<OrnsteinUhlenbeckProcess> process_;
         const boost::shared_ptr<YieldTermStructure> rTS_;
         const Size tGrid_, xGrid_, dampingSteps_;
+        const Real epsilon_;
         const FdmSchemeDesc schemeDesc_;
     };
 }

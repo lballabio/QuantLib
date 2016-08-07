@@ -49,10 +49,12 @@ namespace QuantLib {
     class NormalCLVModel : public LazyObject {
       public:
         NormalCLVModel(
-            Size n,
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
             const boost::shared_ptr<OrnsteinUhlenbeckProcess>& ouProcess,
-            const std::vector<Date>& maturityDates);
+            const std::vector<Date>& maturityDates,
+            Size lagrangeOrder,
+            Real pMax = Null<Real>(),
+            Real pMin = Null<Real>());
 
         // cumulative distribution function of the BS process
         Real cdf(const Date& d, Real x) const;
@@ -81,6 +83,7 @@ namespace QuantLib {
 
           private:
             mutable Array y_;
+            const Volatility sigma_;
             const boost::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess_;
 
             struct InterpolationData {
@@ -103,6 +106,7 @@ namespace QuantLib {
 
 
         const Array x_;
+        const Volatility sigma_;
         const boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess_;
         const boost::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess_;
         const std::vector<Date> maturityDates_;

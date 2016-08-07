@@ -59,6 +59,6 @@ namespace QuantLib {
         return interpl_(x*sigma_, true);
     }
     Real StochasticCollocationInvCDF::operator()(Real u) const {
-        return interpl_(InverseCumulativeNormal()(u)*sigma_, true);
+        return value(InverseCumulativeNormal()(u));
     }
 }

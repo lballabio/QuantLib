@@ -23,11 +23,14 @@
 
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/math/statistics/statistics.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/math/randomnumbers/sobolbrownianbridgersg.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/methods/montecarlo/pathgenerator.hpp>
 #include <ql/termstructures/volatility/sabr.hpp>
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 
@@ -35,12 +38,12 @@
 #include <ql/experimental/finitedifferences/bsmrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/hestonrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/fdornsteinuhlenbeckvanillaengine.hpp>
+#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
+#include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
 
 #include <boost/bind.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/assign/std/vector.hpp>
-
-#include <iostream>
 
 using namespace QuantLib;
 using namespace boost::assign;
@@ -72,7 +75,7 @@ void NormalCLVModelTest::testBSCumlativeDistributionFunction() {
     const boost::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess;
 
     const NormalCLVModel m(
-        5, bsProcess, ouProcess, std::vector<Date>());
+        bsProcess, ouProcess, std::vector<Date>(), 5);
     const BSMRNDCalculator rndCalculator(bsProcess);
 
 
@@ -122,11 +125,10 @@ void NormalCLVModelTest::testHestonCumlativeDistributionFunction() {
             Handle<HestonModel>(boost::make_shared<HestonModel>(process))));
 
     const NormalCLVModel m(
-        5,
         boost::make_shared<GeneralizedBlackScholesProcess>(
             spot, qTS, rTS, hestonVolTS),
         boost::shared_ptr<OrnsteinUhlenbeckProcess>(),
-        std::vector<Date>());
+        std::vector<Date>(), 5);
 
     const HestonRNDCalculator rndCalculator(process);
 
@@ -222,7 +224,7 @@ void NormalCLVModelTest::testIllustrative1DExample() {
         today + Period(90, Days)  , today + Period(180, Days),
         today + Period(360, Days) , today + Period(720, Days);
 
-    const NormalCLVModel m(4, bsProcess, ouProcess, maturityDates);
+    const NormalCLVModel m(bsProcess, ouProcess, maturityDates, 4);
     const boost::function<Real(Real, Real)> g = m.g();
 
     // test collocation points in x_ij
@@ -346,7 +348,7 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
     std::vector<Date> maturities;
     maturities += today + Period(6, Months), maturity;
 
-    const NormalCLVModel m(8, bsProcess, ouProcess, maturities);
+    const NormalCLVModel m(bsProcess, ouProcess, maturities, 8);
     const boost::function<Real(Real, Real)> g = m.g();
 
     const Size nSims = 32767;
@@ -364,7 +366,7 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
 
     }
 
-    const Real calculated = stat.mean() * rTS->discount(maturity);
+    Real calculated = stat.mean() * rTS->discount(maturity);
 
     VanillaOption option(payoff, exercise);
     option.setPricingEngine(
@@ -373,36 +375,214 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
 
     const Real tol = 0.01;
     if (std::fabs(calculated - expected) > tol) {
-        BOOST_FAIL("Failed to reproduce vanilla option price "
+        BOOST_FAIL("Failed to reproduce Monte-Carlo vanilla option price "
                    << "\n    time:       " << maturity
                    << "\n    strike:     " << strike
                    << "\n    calculated: " << calculated
                    << "\n    expected:   " << expected);
-
     }
 
-    VanillaOption clvOption(
+    VanillaOption fdmOption(
          boost::make_shared<NormalCLVModelPayoff>(
              payoff->optionType(), payoff->strike(), boost::bind(g, t, _1)),
          exercise);
 
-    clvOption.setPricingEngine(
+    fdmOption.setPricingEngine(
         boost::make_shared<FdOrnsteinUhlenbeckVanillaEngine>(
             ouProcess, rTS.currentLink(), 50, 800));
 
-    std::cout << clvOption.NPV() << " " << expected << std::endl;
+    calculated = fdmOption.NPV();
+    if (std::fabs(calculated - expected) > tol) {
+        BOOST_FAIL("Failed to reproduce FDM vanilla option price "
+                   << "\n    time:       " << maturity
+                   << "\n    strike:     " << strike
+                   << "\n    calculated: " << calculated
+                   << "\n    expected:   " << expected);
+    }
 }
 
-test_suite* NormalCLVModelTest::suite() {
+void NormalCLVModelTest::testMoustacheGraph() {
+    BOOST_TEST_MESSAGE(
+        "Testing Double no Touch pricing with Normal CLV Model...");
+
+    SavedSettings backup;
+
+    /*
+     The comparison of Black-Scholes and normal CLV prices is derived
+     from figure 8.8 in Iain J. Clark's book,
+     Foreign Exchange Option Pricing: A Practitioner’s Guide
+    */
+
+    const DayCounter dc = ActualActual();
+    const Date todaysDate(5, Aug, 2016);
+    const Date maturityDate = todaysDate + Period(1, Years);
+    const Time maturityTime = dc.yearFraction(todaysDate, maturityDate);
+
+    Settings::instance().evaluationDate() = todaysDate;
+
+    const Real s0 = 100;
+    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(s0));
+    const Rate r = 0.02;
+    const Rate q = 0.01;
+
+    // parameter of the "calibrated" Heston model
+    const Real kappa =   1.0;
+    const Real theta =   0.06;
+    const Real rho   =  -0.8;
+    const Real sigma =   0.8;
+    const Real v0    =   0.09;
+
+    const Handle<YieldTermStructure> rTS(flatRate(r, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(q, dc));
+
+    const boost::shared_ptr<HestonModel> hestonModel(
+        boost::make_shared<HestonModel>(
+            boost::make_shared<HestonProcess>(
+                rTS, qTS, spot, v0, kappa, theta, sigma, rho)));
+
+    const Handle<BlackVolTermStructure> vTS(
+        boost::make_shared<HestonBlackVolSurface>(
+            Handle<HestonModel>(hestonModel)));
+
+    const boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
+        boost::make_shared<GeneralizedBlackScholesProcess>(
+            spot, qTS, rTS, vTS);
+
+    // Ornstein-Uhlenbeck
+    const Real speed   = -0.80;
+    const Real level   = 100;
+    const Real sigmaOU = 0.15;
+    const Real x0      = 100;
+
+    const boost::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
+        boost::make_shared<OrnsteinUhlenbeckProcess>(
+            speed, sigmaOU, x0, level));
+
+    const boost::shared_ptr<Exercise> europeanExercise(
+        boost::make_shared<EuropeanExercise>(maturityDate));
+
+    VanillaOption vanillaOption(
+        boost::make_shared<PlainVanillaPayoff>(Option::Call, s0),
+        europeanExercise);
+
+    vanillaOption.setPricingEngine(
+        boost::make_shared<AnalyticHestonEngine>(hestonModel));
+
+    const Volatility atmVol = vanillaOption.impliedVolatility(
+        vanillaOption.NPV(),
+        boost::make_shared<GeneralizedBlackScholesProcess>(spot, qTS, rTS,
+            Handle<BlackVolTermStructure>(flatVol(std::sqrt(theta), dc))));
+
+    const boost::shared_ptr<PricingEngine> analyticEngine(
+        boost::make_shared<AnalyticDoubleBarrierBinaryEngine>(
+            boost::make_shared<GeneralizedBlackScholesProcess>(
+                spot, qTS, rTS,
+                Handle<BlackVolTermStructure>(flatVol(atmVol, dc)))));
+
+
+    std::vector<Date> maturities(1, todaysDate + Period(2, Weeks));
+    while (maturities.back() < maturityDate)
+        maturities.push_back(maturities.back() + Period(2, Weeks));
+
+    const NormalCLVModel m(bsProcess, ouProcess, maturities, 8);
+    const boost::function<Real(Real, Real)> g = m.g();
+
+    const Size n = 18;
+    Array barrier_lo(n), barrier_hi(n), bsNPV(n);
+
+    const boost::shared_ptr<CashOrNothingPayoff> payoff =
+        boost::make_shared<CashOrNothingPayoff>(Option::Call, 0.0, 1.0);
+
+    for (Size i=0; i < n; ++i) {
+        const Real dist = 10.0+5.0*i;
+
+        barrier_lo[i] = std::max(s0 - dist, 1e-2);
+        barrier_hi[i] = s0 + dist;
+        DoubleBarrierOption doubleBarrier(
+            DoubleBarrier::KnockOut, barrier_lo[i], barrier_hi[i], 0.0,
+            payoff,
+            europeanExercise);
+
+        doubleBarrier.setPricingEngine(analyticEngine);
+        bsNPV[i] = doubleBarrier.NPV();
+    }
+
+    typedef SobolBrownianBridgeRsg rsg_type;
+    typedef PathGenerator<rsg_type>::sample_type sample_type;
+
+    const Size factors = 1;
+    const Size tSteps = 200;
+    const TimeGrid grid(maturityTime, tSteps);
+
+    const boost::shared_ptr<PathGenerator<rsg_type> > pathGenerator =
+        boost::make_shared<PathGenerator<rsg_type> >(
+            ouProcess, grid, rsg_type(factors, tSteps), false);
+
+    const Size nSims = 400000;
+    std::vector<GeneralStatistics> stats(n);
+    const DiscountFactor df = rTS->discount(maturityDate);
+
+    for (Size i=0; i < nSims; ++i) {
+        std::vector<bool> touch(n, false);
+
+        const sample_type& path = pathGenerator->next();
+
+        Real s;
+        for (Size j=1; j <= tSteps; ++j) {
+            const Time t = grid.at(j);
+            s = g(t, path.value.at(j));
+
+            for (Size u=0; u < n; ++u) {
+                if (s <= barrier_lo[u] || s >= barrier_hi[u]) {
+                    touch[u] = true;
+                }
+            }
+        }
+        for (Size u=0; u < n; ++u) {
+            if (touch[u]) {
+                stats[u].add(0.0);
+            }
+            else {
+                stats[u].add(df*payoff->operator()(s));
+            }
+        }
+    }
+
+    const Real expected[] = {
+        0.00907689,  0.0892242,  0.139655,   0.111603,   0.059872,
+        0.016652,   -0.0094134, -0.0207528, -0.0230873, -0.0201951,
+        -0.0160556, -0.0116482, -0.00741535,-0.00355287,-0.000165914,
+        0.00493464,  0.00342315, 0.0023405 };
+
+    const Real tol = 1e-5;
+    for (Size u=0; u < n; ++u) {
+        const Real calculated = stats[u].mean() - bsNPV[u];
+
+        if (std::fabs(calculated - expected[u]) > tol) {
+            BOOST_FAIL("Failed to reproduce Double no Touch prices"
+                   << "\n    time:          " << maturityDate
+                   << "\n    barrier lower: " << barrier_lo[u]
+                   << "\n    barrier high:  " << barrier_hi[u]
+                   << "\n    calculated:    " << calculated
+                   << "\n    expected:      " << expected[u]);
+        }
+    }
+}
+
+
+test_suite* NormalCLVModelTest::experimental() {
     test_suite* suite = BOOST_TEST_SUITE("NormalCLVModel tests");
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &NormalCLVModelTest::testBSCumlativeDistributionFunction));
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &NormalCLVModelTest::testHestonCumlativeDistributionFunction));
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &NormalCLVModelTest::testIllustrative1DExample));
+
+    suite->add(QUANTLIB_TEST_CASE(
+        &NormalCLVModelTest::testBSCumlativeDistributionFunction));
+    suite->add(QUANTLIB_TEST_CASE(
+        &NormalCLVModelTest::testHestonCumlativeDistributionFunction));
+    suite->add(QUANTLIB_TEST_CASE(
+        &NormalCLVModelTest::testIllustrative1DExample));
     suite->add(QUANTLIB_TEST_CASE(
             NormalCLVModelTest::testMonteCarloBSOptionPricing));
+    suite->add(QUANTLIB_TEST_CASE(
+            NormalCLVModelTest::testMoustacheGraph));
 
     return suite;
 }

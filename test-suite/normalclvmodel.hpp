@@ -29,8 +29,9 @@ class NormalCLVModelTest {
     static void testHestonCumlativeDistributionFunction();
     static void testIllustrative1DExample();
     static void testMonteCarloBSOptionPricing();
+    static void testMoustacheGraph();
 
-    static boost::unit_test_framework::test_suite* suite();
+    static boost::unit_test_framework::test_suite* experimental();
 };
 
 

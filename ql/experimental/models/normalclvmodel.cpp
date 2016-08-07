@@ -35,11 +35,16 @@
 namespace QuantLib {
 
     NormalCLVModel::NormalCLVModel(
-        Size n,
         const boost::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
         const boost::shared_ptr<OrnsteinUhlenbeckProcess>& ouProcess,
-        const std::vector<Date>& maturityDates)
-    : x_(M_SQRT2*GaussHermiteIntegration(n).x()),
+        const std::vector<Date>& maturityDates,
+        Size lagrangeOrder, Real pMax, Real pMin)
+    : x_(M_SQRT2*GaussHermiteIntegration(lagrangeOrder).x()),
+      sigma_( (pMax != Null<Real>())
+              ? x_.back() / InverseCumulativeNormal()(pMax)
+              : (pMin != Null<Real>())
+                  ? x_.front() / InverseCumulativeNormal()(pMin)
+                  : 1.0),
       bsProcess_    (bsProcess),
       ouProcess_    (ouProcess),
       maturityDates_(maturityDates),
@@ -57,32 +62,74 @@ namespace QuantLib {
     }
 
     Real NormalCLVModel::cdf(const Date& d, Real k) const {
-        const DiscountFactor df
-            = bsProcess_->riskFreeRate()->discount(d);
-
-        VanillaOption option(
-            boost::make_shared<PlainVanillaPayoff>(Option::Call, k),
-            boost::make_shared<EuropeanExercise>(d));
-
-        option.setPricingEngine(pricingEngine_);
+        //k = std::max(k, 1e-3*bsProcess_->x0());
 
         const Handle<BlackVolTermStructure> volTS
             = bsProcess_->blackVolatility();
 
-        const Real dk = 1e-4*k;
+        const Real dk = 1e-3*k;
         const Real dvol_dk
             = (volTS->blackVol(d, k+dk) - volTS->blackVol(d, k-dk)) / (2*dk);
 
-        return 1.0 + (  option.strikeSensitivity()
-                      + option.vega() * dvol_dk) /df;
+        const DiscountFactor df
+            = bsProcess_->riskFreeRate()->discount(d);
+
+        const boost::shared_ptr<Exercise> exercise
+            = boost::make_shared<EuropeanExercise>(d);
+
+        if (bsProcess_->x0() <=k) {
+            VanillaOption option(
+                boost::make_shared<PlainVanillaPayoff>(Option::Call, k),
+                exercise);
+            option.setPricingEngine(pricingEngine_);
+
+            return 1.0 + (  option.strikeSensitivity()
+                          + option.vega() * dvol_dk) /df;
+        }
+        else {
+            VanillaOption option(
+                boost::make_shared<PlainVanillaPayoff>(Option::Put, k),
+                exercise);
+            option.setPricingEngine(pricingEngine_);
+
+            return (  option.strikeSensitivity()
+                    + option.vega() * dvol_dk) /df;
+
+        }
     }
 
+
     Real NormalCLVModel::invCDF(const Date& d, Real q) const {
+        const Real fwd = bsProcess_->x0()
+            / bsProcess_->riskFreeRate()->discount(d, true)
+            * bsProcess_->dividendYield()->discount(d, true);
+
+        const Volatility atmVol =
+            bsProcess_->blackVolatility()->blackVol(d, fwd, true);
+
+        const Real atmX = InverseCumulativeNormal()(q);
+        const Time t = bsProcess_->time(d);
+
+        const Real guess = fwd*std::exp(atmVol*atmX*std::sqrt(t));
+
+
+        Real lower = guess;
+        while (guess/lower < 65535.0 && cdf(d, lower) > q)
+            lower*=0.5;
+
+        Real upper = guess;
+        while (upper/guess < 65535.0 && cdf(d, upper) < q) upper*=2;
+
+        QL_REQUIRE(guess/lower < 65535.0 && upper/guess < 65535.0,
+                "Could not find an start interval with ("
+                << lower << ", " << upper << ") -> ("
+                << cdf(d, lower) << ", " << cdf(d, upper) << ")");
+
         return Brent().solve(
             compose(std::bind2nd(std::minus<Real>(), q),
                 boost::function<Real(Real)>(
                     boost::bind(&NormalCLVModel::cdf, this, d, _1))),
-            1e-10, bsProcess_->x0(), 0.05*bsProcess_->x0());
+            1e-10, 0.5*(lower+upper), lower, upper);
     }
 
     Disposable<Array> NormalCLVModel::collocationPointsX(const Date& d) const {
@@ -101,7 +148,7 @@ namespace QuantLib {
 
         CumulativeNormalDistribution N;
         for (Size i=0, n=s.size(); i < n; ++i) {
-            s[i] = invCDF(d, N(x_[i]));
+            s[i] = invCDF(d, N(x_[i]/sigma_));
         }
 
         return s;
@@ -116,6 +163,7 @@ namespace QuantLib {
     NormalCLVModel::MappingFunction::MappingFunction(
         const NormalCLVModel& model)
     : y_(model.x_.size()),
+      sigma_(model.sigma_),
       ouProcess_(model.ouProcess_),
       data_(boost::make_shared<InterpolationData>(model)) {
 
@@ -142,7 +190,9 @@ namespace QuantLib {
         const Real stdDeviation
             = ouProcess_->stdDeviation(0.0, ouProcess_->x0(), t);
 
-        return data_->lagrangeInterpl_.value(y_, (x-expectation)/stdDeviation);
+        const Real r = sigma_*(x-expectation)/stdDeviation;
+
+        return data_->lagrangeInterpl_.value(y_, r);
     }
 
     void NormalCLVModel::performCalculations() const {
