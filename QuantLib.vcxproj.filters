@@ -4105,6 +4105,18 @@
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmornsteinuhlenbeckop.hpp">
       <Filter>methods\finitedifferences\operators</Filter>
     </ClInclude>
+    <ClInclude Include="ql\indexes\ibor\aonia.hpp">
+      <Filter>indexes\ibor</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\indexes\ibor\bbsw.hpp">
+      <Filter>indexes\ibor</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\indexes\ibor\bkbm.hpp">
+      <Filter>indexes\ibor</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\indexes\ibor\nzocr.hpp">
+      <Filter>indexes\ibor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">

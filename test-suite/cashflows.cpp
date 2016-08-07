@@ -236,7 +236,7 @@ void CashFlowsTest::testDefaultSettlementDate() {
     if (accruedPeriod == 0.0)
         BOOST_ERROR("null accrued period with default settlement date");
 
-    BigInteger accruedDays = CashFlows::accruedDays(leg, false);
+    Date::serial_type accruedDays = CashFlows::accruedDays(leg, false);
     if (accruedDays == 0)
         BOOST_ERROR("no accrued days with default settlement date");
 

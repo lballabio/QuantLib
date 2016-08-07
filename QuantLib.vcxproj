@@ -499,6 +499,10 @@
     <ClInclude Include="ql\experimental\models\hestonslvfdmmodel.hpp" />
     <ClInclude Include="ql\experimental\models\hestonslvmcmodel.hpp" />
     <ClInclude Include="ql\experimental\models\normalclvmodel.hpp" />
+    <ClInclude Include="ql\indexes\ibor\aonia.hpp" />
+    <ClInclude Include="ql\indexes\ibor\bbsw.hpp" />
+    <ClInclude Include="ql\indexes\ibor\bkbm.hpp" />
+    <ClInclude Include="ql\indexes\ibor\nzocr.hpp" />
     <ClInclude Include="ql\math\polynomialmathfunction.hpp" />
     <ClInclude Include="ql\math\pascaltriangle.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmornsteinuhlenbeckop.hpp" />

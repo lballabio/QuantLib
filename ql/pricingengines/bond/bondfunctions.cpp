@@ -185,8 +185,8 @@ namespace QuantLib {
                                         false, settlement);
     }
 
-    BigInteger BondFunctions::accrualDays(const Bond& bond,
-                                          Date settlement) {
+    Date::serial_type BondFunctions::accrualDays(const Bond& bond,
+                                                 Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();
 
@@ -211,8 +211,8 @@ namespace QuantLib {
                                         false, settlement);
     }
 
-    BigInteger BondFunctions::accruedDays(const Bond& bond,
-                                          Date settlement) {
+    Date::serial_type BondFunctions::accruedDays(const Bond& bond,
+                                                 Date settlement) {
         if (settlement == Date())
             settlement = bond.settlementDate();
 

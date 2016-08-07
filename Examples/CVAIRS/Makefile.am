@@ -11,8 +11,8 @@ CVAIRS_SOURCES = CVAIRS.cpp
 CVAIRS_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
+    CMakeLists.txt \
     CVAIRS.dev \
-    CVAIRS_vc8.vcproj \
     CVAIRS_vc9.vcproj \
     CVAIRS.vcxproj \
     CVAIRS.vcxproj.filters

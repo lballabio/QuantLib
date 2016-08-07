@@ -52,9 +52,9 @@ namespace QuantLib {
 #ifndef QL_HIGH_RESOLUTION_DATE
     // constructors
     Date::Date()
-    : serialNumber_(BigInteger(0)) {}
+    : serialNumber_(Date::serial_type(0)) {}
 
-    Date::Date(BigInteger serialNumber)
+    Date::Date(Date::serial_type serialNumber)
     : serialNumber_(serialNumber) {
         checkSerialNumber(serialNumber);
     }
@@ -94,8 +94,8 @@ namespace QuantLib {
         return y;
     }
 
-    Date& Date::operator+=(BigInteger days) {
-        BigInteger serial = serialNumber_ + days;
+    Date& Date::operator+=(Date::serial_type days) {
+        Date::serial_type serial = serialNumber_ + days;
         checkSerialNumber(serial);
         serialNumber_ = serial;
         return *this;
@@ -106,8 +106,8 @@ namespace QuantLib {
         return *this;
     }
 
-    Date& Date::operator-=(BigInteger days) {
-        BigInteger serial = serialNumber_ - days;
+    Date& Date::operator-=(Date::serial_type days) {
+        Date::serial_type serial = serialNumber_ - days;
         checkSerialNumber(serial);
         serialNumber_ = serial;
         return *this;
@@ -119,14 +119,14 @@ namespace QuantLib {
     }
 
     Date& Date::operator++() {
-        BigInteger serial = serialNumber_ + 1;
+        Date::serial_type serial = serialNumber_ + 1;
         checkSerialNumber(serial);
         serialNumber_ = serial;
         return *this;
     }
 
     Date& Date::operator--() {
-        BigInteger serial = serialNumber_ - 1;
+        Date::serial_type serial = serialNumber_ - 1;
         checkSerialNumber(serial);
         serialNumber_ = serial;
         return *this;
@@ -276,10 +276,10 @@ namespace QuantLib {
         return (leapYear? MonthLeapOffset[m-1] : MonthOffset[m-1]);
     }
 
-    BigInteger Date::yearOffset(Year y) {
+    Date::serial_type Date::yearOffset(Year y) {
         // the list of all December 31st in the preceding year
         // e.g. for 1901 yearOffset[1] is 366, that is, December 31 1900
-        static const BigInteger YearOffset[] = {
+        static const Date::serial_type YearOffset[] = {
             // 1900-1909
                 0,  366,  731, 1096, 1461, 1827, 2192, 2557, 2922, 3288,
             // 1910-1919
@@ -528,7 +528,7 @@ namespace QuantLib {
                millisec*(time_duration::ticks_per_second()/1000)
              + microsec*(time_duration::ticks_per_second()/1000000))) {}
 
-    Date::Date(BigInteger serialNumber)
+    Date::Date(Date::serial_type serialNumber)
     : dateTime_(
          serialNumberDateReference() +
          boost::gregorian::days(serialNumber)) {
@@ -598,8 +598,8 @@ namespace QuantLib {
         return time_duration::ticks_per_second();
     }
 
-    BigInteger Date::serialNumber() const {
-        const BigInteger n = (dateTime_.date()
+    Date::serial_type Date::serialNumber() const {
+        const Date::serial_type n = (dateTime_.date()
             - serialNumberDateReference()).days();
         checkSerialNumber(n);
 
@@ -608,7 +608,7 @@ namespace QuantLib {
 
     const ptime& Date::dateTime() const { return dateTime_; }
 
-    Date& Date::operator+=(BigInteger d) {
+    Date& Date::operator+=(Date::serial_type d) {
         dateTime_ += boost::gregorian::days(d);
         return *this;
     }
@@ -618,7 +618,7 @@ namespace QuantLib {
         return *this;
     }
 
-    Date& Date::operator-=(BigInteger d) {
+    Date& Date::operator-=(Date::serial_type d) {
         dateTime_ -= boost::gregorian::days(d);
         return *this;
     }
@@ -637,14 +637,14 @@ namespace QuantLib {
         return *this;
     }
 
-    Date Date::operator+(BigInteger days) const {
+    Date Date::operator+(Date::serial_type days) const {
         Date retVal(*this);
         retVal+=days;
 
         return retVal;
     }
 
-    Date Date::operator-(BigInteger days) const {
+    Date Date::operator-(Date::serial_type days) const {
         Date retVal(*this);
         retVal-=days;
 
@@ -693,12 +693,12 @@ namespace QuantLib {
     }
 
 
-    BigInteger operator-(const Date& d1, const Date& d2) {
+    Date::serial_type operator-(const Date& d1, const Date& d2) {
         return (d1.dateTime().date() - d2.dateTime().date()).days();
     }
 
     Time daysBetween(const Date& d1, const Date& d2) {
-        const BigInteger days = d2 - d1;
+        const Date::serial_type days = d2 - d1;
         return days + d2.fractionOfDay() - d1.fractionOfDay();
     }
 
@@ -727,15 +727,15 @@ namespace QuantLib {
     }
 #endif
 
-    BigInteger Date::minimumSerialNumber() {
+    Date::serial_type Date::minimumSerialNumber() {
         return 367;       // Jan 1st, 1901
     }
 
-    BigInteger Date::maximumSerialNumber() {
+    Date::serial_type Date::maximumSerialNumber() {
         return 109574;    // Dec 31st, 2199
     }
 
-    void Date::checkSerialNumber(BigInteger serialNumber) {
+    void Date::checkSerialNumber(Date::serial_type serialNumber) {
         QL_REQUIRE(serialNumber >= minimumSerialNumber() &&
                    serialNumber <= maximumSerialNumber(),
                    "Date's serial number (" << serialNumber << ") outside "
@@ -835,12 +835,38 @@ namespace QuantLib {
 
     namespace detail {
 
+        struct FormatResetter {
+            // An instance of this object will have undefined behaviour
+            // if the object out passed in the constructor is destroyed
+            // before this instance
+            FormatResetter(std::ostream &out)
+                : out_(&out), flags_(out.flags()), filler_(out.fill()),
+                  loc_(out.getloc()) {
+                out << std::resetiosflags(
+                    std::ios_base::adjustfield | std::ios_base::basefield |
+                    std::ios_base::floatfield | std::ios_base::showbase |
+                    std::ios_base::showpos | std::ios_base::uppercase);
+                out << std::right;
+                out.imbue(std::locale(""));
+            }
+            ~FormatResetter() {
+                out_->flags(flags_);
+                out_->fill(filler_);
+                out_->imbue(loc_);
+            }
+            std::ostream *out_;
+            std::ios_base::fmtflags flags_;
+            char filler_;
+            std::locale loc_;
+        };
+
         std::ostream& operator<<(std::ostream& out,
                                  const short_date_holder& holder) {
             const Date& d = holder.d;
             if (d == Date()) {
                 out << "null date";
             } else {
+                FormatResetter resetter(out);
                 Integer dd = d.dayOfMonth(), mm = Integer(d.month()),
                         yyyy = d.year();
                 char filler = out.fill();
@@ -858,6 +884,7 @@ namespace QuantLib {
             if (d == Date()) {
                 out << "null date";
             } else {
+                FormatResetter resetter(out);
                 out << d.month() << " ";
                 out << io::ordinal(d.dayOfMonth()) << ", ";
                 out << d.year();
@@ -871,13 +898,12 @@ namespace QuantLib {
             if (d == Date()) {
                 out << "null date";
             } else {
+                FormatResetter resetter(out);
                 Integer dd = d.dayOfMonth(), mm = Integer(d.month()),
                         yyyy = d.year();
-                char filler = out.fill();
                 out << yyyy << "-";
                 out << std::setw(2) << std::setfill('0') << mm << "-";
                 out << std::setw(2) << std::setfill('0') << dd;
-                out.fill(filler);
             }
             return out;
         }
@@ -889,6 +915,7 @@ namespace QuantLib {
             if (d == Date()) {
                 out << "null date";
             } else {
+                FormatResetter resetter(out);
                 date boostDate(d.year(), d.month(), d.dayOfMonth());
                 out.imbue(std::locale(std::locale(),
                                       new date_facet(holder.f.c_str())));
@@ -903,6 +930,7 @@ namespace QuantLib {
             const Date& d = holder.d;
 
             out << io::iso_date(d) << "T";
+            FormatResetter resetter(out);
             Integer hh = d.hours(), mm = d.minutes(), s = d.seconds(),
                     millis = d.milliseconds(), micros = d.microseconds();
 

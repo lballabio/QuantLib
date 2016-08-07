@@ -46,7 +46,7 @@ namespace QuantLib {
             //! Returns lower bound for given parameters
             virtual Array lowerBound(const Array& params) const {
                 return Array(params.size(),
-                             std::numeric_limits < Array::value_type > ::min());
+                             -std::numeric_limits < Array::value_type > ::max());
             }
         };
         boost::shared_ptr<Impl> impl_;

@@ -333,9 +333,9 @@ namespace QuantLib {
         return 0;
     }
 
-    BigInteger CashFlows::accrualDays(const Leg& leg,
-                                      bool includeSettlementDateFlows,
-                                      Date settlementDate) {
+    Date::serial_type CashFlows::accrualDays(const Leg& leg,
+                                             bool includeSettlementDateFlows,
+                                             Date settlementDate) {
         Leg::const_iterator cf = nextCashFlow(leg,
                                               includeSettlementDateFlows,
                                               settlementDate);
@@ -370,9 +370,9 @@ namespace QuantLib {
         return 0;
     }
 
-    BigInteger CashFlows::accruedDays(const Leg& leg,
-                                      bool includeSettlementDateFlows,
-                                      Date settlementDate) {
+    Date::serial_type CashFlows::accruedDays(const Leg& leg,
+                                             bool includeSettlementDateFlows,
+                                             Date settlementDate) {
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
 
