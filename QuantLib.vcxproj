@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (static runtime)|Win32">
@@ -490,6 +490,7 @@
     <ClInclude Include="ql\experimental\finitedifferences\bsmrndcalculator.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmhestongreensfct.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmlocalvolfwdop.hpp" />
+    <ClInclude Include="ql\experimental\finitedifferences\fdornsteinuhlenbeckvanillaengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\hestonrndcalculator.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\localvolrndcalculator.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\riskneutraldensitycalculator.hpp" />
@@ -497,6 +498,7 @@
     <ClInclude Include="ql\experimental\models\all.hpp" />
     <ClInclude Include="ql\experimental\models\hestonslvfdmmodel.hpp" />
     <ClInclude Include="ql\experimental\models\hestonslvmcmodel.hpp" />
+    <ClInclude Include="ql\experimental\models\normalclvmodel.hpp" />
     <ClInclude Include="ql\math\polynomialmathfunction.hpp" />
     <ClInclude Include="ql\math\pascaltriangle.hpp" />
     <ClInclude Include="ql\rebatedexercise.hpp" />
@@ -1768,12 +1770,14 @@
     <ClCompile Include="ql\experimental\finitedifferences\bsmrndcalculator.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmhestongreensfct.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmlocalvolfwdop.cpp" />
+    <ClCompile Include="ql\experimental\finitedifferences\fdornsteinuhlenbeckvanillaengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\hestonrndcalculator.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\localvolrndcalculator.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\riskneutraldensitycalculator.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\squarerootprocessrndcalculator.cpp" />
     <ClCompile Include="ql\experimental\models\hestonslvfdmmodel.cpp" />
     <ClCompile Include="ql\experimental\models\hestonslvmcmodel.cpp" />
+    <ClCompile Include="ql\experimental\models\normalclvmodel.cpp" />
     <ClCompile Include="ql\math\polynomialmathfunction.cpp" />
     <ClCompile Include="ql\math\pascaltriangle.cpp" />
     <ClCompile Include="ql\patterns\observable.cpp" />
