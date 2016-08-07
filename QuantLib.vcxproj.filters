@@ -4102,6 +4102,9 @@
     <ClInclude Include="ql\termstructures\volatility\equityfx\hestonblackvolsurface.hpp">
       <Filter>termstructures\volatility\equityfx</Filter>
     </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\operators\fdmornsteinuhlenbeckop.hpp">
+      <Filter>methods\finitedifferences\operators</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -6619,6 +6622,9 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\models\normalclvmodel.cpp">
       <Filter>experimental\models</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\methods\finitedifferences\operators\fdmornsteinuhlenbeckop.cpp">
+      <Filter>methods\finitedifferences\operators</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
