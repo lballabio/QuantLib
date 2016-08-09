@@ -38,7 +38,7 @@
 namespace QuantLib {
     /*! References:
 
-        A. Grzelak, 2015, The CLV Framework -
+        A. Grzelak, 2016, The CLV Framework -
         A Fresh Look at Efficient Pricing with Smile
 
         http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2747541
