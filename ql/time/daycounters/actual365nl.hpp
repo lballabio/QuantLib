@@ -41,14 +41,14 @@ namespace QuantLib {
             std::string name() const { return std::string("Actual/365 (NL)"); }
 
             // Returns the exact number of days between 2 dates, excluding leap days
-            BigInteger dayCount(const Date& d1,
-                                const Date& d2) const {
+            Date::serial_type dayCount(const Date& d1,
+                                       const Date& d2) const {
 
                 static const Integer MonthOffset[] = {
                     0,  31,  59,  90, 120, 151,  // Jan - Jun
                   181, 212, 243, 273, 304, 334   // Jun - Dec
                 };
-                BigInteger s1, s2;
+                Date::serial_type s1, s2;
 
                 s1 = d1.dayOfMonth() + MonthOffset[d1.month()-1] + (d1.year() * 365);
                 s2 = d2.dayOfMonth() + MonthOffset[d2.month()-1] + (d2.year() * 365);

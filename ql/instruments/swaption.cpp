@@ -63,12 +63,19 @@ namespace QuantLib {
             // at first ImpliedVolHelper::operator()(Volatility x) call
             vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(-1.0));
             Handle<Quote> h(vol_);
-            if (type == Normal) {
-                engine_ = boost::make_shared<BachelierSwaptionEngine>(
-                    discountCurve_, h, Actual365Fixed());
-            } else {
+
+            switch (type) {
+            case ShiftedLognormal:
                 engine_ = boost::make_shared<BlackSwaptionEngine>(
                     discountCurve_, h, Actual365Fixed(), displacement);
+                break;
+            case Normal:
+                engine_ = boost::make_shared<BachelierSwaptionEngine>(
+                    discountCurve_, h, Actual365Fixed());
+                break;
+            default:
+                QL_FAIL("unknown VolatilityType (" << type << ")");
+                break;
             }
             swaption.setupArguments(engine_->getArguments());
             results_ = dynamic_cast<const Instrument::results *>(
@@ -148,8 +155,8 @@ namespace QuantLib {
                                            Natural maxEvaluations,
                                            Volatility minVol,
                                            Volatility maxVol,
-                                           Real displacement,
-                                           VolatilityType type) const {
+                                           VolatilityType type,
+                                           Real displacement) const {
         //calculate();
         QL_REQUIRE(!isExpired(), "instrument expired");
 
@@ -158,6 +165,19 @@ namespace QuantLib {
         NewtonSafe solver;
         solver.setMaxEvaluations(maxEvaluations);
         return solver.solve(f, accuracy, guess, minVol, maxVol);
+    }
+
+    Volatility Swaption::impliedVolatility(Real targetValue,
+                                           const Handle<YieldTermStructure>& d,
+                                           Volatility guess,
+                                           Real accuracy,
+                                           Natural maxEvaluations,
+                                           Volatility minVol,
+                                           Volatility maxVol,
+                                           Real displacement) const {
+        return impliedVolatility(targetValue, d, guess, accuracy,
+                                 maxEvaluations, minVol, maxVol,
+                                 ShiftedLognormal, displacement);
     }
 
 }
