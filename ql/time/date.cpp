@@ -842,12 +842,16 @@ namespace QuantLib {
             FormatResetter(std::ostream &out)
                 : out_(&out), flags_(out.flags()), filler_(out.fill()),
                   loc_(out.getloc()) {
+                struct nopunct : std::numpunct<char> {
+                    std::string do_grouping() const {return "";}
+                };
+                std::locale loc (out.getloc(),new nopunct);
+                out.imbue(loc);
                 out << std::resetiosflags(
                     std::ios_base::adjustfield | std::ios_base::basefield |
                     std::ios_base::floatfield | std::ios_base::showbase |
                     std::ios_base::showpos | std::ios_base::uppercase);
                 out << std::right;
-                out.imbue(std::locale(""));
             }
             ~FormatResetter() {
                 out_->flags(flags_);
