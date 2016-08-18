@@ -27,8 +27,6 @@ EXTRA_DIST = \
 	QuantLib.dev \
 	QuantLib.props \
 	QuantLib.spec \
-	QuantLib_vc8.sln \
-	QuantLib_vc8.vcproj \
 	QuantLib_vc9.sln \
 	QuantLib_vc9.vcproj \
 	QuantLib_vc10.sln \
