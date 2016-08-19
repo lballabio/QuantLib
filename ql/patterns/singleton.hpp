@@ -148,14 +148,9 @@ namespace QuantLib {
         static std::map<Integer, boost::shared_ptr<T> > instances_;
         #endif
 
-        #if defined(QL_ENABLE_SESSIONS)
-          Integer id = sessionId();
-        #else
-          Integer id = 0;
-        #endif
-        
         // thread safe double checked locking pattern with atomic memory calls
         #if defined(QL_SINGLETON_THREAD_SAFE_INIT) 
+
         T* instance =  instance_.load(boost::memory_order_consume);
         
         if (!instance) {
@@ -166,12 +161,21 @@ namespace QuantLib {
                 instance_.store(instance, boost::memory_order_release);
             }
         }
+
         #else //this is not thread safe
+
+        #if defined(QL_ENABLE_SESSIONS)
+        Integer id = sessionId();
+        #else
+        Integer id = 0;
+        #endif
+
         boost::shared_ptr<T>& instance = instances_[id];
         if (!instance)
             instance = boost::shared_ptr<T>(new T);
+
         #endif
-  
+
         return *instance;
     }
 
