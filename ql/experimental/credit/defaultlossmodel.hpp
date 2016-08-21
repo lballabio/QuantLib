@@ -26,7 +26,7 @@
 #include <ql/utilities/disposable.hpp>
 #include <ql/experimental/credit/basket.hpp>
 
-#include <boost/core/null_deleter.hpp>
+#include <ql/utilities/null_deleter.hpp>
 
 /* Intended to replace LossDistribution in 
     ql/experimental/credit/lossdistribution, not sure its covering all the 
@@ -153,7 +153,7 @@ namespace QuantLib {
             until the basket takes in a new model....
             ..alternatively both old basket and model could be forced reset here
             */
-            basket_.linkTo(boost::shared_ptr<Basket>(bskt, boost::null_deleter()),
+            basket_.linkTo(boost::shared_ptr<Basket>(bskt, null_deleter()),
                            false);
             resetModel();// or rename to setBasketImpl(...)
         }

@@ -20,7 +20,7 @@
 #include <ql/experimental/inflation/yoyoptionlethelpers.hpp>
 #include <ql/instruments/makeyoyinflationcapfloor.hpp>
 
-#include <boost/core/null_deleter.hpp>
+#include <ql/utilities/null_deleter.hpp>
 
 namespace QuantLib {
 
@@ -80,7 +80,7 @@ namespace QuantLib {
         const bool own = false;
         // create a handle to the new vol surface
         Handle<YoYOptionletVolatilitySurface> volSurf(
-            boost::shared_ptr<YoYOptionletVolatilitySurface>(v, boost::null_deleter()),
+            boost::shared_ptr<YoYOptionletVolatilitySurface>(v, null_deleter()),
             own);
         // in this case all we need to do is reset the vol in the pricer
         // we must do it because the surface is a different one each time

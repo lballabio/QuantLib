@@ -35,7 +35,7 @@
     #include <ql/cashflows/floatingratecoupon.hpp>
 #endif
 
-#include <boost/core/null_deleter.hpp>
+#include <ql/utilities/null_deleter.hpp>
 
 using boost::shared_ptr;
 
@@ -348,7 +348,7 @@ namespace QuantLib {
         // force recalculation when needed---the index is not lazy
         bool observer = false;
 
-        shared_ptr<YieldTermStructure> temp(t, boost::null_deleter());
+        shared_ptr<YieldTermStructure> temp(t, null_deleter());
         termStructureHandle_.linkTo(temp, observer);
 
         RelativeDateRateHelper::setTermStructure(t);
@@ -555,7 +555,7 @@ namespace QuantLib {
         // force recalculation when needed---the index is not lazy
         bool observer = false;
 
-        shared_ptr<YieldTermStructure> temp(t, boost::null_deleter());
+        shared_ptr<YieldTermStructure> temp(t, null_deleter());
         termStructureHandle_.linkTo(temp, observer);
 
         RelativeDateRateHelper::setTermStructure(t);
@@ -826,7 +826,7 @@ namespace QuantLib {
         // force recalculation when needed
         bool observer = false;
 
-        shared_ptr<YieldTermStructure> temp(t, boost::null_deleter());
+        shared_ptr<YieldTermStructure> temp(t, null_deleter());
         termStructureHandle_.linkTo(temp, observer);
 
         if (discountHandle_.empty())
@@ -940,7 +940,7 @@ namespace QuantLib {
         // force recalculation when needed
         bool observer = false;
 
-        shared_ptr<YieldTermStructure> temp(t, boost::null_deleter());
+        shared_ptr<YieldTermStructure> temp(t, null_deleter());
         termStructureHandle_.linkTo(temp, observer);
 
         RelativeDateRateHelper::setTermStructure(t);
@@ -1013,7 +1013,7 @@ namespace QuantLib {
         // force recalculation when needed
         bool observer = false;
 
-        shared_ptr<YieldTermStructure> temp(t, boost::null_deleter());
+        shared_ptr<YieldTermStructure> temp(t, null_deleter());
         termStructureHandle_.linkTo(temp, observer);
 
         collRelinkableHandle_.linkTo(*collHandle_, observer);

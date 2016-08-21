@@ -25,7 +25,7 @@
 #include <ql/settings.hpp>
 #include <boost/make_shared.hpp>
 
-#include <boost/core/null_deleter.hpp>
+#include <ql/utilities/null_deleter.hpp>
 
 namespace QuantLib {
 
@@ -49,7 +49,7 @@ namespace QuantLib {
         // do not set the relinkable handle as an observer -
         // force recalculation when needed
         termStructureHandle_.linkTo(
-            boost::shared_ptr<YieldTermStructure>(t, boost::null_deleter()), false);
+            boost::shared_ptr<YieldTermStructure>(t, null_deleter()), false);
 
         BootstrapHelper<YieldTermStructure>::setTermStructure(t);
     }

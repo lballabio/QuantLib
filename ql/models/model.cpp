@@ -23,7 +23,7 @@
 #include <ql/math/optimization/projection.hpp>
 #include <ql/math/optimization/projectedconstraint.hpp>
 
-#include <boost/core/null_deleter.hpp>
+#include <ql/utilities/null_deleter.hpp>
 
 using std::vector;
 using boost::shared_ptr;
@@ -41,7 +41,7 @@ namespace QuantLib {
                             const vector<shared_ptr<CalibrationHelper> >& h,
                             const vector<Real>& weights,
                             const Projection& projection)
-            : model_(model, boost::null_deleter()), instruments_(h),
+            : model_(model, null_deleter()), instruments_(h),
               weights_(weights), projection_(projection) { }
 
         virtual ~CalibrationFunction() {}

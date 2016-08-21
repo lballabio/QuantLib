@@ -20,7 +20,7 @@
 #include <ql/experimental/credit/riskyassetswap.hpp>
 #include <ql/event.hpp>
 
-#include <boost/core/null_deleter.hpp>
+#include <ql/utilities/null_deleter.hpp>
 
 namespace QuantLib {
 
@@ -223,7 +223,7 @@ namespace QuantLib {
         DefaultProbabilityHelper::setTermStructure(ts);
 
         probability_.linkTo(
-            boost::shared_ptr<DefaultProbabilityTermStructure>(ts, boost::null_deleter()),
+            boost::shared_ptr<DefaultProbabilityTermStructure>(ts, null_deleter()),
             false);
 
         initializeDates();
