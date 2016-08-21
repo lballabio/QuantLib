@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file null_deleter.hpp<utilities>
+/*! \file null_deleter.hpp
     \brief empty deleter for shared_ptr
 */
 
