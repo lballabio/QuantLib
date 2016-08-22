@@ -26,6 +26,8 @@
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/exercise.hpp>
 
+#include <ql/utilities/null_deleter.hpp>
+
 namespace QuantLib {
 
     ConvertibleBond::ConvertibleBond(
@@ -163,10 +165,6 @@ namespace QuantLib {
         registerWith(index);
     }
 
-    namespace {
-        void no_deletion(ConvertibleBond*) {}
-    }
-
     ConvertibleBond::option::option(
             const ConvertibleBond* bond,
             const boost::shared_ptr<Exercise>& exercise,
@@ -191,7 +189,7 @@ namespace QuantLib {
       dayCounter_(dayCounter), issueDate_(issueDate), schedule_(schedule),
       settlementDays_(settlementDays), redemption_(redemption) {
         registerWith(boost::shared_ptr<ConvertibleBond>(const_cast<ConvertibleBond*>(bond),
-                                                        no_deletion));
+                                                        null_deleter()));
     }
 
 
