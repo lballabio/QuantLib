@@ -839,12 +839,12 @@ namespace QuantLib {
             // An instance of this object will have undefined behaviour
             // if the object out passed in the constructor is destroyed
             // before this instance
+            struct nopunct : std::numpunct<char> {
+                std::string do_grouping() const {return "";}
+            };
             FormatResetter(std::ostream &out)
                 : out_(&out), flags_(out.flags()), filler_(out.fill()),
                   loc_(out.getloc()) {
-                struct nopunct : std::numpunct<char> {
-                    std::string do_grouping() const {return "";}
-                };
                 std::locale loc (out.getloc(),new nopunct);
                 out.imbue(loc);
                 out << std::resetiosflags(
