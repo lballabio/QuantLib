@@ -158,8 +158,6 @@ namespace QuantLib {
         NonstandardSwap swap = *arguments_.swap;
         Option::Type type =
             arguments_.type == VanillaSwap::Payer ? Option::Call : Option::Put;
-        Schedule schedule = swap.fixedSchedule();
-        Schedule floatSchedule = swap.floatingSchedule();
 
         Array npv0(2 * integrationPoints_ + 1, 0.0),
             npv1(2 * integrationPoints_ + 1, 0.0);
@@ -191,13 +189,14 @@ namespace QuantLib {
             expiry0Time = std::max(
                 model_->termStructure()->timeFromReference(expiry0), 0.0);
 
-            Size j1 = std::upper_bound(schedule.dates().begin(),
-                                       schedule.dates().end(), expiry0 - 1) -
-                      schedule.dates().begin();
+            Size j1 =
+                std::upper_bound(arguments_.fixedResetDates.begin(),
+                                 arguments_.fixedResetDates.end(), expiry0 - 1) -
+                arguments_.fixedResetDates.begin();
             Size k1 =
-                std::upper_bound(floatSchedule.dates().begin(),
-                                 floatSchedule.dates().end(), expiry0 - 1) -
-                floatSchedule.dates().begin();
+                std::upper_bound(arguments_.floatingResetDates.begin(),
+                                 arguments_.floatingResetDates.end(), expiry0 - 1) -
+                arguments_.floatingResetDates.begin();
 
             // todo add openmp support later on (as in gaussian1dswaptionengine)
 
