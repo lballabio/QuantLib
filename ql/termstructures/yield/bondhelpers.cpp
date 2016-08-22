@@ -25,11 +25,9 @@
 #include <ql/settings.hpp>
 #include <boost/make_shared.hpp>
 
-namespace QuantLib {
+#include <ql/utilities/null_deleter.hpp>
 
-    namespace {
-        void no_deletion(YieldTermStructure*) {}
-    }
+namespace QuantLib {
 
     BondHelper::BondHelper(const Handle<Quote>& price,
                            const boost::shared_ptr<Bond>& bond,
@@ -51,7 +49,7 @@ namespace QuantLib {
         // do not set the relinkable handle as an observer -
         // force recalculation when needed
         termStructureHandle_.linkTo(
-                 boost::shared_ptr<YieldTermStructure>(t,no_deletion), false);
+            boost::shared_ptr<YieldTermStructure>(t, null_deleter()), false);
 
         BootstrapHelper<YieldTermStructure>::setTermStructure(t);
     }
