@@ -28,6 +28,8 @@ input instruments (par quotes).
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <boost/shared_ptr.hpp>
+#include <iostream>
+#include <sstream>
 
 namespace {
 QuantLib::Real secondElement(const std::pair< QuantLib::Date, QuantLib::Real > &p) { return p.second; }
@@ -38,13 +40,16 @@ namespace QuantLib {
 //! Multi curve sensitivities
 /*! This class provides a simple (yet most likely not the fastest) way to create sensitivities
   to the <em>par quotes</em>, provided in the piecewiseyieldcurve for stripping. If constructed with more
-than one curve, the class iterates over all quotes of the provided curves and shifts each quote of all provided curves taking interdependence into account.
+than one curve, the class iterates over all quotes of the provided curves and shifts each quote of all provided curves
+taking interdependence into account.
 
 The class computes the sensitvities as a QuantLib Matrix class in the form:
 \f[
 \frac{\partial z_i}{\partial q_j}
 \f]
-where the \f$(z_i)_{i\in \{1,...,n\}}\f$'s are the implied <em>values</em> (being the traits used during curve constructions, e.g. ZeroYield, Discountfactors or ForwardRates) and the the \f$(q_i)_{i\in \{1,...,n\}}\f$'s are the quoted par rates.
+where the \f$(z_i)_{i\in \{1,...,n\}}\f$'s are the implied <em>values</em> (being the traits used during curve
+constructions, e.g. ZeroYield, Discountfactors or ForwardRates) and the the \f$(q_i)_{i\in \{1,...,n\}}\f$'s are the
+quoted par rates.
 
 
 \note It's the users job to provide all curves that <em>influence</em> the implied rates.
@@ -68,16 +73,20 @@ public:
       boost::shared_ptr< PiecewiseYieldCurve< ZeroYield, Linear > > curve =
           boost::dynamic_pointer_cast< PiecewiseYieldCurve< ZeroYield, Linear > >(it->second.currentLink());
       QL_REQUIRE(curve != NULL, "Couldn't cast curvename: " << it->first);
-      for (std::vector< boost::shared_ptr< BootstrapHelper< YieldTermStructure > > >::iterator it =
+      for (std::vector< boost::shared_ptr< BootstrapHelper< YieldTermStructure > > >::iterator inst =
                curve->instruments_.begin();
-           it != curve->instruments_.end(); ++it) {
-        allQuotes_.push_back((*it)->quote());
+           inst != curve->instruments_.end(); ++inst) {
+        allQuotes_.push_back((*inst)->quote());
+        std::stringstream tmp;
+        tmp << QuantLib::io::iso_date((*inst)->latestRelevantDate());
+        headers_.push_back(it->first + "_" + tmp.str());
       }
     }
   }
 
   Matrix sensitivities() const;
   Matrix inverseSensitivities() const;
+  std::vector< std::string > headers() const { return headers_; }
 
 private:
   //! \name LazyObject interface
@@ -92,6 +101,7 @@ private:
   std::vector< std::pair< Date, Real > > origNodes_;
   mutable Matrix sensi_, invSensi_;
   curvespec curves_;
+  std::vector< std::string > headers_;
 };
 
 void MultiCurveSensitivities::performCalculations() const {
