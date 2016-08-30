@@ -186,15 +186,38 @@ void CalendarTest::testUSSettlement() {
     Calendar c = UnitedStates(UnitedStates::Settlement);
     std::vector<Date> hol = Calendar::holidayList(c, Date( 1, January, 2004),
                                                      Date(31,December, 2005));
-    for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i]
-                       << " while calculated holiday is " << hol[i]);
-    }
     if (hol.size()!=expectedHol.size())
         BOOST_FAIL("there were " << expectedHol.size()
                    << " expected holidays, while there are " << hol.size()
                    << " calculated holidays");
+    for (Size i=0; i<hol.size(); i++) {
+        if (hol[i]!=expectedHol[i])
+            BOOST_FAIL("expected holiday was " << expectedHol[i]
+                       << " while calculated holiday is " << hol[i]);
+    }
+
+    // before Uniform Monday Holiday Act
+    expectedHol = std::vector<Date>();
+    expectedHol.push_back(Date(2,January,1961));
+    expectedHol.push_back(Date(22,February,1961));
+    expectedHol.push_back(Date(30,May,1961));
+    expectedHol.push_back(Date(4,July,1961));
+    expectedHol.push_back(Date(4,September,1961));
+    expectedHol.push_back(Date(10,November,1961));
+    expectedHol.push_back(Date(23,November,1961));
+    expectedHol.push_back(Date(25,December,1961));
+
+    hol = Calendar::holidayList(c, Date( 1, January, 1961),
+                                Date(31,December, 1961));
+    if (hol.size()!=expectedHol.size())
+        BOOST_FAIL("there were " << expectedHol.size()
+                   << " expected holidays, while there are " << hol.size()
+                   << " calculated holidays");
+    for (Size i=0; i<hol.size(); i++) {
+        if (hol[i]!=expectedHol[i])
+            BOOST_FAIL("expected holiday was " << expectedHol[i]
+                       << " while calculated holiday is " << hol[i]);
+    }
 }
 
 void CalendarTest::testUSGovernmentBondMarket() {
