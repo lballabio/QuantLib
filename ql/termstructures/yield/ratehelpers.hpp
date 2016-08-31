@@ -358,7 +358,13 @@ namespace QuantLib {
     //! Rate helper for bootstrapping over Fx Swap rates
     /*! fwdFx = spotFx + fwdPoint
         isFxBaseCurrencyCollateralCurrency indicates if the base currency
-        of the fx currency pair is the one used as collateral 
+        of the fx currency pair is the one used as collateral
+        requireUSCalendar indicates if for cross pairs without USD, US calendar
+        should be used for adjusting the earliest settlement date and for
+        setting the latest date. Due to FX spot market conventions it is not
+        sufficient to pass JointCalendar with UnitedStates included, as with
+        regard the earliest date, this calendar is only used in case the spot 
+        date of the two currencies is not a US business day.
     */
     class FxSwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -369,8 +375,9 @@ namespace QuantLib {
                          const Calendar& calendar,
                          BusinessDayConvention convention,
                          bool endOfMonth,
-                         bool isFxBaseCurrencyCollateralCurrency,                   
-                         const Handle<YieldTermStructure>& collateralCurve);
+                         bool isFxBaseCurrencyCollateralCurrency,
+                         const Handle<YieldTermStructure>& collateralCurve,
+                         bool requireUSCalendar);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -386,6 +393,7 @@ namespace QuantLib {
         bool endOfMonth() const { return eom_; }
         bool isFxBaseCurrencyCollateralCurrency() const {
                                 return isFxBaseCurrencyCollateralCurrency_; }
+        bool requireUSCalendar() const { return usCal_; }
         //@}
         //! \name Visitability
         //@{
@@ -405,6 +413,8 @@ namespace QuantLib {
 
         Handle<YieldTermStructure> collHandle_;
         RelinkableHandle<YieldTermStructure> collRelinkableHandle_;
+
+        bool usCal_;
     };
 
 

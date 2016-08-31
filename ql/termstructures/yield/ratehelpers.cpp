@@ -25,6 +25,7 @@
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/time/imm.hpp>
 #include <ql/time/asx.hpp>
+#include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
@@ -970,12 +971,13 @@ namespace QuantLib {
                                        BusinessDayConvention convention,
                                        bool endOfMonth,
                                        bool isFxBaseCurrencyCollateralCurrency,
-                                       const Handle<YieldTermStructure>& coll)
+                                       const Handle<YieldTermStructure>& coll,
+                                       bool requireUSCalendar)
                                        : RelativeDateRateHelper(fwdPoint), spot_(spotFx), tenor_(tenor),
       fixingDays_(fixingDays), cal_(calendar), conv_(convention),
       eom_(endOfMonth),
       isFxBaseCurrencyCollateralCurrency_(isFxBaseCurrencyCollateralCurrency),
-      collHandle_(coll) {
+      collHandle_(coll), usCal_(requireUSCalendar) {
         registerWith(spot_);
         registerWith(collHandle_);
         initializeDates();
@@ -985,15 +987,33 @@ namespace QuantLib {
         // if the evaluation date is not a business day
         // then move to the next business day
         Date refDate = cal_.adjust(evaluationDate_);
+        const Calendar usCalendar = UnitedStates();
+        const Calendar fullCalendar = JointCalendar(usCalendar, cal_);
+        // BusinessDayConvention follBusDayConv = Following;
+
+        // so far joint calendar provided to the class was used
+        // now if required, add the US calendar
+
         earliestDate_ = cal_.advance(refDate, fixingDays_*Days);
-        latestDate_ = cal_.advance(earliestDate_, tenor_, conv_, eom_);
+
+        if (usCal_ == true) {
+            if (usCalendar.isBusinessDay(earliestDate_) == false){
+                earliestDate_ = fullCalendar.adjust(earliestDate_);
+            }    
+        }
+        if (usCal_ == true) {
+            latestDate_ = fullCalendar.advance(earliestDate_, tenor_, conv_, eom_);
+        } else {
+            latestDate_ = cal_.advance(earliestDate_, tenor_, conv_, eom_);
+        }
+
     }
 
     Real FxSwapRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
 
         QL_REQUIRE(!collHandle_.empty(), "collateral term structure not set");
-        
+
         DiscountFactor d1 = collHandle_->discount(earliestDate_);
         DiscountFactor d2 = collHandle_->discount(latestDate_);
         Real collRatio = d1 / d2;
