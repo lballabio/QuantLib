@@ -74,11 +74,6 @@ namespace QuantLib {
                         "for kernel interpolation");
             }
 
-            // the calculation will solve y=M*a for a.  Due to
-            // singularity or rounding errors the recalculation
-            // M*a may not give y. Here, a failure will be thrown if
-            // |M*a-y|>=invPrec_
-
             void setInverseResultPrecision(Real invPrec){
                 invPrec_=invPrec;
             }
@@ -165,8 +160,19 @@ namespace QuantLib {
                                                               yBegin, kernel));
             impl_->update();
         }
-    };
 
+        /*! The calculation will solve \f$ y = Ma \f$ for \f$a\f$.
+          Due to singularity or rounding errors the recalculation
+          \f$ Ma \f$ may not give \f$ y\f$. Here, a failure will
+          be thrown if
+          \f[
+          \left\| Ma-y \right\|_\infty \geq \epsilon
+          \f] */
+        void setInverseResultPrecision(Real epsilon){
+            impl_->setInverseResultPrecision(epsilon);
+            impl_->update();
+        }
+    };
 }
 
 #endif
