@@ -150,28 +150,26 @@ namespace QuantLib {
       public:
         /*! \pre the \f$ x \f$ values must be sorted.
             \pre kernel needs a Real operator()(Real x) implementation
-        */
+
+            The calculation will solve \f$ y = Ma \f$ for \f$a\f$.
+            Due to singularity or rounding errors the recalculation
+            \f$ Ma \f$ may not give \f$ y\f$. Here, a failure will
+            be thrown if
+            \f[
+            \left\| Ma-y \right\|_\infty \geq \epsilon
+            \f] */
         template <class I1, class I2, class Kernel>
         KernelInterpolation(const I1& xBegin, const I1& xEnd,
                             const I2& yBegin,
-                            const Kernel& kernel) {
+                            const Kernel& kernel,
+                            const double epsilon = 1.0E-7) {
             impl_ = boost::shared_ptr<Interpolation::Impl>(new
                 detail::KernelInterpolationImpl<I1,I2,Kernel>(xBegin, xEnd,
                                                               yBegin, kernel));
-            impl_->update();
-        }
-
-        /*! The calculation will solve \f$ y = Ma \f$ for \f$a\f$.
-          Due to singularity or rounding errors the recalculation
-          \f$ Ma \f$ may not give \f$ y\f$. Here, a failure will
-          be thrown if
-          \f[
-          \left\| Ma-y \right\|_\infty \geq \epsilon
-          \f] */
-        void setInverseResultPrecision(Real epsilon){
             impl_->setInverseResultPrecision(epsilon);
             impl_->update();
         }
+
     };
 }
 
