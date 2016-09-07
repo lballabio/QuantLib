@@ -143,7 +143,7 @@ std::vector< std::pair< Date, Real > > MultiCurveSensitivities::allNodes() const
     boost::shared_ptr< PiecewiseYieldCurve< ZeroYield, Linear > > curve =
         boost::dynamic_pointer_cast< PiecewiseYieldCurve< ZeroYield, Linear > >(it->second.currentLink());
     result.reserve(result.size() + curve->nodes().size() - 1);
-    for (auto p = curve->nodes().begin() + 1; p != curve->nodes().end(); ++p)
+    for (std::vector<std::pair<Date, Real> >::const_iterator p = curve->nodes().begin() + 1; p != curve->nodes().end(); ++p)
       result.push_back(*p);
   }
   return result;
