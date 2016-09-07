@@ -46,9 +46,13 @@ namespace QuantLib {
         Matrix(Size rows, Size columns);
         //! creates the matrix and fills it with <tt>value</tt>
         Matrix(Size rows, Size columns, Real value);
-        //! creates the matrix and fills it with <tt>values</tt> (row by row)
-        Matrix(Size rows, Size columns, std::vector< Real >::const_iterator start,
-               std::vector< Real >::const_iterator end);
+        //! creates the matrix and fills it with data from a range.
+        /*! \warning if the range defined by [begin, end) is larger
+            than the size of the matrix, a memory access violation
+            might occur.  It is up to the user to avoid this.
+        */
+        template <class Iterator>
+        Matrix(Size rows, Size columns, Iterator begin, Iterator end);
         Matrix(const Matrix &);
         Matrix(const Disposable<Matrix>&);
         Matrix& operator=(const Matrix&);
@@ -200,13 +204,12 @@ namespace QuantLib {
         std::fill(begin(),end(),value);
     }
 
-    inline Matrix::Matrix(Size rows, Size columns, std::vector< Real >::const_iterator start,
-                          std::vector< Real >::const_iterator end)
-        : data_(rows * columns > 0 ? new Real[rows * columns] : (Real *)(0)), rows_(rows), columns_(columns) {
-      QL_REQUIRE(rows * columns == std::distance(start, end),
-                 "Matrix size (rows*columns) does not fit size of values: (" << rows * columns << ", "
-                                                                             << std::distance(start, end) << ")");
-      std::copy(start, end, begin());
+    template <class Iterator>
+    inline Matrix::Matrix(Size rows, Size columns,
+                          Iterator begin, Iterator end)
+        : data_(rows * columns > 0 ? new Real[rows * columns] : (Real *)(0)),
+          rows_(rows), columns_(columns) {
+        std::copy(begin, end, this->begin());
     }
 
     inline Matrix::Matrix(const Matrix& from)
