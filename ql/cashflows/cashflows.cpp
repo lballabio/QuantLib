@@ -851,37 +851,29 @@ namespace QuantLib {
         if (npvDate == Date())
             npvDate = settlementDate;
 
-        // use original leg if sorted, otherwise create
-        // a sorted copy and use that
-        const Leg *refLeg;
-        CashFlowLess cashFlowLess;
-        Leg tmp;
-        if (std::is_sorted(leg.begin(), leg.end(), cashFlowLess)) {
-            refLeg = &leg;
-        } else {
-            tmp = leg;
-            std::sort(tmp.begin(), tmp.end(), cashFlowLess);
-            refLeg = &tmp;
-        }
+#if defined(QL_EXTRA_SAFETY_CHECKS)
+        QL_REQUIRE(std::is_sorted(leg.begin(), leg.end(), cashFlowLess),
+                   "cashflows must be sorted in ascending order w.r.t. their payment dates");
+#endif
 
         Real npv = 0.0;
         DiscountFactor discount = 1.0;
         Date lastDate = npvDate;
         Date refStartDate, refEndDate;
 
-        for (Size i=0; i<refLeg->size(); ++i) {
-            if (refLeg->operator[](i)->hasOccurred(settlementDate,
+        for (Size i=0; i<leg.size(); ++i) {
+            if (leg[i]->hasOccurred(settlementDate,
                                     includeSettlementDateFlows))
                 continue;
 
-            Date couponDate = refLeg->operator[](i)->date();
-            Real amount = refLeg->operator[](i)->amount();
-            if (refLeg->operator[](i)->tradingExCoupon(settlementDate)) {
+            Date couponDate = leg[i]->date();
+            Real amount = leg[i]->amount();
+            if (leg[i]->tradingExCoupon(settlementDate)) {
                 amount = 0.0;
             }
 
             shared_ptr<Coupon> coupon =
-                boost::dynamic_pointer_cast<Coupon>(refLeg->operator[](i));
+                boost::dynamic_pointer_cast<Coupon>(leg[i]);
             if (coupon) {
                 refStartDate = coupon->referencePeriodStart();
                 refEndDate = coupon->referencePeriodEnd();
