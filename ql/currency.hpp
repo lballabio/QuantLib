@@ -104,6 +104,10 @@ namespace QuantLib {
                     const Currency&);
 
     /*! \relates Currency */
+    bool operator<(const Currency&,
+                   const Currency&);
+
+    /*! \relates Currency */
     std::ostream& operator<<(std::ostream&,
                              const Currency&);
 
@@ -158,6 +162,10 @@ namespace QuantLib {
 
     inline bool operator!=(const Currency& c1, const Currency& c2) {
         return !(c1 == c2);
+    }
+
+    inline bool operator<(const Currency& c1, const Currency& c2) {
+        return c1.name() < c2.name();
     }
 
 }
