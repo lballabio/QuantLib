@@ -38,9 +38,10 @@ namespace QuantLib {
           public:
             KernelInterpolationImpl(const I1& xBegin, const I1& xEnd,
                                     const I2& yBegin,
-                                    const Kernel& kernel)
+                                    const Kernel& kernel,
+                                    const Real epsilon)
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
-              xSize_(Size(xEnd-xBegin)),invPrec_(1.0e-7),
+              xSize_(Size(xEnd-xBegin)), invPrec_(epsilon),
               M_(xSize_,xSize_), alphaVec_(xSize_), yVec_(xSize_),
               kernel_(kernel) {}
 
@@ -72,10 +73,6 @@ namespace QuantLib {
             Real secondDerivative(Real) const {
                 QL_FAIL("Second derivative calculation not implemented "
                         "for kernel interpolation");
-            }
-
-            void setInverseResultPrecision(Real invPrec){
-                invPrec_=invPrec;
             }
 
         private:
@@ -165,8 +162,8 @@ namespace QuantLib {
                             const double epsilon = 1.0E-7) {
             impl_ = boost::shared_ptr<Interpolation::Impl>(new
                 detail::KernelInterpolationImpl<I1,I2,Kernel>(xBegin, xEnd,
-                                                              yBegin, kernel));
-            impl_->setInverseResultPrecision(epsilon);
+                                                              yBegin, kernel,
+                                                              epsilon));
             impl_->update();
         }
 
