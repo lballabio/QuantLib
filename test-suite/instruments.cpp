@@ -20,10 +20,15 @@
 #include "instruments.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/stock.hpp>
+#include <ql/instruments/compositeinstrument.hpp>
+#include <ql/instruments/europeanoption.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+using boost::shared_ptr;
 
 void InstrumentTest::testObservable() {
 
@@ -61,9 +66,59 @@ void InstrumentTest::testObservable() {
 }
 
 
+void InstrumentTest::testCompositeWhenShiftingDates() {
+
+    BOOST_TEST_MESSAGE(
+        "Testing reaction of composite instrument to date changes...");
+
+    SavedSettings backup;
+
+    Date today = Date::todaysDate();
+    DayCounter dc = Actual360();
+
+    shared_ptr<StrikedTypePayoff> payoff(
+                                 new PlainVanillaPayoff(Option::Call, 100.0));
+    shared_ptr<Exercise> exercise(new EuropeanExercise(today+30));
+
+    shared_ptr<Instrument> option(new EuropeanOption(payoff, exercise));
+
+    shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
+    shared_ptr<YieldTermStructure> qTS = flatRate(0.0, dc);
+    shared_ptr<YieldTermStructure> rTS = flatRate(0.01, dc);
+    shared_ptr<BlackVolTermStructure> volTS = flatVol(0.1, dc);
+
+    shared_ptr<BlackScholesMertonProcess> process(
+        new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS)));
+    shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine(process));
+
+    option->setPricingEngine(engine);
+
+    CompositeInstrument composite;
+    composite.add(option);
+
+    Settings::instance().evaluationDate() = today+45;
+
+    if (!composite.isExpired())
+        BOOST_FAIL("Composite didn't detect expiration");
+    if (composite.NPV() != 0.0)
+        BOOST_FAIL("Composite didn't return a null NPV");
+
+    Settings::instance().evaluationDate() = today;
+
+    if (composite.isExpired())
+        BOOST_FAIL("Composite didn't detect aliveness");
+    if (composite.NPV() == 0.0)
+        BOOST_FAIL("Composite didn't recalculate");
+}
+
 test_suite* InstrumentTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Instrument tests");
     suite->add(QUANTLIB_TEST_CASE(&InstrumentTest::testObservable));
+    suite->add(QUANTLIB_TEST_CASE(
+                            &InstrumentTest::testCompositeWhenShiftingDates));
     return suite;
 }
 
