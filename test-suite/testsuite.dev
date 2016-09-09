@@ -1,7 +1,7 @@
 [Project]
 FileName=testsuite.dev
 Name=QuantLib-test-suite
-UnitCount=277
+UnitCount=279
 Type=1
 Ver=1
 ObjFiles=
@@ -2809,6 +2809,26 @@ BuildCmd=
 
 [Unit277]
 FileName=riskneutraldensitycalculator.hpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit278]
+FileName=lazyobject.cpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit279]
+FileName=lazyobject.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1
