@@ -158,7 +158,7 @@ namespace QuantLib {
 
         if (intermediateCapitalExchange_) {
             for (Size i = 0; i < legs_[0].size() - 1; i++) {
-                Real cap = fixedNominal_[i + 1] - fixedNominal_[i];
+                Real cap = fixedNominal_[i] - fixedNominal_[i + 1];
                 if (!close(cap, 0.0)) {
                     std::vector<boost::shared_ptr<CashFlow> >::iterator it1 =
                         legs_[0].begin();
@@ -169,11 +169,14 @@ namespace QuantLib {
                     std::vector<Real>::iterator it2 = fixedNominal_.begin();
                     std::advance(it2, i + 1);
                     fixedNominal_.insert(it2, fixedNominal_[i]);
+                    std::vector<Real>::iterator it3 = fixedRate_.begin();
+                    std::advance(it3, i + 1);
+                    fixedRate_.insert(it3, 0.0);
                     i++;
                 }
             }
             for (Size i = 0; i < legs_[1].size() - 1; i++) {
-                Real cap = floatingNominal_[i + 1] - floatingNominal_[i];
+                Real cap = floatingNominal_[i] - floatingNominal_[i + 1];
                 if (!close(cap, 0.0)) {
                     std::vector<boost::shared_ptr<CashFlow> >::iterator it1 =
                         legs_[1].begin();
@@ -224,8 +227,7 @@ namespace QuantLib {
             dynamic_cast<NonstandardSwap::arguments *>(args);
 
         if (!arguments)
-            return; // swap engine ... // QL_FAIL("argument types do not
-                    // match");
+            return; // swap engine ...
 
         arguments->type = type_;
         arguments->fixedNominal = fixedNominal_;
