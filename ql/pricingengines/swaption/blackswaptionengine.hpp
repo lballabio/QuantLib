@@ -269,10 +269,8 @@ namespace QuantLib {
         }
         results_.additionalResults["annuity"] = annuity;
 
-        // the swap length calculation might be improved using the value date
-        // of the exercise date
-        Time swapLength =  vol_->swapLength(exerciseDate,
-                                                   arguments_.floatingPayDates.back());
+        Time swapLength =  vol_->swapLength(swap.floatingSchedule().dates().front(),
+                                            swap.floatingSchedule().dates().back());
         results_.additionalResults["swapLength"] = swapLength;
 
         Real variance = vol_->blackVariance(exerciseDate,
