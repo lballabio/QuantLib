@@ -266,8 +266,13 @@ void BermudanSwaptionTest::testCachedG2Values() {
     const boost::shared_ptr<PricingEngine> treeEngine(
         boost::make_shared<TreeSwaptionEngine>(g2Model, 50));
 
+#if defined(QL_USE_INDEXED_COUPON)
+    const Real expectedFdm[] = { 103.231, 54.6519, 20.0475, 5.26941, 1.07097 };
+    const Real expectedTree[]= { 103.253, 54.6685, 20.1399, 5.40517, 1.10642 };
+#else
     const Real expectedFdm[] = { 103.227, 54.6502, 20.0469, 5.26924, 1.07093 };
     const Real expectedTree[]= { 103.256, 54.6726, 20.1429, 5.4064 , 1.10677 };
+#endif
 
     const Real tol = 0.005;
     for (Size i=0; i < swaptions.size(); ++i) {
