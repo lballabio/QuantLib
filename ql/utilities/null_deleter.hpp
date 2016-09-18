@@ -1,8 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 RiskMap srl
- Copyright (C) 2016 StatPro Italia srl
+ Copyright (C) 2016 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,20 +17,28 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_instruments_hpp
-#define quantlib_test_instruments_hpp
+/*! \file null_deleter.hpp
+    \brief empty deleter for shared_ptr
+*/
 
-#include <boost/test/unit_test.hpp>
+#ifndef quantlib_nulldeleter_hpp
+#define quantlib_nulldeleter_hpp
 
-/* remember to document new and/or updated tests in the Doxygen
-   comment block of the corresponding class */
+#if BOOST_VERSION >= 105600
 
-class InstrumentTest {
-  public:
-    static void testObservable();
-    static void testCompositeWhenShiftingDates();
-    static boost::unit_test_framework::test_suite* suite();
+#include <boost/core/null_deleter.hpp>
+namespace QuantLib {
+using boost::null_deleter;
+}
+
+#else
+
+namespace QuantLib {
+struct null_deleter {
+    template <typename T> void operator()(T *) const {}
 };
+}
 
+#endif
 
 #endif

@@ -180,7 +180,7 @@ namespace QuantLib {
                                      Real& hnext,
                                      const OdeFct& derivs) {
         Size n=y.size();
-        Real errmax,htemp,xnew;
+        Real errmax,xnew;
         std::vector<T> yerr(n),ytemp(n);
 
         Real h=htry;
@@ -192,12 +192,20 @@ namespace QuantLib {
                 errmax=std::max(errmax,std::abs(yerr[i]/yScale[i]));
             errmax/=eps;
             if (errmax>1.0) {
-                htemp=ADAPTIVERK_SAFETY*h*std::pow(errmax,ADAPTIVERK_PSHRINK);
-                h = (h>=0.0 ? std::max(htemp,h/10) : std::min(htemp,h/10));
+                Real htemp1 = ADAPTIVERK_SAFETY*h*std::pow(errmax,ADAPTIVERK_PSHRINK);
+                Real htemp2 = h / 10;
+                // These would be std::min and std::max, of course,
+                // but VC++14 had problems inlining them and caused
+                // the wrong results to be calculated.  The problem
+                // seems to be fixed in update 3, but let's keep this
+                // implementation for compatibility.
+                Real max_positive = htemp1 > htemp2 ? htemp1 : htemp2;
+                Real max_negative = htemp1 < htemp2 ? htemp1 : htemp2;
+                h = ((h >= 0.0) ? max_positive : max_negative);
                 xnew=x+h;
                 if (xnew==x)
-                    QL_FAIL("Stepsize (" << xnew
-                            << ") underflow in AdaptiveRungeKutta::rkqs");
+                    QL_FAIL("Stepsize underflow (" << h << " at x = " << x
+                            << ") in AdaptiveRungeKutta::rkqs");
                 continue;
             } else {
                 if (errmax>ADAPTIVERK_ERRCON)

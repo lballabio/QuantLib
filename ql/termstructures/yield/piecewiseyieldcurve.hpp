@@ -54,6 +54,9 @@ namespace QuantLib {
           checking them against the original inputs.
         - the observability of the term structure is tested.
     */
+
+    class MultiCurveSensitivities;
+
     template <class Traits, class Interpolator,
               template <class> class Bootstrap = IterativeBootstrap>
     class PiecewiseYieldCurve
@@ -186,6 +189,7 @@ namespace QuantLib {
         // the curve data. They might be passed the data instead, but
         // it would increase the complexity---which is high enough
         // already.
+        friend class MultiCurveSensitivities;
         friend class Bootstrap<this_curve>;
         friend class BootstrapError<this_curve> ;
         friend class PenaltyFunction<this_curve>;

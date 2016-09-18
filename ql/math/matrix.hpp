@@ -5,7 +5,6 @@
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
  Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2015 Michael von den Driesch
-
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -47,7 +46,14 @@ namespace QuantLib {
         Matrix(Size rows, Size columns);
         //! creates the matrix and fills it with <tt>value</tt>
         Matrix(Size rows, Size columns, Real value);
-        Matrix(const Matrix&);
+        //! creates the matrix and fills it with data from a range.
+        /*! \warning if the range defined by [begin, end) is larger
+            than the size of the matrix, a memory access violation
+            might occur.  It is up to the user to avoid this.
+        */
+        template <class Iterator>
+        Matrix(Size rows, Size columns, Iterator begin, Iterator end);
+        Matrix(const Matrix &);
         Matrix(const Disposable<Matrix>&);
         Matrix& operator=(const Matrix&);
         Matrix& operator=(const Disposable<Matrix>&);
@@ -196,6 +202,14 @@ namespace QuantLib {
     : data_(rows*columns > 0 ? new Real[rows*columns] : (Real*)(0)),
       rows_(rows), columns_(columns) {
         std::fill(begin(),end(),value);
+    }
+
+    template <class Iterator>
+    inline Matrix::Matrix(Size rows, Size columns,
+                          Iterator begin, Iterator end)
+        : data_(rows * columns > 0 ? new Real[rows * columns] : (Real *)(0)),
+          rows_(rows), columns_(columns) {
+        std::copy(begin, end, this->begin());
     }
 
     inline Matrix::Matrix(const Matrix& from)

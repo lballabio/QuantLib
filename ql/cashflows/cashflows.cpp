@@ -827,7 +827,12 @@ namespace QuantLib {
             Date settlementDate_, npvDate_;
         };
 
-
+        struct CashFlowLess {
+            bool operator()(const boost::shared_ptr<CashFlow> &c,
+                            const boost::shared_ptr<CashFlow> &d) {
+                return c->date() < d->date();
+            }
+        };
 
     } // anonymous namespace ends here
 
@@ -845,6 +850,11 @@ namespace QuantLib {
 
         if (npvDate == Date())
             npvDate = settlementDate;
+
+#if defined(QL_EXTRA_SAFETY_CHECKS)
+        QL_REQUIRE(std::is_sorted(leg.begin(), leg.end(), cashFlowLess),
+                   "cashflows must be sorted in ascending order w.r.t. their payment dates");
+#endif
 
         Real npv = 0.0;
         DiscountFactor discount = 1.0;

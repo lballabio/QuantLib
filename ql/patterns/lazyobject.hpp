@@ -67,6 +67,22 @@ namespace QuantLib {
             method, thus re-enabling recalculations.
         */
         void unfreeze();
+        /*! This method causes the object to forward all
+            notifications, even when not calculated.  The default
+            behavior is to forward the first notification received,
+            and discard the others until recalculated; the rationale
+            is that observers were already notified, and don't need
+            further notification until they recalculate, at which
+            point this object would be recalculated too.  After
+            recalculation, this object would again forward the first
+            notification received.
+
+            \warning Forwarding all notifications will cause a
+                     performance hit, and should be used only when
+                     discarding notifications cause an incorrect
+                     behavior.
+        */
+        void alwaysForwardNotifications();
       protected:
         /*! This method performs all needed calculations by calling
             the <i><b>performCalculations</b></i> method.
@@ -90,18 +106,18 @@ namespace QuantLib {
         */
         virtual void performCalculations() const = 0;
         //@}
-        mutable bool calculated_, frozen_;
+        mutable bool calculated_, frozen_, alwaysForward_;
     };
 
 
     // inline definitions
 
     inline LazyObject::LazyObject()
-    : calculated_(false), frozen_(false) {}
+    : calculated_(false), frozen_(false), alwaysForward_(false) {}
 
     inline void LazyObject::update() {
         // forwards notifications only the first time
-        if (calculated_) {
+        if (calculated_ || alwaysForward_) {
             // set to false early
             // 1) to prevent infinite recursion
             // 2) otherways non-lazy observers would be served obsolete
@@ -140,6 +156,10 @@ namespace QuantLib {
             frozen_ = false;
             notifyObservers();
         }
+    }
+
+    inline void LazyObject::alwaysForwardNotifications() {
+        alwaysForward_ = true;
     }
 
     inline void LazyObject::calculate() const {

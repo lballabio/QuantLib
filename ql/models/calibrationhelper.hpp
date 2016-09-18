@@ -60,6 +60,9 @@ namespace QuantLib {
         //! returns the volatility Handle
         Handle<Quote> volatility() { return volatility_; }
 
+        //! returns the volatility type
+        VolatilityType volatilityType() { return volatilityType_; }
+
         //! returns the actual price of the instrument (from volatility)
         Real marketValue() const { calculate(); return marketValue_; }
 
