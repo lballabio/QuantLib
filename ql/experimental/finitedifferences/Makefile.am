@@ -29,6 +29,7 @@ this_include_HEADERS = \
 	fdmvppstepcondition.hpp \
 	fdmvppstepconditionfactory.hpp \
 	fdmzabrop.hpp \
+	fdornsteinuhlenbeckvanillaengine.hpp \
 	fdsimpleextoujumpswingengine.hpp \
     fdsimpleextoustorageengine.hpp \
 	fdsimpleklugeextouvppengine.hpp \
@@ -60,6 +61,7 @@ libMultiDimFDM_la_SOURCES = \
 	fdmvppstepcondition.cpp \
 	fdmvppstepconditionfactory.cpp \
 	fdmzabrop.cpp \
+	fdornsteinuhlenbeckvanillaengine.cpp \
 	fdsimpleextoujumpswingengine.cpp \
     fdsimpleextoustorageengine.cpp \
     fdsimpleklugeextouvppengine.cpp \

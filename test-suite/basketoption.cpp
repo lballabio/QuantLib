@@ -33,7 +33,9 @@
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/pricingengines/basket/fd2dblackscholesvanillaengine.hpp>
 #include <ql/utilities/dataformatters.hpp>
+
 #include <boost/progress.hpp>
+#include <boost/make_shared.hpp>
 #include <boost/bind.hpp>
 
 using namespace QuantLib;
@@ -946,8 +948,84 @@ void BasketOptionTest::testOddSamples() {
     }
 }
 
+void BasketOptionTest::test2DPDEGreeks() {
+
+    BOOST_TEST_MESSAGE("Testing Greeks of 2dim PDE engine...");
+
+    const Real s1 = 100;
+    const Real s2 = 100;
+    const Real r = 0.013;
+    const Volatility v = 0.2;
+    const Real rho = 0.5;
+    const Real strike = s1-s2;
+    const Size maturityInDays = 1095;
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date::todaysDate();
+    const Date maturity = today + maturityInDays;
+
+    const boost::shared_ptr<SimpleQuote> spot1(
+        boost::make_shared<SimpleQuote>(s1));
+    const boost::shared_ptr<SimpleQuote> spot2(
+        boost::make_shared<SimpleQuote>(s2));
+
+    const Handle<YieldTermStructure> rTS(flatRate(today, r, dc));
+    const Handle<BlackVolTermStructure> vTS(flatVol(today, v, dc));
+
+    const boost::shared_ptr<BlackProcess> p1(
+        boost::make_shared<BlackProcess>(Handle<Quote>(spot1), rTS, vTS));
+
+    const boost::shared_ptr<BlackProcess> p2(
+        boost::make_shared<BlackProcess>(Handle<Quote>(spot2), rTS, vTS));
+
+    BasketOption option(
+        boost::make_shared<SpreadBasketPayoff>(
+            boost::make_shared<PlainVanillaPayoff>(Option::Call, strike)),
+        boost::make_shared<EuropeanExercise>(maturity));
+
+    option.setPricingEngine(
+        boost::make_shared<Fd2dBlackScholesVanillaEngine>(p1, p2, rho));
+
+    const Real calculatedDelta = option.delta();
+    const Real calculatedGamma = option.gamma();
+
+    option.setPricingEngine(boost::make_shared<KirkEngine>(p1, p2, rho));
+
+    const Real eps = 1.0;
+    const Real npv = option.NPV();
+
+    spot1->setValue(s1 + eps);
+    spot2->setValue(s2 + eps);
+    const Real npvUp = option.NPV();
+
+    spot1->setValue(s1 - eps);
+    spot2->setValue(s2 - eps);
+    const Real npvDown = option.NPV();
+
+    const Real expectedDelta = (npvUp - npvDown)/(2*eps);
+    const Real expectedGamma = (npvUp + npvDown - 2*npv)/(eps*eps);
+
+    const Real tol = 0.0005;
+    if (std::fabs(expectedDelta - calculatedDelta) > tol) {
+        BOOST_FAIL("failed to reproduce delta with 2dim PDE"
+                   << QL_FIXED << std::setprecision(8)
+                   << "\n    calculated: " << calculatedDelta
+                   << "\n    expected:   " << expectedDelta
+                   << "\n    tolerance:  " << tol);
+    }
+
+    if (std::fabs(expectedGamma - calculatedGamma) > tol) {
+        BOOST_FAIL("failed to reproduce delta with 2dim PDE"
+                   << QL_FIXED << std::setprecision(8)
+                   << "\n    calculated: " << calculatedGamma
+                   << "\n    expected:   " << expectedGamma
+                   << "\n    tolerance:  " << tol);
+    }
+}
+
 test_suite* BasketOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Basket option tests");
+
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testEuroTwoValues));
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(
@@ -962,6 +1040,7 @@ test_suite* BasketOptionTest::suite() {
                 ((i+1)*LENGTH(oneDataValues))/nTestCases)));
     }
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testOddSamples));
+    suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::test2DPDEGreeks));
 
     return suite;
 }

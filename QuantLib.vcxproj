@@ -142,7 +142,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\boost\boost_1_61_0;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WIN32;_LIB;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -490,6 +490,7 @@
     <ClInclude Include="ql\experimental\finitedifferences\bsmrndcalculator.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmhestongreensfct.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmlocalvolfwdop.hpp" />
+    <ClInclude Include="ql\experimental\finitedifferences\fdornsteinuhlenbeckvanillaengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\hestonrndcalculator.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\localvolrndcalculator.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\riskneutraldensitycalculator.hpp" />
@@ -497,12 +498,14 @@
     <ClInclude Include="ql\experimental\models\all.hpp" />
     <ClInclude Include="ql\experimental\models\hestonslvfdmmodel.hpp" />
     <ClInclude Include="ql\experimental\models\hestonslvmcmodel.hpp" />
+    <ClInclude Include="ql\experimental\models\normalclvmodel.hpp" />
     <ClInclude Include="ql\indexes\ibor\aonia.hpp" />
     <ClInclude Include="ql\indexes\ibor\bbsw.hpp" />
     <ClInclude Include="ql\indexes\ibor\bkbm.hpp" />
     <ClInclude Include="ql\indexes\ibor\nzocr.hpp" />
     <ClInclude Include="ql\math\polynomialmathfunction.hpp" />
     <ClInclude Include="ql\math\pascaltriangle.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\operators\fdmornsteinuhlenbeckop.hpp" />
     <ClInclude Include="ql\rebatedexercise.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\dynprogvppintrinsicvalueengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdextoujumpvanillaengine.hpp" />
@@ -843,6 +846,7 @@
     <ClInclude Include="ql\math\interpolations\interpolation2d.hpp" />
     <ClInclude Include="ql\math\interpolations\kernelinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\kernelinterpolation2d.hpp" />
+    <ClInclude Include="ql\math\interpolations\lagrangeinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\linearinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\loginterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\mixedinterpolation.hpp" />
@@ -910,6 +914,7 @@
     <ClInclude Include="ql\math\randomnumbers\rngtraits.hpp" />
     <ClInclude Include="ql\math\randomnumbers\seedgenerator.hpp" />
     <ClInclude Include="ql\math\randomnumbers\sobolrsg.hpp" />
+    <ClInclude Include="ql\math\randomnumbers\stochasticcollocationinvcdf.hpp" />
     <ClInclude Include="ql\math\solvers1d\all.hpp" />
     <ClInclude Include="ql\math\solvers1d\bisection.hpp" />
     <ClInclude Include="ql\math\solvers1d\brent.hpp" />
@@ -1770,14 +1775,17 @@
     <ClCompile Include="ql\experimental\finitedifferences\bsmrndcalculator.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmhestongreensfct.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmlocalvolfwdop.cpp" />
+    <ClCompile Include="ql\experimental\finitedifferences\fdornsteinuhlenbeckvanillaengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\hestonrndcalculator.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\localvolrndcalculator.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\riskneutraldensitycalculator.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\squarerootprocessrndcalculator.cpp" />
     <ClCompile Include="ql\experimental\models\hestonslvfdmmodel.cpp" />
     <ClCompile Include="ql\experimental\models\hestonslvmcmodel.cpp" />
+    <ClCompile Include="ql\experimental\models\normalclvmodel.cpp" />
     <ClCompile Include="ql\math\polynomialmathfunction.cpp" />
     <ClCompile Include="ql\math\pascaltriangle.cpp" />
+    <ClCompile Include="ql\methods\finitedifferences\operators\fdmornsteinuhlenbeckop.cpp" />
     <ClCompile Include="ql\patterns\observable.cpp" />
     <ClCompile Include="ql\rebatedexercise.cpp" />
     <ClInclude Include="ql\experimental\finitedifferences\all.hpp" />
@@ -2031,6 +2039,7 @@
     <ClCompile Include="ql\math\randomnumbers\primitivepolynomials.cpp" />
     <ClCompile Include="ql\math\randomnumbers\seedgenerator.cpp" />
     <ClCompile Include="ql\math\randomnumbers\sobolrsg.cpp" />
+    <ClCompile Include="ql\math\randomnumbers\stochasticcollocationinvcdf.cpp" />
     <ClCompile Include="ql\math\optimization\armijo.cpp" />
     <ClCompile Include="ql\math\optimization\bfgs.cpp" />
     <ClCompile Include="ql\math\optimization\conjugategradient.cpp" />
