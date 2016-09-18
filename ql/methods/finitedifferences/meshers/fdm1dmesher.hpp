@@ -41,6 +41,7 @@ namespace QuantLib {
         Real dminus(Size index) const {return dminus_[index];}
         Real location(Size index) const {return locations_[index];}
         const std::vector<Real>& locations() const {return locations_;}
+        virtual ~Fdm1dMesher() {}
 
       protected:
         std::vector<Real> locations_;
