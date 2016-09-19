@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 Jose Aparicio
+ Copyright (C) 2008, 2016 Jose Aparicio
  Copyright (C) 2008 Chris Kenyon
  Copyright (C) 2008 Roland Lichters
  Copyright (C) 2008 StatPro Italia srl
@@ -135,7 +135,31 @@ namespace QuantLib {
                      std::vector<Handle<Quote> >(), std::vector<Date>(), i),
           instruments_(instruments), accuracy_(1.0e-12) {
             bootstrap_.setup(this);
+        }       
+        /* AffineHazardRate Traits constructor case. Other constructors of
+        base_curve would fail and this would fail for other cases of Traits.
+        This is a case of substitution failure, it might be preferred
+        to specialization of the class.
+        The way the methods are used in the bootstrapping means the target
+        term structure is the deterministic TS to be added to the model
+        passed in order to reproduce instrument market prices.
+
+        \todo Implement the remaining signatures
+        */
+        PiecewiseDefaultCurve(
+            const Date& referenceDate,
+            const std::vector<boost::shared_ptr<typename Traits::helper> >&
+                                                              instruments,
+               const DayCounter& dayCounter,
+            Real accuracy,
+            const boost::shared_ptr<OneFactorAffineModel> model,
+            const Interpolator& i = Interpolator())
+        : base_curve(referenceDate, dayCounter, model,
+            std::vector<Handle<Quote> >(), std::vector<Date>(), i),
+          instruments_(instruments), accuracy_(accuracy) {
+            bootstrap_.setup(this);
         }
+
         //@}
         //! \name TermStructure interface
         //@{
