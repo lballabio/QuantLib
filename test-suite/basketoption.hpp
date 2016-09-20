@@ -32,6 +32,8 @@ class BasketOptionTest {
     static void testTavellaValues();
     static void testOneDAmericanValues(unsigned from, unsigned to);
     static void testOddSamples();
+    static void testLocalVolatilitySpreadOption();
+
     static boost::unit_test_framework::test_suite* suite();
 };
 

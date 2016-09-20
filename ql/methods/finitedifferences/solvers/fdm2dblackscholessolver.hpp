@@ -40,7 +40,9 @@ namespace QuantLib {
             const Handle<GeneralizedBlackScholesProcess>& p2,
             const Real correlation,
             const FdmSolverDesc& solverDesc,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+            bool localVol = false,
+            Real illegalLocalVolOverwrite = -Null<Real>());
 
         Real valueAt(Real x, Real y) const;
         Real thetaAt(Real x, Real y) const;
@@ -59,6 +61,8 @@ namespace QuantLib {
         const Real correlation_;
         const FdmSolverDesc solverDesc_;
         const FdmSchemeDesc schemeDesc_;
+        const bool localVol_;
+        const Real illegalLocalVolOverwrite_;
 
         mutable boost::shared_ptr<Fdm2DimSolver> solver_;
     };
