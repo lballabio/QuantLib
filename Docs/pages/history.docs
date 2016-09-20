@@ -18,7 +18,29 @@
 
 /*! \page history Version history
 
-    <strong>Release 1.8 - May 2016</strong>
+    <strong>Release 1.8.1 - September 2016</strong>
+
+    %QuantLib 1.8.1 is a bug-fix release for version 1.8.
+
+    - A test failure with Visual C++ 14 (2015) was avoided. Up to
+      VC++14 update 2, the compiler would inline a call to std::min
+      and std::max incorrectly causing a calculation to fail (thanks
+      to Ivan Cherkasov for the heads-up).
+    - A test failure with the upcoming Boost 1.62 was avoided.  A
+      QuantLib test was checking for the stored value of a hash whose
+      value changed in Boost 1.62.
+    - Miscellaneous fixes for the g1d swaption engine and instrument
+      (thanks to Peter Caspers).
+    - Whit Monday was no longer a holiday in Sweden since 2005 (thanks
+      to Stefano Fondi).
+    - A new holiday for election day 2016 was added to the South
+      African calendar (thanks to Jasen Mackie).
+    - A few missing CMakeLists were added to the distributed release
+      (thanks to izavyalov for the heads-up).
+    - An irregular last period in a schedule was not reported as such
+      (thanks to Schmidt for the heads-up).
+
+    <strong>Release 1.8 - May 18th, 2016</strong>
 
     PORTABILITY
     - The minimum required Boost version is now Boost 1.43 (May
