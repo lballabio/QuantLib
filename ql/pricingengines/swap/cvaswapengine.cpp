@@ -130,17 +130,21 @@ namespace QuantLib {
     // copy args into the non risky engine
     Swap::arguments * noCVAArgs = dynamic_cast<Swap::arguments*>(
       baseSwapEngine_->getArguments());
+    QL_REQUIRE(noCVAArgs != 0, "wrong argument type");
 
     noCVAArgs->legs = this->arguments_.legs;
     noCVAArgs->payer = this->arguments_.payer;
 
     baseSwapEngine_->calculate();
 
-    Rate baseSwapRate = boost::dynamic_pointer_cast<FixedRateCoupon>(
-	    arguments_.legs[0][0])->rate();
+    boost::shared_ptr<FixedRateCoupon> coupon = boost::dynamic_pointer_cast<FixedRateCoupon>(arguments_.legs[0][0]);
+    QL_REQUIRE(coupon,"dynamic cast of fixed leg coupon failed.");
+    Rate baseSwapRate = coupon->rate();
 
     const Swap::results * vSResults =  
         dynamic_cast<const Swap::results *>(baseSwapEngine_->getResults());
+    QL_REQUIRE(vSResults != 0, "wrong result type");
+
     Rate baseSwapFairRate = -baseSwapRate * vSResults->legNPV[1] / 
         vSResults->legNPV[0];
     Real baseSwapNPV = vSResults->value;
@@ -151,10 +155,10 @@ namespace QuantLib {
     // Swaplet options summatory:
     while(nextFD != arguments_.fixedPayDates.end()) {
       // iFD coupon not fixed, create swaptionlet:
-      boost::shared_ptr<IborIndex> swapIndex = 
-    	boost::dynamic_pointer_cast<IborIndex>(
-          boost::dynamic_pointer_cast<FloatingRateCoupon>(
-	        arguments_.legs[1][0])->index());
+      boost::shared_ptr<FloatingRateCoupon> floatCoupon = boost::dynamic_pointer_cast<FloatingRateCoupon>(arguments_.legs[1][0]);
+      QL_REQUIRE(floatCoupon,"dynamic cast of floating leg coupon failed.");
+      boost::shared_ptr<IborIndex> swapIndex = boost::dynamic_pointer_cast<IborIndex>(floatCoupon->index());
+      QL_REQUIRE(swapIndex,"dynamic cast of floating leg index failed.");
 
       // Alternatively one could cap this period to, say, 1M 
       // Period swapPeriod = boost::dynamic_pointer_cast<FloatingRateCoupon>(

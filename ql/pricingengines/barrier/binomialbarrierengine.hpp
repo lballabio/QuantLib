@@ -37,7 +37,7 @@ namespace QuantLib {
     //! Pricing engine for barrier options using binomial trees
     /*! \ingroup barrierengines
 
-        \note Timesteps are adjusted using Boyle and Lau algorithm.
+        \note Timesteps for Cox-Ross-Rubinstein trees are adjusted using Boyle and Lau algorithm.
               See Journal of Derivatives, 1/1994,
               "Bumping up against the barrier with the binomial method"
 
@@ -52,6 +52,8 @@ namespace QuantLib {
                    steps is calculated by an heuristic: anything when < 1000,
                    otherwise no more than 5*timeSteps.
                    If maxTimeSteps is equal to timeSteps Boyle-Lau is disabled.
+                   Likewise if the lattice is not CoxRossRubinstein Boyle-Lau is 
+                   disabled and maxTimeSteps ignored.
         */
         BinomialBarrierEngine(
              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
@@ -123,8 +125,11 @@ namespace QuantLib {
         // correct timesteps to ensure a (local) minimum, using Boyle and Lau
         // approach. See Journal of Derivatives, 1/1994,
         // "Bumping up against the barrier with the binomial method"
+        // Note: this approach works only for CoxRossRubinstein lattices, so
+        // is disabled if T is not a CoxRossRubinstein or derived from it.
         Size optimum_steps = timeSteps_;
-        if (maxTimeSteps_ > timeSteps_ && s0 > 0 && arguments_.barrier > 0) {
+        if (boost::is_base_of<CoxRossRubinstein, T>::value && 
+            maxTimeSteps_ > timeSteps_ && s0 > 0 && arguments_.barrier > 0) {
             Real divisor;
             if (s0 > arguments_.barrier)
                divisor = std::pow(std::log(s0 / arguments_.barrier), 2);

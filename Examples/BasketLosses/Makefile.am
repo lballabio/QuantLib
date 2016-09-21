@@ -12,7 +12,6 @@ BasketLosses_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     BasketLosses.dev \
-    BasketLosses_vc8.vcproj \
     BasketLosses_vc9.vcproj \
     BasketLosses.vcxproj \
     BasketLosses.vcxproj.filters \

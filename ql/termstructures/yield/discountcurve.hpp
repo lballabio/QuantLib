@@ -155,7 +155,7 @@ namespace QuantLib {
     #ifndef __DOXYGEN__
 
     // template definitions
-
+    
     template <class T>
     DiscountFactor InterpolatedDiscountCurve<T>::discountImpl(Time t) const {
         if (t <= this->times_.back())
