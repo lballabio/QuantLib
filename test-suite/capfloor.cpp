@@ -525,7 +525,8 @@ void CapFloorTest::testImpliedVolatility() {
                                                             0.10,
                                                             tolerance,
                                                             maxEvaluations,
-                                                            10.0e-7, 4.0, 0.0);
+                                                            10.0e-7, 4.0,
+                                                            ShiftedLognormal, 0.0);
                         } catch (std::exception& e) {
                             // couldn't bracket?
                             capfloor->setPricingEngine(vars.makeEngine(0.0));

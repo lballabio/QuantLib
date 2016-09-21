@@ -66,7 +66,7 @@ class SABRWrapper {
 struct SABRSpecs {
     Size dimension() { return 4; }
     void defaultValues(std::vector<Real> &params, std::vector<bool> &,
-                       const Real &forward, const Real expiryTIme,
+                       const Real &forward, const Real expiryTime,
                        const std::vector<Real> &addParams) {
         if (params[1] == Null<Real>())
             params[1] = 0.5;

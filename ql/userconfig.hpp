@@ -91,4 +91,11 @@
 //#    define QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
 #endif
 
+/* Define this to make Singleton initialization thread-safe.
+   Note: There is no support for thread safety and multiple sessions.
+*/
+#ifndef QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
+//#   define QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
+#endif
+
 #endif

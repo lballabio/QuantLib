@@ -139,10 +139,10 @@ namespace QuantLib {
         /*! Calculates the number of business days between two given
             dates and returns the result.
         */
-        BigInteger businessDaysBetween(const Date& from,
-                                       const Date& to,
-                                       bool includeFirst = true,
-                                       bool includeLast = false) const;
+        Date::serial_type businessDaysBetween(const Date& from,
+                                              const Date& to,
+                                              bool includeFirst = true,
+                                              bool includeLast = false) const;
         //@}
 
       protected:

@@ -101,7 +101,7 @@ namespace QuantLib {
                               (d == 1 && m == May)))
             || (y == 2014 && d >= 1 && d <=3 && m == May)
             || (y == 2015 && d == 1 && m == May)
-            || (y == 2016 && d == 1 && m == May)
+            || (y == 2016 && d >= 1 && d <=2 && m == May)
             // Tuen Ng Festival
             || (y <= 2008 && d == 9 && m == June)
             || (y == 2009 && (d == 28 || d == 29) && m == May)

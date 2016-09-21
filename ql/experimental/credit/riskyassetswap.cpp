@@ -20,6 +20,8 @@
 #include <ql/experimental/credit/riskyassetswap.hpp>
 #include <ql/event.hpp>
 
+#include <ql/utilities/null_deleter.hpp>
+
 namespace QuantLib {
 
     RiskyAssetSwap::RiskyAssetSwap(
@@ -216,16 +218,12 @@ namespace QuantLib {
         return asw_->fairSpread();
     }
 
-    namespace {
-        void no_deletion(DefaultProbabilityTermStructure*) {}
-    }
-
     void AssetSwapHelper::setTermStructure(
                                         DefaultProbabilityTermStructure* ts) {
         DefaultProbabilityHelper::setTermStructure(ts);
 
         probability_.linkTo(
-            boost::shared_ptr<DefaultProbabilityTermStructure>(ts, no_deletion),
+            boost::shared_ptr<DefaultProbabilityTermStructure>(ts, null_deleter()),
             false);
 
         initializeDates();
