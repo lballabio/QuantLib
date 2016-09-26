@@ -111,6 +111,86 @@ namespace QuantLib
         normal_random distribution_;
         mutable normal_variate gaussian_;
     };
+    
+    //! Gaussian Ring Sampler
+    /*! Sample from normal distribution, but constrained to lie within
+     * .boundaries. If the value ends up beyond the boundary, the value
+     * is circled back from the other side.
+    */
+    class SamplerRingGaussian
+    {
+    public:
+        SamplerRingGaussian(const Array& lower, const Array& upper, 
+				unsigned long seed = SeedGenerator::instance().get()) :
+            generator_(seed), distribution_(0.0, 1.0), 
+            gaussian_(generator_, distribution_),
+            lower_(lower), upper_(upper) {};
+        SamplerRingGaussian(const SamplerRingGaussian& sampler) : 
+			generator_(sampler.gaussian_.engine()),
+            distribution_(sampler.gaussian_.distribution()),
+            gaussian_(generator_, distribution_),
+            lower_(sampler.lower_), upper_(sampler.upper_) {};
+
+        inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) const {
+            QL_REQUIRE(newPoint.size() == currentPoint.size(), "Incompatible input");
+            QL_REQUIRE(newPoint.size() == temp.size(), "Incompatible input");
+            for (Size i = 0; i < currentPoint.size(); i++){
+                newPoint[i] = currentPoint[i] + std::sqrt(temp[i])*gaussian_();
+                while(newPoint[i] < lower_[i] || newPoint[i] > upper_[i]){
+					if(newPoint[i] < lower_[i]){
+						newPoint[i] = upper_[i] + newPoint[i] - lower_[i];
+					} else {
+						newPoint[i] = lower_[i] + newPoint[i] - upper_[i];
+					}
+				} 
+            }
+        };
+    private:
+        base_generator_type generator_;
+        normal_random distribution_;
+        mutable normal_variate gaussian_;
+        Array lower_, upper_;
+    };
+    
+    //! Gaussian Mirror Sampler
+    /*! Sample from normal distribution, but constrained to lie within
+     * .boundaries. If the value ends up beyond the boundary, the value
+     * is reflected back.
+    */
+    class SamplerMirrorGaussian
+    {
+    public:
+        SamplerMirrorGaussian(const Array& lower, const Array& upper, 
+				unsigned long seed = SeedGenerator::instance().get()) :
+            generator_(seed), distribution_(0.0, 1.0), 
+            gaussian_(generator_, distribution_),
+            lower_(lower), upper_(upper) {};
+        SamplerMirrorGaussian(const SamplerMirrorGaussian& sampler) : 
+			generator_(sampler.gaussian_.engine()),
+            distribution_(sampler.gaussian_.distribution()),
+            gaussian_(generator_, distribution_),
+            lower_(sampler.lower_), upper_(sampler.upper_) {};
+
+        inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) const {
+            QL_REQUIRE(newPoint.size() == currentPoint.size(), "Incompatible input");
+            QL_REQUIRE(newPoint.size() == temp.size(), "Incompatible input");
+            for (Size i = 0; i < currentPoint.size(); i++){
+                newPoint[i] = currentPoint[i] + std::sqrt(temp[i])*gaussian_();
+                while(newPoint[i] < lower_[i] || newPoint[i] > upper_[i]){
+					if(newPoint[i] < lower_[i]){
+						newPoint[i] = lower_[i] + lower_[i] - newPoint[i];
+					} else {
+						newPoint[i] = upper_[i] + upper_[i] - newPoint[i];
+					}
+				}
+            }
+        };
+    private:
+        base_generator_type generator_;
+        normal_random distribution_;
+        mutable normal_variate gaussian_;
+        Array lower_, upper_;
+    };
 
     //! Cauchy Sampler
     /*!    Sample from cauchy distribution. This means that the parameter space

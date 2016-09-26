@@ -119,6 +119,17 @@ namespace QuantLib {
                   lowerRateBound_(0.0), upperRateBound_(2.0),
                   adjustments_(KahaleSmile | SmileExponentialExtrapolation),
                   smileMoneynessCheckpoints_(std::vector<Real>()) {}
+                  
+            ModelSettings(Size yGridPoints, Real yStdDevs, Size gaussHermitePoints,
+                          Real digitalGap, Real marketRateAccuracy, 
+                          Real lowerRateBound, Real upperRateBound,
+                          int adjustments, 
+                          const std::vector<Real>& smileMoneyCheckpoints = std::vector<Real>())
+                : yGridPoints_(yGridPoints), yStdDevs_(yStdDevs), 
+                  gaussHermitePoints_(gaussHermitePoints), digitalGap_(digitalGap), 
+                  marketRateAccuracy_(marketRateAccuracy), lowerRateBound_(lowerRateBound), 
+                  upperRateBound_(upperRateBound), adjustments_(adjustments),
+                  smileMoneynessCheckpoints_(smileMoneyCheckpoints) {}
 
             void validate() {
 

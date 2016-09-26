@@ -97,7 +97,7 @@ namespace QuantLib {
             boost::shared_ptr<Inertia> inertia,
             Real c1 = 2.05, Real c2 = 2.05,
             unsigned long seed = SeedGenerator::instance().get());
-        ParticleSwarmOptimization(const Size M,
+        explicit ParticleSwarmOptimization(const Size M,
             boost::shared_ptr<Topology> topology,
             boost::shared_ptr<Inertia> inertia,
             Real omega, Real c1, Real c2,
