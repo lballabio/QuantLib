@@ -1,130 +1,30 @@
 
-Changes for QuantLib 1.8:
-=========================
+Changes for QuantLib 1.8.1:
+===========================
 
-QuantLib 1.8 includes 45 pull requests from several contributors.
+QuantLib 1.8.1 is a bug-fix release for version 1.8.
 
-The most notable changes are included below.
-A detailed list of changes is available in ChangeLog.txt.
+- A test failure with Visual C++ 14 (2015) was avoided. Up to VC++14
+  update 2, the compiler would inline a call to std::min and std::max
+  incorrectly causing a calculation to fail (thanks to Ivan Cherkasov
+  for the heads-up).
 
-PORTABILITY
+- A test failure with the upcoming Boost 1.62 was avoided.  A QuantLib
+  test was checking for the stored value of a hash whose value changed
+  in Boost 1.62.
 
-- The minimum required Boost version is now Boost 1.43 (May
-  2010). However, it is strongly suggested to use a recent version, or
-  at least Boost 1.48 (November 2011).
+- Miscellaneous fixes for the g1d swaption engine and instrument
+  (thanks to Peter Caspers).
 
-- Added initial CMake support (thanks to Dmitri Nesteruk). This makes
-  it possible to compile QuantLib on CLion and other CMake-based
-  tools.
+- Whit Monday was no longer a holiday in Sweden since 2005 (thanks to
+  Stefano Fondi).
 
-- The build now generates and installs pkg-config file on Linux
-  systems (thanks to GitHub user njwhite).
+- A new holiday for election day 2016 was added to the South African
+  calendar (thanks to Jasen Mackie).
 
-INTEREST RATES
+- A few missing CMakeLists were added to the distributed release
+  (thanks to izavyalov for the heads-up).
 
-- Fixed links to documentation for LIBOR indexes (thanks to Jose
-  Magana).
+- An irregular last period in a schedule was not reported as such
+  (thanks to Schmidt for the heads-up).
 
-VOLATILITY
-
-- Added the possibility to price swaptions and to calculate their
-  implied volatilities in a Black-like model with normal volatilities
-  as well as shifted lognormal (thanks to Peter Caspers).
-
-- Added the possibility to price caps in a Black-like model with
-  normal volatilities as well as shifted lognormal (thanks to Michael
-  von den Driesch).
-
-- Caplet strike is correctly recomputed during stripping (thanks to
-  Michael von den Driesch).
-
-INSTRUMENTS
-
-- Added basic CVA IRS pricing engine (stand alone, no portfolio; no
-  WWR, no collateral). Thanks to Jose Aparicio.
-
-MODELS
-
-- Black-Scholes processes now return the closed-formula expectation,
-  standard deviation and variance over long periods (thanks to Peter
-  Caspers).
-
-CURRENCIES
-
-- Added Ukrainian hryvnia (thanks to GitHub user maksym-studenets).
-
-MONTE CARLO
-
-- Use different random-number generators for calibration and pricing
-  in Longstaff-Schwartz engine (thanks to Peter Caspers).
-
-DATE/TIME
-
-- Added forecast dates for moving holidays to Saudi Arabia calendar up
-  to 2022 (thanks to Jayanth R. Varma).
-
-- Added new Ukrainian holiday, Defender's Day (thanks to GitHub user
-  maksym-studenets).
-
-- Added a few more holidays for South Korea (thanks to Faycal El Karaa).
-
-MATH
-
-- Added mixed log interpolation (thanks to GitHub user sfondi).
-
-- Avoid mixing different types while bit-shifting in fast Fourier
-  transform on 64-bit systems (thanks to Nikolai Nowaczyk).
-
-DEPRECATED FEATURES
-
-- Removed DateParser::split method (deprecated in version 1.6).
-
-TEST SUITE
-
-- The test suite is now run with a fixed evaluation date instead of
-  using today's date. This helps avoid transient errors due to
-  holidays. It is still possible to use today's date (or any other
-  date) by running it as:
-
-    $ quantlib-test-suite -- --date=today
-
-  or
-
-    $ quantlib-test-suite -- --date=2016-02-08
-
-  (Thanks to Peter Caspers.)
-
-NEW OPT-IN FEATURES
-
-These features are disabled by default and can be enabled by defining
-a macro or passing a flag to `./configure`.  Feedback is appreciated.
-
-- Added a parallel unit-test runner (thanks to Klaus Spanderen). This
-  was successfully used under Linux, but problems were reported on Mac
-  OS X and occasionally on Visual C++ 2010.  The feature requires
-  Boost 1.59 or later and can be enabled by uncommenting the
-  `QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER` macro in `ql/userconfig.hpp`
-  on Visual C++ or by passing the `--enable-parallel-unit-test-runner`
-  to `./configure` on other systems.
-
-EXPERIMENTAL FOLDER
-
-The ql/experimental folder contains code which is still not fully
-integrated with the library or even fully tested, but is released in
-order to get user feedback. Experimental classes are considered
-unstable; their interfaces might change in future releases.
-
-Changes and new contributions for this release were:
-
-- Stochastic local-volatility Heston model, (thanks to Klaus Spanderen
-  and Johannes Goettker-Schnetmann). Both a Monte Carlo and a
-  finite-difference calibration and calculation are provided.
-
-- Laplace interpolation (thanks to Peter Caspers).
-
-- Global optimizers: Hybrid Simulated Annealing, Particle Swarm
-  Optimization, Firefly Algorithm, and Differential Evolution (thanks
-  to Andres Hernandez).
-
-- A SVD-based calculation of the Moore-Penrose inverse matrix (thanks
-  to Peter Caspers).
