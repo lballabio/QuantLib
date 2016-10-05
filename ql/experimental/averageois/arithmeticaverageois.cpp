@@ -39,11 +39,11 @@ namespace QuantLib {
     : Swap(2), type_(type),
       nominals_(std::vector<Real>(1, nominal)),
       fixedLegPaymentFrequency_(fixedLegSchedule.tenor().frequency()),
+      overnightLegPaymentFrequency_(overnightLegSchedule.tenor().frequency()),
       fixedRate_(fixedRate), fixedDC_(fixedDC),
       overnightIndex_(overnightIndex),
-      overnightLegPaymentFrequency_(overnightLegSchedule.tenor().frequency()),
-      spread_(spread), mrs_(meanReversionSpeed), vol_(volatility),
-      byApprox_(byApprox) {
+      spread_(spread), byApprox_(byApprox), mrs_(meanReversionSpeed),
+      vol_(volatility) {
 
         initialize(fixedLegSchedule, overnightLegSchedule);
 
@@ -63,11 +63,11 @@ namespace QuantLib {
                     bool byApprox)
     : Swap(2), type_(type), nominals_(nominals),
       fixedLegPaymentFrequency_(fixedLegSchedule.tenor().frequency()),
+      overnightLegPaymentFrequency_(overnightLegSchedule.tenor().frequency()),
       fixedRate_(fixedRate), fixedDC_(fixedDC),
       overnightIndex_(overnightIndex),
-      overnightLegPaymentFrequency_(overnightLegSchedule.tenor().frequency()),
-      spread_(spread), mrs_(meanReversionSpeed), vol_(volatility),
-      byApprox_(byApprox) {
+      spread_(spread), byApprox_(byApprox), mrs_(meanReversionSpeed),
+      vol_(volatility) {
 
         initialize(fixedLegSchedule, overnightLegSchedule);
 

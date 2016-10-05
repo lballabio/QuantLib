@@ -40,12 +40,12 @@ namespace QuantLib {
       rule_(DateGeneration::Backward),
       // any value here for endOfMonth_ would not be actually used
       isDefaultEOM_(true),
-      type_(ArithmeticAverageOIS::Payer), nominal_(1.0),
-      overnightSpread_(0.0),
-      fixedDayCount_(overnightIndex->dayCounter()),
       byApprox_(false),
       mrs_(0.03),
-      vol_(0.00) {}
+      vol_(0.00),
+      type_(ArithmeticAverageOIS::Payer), nominal_(1.0),
+      overnightSpread_(0.0),
+      fixedDayCount_(overnightIndex->dayCounter()) {}
 
     MakeArithmeticAverageOIS::operator ArithmeticAverageOIS() const {
         shared_ptr<ArithmeticAverageOIS> ois = *this;
