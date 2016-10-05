@@ -292,6 +292,9 @@
     <Filter Include="experimental\amortizingbonds">
       <UniqueIdentifier>{101d6cdd-3e77-48cd-8bec-c84a252324f0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="experimental\averageois">
+      <UniqueIdentifier>{33f1be16-e858-4cfe-ba9c-483609826221}</UniqueIdentifier>
+    </Filter>
     <Filter Include="experimental\barrieroption">
       <UniqueIdentifier>{aad1cf31-2c29-47a1-9461-ee71b1dd9a6a}</UniqueIdentifier>
     </Filter>
@@ -3405,6 +3408,21 @@
     <ClInclude Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.hpp">
       <Filter>experimental\amortizingbonds</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\averageois\all.hpp">
+      <Filter>experimental\averageois</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\averageois\arithmeticaverageois.hpp">
+      <Filter>experimental\averageois</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\averageois\arithmeticoisratehelper.hpp">
+      <Filter>experimental\averageois</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\averageois\averageoiscouponpricer.hpp">
+      <Filter>experimental\averageois</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\averageois\makearithmeticaverageois.hpp">
+      <Filter>experimental\averageois</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\barrieroption\all.hpp">
       <Filter>experimental\barrieroption</Filter>
     </ClInclude>
@@ -6131,6 +6149,18 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.cpp">
       <Filter>experimental\amortizingbonds</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\averageois\arithmeticaverageois.cpp">
+      <Filter>experimental\averageois</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\averageois\averageoiscouponpricer.cpp">
+      <Filter>experimental\averageois</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\averageois\arithmeticoisratehelper.cpp">
+      <Filter>experimental\averageois</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\averageois\makearithmeticaverageois.cpp">
+      <Filter>experimental\averageois</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\barrieroption\analyticdoublebarrierbinaryengine.cpp">
       <Filter>experimental\barrieroption</Filter>

@@ -1,0 +1,152 @@
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+
+/*
+ Copyright (C) 2016 Stefano Fondi
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/license.shtml>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
+#include <ql/experimental/averageois/arithmeticaverageois.hpp>
+#include <ql/experimental/averageois/averageoiscouponpricer.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
+#include <ql/cashflows/fixedratecoupon.hpp>
+
+namespace QuantLib {
+
+    ArithmeticAverageOIS::ArithmeticAverageOIS(
+                    Type type,
+                    Real nominal,
+                    const Schedule& fixedLegSchedule,
+                    Rate fixedRate,
+                    const DayCounter& fixedDC,
+                    const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                    const Schedule& overnightLegSchedule,
+                    Spread spread,
+                    Real meanReversionSpeed,
+                    Real volatility,
+                    bool byApprox)
+    : Swap(2), type_(type),
+      nominals_(std::vector<Real>(1, nominal)),
+      fixedLegPaymentFrequency_(fixedLegSchedule.tenor().frequency()),
+      overnightLegPaymentFrequency_(overnightLegSchedule.tenor().frequency()),
+      fixedRate_(fixedRate), fixedDC_(fixedDC),
+      overnightIndex_(overnightIndex),
+      spread_(spread), byApprox_(byApprox), mrs_(meanReversionSpeed),
+      vol_(volatility) {
+
+        initialize(fixedLegSchedule, overnightLegSchedule);
+
+    }
+
+    ArithmeticAverageOIS::ArithmeticAverageOIS(
+                    Type type,
+                    std::vector<Real> nominals,
+                    const Schedule& fixedLegSchedule,
+                    Rate fixedRate,
+                    const DayCounter& fixedDC,
+                    const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                    const Schedule& overnightLegSchedule,
+                    Spread spread,
+                    Real meanReversionSpeed,
+                    Real volatility,
+                    bool byApprox)
+    : Swap(2), type_(type), nominals_(nominals),
+      fixedLegPaymentFrequency_(fixedLegSchedule.tenor().frequency()),
+      overnightLegPaymentFrequency_(overnightLegSchedule.tenor().frequency()),
+      fixedRate_(fixedRate), fixedDC_(fixedDC),
+      overnightIndex_(overnightIndex),
+      spread_(spread), byApprox_(byApprox), mrs_(meanReversionSpeed),
+      vol_(volatility) {
+
+        initialize(fixedLegSchedule, overnightLegSchedule);
+
+    }
+
+    void ArithmeticAverageOIS::initialize(const Schedule& fixedLegSchedule,
+                                          const Schedule& overnightLegSchedule) {
+        if (fixedDC_==DayCounter())
+            fixedDC_ = overnightIndex_->dayCounter();
+        legs_[0] = FixedRateLeg(fixedLegSchedule)
+            .withNotionals(nominals_)
+            .withCouponRates(fixedRate_, fixedDC_);
+
+        legs_[1] = OvernightLeg(overnightLegSchedule, overnightIndex_)
+            .withNotionals(nominals_)
+            .withSpreads(spread_);
+
+        boost::shared_ptr<FloatingRateCouponPricer> arithmeticPricer(
+                new ArithmeticAveragedOvernightIndexedCouponPricer(mrs_, vol_, byApprox_));
+
+        for (Size i = 0; i < legs_[1].size(); i++) {
+            boost::shared_ptr<OvernightIndexedCoupon> 
+                c = boost::dynamic_pointer_cast<OvernightIndexedCoupon> (legs_[1][i]);
+            c->setPricer(arithmeticPricer);
+        }
+
+        for (Size j=0; j<2; ++j) {
+            for (Leg::iterator i = legs_[j].begin(); i!= legs_[j].end(); ++i)
+                registerWith(*i);
+        }
+
+        switch (type_) {
+          case Payer:
+            payer_[0] = -1.0;
+            payer_[1] = +1.0;
+            break;
+          case Receiver:
+            payer_[0] = +1.0;
+            payer_[1] = -1.0;
+            break;
+          default:
+            QL_FAIL("Unknown overnight-swap type");
+        }
+    }
+
+    Real ArithmeticAverageOIS::fairRate() const {
+        static Spread basisPoint = 1.0e-4;
+        calculate();
+        return fixedRate_ - NPV_/(fixedLegBPS()/basisPoint);
+    }
+
+    Spread ArithmeticAverageOIS::fairSpread() const {
+        static Spread basisPoint = 1.0e-4;
+        calculate();
+        return spread_ - NPV_/(overnightLegBPS()/basisPoint);
+    }
+
+    Real ArithmeticAverageOIS::fixedLegBPS() const {
+        calculate();
+        QL_REQUIRE(legBPS_[0] != Null<Real>(), "result not available");
+        return legBPS_[0];
+    }
+
+    Real ArithmeticAverageOIS::overnightLegBPS() const {
+        calculate();
+        QL_REQUIRE(legBPS_[1] != Null<Real>(), "result not available");
+        return legBPS_[1];
+    }
+
+    Real ArithmeticAverageOIS::fixedLegNPV() const {
+        calculate();
+        QL_REQUIRE(legNPV_[0] != Null<Real>(), "result not available");
+        return legNPV_[0];
+    }
+
+    Real ArithmeticAverageOIS::overnightLegNPV() const {
+        calculate();
+        QL_REQUIRE(legNPV_[1] != Null<Real>(), "result not available");
+        return legNPV_[1];
+    }
+
+}
