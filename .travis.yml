@@ -1,0 +1,52 @@
+sudo: required
+dist: trusty
+
+language: generic
+
+matrix:
+  include:
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-4.9
+      env: 
+        - COMPILER=g++-4.9 COMPILER_NAME=gcc COMPILER_VERSION=4.9
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+          packages:
+            - clang-3.6
+      env: 
+        - CONAN_ENV="env CC=clang CXX=clang++-3.6" COMPILER=clang++-3.6 COMPILER_NAME=clang COMPILER_VERSION=3.6 CONAN_EXTRA="-s compiler.libcxx=libstdc++11 --build bzip2 --build zlib --build Boost"
+        
+install:
+  # install cmake 2.8.12 manually, see
+  #     * https://github.com/travis-ci-tester/travis-test-cmake
+  - wget http://www.cmake.org/files/v3.6/cmake-3.6.1.tar.gz
+  - tar xf cmake-3.6.1.tar.gz
+  - cd cmake-3.6.1
+  - ./bootstrap --system-curl
+  - make
+  - sudo make install
+  - cd ..
+  # -- end
+  
+  # Download conan
+  - wget http://downloads.conan.io/latest_debian -O conan.deb
+  - sudo dpkg -i conan.deb
+  - rm conan.deb
+
+  
+script:
+  - mkdir build
+  - cd build
+  # Automatic detection of your arch, compiler, etc
+  - $CONAN_ENV conan install .. -s compiler=$COMPILER_NAME -s compiler.version=$COMPILER_VERSION $CONAN_EXTRA
+  - cmake -DCMAKE_CXX_COMPILER=$COMPILER -DBUILD_TEST=ON .. && cmake --build .
+
