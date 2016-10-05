@@ -25,7 +25,7 @@
 #define quantlib_arithmeticoisratehelper_hpp
 
 #include <ql/termstructures/yield/ratehelpers.hpp>
-#include <ql/instruments/arithmeticaverageois.hpp>
+#include <ql/experimental/averageois/arithmeticaverageois.hpp>
 
 namespace QuantLib {
 

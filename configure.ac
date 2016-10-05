@@ -364,6 +364,7 @@ AC_CONFIG_FILES([
     ql/currencies/Makefile
     ql/experimental/Makefile
     ql/experimental/amortizingbonds/Makefile
+    ql/experimental/averageois/Makefile
     ql/experimental/barrieroption/Makefile
     ql/experimental/callablebonds/Makefile
     ql/experimental/catbonds/Makefile

@@ -24,7 +24,7 @@
 #ifndef quantlib_makearithmeticaverageois_hpp
 #define quantlib_makearithmeticaverageois_hpp
 
-#include <ql/instruments/arithmeticaverageois.hpp>
+#include <ql/experimental/averageois/arithmeticaverageois.hpp>
 #include <ql/time/dategenerationrule.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 

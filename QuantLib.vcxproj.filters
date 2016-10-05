@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="methods">
@@ -291,6 +291,9 @@
     </Filter>
     <Filter Include="experimental\amortizingbonds">
       <UniqueIdentifier>{101d6cdd-3e77-48cd-8bec-c84a252324f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="experimental\averageois">
+      <UniqueIdentifier>{33f1be16-e858-4cfe-ba9c-483609826221}</UniqueIdentifier>
     </Filter>
     <Filter Include="experimental\barrieroption">
       <UniqueIdentifier>{aad1cf31-2c29-47a1-9461-ee71b1dd9a6a}</UniqueIdentifier>
@@ -3405,6 +3408,21 @@
     <ClInclude Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.hpp">
       <Filter>experimental\amortizingbonds</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\averageois\all.hpp">
+      <Filter>experimental\averageois</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\averageois\arithmeticaverageois.hpp">
+      <Filter>experimental\averageois</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\averageois\arithmeticoisratehelper.hpp">
+      <Filter>experimental\averageois</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\averageois\averageoiscouponpricer.hpp">
+      <Filter>experimental\averageois</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\averageois\makearithmeticaverageois.hpp">
+      <Filter>experimental\averageois</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\barrieroption\all.hpp">
       <Filter>experimental\barrieroption</Filter>
     </ClInclude>
@@ -4089,15 +4107,6 @@
     </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\equityfx\hestonblackvolsurface.hpp">
       <Filter>termstructures\volatility\equityfx</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\termstructures\yield\arithmeticoisratehelper.hpp">
-      <Filter>termstructures\yield</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\instruments\arithmeticaverageois.hpp">
-      <Filter>instruments</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\instruments\makearithmeticaverageois.hpp">
-      <Filter>instruments</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -6129,6 +6138,18 @@
     <ClCompile Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.cpp">
       <Filter>experimental\amortizingbonds</Filter>
     </ClCompile>
+    <ClCompile Include="ql\experimental\averageois\arithmeticaverageois.cpp">
+      <Filter>experimental\averageois</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\averageois\averageoiscouponpricer.cpp">
+      <Filter>experimental\averageois</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\averageois\arithmeticoisratehelper.cpp">
+      <Filter>experimental\averageois</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\averageois\makearithmeticaverageois.cpp">
+      <Filter>experimental\averageois</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\barrieroption\analyticdoublebarrierbinaryengine.cpp">
       <Filter>experimental\barrieroption</Filter>
     </ClCompile>
@@ -6607,15 +6628,6 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\math\particleswarmoptimization.cpp">
       <Filter>experimental\math</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\termstructures\yield\arithmeticoisratehelper.cpp">
-      <Filter>termstructures\yield</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\instruments\arithmeticaverageois.cpp">
-      <Filter>instruments</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\instruments\makearithmeticaverageois.cpp">
-      <Filter>instruments</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

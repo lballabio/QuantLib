@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/makearithmeticaverageois.hpp>
+#include <ql/experimental/averageois/makearithmeticaverageois.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/schedule.hpp>

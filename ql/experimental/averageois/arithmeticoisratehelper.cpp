@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/yield/arithmeticoisratehelper.hpp>
-#include <ql/instruments/makearithmeticaverageois.hpp>
+#include <ql/experimental/averageois/arithmeticoisratehelper.hpp>
+#include <ql/experimental/averageois/makearithmeticaverageois.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 
 using boost::shared_ptr;
