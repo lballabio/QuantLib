@@ -18,9 +18,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 #include <ql/qldefines.hpp>
 #include <ql/version.hpp>
-#ifdef BOOST_MSVC
-#  include <ql/auto_link.hpp>
-#endif
 #include <ql/models/marketmodels/all.hpp>
 #include <ql/methods/montecarlo/genericlsregression.hpp>
 #include <ql/legacy/libormarketmodels/lmlinexpcorrmodel.hpp>

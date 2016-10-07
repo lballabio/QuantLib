@@ -49,4 +49,4 @@ script:
   # Automatic detection of your arch, compiler, etc
   - $CONAN_ENV conan install .. -s compiler=$COMPILER_NAME -s compiler.version=$COMPILER_VERSION $CONAN_EXTRA
   - cmake -DCMAKE_CXX_COMPILER=$COMPILER -DBUILD_TEST=ON .. && cmake --build .
-
+  - ./bin/quantlib-test-suite

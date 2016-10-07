@@ -35,7 +35,7 @@
    for example) also #define _MSC_VER
 */
 #ifdef BOOST_MSVC
-#  include <ql/auto_link.hpp>
+//#  include <ql/auto_link.hpp>
 
 #ifndef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
 #  define BOOST_LIB_NAME boost_unit_test_framework
@@ -284,11 +284,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     std::ostringstream header;
     header <<
         " Testing "
-        #ifdef BOOST_MSVC
-        QL_LIB_NAME
-        #else
         "QuantLib " QL_VERSION
-        #endif
         "\n  QL_NEGATIVE_RATES "
         #ifdef QL_NEGATIVE_RATES
         "       defined"

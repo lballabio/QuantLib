@@ -28,15 +28,15 @@
 #if (_MSC_VER < 1500)
 #  error "unsupported Microsoft compiler"
 #elif (_MSC_VER == 1500)
-#  define QL_LIB_TOOLSET "vc90"
+#  define QL_LIB_TOOLSET "v90"
 #elif (_MSC_VER == 1600)
-#  define QL_LIB_TOOLSET "vc100"
+#  define QL_LIB_TOOLSET "v100"
 #elif (_MSC_VER == 1700)
-#  define QL_LIB_TOOLSET "vc110"
+#  define QL_LIB_TOOLSET "v110"
 #elif (_MSC_VER == 1800)
-#  define QL_LIB_TOOLSET "vc120"
+#  define QL_LIB_TOOLSET "v120"
 #else
-#  define QL_LIB_TOOLSET "vc140"
+#  define QL_LIB_TOOLSET "v140"
 #endif
 
 #ifdef _M_X64

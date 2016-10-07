@@ -16,8 +16,8 @@ if (Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIRS})
 endif (Boost_FOUND)
 
-add_subdirectory(Examples)
 add_subdirectory(ql)
+add_subdirectory(Examples)
 
 # Building the test suite might require using shared libraries
 # for Boost.Test
