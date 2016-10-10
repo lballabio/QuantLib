@@ -19,8 +19,7 @@ class QuantLibConan(ConanFile):
         self.run("cmake --build . %s" % cmake.build_config)
 
     def package(self):
-        self.copy("cmake/FindQuantlib.cmake", ".", ".")
-        self.copy("cmake/quantlib.cmake", ".", ".")
+        self.copy(pattern="*.cmake", src="cmake", dst=".")
         
         self.copy(pattern="*", dst="ql", src="ql")
         self.copy("*.lib", dst="lib", src="lib")
