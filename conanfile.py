@@ -9,7 +9,7 @@ class QuantLibConan(ConanFile):
     name = "QuantLib"
     settings = "os", "compiler", "build_type", "arch"
     version = get_version()
-    exports = ["*", "cmake/*"]
+    exports = "*"
     requires = "Boost/1.60.0@lasote/stable"
     generators = "cmake"
 
