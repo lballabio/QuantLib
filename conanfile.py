@@ -9,7 +9,7 @@ class QuantLibConan(ConanFile):
     name = "QuantLib"
     settings = "os", "compiler", "build_type", "arch"
     version = get_version()
-    exports = ["cmake/*", "ql/*", "CMakeLists.txt", "Examples/*", "test-suite/*",]
+    exports = "*"
     requires = "Boost/1.60.0@lasote/stable"
     generators = "cmake"
 
@@ -20,6 +20,7 @@ class QuantLibConan(ConanFile):
 
     def package(self):
         self.copy("cmake/FindQuantlib.cmake", ".", ".")
+        self.copy("cmake/quantlib.cmake", ".", ".")
         
         self.copy(pattern="*", dst="ql", src="ql")
         self.copy("*.lib", dst="lib", src="lib")
