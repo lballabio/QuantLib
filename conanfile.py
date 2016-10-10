@@ -2,7 +2,7 @@ from conans import ConanFile, CMake
 
 
 def get_version():
-    return "1.8"
+    return "1.9"
 
 
 class QuantLibConan(ConanFile):
