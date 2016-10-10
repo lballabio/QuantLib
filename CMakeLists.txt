@@ -17,10 +17,15 @@ if (Boost_FOUND)
 endif (Boost_FOUND)
 
 add_subdirectory(ql)
-add_subdirectory(Examples)
 
-# Building the test suite might require using shared libraries
-# for Boost.Test
-option(USE_BOOST_DYNAMIC_LIBRARIES
-       "Use the shared version of Boost.Test" OFF)
-add_subdirectory(test-suite)
+option(BUILD_EXAMPLES "Build QuantLib examples" ON)
+message("Build QuantLib examples: ${BUILD_EXAMPLES}")
+if (BUILD_EXAMPLES)
+    add_subdirectory(Examples)
+endif()
+
+option(BUILD_TESTS "Build QuantLib tests" ON)
+message("Build QuantLib tests: ${BUILD_TESTS}")
+if (BUILD_TESTS)
+    add_subdirectory(test-suite)
+endif()
