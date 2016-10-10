@@ -22,3 +22,4 @@ install:
 
 test_script:
   - C:\Python27-x64\python build.py
+

@@ -29,3 +29,4 @@ message("Build QuantLib tests: ${BUILD_TESTS}")
 if (BUILD_TESTS)
     add_subdirectory(test-suite)
 endif()
+

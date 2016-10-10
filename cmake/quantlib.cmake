@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 3.0)  # Required for CMAKE_VS_PLATFORM_TOOLSET
 
 macro(get_quantlib_library_name QL_OUTPUT_DIR)
     set(QL_OUTPUT_NAME "QuantLib")
@@ -37,3 +38,4 @@ macro(get_quantlib_library_name QL_OUTPUT_DIR)
         set(QL_OUTPUT_NAME "${QL_OUTPUT_NAME}-${QL_LIB_TOOLSET}${QL_LIB_PLATFORM}${QL_LIB_THREAD_OPT}${QL_LIB_RT_OPT}")
     endif()
 endmacro(get_quantlib_library_name)
+
