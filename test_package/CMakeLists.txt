@@ -4,6 +4,13 @@ cmake_minimum_required(VERSION 2.8.12)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
-add_executable(greet main.cpp)
-target_link_libraries(greet ${CONAN_LIBS})
+find_package("Quantlib")
+
+if (QUANTLIB_FOUND)
+    add_executable(greet main.cpp)
+    include_directories(${QUANTLIB_INCLUDE_DIRS})
+    target_link_libraries(greet ${QUANTLIB_LIBRARIES})
+else()
+    message(FATAL_ERROR "Quantlib not found")
+endif()
 
