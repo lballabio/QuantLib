@@ -277,6 +277,9 @@
     <Filter Include="experimental\swaptions">
       <UniqueIdentifier>{63ee57ce-bf68-4a4a-b5c8-29d11c2a11ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="experimental\termstructures">
+      <UniqueIdentifier>{8a1123c5-a617-4cf2-93df-e554735531ae}</UniqueIdentifier>
+    </Filter>
     <Filter Include="experimental\varianceoption">
       <UniqueIdentifier>{8fd699bb-f489-4e96-a998-54b5612a9aa7}</UniqueIdentifier>
     </Filter>
@@ -2124,6 +2127,9 @@
     <ClInclude Include="ql\utilities\null.hpp">
       <Filter>utilities</Filter>
     </ClInclude>
+    <ClInclude Include="ql\utilities\null_deleter.hpp">
+      <Filter>utilities</Filter>
+    </ClInclude>
     <ClInclude Include="ql\utilities\observablevalue.hpp">
       <Filter>utilities</Filter>
     </ClInclude>
@@ -3290,6 +3296,12 @@
     </ClInclude>
     <ClInclude Include="ql\experimental\swaptions\irregularswaption.hpp">
       <Filter>experimental\swaptions</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\termstructures\all.hpp">
+      <Filter>experimental\termstructures</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\termstructures\multicurvesensitivities.hpp">
+      <Filter>experimental\termstructures</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\varianceoption\all.hpp">
       <Filter>experimental\varianceoption</Filter>

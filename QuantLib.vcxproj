@@ -1245,6 +1245,7 @@
     <ClInclude Include="ql\utilities\dataparsers.hpp" />
     <ClInclude Include="ql\utilities\disposable.hpp" />
     <ClInclude Include="ql\utilities\null.hpp" />
+    <ClInclude Include="ql\utilities\null_deleter.hpp" />
     <ClInclude Include="ql\utilities\observablevalue.hpp" />
     <ClInclude Include="ql\utilities\steppingiterator.hpp" />
     <ClInclude Include="ql\utilities\tracing.hpp" />
@@ -1635,6 +1636,8 @@
     <ClInclude Include="ql\experimental\swaptions\haganirregularswaptionengine.hpp" />
     <ClInclude Include="ql\experimental\swaptions\irregularswap.hpp" />
     <ClInclude Include="ql\experimental\swaptions\irregularswaption.hpp" />
+    <ClInclude Include="ql\experimental\termstructures\all.hpp" />
+    <ClInclude Include="ql\experimental\termstructures\multicurvesensitivities.hpp" />
     <ClInclude Include="ql\experimental\varianceoption\all.hpp" />
     <ClInclude Include="ql\experimental\varianceoption\integralhestonvarianceoptionengine.hpp" />
     <ClInclude Include="ql\experimental\varianceoption\varianceoption.hpp" />
