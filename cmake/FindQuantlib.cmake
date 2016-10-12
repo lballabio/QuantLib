@@ -1,6 +1,7 @@
 
 include(${CMAKE_CURRENT_LIST_DIR}/quantlib.cmake)
 get_quantlib_library_name(QL_LIBRARY_NAME)
+message("** Looking for library ${QL_LIBRARY_NAME}")
 
 find_path(QUANTLIB_INCLUDE_DIR NAMES ql/quantlib.hpp PATHS ${CONAN_INCLUDE_DIRS_QUANTLIB})
 find_library(QUANTLIB_LIBRARY NAMES ${QL_LIBRARY_NAME} ${CONAN_LIBS_QUANTLIB} PATHS ${CONAN_LIB_DIRS_QUANTLIB})
