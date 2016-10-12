@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)  # Required for CMAKE_VS_PLATFORM_TOOLSET
 
-macro(get_quantlib_library_name QL_OUTPUT_DIR)
+macro(get_quantlib_library_name QL_OUTPUT_NAME)
     set(QL_OUTPUT_NAME "QuantLib")
 
     # MSVC: Give QuantLib built library different names following code in 'ql/autolink.hpp'
