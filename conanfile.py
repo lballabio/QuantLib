@@ -12,6 +12,8 @@ class QuantLibConan(ConanFile):
     exports = "CMakeLists.txt", "cmake/*", "ql/*", "Examples/*", "test-suite/*", "*.TXT", "README.md"
     requires = "Boost/1.60.0@lasote/stable"
     generators = "cmake"
+    license = 'http://quantlib.org/license.shtml'
+    url = 'http://quantlib.org/index.shtml'
 
     options = {"examples": [True, False], "tests": [True, False]}    
     default_options = "examples=False", "tests=False"
