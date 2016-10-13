@@ -1,8 +1,18 @@
+import os
+import re
 from conans import ConanFile, CMake
 
 
+
 def get_version():
-    return "1.9"
+    version_hpp = os.path.join(os.path.dirname(__file__), 'ql', 'version.hpp')
+    version_pattern = re.compile(r'^#define QL_VERSION "(?P<version>[\d\.]+)"$')
+    with open(version_hpp) as f:
+	for line in f:
+            m = version_pattern.match(line.strip())
+            if m:
+                 return m.group('version')
+    raise Exception("Cannot get version from {!r}".format(version_hpp))
 
 
 class QuantLibConan(ConanFile):
@@ -36,4 +46,5 @@ class QuantLibConan(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = ["QuantLib"]
+
 
