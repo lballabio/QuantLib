@@ -13,7 +13,7 @@ class QuantLibConan(ConanFile):
     requires = "Boost/1.60.0@lasote/stable"
     generators = "cmake"
 
-    options = {"examples": [True, False], "tests": [True, False]}
+    options = {"examples": [True, False], "tests": [True, False]}    
     default_options = "examples=False", "tests=False"
 
     def build(self):

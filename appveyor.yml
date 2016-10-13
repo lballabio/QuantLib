@@ -8,7 +8,7 @@ environment:
     CONAN_REFERENCE: "quantlib/1.9"
     CONAN_USERNAME: "jgsogo"
     CONAN_CHANNEL: "ci"
-    CONAN_TOTAL_PAGES: 12
+    CONAN_TOTAL_PAGES: 10
 
     matrix:
         - CONAN_CURRENT_PAGE: 1
@@ -21,8 +21,6 @@ environment:
         - CONAN_CURRENT_PAGE: 8
         - CONAN_CURRENT_PAGE: 9
         - CONAN_CURRENT_PAGE: 10
-        - CONAN_CURRENT_PAGE: 11
-        - CONAN_CURRENT_PAGE: 12
 install:
   - set PATH=%PATH%;%PYTHON%/Scripts/
   - pip.exe install conan_package_tools # It install conan too
