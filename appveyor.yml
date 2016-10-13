@@ -1,22 +1,31 @@
-version: 0.1.{build}
+build: false
+environment:
+    PYTHON: "C:\\Python27-x64"
+    PYTHON_VERSION: "2.7.11"
+    PYTHON_ARCH: "64"
 
-platform:
-  - x64
+    CONAN_UPLOAD: 1
+    CONAN_REFERENCE: "QuantLib/1.9"
+    CONAN_USERNAME: "jgsogo"
+    CONAN_CHANNEL: "ci"
+    CONAN_TOTAL_PAGES: 10
 
+    matrix:
+        - CONAN_CURRENT_PAGE: 1
+        - CONAN_CURRENT_PAGE: 2
+        - CONAN_CURRENT_PAGE: 3
+        - CONAN_CURRENT_PAGE: 4
+        - CONAN_CURRENT_PAGE: 5
+        - CONAN_CURRENT_PAGE: 6
+        - CONAN_CURRENT_PAGE: 7
+        - CONAN_CURRENT_PAGE: 8
+        - CONAN_CURRENT_PAGE: 9
+        - CONAN_CURRENT_PAGE: 10
 install:
-  - cmd: echo "Downloading conan..."
-  - ps: wget http://downloads.conan.io/latest_windows -OutFile conan_installer.exe
-  - cmd: conan_installer.exe /VERYSILENT
-  - cmd: set PATH=%PATH%;C:\Program Files (x86)\Conan\conan
-  - cmd: conan --version
-
-build_script:
-  - cmd: mkdir build
-  - cmd: cd build
-  - cmd: conan install ..
-  - cmd: cmake -DBUILD_TEST=ON .. -G "Visual Studio 14 2015 Win64"
-  - cmd: cmake --build . --config Release
+  - set PATH=%PATH%;%PYTHON%/Scripts/
+  - pip.exe install conan_package_tools # It install conan too
+  - conan user # It creates the conan data directory
 
 test_script:
-  - cmd: cd bin
-  - cmd: quantlib-test-suite.exe
+  - C:\Python27-x64\python build.py
+

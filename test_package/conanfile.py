@@ -7,7 +7,7 @@ username = os.getenv("CONAN_USERNAME", "demo")
 
 class HelloReuseConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
-    requires = "QuantLib/1.8@%s/%s" % (username, channel)
+    requires = "QuantLib/1.9@%s/%s" % (username, channel)
     generators = "cmake"
 
     def build(self):
