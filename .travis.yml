@@ -6,7 +6,6 @@ language: python
 env:
   global:
     - CONAN_UPLOAD=1
-    - CONAN_REFERENCE="QuantLib/1.9"
     - CONAN_USERNAME="jgsogo"
     - CONAN_CHANNEL="ci"
     - CONAN_TOTAL_PAGES=4
