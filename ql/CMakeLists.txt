@@ -1,2 +1,7 @@
 file(GLOB_RECURSE QUANTLIB_FILES "*.hpp" "*.cpp")
-add_library(QuantLib SHARED ${QUANTLIB_FILES})
+add_library(QuantLibObjects OBJECT ${QUANTLIB_FILES})
+add_library(QuantLibStatic STATIC $<TARGET_OBJECTS:QuantLibObjects>)
+set_target_properties(QuantLibStatic PROPERTIES OUTPUT_NAME QuantLib)
+if (NOT DISABLE_SHARED)
+    add_library(QuantLib SHARED $<TARGET_OBJECTS:QuantLibObjects>)
+endif (NOT DISABLE_SHARED)

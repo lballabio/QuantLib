@@ -2,6 +2,7 @@ cmake_minimum_required()
 
 option(BUILD_EXAMPLES "Build examples" ON)
 option(BUILD_TESTS "Build tests" ON)
+option(DISABLE_SHARED "Do not build shared library" OFF)
 # to reference headers via <ql/foo.hpp>, we need to add the root
 # directory of the project to includes
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
