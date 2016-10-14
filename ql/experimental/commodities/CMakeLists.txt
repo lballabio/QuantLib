@@ -1,0 +1,25 @@
+install(FILES
+  all.hpp
+  commodity.hpp
+  commoditycashflow.hpp
+  commoditycurve.hpp
+  commodityindex.hpp
+  commoditypricinghelpers.hpp
+  commoditysettings.hpp
+  commoditytype.hpp
+  commodityunitcost.hpp
+  dateinterval.hpp
+  energybasisswap.hpp
+  energycommodity.hpp
+  energyfuture.hpp
+  energyswap.hpp
+  energyvanillaswap.hpp
+  exchangecontract.hpp
+  paymentterm.hpp
+  petroleumunitsofmeasure.hpp
+  pricingperiod.hpp
+  quantity.hpp
+  unitofmeasure.hpp
+  unitofmeasureconversion.hpp
+  unitofmeasureconversionmanager.hpp
+  DESTINATION include/ql/experimental/commodities)

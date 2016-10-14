@@ -1,0 +1,19 @@
+install(FILES
+    all.hpp
+    brownianbridge.hpp
+    earlyexercisepathpricer.hpp
+    exercisestrategy.hpp
+    genericlsregression.hpp
+    longstaffschwartzpathpricer.hpp
+    lsmbasissystem.hpp
+    mctraits.hpp
+    montecarlomodel.hpp
+    multipath.hpp
+    multipathgenerator.hpp
+    nodedata.hpp
+    parametricexercise.hpp
+    path.hpp
+    pathgenerator.hpp
+    pathpricer.hpp
+    sample.hpp
+    DESTINATION include/ql/methods/montecarlo)

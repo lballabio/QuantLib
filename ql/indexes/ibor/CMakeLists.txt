@@ -1,0 +1,28 @@
+install(FILES
+    all.hpp
+    aonia.hpp
+    audlibor.hpp
+    bbsw.hpp
+    bkbm.hpp
+    cadlibor.hpp
+    cdor.hpp
+    chflibor.hpp
+    dkklibor.hpp
+    eonia.hpp
+    euribor.hpp
+    eurlibor.hpp
+    fedfunds.hpp
+    gbplibor.hpp
+    jibar.hpp
+    jpylibor.hpp
+    libor.hpp
+    nzdlibor.hpp
+    nzocr.hpp
+    seklibor.hpp
+    shibor.hpp
+    sonia.hpp
+    tibor.hpp
+    trlibor.hpp
+    usdlibor.hpp
+    zibor.hpp
+    DESTINATION include/ql/indexes/ibor)

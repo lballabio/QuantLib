@@ -1,0 +1,32 @@
+install(FILES
+    all.hpp
+    averagebmacoupon.hpp
+    capflooredcoupon.hpp
+    capflooredinflationcoupon.hpp
+    cashflows.hpp
+    cashflowvectors.hpp
+    cmscoupon.hpp
+    conundrumpricer.hpp
+    coupon.hpp
+    couponpricer.hpp
+    cpicoupon.hpp
+    cpicouponpricer.hpp
+    digitalcmscoupon.hpp
+    digitalcoupon.hpp
+    digitaliborcoupon.hpp
+    dividend.hpp
+    duration.hpp
+    fixedratecoupon.hpp
+    floatingratecoupon.hpp
+    iborcoupon.hpp
+    indexedcashflow.hpp
+    inflationcoupon.hpp
+    inflationcouponpricer.hpp
+    lineartsrpricer.hpp
+    overnightindexedcoupon.hpp
+    rangeaccrual.hpp
+    replication.hpp
+    simplecashflow.hpp
+    timebasket.hpp
+    yoyinflationcoupon.hpp
+    DESTINATION include/ql/cashflows)

@@ -1,0 +1,22 @@
+install(FILES
+    all.hpp
+    abcdinterpolation.hpp
+    backwardflatinterpolation.hpp
+    backwardflatlinearinterpolation.hpp
+    bicubicsplineinterpolation.hpp
+    bilinearinterpolation.hpp
+    convexmonotoneinterpolation.hpp
+    cubicinterpolation.hpp
+    extrapolation.hpp
+    flatextrapolation2d.hpp
+    forwardflatinterpolation.hpp
+    interpolation2d.hpp
+    kernelinterpolation.hpp
+    kernelinterpolation2d.hpp
+    linearinterpolation.hpp
+    loginterpolation.hpp
+    mixedinterpolation.hpp
+    multicubicspline.hpp
+    sabrinterpolation.hpp
+    xabrinterpolation.hpp
+    DESTINATION include/ql/math/interpolations)

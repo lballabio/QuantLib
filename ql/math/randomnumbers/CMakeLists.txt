@@ -1,0 +1,22 @@
+install(FILES
+    all.hpp
+    boxmullergaussianrng.hpp
+    centrallimitgaussianrng.hpp
+    faurersg.hpp
+    haltonrsg.hpp
+    inversecumulativerng.hpp
+    inversecumulativersg.hpp
+    knuthuniformrng.hpp
+    latticersg.hpp
+    latticerules.hpp
+    lecuyeruniformrng.hpp
+    mt19937uniformrng.hpp
+    primitivepolynomials.hpp
+    randomizedlds.hpp
+    randomsequencegenerator.hpp
+    ranluxuniformrng.hpp
+    rngtraits.hpp
+    seedgenerator.hpp
+    sobolbrownianbridgersg.hpp
+    sobolrsg.hpp
+    DESTINATION include/ql/math/randomnumbers)

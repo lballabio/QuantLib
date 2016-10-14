@@ -1,0 +1,22 @@
+install(FILES
+    all.hpp
+    bondhelpers.hpp
+    bootstraptraits.hpp
+    discountcurve.hpp
+    drifttermstructure.hpp
+    fittedbonddiscountcurve.hpp
+    flatforward.hpp
+    forwardcurve.hpp
+    forwardspreadedtermstructure.hpp
+    forwardstructure.hpp
+    impliedtermstructure.hpp
+    nonlinearfittingmethods.hpp
+    oisratehelper.hpp
+    piecewiseyieldcurve.hpp
+    piecewisezerospreadedtermstructure.hpp
+    quantotermstructure.hpp
+    ratehelpers.hpp
+    zerocurve.hpp
+    zerospreadedtermstructure.hpp
+    zeroyieldstructure.hpp
+    DESTINATION include/ql/termstructures/yield)

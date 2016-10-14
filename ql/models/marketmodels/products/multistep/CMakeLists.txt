@@ -1,0 +1,19 @@
+install(FILES
+    all.hpp
+    callspecifiedmultiproduct.hpp
+    cashrebate.hpp
+    exerciseadapter.hpp
+    multistepcoinitialswaps.hpp
+    multistepcoterminalswaps.hpp
+    multistepcoterminalswaptions.hpp
+    multistepforwards.hpp
+    multistepinversefloater.hpp
+    multistepnothing.hpp
+    multistepoptionlets.hpp
+    multisteppathwisewrapper.hpp
+    multistepperiodcapletswaptions.hpp
+    multistepratchet.hpp
+    multistepswap.hpp
+    multistepswaption.hpp
+    multisteptarn.hpp
+    DESTINATION include/ql/models/marketmodels/products/multistep)

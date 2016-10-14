@@ -1,0 +1,19 @@
+install(FILES
+    all.hpp
+    fdm2dblackscholesop.hpp
+    fdmbatesop.hpp
+    fdmblackscholesop.hpp
+    fdmg2op.hpp
+    fdmhestonhullwhiteop.hpp
+    fdmhestonop.hpp
+    fdmhullwhiteop.hpp
+    fdmlinearopcomposite.hpp
+    fdmlinearop.hpp
+    fdmlinearopiterator.hpp
+    fdmlinearoplayout.hpp
+    firstderivativeop.hpp
+    ninepointlinearop.hpp
+    secondderivativeop.hpp
+    secondordermixedderivativeop.hpp
+    triplebandlinearop.hpp
+    DESTINATION include/ql/methods/finitedifferences/operators)

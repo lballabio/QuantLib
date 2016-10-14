@@ -1,0 +1,43 @@
+install(FILES
+    abcdmathfunction.hpp
+    all.hpp
+    array.hpp
+    autocovariance.hpp
+    bernsteinpolynomial.hpp
+    beta.hpp
+    bspline.hpp
+    comparison.hpp
+    curve.hpp
+    errorfunction.hpp
+    factorial.hpp
+    fastfouriertransform.hpp
+    functional.hpp
+    generallinearleastsquares.hpp
+    kernelfunctions.hpp
+    incompletegamma.hpp
+    interpolation.hpp
+    lexicographicalview.hpp
+    linearleastsquaresregression.hpp
+    matrix.hpp
+    modifiedbessel.hpp
+    pascaltriangle.hpp
+    polynomialmathfunction.hpp
+    primenumbers.hpp
+    quadratic.hpp
+    rounding.hpp
+    richardsonextrapolation.hpp
+    sampledcurve.hpp
+    solver1d.hpp
+    transformedgrid.hpp
+    DESTINATION include/ql/math)
+
+add_subdirectory(copulas)
+add_subdirectory(distributions)
+add_subdirectory(integrals)
+add_subdirectory(interpolations)
+add_subdirectory(matrixutilities)
+add_subdirectory(ode)
+add_subdirectory(optimization)
+add_subdirectory(randomnumbers)
+add_subdirectory(solvers1d)
+add_subdirectory(statistics)

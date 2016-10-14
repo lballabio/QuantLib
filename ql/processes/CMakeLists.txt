@@ -1,0 +1,22 @@
+install(FILES
+    all.hpp
+    batesprocess.hpp
+    blackscholesprocess.hpp
+    endeulerdiscretization.hpp
+    eulerdiscretization.hpp
+    forwardmeasureprocess.hpp
+    g2process.hpp
+    geometricbrownianprocess.hpp
+    gjrgarchprocess.hpp
+    gsrprocess.hpp
+    gsrprocesscore.hpp
+    hestonprocess.hpp
+    hullwhiteprocess.hpp
+    hybridhestonhullwhiteprocess.hpp
+    jointstochasticprocess.hpp
+    merton76process.hpp
+    mfstateprocess.hpp
+    ornsteinuhlenbeckprocess.hpp
+    squarerootprocess.hpp
+    stochasticprocessarray.hpp
+    DESTINATION include/ql/processes)

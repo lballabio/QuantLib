@@ -1,0 +1,21 @@
+install(FILES
+    all.hpp
+    abcdvol.hpp
+    alphafinder.hpp
+    alphaform.hpp
+    alphaformconcrete.hpp
+    capletcoterminalalphacalibration.hpp
+    capletcoterminalmaxhomogeneity.hpp
+    capletcoterminalperiodic.hpp
+    capletcoterminalswaptioncalibration.hpp
+    cotswaptofwdadapter.hpp
+    ctsmmcapletcalibration.hpp
+    flatvol.hpp
+    fwdperiodadapter.hpp
+    fwdtocotswapadapter.hpp
+    piecewiseconstantabcdvariance.hpp
+    piecewiseconstantvariance.hpp
+    pseudorootfacade.hpp
+    volatilityinterpolationspecifier.hpp
+    volatilityinterpolationspecifierabcd.hpp
+    DESTINATION include/ql/models/marketmodels/models)

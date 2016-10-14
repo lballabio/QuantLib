@@ -1,0 +1,29 @@
+install(FILES
+    all.hpp
+    americancondition.hpp
+    boundarycondition.hpp
+    bsmoperator.hpp
+    bsmtermoperator.hpp
+    cranknicolson.hpp
+    dminus.hpp
+    dplus.hpp
+    dplusdminus.hpp
+    dzero.hpp
+    expliciteuler.hpp
+    fdtypedefs.hpp
+    finitedifferencemodel.hpp
+    impliciteuler.hpp
+    mixedscheme.hpp
+    onefactoroperator.hpp
+    operatorfactory.hpp
+    operatortraits.hpp
+    parallelevolver.hpp
+    pde.hpp
+    pdebsm.hpp
+    pdeshortrate.hpp
+    shoutcondition.hpp
+    stepcondition.hpp
+    trbdf2.hpp
+    tridiagonaloperator.hpp
+    zerocondition.hpp
+    DESTINATION include/ql/methods/finitedifferences)

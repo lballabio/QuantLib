@@ -1,0 +1,25 @@
+install(FILES
+    all.hpp
+    armijo.hpp
+    bfgs.hpp
+    conjugategradient.hpp
+    constraint.hpp
+    costfunction.hpp
+    differentialevolution.hpp
+    endcriteria.hpp
+    goldstein.hpp
+    leastsquare.hpp
+    levenbergmarquardt.hpp
+    linesearch.hpp
+    linesearchbasedmethod.hpp
+    lmdif.hpp
+    method.hpp
+    problem.hpp
+    projectedconstraint.hpp
+    projectedcostfunction.hpp
+    projection.hpp
+    simplex.hpp
+    simulatedannealing.hpp
+    spherecylinder.hpp
+    steepestdescent.hpp
+    DESTINATION include/ql/math/optimization)

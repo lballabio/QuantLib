@@ -1,0 +1,34 @@
+install(FILES
+    all.hpp
+    accountingengine.hpp
+    browniangenerator.hpp
+    constrainedevolver.hpp
+    curvestate.hpp
+    discounter.hpp
+    duffsdeviceinnerproduct.hpp
+    evolutiondescription.hpp
+    evolver.hpp
+    forwardforwardmappings.hpp
+    historicalforwardratesanalysis.hpp
+    historicalratesanalysis.hpp
+    marketmodel.hpp
+    marketmodeldifferences.hpp
+    multiproduct.hpp
+    pathwiseaccountingengine.hpp
+    pathwisemultiproduct.hpp
+    pathwisediscounter.hpp
+    piecewiseconstantcorrelation.hpp
+    proxygreekengine.hpp
+    swapforwardmappings.hpp
+    utilities.hpp
+    DESTINATION include/ql/models/marketmodels)
+
+add_subdirectory(browniangenerators)
+add_subdirectory(callability)
+add_subdirectory(correlations)
+add_subdirectory(curvestates)
+add_subdirectory(driftcomputation)
+add_subdirectory(evolvers)
+add_subdirectory(models)
+add_subdirectory(pathwisegreeks)
+add_subdirectory(products)

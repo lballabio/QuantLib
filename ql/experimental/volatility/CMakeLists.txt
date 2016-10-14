@@ -1,0 +1,24 @@
+install(FILES
+    all.hpp
+    abcdatmvolcurve.hpp
+    blackatmvolcurve.hpp
+    blackvolsurface.hpp
+    equityfxvolsurface.hpp
+    extendedblackvariancecurve.hpp
+    extendedblackvariancesurface.hpp
+    interestratevolsurface.hpp
+    noarbsabr.hpp
+    noarbsabrinterpolatedsmilesection.hpp
+    noarbsabrinterpolation.hpp
+    noarbsabrsmilesection.hpp
+    sabrvolsurface.hpp
+    sviinterpolatedsmilesection.hpp
+    sviinterpolation.hpp
+    svismilesection.hpp
+    swaptionvolcube1a.hpp
+    volcube.hpp
+    zabr.hpp
+    zabrinterpolatedsmilesection.hpp
+    zabrinterpolation.hpp
+    zabrsmilesection.hpp
+    DESTINATION include/ql/experimental/volatility)

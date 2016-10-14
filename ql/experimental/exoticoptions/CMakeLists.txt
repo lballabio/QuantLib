@@ -1,0 +1,33 @@
+install(FILES
+    all.hpp
+    analyticamericanmargrabeengine.hpp
+    analyticcomplexchooserengine.hpp
+    analyticcompoundoptionengine.hpp
+    analyticeuropeanmargrabeengine.hpp
+    analyticholderextensibleoptionengine.hpp
+    analyticpartialtimebarrieroptionengine.hpp
+    analyticpdfhestonengine.hpp
+    analyticsimplechooserengine.hpp
+    analytictwoassetbarrierengine.hpp
+    analytictwoassetcorrelationengine.hpp
+    analyticwriterextensibleoptionengine.hpp
+    complexchooseroption.hpp
+    compoundoption.hpp
+    continuousarithmeticasianlevyengine.hpp
+    continuousarithmeticasianvecerengine.hpp
+    everestoption.hpp
+    himalayaoption.hpp
+    holderextensibleoption.hpp
+    kirkspreadoptionengine.hpp
+    margrabeoption.hpp
+    mceverestengine.hpp
+    mchimalayaengine.hpp
+    mcpagodaengine.hpp
+    pagodaoption.hpp
+    partialtimebarrieroption.hpp
+    simplechooseroption.hpp
+    spreadoption.hpp
+    twoassetbarrieroption.hpp
+    twoassetcorrelationoption.hpp
+    writerextensibleoption.hpp
+    DESTINATION include/ql/experimental/exoticoptions)

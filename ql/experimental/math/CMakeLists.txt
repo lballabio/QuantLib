@@ -1,0 +1,26 @@
+install(FILES
+    all.hpp
+    claytoncopularng.hpp
+    convolvedstudentt.hpp
+    expm.hpp
+    farliegumbelmorgensterncopularng.hpp
+    fireflyalgorithm.hpp
+    frankcopularng.hpp
+    gaussiancopulapolicy.hpp
+    hybridsimulatedannealing.hpp
+    hybridsimulatedannealingfunctors.hpp
+    isotropicrandomwalk.hpp
+    laplaceinterpolation.hpp
+    latentmodel.hpp
+    levyflightdistribution.hpp
+    moorepenroseinverse.hpp
+    multidimintegrator.hpp
+    multidimquadrature.hpp
+    numericaldifferentiation.hpp
+    particleswarmoptimization.hpp
+    piecewisefunction.hpp
+    piecewiseintegral.hpp
+    polarstudenttrng.hpp
+    tcopulapolicy.hpp
+    zigguratrng.hpp
+    DESTINATION include/ql/experimental/math)
