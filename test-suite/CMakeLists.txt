@@ -4,7 +4,7 @@ file (GLOB TEST_SUITE_FILES "*.hpp" "*.cpp")
 list(REMOVE_ITEM TEST_SUITE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/quantlibbenchmark.cpp)
 
 if (USE_BOOST_DYNAMIC_LIBRARIES)
-   add_definitions(-DBOOST_TEST_DYN_LINK)
+    add_definitions(-DBOOST_TEST_DYN_LINK)
 endif (USE_BOOST_DYNAMIC_LIBRARIES)
 
 find_package (Boost COMPONENTS unit_test_framework REQUIRED)
