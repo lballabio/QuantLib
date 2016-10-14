@@ -1,4 +1,5 @@
 cmake_minimum_required()
+cmake_policy(SET CMP0042 NEW)
 
 option(BUILD_EXAMPLES "Build examples" ON)
 option(BUILD_TESTS "Build tests" ON)
