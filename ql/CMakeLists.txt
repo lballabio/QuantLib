@@ -6,7 +6,7 @@ install(TARGETS QuantLibStatic ARCHIVE DESTINATION lib)
 if (NOT DISABLE_SHARED)
     add_library(QuantLib SHARED $<TARGET_OBJECTS:QuantLibObjects>)
     install(TARGETS QuantLib LIBRARY DESTINATION lib)
-endif (NOT DISABLE_SHARED)
+endif ()
 
 install(FILES 
     auto_link.hpp

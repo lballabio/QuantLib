@@ -11,11 +11,11 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 find_package(Boost)
 if (Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
-endif (Boost_FOUND)
+endif ()
 
 if (BUILD_EXAMPLES)
     add_subdirectory(Examples)
-endif (BUILD_EXAMPLES)
+endif ()
 add_subdirectory(ql)
 
 # Building the test suite might require using shared libraries
@@ -24,4 +24,4 @@ option(USE_BOOST_DYNAMIC_LIBRARIES
        "Use the shared version of Boost.Test" OFF)
 if (BUILD_TESTS)
     add_subdirectory(test-suite)
-endif (BUILD_TESTS)
+endif ()

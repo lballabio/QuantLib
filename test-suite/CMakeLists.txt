@@ -5,7 +5,7 @@ list(REMOVE_ITEM TEST_SUITE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/quantlibbenchmark.
 
 if (USE_BOOST_DYNAMIC_LIBRARIES)
     add_definitions(-DBOOST_TEST_DYN_LINK)
-endif (USE_BOOST_DYNAMIC_LIBRARIES)
+endif ()
 
 find_package (Boost COMPONENTS unit_test_framework REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
