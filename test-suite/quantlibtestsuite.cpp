@@ -132,10 +132,11 @@
 #include "integrals.hpp"
 #include "interestrates.hpp"
 #include "interpolations.hpp"
+#include "jumpdiffusion.hpp"
+#include "lazyobject.hpp"
 #include "libormarketmodel.hpp"
 #include "libormarketmodelprocess.hpp"
 #include "linearleastsquaresregression.hpp"
-#include "jumpdiffusion.hpp"
 #include "lookbackoptions.hpp"
 #include "lowdiscrepancysequences.hpp"
 #include "margrabeoption.hpp"
@@ -311,9 +312,10 @@ test_suite* init_unit_test_suite(int, char* []) {
            << (settings.includeReferenceDateEvents()
                ? "reference date events are included,\n"
                : "reference date events are excluded,\n")
-           << (settings.includeTodaysCashFlows()
-               ? "today's cashflows are included,\n"
-               : "today's cashflows are excluded,\n")
+           << (settings.includeTodaysCashFlows() == boost::none ?
+               "" : (*settings.includeTodaysCashFlows() ?
+                     "today's cashflows are included,\n"
+                     : "today's cashflows are excluded,\n"))
            << (settings.enforcesTodaysHistoricFixings()
                ? "today's historic fixings are enforced"
                : "today's historic fixings are not enforced");
@@ -380,6 +382,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(InterestRateTest::suite());
     test->add(InterpolationTest::suite());
     test->add(JumpDiffusionTest::suite());
+    test->add(LazyObjectTest::suite());
     test->add(LinearLeastSquaresRegressionTest::suite());
     test->add(LookbackOptionTest::suite());
     test->add(LowDiscrepancyTest::suite());

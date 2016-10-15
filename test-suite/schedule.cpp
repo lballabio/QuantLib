@@ -137,6 +137,38 @@ void ScheduleTest::testDatesPastEndDateWithEomAdjustment() {
     expected[2] = Date(30,March,2015);
 
     check_dates(s, expected);
+
+    // also, the last period should not be regular.
+    if (s.isRegular(2))
+        BOOST_ERROR("last period should not be regular");
+}
+
+void ScheduleTest::testDatesSameAsEndDateWithEomAdjustment() {
+    BOOST_TEST_MESSAGE(
+        "Testing that next-to-last date same as end date is removed...");
+
+    Schedule s =
+        MakeSchedule().from(Date(28,March,2013))
+                      .to(Date(31,March,2015))
+                      .withCalendar(TARGET())
+                      .withTenor(1*Years)
+                      .withConvention(Unadjusted)
+                      .withTerminationDateConvention(Unadjusted)
+                      .forwards()
+                      .endOfMonth();
+
+    std::vector<Date> expected(3);
+    expected[0] = Date(31,March,2013);
+    expected[1] = Date(31,March,2014);
+    // March 31st 2015, coming from the EOM adjustment of March 28th,
+    // should be discarded as the same as the end date.
+    expected[2] = Date(31,March,2015);
+
+    check_dates(s, expected);
+
+    // also, the last period should be regular.
+    if (!s.isRegular(2))
+        BOOST_ERROR("last period should be regular");
 }
 
 void ScheduleTest::testForwardDatesWithEomAdjustment() {
@@ -295,6 +327,8 @@ test_suite* ScheduleTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testEndDateWithEomAdjustment));
     suite->add(QUANTLIB_TEST_CASE(
         &ScheduleTest::testDatesPastEndDateWithEomAdjustment));
+    suite->add(QUANTLIB_TEST_CASE(
+        &ScheduleTest::testDatesSameAsEndDateWithEomAdjustment));
     suite->add(QUANTLIB_TEST_CASE(
         &ScheduleTest::testForwardDatesWithEomAdjustment));
     suite->add(QUANTLIB_TEST_CASE(

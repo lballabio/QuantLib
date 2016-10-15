@@ -1810,7 +1810,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\indexes\ibor\aonia.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\indexes\ibor\audlibor.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\indexes\ibor\bbsw.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\indexes\ibor\bkbm.hpp"
 					>
 				</File>
 				<File
@@ -1883,6 +1895,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\indexes\ibor\nzdlibor.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\indexes\ibor\nzocr.hpp"
 					>
 				</File>
 				<File

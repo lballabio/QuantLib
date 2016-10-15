@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2016 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,6 +29,7 @@
 class InstrumentTest {
   public:
     static void testObservable();
+    static void testCompositeWhenShiftingDates();
     static boost::unit_test_framework::test_suite* suite();
 };
 

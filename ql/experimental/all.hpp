@@ -2,6 +2,7 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/experimental/amortizingbonds/all.hpp>
+#include <ql/experimental/averageois/all.hpp>
 #include <ql/experimental/barrieroption/all.hpp>
 #include <ql/experimental/callablebonds/all.hpp>
 #include <ql/experimental/catbonds/all.hpp>
@@ -21,6 +22,7 @@
 #include <ql/experimental/risk/all.hpp>
 #include <ql/experimental/shortrate/all.hpp>
 #include <ql/experimental/swaptions/all.hpp>
+#include <ql/experimental/termstructures/all.hpp>
 #include <ql/experimental/variancegamma/all.hpp>
 #include <ql/experimental/varianceoption/all.hpp>
 #include <ql/experimental/volatility/all.hpp>

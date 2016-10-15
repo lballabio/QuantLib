@@ -299,7 +299,7 @@ namespace QuantLib {
                 Date next20th = nextTwentieth(effectiveDate, *rule_);
                 if (*rule_ == DateGeneration::OldCDS) {
                     // distance rule inforced in natural days
-                    static const BigInteger stubDays = 30;
+                    static const Date::serial_type stubDays = 30;
                     if (next20th - effectiveDate < stubDays) {
                         // +1 will skip this one and get the next
                         next20th = nextTwentieth(next20th + 1, *rule_);
@@ -412,7 +412,7 @@ namespace QuantLib {
         // date due to EOM adjustments (see the Schedule test suite
         // for an example).
         if (dates_.size() >= 2 && dates_[dates_.size()-2] >= dates_.back()) {
-            isRegular_[dates_.size()-2] =
+            isRegular_[isRegular_.size()-2] =
                 (dates_[dates_.size()-2] == dates_.back());
             dates_[dates_.size()-2] = dates_.back();
             dates_.pop_back();

@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2000-2003 RiskMap srl
  Copyright (C) 2003 Kawanishi Tomoya
+ Copyright (C) 2016 Eisuke Tani
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -85,7 +86,8 @@ namespace QuantLib {
             || ((d == 20 || (d == 21 && w == Monday)) && m == July
                 && y >= 1996 && y < 2003)
             // Mountain Day (from 2016)
-            || (d == 11 && m == August && y >= 2016)
+            || ((d == 11 || (d == 12 && w == Monday)) && m == August
+                && y >= 2016)
             // Respect for the Aged Day (3rd Monday in September),
             // was September 15th until 2003
             || (w == Monday && (d >= 15 && d <= 21) && m == September
@@ -127,4 +129,3 @@ namespace QuantLib {
     }
 
 }
-

@@ -333,9 +333,9 @@ namespace QuantLib {
         return 0;
     }
 
-    BigInteger CashFlows::accrualDays(const Leg& leg,
-                                      bool includeSettlementDateFlows,
-                                      Date settlementDate) {
+    Date::serial_type CashFlows::accrualDays(const Leg& leg,
+                                             bool includeSettlementDateFlows,
+                                             Date settlementDate) {
         Leg::const_iterator cf = nextCashFlow(leg,
                                               includeSettlementDateFlows,
                                               settlementDate);
@@ -370,9 +370,9 @@ namespace QuantLib {
         return 0;
     }
 
-    BigInteger CashFlows::accruedDays(const Leg& leg,
-                                      bool includeSettlementDateFlows,
-                                      Date settlementDate) {
+    Date::serial_type CashFlows::accruedDays(const Leg& leg,
+                                             bool includeSettlementDateFlows,
+                                             Date settlementDate) {
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
 
@@ -827,7 +827,12 @@ namespace QuantLib {
             Date settlementDate_, npvDate_;
         };
 
-
+        struct CashFlowLater {
+            bool operator()(const boost::shared_ptr<CashFlow> &c,
+                            const boost::shared_ptr<CashFlow> &d) {
+                return c->date() > d->date();
+            }
+        };
 
     } // anonymous namespace ends here
 
@@ -845,6 +850,12 @@ namespace QuantLib {
 
         if (npvDate == Date())
             npvDate = settlementDate;
+
+#if defined(QL_EXTRA_SAFETY_CHECKS)
+        QL_REQUIRE(std::adjacent_find(leg.begin(), leg.end(),
+                                      CashFlowLater()) == leg.end(),
+                   "cashflows must be sorted in ascending order w.r.t. their payment dates");
+#endif
 
         Real npv = 0.0;
         DiscountFactor discount = 1.0;

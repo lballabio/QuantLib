@@ -228,18 +228,18 @@ void DateTest::testConsistency() {
 
     BOOST_TEST_MESSAGE("Testing dates...");
 
-    BigInteger minDate = Date::minDate().serialNumber()+1,
-               maxDate = Date::maxDate().serialNumber();
+    Date::serial_type minDate = Date::minDate().serialNumber()+1,
+                      maxDate = Date::maxDate().serialNumber();
 
-    BigInteger dyold = Date(minDate-1).dayOfYear(),
-               dold  = Date(minDate-1).dayOfMonth(),
-               mold  = Date(minDate-1).month(),
-               yold  = Date(minDate-1).year(),
-               wdold = Date(minDate-1).weekday();
+    Date::serial_type dyold = Date(minDate-1).dayOfYear(),
+                      dold  = Date(minDate-1).dayOfMonth(),
+                      mold  = Date(minDate-1).month(),
+                      yold  = Date(minDate-1).year(),
+                      wdold = Date(minDate-1).weekday();
 
-    for (BigInteger i=minDate; i<=maxDate; i++) {
+    for (Date::serial_type i=minDate; i<=maxDate; i++) {
         Date t(i);
-        BigInteger serial = t.serialNumber();
+        Date::serial_type serial = t.serialNumber();
 
         // check serial number consistency
         if (serial != i)
