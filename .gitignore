@@ -27,7 +27,7 @@ Docs/man/
 Examples/*/bin/
 Examples/*/build/
 Examples/*/*.trs
-build/
+build*/
 lib/
 test-suite/bin/QuantLib-test-suite-*.manifest
 test-suite/build/
