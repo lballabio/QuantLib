@@ -4,7 +4,15 @@ macro(get_quantlib_library_name QL_OUTPUT_NAME)
     # MSVC: Give QuantLib built library different names following code in 'ql/autolink.hpp'
     if(MSVC)
         # - toolset
-        set(QL_LIB_TOOLSET ${CMAKE_VS_PLATFORM_TOOLSET})
+        if(CMAKE_VS_PLATFORM_TOOLSET)
+            set(QL_LIB_TOOLSET ${CMAKE_VS_PLATFORM_TOOLSET})
+        else()
+            if(CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL 16)
+                set(QL_LIB_TOOLSET "v100")
+            else()
+                message(FATAL_ERROR "Cannot identify toolset for MSVC. Nor 'CMAKE_VS_PLATFORM_TOOLSET' and '${CMAKE_CXX_COMPILER_VERSION} != 16' (MSVC 2010)")
+            endif()
+        endif()
         
         # - platform
         if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
