@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
+ Copyright (C) 2001, 2002, 2003 Nicolas Di CÃ©sarÃ©
  Copyright (C) 2004, 2008, 2009, 2011 Ferdinando Ametrano
  Copyright (C) 2009 Sylvain Bertrand
  Copyright (C) 2013 Peter Caspers
