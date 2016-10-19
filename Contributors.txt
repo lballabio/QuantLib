@@ -58,6 +58,7 @@ Matt Fair
 Paul Farrington
 Lorella Fatone
 Luca Ferraro
+Stefano Fondi
 Chiara Fornarola
 Silvia Frasson
 Andreas Gaida
@@ -108,6 +109,7 @@ Cheng Li
 Gang Liang
 Robert Lopez
 André Louw
+Jasen Mackie
 Joao Paulo Magalhaes
 Jose Magana
 John Maiden

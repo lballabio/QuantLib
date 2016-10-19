@@ -38,9 +38,10 @@ namespace QuantLib {
           public:
             KernelInterpolationImpl(const I1& xBegin, const I1& xEnd,
                                     const I2& yBegin,
-                                    const Kernel& kernel)
+                                    const Kernel& kernel,
+                                    const Real epsilon)
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
-              xSize_(Size(xEnd-xBegin)),invPrec_(1.0e-7),
+              xSize_(Size(xEnd-xBegin)), invPrec_(epsilon),
               M_(xSize_,xSize_), alphaVec_(xSize_), yVec_(xSize_),
               kernel_(kernel) {}
 
@@ -72,15 +73,6 @@ namespace QuantLib {
             Real secondDerivative(Real) const {
                 QL_FAIL("Second derivative calculation not implemented "
                         "for kernel interpolation");
-            }
-
-            // the calculation will solve y=M*a for a.  Due to
-            // singularity or rounding errors the recalculation
-            // M*a may not give y. Here, a failure will be thrown if
-            // |M*a-y|>=invPrec_
-
-            void setInverseResultPrecision(Real invPrec){
-                invPrec_=invPrec;
             }
 
         private:
@@ -155,18 +147,27 @@ namespace QuantLib {
       public:
         /*! \pre the \f$ x \f$ values must be sorted.
             \pre kernel needs a Real operator()(Real x) implementation
-        */
+
+            The calculation will solve \f$ y = Ma \f$ for \f$a\f$.
+            Due to singularity or rounding errors the recalculation
+            \f$ Ma \f$ may not give \f$ y\f$. Here, a failure will
+            be thrown if
+            \f[
+            \left\| Ma-y \right\|_\infty \geq \epsilon
+            \f] */
         template <class I1, class I2, class Kernel>
         KernelInterpolation(const I1& xBegin, const I1& xEnd,
                             const I2& yBegin,
-                            const Kernel& kernel) {
+                            const Kernel& kernel,
+                            const double epsilon = 1.0E-7) {
             impl_ = boost::shared_ptr<Interpolation::Impl>(new
                 detail::KernelInterpolationImpl<I1,I2,Kernel>(xBegin, xEnd,
-                                                              yBegin, kernel));
+                                                              yBegin, kernel,
+                                                              epsilon));
             impl_->update();
         }
-    };
 
+    };
 }
 
 #endif

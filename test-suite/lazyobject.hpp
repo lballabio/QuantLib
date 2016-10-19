@@ -1,7 +1,6 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 RiskMap srl
  Copyright (C) 2016 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -18,18 +17,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_instruments_hpp
-#define quantlib_test_instruments_hpp
+#ifndef quantlib_test_lazy_object_hpp
+#define quantlib_test_lazy_object_hpp
 
 #include <boost/test/unit_test.hpp>
 
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
 
-class InstrumentTest {
+class LazyObjectTest {
   public:
-    static void testObservable();
-    static void testCompositeWhenShiftingDates();
+    static void testDiscardingNotifications();
+    static void testForwardingNotifications();
     static boost::unit_test_framework::test_suite* suite();
 };
 

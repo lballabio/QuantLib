@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (static runtime)|Win32">
@@ -700,6 +700,7 @@
     <ClCompile Include="interestrates.cpp" />
     <ClCompile Include="interpolations.cpp" />
     <ClCompile Include="jumpdiffusion.cpp" />
+    <ClCompile Include="lazyobject.cpp" />
     <ClCompile Include="libormarketmodel.cpp" />
     <ClCompile Include="libormarketmodelprocess.cpp" />
     <ClCompile Include="linearleastsquaresregression.cpp" />
@@ -840,6 +841,7 @@
     <ClInclude Include="interestrates.hpp" />
     <ClInclude Include="interpolations.hpp" />
     <ClInclude Include="jumpdiffusion.hpp" />
+    <ClInclude Include="lazyobject.hpp" />
     <ClInclude Include="libormarketmodel.hpp" />
     <ClInclude Include="libormarketmodelprocess.hpp" />
     <ClInclude Include="linearleastsquaresregression.hpp" />

@@ -1144,6 +1144,10 @@
 				>
 			</File>
 			<File
+				RelativePath="lazyobject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\libormarketmodel.cpp"
 				>
 			</File>
@@ -1694,6 +1698,10 @@
 			</File>
 			<File
 				RelativePath="jumpdiffusion.hpp"
+				>
+			</File>
+			<File
+				RelativePath="lazyobject.hpp"
 				>
 			</File>
 			<File

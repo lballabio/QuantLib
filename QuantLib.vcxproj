@@ -1674,6 +1674,11 @@
     <ClInclude Include="ql\experimental\amortizingbonds\amortizingcmsratebond.hpp" />
     <ClInclude Include="ql\experimental\amortizingbonds\amortizingfixedratebond.hpp" />
     <ClInclude Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.hpp" />
+    <ClInclude Include="ql\experimental\averageois\all.hpp" />
+    <ClInclude Include="ql\experimental\averageois\arithmeticaverageois.hpp" />
+    <ClInclude Include="ql\experimental\averageois\arithmeticoisratehelper.hpp" />
+    <ClInclude Include="ql\experimental\averageois\averageoiscouponpricer.hpp" />
+    <ClInclude Include="ql\experimental\averageois\makearithmeticaverageois.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\all.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\analyticdoublebarrierbinaryengine.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\analyticdoublebarrierengine.hpp" />
@@ -2575,6 +2580,10 @@
     <ClCompile Include="ql\experimental\amortizingbonds\amortizingcmsratebond.cpp" />
     <ClCompile Include="ql\experimental\amortizingbonds\amortizingfixedratebond.cpp" />
     <ClCompile Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.cpp" />
+    <ClCompile Include="ql\experimental\averageois\arithmeticaverageois.cpp" />
+    <ClCompile Include="ql\experimental\averageois\arithmeticoisratehelper.cpp" />
+    <ClCompile Include="ql\experimental\averageois\averageoiscouponpricer.cpp" />
+    <ClCompile Include="ql\experimental\averageois\makearithmeticaverageois.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\analyticdoublebarrierbinaryengine.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\analyticdoublebarrierengine.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\discretizeddoublebarrieroption.cpp" />

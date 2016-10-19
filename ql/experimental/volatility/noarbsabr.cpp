@@ -326,14 +326,9 @@ Real D0Interpolator::d0(const Real phi) const {
 } // namespace detail
 
 void NoArbSabrModel::checkAbsorptionMatrix() {
-    std::size_t seed = 0;
-    for (Size i = 0; i < 1209600; ++i)
-        boost::hash_combine(seed, detail::sabrabsprob[i]);
-    std::size_t expected =
-        sizeof(std::size_t) == 8 ?
-        8940976986331216656L :
-        1225169178L;
-    QL_REQUIRE(seed == expected, "absorption matrix is invalid");
+    // The check was dependent on the Boost version and was removed.
+    // The method itself is deprecated and will be removed in the
+    // next QuantLib version.
 }
 
 } // namespace QuantLib
