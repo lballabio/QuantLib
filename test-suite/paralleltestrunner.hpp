@@ -165,6 +165,14 @@ namespace {
         s.str(std::string());
         out.rdbuf(s.rdbuf());
     }
+
+	std::ostream& log_stream() {
+	#if BOOST_VERSION < 106200
+		return s_log_impl().stream();
+	#else
+		return s_log_impl().m_log_formatter_data.front().stream();
+	#endif
+	}
 }
 
 
@@ -236,10 +244,10 @@ int main( int argc, char* argv[] )
             TestCaseCollector tcc;
             traverse_test_tree(framework::master_test_suite(), tcc , true);
 
-            s_log_impl().stream() << "Total number of test cases: "
+            log_stream() << "Total number of test cases: "
                 << tcc.numberOfTests() << std::endl;
 
-            s_log_impl().stream() << "Total number of worker processes: "
+            log_stream() << "Total number of worker processes: "
                 << nProc << std::endl;
 
             message_queue::remove(testUnitIdQueueName);
@@ -261,8 +269,8 @@ int main( int argc, char* argv[] )
                     : std::list<test_unit_id>();
 
             std::stringstream logBuf;
-            std::streambuf* const oldBuf = s_log_impl().stream().rdbuf();
-            s_log_impl().stream().rdbuf(logBuf.rdbuf());
+            std::streambuf* const oldBuf = log_stream().rdbuf();
+            log_stream().rdbuf(logBuf.rdbuf());
 
             for (std::list<test_unit_id>::const_iterator iter = qlRoot.begin();
                 std::distance(qlRoot.begin(), iter) < int(qlRoot.size())-1;
@@ -270,8 +278,8 @@ int main( int argc, char* argv[] )
 
                 framework::impl::s_frk_state().execute_test_tree(*iter);
             }
-            output_logstream(s_log_impl().stream(), oldBuf, logBuf);
-            s_log_impl().stream().rdbuf(oldBuf);
+            output_logstream(log_stream(), oldBuf, logBuf);
+            log_stream().rdbuf(oldBuf);
 
             // fork worker processes
             boost::thread_group threadGroup;
@@ -354,14 +362,14 @@ int main( int argc, char* argv[] )
             }
 
             if (!qlRoot.empty()) {
-                std::streambuf* const oldBuf = s_log_impl().stream().rdbuf();
-                s_log_impl().stream().rdbuf(logBuf.rdbuf());
+                std::streambuf* const oldBuf = log_stream().rdbuf();
+                log_stream().rdbuf(logBuf.rdbuf());
 
                 const test_unit_id id = qlRoot.back();
                 framework::impl::s_frk_state().execute_test_tree(id);
 
-                output_logstream(s_log_impl().stream(), oldBuf, logBuf);
-                s_log_impl().stream().rdbuf(oldBuf);
+                output_logstream(log_stream(), oldBuf, logBuf);
+                log_stream().rdbuf(oldBuf);
             }
 
             TestCaseReportAggregator tca;
@@ -388,8 +396,8 @@ int main( int argc, char* argv[] )
         }
         else {
             std::stringstream logBuf;
-            std::streambuf* const oldBuf = s_log_impl().stream().rdbuf();
-            s_log_impl().stream().rdbuf(logBuf.rdbuf());
+            std::streambuf* const oldBuf = log_stream().rdbuf();
+            log_stream().rdbuf(logBuf.rdbuf());
 
             framework::init(init_unit_test_suite, argc-1, argv );
             framework::finalize_setup_phase();
@@ -427,7 +435,7 @@ int main( int argc, char* argv[] )
                 runTimeLogs.push_back(std::make_pair(
                     framework::get(id.id, TUT_ANY).p_name, t.elapsed()));
 
-                output_logstream(s_log_impl().stream(), oldBuf, logBuf);
+                output_logstream(log_stream(), oldBuf, logBuf);
 
                 QualifiedTestResults results
                     = { id.id,
@@ -438,8 +446,8 @@ int main( int argc, char* argv[] )
             }
 
 
-            output_logstream(s_log_impl().stream(), oldBuf, logBuf);
-            s_log_impl().stream().rdbuf(oldBuf);
+            output_logstream(log_stream(), oldBuf, logBuf);
+            log_stream().rdbuf(oldBuf);
 
             RuntimeLog log;
             log.testCaseName[sizeof(log.testCaseName)-1] = '\0';
