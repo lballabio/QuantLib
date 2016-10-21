@@ -64,13 +64,13 @@ namespace QuantLib {
 
         // Unique F (forward) value for pricing
         Real F = forward1/(forward2+strike);
-        
+
         // Its volatility
         Real sigma =
             sqrt(pow(sigma1,2)
                  + pow((sigma2*(forward2/(forward2+strike))),2)
                  - 2*rho_->value()*sigma1*sigma2*(forward2/(forward2+strike)));
-        
+
         // Day counter and Dates handling variables
         DayCounter rfdc = process1_->riskFreeRate()->dayCounter();
         Time t = rfdc.yearFraction(process1_->riskFreeRate()->referenceDate(),
@@ -85,13 +85,13 @@ namespace QuantLib {
         Real Nd2 = cum(d2);
         Real NMd1 = cum(-d1);
         Real NMd2 = cum(-d2);
-        
+
         if (payoff->optionType()==Option::Call) {
             results_.value = riskFreeDiscount*(F*Nd1-Nd2)*(forward2+strike);
         } else {
             results_.value = riskFreeDiscount*(NMd2 -F*NMd1)*(forward2+strike);
         }
     }
-    
+
 }
 
