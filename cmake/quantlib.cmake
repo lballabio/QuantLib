@@ -25,21 +25,12 @@ macro(get_quantlib_library_name QL_OUTPUT_NAME)
             set(QL_LIB_THREAD_OPT "-mt")
         endif()
         
-        # - runtime
+        # - runtime + debug/release
         if (BUILD_SHARED_LIBS)
-            if(NOT CMAKE_DEBUG_POSTFIX)
-                set(CMAKE_DEBUG_POSTFIX -gd)
-            endif()
+            set(CMAKE_DEBUG_POSTFIX -gd)
         else()
-            if(NOT CMAKE_DEBUG_POSTFIX)
-                set(CMAKE_DEBUG_POSTFIX gd)
-            endif()
-            set(QL_LIB_RT_OPT "-s")
-        endif()
-        
-        # - debug/release
-        if(NOT CMAKE_DEBUG_POSTFIX)
             set(CMAKE_DEBUG_POSTFIX gd)
+            set(QL_LIB_RT_OPT "-s")
         endif()
         
         set(${QL_OUTPUT_NAME} "QuantLib-${QL_LIB_TOOLSET}${QL_LIB_PLATFORM}${QL_LIB_THREAD_OPT}${QL_LIB_RT_OPT}")
