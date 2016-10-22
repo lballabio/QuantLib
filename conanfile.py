@@ -8,7 +8,7 @@ def get_version():
     version_hpp = os.path.join(os.path.dirname(__file__), 'ql', 'version.hpp')
     version_pattern = re.compile(r'^#define QL_VERSION "(?P<version>[\d\.]+)"$')
     with open(version_hpp) as f:
-	for line in f:
+        for line in f:
             m = version_pattern.match(line.strip())
             if m:
                  return m.group('version')
