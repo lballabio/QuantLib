@@ -23,6 +23,15 @@
 
 using namespace std;
 
+namespace {
+
+// Probability density function of standard normal distribution
+inline double pdf(double x) {
+    return (1/sqrt(2.0*M_PI))*exp(-pow(x,2)/2.0);
+}
+
+}
+
 namespace QuantLib {
 
     KirkSpreadOptionEngine::KirkSpreadOptionEngine(
@@ -86,11 +95,16 @@ namespace QuantLib {
         Real NMd1 = cum(-d1);
         Real NMd2 = cum(-d2);
 
-        if (payoff->optionType()==Option::Call) {
+        Option::Type optionType = payoff->optionType();
+
+        if (optionType==Option::Call) {
             results_.value = riskFreeDiscount*(F*Nd1-Nd2)*(forward2+strike);
         } else {
             results_.value = riskFreeDiscount*(NMd2 -F*NMd1)*(forward2+strike);
         }
+
+        Real callValue = optionType == Option::Call ? results_.value : riskFreeDiscount*(F*Nd1-Nd2)*(forward2+strike);
+        results_.theta = (log(riskFreeDiscount)/t)*callValue+riskFreeDiscount*(forward1*sigma)/(2*sqrt(t))*pdf(d1);
     }
 
 }
