@@ -38,7 +38,7 @@ class QuantLibConan(ConanFile):
     def package(self):
         self.copy(pattern="*.cmake", src="cmake", dst=".")
         
-        self.copy(pattern="*", dst="ql", src="ql")
+        self.copy(pattern="*", dst="include/ql", src="ql")
         self.copy("*.lib", dst="lib", src="lib")
         self.copy("*.a", dst="lib", src="lib")
         self.copy("*.bin", dst="bin", src="bin")
