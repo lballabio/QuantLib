@@ -110,6 +110,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 #include <boost/math/special_functions/fpclassify.hpp>
 #include <boost/bind.hpp>
+#include <boost/make_shared.hpp>
 #include <memory>
 #include <sstream>
 
@@ -3194,7 +3195,7 @@ void MarketModelTest::testPathwiseVegas()
 
                     {
 
-                        PathwiseVegasAccountingEngine accountingengine(boost::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolver)), // method relies heavily on LMM Euler
+                        PathwiseVegasAccountingEngine accountingengine(boost::make_shared<LogNormalFwdRateEuler>(evolver), // method relies heavily on LMM Euler
                             productToUse,
                             marketModel, // we need pseudo-roots and displacements
                             vegaBumps,
@@ -3328,7 +3329,7 @@ void MarketModelTest::testPathwiseVegas()
 
                     SequenceStatisticsInc stats(productToUse2->numberOfProducts()*(todaysForwards.size()+1));
                     {
-                        PathwiseAccountingEngine accountingengine(boost::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolver)), // method relies heavily on LMM Euler
+                        PathwiseAccountingEngine accountingengine(boost::make_shared<LogNormalFwdRateEuler>(evolver), // method relies heavily on LMM Euler
                             *productToUse2,
                             marketModel, // we need pseudo-roots and displacements
                             initialNumeraireValue);
