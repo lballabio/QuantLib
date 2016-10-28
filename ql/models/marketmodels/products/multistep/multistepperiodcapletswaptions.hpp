@@ -23,7 +23,9 @@
 
 #include <ql/models/marketmodels/products/multiproductmultistep.hpp>
 #include <boost/shared_ptr.hpp>
+#include <memory>
 #include <vector>
+
 namespace QuantLib {
 
     class StrikedTypePayoff;
@@ -49,7 +51,7 @@ namespace QuantLib {
                      const CurveState& currentState,
                      std::vector<Size>& numberCashFlowsThisStep,
                      std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
-        std::auto_ptr<MarketModelMultiProduct> clone() const;
+        std::unique_ptr<MarketModelMultiProduct> clone() const;
          //@}
 
       private:

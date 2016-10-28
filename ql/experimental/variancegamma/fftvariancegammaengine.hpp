@@ -24,6 +24,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #ifndef quantlib_fft_variancegamma_engine_hpp
 #define quantlib_fft_variancegamma_engine_hpp
 
+#include <memory>
 #include <ql/experimental/variancegamma/fftengine.hpp>
 #include <ql/experimental/variancegamma/variancegammaprocess.hpp>
 
@@ -39,7 +40,7 @@ namespace QuantLib {
     public:
         FFTVarianceGammaEngine(
             const boost::shared_ptr<VarianceGammaProcess>&process, Real logStrikeSpacing = 0.001);
-        virtual std::auto_ptr<FFTEngine> clone() const;
+        virtual std::unique_ptr<FFTEngine> clone() const;
 
     protected:
         virtual void precalculateExpiry(Date d);

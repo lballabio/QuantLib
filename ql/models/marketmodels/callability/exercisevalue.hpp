@@ -45,7 +45,7 @@ namespace QuantLib {
         virtual std::valarray<bool> isExerciseTime() const = 0;
         virtual MarketModelMultiProduct::CashFlow value(
                                                const CurveState&) const = 0;
-        virtual std::auto_ptr<MarketModelExerciseValue> clone() const = 0;
+        virtual std::unique_ptr<MarketModelExerciseValue> clone() const = 0;
     };
 
 }

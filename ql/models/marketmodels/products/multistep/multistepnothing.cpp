@@ -38,8 +38,8 @@ namespace QuantLib {
         return (currentIndex_ >= doneIndex_);
     }
 
-    std::auto_ptr<MarketModelMultiProduct> MultiStepNothing::clone() const {
-        return std::auto_ptr<MarketModelMultiProduct>(
+    std::unique_ptr<MarketModelMultiProduct> MultiStepNothing::clone() const {
+        return std::unique_ptr<MarketModelMultiProduct>(
                                                  new MultiStepNothing(*this));
     }
 

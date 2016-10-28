@@ -74,7 +74,7 @@ namespace QuantLib {
             std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> >& cashFlowsGenerated) ;
 
         //! returns a newly-allocated copy of itself
-        virtual std::auto_ptr<MarketModelPathwiseMultiProduct> clone() const;
+        virtual std::unique_ptr<MarketModelPathwiseMultiProduct> clone() const;
 
     private:
         std::vector<Real> rateTimes_;
@@ -126,7 +126,7 @@ namespace QuantLib {
             std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> >& cashFlowsGenerated) ;
 
         //! returns a newly-allocated copy of itself
-        virtual std::auto_ptr<MarketModelPathwiseMultiProduct> clone() const;
+        virtual std::unique_ptr<MarketModelPathwiseMultiProduct> clone() const;
 
     private:
         std::vector<Real> rateTimes_;
@@ -181,7 +181,7 @@ namespace QuantLib {
             std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> >& cashFlowsGenerated) ;
 
         //! returns a newly-allocated copy of itself
-        virtual std::auto_ptr<MarketModelPathwiseMultiProduct> clone() const;
+        virtual std::unique_ptr<MarketModelPathwiseMultiProduct> clone() const;
 
     private:
         MarketModelPathwiseMultiDeflatedCaplet underlyingCaplets_;

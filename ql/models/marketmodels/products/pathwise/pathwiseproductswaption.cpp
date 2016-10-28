@@ -89,9 +89,9 @@ namespace QuantLib {
         return (currentIndex_ == strikes_.size());
     }
 
-    std::auto_ptr<MarketModelPathwiseMultiProduct> MarketModelPathwiseCoterminalSwaptionsDeflated::clone() const 
+    std::unique_ptr<MarketModelPathwiseMultiProduct> MarketModelPathwiseCoterminalSwaptionsDeflated::clone() const 
     {
-        return std::auto_ptr<MarketModelPathwiseMultiProduct>(
+        return std::unique_ptr<MarketModelPathwiseMultiProduct>(
                                                 new MarketModelPathwiseCoterminalSwaptionsDeflated(*this));
     }
 
@@ -210,9 +210,9 @@ namespace QuantLib {
         return (currentIndex_ == strikes_.size());
     }
 
-    std::auto_ptr<MarketModelPathwiseMultiProduct> MarketModelPathwiseCoterminalSwaptionsNumericalDeflated::clone() const 
+    std::unique_ptr<MarketModelPathwiseMultiProduct> MarketModelPathwiseCoterminalSwaptionsNumericalDeflated::clone() const 
     {
-        return std::auto_ptr<MarketModelPathwiseMultiProduct>(
+        return std::unique_ptr<MarketModelPathwiseMultiProduct>(
                                                 new MarketModelPathwiseCoterminalSwaptionsNumericalDeflated(*this));
     }
 

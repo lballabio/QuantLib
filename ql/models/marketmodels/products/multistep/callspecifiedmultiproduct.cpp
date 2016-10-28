@@ -171,10 +171,10 @@ namespace QuantLib {
         return done || currentIndex_ == evolution_.evolutionTimes().size();
     }
 
-    std::auto_ptr<MarketModelMultiProduct>
+    std::unique_ptr<MarketModelMultiProduct>
     CallSpecifiedMultiProduct::clone() const 
     {
-        return std::auto_ptr<MarketModelMultiProduct>(
+        return std::unique_ptr<MarketModelMultiProduct>(
                                         new CallSpecifiedMultiProduct(*this));
     }
 

@@ -105,10 +105,10 @@ namespace QuantLib
         return true;
     }
 
-    std::auto_ptr<MarketModelPathwiseMultiProduct>
+    std::unique_ptr<MarketModelPathwiseMultiProduct>
     MarketModelPathwiseCashRebate::clone() const 
     {
-        return std::auto_ptr<MarketModelPathwiseMultiProduct>(
+        return std::unique_ptr<MarketModelPathwiseMultiProduct>(
                                             new MarketModelPathwiseCashRebate(*this));
     }
 

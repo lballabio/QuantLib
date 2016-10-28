@@ -23,6 +23,7 @@
 
 #include <ql/models/marketmodels/callability/marketmodelbasissystem.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
+#include <memory>
 
 namespace QuantLib {
 
@@ -38,7 +39,7 @@ namespace QuantLib {
         std::valarray<bool> isExerciseTime() const;
         void values(const CurveState&,
                     std::vector<Real>& results) const;
-        std::auto_ptr<MarketModelBasisSystem> clone() const;
+        std::unique_ptr<MarketModelBasisSystem> clone() const;
       private:
         std::vector<Time> rateTimes_, exerciseTimes_;
         Size currentIndex_;

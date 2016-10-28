@@ -23,6 +23,7 @@
 
 #include <ql/methods/montecarlo/exercisestrategy.hpp>
 #include <ql/utilities/clone.hpp>
+#include <memory>
 #include <valarray>
 
 namespace QuantLib {
@@ -40,7 +41,7 @@ namespace QuantLib {
         void reset();
         void nextStep(const CurveState& currentState);
         bool exercise(const CurveState& currentState) const;
-        std::auto_ptr<ExerciseStrategy<CurveState> > clone() const;
+        std::unique_ptr<ExerciseStrategy<CurveState> > clone() const;
       private:
         Clone<MarketModelParametricExercise> exercise_;
         std::vector<std::vector<Real> > parameters_;

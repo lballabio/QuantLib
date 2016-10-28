@@ -36,7 +36,7 @@ namespace QuantLib {
         virtual void reset() = 0;
         virtual bool exercise(const State& currentState) const = 0;
         virtual void nextStep(const State& currentState) = 0;
-        virtual std::auto_ptr<ExerciseStrategy<State> > clone() const = 0;
+        virtual std::unique_ptr<ExerciseStrategy<State> > clone() const = 0;
     };
 
 }

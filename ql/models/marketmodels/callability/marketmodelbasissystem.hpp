@@ -33,7 +33,7 @@ namespace QuantLib {
         std::vector<Size> numberOfData() const {
             return numberOfFunctions();
         }
-        virtual std::auto_ptr<MarketModelBasisSystem> clone() const = 0;
+        virtual std::unique_ptr<MarketModelBasisSystem> clone() const = 0;
     };
 
 }

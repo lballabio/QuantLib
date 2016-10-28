@@ -73,8 +73,8 @@ namespace QuantLib {
                                                      cashFlowsGenerated);
             }
 
-            std::auto_ptr<MarketModelMultiProduct> clone() const {
-                return std::auto_ptr<MarketModelMultiProduct>(
+            std::unique_ptr<MarketModelMultiProduct> clone() const {
+                return std::unique_ptr<MarketModelMultiProduct>(
                                                    new DecoratedHedge(*this));
             }
 

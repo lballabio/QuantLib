@@ -21,6 +21,7 @@
 #define quantlib_multi_product_composite_hpp
 
 #include <ql/models/marketmodels/products/compositeproduct.hpp>
+#include <memory>
 
 namespace QuantLib {
 
@@ -40,7 +41,7 @@ namespace QuantLib {
                      const CurveState& currentState,
                      std::vector<Size>& numberCashFlowsThisStep,
                      std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
-        std::auto_ptr<MarketModelMultiProduct> clone() const;
+        std::unique_ptr<MarketModelMultiProduct> clone() const;
         //@}
     };
 

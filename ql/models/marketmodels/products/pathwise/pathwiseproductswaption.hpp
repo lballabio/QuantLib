@@ -67,7 +67,7 @@ class MarketModelPathwiseCoterminalSwaptionsDeflated : public MarketModelPathwis
             std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> >& cashFlowsGenerated) ;
 
         //! returns a newly-allocated copy of itself
-        virtual std::auto_ptr<MarketModelPathwiseMultiProduct> clone() const;
+        virtual std::unique_ptr<MarketModelPathwiseMultiProduct> clone() const;
 
     private:
         std::vector<Real> rateTimes_;
@@ -114,7 +114,7 @@ class MarketModelPathwiseCoterminalSwaptionsNumericalDeflated : public MarketMod
             std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> >& cashFlowsGenerated) ;
 
         //! returns a newly-allocated copy of itself
-        virtual std::auto_ptr<MarketModelPathwiseMultiProduct> clone() const;
+        virtual std::unique_ptr<MarketModelPathwiseMultiProduct> clone() const;
 
     private:
         std::vector<Real> rateTimes_;

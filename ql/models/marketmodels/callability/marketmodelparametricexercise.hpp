@@ -33,7 +33,7 @@ namespace QuantLib {
         std::vector<Size> numberOfData() const {
             return numberOfVariables();
         }
-        virtual std::auto_ptr<MarketModelParametricExercise> clone() const = 0;
+        virtual std::unique_ptr<MarketModelParametricExercise> clone() const = 0;
     };
 
 }

@@ -49,8 +49,8 @@ namespace QuantLib {
         return (currentIndex_ == strikes_.size());
     }
 
-    std::auto_ptr<MarketModelMultiProduct> MultiStepForwards::clone() const {
-        return std::auto_ptr<MarketModelMultiProduct>(
+    std::unique_ptr<MarketModelMultiProduct> MultiStepForwards::clone() const {
+        return std::unique_ptr<MarketModelMultiProduct>(
                                                 new MultiStepForwards(*this));
     }
 

@@ -58,7 +58,7 @@ namespace QuantLib
             std::vector<Size>& numberCashFlowsThisStep,
             std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> >& cashFlowsGenerated) ;
 
-        virtual std::auto_ptr<MarketModelPathwiseMultiProduct> clone() const;
+        virtual std::unique_ptr<MarketModelPathwiseMultiProduct> clone() const;
           
         virtual bool alreadyDeflated() const;
         //@}

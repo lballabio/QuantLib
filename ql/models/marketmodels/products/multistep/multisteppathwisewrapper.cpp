@@ -84,9 +84,9 @@ namespace QuantLib
             return innerProduct_->evolution();
         }
 
-        std::auto_ptr<MarketModelMultiProduct>  MultiProductPathwiseWrapper::clone() const
+        std::unique_ptr<MarketModelMultiProduct>  MultiProductPathwiseWrapper::clone() const
         {
-                return   std::auto_ptr<MarketModelMultiProduct>(new MultiProductPathwiseWrapper(*this));
+                return   std::unique_ptr<MarketModelMultiProduct>(new MultiProductPathwiseWrapper(*this));
         }
 
       

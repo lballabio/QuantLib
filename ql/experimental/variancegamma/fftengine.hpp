@@ -27,6 +27,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/stochasticprocess.hpp>
 #include <complex>
+#include <memory>
 
 namespace QuantLib {
 
@@ -53,7 +54,7 @@ namespace QuantLib {
         void update();
 
         void precalculate(const std::vector<boost::shared_ptr<Instrument> >& optionList);
-        virtual std::auto_ptr<FFTEngine> clone() const = 0;
+        virtual std::unique_ptr<FFTEngine> clone() const = 0;
 
     protected:
         virtual void precalculateExpiry(Date d) = 0;

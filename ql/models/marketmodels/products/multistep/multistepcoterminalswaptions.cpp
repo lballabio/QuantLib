@@ -54,9 +54,9 @@ namespace QuantLib {
         return (currentIndex_ == lastIndex_);
     }
 
-    std::auto_ptr<MarketModelMultiProduct>
+    std::unique_ptr<MarketModelMultiProduct>
     MultiStepCoterminalSwaptions::clone() const {
-        return std::auto_ptr<MarketModelMultiProduct>(
+        return std::unique_ptr<MarketModelMultiProduct>(
                                          new MultiStepCoterminalSwaptions(*this));
     }
 

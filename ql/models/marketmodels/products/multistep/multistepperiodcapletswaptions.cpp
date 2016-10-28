@@ -136,9 +136,9 @@ namespace QuantLib {
     return terminate;
     }
 
-    std::auto_ptr<MarketModelMultiProduct>
+    std::unique_ptr<MarketModelMultiProduct>
     MultiStepPeriodCapletSwaptions::clone() const {
-        return std::auto_ptr<MarketModelMultiProduct>(
+        return std::unique_ptr<MarketModelMultiProduct>(
                                          new MultiStepPeriodCapletSwaptions(*this));
     }
 

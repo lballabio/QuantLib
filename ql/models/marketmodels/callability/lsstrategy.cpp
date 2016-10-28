@@ -156,9 +156,9 @@ namespace QuantLib {
         ++currentIndex_;
     }
 
-    std::auto_ptr<ExerciseStrategy<CurveState> >
+    std::unique_ptr<ExerciseStrategy<CurveState> >
     LongstaffSchwartzExerciseStrategy::clone() const {
-        return std::auto_ptr<ExerciseStrategy<CurveState> >(
+        return std::unique_ptr<ExerciseStrategy<CurveState> >(
                                 new LongstaffSchwartzExerciseStrategy(*this));
     }
 

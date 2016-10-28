@@ -110,6 +110,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 #include <boost/math/special_functions/fpclassify.hpp>
 #include <boost/bind.hpp>
+#include <memory>
 #include <sstream>
 
 #if defined(BOOST_MSVC)
@@ -2202,7 +2203,7 @@ void MarketModelTest::testPathwiseGreeks()
         MarketModelPathwiseMultiCaplet product2(rateTimes, accruals,
             paymentTimes, todaysForwards);
 
-        std::auto_ptr<MarketModelPathwiseMultiProduct> product;
+        std::unique_ptr<MarketModelPathwiseMultiProduct> product;
 
         if (whichProduct == 0)
             product = product2.clone();
@@ -3148,7 +3149,7 @@ void MarketModelTest::testPathwiseVegas()
 
             for (Size deflate =0; deflate <2; ++deflate)
             {
-                std::auto_ptr<MarketModelPathwiseMultiProduct> productToUse;
+                std::unique_ptr<MarketModelPathwiseMultiProduct> productToUse;
 
                 if (deflate ==0)
                     productToUse = caplets.clone();
@@ -3317,7 +3318,7 @@ void MarketModelTest::testPathwiseVegas()
                     // for deltas and prices the pathwise vega engine should agree precisely with the pathwiseaccounting engine
                     // so lets see if it does
 
-                    std::auto_ptr<MarketModelPathwiseMultiProduct> productToUse2;
+                    std::unique_ptr<MarketModelPathwiseMultiProduct> productToUse2;
 
                     if (deflate ==0)
                         productToUse2 = caplets.clone();

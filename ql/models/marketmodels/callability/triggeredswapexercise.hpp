@@ -22,6 +22,7 @@
 
 #include <ql/models/marketmodels/callability/marketmodelparametricexercise.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
+#include <memory>
 
 namespace QuantLib {
 
@@ -49,7 +50,7 @@ namespace QuantLib {
         void guess(Size exerciseNumber,
                    std::vector<Real>& parameters) const;
 
-        std::auto_ptr<MarketModelParametricExercise> clone() const;
+        std::unique_ptr<MarketModelParametricExercise> clone() const;
 
       private:
         std::vector<Time> rateTimes_, exerciseTimes_;

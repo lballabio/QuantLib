@@ -22,6 +22,7 @@
 
 #include <ql/methods/montecarlo/exercisestrategy.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
+#include <memory>
 #include <vector>
 
 namespace QuantLib {
@@ -36,7 +37,7 @@ namespace QuantLib {
         void reset();
         bool exercise(const CurveState& currentState) const;
         void nextStep(const CurveState& currentState);
-        std::auto_ptr<ExerciseStrategy<CurveState> > clone() const;
+        std::unique_ptr<ExerciseStrategy<CurveState> > clone() const;
       private:
         std::vector<Time> rateTimes_;
         std::vector<Rate> swapTriggers_;
