@@ -18,7 +18,97 @@
 
 /*! \page history Version history
 
-    <strong>Release 1.8 - May 2016</strong>
+    <strong>Release 1.9 - November 2016</strong>
+
+    PORTABILITY
+    - Dropped support for Visual C++ 8 (2005).  As of April 2016, the
+      compiler is no longer supported by Microsoft.
+    - Allow the parallel test runner to work with Boost 1.62 (thanks
+      to Klaus Spanderen for the fix and to Andrei Borodaenko for the
+      heads-up).
+
+    INTEREST RATES
+    - Allow negative jumps in interest-rate curves. Previously, trying
+      to pass one would result in an exception (thanks to Leanpub
+      reader Jeff for the heads-up).
+    - Added BBSW and Aonia indexes from Australia and BKBM and NZOCR
+      indexes from New Zealand (thanks to Fabrice Lecuyer).
+
+    VOLATILITY
+    - Added normal implied-volatility calculation to caps/floors
+      (thanks to Paolo Mazzocchi).
+
+    INSTRUMENTS
+    - Fix a scenario in which a `CompositeInstrument` instance would
+      stop receiving notifications (thanks to Peter Caspers for the
+      heads-up).
+    - Added a few safety checks to the CVA swap engine (thanks to
+      Andrea Maggiulli).
+    - Auto-deactivate Boyle-Lau optimization for barrier options when
+      not using a CRR tree (thanks to Riccardo Ghetta).
+
+    DATE/TIME
+    - Changed data type for `Date` serial numbers to `int_fast_32t` to
+      improve performance of date calculations (thanks to Peter
+      Caspers).
+    - Added ECB maintenance period dates for 2017 (thanks to Paolo
+      Mazzocchi).
+    - Fixed rule for the Japanese Mountain Day holiday (thanks to
+      Eisuke Tani).
+    - Fixed United States holidays before 1971 (thanks to Nick Glass
+      for the heads-up).
+    - Added a missing Chinese holiday (thanks to Cheng Li).
+    - Ensure correct formatting when outputting dates (thanks to Peter
+      Caspers).
+
+    NEW OPT-IN FEATURES
+
+    These features are disabled by default and can be enabled by
+    defining a macro or passing a flag to `./configure`.  Feedback is
+    appreciated.
+    - Enable thread-safe singleton initialization (thanks to GitHub
+      user sdgit). The feature can be enabled by uncommenting the
+      `QL_ENABLE_SINGLETON_THREAD_SAFE_INIT` macro in
+      `ql/userconfig.hpp` on Visual C++ or by passing the
+      `--enable-thread-safe-singleton-init` to `./configure` on other
+      systems.
+
+    EXPERIMENTAL FOLDER
+
+    The `ql/experimental` folder contains code whose interface is not
+    fully stable, but is released in order to get user feedback.
+    Experimental classes make no guarantees of backward compatibility;
+    their interfaces might change in future releases.
+
+    Changes and new contributions for this release were:
+    - OIS with arithmetic average (thanks to Stefano Fondi). A
+      corresponding bootstrap helpers is also available.
+    - a function to calculate multi-curve sensitivities (thanks to
+      Michael von den Driesch).
+
+    <strong>Release 1.8.1 - September 23rd, 2016</strong>
+
+    %QuantLib 1.8.1 is a bug-fix release for version 1.8.
+
+    - A test failure with Visual C++ 14 (2015) was avoided. Up to
+      VC++14 update 2, the compiler would inline a call to std::min
+      and std::max incorrectly causing a calculation to fail (thanks
+      to Ivan Cherkasov for the heads-up).
+    - A test failure with the upcoming Boost 1.62 was avoided.  A
+      QuantLib test was checking for the stored value of a hash whose
+      value changed in Boost 1.62.
+    - Miscellaneous fixes for the g1d swaption engine and instrument
+      (thanks to Peter Caspers).
+    - Whit Monday was no longer a holiday in Sweden since 2005 (thanks
+      to Stefano Fondi).
+    - A new holiday for election day 2016 was added to the South
+      African calendar (thanks to Jasen Mackie).
+    - A few missing CMakeLists were added to the distributed release
+      (thanks to izavyalov for the heads-up).
+    - An irregular last period in a schedule was not reported as such
+      (thanks to Schmidt for the heads-up).
+
+    <strong>Release 1.8 - May 18th, 2016</strong>
 
     PORTABILITY
     - The minimum required Boost version is now Boost 1.43 (May
@@ -93,10 +183,6 @@
       (Thanks to Peter Caspers.)
 
     NEW OPT-IN FEATURES
-
-    These features are disabled by default and can be enabled by
-    defining a macro or passing a flag to `./configure`.  Feedback is
-    appreciated.
     - Added a parallel unit-test runner (thanks to Klaus
       Spanderen). This was successfully used under Linux, but problems
       were reported on Mac OS X and occasionally on Visual C++ 2010.
@@ -107,13 +193,6 @@
       systems.
 
     EXPERIMENTAL FOLDER
-
-    The ql/experimental folder contains code which is still not fully
-    integrated with the library or even fully tested, but is released
-    in order to get user feedback. Experimental classes are considered
-    unstable; their interfaces might change in future releases.
-
-    Changes and new contributions for this release were:
     - Stochastic local-volatility Heston model, (thanks to Klaus
       Spanderen and Johannes Goettker-Schnetmann). Both a Monte Carlo
       and a finite-difference calibration and calculation are
@@ -210,11 +289,6 @@
     - Added Goldstein line-search method (thanks to Cheng Li).
 
     NEW OPT-IN FEATURES
-
-    These features are disabled by default and can be enabled by
-    defining a macro or passing a flag to `./configure`.  Feedback is
-    appreciated.
-
     - Added intraday component to dates (thanks to Klaus Spanderen).
       Date specifications now include hours, minutes, seconds,
       milliseconds and microseconds.  Day counters are aware of the
@@ -336,13 +410,6 @@
       SwaptionVolatilityStructure and VolatilityTermStructure classes.
 
     EXPERIMENTAL FOLDER
-
-    The ql/experimental folder contains code which is still not fully
-    integrated with the library or even fully tested, but is released in
-    order to get user feedback.  Experimental classes are considered
-    unstable; their interfaces might change in future releases.
-
-    Changes and new contributions for this release were:
     - Finite-difference meshers based on multi-dimensional integrals
       (thanks to Klaus Spanderen).
     - SVI interpolation and a corresponding smile section (thanks to Peter

@@ -24,6 +24,8 @@
 #ifndef quantlib_nulldeleter_hpp
 #define quantlib_nulldeleter_hpp
 
+#include <ql/qldefines.hpp>
+
 #if BOOST_VERSION >= 105600
 
 #include <boost/core/null_deleter.hpp>
