@@ -17,9 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file multicurvesensitivity.hpp
-\brief compute sensitivities based of traits (zeroyield, discount, forward) to the input
-input instruments (par quotes).
+/*! \file multicurvesensitivities.hpp
+    \brief compute piecewise-curve sensitivities to the input instruments.
 */
 
 #ifndef quantlib_multicurve_sensitivity_hpp
