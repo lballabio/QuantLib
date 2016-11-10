@@ -63,6 +63,7 @@ testCaseCollection.xml
 *.suo
 *.vcproj.*.user
 *.vcxproj.user
+*.VC.db
 *.VC.opendb
 *.log
 *.sdf
@@ -72,6 +73,7 @@ testCaseCollection.xml
 *.ipch
 CMakeFiles
 *.cmake
+TAGS
 
 # Outputs
 Examples/BasketLosses/BasketLosses

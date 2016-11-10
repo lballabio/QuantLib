@@ -22,12 +22,9 @@
 #include <ql/indexes/inflationindex.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 
+#include <ql/utilities/null_deleter.hpp>
+
 namespace QuantLib {
-
-    namespace {
-        void no_deletion(void*) {}
-    }
-
 
     ZeroCouponInflationSwapHelper::ZeroCouponInflationSwapHelper(
         const Handle<Quote>& quote,
@@ -96,7 +93,7 @@ namespace QuantLib {
         // The effect of the new inflation term structure is
         // felt via the effect on the inflation index
         Handle<ZeroInflationTermStructure> zits(
-            boost::shared_ptr<ZeroInflationTermStructure>(z,no_deletion), own);
+            boost::shared_ptr<ZeroInflationTermStructure>(z, null_deleter()), own);
 
         boost::shared_ptr<ZeroInflationIndex> new_zii = zii_->clone(zits);
 
@@ -181,7 +178,7 @@ namespace QuantLib {
         // The effect of the new inflation term structure is
         // felt via the effect on the inflation index
         Handle<YoYInflationTermStructure> yyts(
-            boost::shared_ptr<YoYInflationTermStructure>(y,no_deletion), own);
+            boost::shared_ptr<YoYInflationTermStructure>(y, null_deleter()), own);
 
         boost::shared_ptr<YoYInflationIndex> new_yii = yii_->clone(yyts);
 

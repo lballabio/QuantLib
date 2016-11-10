@@ -71,6 +71,8 @@ namespace QuantLib {
                 && m == December)
             // one-shot: Election day 2009
             || (d == 22 && m == April && y == 2009)
+            // one-shot: Election day 2016
+            || (d == 3 && m == August && y == 2016)
             )
             return false;
         return true;

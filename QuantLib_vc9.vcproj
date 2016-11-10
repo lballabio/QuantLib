@@ -1810,7 +1810,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\indexes\ibor\aonia.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\indexes\ibor\audlibor.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\indexes\ibor\bbsw.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\indexes\ibor\bkbm.hpp"
 					>
 				</File>
 				<File
@@ -1883,6 +1895,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\indexes\ibor\nzdlibor.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\indexes\ibor\nzocr.hpp"
 					>
 				</File>
 				<File
@@ -5571,6 +5587,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\utilities\null_deleter.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\utilities\observablevalue.hpp"
 				>
 			</File>
@@ -7418,14 +7438,46 @@
 				RelativePath=".\ql\experimental\all.hpp"
 				>
 			</File>
-			<File
-				RelativePath=".\ql\experimental\credit\correlationstructure.cpp"
+			<Filter
+				Name="averageois"
 				>
-			</File>
-			<File
-				RelativePath=".\ql\experimental\credit\correlationstructure.hpp"
-				>
-			</File>
+				<File
+					RelativePath=".\ql\experimental\averageois\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\averageois\arithmeticaverageois.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\averageois\arithmeticaverageois.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\averageois\arithmeticoisratehelper.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\averageois\arithmeticoisratehelper.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\averageois\averageoiscouponpricer.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\averageois\averageoiscouponpricer.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\averageois\makearithmeticaverageois.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\averageois\makearithmeticaverageois.hpp"
+					>
+				</File>
+			</Filter>
 			<Filter
 				Name="volatility"
 				>
@@ -8075,6 +8127,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\constantlosslatentmodel.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\correlationstructure.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\correlationstructure.hpp"
 					>
 				</File>
 				<File
@@ -8779,6 +8839,18 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\swaptions\irregularswaption.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="termstructures"
+				>
+				<File
+					RelativePath=".\ql\experimental\termstructures\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\termstructures\multicurvesensitivities.hpp"
 					>
 				</File>
 			</Filter>

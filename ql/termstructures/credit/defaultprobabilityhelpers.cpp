@@ -24,11 +24,9 @@
 #include <ql/instruments/creditdefaultswap.hpp>
 #include <ql/pricingengines/credit/midpointcdsengine.hpp>
 
-namespace QuantLib {
+#include <ql/utilities/null_deleter.hpp>
 
-    namespace {
-        void no_deletion(DefaultProbabilityTermStructure*) {}
-    }
+namespace QuantLib {
 
     CdsHelper::CdsHelper(const Handle<Quote>& quote,
                          const Period& tenor,
@@ -82,7 +80,7 @@ namespace QuantLib {
         RelativeDateDefaultProbabilityHelper::setTermStructure(ts);
 
         probability_.linkTo(
-            boost::shared_ptr<DefaultProbabilityTermStructure>(ts, no_deletion),
+            boost::shared_ptr<DefaultProbabilityTermStructure>(ts, null_deleter()),
             false);
 
         resetEngine();

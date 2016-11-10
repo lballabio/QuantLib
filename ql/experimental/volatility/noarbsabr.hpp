@@ -121,6 +121,7 @@ class NoArbSabrModel {
 
     Real absorptionProbability() const { return absProb_; }
 
+    QL_DEPRECATED
     static void checkAbsorptionMatrix();
 
     private:

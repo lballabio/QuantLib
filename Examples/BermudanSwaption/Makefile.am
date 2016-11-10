@@ -12,7 +12,6 @@ BermudanSwaption_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     BermudanSwaption.dev \
-    BermudanSwaption_vc8.vcproj \
     BermudanSwaption_vc9.vcproj \
     BermudanSwaption.vcxproj \
     BermudanSwaption.vcxproj.filters \

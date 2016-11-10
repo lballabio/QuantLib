@@ -12,7 +12,6 @@ CallableBonds_LDADD = ../../ql/libQuantLib.la  ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     CallableBonds.dev \
-    CallableBonds_vc8.vcproj \
     CallableBonds_vc9.vcproj \
     CallableBonds.vcxproj \
     CallableBonds.vcxproj.filters \
