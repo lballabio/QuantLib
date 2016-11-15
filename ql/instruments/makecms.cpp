@@ -176,9 +176,9 @@ namespace QuantLib {
 
         boost::shared_ptr<Swap> swap;
         if (payCms_)
-            swap = boost::shared_ptr<Swap>(new Swap(cmsLeg, floatLeg));
+            swap = boost::make_shared<Swap>(cmsLeg, floatLeg);
         else
-            swap = boost::shared_ptr<Swap>(new Swap(floatLeg, cmsLeg));
+            swap = boost::make_shared<Swap>(floatLeg, cmsLeg);
         swap->setPricingEngine(engine_);
         return swap;
     }
@@ -201,8 +201,8 @@ namespace QuantLib {
 
     MakeCms& MakeCms::withDiscountingTermStructure(
                 const Handle<YieldTermStructure>& discountingTermStructure) {
-        engine_ = boost::shared_ptr<PricingEngine>(new
-                            DiscountingSwapEngine(discountingTermStructure));
+        engine_ = boost::static_pointer_cast<PricingEngine>(
+           boost::make_shared<DiscountingSwapEngine>(discountingTermStructure));
         return *this;
     }
 
