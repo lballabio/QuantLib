@@ -27,6 +27,7 @@
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
