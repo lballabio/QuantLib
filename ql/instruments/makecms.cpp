@@ -202,8 +202,7 @@ namespace QuantLib {
 
     MakeCms& MakeCms::withDiscountingTermStructure(
                 const Handle<YieldTermStructure>& discountingTermStructure) {
-        engine_ = boost::static_pointer_cast<PricingEngine>(
-           boost::make_shared<DiscountingSwapEngine>(discountingTermStructure));
+        engine_ = boost::make_shared<DiscountingSwapEngine>(discountingTermStructure);
         return *this;
     }
 
