@@ -55,9 +55,6 @@
 #  define QL_PATCH_MSVC100
 #endif
 
-// prevent auto-link of Boost libs such as serialization
-#define BOOST_ALL_NO_LIB
-
 // This holds for all supported versions
 #define QL_WORKING_BOOST_STREAMS
 
