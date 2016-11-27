@@ -344,10 +344,11 @@ namespace QuantLib {
                                            Natural maxEvaluations,
                                            Volatility minVol,
                                            Volatility maxVol,
-                                           Real displacement) const {
+                                           Real displacement,
+                                           VolatilityType type) const {
         return impliedVolatility(targetValue, d, guess, accuracy,
                                  maxEvaluations, minVol, maxVol,
-                                 ShiftedLognormal, displacement);
+                                 type, displacement);
     }
 
 }
