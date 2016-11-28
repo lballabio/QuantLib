@@ -43,15 +43,6 @@
 #  undef BOOST_LIB_NAME
 #endif
 
-#ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
-#  define BOOST_LIB_NAME boost_system
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-#  define BOOST_LIB_NAME boost_thread
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-#endif
-
 /* uncomment the following lines to unmask floating-point exceptions.
    See http://www.wilmott.com/messageview.cfm?catid=10&threadid=9481
 */

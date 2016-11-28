@@ -74,6 +74,7 @@ testCaseCollection.xml
 CMakeFiles
 *.cmake
 *.bat
+TAGS
 
 # Outputs
 Examples/BasketLosses/BasketLosses

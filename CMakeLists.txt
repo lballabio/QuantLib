@@ -14,7 +14,16 @@ endif()
 find_package(Boost)
 if (Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIRS})
-endif (Boost_FOUND)
+endif()
+
+if(MSVC)
+	add_definitions(-DUNICODE                     # Use unicode
+					-D_UNICODE                    # Use unicode
+					-D_SCL_SECURE_NO_WARNINGS     # Calling any one of the potentially unsafe methods in the Standard C++ Library
+					-D_CRT_SECURE_NO_DEPRECATE    # Disable CRT deprecation warnings
+					-DBOOST_ALL_NO_LIB			  # Prevent auto-link of Boost libs such as serialization
+					)
+endif()
 
 add_subdirectory(ql)
 

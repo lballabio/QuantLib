@@ -1,8 +1,8 @@
 build: false
 environment:
-    PYTHON: "C:\\Python27-x64"
+    PYTHON: "C:\\Python27"
     PYTHON_VERSION: "2.7.11"
-    PYTHON_ARCH: "64"
+    PYTHON_ARCH: "32"
 
     CONAN_UPLOAD: 1
     CONAN_USERNAME: "jgsogo"
@@ -26,5 +26,5 @@ install:
   - conan user # It creates the conan data directory
 
 test_script:
-  - C:\Python27-x64\python build.py
+  - C:\Python27\python build.py
 

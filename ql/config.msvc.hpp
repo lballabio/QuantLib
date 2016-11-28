@@ -55,20 +55,10 @@
 #  define QL_PATCH_MSVC100
 #endif
 
-// prevent auto-link of Boost libs such as serialization
-#define BOOST_ALL_NO_LIB
-
 // This holds for all supported versions
 #define QL_WORKING_BOOST_STREAMS
 
 #if (_MSC_VER == 1500)
-// warning management for VC++ 9
-#  ifndef _SCL_SECURE_NO_DEPRECATE
-#    define _SCL_SECURE_NO_DEPRECATE
-#  endif
-#  ifndef _CRT_SECURE_NO_DEPRECATE
-#    define _CRT_SECURE_NO_DEPRECATE
-#  endif
 // Sending a size_t to an output stream causes a warning.
 // We disable it and rely on other compilers to catch genuine problems.
 #  pragma warning(disable: 4267)
