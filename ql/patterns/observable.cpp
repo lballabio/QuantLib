@@ -3,6 +3,7 @@
 /*
 Copyright (C) 2013 Chris Higgs
 Copyright (C) 2015 Klaus Spanderen
+Copyright (C) 2016 Michael von den Driesch
 
 This file is part of QuantLib, a free-software/open-source library
 for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,37 +25,59 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #ifndef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
 
 namespace QuantLib {
+void ObservableSettings::forceAllObserverUpdates() {
+    if (allObservers_.size()) {
+        bool successful = true;
+        std::string errMsg;
 
-    void ObservableSettings::enableUpdates() {
-        updatesEnabled_  = true;
-        updatesDeferred_ = false;
-
-        // if there are outstanding deferred updates, do the notification
-        if (deferredObservers_.size()) {
-            bool successful = true;
-            std::string errMsg;
-
-            for (iterator i=deferredObservers_.begin();
-                i!=deferredObservers_.end(); ++i) {
-                try {
-                    (*i)->update();
-                } catch (std::exception& e) {
-                    successful = false;
-                    errMsg = e.what();
-                } catch (...) {
-                    successful = false;
-                }
+        for (iterator i = allObservers_.begin(); i != allObservers_.end();
+             ++i) {
+            try {
+                (*i)->update();
+            } catch (std::exception& e) {
+                successful = false;
+                errMsg = e.what();
+            } catch (...) {
+                successful = false;
             }
-
-            deferredObservers_.clear();
-
-            QL_ENSURE(successful,
-                  "could not notify one or more observers: " << errMsg);
         }
+
+        QL_ENSURE(successful,
+                  "could not notify one or more observers: " << errMsg);
+    }
+}
+
+void ObservableSettings::enableUpdates() {
+    updatesEnabled_ = true;
+    updatesDeferred_ = false;
+
+    // if there are outstanding deferred updates, do the notification
+    if (deferredObservers_.size()) {
+        bool successful = true;
+        std::string errMsg;
+
+        for (iterator i = deferredObservers_.begin();
+             i != deferredObservers_.end(); ++i) {
+            try {
+                (*i)->update();
+            } catch (std::exception& e) {
+                successful = false;
+                errMsg = e.what();
+            } catch (...) {
+                successful = false;
+            }
+        }
+
+        deferredObservers_.clear();
+
+        QL_ENSURE(successful,
+                  "could not notify one or more observers: " << errMsg);
+    }
     }
 
 
     void Observable::notifyObservers() {
+        if (!settings_.notificationsEnabled_) return;
         if (!settings_.updatesEnabled()) {
             // if updates are only deferred, flag this for later notification
             // these are held centrally by the settings singleton

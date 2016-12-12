@@ -19,6 +19,8 @@
 
 #include "observable.hpp"
 #include "utilities.hpp"
+#include <boost/make_shared.hpp>
+#include <iostream>
 #include <ql/patterns/observable.hpp>
 #include <ql/quotes/simplequote.hpp>
 
@@ -35,6 +37,21 @@ namespace {
         Size counter() { return counter_; }
       private:
         Size counter_;
+    };
+
+    class ExtQuote : public SimpleQuote, public Observer {
+       public:
+        ExtQuote(Real quote) : SimpleQuote(quote), counter_(0) {}
+        void update() {
+            ++counter_;
+            qv_ += this->value();
+        }
+        Size getqv() { return qv_; }
+        Size counter() { return counter_; }
+
+       private:
+        Size counter_;
+        Size qv_;
     };
 }
 
@@ -88,6 +105,43 @@ void ObservableTest::testObservableSettings() {
    if (updateCounter.counter() != 3 || updateCounter2.counter() != 1) {
        BOOST_FAIL("update counter values are not correct");
    }
+
+   ExtQuote updateCounter3(0);
+   ObservableSettings::instance().enableUpdates();
+   std::vector<boost::shared_ptr<SimpleQuote> > quotes;
+   int quoteNum = 100;
+   for (int i = 0; i < quoteNum; ++i) {
+       quotes.push_back(boost::make_shared<SimpleQuote>(1));
+       updateCounter3.registerWith(quotes.back());
+   }
+
+   std::cout << "\n1. Number of updates: " << updateCounter3.counter();
+
+   for (int i = 0; i < quoteNum; ++i) {
+       quotes[i]->setValue(2);
+   }
+
+   std::cout << "\n2. Number of updates: " << updateCounter3.counter();
+
+   ObservableSettings::instance().turnOffNotifications();
+
+   for (int i = 0; i < quoteNum; ++i) {
+       quotes[i]->setValue(3);
+   }
+
+   std::cout << "\n3. Number of updates: " << updateCounter3.counter();
+
+   ObservableSettings::instance().forceAllObserverUpdates();
+   std::cout << "\n4. Number of updates: " << updateCounter3.counter();
+
+   ObservableSettings::instance().turnOnNotifications();
+
+   for (int i = 0; i < quoteNum; ++i) {
+       quotes[i]->setValue(4);
+   }
+
+   std::cout << "\n5. Number of updates: " << updateCounter3.counter() << ", "
+             << updateCounter3.getqv();
 }
 
 

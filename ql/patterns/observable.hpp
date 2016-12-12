@@ -55,29 +55,34 @@ namespace QuantLib {
     class ObservableSettings : public Singleton<ObservableSettings> {
         friend class Singleton<ObservableSettings>;
         friend class Observable;
-      public:
+        friend class Observer;
+
+       public:
         void disableUpdates(bool deferred=false) {
             updatesEnabled_  = false;
             updatesDeferred_ = deferred;
         }
         void enableUpdates();
-
+        void forceAllObserverUpdates();
+        void turnOffNotifications() { notificationsEnabled_ = false; }
+        void turnOnNotifications() { notificationsEnabled_ = true; }
         bool updatesEnabled()  {return updatesEnabled_;}
         bool updatesDeferred() {return updatesDeferred_;}
       private:
-        ObservableSettings()
-        : updatesEnabled_(true),
-          updatesDeferred_(false) {}
+       ObservableSettings()
+           : updatesEnabled_(true),
+             updatesDeferred_(false),
+             notificationsEnabled_(true) {}
 
-        void registerDeferredObservers(
-            const boost::unordered_set<Observer*>& observers);
-        void unregisterDeferredObserver(Observer*);
+       void registerDeferredObservers(
+           const boost::unordered_set<Observer*>& observers);
+       void unregisterDeferredObserver(Observer*);
 
-        typedef boost::unordered_set<Observer*> set_type;
-        typedef set_type::iterator iterator;
-        set_type deferredObservers_;
-
-        bool updatesEnabled_,  updatesDeferred_;
+       typedef boost::unordered_set<Observer*> set_type;
+       typedef set_type::iterator iterator;
+       set_type deferredObservers_;
+       set_type allObservers_;
+       bool updatesEnabled_, updatesDeferred_, notificationsEnabled_;
     };
 
     //! Object that notifies its changes to a set of observers
@@ -114,7 +119,9 @@ namespace QuantLib {
         typedef set_type::iterator iterator;
 
         // constructors, assignment, destructor
-        Observer() {}
+        Observer() : settings_(ObservableSettings::instance()) {
+            settings_.allObservers_.insert(this);
+        }
         Observer(const Observer&);
         Observer& operator=(const Observer&);
         virtual ~Observer();
@@ -139,6 +146,7 @@ namespace QuantLib {
 
       private:
         set_type observables_;
+        ObservableSettings& settings_;
     };
 
 
@@ -189,9 +197,10 @@ namespace QuantLib {
         return observers_.erase(o);
     }
 
-
     inline Observer::Observer(const Observer& o)
-    : observables_(o.observables_) {
+        : observables_(o.observables_),
+          settings_(ObservableSettings::instance()) {
+        settings_.allObservers_.insert(this);
         for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
             (*i)->registerObserver(this);
     }
@@ -207,6 +216,7 @@ namespace QuantLib {
     }
 
     inline Observer::~Observer() {
+        settings_.allObservers_.erase(this);
         for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
             (*i)->unregisterObserver(this);
     }
