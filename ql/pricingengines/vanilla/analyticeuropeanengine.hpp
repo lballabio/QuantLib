@@ -61,10 +61,13 @@ namespace QuantLib {
     class AnalyticEuropeanEngine : public VanillaOption::engine {
       public:
         AnalyticEuropeanEngine(
-                    const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
+                    const boost::shared_ptr<GeneralizedBlackScholesProcess>& gbsp,
+                    const Handle<YieldTermStructure>& discountCurve =
+                        Handle<YieldTermStructure>());
         void calculate() const;
       private:
         boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        Handle<YieldTermStructure> discountCurve_;
     };
 
 }
