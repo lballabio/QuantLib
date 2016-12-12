@@ -1561,7 +1561,6 @@ void EuropeanOptionTest::testAnalyticEngineDisocuntCurve() {
     BOOST_CHECK_NE(npvSingleCurve, npvMultiCurve);
 }
 
-
 test_suite* EuropeanOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("European option tests");
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testValues));
@@ -1591,7 +1590,6 @@ test_suite* EuropeanOptionTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testLocalVolatility));
 
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testAnalyticEngineDisocuntCurve));
-    
 
     return suite;
 }
