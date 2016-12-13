@@ -76,6 +76,13 @@ namespace QuantLib {
             xIterator xBegin, xIterator xEnd,
             yIterator yBegin, yIterator yEnd,
             vIterator vBegin);
+
+        template <class xIterator, class yIterator, class vIterator>
+        QL_DEPRECATED
+        void calculate(
+            xIterator xBegin, xIterator xEnd,
+            yIterator yBegin, yIterator yEnd,
+            vIterator vBegin, vIterator vEnd);
     };
 
     template <class xContainer, class yContainer, class vContainer> inline
@@ -150,6 +157,14 @@ namespace QuantLib {
             std::bind1st(std::multiplies<Real>(),
             std::sqrt(chiSq/(n-2))));
     }
+
+    template <class xIterator, class yIterator, class vIterator>
+    void GeneralLinearLeastSquares::calculate(xIterator xBegin, xIterator xEnd,
+                                              yIterator yBegin, yIterator yEnd,
+                                              vIterator vBegin, vIterator) {
+        calculate(xBegin, xEnd, yBegin, yEnd, vBegin);
+    }
+
 }
 
 #endif
