@@ -28,16 +28,19 @@ namespace QuantLib {
               const boost::shared_ptr<GeneralizedBlackScholesProcess>&process,
               const Handle<YieldTermStructure>& discountCurve)
     : process_(process), discountCurve_(discountCurve) {
-        // if discount curve not specified, 
-            // we default to the risk free rate curve 
-            // embedded within the GBM process
-        if (discountCurve_.empty())
-            discountCurve_ = process_->riskFreeRate();
         registerWith(process_);
         registerWith(discountCurve_);
     }
 
     void AnalyticEuropeanEngine::calculate() const {
+
+        // if discount curve not specified, 
+        // we default to the risk free rate curve 
+        // embedded within the GBM process
+        boost::shared_ptr<YieldTermStructure> discountPtr = 
+            discountCurve_.empty() ? 
+            process_->riskFreeRate().currentLink() :
+            discountCurve_.currentLink();
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European option");
@@ -53,7 +56,7 @@ namespace QuantLib {
         DiscountFactor dividendDiscount =
             process_->dividendYield()->discount(
                                              arguments_.exercise->lastDate());
-        DiscountFactor df = discountCurve_->discount(arguments_.exercise->lastDate());
+        DiscountFactor df = discountPtr->discount(arguments_.exercise->lastDate());
         DiscountFactor riskFreeDiscountForFwdEstimation =
             process_->riskFreeRate()->discount(arguments_.exercise->lastDate());
         Real spot = process_->stateVariable()->value();
@@ -69,7 +72,7 @@ namespace QuantLib {
         results_.elasticity = black.elasticity(spot);
         results_.gamma = black.gamma(spot);
 
-        DayCounter rfdc  = discountCurve_->dayCounter();
+        DayCounter rfdc  = discountPtr->dayCounter();
         DayCounter divdc = process_->dividendYield()->dayCounter();
         DayCounter voldc = process_->blackVolatility()->dayCounter();
         Time t = rfdc.yearFraction(process_->riskFreeRate()->referenceDate(),
