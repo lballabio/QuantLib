@@ -1,130 +1,91 @@
 
-Changes for QuantLib 1.8:
-=========================
+Changes for QuantLib 1.9:
+========================
 
-QuantLib 1.8 includes 45 pull requests from several contributors.
+QuantLib 1.9 includes 27 pull requests from several contributors.
 
 The most notable changes are included below.
-A detailed list of changes is available in ChangeLog.txt.
+A detailed list of changes is available in ChangeLog.txt and at
+<https://github.com/lballabio/QuantLib/milestone/3?closed=1>.
+
 
 PORTABILITY
 
-- The minimum required Boost version is now Boost 1.43 (May
-  2010). However, it is strongly suggested to use a recent version, or
-  at least Boost 1.48 (November 2011).
+- Dropped support for Visual C++ 8 (2005).  As of April 2016, the
+  compiler is no longer supported by Microsoft.
 
-- Added initial CMake support (thanks to Dmitri Nesteruk). This makes
-  it possible to compile QuantLib on CLion and other CMake-based
-  tools.
-
-- The build now generates and installs pkg-config file on Linux
-  systems (thanks to GitHub user njwhite).
+- Allow the parallel test runner to work with Boost 1.62 (thanks to
+  Klaus Spanderen for the fix and to Andrei Borodaenko for the
+  heads-up).
 
 INTEREST RATES
 
-- Fixed links to documentation for LIBOR indexes (thanks to Jose
-  Magana).
+- Allow negative jumps in interest-rate curves. Previously, trying to
+  pass one would result in an exception (thanks to Leanpub reader Jeff
+  for the heads-up).
+
+- Added BBSW and Aonia indexes from Australia and BKBM and NZOCR
+  indexes from New Zealand (thanks to Fabrice Lecuyer).
 
 VOLATILITY
 
-- Added the possibility to price swaptions and to calculate their
-  implied volatilities in a Black-like model with normal volatilities
-  as well as shifted lognormal (thanks to Peter Caspers).
-
-- Added the possibility to price caps in a Black-like model with
-  normal volatilities as well as shifted lognormal (thanks to Michael
-  von den Driesch).
-
-- Caplet strike is correctly recomputed during stripping (thanks to
-  Michael von den Driesch).
+- Added normal implied-volatility calculation to caps/floors (thanks
+  to Paolo Mazzocchi).
 
 INSTRUMENTS
 
-- Added basic CVA IRS pricing engine (stand alone, no portfolio; no
-  WWR, no collateral). Thanks to Jose Aparicio.
+- Fix a scenario in which a `CompositeInstrument` instance would stop
+  receiving notifications (thanks to Peter Caspers for the heads-up).
 
-MODELS
+- Added a few safety checks to the CVA swap engine (thanks to Andrea
+  Maggiulli).
 
-- Black-Scholes processes now return the closed-formula expectation,
-  standard deviation and variance over long periods (thanks to Peter
-  Caspers).
-
-CURRENCIES
-
-- Added Ukrainian hryvnia (thanks to GitHub user maksym-studenets).
-
-MONTE CARLO
-
-- Use different random-number generators for calibration and pricing
-  in Longstaff-Schwartz engine (thanks to Peter Caspers).
+- Auto-deactivate Boyle-Lau optimization for barrier options when not
+  using a CRR tree (thanks to Riccardo Ghetta).
 
 DATE/TIME
 
-- Added forecast dates for moving holidays to Saudi Arabia calendar up
-  to 2022 (thanks to Jayanth R. Varma).
+- Changed data type for `Date` serial numbers to `int_fast_32t` to
+  improve performance of date calculations (thanks to Peter Caspers).
 
-- Added new Ukrainian holiday, Defender's Day (thanks to GitHub user
-  maksym-studenets).
+- Added ECB maintenance period dates for 2017 (thanks to Paolo
+  Mazzocchi).
 
-- Added a few more holidays for South Korea (thanks to Faycal El Karaa).
+- Fixed rule for the Japanese Mountain Day holiday (thanks to Eisuke
+  Tani).
 
-MATH
+- Fixed United States holidays before 1971 (thanks to Nick Glass for
+  the heads-up).
 
-- Added mixed log interpolation (thanks to GitHub user sfondi).
+- Added a missing Chinese holiday (thanks to Cheng Li).
 
-- Avoid mixing different types while bit-shifting in fast Fourier
-  transform on 64-bit systems (thanks to Nikolai Nowaczyk).
-
-DEPRECATED FEATURES
-
-- Removed DateParser::split method (deprecated in version 1.6).
-
-TEST SUITE
-
-- The test suite is now run with a fixed evaluation date instead of
-  using today's date. This helps avoid transient errors due to
-  holidays. It is still possible to use today's date (or any other
-  date) by running it as:
-
-    $ quantlib-test-suite -- --date=today
-
-  or
-
-    $ quantlib-test-suite -- --date=2016-02-08
-
-  (Thanks to Peter Caspers.)
+- Ensure correct formatting when outputting dates (thanks to Peter
+  Caspers).
 
 NEW OPT-IN FEATURES
 
 These features are disabled by default and can be enabled by defining
 a macro or passing a flag to `./configure`.  Feedback is appreciated.
 
-- Added a parallel unit-test runner (thanks to Klaus Spanderen). This
-  was successfully used under Linux, but problems were reported on Mac
-  OS X and occasionally on Visual C++ 2010.  The feature requires
-  Boost 1.59 or later and can be enabled by uncommenting the
-  `QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER` macro in `ql/userconfig.hpp`
-  on Visual C++ or by passing the `--enable-parallel-unit-test-runner`
-  to `./configure` on other systems.
+- Enable thread-safe singleton initialization (thanks to GitHub user
+  sdgit). The feature can be enabled by uncommenting the
+  `QL_ENABLE_SINGLETON_THREAD_SAFE_INIT` macro in `ql/userconfig.hpp`
+  on Visual C++ or by passing the
+  `--enable-thread-safe-singleton-init` to `./configure` on other
+  systems.
 
 EXPERIMENTAL FOLDER
 
-The ql/experimental folder contains code which is still not fully
-integrated with the library or even fully tested, but is released in
-order to get user feedback. Experimental classes are considered
-unstable; their interfaces might change in future releases.
+The `ql/experimental` folder contains code whose interface is not
+fully stable, but is released in order to get user
+feedback. Experimental classes make no guarantees of backward
+compatibility; their interfaces might change in future releases.
 
 Changes and new contributions for this release were:
 
-- Stochastic local-volatility Heston model, (thanks to Klaus Spanderen
-  and Johannes Goettker-Schnetmann). Both a Monte Carlo and a
-  finite-difference calibration and calculation are provided.
+- OIS with arithmetic average (thanks to Stefano Fondi). A
+  corresponding bootstrap helpers is also available.
 
-- Laplace interpolation (thanks to Peter Caspers).
+- a function to calculate multi-curve sensitivities (thanks to Michael
+  von den Driesch).
 
-- Global optimizers: Hybrid Simulated Annealing, Particle Swarm
-  Optimization, Firefly Algorithm, and Differential Evolution (thanks
-  to Andres Hernandez).
-
-- A SVD-based calculation of the Moore-Penrose inverse matrix (thanks
-  to Peter Caspers).

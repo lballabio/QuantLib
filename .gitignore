@@ -73,6 +73,7 @@ testCaseCollection.xml
 *.ipch
 CMakeFiles
 *.cmake
+TAGS
 
 # Outputs
 Examples/BasketLosses/BasketLosses
