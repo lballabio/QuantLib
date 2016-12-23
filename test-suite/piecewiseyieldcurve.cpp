@@ -48,6 +48,7 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <boost/make_shared.hpp>
 #include <iomanip>
 
 using namespace QuantLib;
@@ -1026,7 +1027,26 @@ void PiecewiseYieldCurveTest::testZeroCopy() {
     testCurveCopy<ZeroYield,Linear>(vars);
 }
 
+void PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate() {
+    BOOST_TEST_MESSAGE("Testing SwapRateHelper last relevant date...");
 
+    SavedSettings backup;
+    Settings::instance().evaluationDate() = Date(22, Dec, 2016);
+    Date today = Settings::instance().evaluationDate();
+
+    Handle<YieldTermStructure> flat3m(
+        boost::make_shared<FlatForward>(today, Handle<Quote>(boost::make_shared<SimpleQuote>(0.02)), Actual365Fixed()));
+    boost::shared_ptr<IborIndex> usdLibor3m = boost::make_shared<USDLibor>(3 * Months, flat3m);
+
+    // note that the calendar should be US+UK here actually, but technically it should also work with
+    // the US calendar only
+    boost::shared_ptr<RateHelper> helper = boost::make_shared<SwapRateHelper>(
+        0.02, 50 * Years, UnitedStates(), Semiannual, ModifiedFollowing, Thirty360(), usdLibor3m);
+
+    PiecewiseYieldCurve<Discount, LogLinear> curve(today, std::vector<boost::shared_ptr<RateHelper> >(1, helper),
+                                                   Actual365Fixed());
+    BOOST_CHECK_NO_THROW(curve.discount(1.0));
+}
 
 
 test_suite* PiecewiseYieldCurveTest::suite() {
@@ -1076,5 +1096,6 @@ test_suite* PiecewiseYieldCurveTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testForwardCopy));
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testZeroCopy));
 
+    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate));
     return suite;
 }
