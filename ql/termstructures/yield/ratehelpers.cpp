@@ -778,11 +778,11 @@ namespace QuantLib {
             .withFloatingLegCalendar(calendar_);
 
         earliestDate_ = swap_->startDate();
+        maturityDate_ = swap_->maturityDate();
 
         shared_ptr<IborCoupon> lastCoupon =
             boost::dynamic_pointer_cast<IborCoupon>(swap_->floatingLeg().back());
-        maturityDate_ = latestRelevantDate_ = std::max(swap_->maturityDate(),
-                                                       lastCoupon->fixingEndDate());
+        latestRelevantDate_ = std::max(maturityDate_, lastCoupon->fixingEndDate());
 
         switch (pillarChoice_) {
           case Pillar::MaturityDate:
