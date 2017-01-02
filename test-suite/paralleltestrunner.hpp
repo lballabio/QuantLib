@@ -32,6 +32,12 @@
 
 #include <ql/types.hpp>
 
+#ifdef VERSION
+/* This comes from ./configure, and for some reason it interferes with
+   the internals of the unit test library in Boost 1.63. */
+#undef VERSION
+#endif
+
 #include <boost/timer.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
