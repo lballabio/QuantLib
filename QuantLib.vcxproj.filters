@@ -990,6 +990,9 @@
     <ClInclude Include="ql\math\interpolations\linearinterpolation.hpp">
       <Filter>math\interpolations</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\interpolations\lagrangeinterpolation.hpp">
+      <Filter>math\interpolations</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\interpolations\loginterpolation.hpp">
       <Filter>math\interpolations</Filter>
     </ClInclude>
@@ -1186,6 +1189,9 @@
       <Filter>math\randomnumbers</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\randomnumbers\sobolrsg.hpp">
+      <Filter>math\randomnumbers</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\math\randomnumbers\stochasticcollocationinvcdf.hpp">
       <Filter>math\randomnumbers</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\solvers1d\all.hpp">
@@ -4069,6 +4075,9 @@
     <ClInclude Include="ql\experimental\models\hestonslvmcmodel.hpp">
       <Filter>experimental\models</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\models\normalclvmodel.hpp">
+      <Filter>experimental\models</Filter>
+    </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\equityfx\fixedlocalvolsurface.hpp">
       <Filter>termstructures\volatility\equityfx</Filter>
     </ClInclude>
@@ -4076,6 +4085,9 @@
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\finitedifferences\fdmlocalvolfwdop.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\fdornsteinuhlenbeckvanillaengine.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\equityfx\noexceptlocalvolsurface.hpp">
@@ -4119,6 +4131,9 @@
     </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\equityfx\hestonblackvolsurface.hpp">
       <Filter>termstructures\volatility\equityfx</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\operators\fdmornsteinuhlenbeckop.hpp">
+      <Filter>methods\finitedifferences\operators</Filter>
     </ClInclude>
     <ClInclude Include="ql\indexes\ibor\aonia.hpp">
       <Filter>indexes\ibor</Filter>
@@ -4597,6 +4612,9 @@
       <Filter>math\randomnumbers</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\randomnumbers\sobolrsg.cpp">
+      <Filter>math\randomnumbers</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\randomnumbers\stochasticcollocationinvcdf.cpp">
       <Filter>math\randomnumbers</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\optimization\armijo.cpp">
@@ -6608,6 +6626,9 @@
     <ClCompile Include="ql\experimental\finitedifferences\squarerootprocessrndcalculator.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\fdornsteinuhlenbeckvanillaengine.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\models\hestonslvfdmmodel.cpp">
       <Filter>experimental\models</Filter>
     </ClCompile>
@@ -6652,6 +6673,12 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\math\particleswarmoptimization.cpp">
       <Filter>experimental\math</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\models\normalclvmodel.cpp">
+      <Filter>experimental\models</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\methods\finitedifferences\operators\fdmornsteinuhlenbeckop.cpp">
+      <Filter>methods\finitedifferences\operators</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
