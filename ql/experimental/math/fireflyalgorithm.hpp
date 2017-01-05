@@ -230,8 +230,9 @@ namespace QuantLib {
     */
     class GaussianWalk : public DistributionRandomWalk<BoostNormalDistribution> {
     public:
-        GaussianWalk(Real sigma, Real delta = 0.9, unsigned long seed = 0) :
-            DistributionRandomWalk(BoostNormalDistribution(0.0, sigma), delta, seed){}
+        GaussianWalk(Real sigma, Real delta = 0.9, unsigned long seed = 0)
+        : DistributionRandomWalk<BoostNormalDistribution>(
+                           BoostNormalDistribution(0.0, sigma), delta, seed){}
     };
 
     //! Levy Flight Random Walk
@@ -240,8 +241,9 @@ namespace QuantLib {
     class LevyFlightWalk : public DistributionRandomWalk<LevyFlightDistribution> {
     public:
         LevyFlightWalk(Real alpha, Real xm = 0.5, 
-                       Real delta = 0.9, unsigned long seed = 0) :
-            DistributionRandomWalk(LevyFlightDistribution(xm, alpha), delta, seed) {}
+                       Real delta = 0.9, unsigned long seed = 0)
+        : DistributionRandomWalk<LevyFlightDistribution>(
+                            LevyFlightDistribution(xm, alpha), delta, seed) {}
     };
 
     //! Decreasing Random Walk
