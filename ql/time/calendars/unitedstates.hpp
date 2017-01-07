@@ -55,11 +55,10 @@ namespace QuantLib {
         </ul>
 
         Note that since 2015 Independence Day only impacts Libor if it
-        falls on a  weekday (see <https://www.theice.com/iba/libor>
-        and <https://www.theice.com/marketdata/reports/170>
-        for the fixing calendar and
+        falls on a  weekday (see <https://www.theice.com/iba/libor>,
+        <https://www.theice.com/marketdata/reports/170> and
         <https://www.theice.com/publicdocs/LIBOR_Holiday_Calendar_2015.pdf>
-        for the value date calendar).
+        for the fixing and value date calendars).
 
         Holidays for the stock exchange (data from http://www.nyse.com):
         <ul>
