@@ -20,16 +20,19 @@
 /*! \file normalclvmodel.cpp
 */
 
+#include <ql/exercise.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/processes/ornsteinuhlenbeckprocess.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/experimental/models/normalclvmodel.hpp>
+#include <ql/experimental/finitedifferences/gbsmrndcalculator.hpp>
 
-#include <boost/bind.hpp>
 #include <boost/make_shared.hpp>
 
 namespace QuantLib {
@@ -48,88 +51,26 @@ namespace QuantLib {
       bsProcess_    (bsProcess),
       ouProcess_    (ouProcess),
       maturityDates_(maturityDates),
-      pricingEngine_(boost::make_shared<AnalyticEuropeanEngine>(bsProcess_)) {
+      rndCalculator_(boost::make_shared<GBSMRNDCalculator>(bsProcess)),
+      maturityTimes_(maturityDates.size()) {
 
         registerWith(bsProcess_);
         registerWith(ouProcess_);
 
-        maturityTimes_.reserve(maturityDates.size());
-        std::transform(maturityDates_.begin(), maturityDates_.end(),
-            std::back_inserter(maturityTimes_),
-            boost::bind(&GeneralizedBlackScholesProcess::time,
-                        bsProcess_, _1));
-        std::sort(maturityTimes_.begin(), maturityTimes_.end());
+        for (Size i=0; i < maturityTimes_.size(); ++i) {
+            maturityTimes_[i] = bsProcess_->time(maturityDates[i]);
+            QL_REQUIRE(i==0 || maturityTimes_[i-1] < maturityTimes_[i],
+                    "dates must be sorted");
+        }
     }
 
     Real NormalCLVModel::cdf(const Date& d, Real k) const {
-        //k = std::max(k, 1e-3*bsProcess_->x0());
-
-        const Handle<BlackVolTermStructure> volTS
-            = bsProcess_->blackVolatility();
-
-        const Real dk = 1e-3*k;
-        const Real dvol_dk
-            = (volTS->blackVol(d, k+dk) - volTS->blackVol(d, k-dk)) / (2*dk);
-
-        const DiscountFactor df
-            = bsProcess_->riskFreeRate()->discount(d);
-
-        const boost::shared_ptr<Exercise> exercise
-            = boost::make_shared<EuropeanExercise>(d);
-
-        if (bsProcess_->x0() <=k) {
-            VanillaOption option(
-                boost::make_shared<PlainVanillaPayoff>(Option::Call, k),
-                exercise);
-            option.setPricingEngine(pricingEngine_);
-
-            return 1.0 + (  option.strikeSensitivity()
-                          + option.vega() * dvol_dk) /df;
-        }
-        else {
-            VanillaOption option(
-                boost::make_shared<PlainVanillaPayoff>(Option::Put, k),
-                exercise);
-            option.setPricingEngine(pricingEngine_);
-
-            return (  option.strikeSensitivity()
-                    + option.vega() * dvol_dk) /df;
-
-        }
+        return rndCalculator_->cdf(k, bsProcess_->time(d));
     }
 
 
     Real NormalCLVModel::invCDF(const Date& d, Real q) const {
-        const Real fwd = bsProcess_->x0()
-            / bsProcess_->riskFreeRate()->discount(d, true)
-            * bsProcess_->dividendYield()->discount(d, true);
-
-        const Volatility atmVol =
-            bsProcess_->blackVolatility()->blackVol(d, fwd, true);
-
-        const Real atmX = InverseCumulativeNormal()(q);
-        const Time t = bsProcess_->time(d);
-
-        const Real guess = fwd*std::exp(atmVol*atmX*std::sqrt(t));
-
-
-        Real lower = guess;
-        while (guess/lower < 65535.0 && cdf(d, lower) > q)
-            lower*=0.5;
-
-        Real upper = guess;
-        while (upper/guess < 65535.0 && cdf(d, upper) < q) upper*=2;
-
-        QL_REQUIRE(guess/lower < 65535.0 && upper/guess < 65535.0,
-                "Could not find an start interval with ("
-                << lower << ", " << upper << ") -> ("
-                << cdf(d, lower) << ", " << cdf(d, upper) << ")");
-
-        return Brent().solve(
-            compose(std::bind2nd(std::minus<Real>(), q),
-                boost::function<Real(Real)>(
-                    boost::bind(&NormalCLVModel::cdf, this, d, _1))),
-            1e-10, 0.5*(lower+upper), lower, upper);
+        return rndCalculator_->invcdf(q, bsProcess_->time(d));
     }
 
     Disposable<Array> NormalCLVModel::collocationPointsX(const Date& d) const {

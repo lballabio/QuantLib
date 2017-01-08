@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (static runtime)|Win32">
@@ -746,6 +746,7 @@
     <ClCompile Include="shortratemodels.cpp" />
     <ClCompile Include="solvers.cpp" />
     <ClCompile Include="spreadoption.cpp" />
+    <ClCompile Include="squarerootclvmodel.cpp" />
     <ClCompile Include="stats.cpp" />
     <ClCompile Include="swap.cpp" />
     <ClCompile Include="swapforwardmappings.cpp" />
@@ -889,6 +890,7 @@
     <ClInclude Include="shortratemodels.hpp" />
     <ClInclude Include="solvers.hpp" />
     <ClInclude Include="spreadoption.hpp" />
+    <ClInclude Include="squarerootclvmodel.hpp" />
     <ClInclude Include="stats.hpp" />
     <ClInclude Include="swap.hpp" />
     <ClInclude Include="swapforwardmappings.hpp" />

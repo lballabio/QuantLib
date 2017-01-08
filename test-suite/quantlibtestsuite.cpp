@@ -169,6 +169,7 @@
 #include "shortratemodels.hpp"
 #include "solvers.hpp"
 #include "spreadoption.hpp"
+#include "squarerootclvmodel.hpp"
 #include "swingoption.hpp"
 #include "stats.hpp"
 #include "swap.hpp"
@@ -442,6 +443,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(EverestOptionTest::suite());
     test->add(ExtendedTreesTest::suite());
     test->add(ExtensibleOptionsTest::suite());
+    test->add(GaussianQuadraturesTest::experimental());
     test->add(HestonModelTest::experimental());
     test->add(HestonSLVModelTest::experimental());
     test->add(HimalayaOptionTest::suite());
@@ -457,6 +459,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(QuantoOptionTest::experimental());
     test->add(RiskNeutralDensityCalculatorTest::experimental());
     test->add(SpreadOptionTest::suite());
+    test->add(SquareRootCLVModelTest::experimental());
     test->add(SwingOptionTest::suite());
     test->add(TwoAssetBarrierOptionTest::suite());
     test->add(TwoAssetCorrelationOptionTest::suite());

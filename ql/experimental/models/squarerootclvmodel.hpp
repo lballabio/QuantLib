@@ -17,38 +17,32 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file normalclvmodel.hpp
-    \brief CLV model with a normally distributed kernel process
+/*! \file squarerootclvmodel.hpp
+    \brief CLV model with a square root kernel process
 */
 
-#ifndef quantlib_normal_clv_model_hpp
-#define quantlib_normal_clv_model_hpp
+#ifndef quantlib_square_root_clv_model_hpp
+#define quantlib_square_root_clv_model_hpp
 
+#include <ql/time/date.hpp>
 #include <ql/patterns/lazyobject.hpp>
-#include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/interpolations/lagrangeinterpolation.hpp>
+#include <ql/experimental/math/gaussiannoncentralchisquaredpolynomial.hpp>
 
 #include <boost/function.hpp>
+#include <map>
 
 namespace QuantLib {
-    /*! References:
 
-        A. Grzelak, 2016, The CLV Framework -
-        A Fresh Look at Efficient Pricing with Smile
-
-        http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2747541
-    */
-
-    class PricingEngine;
     class GBSMRNDCalculator;
-    class OrnsteinUhlenbeckProcess;
+    class SquareRootProcess;
     class GeneralizedBlackScholesProcess;
 
-    class NormalCLVModel : public LazyObject {
+    class SquareRootCLVModel : public LazyObject {
       public:
-        NormalCLVModel(
+        SquareRootCLVModel(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
-            const boost::shared_ptr<OrnsteinUhlenbeckProcess>& ouProcess,
+            const boost::shared_ptr<SquareRootProcess>& sqrtProcess,
             const std::vector<Date>& maturityDates,
             Size lagrangeOrder,
             Real pMax = Null<Real>(),
@@ -60,7 +54,7 @@ namespace QuantLib {
         // inverse cumulative distribution function of the BS process
         Real invCDF(const Date& d, Real q) const;
 
-        // collocation points of the Ornstein-Uhlenbeck process
+        // collocation points of the square root process
         Disposable<Array> collocationPointsX(const Date& d) const;
 
         // collocation points for the underlying Y
@@ -75,42 +69,27 @@ namespace QuantLib {
       private:
         class MappingFunction : public std::binary_function<Time, Real, Real> {
           public:
-            MappingFunction(const NormalCLVModel& model);
+            MappingFunction(const SquareRootCLVModel& model);
 
             Real operator()(Time t, Real x) const;
 
           private:
-            mutable Array y_;
-            const Volatility sigma_;
-            const boost::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess_;
+            const boost::shared_ptr<Matrix> s_, x_;
+            typedef std::map<Time, boost::shared_ptr<LagrangeInterpolation> >
+                interpl_type;
 
-            struct InterpolationData {
-                InterpolationData(const NormalCLVModel& model)
-                : s_(model.x_.size(), model.maturityDates_.size()),
-                  x_(model.x_),
-                  t_(model.maturityTimes_),
-                  lagrangeInterpl_(x_.begin(), x_.end(), x_.begin()) {}
-
-                Matrix s_;
-                std::vector<LinearInterpolation> interpl_;
-
-                const Array x_;
-                const std::vector<Time> t_;
-                const LagrangeInterpolation lagrangeInterpl_;
-            };
-
-            const boost::shared_ptr<InterpolationData> data_;
+            interpl_type interpl;
         };
 
+        std::pair<Real, Real> nonCentralChiSquaredParams(const Date& d) const;
 
-        const Array x_;
-        const Volatility sigma_;
+        const Real pMax_, pMin_;
         const boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess_;
-        const boost::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess_;
+        const boost::shared_ptr<SquareRootProcess> sqrtProcess_;
         const std::vector<Date> maturityDates_;
+        const Size lagrangeOrder_;
         const boost::shared_ptr<GBSMRNDCalculator> rndCalculator_;
 
-        std::vector<Time> maturityTimes_;
         mutable boost::function<Real(Time, Real)> g_;
     };
 }

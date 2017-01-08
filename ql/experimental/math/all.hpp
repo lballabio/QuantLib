@@ -8,6 +8,7 @@
 #include <ql/experimental/math/fireflyalgorithm.hpp>
 #include <ql/experimental/math/frankcopularng.hpp>
 #include <ql/experimental/math/gaussiancopulapolicy.hpp>
+#include <ql/experimental/math/gaussiannoncentralchisquaredpolynomial.hpp>
 #include <ql/experimental/math/hybridsimulatedannealing.hpp>
 #include <ql/experimental/math/hybridsimulatedannealingfunctors.hpp>
 #include <ql/experimental/math/isotropicrandomwalk.hpp>

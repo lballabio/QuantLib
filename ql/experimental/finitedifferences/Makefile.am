@@ -33,6 +33,7 @@ this_include_HEADERS = \
 	fdsimpleextoujumpswingengine.hpp \
     fdsimpleextoustorageengine.hpp \
 	fdsimpleklugeextouvppengine.hpp \
+    gbsmrndcalculator.hpp \
 	glued1dmesher.hpp \
 	hestonrndcalculator.hpp \
 	localvolrndcalculator.hpp \
@@ -65,6 +66,7 @@ libMultiDimFDM_la_SOURCES = \
 	fdsimpleextoujumpswingengine.cpp \
     fdsimpleextoustorageengine.cpp \
     fdsimpleklugeextouvppengine.cpp \
+    gbsmrndcalculator.cpp \
 	glued1dmesher.cpp \
 	hestonrndcalculator.cpp \
 	localvolrndcalculator.cpp \

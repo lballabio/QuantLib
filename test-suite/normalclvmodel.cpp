@@ -26,22 +26,37 @@
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/instruments/impliedvolatility.hpp>
+#include <ql/instruments/forwardvanillaoption.hpp>
 #include <ql/math/statistics/statistics.hpp>
+#include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/randomnumbers/sobolbrownianbridgersg.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/processes/ornsteinuhlenbeckprocess.hpp>
+#include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/pricingengines/forward/forwardengine.hpp>
 #include <ql/methods/montecarlo/pathgenerator.hpp>
-#include <ql/termstructures/volatility/sabr.hpp>
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 
 #include <ql/experimental/models/normalclvmodel.hpp>
+#include <ql/experimental/volatility/sabrvoltermstructure.hpp>
 #include <ql/experimental/finitedifferences/bsmrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/hestonrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/fdornsteinuhlenbeckvanillaengine.hpp>
 #include <ql/experimental/barrieroption/doublebarrieroption.hpp>
 #include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
 
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
 #include <boost/bind.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic pop
+#endif
+
 #include <boost/make_shared.hpp>
 #include <boost/assign/std/vector.hpp>
 
@@ -148,31 +163,6 @@ void NormalCLVModelTest::testHestonCumlativeDistributionFunction() {
 }
 
 
-namespace {
-    class SABRVolTermStructure : public BlackVolatilityTermStructure {
-      public:
-        SABRVolTermStructure(Real alpha, Real beta, Real gamma, Real rho,
-                             Real s0, Real r,
-                             const Date& referenceDate, const DayCounter dc)
-      : BlackVolatilityTermStructure(
-            referenceDate, NullCalendar(), Following, dc),
-        alpha_(alpha), beta_(beta),
-        gamma_(gamma), rho_(rho),
-        s0_(s0), r_(r) { }
-
-        Date maxDate()   const { return Date::maxDate(); }
-        Rate minStrike() const { return 0.0; }
-        Rate maxStrike() const { return QL_MAX_REAL; }
-
-      protected:
-        Volatility blackVolImpl(Time t, Real strike) const {
-            const Real fwd = s0_*std::exp(r_*t);
-            return sabrVolatility(strike, fwd, t, alpha_, beta_, gamma_, rho_);
-        }
-      private:
-        Real alpha_, beta_, gamma_, rho_, s0_, r_;
-    };
-}
 
 void NormalCLVModelTest::testIllustrative1DExample() {
     BOOST_TEST_MESSAGE("Testing illustrative 1d example of NormalCLVModel ...");
@@ -289,9 +279,9 @@ void NormalCLVModelTest::testIllustrative1DExample() {
 }
 
 namespace {
-    class NormalCLVModelPayoff : public PlainVanillaPayoff {
+    class CLVModelPayoff : public PlainVanillaPayoff {
       public:
-        NormalCLVModelPayoff(Option::Type type, Real strike,
+        CLVModelPayoff(Option::Type type, Real strike,
                              const boost::function<Real(Real)> g)
         : PlainVanillaPayoff(type, strike),
           g_(g) { }
@@ -383,7 +373,7 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
     }
 
     VanillaOption fdmOption(
-         boost::make_shared<NormalCLVModelPayoff>(
+         boost::make_shared<CLVModelPayoff>(
              payoff->optionType(), payoff->strike(), boost::bind(g, t, _1)),
          exercise);
 
@@ -569,7 +559,6 @@ void NormalCLVModelTest::testMoustacheGraph() {
     }
 }
 
-
 test_suite* NormalCLVModelTest::experimental() {
     test_suite* suite = BOOST_TEST_SUITE("NormalCLVModel tests");
 
@@ -580,9 +569,9 @@ test_suite* NormalCLVModelTest::experimental() {
     suite->add(QUANTLIB_TEST_CASE(
         &NormalCLVModelTest::testIllustrative1DExample));
     suite->add(QUANTLIB_TEST_CASE(
-            NormalCLVModelTest::testMonteCarloBSOptionPricing));
+        &NormalCLVModelTest::testMonteCarloBSOptionPricing));
     suite->add(QUANTLIB_TEST_CASE(
-            NormalCLVModelTest::testMoustacheGraph));
+        &NormalCLVModelTest::testMoustacheGraph));
 
     return suite;
 }

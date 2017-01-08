@@ -11,6 +11,7 @@ this_include_HEADERS = \
     fireflyalgorithm.hpp \
     frankcopularng.hpp \
     gaussiancopulapolicy.hpp \
+    gaussiannoncentralchisquaredpolynomial.hpp \
     hybridsimulatedannealing.hpp \
     hybridsimulatedannealingfunctors.hpp \
     isotropicrandomwalk.hpp \
@@ -33,6 +34,7 @@ libMath_la_SOURCES = \
     expm.cpp \
     fireflyalgorithm.cpp \
     gaussiancopulapolicy.cpp \
+    gaussiannoncentralchisquaredpolynomial.cpp \
     multidimintegrator.cpp \
     multidimquadrature.cpp \
     numericaldifferentiation.cpp \

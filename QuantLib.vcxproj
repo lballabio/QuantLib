@@ -481,7 +481,9 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ql\experimental\finitedifferences\gbsmrndcalculator.hpp" />
     <ClInclude Include="ql\experimental\math\fireflyalgorithm.hpp" />
+    <ClInclude Include="ql\experimental\math\gaussiannoncentralchisquaredpolynomial.hpp" />
     <ClInclude Include="ql\experimental\math\hybridsimulatedannealing.hpp" />
     <ClInclude Include="ql\experimental\math\hybridsimulatedannealingfunctors.hpp" />
     <ClInclude Include="ql\experimental\math\isotropicrandomwalk.hpp" />
@@ -499,6 +501,8 @@
     <ClInclude Include="ql\experimental\models\hestonslvfdmmodel.hpp" />
     <ClInclude Include="ql\experimental\models\hestonslvmcmodel.hpp" />
     <ClInclude Include="ql\experimental\models\normalclvmodel.hpp" />
+    <ClInclude Include="ql\experimental\models\squarerootclvmodel.hpp" />
+    <ClInclude Include="ql\experimental\volatility\sabrvoltermstructure.hpp" />
     <ClInclude Include="ql\indexes\ibor\aonia.hpp" />
     <ClInclude Include="ql\indexes\ibor\bbsw.hpp" />
     <ClInclude Include="ql\indexes\ibor\bkbm.hpp" />
@@ -1778,7 +1782,9 @@
     <ClInclude Include="ql\volatilitymodel.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ql\experimental\finitedifferences\gbsmrndcalculator.cpp" />
     <ClCompile Include="ql\experimental\math\fireflyalgorithm.cpp" />
+    <ClCompile Include="ql\experimental\math\gaussiannoncentralchisquaredpolynomial.cpp" />
     <ClCompile Include="ql\experimental\math\particleswarmoptimization.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\bsmrndcalculator.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmhestongreensfct.cpp" />
@@ -1791,6 +1797,7 @@
     <ClCompile Include="ql\experimental\models\hestonslvfdmmodel.cpp" />
     <ClCompile Include="ql\experimental\models\hestonslvmcmodel.cpp" />
     <ClCompile Include="ql\experimental\models\normalclvmodel.cpp" />
+    <ClCompile Include="ql\experimental\models\squarerootclvmodel.cpp" />
     <ClCompile Include="ql\math\polynomialmathfunction.cpp" />
     <ClCompile Include="ql\math\pascaltriangle.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\fdmornsteinuhlenbeckop.cpp" />

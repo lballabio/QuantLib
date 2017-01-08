@@ -30,6 +30,7 @@
 #include <ql/experimental/finitedifferences/fdsimpleextoujumpswingengine.hpp>
 #include <ql/experimental/finitedifferences/fdsimpleextoustorageengine.hpp>
 #include <ql/experimental/finitedifferences/fdsimpleklugeextouvppengine.hpp>
+#include <ql/experimental/finitedifferences/gbsmrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/glued1dmesher.hpp>
 #include <ql/experimental/finitedifferences/hestonrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/localvolrndcalculator.hpp>

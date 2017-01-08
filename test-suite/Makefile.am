@@ -119,6 +119,7 @@ QL_TESTS = \
 	shortratemodels.hpp shortratemodels.cpp \
 	solvers.hpp solvers.cpp \
 	spreadoption.hpp spreadoption.cpp \
+	squarerootclvmodel.hpp squarerootclvmodel.cpp \
 	stats.hpp stats.cpp \
 	swap.hpp swap.cpp \
 	swapforwardmappings.hpp swapforwardmappings.cpp \

@@ -4147,6 +4147,18 @@
     <ClInclude Include="ql\indexes\ibor\nzocr.hpp">
       <Filter>indexes\ibor</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\finitedifferences\gbsmrndcalculator.hpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\volatility\sabrvoltermstructure.hpp">
+      <Filter>experimental\volatility</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\models\squarerootclvmodel.hpp">
+      <Filter>experimental\models</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\math\gaussiannoncentralchisquaredpolynomial.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -6679,6 +6691,15 @@
     </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\operators\fdmornsteinuhlenbeckop.cpp">
       <Filter>methods\finitedifferences\operators</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\finitedifferences\gbsmrndcalculator.cpp">
+      <Filter>experimental\finitedifferences</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\models\squarerootclvmodel.cpp">
+      <Filter>experimental\models</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\math\gaussiannoncentralchisquaredpolynomial.cpp">
+      <Filter>experimental\math</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

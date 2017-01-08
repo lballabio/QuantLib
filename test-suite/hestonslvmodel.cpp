@@ -103,9 +103,6 @@
 #pragma GCC diagnostic pop
 #endif
 
-#include <iostream>
-#include <fstream>
-
 using namespace QuantLib;
 using namespace boost::assign;
 using boost::unit_test_framework::test_suite;

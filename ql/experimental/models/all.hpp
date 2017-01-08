@@ -4,4 +4,5 @@
 #include <ql/experimental/models/hestonslvfdmmodel.hpp>
 #include <ql/experimental/models/hestonslvmcmodel.hpp>
 #include <ql/experimental/models/normalclvmodel.hpp>
+#include <ql/experimental/models/squarerootclvmodel.hpp>
 
