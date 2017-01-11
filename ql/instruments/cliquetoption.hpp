@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003, 2004, 2007 StatPro Italia srl
+ Copyright (C) 2017 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -39,10 +40,6 @@ namespace QuantLib {
         strike for each forward start option is set equal to a fixed
         percentage of the spot price at the beginning of each period.
 
-        \todo
-        - add local/global caps/floors
-        - add accrued coupon and last fixing
-
         \ingroup instruments
     */
     class CliquetOption : public OneAssetOption {
@@ -51,10 +48,18 @@ namespace QuantLib {
         class engine;
         CliquetOption(const boost::shared_ptr<PercentageStrikePayoff>&,
                       const boost::shared_ptr<EuropeanExercise>& maturity,
-                      const std::vector<Date>& resetDates);
+                      const std::vector<Date>& resetDates,
+                      const Real localCap = Null<Real>(),
+                      const Real localFloor = Null<Real>(),
+                      const Real globalCap = Null<Real>(),
+                      const Real globalFloor = Null<Real>(),
+                      const Real accruedCoupon = Null<Real>(),
+                      const Real lastFixing = Null<Real>());
         void setupArguments(PricingEngine::arguments*) const;
       private:
         std::vector<Date> resetDates_;
+        Real localCap_, localFloor_, globalCap_, globalFloor_,
+            accruedCoupon_, lastFixing_;
     };
 
     //! %Arguments for cliquet option calculation

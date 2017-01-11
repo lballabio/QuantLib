@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2008 Master IMAFA - Polytech'Nice Sophia - Université de Nice Sophia Antipolis
+ Copyright (C) 2017 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,8 +24,14 @@ namespace QuantLib {
 
     PerformanceOptionPathPricer::PerformanceOptionPathPricer(
                                  Option::Type type, Real strike,
+                                 Real localCap, Real localFloor,
+                                 Real globalCap, Real globalFloor,
+                                 Real accruedCoupon, Real lastFixing,
                                  const std::vector<DiscountFactor>& discounts)
-    : strike_(strike), type_(type), discounts_(discounts) {}
+        : strike_(strike), localCap_(localCap), localFloor_(localFloor),
+          globalCap_(globalCap), globalFloor_(globalFloor),
+          accruedCoupon_(accruedCoupon), lastFixing_(lastFixing),
+          type_(type), discounts_(discounts) {}
 
     Real PerformanceOptionPathPricer::operator()(const Path& path) const {
 
@@ -32,12 +39,17 @@ namespace QuantLib {
         QL_REQUIRE(n==discounts_.size()+1, "discounts/options mismatch");
         PlainVanillaPayoff payoff(type_,strike_);
 
-        Real sum = 0.0;
-        for (Size i = 2 ; i < n; i++) {
-            sum += discounts_[i-1] * payoff(path[i]/path[i-1]);
+        Real sum = accruedCoupon_ == Null<Real>() ? 0.0 : accruedCoupon_;
+        Real lastFixing = lastFixing_, currentFixing;
+        for (Size i = 1 ; i < n; i++) {
+            currentFixing = path[i];
+            if (i > 1 || lastFixing != Null<Real>())
+                sum += discounts_[i - 1] *
+                    std::min(std::max(payoff(currentFixing / lastFixing), localFloor_), localCap_);
+            lastFixing = currentFixing;
         }
 
-        return sum;
+        return std::min(std::max(sum, globalFloor_), globalCap_);
     }
 
 }

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2004, 2007 StatPro Italia srl
+ Copyright (C) 2017 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,9 +26,14 @@ namespace QuantLib {
     CliquetOption::CliquetOption(
                    const boost::shared_ptr<PercentageStrikePayoff>& payoff,
                    const boost::shared_ptr<EuropeanExercise>& maturity,
-                   const std::vector<Date>& resetDates)
+                   const std::vector<Date>& resetDates,
+                   const Real localCap, const Real localFloor,
+                   const Real globalCap, const Real globalFloor,
+                   const Real accruedCoupon, const Real lastFixing)
     : OneAssetOption(payoff,maturity),
-      resetDates_(resetDates) {}
+      resetDates_(resetDates), localCap_(localCap), localFloor_(localFloor),
+      globalCap_(globalCap), globalFloor_(globalFloor),
+      accruedCoupon_(accruedCoupon), lastFixing_(lastFixing) {}
 
     void CliquetOption::setupArguments(PricingEngine::arguments* args) const {
         OneAssetOption::setupArguments(args);
@@ -36,6 +42,12 @@ namespace QuantLib {
             dynamic_cast<CliquetOption::arguments*>(args);
         QL_REQUIRE(moreArgs != 0,
                    "wrong engine type");
+        moreArgs->accruedCoupon = accruedCoupon_;
+        moreArgs->lastFixing = lastFixing_;
+        moreArgs->localCap = localCap_;
+        moreArgs->localFloor = localFloor_;
+        moreArgs->globalCap = globalCap_;
+        moreArgs->globalFloor = globalFloor_;
         moreArgs->resetDates = resetDates_;
     }
 

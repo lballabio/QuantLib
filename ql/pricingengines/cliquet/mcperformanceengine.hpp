@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2008 Master IMAFA - Polytech'Nice Sophia - Université de Nice Sophia Antipolis
+ Copyright (C) 2017 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -49,6 +50,11 @@ namespace QuantLib {
              Size maxSamples,
              BigNatural seed);
         void calculate() const {
+            // sanity check
+            QL_REQUIRE(process_->time(this->arguments_.resetDates.front()) > 0.0,
+                       "first reset date (" << this->arguments_.resetDates.front()
+                                            << ") must have positive time ("
+                                            << process_->time(this->arguments_.resetDates.front()));
             McSimulation<SingleVariate,RNG,S>::calculate(requiredTolerance_,
                                                          requiredSamples_,
                                                          maxSamples_);
@@ -106,14 +112,17 @@ namespace QuantLib {
 
     class PerformanceOptionPathPricer : public PathPricer<Path> {
       public:
-        PerformanceOptionPathPricer(
-                                Option::Type type, Real strike,
-                                const std::vector<DiscountFactor>& discounts);
-        Real operator()(const Path& path) const;
+          PerformanceOptionPathPricer(Option::Type type, Real strike,
+                                      Real localCap, Real localFloor,
+                                      Real globalCap, Real globalFloor,
+                                      Real accruedCoupon, Real lastFixing,
+                                      const std::vector<DiscountFactor>& discounts);
+          Real operator()(const Path& path) const;
       private:
-        Real strike_;
-        Option::Type type_;
-        std::vector<DiscountFactor> discounts_;
+          Real strike_, localCap_, localFloor_, globalCap_, globalFloor_, accruedCoupon_,
+              lastFixing_;
+          Option::Type type_;
+          std::vector<DiscountFactor> discounts_;
     };
 
 
@@ -159,6 +168,15 @@ namespace QuantLib {
                 this->arguments_.payoff);
         QL_REQUIRE(payoff, "non-percentage payoff given");
 
+        Real lcap = this->arguments_.localCap == Null<Real>() ?
+            QL_MAX_REAL : this->arguments_.localCap;
+        Real lfloor = this->arguments_.localFloor == Null<Real>() ?
+            -QL_MAX_REAL : this->arguments_.localFloor;
+        Real gcap = this->arguments_.globalCap == Null<Real>() ?
+            QL_MAX_REAL : this->arguments_.globalCap;
+        Real gfloor = this->arguments_.globalFloor == Null<Real>() ?
+            -QL_MAX_REAL : this->arguments_.globalFloor;
+
         boost::shared_ptr<EuropeanExercise> exercise =
             boost::dynamic_pointer_cast<EuropeanExercise>(
                 this->arguments_.exercise);
@@ -177,6 +195,10 @@ namespace QuantLib {
             typename MCPerformanceEngine<RNG,S>::path_pricer_type>(
                          new PerformanceOptionPathPricer(payoff->optionType(),
                                                          payoff->strike(),
+                                                         lcap, lfloor,
+                                                         gcap, gfloor,
+                                                         this->arguments_.accruedCoupon,
+                                                         this->arguments_.lastFixing,
                                                          discounts));
     }
 
