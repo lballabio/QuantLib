@@ -159,10 +159,10 @@ namespace QuantLib {
       public:
         //! US calendars
         enum Market { Settlement,     //!< generic settlement calendar
-                      LiborImpact,    //!< Libor impact calendar
                       NYSE,           //!< New York stock exchange calendar
                       GovernmentBond, //!< government-bond calendar
                       NERC            //!< off-peak days for NERC
+                      LiborImpact,    //!< Libor impact calendar
         };
         UnitedStates(Market market = Settlement);
     };
