@@ -9,6 +9,7 @@ this_include_HEADERS = \
 	choleskydecomposition.hpp \
 	factorreduction.hpp \
 	getcovariance.hpp \
+	gmres.hpp \
 	pseudosqrt.hpp \
 	qrdecomposition.hpp \
 	sparseilupreconditioner.hpp \
@@ -24,6 +25,7 @@ libMatrixUtilities_la_SOURCES = \
 	choleskydecomposition.cpp \
 	factorreduction.cpp \
 	getcovariance.cpp \
+	gmres.cpp \
 	pseudosqrt.cpp \
 	qrdecomposition.cpp \
 	sparseilupreconditioner.cpp \
