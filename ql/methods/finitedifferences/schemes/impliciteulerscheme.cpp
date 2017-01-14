@@ -63,7 +63,7 @@ namespace QuantLib {
                 QuantLib::BiCGstab(
                     boost::function<Disposable<Array>(const Array&)>(
                         boost::bind(&ImplicitEulerScheme::apply, this, _1)),
-                    std::max(10ul, a.size()), relTol_,
+                    std::max(Size(10), a.size()), relTol_,
                     boost::function<Disposable<Array>(const Array&)>(
                         boost::bind(&FdmLinearOpComposite::preconditioner,
                                     map_, _1, -dt_))
@@ -77,7 +77,7 @@ namespace QuantLib {
                 QuantLib::GMRES(
                     boost::function<Disposable<Array>(const Array&)>(
                         boost::bind(&ImplicitEulerScheme::apply, this, _1)),
-                    std::max(10ul, a.size()/10u), relTol_,
+                    std::max(Size(10), a.size()/10u), relTol_,
                     boost::function<Disposable<Array>(const Array&)>(
                         boost::bind(&FdmLinearOpComposite::preconditioner,
                                     map_, _1, -dt_))

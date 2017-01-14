@@ -1362,8 +1362,18 @@ void FdmLinearOpTest::testGMRES() {
                 "\n error:      " << error);
 
     }
-#endif
 
+    const GMRES gmresRestart(matmult, 5, tol, precond);
+    const GMRESResult resultRestart = gmresRestart.solveWithRestart(5, b, b);
+    const Real errorWithRestart = resultRestart.errors.back();
+
+    if (errorWithRestart > tol) {
+        BOOST_FAIL("Error calculating the inverse using "
+                "GMRES with restarts" <<
+                "\n tolerance:  " << tol <<
+                "\n error:      " << errorWithRestart);
+    }
+#endif
 }
 
 void FdmLinearOpTest::testCrankNicolsonWithDamping() {
