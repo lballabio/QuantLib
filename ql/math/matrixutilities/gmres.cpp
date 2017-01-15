@@ -26,6 +26,8 @@
 #include <ql/math/matrixutilities/gmres.hpp>
 #include <ql/math/matrixutilities/qrdecomposition.hpp>
 
+#include <numeric>
+
 namespace QuantLib {
 
     GMRES::GMRES(const GMRES::MatrixMult& A,
@@ -134,16 +136,12 @@ namespace QuantLib {
         y[k-1]=z[k-1]/h[k-1][k-1];
 
         for (Integer i=k-2; i >= 0; --i) {
-            y[i] = z[i];
-            for (Size l=i+1; l < k; ++l) {
-                y[i]-=h[i][l]*y[l];
-            }
-            y[i]/=h[i][i];
+            y[i] = (z[i] - std::inner_product(
+                 h[i].begin()+i+1, h[i].begin()+k, y.begin()+i+1, 0.0))/h[i][i];
         }
 
-        Array xm(x.size(), 0.0);
-        for (Size i=0; i < k; ++i)
-            xm += y[i]*v[i];
+        Array xm = std::inner_product(
+            v.begin(), v.begin()+k, y.begin(), Array(x.size(), 0.0));
 
         xm = x + ((M_)? M_(xm) : xm);
 
