@@ -37,8 +37,8 @@ namespace QuantLib {
         }
     }
 
-    BigInteger Thirty360::US_Impl::dayCount(const Date& d1,
-                                            const Date& d2) const {
+    Date::serial_type Thirty360::US_Impl::dayCount(const Date& d1,
+                                                   const Date& d2) const {
         Day dd1 = d1.dayOfMonth(), dd2 = d2.dayOfMonth();
         Integer mm1 = d1.month(), mm2 = d2.month();
         Year yy1 = d1.year(), yy2 = d2.year();
@@ -49,8 +49,8 @@ namespace QuantLib {
             std::max(Integer(0),30-dd1) + std::min(Integer(30),dd2);
     }
 
-    BigInteger Thirty360::EU_Impl::dayCount(const Date& d1,
-                                            const Date& d2) const {
+    Date::serial_type Thirty360::EU_Impl::dayCount(const Date& d1,
+                                                   const Date& d2) const {
         Day dd1 = d1.dayOfMonth(), dd2 = d2.dayOfMonth();
         Month mm1 = d1.month(), mm2 = d2.month();
         Year yy1 = d1.year(), yy2 = d2.year();
@@ -59,8 +59,8 @@ namespace QuantLib {
             std::max(Integer(0),30-dd1) + std::min(Integer(30),dd2);
     }
 
-    BigInteger Thirty360::IT_Impl::dayCount(const Date& d1,
-                                            const Date& d2) const {
+    Date::serial_type Thirty360::IT_Impl::dayCount(const Date& d1,
+                                                   const Date& d2) const {
         Day dd1 = d1.dayOfMonth(), dd2 = d2.dayOfMonth();
         Month mm1 = d1.month(), mm2 = d2.month();
         Year yy1 = d1.year(), yy2 = d2.year();

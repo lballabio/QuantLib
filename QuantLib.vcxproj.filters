@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="methods">
@@ -277,6 +277,9 @@
     <Filter Include="experimental\swaptions">
       <UniqueIdentifier>{63ee57ce-bf68-4a4a-b5c8-29d11c2a11ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="experimental\termstructures">
+      <UniqueIdentifier>{8a1123c5-a617-4cf2-93df-e554735531ae}</UniqueIdentifier>
+    </Filter>
     <Filter Include="experimental\varianceoption">
       <UniqueIdentifier>{8fd699bb-f489-4e96-a998-54b5612a9aa7}</UniqueIdentifier>
     </Filter>
@@ -291,6 +294,9 @@
     </Filter>
     <Filter Include="experimental\amortizingbonds">
       <UniqueIdentifier>{101d6cdd-3e77-48cd-8bec-c84a252324f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="experimental\averageois">
+      <UniqueIdentifier>{33f1be16-e858-4cfe-ba9c-483609826221}</UniqueIdentifier>
     </Filter>
     <Filter Include="experimental\barrieroption">
       <UniqueIdentifier>{aad1cf31-2c29-47a1-9461-ee71b1dd9a6a}</UniqueIdentifier>
@@ -2121,6 +2127,9 @@
     <ClInclude Include="ql\utilities\null.hpp">
       <Filter>utilities</Filter>
     </ClInclude>
+    <ClInclude Include="ql\utilities\null_deleter.hpp">
+      <Filter>utilities</Filter>
+    </ClInclude>
     <ClInclude Include="ql\utilities\observablevalue.hpp">
       <Filter>utilities</Filter>
     </ClInclude>
@@ -3288,6 +3297,12 @@
     <ClInclude Include="ql\experimental\swaptions\irregularswaption.hpp">
       <Filter>experimental\swaptions</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\termstructures\all.hpp">
+      <Filter>experimental\termstructures</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\termstructures\multicurvesensitivities.hpp">
+      <Filter>experimental\termstructures</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\varianceoption\all.hpp">
       <Filter>experimental\varianceoption</Filter>
     </ClInclude>
@@ -3404,6 +3419,21 @@
     </ClInclude>
     <ClInclude Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.hpp">
       <Filter>experimental\amortizingbonds</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\averageois\all.hpp">
+      <Filter>experimental\averageois</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\averageois\arithmeticaverageois.hpp">
+      <Filter>experimental\averageois</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\averageois\arithmeticoisratehelper.hpp">
+      <Filter>experimental\averageois</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\averageois\averageoiscouponpricer.hpp">
+      <Filter>experimental\averageois</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\averageois\makearithmeticaverageois.hpp">
+      <Filter>experimental\averageois</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\barrieroption\all.hpp">
       <Filter>experimental\barrieroption</Filter>
@@ -4089,6 +4119,18 @@
     </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\equityfx\hestonblackvolsurface.hpp">
       <Filter>termstructures\volatility\equityfx</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\indexes\ibor\aonia.hpp">
+      <Filter>indexes\ibor</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\indexes\ibor\bbsw.hpp">
+      <Filter>indexes\ibor</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\indexes\ibor\bkbm.hpp">
+      <Filter>indexes\ibor</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\indexes\ibor\nzocr.hpp">
+      <Filter>indexes\ibor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -6119,6 +6161,18 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.cpp">
       <Filter>experimental\amortizingbonds</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\averageois\arithmeticaverageois.cpp">
+      <Filter>experimental\averageois</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\averageois\averageoiscouponpricer.cpp">
+      <Filter>experimental\averageois</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\averageois\arithmeticoisratehelper.cpp">
+      <Filter>experimental\averageois</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\averageois\makearithmeticaverageois.cpp">
+      <Filter>experimental\averageois</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\barrieroption\analyticdoublebarrierbinaryengine.cpp">
       <Filter>experimental\barrieroption</Filter>

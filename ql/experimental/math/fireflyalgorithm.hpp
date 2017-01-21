@@ -206,11 +206,12 @@ namespace QuantLib {
         variate_generator
     */
     template <class Distribution>
-    class DistributionRanddomWalk : public FireflyAlgorithm::RandomWalk {
+    class DistributionRandomWalk : public FireflyAlgorithm::RandomWalk {
     public:
         typedef IsotropicRandomWalk<Distribution, base_generator_type> WalkRandom;
-        DistributionRanddomWalk(Distribution dist, Real delta = 0.9,
-                                unsigned long seed = SeedGenerator::instance().get()) :
+        DistributionRandomWalk(Distribution dist, 
+		                       Real delta = 0.9, 
+                               unsigned long seed = SeedGenerator::instance().get()) :
             walkRandom_(base_generator_type(seed), dist, 1, Array(1, 1.0), seed),
             delta_(delta) {}
     protected:
@@ -229,20 +230,25 @@ namespace QuantLib {
     //! Gaussian Walk
     /*  Gaussian random walk
     */
-    class GaussianWalk : public DistributionRanddomWalk<BoostNormalDistribution> {
+    class GaussianWalk : public DistributionRandomWalk<BoostNormalDistribution> {
     public:
-        GaussianWalk(Real sigma, Real delta = 0.9, unsigned long seed = SeedGenerator::instance().get()) :
-            DistributionRanddomWalk(BoostNormalDistribution(0.0, sigma), delta, seed){}
+        GaussianWalk(Real sigma, 
+		             Real delta = 0.9, 
+                     unsigned long seed = SeedGenerator::instance().get())
+        : DistributionRandomWalk<BoostNormalDistribution>(
+                           BoostNormalDistribution(0.0, sigma), delta, seed){}
     };
 
     //! Levy Flight Random Walk
     /*  Levy flight random walk
     */
-    class LevyFlightWalk : public DistributionRanddomWalk<LevyFlightDistribution> {
+    class LevyFlightWalk : public DistributionRandomWalk<LevyFlightDistribution> {
     public:
-        LevyFlightWalk(Real alpha, Real xm = 0.5,
-                       Real delta = 0.9, unsigned long seed = SeedGenerator::instance().get()) :
-            DistributionRanddomWalk(LevyFlightDistribution(xm, alpha), delta, seed) {}
+        LevyFlightWalk(Real alpha, 
+		               Real xm = 0.5, 
+                       Real delta = 0.9, unsigned long seed = SeedGenerator::instance().get())
+        : DistributionRandomWalk<LevyFlightDistribution>(
+                            LevyFlightDistribution(xm, alpha), delta, seed) {}
     };
 
     //! Decreasing Random Walk

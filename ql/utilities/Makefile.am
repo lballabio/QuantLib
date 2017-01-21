@@ -9,6 +9,7 @@ this_include_HEADERS = \
     dataparsers.hpp \
     disposable.hpp \
     null.hpp \
+	null_deleter.hpp \
     observablevalue.hpp \
     steppingiterator.hpp \
     tracing.hpp \

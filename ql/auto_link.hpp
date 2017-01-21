@@ -25,12 +25,8 @@
 #include <boost/config.hpp>
 
 // select toolset:
-#if (_MSC_VER < 1310)
+#if (_MSC_VER < 1500)
 #  error "unsupported Microsoft compiler"
-#elif (_MSC_VER == 1310)
-#  define QL_LIB_TOOLSET "vc71"
-#elif (_MSC_VER == 1400)
-#  define QL_LIB_TOOLSET "vc80"
 #elif (_MSC_VER == 1500)
 #  define QL_LIB_TOOLSET "vc90"
 #elif (_MSC_VER == 1600)
@@ -79,5 +75,16 @@
 #ifdef BOOST_LIB_DIAGNOSTIC
 #  pragma message("Will (need to) link to lib file: " QL_LIB_NAME)
 #endif
+
+/* Also, these Boost libraries might be needed */
+#if defined(QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN) || defined(QL_ENABLE_SINGLETON_THREAD_SAFE_INIT)
+#  define BOOST_LIB_NAME boost_system
+#  include <boost/config/auto_link.hpp>
+#  undef BOOST_LIB_NAME
+#  define BOOST_LIB_NAME boost_thread
+#  include <boost/config/auto_link.hpp>
+#  undef BOOST_LIB_NAME
+#endif
+
 
 #endif
