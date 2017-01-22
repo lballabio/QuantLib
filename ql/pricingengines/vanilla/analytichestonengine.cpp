@@ -27,6 +27,7 @@
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/math/integrals/trapezoidintegral.hpp>
+#include <ql/math/integrals/discreteintegrals.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 
 #include <ql/instruments/payoffs.hpp>
@@ -381,7 +382,7 @@ namespace QuantLib {
 
         const Real ratio = riskFreeDiscount/dividendDiscount;
 
-        const Real c_inf = std::min(10.0, std::max(0.0001,
+        const Real c_inf = std::min(1.0, std::max(0.0001,
                 std::sqrt(1.0-square<Real>()(rho))/sigma))
                 *(v0 + kappa*theta*term);
 
@@ -534,6 +535,20 @@ namespace QuantLib {
                                new GaussChebyshev2ndIntegration(intOrder)));
     }
 
+    AnalyticHestonEngine::Integration
+    AnalyticHestonEngine::Integration::discreteSimpson(Size evaluations) {
+        return Integration(
+            DiscreteSimpson, boost::shared_ptr<Integrator>(
+                new DiscreteSimpsonIntegrator(evaluations)));
+    }
+
+    AnalyticHestonEngine::Integration
+    AnalyticHestonEngine::Integration::discreteTrapezoid(Size evaluations) {
+        return Integration(
+            DiscreteTrapezoid, boost::shared_ptr<Integrator>(
+                new DiscreteTrapezoidIntegrator(evaluations)));
+    }
+
     Size AnalyticHestonEngine::Integration::numberOfEvaluations() const {
         if (integrator_) {
             return integrator_->numberOfEvaluations();
@@ -571,6 +586,8 @@ namespace QuantLib {
           case Trapezoid:
           case GaussLobatto:
           case GaussKronrod:
+          case DiscreteTrapezoid:
+          case DiscreteSimpson:
             retVal = (*integrator_)(integrand2(c_inf, f),
                                     0.0, 1.0);
             break;
