@@ -382,7 +382,7 @@ namespace QuantLib {
 
         const Real ratio = riskFreeDiscount/dividendDiscount;
 
-        const Real c_inf = std::min(1.0, std::max(0.0001,
+        const Real c_inf = std::min(0.2, std::max(0.0001,
                 std::sqrt(1.0-square<Real>()(rho))/sigma))
                 *(v0 + kappa*theta*term);
 
