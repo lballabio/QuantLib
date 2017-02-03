@@ -49,6 +49,7 @@ namespace QuantLib {
         Real deltaYat(Real x, Real y) const;
         Real gammaXat(Real x, Real y) const;
         Real gammaYat(Real x, Real y) const;
+        Real gammaXYat(Real x, Real y) const;
 
       protected:
         void performCalculations() const;

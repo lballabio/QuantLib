@@ -41,6 +41,8 @@ namespace QuantLib {
       xGrid_(xGrid), yGrid_(yGrid), tGrid_(tGrid),
       dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc) {
+        registerWith(p1);
+        registerWith(p2);
     }
 
     void Fd2dBlackScholesVanillaEngine::calculate() const {
@@ -95,6 +97,9 @@ namespace QuantLib {
         const Real y = p2_->x0();
 
         results_.value = solver->valueAt(x, y);
+        results_.delta = solver->deltaXat(x, y) + solver->deltaYat(x, y);
+        results_.gamma = solver->gammaXat(x, y) + solver->gammaYat(x, y)
+             + 2*solver->gammaXYat(x, y);
         results_.theta = solver->thetaAt(x, y);
     }
 }
