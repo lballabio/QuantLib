@@ -167,10 +167,10 @@ namespace QuantLib {
         techniques to improve it (not implemented here) see:
         Joshi, M., D. Kainth. 2004. Rapid and accurate development of prices
         and Greeks for nth to default credit swaps in the Li model. Quantitative
-        Finance, Vol. 4. Institute of Physics Publishing, London, UK, 266 275
+        Finance, Vol. 4. Institute of Physics Publishing, London, UK, 266-275
         and:
         Chen, Z., Glasserman, P. 'Fast pricing of basket default swaps' in
-        Operations Research Vol. 56, No. 2, March April 2008, pp. 286 303
+        Operations Research Vol. 56, No. 2, March/April 2008, pp. 286-303
         */
         virtual Disposable<std::vector<Probability> > probsBeingNthEvent(Size n,
             const Date& d) const;
