@@ -36,6 +36,7 @@
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/pricingengines/basket/fd2dblackscholesvanillaengine.hpp>
 #include <ql/utilities/dataformatters.hpp>
+
 #include <boost/progress.hpp>
 #include <boost/bind.hpp>
 #include <boost/make_shared.hpp>
@@ -954,7 +955,7 @@ void BasketOptionTest::testLocalVolatilitySpreadOption() {
     BOOST_TEST_MESSAGE("Testing 2d local volatility spread option pricing...");
 
     const DayCounter dc = Actual360();
-    const Date today = Date::todaysDate();
+    const Date today = Date(21, September, 2017);
     const Date maturity = today + Period(3, Months);
 
     const Handle<YieldTermStructure> riskFreeRate(flatRate(today, 0.07, dc));
