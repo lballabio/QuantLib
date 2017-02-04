@@ -26,6 +26,7 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/utilities/null.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/math/interpolations/backwardflatinterpolation.hpp>
 #include <ql/math/interpolations/forwardflatinterpolation.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
@@ -33,7 +34,7 @@
 #include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/math/interpolations/kernelinterpolation.hpp>
 #include <ql/math/interpolations/kernelinterpolation2d.hpp>
-#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
+#include <ql/math/interpolations/lagrangeinterpolation.hpp>
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/kernelfunctions.hpp>
 #include <ql/math/functional.hpp>
@@ -43,7 +44,7 @@
 #include <ql/experimental/volatility/noarbsabrinterpolation.hpp>
 #include <boost/foreach.hpp>
 #include <boost/assign/std/vector.hpp>
-
+#include <boost/math/special_functions/fpclassify.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -1981,6 +1982,177 @@ void InterpolationTest::testTransformations() {
 
 }
 
+namespace {
+    Real lagrangeTestFct(Real x) {
+        return std::fabs(x) + 0.5*x - x*x;
+    }
+}
+
+void InterpolationTest::testLagrangeInterpolation() {
+
+    BOOST_TEST_MESSAGE("Testing Lagrange Interpolation...");
+
+    const Real x[] = {-1.0 , -0.5, -0.25, 0.1, 0.4, 0.75, 0.96};
+    Array y(LENGTH(x));
+    std::transform(x, x+LENGTH(x), y.begin(), &lagrangeTestFct);
+
+    LagrangeInterpolation interpl(&x[0], x+LENGTH(x), y.begin());
+
+    // reference results are taken from R package pracma
+    const Real references[] = {
+        -0.5000000000000000,-0.5392414024347419,-0.5591485962711904,
+        -0.5629199661387594,-0.5534414777017116,-0.5333043347921566,
+        -0.5048221831582063,-0.4700478608272949,-0.4307896950846587,
+        -0.3886273460669714,-0.3449271969711449,-0.3008572908782903,
+        -0.2574018141928359,-0.2153751266968088,-0.1754353382192734,
+        -0.1380974319209344,-0.1037459341938971,-0.0726471311765894,
+        -0.0449608318838433,-0.0207516779521373,0.0000000000000000,
+        0.0173877793964286,0.0315691961126723,0.0427562482700356,
+        0.0512063534145595,0.0572137590808174,0.0611014067405497,
+        0.0632132491361394,0.0639070209989264,0.0635474631523613,
+        0.0625000000000000,0.0611248703983366,0.0597717119144768,
+        0.0587745984686508,0.0584475313615655,0.0590803836865967,
+        0.0609352981268212,0.0642435381368876,0.0692027925097279,
+        0.0759749333281079,0.0846842273010179,0.0954160004849021,
+        0.1082157563897290,0.1230887474699003,0.1400000000000001,
+        0.1588747923353829,0.1795995865576031,0.2020234135046815,
+        0.2259597111862140,0.2511886165833182,0.2774597108334206,
+        0.3044952177998833,0.3319936560264689,0.3596339440766487,
+        0.3870799592577457,0.4139855497299214,0.4400000000000001,
+        0.4647739498001331,0.4879657663513030,0.5092483700116673,
+        0.5283165133097421,0.5448945133624253,0.5587444376778583,
+        0.5696747433431296,0.5775493695968156,0.5822972837863635,
+        0.5839224807103117,0.5825144353453510,0.5782590089582251,
+        0.5714498086024714,0.5625000000000000,0.5519545738075141,
+        0.5405030652677689,0.5289927272456703,0.5184421566492137,
+        0.5100553742352614,0.5052363578001620,0.5056040287552059,
+        0.5130076920869246
+    };
+
+    const Real tol = 50*QL_EPSILON;
+    for (Size i=0; i < 79; ++i) {
+        const Real xx = -1.0 + i*0.025;
+        const Real calculated = interpl(xx);
+        if (   boost::math::isnan(calculated)
+            || std::fabs(references[i] - calculated) > tol) {
+            BOOST_FAIL("failed to reproduce the Lagrange interplation"
+                    << "\n    x         : " << xx
+                    << "\n    calculated: " << calculated
+                    << "\n    expected  : " << references[i]);
+        }
+    }
+}
+
+void InterpolationTest::testLagrangeInterpolationAtSupportPoint() {
+    BOOST_TEST_MESSAGE(
+        "Testing Lagrange Interpolation at supporting points...");
+
+    const Size n=5;
+    Array x(n), y(n);
+    for (Size i=0; i < n; ++i) {
+        x[i] = i/Real(n);
+        y[i] = 1.0/(1.0 - x[i]);
+    }
+    LagrangeInterpolation interpl(x.begin(), x.end(), y.begin());
+
+    const Real relTol = 5e-12;
+
+    for (Size i=1; i < n-1; ++i) {
+        for (Real z = x[i] - 100*QL_EPSILON;
+            z < x[i] + 100*QL_EPSILON; z+=2*QL_EPSILON) {
+            const Real expected = 1.0/(1.0 - x[i]);
+            const Real calculated = interpl(z);
+
+            if (   boost::math::isnan(calculated)
+                || std::fabs(expected - calculated) > relTol) {
+                BOOST_FAIL("failed to reproduce the Lagrange interplation"
+                        << "\n    x         : " << z
+                        << "\n    calculated: " << calculated
+                        << "\n    expected  : " << expected);
+            }
+        }
+    }
+}
+
+void InterpolationTest::testLagrangeInterpolationDerivative() {
+    BOOST_TEST_MESSAGE(
+        "Testing Lagrange Interpolation derivatives...");
+
+    Array x(5), y(5);
+    x[0] = -1.0; y[0] = 2.0;
+    x[1] = -0.3; y[1] = 3.0;
+    x[2] =  0.1; y[2] = 6.0;
+    x[3] =  0.3; y[3] = 3.0;
+    x[4] =  0.9; y[4] =-1.0;
+
+    LagrangeInterpolation interpl(x.begin(), x.end(), y.begin());
+
+    const Real eps = std::sqrt(QL_EPSILON);
+    for (Real x=-1.0; x <= 0.9; x+=0.01) {
+        const Real calculated = interpl.derivative(x, true);
+        const Real expected = (interpl(x+eps, true)
+            - interpl(x-eps, true))/(2*eps);
+
+        if (   boost::math::isnan(calculated)
+            || std::fabs(expected - calculated) > 25*eps) {
+            BOOST_FAIL("failed to reproduce the Lagrange"
+                    " interplation derivative"
+                    << "\n    x         : " << x
+                    << "\n    calculated: " << calculated
+                    << "\n    expected  : " << expected);
+        }
+    }
+}
+
+void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
+    BOOST_TEST_MESSAGE(
+        "Testing Lagrange Interpolation on Chebyshev points...");
+
+    // Test example taken from
+    // J.P. Berrut, L.N. Trefethen, Barycentric Lagrange Interpolation
+    // https://people.maths.ox.ac.uk/trefethen/barycentric.pdf
+
+    const Size n=50;
+    Array x(n+1), y(n+1);
+    for (Size i=0; i <= n; ++i) {
+        // Chebyshev points
+        x[i] = std::cos( (2*i+1)*M_PI/(2*n+2) );
+        y[i] = std::exp(x[i])/std::cos(x[i]);
+    }
+
+    LagrangeInterpolation interpl(x.begin(), x.end(), y.begin());
+
+    const Real tol = 1e-13;
+
+    for (Real x=-1.0; x <= 1.0; x+=0.01) {
+        const Real calculated = interpl(x, true);
+        const Real expected = std::exp(x)/std::cos(x);
+
+        if (   boost::math::isnan(calculated)
+            || std::fabs(expected - calculated) > tol) {
+            BOOST_FAIL("failed to reproduce the Lagrange"
+                    " interplation on Chebyshev points"
+                    << "\n    x         : " << x
+                    << "\n    calculated: " << calculated
+                    << "\n    expected  : " << expected);
+        }
+
+        const Real calculatedDeriv = interpl.derivative(x, true);
+        const Real expectedDeriv = std::exp(x)*(std::cos(x) + std::sin(x))
+                / square<Real>()(std::cos(x));
+
+        if (   boost::math::isnan(calculated)
+            || std::fabs(expected - calculated) > tol) {
+            BOOST_FAIL("failed to reproduce the Lagrange"
+                    " interplation derivative on Chebyshev points"
+                    << "\n    x         : " << x
+                    << "\n    calculated: " << calculatedDeriv
+                    << "\n    expected  : " << expectedDeriv);
+        }
+    }
+}
+
+
 test_suite* InterpolationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
 
@@ -2013,5 +2185,15 @@ test_suite* InterpolationTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testNoArbSabrInterpolation));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSabrSingleCases));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testTransformations));
+    suite->add(QUANTLIB_TEST_CASE(
+        &InterpolationTest::testLagrangeInterpolation));
+    suite->add(QUANTLIB_TEST_CASE(
+        &InterpolationTest::testLagrangeInterpolationAtSupportPoint));
+    suite->add(QUANTLIB_TEST_CASE(
+        &InterpolationTest::testLagrangeInterpolationDerivative));
+
+    suite->add(QUANTLIB_TEST_CASE(
+        &InterpolationTest::testLagrangeInterpolationOnChebyshevPoints));
+
     return suite;
 }

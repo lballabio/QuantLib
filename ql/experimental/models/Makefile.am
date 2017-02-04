@@ -5,11 +5,15 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     hestonslvfdmmodel.hpp \
-    hestonslvmcmodel.hpp
+    hestonslvmcmodel.hpp \
+    normalclvmodel.hpp \
+    squarerootclvmodel.hpp
 
 libModels_la_SOURCES = \
     hestonslvfdmmodel.cpp \
-    hestonslvmcmodel.cpp
+    hestonslvmcmodel.cpp \
+    normalclvmodel.cpp \
+    squarerootclvmodel.cpp
 
 noinst_LTLIBRARIES = libModels.la
 

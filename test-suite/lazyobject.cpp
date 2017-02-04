@@ -29,7 +29,7 @@ using boost::shared_ptr;
 void LazyObjectTest::testDiscardingNotifications() {
 
     BOOST_TEST_MESSAGE(
-        "Testing that lazy object discards notifications after the first...");
+        "Testing that lazy objects discard notifications after the first...");
 
     boost::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
     boost::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
@@ -58,7 +58,7 @@ void LazyObjectTest::testDiscardingNotifications() {
 void LazyObjectTest::testForwardingNotifications() {
 
     BOOST_TEST_MESSAGE(
-        "Testing that lazy object forwards all notifications when told...");
+        "Testing that lazy objects forward all notifications when told...");
 
     boost::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
     boost::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));

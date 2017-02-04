@@ -39,10 +39,10 @@ namespace QuantLib {
     with no excesive cost over the LHP.\par
     See:\par
     <b>Approximating Independent Loss Distributions with an Adjusted Binomial 
-    Distribution</b> , Dominic O’Kane, 2007 EDHEC RISK AND ASSET MANAGEMENT 
+    Distribution</b> , Dominic O'Kane, 2007 EDHEC RISK AND ASSET MANAGEMENT 
     RESEARCH CENTRE \par
     <b>Modelling single name and multi-name credit derivatives</b> Chapter 
-    18.5.2, Dominic O’Kane, Wiley Finance, 2008 \par
+    18.5.2, Dominic O'Kane, Wiley Finance, 2008 \par
     The version presented here is adaptated to the multifactorial case
     by computing a conditional binomial approximation; notice that the Binomial
     is stable. This way the model can be used also in risk management models
@@ -182,7 +182,8 @@ namespace QuantLib {
             bsktNots.begin(), std::back_inserter(lgdsLeft), 
             std::multiplies<Real>());
         Real avgLgd = 
-            std::accumulate(lgdsLeft.begin(), lgdsLeft.end(), Real(0.)) / bsktSize;
+            std::accumulate(lgdsLeft.begin(), lgdsLeft.end(), Real(0.)) /
+                bsktSize;
 
         std::vector<Probability> condDefProb(bsktSize, 0.);
         for(Size j=0; j<bsktSize; j++)//transform

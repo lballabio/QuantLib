@@ -114,4 +114,13 @@ namespace QuantLib {
         return (solver_->derivativeYY(x, y)
                 -solver_->derivativeY(x, y))/(v*v);
     }
+
+    Real Fdm2dBlackScholesSolver::gammaXYat(Real u, Real v) const {
+        calculate();
+
+        const Real x = std::log(u);
+        const Real y = std::log(v);
+
+        return solver_->derivativeXY(x, y)/(u*v);
+    }
 }

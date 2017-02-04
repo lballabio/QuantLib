@@ -103,7 +103,8 @@ namespace QuantLib {
                                  Natural maxEvaluations,
                                  Volatility minVol,
                                  Volatility maxVol,
-                                 Real displacement) const;
+                                 Real displacement,
+                                 VolatilityType type = ShiftedLognormal) const;
       private:
         Type type_;
         Leg floatingLeg_;

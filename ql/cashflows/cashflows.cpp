@@ -710,6 +710,12 @@ namespace QuantLib {
                     else
                         dPdy -= c * t * B/(1+r/N);
                     break;
+                  case CompoundedThenSimple:
+                    if (t>1.0/N)
+                        dPdy -= c * B*B * t;
+                    else
+                        dPdy -= c * t * B/(1+r/N);
+                    break;
                   default:
                     QL_FAIL("unknown compounding convention (" <<
                             Integer(y.compounding()) << ")");
@@ -827,10 +833,10 @@ namespace QuantLib {
             Date settlementDate_, npvDate_;
         };
 
-        struct CashFlowLess {
+        struct CashFlowLater {
             bool operator()(const boost::shared_ptr<CashFlow> &c,
                             const boost::shared_ptr<CashFlow> &d) {
-                return c->date() < d->date();
+                return c->date() > d->date();
             }
         };
 
@@ -852,7 +858,8 @@ namespace QuantLib {
             npvDate = settlementDate;
 
 #if defined(QL_EXTRA_SAFETY_CHECKS)
-        QL_REQUIRE(std::is_sorted(leg.begin(), leg.end(), cashFlowLess),
+        QL_REQUIRE(std::adjacent_find(leg.begin(), leg.end(),
+                                      CashFlowLater()) == leg.end(),
                    "cashflows must be sorted in ascending order w.r.t. their payment dates");
 #endif
 
@@ -1084,6 +1091,12 @@ namespace QuantLib {
                 break;
               case SimpleThenCompounded:
                 if (t<=1.0/N)
+                    d2Pdy2 += c * 2.0*B*B*B*t*t;
+                else
+                    d2Pdy2 += c * B*t*(N*t+1)/(N*(1+r/N)*(1+r/N));
+                break;
+              case CompoundedThenSimple:
+                if (t>1.0/N)
                     d2Pdy2 += c * 2.0*B*B*B*t*t;
                 else
                     d2Pdy2 += c * B*t*(N*t+1)/(N*(1+r/N)*(1+r/N));

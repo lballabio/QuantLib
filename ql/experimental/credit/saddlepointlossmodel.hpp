@@ -43,7 +43,7 @@ namespace QuantLib {
         C.Browne RISK AUGUST 2001\par
     <b>Shortfall: Who contributes and how much?</b> R. J. Martin, Credit Suisse 
         January 3, 2007 \par
-    <b>Don’t Fall from the Saddle: the Importance of Higher Moments of Credit 
+    <b>Don't Fall from the Saddle: the Importance of Higher Moments of Credit 
         Loss Distributions</b> J.Annaert, C.Garcia Joao Batista, J.Lamoot, 
         G.Lanine February 2006, Gent University\par
     <b>Analytical techniques for synthetic CDOs and credit default risk 
@@ -51,10 +51,10 @@ namespace QuantLib {
         NumeriX May 23, 2005 \par
     <b>Computation of VaR and VaR contribution in the Vasicek portfolio credit 
         loss model: a comparative study</b> X.Huang, C.W.Oosterlee, M.Mesters
-        Journal of Credit Risk (75–96) Volume 3/ Number 3, Fall 2007 \par
+        Journal of Credit Risk (75-96) Volume 3/ Number 3, Fall 2007 \par
     <b>Higher-order saddlepoint approximations in the Vasicek portfolio credit 
         loss model</b> X.Huang, C.W.Oosterlee, M.Mesters  Journal of 
-        Computational Finance (93–113) Volume 11/Number 1, Fall 2007 \par
+        Computational Finance (93-113) Volume 11/Number 1, Fall 2007 \par
     While more expensive, a high order expansion is used here; see the paper by 
     Antonov et al for the terms retained.\par
     For a discussion of an alternative to fix the error at low loss levels 

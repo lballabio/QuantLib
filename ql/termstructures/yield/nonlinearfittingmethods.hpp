@@ -61,7 +61,7 @@ namespace QuantLib {
     /*! Fits a discount function to the form
         \f$ d(t) = \exp^{-r t}, \f$ where the zero rate \f$r\f$ is defined as
         \f[
-        r \equiv c_0 + (c_0 + c_1)*(1 - exp^{-\kappa*t}/(\kappa t) -
+        r \equiv c_0 + (c_1 + c_2)*(1 - exp^{-\kappa*t})/(\kappa t) -
         c_2 exp^{ - \kappa t}.
         \f]
         See: Nelson, C. and A. Siegel (1985): "Parsimonious modeling of yield

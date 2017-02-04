@@ -237,7 +237,7 @@ namespace {
                 std::vector<boost::shared_ptr<RateHelper> >(deposits+swaps);
             fraHelpers = std::vector<boost::shared_ptr<RateHelper> >(fras);
             immFutHelpers = std::vector<boost::shared_ptr<RateHelper> >(immFuts);
-            asxFutHelpers = std::vector<boost::shared_ptr<RateHelper> >(asxFuts);
+            asxFutHelpers = std::vector<boost::shared_ptr<RateHelper> >();
             bondHelpers = std::vector<boost::shared_ptr<RateHelper> >(bonds);
             schedules = std::vector<Schedule>(bonds);
             bmaHelpers = std::vector<boost::shared_ptr<RateHelper> >(bmas);
@@ -294,9 +294,10 @@ namespace {
                 if (euribor3m->fixingDate(asxDate) <
                     Settings::instance().evaluationDate())
                     asxDate = ASX::nextDate(asxDate, false);
-                asxFutHelpers[i] = boost::shared_ptr<RateHelper>(new
-                    FuturesRateHelper(r, asxDate, euribor3m, Handle<Quote>(),
-                                      Futures::ASX));
+                if (euribor3m->fixingCalendar().isBusinessDay(asxDate))
+                    asxFutHelpers.push_back(boost::shared_ptr<RateHelper>(new
+                        FuturesRateHelper(r, asxDate, euribor3m,
+                                          Handle<Quote>(), Futures::ASX)));
             }
 
             for (Size i=0; i<bonds; i++) {
@@ -494,6 +495,8 @@ namespace {
             if (euribor3m->fixingDate(asxStart) <
                 Settings::instance().evaluationDate())
                 asxStart = ASX::nextDate(asxStart, false);
+            if (euribor3m->fixingCalendar().isHoliday(asxStart))
+                continue;
             Date end = vars.calendar.advance(asxStart, 3, Months,
                 euribor3m->businessDayConvention(),
                 euribor3m->endOfMonth());

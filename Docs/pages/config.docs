@@ -59,9 +59,8 @@
     \code
     #define QL_NEGATIVE_RATES
     \endcode
-    If defined, negative yield rates are allowed in a few places where
-    they are currently forbidden. It is still not clear whether this
-    is safe. Undefined by default.
+    If defined (the default), negative yield rates are allowed in a
+    few places where they used to be forbidden.
 
     \code
     #define QL_EXTRA_SAFETY_CHECKS
@@ -82,7 +81,39 @@
     If defined, singletons will return different instances for
     different sessions. You will have to provide and link with the
     library a sessionId() function in namespace QuantLib, returning a
-    different session id for each session.
+    different session id for each session. Undefined by default.
+
+    \code
+    #define QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+    \endcode
+    If defined, a thread-safe (but less performant) version of the
+    observer pattern will be used. You should define it if you want to
+    use QuantLib via the SWIG layer within the JVM or .NET eco system
+    or any environment with an async garbage collector.  Undefined by
+    default.
+
+    \code
+    #define QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
+    \endcode
+    Define this to make Singleton initialization thread-safe.
+    Undefined by default.  Not compatible with multiple sessions.
+
+    \code
+    #define QL_HIGH_RESOLUTION_DATE
+    \endcode
+    If defined, date objects will support an intraday datetime
+    resolution down to microseconds.  Strickly monotone daycounters
+    (Actual360, Actual365Fixed and ActualActual) will take the
+    additional information into account and allow for accurate
+    intraday pricing.  If disabled (the default) the smallest
+    resolution of date objects will be a single day.  Intraday
+    datetime resolution is experimental.
+
+    \code
+    #define QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
+    \endcode
+    Define this to enable the parallel unit test runner. Undefined by
+    default.
 
 */
 

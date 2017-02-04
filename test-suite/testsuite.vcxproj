@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (static runtime)|Win32">
@@ -719,6 +719,7 @@
     <ClCompile Include="mersennetwister.cpp" />
     <ClCompile Include="money.cpp" />
     <ClCompile Include="noarbsabr.cpp" />
+    <ClCompile Include="normalclvmodel.cpp" />
     <ClCompile Include="nthtodefault.cpp" />
     <ClCompile Include="numericaldifferentiation.cpp" />
     <ClCompile Include="observable.cpp" />
@@ -745,6 +746,7 @@
     <ClCompile Include="shortratemodels.cpp" />
     <ClCompile Include="solvers.cpp" />
     <ClCompile Include="spreadoption.cpp" />
+    <ClCompile Include="squarerootclvmodel.cpp" />
     <ClCompile Include="stats.cpp" />
     <ClCompile Include="swap.cpp" />
     <ClCompile Include="swapforwardmappings.cpp" />
@@ -860,6 +862,7 @@
     <ClInclude Include="mersennetwister.hpp" />
     <ClInclude Include="money.hpp" />
     <ClInclude Include="noarbsabr.hpp" />
+    <ClInclude Include="normalclvmodel.hpp" />
     <ClInclude Include="nthtodefault.hpp" />
     <ClInclude Include="numericaldifferentiation.hpp" />
     <ClInclude Include="observable.hpp" />
@@ -871,7 +874,7 @@
     <ClInclude Include="pagodaoption.hpp" />
     <ClInclude Include="partialtimebarrieroption.hpp" />
     <ClInclude Include="pathgenerator.hpp" />
-    <ClInclude Include="paralleltestrunner.hpp" />    
+    <ClInclude Include="paralleltestrunner.hpp" />
     <ClInclude Include="period.hpp" />
     <ClInclude Include="piecewiseyieldcurve.hpp" />
     <ClInclude Include="piecewisezerospreadedtermstructure.hpp" />
@@ -887,6 +890,7 @@
     <ClInclude Include="shortratemodels.hpp" />
     <ClInclude Include="solvers.hpp" />
     <ClInclude Include="spreadoption.hpp" />
+    <ClInclude Include="squarerootclvmodel.hpp" />
     <ClInclude Include="stats.hpp" />
     <ClInclude Include="swap.hpp" />
     <ClInclude Include="swapforwardmappings.hpp" />
