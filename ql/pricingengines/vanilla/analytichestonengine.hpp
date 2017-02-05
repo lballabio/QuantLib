@@ -106,17 +106,17 @@ namespace QuantLib {
         Size numberOfEvaluations() const;
 
         static void doCalculation(Real riskFreeDiscount,
-                                             Real dividendDiscount,
-                                             Real spotPrice,
-                                             Real strikePrice,
-                                             Real term,
-                                             Real kappa, Real theta, Real sigma, Real v0, Real rho,
-                                             const TypePayoff& type,
-                                             const Integration& integration,
-                                             const ComplexLogFormula cpxLog,
-                                             const AnalyticHestonEngine* const enginePtr,
-                                             Real& value,
-                                             Size& evaluations);
+                                  Real dividendDiscount,
+                                  Real spotPrice,
+                                  Real strikePrice,
+                                  Real term,
+                                  Real kappa, Real theta, Real sigma, Real v0, Real rho,
+                                  const TypePayoff& type,
+                                  const Integration& integration,
+                                  const ComplexLogFormula cpxLog,
+                                  const AnalyticHestonEngine* const enginePtr,
+                                  Real& value,
+                                  Size& evaluations);
 
       protected:
         // call back for extended stochastic volatility

@@ -43,36 +43,43 @@ namespace QuantLib {
 
         class integrand1 {
           private:
-            Real c_inf;
-            boost::function<Real(Real)> f;
+            const Real c_inf_;
+            const boost::function<Real(Real)> f_;
           public:
-            integrand1(Real c_inf,
-                       boost::function<Real(Real)> f)
-            : c_inf(c_inf), f(f) {}
+            integrand1(Real c_inf, const boost::function<Real(Real)>& f)
+            : c_inf_(c_inf), f_(f) {}
             Real operator()(Real x) const {
-                if ((x+1.0)*c_inf > QL_EPSILON) {
-                    return f(-std::log(0.5*x+0.5)/c_inf)/((x+1.0)*c_inf);
+                if ((1.0-x)*c_inf_ > QL_EPSILON)
+                    return f_(-std::log(0.5-0.5*x)/c_inf_)/((1.0-x)*c_inf_);
+                else
+                    return 0.0;
+            }
+        };
+
+        class integrand2 {
+          private:
+            const Real c_inf_;
+            const boost::function<Real(Real)> f_;
+          public:
+            integrand2(Real c_inf, const boost::function<Real(Real)>& f)
+            : c_inf_(c_inf), f_(f) {}
+            Real operator()(Real x) const {
+                if (x*c_inf_ > QL_EPSILON) {
+                    return f_(-std::log(x)/c_inf_)/(x*c_inf_);
                 } else {
                     return 0.0;
                 }
             }
         };
 
-        class integrand2 {
+        class integrand3 {
           private:
-            Real c_inf;
-            boost::function<Real(Real)> f;
+            const integrand2 int_;
           public:
-            integrand2(Real c_inf,
-                       boost::function<Real(Real)> f)
-            : c_inf(c_inf), f(f) {}
-            Real operator()(Real x) const {
-                if (x*c_inf > QL_EPSILON) {
-                    return f(-std::log(x)/c_inf)/(x*c_inf);
-                } else {
-                    return 0.0;
-                }
-            }
+            integrand3(Real c_inf, const boost::function<Real(Real)>& f)
+            : int_(c_inf, f) {}
+
+            Real operator()(Real x) const { return int_(1.0-x); }
         };
 
     }
@@ -377,8 +384,7 @@ namespace QuantLib {
                                              const ComplexLogFormula cpxLog,
                                              const AnalyticHestonEngine* const enginePtr,
                                              Real& value,
-                                             Size& evaluations)
-    {
+                                             Size& evaluations) {
 
         const Real ratio = riskFreeDiscount/dividendDiscount;
 
@@ -586,11 +592,14 @@ namespace QuantLib {
           case Trapezoid:
           case GaussLobatto:
           case GaussKronrod:
+              retVal = (*integrator_)(integrand2(c_inf, f),
+                                      0.0, 1.0);
+              break;
           case DiscreteTrapezoid:
           case DiscreteSimpson:
-            retVal = (*integrator_)(integrand2(c_inf, f),
-                                    0.0, 1.0);
-            break;
+              retVal = (*integrator_)(integrand3(c_inf, f),
+                                      0.0, 1.0);
+              break;
           default:
               QL_FAIL("unknwon integration algorithm");
         }
