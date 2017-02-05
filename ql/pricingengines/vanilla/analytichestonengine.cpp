@@ -592,16 +592,16 @@ namespace QuantLib {
           case Trapezoid:
           case GaussLobatto:
           case GaussKronrod:
-              retVal = (*integrator_)(integrand2(c_inf, f),
-                                      0.0, 1.0);
-              break;
+            retVal = (*integrator_)(integrand2(c_inf, f),
+                                    0.0, 1.0);
+            break;
           case DiscreteTrapezoid:
           case DiscreteSimpson:
-              retVal = (*integrator_)(integrand3(c_inf, f),
-                                      0.0, 1.0);
-              break;
+            retVal = (*integrator_)(integrand3(c_inf, f),
+                                    0.0, 1.0);
+            break;
           default:
-              QL_FAIL("unknwon integration algorithm");
+            QL_FAIL("unknwon integration algorithm");
         }
 
         return retVal;

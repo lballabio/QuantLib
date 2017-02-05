@@ -1565,7 +1565,7 @@ namespace {
 }
 
 void HestonModelTest::testAllIntegrationMethods() {
-    BOOST_TEST_MESSAGE("Testing Heston pricing with all "
+    BOOST_TEST_MESSAGE("Testing semi-analytic Heston pricing with all "
                        "integration methods...");
 
     SavedSettings backup;
