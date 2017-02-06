@@ -286,7 +286,8 @@ namespace QuantLib {
         Real dirtyPrice = cleanPrice==Null<Real>() ? Null<Real>() :
                           cleanPrice + bond.accruedAmount(settlement);
         Real currentNotional = bond.notional(settlement);
-        Real npv = dirtyPrice/100.0 * currentNotional;
+        Real npv = dirtyPrice==Null<Real>() ? Null<Real>() :
+                                              dirtyPrice/100.0 * currentNotional;
 
         return CashFlows::atmRate(bond.cashflows(), discountCurve,
                                   false, settlement, settlement,
