@@ -21,6 +21,7 @@
 
 #include "basketoption.hpp"
 #include "utilities.hpp"
+#include <ql/quotes/simplequote.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/basketoption.hpp>
 #include <ql/pricingengines/basket/stulzengine.hpp>
@@ -29,14 +30,17 @@
 #include <ql/pricingengines/basket/mcamericanbasketengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
+#include <ql/models/equity/hestonmodel.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/pricingengines/basket/fd2dblackscholesvanillaengine.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 #include <boost/progress.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/bind.hpp>
+#include <boost/make_shared.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -944,7 +948,73 @@ void BasketOptionTest::testOddSamples() {
             BOOST_FAIL("expected value: " << values[i].result << "\n"
                        << "calculated:     " << calculated);
         }
+    }
+}
 
+void BasketOptionTest::testLocalVolatilitySpreadOption() {
+
+    BOOST_TEST_MESSAGE("Testing 2d local volatility spread option pricing...");
+
+    const DayCounter dc = Actual360();
+    const Date today = Date(21, September, 2017);
+    const Date maturity = today + Period(3, Months);
+
+    const Handle<YieldTermStructure> riskFreeRate(flatRate(today, 0.07, dc));
+    const Handle<YieldTermStructure> dividendYield(flatRate(today, 0.03, dc));
+
+    const Handle<Quote> s1(boost::make_shared<SimpleQuote>(100));
+    const Handle<Quote> s2(boost::make_shared<SimpleQuote>(110));
+
+    const boost::shared_ptr<HestonModel> hm1(
+        boost::make_shared<HestonModel>(
+            boost::make_shared<HestonProcess>(
+                riskFreeRate, dividendYield,
+                s1, 0.09, 1.0, 0.06, 0.6, -0.75)));
+
+    const boost::shared_ptr<HestonModel> hm2(
+        boost::make_shared<HestonModel>(
+            boost::make_shared<HestonProcess>(
+                riskFreeRate, dividendYield,
+                s2, 0.1, 2.0, 0.07, 0.8, 0.85)));
+
+    const Handle<BlackVolTermStructure> vol1(
+        boost::make_shared<HestonBlackVolSurface>(Handle<HestonModel>(hm1)));
+
+    const Handle<BlackVolTermStructure> vol2(
+        boost::make_shared<HestonBlackVolSurface>(Handle<HestonModel>(hm2)));
+
+    BasketOption basketOption(
+        basketTypeToPayoff(
+            SpreadBasket,
+            boost::make_shared<PlainVanillaPayoff>(
+                    Option::Call, s2->value() - s1->value())),
+        boost::make_shared<EuropeanExercise>(maturity));
+
+    const Real rho = -0.6;
+
+    const boost::shared_ptr<GeneralizedBlackScholesProcess> bs2(
+        boost::make_shared<GeneralizedBlackScholesProcess>(
+            s2, dividendYield, riskFreeRate, vol2));
+
+    const boost::shared_ptr<GeneralizedBlackScholesProcess> bs1(
+        boost::make_shared<GeneralizedBlackScholesProcess>(
+            s1, dividendYield, riskFreeRate, vol1));
+
+    basketOption.setPricingEngine(
+        boost::shared_ptr<Fd2dBlackScholesVanillaEngine>(
+            new Fd2dBlackScholesVanillaEngine(
+                bs1, bs2, rho, 11, 11, 6, 0,
+                FdmSchemeDesc::Hundsdorfer(), true, 0.25)));
+
+    const Real tolerance = 0.01;
+    const Real expected = 2.561;
+    const Real calculated = basketOption.NPV();
+
+    if (std::fabs(expected - calculated) > tolerance) {
+        BOOST_ERROR("Failed to reproduce expected local volatility price"
+                    << "\n    calculated: " << calculated
+                    << "\n    expected:   " << expected
+                    << "\n    tolerance:  " << tolerance);
     }
 }
 
@@ -1040,6 +1110,8 @@ test_suite* BasketOptionTest::suite() {
                 ((i+1)*LENGTH(oneDataValues))/nTestCases)));
     }
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testOddSamples));
+    suite->add(QUANTLIB_TEST_CASE(
+        &BasketOptionTest::testLocalVolatilitySpreadOption));
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::test2DPDEGreeks));
 
     return suite;
