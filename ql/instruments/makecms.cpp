@@ -27,6 +27,7 @@
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -176,9 +177,9 @@ namespace QuantLib {
 
         boost::shared_ptr<Swap> swap;
         if (payCms_)
-            swap = boost::shared_ptr<Swap>(new Swap(cmsLeg, floatLeg));
+            swap = boost::make_shared<Swap>(cmsLeg, floatLeg);
         else
-            swap = boost::shared_ptr<Swap>(new Swap(floatLeg, cmsLeg));
+            swap = boost::make_shared<Swap>(floatLeg, cmsLeg);
         swap->setPricingEngine(engine_);
         return swap;
     }
@@ -201,8 +202,7 @@ namespace QuantLib {
 
     MakeCms& MakeCms::withDiscountingTermStructure(
                 const Handle<YieldTermStructure>& discountingTermStructure) {
-        engine_ = boost::shared_ptr<PricingEngine>(new
-                            DiscountingSwapEngine(discountingTermStructure));
+        engine_ = boost::make_shared<DiscountingSwapEngine>(discountingTermStructure);
         return *this;
     }
 
