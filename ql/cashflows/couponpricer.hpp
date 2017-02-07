@@ -172,6 +172,25 @@ namespace QuantLib {
             const Leg& leg,
             const std::vector<boost::shared_ptr<FloatingRateCouponPricer> >&);
 
+    /*! set the first matching pricer (if any) to each coupon of the leg */
+    void setCouponPricers(
+            const Leg& leg,
+            const boost::shared_ptr<FloatingRateCouponPricer>&,
+            const boost::shared_ptr<FloatingRateCouponPricer>&);
+
+    void setCouponPricers(
+            const Leg& leg,
+            const boost::shared_ptr<FloatingRateCouponPricer>&,
+            const boost::shared_ptr<FloatingRateCouponPricer>&,
+            const boost::shared_ptr<FloatingRateCouponPricer>&);
+
+    void setCouponPricers(
+            const Leg& leg,
+            const boost::shared_ptr<FloatingRateCouponPricer>&,
+            const boost::shared_ptr<FloatingRateCouponPricer>&,
+            const boost::shared_ptr<FloatingRateCouponPricer>&,
+            const boost::shared_ptr<FloatingRateCouponPricer>&);
+
     // inline
 
     inline Real BlackIborCouponPricer::swapletPrice() const {
