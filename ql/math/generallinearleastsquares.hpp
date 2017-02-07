@@ -49,7 +49,7 @@ namespace QuantLib {
     public:
         template <class xContainer, class yContainer, class vContainer>
         GeneralLinearLeastSquares(const xContainer & x,
-                                  const yContainer &y, const vContainer & v);
+                                  const yContainer & y, const vContainer & v);
 
         template<class xIterator, class yIterator, class vIterator>
         GeneralLinearLeastSquares(xIterator xBegin, xIterator xEnd,
@@ -87,7 +87,7 @@ namespace QuantLib {
 
     template <class xContainer, class yContainer, class vContainer> inline
     GeneralLinearLeastSquares::GeneralLinearLeastSquares(const xContainer & x,
-                                                         const yContainer &y,
+                                                         const yContainer & y,
                                                          const vContainer & v)
     : a_(v.size(), 0.0),
       err_(v.size(), 0.0),
@@ -105,7 +105,7 @@ namespace QuantLib {
       err_(a_.size(), 0.0),
       residuals_(std::distance(yBegin, yEnd)),
       standardErrors_(a_.size()) {
-        calculate(xBegin, xEnd, yBegin, yEnd, vBegin, vEnd);
+        calculate(xBegin, xEnd, yBegin, yEnd, vBegin);
     }
 
 
