@@ -180,7 +180,7 @@ namespace QuantLib {
                              public Visitor<RangeAccrualFloatersCoupon>,
                              public Visitor<SubPeriodsCoupon> {
           private:
-            const boost::shared_ptr<FloatingRateCouponPricer> pricer_;
+            boost::shared_ptr<FloatingRateCouponPricer> pricer_;
           public:
             PricerSetter(
                     const boost::shared_ptr<FloatingRateCouponPricer>& pricer)
