@@ -1513,9 +1513,9 @@ void EuropeanOptionTest::testLocalVolatility() {
     }
 }
 
-void EuropeanOptionTest::testAnalyticEngineDisocuntCurve() {
-    BOOST_TEST_MESSAGE("Testing separate discount curve for AnalyticEuropeanEngine...");
-
+void EuropeanOptionTest::testAnalyticEngineDiscountCurve() {
+    BOOST_TEST_MESSAGE(
+        "Testing separate discount curve for AnalyticEuropeanEngine...");
 
     SavedSettings backup;
 
@@ -1589,7 +1589,8 @@ test_suite* EuropeanOptionTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testPriceCurve));
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testLocalVolatility));
 
-    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testAnalyticEngineDisocuntCurve));
+    suite->add(QUANTLIB_TEST_CASE(
+                       &EuropeanOptionTest::testAnalyticEngineDiscountCurve));
 
     return suite;
 }
