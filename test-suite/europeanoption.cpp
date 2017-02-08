@@ -1513,6 +1513,53 @@ void EuropeanOptionTest::testLocalVolatility() {
     }
 }
 
+void EuropeanOptionTest::testAnalyticEngineDiscountCurve() {
+    BOOST_TEST_MESSAGE(
+        "Testing separate discount curve for AnalyticEuropeanEngine...");
+
+    SavedSettings backup;
+
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(1000.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.01));
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.015));
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.02));
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    boost::shared_ptr<SimpleQuote> discRate(new SimpleQuote(0.015));
+    boost::shared_ptr<YieldTermStructure> discTS = flatRate(today, discRate, dc);
+
+    boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
+        BlackScholesMertonProcess(Handle<Quote>(spot),
+            Handle<YieldTermStructure>(qTS),
+            Handle<YieldTermStructure>(rTS),
+            Handle<BlackVolTermStructure>(volTS)));
+    boost::shared_ptr<PricingEngine> engineSingleCurve(
+        new AnalyticEuropeanEngine(stochProcess));
+    boost::shared_ptr<PricingEngine> engineMultiCurve(
+        new AnalyticEuropeanEngine(stochProcess,
+            Handle<YieldTermStructure>(discTS)));
+
+    boost::shared_ptr<StrikedTypePayoff> payoff(new
+        PlainVanillaPayoff(Option::Call, 1025.0));
+    Date exDate = today + Period(1, Years);
+    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+    EuropeanOption option(payoff, exercise);
+    Real npvSingleCurve, npvMultiCurve;
+    option.setPricingEngine(engineSingleCurve);
+    npvSingleCurve = option.NPV();
+    option.setPricingEngine(engineMultiCurve);
+    npvMultiCurve = option.NPV();
+    // check that NPV is the same regardless of engine interface
+    BOOST_CHECK_EQUAL(npvSingleCurve, npvMultiCurve);
+    // check that NPV changes if discount rate is changed
+    discRate->setValue(0.023);
+    npvMultiCurve = option.NPV();
+    BOOST_CHECK_NE(npvSingleCurve, npvMultiCurve);
+}
 
 test_suite* EuropeanOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("European option tests");
@@ -1541,6 +1588,9 @@ test_suite* EuropeanOptionTest::suite() {
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testPriceCurve));
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testLocalVolatility));
+
+    suite->add(QUANTLIB_TEST_CASE(
+                       &EuropeanOptionTest::testAnalyticEngineDiscountCurve));
 
     return suite;
 }
