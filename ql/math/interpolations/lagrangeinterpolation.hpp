@@ -24,6 +24,7 @@
 #include <ql/math/interpolation.hpp>
 
 #include <boost/make_shared.hpp>
+#include<set>
 
 namespace QuantLib {
     /*! References: J-P. Berrut and L.N. Trefethen,
