@@ -37,6 +37,9 @@
 
 namespace QuantLib {
 
+   const Real LinearTsrPricer::defaultLowerBound = 0.0001,
+             LinearTsrPricer::defaultUpperBound = 2.0000;
+
     LinearTsrPricer::LinearTsrPricer(
         const Handle<SwaptionVolatilityStructure> &swaptionVol,
         const Handle<Quote> &meanReversion,

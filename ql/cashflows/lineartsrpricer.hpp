@@ -62,8 +62,8 @@ namespace QuantLib {
     class LinearTsrPricer : public CmsCouponPricer, public MeanRevertingPricer {
 
       private:
-        static const Real defaultLowerBound = 0.0001,
-                          defaultUpperBound = 2.0000;
+        static const Real defaultLowerBound,
+                          defaultUpperBound;
 
       public:
 
