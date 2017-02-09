@@ -31,9 +31,7 @@
 #include <ql/quote.hpp>
 #include <ql/currency.hpp>
 #include <ql/indexes/swapindex.hpp>
-#ifdef QL_USE_INDEXED_COUPON
-    #include <ql/cashflows/floatingratecoupon.hpp>
-#endif
+#include <ql/cashflows/iborcoupon.hpp>
 
 #include <ql/utilities/null_deleter.hpp>
 
@@ -780,20 +778,11 @@ namespace QuantLib {
             .withFloatingLegCalendar(calendar_);
 
         earliestDate_ = swap_->startDate();
+        maturityDate_ = swap_->maturityDate();
 
-        // Usually...
-        maturityDate_ = latestRelevantDate_ = swap_->maturityDate();
-
-        // ...but due to adjustments, the last floating coupon might
-        // need a later date for fixing
-        #ifdef QL_USE_INDEXED_COUPON
-        shared_ptr<FloatingRateCoupon> lastCoupon =
-            boost::dynamic_pointer_cast<FloatingRateCoupon>(
-                                                 swap_->floatingLeg().back());
-        Date fixingValueDate = iborIndex_->valueDate(lastCoupon->fixingDate());
-        Date endValueDate = iborIndex_->maturityDate(fixingValueDate);
-        latestRelevantDate_ = std::max(latestRelevantDate_, endValueDate);
-        #endif
+        shared_ptr<IborCoupon> lastCoupon =
+            boost::dynamic_pointer_cast<IborCoupon>(swap_->floatingLeg().back());
+        latestRelevantDate_ = std::max(maturityDate_, lastCoupon->fixingEndDate());
 
         switch (pillarChoice_) {
           case Pillar::MaturityDate:
