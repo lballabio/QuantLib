@@ -22,9 +22,10 @@
 
 #include <ql/math/array.hpp>
 #include <ql/math/interpolation.hpp>
-
 #include <boost/make_shared.hpp>
-#include<set>
+#if defined(QL_EXTRA_SAFETY_CHECKS)
+#include <set>
+#endif
 
 namespace QuantLib {
     /*! References: J-P. Berrut and L.N. Trefethen,
