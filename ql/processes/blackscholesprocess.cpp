@@ -38,7 +38,7 @@ namespace QuantLib {
              const Handle<YieldTermStructure>& riskFreeTS,
              const Handle<BlackVolTermStructure>& blackVolTS,
              const boost::shared_ptr<discretization>& disc,
-             const bool forceDiscretization)
+             bool forceDiscretization)
     : StochasticProcess1D(disc), x0_(x0), riskFreeRate_(riskFreeTS),
       dividendYield_(dividendTS), blackVolatility_(blackVolTS),
       forceDiscretization_(forceDiscretization), updated_(false) {
@@ -209,7 +209,7 @@ namespace QuantLib {
                               const Handle<YieldTermStructure>& riskFreeTS,
                               const Handle<BlackVolTermStructure>& blackVolTS,
                               const boost::shared_ptr<discretization>& d,
-                              const bool forceDiscretization)
+                              bool forceDiscretization)
     : GeneralizedBlackScholesProcess(
              x0,
              // no dividend yield
@@ -226,7 +226,7 @@ namespace QuantLib {
                               const Handle<YieldTermStructure>& riskFreeTS,
                               const Handle<BlackVolTermStructure>& blackVolTS,
                               const boost::shared_ptr<discretization>& d,
-                              const bool forceDiscretization)
+                              bool forceDiscretization)
     : GeneralizedBlackScholesProcess(x0,dividendTS,riskFreeTS,blackVolTS,d,
                                      forceDiscretization) {}
 
@@ -235,7 +235,7 @@ namespace QuantLib {
                                const Handle<YieldTermStructure>& riskFreeTS,
                                const Handle<BlackVolTermStructure>& blackVolTS,
                                const boost::shared_ptr<discretization>& d,
-                               const bool forceDiscretization)
+                               bool forceDiscretization)
     : GeneralizedBlackScholesProcess(x0,riskFreeTS,riskFreeTS,blackVolTS,d,
                                      forceDiscretization) {}
 
@@ -246,7 +246,7 @@ namespace QuantLib {
                           const Handle<YieldTermStructure>& domesticRiskFreeTS,
                           const Handle<BlackVolTermStructure>& blackVolTS,
                           const boost::shared_ptr<discretization>& d,
-                          const bool forceDiscretization)
+                          bool forceDiscretization)
     : GeneralizedBlackScholesProcess(x0,foreignRiskFreeTS,domesticRiskFreeTS,
                                      blackVolTS,d,forceDiscretization) {}
 
