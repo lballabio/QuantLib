@@ -48,6 +48,7 @@ namespace QuantLib {
             case Biweekly:          // etc.
             case Weekly:
             case Daily:
+                QL_REQUIRE(this->seasonalityFactors().empty(), "no seasonality factors given");
                 QL_REQUIRE( (this->seasonalityFactors().size() %
                              this->frequency()) == 0,
                            "For frequency " << this->frequency()
