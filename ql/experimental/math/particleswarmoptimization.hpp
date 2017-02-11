@@ -29,6 +29,8 @@ Computation, 6(2): 58–73.
 
 #include <ql/qldefines.hpp>
 
+#if BOOST_VERSION >= 104700
+
 #include <ql/math/optimization/problem.hpp>
 #include <ql/math/optimization/constraint.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
@@ -413,4 +415,5 @@ namespace QuantLib {
 
 }
 
+#endif
 #endif
