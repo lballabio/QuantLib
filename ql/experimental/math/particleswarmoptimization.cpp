@@ -16,6 +16,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT
 ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+#if BOOST_VERSION >= 104700
 
 #include <ql/experimental/math/particleswarmoptimization.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
@@ -395,3 +396,4 @@ namespace QuantLib {
         }
     }
 }
+#endif
