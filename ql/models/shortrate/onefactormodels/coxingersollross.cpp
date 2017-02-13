@@ -31,11 +31,7 @@ namespace QuantLib {
             Impl(Real k, Real theta) : k_(k), theta_(theta) {}
             bool test(const Array& params) const {
                 Real sigma = params[0];
-                if (sigma <= 0.0)
-                    return false;
-                if (sigma*sigma >= 2.0*k_*theta_)
-                    return false;
-                return true;
+                return (sigma > 0.0) && (sigma*sigma < 2.0*k_*theta_);
             }
         };
       public:
