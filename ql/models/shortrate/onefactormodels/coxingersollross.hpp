@@ -45,7 +45,8 @@ namespace QuantLib {
         CoxIngersollRoss(Rate r0 = 0.05,
                          Real theta = 0.1,
                          Real k = 0.1,
-                         Real sigma = 0.1);
+                         Real sigma = 0.1,
+                         bool withFellerConstraint = true);
 
         virtual Real discountBondOption(Option::Type type,
                                         Real strike,

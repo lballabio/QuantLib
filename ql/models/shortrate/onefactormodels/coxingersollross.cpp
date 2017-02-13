@@ -41,13 +41,17 @@ namespace QuantLib {
     };
 
     CoxIngersollRoss::CoxIngersollRoss(Rate r0, Real theta,
-                                       Real k, Real sigma)
+                                       Real k, Real sigma,
+                                       bool withFellerConstraint)
     : OneFactorAffineModel(4),
       theta_(arguments_[0]), k_(arguments_[1]),
       sigma_(arguments_[2]), r0_(arguments_[3]) {
         theta_ = ConstantParameter(theta, PositiveConstraint());
         k_ = ConstantParameter(k, PositiveConstraint());
-        sigma_ = ConstantParameter(sigma, VolatilityConstraint(k,theta));
+        if (withFellerConstraint)
+            sigma_ = ConstantParameter(sigma, VolatilityConstraint(k,theta));
+        else
+            sigma_ = ConstantParameter(sigma, PositiveConstraint());
         r0_ = ConstantParameter(r0, PositiveConstraint());
     }
 
