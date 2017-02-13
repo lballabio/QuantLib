@@ -753,19 +753,18 @@ namespace QuantLib {
     } // anonymous namespace ends here
 
     CashFlows::IrrFinder::IrrFinder(const Leg& leg,
-          Real npv,
-          const DayCounter& dayCounter,
-          Compounding comp,
-          Frequency freq,
-          bool includeSettlementDateFlows,
-          Date settlementDate,
-          Date npvDate)
+                                    Real npv,
+                                    const DayCounter& dayCounter,
+                                    Compounding comp,
+                                    Frequency freq,
+                                    bool includeSettlementDateFlows,
+                                    Date settlementDate,
+                                    Date npvDate)
     : leg_(leg), npv_(npv),
       dayCounter_(dayCounter), compounding_(comp), frequency_(freq),
       includeSettlementDateFlows_(includeSettlementDateFlows),
       settlementDate_(settlementDate),
       npvDate_(npvDate) {
-
 
     if (settlementDate == Date())
         settlementDate = Settings::instance().evaluationDate();
@@ -775,6 +774,7 @@ namespace QuantLib {
 
         checkSign();
     }
+
     Real CashFlows::IrrFinder::operator()(Rate y) const {
         InterestRate yield(y, dayCounter_, compounding_, frequency_);
         Real NPV = CashFlows::npv(leg_, yield,
@@ -782,12 +782,14 @@ namespace QuantLib {
                                   settlementDate_, npvDate_);
         return npv_ - NPV;
     }
+
     Real CashFlows::IrrFinder::derivative(Rate y) const {
         InterestRate yield(y, dayCounter_, compounding_, frequency_);
         return modifiedDuration(leg_, yield,
                                 includeSettlementDateFlows_,
                                 settlementDate_, npvDate_);
     }
+
     void CashFlows::IrrFinder::checkSign() const {
         // depending on the sign of the market price, check that cash
         // flows of the opposite sign have been specified (otherwise
@@ -954,11 +956,12 @@ namespace QuantLib {
                           Size maxIterations,
                           Rate guess) {
         NewtonSafe solver;
+        solver.setMaxEvaluations(maxIterations);
         return CashFlows::yield<NewtonSafe>(solver, leg, npv, dayCounter,
                                             compounding, frequency,
                                             includeSettlementDateFlows,
-                                            settlementDate, npvDate, accuracy,
-                                            maxIterations, guess);
+                                            settlementDate, npvDate,
+                                            accuracy, guess);
     }
 
 

@@ -369,9 +369,10 @@ namespace QuantLib {
                               Size maxIterations,
                               Rate guess) {
         NewtonSafe solver;
+        solver.setMaxEvaluations(maxIterations);
         return yield<NewtonSafe>(solver, bond, cleanPrice, dayCounter,
-                                 compounding, frequency, settlement, accuracy,
-                                 maxIterations, guess);
+                                 compounding, frequency, settlement,
+                                 accuracy, guess);
     }
 
     Time BondFunctions::duration(const Bond& bond,

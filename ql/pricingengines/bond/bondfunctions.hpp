@@ -164,7 +164,6 @@ namespace QuantLib {
                           Frequency frequency,
                           Date settlementDate = Date(),
                           Real accuracy = 1.0e-10,
-                          Size maxIterations = 100,
                           Rate guess = 0.05) {
             if (settlementDate == Date())
                 settlementDate = bond.settlementDate();
@@ -179,8 +178,7 @@ namespace QuantLib {
             return CashFlows::yield<Solver>(solver, bond.cashflows(),
                                             dirtyPrice, dayCounter, compounding,
                                             frequency, false, settlementDate,
-                                            settlementDate, accuracy,
-                                            maxIterations, guess);
+                                            settlementDate, accuracy, guess);
         }
         static Time duration(const Bond& bond,
                              const InterestRate& yield,
