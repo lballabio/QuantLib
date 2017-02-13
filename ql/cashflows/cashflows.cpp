@@ -743,96 +743,6 @@ namespace QuantLib {
                                  settlementDate, npvDate);
         }
 
-        class IrrFinder : public std::unary_function<Rate, Real> {
-          public:
-            IrrFinder(const Leg& leg,
-                      Real npv,
-                      const DayCounter& dayCounter,
-                      Compounding comp,
-                      Frequency freq,
-                      bool includeSettlementDateFlows,
-                      Date settlementDate,
-                      Date npvDate)
-            : leg_(leg), npv_(npv),
-              dayCounter_(dayCounter), compounding_(comp), frequency_(freq),
-              includeSettlementDateFlows_(includeSettlementDateFlows),
-              settlementDate_(settlementDate),
-              npvDate_(npvDate) {
-
-
-            if (settlementDate == Date())
-                settlementDate = Settings::instance().evaluationDate();
-
-                if (npvDate == Date())
-                    npvDate = settlementDate;
-
-                checkSign();
-            }
-            Real operator()(Rate y) const {
-                InterestRate yield(y, dayCounter_, compounding_, frequency_);
-                Real NPV = CashFlows::npv(leg_, yield,
-                                          includeSettlementDateFlows_,
-                                          settlementDate_, npvDate_);
-                return npv_ - NPV;
-            }
-            Real derivative(Rate y) const {
-                InterestRate yield(y, dayCounter_, compounding_, frequency_);
-                return modifiedDuration(leg_, yield,
-                                        includeSettlementDateFlows_,
-                                        settlementDate_, npvDate_);
-            }
-          private:
-            void checkSign() const {
-                // depending on the sign of the market price, check that cash
-                // flows of the opposite sign have been specified (otherwise
-                // IRR is nonsensical.)
-
-                Integer lastSign = sign(-npv_),
-                        signChanges = 0;
-                for (Size i = 0; i < leg_.size(); ++i) {
-                    if (!leg_[i]->hasOccurred(settlementDate_,
-                                              includeSettlementDateFlows_) &&
-                        !leg_[i]->tradingExCoupon(settlementDate_)) {
-                        Integer thisSign = sign(leg_[i]->amount());
-                        if (lastSign * thisSign < 0) // sign change
-                            signChanges++;
-
-                        if (thisSign != 0)
-                            lastSign = thisSign;
-                    }
-                }
-                QL_REQUIRE(signChanges > 0,
-                           "the given cash flows cannot result in the given market "
-                           "price due to their sign");
-
-                /* The following is commented out due to the lack of a QL_WARN macro
-                if (signChanges > 1) {    // Danger of non-unique solution
-                                          // Check the aggregate cash flows (Norstrom)
-                    Real aggregateCashFlow = npv;
-                    signChanges = 0;
-                    for (Size i = 0; i < leg.size(); ++i) {
-                        Real nextAggregateCashFlow =
-                            aggregateCashFlow + leg[i]->amount();
-
-                        if (aggregateCashFlow * nextAggregateCashFlow < 0.0)
-                            signChanges++;
-
-                        aggregateCashFlow = nextAggregateCashFlow;
-                    }
-                    if (signChanges > 1)
-                        QL_WARN( "danger of non-unique solution");
-                };
-                */
-            }
-            const Leg& leg_;
-            Real npv_;
-            DayCounter dayCounter_;
-            Compounding compounding_;
-            Frequency frequency_;
-            bool includeSettlementDateFlows_;
-            Date settlementDate_, npvDate_;
-        };
-
         struct CashFlowLater {
             bool operator()(const boost::shared_ptr<CashFlow> &c,
                             const boost::shared_ptr<CashFlow> &d) {
@@ -841,6 +751,87 @@ namespace QuantLib {
         };
 
     } // anonymous namespace ends here
+
+    CashFlows::IrrFinder::IrrFinder(const Leg& leg,
+                                    Real npv,
+                                    const DayCounter& dayCounter,
+                                    Compounding comp,
+                                    Frequency freq,
+                                    bool includeSettlementDateFlows,
+                                    Date settlementDate,
+                                    Date npvDate)
+    : leg_(leg), npv_(npv),
+      dayCounter_(dayCounter), compounding_(comp), frequency_(freq),
+      includeSettlementDateFlows_(includeSettlementDateFlows),
+      settlementDate_(settlementDate),
+      npvDate_(npvDate) {
+
+    if (settlementDate == Date())
+        settlementDate = Settings::instance().evaluationDate();
+
+        if (npvDate == Date())
+            npvDate = settlementDate;
+
+        checkSign();
+    }
+
+    Real CashFlows::IrrFinder::operator()(Rate y) const {
+        InterestRate yield(y, dayCounter_, compounding_, frequency_);
+        Real NPV = CashFlows::npv(leg_, yield,
+                                  includeSettlementDateFlows_,
+                                  settlementDate_, npvDate_);
+        return npv_ - NPV;
+    }
+
+    Real CashFlows::IrrFinder::derivative(Rate y) const {
+        InterestRate yield(y, dayCounter_, compounding_, frequency_);
+        return modifiedDuration(leg_, yield,
+                                includeSettlementDateFlows_,
+                                settlementDate_, npvDate_);
+    }
+
+    void CashFlows::IrrFinder::checkSign() const {
+        // depending on the sign of the market price, check that cash
+        // flows of the opposite sign have been specified (otherwise
+        // IRR is nonsensical.)
+
+        Integer lastSign = sign(-npv_),
+                signChanges = 0;
+        for (Size i = 0; i < leg_.size(); ++i) {
+            if (!leg_[i]->hasOccurred(settlementDate_,
+                                      includeSettlementDateFlows_) &&
+                !leg_[i]->tradingExCoupon(settlementDate_)) {
+                Integer thisSign = sign(leg_[i]->amount());
+                if (lastSign * thisSign < 0) // sign change
+                    signChanges++;
+
+                if (thisSign != 0)
+                    lastSign = thisSign;
+            }
+        }
+        QL_REQUIRE(signChanges > 0,
+                   "the given cash flows cannot result in the given market "
+                   "price due to their sign");
+
+        /* The following is commented out due to the lack of a QL_WARN macro
+        if (signChanges > 1) {    // Danger of non-unique solution
+                                  // Check the aggregate cash flows (Norstrom)
+            Real aggregateCashFlow = npv;
+            signChanges = 0;
+            for (Size i = 0; i < leg.size(); ++i) {
+                Real nextAggregateCashFlow =
+                    aggregateCashFlow + leg[i]->amount();
+
+                if (aggregateCashFlow * nextAggregateCashFlow < 0.0)
+                    signChanges++;
+
+                aggregateCashFlow = nextAggregateCashFlow;
+            }
+            if (signChanges > 1)
+                QL_WARN( "danger of non-unique solution");
+        };
+        */
+    }
 
     Real CashFlows::npv(const Leg& leg,
                         const InterestRate& y,
@@ -964,14 +955,13 @@ namespace QuantLib {
                           Real accuracy,
                           Size maxIterations,
                           Rate guess) {
-        //Brent solver;
         NewtonSafe solver;
         solver.setMaxEvaluations(maxIterations);
-        IrrFinder objFunction(leg, npv,
-                              dayCounter, compounding, frequency,
-                              includeSettlementDateFlows,
-                              settlementDate, npvDate);
-        return solver.solve(objFunction, accuracy, guess, guess/10.0);
+        return CashFlows::yield<NewtonSafe>(solver, leg, npv, dayCounter,
+                                            compounding, frequency,
+                                            includeSettlementDateFlows,
+                                            settlementDate, npvDate,
+                                            accuracy, guess);
     }
 
 
