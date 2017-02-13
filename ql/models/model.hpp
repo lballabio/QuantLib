@@ -112,6 +112,9 @@ namespace QuantLib {
         //! Returns end criteria result
         EndCriteria::Type endCriteria() const { return shortRateEndCriteria_; }
 
+        //! Returns the problem values
+        const Array& problemValues() const { return problemValues_; }
+
         //! Returns array of arguments on which calibration is done
         Disposable<Array> params() const;
 
@@ -122,6 +125,7 @@ namespace QuantLib {
         std::vector<Parameter> arguments_;
         boost::shared_ptr<Constraint> constraint_;
         EndCriteria::Type shortRateEndCriteria_;
+        Array problemValues_;
 
       private:
         //! Constraint imposed on arguments

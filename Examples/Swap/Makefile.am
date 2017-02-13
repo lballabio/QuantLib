@@ -11,8 +11,8 @@ SwapValuation_SOURCES = swapvaluation.cpp
 SwapValuation_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
+    CMakeLists.txt \
     Swap.dev \
-    Swap_vc8.vcproj \
     Swap_vc9.vcproj \
     Swap.vcxproj \
     Swap.vcxproj.filters \

@@ -30,8 +30,10 @@ class BasketOptionTest {
     static void testEuroTwoValues();
     static void testBarraquandThreeValues();
     static void testTavellaValues();
-    static void testOneDAmericanValues();
+    static void testOneDAmericanValues(unsigned from, unsigned to);
     static void testOddSamples();
+    static void testLocalVolatilitySpreadOption();
+    static void test2DPDEGreeks();
     static boost::unit_test_framework::test_suite* suite();
 };
 

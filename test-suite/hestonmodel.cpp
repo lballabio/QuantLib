@@ -51,6 +51,7 @@
 #include <ql/math/optimization/differentialevolution.hpp>
 #include <ql/time/period.hpp>
 #include <ql/quotes/simplequote.hpp>
+
 #include <boost/make_shared.hpp>
 
 using namespace QuantLib;
@@ -791,18 +792,35 @@ void HestonModelTest::testKahlJaeckelCase() {
                     << "\n    tolerance:      " << tolerance);
     }
 
+
+    const boost::shared_ptr<HestonModel> hestonModel(
+         new HestonModel(
+             boost::shared_ptr<HestonProcess>(new HestonProcess(
+                riskFreeTS, dividendTS, s0, v0,
+                kappa, theta, sigma, rho))));
+
     option.setPricingEngine(boost::shared_ptr<PricingEngine>(
-        new FdHestonVanillaEngine(
-            boost::shared_ptr<HestonModel>(new HestonModel(
-                boost::shared_ptr<HestonProcess>(new HestonProcess(
-                    riskFreeTS, dividendTS, s0, v0,
-                    kappa, theta, sigma, rho)))),
-            200,400,100)));
+        new FdHestonVanillaEngine(hestonModel, 200, 400, 100)));
 
     calculated = option.NPV();
-    const Real error = std::fabs(calculated - expected);
+    Real error = std::fabs(calculated - expected);
     if (error > 5.0e-2) {
         BOOST_FAIL("failed to reproduce cached price with FD engine"
+                   << "\n    calculated: " << calculated
+                   << "\n    expected:   " << expected
+                   << "\n    error:      " << QL_SCIENTIFIC << error);
+    }
+
+    option.setPricingEngine(
+        boost::shared_ptr<AnalyticHestonEngine>(
+            new AnalyticHestonEngine(hestonModel, 1e-6, 1000)));
+
+    calculated = option.NPV();
+    error = std::fabs(calculated - expected);
+
+    if (error > 0.00002) {
+        BOOST_FAIL("failed to reproduce cached price with "
+                   "GaussLobatto engine"
                    << "\n    calculated: " << calculated
                    << "\n    expected:   " << expected
                    << "\n    error:      " << QL_SCIENTIFIC << error);
@@ -1505,6 +1523,193 @@ void HestonModelTest::testExpansionOnFordeReference() {
     }
 }
 
+
+namespace {
+    void reportOnIntegrationMethodTest(
+        VanillaOption& option,
+        const boost::shared_ptr<HestonModel>& model,
+        const AnalyticHestonEngine::Integration& integration,
+        AnalyticHestonEngine::ComplexLogFormula formula,
+        bool isAdaptive, Real expected, Real tol, Size valuations,
+        std::string method) {
+
+        if (integration.isAdaptiveIntegration() != isAdaptive)
+            BOOST_ERROR(method << " is not an adaptive integration routine");
+
+        const boost::shared_ptr<AnalyticHestonEngine> engine =
+            boost::make_shared<AnalyticHestonEngine>(
+                model, formula, integration);
+
+        option.setPricingEngine(engine);
+        const Real calculated = option.NPV();
+
+        const Real error = std::fabs(calculated - expected);
+        if (error > tol) {
+            BOOST_ERROR("failed to reproduce simple Heston Pricing with "
+                    << "\n    integration method: " << method
+                    <<  std::setprecision(12)
+                    << "\n    expected          : " << expected
+                    << "\n    calculated        : " << calculated
+                    << "\n    error             : " << error);
+        }
+
+        if (   valuations != Null<Size>()
+            && valuations != engine->numberOfEvaluations()) {
+            BOOST_ERROR("nubmer of function evaluations does not match "
+                    << "\n    integration method      : " << method
+                    << "\n    expected function calls : " << valuations
+                    << "\n    number of function calls: "
+                    << engine->numberOfEvaluations());
+        }
+    }
+}
+
+void HestonModelTest::testAllIntegrationMethods() {
+    BOOST_TEST_MESSAGE("Testing semi-analytic Heston pricing with all "
+                       "integration methods...");
+
+    SavedSettings backup;
+
+    const Date settlementDate(7, February, 2017);
+    Settings::instance().evaluationDate() = settlementDate;
+
+    const DayCounter dayCounter = Actual365Fixed();
+    const Handle<YieldTermStructure> riskFreeTS(flatRate(0.05, dayCounter));
+    const Handle<YieldTermStructure> dividendTS(flatRate(0.075, dayCounter));
+
+    const Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
+
+    const Real v0    =  0.1;
+    const Real rho   = -0.75;
+    const Real sigma =  0.4;
+    const Real kappa =  4.0;
+    const Real theta =  0.05;
+
+    const boost::shared_ptr<HestonModel> model =
+        boost::make_shared<HestonModel>(
+            boost::make_shared<HestonProcess>(
+                riskFreeTS, dividendTS,
+                s0, v0, kappa, theta, sigma, rho));
+
+    const boost::shared_ptr<StrikedTypePayoff> payoff =
+        boost::make_shared<PlainVanillaPayoff>(Option::Put, s0->value());
+
+    const Date maturityDate = settlementDate + Period(1, Years);
+    const boost::shared_ptr<Exercise> exercise =
+        boost::make_shared<EuropeanExercise>(maturityDate);
+
+    VanillaOption option(payoff, exercise);
+
+    const Real tol = 1e-8;
+    const Real expected = 10.147041515497;
+
+    // Gauss-Laguerre with Gatheral logarithm integration method
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::gaussLaguerre(),
+        AnalyticHestonEngine::Gatheral,
+        false, expected, tol, 256, "Gauss-Laguerre with Gatheral logarithm");
+
+    // Gauss-Laguerre with branch correction integration method
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::gaussLaguerre(),
+        AnalyticHestonEngine::BranchCorrection,
+        false, expected, tol, 256, "Gauss-Laguerre with branch correction");
+
+    // Gauss-Legendre with Gatheral logarithm integration method
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::gaussLegendre(),
+        AnalyticHestonEngine::Gatheral,
+        false, expected, tol, 256, "Gauss-Legendre with Gatheral logarithm");
+
+    // Gauss-Legendre with branch correction integration method
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::gaussLegendre(),
+        AnalyticHestonEngine::BranchCorrection,
+        false, expected, tol, 256, "Gauss-Legendre with branch correction");
+
+    // Gauss-Chebyshev with Gatheral logarithm integration method
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::gaussChebyshev(512),
+        AnalyticHestonEngine::Gatheral,
+        false, expected, 1e-4, 1024, "Gauss-Chebyshev with Gatheral logarithm");
+
+    // Gauss-Chebyshev with branch correction integration method
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::gaussChebyshev(512),
+        AnalyticHestonEngine::BranchCorrection,
+        false, expected, 1e-4, 1024, "Gauss-Chebyshev with branch correction");
+
+    // Gauss-Chebyshev2nd with Gatheral logarithm integration method
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::gaussChebyshev2nd(512),
+        AnalyticHestonEngine::Gatheral,
+        false, expected, 2e-4, 1024,
+        "Gauss-Chebyshev2nd with Gatheral logarithm");
+
+    // Gauss-Chebyshev with branch correction integration method
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::gaussChebyshev2nd(512),
+        AnalyticHestonEngine::BranchCorrection,
+        false, expected, 2e-4, 1024,
+        "Gauss-Chebyshev2nd with branch correction");
+
+    // Discrete Simpson rule with Gatheral logarithm
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::discreteSimpson(512),
+        AnalyticHestonEngine::Gatheral,
+        false, expected, tol, 1024,
+        "Discrete Simpson rule with Gatheral logarithm");
+
+    // Discrete Simpson rule with branch correction integration method
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::discreteSimpson(512),
+        AnalyticHestonEngine::BranchCorrection,
+        false, expected, tol, 1024,
+        "Discrete Simpson rule with branch correction");
+
+    // Discrete Trapezoid rule with Gatheral logarithm
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::discreteTrapezoid(512),
+        AnalyticHestonEngine::Gatheral,
+        false, expected, 2e-4, 1024,
+        "Discrete Trapezoid rule with Gatheral logarithm");
+
+    // Discrete Trapezoid rule with branch correction integration method
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::discreteTrapezoid(512),
+        AnalyticHestonEngine::BranchCorrection,
+        false, expected, 2e-4, 1024,
+        "Discrete Trapezoid rule with branch correction");
+
+    // Gauss-Lobatto with Gatheral logarithm
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::gaussLobatto(tol, Null<Real>()),
+        AnalyticHestonEngine::Gatheral,
+        true, expected, tol, Null<Size>(),
+        "Gauss-Lobatto with Gatheral logarithm");
+
+    // Gauss-Konrod with Gatheral logarithm
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::gaussKronrod(tol),
+        AnalyticHestonEngine::Gatheral,
+        true, expected, tol, Null<Size>(),
+        "Gauss-Konrod with Gatheral logarithm");
+
+    // Simpson with Gatheral logarithm
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::simpson(tol),
+        AnalyticHestonEngine::Gatheral,
+        true, expected, 1e-6, Null<Size>(),
+        "Simpson with Gatheral logarithm");
+
+    // Trapezoid with Gatheral logarithm
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::trapezoid(tol),
+        AnalyticHestonEngine::Gatheral,
+        true, expected, 1e-6, Null<Size>(),
+        "Trapezoid with Gatheral logarithm");
+}
+
 test_suite* HestonModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Heston model tests");
 
@@ -1531,6 +1736,8 @@ test_suite* HestonModelTest::suite() {
                     &HestonModelTest::testExpansionOnAlanLewisReference));
     suite->add(QUANTLIB_TEST_CASE(
                     &HestonModelTest::testExpansionOnFordeReference));
+    suite->add(QUANTLIB_TEST_CASE(
+                    &HestonModelTest::testAllIntegrationMethods));
     return suite;
 }
 

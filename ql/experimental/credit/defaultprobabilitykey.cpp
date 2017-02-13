@@ -31,9 +31,6 @@
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
-#if defined(QL_PATCH_MSVC80)
-#pragma warning(pop)
-#endif
 #include <algorithm>
 #include <set>
 

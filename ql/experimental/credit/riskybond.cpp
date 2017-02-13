@@ -129,7 +129,7 @@ namespace QuantLib {
           schedule_(schedule),
           rate_(rate),
           dayCounter_(dayCounter),
-          paymentConvention_(paymentConvention),
+          // paymentConvention_(paymentConvention),
           notionals_(notionals) {
         // FIXME: Take paymentConvention into account
         std::vector<Date> dates = schedule_.dates();

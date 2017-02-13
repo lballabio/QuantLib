@@ -59,7 +59,8 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& riskFreeTS,
             const Handle<BlackVolTermStructure>& blackVolTS,
             const boost::shared_ptr<discretization>& d =
-                  boost::shared_ptr<discretization>(new EulerDiscretization));
+                  boost::shared_ptr<discretization>(new EulerDiscretization),
+            bool forceDiscretization = false);
         //! \name StochasticProcess1D interface
         //@{
         Real x0() const;
@@ -68,11 +69,13 @@ namespace QuantLib {
         /*! \todo revise extrapolation */
         Real diffusion(Time t, Real x) const;
         Real apply(Real x0, Real dx) const;
-        /*! \warning raises a "not implemented" exception.  It should
-                     be rewritten to return the expectation E(S) of
-                     the process, not exp(E(log S)).
+        /*! \warning in general raises a "not implemented" exception.
+                     It should be rewritten to return the expectation E(S)
+                     of the process, not exp(E(log S)).
         */
         Real expectation(Time t0, Real x0, Time dt) const;
+        Real stdDeviation(Time t0, Real x0, Time dt) const;
+        Real variance(Time t0, Real x0, Time dt) const;
         Real evolve(Time t0, Real x0, Time dt, Real dw) const;
         //@}
         Time time(const Date&) const;
@@ -92,6 +95,7 @@ namespace QuantLib {
         Handle<Quote> x0_;
         Handle<YieldTermStructure> riskFreeRate_, dividendYield_;
         Handle<BlackVolTermStructure> blackVolatility_;
+        bool forceDiscretization_;
         mutable RelinkableHandle<LocalVolTermStructure> localVolatility_;
         mutable bool updated_, isStrikeIndependent_;
     };
@@ -115,7 +119,8 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& riskFreeTS,
             const Handle<BlackVolTermStructure>& blackVolTS,
             const boost::shared_ptr<discretization>& d =
-                  boost::shared_ptr<discretization>(new EulerDiscretization));
+                  boost::shared_ptr<discretization>(new EulerDiscretization),
+            bool forceDiscretization = false);
     };
 
     //! Merton (1973) extension to the Black-Scholes stochastic process
@@ -136,7 +141,8 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& riskFreeTS,
             const Handle<BlackVolTermStructure>& blackVolTS,
             const boost::shared_ptr<discretization>& d =
-                  boost::shared_ptr<discretization>(new EulerDiscretization));
+                  boost::shared_ptr<discretization>(new EulerDiscretization),
+            bool forceDiscretization = false);
     };
 
     //! Black (1976) stochastic process
@@ -158,7 +164,8 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& riskFreeTS,
             const Handle<BlackVolTermStructure>& blackVolTS,
             const boost::shared_ptr<discretization>& d =
-                  boost::shared_ptr<discretization>(new EulerDiscretization));
+                  boost::shared_ptr<discretization>(new EulerDiscretization),
+            bool forceDiscretization = false);
     };
 
     //! Garman-Kohlhagen (1983) stochastic process
@@ -182,7 +189,8 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& domesticRiskFreeTS,
             const Handle<BlackVolTermStructure>& blackVolTS,
             const boost::shared_ptr<discretization>& d =
-                  boost::shared_ptr<discretization>(new EulerDiscretization));
+                  boost::shared_ptr<discretization>(new EulerDiscretization),
+            bool forceDiscretization = false);
     };
 
 }

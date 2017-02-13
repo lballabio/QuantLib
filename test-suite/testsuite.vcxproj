@@ -685,6 +685,7 @@
     <ClCompile Include="gjrgarchmodel.cpp" />
     <ClCompile Include="gsr.cpp" />
     <ClCompile Include="hestonmodel.cpp" />
+    <ClCompile Include="hestonslvmodel.cpp" />
     <ClCompile Include="himalayaoption.cpp" />
     <ClCompile Include="hybridhestonhullwhiteprocess.cpp" />
     <ClCompile Include="inflation.cpp" />
@@ -699,6 +700,7 @@
     <ClCompile Include="interestrates.cpp" />
     <ClCompile Include="interpolations.cpp" />
     <ClCompile Include="jumpdiffusion.cpp" />
+    <ClCompile Include="lazyobject.cpp" />
     <ClCompile Include="libormarketmodel.cpp" />
     <ClCompile Include="libormarketmodelprocess.cpp" />
     <ClCompile Include="linearleastsquaresregression.cpp" />
@@ -717,6 +719,7 @@
     <ClCompile Include="mersennetwister.cpp" />
     <ClCompile Include="money.cpp" />
     <ClCompile Include="noarbsabr.cpp" />
+    <ClCompile Include="normalclvmodel.cpp" />
     <ClCompile Include="nthtodefault.cpp" />
     <ClCompile Include="numericaldifferentiation.cpp" />
     <ClCompile Include="observable.cpp" />
@@ -734,6 +737,7 @@
     <ClCompile Include="quantooption.cpp" />
     <ClCompile Include="quotes.cpp" />
     <ClCompile Include="rangeaccrual.cpp" />
+    <ClCompile Include="riskneutraldensitycalculator.cpp" />
     <ClCompile Include="riskstats.cpp" />
     <ClCompile Include="rngtraits.cpp" />
     <ClCompile Include="rounding.cpp" />
@@ -742,6 +746,7 @@
     <ClCompile Include="shortratemodels.cpp" />
     <ClCompile Include="solvers.cpp" />
     <ClCompile Include="spreadoption.cpp" />
+    <ClCompile Include="squarerootclvmodel.cpp" />
     <ClCompile Include="stats.cpp" />
     <ClCompile Include="swap.cpp" />
     <ClCompile Include="swapforwardmappings.cpp" />
@@ -823,6 +828,7 @@
     <ClInclude Include="gjrgarchmodel.hpp" />
     <ClInclude Include="gsr.hpp" />
     <ClInclude Include="hestonmodel.hpp" />
+    <ClInclude Include="hestonslvmodel.hpp" />
     <ClInclude Include="himalayaoption.hpp" />
     <ClInclude Include="hybridhestonhullwhiteprocess.hpp" />
     <ClInclude Include="inflation.hpp" />
@@ -837,6 +843,7 @@
     <ClInclude Include="interestrates.hpp" />
     <ClInclude Include="interpolations.hpp" />
     <ClInclude Include="jumpdiffusion.hpp" />
+    <ClInclude Include="lazyobject.hpp" />
     <ClInclude Include="libormarketmodel.hpp" />
     <ClInclude Include="libormarketmodelprocess.hpp" />
     <ClInclude Include="linearleastsquaresregression.hpp" />
@@ -855,6 +862,7 @@
     <ClInclude Include="mersennetwister.hpp" />
     <ClInclude Include="money.hpp" />
     <ClInclude Include="noarbsabr.hpp" />
+    <ClInclude Include="normalclvmodel.hpp" />
     <ClInclude Include="nthtodefault.hpp" />
     <ClInclude Include="numericaldifferentiation.hpp" />
     <ClInclude Include="observable.hpp" />
@@ -866,12 +874,14 @@
     <ClInclude Include="pagodaoption.hpp" />
     <ClInclude Include="partialtimebarrieroption.hpp" />
     <ClInclude Include="pathgenerator.hpp" />
+    <ClInclude Include="paralleltestrunner.hpp" />
     <ClInclude Include="period.hpp" />
     <ClInclude Include="piecewiseyieldcurve.hpp" />
     <ClInclude Include="piecewisezerospreadedtermstructure.hpp" />
     <ClInclude Include="quantooption.hpp" />
     <ClInclude Include="quotes.hpp" />
     <ClInclude Include="rangeaccrual.hpp" />
+    <ClInclude Include="riskneutraldensitycalculator.hpp" />
     <ClInclude Include="riskstats.hpp" />
     <ClInclude Include="rngtraits.hpp" />
     <ClInclude Include="rounding.hpp" />
@@ -880,6 +890,7 @@
     <ClInclude Include="shortratemodels.hpp" />
     <ClInclude Include="solvers.hpp" />
     <ClInclude Include="spreadoption.hpp" />
+    <ClInclude Include="squarerootclvmodel.hpp" />
     <ClInclude Include="stats.hpp" />
     <ClInclude Include="swap.hpp" />
     <ClInclude Include="swapforwardmappings.hpp" />

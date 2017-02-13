@@ -71,9 +71,12 @@ namespace QuantLib {
                     ->forwardRate(begin, end, Continuous, NoFrequency).rate();
             q_[i] = model->dividendYield()
                     ->forwardRate(begin, end, Continuous, NoFrequency).rate();
-        }            
-            
-        QL_REQUIRE(term_ < model_->timeGrid().back(), "maturity is too large");
+        }
+
+        QL_REQUIRE(term_ < model_->timeGrid().back() ||
+                       close_enough(term_, model_->timeGrid().back()),
+                   "maturity (" << term_ << ") is too large, time grid is bounded by "
+                                << model_->timeGrid().back());
     }
         
     Real AnalyticPTDHestonEngine::Fj_Helper::operator()(Real phi) const {

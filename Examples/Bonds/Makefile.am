@@ -12,10 +12,10 @@ Bonds_LDADD = ../../ql/libQuantLib.la  ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     Bonds.dev \
-    Bonds_vc8.vcproj \
     Bonds_vc9.vcproj \
     Bonds.vcxproj \
     Bonds.vcxproj.filters \
+    CMakeLists.txt \
     ReadMe.txt
 
 .PHONY: examples check-examples

@@ -872,6 +872,7 @@ void SwaptionTest::testImpliedVolatility() {
                                                               maxEvaluations,
                                                               1.0e-7,
                                                               4.0,
+                                                              ShiftedLognormal,
                                                               0.0);
                             } catch (std::exception& e) {
                                 // couldn't bracket?

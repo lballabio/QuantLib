@@ -35,11 +35,9 @@ namespace QuantLib {
         AnalyticDoubleBarrierBinaryEngine_helper(
              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
              const boost::shared_ptr<CashOrNothingPayoff> &payoff,
-             const boost::shared_ptr<Exercise> &exercise,
              const DoubleBarrierOption::arguments &arguments):
         process_(process),
         payoff_(payoff),
-        exercise_(exercise),
         arguments_(arguments)
         {
         }
@@ -57,7 +55,6 @@ namespace QuantLib {
 
         const boost::shared_ptr<GeneralizedBlackScholesProcess>& process_;
         const boost::shared_ptr<CashOrNothingPayoff> &payoff_;
-        const boost::shared_ptr<Exercise> &exercise_;
         const DoubleBarrierOption::arguments &arguments_;
     };
 
@@ -290,7 +287,7 @@ namespace QuantLib {
         }
 
         AnalyticDoubleBarrierBinaryEngine_helper helper(process_,
-           payoff, arguments_.exercise, arguments_);
+           payoff, arguments_);
         switch (barrierType)
         {
           case DoubleBarrier::KnockOut:

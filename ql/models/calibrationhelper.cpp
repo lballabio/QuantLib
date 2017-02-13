@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -60,19 +61,20 @@ namespace QuantLib {
             break;
           case ImpliedVolError: 
             {
-              const Real lowerPrice = blackPrice(0.001);
-              const Real upperPrice = blackPrice(10);
+              Real minVol = volatilityType_ == ShiftedLognormal ? 0.0010 : 0.00005;
+              Real maxVol = volatilityType_ == ShiftedLognormal ? 10.0 : 0.50;
+              const Real lowerPrice = blackPrice(minVol);
+              const Real upperPrice = blackPrice(maxVol);
               const Real modelPrice = modelValue();
 
               Volatility implied;
               if (modelPrice <= lowerPrice)
-                  implied = 0.001;
+                  implied = minVol;
+              else if (modelPrice >= upperPrice)
+                  implied = maxVol;
               else
-                  if (modelPrice >= upperPrice)
-                      implied = 10.0;
-                  else
-                      implied = this->impliedVolatility(
-                                          modelPrice, 1e-12, 5000, 0.001, 10);
+                  implied = this->impliedVolatility(
+                                          modelPrice, 1e-12, 5000, minVol, maxVol);
               error = implied - volatility_->value();
             }
             break;

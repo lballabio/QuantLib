@@ -68,6 +68,7 @@ namespace QuantLib {
         <ul>
         <li>Public holidays as listed above</li>
         <li>Year-end closing</li>
+        <li>Occasional closing days</li>
         </ul>
 
         \ingroup calendars

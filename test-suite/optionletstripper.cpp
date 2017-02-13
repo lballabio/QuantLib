@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2008 Ferdinando Ametrano
  Copyright (C) 2007, 2008 Laurent Hoffmann
- Copyright (C) 2015 Michael von den Driesch
+ Copyright (C) 2015, 2016 Michael von den Driesch
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,24 +27,32 @@
 #include <ql/termstructures/volatility/capfloor/constantcapfloortermvol.hpp>
 #include <ql/termstructures/volatility/capfloor/capfloortermvolcurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+#include <ql/pricingengines/capfloor/bacheliercapfloorengine.hpp>
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <boost/assign/std/vector.hpp>
+#include <algorithm>
+#include <iterator>
 
 using namespace QuantLib;
+using namespace boost::assign;
 using namespace boost::unit_test_framework;
 using boost::shared_ptr;
 
 namespace {
 
-    struct CommonVars{
+struct CommonVars {
         // global data
         Calendar calendar;
         DayCounter dayCounter;
 
         RelinkableHandle<YieldTermStructure> yieldTermStructure;
+        RelinkableHandle< YieldTermStructure > discountingYTS;
+        RelinkableHandle< YieldTermStructure > forwardingYTS;
 
         std::vector<Rate> strikes;
         std::vector<Period> optionTenors;
@@ -57,6 +65,7 @@ namespace {
 
         boost::shared_ptr<CapFloorTermVolSurface> capFloorVolSurface;
         boost::shared_ptr<CapFloorTermVolSurface> flatTermVolSurface;
+        boost::shared_ptr< CapFloorTermVolSurface > capFloorVolRealSurface;
 
         Real accuracy;
         Real tolerance;
@@ -80,6 +89,70 @@ namespace {
                                                                calendar,
                                                                flatFwdRate,
                                                                dayCounter)));
+        }
+
+        void setRealTermStructure() {
+
+            calendar = TARGET();
+            dayCounter = Actual365Fixed();
+
+            std::vector< int > datesTmp;
+            std::vector< Date > dates;
+            std::vector< Rate > rates;
+
+            datesTmp += 42124, 42129, 42143, 42221, 42254, 42282, 42313, 42345,
+                42374, 42405, 42465, 42495, 42587, 42681, 42772, 42860, 43227,
+                43956, 44321, 44686, 45051, 45418, 45782, 46147, 46512, 47609,
+                49436, 51263, 53087, 56739, 60392;
+
+            for (std::vector< int >::iterator it = datesTmp.begin();
+                 it != datesTmp.end(); ++it)
+                dates.push_back(Date(*it));
+
+            rates += -0.00292, -0.00292, -0.001441, -0.00117, -0.001204,
+                -0.001212, -0.001223, -0.001236, -0.001221, -0.001238,
+                -0.001262, -0.00125, -0.001256, -0.001233, -0.00118, -0.001108,
+                -0.000619, 0.000833, 0.001617, 0.002414, 0.003183, 0.003883,
+                0.004514, 0.005074, 0.005606, 0.006856, 0.00813, 0.008709,
+                0.009136, 0.009601, 0.009384;
+
+            discountingYTS.linkTo(
+                boost::shared_ptr< InterpolatedZeroCurve< Linear > >(
+                    new InterpolatedZeroCurve< Linear >(dates, rates,
+                                                        dayCounter, calendar)));
+
+            QL_REQUIRE(!discountingYTS.empty(),
+                       "Could not create discounting yieldcurve")
+
+            datesTmp.clear();
+            dates.clear();
+            rates.clear();
+
+            datesTmp += 42124, 42313, 42436, 42556, 42618, 42800, 42830, 42860,
+                43227, 43591, 43956, 44321, 44686, 45051, 45418, 45782, 46147,
+                46512, 46878, 47245, 47609, 47973, 48339, 48704, 49069, 49436,
+                49800, 50165, 50530, 50895, 51263, 51627, 51991, 52356, 52722,
+                53087, 54913, 56739, 60392, 64045;
+
+            for (std::vector< int >::iterator it = datesTmp.begin();
+                 it != datesTmp.end(); ++it)
+                dates.push_back(Date(*it));
+
+            rates += 0.000649, 0.000649, 0.000684, 0.000717, 0.000745, 0.000872,
+                0.000905, 0.000954, 0.001532, 0.002319, 0.003147, 0.003949,
+                0.004743, 0.00551, 0.006198, 0.006798, 0.007339, 0.007832,
+                0.008242, 0.008614, 0.008935, 0.009205, 0.009443, 0.009651,
+                0.009818, 0.009952, 0.010054, 0.010146, 0.010206, 0.010266,
+                0.010315, 0.010365, 0.010416, 0.010468, 0.010519, 0.010571,
+                0.010757, 0.010806, 0.010423, 0.010217;
+
+            forwardingYTS.linkTo(
+                boost::shared_ptr< InterpolatedZeroCurve< Linear > >(
+                    new InterpolatedZeroCurve< Linear >(dates, rates,
+                                                        dayCounter, calendar)));
+
+            QL_REQUIRE(!forwardingYTS.empty(),
+                       "Could not create forwarding yieldcurve");
         }
 
         void setFlatTermVolCurve() {
@@ -241,8 +314,76 @@ namespace {
                                        optionTenors, strikes,
                                        termV, dayCounter));
         }
-    };
 
+        void setRealCapFloorTermVolSurface() {
+
+            setRealTermStructure();
+
+            // cap volatility smile matrix
+            optionTenors = std::vector< Period >();
+            optionTenors.push_back(Period(1, Years));
+            optionTenors.push_back(Period(18, Months));
+            optionTenors.push_back(Period(2, Years));
+            optionTenors.push_back(Period(3, Years));
+            optionTenors.push_back(Period(4, Years));
+            optionTenors.push_back(Period(5, Years));
+            optionTenors.push_back(Period(6, Years));
+            optionTenors.push_back(Period(7, Years));
+            optionTenors.push_back(Period(8, Years));
+            optionTenors.push_back(Period(9, Years));
+            optionTenors.push_back(Period(10, Years));
+            optionTenors.push_back(Period(12, Years));
+            optionTenors.push_back(Period(15, Years));
+            optionTenors.push_back(Period(20, Years));
+            optionTenors.push_back(Period(25, Years));
+            optionTenors.push_back(Period(30, Years));
+            // 16
+
+            strikes = std::vector< Rate >();
+            strikes.push_back(-0.005);
+            strikes.push_back(-0.0025);
+            strikes.push_back(-0.00125);
+            strikes.push_back(0.0);
+            strikes.push_back(0.00125);
+            strikes.push_back(0.0025);
+            strikes.push_back(0.005);
+            strikes.push_back(0.01);
+            strikes.push_back(0.015);
+            strikes.push_back(0.02);
+            strikes.push_back(0.03);
+            strikes.push_back(0.05);
+            strikes.push_back(0.1);
+            // 13
+
+            std::vector< Real > rawVols;
+            rawVols += 0.49, 0.39, 0.34, 0.31, 0.34, 0.37, 0.50, 0.75, 0.99, 1.21, 1.64, 2.44, 4.29, 
+                       0.44, 0.36, 0.33, 0.31, 0.33, 0.35,0.45, 0.65, 0.83, 1.00, 1.32, 1.93, 3.30, 
+                       0.40, 0.35, 0.33,0.31, 0.33, 0.34, 0.41, 0.55, 0.69, 0.82, 1.08, 1.56, 2.68,
+                       0.42, 0.39, 0.38, 0.37, 0.38, 0.39, 0.43, 0.54, 0.64, 0.74,0.94, 1.31, 2.18, 
+                       0.46, 0.43, 0.42, 0.41, 0.42, 0.43, 0.47,0.56, 0.66, 0.75, 0.93, 1.28, 2.07, 
+                       0.49, 0.47, 0.46, 0.45,0.46, 0.47, 0.51, 0.59, 0.68, 0.76, 0.93, 1.25, 1.99, 
+                       0.51, 0.49, 0.49, 0.48, 0.49, 0.50, 0.54, 0.62, 0.70, 0.78, 0.94,1.24, 1.94, 
+                       0.52, 0.51, 0.51, 0.51, 0.52, 0.53, 0.56, 0.63,0.71, 0.79, 0.94, 1.23, 1.89, 
+                       0.53, 0.52, 0.52, 0.52, 0.53,0.54, 0.57, 0.65, 0.72, 0.79, 0.94, 1.21, 1.83, 
+                       0.55, 0.54, 0.54, 0.54, 0.55, 0.56, 0.59, 0.66, 0.72, 0.79, 0.91, 1.15,1.71, 
+                       0.56, 0.56, 0.56, 0.56, 0.57, 0.58, 0.61, 0.67, 0.72,0.78, 0.89, 1.09, 1.59, 
+                       0.59, 0.58, 0.58, 0.59, 0.59, 0.60,0.63, 0.68, 0.73, 0.78, 0.86, 1.03, 1.45, 
+                       0.61, 0.61, 0.61,0.61, 0.62, 0.62, 0.64, 0.69, 0.73, 0.77, 0.85, 1.02, 1.44,
+                       0.62, 0.62, 0.63, 0.63, 0.64, 0.64, 0.65, 0.69, 0.72, 0.76,0.82, 0.96, 1.32, 
+                       0.62, 0.63, 0.63, 0.63, 0.65, 0.66, 0.66,0.68, 0.72, 0.74, 0.80, 0.93, 1.25, 
+                       0.62, 0.62, 0.62, 0.62,0.66, 0.67, 0.67, 0.67, 0.72, 0.72, 0.78, 0.90, 1.25;
+
+            termV = Matrix(optionTenors.size(), strikes.size());
+            std::copy(rawVols.begin(), rawVols.end(), termV.begin());
+            termV /= 100;
+
+            capFloorVolRealSurface =
+                boost::shared_ptr< CapFloorTermVolSurface >(
+                    new CapFloorTermVolSurface(0, calendar, Following,
+                                               optionTenors, strikes, termV,
+                                               dayCounter));
+        }
+};
 }
 
 void OptionletStripperTest::testFlatTermVolatilityStripping1() {
@@ -368,6 +509,152 @@ void OptionletStripperTest::testTermVolatilityStripping1() {
     }
 }
 
+void OptionletStripperTest::testTermVolatilityStrippingNormalVol() {
+
+    BOOST_TEST_MESSAGE(
+        "Testing forward/forward vol stripping from non-flat normal vol term "
+        "vol surface for normal vol setup using OptionletStripper1 class...");
+
+    CommonVars vars;
+    Settings::instance().evaluationDate() = Date(30, April, 2015);
+
+    vars.setRealCapFloorTermVolSurface();
+
+    shared_ptr< IborIndex > iborIndex(new Euribor6M(vars.forwardingYTS));
+
+    boost::shared_ptr< OptionletStripper > optionletStripper1(
+        new OptionletStripper1(vars.capFloorVolRealSurface, iborIndex,
+                               Null< Rate >(), vars.accuracy, 100,
+                               vars.discountingYTS, Normal));
+
+    QL_REQUIRE(optionletStripper1 != NULL,
+               "Could not create optionletStripper");
+
+    boost::shared_ptr< StrippedOptionletAdapter > strippedOptionletAdapter =
+        boost::shared_ptr< StrippedOptionletAdapter >(
+            new StrippedOptionletAdapter(optionletStripper1));
+
+    QL_REQUIRE(optionletStripper1 != NULL,
+               "Could not create StrippedOptionletAdapter");
+
+    Handle< OptionletVolatilityStructure > vol(strippedOptionletAdapter);
+
+    vol->enableExtrapolation();
+
+    boost::shared_ptr< BachelierCapFloorEngine > strippedVolEngine(
+        new BachelierCapFloorEngine(vars.discountingYTS, vol));
+    QL_REQUIRE(strippedVolEngine != NULL, "Could not create strippedVolEngine");
+
+    boost::shared_ptr< CapFloor > cap;
+    for (Size tenorIndex = 0; tenorIndex < vars.optionTenors.size();
+         ++tenorIndex) {
+        for (Size strikeIndex = 0; strikeIndex < vars.strikes.size();
+             ++strikeIndex) {
+            cap = MakeCapFloor(CapFloor::Cap, vars.optionTenors[tenorIndex],
+                               iborIndex, vars.strikes[strikeIndex],
+                               0 * Days).withPricingEngine(strippedVolEngine);
+
+            Real priceFromStrippedVolatility = cap->NPV();
+
+            boost::shared_ptr< PricingEngine >
+                bachelierCapFloorEngineConstantVolatility(
+                    new BachelierCapFloorEngine(
+                        vars.discountingYTS,
+                        vars.termV[tenorIndex][strikeIndex]));
+
+            cap->setPricingEngine(bachelierCapFloorEngineConstantVolatility);
+            Real priceFromConstantVolatility = cap->NPV();
+
+            Real error = std::fabs(priceFromStrippedVolatility -
+                                   priceFromConstantVolatility);
+            if (error > vars.tolerance)
+                BOOST_FAIL(
+                    "\noption tenor:       "
+                    << vars.optionTenors[tenorIndex] << "\nstrike:             "
+                    << io::rate(vars.strikes[strikeIndex])
+                    << "\nstripped vol price: "
+                    << io::rate(priceFromStrippedVolatility)
+                    << "\nconstant vol price: "
+                    << io::rate(priceFromConstantVolatility)
+                    << "\nerror:              " << io::rate(error)
+                    << "\ntolerance:          " << io::rate(vars.tolerance));
+        }
+    }
+}
+
+void OptionletStripperTest::testTermVolatilityStrippingShiftedLogNormalVol() {
+
+    BOOST_TEST_MESSAGE(
+        "Testing forward/forward vol stripping from non-flat normal vol term "
+        "vol surface for normal vol setup using OptionletStripper1 class...");
+
+    CommonVars vars;
+    Real shift = 0.03;
+    Settings::instance().evaluationDate() = Date(30, April, 2015);
+
+    vars.setRealCapFloorTermVolSurface();
+
+    shared_ptr< IborIndex > iborIndex(new Euribor6M(vars.forwardingYTS));
+
+    boost::shared_ptr< OptionletStripper > optionletStripper1(
+        new OptionletStripper1(vars.capFloorVolRealSurface, iborIndex,
+                               Null< Rate >(), vars.accuracy, 100,
+                               vars.discountingYTS, ShiftedLognormal, shift,
+                               true));
+
+    QL_REQUIRE(optionletStripper1 != NULL,
+               "Could not create optionletStripper");
+
+    boost::shared_ptr< StrippedOptionletAdapter > strippedOptionletAdapter =
+        boost::shared_ptr< StrippedOptionletAdapter >(
+            new StrippedOptionletAdapter(optionletStripper1));
+
+    QL_REQUIRE(optionletStripper1 != NULL,
+               "Could not create StrippedOptionletAdapter");
+
+    Handle< OptionletVolatilityStructure > vol(strippedOptionletAdapter);
+
+    vol->enableExtrapolation();
+
+    boost::shared_ptr< BlackCapFloorEngine > strippedVolEngine(
+        new BlackCapFloorEngine(vars.discountingYTS, vol));
+    QL_REQUIRE(strippedVolEngine != NULL, "Could not create strippedVolEngine");
+
+    boost::shared_ptr< CapFloor > cap;
+    for (Size strikeIndex = 0; strikeIndex < vars.strikes.size();
+         ++strikeIndex) {
+        for (Size tenorIndex = 0; tenorIndex < vars.optionTenors.size();
+             ++tenorIndex) {
+            cap = MakeCapFloor(CapFloor::Cap, vars.optionTenors[tenorIndex],
+                               iborIndex, vars.strikes[strikeIndex],
+                               0 * Days).withPricingEngine(strippedVolEngine);
+
+            Real priceFromStrippedVolatility = cap->NPV();
+
+            boost::shared_ptr< PricingEngine >
+                blackCapFloorEngineConstantVolatility(new BlackCapFloorEngine(
+                    vars.discountingYTS, vars.termV[tenorIndex][strikeIndex],
+                    vars.capFloorVolRealSurface->dayCounter(), shift));
+
+            cap->setPricingEngine(blackCapFloorEngineConstantVolatility);
+            Real priceFromConstantVolatility = cap->NPV();
+
+            Real error = std::fabs(priceFromStrippedVolatility -
+                                   priceFromConstantVolatility);
+            if (error > vars.tolerance)
+                BOOST_FAIL(
+                    "\noption tenor:       "
+                    << vars.optionTenors[tenorIndex] << "\nstrike:             "
+                    << io::rate(vars.strikes[strikeIndex])
+                    << "\nstripped vol price: "
+                    << io::rate(priceFromStrippedVolatility)
+                    << "\nconstant vol price: "
+                    << io::rate(priceFromConstantVolatility)
+                    << "\nerror:              " << io::rate(error)
+                    << "\ntolerance:          " << io::rate(vars.tolerance));
+        }
+    }
+}
 
 void OptionletStripperTest::testFlatTermVolatilityStripping2() {
 
@@ -502,6 +789,46 @@ void OptionletStripperTest::testTermVolatilityStripping2() {
   }
 }
 
+void OptionletStripperTest::testSwitchStrike() {
+    BOOST_TEST_MESSAGE("Testing switch strike level and recalibration of level "
+                       "in case of curve relinking...");
+
+    CommonVars vars;
+    Settings::instance().evaluationDate() = Date(28, October, 2013);
+    vars.setCapFloorTermVolSurface();
+
+    RelinkableHandle< YieldTermStructure > yieldTermStructure;
+    yieldTermStructure.linkTo(boost::shared_ptr< FlatForward >(
+        new FlatForward(0, vars.calendar, 0.03, vars.dayCounter)));
+
+    shared_ptr< IborIndex > iborIndex(new Euribor6M(yieldTermStructure));
+
+    boost::shared_ptr< OptionletStripper1 > optionletStripper1(
+        new OptionletStripper1(vars.capFloorVolSurface, iborIndex,
+                               Null< Rate >(), vars.accuracy));
+
+    Real error = std::fabs(optionletStripper1->switchStrike() - 0.02981223);
+    if (error > vars.tolerance)
+        BOOST_FAIL("\nSwitchstrike not correctly computed:  "
+                   << "\nexpected switch strike: " << io::rate(0.02981223)
+                   << "\ncomputed switch strike: "
+                   << io::rate(optionletStripper1->switchStrike())
+                   << "\nerror:         " << io::rate(error)
+                   << "\ntolerance:     " << io::rate(vars.tolerance));
+
+    yieldTermStructure.linkTo(boost::shared_ptr< FlatForward >(
+        new FlatForward(0, vars.calendar, 0.05, vars.dayCounter)));
+
+    error = std::fabs(optionletStripper1->switchStrike() - 0.0499371);
+    if (error > vars.tolerance)
+        BOOST_FAIL("\nSwitchstrike not correctly computed:  "
+                   << "\nexpected switch strike: " << io::rate(0.0499371)
+                   << "\ncomputed switch strike: "
+                   << io::rate(optionletStripper1->switchStrike())
+                   << "\nerror:         " << io::rate(error)
+                   << "\ntolerance:     " << io::rate(vars.tolerance));
+}
+
 test_suite* OptionletStripperTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("OptionletStripper Tests");
     suite->add(QUANTLIB_TEST_CASE(
@@ -512,5 +839,13 @@ test_suite* OptionletStripperTest::suite() {
                    &OptionletStripperTest::testFlatTermVolatilityStripping2));
     suite->add(QUANTLIB_TEST_CASE(
                        &OptionletStripperTest::testTermVolatilityStripping2));
+    suite->add(QUANTLIB_TEST_CASE(
+                       &OptionletStripperTest::testSwitchStrike));
+    suite->add(QUANTLIB_TEST_CASE(
+        &OptionletStripperTest::testTermVolatilityStrippingNormalVol));
+    suite->add(
+        QUANTLIB_TEST_CASE(&OptionletStripperTest::
+                               testTermVolatilityStrippingShiftedLogNormalVol));
+
     return suite;
 }

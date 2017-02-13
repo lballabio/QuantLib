@@ -4,6 +4,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    bsmrndcalculator.hpp \
     dynprogvppintrinsicvalueengine.hpp \
     fdextoujumpvanillaengine.hpp \
 	fdklugeextouspreadengine.hpp \
@@ -14,9 +15,12 @@ this_include_HEADERS = \
 	fdmextoujumpmodelinnervalue.hpp \
 	fdmextoujumpop.hpp \
 	fdmextoujumpsolver.hpp \
+	fdhestondoublebarrierengine.hpp \
+	fdmhestongreensfct.hpp \
 	fdmhestonfwdop.hpp \
 	fdmklugeextouop.hpp \
 	fdmklugeextousolver.hpp \
+	fdmlocalvolfwdop.hpp \
 	fdmsimple2dextousolver.hpp \
     fdmsimple3dextoujumpsolver.hpp \
 	fdmspreadpayoffinnervalue.hpp \
@@ -25,14 +29,21 @@ this_include_HEADERS = \
 	fdmvppstepcondition.hpp \
 	fdmvppstepconditionfactory.hpp \
 	fdmzabrop.hpp \
+	fdornsteinuhlenbeckvanillaengine.hpp \
 	fdsimpleextoujumpswingengine.hpp \
     fdsimpleextoustorageengine.hpp \
 	fdsimpleklugeextouvppengine.hpp \
+    gbsmrndcalculator.hpp \
 	glued1dmesher.hpp \
+	hestonrndcalculator.hpp \
+	localvolrndcalculator.hpp \
 	modtriplebandlinearop.hpp \
+	riskneutraldensitycalculator.hpp \
+	squarerootprocessrndcalculator.hpp \
 	vanillavppoption.hpp
 
 libMultiDimFDM_la_SOURCES = \
+    bsmrndcalculator.cpp \
 	dynprogvppintrinsicvalueengine.cpp \
     fdextoujumpvanillaengine.cpp \
 	fdklugeextouspreadengine.cpp \
@@ -41,17 +52,26 @@ libMultiDimFDM_la_SOURCES = \
 	fdmextendedornsteinuhlenbeckop.cpp \
 	fdmextoujumpop.cpp \
 	fdmextoujumpsolver.cpp \
+	fdhestondoublebarrierengine.cpp \
+	fdmhestongreensfct.cpp \
 	fdmhestonfwdop.cpp \
 	fdmklugeextouop.cpp \
+	fdmlocalvolfwdop.cpp \
 	fdmsquarerootfwdop.cpp \
 	fdmvppstartlimitstepcondition.cpp \
 	fdmvppstepcondition.cpp \
 	fdmvppstepconditionfactory.cpp \
 	fdmzabrop.cpp \
+	fdornsteinuhlenbeckvanillaengine.cpp \
 	fdsimpleextoujumpswingengine.cpp \
     fdsimpleextoustorageengine.cpp \
     fdsimpleklugeextouvppengine.cpp \
+    gbsmrndcalculator.cpp \
 	glued1dmesher.cpp \
+	hestonrndcalculator.cpp \
+	localvolrndcalculator.cpp \
+	riskneutraldensitycalculator.cpp \
+	squarerootprocessrndcalculator.cpp \
 	vanillavppoption.cpp
 
 noinst_LTLIBRARIES = libMultiDimFDM.la

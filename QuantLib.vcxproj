@@ -481,14 +481,42 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ql\experimental\finitedifferences\gbsmrndcalculator.hpp" />
+    <ClInclude Include="ql\experimental\math\fireflyalgorithm.hpp" />
+    <ClInclude Include="ql\experimental\math\gaussiannoncentralchisquaredpolynomial.hpp" />
+    <ClInclude Include="ql\experimental\math\hybridsimulatedannealing.hpp" />
+    <ClInclude Include="ql\experimental\math\hybridsimulatedannealingfunctors.hpp" />
+    <ClInclude Include="ql\experimental\math\isotropicrandomwalk.hpp" />
+    <ClInclude Include="ql\experimental\math\levyflightdistribution.hpp" />
+    <ClInclude Include="ql\experimental\math\particleswarmoptimization.hpp" />
+    <ClInclude Include="ql\experimental\finitedifferences\bsmrndcalculator.hpp" />
+    <ClInclude Include="ql\experimental\finitedifferences\fdmhestongreensfct.hpp" />
+    <ClInclude Include="ql\experimental\finitedifferences\fdmlocalvolfwdop.hpp" />
+    <ClInclude Include="ql\experimental\finitedifferences\fdornsteinuhlenbeckvanillaengine.hpp" />
+    <ClInclude Include="ql\experimental\finitedifferences\hestonrndcalculator.hpp" />
+    <ClInclude Include="ql\experimental\finitedifferences\localvolrndcalculator.hpp" />
+    <ClInclude Include="ql\experimental\finitedifferences\riskneutraldensitycalculator.hpp" />
+    <ClInclude Include="ql\experimental\finitedifferences\squarerootprocessrndcalculator.hpp" />
+    <ClInclude Include="ql\experimental\models\all.hpp" />
+    <ClInclude Include="ql\experimental\models\hestonslvfdmmodel.hpp" />
+    <ClInclude Include="ql\experimental\models\hestonslvmcmodel.hpp" />
+    <ClInclude Include="ql\experimental\models\normalclvmodel.hpp" />
+    <ClInclude Include="ql\experimental\models\squarerootclvmodel.hpp" />
+    <ClInclude Include="ql\experimental\volatility\sabrvoltermstructure.hpp" />
+    <ClInclude Include="ql\indexes\ibor\aonia.hpp" />
+    <ClInclude Include="ql\indexes\ibor\bbsw.hpp" />
+    <ClInclude Include="ql\indexes\ibor\bkbm.hpp" />
+    <ClInclude Include="ql\indexes\ibor\nzocr.hpp" />
     <ClInclude Include="ql\math\polynomialmathfunction.hpp" />
     <ClInclude Include="ql\math\pascaltriangle.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\operators\fdmornsteinuhlenbeckop.hpp" />
     <ClInclude Include="ql\rebatedexercise.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\dynprogvppintrinsicvalueengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdextoujumpvanillaengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdklugeextouspreadengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmblackscholesfwdop.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmdupire1dop.hpp" />
+    <ClInclude Include="ql\experimental\finitedifferences\fdhestondoublebarrierengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmexpextouinnervaluecalculator.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmextendedornsteinuhlenbeckop.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdmextoujumpmodelinnervalue.hpp" />
@@ -516,6 +544,7 @@
     <ClInclude Include="ql\experimental\processes\extouwithjumpsprocess.hpp" />
     <ClInclude Include="ql\experimental\processes\gemanroncoroniprocess.hpp" />
     <ClInclude Include="ql\experimental\processes\klugeextouprocess.hpp" />
+    <ClInclude Include="ql\experimental\processes\hestonslvprocess.hpp" />
     <ClInclude Include="ql\instruments\bonds\cpibond.hpp" />
     <ClInclude Include="ql\instruments\cpicapfloor.hpp" />
     <ClInclude Include="ql\instruments\cpiswap.hpp" />
@@ -821,6 +850,7 @@
     <ClInclude Include="ql\math\interpolations\interpolation2d.hpp" />
     <ClInclude Include="ql\math\interpolations\kernelinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\kernelinterpolation2d.hpp" />
+    <ClInclude Include="ql\math\interpolations\lagrangeinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\linearinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\loginterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\mixedinterpolation.hpp" />
@@ -888,6 +918,7 @@
     <ClInclude Include="ql\math\randomnumbers\rngtraits.hpp" />
     <ClInclude Include="ql\math\randomnumbers\seedgenerator.hpp" />
     <ClInclude Include="ql\math\randomnumbers\sobolrsg.hpp" />
+    <ClInclude Include="ql\math\randomnumbers\stochasticcollocationinvcdf.hpp" />
     <ClInclude Include="ql\math\solvers1d\all.hpp" />
     <ClInclude Include="ql\math\solvers1d\bisection.hpp" />
     <ClInclude Include="ql\math\solvers1d\brent.hpp" />
@@ -1119,6 +1150,10 @@
     <ClInclude Include="ql\termstructures\interpolatedcurve.hpp" />
     <ClInclude Include="ql\termstructures\iterativebootstrap.hpp" />
     <ClInclude Include="ql\termstructures\localbootstrap.hpp" />
+    <ClInclude Include="ql\termstructures\volatility\equityfx\fixedlocalvolsurface.hpp" />
+    <ClInclude Include="ql\termstructures\volatility\equityfx\gridmodellocalvolsurface.hpp" />
+    <ClInclude Include="ql\termstructures\volatility\equityfx\hestonblackvolsurface.hpp" />
+    <ClInclude Include="ql\termstructures\volatility\equityfx\noexceptlocalvolsurface.hpp" />
     <ClInclude Include="ql\termstructures\voltermstructure.hpp" />
     <ClInclude Include="ql\termstructures\yieldtermstructure.hpp" />
     <ClInclude Include="ql\termstructures\volatility\abcd.hpp" />
@@ -1219,6 +1254,7 @@
     <ClInclude Include="ql\utilities\dataparsers.hpp" />
     <ClInclude Include="ql\utilities\disposable.hpp" />
     <ClInclude Include="ql\utilities\null.hpp" />
+    <ClInclude Include="ql\utilities\null_deleter.hpp" />
     <ClInclude Include="ql\utilities\observablevalue.hpp" />
     <ClInclude Include="ql\utilities\steppingiterator.hpp" />
     <ClInclude Include="ql\utilities\tracing.hpp" />
@@ -1347,6 +1383,7 @@
     <ClInclude Include="ql\pricingengines\bond\bondfunctions.hpp" />
     <ClInclude Include="ql\pricingengines\bond\discountingbondengine.hpp" />
     <ClInclude Include="ql\pricingengines\swap\all.hpp" />
+    <ClInclude Include="ql\pricingengines\swap\cvaswapengine.hpp" />
     <ClInclude Include="ql\pricingengines\swap\discountingswapengine.hpp" />
     <ClInclude Include="ql\pricingengines\swap\discretizedswap.hpp" />
     <ClInclude Include="ql\pricingengines\swap\treeswapengine.hpp" />
@@ -1608,6 +1645,8 @@
     <ClInclude Include="ql\experimental\swaptions\haganirregularswaptionengine.hpp" />
     <ClInclude Include="ql\experimental\swaptions\irregularswap.hpp" />
     <ClInclude Include="ql\experimental\swaptions\irregularswaption.hpp" />
+    <ClInclude Include="ql\experimental\termstructures\all.hpp" />
+    <ClInclude Include="ql\experimental\termstructures\multicurvesensitivities.hpp" />
     <ClInclude Include="ql\experimental\varianceoption\all.hpp" />
     <ClInclude Include="ql\experimental\varianceoption\integralhestonvarianceoptionengine.hpp" />
     <ClInclude Include="ql\experimental\varianceoption\varianceoption.hpp" />
@@ -1647,6 +1686,11 @@
     <ClInclude Include="ql\experimental\amortizingbonds\amortizingcmsratebond.hpp" />
     <ClInclude Include="ql\experimental\amortizingbonds\amortizingfixedratebond.hpp" />
     <ClInclude Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.hpp" />
+    <ClInclude Include="ql\experimental\averageois\all.hpp" />
+    <ClInclude Include="ql\experimental\averageois\arithmeticaverageois.hpp" />
+    <ClInclude Include="ql\experimental\averageois\arithmeticoisratehelper.hpp" />
+    <ClInclude Include="ql\experimental\averageois\averageoiscouponpricer.hpp" />
+    <ClInclude Include="ql\experimental\averageois\makearithmeticaverageois.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\all.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\analyticdoublebarrierbinaryengine.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\analyticdoublebarrierengine.hpp" />
@@ -1685,10 +1729,14 @@
     <ClInclude Include="ql\experimental\math\farliegumbelmorgensterncopularng.hpp" />
     <ClInclude Include="ql\experimental\math\frankcopularng.hpp" />
     <ClInclude Include="ql\experimental\math\gaussiancopulapolicy.hpp" />
+    <ClInclude Include="ql\experimental\math\laplaceinterpolation.hpp" />
     <ClInclude Include="ql\experimental\math\latentmodel.hpp" />
+    <ClInclude Include="ql\experimental\math\moorepenroseinverse.hpp" />
     <ClInclude Include="ql\experimental\math\multidimintegrator.hpp" />
     <ClInclude Include="ql\experimental\math\multidimquadrature.hpp" />
     <ClInclude Include="ql\experimental\math\numericaldifferentiation.hpp" />
+    <ClInclude Include="ql\experimental\math\piecewisefunction.hpp" />
+    <ClInclude Include="ql\experimental\math\piecewiseintegral.hpp" />
     <ClInclude Include="ql\experimental\math\polarstudenttrng.hpp" />
     <ClInclude Include="ql\math\optimization\simulatedannealing.hpp" />
     <ClInclude Include="ql\experimental\math\tcopulapolicy.hpp" />
@@ -1734,8 +1782,25 @@
     <ClInclude Include="ql\volatilitymodel.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ql\experimental\finitedifferences\gbsmrndcalculator.cpp" />
+    <ClCompile Include="ql\experimental\math\fireflyalgorithm.cpp" />
+    <ClCompile Include="ql\experimental\math\gaussiannoncentralchisquaredpolynomial.cpp" />
+    <ClCompile Include="ql\experimental\math\particleswarmoptimization.cpp" />
+    <ClCompile Include="ql\experimental\finitedifferences\bsmrndcalculator.cpp" />
+    <ClCompile Include="ql\experimental\finitedifferences\fdmhestongreensfct.cpp" />
+    <ClCompile Include="ql\experimental\finitedifferences\fdmlocalvolfwdop.cpp" />
+    <ClCompile Include="ql\experimental\finitedifferences\fdornsteinuhlenbeckvanillaengine.cpp" />
+    <ClCompile Include="ql\experimental\finitedifferences\hestonrndcalculator.cpp" />
+    <ClCompile Include="ql\experimental\finitedifferences\localvolrndcalculator.cpp" />
+    <ClCompile Include="ql\experimental\finitedifferences\riskneutraldensitycalculator.cpp" />
+    <ClCompile Include="ql\experimental\finitedifferences\squarerootprocessrndcalculator.cpp" />
+    <ClCompile Include="ql\experimental\models\hestonslvfdmmodel.cpp" />
+    <ClCompile Include="ql\experimental\models\hestonslvmcmodel.cpp" />
+    <ClCompile Include="ql\experimental\models\normalclvmodel.cpp" />
+    <ClCompile Include="ql\experimental\models\squarerootclvmodel.cpp" />
     <ClCompile Include="ql\math\polynomialmathfunction.cpp" />
     <ClCompile Include="ql\math\pascaltriangle.cpp" />
+    <ClCompile Include="ql\methods\finitedifferences\operators\fdmornsteinuhlenbeckop.cpp" />
     <ClCompile Include="ql\patterns\observable.cpp" />
     <ClCompile Include="ql\rebatedexercise.cpp" />
     <ClInclude Include="ql\experimental\finitedifferences\all.hpp" />
@@ -1744,6 +1809,7 @@
     <ClCompile Include="ql\experimental\finitedifferences\fdklugeextouspreadengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmblackscholesfwdop.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmdupire1dop.cpp" />
+    <ClCompile Include="ql\experimental\finitedifferences\fdhestondoublebarrierengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmextendedornsteinuhlenbeckop.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmextoujumpop.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\fdmextoujumpsolver.cpp" />
@@ -1764,6 +1830,7 @@
     <ClCompile Include="ql\experimental\processes\extouwithjumpsprocess.cpp" />
     <ClCompile Include="ql\experimental\processes\gemanroncoroniprocess.cpp" />
     <ClCompile Include="ql\experimental\processes\klugeextouprocess.cpp" />
+    <ClCompile Include="ql\experimental\processes\hestonslvprocess.cpp" />
     <ClCompile Include="ql\instruments\bonds\cpibond.cpp" />
     <ClCompile Include="ql\instruments\cpicapfloor.cpp" />
     <ClCompile Include="ql\instruments\cpiswap.cpp" />
@@ -1987,6 +2054,7 @@
     <ClCompile Include="ql\math\randomnumbers\primitivepolynomials.cpp" />
     <ClCompile Include="ql\math\randomnumbers\seedgenerator.cpp" />
     <ClCompile Include="ql\math\randomnumbers\sobolrsg.cpp" />
+    <ClCompile Include="ql\math\randomnumbers\stochasticcollocationinvcdf.cpp" />
     <ClCompile Include="ql\math\optimization\armijo.cpp" />
     <ClCompile Include="ql\math\optimization\bfgs.cpp" />
     <ClCompile Include="ql\math\optimization\conjugategradient.cpp" />
@@ -2153,6 +2221,9 @@
     <ClCompile Include="ql\pricingengines\vanilla\fdsimplebsswingengine.cpp" />
     <ClCompile Include="ql\termstructures\defaulttermstructure.cpp" />
     <ClCompile Include="ql\termstructures\inflationtermstructure.cpp" />
+    <ClCompile Include="ql\termstructures\volatility\equityfx\fixedlocalvolsurface.cpp" />
+    <ClCompile Include="ql\termstructures\volatility\equityfx\gridmodellocalvolsurface.cpp" />
+    <ClCompile Include="ql\termstructures\volatility\equityfx\hestonblackvolsurface.cpp" />
     <ClCompile Include="ql\termstructures\voltermstructure.cpp" />
     <ClCompile Include="ql\termstructures\yieldtermstructure.cpp" />
     <ClCompile Include="ql\termstructures\volatility\abcd.cpp" />
@@ -2292,6 +2363,7 @@
     <ClCompile Include="ql\pricingengines\lookback\analyticcontinuouspartialfloatinglookback.cpp" />
     <ClCompile Include="ql\pricingengines\bond\bondfunctions.cpp" />
     <ClCompile Include="ql\pricingengines\bond\discountingbondengine.cpp" />
+    <ClCompile Include="ql\pricingengines\swap\cvaswapengine.cpp" />
     <ClCompile Include="ql\pricingengines\swap\discountingswapengine.cpp" />
     <ClCompile Include="ql\pricingengines\swap\discretizedswap.cpp" />
     <ClCompile Include="ql\pricingengines\swap\treeswapengine.cpp" />
@@ -2527,6 +2599,10 @@
     <ClCompile Include="ql\experimental\amortizingbonds\amortizingcmsratebond.cpp" />
     <ClCompile Include="ql\experimental\amortizingbonds\amortizingfixedratebond.cpp" />
     <ClCompile Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.cpp" />
+    <ClCompile Include="ql\experimental\averageois\arithmeticaverageois.cpp" />
+    <ClCompile Include="ql\experimental\averageois\arithmeticoisratehelper.cpp" />
+    <ClCompile Include="ql\experimental\averageois\averageoiscouponpricer.cpp" />
+    <ClCompile Include="ql\experimental\averageois\makearithmeticaverageois.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\analyticdoublebarrierbinaryengine.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\analyticdoublebarrierengine.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\discretizeddoublebarrieroption.cpp" />
@@ -2548,6 +2624,7 @@
     <ClCompile Include="ql\experimental\math\multidimintegrator.cpp" />
     <ClCompile Include="ql\experimental\math\multidimquadrature.cpp" />
     <ClCompile Include="ql\experimental\math\numericaldifferentiation.cpp" />
+    <ClCompile Include="ql\experimental\math\piecewiseintegral.cpp" />
     <ClCompile Include="ql\experimental\math\tcopulapolicy.cpp" />
     <ClCompile Include="ql\experimental\math\zigguratrng.cpp" />
     <ClCompile Include="ql\cashflow.cpp" />

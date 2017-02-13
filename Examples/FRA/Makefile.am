@@ -11,8 +11,8 @@ FRA_SOURCES = FRA.cpp
 FRA_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
+    CMakeLists.txt \
     FRA.dev \
-    FRA_vc8.vcproj \
     FRA_vc9.vcproj \
     FRA.vcxproj \
     FRA.vcxproj.filters \

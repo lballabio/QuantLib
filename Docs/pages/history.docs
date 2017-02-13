@@ -18,9 +18,207 @@
 
 /*! \page history Version history
 
-    <strong>Release 1.7.1 - January 2016</strong>
+    <strong>Release 1.9.1 - January 2017</strong>
 
-    QuantLib 1.7.1 is a bug-fix release for version 1.7.
+    %QuantLib 1.9.1 is a bug-fix release for version 1.9.
+
+    - Prevented a linking error when multiple compilation units
+      included the global ql/quantlib.hpp header (thanks to Dirk
+      Eddelbuettel).
+    - Prevented a compilation error with gcc 4.4 on RedHat (thanks to
+      GitHub user aloupos for the heads-up).
+    - Prevented a compilation error with the parallel unit runner and
+      the recently released Boost 1.63.0.
+
+    <strong>Release 1.9 - November 8th, 2016</strong>
+
+    PORTABILITY
+    - Dropped support for Visual C++ 8 (2005).  As of April 2016, the
+      compiler is no longer supported by Microsoft.
+    - Allow the parallel test runner to work with Boost 1.62 (thanks
+      to Klaus Spanderen for the fix and to Andrei Borodaenko for the
+      heads-up).
+
+    INTEREST RATES
+    - Allow negative jumps in interest-rate curves. Previously, trying
+      to pass one would result in an exception (thanks to Leanpub
+      reader Jeff for the heads-up).
+    - Added BBSW and Aonia indexes from Australia and BKBM and NZOCR
+      indexes from New Zealand (thanks to Fabrice Lecuyer).
+
+    VOLATILITY
+    - Added normal implied-volatility calculation to caps/floors
+      (thanks to Paolo Mazzocchi).
+
+    INSTRUMENTS
+    - Fix a scenario in which a `CompositeInstrument` instance would
+      stop receiving notifications (thanks to Peter Caspers for the
+      heads-up).
+    - Added a few safety checks to the CVA swap engine (thanks to
+      Andrea Maggiulli).
+    - Auto-deactivate Boyle-Lau optimization for barrier options when
+      not using a CRR tree (thanks to Riccardo Ghetta).
+
+    DATE/TIME
+    - Changed data type for `Date` serial numbers to `int_fast_32t` to
+      improve performance of date calculations (thanks to Peter
+      Caspers).
+    - Added ECB maintenance period dates for 2017 (thanks to Paolo
+      Mazzocchi).
+    - Fixed rule for the Japanese Mountain Day holiday (thanks to
+      Eisuke Tani).
+    - Fixed United States holidays before 1971 (thanks to Nick Glass
+      for the heads-up).
+    - Added a missing Chinese holiday (thanks to Cheng Li).
+    - Ensure correct formatting when outputting dates (thanks to Peter
+      Caspers).
+
+    NEW OPT-IN FEATURES
+
+    These features are disabled by default and can be enabled by
+    defining a macro or passing a flag to `./configure`.  Feedback is
+    appreciated.
+    - Enable thread-safe singleton initialization (thanks to GitHub
+      user sdgit). The feature can be enabled by uncommenting the
+      `QL_ENABLE_SINGLETON_THREAD_SAFE_INIT` macro in
+      `ql/userconfig.hpp` on Visual C++ or by passing the
+      `--enable-thread-safe-singleton-init` to `./configure` on other
+      systems.
+
+    EXPERIMENTAL FOLDER
+
+    The `ql/experimental` folder contains code whose interface is not
+    fully stable, but is released in order to get user feedback.
+    Experimental classes make no guarantees of backward compatibility;
+    their interfaces might change in future releases.
+
+    Changes and new contributions for this release were:
+    - OIS with arithmetic average (thanks to Stefano Fondi). A
+      corresponding bootstrap helpers is also available.
+    - a function to calculate multi-curve sensitivities (thanks to
+      Michael von den Driesch).
+
+    <strong>Release 1.8.1 - September 23rd, 2016</strong>
+
+    %QuantLib 1.8.1 is a bug-fix release for version 1.8.
+
+    - A test failure with Visual C++ 14 (2015) was avoided. Up to
+      VC++14 update 2, the compiler would inline a call to std::min
+      and std::max incorrectly causing a calculation to fail (thanks
+      to Ivan Cherkasov for the heads-up).
+    - A test failure with the upcoming Boost 1.62 was avoided.  A
+      QuantLib test was checking for the stored value of a hash whose
+      value changed in Boost 1.62.
+    - Miscellaneous fixes for the g1d swaption engine and instrument
+      (thanks to Peter Caspers).
+    - Whit Monday was no longer a holiday in Sweden since 2005 (thanks
+      to Stefano Fondi).
+    - A new holiday for election day 2016 was added to the South
+      African calendar (thanks to Jasen Mackie).
+    - A few missing CMakeLists were added to the distributed release
+      (thanks to izavyalov for the heads-up).
+    - An irregular last period in a schedule was not reported as such
+      (thanks to Schmidt for the heads-up).
+
+    <strong>Release 1.8 - May 18th, 2016</strong>
+
+    PORTABILITY
+    - The minimum required Boost version is now Boost 1.43 (May
+      2010). However, it is strongly suggested to use a recent
+      version, or at least Boost 1.48 (November 2011).
+    - Added initial CMake support (thanks to Dmitri Nesteruk). This
+      makes it possible to compile %QuantLib on CLion and other
+      CMake-based tools.
+    - The build now generates and installs pkg-config file on Linux
+      systems (thanks to GitHub user njwhite).
+
+    INTEREST RATES
+    - Fixed links to documentation for LIBOR indexes (thanks to Jose
+      Magana).
+
+    VOLATILITY
+    - Added the possibility to price swaptions and to calculate their
+      implied volatilities in a Black-like model with normal
+      volatilities as well as shifted lognormal (thanks to Peter
+      Caspers).
+    - Added the possibility to price caps in a Black-like model with
+      normal volatilities as well as shifted lognormal (thanks to
+      Michael von den Driesch).
+    - Caplet strike is correctly recomputed during stripping (thanks
+      to Michael von den Driesch).
+
+    INSTRUMENTS
+    - Added basic CVA IRS pricing engine (stand alone, no portfolio;
+      no WWR, no collateral). Thanks to Jose Aparicio.
+
+    MODELS
+    - Black-Scholes processes now return the closed-formula
+      expectation, standard deviation and variance over long periods
+      (thanks to Peter Caspers).
+
+    CURRENCIES
+    - Added Ukrainian hryvnia (thanks to GitHub user
+      maksym-studenets).
+
+    MONTE CARLO
+    - Use different random-number generators for calibration and
+      pricing in Longstaff-Schwartz engine (thanks to Peter Caspers).
+
+    DATE/TIME
+    - Added forecast dates for moving holidays to Saudi Arabia
+      calendar up to 2022 (thanks to Jayanth R. Varma).
+    - Added new Ukrainian holiday, Defender's Day (thanks to GitHub
+      user maksym-studenets).
+    - Added a few more holidays for South Korea (thanks to Faycal El
+      Karaa).
+
+    MATH
+    - Added mixed log interpolation (thanks to GitHub user sfondi).
+    - Avoid mixing different types while bit-shifting in fast Fourier
+      transform on 64-bit systems (thanks to Nikolai Nowaczyk).
+
+    DEPRECATED FEATURES
+    - Removed `DateParser::split` method (deprecated in version 1.6).
+
+    TEST SUITE
+    - The test suite is now run with a fixed evaluation date instead
+      of using today's date. This helps avoid transient errors due to
+      holidays. It is still possible to use today's date (or any other
+      date) by running it as:
+      \code
+      quantlib-test-suite -- --date=today
+      \endcode
+      or
+      \code
+      quantlib-test-suite -- --date=2016-02-08
+      \endcode
+      (Thanks to Peter Caspers.)
+
+    NEW OPT-IN FEATURES
+    - Added a parallel unit-test runner (thanks to Klaus
+      Spanderen). This was successfully used under Linux, but problems
+      were reported on Mac OS X and occasionally on Visual C++ 2010.
+      The feature requires Boost 1.59 or later and can be enabled by
+      uncommenting the `QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER` macro in
+      `ql/userconfig.hpp` on Visual C++ or by passing the
+      `--enable-parallel-unit-test-runner` to `./configure` on other
+      systems.
+
+    EXPERIMENTAL FOLDER
+    - Stochastic local-volatility Heston model, (thanks to Klaus
+      Spanderen and Johannes Goettker-Schnetmann). Both a Monte Carlo
+      and a finite-difference calibration and calculation are
+      provided.
+    - Laplace interpolation (thanks to Peter Caspers).
+    - Global optimizers: Hybrid Simulated Annealing, Particle Swarm
+      Optimization, Firefly Algorithm, and Differential Evolution
+      (thanks to Andres Hernandez).
+    - A SVD-based calculation of the Moore-Penrose inverse matrix
+      (thanks to Peter Caspers).
+
+    <strong>Release 1.7.1 - January 18th, 2016</strong>
+
+    %QuantLib 1.7.1 is a bug-fix release for version 1.7.
 
     - an unneeded dependency on the Boost.Thread library had slipped into
       version 1.7. It is now removed (thanks to GitHub user MattPD).
@@ -103,11 +301,6 @@
     - Added Goldstein line-search method (thanks to Cheng Li).
 
     NEW OPT-IN FEATURES
-
-    These features are disabled by default and can be enabled by
-    defining a macro or passing a flag to `./configure`.  Feedback is
-    appreciated.
-
     - Added intraday component to dates (thanks to Klaus Spanderen).
       Date specifications now include hours, minutes, seconds,
       milliseconds and microseconds.  Day counters are aware of the
@@ -118,7 +311,7 @@
       on other systems.
     - Added thread-safe implementation of the Observer pattern (thanks
       to Klaus Spanderen). This can be used to avoid crashes when
-      using QuantLib from languages (such as C# or Java) that run a
+      using %QuantLib from languages (such as C# or Java) that run a
       garbage collector in a separate thread.
       The feature requires Boost 1.58 or later and can be enabled by
       uncommenting the `QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN` macro
@@ -128,7 +321,7 @@
 
     <strong>Release 1.6.2 - September 2015</strong>
 
-    QuantLib 1.6.2 is a compatibility release. It solves an ambiguous
+    %QuantLib 1.6.2 is a compatibility release. It solves an ambiguous
     name resolution in the test-suite code when Visual Studio and the
     newly released Boost 1.59.0 are used together.
 
@@ -136,7 +329,7 @@
 
     <strong>Release 1.6.1 - August 3rd, 2015</strong>
 
-    QuantLib 1.6.1 is a compatibility release. It adds out-of-the-box
+    %QuantLib 1.6.1 is a compatibility release. It adds out-of-the-box
     support for the newly released Visual Studio 2015, and avoids use
     of deprecated Boost macros that will be removed in the upcoming
     Boost 1.59.0 release.
@@ -229,13 +422,6 @@
       SwaptionVolatilityStructure and VolatilityTermStructure classes.
 
     EXPERIMENTAL FOLDER
-
-    The ql/experimental folder contains code which is still not fully
-    integrated with the library or even fully tested, but is released in
-    order to get user feedback.  Experimental classes are considered
-    unstable; their interfaces might change in future releases.
-
-    Changes and new contributions for this release were:
     - Finite-difference meshers based on multi-dimensional integrals
       (thanks to Klaus Spanderen).
     - SVI interpolation and a corresponding smile section (thanks to Peter
@@ -347,12 +533,12 @@
 
     <strong>Release 1.4.1 - November 17th, 2014</strong>
 
-    QuantLib 1.4.1 is a compatibility release. It fixes a number of
-    compilation errors that surfaced when using QuantLib 1.4 with
+    %QuantLib 1.4.1 is a compatibility release. It fixes a number of
+    compilation errors that surfaced when using %QuantLib 1.4 with
     Clang 3.5 and Boost 1.57. Thanks to Tim Smith for the heads-up.
 
     If you are not using Clang, you don't need to upgrade from
-    QuantLib 1.4 to 1.4.1.
+    %QuantLib 1.4 to 1.4.1.
 
     <strong>Release 1.4 - February 26th, 2014</strong>
 
@@ -625,7 +811,7 @@
 
     PORTABILITY
     - Microsoft Visual C++ 2010 no longer needs to disable uBlas code.
-    - QuantLib now ships with an updated specification file for
+    - %QuantLib now ships with an updated specification file for
       building RPMs (thanks to Matt Fair).
 
     DATE/TIME
@@ -729,7 +915,7 @@
 
     PORTABILITY
     - Added support for Microsoft Visual C++ 2010.
-    - Fixed m4 macro for QuantLib detection.  It now works also when asked
+    - Fixed m4 macro for %QuantLib detection.  It now works also when asked
       for versions such as 1.1 (as opposed to 1.1.0).
 
     DATE/TIME
@@ -1017,7 +1203,7 @@
 
     <strong>Release 0.9.6 - August 6th, 2008</strong>
 
-    Bug-fix release for QuantLib 0.9.5.  It fixes a bug that would
+    Bug-fix release for %QuantLib 0.9.5.  It fixes a bug that would
     cause bootstrapped term structures to silently switch to linear
     interpolation when log-linear was requested.
 

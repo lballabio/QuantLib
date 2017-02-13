@@ -1,83 +1,39 @@
-commit 27236823afd31bca4022defa811d200039033602
+commit 143390fef775522976c50dd7bb9a7cd82d35f538
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 13 Jan 2016 15:21:55 +0100
+Date:   Mon, 2 Jan 2017 17:21:01 +0100
 
-    Update copyrights.
+    Prevent compilation error with Boost 1.63.
 
- Docs/pages/license.docs | 1 +
- LICENSE.TXT             | 1 +
- 2 files changed, 2 insertions(+)
+ test-suite/paralleltestrunner.hpp | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-commit 8e9ff3198fbc0c415e935285791a7dbb52eb44fa
+commit 1846e3db9ed09ab9252a4ad9625c080ee0b84cde
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 13 Jan 2016 13:45:53 +0100
+Date:   Fri, 16 Dec 2016 17:22:50 +0100
 
-    Avoid error when creating schedules with 4-weeks tenor.
+    Refer to template base class via its complete name.
     
-    Closes #28.
+    This prevents errors with gcc 4.4 on RedHat (see issue #176).
 
- ql/time/schedule.cpp    | 10 ++++++++--
- test-suite/schedule.cpp | 19 +++++++++++++++++++
- test-suite/schedule.hpp |  1 +
- 3 files changed, 28 insertions(+), 2 deletions(-)
+ ql/experimental/math/fireflyalgorithm.hpp | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-commit 4f8a41893e25a847ebcb279c7cf6f172230d9385
-Author: Peter Caspers <pcaspers1973@gmail.com>
-Date:   Thu, 31 Dec 2015 17:40:49 +0100
+commit e1cd3959dc6fa27895e43125511e91b9ce6027fd
+Author: Dirk Eddelbuettel <edd@debian.org>
+Date:   Mon, 14 Nov 2016 19:59:22 -0600
 
-    fix at the money calculation
-
- ql/instruments/makeswaption.cpp | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
-
-commit 2ca9a8005d6a232d3bd0039f0deab004dbdab8f3
-Author: Cheng Li <scrappedprince.li@gmail.com>
-Date:   Fri, 18 Dec 2015 10:33:53 +0800
-
-    updated china calendar fotr the year 2016
-
- ql/time/calendars/china.cpp | 15 ++++++++++++++-
- ql/time/calendars/china.hpp |  2 +-
- 2 files changed, 15 insertions(+), 2 deletions(-)
-
-commit 72f269b79ab3a604f4ebfaefe44a1c952bd455c6
-Author: nesteruk (Dmitri Nesteruk) <dmitrinesteruk@gmail.com>
-Date:   Thu, 26 Nov 2015 11:19:28 +0300
-
-    Fix Russian calendar bugs, add 2016 holidays and unit tests.
-
- ql/time/calendars/russia.cpp |  19 +-
- test-suite/calendars.cpp     | 606 +++++++++++++++++++++++++++++++++++++++++++
- test-suite/calendars.hpp     |   2 +-
- 3 files changed, 624 insertions(+), 3 deletions(-)
-
-commit 9741daac0035cc7e2c0b017cc8f1928eb866fe66
-Author: Matt <MattPD@users.noreply.github.com>
-Date:   Mon, 7 Dec 2015 19:29:55 +0100
-
-    Remove hardcoded dependence from the FRA sample.
+    add missing 'inline' attribute to free functions
     
-    This removes a hardcoded ` -lboost_thread` flag -- which is superfluous due to the already-present `${BOOST_THREAD_LIB}` and breaks builds where the binary file for the Boost.Thread library is named differently.
-    
-    Context: It seems it's been introduced w/ the thread-safe observer: https://github.com/lballabio/quantlib/blame/master/QuantLib/Examples/FRA/Makefile.am#L11
+    prevents a linking error seen in RQuantLib
 
- Examples/FRA/Makefile.am | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ ql/experimental/termstructures/multicurvesensitivities.hpp | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-commit 66efc6c6c35192bf671818448610bddcdf379352
+commit 0b51cc7a113adb3db8c56bfce36d3c43b565ca7e
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 17 Dec 2015 18:25:06 +0100
+Date:   Wed, 9 Nov 2016 09:41:49 +0100
 
-    Add .gitignore file after splitting.
-
- .gitignore | 95 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 95 insertions(+)
-
-commit 1983e74053caddd1963552c5249fd6d7d3f4a252
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 23 Nov 2015 12:56:28 +0100
-
-    Bump version number to 1.7.1.
+    Increase version number to 1.9.1.
 
  Announce.txt   | 2 +-
  configure.ac   | 2 +-

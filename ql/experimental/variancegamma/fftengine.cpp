@@ -120,7 +120,7 @@ namespace QuantLib {
             }
             Real nR = 2.0 * (std::log(maxStrike) + lambda_) / lambda_;
       Size log2_n = (static_cast<Size>((std::log(nR) / std::log(2.0))) + 1);
-            Size n = 1 << log2_n;
+            Size n = static_cast<std::size_t>(1) << log2_n;
 
             // Strike range (equation 19,20)
             Real b = n * lambda_ / 2.0;

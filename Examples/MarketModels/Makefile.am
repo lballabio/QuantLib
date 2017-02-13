@@ -11,8 +11,8 @@ MarketModels_SOURCES = MarketModels.cpp
 MarketModels_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
+    CMakeLists.txt \
     MarketModels.dev \
-    MarketModels_vc8.vcproj \
     MarketModels_vc9.vcproj \
     MarketModels.vcxproj \
     MarketModels.vcxproj.filters

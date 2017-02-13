@@ -31,14 +31,53 @@
 namespace QuantLib {
 
     namespace detail {
-        template<class I1, class I2, class Ia, class Ib> class MixedInterpolationImpl;
+
+        template<class I1, class I2, class Ia, class Ib>
+        class MixedInterpolationImpl;
+
     }
+
+
+    struct MixedInterpolation {
+        enum Behavior {
+            ShareRanges,  /*!< Define both interpolations over the
+                               whole range defined by the passed
+                               iterators. This is the default
+                               behavior. */
+            SplitRanges   /*!< Define the first interpolation over the
+                               first part of the range, and the second
+                               interpolation over the second part. */
+        };
+    };
 
     //! mixed linear/cubic interpolation between discrete points
     /*! \ingroup interpolations */
     class MixedLinearCubicInterpolation : public Interpolation {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
+        template <class I1, class I2>
+        MixedLinearCubicInterpolation(const I1& xBegin, const I1& xEnd,
+                                      const I2& yBegin, Size n,
+                                      MixedInterpolation::Behavior behavior,
+                                      CubicInterpolation::DerivativeApprox da,
+                                      bool monotonic,
+                                      CubicInterpolation::BoundaryCondition leftC,
+                                      Real leftConditionValue,
+                                      CubicInterpolation::BoundaryCondition rightC,
+                                      Real rightConditionValue) {
+            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+                detail::MixedInterpolationImpl<I1, I2, Linear, Cubic>(
+                    xBegin, xEnd, yBegin, n, behavior,
+                    Linear(),
+                    Cubic(da, monotonic,
+                          leftC, leftConditionValue,
+                          rightC, rightConditionValue)));
+            impl_->update();
+        }
+        /*! \pre the \f$ x \f$ values must be sorted.
+            \deprecated Use the other constructor
+        */
+        //QL_DEPRECATED
         template <class I1, class I2>
         MixedLinearCubicInterpolation(const I1& xBegin, const I1& xEnd,
                                       const I2& yBegin, Size n,
@@ -51,13 +90,13 @@ namespace QuantLib {
             impl_ = boost::shared_ptr<Interpolation::Impl>(new
                 detail::MixedInterpolationImpl<I1, I2, Linear, Cubic>(
                     xBegin, xEnd, yBegin, n,
+                    MixedInterpolation::ShareRanges,
                     Linear(),
                     Cubic(da, monotonic,
                           leftC, leftConditionValue,
                           rightC, rightConditionValue)));
             impl_->update();
         }
-        //Size switchIndex() { return impl_->switchIndex(); }
     };
 
     //! mixed linear/cubic interpolation factory and traits
@@ -65,6 +104,7 @@ namespace QuantLib {
     class MixedLinearCubic {
       public:
         MixedLinearCubic(Size n,
+                         MixedInterpolation::Behavior behavior,
                          CubicInterpolation::DerivativeApprox da,
                          bool monotonic = true,
                          CubicInterpolation::BoundaryCondition leftCondition
@@ -73,14 +113,29 @@ namespace QuantLib {
                          CubicInterpolation::BoundaryCondition rightCondition
                              = CubicInterpolation::SecondDerivative,
                          Real rightConditionValue = 0.0)
-        : n_(n), da_(da), monotonic_(monotonic),
+        : n_(n), behavior_(behavior), da_(da), monotonic_(monotonic),
+          leftType_(leftCondition), rightType_(rightCondition),
+          leftValue_(leftConditionValue), rightValue_(rightConditionValue) {}
+        /*! \deprecated Use the other constructor */
+        QL_DEPRECATED
+        MixedLinearCubic(Size n,
+                         CubicInterpolation::DerivativeApprox da,
+                         bool monotonic,
+                         CubicInterpolation::BoundaryCondition leftCondition
+                             = CubicInterpolation::SecondDerivative,
+                         Real leftConditionValue = 0.0,
+                         CubicInterpolation::BoundaryCondition rightCondition
+                             = CubicInterpolation::SecondDerivative,
+                         Real rightConditionValue = 0.0)
+        : n_(n), behavior_(MixedInterpolation::ShareRanges),
+          da_(da), monotonic_(monotonic),
           leftType_(leftCondition), rightType_(rightCondition),
           leftValue_(leftConditionValue), rightValue_(rightConditionValue) {}
         template <class I1, class I2>
         Interpolation interpolate(const I1& xBegin, const I1& xEnd,
                                   const I2& yBegin) const {
             return MixedLinearCubicInterpolation(xBegin, xEnd,
-                                                 yBegin, n_,
+                                                 yBegin, n_, behavior_,
                                                  da_, monotonic_,
                                                  leftType_, leftValue_,
                                                  rightType_, rightValue_);
@@ -90,6 +145,7 @@ namespace QuantLib {
         static const Size requiredPoints = 3;
       private:
         Size n_;
+        MixedInterpolation::Behavior behavior_;
         CubicInterpolation::DerivativeApprox da_;
         bool monotonic_;
         CubicInterpolation::BoundaryCondition leftType_, rightType_;
@@ -103,8 +159,10 @@ namespace QuantLib {
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
         MixedLinearCubicNaturalSpline(const I1& xBegin, const I1& xEnd,
-                                      const I2& yBegin, Size n)
-        : MixedLinearCubicInterpolation(xBegin, xEnd, yBegin, n,
+                                      const I2& yBegin, Size n,
+                                      MixedInterpolation::Behavior behavior
+                                            = MixedInterpolation::ShareRanges)
+        : MixedLinearCubicInterpolation(xBegin, xEnd, yBegin, n, behavior,
                                         CubicInterpolation::Spline, false,
                                         CubicInterpolation::SecondDerivative, 0.0,
                                         CubicInterpolation::SecondDerivative, 0.0) {}
@@ -115,8 +173,10 @@ namespace QuantLib {
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
         MixedLinearMonotonicCubicNaturalSpline(const I1& xBegin, const I1& xEnd,
-                                               const I2& yBegin, Size n)
-        : MixedLinearCubicInterpolation(xBegin, xEnd, yBegin, n,
+                                               const I2& yBegin, Size n,
+                                               MixedInterpolation::Behavior behavior
+                                                   = MixedInterpolation::ShareRanges)
+        : MixedLinearCubicInterpolation(xBegin, xEnd, yBegin, n, behavior,
                                         CubicInterpolation::Spline, true,
                                         CubicInterpolation::SecondDerivative, 0.0,
                                         CubicInterpolation::SecondDerivative, 0.0) {}
@@ -127,8 +187,10 @@ namespace QuantLib {
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
         MixedLinearKrugerCubic(const I1& xBegin, const I1& xEnd,
-                               const I2& yBegin, Size n)
-        : MixedLinearCubicInterpolation(xBegin, xEnd, yBegin, n,
+                               const I2& yBegin, Size n,
+                               MixedInterpolation::Behavior behavior
+                                            = MixedInterpolation::ShareRanges)
+        : MixedLinearCubicInterpolation(xBegin, xEnd, yBegin, n, behavior,
                                         CubicInterpolation::Kruger, false,
                                         CubicInterpolation::SecondDerivative, 0.0,
                                         CubicInterpolation::SecondDerivative, 0.0) {}
@@ -139,8 +201,10 @@ namespace QuantLib {
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
         MixedLinearFritschButlandCubic(const I1& xBegin, const I1& xEnd,
-                                       const I2& yBegin, Size n)
-        : MixedLinearCubicInterpolation(xBegin, xEnd, yBegin, n,
+                                       const I2& yBegin, Size n,
+                                       MixedInterpolation::Behavior behavior
+                                            = MixedInterpolation::ShareRanges)
+        : MixedLinearCubicInterpolation(xBegin, xEnd, yBegin, n, behavior,
                                         CubicInterpolation::FritschButland, false,
                                         CubicInterpolation::SecondDerivative, 0.0,
                                         CubicInterpolation::SecondDerivative, 0.0) {}
@@ -151,8 +215,10 @@ namespace QuantLib {
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
         MixedLinearParabolic(const I1& xBegin, const I1& xEnd,
-                             const I2& yBegin, Size n)
-        : MixedLinearCubicInterpolation(xBegin, xEnd, yBegin, n,
+                             const I2& yBegin, Size n,
+                             MixedInterpolation::Behavior behavior
+                                            = MixedInterpolation::ShareRanges)
+        : MixedLinearCubicInterpolation(xBegin, xEnd, yBegin, n, behavior,
                                         CubicInterpolation::Parabolic, false,
                                         CubicInterpolation::SecondDerivative, 0.0,
                                         CubicInterpolation::SecondDerivative, 0.0) {}
@@ -163,8 +229,10 @@ namespace QuantLib {
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
         MixedLinearMonotonicParabolic(const I1& xBegin, const I1& xEnd,
-                                      const I2& yBegin, Size n)
-        : MixedLinearCubicInterpolation(xBegin, xEnd, yBegin, n,
+                                      const I2& yBegin, Size n,
+                                      MixedInterpolation::Behavior behavior
+                                            = MixedInterpolation::ShareRanges)
+        : MixedLinearCubicInterpolation(xBegin, xEnd, yBegin, n, behavior,
                                         CubicInterpolation::Parabolic, true,
                                         CubicInterpolation::SecondDerivative, 0.0,
                                         CubicInterpolation::SecondDerivative, 0.0) {}
@@ -178,13 +246,58 @@ namespace QuantLib {
           public:
             MixedInterpolationImpl(const I1& xBegin, const I1& xEnd,
                                    const I2& yBegin, Size n,
+                                   MixedInterpolation::Behavior behavior
+                                            = MixedInterpolation::ShareRanges,
                                    const Interpolator1& factory1 = Interpolator1(),
                                    const Interpolator2& factory2 = Interpolator2())
-            : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin,
-              std::max<Size>(Interpolator1::requiredPoints,Interpolator2::requiredPoints)),
+            : Interpolation::templateImpl<I1,I2>(
+                               xBegin, xEnd, yBegin,
+                               std::max<Size>(Interpolator1::requiredPoints,
+                                              Interpolator2::requiredPoints)),
               n_(n) {
 
-                xBegin2_ = this->xBegin_+n;
+                xBegin2_ = this->xBegin_ + n_;
+                yBegin2_ = this->yBegin_ + n_;
+
+                QL_REQUIRE(xBegin2_<this->xEnd_,
+                           "too large n (" << n << ") for " <<
+                           this->xEnd_-this->xBegin_ << "-element x sequence");
+
+                switch (behavior) {
+                  case MixedInterpolation::ShareRanges:
+                    interpolation1_ = factory1.interpolate(this->xBegin_,
+                                                           this->xEnd_,
+                                                           this->yBegin_);
+                    interpolation2_ = factory2.interpolate(this->xBegin_,
+                                                           this->xEnd_,
+                                                           this->yBegin_);
+                    break;
+                  case MixedInterpolation::SplitRanges:
+                    interpolation1_ = factory1.interpolate(this->xBegin_,
+                                                           this->xBegin2_+1,
+                                                           this->yBegin_);
+                    interpolation2_ = factory2.interpolate(this->xBegin2_,
+                                                           this->xEnd_,
+                                                           this->yBegin2_);
+                    break;
+                  default:
+                    QL_FAIL("unknown mixed-interpolation behavior: " << behavior);
+                }
+            }
+
+            QL_DEPRECATED
+            MixedInterpolationImpl(const I1& xBegin, const I1& xEnd,
+                                   const I2& yBegin, Size n,
+                                   const Interpolator1& factory1,
+                                   const Interpolator2& factory2 = Interpolator2())
+            : Interpolation::templateImpl<I1,I2>(
+                               xBegin, xEnd, yBegin,
+                               std::max<Size>(Interpolator1::requiredPoints,
+                                              Interpolator2::requiredPoints)),
+              n_(n) {
+
+                xBegin2_ = this->xBegin_ + n_;
+                yBegin2_ = this->yBegin_ + n_;
 
                 QL_REQUIRE(xBegin2_<this->xEnd_,
                            "too large n (" << n << ") for " <<
@@ -226,6 +339,7 @@ namespace QuantLib {
             Size switchIndex() { return n_; }
           private:
             I1 xBegin2_;
+            I2 yBegin2_;
             Size n_;
             Interpolation interpolation1_, interpolation2_;
         };

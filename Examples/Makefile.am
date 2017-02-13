@@ -8,6 +8,7 @@ SUBDIRS = \
     CallableBonds \
     CDS \
     ConvertibleBonds \
+    CVAIRS \
     DiscreteHedging \
     EquityOption \
     FittedBondCurve \
@@ -22,7 +23,7 @@ SUBDIRS = \
 
 SUBDIR_CHECKS = $(SUBDIRS:%=%.check)
 
-EXTRA_DIST = README.txt
+EXTRA_DIST = CMakeLists.txt README.txt
 
 %.check:
 	$(MAKE) -C $* check-examples

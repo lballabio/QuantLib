@@ -66,25 +66,30 @@ namespace QuantLib {
         Real legBPS(Size j) const {
             QL_REQUIRE(j<legs_.size(), "leg# " << j << " doesn't exist!");
             calculate();
+            QL_REQUIRE(legBPS_[j] != Null<Real>(), "result not available");
             return legBPS_[j];
         }
         Real legNPV(Size j) const {
             QL_REQUIRE(j<legs_.size(), "leg #" << j << " doesn't exist!");
             calculate();
+            QL_REQUIRE(legNPV_[j] != Null<Real>(), "result not available");
             return legNPV_[j];
         }
         DiscountFactor startDiscounts(Size j) const {
             QL_REQUIRE(j<legs_.size(), "leg #" << j << " doesn't exist!");
             calculate();
+            QL_REQUIRE(startDiscounts_[j] != Null<Real>(), "result not available");
             return startDiscounts_[j];
         }
         DiscountFactor endDiscounts(Size j) const {
             QL_REQUIRE(j<legs_.size(), "leg #" << j << " doesn't exist!");
             calculate();
+            QL_REQUIRE(endDiscounts_[j] != Null<Real>(), "result not available");
             return endDiscounts_[j];
         }
         DiscountFactor npvDateDiscount() const {
             calculate();
+            QL_REQUIRE(npvDateDiscount_ != Null<Real>(), "result not available");
             return npvDateDiscount_;
         }
         const Leg& leg(Size j) const {

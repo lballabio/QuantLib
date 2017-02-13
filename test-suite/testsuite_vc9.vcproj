@@ -1084,6 +1084,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\hestonslvmodel.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\himalayaoption.cpp"
 				>
 			</File>
@@ -1137,6 +1141,10 @@
 			</File>
 			<File
 				RelativePath="jumpdiffusion.cpp"
+				>
+			</File>
+			<File
+				RelativePath="lazyobject.cpp"
 				>
 			</File>
 			<File
@@ -1212,6 +1220,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\normalclvmodel.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\nthtodefault.cpp"
 				>
 			</File>
@@ -1280,6 +1292,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\riskneutraldensitycalculator.cpp"
+				>
+			</File>
+			<File
 				RelativePath="riskstats.cpp"
 				>
 			</File>
@@ -1309,6 +1325,10 @@
 			</File>
 			<File
 				RelativePath="spreadoption.cpp"
+				>
+			</File>
+			<File
+				RelativePath="squarerootclvmodel.cpp"
 				>
 			</File>
 			<File
@@ -1629,6 +1649,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\hestonslvmodel.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\himalayaoption.hpp"
 				>
 			</File>
@@ -1682,6 +1706,10 @@
 			</File>
 			<File
 				RelativePath="jumpdiffusion.hpp"
+				>
+			</File>
+			<File
+				RelativePath="lazyobject.hpp"
 				>
 			</File>
 			<File
@@ -1757,6 +1785,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\normalclvmodel.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\nthtodefault.hpp"
 				>
 			</File>
@@ -1793,6 +1825,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\paralleltestrunner.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\partialtimebarrieroption.hpp"
 				>
 			</File>
@@ -1825,6 +1861,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\riskneutraldensitycalculator.hpp"
+				>
+			</File>
+			<File
 				RelativePath="riskstats.hpp"
 				>
 			</File>
@@ -1854,6 +1894,10 @@
 			</File>
 			<File
 				RelativePath="spreadoption.hpp"
+				>
+			</File>
+			<File
+				RelativePath="squarerootclvmodel.hpp"
 				>
 			</File>
 			<File

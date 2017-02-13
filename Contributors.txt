@@ -58,6 +58,7 @@ Matt Fair
 Paul Farrington
 Lorella Fatone
 Luca Ferraro
+Stefano Fondi
 Chiara Fornarola
 Silvia Frasson
 Andreas Gaida
@@ -101,6 +102,7 @@ Allen Kuo
 Paul Laderoute
 Yasmine Lahlou
 Fabien Le Floc'h
+Fabrice Lecuyer
 James Lee
 Samuel Lerouge
 Bernd Lewerenz
@@ -108,7 +110,10 @@ Cheng Li
 Gang Liang
 Robert Lopez
 André Louw
+Jasen Mackie
 Joao Paulo Magalhaes
+Jose Magana
+Andrea Maggiulli
 John Maiden
 Katiuscia Manzoni
 Francesca Mariani
@@ -124,6 +129,7 @@ Dmitri Nesteruk
 Billy Ng
 Bojan Nikolic
 Jean Nkeng
+Nikolai Nowaczyk
 Adrian O'Neill
 Andrea Odetti
 Mike Parker
@@ -170,8 +176,10 @@ Niels Elken Sønderby
 Andreas Spengler
 Roland Stamm
 Edouard Tallent
+Eisuke Tani
 Marco Tarenghi
 Yue Tian
+Jayanth R. Varma
 François du Vignaud
 Qingxiao Wang
 Charles Whitmore
