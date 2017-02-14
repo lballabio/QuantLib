@@ -88,7 +88,7 @@ namespace QuantLib {
                         return true;
                     }
                 }
-            } catch(Error e) {
+            } catch(Error&) {
                 return false;
             }
 
