@@ -660,7 +660,7 @@ namespace QuantLib {
                         marketRawPut.push_back(rawSec->optionPrice(
                             strikes[j], Option::Put, i->second.annuity_));
                     }
-                    catch (QuantLib::Error) {
+                    catch (Error&) {
                         // the smile section might not be able to output an
                         // option price because it has no atm level
                         marketRawCall.push_back(0.0);
