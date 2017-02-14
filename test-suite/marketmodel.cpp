@@ -110,6 +110,8 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 #include <boost/math/special_functions/fpclassify.hpp>
 #include <boost/bind.hpp>
+#include <boost/make_shared.hpp>
+#include <memory>
 #include <sstream>
 
 #if defined(BOOST_MSVC)
@@ -2202,7 +2204,7 @@ void MarketModelTest::testPathwiseGreeks()
         MarketModelPathwiseMultiCaplet product2(rateTimes, accruals,
             paymentTimes, todaysForwards);
 
-        std::auto_ptr<MarketModelPathwiseMultiProduct> product;
+        std::unique_ptr<MarketModelPathwiseMultiProduct> product;
 
         if (whichProduct == 0)
             product = product2.clone();
@@ -3148,7 +3150,7 @@ void MarketModelTest::testPathwiseVegas()
 
             for (Size deflate =0; deflate <2; ++deflate)
             {
-                std::auto_ptr<MarketModelPathwiseMultiProduct> productToUse;
+                std::unique_ptr<MarketModelPathwiseMultiProduct> productToUse;
 
                 if (deflate ==0)
                     productToUse = caplets.clone();
@@ -3193,7 +3195,7 @@ void MarketModelTest::testPathwiseVegas()
 
                     {
 
-                        PathwiseVegasAccountingEngine accountingengine(boost::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolver)), // method relies heavily on LMM Euler
+                        PathwiseVegasAccountingEngine accountingengine(boost::make_shared<LogNormalFwdRateEuler>(evolver), // method relies heavily on LMM Euler
                             productToUse,
                             marketModel, // we need pseudo-roots and displacements
                             vegaBumps,
@@ -3317,7 +3319,7 @@ void MarketModelTest::testPathwiseVegas()
                     // for deltas and prices the pathwise vega engine should agree precisely with the pathwiseaccounting engine
                     // so lets see if it does
 
-                    std::auto_ptr<MarketModelPathwiseMultiProduct> productToUse2;
+                    std::unique_ptr<MarketModelPathwiseMultiProduct> productToUse2;
 
                     if (deflate ==0)
                         productToUse2 = caplets.clone();
@@ -3327,7 +3329,7 @@ void MarketModelTest::testPathwiseVegas()
 
                     SequenceStatisticsInc stats(productToUse2->numberOfProducts()*(todaysForwards.size()+1));
                     {
-                        PathwiseAccountingEngine accountingengine(boost::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolver)), // method relies heavily on LMM Euler
+                        PathwiseAccountingEngine accountingengine(boost::make_shared<LogNormalFwdRateEuler>(evolver), // method relies heavily on LMM Euler
                             *productToUse2,
                             marketModel, // we need pseudo-roots and displacements
                             initialNumeraireValue);

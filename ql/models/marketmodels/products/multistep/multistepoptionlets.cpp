@@ -52,8 +52,8 @@ namespace QuantLib {
         return (currentIndex_ == payoffs_.size());
     }
 
-    std::auto_ptr<MarketModelMultiProduct> MultiStepOptionlets::clone() const {
-        return std::auto_ptr<MarketModelMultiProduct>(
+    std::unique_ptr<MarketModelMultiProduct> MultiStepOptionlets::clone() const {
+        return std::unique_ptr<MarketModelMultiProduct>(
                                                  new MultiStepOptionlets(*this));
     }
 

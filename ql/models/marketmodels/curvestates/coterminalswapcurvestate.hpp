@@ -23,6 +23,7 @@
 #define quantlib_coterminalswapcurvestate_hpp
 
 #include <ql/models/marketmodels/curvestate.hpp>
+#include <memory>
 
 namespace QuantLib {
 
@@ -72,8 +73,8 @@ namespace QuantLib {
         const std::vector<Rate>& coterminalSwapRates() const;
         const std::vector<Rate>& cmSwapRates(Size spanningForwards) const;
         //@}
-        std::auto_ptr<CurveState> clone() const {
-            return std::auto_ptr<CurveState>(
+        std::unique_ptr<CurveState> clone() const {
+            return std::unique_ptr<CurveState>(
                 new CoterminalSwapCurveState(*this));
         }
       private:

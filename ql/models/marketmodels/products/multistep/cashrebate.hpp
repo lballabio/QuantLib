@@ -24,6 +24,7 @@
 #include <ql/models/marketmodels/multiproduct.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/math/matrix.hpp>
+#include <memory>
 
 namespace QuantLib 
 {
@@ -52,7 +53,7 @@ namespace QuantLib
                     const CurveState& currentState,
                     std::vector<Size>& numberCashFlowsThisStep,
                     std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
-        std::auto_ptr<MarketModelMultiProduct> clone() const;
+        std::unique_ptr<MarketModelMultiProduct> clone() const;
         //@}
       private:
         EvolutionDescription evolution_;

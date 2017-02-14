@@ -24,6 +24,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #ifndef quantlib_fft_vanilla_engine_hpp
 #define quantlib_fft_vanilla_engine_hpp
 
+#include <memory>
 #include <ql/experimental/variancegamma/fftengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 
@@ -39,7 +40,7 @@ namespace QuantLib {
     public:
         FFTVanillaEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>&process, Real logStrikeSpacing = 0.001);
-        virtual std::auto_ptr<FFTEngine> clone() const;
+        virtual std::unique_ptr<FFTEngine> clone() const;
 
     protected:
         virtual void precalculateExpiry(Date d);

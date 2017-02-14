@@ -29,11 +29,11 @@ namespace QuantLib {
     {
     }
 
-    std::auto_ptr<FFTEngine> FFTVarianceGammaEngine::clone() const
+    std::unique_ptr<FFTEngine> FFTVarianceGammaEngine::clone() const
     {
         boost::shared_ptr<VarianceGammaProcess> process =
             boost::dynamic_pointer_cast<VarianceGammaProcess>(process_);
-        return std::auto_ptr<FFTEngine>(new FFTVarianceGammaEngine(process, lambda_));
+        return std::unique_ptr<FFTEngine>(new FFTVarianceGammaEngine(process, lambda_));
     }
 
     void FFTVarianceGammaEngine::precalculateExpiry(Date d)

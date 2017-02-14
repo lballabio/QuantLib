@@ -25,6 +25,7 @@
 #include <ql/models/marketmodels/multiproduct.hpp>
 #include <ql/methods/montecarlo/exercisestrategy.hpp>
 #include <ql/utilities/clone.hpp>
+#include <memory>
 #include <valarray>
 
 namespace QuantLib {
@@ -48,7 +49,7 @@ namespace QuantLib {
                     const CurveState& currentState,
                     std::vector<Size>& numberCashFlowsThisStep,
                     std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
-        std::auto_ptr<MarketModelMultiProduct> clone() const;
+        std::unique_ptr<MarketModelMultiProduct> clone() const;
         //@}
         const MarketModelMultiProduct& underlying() const;
         const ExerciseStrategy<CurveState>& strategy() const;

@@ -30,11 +30,11 @@ namespace QuantLib {
     {
     }
 
-    std::auto_ptr<FFTEngine> FFTVanillaEngine::clone() const
+    std::unique_ptr<FFTEngine> FFTVanillaEngine::clone() const
     {
         boost::shared_ptr<GeneralizedBlackScholesProcess> process =
             boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(process_);
-        return std::auto_ptr<FFTEngine>(new FFTVanillaEngine(process, lambda_));
+        return std::unique_ptr<FFTEngine>(new FFTVanillaEngine(process, lambda_));
     }
 
     void FFTVanillaEngine::precalculateExpiry(Date d)

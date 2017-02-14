@@ -85,9 +85,9 @@ namespace QuantLib {
          return cf_;
     }
 
-    std::auto_ptr<MarketModelExerciseValue>
+    std::unique_ptr<MarketModelExerciseValue>
     NothingExerciseValue::clone() const {
-        return std::auto_ptr<MarketModelExerciseValue>(
+        return std::unique_ptr<MarketModelExerciseValue>(
                                              new NothingExerciseValue(*this));
     }
 

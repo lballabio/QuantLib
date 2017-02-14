@@ -92,9 +92,9 @@ namespace QuantLib {
         return (currentIndex_ == strikes_.size());
     }
 
-    std::auto_ptr<MarketModelPathwiseMultiProduct> MarketModelPathwiseMultiCaplet::clone() const 
+    std::unique_ptr<MarketModelPathwiseMultiProduct> MarketModelPathwiseMultiCaplet::clone() const 
     {
-        return std::auto_ptr<MarketModelPathwiseMultiProduct>(
+        return std::unique_ptr<MarketModelPathwiseMultiProduct>(
             new MarketModelPathwiseMultiCaplet(*this));
     }
 
@@ -239,9 +239,9 @@ namespace QuantLib {
         return (currentIndex_ == strikes_.size());
     }
 
-    std::auto_ptr<MarketModelPathwiseMultiProduct> MarketModelPathwiseMultiDeflatedCaplet::clone() const 
+    std::unique_ptr<MarketModelPathwiseMultiProduct> MarketModelPathwiseMultiDeflatedCaplet::clone() const 
     {
-        return std::auto_ptr<MarketModelPathwiseMultiProduct>(
+        return std::unique_ptr<MarketModelPathwiseMultiProduct>(
             new MarketModelPathwiseMultiDeflatedCaplet(*this));
     }
 
@@ -378,9 +378,9 @@ namespace QuantLib {
         return done;
     }
 
-    std::auto_ptr<MarketModelPathwiseMultiProduct> MarketModelPathwiseMultiDeflatedCap::clone() const
+    std::unique_ptr<MarketModelPathwiseMultiProduct> MarketModelPathwiseMultiDeflatedCap::clone() const
     {
-        return std::auto_ptr<MarketModelPathwiseMultiProduct>(
+        return std::unique_ptr<MarketModelPathwiseMultiProduct>(
                               new MarketModelPathwiseMultiDeflatedCap(*this));
     }
 

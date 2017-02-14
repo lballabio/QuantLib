@@ -31,6 +31,7 @@
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/math/array.hpp>
 #include <ql/utilities/clone.hpp>
+#include <memory>
 
 namespace QuantLib {
 
@@ -196,7 +197,7 @@ namespace QuantLib {
         //! final value of cost function after optimization
         Real minimumCostValue() const;
         //! clone of the current object
-        virtual std::auto_ptr<FittingMethod> clone() const = 0;
+        virtual std::unique_ptr<FittingMethod> clone() const = 0;
 		//! return whether there is a constraint at zero
 		bool constrainAtZero() const;
 		//! return weights being used
