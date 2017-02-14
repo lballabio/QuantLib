@@ -25,8 +25,9 @@ namespace QuantLib {
 
     ExtendedCoxIngersollRoss::ExtendedCoxIngersollRoss(
                               const Handle<YieldTermStructure>& termStructure,
-                              Real theta, Real k, Real sigma, Real x0)
-    : CoxIngersollRoss(x0, theta, k, sigma),
+                              Real theta, Real k, Real sigma, Real x0,
+                              bool withFellerConstraint)
+    : CoxIngersollRoss(x0, theta, k, sigma, withFellerConstraint),
       TermStructureConsistentModel(termStructure) {
         generateArguments();
     }
