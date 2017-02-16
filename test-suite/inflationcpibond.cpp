@@ -176,9 +176,7 @@ namespace {
 
         Calendar calendar;
         BusinessDayConvention convention;
-        Date evaluationDate;
         Natural settlementDays;
-        Date settlementDate;
         Period observationLag;
         DayCounter dayCounter;
 
@@ -193,54 +191,57 @@ namespace {
         IndexHistoryCleaner cleaner;
 
         // setup
-        ZACommonVars() {
-            // usual setup
+        ZACommonVars(Date evaluationDate, Date settlementDate) {
             calendar = NullCalendar();
             convention = ModifiedFollowing;
-            Date today(31, Jul, 2015);
-            settlementDate = Date(5, Aug, 2015);
-            evaluationDate = calendar.adjust(today);
             settlementDays = calendar.businessDaysBetween(evaluationDate, settlementDate);
             dayCounter = ActualActual();
             observationLag = Period(4, Months);
 
             bool interp = false;
-            int indexAvailability = 1;
-            int cpiIndexLag = -4;
-            ii = boost::shared_ptr<ZeroInflationIndex>(new ZeroInflationIndex("CPI", ZARegion(), false, true, Monthly, Period(indexAvailability, Months), ZARCurrency(), cpiTS, true));
+            Period indexAvailability(1, Months);
+            ii = boost::shared_ptr<ZeroInflationIndex>(
+                new ZeroInflationIndex("CPI", ZARegion(), false, true, Monthly,
+                    indexAvailability, ZARCurrency(), cpiTS, true));
 
-            // Pre-reindexing CPI fixings
             Datum cpiFixings[] = {
                 { Date(31, Jan, 2015), 110.8 },
                 { Date(28, Feb, 2015), 111.5 },
                 { Date(31, Mar, 2015), 113.1 },
                 { Date(30, Apr, 2015), 114.1 },
                 { Date(31, May, 2015), 114.4 },
-                { Date(30, Jun, 2015), 114.9 }
+                { Date(30, Jun, 2015), 114.9 },
+                { Date(31, Jul, 2015), 116.1 },
+                { Date(31, Aug, 2015), 116.1 },
+                { Date(30, Sep, 2015), 116.1 },
+                { Date(31, Oct, 2015), 116.4 },
+                { Date(30, Nov, 2015), 116.5 },
+                { Date(31, Dec, 2015), 116.8 },
+                { Date(31, Jan, 2016), 117.7 },
+                { Date(29, Feb, 2016), 119.3 },
+                { Date(31, Mar, 2016), 120.2 },
+                { Date(30, Apr, 2016), 121.2 },
+                { Date(31, May, 2016), 121.4 },
+                { Date(30, Jun, 2016), 122.1 },
+                { Date(31, Jul, 2016), 123.1 },
+                { Date(31, Aug, 2016), 123 },
+                { Date(30, Sep, 2016), 123.2 },
+                { Date(31, Oct, 2016), 123.8 },
+                { Date(30, Nov, 2016), 124.2 },
+                { Date(31, Dec, 2016), 124.7 },
+                { Date(31, Jan, 2017), 124.7 }
             };
-            Date expectedCPIEndDate = calendar.endOfMonth(calendar.advance(settlementDate, cpiIndexLag + 1, Months, convention));
+
             for (Size i = 0; i < LENGTH(cpiFixings); ++i) {
-                if (cpiFixings[i].date <= expectedCPIEndDate)
-                    ii->addFixing(cpiFixings[i].date, cpiFixings[i].rate * 1.267); // 1.267 to convert to post-reindexing indices
+                ii->addFixing(cpiFixings[i].date, cpiFixings[i].rate);
             }
 
             yTS.linkTo(boost::shared_ptr<YieldTermStructure>(
-                new FlatForward(evaluationDate, 0.00, dayCounter)));
-
-            Datum futureInflationIncreases[] = {
-                { calendar.advance(settlementDate, Period(cpiIndexLag, Months)), 1 },
-                { Date(1, May, 2051), 1 }
-            };
-
-            std::vector<boost::shared_ptr<Helper> > helpers =
-                makeHelpers(futureInflationIncreases, LENGTH(futureInflationIncreases), ii,
-                    observationLag, calendar, convention, dayCounter);
-
-            Rate baseZeroRate = 1;
+                new FlatForward(settlementDate, 0.50, dayCounter)));
 
             std::vector<Date> dates;
-            dates.push_back(calendar.advance(settlementDate, Period(cpiIndexLag, Months)));
-            dates.push_back(Date(1, May, 2051));
+            dates.push_back(calendar.advance(settlementDate, -observationLag));
+            dates.push_back(Date(1, May, 2100));
 
             std::vector<Rate> rates;
             rates.push_back(0);
@@ -263,6 +264,8 @@ namespace {
 
 
 void InflationCPIBondTest::testCleanPrice() {
+    BOOST_TEST_MESSAGE("Testing UK CPI bond reference period on 2009-11-25...");
+
     IndexManager::instance().clearHistories();
   
     UKCommonVars common;
@@ -310,10 +313,9 @@ void InflationCPIBondTest::testCleanPrice() {
 }
 
 void InflationCPIBondTest::testZABondsReferencePeriod() {
-    BOOST_TEST_MESSAGE("Testing CPI bond reference period...");
+    BOOST_TEST_MESSAGE("Testing CPI bond reference period on 2015-07-31...");
 
-    ZACommonVars common;
-    Settings::instance().evaluationDate() = common.evaluationDate;
+    IndexManager::instance().clearHistories();
 
     struct test_case {
         Date issueDate;
@@ -325,16 +327,83 @@ void InflationCPIBondTest::testZABondsReferencePeriod() {
         Rate dirtyPrice;
     };
 
+    Real notional = 100.0;
+    DayCounter paymentDayCounter = ActualActual(ActualActual::ISMA);
+    DayCounter accruedInterestDayCounter = Actual365Fixed();
+    BusinessDayConvention paymentConvention = ModifiedFollowing;
+    CPI::InterpolationType observationInterpolation = CPI::Linear;
+    bool growthOnly = false;
+
+    // Tests for trade date 2015-07-31
+    Date evaluationDate(31, Jul, 2015);
+    Date settlementDate(5, Aug, 2015);
+    ZACommonVars common(evaluationDate, settlementDate);
+    Settings::instance().evaluationDate() = evaluationDate;
+
     test_case cases[] = {
-        { Date(9, Jun, 2010), Date(31, Jan, 2017), 0.0250, 0.00825, 110.440000, true,  134.22128 }, // R211 bond
-        { Date(17, Jun, 2010), Date(31, Jan, 2022), 0.0275, 0.01445, 110.680000, true,  141.22928 }, // R212 bond
-        { Date(30, May, 2001), Date(7, Dec, 2023), 0.0550, 0.01525,  65.050400, false, 293.22573 }, // R197 bond
-        { Date(4, Jul, 2012), Date(31, Jan, 2025), 0.0200, 0.01515, 122.648387, true,  122.97651 }, // I2025 bond
-        { Date(27, Sep, 2007), Date(31, Mar, 2028), 0.0260, 0.01625,  89.275000, true,  181.44388 }, // R210 bond
-        { Date(20, Aug, 2003), Date(7, Dec, 2033), 0.0345, 0.01780,  76.822578, false, 238.29050 }, // R202 bond
-        { Date(4, Jul, 2012), Date(31, Jan, 2038), 0.0225, 0.01810, 122.648384, true,  127.49386 }, // I2038 bond
-        { Date(17, Jul, 2013), Date(31, Mar, 2046), 0.0250, 0.01950, 130.129074, true,  126.14694 }, // I2046 bond
-        { Date(11, Jul, 2012), Date(31, Dec, 2050), 0.0250, 0.01925, 122.761292, true,  135.41703 }  // I2050 bond
+        { Date( 9, Jun, 2010), Date(31, Jan, 2017), 0.0250, 0.00825, 87.16653512,  true, 134.22128 }, // R211 bond
+        { Date(17, Jun, 2010), Date(31, Jan, 2022), 0.0275, 0.01445, 87.35595896,  true, 141.22928 }, // R212 bond
+        { Date(30, May, 2001), Date( 7, Dec, 2023), 0.0550, 0.01525, 51.34206788, false, 293.22573 }, // R197 bond
+        { Date( 4, Jul, 2012), Date(31, Jan, 2025), 0.0200, 0.01515, 96.80219968,  true, 122.97651 }, // I2025 bond
+        { Date(27, Sep, 2007), Date(31, Mar, 2028), 0.0260, 0.01625, 70.46172060,  true, 181.44388 }, // R210 bond
+        { Date(20, Aug, 2003), Date( 7, Dec, 2033), 0.0345, 0.01780, 60.63344751, false, 238.29050 }, // R202 bond
+        { Date( 4, Jul, 2012), Date(31, Jan, 2038), 0.0225, 0.01810, 96.80219732,  true, 127.49386 }, // I2038 bond
+        { Date(17, Jul, 2013), Date(31, Mar, 2046), 0.0250, 0.01950, 102.7064515,  true, 126.14694 }, // I2046 bond
+        { Date(11, Jul, 2012), Date(31, Dec, 2050), 0.0250, 0.01925, 96.89131176,  true, 135.41703 }  // I2050 bond
+    };
+
+    for (Size i = 0; i < LENGTH(cases); ++i) {
+        Schedule schedule(
+            cases[i].issueDate,
+            cases[i].maturityDate,
+            Period(6, Months),
+            common.calendar,
+            Unadjusted,
+            Unadjusted,
+            DateGeneration::Backward,
+            cases[i].couponsAtEndOfMonth);
+
+        std::vector<Rate> couponRate(1, cases[i].couponRate);
+
+        CPIBond bond(common.settlementDays, notional, growthOnly,
+            cases[i].baseCPI, common.observationLag, common.ii,
+            observationInterpolation, schedule,
+            couponRate, paymentDayCounter, paymentConvention,
+            cases[i].issueDate,
+            common.calendar,
+            //Ex-coupon parameters
+            Period(10, Days),
+            NullCalendar(),
+            Unadjusted,
+            false);
+
+        Real calculated = BondFunctions::dirtyPrice(bond,
+            InterestRate(cases[i].ytm, paymentDayCounter, Compounded, Semiannual),
+            settlementDate);
+
+        Real tolerance = 2e-5;
+        if (std::fabs(calculated - cases[i].dirtyPrice) > tolerance) {
+            BOOST_FAIL("failed to reproduce expected ZA CPI-bond dirty price on 2015-07-31"
+                << QL_FIXED << std::setprecision(12)
+                << "\n  expected: " << cases[i].dirtyPrice
+                << "\n  actual  : " << calculated);
+        }
+    }
+}
+
+void InflationCPIBondTest::testZABondsReferencePeriod2() {
+    BOOST_TEST_MESSAGE("Testing CPI bond reference period on 2017-02-14...");
+
+    IndexManager::instance().clearHistories();
+
+    struct test_case {
+        Date issueDate;
+        Date maturityDate;
+        Real couponRate;
+        Real ytm;
+        Real baseCPI;
+        bool couponsAtEndOfMonth;
+        Rate dirtyPrice;
     };
 
     Real notional = 100.0;
@@ -343,6 +412,23 @@ void InflationCPIBondTest::testZABondsReferencePeriod() {
     BusinessDayConvention paymentConvention = ModifiedFollowing;
     CPI::InterpolationType observationInterpolation = CPI::Linear;
     bool growthOnly = false;
+
+    // Tests for trade date 2017-02-14
+    Date evaluationDate(14, Feb, 2017);
+    Date settlementDate(17, Feb, 2017);
+    ZACommonVars common(evaluationDate, settlementDate);
+    Settings::instance().evaluationDate() = evaluationDate;
+
+    test_case cases[] = {
+        { Date(17, Jun, 2010), Date(31, Jan, 2022), 0.0275, 0.02020,  87.35595896,  true, 147.02504}, // R212 bond
+        { Date(30, May, 2001), Date( 7, Dec, 2023), 0.0550, 0.02040,  51.34207043, false, 297.02942}, // R197 bond
+        { Date( 4, Jul, 2012), Date(31, Jan, 2025), 0.0200, 0.02080,  96.80219968,  true, 127.49778}, // I2025 bond
+        { Date(27, Sep, 2007), Date(31, Mar, 2028), 0.0260, 0.02020,  70.46172060,  true, 187.89960}, // R210 bond
+        { Date(20, Aug, 2003), Date( 7, Dec, 2033), 0.0345, 0.02070,  60.63344961, false, 245.83447}, // R202 bond
+        { Date( 4, Jul, 2012), Date(31, Jan, 2038), 0.0225, 0.02035,  96.80219976,  true, 132.94059}, // I2038 bond
+        { Date(17, Jul, 2013), Date(31, Mar, 2046), 0.0250, 0.02080, 102.70645160,  true, 132.95497}, // I2046 bond
+        { Date(11, Jul, 2012), Date(31, Dec, 2050), 0.0250, 0.02040,  96.89131042,  true, 142.77971}  // I2050 bond
+    };
 
     for (Size i = 0; i < LENGTH(cases); ++i) {
         Schedule schedule(
@@ -369,17 +455,13 @@ void InflationCPIBondTest::testZABondsReferencePeriod() {
             Unadjusted,
             false);
 
-        boost::shared_ptr<DiscountingBondEngine> engine(
-            new DiscountingBondEngine(common.yTS));
-        bond.setPricingEngine(engine);
-
         Real calculated = BondFunctions::dirtyPrice(bond,
             InterestRate(cases[i].ytm, paymentDayCounter, Compounded, Semiannual),
-            common.settlementDate);
+            settlementDate);
 
         Real tolerance = 2e-5;
         if (std::fabs(calculated - cases[i].dirtyPrice) > tolerance) {
-            BOOST_FAIL("failed to reproduce expected ZA CPI-bond dirty price"
+            BOOST_FAIL("failed to reproduce expected ZA CPI-bond dirty price on 2017-02-14"
                 << QL_FIXED << std::setprecision(12)
                 << "\n  expected: " << cases[i].dirtyPrice
                 << "\n  actual  : " << calculated);
@@ -393,6 +475,7 @@ test_suite* InflationCPIBondTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(&InflationCPIBondTest::testCleanPrice));
     suite->add(QUANTLIB_TEST_CASE(&InflationCPIBondTest::testZABondsReferencePeriod));
+    suite->add(QUANTLIB_TEST_CASE(&InflationCPIBondTest::testZABondsReferencePeriod2));
 
     return suite;
 }

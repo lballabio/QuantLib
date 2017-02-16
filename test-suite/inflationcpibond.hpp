@@ -26,6 +26,7 @@ class InflationCPIBondTest {
 public:
     static void testCleanPrice();
     static void testZABondsReferencePeriod();
+    static void testZABondsReferencePeriod2();
     static boost::unit_test_framework::test_suite* suite();
 };
 
