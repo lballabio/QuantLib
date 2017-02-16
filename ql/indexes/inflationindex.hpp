@@ -158,13 +158,6 @@ namespace QuantLib {
 
         Rate fixing(const Date& fixingDate,
                     bool forecastTodaysFixing) const;
-
-        Rate fixing(const Date& fixingDate,
-                    const Date& referenceDate) const;
-
-        Rate fixing(const Date& fixingDate,
-                    const Date& referenceDate,
-                    bool forecastTodaysFixing) const;
         
         //@}
         //! \name Other methods
@@ -175,6 +168,13 @@ namespace QuantLib {
         bool forecastWhenPossible() const;
         //@}
       private:
+        Rate fixing(const Date& fixingDate,
+                    const Date& referenceDate) const;
+
+        Rate fixing(const Date& fixingDate,
+                    const Date& referenceDate,
+                    bool forecastTodaysFixing) const;
+          
         bool forecastTodaysFixing(const Date& fixingDate) const;
         bool needsForecast(const Date& fixingDate) const;
         Rate forecastFixing(const Date& fixingDate) const;

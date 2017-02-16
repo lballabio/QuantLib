@@ -80,7 +80,10 @@ namespace QuantLib {
     }
 
     bool ZeroInflationIndex::forecastTodaysFixing(const Date& fixingDate) const {
-        return forecastWhenPossible_ && fixingDate >= zeroInflationTermStructure()->baseDate();
+        if (fixingDate < zeroInflationTermStructure()->baseDate())
+            return false;
+        else
+            return forecastWhenPossible_;
     }
 
 
@@ -89,8 +92,8 @@ namespace QuantLib {
     }
 
     Rate ZeroInflationIndex::fixing(const Date& aFixingDate,
-                                    bool forecastTodaysFixing) const {
-        return fixing(aFixingDate, aFixingDate, forecastTodaysFixing);
+                                    bool /* forecastTodaysFixing */) const {
+        return fixing(aFixingDate, aFixingDate);
     }
 
     Rate ZeroInflationIndex::fixing(const Date& fixingDate,
@@ -109,7 +112,7 @@ namespace QuantLib {
                        "Missing " << name() << " fixing for " << lim.first);
             Real theFixing = pastFixing;
             //Interpolate only when necessary
-            if (interpolated_ && referenceDate > lim.first) {
+            if (interpolated_ && aFixingDate > lim.first) {
                 // fixings stored on first day of every period
                 if (aFixingDate == lim.first) {
                     // we don't actually need the next fixing
@@ -178,7 +181,7 @@ namespace QuantLib {
         Date baseDate = zeroInflation_->baseDate();
         QL_REQUIRE(!needsForecast(baseDate),
                    name() << " index fixing at base date is not available");
-        Real baseFixing = fixing(baseDate, false);
+        Real baseFixing = fixing(baseDate, baseDate, false);
         Date effectiveFixingDate;
         if (interpolated()) {
             effectiveFixingDate = fixingDate;
