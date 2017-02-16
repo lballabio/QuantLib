@@ -176,7 +176,6 @@ namespace QuantLib {
     Rate ZeroInflationIndex::forecastFixing(const Date& fixingDate) const {
         // the term structure is relative to the fixing value at the base date.
         Date baseDate = zeroInflation_->baseDate();
-        Date referenceDate = zeroInflation_->referenceDate();
         QL_REQUIRE(!needsForecast(baseDate),
                    name() << " index fixing at base date is not available");
         Real baseFixing = fixing(baseDate, false);
