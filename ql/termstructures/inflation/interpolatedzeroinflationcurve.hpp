@@ -120,7 +120,7 @@ namespace QuantLib {
           // period
           std::pair<Date,Date> lim =
                 inflationPeriod(yTS->referenceDate() - this->observationLag(), frequency);
-          QL_REQUIRE(lim.first <= dates_[0],
+          QL_REQUIRE(lim.first <= dates_[0] && dates_[0] <= lim.second,
                    "first data date is not in base period, date: " << dates_[0]
                    << " not within [" << lim.first << "," << lim.second << "]");
 
