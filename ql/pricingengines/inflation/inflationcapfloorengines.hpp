@@ -53,7 +53,6 @@ namespace QuantLib {
         void setVolatility(const Handle<YoYOptionletVolatilitySurface>& vol);
 
         void calculate() const;
-        virtual ~YoYInflationCapFloorEngine() {}
     protected:
         //! descendents only need to implement this
         virtual Real optionletImpl(Option::Type type, Rate strike,
@@ -72,7 +71,6 @@ namespace QuantLib {
     public:
         YoYInflationBlackCapFloorEngine(const boost::shared_ptr<YoYInflationIndex>&,
                                         const Handle<YoYOptionletVolatilitySurface>&);
-        virtual ~YoYInflationBlackCapFloorEngine() {}
 
     protected:
 
@@ -90,7 +88,6 @@ namespace QuantLib {
         YoYInflationUnitDisplacedBlackCapFloorEngine(
                     const boost::shared_ptr<YoYInflationIndex>&,
                     const Handle<YoYOptionletVolatilitySurface>&);
-        virtual ~YoYInflationUnitDisplacedBlackCapFloorEngine() {}
     protected:
 
         virtual Real optionletImpl(Option::Type, Real strike,
@@ -107,7 +104,6 @@ namespace QuantLib {
         YoYInflationBachelierCapFloorEngine(
                     const boost::shared_ptr<YoYInflationIndex>&,
                     const Handle<YoYOptionletVolatilitySurface>&);
-        virtual ~YoYInflationBachelierCapFloorEngine() {}
 
     protected:
 

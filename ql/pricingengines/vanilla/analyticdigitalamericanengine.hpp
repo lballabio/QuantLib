@@ -60,7 +60,6 @@ namespace QuantLib {
         virtual bool knock_in() const {
            return true;
         }
-        virtual ~AnalyticDigitalAmericanEngine() {}
       private:
         boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
     };
