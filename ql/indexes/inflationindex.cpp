@@ -111,8 +111,7 @@ namespace QuantLib {
             QL_REQUIRE(pastFixing != Null<Real>(),
                        "Missing " << name() << " fixing for " << lim.first);
             Real theFixing = pastFixing;
-            //Interpolate only when necessary
-            if (interpolated_ && aFixingDate > lim.first) {
+            if (interpolated_) {
                 // fixings stored on first day of every period
                 if (aFixingDate == lim.first) {
                     // we don't actually need the next fixing
