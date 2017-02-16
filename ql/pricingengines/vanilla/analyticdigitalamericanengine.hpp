@@ -96,7 +96,6 @@ namespace QuantLib {
         virtual bool knock_in() const {
            return false;
         }
-        virtual ~AnalyticDigitalAmericanKOEngine() {}
     };
 
 }
