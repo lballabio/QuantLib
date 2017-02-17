@@ -163,6 +163,7 @@ namespace QuantLib {
     public:
         virtual Real meanReversion() const = 0;
         virtual void setMeanReversion(const Handle<Quote>&) = 0;
+        virtual ~MeanRevertingPricer() {}
     };
 
     void setCouponPricer(const Leg& leg,
