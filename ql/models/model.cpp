@@ -106,6 +106,7 @@ namespace QuantLib {
         Array result(prob.currentValue());
         setParams(proj.include(result));
         problemValues_ = prob.values(result);
+        functionEvaluation_ = prob.functionEvaluation();
 
         notifyObservers();
     }
