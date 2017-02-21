@@ -760,11 +760,11 @@ namespace QuantLib {
               npvDate_(npvDate) {
 
 
-            if (settlementDate == Date())
-                settlementDate = Settings::instance().evaluationDate();
+                if (settlementDate == Date())
+                    settlementDate_ = Settings::instance().evaluationDate();
 
                 if (npvDate == Date())
-                    npvDate = settlementDate;
+                    npvDate_ = settlementDate_;
 
                 checkSign();
             }
@@ -1237,10 +1237,10 @@ namespace QuantLib {
               npvDate_(npvDate) {
 
                 if (settlementDate == Date())
-                    settlementDate = Settings::instance().evaluationDate();
+                    settlementDate_ = Settings::instance().evaluationDate();
 
                 if (npvDate == Date())
-                    npvDate = settlementDate;
+                    npvDate_ = settlementDate_;
 
                 // if the discount curve allows extrapolation, let's
                 // the spreaded curve do too.
