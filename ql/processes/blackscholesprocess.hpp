@@ -59,7 +59,8 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& riskFreeTS,
             const Handle<BlackVolTermStructure>& blackVolTS,
             const boost::shared_ptr<discretization>& d =
-                  boost::shared_ptr<discretization>(new EulerDiscretization));
+                  boost::shared_ptr<discretization>(new EulerDiscretization),
+            bool forceDiscretization = false);
         //! \name StochasticProcess1D interface
         //@{
         Real x0() const;
@@ -94,6 +95,7 @@ namespace QuantLib {
         Handle<Quote> x0_;
         Handle<YieldTermStructure> riskFreeRate_, dividendYield_;
         Handle<BlackVolTermStructure> blackVolatility_;
+        bool forceDiscretization_;
         mutable RelinkableHandle<LocalVolTermStructure> localVolatility_;
         mutable bool updated_, isStrikeIndependent_;
     };
@@ -117,7 +119,8 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& riskFreeTS,
             const Handle<BlackVolTermStructure>& blackVolTS,
             const boost::shared_ptr<discretization>& d =
-                  boost::shared_ptr<discretization>(new EulerDiscretization));
+                  boost::shared_ptr<discretization>(new EulerDiscretization),
+            bool forceDiscretization = false);
     };
 
     //! Merton (1973) extension to the Black-Scholes stochastic process
@@ -138,7 +141,8 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& riskFreeTS,
             const Handle<BlackVolTermStructure>& blackVolTS,
             const boost::shared_ptr<discretization>& d =
-                  boost::shared_ptr<discretization>(new EulerDiscretization));
+                  boost::shared_ptr<discretization>(new EulerDiscretization),
+            bool forceDiscretization = false);
     };
 
     //! Black (1976) stochastic process
@@ -160,7 +164,8 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& riskFreeTS,
             const Handle<BlackVolTermStructure>& blackVolTS,
             const boost::shared_ptr<discretization>& d =
-                  boost::shared_ptr<discretization>(new EulerDiscretization));
+                  boost::shared_ptr<discretization>(new EulerDiscretization),
+            bool forceDiscretization = false);
     };
 
     //! Garman-Kohlhagen (1983) stochastic process
@@ -184,7 +189,8 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& domesticRiskFreeTS,
             const Handle<BlackVolTermStructure>& blackVolTS,
             const boost::shared_ptr<discretization>& d =
-                  boost::shared_ptr<discretization>(new EulerDiscretization));
+                  boost::shared_ptr<discretization>(new EulerDiscretization),
+            bool forceDiscretization = false);
     };
 
 }
