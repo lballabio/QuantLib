@@ -4,6 +4,7 @@
  Copyright (C) 2004, 2005 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2017 Oleg Kulkov, Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -79,6 +80,8 @@ namespace QuantLib {
         // implementation instance
         static boost::shared_ptr<Calendar::Impl> settlementImpl(
                                         new UnitedStates::SettlementImpl);
+        static boost::shared_ptr<Calendar::Impl> liborImpactImpl(
+                                        new UnitedStates::LiborImpactImpl);
         static boost::shared_ptr<Calendar::Impl> nyseImpl(
                                         new UnitedStates::NyseImpl);
         static boost::shared_ptr<Calendar::Impl> governmentImpl(
@@ -89,6 +92,8 @@ namespace QuantLib {
           case Settlement:
             impl_ = settlementImpl;
             break;
+        case LiborImpact:
+            impl_ = liborImpactImpl;
           case NYSE:
             impl_ = nyseImpl;
             break;
@@ -139,6 +144,18 @@ namespace QuantLib {
         return true;
     }
 
+    bool UnitedStates::LiborImpactImpl::isBusinessDay(const Date& date) const {
+        // Since 2015 Independence Day only impacts Libor if it falls
+        // on a weekday
+        Weekday w = date.weekday();
+        Day d = date.dayOfMonth();
+        Month m = date.month();
+        Year y = date.year();
+        if (((d == 5 && w == Monday) ||
+            (d == 3 && w == Friday)) && m == July && y >= 2015)
+            return true;
+        return SettlementImpl::isBusinessDay(date);
+    }
 
     bool UnitedStates::NyseImpl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();

@@ -180,7 +180,7 @@ namespace QuantLib {
                              public Visitor<RangeAccrualFloatersCoupon>,
                              public Visitor<SubPeriodsCoupon> {
           private:
-            const boost::shared_ptr<FloatingRateCouponPricer> pricer_;
+            boost::shared_ptr<FloatingRateCouponPricer> pricer_;
           public:
             PricerSetter(
                     const boost::shared_ptr<FloatingRateCouponPricer>& pricer)
@@ -216,6 +216,19 @@ namespace QuantLib {
         }
 
         void PricerSetter::visit(CappedFlooredCoupon& c) {
+            // we might end up here because a CappedFlooredCoupon
+            // was directly constructed; we should then check
+            // the underlying for consistency with the pricer
+            if (boost::dynamic_pointer_cast<IborCoupon>(c.underlying())) {
+                QL_REQUIRE(boost::dynamic_pointer_cast<IborCouponPricer>(pricer_),
+                           "pricer not compatible with Ibor Coupon");
+            } else if (boost::dynamic_pointer_cast<CmsCoupon>(c.underlying())) {
+                QL_REQUIRE(boost::dynamic_pointer_cast<CmsCouponPricer>(pricer_),
+                           "pricer not compatible with CMS Coupon");
+            } else if (boost::dynamic_pointer_cast<CmsSpreadCoupon>(c.underlying())) {
+                QL_REQUIRE(boost::dynamic_pointer_cast<CmsSpreadCouponPricer>(pricer_),
+                           "pricer not compatible with CMS spread Coupon");
+            }
             c.setPricer(pricer_);
         }
 
@@ -307,15 +320,32 @@ namespace QuantLib {
             c.setPricer(subPeriodsPricer);
         }
 
-    }
-
-    void setCouponPricer(
-                  const Leg& leg,
-                  const boost::shared_ptr<FloatingRateCouponPricer>& pricer) {
-        PricerSetter setter(pricer);
-        for (Size i=0; i<leg.size(); ++i) {
-            leg[i]->accept(setter);
+        void setCouponPricersFirstMatching(const Leg& leg,
+                                           const std::vector<boost::shared_ptr<FloatingRateCouponPricer> >& p) {
+            std::vector<PricerSetter> setter;
+            for (Size i = 0; i < p.size(); ++i) {
+                setter.push_back(PricerSetter(p[i]));
+            }
+            for (Size i = 0; i < leg.size(); ++i) {
+                Size j = 0;
+                do {
+                    try {
+                        leg[i]->accept(setter[j]);
+                        j = p.size();
+                    } catch (...) {
+                        ++j;
+                    }
+                } while (j < p.size());
+            }
         }
+
+    } // anonymous namespace
+
+    void setCouponPricer(const Leg& leg, const boost::shared_ptr<FloatingRateCouponPricer>& pricer) {
+            PricerSetter setter(pricer);
+            for (Size i = 0; i < leg.size(); ++i) {
+                leg[i]->accept(setter);
+            }
     }
 
     void setCouponPricers(
@@ -335,5 +365,42 @@ namespace QuantLib {
             leg[i]->accept(setter);
         }
     }
+
+    void setCouponPricers(
+            const Leg& leg,
+            const boost::shared_ptr<FloatingRateCouponPricer>& p1,
+            const boost::shared_ptr<FloatingRateCouponPricer>& p2) {
+        std::vector<boost::shared_ptr<FloatingRateCouponPricer> > p;
+        p.push_back(p1);
+        p.push_back(p2);
+        setCouponPricersFirstMatching(leg, p);
+    }
+
+    void setCouponPricers(
+            const Leg& leg,
+            const boost::shared_ptr<FloatingRateCouponPricer>& p1,
+            const boost::shared_ptr<FloatingRateCouponPricer>& p2,
+            const boost::shared_ptr<FloatingRateCouponPricer>& p3) {
+        std::vector<boost::shared_ptr<FloatingRateCouponPricer> > p;
+        p.push_back(p1);
+        p.push_back(p2);
+        p.push_back(p3);
+        setCouponPricersFirstMatching(leg, p);
+    }
+
+    void setCouponPricers(
+            const Leg& leg,
+            const boost::shared_ptr<FloatingRateCouponPricer>& p1,
+            const boost::shared_ptr<FloatingRateCouponPricer>& p2,
+            const boost::shared_ptr<FloatingRateCouponPricer>& p3,
+            const boost::shared_ptr<FloatingRateCouponPricer>& p4) {
+        std::vector<boost::shared_ptr<FloatingRateCouponPricer> > p;
+        p.push_back(p1);
+        p.push_back(p2);
+        p.push_back(p3);
+        p.push_back(p4);
+        setCouponPricersFirstMatching(leg, p);
+    }
+
 
 }

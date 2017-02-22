@@ -48,6 +48,7 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <boost/make_shared.hpp>
 #include <iomanip>
 
 using namespace QuantLib;
@@ -237,7 +238,7 @@ namespace {
                 std::vector<boost::shared_ptr<RateHelper> >(deposits+swaps);
             fraHelpers = std::vector<boost::shared_ptr<RateHelper> >(fras);
             immFutHelpers = std::vector<boost::shared_ptr<RateHelper> >(immFuts);
-            asxFutHelpers = std::vector<boost::shared_ptr<RateHelper> >(asxFuts);
+            asxFutHelpers = std::vector<boost::shared_ptr<RateHelper> >();
             bondHelpers = std::vector<boost::shared_ptr<RateHelper> >(bonds);
             schedules = std::vector<Schedule>(bonds);
             bmaHelpers = std::vector<boost::shared_ptr<RateHelper> >(bmas);
@@ -294,9 +295,10 @@ namespace {
                 if (euribor3m->fixingDate(asxDate) <
                     Settings::instance().evaluationDate())
                     asxDate = ASX::nextDate(asxDate, false);
-                asxFutHelpers[i] = boost::shared_ptr<RateHelper>(new
-                    FuturesRateHelper(r, asxDate, euribor3m, Handle<Quote>(),
-                                      Futures::ASX));
+                if (euribor3m->fixingCalendar().isBusinessDay(asxDate))
+                    asxFutHelpers.push_back(boost::shared_ptr<RateHelper>(new
+                        FuturesRateHelper(r, asxDate, euribor3m,
+                                          Handle<Quote>(), Futures::ASX)));
             }
 
             for (Size i=0; i<bonds; i++) {
@@ -494,6 +496,8 @@ namespace {
             if (euribor3m->fixingDate(asxStart) <
                 Settings::instance().evaluationDate())
                 asxStart = ASX::nextDate(asxStart, false);
+            if (euribor3m->fixingCalendar().isHoliday(asxStart))
+                continue;
             Date end = vars.calendar.advance(asxStart, 3, Months,
                 euribor3m->businessDayConvention(),
                 euribor3m->endOfMonth());
@@ -1026,7 +1030,26 @@ void PiecewiseYieldCurveTest::testZeroCopy() {
     testCurveCopy<ZeroYield,Linear>(vars);
 }
 
+void PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate() {
+    BOOST_TEST_MESSAGE("Testing SwapRateHelper last relevant date...");
 
+    SavedSettings backup;
+    Settings::instance().evaluationDate() = Date(22, Dec, 2016);
+    Date today = Settings::instance().evaluationDate();
+
+    Handle<YieldTermStructure> flat3m(
+        boost::make_shared<FlatForward>(today, Handle<Quote>(boost::make_shared<SimpleQuote>(0.02)), Actual365Fixed()));
+    boost::shared_ptr<IborIndex> usdLibor3m = boost::make_shared<USDLibor>(3 * Months, flat3m);
+
+    // note that the calendar should be US+UK here actually, but technically it should also work with
+    // the US calendar only
+    boost::shared_ptr<RateHelper> helper = boost::make_shared<SwapRateHelper>(
+        0.02, 50 * Years, UnitedStates(), Semiannual, ModifiedFollowing, Thirty360(), usdLibor3m);
+
+    PiecewiseYieldCurve<Discount, LogLinear> curve(today, std::vector<boost::shared_ptr<RateHelper> >(1, helper),
+                                                   Actual365Fixed());
+    BOOST_CHECK_NO_THROW(curve.discount(1.0));
+}
 
 
 test_suite* PiecewiseYieldCurveTest::suite() {
@@ -1076,5 +1099,6 @@ test_suite* PiecewiseYieldCurveTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testForwardCopy));
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testZeroCopy));
 
+    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate));
     return suite;
 }

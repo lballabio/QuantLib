@@ -35,7 +35,7 @@ namespace QuantLib {
                                Frequency freq)
     : r_(r), dc_(dc), comp_(comp), freqMakesSense_(false) {
 
-        if (comp_==Compounded || comp_==SimpleThenCompounded) {
+        if (comp_==Compounded || comp_==SimpleThenCompounded || comp_==CompoundedThenSimple) {
             freqMakesSense_ = true;
             QL_REQUIRE(freq!=Once && freq!=NoFrequency,
                        "frequency not allowed for this interest rate");
@@ -56,6 +56,11 @@ namespace QuantLib {
             return std::exp(r_*t);
           case SimpleThenCompounded:
             if (t<=1.0/Real(freq_))
+                return 1.0 + r_*t;
+            else
+                return std::pow(1.0+r_/freq_, freq_*t);
+          case CompoundedThenSimple:
+            if (t>1.0/Real(freq_))
                 return 1.0 + r_*t;
             else
                 return std::pow(1.0+r_/freq_, freq_*t);
@@ -90,6 +95,12 @@ namespace QuantLib {
                 break;
               case SimpleThenCompounded:
                 if (t<=1.0/Real(freq))
+                    r = (compound - 1.0)/t;
+                else
+                    r = (std::pow(compound, 1.0/(Real(freq)*t))-1.0)*Real(freq);
+                break;
+              case CompoundedThenSimple:
+                if (t>1.0/Real(freq))
                     r = (compound - 1.0)/t;
                 else
                     r = (std::pow(compound, 1.0/(Real(freq)*t))-1.0)*Real(freq);
@@ -135,6 +146,18 @@ namespace QuantLib {
                 out << "simple compounding up to "
                     << Integer(12/ir.frequency()) << " months, then "
                     << ir.frequency() << " compounding";
+            }
+            break;
+          case CompoundedThenSimple:
+            switch (ir.frequency()) {
+              case NoFrequency:
+              case Once:
+                QL_FAIL(ir.frequency() << " frequency not allowed "
+                        "for this interest rate");
+              default:
+                out << "compounding up to "
+                    << Integer(12/ir.frequency()) << " months, then "
+                    << ir.frequency() << " simple compounding";
             }
             break;
           default:

@@ -77,8 +77,6 @@ class SimpleQuote;
             const bool logging = false,
             const std::vector<Date>& mandatoryDates = std::vector<Date>());
 
-        void update();
-
         boost::shared_ptr<HestonProcess> hestonProcess() const;
         boost::shared_ptr<LocalVolTermStructure> localVol() const;
         boost::shared_ptr<LocalVolTermStructure> leverageFunction() const;

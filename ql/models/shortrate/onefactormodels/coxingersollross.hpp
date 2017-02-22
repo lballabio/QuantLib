@@ -26,6 +26,7 @@
 
 #include <ql/models/shortrate/onefactormodel.hpp>
 #include <ql/stochasticprocess.hpp>
+#include <ql/processes/eulerdiscretization.hpp>
 
 namespace QuantLib {
 
@@ -45,7 +46,8 @@ namespace QuantLib {
         CoxIngersollRoss(Rate r0 = 0.05,
                          Real theta = 0.1,
                          Real k = 0.1,
-                         Real sigma = 0.1);
+                         Real sigma = 0.1,
+                         bool withFellerConstraint = true);
 
         virtual Real discountBondOption(Option::Type type,
                                         Real strike,
@@ -79,7 +81,10 @@ namespace QuantLib {
     class CoxIngersollRoss::HelperProcess : public StochasticProcess1D {
       public:
         HelperProcess(Real theta, Real k, Real sigma, Real y0)
-        : y0_(y0), theta_(theta), k_(k), sigma_(sigma) {}
+        : y0_(y0), theta_(theta), k_(k), sigma_(sigma) {
+            discretization_ =
+                boost::shared_ptr<discretization>(new EulerDiscretization);
+        }
 
         Real x0() const {
             return y0_;

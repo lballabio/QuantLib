@@ -34,13 +34,19 @@ namespace QuantLib {
         Real correlation,
         Size xGrid, Size yGrid,
         Size tGrid, Size dampingSteps,
-        const FdmSchemeDesc& schemeDesc)
+        const FdmSchemeDesc& schemeDesc,
+        bool localVol,
+        Real illegalLocalVolOverwrite)
     : p1_(p1),
       p2_(p2),
       correlation_(correlation),
       xGrid_(xGrid), yGrid_(yGrid), tGrid_(tGrid),
       dampingSteps_(dampingSteps),
-      schemeDesc_(schemeDesc) {
+      schemeDesc_(schemeDesc),
+      localVol_(localVol),
+      illegalLocalVolOverwrite_(illegalLocalVolOverwrite) {
+        registerWith(p1);
+        registerWith(p2);
     }
 
     void Fd2dBlackScholesVanillaEngine::calculate() const {
@@ -89,12 +95,16 @@ namespace QuantLib {
                 new Fdm2dBlackScholesSolver(
                              Handle<GeneralizedBlackScholesProcess>(p1_),
                              Handle<GeneralizedBlackScholesProcess>(p2_),
-                             correlation_, solverDesc, schemeDesc_));
+                             correlation_, solverDesc, schemeDesc_,
+                             localVol_, illegalLocalVolOverwrite_));
 
         const Real x = p1_->x0();
         const Real y = p2_->x0();
 
         results_.value = solver->valueAt(x, y);
+        results_.delta = solver->deltaXat(x, y) + solver->deltaYat(x, y);
+        results_.gamma = solver->gammaXat(x, y) + solver->gammaYat(x, y)
+             + 2*solver->gammaXYat(x, y);
         results_.theta = solver->thetaAt(x, y);
     }
 }

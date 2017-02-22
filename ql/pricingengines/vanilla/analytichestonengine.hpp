@@ -106,17 +106,17 @@ namespace QuantLib {
         Size numberOfEvaluations() const;
 
         static void doCalculation(Real riskFreeDiscount,
-                                             Real dividendDiscount,
-                                             Real spotPrice,
-                                             Real strikePrice,
-                                             Real term,
-                                             Real kappa, Real theta, Real sigma, Real v0, Real rho,
-                                             const TypePayoff& type,
-                                             const Integration& integration,
-                                             const ComplexLogFormula cpxLog,
-                                             const AnalyticHestonEngine* const enginePtr,
-                                             Real& value,
-                                             Size& evaluations);
+                                  Real dividendDiscount,
+                                  Real spotPrice,
+                                  Real strikePrice,
+                                  Real term,
+                                  Real kappa, Real theta, Real sigma, Real v0, Real rho,
+                                  const TypePayoff& type,
+                                  const Integration& integration,
+                                  const ComplexLogFormula cpxLog,
+                                  const AnalyticHestonEngine* const enginePtr,
+                                  Real& value,
+                                  Size& evaluations);
 
       protected:
         // call back for extended stochastic volatility
@@ -156,6 +156,8 @@ namespace QuantLib {
                                    Size maxEvaluations = 1000);
         static Integration trapezoid(Real absTolerance,
                                      Size maxEvaluations = 1000);
+        static Integration discreteSimpson(Size evaluation = 1000);
+        static Integration discreteTrapezoid(Size evaluation = 1000);
 
         Real calculate(Real c_inf,
                        const boost::function1<Real, Real>& f) const;
@@ -166,6 +168,7 @@ namespace QuantLib {
       private:
         enum Algorithm
             { GaussLobatto, GaussKronrod, Simpson, Trapezoid,
+              DiscreteTrapezoid, DiscreteSimpson,
               GaussLaguerre, GaussLegendre,
               GaussChebyshev, GaussChebyshev2nd };
 

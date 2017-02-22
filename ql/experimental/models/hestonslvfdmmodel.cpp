@@ -281,10 +281,6 @@ namespace QuantLib {
         registerWith(hestonModel_);
     }
 
-    void HestonSLVFDMModel::update() {
-        notifyObservers();
-    }
-
     boost::shared_ptr<HestonProcess> HestonSLVFDMModel::hestonProcess() const {
         return hestonModel_->process();
     }
