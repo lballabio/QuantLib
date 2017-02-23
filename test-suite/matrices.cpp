@@ -607,7 +607,7 @@ namespace {
     class MatrixMult :
         public std::unary_function<const Array&, Disposable<Array> > {
       public:
-        MatrixMult(const Matrix& m) : m_(m) {}
+        explicit MatrixMult(const Matrix& m) : m_(m) {}
         Disposable<Array> operator()(const Array& x) const {
             Array retVal = m_*x;
             return retVal;
