@@ -504,6 +504,7 @@ AC_CONFIG_FILES([
     Examples/FRA/Makefile
     Examples/LatentModel/Makefile
     Examples/Gaussian1dModels/Makefile
+    Examples/GlobalOptimizer/Makefile
     Examples/MarketModels/Makefile
     Examples/MultidimIntegral/Makefile
     Examples/Replication/Makefile

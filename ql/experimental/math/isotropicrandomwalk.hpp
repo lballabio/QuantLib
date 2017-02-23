@@ -85,6 +85,11 @@ namespace QuantLib {
             dim_ = dim;
             weights_ = weights;
         }
+        /*!
+        The isotropic random walk will not adjust its draw to be within the lower and upper bounds,
+        but if the limits are provided, they are used to rescale the sphere so as to make it to an
+        ellipsoid, with different radius in different dimensions.
+        */
         inline void setDimension(Size dim,
             const Array& lowerBound, const Array& upperBound) {
             QL_REQUIRE(dim == lowerBound.size(),

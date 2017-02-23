@@ -14,6 +14,7 @@ SUBDIRS = \
     FittedBondCurve \
     FRA \
     Gaussian1dModels \
+    GlobalOptimizer \
     LatentModel \
     MarketModels \
     MultidimIntegral \
