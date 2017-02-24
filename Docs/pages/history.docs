@@ -18,7 +18,14 @@
 
 /*! \page history Version history
 
-    <strong>Release 1.9.1 - January 2017</strong>
+    <strong>Release 1.9.2 - February 2017</strong>
+
+    %QuantLib 1.9.2 is a bug-fix release for version 1.9.1.
+
+    - Prevented errors in yield-curve bootstrapping tests due to an
+      incorrect test setup (thanks to Peter Caspers for the heads-up).
+
+    <strong>Release 1.9.1 - January 5th, 2017</strong>
 
     %QuantLib 1.9.1 is a bug-fix release for version 1.9.
 

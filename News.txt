@@ -1,15 +1,9 @@
 
-Changes for QuantLib 1.9.1:
+Changes for QuantLib 1.9.2:
 ===========================
 
-QuantLib 1.9.1 is a bug-fix release for QuantLib 1.9.
+QuantLib 1.9.2 is a bug-fix release for QuantLib 1.9.1.
 
-- Prevented a linking error when multiple compilation units included
-  the global ql/quantlib.hpp header (thanks to Dirk Eddelbuettel).
-
-- Prevented a compilation error with gcc 4.4 on RedHat (thanks to
-  GitHub user aloupos for the heads-up).
-
-- Prevented a compilation error with the parallel unit runner and the
-  recently released Boost 1.63.0.
+- Prevented errors in yield-curve bootstrapping tests due to an
+  incorrect test setup (thanks to Peter Caspers for the heads-up).
 
