@@ -1743,8 +1743,8 @@ void HestonModelTest::testCosHestonCumulants() {
     Settings::instance().evaluationDate() = settlementDate;
 
     const DayCounter dayCounter = Actual365Fixed();
-    const Handle<YieldTermStructure> riskFreeTS(flatRate(0.0, dayCounter));
-    const Handle<YieldTermStructure> dividendTS(flatRate(0.0, dayCounter));
+    const Handle<YieldTermStructure> riskFreeTS(flatRate(0.15, dayCounter));
+    const Handle<YieldTermStructure> dividendTS(flatRate(0.075, dayCounter));
 
     const Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
 
@@ -1778,7 +1778,8 @@ void HestonModelTest::testCosHestonCumulants() {
         if (std::fabs(nc1 - c1) > tol) {
             BOOST_ERROR(" failed to reproduce first cumulant"
                     << "\n    expected:   " << nc1
-                    << "\n    calculated: " << c1);
+                    << "\n    calculated: " << c1
+                    << "\n    difference: " << std::fabs(nc1 - c1));
         }
 
         const Real nc2 = NumericalDifferentiation(
@@ -1808,6 +1809,20 @@ void HestonModelTest::testCosHestonCumulants() {
                     << "\n    calculated: " << c3
                     << "\n    difference: " << std::fabs(nc3 - c3));
         }
+
+        const Real nc4 = NumericalDifferentiation(
+            boost::function<Real(Real)>(
+                LogCharacteristicFunction(4, t, cosEngine)),
+            4, 5e-2, 9, central)(0.0);
+
+        const Real c4 = cosEngine->c4(t);
+
+        if (std::fabs(nc4 - c4) > 10*tol) {
+            BOOST_ERROR(" failed to reproduce 4th cumulant"
+                    << "\n    expected:   " << nc4
+                    << "\n    calculated: " << c4
+                    << "\n    difference: " << std::fabs(nc4 - c4));
+        }
     }
 }
 
@@ -1821,8 +1836,8 @@ void HestonModelTest::testCosHestonEngine() {
     Settings::instance().evaluationDate() = settlementDate;
 
     const DayCounter dayCounter = Actual365Fixed();
-    const Handle<YieldTermStructure> riskFreeTS(flatRate(0.05, dayCounter));
-    const Handle<YieldTermStructure> dividendTS(flatRate(0.075, dayCounter));
+    const Handle<YieldTermStructure> riskFreeTS(flatRate(0.15, dayCounter));
+    const Handle<YieldTermStructure> dividendTS(flatRate(0.07, dayCounter));
 
     const Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
 
@@ -1839,13 +1854,24 @@ void HestonModelTest::testCosHestonEngine() {
                 s0, v0, kappa, theta, sigma, rho));
 
     const boost::shared_ptr<StrikedTypePayoff> payoff =
-        boost::make_shared<PlainVanillaPayoff>(Option::Put, s0->value());
+        boost::make_shared<PlainVanillaPayoff>(Option::Put, s0->value()+10);
 
     const Date maturityDate = settlementDate + Period(1, Years);
     const boost::shared_ptr<Exercise> exercise =
         boost::make_shared<EuropeanExercise>(maturityDate);
 
     VanillaOption option(payoff, exercise);
+
+    const boost::shared_ptr<PricingEngine> cosEngine(
+        boost::make_shared<COSHestonEngine>(model));
+    const boost::shared_ptr<PricingEngine> analyticEngine(
+        boost::make_shared<AnalyticHestonEngine>(model));
+
+    option.setPricingEngine(cosEngine);
+    std::cout << std::setprecision(16) << option.NPV() << std::endl;
+
+    option.setPricingEngine(analyticEngine);
+    std::cout << std::setprecision(16) << option.NPV() << std::endl;
 }
 
 test_suite* HestonModelTest::suite() {
@@ -1876,8 +1902,8 @@ test_suite* HestonModelTest::suite() {
 //                    &HestonModelTest::testExpansionOnFordeReference));
 //    suite->add(QUANTLIB_TEST_CASE(
 //                    &HestonModelTest::testAllIntegrationMethods));
-    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testCosHestonCumulants));
-//    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testCosHestonEngine));
+//    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testCosHestonCumulants));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testCosHestonEngine));
     return suite;
 }
 

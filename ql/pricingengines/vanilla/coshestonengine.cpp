@@ -49,6 +49,54 @@ namespace QuantLib {
 
     void COSHestonEngine::calculate() const {
 
+        // this is a european option pricer
+        QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
+                   "not an European option");
+
+        // plain vanilla
+        const boost::shared_ptr<PlainVanillaPayoff> payoff =
+            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        QL_REQUIRE(payoff, "non plain vanilla payoff given");
+
+        const boost::shared_ptr<HestonProcess> process = model_->process();
+
+        const Date maturityDate = arguments_.exercise->lastDate();
+        const Time maturity = process->time(maturityDate);
+
+        const Real cum1 = c1(maturity);
+        const Real cum2 = c2(maturity);
+
+        const Real L = 16.0;
+        const Real a = cum1 - L*std::sqrt(std::fabs(cum2));
+        const Real b = cum1 + L*std::sqrt(std::fabs(cum2));
+        const Real d = 1.0/(b-a);
+
+        const Real spot = process->s0()->value();
+        QL_REQUIRE(spot > 0.0, "negative or null underlying given");
+
+        const Real k = payoff->strike();
+        const Real x = std::log(spot/k);
+
+        std::cout << a << " " << b << " " << x  << std::endl;
+
+        const DiscountFactor df
+            = process->riskFreeRate()->discount(maturityDate);
+
+        Real s = characteristicFct(0, maturity).real()*(std::exp(a)-1-a)*d;
+
+        const Size N = 200;
+        for (Size n=1; n < N; ++n) {
+            const Real U_n = 2.0*d*( 1.0/(1.0 + square<Real>()(n*M_PI*d))
+                *(  std::exp(a) + n*M_PI*d*std::sin(n*M_PI*a*d)
+                  - std::cos(n*M_PI*a*d) )
+                - 1.0/(n*M_PI*d)*std::sin(n*M_PI*a*d));
+
+            s += U_n*(characteristicFct(n*M_PI*d, maturity)
+                     *std::exp(std::complex<Real>(0, n*M_PI*d*(x-a)))).real();
+        }
+
+        results_.value = k*df*s;
+
     }
 
     Real COSHestonEngine::muT(Time t) const {
@@ -79,13 +127,13 @@ namespace QuantLib {
    /*
     Mathematica program to calculate the n-th cumulant
 
-    d[z_] := Sqrt[(kappa_ -i*rho_*sigma_*z)^2 + (z*z+i*z)*sigma_*sigma_]
+    d[z_] := Sqrt[(kappa -i*rho*sigma*z)^2 + (z*z+i*z)*sigma^2]
 
-    g[z_] := (kappa_ -i*rho_*sigma_*z - d[z])/(kappa_ -i*rho_*sigma_*z + d[z])
+    g[z_] := (kappa -i*rho*sigma*z - d[z])/(kappa -i*rho*sigma*z + d[z])
 
-    phi[z_] := Exp[ i*z*muT + v0_/(sigma_^2)*(1-Exp[-d[z]*t])/(1-g[z]*Exp[-d[z]*t])
-        *(kappa_ -i*rho_*sigma_*z - d[z]) + kappa_*theta_/sigma_^2
-        *((kappa_ -i*rho_*sigma_*z-d[z])*t
+    phi[z_] := Exp[ i*z*muT + v0/(sigma^2)*(1-Exp[-d[z]*t])/(1-g[z]*Exp[-d[z]*t])
+        *(kappa -i*rho*sigma*z - d[z]) + kappa*theta/sigma^2
+        *((kappa -i*rho*sigma*z-d[z])*t
           -2*Log[(1-g[z]*Exp[-d[z]*t])/(1-g[z]) ]) ]
 
     e[z_] := Log[phi[-i*z]]
@@ -98,8 +146,8 @@ namespace QuantLib {
                            "Power" -> "std::pow"}]}, aa], {0, Infinity}]] &;
 
     c[n_] := cpp@CForm[FullSimplify[Derivative[n][e][0],
-         kappa_ > 0 && theta_ > 0 && v0_ > 0 && sigma_ > 0 &&
-         rho_ [Element] {-1, 1} && i^2 == -1]]
+         kappa > 0 && theta > 0 && v0 > 0 && sigma > 0 &&
+         rho [Element] {-1, 1} && i^2 == -1]]
     */
 
    Real COSHestonEngine::c1(Time t) const {
@@ -151,6 +199,67 @@ namespace QuantLib {
            + 24*rho2 - 16*rho_*sigma_*t + sigma2*t*t)*theta_ - (8*rho2 -
            8*rho_*sigma_*t + sigma2*t*t)*v0_))))/(16.*std::exp(3*kappa_*t)*
            kappa_*kappa4);
+   }
+
+   Real COSHestonEngine::c4(Time t) const {
+       const Real sigma2 = sigma_*sigma_;
+       const Real sigma3 = sigma2*sigma_;
+       const Real sigma4 = sigma2*sigma2;
+       const Real sigma5 = sigma2*sigma3;
+       const Real kappa2 = kappa_*kappa_;
+       const Real kappa3 = kappa2*kappa_;
+       const Real kappa4 = kappa2*kappa2;
+       const Real kappa5 = kappa2*kappa3;
+       const Real kappa6 = kappa3*kappa3;
+       const Real kappa7 = kappa4*kappa3;
+       const Real rho2   = rho_*rho_;
+       const Real rho3   = rho2*rho_;
+       const Time t2     = t*t;
+       const Time t3     = t2*t;
+
+       return
+           (sigma2*(3*sigma4*(theta_ - 4*v0_) +
+           3*std::exp(4*kappa_*t)*((-93*sigma4 +
+           64*kappa5*(t + 4*rho2*t) +
+           4*kappa_*sigma3*(176*rho_ + 5*sigma_*t) -
+           32*kappa2*sigma2*(11 + 50*rho2 +
+           5*rho_*sigma_*t) + 32*kappa3*sigma_*(3*sigma_*t + 4*rho_*(10 +
+           8*rho2 + 3*rho_*sigma_*t)) - 32*kappa4*(5 +
+           4*rho_*(6*rho_ + (3 + 2*rho2)*sigma_*t)))*theta_ +
+           4*(4*kappa2 - 4*kappa_*rho_*sigma_ +
+           sigma2)*(4*kappa2*(1 + 4*rho2) -
+           20*kappa_*rho_*sigma_ + 5*sigma2)*v0_) +
+           24*std::exp(kappa_*t)*sigma2*(-2*kappa2*(-1 +
+           rho_*sigma_*t)*(theta_ - 3*v0_) + sigma2*(theta_ - 2*v0_) +
+           kappa_*sigma_*(-4*rho_*theta_ + sigma_*t*theta_ + 10*rho_*v0_ -
+           3*sigma_*t*v0_)) + 12*std::exp(2*kappa_*t)*(sigma4*(7*theta_ -
+           4*v0_) + 8*kappa4*(1 + 2*rho_*sigma_*t*(-2 +
+           rho_*sigma_*t))*(theta_ - 2*v0_) +
+           2*kappa_*sigma3*(-24*rho_*theta_ + 5*sigma_*t*theta_ +
+           20*rho_*v0_ - 6*sigma_*t*v0_) + 4*kappa2*sigma2*((6
+           + 20*rho2 - 14*rho_*sigma_*t +
+           sigma2*t2)*theta_ - 2*(3 + 12*rho2 -
+           10*rho_*sigma_*t + sigma2*t2)*v0_) +
+           8*kappa3*sigma_*((3*sigma_*t + 2*rho_*(-4 + sigma_*t*(4*rho_ -
+           sigma_*t)))*theta_ + 2*(-3*sigma_*t + 2*rho_*(3 + sigma_*t*(-3*rho_ +
+           sigma_*t)))*v0_)) -
+           8*std::exp(3*kappa_*t)*(16*kappa6*rho2*t2*(-3 + rho_*sigma_*t)*(theta_ - v0_) - 3*sigma4*(7*theta_ +
+           2*v0_) + 2*kappa3*sigma_*((192*(rho_ + rho3) -
+           6*(9 + 40*rho2)*sigma_*t + 42*rho_*sigma2*t2 -
+           sigma3*t3)*theta_ + (-48*rho3 + 18*(1
+           + 4*rho2)*sigma_*t - 24*rho_*sigma2*t2
+           + sigma3*t3)*v0_) + 12*kappa4*((-4 -
+           24*rho2 + 8*rho_*(4 + 3*rho2)*sigma_*t - (3 +
+           14*rho2)*sigma2*t2 + rho_*sigma3*t3)*theta_ + (8*rho2 -
+           8*rho_*(2 + rho2)*sigma_*t + (3 +
+           8*rho2)*sigma2*t2 - rho_*sigma3*t3)*v0_) -
+           6*kappa2*sigma2*((15 + 80*rho2 -
+           35*rho_*sigma_*t + 2*sigma2*t2)*theta_ + (3 +
+           sigma_*t*(7*rho_ - sigma_*t))*v0_) + 24*kappa5*t*((-2 +
+           rho_*(4*sigma_*t + rho_*(-8 + sigma_*t*(4*rho_ - sigma_*t))))*theta_ + (2 +
+           rho_*(-4*sigma_*t + rho_*(4 + sigma_*t*(-2*rho_ + sigma_*t))))*v0_) +
+           3*kappa_*sigma3*(sigma_*t*(-9*theta_ + v0_) + 10*rho_*(6*theta_
+           + v0_)))))/(64.*std::exp(4*kappa_*t)*kappa7);
    }
 }
 

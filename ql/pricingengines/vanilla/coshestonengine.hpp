@@ -61,6 +61,7 @@ namespace QuantLib {
         Real c1(Time t) const;
         Real c2(Time t) const;
         Real c3(Time t) const;
+        Real c4(Time t) const;
 
       private:
         Real muT(Time t) const;
