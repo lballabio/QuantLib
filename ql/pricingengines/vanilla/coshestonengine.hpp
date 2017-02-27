@@ -40,6 +40,10 @@ namespace QuantLib {
         based oN Fourier-Cosine Series Expansions,
         http://ta.twi.tudelft.nl/mf/users/oosterle/oosterlee/COS.pdf
 
+        Fabien Le Floc'h: Fourier Integration and Stochastic Volatility
+        Calibration,
+        https://papers.ssrn.com/sol3/papers2.cfm?abstract_id=2362968
+
         \ingroup vanillaengines
 
         \test the correctness of the returned value is tested by
