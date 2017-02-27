@@ -1918,11 +1918,11 @@ void HestonModelTest::testCosHestonEngine() {
 test_suite* HestonModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Heston model tests");
 
-//    // FLOATING_POINT_EXCEPTION
+    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testBlackCalibration));
-//    // FLOATING_POINT_EXCEPTION
+    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testDAXCalibration));
-//    // FLOATING_POINT_EXCEPTION
+    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAnalyticVsBlack));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAnalyticVsCached));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testKahlJaeckelCase));
