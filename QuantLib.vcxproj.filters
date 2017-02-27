@@ -6701,5 +6701,8 @@
     <ClCompile Include="ql\experimental\math\gaussiannoncentralchisquaredpolynomial.cpp">
       <Filter>experimental\math</Filter>
     </ClCompile>
+    <ClCompile Include="ql\time\daycounters\actual365fixed.cpp">
+      <Filter>time\daycounters</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
