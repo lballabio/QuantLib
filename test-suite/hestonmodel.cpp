@@ -266,30 +266,39 @@ void HestonModelTest::testDAXCalibration() {
     const Real sigma=0.5;
     const Real rho=-0.5;
 
-    boost::shared_ptr<HestonProcess> process(new HestonProcess(
-              riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho));
+    const boost::shared_ptr<HestonProcess> process(
+        boost::make_shared<HestonProcess>(
+            riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho));
 
-    boost::shared_ptr<HestonModel> model(new HestonModel(process));
+    const boost::shared_ptr<HestonModel> model(
+        boost::make_shared<HestonModel>(process));
 
-    boost::shared_ptr<PricingEngine> engine(
-                                         new AnalyticHestonEngine(model, 64));
+    const boost::shared_ptr<PricingEngine> engines[] = {
+        boost::make_shared<AnalyticHestonEngine>(model, 64),
+        boost::make_shared<COSHestonEngine>(model, 12, 75)
+    };
 
-    for (Size i = 0; i < options.size(); ++i)
-        options[i]->setPricingEngine(engine);
+    const Array params = model->params();
+    for (Size j=0; j < LENGTH(engines); ++j) {
+        model->setParams(params);
+        for (Size i = 0; i < options.size(); ++i)
+            options[i]->setPricingEngine(engines[j]);
 
-    LevenbergMarquardt om(1e-8, 1e-8, 1e-8);
-    model->calibrate(options, om, EndCriteria(400, 40, 1.0e-8, 1.0e-8, 1.0e-8));
+        LevenbergMarquardt om(1e-8, 1e-8, 1e-8);
+        model->calibrate(options, om,
+                         EndCriteria(400, 40, 1.0e-8, 1.0e-8, 1.0e-8));
 
-    Real sse = 0;
-    for (Size i = 0; i < 13*8; ++i) {
-        const Real diff = options[i]->calibrationError()*100.0;
-        sse += diff*diff;
-    }
-    Real expected = 177.2; //see article by A. Sepp.
-    if (std::fabs(sse - expected) > 1.0) {
-        BOOST_FAIL("Failed to reproduce calibration error"
-                   << "\n    calculated: " << sse
-                   << "\n    expected:   " << expected);
+        Real sse = 0;
+        for (Size i = 0; i < 13*8; ++i) {
+            const Real diff = options[i]->calibrationError()*100.0;
+            sse += diff*diff;
+        }
+        Real expected = 177.2; //see article by A. Sepp.
+        if (std::fabs(sse - expected) > 1.0) {
+            BOOST_FAIL("Failed to reproduce calibration error"
+                       << "\n    calculated: " << sse
+                       << "\n    expected:   " << expected);
+        }
     }
 }
 
@@ -827,6 +836,19 @@ void HestonModelTest::testKahlJaeckelCase() {
                    << "\n    expected:   " << expected
                    << "\n    error:      " << QL_SCIENTIFIC << error);
     }
+
+    option.setPricingEngine(
+        boost::make_shared<COSHestonEngine>(hestonModel, 16, 400));
+    calculated = option.NPV();
+    error = std::fabs(calculated - expected);
+
+    if (error > 0.00002) {
+        BOOST_FAIL("failed to reproduce cached price with "
+                   "Cosine engine"
+                   << "\n    calculated: " << calculated
+                   << "\n    expected:   " << expected
+                   << "\n    error:      " << QL_SCIENTIFIC << error);
+    }
 }
 
 namespace {
@@ -1202,10 +1224,13 @@ void HestonModelTest::testAlanLewisReferencePrices() {
     const boost::shared_ptr<PricingEngine> gaussLobattoEngine(
         new AnalyticHestonEngine(model, QL_EPSILON, 100000u));
 
+    const boost::shared_ptr<PricingEngine> cosEngine(
+        new COSHestonEngine(model, 20, 400));
+
     const Real strikes[] = { 80, 90, 100, 110, 120 };
     const Option::Type types[] = { Option::Put, Option::Call };
     const boost::shared_ptr<PricingEngine> engines[]
-        = { laguerreEngine, gaussLobattoEngine };
+        = { laguerreEngine, gaussLobattoEngine, cosEngine };
 
     const Real expectedResults[][2] = {
         { 7.958878113256768285213263077598987193482161301733,
@@ -1843,9 +1868,9 @@ void HestonModelTest::testCosHestonEngine() {
 
     const Real v0    =  0.1;
     const Real rho   = -0.75;
-    const Real sigma =  0.4;
+    const Real sigma =  1.8;
     const Real kappa =  4.0;
-    const Real theta =  0.05;
+    const Real theta =  0.22;
 
     const boost::shared_ptr<HestonModel> model =
         boost::make_shared<HestonModel>(
@@ -1853,56 +1878,72 @@ void HestonModelTest::testCosHestonEngine() {
                 riskFreeTS, dividendTS,
                 s0, v0, kappa, theta, sigma, rho));
 
-    const boost::shared_ptr<StrikedTypePayoff> payoff =
-        boost::make_shared<PlainVanillaPayoff>(Option::Put, s0->value()+10);
-
     const Date maturityDate = settlementDate + Period(1, Years);
+
     const boost::shared_ptr<Exercise> exercise =
         boost::make_shared<EuropeanExercise>(maturityDate);
 
-    VanillaOption option(payoff, exercise);
-
     const boost::shared_ptr<PricingEngine> cosEngine(
-        boost::make_shared<COSHestonEngine>(model));
-    const boost::shared_ptr<PricingEngine> analyticEngine(
-        boost::make_shared<AnalyticHestonEngine>(model));
+        boost::make_shared<COSHestonEngine>(model, 25, 600));
 
-    option.setPricingEngine(cosEngine);
-    std::cout << std::setprecision(16) << option.NPV() << std::endl;
+    const boost::shared_ptr<StrikedTypePayoff> payoffs[] = {
+        boost::make_shared<PlainVanillaPayoff>(Option::Call, s0->value()+20),
+        boost::make_shared<PlainVanillaPayoff>(Option::Call, s0->value()+150),
+        boost::make_shared<PlainVanillaPayoff>(Option::Put, s0->value()-20),
+        boost::make_shared<PlainVanillaPayoff>(Option::Put, s0->value()-90)
+    };
 
-    option.setPricingEngine(analyticEngine);
-    std::cout << std::setprecision(16) << option.NPV() << std::endl;
+    const Real expected[] = {
+        9.364410588426075, 0.01036797658132471,
+        5.319092971836708, 0.01032681906278383 };
+
+    const Real tol = 1e-10;
+
+    for (Size i=0; i < LENGTH(payoffs); ++i) {
+        VanillaOption option(payoffs[i], exercise);
+
+        option.setPricingEngine(cosEngine);
+        const Real calculated = option.NPV();
+        const Real error = std::fabs(expected[i] - calculated);
+
+        if (error > tol) {
+            BOOST_ERROR(" failed to reproduce prices with COSHestonEngine"
+                    << "\n    expected:   " << expected[i]
+                    << "\n    calculated: " << calculated
+                    << "\n    difference: " << error);
+        }
+    }
 }
 
 test_suite* HestonModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Heston model tests");
 
 //    // FLOATING_POINT_EXCEPTION
-//    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testBlackCalibration));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testBlackCalibration));
 //    // FLOATING_POINT_EXCEPTION
-//    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testDAXCalibration));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testDAXCalibration));
 //    // FLOATING_POINT_EXCEPTION
-//    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAnalyticVsBlack));
-//    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAnalyticVsCached));
-//    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testKahlJaeckelCase));
-//    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testDifferentIntegrals));
-//    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdBarrierVsCached));
-//    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdVanillaVsCached));
-//    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testMultipleStrikesEngine));
-//    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testMcVsCached));
-//    suite->add(QUANTLIB_TEST_CASE(
-//                    &HestonModelTest::testAnalyticPiecewiseTimeDependent));
-//    suite->add(QUANTLIB_TEST_CASE(
-//                    &HestonModelTest::testDAXCalibrationOfTimeDependentModel));
-//    suite->add(QUANTLIB_TEST_CASE(
-//                    &HestonModelTest::testAlanLewisReferencePrices));
-//    suite->add(QUANTLIB_TEST_CASE(
-//                    &HestonModelTest::testExpansionOnAlanLewisReference));
-//    suite->add(QUANTLIB_TEST_CASE(
-//                    &HestonModelTest::testExpansionOnFordeReference));
-//    suite->add(QUANTLIB_TEST_CASE(
-//                    &HestonModelTest::testAllIntegrationMethods));
-//    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testCosHestonCumulants));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAnalyticVsBlack));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAnalyticVsCached));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testKahlJaeckelCase));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testDifferentIntegrals));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdBarrierVsCached));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdVanillaVsCached));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testMultipleStrikesEngine));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testMcVsCached));
+    suite->add(QUANTLIB_TEST_CASE(
+                    &HestonModelTest::testAnalyticPiecewiseTimeDependent));
+    suite->add(QUANTLIB_TEST_CASE(
+                    &HestonModelTest::testDAXCalibrationOfTimeDependentModel));
+    suite->add(QUANTLIB_TEST_CASE(
+                    &HestonModelTest::testAlanLewisReferencePrices));
+    suite->add(QUANTLIB_TEST_CASE(
+                    &HestonModelTest::testExpansionOnAlanLewisReference));
+    suite->add(QUANTLIB_TEST_CASE(
+                    &HestonModelTest::testExpansionOnFordeReference));
+    suite->add(QUANTLIB_TEST_CASE(
+                    &HestonModelTest::testAllIntegrationMethods));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testCosHestonCumulants));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testCosHestonEngine));
     return suite;
 }

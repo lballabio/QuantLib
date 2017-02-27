@@ -23,10 +23,11 @@
 namespace QuantLib {
 
     COSHestonEngine::COSHestonEngine(
-       const boost::shared_ptr<HestonModel>& model)
+       const boost::shared_ptr<HestonModel>& model, Real L, Size N)
     : GenericModelEngine<HestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
+    L_(L), N_(N),
     kappa_(model_->kappa()),
     theta_(model_->theta()),
     sigma_(model_->sigma()),
@@ -64,11 +65,14 @@ namespace QuantLib {
         const Time maturity = process->time(maturityDate);
 
         const Real cum1 = c1(maturity);
-        const Real cum2 = c2(maturity);
+        const Real w = std::sqrt(std::fabs(c2(maturity))
+            // the 4th order doesn't necessarily improve the precision
+            // + std::sqrt(std::fabs(c4(maturity)))
+        );
 
-        const Real L = 16.0;
-        const Real a = cum1 - L*std::sqrt(std::fabs(cum2));
-        const Real b = cum1 + L*std::sqrt(std::fabs(cum2));
+        const Real a = cum1 - L_*w;
+        const Real b = cum1 + L_*w;
+
         const Real d = 1.0/(b-a);
 
         const Real spot = process->s0()->value();
@@ -77,15 +81,12 @@ namespace QuantLib {
         const Real k = payoff->strike();
         const Real x = std::log(spot/k);
 
-        std::cout << a << " " << b << " " << x  << std::endl;
-
         const DiscountFactor df
             = process->riskFreeRate()->discount(maturityDate);
 
         Real s = characteristicFct(0, maturity).real()*(std::exp(a)-1-a)*d;
 
-        const Size N = 200;
-        for (Size n=1; n < N; ++n) {
+        for (Size n=1; n < N_; ++n) {
             const Real U_n = 2.0*d*( 1.0/(1.0 + square<Real>()(n*M_PI*d))
                 *(  std::exp(a) + n*M_PI*d*std::sin(n*M_PI*a*d)
                   - std::cos(n*M_PI*a*d) )
@@ -95,8 +96,13 @@ namespace QuantLib {
                      *std::exp(std::complex<Real>(0, n*M_PI*d*(x-a)))).real();
         }
 
-        results_.value = k*df*s;
-
+        if (payoff->optionType() == Option::Put)
+            results_.value = k*df*s;
+        else {
+            const DiscountFactor qf
+                = process->dividendYield()->discount(maturityDate);
+            results_.value = spot*qf - k*df*(1-s);
+        }
     }
 
     Real COSHestonEngine::muT(Time t) const {

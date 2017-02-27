@@ -51,7 +51,8 @@ namespace QuantLib {
                                     VanillaOption::arguments,
                                     VanillaOption::results> {
       public:
-        COSHestonEngine(const boost::shared_ptr<HestonModel>& model);
+        COSHestonEngine(const boost::shared_ptr<HestonModel>& model,
+            Real L = 16, Size N=200);
 
         void update();
         void calculate() const;
@@ -66,6 +67,8 @@ namespace QuantLib {
       private:
         Real muT(Time t) const;
 
+        const Real L_;
+        const Size N_;
         Real kappa_, theta_, sigma_, rho_, v0_;
     };
 }
