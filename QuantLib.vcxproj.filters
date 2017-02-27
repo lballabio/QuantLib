@@ -2361,6 +2361,9 @@
     <ClInclude Include="ql\pricingengines\vanilla\bjerksundstenslandengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\vanilla\coshestonengine.hpp">
+      <Filter>pricingengines\vanilla</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\vanilla\discretizedvanillaoption.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
@@ -5398,6 +5401,9 @@
       <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\vanilla\bjerksundstenslandengine.cpp">
+      <Filter>pricingengines\vanilla</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\vanilla\coshestonengine.cpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\vanilla\discretizedvanillaoption.cpp">

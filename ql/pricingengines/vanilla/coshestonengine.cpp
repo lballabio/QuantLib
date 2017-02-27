@@ -84,25 +84,27 @@ namespace QuantLib {
         const DiscountFactor df
             = process->riskFreeRate()->discount(maturityDate);
 
-        Real s = characteristicFct(0, maturity).real()*(std::exp(a)-1-a)*d;
+        const Real expA = std::exp(a);
+        Real s = characteristicFct(0, maturity).real()*(expA-1-a)*d;
 
         for (Size n=1; n < N_; ++n) {
-            const Real U_n = 2.0*d*( 1.0/(1.0 + square<Real>()(n*M_PI*d))
-                *(  std::exp(a) + n*M_PI*d*std::sin(n*M_PI*a*d)
-                  - std::cos(n*M_PI*a*d) )
-                - 1.0/(n*M_PI*d)*std::sin(n*M_PI*a*d));
+            const Real r = n*M_PI*d;
+            const Real U_n = 2.0*d*( 1.0/(1.0 + r*r)
+                *(expA + r*std::sin(r*a) - std::cos(r*a)) - 1.0/r*std::sin(r*a));
 
-            s += U_n*(characteristicFct(n*M_PI*d, maturity)
-                     *std::exp(std::complex<Real>(0, n*M_PI*d*(x-a)))).real();
+            s += U_n*(characteristicFct(r, maturity)
+                     *std::exp(std::complex<Real>(0, r*(x-a)))).real();
         }
 
         if (payoff->optionType() == Option::Put)
             results_.value = k*df*s;
-        else {
+        else if (payoff->optionType() == Option::Call) {
             const DiscountFactor qf
                 = process->dividendYield()->discount(maturityDate);
             results_.value = spot*qf - k*df*(1-s);
         }
+        else
+            QL_FAIL("unknown payoff type");
     }
 
     Real COSHestonEngine::muT(Time t) const {
