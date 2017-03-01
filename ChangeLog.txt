@@ -1,39 +1,19 @@
-commit 143390fef775522976c50dd7bb9a7cd82d35f538
+commit 1412269383681d135e89eba7e57996d40e3aa699
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 2 Jan 2017 17:21:01 +0100
+Date:   Thu, 2 Feb 2017 16:22:22 +0100
 
-    Prevent compilation error with Boost 1.63.
-
- test-suite/paralleltestrunner.hpp | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-commit 1846e3db9ed09ab9252a4ad9625c080ee0b84cde
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 16 Dec 2016 17:22:50 +0100
-
-    Refer to template base class via its complete name.
+    Prevent error during bootstrapping test.
     
-    This prevents errors with gcc 4.4 on RedHat (see issue #176).
+    This prevents the errors reported in #189.
 
- ql/experimental/math/fireflyalgorithm.hpp | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ test-suite/piecewiseyieldcurve.cpp | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-commit e1cd3959dc6fa27895e43125511e91b9ce6027fd
-Author: Dirk Eddelbuettel <edd@debian.org>
-Date:   Mon, 14 Nov 2016 19:59:22 -0600
-
-    add missing 'inline' attribute to free functions
-    
-    prevents a linking error seen in RQuantLib
-
- ql/experimental/termstructures/multicurvesensitivities.hpp | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-commit 0b51cc7a113adb3db8c56bfce36d3c43b565ca7e
+commit e3f8a1fd9ba65fc6e9745838b4f2a4e9dde75e9c
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 9 Nov 2016 09:41:49 +0100
+Date:   Thu, 5 Jan 2017 12:44:01 +0100
 
-    Increase version number to 1.9.1.
+    Bump version number to 1.9.2.
 
  Announce.txt   | 2 +-
  configure.ac   | 2 +-

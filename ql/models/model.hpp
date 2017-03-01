@@ -119,6 +119,7 @@ namespace QuantLib {
         Disposable<Array> params() const;
 
         virtual void setParams(const Array& params);
+        Integer functionEvaluation() const { return functionEvaluation_; }
 
       protected:
         virtual void generateArguments() {}
@@ -126,6 +127,7 @@ namespace QuantLib {
         boost::shared_ptr<Constraint> constraint_;
         EndCriteria::Type shortRateEndCriteria_;
         Array problemValues_;
+        Integer functionEvaluation_;
 
       private:
         //! Constraint imposed on arguments

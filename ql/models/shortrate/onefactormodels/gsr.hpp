@@ -144,7 +144,7 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
         notifyObservers();
     }
 
-    void update() { LazyObject::update(); }
+    void update();
 
     void performCalculations() const {
         Gaussian1dModel::performCalculations();
