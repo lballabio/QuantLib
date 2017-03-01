@@ -232,7 +232,14 @@ namespace QuantLib {
 
         // the part of the swap preceding exerciseDate should be truncated
         // to avoid taking into account unwanted cashflows
+        // for the moment we add a check avoiding this situation
         VanillaSwap swap = *arguments_.swap;
+        const Leg& fixedLeg = swap.fixedLeg();
+        boost::shared_ptr<FixedRateCoupon> firstCoupon =
+            boost::dynamic_pointer_cast<FixedRateCoupon>(fixedLeg[0]);
+        QL_REQUIRE(firstCoupon->accrualStartDate() >= exerciseDate,
+                   "swap start (" << firstCoupon->accrualStartDate() << ") before exercise date ("
+                                  << exerciseDate << ") not supported in Black swaption engine");
 
         Rate strike = swap.fixedRate();
 
@@ -267,9 +274,6 @@ namespace QuantLib {
               break;
           }
           case Settlement::Cash: {
-              const Leg& fixedLeg = swap.fixedLeg();
-              boost::shared_ptr<FixedRateCoupon> firstCoupon =
-                  boost::dynamic_pointer_cast<FixedRateCoupon>(fixedLeg[0]);
               DayCounter dayCount = firstCoupon->dayCounter();
               // we assume that the cash settlement date is equal
               // to the swap start date
