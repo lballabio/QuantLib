@@ -49,7 +49,7 @@ namespace QuantLib {
           dim_(dim),
           coordinates_(coordinates) {}
 
-        explicit FdmLinearOpIterator(
+        FdmLinearOpIterator(
             const Disposable<FdmLinearOpIterator> & from) {
             swap(const_cast<Disposable<FdmLinearOpIterator> & >(from));
         }

@@ -40,7 +40,7 @@ namespace QuantLib {
                            const boost::shared_ptr<FdmMesher>& mesher);
 
         TripleBandLinearOp(const TripleBandLinearOp& m);
-        explicit TripleBandLinearOp(const Disposable<TripleBandLinearOp>& m);
+        TripleBandLinearOp(const Disposable<TripleBandLinearOp>& m);
         TripleBandLinearOp& operator=(const TripleBandLinearOp& m);
         TripleBandLinearOp& operator=(const Disposable<TripleBandLinearOp>& m);
 
