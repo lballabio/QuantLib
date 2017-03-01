@@ -41,7 +41,7 @@ namespace QuantLib {
     */
     class HestonModel : public CalibratedModel {
       public:
-        HestonModel(const boost::shared_ptr<HestonProcess>& process);
+        explicit HestonModel(const boost::shared_ptr<HestonProcess>& process);
 
         // variance mean version level
         Real theta() const { return arguments_[0](0.0); }

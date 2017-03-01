@@ -196,10 +196,10 @@ int main( int argc, char* argv[] )
     const std::string clientModeStr = "--client_mode=true";
     const bool clientMode = (std::string(argv[argc-1]) == clientModeStr);
 
-    unsigned int priority;
     message_queue::size_type recvd_size;
 
     try {
+        unsigned int priority;
         if (!clientMode) {
             std::map<std::string, Time> runTimeLog;
 

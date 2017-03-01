@@ -35,7 +35,7 @@ namespace QuantLib {
                               const boost::shared_ptr<FdmMesher>& mesher)
         : TripleBandLinearOp(direction, mesher) { }
 
-        ModTripleBandLinearOp(const TripleBandLinearOp& m)
+        explicit ModTripleBandLinearOp(const TripleBandLinearOp& m)
         : TripleBandLinearOp(m) { }
 
         boost::shared_array<Real>& lower() { return lower_; }

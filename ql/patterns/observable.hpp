@@ -292,7 +292,7 @@ namespace QuantLib {
 
         class Proxy {
           public:
-            Proxy(Observer* const observer)
+            explicit Proxy(Observer* const observer)
              : active_  (true),
                observer_(observer) {
             }

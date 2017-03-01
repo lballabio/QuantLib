@@ -63,7 +63,7 @@ namespace {
         }
     }
 
-    void singleValueTest(const std::string comment,
+    void singleValueTest(const std::string& comment,
                          Real calculated, Real expected, Real tol) {
         if (std::fabs(calculated - expected) > tol)
             BOOST_FAIL("Failed to reproduce " << comment

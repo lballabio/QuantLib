@@ -34,7 +34,7 @@ namespace QuantLib {
 
     class BSMRNDCalculator : public RiskNeutralDensityCalculator {
     public:
-        BSMRNDCalculator(
+        explicit BSMRNDCalculator(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
 
         // x = ln(S)
