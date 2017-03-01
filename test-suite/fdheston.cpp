@@ -654,7 +654,7 @@ void FdHestonTest::testFdmHestonIntradayPricing() {
             new FlatForward(now, dividendYield, dayCounter)));
 
         const Real gammaCalculated = option.gamma();
-        if (std::fabs(gammaCalculated - gammaExpected[i]) > 1e-5) {
+        if (std::fabs(gammaCalculated - gammaExpected[i]) > 1e-4) {
             BOOST_ERROR("unable to reproduce intraday gamma values at time "
                         << "\n   timestamp : " << io::iso_datetime(now)
                         << "\n   expiry    : " << io::iso_datetime(maturity)
