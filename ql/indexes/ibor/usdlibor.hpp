@@ -65,7 +65,7 @@ namespace QuantLib {
     //! Overnight %USD %Libor index
     class USDLiborON : public DailyTenorUSDLibor {
       public:
-        USDLiborON(const Handle<YieldTermStructure>& h =
+        explicit USDLiborON(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : DailyTenorUSDLibor(0, h) {}
     };
