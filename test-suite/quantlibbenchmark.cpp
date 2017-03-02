@@ -212,8 +212,8 @@ namespace {
                       << " mflops" << std::endl;
 
             sum+=mflopsPerSec;
-            iterT++;
-            iterBM++;
+            ++iterT;
+            ++iterBM;
         }
         std::cout << std::string(56,'-') << std::endl
                   << "QuantLib Benchmark Index                  :"

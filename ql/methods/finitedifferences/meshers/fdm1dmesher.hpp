@@ -33,7 +33,7 @@ namespace QuantLib {
 
     class Fdm1dMesher {
       public:
-        Fdm1dMesher(Size size)
+        explicit Fdm1dMesher(Size size)
         : locations_(size), dplus_(size), dminus_(size) {}
         virtual ~Fdm1dMesher() {}
 

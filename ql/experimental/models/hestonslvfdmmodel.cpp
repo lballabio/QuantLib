@@ -427,12 +427,6 @@ namespace QuantLib {
         Array p = FdmHestonGreensFct(mesher, hestonProcess, trafoType, lv0)
             .get(timeGrid->at(1), params_.greensAlgorithm);
 
-        mesher = boost::make_shared<FdmMesherComposite>(
-            xMesher.at(1), vMesher.at(1));
-
-        p = FdmHestonGreensFct(mesher, hestonProcess, trafoType, lv0)
-            .get(timeGrid->at(1), params_.greensAlgorithm);
-
         if (logging_) {
             const LogEntry entry = { timeGrid->at(1),
                 boost::shared_ptr<Array>(new Array(p)), mesher };

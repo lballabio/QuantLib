@@ -1194,7 +1194,7 @@ namespace {
       private:
         class Impl : public Constraint::Impl {
           public:
-            Impl(Real equityShortRateCorr)
+            explicit Impl(Real equityShortRateCorr)
             : equityShortRateCorr_(equityShortRateCorr) {}
 
             bool test(const Array& params) const {
@@ -1207,7 +1207,8 @@ namespace {
             const Real equityShortRateCorr_;
         };
       public:
-        HestonHullWhiteCorrelationConstraint(Real equityShortRateCorr)
+        explicit HestonHullWhiteCorrelationConstraint(
+            Real equityShortRateCorr)
         : Constraint(boost::shared_ptr<Constraint::Impl>(
              new HestonHullWhiteCorrelationConstraint::Impl(
                                                      equityShortRateCorr))) {}

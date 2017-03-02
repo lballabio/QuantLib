@@ -33,7 +33,7 @@ namespace QuantLib {
 
     class Predefined1dMesher : public Fdm1dMesher {
       public:
-        Predefined1dMesher(const std::vector<Real>& x)
+        explicit Predefined1dMesher(const std::vector<Real>& x)
         : Fdm1dMesher(x.size()) {
             std::copy(x.begin(), x.end(), locations_.begin());
 

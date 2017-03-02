@@ -69,7 +69,7 @@ namespace QuantLib {
       private:
         class MappingFunction : public std::binary_function<Time, Real, Real> {
           public:
-            MappingFunction(const SquareRootCLVModel& model);
+            explicit MappingFunction(const SquareRootCLVModel& model);
 
             Real operator()(Time t, Real x) const;
 

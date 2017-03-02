@@ -56,7 +56,7 @@ namespace {
 
     class OneDimensionalPolynomialDegreeN : public CostFunction {
       public:
-        OneDimensionalPolynomialDegreeN(const Array& coefficients)
+        explicit OneDimensionalPolynomialDegreeN(const Array& coefficients)
         : coefficients_(coefficients),
           polynomialDegree_(coefficients.size()-1) {}
 
