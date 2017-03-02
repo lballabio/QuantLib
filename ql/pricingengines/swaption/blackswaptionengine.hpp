@@ -195,7 +195,7 @@ namespace QuantLib {
           vol_(boost::shared_ptr<SwaptionVolatilityStructure>(
               new ConstantSwaptionVolatility(0, NullCalendar(), Following, vol,
                                              dc, Spec().type, displacement))),
-          displacement_(displacement), model_(model) {
+          model_(model), displacement_(displacement) {
         registerWith(discountCurve_);
     }
 
@@ -208,7 +208,7 @@ namespace QuantLib {
           vol_(boost::shared_ptr<SwaptionVolatilityStructure>(
               new ConstantSwaptionVolatility(0, NullCalendar(), Following, vol,
                                              dc, Spec().type, displacement))),
-          displacement_(displacement), model_(model) {
+          model_(model), displacement_(displacement) {
         registerWith(discountCurve_);
         registerWith(vol_);
     }
@@ -219,7 +219,7 @@ namespace QuantLib {
         const Handle<SwaptionVolatilityStructure> &volatility,
         Real displacement, CashAnnuityModel model)
         : discountCurve_(discountCurve), vol_(volatility),
-          displacement_(displacement), model_(model) {
+          model_(model), displacement_(displacement) {
         registerWith(discountCurve_);
         registerWith(vol_);
     }
