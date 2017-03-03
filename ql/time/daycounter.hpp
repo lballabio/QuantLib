@@ -26,6 +26,7 @@
 #define quantlib_day_counter_hpp
 
 #include <ql/time/date.hpp>
+#include <ql/time/schedule.hpp>
 #include <ql/errors.hpp>
 
 namespace QuantLib {
@@ -55,7 +56,8 @@ namespace QuantLib {
             virtual Time yearFraction(const Date& d1,
                                       const Date& d2,
                                       const Date& refPeriodStart,
-                                      const Date& refPeriodEnd) const = 0;
+                                      const Date& refPeriodEnd,
+																			const Schedule& schedule) const = 0;
         };
         boost::shared_ptr<Impl> impl_;
         /*! This constructor can be invoked by derived classes which
@@ -84,7 +86,8 @@ namespace QuantLib {
         //! Returns the period between two dates as a fraction of year.
         Time yearFraction(const Date&, const Date&,
                           const Date& refPeriodStart = Date(),
-                          const Date& refPeriodEnd = Date()) const;
+                          const Date& refPeriodEnd = Date(),
+													const Schedule& schedule = Schedule()) const;
         //@}
     };
 
@@ -124,9 +127,10 @@ namespace QuantLib {
     }
 
     inline Time DayCounter::yearFraction(const Date& d1, const Date& d2,
-        const Date& refPeriodStart, const Date& refPeriodEnd) const {
+        const Date& refPeriodStart, const Date& refPeriodEnd,
+				const Schedule& schedule) const {
             QL_REQUIRE(impl_, "no implementation provided");
-            return impl_->yearFraction(d1,d2,refPeriodStart,refPeriodEnd);
+            return impl_->yearFraction(d1,d2,refPeriodStart,refPeriodEnd,schedule);
     }
 
 

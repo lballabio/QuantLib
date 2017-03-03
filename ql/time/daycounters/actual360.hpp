@@ -42,7 +42,8 @@ namespace QuantLib {
             Time yearFraction(const Date& d1,
                               const Date& d2,
                               const Date&,
-                              const Date&) const {
+                              const Date&,
+															const Schedule&) const {
                 return daysBetween(d1,d2)/360.0;
             }
         };

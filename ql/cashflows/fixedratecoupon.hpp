@@ -48,7 +48,8 @@ namespace QuantLib {
                         const Date& accrualEndDate,
                         const Date& refPeriodStart = Date(),
                         const Date& refPeriodEnd = Date(),
-                        const Date& exCouponDate = Date());
+                        const Date& exCouponDate = Date(),
+												const Schedule& schedule = Schedule());
         FixedRateCoupon(const Date& paymentDate,
                         Real nominal,
                         const InterestRate& interestRate,
@@ -56,7 +57,8 @@ namespace QuantLib {
                         const Date& accrualEndDate,
                         const Date& refPeriodStart = Date(),
                         const Date& refPeriodEnd = Date(),
-                        const Date& exCouponDate = Date());
+                        const Date& exCouponDate = Date(),
+												const Schedule& schedule = Schedule());
         //@}
         //! \name CashFlow interface
         //@{
@@ -103,6 +105,8 @@ namespace QuantLib {
                                          BusinessDayConvention,
                                          bool endOfMonth = false);
         operator Leg() const;
+
+				const Schedule& schedule() const;
       private:
         Schedule schedule_;
         Calendar calendar_;
@@ -124,7 +128,6 @@ namespace QuantLib {
         else
             Coupon::accept(v);
     }
-
 }
 
 

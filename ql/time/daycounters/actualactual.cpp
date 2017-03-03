@@ -43,7 +43,8 @@ namespace QuantLib {
     Time ActualActual::ISMA_Impl::yearFraction(const Date& d1,
                                                const Date& d2,
                                                const Date& d3,
-                                               const Date& d4) const {
+                                               const Date& d4,
+																							 const Schedule& schedule) const {
         if (d1 == d2)
             return 0.0;
 
@@ -96,7 +97,8 @@ namespace QuantLib {
                 // this case is long first coupon
 
                 // the last notional payment date
-                Date previousRef = refPeriodStart - months*Months;
+								BusinessDayConvention bdc = schedule.businessDayConvention();
+								Date previousRef = schedule.calendar().advance(refPeriodStart, -schedule.tenor(), bdc, schedule.endOfMonth());
                 if (d2 > refPeriodStart)
                     return yearFraction(d1, refPeriodStart, previousRef,
                                         refPeriodStart) +
@@ -115,7 +117,7 @@ namespace QuantLib {
 
             // the part from d1 to refPeriodEnd
             Time sum = yearFraction(d1, refPeriodEnd,
-                                    refPeriodStart, refPeriodEnd);
+                                    refPeriodStart, refPeriodEnd, schedule);
 
             // the part from refPeriodEnd to d2
             // count how many regular periods are in [refPeriodEnd, d2],
@@ -132,7 +134,7 @@ namespace QuantLib {
                     i++;
                 }
             }
-            sum += yearFraction(newRefStart,d2,newRefStart,newRefEnd);
+            sum += yearFraction(newRefStart,d2,newRefStart,newRefEnd,schedule);
             return sum;
         }
     }
@@ -140,7 +142,8 @@ namespace QuantLib {
     Time ActualActual::ISDA_Impl::yearFraction(const Date& d1,
                                                const Date& d2,
                                                const Date&,
-                                               const Date&) const {
+                                               const Date&,
+																							 const Schedule& schedule) const {
         if (d1 == d2)
             return 0.0;
 
@@ -161,7 +164,8 @@ namespace QuantLib {
     Time ActualActual::AFB_Impl::yearFraction(const Date& d1,
                                               const Date& d2,
                                               const Date&,
-                                              const Date&) const {
+                                              const Date&,
+																							const Schedule& schedule) const {
         if (d1 == d2)
             return 0.0;
 

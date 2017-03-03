@@ -26,6 +26,7 @@
 #define quantlib_coupon_hpp
 
 #include <ql/cashflow.hpp>
+#include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 
@@ -47,7 +48,8 @@ namespace QuantLib {
                const Date& accrualEndDate,
                const Date& refPeriodStart = Date(),
                const Date& refPeriodEnd = Date(),
-               const Date& exCouponDate = Date());
+               const Date& exCouponDate = Date(),
+							 const Schedule& schedule = Schedule());
         //! \name Event interface
         //@{
         Date date() const { return paymentDate_; }
@@ -67,6 +69,7 @@ namespace QuantLib {
         const Date& referencePeriodStart() const;
         //! end date of the reference period
         const Date& referencePeriodEnd() const;
+				const Schedule& schedule() const;
         //! accrual period as fraction of year
         Time accrualPeriod() const;
         //! accrual period in days
@@ -91,6 +94,7 @@ namespace QuantLib {
         Real nominal_;
         Date accrualStartDate_,accrualEndDate_, refPeriodStart_,refPeriodEnd_;
         Date exCouponDate_;
+				Schedule schedule_;
         mutable Real accrualPeriod_;
     };
 
@@ -115,6 +119,10 @@ namespace QuantLib {
 
     inline const Date& Coupon::referencePeriodEnd() const {
         return refPeriodEnd_;
+    }
+
+		inline const Schedule& Coupon::schedule() const {
+        return schedule_;
     }
 
 }

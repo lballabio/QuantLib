@@ -64,8 +64,9 @@ namespace QuantLib {
                                        const Date& d2) const;
             Time yearFraction(const Date& d1,
                               const Date& d2,
-                              const Date&, 
-                              const Date&) const {
+                              const Date&,
+                              const Date&,
+															const Schedule&) const {
                 return dayCount(d1,d2)/360.0; }
         };
         class EU_Impl : public DayCounter::Impl {
@@ -76,7 +77,8 @@ namespace QuantLib {
             Time yearFraction(const Date& d1,
                               const Date& d2,
                               const Date&,
-                              const Date&) const {
+                              const Date&,
+															const Schedule&) const {
                 return dayCount(d1,d2)/360.0; }
         };
         class IT_Impl : public DayCounter::Impl {
@@ -86,7 +88,8 @@ namespace QuantLib {
             Time yearFraction(const Date& d1,
                               const Date& d2,
                               const Date&,
-                              const Date&) const {
+                              const Date&,
+															const Schedule&) const {
                 return dayCount(d1,d2)/360.0; }
         };
         static boost::shared_ptr<DayCounter::Impl> implementation(

@@ -77,11 +77,12 @@ namespace QuantLib {
         DiscountFactor discountFactor(const Date& d1,
                                       const Date& d2,
                                       const Date& refStart = Date(),
-                                      const Date& refEnd = Date()) const {
+                                      const Date& refEnd = Date(),
+																			const Schedule& schedule = Schedule()) const {
             QL_REQUIRE(d2>=d1,
                        "d1 (" << d1 << ") "
                        "later than d2 (" << d2 << ")");
-            Time t = dc_.yearFraction(d1, d2, refStart, refEnd);
+            Time t = dc_.yearFraction(d1, d2, refStart, refEnd, schedule);
             return discountFactor(t);
         }
 
@@ -101,11 +102,12 @@ namespace QuantLib {
         Real compoundFactor(const Date& d1,
                             const Date& d2,
                             const Date& refStart = Date(),
-                            const Date& refEnd = Date()) const {
+                            const Date& refEnd = Date(),
+														const Schedule& schedule = Schedule()) const {
             QL_REQUIRE(d2>=d1,
                        "d1 (" << d1 << ") "
                        "later than d2 (" << d2 << ")");
-            Time t = dc_.yearFraction(d1, d2, refStart, refEnd);
+            Time t = dc_.yearFraction(d1, d2, refStart, refEnd, schedule);
             return compoundFactor(t);
         }
         //@}
