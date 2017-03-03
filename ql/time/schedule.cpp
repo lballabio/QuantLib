@@ -353,17 +353,14 @@ namespace QuantLib {
                 if (*rule_ == DateGeneration::Twentieth ||
                     *rule_ == DateGeneration::TwentiethIMM ||
                     *rule_ == DateGeneration::OldCDS ||
-                    *rule_ == DateGeneration::CDS ||
-                    *rule_ == DateGeneration::CDS2015) {
-                    if (*rule_ == DateGeneration::CDS2015) {
-                        Date tentativeTerminationDate =
-                            nextTwentieth(terminationDate, *rule_);
-                        if(tentativeTerminationDate.month() %2 == 0) {
-                            dates_.push_back(tentativeTerminationDate);
-                            isRegular_.push_back(true);
-                        }
-                    } else {
-                        dates_.push_back(nextTwentieth(terminationDate, *rule_));
+                    *rule_ == DateGeneration::CDS) {
+                    dates_.push_back(nextTwentieth(terminationDate, *rule_));
+                    isRegular_.push_back(true);
+                } else if(*rule_ == DateGeneration::CDS2015) {
+                    Date tentativeTerminationDate =
+                        nextTwentieth(terminationDate, *rule_);
+                    if(tentativeTerminationDate.month() %2 == 0) {
+                        dates_.push_back(tentativeTerminationDate);
                         isRegular_.push_back(true);
                     }
                 } else {
