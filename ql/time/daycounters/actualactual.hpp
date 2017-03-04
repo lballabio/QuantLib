@@ -61,7 +61,7 @@ namespace QuantLib {
                               const Date& d2,
                               const Date& refPeriodStart,
                               const Date& refPeriodEnd,
-															const Schedule& schedule = Schedule()) const;
+                              const Schedule& schedule = Schedule()) const;
         };
         class ISDA_Impl : public DayCounter::Impl {
           public:
@@ -72,7 +72,7 @@ namespace QuantLib {
                               const Date& d2,
                               const Date&,
                               const Date&,
-															const Schedule&) const;
+                              const Schedule&) const;
         };
         class AFB_Impl : public DayCounter::Impl {
           public:
@@ -83,7 +83,7 @@ namespace QuantLib {
                               const Date& d2,
                               const Date&,
                               const Date&,
-															const Schedule&) const;
+                              const Schedule&) const;
         };
         static boost::shared_ptr<DayCounter::Impl> implementation(
                                                                Convention c);

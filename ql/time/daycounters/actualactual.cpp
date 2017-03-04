@@ -44,12 +44,12 @@ namespace QuantLib {
                                                const Date& d2,
                                                const Date& d3,
                                                const Date& d4,
-																							 const Schedule& schedule) const {
+                                               const Schedule& schedule) const {
         if (d1 == d2)
             return 0.0;
 
         if (d1 > d2)
-            return -yearFraction(d2,d1,d3,d4);
+            return -yearFraction(d2,d1,d3,d4,schedule);
 
         // when the reference period is not specified, try taking
         // it equal to (d1,d2)
@@ -97,15 +97,24 @@ namespace QuantLib {
                 // this case is long first coupon
 
                 // the last notional payment date
-								BusinessDayConvention bdc = schedule.businessDayConvention();
-								Date previousRef = schedule.calendar().advance(refPeriodStart, -schedule.tenor(), bdc, schedule.endOfMonth());
+                Date previousRef;
+                if (schedule.empty()) {
+                    previousRef = refPeriodStart - months*Months;
+                } else {
+                    BusinessDayConvention bdc = schedule.businessDayConvention();
+                    previousRef = schedule.calendar().advance(refPeriodStart,
+                                                              -schedule.tenor(),
+                                                              bdc,
+                                                              schedule.endOfMonth());
+                }
+
                 if (d2 > refPeriodStart)
                     return yearFraction(d1, refPeriodStart, previousRef,
-                                        refPeriodStart) +
+                                        refPeriodStart, schedule) +
                         yearFraction(refPeriodStart, d2, refPeriodStart,
-                                     refPeriodEnd);
+                                     refPeriodEnd, schedule);
                 else
-                    return yearFraction(d1,d2,previousRef,refPeriodStart);
+                    return yearFraction(d1,d2,previousRef,refPeriodStart,schedule);
             }
         } else {
             // here refPeriodEnd is the last (notional?) payment date
@@ -143,12 +152,12 @@ namespace QuantLib {
                                                const Date& d2,
                                                const Date&,
                                                const Date&,
-																							 const Schedule& schedule) const {
+                                               const Schedule& schedule) const {
         if (d1 == d2)
             return 0.0;
 
         if (d1 > d2)
-            return -yearFraction(d2,d1,Date(),Date());
+            return -yearFraction(d2,d1,Date(),Date(),schedule);
 
         Integer y1 = d1.year(), y2 = d2.year();
         Real dib1 = (Date::isLeap(y1) ? 366.0 : 365.0),
@@ -165,12 +174,12 @@ namespace QuantLib {
                                               const Date& d2,
                                               const Date&,
                                               const Date&,
-																							const Schedule& schedule) const {
+                                              const Schedule& schedule) const {
         if (d1 == d2)
             return 0.0;
 
         if (d1 > d2)
-            return -yearFraction(d2,d1,Date(),Date());
+            return -yearFraction(d2,d1,Date(),Date(),Schedule());
 
         Date newD2=d2, temp=d2;
         Time sum = 0.0;

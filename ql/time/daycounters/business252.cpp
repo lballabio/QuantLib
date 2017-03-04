@@ -27,7 +27,7 @@ namespace QuantLib {
 
         typedef std::map<Year, std::map<Month, Date::serial_type> > Cache;
         typedef std::map<Year, Date::serial_type> OuterCache;
-        
+
         std::map<std::string, Cache> monthlyFigures_;
         std::map<std::string, OuterCache> yearlyFigures_;
 
@@ -137,7 +137,8 @@ namespace QuantLib {
     Time Business252::Impl::yearFraction(const Date& d1,
                                          const Date& d2,
                                          const Date&,
-                                         const Date&) const {
+                                         const Date&,
+                                         const Schedule&) const {
         return dayCount(d1, d2)/252.0;
     }
 

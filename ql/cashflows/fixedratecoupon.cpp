@@ -21,7 +21,6 @@
 */
 
 #include <ql/cashflows/fixedratecoupon.hpp>
-#include <iostream>
 
 using boost::shared_ptr;
 using std::vector;
@@ -38,7 +37,7 @@ namespace QuantLib {
                                      const Date& refPeriodStart,
                                      const Date& refPeriodEnd,
                                      const Date& exCouponDate,
-						 												 const Schedule& schedule)
+                                     const Schedule& schedule)
     : Coupon(paymentDate, nominal, accrualStartDate, accrualEndDate,
              refPeriodStart, refPeriodEnd, exCouponDate, schedule),
       rate_(InterestRate(rate, dayCounter, Simple, Annual)) {}
@@ -51,7 +50,7 @@ namespace QuantLib {
                                      const Date& refPeriodStart,
                                      const Date& refPeriodEnd,
                                      const Date& exCouponDate,
-						 												 const Schedule& schedule)
+                                     const Schedule& schedule)
     : Coupon(paymentDate, nominal, accrualStartDate, accrualEndDate,
              refPeriodStart, refPeriodEnd, exCouponDate, schedule),
       rate_(interestRate) {}
@@ -60,7 +59,8 @@ namespace QuantLib {
         return nominal()*(rate_.compoundFactor(accrualStartDate_,
                                                accrualEndDate_,
                                                refPeriodStart_,
-                                               refPeriodEnd_) - 1.0);
+                                               refPeriodEnd_,
+                                               schedule_) - 1.0);
     }
 
     Real FixedRateCoupon::accruedAmount(const Date& d) const {
@@ -72,29 +72,36 @@ namespace QuantLib {
                                                     refPeriodStart_,
                                                     refPeriodEnd_) - 1.0);
         } else {
-						if (accrualStartDate >= refPeriodStart_) {
-							// regular or short first coupon
-							std::cout << "accrualStartDate: " << accrualStartDate_ << std::endl;
-							std::cout << "accrualEndDate: " << std::min(d,accrualEndDate_) << std::endl;
-							std::cout << "refStartDate: " << refPeriodStart_ << std::endl;
-							std::cout << "refEndDate: " << refPeriodEnd_ << std::endl;
-	            return nominal()*(rate_.compoundFactor(accrualStartDate_,
-	                                                   std::min(d,accrualEndDate_),
-	                                                   refPeriodStart_,
-	                                                   refPeriodEnd_) - 1.0);
-						} else {
-							// long first coupon
-							BusinessDayConvention bdc = schedule_.businessDayConvention();
-							Date previousRef = schedule_.calendar().advance(refPeriodStart_, -schedule_.tenor(), bdc, schedule_.endOfMonth());
-							std::cout << "accrualStartDate: " << accrualStartDate_ << std::endl;
-							std::cout << "accrualEndDate: " << std::min(d,refPeriodStart_) << std::endl;
-							std::cout << "refStartDate: " << previousRef << std::endl;
-							std::cout << "refEndDate: " << refPeriodStart_ << std::endl;
-	            return nominal()*(rate_.compoundFactor(accrualStartDate_,
-	                                                   std::min(d,refPeriodStart_),
-	                                                   previousRef,
-	                                                   refPeriodStart_) - 1.0);
-						}
+            if (accrualStartDate_ >= refPeriodStart_) {
+                // regular or short first coupon
+                return nominal()*(rate_.compoundFactor(accrualStartDate_,
+                                                       std::min(d,accrualEndDate_),
+                                                       refPeriodStart_,
+                                                       refPeriodEnd_) - 1.0);
+            } else {
+                // long first coupon
+                BusinessDayConvention bdc = schedule_.businessDayConvention();
+                Date end = std::min(d,refPeriodEnd_);
+                Date newEndRef = refPeriodStart_;
+
+                while (newEndRef > accrualStartDate_) {
+                    newEndRef = schedule_.calendar().advance(newEndRef, -schedule_.tenor(), bdc, schedule_.endOfMonth());
+                }
+
+                Date newStartRef;
+                Real amount = 0.0;
+
+                while (newEndRef < end) {
+                    newStartRef = newEndRef;
+                    newEndRef = schedule_.calendar().advance(newEndRef, schedule_.tenor(), bdc, schedule_.endOfMonth());
+                    amount += nominal()*(rate_.compoundFactor(std::max(accrualStartDate_,newStartRef),
+                                                              std::min(d,newEndRef),
+                                                              newStartRef,
+                                                              newEndRef) - 1.0);
+                }
+
+                return amount;
+            }
         }
     }
 
@@ -208,8 +215,8 @@ namespace QuantLib {
                                 start, end, start, end, exCouponDate, schedule_));
             leg.push_back(temp);
         } else {
-						BusinessDayConvention bdc = schedule_.businessDayConvention();
-						Date ref = schedule_.calendar().advance(end, -schedule_.tenor(), bdc, schedule_.endOfMonth());
+            BusinessDayConvention bdc = schedule_.businessDayConvention();
+            Date ref = schedule_.calendar().advance(end, -schedule_.tenor(), bdc, schedule_.endOfMonth());
 
             InterestRate r(rate.rate(),
                            firstPeriodDC_.empty() ? rate.dayCounter()

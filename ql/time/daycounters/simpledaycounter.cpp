@@ -32,7 +32,8 @@ namespace QuantLib {
     Time SimpleDayCounter::Impl::yearFraction(const Date& d1,
                                               const Date& d2,
                                               const Date&,
-                                              const Date&) const {
+                                              const Date&,
+                                              const Schedule&) const {
         Day dm1 = d1.dayOfMonth(),
             dm2 = d2.dayOfMonth();
 
