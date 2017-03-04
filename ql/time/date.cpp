@@ -842,7 +842,7 @@ namespace QuantLib {
             struct nopunct : std::numpunct<char> {
                 std::string do_grouping() const {return "";}
             };
-            FormatResetter(std::ostream &out)
+            explicit FormatResetter(std::ostream &out)
                 : out_(&out), flags_(out.flags()), filler_(out.fill()),
                   loc_(out.getloc()) {
                 std::locale loc (out.getloc(),new nopunct);
