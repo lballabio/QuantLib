@@ -1099,7 +1099,7 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhitePricing() {
                                         = makeVanillaOption(optionData);
                     option->setPricingEngine(bsmhwEngine);
                     Real expected = option->NPV();
-        
+     
                     option->setPricingEngine(fdEngine);
                     Real calculated = option->NPV();
                     avgPriceDiff
@@ -1110,7 +1110,7 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhitePricing() {
                      BOOST_ERROR("Failed to reproduce BSM-Hull-White prices"
                              << "\n   scheme       : " << scheme.name
                              << "\n   model        : " << hestonModelData.name
-                             << "\n   CV           : on");                    
+                             << "\n   CV           : on");                     
                 }
                 
                 
@@ -1118,10 +1118,10 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhitePricing() {
                     BOOST_ERROR("Failed to reproduce BSM-Hull-White prices"
                             << "\n   scheme       : " << scheme.name
                             << "\n   model        : " << hestonModelData.name
-                            << "\n   CV           : off");                   
+                            << "\n   CV           : off");                     
                 }
             }
-        }   
+        }    
     }
 }
 
@@ -1329,7 +1329,7 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
             options.back()->setPricingEngine(
                 boost::shared_ptr<PricingEngine>(analyticHestonEngine));
         }
-    }   
+    }    
         
     HestonHullWhiteCorrelationConstraint corrConstraint(equityShortRateCorr);
     LevenbergMarquardt om(1e-6, 1e-8, 1e-8);
@@ -1370,7 +1370,7 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
             
             options.back()->setPricingEngine(engine);
         }
-    }   
+    }    
 
     LevenbergMarquardt vm(1e-6, 1e-2, 1e-2);
     fdmHestonModel->calibrate(options, vm, 
