@@ -217,7 +217,6 @@ namespace QuantLib {
         } else {
             BusinessDayConvention bdc = schedule_.businessDayConvention();
             Date ref = schedule_.calendar().advance(end, -schedule_.tenor(), bdc, schedule_.endOfMonth());
-
             InterestRate r(rate.rate(),
                            firstPeriodDC_.empty() ? rate.dayCounter()
                                                   : firstPeriodDC_,
