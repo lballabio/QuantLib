@@ -427,7 +427,7 @@ namespace QuantLib {
                 bps_ += bps;
             }
             void visit(CashFlow& cf) {
-                nonSensNPV_ += cf.amount() *
+                nonSensNPV_ += cf.amount() * 
                                discountCurve_.discount(cf.date());
             }
             Real bps() const { return bps_; }
@@ -632,7 +632,7 @@ namespace QuantLib {
                 DiscountFactor B = y.discountFactor(t);
                 P += c * B;
                 dPdy += t * c * B;
-
+                
                 lastDate = couponDate;
             }
             if (P == 0.0) // no cashflows
@@ -688,10 +688,10 @@ namespace QuantLib {
                     }
                     refEndDate = couponDate;
                 }
-
+                
                 t += dc.yearFraction(lastDate, couponDate,
                                      refStartDate, refEndDate);
-
+                
                 DiscountFactor B = y.discountFactor(t);
                 P += c * B;
                 switch (y.compounding()) {
@@ -1043,7 +1043,7 @@ namespace QuantLib {
             if (leg[i]->hasOccurred(settlementDate,
                                         includeSettlementDateFlows))
                 continue;
-
+            
             Real c = leg[i]->amount();
             if (leg[i]->tradingExCoupon(settlementDate)) {
                 c = 0.0;
@@ -1065,10 +1065,10 @@ namespace QuantLib {
                 }
                 refEndDate = couponDate;
             }
-
+            
             t += dc.yearFraction(lastDate, couponDate,
                                  refStartDate, refEndDate);
-
+            
             DiscountFactor B = y.discountFactor(t);
             P += c * B;
             switch (y.compounding()) {

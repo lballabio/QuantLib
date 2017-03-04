@@ -27,7 +27,7 @@ namespace QuantLib {
 
         typedef std::map<Year, std::map<Month, Date::serial_type> > Cache;
         typedef std::map<Year, Date::serial_type> OuterCache;
-
+        
         std::map<std::string, Cache> monthlyFigures_;
         std::map<std::string, OuterCache> yearlyFigures_;
 
