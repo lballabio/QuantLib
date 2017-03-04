@@ -49,7 +49,7 @@ namespace QuantLib {
                const Date& refPeriodStart = Date(),
                const Date& refPeriodEnd = Date(),
                const Date& exCouponDate = Date(),
-							 const Schedule& schedule = Schedule());
+               const Schedule& schedule = Schedule());
         //! \name Event interface
         //@{
         Date date() const { return paymentDate_; }
@@ -69,7 +69,8 @@ namespace QuantLib {
         const Date& referencePeriodStart() const;
         //! end date of the reference period
         const Date& referencePeriodEnd() const;
-				const Schedule& schedule() const;
+        //! schedule
+        const Schedule& schedule() const;
         //! accrual period as fraction of year
         Time accrualPeriod() const;
         //! accrual period in days
@@ -94,7 +95,7 @@ namespace QuantLib {
         Real nominal_;
         Date accrualStartDate_,accrualEndDate_, refPeriodStart_,refPeriodEnd_;
         Date exCouponDate_;
-				Schedule schedule_;
+        Schedule schedule_;
         mutable Real accrualPeriod_;
     };
 
@@ -121,7 +122,7 @@ namespace QuantLib {
         return refPeriodEnd_;
     }
 
-		inline const Schedule& Coupon::schedule() const {
+    inline const Schedule& Coupon::schedule() const {
         return schedule_;
     }
 

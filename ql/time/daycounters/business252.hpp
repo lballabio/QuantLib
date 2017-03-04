@@ -46,7 +46,7 @@ namespace QuantLib {
                               const Date& d2,
                               const Date&,
                               const Date&,
-															const Schedule&) const;
+                              const Schedule&) const;
             Impl(Calendar c) { calendar_ = c; }
         };
       public:

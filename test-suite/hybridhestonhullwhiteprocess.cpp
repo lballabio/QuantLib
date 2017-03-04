@@ -867,7 +867,7 @@ void HybridHestonHullWhiteProcessTest::testFdmHestonHullWhiteEngine() {
     Settings::instance().evaluationDate() = today;
     const Date exerciseDate = Date(28, March, 2012);
     DayCounter dc = Actual365Fixed();
-
+    
     Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
 
     const Handle<YieldTermStructure> rTS(flatRate(0.05, dc));
@@ -887,7 +887,7 @@ void HybridHestonHullWhiteProcessTest::testFdmHestonHullWhiteEngine() {
                               new HullWhiteProcess(rTS, 0.00883, 0.01));
     boost::shared_ptr<HullWhite> hwModel(
                     new HullWhite(rTS, hwProcess->a(), hwProcess->sigma()));
-
+    
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
     const Real corr[] = {-0.85, 0.5 };
     const Real strike[] = { 75, 120, 160 };
@@ -897,7 +897,7 @@ void HybridHestonHullWhiteProcessTest::testFdmHestonHullWhiteEngine() {
             boost::shared_ptr<StrikedTypePayoff> payoff(
                               new PlainVanillaPayoff(Option::Call, strike[j]));
             VanillaOption option(payoff, exercise);
-
+            
             option.setPricingEngine(boost::shared_ptr<PricingEngine>(
                 new FdHestonHullWhiteVanillaEngine(
                     boost::shared_ptr<HestonModel>(
@@ -906,7 +906,7 @@ void HybridHestonHullWhiteProcessTest::testFdmHestonHullWhiteEngine() {
             const Real calculated = option.NPV();
             const Real calculatedDelta = option.delta();
             const Real calculatedGamma = option.gamma();
-
+            
             option.setPricingEngine(boost::shared_ptr<PricingEngine>(
                 new AnalyticBSMHullWhiteEngine(corr[i],
                                                stochProcess, hwModel)));
@@ -955,18 +955,18 @@ namespace {
         Real r;
         Real q;
     };
-
+    
     HestonModelData hestonModels[] = {
-        // ADI finite difference schemes for option pricing in the
+        // ADI finite difference schemes for option pricing in the 
         // Heston model with correlation, K.J. in t'Hout and S. Foulon,
         {"'t Hout case 1", 0.04, 1.5, 0.04, 0.3, -0.9, 0.025, 0.0},
         {"'t Hout case 2", 0.12, 3.0, 0.12, 0.04, 0.6, 0.01, 0.04},
         {"'t Hout case 3", 0.0707,0.6067, 0.0707, 0.2928, -0.7571, 0.03, 0.0},
         {"'t Hout case 4", 0.06, 2.5, 0.06, 0.5, -0.1, 0.0507, 0.0469},
-        // Efficient numerical methods for pricing American options under
+        // Efficient numerical methods for pricing American options under 
         // stochastic volatility, Samuli Ikonen and Jari Toivanen,
         {"Ikonen-Toivanen", 0.0625, 5, 0.16, 0.9, 0.1, 0.1, 0.0},
-        // Not-so-complex logarithms in the Heston model,
+        // Not-so-complex logarithms in the Heston model, 
         // Christian Kahl and Peter Jäckel
         {"Kahl-Jaeckel", 0.16, 1.0, 0.16, 2.0, -0.8, 0.0, 0.0},
         // self defined test cases
@@ -981,17 +981,17 @@ namespace {
         Real a;
         Real sigma;
     };
-
+    
     HullWhiteModelData hullWhiteModels[] = {
         {"EUR-2003", 0.00883, 0.00631 }
     };
-
-
+    
+    
     struct SchemeData {
         const char* const name;
         FdmSchemeDesc schemeDesc;
     };
-
+        
     SchemeData schemes[] = {
         { "HV2", FdmSchemeDesc::Hundsdorfer() },
         { "HV1", FdmSchemeDesc::ModifiedHundsdorfer() },
@@ -1015,12 +1015,12 @@ namespace {
         DayCounter dayCounter = Actual365Fixed();
         Handle<YieldTermStructure> rTS(flatRate(params.r, dayCounter));
         Handle<YieldTermStructure> qTS(flatRate(params.q, dayCounter));
-
+        
         return boost::shared_ptr<HestonProcess>(new HestonProcess(
                    rTS, qTS, spot, params.v0, params.kappa,
                    params.theta, params.sigma, params.rho));
     }
-
+    
     boost::shared_ptr<VanillaOption> makeVanillaOption(
                                             const VanillaOptionData& params) {
 
@@ -1029,7 +1029,7 @@ namespace {
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(maturity));
         boost::shared_ptr<StrikedTypePayoff> payoff(
                     new PlainVanillaPayoff(params.optionType, params.strike));
-
+        
         return boost::shared_ptr<VanillaOption>(
                                           new VanillaOption(payoff, exercise));
     }

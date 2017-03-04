@@ -66,7 +66,7 @@ namespace QuantLib {
                               const Date& d2,
                               const Date&,
                               const Date&,
-															const Schedule&) const {
+                              const Schedule&) const {
                 return dayCount(d1,d2)/360.0; }
         };
         class EU_Impl : public DayCounter::Impl {
@@ -78,7 +78,7 @@ namespace QuantLib {
                               const Date& d2,
                               const Date&,
                               const Date&,
-															const Schedule&) const {
+                              const Schedule&) const {
                 return dayCount(d1,d2)/360.0; }
         };
         class IT_Impl : public DayCounter::Impl {
@@ -89,7 +89,7 @@ namespace QuantLib {
                               const Date& d2,
                               const Date&,
                               const Date&,
-															const Schedule&) const {
+                              const Schedule&) const {
                 return dayCount(d1,d2)/360.0; }
         };
         static boost::shared_ptr<DayCounter::Impl> implementation(

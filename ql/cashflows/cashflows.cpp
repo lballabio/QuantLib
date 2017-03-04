@@ -29,7 +29,6 @@
 #include <ql/patterns/visitor.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
-#include <iostream>
 
 using boost::shared_ptr;
 using boost::dynamic_pointer_cast;
@@ -859,7 +858,7 @@ namespace QuantLib {
         DiscountFactor discount = 1.0;
         Date lastDate = npvDate;
         Date refStartDate, refEndDate;
-				Schedule schedule;
+        Schedule schedule;
 
         for (Size i=0; i<leg.size(); ++i) {
             if (leg[i]->hasOccurred(settlementDate,
@@ -875,9 +874,9 @@ namespace QuantLib {
             shared_ptr<Coupon> coupon =
                 boost::dynamic_pointer_cast<Coupon>(leg[i]);
             if (coupon) {
-								refStartDate = coupon->referencePeriodStart();
+                refStartDate = coupon->referencePeriodStart();
                 refEndDate = coupon->referencePeriodEnd();
-								schedule = coupon->schedule();
+                schedule = coupon->schedule();
             } else {
                 if (lastDate == npvDate) {
                     // we don't have a previous coupon date,
@@ -888,15 +887,8 @@ namespace QuantLib {
                 }
                 refEndDate = couponDate;
             }
-						std::cout.precision(17);
-						std::cout << "lastDate: " << lastDate << std::endl;
-						std::cout << "couponDate: " << couponDate << std::endl;
-						std::cout << "refStartDate: " << refStartDate << std::endl;
-						std::cout << "refEndDate: " << refEndDate << std::endl;
             DiscountFactor b = y.discountFactor(lastDate, couponDate,
                                                 refStartDate, refEndDate, schedule);
-						std::cout << "discountFactor: " << std::fixed << b << std::endl;
-						std::cout << std::endl;
             discount *= b;
             lastDate = couponDate;
 

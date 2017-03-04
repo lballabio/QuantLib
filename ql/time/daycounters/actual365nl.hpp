@@ -70,7 +70,7 @@ namespace QuantLib {
                                         const Date& d2,
                                         const Date& d3,
                                         const Date& d4,
-																				const Schedule&) const {
+                                        const Schedule&) const {
                 return dayCount(d1, d2)/365.0;
             }
         };

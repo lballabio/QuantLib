@@ -57,7 +57,7 @@ namespace QuantLib {
                                       const Date& d2,
                                       const Date& refPeriodStart,
                                       const Date& refPeriodEnd,
-																			const Schedule& schedule) const = 0;
+                                      const Schedule& schedule) const = 0;
         };
         boost::shared_ptr<Impl> impl_;
         /*! This constructor can be invoked by derived classes which
@@ -87,7 +87,7 @@ namespace QuantLib {
         Time yearFraction(const Date&, const Date&,
                           const Date& refPeriodStart = Date(),
                           const Date& refPeriodEnd = Date(),
-													const Schedule& schedule = Schedule()) const;
+                          const Schedule& schedule = Schedule()) const;
         //@}
     };
 
@@ -127,8 +127,7 @@ namespace QuantLib {
     }
 
     inline Time DayCounter::yearFraction(const Date& d1, const Date& d2,
-        const Date& refPeriodStart, const Date& refPeriodEnd,
-				const Schedule& schedule) const {
+        const Date& refPeriodStart, const Date& refPeriodEnd, const Schedule& schedule) const {
             QL_REQUIRE(impl_, "no implementation provided");
             return impl_->yearFraction(d1,d2,refPeriodStart,refPeriodEnd,schedule);
     }

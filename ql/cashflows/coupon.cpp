@@ -31,7 +31,7 @@ namespace QuantLib {
                    const Date& refPeriodStart,
                    const Date& refPeriodEnd,
                    const Date& exCouponDate,
-									 const Schedule& schedule)
+                   const Schedule& schedule)
     : paymentDate_(paymentDate), nominal_(nominal),
       accrualStartDate_(accrualStartDate), accrualEndDate_(accrualEndDate),
       refPeriodStart_(refPeriodStart), refPeriodEnd_(refPeriodEnd),

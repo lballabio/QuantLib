@@ -78,7 +78,7 @@ namespace QuantLib {
                                       const Date& d2,
                                       const Date& refStart = Date(),
                                       const Date& refEnd = Date(),
-																			const Schedule& schedule = Schedule()) const {
+                                      const Schedule& schedule = Schedule()) const {
             QL_REQUIRE(d2>=d1,
                        "d1 (" << d1 << ") "
                        "later than d2 (" << d2 << ")");
@@ -103,7 +103,7 @@ namespace QuantLib {
                             const Date& d2,
                             const Date& refStart = Date(),
                             const Date& refEnd = Date(),
-														const Schedule& schedule = Schedule()) const {
+                            const Schedule& schedule = Schedule()) const {
             QL_REQUIRE(d2>=d1,
                        "d1 (" << d1 << ") "
                        "later than d2 (" << d2 << ")");

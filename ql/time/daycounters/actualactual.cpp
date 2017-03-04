@@ -152,12 +152,12 @@ namespace QuantLib {
                                                const Date& d2,
                                                const Date&,
                                                const Date&,
-                                               const Schedule& schedule) const {
+                                               const Schedule&) const {
         if (d1 == d2)
             return 0.0;
 
         if (d1 > d2)
-            return -yearFraction(d2,d1,Date(),Date(),schedule);
+            return -yearFraction(d2,d1,Date(),Date(),Schedule());
 
         Integer y1 = d1.year(), y2 = d2.year();
         Real dib1 = (Date::isLeap(y1) ? 366.0 : 365.0),
@@ -174,7 +174,7 @@ namespace QuantLib {
                                               const Date& d2,
                                               const Date&,
                                               const Date&,
-                                              const Schedule& schedule) const {
+                                              const Schedule&) const {
         if (d1 == d2)
             return 0.0;
 
