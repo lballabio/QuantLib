@@ -878,6 +878,7 @@ namespace QuantLib {
                 refEndDate = coupon->referencePeriodEnd();
                 schedule = coupon->schedule();
             } else {
+                schedule = Schedule();
                 if (lastDate == npvDate) {
                     // we don't have a previous coupon date,
                     // so we fake it
