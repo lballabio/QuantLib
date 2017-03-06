@@ -320,7 +320,7 @@ ZabrModel::x(const std::vector<Real> &strikes) const {
     QL_REQUIRE(strikes[0] > 0.0 || beta_ < 1.0,
                "strikes must be positive (" << strikes[0] << ") if beta = 1");
     for (std::vector<Real>::const_iterator i = strikes.begin() + 1;
-         i != strikes.end(); i++)
+         i != strikes.end(); ++i)
         QL_REQUIRE(*i > *(i - 1), "strikes must be strictly ascending ("
                                       << *(i - 1) << "," << *i << ")");
 

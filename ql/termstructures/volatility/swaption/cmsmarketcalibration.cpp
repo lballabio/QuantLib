@@ -30,7 +30,7 @@ namespace {
 
     class ObjectiveFunction : public CostFunction {
       public:
-        ObjectiveFunction(CmsMarketCalibration *smileAndCms)
+        explicit ObjectiveFunction(CmsMarketCalibration *smileAndCms)
             : smileAndCms_(smileAndCms), volCube_(smileAndCms->volCube_),
               cmsMarket_(smileAndCms->cmsMarket_),
               weights_(smileAndCms->weights_),
@@ -67,7 +67,7 @@ namespace {
 
     class ObjectiveFunction3 : public ObjectiveFunction {
       public:
-        ObjectiveFunction3(CmsMarketCalibration *smileAndCms)
+        explicit ObjectiveFunction3(CmsMarketCalibration *smileAndCms)
             : ObjectiveFunction(smileAndCms) {};
 
       private:
@@ -100,7 +100,7 @@ namespace {
 
     class ObjectiveFunction6 : public ObjectiveFunction {
       public:
-        ObjectiveFunction6(CmsMarketCalibration *smileAndCms)
+        explicit ObjectiveFunction6(CmsMarketCalibration *smileAndCms)
             : ObjectiveFunction(smileAndCms) {};
 
       private:

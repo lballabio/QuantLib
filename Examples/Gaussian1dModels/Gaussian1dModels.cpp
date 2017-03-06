@@ -668,11 +668,11 @@ int main(int argc, char *argv[]) {
         std::cout << "\nThat was it. Thank you for running this demo. Bye."
                   << std::endl;
 
-    } catch (QuantLib::Error e) {
+    } catch (const QuantLib::Error& e) {
         std::cout << "terminated with a ql exception: " << e.what()
                   << std::endl;
         return 1;
-    } catch (std::exception e) {
+    } catch (const std::exception& e) {
         std::cout << "terminated with a general exception: " << e.what()
                   << std::endl;
         return 1;

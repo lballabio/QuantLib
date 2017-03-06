@@ -1390,11 +1390,7 @@ void MarkovFunctionalTest::testVanillaEngines() {
     for (Size i = 0; i < c4.size(); i++) {
         c4[i].setPricingEngine(blackCapFloorEngine4);
         Real blackPrice = c4[i].NPV();
-        std::vector<Real> blackOptionlets =
-            c4[i].result<std::vector<Real> >("optionletsPrice");
         c4[i].setPricingEngine(mfCapFloorEngine4);
-        std::vector<Real> mfOptionlets =
-            c4[i].result<std::vector<Real> >("optionletsPrice");
         Real mfPrice = c4[i].NPV();
         if (fabs(blackPrice - mfPrice) > tol1)
             BOOST_ERROR(
