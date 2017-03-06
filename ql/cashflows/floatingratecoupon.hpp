@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004 StatPro Italia srl
- Copyright (C) 2003 Nicolas Di Césaré
+ Copyright (C) 2003 Nicolas Di CÃ©sarÃ©
  Copyright (C) 2006, 2007 Cristina Duminuco
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2007 Giorgio Facchinetti
