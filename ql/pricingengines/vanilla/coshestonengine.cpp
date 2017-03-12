@@ -213,7 +213,6 @@ namespace QuantLib {
        const Real sigma2 = sigma_*sigma_;
        const Real sigma3 = sigma2*sigma_;
        const Real sigma4 = sigma2*sigma2;
-       const Real sigma5 = sigma2*sigma3;
        const Real kappa2 = kappa_*kappa_;
        const Real kappa3 = kappa2*kappa_;
        const Real kappa4 = kappa2*kappa2;
