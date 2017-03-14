@@ -77,6 +77,7 @@ namespace QuantLib {
         //@}
       private:
         InterestRate rate_;
+        Schedule schedule_;
     };
 
 

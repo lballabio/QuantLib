@@ -137,8 +137,7 @@ namespace QuantLib {
     Time Business252::Impl::yearFraction(const Date& d1,
                                          const Date& d2,
                                          const Date&,
-                                         const Date&,
-                                         const Schedule&) const {
+                                         const Date&) const {
         return dayCount(d1, d2)/252.0;
     }
 

@@ -22,11 +22,12 @@
 namespace QuantLib {
 
     boost::shared_ptr<DayCounter::Impl>
-    ActualActual::implementation(ActualActual::Convention c) {
+    ActualActual::implementation(ActualActual::Convention c, 
+                                 const Schedule& schedule) {
         switch (c) {
           case ISMA:
           case Bond:
-            return boost::shared_ptr<DayCounter::Impl>(new ISMA_Impl);
+            return boost::shared_ptr<DayCounter::Impl>(new ISMA_Impl(schedule));
           case ISDA:
           case Historical:
           case Actual365:
@@ -43,13 +44,12 @@ namespace QuantLib {
     Time ActualActual::ISMA_Impl::yearFraction(const Date& d1,
                                                const Date& d2,
                                                const Date& d3,
-                                               const Date& d4,
-                                               const Schedule& schedule) const {
+                                               const Date& d4) const {
         if (d1 == d2)
             return 0.0;
 
         if (d1 > d2)
-            return -yearFraction(d2,d1,d3,d4,schedule);
+            return -yearFraction(d2,d1,d3,d4);
 
         // when the reference period is not specified, try taking
         // it equal to (d1,d2)
@@ -98,23 +98,23 @@ namespace QuantLib {
 
                 // the last notional payment date
                 Date previousRef;
-                if (schedule.empty()) {
+                if (schedule_.empty()) {
                     previousRef = refPeriodStart - months*Months;
                 } else {
-                    BusinessDayConvention bdc = schedule.businessDayConvention();
-                    previousRef = schedule.calendar().advance(refPeriodStart,
-                                                              -schedule.tenor(),
+                    BusinessDayConvention bdc = schedule_.businessDayConvention();
+                    previousRef = schedule_.calendar().advance(refPeriodStart,
+                                                              -schedule_.tenor(),
                                                               bdc,
-                                                              schedule.endOfMonth());
+                                                              schedule_.endOfMonth());
                 }
 
                 if (d2 > refPeriodStart)
                     return yearFraction(d1, refPeriodStart, previousRef,
-                                        refPeriodStart, schedule) +
+                                        refPeriodStart) +
                         yearFraction(refPeriodStart, d2, refPeriodStart,
-                                     refPeriodEnd, schedule);
+                                     refPeriodEnd);
                 else
-                    return yearFraction(d1,d2,previousRef,refPeriodStart,schedule);
+                    return yearFraction(d1,d2,previousRef,refPeriodStart);
             }
         } else {
             // here refPeriodEnd is the last (notional?) payment date
@@ -126,7 +126,7 @@ namespace QuantLib {
 
             // the part from d1 to refPeriodEnd
             Time sum = yearFraction(d1, refPeriodEnd,
-                                    refPeriodStart, refPeriodEnd, schedule);
+                                    refPeriodStart, refPeriodEnd);
 
             // the part from refPeriodEnd to d2
             // count how many regular periods are in [refPeriodEnd, d2],
@@ -143,7 +143,7 @@ namespace QuantLib {
                     i++;
                 }
             }
-            sum += yearFraction(newRefStart,d2,newRefStart,newRefEnd,schedule);
+            sum += yearFraction(newRefStart,d2,newRefStart,newRefEnd);
             return sum;
         }
     }
@@ -151,13 +151,12 @@ namespace QuantLib {
     Time ActualActual::ISDA_Impl::yearFraction(const Date& d1,
                                                const Date& d2,
                                                const Date&,
-                                               const Date&,
-                                               const Schedule&) const {
+                                               const Date&) const {
         if (d1 == d2)
             return 0.0;
 
         if (d1 > d2)
-            return -yearFraction(d2,d1,Date(),Date(),Schedule());
+            return -yearFraction(d2,d1,Date(),Date());
 
         Integer y1 = d1.year(), y2 = d2.year();
         Real dib1 = (Date::isLeap(y1) ? 366.0 : 365.0),
@@ -173,13 +172,12 @@ namespace QuantLib {
     Time ActualActual::AFB_Impl::yearFraction(const Date& d1,
                                               const Date& d2,
                                               const Date&,
-                                              const Date&,
-                                              const Schedule&) const {
+                                              const Date&) const {
         if (d1 == d2)
             return 0.0;
 
         if (d1 > d2)
-            return -yearFraction(d2,d1,Date(),Date(),Schedule());
+            return -yearFraction(d2,d1,Date(),Date());
 
         Date newD2=d2, temp=d2;
         Time sum = 0.0;

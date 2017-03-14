@@ -694,7 +694,7 @@ void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
     std::vector<Time> times(maturity+1);
     std::transform(schedule.begin(), schedule.end(), times.begin(),
                    boost::bind(&Actual365Fixed::yearFraction,
-                               dc, today, _1, Date(), Date(), schedule));
+                               dc, today, _1, Date(), Date()));
 
     for (Size i=0; i<=maturity; ++i)
         times[i] = static_cast<Time>(i);

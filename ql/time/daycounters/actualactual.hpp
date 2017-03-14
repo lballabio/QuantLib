@@ -25,6 +25,7 @@
 #define quantlib_actualactual_day_counter_h
 
 #include <ql/time/daycounter.hpp>
+#include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 
@@ -54,14 +55,18 @@ namespace QuantLib {
       private:
         class ISMA_Impl : public DayCounter::Impl {
           public:
+            ISMA_Impl(const Schedule& schedule)
+            : schedule_(schedule) {}
+            
             std::string name() const {
                 return std::string("Actual/Actual (ISMA)");
             }
             Time yearFraction(const Date& d1,
                               const Date& d2,
                               const Date& refPeriodStart,
-                              const Date& refPeriodEnd,
-                              const Schedule& schedule = Schedule()) const;
+                              const Date& refPeriodEnd) const;
+          private:
+            Schedule schedule_;
         };
         class ISDA_Impl : public DayCounter::Impl {
           public:
@@ -71,8 +76,7 @@ namespace QuantLib {
             Time yearFraction(const Date& d1,
                               const Date& d2,
                               const Date&,
-                              const Date&,
-                              const Schedule&) const;
+                              const Date&) const;
         };
         class AFB_Impl : public DayCounter::Impl {
           public:
@@ -82,14 +86,15 @@ namespace QuantLib {
             Time yearFraction(const Date& d1,
                               const Date& d2,
                               const Date&,
-                              const Date&,
-                              const Schedule&) const;
+                              const Date&) const;
         };
         static boost::shared_ptr<DayCounter::Impl> implementation(
-                                                               Convention c);
+                                                               Convention c, 
+                                                               const Schedule& schedule);
       public:
-        ActualActual(Convention c = ActualActual::ISDA)
-        : DayCounter(implementation(c)) {}
+        ActualActual(Convention c = ActualActual::ISDA, 
+                     const Schedule& schedule = Schedule())
+        : DayCounter(implementation(c, schedule)) {}
     };
 
 }
