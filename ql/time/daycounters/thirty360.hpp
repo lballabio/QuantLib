@@ -64,7 +64,7 @@ namespace QuantLib {
                                        const Date& d2) const;
             Time yearFraction(const Date& d1,
                               const Date& d2,
-                              const Date&,
+                              const Date&, 
                               const Date&) const {
                 return dayCount(d1,d2)/360.0; }
         };

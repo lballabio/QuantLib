@@ -26,7 +26,6 @@
 #define quantlib_coupon_hpp
 
 #include <ql/cashflow.hpp>
-#include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 

@@ -26,7 +26,6 @@
 #define quantlib_day_counter_hpp
 
 #include <ql/time/date.hpp>
-#include <ql/time/schedule.hpp>
 #include <ql/errors.hpp>
 
 namespace QuantLib {
