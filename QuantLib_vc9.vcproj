@@ -6254,6 +6254,14 @@
 					>
 				</File>
 				<File
+					RelativePath="ql\pricingengines\vanilla\coshestonengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\pricingengines\vanilla\coshestonengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath="ql\pricingengines\vanilla\discretizedvanillaoption.cpp"
 					>
 				</File>
