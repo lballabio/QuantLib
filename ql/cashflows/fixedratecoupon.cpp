@@ -72,36 +72,10 @@ namespace QuantLib {
                                                     refPeriodStart_,
                                                     refPeriodEnd_) - 1.0);
         } else {
-            if (accrualStartDate_ >= refPeriodStart_) {
-                // regular or short first coupon
-                return nominal()*(rate_.compoundFactor(accrualStartDate_,
-                                                       std::min(d,accrualEndDate_),
-                                                       refPeriodStart_,
-                                                       refPeriodEnd_) - 1.0);
-            } else {
-                // long first coupon
-                BusinessDayConvention bdc = schedule_.businessDayConvention();
-                Date end = std::min(d,refPeriodEnd_);
-                Date newEndRef = refPeriodStart_;
-
-                while (newEndRef > accrualStartDate_) {
-                    newEndRef = schedule_.calendar().advance(newEndRef, -schedule_.tenor(), bdc, schedule_.endOfMonth());
-                }
-
-                Date newStartRef;
-                Real amount = 0.0;
-
-                while (newEndRef < end) {
-                    newStartRef = newEndRef;
-                    newEndRef = schedule_.calendar().advance(newEndRef, schedule_.tenor(), bdc, schedule_.endOfMonth());
-                    amount += nominal()*(rate_.compoundFactor(std::max(accrualStartDate_,newStartRef),
-                                                              std::min(d,newEndRef),
-                                                              newStartRef,
-                                                              newEndRef) - 1.0);
-                }
-
-                return amount;
-            }
+            return nominal()*(rate_.compoundFactor(accrualStartDate_,
+                                                   std::min(d,accrualEndDate_),
+                                                   refPeriodStart_,
+                                                   refPeriodEnd_) - 1.0);
         }
     }
 
