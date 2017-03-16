@@ -48,8 +48,7 @@ namespace QuantLib {
                         const Date& accrualEndDate,
                         const Date& refPeriodStart = Date(),
                         const Date& refPeriodEnd = Date(),
-                        const Date& exCouponDate = Date(),
-                        const Schedule& schedule = Schedule());
+                        const Date& exCouponDate = Date());
         FixedRateCoupon(const Date& paymentDate,
                         Real nominal,
                         const InterestRate& interestRate,
@@ -57,8 +56,7 @@ namespace QuantLib {
                         const Date& accrualEndDate,
                         const Date& refPeriodStart = Date(),
                         const Date& refPeriodEnd = Date(),
-                        const Date& exCouponDate = Date(),
-                        const Schedule& schedule = Schedule());
+                        const Date& exCouponDate = Date());
         //@}
         //! \name CashFlow interface
         //@{
@@ -77,7 +75,6 @@ namespace QuantLib {
         //@}
       private:
         InterestRate rate_;
-        Schedule schedule_;
     };
 
 

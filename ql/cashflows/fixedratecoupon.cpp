@@ -36,12 +36,10 @@ namespace QuantLib {
                                      const Date& accrualEndDate,
                                      const Date& refPeriodStart,
                                      const Date& refPeriodEnd,
-                                     const Date& exCouponDate,
-                                     const Schedule& schedule)
+                                     const Date& exCouponDate)
     : Coupon(paymentDate, nominal, accrualStartDate, accrualEndDate,
              refPeriodStart, refPeriodEnd, exCouponDate),
-      rate_(InterestRate(rate, dayCounter, Simple, Annual)),
-      schedule_(schedule) {}
+      rate_(InterestRate(rate, dayCounter, Simple, Annual)) {}
 
     FixedRateCoupon::FixedRateCoupon(const Date& paymentDate,
                                      Real nominal,
@@ -50,11 +48,10 @@ namespace QuantLib {
                                      const Date& accrualEndDate,
                                      const Date& refPeriodStart,
                                      const Date& refPeriodEnd,
-                                     const Date& exCouponDate,
-                                     const Schedule& schedule)
+                                     const Date& exCouponDate)
     : Coupon(paymentDate, nominal, accrualStartDate, accrualEndDate,
              refPeriodStart, refPeriodEnd, exCouponDate),
-      rate_(interestRate), schedule_(schedule) {}
+      rate_(interestRate) {}
 
     Real FixedRateCoupon::amount() const {
         return nominal()*(rate_.compoundFactor(accrualStartDate_,
@@ -186,7 +183,7 @@ namespace QuantLib {
                        "does not allow a first-period day count");
             shared_ptr<CashFlow> temp(new
                 FixedRateCoupon(paymentDate, nominal, rate,
-                                start, end, start, end, exCouponDate, schedule_));
+                                start, end, start, end, exCouponDate));
             leg.push_back(temp);
         } else {
             BusinessDayConvention bdc = schedule_.businessDayConvention();
@@ -197,7 +194,7 @@ namespace QuantLib {
                            rate.compounding(), rate.frequency());
             leg.push_back(shared_ptr<CashFlow>(new
                 FixedRateCoupon(paymentDate, nominal, r,
-                                start, end, ref, end, exCouponDate, schedule_)));
+                                start, end, ref, end, exCouponDate)));
         }
         // regular periods
         for (Size i=2; i<schedule_.size()-1; ++i) {
@@ -220,7 +217,7 @@ namespace QuantLib {
                 nominal = notionals_.back();
             leg.push_back(shared_ptr<CashFlow>(new
                 FixedRateCoupon(paymentDate, nominal, rate,
-                                start, end, start, end, exCouponDate, schedule_)));
+                                start, end, start, end, exCouponDate)));
         }
         if (schedule_.size() > 2) {
             // last period might be short or long
@@ -245,13 +242,13 @@ namespace QuantLib {
             if (schedule_.isRegular(N-1)) {
                 leg.push_back(shared_ptr<CashFlow>(new
                     FixedRateCoupon(paymentDate, nominal, rate,
-                                    start, end, start, end, exCouponDate, schedule_)));
+                                    start, end, start, end, exCouponDate)));
             } else {
                 Date ref = start + schedule_.tenor();
                 ref = schCalendar.adjust(ref, schedule_.businessDayConvention());
                 leg.push_back(shared_ptr<CashFlow>(new
                     FixedRateCoupon(paymentDate, nominal, rate,
-                                    start, end, start, ref, exCouponDate, schedule_)));
+                                    start, end, start, ref, exCouponDate)));
             }
         }
         return leg;
