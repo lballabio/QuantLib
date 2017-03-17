@@ -190,14 +190,17 @@ namespace QuantLib {
         virtual boost::tuples::tuple<Real, Real, Real> percentileAndInterval(
             const Date& d, Real percentile) const;
         /*! Distributes the total VaR amount along the portfolio counterparties.
-        @param loss Loss amount (in loss units).
+            The passed loss amount is in loss units.
         */
         virtual Disposable<std::vector<Real> > splitVaRLevel(const Date& date,
             Real loss) const;
-        /*! Distributes the total VaR amount along the portfolio counterparties.
-        Provides confidence interval for split so that portfolio optimization
-        can be performed outside those limits.
-        @param loss Loss amount (in loss units).
+        /*! Distributes the total VaR amount along the portfolio
+            counterparties.
+
+            Provides confidence interval for split so that portfolio
+            optimization can be performed outside those limits.
+
+            The passed loss amount is in loss units.
         */
         virtual Disposable<std::vector<std::vector<Real> > > splitVaRAndError(
             const Date& date, Real loss, Probability confInterval) const;

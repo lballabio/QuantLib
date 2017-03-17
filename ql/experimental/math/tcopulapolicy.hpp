@@ -83,8 +83,8 @@ namespace QuantLib {
         const std::vector<Real>& varianceFactors() const {
             return varianceFactors_;
         }
-        /*! Cumulative probability of the indexed latent variable 
-            @param iVariable The index of the latent variable requested.
+        /*! Cumulative probability of a given latent variable.
+            The iVariable parameter is the index of the requested variable.
         */
         Probability cumulativeY(Real val, Size iVariable) const {
     #if defined(QL_EXTRA_SAFETY_CHECKS)

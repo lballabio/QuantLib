@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file stochasticcollationcdf.hpp
+/*! \file stochasticcollocationinvcdf.hpp
     Stochastic collocation inverse cumulative distribution function
 */
 

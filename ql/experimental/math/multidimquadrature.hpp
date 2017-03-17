@@ -76,7 +76,7 @@ namespace QuantLib {
         /*!
             @param dimension The number of dimensions of the argument of the 
             function we want to integrate.
-            @param dimension Integration variable dimension.
+            @param quadOrder Quadrature order.
             @param mu Parameter in the Gauss Hermite weight (i.e. points load).
         */
         GaussianQuadMultidimIntegrator(Size dimension, Size quadOrder, 
