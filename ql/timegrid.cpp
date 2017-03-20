@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2005, 2006 StatPro Italia srl
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,16 +24,14 @@
 
 namespace QuantLib {
 
-    TimeGrid::TimeGrid(Time end, Size steps) {
-        // We seem to assume that the grid begins at 0.
-        // Let's enforce the assumption for the time being
-        // (even though I'm not sure that I agree.)
-        QL_REQUIRE(end > 0.0,
-                   "negative times not allowed");
-        Time dt = end/steps;
+    TimeGrid::TimeGrid(Time end, Size steps, Time start) {
+        QL_REQUIRE(end > start, "end (" << end
+                                        << ") must be greater than start ("
+                                        << start << ")");
+        Time dt = (end - start) / steps;
         times_.reserve(steps+1);
         for (Size i=0; i<=steps; i++)
-            times_.push_back(dt*i);
+            times_.push_back(start + dt*i);
 
         mandatoryTimes_ = std::vector<Time>(1);
         mandatoryTimes_[0] = end;
