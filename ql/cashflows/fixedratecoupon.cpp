@@ -186,8 +186,8 @@ namespace QuantLib {
                                 start, end, start, end, exCouponDate));
             leg.push_back(temp);
         } else {
-            Date ref = end - schedule_.tenor();
-            ref = schCalendar.adjust(ref, schedule_.businessDayConvention());
+						BusinessDayConvention bdc = schedule_.businessDayConvention();
+						Date ref = schedule_.calendar().advance(end, -schedule_.tenor(), bdc, schedule_.endOfMonth());
             InterestRate r(rate.rate(),
                            firstPeriodDC_.empty() ? rate.dayCounter()
                                                   : firstPeriodDC_,
