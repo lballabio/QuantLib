@@ -37,6 +37,7 @@ namespace QuantLib {
     class CapFloor;
     class PricingEngine;
 
+    QL_DEPRECATED
     typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapFloorMatrix;
 
     /*! Helper class to strip optionlet (i.e. caplet/floorlet) volatilities

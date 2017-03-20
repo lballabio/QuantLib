@@ -95,13 +95,6 @@ OptionletStripper1::OptionletStripper1(
                 discount_;
 
         const std::vector<Rate>& strikes = termVolSurface_->strikes();
-        // initialize CapFloorMatrix
-
-		CapFloorMatrix capFloors = CapFloorMatrix(nOptionletTenors_);
-
-        for (Size i = 0; i < nOptionletTenors_; ++i) {
-            capFloors[i].resize(nStrikes_);
-        }
 
         boost::shared_ptr<PricingEngine> capFloorEngine;
         boost::shared_ptr<SimpleQuote> volQuote(new SimpleQuote);
@@ -133,11 +126,11 @@ OptionletStripper1::OptionletStripper1(
                 capFloorVols_[i][j] = termVolSurface_->volatility(
                     capFloorLengths_[i], strikes[j], true);
                 volQuote->setValue(capFloorVols_[i][j]);
-                capFloors[i][j] =
+                boost::shared_ptr<CapFloor> capFloor =
                     MakeCapFloor(capFloorType, capFloorLengths_[i],
                                  iborIndex_, strikes[j], -0 * Days)
                         .withPricingEngine(capFloorEngine);
-                capFloorPrices_[i][j] = capFloors[i][j]->NPV();
+                capFloorPrices_[i][j] = capFloor->NPV();
                 optionletPrices_[i][j] = capFloorPrices_[i][j] -
                                                         previousCapFloorPrice;
                 previousCapFloorPrice = capFloorPrices_[i][j];
