@@ -42,8 +42,6 @@ OptionletStripper1::OptionletStripper1(
     Natural maxIter, const Handle< YieldTermStructure > &discount,
     const VolatilityType type, const Real displacement, bool dontThrow)
     : OptionletStripper(termVolSurface, index, discount, type, displacement),
-      volQuotes_(nOptionletTenors_,
-                 std::vector< shared_ptr< SimpleQuote > >(nStrikes_)),
       floatingSwitchStrike_(switchStrike == Null< Rate >() ? true : false),
       switchStrike_(switchStrike),
       accuracy_(accuracy), maxIter_(maxIter), dontThrow_(dontThrow) {
@@ -55,8 +53,6 @@ OptionletStripper1::OptionletStripper1(
 
         Real firstGuess = 0.14; // guess is only used for shifted lognormal vols
         optionletStDevs_ = Matrix(nOptionletTenors_, nStrikes_, firstGuess);
-
-        capFloorEngines_ = std::vector<std::vector<boost::shared_ptr<PricingEngine> > >(nOptionletTenors_);
     }
 
     void OptionletStripper1::performCalculations() const {
@@ -105,29 +101,24 @@ OptionletStripper1::OptionletStripper1(
 
         for (Size i = 0; i < nOptionletTenors_; ++i) {
             capFloors[i].resize(nStrikes_);
-            capFloorEngines_[i].resize(nStrikes_);
-        }
-        // construction might go here
-        for (Size j=0; j<nStrikes_; ++j) {
-            for (Size i=0; i<nOptionletTenors_; ++i) {
-                volQuotes_[i][j] = shared_ptr<SimpleQuote>(new
-                                                            SimpleQuote());
-                if (volatilityType_ == ShiftedLognormal) {
-                    capFloorEngines_[i][j]=boost::shared_ptr<BlackCapFloorEngine>(
-                        new BlackCapFloorEngine(
-                            discountCurve, Handle<Quote>(volQuotes_[i][j]),
-                            dc, displacement_));
-                } else if (volatilityType_ == Normal) {
-                    capFloorEngines_[i][j]=boost::shared_ptr<BachelierCapFloorEngine>(
-                        new BachelierCapFloorEngine(
-                            discountCurve, Handle<Quote>(volQuotes_[i][j]),
-                            dc));
-                } else {
-                    QL_FAIL("unknown volatility type: " << volatilityType_);
-                }
-            }
         }
 
+        boost::shared_ptr<PricingEngine> capFloorEngine;
+        boost::shared_ptr<SimpleQuote> volQuote(new SimpleQuote);
+
+        if (volatilityType_ == ShiftedLognormal) {
+            capFloorEngine = boost::shared_ptr<BlackCapFloorEngine>(
+                        new BlackCapFloorEngine(
+                            discountCurve, Handle<Quote>(volQuote),
+                            dc, displacement_));
+        } else if (volatilityType_ == Normal) {
+            capFloorEngine = boost::shared_ptr<BachelierCapFloorEngine>(
+                        new BachelierCapFloorEngine(
+                            discountCurve, Handle<Quote>(volQuote),
+                            dc));
+        } else {
+            QL_FAIL("unknown volatility type: " << volatilityType_);
+        }
 
         for (Size j=0; j<nStrikes_; ++j) {
             // using out-of-the-money options
@@ -141,11 +132,11 @@ OptionletStripper1::OptionletStripper1(
 
                 capFloorVols_[i][j] = termVolSurface_->volatility(
                     capFloorLengths_[i], strikes[j], true);
-                volQuotes_[i][j]->setValue(capFloorVols_[i][j]);
+                volQuote->setValue(capFloorVols_[i][j]);
                 capFloors[i][j] =
                     MakeCapFloor(capFloorType, capFloorLengths_[i],
                                  iborIndex_, strikes[j], -0 * Days)
-                        .withPricingEngine(capFloorEngines_[i][j]);
+                        .withPricingEngine(capFloorEngine);
                 capFloorPrices_[i][j] = capFloors[i][j]->NPV();
                 optionletPrices_[i][j] = capFloorPrices_[i][j] -
                                                         previousCapFloorPrice;

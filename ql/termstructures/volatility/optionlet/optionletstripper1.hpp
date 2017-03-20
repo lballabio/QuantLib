@@ -70,8 +70,6 @@ namespace QuantLib {
         mutable Matrix capFloorVols_;
         mutable Matrix optionletStDevs_, capletVols_;
 
-        mutable std::vector<std::vector<boost::shared_ptr<SimpleQuote> > > volQuotes_;
-        mutable std::vector<std::vector<boost::shared_ptr<PricingEngine> > > capFloorEngines_;
         bool floatingSwitchStrike_;
 
         mutable Rate switchStrike_;
