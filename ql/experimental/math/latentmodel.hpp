@@ -17,6 +17,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 #ifndef quantlib_latent_model_hpp
 #define quantlib_latent_model_hpp
 
@@ -106,11 +107,15 @@ namespace QuantLib {
     namespace LatentModelIntegrationType {
         typedef 
         enum LatentModelIntegrationType {
+            #ifndef QL_PATCH_SOLARIS
             GaussianQuadrature,
+            #endif
             Trapezoid
             // etc....
         } LatentModelIntegrationType;
     }
+
+    #ifndef QL_PATCH_SOLARIS
 
     /* class template specializations. I havent use CRTP type cast directly
     because the signature of the integrators is different, grid integration
@@ -132,6 +137,8 @@ namespace QuantLib {
         }
         virtual ~IntegrationBase() {}
     };
+
+    #endif
 
     template<> class IntegrationBase<MultidimIntegral> : 
         public MultidimIntegral, public LMIntegration {
@@ -456,15 +463,21 @@ namespace QuantLib {
             static boost::shared_ptr<LMIntegration> createLMIntegration(
                 Size dimension, 
                 LatentModelIntegrationType::LatentModelIntegrationType type = 
-                    LatentModelIntegrationType::GaussianQuadrature) 
+                    #ifndef QL_PATCH_SOLARIS
+                    LatentModelIntegrationType::GaussianQuadrature)
+                    #else
+                    LatentModelIntegrationType::Trapezoid)
+                    #endif
             {
                 switch(type) {
+                    #ifndef QL_PATCH_SOLARIS
                     case LatentModelIntegrationType::GaussianQuadrature:
                         return 
                             boost::make_shared<
                             IntegrationBase<GaussianQuadMultidimIntegrator> >(
                                 dimension, 25);
                         break;
+                    #endif
                     case LatentModelIntegrationType::Trapezoid:
                         {
                         std::vector<boost::shared_ptr<Integrator> > integrals;

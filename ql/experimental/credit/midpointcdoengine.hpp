@@ -18,9 +18,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-
 #ifndef quantlib_midpoint_cdo_engine_hpp
 #define quantlib_midpoint_cdo_engine_hpp
+
+#include <ql/qldefines.hpp>
+
+#ifndef QL_PATCH_SOLARIS
 
 #include <ql/experimental/credit/syntheticcdo.hpp>
 
@@ -50,5 +53,7 @@ namespace QuantLib {
     };
 
 }
+
+#endif
 
 #endif

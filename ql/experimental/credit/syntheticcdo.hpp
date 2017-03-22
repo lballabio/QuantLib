@@ -24,6 +24,10 @@
 #ifndef quantlib_synthetic_cdo_hpp
 #define quantlib_synthetic_cdo_hpp
 
+#include <ql/qldefines.hpp>
+
+#ifndef QL_PATCH_SOLARIS
+
 #include <ql/instrument.hpp>
 #include <ql/default.hpp>
 #include <ql/time/schedule.hpp>
@@ -224,5 +228,7 @@ namespace QuantLib {
                              SyntheticCDO::results> { };
 
 }
+
+#endif
 
 #endif
