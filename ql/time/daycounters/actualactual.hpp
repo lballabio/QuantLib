@@ -55,9 +55,9 @@ namespace QuantLib {
       private:
         class ISMA_Impl : public DayCounter::Impl {
           public:
-            ISMA_Impl(const Schedule& schedule)
+            explicit ISMA_Impl(const Schedule& schedule)
             : schedule_(schedule) {}
-            
+
             std::string name() const {
                 return std::string("Actual/Actual (ISMA)");
             }
