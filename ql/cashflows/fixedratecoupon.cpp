@@ -247,8 +247,11 @@ namespace QuantLib {
                     FixedRateCoupon(paymentDate, nominal, rate,
                                     start, end, start, end, exCouponDate)));
             } else {
-                Date ref = start + schedule_.tenor();
-                ref = schCalendar.adjust(ref, schedule_.businessDayConvention());
+                BusinessDayConvention bdc = schedule_.businessDayConvention();
+                Date ref = schedule_.calendar().advance(start,
+                                                        schedule_.tenor(),
+                                                        bdc,
+                                                        schedule_.endOfMonth());
                 leg.push_back(shared_ptr<CashFlow>(new
                     FixedRateCoupon(paymentDate, nominal, rate,
                                     start, end, start, ref, exCouponDate)));
