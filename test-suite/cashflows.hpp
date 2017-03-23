@@ -28,6 +28,7 @@ class CashFlowsTest {
     static void testAccessViolation();
     static void testDefaultSettlementDate();
     static void testNullFixingDays();
+    static void testReferenceDatesAtEndOfMonth();
     static boost::unit_test_framework::test_suite* suite();
 };
 
