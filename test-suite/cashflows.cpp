@@ -264,8 +264,8 @@ void CashFlowsTest::testNullFixingDays() {
         .withFixingDays(Null<Natural>());
 }
 
-void CashFlowsTest::testReferenceDatesAtEndOfMonth() {
-    BOOST_TEST_MESSAGE("Testing reference dates with end of month enabled...");
+void CashFlowsTest::testIrregularFirstCouponReferenceDatesAtEndOfMonth() {
+    BOOST_TEST_MESSAGE("Testing irregular first coupon reference dates with end of month enabled...");
     Schedule schedule =
         MakeSchedule()
         .from(Date(17, January, 2017)).to(Date(28, February, 2018))
@@ -286,6 +286,29 @@ void CashFlowsTest::testReferenceDatesAtEndOfMonth() {
                     "got " << firstCoupon->referencePeriodStart());
 }
 
+void CashFlowsTest::testIrregularLastCouponReferenceDatesAtEndOfMonth() {
+    BOOST_TEST_MESSAGE("Testing irregular last coupon reference dates with end of month enabled...");
+    Schedule schedule =
+            MakeSchedule()
+                    .from(Date(17, January, 2017)).to(Date(15, September, 2018))
+                    .withNextToLastDate(Date(28, February, 2018))
+                    .withFrequency(Semiannual)
+                    .withConvention(Unadjusted)
+                    .endOfMonth()
+                    .backwards();
+
+    Leg leg = FixedRateLeg(schedule)
+            .withNotionals(100.0)
+            .withCouponRates(0.01, Actual360());
+
+    boost::shared_ptr<Coupon> lastCoupon =
+            boost::dynamic_pointer_cast<Coupon>(leg.back());
+
+    if (lastCoupon->referencePeriodEnd() != Date(31, August, 2018))
+        BOOST_ERROR("Expected reference end date at end of month, "
+                            "got " << lastCoupon->referencePeriodEnd());
+}
+
 test_suite* CashFlowsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Cash flows tests");
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testSettings));
@@ -295,7 +318,9 @@ test_suite* CashFlowsTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testNullFixingDays));
     #endif
     suite->add(QUANTLIB_TEST_CASE(
-                             &CashFlowsTest::testReferenceDatesAtEndOfMonth));
+                             &CashFlowsTest::testIrregularFirstCouponReferenceDatesAtEndOfMonth));
+    suite->add(QUANTLIB_TEST_CASE(
+                             &CashFlowsTest::testIrregularLastCouponReferenceDatesAtEndOfMonth));
     return suite;
 }
 
