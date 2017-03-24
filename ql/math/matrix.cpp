@@ -39,6 +39,9 @@
 #endif
 
 #if !defined(QL_NO_UBLAS_SUPPORT)
+#if BOOST_VERSION > 106300
+#include <boost/serialization/array_wrapper.hpp>
+#endif
 #include <boost/numeric/ublas/vector_proxy.hpp>
 #include <boost/numeric/ublas/triangular.hpp>
 #include <boost/numeric/ublas/lu.hpp>
