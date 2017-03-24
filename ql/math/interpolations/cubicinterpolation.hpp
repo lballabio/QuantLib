@@ -2,10 +2,11 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
+ Copyright (C) 2001, 2002, 2003 Nicolas Di CÃ©sarÃ©
  Copyright (C) 2004, 2008, 2009, 2011 Ferdinando Ametrano
  Copyright (C) 2009 Sylvain Bertrand
  Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2016 Nicholas Bertocchi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -127,7 +128,10 @@ namespace QuantLib {
             Akima,
 
             //! Kruger approximation (local, monotonic, non-linear)
-            Kruger
+            Kruger, 
+
+            //! Weighted harmonic mean approximation (local, monotonic, non-linear)
+            Harmonic,
         };
         enum BoundaryCondition {
             //! Make second(-last) point an inactive knot
@@ -241,14 +245,14 @@ namespace QuantLib {
     class AkimaCubicInterpolation : public CubicInterpolation {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
-    template <class I1, class I2>
-    AkimaCubicInterpolation(const I1& xBegin,
-                const I1& xEnd,
-                const I2& yBegin)
-    : CubicInterpolation(xBegin, xEnd, yBegin,
-                 Akima, false,
-                 SecondDerivative, 0.0,
-                 SecondDerivative, 0.0) {}
+        template <class I1, class I2>
+        AkimaCubicInterpolation(const I1& xBegin,
+                                const I1& xEnd,
+                                const I2& yBegin)
+        : CubicInterpolation(xBegin, xEnd, yBegin,
+                             Akima, false,
+                             SecondDerivative, 0.0,
+                             SecondDerivative, 0.0) {}
     };
 
     class KrugerCubic : public CubicInterpolation {
@@ -260,6 +264,19 @@ namespace QuantLib {
                     const I2& yBegin)
         : CubicInterpolation(xBegin, xEnd, yBegin,
                              Kruger, false,
+                             SecondDerivative, 0.0,
+                             SecondDerivative, 0.0) {}
+    };
+
+    class HarmonicCubic : public CubicInterpolation {
+      public:
+        /*! \pre the \f$ x \f$ values must be sorted. */
+        template <class I1, class I2>
+        HarmonicCubic(const I1& xBegin,
+                      const I1& xEnd,
+                      const I2& yBegin)
+        : CubicInterpolation(xBegin, xEnd, yBegin,
+                             Harmonic, false,
                              SecondDerivative, 0.0,
                              SecondDerivative, 0.0) {}
     };
@@ -597,6 +614,40 @@ namespace QuantLib {
                                 // end points
                                 tmp_[0] = (3.0*S_[0]-tmp_[1])/2.0;
                                 tmp_[n_-1] = (3.0*S_[n_-2]-tmp_[n_-2])/2.0;
+                                break;
+                            case CubicInterpolation::Harmonic:
+                                // intermediate points
+                                for (Size i=1; i<n_-1; ++i) {
+                                    Real w1 = 2*dx_[i]+dx_[i-1];
+                                    Real w2 = dx_[i]+2*dx_[i-1];
+                                    if (S_[i-1]*S_[i]<=0.0)
+                                        // slope changes sign at point
+                                        tmp_[i] = 0.0;
+                                    else
+                                        // weighted harmonic mean of S_[i] and S_[i-1] if they
+                                        // have the same sign; otherwise 0
+                                        tmp_[i] = (w1+w2)/(w1/S_[i-1]+w2/S_[i]);
+                                }
+                                // end points [0]
+                                tmp_[0] = ((2 * dx_[0] + dx_[1])*S_[0] - dx_[0] * S_[1]) / (dx_[1] + dx_[0]);
+                                if (tmp_[0]*S_[0]<0.0) {
+                                    tmp_[0] = 0;
+                                }
+                                else if (S_[0]*S_[1]<0) {
+                                    if (std::fabs(tmp_[0])>std::fabs(3*S_[0])) {
+                                            tmp_[0] = 3*S_[0];
+                                    }
+                                }
+                                // end points [n-1]
+                                tmp_[n_-1] = ((2*dx_[n_-2]+dx_[n_-3])*S_[n_-2]-dx_[n_-2]*S_[n_-3])/(dx_[n_-3]+dx_[n_-2]);
+                                if (tmp_[n_-1]*S_[n_-2]<0.0) {
+                                    tmp_[n_-1] = 0;
+                                }
+                                else if (S_[n_-2]*S_[n_-3]<0) {
+                                    if (std::fabs(tmp_[n_-1])>std::fabs(3*S_[n_-2])) {
+                                        tmp_[n_-1] = 3*S_[n_-2];
+                                    }
+                                }
                                 break;
                             default:
                                 QL_FAIL("unknown scheme");

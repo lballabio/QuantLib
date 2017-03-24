@@ -48,7 +48,8 @@ namespace QuantLib {
                               Real theta = 0.1,
                               Real k = 0.1,
                               Real sigma = 0.1,
-                              Real x0 = 0.05);
+                              Real x0 = 0.05,
+                              bool withFellerConstraint = true);
 
         boost::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
 

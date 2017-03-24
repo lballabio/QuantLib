@@ -331,12 +331,14 @@ namespace QuantLib {
         }
         //@}
 
-        /*!The value of the latent variable Y_i conditional to (given) a set of 
-        values of the factors. 
-        @param allFactors Contains values for all the independent factors in 
-        the model. The systemic and idiosyncratic in that order. A full sample 
-        is required, i.e. all the idiosyncratic values are expected to be 
-        present even if only the relevant one is used.
+        /*! The value of the latent variable Y_i conditional to
+            (given) a set of values of the factors.
+
+            The passed allFactors vector contains values for all the
+            independent factors in the model (systemic and
+            idiosyncratic, in that order). A full sample is required,
+            i.e. all the idiosyncratic values are expected to be
+            present even if only the relevant one is used.
         */
         Real latentVarValue(const std::vector<Real>& allFactors, 
                             Size iVar) const 
@@ -530,11 +532,13 @@ namespace QuantLib {
         /*! Constructs a LM with an arbitrary number of latent variables 
           depending only on one random factor with the same weight for all
           latent variables.
-            @param correlSqr The weight, same for all.
-            @param ini Initialization variables. Trait type from the copula 
-              policy to allow for static policies (this solution needs to be 
-              revised, possibly drop the static policy and create a policy 
-              member in LatentModel)
+
+            correlSqr is the weight, same for all.
+
+            ini is a trait type from the copula policy, to allow for
+            static policies (this solution needs to be revised,
+            possibly drop the static policy and create a policy member
+            in LatentModel)
         */
         explicit LatentModel(const Real correlSqr, Size nVariables,
             const typename copulaType::initTraits& ini = 
@@ -543,11 +547,13 @@ namespace QuantLib {
           depending only on one random factor with the same weight for all
           latent variables. The weight is observed and this constructor is
           intended to be used when the model relates to a market value.
-            @param singleFactorCorrel The weight/mkt-factor, same for all.
-            @param ini Initialization variables. Trait type from the copula 
-              policy to allow for static policies (this solution needs to be 
-              revised, possibly drop the static policy and create a policy 
-              member in LatentModel)
+
+            singleFactorCorrel is the weight/mkt-factor, same for all.
+
+            ini is a trait type from the copula policy, to allow for
+            static policies (this solution needs to be revised,
+            possibly drop the static policy and create a policy member
+            in LatentModel)
         */
         explicit LatentModel(const Handle<Quote>& singleFactorCorrel,
             Size nVariables,
@@ -642,6 +648,8 @@ namespace QuantLib {
 
     // Defines ----------------------------------------------------------------
 
+#ifndef __DOXYGEN__
+
     template <class Impl>
     LatentModel<Impl>::LatentModel(
         const std::vector<std::vector<Real> >& factorWeights,
@@ -708,6 +716,7 @@ namespace QuantLib {
         registerWith(cachedMktFactor_);
     }
 
+#endif
 
     template <class Impl>
     void LatentModel<Impl>::update() {
@@ -724,6 +733,7 @@ namespace QuantLib {
         notifyObservers();
     }
 
+#ifndef __DOXYGEN__
 
     //----Template partial specializations of the random FactorSampler--------
     /*
@@ -794,6 +804,7 @@ namespace QuantLib {
         mutable std::vector<PolarStudentTRng<URNG> > trng_;
     };
 
+#endif
 
 }                    
 

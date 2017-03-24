@@ -53,7 +53,7 @@ namespace QuantLib {
         // pow(x, order)
         class MonomialFct : public std::unary_function<Real, Real> {
           public:
-            MonomialFct(Size order): order_(order) {}
+            explicit MonomialFct(Size order): order_(order) {}
             inline Real operator()(const Real x) const {
                 Real ret = 1.0;
                 for(Size i=0; i<order_; ++i)

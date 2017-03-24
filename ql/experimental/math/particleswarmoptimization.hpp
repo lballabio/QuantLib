@@ -36,6 +36,7 @@ Computation, 6(2): 58–73.
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/experimental/math/isotropicrandomwalk.hpp>
 #include <ql/experimental/math/levyflightdistribution.hpp>
+#include <ql/math/randomnumbers/seedgenerator.hpp>
 
 #include <boost/random/mersenne_twister.hpp>
 typedef boost::mt19937 base_generator_type;
@@ -97,12 +98,12 @@ namespace QuantLib {
             boost::shared_ptr<Topology> topology,
             boost::shared_ptr<Inertia> inertia,
             Real c1 = 2.05, Real c2 = 2.05,
-            unsigned long seed = 0);
-        ParticleSwarmOptimization(const Size M,
+            unsigned long seed = SeedGenerator::instance().get());
+        explicit ParticleSwarmOptimization(const Size M,
             boost::shared_ptr<Topology> topology,
             boost::shared_ptr<Inertia> inertia,
             Real omega, Real c1, Real c2,
-            unsigned long seed = 0);
+            unsigned long seed = SeedGenerator::instance().get());
         void startState(Problem &P, const EndCriteria &endCriteria);
         EndCriteria::Type minimize(Problem &P, const EndCriteria &endCriteria);
 
@@ -134,8 +135,8 @@ namespace QuantLib {
         std::vector<Array> *X_, *V_, *pBX_, *gBX_;
         Array *pBF_, *gBF_;
         Array *lX_, *uX_;
-      private:
-        void init(ParticleSwarmOptimization *pso) {
+
+        virtual void init(ParticleSwarmOptimization *pso) {
             pso_ = pso;
             X_ = &pso_->X_;
             V_ = &pso_->V_;
@@ -173,7 +174,7 @@ namespace QuantLib {
     */
     class SimpleRandomInertia : public ParticleSwarmOptimization::Inertia {
       public:
-        SimpleRandomInertia(Real threshhold = 0.5, unsigned long seed = 0)
+        SimpleRandomInertia(Real threshhold = 0.5, unsigned long seed = SeedGenerator::instance().get())
             : threshhold_(threshhold), rng_(seed) {
             QL_REQUIRE(threshhold_ >= 0.0 && threshhold_ < 1.0, "Threshhold must be a Real in [0, 1)");
         }
@@ -255,18 +256,16 @@ namespace QuantLib {
     class LevyFlightInertia : public ParticleSwarmOptimization::Inertia {
       public:
         typedef IsotropicRandomWalk<LevyFlightDistribution, base_generator_type> IsotropicLevyFlight;
-        LevyFlightInertia(Real alpha, Size threshhold, 
-                          unsigned long seed = 0)
-            :flight_(base_generator_type(seed), LevyFlightDistribution(1.0, alpha), 
+        LevyFlightInertia(Real alpha, Size threshhold,
+                          unsigned long seed = SeedGenerator::instance().get())
+            :rng_(seed), flight_(base_generator_type(seed), LevyFlightDistribution(1.0, alpha),
                 1, Array(1, 1.0), seed),
             threshhold_(threshhold) {};
         inline void setSize(Size M, Size N, Real c0, const EndCriteria &endCriteria) {
             M_ = M;
             N_ = N;
             c0_ = c0;
-            personalBestF_ = *pBF_;
             adaptiveCounter_ = std::vector<Size>(M_, 0);
-            flight_.setDimension(N_, *lX_, *uX_);
         }
         inline void setValues() {
             for (Size i = 0; i < M_; i++) {
@@ -287,6 +286,12 @@ namespace QuantLib {
                     flight_.nextReal<Real *>(&(*V_)[i][0]);
                 }
             }
+        }
+      protected:
+        void init(ParticleSwarmOptimization *pso) {
+            ParticleSwarmOptimization::Inertia::init(pso);
+            personalBestF_ = *pBF_;
+            flight_.setDimension(N_, *lX_, *uX_);
         }
       private:
         MersenneTwisterUniformRng rng_;
@@ -367,8 +372,7 @@ namespace QuantLib {
         }
         inline void setSize(Size M) {
             M_ = M;
-            if (M_ < 2 * K_ + 1)
-                K_ = (M_ - 1) / 2;
+            QL_ENSURE(K_ < M, "Number of neighbors need to be smaller than total particles in swarm");
         }
         void findSocialBest();
 
@@ -390,7 +394,7 @@ namespace QuantLib {
       public:
         ClubsTopology(Size defaultClubs, Size totalClubs,
             Size maxClubs, Size minClubs,
-            Size resetIteration, unsigned long seed = 0);
+            Size resetIteration, unsigned long seed = SeedGenerator::instance().get());
         void setSize(Size M);
         void findSocialBest();
 
@@ -412,5 +416,4 @@ namespace QuantLib {
 }
 
 #endif
-
 #endif

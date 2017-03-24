@@ -32,6 +32,12 @@
 
 #include <ql/types.hpp>
 
+#ifdef VERSION
+/* This comes from ./configure, and for some reason it interferes with
+   the internals of the unit test library in Boost 1.63. */
+#undef VERSION
+#endif
+
 #include <boost/timer.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
@@ -190,10 +196,10 @@ int main( int argc, char* argv[] )
     const std::string clientModeStr = "--client_mode=true";
     const bool clientMode = (std::string(argv[argc-1]) == clientModeStr);
 
-    unsigned int priority;
     message_queue::size_type recvd_size;
 
     try {
+        unsigned int priority;
         if (!clientMode) {
             std::map<std::string, Time> runTimeLog;
 

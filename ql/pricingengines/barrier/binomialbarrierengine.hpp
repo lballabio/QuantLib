@@ -47,13 +47,14 @@ namespace QuantLib {
     template <class T, class D>
     class BinomialBarrierEngine : public BarrierOption::engine {
       public:
-        /*! \param maxTimeSteps is used to limit timeSteps when using Boyle-Lau
-                   optimization. If zero (the default) the maximum number of 
-                   steps is calculated by an heuristic: anything when < 1000,
-                   otherwise no more than 5*timeSteps.
-                   If maxTimeSteps is equal to timeSteps Boyle-Lau is disabled.
-                   Likewise if the lattice is not CoxRossRubinstein Boyle-Lau is 
-                   disabled and maxTimeSteps ignored.
+        /*! The maxTimeSteps parameter is used to limit timeSteps when
+            using Boyle-Lau optimization. If zero (the default) the
+            maximum number of steps is calculated by an heuristic:
+            anything when < 1000, otherwise no more than 5*timeSteps.
+            If maxTimeSteps is equal to timeSteps, Boyle-Lau is
+            disabled.  Likewise if the lattice is not
+            CoxRossRubinstein Boyle-Lau is disabled and maxTimeSteps
+            ignored.
         */
         BinomialBarrierEngine(
              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,

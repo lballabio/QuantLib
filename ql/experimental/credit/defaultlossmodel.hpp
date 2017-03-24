@@ -69,10 +69,10 @@ namespace QuantLib {
             QL_FAIL("expectedTrancheLoss Not implemented for this model.");
         }
         /*! Probability of the tranche losing the same or more than the 
-          fractional amount given.
+            fractional amount given.
 
-            @param lossFraction A fraction of losses over the tranche 
-                                notional (not the portfolio)
+            The passed lossFraction is a fraction of losses over the
+            tranche notional (not the portfolio).
         */
         virtual Probability probOverLoss(
             const Date& d, Real lossFraction) const {

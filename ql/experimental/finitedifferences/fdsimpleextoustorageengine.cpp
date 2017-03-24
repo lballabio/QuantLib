@@ -45,7 +45,7 @@ namespace QuantLib {
     namespace {
         class FdmStorageValue : public FdmInnerValueCalculator {
           public:
-            FdmStorageValue(const boost::shared_ptr<FdmMesher>& mesher)
+            explicit FdmStorageValue(const boost::shared_ptr<FdmMesher>& mesher)
             : mesher_(mesher) { }
 
             Real innerValue(const FdmLinearOpIterator& iter, Time) {

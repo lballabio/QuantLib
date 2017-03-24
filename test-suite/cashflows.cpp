@@ -264,6 +264,28 @@ void CashFlowsTest::testNullFixingDays() {
         .withFixingDays(Null<Natural>());
 }
 
+void CashFlowsTest::testReferenceDatesAtEndOfMonth() {
+    BOOST_TEST_MESSAGE("Testing reference dates with end of month enabled...");
+    Schedule schedule =
+        MakeSchedule()
+        .from(Date(17, January, 2017)).to(Date(28, February, 2018))
+        .withFrequency(Semiannual)
+        .withConvention(Unadjusted)
+        .endOfMonth()
+        .backwards();
+
+    Leg leg = FixedRateLeg(schedule)
+        .withNotionals(100.0)
+        .withCouponRates(0.01, Actual360());
+
+    boost::shared_ptr<Coupon> firstCoupon =
+        boost::dynamic_pointer_cast<Coupon>(leg.front());
+
+    if (firstCoupon->referencePeriodStart() != Date(31, August, 2016))
+        BOOST_ERROR("Expected reference start date at end of month, "
+                    "got " << firstCoupon->referencePeriodStart());
+}
+
 test_suite* CashFlowsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Cash flows tests");
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testSettings));
@@ -272,6 +294,8 @@ test_suite* CashFlowsTest::suite() {
     #ifndef QL_USE_INDEXED_COUPON
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testNullFixingDays));
     #endif
+    suite->add(QUANTLIB_TEST_CASE(
+                             &CashFlowsTest::testReferenceDatesAtEndOfMonth));
     return suite;
 }
 

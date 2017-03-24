@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 Klaus Spanderen
+ Copyright (C) 2005, 2016 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,10 +19,15 @@
 
 #include "gaussianquadratures.hpp"
 #include "utilities.hpp"
+
 #include <ql/types.hpp>
+#include <ql/math/matrix.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
+#include <ql/experimental/math/gaussiannoncentralchisquaredpolynomial.hpp>
+
+#include <boost/math/distributions/non_central_chi_squared.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -66,6 +71,16 @@ namespace {
 
     Real x_inv_cosh(Real x) {
         return x/std::cosh(x);
+    }
+
+    Real x_x_nonCentralChiSquared(Real x) {
+        return x * x * boost::math::pdf(
+            boost::math::non_central_chi_squared_distribution<Real>(4.0,1.0),x);
+    }
+
+    Real x_sin_exp_nonCentralChiSquared(Real x) {
+        return x * std::sin(0.1*x) * std::exp(0.3*x) * boost::math::pdf(
+            boost::math::non_central_chi_squared_distribution<Real>(1.0,1.0),x);
     }
 
     template <class T>
@@ -173,6 +188,66 @@ void GaussianQuadraturesTest::testTabulated() {
                          (2.0/5.0), 1.0e-13);
 }
 
+void GaussianQuadraturesTest::testNonCentralChiSquared() {
+     BOOST_TEST_MESSAGE(
+         "Testing Gauss non central chi squared integration...");
+
+     testSingle(
+        GaussianQuadrature(2, GaussNonCentralChiSquaredPolynomial(4.0, 1.0)),
+        "f(x) = x^2 * nonCentralChiSquared(4, 1)(x)",
+        std::ptr_fun<Real,Real>(x_x_nonCentralChiSquared), 37.0);
+
+     testSingle(
+        GaussianQuadrature(14, GaussNonCentralChiSquaredPolynomial(1.0, 1.0)),
+        "f(x) = x * sin(0.1*x)*exp(0.3*x)*nonCentralChiSquared(1, 1)(x)",
+        std::ptr_fun<Real,Real>(x_sin_exp_nonCentralChiSquared), 17.408092);
+}
+
+
+void GaussianQuadraturesTest::testNonCentralChiSquaredSumOfNotes() {
+     BOOST_TEST_MESSAGE(
+         "Testing Gauss non central chi squared sum of notes...");
+
+     // Walter Gautschi, How and How not to check Gaussian Quadrature Formulae
+     // https://www.cs.purdue.edu/homes/wxg/selected_works/section_08/084.pdf
+
+     // Expected results have been calculated with a multi precision library
+     // following the description of test #4 in the paper above.
+     // Using QuantLib's own determinant function will not work here
+     // as it supports only double precision.
+
+     const Real expected[] = {
+         47.53491786730293,
+         70.6103295419633383,
+         98.0593406849441607,
+         129.853401537905341,
+         165.96963582663912,
+         206.389183233992043
+     };
+
+     const Real nu=4.0;
+     const Real lambda=1.0;
+     const GaussNonCentralChiSquaredPolynomial orthPoly(nu, lambda);
+
+#ifdef MULTIPRECISION_NON_CENTRAL_CHI_SQUARED_QUADRATURE
+     const Real tol = 1e-12;
+#else
+     const Real tol = 1e-5;
+#endif
+	 for (Size n = 4; n < 10; ++n) {
+		 const Array x = GaussianQuadrature(n, orthPoly).x();
+         const Real calculated = std::accumulate(x.begin(), x.end(), 0.0);
+
+
+         if (std::fabs(calculated - expected[n-4]) > tol) {
+             BOOST_ERROR("failed to reproduce rule of sum"
+                         << "\n    calculated: " << calculated
+                         << "\n    expected:   " << expected[n-4]
+                         << "\n    diff    :   " << calculated - expected[n-4]);
+         }
+     }
+}
+
 
 test_suite* GaussianQuadraturesTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Gaussian quadratures tests");
@@ -184,3 +259,14 @@ test_suite* GaussianQuadraturesTest::suite() {
     return suite;
 }
 
+test_suite* GaussianQuadraturesTest::experimental() {
+    test_suite* suite = BOOST_TEST_SUITE(
+        "Gaussian quadratures experimental tests");
+
+    suite->add(QUANTLIB_TEST_CASE(
+        &GaussianQuadraturesTest::testNonCentralChiSquared));
+    suite->add(QUANTLIB_TEST_CASE(
+        &GaussianQuadraturesTest::testNonCentralChiSquaredSumOfNotes));
+
+    return suite;
+}

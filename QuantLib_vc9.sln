@@ -97,6 +97,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CVAIRS", "Examples\CVAIRS\C
 		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GlobalOptimizer", "Examples\GlobalOptimizer\GlobalOptimizer_vc9.vcproj", "{ED7AED39-312A-4330-8ADF-DD24F848A754}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA} = {AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug (static runtime)|Win32 = Debug (static runtime)|Win32
@@ -429,6 +434,22 @@ Global
 		{D85EA161-361A-4CAC-8B77-39E174FCFFE2}.Release|Win32.Build.0 = Release|Win32
 		{D85EA161-361A-4CAC-8B77-39E174FCFFE2}.Release|x64.ActiveCfg = Release|x64
 		{D85EA161-361A-4CAC-8B77-39E174FCFFE2}.Release|x64.Build.0 = Release|x64
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Debug (static runtime)|Win32.ActiveCfg = Debug (static runtime)|Win32
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Debug (static runtime)|Win32.Build.0 = Debug (static runtime)|Win32
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Debug (static runtime)|x64.ActiveCfg = Debug (static runtime)|x64
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Debug (static runtime)|x64.Build.0 = Debug (static runtime)|x64
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Debug|Win32.ActiveCfg = Debug|Win32
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Debug|Win32.Build.0 = Debug|Win32
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Debug|x64.ActiveCfg = Debug|x64
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Debug|x64.Build.0 = Debug|x64
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Release (static runtime)|Win32.ActiveCfg = Release (static runtime)|Win32
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Release (static runtime)|Win32.Build.0 = Release (static runtime)|Win32
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Release (static runtime)|x64.ActiveCfg = Release (static runtime)|x64
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Release (static runtime)|x64.Build.0 = Release (static runtime)|x64
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Release|Win32.ActiveCfg = Release|Win32
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Release|Win32.Build.0 = Release|Win32
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Release|x64.ActiveCfg = Release|x64
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

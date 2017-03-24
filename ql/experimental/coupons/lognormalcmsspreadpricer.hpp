@@ -80,7 +80,7 @@ namespace QuantLib {
       private:
         class PrivateObserver : public Observer {
           public:
-            PrivateObserver(LognormalCmsSpreadPricer *t) : t_(t) {}
+            explicit PrivateObserver(LognormalCmsSpreadPricer *t) : t_(t) {}
             void update() { t_->flushCache(); }
 
           private:

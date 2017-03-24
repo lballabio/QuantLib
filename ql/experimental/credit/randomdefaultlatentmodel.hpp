@@ -167,10 +167,10 @@ namespace QuantLib {
         techniques to improve it (not implemented here) see:
         Joshi, M., D. Kainth. 2004. Rapid and accurate development of prices
         and Greeks for nth to default credit swaps in the Li model. Quantitative
-        Finance, Vol. 4. Institute of Physics Publishing, London, UK, 266–275
+        Finance, Vol. 4. Institute of Physics Publishing, London, UK, 266-275
         and:
         Chen, Z., Glasserman, P. 'Fast pricing of basket default swaps' in
-        Operations Research Vol. 56, No. 2, March–April 2008, pp. 286–303
+        Operations Research Vol. 56, No. 2, March/April 2008, pp. 286-303
         */
         virtual Disposable<std::vector<Probability> > probsBeingNthEvent(Size n,
             const Date& d) const;
@@ -190,14 +190,17 @@ namespace QuantLib {
         virtual boost::tuples::tuple<Real, Real, Real> percentileAndInterval(
             const Date& d, Real percentile) const;
         /*! Distributes the total VaR amount along the portfolio counterparties.
-        @param loss Loss amount (in loss units).
+            The passed loss amount is in loss units.
         */
         virtual Disposable<std::vector<Real> > splitVaRLevel(const Date& date,
             Real loss) const;
-        /*! Distributes the total VaR amount along the portfolio counterparties.
-        Provides confidence interval for split so that portfolio optimization
-        can be performed outside those limits.
-        @param loss Loss amount (in loss units).
+        /*! Distributes the total VaR amount along the portfolio
+            counterparties.
+
+            Provides confidence interval for split so that portfolio
+            optimization can be performed outside those limits.
+
+            The passed loss amount is in loss units.
         */
         virtual Disposable<std::vector<std::vector<Real> > > splitVaRAndError(
             const Date& date, Real loss, Probability confInterval) const;
@@ -363,7 +366,8 @@ namespace QuantLib {
             Real portfSimLoss=0.;
             for(Size iEvt=0; iEvt < events.size(); iEvt++) {
                 // if event is within time horizon...
-                if(val > static_cast<Date::serial_type>(events[iEvt].dayFromRef)) {
+                if(val > static_cast<Date::serial_type>(
+					   events[iEvt].dayFromRef)) {
                     Size iName = events[iEvt].nameIdx;
                     // ...and is contained in the basket.
                         portfSimLoss +=
@@ -420,7 +424,8 @@ namespace QuantLib {
 
             Real portfSimLoss=0.;
             for(Size iEvt=0; iEvt < events.size(); iEvt++) {
-                if(val > static_cast<Date::serial_type>(events[iEvt].dayFromRef)) {
+                if(val > static_cast<Date::serial_type>(
+					 events[iEvt].dayFromRef)) {
                     Size iName = events[iEvt].nameIdx;
           // test needed (here and the others) to reuse simulations:
           //          if(basket_->pool()->has(copula_->pool()->names()[iName]))
@@ -462,7 +467,8 @@ namespace QuantLib {
             const std::vector<simEvent<D<C, URNG> > >& events = getSim(iSim);
             Real portfSimLoss=0.;
             for(Size iEvt=0; iEvt < events.size(); iEvt++) {
-                if(val > static_cast<Date::serial_type>(events[iEvt].dayFromRef)) {
+                if(val > static_cast<Date::serial_type>(
+					  events[iEvt].dayFromRef)) {
                     Size iName = events[iEvt].nameIdx;
                     // ...and is contained in the basket.
                     //if(basket_->pool()->has(copula_->pool()->names()[iName]))
@@ -490,7 +496,8 @@ namespace QuantLib {
                 losses.end())) / static_cast<Real>(nSims_);
 
         return ( perctlInf * (1.-percent-probOverQ) +//<-correction term
-            std::accumulate(losses.begin() + position, losses.end(), Real(0.))/nSims_
+            std::accumulate(losses.begin() + position, losses.end(), 
+			    Real(0.))/nSims_
                 )/(1.-percent);
 
         /* Alternative ESF definition; find the first loss larger than the
@@ -553,7 +560,8 @@ namespace QuantLib {
             const std::vector<simEvent<D<C, URNG> > >& events = getSim(iSim);
             Real portfSimLoss=0.;
             for(Size iEvt=0; iEvt < events.size(); iEvt++) {
-                if(val > static_cast<Date::serial_type>(events[iEvt].dayFromRef)) {
+                if(val > static_cast<Date::serial_type>(
+					 events[iEvt].dayFromRef)) {
                     Size iName = events[iEvt].nameIdx;
                  //   if(basket_->pool()->has(copula_->pool()->names()[iName]))
                         portfSimLoss +=
@@ -659,7 +667,8 @@ namespace QuantLib {
             std::vector<simEvent<D<C, URNG> > > splitEventsBuffer;
 
             for(Size iEvt=0; iEvt < events.size(); iEvt++) {
-                if(val > static_cast<Date::serial_type>(events[iEvt].dayFromRef)) {
+                if(val > static_cast<Date::serial_type>(
+					 events[iEvt].dayFromRef)) {
                     Size iName = events[iEvt].nameIdx;
                 // if(basket_->pool()->has(copula_->pool()->names()[iName])) {
                         portfSimLoss +=
@@ -735,7 +744,7 @@ namespace QuantLib {
 
     // --------- Time inversion solver target function: -----------------------
 
-    /* It could be argued that this concept is part of the copula (more generic).
+    /* It could be argued that this concept is part of the copula (more generic)
     In general when the modelled magnitude is parametric one can solve for
     inversion to get the parameter value for a given magnitude value (provided
     the modelled variable dependence in invertible). In this particular problem

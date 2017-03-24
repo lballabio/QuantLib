@@ -55,9 +55,11 @@ namespace QuantLib {
         Basket() {}
         /*! Constructs a basket of simple collection of constant notional 
           positions subject to default risk only.
-          @param refDate Basket inception date. Date at which defaultable 
-                events are relevant. (There are no constraints on forward
-                baskets but models assigned should be consistent.)
+          
+          The refDate parameter is the basket inception date, that is,
+          the date at which defaultable events are relevant. (There
+          are no constraints on forward baskets but models assigned
+          should be consistent.)
         */
         Basket(
             const Date& refDate,
@@ -233,10 +235,9 @@ namespace QuantLib {
         */
         //@{
         Real expectedTrancheLoss(const Date& d) const;
-        /*!
-            @param lossFraction is the fraction of losses expressed in 
-              inception (no losses) tranche units (e.g. 'attach level'=0%, 
-              'detach level'=100%)
+        /*! The lossFraction is the fraction of losses expressed in 
+            inception (no losses) tranche units (e.g. 'attach level'=0%, 
+            'detach level'=100%)
         */
         Probability probOverLoss(const Date& d, Real lossFraction) const;
         /*! 
@@ -257,8 +258,10 @@ namespace QuantLib {
         Real defaultCorrelation(const Date& d, Size iName, Size jName) const;
         /*! Probability vector that each of the remaining live names (at eval
           date) is the n-th default by date d.
-          @param n The internal index to the name, it should be live at the 
-            evaluation date.
+
+          The n parameter is the internal index to the name; it should
+          be alive at the evaluation date.
+
         ---------TO DO: Implement with a string passed----------------------
         ---------TO DO: Perform check the name is alive---------------------
         */

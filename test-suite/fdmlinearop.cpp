@@ -741,8 +741,8 @@ void FdmLinearOpTest::testTripleBandMapSolve() {
         }
     }
 
-    //check assigment operator
-    copyOfDxx = SecondDerivativeOp(1, mesher);
+    //check assignment operator
+    copyOfDxx.add(SecondDerivativeOp(1, mesher));
     copyOfDxx = dxx;
 
     t = dxx.solve_splitting(copyOfDxx.apply(u), 1.0, 0.0);

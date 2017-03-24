@@ -51,7 +51,7 @@ namespace QuantLib {
         Integer numericCode() const;
         //! symbol, e.g, "$"
         const std::string& symbol() const;
-        //! fraction symbol, e.g, "¢"
+        //! fraction symbol, e.g, "Â¢"
         const std::string& fractionSymbol() const;
         //! number of fractionary parts in a unit, e.g, 100
         Integer fractionsPerUnit() const;

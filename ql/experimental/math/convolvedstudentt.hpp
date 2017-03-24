@@ -170,6 +170,7 @@ namespace QuantLib {
             @param degreesFreedom Degrees of freedom of the Ts convolved. The
                 algorithm is limited to odd orders only.
             @param factors Factors in the linear combination of the Ts.
+            @param accuracy The accuracy of the root-solving process.
         */
         InverseCumulativeBehrensFisher(
             const std::vector<Integer>& degreesFreedom = std::vector<Integer>(),

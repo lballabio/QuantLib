@@ -18,7 +18,26 @@
 
 /*! \page history Version history
 
-    <strong>Release 1.9 - November 2016</strong>
+    <strong>Release 1.9.2 - February 2017</strong>
+
+    %QuantLib 1.9.2 is a bug-fix release for version 1.9.1.
+
+    - Prevented errors in yield-curve bootstrapping tests due to an
+      incorrect test setup (thanks to Peter Caspers for the heads-up).
+
+    <strong>Release 1.9.1 - January 5th, 2017</strong>
+
+    %QuantLib 1.9.1 is a bug-fix release for version 1.9.
+
+    - Prevented a linking error when multiple compilation units
+      included the global ql/quantlib.hpp header (thanks to Dirk
+      Eddelbuettel).
+    - Prevented a compilation error with gcc 4.4 on RedHat (thanks to
+      GitHub user aloupos for the heads-up).
+    - Prevented a compilation error with the parallel unit runner and
+      the recently released Boost 1.63.0.
+
+    <strong>Release 1.9 - November 8th, 2016</strong>
 
     PORTABILITY
     - Dropped support for Visual C++ 8 (2005).  As of April 2016, the

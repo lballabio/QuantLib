@@ -32,7 +32,7 @@ namespace QuantLib {
     //! Halton low-discrepancy sequence generator
     /*! Halton algorithm for low-discrepancy sequence.  For more
         details see chapter 8, paragraph 2 of "Monte Carlo Methods in
-        Finance", by Peter Jäckel
+        Finance", by Peter JÃ¤ckel
 
         \test
         - the correctness of the returned values is tested by

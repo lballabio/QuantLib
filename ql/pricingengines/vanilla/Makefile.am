@@ -17,6 +17,7 @@ this_include_HEADERS = \
     batesengine.hpp \
     binomialengine.hpp \
     bjerksundstenslandengine.hpp \
+    coshestonengine.hpp \
     discretizedvanillaoption.hpp \
     hestonexpansionengine.hpp \
     integralengine.hpp \
@@ -60,6 +61,7 @@ libVanillaEngines_la_SOURCES = \
     baroneadesiwhaleyengine.cpp \
     batesengine.cpp \
     bjerksundstenslandengine.cpp \
+    coshestonengine.cpp \
     discretizedvanillaoption.cpp \
     hestonexpansionengine.cpp \
     integralengine.cpp \

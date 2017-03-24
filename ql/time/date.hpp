@@ -234,7 +234,7 @@ namespace QuantLib {
         static Date universalDateTime();
 
         //! underlying resolution of the  posix date time object
-        static Size ticksPerSecond();
+        static boost::posix_time::time_duration::tick_type ticksPerSecond();
 #endif
 
         //@}

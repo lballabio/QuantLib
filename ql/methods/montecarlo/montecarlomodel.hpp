@@ -96,7 +96,7 @@ namespace QuantLib {
     inline void MonteCarloModel<MC,RNG,S>::addSamples(Size samples) {
         for(Size j = 1; j <= samples; j++) {
 
-            sample_type path = pathGenerator_->next();
+            const sample_type& path = pathGenerator_->next();
             result_type price = (*pathPricer_)(path.value);
 
             if (isControlVariate_) {
@@ -104,19 +104,19 @@ namespace QuantLib {
                     price += cvOptionValue_-(*cvPathPricer_)(path.value);
                 }
                 else {
-                    sample_type cvPath = cvPathGenerator_->next();
+                    const sample_type& cvPath = cvPathGenerator_->next();
                     price += cvOptionValue_-(*cvPathPricer_)(cvPath.value);
                 }
             }
 
             if (isAntitheticVariate_) {
-                path = pathGenerator_->antithetic();
-                result_type price2 = (*pathPricer_)(path.value);
+                const sample_type& atPath = pathGenerator_->antithetic();
+                result_type price2 = (*pathPricer_)(atPath.value);
                 if (isControlVariate_) {
                     if (!cvPathGenerator_)
-                        price2 += cvOptionValue_-(*cvPathPricer_)(path.value);
+                        price2 += cvOptionValue_-(*cvPathPricer_)(atPath.value);
                     else {
-                        sample_type cvPath = cvPathGenerator_->antithetic();
+                        const sample_type& cvPath = cvPathGenerator_->antithetic();
                         price2 += cvOptionValue_-(*cvPathPricer_)(cvPath.value);
                     }
                 }

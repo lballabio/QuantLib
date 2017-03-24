@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
@@ -338,6 +338,9 @@
     <ClCompile Include="spreadoption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="squarerootclvmodel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="stats.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -424,6 +427,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="observable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="normalclvmodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -758,6 +764,9 @@
     <ClInclude Include="spreadoption.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="squarerootclvmodel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="stats.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -846,6 +855,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="observable.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="normalclvmodel.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
