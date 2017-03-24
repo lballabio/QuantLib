@@ -103,7 +103,7 @@ namespace QuantLib {
                 } else {
                     previousRef = schedule_.calendar().advance(refPeriodStart,
                                                                -schedule_.tenor(),
-                                                               schedule_.businessDayConvention();,
+                                                               schedule_.businessDayConvention(),
                                                                schedule_.endOfMonth());
                 }
 
