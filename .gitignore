@@ -42,6 +42,10 @@ test-suite/*.trs
 **/bin/*.xml
 **/bin/*.manifest
 
+# CLion
+.idea
+cmake-build-debug
+
 # Artifacts created in multiple directories
 Makefile
 Makefile.in
