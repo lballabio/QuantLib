@@ -19,8 +19,15 @@
 
 #include "observable.hpp"
 #include "utilities.hpp"
+#include <ql/indexes/ibor/euribor.hpp>
 #include <ql/patterns/observable.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/capfloor/capfloortermvolsurface.hpp>
+#include <ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp>
+#include <ql/termstructures/volatility/optionlet/strippedoptionlet.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
+
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -249,7 +256,45 @@ void ObservableTest::testMultiThreadingGlobalSettings() {
 }
 #endif
 
+void ObservableTest::testDeepUpdate() {
 
+    SavedSettings backup;
+
+    Date refDate = Settings::instance().evaluationDate();
+
+    ObservableSettings::instance().disableUpdates(true);
+
+    Handle<YieldTermStructure> yts(
+        boost::make_shared<FlatForward>(0, NullCalendar(), 0.02, Actual365Fixed()));
+    boost::shared_ptr<IborIndex> ibor = boost::make_shared<Euribor>(3 * Months, yts);
+    std::vector<Real> strikes;
+    std::vector<Date> dates;
+    std::vector<std::vector<Handle<Quote> > > quotes;
+    strikes.push_back(0.01);
+    strikes.push_back(0.02);
+    dates.push_back(refDate + 90);
+    dates.push_back(refDate + 180);
+    boost::shared_ptr<SimpleQuote> q = boost::make_shared<SimpleQuote>(0.20);
+    quotes.push_back(std::vector<Handle<Quote> >(2, Handle<Quote>(q)));
+    quotes.push_back(std::vector<Handle<Quote> >(2, Handle<Quote>(q)));
+
+    boost::shared_ptr<StrippedOptionletAdapter> vol =
+        boost::make_shared<StrippedOptionletAdapter>(boost::make_shared<StrippedOptionlet>(
+            0, NullCalendar(), Unadjusted, ibor, dates, strikes, quotes, Actual365Fixed()));
+
+    Real v1 = vol->volatility(refDate + 100, 0.01);
+    q->setValue(0.21);
+    Real v2 = vol->volatility(refDate + 100, 0.01);
+    vol->update();
+    Real v3 = vol->volatility(refDate + 100, 0.01);
+    vol->deepUpdate();
+    Real v4 = vol->volatility(refDate + 100, 0.01);
+
+    BOOST_CHECK_CLOSE(v1, 0.2, 1E-10);
+    BOOST_CHECK_CLOSE(v2, 0.2, 1E-10);
+    BOOST_CHECK_CLOSE(v3, 0.2, 1E-10);
+    BOOST_CHECK_CLOSE(v4, 0.21, 1E-10);
+}
 
 test_suite* ObservableTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Observer tests");
@@ -261,6 +306,8 @@ test_suite* ObservableTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
         &ObservableTest::testMultiThreadingGlobalSettings));
 #endif
+
+    suite->add(QUANTLIB_TEST_CASE(&ObservableTest::testDeepUpdate));
 
     return suite;
 }
