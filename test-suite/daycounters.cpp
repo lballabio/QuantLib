@@ -231,7 +231,7 @@ void DayCounterTest::testActualActualWithSchedule() {
                    << "    expected:   " << t1);
     }
 
-    // settlement date in the first quasi-period
+    // settlement date in the second quasi-period
     settlementDate = Date(29, July, 2017);
 
     T = dayCounter.yearFraction(issueDate,

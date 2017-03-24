@@ -101,10 +101,9 @@ namespace QuantLib {
                 if (schedule_.empty()) {
                     previousRef = refPeriodStart - months*Months;
                 } else {
-                    BusinessDayConvention bdc = schedule_.businessDayConvention();
                     previousRef = schedule_.calendar().advance(refPeriodStart,
                                                                -schedule_.tenor(),
-                                                               bdc,
+                                                               schedule_.businessDayConvention();,
                                                                schedule_.endOfMonth());
                 }
 
