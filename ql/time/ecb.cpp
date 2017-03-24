@@ -58,7 +58,7 @@ namespace QuantLib {
             , 42032, 42074, 42116, 42165, 42207, 42256, 42305, 42347// 2015
             // https://www.ecb.europa.eu/press/pr/date/2015/html/pr150622.en.html
             , 42396, 42445, 42487, 42529, 42578, 42627, 42669, 42718 // 2016
-            // https://www.ecb.europa.eu/press/calendars/mgcgc/html/index.en.html
+            // https://www.ecb.europa.eu/press/calendars/reserve/html/index.en.html
             , 42760, 42809, 42858, 42900, 42942, 42991, 43040, 43089 //2017
         };
         if (knownDateSet.empty()) {
