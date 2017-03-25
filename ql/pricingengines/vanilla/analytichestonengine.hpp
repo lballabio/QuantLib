@@ -81,7 +81,7 @@ namespace QuantLib {
                                     VanillaOption::results> {
       public:
         class Integration;
-        enum ComplexLogFormula { Gatheral, BranchCorrection };
+        enum ComplexLogFormula { Gatheral, BranchCorrection, AndersenPiterbarg };
 
         // Simple to use constructor: Using adaptive
         // Gauss-Lobatto integration and Gatheral's version of complex log.
@@ -101,6 +101,9 @@ namespace QuantLib {
         AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
                              ComplexLogFormula cpxLog, const Integration& itg);
 
+
+        // normalized characteristic function
+        std::complex<Real> chF(const std::complex<Real>& z, Time t) const;
 
         void calculate() const;
         Size numberOfEvaluations() const;
@@ -127,6 +130,7 @@ namespace QuantLib {
 
       private:
         class Fj_Helper;
+        class AP_Helper;
 
         mutable Size evaluations_;
         const ComplexLogFormula cpxLog_;

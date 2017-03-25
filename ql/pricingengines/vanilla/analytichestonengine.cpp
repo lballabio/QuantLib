@@ -31,7 +31,10 @@
 #include <ql/math/integrals/gausslobattointegral.hpp>
 
 #include <ql/instruments/payoffs.hpp>
+#include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
+
+#include <iostream>
 
 #if defined(QL_PATCH_MSVC)
 #pragma warning(disable: 4180)
@@ -112,7 +115,7 @@ namespace QuantLib {
             Real ratio,
             Size j);
 
-        Real operator()(Real phi)      const;
+        Real operator()(Real phi) const;
 
     private:
         const Size j_;
@@ -329,6 +332,69 @@ namespace QuantLib {
         }
     }
 
+
+    class AnalyticHestonEngine::AP_Helper
+        : public std::unary_function<Real, Real> {
+      public:
+        AP_Helper(Time term, Real s0, Real strike, Real ratio,
+                  Volatility sigmaBS,
+                  const AnalyticHestonEngine* const enginePtr)
+        : term_(term),
+          s0_(s0),
+          strike_(strike),
+          ratio_(ratio),
+          sigmaBS_(sigmaBS),
+          x_(std::log(s0)),
+          sx_(std::log(strike)),
+          dd_(x_-std::log(ratio)),
+          enginePtr_(enginePtr) {}
+
+        Real operator()(Real u) const {
+            const std::complex<Real> z(u, -0.5);
+
+            const std::complex<Real> phiBS
+                = std::exp(-0.5*sigmaBS_*sigmaBS_*term_
+                           *(z*z + std::complex<Real>(-z.imag(), z.real())));
+
+            return (std::exp(std::complex<Real>(0.0, u*(dd_-sx_)))
+                * (phiBS - enginePtr_->chF(z, term_)) / (u*u + 0.25)).real();
+        }
+
+      private:
+        const Time term_;
+        const Real s0_, strike_, ratio_;
+        const Volatility sigmaBS_;
+        const Real x_, sx_, dd_;
+        const AnalyticHestonEngine* const enginePtr_;
+    };
+
+    std::complex<Real> AnalyticHestonEngine::chF(
+        const std::complex<Real>& z, Time t) const {
+
+        const Real kappa = model_->kappa();
+        const Real sigma = model_->sigma();
+        const Real theta = model_->theta();
+        const Real rho   = model_->rho();
+        const Real v0    = model_->v0();
+
+        const Real sigma2 = sigma*sigma;
+
+        const std::complex<Real> g
+            = kappa + rho*sigma*std::complex<Real>(z.imag(), -z.real());
+
+        const std::complex<Real> D = std::sqrt(
+            g*g + (z*z + std::complex<Real>(-z.imag(), z.real()))*sigma2);
+
+        const std::complex<Real> G = (g-D)/(g+D);
+
+        return std::exp(
+            v0/(sigma2)*(1.0-std::exp(-D*t))/(1.0-G*std::exp(-D*t))
+             *(g-D) + kappa*theta/sigma2*((g-D)*t
+                -2.0*std::log((1.0-G*std::exp(-D*t))/(1.0-G)))
+            );
+    }
+
+
     AnalyticHestonEngine::AnalyticHestonEngine(
                               const boost::shared_ptr<HestonModel>& model,
                               Size integrationOrder)
@@ -392,29 +458,67 @@ namespace QuantLib {
                 std::sqrt(1.0-square<Real>()(rho))/sigma))
                 *(v0 + kappa*theta*term);
 
-        evaluations = 0;
-        const Real p1 = integration.calculate(c_inf,
-            Fj_Helper(kappa, theta, sigma, v0, spotPrice, rho, enginePtr,
-                      cpxLog, term, strikePrice, ratio, 1))/M_PI;
-        evaluations+= integration.numberOfEvaluations();
+        switch(cpxLog) {
+          case Gatheral:
+          case BranchCorrection: {
 
-        const Real p2 = integration.calculate(c_inf,
-            Fj_Helper(kappa, theta, sigma, v0, spotPrice, rho, enginePtr,
-                      cpxLog, term, strikePrice, ratio, 2))/M_PI;
-        evaluations+= integration.numberOfEvaluations();
+            evaluations = 0;
+            const Real p1 = integration.calculate(c_inf,
+                Fj_Helper(kappa, theta, sigma, v0, spotPrice, rho, enginePtr,
+                          cpxLog, term, strikePrice, ratio, 1))/M_PI;
+            evaluations += integration.numberOfEvaluations();
 
-        switch (type.optionType())
-        {
-          case Option::Call:
-            value = spotPrice*dividendDiscount*(p1+0.5)
-                           - strikePrice*riskFreeDiscount*(p2+0.5);
-            break;
-          case Option::Put:
-            value = spotPrice*dividendDiscount*(p1-0.5)
-                           - strikePrice*riskFreeDiscount*(p2-0.5);
-            break;
+            const Real p2 = integration.calculate(c_inf,
+                Fj_Helper(kappa, theta, sigma, v0, spotPrice, rho, enginePtr,
+                          cpxLog, term, strikePrice, ratio, 2))/M_PI;
+            evaluations += integration.numberOfEvaluations();
+
+            switch (type.optionType())
+            {
+              case Option::Call:
+                value = spotPrice*dividendDiscount*(p1+0.5)
+                               - strikePrice*riskFreeDiscount*(p2+0.5);
+                break;
+              case Option::Put:
+                value = spotPrice*dividendDiscount*(p1-0.5)
+                               - strikePrice*riskFreeDiscount*(p2-0.5);
+                break;
+              default:
+                QL_FAIL("unknown option type");
+            }
+          }
+          break;
+
+          case AndersenPiterbarg: {
+              const Real fwdPrice = spotPrice / ratio;
+
+              const Real bsPrice
+                  = BlackCalculator(Option::Call, strikePrice,
+                                    fwdPrice, std::sqrt(v0*term),
+                                    riskFreeDiscount).value();
+
+              const Real h_cv = integration.calculate(c_inf,
+                  AP_Helper(term, spotPrice, strikePrice,
+                            ratio, std::sqrt(v0), enginePtr))
+                  * std::sqrt(strikePrice * fwdPrice)*riskFreeDiscount/M_PI;
+
+              switch (type.optionType())
+              {
+                case Option::Call:
+                  value = bsPrice + h_cv;
+                  break;
+                case Option::Put:
+                  value = bsPrice + h_cv
+                      - riskFreeDiscount*(fwdPrice - strikePrice);
+                  break;
+                default:
+                  QL_FAIL("unknown option type");
+              }
+          }
+          break;
+
           default:
-            QL_FAIL("unknown option type");
+            QL_FAIL("unknown complex log formula");
         }
     }
 
