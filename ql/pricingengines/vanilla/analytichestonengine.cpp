@@ -501,6 +501,7 @@ namespace QuantLib {
                   AP_Helper(term, spotPrice, strikePrice,
                             ratio, std::sqrt(v0), enginePtr))
                   * std::sqrt(strikePrice * fwdPrice)*riskFreeDiscount/M_PI;
+              evaluations += integration.numberOfEvaluations();
 
               switch (type.optionType())
               {

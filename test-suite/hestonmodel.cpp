@@ -1642,6 +1642,13 @@ void HestonModelTest::testAllIntegrationMethods() {
         AnalyticHestonEngine::BranchCorrection,
         false, expected, tol, 256, "Gauss-Laguerre with branch correction");
 
+    // Gauss-Laguerre with Andersen-Piterbarg integration method
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::gaussLaguerre(),
+        AnalyticHestonEngine::AndersenPiterbarg,
+        false, expected, tol, 128,
+        "Gauss-Laguerre with Andersen Piterbarg control variate");
+
     // Gauss-Legendre with Gatheral logarithm integration method
     reportOnIntegrationMethodTest(option, model,
         AnalyticHestonEngine::Integration::gaussLegendre(),
@@ -1749,7 +1756,7 @@ namespace {
         }
 
         Real operator()(Real u) const {
-            return (std::log(engine_->characteristicFct(u, t_))/alpha_).real();
+            return (std::log(engine_->chF(u, t_))/alpha_).real();
         }
 
       private:
@@ -1915,6 +1922,127 @@ void HestonModelTest::testCosHestonEngine() {
     }
 }
 
+void HestonModelTest::testCharacteristicFct() {
+    BOOST_TEST_MESSAGE("Testing Heston characteristic function ...");
+
+    SavedSettings backup;
+
+    const Date settlementDate(30, March, 2017);
+    Settings::instance().evaluationDate() = settlementDate;
+
+    const DayCounter dayCounter = Actual365Fixed();
+    const Handle<YieldTermStructure> riskFreeTS(flatRate(0.35, dayCounter));
+    const Handle<YieldTermStructure> dividendTS(flatRate(0.17, dayCounter));
+
+    const Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
+
+    const Real v0    =  0.1;
+    const Real rho   = -0.85;
+    const Real sigma =  0.8;
+    const Real kappa =  2.0;
+    const Real theta =  0.15;
+
+    const boost::shared_ptr<HestonModel> model =
+        boost::make_shared<HestonModel>(
+            boost::make_shared<HestonProcess>(
+                riskFreeTS, dividendTS,
+                s0, v0, kappa, theta, sigma, rho));
+
+    const Real u[] = { 1.0, 0.45, 3,4 };
+    const Real t[] = { 0.01, 23.2, 3.2};
+
+    const COSHestonEngine cosEngine(model);
+    const AnalyticHestonEngine analyticEngine(model);
+
+    const Real tol = 100*QL_EPSILON;
+    for (Size i=0; i < LENGTH(u); ++i) {
+        for (Size j=0; j < LENGTH(t); ++j) {
+            const std::complex<Real> c = cosEngine.chF(u[i], t[j]);
+            const std::complex<Real> a = analyticEngine.chF(u[i], t[j]);
+
+            const Real error = std::abs(a-c);
+            if (error > tol) {
+                BOOST_ERROR(" failed to reproduce prices with characteristic Fct"
+                        << "\n    Cos Engine:      " << c
+                        << "\n    analytic engine: " << a
+                        << "\n    difference:      " << error);
+            }
+        }
+    }
+}
+
+void HestonModelTest::testAndersenPiterbargPricing() {
+    BOOST_TEST_MESSAGE("Testing Andersen-Piterbarg method to "
+                       "price under the Heston model ...");
+
+    SavedSettings backup;
+
+    const Date settlementDate(30, March, 2017);
+    Settings::instance().evaluationDate() = settlementDate;
+
+    const DayCounter dayCounter = Actual365Fixed();
+    const Handle<YieldTermStructure> riskFreeTS(flatRate(0.10, dayCounter));
+    const Handle<YieldTermStructure> dividendTS(flatRate(0.06, dayCounter));
+
+    const Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
+
+    const Real v0    =  0.1;
+    const Real rho   =  0.80;
+    const Real sigma =  0.75;
+    const Real kappa =  1.0;
+    const Real theta =  0.1;
+
+    const boost::shared_ptr<HestonModel> model =
+        boost::make_shared<HestonModel>(
+            boost::make_shared<HestonProcess>(
+                riskFreeTS, dividendTS,
+                s0, v0, kappa, theta, sigma, rho));
+
+    const boost::shared_ptr<PricingEngine> andersenPiterbargEngine(
+        boost::make_shared<AnalyticHestonEngine>(
+            model,
+            AnalyticHestonEngine::AndersenPiterbarg,
+            AnalyticHestonEngine::Integration::gaussLaguerre()));
+
+    const boost::shared_ptr<PricingEngine> analyticEngine(
+       boost::make_shared<AnalyticHestonEngine>(model));
+
+    const Date maturityDate = settlementDate + Period(1, Years);
+
+    const boost::shared_ptr<Exercise> exercise =
+        boost::make_shared<EuropeanExercise>(maturityDate);
+
+    const Option::Type optionTypes[] = { Option::Call, Option::Put };
+    const Real strikes[] = { 50, 75, 90, 100, 110, 130, 150, 200};
+
+    const Real tol = 1e-8;
+
+    for (Size i=0; i < LENGTH(optionTypes); ++i)
+        for (Size j=0; j < LENGTH(strikes); ++j) {
+            VanillaOption option(
+                boost::make_shared<PlainVanillaPayoff>(
+                    optionTypes[i], strikes[j]),
+                exercise);
+
+            option.setPricingEngine(andersenPiterbargEngine);
+            const Real calculated = option.NPV();
+
+            option.setPricingEngine(analyticEngine);
+            const Real expected = option.NPV();
+
+            const Real error = std::fabs(calculated-expected);
+            if (error > tol) {
+                BOOST_ERROR(" failed to reproduce prices with Andersen-"
+                        "Piterbarg control variate"
+                        << "\n    control variate: " << calculated
+                        << "\n    classic engine : " << expected
+                        << "\n    difference:      " << error);
+            }
+        }
+}
+
+
+
 test_suite* HestonModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Heston model tests");
 
@@ -1945,6 +2073,9 @@ test_suite* HestonModelTest::suite() {
                     &HestonModelTest::testAllIntegrationMethods));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testCosHestonCumulants));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testCosHestonEngine));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testCharacteristicFct));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonModelTest::testAndersenPiterbargPricing));
     return suite;
 }
 

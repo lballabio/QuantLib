@@ -46,6 +46,8 @@ class HestonModelTest {
     static void testAllIntegrationMethods();
     static void testCosHestonCumulants();
     static void testCosHestonEngine();
+    static void testCharacteristicFct();
+    static void testAndersenPiterbargPricing();
     static boost::unit_test_framework::test_suite* suite();
     static boost::unit_test_framework::test_suite* experimental();
 };
