@@ -271,10 +271,10 @@ namespace QuantLib {
         if(percentile == 1.) return dist.rbegin()->second;
         if(percentile == 0.) return dist.begin()->second;
         std::map<Real, Probability>::const_iterator itdist = dist.begin();
-        while(itdist->second <= percentile) itdist++;
+        while (itdist->second <= percentile) ++itdist;
         Real valPlus = itdist->second;
         Real xPlus   = itdist->first;
-        itdist--;//we r never 1st or last, because of tests above
+        --itdist;  //we're never 1st or last, because of tests above
         Real valMin  = itdist->second;
         Real xMin    = itdist->first;
 
@@ -295,9 +295,10 @@ namespace QuantLib {
 
         std::map<Real, Probability>::iterator itNxt, itDist = 
             distrib.begin();
-        for(; itDist != distrib.end(); itDist++) 
+        for(; itDist != distrib.end(); ++itDist)
             if(itDist->second >= perctl) break;
-        itNxt = itDist; itDist--;// what if we are on the first one?!!!
+        itNxt = itDist;
+        --itDist; // what if we are on the first one?!!!
 
         // One could linearly triangulate the exact point and get extra 
         // precission on the first(broken) period.
@@ -310,7 +311,7 @@ namespace QuantLib {
             Real val =  lossNxt - (itNxt->second - perctl) * 
                 (lossNxt - lossHere) / (itNxt->second - itDist->second); 
             Real suma = (itNxt->second - perctl) * (lossNxt + val) * .5;
-            itDist++;itNxt++;
+            ++itDist; ++itNxt;
             do{
                 lossNxt = std::min(std::max(itNxt->first - attachAmount_, 
                     0.), detachAmount_ - attachAmount_);
@@ -365,7 +366,7 @@ namespace QuantLib {
                     pDistTemp.insert(std::make_pair(
                         distIt->first+wk_[iName], distIt->second * pDef));
                 }
-                distIt++;
+                ++distIt;
             }
            /////  copy back
             pIndepDistrib = pDistTemp;
