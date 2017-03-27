@@ -18,8 +18,11 @@
 */
 
 #include <ql/experimental/averageois/averageoiscouponpricer.hpp>
+#include <cmath>
 
 using std::vector;
+using std::exp;
+using std::pow;
 using boost::shared_ptr;
 using boost::dynamic_pointer_cast;
 
