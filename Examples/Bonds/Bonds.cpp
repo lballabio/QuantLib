@@ -485,13 +485,8 @@ int main(int, char* []) {
          << std::setw(widths[3]) << "Floating"
          << std::endl;
 
-         std::string separator = " | ";
-         Size width = widths[0]
-                             + widths[1]
-                                      + widths[2]
-                                               + widths[3];
-         std::string rule(width, '-'), dblrule(width, '=');
-         std::string tab(8, ' ');
+         Size width = widths[0] + widths[1] + widths[2] + widths[3];
+         std::string rule(width, '-');
 
          std::cout << rule << std::endl;
 
