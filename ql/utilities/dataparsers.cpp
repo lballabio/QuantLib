@@ -28,7 +28,7 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
-#ifndef x64
+#if !defined(x64) && !defined(QL_PATCH_SOLARIS)
 #include <boost/lexical_cast.hpp>
 #endif
 #include <boost/algorithm/string/case_conv.hpp>
@@ -47,8 +47,8 @@ namespace QuantLib {
     namespace io {
 
         Integer to_integer(const std::string& str) {
-        #ifndef x64
-            return  boost::lexical_cast<Integer>(str.c_str());
+        #if !defined(x64) && !defined(QL_PATCH_SOLARIS)
+            return boost::lexical_cast<Integer>(str.c_str());
         #else
             return std::atoi(str.c_str());
         #endif
@@ -98,7 +98,6 @@ namespace QuantLib {
         Integer n;
         try {
             n = io::to_integer(str.substr(nPos,iPos));
-                //boost::lexical_cast<Integer>(str.substr(nPos,iPos));
         } catch (std::exception& e) {
             QL_FAIL("unable to parse the number of units of " << units <<
                     " in '" << str << "'. Error:" << e.what());
@@ -123,13 +122,9 @@ namespace QuantLib {
     Date DateParser::parseISO(const std::string& str) {
         QL_REQUIRE(str.size() == 10 && str[4] == '-' && str[7] == '-',
                    "invalid format");
-        Integer year = //boost::lexical_cast<Integer>(str.substr(0, 4));
-            io::to_integer(str.substr(0, 4));
-        Month month =
-            //  static_cast<Month>(boost::lexical_cast<Integer>(str.substr(5, 2)));
-            static_cast<Month>(io::to_integer(str.substr(5, 2)));
-        Integer day = //boost::lexical_cast<Integer>(str.substr(8, 2));
-            static_cast<Month>(io::to_integer(str.substr(8, 2)));
+        Integer year = io::to_integer(str.substr(0, 4));
+        Month month = static_cast<Month>(io::to_integer(str.substr(5, 2)));
+        Integer day = io::to_integer(str.substr(8, 2));
 
         return Date(day, month, year);
     }

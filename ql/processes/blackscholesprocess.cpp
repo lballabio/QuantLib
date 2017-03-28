@@ -77,8 +77,8 @@ namespace QuantLib {
         if(isStrikeIndependent_ && !forceDiscretization_) {
             // exact value for curves
             return x0 *
-                   exp(dt * (riskFreeRate_->forwardRate(t0, t0 + dt, Continuous,
-                                                        NoFrequency, true) -
+                std::exp(dt * (riskFreeRate_->forwardRate(t0, t0 + dt, Continuous,
+                                                          NoFrequency, true) -
                              dividendYield_->forwardRate(
                                  t0, t0 + dt, Continuous, NoFrequency, true)));
         } else {
