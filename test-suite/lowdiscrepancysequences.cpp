@@ -110,7 +110,8 @@ void LowDiscrepancyTest::testRandomizedLowDiscrepancySequence() {
 
 namespace
 {
-    void testRandomizedLatticeRule(LatticeRule::type name, std::string nameString)
+    void testRandomizedLatticeRule(LatticeRule::type name,
+                                   const std::string& nameString)
     {
         Size maxDim = 30;
         Size N = 1024;

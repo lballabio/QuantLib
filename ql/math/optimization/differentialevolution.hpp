@@ -147,7 +147,7 @@ namespace QuantLib {
         };
 
 
-        DifferentialEvolution(Configuration configuration = Configuration())
+        DifferentialEvolution(const Configuration& configuration = Configuration())
         : configuration_(configuration), rng_(configuration.seed) {}
 
         virtual EndCriteria::Type minimize(Problem& p,
