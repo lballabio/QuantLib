@@ -166,7 +166,12 @@ void CatBondTest::testBetaRisk() {
     
     Real expectedVar = 3.0*(15.0*15.0+10*10)/100.0;
     Real actualVar = sumSquares/PATHS - actualMean*actualMean;
+    #if BOOST_VERSION > 106300
+    // changes in Boost.Random after 1.64 increased numerical error
+    BOOST_CHECK_CLOSE(expectedVar, actualVar, 1.5);
+    #else
     BOOST_CHECK_CLOSE(expectedVar, actualVar, 1);
+    #endif
 }
 
 namespace {
