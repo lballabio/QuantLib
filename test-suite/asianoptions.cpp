@@ -654,7 +654,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
         boost::shared_ptr<PricingEngine> engine =
             MakeMCDiscreteArithmeticAPEngine<LowDiscrepancy>(stochProcess)
             .withSamples(2047)
-            .withControlVariate();
+            .withControlVariate(cases4[l].controlVariate);
 
         DiscreteAveragingAsianOption option(averageType, runningSum,
                                             pastFixings, fixingDates,

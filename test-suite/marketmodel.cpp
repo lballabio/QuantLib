@@ -1276,8 +1276,6 @@ void MarketModelTest::testPeriodAdapter() {
 
     BOOST_TEST_MESSAGE("Testing period-adaptation routines in LIBOR market model...");
 
-    std::string testDescription = "test period adapter ";
-
     setup();
     LMMCurveState cs(rateTimes);
     cs.setOnForwardRates(todaysForwards);
@@ -3944,7 +3942,7 @@ void MarketModelTest::testPathwiseMarketVegas()
                 swaptionsDeflated2.reset();
                 Size step =0;
 
-                bool done,done2;
+                bool done;
 
                 do
                 {
@@ -3954,7 +3952,7 @@ void MarketModelTest::testPathwiseMarketVegas()
                         cashFlowsGenerated1);
 
                     evolver2.advanceStep();
-                    done2 = swaptionsDeflated2.nextTimeStep(evolver2.currentState(),
+                    bool done2 = swaptionsDeflated2.nextTimeStep(evolver2.currentState(),
                         numberCashFlowsThisStep2,
                         cashFlowsGenerated2);
 
@@ -4494,15 +4492,15 @@ void MarketModelTest::testStochVolForwardsAndOptionlets() {
 
     std::vector<Rate> forwardStrikes(todaysForwards.size());
     std::vector<boost::shared_ptr<Payoff> > optionletPayoffs(todaysForwards.size());
-    std::vector<boost::shared_ptr<PlainVanillaPayoff> >
-        displacedPayoffs(todaysForwards.size());
+    /* std::vector<boost::shared_ptr<PlainVanillaPayoff> >
+       displacedPayoffs(todaysForwards.size()); */
     for (Size i=0; i<todaysForwards.size(); ++i)
     {
         forwardStrikes[i] = todaysForwards[i] + 0.01;
         optionletPayoffs[i] = boost::shared_ptr<Payoff>(new
             PlainVanillaPayoff(Option::Call, todaysForwards[i]));
-        displacedPayoffs[i] = boost::shared_ptr<PlainVanillaPayoff>(new
-            PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacement));
+        /* displacedPayoffs[i] = boost::shared_ptr<PlainVanillaPayoff>(new
+           PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacement)); */
     }
 
     MultiStepForwards forwards(rateTimes, accruals,

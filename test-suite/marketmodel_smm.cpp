@@ -395,7 +395,6 @@ namespace {
         // check Swaptions
         maxError = 0;
         std::vector<Rate> expectedSwaptions(N);
-        std::vector<Real> stdDevSwaptions(N);
         for (Size i=0; i<N; ++i) {
             Real expectedSwaption =
                 BlackCalculator(displacedPayoff[i],

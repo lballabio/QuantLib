@@ -73,7 +73,7 @@ namespace {
         { 0.3,  5,  5, { 1713, 359, 136,  9 } }
     };
 
-    void check(int i, int j, string desc, Real found, Real expected,
+    void check(int i, int j, const string& desc, Real found, Real expected,
                Real bpTolerance, Real relativeTolerance) 
     {
         /* Uncomment to display the full show if your debugging:

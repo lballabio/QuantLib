@@ -273,7 +273,7 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
                                               useFullApprox);
     // calibrate
     Natural maxIterations = 2;
-    Real capletTolerance = (maxIterations==1 ? 0.0032 : 0.0001);
+    Real capletTolerance = 0.0001;
     Natural innerMaxIterations = 50;
     Real innerTolerance = 1e-9;
     if (printReport_) {
