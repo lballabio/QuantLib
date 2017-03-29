@@ -3942,7 +3942,7 @@ void MarketModelTest::testPathwiseMarketVegas()
                 swaptionsDeflated2.reset();
                 Size step =0;
 
-                bool done,done2;
+                bool done;
 
                 do
                 {
@@ -3952,7 +3952,7 @@ void MarketModelTest::testPathwiseMarketVegas()
                         cashFlowsGenerated1);
 
                     evolver2.advanceStep();
-                    done2 = swaptionsDeflated2.nextTimeStep(evolver2.currentState(),
+                    bool done2 = swaptionsDeflated2.nextTimeStep(evolver2.currentState(),
                         numberCashFlowsThisStep2,
                         cashFlowsGenerated2);
 
