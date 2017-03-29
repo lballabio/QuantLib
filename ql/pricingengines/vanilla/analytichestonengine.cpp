@@ -279,7 +279,7 @@ namespace QuantLib {
             }
         }
         else if (cpxLog_ == BranchCorrection) {
-            const std::complex<Real> p  = (t1+d)/(t1 - d);
+            const std::complex<Real> p = (t1+d)/(t1-d);
 
             // next term: g = std::log((1.0 - p*std::exp(d*term_))/(1.0 - p))
             std::complex<Real> g;
@@ -347,9 +347,17 @@ namespace QuantLib {
           x_(std::log(s0)),
           sx_(std::log(strike)),
           dd_(x_-std::log(ratio)),
-          enginePtr_(enginePtr) {}
+          enginePtr_(enginePtr) {
+            QL_REQUIRE(enginePtr != 0, "pricing engine required");
+        }
 
         Real operator()(Real u) const {
+            QL_REQUIRE(   enginePtr_->addOnTerm(u, term_, 1)
+                            == std::complex<Real>(0.0)
+                       && enginePtr_->addOnTerm(u, term_, 2)
+                            == std::complex<Real>(0.0),
+                       "only Heston model is supported");
+
             const std::complex<Real> z(u, -0.5);
 
             const std::complex<Real> phiBS

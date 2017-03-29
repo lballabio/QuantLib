@@ -55,6 +55,7 @@
 #include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
 
 #include <boost/make_shared.hpp>
+#include <boost/math/special_functions/fpclassify.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -1550,7 +1551,6 @@ void HestonModelTest::testExpansionOnFordeReference() {
     }
 }
 
-
 namespace {
     void reportOnIntegrationMethodTest(
         VanillaOption& option,
@@ -1571,7 +1571,8 @@ namespace {
         const Real calculated = option.NPV();
 
         const Real error = std::fabs(calculated - expected);
-        if (error > tol) {
+
+        if (boost::math::isnan(error) || error > tol) {
             BOOST_ERROR("failed to reproduce simple Heston Pricing with "
                     << "\n    integration method: " << method
                     <<  std::setprecision(12)
@@ -1661,6 +1662,13 @@ void HestonModelTest::testAllIntegrationMethods() {
         AnalyticHestonEngine::BranchCorrection,
         false, expected, tol, 256, "Gauss-Legendre with branch correction");
 
+    // Gauss-Legendre with Andersen-Piterbarg integration method
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::gaussLegendre(),
+        AnalyticHestonEngine::AndersenPiterbarg,
+        false, expected, tol, 128,
+        "Gauss-Laguerre with Andersen Piterbarg control variate");
+
     // Gauss-Chebyshev with Gatheral logarithm integration method
     reportOnIntegrationMethodTest(option, model,
         AnalyticHestonEngine::Integration::gaussChebyshev(512),
@@ -1672,6 +1680,13 @@ void HestonModelTest::testAllIntegrationMethods() {
         AnalyticHestonEngine::Integration::gaussChebyshev(512),
         AnalyticHestonEngine::BranchCorrection,
         false, expected, 1e-4, 1024, "Gauss-Chebyshev with branch correction");
+
+    // Gauss-Chebyshev with Andersen-Piterbarg integration method
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::gaussChebyshev(512),
+        AnalyticHestonEngine::AndersenPiterbarg,
+        false, expected, 1e-4, 512,
+        "Gauss-Laguerre with Andersen Piterbarg control variate");
 
     // Gauss-Chebyshev2nd with Gatheral logarithm integration method
     reportOnIntegrationMethodTest(option, model,
@@ -1687,6 +1702,13 @@ void HestonModelTest::testAllIntegrationMethods() {
         false, expected, 2e-4, 1024,
         "Gauss-Chebyshev2nd with branch correction");
 
+    // Gauss-Chebyshev with Andersen-Piterbarg integration method
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::gaussChebyshev2nd(512),
+        AnalyticHestonEngine::AndersenPiterbarg,
+        false, expected, 2e-4, 512,
+        "Gauss-Chebyshev2nd with Andersen Piterbarg control variate");
+
     // Discrete Simpson rule with Gatheral logarithm
     reportOnIntegrationMethodTest(option, model,
         AnalyticHestonEngine::Integration::discreteSimpson(512),
@@ -1694,12 +1716,12 @@ void HestonModelTest::testAllIntegrationMethods() {
         false, expected, tol, 1024,
         "Discrete Simpson rule with Gatheral logarithm");
 
-    // Discrete Simpson rule with branch correction integration method
+    // Discrete Simpson rule with Andersen-Piterbarg integration method
     reportOnIntegrationMethodTest(option, model,
         AnalyticHestonEngine::Integration::discreteSimpson(512),
-        AnalyticHestonEngine::BranchCorrection,
-        false, expected, tol, 1024,
-        "Discrete Simpson rule with branch correction");
+        AnalyticHestonEngine::AndersenPiterbarg,
+        false, expected, tol, 512,
+        "Discrete Simpson rule with Andersen Piterbarg control variate");
 
     // Discrete Trapezoid rule with Gatheral logarithm
     reportOnIntegrationMethodTest(option, model,
@@ -1708,12 +1730,12 @@ void HestonModelTest::testAllIntegrationMethods() {
         false, expected, 2e-4, 1024,
         "Discrete Trapezoid rule with Gatheral logarithm");
 
-    // Discrete Trapezoid rule with branch correction integration method
+    // Discrete Trapezoid rule with Andersen-Piterbarg integration method
     reportOnIntegrationMethodTest(option, model,
         AnalyticHestonEngine::Integration::discreteTrapezoid(512),
-        AnalyticHestonEngine::BranchCorrection,
-        false, expected, 2e-4, 1024,
-        "Discrete Trapezoid rule with branch correction");
+        AnalyticHestonEngine::AndersenPiterbarg,
+        false, expected, 2e-4, 512,
+        "Discrete Trapezoid rule with Andersen Piterbarg control variate");
 
     // Gauss-Lobatto with Gatheral logarithm
     reportOnIntegrationMethodTest(option, model,
@@ -1722,12 +1744,26 @@ void HestonModelTest::testAllIntegrationMethods() {
         true, expected, tol, Null<Size>(),
         "Gauss-Lobatto with Gatheral logarithm");
 
+    // Gauss-Lobatto with Andersen-Piterbarg integration method
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::gaussLobatto(tol, Null<Real>()),
+        AnalyticHestonEngine::AndersenPiterbarg,
+        true, expected, tol, Null<Size>(),
+        "Gauss-Lobatto with Andersen Piterbarg control variate");
+
     // Gauss-Konrod with Gatheral logarithm
     reportOnIntegrationMethodTest(option, model,
         AnalyticHestonEngine::Integration::gaussKronrod(tol),
         AnalyticHestonEngine::Gatheral,
         true, expected, tol, Null<Size>(),
         "Gauss-Konrod with Gatheral logarithm");
+
+    // Gauss-Konrod with Andersen-Piterbarg integration method
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::gaussKronrod(tol),
+        AnalyticHestonEngine::AndersenPiterbarg,
+        true, expected, tol, Null<Size>(),
+        "Gauss-Konrod with Andersen Piterbarg control variate");
 
     // Simpson with Gatheral logarithm
     reportOnIntegrationMethodTest(option, model,
@@ -1736,12 +1772,26 @@ void HestonModelTest::testAllIntegrationMethods() {
         true, expected, 1e-6, Null<Size>(),
         "Simpson with Gatheral logarithm");
 
+    // Simpson with Andersen-Piterbarg integration method
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::simpson(tol),
+        AnalyticHestonEngine::AndersenPiterbarg,
+        true, expected, 1e-6, Null<Size>(),
+        "Simpson with Andersen Piterbarg control variate");
+
     // Trapezoid with Gatheral logarithm
     reportOnIntegrationMethodTest(option, model,
         AnalyticHestonEngine::Integration::trapezoid(tol),
         AnalyticHestonEngine::Gatheral,
         true, expected, 1e-6, Null<Size>(),
         "Trapezoid with Gatheral logarithm");
+
+    // Trapezoid with Andersen-Piterbarg integration method
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::trapezoid(tol),
+        AnalyticHestonEngine::AndersenPiterbarg,
+        true, expected, 1e-6, Null<Size>(),
+        "Trapezoid with Andersen Piterbarg control variate");
 }
 
 namespace {
@@ -2040,8 +2090,6 @@ void HestonModelTest::testAndersenPiterbargPricing() {
             }
         }
 }
-
-
 
 test_suite* HestonModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Heston model tests");
