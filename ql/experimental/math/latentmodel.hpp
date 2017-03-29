@@ -464,7 +464,6 @@ namespace QuantLib {
                             boost::make_shared<
                             IntegrationBase<GaussianQuadMultidimIntegrator> >(
                                 dimension, 25);
-                        break;
                     case LatentModelIntegrationType::Trapezoid:
                         {
                         std::vector<boost::shared_ptr<Integrator> > integrals;
@@ -485,7 +484,6 @@ namespace QuantLib {
                         return 
                           boost::make_shared<IntegrationBase<MultidimIntegral> >
                                (integrals, -35., 35.);
-                        break;
                         }
                     default:
                         QL_FAIL("Unknown latent model integration type.");
