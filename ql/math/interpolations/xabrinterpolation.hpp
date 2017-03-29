@@ -114,8 +114,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
           XABRCoeffHolder<Model>(t, forward, params, paramIsFixed, addParams),
           endCriteria_(endCriteria), optMethod_(optMethod),
           errorAccept_(errorAccept), useMaxError_(useMaxError),
-          maxGuesses_(maxGuesses), forward_(forward),
-          vegaWeighted_(vegaWeighted) {
+          maxGuesses_(maxGuesses), vegaWeighted_(vegaWeighted) {
         // if no optimization method or endCriteria is provided, we provide one
         if (!optMethod_)
             optMethod_ = boost::shared_ptr<OptimizationMethod>(
@@ -145,7 +144,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
             Real weightsSum = 0.0;
             for (; x != this->xEnd_; ++x, ++y) {
                 Real stdDev = std::sqrt((*y) * (*y) * this->t_);
-                this->weights_.push_back(Model().weight(*x, forward_, stdDev,
+                this->weights_.push_back(Model().weight(*x, this->forward_, stdDev,
                                                         this->addParams_));
                 weightsSum += this->weights_.back();
             }
@@ -185,7 +184,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
 
                 if (iterations > 0) {
                     HaltonRsg::sample_type s = halton.nextSequence();
-                    Model().guess(guess, this->paramIsFixed_, forward_,
+                    Model().guess(guess, this->paramIsFixed_, this->forward_,
                                   this->t_, s.value, this->addParams_);
                     for (Size i = 0; i < this->paramIsFixed_.size(); ++i)
                         if (this->paramIsFixed_[i])
@@ -193,7 +192,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
                 }
 
                 Array inversedTransformatedGuess(Model().inverse(
-                    guess, this->paramIsFixed_, this->params_, forward_));
+                    guess, this->paramIsFixed_, this->params_, this->forward_));
 
                 ProjectedCostFunction constrainedXABRError(
                     costFunction, inversedTransformatedGuess,
@@ -211,7 +210,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
                     constrainedXABRError.include(projectedResult));
 
                 Array result = Model().direct(transfResult, this->paramIsFixed_,
-                                              this->params_, forward_);
+                                              this->params_, this->forward_);
                 tmpInterpolationError = useMaxError_ ? interpolationMaxError()
                                                      : interpolationError();
 
@@ -316,7 +315,6 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
     const Real errorAccept_;
     const bool useMaxError_;
     const Size maxGuesses_;
-    const Real &forward_;
     bool vegaWeighted_;
     NoConstraint constraint_;
 };
