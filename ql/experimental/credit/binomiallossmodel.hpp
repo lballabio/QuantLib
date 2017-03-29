@@ -431,7 +431,7 @@ namespace QuantLib {
                         0.), detachAmount_ - attachAmount_);
                     suma += .5 * (lossHere + lossNxt) 
                         * (itNxt->second - itDist->second);
-                    itDist++;itNxt++;
+                    ++itDist; ++itNxt;
                 }while(itNxt != distrib.end());
                 return suma / (1.-perctl);
             }
