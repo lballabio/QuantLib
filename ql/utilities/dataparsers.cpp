@@ -31,8 +31,10 @@
 #if !defined(x64) && !defined(QL_PATCH_SOLARIS)
 #include <boost/lexical_cast.hpp>
 #endif
+#ifndef QL_PATCH_SOLARIS
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
+#endif
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
@@ -108,6 +110,7 @@ namespace QuantLib {
 
     Date DateParser::parseFormatted(const std::string& str,
                                     const std::string& fmt) {
+        #ifndef QL_PATCH_SOLARIS
         using namespace boost::gregorian;
 
         date boostDate;
@@ -117,6 +120,9 @@ namespace QuantLib {
         is >> boostDate;
         date_duration noDays = boostDate - date(1901, 1, 1);
         return Date(1, January, 1901) + noDays.days();
+        #else
+        QL_FAIL("DateParser::parseFormatted not supported under Solaris");
+        #endif
     }
 
     Date DateParser::parseISO(const std::string& str) {
