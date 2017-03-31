@@ -1,0 +1,21 @@
+
+language: cpp
+
+os: linux
+dist: trusty
+sudo: false
+compiler: gcc
+
+addons:
+  apt:
+    packages:
+      - boost-dev
+
+script:
+  - ./autogen.sh
+  - ./configure
+
+branches:
+  only:
+    - travis-test
+
