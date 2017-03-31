@@ -440,7 +440,9 @@ test_suite* DateTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&DateTest::immDates));
     suite->add(QUANTLIB_TEST_CASE(&DateTest::asxDates));
     suite->add(QUANTLIB_TEST_CASE(&DateTest::isoDates));
+    #ifndef QL_PATCH_SOLARIS
     suite->add(QUANTLIB_TEST_CASE(&DateTest::parseDates));
+    #endif
     suite->add(QUANTLIB_TEST_CASE(&DateTest::intraday));
 
     return suite;

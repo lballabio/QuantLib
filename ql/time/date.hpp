@@ -41,6 +41,7 @@
 
 #include <utility>
 #include <functional>
+#include <string>
 
 
 namespace QuantLib {
