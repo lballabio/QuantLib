@@ -6,16 +6,15 @@ dist: trusty
 sudo: false
 compiler: gcc
 
+cache: ccache
+
 addons:
   apt:
     packages:
-      - boost-dev
+      - libboost-dev
 
 script:
   - ./autogen.sh
-  - ./configure
-
-branches:
-  only:
-    - travis-test
+  - ./configure --disable-static
+  - make -j 2
 
