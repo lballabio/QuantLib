@@ -311,6 +311,9 @@ if test "$ql_use_parallel_test" = "yes" ; then
       QL_CHECK_BOOST_TEST_THREAD_SIGNALS2_SYSTEM
    fi
    QL_CHECK_BOOST_TEST_INTERPROCESS
+   # do not link boost unit test lib
+   AC_SUBST([BOOST_UNIT_TEST_LIB],[""])
+   AC_SUBST([BOOST_UNIT_TEST_MAIN_CXXFLAGS],[""])
 else
    AC_SUBST([BOOST_INTERPROCESS_LIB],[""])
 fi

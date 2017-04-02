@@ -31,6 +31,7 @@
 #define quantlib_parallel_test_runner_hpp
 
 #include <ql/types.hpp>
+#include <ql/errors.hpp>
 
 #ifdef VERSION
 /* This comes from ./configure, and for some reason it interferes with
@@ -98,8 +99,9 @@ namespace {
 
         bool visit(test_unit const& tu) {
             if (tu.p_parent_id == framework::master_test_suite().p_id) {
-                QL_REQUIRE(!tu.p_name.get().compare("QuantLib test suite"),
-                     "could not find QuantLib test suite");
+
+                QL_REQUIRE(boost::starts_with(tu.p_name.get(), "QuantLib"),
+                     "could not find QuantLib root test suite");
 
                 testSuiteId_ = tu.p_id;
             }
@@ -138,7 +140,7 @@ namespace {
 
     struct RuntimeLog {
         QuantLib::Time time;
-        char testCaseName[256];
+        char testCaseName[1024];
     };
 
     struct QualifiedTestResults {
@@ -403,9 +405,11 @@ int main( int argc, char* argv[] )
         else {
             std::stringstream logBuf;
             std::streambuf* const oldBuf = log_stream().rdbuf();
+
             log_stream().rdbuf(logBuf.rdbuf());
 
             framework::init(init_unit_test_suite, argc-1, argv );
+
             framework::finalize_setup_phase();
 
             framework::impl::s_frk_state().deduce_run_status(

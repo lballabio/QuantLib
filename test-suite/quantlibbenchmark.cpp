@@ -79,12 +79,20 @@
 
 #include <ql/types.hpp>
 #include <ql/version.hpp>
+
+#ifdef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
+#include "paralleltestrunner.hpp"
+#else
 #include <boost/test/unit_test.hpp>
+#endif
+
 #include <boost/timer.hpp>
 #include <iostream>
 #include <iomanip>
 #include <list>
 #include <string>
+
+
 
 /* PAPI code
 #include <stdio.h
