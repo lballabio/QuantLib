@@ -17,7 +17,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/quantlib.hpp>
+#include <ql/experimental/credit/randomdefaultlatentmodel.hpp>
+#include <ql/termstructures/credit/flathazardrate.hpp>
+#include <ql/currencies/europe.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 
 #include <boost/timer.hpp>
 #include <boost/make_shared.hpp>

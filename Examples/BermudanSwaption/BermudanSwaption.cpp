@@ -19,7 +19,23 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/quantlib.hpp>
+#include <ql/instruments/swaption.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/pricingengines/swaption/treeswaptionengine.hpp>
+#include <ql/pricingengines/swaption/jamshidianswaptionengine.hpp>
+#include <ql/pricingengines/swaption/g2swaptionengine.hpp>
+#include <ql/pricingengines/swaption/fdhullwhiteswaptionengine.hpp>
+#include <ql/pricingengines/swaption/fdg2swaptionengine.hpp>
+#include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
+#include <ql/models/shortrate/onefactormodels/blackkarasinski.hpp>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
+#include <ql/cashflows/coupon.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
+#include <ql/utilities/dataformatters.hpp>
 
 #ifdef BOOST_MSVC
 /* Uncomment the following lines to unmask floating-point

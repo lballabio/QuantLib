@@ -1,9 +1,14 @@
-#include <iostream>
-#include <iomanip>
+
+#include <ql/experimental/math/multidimintegrator.hpp>
+#include <ql/experimental/math/multidimquadrature.hpp>
+#include <ql/math/integrals/trapezoidintegral.hpp>
+
 #include <boost/function.hpp>
+#include <boost/make_shared.hpp>
 #include <boost/timer.hpp>
 
-#include <ql/quantlib.hpp>
+#include <iostream>
+#include <iomanip>
 
 using namespace QuantLib;
 using namespace std;

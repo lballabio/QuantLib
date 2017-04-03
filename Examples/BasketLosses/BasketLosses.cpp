@@ -17,7 +17,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/quantlib.hpp>
+#include <ql/experimental/credit/gaussianlhplossmodel.hpp>
+#include <ql/experimental/credit/constantlosslatentmodel.hpp>
+#include <ql/experimental/credit/binomiallossmodel.hpp>
+#include <ql/experimental/credit/randomdefaultlatentmodel.hpp>
+#include <ql/experimental/credit/randomlosslatentmodel.hpp>
+#include <ql/experimental/credit/spotlosslatentmodel.hpp>
+#include <ql/experimental/credit/basecorrelationlossmodel.hpp>
+#include <ql/termstructures/credit/flathazardrate.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/currencies/europe.hpp>
 
 #include <boost/timer.hpp>
 #include <boost/make_shared.hpp>
@@ -26,6 +36,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <string>
 
 using namespace std;
 using namespace QuantLib;

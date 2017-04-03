@@ -17,7 +17,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/quantlib.hpp>
+#include <ql/math/optimization/differentialevolution.hpp>
+#include <ql/math/optimization/simulatedannealing.hpp>
+#include <ql/experimental/math/fireflyalgorithm.hpp>
+#include <ql/experimental/math/hybridsimulatedannealing.hpp>
+#include <ql/experimental/math/particleswarmoptimization.hpp>
 
 #ifdef BOOST_MSVC
 /* Uncomment the following lines to unmask floating-point

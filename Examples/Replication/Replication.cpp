@@ -24,8 +24,16 @@
     reader.
 */
 
-// the only header you need to use QuantLib
-#include <ql/quantlib.hpp>
+#include <ql/instruments/compositeinstrument.hpp>
+#include <ql/instruments/barrieroption.hpp>
+#include <ql/instruments/europeanoption.hpp>
+#include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/exercise.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 
 #ifdef BOOST_MSVC
 /* Uncomment the following lines to unmask floating-point
