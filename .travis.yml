@@ -17,4 +17,5 @@ script:
   - ./autogen.sh
   - ./configure --disable-static
   - make -j 2 -C ql
+  - make -j 2 -C Examples
 

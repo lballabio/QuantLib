@@ -45,8 +45,14 @@
     We examine the range of possibilities, computing the replication error.
 */
 
-// the only header you need to use QuantLib
-#include <ql/quantlib.hpp>
+#include <ql/methods/montecarlo/montecarlomodel.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/pricingengines/blackcalculator.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 
 #ifdef BOOST_MSVC
 /* Uncomment the following lines to unmask floating-point

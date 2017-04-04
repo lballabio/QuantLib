@@ -17,8 +17,33 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/quantlib.hpp>
+#include <ql/instruments/floatfloatswap.hpp>
+#include <ql/instruments/floatfloatswaption.hpp>
+#include <ql/instruments/nonstandardswaption.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/pricingengines/swaption/gaussian1dswaptionengine.hpp>
+#include <ql/pricingengines/swaption/gaussian1dnonstandardswaptionengine.hpp>
+#include <ql/pricingengines/swaption/gaussian1dfloatfloatswaptionengine.hpp>
+#include <ql/models/shortrate/onefactormodels/gsr.hpp>
+#include <ql/models/shortrate/onefactormodels/markovfunctional.hpp>
+#include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
+#include <ql/cashflows/lineartsrpricer.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
+#include <ql/indexes/swap/euriborswap.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/volatility/swaption/swaptionconstantvol.hpp>
+#include <ql/rebatedexercise.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
+
 #include <boost/timer.hpp>
+#include <boost/make_shared.hpp>
+
+#include <iostream>
+#include <iomanip>
 
 using namespace QuantLib;
 
