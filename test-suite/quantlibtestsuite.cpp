@@ -167,6 +167,7 @@
 #include "sampledcurve.hpp"
 #include "schedule.hpp"
 #include "shortratemodels.hpp"
+#include "simultaneouscurvebootstrap.hpp"
 #include "solvers.hpp"
 #include "spreadoption.hpp"
 #include "squarerootclvmodel.hpp"
@@ -408,6 +409,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(SampledCurveTest::suite());
     test->add(ScheduleTest::suite());
     test->add(ShortRateModelTest::suite()); // fails with QL_USE_INDEXED_COUPON
+    test->add(SimultaneousBootstrapTest::suite());
     test->add(Solver1DTest::suite());
     test->add(StatisticsTest::suite());
     test->add(SwapTest::suite());

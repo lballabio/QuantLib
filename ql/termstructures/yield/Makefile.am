@@ -16,6 +16,7 @@ this_include_HEADERS = \
     impliedtermstructure.hpp \
     nonlinearfittingmethods.hpp \
     oisratehelper.hpp \
+    oisbasisratehelper.hpp \
     piecewiseyieldcurve.hpp \
     piecewisezerospreadedtermstructure.hpp \
     quantotermstructure.hpp \
@@ -31,6 +32,7 @@ libYieldTermStructures_la_SOURCES = \
     forwardstructure.cpp \
     nonlinearfittingmethods.cpp \
     oisratehelper.cpp \
+    oisbasisratehelper.cpp \
     ratehelpers.cpp \
     zeroyieldstructure.cpp
 

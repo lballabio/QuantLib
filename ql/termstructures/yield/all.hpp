@@ -13,6 +13,7 @@
 #include <ql/termstructures/yield/impliedtermstructure.hpp>
 #include <ql/termstructures/yield/nonlinearfittingmethods.hpp>
 #include <ql/termstructures/yield/oisratehelper.hpp>
+#include <ql/termstructures/yield/oisbasisratehelper.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yield/piecewisezerospreadedtermstructure.hpp>
 #include <ql/termstructures/yield/quantotermstructure.hpp>
