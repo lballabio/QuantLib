@@ -18,7 +18,6 @@ script:
   - ./configure --disable-static
   - ccache --zero-stats
   - ccache --max-size=2G
-  - make -j 2 -C ql
-  - make -j 2 -C Examples
+  - make -j 2
   - ccache --show-stats
 
