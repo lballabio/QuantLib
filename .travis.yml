@@ -12,6 +12,7 @@ addons:
   apt:
     packages:
       - libboost-dev
+      - libboost-test-dev
 
 script:
   - ./autogen.sh
