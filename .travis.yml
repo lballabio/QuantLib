@@ -18,7 +18,8 @@ script:
   - ./autogen.sh
   - ./configure --disable-static
   - ccache --zero-stats
-  - ccache --max-size=2G
+  - ccache --max-size=2.5G
   - make -j 2
   - ccache --show-stats
+  - ./test-suite/quantlib-test-suite --log_level=message -- --faster
 

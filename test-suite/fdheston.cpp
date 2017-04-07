@@ -665,19 +665,29 @@ void FdHestonTest::testFdmHestonIntradayPricing() {
 #endif
 }
 
-test_suite* FdHestonTest::suite() {
+test_suite* FdHestonTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Finite Difference Heston tests");
+
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBarrier));
-    suite->add(QUANTLIB_TEST_CASE(
-                         &FdHestonTest::testFdmHestonBarrierVsBlackScholes));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonAmerican));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonIkonenToivanen));
-    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBlackScholes));
     suite->add(QUANTLIB_TEST_CASE(
                     &FdHestonTest::testFdmHestonEuropeanWithDividends));
-    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonConvergence));
     suite->add(QUANTLIB_TEST_CASE(
         &FdHestonTest::testFdmHestonIntradayPricing));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &FdHestonTest::testFdmHestonBlackScholes));
+    }
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &FdHestonTest::testFdmHestonBarrierVsBlackScholes));
+        suite->add(QUANTLIB_TEST_CASE(
+            &FdHestonTest::testFdmHestonConvergence));
+    }
+
     return suite;
 }
 

@@ -4868,38 +4868,19 @@ void MarketModelTest::testCovariance() {
 }
 
 // --- Call the desired tests
-test_suite* MarketModelTest::suite() {
+test_suite* MarketModelTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Market-model tests");
 
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testInverseFloater));
-    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCallableSwapLS));
 
-    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testPathwiseVegas));
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testPathwiseMarketVegas));
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testPathwiseGreeks));
 
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testStochVolForwardsAndOptionlets));
 
-    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testAllMultiStepProducts));
-
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testOneStepForwardsAndOptionlets));
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testOneStepNormalForwardsAndOptionlets));
 
-    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
-
-    MarketModelType marketModels[] = {
-        ExponentialCorrelationFlatVolatility,
-        ExponentialCorrelationAbcdVolatility };
-
-    setup();
-    for (Size j=0; j<LENGTH(marketModels); j++) {
-        Size testedFactors[] = { 4, 8, todaysForwards.size()};
-        for (Size m=0; m<LENGTH(testedFactors); ++m) {
-            suite->add(QUANTLIB_TEST_CASE(
-                boost::bind(&MarketModelTest::testCallableSwapAnderson,
-                    marketModels[j],testedFactors[m])));
-        }
-    }
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testGreeks));
 
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));
@@ -4913,6 +4894,31 @@ test_suite* MarketModelTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testAbcdDegenerateCases));
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCovariance));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testPathwiseVegas));
+
+        MarketModelType marketModels[] = {
+            ExponentialCorrelationFlatVolatility,
+            ExponentialCorrelationAbcdVolatility };
+
+        setup();
+        for (Size j=0; j<LENGTH(marketModels); j++) {
+            Size testedFactors[] = { 4, 8, todaysForwards.size()};
+            for (Size m=0; m<LENGTH(testedFactors); ++m) {
+                suite->add(QUANTLIB_TEST_CASE(
+                    boost::bind(&MarketModelTest::testCallableSwapAnderson,
+                        marketModels[j],testedFactors[m])));
+            }
+        }
+    }
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &MarketModelTest::testAllMultiStepProducts));
+        suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
+        suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCallableSwapLS));
+    }
 
     return suite;
 }

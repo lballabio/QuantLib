@@ -369,12 +369,14 @@ void CdoTest::testHW(unsigned dataSet) {
 }
 
 
-test_suite* CdoTest::suite() {
+test_suite* CdoTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("CDO tests");
     #ifndef QL_PATCH_SOLARIS
-    for (unsigned i=0; i < LENGTH(hwData7); ++i)
-        suite->add(QUANTLIB_TEST_CASE(
-            boost::bind(&CdoTest::testHW, i)));
+    if (speed == Slow) {
+        for (unsigned i=0; i < LENGTH(hwData7); ++i)
+            suite->add(QUANTLIB_TEST_CASE(
+                boost::bind(&CdoTest::testHW, i)));
+    }
     #endif
     return suite;
 }

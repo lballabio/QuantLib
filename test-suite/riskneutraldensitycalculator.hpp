@@ -22,6 +22,7 @@
 #define quantlib_test_risk_neutral_density_calculator_hpp
 
 #include <boost/test/unit_test.hpp>
+#include "speedlevel.hpp"
 
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
@@ -33,7 +34,7 @@ class RiskNeutralDensityCalculatorTest {
     static void testLocalVolatilityRND();
     static void testSquareRootProcessRND();
     static void testBlackScholesWithSkew();
-    static boost::unit_test_framework::test_suite* experimental();
+    static boost::unit_test_framework::test_suite* experimental(SpeedLevel);
 };
 
 #endif
