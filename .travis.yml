@@ -21,5 +21,4 @@ script:
   - ccache --max-size=2.5G
   - make -j 2 ql
   - ccache --show-stats
-  - ./test-suite/quantlib-test-suite --log_level=message -- --faster
 
