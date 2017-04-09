@@ -34,6 +34,7 @@
 #include <ql/math/randomnumbers/sobolbrownianbridgersg.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/ornsteinuhlenbeckprocess.hpp>
+#include <ql/pricingengines/blackformula.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/forward/forwardengine.hpp>
@@ -559,6 +560,92 @@ void NormalCLVModelTest::testMoustacheGraph() {
     }
 }
 
+void NormalCLVModelTest::testOrnsteinUhlenbeckVanillaDelta() {
+    BOOST_TEST_MESSAGE("Testing Ornstein-Uhlenbeck Delta "
+                       "of an vanilla option ...");
+
+    SavedSettings backup;
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(4, April, 2017);
+    const Date maturity = today + Period(3, Months);
+    const Time maturityTime = dc.yearFraction(today, maturity);
+
+    const Real strike = 0;
+    const boost::shared_ptr<StrikedTypePayoff> payoff =
+        boost::make_shared<PlainVanillaPayoff>(Option::Call, strike);
+    const boost::shared_ptr<Exercise> exercise =
+        boost::make_shared<EuropeanExercise>(maturity);
+
+    // Ornstein-Uhlenbeck
+    const Real speed = 1.0;
+    const Real level = strike;
+    const Real sigma = 25.0;
+    const Real x0    = strike;
+
+    const boost::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
+        boost::make_shared<OrnsteinUhlenbeckProcess>(
+            speed, sigma, x0, level));
+
+    const Rate r = 0.0;
+    const boost::shared_ptr<YieldTermStructure> rTS(flatRate(today, r, dc));
+
+    VanillaOption option(payoff, exercise);
+
+    option.setPricingEngine(
+        boost::make_shared<FdOrnsteinUhlenbeckVanillaEngine>(
+            ouProcess, rTS, 100, 200, 2));
+
+    const Real expectedNPV   = 4.41887;
+    const Real expectedDelta = 0.389669;
+    const Real expectedGamma = 0.0218722;
+
+    const Real calculatedNPV = option.NPV();
+    const Real calculatedDelta = option.delta();
+    const Real calculatedGamma = option.gamma();
+
+    const Real tol = 1e-5;
+
+    if (std::fabs(expectedNPV - calculatedNPV) > tol) {
+        BOOST_FAIL("Failed to reproduce price of vanilla option under "
+                "Ornstein-Uhlenbeck process"
+               << "\n    time:        " << maturity
+               << "\n    expected:    " << expectedNPV
+               << "\n    calculated:  " << calculatedNPV);
+    }
+
+    if (std::fabs(expectedDelta - calculatedDelta) > tol) {
+        BOOST_FAIL("Failed to reproduce delta of vanilla option under "
+                "Ornstein-Uhlenbeck process"
+               << "\n    time:        " << maturity
+               << "\n    expected:    " << expectedDelta
+               << "\n    calculated:  " << calculatedDelta);
+    }
+
+    if (std::fabs(expectedGamma - calculatedGamma) > tol) {
+        BOOST_FAIL("Failed to reproduce gamma of vanilla option under "
+                "Ornstein-Uhlenbeck process"
+               << "\n    time:        " << maturity
+               << "\n    expected:    " << expectedGamma
+               << "\n    calculated:  " << calculatedGamma);
+    }
+
+    const Real bachelierNPV =
+        bachelierBlackFormula(
+            payoff->optionType(), strike, strike,
+            std::sqrt(ouProcess->variance(0, strike, maturityTime)));
+
+    if (std::fabs(bachelierNPV - calculatedNPV) > 1e-3) {
+        BOOST_FAIL("Failed to compare price of vanilla option under "
+                "Ornstein-Uhlenbeck process with Bachelier Formula"
+               << "\n    time:        " << maturity
+               << "\n    expected:    " << bachelierNPV
+               << "\n    calculated:  " << calculatedNPV);
+    }
+
+
+}
+
 test_suite* NormalCLVModelTest::experimental() {
     test_suite* suite = BOOST_TEST_SUITE("NormalCLVModel tests");
 
@@ -572,6 +659,8 @@ test_suite* NormalCLVModelTest::experimental() {
         &NormalCLVModelTest::testMonteCarloBSOptionPricing));
     suite->add(QUANTLIB_TEST_CASE(
         &NormalCLVModelTest::testMoustacheGraph));
+    suite->add(QUANTLIB_TEST_CASE(
+        &NormalCLVModelTest::testOrnsteinUhlenbeckVanillaDelta));
 
     return suite;
 }

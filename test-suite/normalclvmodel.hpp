@@ -30,6 +30,7 @@ class NormalCLVModelTest {
     static void testIllustrative1DExample();
     static void testMonteCarloBSOptionPricing();
     static void testMoustacheGraph();
+    static void testOrnsteinUhlenbeckVanillaDelta();
     static boost::unit_test_framework::test_suite* experimental();
 };
 
