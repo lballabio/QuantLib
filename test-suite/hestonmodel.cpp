@@ -1915,19 +1915,14 @@ void HestonModelTest::testCosHestonEngine() {
     }
 }
 
-test_suite* HestonModelTest::suite() {
+test_suite* HestonModelTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Heston model tests");
 
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testBlackCalibration));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testDAXCalibration));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAnalyticVsBlack));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAnalyticVsCached));
-    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testKahlJaeckelCase));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testDifferentIntegrals));
-    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdBarrierVsCached));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdVanillaVsCached));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testMultipleStrikesEngine));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testMcVsCached));
@@ -1945,6 +1940,16 @@ test_suite* HestonModelTest::suite() {
                     &HestonModelTest::testAllIntegrationMethods));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testCosHestonCumulants));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testCosHestonEngine));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &HestonModelTest::testFdBarrierVsCached));
+    }
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testKahlJaeckelCase));
+    }
+
     return suite;
 }
 

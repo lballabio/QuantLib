@@ -523,10 +523,7 @@ namespace QuantLib {
     inline Probability SaddlePointLossModel<CP>::probOverPortfLoss(
         const Date& d, Real loss) const 
     {
-        const std::vector<Probability> uncondProbs = 
-            basket_->remainingProbabilities(d);
-
-        std::vector<Real> invUncondProbs = 
+        std::vector<Probability> invUncondProbs = 
             basket_->remainingProbabilities(d);
         for(Size i=0; i<invUncondProbs.size(); i++)
             invUncondProbs[i] = 

@@ -403,7 +403,6 @@ namespace {
         maxError = 0;
 
         std::vector<Rate> expectedSwaptions(N);
-        std::vector<Real> stdDevSwaptions(N);
         for (Size i=0; i<N; ++i) {
             Real expectedSwaption =
                 BlackCalculator(displacedPayoff[i],
@@ -532,11 +531,13 @@ void MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions() {
 
 
 // --- Call the desired tests
-test_suite* MarketModelCmsTest::suite() {
+test_suite* MarketModelCmsTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("CMS Market-model tests");
 
-    suite->add(QUANTLIB_TEST_CASE(
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(
                       &MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions));
+    }
 
     return suite;
 }

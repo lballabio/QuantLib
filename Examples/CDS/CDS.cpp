@@ -17,7 +17,14 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/quantlib.hpp>
+#include <ql/instruments/creditdefaultswap.hpp>
+#include <ql/pricingengines/credit/midpointcdsengine.hpp>
+#include <ql/termstructures/credit/piecewisedefaultcurve.hpp>
+#include <ql/termstructures/credit/defaultprobabilityhelpers.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/math/interpolations/backwardflatinterpolation.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/quotes/simplequote.hpp>
 
 #include <boost/timer.hpp>
 #include <iostream>

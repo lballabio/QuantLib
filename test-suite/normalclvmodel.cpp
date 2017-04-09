@@ -560,6 +560,7 @@ void NormalCLVModelTest::testMoustacheGraph() {
     }
 }
 
+<<<<<<< HEAD
 void NormalCLVModelTest::testOrnsteinUhlenbeckVanillaDelta() {
     BOOST_TEST_MESSAGE("Testing Ornstein-Uhlenbeck Delta "
                        "of an vanilla option ...");
@@ -646,7 +647,7 @@ void NormalCLVModelTest::testOrnsteinUhlenbeckVanillaDelta() {
 
 }
 
-test_suite* NormalCLVModelTest::experimental() {
+test_suite* NormalCLVModelTest::experimental(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("NormalCLVModel tests");
 
     suite->add(QUANTLIB_TEST_CASE(
@@ -658,9 +659,10 @@ test_suite* NormalCLVModelTest::experimental() {
     suite->add(QUANTLIB_TEST_CASE(
         &NormalCLVModelTest::testMonteCarloBSOptionPricing));
     suite->add(QUANTLIB_TEST_CASE(
-        &NormalCLVModelTest::testMoustacheGraph));
-    suite->add(QUANTLIB_TEST_CASE(
         &NormalCLVModelTest::testOrnsteinUhlenbeckVanillaDelta));
-
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &NormalCLVModelTest::testMoustacheGraph));
+    }
     return suite;
 }

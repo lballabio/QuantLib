@@ -19,6 +19,9 @@
 */
 
 #include <ql/experimental/credit/integralcdoengine.hpp>
+
+#ifndef QL_PATCH_SOLARIS
+
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 
@@ -126,3 +129,5 @@ namespace QuantLib {
     }
 
 }
+
+#endif

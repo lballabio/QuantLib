@@ -23,6 +23,7 @@
 #define quantlib_test_distributions_hpp
 
 #include <boost/test/unit_test.hpp>
+#include "speedlevel.hpp"
 
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
@@ -37,7 +38,7 @@ class DistributionTest {
     static void testBivariateCumulativeStudent();
     static void testBivariateCumulativeStudentVsBivariate();
     static void testInvCDFviaStochasticCollocation();
-    static boost::unit_test_framework::test_suite* suite();
+    static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
 
 

@@ -26,7 +26,14 @@
     results generated from the bootstrap fitting method.
 */
 
-#include <ql/quantlib.hpp>
+#include <ql/termstructures/yield/fittedbonddiscountcurve.hpp>
+#include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/yield/bondhelpers.hpp>
+#include <ql/termstructures/yield/nonlinearfittingmethods.hpp>
+#include <ql/pricingengines/bond/bondfunctions.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/simpledaycounter.hpp>
 
 #ifdef BOOST_MSVC
 /* Uncomment the following lines to unmask floating-point

@@ -222,7 +222,7 @@ namespace QuantLib {
                       *std::complex<Real>(-phi, (j_== 1)? 1 : -1));
         const std::complex<Real> ex = std::exp(-d*term_);
         const std::complex<Real> addOnTerm
-            = engine_ > 0 ? engine_->addOnTerm(phi, term_, j_) : Real(0.0);
+            = engine_ ? engine_->addOnTerm(phi, term_, j_) : Real(0.0);
 
         if (cpxLog_ == Gatheral) {
             if (phi != 0.0) {

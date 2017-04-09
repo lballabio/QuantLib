@@ -23,8 +23,15 @@
     swap.
 */
 
-// the only header you need to use QuantLib
-#include <ql/quantlib.hpp>
+#include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
+#include <ql/termstructures/yield/ratehelpers.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
+#include <ql/time/imm.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
 
 #ifdef BOOST_MSVC
 /* Uncomment the following lines to unmask floating-point

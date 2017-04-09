@@ -23,6 +23,9 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 #include <ql/experimental/math/particleswarmoptimization.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
+#include <cmath>
+
+using std::sqrt;
 
 namespace QuantLib {
     ParticleSwarmOptimization::ParticleSwarmOptimization(Size M,

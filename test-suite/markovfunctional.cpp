@@ -1748,16 +1748,26 @@ void MarkovFunctionalTest::testBermudanSwaption() {
     Settings::instance().evaluationDate() = savedEvalDate;
 }
 
-test_suite *MarkovFunctionalTest::suite() {
+test_suite *MarkovFunctionalTest::suite(SpeedLevel speed) {
     test_suite *suite = BOOST_TEST_SUITE("Markov functional model tests");
+
     suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testMfStateProcess));
-    suite->add(
-        QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testKahaleSmileSection));
     suite->add(QUANTLIB_TEST_CASE(
-        &MarkovFunctionalTest::testCalibrationOneInstrumentSet));
-    suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testVanillaEngines));
+        &MarkovFunctionalTest::testKahaleSmileSection));
     suite->add(QUANTLIB_TEST_CASE(
-        &MarkovFunctionalTest::testCalibrationTwoInstrumentSets));
-    suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testBermudanSwaption));
+        &MarkovFunctionalTest::testBermudanSwaption));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &MarkovFunctionalTest::testCalibrationOneInstrumentSet));
+        suite->add(QUANTLIB_TEST_CASE(
+            &MarkovFunctionalTest::testCalibrationTwoInstrumentSets));
+    }
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &MarkovFunctionalTest::testVanillaEngines));
+    }
+
     return suite;
 }

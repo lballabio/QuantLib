@@ -1,6 +1,7 @@
 
 QL_TESTS = \
 	quantlibtestsuite.cpp \
+	speedlevel.hpp \
 	americanoption.hpp americanoption.cpp \
 	amortizingbond.hpp amortizingbond.cpp \
 	array.hpp array.cpp \

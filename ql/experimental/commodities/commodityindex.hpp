@@ -72,7 +72,7 @@ namespace QuantLib {
             std::string tag = name();
             quotes_ = IndexManager::instance().getHistory(tag);
             for (std::map<Date, Real>::const_iterator ii = quotes.begin();
-                 ii != quotes.end (); ii++) {
+                 ii != quotes.end (); ++ii) {
                 quotes_[ii->first] = ii->second;
             }
             IndexManager::instance().setHistory(tag, quotes_);
@@ -147,7 +147,7 @@ namespace QuantLib {
     inline Real CommodityIndex::price(const Date& date) {
         std::map<Date, Real>::const_iterator hq = quotes_.find(date);
         if (hq->second == Null<Real>()) {
-            hq++;
+            ++hq;
             if (hq == quotes_.end())
                 //if (hq->second == Null<Real>())
                 return Null<Real>();

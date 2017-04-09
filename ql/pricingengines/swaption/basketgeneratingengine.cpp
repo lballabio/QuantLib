@@ -48,9 +48,10 @@ namespace QuantLib {
 
         std::vector<boost::shared_ptr<CalibrationHelper> > result;
 
+        Date today = Settings::instance().evaluationDate();
         Size minIdxAlive = static_cast<Size>(
             std::upper_bound(exercise->dates().begin(), exercise->dates().end(),
-                             Settings::instance().evaluationDate()) -
+                             today) -
             exercise->dates().begin());
 
         boost::shared_ptr<RebatedExercise> rebEx =

@@ -91,13 +91,13 @@ namespace QuantLib {
 
 
     MultiplicativePriceSeasonality::MultiplicativePriceSeasonality(const Date& seasonalityBaseDate, const Frequency frequency,
-                                                                   const std::vector<Rate> seasonalityFactors)
+                                                                   const std::vector<Rate>& seasonalityFactors)
     {
         set(seasonalityBaseDate, frequency, seasonalityFactors);
     }
 
     void MultiplicativePriceSeasonality::set(const Date& seasonalityBaseDate, const Frequency frequency,
-                                             const std::vector<Rate> seasonalityFactors)
+                                             const std::vector<Rate>& seasonalityFactors)
     {
         frequency_ = frequency;
         seasonalityFactors_ = std::vector<Rate>(seasonalityFactors.size());

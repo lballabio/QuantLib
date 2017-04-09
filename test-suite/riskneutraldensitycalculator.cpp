@@ -736,7 +736,7 @@ void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
     }
 }
 
-test_suite* RiskNeutralDensityCalculatorTest::experimental() {
+test_suite* RiskNeutralDensityCalculatorTest::experimental(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Risk neutral density calculator tests");
 
     suite->add(QUANTLIB_TEST_CASE(
@@ -747,7 +747,11 @@ test_suite* RiskNeutralDensityCalculatorTest::experimental() {
         &RiskNeutralDensityCalculatorTest::testLocalVolatilityRND));
     suite->add(QUANTLIB_TEST_CASE(
         &RiskNeutralDensityCalculatorTest::testSquareRootProcessRND));
-    suite->add(QUANTLIB_TEST_CASE(
-        &RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew));
+    }
+
     return suite;
 }

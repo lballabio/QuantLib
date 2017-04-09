@@ -180,7 +180,7 @@ namespace QuantLib {
         std::vector<Probability> uncDefProb = 
             basket_->remainingProbabilities(date);
         std::vector<Real> invProb;
-        for(Size i=0; i<uncDefProb.size(); i++)
+        for(Size i=0; i<uncDefProb.size(); ++i)
            invProb.push_back(copula_->inverseCumulativeY(uncDefProb[i], i));
            ///  invProb.push_back(CP::inverseCumulativeY(uncDefProb[i], i));//<-static call
         return copula_->integratedExpectedValue(
@@ -227,14 +227,14 @@ namespace QuantLib {
         copula_->resetBasket(basket_.currentLink());
 
         std::vector<Real> lgdsTmp, lgds;
-        for(Size i=0; i<remainingBsktSize_; i++)
+        for(Size i=0; i<remainingBsktSize_; ++i)
             lgds.push_back(notionals_[i]*(1.-copula_->recoveries()[i]));
         lgdsTmp = lgds;
         ///////////////std::remove(lgds.begin(), lgds.end(), 0.);
         lgds.erase(std::remove(lgds.begin(), lgds.end(), 0.), lgds.end());
         lossUnit_ = *(std::min_element(lgds.begin(), lgds.end()))
             / nBuckets_;
-        for(Size i=0; i<remainingBsktSize_; i++)
+        for(Size i=0; i<remainingBsktSize_; ++i)
             wk_.push_back(std::floor(lgdsTmp[i]/lossUnit_ + .5));
     }
 
@@ -246,7 +246,7 @@ namespace QuantLib {
         std::map<Real, Probability> distrib;
         std::vector<Real> values  = lossProbability(d);
         Real sum = 0.;
-        for(Size i=0; i<values.size(); i++) {
+        for(Size i=0; i<values.size(); ++i) {
             distrib.insert(std::make_pair<Real, Probability>(i * lossUnit_, 
                 sum + values[i]));
             sum += values[i];
@@ -271,10 +271,10 @@ namespace QuantLib {
         if(percentile == 1.) return dist.rbegin()->second;
         if(percentile == 0.) return dist.begin()->second;
         std::map<Real, Probability>::const_iterator itdist = dist.begin();
-        while(itdist->second <= percentile) itdist++;
+        while (itdist->second <= percentile) ++itdist;
         Real valPlus = itdist->second;
         Real xPlus   = itdist->first;
-        itdist--;//we r never 1st or last, because of tests above
+        --itdist;  //we're never 1st or last, because of tests above
         Real valMin  = itdist->second;
         Real xMin    = itdist->first;
 
@@ -295,9 +295,10 @@ namespace QuantLib {
 
         std::map<Real, Probability>::iterator itNxt, itDist = 
             distrib.begin();
-        for(; itDist != distrib.end(); itDist++) 
+        for(; itDist != distrib.end(); ++itDist)
             if(itDist->second >= perctl) break;
-        itNxt = itDist; itDist--;// what if we are on the first one?!!!
+        itNxt = itDist;
+        --itDist; // what if we are on the first one?!!!
 
         // One could linearly triangulate the exact point and get extra 
         // precission on the first(broken) period.
@@ -310,7 +311,7 @@ namespace QuantLib {
             Real val =  lossNxt - (itNxt->second - perctl) * 
                 (lossNxt - lossHere) / (itNxt->second - itDist->second); 
             Real suma = (itNxt->second - perctl) * (lossNxt + val) * .5;
-            itDist++;itNxt++;
+            ++itDist; ++itNxt;
             do{
                 lossNxt = std::min(std::max(itNxt->first - attachAmount_, 
                     0.), detachAmount_ - attachAmount_);
@@ -318,7 +319,7 @@ namespace QuantLib {
                     0.), detachAmount_ - attachAmount_);
                 suma += .5 * (lossHere + lossNxt) * (itNxt->second - 
                     itDist->second);
-                itDist++;itNxt++;
+                ++itDist; ++itNxt;
             }while(itNxt != distrib.end());
             return suma / (1.-perctl);
         }
@@ -339,7 +340,7 @@ namespace QuantLib {
         std::map<Real, Probability> pIndepDistrib;
         ////////  K=0
         pIndepDistrib.insert(std::make_pair(0., 1.));
-        for(Size iName=0; iName<remainingBsktSize_; iName++) {
+        for(Size iName=0; iName<remainingBsktSize_; ++iName) {
             Probability pDef =
                 copula_->conditionalDefaultProbability(uncDefProb[iName], iName,
                                                 mktFactor);
@@ -365,7 +366,7 @@ namespace QuantLib {
                     pDistTemp.insert(std::make_pair(
                         distIt->first+wk_[iName], distIt->second * pDef));
                 }
-                distIt++;
+                ++distIt;
             }
            /////  copy back
             pIndepDistrib = pDistTemp;
@@ -389,7 +390,7 @@ namespace QuantLib {
         std::map<Real, Probability> pIndepDistrib;
         // K=0
         pIndepDistrib.insert(std::make_pair(0., 1.));
-        for(Size iName=0; iName<remainingBsktSize_; iName++) {
+        for(Size iName=0; iName<remainingBsktSize_; ++iName) {
             Probability pDef =
                 copula_->conditionalDefaultProbabilityInvP(invpDefDate[iName], 
                     iName, mktFactor);
@@ -416,7 +417,7 @@ namespace QuantLib {
                     pDistTemp.insert(std::make_pair(
                         distIt->first+wk_[iName], distIt->second * pDef));
                 }
-                distIt++;
+                ++distIt;
             }
             // copy back
             pIndepDistrib = pDistTemp;
@@ -462,7 +463,7 @@ namespace QuantLib {
                 detachAmount_ - attachAmount_);
             // MIN MAX BUGS ....??
             expLoss += loss * distIt->second;
-            distIt++;
+            ++distIt;
         }
         return expLoss ;
     }
@@ -495,7 +496,7 @@ namespace QuantLib {
                 detachAmount_ - attachAmount_);
             // MIN MAX BUGS ....???
             expLoss += loss * distIt->second;
-            distIt++;
+            ++distIt;
         }
         return expLoss ;
     }
@@ -519,12 +520,10 @@ namespace QuantLib {
             //expLoss += loss * distIt->second;
 
             results.push_back(distIt->second);
-             distIt++;
-       }
+             ++distIt;
+        }
         return results;
     }
-
-
 
 }
 
