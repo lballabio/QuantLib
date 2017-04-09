@@ -92,8 +92,6 @@
 #include <list>
 #include <string>
 
-
-
 /* PAPI code
 #include <stdio.h
 #include <papi.h>
