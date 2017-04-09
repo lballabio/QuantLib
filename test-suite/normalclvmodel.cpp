@@ -560,7 +560,6 @@ void NormalCLVModelTest::testMoustacheGraph() {
     }
 }
 
-<<<<<<< HEAD
 void NormalCLVModelTest::testOrnsteinUhlenbeckVanillaDelta() {
     BOOST_TEST_MESSAGE("Testing Ornstein-Uhlenbeck Delta "
                        "of an vanilla option ...");
