@@ -467,8 +467,8 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(VarianceOptionTest::suite());
     test->add(VPPTest::suite());
     test->add(ZabrTest::suite());
-//
-//    // tests for deprecated classes
+
+    // tests for deprecated classes
     test->add(LiborMarketModelTest::suite());
     test->add(LiborMarketModelProcessTest::suite());
 
