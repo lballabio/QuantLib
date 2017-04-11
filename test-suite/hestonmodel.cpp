@@ -1760,7 +1760,7 @@ namespace {
 }
 
 void HestonModelTest::testCosHestonCumulants() {
-    BOOST_TEST_MESSAGE("Testing Heston COS cumulants ...");
+    BOOST_TEST_MESSAGE("Testing Heston COS cumulants...");
 
     SavedSettings backup;
 
@@ -1853,7 +1853,7 @@ void HestonModelTest::testCosHestonCumulants() {
 
 
 void HestonModelTest::testCosHestonEngine() {
-    BOOST_TEST_MESSAGE("Testing Heston pricing via COS method ...");
+    BOOST_TEST_MESSAGE("Testing Heston pricing via COS method...");
 
     SavedSettings backup;
 

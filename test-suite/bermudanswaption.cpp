@@ -109,7 +109,8 @@ namespace {
 
 void BermudanSwaptionTest::testCachedValues() {
 
-    BOOST_TEST_MESSAGE("Testing Bermudan swaption HW model against cached values...");
+    BOOST_TEST_MESSAGE(
+        "Testing Bermudan swaption with HW model against cached values...");
 
     CommonVars vars;
 
@@ -230,7 +231,8 @@ void BermudanSwaptionTest::testCachedValues() {
 }
 
 void BermudanSwaptionTest::testCachedG2Values() {
-    BOOST_TEST_MESSAGE("Testing Bermudan swaption G2 model against cached values...");
+    BOOST_TEST_MESSAGE(
+        "Testing Bermudan swaption with G2 model against cached values...");
 
     CommonVars vars;
 

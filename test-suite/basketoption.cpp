@@ -953,7 +953,7 @@ void BasketOptionTest::testOddSamples() {
 
 void BasketOptionTest::testLocalVolatilitySpreadOption() {
 
-    BOOST_TEST_MESSAGE("Testing 2d local volatility spread option pricing...");
+    BOOST_TEST_MESSAGE("Testing 2D local-volatility spread-option pricing...");
 
     const DayCounter dc = Actual360();
     const Date today = Date(21, September, 2017);
@@ -1020,7 +1020,7 @@ void BasketOptionTest::testLocalVolatilitySpreadOption() {
 
 void BasketOptionTest::test2DPDEGreeks() {
 
-    BOOST_TEST_MESSAGE("Testing Greeks of 2dim PDE engine...");
+    BOOST_TEST_MESSAGE("Testing Greeks of two-dimensional PDE engine...");
 
     const Real s1 = 100;
     const Real s2 = 100;

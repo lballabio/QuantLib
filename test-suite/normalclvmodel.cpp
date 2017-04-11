@@ -110,7 +110,7 @@ void NormalCLVModelTest::testBSCumlativeDistributionFunction() {
 }
 
 void NormalCLVModelTest::testHestonCumlativeDistributionFunction() {
-    BOOST_TEST_MESSAGE("Testing Heston cumulative distribution function ...");
+    BOOST_TEST_MESSAGE("Testing Heston cumulative distribution function...");
 
     SavedSettings backup;
 
@@ -165,7 +165,8 @@ void NormalCLVModelTest::testHestonCumlativeDistributionFunction() {
 
 
 void NormalCLVModelTest::testIllustrative1DExample() {
-    BOOST_TEST_MESSAGE("Testing illustrative 1d example of NormalCLVModel ...");
+    BOOST_TEST_MESSAGE(
+        "Testing illustrative 1D example of normal CLV model...");
 
     SavedSettings backup;
 
@@ -296,7 +297,7 @@ namespace {
 }
 
 void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
-    BOOST_TEST_MESSAGE("Testing Monte-Carlo BS option pricing ...");
+    BOOST_TEST_MESSAGE("Testing Monte Carlo BS option pricing...");
 
     SavedSettings backup;
 
@@ -393,7 +394,7 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
 
 void NormalCLVModelTest::testMoustacheGraph() {
     BOOST_TEST_MESSAGE(
-        "Testing Double no Touch pricing with Normal CLV Model...");
+        "Testing double no-touch pricing with normal CLV model...");
 
     SavedSettings backup;
 
