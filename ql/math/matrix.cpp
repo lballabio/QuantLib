@@ -83,7 +83,6 @@ namespace QuantLib {
         }
         QL_REQUIRE(singular == 0, "singular matrix given");
 
-        Matrix retVal(m.rows(), m.columns());
         boost::numeric::ublas::matrix<Real>
             inverse = boost::numeric::ublas::identity_matrix<Real>(m.rows());
 
@@ -93,6 +92,10 @@ namespace QuantLib {
         } catch (const boost::numeric::ublas::internal_logic& e) {
             QL_FAIL("lu_substitute error: " << e.what());
         }
+
+        Matrix retVal(m.rows(), m.columns());
+        std::copy(inverse.data().begin(), inverse.data().end(),
+                  retVal.begin());
 
         return retVal;
 
