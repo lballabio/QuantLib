@@ -74,7 +74,7 @@ namespace QuantLib {
         boost::numeric::ublas::permutation_matrix<Size> pert(m.rows());
 
         // lu decomposition
-        Size singluar = 1;
+        Size singular = 1;
         try {
             singular = lu_factorize(a, pert);
         } catch (const boost::numeric::ublas::internal_logic& e) {
