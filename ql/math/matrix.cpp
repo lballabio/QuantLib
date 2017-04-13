@@ -74,18 +74,25 @@ namespace QuantLib {
         boost::numeric::ublas::permutation_matrix<Size> pert(m.rows());
 
         // lu decomposition
-        const Size singular = lu_factorize(a, pert);
+        try {
+            const Size singular = lu_factorize(a, pert);
+        } catch (const boost::numeric::ublas::internal_logic& e) {
+            QL_FAIL("lu_factorize error: " << e.what());
+        } catch (const boost::numeric::ublas::external_logic& e) {
+            QL_FAIL("lu_factorize error: " << e.what());
+        }
         QL_REQUIRE(singular == 0, "singular matrix given");
 
+        Matrix retVal(m.rows(), m.columns());
         boost::numeric::ublas::matrix<Real>
             inverse = boost::numeric::ublas::identity_matrix<Real>(m.rows());
 
         // backsubstitution
-        boost::numeric::ublas::lu_substitute(a, pert, inverse);
-
-        Matrix retVal(m.rows(), m.columns());
-        std::copy(inverse.data().begin(), inverse.data().end(),
-                  retVal.begin());
+        try {
+            boost::numeric::ublas::lu_substitute(a, pert, inverse);
+        } catch (const boost::numeric::ublas::internal_logic& e) {
+            QL_FAIL("lu_substitute error: " << e.what());
+        }
 
         return retVal;
 
