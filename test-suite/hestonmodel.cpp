@@ -1228,10 +1228,18 @@ void HestonModelTest::testAlanLewisReferencePrices() {
     const boost::shared_ptr<PricingEngine> cosEngine(
         new COSHestonEngine(model, 20, 400));
 
+    const boost::shared_ptr<PricingEngine> andersenPiterbargEngine(
+        new AnalyticHestonEngine(
+            model,
+            AnalyticHestonEngine::AndersenPiterbarg,
+            AnalyticHestonEngine::Integration::discreteTrapezoid(92),
+            QL_EPSILON));
+
     const Real strikes[] = { 80, 90, 100, 110, 120 };
     const Option::Type types[] = { Option::Put, Option::Call };
     const boost::shared_ptr<PricingEngine> engines[]
-        = { laguerreEngine, gaussLobattoEngine, cosEngine };
+        = { laguerreEngine, gaussLobattoEngine,
+            cosEngine, andersenPiterbargEngine };
 
     const Real expectedResults[][2] = {
         { 7.958878113256768285213263077598987193482161301733,
@@ -1565,7 +1573,7 @@ namespace {
 
         const boost::shared_ptr<AnalyticHestonEngine> engine =
             boost::make_shared<AnalyticHestonEngine>(
-                model, formula, integration);
+                model, formula, integration, 1e-9);
 
         option.setPricingEngine(engine);
         const Real calculated = option.NPV();
@@ -1664,10 +1672,10 @@ void HestonModelTest::testAllIntegrationMethods() {
 
     // Gauss-Legendre with Andersen-Piterbarg integration method
     reportOnIntegrationMethodTest(option, model,
-        AnalyticHestonEngine::Integration::gaussLegendre(),
+        AnalyticHestonEngine::Integration::gaussLegendre(256),
         AnalyticHestonEngine::AndersenPiterbarg,
-        false, expected, tol, 128,
-        "Gauss-Laguerre with Andersen Piterbarg control variate");
+        false, expected, 1e-4, 256,
+        "Gauss-Legendre with Andersen Piterbarg control variate");
 
     // Gauss-Chebyshev with Gatheral logarithm integration method
     reportOnIntegrationMethodTest(option, model,
@@ -1718,9 +1726,9 @@ void HestonModelTest::testAllIntegrationMethods() {
 
     // Discrete Simpson rule with Andersen-Piterbarg integration method
     reportOnIntegrationMethodTest(option, model,
-        AnalyticHestonEngine::Integration::discreteSimpson(512),
+        AnalyticHestonEngine::Integration::discreteSimpson(64),
         AnalyticHestonEngine::AndersenPiterbarg,
-        false, expected, tol, 512,
+        false, expected, tol, 64,
         "Discrete Simpson rule with Andersen Piterbarg control variate");
 
     // Discrete Trapezoid rule with Gatheral logarithm
@@ -1732,9 +1740,9 @@ void HestonModelTest::testAllIntegrationMethods() {
 
     // Discrete Trapezoid rule with Andersen-Piterbarg integration method
     reportOnIntegrationMethodTest(option, model,
-        AnalyticHestonEngine::Integration::discreteTrapezoid(512),
+        AnalyticHestonEngine::Integration::discreteTrapezoid(64),
         AnalyticHestonEngine::AndersenPiterbarg,
-        false, expected, 2e-4, 512,
+        false, expected, tol, 64,
         "Discrete Trapezoid rule with Andersen Piterbarg control variate");
 
     // Gauss-Lobatto with Gatheral logarithm
@@ -2021,6 +2029,7 @@ void HestonModelTest::testCharacteristicFct() {
     }
 }
 
+#include <iostream>
 void HestonModelTest::testAndersenPiterbargPricing() {
     BOOST_TEST_MESSAGE("Testing Andersen-Piterbarg method to "
                        "price under the Heston model ...");
@@ -2048,47 +2057,106 @@ void HestonModelTest::testAndersenPiterbargPricing() {
                 riskFreeTS, dividendTS,
                 s0, v0, kappa, theta, sigma, rho));
 
-    const boost::shared_ptr<PricingEngine> andersenPiterbargEngine(
-        boost::make_shared<AnalyticHestonEngine>(
-            model,
-            AnalyticHestonEngine::AndersenPiterbarg,
-            AnalyticHestonEngine::Integration::gaussLaguerre()));
+    const boost::shared_ptr<AnalyticHestonEngine>
+        andersenPiterbargLaguerreEngine(
+            boost::make_shared<AnalyticHestonEngine>(
+                model,
+                AnalyticHestonEngine::AndersenPiterbarg,
+                AnalyticHestonEngine::Integration::gaussLaguerre()));
+
+    const boost::shared_ptr<AnalyticHestonEngine>
+        andersenPiterbargLobattoEngine(
+            boost::make_shared<AnalyticHestonEngine>(
+                model,
+                AnalyticHestonEngine::AndersenPiterbarg,
+                AnalyticHestonEngine::Integration::gaussLobatto(
+                    Null<Real>(), 1e-9, 10000), 1e-9));
+
+    const boost::shared_ptr<AnalyticHestonEngine>
+        andersenPiterbargSimpsonEngine(
+            boost::make_shared<AnalyticHestonEngine>(
+                model,
+                AnalyticHestonEngine::AndersenPiterbarg,
+                AnalyticHestonEngine::Integration::discreteSimpson(256),
+                1e-8));
+
+    const boost::shared_ptr<AnalyticHestonEngine>
+        andersenPiterbargTrapezoidEngine(
+            boost::make_shared<AnalyticHestonEngine>(
+                model,
+                AnalyticHestonEngine::AndersenPiterbarg,
+                AnalyticHestonEngine::Integration::discreteTrapezoid(164),
+                1e-8));
+
+    const boost::shared_ptr<AnalyticHestonEngine>
+        andersenPiterbargTrapezoidEngine2(
+            boost::make_shared<AnalyticHestonEngine>(
+                model,
+                AnalyticHestonEngine::AndersenPiterbarg,
+                AnalyticHestonEngine::Integration::trapezoid(1e-8, 256),
+                1e-8));
+
+    const boost::shared_ptr<AnalyticHestonEngine> engines[] = {
+        andersenPiterbargLaguerreEngine,
+        andersenPiterbargLobattoEngine,
+        andersenPiterbargSimpsonEngine,
+        andersenPiterbargTrapezoidEngine,
+        andersenPiterbargTrapezoidEngine2
+    };
+
+    const std::string algos[] = {
+          "Gauss-Laguerre", "Gauss-Lobatto",
+          "Discrete Simpson", "Discrete Trapezoid", "Trapezoid"
+    };
 
     const boost::shared_ptr<PricingEngine> analyticEngine(
-       boost::make_shared<AnalyticHestonEngine>(model));
+        boost::make_shared<AnalyticHestonEngine>(model, 192));
 
-    const Date maturityDate = settlementDate + Period(1, Years);
-
-    const boost::shared_ptr<Exercise> exercise =
-        boost::make_shared<EuropeanExercise>(maturityDate);
+    const Date maturityDates[] = {
+        settlementDate + Period(1, Days),
+        settlementDate + Period(1, Weeks),
+        settlementDate + Period(1, Years),
+        settlementDate + Period(10, Years)
+    };
 
     const Option::Type optionTypes[] = { Option::Call, Option::Put };
     const Real strikes[] = { 50, 75, 90, 100, 110, 130, 150, 200};
 
     const Real tol = 1e-8;
 
-    for (Size i=0; i < LENGTH(optionTypes); ++i)
-        for (Size j=0; j < LENGTH(strikes); ++j) {
-            VanillaOption option(
-                boost::make_shared<PlainVanillaPayoff>(
-                    optionTypes[i], strikes[j]),
-                exercise);
+    for (Size u=0; u < LENGTH(maturityDates); ++u) {
+        const boost::shared_ptr<Exercise> exercise =
+            boost::make_shared<EuropeanExercise>(maturityDates[u]);
 
-            option.setPricingEngine(andersenPiterbargEngine);
-            const Real calculated = option.NPV();
+        for (Size i=0; i < LENGTH(optionTypes); ++i) {
+            for (Size j=0; j < LENGTH(strikes); ++j) {
+                VanillaOption option(
+                    boost::make_shared<PlainVanillaPayoff>(
+                        optionTypes[i], strikes[j]),
+                    exercise);
 
-            option.setPricingEngine(analyticEngine);
-            const Real expected = option.NPV();
+                option.setPricingEngine(analyticEngine);
+                const Real expected = option.NPV();
 
-            const Real error = std::fabs(calculated-expected);
-            if (error > tol) {
-                BOOST_ERROR(" failed to reproduce prices with Andersen-"
-                        "Piterbarg control variate"
-                        << "\n    control variate: " << calculated
-                        << "\n    classic engine : " << expected
-                        << "\n    difference:      " << error);
+                for (Size k=0; k < LENGTH(engines); ++k) {
+                    option.setPricingEngine(engines[k]);
+                    const Real calculated = option.NPV();
+
+                    const Real error = std::fabs(calculated-expected);
+
+                    if (error > tol) {
+                        BOOST_ERROR(" failed to reproduce prices with Andersen-"
+                                "Piterbarg control variate"
+                                << "\n    algorithm      : " << algos[k]
+                                << "\n    strike         : " << strikes[j]
+                                << "\n    control variate: " << calculated
+                                << "\n    classic engine : " << expected
+                                << "\n    difference:      " << error);
+                    }
+                }
             }
         }
+    }
 }
 
 test_suite* HestonModelTest::suite() {
@@ -2124,6 +2192,7 @@ test_suite* HestonModelTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testCharacteristicFct));
     suite->add(QUANTLIB_TEST_CASE(
         &HestonModelTest::testAndersenPiterbargPricing));
+
     return suite;
 }
 

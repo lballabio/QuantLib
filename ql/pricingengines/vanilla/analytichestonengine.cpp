@@ -23,7 +23,7 @@
   based on fourier transformation
 */
 
-#include <ql/math/functional.hpp>
+#include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/math/integrals/trapezoidintegral.hpp>
@@ -33,8 +33,6 @@
 #include <ql/instruments/payoffs.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
-
-#include <iostream>
 
 #if defined(QL_PATCH_MSVC)
 #pragma warning(disable: 4180)
@@ -85,6 +83,42 @@ namespace QuantLib {
             Real operator()(Real x) const { return int_(1.0-x); }
         };
 
+        class u_Max : public std::unary_function<Real, Real> {
+          public:
+            u_Max(Real c_inf, Real epsilon)
+            : c_inf_(c_inf), logEpsilon_(std::log(epsilon)),
+              evaluations_(0) {}
+
+            Real operator()(Real u) const {
+                ++evaluations_;
+                return c_inf_*u + std::log(u) + logEpsilon_;
+            }
+
+            Size evaluations() const { return evaluations_; }
+
+          private:
+            const Real c_inf_, logEpsilon_;
+            mutable Size evaluations_;
+        };
+
+
+        class uHat_Max : public std::unary_function<Real, Real> {
+          public:
+            uHat_Max(Real v0T2, Real epsilon)
+            : v0T2_(v0T2), logEpsilon_(std::log(epsilon)),
+              evaluations_(0) {}
+
+            Real operator()(Real u) const {
+                ++evaluations_;
+                return v0T2_*u*u + std::log(u) + logEpsilon_;
+            }
+
+            Size evaluations() const { return evaluations_; }
+
+          private:
+            const Real v0T2_, logEpsilon_;
+            mutable Size evaluations_;
+        };
     }
 
     // helper class for integration
@@ -412,7 +446,8 @@ namespace QuantLib {
       evaluations_(0),
       cpxLog_     (Gatheral),
       integration_(new Integration(
-                          Integration::gaussLaguerre(integrationOrder))) {
+                          Integration::gaussLaguerre(integrationOrder))),
+      andersenPiterbargEpsilon_(Null<Real>()) {
     }
 
     AnalyticHestonEngine::AnalyticHestonEngine(
@@ -424,19 +459,22 @@ namespace QuantLib {
       evaluations_(0),
       cpxLog_(Gatheral),
       integration_(new Integration(Integration::gaussLobatto(
-                              relTolerance, Null<Real>(), maxEvaluations))) {
+                              relTolerance, Null<Real>(), maxEvaluations))),
+      andersenPiterbargEpsilon_(Null<Real>()) {
     }
 
     AnalyticHestonEngine::AnalyticHestonEngine(
                               const boost::shared_ptr<HestonModel>& model,
                               ComplexLogFormula cpxLog,
-                              const Integration& integration)
+                              const Integration& integration,
+                              const Real andersenPiterbargEpsilon)
     : GenericModelEngine<HestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
       evaluations_(0),
       cpxLog_(cpxLog),
-      integration_(new Integration(integration)) {
+      integration_(new Integration(integration)),
+      andersenPiterbargEpsilon_(andersenPiterbargEpsilon) {
         QL_REQUIRE(   cpxLog_ != BranchCorrection
                    || !integration.isAdaptiveIntegration(),
                    "Branch correction does not work in conjunction "
@@ -462,15 +500,14 @@ namespace QuantLib {
 
         const Real ratio = riskFreeDiscount/dividendDiscount;
 
-        const Real c_inf = std::min(0.2, std::max(0.0001,
-                std::sqrt(1.0-square<Real>()(rho))/sigma))
-                *(v0 + kappa*theta*term);
+        evaluations = 0;
 
         switch(cpxLog) {
           case Gatheral:
           case BranchCorrection: {
+            const Real c_inf = std::min(0.2, std::max(0.0001,
+                std::sqrt(1.0-rho*rho)/sigma))*(v0 + kappa*theta*term);
 
-            evaluations = 0;
             const Real p1 = integration.calculate(c_inf,
                 Fj_Helper(kappa, theta, sigma, v0, spotPrice, rho, enginePtr,
                           cpxLog, term, strikePrice, ratio, 1))/M_PI;
@@ -498,31 +535,51 @@ namespace QuantLib {
           break;
 
           case AndersenPiterbarg: {
-              const Real fwdPrice = spotPrice / ratio;
+            const Real c_inf =
+                std::sqrt(1.0-rho*rho)*(v0 + kappa*theta*term)/sigma;
 
-              const Real bsPrice
-                  = BlackCalculator(Option::Call, strikePrice,
-                                    fwdPrice, std::sqrt(v0*term),
-                                    riskFreeDiscount).value();
+            const Real fwdPrice = spotPrice / ratio;
 
-              const Real h_cv = integration.calculate(c_inf,
-                  AP_Helper(term, spotPrice, strikePrice,
-                            ratio, std::sqrt(v0), enginePtr))
-                  * std::sqrt(strikePrice * fwdPrice)*riskFreeDiscount/M_PI;
-              evaluations += integration.numberOfEvaluations();
+            const Real epsilon = enginePtr->andersenPiterbargEpsilon_
+                *M_PI/(std::sqrt(strikePrice*fwdPrice)*riskFreeDiscount);
 
-              switch (type.optionType())
-              {
-                case Option::Call:
-                  value = bsPrice + h_cv;
-                  break;
-                case Option::Put:
-                  value = bsPrice + h_cv
-                      - riskFreeDiscount*(fwdPrice - strikePrice);
-                  break;
-                default:
-                  QL_FAIL("unknown option type");
-              }
+            const Real uMaxGuess = -std::log(epsilon)/c_inf;
+            const Real uMaxStep = 0.1*uMaxGuess;
+
+            const Real uMax = Brent().solve(u_Max(c_inf, epsilon),
+                QL_EPSILON*uMaxGuess, uMaxGuess, uMaxStep);
+
+            const Real uHatMax = Brent().solve(uHat_Max(0.5*v0*term, epsilon),
+                QL_EPSILON*std::sqrt(uMaxGuess),
+                std::sqrt(uMaxGuess), 0.1*std::sqrt(uMaxGuess));
+
+            const Real vAvg
+                = (1-std::exp(-kappa*term))*(v0-theta)/(kappa*term) + theta;
+
+            const Real bsPrice
+                = BlackCalculator(Option::Call, strikePrice,
+                                  fwdPrice, std::sqrt(vAvg*term),
+                                  riskFreeDiscount).value();
+
+            const Real h_cv = integration.calculate(c_inf,
+                    AP_Helper(term, spotPrice, strikePrice,
+                              ratio, std::sqrt(vAvg), enginePtr),
+                    std::max(uMax, uHatMax))
+                * std::sqrt(strikePrice * fwdPrice)*riskFreeDiscount/M_PI;
+            evaluations += integration.numberOfEvaluations();
+
+            switch (type.optionType())
+            {
+              case Option::Call:
+                value = bsPrice + h_cv;
+                break;
+              case Option::Put:
+                value = bsPrice + h_cv
+                    - riskFreeDiscount*(fwdPrice - strikePrice);
+                break;
+              default:
+                QL_FAIL("unknown option type");
+            }
           }
           break;
 
@@ -689,7 +746,8 @@ namespace QuantLib {
 
     Real AnalyticHestonEngine::Integration::calculate(
                                Real c_inf,
-                               const boost::function1<Real, Real>& f) const {
+                               const boost::function1<Real, Real>& f,
+                               Real maxBound) const {
         Real retVal;
 
         switch(intAlgo_) {
@@ -705,13 +763,17 @@ namespace QuantLib {
           case Trapezoid:
           case GaussLobatto:
           case GaussKronrod:
-            retVal = (*integrator_)(integrand2(c_inf, f),
-                                    0.0, 1.0);
+            if (maxBound == Null<Real>())
+                retVal = (*integrator_)(integrand2(c_inf, f), 0.0, 1.0);
+            else
+                retVal = (*integrator_)(f, 0.0, maxBound);
             break;
           case DiscreteTrapezoid:
           case DiscreteSimpson:
-            retVal = (*integrator_)(integrand3(c_inf, f),
-                                    0.0, 1.0);
+            if (maxBound == Null<Real>())
+                retVal = (*integrator_)(integrand3(c_inf, f), 0.0, 1.0);
+            else
+                retVal = (*integrator_)(f, 0.0, maxBound);
             break;
           default:
             QL_FAIL("unknwon integration algorithm");
