@@ -75,6 +75,22 @@ namespace QuantLib {
                               Size maxEvaluations,
                               Volatility minVol,
                               Volatility maxVol) const;
+
+        //! Calculate the Option Adjusted Spread (OAS)
+        /*! Calculates the spread that needs to be added to the the
+            reference (engineTS risk-free) curve so that the
+            theoretical model value matches the marketPrice.
+
+            \note a pricing engine should be set on the bond and the
+            YieldTermStructure handle used by engine should be the
+            same as engineTS
+         */
+        Spread OAS(Real marketPrice,
+                   RelinkableHandle<YieldTermStructure>& engineTS,
+                   Real accuracy,
+                   Size maxIterations,
+                   Spread guess);
+
         //@}
         virtual void setupArguments(PricingEngine::arguments*) const {}
 
@@ -108,6 +124,21 @@ namespace QuantLib {
             Real targetValue_;
             boost::shared_ptr<SimpleQuote> vol_;
             const Instrument::results* results_;
+        };
+
+
+        class OASHelper;
+        friend class OASHelper;
+        class OASHelper {
+          public:
+            OASHelper(const CallableBond& bond,
+                      Handle<SimpleQuote>& spread,
+                      Real targetValue);
+            Real operator()(Spread x) const;
+          private:
+            const CallableBond& bond_;
+            Handle<SimpleQuote>& spread_;
+            Real targetValue_;
         };
     };
 

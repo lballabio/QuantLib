@@ -20,6 +20,7 @@
 #include <ql/experimental/callablebonds/callablebond.hpp>
 #include <ql/experimental/callablebonds/blackcallablebondengine.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 
 namespace QuantLib {
@@ -89,7 +90,6 @@ namespace QuantLib {
         return results_->value-targetValue_;
     }
 
-
     Volatility CallableBond::impliedVolatility(
                               Real targetValue,
                               const Handle<YieldTermStructure>& discountCurve,
@@ -105,6 +105,58 @@ namespace QuantLib {
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
         return solver.solve(f, accuracy, guess, minVol, maxVol);
+    }
+
+    CallableBond::OASHelper::OASHelper(const CallableBond& bond,
+                                       Handle<SimpleQuote>& spread,
+                                       Real targetValue):
+        bond_(bond),
+        spread_(spread),
+        targetValue_(targetValue)
+    {
+    }
+
+    Real CallableBond::OASHelper::operator()(Spread x) const
+    {
+        std::cout<<x<<" ";
+        spread_->setValue(x);
+        std::cout<<bond_.NPV()<<" ";
+        return bond_.NPV()-targetValue_;
+    }
+
+    Spread CallableBond::OAS(Real marketPrice,
+                             RelinkableHandle<YieldTermStructure>& engineTS,
+                             Real accuracy,
+                             Size maxIterations,
+                             Spread guess)
+    {
+        // Save the original terms structure, to be restored
+        // later. Not thread safe
+        boost::shared_ptr<YieldTermStructure> origTS(engineTS.currentLink());
+        Handle<YieldTermStructure> refHandle(origTS);
+        // Handle for the spread
+        boost::shared_ptr<SimpleQuote> spread(new SimpleQuote(0));
+        Handle<Quote> hSpread(spread);
+
+        boost::shared_ptr<ZeroSpreadedTermStructure>
+            spreadedTS( new ZeroSpreadedTermStructure(refHandle,
+                                                      hSpread));
+        engineTS.linkTo(spreadedTS);
+
+
+        Handle<SimpleQuote> sqSpread(spread);
+        OASHelper obj(*this,
+                      sqSpread,
+                      marketPrice);
+
+        Brent solver;
+        solver.setMaxEvaluations(maxIterations);
+
+        Real step = 0.001;
+        Spread res=solver.solve(obj, accuracy, guess, step);
+        engineTS.linkTo(origTS);
+        return res;
+
     }
 
 
