@@ -86,11 +86,15 @@ namespace QuantLib {
             YieldTermStructure handle used by engine should be the
             same as engineTS
          */
-        Spread OAS(Real marketPrice,
+        Spread OAS(Real cleanPrice,
                    RelinkableHandle<YieldTermStructure>& engineTS,
-                   Real accuracy,
-                   Size maxIterations,
-                   Spread guess);
+                   const DayCounter& dayCounter,
+                   Compounding compounding,
+                   Frequency frequency,
+                   Date settlementDate = Date(),
+                   Real accuracy = 1.0e-10,
+                   Size maxIterations = 100,
+                   Rate guess = 0.0);
 
         //@}
         virtual void setupArguments(PricingEngine::arguments*) const {}

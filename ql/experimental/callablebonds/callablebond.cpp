@@ -125,12 +125,21 @@ namespace QuantLib {
         return bond_.NPV()-targetValue_;
     }
 
-    Spread CallableBond::OAS(Real marketPrice,
+    Spread CallableBond::OAS(Real cleanPrice,
                              RelinkableHandle<YieldTermStructure>& engineTS,
+                             const DayCounter& dayCounter,
+                             Compounding compounding,
+                             Frequency frequency,
+                             Date settlement,
                              Real accuracy,
                              Size maxIterations,
                              Spread guess)
     {
+        if (settlement == Date())
+            settlement = settlementDate();
+
+        Real dirtyPrice = cleanPrice + accruedAmount(settlement);
+
         // Save the original terms structure, to be restored
         // later. Not thread safe
         boost::shared_ptr<YieldTermStructure> origTS(engineTS.currentLink());
@@ -141,14 +150,18 @@ namespace QuantLib {
 
         boost::shared_ptr<ZeroSpreadedTermStructure>
             spreadedTS( new ZeroSpreadedTermStructure(refHandle,
-                                                      hSpread));
+                                                      hSpread,
+                                                      compounding,
+                                                      frequency,
+                                                      dayCounter
+                                                      ));
         engineTS.linkTo(spreadedTS);
 
 
         Handle<SimpleQuote> sqSpread(spread);
         OASHelper obj(*this,
                       sqSpread,
-                      marketPrice);
+                      dirtyPrice);
 
         Brent solver;
         solver.setMaxEvaluations(maxIterations);
