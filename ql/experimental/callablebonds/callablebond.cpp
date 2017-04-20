@@ -224,12 +224,12 @@ namespace QuantLib {
         return res;
     }
 
-    Real CallableBond::cleanPrice(Real oas,
-                                  RelinkableHandle<YieldTermStructure>& engineTS,
-                                  const DayCounter& dayCounter,
-                                  Compounding compounding,
-                                  Frequency frequency,
-                                  Date settlement)
+    Real CallableBond::cleanPriceOAS(Real oas,
+                                     RelinkableHandle<YieldTermStructure>& engineTS,
+                                     const DayCounter& dayCounter,
+                                     Compounding compounding,
+                                     Frequency frequency,
+                                     Date settlement) const
     {
         if (settlement == Date())
             settlement = settlementDate();
@@ -251,8 +251,7 @@ namespace QuantLib {
                                          RelinkableHandle<YieldTermStructure>& engineTS,
                                          const DayCounter& dayCounter,
                                          Compounding compounding,
-                                         Frequency frequency,
-                                         Date settlementDate)
+                                         Frequency frequency)
     {
         EngSpreadHelper s(engineTS,
                           dayCounter,
@@ -279,8 +278,7 @@ namespace QuantLib {
                                           RelinkableHandle<YieldTermStructure>& engineTS,
                                           const DayCounter& dayCounter,
                                           Compounding compounding,
-                                          Frequency frequency,
-                                          Date settlementDate)
+                                          Frequency frequency)
     {
         EngSpreadHelper s(engineTS,
                           dayCounter,
@@ -297,7 +295,7 @@ namespace QuantLib {
         else
             {
                 NumericalDifferentiation dFdOAS(f,
-                                                2,
+                                                2, 
                                                 1e-6,
                                                 3,
                                                 NumericalDifferentiation::Central);

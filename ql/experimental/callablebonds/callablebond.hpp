@@ -99,12 +99,12 @@ namespace QuantLib {
         //! Calculate the clean price based on the given
         //! option-adjust-spread (oas) over the given yield term
         //! structure (engineTS)
-        Real cleanPrice(Real oas,
-                        RelinkableHandle<YieldTermStructure>& engineTS,
-                        const DayCounter& dayCounter,
-                        Compounding compounding,
-                        Frequency frequency,
-                        Date settlementDate = Date());
+        Real cleanPriceOAS(Real oas,
+                           RelinkableHandle<YieldTermStructure>& engineTS,
+                           const DayCounter& dayCounter,
+                           Compounding compounding,
+                           Frequency frequency,
+                           Date settlementDate = Date()) const;
 
         //! Calculate the effective duration, i.e., the first
         //! differential of the dirty price w.r.t. a parallel shift of
@@ -113,8 +113,7 @@ namespace QuantLib {
                                RelinkableHandle<YieldTermStructure>& engineTS,
                                const DayCounter& dayCounter,
                                Compounding compounding,
-                               Frequency frequency,
-                               Date settlementDate = Date());
+                               Frequency frequency);
 
         //! Calculate the effective convexity, i.e., the second
         //! differential of the dirty price w.r.t. a parallel shift of
@@ -123,8 +122,7 @@ namespace QuantLib {
                                 RelinkableHandle<YieldTermStructure>& engineTS,
                                 const DayCounter& dayCounter,
                                 Compounding compounding,
-                                Frequency frequency,
-                                Date settlementDate = Date());
+                                Frequency frequency);
         //@}
         virtual void setupArguments(PricingEngine::arguments*) const {}
 
