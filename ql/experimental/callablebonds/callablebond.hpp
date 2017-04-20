@@ -96,6 +96,25 @@ namespace QuantLib {
                    Size maxIterations = 100,
                    Rate guess = 0.0);
 
+        //! Calculate the effective duration, i.e., the first
+        //! differential of the dirty price w.r.t. a parallel shift of
+        //! the yield term structure divided by current dirty price
+        Real effectiveDuration(Real oas,
+                               RelinkableHandle<YieldTermStructure>& engineTS,
+                               const DayCounter& dayCounter,
+                               Compounding compounding,
+                               Frequency frequency,
+                               Date settlementDate = Date());
+
+        //! Calculate the effective convexity, i.e., the second
+        //! differential of the dirty price w.r.t. a parallel shift of
+        //! the yield term structure divided by current dirty price
+        Real effectiveConvexity(Real oas,
+                                RelinkableHandle<YieldTermStructure>& engineTS,
+                                const DayCounter& dayCounter,
+                                Compounding compounding,
+                                Frequency frequency,
+                                Date settlementDate = Date());
         //@}
         virtual void setupArguments(PricingEngine::arguments*) const {}
 
