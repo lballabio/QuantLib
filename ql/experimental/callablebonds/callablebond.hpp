@@ -96,6 +96,16 @@ namespace QuantLib {
                    Size maxIterations = 100,
                    Rate guess = 0.0);
 
+        //! Calculate the clean price based on the given
+        //! option-adjust-spread (oas) over the given yield term
+        //! structure (engineTS)
+        Real cleanPrice(Real oas,
+                        RelinkableHandle<YieldTermStructure>& engineTS,
+                        const DayCounter& dayCounter,
+                        Compounding compounding,
+                        Frequency frequency,
+                        Date settlementDate = Date());
+
         //! Calculate the effective duration, i.e., the first
         //! differential of the dirty price w.r.t. a parallel shift of
         //! the yield term structure divided by current dirty price

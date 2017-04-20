@@ -224,6 +224,29 @@ namespace QuantLib {
         return res;
     }
 
+    Real CallableBond::cleanPrice(Real oas,
+                                  RelinkableHandle<YieldTermStructure>& engineTS,
+                                  const DayCounter& dayCounter,
+                                  Compounding compounding,
+                                  Frequency frequency,
+                                  Date settlement)
+    {
+        if (settlement == Date())
+            settlement = settlementDate();
+
+        EngSpreadHelper s(engineTS,
+                          dayCounter,
+                          compounding,
+                          frequency);
+
+        boost::function<Real(Real)> f = NPVSpreadHelper(*this,
+                                                        s.sqSpread);
+
+        Real P = f(oas) - accruedAmount(settlement);
+
+        return P;
+    }
+
     Real CallableBond::effectiveDuration(Real oas,
                                          RelinkableHandle<YieldTermStructure>& engineTS,
                                          const DayCounter& dayCounter,
