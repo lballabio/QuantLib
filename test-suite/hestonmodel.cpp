@@ -1276,7 +1276,7 @@ void HestonModelTest::testAlanLewisReferencePrices() {
                 const Real calculated = option.NPV();
                 const Real relError = std::fabs(calculated-expected)/expected;
 
-                if (relError > tol) {
+                if (relError > tol || boost::math::isnan(calculated)) {
                     BOOST_ERROR(
                            "failed to reproduce Alan Lewis Reference prices "
                         << "\n    strike     : " << strike
@@ -1916,7 +1916,6 @@ void HestonModelTest::testCosHestonCumulants() {
     }
 }
 
-
 void HestonModelTest::testCosHestonEngine() {
     BOOST_TEST_MESSAGE("Testing Heston pricing via COS method ...");
 
@@ -1969,6 +1968,7 @@ void HestonModelTest::testCosHestonEngine() {
 
         option.setPricingEngine(cosEngine);
         const Real calculated = option.NPV();
+
         const Real error = std::fabs(expected[i] - calculated);
 
         if (error > tol) {
@@ -2029,7 +2029,6 @@ void HestonModelTest::testCharacteristicFct() {
     }
 }
 
-#include <iostream>
 void HestonModelTest::testAndersenPiterbargPricing() {
     BOOST_TEST_MESSAGE("Testing Andersen-Piterbarg method to "
                        "price under the Heston model ...");
@@ -2159,6 +2158,139 @@ void HestonModelTest::testAndersenPiterbargPricing() {
     }
 }
 
+
+void HestonModelTest::testAndersenPiterbargControlVariateIntegrand() {
+    BOOST_TEST_MESSAGE("Testing Andersen-Piterbarg Integrand "
+                        "with control variate ...");
+
+    SavedSettings backup;
+
+    const Date settlementDate(17, April, 2017);
+    Settings::instance().evaluationDate() = settlementDate;
+
+    const DayCounter dayCounter = Actual365Fixed();
+    const Handle<YieldTermStructure> rTS(flatRate(0.075, dayCounter));
+    const Handle<YieldTermStructure> qTS(flatRate(0.05, dayCounter));
+
+    const Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
+
+    const Time maturity = 2.0;
+
+    const Real sx = std::log(200.0);
+    const Real dd = std::log(s0->value()
+        *qTS->discount(maturity)/rTS->discount(maturity));
+
+    const Real v0    =  0.08;
+    const Real rho   =  -0.80;
+    const Real sigma =  0.5;
+    const Real kappa =  4.0;
+    const Real theta =  0.05;
+
+    const boost::shared_ptr<HestonModel> hestonModel(
+        boost::make_shared<HestonModel>(
+            boost::make_shared<HestonProcess>(
+                rTS, qTS, s0, v0, kappa, theta, sigma, rho)));
+
+    const boost::shared_ptr<COSHestonEngine> cosEngine(
+        boost::make_shared<COSHestonEngine>(hestonModel));
+
+    const boost::shared_ptr<AnalyticHestonEngine> engine(
+        boost::make_shared<AnalyticHestonEngine>(
+            hestonModel,
+            AnalyticHestonEngine::AndersenPiterbarg,
+            AnalyticHestonEngine::Integration::gaussLaguerre()));
+
+    const Real variances[] = {
+        v0*maturity,
+        ((1-std::exp(-kappa*maturity))*(v0-theta)/(kappa*maturity) + theta)
+            *maturity,
+        cosEngine->c2(maturity)
+    };
+
+    for (Size i=0; i < LENGTH(variances); ++i) {
+        const Real sigmaBS = std::sqrt(variances[i]/maturity);
+
+        for (Real u =0.001; u < 10; u*=1.05) {
+            const std::complex<Real> z(u, -0.5);
+
+            const std::complex<Real> phiBS
+                = std::exp(-0.5*sigmaBS*sigmaBS*maturity
+                           *(z*z + std::complex<Real>(-z.imag(), z.real())));
+
+            const std::complex<Real> ex
+                = std::exp(std::complex<Real>(0.0, u*(dd-sx)));
+
+            const std::complex<Real> chf = engine->chF(z, maturity);
+
+            const Real orig = (-ex*chf / (u*u + 0.25)).real();
+            const Real cv = (ex*(phiBS - chf) / (u*u + 0.25)).real();
+
+            if (std::fabs(cv) > 0.03) {
+                BOOST_ERROR(" Control variate function is greater "
+                        "than original function"
+                        << "\n    control variate method  : " << i
+                        << "\n    z value                 : " << u
+                        << "\n    control variate function: " << cv
+                        << "\n    original function       : " << orig);
+            }
+        }
+    }
+}
+
+void HestonModelTest::testAndersenPiterbargConvergence() {
+    BOOST_TEST_MESSAGE("Testing Andersen-Piterbarg pricing convergence ...");
+
+    SavedSettings backup;
+
+    const Date settlementDate(5, July, 2002);
+    Settings::instance().evaluationDate() = settlementDate;
+    const Date maturityDate(5, July, 2003);
+
+    const DayCounter dayCounter = Actual365Fixed();
+    const Handle<YieldTermStructure> rTS(flatRate(0.01, dayCounter));
+    const Handle<YieldTermStructure> qTS(flatRate(0.02, dayCounter));
+
+    const Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
+
+    const Real v0    =  0.04;
+    const Real rho   = -0.5;
+    const Real sigma =  1.0;
+    const Real kappa =  4.0;
+    const Real theta =  0.25;
+
+    const boost::shared_ptr<HestonModel> hestonModel(
+        boost::make_shared<HestonModel>(
+            boost::make_shared<HestonProcess>(
+                rTS, qTS, s0, v0, kappa, theta, sigma, rho)));
+
+    VanillaOption option(
+        boost::make_shared<PlainVanillaPayoff>(Option::Call, s0->value()),
+        boost::make_shared<EuropeanExercise>(maturityDate));
+
+
+    // Alan Lewis reference prices posted in
+    // http://wilmott.com/messageview.cfm?catid=34&threadid=90957
+    const Real reference = 16.070154917028834278213466703938231827658768230714;
+
+    const Real diffs[] = {
+            0.0892433814611486298,   0.00013096156482816923,
+            1.34107015270501506e-07, 1.22913235145460931e-10,
+            1.24344978758017533e-13 };
+
+    for (Size n=10; n <= 50; n+=10) {
+        option.setPricingEngine(boost::make_shared<AnalyticHestonEngine>(
+            hestonModel, AnalyticHestonEngine::AndersenPiterbarg,
+            AnalyticHestonEngine::Integration::discreteTrapezoid(n), 1e-13));
+
+        const Real calculatedDiff = std::fabs(option.NPV()-reference);
+        if (calculatedDiff > 1.25*diffs[n/10-1])
+            BOOST_ERROR("failed to prove convergence for trapezoid rule "
+                    << "\n  calculated difference: " << calculatedDiff
+                    << "\n  expected difference:   " << diffs[n/10-1]);
+    }
+}
+
+
 test_suite* HestonModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Heston model tests");
 
@@ -2192,6 +2324,10 @@ test_suite* HestonModelTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testCharacteristicFct));
     suite->add(QUANTLIB_TEST_CASE(
         &HestonModelTest::testAndersenPiterbargPricing));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonModelTest::testAndersenPiterbargControlVariateIntegrand));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonModelTest::testAndersenPiterbargConvergence));
 
     return suite;
 }
