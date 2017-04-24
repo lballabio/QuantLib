@@ -70,15 +70,9 @@ namespace QuantLib {
             // + std::sqrt(std::fabs(c4(maturity)))
         );
 
-        const Real a = cum1 - L_*w;
-        const Real b = cum1 + L_*w;
-
-        const Real d = 1.0/(b-a);
-
+        const Real k = payoff->strike();
         const Real spot = process->s0()->value();
         QL_REQUIRE(spot > 0.0, "negative or null underlying given");
-
-        const Real k = payoff->strike();
 
         const DiscountFactor df
             = process->riskFreeRate()->discount(maturityDate);
@@ -86,6 +80,11 @@ namespace QuantLib {
             = process->dividendYield()->discount(maturityDate);
         const Real fwd = spot*qf/df;
         const Real x = std::log(fwd/k);
+
+        const Real a = x + cum1 - L_*w;
+        const Real b = x + cum1 + L_*w;
+
+        const Real d = 1.0/(b-a);
 
         const Real expA = std::exp(a);
         Real s = chF(0, maturity).real()*(expA-1-a)*d;

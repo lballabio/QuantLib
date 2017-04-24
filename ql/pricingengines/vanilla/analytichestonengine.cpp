@@ -34,6 +34,8 @@
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 
+#include <boost/make_shared.hpp>
+
 #if defined(QL_PATCH_MSVC)
 #pragma warning(disable: 4180)
 #endif
@@ -533,7 +535,6 @@ namespace QuantLib {
             }
           }
           break;
-
           case AndersenPiterbarg: {
             const Real c_inf =
                 std::sqrt(1.0-rho*rho)*(v0 + kappa*theta*term)/sigma;
