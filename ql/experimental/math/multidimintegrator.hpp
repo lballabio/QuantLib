@@ -129,7 +129,8 @@ namespace QuantLib {
     template<>
     void inline MultidimIntegral::spawnFcts<1>() const {
         integrationLevelEntries_[0] = 
-            boost::bind(&MultidimIntegral::integrate<0>, this, _1, _2, _3);
+            boost::bind(&MultidimIntegral::integrate<0>, this, boost::placeholders::_1,
+                        boost::placeholders::_2, boost::placeholders::_3);
     }
 
     template<int nT>
@@ -141,7 +142,7 @@ namespace QuantLib {
         return 
             (*integrators_[nT])(
                 boost::bind(&MultidimIntegral::vectorBinder<nT>, this, f, 
-                    _1, boost::cref(a), boost::cref(b)), a[nT], b[nT]);
+                    boost::placeholders::_1, boost::cref(a), boost::cref(b)), a[nT], b[nT]);
     }
 
     template<int T_N> 
@@ -159,7 +160,7 @@ namespace QuantLib {
     void MultidimIntegral::spawnFcts() const {
         integrationLevelEntries_[depth-1] =
           boost::bind(&MultidimIntegral::integrate<depth-1>, this, 
-            _1, _2, _3);
+            boost::placeholders::_1, boost::placeholders::_2, boost::placeholders::_3);
         spawnFcts<depth-1>();
     }
 

@@ -47,7 +47,7 @@ namespace QuantLib {
         // the all types must be equal in the weak sense.
         for(Size i=0; i<mySize; i++) {
             if(std::find_if(lhs.eventTypes().begin(), lhs.eventTypes().end(),
-                *_1 == *rhs.eventTypes()[i]) == lhs.eventTypes().end())
+                            *boost::lambda::_1 == *rhs.eventTypes()[i]) == lhs.eventTypes().end())
                 return false;
         }// naah, I bet this can be done with a double lambda
         return true;

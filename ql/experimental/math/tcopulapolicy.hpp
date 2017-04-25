@@ -76,7 +76,7 @@ namespace QuantLib {
             std::transform(distributions_.begin(), distributions_.end(), 
                 data.tOrders.begin(), 
                 boost::bind(
-                &boost::math::students_t_distribution<>::degrees_of_freedom, _1)
+                &boost::math::students_t_distribution<>::degrees_of_freedom, boost::placeholders::_1)
                 );
             return data;
         }
