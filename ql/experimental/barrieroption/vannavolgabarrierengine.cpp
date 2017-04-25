@@ -172,17 +172,17 @@ namespace QuantLib {
             //set up BS barrier option pricing
             //only calculate out barrier option price
             // in barrier price = vanilla - out barrier
-            Barrier::Type barrierTyp;
+            Barrier::Type barrierType;
             if(arguments_.barrierType == Barrier::UpOut)
-                barrierTyp = arguments_.barrierType;
+                barrierType = arguments_.barrierType;
             else if(arguments_.barrierType == Barrier::UpIn)
-                barrierTyp = Barrier::UpOut;
+                barrierType = Barrier::UpOut;
             else if(arguments_.barrierType == Barrier::DownOut)
-                barrierTyp = arguments_.barrierType;
+                barrierType = arguments_.barrierType;
             else
-                barrierTyp = Barrier::DownOut;
+                barrierType = Barrier::DownOut;
 
-            BarrierOption barrierOption(barrierTyp,
+            BarrierOption barrierOption(barrierType,
                                         arguments_.barrier,
                                         arguments_.rebate,
                                         boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff),
