@@ -6,8 +6,6 @@ dist: trusty
 sudo: false
 compiler: gcc
 
-cache: ccache
-
 addons:
   apt:
     packages:
@@ -16,10 +14,7 @@ addons:
 
 script:
   - ./autogen.sh
-  - ./configure --disable-static CXXFLAGS='-O2'
-  - ccache --zero-stats
-  - ccache --max-size=2.5G
+  - ./configure --disable-static --enable-unity-build CXXFLAGS='-O2'
   - make -j 2
-  - ccache --show-stats
   - ./test-suite/quantlib-test-suite --log_level=message -- --faster
 
