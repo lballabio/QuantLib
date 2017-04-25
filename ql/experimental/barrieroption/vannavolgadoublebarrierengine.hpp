@@ -180,7 +180,7 @@ namespace QuantLib {
                        // in barrier price = vanilla - out barrier
                        boost::shared_ptr<StrikedTypePayoff> payoff
                            = boost::static_pointer_cast<StrikedTypePayoff> (arguments_.payoff);
-                       DoubleBarrierOption doubleBarrierOption(arguments_.barrierType,
+                       DoubleBarrierOption doubleBarrierOption(DoubleBarrier::KnockOut,
                                                    arguments_.barrier_lo,
                                                    arguments_.barrier_hi,
                                                    arguments_.rebate,
