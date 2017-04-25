@@ -66,10 +66,13 @@ namespace QuantLib {
           registerWith(spotFX_);
           registerWith(domesticTS_);
           registerWith(foreignTS_);
-
-    }
+      }
 
     void VannaVolgaBarrierEngine::calculate() const {
+
+        QL_REQUIRE(arguments_.barrierType == Barrier::UpIn || arguments_.barrierType == Barrier::UpOut ||
+            arguments_.barrierType == Barrier::DownIn || arguments_.barrierType == Barrier::DownOut,
+            "Invalid barrier type");
 
         const Real sigmaShift_vega = 0.0001;
         const Real sigmaShift_volga = 0.0001;
@@ -130,7 +133,7 @@ namespace QuantLib {
                                         boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         Real strikeVol = interpolation(payoff->strike());
 
-        //vannila option price
+        //vanilla option price
         Real vanillaOption = blackFormula(payoff->optionType(), payoff->strike(), 
                                       x0Quote->value()* foreignTS_->discount(T_)/ domesticTS_->discount(T_), 
                                       strikeVol * sqrt(T_),
@@ -344,7 +347,7 @@ namespace QuantLib {
             }
             else{
                 //capfloored by (0, vanilla)
-                outPrice = std::max(0.0, std::min(vanillaOption , outPrice));
+                outPrice = std::max(0.0, std::min(vanillaOption, outPrice));
                 inPrice = vanillaOption - outPrice;
             }
 
