@@ -966,14 +966,19 @@ void VPPTest::testKlugeExtOUMatrixDecomposition() {
 }
 
 
-test_suite* VPPTest::suite() {
+test_suite* VPPTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("VPP Test");
+
     suite->add(QUANTLIB_TEST_CASE(&VPPTest::testGemanRoncoroniProcess));
     suite->add(QUANTLIB_TEST_CASE(&VPPTest::testSimpleExtOUStorageEngine));
     suite->add(QUANTLIB_TEST_CASE(&VPPTest::testKlugeExtOUSpreadOption));
     suite->add(QUANTLIB_TEST_CASE(&VPPTest::testVPPIntrinsicValue));
-    suite->add(QUANTLIB_TEST_CASE(&VPPTest::testVPPPricing));
-    suite->add(QUANTLIB_TEST_CASE(&VPPTest::testKlugeExtOUMatrixDecomposition));
+    suite->add(QUANTLIB_TEST_CASE(
+        &VPPTest::testKlugeExtOUMatrixDecomposition));
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(&VPPTest::testVPPPricing));
+    }
 
     return suite;
 }

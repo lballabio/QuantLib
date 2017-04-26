@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2017 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,26 +17,14 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_dates_hpp
-#define quantlib_test_dates_hpp
+#ifndef quantlib_test_speed_level_hpp
+#define quantlib_test_speed_level_hpp
 
-#include <boost/test/unit_test.hpp>
-#include "speedlevel.hpp"
-
-/* remember to document new and/or updated tests in the Doxygen
-   comment block of the corresponding class */
-
-class DateTest {
-  public:
-    static void testConsistency();
-    static void ecbDates();
-    static void immDates();
-    static void asxDates();
-    static void isoDates();
-    static void parseDates();
-    static void intraday();
-    static boost::unit_test_framework::test_suite* suite(SpeedLevel);
+enum SpeedLevel {
+    Slow   = 0,
+    Fast   = 1,
+    Faster = 2
 };
 
-
 #endif
+

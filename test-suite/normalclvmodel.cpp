@@ -559,7 +559,7 @@ void NormalCLVModelTest::testMoustacheGraph() {
     }
 }
 
-test_suite* NormalCLVModelTest::experimental() {
+test_suite* NormalCLVModelTest::experimental(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("NormalCLVModel tests");
 
     suite->add(QUANTLIB_TEST_CASE(
@@ -570,8 +570,10 @@ test_suite* NormalCLVModelTest::experimental() {
         &NormalCLVModelTest::testIllustrative1DExample));
     suite->add(QUANTLIB_TEST_CASE(
         &NormalCLVModelTest::testMonteCarloBSOptionPricing));
-    suite->add(QUANTLIB_TEST_CASE(
-        &NormalCLVModelTest::testMoustacheGraph));
 
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &NormalCLVModelTest::testMoustacheGraph));
+    }
     return suite;
 }

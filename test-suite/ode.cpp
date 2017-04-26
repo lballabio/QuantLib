@@ -38,7 +38,7 @@ namespace {
 
     struct ode2 {
         std::complex<Real> operator()(Real x,
-                                      std::complex<Real> y) {
+                                      const std::complex<Real>& y) {
             return std::complex<Real>(0.0,1.0)*y;
         }
     };
@@ -54,7 +54,7 @@ namespace {
 
     struct ode4 {
         Disposable<std::vector<std::complex<Real> > > operator()(
-                                  std::complex<Real> x,
+                                  const std::complex<Real>& x,
                                   const std::vector<std::complex<Real> >& y) {
             std::vector<std::complex<Real> > r(2);
             r[0] = y[1]; r[1] = -y[0];

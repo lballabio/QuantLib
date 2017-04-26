@@ -93,16 +93,15 @@ namespace QuantLib {
             checkNativeFixingsAllowed();
             std::string tag = name();
             TimeSeries<Real> h = IndexManager::instance().getHistory(tag);
-            bool missingFixing, validFixing;
             bool noInvalidFixing = true, noDuplicatedFixing = true;
             Date invalidDate, duplicatedDate;
             Real nullValue = Null<Real>();
             Real invalidValue = Null<Real>();
             Real duplicatedValue = Null<Real>();
             while (dBegin != dEnd) {
-                validFixing = isValidFixingDate(*dBegin);
+                bool validFixing = isValidFixingDate(*dBegin);
                 Real currentValue = h[*dBegin];
-                missingFixing = forceOverwrite || currentValue == nullValue;
+                bool missingFixing = forceOverwrite || currentValue == nullValue;
                 if (validFixing) {
                     if (missingFixing)
                         h[*(dBegin++)] = *(vBegin++);

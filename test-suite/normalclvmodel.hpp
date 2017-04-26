@@ -21,7 +21,7 @@
 #define quantlib_test_normal_clv_model_hpp
 
 #include <boost/test/unit_test.hpp>
-
+#include "speedlevel.hpp"
 
 class NormalCLVModelTest {
    public:
@@ -30,7 +30,7 @@ class NormalCLVModelTest {
     static void testIllustrative1DExample();
     static void testMonteCarloBSOptionPricing();
     static void testMoustacheGraph();
-    static boost::unit_test_framework::test_suite* experimental();
+    static boost::unit_test_framework::test_suite* experimental(SpeedLevel);
 };
 
 

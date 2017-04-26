@@ -28,8 +28,13 @@
    YieldTermStructure.
 */
 
-// the only header you need to use QuantLib
-#include <ql/quantlib.hpp>
+#include <ql/instruments/fixedratebondforward.hpp>
+#include <ql/pricingengines/bond/discountingbondengine.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/time/schedule.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
 
 #ifdef BOOST_MSVC
 /* Uncomment the following lines to unmask floating-point
@@ -44,6 +49,7 @@
 
 #include <boost/timer.hpp>
 #include <iostream>
+#include <iomanip>
 
 using namespace std;
 using namespace QuantLib;

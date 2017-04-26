@@ -1,9 +1,14 @@
-#include <iostream>
-#include <iomanip>
+
+#include <ql/experimental/math/multidimintegrator.hpp>
+#include <ql/experimental/math/multidimquadrature.hpp>
+#include <ql/math/integrals/trapezoidintegral.hpp>
+
 #include <boost/function.hpp>
+#include <boost/make_shared.hpp>
 #include <boost/timer.hpp>
 
-#include <ql/quantlib.hpp>
+#include <iostream>
+#include <iomanip>
 
 using namespace QuantLib;
 using namespace std;
@@ -43,11 +48,14 @@ int main() {
         std::sqrt(M_PI), static_cast<Real>(dimension));
 
     boost::function<Real(const std::vector<Real>& arg)> f = integrand();
+
+    #ifndef QL_PATCH_SOLARIS
     GaussianQuadMultidimIntegrator intg(dimension, 15);
 
     timer.restart();
     Real valueQuad = intg(f);
     Real secondsQuad = timer.elapsed();
+    #endif
 
     std::vector<boost::shared_ptr<Integrator> > integrals;
     for(Size i=0; i<dimension; i++)
@@ -62,13 +70,18 @@ int main() {
     Real secondsGrid = timer.elapsed();
 
     cout << fixed << setprecision(4);
-    cout << endl << "-------------- " << endl << 
-        "Exact: " << exactSol << endl << 
-        "Quad: " << valueQuad << endl << 
-        "Grid: " << valueGrid << endl << 
-        endl;
+    cout << endl << "-------------- " << endl
+         << "Exact: " << exactSol << endl
+        #ifndef QL_PATCH_SOLARIS
+         << "Quad: " << valueQuad << endl
+        #endif
+         << "Grid: " << valueGrid << endl
+         << endl;
 
-    cout << "Seconds for Quad: " << secondsQuad << endl << 
-     "Seconds for Grid: " << secondsGrid << endl;
+    cout
+        #ifndef QL_PATCH_SOLARIS
+        << "Seconds for Quad: " << secondsQuad << endl
+        #endif
+        << "Seconds for Grid: " << secondsGrid << endl;
     return 0;
 }

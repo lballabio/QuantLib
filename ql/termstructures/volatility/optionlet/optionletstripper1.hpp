@@ -37,6 +37,7 @@ namespace QuantLib {
     class CapFloor;
     class PricingEngine;
 
+    QL_DEPRECATED
     typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapFloorMatrix;
 
     /*! Helper class to strip optionlet (i.e. caplet/floorlet) volatilities
@@ -70,11 +71,8 @@ namespace QuantLib {
         mutable Matrix capFloorVols_;
         mutable Matrix optionletStDevs_, capletVols_;
 
-        mutable CapFloorMatrix capFloors_;
-        mutable std::vector<std::vector<boost::shared_ptr<SimpleQuote> > > volQuotes_;
-        mutable std::vector<std::vector<boost::shared_ptr<PricingEngine> > > capFloorEngines_;
         bool floatingSwitchStrike_;
-        mutable bool capFlooMatrixNotInitialized_;
+
         mutable Rate switchStrike_;
         Real accuracy_;
         Natural maxIter_;

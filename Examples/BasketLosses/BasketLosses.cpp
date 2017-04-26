@@ -17,7 +17,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/quantlib.hpp>
+#include <ql/experimental/credit/gaussianlhplossmodel.hpp>
+#include <ql/experimental/credit/constantlosslatentmodel.hpp>
+#include <ql/experimental/credit/binomiallossmodel.hpp>
+#include <ql/experimental/credit/randomdefaultlatentmodel.hpp>
+#include <ql/experimental/credit/randomlosslatentmodel.hpp>
+#include <ql/experimental/credit/spotlosslatentmodel.hpp>
+#include <ql/experimental/credit/basecorrelationlossmodel.hpp>
+#include <ql/termstructures/credit/flathazardrate.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/currencies/europe.hpp>
 
 #include <boost/timer.hpp>
 #include <boost/make_shared.hpp>
@@ -26,6 +36,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <string>
 
 using namespace std;
 using namespace QuantLib;
@@ -108,6 +119,7 @@ int main(int, char* []) {
             std::vector<Real>(1, std::sqrt(factorValue)));
 
         // --- LHP model --------------------------
+        #ifndef QL_PATCH_SOLARIS
         boost::shared_ptr<DefaultLossModel> lmGLHP(
             boost::make_shared<GaussianLHPLossModel>(
                 fctrsWeights[0][0] * fctrsWeights[0][0], recoveries));
@@ -128,6 +140,8 @@ int main(int, char* []) {
         std::cout << "Gaussian Binomial Expected 10-Yr Losses: "  << std::endl;
         std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
 
+        #endif
+
         // --- T Binomial model --------------------
         TCopulaPolicy::initTraits initT;
         initT.tOrders = std::vector<Integer>(2, 3);
@@ -145,6 +159,8 @@ int main(int, char* []) {
         std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
 
         // --- G Inhomogeneous model ---------------
+        Size numSimulations = 100000;
+        #ifndef QL_PATCH_SOLARIS
         boost::shared_ptr<GaussianConstantLossLM> gLM(
             boost::make_shared<GaussianConstantLossLM>(fctrsWeights, 
             recoveries,
@@ -162,7 +178,6 @@ int main(int, char* []) {
 
         // --- G Random model ---------------------
         // Gaussian random joint default model:
-        Size numSimulations = 100000;
         // Size numCoresUsed = 4;
         // Sobol, many cores
         boost::shared_ptr<DefaultLossModel> rdlmG(
@@ -177,6 +192,7 @@ int main(int, char* []) {
 
         std::cout << "Random G Expected 10-Yr Losses: "  << std::endl;
         std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
+        #endif
 
         // --- StudentT Random model ---------------------
         // Sobol, many cores
@@ -195,6 +211,7 @@ int main(int, char* []) {
 
 
         // Spot Loss latent model: 
+        #ifndef QL_PATCH_SOLARIS
         std::vector<std::vector<Real> > fctrsWeightsRR(2 * hazardRates.size(), 
             std::vector<Real>(1, std::sqrt(factorValue)));
         Real modelA = 2.2;
@@ -228,10 +245,6 @@ int main(int, char* []) {
 
         std::cout << "Random Loss T Expected 10-Yr Losses: "  << std::endl;
         std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
-
-
-
-
 
         // Base Correlation model set up to test cocherence with base LHP model
         std::vector<Period> bcTenors;
@@ -282,7 +295,7 @@ int main(int, char* []) {
         std::cout << "Base Correlation GLHP Expected 10-Yr Losses: "  
             << std::endl;
         std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
-
+        #endif
 
         Real seconds  = timer.elapsed();
         Integer hours = Integer(seconds/3600);

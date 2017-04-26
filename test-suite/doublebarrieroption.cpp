@@ -562,9 +562,14 @@ void DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues() {
     }
 }
 
-test_suite* DoubleBarrierOptionTest::suite() {
+test_suite* DoubleBarrierOptionTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("DoubleBarrier");
-    suite->add(QUANTLIB_TEST_CASE(&DoubleBarrierOptionTest::testEuropeanHaugValues));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &DoubleBarrierOptionTest::testEuropeanHaugValues));
+    }
+
     return suite;
 }
 

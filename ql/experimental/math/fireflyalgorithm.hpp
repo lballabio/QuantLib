@@ -48,6 +48,8 @@ typedef boost::random::uniform_int_distribution<QuantLib::Size> uniform_integer;
 #include <boost/random/variate_generator.hpp>
 typedef boost::variate_generator<base_generator_type, uniform_integer> variate_integer;
 
+#include <cmath>
+
 namespace QuantLib {
 
     /*! The main process is as follows:
@@ -149,7 +151,7 @@ namespace QuantLib {
               : beta0_(beta0), betaMin_(betaMin), gamma_(gamma) {}
       protected:
           Real intensityImpl(Real valueX, Real valueY, Real d){
-              return (beta0_ - betaMin_)*exp(-gamma_*d) + betaMin_;
+              return (beta0_ - betaMin_)*std::exp(-gamma_*d) + betaMin_;
           }
           Real beta0_, betaMin_, gamma_;
     };

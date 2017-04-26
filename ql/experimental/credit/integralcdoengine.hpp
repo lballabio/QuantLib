@@ -22,6 +22,10 @@
 #ifndef quantlib_integral_cdo_engine_hpp
 #define quantlib_integral_cdo_engine_hpp
 
+#include <ql/qldefines.hpp>
+
+#ifndef QL_PATCH_SOLARIS
+
 #include <ql/experimental/credit/syntheticcdo.hpp>
 
 namespace QuantLib {
@@ -40,5 +44,7 @@ namespace QuantLib {
     };
 
 }
+
+#endif
 
 #endif

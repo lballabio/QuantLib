@@ -60,7 +60,7 @@ namespace QuantLib {
         void sample(const F& f) {
             Array::iterator i, j;
             for(i=grid_.begin(), j = values_.begin();
-                i != grid_.end(); i++, j++)
+                i != grid_.end(); ++i, ++j)
                 *j = f(*i);
         }
         //@}
@@ -118,7 +118,7 @@ namespace QuantLib {
             std::transform(newValues.begin(), newValues.end(),
                            newValues.begin(), func);
             for (Array::iterator j = newValues.begin();
-                 j != newValues.end(); j++) {
+                 j != newValues.end(); ++j) {
                 *j = priceSpline(*j, true);
             }
             values_.swap(newValues);

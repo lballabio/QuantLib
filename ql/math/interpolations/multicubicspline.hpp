@@ -211,7 +211,7 @@ namespace QuantLib {
 
         template<> struct Point<base_data_table, EmptyRes> {
             typedef base_data_table data_type;
-            Point<base_data_table, EmptyRes>(data_type s)
+            Point<base_data_table, EmptyRes>(const data_type& s)
             : first(s) {}
             Point<base_data_table, EmptyRes>(const SplineGrid::const_iterator &i)
             : first(i->size()) {}

@@ -1093,26 +1093,31 @@ void BasketOptionTest::test2DPDEGreeks() {
     }
 }
 
-test_suite* BasketOptionTest::suite() {
+test_suite* BasketOptionTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Basket option tests");
 
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testEuroTwoValues));
-    // FLOATING_POINT_EXCEPTION
-    suite->add(QUANTLIB_TEST_CASE(
-                               &BasketOptionTest::testBarraquandThreeValues));
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testTavellaValues));
 
-    const Size nTestCases = std::min(Size(5), LENGTH(oneDataValues));
-    for (Size i=0; i < nTestCases; ++i) {
-        suite->add(QUANTLIB_TEST_CASE(
-            boost::bind(&BasketOptionTest::testOneDAmericanValues,
-                (i    *LENGTH(oneDataValues))/nTestCases,
-                ((i+1)*LENGTH(oneDataValues))/nTestCases)));
-    }
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testOddSamples));
     suite->add(QUANTLIB_TEST_CASE(
         &BasketOptionTest::testLocalVolatilitySpreadOption));
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::test2DPDEGreeks));
+
+    if (speed <= Fast) {
+        const Size nTestCases = std::min(Size(5), LENGTH(oneDataValues));
+        for (Size i=0; i < nTestCases; ++i) {
+            suite->add(QUANTLIB_TEST_CASE(
+                boost::bind(&BasketOptionTest::testOneDAmericanValues,
+                    (i    *LENGTH(oneDataValues))/nTestCases,
+                    ((i+1)*LENGTH(oneDataValues))/nTestCases)));
+        }
+    }
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &BasketOptionTest::testBarraquandThreeValues));
+    }
 
     return suite;
 }
