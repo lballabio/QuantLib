@@ -88,8 +88,8 @@ namespace QuantLib {
         */
         Probability density(const std::vector<Real>& m) const {
             return std::accumulate(m.begin(), m.end(), Real(1.), 
-                boost::bind(std::multiplies<Real>(), boost::placeholders::_1, 
-                    boost::bind(density_, boost::placeholders::_2)));
+                boost::bind(std::multiplies<Real>(), _1, 
+                    boost::bind(density_, _2)));
         }
         /*! Returns the inverse of the cumulative distribution of the (modelled) 
           latent variable (as indexed by iVariable). The normal stability avoids
@@ -117,7 +117,7 @@ namespace QuantLib {
             std::vector<Real> result;
             result.resize(probs.size());
             std::transform(probs.begin(), probs.end(), result.begin(), 
-                boost::bind(&InverseCumulativeNormal::standard_value, boost::placeholders::_1));
+                boost::bind(&InverseCumulativeNormal::standard_value, _1));
             return result;
         }
     private:

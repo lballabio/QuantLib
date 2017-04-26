@@ -48,7 +48,7 @@ namespace QuantLib {
                    "insufficient polynom type");
 
         // the payoff gives an additional value
-        v_.push_back(boost::bind(&AmericanPathPricer::payoff, this, boost::placeholders::_1));
+        v_.push_back(boost::bind(&AmericanPathPricer::payoff, this, _1));
 
         const boost::shared_ptr<StrikedTypePayoff> strikePayoff
             = boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);

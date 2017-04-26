@@ -42,8 +42,6 @@
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 
-using namespace boost::lambda;
-
 using std::exp;
 using std::pow;
 using std::log;

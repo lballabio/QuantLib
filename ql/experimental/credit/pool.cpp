@@ -78,8 +78,7 @@ namespace QuantLib {
         std::vector<DefaultProbKey> defaultKeys;
         std::transform(defaultKeys_.begin(), defaultKeys_.end(),
             std::back_inserter(defaultKeys), boost::bind(
-              &std::map<std::string, DefaultProbKey>::value_type::second,
-              boost::placeholders::_1));
+              &std::map<std::string, DefaultProbKey>::value_type::second, _1));
         return defaultKeys;
     }
 

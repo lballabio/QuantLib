@@ -599,8 +599,8 @@ namespace QuantLib {
             return 
                 integration()->integrate(
                     boost::bind(std::multiplies<Real>(), 
-                    boost::bind(&copulaPolicyImpl::density, copula_, boost::lambda::_1),
-                    boost::bind(boost::cref(f), boost::lambda::_1)));   
+                    boost::bind(&copulaPolicyImpl::density, copula_, _1),
+                    boost::bind(boost::cref(f), _1)));   
         }
         /*! Integrates an arbitrary vector function over the density domain(i.e.
          computes its expected value).
@@ -613,8 +613,8 @@ namespace QuantLib {
                 integration()->integrateV(//see note in LMIntegrators base class
                     boost::bind<Disposable<std::vector<Real> > >(
                         detail::multiplyV(),
-                        boost::bind(&copulaPolicyImpl::density, copula_, boost::lambda::_1),
-                        boost::bind(boost::cref(f), boost::lambda::_1)));
+                        boost::bind(&copulaPolicyImpl::density, copula_, _1),
+                        boost::bind(boost::cref(f), _1)));
         }
     protected:
         // Integrable models must provide their integrator.

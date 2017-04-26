@@ -74,8 +74,8 @@ namespace QuantLib {
                     // sum[j] += term[j] * w_[i];
                     std::transform(term.begin(), term.end(), sum.begin(), 
                         sum.begin(), 
-                            boost::bind(std::plus<Real>(), boost::lambda::_2,
-                            boost::bind(std::multiplies<Real>(), w_[i], boost::lambda::_1)));
+                        boost::bind(std::plus<Real>(), _2,
+                            boost::bind(std::multiplies<Real>(), w_[i], _1)));
                 }
                 return sum;
             }
@@ -139,11 +139,11 @@ namespace QuantLib {
             integrationEntries_[levelSpawn-1] = 
                 boost::bind(
                 &GaussianQuadMultidimIntegrator::scalarIntegrator<levelSpawn>, 
-                    this, boost::lambda::_1, boost::lambda::_2);
+                    this, _1, _2);
             integrationEntriesVR_[levelSpawn-1] = 
                 boost::bind(
                 &GaussianQuadMultidimIntegrator::vectorIntegratorVR<levelSpawn>, 
-                    this, boost::lambda::_1, boost::lambda::_2);
+                    this, _1, _2);
             spawnFcts<levelSpawn-1>();
         }
         //@}
@@ -160,7 +160,7 @@ namespace QuantLib {
                 &GaussianQuadMultidimIntegrator::scalarIntegrator<intgDepth-1>,
                 this,
                 f,
-                boost::lambda::_1)
+                _1)
             );
         }
 
@@ -175,7 +175,7 @@ namespace QuantLib {
                &GaussianQuadMultidimIntegrator::vectorIntegratorVR<intgDepth-1>,
                this,
                f,
-               boost::lambda::_1)
+               _1)
             );
         }
     private:
@@ -213,7 +213,7 @@ namespace QuantLib {
                    // integration entry level is selected now
                    integrationEntries_[dimension_-1],
                    boost::cref(f),
-                   boost::lambda::_1)
+                   _1)
                    );
     }
 
@@ -230,7 +230,7 @@ namespace QuantLib {
                    // integration entry level is selected now
                    integrationEntries_[dimension_-1],
                    boost::cref(f),
-                   boost::lambda::_1)
+                   _1)
                    );
     }
 
@@ -242,7 +242,7 @@ namespace QuantLib {
         return integralV_(boost::bind(
                    boost::cref(integrationEntriesVR_[dimension_-1]),
                    boost::cref(f),
-                   boost::lambda::_1)
+                   _1)
                    );
     } 
 
@@ -272,10 +272,10 @@ namespace QuantLib {
     inline void GaussianQuadMultidimIntegrator::spawnFcts<1>() const {
         integrationEntries_[0] = 
           boost::bind(&GaussianQuadMultidimIntegrator::scalarIntegrator<1>, 
-          this, boost::lambda::_1, boost::lambda::_2);
+          this, _1, _2);
         integrationEntriesVR_[0] = 
          boost::bind(&GaussianQuadMultidimIntegrator::vectorIntegratorVR<1>, 
-         this, boost::lambda::_1, boost::lambda::_2);
+         this, _1, _2);
     }
 
 }
