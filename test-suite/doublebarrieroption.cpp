@@ -407,17 +407,17 @@ void DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues() {
         { DoubleBarrier::KnockOut,    1.1,    1.5,    0.0, Option::Put,   1.38843,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08463,    0.06049, 1.0e-4},
         { DoubleBarrier::KnockOut,    1.1,    1.5,    0.0, Option::Put,   1.46047,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08412,    0.11103, 1.0e-4},
 
-        { DoubleBarrier::KnockIn,     1.1,    1.5,    0.0, Option::Call,   1.13321,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.11638,   0.03622, 1.0e-4},
-        { DoubleBarrier::KnockIn,     1.1,    1.5,    0.0, Option::Call,   1.22687,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.10088,   0.02553, 1.0e-4},
-        { DoubleBarrier::KnockIn,     1.1,    1.5,    0.0, Option::Call,   1.31179,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08925,   0.01681, 1.0e-4},
-        { DoubleBarrier::KnockIn,     1.1,    1.5,    0.0, Option::Call,   1.38843,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08463,   0.01005, 1.0e-4},
-        { DoubleBarrier::KnockIn,     1.1,    1.5,    0.0, Option::Call,   1.46047,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08412,   0.00488, 1.0e-4},
+        { DoubleBarrier::KnockIn,     1.1,    1.5,    0.0, Option::Call,   1.13321,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.11638,   0, 1.0e-4},
+        { DoubleBarrier::KnockIn,     1.1,    1.5,    0.0, Option::Call,   1.22687,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.10088,   0, 1.0e-4},
+        { DoubleBarrier::KnockIn,     1.1,    1.5,    0.0, Option::Call,   1.31179,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08925,   0, 1.0e-4},
+        { DoubleBarrier::KnockIn,     1.1,    1.5,    0.0, Option::Call,   1.38843,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08463,   0, 1.0e-4},
+        { DoubleBarrier::KnockIn,     1.1,    1.5,    0.0, Option::Call,   1.46047,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08412,   0, 1.0e-4},
 
-        { DoubleBarrier::KnockIn,     1.1,    1.5,    0.0, Option::Put,   1.13321,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.11638,    0.00737, 1.0e-4},
-        { DoubleBarrier::KnockIn,     1.1,    1.5,    0.0, Option::Put,   1.22687,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.10088,    0.01709, 1.0e-4},
-        { DoubleBarrier::KnockIn,     1.1,    1.5,    0.0, Option::Put,   1.31179,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08925,    0.02686, 1.0e-4},
-        { DoubleBarrier::KnockIn,     1.1,    1.5,    0.0, Option::Put,   1.38843,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08463,    0.03680, 1.0e-4},
-        { DoubleBarrier::KnockIn,     1.1,    1.5,    0.0, Option::Put,   1.46047,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08412,    0.04733, 1.0e-4},
+        { DoubleBarrier::KnockIn,     1.1,    1.5,    0.0, Option::Put,   1.13321,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.11638,    0, 1.0e-4},
+        { DoubleBarrier::KnockIn,     1.1,    1.5,    0.0, Option::Put,   1.22687,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.10088,    0, 1.0e-4},
+        { DoubleBarrier::KnockIn,     1.1,    1.5,    0.0, Option::Put,   1.31179,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08925,    0, 1.0e-4},
+        { DoubleBarrier::KnockIn,     1.1,    1.5,    0.0, Option::Put,   1.38843,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08463,    0, 1.0e-4},
+        { DoubleBarrier::KnockIn,     1.1,    1.5,    0.0, Option::Put,   1.46047,    1.30265, 0.0003541, 0.0033871, 1.0, 0.10087,   0.08925, 0.08463,   0.08412,    0, 1.0e-4},
 
         { DoubleBarrier::KnockOut,    1.0,    1.6,    0.0, Option::Call,   1.06145,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.12511,   0.19981, 1.0e-4},
         { DoubleBarrier::KnockOut,    1.0,    1.6,    0.0, Option::Call,   1.19545,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.10890,   0.10389, 1.0e-4},
@@ -431,17 +431,17 @@ void DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues() {
         { DoubleBarrier::KnockOut,    1.0,    1.6,    0.0, Option::Put,   1.44298,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09197,    0.09346, 1.0e-4},
         { DoubleBarrier::KnockOut,    1.0,    1.6,    0.0, Option::Put,   1.56345,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09261,    0.17704, 1.0e-4},
 
-        { DoubleBarrier::KnockIn,     1.0,    1.6,    0.0, Option::Call,   1.06145,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.12511,   0.05913, 1.0e-4},
-        { DoubleBarrier::KnockIn,     1.0,    1.6,    0.0, Option::Call,   1.19545,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.10890,   0.04269, 1.0e-4},
-        { DoubleBarrier::KnockIn,     1.0,    1.6,    0.0, Option::Call,   1.32238,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09444,   0.02829, 1.0e-4},
-        { DoubleBarrier::KnockIn,     1.0,    1.6,    0.0, Option::Call,   1.44298,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09197,   0.01732, 1.0e-4},
-        { DoubleBarrier::KnockIn,     1.0,    1.6,    0.0, Option::Call,   1.56345,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09261,   0.00764, 1.0e-4},
+        { DoubleBarrier::KnockIn,     1.0,    1.6,    0.0, Option::Call,   1.06145,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.12511,   0, 1.0e-4},
+        { DoubleBarrier::KnockIn,     1.0,    1.6,    0.0, Option::Call,   1.19545,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.10890,   0, 1.0e-4},
+        { DoubleBarrier::KnockIn,     1.0,    1.6,    0.0, Option::Call,   1.32238,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09444,   0, 1.0e-4},
+        { DoubleBarrier::KnockIn,     1.0,    1.6,    0.0, Option::Call,   1.44298,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09197,   0, 1.0e-4},
+        { DoubleBarrier::KnockIn,     1.0,    1.6,    0.0, Option::Call,   1.56345,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09261,   0, 1.0e-4},
 
-        { DoubleBarrier::KnockIn,     1.0,    1.6,    0.0, Option::Put,   1.06145,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.12511,    0.01178, 1.0e-4},
-        { DoubleBarrier::KnockIn,     1.0,    1.6,    0.0, Option::Put,   1.19545,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.10890,    0.02800, 1.0e-4},
-        { DoubleBarrier::KnockIn,     1.0,    1.6,    0.0, Option::Put,   1.32238,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09444,    0.04381, 1.0e-4},
-        { DoubleBarrier::KnockIn,     1.0,    1.6,    0.0, Option::Put,   1.44298,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09197,    0.06154, 1.0e-4},
-        { DoubleBarrier::KnockIn,     1.0,    1.6,    0.0, Option::Put,   1.56345,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09261,    0.08147, 1.0e-4}
+        { DoubleBarrier::KnockIn,     1.0,    1.6,    0.0, Option::Put,   1.06145,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.12511,    0, 1.0e-4},
+        { DoubleBarrier::KnockIn,     1.0,    1.6,    0.0, Option::Put,   1.19545,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.10890,    0, 1.0e-4},
+        { DoubleBarrier::KnockIn,     1.0,    1.6,    0.0, Option::Put,   1.32238,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09444,    0, 1.0e-4},
+        { DoubleBarrier::KnockIn,     1.0,    1.6,    0.0, Option::Put,   1.44298,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09197,    0, 1.0e-4},
+        { DoubleBarrier::KnockIn,     1.0,    1.6,    0.0, Option::Put,   1.56345,    1.30265, 0.0009418, 0.0039788, 2.0, 0.10891,   0.09525, 0.09197,   0.09261,    0, 1.0e-4}
 
     };
 
@@ -520,8 +520,14 @@ void DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues() {
 							bsVanillaPrice);
         doubleBarrierOption.setPricingEngine(vannaVolgaEngine);
 
+        // Expected result for KO is given in array, for KI is evaluated as vanilla - KO
+        Real expected = 0;
+        if (values[i].barrierType == DoubleBarrier::KnockOut)
+           expected = values[i].result;
+        else if (values[i].barrierType == DoubleBarrier::KnockIn)
+           expected = (bsVanillaPrice - values[i-10].result);
+
         Real calculated = doubleBarrierOption.NPV();
-        Real expected = values[i].result;
         Real error = std::fabs(calculated-expected);
         if (error>values[i].tol) {
             REPORT_FAILURE_VANNAVOLGA(
@@ -546,7 +552,6 @@ void DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues() {
         doubleBarrierOption.setPricingEngine(vannaVolgaEngine);
 
         calculated = doubleBarrierOption.NPV();
-        expected = values[i].result;
         error = std::fabs(calculated-expected);
         Real maxtol = 5.0e-3; // different engines have somewhat different results
         if (error>maxtol) {
