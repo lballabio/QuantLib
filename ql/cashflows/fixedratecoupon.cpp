@@ -176,7 +176,16 @@ namespace QuantLib {
                                                      exCouponEndOfMonth_);
         }
 
-        if (schedule_.isRegular(1)) {
+        if(!schedule_.hasIsRegular() || !schedule_.hasTenor()) {
+            InterestRate r(rate.rate(),
+                           firstPeriodDC_.empty() ? rate.dayCounter()
+                                                  : firstPeriodDC_,
+                           rate.compounding(), rate.frequency());
+            leg.push_back(shared_ptr<CashFlow>(new
+                FixedRateCoupon(paymentDate, nominal, r,
+                                start, end, start, end, exCouponDate)));
+        }
+        else if (schedule_.isRegular(1)) {
             QL_REQUIRE(firstPeriodDC_.empty() ||
                        firstPeriodDC_ == rate.dayCounter(),
                        "regular first coupon "
@@ -242,7 +251,7 @@ namespace QuantLib {
                 nominal = notionals_[N-2];
             else
                 nominal = notionals_.back();
-            if (schedule_.isRegular(N-1)) {
+            if (!schedule_.hasIsRegular() || !schedule_.hasTenor() || schedule_.isRegular(N-1)) {
                 leg.push_back(shared_ptr<CashFlow>(new
                     FixedRateCoupon(paymentDate, nominal, rate,
                                     start, end, start, end, exCouponDate)));
