@@ -270,7 +270,7 @@ namespace QuantLib {
                 NumericalDifferentiation dFdOAS(f, 1, 1e-6,
                                                 3,
                                                 NumericalDifferentiation::Central);
-                return dFdOAS(oas)/P;
+                return -1*dFdOAS(oas)/P;
             }
     }
 
