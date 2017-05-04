@@ -251,7 +251,8 @@ namespace QuantLib {
                                          RelinkableHandle<YieldTermStructure>& engineTS,
                                          const DayCounter& dayCounter,
                                          Compounding compounding,
-                                         Frequency frequency)
+                                         Frequency frequency,
+                                         Real bump)
     {
         EngSpreadHelper s(engineTS,
                           dayCounter,
@@ -267,7 +268,7 @@ namespace QuantLib {
             return 0;
         else
             {
-                NumericalDifferentiation dFdOAS(f, 1, 1e-6,
+                NumericalDifferentiation dFdOAS(f, 1, bump,
                                                 3,
                                                 NumericalDifferentiation::Central);
                 return -1*dFdOAS(oas)/P;
@@ -278,7 +279,8 @@ namespace QuantLib {
                                           RelinkableHandle<YieldTermStructure>& engineTS,
                                           const DayCounter& dayCounter,
                                           Compounding compounding,
-                                          Frequency frequency)
+                                          Frequency frequency,
+                                          Real bump)
     {
         EngSpreadHelper s(engineTS,
                           dayCounter,
@@ -296,7 +298,7 @@ namespace QuantLib {
             {
                 NumericalDifferentiation dFdOAS(f,
                                                 2, 
-                                                1e-6,
+                                                bump,
                                                 3,
                                                 NumericalDifferentiation::Central);
                 return dFdOAS(oas)/P;

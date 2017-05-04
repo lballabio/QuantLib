@@ -113,7 +113,8 @@ namespace QuantLib {
                                RelinkableHandle<YieldTermStructure>& engineTS,
                                const DayCounter& dayCounter,
                                Compounding compounding,
-                               Frequency frequency);
+                               Frequency frequency,
+                               Real bump=2e-4);
 
         //! Calculate the effective convexity, i.e., the second
         //! differential of the dirty price w.r.t. a parallel shift of
@@ -122,7 +123,8 @@ namespace QuantLib {
                                 RelinkableHandle<YieldTermStructure>& engineTS,
                                 const DayCounter& dayCounter,
                                 Compounding compounding,
-                                Frequency frequency);
+                                Frequency frequency,
+                                Real bump=2e-4);
         //@}
         virtual void setupArguments(PricingEngine::arguments*) const {}
 
