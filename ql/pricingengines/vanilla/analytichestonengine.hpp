@@ -74,6 +74,11 @@ namespace QuantLib {
         Calibration,
         https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2362968
 
+        L. Andersen, and V. Piterbarg, 2010,
+        Interest Rate Modeling, Volume I: Foundations and Vanilla Models,
+        Atlantic Financial Press London.
+
+
         \ingroup vanillaengines
 
         \test the correctness of the returned value is tested by
