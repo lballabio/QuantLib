@@ -284,7 +284,9 @@ namespace QuantLib {
         // once the deprecated methods allowing to override the displacement
         // are gone, we can avoid this and directly read the displacement
         // from the volatility structure
-        Real displacement = vol_->shift(exerciseDate, swapLength);
+        Real displacement =
+            vol_->volatilityType() == ShiftedLognormal ?
+            vol_->shift(exerciseDate, swapLength) : 0.0;
 
         Real stdDev = std::sqrt(variance);
         results_.additionalResults["stdDev"] = stdDev;
