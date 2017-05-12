@@ -1,3 +1,32 @@
+commit f69bc6b58616308b11e326175b9d828c4dc404ad
+Merge: d73944857 120cb411a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 12 May 2017 17:35:55 +0200
+
+    Merge pull request #254.
+
+commit 120cb411a98920aca24818f5dcfb3a8587136824
+Author: Peter Caspers <peter.caspers@quaternion.com>
+Date:   Fri, 12 May 2017 16:15:23 +0200
+
+    only ask for a shift if applicable
+
+ ql/pricingengines/swaption/blackswaptionengine.hpp | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+commit d73944857390c2660b3f4f5bd465f8afd95f2737
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 11 May 2017 18:13:48 +0200
+
+    Update ChangeLog, News and Contributors.
+
+ ChangeLog.txt           | 2595 ++++++++++++++++++++++++++++++++++++++++++++++-
+ Contributors.txt        |   10 +
+ Docs/pages/authors.docs |   10 +
+ Docs/pages/history.docs |   94 +-
+ News.txt                |  129 ++-
+ 5 files changed, 2831 insertions(+), 7 deletions(-)
+
 commit 3e7b0023bfb0a2b693ea5974b0a21f8f5f21ea28
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Fri, 5 May 2017 08:53:23 +0100
