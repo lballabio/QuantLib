@@ -647,7 +647,7 @@ namespace {
 
 void DistributionTest::testInvCDFviaStochasticCollocation() {
     BOOST_TEST_MESSAGE(
-        "Testing inverse CDF based on testInvCDFviaStochasticCollocation...");
+        "Testing inverse CDF based on stochastic collocation...");
 
     const Real k = 3.0;
     const Real lambda = 1.0;

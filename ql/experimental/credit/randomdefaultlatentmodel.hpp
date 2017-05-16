@@ -293,7 +293,7 @@ namespace QuantLib {
             }
         }
         std::transform(hitsByDate.begin(), hitsByDate.end(),
-            hitsByDate.begin(), std::bind2nd(std::divides<Real>(), nSims_));
+            hitsByDate.begin(), std::bind2nd(std::divides<Real>(), Real(nSims_)));
         return hitsByDate;
         // \todo Provide confidence interval
     }

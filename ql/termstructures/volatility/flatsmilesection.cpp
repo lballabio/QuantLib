@@ -43,21 +43,4 @@ namespace QuantLib {
     : SmileSection(exerciseTime, dc, type, shift),
       vol_(vol), atmLevel_(atmLevel) {}
 
-    FlatSmileSection::FlatSmileSection(const Date& d,
-                                       Volatility vol,
-                                       const DayCounter& dc,
-                                       const Date& referenceDate,
-                                       Real atmLevel,
-                                       Real shift)
-    : SmileSection(d, dc, referenceDate, ShiftedLognormal, shift),
-      vol_(vol), atmLevel_(atmLevel) {}
-
-    FlatSmileSection::FlatSmileSection(Time exerciseTime,
-                                       Volatility vol,
-                                       const DayCounter& dc,
-                                       Real atmLevel,
-                                       Real shift)
-    : SmileSection(exerciseTime, dc, ShiftedLognormal, shift),
-      vol_(vol), atmLevel_(atmLevel) {}
-
 }

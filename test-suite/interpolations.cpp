@@ -1990,7 +1990,7 @@ namespace {
 
 void InterpolationTest::testLagrangeInterpolation() {
 
-    BOOST_TEST_MESSAGE("Testing Lagrange Interpolation...");
+    BOOST_TEST_MESSAGE("Testing Lagrange interpolation...");
 
     const Real x[] = {-1.0 , -0.5, -0.25, 0.1, 0.4, 0.75, 0.96};
     Array y(LENGTH(x));
@@ -2035,7 +2035,7 @@ void InterpolationTest::testLagrangeInterpolation() {
         const Real calculated = interpl(xx);
         if (   boost::math::isnan(calculated)
             || std::fabs(references[i] - calculated) > tol) {
-            BOOST_FAIL("failed to reproduce the Lagrange interplation"
+            BOOST_FAIL("failed to reproduce the Lagrange interpolation"
                     << "\n    x         : " << xx
                     << "\n    calculated: " << calculated
                     << "\n    expected  : " << references[i]);
@@ -2045,7 +2045,7 @@ void InterpolationTest::testLagrangeInterpolation() {
 
 void InterpolationTest::testLagrangeInterpolationAtSupportPoint() {
     BOOST_TEST_MESSAGE(
-        "Testing Lagrange Interpolation at supporting points...");
+        "Testing Lagrange interpolation at supporting points...");
 
     const Size n=5;
     Array x(n), y(n);
@@ -2076,7 +2076,7 @@ void InterpolationTest::testLagrangeInterpolationAtSupportPoint() {
 
 void InterpolationTest::testLagrangeInterpolationDerivative() {
     BOOST_TEST_MESSAGE(
-        "Testing Lagrange Interpolation derivatives...");
+        "Testing Lagrange interpolation derivatives...");
 
     Array x(5), y(5);
     x[0] = -1.0; y[0] = 2.0;
@@ -2106,7 +2106,7 @@ void InterpolationTest::testLagrangeInterpolationDerivative() {
 
 void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
     BOOST_TEST_MESSAGE(
-        "Testing Lagrange Interpolation on Chebyshev points...");
+        "Testing Lagrange interpolation on Chebyshev points...");
 
     // Test example taken from
     // J.P. Berrut, L.N. Trefethen, Barycentric Lagrange Interpolation

@@ -5,7 +5,8 @@
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006 StatPro Italia srl
  Copyright (C) 2015, 2016, 2017 Peter Caspers
- Copyright (C) 2017 Paul Giltinan, Werner Kuerzinger
+ Copyright (C) 2017 Paul Giltinan
+ Copyright (C) 2017 Werner Kuerzinger
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -65,9 +66,8 @@ namespace QuantLib {
           structure, the parameter can be removed once the deprecated methods
           overriding the displacement are deleted */
         BlackStyleSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
-                            const Handle<SwaptionVolatilityStructure>& vol,
-                            Real displacement = Null<Real>(),
-                            CashAnnuityModel model = DiscountCurve);
+                                 const Handle<SwaptionVolatilityStructure>& vol,
+                                 CashAnnuityModel model = DiscountCurve);
         void calculate() const;
         Handle<YieldTermStructure> termStructure() { return discountCurve_; }
         Handle<SwaptionVolatilityStructure> volatility() { return vol_; }
@@ -76,11 +76,6 @@ namespace QuantLib {
         Handle<YieldTermStructure> discountCurve_;
         Handle<SwaptionVolatilityStructure> vol_;
         CashAnnuityModel model_;
-
-      protected:
-        // can be removed once the deprecated methods overriding the
-        // displacement are deleted
-        Real displacement_;
     };
 
     // shifted lognormal type engine
@@ -143,21 +138,6 @@ namespace QuantLib {
         BlackSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
                             const Handle<SwaptionVolatilityStructure>& vol,
                             CashAnnuityModel model = DiscountCurve);
-
-        /*! \deprecated
-          overrides displacement from given volatility structure,
-          this is not recommended to do */
-        QL_DEPRECATED
-        BlackSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
-                            const Handle<SwaptionVolatilityStructure>& vol,
-                            Real displacement,
-                            CashAnnuityModel model = DiscountCurve);
-
-        /*! \deprecated
-          might return Null<Real>(), if given by a volatility structure,
-          use volatility()->shift() to get the displacement instead */
-        QL_DEPRECATED
-        Real displacement() { return displacement_; }
     };
 
     //! Normal Bachelier-formula swaption engine
@@ -195,7 +175,7 @@ namespace QuantLib {
           vol_(boost::shared_ptr<SwaptionVolatilityStructure>(
               new ConstantSwaptionVolatility(0, NullCalendar(), Following, vol,
                                              dc, Spec().type, displacement))),
-          model_(model), displacement_(displacement) {
+          model_(model) {
         registerWith(discountCurve_);
     }
 
@@ -208,7 +188,7 @@ namespace QuantLib {
           vol_(boost::shared_ptr<SwaptionVolatilityStructure>(
               new ConstantSwaptionVolatility(0, NullCalendar(), Following, vol,
                                              dc, Spec().type, displacement))),
-          model_(model), displacement_(displacement) {
+          model_(model) {
         registerWith(discountCurve_);
         registerWith(vol_);
     }
@@ -217,9 +197,9 @@ namespace QuantLib {
     BlackStyleSwaptionEngine<Spec>::BlackStyleSwaptionEngine(
         const Handle<YieldTermStructure> &discountCurve,
         const Handle<SwaptionVolatilityStructure> &volatility,
-        Real displacement, CashAnnuityModel model)
+        CashAnnuityModel model)
         : discountCurve_(discountCurve), vol_(volatility),
-          model_(model), displacement_(displacement) {
+          model_(model) {
         registerWith(discountCurve_);
         registerWith(vol_);
     }
@@ -304,9 +284,9 @@ namespace QuantLib {
         // once the deprecated methods allowing to override the displacement
         // are gone, we can avoid this and directly read the displacement
         // from the volatility structure
-        Real displacement = displacement_ == Null<Real>()
-                                ? vol_->shift(exerciseDate, swapLength)
-                                : displacement_;
+        Real displacement =
+            vol_->volatilityType() == ShiftedLognormal ?
+            vol_->shift(exerciseDate, swapLength) : 0.0;
 
         Real stdDev = std::sqrt(variance);
         results_.additionalResults["stdDev"] = stdDev;

@@ -190,7 +190,7 @@ void GaussianQuadraturesTest::testTabulated() {
 
 void GaussianQuadraturesTest::testNonCentralChiSquared() {
      BOOST_TEST_MESSAGE(
-         "Testing Gauss non central chi squared integration...");
+         "Testing Gauss non-central chi-squared integration...");
 
      testSingle(
         GaussianQuadrature(2, GaussNonCentralChiSquaredPolynomial(4.0, 1.0)),
@@ -206,7 +206,7 @@ void GaussianQuadraturesTest::testNonCentralChiSquared() {
 
 void GaussianQuadraturesTest::testNonCentralChiSquaredSumOfNotes() {
      BOOST_TEST_MESSAGE(
-         "Testing Gauss non central chi squared sum of notes...");
+         "Testing Gauss non-central chi-squared sum of notes...");
 
      // Walter Gautschi, How and How not to check Gaussian Quadrature Formulae
      // https://www.cs.purdue.edu/homes/wxg/selected_works/section_08/084.pdf
