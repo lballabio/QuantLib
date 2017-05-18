@@ -4,6 +4,7 @@
  Copyright (C) 2005, 2006, 2007, 2008 StatPro Italia srl
  Copyright (C) 2007, 2008, 2009 Ferdinando Ametrano
  Copyright (C) 2007 Chris Kenyon
+ Copyright (C) 2016 Michael von den Driesch
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -83,6 +84,7 @@ namespace QuantLib {
         : base_curve(referenceDate, dayCounter, jumps, jumpDates, i),
           instruments_(instruments),
           accuracy_(accuracy), bootstrap_(bootstrap) {
+            initialize();
             bootstrap_.setup(this);
         }
         PiecewiseYieldCurve(
@@ -97,6 +99,7 @@ namespace QuantLib {
                      std::vector<Handle<Quote> >(), std::vector<Date>(), i),
           instruments_(instruments),
           accuracy_(accuracy), bootstrap_(bootstrap) {
+            initialize();
             bootstrap_.setup(this);
         }
         PiecewiseYieldCurve(
@@ -110,6 +113,7 @@ namespace QuantLib {
                      std::vector<Handle<Quote> >(), std::vector<Date>(), i),
           instruments_(instruments),
           accuracy_(1.0e-12), bootstrap_(bootstrap) {
+            initialize();
             bootstrap_.setup(this);
         }
         PiecewiseYieldCurve(
@@ -126,6 +130,7 @@ namespace QuantLib {
         : base_curve(settlementDays, calendar, dayCounter, jumps, jumpDates, i),
           instruments_(instruments),
           accuracy_(accuracy), bootstrap_(bootstrap) {
+            initialize();
             bootstrap_.setup(this);
         }
         PiecewiseYieldCurve(
@@ -141,6 +146,7 @@ namespace QuantLib {
                      std::vector<Handle<Quote> >(), std::vector<Date>(), i),
           instruments_(instruments),
           accuracy_(accuracy), bootstrap_(bootstrap) {
+            initialize();
             bootstrap_.setup(this);
         }
         PiecewiseYieldCurve(
@@ -155,6 +161,7 @@ namespace QuantLib {
                      std::vector<Handle<Quote> >(), std::vector<Date>(), i),
           instruments_(instruments),
           accuracy_(1.0e-12), bootstrap_(bootstrap) {
+            initialize();
             bootstrap_.setup(this);
         }
         //@}
@@ -180,6 +187,16 @@ namespace QuantLib {
         //@}
         // methods
         DiscountFactor discountImpl(Time) const;
+        struct InstrumentCompare {
+          bool operator()(const boost::shared_ptr< typename Traits::helper > &c,
+                          const boost::shared_ptr< typename Traits::helper > &d) const {
+            return c->pillarDate() < d->pillarDate();
+          }
+        };
+        void initialize() {
+          InstrumentCompare instLess;
+          std::sort(instruments_.begin(), instruments_.end(), instLess);
+        }
         // data members
         std::vector<boost::shared_ptr<typename Traits::helper> > instruments_;
         Real accuracy_;
