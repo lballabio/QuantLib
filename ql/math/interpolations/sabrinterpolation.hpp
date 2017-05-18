@@ -128,7 +128,7 @@ struct SABRSpecs {
                    : eps1();
         y[2] = std::fabs(x[2]) < 5.0 ? x[2] * x[2] + eps1()
                                      : (10.0 * std::fabs(x[2]) - 25.0) + eps1();
-        y[3] = std::fabs(x[3]) < 2.5 * M_PI
+        y[3] = std::fabs(x[3]) < 0.5 * M_PI
                    ? eps2() * std::sin(x[3])
                    : eps2() * (x[3] > 0.0 ? 1.0 : (-1.0));
         return y;
