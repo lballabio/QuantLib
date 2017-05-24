@@ -24,46 +24,29 @@
 
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
+#include <ql/math/abcdmathfunction.hpp>
 
 namespace QuantLib {
     
-    inline void validateAbcdParameters(Real a,
-                                       Real, // no condition on b
-                                       Real c,
-                                       Real d) {
-        QL_REQUIRE(a+d>=0,
-                   "a (" << a << ") + d (" << d << ") must be non negative");
-        QL_REQUIRE(c>=0,
-                   "c (" << c << ") must be non negative");
-        QL_REQUIRE(d>=0,
-                   "d (" << d << ") must be non negative");
-    }
-
     //! %Abcd functional form for instantaneous volatility
     /*! \f[ f(T-t) = [ a + b(T-t) ] e^{-c(T-t)} + d \f]
         following Rebonato's notation. */
-    class AbcdFunction : public std::unary_function<Real, Real> {
+    class AbcdFunction : public AbcdMathFunction {
 
       public:
         AbcdFunction(Real a = -0.06,
-                     Real b = 0.17,
-                     Real c = 0.54,
-                     Real d = 0.17);
-
-        //! volatility function value at time u: \f[ f(u) \f]
-        Real operator()(Time u) const;
-
-        //! time at which the volatility function reaches maximum (if any)
-        Real maximumLocation() const;
+                     Real b =  0.17,
+                     Real c =  0.54,
+                     Real d =  0.17);
 
         //! maximum value of the volatility function
-        Real maximumVolatility() const;
+        Real maximumVolatility() const { return maximumValue(); }
 
         //! volatility function value at time 0: \f[ f(0) \f]
-        Real shortTermVolatility() const { return a_+d_; }
+        Real shortTermVolatility() const { return (*this)(0.0); }
 
         //! volatility function value at time +inf: \f[ f(\inf) \f]
-        Real longTermVolatility() const { return d_; }
+        Real longTermVolatility() const { return longTermValue(); }
 
         /*! instantaneous covariance function at time t between T-fixing and
             S-fixing rates \f[ f(T-t)f(S-t) \f] */
@@ -103,14 +86,6 @@ namespace QuantLib {
             \f[ \int f(T-t)f(S-t)dt \f] */
         Real primitive(Time t, Time T, Time S) const;
         
-        /*! Inspectors */
-        Real a() const { return a_; }
-        Real b() const { return b_; }
-        Real c() const { return c_; }
-        Real d() const { return d_; }
-
-      private:
-        Real a_, b_, c_, d_;
     };
 
     

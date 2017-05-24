@@ -21,7 +21,6 @@
     \brief modified Bessel functions of first and second kind
 */
 
-#include <ql/math/functional.hpp>
 #include <ql/math/modifiedbessel.hpp>
 #include <ql/math/distributions/gammadistribution.hpp>
 
@@ -30,13 +29,24 @@
 namespace QuantLib {
 
     namespace {
+
         template <class T>  struct I {};
         template <> struct I<Real> { Real value() { return 0.0;} };
         template <> struct I<std::complex<Real> > {
             std::complex<Real> value() { return std::complex<Real>(0.0,1.0);}
         };
+        template <class T> struct Unweighted {
+            T weightSmallX(const T& x) { return 1.0; }
+            T weight1LargeX(const T& x) { return std::exp(x); }
+            T weight2LargeX(const T& x) { return std::exp(-x); }
+        };
+        template <class T> struct ExponentiallyWeighted {
+            T weightSmallX(const T& x) { return std::exp(-x); }
+            T weight1LargeX(const T& x) { return 1.0; }
+            T weight2LargeX(const T& x) { return std::exp(-2.0*x); }
+        };
 
-        template <class T>
+        template <class T, template <class> class W>
         T modifiedBesselFunction_i_impl(Real nu, const T& x) {
             if (std::abs(x) < 13.0) {
                 const T alpha = std::pow(0.5*x, nu)
@@ -49,7 +59,7 @@ namespace QuantLib {
                     sum += B_k;
                     QL_REQUIRE(++k < 1000, "max iterations exceeded");
                 }
-                return sum;
+                return sum * W<T>().weightSmallX(x);
             }
             else {
                 Real na_k=1.0, sign=1.0;
@@ -58,8 +68,10 @@ namespace QuantLib {
                 T s1=T(1.0), s2=T(1.0);
                 for (Size k=1; k < 30; ++k) {
                     sign*=-1;
-                    na_k*=(4*nu*nu-square<Real>()(2*k-1));
-                    da_k*=(8.0*k)*x;
+                    na_k *= (4.0 * nu * nu -
+                             (2.0 * static_cast<Real>(k) - 1.0) *
+                                 (2.0 * static_cast<Real>(k) - 1.0));
+                    da_k *= (8.0 * k) * x;
                     const T a_k = na_k/da_k;
 
                     s2+=a_k;
@@ -67,36 +79,64 @@ namespace QuantLib {
                 }
 
                 const T i = I<T>().value();
-                return  1.0/std::sqrt( 2*M_PI*x)*(std::exp(x)*s1
-                      + i*std::exp(i*nu*M_PI)*std::exp(-x)*s2);
+                return 1.0 / std::sqrt(2 * M_PI * x) *
+                    (W<T>().weight1LargeX(x) * s1 +
+                     i * std::exp(i * nu * M_PI) * W<T>().weight2LargeX(x) * s2);
             }
         }
 
-        template <class T>
+        template <class T, template <class> class W>
         T modifiedBesselFunction_k_impl(Real nu, const T& x) {
-            return M_PI_2*(  modifiedBesselFunction_i(-nu, x)
-                           - modifiedBesselFunction_i( nu, x))
-                    / std::sin(M_PI*nu);
+            return M_PI_2 * (modifiedBesselFunction_i_impl<T,W>(-nu, x) -
+                             modifiedBesselFunction_i_impl<T,W>(nu, x)) /
+                             std::sin(M_PI * nu);
         }
     }
 
     Real modifiedBesselFunction_i(Real nu, Real x) {
         QL_REQUIRE(x >= 0.0, "negative argument requires complex version of "
                              "modifiedBesselFunction");
-        return modifiedBesselFunction_i_impl(nu, x);
+        return modifiedBesselFunction_i_impl<Real, Unweighted>(nu, x);
     }
 
-    std::complex<Real> modifiedBesselFunction_i(
-        Real nu, const std::complex<Real>& z) {
-        return modifiedBesselFunction_i_impl(nu, z);
+    std::complex<Real> modifiedBesselFunction_i(Real nu,
+                                                const std::complex<Real> &z) {
+        return modifiedBesselFunction_i_impl<
+            std::complex<Real>, Unweighted>(nu, z);
     }
 
     Real modifiedBesselFunction_k(Real nu, Real x) {
-        return modifiedBesselFunction_k_impl(nu, x);
+        return modifiedBesselFunction_k_impl<Real, Unweighted>(nu, x);
     }
 
-    std::complex<Real> modifiedBesselFunction_k(
-        Real nu, const std::complex<Real>& z) {
-        return modifiedBesselFunction_k_impl(nu, z);
+    std::complex<Real> modifiedBesselFunction_k(Real nu,
+                                                const std::complex<Real> &z) {
+        return modifiedBesselFunction_k_impl<
+            std::complex<Real>, Unweighted>(nu, z);
     }
+
+    Real modifiedBesselFunction_i_exponentiallyWeighted(Real nu, Real x) {
+        QL_REQUIRE(x >= 0.0, "negative argument requires complex version of "
+                             "modifiedBesselFunction");
+        return modifiedBesselFunction_i_impl<Real, ExponentiallyWeighted>(
+            nu, x);
+    }
+
+    std::complex<Real> modifiedBesselFunction_i_exponentiallyWeighted(
+        Real nu, const std::complex<Real> &z) {
+        return modifiedBesselFunction_i_impl<
+            std::complex<Real>, ExponentiallyWeighted>(nu, z);
+    }
+
+    Real modifiedBesselFunction_k_exponentiallyWeighted(Real nu, Real x) {
+        return modifiedBesselFunction_k_impl<Real, ExponentiallyWeighted>(
+            nu, x);
+    }
+
+    std::complex<Real> modifiedBesselFunction_k_exponentiallyWeighted(
+        Real nu, const std::complex<Real> &z) {
+        return modifiedBesselFunction_k_impl<
+            std::complex<Real>, ExponentiallyWeighted>(nu, z);
+    }
+
 }

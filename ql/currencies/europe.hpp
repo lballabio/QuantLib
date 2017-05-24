@@ -82,7 +82,7 @@ namespace QuantLib {
 
     //! Danish krone
     /*! The ISO three-letter code is DKK; the numeric code is 208.
-        It is divided in 100 øre.
+        It is divided in 100 Ã¸re.
 
         \ingroup currencies
     */
@@ -170,7 +170,7 @@ namespace QuantLib {
 
     //! Norwegian krone
     /*! The ISO three-letter code is NOK; the numeric code is 578.
-        It is divided in 100 øre.
+        It is divided in 100 Ã¸re.
 
         \ingroup currencies
     */
@@ -214,9 +214,20 @@ namespace QuantLib {
         RONCurrency();
     };
 
+    //! Russian ruble
+    /*! The ISO three-letter code is RUB; the numeric code is 643.
+        It is divided in 100 kopeyki.
+
+        \ingroup currencies
+    */
+    class RUBCurrency : public Currency {
+      public:
+        RUBCurrency();
+    };
+
     //! Swedish krona
     /*! The ISO three-letter code is SEK; the numeric code is 752.
-        It is divided in 100 öre.
+        It is divided in 100 Ã¶re.
 
         \ingroup currencies
     */
@@ -330,7 +341,7 @@ namespace QuantLib {
 
     //! Finnish markka
     /*! The ISO three-letter code was FIM; the numeric code was 246.
-        It was divided in 100 penniä.
+        It was divided in 100 penniÃ¤.
 
         Obsoleted by the Euro since 1999.
 
@@ -456,6 +467,17 @@ namespace QuantLib {
     class SKKCurrency : public Currency {
       public:
         SKKCurrency();
+    };
+
+    //! Ukrainian hryvnia
+    /*! The ISO three-letter code is UAH; the numeric code is 980.
+        It is divided in 100 kopiykas.
+
+        \ingroup currencies    
+     */
+    class UAHCurrency : public Currency {
+    public:
+        UAHCurrency();
     };
 
 }

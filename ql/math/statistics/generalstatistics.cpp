@@ -26,7 +26,7 @@ namespace QuantLib {
     Real GeneralStatistics::weightSum() const {
         Real result = 0.0;
         std::vector<std::pair<Real,Real> >::const_iterator it;
-        for (it=samples_.begin(); it!=samples_.end(); it++) {
+        for (it=samples_.begin(); it!=samples_.end(); ++it) {
             result += it->second;
         }
         return result;
@@ -102,7 +102,7 @@ namespace QuantLib {
            at least one sample */
         Real integral = k->second, target = percent*sampleWeight;
         while (integral < target && k != l) {
-            k++;
+            ++k;
             integral += k->second;
         }
         return k->first;
@@ -126,7 +126,7 @@ namespace QuantLib {
            at least one sample */
         Real integral = k->second, target = percent*sampleWeight;
         while (integral < target && k != l) {
-            k++;
+            ++k;
             integral += k->second;
         }
         return k->first;

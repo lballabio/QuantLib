@@ -129,7 +129,7 @@ namespace QuantLib {
         for (std::vector<Real>::const_iterator k=strikes.begin();
              // added end-strike discarded
              k<strikes.end()-1;
-             k++) {
+             ++k) {
             slope = std::fabs((computeLogPayoff(*(k+1), f) -
                                computeLogPayoff(*k, f))/
                               (*(k+1) - *k));

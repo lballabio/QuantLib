@@ -34,7 +34,8 @@ namespace QuantLib {
 
     class FdmVPPStepConditionFactory {
       public:
-        FdmVPPStepConditionFactory(const VanillaVPPOption::arguments& args);
+        explicit FdmVPPStepConditionFactory(
+            const VanillaVPPOption::arguments& args);
 
         boost::shared_ptr<Fdm1dMesher> stateMesher() const;
         boost::shared_ptr<FdmVPPStepCondition> build(

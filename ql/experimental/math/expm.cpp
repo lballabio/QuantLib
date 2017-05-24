@@ -23,7 +23,7 @@
 
 
 #include <ql/experimental/math/expm.hpp>
-#include <ql/experimental/math/adaptiverungekutta.hpp>
+#include <ql/math/ode/adaptiverungekutta.hpp>
 
 #include <numeric>
 #include <algorithm>
@@ -33,7 +33,7 @@ namespace QuantLib {
     namespace {
         class MatrixVectorProductFct {
           public:
-            MatrixVectorProductFct(const Matrix& m) : m_(m) {}
+            explicit MatrixVectorProductFct(const Matrix& m) : m_(m) {}
 
             // implements x = M*y
             Disposable<std::vector<Real> > operator()(

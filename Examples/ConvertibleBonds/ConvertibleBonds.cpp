@@ -18,8 +18,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-// the only header you need to use QuantLib
-#include <ql/quantlib.hpp>
+#include <ql/experimental/convertiblebonds/convertiblebond.hpp>
+#include <ql/experimental/convertiblebonds/binomialconvertibleengine.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
+#include <ql/utilities/dataformatters.hpp>
 
 #ifdef BOOST_MSVC
 /* Uncomment the following lines to unmask floating-point
@@ -312,7 +315,7 @@ int main(int, char* []) {
 
         std::cout << dblrule << std::endl;
 
-        Real seconds = timer.elapsed();
+        double seconds = timer.elapsed();
         Integer hours = int(seconds/3600);
         seconds -= hours * 3600;
         Integer minutes = int(seconds/60);

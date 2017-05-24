@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2014 Klaus Spanderen
+ Copyright (C) 2015 Johannes Goettker-Schnetmann
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,6 +27,8 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+
+using std::exp;
 
 void FunctionsTest::testFactorial() {
 
@@ -110,7 +113,7 @@ void FunctionsTest::testGammaValues() {
 }
 
 void FunctionsTest::testModifiedBesselFunctions() {
-    BOOST_TEST_MESSAGE("Testing modified Bessel function of first kind...");
+    BOOST_TEST_MESSAGE("Testing modified Bessel function of first and second kind...");
 
     /* reference values are computed with R and the additional package Bessel
      * http://cran.r-project.org/web/packages/Bessel
@@ -225,6 +228,87 @@ void FunctionsTest::testModifiedBesselFunctions() {
     }
 }
 
+void FunctionsTest::testWeightedModifiedBesselFunctions() {
+    BOOST_TEST_MESSAGE("Testing weighted modified Bessel functions...");
+    Real nu = -5.0;
+    while (nu <= 5.0) {
+        Real x = 0.1;
+        while (x <= 15.0) {
+            const Real calculated_i = 
+                modifiedBesselFunction_i_exponentiallyWeighted(nu, x);
+            const Real expected_i = 
+                modifiedBesselFunction_i(nu, x) * exp(-x);
+            const Real calculated_k = 
+                modifiedBesselFunction_k_exponentiallyWeighted(nu, x);
+            const Real expected_k = 
+                M_PI_2 * (modifiedBesselFunction_i(-nu,x) -
+                          modifiedBesselFunction_i(nu,x)) * exp(-x) / std::sin(M_PI*nu);
+            const Real tol_i = 1e3 * QL_EPSILON *
+                std::fabs(expected_i) * std::max(exp(x), 1.0);
+            const Real tol_k = std::max(QL_EPSILON, 
+                1e3 * QL_EPSILON *
+                std::fabs(expected_k) * std::max(exp(x), 1.0));
+            if (std::abs(expected_i - calculated_i) > tol_i) {
+                BOOST_ERROR("failed to verify exponentially weighted"
+                            << "modified Bessel function of first kind"
+                            << "\n order      : " << nu << "\n argument   : "
+                            << x << "\n calculated  : " << calculated_i
+                            << "\n expected   : " << expected_i);
+            }
+            if (std::abs(expected_k - calculated_k) > tol_k) {
+                BOOST_ERROR("failed to verify exponentially weighted"
+                            << "modified Bessel function of second kind"
+                            << "\n order      : " << nu << "\n argument   : "
+                            << x << "\n calculated  : " << calculated_k
+                            << "\n expected   : " << expected_k);
+            }
+            x += 0.5;
+        }
+        nu += 0.5;
+    }
+    nu = -5.0;
+    while (nu <= 5.0) {
+        Real x = -5.0;
+        while (x <= 5.0) {
+            Real y = -5.0;
+            while (y <= 5.0) {
+                const std::complex<Real> z(x, y);
+                const std::complex<Real> calculated_i =
+                    modifiedBesselFunction_i_exponentiallyWeighted(nu, z);
+                const std::complex<Real> expected_i =
+                    modifiedBesselFunction_i(nu, z) * exp(-z);
+                const std::complex<Real> calculated_k =
+                    modifiedBesselFunction_k_exponentiallyWeighted(nu, z);
+                const std::complex<Real> expected_k =
+                    M_PI_2 * (modifiedBesselFunction_i(-nu, z) * exp(-z) -
+                              modifiedBesselFunction_i(nu, z) * exp(-z)) /
+                    std::sin(M_PI * nu);
+                const Real tol_i = 1e3 * QL_EPSILON*std::abs(calculated_i);
+                const Real tol_k = 1e3 * QL_EPSILON*std::abs(calculated_k);
+                if (std::abs(calculated_i - expected_i) > tol_i) {
+                    BOOST_ERROR("failed to verify exponentially weighted"
+                                << "modified Bessel function of first kind"
+                                << "\n order      : " << nu
+                                << "\n argument   : " << z <<
+                                "\n calculated: "
+                                << calculated_i << "\n expected   : " << expected_i);
+                }
+                if (std::abs(calculated_k - expected_k) > tol_k) {
+                    BOOST_ERROR("failed to verify exponentially weighted"
+                                << "modified Bessel function of second kind"
+                                << "\n order      : " << nu
+                                << "\n argument   : " << z <<
+                                "\n calculated: "
+                                << calculated_k << "\n expected   : " << expected_k);
+                }
+                y += 0.5;
+            }
+            x += 0.5;
+        }
+        nu += 0.5;
+    }
+}
+
 test_suite* FunctionsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Factorial tests");
     suite->add(QUANTLIB_TEST_CASE(&FunctionsTest::testFactorial));
@@ -232,6 +316,7 @@ test_suite* FunctionsTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&FunctionsTest::testGammaValues));
     suite->add(QUANTLIB_TEST_CASE(
                         &FunctionsTest::testModifiedBesselFunctions));
+    suite->add(QUANTLIB_TEST_CASE(
+                        &FunctionsTest::testWeightedModifiedBesselFunctions));
     return suite;
 }
-

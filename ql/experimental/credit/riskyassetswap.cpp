@@ -20,6 +20,8 @@
 #include <ql/experimental/credit/riskyassetswap.hpp>
 #include <ql/event.hpp>
 
+#include <ql/utilities/null_deleter.hpp>
+
 namespace QuantLib {
 
     RiskyAssetSwap::RiskyAssetSwap(
@@ -120,9 +122,9 @@ namespace QuantLib {
                 d = defaultTS_->referenceDate();
             Date d0 = d;
             do {
-                double disc = yieldTS_->discount (d);
-                double dd   = defaultTS_->defaultDensity (d, true);
-                double dcf  = defaultTS_->dayCounter().yearFraction (d0, d);
+                Real disc = yieldTS_->discount (d);
+                Real dd   = defaultTS_->defaultDensity (d, true);
+                Real dcf  = defaultTS_->dayCounter().yearFraction (d0, d);
 
                 recoveryValue  += disc * dd * dcf;
 
@@ -216,16 +218,12 @@ namespace QuantLib {
         return asw_->fairSpread();
     }
 
-    namespace {
-        void no_deletion(DefaultProbabilityTermStructure*) {}
-    }
-
     void AssetSwapHelper::setTermStructure(
                                         DefaultProbabilityTermStructure* ts) {
         DefaultProbabilityHelper::setTermStructure(ts);
 
         probability_.linkTo(
-            boost::shared_ptr<DefaultProbabilityTermStructure>(ts, no_deletion),
+            boost::shared_ptr<DefaultProbabilityTermStructure>(ts, null_deleter()),
             false);
 
         initializeDates();

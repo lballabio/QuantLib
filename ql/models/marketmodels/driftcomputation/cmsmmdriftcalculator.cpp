@@ -32,7 +32,6 @@ namespace QuantLib {
                                 Size alive,
                                 Size spanningFwds)
     : numberOfRates_(taus.size()), numberOfFactors_(pseudo.columns()),
-      isFullFactor_(numberOfFactors_==numberOfRates_ ? true : false),
       numeraire_(numeraire), alive_(alive),
       displacements_(displacements), oneOverTaus_(taus.size()),
       pseudo_(pseudo), tmp_(taus.size(), 0.0),
@@ -90,7 +89,7 @@ namespace QuantLib {
             for (Integer j=static_cast<Integer>(numberOfRates_)-2;
                  j>=static_cast<Integer>(alive_)-1; --j)
             {
-                double sr = cs.cmSwapRate(j+1,spanningFwds_);
+                Real sr = cs.cmSwapRate(j+1,spanningFwds_);
                 Integer endIndex =
                     std::min<Integer>(j + static_cast<Integer>(spanningFwds_) + 1,
                              static_cast<Integer>(numberOfRates_));

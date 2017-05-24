@@ -1,12 +1,15 @@
 
 QL_TESTS = \
 	quantlibtestsuite.cpp \
+	speedlevel.hpp \
 	americanoption.hpp americanoption.cpp \
+	amortizingbond.hpp amortizingbond.cpp \
 	array.hpp array.cpp \
 	asianoptions.hpp asianoptions.cpp \
 	assetswap.hpp assetswap.cpp \
 	autocovariances.hpp autocovariances.cpp \
 	barrieroption.hpp barrieroption.cpp \
+	binaryoption.hpp binaryoption.cpp \
 	basketoption.hpp basketoption.cpp \
 	batesmodel.hpp batesmodel.cpp \
 	bermudanswaption.hpp bermudanswaption.cpp \
@@ -14,6 +17,7 @@ QL_TESTS = \
 	blackformula.hpp blackformula.cpp \
 	bonds.hpp bonds.cpp \
 	brownianbridge.hpp brownianbridge.cpp \
+	businessdayconventions.hpp businessdayconventions.cpp \
 	calendars.hpp calendars.cpp \
 	capfloor.hpp capfloor.cpp \
 	capflooredcoupon.hpp capflooredcoupon.cpp \
@@ -29,6 +33,7 @@ QL_TESTS = \
 	convertiblebonds.hpp convertiblebonds.cpp \
 	covariance.hpp covariance.cpp \
 	creditdefaultswap.hpp creditdefaultswap.cpp \
+	creditriskplus.hpp creditriskplus.cpp \
 	curvestates.hpp curvestates.cpp \
 	dates.hpp dates.cpp \
 	daycounters.hpp daycounters.cpp \
@@ -37,10 +42,13 @@ QL_TESTS = \
 	digitaloption.hpp digitaloption.cpp \
 	distributions.hpp distributions.cpp \
 	dividendoption.hpp dividendoption.cpp \
+	doublebarrieroption.hpp doublebarrieroption.cpp \
+	doublebinaryoption.hpp doublebinaryoption.cpp \
 	europeanoption.hpp europeanoption.cpp \
 	everestoption.hpp everestoption.cpp \
 	exchangerate.hpp exchangerate.cpp \
 	extendedtrees.hpp extendedtrees.cpp \
+	extensibleoptions.hpp extensibleoptions.cpp \
 	fastfouriertransform.hpp fastfouriertransform.cpp \
 	fdheston.hpp fdheston.cpp \
 	fdmlinearop.hpp fdmlinearop.cpp \
@@ -51,6 +59,7 @@ QL_TESTS = \
 	gjrgarchmodel.hpp gjrgarchmodel.cpp \
 	gsr.hpp gsr.cpp \
 	hestonmodel.hpp hestonmodel.cpp \
+	hestonslvmodel.hpp hestonslvmodel.cpp \
 	himalayaoption.hpp himalayaoption.cpp \
 	hybridhestonhullwhiteprocess.hpp hybridhestonhullwhiteprocess.cpp \
 	inflation.hpp inflation.cpp \
@@ -65,6 +74,7 @@ QL_TESTS = \
 	interestrates.hpp interestrates.cpp \
 	interpolations.hpp interpolations.cpp \
 	jumpdiffusion.hpp jumpdiffusion.cpp \
+	lazyobject.hpp lazyobject.cpp \
 	libormarketmodel.hpp libormarketmodel.cpp \
 	libormarketmodelprocess.hpp libormarketmodelprocess.cpp \
 	linearleastsquaresregression.hpp linearleastsquaresregression.cpp \
@@ -82,13 +92,18 @@ QL_TESTS = \
 	mclongstaffschwartzengine.hpp mclongstaffschwartzengine.cpp \
 	mersennetwister.hpp mersennetwister.cpp \
 	money.hpp money.cpp \
+	noarbsabr.hpp noarbsabr.cpp \
+	normalclvmodel.hpp normalclvmodel.cpp \
 	nthtodefault.hpp nthtodefault.cpp \
+	numericaldifferentiation.hpp numericaldifferentiation.cpp \
+	observable.hpp observable.cpp \
 	ode.hpp ode.cpp \
 	operators.hpp operators.cpp \
 	optimizers.hpp optimizers.cpp \
 	optionletstripper.hpp optionletstripper.cpp \
 	overnightindexedswap.hpp overnightindexedswap.cpp \
 	pagodaoption.hpp pagodaoption.cpp \
+	partialtimebarrieroption.hpp partialtimebarrieroption.cpp \
 	pathgenerator.hpp pathgenerator.cpp \
 	period.hpp period.cpp \
 	piecewiseyieldcurve.hpp piecewiseyieldcurve.cpp \
@@ -96,6 +111,7 @@ QL_TESTS = \
 	quantooption.hpp quantooption.cpp \
 	quotes.hpp quotes.cpp \
 	rangeaccrual.hpp rangeaccrual.cpp \
+	riskneutraldensitycalculator.hpp riskneutraldensitycalculator.cpp \
 	riskstats.hpp riskstats.cpp \
 	rngtraits.hpp rngtraits.cpp \
 	rounding.hpp rounding.cpp \
@@ -104,6 +120,7 @@ QL_TESTS = \
 	shortratemodels.hpp shortratemodels.cpp \
 	solvers.hpp solvers.cpp \
 	spreadoption.hpp spreadoption.cpp \
+	squarerootclvmodel.hpp squarerootclvmodel.cpp \
 	stats.hpp stats.cpp \
 	swap.hpp swap.cpp \
 	swapforwardmappings.hpp swapforwardmappings.cpp \
@@ -118,19 +135,21 @@ QL_TESTS = \
 	tqreigendecomposition.hpp tqreigendecomposition.cpp \
 	tracing.hpp tracing.cpp \
 	twoassetbarrieroption.hpp twoassetbarrieroption.cpp \
+	twoassetcorrelationoption.hpp twoassetcorrelationoption.cpp \
 	utilities.hpp utilities.cpp \
 	variancegamma.hpp variancegamma.cpp \
 	varianceoption.hpp varianceoption.cpp \
 	varianceswaps.hpp varianceswaps.cpp \
 	volatilitymodels.hpp volatilitymodels.cpp \
 	vpp.hpp vpp.cpp \
-	writerextensibleoption.hpp writerextensibleoption.cpp
+	zabr.hpp zabr.cpp
 
 QL_BENCHMARKS = \
 	quantlibbenchmark.cpp \
 	americanoption.hpp americanoption.cpp \
 	asianoptions.hpp asianoptions.cpp \
 	barrieroption.hpp barrieroption.cpp \
+	doublebarrieroption.hpp doublebarrieroption.cpp \
 	basketoption.hpp basketoption.cpp \
 	batesmodel.hpp batesmodel.cpp \
 	convertiblebonds.hpp convertiblebonds.cpp \
@@ -153,7 +172,6 @@ dist-hook:
 	mkdir -p $(distdir)/build
 	mkdir -p $(distdir)/bin
 	cp -p $(srcdir)/bin/runtest.bat $(distdir)/bin
-	rm -f $(distdir)/main.cpp
 
 if BOOST_UNIT_TEST_FOUND
 
@@ -162,22 +180,6 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir} ${BOOST_UNIT_TEST_DEFINE}
 noinst_LTLIBRARIES = libUnitMain.la
 libUnitMain_la_SOURCES = main.cpp
 libUnitMain_la_CXXFLAGS = ${BOOST_UNIT_TEST_MAIN_CXXFLAGS}
-
-main.cpp: Makefile.am
-	echo "#ifdef BOOST_TEST_DYN_LINK" > $@
-	echo "#include <boost/test/unit_test.hpp>" >> $@
-	echo "#include <boost/test/framework.hpp>" >> $@
-	echo "using namespace boost::unit_test;" >> $@
-	echo "test_suite* init_unit_test_suite(int, char* []);" >> $@
-	echo "bool init_function() {" >> $@
-	echo "framework::master_test_suite().add(init_unit_test_suite(0,0));" >> $@
-	echo "return true;" >> $@
-	echo "}" >> $@
-	echo "int main( int argc, char* argv[] ) {" >> $@
-	echo "return ::boost::unit_test::unit_test_main( &init_function, argc, argv );" >> $@
-	echo "}" >> $@
-	echo "#endif" >> $@
-
 
 if AUTO_BENCHMARK
 bin_PROGRAMS = quantlib-test-suite quantlib-benchmark
@@ -188,11 +190,11 @@ endif
 
 quantlib_test_suite_SOURCES = ${QL_TESTS}
 quantlib_test_suite_LDADD = libUnitMain.la ${top_builddir}/ql/libQuantLib.la \
-                            -l${BOOST_UNIT_TEST_LIB}
+                            -l${BOOST_UNIT_TEST_LIB} ${BOOST_THREAD_LIB}  ${BOOST_INTERPROCESS_LIB}
 
 quantlib_benchmark_SOURCES = ${QL_BENCHMARKS}
 quantlib_benchmark_LDADD = libUnitMain.la ${top_builddir}/ql/libQuantLib.la \
-                           -l${BOOST_UNIT_TEST_LIB}
+                           -l${BOOST_UNIT_TEST_LIB} ${BOOST_THREAD_LIB}
 
 TESTS = quantlib-test-suite$(EXEEXT)
 TESTS_ENVIRONMENT = BOOST_TEST_LOG_LEVEL=message
@@ -202,27 +204,25 @@ benchmark: quantlib-benchmark$(EXEEXT)
 	BOOST_TEST_LOG_LEVEL=message ./quantlib-benchmark$(EXEEXT)
 
 EXTRA_DIST = \
+	CMakeLists.txt \
+	paralleltestrunner.hpp \
 	README.txt \
-	testsuite_vc8.vcproj \
 	testsuite_vc9.vcproj \
-	testsuite_vc10.vcxproj \
-	testsuite_vc10.vcxproj.filters \
-	testsuite_vc11.vcxproj \
-	testsuite_vc11.vcxproj.filters \
+	testsuite.vcxproj \
+	testsuite.vcxproj.filters \
 	testsuite.dev
 
 else
 
 EXTRA_DIST = \
 	${QL_TESTS} \
+	CMakeLists.txt \
+	paralleltestrunner.hpp \
 	quantlibbenchmark.cpp \
 	README.txt \
-	testsuite_vc8.vcproj \
 	testsuite_vc9.vcproj \
-	testsuite_vc10.vcxproj \
-	testsuite_vc10.vcxproj.filters \
-	testsuite_vc11.vcxproj \
-	testsuite_vc11.vcxproj.filters \
+	testsuite.vcxproj \
+	testsuite.vcxproj.filters \
 	testsuite.dev
 
 endif

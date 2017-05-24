@@ -35,6 +35,10 @@ class IntegralTest {
     static void testGaussKronrodNonAdaptive();
     static void testGaussLobatto();
     static void testTwoDimensionalIntegration();
+    static void testFolinIntegration();
+    static void testDiscreteIntegrals();
+    static void testDiscreteIntegrator();
+    static void testPiecewiseIntegral();
     static boost::unit_test_framework::test_suite* suite();
 };
 

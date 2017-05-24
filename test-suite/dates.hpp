@@ -21,6 +21,7 @@
 #define quantlib_test_dates_hpp
 
 #include <boost/test/unit_test.hpp>
+#include "speedlevel.hpp"
 
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
@@ -30,9 +31,11 @@ class DateTest {
     static void testConsistency();
     static void ecbDates();
     static void immDates();
+    static void asxDates();
     static void isoDates();
     static void parseDates();
-    static boost::unit_test_framework::test_suite* suite();
+    static void intraday();
+    static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
 
 

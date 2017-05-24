@@ -492,14 +492,17 @@ void LiborMarketModelTest::testSwaptionPricing() {
 }
 
 
-test_suite* LiborMarketModelTest::suite() {
+test_suite* LiborMarketModelTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Libor market model tests");
 
     suite->add(QUANTLIB_TEST_CASE(
                           &LiborMarketModelTest::testSimpleCovarianceModels));
     suite->add(QUANTLIB_TEST_CASE(&LiborMarketModelTest::testCapletPricing));
     suite->add(QUANTLIB_TEST_CASE(&LiborMarketModelTest::testSwaptionPricing));
-    suite->add(QUANTLIB_TEST_CASE(&LiborMarketModelTest::testCalibration));
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(&LiborMarketModelTest::testCalibration));
+    }
 
     return suite;
 }

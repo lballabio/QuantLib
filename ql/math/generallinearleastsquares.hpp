@@ -49,7 +49,7 @@ namespace QuantLib {
     public:
         template <class xContainer, class yContainer, class vContainer>
         GeneralLinearLeastSquares(const xContainer & x,
-                                  const yContainer &y, const vContainer & v);
+                                  const yContainer & y, const vContainer & v);
 
         template<class xIterator, class yIterator, class vIterator>
         GeneralLinearLeastSquares(xIterator xBegin, xIterator xEnd,
@@ -64,10 +64,6 @@ namespace QuantLib {
         //! modeling uncertainty as definied in Numerical Recipes
         const Array& error()          const { return err_;}
 
-        /*! \deprecated Use coefficients() instead */
-        QL_DEPRECATED
-        const Array& a() const     { return a_;  }
-
         Size size() const { return residuals_.size(); }
 
         Size dim() const { return a_.size(); }
@@ -79,18 +75,25 @@ namespace QuantLib {
         void calculate(
             xIterator xBegin, xIterator xEnd,
             yIterator yBegin, yIterator yEnd,
+            vIterator vBegin);
+
+        template <class xIterator, class yIterator, class vIterator>
+        QL_DEPRECATED
+        void calculate(
+            xIterator xBegin, xIterator xEnd,
+            yIterator yBegin, yIterator yEnd,
             vIterator vBegin, vIterator vEnd);
     };
 
     template <class xContainer, class yContainer, class vContainer> inline
     GeneralLinearLeastSquares::GeneralLinearLeastSquares(const xContainer & x,
-                                                         const yContainer &y,
+                                                         const yContainer & y,
                                                          const vContainer & v)
     : a_(v.size(), 0.0),
       err_(v.size(), 0.0),
       residuals_(y.size()),
       standardErrors_(v.size()) {
-        calculate(x.begin(), x.end(), y.begin(), y.end(), v.begin(), v.end());
+        calculate(x.begin(), x.end(), y.begin(), y.end(), v.begin());
     }
 
     template<class xIterator, class yIterator, class vIterator> inline
@@ -102,14 +105,14 @@ namespace QuantLib {
       err_(a_.size(), 0.0),
       residuals_(std::distance(yBegin, yEnd)),
       standardErrors_(a_.size()) {
-        calculate(xBegin, xEnd, yBegin, yEnd, vBegin, vEnd);
+        calculate(xBegin, xEnd, yBegin, yEnd, vBegin);
     }
 
 
     template <class xIterator, class yIterator, class vIterator>
     void GeneralLinearLeastSquares::calculate(xIterator xBegin, xIterator xEnd,
                                               yIterator yBegin, yIterator yEnd,
-                                              vIterator vBegin, vIterator vEnd) {
+                                              vIterator vBegin) {
 
         const Size n = residuals_.size();
         const Size m = err_.size();
@@ -128,7 +131,7 @@ namespace QuantLib {
         const Matrix& V = svd.V();
         const Matrix& U = svd.U();
         const Array& w = svd.singularValues();
-        const Real threshold = n*QL_EPSILON;
+        const Real threshold = n * QL_EPSILON * svd.singularValues()[0];
 
         for (i=0; i<m; ++i) {
             if (w[i] > threshold) {
@@ -154,6 +157,14 @@ namespace QuantLib {
             std::bind1st(std::multiplies<Real>(),
             std::sqrt(chiSq/(n-2))));
     }
+
+    template <class xIterator, class yIterator, class vIterator>
+    void GeneralLinearLeastSquares::calculate(xIterator xBegin, xIterator xEnd,
+                                              yIterator yBegin, yIterator yEnd,
+                                              vIterator vBegin, vIterator) {
+        calculate(xBegin, xEnd, yBegin, yEnd, vBegin);
+    }
+
 }
 
 #endif

@@ -5,6 +5,7 @@
  Copyright (C) 2005 Ferdinando Ametrano
  Copyright (C) 2006 Piter Dias
  Copyright (C) 2008 Charles Chongseok Hyun
+ Copyright (C) 2015 Dmitri Nesteruk
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,8 +25,10 @@
 #include "utilities.hpp"
 #include <ql/time/calendar.hpp>
 #include <ql/time/calendars/brazil.hpp>
+#include <ql/time/calendars/china.hpp>
 #include <ql/time/calendars/germany.hpp>
 #include <ql/time/calendars/italy.hpp>
+#include <ql/time/calendars/russia.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/unitedkingdom.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
@@ -183,15 +186,38 @@ void CalendarTest::testUSSettlement() {
     Calendar c = UnitedStates(UnitedStates::Settlement);
     std::vector<Date> hol = Calendar::holidayList(c, Date( 1, January, 2004),
                                                      Date(31,December, 2005));
-    for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i]
-                       << " while calculated holiday is " << hol[i]);
-    }
     if (hol.size()!=expectedHol.size())
         BOOST_FAIL("there were " << expectedHol.size()
                    << " expected holidays, while there are " << hol.size()
                    << " calculated holidays");
+    for (Size i=0; i<hol.size(); i++) {
+        if (hol[i]!=expectedHol[i])
+            BOOST_FAIL("expected holiday was " << expectedHol[i]
+                       << " while calculated holiday is " << hol[i]);
+    }
+
+    // before Uniform Monday Holiday Act
+    expectedHol = std::vector<Date>();
+    expectedHol.push_back(Date(2,January,1961));
+    expectedHol.push_back(Date(22,February,1961));
+    expectedHol.push_back(Date(30,May,1961));
+    expectedHol.push_back(Date(4,July,1961));
+    expectedHol.push_back(Date(4,September,1961));
+    expectedHol.push_back(Date(10,November,1961));
+    expectedHol.push_back(Date(23,November,1961));
+    expectedHol.push_back(Date(25,December,1961));
+
+    hol = Calendar::holidayList(c, Date( 1, January, 1961),
+                                Date(31,December, 1961));
+    if (hol.size()!=expectedHol.size())
+        BOOST_FAIL("there were " << expectedHol.size()
+                   << " expected holidays, while there are " << hol.size()
+                   << " calculated holidays");
+    for (Size i=0; i<hol.size(); i++) {
+        if (hol[i]!=expectedHol[i])
+            BOOST_FAIL("expected holiday was " << expectedHol[i]
+                       << " while calculated holiday is " << hol[i]);
+    }
 }
 
 void CalendarTest::testUSGovernmentBondMarket() {
@@ -275,11 +301,15 @@ void CalendarTest::testUSNewYorkStockExchange() {
                    << " calculated holidays");
 
     std::vector<Date> histClose;
+    histClose.push_back(Date(30,October,2012));  // Hurricane Sandy
+    histClose.push_back(Date(29,October,2012));  // Hurricane Sandy
     histClose.push_back(Date(11,June,2004));     // Reagan's funeral
     histClose.push_back(Date(14,September,2001));// September 11, 2001
     histClose.push_back(Date(13,September,2001));// September 11, 2001
     histClose.push_back(Date(12,September,2001));// September 11, 2001
     histClose.push_back(Date(11,September,2001));// September 11, 2001
+    histClose.push_back(Date(27,April,1994));    // Nixon's funeral.
+    histClose.push_back(Date(27,September,1985));// Hurricane Gloria
     histClose.push_back(Date(14,July,1977));     // 1977 Blackout
     histClose.push_back(Date(25,January,1973));  // Johnson's funeral.
     histClose.push_back(Date(28,December,1972)); // Truman's funeral
@@ -287,6 +317,13 @@ void CalendarTest::testUSNewYorkStockExchange() {
     histClose.push_back(Date(31,March,1969));    // Eisenhower's funeral
     histClose.push_back(Date(10,February,1969)); // heavy snow
     histClose.push_back(Date(5,July,1968));      // Day after Independence Day
+    histClose.push_back(Date(9,April,1968));     // Mourning for MLK
+    histClose.push_back(Date(24,December,1965)); // Christmas Eve
+    histClose.push_back(Date(25,November,1963)); // Kennedy's funeral
+    histClose.push_back(Date(29,May,1961));      // Day before Decoration Day
+    histClose.push_back(Date(26,December,1958)); // Day after Christmas
+    histClose.push_back(Date(24,December,1956)); // Christmas Eve
+    histClose.push_back(Date(24,December,1954)); // Christmas Eve
     // June 12-Dec. 31, 1968
     // Four day week (closed on Wednesdays) - Paperwork Crisis
     histClose.push_back(Date(12,Jun,1968));
@@ -311,8 +348,6 @@ void CalendarTest::testUSNewYorkStockExchange() {
             BOOST_FAIL(histClose[i]
                        << " should be holiday (historical close)");
     }
-
-
 }
 
 void CalendarTest::testTARGET() {
@@ -692,6 +727,609 @@ void CalendarTest::testItalyExchange() {
                    << " calculated holidays");
 }
 
+void CalendarTest::testRussia()
+{
+  BOOST_TEST_MESSAGE("Testing Russia holiday list...");
+
+  std::vector<Date> expectedHol;
+  
+  // exhaustive holiday list for the year 2012
+  expectedHol.push_back(Date(1, January, 2012));
+  expectedHol.push_back(Date(2, January, 2012));
+  expectedHol.push_back(Date(7, January, 2012));
+  expectedHol.push_back(Date(8, January, 2012));
+  expectedHol.push_back(Date(14, January, 2012));
+  expectedHol.push_back(Date(15, January, 2012));
+  expectedHol.push_back(Date(21, January, 2012));
+  expectedHol.push_back(Date(22, January, 2012));
+  expectedHol.push_back(Date(28, January, 2012));
+  expectedHol.push_back(Date(29, January, 2012));
+  expectedHol.push_back(Date(4, February, 2012));
+  expectedHol.push_back(Date(5, February, 2012));
+  expectedHol.push_back(Date(11, February, 2012));
+  expectedHol.push_back(Date(12, February, 2012));
+  expectedHol.push_back(Date(18, February, 2012));
+  expectedHol.push_back(Date(19, February, 2012));
+  expectedHol.push_back(Date(23, February, 2012));
+  expectedHol.push_back(Date(25, February, 2012));
+  expectedHol.push_back(Date(26, February, 2012));
+  expectedHol.push_back(Date(3, March, 2012));
+  expectedHol.push_back(Date(4, March, 2012));
+  expectedHol.push_back(Date(8, March, 2012));
+  expectedHol.push_back(Date(9, March, 2012));
+  expectedHol.push_back(Date(10, March, 2012));
+  expectedHol.push_back(Date(17, March, 2012));
+  expectedHol.push_back(Date(18, March, 2012));
+  expectedHol.push_back(Date(24, March, 2012));
+  expectedHol.push_back(Date(25, March, 2012));
+  expectedHol.push_back(Date(31, March, 2012));
+  expectedHol.push_back(Date(1, April, 2012));
+  expectedHol.push_back(Date(7, April, 2012));
+  expectedHol.push_back(Date(8, April, 2012));
+  expectedHol.push_back(Date(14, April, 2012));
+  expectedHol.push_back(Date(15, April, 2012));
+  expectedHol.push_back(Date(21, April, 2012));
+  expectedHol.push_back(Date(22, April, 2012));
+  expectedHol.push_back(Date(29, April, 2012));
+  expectedHol.push_back(Date(30, April, 2012));
+  expectedHol.push_back(Date(1, May, 2012));
+  expectedHol.push_back(Date(6, May, 2012));
+  expectedHol.push_back(Date(9, May, 2012));
+  expectedHol.push_back(Date(13, May, 2012));
+  expectedHol.push_back(Date(19, May, 2012));
+  expectedHol.push_back(Date(20, May, 2012));
+  expectedHol.push_back(Date(26, May, 2012));
+  expectedHol.push_back(Date(27, May, 2012));
+  expectedHol.push_back(Date(2, June, 2012));
+  expectedHol.push_back(Date(3, June, 2012));
+  expectedHol.push_back(Date(10, June, 2012));
+  expectedHol.push_back(Date(11, June, 2012));
+  expectedHol.push_back(Date(12, June, 2012));
+  expectedHol.push_back(Date(16, June, 2012));
+  expectedHol.push_back(Date(17, June, 2012));
+  expectedHol.push_back(Date(23, June, 2012));
+  expectedHol.push_back(Date(24, June, 2012));
+  expectedHol.push_back(Date(30, June, 2012));
+  expectedHol.push_back(Date(1, July, 2012));
+  expectedHol.push_back(Date(7, July, 2012));
+  expectedHol.push_back(Date(8, July, 2012));
+  expectedHol.push_back(Date(14, July, 2012));
+  expectedHol.push_back(Date(15, July, 2012));
+  expectedHol.push_back(Date(21, July, 2012));
+  expectedHol.push_back(Date(22, July, 2012));
+  expectedHol.push_back(Date(28, July, 2012));
+  expectedHol.push_back(Date(29, July, 2012));
+  expectedHol.push_back(Date(4, August, 2012));
+  expectedHol.push_back(Date(5, August, 2012));
+  expectedHol.push_back(Date(11, August, 2012));
+  expectedHol.push_back(Date(12, August, 2012));
+  expectedHol.push_back(Date(18, August, 2012));
+  expectedHol.push_back(Date(19, August, 2012));
+  expectedHol.push_back(Date(25, August, 2012));
+  expectedHol.push_back(Date(26, August, 2012));
+  expectedHol.push_back(Date(1, September, 2012));
+  expectedHol.push_back(Date(2, September, 2012));
+  expectedHol.push_back(Date(8, September, 2012));
+  expectedHol.push_back(Date(9, September, 2012));
+  expectedHol.push_back(Date(15, September, 2012));
+  expectedHol.push_back(Date(16, September, 2012));
+  expectedHol.push_back(Date(22, September, 2012));
+  expectedHol.push_back(Date(23, September, 2012));
+  expectedHol.push_back(Date(29, September, 2012));
+  expectedHol.push_back(Date(30, September, 2012));
+  expectedHol.push_back(Date(6, October, 2012));
+  expectedHol.push_back(Date(7, October, 2012));
+  expectedHol.push_back(Date(13, October, 2012));
+  expectedHol.push_back(Date(14, October, 2012));
+  expectedHol.push_back(Date(20, October, 2012));
+  expectedHol.push_back(Date(21, October, 2012));
+  expectedHol.push_back(Date(27, October, 2012));
+  expectedHol.push_back(Date(28, October, 2012));
+  expectedHol.push_back(Date(3, November, 2012));
+  expectedHol.push_back(Date(4, November, 2012));
+  expectedHol.push_back(Date(5, November, 2012));
+  expectedHol.push_back(Date(10, November, 2012));
+  expectedHol.push_back(Date(11, November, 2012));
+  expectedHol.push_back(Date(17, November, 2012));
+  expectedHol.push_back(Date(18, November, 2012));
+  expectedHol.push_back(Date(24, November, 2012));
+  expectedHol.push_back(Date(25, November, 2012));
+  expectedHol.push_back(Date(1, December, 2012));
+  expectedHol.push_back(Date(2, December, 2012));
+  expectedHol.push_back(Date(8, December, 2012));
+  expectedHol.push_back(Date(9, December, 2012));
+  expectedHol.push_back(Date(15, December, 2012));
+  expectedHol.push_back(Date(16, December, 2012));
+  expectedHol.push_back(Date(22, December, 2012));
+  expectedHol.push_back(Date(23, December, 2012));
+  expectedHol.push_back(Date(29, December, 2012));
+  expectedHol.push_back(Date(30, December, 2012));
+  expectedHol.push_back(Date(31, December, 2012));
+
+  // exhaustive holiday list for the year 2013
+  expectedHol.push_back(Date(1, January, 2013));
+  expectedHol.push_back(Date(2, January, 2013));
+  expectedHol.push_back(Date(3, January, 2013));
+  expectedHol.push_back(Date(4, January, 2013));
+  expectedHol.push_back(Date(5, January, 2013));
+  expectedHol.push_back(Date(6, January, 2013));
+  expectedHol.push_back(Date(7, January, 2013));
+  expectedHol.push_back(Date(12, January, 2013));
+  expectedHol.push_back(Date(13, January, 2013));
+  expectedHol.push_back(Date(19, January, 2013));
+  expectedHol.push_back(Date(20, January, 2013));
+  expectedHol.push_back(Date(26, January, 2013));
+  expectedHol.push_back(Date(27, January, 2013));
+  expectedHol.push_back(Date(2, February, 2013));
+  expectedHol.push_back(Date(3, February, 2013));
+  expectedHol.push_back(Date(9, February, 2013));
+  expectedHol.push_back(Date(10, February, 2013));
+  expectedHol.push_back(Date(16, February, 2013));
+  expectedHol.push_back(Date(17, February, 2013));
+  expectedHol.push_back(Date(23, February, 2013));
+  expectedHol.push_back(Date(24, February, 2013));
+  expectedHol.push_back(Date(2, March, 2013));
+  expectedHol.push_back(Date(3, March, 2013));
+  expectedHol.push_back(Date(8, March, 2013));
+  expectedHol.push_back(Date(9, March, 2013));
+  expectedHol.push_back(Date(10, March, 2013));
+  expectedHol.push_back(Date(16, March, 2013));
+  expectedHol.push_back(Date(17, March, 2013));
+  expectedHol.push_back(Date(23, March, 2013));
+  expectedHol.push_back(Date(24, March, 2013));
+  expectedHol.push_back(Date(30, March, 2013));
+  expectedHol.push_back(Date(31, March, 2013));
+  expectedHol.push_back(Date(6, April, 2013));
+  expectedHol.push_back(Date(7, April, 2013));
+  expectedHol.push_back(Date(13, April, 2013));
+  expectedHol.push_back(Date(14, April, 2013));
+  expectedHol.push_back(Date(20, April, 2013));
+  expectedHol.push_back(Date(21, April, 2013));
+  expectedHol.push_back(Date(27, April, 2013));
+  expectedHol.push_back(Date(28, April, 2013));
+  expectedHol.push_back(Date(1, May, 2013));
+  expectedHol.push_back(Date(4, May, 2013));
+  expectedHol.push_back(Date(5, May, 2013));
+  expectedHol.push_back(Date(9, May, 2013));
+  expectedHol.push_back(Date(11, May, 2013));
+  expectedHol.push_back(Date(12, May, 2013));
+  expectedHol.push_back(Date(18, May, 2013));
+  expectedHol.push_back(Date(19, May, 2013));
+  expectedHol.push_back(Date(25, May, 2013));
+  expectedHol.push_back(Date(26, May, 2013));
+  expectedHol.push_back(Date(1, June, 2013));
+  expectedHol.push_back(Date(2, June, 2013));
+  expectedHol.push_back(Date(8, June, 2013));
+  expectedHol.push_back(Date(9, June, 2013));
+  expectedHol.push_back(Date(12, June, 2013));
+  expectedHol.push_back(Date(15, June, 2013));
+  expectedHol.push_back(Date(16, June, 2013));
+  expectedHol.push_back(Date(22, June, 2013));
+  expectedHol.push_back(Date(23, June, 2013));
+  expectedHol.push_back(Date(29, June, 2013));
+  expectedHol.push_back(Date(30, June, 2013));
+  expectedHol.push_back(Date(6, July, 2013));
+  expectedHol.push_back(Date(7, July, 2013));
+  expectedHol.push_back(Date(13, July, 2013));
+  expectedHol.push_back(Date(14, July, 2013));
+  expectedHol.push_back(Date(20, July, 2013));
+  expectedHol.push_back(Date(21, July, 2013));
+  expectedHol.push_back(Date(27, July, 2013));
+  expectedHol.push_back(Date(28, July, 2013));
+  expectedHol.push_back(Date(3, August, 2013));
+  expectedHol.push_back(Date(4, August, 2013));
+  expectedHol.push_back(Date(10, August, 2013));
+  expectedHol.push_back(Date(11, August, 2013));
+  expectedHol.push_back(Date(17, August, 2013));
+  expectedHol.push_back(Date(18, August, 2013));
+  expectedHol.push_back(Date(24, August, 2013));
+  expectedHol.push_back(Date(25, August, 2013));
+  expectedHol.push_back(Date(31, August, 2013));
+  expectedHol.push_back(Date(1, September, 2013));
+  expectedHol.push_back(Date(7, September, 2013));
+  expectedHol.push_back(Date(8, September, 2013));
+  expectedHol.push_back(Date(14, September, 2013));
+  expectedHol.push_back(Date(15, September, 2013));
+  expectedHol.push_back(Date(21, September, 2013));
+  expectedHol.push_back(Date(22, September, 2013));
+  expectedHol.push_back(Date(28, September, 2013));
+  expectedHol.push_back(Date(29, September, 2013));
+  expectedHol.push_back(Date(5, October, 2013));
+  expectedHol.push_back(Date(6, October, 2013));
+  expectedHol.push_back(Date(12, October, 2013));
+  expectedHol.push_back(Date(13, October, 2013));
+  expectedHol.push_back(Date(19, October, 2013));
+  expectedHol.push_back(Date(20, October, 2013));
+  expectedHol.push_back(Date(26, October, 2013));
+  expectedHol.push_back(Date(27, October, 2013));
+  expectedHol.push_back(Date(2, November, 2013));
+  expectedHol.push_back(Date(3, November, 2013));
+  expectedHol.push_back(Date(4, November, 2013));
+  expectedHol.push_back(Date(9, November, 2013));
+  expectedHol.push_back(Date(10, November, 2013));
+  expectedHol.push_back(Date(16, November, 2013));
+  expectedHol.push_back(Date(17, November, 2013));
+  expectedHol.push_back(Date(23, November, 2013));
+  expectedHol.push_back(Date(24, November, 2013));
+  expectedHol.push_back(Date(30, November, 2013));
+  expectedHol.push_back(Date(1, December, 2013));
+  expectedHol.push_back(Date(7, December, 2013));
+  expectedHol.push_back(Date(8, December, 2013));
+  expectedHol.push_back(Date(14, December, 2013));
+  expectedHol.push_back(Date(15, December, 2013));
+  expectedHol.push_back(Date(21, December, 2013));
+  expectedHol.push_back(Date(22, December, 2013));
+  expectedHol.push_back(Date(28, December, 2013));
+  expectedHol.push_back(Date(29, December, 2013));
+  expectedHol.push_back(Date(31, December, 2013));
+
+  // exhaustive holiday list for the year 2014
+  expectedHol.push_back(Date(1, January, 2014));
+  expectedHol.push_back(Date(2, January, 2014));
+  expectedHol.push_back(Date(3, January, 2014));
+  expectedHol.push_back(Date(4, January, 2014));
+  expectedHol.push_back(Date(5, January, 2014));
+  expectedHol.push_back(Date(7, January, 2014));
+  expectedHol.push_back(Date(11, January, 2014));
+  expectedHol.push_back(Date(12, January, 2014));
+  expectedHol.push_back(Date(18, January, 2014));
+  expectedHol.push_back(Date(19, January, 2014));
+  expectedHol.push_back(Date(25, January, 2014));
+  expectedHol.push_back(Date(26, January, 2014));
+  expectedHol.push_back(Date(1, February, 2014));
+  expectedHol.push_back(Date(2, February, 2014));
+  expectedHol.push_back(Date(8, February, 2014));
+  expectedHol.push_back(Date(9, February, 2014));
+  expectedHol.push_back(Date(15, February, 2014));
+  expectedHol.push_back(Date(16, February, 2014));
+  expectedHol.push_back(Date(22, February, 2014));
+  expectedHol.push_back(Date(23, February, 2014));
+  expectedHol.push_back(Date(1, March, 2014));
+  expectedHol.push_back(Date(2, March, 2014));
+  expectedHol.push_back(Date(8, March, 2014));
+  expectedHol.push_back(Date(9, March, 2014));
+  expectedHol.push_back(Date(10, March, 2014));
+  expectedHol.push_back(Date(15, March, 2014));
+  expectedHol.push_back(Date(16, March, 2014));
+  expectedHol.push_back(Date(22, March, 2014));
+  expectedHol.push_back(Date(23, March, 2014));
+  expectedHol.push_back(Date(29, March, 2014));
+  expectedHol.push_back(Date(30, March, 2014));
+  expectedHol.push_back(Date(5, April, 2014));
+  expectedHol.push_back(Date(6, April, 2014));
+  expectedHol.push_back(Date(12, April, 2014));
+  expectedHol.push_back(Date(13, April, 2014));
+  expectedHol.push_back(Date(19, April, 2014));
+  expectedHol.push_back(Date(20, April, 2014));
+  expectedHol.push_back(Date(26, April, 2014));
+  expectedHol.push_back(Date(27, April, 2014));
+  expectedHol.push_back(Date(1, May, 2014));
+  expectedHol.push_back(Date(3, May, 2014));
+  expectedHol.push_back(Date(4, May, 2014));
+  expectedHol.push_back(Date(9, May, 2014));
+  expectedHol.push_back(Date(10, May, 2014));
+  expectedHol.push_back(Date(11, May, 2014));
+  expectedHol.push_back(Date(17, May, 2014));
+  expectedHol.push_back(Date(18, May, 2014));
+  expectedHol.push_back(Date(24, May, 2014));
+  expectedHol.push_back(Date(25, May, 2014));
+  expectedHol.push_back(Date(31, May, 2014));
+  expectedHol.push_back(Date(1, June, 2014));
+  expectedHol.push_back(Date(7, June, 2014));
+  expectedHol.push_back(Date(8, June, 2014));
+  expectedHol.push_back(Date(12, June, 2014));
+  expectedHol.push_back(Date(14, June, 2014));
+  expectedHol.push_back(Date(15, June, 2014));
+  expectedHol.push_back(Date(21, June, 2014));
+  expectedHol.push_back(Date(22, June, 2014));
+  expectedHol.push_back(Date(28, June, 2014));
+  expectedHol.push_back(Date(29, June, 2014));
+  expectedHol.push_back(Date(5, July, 2014));
+  expectedHol.push_back(Date(6, July, 2014));
+  expectedHol.push_back(Date(12, July, 2014));
+  expectedHol.push_back(Date(13, July, 2014));
+  expectedHol.push_back(Date(19, July, 2014));
+  expectedHol.push_back(Date(20, July, 2014));
+  expectedHol.push_back(Date(26, July, 2014));
+  expectedHol.push_back(Date(27, July, 2014));
+  expectedHol.push_back(Date(2, August, 2014));
+  expectedHol.push_back(Date(3, August, 2014));
+  expectedHol.push_back(Date(9, August, 2014));
+  expectedHol.push_back(Date(10, August, 2014));
+  expectedHol.push_back(Date(16, August, 2014));
+  expectedHol.push_back(Date(17, August, 2014));
+  expectedHol.push_back(Date(23, August, 2014));
+  expectedHol.push_back(Date(24, August, 2014));
+  expectedHol.push_back(Date(30, August, 2014));
+  expectedHol.push_back(Date(31, August, 2014));
+  expectedHol.push_back(Date(6, September, 2014));
+  expectedHol.push_back(Date(7, September, 2014));
+  expectedHol.push_back(Date(13, September, 2014));
+  expectedHol.push_back(Date(14, September, 2014));
+  expectedHol.push_back(Date(20, September, 2014));
+  expectedHol.push_back(Date(21, September, 2014));
+  expectedHol.push_back(Date(27, September, 2014));
+  expectedHol.push_back(Date(28, September, 2014));
+  expectedHol.push_back(Date(4, October, 2014));
+  expectedHol.push_back(Date(5, October, 2014));
+  expectedHol.push_back(Date(11, October, 2014));
+  expectedHol.push_back(Date(12, October, 2014));
+  expectedHol.push_back(Date(18, October, 2014));
+  expectedHol.push_back(Date(19, October, 2014));
+  expectedHol.push_back(Date(25, October, 2014));
+  expectedHol.push_back(Date(26, October, 2014));
+  expectedHol.push_back(Date(1, November, 2014));
+  expectedHol.push_back(Date(2, November, 2014));
+  expectedHol.push_back(Date(4, November, 2014));
+  expectedHol.push_back(Date(8, November, 2014));
+  expectedHol.push_back(Date(9, November, 2014));
+  expectedHol.push_back(Date(15, November, 2014));
+  expectedHol.push_back(Date(16, November, 2014));
+  expectedHol.push_back(Date(22, November, 2014));
+  expectedHol.push_back(Date(23, November, 2014));
+  expectedHol.push_back(Date(29, November, 2014));
+  expectedHol.push_back(Date(30, November, 2014));
+  expectedHol.push_back(Date(6, December, 2014));
+  expectedHol.push_back(Date(7, December, 2014));
+  expectedHol.push_back(Date(13, December, 2014));
+  expectedHol.push_back(Date(14, December, 2014));
+  expectedHol.push_back(Date(20, December, 2014));
+  expectedHol.push_back(Date(21, December, 2014));
+  expectedHol.push_back(Date(27, December, 2014));
+  expectedHol.push_back(Date(28, December, 2014));
+  expectedHol.push_back(Date(31, December, 2014));
+
+  // exhaustive holiday list for the year 2015
+  expectedHol.push_back(Date(1, January, 2015));
+  expectedHol.push_back(Date(2, January, 2015));
+  expectedHol.push_back(Date(3, January, 2015));
+  expectedHol.push_back(Date(4, January, 2015));
+  expectedHol.push_back(Date(7, January, 2015));
+  expectedHol.push_back(Date(10, January, 2015));
+  expectedHol.push_back(Date(11, January, 2015));
+  expectedHol.push_back(Date(17, January, 2015));
+  expectedHol.push_back(Date(18, January, 2015));
+  expectedHol.push_back(Date(24, January, 2015));
+  expectedHol.push_back(Date(25, January, 2015));
+  expectedHol.push_back(Date(31, January, 2015));
+  expectedHol.push_back(Date(1, February, 2015));
+  expectedHol.push_back(Date(7, February, 2015));
+  expectedHol.push_back(Date(8, February, 2015));
+  expectedHol.push_back(Date(14, February, 2015));
+  expectedHol.push_back(Date(15, February, 2015));
+  expectedHol.push_back(Date(21, February, 2015));
+  expectedHol.push_back(Date(22, February, 2015));
+  expectedHol.push_back(Date(23, February, 2015));
+  expectedHol.push_back(Date(28, February, 2015));
+  expectedHol.push_back(Date(1, March, 2015));
+  expectedHol.push_back(Date(7, March, 2015));
+  expectedHol.push_back(Date(8, March, 2015));
+  expectedHol.push_back(Date(9, March, 2015));
+  expectedHol.push_back(Date(14, March, 2015));
+  expectedHol.push_back(Date(15, March, 2015));
+  expectedHol.push_back(Date(21, March, 2015));
+  expectedHol.push_back(Date(22, March, 2015));
+  expectedHol.push_back(Date(28, March, 2015));
+  expectedHol.push_back(Date(29, March, 2015));
+  expectedHol.push_back(Date(4, April, 2015));
+  expectedHol.push_back(Date(5, April, 2015));
+  expectedHol.push_back(Date(11, April, 2015));
+  expectedHol.push_back(Date(12, April, 2015));
+  expectedHol.push_back(Date(18, April, 2015));
+  expectedHol.push_back(Date(19, April, 2015));
+  expectedHol.push_back(Date(25, April, 2015));
+  expectedHol.push_back(Date(26, April, 2015));
+  expectedHol.push_back(Date(1, May, 2015));
+  expectedHol.push_back(Date(2, May, 2015));
+  expectedHol.push_back(Date(3, May, 2015));
+  expectedHol.push_back(Date(9, May, 2015));
+  expectedHol.push_back(Date(10, May, 2015));
+  expectedHol.push_back(Date(11, May, 2015));
+  expectedHol.push_back(Date(16, May, 2015));
+  expectedHol.push_back(Date(17, May, 2015));
+  expectedHol.push_back(Date(23, May, 2015));
+  expectedHol.push_back(Date(24, May, 2015));
+  expectedHol.push_back(Date(30, May, 2015));
+  expectedHol.push_back(Date(31, May, 2015));
+  expectedHol.push_back(Date(6, June, 2015));
+  expectedHol.push_back(Date(7, June, 2015));
+  expectedHol.push_back(Date(12, June, 2015));
+  expectedHol.push_back(Date(13, June, 2015));
+  expectedHol.push_back(Date(14, June, 2015));
+  expectedHol.push_back(Date(20, June, 2015));
+  expectedHol.push_back(Date(21, June, 2015));
+  expectedHol.push_back(Date(27, June, 2015));
+  expectedHol.push_back(Date(28, June, 2015));
+  expectedHol.push_back(Date(4, July, 2015));
+  expectedHol.push_back(Date(5, July, 2015));
+  expectedHol.push_back(Date(11, July, 2015));
+  expectedHol.push_back(Date(12, July, 2015));
+  expectedHol.push_back(Date(18, July, 2015));
+  expectedHol.push_back(Date(19, July, 2015));
+  expectedHol.push_back(Date(25, July, 2015));
+  expectedHol.push_back(Date(26, July, 2015));
+  expectedHol.push_back(Date(1, August, 2015));
+  expectedHol.push_back(Date(2, August, 2015));
+  expectedHol.push_back(Date(8, August, 2015));
+  expectedHol.push_back(Date(9, August, 2015));
+  expectedHol.push_back(Date(15, August, 2015));
+  expectedHol.push_back(Date(16, August, 2015));
+  expectedHol.push_back(Date(22, August, 2015));
+  expectedHol.push_back(Date(23, August, 2015));
+  expectedHol.push_back(Date(29, August, 2015));
+  expectedHol.push_back(Date(30, August, 2015));
+  expectedHol.push_back(Date(5, September, 2015));
+  expectedHol.push_back(Date(6, September, 2015));
+  expectedHol.push_back(Date(12, September, 2015));
+  expectedHol.push_back(Date(13, September, 2015));
+  expectedHol.push_back(Date(19, September, 2015));
+  expectedHol.push_back(Date(20, September, 2015));
+  expectedHol.push_back(Date(26, September, 2015));
+  expectedHol.push_back(Date(27, September, 2015));
+  expectedHol.push_back(Date(3, October, 2015));
+  expectedHol.push_back(Date(4, October, 2015));
+  expectedHol.push_back(Date(10, October, 2015));
+  expectedHol.push_back(Date(11, October, 2015));
+  expectedHol.push_back(Date(17, October, 2015));
+  expectedHol.push_back(Date(18, October, 2015));
+  expectedHol.push_back(Date(24, October, 2015));
+  expectedHol.push_back(Date(25, October, 2015));
+  expectedHol.push_back(Date(31, October, 2015));
+  expectedHol.push_back(Date(1, November, 2015));
+  expectedHol.push_back(Date(4, November, 2015));
+  expectedHol.push_back(Date(7, November, 2015));
+  expectedHol.push_back(Date(8, November, 2015));
+  expectedHol.push_back(Date(14, November, 2015));
+  expectedHol.push_back(Date(15, November, 2015));
+  expectedHol.push_back(Date(21, November, 2015));
+  expectedHol.push_back(Date(22, November, 2015));
+  expectedHol.push_back(Date(28, November, 2015));
+  expectedHol.push_back(Date(29, November, 2015));
+  expectedHol.push_back(Date(5, December, 2015));
+  expectedHol.push_back(Date(6, December, 2015));
+  expectedHol.push_back(Date(12, December, 2015));
+  expectedHol.push_back(Date(13, December, 2015));
+  expectedHol.push_back(Date(19, December, 2015));
+  expectedHol.push_back(Date(20, December, 2015));
+  expectedHol.push_back(Date(26, December, 2015));
+  expectedHol.push_back(Date(27, December, 2015));
+  expectedHol.push_back(Date(31, December, 2015));
+
+  // exhaustive holiday list for the year 2016
+  expectedHol.push_back(Date(1, January, 2016));
+  expectedHol.push_back(Date(2, January, 2016));
+  expectedHol.push_back(Date(3, January, 2016));
+  expectedHol.push_back(Date(7, January, 2016));
+  expectedHol.push_back(Date(8, January, 2016));
+  expectedHol.push_back(Date(9, January, 2016));
+  expectedHol.push_back(Date(10, January, 2016));
+  expectedHol.push_back(Date(16, January, 2016));
+  expectedHol.push_back(Date(17, January, 2016));
+  expectedHol.push_back(Date(23, January, 2016));
+  expectedHol.push_back(Date(24, January, 2016));
+  expectedHol.push_back(Date(30, January, 2016));
+  expectedHol.push_back(Date(31, January, 2016));
+  expectedHol.push_back(Date(6, February, 2016));
+  expectedHol.push_back(Date(7, February, 2016));
+  expectedHol.push_back(Date(13, February, 2016));
+  expectedHol.push_back(Date(14, February, 2016));
+  expectedHol.push_back(Date(21, February, 2016));
+  expectedHol.push_back(Date(23, February, 2016));
+  expectedHol.push_back(Date(27, February, 2016));
+  expectedHol.push_back(Date(28, February, 2016));
+  expectedHol.push_back(Date(5, March, 2016));
+  expectedHol.push_back(Date(6, March, 2016));
+  expectedHol.push_back(Date(8, March, 2016));
+  expectedHol.push_back(Date(12, March, 2016));
+  expectedHol.push_back(Date(13, March, 2016));
+  expectedHol.push_back(Date(19, March, 2016));
+  expectedHol.push_back(Date(20, March, 2016));
+  expectedHol.push_back(Date(26, March, 2016));
+  expectedHol.push_back(Date(27, March, 2016));
+  expectedHol.push_back(Date(2, April, 2016));
+  expectedHol.push_back(Date(3, April, 2016));
+  expectedHol.push_back(Date(9, April, 2016));
+  expectedHol.push_back(Date(10, April, 2016));
+  expectedHol.push_back(Date(16, April, 2016));
+  expectedHol.push_back(Date(17, April, 2016));
+  expectedHol.push_back(Date(23, April, 2016));
+  expectedHol.push_back(Date(24, April, 2016));
+  expectedHol.push_back(Date(30, April, 2016));
+  expectedHol.push_back(Date(1, May, 2016));
+  expectedHol.push_back(Date(2, May, 2016));
+  expectedHol.push_back(Date(3, May, 2016));
+  expectedHol.push_back(Date(7, May, 2016));
+  expectedHol.push_back(Date(8, May, 2016));
+  expectedHol.push_back(Date(9, May, 2016));
+  expectedHol.push_back(Date(14, May, 2016));
+  expectedHol.push_back(Date(15, May, 2016));
+  expectedHol.push_back(Date(21, May, 2016));
+  expectedHol.push_back(Date(22, May, 2016));
+  expectedHol.push_back(Date(28, May, 2016));
+  expectedHol.push_back(Date(29, May, 2016));
+  expectedHol.push_back(Date(4, June, 2016));
+  expectedHol.push_back(Date(5, June, 2016));
+  expectedHol.push_back(Date(11, June, 2016));
+  expectedHol.push_back(Date(12, June, 2016));
+  expectedHol.push_back(Date(13, June, 2016));
+  expectedHol.push_back(Date(18, June, 2016));
+  expectedHol.push_back(Date(19, June, 2016));
+  expectedHol.push_back(Date(25, June, 2016));
+  expectedHol.push_back(Date(26, June, 2016));
+  expectedHol.push_back(Date(2, July, 2016));
+  expectedHol.push_back(Date(3, July, 2016));
+  expectedHol.push_back(Date(9, July, 2016));
+  expectedHol.push_back(Date(10, July, 2016));
+  expectedHol.push_back(Date(16, July, 2016));
+  expectedHol.push_back(Date(17, July, 2016));
+  expectedHol.push_back(Date(23, July, 2016));
+  expectedHol.push_back(Date(24, July, 2016));
+  expectedHol.push_back(Date(30, July, 2016));
+  expectedHol.push_back(Date(31, July, 2016));
+  expectedHol.push_back(Date(6, August, 2016));
+  expectedHol.push_back(Date(7, August, 2016));
+  expectedHol.push_back(Date(13, August, 2016));
+  expectedHol.push_back(Date(14, August, 2016));
+  expectedHol.push_back(Date(20, August, 2016));
+  expectedHol.push_back(Date(21, August, 2016));
+  expectedHol.push_back(Date(27, August, 2016));
+  expectedHol.push_back(Date(28, August, 2016));
+  expectedHol.push_back(Date(3, September, 2016));
+  expectedHol.push_back(Date(4, September, 2016));
+  expectedHol.push_back(Date(10, September, 2016));
+  expectedHol.push_back(Date(11, September, 2016));
+  expectedHol.push_back(Date(17, September, 2016));
+  expectedHol.push_back(Date(18, September, 2016));
+  expectedHol.push_back(Date(24, September, 2016));
+  expectedHol.push_back(Date(25, September, 2016));
+  expectedHol.push_back(Date(1, October, 2016));
+  expectedHol.push_back(Date(2, October, 2016));
+  expectedHol.push_back(Date(8, October, 2016));
+  expectedHol.push_back(Date(9, October, 2016));
+  expectedHol.push_back(Date(15, October, 2016));
+  expectedHol.push_back(Date(16, October, 2016));
+  expectedHol.push_back(Date(22, October, 2016));
+  expectedHol.push_back(Date(23, October, 2016));
+  expectedHol.push_back(Date(29, October, 2016));
+  expectedHol.push_back(Date(30, October, 2016));
+  expectedHol.push_back(Date(4, November, 2016));
+  expectedHol.push_back(Date(5, November, 2016));
+  expectedHol.push_back(Date(6, November, 2016));
+  expectedHol.push_back(Date(12, November, 2016));
+  expectedHol.push_back(Date(13, November, 2016));
+  expectedHol.push_back(Date(19, November, 2016));
+  expectedHol.push_back(Date(20, November, 2016));
+  expectedHol.push_back(Date(26, November, 2016));
+  expectedHol.push_back(Date(27, November, 2016));
+  expectedHol.push_back(Date(3, December, 2016));
+  expectedHol.push_back(Date(4, December, 2016));
+  expectedHol.push_back(Date(10, December, 2016));
+  expectedHol.push_back(Date(11, December, 2016));
+  expectedHol.push_back(Date(17, December, 2016));
+  expectedHol.push_back(Date(18, December, 2016));
+  expectedHol.push_back(Date(24, December, 2016));
+  expectedHol.push_back(Date(25, December, 2016));
+  expectedHol.push_back(Date(30, December, 2016));
+  expectedHol.push_back(Date(31, December, 2016));
+  
+  Calendar c = Russia(Russia::MOEX);
+  
+  
+  std::vector<Date> hol = Calendar::holidayList(c, 
+    Date(1, January, 2012),
+    Date(31, December, 2016), // only dates for which calendars are available
+    true); // include week-ends since lists are exhaustive
+  for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
+    if (hol[i] != expectedHol[i])
+      BOOST_FAIL("expected holiday was " << expectedHol[i]
+        << " while calculated holiday is " << hol[i]);
+  }
+  if (hol.size() != expectedHol.size())
+    BOOST_FAIL("there were " << expectedHol.size()
+      << " expected holidays, while there are " << hol.size()
+      << " calculated holidays");
+}
+
 void CalendarTest::testBrazil() {
     BOOST_TEST_MESSAGE("Testing Brazil holiday list...");
 
@@ -921,6 +1559,156 @@ void CalendarTest::testKoreaStockExchange() {
                    << " calculated holidays");
 }
 
+void CalendarTest::testChinaSSE() {
+    BOOST_TEST_MESSAGE("Testing China Shanghai Stock Exchange holiday list...");
+
+    std::vector<Date> expectedHol;
+
+    // China Shanghai Securities Exchange holiday list in the year 2014
+    expectedHol.push_back(Date(1, Jan, 2014));
+    expectedHol.push_back(Date(31, Jan, 2014));
+    expectedHol.push_back(Date(3, Feb, 2014));
+    expectedHol.push_back(Date(4, Feb, 2014));
+    expectedHol.push_back(Date(5, Feb, 2014));
+    expectedHol.push_back(Date(6, Feb, 2014));
+    expectedHol.push_back(Date(7, Apr, 2014));
+    expectedHol.push_back(Date(1, May, 2014));
+    expectedHol.push_back(Date(2, May, 2014));
+    expectedHol.push_back(Date(2, Jun, 2014));
+    expectedHol.push_back(Date(8, Sep, 2014));
+    expectedHol.push_back(Date(1, Oct, 2014));
+    expectedHol.push_back(Date(2, Oct, 2014));
+    expectedHol.push_back(Date(3, Oct, 2014));
+    expectedHol.push_back(Date(6, Oct, 2014));
+    expectedHol.push_back(Date(7, Oct, 2014));
+
+    // China Shanghai Securities Exchange holiday list in the year 2015
+    expectedHol.push_back(Date(1, Jan, 2015));
+    expectedHol.push_back(Date(2, Jan, 2015));
+    expectedHol.push_back(Date(18, Feb, 2015));
+    expectedHol.push_back(Date(19, Feb, 2015));
+    expectedHol.push_back(Date(20, Feb, 2015));
+    expectedHol.push_back(Date(23, Feb, 2015));
+    expectedHol.push_back(Date(24, Feb, 2015));
+    expectedHol.push_back(Date(6, Apr, 2015));
+    expectedHol.push_back(Date(1, May, 2015));
+    expectedHol.push_back(Date(22, Jun, 2015));
+    expectedHol.push_back(Date(3, Sep, 2015));
+    expectedHol.push_back(Date(4, Sep, 2015));
+    expectedHol.push_back(Date(1, Oct, 2015));
+    expectedHol.push_back(Date(2, Oct, 2015));
+    expectedHol.push_back(Date(5, Oct, 2015));
+    expectedHol.push_back(Date(6, Oct, 2015));
+    expectedHol.push_back(Date(7, Oct, 2015));
+
+    // China Shanghai Securities Exchange holiday list in the year 2016
+    expectedHol.push_back(Date(1, Jan, 2016));
+    expectedHol.push_back(Date(8, Feb, 2016));
+    expectedHol.push_back(Date(9, Feb, 2016));
+    expectedHol.push_back(Date(10, Feb, 2016));
+    expectedHol.push_back(Date(11, Feb, 2016));
+    expectedHol.push_back(Date(12, Feb, 2016));
+    expectedHol.push_back(Date(4, Apr, 2016));
+    expectedHol.push_back(Date(2, May, 2016));
+    expectedHol.push_back(Date(9, Jun, 2016));
+    expectedHol.push_back(Date(10, Jun, 2016));
+    expectedHol.push_back(Date(15, Sep, 2016));
+    expectedHol.push_back(Date(16, Sep, 2016));
+    expectedHol.push_back(Date(3, Oct, 2016));
+    expectedHol.push_back(Date(4, Oct, 2016));
+    expectedHol.push_back(Date(5, Oct, 2016));
+    expectedHol.push_back(Date(6, Oct, 2016));
+    expectedHol.push_back(Date(7, Oct, 2016));
+
+    // China Shanghai Securities Exchange holiday list in the year 2017
+    expectedHol.push_back(Date(2, Jan, 2017));
+    expectedHol.push_back(Date(27, Jan, 2017));
+    expectedHol.push_back(Date(30, Jan, 2017));
+    expectedHol.push_back(Date(31, Jan, 2017));
+    expectedHol.push_back(Date(1, Feb, 2017));
+    expectedHol.push_back(Date(2, Feb, 2017));
+    expectedHol.push_back(Date(3, April, 2017));
+    expectedHol.push_back(Date(4, April, 2017));
+    expectedHol.push_back(Date(1, May, 2017));
+    expectedHol.push_back(Date(29, May, 2017));
+    expectedHol.push_back(Date(30, May, 2017));
+    expectedHol.push_back(Date(2, Oct, 2017));
+    expectedHol.push_back(Date(3, Oct, 2017));
+    expectedHol.push_back(Date(4, Oct, 2017));
+    expectedHol.push_back(Date(5, Oct, 2017));
+    expectedHol.push_back(Date(6, Oct, 2017));
+
+    Calendar c = China(China::SSE);
+    std::vector<Date> hol = Calendar::holidayList(c, Date(1, January, 2014),
+        Date(31, December, 2017));
+
+    for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
+        if (hol[i] != expectedHol[i])
+            BOOST_FAIL("expected holiday was " << expectedHol[i]
+                << " while calculated holiday is " << hol[i]);
+    }
+    if (hol.size() != expectedHol.size())
+        BOOST_FAIL("there were " << expectedHol.size()
+            << " expected holidays, while there are " << hol.size()
+            << " calculated holidays");
+}
+
+void CalendarTest::testChinaIB() {
+    BOOST_TEST_MESSAGE("Testing China Inter Bank working weekends list...");
+    
+    std::vector<Date> expectedWorkingWeekEnds;
+
+    // China Inter Bank working weekends list in the year 2014
+    expectedWorkingWeekEnds.push_back(Date(26, Jan, 2014));
+    expectedWorkingWeekEnds.push_back(Date(8, Feb, 2014));
+    expectedWorkingWeekEnds.push_back(Date(4, May, 2014));
+    expectedWorkingWeekEnds.push_back(Date(28, Sep, 2014));
+    expectedWorkingWeekEnds.push_back(Date(11, Oct, 2014));
+
+    // China Inter Bank working weekends list in the year 2015
+    expectedWorkingWeekEnds.push_back(Date(4, Jan, 2015));
+    expectedWorkingWeekEnds.push_back(Date(15, Feb, 2015));
+    expectedWorkingWeekEnds.push_back(Date(28, Feb, 2015));
+    expectedWorkingWeekEnds.push_back(Date(6, Sep, 2015));
+    expectedWorkingWeekEnds.push_back(Date(10, Oct, 2015));
+
+    // China Inter Bank working weekends list in the year 2016
+    expectedWorkingWeekEnds.push_back(Date(6, Feb, 2016));
+    expectedWorkingWeekEnds.push_back(Date(14, Feb, 2016));
+    expectedWorkingWeekEnds.push_back(Date(12, Jun, 2016));
+    expectedWorkingWeekEnds.push_back(Date(18, Sep, 2016));
+    expectedWorkingWeekEnds.push_back(Date(8, Oct, 2016));
+    expectedWorkingWeekEnds.push_back(Date(9, Oct, 2016));
+
+    // China Inter Bank working weekends list in the year 2017
+    expectedWorkingWeekEnds.push_back(Date(22, Jan, 2017));
+    expectedWorkingWeekEnds.push_back(Date(4, Feb, 2017));
+    expectedWorkingWeekEnds.push_back(Date(1, April, 2017));
+    expectedWorkingWeekEnds.push_back(Date(27, May, 2017));
+    expectedWorkingWeekEnds.push_back(Date(30, Sep, 2017));
+
+    Calendar c = China(China::IB);
+    Date start(1, Jan, 2014);
+    Date end(31, Dec, 2017);
+
+    Size k = 0;
+
+    while (start <= end) {
+        if (c.isBusinessDay(start) && c.isWeekend(start.weekday())) {
+            if (expectedWorkingWeekEnds[k] != start)
+                BOOST_FAIL("expected working weekend was " << expectedWorkingWeekEnds[k]
+                    << " while calculated working weekend is " << start);
+            ++k;
+        }
+        ++start;
+    }
+    
+    if (k != (expectedWorkingWeekEnds.size()))
+        BOOST_FAIL("there were " << expectedWorkingWeekEnds.size()
+            << " expected working weekends, while there are " << k
+            << " calculated working weekends");
+}
+
 void CalendarTest::testEndOfMonth() {
     BOOST_TEST_MESSAGE("Testing end-of-month calculation...");
 
@@ -966,7 +1754,7 @@ void CalendarTest::testBusinessDaysBetween() {
     testDates.push_back(Date(15,May,2006));
     testDates.push_back(Date(26,July,2006));
 
-    BigInteger expected[] = {
+    Date::serial_type expected[] = {
         1,
         321,
         152,
@@ -1109,10 +1897,12 @@ void CalendarTest::testBespokeCalendars() {
 
 }
 
+
 test_suite* CalendarTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Calendar tests");
 
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testBrazil));
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testRussia));
 
 //    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testItalySettlement));
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testItalyExchange));
@@ -1134,6 +1924,9 @@ test_suite* CalendarTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testSouthKoreanSettlement));
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testKoreaStockExchange));
+
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testChinaSSE));
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testChinaIB));
 
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testModifiedCalendars));
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testJointCalendars));

@@ -22,8 +22,20 @@
     computations such as "Yield to Price" or "Price to Yield"
  */
 
-// the only header you need to use QuantLib
-#include <ql/quantlib.hpp>
+#include <ql/instruments/bonds/zerocouponbond.hpp>
+#include <ql/instruments/bonds/floatingratebond.hpp>
+#include <ql/pricingengines/bond/discountingbondengine.hpp>
+#include <ql/cashflows/couponpricer.hpp>
+#include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
+#include <ql/termstructures/yield/bondhelpers.hpp>
+#include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
+#include <ql/indexes/ibor/usdlibor.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/calendars/unitedstates.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
 
 #include <boost/timer.hpp>
 #include <iostream>
@@ -160,7 +172,7 @@ int main(int, char* []) {
         }
 
         // Definition of the rate helpers
-        std::vector<boost::shared_ptr<FixedRateBondHelper> > bondsHelpers;
+        std::vector<boost::shared_ptr<BondHelper> > bondsHelpers;
 
         for (Size i=0; i<numberOfBonds; i++) {
 
@@ -177,6 +189,16 @@ int main(int, char* []) {
                     Unadjusted,
                     redemption,
                     issueDates[i]));
+
+            // the above could also be done by creating a
+            // FixedRateBond instance and writing:
+            //
+            // boost::shared_ptr<BondHelper> bondHelper(
+            //         new BondHelper(quoteHandle[i], bond));
+            //
+            // This would also work for bonds that still don't have a
+            // specialized helper, such as floating-rate bonds.
+
 
             bondsHelpers.push_back(bondHelper);
         }
@@ -475,13 +497,8 @@ int main(int, char* []) {
          << std::setw(widths[3]) << "Floating"
          << std::endl;
 
-         std::string separator = " | ";
-         Size width = widths[0]
-                             + widths[1]
-                                      + widths[2]
-                                               + widths[3];
-         std::string rule(width, '-'), dblrule(width, '=');
-         std::string tab(8, ' ');
+         Size width = widths[0] + widths[1] + widths[2] + widths[3];
+         std::string rule(width, '-');
 
          std::cout << rule << std::endl;
 
@@ -548,7 +565,7 @@ int main(int, char* []) {
          /* "Yield to Price"
             "Price to Yield" */
 
-         Real seconds = timer.elapsed();
+         double seconds = timer.elapsed();
          Integer hours = int(seconds/3600);
          seconds -= hours * 3600;
          Integer minutes = int(seconds/60);

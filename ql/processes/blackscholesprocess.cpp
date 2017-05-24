@@ -4,6 +4,7 @@
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2004, 2005, 2006, 2007 StatPro Italia srl
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +28,8 @@
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 
+#include <boost/make_shared.hpp>
+
 namespace QuantLib {
 
     GeneralizedBlackScholesProcess::GeneralizedBlackScholesProcess(
@@ -34,10 +37,11 @@ namespace QuantLib {
              const Handle<YieldTermStructure>& dividendTS,
              const Handle<YieldTermStructure>& riskFreeTS,
              const Handle<BlackVolTermStructure>& blackVolTS,
-             const boost::shared_ptr<discretization>& disc)
+             const boost::shared_ptr<discretization>& disc,
+             bool forceDiscretization)
     : StochasticProcess1D(disc), x0_(x0), riskFreeRate_(riskFreeTS),
       dividendYield_(dividendTS), blackVolatility_(blackVolTS),
-      updated_(false) {
+      forceDiscretization_(forceDiscretization), updated_(false) {
         registerWith(x0_);
         registerWith(riskFreeRate_);
         registerWith(dividendYield_);
@@ -66,16 +70,61 @@ namespace QuantLib {
         return x0 * std::exp(dx);
     }
 
-    Real GeneralizedBlackScholesProcess::expectation(Time,
-                                                     Real,
-                                                     Time) const {
-        QL_FAIL("not implemented");
+    Real GeneralizedBlackScholesProcess::expectation(Time t0,
+                                                     Real x0,
+                                                     Time dt) const {
+        localVolatility(); // trigger update
+        if(isStrikeIndependent_ && !forceDiscretization_) {
+            // exact value for curves
+            return x0 *
+                std::exp(dt * (riskFreeRate_->forwardRate(t0, t0 + dt, Continuous,
+                                                          NoFrequency, true) -
+                             dividendYield_->forwardRate(
+                                 t0, t0 + dt, Continuous, NoFrequency, true)));
+        } else {
+            QL_FAIL("not implemented");
+        }
+    }
+
+    Real GeneralizedBlackScholesProcess::stdDeviation(Time t0, Real x0, Time dt) const {
+        localVolatility(); // trigger update
+        if(isStrikeIndependent_ && !forceDiscretization_) {
+            // exact value for curves
+            return std::sqrt(variance(t0,x0,dt));
+        }
+        else{
+            return discretization_->diffusion(*this,t0,x0,dt);
+        }
+    }
+
+    Real GeneralizedBlackScholesProcess::variance(Time t0, Real x0, Time dt) const {
+        localVolatility(); // trigger update
+        if(isStrikeIndependent_ && !forceDiscretization_) {
+            // exact value for curves
+            return blackVolatility_->blackVariance(t0 + dt, 0.01) -
+                   blackVolatility_->blackVariance(t0, 0.01);
+        }
+        else{
+            return discretization_->variance(*this,t0,x0,dt);
+        }
     }
 
     Real GeneralizedBlackScholesProcess::evolve(Time t0, Real x0,
                                                 Time dt, Real dw) const {
-        return apply(x0, discretization_->drift(*this,t0,x0,dt) +
-                         stdDeviation(t0,x0,dt)*dw);
+        localVolatility(); // trigger update
+        if (isStrikeIndependent_ && !forceDiscretization_) {
+            // exact value for curves
+            Real var = variance(t0, x0, dt);
+            Real drift = (riskFreeRate_->forwardRate(t0, t0 + dt, Continuous,
+                                                     NoFrequency, true) -
+                          dividendYield_->forwardRate(t0, t0 + dt, Continuous,
+                                                      NoFrequency, true)) *
+                             dt -
+                         0.5 * var;
+            return apply(x0, std::sqrt(var) * dw + drift);
+        } else
+            return apply(x0, discretization_->drift(*this, t0, x0, dt) +
+                                 stdDeviation(t0, x0, dt) * dw);
     }
 
     Time GeneralizedBlackScholesProcess::time(const Date& d) const {
@@ -111,6 +160,7 @@ namespace QuantLib {
     const Handle<LocalVolTermStructure>&
     GeneralizedBlackScholesProcess::localVolatility() const {
         if (!updated_) {
+            isStrikeIndependent_=true;
 
             // constant Black vol?
             boost::shared_ptr<BlackConstantVol> constVol =
@@ -118,11 +168,10 @@ namespace QuantLib {
                                                           *blackVolatility());
             if (constVol) {
                 // ok, the local vol is constant too.
-                localVolatility_.linkTo(
-                    boost::shared_ptr<LocalVolTermStructure>(new
-                        LocalConstantVol(constVol->referenceDate(),
-                                         constVol->blackVol(0.0, x0_->value()),
-                                         constVol->dayCounter())));
+                localVolatility_.linkTo(boost::make_shared<LocalConstantVol>(
+                    constVol->referenceDate(),
+                    constVol->blackVol(0.0, x0_->value()),
+                    constVol->dayCounter()));
                 updated_ = true;
                 return localVolatility_;
             }
@@ -133,20 +182,18 @@ namespace QuantLib {
                                                           *blackVolatility());
             if (volCurve) {
                 // ok, we can use the optimized algorithm
-                localVolatility_.linkTo(
-                    boost::shared_ptr<LocalVolTermStructure>(
-                        new LocalVolCurve(
-                                      Handle<BlackVarianceCurve>(volCurve))));
+                localVolatility_.linkTo(boost::make_shared<LocalVolCurve>(
+                    Handle<BlackVarianceCurve>(volCurve)));
                 updated_ = true;
                 return localVolatility_;
             }
 
             // ok, so it's strike-dependent. Never mind.
             localVolatility_.linkTo(
-                      boost::shared_ptr<LocalVolTermStructure>(
-                          new LocalVolSurface(blackVolatility_, riskFreeRate_,
-                                              dividendYield_, x0_->value())));
+                boost::make_shared<LocalVolSurface>(blackVolatility_, riskFreeRate_,
+                                                    dividendYield_, x0_->value()));
             updated_ = true;
+            isStrikeIndependent_ = false;
             return localVolatility_;
 
         } else {
@@ -161,7 +208,8 @@ namespace QuantLib {
                               const Handle<Quote>& x0,
                               const Handle<YieldTermStructure>& riskFreeTS,
                               const Handle<BlackVolTermStructure>& blackVolTS,
-                              const boost::shared_ptr<discretization>& d)
+                              const boost::shared_ptr<discretization>& d,
+                              bool forceDiscretization)
     : GeneralizedBlackScholesProcess(
              x0,
              // no dividend yield
@@ -169,7 +217,7 @@ namespace QuantLib {
                   new FlatForward(0, NullCalendar(), 0.0, Actual365Fixed()))),
              riskFreeTS,
              blackVolTS,
-             d) {}
+             d,forceDiscretization) {}
 
 
     BlackScholesMertonProcess::BlackScholesMertonProcess(
@@ -177,15 +225,19 @@ namespace QuantLib {
                               const Handle<YieldTermStructure>& dividendTS,
                               const Handle<YieldTermStructure>& riskFreeTS,
                               const Handle<BlackVolTermStructure>& blackVolTS,
-                              const boost::shared_ptr<discretization>& d)
-    : GeneralizedBlackScholesProcess(x0,dividendTS,riskFreeTS,blackVolTS,d) {}
+                              const boost::shared_ptr<discretization>& d,
+                              bool forceDiscretization)
+    : GeneralizedBlackScholesProcess(x0,dividendTS,riskFreeTS,blackVolTS,d,
+                                     forceDiscretization) {}
 
 
     BlackProcess::BlackProcess(const Handle<Quote>& x0,
                                const Handle<YieldTermStructure>& riskFreeTS,
                                const Handle<BlackVolTermStructure>& blackVolTS,
-                               const boost::shared_ptr<discretization>& d)
-    : GeneralizedBlackScholesProcess(x0,riskFreeTS,riskFreeTS,blackVolTS,d) {}
+                               const boost::shared_ptr<discretization>& d,
+                               bool forceDiscretization)
+    : GeneralizedBlackScholesProcess(x0,riskFreeTS,riskFreeTS,blackVolTS,d,
+                                     forceDiscretization) {}
 
 
     GarmanKohlagenProcess::GarmanKohlagenProcess(
@@ -193,8 +245,9 @@ namespace QuantLib {
                           const Handle<YieldTermStructure>& foreignRiskFreeTS,
                           const Handle<YieldTermStructure>& domesticRiskFreeTS,
                           const Handle<BlackVolTermStructure>& blackVolTS,
-                          const boost::shared_ptr<discretization>& d)
+                          const boost::shared_ptr<discretization>& d,
+                          bool forceDiscretization)
     : GeneralizedBlackScholesProcess(x0,foreignRiskFreeTS,domesticRiskFreeTS,
-                                     blackVolTS,d) {}
+                                     blackVolTS,d,forceDiscretization) {}
 
 }

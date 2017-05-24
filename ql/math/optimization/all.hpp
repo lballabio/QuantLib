@@ -8,6 +8,7 @@
 #include <ql/math/optimization/costfunction.hpp>
 #include <ql/math/optimization/differentialevolution.hpp>
 #include <ql/math/optimization/endcriteria.hpp>
+#include <ql/math/optimization/goldstein.hpp>
 #include <ql/math/optimization/leastsquare.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/optimization/linesearch.hpp>
@@ -19,6 +20,7 @@
 #include <ql/math/optimization/projectedcostfunction.hpp>
 #include <ql/math/optimization/projection.hpp>
 #include <ql/math/optimization/simplex.hpp>
+#include <ql/math/optimization/simulatedannealing.hpp>
 #include <ql/math/optimization/spherecylinder.hpp>
 #include <ql/math/optimization/steepestdescent.hpp>
 

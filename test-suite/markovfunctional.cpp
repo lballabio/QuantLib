@@ -19,10 +19,10 @@
 
 #include "markovfunctional.hpp"
 #include "utilities.hpp"
-#include <ql/experimental/models/mfstateprocess.hpp>
-#include <ql/experimental/models/markovfunctional.hpp>
-#include <ql/experimental/models/gaussian1dswaptionengine.hpp>
-#include <ql/experimental/models/gaussian1dcapfloorengine.hpp>
+#include <ql/processes/mfstateprocess.hpp>
+#include <ql/models/shortrate/onefactormodels/markovfunctional.hpp>
+#include <ql/pricingengines/swaption/gaussian1dswaptionengine.hpp>
+#include <ql/pricingengines/capfloor/gaussian1dcapfloorengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionconstantvol.hpp>
@@ -34,6 +34,7 @@
 #include <ql/termstructures/volatility/optionlet/optionletstripper1.hpp>
 #include <ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp>
 #include <ql/termstructures/volatility/interpolatedsmilesection.hpp>
+#include <ql/termstructures/volatility/kahalesmilesection.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/indexes/swap/euriborswap.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
@@ -49,15 +50,16 @@
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
 #include <ql/models/shortrate/calibrationhelpers/caphelper.hpp>
-#include <ql/math/optimization/conjugategradient.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+using std::fabs;
+
 void MarkovFunctionalTest::testMfStateProcess() {
 
     const Real tolerance = 1E-10;
-    BOOST_MESSAGE("Testing Markov functional state process...");
+    BOOST_TEST_MESSAGE("Testing Markov functional state process...");
 
     Array times1(0), vols1(1, 1.0);
     MfStateProcess sp1(0.00, times1, vols1);
@@ -485,6 +487,12 @@ namespace {
 
     Handle<OptionletVolatilityStructure> md0OptionletVts() {
 
+        // with the thread safe observer it takes very long to destruct
+        // the cap floor instruments created in OptionletStripper1
+#ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+        return flatOptionletVts();
+#endif
+
         Size nOptTen = 16;
         Size nStrikes = 12; // leave out last strike 10% because it causes an
                             // exception in bootstrapping
@@ -656,7 +664,7 @@ namespace {
 
 void MarkovFunctionalTest::testKahaleSmileSection() {
 
-    BOOST_MESSAGE("Testing Kahale smile section...");
+    BOOST_TEST_MESSAGE("Testing Kahale smile section...");
 
     const Real tol = 1E-8;
 
@@ -869,7 +877,7 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
     const Real tol1 =
         0.0001; // 1bp tolerance for model call put premia vs. market premia
 
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing Markov functional calibration to one instrument set...");
 
     Date savedEvalDate = Settings::instance().evaluationDate();
@@ -927,7 +935,7 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
     MarkovFunctional::ModelOutputs outputs1 =
         mf1->modelOutputs(); // this costs a lot of time, so only use it if you
                              // want to check the calibration
-    // BOOST_MESSAGE(outputs1);
+    // BOOST_TEST_MESSAGE(outputs1);
 
     for (Size i = 0; i < outputs1.expiries_.size(); i++) {
         if (fabs(outputs1.marketZerorate_[i] - outputs1.modelZerorate_[i]) >
@@ -974,7 +982,7 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
             .withSmileMoneynessCheckpoints(money)));
 
     MarkovFunctional::ModelOutputs outputs2 = mf2->modelOutputs();
-    // BOOST_MESSAGE(outputs2);
+    // BOOST_TEST_MESSAGE(outputs2);
 
     for (Size i = 0; i < outputs2.expiries_.size(); i++) {
         if (fabs(outputs2.marketZerorate_[i] - outputs2.modelZerorate_[i]) >
@@ -1020,7 +1028,7 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
             .withSmileMoneynessCheckpoints(money)));
 
     MarkovFunctional::ModelOutputs outputs3 = mf3->modelOutputs();
-    // BOOST_MESSAGE(outputs3);
+    // BOOST_TEST_MESSAGE(outputs3);
     // outputSurfaces(mf3,md0Yts_);
 
     for (Size i = 0; i < outputs3.expiries_.size(); i++) {
@@ -1067,7 +1075,7 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
                                  .withSmileMoneynessCheckpoints(money)));
 
     MarkovFunctional::ModelOutputs outputs4 = mf4->modelOutputs();
-    // BOOST_MESSAGE(outputs4);
+    // BOOST_TEST_MESSAGE(outputs4);
 
     for (Size i = 0; i < outputs4.expiries_.size(); i++) {
         if (fabs(outputs4.marketZerorate_[i] - outputs4.modelZerorate_[i]) >
@@ -1108,7 +1116,7 @@ void MarkovFunctionalTest::testVanillaEngines() {
     // different from the calibration approach where 0 fixing days must be used.
     // therefore higher errors compared to the calibration results are expected.
 
-    BOOST_MESSAGE("Testing Markov functional vanilla engines...");
+    BOOST_TEST_MESSAGE("Testing Markov functional vanilla engines...");
 
     Date savedEvalDate = Settings::instance().evaluationDate();
     Date referenceDate(14, November, 2012);
@@ -1160,7 +1168,7 @@ void MarkovFunctionalTest::testVanillaEngines() {
             .withSmileMoneynessCheckpoints(money)));
 
     MarkovFunctional::ModelOutputs outputs1 = mf1->modelOutputs();
-    // BOOST_MESSAGE(outputs1);
+    // BOOST_TEST_MESSAGE(outputs1);
 
     boost::shared_ptr<Gaussian1dSwaptionEngine> mfSwaptionEngine1(
         new Gaussian1dSwaptionEngine(mf1, 64, 7.0));
@@ -1224,7 +1232,7 @@ void MarkovFunctionalTest::testVanillaEngines() {
             .withSmileMoneynessCheckpoints(money)));
 
     MarkovFunctional::ModelOutputs outputs2 = mf2->modelOutputs();
-    // BOOST_MESSAGE(outputs2);
+    // BOOST_TEST_MESSAGE(outputs2);
 
     boost::shared_ptr<BlackCapFloorEngine> blackCapFloorEngine2(
         new BlackCapFloorEngine(flatYts_, flatOptionletVts_));
@@ -1281,7 +1289,7 @@ void MarkovFunctionalTest::testVanillaEngines() {
         new BlackSwaptionEngine(md0Yts_, md0SwaptionVts_));
 
     MarkovFunctional::ModelOutputs outputs3 = mf3->modelOutputs();
-    // BOOST_MESSAGE(outputs3);
+    // BOOST_TEST_MESSAGE(outputs3);
 
     for (Size i = 0; i < outputs3.expiries_.size(); i++) {
         for (Size j = 0; j < outputs3.smileStrikes_[0].size(); j++) {
@@ -1354,7 +1362,7 @@ void MarkovFunctionalTest::testVanillaEngines() {
         ));
 
     MarkovFunctional::ModelOutputs outputs4 = mf4->modelOutputs();
-    // BOOST_MESSAGE(outputs4);
+    // BOOST_TEST_MESSAGE(outputs4);
 
     boost::shared_ptr<BlackCapFloorEngine> blackCapFloorEngine4(
         new BlackCapFloorEngine(md0Yts_, md0OptionletVts_));
@@ -1382,11 +1390,7 @@ void MarkovFunctionalTest::testVanillaEngines() {
     for (Size i = 0; i < c4.size(); i++) {
         c4[i].setPricingEngine(blackCapFloorEngine4);
         Real blackPrice = c4[i].NPV();
-        std::vector<Real> blackOptionlets =
-            c4[i].result<std::vector<Real> >("optionletsPrice");
         c4[i].setPricingEngine(mfCapFloorEngine4);
-        std::vector<Real> mfOptionlets =
-            c4[i].result<std::vector<Real> >("optionletsPrice");
         Real mfPrice = c4[i].NPV();
         if (fabs(blackPrice - mfPrice) > tol1)
             BOOST_ERROR(
@@ -1402,7 +1406,7 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
 
     const Real tol1 = 0.1; // 0.1 times vega tolerance for model vs. market in
                            // second instrument set
-    BOOST_MESSAGE(
+    BOOST_TEST_MESSAGE(
         "Testing Markov functional calibration to two instrument sets...");
 
     Date savedEvalDate = Settings::instance().evaluationDate();
@@ -1537,7 +1541,7 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
         ch1[i].setPricingEngine(mfSwaptionEngine1);
         Real mfPrice = ch1[i].NPV();
         if (fabs(blackPrice - mfPrice) / blackVega > tol1)
-            BOOST_MESSAGE("Basket 1 / flat yts, vts: Secondary instrument set "
+            BOOST_TEST_MESSAGE("Basket 1 / flat yts, vts: Secondary instrument set "
                           "calibration failed for instrument #"
                           << i << " black premium is " << blackPrice
                           << " while model premium is " << mfPrice
@@ -1545,7 +1549,7 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
     }
 
     // MarkovFunctional::ModelOutputs outputs1 = mf1->modelOutputs();
-    // BOOST_MESSAGE(outputs1);
+    // BOOST_TEST_MESSAGE(outputs1);
 
     // Calibration Basket 1 / real yts, vts / Secondary calibration set consists
     // of coterminal swaptions
@@ -1646,7 +1650,7 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
         ch2[i].setPricingEngine(mfSwaptionEngine2);
         Real mfPrice = ch2[i].NPV();
         if (fabs(blackPrice - mfPrice) / blackVega > tol1)
-            BOOST_MESSAGE("Basket 1 / real yts, vts: Secondary instrument set "
+            BOOST_TEST_MESSAGE("Basket 1 / real yts, vts: Secondary instrument set "
                           "calibration failed for instrument #"
                           << i << " black premium is " << blackPrice
                           << " while model premium is " << mfPrice
@@ -1654,7 +1658,7 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
     }
 
     // MarkovFunctional::ModelOutputs outputs2 = mf2->modelOutputs();
-    // BOOST_MESSAGE(outputs2);
+    // BOOST_TEST_MESSAGE(outputs2);
 
     Settings::instance().evaluationDate() = savedEvalDate;
 }
@@ -1663,7 +1667,7 @@ void MarkovFunctionalTest::testBermudanSwaption() {
 
     Real tol0 = 0.0001; // 1bp tolerance against cached values
 
-    BOOST_MESSAGE("Testing Markov functional Bermudan swaption engine...");
+    BOOST_TEST_MESSAGE("Testing Markov functional Bermudan swaption engine...");
 
     Date savedEvalDate = Settings::instance().evaluationDate();
     Date referenceDate(14, November, 2012);
@@ -1744,16 +1748,26 @@ void MarkovFunctionalTest::testBermudanSwaption() {
     Settings::instance().evaluationDate() = savedEvalDate;
 }
 
-test_suite *MarkovFunctionalTest::suite() {
+test_suite *MarkovFunctionalTest::suite(SpeedLevel speed) {
     test_suite *suite = BOOST_TEST_SUITE("Markov functional model tests");
+
     suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testMfStateProcess));
-    suite->add(
-        QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testKahaleSmileSection));
     suite->add(QUANTLIB_TEST_CASE(
-        &MarkovFunctionalTest::testCalibrationOneInstrumentSet));
-    suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testVanillaEngines));
+        &MarkovFunctionalTest::testKahaleSmileSection));
     suite->add(QUANTLIB_TEST_CASE(
-        &MarkovFunctionalTest::testCalibrationTwoInstrumentSets));
-    suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testBermudanSwaption));
+        &MarkovFunctionalTest::testBermudanSwaption));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &MarkovFunctionalTest::testCalibrationOneInstrumentSet));
+        suite->add(QUANTLIB_TEST_CASE(
+            &MarkovFunctionalTest::testCalibrationTwoInstrumentSets));
+    }
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &MarkovFunctionalTest::testVanillaEngines));
+    }
+
     return suite;
 }

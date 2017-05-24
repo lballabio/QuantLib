@@ -55,6 +55,7 @@ namespace QuantLib {
 
 
     //! %OptimizationMethod using Differential Evolution algorithm
+    /*! \ingroup optimizers */
     class DifferentialEvolution: public OptimizationMethod {
       public:
         enum Strategy {
@@ -146,7 +147,7 @@ namespace QuantLib {
         };
 
 
-        DifferentialEvolution(Configuration configuration = Configuration())
+        DifferentialEvolution(const Configuration& configuration = Configuration())
         : configuration_(configuration), rng_(configuration.seed) {}
 
         virtual EndCriteria::Type minimize(Problem& p,

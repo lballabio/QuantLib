@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2004, 2007 Neil Firth
+ Copyright (C) 2016 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -37,6 +38,8 @@ class MatricesTest {
     static void testInverse();
     static void testDeterminant();
     static void testOrthogonalProjection();
+    static void testCholeskyDecomposition();
+    static void testMoorePenroseInverse();
     static boost::unit_test_framework::test_suite* suite();
 };
 

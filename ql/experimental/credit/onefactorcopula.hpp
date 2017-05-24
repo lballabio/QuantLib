@@ -259,6 +259,7 @@ namespace QuantLib {
     };
 
     inline Real OneFactorCopula::correlation() const {
+        calculate();
         return correlation_->value();
     }
 

@@ -115,21 +115,21 @@ namespace QuantLib {
 
     //------------------------------------------------------------------------
     RiskyFixedBond::RiskyFixedBond(
-                            std::string name,
-                            Currency ccy,
+                            const std::string& name,
+                            const Currency& ccy,
                             Real recoveryRate,
-                            Handle<DefaultProbabilityTermStructure> defaultTS,
-                            Schedule schedule,
+                            const Handle<DefaultProbabilityTermStructure>& defaultTS,
+                            const Schedule& schedule,
                             Real rate,
-                            DayCounter dayCounter,
+                            const DayCounter& dayCounter,
                             BusinessDayConvention paymentConvention,
-                            std::vector<Real> notionals,
-                            Handle<YieldTermStructure> yieldTS)
+                            const std::vector<Real>& notionals,
+                            const Handle<YieldTermStructure>& yieldTS)
     : RiskyBond(name, ccy, recoveryRate, defaultTS, yieldTS),
           schedule_(schedule),
           rate_(rate),
           dayCounter_(dayCounter),
-          paymentConvention_(paymentConvention),
+          // paymentConvention_(paymentConvention),
           notionals_(notionals) {
         // FIXME: Take paymentConvention into account
         std::vector<Date> dates = schedule_.dates();

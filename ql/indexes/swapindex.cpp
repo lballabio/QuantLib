@@ -65,6 +65,7 @@ namespace QuantLib {
       exogenousDiscount_(true),
       discount_(discount) {
         registerWith(iborIndex_);
+        registerWith(discount_);
     }
 
     Handle<YieldTermStructure> SwapIndex::forwardingTermStructure() const {

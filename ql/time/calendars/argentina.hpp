@@ -41,7 +41,7 @@ namespace QuantLib {
         <li>May Revolution, May 25th</li>
         <li>Death of General Manuel Belgrano, third Monday of June</li>
         <li>Independence Day, July 9th</li>
-        <li>Death of General José de San Martín, third Monday of August</li>
+        <li>Death of General JosÃ© de San MartÃ­n, third Monday of August</li>
         <li>Columbus Day, October 12th (moved to preceding Monday if
             on Tuesday or Wednesday and to following if on Thursday
             or Friday)</li>

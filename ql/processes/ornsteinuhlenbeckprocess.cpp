@@ -28,12 +28,11 @@ namespace QuantLib {
                                                        Real x0,
                                                        Real level)
     : x0_(x0), speed_(speed), level_(level), volatility_(vol) {
-        QL_REQUIRE(speed_ >= 0.0, "negative speed given");
         QL_REQUIRE(volatility_ >= 0.0, "negative volatility given");
     }
 
     Real OrnsteinUhlenbeckProcess::variance(Time, Real, Time dt) const {
-        if (speed_ < std::sqrt(QL_EPSILON)) {
+        if (std::fabs(speed_) < std::sqrt(QL_EPSILON)) {
              // algebraic limit for small speed
             return volatility_*volatility_*dt;
         } else {

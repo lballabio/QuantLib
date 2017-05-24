@@ -61,7 +61,6 @@ What you see here may be used freely but it comes with no support
 or guarantee.
 */
 
-//#include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/optimization/lmdif.hpp>
 #include <cmath>
 #include <cstdio>
@@ -78,7 +77,7 @@ double DWARF = 1.0e-38;
 
 
 
-double enorm(int n,double* x)
+Real enorm(int n,Real* x)
 {
 /*
 *     **********
@@ -120,8 +119,8 @@ double enorm(int n,double* x)
 *     **********
 */
 int i;
-double agiant,floatn,s1,s2,s3,xabs,x1max,x3max;
-double ans, temp;
+Real agiant,floatn,s1,s2,s3,xabs,x1max,x3max;
+Real ans, temp;
 static double rdwarf = 3.834e-20;
 static double rgiant = 1.304e19;
 static double zero = 0.0;
@@ -211,7 +210,7 @@ return(ans);
 }
 /************************lmmisc.c*************************/
 
-double dmax1(double a,double b)
+Real dmax1(Real a,Real b)
 {
 if( a >= b )
     return(a);
@@ -219,7 +218,7 @@ else
     return(b);
 }
 
-double dmin1(double a,double b)
+Real dmin1(Real a,Real b)
 {
 if( a <= b )
     return(a);
@@ -249,14 +248,14 @@ return( k % m );
  * fvec = vector of function values
  * iflag = error return variable
  */
-//void fcn(int m,int n, double* x, double* fvec,int *iflag)
+//void fcn(int m,int n, Real* x, Real* fvec,int *iflag)
 //{
 //  QuantLib::LevenbergMarquardt::fcn(m, n, x, fvec, iflag);
 //}
 
 void
-fdjac2(int m,int n,double* x,double* fvec,double* fjac,int,
-       int* iflag,double epsfcn,double* wa,
+fdjac2(int m,int n,Real* x,Real* fvec,Real* fjac,int,
+       int* iflag,Real epsfcn,Real* wa,
        const QuantLib::MINPACK::LmdifCostFunction& fcn)
 {
 /*
@@ -337,7 +336,7 @@ fdjac2(int m,int n,double* x,double* fvec,double* fjac,int,
       **********
 */
 int i,j,ij;
-double eps,h,temp;
+Real eps,h,temp;
 static double zero = 0.0;
 
 
@@ -369,8 +368,8 @@ for( j=0; j<n; j++ )
 
 
 void
-qrfac(int m,int n,double* a,int,int pivot,int* ipvt,
-      int,double* rdiag,double* acnorm,double* wa)
+qrfac(int m,int n,Real* a,int,int pivot,int* ipvt,
+      int,Real* rdiag,Real* acnorm,Real* wa)
 {
 /*
 *     **********
@@ -450,7 +449,7 @@ qrfac(int m,int n,double* a,int,int pivot,int* ipvt,
 *     **********
 */
 int i,ij,jj,j,jp1,k,kmax,minmn;
-double ajnorm,sum,temp;
+Real ajnorm,sum,temp;
 static double zero = 0.0;
 static double one = 1.0;
 static double p05 = 0.05;
@@ -576,8 +575,8 @@ L100:
 
 
 void
-qrsolv(int n,double* r,int ldr,int* ipvt,double* diag,double* qtb,
-       double* x,double* sdiag,double* wa)
+qrsolv(int n,Real* r,int ldr,int* ipvt,Real* diag,Real* qtb,
+       Real* x,Real* sdiag,Real* wa)
 {
 /*
 *     **********
@@ -659,7 +658,7 @@ qrsolv(int n,double* r,int ldr,int* ipvt,double* diag,double* qtb,
 *     **********
 */
 int i,ij,ik,kk,j,jp1,k,kp1,l,nsing;
-double cos,cotan,qtbpj,sin,sum,tan,temp;
+Real cos,cotan,qtbpj,sin,sum,tan,temp;
 static double zero = 0.0;
 static double p25 = 0.25;
 static double p5 = 0.5;
@@ -807,9 +806,9 @@ for( j=0; j<n; j++ )
 
 
 void
-lmpar(int n,double* r,int ldr,int* ipvt,double* diag,
-      double* qtb,double delta,double* par,double* x,double* sdiag,
-      double* wa1,double* wa2)
+lmpar(int n,Real* r,int ldr,int* ipvt,Real* diag,
+      Real* qtb,Real delta,Real* par,Real* x,Real* sdiag,
+      Real* wa1,Real* wa2)
 {
 /*     **********
 *
@@ -907,8 +906,8 @@ lmpar(int n,double* r,int ldr,int* ipvt,double* diag,
 *     **********
 */
 int i,iter,ij,jj,j,jm1,jp1,k,l,nsing;
-double dxnorm,fp,gnorm,parc,parl,paru;
-double sum,temp;
+Real dxnorm,fp,gnorm,parc,parl,paru;
+Real sum,temp;
 static double zero = 0.0;
 static double p1 = 0.1;
 static double p001 = 0.001;
@@ -1118,13 +1117,14 @@ if(iter == 0)
 
 
 
-void lmdif(int m,int n,double* x,double* fvec,double ftol,
-      double xtol,double gtol,int maxfev,double epsfcn,
-      double* diag, int mode, double factor,
-      int nprint, int* info,int* nfev,double* fjac,
-      int ldfjac,int* ipvt,double* qtf,
-      double* wa1,double* wa2,double* wa3,double* wa4,
-      const QuantLib::MINPACK::LmdifCostFunction& fcn)
+void lmdif(int m,int n,Real* x,Real* fvec,Real ftol,
+      Real xtol,Real gtol,int maxfev,Real epsfcn,
+      Real* diag, int mode, Real factor,
+      int nprint, int* info,int* nfev,Real* fjac,
+      int ldfjac,int* ipvt,Real* qtf,
+      Real* wa1,Real* wa2,Real* wa3,Real* wa4,
+      const QuantLib::MINPACK::LmdifCostFunction& fcn,
+      const QuantLib::MINPACK::LmdifCostFunction& jacFcn)
 {
 /*
 *     **********
@@ -1297,7 +1297,7 @@ void lmdif(int m,int n,double* x,double* fvec,double ftol,
 *
 *     subprograms called
 *
-*   user-supplied ...... fcn
+*   user-supplied ...... fcn, jacFcn
 *
 *   minpack-supplied ... dpmpar,enorm,fdjac2,lmpar,qrfac
 *
@@ -1309,9 +1309,9 @@ void lmdif(int m,int n,double* x,double* fvec,double ftol,
 *     **********
 */
 int i,iflag,ij,jj,iter,j,l;
-double actred,delta=0,dirder,fnorm,fnorm1,gnorm;
-double par,pnorm,prered,ratio;
-double sum,temp,temp1,temp2,temp3,xnorm=0;
+Real actred,delta=0,dirder,fnorm,fnorm1,gnorm;
+Real par,pnorm,prered,ratio;
+Real sum,temp,temp1,temp2,temp3,xnorm=0;
 static double one = 1.0;
 static double p1 = 0.1;
 static double p5 = 0.5;
@@ -1364,7 +1364,10 @@ L30:
 *    calculate the jacobian matrix.
 */
 iflag = 2;
-fdjac2(m,n,x,fvec,fjac,ldfjac,&iflag,epsfcn,wa4, fcn);
+if(jacFcn != 0) // use user supplied jacobian calculation
+    jacFcn(m,n,x,fjac,&iflag);
+else
+    fdjac2(m,n,x,fvec,fjac,ldfjac,&iflag,epsfcn,wa4, fcn);
 *nfev += n;
 if(iflag < 0)
     goto L300;

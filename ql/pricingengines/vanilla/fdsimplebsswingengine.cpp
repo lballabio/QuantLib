@@ -45,13 +45,14 @@ namespace QuantLib {
     }
             
     void FdSimpleBSSwingEngine::calculate() const {
-
         QL_REQUIRE(arguments_.exercise->type() == Exercise::Bermudan,
                    "Bermudan exercise supported only");
 
         // 1. Mesher
         const boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        QL_REQUIRE(payoff, "Strike type payoff expected");
+            
         const Time maturity = process_->time(arguments_.exercise->lastDate());
         const boost::shared_ptr<Fdm1dMesher> equityMesher(
             new FdmBlackScholesMesher(xGrid_, process_,
@@ -61,7 +62,7 @@ namespace QuantLib {
                  new Uniform1dMesher(
                            0, static_cast<Real>(arguments_.maxExerciseRights),
                            arguments_.maxExerciseRights+1));
-        
+
         const boost::shared_ptr<FdmMesher> mesher (
             new FdmMesherComposite(equityMesher, exerciseMesher));
         
@@ -86,8 +87,9 @@ namespace QuantLib {
                                     new FdmLogInnerValue(payoff, mesher, 0));
 
         stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
-            new FdmSimpleSwingCondition(exerciseTimes, mesher,
-                                        exerciseCalculator, 1)));
+            new FdmSimpleSwingCondition(
+                exerciseTimes, mesher, exerciseCalculator,
+                1, arguments_.minExerciseRights)));
         
         boost::shared_ptr<FdmStepConditionComposite> conditions(
                 new FdmStepConditionComposite(stoppingTimes, stepConditions));
@@ -104,20 +106,10 @@ namespace QuantLib {
                                payoff->strike(), solverDesc, schemeDesc_));
     
         const Real spot = process_->x0();
-        
-        std::vector< std::pair<Real, Real> > exerciseValues;
-        for (Size i=arguments_.minExerciseRights;
-             i <= arguments_.maxExerciseRights; ++i) {
-            const Real y = std::exp(Real(i));
-            exerciseValues.push_back(
-                           std::pair<Real, Real>(solver->valueAt(spot, y), y));
-        }
-        const Real y = std::max_element(exerciseValues.begin(),
-                                        exerciseValues.end())->second;
 
-        results_.value = solver->valueAt(spot, y);
-        results_.delta = solver->deltaAt(spot, y, spot*0.01);
-        results_.gamma = solver->gammaAt(spot, y, spot*0.01);
-        results_.theta = solver->thetaAt(spot, y);
+        results_.value = solver->valueAt(spot, 1);
+        results_.delta = solver->deltaAt(spot, 1, spot*0.01);
+        results_.gamma = solver->gammaAt(spot, 1, spot*0.01);
+        results_.theta = solver->thetaAt(spot, 1);
     }
 }

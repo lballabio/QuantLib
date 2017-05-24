@@ -118,8 +118,8 @@ namespace {
 
         Leg makeCapFlooredLeg(const Date& startDate,
                               Integer length,
-                              const std::vector<Rate> caps,
-                              const std::vector<Rate> floors,
+                              const std::vector<Rate>& caps,
+                              const std::vector<Rate>& floors,
                               Volatility volatility,
                               const Rate gearing = 1.0,
                               const Rate spread = 0.0) {

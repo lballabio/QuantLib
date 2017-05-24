@@ -39,7 +39,7 @@ namespace QuantLib {
     */
     class BMAIndex : public InterestRateIndex {
       public:
-        BMAIndex(const Handle<YieldTermStructure>& h =
+        explicit BMAIndex(const Handle<YieldTermStructure>& h =
                                                 Handle<YieldTermStructure>());
         //! \name Index interface
         //@{

@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Katiuscia Manzoni
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,6 +23,7 @@
 #include <ql/termstructures/volatility/interpolatedsmilesection.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/math/rounding.hpp>
+#include <ql/indexes/swapindex.hpp>
 
 namespace QuantLib {
 
@@ -44,7 +46,7 @@ namespace QuantLib {
 
     void SwaptionVolCube2::performCalculations() const{
 
-        SwaptionVolatilityDiscrete::performCalculations();
+        SwaptionVolatilityCube::performCalculations();
         //! set volSpreadsMatrix_ by volSpreads_ quotes
         for (Size i=0; i<nStrikes_; i++) 
             for (Size j=0; j<nOptionTenors_; j++)
@@ -67,10 +69,15 @@ namespace QuantLib {
                                        Time swapLength) const {
 
         calculate();
-        Date optionDate = Date(static_cast<BigInteger>(
-            optionInterpolator_(optionTime)));
+        Date optionDate = optionDateFromTime(optionTime);
         Rounding rounder(0);
         Period swapTenor(static_cast<Integer>(rounder(swapLength*12.0)), Months);
+        // ensure that option date is valid fixing date
+        optionDate =
+            swapTenor > shortSwapIndexBase_->tenor()
+                ? swapIndexBase_->fixingCalendar().adjust(optionDate, Following)
+                : shortSwapIndexBase_->fixingCalendar().adjust(optionDate,
+                                                               Following);
         return smileSectionImpl(optionDate, swapTenor);
     }
 
@@ -93,10 +100,15 @@ namespace QuantLib {
             stdDevs.push_back(exerciseTimeSqrt*(
                 atmVol + volSpreadsInterpolator_[i](length, optionTime)));
         }
+        Real shift = atmVol_->shift(optionTime,length);
         return boost::shared_ptr<SmileSection>(new
             InterpolatedSmileSection<Linear>(optionTime,
                                              strikes,
                                              stdDevs,
-                                             atmForward));
+                                             atmForward,
+                                             Linear(),
+                                             Actual365Fixed(),
+                                             volatilityType(),
+                                             shift));
     }
 }

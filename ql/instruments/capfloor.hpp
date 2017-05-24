@@ -2,8 +2,8 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2006 Ferdinando Ametrano
- Copyright (C) 2006 François du Vignaud
+ Copyright (C) 2006, 2014 Ferdinando Ametrano
+ Copyright (C) 2006 FranÃ§ois du Vignaud
  Copyright (C) 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -30,6 +30,7 @@
 #include <ql/instrument.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/handle.hpp>
+#include <ql/termstructures/volatility/volatilitytype.hpp>
 
 namespace QuantLib {
 
@@ -83,13 +84,27 @@ namespace QuantLib {
         //@}
         Rate atmRate(const YieldTermStructure& discountCurve) const;
         //! implied term volatility
-        Volatility impliedVolatility(Real price,
-                                     const Handle<YieldTermStructure>& disc,
-                                     Volatility guess,
-                                     Real accuracy = 1.0e-4,
-                                     Natural maxEvaluations = 100,
-                                     Volatility minVol = 1.0e-7,
-                                     Volatility maxVol = 4.0) const;
+        Volatility impliedVolatility(
+                                 Real price,
+                                 const Handle<YieldTermStructure>& disc,
+                                 Volatility guess,
+                                 Real accuracy = 1.0e-4,
+                                 Natural maxEvaluations = 100,
+                                 Volatility minVol = 1.0e-7,
+                                 Volatility maxVol = 4.0,
+                                 VolatilityType type = ShiftedLognormal,
+                                 Real displacement = 0.0) const;
+        QL_DEPRECATED
+        Volatility impliedVolatility(
+                                 Real price,
+                                 const Handle<YieldTermStructure>& disc,
+                                 Volatility guess,
+                                 Real accuracy,
+                                 Natural maxEvaluations,
+                                 Volatility minVol,
+                                 Volatility maxVol,
+                                 Real displacement,
+                                 VolatilityType type = ShiftedLognormal) const;
       private:
         Type type_;
         Leg floatingLeg_;

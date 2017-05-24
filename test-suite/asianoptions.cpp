@@ -4,6 +4,7 @@
  Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2005, 2007, 2008 StatPro Italia srl
  Copyright (C) 2009, 2011 Master IMAFA - Polytech'Nice Sophia - Université de Nice Sophia Antipolis
+ Copyright (C) 2014 Bernd Lewerenz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,10 +32,11 @@
 #include <ql/pricingengines/asian/mc_discr_arith_av_strike.hpp>
 #include <ql/pricingengines/asian/fdblackscholesasianengine.hpp>
 #include <ql/experimental/exoticoptions/continuousarithmeticasianlevyengine.hpp>
+#include <ql/experimental/exoticoptions/continuousarithmeticasianvecerengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <boost/progress.hpp>
+#include <boost/make_shared.hpp>
 #include <map>
 
 using namespace QuantLib;
@@ -90,7 +92,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
     // data from "Option Pricing Formulas", Haug, pag.96-97
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(80.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(-0.03));
@@ -187,7 +189,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
     Volatility vols[] = { 0.11, 0.50, 1.20 };
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
     Settings::instance().evaluationDate() = today;
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
@@ -329,7 +331,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice() {
     // Clewlow, Strickland, p.118-123
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.03));
@@ -388,7 +390,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAverageStrike() {
               "Testing analytic discrete geometric average-strike Asians...");
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.03));
@@ -451,7 +453,7 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
     // Clewlow, Strickland, p.118-123
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.03));
@@ -605,7 +607,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
    };
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.03));
@@ -652,7 +654,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
         boost::shared_ptr<PricingEngine> engine =
             MakeMCDiscreteArithmeticAPEngine<LowDiscrepancy>(stochProcess)
             .withSamples(2047)
-            .withControlVariate();
+            .withControlVariate(cases4[l].controlVariate);
 
         DiscreteAveragingAsianOption option(averageType, runningSum,
                                             pastFixings, fixingDates,
@@ -760,7 +762,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAverageStrike() {
     };
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.03));
@@ -847,7 +849,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
     Volatility vols[] = { 0.11, 0.50, 1.20 };
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
     Settings::instance().evaluationDate() = today;
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
@@ -993,7 +995,7 @@ void AsianOptionTest::testPastFixings() {
     BOOST_TEST_MESSAGE("Testing use of past fixings in Asian options...");
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.03));
@@ -1172,7 +1174,7 @@ void AsianOptionTest::testLevyEngine() {
     };
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     for (Size l=0; l<LENGTH(cases); l++) {
 
@@ -1232,6 +1234,79 @@ void AsianOptionTest::testLevyEngine() {
     }
 }
 
+namespace {
+
+    struct VecerData {
+        Real spot;
+        Rate riskFreeRate;
+        Volatility volatility;
+        Real strike;
+        Natural length;
+        Real result;
+        Real tolerance;
+    };
+
+}
+
+void AsianOptionTest::testVecerEngine() {
+    BOOST_TEST_MESSAGE("Testing Vecer engine for Asian options...");
+
+    VecerData cases[] = {
+        { 1.9, 0.05,   0.5,  2.0, 1, 0.193174, 1.0e-5 },
+        { 2.0, 0.05,   0.5,  2.0, 1, 0.246416, 1.0e-5 },
+        { 2.1, 0.05,   0.5,  2.0, 1, 0.306220, 1.0e-4 },
+        { 2.0, 0.02,   0.1,  2.0, 1, 0.055986, 2.0e-4 },
+        { 2.0, 0.18,   0.3,  2.0, 1, 0.218388, 1.0e-4 },
+        { 2.0, 0.0125, 0.25, 2.0, 2, 0.172269, 1.0e-4 },
+        { 2.0, 0.05,   0.5,  2.0, 2, 0.350095, 2.0e-4 }
+    };
+
+    Date today = Settings::instance().evaluationDate();
+    DayCounter dayCounter = Actual360();
+
+    Option::Type type = Option::Call;
+    Handle<YieldTermStructure> q(flatRate(today, 0.0, dayCounter));
+
+    Size timeSteps = 200;
+    Size assetSteps = 200;
+
+    for (Size i=0; i<LENGTH(cases); ++i) {
+        Handle<Quote> u(boost::make_shared<SimpleQuote>(cases[i].spot));
+        Handle<YieldTermStructure> r(flatRate(today,
+                                              cases[i].riskFreeRate,
+                                              dayCounter));
+        Handle<BlackVolTermStructure> sigma(flatVol(today,
+                                                    cases[i].volatility,
+                                                    dayCounter));
+        boost::shared_ptr<BlackScholesMertonProcess> process =
+            boost::make_shared<BlackScholesMertonProcess>(u, q, r, sigma);
+
+        Date maturity = today + cases[i].length*360;
+        boost::shared_ptr<Exercise> exercise =
+            boost::make_shared<EuropeanExercise>(maturity);
+        boost::shared_ptr<StrikedTypePayoff> payoff =
+            boost::make_shared<PlainVanillaPayoff>(type, cases[i].strike);
+        Handle<Quote> average(boost::make_shared<SimpleQuote>(0.0));
+
+        ContinuousAveragingAsianOption option(Average::Arithmetic,
+                                              payoff, exercise);
+        option.setPricingEngine(
+            boost::make_shared<ContinuousArithmeticAsianVecerEngine>(
+                process,average,today,timeSteps,assetSteps,-1.0,1.0));
+
+        Real calculated = option.NPV();
+        Real error = std::fabs(calculated - cases[i].result);
+        if (error > cases[i].tolerance)
+            BOOST_ERROR("Failed to reproduce expected NPV"
+                        << "\n    calculated: " << calculated
+                        << "\n    expected:   " << cases[i].result
+                        << "\n    expected:   " << cases[i].result
+                        << "\n    error:      " << error
+                        << "\n    tolerance:  " << cases[i].tolerance);
+    }
+}
+
+
 test_suite* AsianOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Asian option tests");
 
@@ -1260,6 +1335,6 @@ test_suite* AsianOptionTest::suite() {
 test_suite* AsianOptionTest::experimental() {
     test_suite* suite = BOOST_TEST_SUITE("Asian option tests");
     suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testLevyEngine));
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testVecerEngine));
     return suite;
 }
-

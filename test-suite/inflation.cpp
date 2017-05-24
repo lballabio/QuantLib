@@ -47,6 +47,9 @@ using boost::unit_test_framework::test_suite;
 
 using namespace QuantLib;
 
+using std::fabs;
+using std::pow;
+
 namespace {
 
     struct Datum {
@@ -608,7 +611,7 @@ void InflationTest::testZeroTermStructure() {
 }
 
 void InflationTest::testZeroIndexFutureFixing() {
-    BOOST_MESSAGE("Testing that zero inflation indices forecast future fixings...");
+    BOOST_TEST_MESSAGE("Testing that zero inflation indices forecast future fixings...");
 
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
@@ -968,23 +971,23 @@ void InflationTest::testPeriod() {
 
     Date d;
     Frequency f;
-    std::pair<Date,Date> res;
+    /* std::pair<Date,Date> res; */
 
     // fails by crashing out
     for (Size i=1; i<=12; i++){
         d = Date(1,Month(i),2009);
 
         f = Monthly;
-        res = inflationPeriod (d,f);
+        /* res = */ inflationPeriod (d,f);
 
         f = Quarterly;
-        res = inflationPeriod (d,f);
+        /* res = */ inflationPeriod (d,f);
 
         f = Semiannual;
-        res = inflationPeriod (d,f);
+        /* res = */ inflationPeriod (d,f);
 
         f = Annual;
-        res = inflationPeriod (d,f);
+        /* res = */ inflationPeriod (d,f);
     }
 }
 

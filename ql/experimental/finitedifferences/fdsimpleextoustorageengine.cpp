@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2011 Klaus Spanderen
+ Copyright (C) 2014 Ralph Schreyer
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,12 +22,14 @@
     \brief Finite Differences extended OU engine for simple storage options
 */
 
+#include <ql/math/comparison.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/methods/finitedifferences/meshers/predefined1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
 #include <ql/pricingengines/vanilla/fdsimplebsswingengine.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmsimplestoragecondition.hpp>
@@ -37,13 +40,12 @@
 #include <ql/experimental/finitedifferences/fdmsimple2dextousolver.hpp>
 #include <ql/experimental/finitedifferences/fdmexpextouinnervaluecalculator.hpp>
 
-
 namespace QuantLib {
 
     namespace {
         class FdmStorageValue : public FdmInnerValueCalculator {
           public:
-            FdmStorageValue(const boost::shared_ptr<FdmMesher>& mesher)
+            explicit FdmStorageValue(const boost::shared_ptr<FdmMesher>& mesher)
             : mesher_(mesher) { }
 
             Real innerValue(const FdmLinearOpIterator& iter, Time) {
@@ -58,17 +60,28 @@ namespace QuantLib {
             const boost::shared_ptr<FdmMesher> mesher_;
 
         };
+
+        class LessButNotCloseEnough
+                : public std::binary_function<Real, Real, bool> {
+          public:
+            bool operator()(Real a, Real b) {
+                return !(close_enough(a, b, 100) || b < a);
+            }
+        };
     }
 
     FdSimpleExtOUStorageEngine::FdSimpleExtOUStorageEngine(
             const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& process,
             const boost::shared_ptr<YieldTermStructure>& rTS,
-            Size tGrid, Size xGrid,
+            Size tGrid, Size xGrid, Size yGrid,
+            const boost::shared_ptr<Shape>& shape,
             const FdmSchemeDesc& schemeDesc)
     : process_(process),
       rTS_  (rTS),
       tGrid_(tGrid),
       xGrid_(xGrid),
+      yGrid_(yGrid),
+      shape_(shape),
       schemeDesc_(schemeDesc) {
     }
 
@@ -86,9 +99,32 @@ namespace QuantLib {
         const boost::shared_ptr<Fdm1dMesher> xMesher(
                      new FdmSimpleProcess1dMesher(xGrid_, process_, maturity));
 
-        const boost::shared_ptr<Fdm1dMesher> storageMesher(
-            new Uniform1dMesher(0, arguments_.capacity,
-                                Size(arguments_.capacity/arguments_.changeRate+1)));
+        boost::shared_ptr<Fdm1dMesher> storageMesher;
+
+        if(yGrid_ == Null<Size>()){
+            //elevator mesher
+            std::vector<Real> storageValues(1, arguments_.capacity);
+            storageValues.reserve(
+                Size(arguments_.capacity/arguments_.changeRate)+1);
+
+            for (Real level=0; level <= arguments_.capacity;
+                    level+=arguments_.changeRate) {
+                    storageValues.push_back(level);
+                    storageValues.push_back(arguments_.capacity - level);
+            }
+
+            const std::set<Real, LessButNotCloseEnough>    orderedValues(
+                storageValues.begin(), storageValues.end());
+            storageValues.assign(orderedValues.begin(), orderedValues.end());
+
+            storageMesher =    boost::shared_ptr<Fdm1dMesher>(
+                new Predefined1dMesher(storageValues));
+        }
+        else {
+            // uniform mesher
+            storageMesher = boost::shared_ptr<Fdm1dMesher>(
+                new Uniform1dMesher(0, arguments_.capacity, yGrid_));
+        }
 
         const boost::shared_ptr<FdmMesher> mesher (
             new FdmMesherComposite(xMesher, storageMesher));
@@ -117,7 +153,7 @@ namespace QuantLib {
                                     new PlainVanillaPayoff(Option::Call, 0.0));
 
         boost::shared_ptr<FdmInnerValueCalculator> underlyingCalculator(
-            new FdmExpExtOUInnerValueCalculator(payoff, mesher));
+            new FdmExpExtOUInnerValueCalculator(payoff, mesher, shape_));
 
         stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
             new FdmSimpleStorageCondition(exerciseTimes,

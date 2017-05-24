@@ -450,7 +450,7 @@ void MersenneTwisterTest::testValues() {
         }
     }
     for (i=0; i<1000; i++) {
-        double e = std::fabs(referenceValues[i] -
+        Real e = std::fabs(referenceValues[i] -
                              mt19937.next().value);
         if (e > 1.0e-8) {
             BOOST_FAIL("Mersenne Twister test failed at index: " << i << "\n"

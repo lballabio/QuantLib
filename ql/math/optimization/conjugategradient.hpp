@@ -2,8 +2,8 @@
 
 /*
  Copyright (C) 2006 Ferdinando Ametrano
- Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
- Copyright (C) 2009 Frédéric Degraeve
+ Copyright (C) 2001, 2002, 2003 Nicolas Di CÃ©sarÃ©
+ Copyright (C) 2009 FrÃ©dÃ©ric Degraeve
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -38,6 +38,11 @@ namespace QuantLib {
         Search direction \f$ d_i = - f'(x_i) + c_i*d_{i-1} \f$
         where \f$ c_i = ||f'(x_i)||^2/||f'(x_{i-1})||^2 \f$
         and \f$ d_1 = - f'(x_1) \f$
+
+        This optimization method requires the knowledge of
+        the gradient of the cost function.
+
+        \ingroup optimizers
     */
     class ConjugateGradient: public LineSearchBasedMethod {
       public:

@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,14 +26,20 @@ using std::vector;
 
 namespace QuantLib {
 
-    OptionletStripper::OptionletStripper(
-            const boost::shared_ptr<CapFloorTermVolSurface>& termVolSurface,
-            const boost::shared_ptr<IborIndex>& iborIndex,
-            const Handle<YieldTermStructure>& discount)
-    : termVolSurface_(termVolSurface),
-      iborIndex_(iborIndex), discount_(discount),
-      nStrikes_(termVolSurface->strikes().size()) {
-        
+OptionletStripper::OptionletStripper(
+    const boost::shared_ptr< CapFloorTermVolSurface > &termVolSurface,
+    const boost::shared_ptr< IborIndex > &iborIndex,
+    const Handle< YieldTermStructure > &discount, const VolatilityType type,
+    const Real displacement)
+    : termVolSurface_(termVolSurface), iborIndex_(iborIndex),
+      discount_(discount), nStrikes_(termVolSurface->strikes().size()),
+      volatilityType_(type), displacement_(displacement) {
+
+        if (volatilityType_ == Normal) {
+            QL_REQUIRE(displacement_ == 0.0,
+                       "non-null displacement is not allowed with Normal model");
+        }
+
         registerWith(termVolSurface);
         registerWith(iborIndex_);
         registerWith(discount_);
@@ -144,4 +151,13 @@ namespace QuantLib {
     boost::shared_ptr<IborIndex> OptionletStripper::iborIndex() const {
         return iborIndex_;
     }
+
+    Real OptionletStripper::displacement() const {
+        return displacement_;
+    }
+
+    VolatilityType OptionletStripper::volatilityType() const {
+        return volatilityType_;
+    }
+
 }

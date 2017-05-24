@@ -27,6 +27,7 @@
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/math/integrals/trapezoidintegral.hpp>
+#include <ql/math/integrals/discreteintegrals.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 
 #include <ql/instruments/payoffs.hpp>
@@ -36,13 +37,52 @@
 #pragma warning(disable: 4180)
 #endif
 
-#include <boost/lambda/if.hpp>
-#include <boost/lambda/bind.hpp>
-#include <boost/lambda/lambda.hpp>
-
-using namespace boost::lambda;
-
 namespace QuantLib {
+
+    namespace {
+
+        class integrand1 {
+          private:
+            const Real c_inf_;
+            const boost::function<Real(Real)> f_;
+          public:
+            integrand1(Real c_inf, const boost::function<Real(Real)>& f)
+            : c_inf_(c_inf), f_(f) {}
+            Real operator()(Real x) const {
+                if ((1.0-x)*c_inf_ > QL_EPSILON)
+                    return f_(-std::log(0.5-0.5*x)/c_inf_)/((1.0-x)*c_inf_);
+                else
+                    return 0.0;
+            }
+        };
+
+        class integrand2 {
+          private:
+            const Real c_inf_;
+            const boost::function<Real(Real)> f_;
+          public:
+            integrand2(Real c_inf, const boost::function<Real(Real)>& f)
+            : c_inf_(c_inf), f_(f) {}
+            Real operator()(Real x) const {
+                if (x*c_inf_ > QL_EPSILON) {
+                    return f_(-std::log(x)/c_inf_)/(x*c_inf_);
+                } else {
+                    return 0.0;
+                }
+            }
+        };
+
+        class integrand3 {
+          private:
+            const integrand2 int_;
+          public:
+            integrand3(Real c_inf, const boost::function<Real(Real)>& f)
+            : int_(c_inf, f) {}
+
+            Real operator()(Real x) const { return int_(1.0-x); }
+        };
+
+    }
 
     // helper class for integration
     class AnalyticHestonEngine::Fj_Helper
@@ -182,7 +222,7 @@ namespace QuantLib {
                       *std::complex<Real>(-phi, (j_== 1)? 1 : -1));
         const std::complex<Real> ex = std::exp(-d*term_);
         const std::complex<Real> addOnTerm
-            = engine_ > 0 ? engine_->addOnTerm(phi, term_, j_) : 0.0;
+            = engine_ ? engine_->addOnTerm(phi, term_, j_) : Real(0.0);
 
         if (cpxLog_ == Gatheral) {
             if (phi != 0.0) {
@@ -295,6 +335,7 @@ namespace QuantLib {
     : GenericModelEngine<HestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
+      evaluations_(0),
       cpxLog_     (Gatheral),
       integration_(new Integration(
                           Integration::gaussLaguerre(integrationOrder))) {
@@ -306,6 +347,7 @@ namespace QuantLib {
     : GenericModelEngine<HestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
+      evaluations_(0),
       cpxLog_(Gatheral),
       integration_(new Integration(Integration::gaussLobatto(
                               relTolerance, Null<Real>(), maxEvaluations))) {
@@ -318,6 +360,7 @@ namespace QuantLib {
     : GenericModelEngine<HestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
+      evaluations_(0),
       cpxLog_(cpxLog),
       integration_(new Integration(integration)) {
         QL_REQUIRE(   cpxLog_ != BranchCorrection
@@ -341,12 +384,11 @@ namespace QuantLib {
                                              const ComplexLogFormula cpxLog,
                                              const AnalyticHestonEngine* const enginePtr,
                                              Real& value,
-                                             Size& evaluations)
-    {
+                                             Size& evaluations) {
 
         const Real ratio = riskFreeDiscount/dividendDiscount;
 
-        const Real c_inf = std::min(10.0, std::max(0.0001,
+        const Real c_inf = std::min(0.2, std::max(0.0001,
                 std::sqrt(1.0-square<Real>()(rho))/sigma))
                 *(v0 + kappa*theta*term);
 
@@ -374,7 +416,6 @@ namespace QuantLib {
           default:
             QL_FAIL("unknown option type");
         }
-
     }
 
     void AnalyticHestonEngine::calculate() const
@@ -500,6 +541,20 @@ namespace QuantLib {
                                new GaussChebyshev2ndIntegration(intOrder)));
     }
 
+    AnalyticHestonEngine::Integration
+    AnalyticHestonEngine::Integration::discreteSimpson(Size evaluations) {
+        return Integration(
+            DiscreteSimpson, boost::shared_ptr<Integrator>(
+                new DiscreteSimpsonIntegrator(evaluations)));
+    }
+
+    AnalyticHestonEngine::Integration
+    AnalyticHestonEngine::Integration::discreteTrapezoid(Size evaluations) {
+        return Integration(
+            DiscreteTrapezoid, boost::shared_ptr<Integrator>(
+                new DiscreteTrapezoidIntegrator(evaluations)));
+    }
+
     Size AnalyticHestonEngine::Integration::numberOfEvaluations() const {
         if (integrator_) {
             return integrator_->numberOfEvaluations();
@@ -526,38 +581,27 @@ namespace QuantLib {
 
         switch(intAlgo_) {
           case GaussLaguerre:
-            retVal = gaussianQuadrature_->operator()(f);
+            retVal = (*gaussianQuadrature_)(f);
             break;
           case GaussLegendre:
           case GaussChebyshev:
           case GaussChebyshev2nd:
-            retVal = gaussianQuadrature_->operator()(
-                boost::function1<Real, Real>(
-                    if_then_else_return ( (boost::lambda::_1+1.0)*c_inf 
-                                          > QL_EPSILON,
-                        boost::lambda::bind(f, -boost::lambda::bind(
-                            std::ptr_fun<Real,Real>(std::log),
-                            0.5*boost::lambda::_1+0.5 )/c_inf )
-                                          /((boost::lambda::_1+1.0)*c_inf),
-                        boost::lambda::bind(constant<Real, Real>(0.0), 
-                                            boost::lambda::_1))));
+            retVal = (*gaussianQuadrature_)(integrand1(c_inf, f));
             break;
           case Simpson:
           case Trapezoid:
           case GaussLobatto:
           case GaussKronrod:
-            retVal = integrator_->operator()(
-                boost::function1<Real, Real>(
-                    if_then_else_return ( boost::lambda::_1*c_inf > QL_EPSILON,
-                        boost::lambda::bind(f,-boost::lambda::bind(
-                            std::ptr_fun<Real,Real>(std::log), 
-                            boost::lambda::_1)/c_inf) /(boost::lambda::_1*c_inf),
-                        boost::lambda::bind(constant<Real, Real>(0.0), 
-                                            boost::lambda::_1))),
-                0.0, 1.0);
+            retVal = (*integrator_)(integrand2(c_inf, f),
+                                    0.0, 1.0);
+            break;
+          case DiscreteTrapezoid:
+          case DiscreteSimpson:
+            retVal = (*integrator_)(integrand3(c_inf, f),
+                                    0.0, 1.0);
             break;
           default:
-              QL_FAIL("unknwon integration algorithm");
+            QL_FAIL("unknwon integration algorithm");
         }
 
         return retVal;

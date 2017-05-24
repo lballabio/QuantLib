@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006, 2007 Ferdinando Ametrano
+ Copyright (C) 2006, 2007, 2014 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +27,7 @@
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -40,7 +41,7 @@ namespace QuantLib {
       useAtmSpread_(false), forwardStart_(forwardStart),
 
       cmsSpread_(0.0), cmsGearing_(1.0),
-      cmsCap_(2.0), cmsFloor_(Null<Real>()),
+      cmsCap_(Null<Real>()), cmsFloor_(Null<Real>()),
 
       effectiveDate_(Date()),
       cmsCalendar_(swapIndex->fixingCalendar()),
@@ -71,7 +72,7 @@ namespace QuantLib {
       useAtmSpread_(false), forwardStart_(forwardStart),
 
       cmsSpread_(0.0), cmsGearing_(1.0),
-      cmsCap_(2.0), cmsFloor_(Null<Real>()),
+      cmsCap_(Null<Real>()), cmsFloor_(Null<Real>()),
 
       effectiveDate_(Date()),
       cmsCalendar_(swapIndex->fixingCalendar()),
@@ -103,8 +104,11 @@ namespace QuantLib {
             startDate = effectiveDate_;
         else {
             Natural fixingDays = iborIndex_->fixingDays();
-            Date referenceDate = Settings::instance().evaluationDate();
-            Date spotDate = floatCalendar_.advance(referenceDate,
+            Date refDate = Settings::instance().evaluationDate();
+            // if the evaluation date is not a business day
+            // then move to the next business day
+            refDate = floatCalendar_.adjust(refDate);
+            Date spotDate = floatCalendar_.advance(refDate,
                                                    fixingDays*Days);
             startDate = spotDate+forwardStart_;
         }
@@ -173,9 +177,9 @@ namespace QuantLib {
 
         boost::shared_ptr<Swap> swap;
         if (payCms_)
-            swap = boost::shared_ptr<Swap>(new Swap(cmsLeg, floatLeg));
+            swap = boost::make_shared<Swap>(cmsLeg, floatLeg);
         else
-            swap = boost::shared_ptr<Swap>(new Swap(floatLeg, cmsLeg));
+            swap = boost::make_shared<Swap>(floatLeg, cmsLeg);
         swap->setPricingEngine(engine_);
         return swap;
     }
@@ -198,8 +202,7 @@ namespace QuantLib {
 
     MakeCms& MakeCms::withDiscountingTermStructure(
                 const Handle<YieldTermStructure>& discountingTermStructure) {
-        engine_ = boost::shared_ptr<PricingEngine>(new
-                            DiscountingSwapEngine(discountingTermStructure));
+        engine_ = boost::make_shared<DiscountingSwapEngine>(discountingTermStructure);
         return *this;
     }
 

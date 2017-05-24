@@ -24,7 +24,6 @@
 #ifndef quantlib_sensitivity_analysis_hpp
 #define quantlib_sensitivity_analysis_hpp
 
-//#include <ql/math/matrix.hpp>
 #include <ql/types.hpp>
 #include <ql/utilities/null.hpp>
 #include <boost/shared_ptr.hpp>

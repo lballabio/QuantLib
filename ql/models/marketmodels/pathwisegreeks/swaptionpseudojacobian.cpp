@@ -91,7 +91,7 @@ namespace QuantLib
                 Size zIndex = rate -startIndex;
                 for (Size f =0; f < factors; ++f)
                 {
-                    double sum=0.0;
+                    Real sum=0.0;
                     for (Size rate2 = startIndex; rate2<endIndex; ++rate2)
                     {
                         Size zIndex2 = rate2-startIndex;
@@ -249,7 +249,6 @@ namespace QuantLib
 
         std::vector<Real> displacedImpliedVols(numberCaplets);
         std::vector<Real> annuities(numberCaplets);
-        std::vector<Real> capletPrices(numberCaplets);
         std::vector<Real> initialRates(numberCaplets);
         std::vector<Real> expiries(numberCaplets);
 
@@ -288,8 +287,6 @@ namespace QuantLib
                 annuity,
                 displacement
                 );
-
-            capletPrices[capletIndex] = capletPrice;
 
             capPrice += capletPrice;
 

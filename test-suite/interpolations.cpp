@@ -5,6 +5,7 @@
  Copyright (C) 2005, 2006 StatPro Italia srl
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2009 Dimitri Reiswich
+ Copyright (C) 2014 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,6 +26,7 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/utilities/null.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/math/interpolations/backwardflatinterpolation.hpp>
 #include <ql/math/interpolations/forwardflatinterpolation.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
@@ -32,14 +34,17 @@
 #include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/math/interpolations/kernelinterpolation.hpp>
 #include <ql/math/interpolations/kernelinterpolation2d.hpp>
-#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
+#include <ql/math/interpolations/lagrangeinterpolation.hpp>
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/kernelfunctions.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/richardsonextrapolation.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
+#include <ql/experimental/volatility/noarbsabrinterpolation.hpp>
 #include <boost/foreach.hpp>
+#include <boost/assign/std/vector.hpp>
+#include <boost/math/special_functions/fpclassify.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -1171,8 +1176,6 @@ void InterpolationTest::testForwardFlat() {
     }
 }
 
-
-
 void InterpolationTest::testSabrInterpolation(){
 
     BOOST_TEST_MESSAGE("Testing Sabr interpolation...");
@@ -1227,11 +1230,14 @@ void InterpolationTest::testSabrInterpolation(){
     }
 
     // Test SABR calibration against input parameters
-    // Initial null guesses (uses default values)
-    Real alphaGuess = Null<Real>();
-    Real betaGuess = Null<Real>();
-    Real nuGuess = Null<Real>();
-    Real rhoGuess = Null<Real>();
+    // Use default values (but not null, since then parameters
+    // will then not be fixed during optimization, see the
+    // interpolation constructor, thus rendering the test cases
+    // with fixed parameters non-sensical)
+    Real alphaGuess = std::sqrt(0.2);
+    Real betaGuess = 0.5;
+    Real nuGuess = std::sqrt(0.4);
+    Real rhoGuess = 0.0;
 
     const bool vegaWeighted[]= {true, false};
     const bool isAlphaFixed[]= {true, false};
@@ -1254,14 +1260,22 @@ void InterpolationTest::testSabrInterpolation(){
           for (Size k_b=0; k_b<LENGTH(isBetaFixed); ++k_b) {
             for (Size k_n=0; k_n<LENGTH(isNuFixed); ++k_n) {
               for (Size k_r=0; k_r<LENGTH(isRhoFixed); ++k_r) {
-                SABRInterpolation sabrInterpolation(strikes.begin(), strikes.end(),
-                                                    volatilities.begin(), expiry, forward,
-                                                    alphaGuess, betaGuess, nuGuess, rhoGuess,
-                                                    isAlphaFixed[k_a], isBetaFixed[k_b],
-                                                    isNuFixed[k_n], isRhoFixed[k_r],
-                                                    vegaWeighted[i],
-                                                    endCriteria, methods_[j]);
-                sabrInterpolation.update();
+                  // to meet the tough calibration tolerance we need to lower the default
+                  // error threshold for accepting a calibration (to be more specific, some
+                  // of the new test cases arising from fixing a subset of the model's
+                  // parameters do not calibrate with the desired error using the initial
+                  // guess (i.e. optimization runs into a local minimum) - then a series of
+                  // random start values for optimization is chosen until our tight custom
+                  // error threshold is satisfied.
+                  SABRInterpolation sabrInterpolation(
+                      strikes.begin(), strikes.end(), volatilities.begin(),
+                      expiry, forward, isAlphaFixed[k_a] ? initialAlpha : alphaGuess,
+                      isBetaFixed[k_b] ? initialBeta : betaGuess,
+                      isNuFixed[k_n] ? initialNu : nuGuess,
+                      isRhoFixed[k_r] ? initialRho : rhoGuess, isAlphaFixed[k_a],
+                      isBetaFixed[k_b], isNuFixed[k_n], isRhoFixed[k_r],
+                      vegaWeighted[i], endCriteria, methods_[j], 1E-10);
+                  sabrInterpolation.update();
 
                 // Recover SABR calibration parameters
                 bool failed = false;
@@ -1686,6 +1700,458 @@ void InterpolationTest::testRichardsonExtrapolation() {
     }
 }
 
+void InterpolationTest::testNoArbSabrInterpolation(){
+
+    BOOST_TEST_MESSAGE("Testing no-arbitrage Sabr interpolation...");
+
+    // Test SABR function against input volatilities
+    Real tolerance = 1.0e-12;
+    std::vector<Real> strikes(31);
+    std::vector<Real> volatilities(31), volatilities2(31);
+    // input strikes
+    strikes[0] = 0.03 ; strikes[1] = 0.032 ; strikes[2] = 0.034 ;
+    strikes[3] = 0.036 ; strikes[4] = 0.038 ; strikes[5] = 0.04 ;
+    strikes[6] = 0.042 ; strikes[7] = 0.044 ; strikes[8] = 0.046 ;
+    strikes[9] = 0.048 ; strikes[10] = 0.05 ; strikes[11] = 0.052 ;
+    strikes[12] = 0.054 ; strikes[13] = 0.056 ; strikes[14] = 0.058 ;
+    strikes[15] = 0.06 ; strikes[16] = 0.062 ; strikes[17] = 0.064 ;
+    strikes[18] = 0.066 ; strikes[19] = 0.068 ; strikes[20] = 0.07 ;
+    strikes[21] = 0.072 ; strikes[22] = 0.074 ; strikes[23] = 0.076 ;
+    strikes[24] = 0.078 ; strikes[25] = 0.08 ; strikes[26] = 0.082 ;
+    strikes[27] = 0.084 ; strikes[28] = 0.086 ; strikes[29] = 0.088;
+    strikes[30] = 0.09;
+    // input volatilities for noarb sabr (other than above
+    // alpha is 0.2 here due to the restriction sigmaI <= 1.0 !)
+    volatilities[0] = 0.773729077752926;
+    volatilities[1] = 0.763916242454194;
+    volatilities[2] = 0.754773878663612;
+    volatilities[3] = 0.746222305031368;
+    volatilities[4] = 0.738193023523582;
+    volatilities[5] = 0.730629785825930;
+    volatilities[6] = 0.723484825471685;
+    volatilities[7] = 0.716716812668892;
+    volatilities[8] = 0.710290301049393;
+    volatilities[9] = 0.704174528906769;
+    volatilities[10] = 0.698342635400901;
+    volatilities[11] = 0.692771033345972;
+    volatilities[12] = 0.687438902593476;
+    volatilities[13] = 0.682327777297265;
+    volatilities[14] = 0.677421206991904;
+    volatilities[15] = 0.672704476238547;
+    volatilities[16] = 0.668164371832768;
+    volatilities[17] = 0.663788984329375;
+    volatilities[18] = 0.659567547226380;
+    volatilities[19] = 0.655490294349232;
+    volatilities[20] = 0.651548341349061;
+    volatilities[21] = 0.647733583657137;
+    volatilities[22] = 0.644038608699086;
+    volatilities[23] = 0.640456620061898;
+    volatilities[24] = 0.636981371712714;
+    volatilities[25] = 0.633607110719560;
+    volatilities[26] = 0.630328527192861;
+    volatilities[27] = 0.627140710386248;
+    volatilities[28] = 0.624039110072250;
+    volatilities[29] = 0.621019502453590;
+    volatilities[30] = 0.618077959983455;
+
+    Time expiry = 1.0;
+    Real forward = 0.039;
+    // input SABR coefficients (corresponding to the vols above)
+    Real initialAlpha = 0.2;
+    Real initialBeta = 0.6;
+    Real initialNu = 0.02;
+    Real initialRho = 0.01;
+    // calculate SABR vols and compare with input vols
+    NoArbSabrSmileSection noarbSabr(expiry, forward,
+                                    boost::assign::list_of(initialAlpha)(
+                                        initialBeta)(initialNu)(initialRho));
+    for (Size i = 0; i < strikes.size(); i++) {
+        Real calculatedVol = noarbSabr.volatility(strikes[i]);
+        if (std::fabs(volatilities[i]-calculatedVol) > tolerance)
+        BOOST_ERROR(
+            "failed to calculate noarb-Sabr function at strike " << strikes[i]
+            << "\n    expected:   " << volatilities[i]
+            << "\n    calculated: " << calculatedVol
+            << "\n    error:      " << std::fabs(calculatedVol-volatilities[i]));
+    }
+
+    // Test SABR calibration against input parameters
+    Real betaGuess = 0.5;
+    Real alphaGuess = 0.2 / std::pow(forward,betaGuess-1.0); // new default value for alpha
+    Real nuGuess = std::sqrt(0.4);
+    Real rhoGuess = 0.0;
+
+    const bool vegaWeighted[]= {true, false};
+    const bool isAlphaFixed[]= {true, false};
+    const bool isBetaFixed[]= {true, false};
+    const bool isNuFixed[]= {true, false};
+    const bool isRhoFixed[]= {true, false};
+
+    Real calibrationTolerance = 5.0e-6;
+    // initialize optimization methods
+    std::vector<boost::shared_ptr<OptimizationMethod> > methods_;
+    methods_.push_back( boost::shared_ptr<OptimizationMethod>(new Simplex(0.01)));
+    methods_.push_back( boost::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8)));
+    // Initialize end criteria
+    boost::shared_ptr<EndCriteria> endCriteria(new
+                  EndCriteria(100000, 100, 1e-8, 1e-8, 1e-8));
+    // Test looping over all possibilities
+    for (Size j=1; j<methods_.size(); ++j) { // skip simplex (gets caught in some cases)
+        for (Size i=0; i<LENGTH(vegaWeighted); ++i) {
+            for (Size k_a=0; k_a<LENGTH(isAlphaFixed); ++k_a) {
+                for (Size k_b=0; k_b<1/*LENGTH(isBetaFixed)*/; ++k_b) { // keep beta fixed (all 4 params free is a problem for this kind of test)
+                    for (Size k_n=0; k_n<LENGTH(isNuFixed); ++k_n) {
+                        for (Size k_r=0; k_r<LENGTH(isRhoFixed); ++k_r) {
+                            NoArbSabrInterpolation noarbSabrInterpolation(
+                                                                          strikes.begin(), strikes.end(),
+                                                                          volatilities.begin(), expiry, forward,
+                                                                          isAlphaFixed[k_a] ? initialAlpha
+                                                                          : alphaGuess,
+                                                                          isBetaFixed[k_b] ? initialBeta
+                                                                          : betaGuess,
+                                                                          isNuFixed[k_n] ? initialNu : nuGuess,
+                                                                          isRhoFixed[k_r] ? initialRho : rhoGuess,
+                                                                          isAlphaFixed[k_a], isBetaFixed[k_b],
+                                                                          isNuFixed[k_n], isRhoFixed[k_r],
+                                                                          vegaWeighted[i], endCriteria,
+                                                                          methods_[j], 1E-10);
+                            noarbSabrInterpolation.update();
+
+                            // Recover SABR calibration parameters
+                            bool failed = false;
+                            Real calibratedAlpha = noarbSabrInterpolation.alpha();
+                            Real calibratedBeta = noarbSabrInterpolation.beta();
+                            Real calibratedNu = noarbSabrInterpolation.nu();
+                            Real calibratedRho = noarbSabrInterpolation.rho();
+                            Real error;
+
+                            // compare results: alpha
+                            error = std::fabs(initialAlpha-calibratedAlpha);
+                            if (error > calibrationTolerance) {
+                                BOOST_ERROR("\nfailed to calibrate alpha Sabr parameter:" <<
+                                            "\n    expected:        " << initialAlpha <<
+                                            "\n    calibrated:      " << calibratedAlpha <<
+                                            "\n    error:           " << error);
+                                failed = true;
+                            }
+                            // Beta
+                            error = std::fabs(initialBeta-calibratedBeta);
+                            if (error > calibrationTolerance) {
+                                BOOST_ERROR("\nfailed to calibrate beta Sabr parameter:" <<
+                                            "\n    expected:        " << initialBeta <<
+                                            "\n    calibrated:      " << calibratedBeta <<
+                                            "\n    error:           " << error);
+                                failed = true;
+                            }
+                            // Nu
+                            error = std::fabs(initialNu-calibratedNu);
+                            if (error > calibrationTolerance) {
+                                BOOST_ERROR("\nfailed to calibrate nu Sabr parameter:" <<
+                                            "\n    expected:        " << initialNu <<
+                                            "\n    calibrated:      " << calibratedNu <<
+                                            "\n    error:           " << error);
+                                failed = true;
+                            }
+                            // Rho
+                            error = std::fabs(initialRho-calibratedRho);
+                            if (error > calibrationTolerance) {
+                                BOOST_ERROR("\nfailed to calibrate rho Sabr parameter:" <<
+                                            "\n    expected:        " << initialRho <<
+                                            "\n    calibrated:      " << calibratedRho <<
+                                            "\n    error:           " << error);
+                                failed = true;
+                            }
+
+                            if (failed)
+                                BOOST_TEST_MESSAGE("\nnoarb-Sabr calibration failure:" <<
+                                           "\n    isAlphaFixed:    " << isAlphaFixed[k_a] <<
+                                           "\n    isBetaFixed:     " << isBetaFixed[k_b] <<
+                                           "\n    isNuFixed:       " << isNuFixed[k_n] <<
+                                           "\n    isRhoFixed:      " << isRhoFixed[k_r] <<
+                                           "\n    vegaWeighted[i]: " << vegaWeighted[i]);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+
+void InterpolationTest::testSabrSingleCases() {
+
+    BOOST_TEST_MESSAGE("Testing Sabr calibration single cases...");
+
+    // case #1
+    // this fails with an exception thrown in 1.4, fixed in 1.5
+
+    using namespace boost::assign;
+    std::vector<Real> strikes, vols;
+    strikes += 0.01, 0.01125, 0.0125, 0.01375, 0.0150;
+    vols += 0.1667, 0.2020, 0.2785, 0.3279, 0.3727;
+
+    Real tte = 0.3833;
+    Real forward = 0.011025;
+
+    SABRInterpolation s0(strikes.begin(), strikes.end(), vols.begin(), tte, forward,
+                         Null<Real>(), 0.25, Null<Real>(), Null<Real>(),
+                         false, true, false, false);
+    s0.update();
+
+    if (s0.maxError() > 0.01 || s0.rmsError() > 0.01) {
+        BOOST_ERROR("Sabr case #1 failed with max error ("
+                      << s0.maxError() << ") and rms error (" << s0.rmsError()
+                      << "), both should be < 0.01");
+    }
+
+}
+
+void InterpolationTest::testTransformations() {
+
+    BOOST_TEST_MESSAGE("Testing Sabr and no-arbitrage Sabr transformation functions...");
+
+    Real size = 25.0; // test inputs from [-size,size]^4
+
+    Size N = 100000;
+
+    Array x(4), y(4), z(4);
+    std::vector<Real> s;
+    std::vector<bool> fixed(4, false);
+    std::vector<Real> params(4, 0.0);
+    Real forward = 0.03;
+
+    HaltonRsg h(4, 42, false, false);
+
+    for (Size i = 0; i < 1E6; ++i) {
+
+        s = h.nextSequence().value;
+        for (Size j = 0; j < 4; ++j)
+            x[j] = 2.0 * size * s[j] - size;
+
+        // sabr
+        y = detail::SABRSpecs().direct(x, fixed, params, forward);
+        validateSabrParameters(y[0], y[1], y[2], y[3]);
+        z = detail::SABRSpecs().inverse(y, fixed, params, forward);
+        z = detail::SABRSpecs().direct(z, fixed, params, forward);
+        if (!close(z[0], y[0], N) || !close(z[1], y[1], N) || !close(z[2], y[2], N) ||
+            !close(z[3], y[3], N))
+            BOOST_ERROR("SabrInterpolation: direct(inverse("
+                        << y[0] << "," << y[1] << "," << y[2] << "," << y[3]
+                        << ")) = (" << z[0] << "," << z[1] << "," << z[2] << ","
+                        << z[3] << "), difference is (" << z[0] - y[0] << ","
+                        << z[1] - y[1] << "," << z[2] - y[2] << ","
+                        << z[3] - y[3] << ")");
+
+        // noarb sabr
+        y = detail::NoArbSabrSpecs().direct(x, fixed, params, forward);
+
+        // we can not invoke the constructor, this would be too slow, so
+        // we copy the parameter check here ...
+        Real alpha = y[0];
+        Real beta = y[1];
+        Real nu = y[2];
+        Real rho = y[3];
+        QL_REQUIRE(beta >= detail::NoArbSabrModel::beta_min &&
+                       beta <= detail::NoArbSabrModel::beta_max,
+                   "beta (" << beta << ") out of bounds");
+        Real sigmaI = alpha * std::pow(forward, beta - 1.0);
+        QL_REQUIRE(sigmaI >= detail::NoArbSabrModel::sigmaI_min &&
+                       sigmaI <= detail::NoArbSabrModel::sigmaI_max,
+                   "sigmaI = alpha*forward^(beta-1.0) ("
+                       << sigmaI << ") out of bounds, alpha=" << alpha
+                       << " beta=" << beta << " forward=" << forward);
+        QL_REQUIRE(nu >= detail::NoArbSabrModel::nu_min &&
+                       nu <= detail::NoArbSabrModel::nu_max,
+                   "nu (" << nu << ") out of bounds");
+        QL_REQUIRE(rho >= detail::NoArbSabrModel::rho_min &&
+                       rho <= detail::NoArbSabrModel::rho_max,
+                   "rho (" << rho << ") out of bounds");
+
+        z = detail::NoArbSabrSpecs().inverse(y, fixed, params, forward);
+        z = detail::NoArbSabrSpecs().direct(z, fixed, params, forward);
+        if (!close(z[0], y[0], N) || !close(z[1], y[1], N) || !close(z[2], y[2], N) ||
+            !close(z[3], y[3], N))
+            BOOST_ERROR("NoArbSabrInterpolation: direct(inverse("
+                        << y[0] << "," << y[1] << "," << y[2] << "," << y[3]
+                        << ")) = (" << z[0] << "," << z[1] << "," << z[2] << ","
+                        << z[3] << "), difference is (" << z[0] - y[0] << ","
+                        << z[1] - y[1] << "," << z[2] - y[2] << ","
+                        << z[3] - y[3] << ")");
+    }
+
+}
+
+namespace {
+    Real lagrangeTestFct(Real x) {
+        return std::fabs(x) + 0.5*x - x*x;
+    }
+}
+
+void InterpolationTest::testLagrangeInterpolation() {
+
+    BOOST_TEST_MESSAGE("Testing Lagrange Interpolation...");
+
+    const Real x[] = {-1.0 , -0.5, -0.25, 0.1, 0.4, 0.75, 0.96};
+    Array y(LENGTH(x));
+    std::transform(x, x+LENGTH(x), y.begin(), &lagrangeTestFct);
+
+    LagrangeInterpolation interpl(&x[0], x+LENGTH(x), y.begin());
+
+    // reference results are taken from R package pracma
+    const Real references[] = {
+        -0.5000000000000000,-0.5392414024347419,-0.5591485962711904,
+        -0.5629199661387594,-0.5534414777017116,-0.5333043347921566,
+        -0.5048221831582063,-0.4700478608272949,-0.4307896950846587,
+        -0.3886273460669714,-0.3449271969711449,-0.3008572908782903,
+        -0.2574018141928359,-0.2153751266968088,-0.1754353382192734,
+        -0.1380974319209344,-0.1037459341938971,-0.0726471311765894,
+        -0.0449608318838433,-0.0207516779521373,0.0000000000000000,
+        0.0173877793964286,0.0315691961126723,0.0427562482700356,
+        0.0512063534145595,0.0572137590808174,0.0611014067405497,
+        0.0632132491361394,0.0639070209989264,0.0635474631523613,
+        0.0625000000000000,0.0611248703983366,0.0597717119144768,
+        0.0587745984686508,0.0584475313615655,0.0590803836865967,
+        0.0609352981268212,0.0642435381368876,0.0692027925097279,
+        0.0759749333281079,0.0846842273010179,0.0954160004849021,
+        0.1082157563897290,0.1230887474699003,0.1400000000000001,
+        0.1588747923353829,0.1795995865576031,0.2020234135046815,
+        0.2259597111862140,0.2511886165833182,0.2774597108334206,
+        0.3044952177998833,0.3319936560264689,0.3596339440766487,
+        0.3870799592577457,0.4139855497299214,0.4400000000000001,
+        0.4647739498001331,0.4879657663513030,0.5092483700116673,
+        0.5283165133097421,0.5448945133624253,0.5587444376778583,
+        0.5696747433431296,0.5775493695968156,0.5822972837863635,
+        0.5839224807103117,0.5825144353453510,0.5782590089582251,
+        0.5714498086024714,0.5625000000000000,0.5519545738075141,
+        0.5405030652677689,0.5289927272456703,0.5184421566492137,
+        0.5100553742352614,0.5052363578001620,0.5056040287552059,
+        0.5130076920869246
+    };
+
+    const Real tol = 50*QL_EPSILON;
+    for (Size i=0; i < 79; ++i) {
+        const Real xx = -1.0 + i*0.025;
+        const Real calculated = interpl(xx);
+        if (   boost::math::isnan(calculated)
+            || std::fabs(references[i] - calculated) > tol) {
+            BOOST_FAIL("failed to reproduce the Lagrange interplation"
+                    << "\n    x         : " << xx
+                    << "\n    calculated: " << calculated
+                    << "\n    expected  : " << references[i]);
+        }
+    }
+}
+
+void InterpolationTest::testLagrangeInterpolationAtSupportPoint() {
+    BOOST_TEST_MESSAGE(
+        "Testing Lagrange Interpolation at supporting points...");
+
+    const Size n=5;
+    Array x(n), y(n);
+    for (Size i=0; i < n; ++i) {
+        x[i] = i/Real(n);
+        y[i] = 1.0/(1.0 - x[i]);
+    }
+    LagrangeInterpolation interpl(x.begin(), x.end(), y.begin());
+
+    const Real relTol = 5e-12;
+
+    for (Size i=1; i < n-1; ++i) {
+        for (Real z = x[i] - 100*QL_EPSILON;
+            z < x[i] + 100*QL_EPSILON; z+=2*QL_EPSILON) {
+            const Real expected = 1.0/(1.0 - x[i]);
+            const Real calculated = interpl(z);
+
+            if (   boost::math::isnan(calculated)
+                || std::fabs(expected - calculated) > relTol) {
+                BOOST_FAIL("failed to reproduce the Lagrange interplation"
+                        << "\n    x         : " << z
+                        << "\n    calculated: " << calculated
+                        << "\n    expected  : " << expected);
+            }
+        }
+    }
+}
+
+void InterpolationTest::testLagrangeInterpolationDerivative() {
+    BOOST_TEST_MESSAGE(
+        "Testing Lagrange Interpolation derivatives...");
+
+    Array x(5), y(5);
+    x[0] = -1.0; y[0] = 2.0;
+    x[1] = -0.3; y[1] = 3.0;
+    x[2] =  0.1; y[2] = 6.0;
+    x[3] =  0.3; y[3] = 3.0;
+    x[4] =  0.9; y[4] =-1.0;
+
+    LagrangeInterpolation interpl(x.begin(), x.end(), y.begin());
+
+    const Real eps = std::sqrt(QL_EPSILON);
+    for (Real x=-1.0; x <= 0.9; x+=0.01) {
+        const Real calculated = interpl.derivative(x, true);
+        const Real expected = (interpl(x+eps, true)
+            - interpl(x-eps, true))/(2*eps);
+
+        if (   boost::math::isnan(calculated)
+            || std::fabs(expected - calculated) > 25*eps) {
+            BOOST_FAIL("failed to reproduce the Lagrange"
+                    " interplation derivative"
+                    << "\n    x         : " << x
+                    << "\n    calculated: " << calculated
+                    << "\n    expected  : " << expected);
+        }
+    }
+}
+
+void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
+    BOOST_TEST_MESSAGE(
+        "Testing Lagrange Interpolation on Chebyshev points...");
+
+    // Test example taken from
+    // J.P. Berrut, L.N. Trefethen, Barycentric Lagrange Interpolation
+    // https://people.maths.ox.ac.uk/trefethen/barycentric.pdf
+
+    const Size n=50;
+    Array x(n+1), y(n+1);
+    for (Size i=0; i <= n; ++i) {
+        // Chebyshev points
+        x[i] = std::cos( (2*i+1)*M_PI/(2*n+2) );
+        y[i] = std::exp(x[i])/std::cos(x[i]);
+    }
+
+    LagrangeInterpolation interpl(x.begin(), x.end(), y.begin());
+
+    const Real tol = 1e-13;
+
+    for (Real x=-1.0; x <= 1.0; x+=0.01) {
+        const Real calculated = interpl(x, true);
+        const Real expected = std::exp(x)/std::cos(x);
+
+        if (   boost::math::isnan(calculated)
+            || std::fabs(expected - calculated) > tol) {
+            BOOST_FAIL("failed to reproduce the Lagrange"
+                    " interplation on Chebyshev points"
+                    << "\n    x         : " << x
+                    << "\n    calculated: " << calculated
+                    << "\n    expected  : " << expected);
+        }
+
+        const Real calculatedDeriv = interpl.derivative(x, true);
+        const Real expectedDeriv = std::exp(x)*(std::cos(x) + std::sin(x))
+                / square<Real>()(std::cos(x));
+
+        if (   boost::math::isnan(calculated)
+            || std::fabs(expected - calculated) > tol) {
+            BOOST_FAIL("failed to reproduce the Lagrange"
+                    " interplation derivative on Chebyshev points"
+                    << "\n    x         : " << x
+                    << "\n    calculated: " << calculatedDeriv
+                    << "\n    expected  : " << expectedDeriv);
+        }
+    }
+}
+
 
 test_suite* InterpolationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
@@ -1716,7 +2182,18 @@ test_suite* InterpolationTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBicubicUpdate));
     suite->add(QUANTLIB_TEST_CASE(
                             &InterpolationTest::testRichardsonExtrapolation));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testNoArbSabrInterpolation));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSabrSingleCases));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testTransformations));
+    suite->add(QUANTLIB_TEST_CASE(
+        &InterpolationTest::testLagrangeInterpolation));
+    suite->add(QUANTLIB_TEST_CASE(
+        &InterpolationTest::testLagrangeInterpolationAtSupportPoint));
+    suite->add(QUANTLIB_TEST_CASE(
+        &InterpolationTest::testLagrangeInterpolationDerivative));
+
+    suite->add(QUANTLIB_TEST_CASE(
+        &InterpolationTest::testLagrangeInterpolationOnChebyshevPoints));
 
     return suite;
 }
-

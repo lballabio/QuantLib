@@ -28,7 +28,7 @@
 
 namespace QuantLib {
 
-    //! Russian calendar
+    //! Russian calendars
     /*! Public holidays (see <http://www.cbr.ru/eng/>:):
         <ul>
         <li>Saturdays</li>
@@ -44,17 +44,33 @@ namespace QuantLib {
         <li>Unity Day, November 4th (possibly moved to Monday)</li>
         </ul>
 
+        Holidays for the Moscow Exchange (MOEX) taken from
+        <http://moex.com/s726> and related pages.  These holidays are
+        <em>not</em> consistent year-to-year, may or may not correlate
+        to public holidays, and are only available for dates since the
+        introduction of the MOEX 'brand' (a merger of the stock and
+        futures markets).
+
         \ingroup calendars
     */
     class Russia : public Calendar {
       private:
-        class SettlementImpl : public Calendar::WesternImpl {
+        class SettlementImpl : public Calendar::OrthodoxImpl {
           public:
             std::string name() const { return "Russian settlement"; }
             bool isBusinessDay(const Date&) const;
         };
+        class ExchangeImpl : public Calendar::OrthodoxImpl {
+          public:
+            std::string name() const { return "Moscow exchange"; }
+            bool isBusinessDay(const Date&) const;
+        };
       public:
-        Russia();
+        //! Russian calendars
+        enum Market { Settlement, //!< generic settlement calendar
+                      MOEX        //!< Moscow Exchange calendar
+        };
+        Russia(Market = Settlement);
     };
 
 }

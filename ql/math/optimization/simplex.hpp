@@ -36,6 +36,25 @@
 namespace QuantLib {
 
     //! Multi-dimensional simplex class
+    /*! This method is rather raw and requires quite a lot of
+        computing resources, but it has the advantage that it does not
+        need any evaluation of the cost function's gradient, and that
+        it is quite easily implemented. First, we choose N+1
+        starting points, given here by a starting point \f$
+        \mathbf{P}_{0} \f$ and N points such that
+        \f[ 
+            \mathbf{P}_{\mathbf{i}}=\mathbf{P}_{0}+\lambda \mathbf{e}_{\mathbf{i}},
+        \f]
+        where \f$ \lambda \f$ is the problem's characteristic length scale). These 
+        points will form a geometrical form called simplex.
+        The principle of the downhill simplex method is, at each
+        iteration, to move the worst point (highest cost function value)
+        through the opposite face to a better point. When the simplex
+        seems to be constrained in a valley, it will be contracted
+        downhill, keeping the best point unchanged.
+
+        \ingroup optimizers
+    */
     class Simplex : public OptimizationMethod {
       public:
         /*! Constructor taking as input the characteristic length */

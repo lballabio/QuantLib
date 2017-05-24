@@ -8,16 +8,14 @@ else
 noinst_PROGRAMS = ConvertibleBonds
 endif
 ConvertibleBonds_SOURCES = ConvertibleBonds.cpp
-ConvertibleBonds_LDADD = ../../ql/libQuantLib.la
+ConvertibleBonds_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
+    CMakeLists.txt \
     ConvertibleBonds.dev \
-    ConvertibleBonds_vc8.vcproj \
     ConvertibleBonds_vc9.vcproj \
-    ConvertibleBonds_vc10.vcxproj \
-    ConvertibleBonds_vc10.vcxproj.filters \
-    ConvertibleBonds_vc11.vcxproj \
-    ConvertibleBonds_vc11.vcxproj.filters \
+    ConvertibleBonds.vcxproj \
+    ConvertibleBonds.vcxproj.filters \
     ReadMe.txt
 
 .PHONY: examples check-examples

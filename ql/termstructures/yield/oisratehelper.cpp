@@ -22,13 +22,11 @@
 #include <ql/instruments/makeois.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 
+#include <ql/utilities/null_deleter.hpp>
+
 using boost::shared_ptr;
 
 namespace QuantLib {
-
-    namespace {
-        void no_deletion(YieldTermStructure*) {}
-    }
 
     OISRateHelper::OISRateHelper(
                     Natural settlementDays,
@@ -69,7 +67,7 @@ namespace QuantLib {
         // force recalculation when needed
         bool observer = false;
 
-        shared_ptr<YieldTermStructure> temp(t, no_deletion);
+        shared_ptr<YieldTermStructure> temp(t, null_deleter());
         termStructureHandle_.linkTo(temp, observer);
 
         if (discountHandle_.empty())
@@ -131,7 +129,7 @@ namespace QuantLib {
         // force recalculation when needed
         bool observer = false;
 
-        shared_ptr<YieldTermStructure> temp(t, no_deletion);
+        shared_ptr<YieldTermStructure> temp(t, null_deleter());
         termStructureHandle_.linkTo(temp, observer);
 
         if (discountHandle_.empty())

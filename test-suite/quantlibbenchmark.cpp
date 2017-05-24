@@ -29,44 +29,49 @@
  using the perfex library, http://user.it.uu.se/~mikpe/linux/perfctr
  and PAPI, http://icl.cs.utk.edu/papi
 
- Example results: 1. i7 870@2.93GHz         :4759.2 mflops
-                  2. Core2 Q9300@2.5Ghz     :2272.6 mflops
-                  3. Core2 Q6600@2.4Ghz     :1984.0 mflops
-                  4. i3 540@3.1Ghz          :1755.3 mflops
-                  5. Core2 Dual@2.0Ghz      : 835.9 mflops
-                  6. Athlon 64 X2 4400+     : 824.2 mflops
-                  7. Core2 Dual@2.0Ghz      : 754.1 mflops
-                  8. Pentium4 Dual@2.8Ghz   : 423.8 mflops
-                  9. Pentium4@3.0Ghz        : 266.3 mflops
-                 10. PentiumIII@1.1Ghz      : 146.2 mflops
-                 11. Alpha 2xEV68@833Mhz    : 184.6 mflops
-                 12. Raspberry Pi ARM@700Mhz:  28.3 mflops
-                 13. Strong ARM@206Mhz      :   1.4 mflops
+ Example results: 1. i7 4702HQ@2.2GHz       :6524.9 mflops
+ 	 	 	 	  2. i7 870@2.93GHz         :4759.2 mflops
+                  3. Core2 Q9300@2.5Ghz     :2272.6 mflops
+                  4. Core2 Q6600@2.4Ghz     :1984.0 mflops
+                  5. i3 540@3.1Ghz          :1755.3 mflops
+                  6. Core2 Dual@2.0Ghz      : 835.9 mflops
+                  7. Athlon 64 X2 4400+     : 824.2 mflops
+                  8. Core2 Dual@2.0Ghz      : 754.1 mflops
+                  9. Pentium4 Dual@2.8Ghz   : 423.8 mflops
+                 10. Raspberry Pi3@1.2GHz   : 309.2 mflops
+                 11. Pentium4@3.0Ghz        : 266.3 mflops
+                 12. PentiumIII@1.1Ghz      : 146.2 mflops
+                 13. Alpha 2xEV68@833Mhz    : 184.6 mflops
+                 14. Raspberry Pi ARM@700Mhz:  28.3 mflops
+                 15. Strong ARM@206Mhz      :   1.4 mflops
 
  Remarks: OS: Linux, static libs
-  1. gcc-4.6.3, -O3 -ffast-math -mfpmath=sse,387 -march=corei7
+  1. g++-4.8.1 -O3 -ffast-math -march=core-avx2
       Remark: eight processes
-  2. icc-11.0,  -gcc-version=420 -fast -fp-model fast=2 -ipo-jobs2
-      Remark: four processes
+  2. gcc-4.6.3, -O3 -ffast-math -mfpmath=sse,387 -march=corei7
+      Remark: eight processes
   3. icc-11.0,  -gcc-version=420 -fast -fp-model fast=2 -ipo-jobs2
       Remark: four processes
-  4. gcc-4.4.5, -O3 -ffast-math -mfpmath=sse,387 -msse4.2 -march=core2
+  4. icc-11.0,  -gcc-version=420 -fast -fp-model fast=2 -ipo-jobs2
       Remark: four processes
-  5. icc-11.0,  -gcc-version=420 -fast -fp-model fast=2 -ipo-jobs2
+  5. gcc-4.4.5, -O3 -ffast-math -mfpmath=sse,387 -msse4.2 -march=core2
+      Remark: four processes
+  6. icc-11.0,  -gcc-version=420 -fast -fp-model fast=2 -ipo-jobs2
       Remark: two processes
-  6. icc-11.0,  -gcc-version=420 -xSSSE3 -O3 -ipo -no-prec-div -static
+  7. icc-11.0,  -gcc-version=420 -xSSSE3 -O3 -ipo -no-prec-div -static
                 -fp-model fast=2 -ipo-jobs2, Remark: two processes
-  7. gcc-4.2.1, -O3 -ffast-math -mfpmath=sse,387 -msse3 -funroll-all-loops
+  8. gcc-4.2.1, -O3 -ffast-math -mfpmath=sse,387 -msse3 -funroll-all-loops
       Remark: two processes
-  8. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
-      -mfpmath=sse,387 -msse2 -funroll-all-loops, Remark: two processes
   9. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
+      -mfpmath=sse,387 -msse2 -funroll-all-loops, Remark: two processes
+ 10. gcc-4.9.2  -O2, Remark: four processes
+ 11. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
                 -mfpmath=sse,387 -msse2 -funroll-all-loops
- 10. gcc-4.1.1, -O3 -march=pentium3 -ffast-math
+ 12. gcc-4.1.1, -O3 -march=pentium3 -ffast-math
                 -mfpmath=sse,387 -msse -funroll-all-loops
- 11. gcc-3.3.5, -O3 -mcpu=e67 -funroll-all-loops, Remark: two processes
- 12. gcc-4.6.3, -O3
- 13. gcc-3.4.3, -O2 -g on a Zaurus PDA
+ 13. gcc-3.3.5, -O3 -mcpu=e67 -funroll-all-loops, Remark: two processes
+ 14. gcc-4.6.3, -O3
+ 15. gcc-3.4.3, -O2 -g on a Zaurus PDA
 
   This benchmark is derived from quantlibtestsuite.cpp. Please see the
   copyrights therein.
@@ -132,7 +137,7 @@ namespace {
     class Benchmark {
       public:
         typedef void (*fct_ptr)();
-        Benchmark(std::string name, fct_ptr f, double mflop)
+        Benchmark(const std::string& name, fct_ptr f, double mflop)
         : f_(f), name_(name), mflop_(mflop) {
         }
 
@@ -207,8 +212,8 @@ namespace {
                       << " mflops" << std::endl;
 
             sum+=mflopsPerSec;
-            iterT++;
-            iterBM++;
+            ++iterT;
+            ++iterBM;
         }
         std::cout << std::string(56,'-') << std::endl
                   << "QuantLib Benchmark Index                  :"

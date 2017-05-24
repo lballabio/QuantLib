@@ -124,7 +124,7 @@ namespace QuantLib {
 
             // price each period
             for (PricingPeriods::const_iterator pi = pricingPeriods_.begin();
-                 pi != pricingPeriods_.end(); pi++) {
+                 pi != pricingPeriods_.end(); ++pi) {
                 const boost::shared_ptr<PricingPeriod>& pricingPeriod = *pi;
 
                 QL_REQUIRE(pricingPeriod->quantity().amount() != 0,
@@ -194,7 +194,7 @@ namespace QuantLib {
                 for (std::map<Date, EnergyDailyPosition>::iterator dpi =
                          dailyPositions_.find(periodStartDate);
                      dpi != dailyPositions_.end() &&
-                         dpi->first <= pricingPeriod->endDate(); dpi++) {
+                         dpi->first <= pricingPeriod->endDate(); ++dpi) {
                     EnergyDailyPosition& dailyPosition = dpi->second;
                     dailyPosition.quantityAmount = avgDailyQuantityAmount;
                     dailyPosition.riskDelta =
@@ -256,7 +256,7 @@ namespace QuantLib {
 
             for (SecondaryCostAmounts::const_iterator i =
                      secondaryCostAmounts_.begin();
-                 i != secondaryCostAmounts_.end(); i++) {
+                 i != secondaryCostAmounts_.end(); ++i) {
                 Real amount = i->second.value();
                 NPV_ -= amount;
             }

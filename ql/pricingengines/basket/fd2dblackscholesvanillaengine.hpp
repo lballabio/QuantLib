@@ -47,7 +47,9 @@ namespace QuantLib {
                 Real correlation,
                 Size xGrid = 100, Size yGrid = 100, 
                 Size tGrid = 50, Size dampingSteps = 0,
-                const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
+                const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+                bool localVol = false,
+                Real illegalLocalVolOverwrite = -Null<Real>());
 
         void calculate() const;
 
@@ -58,6 +60,8 @@ namespace QuantLib {
         const Size xGrid_, yGrid_, tGrid_;
         const Size dampingSteps_;
         const FdmSchemeDesc schemeDesc_;
+        const bool localVol_;
+        const Real illegalLocalVolOverwrite_;
     };
 }
 

@@ -43,6 +43,9 @@ namespace QuantLib {
         const Date& exerciseDate() const;
         Time exerciseTime() const;
         const DayCounter& dayCounter() const;
+        const Date& referenceDate() const;
+        VolatilityType volatilityType() const;
+        Rate shift() const;
         //@}
         //! \name LazyObject interface
         //@{
@@ -79,6 +82,17 @@ namespace QuantLib {
         return underlyingSection_->dayCounter();
     }
 
+    inline const Date& SpreadedSmileSection::referenceDate() const {
+        return underlyingSection_->referenceDate();
+    }
+
+    inline VolatilityType SpreadedSmileSection::volatilityType() const {
+        return underlyingSection_->volatilityType();
+    }
+
+    inline Rate SpreadedSmileSection::shift() const {
+        return underlyingSection_->shift();
+    }
 }
 
 #endif

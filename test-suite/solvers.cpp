@@ -27,6 +27,7 @@
 #include <ql/math/solvers1d/secant.hpp>
 #include <ql/math/solvers1d/newton.hpp>
 #include <ql/math/solvers1d/newtonsafe.hpp>
+#include <ql/math/solvers1d/finitedifferencenewtonsafe.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -45,6 +46,11 @@ namespace {
         Real derivative(Real x) const { return -2.0*x; }
     };
 
+    class F3 {
+      public:
+        Real operator()(Real x) const { return std::atan(x-1); }
+        Real derivative(Real x) const { return 1.0 / (1.0+(x-1.0)*(x-1.0)); }
+    };
 
     template <class S, class F>
     void test_not_bracketed(const S& solver, const std::string& name,
@@ -147,9 +153,16 @@ namespace {
         // guess on the right side of the root, decreasing function
         test_not_bracketed(solver, name, F2(), 1.5);
         test_bracketed(solver, name, F2(), 1.5);
+        // situation where bisection is used in the finite difference
+        // newton solver as the first step and where the initial
+        // guess is equal to the next estimate (which causes an infinite
+        // derivative if we do not handle this case with special care)
+        test_not_bracketed(solver, name, F3(), 1.00001);
         // check that the last function call is made with the root value
-        test_last_call_with_root(solver, name, false, accuracy);
-        test_last_call_with_root(solver, name, true, accuracy);
+        if(accuracy != Null<Real>()) {
+            test_last_call_with_root(solver, name, false, accuracy);
+            test_last_call_with_root(solver, name, true, accuracy);
+        }
     }
 
 }
@@ -180,6 +193,11 @@ void Solver1DTest::testNewtonSafe() {
     test_solver(NewtonSafe(), "NewtonSafe", 1.0e-9);
 }
 
+void Solver1DTest::testFiniteDifferenceNewtonSafe() {
+    BOOST_TEST_MESSAGE("Testing finite-difference Newton-safe solver...");
+    test_solver(FiniteDifferenceNewtonSafe(), "FiniteDifferenceNewtonSafe", Null<Real>());
+}
+
 void Solver1DTest::testRidder() {
     BOOST_TEST_MESSAGE("Testing Ridder solver...");
     test_solver(Ridder(), "Ridder", 1.0e-6);
@@ -198,6 +216,7 @@ test_suite* Solver1DTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&Solver1DTest::testFalsePosition));
     suite->add(QUANTLIB_TEST_CASE(&Solver1DTest::testNewton));
     suite->add(QUANTLIB_TEST_CASE(&Solver1DTest::testNewtonSafe));
+    suite->add(QUANTLIB_TEST_CASE(&Solver1DTest::testFiniteDifferenceNewtonSafe));
     suite->add(QUANTLIB_TEST_CASE(&Solver1DTest::testRidder));
     suite->add(QUANTLIB_TEST_CASE(&Solver1DTest::testSecant));
     return suite;

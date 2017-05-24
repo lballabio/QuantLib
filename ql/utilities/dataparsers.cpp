@@ -24,11 +24,20 @@
 #include <ql/utilities/null.hpp>
 #include <ql/time/period.hpp>
 #include <ql/errors.hpp>
-#ifndef x64
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
+#if !defined(x64) && !defined(QL_PATCH_SOLARIS)
 #include <boost/lexical_cast.hpp>
 #endif
+#ifndef QL_PATCH_SOLARIS
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
+#endif
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic pop
+#endif
 #include <locale>
 #include <cctype>
 #if defined(BOOST_NO_STDC_NAMESPACE)
@@ -40,8 +49,8 @@ namespace QuantLib {
     namespace io {
 
         Integer to_integer(const std::string& str) {
-        #ifndef x64
-            return  boost::lexical_cast<Integer>(str.c_str());
+        #if !defined(x64) && !defined(QL_PATCH_SOLARIS)
+            return boost::lexical_cast<Integer>(str.c_str());
         #else
             return std::atoi(str.c_str());
         #endif
@@ -91,7 +100,6 @@ namespace QuantLib {
         Integer n;
         try {
             n = io::to_integer(str.substr(nPos,iPos));
-                //boost::lexical_cast<Integer>(str.substr(nPos,iPos));
         } catch (std::exception& e) {
             QL_FAIL("unable to parse the number of units of " << units <<
                     " in '" << str << "'. Error:" << e.what());
@@ -100,51 +108,9 @@ namespace QuantLib {
         return Period(n, units);
     }
 
-    std::vector<std::string> DateParser::split(const std::string& str,
-                                               char delim) {
-        std::vector<std::string> list;
-        Size sx= str.find(delim), so=0;
-
-        while (sx != std::string::npos) {
-            list.push_back(str.substr(so,sx));
-            so += sx+1;
-            sx = str.substr(so).find(delim);
-        }
-        list.push_back(str.substr(so));
-        return list;
-    }
-
-
-    Date DateParser::parse(const std::string& str, const std::string& fmt) {
-        std::vector<std::string> slist;
-        std::vector<std::string> flist;
-        Integer d=0, m=0, y=0;
-
-        slist = split(str,'/');
-        flist = split(fmt,'/');
-        if (slist.size() != flist.size())
-            return Null<Date>();
-        Size i;
-        for (i=0;i<flist.size();i++) {
-            std::string sub = flist[i];
-            if (boost::algorithm::to_lower_copy(sub) == "dd")
-                //  d = boost::lexical_cast<Integer>(slist[i]);
-                d = io::to_integer(slist[i]);
-            else if (boost::algorithm::to_lower_copy(sub) == "mm")
-                //     m = boost::lexical_cast<Integer>(slist[i]);
-                m = io::to_integer( slist[i]);
-            else if (boost::algorithm::to_lower_copy(sub) == "yyyy") {
-                //     y = boost::lexical_cast<Integer>(slist[i]);
-                y = io::to_integer(slist[i]);
-                if (y < 100)
-                    y += 2000;
-            }
-        }
-        return Date(d,Month(m),y);
-    }
-
     Date DateParser::parseFormatted(const std::string& str,
                                     const std::string& fmt) {
+        #ifndef QL_PATCH_SOLARIS
         using namespace boost::gregorian;
 
         date boostDate;
@@ -154,18 +120,17 @@ namespace QuantLib {
         is >> boostDate;
         date_duration noDays = boostDate - date(1901, 1, 1);
         return Date(1, January, 1901) + noDays.days();
+        #else
+        QL_FAIL("DateParser::parseFormatted not supported under Solaris");
+        #endif
     }
 
     Date DateParser::parseISO(const std::string& str) {
         QL_REQUIRE(str.size() == 10 && str[4] == '-' && str[7] == '-',
                    "invalid format");
-        Integer year = //boost::lexical_cast<Integer>(str.substr(0, 4));
-            io::to_integer(str.substr(0, 4));
-        Month month =
-            //  static_cast<Month>(boost::lexical_cast<Integer>(str.substr(5, 2)));
-            static_cast<Month>(io::to_integer(str.substr(5, 2)));
-        Integer day = //boost::lexical_cast<Integer>(str.substr(8, 2));
-            static_cast<Month>(io::to_integer(str.substr(8, 2)));
+        Integer year = io::to_integer(str.substr(0, 4));
+        Month month = static_cast<Month>(io::to_integer(str.substr(5, 2)));
+        Integer day = io::to_integer(str.substr(8, 2));
 
         return Date(day, month, year);
     }

@@ -87,7 +87,7 @@ namespace QuantLib {
         PayoffMap payoffMap;
         
         for (std::vector<boost::shared_ptr<Instrument> >::const_iterator optIt = optionList.begin();
-            optIt != optionList.end(); optIt++)
+            optIt != optionList.end(); ++optIt)
         {
             boost::shared_ptr<VanillaOption> option = boost::dynamic_pointer_cast<VanillaOption>(*optIt);
             QL_REQUIRE(option, "instrument must be option");
@@ -104,14 +104,14 @@ namespace QuantLib {
         std::complex<Real> i1(0, 1);
         Real alpha = 1.25;
 
-        for (PayoffMap::const_iterator payIt = payoffMap.begin(); payIt != payoffMap.end(); payIt++)
+        for (PayoffMap::const_iterator payIt = payoffMap.begin(); payIt != payoffMap.end(); ++payIt)
         {
             Date expiryDate = payIt->first;
 
             // Calculate n large enough for maximum strike, and round up to a power of 2
             Real maxStrike = 0.0;
             for (PayoffList::const_iterator it = payIt->second.begin();
-                it != payIt->second.end(); it++)
+                it != payIt->second.end(); ++it)
             {
                 boost::shared_ptr<StrikedTypePayoff> payoff = *it;
 
@@ -120,7 +120,7 @@ namespace QuantLib {
             }
             Real nR = 2.0 * (std::log(maxStrike) + lambda_) / lambda_;
       Size log2_n = (static_cast<Size>((std::log(nR) / std::log(2.0))) + 1);
-            Size n = 1 << log2_n;
+            Size n = static_cast<std::size_t>(1) << log2_n;
 
             // Strike range (equation 19,20)
             Real b = n * lambda_ / 2.0;
@@ -167,7 +167,7 @@ namespace QuantLib {
             }
 
             for (PayoffList::const_iterator it = payIt->second.begin();
-                it != payIt->second.end(); it++)
+                it != payIt->second.end(); ++it)
             {
                 boost::shared_ptr<StrikedTypePayoff> payoff = *it;
 

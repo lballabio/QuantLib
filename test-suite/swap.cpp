@@ -92,8 +92,7 @@ namespace {
             index = boost::shared_ptr<IborIndex>(new
                 Euribor(Period(floatingFrequency), termStructure));
             calendar = index->fixingCalendar();
-            today = calendar.adjust(Date::todaysDate());
-            Settings::instance().evaluationDate() = today;
+            today = calendar.adjust(Settings::instance().evaluationDate());
             settlement = calendar.advance(today,settlementDays,Days);
             termStructure.linkTo(flatRate(settlement,0.05,Actual365Fixed()));
         }

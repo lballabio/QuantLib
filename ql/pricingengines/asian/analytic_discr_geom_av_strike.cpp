@@ -70,7 +70,7 @@ namespace QuantLib {
         Real futureWeight = 1.0-pastWeight;
 
         Time timeSum = std::accumulate(fixingTimes.begin(),
-                                       fixingTimes.end(), 0.0);
+                                       fixingTimes.end(), Real(0.0));
 
         Time residualTime = rfdc.yearFraction(arguments_.fixingDates[pastFixings],
                                               arguments_.exercise->lastDate());

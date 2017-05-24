@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2007, 2011 Ferdinando Ametrano
- Copyright (C) 2007 François du Vignaud
+ Copyright (C) 2007 FranÃ§ois du Vignaud
  Copyright (C) 2004, 2005, 2007, 2009 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -94,17 +94,6 @@ namespace QuantLib {
         */
         bool& includeReferenceDateEvents();
         bool includeReferenceDateEvents() const;
-
-        /*! \deprecated Use includeReferenceDateEvents() instead */
-        QL_DEPRECATED
-        bool& includeReferenceDateCashFlows() {
-            return includeReferenceDateEvents();
-        }
-        /*! \deprecated Use includeReferenceDateEvents() instead */
-        QL_DEPRECATED
-        bool includeReferenceDateCashFlows() const {
-            return includeReferenceDateEvents();
-        }
 
         /*! If set, this flag specifies whether or not CashFlows
             occurring on today's date should enter the NPV.  When the

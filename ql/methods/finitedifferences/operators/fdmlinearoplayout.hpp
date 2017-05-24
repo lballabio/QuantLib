@@ -33,7 +33,7 @@ namespace QuantLib {
 
     class FdmLinearOpLayout {
       public:
-        FdmLinearOpLayout(const std::vector<Size>& dim)
+        explicit FdmLinearOpLayout(const std::vector<Size>& dim)
         : dim_(dim), spacing_(dim.size()) {
             spacing_[0] = 1;
             std::partial_sum(dim.begin(), dim.end()-1,

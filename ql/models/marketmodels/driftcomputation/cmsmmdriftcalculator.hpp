@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2007 Ferdinando Ametrano
- Copyright (C) 2007 François du Vignaud
+ Copyright (C) 2007 FranÃ§ois du Vignaud
  Copyright (C) 2007 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
@@ -52,7 +52,6 @@ namespace QuantLib {
                      std::vector<Real>& drifts) const;
       private:
         Size numberOfRates_, numberOfFactors_;
-        bool isFullFactor_;
         Size numeraire_, alive_;
         std::vector<Spread> displacements_;
         std::vector<Real> oneOverTaus_;

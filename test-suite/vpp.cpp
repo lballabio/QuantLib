@@ -52,8 +52,6 @@
 #include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmspreadpayoffinnervalue.hpp>
-
-#include <boost/lambda/lambda.hpp>
 #include <deque>
 
 using namespace QuantLib;
@@ -77,6 +75,16 @@ namespace {
             new ExtOUWithJumpsProcess(ouProcess, x0[1], beta,
                                       jumpIntensity, eta));
     }
+
+    class linear {
+        Real alpha, beta;
+      public:
+        linear(Real alpha, Real beta) : alpha(alpha), beta(beta) {}
+        Real operator()(Real x) const {
+            return alpha + beta*x;
+        }
+    };
+
 }
 
 
@@ -129,7 +137,7 @@ void VPPTest::testGemanRoncoroniProcess() {
     const Real alphaG    = 1.0;
     const Real x0G       = 1.1;
 
-    boost::function<Real (Real)> f = alphaG + betaG*boost::lambda::_1;
+    boost::function<Real (Real)> f = linear(alphaG, betaG);
 
     boost::shared_ptr<StochasticProcess1D> eouProcess(
         new ExtendedOrnsteinUhlenbeckProcess(speed, vol, x0G, f,
@@ -278,7 +286,7 @@ void VPPTest::testKlugeExtOUSpreadOption() {
 
     boost::shared_ptr<ExtOUWithJumpsProcess>
                                            klugeProcess = createKlugeProcess();
-    boost::function<Real (Real)> f = alphaG + betaG*boost::lambda::_1;
+    boost::function<Real (Real)> f = linear(alphaG, betaG);
 
     boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> extOUProcess(
         new ExtendedOrnsteinUhlenbeckProcess(speed, vol, x0G, f,
@@ -697,7 +705,8 @@ void VPPTest::testVPPPricing() {
     }
     npv.reset();
 
-    // Test: Longstaff Schwartz least square Monte-Carlo
+    // Test: Longstaff Schwartz least squares Monte-Carlo
+    // implementation is not strictly correct but saves some coding
     const Size nCalibrationTrails = 1000u;
     std::vector<sample_type> calibrationPaths;
     std::vector<boost::shared_ptr<FdmVPPStepCondition> > stepConditions;
@@ -901,6 +910,7 @@ void VPPTest::testKlugeExtOUMatrixDecomposition() {
         new FdmKlugeExtOUOp(mesher, klugeOUProcess,
                             flatRate(today, 0.0, ActualActual()),
                             FdmBoundaryConditionSet(), 16));
+    op->setTime(0.1, 0.2);
 
     Array x(mesher->layout()->size());
 
@@ -956,14 +966,19 @@ void VPPTest::testKlugeExtOUMatrixDecomposition() {
 }
 
 
-test_suite* VPPTest::suite() {
+test_suite* VPPTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("VPP Test");
+
     suite->add(QUANTLIB_TEST_CASE(&VPPTest::testGemanRoncoroniProcess));
     suite->add(QUANTLIB_TEST_CASE(&VPPTest::testSimpleExtOUStorageEngine));
     suite->add(QUANTLIB_TEST_CASE(&VPPTest::testKlugeExtOUSpreadOption));
     suite->add(QUANTLIB_TEST_CASE(&VPPTest::testVPPIntrinsicValue));
-    suite->add(QUANTLIB_TEST_CASE(&VPPTest::testVPPPricing));
-    suite->add(QUANTLIB_TEST_CASE(&VPPTest::testKlugeExtOUMatrixDecomposition));
+    suite->add(QUANTLIB_TEST_CASE(
+        &VPPTest::testKlugeExtOUMatrixDecomposition));
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(&VPPTest::testVPPPricing));
+    }
 
     return suite;
 }

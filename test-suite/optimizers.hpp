@@ -23,14 +23,14 @@
 #define quantlib_test_optimizers_hpp
 
 #include <boost/test/unit_test.hpp>
-#include <ql/math/optimization/costfunction.hpp>
+#include "speedlevel.hpp"
 
 class OptimizersTest {
   public:
     static void test();
     static void nestedOptimizationTest();
     static void testDifferentialEvolution();
-    static boost::unit_test_framework::test_suite* suite();
+    static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
 
 #endif

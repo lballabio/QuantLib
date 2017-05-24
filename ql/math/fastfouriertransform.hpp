@@ -46,7 +46,7 @@ namespace QuantLib {
 
         FastFourierTransform(std::size_t order)
         : cs_(order), sn_(order) {
-            std::size_t m = 1 << order;
+            std::size_t m = static_cast<std::size_t>(1) << order;
             cs_[order - 1] = std::cos (2 * M_PI / m);
             sn_[order - 1] = std::sin (2 * M_PI / m);
             for (std::size_t i = order - 1; i > 0; --i) {
@@ -57,7 +57,7 @@ namespace QuantLib {
 
         //! The required size for the output vector
         std::size_t output_size() const {
-            return ((std::size_t)1 << cs_.size());
+            return (static_cast<std::size_t>(1) << cs_.size());
         }
 
         //! FFT transform.
@@ -87,14 +87,14 @@ namespace QuantLib {
                 typename std::iterator_traits<RandomAccessIterator>::value_type
                                                                        complex;
             const std::size_t order = cs_.size();
-            const std::size_t N = 1 << order;
+            const std::size_t N = std::size_t(static_cast<std::size_t>(1) << order);
             std::size_t i = 0;
             for (; inBegin != inEnd; ++i, ++inBegin) {
                 *(out + bit_reverse(i, order)) = *inBegin;
             }
             QL_REQUIRE (i <= N, "FFT order is too small");
             for (std::size_t s = 1; s <= order; ++s) {
-                std::size_t m = 1 << s;
+                std::size_t m = static_cast<std::size_t>(1) << s;
                 complex w(1.0);
                 complex wm(cs_[s-1], inverse ? sn_[s-1] : -sn_[s-1]);
                 for (std::size_t j = 0; j < m/2; ++j) {

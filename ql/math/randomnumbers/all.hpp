@@ -12,7 +12,7 @@
 #include <ql/math/randomnumbers/latticerules.hpp>
 #include <ql/math/randomnumbers/lecuyeruniformrng.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
-#include <ql/math/randomnumbers/primitivepolynomials.h>
+#include <ql/math/randomnumbers/primitivepolynomials.hpp>
 #include <ql/math/randomnumbers/randomizedlds.hpp>
 #include <ql/math/randomnumbers/randomsequencegenerator.hpp>
 #include <ql/math/randomnumbers/ranluxuniformrng.hpp>
@@ -20,4 +20,5 @@
 #include <ql/math/randomnumbers/seedgenerator.hpp>
 #include <ql/math/randomnumbers/sobolbrownianbridgersg.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
+#include <ql/math/randomnumbers/stochasticcollocationinvcdf.hpp>
 

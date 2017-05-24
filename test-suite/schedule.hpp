@@ -30,9 +30,13 @@ class ScheduleTest {
     static void testDailySchedule();
     static void testEndDateWithEomAdjustment();
     static void testDatesPastEndDateWithEomAdjustment();
+    static void testDatesSameAsEndDateWithEomAdjustment();
     static void testForwardDatesWithEomAdjustment();
     static void testBackwardDatesWithEomAdjustment();
     static void testDoubleFirstDateWithEomAdjustment();
+    static void testCDS2015Convention();
+    static void testDateConstructor();
+    static void testFourWeeksTenor();
     static boost::unit_test_framework::test_suite* suite();
 };
 

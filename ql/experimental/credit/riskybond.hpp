@@ -42,11 +42,11 @@ namespace QuantLib {
     */
     class RiskyBond : public Instrument {
     public:
-        RiskyBond(std::string name,
-                  Currency ccy,
+        RiskyBond(const std::string& name,
+                  const Currency& ccy,
                   Real recoveryRate,
-                  Handle<DefaultProbabilityTermStructure> defaultTS,
-                  Handle<YieldTermStructure> yieldTS)
+                  const Handle<DefaultProbabilityTermStructure>& defaultTS,
+                  const Handle<YieldTermStructure>& yieldTS)
             : name_(name), ccy_(ccy), recoveryRate_(recoveryRate),
               defaultTS_(defaultTS), yieldTS_(yieldTS) {
             registerWith (yieldTS_);
@@ -108,16 +108,16 @@ namespace QuantLib {
     */
     class RiskyFixedBond : public RiskyBond {
     public:
-        RiskyFixedBond(std::string name,
-                       Currency ccy,
+        RiskyFixedBond(const std::string& name,
+                       const Currency& ccy,
                        Real recoveryRate,
-                       Handle<DefaultProbabilityTermStructure> defaultTS,
-                       Schedule schedule,
+                       const Handle<DefaultProbabilityTermStructure>& defaultTS,
+                       const Schedule& schedule, 
                        Real rate,
-                       DayCounter dayCounter,
+                       const DayCounter& dayCounter,
                        BusinessDayConvention paymentConvention,
-                       std::vector<Real> notionals,
-                       Handle<YieldTermStructure> yieldTS);
+                       const std::vector<Real>& notionals,
+                       const Handle<YieldTermStructure>& yieldTS);
         std::vector<boost::shared_ptr<CashFlow> > cashflows() const;
         Real notional(Date date = Date::minDate()) const;
         Date effectiveDate() const;
@@ -128,7 +128,7 @@ namespace QuantLib {
         Schedule schedule_;
         Real rate_;
         DayCounter dayCounter_;
-        BusinessDayConvention paymentConvention_;
+        // BusinessDayConvention paymentConvention_;
         std::vector<Real> notionals_;
         std::vector<boost::shared_ptr<CashFlow> > leg_;
         std::vector<boost::shared_ptr<CashFlow> > interestLeg_;
@@ -163,7 +163,7 @@ namespace QuantLib {
         DayCounter dayCounter_;
         Integer fixingDays_;
         Real spread_;
-        BusinessDayConvention paymentConvention_;
+        // BusinessDayConvention paymentConvention_;
         std::vector<Real> notionals_;
         std::vector<boost::shared_ptr<CashFlow> > leg_;
         std::vector<boost::shared_ptr<CashFlow> > interestLeg_;

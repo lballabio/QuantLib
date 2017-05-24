@@ -262,7 +262,7 @@ namespace QuantLib {
 
                     const std::vector<Real>& values = innerStats.mean();
                     unexercisedHedgeValue =
-                        std::accumulate(values.begin(), values.end(), 0.0)
+                        std::accumulate(values.begin(), values.end(), Real(0.0))
                         / principalInNumerairePortfolio;
 
                     callable.disableCallability();

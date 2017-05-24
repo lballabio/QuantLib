@@ -21,14 +21,15 @@
 #define quantlib_test_cdo_hpp
 
 #include <boost/test/unit_test.hpp>
+#include "speedlevel.hpp"
 
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
 
 class CdoTest {
   public:
-    static void testHW();
-    static boost::unit_test_framework::test_suite* suite();
+    static void testHW(unsigned dataSet);
+    static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
 
 

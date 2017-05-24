@@ -23,14 +23,6 @@
 namespace QuantLib {
 
     CapFloorTermVolatilityStructure::CapFloorTermVolatilityStructure(
-                                                    const Calendar& cal,
-                                                    BusinessDayConvention bdc,
-                                                    const DayCounter& dc)
-    : VolatilityTermStructure(bdc, dc) {
-        calendar_ = cal;
-    }
-
-    CapFloorTermVolatilityStructure::CapFloorTermVolatilityStructure(
                                                     BusinessDayConvention bdc,
                                                     const DayCounter& dc)
     : VolatilityTermStructure(bdc, dc) {}

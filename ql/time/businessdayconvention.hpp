@@ -4,6 +4,7 @@
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
  Copyright (C) 2006 Piter Dias
+ Copyright (C) 2014 Paolo Mazzocchi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -39,22 +40,33 @@ namespace QuantLib {
     */
     enum BusinessDayConvention {
         // ISDA
-        Following,          /*!< Choose the first business day after
-                                 the given holiday. */
-        ModifiedFollowing,  /*!< Choose the first business day after
-                                 the given holiday unless it belongs
-                                 to a different month, in which case
-                                 choose the first business day before
-                                 the holiday. */
-        Preceding,          /*!< Choose the first business day before
-                                 the given holiday. */
+        Following,                   /*!< Choose the first business day after
+                                          the given holiday. */
+        ModifiedFollowing,           /*!< Choose the first business day after
+                                          the given holiday unless it belongs
+                                          to a different month, in which case
+                                          choose the first business day before
+                                          the holiday. */
+        Preceding,                   /*!< Choose the first business
+                                          day before the given holiday. */
         // NON ISDA
-        ModifiedPreceding,  /*!< Choose the first business day before
-                                 the given holiday unless it belongs
-                                 to a different month, in which case
-                                 choose the first business day after
-                                 the holiday. */
-        Unadjusted          /*!< Do not adjust. */
+        ModifiedPreceding,           /*!< Choose the first business day before
+                                          the given holiday unless it belongs
+                                          to a different month, in which case
+                                          choose the first business day after
+                                          the holiday. */
+        Unadjusted,                  /*!< Do not adjust. */
+        HalfMonthModifiedFollowing,  /*!< Choose the first business day after
+                                          the given holiday unless that day
+                                          crosses the mid-month (15th) or the
+                                          end of month, in which case choose
+                                          the first business day before the
+                                          holiday. */
+        Nearest                      /*!< Choose the nearest business day 
+                                          to the given holiday. If both the
+                                          preceding and following business
+                                          days are equally far away, default
+                                          to following business day. */
     };
 
     /*! \relates BusinessDayConvention */

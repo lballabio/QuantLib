@@ -21,8 +21,14 @@
 
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
-
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
 #include <boost/assign/list_of.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic pop
+#endif
 
 namespace QuantLib {
 
@@ -134,5 +140,10 @@ namespace QuantLib {
         }
 
         return retVal;
+    }
+
+    const std::vector<boost::shared_ptr<Fdm1dMesher> >&
+        FdmMesherComposite::getFdm1dMeshers() const {
+        return  mesher_;
     }
 }

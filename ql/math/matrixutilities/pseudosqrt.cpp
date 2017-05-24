@@ -31,6 +31,7 @@ namespace QuantLib {
 
     namespace {
 
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
         void checkSymmetry(const Matrix& matrix) {
             Size size = matrix.rows();
             QL_REQUIRE(size == matrix.columns(),
@@ -43,6 +44,7 @@ namespace QuantLib {
                                "[" << i << "][" << j << "]=" << matrix[i][j] <<
                                ", [" << j << "][" << i << "]=" << matrix[j][i]);
         }
+        #endif
 
         void normalizePseudoRoot(const Matrix& matrix,
                                  Matrix& pseudo) {
@@ -487,7 +489,7 @@ namespace QuantLib {
         // factor reduction
         Real enough = componentRetainedPercentage *
                       std::accumulate(eigenValues.begin(),
-                                      eigenValues.end(), 0.0);
+                                      eigenValues.end(), Real(0.0));
         if (componentRetainedPercentage == 1.0) {
             // numerical glitches might cause some factors to be discarded
             enough *= 1.1;

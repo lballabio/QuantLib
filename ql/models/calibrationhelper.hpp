@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2015 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,9 +25,9 @@
 #ifndef quantlib_interest_rate_modelling_calibration_helper_h
 #define quantlib_interest_rate_modelling_calibration_helper_h
 
-
 #include <ql/quote.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/termstructures/volatility/volatilitytype.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <list>
 
@@ -39,12 +40,14 @@ namespace QuantLib {
       public:
         enum CalibrationErrorType {
                             RelativePriceError, PriceError, ImpliedVolError};
-          
         CalibrationHelper(const Handle<Quote>& volatility,
                           const Handle<YieldTermStructure>& termStructure,
-                          CalibrationErrorType calibrationErrorType 
-                                                          = RelativePriceError)
+                          CalibrationErrorType calibrationErrorType
+                                                         = RelativePriceError,
+                          const VolatilityType type = ShiftedLognormal,
+                          const Real shift = 0.0)
         : volatility_(volatility), termStructure_(termStructure),
+          volatilityType_(type), shift_(shift),
           calibrationErrorType_(calibrationErrorType) {
             registerWith(volatility_);
             registerWith(termStructure_);
@@ -55,7 +58,10 @@ namespace QuantLib {
         }
 
         //! returns the volatility Handle
-        Handle<Quote> volatility() { return volatility_; }
+        Handle<Quote> volatility() const { return volatility_; }
+
+        //! returns the volatility type
+        VolatilityType volatilityType() const { return volatilityType_; }
 
         //! returns the actual price of the instrument (from volatility)
         Real marketValue() const { calculate(); return marketValue_; }
@@ -75,7 +81,7 @@ namespace QuantLib {
                                      Volatility minVol,
                                      Volatility maxVol) const;
 
-        //! Black price given a volatility
+        //! Black or Bachelier price given a volatility
         virtual Real blackPrice(Volatility volatility) const = 0;
 
         void setPricingEngine(const boost::shared_ptr<PricingEngine>& engine) {
@@ -87,6 +93,8 @@ namespace QuantLib {
         Handle<Quote> volatility_;
         Handle<YieldTermStructure> termStructure_;
         boost::shared_ptr<PricingEngine> engine_;
+        const VolatilityType volatilityType_;
+        const Real shift_;
 
       private:
         class ImpliedVolatilityHelper;

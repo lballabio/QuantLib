@@ -33,9 +33,7 @@
 namespace QuantLib {
 
     //! %AUD %LIBOR rate
-    /*! Australian Dollar LIBOR fixed by BBA.
-
-        See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
+    /*! Australian Dollar LIBOR discontinued as of 2013.
     */
     class AUDLibor : public Libor {
       public:

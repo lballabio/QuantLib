@@ -166,7 +166,9 @@ namespace QuantLib {
             InflationTermStructure::checkRange(d, extrapolate);
             Time t1 = timeFromReference(dd.first);
             Time t2 = timeFromReference(dd.second);
-            zeroRate = zeroRateImpl(t1) + zeroRateImpl(t2) * (dt/dp);
+            Rate z1 = zeroRateImpl(t1);
+            Rate z2 = zeroRateImpl(t2);
+            zeroRate = z1 + (z2-z1) * (dt/dp);
         } else {
             if (indexIsInterpolated()) {
                 InflationTermStructure::checkRange(d-useLag, extrapolate);
@@ -251,7 +253,9 @@ namespace QuantLib {
             InflationTermStructure::checkRange(d, extrapolate);
             Time t1 = timeFromReference(dd.first);
             Time t2 = timeFromReference(dd.second);
-            yoyRate = yoyRateImpl(t1) + (yoyRateImpl(t2)-yoyRateImpl(t1)) * (dt/dp);
+            Rate y1 = yoyRateImpl(t1);
+            Rate y2 = yoyRateImpl(t2);
+            yoyRate = y1 + (y2-y1) * (dt/dp);
         } else {
             if (indexIsInterpolated()) {
                 InflationTermStructure::checkRange(d-useLag, extrapolate);

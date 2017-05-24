@@ -36,13 +36,14 @@ namespace QuantLib {
         \test the correctness of the returned value is tested by
               reproducing results available in web/literature
     */
-    template <class RNG = PseudoRandom, class S = Statistics>
+    template <class RNG = PseudoRandom,
+              class S = Statistics, class P = HestonProcess>
     class MCEuropeanHestonEngine
         : public MCVanillaEngine<MultiVariate,RNG,S> {
       public:
         typedef typename MCVanillaEngine<MultiVariate,RNG,S>::path_pricer_type
             path_pricer_type;
-        MCEuropeanHestonEngine(const boost::shared_ptr<HestonProcess>&,
+        MCEuropeanHestonEngine(const boost::shared_ptr<P>&,
                                Size timeSteps,
                                Size timeStepsPerYear,
                                bool antitheticVariate,
@@ -55,10 +56,11 @@ namespace QuantLib {
     };
 
     //! Monte Carlo Heston European engine factory
-    template <class RNG = PseudoRandom, class S = Statistics>
+    template <class RNG = PseudoRandom,
+              class S = Statistics, class P = HestonProcess>
     class MakeMCEuropeanHestonEngine {
       public:
-        MakeMCEuropeanHestonEngine(const boost::shared_ptr<HestonProcess>&);
+        MakeMCEuropeanHestonEngine(const boost::shared_ptr<P>&);
         // named parameters
         MakeMCEuropeanHestonEngine& withSteps(Size steps);
         MakeMCEuropeanHestonEngine& withStepsPerYear(Size steps);
@@ -70,7 +72,7 @@ namespace QuantLib {
         // conversion to pricing engine
         operator boost::shared_ptr<PricingEngine>() const;
       private:
-        boost::shared_ptr<HestonProcess> process_;
+        boost::shared_ptr<P> process_;
         bool antithetic_;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
@@ -92,9 +94,9 @@ namespace QuantLib {
 
     // template definitions
 
-    template <class RNG, class S>
-    MCEuropeanHestonEngine<RNG, S>::MCEuropeanHestonEngine(
-                const boost::shared_ptr<HestonProcess>& process,
+    template <class RNG, class S, class P>
+    MCEuropeanHestonEngine<RNG, S, P>::MCEuropeanHestonEngine(
+                const boost::shared_ptr<P>& process,
                 Size timeSteps, Size timeStepsPerYear, bool antitheticVariate,
                 Size requiredSamples, Real requiredTolerance,
                 Size maxSamples, BigNatural seed)
@@ -104,22 +106,22 @@ namespace QuantLib {
                                           maxSamples, seed) {}
 
 
-    template <class RNG, class S>
+    template <class RNG, class S, class P>
     boost::shared_ptr<
-        typename MCEuropeanHestonEngine<RNG,S>::path_pricer_type>
-    MCEuropeanHestonEngine<RNG,S>::pathPricer() const {
+        typename MCEuropeanHestonEngine<RNG,S,P>::path_pricer_type>
+    MCEuropeanHestonEngine<RNG,S,P>::pathPricer() const {
 
         boost::shared_ptr<PlainVanillaPayoff> payoff(
                   boost::dynamic_pointer_cast<PlainVanillaPayoff>(
                                                     this->arguments_.payoff));
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        boost::shared_ptr<HestonProcess> process =
-            boost::dynamic_pointer_cast<HestonProcess>(this->process_);
-        QL_REQUIRE(process, "Heston process required");
+        boost::shared_ptr<P> process =
+            boost::dynamic_pointer_cast<P>(this->process_);
+        QL_REQUIRE(process, "Heston like process required");
 
         return boost::shared_ptr<
-            typename MCEuropeanHestonEngine<RNG,S>::path_pricer_type>(
+            typename MCEuropeanHestonEngine<RNG,S,P>::path_pricer_type>(
                    new EuropeanHestonPathPricer(
                                         payoff->optionType(),
                                         payoff->strike(),
@@ -129,44 +131,44 @@ namespace QuantLib {
 
 
 
-    template <class RNG, class S>
-    inline MakeMCEuropeanHestonEngine<RNG,S>::MakeMCEuropeanHestonEngine(
-                              const boost::shared_ptr<HestonProcess>& process)
+    template <class RNG, class S, class P>
+    inline MakeMCEuropeanHestonEngine<RNG,S,P>::MakeMCEuropeanHestonEngine(
+                              const boost::shared_ptr<P>& process)
     : process_(process), antithetic_(false),
       steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
       samples_(Null<Size>()), maxSamples_(Null<Size>()),
       tolerance_(Null<Real>()), seed_(0) {}
 
-    template <class RNG, class S>
-    inline MakeMCEuropeanHestonEngine<RNG,S>&
-    MakeMCEuropeanHestonEngine<RNG,S>::withSteps(Size steps) {
+    template <class RNG, class S,class P>
+    inline MakeMCEuropeanHestonEngine<RNG,S,P>&
+    MakeMCEuropeanHestonEngine<RNG,S,P>::withSteps(Size steps) {
         QL_REQUIRE(stepsPerYear_ == Null<Size>(),
                    "number of steps per year already set");
         steps_ = steps;
         return *this;
     }
 
-    template <class RNG, class S>
-    inline MakeMCEuropeanHestonEngine<RNG,S>&
-    MakeMCEuropeanHestonEngine<RNG,S>::withStepsPerYear(Size steps) {
+    template <class RNG, class S, class P>
+    inline MakeMCEuropeanHestonEngine<RNG,S,P>&
+    MakeMCEuropeanHestonEngine<RNG,S,P>::withStepsPerYear(Size steps) {
         QL_REQUIRE(steps_ == Null<Size>(),
                    "number of steps already set");
         stepsPerYear_ = steps;
         return *this;
     }
 
-    template <class RNG, class S>
-    inline MakeMCEuropeanHestonEngine<RNG,S>&
-    MakeMCEuropeanHestonEngine<RNG,S>::withSamples(Size samples) {
+    template <class RNG, class S,class P>
+    inline MakeMCEuropeanHestonEngine<RNG,S,P>&
+    MakeMCEuropeanHestonEngine<RNG,S,P>::withSamples(Size samples) {
         QL_REQUIRE(tolerance_ == Null<Real>(),
                    "tolerance already set");
         samples_ = samples;
         return *this;
     }
 
-    template <class RNG, class S>
-    inline MakeMCEuropeanHestonEngine<RNG,S>&
-    MakeMCEuropeanHestonEngine<RNG,S>::withAbsoluteTolerance(Real tolerance) {
+    template <class RNG, class S, class P>
+    inline MakeMCEuropeanHestonEngine<RNG,S,P>&
+    MakeMCEuropeanHestonEngine<RNG,S,P>::withAbsoluteTolerance(Real tolerance) {
         QL_REQUIRE(samples_ == Null<Size>(),
                    "number of samples already set");
         QL_REQUIRE(RNG::allowsErrorEstimate,
@@ -176,35 +178,35 @@ namespace QuantLib {
         return *this;
     }
 
-    template <class RNG, class S>
-    inline MakeMCEuropeanHestonEngine<RNG,S>&
-    MakeMCEuropeanHestonEngine<RNG,S>::withMaxSamples(Size samples) {
+    template <class RNG, class S, class P>
+    inline MakeMCEuropeanHestonEngine<RNG,S,P>&
+    MakeMCEuropeanHestonEngine<RNG,S,P>::withMaxSamples(Size samples) {
         maxSamples_ = samples;
         return *this;
     }
 
-    template <class RNG, class S>
-    inline MakeMCEuropeanHestonEngine<RNG,S>&
-    MakeMCEuropeanHestonEngine<RNG,S>::withSeed(BigNatural seed) {
+    template <class RNG, class S, class P>
+    inline MakeMCEuropeanHestonEngine<RNG,S,P>&
+    MakeMCEuropeanHestonEngine<RNG,S,P>::withSeed(BigNatural seed) {
         seed_ = seed;
         return *this;
     }
 
-    template <class RNG, class S>
-    inline MakeMCEuropeanHestonEngine<RNG,S>&
-    MakeMCEuropeanHestonEngine<RNG,S>::withAntitheticVariate(bool b) {
+    template <class RNG, class S, class P>
+    inline MakeMCEuropeanHestonEngine<RNG,S,P>&
+    MakeMCEuropeanHestonEngine<RNG,S,P>::withAntitheticVariate(bool b) {
         antithetic_ = b;
         return *this;
     }
 
-    template <class RNG, class S>
+    template <class RNG, class S, class P>
     inline
-    MakeMCEuropeanHestonEngine<RNG,S>::
+    MakeMCEuropeanHestonEngine<RNG,S,P>::
     operator boost::shared_ptr<PricingEngine>() const {
         QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
                    "number of steps not given");
         return boost::shared_ptr<PricingEngine>(
-                 new MCEuropeanHestonEngine<RNG,S>(process_,
+               new MCEuropeanHestonEngine<RNG,S,P>(process_,
                                                    steps_,
                                                    stepsPerYear_,
                                                    antithetic_,

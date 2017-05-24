@@ -1,10 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 Neil Firth
- Copyright (C) 2003 Ferdinando Ametrano
- Copyright (C) 2007 StatPro Italia srl
- Copyright (C) 2013 Yue Tian
+ Copyright (C) 2015 Thema Consulting SA
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,22 +18,23 @@
 */
 
 #include <ql/experimental/barrieroption/doublebarrieroption.hpp>
-#include <ql/instruments/impliedvolatility.hpp>
 #include <ql/experimental/barrieroption/analyticdoublebarrierengine.hpp>
+#include <ql/instruments/impliedvolatility.hpp>
 #include <ql/exercise.hpp>
 #include <boost/scoped_ptr.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
     DoubleBarrierOption::DoubleBarrierOption(
-        std::vector<Barrier::Type> barrierType,
-        std::vector<Real> barrier,
-        std::vector<Real> rebate,
+        DoubleBarrier::Type barrierType,
+        Real barrier_lo,
+        Real barrier_hi,
+        Real rebate,
         const boost::shared_ptr<StrikedTypePayoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise)
     : OneAssetOption(payoff, exercise),
-      barrierType_(barrierType), barrier_(barrier), rebate_(rebate) {}
+      barrierType_(barrierType), barrier_lo_(barrier_lo), 
+      barrier_hi_(barrier_hi), rebate_(rebate) {}
 
     void DoubleBarrierOption::setupArguments(PricingEngine::arguments* args) const {
 
@@ -46,7 +44,8 @@ namespace QuantLib {
             dynamic_cast<DoubleBarrierOption::arguments*>(args);
         QL_REQUIRE(moreArgs != 0, "wrong argument type");
         moreArgs->barrierType = barrierType_;
-        moreArgs->barrier = barrier_;
+        moreArgs->barrier_lo = barrier_lo_;
+        moreArgs->barrier_hi = barrier_hi_;
         moreArgs->rebate = rebate_;
     }
 
@@ -61,8 +60,7 @@ namespace QuantLib {
 
         QL_REQUIRE(!isExpired(), "option expired");
 
-        boost::shared_ptr<SimpleQuote> volQuote =
-            boost::make_shared<SimpleQuote>();
+        boost::shared_ptr<SimpleQuote> volQuote(new SimpleQuote);
 
         boost::shared_ptr<GeneralizedBlackScholesProcess> newProcess =
             detail::ImpliedVolatilityHelper::clone(process, volQuote);
@@ -92,44 +90,25 @@ namespace QuantLib {
 
 
     DoubleBarrierOption::arguments::arguments()
-    : barrierType(std::vector<Barrier::Type>(2, Barrier::Type(-1))), barrier(std::vector<Real>(2, 0.0)),
-      rebate(std::vector<Real>(2, 0.0)) {}
+    : barrierType(DoubleBarrier::Type(-1)), barrier_lo(Null<Real>()),
+      barrier_hi(Null<Real>()), rebate(Null<Real>()) {}
 
     void DoubleBarrierOption::arguments::validate() const {
         OneAssetOption::arguments::validate();
 
-        QL_REQUIRE(barrierType.size() == 2, "2 barrier type should be given");
-		QL_REQUIRE(barrier.size() == 2, "2 barrier should be given");
-        QL_REQUIRE(rebate.size() == 2, "2 rebate should be given");
+        QL_REQUIRE(barrierType == DoubleBarrier::KnockIn ||
+                   barrierType == DoubleBarrier::KnockOut ||
+                   barrierType == DoubleBarrier::KIKO ||
+                   barrierType == DoubleBarrier::KOKI,
+                   "Invalid barrier type");
 
-		switch (barrierType[0]) {
-          case Barrier::DownIn:
-			  QL_REQUIRE(barrierType[1] == Barrier::UpIn, "both barrier type should be In");
-			  break;
-          case Barrier::UpIn:
-			  QL_FAIL("rearrange the order of barrier types as L/H");
-			  break;
-          case Barrier::DownOut:
-			  QL_REQUIRE(barrierType[1] == Barrier::UpOut, "both barrier type should be Out");
-			  break;
-          case Barrier::UpOut:
-			  QL_FAIL("rearrange the order of barrier types as L/H");
-            break;
-          default:
-            QL_FAIL("unknown type");
-        }
-		QL_REQUIRE(barrier[0] < barrier[1], "rearrange the order of barriers as L/H");
-		
+        QL_REQUIRE(barrier_lo != Null<Real>(), "no low barrier given");
+        QL_REQUIRE(barrier_hi != Null<Real>(), "no high barrier given");
+        QL_REQUIRE(rebate != Null<Real>(), "no rebate given");
     }
 
     bool DoubleBarrierOption::engine::triggered(Real underlying) const {
-        switch (arguments_.barrierType[0]) {
-          case Barrier::DownIn:
-          case Barrier::DownOut:
-            return underlying < arguments_.barrier[1] && underlying < arguments_.barrier[0];
-          default:
-            QL_FAIL("unknown type");
-        }
+        return underlying <= arguments_.barrier_lo || underlying >= arguments_.barrier_hi;
     }
 
 }

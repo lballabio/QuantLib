@@ -80,27 +80,28 @@ namespace QuantLib {
     Rate ZeroInflationIndex::fixing(const Date& aFixingDate,
                                     bool /*forecastTodaysFixing*/) const {
         if (!needsForecast(aFixingDate)) {
+            std::pair<Date,Date> lim = inflationPeriod(aFixingDate, frequency_);
             const TimeSeries<Real>& ts = timeSeries();
-            Real pastFixing = ts[aFixingDate];
+            Real pastFixing = ts[lim.first];
             QL_REQUIRE(pastFixing != Null<Real>(),
-                       "Missing " << name() << " fixing for " << aFixingDate);
+                       "Missing " << name() << " fixing for " << lim.first);
             Real theFixing = pastFixing;
             if (interpolated_) {
-                // fixings stored flat & for every day
-                std::pair<Date,Date> lim =
-                    inflationPeriod(aFixingDate, frequency_);
+                // fixings stored on first day of every period
                 if (aFixingDate == lim.first) {
                     // we don't actually need the next fixing
                     theFixing = pastFixing;
                 } else {
-                    Date fixingDate2 = aFixingDate + Period(frequency_);
-                    Real pastFixing2 = ts[fixingDate2];
+                    Real pastFixing2 = ts[lim.second+1];
                     QL_REQUIRE(pastFixing2 != Null<Real>(),
-                               "Missing " << name() << " fixing for " << fixingDate2);
+                               "Missing " << name() << " fixing for " << lim.second+1);
+
+                    // Use lagged period for interpolation
+                    std::pair<Date, Date> reference_period_lim = inflationPeriod(aFixingDate + zeroInflationTermStructure()->observationLag(), frequency_);
                     // now linearly interpolate
-                    Real daysInPeriod = lim.second+1 - lim.first;
+                    Real daysInPeriod = reference_period_lim.second + 1 - reference_period_lim.first;
                     theFixing = pastFixing
-                        + (pastFixing2-pastFixing)*(aFixingDate-lim.first)/daysInPeriod;
+                        + (pastFixing2 - pastFixing)*(aFixingDate - lim.first) / daysInPeriod;
                 }
             }
             return theFixing;
