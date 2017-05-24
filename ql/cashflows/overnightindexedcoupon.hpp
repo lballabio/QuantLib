@@ -34,9 +34,13 @@ namespace QuantLib {
 
     //! overnight coupon
     /*! %Coupon paying the compounded interest due to daily overnight fixings.
+
         \warning telescopicValueDates optimizes the schedule for calculation speed,
-        but might fail to produce correct results if the coupon ages and new
-        O/N fixings come into play on which the couopon then depends
+        but might fail to produce correct results if the coupon ages by more than
+        a grace period of 7 days. It is therefore recommended not to set this flag
+        to true unless you know exactly what you are doing. The intended use is
+        rather by the OISRateHelper which is safe, since it reinitialises the
+        instrument each time the evaluation date changes.
     */
     class OvernightIndexedCoupon : public FloatingRateCoupon {
       public:
