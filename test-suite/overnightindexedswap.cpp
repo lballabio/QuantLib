@@ -447,7 +447,7 @@ void OvernightIndexedSwapTest::testBootstrap() {
         Rate expected = eoniaSwapData[i].rate;
         Period term = eoniaSwapData[i].n * eoniaSwapData[i].unit;
         // test telescopic value dates (in bootstrap) against non telescopic value dates (swap here)
-        shared_ptr<OvernightIndexedSwap> swap = vars.makeSwap(term, 0.0, 0.0, false); 
+        shared_ptr<OvernightIndexedSwap> swap = vars.makeSwap(term, 0.0, 0.0, false);
         Rate calculated = 100.0 * swap->fairRate();
         Rate error = std::fabs(expected-calculated);
 
@@ -525,4 +525,3 @@ test_suite* OvernightIndexedSwapTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testSeasonedSwaps));
     return suite;
 }
-
