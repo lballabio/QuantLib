@@ -132,7 +132,18 @@ namespace QuantLib {
 
         // value dates
         Date tmpEndDate = endDate;
+
+        /* For the coupon's valuation only the first and last future valuation
+           dates matter, therefore we can avoid to construct the whole series
+           of valuation dates, a front and back stub will do. However notice
+           that if the global evaluation date moves forward it might run past
+           the front stub of valuation dates we build here (which incorporates
+           a grace period of 7 business after the evluation date). This will
+           lead to false coupon projections (see the warning the class header). */
+
         if (telescopicValueDates) {
+            // build optimised value dates schedule: front stub goes
+            // from start date to max(evalDate,startDate) + 7bd
             Date evalDate = Settings::instance().evaluationDate();
             tmpEndDate = overnightIndex->fixingCalendar().advance(
                 std::max(startDate, evalDate), 7, Days, Following);
@@ -150,7 +161,8 @@ namespace QuantLib {
         valueDates_ = sch.dates();
 
         if (telescopicValueDates) {
-            // ensure two dates at the tail
+            // build optimised value dates schedule: back stub
+            // contains at least two dates
             Date tmp = overnightIndex->fixingCalendar().advance(
                 endDate, -1, Days, Preceding);
             if (tmp != valueDates_.back())
