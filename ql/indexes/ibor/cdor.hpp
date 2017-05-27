@@ -26,7 +26,7 @@
 
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/calendars/canada.hpp>
-#include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/currencies/america.hpp>
 
 namespace QuantLib {
@@ -39,15 +39,18 @@ namespace QuantLib {
 
         \todo check settlement days, end-of-month adjustment,
               and day-count convention.
+        \warning Actual360 changed to Actual365Fixed()
+        \warning settlement days changed from 2 to 0
+        \warning source: OpenGamma "Interest Rate Instruments and Market Conventions Guide", BBG, IKON
     */
     class Cdor : public IborIndex {
       public:
         Cdor(const Period& tenor,
              const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : IborIndex("CDOR", tenor, 2, CADCurrency(),
+        : IborIndex("CDOR", tenor, 0, CADCurrency(),
                     Canada(), ModifiedFollowing, false,
-                    Actual360(), h) {}
+                    Actual365Fixed(), h) {}
     };
 
 }
