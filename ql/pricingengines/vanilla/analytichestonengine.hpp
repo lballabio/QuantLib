@@ -175,6 +175,9 @@ namespace QuantLib {
         static Integration discreteSimpson(Size evaluation = 1000);
         static Integration discreteTrapezoid(Size evaluation = 1000);
 
+        static Real andersenPiterbargIntegrationLimit(
+            Real c_inf, Real epsilon, Real v0, Real t);
+
         Real calculate(Real c_inf,
                        const boost::function1<Real, Real>& f,
                        Real maxBound = Null<Real>()) const;

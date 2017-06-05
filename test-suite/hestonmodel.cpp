@@ -22,6 +22,7 @@
 #include <ql/instruments/dividendbarrieroption.hpp>
 #include <ql/instruments/dividendvanillaoption.hpp>
 #include <ql/processes/hestonprocess.hpp>
+#include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/models/equity/hestonmodelhelper.hpp>
@@ -47,6 +48,7 @@
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/methods/montecarlo/pathgenerator.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/optimization/differentialevolution.hpp>
 #include <ql/time/period.hpp>
@@ -1105,22 +1107,36 @@ void HestonModelTest::testAnalyticPiecewiseTimeDependent() {
                                               sigma, rho, TimeGrid(20.0, 2)));
     
     VanillaOption option(payoff, exercise);
-    option.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                                           new AnalyticPTDHestonEngine(model)));
 
-    const Real calculated = option.NPV();
     boost::shared_ptr<HestonProcess> hestonProcess(
         new HestonProcess(riskFreeTS, dividendTS, s0, v0,
                           kappa(0.0), theta(0.0), sigma(0.0), rho(0.0)));
     boost::shared_ptr<HestonModel> hestonModel(new HestonModel(hestonProcess));
     option.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                                    new AnalyticHestonEngine(hestonModel)));
-    
+         new AnalyticHestonEngine(hestonModel)));
+
     const Real expected = option.NPV();
-    
-    if (std::fabs(calculated-expected) > 1e-12) {
-        BOOST_ERROR("failed to reproduce heston prices "
-                   << "\n    calculated: " << calculated
+
+    option.setPricingEngine(boost::shared_ptr<PricingEngine>(
+         new AnalyticPTDHestonEngine(model)));
+
+    const Real calculatedGatheral = option.NPV();
+    if (std::fabs(calculatedGatheral-expected) > 1e-12) {
+        BOOST_ERROR("failed to reproduce Heston prices with Gatheral ChF"
+                   << "\n    calculated: " << calculatedGatheral
+                   << "\n    expected:   " << expected);
+    }
+
+    option.setPricingEngine(boost::shared_ptr<PricingEngine>(
+         new AnalyticPTDHestonEngine(
+             model,
+             AnalyticPTDHestonEngine::AndersenPiterbarg,
+             AnalyticPTDHestonEngine::Integration::gaussLaguerre(164))));
+    const Real calculatedAndersenPiterbarg = option.NPV();
+
+    if (std::fabs(calculatedAndersenPiterbarg-expected) > 1e-8) {
+        BOOST_ERROR("failed to reproduce Heston prices Andersen-Piterbarg"
+                   << "\n    calculated: " << calculatedAndersenPiterbarg
                    << "\n    expected:   " << expected);
     }
 }
@@ -1164,25 +1180,41 @@ void HestonModelTest::testDAXCalibrationOfTimeDependentModel() {
         new PiecewiseTimeDependentHestonModel(riskFreeTS, dividendTS,
                                               s0, v0, theta, kappa, 
                                               sigma, rho, modelGrid));
-    
-    boost::shared_ptr<PricingEngine> engine(new AnalyticPTDHestonEngine(model));
-    for (Size i = 0; i < options.size(); ++i)
-        options[i]->setPricingEngine(engine);
 
-    LevenbergMarquardt om(1e-8, 1e-8, 1e-8);
-    model->calibrate(options, om, EndCriteria(400, 40, 1.0e-8, 1.0e-8, 1.0e-8));
-
-    Real sse = 0;
-    for (Size i = 0; i < 13*8; ++i) {
-        const Real diff = options[i]->calibrationError()*100.0;
-        sse += diff*diff;
-    }
+    const boost::shared_ptr<PricingEngine> engines[] = {
+        boost::make_shared<AnalyticPTDHestonEngine>(model),
+        boost::make_shared<AnalyticPTDHestonEngine>(
+            model,
+            AnalyticPTDHestonEngine::AndersenPiterbarg,
+            AnalyticPTDHestonEngine::Integration::gaussLaguerre(64)),
+        boost::make_shared<AnalyticPTDHestonEngine>(
+            model,
+            AnalyticPTDHestonEngine::AndersenPiterbarg,
+            AnalyticPTDHestonEngine::Integration::discreteTrapezoid(72))
+    };
     
-    Real expected = 74.4;
-    if (std::fabs(sse - expected) > 1.0) {
-        BOOST_ERROR("Failed to reproduce calibration error"
-                   << "\n    calculated: " << sse
-                   << "\n    expected:   " << expected);
+    for (Size j=0; j < LENGTH(engines); ++j) {
+        const boost::shared_ptr<PricingEngine> engine = engines[j];
+
+        for (Size i=0; i < options.size(); ++i)
+            options[i]->setPricingEngine(engine);
+
+        LevenbergMarquardt om(1e-8, 1e-8, 1e-8);
+        model->calibrate(options, om,
+            EndCriteria(400, 40, 1.0e-8, 1.0e-8, 1.0e-8));
+    
+        Real sse = 0;
+        for (Size i = 0; i < 13*8; ++i) {
+            const Real diff = options[i]->calibrationError()*100.0;
+            sse += diff*diff;
+        }
+
+        Real expected = 74.4;
+        if (std::fabs(sse - expected) > 1.0) {
+            BOOST_ERROR("Failed to reproduce calibration error"
+                       << "\n    calculated: " << sse
+                       << "\n    expected:   " << expected);
+        }
     }
 }
 
@@ -2291,6 +2323,342 @@ void HestonModelTest::testAndersenPiterbargConvergence() {
 }
 
 
+void HestonModelTest::testPiecewiseTimeDependentChFvsHestonChF() {
+    BOOST_TEST_MESSAGE("Testing piecewise time dependent "
+                       "ChF vs Heston ChF...");
+
+    SavedSettings backup;
+
+    const Date settlementDate(5, July, 2017);
+    Settings::instance().evaluationDate() = settlementDate;
+    const Date maturityDate(5, July, 2018);
+
+    const DayCounter dayCounter = Actual365Fixed();
+    const Handle<YieldTermStructure> rTS(flatRate(0.01, dayCounter));
+    const Handle<YieldTermStructure> qTS(flatRate(0.02, dayCounter));
+
+    const Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
+
+    const Real v0    =  0.04;
+    const Real rho   = -0.5;
+    const Real sigma =  1.0;
+    const Real kappa =  4.0;
+    const Real theta =  0.25;
+
+    const ConstantParameter thetaP(theta, PositiveConstraint());
+    const ConstantParameter kappaP(kappa, PositiveConstraint());
+    const ConstantParameter sigmaP(sigma, PositiveConstraint());
+    const ConstantParameter rhoP  (rho, BoundaryConstraint(-1.0, 1.0));
+
+    const boost::shared_ptr<AnalyticHestonEngine> analyticEngine(
+        boost::make_shared<AnalyticHestonEngine>(
+            boost::make_shared<HestonModel>(
+                boost::make_shared<HestonProcess>(
+                    rTS, qTS, s0, v0, kappa, theta, sigma, rho))));
+
+    const boost::shared_ptr<AnalyticPTDHestonEngine> ptdHestonEngine(
+        boost::make_shared<AnalyticPTDHestonEngine>(
+            boost::make_shared<PiecewiseTimeDependentHestonModel>(
+                rTS, qTS, s0, v0, thetaP, kappaP, sigmaP, rhoP,
+                TimeGrid(dayCounter.yearFraction(settlementDate, maturityDate),
+                         10))));
+
+    const Real tol = 100*QL_EPSILON;
+    for (Real r = 0.1; r < 4; r+=0.25) {
+        for (Real phi = 0; phi < 360; phi+=60) {
+            for (Time t=0.1; t <= 1.0; t+=0.3) {
+                const std::complex<Real> z
+                    = r*std::exp(std::complex<Real>(0, phi));
+
+                const std::complex<Real> a = analyticEngine->chF(z, t);
+                const std::complex<Real> b = ptdHestonEngine->chF(z, t);
+
+                if (std::abs(a-b) > tol)
+                    BOOST_ERROR("failed to compare characteristic function "
+                            << "\n  time dependent model: " << b
+                            << "\n  Heston model        : " << a
+                            << "\n  Difference          : " << std::abs(a-b));
+            }
+        }
+    }
+}
+
+
+void HestonModelTest::testPiecewiseTimeDependentComparison() {
+    BOOST_TEST_MESSAGE("Testing piecewise time dependent "
+                       "ChF vs Heston ChF...");
+
+    SavedSettings backup;
+
+    const Date settlementDate(5, July, 2017);
+    Settings::instance().evaluationDate() = settlementDate;
+
+    const DayCounter dc = Actual365Fixed();
+    const Date maturityDate(5, July, 2018);
+    const Time maturity = dc.yearFraction(settlementDate, maturityDate);
+
+    const Handle<YieldTermStructure> rTS(flatRate(0.05, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(0.08, dc));
+
+    const Handle<Quote> s0(boost::make_shared<SimpleQuote>(100.0));
+
+    std::vector<Time> modelTimes;
+    modelTimes.push_back(0.25);
+    modelTimes.push_back(0.75);
+    modelTimes.push_back(10.0);
+    const TimeGrid modelGrid(modelTimes.begin(), modelTimes.end());
+
+    const Real v0 = 0.1;
+    ConstantParameter theta( 0.1, PositiveConstraint());
+    ConstantParameter kappa( 1.0, PositiveConstraint());
+    ConstantParameter rho( -0.75, BoundaryConstraint(-1.0, 1.0));
+
+    std::vector<Time> pTimes(2);
+    pTimes[0] = 0.25;
+    pTimes[1] = 0.75;
+    PiecewiseConstantParameter sigma(pTimes, PositiveConstraint());
+
+    sigma.setParam(0, 0.30);
+    sigma.setParam(1, 0.15);
+    sigma.setParam(2, 1.25);
+
+    VanillaOption option(
+        boost::make_shared<PlainVanillaPayoff>(Option::Call, s0->value()),
+        boost::make_shared<EuropeanExercise>(maturityDate));
+
+    const boost::shared_ptr<PiecewiseTimeDependentHestonModel> ptdModel(
+        boost::make_shared<PiecewiseTimeDependentHestonModel>(
+            rTS, qTS, s0, v0, theta, kappa, sigma, rho, modelGrid));
+
+    const boost::shared_ptr<AnalyticPTDHestonEngine> ptdHestonEngine(
+        boost::make_shared<AnalyticPTDHestonEngine>(ptdModel));
+
+    option.setPricingEngine(ptdHestonEngine);
+    const Real calculatedGatheral = option.NPV();
+
+    const boost::shared_ptr<AnalyticPTDHestonEngine> ptdAPEngine(
+        boost::make_shared<AnalyticPTDHestonEngine>(
+            ptdModel,
+            AnalyticPTDHestonEngine::AndersenPiterbarg,
+            AnalyticPTDHestonEngine::Integration::discreteTrapezoid(128),
+            1e-12));
+    option.setPricingEngine(ptdAPEngine);
+    const Real calculatedAndersenPiterbarg = option.NPV();
+
+    if (std::fabs(calculatedGatheral - calculatedAndersenPiterbarg) > 1e-10)
+        BOOST_ERROR("failed to reproduce npv for time dependent Heston model "
+                << "\n  Gatheral ChF         : " << calculatedGatheral
+                << "\n  AndersenPiterbarg ChF: " << calculatedAndersenPiterbarg
+                << "\n  Difference          : "
+                << std::fabs(calculatedGatheral - calculatedAndersenPiterbarg));
+
+    const boost::shared_ptr<HestonProcess> firstPartProcess(
+        boost::make_shared<HestonProcess>(
+            rTS, qTS, s0, v0, 1.0, 0.1, 0.30, -0.75,
+            HestonProcess::QuadraticExponentialMartingale));
+
+    typedef PseudoRandom::rsg_type rsg_type;
+    typedef PseudoRandom::urng_type urng_type;
+    typedef MultiPathGenerator<rsg_type>::sample_type sample_type;
+
+    const MultiPathGenerator<rsg_type> firstPathGen(
+        firstPartProcess,
+        TimeGrid(pTimes.front(), 6),
+        PseudoRandom::make_sequence_generator(12, 1234));
+
+    const urng_type urng(5678);
+
+    Statistics stat;
+    const DiscountFactor df = rTS->discount(maturityDate);
+
+    const Size nSims = 10000;
+    for (Size i=0; i < nSims; ++i) {
+        Real priceS = 0.0;
+
+        for (Size j=0; j < 2; ++j) {
+            const sample_type& path1 = (j&1) ? firstPathGen.antithetic()
+                                             : firstPathGen.next();
+            const Real spot1 = path1.value[0].back();
+            const Real v1    = path1.value[1].back();
+
+            const MultiPathGenerator<rsg_type> secondPathGen(
+                boost::make_shared<HestonProcess>(
+                    rTS, qTS,
+                    Handle<Quote>(boost::make_shared<SimpleQuote>(spot1)),
+                    v1, 1.0, 0.1, 0.15, -0.75,
+                    HestonProcess::QuadraticExponentialMartingale),
+                TimeGrid(pTimes[1]-pTimes[0], 12),
+                PseudoRandom::make_sequence_generator(24, urng.nextInt32()));
+
+            const sample_type& path2 = secondPathGen.next();
+            const Real spot2 = path2.value[0].back();
+            const Real v2    = path2.value[1].back();
+
+            const MultiPathGenerator<rsg_type> thirdPathGen(
+                boost::make_shared<HestonProcess>(
+                    rTS, qTS,
+                    Handle<Quote>(boost::make_shared<SimpleQuote>(spot2)),
+                    v2, 1.0, 0.1, 1.25, -0.75,
+                    HestonProcess::QuadraticExponentialMartingale),
+                TimeGrid(maturity-pTimes[1], 6),
+                PseudoRandom::make_sequence_generator(12, urng.nextInt32()));
+            const sample_type& path3 = thirdPathGen.next();
+            const Real spot3 = path3.value[0].back();
+
+            priceS += 0.5*(*option.payoff())(spot3);
+        }
+
+        stat.add(priceS*df);
+    }
+
+    const Real calculatedMC = stat.mean();
+    const Real errorEstimate = stat.errorEstimate();
+
+    if (std::fabs(calculatedMC - calculatedGatheral) > 3.0*errorEstimate)
+        BOOST_ERROR("failed to reproduce npv for time dependent Heston model"
+                << "\n  Gatheral ChF     : " << calculatedGatheral
+                << "\n  Monte-Carlo      : " << calculatedMC
+                << "\n  Monte-Carlo error: " << errorEstimate
+                << "\n  Difference       : "
+                << std::fabs(calculatedGatheral - calculatedMC));
+}
+
+void HestonModelTest::testPiecewiseTimeDependentChFAsymtotic() {
+    BOOST_TEST_MESSAGE("Testing piecewise time dependent "
+                       "ChF vs Heston ChF...");
+
+    SavedSettings backup;
+
+    const Date settlementDate(5, July, 2017);
+    Settings::instance().evaluationDate() = settlementDate;
+    const Date maturityDate = settlementDate + Period(13, Months);
+
+    const DayCounter dc = Actual365Fixed();
+    const Time maturity = dc.yearFraction(settlementDate, maturityDate);
+    const Handle<YieldTermStructure> rTS(flatRate(0.0, dc));
+
+    std::vector<Time> modelTimes;
+    modelTimes.push_back(0.01);
+    modelTimes.push_back(0.5);
+    modelTimes.push_back(2.0);
+
+    const TimeGrid modelGrid(modelTimes.begin(), modelTimes.end());
+
+    const Real v0 = 0.1;
+    const std::vector<Time> pTimes(modelTimes.begin(), modelTimes.end()-1);
+
+    PiecewiseConstantParameter sigma(pTimes, PositiveConstraint());
+    PiecewiseConstantParameter theta(pTimes, PositiveConstraint());
+    PiecewiseConstantParameter kappa(pTimes, PositiveConstraint());
+    PiecewiseConstantParameter rho(pTimes, BoundaryConstraint(-1.0, 1.0));
+
+    const Real sigmas[] = { 0.01, 0.2, 0.6 };
+    const Real thetas[] = { 0.16, 0.06, 0.36 };
+    const Real kappas[] = { 1.0, 0.3, 4.0 };
+    const Real rhos[] = { 0.5, -0.75, -0.25 };
+
+    for (Size i=0; i < 3; ++i) {
+        sigma.setParam(i, sigmas[i]);
+        theta.setParam(i, thetas[i]);
+        kappa.setParam(i, kappas[i]);
+        rho.setParam(i, rhos[i]);
+    }
+
+    const Handle<Quote> s0(boost::make_shared<SimpleQuote>(100.0));
+    const boost::shared_ptr<PiecewiseTimeDependentHestonModel> ptdModel(
+        boost::make_shared<PiecewiseTimeDependentHestonModel>(
+            rTS, rTS, s0, v0, theta, kappa, sigma, rho, modelGrid));
+
+    const Real eps = 1e-8;
+
+    const boost::shared_ptr<AnalyticPTDHestonEngine> ptdHestonEngine(
+        boost::make_shared<AnalyticPTDHestonEngine>(
+            ptdModel,
+            AnalyticPTDHestonEngine::AndersenPiterbarg,
+            AnalyticPTDHestonEngine::Integration::discreteTrapezoid(128),
+            eps));
+
+    const std::complex<Real> D_u_inf = -
+        std::complex<Real>(std::sqrt(1-rhos[0]*rhos[0]),rhos[0])/sigmas[0];
+
+    const std::complex<Real> dd = std::complex<Real>(kappas[0],
+        (2*kappas[0]*rhos[0]-sigmas[0])
+        /(2*std::sqrt(1-rhos[0]*rhos[0])))/(sigmas[0]*sigmas[0]);
+
+    std::complex<Real> C_u_inf(0.0, 0.0), cc(0.0, 0.0), clog(0.0, 0.0);
+
+    for (Size i=0; i < 3; ++i) {
+        const Real kappa = kappas[i];
+        const Real theta = thetas[i];
+        const Real sigma = sigmas[i];
+        const Real rho = rhos[i];
+        const Time tau = std::min(maturity, modelGrid[i+1]) - modelGrid[i];
+
+        C_u_inf += -kappa*theta*tau / sigma
+            *std::complex<Real>(std::sqrt(1-rho*rho), rho);
+
+        cc += kappa*std::complex<Real>(2*kappa,(2*kappa*rho-sigma)
+            /sqrt(1-rho*rho))*tau*theta/(2*sigma*sigma);
+
+        const std::complex<Real> Di =
+            (i < 2) ? sigma/sigmas[i+1]
+              *std::complex<Real>(std::sqrt(1-rhos[i+1]*rhos[i+1]), rhos[i+1])
+                     : std::complex<Real>(0.0, 0.0);
+
+        clog += 2*kappa*theta/(sigma*sigma)*std::log(1.0 -
+            ( Di - std::complex<Real>(std::sqrt(1-rho*rho), rho)) /
+            ( Di + std::complex<Real>(std::sqrt(1-rho*rho), -rho)));
+    }
+
+    const Real epsilon = eps*M_PI/s0->value();
+
+    const Real uM =
+        AnalyticHestonEngine::Integration::andersenPiterbargIntegrationLimit(
+            -(C_u_inf + D_u_inf*v0).real(), epsilon, v0, maturity);
+
+    const Real expectedUM = 18.6918883427;
+    if (std::fabs(uM - expectedUM) > 1e-5) {
+        BOOST_ERROR("failed to reproduce Andersen-Piterbarg "
+                    "Integration bounds for piecewise constant "
+                    "time dependent Heston Model"
+                << "\n  calculated : " << uM
+                << "\n  expected   : " << expectedUM
+                << "\n  diff       : " << std::fabs(uM - expectedUM)
+                << "\n  tolerance  : " << 1e-5);
+    }
+
+    const Real u = 1e8;
+    const std::complex<Real> expectedlnChF = ptdHestonEngine->lnChF(u, maturity);
+    const std::complex<Real> calculatedAsympotic =
+        (D_u_inf*u + dd)*v0 + C_u_inf*u + cc + clog;
+
+    if (std::abs(expectedlnChF - calculatedAsympotic) > 0.01) {
+        BOOST_ERROR("failed to reproduce asymptotic of characteristic function"
+                << "\n  ln(ChF)   : " << expectedlnChF
+                << "\n  asymptotic: " << calculatedAsympotic
+                << "\n  diff      : "
+                << std::abs(expectedlnChF - calculatedAsympotic)
+                << "\n  tolerance : " << 0.01);
+    }
+
+    VanillaOption option(
+        boost::make_shared<PlainVanillaPayoff>(Option::Call, s0->value()),
+        boost::make_shared<EuropeanExercise>(maturityDate));
+    option.setPricingEngine(ptdHestonEngine);
+
+    const Real expectedNPV = 17.43851162589377;
+    const Real calculatedNPV = option.NPV();
+    const Real diffNPV = std::fabs(expectedNPV - calculatedNPV);
+    if (diffNPV > 1e-9) {
+        BOOST_ERROR("failed to reproduce high precision prices for "
+                "piecewise constant time dependent Heston model"
+                << "\n  expeceted : " << expectedNPV
+                << "\n  calclated : " << calculatedNPV
+                << "\n  diff      : " << diffNPV
+                << "\n  tolerance : " << 1e-9);
+    }
+}
+
 test_suite* HestonModelTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Heston model tests");
 
@@ -2323,6 +2691,12 @@ test_suite* HestonModelTest::suite(SpeedLevel speed) {
         &HestonModelTest::testAndersenPiterbargControlVariateIntegrand));
     suite->add(QUANTLIB_TEST_CASE(
         &HestonModelTest::testAndersenPiterbargConvergence));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonModelTest::testPiecewiseTimeDependentChFvsHestonChF));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonModelTest::testPiecewiseTimeDependentComparison));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonModelTest::testPiecewiseTimeDependentChFAsymtotic));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(

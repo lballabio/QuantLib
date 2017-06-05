@@ -376,9 +376,6 @@ namespace QuantLib {
                   Volatility sigmaBS,
                   const AnalyticHestonEngine* const enginePtr)
         : term_(term),
-          s0_(s0),
-          strike_(strike),
-          ratio_(ratio),
           sigmaBS_(sigmaBS),
           x_(std::log(s0)),
           sx_(std::log(strike)),
@@ -406,7 +403,6 @@ namespace QuantLib {
 
       private:
         const Time term_;
-        const Real s0_, strike_, ratio_;
         const Volatility sigmaBS_;
         const Real x_, sx_, dd_;
         const AnalyticHestonEngine* const enginePtr_;
@@ -432,7 +428,7 @@ namespace QuantLib {
         const std::complex<Real> G = (g-D)/(g+D);
 
         return std::exp(
-            v0/(sigma2)*(1.0-std::exp(-D*t))/(1.0-G*std::exp(-D*t))
+            v0/sigma2*(1.0-std::exp(-D*t))/(1.0-G*std::exp(-D*t))
              *(g-D) + kappa*theta/sigma2*((g-D)*t
                 -2.0*std::log((1.0-G*std::exp(-D*t))/(1.0-G)))
             );
@@ -544,15 +540,8 @@ namespace QuantLib {
             const Real epsilon = enginePtr->andersenPiterbargEpsilon_
                 *M_PI/(std::sqrt(strikePrice*fwdPrice)*riskFreeDiscount);
 
-            const Real uMaxGuess = -std::log(epsilon)/c_inf;
-            const Real uMaxStep = 0.1*uMaxGuess;
-
-            const Real uMax = Brent().solve(u_Max(c_inf, epsilon),
-                QL_EPSILON*uMaxGuess, uMaxGuess, uMaxStep);
-
-            const Real uHatMax = Brent().solve(uHat_Max(0.5*v0*term, epsilon),
-                QL_EPSILON*std::sqrt(uMaxGuess),
-                std::sqrt(uMaxGuess), 0.1*std::sqrt(uMaxGuess));
+            const Real uM = Integration::andersenPiterbargIntegrationLimit(
+                c_inf, epsilon, v0, term);
 
             const Real vAvg
                 = (1-std::exp(-kappa*term))*(v0-theta)/(kappa*term) + theta;
@@ -564,8 +553,7 @@ namespace QuantLib {
 
             const Real h_cv = integration.calculate(c_inf,
                     AP_Helper(term, spotPrice, strikePrice,
-                              ratio, std::sqrt(vAvg), enginePtr),
-                    std::max(uMax, uHatMax))
+                              ratio, std::sqrt(vAvg), enginePtr), uM)
                 * std::sqrt(strikePrice * fwdPrice)*riskFreeDiscount/M_PI;
             evaluations += integration.numberOfEvaluations();
 
@@ -782,4 +770,20 @@ namespace QuantLib {
 
         return retVal;
      }
+
+    Real AnalyticHestonEngine::Integration::andersenPiterbargIntegrationLimit(
+        Real c_inf, Real epsilon, Real v0, Real t) {
+
+        const Real uMaxGuess = -std::log(epsilon)/c_inf;
+        const Real uMaxStep = 0.1*uMaxGuess;
+
+        const Real uMax = Brent().solve(u_Max(c_inf, epsilon),
+            QL_EPSILON*uMaxGuess, uMaxGuess, uMaxStep);
+
+        const Real uHatMax = Brent().solve(uHat_Max(0.5*v0*t, epsilon),
+            QL_EPSILON*std::sqrt(uMaxGuess),
+            std::sqrt(uMaxGuess), 0.1*std::sqrt(uMaxGuess));
+
+        return std::max(uMax, uHatMax);
+    }
 }

@@ -51,6 +51,9 @@ class HestonModelTest {
     static void testAndersenPiterbargPricing();
     static void testAndersenPiterbargControlVariateIntegrand();
     static void testAndersenPiterbargConvergence();
+    static void testPiecewiseTimeDependentChFvsHestonChF();
+    static void testPiecewiseTimeDependentComparison();
+    static void testPiecewiseTimeDependentChFAsymtotic();
 
     static boost::unit_test_framework::test_suite* suite(SpeedLevel);
     static boost::unit_test_framework::test_suite* experimental();
