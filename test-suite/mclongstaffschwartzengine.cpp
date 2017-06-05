@@ -38,7 +38,7 @@ namespace {
 
     class AmericanMaxPathPricer : public EarlyExercisePathPricer<MultiPath>  {
       public:
-        AmericanMaxPathPricer(const boost::shared_ptr<Payoff>& payoff)
+        explicit AmericanMaxPathPricer(const boost::shared_ptr<Payoff>& payoff)
         : payoff_(payoff) {
         }
 

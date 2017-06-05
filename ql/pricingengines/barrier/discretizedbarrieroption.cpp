@@ -19,7 +19,6 @@
 
 #include <ql/pricingengines/barrier/discretizedbarrieroption.hpp>
 #include <vector>
-#include <iostream>
 
 namespace QuantLib {
 

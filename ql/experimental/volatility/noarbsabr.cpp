@@ -100,7 +100,7 @@ NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
                     detail::NoArbSabrModel::forward_accuracy, start,
                     std::min(detail::NoArbSabrModel::forward_search_step, start / 2.0));
         forward_ = tmp * tmp + detail::NoArbSabrModel::strike_min;
-    } catch (QuantLib::Error e) {
+    } catch (Error&) {
         // fall back to unadjusted forward
         forward_ = externalForward_;
     }

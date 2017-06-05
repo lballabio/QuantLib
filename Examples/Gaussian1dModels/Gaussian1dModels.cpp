@@ -17,8 +17,37 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/quantlib.hpp>
+#include <ql/qldefines.hpp>
+#ifdef BOOST_MSVC
+#  include <ql/auto_link.hpp>
+#endif
+#include <ql/instruments/floatfloatswap.hpp>
+#include <ql/instruments/floatfloatswaption.hpp>
+#include <ql/instruments/nonstandardswaption.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/pricingengines/swaption/gaussian1dswaptionengine.hpp>
+#include <ql/pricingengines/swaption/gaussian1dnonstandardswaptionengine.hpp>
+#include <ql/pricingengines/swaption/gaussian1dfloatfloatswaptionengine.hpp>
+#include <ql/models/shortrate/onefactormodels/gsr.hpp>
+#include <ql/models/shortrate/onefactormodels/markovfunctional.hpp>
+#include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
+#include <ql/cashflows/lineartsrpricer.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
+#include <ql/indexes/swap/euriborswap.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/volatility/swaption/swaptionconstantvol.hpp>
+#include <ql/rebatedexercise.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
+
 #include <boost/timer.hpp>
+#include <boost/make_shared.hpp>
+
+#include <iostream>
+#include <iomanip>
 
 using namespace QuantLib;
 
@@ -668,11 +697,11 @@ int main(int argc, char *argv[]) {
         std::cout << "\nThat was it. Thank you for running this demo. Bye."
                   << std::endl;
 
-    } catch (QuantLib::Error e) {
+    } catch (const QuantLib::Error& e) {
         std::cout << "terminated with a ql exception: " << e.what()
                   << std::endl;
         return 1;
-    } catch (std::exception e) {
+    } catch (const std::exception& e) {
         std::cout << "terminated with a general exception: " << e.what()
                   << std::endl;
         return 1;

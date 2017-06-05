@@ -34,7 +34,11 @@ namespace QuantLib {
                                const Period& forwardStart)
     : capFloorType_(capFloorType), strike_(strike),
       firstCapletExcluded_(forwardStart==0*Days), asOptionlet_(false),
-      makeVanillaSwap_(MakeVanillaSwap(tenor, iborIndex, 0.0, forwardStart)) {}
+      // setting the fixed leg tenor avoids that MakeVanillaSwap throws
+      // because of an unknown fixed leg default tenor for a currency,
+      // notice that only the floating leg of the swap is used anyway
+      makeVanillaSwap_(MakeVanillaSwap(tenor, iborIndex, 0.0, forwardStart)
+                       .withFixedLegTenor(1*Years)) {}
 
     MakeCapFloor::operator CapFloor() const {
         shared_ptr<CapFloor> capfloor = *this;
@@ -90,21 +94,18 @@ namespace QuantLib {
     }
 
     MakeCapFloor& MakeCapFloor::withTenor(const Period& t) {
-        makeVanillaSwap_.withFixedLegTenor(t);
         makeVanillaSwap_.withFloatingLegTenor(t);
         return *this;
     }
 
 
     MakeCapFloor& MakeCapFloor::withCalendar(const Calendar& cal) {
-        makeVanillaSwap_.withFixedLegCalendar(cal);
         makeVanillaSwap_.withFloatingLegCalendar(cal);
         return *this;
     }
 
 
     MakeCapFloor& MakeCapFloor::withConvention(BusinessDayConvention bdc) {
-        makeVanillaSwap_.withFixedLegConvention(bdc);
         makeVanillaSwap_.withFloatingLegConvention(bdc);
         return *this;
     }
@@ -112,39 +113,33 @@ namespace QuantLib {
 
     MakeCapFloor&
     MakeCapFloor::withTerminationDateConvention(BusinessDayConvention bdc) {
-        makeVanillaSwap_.withFixedLegTerminationDateConvention(bdc);
         makeVanillaSwap_.withFloatingLegTerminationDateConvention(bdc);
         return *this;
     }
 
 
     MakeCapFloor& MakeCapFloor::withRule(DateGeneration::Rule r) {
-        makeVanillaSwap_.withFixedLegRule(r);
         makeVanillaSwap_.withFloatingLegRule(r);
         return *this;
     }
 
     MakeCapFloor& MakeCapFloor::withEndOfMonth(bool flag) {
-        makeVanillaSwap_.withFixedLegEndOfMonth(flag);
         makeVanillaSwap_.withFloatingLegEndOfMonth(flag);
         return *this;
     }
 
 
     MakeCapFloor& MakeCapFloor::withFirstDate(const Date& d) {
-        makeVanillaSwap_.withFixedLegFirstDate(d);
         makeVanillaSwap_.withFloatingLegFirstDate(d);
         return *this;
     }
 
     MakeCapFloor& MakeCapFloor::withNextToLastDate(const Date& d) {
-        makeVanillaSwap_.withFixedLegNextToLastDate(d);
         makeVanillaSwap_.withFloatingLegNextToLastDate(d);
         return *this;
     }
 
     MakeCapFloor& MakeCapFloor::withDayCount(const DayCounter& dc) {
-        makeVanillaSwap_.withFixedLegDayCount(dc);
         makeVanillaSwap_.withFloatingLegDayCount(dc);
         return *this;
     }

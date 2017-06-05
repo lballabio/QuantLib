@@ -453,16 +453,22 @@ void SwingOptionTest::testExtOUJumpSwingOption() {
 }
 
 
-test_suite* SwingOptionTest::suite() {
+test_suite* SwingOptionTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Swing-Option Test");
+
     suite->add(QUANTLIB_TEST_CASE(
         &SwingOptionTest::testExtendedOrnsteinUhlenbeckProcess));
     suite->add(QUANTLIB_TEST_CASE(&SwingOptionTest::testFdBSSwingOption));
     suite->add(QUANTLIB_TEST_CASE(
                           &SwingOptionTest::testFdmExponentialJump1dMesher));
-    suite->add(QUANTLIB_TEST_CASE(&SwingOptionTest::testExtOUJumpVanillaEngine));
-    suite->add(QUANTLIB_TEST_CASE(
-                            &SwingOptionTest::testExtOUJumpSwingOption));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &SwingOptionTest::testExtOUJumpVanillaEngine));
+        suite->add(QUANTLIB_TEST_CASE(
+            &SwingOptionTest::testExtOUJumpSwingOption));
+    }
+
     return suite;
 }
 

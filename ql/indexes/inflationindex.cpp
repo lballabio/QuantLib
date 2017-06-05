@@ -95,10 +95,13 @@ namespace QuantLib {
                     Real pastFixing2 = ts[lim.second+1];
                     QL_REQUIRE(pastFixing2 != Null<Real>(),
                                "Missing " << name() << " fixing for " << lim.second+1);
+
+                    // Use lagged period for interpolation
+                    std::pair<Date, Date> reference_period_lim = inflationPeriod(aFixingDate + zeroInflationTermStructure()->observationLag(), frequency_);
                     // now linearly interpolate
-                    Real daysInPeriod = lim.second+1 - lim.first;
+                    Real daysInPeriod = reference_period_lim.second + 1 - reference_period_lim.first;
                     theFixing = pastFixing
-                        + (pastFixing2-pastFixing)*(aFixingDate-lim.first)/daysInPeriod;
+                        + (pastFixing2 - pastFixing)*(aFixingDate - lim.first) / daysInPeriod;
                 }
             }
             return theFixing;

@@ -25,6 +25,7 @@
 #define quantlib_actualactual_day_counter_h
 
 #include <ql/time/daycounter.hpp>
+#include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 
@@ -54,6 +55,9 @@ namespace QuantLib {
       private:
         class ISMA_Impl : public DayCounter::Impl {
           public:
+            explicit ISMA_Impl(const Schedule& schedule)
+            : schedule_(schedule) {}
+
             std::string name() const {
                 return std::string("Actual/Actual (ISMA)");
             }
@@ -61,6 +65,8 @@ namespace QuantLib {
                               const Date& d2,
                               const Date& refPeriodStart,
                               const Date& refPeriodEnd) const;
+          private:
+            Schedule schedule_;
         };
         class ISDA_Impl : public DayCounter::Impl {
           public:
@@ -83,10 +89,12 @@ namespace QuantLib {
                               const Date&) const;
         };
         static boost::shared_ptr<DayCounter::Impl> implementation(
-                                                               Convention c);
+                                                               Convention c, 
+                                                               const Schedule& schedule);
       public:
-        ActualActual(Convention c = ActualActual::ISDA)
-        : DayCounter(implementation(c)) {}
+        ActualActual(Convention c = ActualActual::ISDA, 
+                     const Schedule& schedule = Schedule())
+        : DayCounter(implementation(c, schedule)) {}
     };
 
 }

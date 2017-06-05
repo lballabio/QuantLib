@@ -16,8 +16,8 @@ This program is distributed in the hope that it will be useful, but WITHOUT
 ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 #include <ql/qldefines.hpp>
-#include <ql/version.hpp>
 #ifdef BOOST_MSVC
 #  include <ql/auto_link.hpp>
 #endif

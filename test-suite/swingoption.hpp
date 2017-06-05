@@ -21,6 +21,7 @@
 #define quantlib_test_swing_option_hpp
 
 #include <boost/test/unit_test.hpp>
+#include "speedlevel.hpp"
 
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
@@ -32,7 +33,7 @@ class SwingOptionTest {
     static void testExtOUJumpSwingOption();
     static void testFdmExponentialJump1dMesher();
     static void testExtOUJumpVanillaEngine();
-    static boost::unit_test_framework::test_suite* suite();
+    static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
 
 #endif

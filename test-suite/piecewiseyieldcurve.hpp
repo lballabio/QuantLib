@@ -51,6 +51,8 @@ class PiecewiseYieldCurveTest {
     static void testForwardCopy();
     static void testZeroCopy();
 
+    static void testSwapRateHelperLastRelevantDate();
+
     static boost::unit_test_framework::test_suite* suite();
 };
 

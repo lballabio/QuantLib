@@ -594,7 +594,7 @@ namespace QuantLib {
             /(ticksPerSecond()/1000000);
     }
 
-    Size Date::ticksPerSecond() {
+    time_duration::tick_type Date::ticksPerSecond() {
         return time_duration::ticks_per_second();
     }
 
@@ -842,7 +842,7 @@ namespace QuantLib {
             struct nopunct : std::numpunct<char> {
                 std::string do_grouping() const {return "";}
             };
-            FormatResetter(std::ostream &out)
+            explicit FormatResetter(std::ostream &out)
                 : out_(&out), flags_(out.flags()), filler_(out.fill()),
                   loc_(out.getloc()) {
                 std::locale loc (out.getloc(),new nopunct);
@@ -935,8 +935,11 @@ namespace QuantLib {
 
             out << io::iso_date(d) << "T";
             FormatResetter resetter(out);
-            Integer hh = d.hours(), mm = d.minutes(), s = d.seconds(),
-                    millis = d.milliseconds(), micros = d.microseconds();
+            const Hour hh= d.hours();
+            const Minute mm = d.minutes();
+            const Second s = d.seconds();
+            const Millisecond millis = d.milliseconds();
+            const Microsecond micros = d.microseconds();
 
             out << std::setw(2) << std::setfill('0') << hh << ":"
                 << std::setw(2) << std::setfill('0') << mm << ":"

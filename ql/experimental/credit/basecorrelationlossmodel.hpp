@@ -39,7 +39,7 @@ namespace QuantLib {
     (live) amount percentage.\par
     Though the literature on this model is inmense, see for a more than 
     introductory level (precrisis) chapters 19, 20 and 21 of <b>Modelling single
-    name and multi-name credit derivatives.</b> Dominic O’Kane, Wiley Finance, 
+    name and multi-name credit derivatives.</b> Dominic O'Kane, Wiley Finance, 
     2008\par
     For freely available documentation see:\par
     Credit Correlation: A Guide; JP Morgan Credit Derivatives Strategy; 
@@ -200,6 +200,9 @@ namespace QuantLib {
     parameter trick partial specializations leaving the interpolation open 
     would be possible.
     */
+
+    #ifndef QL_PATCH_SOLARIS
+
     template<>
     inline void BaseCorrelationLossModel<GaussianLHPLossModel, 
         BilinearInterpolation>::setupModels() const 
@@ -292,11 +295,14 @@ namespace QuantLib {
         basketDetach_->setLossModel(scalarCorrelModelDetach_);
     }
 
+    #endif
+
 
     // Vanilla BC model
+    #ifndef QL_PATCH_SOLARIS
     typedef BaseCorrelationLossModel<GaussianLHPLossModel, 
                 BilinearInterpolation> GaussianLHPFlatBCLM;
-
+    #endif
 
 }
 

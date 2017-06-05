@@ -51,6 +51,7 @@
 
 #endif
 #include "utilities.hpp"
+#include "speedlevel.hpp"
 
 #include "americanoption.hpp"
 #include "amortizingbond.hpp"
@@ -143,6 +144,7 @@
 #include "mersennetwister.hpp"
 #include "money.hpp"
 #include "noarbsabr.hpp"
+#include "normalclvmodel.hpp"
 #include "nthtodefault.hpp"
 #include "numericaldifferentiation.hpp"
 #include "observable.hpp"
@@ -168,6 +170,7 @@
 #include "shortratemodels.hpp"
 #include "solvers.hpp"
 #include "spreadoption.hpp"
+#include "squarerootclvmodel.hpp"
 #include "swingoption.hpp"
 #include "stats.hpp"
 #include "swap.hpp"
@@ -264,12 +267,34 @@ QuantLib::Date evaluation_date(int argc, char** argv) {
     return knownGoodDefault;
 }
 
+    
+SpeedLevel speed_level(int argc, char** argv) {
+    /*! Again, dead simple parser:
+        - passing --slow causes all tests to be run;
+        - passing --fast causes most tests to be run, except the slowest;
+        - passing --faster causes only the faster tests to be run;
+        - passing nothing is the same as --slow
+    */
+
+    for (int i=1; i<argc; ++i) {
+        std::string arg = argv[i];
+        if (arg == "--slow")
+            return Slow;
+        else if (arg == "--fast")
+            return Fast;
+        else if (arg == "--faster")
+            return Faster;
+    }
+    return Slow;
+}
+
 
 test_suite* init_unit_test_suite(int, char* []) {
 
     int argc = boost::unit_test::framework::master_test_suite().argc;
     char **argv = boost::unit_test::framework::master_test_suite().argv;
     configure(evaluation_date(argc, argv));
+    SpeedLevel speed = speed_level(argc, argv);
 
     const QuantLib::Settings& settings = QuantLib::Settings::instance();
     std::ostringstream header;
@@ -308,8 +333,12 @@ test_suite* init_unit_test_suite(int, char* []) {
                      "today's cashflows are included,\n"
                      : "today's cashflows are excluded,\n"))
            << (settings.enforcesTodaysHistoricFixings()
-               ? "today's historic fixings are enforced"
-               : "today's historic fixings are not enforced");
+               ? "today's historic fixings are enforced."
+               : "today's historic fixings are not enforced.")
+           << "\nRunning "
+           << (speed == Faster ? "faster" :
+               (speed == Fast ?   "fast" : "all"))
+           << " tests.";
 
     std::string rule = std::string(41, '=');
 
@@ -326,9 +355,9 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(AssetSwapTest::suite()); // fails with QL_USE_INDEXED_COUPON
     test->add(AutocovariancesTest::suite());
     test->add(BarrierOptionTest::suite());
-    test->add(BasketOptionTest::suite());
+    test->add(BasketOptionTest::suite(speed));
     test->add(BatesModelTest::suite());
-    test->add(BermudanSwaptionTest::suite());
+    test->add(BermudanSwaptionTest::suite(speed));
     test->add(BinaryOptionTest::suite());
     test->add(BlackFormulaTest::suite());
     test->add(BondTest::suite());
@@ -344,26 +373,26 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CPISwapTest::suite());
     test->add(CreditDefaultSwapTest::suite());
     test->add(CurveStatesTest::suite());
-    test->add(DateTest::suite());
+    test->add(DateTest::suite(speed));
     test->add(DayCounterTest::suite());
     test->add(DefaultProbabilityCurveTest::suite());
     test->add(DigitalCouponTest::suite()); // might fail with QL_USE_INDEXED_COUPON
     test->add(DigitalOptionTest::suite());
-    test->add(DistributionTest::suite());
+    test->add(DistributionTest::suite(speed));
     test->add(DividendOptionTest::suite());
     test->add(EuropeanOptionTest::suite());
     test->add(ExchangeRateTest::suite());
     test->add(FastFourierTransformTest::suite());
-    test->add(FdHestonTest::suite());
+    test->add(FdHestonTest::suite(speed));
     test->add(FdmLinearOpTest::suite());
     test->add(ForwardOptionTest::suite());
     test->add(FunctionsTest::suite());
     test->add(GARCHTest::suite());
     test->add(GaussianQuadraturesTest::suite());
-    test->add(GJRGARCHModelTest::suite());
+    test->add(GJRGARCHModelTest::suite(speed));
     test->add(GsrTest::suite());
-    test->add(HestonModelTest::suite());
-    test->add(HybridHestonHullWhiteProcessTest::suite());
+    test->add(HestonModelTest::suite(speed));
+    test->add(HybridHestonHullWhiteProcessTest::suite(speed));
     test->add(InflationTest::suite());
     test->add(InflationCapFloorTest::suite());
     test->add(InflationCapFlooredCouponTest::suite());
@@ -377,13 +406,13 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(LinearLeastSquaresRegressionTest::suite());
     test->add(LookbackOptionTest::suite());
     test->add(LowDiscrepancyTest::suite());
-    test->add(MarketModelTest::suite());
-    test->add(MarketModelCmsTest::suite());
-    test->add(MarketModelSmmTest::suite());
+    test->add(MarketModelTest::suite(speed));
+    test->add(MarketModelCmsTest::suite(speed));
+    test->add(MarketModelSmmTest::suite(speed));
     test->add(MarketModelSmmCapletAlphaCalibrationTest::suite());
     test->add(MarketModelSmmCapletCalibrationTest::suite());
     test->add(MarketModelSmmCapletHomoCalibrationTest::suite());
-    test->add(MarkovFunctionalTest::suite());
+    test->add(MarkovFunctionalTest::suite(speed));
     test->add(MatricesTest::suite());
     test->add(MCLongstaffSchwartzEngineTest::suite());
     test->add(MersenneTwisterTest::suite());
@@ -391,7 +420,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ObservableTest::suite());
     test->add(OdeTest::suite());
     test->add(OperatorTest::suite());
-    test->add(OptimizersTest::suite());
+    test->add(OptimizersTest::suite(speed));
     test->add(OptionletStripperTest::suite());
     test->add(OvernightIndexedSwapTest::suite());
     test->add(PathGeneratorTest::suite());
@@ -405,7 +434,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(RoundingTest::suite());
     test->add(SampledCurveTest::suite());
     test->add(ScheduleTest::suite());
-    test->add(ShortRateModelTest::suite()); // fails with QL_USE_INDEXED_COUPON
+    test->add(ShortRateModelTest::suite(speed)); // fails with QL_USE_INDEXED_COUPON
     test->add(Solver1DTest::suite());
     test->add(StatisticsTest::suite());
     test->add(SwapTest::suite());
@@ -421,51 +450,54 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(VarianceSwapTest::suite());
     test->add(VolatilityModelsTest::suite());
 
-//    tests for experimental classes
+    // tests for experimental classes
     test->add(AmortizingBondTest::suite());
     test->add(AsianOptionTest::experimental());
     test->add(BarrierOptionTest::experimental());
     test->add(DoubleBarrierOptionTest::experimental());
     test->add(BlackDeltaCalculatorTest::suite());
     test->add(CatBondTest::suite());
-    test->add(CdoTest::suite());
+    test->add(CdoTest::suite(speed));
     test->add(CdsOptionTest::suite());
     test->add(ChooserOptionTest::suite());
     test->add(CommodityUnitOfMeasureTest::suite());
     test->add(CompoundOptionTest::suite());
     test->add(ConvertibleBondTest::suite());
     test->add(CreditRiskPlusTest::suite());
-    test->add(DoubleBarrierOptionTest::suite());
+    test->add(DoubleBarrierOptionTest::suite(speed));
     test->add(DoubleBinaryOptionTest::suite());
     test->add(EuropeanOptionTest::experimental());
     test->add(EverestOptionTest::suite());
     test->add(ExtendedTreesTest::suite());
     test->add(ExtensibleOptionsTest::suite());
+    test->add(GaussianQuadraturesTest::experimental());
     test->add(HestonModelTest::experimental());
-    test->add(HestonSLVModelTest::experimental());
+    test->add(HestonSLVModelTest::experimental(speed));
     test->add(HimalayaOptionTest::suite());
     test->add(InflationCPICapFloorTest::suite());
     test->add(InflationVolTest::suite());
     test->add(MargrabeOptionTest::suite());
     test->add(NoArbSabrTest::suite());
-    test->add(NthToDefaultTest::suite());
+    test->add(NormalCLVModelTest::experimental(speed));
+    test->add(NthToDefaultTest::suite(speed));
     test->add(NumericalDifferentiationTest::suite());
     test->add(PagodaOptionTest::suite());
     test->add(PartialTimeBarrierOptionTest::suite());
     test->add(QuantoOptionTest::experimental());
-    test->add(RiskNeutralDensityCalculatorTest::experimental());
+    test->add(RiskNeutralDensityCalculatorTest::experimental(speed));
     test->add(SpreadOptionTest::suite());
-    test->add(SwingOptionTest::suite());
+    test->add(SquareRootCLVModelTest::experimental());
+    test->add(SwingOptionTest::suite(speed));
     test->add(TwoAssetBarrierOptionTest::suite());
     test->add(TwoAssetCorrelationOptionTest::suite());
     test->add(VarianceGammaTest::suite());
     test->add(VarianceOptionTest::suite());
-    test->add(VPPTest::suite());
-    test->add(ZabrTest::suite());
+    test->add(VPPTest::suite(speed));
+    test->add(ZabrTest::suite(speed));
 
     // tests for deprecated classes
-    test->add(LiborMarketModelTest::suite());
-    test->add(LiborMarketModelProcessTest::suite());
+    test->add(LiborMarketModelTest::suite(speed));
+    test->add(LiborMarketModelProcessTest::suite(speed));
 
     test->add(QUANTLIB_TEST_CASE(stopTimer));
 

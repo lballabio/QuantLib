@@ -281,10 +281,6 @@ namespace QuantLib {
         registerWith(hestonModel_);
     }
 
-    void HestonSLVFDMModel::update() {
-        notifyObservers();
-    }
-
     boost::shared_ptr<HestonProcess> HestonSLVFDMModel::hestonProcess() const {
         return hestonModel_->process();
     }
@@ -429,12 +425,6 @@ namespace QuantLib {
             new FdmHestonFwdOp(mesher, hestonProcess, trafoType, leverageFct));
 
         Array p = FdmHestonGreensFct(mesher, hestonProcess, trafoType, lv0)
-            .get(timeGrid->at(1), params_.greensAlgorithm);
-
-        mesher = boost::make_shared<FdmMesherComposite>(
-            xMesher.at(1), vMesher.at(1));
-
-        p = FdmHestonGreensFct(mesher, hestonProcess, trafoType, lv0)
             .get(timeGrid->at(1), params_.greensAlgorithm);
 
         if (logging_) {

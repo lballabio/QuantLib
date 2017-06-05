@@ -55,7 +55,7 @@ namespace QuantLib {
     //! 1-month %Bbsw index
     class Bbsw1M : public Bbsw {
       public:
-        Bbsw1M(const Handle<YieldTermStructure>& h =
+        explicit Bbsw1M(const Handle<YieldTermStructure>& h =
                                Handle<YieldTermStructure>())
         : Bbsw(Period(1, Months), h) {}
     };
@@ -63,7 +63,7 @@ namespace QuantLib {
     //! 2-months %Bbsw index
     class Bbsw2M : public Bbsw {
       public:
-        Bbsw2M(const Handle<YieldTermStructure>& h =
+        explicit Bbsw2M(const Handle<YieldTermStructure>& h =
                                Handle<YieldTermStructure>())
         : Bbsw(Period(2, Months), h) {}
     };
@@ -71,7 +71,7 @@ namespace QuantLib {
     //! 3-months %Bbsw index
     class Bbsw3M : public Bbsw {
       public:
-        Bbsw3M(const Handle<YieldTermStructure>& h =
+        explicit Bbsw3M(const Handle<YieldTermStructure>& h =
                                Handle<YieldTermStructure>())
         : Bbsw(Period(3, Months), h) {}
     };
@@ -79,7 +79,7 @@ namespace QuantLib {
     //! 4-months %Bbsw index
     class Bbsw4M : public Bbsw {
       public:
-        Bbsw4M(const Handle<YieldTermStructure>& h =
+        explicit Bbsw4M(const Handle<YieldTermStructure>& h =
                                Handle<YieldTermStructure>())
         : Bbsw(Period(4, Months), h) {}
     };
@@ -87,7 +87,7 @@ namespace QuantLib {
     //! 5-months %Bbsw index
     class Bbsw5M : public Bbsw {
       public:
-        Bbsw5M(const Handle<YieldTermStructure>& h =
+        explicit Bbsw5M(const Handle<YieldTermStructure>& h =
                                Handle<YieldTermStructure>())
         : Bbsw(Period(5, Months), h) {}
     };
@@ -95,7 +95,7 @@ namespace QuantLib {
     //! 6-months %Bbsw index
     class Bbsw6M : public Bbsw {
       public:
-        Bbsw6M(const Handle<YieldTermStructure>& h =
+        explicit Bbsw6M(const Handle<YieldTermStructure>& h =
                                Handle<YieldTermStructure>())
         : Bbsw(Period(6, Months), h) {}
     };

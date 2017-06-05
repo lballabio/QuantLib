@@ -78,7 +78,7 @@ namespace QuantLib {
         // for strike at -shift, return option price even if outside
         // minstrike, maxstrike interval
         if (volatilityType() == ShiftedLognormal)
-            return blackFormula(type,strike,atm, fabs(strike+shift()) < QL_EPSILON ?
+            return blackFormula(type,strike,atm, std::fabs(strike+shift()) < QL_EPSILON ?
                             0.2 : sqrt(variance(strike)),discount,shift());
         else
             return bachelierBlackFormula(type,strike,atm,sqrt(variance(strike)),discount);

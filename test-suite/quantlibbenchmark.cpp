@@ -38,11 +38,12 @@
                   7. Athlon 64 X2 4400+     : 824.2 mflops
                   8. Core2 Dual@2.0Ghz      : 754.1 mflops
                   9. Pentium4 Dual@2.8Ghz   : 423.8 mflops
-                 10. Pentium4@3.0Ghz        : 266.3 mflops
-                 11. PentiumIII@1.1Ghz      : 146.2 mflops
-                 12. Alpha 2xEV68@833Mhz    : 184.6 mflops
-                 13. Raspberry Pi ARM@700Mhz:  28.3 mflops
-                 14. Strong ARM@206Mhz      :   1.4 mflops
+                 10. Raspberry Pi3@1.2GHz   : 309.2 mflops
+                 11. Pentium4@3.0Ghz        : 266.3 mflops
+                 12. PentiumIII@1.1Ghz      : 146.2 mflops
+                 13. Alpha 2xEV68@833Mhz    : 184.6 mflops
+                 14. Raspberry Pi ARM@700Mhz:  28.3 mflops
+                 15. Strong ARM@206Mhz      :   1.4 mflops
 
  Remarks: OS: Linux, static libs
   1. g++-4.8.1 -O3 -ffast-math -march=core-avx2
@@ -63,13 +64,14 @@
       Remark: two processes
   9. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
       -mfpmath=sse,387 -msse2 -funroll-all-loops, Remark: two processes
- 10. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
+ 10. gcc-4.9.2  -O2, Remark: four processes
+ 11. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
                 -mfpmath=sse,387 -msse2 -funroll-all-loops
- 11. gcc-4.1.1, -O3 -march=pentium3 -ffast-math
+ 12. gcc-4.1.1, -O3 -march=pentium3 -ffast-math
                 -mfpmath=sse,387 -msse -funroll-all-loops
- 12. gcc-3.3.5, -O3 -mcpu=e67 -funroll-all-loops, Remark: two processes
- 13. gcc-4.6.3, -O3
- 14. gcc-3.4.3, -O2 -g on a Zaurus PDA
+ 13. gcc-3.3.5, -O3 -mcpu=e67 -funroll-all-loops, Remark: two processes
+ 14. gcc-4.6.3, -O3
+ 15. gcc-3.4.3, -O2 -g on a Zaurus PDA
 
   This benchmark is derived from quantlibtestsuite.cpp. Please see the
   copyrights therein.
@@ -135,7 +137,7 @@ namespace {
     class Benchmark {
       public:
         typedef void (*fct_ptr)();
-        Benchmark(std::string name, fct_ptr f, double mflop)
+        Benchmark(const std::string& name, fct_ptr f, double mflop)
         : f_(f), name_(name), mflop_(mflop) {
         }
 
@@ -210,8 +212,8 @@ namespace {
                       << " mflops" << std::endl;
 
             sum+=mflopsPerSec;
-            iterT++;
-            iterBM++;
+            ++iterT;
+            ++iterBM;
         }
         std::cout << std::string(56,'-') << std::endl
                   << "QuantLib Benchmark Index                  :"

@@ -196,10 +196,10 @@ int main( int argc, char* argv[] )
     const std::string clientModeStr = "--client_mode=true";
     const bool clientMode = (std::string(argv[argc-1]) == clientModeStr);
 
-    unsigned int priority;
     message_queue::size_type recvd_size;
 
     try {
+        unsigned int priority;
         if (!clientMode) {
             std::map<std::string, Time> runTimeLog;
 
@@ -506,9 +506,12 @@ int main( int argc, char* argv[] )
 
     #if BOOST_VERSION < 106000
     return runtime_config::no_result_code()
-    #else
+    #elif BOOST_VERSION < 106400
     // changed in Boost 1.60
     return !runtime_config::get<bool>( runtime_config::RESULT_CODE )
+    #else
+    // changed again in Boost 1.64
+    return !runtime_config::get<bool>( runtime_config::btrt_result_code )
     #endif
         ? boost::exit_success
         : results_collector.results(

@@ -39,6 +39,8 @@ using namespace std;
 using namespace boost;
 using namespace boost::unit_test_framework;
 
+#ifndef QL_PATCH_SOLARIS
+
 namespace {
 
     struct hwDatum {
@@ -93,7 +95,10 @@ namespace {
 
 }
 
+#endif
+
 void NthToDefaultTest::testGauss() {
+    #ifndef QL_PATCH_SOLARIS
     BOOST_TEST_MESSAGE("Testing nth-to-default against Hull-White values "
                        "with Gaussian copula...");
 
@@ -235,10 +240,12 @@ void NthToDefaultTest::testGauss() {
                                  << absTolerance << " exceeded");
         }
     }
+    #endif
 }
 
 
 void NthToDefaultTest::testGaussStudent() {
+    #ifndef QL_PATCH_SOLARIS
     BOOST_TEST_MESSAGE("Testing nth-to-default against Hull-White values "
                        "with Gaussian and Student copula...");
 
@@ -377,12 +384,17 @@ void NthToDefaultTest::testGaussStudent() {
                              "tolerance " << relTolerance << "|"
                              << absTolerance << " exceeded");
     }
+    #endif
 }
 
-test_suite* NthToDefaultTest::suite() {
+test_suite* NthToDefaultTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Nth-to-default tests");
-    suite->add(QUANTLIB_TEST_CASE(&NthToDefaultTest::testGauss));
-    suite->add(QUANTLIB_TEST_CASE(&NthToDefaultTest::testGaussStudent));
+    #ifndef QL_PATCH_SOLARIS
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(&NthToDefaultTest::testGauss));
+        suite->add(QUANTLIB_TEST_CASE(&NthToDefaultTest::testGaussStudent));
+    }
+    #endif
     return suite;
 }
 

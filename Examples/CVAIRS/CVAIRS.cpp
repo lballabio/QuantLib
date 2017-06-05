@@ -17,9 +17,24 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/quantlib.hpp>
+#include <ql/qldefines.hpp>
+#ifdef BOOST_MSVC
+#  include <ql/auto_link.hpp>
+#endif
+#include <ql/instruments/vanillaswap.hpp>
+#include <ql/instruments/makevanillaswap.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/pricingengines/swap/cvaswapengine.hpp>
+#include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
+#include <ql/termstructures/yield/ratehelpers.hpp>
+#include <ql/termstructures/credit/interpolatedhazardratecurve.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 
 #include <boost/timer.hpp>
+#include <boost/make_shared.hpp>
 #include <iostream>
 #include <iomanip>
 
