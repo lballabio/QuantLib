@@ -34,11 +34,13 @@ namespace QuantLib {
 
     //! %CAD LIBOR rate
     /*! Canadian Dollar LIBOR discontinued as of 2013.
+
+        Conventions are taken from a number of sources including
+        OpenGamma "Interest Rate Instruments and Market Conventions
+        Guide", BBG, IKON.
+
         \warning This is the rate fixed in London by BBA. Use CDOR if
                  you're interested in the Canadian fixing by IDA.
-        \warning Actual360 changed to Actual365Fixed()
-        \warning settlement days changed from 2 to 0
-        \warning source: OpenGamma "Interest Rate Instruments and Market Conventions Guide", BBG, IKON
     */
     class CADLibor : public Libor {
       public:
