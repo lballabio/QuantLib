@@ -581,8 +581,9 @@ void RiskNeutralDensityCalculatorTest::testSquareRootProcessRND() {
 }
 
 void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
-    BOOST_TEST_MESSAGE("Testing probability density for a BSM process "
-            "with strike dependent volatility vs Local volatility...");
+    BOOST_TEST_MESSAGE(
+        "Testing probability density for a BSM process "
+        "with strike dependent volatility vs local volatility...");
 
     SavedSettings backup;
 

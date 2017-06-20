@@ -36,13 +36,6 @@ namespace QuantLib {
                              const Date& expiry,
                              Rate marketSpread,
                              Volatility spreadVolatility);
-        /*! \deprecated Use the other constructor */
-        QL_DEPRECATED
-        RiskyAssetSwapOption(bool payer,
-                             const boost::shared_ptr<RiskyAssetSwap>& asw,
-                             const Date& expiry,
-                             Rate marketSpread,
-                             Volatility spreadVolatility);
       private:
         bool isExpired() const;
         void performCalculations() const;

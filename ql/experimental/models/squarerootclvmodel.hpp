@@ -27,6 +27,7 @@
 #include <ql/time/date.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/math/interpolations/lagrangeinterpolation.hpp>
+#include <ql/math/matrix.hpp>
 #include <ql/experimental/math/gaussiannoncentralchisquaredpolynomial.hpp>
 
 #include <boost/function.hpp>

@@ -17,6 +17,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/qldefines.hpp>
+#ifdef BOOST_MSVC
+#  include <ql/auto_link.hpp>
+#endif
 #include <ql/instruments/creditdefaultswap.hpp>
 #include <ql/pricingengines/credit/midpointcdsengine.hpp>
 #include <ql/termstructures/credit/piecewisedefaultcurve.hpp>
