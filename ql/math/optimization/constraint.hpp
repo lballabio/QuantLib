@@ -52,9 +52,9 @@ namespace QuantLib {
         boost::shared_ptr<Impl> impl_;
       public:
         bool empty() const { return !impl_; }
-        bool test(const Array& p) const { return impl_->test(p); }
+        bool test(const Array& p) const { return impl()->test(p); }
         Array upperBound(const Array& params) const {
-            Array result = impl_->upperBound(params);
+            Array result = impl()->upperBound(params);
             QL_REQUIRE(params.size() == result.size(),
                        "upper bound size (" << result.size()
                                             << ") not equal to params size ("
@@ -62,7 +62,7 @@ namespace QuantLib {
             return result;
         }
         Array lowerBound(const Array& params) const {
-            Array result = impl_->lowerBound(params);
+            Array result = impl()->lowerBound(params);
             QL_REQUIRE(params.size() == result.size(),
                        "lower bound size (" << result.size()
                                             << ") not equal to params size ("
@@ -74,6 +74,11 @@ namespace QuantLib {
                     Real beta);
         Constraint(const boost::shared_ptr<Impl>& impl =
                                                    boost::shared_ptr<Impl>());
+      private:
+        boost::shared_ptr<Impl> impl() const {
+            QL_REQUIRE(!empty(), "Constraint: no implementation given");
+            return impl_;
+        }
     };
 
     //! No constraint
