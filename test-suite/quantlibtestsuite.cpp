@@ -161,6 +161,7 @@
 #include "piecewisezerospreadedtermstructure.hpp"
 #include "quantooption.hpp"
 #include "quotes.hpp"
+#include "rangeaccrual.hpp"
 #include "riskneutraldensitycalculator.hpp"
 #include "riskstats.hpp"
 #include "rngtraits.hpp"
@@ -429,6 +430,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(PiecewiseZeroSpreadedTermStructureTest::suite());
     test->add(QuantoOptionTest::suite());
     test->add(QuoteTest::suite());
+    test->add(RangeAccrualTest::suite());
     test->add(RiskStatisticsTest::suite());
     test->add(RngTraitsTest::suite());
     test->add(RoundingTest::suite());
