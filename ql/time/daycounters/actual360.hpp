@@ -40,7 +40,7 @@ namespace QuantLib {
 		  private:
 			  bool includeLastDay_;
           public:
-		    Impl(const bool includeLastDay) : includeLastDay_(includeLastDay) {}
+		    explicit Impl(const bool includeLastDay) : includeLastDay_(includeLastDay) {}
             std::string name() const { return includeLastDay_ ? 
                 std::string("Actual/360 (inc)") : std::string("Actual/360"); }
             Date::serial_type dayCount(const Date& d1, const Date& d2) const {
@@ -54,7 +54,7 @@ namespace QuantLib {
             }
         };
       public:
-        Actual360(const bool includeLastDay = false )
+        explicit Actual360(const bool includeLastDay = false )
         : DayCounter(boost::shared_ptr<DayCounter::Impl>(
             new Actual360::Impl(includeLastDay))) {}
     };
