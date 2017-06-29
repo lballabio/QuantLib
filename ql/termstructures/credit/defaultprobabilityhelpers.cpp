@@ -108,27 +108,14 @@ namespace QuantLib {
         if(startDate_ == Date()) {
             startDate = calendar_.adjust(protectionStart_,
                                          paymentConvention_);
-            if (rule_ == DateGeneration::CDS) { // for standard CDS ..
+            if (rule_ == DateGeneration::CDS || rule_ == DateGeneration::CDS2015) { // for standard CDS ..
                 // .. the start date is not adjusted
                 startDate = protectionStart_;
             }
             // .. and (in any case) the end date rolls by 3 month as
-            //  soon as the trade date falls on an IMM date
-            // however, tarting 2015-12-21, Markit switched to semi annual roll
-            // instead of quarterly roll to better align with indices
-            Period tenor = tenor_;
-            if(evaluationDate_ >= Date(21, December, 2015)) {
-                Year currentYear = protectionStart_.year();
-                Date IMMmarch = Date(20, March, currentYear);
-                Date IMMjune = Date(20, June, currentYear);
-                Date IMMsept = Date(20, September, currentYear);
-                Date IMMdec = Date(20, December, currentYear);
-                if( (protectionStart_ > IMMjune && protectionStart_ <= IMMsept) ||
-                    (protectionStart_ <= IMMmarch || protectionStart_ > IMMdec) ) {
-                    tenor -= Period(3, Months);
-                }
-            }
-            endDate = protectionStart_ + tenor;
+            //  soon as the trade date falls on an IMM date,
+            // or the March or September IMM date in case of the CDS2015 rule.
+            endDate = protectionStart_ + tenor_;
 
         } else {
             if(!schedule_.empty()) return; //no need to update schedule
