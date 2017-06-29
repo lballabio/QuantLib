@@ -52,10 +52,10 @@ namespace QuantLib {
     }
 
     IsdaCdsEngine::IsdaCdsEngine(
-        const std::vector<boost::shared_ptr<DefaultProbabilityHelper>> &
+        const std::vector<boost::shared_ptr<DefaultProbabilityHelper> > &
             probabilityHelpers,
         Real recoveryRate,
-        const std::vector<boost::shared_ptr<RateHelper>> &rateHelpers,
+        const std::vector<boost::shared_ptr<RateHelper> > &rateHelpers,
         boost::optional<bool> includeSettlementDateFlows,
         const NumericalFix numericalFix, const AccrualBias accrualBias,
         const ForwardsInCouponPeriod forwardsInCouponPeriod)
@@ -66,7 +66,7 @@ namespace QuantLib {
           forwardsInCouponPeriod_(forwardsInCouponPeriod) {
 
         discountCurve_ = Handle<YieldTermStructure>(
-            boost::make_shared<PiecewiseYieldCurve<Discount, LogLinear>>(
+            boost::make_shared<PiecewiseYieldCurve<Discount, LogLinear> >(
                 0, WeekendsOnly(), rateHelpers_, Actual365Fixed()));
 
         discountCurve_->enableExtrapolation();
@@ -80,7 +80,7 @@ namespace QuantLib {
 
         probability_ =
             Handle<DefaultProbabilityTermStructure>(boost::make_shared<
-                PiecewiseDefaultCurve<SurvivalProbability, LogLinear>>(
+                PiecewiseDefaultCurve<SurvivalProbability, LogLinear> >(
                 0, WeekendsOnly(), probabilityHelpers_, Actual365Fixed()));
 
         registerWith(probability_);
@@ -143,13 +143,13 @@ namespace QuantLib {
         // collect nodes from both curves and sort them
         std::vector<Date> yDates, cDates;
 
-        if(boost::shared_ptr<PiecewiseYieldCurve<Discount, LogLinear>> castY1 =
+        if(boost::shared_ptr<PiecewiseYieldCurve<Discount, LogLinear> > castY1 =
             boost::dynamic_pointer_cast<
-                PiecewiseYieldCurve<Discount, LogLinear>>(*discountCurve_)) {
+                PiecewiseYieldCurve<Discount, LogLinear> >(*discountCurve_)) {
             yDates = castY1->dates();
-        } else if(boost::shared_ptr<PiecewiseYieldCurve<ForwardRate, BackwardFlat>>
+        } else if(boost::shared_ptr<PiecewiseYieldCurve<ForwardRate, BackwardFlat> >
         castY2 = boost::dynamic_pointer_cast<
-            PiecewiseYieldCurve<ForwardRate, BackwardFlat>>(*discountCurve_)) {
+            PiecewiseYieldCurve<ForwardRate, BackwardFlat> >(*discountCurve_)) {
             yDates = castY2->dates();
         } else if(boost::shared_ptr<FlatForward> castY3 =
             boost::dynamic_pointer_cast<FlatForward>(*discountCurve_)) {
@@ -157,20 +157,20 @@ namespace QuantLib {
             QL_FAIL("Yield curve must be flat forward interpolated");
         }
 
-        if(boost::shared_ptr<PiecewiseDefaultCurve<SurvivalProbability, LogLinear>>
+        if(boost::shared_ptr<PiecewiseDefaultCurve<SurvivalProbability, LogLinear> >
         castC1 = boost::dynamic_pointer_cast<
-            PiecewiseDefaultCurve<SurvivalProbability, LogLinear>>(
+            PiecewiseDefaultCurve<SurvivalProbability, LogLinear> >(
             *probability_)) {
             cDates = castC1->dates();
         } else if(
-                boost::shared_ptr<PiecewiseDefaultCurve<HazardRate, BackwardFlat>>
+                boost::shared_ptr<PiecewiseDefaultCurve<HazardRate, BackwardFlat> >
         castC2 = boost::dynamic_pointer_cast<
-            PiecewiseDefaultCurve<HazardRate, BackwardFlat>>(*probability_)) {
+            PiecewiseDefaultCurve<HazardRate, BackwardFlat> >(*probability_)) {
             cDates = castC2->dates();
         } else if(
-        boost::shared_ptr<InterpolatedHazardRateCurve<BackwardFlat>> castC3 =
+        boost::shared_ptr<InterpolatedHazardRateCurve<BackwardFlat> > castC3 =
             boost::dynamic_pointer_cast<
-            InterpolatedHazardRateCurve<BackwardFlat>>(*probability_)) {
+            InterpolatedHazardRateCurve<BackwardFlat> >(*probability_)) {
             cDates = castC3->dates();
         } else if(
         boost::shared_ptr<FlatHazardRate> castC4 =

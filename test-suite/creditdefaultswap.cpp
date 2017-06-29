@@ -626,7 +626,7 @@ void CreditDefaultSwapTest::testIsdaEngine() {
 
     RelinkableHandle<YieldTermStructure> discountCurve;
     discountCurve.linkTo(
-            boost::make_shared<PiecewiseYieldCurve<Discount, LogLinear>>(
+            boost::make_shared<PiecewiseYieldCurve<Discount, LogLinear> >(
                 0, WeekendsOnly(), isdaRateHelpers, Actual365Fixed())
         );
 
