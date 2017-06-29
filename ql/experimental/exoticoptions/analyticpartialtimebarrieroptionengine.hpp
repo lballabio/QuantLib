@@ -32,7 +32,7 @@ namespace QuantLib {
     class AnalyticPartialTimeBarrierOptionEngine
         : public PartialTimeBarrierOption::engine {
       public:
-        AnalyticPartialTimeBarrierOptionEngine(
+        explicit AnalyticPartialTimeBarrierOptionEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
         void calculate() const;
       private:

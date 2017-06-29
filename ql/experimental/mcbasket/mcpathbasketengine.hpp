@@ -222,7 +222,8 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCPathBasketEngine {
       public:
-        MakeMCPathBasketEngine(const boost::shared_ptr<StochasticProcessArray>&);
+        explicit MakeMCPathBasketEngine(
+                            const boost::shared_ptr<StochasticProcessArray>&);
         // named parameters
         MakeMCPathBasketEngine& withSteps(Size steps);
         MakeMCPathBasketEngine& withStepsPerYear(Size steps);

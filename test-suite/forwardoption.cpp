@@ -387,13 +387,13 @@ class TestBinomialEngine : public BinomialVanillaEngine<CoxRossRubinstein>
 {
 private:
 public:
-   TestBinomialEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess > &process):
-   BinomialVanillaEngine<CoxRossRubinstein>(process, 300) // fixed steps
-   {
-   }
+   explicit TestBinomialEngine(
+           const boost::shared_ptr<GeneralizedBlackScholesProcess > &process)
+   : BinomialVanillaEngine<CoxRossRubinstein>(process, 300) // fixed steps
+    {}
 };
 
-// verify than if engine
+
 void ForwardOptionTest::testGreeksInitialization() {
    BOOST_TEST_MESSAGE("Testing forward option greeks initialization...");
 

@@ -287,7 +287,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
   private:
     class XABRError : public CostFunction {
       public:
-        XABRError(XABRInterpolationImpl *xabr) : xabr_(xabr) {}
+        explicit XABRError(XABRInterpolationImpl *xabr) : xabr_(xabr) {}
 
         Real value(const Array &x) const {
             const Array y = Model().direct(x, xabr_->paramIsFixed_,
