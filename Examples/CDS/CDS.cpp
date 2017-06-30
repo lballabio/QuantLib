@@ -360,25 +360,27 @@ std::copy(cdsSchedule.begin(), cdsSchedule.end(),
     std::cout << "ISDA rate curve: " << std::endl;
     for(Size i=0;i<isdaRateHelper.size(); i++) {
         Date d = isdaRateHelper[i]->latestDate();
-        std::cout << d << "\t" << setprecision(6) << 
-            rateTs->zeroRate(d,Actual365Fixed(),Continuous).rate() << "\t" << 
+        std::cout << d << "\t" << setprecision(6) <<
+            rateTs->zeroRate(d,Actual365Fixed(),Continuous).rate() << "\t" <<
             rateTs->discount(d) << std::endl;
     }
 
     // build reference credit curve (flat)
     boost::shared_ptr<DefaultProbabilityTermStructure> defaultTs0 =
         boost::make_shared<FlatHazardRate>(0, WeekendsOnly(), 0.016739207493630,Actual365Fixed());
-    
+
     // reference CDS
     Schedule sched( Date(22,September,2014), Date(20,December,2019), 3*Months,
             WeekendsOnly(), Following, Unadjusted, DateGeneration::CDS, false, Date(), Date() );
-    boost::shared_ptr<CreditDefaultSwap> trade = 
-        boost::make_shared<CreditDefaultSwap>(Protection::Buyer,
-                100000000.0, 0.01, sched, Following, Actual360(),
-                true, true, Date(22,October,2014), boost::shared_ptr<Claim>(), Actual360(true), true);
-    
+    boost::shared_ptr<CreditDefaultSwap> trade =
+        boost::shared_ptr<CreditDefaultSwap>(
+            new CreditDefaultSwap(Protection::Buyer, 100000000.0, 0.01, sched,
+                                  Following, Actual360(), true, true,
+                                  Date(22,October,2014), boost::shared_ptr<Claim>(),
+                                  Actual360(true), true));
+
     boost::shared_ptr<FixedRateCoupon> cp = boost::dynamic_pointer_cast<FixedRateCoupon>(trade->coupons()[0]);
-    std::cout << "first period = " << cp->accrualStartDate() << " to " << cp->accrualEndDate() << 
+    std::cout << "first period = " << cp->accrualStartDate() << " to " << cp->accrualEndDate() <<
         " accrued amount = " << cp->accruedAmount(Date(24,October,2014)) << std::endl;
 
     // price with isda engine
@@ -387,11 +389,11 @@ std::copy(cdsSchedule.begin(), cdsSchedule.end(),
             false, IsdaCdsEngine::Taylor, IsdaCdsEngine::NoBias, IsdaCdsEngine::Piecewise);
 
     trade->setPricingEngine(engine);
-    
+
     std::cout << "reference trade NPV = " << trade->NPV() << std::endl;
 
 
-    // build credit curve with one cds 
+    // build credit curve with one cds
     std::vector<boost::shared_ptr<DefaultProbabilityHelper> > isdaCdsHelper;
 
     boost::shared_ptr<CdsHelper> cds5y(new SpreadCdsHelper(
@@ -410,7 +412,7 @@ std::copy(cdsSchedule.begin(), cdsSchedule.end(),
         Date d = isdaCdsHelper[i]->latestDate();
         Real pd = defaultTs->defaultProbability(d);
         Real t = defaultTs->timeFromReference(d);
-        std::cout << d << ";" << pd << ";" << 1.0 - pd << ";" << 
+        std::cout << d << ";" << pd << ";" << 1.0 - pd << ";" <<
             -std::log(1.0-pd)/t << std::endl;
     }
 
@@ -459,7 +461,7 @@ std::copy(cdsSchedule.begin(), cdsSchedule.end(),
 }
 
 void example03() {
-    
+
     // this is the example from Apdx E in pricing and risk management of CDS, OpenGamma
 
     Date tradeDate(13,June,2011);
@@ -544,7 +546,7 @@ void example03() {
         euribor6m);
 
     std::vector<boost::shared_ptr<RateHelper> > isdaYieldHelpers;
-    
+
     isdaYieldHelpers.push_back(dp1m);
     isdaYieldHelpers.push_back(dp2m);
     isdaYieldHelpers.push_back(dp3m);

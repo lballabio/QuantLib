@@ -188,10 +188,10 @@ namespace QuantLib {
     }
 
     void SpreadCdsHelper::resetEngine() {
-        swap_ = boost::make_shared<CreditDefaultSwap>(
+        swap_ = boost::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
             Protection::Buyer, 100.0, 0.01, schedule_, paymentConvention_,
             dayCounter_, settlesAccrual_, paysAtDefaultTime_, protectionStart_,
-            boost::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_);
+            boost::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_));
 
         if (useIsdaEngine_) {
             swap_->setPricingEngine(boost::make_shared<IsdaCdsEngine>(
@@ -272,11 +272,11 @@ namespace QuantLib {
     }
 
     void UpfrontCdsHelper::resetEngine() {
-        swap_ = boost::make_shared<CreditDefaultSwap>(
+        swap_ = boost::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
             Protection::Buyer, 100.0, 0.01, runningSpread_, schedule_,
             paymentConvention_, dayCounter_, settlesAccrual_,
             paysAtDefaultTime_, protectionStart_, upfrontDate_,
-            boost::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_);
+            boost::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_));
         if (useIsdaEngine_) {
             swap_->setPricingEngine(boost::make_shared<IsdaCdsEngine>(
                 probability_, recoveryRate_, discountCurve_, false,
