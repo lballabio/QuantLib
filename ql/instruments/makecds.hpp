@@ -55,8 +55,8 @@ namespace QuantLib {
       private:
         Protection::Side side_;
         Real nominal_;
-        boost::optional<Period> tenor_ = boost::none;
-        boost::optional<Date> termDate_ = boost::none;
+        boost::optional<Period> tenor_;
+        boost::optional<Date> termDate_;
         Period couponTenor_;
         Real couponRate_;
         Real upfrontRate_;
