@@ -35,7 +35,7 @@ namespace QuantLib {
       private:
         BlackCalculator& black_;
       public:
-        Calculator(BlackCalculator& black) : black_(black) {}
+        explicit Calculator(BlackCalculator& black) : black_(black) {}
         void visit(Payoff&);
         void visit(PlainVanillaPayoff&);
         void visit(CashOrNothingPayoff&);

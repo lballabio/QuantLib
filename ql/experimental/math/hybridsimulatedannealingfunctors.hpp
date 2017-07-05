@@ -67,7 +67,7 @@ namespace QuantLib
     class SamplerLogNormal
     {
     public:
-        SamplerLogNormal(unsigned long seed = SeedGenerator::instance().get()) :
+        explicit SamplerLogNormal(unsigned long seed = SeedGenerator::instance().get()) :
             generator_(seed),
             distribution_(0.0, 1.0), gaussian_(generator_, distribution_) {};
         SamplerLogNormal(const SamplerLogNormal& sampler) : generator_(sampler.gaussian_.engine()),
@@ -93,7 +93,7 @@ namespace QuantLib
     class SamplerGaussian
     {
     public:
-        SamplerGaussian(unsigned long seed = SeedGenerator::instance().get()) :
+        explicit SamplerGaussian(unsigned long seed = SeedGenerator::instance().get()) :
             generator_(seed),
             distribution_(0.0, 1.0), gaussian_(generator_, distribution_) {};
         SamplerGaussian(const SamplerGaussian& sampler) : generator_(sampler.gaussian_.engine()),
@@ -201,7 +201,7 @@ namespace QuantLib
     class SamplerCauchy
     {
     public:
-        SamplerCauchy(unsigned long seed = SeedGenerator::instance().get()) :
+        explicit SamplerCauchy(unsigned long seed = SeedGenerator::instance().get()) :
             generator_(seed),
             distribution_(0.0, 1.0), cauchy_(generator_, distribution_) {};
         SamplerCauchy(const SamplerCauchy& sampler) : generator_(sampler.cauchy_.engine()),
@@ -280,7 +280,7 @@ namespace QuantLib
     */
     class ProbabilityBoltzmann {
     public:
-        ProbabilityBoltzmann(unsigned long seed = SeedGenerator::instance().get()) :
+        explicit ProbabilityBoltzmann(unsigned long seed = SeedGenerator::instance().get()) :
             generator_(seed),
             uniform_(generator_, distribution_) {};
         ProbabilityBoltzmann(const ProbabilityBoltzmann &probability) :
@@ -302,7 +302,7 @@ namespace QuantLib
     class ProbabilityBoltzmannDownhill
     {
     public:
-        ProbabilityBoltzmannDownhill(unsigned long seed = SeedGenerator::instance().get()) :
+        explicit ProbabilityBoltzmannDownhill(unsigned long seed = SeedGenerator::instance().get()) :
             generator_(seed),
             uniform_(generator_, distribution_) {};
         ProbabilityBoltzmannDownhill(const ProbabilityBoltzmannDownhill& probability) :

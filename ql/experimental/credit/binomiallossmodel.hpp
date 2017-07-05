@@ -63,7 +63,7 @@ namespace QuantLib {
     class BinomialLossModel : public DefaultLossModel {
     public:
         typedef typename LLM::copulaType copulaType;
-        BinomialLossModel(
+        explicit BinomialLossModel(
             const boost::shared_ptr<LLM>& copula)
         : copula_(copula) { }
     private:

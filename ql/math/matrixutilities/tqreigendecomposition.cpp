@@ -40,8 +40,7 @@ namespace QuantLib {
 
         Array e(n, 0.0);
         std::copy(sub.begin(),sub.end(),e.begin()+1);
-        Size i;
-        for (i=0; i < ev_.rows(); ++i) {
+        for (Size i=0; i < ev_.rows(); ++i) {
             ev_[i][i] = 1.0;
         }
 
@@ -121,7 +120,7 @@ namespace QuantLib {
         // code taken from symmetricSchureDecomposition.cpp
         std::vector<std::pair<Real, std::vector<Real> > > temp(n);
         std::vector<Real> eigenVector(ev_.rows());
-        for (i=0; i<n; i++) {
+        for (Size i=0; i<n; i++) {
             if (ev_.rows() > 0)
                 std::copy(ev_.column_begin(i),
                           ev_.column_end(i), eigenVector.begin());
@@ -130,7 +129,7 @@ namespace QuantLib {
         std::sort(temp.begin(), temp.end(),
                   std::greater<std::pair<Real, std::vector<Real> > >());
         // first element is positive
-        for (i=0; i<n; i++) {
+        for (Size i=0; i<n; i++) {
             d_[i] = temp[i].first;
             Real sign = 1.0;
             if (ev_.rows() > 0 && temp[i].second[0]<0.0)
