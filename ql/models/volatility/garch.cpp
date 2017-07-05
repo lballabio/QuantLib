@@ -53,7 +53,7 @@ namespace QuantLib {
 
         class Garch11CostFunction : public CostFunction {
           public:
-            Garch11CostFunction (const std::vector<Volatility> &);
+            explicit Garch11CostFunction (const std::vector<Volatility> &);
             virtual Real value(const Array& x) const;
             virtual Disposable<Array> values(const Array& x) const;
             virtual void gradient(Array& grad, const Array& x) const;

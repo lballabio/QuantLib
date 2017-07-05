@@ -763,7 +763,7 @@ namespace {
     class SobolFactory {
       public:
         typedef SobolRsg generator_type;
-        SobolFactory(SobolRsg::DirectionIntegers unit) : unit_(unit) {}
+        explicit SobolFactory(SobolRsg::DirectionIntegers unit) : unit_(unit) {}
         SobolRsg make(Size dim,
                       BigNatural seed) const {
             return SobolRsg(dim,seed,unit_);

@@ -151,12 +151,12 @@ namespace {
 
     // a simple structure to store some data which will be used during tests
     struct SubProductExpectedValues {
-        SubProductExpectedValues(const std::string& descr):
-    description(descr), testBias(false) {}
-    std::string description;
-    std::vector<Real> values;
-    bool testBias;
-    Real errorThreshold;
+        explicit SubProductExpectedValues(const std::string& descr)
+        : description(descr), testBias(false) {}
+        std::string description;
+        std::vector<Real> values;
+        bool testBias;
+        Real errorThreshold;
     };
 
     void setup() {

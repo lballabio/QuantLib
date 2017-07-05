@@ -136,7 +136,7 @@ namespace QuantLib {
     //! base pricer for vanilla CMS spread coupons
     class CmsSpreadCouponPricer : public FloatingRateCouponPricer {
       public:
-        CmsSpreadCouponPricer(
+        explicit CmsSpreadCouponPricer(
                            const Handle<Quote> &correlation = Handle<Quote>())
         : correlation_(correlation) {
             registerWith(correlation_);
