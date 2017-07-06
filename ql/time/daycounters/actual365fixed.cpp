@@ -50,7 +50,7 @@ namespace QuantLib {
         if ( dcs < 365/frequency)
             return dcs/365.0;
 
-        return (dcc-dcs)/365.0;
+        return 1./frequency - (dcc-dcs)/365.0;
 
     }
 
