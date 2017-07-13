@@ -53,7 +53,7 @@ namespace QuantLib {
             // Labor Day
             || ((d == 1 || ((d == 2 || d == 3) && w == Monday)) && m == May)
             // SAR Establishment Day
-            || ((d == 1 || ((d == 2 || d == 3) && w == Monday)) && m == July)
+            || ((d == 1 || ((d == 2) && w == Monday)) && m == July)
             // National Day
             || ((d == 1 || ((d == 2 || d == 3) && w == Monday))
                 && m == October)
@@ -249,6 +249,52 @@ namespace QuantLib {
                 || (d == 28 && m == September)
                 // Chung Yeung festival
                 || (d == 21 && m == October))
+                return false;
+        }
+
+        if (y == 2016) {
+            if (// Lunar New Year
+                ((d >= 8 && d <= 10) && m == February)
+                // Ching Ming Festival
+                || (d == 4 && m == April)
+                // Tuen NG festival
+                || (d == 9 && m == June)
+                // Mid-autumn festival
+                || (d == 16 && m == September)
+                // Chung Yeung festival
+                || (d == 10 && m == October)
+                // Second day after Christmas
+                || (d == 27 && m == December))
+                return false;
+        }
+
+        if (y == 2017) {
+            if (// Lunar New Year
+                ((d >= 30 && d <= 31) && m == January)
+                // Ching Ming Festival
+                || (d == 4 && m == April)
+                // Buddha's birthday
+                || (d == 3 && m == May)
+                // Tuen NG festival
+                || (d == 30 && m == May)
+                // Mid-autumn festival
+                || (d == 5 && m == October))
+                return false;
+        }
+
+        if (y == 2018) {
+            if (// Lunar New Year
+                ((d == 16 && m == February) || (d == 19 && m == February))
+                // Ching Ming Festival
+                || (d == 5 && m == April)
+                // Buddha's birthday
+                || (d == 22 && m == May)
+                // Tuen NG festival
+                || (d == 18 && m == June)
+                // Mid-autumn festival
+                || (d == 25 && m == September)
+                // Chung Yeung festival
+                || (d == 17 && m == October))
                 return false;
         }
 
