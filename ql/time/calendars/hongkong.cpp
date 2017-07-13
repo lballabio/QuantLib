@@ -44,18 +44,18 @@ namespace QuantLib {
 
         if (isWeekend(w)
             // New Year's Day
-            || ((d == 1 || ((d == 2 || d == 3) && w == Monday))
+            || ((d == 1 || ((d == 2) && w == Monday))
                 && m == January)
             // Good Friday
             || (dd == em-3)
             // Easter Monday
             || (dd == em)
             // Labor Day
-            || ((d == 1 || ((d == 2 || d == 3) && w == Monday)) && m == May)
+            || ((d == 1 || ((d == 2) && w == Monday)) && m == May)
             // SAR Establishment Day
             || ((d == 1 || ((d == 2) && w == Monday)) && m == July)
             // National Day
-            || ((d == 1 || ((d == 2 || d == 3) && w == Monday))
+            || ((d == 1 || ((d == 2) && w == Monday))
                 && m == October)
             // Christmas Day
             || (d == 25 && m == December)
