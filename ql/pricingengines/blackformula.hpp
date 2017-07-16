@@ -9,6 +9,7 @@
  Copyright (C) 2007 Chiara Fornarola
  Copyright (C) 2013 Gary Kennedy
  Copyright (C) 2015 Peter Caspers
+ Copyright (C) 2017 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -95,12 +96,12 @@ namespace QuantLib {
         method.
     */
     Real blackFormulaImpliedStdDevChambers(Option::Type optionType,
-                                                Real strike,
-                                                Real forward,
-                                                Real blackPrice,
-                                                Real blackAtmPrice,
-                                                Real discount = 1.0,
-                                                Real displacement = 0.0);
+                                           Real strike,
+                                           Real forward,
+                                           Real blackPrice,
+                                           Real blackAtmPrice,
+                                           Real discount = 1.0,
+                                           Real displacement = 0.0);
 
     /*! Approximated Black 1976 implied standard deviation,
         i.e. volatility*sqrt(timeToMaturity).
@@ -117,6 +118,35 @@ namespace QuantLib {
         Real blackAtmPrice,
         Real discount = 1.0,
         Real displacement = 0.0);
+
+    /*! Approximated Black 1976 implied standard deviation,
+        i.e. volatility*sqrt(timeToMaturity).
+
+        It is calculated using
+
+        "An Explicit Implicit Volatility Formula"
+        R. Radoicic, D. Stefanica,
+        https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2908494
+
+        "Tighter Bounds for Implied Volatility",
+        J. Gatheral, I. Matic, R. Radoicic, D. Stefanica
+        https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2922742
+    */
+    Real blackFormulaImpliedStdDevRS(
+        Option::Type optionType,
+        Real strike,
+        Real forward,
+        Real blackPrice,
+        Real discount = 1.0,
+        Real displacement = 0.0);
+
+    Real blackFormulaImpliedStdDevRS(
+        const boost::shared_ptr<PlainVanillaPayoff> &payoff,
+        Real forward,
+        Real blackPrice,
+        Real discount = 1.0,
+        Real displacement = 0.0);
+
 
     /*! Black 1976 implied standard deviation,
         i.e. volatility*sqrt(timeToMaturity)

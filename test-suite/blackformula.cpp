@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2013 Gary Kennedy
  Copyright (C) 2015 Peter Caspers
+ Copyright (C) 2017 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,6 +23,9 @@
 #include "blackformula.hpp"
 #include "utilities.hpp"
 #include <ql/pricingengines/blackformula.hpp>
+
+#include <boost/make_shared.hpp>
+#include <boost/math/special_functions/fpclassify.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -117,6 +121,99 @@ void BlackFormulaTest::testChambersImpliedVol() {
     }
 }
 
+void BlackFormulaTest::testRadoicicStefanicaImpliedVol() {
+
+    BOOST_TEST_MESSAGE(
+        "Testing Radoicic-Stefanica implied vol approximation...");
+
+    const Time T = 1.7;
+    const Rate r = 0.1;
+    const DiscountFactor df = std::exp(-r*T);
+
+    const Real forward = 100;
+
+    const Volatility vol = 0.3;
+    const Real stdDev = vol * std::sqrt(T);
+
+    const Option::Type types[] = { Option::Call, Option::Put };
+    const Real strikes[] = {
+        50, 60, 70, 80, 90, 100, 110, 125, 150, 200, 300 };
+
+    const Real tol = 0.02;
+
+    for (Size i=0; i < LENGTH(strikes); ++i) {
+        const Real strike = strikes[i];
+        for (Size j=0; j < LENGTH(types); ++j) {
+            const Option::Type type = types[j];
+
+            const boost::shared_ptr<PlainVanillaPayoff> payoff(
+                boost::make_shared<PlainVanillaPayoff>(type, strike));
+
+            const Real marketValue = blackFormula(payoff, forward, stdDev, df);
+
+            const Real estVol = blackFormulaImpliedStdDevRS(
+                payoff, forward, marketValue, df) / std::sqrt(T);
+
+            const Real error = std::fabs(estVol - vol);
+            if (error > tol) {
+                BOOST_ERROR("Failed to verify Radoicic-Stefanica"
+                    "approximation for "
+                    << type
+                    << "\n forward     :" << forward
+                    << "\n strike      :" << strike
+                    << "\n discount    :" << df
+                    << "\n implied vol :" << vol
+                    << "\n result      :" << estVol
+                    << "\n error       :" << error
+                    << "\n tolerance   :" << tol);
+            }
+        }
+    }
+}
+
+void BlackFormulaTest::testRadoicicStefanicaLowerBound() {
+
+    BOOST_TEST_MESSAGE(
+        "Testing Radoicic-Stefanica is lower bound...");
+
+    // testing lower bound plot figure 3.1 from
+    // "Tighter Bounds for Implied Volatility",
+    // J. Gatheral, I. Matic, R. Radoicic, D. Stefanica
+    // https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2922742
+
+    const Real forward = 1.0;
+    const Real k = 1.2;
+
+    for (Real s=0.17; s < 2.9; s+=0.01) {
+        const Real strike = std::exp(k)*forward;
+        const Real c = blackFormula(Option::Call, strike, forward, s);
+        const Real estimate = blackFormulaImpliedStdDevRS(
+            Option::Call, strike, forward, c);
+
+        const Real error = s - estimate;
+        if (boost::math::isnan(estimate) || std::fabs(error) > 0.05) {
+            BOOST_ERROR("Failed to lower bound Radoicic-Stefanica"
+                "approximation for "
+                << "\n forward     :" << forward
+                << "\n strike      :" << k
+                << "\n stdDev      :" << s
+                << "\n result      :" << estimate
+                << "\n error       :" << error);
+
+        }
+
+        if (c > 1e-5 && error < 0.0) {
+            BOOST_ERROR("Failed to verify Radoicic-Stefanica is lower bound"
+                    << "\n forward     :" << forward
+                    << "\n strike      :" << k
+                    << "\n stdDev      :" << s
+                    << "\n result      :" << estimate
+                    << "\n error       :" << error);
+        }
+    }
+}
+
+
 test_suite* BlackFormulaTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Black formula tests");
 
@@ -124,6 +221,10 @@ test_suite* BlackFormulaTest::suite() {
         &BlackFormulaTest::testBachelierImpliedVol));
     suite->add(QUANTLIB_TEST_CASE(
         &BlackFormulaTest::testChambersImpliedVol));
+    suite->add(QUANTLIB_TEST_CASE(
+        &BlackFormulaTest::testRadoicicStefanicaImpliedVol));
+    suite->add(QUANTLIB_TEST_CASE(
+        &BlackFormulaTest::testRadoicicStefanicaLowerBound));
 
     return suite;
 }
