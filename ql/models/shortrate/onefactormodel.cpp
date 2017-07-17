@@ -87,7 +87,7 @@ namespace QuantLib {
                          const boost::shared_ptr<ShortRateDynamics>& dynamics,
                          const TimeGrid& timeGrid)
     : TreeLattice1D<OneFactorModel::ShortRateTree>(timeGrid, tree->size(1)),
-      tree_(tree), dynamics_(dynamics) {}
+        tree_(tree), dynamics_(dynamics), spread_() {}
 
     OneFactorModel::OneFactorModel(Size nArguments)
     : ShortRateModel(nArguments) {}

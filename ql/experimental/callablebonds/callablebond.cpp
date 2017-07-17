@@ -108,89 +108,143 @@ namespace QuantLib {
         return solver.solve(f, accuracy, guess, minVol, maxVol);
     }
 
-    CallableBond::OASHelper::OASHelper(const CallableBond& bond,
-                                       Handle<SimpleQuote>& spread,
-                                       Real targetValue):
-        bond_(bond),
-        spread_(spread),
-        targetValue_(targetValue)
-    {
-    }
 
-    Real CallableBond::OASHelper::operator()(Spread x) const
-    {
-        spread_->setValue(x);
-        return bond_.NPV()-targetValue_;
-    }
-
-    class NPVSpreadHelper :
-        public std::unary_function<Real, Real>
-    {
-        const CallableBond& bond_;
-        Handle<SimpleQuote>& spread_;
-    public:
-        NPVSpreadHelper(const CallableBond& bond,
-                        Handle<SimpleQuote>& spread):
-            bond_(bond),
-            spread_(spread)
-        {
-        }
-        Real operator()(Real x) const
-        {
-            spread_->setValue(x);
-            return bond_.NPV();
-        }
-    };
-
-    /* Expose a mechanism to add spread the curve being used in the
-       callable bond and clean up when the object is destroyed
+    /* Expose a mechanism to add spread the engine parameters and
+       clean clean up when the object is destroyed
      */
     class EngSpreadHelper {
-
-        // Relinkable handle to the term structure used by the engine
-        RelinkableHandle<YieldTermStructure>& engineTS;
-        // The original term structure used by the engine before
-        // spreading
-        boost::shared_ptr<YieldTermStructure> origTS;
-        // New handle to the original term structure
-        Handle<YieldTermStructure> refHandle;
-        // Quote for the spread
-        boost::shared_ptr<SimpleQuote> spread;
-        // Quote Handle
-        Handle<Quote> hSpread;
+        double ospread;
+        CallableBond::arguments*  args;
     public:
-        // SimpleQuote handle
-        Handle<SimpleQuote> sqSpread;
-    private:
-        // The new term structure which is spreaded w.r.t the original
-        boost::shared_ptr<ZeroSpreadedTermStructure> spreadedTS;
-
-    public:
-        EngSpreadHelper(RelinkableHandle<YieldTermStructure>& engineTS,
-                        const DayCounter& dayCounter,
-                        Compounding compounding,
-                        Frequency frequency):
-            engineTS(engineTS),
-            origTS(engineTS.currentLink()),
-            refHandle(origTS),
-            spread(new SimpleQuote(0)),
-            hSpread(spread),
-            sqSpread(spread),
-            spreadedTS( new ZeroSpreadedTermStructure(refHandle,
-                                                      hSpread,
-                                                      compounding,
-                                                      frequency,
-                                                      dayCounter
-                                                      ))
+        EngSpreadHelper(CallableBond::arguments* args):
+            args(args),
+            ospread(args->spread)
         {
-            engineTS.linkTo(spreadedTS);
+        }
+
+        void setSpread(double s)
+        {
+            args->spread=s;
         }
 
         ~EngSpreadHelper()
         {
-            engineTS.linkTo(origTS);
+            setSpread(ospread);
         }
     };
+
+    /* Functional interface to take a spread and return NPV of
+       spreaded callable bond */
+    class NPVSpreadHelper :
+        public std::unary_function<Real, Real>
+    {
+        CallableBond& bond_;
+        EngSpreadHelper &e;
+    public:
+        NPVSpreadHelper(CallableBond& bond,
+                        EngSpreadHelper& e):
+            bond_(bond),
+            e(e)
+        {
+        }
+        Real operator()(Real x) const
+        {
+            e.setSpread(x);
+            bond_.recalculate();
+            return bond_.NPV();
+        }
+    };
+
+    class OASHelper {
+    public:
+        OASHelper(const boost::function<Real(Real)>& npvhelper,
+                  Real targetValue):
+            npvhelper_(npvhelper),
+            targetValue_(targetValue)
+        {
+        }
+
+        Real operator()(Spread x) const
+        {
+            return targetValue_ - npvhelper_(x);
+        }
+    private:
+        const boost::function<Real(Real)>& npvhelper_;
+        Real targetValue_;
+    };
+
+    /* Convert a continuous spread to a conventional spread to a
+       reference yield curve
+    */
+    Real continuousToConv(Real oas,
+                          const Bond &b,
+                          RelinkableHandle<YieldTermStructure>& yts,
+                          const DayCounter& dayCounter,
+                          Compounding compounding,
+                          Frequency frequency)
+    {
+        double zz=yts->zeroRate(b.maturityDate(),
+                                dayCounter,
+                                Continuous,
+                                NoFrequency);
+        InterestRate baseRate(zz,
+                              dayCounter,
+                              Continuous,
+                              NoFrequency);
+        InterestRate spreadedRate(oas+zz,
+                                  dayCounter,
+                                  Continuous,
+                                  NoFrequency);
+        double br=baseRate.equivalentRate(dayCounter,
+                                          compounding,
+                                          frequency,
+                                          yts->referenceDate(),
+                                          b.maturityDate()).rate();
+        double sr=spreadedRate.equivalentRate(dayCounter,
+                                              compounding,
+                                              frequency,
+                                              yts->referenceDate(),
+                                              b.maturityDate()).rate();
+        // Return the spread
+        return sr-br;
+    }
+
+    /* Convert a conventional spread to a reference yield curve to a
+       continuous spread
+    */
+    Real convToContinuous(Real oas,
+                          const Bond &b,
+                          RelinkableHandle<YieldTermStructure>& yts,
+                          const DayCounter& dayCounter,
+                          Compounding compounding,
+                          Frequency frequency)
+    {
+        double zz=yts->zeroRate(b.maturityDate(),
+                                dayCounter,
+                                compounding,
+                                frequency);
+        InterestRate baseRate(zz,
+                              dayCounter,
+                              compounding,
+                              frequency);
+
+        InterestRate spreadedRate(oas+zz,
+                                  dayCounter,
+                                  compounding,
+                                  frequency);
+        double br=baseRate.equivalentRate(dayCounter,
+                                          Continuous,
+                                          NoFrequency,
+                                          yts->referenceDate(),
+                                          b.maturityDate()).rate();
+        double sr=spreadedRate.equivalentRate(dayCounter,
+                                              Continuous,
+                                              NoFrequency,
+                                              yts->referenceDate(),
+                                              b.maturityDate()).rate();
+        // Return the spread
+        return sr-br;
+    }
 
     Spread CallableBond::OAS(Real cleanPrice,
                              RelinkableHandle<YieldTermStructure>& engineTS,
@@ -207,40 +261,46 @@ namespace QuantLib {
 
         Real dirtyPrice = cleanPrice + accruedAmount(settlement);
 
-        EngSpreadHelper s(engineTS,
-                          dayCounter,
-                          compounding,
-                          frequency);
-
-        OASHelper obj(*this,
-                      s.sqSpread,
-                      dirtyPrice);
+        EngSpreadHelper s(dynamic_cast<CallableBond::arguments*>(engine_->getArguments()));
+        boost::function<Real(Real)> f = NPVSpreadHelper(*this, s);
+        OASHelper obj(f, dirtyPrice);
 
         Brent solver;
         solver.setMaxEvaluations(maxIterations);
 
         Real step = 0.001;
-        Spread res=solver.solve(obj, accuracy, guess, step);
-        return res;
+        Spread oas=solver.solve(obj, accuracy, guess, step);
+
+        return continuousToConv(oas,
+                                *this,
+                                engineTS,
+                                dayCounter,
+                                compounding,
+                                frequency);
     }
+
+
 
     Real CallableBond::cleanPriceOAS(Real oas,
                                      RelinkableHandle<YieldTermStructure>& engineTS,
                                      const DayCounter& dayCounter,
                                      Compounding compounding,
                                      Frequency frequency,
-                                     Date settlement) const
+                                     Date settlement)
     {
         if (settlement == Date())
             settlement = settlementDate();
 
-        EngSpreadHelper s(engineTS,
-                          dayCounter,
-                          compounding,
-                          frequency);
+        oas=convToContinuous(oas,
+                             *this,
+                             engineTS,
+                             dayCounter,
+                             compounding,
+                             frequency);
 
-        boost::function<Real(Real)> f = NPVSpreadHelper(*this,
-                                                        s.sqSpread);
+        EngSpreadHelper s(dynamic_cast<CallableBond::arguments*>(engine_->getArguments()));
+
+        boost::function<Real(Real)> f = NPVSpreadHelper(*this, s);
 
         Real P = f(oas) - accruedAmount(settlement);
 
@@ -254,13 +314,15 @@ namespace QuantLib {
                                          Frequency frequency,
                                          Real bump)
     {
-        EngSpreadHelper s(engineTS,
-                          dayCounter,
-                          compounding,
-                          frequency);
+        oas=convToContinuous(oas,
+                             *this,
+                             engineTS,
+                             dayCounter,
+                             compounding,
+                             frequency);
+        EngSpreadHelper s(dynamic_cast<CallableBond::arguments*>(engine_->getArguments()));
 
-        boost::function<Real(Real)> f = NPVSpreadHelper(*this,
-                                                        s.sqSpread);
+        boost::function<Real(Real)> f = NPVSpreadHelper(*this, s);
 
         Real P = f(oas);
 
@@ -268,7 +330,8 @@ namespace QuantLib {
             return 0;
         else
             {
-                NumericalDifferentiation dFdOAS(f, 1, bump,
+                NumericalDifferentiation dFdOAS(f, 1,
+                                                bump,
                                                 3,
                                                 NumericalDifferentiation::Central);
                 return -1*dFdOAS(oas)/P;
@@ -282,13 +345,15 @@ namespace QuantLib {
                                           Frequency frequency,
                                           Real bump)
     {
-        EngSpreadHelper s(engineTS,
-                          dayCounter,
-                          compounding,
-                          frequency);
+        oas=convToContinuous(oas,
+                             *this,
+                             engineTS,
+                             dayCounter,
+                             compounding,
+                             frequency);
+        EngSpreadHelper s(dynamic_cast<CallableBond::arguments*>(engine_->getArguments()));
 
-        boost::function<Real(Real)> f = NPVSpreadHelper(*this,
-                                                        s.sqSpread);
+        boost::function<Real(Real)> f = NPVSpreadHelper(*this, s);
 
         Real P = f(oas);
 
@@ -297,7 +362,7 @@ namespace QuantLib {
         else
             {
                 NumericalDifferentiation dFdOAS(f,
-                                                2, 
+                                                2,
                                                 bump,
                                                 3,
                                                 NumericalDifferentiation::Central);

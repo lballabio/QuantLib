@@ -79,12 +79,9 @@ namespace QuantLib {
 
         //! Calculate the Option Adjusted Spread (OAS)
         /*! Calculates the spread that needs to be added to the the
-            reference (engineTS risk-free) curve so that the
-            theoretical model value matches the marketPrice.
+            reference curve so that the theoretical model value
+            matches the marketPrice.
 
-            \note a pricing engine should be set on the bond and the
-            YieldTermStructure handle used by engine should be the
-            same as engineTS
          */
         Spread OAS(Real cleanPrice,
                    RelinkableHandle<YieldTermStructure>& engineTS,
@@ -104,7 +101,7 @@ namespace QuantLib {
                            const DayCounter& dayCounter,
                            Compounding compounding,
                            Frequency frequency,
-                           Date settlementDate = Date()) const;
+                           Date settlementDate = Date());
 
         //! Calculate the effective duration, i.e., the first
         //! differential of the dirty price w.r.t. a parallel shift of
@@ -161,19 +158,6 @@ namespace QuantLib {
         };
 
 
-        class OASHelper;
-        friend class OASHelper;
-        class OASHelper {
-          public:
-            OASHelper(const CallableBond& bond,
-                      Handle<SimpleQuote>& spread,
-                      Real targetValue);
-            Real operator()(Spread x) const;
-          private:
-            const CallableBond& bond_;
-            Handle<SimpleQuote>& spread_;
-            Real targetValue_;
-        };
     };
 
     class CallableBond::arguments : public Bond::arguments {
@@ -190,6 +174,10 @@ namespace QuantLib {
         //! bond full/dirty/cash prices
         std::vector<Real> callabilityPrices;
         std::vector<Date> callabilityDates;
+        //! Spread to apply to the valuation. This is a continuously
+        //! componded rate added to the model. Currently only applied
+        //! by the TreeCallableFixedRateBondEngine
+        Real spread;
         void validate() const;
     };
 

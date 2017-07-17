@@ -91,7 +91,7 @@ namespace QuantLib {
         }
         DiscountFactor discount(Size i, Size index) const {
             Real x = tree_->underlying(i, index);
-            Rate r = dynamics_->shortRate(timeGrid()[i], x);
+            Rate r = dynamics_->shortRate(timeGrid()[i], x) +spread_;
             return std::exp(-r*timeGrid().dt(i));
         }
         Real underlying(Size i, Size index) const {
@@ -103,10 +103,15 @@ namespace QuantLib {
         Real probability(Size i, Size index, Size branch) const {
             return tree_->probability(i, index, branch);
         }
+        void setSpread(double spread)
+        {
+            spread_=spread;
+        }
       private:
         boost::shared_ptr<TrinomialTree> tree_;
         boost::shared_ptr<ShortRateDynamics> dynamics_;
         class Helper;
+        double spread_;
     };
 
     //! Single-factor affine base class

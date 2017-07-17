@@ -52,6 +52,7 @@ namespace QuantLib {
                                                  Handle<YieldTermStructure>()) ;
         //@}
         void calculate() const;
+        void calculateSpread(double s) const;        
       private:
         Handle<YieldTermStructure> termStructure_;
     };
