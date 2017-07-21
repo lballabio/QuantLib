@@ -314,27 +314,28 @@ namespace QuantLib {
                                          Frequency frequency,
                                          Real bump)
     {
-        oas=convToContinuous(oas,
-                             *this,
-                             engineTS,
-                             dayCounter,
-                             compounding,
-                             frequency);
-        EngSpreadHelper s(dynamic_cast<CallableBond::arguments*>(engine_->getArguments()));
+        Real P = cleanPriceOAS(oas,
+                               engineTS,
+                               dayCounter,
+                               compounding,
+                               frequency);
 
-        boost::function<Real(Real)> f = NPVSpreadHelper(*this, s);
-
-        Real P = f(oas);
-
+        Real Ppp = cleanPriceOAS(oas+bump,
+                                 engineTS,
+                                 dayCounter,
+                                 compounding,
+                                 frequency);
+        Real Pmm = cleanPriceOAS(oas-bump,
+                                 engineTS,
+                                 dayCounter,
+                                 compounding,
+                                 frequency);
+            
         if ( P == 0.0 )
             return 0;
         else
             {
-                NumericalDifferentiation dFdOAS(f, 1,
-                                                bump,
-                                                3,
-                                                NumericalDifferentiation::Central);
-                return -1*dFdOAS(oas)/P;
+                return (Pmm-Ppp)/(2*P*bump);
             }
     }
 
@@ -345,29 +346,30 @@ namespace QuantLib {
                                           Frequency frequency,
                                           Real bump)
     {
-        oas=convToContinuous(oas,
-                             *this,
-                             engineTS,
-                             dayCounter,
-                             compounding,
-                             frequency);
-        EngSpreadHelper s(dynamic_cast<CallableBond::arguments*>(engine_->getArguments()));
+        Real P = cleanPriceOAS(oas,
+                               engineTS,
+                               dayCounter,
+                               compounding,
+                               frequency);
 
-        boost::function<Real(Real)> f = NPVSpreadHelper(*this, s);
-
-        Real P = f(oas);
-
+        Real Ppp = cleanPriceOAS(oas+bump,
+                                 engineTS,
+                                 dayCounter,
+                                 compounding,
+                                 frequency);
+        Real Pmm = cleanPriceOAS(oas-bump,
+                                 engineTS,
+                                 dayCounter,
+                                 compounding,
+                                 frequency);
+            
         if ( P == 0.0 )
             return 0;
         else
             {
-                NumericalDifferentiation dFdOAS(f,
-                                                2,
-                                                bump,
-                                                3,
-                                                NumericalDifferentiation::Central);
-                return dFdOAS(oas)/P;
-            }
+                return (Ppp + Pmm - 2*P) / ( std::pow(bump,2) * P);
+            }        
+
     }
 
 
