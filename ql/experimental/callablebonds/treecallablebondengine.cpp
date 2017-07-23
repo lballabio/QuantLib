@@ -90,7 +90,8 @@ namespace QuantLib {
         callableBond.initialize(lattice, redemptionTime);
         callableBond.rollback(0.0);
         results_.value = results_.settlementValue = callableBond.presentValue();
-        sr->setSpread(0.0);
+        if (sr)
+            sr->setSpread(0.0);
     }
 
 }
