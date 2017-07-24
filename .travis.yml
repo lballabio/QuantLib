@@ -13,13 +13,14 @@ env:
   global:
     - DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
     - DOCKER_IMAGE=lballabio/quantlib-devenv
+    - CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Werror -std=c++03"
 
 before_install:
   - docker pull ${DOCKER_IMAGE}
 
 script:
   - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} ./autogen.sh
-  - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} ./configure --disable-static CXXFLAGS='-O2'
+  - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} ./configure --disable-static CXXFLAGS="${CXXFLAGS}"
   - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} ccache --zero-stats
   - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} ccache --max-size=2.5G
   - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} ccache --show-stats
