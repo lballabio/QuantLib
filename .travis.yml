@@ -3,23 +3,21 @@ language: cpp
 
 os: linux
 dist: trusty
-sudo: false
+sudo: required
 compiler: gcc
+services: docker
 
 cache: ccache
 
-addons:
-  apt:
-    packages:
-      - libboost-dev
-      - libboost-test-dev
+before_install:
+  - docker pull lballabio/boost
 
 script:
   - ./autogen.sh
-  - ./configure --disable-static CXXFLAGS='-O2'
-  - ccache --zero-stats
-  - ccache --max-size=2.5G
-  - make -j 2
-  - ccache --show-stats
-  - ./test-suite/quantlib-test-suite --log_level=message -- --faster
+  - docker run --rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build lballabio/boost ./configure --disable-static CXXFLAGS='-O2'
+  - docker run --rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build lballabio/boost ccache --zero-stats
+  - docker run --rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build lballabio/boost ccache --max-size=2.5G
+  - docker run --rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build lballabio/boost make -j 2
+  - docker run --rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build lballabio/boost ccache --show-stats
+  - docker run --rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build lballabio/boost ./test-suite/quantlib-test-suite --log_level=message -- --faster
 
