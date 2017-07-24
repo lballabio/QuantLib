@@ -12,8 +12,15 @@ cache: ccache
 env:
   global:
     - DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
+  matrix:
     - DOCKER_IMAGE=lballabio/quantlib-devenv
-    - CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Werror -std=c++03"
+      CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Werror -std=c++03"
+    - DOCKER_IMAGE=lballabio/quantlib-devenv
+      CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Werror -std=c++11"
+    - DOCKER_IMAGE=lballabio/quantlib-devenv:zesty
+      CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Werror -std=c++03"
+    - DOCKER_IMAGE=lballabio/quantlib-devenv:zesty
+      CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Werror -std=c++11"
 
 before_install:
   - docker pull ${DOCKER_IMAGE}
