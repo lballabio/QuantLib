@@ -220,27 +220,25 @@ namespace QuantLib
             }
 
 
+        for (Size i =0; i < numberBumps_; ++i)
+        {
+            Size j=0;
 
-            for (Size i =0; i < numberBumps_; ++i)
+            for (; j < aliveIndex_; ++j)
             {
-                Size j=0;
+                B[i][j]=0.0;
+            }
+            for (; j < numberRates; ++j)
+            {
+                Real sum =0.0;
 
-                for (; j < aliveIndex_; ++j)
-                {
-                    B[i][j]=0.0;
-                }
-                for (; j < numberRates; ++j)
-                {
-                    Real sum =0.0;
-
-                    for (Size k=aliveIndex_; k < numberRates; ++k)
-                        for (Size f=0; f < factors_; ++f)
-                            sum += pseudoBumps_[i][k][f]*allDerivatives_[j][k][f];
-                    B[i][j] =sum;
-
-                }
+                for (Size k=aliveIndex_; k < numberRates; ++k)
+                    for (Size f=0; f < factors_; ++f)
+                        sum += pseudoBumps_[i][k][f]*allDerivatives_[j][k][f];
+                B[i][j] =sum;
 
             }
+        }
 
     }
 
