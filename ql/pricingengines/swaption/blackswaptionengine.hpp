@@ -62,9 +62,6 @@ namespace QuantLib {
                             const DayCounter& dc = Actual365Fixed(),
                             Real displacement = 0.0,
                             CashAnnuityModel model = DiscountCurve);
-        /*! if displacement is Null<Real>(), it is read from the volatility
-          structure, the parameter can be removed once the deprecated methods
-          overriding the displacement are deleted */
         BlackStyleSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
                                  const Handle<SwaptionVolatilityStructure>& vol,
                                  CashAnnuityModel model = DiscountCurve);
@@ -118,7 +115,7 @@ namespace QuantLib {
     //! Shifted Lognormal Black-formula swaption engine
     /*! \ingroup swaptionengines
 
-        \warning The engine assumes that the exercise date equals the
+        \warning The engine assumes that the exercise date lies before the
                  start date of the passed swap.
     */
 
@@ -143,7 +140,7 @@ namespace QuantLib {
     //! Normal Bachelier-formula swaption engine
     /*! \ingroup swaptionengines
 
-        \warning The engine assumes that the exercise date equals the
+        \warning The engine assumes that the exercise date lies before the
                  start date of the passed swap.
     */
 
@@ -281,9 +278,6 @@ namespace QuantLib {
                                                    swapLength,
                                                    strike);
 
-        // once the deprecated methods allowing to override the displacement
-        // are gone, we can avoid this and directly read the displacement
-        // from the volatility structure
         Real displacement =
             vol_->volatilityType() == ShiftedLognormal ?
             vol_->shift(exerciseDate, swapLength) : 0.0;
