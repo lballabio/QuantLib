@@ -359,6 +359,7 @@ void BatesModelTest::testAnalyticVsMCPricing() {
         const Real mcError = std::fabs(calculated - expected);
         if (mcError > 3*mcTolerance) {
             BOOST_FAIL("failed to reproduce Monte-Carlo price for BatesEngine"
+                       << "\n    parameter:  " << hestonModels[i].name
                        << QL_FIXED << std::setprecision(8)
                        << "\n    calculated: " << calculated
                        << "\n    expected:   " << expected
@@ -369,6 +370,7 @@ void BatesModelTest::testAnalyticVsMCPricing() {
         const Real fdError = std::fabs(fdCalculated - expected);
         if (fdError > fdTolerance) {
             BOOST_FAIL("failed to reproduce PIDE price for BatesEngine"
+                       << "\n    parameter:  " << hestonModels[i].name
                        << QL_FIXED << std::setprecision(8)
                        << "\n    calculated: " << fdCalculated
                        << "\n    expected:   " << expected

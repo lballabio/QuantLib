@@ -1,6 +1,6 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 /*
-  Copyright (C) 2014 Peter Caspers
+  Copyright (C) 2014, 2016 Peter Caspers
 
   This file is part of QuantLib, a free-software/open-source library
   for financial quantitative analysts and developers - http://quantlib.org/
@@ -55,11 +55,15 @@ namespace QuantLib {
         e.g. a zero lower bound always refers to the lower bound of
         the rates in the shifted lognormal model.
         Note that for normal volatility input the lower rate bound
-        should probably be adjusted to an appropriate negative value,
-        there is no automatic adjustment in this case.
+        is adjusted to min(-upperBound, lowerBound), except the bounds
+        are set explicitly.
     */
 
     class LinearTsrPricer : public CmsCouponPricer, public MeanRevertingPricer {
+
+      private:
+        static const Real defaultLowerBound,
+                          defaultUpperBound;
 
       public:
 
@@ -68,43 +72,108 @@ namespace QuantLib {
             Settings()
                 : strategy_(RateBound), vegaRatio_(0.01),
                   priceThreshold_(1.0E-8), stdDevs_(3.0),
-                  lowerRateBound_(0.0001), upperRateBound_(2.0000) {}
+                  lowerRateBound_(defaultLowerBound), upperRateBound_(defaultUpperBound),
+                  defaultBounds_(true) {}
 
-            Settings &withRateBound(const Real lowerRateBound = 0.0001,
-                                    const Real upperRateBound = 2.0000) {
+            Settings &withRateBound(const Real lowerRateBound = defaultLowerBound,
+                                    const Real upperRateBound = defaultUpperBound) {
                 strategy_ = RateBound;
                 lowerRateBound_ = lowerRateBound;
                 upperRateBound_ = upperRateBound;
+                defaultBounds_ = false;
                 return *this;
             }
 
-            Settings &withVegaRatio(const Real vegaRatio = 0.01,
-                                    const Real lowerRateBound = 0.0001,
-                                    const Real upperRateBound = 2.0000) {
+            Settings &withVegaRatio(const Real vegaRatio = 0.01) {
+                strategy_ = VegaRatio;
+                vegaRatio_ = vegaRatio;
+                lowerRateBound_ = defaultLowerBound;
+                upperRateBound_ = defaultUpperBound;
+                defaultBounds_ = true;
+                return *this;
+            }
+
+            QL_DEPRECATED
+            Settings &withVegaRatio(const Real vegaRatio,
+                                    const Real lowerRateBound) {
+                strategy_ = VegaRatio;
+                vegaRatio_ = vegaRatio;
+                lowerRateBound_ = lowerRateBound;
+                upperRateBound_ = defaultUpperBound;
+                defaultBounds_ = false;
+                return *this;
+            }
+
+            Settings &withVegaRatio(const Real vegaRatio,
+                                    const Real lowerRateBound,
+                                    const Real upperRateBound) {
                 strategy_ = VegaRatio;
                 vegaRatio_ = vegaRatio;
                 lowerRateBound_ = lowerRateBound;
                 upperRateBound_ = upperRateBound;
+                defaultBounds_ = false;
                 return *this;
             }
 
-            Settings &withPriceThreshold(const Real priceThreshold = 1.0E-8,
-                                         const Real lowerRateBound = 0.0001,
-                                         const Real upperRateBound = 2.0000) {
+            Settings &withPriceThreshold(const Real priceThreshold = 1.0E-8) {
+                strategy_ = PriceThreshold;
+                priceThreshold_ = priceThreshold;
+                lowerRateBound_ = defaultLowerBound;
+                upperRateBound_ = defaultUpperBound;
+                defaultBounds_ = true;
+                return *this;
+            }
+
+            QL_DEPRECATED
+            Settings &withPriceThreshold(const Real priceThreshold,
+                                         const Real lowerRateBound) {
+                strategy_ = PriceThreshold;
+                priceThreshold_ = priceThreshold;
+                lowerRateBound_ = lowerRateBound;
+                upperRateBound_ = defaultUpperBound;
+                defaultBounds_ = false;
+                return *this;
+            }
+
+            Settings &withPriceThreshold(const Real priceThreshold,
+                                         const Real lowerRateBound,
+                                         const Real upperRateBound) {
                 strategy_ = PriceThreshold;
                 priceThreshold_ = priceThreshold;
                 lowerRateBound_ = lowerRateBound;
                 upperRateBound_ = upperRateBound;
+                defaultBounds_ = false;
                 return *this;
             }
 
-            Settings &withBSStdDevs(const Real stdDevs = 3.0,
-                                    const Real lowerRateBound = 0.0001,
-                                    const Real upperRateBound = 2.0000) {
+            Settings &withBSStdDevs(const Real stdDevs = 3.0) {
+                strategy_ = BSStdDevs;
+                stdDevs_ = stdDevs;
+                lowerRateBound_ = defaultLowerBound;
+                upperRateBound_ = defaultUpperBound;
+                defaultBounds_ = true;
+                return *this;
+            }
+
+            QL_DEPRECATED
+            Settings &withBSStdDevs(const Real stdDevs,
+                                    const Real lowerRateBound) {
+                strategy_ = BSStdDevs;
+                stdDevs_ = stdDevs;
+                lowerRateBound_ = lowerRateBound;
+                upperRateBound_ = defaultUpperBound;
+                defaultBounds_ = false;
+                return *this;
+            }
+
+            Settings &withBSStdDevs(const Real stdDevs,
+                                    const Real lowerRateBound,
+                                    const Real upperRateBound) {
                 strategy_ = BSStdDevs;
                 stdDevs_ = stdDevs;
                 lowerRateBound_ = lowerRateBound;
                 upperRateBound_ = upperRateBound;
+                defaultBounds_ = false;
                 return *this;
             }
 
@@ -120,6 +189,7 @@ namespace QuantLib {
             Real priceThreshold_;
             Real stdDevs_;
             Real lowerRateBound_, upperRateBound_;
+            bool defaultBounds_;
         };
 
 
@@ -208,7 +278,7 @@ namespace QuantLib {
         DayCounter volDayCounter_;
         boost::shared_ptr<Integrator> integrator_;
 
-        Real shiftedLowerBound_, shiftedUpperBound_;
+        Real adjustedLowerBound_, adjustedUpperBound_;
     };
 }
 

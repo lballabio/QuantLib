@@ -12,6 +12,7 @@ this_include_HEADERS = \
 	fdmhestonop.hpp \
 	fdmhullwhiteop.hpp \
 	fdmlinearopcomposite.hpp \
+	fdmornsteinuhlenbeckop.hpp \
 	fdmlinearop.hpp \
 	fdmlinearopiterator.hpp \
 	fdmlinearoplayout.hpp \
@@ -30,6 +31,7 @@ libFdmOperators_la_SOURCES = \
 	fdmhestonop.cpp \
 	fdmhullwhiteop.cpp \
 	fdmlinearoplayout.cpp \
+	fdmornsteinuhlenbeckop.cpp \
 	firstderivativeop.cpp \
 	ninepointlinearop.cpp \
 	secondderivativeop.cpp \

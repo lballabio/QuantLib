@@ -54,7 +54,6 @@ namespace QuantLib {
 
         void precalculate(const std::vector<boost::shared_ptr<Instrument> >& optionList);
         virtual std::auto_ptr<FFTEngine> clone() const = 0;
-
     protected:
         virtual void precalculateExpiry(Date d) = 0;
         virtual std::complex<Real> complexFourierTransform(std::complex<Real> u) const = 0;

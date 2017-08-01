@@ -25,6 +25,8 @@
 #define quantlib_discrete_integrals_hpp
 
 #include <ql/math/array.hpp>
+#include <ql/math/integrals/integral.hpp>
+#include <ql/utilities/null.hpp>
 
 namespace QuantLib {
 
@@ -40,6 +42,26 @@ namespace QuantLib {
     class DiscreteSimpsonIntegral {
       public:
         Real operator()(const Array& x, const Array& f) const;
+    };
+
+    class DiscreteTrapezoidIntegrator: public Integrator {
+      public:
+        explicit DiscreteTrapezoidIntegrator(Size evaluations)
+        : Integrator(Null<Real>(), evaluations) {}
+
+      protected:
+        Real integrate(const boost::function<Real (Real)>& f,
+                       Real a, Real b) const;
+    };
+
+    class DiscreteSimpsonIntegrator: public Integrator {
+      public:
+        explicit DiscreteSimpsonIntegrator(Size evaluations)
+        : Integrator(Null<Real>(), evaluations) {}
+
+      protected:
+        Real integrate(const boost::function<Real (Real)>& f,
+                       Real a, Real b) const;
     };
 }
 #endif

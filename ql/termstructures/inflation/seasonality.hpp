@@ -129,11 +129,14 @@ namespace QuantLib {
             //
             MultiplicativePriceSeasonality();
 
-            MultiplicativePriceSeasonality(const Date& seasonalityBaseDate, const Frequency frequency,
-                                           const std::vector<Rate> seasonalityFactors);
+            MultiplicativePriceSeasonality(
+                             const Date& seasonalityBaseDate,
+                             const Frequency frequency,
+                             const std::vector<Rate>& seasonalityFactors);
 
-            virtual void set(const Date& seasonalityBaseDate, const Frequency frequency,
-                     const std::vector<Rate> seasonalityFactors);
+            virtual void set(const Date& seasonalityBaseDate,
+                             const Frequency frequency,
+                             const std::vector<Rate>& seasonalityFactors);
 
             //! inspectors
             //@{
@@ -166,7 +169,7 @@ namespace QuantLib {
     class KerkhofSeasonality : public MultiplicativePriceSeasonality {
       public:
         KerkhofSeasonality(const Date& seasonalityBaseDate,
-                           const std::vector<Rate> seasonalityFactors)
+                           const std::vector<Rate>& seasonalityFactors)
         : MultiplicativePriceSeasonality(seasonalityBaseDate,Monthly,
                                          seasonalityFactors) {}
 

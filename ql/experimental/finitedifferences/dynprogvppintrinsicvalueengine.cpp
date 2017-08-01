@@ -57,7 +57,7 @@ namespace QuantLib {
 
         class FuelPrice : public FdmInnerValueCalculator {
           public:
-            FuelPrice(const std::vector<Real>& fuelPrices)
+            explicit FuelPrice(const std::vector<Real>& fuelPrices)
             : fuelPrices_(fuelPrices) {}
 
             Real innerValue(const FdmLinearOpIterator&, Time t) {

@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2015 Johannes Goettker-Schnetmann
- Copyright (C) 2015 Klaus Spanderen
+ Copyright (C) 2015, 2016 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,11 +33,15 @@
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
+#include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
 #include <ql/experimental/finitedifferences/bsmrndcalculator.hpp>
+#include <ql/experimental/finitedifferences/gbsmrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/hestonrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/localvolrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/squarerootprocessrndcalculator.hpp>
+#include <ql/models/equity/hestonmodel.hpp>
+#include <ql/types.hpp>
 
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic push
@@ -576,6 +580,162 @@ void RiskNeutralDensityCalculatorTest::testSquareRootProcessRND() {
     }
 }
 
+void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
+    BOOST_TEST_MESSAGE(
+        "Testing probability density for a BSM process "
+        "with strike dependent volatility vs local volatility...");
+
+    SavedSettings backup;
+
+    const Date todaysDate = Date(3, Oct, 2016);
+    Settings::instance().evaluationDate() = todaysDate;
+
+    const DayCounter dc = Actual365Fixed();
+    const Date maturityDate = todaysDate + Period(3, Months);
+    const Time maturity = dc.yearFraction(todaysDate, maturityDate);
+
+    // use Heston model to create volatility surface with skew
+    const Real r     =  0.08;
+    const Real q     =  0.03;
+    const Real s0    =  100;
+    const Real v0    =  0.06;
+    const Real kappa =  1.0;
+    const Real theta =  0.06;
+    const Real sigma =  0.4;
+    const Real rho   = -0.75;
+
+    const Handle<YieldTermStructure> rTS(flatRate(todaysDate, r, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(todaysDate, q, dc));
+    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(s0));
+
+    const boost::shared_ptr<HestonProcess> hestonProcess(
+        boost::make_shared<HestonProcess>(
+            rTS, qTS, spot, v0, kappa, theta, sigma, rho));
+
+    const Handle<BlackVolTermStructure> hestonSurface(
+        boost::make_shared<HestonBlackVolSurface>(
+            Handle<HestonModel>(
+                boost::make_shared<HestonModel>(hestonProcess))));
+
+    const boost::shared_ptr<TimeGrid> timeGrid(new TimeGrid(maturity, 51));
+
+    const boost::shared_ptr<LocalVolTermStructure> localVol(
+        boost::make_shared<NoExceptLocalVolSurface>(
+            hestonSurface, rTS, qTS, spot, std::sqrt(theta)));
+
+    const LocalVolRNDCalculator localVolCalc(
+        spot.currentLink(), rTS.currentLink(), qTS.currentLink(), localVol,
+        timeGrid, 151, 0.25);
+
+    const HestonRNDCalculator hestonCalc(hestonProcess);
+
+    const GBSMRNDCalculator gbsmCalc(
+        boost::make_shared<BlackScholesMertonProcess>(
+            spot, qTS, rTS, hestonSurface));
+
+    const Real strikes[] = { 85, 75, 90, 110, 125, 150 };
+
+    for (Size i=0; i < LENGTH(strikes); ++i) {
+        const Real strike = strikes[i];
+        const Real logStrike = std::log(strike);
+
+        const Real expected = hestonCalc.cdf(logStrike, maturity);
+        const Real calculatedGBSM = gbsmCalc.cdf(strike, maturity);
+
+        const Real gbsmTol = 1e-5;
+        if (std::fabs(expected - calculatedGBSM) > gbsmTol) {
+            BOOST_FAIL("failed to match Heston and GBSM cdf"
+                    << "\n   t:          " << maturity
+                    << "\n   k:          " << strike
+                    << "\n   calculated: " << calculatedGBSM
+                    << "\n   expected:   " << expected
+                    << "\n   diff:       " <<
+                        std::fabs(calculatedGBSM - expected)
+                    << "\n   tolerance:  " << gbsmTol);
+        }
+
+        const Real calculatedLocalVol = localVolCalc.cdf(logStrike, maturity);
+        const Real localVolTol = 1e-3;
+        if (std::fabs(expected - calculatedLocalVol) > localVolTol) {
+            BOOST_FAIL("failed to match Heston and local Volatility cdf"
+                    << "\n   t:          " << maturity
+                    << "\n   k:          " << strike
+                    << "\n   calculated: " << calculatedLocalVol
+                    << "\n   expected:   " << expected
+                    << "\n   diff:       " <<
+                        std::fabs(calculatedLocalVol - expected)
+                    << "\n   tolerance:  " << localVolTol);
+        }
+    }
+
+    for (Size i=0; i < LENGTH(strikes); ++i) {
+        const Real strike = strikes[i];
+        const Real logStrike = std::log(strike);
+
+        const Real expected = hestonCalc.pdf(logStrike, maturity)/strike;
+        const Real calculatedGBSM = gbsmCalc.pdf(strike, maturity);
+
+        const Real gbsmTol = 1e-5;
+        if (std::fabs(expected - calculatedGBSM) > gbsmTol) {
+            BOOST_FAIL("failed to match Heston and GBSM pdf"
+                    << "\n   t:          " << maturity
+                    << "\n   k:          " << strike
+                    << "\n   calculated: " << calculatedGBSM
+                    << "\n   expected:   " << expected
+                    << "\n   diff:       " <<
+                        std::fabs(calculatedGBSM - expected)
+                    << "\n   tolerance:  " << gbsmTol);
+        }
+
+        const Real calculatedLocalVol
+            = localVolCalc.pdf(logStrike, maturity)/strike;
+        const Real localVolTol = 1e-4;
+        if (std::fabs(expected - calculatedLocalVol) > localVolTol) {
+            BOOST_FAIL("failed to match Heston and local Volatility pdf"
+                    << "\n   t:          " << maturity
+                    << "\n   k:          " << strike
+                    << "\n   calculated: " << calculatedLocalVol
+                    << "\n   expected:   " << expected
+                    << "\n   diff:       " <<
+                        std::fabs(calculatedLocalVol - expected)
+                    << "\n   tolerance:  " << localVolTol);
+        }
+    }
+
+    const Real quantiles[] = { 1e-3, 0.05, 0.25, 0.5, 0.75, 0.95, 0.999};
+    for (Size i=0; i < LENGTH(quantiles); ++i) {
+        const Real quantile = quantiles[i];
+
+        const Real expected = std::exp(hestonCalc.invcdf(quantile, maturity));
+        const Real calculatedGBSM = gbsmCalc.invcdf(quantile, maturity);
+
+        const Real gbsmTol = 1e-3;
+        if (std::fabs(expected - calculatedGBSM) > gbsmTol) {
+            BOOST_FAIL("failed to match Heston and GBSM invcdf"
+                    << "\n   t:          " << maturity
+                    << "\n   quantile:   " << quantile
+                    << "\n   calculated: " << calculatedGBSM
+                    << "\n   expected:   " << expected
+                    << "\n   diff:       " <<
+                        std::fabs(calculatedGBSM - expected)
+                    << "\n   tolerance:  " << gbsmTol);
+        }
+
+        const Real calculatedLocalVol
+            = std::exp(localVolCalc.invcdf(quantile, maturity));
+        const Real localVolTol = 0.1;
+        if (std::fabs(expected - calculatedLocalVol) > localVolTol) {
+            BOOST_FAIL("failed to match Heston and local Volatility invcdf"
+                    << "\n   t:          " << maturity
+                    << "\n   k:          " << quantile
+                    << "\n   calculated: " << calculatedLocalVol
+                    << "\n   expected:   " << expected
+                    << "\n   diff:       " <<
+                        std::fabs(calculatedLocalVol - expected)
+                    << "\n   tolerance:  " << localVolTol);
+        }
+    }
+}
 
 test_suite* RiskNeutralDensityCalculatorTest::experimental() {
     test_suite* suite = BOOST_TEST_SUITE("Risk neutral density calculator tests");
@@ -588,5 +748,7 @@ test_suite* RiskNeutralDensityCalculatorTest::experimental() {
         &RiskNeutralDensityCalculatorTest::testLocalVolatilityRND));
     suite->add(QUANTLIB_TEST_CASE(
         &RiskNeutralDensityCalculatorTest::testSquareRootProcessRND));
+    suite->add(QUANTLIB_TEST_CASE(
+        &RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew));
     return suite;
 }

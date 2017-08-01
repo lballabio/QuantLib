@@ -33,7 +33,7 @@ namespace QuantLib {
     namespace {
         class MatrixVectorProductFct {
           public:
-            MatrixVectorProductFct(const Matrix& m) : m_(m) {}
+            explicit MatrixVectorProductFct(const Matrix& m) : m_(m) {}
 
             // implements x = M*y
             Disposable<std::vector<Real> > operator()(

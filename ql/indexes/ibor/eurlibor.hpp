@@ -75,7 +75,7 @@ namespace QuantLib {
     //! Overnight %EUR %Libor index
     class EURLiborON : public DailyTenorEURLibor {
       public:
-        EURLiborON(const Handle<YieldTermStructure>& h =
+        explicit EURLiborON(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : DailyTenorEURLibor(0, h) {}
     };
@@ -83,7 +83,7 @@ namespace QuantLib {
     //! 1-week %EUR %Libor index
     class EURLiborSW : public EURLibor {
       public:
-        EURLiborSW(const Handle<YieldTermStructure>& h =
+        explicit EURLiborSW(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : EURLibor(Period(1, Weeks), h) {}
     };
@@ -91,7 +91,7 @@ namespace QuantLib {
     //! 2-weeks %EUR %Libor index
     class EURLibor2W : public EURLibor {
       public:
-        EURLibor2W(const Handle<YieldTermStructure>& h =
+        explicit EURLibor2W(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : EURLibor(Period(2, Weeks), h) {}
     };
@@ -100,7 +100,7 @@ namespace QuantLib {
     //! 1-month %EUR %Libor index
     class EURLibor1M : public EURLibor {
       public:
-        EURLibor1M(const Handle<YieldTermStructure>& h =
+        explicit EURLibor1M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : EURLibor(Period(1, Months), h) {}
     };
@@ -108,7 +108,7 @@ namespace QuantLib {
     //! 2-months %EUR %Libor index
     class EURLibor2M : public EURLibor {
       public:
-        EURLibor2M(const Handle<YieldTermStructure>& h =
+        explicit EURLibor2M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : EURLibor(Period(2, Months), h) {}
     };
@@ -116,7 +116,7 @@ namespace QuantLib {
     //! 3-months %EUR %Libor index
     class EURLibor3M : public EURLibor {
       public:
-        EURLibor3M(const Handle<YieldTermStructure>& h =
+        explicit EURLibor3M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : EURLibor(Period(3, Months), h) {}
     };
@@ -124,7 +124,7 @@ namespace QuantLib {
     //! 4-months %EUR %Libor index
     class EURLibor4M : public EURLibor {
       public:
-        EURLibor4M(const Handle<YieldTermStructure>& h =
+        explicit EURLibor4M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : EURLibor(Period(4, Months), h) {}
     };
@@ -132,7 +132,7 @@ namespace QuantLib {
     //! 5-months %EUR %Libor index
     class EURLibor5M : public EURLibor {
       public:
-        EURLibor5M(const Handle<YieldTermStructure>& h =
+        explicit EURLibor5M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : EURLibor(Period(5, Months), h) {}
     };
@@ -140,7 +140,7 @@ namespace QuantLib {
     //! 6-months %EUR %Libor index
     class EURLibor6M : public EURLibor {
       public:
-        EURLibor6M(const Handle<YieldTermStructure>& h =
+        explicit EURLibor6M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : EURLibor(Period(6, Months), h) {}
     };
@@ -148,7 +148,7 @@ namespace QuantLib {
     //! 7-months %EUR %Libor index
     class EURLibor7M : public EURLibor{
       public:
-        EURLibor7M(const Handle<YieldTermStructure>& h =
+        explicit EURLibor7M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : EURLibor(Period(7, Months), h) {}
     };
@@ -156,7 +156,7 @@ namespace QuantLib {
     //! 8-months %EUR %Libor index
     class EURLibor8M : public EURLibor {
       public:
-        EURLibor8M(const Handle<YieldTermStructure>& h =
+        explicit EURLibor8M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : EURLibor(Period(8, Months), h) {}
     };
@@ -164,7 +164,7 @@ namespace QuantLib {
     //! 9-months %EUR %Libor index
     class EURLibor9M : public EURLibor {
       public:
-        EURLibor9M(const Handle<YieldTermStructure>& h =
+        explicit EURLibor9M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : EURLibor(Period(9, Months), h) {}
     };
@@ -172,7 +172,7 @@ namespace QuantLib {
     //! 10-months %EUR %Libor index
     class EURLibor10M : public EURLibor {
       public:
-        EURLibor10M(const Handle<YieldTermStructure>& h =
+        explicit EURLibor10M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : EURLibor(Period(10, Months), h) {}
     };
@@ -180,7 +180,7 @@ namespace QuantLib {
     //! 11-months %EUR %Libor index
     class EURLibor11M : public EURLibor {
       public:
-        EURLibor11M(const Handle<YieldTermStructure>& h =
+        explicit EURLibor11M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : EURLibor(Period(11, Months), h) {}
     };
@@ -188,7 +188,7 @@ namespace QuantLib {
     //! 1-year %EUR %Libor index
     class EURLibor1Y : public EURLibor {
       public:
-        EURLibor1Y(const Handle<YieldTermStructure>& h =
+        explicit EURLibor1Y(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : EURLibor(Period(1, Years), h) {}
     };

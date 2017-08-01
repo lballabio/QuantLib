@@ -58,7 +58,8 @@ namespace QuantLib {
             , 42032, 42074, 42116, 42165, 42207, 42256, 42305, 42347// 2015
             // https://www.ecb.europa.eu/press/pr/date/2015/html/pr150622.en.html
             , 42396, 42445, 42487, 42529, 42578, 42627, 42669, 42718 // 2016
-            , 42760, /*source ICAP */ 42802, 42844, 42893, 42942 // 2017
+            // https://www.ecb.europa.eu/press/calendars/reserve/html/index.en.html
+            , 42760, 42809, 42858, 42900, 42942, 42991, 43040, 43089 //2017
         };
         if (knownDateSet.empty()) {
             Size n = sizeof(knownDatesArray)/sizeof(Date::serial_type);
@@ -114,7 +115,7 @@ namespace QuantLib {
         if (y<Date::minDate().year())
             return ECB::nextDate(Date::minDate());
 
-        return ECB::nextDate(Date(1, m, y));
+        return ECB::nextDate(Date(1, m, y) - 1);
     }
 
     string ECB::code(const Date& ecbDate) {

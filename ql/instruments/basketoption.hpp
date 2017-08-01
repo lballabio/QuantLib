@@ -36,7 +36,7 @@ namespace QuantLib {
       private:
         boost::shared_ptr<Payoff> basePayoff_;
       public:
-        BasketPayoff(const boost::shared_ptr<Payoff> &p)
+        explicit BasketPayoff(const boost::shared_ptr<Payoff> &p)
         : basePayoff_(p) {}
         virtual ~BasketPayoff() {}
         std::string name() const { return basePayoff_->name(); }
@@ -53,7 +53,7 @@ namespace QuantLib {
 
     class MinBasketPayoff : public BasketPayoff {
       public:
-        MinBasketPayoff(const boost::shared_ptr<Payoff> &p)
+        explicit MinBasketPayoff(const boost::shared_ptr<Payoff> &p)
         : BasketPayoff(p) {}
         Real accumulate (const Array &a) const {
             return *std::min_element(a.begin(), a.end());
@@ -62,7 +62,7 @@ namespace QuantLib {
 
     class MaxBasketPayoff : public BasketPayoff {
       public:
-        MaxBasketPayoff(const boost::shared_ptr<Payoff> &p)
+        explicit MaxBasketPayoff(const boost::shared_ptr<Payoff> &p)
         : BasketPayoff(p) {}
         Real accumulate (const Array &a) const {
             return *std::max_element(a.begin(), a.end());
@@ -89,7 +89,7 @@ namespace QuantLib {
 
     class SpreadBasketPayoff : public BasketPayoff {
       public:
-          SpreadBasketPayoff(const boost::shared_ptr<Payoff> &p)
+        explicit SpreadBasketPayoff(const boost::shared_ptr<Payoff> &p)
         : BasketPayoff(p) {}
         Real accumulate (const Array &a) const {
             QL_REQUIRE(a.size() == 2, 

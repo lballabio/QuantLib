@@ -33,6 +33,8 @@
 
 namespace QuantLib {
 
+    class MultiCurveSensitivities;
+
     //! Piecewise yield term structure
     /*! This term structure is bootstrapped on a number of interest
         rate instruments which are passed as a vector of handles to
@@ -54,9 +56,6 @@ namespace QuantLib {
           checking them against the original inputs.
         - the observability of the term structure is tested.
     */
-
-    class MultiCurveSensitivities;
-
     template <class Traits, class Interpolator,
               template <class> class Bootstrap = IterativeBootstrap>
     class PiecewiseYieldCurve

@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([QuantLib], [1.9],
+AC_INIT([QuantLib], [1.10.1],
         [quantlib-dev@lists.sourceforge.net],
         [QuantLib])
 AC_PREREQ(2.62)
@@ -504,6 +504,7 @@ AC_CONFIG_FILES([
     Examples/FRA/Makefile
     Examples/LatentModel/Makefile
     Examples/Gaussian1dModels/Makefile
+    Examples/GlobalOptimizer/Makefile
     Examples/MarketModels/Makefile
     Examples/MultidimIntegral/Makefile
     Examples/Replication/Makefile

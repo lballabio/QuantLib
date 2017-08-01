@@ -92,6 +92,12 @@ Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
     initialize(T);
 }
 
+void Gsr::update() { 
+	if (stateProcess_ != NULL)
+        boost::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
+	LazyObject::update();
+}
+
 void Gsr::updateTimes() const {
     volsteptimes_.clear();
     int j = 0;
@@ -116,7 +122,6 @@ void Gsr::updateVolatility() {
     for (Size i = 0; i < sigma_.size(); i++) {
         sigma_.setParam(i, volatilities_[i]->value());
     }
-    boost::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
     update();
 }
 
@@ -124,7 +129,6 @@ void Gsr::updateReversion() {
     for (Size i = 0; i < reversion_.size(); i++) {
         reversion_.setParam(i, reversions_[i]->value());
     }
-    boost::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
     update();
 }
 
@@ -138,9 +142,6 @@ void Gsr::initialize(Real T) {
                "there must be n+1 volatilities ("
                    << volatilities_.size() << ") for n volatility step times ("
                    << volsteptimes_.size() << ")");
-    // sigma_ =
-    // PiecewiseConstantParameter(volsteptimes_,PositiveConstraint());
-    sigma_ = PiecewiseConstantParameter(volsteptimes_, NoConstraint());
 
     QL_REQUIRE(reversions_.size() == 1 ||
                    reversions_.size() == volsteptimes_.size() + 1,
@@ -151,13 +152,16 @@ void Gsr::initialize(Real T) {
         reversion_ = ConstantParameter(reversions_[0]->value(), NoConstraint());
     } else {
         reversion_ = PiecewiseConstantParameter(volsteptimes_, NoConstraint());
+        for (Size i = 0; i < reversion_.size(); i++) {
+            reversion_.setParam(i, reversions_[i]->value());
+        }
     }
 
+    // sigma_ =
+    // PiecewiseConstantParameter(volsteptimes_,PositiveConstraint());
+    sigma_ = PiecewiseConstantParameter(volsteptimes_, NoConstraint());
     for (Size i = 0; i < sigma_.size(); i++) {
         sigma_.setParam(i, volatilities_[i]->value());
-    }
-    for (Size i = 0; i < reversion_.size(); i++) {
-        reversion_.setParam(i, reversions_[i]->value());
     }
 
     stateProcess_ = boost::shared_ptr<GsrProcess>(new GsrProcess(

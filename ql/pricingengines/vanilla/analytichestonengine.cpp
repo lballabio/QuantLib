@@ -27,6 +27,7 @@
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/math/integrals/trapezoidintegral.hpp>
+#include <ql/math/integrals/discreteintegrals.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 
 #include <ql/instruments/payoffs.hpp>
@@ -42,36 +43,43 @@ namespace QuantLib {
 
         class integrand1 {
           private:
-            Real c_inf;
-            boost::function<Real(Real)> f;
+            const Real c_inf_;
+            const boost::function<Real(Real)> f_;
           public:
-            integrand1(Real c_inf,
-                       boost::function<Real(Real)> f)
-            : c_inf(c_inf), f(f) {}
+            integrand1(Real c_inf, const boost::function<Real(Real)>& f)
+            : c_inf_(c_inf), f_(f) {}
             Real operator()(Real x) const {
-                if ((x+1.0)*c_inf > QL_EPSILON) {
-                    return f(-std::log(0.5*x+0.5)/c_inf)/((x+1.0)*c_inf);
+                if ((1.0-x)*c_inf_ > QL_EPSILON)
+                    return f_(-std::log(0.5-0.5*x)/c_inf_)/((1.0-x)*c_inf_);
+                else
+                    return 0.0;
+            }
+        };
+
+        class integrand2 {
+          private:
+            const Real c_inf_;
+            const boost::function<Real(Real)> f_;
+          public:
+            integrand2(Real c_inf, const boost::function<Real(Real)>& f)
+            : c_inf_(c_inf), f_(f) {}
+            Real operator()(Real x) const {
+                if (x*c_inf_ > QL_EPSILON) {
+                    return f_(-std::log(x)/c_inf_)/(x*c_inf_);
                 } else {
                     return 0.0;
                 }
             }
         };
 
-        class integrand2 {
+        class integrand3 {
           private:
-            Real c_inf;
-            boost::function<Real(Real)> f;
+            const integrand2 int_;
           public:
-            integrand2(Real c_inf,
-                       boost::function<Real(Real)> f)
-            : c_inf(c_inf), f(f) {}
-            Real operator()(Real x) const {
-                if (x*c_inf > QL_EPSILON) {
-                    return f(-std::log(x)/c_inf)/(x*c_inf);
-                } else {
-                    return 0.0;
-                }
-            }
+            integrand3(Real c_inf, const boost::function<Real(Real)>& f)
+            : int_(c_inf, f) {}
+
+            Real operator()(Real x) const { return int_(1.0-x); }
         };
 
     }
@@ -214,7 +222,7 @@ namespace QuantLib {
                       *std::complex<Real>(-phi, (j_== 1)? 1 : -1));
         const std::complex<Real> ex = std::exp(-d*term_);
         const std::complex<Real> addOnTerm
-            = engine_ > 0 ? engine_->addOnTerm(phi, term_, j_) : Real(0.0);
+            = engine_ ? engine_->addOnTerm(phi, term_, j_) : Real(0.0);
 
         if (cpxLog_ == Gatheral) {
             if (phi != 0.0) {
@@ -376,12 +384,11 @@ namespace QuantLib {
                                              const ComplexLogFormula cpxLog,
                                              const AnalyticHestonEngine* const enginePtr,
                                              Real& value,
-                                             Size& evaluations)
-    {
+                                             Size& evaluations) {
 
         const Real ratio = riskFreeDiscount/dividendDiscount;
 
-        const Real c_inf = std::min(10.0, std::max(0.0001,
+        const Real c_inf = std::min(0.2, std::max(0.0001,
                 std::sqrt(1.0-square<Real>()(rho))/sigma))
                 *(v0 + kappa*theta*term);
 
@@ -534,6 +541,20 @@ namespace QuantLib {
                                new GaussChebyshev2ndIntegration(intOrder)));
     }
 
+    AnalyticHestonEngine::Integration
+    AnalyticHestonEngine::Integration::discreteSimpson(Size evaluations) {
+        return Integration(
+            DiscreteSimpson, boost::shared_ptr<Integrator>(
+                new DiscreteSimpsonIntegrator(evaluations)));
+    }
+
+    AnalyticHestonEngine::Integration
+    AnalyticHestonEngine::Integration::discreteTrapezoid(Size evaluations) {
+        return Integration(
+            DiscreteTrapezoid, boost::shared_ptr<Integrator>(
+                new DiscreteTrapezoidIntegrator(evaluations)));
+    }
+
     Size AnalyticHestonEngine::Integration::numberOfEvaluations() const {
         if (integrator_) {
             return integrator_->numberOfEvaluations();
@@ -574,8 +595,13 @@ namespace QuantLib {
             retVal = (*integrator_)(integrand2(c_inf, f),
                                     0.0, 1.0);
             break;
+          case DiscreteTrapezoid:
+          case DiscreteSimpson:
+            retVal = (*integrator_)(integrand3(c_inf, f),
+                                    0.0, 1.0);
+            break;
           default:
-              QL_FAIL("unknwon integration algorithm");
+            QL_FAIL("unknwon integration algorithm");
         }
 
         return retVal;

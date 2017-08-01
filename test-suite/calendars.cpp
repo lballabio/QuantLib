@@ -1620,10 +1620,27 @@ void CalendarTest::testChinaSSE() {
     expectedHol.push_back(Date(6, Oct, 2016));
     expectedHol.push_back(Date(7, Oct, 2016));
 
+    // China Shanghai Securities Exchange holiday list in the year 2017
+    expectedHol.push_back(Date(2, Jan, 2017));
+    expectedHol.push_back(Date(27, Jan, 2017));
+    expectedHol.push_back(Date(30, Jan, 2017));
+    expectedHol.push_back(Date(31, Jan, 2017));
+    expectedHol.push_back(Date(1, Feb, 2017));
+    expectedHol.push_back(Date(2, Feb, 2017));
+    expectedHol.push_back(Date(3, April, 2017));
+    expectedHol.push_back(Date(4, April, 2017));
+    expectedHol.push_back(Date(1, May, 2017));
+    expectedHol.push_back(Date(29, May, 2017));
+    expectedHol.push_back(Date(30, May, 2017));
+    expectedHol.push_back(Date(2, Oct, 2017));
+    expectedHol.push_back(Date(3, Oct, 2017));
+    expectedHol.push_back(Date(4, Oct, 2017));
+    expectedHol.push_back(Date(5, Oct, 2017));
+    expectedHol.push_back(Date(6, Oct, 2017));
 
     Calendar c = China(China::SSE);
     std::vector<Date> hol = Calendar::holidayList(c, Date(1, January, 2014),
-        Date(31, December, 2016));
+        Date(31, December, 2017));
 
     for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i] != expectedHol[i])
@@ -1663,9 +1680,16 @@ void CalendarTest::testChinaIB() {
     expectedWorkingWeekEnds.push_back(Date(8, Oct, 2016));
     expectedWorkingWeekEnds.push_back(Date(9, Oct, 2016));
 
+    // China Inter Bank working weekends list in the year 2017
+    expectedWorkingWeekEnds.push_back(Date(22, Jan, 2017));
+    expectedWorkingWeekEnds.push_back(Date(4, Feb, 2017));
+    expectedWorkingWeekEnds.push_back(Date(1, April, 2017));
+    expectedWorkingWeekEnds.push_back(Date(27, May, 2017));
+    expectedWorkingWeekEnds.push_back(Date(30, Sep, 2017));
+
     Calendar c = China(China::IB);
     Date start(1, Jan, 2014);
-    Date end(31, Dec, 2016);
+    Date end(31, Dec, 2017);
 
     Size k = 0;
 

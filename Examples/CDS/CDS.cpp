@@ -17,7 +17,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/quantlib.hpp>
+#include <ql/qldefines.hpp>
+#ifdef BOOST_MSVC
+#  include <ql/auto_link.hpp>
+#endif
+#include <ql/instruments/creditdefaultswap.hpp>
+#include <ql/pricingengines/credit/midpointcdsengine.hpp>
+#include <ql/termstructures/credit/piecewisedefaultcurve.hpp>
+#include <ql/termstructures/credit/defaultprobabilityhelpers.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/math/interpolations/backwardflatinterpolation.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/quotes/simplequote.hpp>
 
 #include <boost/timer.hpp>
 #include <iostream>
@@ -25,19 +36,6 @@
 
 using namespace std;
 using namespace QuantLib;
-
-#ifdef BOOST_MSVC
-#  ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
-#    include <ql/auto_link.hpp>
-#    define BOOST_LIB_NAME boost_system
-#    include <boost/config/auto_link.hpp>
-#    undef BOOST_LIB_NAME
-#    define BOOST_LIB_NAME boost_thread
-#    include <boost/config/auto_link.hpp>
-#    undef BOOST_LIB_NAME
-#  endif
-#endif
-
 
 #if defined(QL_ENABLE_SESSIONS)
 namespace QuantLib {

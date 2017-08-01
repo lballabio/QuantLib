@@ -70,7 +70,7 @@ namespace QuantLib {
                 QL_REQUIRE(static_cast<int>(xEnd_-xBegin_) >= requiredPoints,
                            "not enough points to interpolate: at least " <<
                            requiredPoints <<
-                           "required, " << static_cast<int>(xEnd_-xBegin_)<< " provided");
+                           " required, " << static_cast<int>(xEnd_-xBegin_)<< " provided");
             }
             Real xMin() const {
                 return *xBegin_;

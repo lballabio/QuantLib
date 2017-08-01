@@ -17,8 +17,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/experimental/credit/syntheticcdo.hpp>
+
+#ifndef QL_PATCH_SOLARIS
+
+#include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/event.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
@@ -261,3 +264,5 @@ namespace QuantLib {
     }
 
 }
+
+#endif

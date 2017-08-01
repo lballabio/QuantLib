@@ -1194,7 +1194,7 @@ namespace {
       private:
         class Impl : public Constraint::Impl {
           public:
-            Impl(Real equityShortRateCorr)
+            explicit Impl(Real equityShortRateCorr)
             : equityShortRateCorr_(equityShortRateCorr) {}
 
             bool test(const Array& params) const {
@@ -1207,7 +1207,8 @@ namespace {
             const Real equityShortRateCorr_;
         };
       public:
-        HestonHullWhiteCorrelationConstraint(Real equityShortRateCorr)
+        explicit HestonHullWhiteCorrelationConstraint(
+            Real equityShortRateCorr)
         : Constraint(boost::shared_ptr<Constraint::Impl>(
              new HestonHullWhiteCorrelationConstraint::Impl(
                                                      equityShortRateCorr))) {}
@@ -1246,7 +1247,7 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
     const Handle<YieldTermStructure> qTS(flatRate(0.02, dc));
     Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
 
-    // starting point the the pure Heston calibration
+    // starting point of the pure Heston calibration
     const Real start_v0    = 0.2*0.2;
     const Real start_theta = start_v0;
     const Real start_kappa = 0.5;

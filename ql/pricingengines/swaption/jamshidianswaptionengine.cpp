@@ -111,6 +111,7 @@ namespace QuantLib {
             Real strike = model_->discountBond(maturity,
                                                fixedPayTime,
                                                rStar) / B;
+            // Looks like the swaption decomposed into individual options adjusted for maturity. Each individual option is valued by Hull-White (or other one-factor model).
             Real dboValue = model_->discountBondOption(
                                                w, strike, maturity, valueTime,
                                                fixedPayTime);

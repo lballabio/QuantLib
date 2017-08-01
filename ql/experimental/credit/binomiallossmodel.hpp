@@ -39,10 +39,10 @@ namespace QuantLib {
     with no excesive cost over the LHP.\par
     See:\par
     <b>Approximating Independent Loss Distributions with an Adjusted Binomial 
-    Distribution</b> , Dominic O’Kane, 2007 EDHEC RISK AND ASSET MANAGEMENT 
+    Distribution</b> , Dominic O'Kane, 2007 EDHEC RISK AND ASSET MANAGEMENT 
     RESEARCH CENTRE \par
     <b>Modelling single name and multi-name credit derivatives</b> Chapter 
-    18.5.2, Dominic O’Kane, Wiley Finance, 2008 \par
+    18.5.2, Dominic O'Kane, Wiley Finance, 2008 \par
     The version presented here is adaptated to the multifactorial case
     by computing a conditional binomial approximation; notice that the Binomial
     is stable. This way the model can be used also in risk management models
@@ -182,7 +182,8 @@ namespace QuantLib {
             bsktNots.begin(), std::back_inserter(lgdsLeft), 
             std::multiplies<Real>());
         Real avgLgd = 
-            std::accumulate(lgdsLeft.begin(), lgdsLeft.end(), Real(0.)) / bsktSize;
+            std::accumulate(lgdsLeft.begin(), lgdsLeft.end(), Real(0.)) /
+                bsktSize;
 
         std::vector<Probability> condDefProb(bsktSize, 0.);
         for(Size j=0; j<bsktSize; j++)//transform
@@ -382,10 +383,10 @@ namespace QuantLib {
         if(perc == 1.) return dist.rbegin()->first;
         if(perc == 0.) return dist.begin()->first;
         std::map<Real, Probability>::const_iterator itdist = dist.begin();
-        while(itdist->second <= perc) itdist++;
+        while (itdist->second <= perc) ++itdist;
         Real valPlus = itdist->second;
         Real xPlus   = itdist->first;
-        itdist--;//we r never 1st or last, because of tests above
+        --itdist; //we're never 1st or last, because of tests above
         Real valMin  = itdist->second;
         Real xMin    = itdist->first;
 
@@ -406,9 +407,10 @@ namespace QuantLib {
 
             std::map<Real, Probability>::iterator 
                 itNxt, itDist = distrib.begin();
-            for(; itDist != distrib.end(); itDist++) 
+            for(; itDist != distrib.end(); ++itDist)
                 if(itDist->second >= perctl) break;
-            itNxt = itDist; itDist--;
+            itNxt = itDist;
+            --itDist;
 
             // \todo: I could linearly triangulate the exact point and get 
             //    extra precission on the first(broken) period.
@@ -421,7 +423,7 @@ namespace QuantLib {
                 Real val =  lossNxt - (itNxt->second - perctl) * 
                     (lossNxt - lossHere) / (itNxt->second - itDist->second); 
                 Real suma = (itNxt->second - perctl) * (lossNxt + val) * .5;
-                itDist++;itNxt++;
+                ++itDist; ++itNxt;
                 do{
                     lossNxt = std::min(std::max(itNxt->first - attachAmount_, 
                         0.), detachAmount_ - attachAmount_);
@@ -429,7 +431,7 @@ namespace QuantLib {
                         0.), detachAmount_ - attachAmount_);
                     suma += .5 * (lossHere + lossNxt) 
                         * (itNxt->second - itDist->second);
-                    itDist++;itNxt++;
+                    ++itDist; ++itNxt;
                 }while(itNxt != distrib.end());
                 return suma / (1.-perctl);
             }

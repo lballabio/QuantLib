@@ -106,7 +106,8 @@ namespace QuantLib {
                               Natural maxEvaluations,
                               Volatility minVol,
                               Volatility maxVol,
-                              Real displacement) const;
+                              Real displacement,
+                              VolatilityType type = ShiftedLognormal) const;
       private:
         // arguments
         boost::shared_ptr<VanillaSwap> swap_;

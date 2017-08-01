@@ -539,9 +539,9 @@ namespace QuantLib {
         }
 
         Real nu = (forward - strike) / straddlePremium;
-        QL_REQUIRE(nu<=1.0,
+        QL_REQUIRE(nu<1.0 || close_enough(nu,1.0),
                    "nu (" << nu << ") must be <= 1.0");
-        QL_REQUIRE(nu>=-1.0,
+        QL_REQUIRE(nu>-1.0 || close_enough(nu,-1.0),
                      "nu (" << nu << ") must be >= -1.0");
 
         nu = std::max(-1.0 + QL_EPSILON, std::min(nu,1.0 - QL_EPSILON));

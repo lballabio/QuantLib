@@ -186,8 +186,11 @@ namespace QuantLib {
                                 start, end, start, end, exCouponDate));
             leg.push_back(temp);
         } else {
-            Date ref = end - schedule_.tenor();
-            ref = schCalendar.adjust(ref, schedule_.businessDayConvention());
+            Date ref = schedule_.calendar().advance(
+                                            end,
+                                            -schedule_.tenor(),
+                                            schedule_.businessDayConvention(),
+                                            schedule_.endOfMonth());
             InterestRate r(rate.rate(),
                            firstPeriodDC_.empty() ? rate.dayCounter()
                                                   : firstPeriodDC_,
@@ -244,8 +247,11 @@ namespace QuantLib {
                     FixedRateCoupon(paymentDate, nominal, rate,
                                     start, end, start, end, exCouponDate)));
             } else {
-                Date ref = start + schedule_.tenor();
-                ref = schCalendar.adjust(ref, schedule_.businessDayConvention());
+                Date ref = schedule_.calendar().advance(
+                                            start,
+                                            schedule_.tenor(),
+                                            schedule_.businessDayConvention(),
+                                            schedule_.endOfMonth());
                 leg.push_back(shared_ptr<CashFlow>(new
                     FixedRateCoupon(paymentDate, nominal, rate,
                                     start, end, start, ref, exCouponDate)));
