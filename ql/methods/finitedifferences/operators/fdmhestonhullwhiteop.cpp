@@ -83,7 +83,7 @@ namespace QuantLib {
       theta_(hestonProcess->theta()),
       sigma_(hestonProcess->sigma()),
       rho_(hestonProcess->rho()),
-      hwModel_(new HullWhite(hestonProcess->riskFreeRate(),
+      hwModel_(boost::make_shared<HullWhite>(hestonProcess->riskFreeRate(),
                              hwProcess->a(), hwProcess->sigma())),
       hestonCorrMap_(SecondOrderMixedDerivativeOp(0, 1, mesher)
                      .mult(rho_*sigma_*mesher->locations(1))),
