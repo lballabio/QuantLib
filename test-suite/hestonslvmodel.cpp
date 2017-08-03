@@ -187,49 +187,49 @@ void HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation() {
     const Size xGrid = 2*100+1;
     const Size tGrid = 400;
 
-    const Handle<Quote> spot(boost::shared_ptr<Quote>(new SimpleQuote(s0)));
+    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(s0));
     const Handle<YieldTermStructure> qTS(flatRate(q, dc));
     const Handle<YieldTermStructure> rTS(flatRate(r, dc));
     const Handle<BlackVolTermStructure> vTS(flatVol(v, dc));
 
     const boost::shared_ptr<GeneralizedBlackScholesProcess> process(
-        new GeneralizedBlackScholesProcess(spot, qTS, rTS, vTS));
+		boost::make_shared<GeneralizedBlackScholesProcess>(spot, qTS, rTS, vTS));
 
     const boost::shared_ptr<PricingEngine> engine(
-        new AnalyticEuropeanEngine(process));
+		boost::make_shared<AnalyticEuropeanEngine>(process));
 
     const boost::shared_ptr<FdmMesher> uniformMesher(
-        new FdmMesherComposite(boost::shared_ptr<Fdm1dMesher>(
-            new FdmBlackScholesMesher(xGrid, process, maturity, s0))));
+		boost::make_shared<FdmMesherComposite>(
+			boost::make_shared<FdmBlackScholesMesher>(xGrid, process, maturity, s0)));
 
     const boost::shared_ptr<FdmLinearOpComposite> uniformBSFwdOp(
-        new FdmBlackScholesFwdOp(uniformMesher, process, s0, 0));
+		boost::make_shared<FdmBlackScholesFwdOp>(uniformMesher, process, s0, 0));
 
     const boost::shared_ptr<FdmMesher> concentratedMesher(
-        new FdmMesherComposite(boost::shared_ptr<Fdm1dMesher>(
-            new FdmBlackScholesMesher(xGrid, process, maturity, s0,
+		boost::make_shared<FdmMesherComposite>(
+			boost::make_shared<FdmBlackScholesMesher>(xGrid, process, maturity, s0,
                                       Null<Real>(), Null<Real>(), 0.0001, 1.5,
-                                      std::pair<Real, Real>(s0, 0.1)))));
+                                      std::pair<Real, Real>(s0, 0.1))));
 
     const boost::shared_ptr<FdmLinearOpComposite> concentratedBSFwdOp(
-        new FdmBlackScholesFwdOp(concentratedMesher, process, s0, 0));
+		boost::make_shared<FdmBlackScholesFwdOp>(concentratedMesher, process, s0, 0));
 
     const boost::shared_ptr<FdmMesher> shiftedMesher(
-        new FdmMesherComposite(boost::shared_ptr<Fdm1dMesher>(
-            new FdmBlackScholesMesher(xGrid, process, maturity, s0,
+		boost::make_shared<FdmMesherComposite>(
+			boost::make_shared<FdmBlackScholesMesher>(xGrid, process, maturity, s0,
                                       Null<Real>(), Null<Real>(), 0.0001, 1.5,
-                                      std::pair<Real, Real>(s0*1.1, 0.2)))));
+                                      std::pair<Real, Real>(s0*1.1, 0.2))));
 
     const boost::shared_ptr<FdmLinearOpComposite> shiftedBSFwdOp(
-        new FdmBlackScholesFwdOp(shiftedMesher, process, s0, 0));
+		boost::make_shared<FdmBlackScholesFwdOp>(shiftedMesher, process, s0, 0));
 
     const boost::shared_ptr<Exercise> exercise(
-        new EuropeanExercise(maturityDate));
+		boost::make_shared<EuropeanExercise>(maturityDate));
     const Real strikes[] = { 50, 80, 100, 130, 150 };
 
     for (Size i=0; i < LENGTH(strikes); ++i) {
         const boost::shared_ptr<StrikedTypePayoff> payoff(
-            new PlainVanillaPayoff(Option::Call, strikes[i]));
+			boost::make_shared<PlainVanillaPayoff>(Option::Call, strikes[i]));
 
         VanillaOption option(payoff, exercise);
         option.setPricingEngine(engine);
@@ -373,8 +373,8 @@ namespace {
         }
 
         return boost::shared_ptr<FdmMesher>(
-            new FdmMesherComposite(boost::shared_ptr<Fdm1dMesher>(
-                new Predefined1dMesher(v))));
+			boost::make_shared<FdmMesherComposite>(
+				boost::make_shared<Predefined1dMesher>(v)));
     }
 }
 
@@ -430,7 +430,7 @@ namespace {
       public:
         q_fct(const Array& v, const Array& p, const Real alpha)
         : v_(v), q_(Pow(v, alpha)*p), alpha_(alpha),
-          spline_(new CubicNaturalSpline(v_.begin(), v_.end(), q_.begin())) {
+          spline_(boost::make_shared<CubicNaturalSpline>(v_.begin(), v_.end(), q_.begin())) {
         }
 
         Real operator()(Real v) const {
@@ -464,8 +464,8 @@ void HestonSLVModelTest::testSquareRootEvolveWithStationaryDensity() {
         const Real vMax = rnd.stationary_invcdf(1-eps);
 
         const boost::shared_ptr<FdmMesher> mesher(
-            new FdmMesherComposite(boost::shared_ptr<Fdm1dMesher>(
-                    new Uniform1dMesher(vMin, vMax, vGrid))));
+			boost::make_shared<FdmMesherComposite>(
+				boost::make_shared<Uniform1dMesher>(vMin, vMax, vGrid)));
 
         const Array v = mesher->locations(0);
         const FdmSquareRootFwdOp::TransformationType transform =
@@ -487,7 +487,7 @@ void HestonSLVModelTest::testSquareRootEvolveWithStationaryDensity() {
         }
 
         const boost::shared_ptr<FdmSquareRootFwdOp> op(
-            new FdmSquareRootFwdOp(mesher, kappa, theta,
+			boost::make_shared<FdmSquareRootFwdOp>(mesher, kappa, theta,
                                    sigma, 0, transform));
 
         const Array eP = p;
@@ -550,8 +550,8 @@ void HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity() {
         const Real vMax = rnd.stationary_invcdf(1-eps);
 
         const boost::shared_ptr<FdmMesherComposite> mesher(
-            new FdmMesherComposite(boost::shared_ptr<Fdm1dMesher>(
-                new Uniform1dMesher(log(vMin), log(vMax), vGrid))));
+			boost::make_shared<FdmMesherComposite>(
+				boost::make_shared<Uniform1dMesher>(log(vMin), log(vMax), vGrid)));
 
         const Array v = mesher->locations(0);
 
@@ -560,7 +560,7 @@ void HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity() {
             p[i] =  stationaryLogProbabilityFct(kappa, theta, sigma, v[i]);
 
         const boost::shared_ptr<FdmSquareRootFwdOp> op(
-            new FdmSquareRootFwdOp(mesher, kappa, theta,
+			boost::make_shared<FdmSquareRootFwdOp>(mesher, kappa, theta,
                                    sigma, 0,
                                    FdmSquareRootFwdOp::Log));
 
@@ -610,13 +610,13 @@ void HestonSLVModelTest::testSquareRootFokkerPlanckFwdEquation() {
     const Real lowerBound = std::max(0.0002, theta-6*vol);
 
     const boost::shared_ptr<FdmMesher> mesher(
-        new FdmMesherComposite(boost::shared_ptr<Fdm1dMesher>(
-                new Uniform1dMesher(lowerBound, upperBound, xGrid))));
+		boost::make_shared<FdmMesherComposite>(
+			boost::make_shared<Uniform1dMesher>(lowerBound, upperBound, xGrid)));
 
     const Array x(mesher->locations(0));
 
     const boost::shared_ptr<FdmSquareRootFwdOp> op(
-        new FdmSquareRootFwdOp(mesher, kappa, theta, sigma, 0)); //!
+		boost::make_shared<FdmSquareRootFwdOp>(mesher, kappa, theta, sigma, 0)); //!
 
     const Time dt = maturity/tGrid;
     const Size n = 5;
@@ -734,17 +734,17 @@ namespace {
         const Real v0    = testCase.v0;
         const Real alpha = 1.0 - 2*kappa*theta/(sigma*sigma);
 
-        const Handle<Quote> spot(boost::shared_ptr<Quote>(new SimpleQuote(s0)));
+        const Handle<Quote> spot(boost::make_shared<SimpleQuote>(s0));
         const Handle<YieldTermStructure> rTS(flatRate(r, dc));
         const Handle<YieldTermStructure> qTS(flatRate(q, dc));
 
         const boost::shared_ptr<HestonProcess> process(
-            new HestonProcess(rTS, qTS, spot, v0, kappa, theta, sigma, rho));
+			boost::make_shared<HestonProcess>(rTS, qTS, spot, v0, kappa, theta, sigma, rho));
 
-        const boost::shared_ptr<HestonModel> model(new HestonModel(process));
+        const boost::shared_ptr<HestonModel> model(boost::make_shared<HestonModel>(process));
 
         const boost::shared_ptr<PricingEngine> engine(
-            new AnalyticHestonEngine(model));
+			boost::make_shared<AnalyticHestonEngine>(model));
 
         const Size xGrid = testCase.xGrid;
         const Size vGrid = testCase.vGrid;
@@ -800,7 +800,7 @@ namespace {
         }
 
         const boost::shared_ptr<Fdm1dMesher> varianceMesher(
-            new Concentrating1dMesher(lowerBound, upperBound,
+			boost::make_shared<Concentrating1dMesher>(lowerBound, upperBound,
                                       vGrid, cPoints, 1e-12));
 
         const Real sEps = 1e-4;
@@ -810,14 +810,14 @@ namespace {
             = std::log(hestonPxBoundary(maturity, 1-sEps,model));
 
         const boost::shared_ptr<Fdm1dMesher> spotMesher(
-            new Concentrating1dMesher(sLowerBound, sUpperBound, xGrid,
+			boost::make_shared<Concentrating1dMesher>(sLowerBound, sUpperBound, xGrid,
                 std::make_pair(x0, 0.1), true));
 
         const boost::shared_ptr<FdmMesherComposite>
-            mesher(new FdmMesherComposite(spotMesher, varianceMesher));
+            mesher(boost::make_shared<FdmMesherComposite>(spotMesher, varianceMesher));
 
         const boost::shared_ptr<FdmLinearOpComposite> hestonFwdOp(
-            new FdmHestonFwdOp(mesher, process, transformationType));
+			boost::make_shared<FdmHestonFwdOp>(mesher, process, transformationType));
 
         ModifiedCraigSneydScheme evolver(
             FdmSchemeDesc::ModifiedCraigSneyd().theta,
@@ -851,7 +851,7 @@ namespace {
             for (Size i=0; i < LENGTH(strikes); ++i) {
                 const Real strike = strikes[i];
                 const boost::shared_ptr<StrikedTypePayoff> payoff(
-                    new PlainVanillaPayoff((strike > s0) ? Option::Call :
+					boost::make_shared<PlainVanillaPayoff>((strike > s0) ? Option::Call :
                                                            Option::Put, strike));
 
                 Array pd(p.size());
@@ -871,7 +871,7 @@ namespace {
                     * rTS->discount(nextMaturityDate);
 
                 const boost::shared_ptr<Exercise> exercise(
-                    new EuropeanExercise(nextMaturityDate));
+					boost::make_shared<EuropeanExercise>(nextMaturityDate));
 
                 VanillaOption option(payoff, exercise);
                 option.setPricingEngine(engine);
@@ -997,7 +997,7 @@ namespace {
         }
 
         boost::shared_ptr<Matrix> surface(
-            new Matrix(strikes.size(), dates.size()));
+			boost::make_shared<Matrix>(strikes.size(), dates.size()));
 
         for (Size i=0; i < strikes.size(); ++i) {
             for (Size j=0; j < dates.size(); ++j) {
@@ -1059,7 +1059,7 @@ namespace {
             }
 
         const boost::shared_ptr<BlackVarianceSurface> volTS(
-            new BlackVarianceSurface(todaysDate, cal,
+			boost::make_shared<BlackVarianceSurface>(todaysDate, cal,
                                      dates,
                                      surfaceStrikes, blackVolMatrix,
                                      dc,
@@ -1101,12 +1101,12 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
     const DayCounter dayCounter = Actual365Fixed();
     const Calendar calendar = TARGET();
 
-    const Handle<Quote> spot(boost::shared_ptr<Quote>(new SimpleQuote(s0)));
+    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(s0));
     const Handle<YieldTermStructure> rTS(flatRate(todaysDate, r, dayCounter));
     const Handle<YieldTermStructure> qTS(flatRate(todaysDate, q, dayCounter));
 
     boost::shared_ptr<HestonProcess> hestonProcess(
-        new HestonProcess(rTS, qTS, spot, v0, kappa, theta, sigma, rho));
+		boost::make_shared<HestonProcess>(rTS, qTS, spot, v0, kappa, theta, sigma, rho));
 
     const Size xGrid = 201;
     const Size vGrid = 401;
@@ -1123,20 +1123,20 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
     critPoints.push_back(boost::tuple<Real, Real, bool>(v0, beta/100, true));
     critPoints.push_back(boost::tuple<Real, Real, bool>(upperBound, beta, true));
     const boost::shared_ptr<Fdm1dMesher> varianceMesher(
-            new Concentrating1dMesher(lowerBound, upperBound, vGrid, critPoints));
+		boost::make_shared<Concentrating1dMesher>(lowerBound, upperBound, vGrid, critPoints));
 
     const boost::shared_ptr<Fdm1dMesher> equityMesher(
-        new Concentrating1dMesher(std::log(2.0), std::log(600.0), xGrid,
+		boost::make_shared<Concentrating1dMesher>(std::log(2.0), std::log(600.0), xGrid,
             std::make_pair(x0+0.005, 0.1), true));
 
     const boost::shared_ptr<FdmMesherComposite>
-        mesher(new FdmMesherComposite(equityMesher, varianceMesher));
+        mesher(boost::make_shared<FdmMesherComposite>(equityMesher, varianceMesher));
 
     const boost::tuple<std::vector<Real>, std::vector<Date>,
                  boost::shared_ptr<BlackVarianceSurface> > smoothSurface =
         createSmoothImpliedVol(dayCounter, calendar);
     const boost::shared_ptr<BlackScholesMertonProcess> lvProcess(
-        new BlackScholesMertonProcess(spot, qTS, rTS,
+		boost::make_shared<BlackScholesMertonProcess>(spot, qTS, rTS,
             Handle<BlackVolTermStructure>(smoothSurface.get<2>())));
 
     // step two days using non-correlated process
@@ -1180,13 +1180,13 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
         lvProcess, ds, dates, times);
 
     const boost::shared_ptr<FixedLocalVolSurface> leverage(
-        new FixedLocalVolSurface(todaysDate, dates, ds, m, dc));
+		boost::make_shared<FixedLocalVolSurface>(todaysDate, dates, ds, m, dc));
 
     const boost::shared_ptr<PricingEngine> lvEngine(
-        new AnalyticEuropeanEngine(lvProcess));
+		boost::make_shared<AnalyticEuropeanEngine>(lvProcess));
 
     const boost::shared_ptr<FdmLinearOpComposite> hestonFwdOp(
-        new FdmHestonFwdOp(mesher, hestonProcess, transform, leverage));
+		boost::make_shared<FdmHestonFwdOp>(mesher, hestonProcess, transform, leverage));
 
     HundsdorferScheme evolver(FdmSchemeDesc::Hundsdorfer().theta,
                               FdmSchemeDesc::Hundsdorfer().mu,
@@ -1200,15 +1200,15 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
     }
 
     const boost::shared_ptr<Exercise> exercise(
-        new EuropeanExercise(maturityDate));
+		boost::make_shared<EuropeanExercise>(maturityDate));
 
     const boost::shared_ptr<PricingEngine> fdmEngine(
-        new FdBlackScholesVanillaEngine(lvProcess, 50, 201, 0,
+		boost::make_shared<FdBlackScholesVanillaEngine>(lvProcess, 50, 201, 0,
                                         FdmSchemeDesc::Douglas(), true,0.2));
 
     for (Size strike=5; strike < 200; strike+=10) {
         const boost::shared_ptr<StrikedTypePayoff> payoff(
-            new CashOrNothingPayoff(Option::Put, Real(strike), 1.0));
+			boost::make_shared<CashOrNothingPayoff>(Option::Put, Real(strike), 1.0));
 
         Array pd(p.size());
         for (FdmLinearOpIterator iter = layout->begin();
@@ -1276,13 +1276,13 @@ void HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol() {
 
     const Handle<Quote> spot(boost::make_shared<SimpleQuote>(s0));
     const boost::shared_ptr<BlackScholesMertonProcess> process(
-        new BlackScholesMertonProcess(spot, qTS, rTS, vTS));
+		boost::make_shared<BlackScholesMertonProcess>(spot, qTS, rTS, vTS));
 
     const boost::shared_ptr<LocalVolTermStructure> localVol(
         boost::make_shared<NoExceptLocalVolSurface>(vTS, rTS, qTS, spot, 0.2));
 
     const boost::shared_ptr<PricingEngine> engine(
-            new AnalyticEuropeanEngine(process));
+		boost::make_shared<AnalyticEuropeanEngine>(process));
 
     for (Size i = 1; i < dates.size(); i += 2) {
         for (Size j = 3; j < strikes.size() - 3; j += 2) {
@@ -1290,48 +1290,45 @@ void HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol() {
             const Date maturityDate = exDate;
             const Time maturity = dc.yearFraction(todaysDate, maturityDate);
             const boost::shared_ptr<Exercise> exercise(
-                    new EuropeanExercise(exDate));
+				boost::make_shared<EuropeanExercise>(exDate));
 
             const boost::shared_ptr<FdmMesher> uniformMesher(
-                new FdmMesherComposite(
-                    boost::shared_ptr<Fdm1dMesher>(
-                        new FdmBlackScholesMesher(xGrid, process,
-                            maturity, s0))));
+				boost::make_shared<FdmMesherComposite>(
+					boost::make_shared<FdmBlackScholesMesher>(xGrid, process,
+                            maturity, s0)));
 
             //-- operator --
             const boost::shared_ptr<FdmLinearOpComposite> uniformBSFwdOp(
-                new FdmLocalVolFwdOp(
+				boost::make_shared<FdmLocalVolFwdOp>(
                     uniformMesher, *spot, *rTS, *qTS, localVol));
 
             const boost::shared_ptr<FdmMesher> concentratedMesher(
-                new FdmMesherComposite(
-                    boost::shared_ptr<Fdm1dMesher>(
-                        new FdmBlackScholesMesher(xGrid, process,
+				boost::make_shared<FdmMesherComposite>(
+					boost::make_shared<FdmBlackScholesMesher>(xGrid, process,
                                 maturity, s0, Null<Real>(),
                                 Null<Real>(), 0.0001, 1.5,
-                                std::pair<Real, Real>(s0, 0.1)))));
+                                std::pair<Real, Real>(s0, 0.1))));
 
             //-- operator --
             const boost::shared_ptr<FdmLinearOpComposite> concentratedBSFwdOp(
-                new FdmLocalVolFwdOp(
+				boost::make_shared<FdmLocalVolFwdOp>(
                     concentratedMesher, *spot, *rTS, *qTS, localVol));
 
             const boost::shared_ptr<FdmMesher> shiftedMesher(
-                new FdmMesherComposite(
-                    boost::shared_ptr<Fdm1dMesher>(
-                        new FdmBlackScholesMesher(xGrid, process,
+				boost::make_shared<FdmMesherComposite>(
+					boost::make_shared<FdmBlackScholesMesher>(xGrid, process,
                             maturity, s0, Null<Real>(),
                             Null<Real>(), 0.0001, 1.5,
                             std::pair<Real, Real>(s0 * 1.1,
-                                    0.2)))));
+                                    0.2))));
 
             //-- operator --
             const boost::shared_ptr<FdmLinearOpComposite> shiftedBSFwdOp(
-                new FdmLocalVolFwdOp(
+				boost::make_shared<FdmLocalVolFwdOp>(
                     shiftedMesher, *spot, *rTS, *qTS, localVol));
 
             const boost::shared_ptr<StrikedTypePayoff> payoff(
-                    new PlainVanillaPayoff(Option::Call, strikes[j]));
+				boost::make_shared<PlainVanillaPayoff>(Option::Call, strikes[j]));
 
             VanillaOption option(payoff, exercise);
             option.setPricingEngine(engine);
@@ -1402,7 +1399,7 @@ namespace {
         const Handle<YieldTermStructure> qTS(flatRate(q, dc));
 
         const boost::shared_ptr<HestonProcess> hestonProcess(
-            new HestonProcess(rTS, qTS, spot, v0, kappa, theta, sigma, rho));
+			boost::make_shared<HestonProcess>(rTS, qTS, spot, v0, kappa, theta, sigma, rho));
 
         const Handle<HestonModel> hestonModel(
             boost::make_shared<HestonModel>(hestonProcess));
@@ -1418,11 +1415,11 @@ namespace {
             l = slvModel.leverageFunction();
 
         const boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
-            new GeneralizedBlackScholesProcess(spot, qTS, rTS,
+			boost::make_shared<GeneralizedBlackScholesProcess>(spot, qTS, rTS,
                 Handle<BlackVolTermStructure>(flatVol(lv, dc))));
 
         const boost::shared_ptr<PricingEngine> analyticEngine(
-            new AnalyticEuropeanEngine(bsProcess));
+			boost::make_shared<AnalyticEuropeanEngine>(bsProcess));
 
         const Real strikes[] = { 50, 75, 80, 90, 100, 110, 125, 150 };
         const Size times[] = { 3, 6, 9, 12, 24, 36, 60 };
@@ -1430,14 +1427,14 @@ namespace {
         for (Size t=0; t < LENGTH(times); ++t) {
             const Date expiry = todaysDate +  Period(times[t], Months);
             const boost::shared_ptr<Exercise> exercise(
-                new EuropeanExercise(expiry));
+				boost::make_shared<EuropeanExercise>(expiry));
 
             const boost::shared_ptr<PricingEngine> slvEngine(
                 (times[t] <= 3) ?
-                    new FdHestonVanillaEngine(hestonModel.currentLink(),
+				boost::make_shared<FdHestonVanillaEngine>(hestonModel.currentLink(),
                         Size(std::max(101.0, 51*times[t]/12.0)), 401, 101, 0,
                             FdmSchemeDesc::ModifiedCraigSneyd(), l)
-                :   new FdHestonVanillaEngine(hestonModel.currentLink(),
+                : boost::make_shared<FdHestonVanillaEngine>(hestonModel.currentLink(),
                         Size(std::max(51.0, 51*times[t]/12.0)), 201, 101, 0,
                             FdmSchemeDesc::ModifiedCraigSneyd(), l));
 
@@ -1445,7 +1442,7 @@ namespace {
                 const Real strike = strikes[s];
 
                 const boost::shared_ptr<StrikedTypePayoff> payoff(
-                    new PlainVanillaPayoff(
+					boost::make_shared<PlainVanillaPayoff>(
                         (strike > s0) ? Option::Call : Option::Put, strike));
 
                 VanillaOption option(payoff, exercise);
@@ -1458,7 +1455,7 @@ namespace {
                 const Real vega = option.vega();
 
                 const boost::shared_ptr<GeneralizedBlackScholesProcess> bp(
-                    new GeneralizedBlackScholesProcess(spot, qTS, rTS,
+					boost::make_shared<GeneralizedBlackScholesProcess>(spot, qTS, rTS,
                         Handle<BlackVolTermStructure>(flatVol(lv,
                                                       dc))));
 
@@ -1562,7 +1559,7 @@ void HestonSLVModelTest::testLocalVolsvSLVPropDensity() {
     const Real v0    =  0.1974;
 
     const boost::shared_ptr<HestonProcess> hestonProcess(
-        new HestonProcess(rTS, qTS, spot, v0, kappa, theta, sigma, rho));
+		boost::make_shared<HestonProcess>(rTS, qTS, spot, v0, kappa, theta, sigma, rho));
 
     const Handle<HestonModel> hestonModel(
         boost::make_shared<HestonModel>(hestonProcess));
@@ -1652,7 +1649,7 @@ void HestonSLVModelTest::testBarrierPricingViaHestonLocalVol() {
     const Handle<YieldTermStructure> qTS(flatRate(q, dc));
 
     const boost::shared_ptr<HestonProcess> hestonProcess(
-        new HestonProcess(rTS, qTS, spot, v0, kappa, theta, sigma, rho));
+		boost::make_shared<HestonProcess>(rTS, qTS, spot, v0, kappa, theta, sigma, rho));
 
     const Handle<HestonModel> hestonModel(
         boost::make_shared<HestonModel>(hestonProcess));
@@ -1670,10 +1667,10 @@ void HestonSLVModelTest::testBarrierPricingViaHestonLocalVol() {
         Period(3, Years), Period(5, Years) };
 
     const boost::shared_ptr<LocalVolSurface> localVolSurface(
-        new LocalVolSurface(surf, rTS, qTS, spot));
+		boost::make_shared<LocalVolSurface>(surf, rTS, qTS, spot));
 
     const boost::shared_ptr<PricingEngine> hestonEngine(
-        new AnalyticHestonEngine(hestonModel.currentLink(), 164));
+		boost::make_shared<AnalyticHestonEngine>(hestonModel.currentLink(), 164));
 
     for (Size i=0; i < LENGTH(strikeValues); ++i) {
         for (Size j=0; j < LENGTH(maturities); ++j) {
@@ -1684,22 +1681,22 @@ void HestonSLVModelTest::testBarrierPricingViaHestonLocalVol() {
             const Volatility impliedVol = surf->blackVol(t, strike, true);
 
             const boost::shared_ptr<GeneralizedBlackScholesProcess>
-                bsProcess(new GeneralizedBlackScholesProcess(
+                bsProcess(boost::make_shared<GeneralizedBlackScholesProcess>(
                     spot, qTS, rTS,
                     Handle<BlackVolTermStructure>(flatVol(impliedVol, dc))));
 
             const boost::shared_ptr<PricingEngine> analyticEngine(
-                new AnalyticEuropeanEngine(bsProcess));
+				boost::make_shared<AnalyticEuropeanEngine>(bsProcess));
 
             const boost::shared_ptr<Exercise> exercise(
-                new EuropeanExercise(exerciseDate));
+				boost::make_shared<EuropeanExercise>(exerciseDate));
             const boost::shared_ptr<StrikedTypePayoff> payoff(
-                new PlainVanillaPayoff(
+				boost::make_shared<PlainVanillaPayoff>(
                     spot->value() < strike ? Option::Call : Option::Put,
                     strike));
 
             const boost::shared_ptr<PricingEngine> localVolEngine(
-                new FdBlackScholesVanillaEngine(bsProcess, 201, 801, 0,
+				boost::make_shared<FdBlackScholesVanillaEngine>(bsProcess, 201, 801, 0,
                     FdmSchemeDesc::Douglas(), true));
 
             VanillaOption option(payoff, exercise);
@@ -1755,7 +1752,7 @@ void HestonSLVModelTest::testBarrierPricingMixedModels() {
     const Handle<YieldTermStructure> qTS(flatRate(q, dc));
 
     const boost::shared_ptr<HestonProcess> hestonProcess(
-        new HestonProcess(rTS, qTS, spot, v0, kappa, theta, sigma, rho));
+		boost::make_shared<HestonProcess>(rTS, qTS, spot, v0, kappa, theta, sigma, rho));
 
     const Handle<HestonModel> hestonModel(
         boost::make_shared<HestonModel>(hestonProcess));
@@ -2213,7 +2210,7 @@ void HestonSLVModelTest::testForwardSkewSLV() {
     const Handle<BlackVolTermStructure> volTS(flatVol(todaysDate, vol, dc));
 
     const boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
-        new GeneralizedBlackScholesProcess(spot, qTS, rTS, volTS));
+		boost::make_shared<GeneralizedBlackScholesProcess>(spot, qTS, rTS, volTS));
 
     const boost::shared_ptr<PricingEngine> fwdEngine(
         boost::make_shared<ForwardVanillaEngine<AnalyticEuropeanEngine> >(
