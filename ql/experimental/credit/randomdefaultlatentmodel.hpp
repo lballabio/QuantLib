@@ -250,7 +250,7 @@ namespace QuantLib {
             for(Size iEvt=0; iEvt < events.size(); iEvt++)
                 // duck type on the members:
                 if(val > events[iEvt].dayFromRef) simCount++;
-                if(simCount >= n) counts++;
+            if(simCount >= n) counts++;
         }
         return counts/nSims_;
         // \todo Provide confidence interval
