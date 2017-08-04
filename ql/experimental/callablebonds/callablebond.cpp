@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2008 Allen Kuo
+ Copyright (C) 2017 BN Algorithms Ltd
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -20,8 +21,9 @@
 #include <ql/experimental/callablebonds/callablebond.hpp>
 #include <ql/experimental/callablebonds/blackcallablebondengine.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/math/solvers1d/brent.hpp>
-
+#include <ql/experimental/math/numericaldifferentiation.hpp>
 namespace QuantLib {
 
     CallableBond::CallableBond(Natural settlementDays,
@@ -89,7 +91,6 @@ namespace QuantLib {
         return results_->value-targetValue_;
     }
 
-
     Volatility CallableBond::impliedVolatility(
                               Real targetValue,
                               const Handle<YieldTermStructure>& discountCurve,
@@ -105,6 +106,203 @@ namespace QuantLib {
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
         return solver.solve(f, accuracy, guess, minVol, maxVol);
+    }
+
+    CallableBond::OASHelper::OASHelper(const CallableBond& bond,
+                                       Handle<SimpleQuote>& spread,
+                                       Real targetValue):
+        bond_(bond),
+        spread_(spread),
+        targetValue_(targetValue)
+    {
+    }
+
+    Real CallableBond::OASHelper::operator()(Spread x) const
+    {
+        spread_->setValue(x);
+        return bond_.NPV()-targetValue_;
+    }
+
+    class NPVSpreadHelper :
+        public std::unary_function<Real, Real>
+    {
+        const CallableBond& bond_;
+        Handle<SimpleQuote>& spread_;
+    public:
+        NPVSpreadHelper(const CallableBond& bond,
+                        Handle<SimpleQuote>& spread):
+            bond_(bond),
+            spread_(spread)
+        {
+        }
+        Real operator()(Real x) const
+        {
+            spread_->setValue(x);
+            return bond_.NPV();
+        }
+    };
+
+    /* Expose a mechanism to add spread the curve being used in the
+       callable bond and clean up when the object is destroyed
+     */
+    class EngSpreadHelper {
+
+        // Relinkable handle to the term structure used by the engine
+        RelinkableHandle<YieldTermStructure>& engineTS;
+        // The original term structure used by the engine before
+        // spreading
+        boost::shared_ptr<YieldTermStructure> origTS;
+        // New handle to the original term structure
+        Handle<YieldTermStructure> refHandle;
+        // Quote for the spread
+        boost::shared_ptr<SimpleQuote> spread;
+        // Quote Handle
+        Handle<Quote> hSpread;
+    public:
+        // SimpleQuote handle
+        Handle<SimpleQuote> sqSpread;
+    private:
+        // The new term structure which is spreaded w.r.t the original
+        boost::shared_ptr<ZeroSpreadedTermStructure> spreadedTS;
+
+    public:
+        EngSpreadHelper(RelinkableHandle<YieldTermStructure>& engineTS,
+                        const DayCounter& dayCounter,
+                        Compounding compounding,
+                        Frequency frequency):
+            engineTS(engineTS),
+            origTS(engineTS.currentLink()),
+            refHandle(origTS),
+            spread(new SimpleQuote(0)),
+            hSpread(spread),
+            sqSpread(spread),
+            spreadedTS( new ZeroSpreadedTermStructure(refHandle,
+                                                      hSpread,
+                                                      compounding,
+                                                      frequency,
+                                                      dayCounter
+                                                      ))
+        {
+            engineTS.linkTo(spreadedTS);
+        }
+
+        ~EngSpreadHelper()
+        {
+            engineTS.linkTo(origTS);
+        }
+    };
+
+    Spread CallableBond::OAS(Real cleanPrice,
+                             RelinkableHandle<YieldTermStructure>& engineTS,
+                             const DayCounter& dayCounter,
+                             Compounding compounding,
+                             Frequency frequency,
+                             Date settlement,
+                             Real accuracy,
+                             Size maxIterations,
+                             Spread guess)
+    {
+        if (settlement == Date())
+            settlement = settlementDate();
+
+        Real dirtyPrice = cleanPrice + accruedAmount(settlement);
+
+        EngSpreadHelper s(engineTS,
+                          dayCounter,
+                          compounding,
+                          frequency);
+
+        OASHelper obj(*this,
+                      s.sqSpread,
+                      dirtyPrice);
+
+        Brent solver;
+        solver.setMaxEvaluations(maxIterations);
+
+        Real step = 0.001;
+        Spread res=solver.solve(obj, accuracy, guess, step);
+        return res;
+    }
+
+    Real CallableBond::cleanPriceOAS(Real oas,
+                                     RelinkableHandle<YieldTermStructure>& engineTS,
+                                     const DayCounter& dayCounter,
+                                     Compounding compounding,
+                                     Frequency frequency,
+                                     Date settlement) const
+    {
+        if (settlement == Date())
+            settlement = settlementDate();
+
+        EngSpreadHelper s(engineTS,
+                          dayCounter,
+                          compounding,
+                          frequency);
+
+        boost::function<Real(Real)> f = NPVSpreadHelper(*this,
+                                                        s.sqSpread);
+
+        Real P = f(oas) - accruedAmount(settlement);
+
+        return P;
+    }
+
+    Real CallableBond::effectiveDuration(Real oas,
+                                         RelinkableHandle<YieldTermStructure>& engineTS,
+                                         const DayCounter& dayCounter,
+                                         Compounding compounding,
+                                         Frequency frequency,
+                                         Real bump)
+    {
+        EngSpreadHelper s(engineTS,
+                          dayCounter,
+                          compounding,
+                          frequency);
+
+        boost::function<Real(Real)> f = NPVSpreadHelper(*this,
+                                                        s.sqSpread);
+
+        Real P = f(oas);
+
+        if ( P == 0.0 )
+            return 0;
+        else
+            {
+                NumericalDifferentiation dFdOAS(f, 1, bump,
+                                                3,
+                                                NumericalDifferentiation::Central);
+                return -1*dFdOAS(oas)/P;
+            }
+    }
+
+    Real CallableBond::effectiveConvexity(Real oas,
+                                          RelinkableHandle<YieldTermStructure>& engineTS,
+                                          const DayCounter& dayCounter,
+                                          Compounding compounding,
+                                          Frequency frequency,
+                                          Real bump)
+    {
+        EngSpreadHelper s(engineTS,
+                          dayCounter,
+                          compounding,
+                          frequency);
+
+        boost::function<Real(Real)> f = NPVSpreadHelper(*this,
+                                                        s.sqSpread);
+
+        Real P = f(oas);
+
+        if ( P == 0.0 )
+            return 0;
+        else
+            {
+                NumericalDifferentiation dFdOAS(f,
+                                                2, 
+                                                bump,
+                                                3,
+                                                NumericalDifferentiation::Central);
+                return dFdOAS(oas)/P;
+            }
     }
 
 
