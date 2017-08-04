@@ -116,7 +116,7 @@ namespace QuantLib {
         double ospread;
         CallableBond::arguments*  args;
     public:
-        EngSpreadHelper(CallableBond::arguments* args):
+        explicit EngSpreadHelper(CallableBond::arguments* args):
             args(args),
             ospread(args->spread)
         {
