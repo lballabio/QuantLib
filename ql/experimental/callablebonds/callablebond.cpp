@@ -113,8 +113,8 @@ namespace QuantLib {
        clean clean up when the object is destroyed
      */
     class EngSpreadHelper {
-        double ospread;
         CallableBond::arguments*  args;
+        double ospread;
     public:
         explicit EngSpreadHelper(CallableBond::arguments* args):
             args(args),
