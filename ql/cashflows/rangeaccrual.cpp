@@ -385,7 +385,7 @@ namespace QuantLib {
             "RangeAccrualPricerByBgm::digitalPriceWithoutSmile: result/deflator > 1. Ratio: "
             << result/deflator << " result: " << result<< " deflator: " << deflator);
 
-        return result;
+       return result;
     }
 
     Real RangeAccrualPricerByBgm::digitalPriceWithSmile(Real strike,

@@ -3,23 +3,36 @@ language: cpp
 
 os: linux
 dist: trusty
-sudo: false
+sudo: required
 compiler: gcc
+services: docker
 
 cache: ccache
 
-addons:
-  apt:
-    packages:
-      - libboost-dev
-      - libboost-test-dev
+env:
+  global:
+    - DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
+  matrix:
+    # Regression test with old Boost version, gcc 4.8
+    - DOCKER_IMAGE=lballabio/quantlib-devenv:1.54.0-trusty
+      CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Werror -std=c++03"
+    # Latest Boost, gcc 5.4, strict C++03 mode
+    - DOCKER_IMAGE=lballabio/quantlib-devenv:xenial
+      CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Werror -std=c++03"
+    # Latest Boost and Ubuntu release, C++14 mode
+    - DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+      CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror -std=c++14"
+
+before_install:
+  - docker pull ${DOCKER_IMAGE}
 
 script:
-  - ./autogen.sh
-  - ./configure --disable-static CXXFLAGS='-O2'
-  - ccache --zero-stats
-  - ccache --max-size=2.5G
-  - make -j 2
-  - ccache --show-stats
-  - ./test-suite/quantlib-test-suite --log_level=message -- --faster
+  - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} ./autogen.sh
+  - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} ./configure --disable-static CXXFLAGS="${CXXFLAGS}"
+  - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} ccache --zero-stats
+  - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} ccache --max-size=2.5G
+  - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} ccache --show-stats
+  - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} make -j 2
+  - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} ccache --show-stats
+  - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} ./test-suite/quantlib-test-suite --log_level=message -- --faster
 
