@@ -31,6 +31,8 @@ class BlackFormulaTest {
     static void testChambersImpliedVol();
     static void testRadoicicStefanicaImpliedVol();
     static void testRadoicicStefanicaLowerBound();
+    static void testImpliedVolAdaptiveSuccessiveOverRelaxation();
+
     static boost::unit_test_framework::test_suite* suite();
 };
 

@@ -132,7 +132,7 @@ namespace QuantLib {
         J. Gatheral, I. Matic, R. Radoicic, D. Stefanica
         https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2922742
     */
-    Real blackFormulaImpliedStdDevRS(
+    Real blackFormulaImpliedStdDevApproximationRS(
         Option::Type optionType,
         Real strike,
         Real forward,
@@ -140,7 +140,7 @@ namespace QuantLib {
         Real discount = 1.0,
         Real displacement = 0.0);
 
-    Real blackFormulaImpliedStdDevRS(
+    Real blackFormulaImpliedStdDevApproximationRS(
         const boost::shared_ptr<PlainVanillaPayoff> &payoff,
         Real forward,
         Real blackPrice,
@@ -174,6 +174,42 @@ namespace QuantLib {
                         Real accuracy = 1.0e-6,
                         Natural maxIterations = 100);
 
+    /*! Black 1976 implied standard deviation,
+         i.e. volatility*sqrt(timeToMaturity)
+
+        "An Adaptive Successive Over-relaxation Method for Computing the
+        Black-Scholes Implied Volatility"
+        M. Li, http://mpra.ub.uni-muenchen.de/6867/
+
+
+        Starting point of the iteration is calculated based on
+
+        "An Explicit Implicit Volatility Formula"
+        R. Radoicic, D. Stefanica,
+        https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2908494
+    */
+    Real blackFormulaImpliedStdDevLiRS(
+        Option::Type optionType,
+        Real strike,
+        Real forward,
+        Real blackPrice,
+        Real discount = 1.0,
+        Real displacement = 0.0,
+        Real guess = Null<Real>(),
+        Real omega = 1.0,
+        Real accuracy = 1.0e-6,
+        Natural maxIterations = 100);
+
+    Real blackFormulaImpliedStdDevLiRS(
+        const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+        Real forward,
+        Real blackPrice,
+        Real discount = 1.0,
+        Real displacement = 0.0,
+        Real guess = Null<Real>(),
+        Real omega = 1.0,
+        Real accuracy = 1.0e-6,
+        Natural maxIterations = 100);
 
     /*! Black 1976 probability of being in the money (in the bond martingale
         measure), i.e. N(d2).
