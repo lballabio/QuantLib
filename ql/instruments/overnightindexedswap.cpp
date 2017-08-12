@@ -31,12 +31,17 @@ namespace QuantLib {
                     Rate fixedRate,
                     const DayCounter& fixedDC,
                     const boost::shared_ptr<OvernightIndex>& overnightIndex,
-                    Spread spread)
+                    Spread spread,
+					Natural paymentLag,
+					BusinessDayConvention paymentAdjustment,
+					Calendar paymentCalendar)
     : Swap(2), type_(type),
       nominals_(std::vector<Real>(1, nominal)),
       paymentFrequency_(schedule.tenor().frequency()),
       fixedRate_(fixedRate), fixedDC_(fixedDC),
-      overnightIndex_(overnightIndex), spread_(spread) {
+      overnightIndex_(overnightIndex), spread_(spread),
+	  paymentLag_(paymentLag), paymentAdjustment_(paymentAdjustment),
+	  paymentCalendar_(paymentCalendar == Calendar() ? schedule.calendar() : paymentCalendar) {
 
           initialize(schedule);
 
@@ -49,11 +54,16 @@ namespace QuantLib {
                     Rate fixedRate,
                     const DayCounter& fixedDC,
                     const boost::shared_ptr<OvernightIndex>& overnightIndex,
-                    Spread spread)
+                    Spread spread,
+					Natural paymentLag,
+					BusinessDayConvention paymentAdjustment,
+					Calendar paymentCalendar)
     : Swap(2), type_(type), nominals_(nominals),
       paymentFrequency_(schedule.tenor().frequency()),
       fixedRate_(fixedRate), fixedDC_(fixedDC),
-      overnightIndex_(overnightIndex), spread_(spread) {
+      overnightIndex_(overnightIndex), spread_(spread),
+	  paymentLag_(paymentLag), paymentAdjustment_(paymentAdjustment),
+	  paymentCalendar_(paymentCalendar == Calendar() ? schedule.calendar() : paymentCalendar ) {
 
           initialize(schedule);
 
@@ -64,11 +74,17 @@ namespace QuantLib {
             fixedDC_ = overnightIndex_->dayCounter();
         legs_[0] = FixedRateLeg(schedule)
             .withNotionals(nominals_)
-            .withCouponRates(fixedRate_, fixedDC_);
+            .withCouponRates(fixedRate_, fixedDC_)
+			.withPaymentLag(paymentLag_)
+			.withPaymentAdjustment(paymentAdjustment_)
+			.withPaymentCalendar(paymentCalendar_);
 
-        legs_[1] = OvernightLeg(schedule, overnightIndex_)
-            .withNotionals(nominals_)
-            .withSpreads(spread_);
+		legs_[1] = OvernightLeg(schedule, overnightIndex_)
+			.withNotionals(nominals_)
+			.withSpreads(spread_)
+			.withPaymentLag(paymentLag_)
+			.withPaymentAdjustment(paymentAdjustment_)
+			.withPaymentCalendar(paymentCalendar_);
 
         for (Size j=0; j<2; ++j) {
             for (Leg::iterator i = legs_[j].begin(); i!= legs_[j].end(); ++i)

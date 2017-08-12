@@ -83,6 +83,8 @@ namespace QuantLib {
         OvernightLeg& withNotionals(const std::vector<Real>& notionals);
         OvernightLeg& withPaymentDayCounter(const DayCounter&);
         OvernightLeg& withPaymentAdjustment(BusinessDayConvention);
+		OvernightLeg& withPaymentCalendar(const Calendar&);
+		OvernightLeg& withPaymentLag(Natural lag);
         OvernightLeg& withGearings(Real gearing);
         OvernightLeg& withGearings(const std::vector<Real>& gearings);
         OvernightLeg& withSpreads(Spread spread);
@@ -93,7 +95,9 @@ namespace QuantLib {
         boost::shared_ptr<OvernightIndex> overnightIndex_;
         std::vector<Real> notionals_;
         DayCounter paymentDayCounter_;
+		Calendar paymentCalendar_;
         BusinessDayConvention paymentAdjustment_;
+		Natural paymentLag_;
         std::vector<Real> gearings_;
         std::vector<Spread> spreads_;
     };

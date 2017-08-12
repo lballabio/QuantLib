@@ -98,6 +98,7 @@ namespace QuantLib {
         FixedRateLeg& withPaymentAdjustment(BusinessDayConvention);
         FixedRateLeg& withFirstPeriodDayCounter(const DayCounter&);
         FixedRateLeg& withPaymentCalendar(const Calendar&);
+		FixedRateLeg& withPaymentLag(Natural lag);
         FixedRateLeg& withExCouponPeriod(const Period&,
                                          const Calendar&,
                                          BusinessDayConvention,
@@ -105,11 +106,12 @@ namespace QuantLib {
         operator Leg() const;
       private:
         Schedule schedule_;
-        Calendar calendar_;
         std::vector<Real> notionals_;
         std::vector<InterestRate> couponRates_;
         DayCounter firstPeriodDC_;
         BusinessDayConvention paymentAdjustment_;
+		Natural paymentLag_;
+		Calendar paymentCalendar_;
         Period exCouponPeriod_;
         Calendar exCouponCalendar_;
         BusinessDayConvention exCouponAdjustment_;

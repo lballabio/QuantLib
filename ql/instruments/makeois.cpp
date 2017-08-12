@@ -36,6 +36,9 @@ namespace QuantLib {
       settlementDays_(2),
       calendar_(overnightIndex->fixingCalendar()),
       paymentFrequency_(Annual),
+	  paymentLag_(0),
+	  paymentAdjustment_(Following),
+	  paymentCalendar_(Calendar()),
       rule_(DateGeneration::Backward),
       // any value here for endOfMonth_ would not be actually used
       isDefaultEOM_(true),
@@ -68,7 +71,7 @@ namespace QuantLib {
         }
 
         // OIS end of month default
-        bool usedEndOfMonth = 
+        bool usedEndOfMonth =
             isDefaultEOM_ ? calendar_.isEndOfMonth(startDate) : endOfMonth_;
 
         Date endDate = terminationDate_;
@@ -96,7 +99,8 @@ namespace QuantLib {
                                       schedule,
                                       0.0, // fixed rate
                                       fixedDayCount_,
-                                      overnightIndex_, overnightSpread_);
+                                      overnightIndex_, overnightSpread_,
+									  paymentLag_, paymentAdjustment_, paymentCalendar_);
             if (engine_ == 0) {
                 Handle<YieldTermStructure> disc =
                                     overnightIndex_->forwardingTermStructure();
@@ -117,7 +121,8 @@ namespace QuantLib {
             OvernightIndexedSwap(type_, nominal_,
                                  schedule,
                                  usedFixedRate, fixedDayCount_,
-                                 overnightIndex_, overnightSpread_));
+                                 overnightIndex_, overnightSpread_,
+								 paymentLag_, paymentAdjustment_, paymentCalendar_));
 
         if (engine_ == 0) {
             Handle<YieldTermStructure> disc =
@@ -170,6 +175,21 @@ namespace QuantLib {
             rule_ = DateGeneration::Zero;
         return *this;
     }
+
+	MakeOIS& MakeOIS::withPaymentAdjustment(BusinessDayConvention convention) {
+		paymentAdjustment_ = convention;
+		return *this;
+	}
+
+	MakeOIS& MakeOIS::withPaymentLag(Natural lag) {
+		paymentLag_ = lag;
+		return *this;
+	}
+
+	MakeOIS& MakeOIS::withPaymentCalendar(const Calendar& cal) {
+		paymentCalendar_ = cal;
+		return *this;
+	}
 
     MakeOIS& MakeOIS::withRule(DateGeneration::Rule r) {
         rule_ = r;

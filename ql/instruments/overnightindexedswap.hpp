@@ -27,6 +27,8 @@
 
 #include <ql/instruments/swap.hpp>
 #include <ql/time/daycounter.hpp>
+#include <ql/time/businessdayconvention.hpp>
+#include <ql/time/calendar.hpp>
 
 namespace QuantLib {
 
@@ -44,7 +46,11 @@ namespace QuantLib {
                     Rate fixedRate,
                     const DayCounter& fixedDC,
                     const boost::shared_ptr<OvernightIndex>& overnightIndex,
-                    Spread spread = 0.0);
+                    Spread spread = 0.0,
+					Natural paymentLag = 0,
+					BusinessDayConvention paymentAdjustment = Following,
+					Calendar paymentCalendar = Calendar());
+
         OvernightIndexedSwap(
                     Type type,
                     std::vector<Real> nominals,
@@ -52,7 +58,11 @@ namespace QuantLib {
                     Rate fixedRate,
                     const DayCounter& fixedDC,
                     const boost::shared_ptr<OvernightIndex>& overnightIndex,
-                    Spread spread = 0.0);
+                    Spread spread = 0.0,
+					Natural paymentLag = 0,
+					BusinessDayConvention paymentAdjustment = Following,
+					Calendar paymentCalendar = Calendar());
+
         //! \name Inspectors
         //@{
         Type type() const { return type_; }
@@ -88,6 +98,10 @@ namespace QuantLib {
         std::vector<Real> nominals_;
 
         Frequency paymentFrequency_;
+		Natural paymentLag_;
+		BusinessDayConvention paymentAdjustment_;
+		Calendar paymentCalendar_;
+
         //Schedule schedule_;
 
         Rate fixedRate_;

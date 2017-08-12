@@ -54,6 +54,10 @@ namespace QuantLib {
         MakeOIS& withRule(DateGeneration::Rule r);
 
         MakeOIS& withPaymentFrequency(Frequency f);
+    MakeOIS& withPaymentAdjustment(BusinessDayConvention convention);
+		MakeOIS& withPaymentLag(Natural lag);
+		MakeOIS& withPaymentCalendar(const Calendar& cal);
+
         MakeOIS& withEndOfMonth(bool flag = true);
 
         MakeOIS& withFixedLegDayCount(const DayCounter& dc);
@@ -75,6 +79,10 @@ namespace QuantLib {
         Calendar calendar_;
 
         Frequency paymentFrequency_;
+		Calendar paymentCalendar_;
+		Natural paymentLag_;
+		BusinessDayConvention paymentAdjustment_;
+
         DateGeneration::Rule rule_;
         bool endOfMonth_, isDefaultEOM_;
 
