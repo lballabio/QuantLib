@@ -625,9 +625,18 @@ namespace QuantLib {
                     }
                     refEndDate = couponDate;
                 }
-
-                t += dc.yearFraction(lastDate, couponDate,
-                                     refStartDate, refEndDate);
+                
+                if (coupon && lastDate!=refStartDate){
+                     Time couponPeriod = y.dayCounter().yearFraction(refStartDate,
+                                                couponDate, refStartDate, refEndDate);
+                     Time accruedPeriod = y.dayCounter().yearFraction(refStartDate,
+                                                lastDate, refStartDate, refEndDate);
+                     t += couponPeriod - accruedPeriod;                                
+                }
+                else{
+                     t += dc.yearFraction(lastDate, couponDate,
+                                 refStartDate, refEndDate);
+                }
 
                 DiscountFactor B = y.discountFactor(t);
                 P += c * B;
@@ -689,8 +698,17 @@ namespace QuantLib {
                     refEndDate = couponDate;
                 }
                 
-                t += dc.yearFraction(lastDate, couponDate,
-                                     refStartDate, refEndDate);
+                if (coupon && lastDate!=refStartDate){
+                    Time couponPeriod = y.dayCounter().yearFraction(refStartDate,
+                                                couponDate, refStartDate, refEndDate);
+                    Time accruedPeriod = y.dayCounter().yearFraction(refStartDate,
+                                                lastDate, refStartDate, refEndDate);
+                    t += couponPeriod - accruedPeriod;                                
+                }
+                else{
+                    t += dc.yearFraction(lastDate, couponDate,
+                                 refStartDate, refEndDate);
+                }
                 
                 DiscountFactor B = y.discountFactor(t);
                 P += c * B;
@@ -885,8 +903,18 @@ namespace QuantLib {
                 }
                 refEndDate = couponDate;
             }
-            DiscountFactor b = y.discountFactor(lastDate, couponDate,
+            DiscountFactor b;
+            if (coupon && refStartDate!=lastDate) {
+                Time couponPeriod = y.dayCounter().yearFraction(refStartDate,
+                                                couponDate, refStartDate, refEndDate);
+                Time accruedPeriod = y.dayCounter().yearFraction(refStartDate,
+                                                lastDate, refStartDate, refEndDate);
+                b = y.discountFactor(couponPeriod - accruedPeriod);
+            }
+            else {
+                b = y.discountFactor(lastDate, couponDate,
                                                 refStartDate, refEndDate);
+            }
             discount *= b;
             lastDate = couponDate;
 
@@ -1064,8 +1092,17 @@ namespace QuantLib {
                 refEndDate = couponDate;
             }
             
-            t += dc.yearFraction(lastDate, couponDate,
+            if (coupon && lastDate!=refStartDate){
+                Time couponPeriod = y.dayCounter().yearFraction(refStartDate,
+                                                couponDate, refStartDate, refEndDate);
+                Time accruedPeriod = y.dayCounter().yearFraction(refStartDate,
+                                                lastDate, refStartDate, refEndDate);
+                t += couponPeriod - accruedPeriod;                                
+            }
+            else{
+                t += dc.yearFraction(lastDate, couponDate,
                                  refStartDate, refEndDate);
+            }            
             
             DiscountFactor B = y.discountFactor(t);
             P += c * B;
