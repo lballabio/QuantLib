@@ -300,30 +300,30 @@ namespace QuantLib {
 
         if (y == 2019) {
            if (// Lunar New Year
-              ((d == 5 && m == February) || (d == 6 && m == February) || (d == 7 && m == February))
-              // Ching Ming Festival
-              || (d == 5 && m == April)
-              // Tuen Ng festival
-              || (d == 7 && m == June)
-              // Chung Yeung festival
-              || (d == 7 && m == October))
-              return false;
+               ((d == 5 && m == February) || (d == 6 && m == February) || (d == 7 && m == February))
+               // Ching Ming Festival
+               || (d == 5 && m == April)
+               // Tuen Ng festival
+               || (d == 7 && m == June)
+               // Chung Yeung festival
+               || (d == 7 && m == October))
+               return false;
         }
 
         if (y == 2020) {
            if (// Lunar New Year
-              ((d == 27 && m == January) || (d == 28 && m == January))
-              // Ching Ming Festival
-              || (d == 4 && m == April)
-              // Buddha's birthday
-              || (d == 30 && m == April)
-              // Tuen Ng festival
-              || (d == 25 && m == June)
-              // Mid-autumn festival
-              || (d == 2 && m == October)
-              // Chung Yeung festival
-              || (d == 26 && m == October))
-              return false;
+               ((d == 27 && m == January) || (d == 28 && m == January))
+               // Ching Ming Festival
+               || (d == 4 && m == April)
+               // Buddha's birthday
+               || (d == 30 && m == April)
+               // Tuen Ng festival
+               || (d == 25 && m == June)
+               // Mid-autumn festival
+               || (d == 2 && m == October)
+               // Chung Yeung festival
+               || (d == 26 && m == October))
+               return false;
         }
 
         return true;
