@@ -284,17 +284,17 @@ namespace QuantLib {
 
         if (y == 2018) {
             if (// Lunar New Year
-                    ((d == 16 && m == February) || (d == 19 && m == February))
-                    // Ching Ming Festival
-                    || (d == 5 && m == April)
-                    // Buddha's birthday
-                    || (d == 22 && m == May)
-                    // Tuen NG festival
-                    || (d == 18 && m == June)
-                    // Mid-autumn festival
-                    || (d == 25 && m == September)
-                    // Chung Yeung festival
-                    || (d == 17 && m == October))
+                ((d == 16 && m == February) || (d == 19 && m == February))
+                // Ching Ming Festival
+                || (d == 5 && m == April)
+                // Buddha's birthday
+                || (d == 22 && m == May)
+                // Tuen NG festival
+                || (d == 18 && m == June)
+                // Mid-autumn festival
+                || (d == 25 && m == September)
+                // Chung Yeung festival
+                || (d == 17 && m == October))
                 return false;
         }
 
