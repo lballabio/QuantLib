@@ -5,6 +5,8 @@
  Copyright (C) 2003, 2004, 2007 StatPro Italia srl
  Copyright (C) 2007 Piter Dias
  Copyright (C) 2010 Ferdinando Ametrano
+ Copyright (C) 2017 Joseph Jeisman
+ Copyright (C) 2017 Fabrice Lecuyer
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -98,7 +100,7 @@ namespace QuantLib {
         FixedRateLeg& withPaymentAdjustment(BusinessDayConvention);
         FixedRateLeg& withFirstPeriodDayCounter(const DayCounter&);
         FixedRateLeg& withPaymentCalendar(const Calendar&);
-		FixedRateLeg& withPaymentLag(Natural lag);
+        FixedRateLeg& withPaymentLag(Natural lag);
         FixedRateLeg& withExCouponPeriod(const Period&,
                                          const Calendar&,
                                          BusinessDayConvention,
@@ -110,8 +112,8 @@ namespace QuantLib {
         std::vector<InterestRate> couponRates_;
         DayCounter firstPeriodDC_;
         BusinessDayConvention paymentAdjustment_;
-		Natural paymentLag_;
-		Calendar paymentCalendar_;
+        Natural paymentLag_;
+        Calendar paymentCalendar_;
         Period exCouponPeriod_;
         Calendar exCouponCalendar_;
         BusinessDayConvention exCouponAdjustment_;

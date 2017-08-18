@@ -2,6 +2,8 @@
 
 /*
  Copyright (C) 2009 Ferdinando Ametrano
+ Copyright (C) 2017 Joseph Jeisman
+ Copyright (C) 2017 Fabrice Lecuyer
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -54,9 +56,9 @@ namespace QuantLib {
         MakeOIS& withRule(DateGeneration::Rule r);
 
         MakeOIS& withPaymentFrequency(Frequency f);
-    MakeOIS& withPaymentAdjustment(BusinessDayConvention convention);
-		MakeOIS& withPaymentLag(Natural lag);
-		MakeOIS& withPaymentCalendar(const Calendar& cal);
+        MakeOIS& withPaymentAdjustment(BusinessDayConvention convention);
+        MakeOIS& withPaymentLag(Natural lag);
+        MakeOIS& withPaymentCalendar(const Calendar& cal);
 
         MakeOIS& withEndOfMonth(bool flag = true);
 
@@ -79,9 +81,9 @@ namespace QuantLib {
         Calendar calendar_;
 
         Frequency paymentFrequency_;
-		Calendar paymentCalendar_;
-		Natural paymentLag_;
-		BusinessDayConvention paymentAdjustment_;
+        Calendar paymentCalendar_;
+        Natural paymentLag_;
+        BusinessDayConvention paymentAdjustment_;
 
         DateGeneration::Rule rule_;
         bool endOfMonth_, isDefaultEOM_;

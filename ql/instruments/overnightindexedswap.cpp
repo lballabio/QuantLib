@@ -3,6 +3,8 @@
 /*
  Copyright (C) 2009 Roland Lichters
  Copyright (C) 2009 Ferdinando Ametrano
+ Copyright (C) 2017 Joseph Jeisman
+ Copyright (C) 2017 Fabrice Lecuyer
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,16 +34,16 @@ namespace QuantLib {
                     const DayCounter& fixedDC,
                     const boost::shared_ptr<OvernightIndex>& overnightIndex,
                     Spread spread,
-					Natural paymentLag,
-					BusinessDayConvention paymentAdjustment,
-					Calendar paymentCalendar)
+                    Natural paymentLag,
+                    BusinessDayConvention paymentAdjustment,
+                    Calendar paymentCalendar)
     : Swap(2), type_(type),
       nominals_(std::vector<Real>(1, nominal)),
       paymentFrequency_(schedule.tenor().frequency()),
       fixedRate_(fixedRate), fixedDC_(fixedDC),
       overnightIndex_(overnightIndex), spread_(spread),
-	  paymentLag_(paymentLag), paymentAdjustment_(paymentAdjustment),
-	  paymentCalendar_(paymentCalendar == Calendar() ? schedule.calendar() : paymentCalendar) {
+      paymentLag_(paymentLag), paymentAdjustment_(paymentAdjustment),
+      paymentCalendar_(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar) {
 
           initialize(schedule);
 
@@ -55,15 +57,15 @@ namespace QuantLib {
                     const DayCounter& fixedDC,
                     const boost::shared_ptr<OvernightIndex>& overnightIndex,
                     Spread spread,
-					Natural paymentLag,
-					BusinessDayConvention paymentAdjustment,
-					Calendar paymentCalendar)
+                    Natural paymentLag,
+                    BusinessDayConvention paymentAdjustment,
+                    Calendar paymentCalendar)
     : Swap(2), type_(type), nominals_(nominals),
       paymentFrequency_(schedule.tenor().frequency()),
       fixedRate_(fixedRate), fixedDC_(fixedDC),
       overnightIndex_(overnightIndex), spread_(spread),
-	  paymentLag_(paymentLag), paymentAdjustment_(paymentAdjustment),
-	  paymentCalendar_(paymentCalendar == Calendar() ? schedule.calendar() : paymentCalendar ) {
+      paymentLag_(paymentLag), paymentAdjustment_(paymentAdjustment),
+      paymentCalendar_(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar) {
 
           initialize(schedule);
 
@@ -75,16 +77,16 @@ namespace QuantLib {
         legs_[0] = FixedRateLeg(schedule)
             .withNotionals(nominals_)
             .withCouponRates(fixedRate_, fixedDC_)
-			.withPaymentLag(paymentLag_)
-			.withPaymentAdjustment(paymentAdjustment_)
-			.withPaymentCalendar(paymentCalendar_);
+            .withPaymentLag(paymentLag_)
+            .withPaymentAdjustment(paymentAdjustment_)
+            .withPaymentCalendar(paymentCalendar_);
 
 		legs_[1] = OvernightLeg(schedule, overnightIndex_)
-			.withNotionals(nominals_)
-			.withSpreads(spread_)
-			.withPaymentLag(paymentLag_)
-			.withPaymentAdjustment(paymentAdjustment_)
-			.withPaymentCalendar(paymentCalendar_);
+            .withNotionals(nominals_)
+            .withSpreads(spread_)
+            .withPaymentLag(paymentLag_)
+            .withPaymentAdjustment(paymentAdjustment_)
+            .withPaymentCalendar(paymentCalendar_);
 
         for (Size j=0; j<2; ++j) {
             for (Leg::iterator i = legs_[j].begin(); i!= legs_[j].end(); ++i)

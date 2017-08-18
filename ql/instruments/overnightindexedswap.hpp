@@ -3,6 +3,8 @@
 /*
  Copyright (C) 2009 Roland Lichters
  Copyright (C) 2009 Ferdinando Ametrano
+ Copyright (C) 2017 Joseph Jeisman
+ Copyright (C) 2017 Fabrice Lecuyer
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -37,31 +39,31 @@ namespace QuantLib {
 
     //! Overnight indexed swap: fix vs compounded overnight rate
     class OvernightIndexedSwap : public Swap {
-      public:
+    public:
         enum Type { Receiver = -1, Payer = 1 };
         OvernightIndexedSwap(
-                    Type type,
-                    Real nominal,
-                    const Schedule& schedule,
-                    Rate fixedRate,
-                    const DayCounter& fixedDC,
-                    const boost::shared_ptr<OvernightIndex>& overnightIndex,
-                    Spread spread = 0.0,
-					Natural paymentLag = 0,
-					BusinessDayConvention paymentAdjustment = Following,
-					Calendar paymentCalendar = Calendar());
+                        Type type,
+                        Real nominal,
+                        const Schedule& schedule,
+                        Rate fixedRate,
+                        const DayCounter& fixedDC,
+                        const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                        Spread spread = 0.0,
+                        Natural paymentLag = 0,
+                        BusinessDayConvention paymentAdjustment = Following,
+                        Calendar paymentCalendar = Calendar());
 
         OvernightIndexedSwap(
-                    Type type,
-                    std::vector<Real> nominals,
-                    const Schedule& schedule,
-                    Rate fixedRate,
-                    const DayCounter& fixedDC,
-                    const boost::shared_ptr<OvernightIndex>& overnightIndex,
-                    Spread spread = 0.0,
-					Natural paymentLag = 0,
-					BusinessDayConvention paymentAdjustment = Following,
-					Calendar paymentCalendar = Calendar());
+                        Type type,
+                        std::vector<Real> nominals,
+                        const Schedule& schedule,
+                        Rate fixedRate,
+                        const DayCounter& fixedDC,
+                        const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                        Spread spread = 0.0,
+                        Natural paymentLag = 0,
+                        BusinessDayConvention paymentAdjustment = Following,
+                        Calendar paymentCalendar = Calendar());
 
         //! \name Inspectors
         //@{
@@ -98,9 +100,9 @@ namespace QuantLib {
         std::vector<Real> nominals_;
 
         Frequency paymentFrequency_;
-		Natural paymentLag_;
-		BusinessDayConvention paymentAdjustment_;
-		Calendar paymentCalendar_;
+        Natural paymentLag_;
+        BusinessDayConvention paymentAdjustment_;
+        Calendar paymentCalendar_;
 
         //Schedule schedule_;
 
