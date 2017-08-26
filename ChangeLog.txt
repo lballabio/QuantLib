@@ -1,3 +1,46 @@
+commit 85f9f6875e1ea4413bb47084c31b9e3a6ba446c2
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 26 Aug 2017 18:18:08 +0200
+
+    Avoid name clash with Boost 1.65.0 and g++ 6.3.
+    
+    An Integer type was pulled in from both the QuantLib and the
+    boost namespace.  The reason why this doesn't happen with
+    earlier versions of g++, or with g++ 6.3 in C++03 mode,
+    escapes me.
+
+ test-suite/cashflows.cpp | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+commit 8ae4497c04f2ac1af40ffdf53c054c804a0c76fd
+Author: Peter Caspers <peter.caspers@quaternion.com>
+Date:   Sat, 29 Apr 2017 21:05:40 +0200
+
+    provide missing member function definitions
+
+ .../volatility/swaption/swaptionvolstructure.hpp   | 28 ++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
+
+commit 3cba40012ec6b634050a17c8a5f8e065e8adeddf
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 16 May 2017 10:57:40 +0200
+
+    Bump version number to 1.10.1.
+
+ Announce.txt   | 2 +-
+ configure.ac   | 2 +-
+ ql/version.hpp | 8 ++++----
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+commit 757cb17a0d37b01f28e67c6d05e2ee1b669e0e45
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 12 May 2017 17:42:36 +0200
+
+    Update ChangeLog.
+
+ ChangeLog.txt | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+
 commit f69bc6b58616308b11e326175b9d828c4dc404ad
 Merge: d73944857 120cb411a
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
