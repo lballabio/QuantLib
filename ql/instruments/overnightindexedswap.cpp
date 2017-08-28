@@ -40,10 +40,10 @@ namespace QuantLib {
     : Swap(2), type_(type),
       nominals_(std::vector<Real>(1, nominal)),
       paymentFrequency_(schedule.tenor().frequency()),
-      fixedRate_(fixedRate), fixedDC_(fixedDC),
-      overnightIndex_(overnightIndex), spread_(spread),
       paymentCalendar_(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar),
-      paymentAdjustment_(paymentAdjustment), paymentLag_(paymentLag) {
+      paymentAdjustment_(paymentAdjustment), paymentLag_(paymentLag),
+      fixedRate_(fixedRate), fixedDC_(fixedDC),
+      overnightIndex_(overnightIndex), spread_(spread) {
 
           initialize(schedule);
 
@@ -62,10 +62,10 @@ namespace QuantLib {
                     Calendar paymentCalendar)
     : Swap(2), type_(type), nominals_(nominals),
       paymentFrequency_(schedule.tenor().frequency()),
-      fixedRate_(fixedRate), fixedDC_(fixedDC),
-      overnightIndex_(overnightIndex), spread_(spread),
       paymentCalendar_(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar),
-      paymentAdjustment_(paymentAdjustment), paymentLag_(paymentLag){
+      paymentAdjustment_(paymentAdjustment), paymentLag_(paymentLag),
+      fixedRate_(fixedRate), fixedDC_(fixedDC),
+      overnightIndex_(overnightIndex), spread_(spread){
 
           initialize(schedule);
 
