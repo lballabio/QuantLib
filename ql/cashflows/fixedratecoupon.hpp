@@ -111,9 +111,9 @@ namespace QuantLib {
         std::vector<Real> notionals_;
         std::vector<InterestRate> couponRates_;
         DayCounter firstPeriodDC_;
+        Calendar paymentCalendar_;
         BusinessDayConvention paymentAdjustment_;
         Natural paymentLag_;
-        Calendar paymentCalendar_;
         Period exCouponPeriod_;
         Calendar exCouponCalendar_;
         BusinessDayConvention exCouponAdjustment_;
