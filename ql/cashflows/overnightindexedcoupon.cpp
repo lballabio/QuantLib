@@ -181,8 +181,8 @@ namespace QuantLib {
 
     OvernightLeg::OvernightLeg(const Schedule& schedule,
                                const shared_ptr<OvernightIndex>& i)
-    : schedule_(schedule), overnightIndex_(i), paymentAdjustment_(Following),
-      paymentLag_(0), paymentCalendar_(schedule.calendar()) {}
+    : schedule_(schedule), overnightIndex_(i), paymentCalendar_(schedule.calendar(),
+      paymentAdjustment_(Following), paymentLag_(0)) {}
 
     OvernightLeg& OvernightLeg::withNotionals(Real notional) {
         notionals_ = vector<Real>(1, notional);
