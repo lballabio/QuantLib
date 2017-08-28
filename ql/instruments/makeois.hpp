@@ -82,8 +82,8 @@ namespace QuantLib {
 
         Frequency paymentFrequency_;
         Calendar paymentCalendar_;
-        Natural paymentLag_;
         BusinessDayConvention paymentAdjustment_;
+        Natural paymentLag_;
 
         DateGeneration::Rule rule_;
         bool endOfMonth_, isDefaultEOM_;

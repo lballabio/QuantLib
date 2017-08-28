@@ -42,8 +42,8 @@ namespace QuantLib {
       paymentFrequency_(schedule.tenor().frequency()),
       fixedRate_(fixedRate), fixedDC_(fixedDC),
       overnightIndex_(overnightIndex), spread_(spread),
-      paymentLag_(paymentLag), paymentAdjustment_(paymentAdjustment),
-      paymentCalendar_(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar) {
+      paymentCalendar_(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar),
+      paymentAdjustment_(paymentAdjustment), paymentLag_(paymentLag) {
 
           initialize(schedule);
 
@@ -64,8 +64,8 @@ namespace QuantLib {
       paymentFrequency_(schedule.tenor().frequency()),
       fixedRate_(fixedRate), fixedDC_(fixedDC),
       overnightIndex_(overnightIndex), spread_(spread),
-      paymentLag_(paymentLag), paymentAdjustment_(paymentAdjustment),
-      paymentCalendar_(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar) {
+      paymentCalendar_(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar),
+      paymentAdjustment_(paymentAdjustment), paymentLag_(paymentLag){
 
           initialize(schedule);
 

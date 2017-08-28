@@ -100,9 +100,9 @@ namespace QuantLib {
         std::vector<Real> nominals_;
 
         Frequency paymentFrequency_;
-        Natural paymentLag_;
-        BusinessDayConvention paymentAdjustment_;
         Calendar paymentCalendar_;
+        BusinessDayConvention paymentAdjustment_;
+        Natural paymentLag_;
 
         //Schedule schedule_;
 

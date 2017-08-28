@@ -38,9 +38,9 @@ namespace QuantLib {
       settlementDays_(2),
       calendar_(overnightIndex->fixingCalendar()),
       paymentFrequency_(Annual),
-      paymentLag_(0),
-      paymentAdjustment_(Following),
       paymentCalendar_(Calendar()),
+      paymentAdjustment_(Following),
+      paymentLag_(0),
       rule_(DateGeneration::Backward),
       // any value here for endOfMonth_ would not be actually used
       isDefaultEOM_(true),
