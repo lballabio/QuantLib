@@ -23,15 +23,6 @@
 
 using namespace std;
 
-namespace {
-
-// Probability density function of standard normal distribution
-inline double pdf(double x) {
-    return (1/sqrt(2.0*M_PI))*exp(-pow(x,2)/2.0);
-}
-
-}
-
 namespace QuantLib {
 
     KirkSpreadOptionEngine::KirkSpreadOptionEngine(
@@ -89,6 +80,7 @@ namespace QuantLib {
         Real d1 = (log(F)+ 0.5*pow(sigma,2)*t) / (sigma*sqrt(t));
         Real d2 = d1 - sigma*sqrt(t);
 
+        NormalDistribution pdf;
         CumulativeNormalDistribution cum;
         Real Nd1 = cum(d1);
         Real Nd2 = cum(d2);
