@@ -34,7 +34,6 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/time/calendars/all.hpp>
 
 namespace QuantLib {
 
