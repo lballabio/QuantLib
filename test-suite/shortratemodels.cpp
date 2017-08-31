@@ -427,13 +427,18 @@ void ShortRateModelTest::testFuturesConvexityBias() {
     }
 }
 
-test_suite* ShortRateModelTest::suite() {
+test_suite* ShortRateModelTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Short-rate model tests");
+
     suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testCachedHullWhite));
     suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testCachedHullWhiteFixedReversion));
     suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testCachedHullWhite2));
-    suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testSwaps));
     suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testFuturesConvexityBias));
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testSwaps));
+    }
+
     return suite;
 }
 

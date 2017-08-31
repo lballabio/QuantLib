@@ -38,18 +38,6 @@ namespace QuantLib {
                          VanillaOption::arguments,
                          VanillaOption::results>(model) {init_ = false;}
 
-    namespace {
-        template <int n>
-        inline Real pow(Real x) {
-            return x*pow<n-1>(x);
-        }
-
-        template <>
-        inline Real pow<1>(Real x) {
-            return x;
-        }
-    }
-
     void AnalyticGJRGARCHEngine::calculate() const {
         // this is a european option pricer
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
@@ -100,34 +88,34 @@ namespace QuantLib {
         if (!init_ || b1 != b1_ || b2 != b2_ || b3 != b3_ || la != la_) {
             // compute the useful coefficients
             m1 = b1 + (b2+b3*N)*(1+la*la) + b3*la*n; // ok
-            m2 = b1*b1 + b2*b2*(pow<4>(la)+6*la*la+3)
-                + (b3*b3+2*b2*b3)*( pow<4>(la)*N
-                                   +pow<3>(la)*n+6*la*la*N+5*la*n+3*N)
+            m2 = b1*b1 + b2*b2*(pow(la,4)+6*la*la+3)
+                + (b3*b3+2*b2*b3)*( pow(la,4)*N
+                                   +pow(la,3)*n+6*la*la*N+5*la*n+3*N)
                 + 2*b1*b2*(1+la*la) + 2*b3*b1*(la*la*N+la*n+N); // ok
-            m3 = pow<3>(b1)
-                + (3*b3*b3*b1+6*b1*b2*b3)*(pow<3>(la)*n+5*la*n+3*N
-                                           +pow<4>(la)*N+6*la*la*N)
-                + pow<3>(b2)*(15+pow<6>(la)+15*pow<4>(la)+45*la*la)
-                + (pow<3>(b3)+3*b2*b2*b3+3*b3*b3*b2)
-                *(pow<5>(la)*n+14*pow<3>(la)*n+33*la*n+15*N
-                  +15*pow<4>(la)*N+45*la*la*N+pow<6>(la)*N)
+            m3 = pow(b1,3)
+                + (3*b3*b3*b1+6*b1*b2*b3)*(pow(la,3)*n+5*la*n+3*N
+                                           +pow(la,4)*N+6*la*la*N)
+                + pow(b2,3)*(15+pow(la,6)+15*pow(la,4)+45*la*la)
+                + (pow(b3,3)+3*b2*b2*b3+3*b3*b3*b2)
+                *(pow(la,5)*n+14*pow(la,3)*n+33*la*n+15*N
+                  +15*pow(la,4)*N+45*la*la*N+pow(la,6)*N)
                 + 3*b1*b1*b2*(1+la*la) + 3*b1*b1*b3*(la*n+N+la*la*N)
-                + 3*b1*b2*b2*(3+pow<4>(la)+6*la*la); // ok
+                + 3*b1*b2*b2*(3+pow(la,4)+6*la*la); // ok
             v1 = -2*b2*la - 2*b3*(n+la*N); // ok
-            v2 = -4*b2*b2*(3*la+pow<3>(la))
-                - (4*b3*b3+8*b2*b3)*(la*la*n+2*n+pow<3>(la)*N+3*la*N)
+            v2 = -4*b2*b2*(3*la+pow(la,3))
+                - (4*b3*b3+8*b2*b3)*(la*la*n+2*n+pow(la,3)*N+3*la*N)
                 - 4*b1*b2*la - 4*b3*b1*(n+la*N); // ok
-            v3 = -12*b3*b1*(b3+2*b2)*(la*la*n+2*n+pow<3>(la)*N+3*la*N)
-                - 6*pow<3>(b2)*la*(15+pow<4>(la)+10*la*la)
+            v3 = -12*b3*b1*(b3+2*b2)*(la*la*n+2*n+pow(la,3)*N+3*la*N)
+                - 6*pow(b2,3)*la*(15+pow(la,4)+10*la*la)
                 - 6*b3*(b3*b3+3*b2*b2+3*b3*b2)
-                *(9*la*la*n+8*n+15*la*N+pow<4>(la)*n+pow<5>(la)*N
-                  +10*pow<3>(la)*N)
+                *(9*la*la*n+8*n+15*la*N+pow(la,4)*n+pow(la,5)*N
+                  +10*pow(la,3)*N)
                 - 6*b1*b1*b2*la - 6*b3*b1*b1*(n+la*N)
                 - 12*b2*b2*b1*(3*la+std::pow(la,3)); // ok
             z1 = b1 + b2*(3+la*la) + b3*(la*n+3*N+la*la*N); // ok
-            z2 = b1*b1 + b2*b2*(15+pow<4>(la)+18*la*la)
-                + (b3*b3+2*b2*b3)*(pow<3>(la)*n+17*la*n+15*N
-                                   +pow<4>(la)*N+18*la*la*N)
+            z2 = b1*b1 + b2*b2*(15+pow(la,4)+18*la*la)
+                + (b3*b3+2*b2*b3)*(pow(la,3)*n+17*la*n+15*N
+                                   +pow(la,4)*N+18*la*la*N)
                 + 2*b1*b2*(3+la*la) + 2*b3*b1*(la*n+3*N+la*la*N); // ok
             x1 = -6*b2*la - 2*b3*(4*n+3*la*N); // ok
             b1_ = b1; b2_ = b2; b3_ = b3; la_ = la;
@@ -169,7 +157,7 @@ namespace QuantLib {
                                   - 2*m1*m1im2i/(m1-m2))/(1-m1)
                     + 2*b0*m1*m1im2i*h1/(m1-m2)
                     + m2i*h1*h1; // ko
-                Real Eh3 = pow<3>(b0)*(
+                Real Eh3 = pow(b0,3)*(
                     (1-m3i)/(1-m3)
                     + 3*m2*((1-m3i)/(1-m3)-m2im3i/(m2-m3))/(1-m2) 
                     + 3*m1*((1-m3i)/(1-m3)-m1im3i/(m1-m3))/(1-m1) 
@@ -239,13 +227,13 @@ namespace QuantLib {
             ST2 = 3*sEh1_2eh;
             ST3 = 2*sEhh1_2eh + (2*sEh1_2ehh + (2*sEh3_2eh + sEh1_2eh2));
             ST4 = sEhe2h + (sEhh + (sEh2 + 2*sEh1_2eh1_2eh)); 
-            ex3 = pow<3>(T*r) - 1.5*T*T*r*r*sEh 
+            ex3 = pow(T*r,3) - 1.5*T*T*r*r*sEh 
                 + 3*T*r*(SD1/4+SD2-SD3) + (ST2-ST1/8+3*ST3/4-3*ST4/2);
             SQ2 = 6*sEhe2h + (12*sEh1_2eh1_2eh + 3*sEh2);     
             SQ4 = 2*sEhhh + 2*sEhh2;
             SQ5 = 3*sEhh1_2eh + 3*sEh1_2ehh + 3*sEh3_2eh 
                 + 3*sEh1_2eh2 + sEh3_2e3h;
-            ex4 = pow<4>(T*r) - 2*pow<3>(T*r)*sEh 
+            ex4 = pow(T*r,4) - 2*pow(T*r,3)*sEh 
                 + 6*T*T*r*r*(SD1/4+SD2-SD3) + T*r*(4*ST2-ST1/2+3*ST3-6*ST4) 
                 + (SQ2+3*SQ4/2-2*SQ5);
             
@@ -256,7 +244,7 @@ namespace QuantLib {
             // 4th central moment mu4
             k4 = ex4 + 6*ex*ex*ex2 - 3*ex*ex*ex*ex - 4*ex*ex3;
             k3 /= std::pow(sigma,1.5); // 3rd standardized moment, ie skewness 
-            k4 /= pow<2>(sigma); // 4th standardized moment, ie kurtosis
+            k4 /= pow(sigma,2); // 4th standardized moment, ie kurtosis
             ex_ = ex; sigma_ = sigma; 
             k3_ = k3; k4_ = k4; r_ = r; T_ = T; b0_ = b0; h1_ = h1;
         } else {

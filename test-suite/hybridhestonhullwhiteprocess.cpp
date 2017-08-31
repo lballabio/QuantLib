@@ -1194,7 +1194,7 @@ namespace {
       private:
         class Impl : public Constraint::Impl {
           public:
-            Impl(Real equityShortRateCorr)
+            explicit Impl(Real equityShortRateCorr)
             : equityShortRateCorr_(equityShortRateCorr) {}
 
             bool test(const Array& params) const {
@@ -1207,7 +1207,8 @@ namespace {
             const Real equityShortRateCorr_;
         };
       public:
-        HestonHullWhiteCorrelationConstraint(Real equityShortRateCorr)
+        explicit HestonHullWhiteCorrelationConstraint(
+            Real equityShortRateCorr)
         : Constraint(boost::shared_ptr<Constraint::Impl>(
              new HestonHullWhiteCorrelationConstraint::Impl(
                                                      equityShortRateCorr))) {}
@@ -1246,7 +1247,7 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
     const Handle<YieldTermStructure> qTS(flatRate(0.02, dc));
     Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
 
-    // starting point the the pure Heston calibration
+    // starting point of the pure Heston calibration
     const Real start_v0    = 0.2*0.2;
     const Real start_theta = start_v0;
     const Real start_kappa = 0.5;
@@ -1500,24 +1501,19 @@ void HybridHestonHullWhiteProcessTest::testH1HWPricingEngine() {
     }
 }
     
-test_suite* HybridHestonHullWhiteProcessTest::suite() {
+test_suite* HybridHestonHullWhiteProcessTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Hybrid Heston-HullWhite tests");
 
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testBsmHullWhiteEngine));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testCompareBsmHWandHestonHW));
     suite->add(QUANTLIB_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testZeroBondPricing));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testMcVanillaPricing));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testMcPureHestonPricing));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(
       &HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing));
     suite->add(QUANTLIB_TEST_CASE(
@@ -1527,13 +1523,19 @@ test_suite* HybridHestonHullWhiteProcessTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testFdmHestonHullWhiteEngine));
     suite->add(QUANTLIB_TEST_CASE(
-        &HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration));
-    suite->add(QUANTLIB_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testBsmHullWhitePricing));
     suite->add(QUANTLIB_TEST_CASE(
-        &HybridHestonHullWhiteProcessTest::testSpatialDiscretizatinError));
-    suite->add(QUANTLIB_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testH1HWPricingEngine));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &HybridHestonHullWhiteProcessTest::testSpatialDiscretizatinError));
+    }
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration));
+    }
 
     return suite;
 }

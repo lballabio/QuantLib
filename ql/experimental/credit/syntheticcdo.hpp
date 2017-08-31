@@ -24,6 +24,10 @@
 #ifndef quantlib_synthetic_cdo_hpp
 #define quantlib_synthetic_cdo_hpp
 
+#include <ql/qldefines.hpp>
+
+#ifndef QL_PATCH_SOLARIS
+
 #include <ql/instrument.hpp>
 #include <ql/default.hpp>
 #include <ql/time/schedule.hpp>
@@ -106,11 +110,11 @@ namespace QuantLib {
 
         // Review: No accrual settlement flag. No separate upfront payment date.
         // Review: Forward start case.
-        /**
-            @param notional Tranche notional. If the notional exceeds the basket
-                inception tranche notional the cdo is leveraged by that factor.
+        /*! If the notional exceeds the basket inception tranche
+            notional, the cdo is leveraged by that factor.
 
-            \todo: allow for extra payment flags, arbitrary upfrt pay date,....
+            \todo: allow for extra payment flags, arbitrary upfront
+                   payment date...
         */
         SyntheticCDO (const boost::shared_ptr<Basket>& basket,
                       Protection::Side side,
@@ -224,5 +228,7 @@ namespace QuantLib {
                              SyntheticCDO::results> { };
 
 }
+
+#endif
 
 #endif

@@ -35,7 +35,7 @@ namespace QuantLib {
 
     class FdmMesher {
       public:
-        FdmMesher(const boost::shared_ptr<FdmLinearOpLayout>& layout)
+        explicit FdmMesher(const boost::shared_ptr<FdmLinearOpLayout>& layout)
         : layout_(layout) {}
         virtual ~FdmMesher() {}
 

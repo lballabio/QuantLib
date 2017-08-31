@@ -68,7 +68,7 @@ namespace QuantLib {
             boost::function0<void> test_;
           public:
             template <class F>
-            quantlib_test_case(F test) : test_(test) {}
+            explicit quantlib_test_case(F test) : test_(test) {}
             void operator()() const {
                 Date before = Settings::instance().evaluationDate();
                 BOOST_CHECK(true);
@@ -181,7 +181,7 @@ namespace QuantLib {
 
     template <class T>
     struct vector_streamer {
-        vector_streamer(const std::vector<T>& v) : v(v) {}
+        explicit vector_streamer(const std::vector<T>& v) : v(v) {}
         std::vector<T> v;
     };
 

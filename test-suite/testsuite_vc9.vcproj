@@ -1220,6 +1220,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\normalclvmodel.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\nthtodefault.cpp"
 				>
 			</File>
@@ -1321,6 +1325,10 @@
 			</File>
 			<File
 				RelativePath="spreadoption.cpp"
+				>
+			</File>
+			<File
+				RelativePath="squarerootclvmodel.cpp"
 				>
 			</File>
 			<File
@@ -1777,6 +1785,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\normalclvmodel.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\nthtodefault.hpp"
 				>
 			</File>
@@ -1881,7 +1893,15 @@
 				>
 			</File>
 			<File
+				RelativePath="speedlevel.hpp"
+				>
+			</File>
+			<File
 				RelativePath="spreadoption.hpp"
+				>
+			</File>
+			<File
+				RelativePath="squarerootclvmodel.hpp"
 				>
 			</File>
 			<File

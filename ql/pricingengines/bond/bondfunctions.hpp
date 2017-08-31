@@ -27,9 +27,11 @@
 #ifndef quantlib_bond_functions_hpp
 #define quantlib_bond_functions_hpp
 
+#include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/duration.hpp>
 #include <ql/cashflow.hpp>
 #include <ql/interestrate.hpp>
+#include <ql/instruments/bond.hpp>
 #include <boost/shared_ptr.hpp>
 
 namespace QuantLib {
@@ -153,6 +155,31 @@ namespace QuantLib {
                           Real accuracy = 1.0e-10,
                           Size maxIterations = 100,
                           Rate guess = 0.05);
+        template <typename Solver>
+        static Rate yield(Solver solver,
+                          const Bond& bond,
+                          Real cleanPrice,
+                          const DayCounter& dayCounter,
+                          Compounding compounding,
+                          Frequency frequency,
+                          Date settlementDate = Date(),
+                          Real accuracy = 1.0e-10,
+                          Rate guess = 0.05) {
+            if (settlementDate == Date())
+                settlementDate = bond.settlementDate();
+
+            QL_REQUIRE(BondFunctions::isTradable(bond, settlementDate),
+                       "non tradable at " << settlementDate <<
+                       " (maturity being " << bond.maturityDate() << ")");
+
+            Real dirtyPrice = cleanPrice + bond.accruedAmount(settlementDate);
+            dirtyPrice /= 100.0 / bond.notional(settlementDate);
+
+            return CashFlows::yield<Solver>(solver, bond.cashflows(),
+                                            dirtyPrice, dayCounter, compounding,
+                                            frequency, false, settlementDate,
+                                            settlementDate, accuracy, guess);
+        }
         static Time duration(const Bond& bond,
                              const InterestRate& yield,
                              Duration::Type type = Duration::Modified,

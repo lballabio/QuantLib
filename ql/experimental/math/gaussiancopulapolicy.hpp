@@ -69,8 +69,8 @@ namespace QuantLib {
             return initTraits();
         }
 
-        /*! Cumulative probability of the indexed latent variable 
-            @param iVariable The index of the latent variable requested.
+        /*! Cumulative probability of a given latent variable 
+            The iVariable parameter is the index of the requested variable.
         */
         Probability cumulativeY(Real val, Size iVariable) const {
             return cumulative_(val);

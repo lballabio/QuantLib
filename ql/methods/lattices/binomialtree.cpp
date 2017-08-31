@@ -99,10 +99,11 @@ namespace QuantLib {
     LeisenReimer::LeisenReimer(
                         const boost::shared_ptr<StochasticProcess1D>& process,
                         Time end, Size steps, Real strike)
-    : BinomialTree<LeisenReimer>(process, end, (steps%2 ? steps : steps+1)) {
+    : BinomialTree<LeisenReimer>(process, end,
+                                 ((steps%2) ? steps : (steps+1))) {
 
         QL_REQUIRE(strike>0.0, "strike must be positive");
-        Size oddSteps = (steps%2 ? steps : steps+1);
+        Size oddSteps = ((steps%2) ? steps : (steps+1));
         Real variance = process->variance(0.0, x0_, end);
         Real ermqdt = std::exp(driftPerStep_ + 0.5*variance/oddSteps);
         Real d2 = (std::log(x0_/strike) + driftPerStep_*oddSteps ) /
@@ -139,10 +140,10 @@ namespace QuantLib {
 
     Joshi4::Joshi4(const boost::shared_ptr<StochasticProcess1D>& process,
                    Time end, Size steps, Real strike)
-    : BinomialTree<Joshi4>(process, end, (steps%2 ? steps : steps+1)) {
+    : BinomialTree<Joshi4>(process, end, (steps%2) ? steps : (steps+1)) {
 
         QL_REQUIRE(strike>0.0, "strike must be positive");
-        Size oddSteps = (steps%2 ? steps : steps+1);
+        Size oddSteps = (steps%2) ? steps : (steps+1);
         Real variance = process->variance(0.0, x0_, end);
         Real ermqdt = std::exp(driftPerStep_ + 0.5*variance/oddSteps);
         Real d2 = (std::log(x0_/strike) + driftPerStep_*oddSteps ) /

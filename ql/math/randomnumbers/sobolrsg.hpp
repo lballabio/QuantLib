@@ -37,10 +37,10 @@ namespace QuantLib {
 
         The implementation relies on primitive polynomials modulo two
         from the book "Monte Carlo Methods in Finance" by Peter
-        Jäckel.
+        JÃ¤ckel.
 
         21 200 primitive polynomials modulo two are provided in QuantLib.
-        Jäckel has calculated 8 129 334 polynomials: if you need that many
+        JÃ¤ckel has calculated 8 129 334 polynomials: if you need that many
         dimensions you can replace the primitivepolynomials.cpp file included
         in QuantLib with the one provided in the CD of the "Monte Carlo
         Methods in Finance" book.
@@ -62,7 +62,7 @@ namespace QuantLib {
         14:88-100. These values satisfy Property A for d<=20 and d =
         23, 31, 33, 34, 37; Property A' holds for d<=6.
 
-        Jäckel provides in his book (section 8.3) initialization
+        JÃ¤ckel provides in his book (section 8.3) initialization
         numbers up to dimension 32. Coefficients for d<=8 are the same
         as in Bradley-Fox, so Property A' holds for d<=6 but Property
         A holds for d<=32.

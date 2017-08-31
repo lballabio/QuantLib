@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2007 Cristina Duminuco
  Copyright (C) 2006 Ferdinando Ametrano
- Copyright (C) 2006 François du Vignaud
+ Copyright (C) 2006 FranÃ§ois du Vignaud
  Copyright (C) 2006 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library

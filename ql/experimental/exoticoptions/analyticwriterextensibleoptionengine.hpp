@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2011 Master IMAFA - Polytech'Nice Sophia - Université de Nice Sophia Antipolis
+ Copyright (C) 2011 Master IMAFA - Polytech'Nice Sophia - UniversitÃ© de Nice Sophia Antipolis
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,7 +33,7 @@ namespace QuantLib {
     class AnalyticWriterExtensibleOptionEngine
         : public WriterExtensibleOption::engine {
       public:
-        AnalyticWriterExtensibleOptionEngine(
+        explicit AnalyticWriterExtensibleOptionEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
         void calculate() const;
       private:

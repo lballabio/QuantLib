@@ -249,7 +249,6 @@ namespace QuantLib
 
         std::vector<Real> displacedImpliedVols(numberCaplets);
         std::vector<Real> annuities(numberCaplets);
-        std::vector<Real> capletPrices(numberCaplets);
         std::vector<Real> initialRates(numberCaplets);
         std::vector<Real> expiries(numberCaplets);
 
@@ -288,8 +287,6 @@ namespace QuantLib
                 annuity,
                 displacement
                 );
-
-            capletPrices[capletIndex] = capletPrice;
 
             capPrice += capletPrice;
 

@@ -71,10 +71,6 @@ namespace QuantLib {
                 std::max(Size(2), Size(gridTimes.back()*timeStepsPerYear)));
     }
 
-    void HestonSLVMCModel::update() {
-        notifyObservers();
-    }
-
     boost::shared_ptr<HestonProcess> HestonSLVMCModel::hestonProcess() const {
         return hestonModel_->process();
     }

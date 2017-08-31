@@ -217,7 +217,7 @@ namespace QuantLib {
 
     inline Array::Array(Size size, Real value, Real increment)
     : data_(size ? new Real[size] : (Real*)(0)), n_(size) {
-        for (iterator i=begin(); i!=end(); i++,value+=increment)
+        for (iterator i=begin(); i!=end(); ++i, value+=increment)
             *i = value;
     }
 

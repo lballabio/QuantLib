@@ -40,7 +40,7 @@ template <class M> void laplaceInterpolation(M &A, Real relTol = 1E-6) {
 
     struct f_A {
         const SparseMatrix &g;
-        f_A(const SparseMatrix &g) : g(g) {}
+        explicit f_A(const SparseMatrix &g) : g(g) {}
         Disposable<Array> operator()(const Array &x) const {
             return prod(g, x);
         }

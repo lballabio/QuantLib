@@ -30,12 +30,17 @@ namespace QuantLib {
         const Handle<GeneralizedBlackScholesProcess>& p2,
         const Real correlation,
         const FdmSolverDesc& solverDesc,
-        const FdmSchemeDesc& schemeDesc)
+        const FdmSchemeDesc& schemeDesc,
+        bool localVol,
+        Real illegalLocalVolOverwrite)
     : p1_(p1),
       p2_(p2),
       correlation_(correlation),
       solverDesc_(solverDesc),
-      schemeDesc_(schemeDesc) {
+      schemeDesc_(schemeDesc),
+      localVol_(localVol),
+      illegalLocalVolOverwrite_(illegalLocalVolOverwrite) {
+
         registerWith(p1_);
         registerWith(p2_);
     }
@@ -48,7 +53,9 @@ namespace QuantLib {
                                         p1_.currentLink(), 
                                         p2_.currentLink(), 
                                         correlation_,
-                                        solverDesc_.maturity));
+                                        solverDesc_.maturity,
+                                        localVol_,
+                                        illegalLocalVolOverwrite_));
 
         solver_ = boost::shared_ptr<Fdm2DimSolver>(
                             new Fdm2DimSolver(solverDesc_, schemeDesc_, op));
@@ -106,5 +113,14 @@ namespace QuantLib {
         
         return (solver_->derivativeYY(x, y)
                 -solver_->derivativeY(x, y))/(v*v);
+    }
+
+    Real Fdm2dBlackScholesSolver::gammaXYat(Real u, Real v) const {
+        calculate();
+
+        const Real x = std::log(u);
+        const Real y = std::log(v);
+
+        return solver_->derivativeXY(x, y)/(u*v);
     }
 }

@@ -63,7 +63,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom>
     class MakeMCAmericanPathEngine {
       public:
-        MakeMCAmericanPathEngine(
+        explicit MakeMCAmericanPathEngine(
                             const boost::shared_ptr<StochasticProcessArray>&);
         // named parameters
         MakeMCAmericanPathEngine& withSteps(Size steps);

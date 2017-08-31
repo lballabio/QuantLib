@@ -179,7 +179,6 @@ void CovarianceTest::testCovariance() {
         s.add(temp, weights[i]);
     }
 
-    std::vector<Real> m = s.mean();
     std::vector<Real> std = s.standardDeviation();
     Matrix calcCov  =  s.covariance();
     Matrix calcCor  =  s.correlation();

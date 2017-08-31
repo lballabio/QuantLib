@@ -76,7 +76,7 @@ namespace QuantLib {
                 // Mid-autumn festival
                 || (d == 29 && m == September)
                 // Chung Yeung
-                || (d == 29 && m == September))
+                || (d == 22 && m == October))
                 return false;
         }
 

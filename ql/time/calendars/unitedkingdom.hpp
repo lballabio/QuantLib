@@ -22,8 +22,8 @@
     \brief UK calendars
 */
 
-#ifndef quantlib_united_kindgom_calendar_hpp
-#define quantlib_united_kindgom_calendar_hpp
+#ifndef quantlib_united_kingdom_calendar_hpp
+#define quantlib_united_kingdom_calendar_hpp
 
 #include <ql/time/calendar.hpp>
 

@@ -53,6 +53,8 @@ namespace QuantLib {
         const boost::shared_ptr<IborIndex>& iborIndex() const {
             return iborIndex_;
         }
+        //! this is dependent on QL_USE_INDEXED_COUPON
+        const Date& fixingEndDate() const { return fixingEndDate_; }
         //@}
         //! \name FloatingRateCoupon interface
         //@{

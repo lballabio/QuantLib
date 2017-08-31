@@ -56,7 +56,7 @@ namespace {
 
     class OneDimensionalPolynomialDegreeN : public CostFunction {
       public:
-        OneDimensionalPolynomialDegreeN(const Array& coefficients)
+        explicit OneDimensionalPolynomialDegreeN(const Array& coefficients)
         : coefficients_(coefficients),
           polynomialDegree_(coefficients.size()-1) {}
 
@@ -553,11 +553,17 @@ void OptimizersTest::testDifferentialEvolution() {
     }
 }
 
-test_suite* OptimizersTest::suite() {
+test_suite* OptimizersTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Optimizers tests");
+
     suite->add(QUANTLIB_TEST_CASE(&OptimizersTest::test));
     suite->add(QUANTLIB_TEST_CASE(&OptimizersTest::nestedOptimizationTest));
-    suite->add(QUANTLIB_TEST_CASE(&OptimizersTest::testDifferentialEvolution));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &OptimizersTest::testDifferentialEvolution));
+    }
+
     return suite;
 }
 
