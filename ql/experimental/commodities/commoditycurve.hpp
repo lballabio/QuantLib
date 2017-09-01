@@ -30,6 +30,7 @@
 #include <ql/experimental/commodities/exchangecontract.hpp>
 #include <ql/currency.hpp>
 #include <ql/math/interpolations/forwardflatinterpolation.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 
 namespace QuantLib {
 
