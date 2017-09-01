@@ -252,6 +252,78 @@ namespace QuantLib {
                 return false;
         }
 
+        if (y == 2016) {
+           if (// Lunar New Year
+              ((d == 8 && m == February) || (d == 9 && m == February) || (d == 10 && m == February))
+              // Ching Ming Festival
+              || (d == 4 && m == April)
+              // Tuen Ng festival
+              || (d == 9 && m == June)
+              // Mid-autumn festival
+              || (d == 16 && m == September)
+              // Chung Yeung festival
+              || (d == 10 && m == October))
+              return false;
+        }
+
+        if (y == 2017) {
+           if (// Lunar New Year
+              ((d == 30 && m == January) || (d == 31 && m == January))
+              // Ching Ming Festival
+              || (d == 4 && m == April)
+              // Buddha's birthday
+              || (d == 3 && m == May)
+              // Tuen Ng festival
+              || (d == 30 && m == May)
+              // Mid-autumn festival
+              || (d == 5 && m == October))
+              return false;
+        }
+
+        if (y == 2018) {
+           if (// Lunar New Year
+              ((d == 16 && m == February) || (d == 19 && m == February))
+              // Ching Ming Festival
+              || (d == 5 && m == April)
+              // Buddha's birthday
+              || (d == 22 && m == May)
+              // Tuen Ng festival
+              || (d == 18 && m == June)
+              // Mid-autumn festival
+              || (d == 25 && m == September)
+              // Chung Yeung festival
+              || (d == 17 && m == October))
+              return false;
+        }
+
+        if (y == 2019) {
+           if (// Lunar New Year
+              ((d == 5 && m == February) || (d == 6 && m == February) || (d == 7 && m == February))
+              // Ching Ming Festival
+              || (d == 5 && m == April)
+              // Tuen Ng festival
+              || (d == 7 && m == June)
+              // Chung Yeung festival
+              || (d == 7 && m == October))
+              return false;
+        }
+
+        if (y == 2020) {
+           if (// Lunar New Year
+              ((d == 27 && m == January) || (d == 28 && m == January))
+              // Ching Ming Festival
+              || (d == 4 && m == April)
+              // Buddha's birthday
+              || (d == 30 && m == April)
+              // Tuen Ng festival
+              || (d == 25 && m == June)
+              // Mid-autumn festival
+              || (d == 2 && m == October)
+              // Chung Yeung festival
+              || (d == 26 && m == October))
+              return false;
+        }
+
         return true;
     }
 
