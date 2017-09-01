@@ -31,6 +31,7 @@
 #include <ql/methods/finitedifferences/schemes/expliciteulerscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/modifiedcraigsneydscheme.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
+#include <boost/make_shared.hpp>
 
 namespace QuantLib {
     

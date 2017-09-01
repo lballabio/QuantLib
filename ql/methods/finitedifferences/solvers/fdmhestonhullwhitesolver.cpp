@@ -21,6 +21,7 @@
 #include <ql/methods/finitedifferences/utilities/fdmquantohelper.hpp>
 #include <ql/methods/finitedifferences/operators/fdmhestonhullwhiteop.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmhestonhullwhitesolver.hpp>
+#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
