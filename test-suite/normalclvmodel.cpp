@@ -110,7 +110,7 @@ void NormalCLVModelTest::testBSCumlativeDistributionFunction() {
 }
 
 void NormalCLVModelTest::testHestonCumlativeDistributionFunction() {
-    BOOST_TEST_MESSAGE("Testing Heston cumulative distribution function ...");
+    BOOST_TEST_MESSAGE("Testing Heston cumulative distribution function...");
 
     SavedSettings backup;
 
@@ -165,7 +165,8 @@ void NormalCLVModelTest::testHestonCumlativeDistributionFunction() {
 
 
 void NormalCLVModelTest::testIllustrative1DExample() {
-    BOOST_TEST_MESSAGE("Testing illustrative 1d example of NormalCLVModel ...");
+    BOOST_TEST_MESSAGE(
+        "Testing illustrative 1D example of normal CLV model...");
 
     SavedSettings backup;
 
@@ -296,7 +297,7 @@ namespace {
 }
 
 void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
-    BOOST_TEST_MESSAGE("Testing Monte-Carlo BS option pricing ...");
+    BOOST_TEST_MESSAGE("Testing Monte Carlo BS option pricing...");
 
     SavedSettings backup;
 
@@ -393,7 +394,7 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
 
 void NormalCLVModelTest::testMoustacheGraph() {
     BOOST_TEST_MESSAGE(
-        "Testing Double no Touch pricing with Normal CLV Model...");
+        "Testing double no-touch pricing with normal CLV model...");
 
     SavedSettings backup;
 
@@ -559,7 +560,7 @@ void NormalCLVModelTest::testMoustacheGraph() {
     }
 }
 
-test_suite* NormalCLVModelTest::experimental() {
+test_suite* NormalCLVModelTest::experimental(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("NormalCLVModel tests");
 
     suite->add(QUANTLIB_TEST_CASE(
@@ -570,8 +571,10 @@ test_suite* NormalCLVModelTest::experimental() {
         &NormalCLVModelTest::testIllustrative1DExample));
     suite->add(QUANTLIB_TEST_CASE(
         &NormalCLVModelTest::testMonteCarloBSOptionPricing));
-    suite->add(QUANTLIB_TEST_CASE(
-        &NormalCLVModelTest::testMoustacheGraph));
 
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &NormalCLVModelTest::testMoustacheGraph));
+    }
     return suite;
 }

@@ -182,7 +182,7 @@ namespace QuantLib {
           private:
             boost::shared_ptr<FloatingRateCouponPricer> pricer_;
           public:
-            PricerSetter(
+            explicit PricerSetter(
                     const boost::shared_ptr<FloatingRateCouponPricer>& pricer)
             : pricer_(pricer) {}
 

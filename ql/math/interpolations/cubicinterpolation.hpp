@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
+ Copyright (C) 2001, 2002, 2003 Nicolas Di CÃ©sarÃ©
  Copyright (C) 2004, 2008, 2009, 2011 Ferdinando Ametrano
  Copyright (C) 2009 Sylvain Bertrand
  Copyright (C) 2013 Peter Caspers
@@ -40,7 +40,7 @@ namespace QuantLib {
 
         class CoefficientHolder {
           public:
-            CoefficientHolder(Size n)
+            explicit CoefficientHolder(Size n)
             : n_(n), primitiveConst_(n-1), a_(n-1), b_(n-1), c_(n-1),
               monotonicityAdjustments_(n) {}
             virtual ~CoefficientHolder() {}

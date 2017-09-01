@@ -647,7 +647,7 @@ namespace {
 
 void DistributionTest::testInvCDFviaStochasticCollocation() {
     BOOST_TEST_MESSAGE(
-        "Testing inverse CDF based on testInvCDFviaStochasticCollocation...");
+        "Testing inverse CDF based on stochastic collocation...");
 
     const Real k = 3.0;
     const Real lambda = 1.0;
@@ -710,8 +710,9 @@ void DistributionTest::testInvCDFviaStochasticCollocation() {
     }
 }
 
-test_suite* DistributionTest::suite() {
+test_suite* DistributionTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Distribution tests");
+
     suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testNormal));
     suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testBivariate));
     suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testPoisson));
@@ -721,9 +722,12 @@ test_suite* DistributionTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
                           &DistributionTest::testBivariateCumulativeStudent));
     suite->add(QUANTLIB_TEST_CASE(
-               &DistributionTest::testBivariateCumulativeStudentVsBivariate));
-    suite->add(QUANTLIB_TEST_CASE(
                    &DistributionTest::testInvCDFviaStochasticCollocation));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &DistributionTest::testBivariateCumulativeStudentVsBivariate));
+    }
 
     return suite;
 }

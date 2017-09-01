@@ -30,7 +30,7 @@ namespace QuantLib {
             const Calendar& cal,
             const std::vector<Period>& optionTenors,
             const std::vector<Handle<Quote> >& volsHandles,
-            const std::vector<bool> inclusionInInterpolationFlag,
+            const std::vector<bool>& inclusionInInterpolationFlag,
             BusinessDayConvention bdc,
             const DayCounter& dc)
     : BlackAtmVolCurve(settlDays, cal, bdc, dc),

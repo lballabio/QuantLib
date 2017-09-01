@@ -109,7 +109,8 @@ namespace {
 
 void BermudanSwaptionTest::testCachedValues() {
 
-    BOOST_TEST_MESSAGE("Testing Bermudan swaption HW model against cached values...");
+    BOOST_TEST_MESSAGE(
+        "Testing Bermudan swaption with HW model against cached values...");
 
     CommonVars vars;
 
@@ -230,7 +231,8 @@ void BermudanSwaptionTest::testCachedValues() {
 }
 
 void BermudanSwaptionTest::testCachedG2Values() {
-    BOOST_TEST_MESSAGE("Testing Bermudan swaption G2 model against cached values...");
+    BOOST_TEST_MESSAGE(
+        "Testing Bermudan swaption with G2 model against cached values...");
 
     CommonVars vars;
 
@@ -296,10 +298,16 @@ void BermudanSwaptionTest::testCachedG2Values() {
     }
 }
 
-test_suite* BermudanSwaptionTest::suite() {
+test_suite* BermudanSwaptionTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Bermudan swaption tests");
+
     suite->add(QUANTLIB_TEST_CASE(&BermudanSwaptionTest::testCachedValues));
-    suite->add(QUANTLIB_TEST_CASE(&BermudanSwaptionTest::testCachedG2Values));
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &BermudanSwaptionTest::testCachedG2Values));
+    }
+
     return suite;
 }
 

@@ -1,4 +1,7 @@
-Microsoft Visual Studio Solution File, Format Version 11.00
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QuantLib", "QuantLib.vcxproj", "{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testsuite", "test-suite\testsuite.vcxproj", "{A613045C-34AF-4706-AA3C-730C92524F74}"
@@ -38,6 +41,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BasketLosses", "Examples\BasketLosses\BasketLosses.vcxproj", "{43A17E5B-EC94-4EB5-9D68-788BF234AE1F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CVAIRS", "Examples\CVAIRS\CVAIRS.vcxproj", "{D85EA161-361A-4CAC-8B77-39E174FCFFE2}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GlobalOptimizer", "Examples\GlobalOptimizer\GlobalOptimizer.vcxproj", "{ED7AED39-312A-4330-8ADF-DD24F848A754}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -371,6 +376,22 @@ Global
 		{D85EA161-361A-4CAC-8B77-39E174FCFFE2}.Release|Win32.Build.0 = Release|Win32
 		{D85EA161-361A-4CAC-8B77-39E174FCFFE2}.Release|x64.ActiveCfg = Release|x64
 		{D85EA161-361A-4CAC-8B77-39E174FCFFE2}.Release|x64.Build.0 = Release|x64
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Debug (static runtime)|Win32.ActiveCfg = Debug (static runtime)|Win32
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Debug (static runtime)|Win32.Build.0 = Debug (static runtime)|Win32
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Debug (static runtime)|x64.ActiveCfg = Debug (static runtime)|x64
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Debug (static runtime)|x64.Build.0 = Debug (static runtime)|x64
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Debug|Win32.ActiveCfg = Debug|Win32
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Debug|Win32.Build.0 = Debug|Win32
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Debug|x64.ActiveCfg = Debug|x64
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Debug|x64.Build.0 = Debug|x64
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Release (static runtime)|Win32.ActiveCfg = Release (static runtime)|Win32
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Release (static runtime)|Win32.Build.0 = Release (static runtime)|Win32
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Release (static runtime)|x64.ActiveCfg = Release (static runtime)|x64
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Release (static runtime)|x64.Build.0 = Release (static runtime)|x64
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Release|Win32.ActiveCfg = Release|Win32
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Release|Win32.Build.0 = Release|Win32
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Release|x64.ActiveCfg = Release|x64
+		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

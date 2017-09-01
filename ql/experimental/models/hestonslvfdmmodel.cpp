@@ -27,7 +27,12 @@
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 #include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
-#include <ql/methods/finitedifferences/schemes/all.hpp>
+#include <ql/methods/finitedifferences/schemes/impliciteulerscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/expliciteulerscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/craigsneydscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/modifiedcraigsneydscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/douglasscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/hundsdorferscheme.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/meshers/predefined1dmesher.hpp>
@@ -425,12 +430,6 @@ namespace QuantLib {
             new FdmHestonFwdOp(mesher, hestonProcess, trafoType, leverageFct));
 
         Array p = FdmHestonGreensFct(mesher, hestonProcess, trafoType, lv0)
-            .get(timeGrid->at(1), params_.greensAlgorithm);
-
-        mesher = boost::make_shared<FdmMesherComposite>(
-            xMesher.at(1), vMesher.at(1));
-
-        p = FdmHestonGreensFct(mesher, hestonProcess, trafoType, lv0)
             .get(timeGrid->at(1), params_.greensAlgorithm);
 
         if (logging_) {

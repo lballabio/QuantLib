@@ -65,7 +65,7 @@ public:
   /*! @param curves std::map of string (curve name) and handle to piecewiseyieldcurve
   */
 
-  MultiCurveSensitivities(curvespec curves) : curves_(curves) {
+  explicit MultiCurveSensitivities(const curvespec& curves) : curves_(curves) {
     for (curvespec::const_iterator it = curves_.begin(); it != curves_.end(); ++it)
       registerWith((*it).second);
     for (curvespec::const_iterator it = curves_.begin(); it != curves_.end(); ++it) {

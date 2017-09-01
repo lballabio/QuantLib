@@ -27,6 +27,7 @@
 #include <ql/time/date.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/math/interpolations/lagrangeinterpolation.hpp>
+#include <ql/math/matrix.hpp>
 #include <ql/experimental/math/gaussiannoncentralchisquaredpolynomial.hpp>
 
 #include <boost/function.hpp>
@@ -69,7 +70,7 @@ namespace QuantLib {
       private:
         class MappingFunction : public std::binary_function<Time, Real, Real> {
           public:
-            MappingFunction(const SquareRootCLVModel& model);
+            explicit MappingFunction(const SquareRootCLVModel& model);
 
             Real operator()(Time t, Real x) const;
 

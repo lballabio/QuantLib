@@ -953,7 +953,7 @@ void BasketOptionTest::testOddSamples() {
 
 void BasketOptionTest::testLocalVolatilitySpreadOption() {
 
-    BOOST_TEST_MESSAGE("Testing 2d local volatility spread option pricing...");
+    BOOST_TEST_MESSAGE("Testing 2D local-volatility spread-option pricing...");
 
     const DayCounter dc = Actual360();
     const Date today = Date(21, September, 2017);
@@ -1020,7 +1020,7 @@ void BasketOptionTest::testLocalVolatilitySpreadOption() {
 
 void BasketOptionTest::test2DPDEGreeks() {
 
-    BOOST_TEST_MESSAGE("Testing Greeks of 2dim PDE engine...");
+    BOOST_TEST_MESSAGE("Testing Greeks of two-dimensional PDE engine...");
 
     const Real s1 = 100;
     const Real s2 = 100;
@@ -1093,26 +1093,31 @@ void BasketOptionTest::test2DPDEGreeks() {
     }
 }
 
-test_suite* BasketOptionTest::suite() {
+test_suite* BasketOptionTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Basket option tests");
 
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testEuroTwoValues));
-    // FLOATING_POINT_EXCEPTION
-    suite->add(QUANTLIB_TEST_CASE(
-                               &BasketOptionTest::testBarraquandThreeValues));
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testTavellaValues));
 
-    const Size nTestCases = std::min(Size(5), LENGTH(oneDataValues));
-    for (Size i=0; i < nTestCases; ++i) {
-        suite->add(QUANTLIB_TEST_CASE(
-            boost::bind(&BasketOptionTest::testOneDAmericanValues,
-                (i    *LENGTH(oneDataValues))/nTestCases,
-                ((i+1)*LENGTH(oneDataValues))/nTestCases)));
-    }
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testOddSamples));
     suite->add(QUANTLIB_TEST_CASE(
         &BasketOptionTest::testLocalVolatilitySpreadOption));
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::test2DPDEGreeks));
+
+    if (speed <= Fast) {
+        const Size nTestCases = std::min(Size(5), LENGTH(oneDataValues));
+        for (Size i=0; i < nTestCases; ++i) {
+            suite->add(QUANTLIB_TEST_CASE(
+                boost::bind(&BasketOptionTest::testOneDAmericanValues,
+                    (i    *LENGTH(oneDataValues))/nTestCases,
+                    ((i+1)*LENGTH(oneDataValues))/nTestCases)));
+        }
+    }
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &BasketOptionTest::testBarraquandThreeValues));
+    }
 
     return suite;
 }

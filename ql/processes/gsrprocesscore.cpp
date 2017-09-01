@@ -18,6 +18,10 @@
 */
 
 #include <ql/processes/gsrprocesscore.hpp>
+#include <cmath>
+
+using std::exp;
+using std::pow;
 
 namespace QuantLib {
 

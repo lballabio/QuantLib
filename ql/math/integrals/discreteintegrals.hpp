@@ -46,7 +46,7 @@ namespace QuantLib {
 
     class DiscreteTrapezoidIntegrator: public Integrator {
       public:
-        DiscreteTrapezoidIntegrator(Size evaluations)
+        explicit DiscreteTrapezoidIntegrator(Size evaluations)
         : Integrator(Null<Real>(), evaluations) {}
 
       protected:
@@ -56,7 +56,7 @@ namespace QuantLib {
 
     class DiscreteSimpsonIntegrator: public Integrator {
       public:
-        DiscreteSimpsonIntegrator(Size evaluations)
+        explicit DiscreteSimpsonIntegrator(Size evaluations)
         : Integrator(Null<Real>(), evaluations) {}
 
       protected:

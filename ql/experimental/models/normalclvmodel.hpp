@@ -27,6 +27,8 @@
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/interpolations/lagrangeinterpolation.hpp>
+#include <ql/math/matrix.hpp>
+#include <ql/time/date.hpp>
 
 #include <boost/function.hpp>
 
@@ -75,7 +77,7 @@ namespace QuantLib {
       private:
         class MappingFunction : public std::binary_function<Time, Real, Real> {
           public:
-            MappingFunction(const NormalCLVModel& model);
+            explicit MappingFunction(const NormalCLVModel& model);
 
             Real operator()(Time t, Real x) const;
 
@@ -85,7 +87,7 @@ namespace QuantLib {
             const boost::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess_;
 
             struct InterpolationData {
-                InterpolationData(const NormalCLVModel& model)
+                explicit InterpolationData(const NormalCLVModel& model)
                 : s_(model.x_.size(), model.maturityDates_.size()),
                   x_(model.x_),
                   t_(model.maturityTimes_),

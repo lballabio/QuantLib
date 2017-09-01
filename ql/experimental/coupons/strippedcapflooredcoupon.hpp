@@ -32,7 +32,7 @@ namespace QuantLib {
 
     public:
 
-        StrippedCappedFlooredCoupon(const boost::shared_ptr<CappedFlooredCoupon> &underlying);
+        explicit StrippedCappedFlooredCoupon(const boost::shared_ptr<CappedFlooredCoupon> &underlying);
 
         //! Coupon interface
         Rate rate() const;
@@ -67,7 +67,7 @@ namespace QuantLib {
 
     class StrippedCappedFlooredCouponLeg {
       public:
-        StrippedCappedFlooredCouponLeg(const Leg &underlyingLeg);
+        explicit StrippedCappedFlooredCouponLeg(const Leg &underlyingLeg);
         operator Leg() const;
       private:
         Leg underlyingLeg_;

@@ -29,7 +29,7 @@
 
 namespace QuantLib {
 
-    /*! \brief Sudent-T Latent Model's copula policy.
+    /*! \brief Student-T Latent Model's copula policy.
 
     Describes the copula of a set of normalized Student-T independent random 
     factors to be fed into the latent variable model. 
@@ -73,18 +73,17 @@ namespace QuantLib {
         initTraits getInitTraits() const {
             initTraits data;
             data.tOrders.resize(distributions_.size());
-            std::transform(distributions_.begin(), distributions_.end(), 
-                data.tOrders.begin(), 
-                boost::bind(
-                &boost::math::students_t_distribution<>::degrees_of_freedom, _1)
-                );
+            for (Size i=0; i<distributions_.size(); ++i) {
+                data.tOrders[i] = static_cast<Integer>(
+                    distributions_[i].degrees_of_freedom());
+            }
             return data;
         }
         const std::vector<Real>& varianceFactors() const {
             return varianceFactors_;
         }
-        /*! Cumulative probability of the indexed latent variable 
-            @param iVariable The index of the latent variable requested.
+        /*! Cumulative probability of a given latent variable.
+            The iVariable parameter is the index of the requested variable.
         */
         Probability cumulativeY(Real val, Size iVariable) const {
     #if defined(QL_EXTRA_SAFETY_CHECKS)

@@ -137,7 +137,7 @@ namespace {
     class Benchmark {
       public:
         typedef void (*fct_ptr)();
-        Benchmark(std::string name, fct_ptr f, double mflop)
+        Benchmark(const std::string& name, fct_ptr f, double mflop)
         : f_(f), name_(name), mflop_(mflop) {
         }
 
@@ -212,8 +212,8 @@ namespace {
                       << " mflops" << std::endl;
 
             sum+=mflopsPerSec;
-            iterT++;
-            iterBM++;
+            ++iterT;
+            ++iterBM;
         }
         std::cout << std::string(56,'-') << std::endl
                   << "QuantLib Benchmark Index                  :"

@@ -18,6 +18,7 @@
 */
 
 #include <ql/processes/gsrprocess.hpp>
+#include <cmath>
 
 namespace QuantLib {
 
@@ -67,7 +68,7 @@ namespace QuantLib {
 
 
     Real GsrProcess::stdDeviation(Time t0, Real x0, Time dt) const {
-        return sqrt(variance(t0, x0, dt));
+        return std::sqrt(variance(t0, x0, dt));
     }
 
     Real GsrProcess::variance(Time w, Real, Time dt) const {

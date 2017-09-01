@@ -1,9 +1,36 @@
-#include <iostream>
-#include <iomanip>
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+
+/*!
+Copyright (C) 2014 Jose Aparicio
+
+This file is part of QuantLib, a free-software/open-source library
+for financial quantitative analysts and developers - http://quantlib.org/
+
+QuantLib is free software: you can redistribute it and/or modify it
+under the terms of the QuantLib license.  You should have received a
+copy of the license along with this program; if not, please email
+<quantlib-dev@lists.sf.net>. The license is also available online at
+<http://quantlib.org/license.shtml>.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
+#include <ql/qldefines.hpp>
+#ifdef BOOST_MSVC
+#  include <ql/auto_link.hpp>
+#endif
+#include <ql/experimental/math/multidimintegrator.hpp>
+#include <ql/experimental/math/multidimquadrature.hpp>
+#include <ql/math/integrals/trapezoidintegral.hpp>
+
 #include <boost/function.hpp>
+#include <boost/make_shared.hpp>
 #include <boost/timer.hpp>
 
-#include <ql/quantlib.hpp>
+#include <iostream>
+#include <iomanip>
 
 using namespace QuantLib;
 using namespace std;
@@ -43,11 +70,14 @@ int main() {
         std::sqrt(M_PI), static_cast<Real>(dimension));
 
     boost::function<Real(const std::vector<Real>& arg)> f = integrand();
+
+    #ifndef QL_PATCH_SOLARIS
     GaussianQuadMultidimIntegrator intg(dimension, 15);
 
     timer.restart();
     Real valueQuad = intg(f);
     Real secondsQuad = timer.elapsed();
+    #endif
 
     std::vector<boost::shared_ptr<Integrator> > integrals;
     for(Size i=0; i<dimension; i++)
@@ -62,13 +92,18 @@ int main() {
     Real secondsGrid = timer.elapsed();
 
     cout << fixed << setprecision(4);
-    cout << endl << "-------------- " << endl << 
-        "Exact: " << exactSol << endl << 
-        "Quad: " << valueQuad << endl << 
-        "Grid: " << valueGrid << endl << 
-        endl;
+    cout << endl << "-------------- " << endl
+         << "Exact: " << exactSol << endl
+        #ifndef QL_PATCH_SOLARIS
+         << "Quad: " << valueQuad << endl
+        #endif
+         << "Grid: " << valueGrid << endl
+         << endl;
 
-    cout << "Seconds for Quad: " << secondsQuad << endl << 
-     "Seconds for Grid: " << secondsGrid << endl;
+    cout
+        #ifndef QL_PATCH_SOLARIS
+        << "Seconds for Quad: " << secondsQuad << endl
+        #endif
+        << "Seconds for Grid: " << secondsGrid << endl;
     return 0;
 }

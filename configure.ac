@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([QuantLib], [1.10],
+AC_INIT([QuantLib], [1.11],
         [quantlib-dev@lists.sourceforge.net],
         [QuantLib])
 AC_PREREQ(2.62)
@@ -339,6 +339,20 @@ AC_ARG_ENABLE([benchmark],
 AM_CONDITIONAL(AUTO_BENCHMARK, test "$ql_install_benchmark" != "no")
 AC_MSG_RESULT([$ql_install_benchmark])
 
+AC_MSG_CHECKING([whether to use unity build])
+AC_ARG_ENABLE([unity-build],
+              AC_HELP_STRING([--enable-unity-build],
+                             [If enabled, the source files in each directory
+                              are collected into one single source file and
+                              compiled together. This can speed up the
+                              compilation of the library.
+                              If disabled (the default) each source file is
+                              compiled separately..]),
+              [ql_use_unity_build=$enableval],
+              [ql_use_unity_build=no])
+AM_CONDITIONAL(UNITY_BUILD, test "$ql_use_unity_build" != "no")
+AC_MSG_RESULT([$ql_use_unity_build])
+
 AC_MSG_CHECKING([whether to enable intraday date and daycounters])
 AC_ARG_ENABLE([intraday],
               AC_HELP_STRING([--enable-intraday],
@@ -504,6 +518,7 @@ AC_CONFIG_FILES([
     Examples/FRA/Makefile
     Examples/LatentModel/Makefile
     Examples/Gaussian1dModels/Makefile
+    Examples/GlobalOptimizer/Makefile
     Examples/MarketModels/Makefile
     Examples/MultidimIntegral/Makefile
     Examples/Replication/Makefile

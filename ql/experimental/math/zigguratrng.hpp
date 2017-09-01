@@ -52,7 +52,7 @@ namespace QuantLib {
     class ZigguratRng {
       public:
         typedef Sample<Real> sample_type;
-        ZigguratRng(unsigned long seed = 0);
+        explicit ZigguratRng(unsigned long seed = 0);
         sample_type next() const {
             return sample_type(nextGaussian(),1.0);
         }

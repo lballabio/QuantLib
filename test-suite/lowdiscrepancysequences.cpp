@@ -110,7 +110,8 @@ void LowDiscrepancyTest::testRandomizedLowDiscrepancySequence() {
 
 namespace
 {
-    void testRandomizedLatticeRule(LatticeRule::type name, std::string nameString)
+    void testRandomizedLatticeRule(LatticeRule::type name,
+                                   const std::string& nameString)
     {
         Size maxDim = 30;
         Size N = 1024;
@@ -762,7 +763,7 @@ namespace {
     class SobolFactory {
       public:
         typedef SobolRsg generator_type;
-        SobolFactory(SobolRsg::DirectionIntegers unit) : unit_(unit) {}
+        explicit SobolFactory(SobolRsg::DirectionIntegers unit) : unit_(unit) {}
         SobolRsg make(Size dim,
                       BigNatural seed) const {
             return SobolRsg(dim,seed,unit_);

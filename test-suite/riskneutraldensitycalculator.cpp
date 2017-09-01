@@ -581,8 +581,9 @@ void RiskNeutralDensityCalculatorTest::testSquareRootProcessRND() {
 }
 
 void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
-    BOOST_TEST_MESSAGE("Testing probability density for a BSM process "
-            "with strike dependent volatility vs Local volatility...");
+    BOOST_TEST_MESSAGE(
+        "Testing probability density for a BSM process "
+        "with strike dependent volatility vs local volatility...");
 
     SavedSettings backup;
 
@@ -736,7 +737,7 @@ void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
     }
 }
 
-test_suite* RiskNeutralDensityCalculatorTest::experimental() {
+test_suite* RiskNeutralDensityCalculatorTest::experimental(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Risk neutral density calculator tests");
 
     suite->add(QUANTLIB_TEST_CASE(
@@ -747,7 +748,11 @@ test_suite* RiskNeutralDensityCalculatorTest::experimental() {
         &RiskNeutralDensityCalculatorTest::testLocalVolatilityRND));
     suite->add(QUANTLIB_TEST_CASE(
         &RiskNeutralDensityCalculatorTest::testSquareRootProcessRND));
-    suite->add(QUANTLIB_TEST_CASE(
-        &RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew));
+    }
+
     return suite;
 }

@@ -549,10 +549,6 @@ void HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity() {
         const Real expected = 1-eps-lowEps;
         const Real vMax = rnd.stationary_invcdf(1-eps);
 
-        std::vector<Real> critialPoints;
-        std::vector<boost::tuple<Real, Real, bool> > critPoints;
-        critPoints.push_back(boost::tuple<Real, Real, bool>(log(vMin), 0.001, false));
-
         const boost::shared_ptr<FdmMesherComposite> mesher(
             new FdmMesherComposite(boost::shared_ptr<Fdm1dMesher>(
                 new Uniform1dMesher(log(vMin), log(vMax), vGrid))));
@@ -2477,7 +2473,7 @@ void HestonSLVModelTest::testMoustacheGraph() {
 }
 
 
-test_suite* HestonSLVModelTest::experimental() {
+test_suite* HestonSLVModelTest::experimental(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE(
         "Heston Stochastic Local Volatility tests");
 
@@ -2492,19 +2488,25 @@ test_suite* HestonSLVModelTest::experimental() {
     suite->add(QUANTLIB_TEST_CASE(
         &HestonSLVModelTest::testSquareRootFokkerPlanckFwdEquation));
     suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquation));
-    suite->add(QUANTLIB_TEST_CASE(
         &HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
     suite->add(QUANTLIB_TEST_CASE(
         &HestonSLVModelTest::testBarrierPricingViaHestonLocalVol));
     suite->add(QUANTLIB_TEST_CASE(
         &HestonSLVModelTest::testMonteCarloVsFdmPricing));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testMonteCarloCalibration));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testMoustacheGraph));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &HestonSLVModelTest::testHestonFokkerPlanckFwdEquation));
+    }
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &HestonSLVModelTest::testMonteCarloCalibration));
+        suite->add(QUANTLIB_TEST_CASE(
+            &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
+        suite->add(QUANTLIB_TEST_CASE(
+            &HestonSLVModelTest::testMoustacheGraph));
+    }
 
 //    these tests take very long
 //    suite->add(QUANTLIB_TEST_CASE(

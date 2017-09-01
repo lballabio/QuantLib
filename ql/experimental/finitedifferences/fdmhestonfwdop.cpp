@@ -31,6 +31,9 @@
 #include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
 #include <ql/experimental/finitedifferences/modtriplebandlinearop.hpp>
 #include <boost/unordered/unordered_map.hpp>
+#include <cmath>
+
+using std::exp;
 
 namespace QuantLib {
 
