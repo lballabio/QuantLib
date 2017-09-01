@@ -43,8 +43,8 @@ namespace QuantLib {
     */
     class Actual365Fixed : public DayCounter {
       public:
-        enum Convention { Standard, Canadian};
-        Actual365Fixed(Convention c = Actual365Fixed::Standard)
+        enum Convention { Standard, Canadian };
+        explicit Actual365Fixed(Convention c = Actual365Fixed::Standard)
         : DayCounter(implementation(c)) {}
 
       private:
