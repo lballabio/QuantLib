@@ -408,7 +408,7 @@ namespace QuantLib {
         const AnalyticHestonEngine* const enginePtr_;
     };
 
-    std::complex<Real> AnalyticHestonEngine::chF(
+    std::complex<Real> AnalyticHestonEngine::lnChF(
         const std::complex<Real>& z, Time t) const {
 
         const Real kappa = model_->kappa();
@@ -427,13 +427,15 @@ namespace QuantLib {
 
         const std::complex<Real> G = (g-D)/(g+D);
 
-        return std::exp(
-            v0/sigma2*(1.0-std::exp(-D*t))/(1.0-G*std::exp(-D*t))
-             *(g-D) + kappa*theta/sigma2*((g-D)*t
-                -2.0*std::log((1.0-G*std::exp(-D*t))/(1.0-G)))
-            );
+        return v0/sigma2*(1.0-std::exp(-D*t))/(1.0-G*std::exp(-D*t))
+                *(g-D) + kappa*theta/sigma2*((g-D)*t
+                -2.0*std::log((1.0-G*std::exp(-D*t))/(1.0-G)));
     }
 
+    std::complex<Real> AnalyticHestonEngine::chF(
+        const std::complex<Real>& z, Time T) const {
+        return std::exp(lnChF(z, T));
+    }
 
     AnalyticHestonEngine::AnalyticHestonEngine(
                               const boost::shared_ptr<HestonModel>& model,
