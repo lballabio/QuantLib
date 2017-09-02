@@ -114,7 +114,6 @@ namespace QuantLib {
                 h[i+1][j] = h1;
             }
 
-            const Real tau = std::fabs(h[j][j]) + std::fabs(h[j+1][j]);
             const Real nu = std::sqrt(  square<Real>()(h[j][j])
                                       + square<Real>()(h[j+1][j]));
 

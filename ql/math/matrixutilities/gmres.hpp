@@ -38,7 +38,7 @@ namespace QuantLib {
         Dongarra et al. 1994,
         Templates for the Solution of Linear Systems: Building Blocks
         for Iterative Methods, 2nd Edition, SIAM, Philadelphia
-        http://http://www.netlib.org/templates/templates.pdf
+        http://www.netlib.org/templates/templates.pdf
 
         Christian Kanzow
         Numerik linearer Gleichungssysteme (German)
