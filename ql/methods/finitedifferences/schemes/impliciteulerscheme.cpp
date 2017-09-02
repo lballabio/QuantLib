@@ -31,6 +31,7 @@
 #pragma GCC diagnostic pop
 #endif
 #include <boost/function.hpp>
+#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
