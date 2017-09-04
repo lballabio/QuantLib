@@ -92,7 +92,7 @@ namespace QuantLib {
         return result;
     }
 
-    Real BiCGstab::norm2(const Array& a) const {
+    Real BiCGstab::norm2(const Array& a) {
         return std::sqrt(DotProduct(a, a));
     }
 }

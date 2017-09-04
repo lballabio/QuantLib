@@ -4150,6 +4150,9 @@
     <ClInclude Include="ql\indexes\ibor\nzocr.hpp">
       <Filter>indexes\ibor</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\matrixutilities\gmres.hpp">
+      <Filter>math\matrixutilities</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\finitedifferences\gbsmrndcalculator.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
@@ -6691,6 +6694,9 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\math\particleswarmoptimization.cpp">
       <Filter>experimental\math</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\matrixutilities\gmres.cpp">
+      <Filter>math\matrixutilities</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\models\normalclvmodel.cpp">
       <Filter>experimental\models</Filter>
