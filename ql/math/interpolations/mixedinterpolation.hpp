@@ -77,8 +77,8 @@ namespace QuantLib {
         /*! \pre the \f$ x \f$ values must be sorted.
             \deprecated Use the other constructor
         */
-        //QL_DEPRECATED
         template <class I1, class I2>
+        QL_DEPRECATED
         MixedLinearCubicInterpolation(const I1& xBegin, const I1& xEnd,
                                       const I2& yBegin, Size n,
                                       CubicInterpolation::DerivativeApprox da,

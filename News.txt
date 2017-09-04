@@ -1,9 +1,12 @@
 
-Changes for QuantLib 1.9.2:
-===========================
+Changes for QuantLib 1.10.1:
+============================
 
-QuantLib 1.9.2 is a bug-fix release for QuantLib 1.9.1.
+QuantLib 1.10.1 is a bug-fix release for version 1.10.
 
-- Prevented errors in yield-curve bootstrapping tests due to an
-  incorrect test setup (thanks to Peter Caspers for the heads-up).
+- Prevented a name clash when using the newly-released Boost 1.65.0
+  with g++ 6.3.
+
+- Added a few missing function declarations in the
+  SwaptionVolatilityStructure class (thanks to Peter Caspers).
 

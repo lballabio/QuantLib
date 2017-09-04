@@ -418,7 +418,7 @@ namespace QuantLib {
                               public Visitor<CashFlow>,
                               public Visitor<Coupon> {
           public:
-            BPSCalculator(const YieldTermStructure& discountCurve)
+            explicit BPSCalculator(const YieldTermStructure& discountCurve)
             : discountCurve_(discountCurve), bps_(0.0), nonSensNPV_(0.0) {}
             void visit(Coupon& c) {
                 Real bps = c.nominal() *

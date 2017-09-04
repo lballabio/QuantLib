@@ -33,8 +33,9 @@
 #include <ql/settings.hpp>
 
 using namespace QuantLib;
-using namespace boost;
 using namespace boost::unit_test_framework;
+using boost::shared_ptr;
+using boost::none;
 
 void CashFlowsTest::testSettings() {
 

@@ -24,6 +24,7 @@ Michaël Benguigui
 Adolfo Benin
 Hachemi Benyahia
 Luca Berardi
+Nicholas Bertocchi
 Sylvain Bertrand
 Manas Bhatt
 David Binderman
@@ -64,6 +65,7 @@ Silvia Frasson
 Andreas Gaida
 Matteo Gallivanoni
 Riccardo Ghetta
+Paul Giltinan
 Roman Gitlin
 Nick Glass
 Marek Glowacki
@@ -81,8 +83,10 @@ Andres Hernandez
 Chris Higgs
 Laurent Hoffmann
 Xiangyu Hong
+Guillaume Horel
 Benoît Houzelle
 Frank Hövermann
+Daniel Hrabovcak
 Shen Hui
 Charles Chongseok Hyun
 Simon Ibbotson
@@ -93,11 +97,13 @@ Andrey Karpov
 Michal Kaut
 Tomoya Kawanishi
 Gary Kennedy
+Oleksandr Khomenko
 Matt Knox
 Andrew Kolesnikov
 Silakhdar Krikeb
 Nathan Kruck
 Yan Kuang
+Werner Kuerzinger
 Allen Kuo
 Paul Laderoute
 Yasmine Lahlou
@@ -110,6 +116,7 @@ Cheng Li
 Gang Liang
 Robert Lopez
 André Louw
+Matthias Lungwitz
 Jasen Mackie
 Joao Paulo Magalhaes
 Jose Magana
@@ -154,6 +161,7 @@ Fabio Ramponi
 Maria Cristina Recchioni
 Dimitri Reiswich
 Sadruddin Rejeb
+Martin Ross
 Alessandro Roveda
 Mohamed Amine Sadaoui
 Amine Samani
@@ -178,12 +186,14 @@ Roland Stamm
 Edouard Tallent
 Eisuke Tani
 Marco Tarenghi
+Ryan Taylor
 Yue Tian
 Jayanth R. Varma
 François du Vignaud
 Qingxiao Wang
 Charles Whitmore
 Stephen Wong
+Krzysztof Wos
 Bernd Johannes Wuebben
 Sun Xiuxin
 Jeff Yu

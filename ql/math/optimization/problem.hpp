@@ -27,11 +27,10 @@
 #define quantlib_optimization_problem_h
 
 #include <ql/math/optimization/method.hpp>
+#include <ql/math/optimization/constraint.hpp>
 #include <ql/math/optimization/costfunction.hpp>
 
 namespace QuantLib {
-
-    class Constraint;
 
     //! Constrained optimization problem
     /*! \warning The passed CostFunction and Constraint instances are
@@ -46,7 +45,9 @@ namespace QuantLib {
                 Constraint& constraint,
                 const Array& initialValue = Array())
         : costFunction_(costFunction), constraint_(constraint),
-          currentValue_(initialValue) {}
+          currentValue_(initialValue) {
+            QL_REQUIRE(!constraint.empty(), "empty constraint given");
+        }
 
         /*! \warning it does not reset the current minumum to any initial value
         */

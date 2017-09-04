@@ -49,6 +49,7 @@ cmake-build-debug
 # Artifacts created in multiple directories
 Makefile
 Makefile.in
+unity.cpp
 testCaseCollection.xml
 .deps
 .libs

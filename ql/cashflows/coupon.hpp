@@ -58,7 +58,7 @@ namespace QuantLib {
         //@}
         //! \name Inspectors
         //@{
-        Real nominal() const;
+        virtual Real nominal() const;
         //! start of the accrual period
         const Date& accrualStartDate() const;
         //! end of the accrual period

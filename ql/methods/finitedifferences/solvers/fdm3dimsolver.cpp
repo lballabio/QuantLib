@@ -26,7 +26,7 @@
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmsnapshotcondition.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
-
+#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -37,7 +37,7 @@ namespace QuantLib {
     : solverDesc_(solverDesc),
       schemeDesc_(schemeDesc),
       op_(op),
-      thetaCondition_(new FdmSnapshotCondition(
+      thetaCondition_(boost::make_shared<FdmSnapshotCondition>(
         0.99*std::min(1.0/365.0,
                 solverDesc.condition->stoppingTimes().empty()
                 ? solverDesc.maturity :
@@ -90,10 +90,9 @@ namespace QuantLib {
                       rhs.begin()+(i+1)*y_.size()*x_.size(),
                       resultValues_[i].begin());
 
-            interpolation_[i] = boost::shared_ptr<BicubicSpline> (
-                new BicubicSpline(x_.begin(), x_.end(),
+            interpolation_[i] = boost::make_shared<BicubicSpline>(x_.begin(), x_.end(),
                                   y_.begin(), y_.end(),
-                                  resultValues_[i]));
+                                  resultValues_[i]);
         }
     }
 

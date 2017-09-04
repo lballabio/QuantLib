@@ -22,6 +22,10 @@
     computations such as "Yield to Price" or "Price to Yield"
  */
 
+#include <ql/qldefines.hpp>
+#ifdef BOOST_MSVC
+#  include <ql/auto_link.hpp>
+#endif
 #include <ql/instruments/bonds/zerocouponbond.hpp>
 #include <ql/instruments/bonds/floatingratebond.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>

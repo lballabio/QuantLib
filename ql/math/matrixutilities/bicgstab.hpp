@@ -46,11 +46,11 @@ namespace QuantLib {
         BiCGStabResult solve(const Array& b, const Array& x0 = Array()) const;
         
       protected:
-        Real norm2(const Array& a) const;
-        
         const MatrixMult A_, M_;
         const Size maxIter_;
         const Real relTol_;  
+
+        static Real norm2(const Array& a);
     };
 }
 

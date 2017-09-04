@@ -40,7 +40,7 @@ namespace QuantLib {
 
         class CoefficientHolder {
           public:
-            CoefficientHolder(Size n)
+            explicit CoefficientHolder(Size n)
             : n_(n), primitiveConst_(n-1), a_(n-1), b_(n-1), c_(n-1),
               monotonicityAdjustments_(n) {}
             virtual ~CoefficientHolder() {}

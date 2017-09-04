@@ -61,9 +61,9 @@ namespace QuantLib {
     class ConstantRecoveryModel : public RecoveryRateModel,
                                   public Observer {
       public:
-        ConstantRecoveryModel(const Handle<RecoveryRateQuote>& quote);
-        ConstantRecoveryModel(Real recovery,
-                              Seniority sen = NoSeniority);
+        explicit ConstantRecoveryModel(const Handle<RecoveryRateQuote>& quote);
+        explicit ConstantRecoveryModel(Real recovery,
+                                       Seniority sen = NoSeniority);
         void update() { notifyObservers();}
         bool appliesToSeniority(Seniority) const {return true;}
       protected:
