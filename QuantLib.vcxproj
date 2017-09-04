@@ -2282,6 +2282,7 @@
     <ClCompile Include="ql\termstructures\credit\hazardratestructure.cpp" />
     <ClCompile Include="ql\termstructures\credit\survivalprobabilitystructure.cpp" />
     <ClCompile Include="ql\time\asx.cpp" />
+    <ClCompile Include="ql\time\daycounters\actual365fixed.cpp" />
     <ClCompile Include="ql\utilities\dataformatters.cpp" />
     <ClCompile Include="ql\utilities\dataparsers.cpp" />
     <ClCompile Include="ql\utilities\tracing.cpp" />

@@ -7290,6 +7290,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\time\daycounters\actual365fixed.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\time\daycounters\actual365fixed.hpp"
 					>
 				</File>
