@@ -70,29 +70,31 @@ namespace QuantLib {
             // + std::sqrt(std::fabs(c4(maturity)))
         );
 
+        const Real k = payoff->strike();
         const Real spot = process->s0()->value();
         QL_REQUIRE(spot > 0.0, "negative or null underlying given");
 
-        const Real k = payoff->strike();
-        const Real x = std::log(spot/k);
+        const DiscountFactor df
+            = process->riskFreeRate()->discount(maturityDate);
+        const DiscountFactor qf
+            = process->dividendYield()->discount(maturityDate);
+        const Real fwd = spot*qf/df;
+        const Real x = std::log(fwd/k);
 
         const Real a = x + cum1 - L_*w;
         const Real b = x + cum1 + L_*w;
 
         const Real d = 1.0/(b-a);
 
-        const DiscountFactor df
-            = process->riskFreeRate()->discount(maturityDate);
-
         const Real expA = std::exp(a);
-        Real s = characteristicFct(0, maturity).real()*(expA-1-a)*d;
+        Real s = chF(0, maturity).real()*(expA-1-a)*d;
 
         for (Size n=1; n < N_; ++n) {
             const Real r = n*M_PI*d;
             const Real U_n = 2.0*d*( 1.0/(1.0 + r*r)
                 *(expA + r*std::sin(r*a) - std::cos(r*a)) - 1.0/r*std::sin(r*a));
 
-            s += U_n*(characteristicFct(r, maturity)
+            s += U_n*(chF(r, maturity)
                      *std::exp(std::complex<Real>(0, r*(x-a)))).real();
         }
 
@@ -112,7 +114,7 @@ namespace QuantLib {
                         / model_->process()->riskFreeRate()->discount(t));
     }
 
-    std::complex<Real> COSHestonEngine::characteristicFct(Real u, Real t)
+    std::complex<Real> COSHestonEngine::chF(Real u, Real t)
     const {
         const Real sigma2 = sigma_*sigma_;
 
@@ -125,8 +127,8 @@ namespace QuantLib {
 
         const std::complex<Real> G = (g-D)/(g+D);
 
-        return std::exp(std::complex<Real>(0.0, u*muT(t))
-            + v0_/(sigma2)*(1.0-std::exp(-D*t))/(1.0-G*std::exp(-D*t))
+        return std::exp(
+              v0_/(sigma2)*(1.0-std::exp(-D*t))/(1.0-G*std::exp(-D*t))
              *(g-D) + kappa_*theta_/sigma2*((g-D)*t
                 -2.0*std::log((1.0-G*std::exp(-D*t))/(1.0-G)))
             );
@@ -139,7 +141,7 @@ namespace QuantLib {
 
     g[z_] := (kappa -i*rho*sigma*z - d[z])/(kappa -i*rho*sigma*z + d[z])
 
-    phi[z_] := Exp[ i*z*muT + v0/(sigma^2)*(1-Exp[-d[z]*t])/(1-g[z]*Exp[-d[z]*t])
+    phi[z_] := Exp[ v0/(sigma^2)*(1-Exp[-d[z]*t])/(1-g[z]*Exp[-d[z]*t])
         *(kappa -i*rho*sigma*z - d[z]) + kappa*theta/sigma^2
         *((kappa -i*rho*sigma*z-d[z])*t
           -2*Log[(1-g[z]*Exp[-d[z]*t])/(1-g[z]) ]) ]
@@ -160,7 +162,7 @@ namespace QuantLib {
 
    Real COSHestonEngine::c1(Time t) const {
        return (-theta_ + std::exp(kappa_*t)
-           *(2*kappa_*muT(t) + theta_ - kappa_*t*theta_ -
+           *( theta_ - kappa_*t*theta_ -
                v0_) + v0_)/(2*std::exp(kappa_*t)*kappa_);
    }
 

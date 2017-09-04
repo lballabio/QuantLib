@@ -234,7 +234,8 @@ namespace {
             const boost::shared_ptr<Quote>& spot,
             const boost::shared_ptr<YieldTermStructure>& rTS,
             const boost::shared_ptr<YieldTermStructure>& qTS)
-        : BlackVolatilityTermStructure(Following, rTS->dayCounter()),
+        : BlackVolatilityTermStructure(
+              0, NullCalendar(), Following, rTS->dayCounter()),
           b1_(b1), b2_(b2), b3_(b3), b4_(b4), b5_(b5),
           spot_(spot), rTS_(rTS), qTS_(qTS) {}
 
@@ -702,7 +703,7 @@ void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
         }
     }
 
-    const Real quantiles[] = { 1e-3, 0.05, 0.25, 0.5, 0.75, 0.95, 0.999};
+    const Real quantiles[] = { 0.05, 0.25, 0.5, 0.75, 0.95 };
     for (Size i=0; i < LENGTH(quantiles); ++i) {
         const Real quantile = quantiles[i];
 
