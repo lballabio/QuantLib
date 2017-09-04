@@ -3066,6 +3066,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\math\matrixutilities\gmres.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\matrixutilities\gmres.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\matrixutilities\pseudosqrt.cpp"
 					>
 				</File>
