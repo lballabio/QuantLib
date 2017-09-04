@@ -68,9 +68,8 @@ namespace QuantLib {
         const MatrixMult A_, M_;
         const Size maxIter_;
         const Real relTol_;
-
-        static Real norm2(const Array& a);
     };
+
 }
 
 #endif

@@ -67,7 +67,7 @@ namespace QuantLib {
     }
 
     GMRESResult GMRES::solveImpl(const Array& b, const Array& x0) const {
-        const Real bn = norm2(b);
+        const Real bn = Norm2(b);
         if (bn == 0.0) {
             GMRESResult result = { std::list<Real>(1, 0.0), b };
             return result;
@@ -76,7 +76,7 @@ namespace QuantLib {
         Array x = ((!x0.empty()) ? x0 : Array(b.size(), 0.0));
         Array r = b - A_(x);
 
-        const Real g = norm2(r);
+        const Real g = Norm2(r);
         if (g/bn < relTol_) {
             GMRESResult result = { std::list<Real>(1, g/bn), x };
             return result;
@@ -99,7 +99,7 @@ namespace QuantLib {
                 w -= h[i][j] * v[i];
             }
 
-            h[j+1][j] = norm2(w);
+            h[j+1][j] = Norm2(w);
 
             if (h[j+1][j] < QL_EPSILON*QL_EPSILON)
                 break;
@@ -148,7 +148,4 @@ namespace QuantLib {
         return result;
     }
 
-    Real GMRES::norm2(const Array& a) {
-        return std::sqrt(DotProduct(a, a));
-    }
 }
