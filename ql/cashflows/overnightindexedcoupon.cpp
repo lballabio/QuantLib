@@ -4,6 +4,8 @@
  Copyright (C) 2009 Roland Lichters
  Copyright (C) 2009 Ferdinando Ametrano
  Copyright (C) 2014 Peter Caspers
+ Copyright (C) 2017 Joseph Jeisman
+ Copyright (C) 2017 Fabrice Lecuyer
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -213,10 +215,10 @@ namespace QuantLib {
         }
     }
 
-    OvernightLeg::OvernightLeg(const Schedule &schedule,
-                               const shared_ptr<OvernightIndex> &i)
-        : schedule_(schedule), overnightIndex_(i),
-          paymentAdjustment_(Following), telescopicValueDates_(false) {}
+    OvernightLeg::OvernightLeg(const Schedule& schedule,
+                               const shared_ptr<OvernightIndex>& i)
+    : schedule_(schedule), overnightIndex_(i), paymentCalendar_(schedule.calendar()),
+      paymentAdjustment_(Following), paymentLag_(0), telescopicValueDates_(false) {}
 
     OvernightLeg& OvernightLeg::withNotionals(Real notional) {
         notionals_ = vector<Real>(1, notional);
@@ -236,6 +238,16 @@ namespace QuantLib {
     OvernightLeg&
     OvernightLeg::withPaymentAdjustment(BusinessDayConvention convention) {
         paymentAdjustment_ = convention;
+        return *this;
+    }
+
+    OvernightLeg& OvernightLeg::withPaymentCalendar(const Calendar& cal) {
+        paymentCalendar_ = cal;
+        return *this;
+    }
+
+    OvernightLeg& OvernightLeg::withPaymentLag(Natural lag) {
+        paymentLag_ = lag;
         return *this;
     }
 
@@ -280,7 +292,8 @@ namespace QuantLib {
         for (Size i=0; i<n; ++i) {
             refStart = start = schedule_.date(i);
             refEnd   =   end = schedule_.date(i+1);
-            paymentDate = calendar.adjust(end, paymentAdjustment_);
+            paymentDate = paymentCalendar_.advance(end, paymentLag_, Days, paymentAdjustment_);
+
             if (i == 0 && !schedule_.isRegular(i+1))
                 refStart = calendar.adjust(end - schedule_.tenor(),
                                            paymentAdjustment_);

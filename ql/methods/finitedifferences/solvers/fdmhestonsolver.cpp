@@ -24,6 +24,7 @@
 #include <ql/methods/finitedifferences/operators/fdmhestonop.hpp>
 #include <ql/methods/finitedifferences/solvers/fdm2dimsolver.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmhestonsolver.hpp>
+#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -45,14 +46,13 @@ namespace QuantLib {
 
     void FdmHestonSolver::performCalculations() const {
         boost::shared_ptr<FdmLinearOpComposite> op(
-            new FdmHestonOp(
+			boost::make_shared<FdmHestonOp>(
                 solverDesc_.mesher, process_.currentLink(),
                 (!quantoHelper_.empty()) ? quantoHelper_.currentLink()
                              : boost::shared_ptr<FdmQuantoHelper>(),
                 leverageFct_));
 
-        solver_ = boost::shared_ptr<Fdm2DimSolver>(
-                               new Fdm2DimSolver(solverDesc_, schemeDesc_, op));
+        solver_ = boost::make_shared<Fdm2DimSolver>(solverDesc_, schemeDesc_, op);
     }
 
     Real FdmHestonSolver::valueAt(Real s, Real v) const {

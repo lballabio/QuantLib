@@ -68,7 +68,7 @@ namespace QuantLib {
            to create [Array -> Real] functor */
         class MultiDimFct : public std::unary_function<Real, Array> {
           public:
-            MultiDimFct(const VF_R& b): b_(b) {
+            explicit MultiDimFct(const VF_R& b): b_(b) {
                 QL_REQUIRE(b_.size()>0, "zero size basis");
             }
             inline Real operator()(const Array& a) const {

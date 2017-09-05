@@ -36,7 +36,7 @@ namespace QuantLib {
 
         class DecoratedHedge : public CallSpecifiedMultiProduct {
           public:
-            DecoratedHedge(const CallSpecifiedMultiProduct& product)
+            explicit DecoratedHedge(const CallSpecifiedMultiProduct& product)
             : CallSpecifiedMultiProduct(product) {
                 savedStates_.reserve(product.evolution().numberOfSteps());
 

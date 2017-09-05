@@ -14,6 +14,7 @@ this_include_HEADERS = \
 	thirty360.hpp
 
 cpp_files = \
+    actual365fixed.cpp \
     actualactual.cpp \
     business252.cpp \
 	simpledaycounter.cpp \

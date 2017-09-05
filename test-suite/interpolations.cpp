@@ -36,6 +36,7 @@
 #include <ql/math/interpolations/kernelinterpolation2d.hpp>
 #include <ql/math/interpolations/lagrangeinterpolation.hpp>
 #include <ql/math/integrals/simpsonintegral.hpp>
+#include <ql/math/bspline.hpp>
 #include <ql/math/kernelfunctions.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/richardsonextrapolation.hpp>
@@ -43,6 +44,7 @@
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/experimental/volatility/noarbsabrinterpolation.hpp>
 #include <boost/foreach.hpp>
+#include <boost/tuple/tuple.hpp>
 #include <boost/assign/std/vector.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
 
@@ -1990,7 +1992,7 @@ namespace {
 
 void InterpolationTest::testLagrangeInterpolation() {
 
-    BOOST_TEST_MESSAGE("Testing Lagrange Interpolation...");
+    BOOST_TEST_MESSAGE("Testing Lagrange interpolation...");
 
     const Real x[] = {-1.0 , -0.5, -0.25, 0.1, 0.4, 0.75, 0.96};
     Array y(LENGTH(x));
@@ -2035,7 +2037,7 @@ void InterpolationTest::testLagrangeInterpolation() {
         const Real calculated = interpl(xx);
         if (   boost::math::isnan(calculated)
             || std::fabs(references[i] - calculated) > tol) {
-            BOOST_FAIL("failed to reproduce the Lagrange interplation"
+            BOOST_FAIL("failed to reproduce the Lagrange interpolation"
                     << "\n    x         : " << xx
                     << "\n    calculated: " << calculated
                     << "\n    expected  : " << references[i]);
@@ -2045,7 +2047,7 @@ void InterpolationTest::testLagrangeInterpolation() {
 
 void InterpolationTest::testLagrangeInterpolationAtSupportPoint() {
     BOOST_TEST_MESSAGE(
-        "Testing Lagrange Interpolation at supporting points...");
+        "Testing Lagrange interpolation at supporting points...");
 
     const Size n=5;
     Array x(n), y(n);
@@ -2076,7 +2078,7 @@ void InterpolationTest::testLagrangeInterpolationAtSupportPoint() {
 
 void InterpolationTest::testLagrangeInterpolationDerivative() {
     BOOST_TEST_MESSAGE(
-        "Testing Lagrange Interpolation derivatives...");
+        "Testing Lagrange interpolation derivatives...");
 
     Array x(5), y(5);
     x[0] = -1.0; y[0] = 2.0;
@@ -2106,7 +2108,7 @@ void InterpolationTest::testLagrangeInterpolationDerivative() {
 
 void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
     BOOST_TEST_MESSAGE(
-        "Testing Lagrange Interpolation on Chebyshev points...");
+        "Testing Lagrange interpolation on Chebyshev points...");
 
     // Test example taken from
     // J.P. Berrut, L.N. Trefethen, Barycentric Lagrange Interpolation
@@ -2152,6 +2154,53 @@ void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
     }
 }
 
+void InterpolationTest::testBSplines() {
+    BOOST_TEST_MESSAGE("Testing B-Splines...");
+
+    // reference values have been generate with the R package splines2
+    // https://cran.r-project.org/web/packages/splines2/splines2.pdf
+
+    using namespace boost::assign;
+
+    std::vector<Real> knots;
+    knots += -1.0, 0.5, 0.75, 1.2, 3.0, 4.0, 5.0;
+
+    const Natural p = 2;
+    const BSpline bspline(p, knots.size()-p-2, knots);
+
+    std::vector<boost::tuple<Natural, Real, Real> > referenceValues;
+    referenceValues += boost::make_tuple(0, -0.95, 9.5238095238e-04),
+        boost::make_tuple(0, -0.01, 0.37337142857),
+        boost::make_tuple(0, 0.49, 0.84575238095),
+        boost::make_tuple(0, 1.21, 0.0),
+        boost::make_tuple(1, 1.49, 0.562987654321),
+        boost::make_tuple(1, 1.59, 0.490888888889),
+        boost::make_tuple(2, 1.99, 0.62429409171),
+        boost::make_tuple(3, 1.19, 0.0),
+        boost::make_tuple(3, 1.99, 0.12382936508),
+        boost::make_tuple(3, 3.59, 0.765914285714);
+
+
+    const Real tol = 1e-10;
+    for (Size i=0; i < referenceValues.size(); ++i) {
+        const Natural idx = referenceValues[i].get<0>();
+        const Real x = referenceValues[i].get<1>();
+        const Real expected = referenceValues[i].get<2>();
+
+        const Real calculated = bspline(idx, x);
+
+        if (   boost::math::isnan(calculated)
+            || std::fabs(calculated - expected) > tol) {
+            BOOST_FAIL("failed to reproduce the B-Spline value"
+                    << "\n    i         : " << idx
+                    << "\n    x         : " << x
+                    << "\n    calculated: " << calculated
+                    << "\n    expected  : " << expected
+                    << "\n    difference: " << std::fabs(calculated-expected)
+                    << "\n    tolerance : " << tol);
+        }
+    }
+}
 
 test_suite* InterpolationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
@@ -2191,9 +2240,9 @@ test_suite* InterpolationTest::suite() {
         &InterpolationTest::testLagrangeInterpolationAtSupportPoint));
     suite->add(QUANTLIB_TEST_CASE(
         &InterpolationTest::testLagrangeInterpolationDerivative));
-
     suite->add(QUANTLIB_TEST_CASE(
         &InterpolationTest::testLagrangeInterpolationOnChebyshevPoints));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBSplines));
 
     return suite;
 }

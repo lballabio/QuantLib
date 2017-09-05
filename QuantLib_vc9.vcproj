@@ -3066,6 +3066,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\math\matrixutilities\gmres.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\matrixutilities\gmres.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\matrixutilities\pseudosqrt.cpp"
 					>
 				</File>
@@ -7279,6 +7287,10 @@
 				>
 				<File
 					RelativePath=".\ql\time\daycounters\actual360.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\time\daycounters\actual365fixed.cpp"
 					>
 				</File>
 				<File

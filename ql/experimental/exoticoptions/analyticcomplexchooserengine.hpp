@@ -32,7 +32,7 @@ namespace QuantLib {
 
     class AnalyticComplexChooserEngine : public ComplexChooserOption::engine {
       public:
-        AnalyticComplexChooserEngine(
+        explicit AnalyticComplexChooserEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
         void calculate() const;
 

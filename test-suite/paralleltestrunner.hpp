@@ -298,7 +298,7 @@ int main( int argc, char* argv[] )
             } mutex_remover;
 
             struct queue_remove {
-                queue_remove(const char* name) : name_(name) { }
+                explicit queue_remove(const char* name) : name_(name) { }
                 ~queue_remove() { message_queue::remove(name_); }
 
             private:

@@ -40,10 +40,10 @@
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/mchestonhullwhiteengine.hpp>
 #include <ql/methods/finitedifferences/finitedifferencemodel.hpp>
+#include <ql/math/matrixutilities/gmres.hpp>
 #include <ql/math/matrixutilities/bicgstab.hpp>
 #include <ql/methods/finitedifferences/schemes/douglasscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/hundsdorferscheme.hpp>
-#include <ql/methods/finitedifferences/schemes/impliciteulerscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/craigsneydscheme.hpp>
 #include <ql/methods/finitedifferences/meshers/uniformgridmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
@@ -1248,41 +1248,87 @@ namespace {
         Array retVal(y.begin(), y.end());
         return retVal;
     }
+
+    boost::numeric::ublas::compressed_matrix<Real> createTestMatrix(
+        Size n, Size m, Real theta) {
+
+        boost::numeric::ublas::compressed_matrix<Real> a(n*m, n*m);
+
+        for (Size i=0; i < n; ++i) {
+            for (Size j=0; j < m; ++j) {
+                const Size k = i*m+j;
+                a(k,k)=1.0;
+
+                if (i > 0 && j > 0 && i <n-1 && j < m-1) {
+                    const Size im1 = i-1;
+                    const Size ip1 = i+1;
+                    const Size jm1 = j-1;
+                    const Size jp1 = j+1;
+                    const Real delta = theta/((ip1-im1)*(jp1-jm1));
+
+                    a(k,im1*m+jm1) =  delta;
+                    a(k,im1*m+jp1) = -delta;
+                    a(k,ip1*m+jm1) = -delta;
+                    a(k,ip1*m+jp1) =  delta;
+                }
+            }
+        }
+
+        return a;
+    }
 }
 #endif
-
 
 void FdmLinearOpTest::testBiCGstab() {
 #if !defined(QL_NO_UBLAS_SUPPORT)
     BOOST_TEST_MESSAGE("Testing bi-conjugated gradient stabilized algorithm "
-                       "with Heston operator...");
+                       "...");
 
     const Size n=41, m=21;
     const Real theta = 1.0;
-    boost::numeric::ublas::compressed_matrix<Real> a(n*m, n*m);
-    
-    for (Size i=0; i < n; ++i) {
-        for (Size j=0; j < m; ++j) {
-            const Size k = i*m+j;
-            a(k,k)=1.0;
+    const boost::numeric::ublas::compressed_matrix<Real> a
+        = createTestMatrix(n, m, theta);
 
-            if (i > 0 && j > 0 && i <n-1 && j < m-1) {
-                const Size im1 = i-1;
-                const Size ip1 = i+1;
-                const Size jm1 = j-1;
-                const Size jp1 = j+1;
-                const Real delta = theta/((ip1-im1)*(jp1-jm1));
+    const boost::function<Disposable<Array>(const Array&)> matmult(
+                                                boost::bind(&axpy, a, _1));
 
-                a(k,im1*m+jm1) =  delta;
-                a(k,im1*m+jp1) = -delta;
-                a(k,ip1*m+jm1) = -delta;
-                a(k,ip1*m+jp1) =  delta;
-            }
-        }
+    SparseILUPreconditioner ilu(a, 4);
+    boost::function<Disposable<Array>(const Array&)> precond(
+         boost::bind(&SparseILUPreconditioner::apply, &ilu, _1));
+
+    Array b(n*m);
+    MersenneTwisterUniformRng rng(1234);
+    for (Size i=0; i < b.size(); ++i) {
+        b[i] = rng.next().value;
     }
-    
-    boost::function<Disposable<Array>(const Array&)> matmult(
-                                                    boost::bind(&axpy, a, _1));
+
+    const Real tol = 1e-10;
+
+    const BiCGstab biCGstab(matmult, n*m, tol, precond);
+    const Array x = biCGstab.solve(b).x;
+
+    const Real error = std::sqrt(DotProduct(b-axpy(a, x),
+                                 b-axpy(a, x))/DotProduct(b,b));
+
+    if (error > tol) {
+        BOOST_FAIL("Error calculating the inverse using BiCGstab" <<
+                "\n tolerance:  " << tol <<
+                "\n error:      " << error);
+    }
+#endif
+}
+
+void FdmLinearOpTest::testGMRES() {
+#if !defined(QL_NO_UBLAS_SUPPORT)
+    BOOST_TEST_MESSAGE("Testing GMRES algorithm ...");
+
+    const Size n=41, m=21;
+    const Real theta = 1.0;
+    const boost::numeric::ublas::compressed_matrix<Real> a
+        = createTestMatrix(n, m, theta);
+
+    const boost::function<Disposable<Array>(const Array&)> matmult(
+                                                boost::bind(&axpy, a, _1));
     
     SparseILUPreconditioner ilu(a, 4);
     boost::function<Disposable<Array>(const Array&)> precond(
@@ -1296,17 +1342,37 @@ void FdmLinearOpTest::testBiCGstab() {
 
     const Real tol = 1e-10;
 
-    const BiCGstab biCGstab(matmult, n*m, tol, precond);
-    const Array x = biCGstab.solve(b).x;
+    const GMRES gmres(matmult, n*m, tol, precond);
+    const GMRESResult result = gmres.solve(b, b);
+    const Array x = result.x;
+    const Real errorCalculated = result.errors.back();
 
     const Real error = std::sqrt(DotProduct(b-axpy(a, x), 
                                  b-axpy(a, x))/DotProduct(b,b));
 
     if (error > tol) {
-        BOOST_FAIL("Error calculating the inverse using BiCGstab" <<
+        BOOST_FAIL("Error calculating the inverse using GMRES" <<
                 "\n tolerance:  " << tol <<
                 "\n error:      " << error);
-    }  
+    }
+
+    if (std::fabs(error - errorCalculated) > 10*QL_EPSILON) {
+        BOOST_FAIL("Calculation if the error in GMRES went wrong" <<
+                "\n calculated: " << errorCalculated <<
+                "\n error:      " << error);
+
+    }
+
+    const GMRES gmresRestart(matmult, 5, tol, precond);
+    const GMRESResult resultRestart = gmresRestart.solveWithRestart(5, b, b);
+    const Real errorWithRestart = resultRestart.errors.back();
+
+    if (errorWithRestart > tol) {
+        BOOST_FAIL("Error calculating the inverse using "
+                "GMRES with restarts" <<
+                "\n tolerance:  " << tol <<
+                "\n error:      " << errorWithRestart);
+    }
 #endif
 }
 
@@ -1561,6 +1627,7 @@ test_suite* FdmLinearOpTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmHestonExpress));
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmHestonHullWhiteOp));
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testBiCGstab));
+    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testGMRES));
     suite->add(
         QUANTLIB_TEST_CASE(&FdmLinearOpTest::testCrankNicolsonWithDamping));
     suite->add(

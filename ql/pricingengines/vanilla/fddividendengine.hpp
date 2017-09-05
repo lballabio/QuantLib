@@ -199,9 +199,7 @@ namespace QuantLib {
           private:
             const Dividend *dividend;
           public:
-            DividendAdder (const Dividend *d) {
-                dividend = d;
-            }
+            explicit DividendAdder (const Dividend *d) : dividend(d) {}
             Real operator() (Real x) const {
                 return x + dividend->amount(x);
             }

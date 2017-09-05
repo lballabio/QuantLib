@@ -32,17 +32,6 @@ namespace QuantLib {
       marketSpread_(marketSpread),
       spreadVolatility_(spreadVolatility) {}
 
-    RiskyAssetSwapOption::RiskyAssetSwapOption(
-                                 bool payer,
-                                 const boost::shared_ptr<RiskyAssetSwap>& asw,
-                                 const Date& expiry,
-                                 Rate marketSpread,
-                                 Volatility spreadVolatility)
-    : asw_(asw), expiry_(expiry),
-      marketSpread_(marketSpread),
-      spreadVolatility_(spreadVolatility) {}
-
-
     bool RiskyAssetSwapOption::isExpired() const {
         return detail::simple_event(expiry_).hasOccurred();
     }
