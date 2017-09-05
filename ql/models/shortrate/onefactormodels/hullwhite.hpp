@@ -50,7 +50,7 @@ namespace QuantLib {
         HullWhite(const Handle<YieldTermStructure>& termStructure,
                   Real a = 0.1, Real sigma = 0.01);
 
-        boost::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
+        std::auto_ptr<Lattice> tree(const TimeGrid& grid) const;
 
         boost::shared_ptr<ShortRateDynamics> dynamics() const;
 

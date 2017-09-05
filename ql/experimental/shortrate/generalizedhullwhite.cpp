@@ -87,7 +87,7 @@ namespace QuantLib {
       public:
         Helper(const Size i, const Real xMin, const Real dx,
                const Real discountBondPrice,
-               const boost::shared_ptr<ShortRateTree>& tree,
+               const std::auto_ptr<ShortRateTree>& tree,
                const boost::function<Real(Real)>& fInv)
         : size_(tree->size(i)),
           dt_(tree->timeGrid().dt(i)),
@@ -277,7 +277,7 @@ namespace QuantLib {
     }
 
 
-    boost::shared_ptr<Lattice> GeneralizedHullWhite::tree(
+    std::auto_ptr<Lattice> GeneralizedHullWhite::tree(
                                                   const TimeGrid& grid) const{
 
         TermStructureFittingParameter phi(termStructure());
@@ -285,7 +285,7 @@ namespace QuantLib {
             new Dynamics(phi, speed(), vol(), f_, fInverse_));
         boost::shared_ptr<TrinomialTree> trinomial(
             new TrinomialTree(numericDynamics->process(), grid));
-        boost::shared_ptr<ShortRateTree> numericTree(
+        std::auto_ptr<ShortRateTree> numericTree(
             new ShortRateTree(trinomial, numericDynamics, grid));
         typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
         boost::shared_ptr<NumericalImpl> impl =
@@ -307,7 +307,7 @@ namespace QuantLib {
             impl->set(grid[i], value);
         }
 
-        return numericTree;
+        return std::auto_ptr<Lattice> (numericTree);
     }
 
     boost::function<Real (Time)> GeneralizedHullWhite::speed() const {

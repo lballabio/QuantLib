@@ -56,7 +56,7 @@ namespace QuantLib {
 
         virtual boost::shared_ptr<ShortRateDynamics> dynamics() const;
 
-        boost::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
+        std::auto_ptr<Lattice> tree(const TimeGrid& grid) const;
 
         class Dynamics;
       protected:

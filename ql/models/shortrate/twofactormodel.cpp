@@ -26,7 +26,7 @@ namespace QuantLib {
     TwoFactorModel::TwoFactorModel(Size nArguments)
     : ShortRateModel(nArguments) {}
 
-    boost::shared_ptr<Lattice>
+    std::auto_ptr<Lattice>
     TwoFactorModel::tree(const TimeGrid& grid) const {
         boost::shared_ptr<ShortRateDynamics> dyn = dynamics();
 
@@ -35,7 +35,7 @@ namespace QuantLib {
         boost::shared_ptr<TrinomialTree> tree2(
                                     new TrinomialTree(dyn->yProcess(), grid));
 
-        return boost::shared_ptr<Lattice>(
+        return std::auto_ptr<Lattice>(
                         new TwoFactorModel::ShortRateTree(tree1, tree2, dyn));
     }
 

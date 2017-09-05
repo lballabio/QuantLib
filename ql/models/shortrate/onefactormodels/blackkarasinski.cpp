@@ -28,7 +28,7 @@ namespace QuantLib {
       public:
         Helper(Size i, Real xMin, Real dx,
                Real discountBondPrice,
-               const boost::shared_ptr<ShortRateTree>& tree)
+               const std::auto_ptr<ShortRateTree>& tree)
         : size_(tree->size(i)),
           dt_(tree->timeGrid().dt(i)),
           xMin_(xMin), dx_(dx),
@@ -65,7 +65,7 @@ namespace QuantLib {
         registerWith(termStructure);
     }
 
-    boost::shared_ptr<Lattice>
+    std::auto_ptr<Lattice>
     BlackKarasinski::tree(const TimeGrid& grid) const {
 
         TermStructureFittingParameter phi(termStructure());
@@ -75,7 +75,7 @@ namespace QuantLib {
 
         boost::shared_ptr<TrinomialTree> trinomial(
                          new TrinomialTree(numericDynamics->process(), grid));
-        boost::shared_ptr<ShortRateTree> numericTree(
+        std::auto_ptr<ShortRateTree> numericTree(
                          new ShortRateTree(trinomial, numericDynamics, grid));
 
         typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
@@ -97,7 +97,7 @@ namespace QuantLib {
             // vMin = value - 10.0;
             // vMax = value + 10.0;
         }
-        return numericTree;
+        return std::auto_ptr<Lattice>(numericTree);
     }
 
 }

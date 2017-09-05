@@ -51,7 +51,7 @@ namespace QuantLib {
                               Real x0 = 0.05,
                               bool withFellerConstraint = true);
 
-        boost::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
+        std::auto_ptr<Lattice> tree(const TimeGrid& grid) const;
 
         boost::shared_ptr<ShortRateDynamics> dynamics() const;
 
