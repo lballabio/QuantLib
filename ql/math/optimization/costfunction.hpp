@@ -27,6 +27,7 @@
 
 #include <ql/math/array.hpp>
 #include <ql/math/matrix.hpp>
+#include <ql/math/functional.hpp>
 
 namespace QuantLib {
 
@@ -35,7 +36,12 @@ namespace QuantLib {
       public:
         virtual ~CostFunction() {}
         //! method to overload to compute the cost function value in x
-        virtual Real value(const Array& x) const = 0;
+        virtual Real value(const Array& x) const {
+            Array v = values(x);
+            std::transform(v.begin(), v.end(), v.begin(), square<Real>());
+            return std::sqrt(std::accumulate(v.begin(), v.end(), 0.0) /
+                             static_cast<Real>(v.size()));
+        }
         //! method to overload to compute the cost function values in x
         virtual Disposable<Array> values(const Array& x) const =0;
 
