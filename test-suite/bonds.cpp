@@ -1410,7 +1410,7 @@ void BondTest::testThiry360BondWithSettlementOn31st(){
     double cleanPrice = 100;
 
     Real yield = BondFunctions::yield(fixedRateBond, cleanPrice, dayCounter, compounding, Semiannual, settlement);
-    ASSERT_CLOSE("yield", settlement, yield, 0.015, 1e-3);
+    ASSERT_CLOSE("yield", settlement, yield, 0.015, 1e-4);
 
     Real duration = BondFunctions::duration(fixedRateBond, InterestRate(yield, dayCounter, compounding, Semiannual), Duration::Macaulay, settlement);
     ASSERT_CLOSE("duration", settlement, duration, 1.022, 1e-3);
