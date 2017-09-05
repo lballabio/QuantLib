@@ -807,10 +807,17 @@ void OptionletStripperTest::testSwitchStrike() {
         new OptionletStripper1(vars.capFloorVolSurface, iborIndex,
                                Null< Rate >(), vars.accuracy));
 
-    Real error = std::fabs(optionletStripper1->switchStrike() - 0.02981223);
+
+    #if defined(QL_USE_INDEXED_COUPON)
+    Real expected = 0.02981258;
+    #else
+    Real expected = 0.02981223;
+    #endif
+
+    Real error = std::fabs(optionletStripper1->switchStrike() - expected);
     if (error > vars.tolerance)
         BOOST_FAIL("\nSwitchstrike not correctly computed:  "
-                   << "\nexpected switch strike: " << io::rate(0.02981223)
+                   << "\nexpected switch strike: " << io::rate(expected)
                    << "\ncomputed switch strike: "
                    << io::rate(optionletStripper1->switchStrike())
                    << "\nerror:         " << io::rate(error)
@@ -819,10 +826,16 @@ void OptionletStripperTest::testSwitchStrike() {
     yieldTermStructure.linkTo(boost::shared_ptr< FlatForward >(
         new FlatForward(0, vars.calendar, 0.05, vars.dayCounter)));
 
-    error = std::fabs(optionletStripper1->switchStrike() - 0.0499371);
+    #if defined(QL_USE_INDEXED_COUPON)
+    expected = 0.0499381;
+    #else
+    expected = 0.0499371;
+    #endif
+
+    error = std::fabs(optionletStripper1->switchStrike() - expected);
     if (error > vars.tolerance)
         BOOST_FAIL("\nSwitchstrike not correctly computed:  "
-                   << "\nexpected switch strike: " << io::rate(0.0499371)
+                   << "\nexpected switch strike: " << io::rate(expected)
                    << "\ncomputed switch strike: "
                    << io::rate(optionletStripper1->switchStrike())
                    << "\nerror:         " << io::rate(error)
