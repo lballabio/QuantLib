@@ -55,7 +55,7 @@ namespace QuantLib {
                     const Date& refPeriodStart = Date(),
                     const Date& refPeriodEnd = Date(),
                     const DayCounter& dayCounter = DayCounter(),
-                    const bool telescopicValueDates = false);
+                    bool telescopicValueDates = false);
         //! \name Inspectors
         //@{
         //! fixing dates for the rates to be compounded
@@ -97,7 +97,7 @@ namespace QuantLib {
         OvernightLeg& withGearings(const std::vector<Real>& gearings);
         OvernightLeg& withSpreads(Spread spread);
         OvernightLeg& withSpreads(const std::vector<Spread>& spreads);
-        OvernightLeg& withTelescopicValueDates(const bool telescopicValueDates);
+        OvernightLeg& withTelescopicValueDates(bool telescopicValueDates);
         operator Leg() const;
       private:
         Schedule schedule_;

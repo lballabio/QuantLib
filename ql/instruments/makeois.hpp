@@ -63,7 +63,7 @@ namespace QuantLib {
         MakeOIS& withDiscountingTermStructure(
                   const Handle<YieldTermStructure>& discountingTermStructure);
 
-        MakeOIS &withTelescopicValueDates(const bool telescopicValueDates);
+        MakeOIS &withTelescopicValueDates(bool telescopicValueDates);
 
         MakeOIS& withPricingEngine(
                               const boost::shared_ptr<PricingEngine>& engine);

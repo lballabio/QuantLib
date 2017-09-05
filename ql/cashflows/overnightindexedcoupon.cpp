@@ -123,7 +123,7 @@ namespace QuantLib {
                     const Date& refPeriodStart,
                     const Date& refPeriodEnd,
                     const DayCounter& dayCounter,
-                    const bool telescopicValueDates)
+                    bool telescopicValueDates)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          overnightIndex->fixingDays(), overnightIndex,
                          gearing, spread,
@@ -259,7 +259,7 @@ namespace QuantLib {
         return *this;
     }
 
-    OvernightLeg& OvernightLeg::withTelescopicValueDates(const bool telescopicValueDates) {
+    OvernightLeg& OvernightLeg::withTelescopicValueDates(bool telescopicValueDates) {
         telescopicValueDates_ = telescopicValueDates;
         return *this;
     }

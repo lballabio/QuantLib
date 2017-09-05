@@ -348,10 +348,11 @@ void OvernightIndexedSwapTest::testCachedValue() {
                     "\n tolerance:" << tolerance);
 }
 
+namespace {
+void testBootstrap(bool telescopicValueDates) {
 
-void OvernightIndexedSwapTest::testBootstrap() {
-
-    BOOST_TEST_MESSAGE("Testing Eonia-swap curve building...");
+    BOOST_TEST_MESSAGE("Testing Eonia-swap curve building "
+                       << (telescopicValueDates ? "(with telescopic value dates) " : "") << "...");
 
     CommonVars vars;
 
@@ -406,7 +407,9 @@ void OvernightIndexedSwapTest::testBootstrap() {
                      OISRateHelper(eoniaSwapData[i].settlementDays,
                                    term,
                                    Handle<Quote>(quote),
-                                   eonia));
+                                   eonia,
+                                   Handle<YieldTermStructure>(),
+                                   telescopicValueDates));
         eoniaHelpers.push_back(helper);
     }
 
@@ -477,6 +480,12 @@ void OvernightIndexedSwapTest::testBootstrap() {
                   << (zero3m - zero1d) * 10000.0 << std::endl;
     }
     */
+} // testBootstrap(telescopicValueDates)
+} // anonymous namespace
+
+void OvernightIndexedSwapTest::testBootstrap() {
+    ::testBootstrap(false);
+    ::testBootstrap(true);
 }
 
 void OvernightIndexedSwapTest::testSeasonedSwaps() {
