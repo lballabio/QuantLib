@@ -3,6 +3,8 @@
 /*
  Copyright (C) 2009 Roland Lichters
  Copyright (C) 2009 Ferdinando Ametrano
+ Copyright (C) 2017 Joseph Jeisman
+ Copyright (C) 2017 Fabrice Lecuyer
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -83,6 +85,8 @@ namespace QuantLib {
         OvernightLeg& withNotionals(const std::vector<Real>& notionals);
         OvernightLeg& withPaymentDayCounter(const DayCounter&);
         OvernightLeg& withPaymentAdjustment(BusinessDayConvention);
+        OvernightLeg& withPaymentCalendar(const Calendar&);
+        OvernightLeg& withPaymentLag(Natural lag);
         OvernightLeg& withGearings(Real gearing);
         OvernightLeg& withGearings(const std::vector<Real>& gearings);
         OvernightLeg& withSpreads(Spread spread);
@@ -93,7 +97,9 @@ namespace QuantLib {
         boost::shared_ptr<OvernightIndex> overnightIndex_;
         std::vector<Real> notionals_;
         DayCounter paymentDayCounter_;
+        Calendar paymentCalendar_;
         BusinessDayConvention paymentAdjustment_;
+        Natural paymentLag_;
         std::vector<Real> gearings_;
         std::vector<Spread> spreads_;
     };
