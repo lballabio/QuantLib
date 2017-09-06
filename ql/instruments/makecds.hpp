@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file makevcds.hpp
+/*! \file makecds.hpp
     \brief Helper class to instantiate standard market cds.
 */
 

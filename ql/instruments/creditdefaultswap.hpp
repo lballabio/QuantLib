@@ -58,7 +58,10 @@ namespace QuantLib {
         class arguments;
         class results;
         class engine;
-
+        enum CdsPricingEngine {
+            Midpoint,
+            Isda
+        };
         //! \name Constructors
         //@{
         //! CDS quoted as running-spread only
@@ -218,7 +221,7 @@ namespace QuantLib {
                                const DayCounter& dayCounter,
                                Real recoveryRate = 0.4,
                                Real accuracy = 1.0e-6,
-                               bool useIsdaEngine = false) const;
+                               const CdsPricingEngine pricingEngine = Midpoint) const;
 
         //! Conventional/standard upfront-to-spread conversion
         /*! Under a standard ISDA model and a set of standardised
@@ -254,7 +257,7 @@ namespace QuantLib {
         Rate conventionalSpread(Real conventionalRecovery,
                                 const Handle<YieldTermStructure>& discountCurve,
                                 const DayCounter& dayCounter,
-                                bool useIsdaEngine = false) const;
+                                const CdsPricingEngine pricingEngine = Midpoint) const;
         //@}
       protected:
         //! \name Instrument interface

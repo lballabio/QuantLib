@@ -676,7 +676,7 @@ void CreditDefaultSwapTest::testIsdaEngine() {
                                                     Actual365Fixed(),
                                                     recoveries[k],
                                                     1e-8,
-                                                    true);
+                                                    CreditDefaultSwap::Isda);
 
             probabilityCurve.linkTo(
                 boost::make_shared<FlatHazardRate>(

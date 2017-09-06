@@ -30,6 +30,7 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
+#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -319,27 +320,28 @@ namespace QuantLib {
                                const DayCounter& dayCounter,
                                Real recoveryRate,
                                Real accuracy,
-                               bool useIsdaEngine) const {
+                               const CdsPricingEngine pricingEngine) const {
 
-        boost::shared_ptr<SimpleQuote> flatRate(new SimpleQuote(0.0));
+        boost::shared_ptr<SimpleQuote> flatRate = boost::make_shared<SimpleQuote>(0.0);
 
-        Handle<DefaultProbabilityTermStructure> probability(
-            boost::shared_ptr<DefaultProbabilityTermStructure>(new
-                FlatHazardRate(0, WeekendsOnly(),
-                               Handle<Quote>(flatRate), dayCounter)));
+        Handle<DefaultProbabilityTermStructure> probability =
+            Handle<DefaultProbabilityTermStructure>(
+                boost::make_shared<FlatHazardRate>(0, WeekendsOnly(),
+                                                   Handle<Quote>(flatRate), dayCounter));
 
         boost::shared_ptr<PricingEngine> engine;
-        if(useIsdaEngine) {
-            engine.reset(new IsdaCdsEngine(
-                             probability, recoveryRate, discountCurve,
-                             boost::none,
-                             IsdaCdsEngine::Taylor,
-                             IsdaCdsEngine::HalfDayBias,
-                             IsdaCdsEngine::Piecewise));
-        } else {
-            engine.reset(new MidPointCdsEngine(
-                        probability, recoveryRate, discountCurve));
+        if(pricingEngine == Midpoint) {
+            engine = boost::make_shared<MidPointCdsEngine>(
+                probability, recoveryRate, discountCurve);
+        } else if(pricingEngine == Isda) {
+            engine = boost::make_shared<IsdaCdsEngine>(
+                probability, recoveryRate, discountCurve,
+                boost::none,
+                IsdaCdsEngine::Taylor,
+                IsdaCdsEngine::HalfDayBias,
+                IsdaCdsEngine::Piecewise);
         }
+
         setupArguments(engine->getArguments());
         const CreditDefaultSwap::results* results =
             dynamic_cast<const CreditDefaultSwap::results*>(
@@ -352,37 +354,36 @@ namespace QuantLib {
         return std::exp(Brent().solve(f, accuracy, guess, step));
     }
 
-
     Rate CreditDefaultSwap::conventionalSpread(
                               Real conventionalRecovery,
                               const Handle<YieldTermStructure>& discountCurve,
                               const DayCounter& dayCounter,
-                              bool useIsdaEngine) const {
+                              const CdsPricingEngine pricingEngine) const {
 
-        boost::shared_ptr<SimpleQuote> flatRate(new SimpleQuote(0.0));
+        boost::shared_ptr<SimpleQuote> flatRate = boost::make_shared<SimpleQuote>(0.0);
 
-        Handle<DefaultProbabilityTermStructure> probability(
-            boost::shared_ptr<DefaultProbabilityTermStructure>(new
-                FlatHazardRate(0, WeekendsOnly(),
-                               Handle<Quote>(flatRate), dayCounter)));
+        Handle<DefaultProbabilityTermStructure> probability =
+            Handle<DefaultProbabilityTermStructure>(
+                boost::make_shared<FlatHazardRate>(0, WeekendsOnly(),
+                                                   Handle<Quote>(flatRate), dayCounter));
 
         boost::shared_ptr<PricingEngine> engine;
-        if(useIsdaEngine) {
-            engine.reset(new IsdaCdsEngine(
-                             probability, conventionalRecovery, discountCurve,
-                             boost::none,
-                             IsdaCdsEngine::Taylor,
-                             IsdaCdsEngine::HalfDayBias,
-                             IsdaCdsEngine::Piecewise));
-        } else {
-            engine.reset(new MidPointCdsEngine(
-                             probability, conventionalRecovery, discountCurve));
+        if(pricingEngine == Midpoint) {
+            engine = boost::make_shared<MidPointCdsEngine>(
+                probability, conventionalRecovery, discountCurve);
+        } else if(pricingEngine == Isda) {
+            engine = boost::make_shared<IsdaCdsEngine>(
+                probability, conventionalRecovery, discountCurve,
+                boost::none,
+                IsdaCdsEngine::Taylor,
+                IsdaCdsEngine::HalfDayBias,
+                IsdaCdsEngine::Piecewise);
         }
 
         setupArguments(engine->getArguments());
         const CreditDefaultSwap::results* results =
             dynamic_cast<const CreditDefaultSwap::results*>(
-                                                       engine->getResults());
+                engine->getResults());
 
         ObjectiveFunction f(0., *flatRate, *engine, results);
         Rate guess = std::log(runningSpread_ / (1 - conventionalRecovery) * 365./360.);
