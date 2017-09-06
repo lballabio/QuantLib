@@ -45,9 +45,6 @@
 #include <iostream>
 #include <iomanip>
 
-#include <boost/make_shared.hpp>
-#include <memory>
-
 using namespace std;
 using namespace QuantLib;
 
