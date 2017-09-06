@@ -121,9 +121,6 @@ struct CommonVars {
                     new InterpolatedZeroCurve< Linear >(dates, rates,
                                                         dayCounter, calendar)));
 
-            QL_REQUIRE(!discountingYTS.empty(),
-                       "Could not create discounting yieldcurve")
-
             datesTmp.clear();
             dates.clear();
             rates.clear();
@@ -150,9 +147,6 @@ struct CommonVars {
                 boost::shared_ptr< InterpolatedZeroCurve< Linear > >(
                     new InterpolatedZeroCurve< Linear >(dates, rates,
                                                         dayCounter, calendar)));
-
-            QL_REQUIRE(!forwardingYTS.empty(),
-                       "Could not create forwarding yieldcurve");
         }
 
         void setFlatTermVolCurve() {
@@ -527,15 +521,9 @@ void OptionletStripperTest::testTermVolatilityStrippingNormalVol() {
                                Null< Rate >(), vars.accuracy, 100,
                                vars.discountingYTS, Normal));
 
-    QL_REQUIRE(optionletStripper1 != NULL,
-               "Could not create optionletStripper");
-
     boost::shared_ptr< StrippedOptionletAdapter > strippedOptionletAdapter =
         boost::shared_ptr< StrippedOptionletAdapter >(
             new StrippedOptionletAdapter(optionletStripper1));
-
-    QL_REQUIRE(optionletStripper1 != NULL,
-               "Could not create StrippedOptionletAdapter");
 
     Handle< OptionletVolatilityStructure > vol(strippedOptionletAdapter);
 
@@ -543,7 +531,6 @@ void OptionletStripperTest::testTermVolatilityStrippingNormalVol() {
 
     boost::shared_ptr< BachelierCapFloorEngine > strippedVolEngine(
         new BachelierCapFloorEngine(vars.discountingYTS, vol));
-    QL_REQUIRE(strippedVolEngine != NULL, "Could not create strippedVolEngine");
 
     boost::shared_ptr< CapFloor > cap;
     for (Size tenorIndex = 0; tenorIndex < vars.optionTenors.size();
@@ -602,15 +589,9 @@ void OptionletStripperTest::testTermVolatilityStrippingShiftedLogNormalVol() {
                                vars.discountingYTS, ShiftedLognormal, shift,
                                true));
 
-    QL_REQUIRE(optionletStripper1 != NULL,
-               "Could not create optionletStripper");
-
     boost::shared_ptr< StrippedOptionletAdapter > strippedOptionletAdapter =
         boost::shared_ptr< StrippedOptionletAdapter >(
             new StrippedOptionletAdapter(optionletStripper1));
-
-    QL_REQUIRE(optionletStripper1 != NULL,
-               "Could not create StrippedOptionletAdapter");
 
     Handle< OptionletVolatilityStructure > vol(strippedOptionletAdapter);
 
@@ -618,7 +599,6 @@ void OptionletStripperTest::testTermVolatilityStrippingShiftedLogNormalVol() {
 
     boost::shared_ptr< BlackCapFloorEngine > strippedVolEngine(
         new BlackCapFloorEngine(vars.discountingYTS, vol));
-    QL_REQUIRE(strippedVolEngine != NULL, "Could not create strippedVolEngine");
 
     boost::shared_ptr< CapFloor > cap;
     for (Size strikeIndex = 0; strikeIndex < vars.strikes.size();
@@ -854,11 +834,14 @@ test_suite* OptionletStripperTest::suite() {
                        &OptionletStripperTest::testTermVolatilityStripping2));
     suite->add(QUANTLIB_TEST_CASE(
                        &OptionletStripperTest::testSwitchStrike));
+
+    #if defined(QL_NEGATIVE_RATES)
     suite->add(QUANTLIB_TEST_CASE(
         &OptionletStripperTest::testTermVolatilityStrippingNormalVol));
     suite->add(
         QUANTLIB_TEST_CASE(&OptionletStripperTest::
                                testTermVolatilityStrippingShiftedLogNormalVol));
+    #endif
 
     return suite;
 }
