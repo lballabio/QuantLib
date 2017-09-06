@@ -67,9 +67,9 @@ namespace QuantLib {
                   const DayCounter& dayCounter,
                   Real recoveryRate,
                   const Handle<YieldTermStructure>& discountCurve,
-                  const Date& startDate = Date(),
                   bool settlesAccrual = true,
                   bool paysAtDefaultTime = true,
+                  const Date& startDate = Date(),
                   const DayCounter& lastPeriodDayCounter = DayCounter(),
                   bool rebatesAccrual = true,
                   bool useIsdaEngine = false); // switch to true later on ?
@@ -83,9 +83,9 @@ namespace QuantLib {
                   const DayCounter& dayCounter,
                   Real recoveryRate,
                   const Handle<YieldTermStructure>& discountCurve,
-                  const Date& startDate = Date(),
                   bool settlesAccrual = true,
                   bool paysAtDefaultTime = true,
+                  const Date& startDate = Date(),
                   const DayCounter& lastPeriodDayCounter = DayCounter(),
                   bool rebatesAccrual = true,
                   bool useIsdaEngine = false); // switch to true later on ?
@@ -128,17 +128,6 @@ namespace QuantLib {
         //! protection effective date.
         Date protectionStart_;
         Date startDate_;
-      private:
-        // we need this method in order to be able to pass rate and credit helpers
-        // to the standard isda engine and set the discount curve in the credit
-        // helpers as soons as the rate curve is built
-        void setDiscountCurve(const Handle<YieldTermStructure>& discountCurve) {
-            unregisterWith(discountCurve_);
-            discountCurve_ = discountCurve;
-            registerWith(discountCurve_);
-            update();
-        }
-        friend class IsdaCdsEngine;
     };
 
     //! Spread-quoted CDS hazard rate bootstrap helper.
@@ -154,9 +143,9 @@ namespace QuantLib {
                         const DayCounter& dayCounter,
                         Real recoveryRate,
                         const Handle<YieldTermStructure>& discountCurve,
-                        const Date& startDate = Date(),
                         bool settlesAccrual = true,
                         bool paysAtDefaultTime = true,
+                        const Date& startDate = Date(),
                         const DayCounter& lastPeriodDayCounter = DayCounter(),
                         bool rebatesAccrual = true,
                         bool useIsdaEngine = false); // switch to true later on ?
@@ -171,9 +160,9 @@ namespace QuantLib {
                         const DayCounter& dayCounter, // ISDA: Actual/360
                         Real recoveryRate,
                         const Handle<YieldTermStructure>& discountCurve,
-                        const Date& startDate = Date(),
                         bool settlesAccrual = true,
                         bool paysAtDefaultTime = true,
+                        const Date& startDate = Date(),
                         const DayCounter& lastPeriodDayCounter = DayCounter(), // ISDA: Actual/360(inc)
                         const bool rebatesAccrual = true, // ISDA: true
                         bool useIsdaEngine = false); // switch to true later on ?
@@ -197,10 +186,10 @@ namespace QuantLib {
                          const DayCounter& dayCounter,
                          Real recoveryRate,
                          const Handle<YieldTermStructure>& discountCurve,
-                         const Date& startDate = Date(),
                          Natural upfrontSettlementDays = 0,
                          bool settlesAccrual = true,
                          bool paysAtDefaultTime = true,
+                         const Date& startDate = Date(),
                          const DayCounter& lastPeriodDayCounter = DayCounter(),
                          const bool rebatesAccrual = true,
                          const bool useIsdaEngine = false); // switch to true later on ?
@@ -217,10 +206,10 @@ namespace QuantLib {
                          const DayCounter& dayCounter,
                          Real recoveryRate,
                          const Handle<YieldTermStructure>& discountCurve,
-                         const Date& startDate = Date(),
                          Natural upfrontSettlementDays = 0,
                          bool settlesAccrual = true,
                          bool paysAtDefaultTime = true,
+                         const Date& startDate = Date(),
                          const DayCounter& lastPeriodDayCounter = DayCounter(),
                          const bool rebatesAccrual = true,
                          const bool useIsdaEngine = false); // swtich to true later on ?

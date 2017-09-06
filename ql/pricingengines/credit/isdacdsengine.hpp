@@ -103,26 +103,6 @@ namespace QuantLib {
             const AccrualBias accrualBias = NoBias,
             const ForwardsInCouponPeriod forwardsInCouponPeriod = Piecewise);
 
-        /*! Constructor where the engine produces ISDA compliant interest and
-            credit curves. For the interest rate curve, rate helpers
-            compliant with [3] must be given. For the credit curve, the
-            discount curve handle in the helpers can be left empty
-            (since the rate curve is yet to be built). If more
-            than one helper is given, one should consider to convert each
-            one to an upfront helper (if it is given in conventional spread
-            flavour) to ensure precise consistency between the converter
-            pricing and full hazard term structure pricing */
-
-        IsdaCdsEngine(
-            const std::vector<boost::shared_ptr<DefaultProbabilityHelper> > &
-                probabilityHelpers,
-            Real recoveryRate,
-            const std::vector<boost::shared_ptr<RateHelper> > &rateHelpers,
-            boost::optional<bool> includeSettlementDateFlows = boost::none,
-            const NumericalFix numericalFix = Taylor,
-            const AccrualBias accrualBias = NoBias,
-            const ForwardsInCouponPeriod forwardsInCouponPeriod = Piecewise);
-
         const Handle<YieldTermStructure> isdaRateCurve() const {
             return discountCurve_;
         }

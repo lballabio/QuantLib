@@ -27,8 +27,6 @@
 
 #include <boost/make_shared.hpp>
 
-#include <iostream>
-
 #include <ql/utilities/null_deleter.hpp>
 
 namespace QuantLib {
@@ -40,8 +38,8 @@ namespace QuantLib {
                          DateGeneration::Rule rule,
                          const DayCounter &dayCounter, Real recoveryRate,
                          const Handle<YieldTermStructure> &discountCurve,
-                         const Date& startDate,
                          bool settlesAccrual, bool paysAtDefaultTime,
+                         const Date& startDate,
                          const DayCounter &lastPeriodDayCounter,
                          const bool rebatesAccrual, const bool useIsdaEngine)
         : RelativeDateDefaultProbabilityHelper(quote), tenor_(tenor),
@@ -67,8 +65,8 @@ namespace QuantLib {
                          DateGeneration::Rule rule,
                          const DayCounter &dayCounter, Real recoveryRate,
                          const Handle<YieldTermStructure> &discountCurve,
-                         const Date& startDate,
                          bool settlesAccrual, bool paysAtDefaultTime,
+                         const Date& startDate,
                          const DayCounter &lastPeriodDayCounter,
                          const bool rebatesAccrual, const bool useIsdaEngine)
         : RelativeDateDefaultProbabilityHelper(quote), tenor_(tenor),
@@ -147,16 +145,16 @@ namespace QuantLib {
                               const DayCounter& dayCounter,
                               Real recoveryRate,
                               const Handle<YieldTermStructure>& discountCurve,
-                              const Date& startDate,
                               bool settlesAccrual,
                               bool paysAtDefaultTime,
+                              const Date& startDate,
                               const DayCounter& lastPeriodDayCounter,
                               const bool rebatesAccrual,
                               const bool useIsdaEngine)
     : CdsHelper(runningSpread, tenor, settlementDays, calendar,
                 frequency, paymentConvention, rule, dayCounter,
-                recoveryRate, discountCurve, startDate, settlesAccrual,
-                paysAtDefaultTime,lastPeriodDayCounter,rebatesAccrual,
+                recoveryRate, discountCurve, settlesAccrual, paysAtDefaultTime,
+                startDate, lastPeriodDayCounter, rebatesAccrual,
                 useIsdaEngine) {}
 
     SpreadCdsHelper::SpreadCdsHelper(
@@ -170,16 +168,16 @@ namespace QuantLib {
                               const DayCounter& dayCounter,
                               Real recoveryRate,
                               const Handle<YieldTermStructure>& discountCurve,
-                              const Date& startDate,
                               bool settlesAccrual,
                               bool paysAtDefaultTime,
+                              const Date& startDate,
                               const DayCounter& lastPeriodDayCounter,
                               const bool rebatesAccrual,
                               const bool useIsdaEngine)
     : CdsHelper(runningSpread, tenor, settlementDays, calendar,
                 frequency, paymentConvention, rule, dayCounter,
-                recoveryRate, discountCurve, startDate, settlesAccrual,
-                paysAtDefaultTime,lastPeriodDayCounter,rebatesAccrual,
+                recoveryRate, discountCurve, settlesAccrual, paysAtDefaultTime,
+                startDate, lastPeriodDayCounter,rebatesAccrual,
                 useIsdaEngine) {}
 
     Real SpreadCdsHelper::impliedQuote() const {
@@ -218,17 +216,17 @@ namespace QuantLib {
                               const DayCounter& dayCounter,
                               Real recoveryRate,
                               const Handle<YieldTermStructure>& discountCurve,
-                              const Date& startDate,
                               Natural upfrontSettlementDays,
                               bool settlesAccrual,
                               bool paysAtDefaultTime,
+                              const Date& startDate,
                               const DayCounter& lastPeriodDayCounter,
                               const bool rebatesAccrual,
                               const bool useIsdaEngine)
     : CdsHelper(upfront, tenor, settlementDays, calendar,
                 frequency, paymentConvention, rule, dayCounter,
-                recoveryRate, discountCurve, startDate, settlesAccrual,
-                paysAtDefaultTime, lastPeriodDayCounter, rebatesAccrual,
+                recoveryRate, discountCurve, settlesAccrual, paysAtDefaultTime,
+                startDate, lastPeriodDayCounter, rebatesAccrual,
                 useIsdaEngine),
       upfrontSettlementDays_(upfrontSettlementDays),
       runningSpread_(runningSpread) {
@@ -247,17 +245,17 @@ namespace QuantLib {
                               const DayCounter& dayCounter,
                               Real recoveryRate,
                               const Handle<YieldTermStructure>& discountCurve,
-                              const Date& startDate,
                               Natural upfrontSettlementDays,
                               bool settlesAccrual,
                               bool paysAtDefaultTime,
+                              const Date& startDate,
                               const DayCounter& lastPeriodDayCounter,
                               const bool rebatesAccrual,
                               const bool useIsdaEngine)
     : CdsHelper(upfrontSpread, tenor, settlementDays, calendar,
                 frequency, paymentConvention, rule, dayCounter,
-                recoveryRate, discountCurve, startDate, settlesAccrual,
-                paysAtDefaultTime, lastPeriodDayCounter, rebatesAccrual,
+                recoveryRate, discountCurve, settlesAccrual, paysAtDefaultTime,
+                startDate, lastPeriodDayCounter, rebatesAccrual,
                 useIsdaEngine),
       upfrontSettlementDays_(upfrontSettlementDays),
       runningSpread_(runningSpread) {

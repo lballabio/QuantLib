@@ -398,8 +398,8 @@ std::copy(cdsSchedule.begin(), cdsSchedule.end(),
 
     boost::shared_ptr<CdsHelper> cds5y(new SpreadCdsHelper(
         0.00672658551, 4 * Years + 6 * Months, 1, WeekendsOnly(), Quarterly,
-        Following, DateGeneration::CDS, Actual360(), 0.4, rateTs, Date(), true, true,
-        Actual360(true), true, true));
+        Following, DateGeneration::CDS, Actual360(), 0.4, rateTs, true, true,
+        Date(), Actual360(true), true, true));
 
     isdaCdsHelper.push_back(cds5y);
 
@@ -574,27 +574,27 @@ void example03() {
     bool useIsda = true;
     boost::shared_ptr<CdsHelper> cds6m(new SpreadCdsHelper(
         0.007927, 6 * Months, 1, WeekendsOnly(), Quarterly, Following,
-        DateGeneration::CDS, Actual360(), 0.4, emptyHandle, Date(), true, true,
+        DateGeneration::CDS, Actual360(), 0.4, emptyHandle, true, true, Date(),
         Actual360(true), true, useIsda));
     boost::shared_ptr<CdsHelper> cds1y(new SpreadCdsHelper(
         0.007927, 1 * Years, 1, WeekendsOnly(), Quarterly, Following,
-        DateGeneration::CDS, Actual360(), 0.4, emptyHandle, Date(), true, true,
+        DateGeneration::CDS, Actual360(), 0.4, emptyHandle, true, true, Date(),
         Actual360(true), true, useIsda));
     boost::shared_ptr<CdsHelper> cds3y(new SpreadCdsHelper(
         0.012239, 3 * Years, 1, WeekendsOnly(), Quarterly, Following,
-        DateGeneration::CDS, Actual360(), 0.4, emptyHandle, Date(), true, true,
+        DateGeneration::CDS, Actual360(), 0.4, emptyHandle, true, true, Date(),
         Actual360(true), true, useIsda));
     boost::shared_ptr<CdsHelper> cds5y(new SpreadCdsHelper(
         0.016979, 5 * Years, 1, WeekendsOnly(), Quarterly, Following,
-        DateGeneration::CDS, Actual360(), 0.4, emptyHandle, Date(), true, true,
+        DateGeneration::CDS, Actual360(), 0.4, emptyHandle, true, true, Date(),
         Actual360(true), true, useIsda));
     boost::shared_ptr<CdsHelper> cds7y(new SpreadCdsHelper(
         0.019271, 7 * Years, 1, WeekendsOnly(), Quarterly, Following,
-        DateGeneration::CDS, Actual360(), 0.4, emptyHandle, Date(), true, true,
+        DateGeneration::CDS, Actual360(), 0.4, emptyHandle, true, true, Date(),
         Actual360(true), true, useIsda));
     boost::shared_ptr<CdsHelper> cds10y(new SpreadCdsHelper(
         0.020860, 10 * Years, 1, WeekendsOnly(), Quarterly, Following,
-        DateGeneration::CDS, Actual360(), 0.4, emptyHandle, Date(), true, true,
+        DateGeneration::CDS, Actual360(), 0.4, emptyHandle, true, true, Date(),
         Actual360(true), true, useIsda));
 
     std::vector<boost::shared_ptr<DefaultProbabilityHelper> > isdaCdsHelpers;
@@ -606,6 +606,12 @@ void example03() {
     isdaCdsHelpers.push_back(cds7y);
     isdaCdsHelpers.push_back(cds10y);
 
+    // build yield curve
+    Handle<YieldTermStructure> isdaYts = Handle<YieldTermStructure>(
+            boost::make_shared<PiecewiseYieldCurve<Discount, LogLinear> >(
+                0, WeekendsOnly(), isdaYieldHelpers, Actual365Fixed()));
+    isdaYts->enableExtrapolation();
+
     // set isda parameters
     for (Size i = 0; i < isdaCdsHelpers.size(); i++) {
         boost::dynamic_pointer_cast<CdsHelper>(isdaCdsHelpers[i])
@@ -614,17 +620,19 @@ void example03() {
                                       IsdaCdsEngine::Piecewise); // Piecewise // Flat
     }
 
+    // build credit curve
+    Handle<DefaultProbabilityTermStructure> isdaCts =
+    Handle<DefaultProbabilityTermStructure>(boost::make_shared<
+        PiecewiseDefaultCurve<SurvivalProbability, LogLinear> >(
+            0, WeekendsOnly(), isdaCdsHelpers, Actual365Fixed()));
+ 
     // set up isda engine
 
     boost::shared_ptr<IsdaCdsEngine> isdaPricer =
         boost::make_shared<IsdaCdsEngine>(
-            isdaCdsHelpers, 0.4, isdaYieldHelpers);
+            isdaCts, 0.4, isdaYts);
 
-    // check the curves built by the engine
-
-    Handle<YieldTermStructure> isdaYts = isdaPricer->isdaRateCurve();
-    Handle<DefaultProbabilityTermStructure> isdaCts = isdaPricer->isdaCreditCurve();
-
+    // check the curves
     std::cout << "Isda yield curve:" << std::endl;
     std::cout << "date;time;zeroyield" << std::endl;
     for (Size i = 0; i < isdaYieldHelpers.size(); i++) {

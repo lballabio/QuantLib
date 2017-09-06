@@ -118,9 +118,8 @@ namespace QuantLib {
         // If empty, adjust to T+3 standard settlement, alternatively add
         //  an arbitrary date to the constructor
         Date effectiveUpfrontDate = upfrontDate == Null<Date>() ?
-            schedule.calendar().advance(
-            schedule.calendar().adjust(protectionStart_, convention),
-            2, Days, convention) : upfrontDate;
+            schedule.calendar().advance(protectionStart_, 2, Days, convention) :
+            upfrontDate;
         // '2' is used above since the protection start is assumed to be
         //   on trade_date + 1
         upfrontPayment_.reset(new SimpleCashFlow(notional*upfront,

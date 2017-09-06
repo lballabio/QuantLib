@@ -267,9 +267,8 @@ namespace {
                                          frequency, convention, rule,
                                          dayCounter, recoveryRate,
                                          discountCurve,
-                                         Date(),
                                          upfrontSettlementDays, 
-                                         true, true, Actual360(true))));
+                                         true, true, Date(), Actual360(true))));
 
         RelinkableHandle<DefaultProbabilityTermStructure> piecewiseCurve;
         piecewiseCurve.linkTo(

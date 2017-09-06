@@ -51,42 +51,6 @@ namespace QuantLib {
         registerWith(discountCurve_);
     }
 
-    IsdaCdsEngine::IsdaCdsEngine(
-        const std::vector<boost::shared_ptr<DefaultProbabilityHelper> > &
-            probabilityHelpers,
-        Real recoveryRate,
-        const std::vector<boost::shared_ptr<RateHelper> > &rateHelpers,
-        boost::optional<bool> includeSettlementDateFlows,
-        const NumericalFix numericalFix, const AccrualBias accrualBias,
-        const ForwardsInCouponPeriod forwardsInCouponPeriod)
-        : probabilityHelpers_(probabilityHelpers), recoveryRate_(recoveryRate),
-          rateHelpers_(rateHelpers),
-          includeSettlementDateFlows_(includeSettlementDateFlows),
-          numericalFix_(numericalFix), accrualBias_(accrualBias),
-          forwardsInCouponPeriod_(forwardsInCouponPeriod) {
-
-        discountCurve_ = Handle<YieldTermStructure>(
-            boost::make_shared<PiecewiseYieldCurve<Discount, LogLinear> >(
-                0, WeekendsOnly(), rateHelpers_, Actual365Fixed()));
-
-        discountCurve_->enableExtrapolation();
-
-        for (Size i = 0; i < probabilityHelpers_.size(); i++) {
-            boost::shared_ptr<CdsHelper> h =
-                boost::dynamic_pointer_cast<CdsHelper>(probabilityHelpers_[i]);
-            QL_REQUIRE(h != NULL, "Cds helper required");
-            h->setDiscountCurve(discountCurve_);
-        }
-
-        probability_ =
-            Handle<DefaultProbabilityTermStructure>(boost::make_shared<
-                PiecewiseDefaultCurve<SurvivalProbability, LogLinear> >(
-                0, WeekendsOnly(), probabilityHelpers_, Actual365Fixed()));
-
-        registerWith(probability_);
-        registerWith(discountCurve_);
-    }
-
     void IsdaCdsEngine::calculate() const {
 
         QL_REQUIRE(numericalFix_ == None || numericalFix_ == Taylor,
