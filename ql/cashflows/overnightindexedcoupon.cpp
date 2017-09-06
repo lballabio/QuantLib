@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2009 Roland Lichters
  Copyright (C) 2009 Ferdinando Ametrano
+ Copyright (C) 2014 Peter Caspers
  Copyright (C) 2017 Joseph Jeisman
  Copyright (C) 2017 Fabrice Lecuyer
 
@@ -123,7 +124,8 @@ namespace QuantLib {
                     Spread spread,
                     const Date& refPeriodStart,
                     const Date& refPeriodEnd,
-                    const DayCounter& dayCounter)
+                    const DayCounter& dayCounter,
+                    bool telescopicValueDates)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          overnightIndex->fixingDays(), overnightIndex,
                          gearing, spread,
@@ -131,14 +133,48 @@ namespace QuantLib {
                          dayCounter, false) {
 
         // value dates
-        Schedule sch = MakeSchedule()
-                    .from(startDate)
-                    .to(endDate)
-                    .withTenor(1*Days)
-                    .withCalendar(overnightIndex->fixingCalendar())
-                    .withConvention(overnightIndex->businessDayConvention())
-                    .backwards();
+        Date tmpEndDate = endDate;
+
+        /* For the coupon's valuation only the first and last future valuation
+           dates matter, therefore we can avoid to construct the whole series
+           of valuation dates, a front and back stub will do. However notice
+           that if the global evaluation date moves forward it might run past
+           the front stub of valuation dates we build here (which incorporates
+           a grace period of 7 business after the evluation date). This will
+           lead to false coupon projections (see the warning the class header). */
+
+        if (telescopicValueDates) {
+            // build optimised value dates schedule: front stub goes
+            // from start date to max(evalDate,startDate) + 7bd
+            Date evalDate = Settings::instance().evaluationDate();
+            tmpEndDate = overnightIndex->fixingCalendar().advance(
+                std::max(startDate, evalDate), 7, Days, Following);
+            tmpEndDate = std::min(tmpEndDate, endDate);
+        }
+        Schedule sch =
+            MakeSchedule()
+                .from(startDate)
+                // .to(endDate)
+                .to(tmpEndDate)
+                .withTenor(1 * Days)
+                .withCalendar(overnightIndex->fixingCalendar())
+                .withConvention(overnightIndex->businessDayConvention())
+                .backwards();
         valueDates_ = sch.dates();
+
+        if (telescopicValueDates) {
+            // build optimised value dates schedule: back stub
+            // contains at least two dates
+            Date tmp = overnightIndex->fixingCalendar().advance(
+                endDate, -1, Days, Preceding);
+            if (tmp != valueDates_.back())
+                valueDates_.push_back(tmp);
+            tmp = overnightIndex->fixingCalendar().adjust(
+                endDate, overnightIndex->businessDayConvention());
+            if (tmp != valueDates_.back())
+                valueDates_.push_back(tmp);
+        }
+
         QL_ENSURE(valueDates_.size()>=2, "degenerate schedule");
 
         // fixing dates
@@ -182,7 +218,7 @@ namespace QuantLib {
     OvernightLeg::OvernightLeg(const Schedule& schedule,
                                const shared_ptr<OvernightIndex>& i)
     : schedule_(schedule), overnightIndex_(i), paymentCalendar_(schedule.calendar()),
-      paymentAdjustment_(Following), paymentLag_(0) {}
+      paymentAdjustment_(Following), paymentLag_(0), telescopicValueDates_(false) {}
 
     OvernightLeg& OvernightLeg::withNotionals(Real notional) {
         notionals_ = vector<Real>(1, notional);
@@ -235,6 +271,11 @@ namespace QuantLib {
         return *this;
     }
 
+    OvernightLeg& OvernightLeg::withTelescopicValueDates(bool telescopicValueDates) {
+        telescopicValueDates_ = telescopicValueDates;
+        return *this;
+    }
+
     OvernightLeg::operator Leg() const {
 
         QL_REQUIRE(!notionals_.empty(), "no notional given");
@@ -269,7 +310,8 @@ namespace QuantLib {
                                        detail::get(gearings_, i, 1.0),
                                        detail::get(spreads_, i, 0.0),
                                        refStart, refEnd,
-                                       paymentDayCounter_)));
+                                       paymentDayCounter_,
+                                       telescopicValueDates_)));
         }
         return cashflows;
     }

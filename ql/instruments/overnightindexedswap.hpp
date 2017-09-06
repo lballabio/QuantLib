@@ -51,7 +51,8 @@ namespace QuantLib {
                         Spread spread = 0.0,
                         Natural paymentLag = 0,
                         BusinessDayConvention paymentAdjustment = Following,
-                        Calendar paymentCalendar = Calendar());
+                        Calendar paymentCalendar = Calendar(),
+                        bool telescopicValueDates = false);
 
         OvernightIndexedSwap(
                         Type type,
@@ -63,7 +64,8 @@ namespace QuantLib {
                         Spread spread = 0.0,
                         Natural paymentLag = 0,
                         BusinessDayConvention paymentAdjustment = Following,
-                        Calendar paymentCalendar = Calendar());
+                        Calendar paymentCalendar = Calendar(),
+                        bool telescopicValueDates = false);
 
         //! \name Inspectors
         //@{
@@ -111,6 +113,7 @@ namespace QuantLib {
 
         boost::shared_ptr<OvernightIndex> overnightIndex_;
         Spread spread_;
+        bool telescopicValueDates_;
     };
 
 

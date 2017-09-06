@@ -193,12 +193,13 @@ namespace QuantLib {
                             const Period& tenor,
                             Natural settlementDays,
                             Currency currency,
-                            const shared_ptr<OvernightIndex>& overnightIndex)
+                            const shared_ptr<OvernightIndex>& overnightIndex,
+                            bool telescopicValueDates)
     : SwapIndex(familyName, tenor, settlementDays,
                 currency, overnightIndex->fixingCalendar(),
                 1*Years, ModifiedFollowing, overnightIndex->dayCounter(),
                 overnightIndex),
-      overnightIndex_(overnightIndex) {}
+      overnightIndex_(overnightIndex), telescopicValueDates_(telescopicValueDates) {}
 
 
     boost::shared_ptr<OvernightIndexedSwap>
@@ -211,7 +212,8 @@ namespace QuantLib {
             Rate fixedRate = 0.0;
             lastSwap_ = MakeOIS(tenor_, overnightIndex_, fixedRate)
                 .withEffectiveDate(valueDate(fixingDate))
-                .withFixedLegDayCount(dayCounter_);
+                .withFixedLegDayCount(dayCounter_)
+                .withTelescopicValueDates(telescopicValueDates_);
             lastFixingDate_ = fixingDate;
         }
         return lastSwap_;

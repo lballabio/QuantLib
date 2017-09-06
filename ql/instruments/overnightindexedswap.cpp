@@ -36,14 +36,16 @@ namespace QuantLib {
                     Spread spread,
                     Natural paymentLag,
                     BusinessDayConvention paymentAdjustment,
-                    Calendar paymentCalendar)
+                    Calendar paymentCalendar,
+                    bool telescopicValueDates)
     : Swap(2), type_(type),
       nominals_(std::vector<Real>(1, nominal)),
       paymentFrequency_(schedule.tenor().frequency()),
       paymentCalendar_(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar),
       paymentAdjustment_(paymentAdjustment), paymentLag_(paymentLag),
       fixedRate_(fixedRate), fixedDC_(fixedDC),
-      overnightIndex_(overnightIndex), spread_(spread) {
+      overnightIndex_(overnightIndex), spread_(spread),
+      telescopicValueDates_(telescopicValueDates) {
 
           initialize(schedule);
 
@@ -59,13 +61,15 @@ namespace QuantLib {
                     Spread spread,
                     Natural paymentLag,
                     BusinessDayConvention paymentAdjustment,
-                    Calendar paymentCalendar)
+                    Calendar paymentCalendar,
+                    bool telescopicValueDates)
     : Swap(2), type_(type), nominals_(nominals),
       paymentFrequency_(schedule.tenor().frequency()),
       paymentCalendar_(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar),
       paymentAdjustment_(paymentAdjustment), paymentLag_(paymentLag),
       fixedRate_(fixedRate), fixedDC_(fixedDC),
-      overnightIndex_(overnightIndex), spread_(spread){
+      overnightIndex_(overnightIndex), spread_(spread),
+      telescopicValueDates_(telescopicValueDates) {
 
           initialize(schedule);
 
@@ -84,6 +88,7 @@ namespace QuantLib {
 		legs_[1] = OvernightLeg(schedule, overnightIndex_)
             .withNotionals(nominals_)
             .withSpreads(spread_)
+            .withTelescopicValueDates(telescopicValueDates_)
             .withPaymentLag(paymentLag_)
             .withPaymentAdjustment(paymentAdjustment_)
             .withPaymentCalendar(paymentCalendar_);

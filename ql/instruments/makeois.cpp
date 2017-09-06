@@ -46,7 +46,7 @@ namespace QuantLib {
       isDefaultEOM_(true),
       type_(OvernightIndexedSwap::Payer), nominal_(1.0),
       overnightSpread_(0.0),
-      fixedDayCount_(overnightIndex->dayCounter()) {}
+      fixedDayCount_(overnightIndex->dayCounter()), telescopicValueDates_(false) {}
 
     MakeOIS::operator OvernightIndexedSwap() const {
         shared_ptr<OvernightIndexedSwap> ois = *this;
@@ -103,7 +103,7 @@ namespace QuantLib {
                                       fixedDayCount_,
                                       overnightIndex_, overnightSpread_,
                                       paymentLag_, paymentAdjustment_,
-                                      paymentCalendar_);
+                                      paymentCalendar_, telescopicValueDates_);
             if (engine_ == 0) {
                 Handle<YieldTermStructure> disc =
                                     overnightIndex_->forwardingTermStructure();
@@ -126,7 +126,7 @@ namespace QuantLib {
                                  usedFixedRate, fixedDayCount_,
                                  overnightIndex_, overnightSpread_,
                                  paymentLag_, paymentAdjustment_,
-                                 paymentCalendar_));
+                                 paymentCalendar_, telescopicValueDates_));
 
         if (engine_ == 0) {
             Handle<YieldTermStructure> disc =
@@ -231,5 +231,12 @@ namespace QuantLib {
         overnightSpread_ = sp;
         return *this;
     }
+
+    MakeOIS& MakeOIS::withTelescopicValueDates(bool telescopicValueDates) {
+        telescopicValueDates_ = telescopicValueDates;
+        return *this;
+
+    }
+
 
 }
