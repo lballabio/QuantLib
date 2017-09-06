@@ -227,7 +227,6 @@ namespace QuantLib {
                 Real tstart =
                     discountCurve_->timeFromReference(coupon->accrualStartDate()-1) -
                     (accrualBias_ == HalfDayBias ? 1.0 / 730.0 : 0.0);
-                Real tend = discountCurve_->timeFromReference(end);
                 std::vector<Date> localNodes;
                 localNodes.push_back(start);
                 //add intermediary nodes, if any

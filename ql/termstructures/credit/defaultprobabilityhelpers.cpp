@@ -46,12 +46,13 @@ namespace QuantLib {
           settlementDays_(settlementDays), calendar_(calendar),
           frequency_(frequency), paymentConvention_(paymentConvention),
           rule_(rule), dayCounter_(dayCounter), recoveryRate_(recoveryRate),
-          discountCurve_(discountCurve), startDate_(startDate), schedule_(),
-          settlesAccrual_(settlesAccrual), paysAtDefaultTime_(paysAtDefaultTime),
-          lastPeriodDC_(lastPeriodDayCounter), rebatesAccrual_(rebatesAccrual),
+          discountCurve_(discountCurve), settlesAccrual_(settlesAccrual),
+          paysAtDefaultTime_(paysAtDefaultTime), lastPeriodDC_(lastPeriodDayCounter),
+          rebatesAccrual_(rebatesAccrual),
           useIsdaEngine_(useIsdaEngine), isdaNumericalFix_(IsdaCdsEngine::Taylor),
           isdaAccrualBias_(IsdaCdsEngine::HalfDayBias),
-          isdaForwardsInCouponPeriod_(IsdaCdsEngine::Piecewise) {
+          isdaForwardsInCouponPeriod_(IsdaCdsEngine::Piecewise), schedule_(),
+          startDate_(startDate) {
 
         initializeDates();
 
@@ -73,12 +74,13 @@ namespace QuantLib {
           settlementDays_(settlementDays), calendar_(calendar),
           frequency_(frequency), paymentConvention_(paymentConvention),
           rule_(rule), dayCounter_(dayCounter), recoveryRate_(recoveryRate),
-          discountCurve_(discountCurve), startDate_(startDate), schedule_(),
-          settlesAccrual_(settlesAccrual), paysAtDefaultTime_(paysAtDefaultTime),
+          discountCurve_(discountCurve), settlesAccrual_(settlesAccrual),
+          paysAtDefaultTime_(paysAtDefaultTime),
           lastPeriodDC_(lastPeriodDayCounter), rebatesAccrual_(rebatesAccrual),
           useIsdaEngine_(useIsdaEngine), isdaNumericalFix_(IsdaCdsEngine::Taylor),
           isdaAccrualBias_(IsdaCdsEngine::NoBias),
-          isdaForwardsInCouponPeriod_(IsdaCdsEngine::Piecewise) {
+          isdaForwardsInCouponPeriod_(IsdaCdsEngine::Piecewise), schedule_(),
+          startDate_(startDate){
 
         initializeDates();
 
