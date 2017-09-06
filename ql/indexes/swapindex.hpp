@@ -113,7 +113,7 @@ namespace QuantLib {
                   Natural settlementDays,
                   Currency currency,
                   const boost::shared_ptr<OvernightIndex>& overnightIndex,
-                  bool telescopicValueDates);
+                  bool telescopicValueDates = false);
         //! \name Inspectors
         //@{
         boost::shared_ptr<OvernightIndex> overnightIndex() const;
