@@ -351,9 +351,6 @@ void OvernightIndexedSwapTest::testCachedValue() {
 namespace {
 void testBootstrap(bool telescopicValueDates) {
 
-    BOOST_TEST_MESSAGE("Testing Eonia-swap curve building "
-                       << (telescopicValueDates ? "(with telescopic value dates) " : "") << "...");
-
     CommonVars vars;
 
     std::vector<shared_ptr<RateHelper> > eoniaHelpers;
@@ -439,11 +436,6 @@ void testBootstrap(bool telescopicValueDates) {
 
     vars.eoniaTermStructure.linkTo(eoniaTS);
 
-    /*
-    std::cout.setf (std::ios::fixed, std::ios::floatfield);
-    std::cout.setf (std::ios::showpoint);
-    */
-
     // test curve consistency
     Real tolerance = 1.0e-8;
     for (Size i = 0; i < LENGTH(eoniaSwapData); i++) {
@@ -462,29 +454,17 @@ void testBootstrap(bool telescopicValueDates) {
                         "\n error:           " << error <<
                         "\n tolerance:       " << tolerance);
     }
-
-    // zero spread
-    /*
-    std::cout << "zero spread:" << std::endl;
-    std::cout << "years date zero3m/% zero1d/% spread/bp" << std::endl;
-    DayCounter dc = Actual365Fixed();
-    for (Size i = 1; i <= 10; i++) {
-        Date d = vars.today + i*Years;
-        Rate zero1d = eoniaTS->zeroRate(d, dc, Continuous, Annual,false).rate();
-        Rate zero3m = swapTS->zeroRate(d, dc, Continuous, Annual,false).rate();
-        std::cout << std::setw(2) << i << "y  " << io::iso_date(d) << "  "
-                  << std::setprecision(3)
-                  << zero3m * 100.0 << " "
-                  << zero1d * 100.0 << " "
-                  << std::setprecision(1)
-                  << (zero3m - zero1d) * 10000.0 << std::endl;
-    }
-    */
 } // testBootstrap(telescopicValueDates)
 } // anonymous namespace
 
 void OvernightIndexedSwapTest::testBootstrap() {
+    BOOST_TEST_MESSAGE("Testing Eonia-swap curve building ...");
     ::testBootstrap(false);
+}
+
+void OvernightIndexedSwapTest::testBootstrapWithTelescopicDates() {
+    BOOST_TEST_MESSAGE(
+        "Testing Eonia-swap curve building with telescopic value dates ...");
     ::testBootstrap(true);
 }
 
@@ -531,6 +511,8 @@ test_suite* OvernightIndexedSwapTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testFairSpread));
     suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testCachedValue));
     suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testBootstrap));
+    suite->add(QUANTLIB_TEST_CASE(
+        &OvernightIndexedSwapTest::testBootstrapWithTelescopicDates));
     suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testSeasonedSwaps));
     return suite;
 }

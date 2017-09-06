@@ -32,6 +32,7 @@ class OvernightIndexedSwapTest {
     static void testFairSpread();
     static void testCachedValue();
     static void testBootstrap();
+    static void testBootstrapWithTelescopicDates();
     static void testSeasonedSwaps();
     static boost::unit_test_framework::test_suite* suite();
 };
