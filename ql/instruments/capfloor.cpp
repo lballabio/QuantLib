@@ -337,18 +337,4 @@ namespace QuantLib {
         return solver.solve(f, accuracy, guess, minVol, maxVol);
     }
 
-    Volatility CapFloor::impliedVolatility(Real targetValue,
-                                           const Handle<YieldTermStructure>& d,
-                                           Volatility guess,
-                                           Real accuracy,
-                                           Natural maxEvaluations,
-                                           Volatility minVol,
-                                           Volatility maxVol,
-                                           Real displacement,
-                                           VolatilityType type) const {
-        return impliedVolatility(targetValue, d, guess, accuracy,
-                                 maxEvaluations, minVol, maxVol,
-                                 type, displacement);
-    }
-
 }
