@@ -388,7 +388,7 @@ namespace QuantLib {
         Rate guess = runningSpread_ / (1 - conventionalRecovery) * 365./360.;
         Real step = guess * 0.1;
 
-        Brent().solve(f, 1e-8, guess, step);
+        Brent().solve(f, 1e-9, guess, step);
         return results->fairSpread;
     }
 

@@ -220,7 +220,7 @@ namespace QuantLib {
                                const Handle<YieldTermStructure>& discountCurve,
                                const DayCounter& dayCounter,
                                Real recoveryRate = 0.4,
-                               Real accuracy = 1.0e-6,
+                               Real accuracy = 1.0e-8,
                                const CdsPricingEngine pricingEngine = Midpoint) const;
 
         //! Conventional/standard upfront-to-spread conversion

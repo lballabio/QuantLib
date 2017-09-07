@@ -675,7 +675,7 @@ void CreditDefaultSwapTest::testIsdaEngine() {
                                                     discountCurve,
                                                     Actual365Fixed(),
                                                     recoveries[k],
-                                                    1e-8,
+                                                    1e-10,
                                                     CreditDefaultSwap::Isda);
 
             probabilityCurve.linkTo(
