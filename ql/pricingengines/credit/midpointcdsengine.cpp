@@ -23,6 +23,7 @@
 #include <ql/instruments/claim.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
+#include <iostream>
 
 namespace QuantLib {
 
@@ -57,28 +58,30 @@ namespace QuantLib {
             arguments_.protectionStart > probability_->referenceDate() ?
                 arguments_.protectionStart : probability_->referenceDate();
 
-        Probability nonKnockOut = 
+        Probability nonKnockOut =
             probability_->survivalProbability(effectiveProtectionStart);
 
         Real upfPVO1 = 0.0;
         results_.upfrontNPV = 0.0;
-        if (arguments_.upfrontPayment && 
-            !arguments_.upfrontPayment->hasOccurred(
+        if (!arguments_.upfrontPayment->hasOccurred(
                                                settlementDate,
                                                includeSettlementDateFlows_)) {
             upfPVO1 =
-                nonKnockOut * 
+                nonKnockOut *
                 discountCurve_->discount(arguments_.upfrontPayment->date());
-            results_.upfrontNPV = 
-                upfPVO1 * arguments_.upfrontPayment->amount();
+            if(arguments_.upfrontPayment->amount() != 0.) {
+                results_.upfrontNPV =
+                    upfPVO1 * arguments_.upfrontPayment->amount();
+            }
         }
 
         results_.accrualRebateNPV = 0.;
         if(arguments_.accrualRebate &&
-            !arguments_.accrualRebate->hasOccurred(
-                                               settlementDate,
-                                               includeSettlementDateFlows_)) {
-            results_.accrualRebateNPV = nonKnockOut * 
+           arguments_.accrualRebate->amount() != 0. &&
+           !arguments_.accrualRebate->hasOccurred(
+                                              settlementDate,
+                                              includeSettlementDateFlows_)) {
+            results_.accrualRebateNPV = nonKnockOut *
                 discountCurve_->discount(arguments_.accrualRebate->date()) *
                 arguments_.accrualRebate->amount();
 
@@ -162,7 +165,7 @@ namespace QuantLib {
         }
 
         results_.value =
-            results_.defaultLegNPV + results_.couponLegNPV + 
+            results_.defaultLegNPV + results_.couponLegNPV +
             results_.upfrontNPV + results_.accrualRebateNPV;
         results_.errorEstimate = Null<Real>();
 
@@ -177,7 +180,7 @@ namespace QuantLib {
         Real upfrontSensitivity = upfPVO1 * arguments_.notional;
         if (upfrontSensitivity != 0.0) {
             results_.fairUpfront =
-                -upfrontSign*(results_.defaultLegNPV + results_.couponLegNPV + 
+                -upfrontSign*(results_.defaultLegNPV + results_.couponLegNPV +
                     results_.accrualRebateNPV)
                 / upfrontSensitivity;
         } else {
@@ -202,4 +205,3 @@ namespace QuantLib {
     }
 
 }
-

@@ -51,8 +51,9 @@ namespace QuantLib {
       paysAtDefaultTime_(paysAtDefaultTime), claim_(claim),
       protectionStart_(protectionStart == Null<Date>() ? schedule[0] :
                                                          protectionStart) {
-        QL_REQUIRE((protectionStart_ <= schedule[0])
-            || (schedule.rule() == DateGeneration::CDS),
+        QL_REQUIRE((protectionStart_ <= schedule[0]) ||
+                   (schedule.rule() == DateGeneration::CDS) ||
+                   (schedule.rule() == DateGeneration::CDS2015),
                    "protection can not start after accrual");
 
         leg_ = FixedRateLeg(schedule)
@@ -61,28 +62,26 @@ namespace QuantLib {
             .withPaymentAdjustment(convention)
             .withLastPeriodDayCounter(lastPeriodDayCounter);
 
+        Date effectiveUpfrontDate = schedule.calendar().advance(
+            protectionStart_, 2, Days, convention);
+        // '2' is used above since the protection start is assumed to be
+        //   on trade_date + 1
+
         if(rebatesAccrual) {
             boost::shared_ptr<FixedRateCoupon> firstCoupon =
                 boost::dynamic_pointer_cast<FixedRateCoupon>(leg_[0]);
-            // adjust to T+3 standard settlement, alternatively add
-            // an arbitrary date to the constructor
 
-            // standard date. Notice that protection start is already adjusted
-            //  to T+1
-            Date rebateDate = schedule.calendar().advance(
-                schedule.calendar().adjust(protectionStart_, convention), 2,
-                Days, convention);
-
-            accrualRebate_.reset(new SimpleCashFlow(
+            const Date& rebateDate = effectiveUpfrontDate;
+            accrualRebate_ = boost::make_shared<SimpleCashFlow>(
                 firstCoupon->accruedAmount(protectionStart_),
-                rebateDate));
+                rebateDate);
         }
 
+        upfrontPayment_ = boost::make_shared<SimpleCashFlow>(0.0, effectiveUpfrontDate);
         if (!claim_)
-            claim_ = boost::shared_ptr<Claim>(new FaceValueClaim);
+            claim_ = boost::make_shared<FaceValueClaim>();
         registerWith(claim_);
-        // the upfront payment left intentionally unitialized to indicate
-        //  this CDS has none.
+
 
         maturity_ = schedule.dates().back();
     }
@@ -123,8 +122,8 @@ namespace QuantLib {
             upfrontDate;
         // '2' is used above since the protection start is assumed to be
         //   on trade_date + 1
-        upfrontPayment_.reset(new SimpleCashFlow(notional*upfront,
-            effectiveUpfrontDate));
+        upfrontPayment_ = boost::make_shared<SimpleCashFlow>(notional*upfront,
+            effectiveUpfrontDate);
 
         QL_REQUIRE(effectiveUpfrontDate >= protectionStart_,
                    "upfront can not be due before contract start");
@@ -137,13 +136,13 @@ namespace QuantLib {
 
             const Date& rebateDate = effectiveUpfrontDate;
 
-            accrualRebate_.reset(new SimpleCashFlow(
+            accrualRebate_ = boost::make_shared<SimpleCashFlow>(
                 firstCoupon->accruedAmount(protectionStart_),
-                rebateDate));
+                rebateDate);
         }
 
         if (!claim_)
-            claim_ = boost::shared_ptr<Claim>(new FaceValueClaim);
+            claim_ = boost::make_shared<FaceValueClaim>();
         registerWith(claim_);
 
         maturity_ = schedule.dates().back();
