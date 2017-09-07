@@ -300,7 +300,7 @@ namespace QuantLib {
               engine_(engine), results_(results) {}
 
             Real operator()(Real guess) const {
-                quote_.setValue(std::exp(guess));
+                quote_.setValue(guess);
                 engine_.calculate();
                 return results_->value - target_;
             }
@@ -348,9 +348,9 @@ namespace QuantLib {
 
         ObjectiveFunction f(targetNPV, *flatRate, *engine, results);
         //very close guess if targetNPV = 0.
-        Rate guess = std::log(runningSpread_ / (1 - recoveryRate) * 365./360.);
-        Real step = 0.2; //multiplicative step, equivalent to exp(0.2) factor
-        return std::exp(Brent().solve(f, accuracy, guess, step));
+        Rate guess = runningSpread_ / (1 - recoveryRate) * 365./360.;
+        Real step = 0.1 * guess;
+        return Brent().solve(f, accuracy, guess, step);
     }
 
     Rate CreditDefaultSwap::conventionalSpread(
@@ -385,8 +385,8 @@ namespace QuantLib {
                 engine->getResults());
 
         ObjectiveFunction f(0., *flatRate, *engine, results);
-        Rate guess = std::log(runningSpread_ / (1 - conventionalRecovery) * 365./360.);
-        Real step = 0.2; //multiplicative step, equivalent to exp(0.2) factor
+        Rate guess = runningSpread_ / (1 - conventionalRecovery) * 365./360.;
+        Real step = guess * 0.1;
 
         Brent().solve(f, 1e-8, guess, step);
         return results->fairSpread;
