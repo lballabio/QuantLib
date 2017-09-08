@@ -19,8 +19,11 @@ env:
     # Latest Boost, gcc 5.4, strict C++03 mode
     - DOCKER_IMAGE=lballabio/quantlib-devenv:xenial
       CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Werror -std=c++03"
-    # Latest Boost and Ubuntu release, C++14 mode
-    - DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+    # Latest Boost, gcc 6.3, C++14 mode
+    - DOCKER_IMAGE=lballabio/quantlib-devenv:zesty
+      CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror -std=c++14"
+    # Latest Boost, gcc 7.2, C++14 mode
+    - DOCKER_IMAGE=lballabio/quantlib-devenv:artful
       CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror -std=c++14"
 
 before_install:
