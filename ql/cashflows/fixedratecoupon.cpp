@@ -176,7 +176,7 @@ namespace QuantLib {
                                                      exCouponEndOfMonth_);
         }
         Date ref = schedule_.hasTenor() &&
-            !(schedule_.hasIsRegular() && schedule_.isRegular(1)) ?
+            schedule_.hasIsRegular() && !schedule_.isRegular(1) ?
             schedule_.calendar().advance(end,
                                          -schedule_.tenor(),
                                          schedule_.businessDayConvention(),
