@@ -26,17 +26,19 @@ namespace QuantLib {
     Actual365Fixed::implementation(Actual365Fixed::Convention c) {
         switch (c) {
           case Standard:
-            return boost::make_shared<Impl>();
+            return boost::shared_ptr<DayCounter::Impl>(new Impl);
           case Canadian:
-            return boost::make_shared<CA_Impl>();
+            return boost::shared_ptr<DayCounter::Impl>(new CA_Impl);
+          case NoLeap:
+            return boost::shared_ptr<DayCounter::Impl>(new NL_Impl);
           default:
             QL_FAIL("unknown Actual/365 (Fixed) convention");
         }
     }
-    
-    Time Actual365Fixed::CA_Impl::yearFraction(const Date& d1, 
-                                               const Date& d2, 
-                                               const Date& refPeriodStart, 
+
+    Time Actual365Fixed::CA_Impl::yearFraction(const Date& d1,
+                                               const Date& d2,
+                                               const Date& refPeriodStart,
                                                const Date& refPeriodEnd) const {
         // Need the period to calculate frequency
         QL_REQUIRE(refPeriodStart != Date(),"invalid refPeriodStart");
@@ -54,4 +56,36 @@ namespace QuantLib {
 
     }
 
+    Date::serial_type Actual365Fixed::NL_Impl::dayCount(const Date& d1,
+                                                        const Date& d2) const {
+
+        static const Integer MonthOffset[] = {
+            0,  31,  59,  90, 120, 151,  // Jan - Jun
+            181, 212, 243, 273, 304, 334   // Jun - Dec
+        };
+
+        Date::serial_type s1 = d1.dayOfMonth()
+                             + MonthOffset[d1.month()-1] + (d1.year() * 365);
+        Date::serial_type s2 = d2.dayOfMonth()
+                             + MonthOffset[d2.month()-1] + (d2.year() * 365);
+
+        if (d1.month() == Feb && d1.dayOfMonth() == 29) {
+            --s1;
+        }
+
+        if (d2.month() == Feb && d2.dayOfMonth() == 29) {
+            --s2;
+        }
+
+        return s2 - s1;
+    }
+
+    Time Actual365Fixed::NL_Impl::yearFraction(const Date& d1,
+                                               const Date& d2,
+                                               const Date& d3,
+                                               const Date& d4) const {
+        return dayCount(d1, d2)/365.0;
+    }
+
 }
+
