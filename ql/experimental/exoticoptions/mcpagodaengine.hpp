@@ -91,7 +91,8 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCPagodaEngine {
       public:
-        MakeMCPagodaEngine(const boost::shared_ptr<StochasticProcessArray>&);
+        explicit MakeMCPagodaEngine(
+                            const boost::shared_ptr<StochasticProcessArray>&);
         // named parameters
         MakeMCPagodaEngine& withBrownianBridge(bool b = true);
         MakeMCPagodaEngine& withAntitheticVariate(bool b = true);

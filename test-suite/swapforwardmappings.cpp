@@ -217,25 +217,23 @@ void SwapForwardMappingsTest::testForwardSwapJacobians()
 
             }
 
-            Matrix modelJacobian(SwapForwardMappings::coinitialSwapForwardJacobian(lmmCurveState));
+        Matrix modelJacobian(SwapForwardMappings::coinitialSwapForwardJacobian(lmmCurveState));
 
-            Real errorTolerance = 1e-5;
+        Real errorTolerance = 1e-5;
 
 
-            for (Size i=0; i < nbRates; ++i)
-                for (Size j=0; j < nbRates; ++j)
-                    if( fabs(modelJacobian[i][j]-coinitialJacobian[i][j]) > errorTolerance)
-                    {
-                        BOOST_TEST_MESSAGE(
-                            "rate " << i
-                            << ", sensitivity "  <<  j
-                            << ", formula value " << modelJacobian[i][j]
-                        << " bumping value " << coinitialJacobian[i][j]
-                        <<  "\n");
+        for (Size i=0; i < nbRates; ++i)
+            for (Size j=0; j < nbRates; ++j)
+                if( fabs(modelJacobian[i][j]-coinitialJacobian[i][j]) > errorTolerance)
+                {
+                    BOOST_TEST_MESSAGE("rate " << i
+                                       << ", sensitivity "  <<  j
+                                       << ", formula value " << modelJacobian[i][j]
+                                       << " bumping value " << coinitialJacobian[i][j]
+                                       <<  "\n");
 
-                        BOOST_ERROR("test failed");
-
-                    }
+                    BOOST_ERROR("test failed");
+                }
     }
 
     {
@@ -272,25 +270,25 @@ void SwapForwardMappingsTest::testForwardSwapJacobians()
 
                 }
 
-                Matrix modelJacobian(SwapForwardMappings::cmSwapForwardJacobian(lmmCurveState, spanningForwards));
+            Matrix modelJacobian(SwapForwardMappings::cmSwapForwardJacobian(lmmCurveState, spanningForwards));
 
-                Real errorTolerance = 1e-5;
+            Real errorTolerance = 1e-5;
 
 
-                for (Size i=0; i < nbRates; ++i)
-                    for (Size j=0; j < nbRates; ++j)
-                        if( fabs(modelJacobian[i][j]-cmsJacobian[i][j]) > errorTolerance)
-                        {
-                            BOOST_TEST_MESSAGE(
-                                "rate " << i
-                                << ", sensitivity "  <<  j
-                                << ", formula value " << modelJacobian[i][j]
-                            << " bumping value " << cmsJacobian[i][j]
-                            <<  "\n");
+            for (Size i=0; i < nbRates; ++i)
+                for (Size j=0; j < nbRates; ++j)
+                    if( fabs(modelJacobian[i][j]-cmsJacobian[i][j]) > errorTolerance)
+                    {
+                        BOOST_TEST_MESSAGE(
+                                           "rate " << i
+                                           << ", sensitivity "  <<  j
+                                           << ", formula value " << modelJacobian[i][j]
+                                           << " bumping value " << cmsJacobian[i][j]
+                                           <<  "\n");
 
-                            BOOST_ERROR("test failed");
+                        BOOST_ERROR("test failed");
 
-                        }
+                    }
         }
 
     }

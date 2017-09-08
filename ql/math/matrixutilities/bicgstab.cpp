@@ -35,7 +35,7 @@ namespace QuantLib {
     }
 
     BiCGStabResult BiCGstab::solve(const Array& b, const Array& x0) const {
-        Real bnorm2 = norm2(b);
+        Real bnorm2 = Norm2(b);
         if (bnorm2 == 0.0) {
             BiCGStabResult result = { 0, 0.0, b};
             return result;
@@ -48,8 +48,8 @@ namespace QuantLib {
         Array p, pTld, v, s, sTld, t;
         Real omega = 1.0;
         Real rho, rhoTld=1.0;
-        Real alpha=0.0, beta;
-        Real error=norm2(r)/bnorm2;
+        Real alpha = 0.0, beta;
+        Real error = Norm2(r)/bnorm2;
 
         Size i;
         for (i=0; i < maxIter_ && error >= relTol_; ++i) {
@@ -70,9 +70,9 @@ namespace QuantLib {
 
            alpha = rho/DotProduct(rTld, v);
            s     = r-alpha*v;
-           if (norm2(s) < relTol_*bnorm2) {
+           if (Norm2(s) < relTol_*bnorm2) {
               x += alpha*pTld;
-              error = norm2(s)/bnorm2;
+              error = Norm2(s)/bnorm2;
               break;
            }
 
@@ -81,7 +81,7 @@ namespace QuantLib {
            omega = DotProduct(t,s)/DotProduct(t,t);
            x += alpha*pTld + omega*sTld;
            r = s - omega*t;
-           error = norm2(r)/bnorm2;
+           error = Norm2(r)/bnorm2;
            rhoTld = rho;
         }
 
@@ -93,6 +93,7 @@ namespace QuantLib {
     }
 
     Real BiCGstab::norm2(const Array& a) const {
-        return std::sqrt(DotProduct(a, a));
+        return Norm2(a);
     }
+
 }

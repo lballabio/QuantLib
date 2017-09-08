@@ -27,6 +27,8 @@
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/interpolations/lagrangeinterpolation.hpp>
+#include <ql/math/matrix.hpp>
+#include <ql/time/date.hpp>
 
 #include <boost/function.hpp>
 

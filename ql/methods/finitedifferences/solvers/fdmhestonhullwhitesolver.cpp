@@ -21,6 +21,7 @@
 #include <ql/methods/finitedifferences/utilities/fdmquantohelper.hpp>
 #include <ql/methods/finitedifferences/operators/fdmhestonhullwhiteop.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmhestonhullwhitesolver.hpp>
+#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -42,13 +43,12 @@ namespace QuantLib {
 
     void FdmHestonHullWhiteSolver::performCalculations() const {
         const boost::shared_ptr<FdmLinearOpComposite> op(
-            new FdmHestonHullWhiteOp(solverDesc_.mesher,
+			boost::make_shared<FdmHestonHullWhiteOp>(solverDesc_.mesher,
                                      hestonProcess_.currentLink(),
                                      hwProcess_.currentLink(), 
                                      corrEquityShortRate_));
 
-        solver_ = boost::shared_ptr<Fdm3DimSolver>(
-                                new Fdm3DimSolver(solverDesc_, schemeDesc_, op));
+        solver_ = boost::make_shared<Fdm3DimSolver>(solverDesc_, schemeDesc_, op);
     }
 
     Real FdmHestonHullWhiteSolver::valueAt(Real s, Real v, Rate r) const {

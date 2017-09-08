@@ -893,6 +893,7 @@
     <ClInclude Include="ql\math\matrixutilities\choleskydecomposition.hpp" />
     <ClInclude Include="ql\math\matrixutilities\factorreduction.hpp" />
     <ClInclude Include="ql\math\matrixutilities\getcovariance.hpp" />
+    <ClInclude Include="ql\math\matrixutilities\gmres.hpp" />
     <ClInclude Include="ql\math\matrixutilities\pseudosqrt.hpp" />
     <ClInclude Include="ql\math\matrixutilities\qrdecomposition.hpp" />
     <ClInclude Include="ql\math\matrixutilities\svd.hpp" />
@@ -2039,6 +2040,7 @@
     <ClCompile Include="ql\math\matrixutilities\choleskydecomposition.cpp" />
     <ClCompile Include="ql\math\matrixutilities\factorreduction.cpp" />
     <ClCompile Include="ql\math\matrixutilities\getcovariance.cpp" />
+    <ClCompile Include="ql\math\matrixutilities\gmres.cpp" />
     <ClCompile Include="ql\math\matrixutilities\pseudosqrt.cpp" />
     <ClCompile Include="ql\math\matrixutilities\qrdecomposition.cpp" />
     <ClCompile Include="ql\math\matrixutilities\svd.cpp" />
@@ -2280,6 +2282,7 @@
     <ClCompile Include="ql\termstructures\credit\hazardratestructure.cpp" />
     <ClCompile Include="ql\termstructures\credit\survivalprobabilitystructure.cpp" />
     <ClCompile Include="ql\time\asx.cpp" />
+    <ClCompile Include="ql\time\daycounters\actual365fixed.cpp" />
     <ClCompile Include="ql\utilities\dataformatters.cpp" />
     <ClCompile Include="ql\utilities\dataparsers.cpp" />
     <ClCompile Include="ql\utilities\tracing.cpp" />

@@ -1515,7 +1515,7 @@ void EuropeanOptionTest::testLocalVolatility() {
 
 void EuropeanOptionTest::testAnalyticEngineDiscountCurve() {
     BOOST_TEST_MESSAGE(
-        "Testing separate discount curve for AnalyticEuropeanEngine...");
+        "Testing separate discount curve for analytic European engine...");
 
     SavedSettings backup;
 

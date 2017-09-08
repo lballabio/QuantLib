@@ -1378,6 +1378,49 @@ void BondTest::testBondFromScheduleWithDateVector()
     }
 }
 
+void BondTest::testThiry360BondWithSettlementOn31st(){
+    BOOST_TEST_MESSAGE("Testing Thiry360Bond With Settlement On 31st of the month");
+
+    // cusip 3130A0X70, data is from Bloomberg
+    SavedSettings backup;
+    Settings::instance().evaluationDate() = Date(28, July, 2017);
+
+    Date datedDate(13, February, 2014);
+    Date settlement(31, July, 2017);
+    Date maturity(13, August, 2018);
+
+    DayCounter dayCounter = Thirty360(Thirty360::USA);
+    Compounding compounding = Compounded;
+
+    Schedule fixedBondSchedule(datedDate,
+            maturity,
+            Period(Semiannual),
+            UnitedStates(UnitedStates::GovernmentBond),
+            Unadjusted, Unadjusted, DateGeneration::Forward, false);
+
+    FixedRateBond fixedRateBond(
+            1,
+            100,
+            fixedBondSchedule,
+            std::vector<Rate>(1, 0.015),
+            dayCounter,
+            Unadjusted,
+            100.0);
+
+    double cleanPrice = 100;
+
+    Real yield = BondFunctions::yield(fixedRateBond, cleanPrice, dayCounter, compounding, Semiannual, settlement);
+    ASSERT_CLOSE("yield", settlement, yield, 0.015, 1e-4);
+
+    Real duration = BondFunctions::duration(fixedRateBond, InterestRate(yield, dayCounter, compounding, Semiannual), Duration::Macaulay, settlement);
+    ASSERT_CLOSE("duration", settlement, duration, 1.022, 1e-3);
+
+    Real convexity = BondFunctions::convexity(fixedRateBond, InterestRate(yield, dayCounter, compounding, Semiannual), settlement)/100;
+    ASSERT_CLOSE("convexity", settlement, convexity, 0.015, 1e-3);
+
+    Real accrued = BondFunctions::accruedAmount(fixedRateBond, settlement);
+    ASSERT_CLOSE("accrued", settlement, accrued, 0.7, 1e-6);
+}
 
 test_suite* BondTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Bond tests");
@@ -1394,6 +1437,7 @@ test_suite* BondTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testExCouponGilt));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testExCouponAustralianBond));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testBondFromScheduleWithDateVector));
+    suite->add(QUANTLIB_TEST_CASE(&BondTest::testThiry360BondWithSettlementOn31st));
     return suite;
 }
 

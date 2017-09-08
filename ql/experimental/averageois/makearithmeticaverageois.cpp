@@ -198,9 +198,10 @@ namespace QuantLib {
 
     MakeArithmeticAverageOIS& MakeArithmeticAverageOIS::withRule(DateGeneration::Rule r) {
         rule_ = r;
-        if (r==DateGeneration::Zero)
+        if (r==DateGeneration::Zero) {
             fixedLegPaymentFrequency_ = Once;
             overnightLegPaymentFrequency_ = Once;
+        }
         return *this;
     }
 

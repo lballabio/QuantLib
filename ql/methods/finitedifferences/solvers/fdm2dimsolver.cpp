@@ -25,6 +25,7 @@
 #include <ql/methods/finitedifferences/solvers/fdm2dimsolver.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmsnapshotcondition.hpp>
+#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -35,7 +36,7 @@ namespace QuantLib {
     : solverDesc_(solverDesc),
       schemeDesc_(schemeDesc),
       op_(op),
-      thetaCondition_(new FdmSnapshotCondition(
+      thetaCondition_(boost::make_shared<FdmSnapshotCondition>(
         0.99*std::min(1.0/365.0,
            solverDesc.condition->stoppingTimes().empty()
                     ? solverDesc.maturity
@@ -78,10 +79,9 @@ namespace QuantLib {
                       solverDesc_.timeSteps, solverDesc_.dampingSteps);
 
         std::copy(rhs.begin(), rhs.end(), resultValues_.begin());
-        interpolation_ = boost::shared_ptr<BicubicSpline> (
-            new BicubicSpline(x_.begin(), x_.end(),
+        interpolation_ = boost::make_shared<BicubicSpline>(x_.begin(), x_.end(),
                               y_.begin(), y_.end(),
-                              resultValues_));
+                              resultValues_);
     }
 
     Real Fdm2DimSolver::interpolateAt(Real x, Real y) const {

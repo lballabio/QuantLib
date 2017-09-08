@@ -30,6 +30,7 @@
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
 #include <ql/pricingengines/barrier/fdhestonrebateengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
+#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -56,7 +57,7 @@ namespace QuantLib {
         // 1.1 The variance mesher
         const Size tGridMin = 5;
         const boost::shared_ptr<FdmHestonVarianceMesher> varianceMesher(
-            new FdmHestonVarianceMesher(vGrid_, process, maturity,
+			boost::make_shared<FdmHestonVarianceMesher>(vGrid_, process, maturity,
                                         std::max(tGridMin, tGrid_/50)));
 
         // 1.2 The equity mesher
@@ -75,7 +76,7 @@ namespace QuantLib {
         }
 
         const boost::shared_ptr<Fdm1dMesher> equityMesher(
-            new FdmBlackScholesMesher(
+			boost::make_shared<FdmBlackScholesMesher>(
                 xGrid_,
                 FdmBlackScholesMesher::processHelper(
                     process->s0(), process->dividendYield(), 
@@ -83,11 +84,11 @@ namespace QuantLib {
                 maturity, payoff->strike(), xMin, xMax));
         
         const boost::shared_ptr<FdmMesher> mesher (
-            new FdmMesherComposite(equityMesher, varianceMesher));
+			boost::make_shared<FdmMesherComposite>(equityMesher, varianceMesher));
 
         // 2. Calculator
         boost::shared_ptr<FdmInnerValueCalculator> calculator(
-                                new FdmLogInnerValue(payoff, mesher, 0));
+			boost::make_shared<FdmLogInnerValue>(payoff, mesher, 0));
 
         // 3. Step conditions
         std::list<boost::shared_ptr<StepCondition<Array> > > stepConditions;
@@ -95,7 +96,7 @@ namespace QuantLib {
 
         // 3.1 Step condition if discrete dividends
         boost::shared_ptr<FdmDividendHandler> dividendCondition(
-            new FdmDividendHandler(arguments_.cashFlow, mesher,
+			boost::make_shared<FdmDividendHandler>(arguments_.cashFlow, mesher,
                                    process->riskFreeRate()->referenceDate(),
                                    process->riskFreeRate()->dayCounter(), 0));
 
@@ -108,22 +109,22 @@ namespace QuantLib {
                    "only european style option are supported");
 
         boost::shared_ptr<FdmStepConditionComposite> conditions(
-                new FdmStepConditionComposite(stoppingTimes, stepConditions));
+			boost::make_shared<FdmStepConditionComposite>(stoppingTimes, stepConditions));
 
         // 4. Boundary conditions
         FdmBoundaryConditionSet boundaries;
         if (   arguments_.barrierType == Barrier::DownIn
             || arguments_.barrierType == Barrier::DownOut) {
-            boundaries.push_back(FdmBoundaryConditionSet::value_type(
-                new FdmDirichletBoundary(mesher, arguments_.rebate, 0,
-                                         FdmDirichletBoundary::Lower)));
+            boundaries.push_back(
+				boost::make_shared<FdmDirichletBoundary>(mesher, arguments_.rebate, 0,
+                                         FdmDirichletBoundary::Lower));
 
         }
         if (   arguments_.barrierType == Barrier::UpIn
             || arguments_.barrierType == Barrier::UpOut) {
-            boundaries.push_back(FdmBoundaryConditionSet::value_type(
-                new FdmDirichletBoundary(mesher, arguments_.rebate, 0,
-                                         FdmDirichletBoundary::Upper)));
+            boundaries.push_back(
+				boost::make_shared<FdmDirichletBoundary>(mesher, arguments_.rebate, 0,
+                                         FdmDirichletBoundary::Upper));
         }
 
         // 5. Solver
@@ -131,7 +132,7 @@ namespace QuantLib {
                                      calculator, maturity,
                                      tGrid_, dampingSteps_ };
 
-        boost::shared_ptr<FdmHestonSolver> solver(new FdmHestonSolver(
+        boost::shared_ptr<FdmHestonSolver> solver(boost::make_shared<FdmHestonSolver>(
                     Handle<HestonProcess>(process), solverDesc, schemeDesc_,
                     Handle<FdmQuantoHelper>(), leverageFct_));
 
@@ -150,16 +151,16 @@ namespace QuantLib {
                                                             arguments_.payoff);
             // Calculate the vanilla option
             boost::shared_ptr<DividendVanillaOption> vanillaOption(
-                new DividendVanillaOption(payoff,arguments_.exercise,
+				boost::make_shared<DividendVanillaOption>(payoff,arguments_.exercise,
                                           dividendCondition->dividendDates(), 
                                           dividendCondition->dividends()));
             vanillaOption->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                    new FdHestonVanillaEngine(*model_, tGrid_, xGrid_, 
+				boost::make_shared<FdHestonVanillaEngine>(*model_, tGrid_, xGrid_,
                                               vGrid_, dampingSteps_,
                                               schemeDesc_)));
             // Calculate the rebate value
             boost::shared_ptr<DividendBarrierOption> rebateOption(
-                new DividendBarrierOption(arguments_.barrierType,
+				boost::make_shared<DividendBarrierOption>(arguments_.barrierType,
                                           arguments_.barrier,
                                           arguments_.rebate,
                                           payoff, arguments_.exercise,
@@ -169,12 +170,12 @@ namespace QuantLib {
             const Size vGridMin = 10;
             const Size rebateDampingSteps 
                 = (dampingSteps_ > 0) ? std::min(Size(1), dampingSteps_/2) : 0; 
-            rebateOption->setPricingEngine(boost::shared_ptr<PricingEngine>(
-                    new FdHestonRebateEngine(*model_, tGrid_, 
+            rebateOption->setPricingEngine(
+				boost::make_shared<FdHestonRebateEngine>(*model_, tGrid_,
                                              std::max(xGridMin, xGrid_/4), 
                                              std::max(vGridMin, vGrid_/4),
                                              rebateDampingSteps,
-                                             schemeDesc_)));
+                                             schemeDesc_));
 
             results_.value = vanillaOption->NPV()   + rebateOption->NPV()
                                                     - results_.value;

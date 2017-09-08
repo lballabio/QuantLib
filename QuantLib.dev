@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=2155
+UnitCount=2158
 Type=2
 Ver=1
 ObjFiles=
@@ -21667,4 +21667,32 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
+[Unit2156]
+FileName=ql\math\matrixutilities\gmres.cpp
+CompileCpp=1
+Folder=math/matrixutilities
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
 
+[Unit2157]
+FileName=ql\math\matrixutilities\gmres.hpp
+CompileCpp=1
+Folder=math/matrixutilities
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit2158]
+FileName=ql\time\daycounters\actual365fixed.cpp
+CompileCpp=1
+Folder=time/daycounters
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=

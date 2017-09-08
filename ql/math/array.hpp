@@ -152,6 +152,9 @@ namespace QuantLib {
     /*! \relates Array */
     Real DotProduct(const Array&, const Array&);
 
+    /*! \relates Array */
+    Real Norm2(const Array&);
+
     // unary operators
     /*! \relates Array */
     const Disposable<Array> operator+(const Array& v);
@@ -466,13 +469,17 @@ namespace QuantLib {
         swap(n_,from.n_);
     }
 
-    // dot product
+    // dot product and norm
 
     inline Real DotProduct(const Array& v1, const Array& v2) {
         QL_REQUIRE(v1.size() == v2.size(),
                    "arrays with different sizes (" << v1.size() << ", "
                    << v2.size() << ") cannot be multiplied");
         return std::inner_product(v1.begin(),v1.end(),v2.begin(),0.0);
+    }
+
+    inline Real Norm2(const Array& v) {
+        return std::sqrt(DotProduct(v, v));
     }
 
     // overloaded operators

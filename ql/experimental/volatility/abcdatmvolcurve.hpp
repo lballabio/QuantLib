@@ -28,6 +28,7 @@
 #include <ql/experimental/volatility/blackatmvolcurve.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/math/interpolations/abcdinterpolation.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 
 namespace QuantLib {
 

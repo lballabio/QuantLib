@@ -39,7 +39,8 @@ namespace QuantLib {
                       const boost::shared_ptr<OvernightIndex>& overnightIndex,
                       // exogenous discounting curve
                       const Handle<YieldTermStructure>& discountingCurve
-                                            = Handle<YieldTermStructure>());
+                                               = Handle<YieldTermStructure>(),
+                      bool telescopicValueDates = false);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -64,6 +65,7 @@ namespace QuantLib {
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
 
         Handle<YieldTermStructure> discountHandle_;
+        bool telescopicValueDates_;
         RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
     };
 
@@ -76,8 +78,9 @@ namespace QuantLib {
                     const Handle<Quote>& fixedRate,
                     const boost::shared_ptr<OvernightIndex>& overnightIndex,
                       // exogenous discounting curve
-                      const Handle<YieldTermStructure>& discountingCurve
-                                            = Handle<YieldTermStructure>());
+                    const Handle<YieldTermStructure>& discountingCurve
+                                              = Handle<YieldTermStructure>(),
+                    bool telescopicValueDates = false);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -92,6 +95,7 @@ namespace QuantLib {
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
 
         Handle<YieldTermStructure> discountHandle_;
+        bool telescopicValueDates_;
         RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
     };
 

@@ -416,6 +416,34 @@ namespace QuantLib {
 
     inline boost::shared_ptr<SmileSection>
     SwaptionVolatilityStructure::smileSection(Time optionTime,
+                                              const Period& swapTenor,
+                                              bool extrapolate) const {
+        checkSwapTenor(swapTenor, extrapolate);
+        checkRange(optionTime, extrapolate);
+        return smileSection(optionTime, swapLength(swapTenor));
+    }
+
+    inline boost::shared_ptr<SmileSection>
+    SwaptionVolatilityStructure::smileSection(const Period& optionTenor,
+                                              Time swapLength,
+                                              bool extrapolate) const {
+        checkSwapTenor(swapLength, extrapolate);
+        Date optionDate = optionDateFromTenor(optionTenor);
+        checkRange(optionDate, extrapolate);
+        return smileSection(optionDate, swapLength);
+    }
+
+    inline boost::shared_ptr<SmileSection>
+    SwaptionVolatilityStructure::smileSection(const Date& optionDate,
+                                              Time swapLength,
+                                              bool extrapolate) const {
+        checkSwapTenor(swapLength, extrapolate);
+        checkRange(optionDate, extrapolate);
+        return smileSection(timeFromReference(optionDate), swapLength);
+    }
+
+    inline boost::shared_ptr<SmileSection>
+    SwaptionVolatilityStructure::smileSection(Time optionTime,
                                               Time swapLength,
                                               bool extrapolate) const {
         checkSwapTenor(swapLength, extrapolate);

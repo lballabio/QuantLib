@@ -26,6 +26,8 @@
 #include <ql/math/matrixutilities/choleskydecomposition.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 #include <ql/math/matrixutilities/svd.hpp>
+#include <ql/math/matrixutilities/gmres.hpp>
+#include <ql/math/matrixutilities/bicgstab.hpp>
 #include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/math/matrixutilities/qrdecomposition.hpp>
@@ -352,16 +354,16 @@ void MatricesTest::testInverse() {
         const Matrix I1 = invA*A;
         const Matrix I2 = A*invA;
 
-        Matrix eins(A.rows(), A.rows(), 0.0);
-        for (Size i=0; i < A.rows(); ++i) eins[i][i] = 1.0;
+        Matrix identity(A.rows(), A.rows(), 0.0);
+        for (Size i=0; i < A.rows(); ++i) identity[i][i] = 1.0;
 
-        if (norm(I1 - eins) > tol)
+        if (norm(I1 - identity) > tol)
             BOOST_FAIL("inverse(A)*A does not recover unit matrix (norm = "
-                       << norm(I1-eins) << ")");
+                       << norm(I1-identity) << ")");
 
-        if (norm(I2 - eins) > tol)
+        if (norm(I2 - identity) > tol)
             BOOST_FAIL("A*inverse(A) does not recover unit matrix (norm = "
-                       << norm(I1-eins) << ")");
+                       << norm(I1-identity) << ")");
     }
 }
 
@@ -601,6 +603,84 @@ void MatricesTest::testMoorePenroseInverse() {
 
 }
 
+namespace {
+    class MatrixMult :
+        public std::unary_function<const Array&, Disposable<Array> > {
+      public:
+        explicit MatrixMult(const Matrix& m) : m_(m) {}
+        Disposable<Array> operator()(const Array& x) const {
+            Array retVal = m_*x;
+            return retVal;
+        }
+
+      private:
+        const Matrix m_;
+    };
+
+    Real norm2(const Array& x) {
+        return std::sqrt(DotProduct(x,x));
+    }
+}
+
+void MatricesTest::testIterativeSolvers() {
+    BOOST_TEST_MESSAGE("Testing iterative solvers...");
+
+    setup();
+
+    Array b(3);
+    b[0] = 1.0; b[1] = 0.5; b[2] = 3.0;
+
+    const Real relTol = 1e4*QL_EPSILON;
+
+    const Array x = BiCGstab(MatrixMult(M1), 3, relTol).solve(b).x;
+    if (norm2(M1*x-b)/norm2(b) > relTol) {
+        BOOST_FAIL("Failed to calculate inverse using BiCGstab"
+                << "\n  rel error     : " << norm2(M1*x-b)/norm2(b)
+                << "\n  rel tolerance : " << relTol);
+    }
+
+    const GMRESResult u = GMRES(MatrixMult(M1), 3, relTol).solve(b, b);
+    if (norm2(M1*u.x-b)/norm2(b) > relTol) {
+        BOOST_FAIL("Failed to calculate inverse using gmres"
+                << "\n  rel error     : " << norm2(M1*u.x-b)/norm2(b)
+                << "\n  rel tolerance : " << relTol);
+    }
+    const Array errors = Array(u.errors.begin(), u.errors.end());
+    for (Size i=0; i < errors.size(); ++i) {
+        const Array x = GMRES(MatrixMult(M1), 10, 1.01*errors[i]).solve(b, b).x;
+
+        const Real calculated = norm2(M1*x-b)/norm2(b);
+        const Real expected = errors[i];
+
+        if (std::fabs(calculated - expected) > relTol) {
+            BOOST_FAIL("Failed to calculate solution error"
+                    << "\n  calculated error: " << calculated
+                    << "\n  expected error  : " << expected);
+        }
+    }
+
+    #if !defined(QL_NO_UBLAS_SUPPORT)
+    const Array v = GMRES(MatrixMult(M1), 1, relTol,
+        MatrixMult(inverse(M1))).solve(b, b).x;
+
+    if (norm2(M1*v-b)/norm2(b) > relTol) {
+        BOOST_FAIL("Failed to calculate inverse using gmres "
+                   "with exact preconditioning"
+                << "\n  rel error     : " << norm2(M1*v-b)/norm2(b)
+                << "\n  rel tolerance : " << relTol);
+    }
+
+    const Array w = GMRES(MatrixMult(M1), 3, relTol,
+        MatrixMult(M1)).solve(b, b).x;
+    if (norm2(M1*w-b)/norm2(b) > relTol) {
+        BOOST_FAIL("Failed to calculate inverse using gmres "
+                   "with nonsense preconditioning"
+                << "\n  rel error     : " << norm2(M1*w-b)/norm2(b)
+                << "\n  rel tolerance : " << relTol);
+    }
+    #endif
+}
+
 test_suite* MatricesTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Matrix tests");
 
@@ -617,6 +697,7 @@ test_suite* MatricesTest::suite() {
     #endif
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testCholeskyDecomposition));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testMoorePenroseInverse));
+    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testIterativeSolvers));
     return suite;
 }
 

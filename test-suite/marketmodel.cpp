@@ -151,12 +151,12 @@ namespace {
 
     // a simple structure to store some data which will be used during tests
     struct SubProductExpectedValues {
-        SubProductExpectedValues(const std::string& descr):
-    description(descr), testBias(false) {}
-    std::string description;
-    std::vector<Real> values;
-    bool testBias;
-    Real errorThreshold;
+        explicit SubProductExpectedValues(const std::string& descr)
+        : description(descr), testBias(false) {}
+        std::string description;
+        std::vector<Real> values;
+        bool testBias;
+        Real errorThreshold;
     };
 
     void setup() {
@@ -2752,11 +2752,13 @@ void MarketModelTest::testPathwiseVegas()
 
                 }
 
-                if (numberCapPseudoFailures >0)
-                    BOOST_ERROR("cap pseudo test failed for prices " << numberCapPseudoFailures << " times" );
+            if (numberCapPseudoFailures >0)
+                BOOST_ERROR("cap pseudo test failed for prices "
+                            << numberCapPseudoFailures << " times" );
 
-                if (numberCapImpVolFailures >0)
-                    BOOST_ERROR("cap pseudo test failed for implied vols " << numberCapImpVolFailures << " times" );
+            if (numberCapImpVolFailures >0)
+                BOOST_ERROR("cap pseudo test failed for implied vols "
+                            << numberCapImpVolFailures << " times" );
 
         }
 
@@ -2851,8 +2853,9 @@ void MarketModelTest::testPathwiseVegas()
 
                 }
 
-                if (numberCapVolPseudoFailures >0)
-                    BOOST_ERROR("cap pseudo test failed for implied vols " << numberCapVolPseudoFailures << " times" );
+            if (numberCapVolPseudoFailures >0)
+                BOOST_ERROR("cap pseudo test failed for implied vols "
+                            << numberCapVolPseudoFailures << " times" );
 
         }
     }
@@ -3122,7 +3125,7 @@ void MarketModelTest::testPathwiseVegas()
                                 }
 
                             }
-                            ++currentStep;
+                        ++currentStep;
                     }
                     while (!done);
 
@@ -3527,105 +3530,96 @@ void MarketModelTest::testPathwiseVegas()
                         }
 
 
-                        // first get the terminal vols
+                    // first get the terminal vols
 
-                        Matrix totalCovariance(marketModel->totalCovariance(marketModel->numberOfSteps()-1));
+                    Matrix totalCovariance(marketModel->totalCovariance(marketModel->numberOfSteps()-1));
 
-                        std::vector<Real> trueCapletPrices(numberRates);
-                        boost::shared_ptr<StrikedTypePayoff> dispayoff( new
-                            PlainVanillaPayoff(Option::Call, capStrike+displacement));
+                    std::vector<Real> trueCapletPrices(numberRates);
+                    boost::shared_ptr<StrikedTypePayoff> dispayoff( new
+                        PlainVanillaPayoff(Option::Call, capStrike+displacement));
+
+                    for (Size r =0; r < trueCapletPrices.size(); ++r)
+                        trueCapletPrices[r] = BlackCalculator(dispayoff, todaysForwards[r], sqrt(totalCovariance[r][r]),
+                                                              todaysDiscounts[r+1]*(rateTimes[r+1]-rateTimes[r])).value();
+
+                    std::vector<Real> trueCapPrices(capsDeflated.numberOfProducts());
+                    std::vector<Real> vegaCaps(capsDeflated.numberOfProducts());
+
+
+                    for (Size s=0; s < capsDeflated.numberOfProducts(); ++s)
+                    {
+
+                        trueCapPrices[s]=0.0;
+
+                        for (Size t= caps[s].startIndex_; t <  caps[s].endIndex_; ++t)
+                            trueCapPrices[s] += trueCapletPrices[t];
+                    }
+
+                    Size numberErrors =0;
+
+
+                    for (Size b =0; b < vegaBumps[0].size(); ++b)
+                    {
+
+                        std::vector<Real> bumpedCapletPrices(trueCapletPrices.size());
+                        //                  std::vector<Real> bumpedCapPrices(trueCapPrices.size());
+
+                        std::vector<Real> variances(trueCapletPrices.size(),0.0);
+                        std::vector<Real> vegasCaplets(trueCapletPrices.size());
+
+                        for (Size step = 0; step < marketModel->numberOfSteps(); ++step)
+                        {
+                            Matrix pseudoRoot( marketModel->pseudoRoot(step));
+                            pseudoRoot += vegaBumps[step][b];
+
+                            for (Size rate=step; rate<marketModel->numberOfRates(); ++rate)
+                            {
+                                Real variance = 0.0;
+                                for (Size f=0; f < marketModel->numberOfFactors(); ++f)
+                                    variance+= pseudoRoot[rate][f]* pseudoRoot[rate][f];
+
+                                variances[rate]+=variance;
+                            }
+                        }
 
                         for (Size r =0; r < trueCapletPrices.size(); ++r)
-                            trueCapletPrices[r] = BlackCalculator(dispayoff, todaysForwards[r], sqrt(totalCovariance[r][r]),
-                            todaysDiscounts[r+1]*(rateTimes[r+1]-rateTimes[r])).value();
+                        {
+                            bumpedCapletPrices[r] = BlackCalculator(dispayoff, todaysForwards[r], sqrt(variances[r]),
+                                                                    todaysDiscounts[r+1]*(rateTimes[r+1]-rateTimes[r])).value();
 
-                        std::vector<Real> trueCapPrices(capsDeflated.numberOfProducts());
-                        std::vector<Real> vegaCaps(capsDeflated.numberOfProducts());
-
+                            vegasCaplets[r] = bumpedCapletPrices[r] - trueCapletPrices[r];
+                        }
 
                         for (Size s=0; s < capsDeflated.numberOfProducts(); ++s)
                         {
-
-                            trueCapPrices[s]=0.0;
+                            vegaCaps[s]=0.0;
 
                             for (Size t= caps[s].startIndex_; t <  caps[s].endIndex_; ++t)
-                                trueCapPrices[s] += trueCapletPrices[t];
+                                vegaCaps[s] += vegasCaplets[t];
                         }
 
-                        Size numberErrors =0;
-
-
-                        for (Size b =0; b < vegaBumps[0].size(); ++b)
-
+                        for (Size s=0; s  < capsDeflated.numberOfProducts(); ++s)
                         {
+                            Real mcVega = vegasMatrix[s][b];
+                            Real analyticVega = vegaCaps[s];
+                            Real thisError =  mcVega - analyticVega;
+                            Real thisSE = standardErrors[s][b];
 
-
-                            std::vector<Real> bumpedCapletPrices(trueCapletPrices.size());
-                            //                  std::vector<Real> bumpedCapPrices(trueCapPrices.size());
-
-                            std::vector<Real> variances(trueCapletPrices.size(),0.0);
-                            std::vector<Real> vegasCaplets(trueCapletPrices.size());
-
-
-
-                            for (Size step = 0; step < marketModel->numberOfSteps(); ++step)
+                            if (fabs(thisError) >  0.0)
                             {
-                                Matrix pseudoRoot( marketModel->pseudoRoot(step));
-                                pseudoRoot += vegaBumps[step][b];
+                                Real errorInSEs = fabs(thisError/thisSE);
 
-                                for (Size rate=step; rate<marketModel->numberOfRates(); ++rate)
-                                {
-                                    Real variance = 0.0;
-                                    for (Size f=0; f < marketModel->numberOfFactors(); ++f)
-                                        variance+= pseudoRoot[rate][f]* pseudoRoot[rate][f];
-
-                                    variances[rate]+=variance;
-                                }
+                                if (errorInSEs > 3.5)
+                                    ++numberErrors;
                             }
-
-                            for (Size r =0; r < trueCapletPrices.size(); ++r)
-                            {
-
-                                bumpedCapletPrices[r] = BlackCalculator(dispayoff, todaysForwards[r], sqrt(variances[r]),
-                                    todaysDiscounts[r+1]*(rateTimes[r+1]-rateTimes[r])).value();
-
-                                vegasCaplets[r] = bumpedCapletPrices[r] - trueCapletPrices[r];
-
-                            }
-
-                            for (Size s=0; s < capsDeflated.numberOfProducts(); ++s)
-                            {
-
-                                vegaCaps[s]=0.0;
-
-                                for (Size t= caps[s].startIndex_; t <  caps[s].endIndex_; ++t)
-                                    vegaCaps[s] += vegasCaplets[t];
-                            }
-
-
-                            for (Size s=0; s  < capsDeflated.numberOfProducts(); ++s)
-                            {
-                                Real mcVega = vegasMatrix[s][b];
-                                Real analyticVega = vegaCaps[s];
-                                Real thisError =  mcVega - analyticVega;
-                                Real thisSE = standardErrors[s][b];
-
-                                if (fabs(thisError) >  0.0)
-                                {
-                                    Real errorInSEs = fabs(thisError/thisSE);
-
-                                    if (errorInSEs > 3.5)
-                                        ++numberErrors;
-                                }
-
-                            }
-
 
                         }
 
+                    }
 
-                        if (numberErrors >0)
-                            BOOST_FAIL("caps Pathwise vega test fails : " << numberErrors <<"\n");
+
+                    if (numberErrors >0)
+                        BOOST_FAIL("caps Pathwise vega test fails : " << numberErrors <<"\n");
 
                 } // end of k loop over measures
             }
@@ -4077,67 +4071,67 @@ void MarketModelTest::testPathwiseMarketVegas()
 
                 // we next get the model vegas for comparison
 
-                std::vector<Real> impliedVols_(swaptions.size());
+            std::vector<Real> impliedVols_(swaptions.size());
 
-                for (Size i=0; i < swaptions.size(); ++i)
-                    impliedVols_[i] = SwapForwardMappings::swaptionImpliedVolatility(*marketModel,
-                    swaptions[i].startIndex_,
-                    swaptions[i].endIndex_);
+            for (Size i=0; i < swaptions.size(); ++i)
+                impliedVols_[i] = SwapForwardMappings::swaptionImpliedVolatility(*marketModel,
+                                                                                 swaptions[i].startIndex_,
+                                                                                 swaptions[i].endIndex_);
 
-                std::vector<Real> analyticVegas(swaptions.size());
-                for (Size i=0; i < swaptions.size(); ++i)
+            std::vector<Real> analyticVegas(swaptions.size());
+            for (Size i=0; i < swaptions.size(); ++i)
+            {
+                Real swapRate = cs.coterminalSwapRates()[i];
+                Real annuity =  cs.coterminalSwapAnnuity(0,i)*initialNumeraireValue;
+                Real expiry = rateTimes[i];
+                Real sd = impliedVols_[i]*sqrt(expiry);
+                Real swapDisplacement=0.0;
+
+                Real vega = blackFormulaVolDerivative(swapRate,
+                                                      swapRate,
+                                                      sd,
+                                                      expiry,
+                                                      annuity,
+                                                      swapDisplacement);
+
+                analyticVegas[i] = vega*0.01; // one percent move
+
+            }
+
+            // diagonal vegas should agree up to standard errors
+            // off diagonal vegas should be zero
+
+            Size numberDiagonalFailures = 0;
+            Size offDiagonalFailures=0;
+
+
+            for (Size i=0; i < swaptions.size(); ++i)
+            {
+                Real thisError = vegasMatrix[i][i] - analyticVegas[i];
+                Real thisErrorInSds = thisError /  (standardErrors[i][i]+1E-6); // silly to penalize for tiny standard error
+
+                if (fabs(thisErrorInSds) > 4)
+                    ++numberDiagonalFailures;
+
+            }
+
+            for (Size i=0; i < swaptions.size(); ++i)
+                for (Size j=0; j < theBumps[0].size(); ++j)
                 {
-                    Real swapRate = cs.coterminalSwapRates()[i];
-                    Real annuity =  cs.coterminalSwapAnnuity(0,i)*initialNumeraireValue;
-                    Real expiry = rateTimes[i];
-                    Real sd = impliedVols_[i]*sqrt(expiry);
-                    Real swapDisplacement=0.0;
-
-                    Real vega = blackFormulaVolDerivative(swapRate,
-                        swapRate,
-                        sd,
-                        expiry,
-                        annuity,
-                        swapDisplacement);
-
-                    analyticVegas[i] = vega*0.01; // one percent move
-
-                }
-
-                // diagonal vegas should agree up to standard errors
-                // off diagonal vegas should be zero
-
-                Size numberDiagonalFailures = 0;
-                Size offDiagonalFailures=0;
-
-
-                for (Size i=0; i < swaptions.size(); ++i)
-                {
-                    Real thisError = vegasMatrix[i][i] - analyticVegas[i];
-                    Real thisErrorInSds = thisError /  (standardErrors[i][i]+1E-6); // silly to penalize for tiny standard error
-
-                    if (fabs(thisErrorInSds) > 4)
-                        ++numberDiagonalFailures;
-
-                }
-
-                for (Size i=0; i < swaptions.size(); ++i)
-                    for (Size j=0; j < theBumps[0].size(); ++j)
+                    if ( i !=j )
                     {
-                        if ( i !=j )
-                        {
-                            Real thisError = vegasMatrix[i][j]; // true value is zero
+                        Real thisError = vegasMatrix[i][j]; // true value is zero
 
-                            Real thisErrorInSds = thisError /  (standardErrors[i][j]+1E-6);
+                        Real thisErrorInSds = thisError /  (standardErrors[i][j]+1E-6);
 
-                            if (fabs(thisErrorInSds) > 3.5)
-                                ++offDiagonalFailures;
-                        }
+                        if (fabs(thisErrorInSds) > 3.5)
+                            ++offDiagonalFailures;
                     }
+                }
 
-                    if (offDiagonalFailures + numberDiagonalFailures >0)
-                        BOOST_FAIL("Pathwise market vega test fails for coterminal swaptions : " << offDiagonalFailures <<" off diagonal failures \n "
-                        << " and " << numberDiagonalFailures << " on the diagonal." );
+            if (offDiagonalFailures + numberDiagonalFailures >0)
+                BOOST_FAIL("Pathwise market vega test fails for coterminal swaptions : " << offDiagonalFailures <<" off diagonal failures \n "
+                           << " and " << numberDiagonalFailures << " on the diagonal." );
 
 
 
@@ -4233,84 +4227,83 @@ void MarketModelTest::testPathwiseMarketVegas()
 
                 // we next get the model vegas for comparison
 
-                std::vector<Real> impliedVols_(caps.size());
+            std::vector<Real> impliedVols_(caps.size());
 
 
-                std::vector<Real> analyticVegas(caps.size());
-                for (Size i=0; i < caps.size(); ++i)
+            std::vector<Real> analyticVegas(caps.size());
+            for (Size i=0; i < caps.size(); ++i)
+            {
+
+                CapPseudoDerivative capPseudo(marketModel,
+                                              caps[i].strike_,
+                                              caps[i].startIndex_,
+                                              caps[i].endIndex_, initialNumeraireValue);
+
+                impliedVols_[i] = capPseudo.impliedVolatility();
+
+                Real vega=0.0;
+
+                for (Size j= caps[i].startIndex_; j< caps[i].endIndex_; ++j)
                 {
 
-                    CapPseudoDerivative capPseudo(marketModel,
-                        caps[i].strike_,
-                        caps[i].startIndex_,
-                        caps[i].endIndex_, initialNumeraireValue);
+                    Real forward  = cs.forwardRates()[j];
+                    Real annuity =  cs.discountRatio(j+1,0)*initialNumeraireValue*accruals[j];
+                    Real expiry = rateTimes[j];
+                    Real sd = impliedVols_[i]*sqrt(expiry);
+                    Real displacement=0.0;
 
-                    impliedVols_[i] = capPseudo.impliedVolatility();
+                    Real capletVega = blackFormulaVolDerivative(caps[i].strike_,forward,
+                                                                sd,
+                                                                expiry,
+                                                                annuity,
+                                                                displacement);
 
-                    Real vega=0.0;
-
-                    for (Size j= caps[i].startIndex_; j< caps[i].endIndex_; ++j)
-                    {
-
-
-                        Real forward  = cs.forwardRates()[j];
-                        Real annuity =  cs.discountRatio(j+1,0)*initialNumeraireValue*accruals[j];
-                        Real expiry = rateTimes[j];
-                        Real sd = impliedVols_[i]*sqrt(expiry);
-                        Real displacement=0.0;
-
-                        Real capletVega = blackFormulaVolDerivative(caps[i].strike_,forward,
-                            sd,
-                            expiry,
-                            annuity,
-                            displacement);
-
-                        vega += capletVega;
-                    }
-
-
-
-                    analyticVegas[i] = vega*0.01; // one percent move
-
+                    vega += capletVega;
                 }
 
-                // diagonal vegas should agree up to standard errors
-                // off diagonal vegas should be zero
-
-                Size numberDiagonalFailures = 0;
-                Size offDiagonalFailures=0;
 
 
-                for (Size i=0; i < caps.size(); ++i)
+                analyticVegas[i] = vega*0.01; // one percent move
+
+            }
+
+            // diagonal vegas should agree up to standard errors
+            // off diagonal vegas should be zero
+
+            Size numberDiagonalFailures = 0;
+            Size offDiagonalFailures=0;
+
+
+            for (Size i=0; i < caps.size(); ++i)
+            {
+                Real thisError = vegasMatrix[i][i+swaptions.size()] - analyticVegas[i];
+                Real thisErrorInSds = thisError /  (standardErrors[i][i+swaptions.size()]+1E-6); // silly to penalize for tiny standard error
+
+                if (fabs(thisErrorInSds) > 4)
                 {
-                    Real thisError = vegasMatrix[i][i+swaptions.size()] - analyticVegas[i];
-                    Real thisErrorInSds = thisError /  (standardErrors[i][i+swaptions.size()]+1E-6); // silly to penalize for tiny standard error
-
-                    if (fabs(thisErrorInSds) > 4)
-                    {
-                        BOOST_TEST_MESSAGE(" MC cap vega: " <<vegasMatrix[i][i+swaptions.size()] << " Analytic cap vega:" << analyticVegas[i] << " Error in sds:" << thisErrorInSds << "\n");
-                        ++numberDiagonalFailures;
-                    }
-
+                    BOOST_TEST_MESSAGE(" MC cap vega: " <<vegasMatrix[i][i+swaptions.size()] << " Analytic cap vega:" << analyticVegas[i] << " Error in sds:" << thisErrorInSds << "\n");
+                    ++numberDiagonalFailures;
                 }
 
-                for (Size i=0; i < caps.size(); ++i)
-                    for (Size j=0; j < theBumps[0].size(); ++j)
+            }
+
+            for (Size i=0; i < caps.size(); ++i)
+                for (Size j=0; j < theBumps[0].size(); ++j)
+                {
+                    if ( i+swaptions.size() !=j )
                     {
-                        if ( i+swaptions.size() !=j )
-                        {
-                            Real thisError = vegasMatrix[i][j]; // true value is zero
+                        Real thisError = vegasMatrix[i][j]; // true value is zero
 
-                            Real thisErrorInSds = thisError /  (standardErrors[i][j]+1E-6);
+                        Real thisErrorInSds = thisError /  (standardErrors[i][j]+1E-6);
 
-                            if (fabs(thisErrorInSds) > 3.5)
-                                ++offDiagonalFailures;
-                        }
+                        if (fabs(thisErrorInSds) > 3.5)
+                            ++offDiagonalFailures;
                     }
+                }
 
-                    if (offDiagonalFailures + numberDiagonalFailures >0)
-                        BOOST_FAIL("Pathwise market vega test fails for caps: " << offDiagonalFailures <<" off diagonal failures \n "
-                        << " and " << numberDiagonalFailures << " on the diagonal." );
+            if (offDiagonalFailures + numberDiagonalFailures >0)
+                BOOST_FAIL("Pathwise market vega test fails for caps: " << offDiagonalFailures <<" off diagonal failures \n "
+                           << " and " << numberDiagonalFailures << " on the diagonal." );
 
 
 

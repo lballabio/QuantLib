@@ -46,26 +46,6 @@ namespace QuantLib {
                          Real atmLevel = Null<Rate>(),
                          VolatilityType type = ShiftedLognormal,
                          Real shift = 0.0);
-        /*! \deprecated
-            Use the constructor taking an explicit volatility type
-        */
-        QL_DEPRECATED
-        FlatSmileSection(const Date& d,
-                         Volatility vol,
-                         const DayCounter& dc,
-                         const Date& referenceDate,
-                         Real atmLevel,
-                         Real shift);
-        /*! \deprecated
-            Use the constructor taking an explicit volatility type
-        */
-        QL_DEPRECATED
-        FlatSmileSection(Time exerciseTime,
-                         Volatility vol,
-                         const DayCounter& dc,
-                         Real atmLevel,
-                         Real shift);
-        //! \name SmileSection interface
         //@{
         Real minStrike () const;
         Real maxStrike () const;
