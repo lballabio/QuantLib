@@ -23,10 +23,8 @@
 #include <ql/termstructures/credit/defaultprobabilityhelpers.hpp>
 #include <ql/pricingengines/credit/midpointcdsengine.hpp>
 #include <ql/pricingengines/credit/isdacdsengine.hpp>
-
-#include <boost/make_shared.hpp>
-
 #include <ql/utilities/null_deleter.hpp>
+#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -303,7 +301,6 @@ namespace QuantLib {
         Settings::instance().includeTodaysCashFlows() = true;
         swap_->recalculate();
         return swap_->fairUpfront();
-
     }
 
 }

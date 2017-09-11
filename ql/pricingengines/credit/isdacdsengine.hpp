@@ -26,8 +26,8 @@
 #define quantlib_isda_cds_engine_hpp
 
 #include <ql/instruments/creditdefaultswap.hpp>
-#include <ql/termstructures/yield/ratehelpers.hpp>
-#include <ql/termstructures/credit/defaultprobabilityhelpers.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/termstructures/defaulttermstructure.hpp>
 
 namespace QuantLib {
 
@@ -113,12 +113,9 @@ namespace QuantLib {
         void calculate() const;
 
       private:
-        mutable Handle<DefaultProbabilityTermStructure> probability_;
-        const std::vector<boost::shared_ptr<DefaultProbabilityHelper> >
-        probabilityHelpers_;
+        Handle<DefaultProbabilityTermStructure> probability_;
         const Real recoveryRate_;
-        mutable Handle<YieldTermStructure> discountCurve_;
-        const std::vector<boost::shared_ptr<RateHelper> > rateHelpers_;
+        Handle<YieldTermStructure> discountCurve_;
         const boost::optional<bool> includeSettlementDateFlows_;
         const NumericalFix numericalFix_;
         const AccrualBias accrualBias_;

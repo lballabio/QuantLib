@@ -32,6 +32,7 @@
 #include <ql/termstructures/credit/flathazardrate.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
+#include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/math/interpolations/backwardflatinterpolation.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
