@@ -319,7 +319,7 @@ namespace QuantLib {
                                const DayCounter& dayCounter,
                                Real recoveryRate,
                                Real accuracy,
-                               const CdsPricingEngine pricingEngine) const {
+                               PricingModel model) const {
 
         boost::shared_ptr<SimpleQuote> flatRate = boost::make_shared<SimpleQuote>(0.0);
 
@@ -329,16 +329,21 @@ namespace QuantLib {
                                                    Handle<Quote>(flatRate), dayCounter));
 
         boost::shared_ptr<PricingEngine> engine;
-        if(pricingEngine == Midpoint) {
+        switch (model) {
+          case Midpoint:
             engine = boost::make_shared<MidPointCdsEngine>(
                 probability, recoveryRate, discountCurve);
-        } else if(pricingEngine == Isda) {
+            break;
+          case ISDA:
             engine = boost::make_shared<IsdaCdsEngine>(
                 probability, recoveryRate, discountCurve,
                 boost::none,
                 IsdaCdsEngine::Taylor,
                 IsdaCdsEngine::HalfDayBias,
                 IsdaCdsEngine::Piecewise);
+            break;
+          default:
+            QL_FAIL("unknown CDS pricing model: " << model);
         }
 
         setupArguments(engine->getArguments());
@@ -357,7 +362,7 @@ namespace QuantLib {
                               Real conventionalRecovery,
                               const Handle<YieldTermStructure>& discountCurve,
                               const DayCounter& dayCounter,
-                              const CdsPricingEngine pricingEngine) const {
+                              PricingModel model) const {
 
         boost::shared_ptr<SimpleQuote> flatRate = boost::make_shared<SimpleQuote>(0.0);
 
@@ -367,16 +372,21 @@ namespace QuantLib {
                                                    Handle<Quote>(flatRate), dayCounter));
 
         boost::shared_ptr<PricingEngine> engine;
-        if(pricingEngine == Midpoint) {
+        switch (model) {
+          case Midpoint:
             engine = boost::make_shared<MidPointCdsEngine>(
                 probability, conventionalRecovery, discountCurve);
-        } else if(pricingEngine == Isda) {
+            break;
+          case ISDA:
             engine = boost::make_shared<IsdaCdsEngine>(
                 probability, conventionalRecovery, discountCurve,
                 boost::none,
                 IsdaCdsEngine::Taylor,
                 IsdaCdsEngine::HalfDayBias,
                 IsdaCdsEngine::Piecewise);
+            break;
+          default:
+            QL_FAIL("unknown CDS pricing model: " << model);
         }
 
         setupArguments(engine->getArguments());

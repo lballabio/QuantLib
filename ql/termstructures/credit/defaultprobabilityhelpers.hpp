@@ -72,8 +72,8 @@ namespace QuantLib {
                   const Date& startDate = Date(),
                   const DayCounter& lastPeriodDayCounter = DayCounter(),
                   bool rebatesAccrual = true,
-                  const CreditDefaultSwap::CdsPricingEngine pricingEngine =
-                  CreditDefaultSwap::Midpoint);
+                  const CreditDefaultSwap::PricingModel model =
+                                                 CreditDefaultSwap::Midpoint);
         CdsHelper(Rate quote,
                   const Period& tenor,
                   Integer settlementDays,
@@ -89,8 +89,8 @@ namespace QuantLib {
                   const Date& startDate = Date(),
                   const DayCounter& lastPeriodDayCounter = DayCounter(),
                   bool rebatesAccrual = true,
-                  const CreditDefaultSwap::CdsPricingEngine pricingEngine =
-                  CreditDefaultSwap::Midpoint);
+                  const CreditDefaultSwap::PricingModel model =
+                                                 CreditDefaultSwap::Midpoint);
         void setTermStructure(DefaultProbabilityTermStructure*);
         void setIsdaEngineParameters(const int numericalFix,
                                      const int accrualBias,
@@ -119,7 +119,7 @@ namespace QuantLib {
         bool paysAtDefaultTime_;
         DayCounter lastPeriodDC_;
         bool rebatesAccrual_;
-        CreditDefaultSwap::CdsPricingEngine pricingEngine_;
+        CreditDefaultSwap::PricingModel model_;
         int isdaNumericalFix_;
         int isdaAccrualBias_;
         int isdaForwardsInCouponPeriod_;
@@ -150,8 +150,8 @@ namespace QuantLib {
                         const Date& startDate = Date(),
                         const DayCounter& lastPeriodDayCounter = DayCounter(),
                         bool rebatesAccrual = true,
-                        const CreditDefaultSwap::CdsPricingEngine pricingEngine =
-                        CreditDefaultSwap::Midpoint);
+                        const CreditDefaultSwap::PricingModel model =
+                                                 CreditDefaultSwap::Midpoint);
 
         SpreadCdsHelper(Rate runningSpread,
                         const Period& tenor,
@@ -168,8 +168,8 @@ namespace QuantLib {
                         const Date& startDate = Date(),
                         const DayCounter& lastPeriodDayCounter = DayCounter(), // ISDA: Actual/360(inc)
                         const bool rebatesAccrual = true, // ISDA: true
-                        const CreditDefaultSwap::CdsPricingEngine pricingEngine =
-                        CreditDefaultSwap::Midpoint);
+                        const CreditDefaultSwap::PricingModel model =
+                                                 CreditDefaultSwap::Midpoint);
         Real impliedQuote() const;
       private:
         void resetEngine();
@@ -196,8 +196,8 @@ namespace QuantLib {
                          const Date& startDate = Date(),
                          const DayCounter& lastPeriodDayCounter = DayCounter(),
                          const bool rebatesAccrual = true,
-                         const CreditDefaultSwap::CdsPricingEngine pricingEngine =
-                         CreditDefaultSwap::Midpoint);
+                         const CreditDefaultSwap::PricingModel model =
+                                                 CreditDefaultSwap::Midpoint);
 
         /*! \note the upfront must be quoted in fractional units. */
         UpfrontCdsHelper(Rate upfront,
@@ -217,8 +217,8 @@ namespace QuantLib {
                          const Date& startDate = Date(),
                          const DayCounter& lastPeriodDayCounter = DayCounter(),
                          const bool rebatesAccrual = true,
-                         const CreditDefaultSwap::CdsPricingEngine pricingEngine =
-                         CreditDefaultSwap::Midpoint);
+                         const CreditDefaultSwap::PricingModel model =
+                                                 CreditDefaultSwap::Midpoint);
         Real impliedQuote() const;
       private:
         void initializeDates();

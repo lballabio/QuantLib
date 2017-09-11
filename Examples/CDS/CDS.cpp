@@ -396,7 +396,7 @@ std::copy(cdsSchedule.begin(), cdsSchedule.end(),
     boost::shared_ptr<CdsHelper> cds5y(new SpreadCdsHelper(
         0.00672658551, 4 * Years + 6 * Months, 1, WeekendsOnly(), Quarterly,
         Following, DateGeneration::CDS, Actual360(), 0.4, rateTs, true, true,
-        Date(), Actual360(true), true, CreditDefaultSwap::Isda));
+        Date(), Actual360(true), true, CreditDefaultSwap::ISDA));
 
     isdaCdsHelper.push_back(cds5y);
 
@@ -573,31 +573,31 @@ void example03() {
     isdaYts->enableExtrapolation();
 
 
-    CreditDefaultSwap::CdsPricingEngine pricingEngine = CreditDefaultSwap::Isda;
+    CreditDefaultSwap::PricingModel model = CreditDefaultSwap::ISDA;
     boost::shared_ptr<CdsHelper> cds6m(new SpreadCdsHelper(
         0.007927, 6 * Months, 1, WeekendsOnly(), Quarterly, Following,
         DateGeneration::CDS, Actual360(), 0.4, isdaYts, true, true, Date(),
-        Actual360(true), true, pricingEngine));
+        Actual360(true), true, model));
     boost::shared_ptr<CdsHelper> cds1y(new SpreadCdsHelper(
         0.007927, 1 * Years, 1, WeekendsOnly(), Quarterly, Following,
         DateGeneration::CDS, Actual360(), 0.4, isdaYts, true, true, Date(),
-        Actual360(true), true, pricingEngine));
+        Actual360(true), true, model));
     boost::shared_ptr<CdsHelper> cds3y(new SpreadCdsHelper(
         0.012239, 3 * Years, 1, WeekendsOnly(), Quarterly, Following,
         DateGeneration::CDS, Actual360(), 0.4, isdaYts, true, true, Date(),
-        Actual360(true), true, pricingEngine));
+        Actual360(true), true, model));
     boost::shared_ptr<CdsHelper> cds5y(new SpreadCdsHelper(
         0.016979, 5 * Years, 1, WeekendsOnly(), Quarterly, Following,
         DateGeneration::CDS, Actual360(), 0.4, isdaYts, true, true, Date(),
-        Actual360(true), true, pricingEngine));
+        Actual360(true), true, model));
     boost::shared_ptr<CdsHelper> cds7y(new SpreadCdsHelper(
         0.019271, 7 * Years, 1, WeekendsOnly(), Quarterly, Following,
         DateGeneration::CDS, Actual360(), 0.4, isdaYts, true, true, Date(),
-        Actual360(true), true, pricingEngine));
+        Actual360(true), true, model));
     boost::shared_ptr<CdsHelper> cds10y(new SpreadCdsHelper(
         0.020860, 10 * Years, 1, WeekendsOnly(), Quarterly, Following,
         DateGeneration::CDS, Actual360(), 0.4, isdaYts, true, true, Date(),
-        Actual360(true), true, pricingEngine));
+        Actual360(true), true, model));
 
     std::vector<boost::shared_ptr<DefaultProbabilityHelper> > isdaCdsHelpers;
 
@@ -628,7 +628,7 @@ void example03() {
             isdaCts, 0.4, isdaYts);
 
     // check the curves
-    std::cout << "Isda yield curve:" << std::endl;
+    std::cout << "ISDA yield curve:" << std::endl;
     std::cout << "date;time;zeroyield" << std::endl;
     for (Size i = 0; i < isdaYieldHelpers.size(); i++) {
         Date d = isdaYieldHelpers[i]->latestDate();
@@ -638,7 +638,7 @@ void example03() {
                   << std::endl;
     }
 
-    std::cout << "Isda credit curve:" << std::endl;
+    std::cout << "ISDA credit curve:" << std::endl;
     std::cout << "date;time;survivalprob" << std::endl;
     for (Size i = 0; i < isdaCdsHelpers.size(); i++) {
         Date d = isdaCdsHelpers[i]->latestDate();

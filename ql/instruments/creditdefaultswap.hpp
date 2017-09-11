@@ -47,20 +47,19 @@ namespace QuantLib {
                  NPV and therefore affect the fair-spread
                  calculation. This might not be what you want.
 
-        \warning conventionalSpread (and impliedHazardRate) use the
-                 mid point engine, which is not ISDA conform. Change
-                 this to isda cds engine (once this is finished) ?
+        \warning conventionalSpread (and impliedHazardRate) by default
+                 use the mid-point engine, which is not ISDA conform.
 
-         \ingroup instruments
+        \ingroup instruments
     */
     class CreditDefaultSwap : public Instrument {
       public:
         class arguments;
         class results;
         class engine;
-        enum CdsPricingEngine {
+        enum PricingModel {
             Midpoint,
-            Isda
+            ISDA
         };
         //! \name Constructors
         //@{
@@ -221,7 +220,7 @@ namespace QuantLib {
                                const DayCounter& dayCounter,
                                Real recoveryRate = 0.4,
                                Real accuracy = 1.0e-8,
-                               const CdsPricingEngine pricingEngine = Midpoint) const;
+                               PricingModel model = Midpoint) const;
 
         //! Conventional/standard upfront-to-spread conversion
         /*! Under a standard ISDA model and a set of standardised
@@ -257,7 +256,7 @@ namespace QuantLib {
         Rate conventionalSpread(Real conventionalRecovery,
                                 const Handle<YieldTermStructure>& discountCurve,
                                 const DayCounter& dayCounter,
-                                const CdsPricingEngine pricingEngine = Midpoint) const;
+                                PricingModel model = Midpoint) const;
         //@}
       protected:
         //! \name Instrument interface
