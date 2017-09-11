@@ -64,16 +64,15 @@ namespace QuantLib {
 
         Real upfPVO1 = 0.0;
         results_.upfrontNPV = 0.0;
-        if (!arguments_.upfrontPayment->hasOccurred(
+        if (arguments_.upfrontPayment->amount() != 0.0 &&
+            !arguments_.upfrontPayment->hasOccurred(
                                                settlementDate,
                                                includeSettlementDateFlows_)) {
             upfPVO1 =
                 nonKnockOut *
                 discountCurve_->discount(arguments_.upfrontPayment->date());
-            if(arguments_.upfrontPayment->amount() != 0.) {
-                results_.upfrontNPV =
-                    upfPVO1 * arguments_.upfrontPayment->amount();
-            }
+            results_.upfrontNPV =
+                upfPVO1 * arguments_.upfrontPayment->amount();
         }
 
         results_.accrualRebateNPV = 0.;
