@@ -38,32 +38,24 @@
 #include <ql/currency.hpp>
 
 namespace QuantLib {
+
     /*! Base class for default risky bonds
       \ingroup credit
     */
     class RiskyBond : public Instrument {
     public:
-        /*!
-            @param npvDate The future date cashflows value contingent to 
-                survival. i.e. the knockout probability is considered. 
-                To compute the npv given that the issuer has 
-                survived, divide the npv by \f[(1-P_{def}(T_{npv}))\f]
+        /*! The value is contingent to survival, i.e., the knockout
+            probability is considered.  To compute the npv given that
+            the issuer has survived, divide the npv by
+            \f[(1-P_{def}(T_{npv}))\f]
         */
         RiskyBond(const std::string& name,
                   const Currency& ccy,
                   Real recoveryRate,
                   const Handle<DefaultProbabilityTermStructure>& defaultTS,
                   const Handle<YieldTermStructure>& yieldTS,
-                  Date npvDate = Date())
-            : name_(name), ccy_(ccy), recoveryRate_(recoveryRate),
-              defaultTS_(defaultTS), yieldTS_(yieldTS),
-              npvDate_(npvDate == Date() ? 
-                Settings::instance().evaluationDate() : npvDate){
-            registerWith (yieldTS_);
-            registerWith (defaultTS_);
-            //the two above might not be registered with evalDate
-            registerWith(Settings::instance().evaluationDate());
-        }
+                  Natural settlementDays = 0,
+                  Calendar calendar = Calendar());
         virtual ~RiskyBond() {}
         virtual std::vector<boost::shared_ptr<CashFlow> > cashflows() const = 0;
         std::vector<boost::shared_ptr<CashFlow> > expectedCashflows();
@@ -83,11 +75,6 @@ namespace QuantLib {
         //@{
         bool isExpired() const;
         //@}
-        //! resets engine's npv date.
-        void setNpvDate(const Date d) { 
-            QL_REQUIRE(d != Date(), "Null npv date in risky bond.");
-            npvDate_ = d; 
-        }
     protected:
         void setupExpired() const;
         void performCalculations() const;
@@ -99,7 +86,8 @@ namespace QuantLib {
         Handle<YieldTermStructure> yieldTS_;
     protected:
         // engines data
-        Date npvDate_;
+        Natural settlementDays_;
+        Calendar calendar_;
     };
 
     inline std::string RiskyBond::name() const {
@@ -138,7 +126,7 @@ namespace QuantLib {
                        BusinessDayConvention paymentConvention,
                        const std::vector<Real>& notionals,
                        const Handle<YieldTermStructure>& yieldTS,
-                       Date npvDate = Date());
+                       Natural settlementDays = 0);
         std::vector<boost::shared_ptr<CashFlow> > cashflows() const;
         Real notional(Date date = Date::minDate()) const;
         Date effectiveDate() const;
@@ -172,7 +160,7 @@ namespace QuantLib {
                           Real spread,
                           std::vector<Real> notionals,
                           Handle<YieldTermStructure> yieldTS,
-                          Date npvDate = Date());
+                          Natural settlementDays = 0);
         std::vector<boost::shared_ptr<CashFlow> > cashflows() const;
         Real notional(Date date = Date::minDate()) const;
         Date effectiveDate() const;
