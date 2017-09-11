@@ -109,13 +109,13 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<
                 InterpolatedDiscountCurve<LogLinear> >(*discountCurve_)) {
             yDates = castY1->dates();
-        } else if(boost::shared_ptr<PiecewiseYieldCurve<ForwardRate, BackwardFlat> >
+        } else if(boost::shared_ptr<InterpolatedForwardCurve<BackwardFlat> >
         castY2 = boost::dynamic_pointer_cast<
-            PiecewiseYieldCurve<ForwardRate, BackwardFlat> >(*discountCurve_)) {
+            InterpolatedForwardCurve<BackwardFlat> >(*discountCurve_)) {
             yDates = castY2->dates();
-        } else if(boost::shared_ptr<PiecewiseYieldCurve<ForwardRate, ForwardFlat> >
+        } else if(boost::shared_ptr<InterpolatedForwardCurve<ForwardFlat> >
         castY3 = boost::dynamic_pointer_cast<
-            PiecewiseYieldCurve<ForwardRate, ForwardFlat> >(*discountCurve_)) {
+            InterpolatedForwardCurve<ForwardFlat> >(*discountCurve_)) {
             yDates = castY3->dates();
         } else if(boost::shared_ptr<FlatForward> castY4 =
             boost::dynamic_pointer_cast<FlatForward>(*discountCurve_)) {
