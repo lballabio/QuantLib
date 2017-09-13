@@ -92,13 +92,6 @@ namespace QuantLib {
                   const CreditDefaultSwap::PricingModel model =
                                                  CreditDefaultSwap::Midpoint);
         void setTermStructure(DefaultProbabilityTermStructure*);
-        void setIsdaEngineParameters(const int numericalFix,
-                                     const int accrualBias,
-                                     const int forwardsInCouponPeriod) {
-            isdaNumericalFix_ = numericalFix;
-            isdaAccrualBias_ = accrualBias;
-            isdaForwardsInCouponPeriod_ = forwardsInCouponPeriod;
-        }
         boost::shared_ptr<CreditDefaultSwap> swap() const {
             return swap_;
         }
@@ -120,9 +113,6 @@ namespace QuantLib {
         DayCounter lastPeriodDC_;
         bool rebatesAccrual_;
         CreditDefaultSwap::PricingModel model_;
-        int isdaNumericalFix_;
-        int isdaAccrualBias_;
-        int isdaForwardsInCouponPeriod_;
 
         Schedule schedule_;
         boost::shared_ptr<CreditDefaultSwap> swap_;

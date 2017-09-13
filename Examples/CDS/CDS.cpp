@@ -609,14 +609,6 @@ void example03() {
     isdaCdsHelpers.push_back(cds7y);
     isdaCdsHelpers.push_back(cds10y);
 
-    // set isda parameters
-    for (Size i = 0; i < isdaCdsHelpers.size(); i++) {
-        boost::dynamic_pointer_cast<CdsHelper>(isdaCdsHelpers[i])
-            ->setIsdaEngineParameters(IsdaCdsEngine::Taylor, // None, Taylor
-                                      IsdaCdsEngine::NoBias, // HalfDayBias, NoBias
-                                      IsdaCdsEngine::Piecewise); // Piecewise // Flat
-    }
-
     // build credit curve
     Handle<DefaultProbabilityTermStructure> isdaCts =
     Handle<DefaultProbabilityTermStructure>(boost::make_shared<

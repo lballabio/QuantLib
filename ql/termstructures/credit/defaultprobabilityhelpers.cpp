@@ -47,10 +47,7 @@ namespace QuantLib {
           discountCurve_(discountCurve), settlesAccrual_(settlesAccrual),
           paysAtDefaultTime_(paysAtDefaultTime), lastPeriodDC_(lastPeriodDayCounter),
           rebatesAccrual_(rebatesAccrual),
-          model_(model), isdaNumericalFix_(IsdaCdsEngine::Taylor),
-          isdaAccrualBias_(IsdaCdsEngine::HalfDayBias),
-          isdaForwardsInCouponPeriod_(IsdaCdsEngine::Piecewise), schedule_(),
-          startDate_(startDate) {
+          model_(model), startDate_(startDate) {
 
         initializeDates();
 
@@ -76,10 +73,7 @@ namespace QuantLib {
           discountCurve_(discountCurve), settlesAccrual_(settlesAccrual),
           paysAtDefaultTime_(paysAtDefaultTime),
           lastPeriodDC_(lastPeriodDayCounter), rebatesAccrual_(rebatesAccrual),
-          model_(model), isdaNumericalFix_(IsdaCdsEngine::Taylor),
-          isdaAccrualBias_(IsdaCdsEngine::NoBias),
-          isdaForwardsInCouponPeriod_(IsdaCdsEngine::Piecewise), schedule_(),
-          startDate_(startDate){
+          model_(model), startDate_(startDate){
 
         initializeDates();
 
@@ -195,10 +189,8 @@ namespace QuantLib {
           case CreditDefaultSwap::ISDA:
             swap_->setPricingEngine(boost::make_shared<IsdaCdsEngine>(
                 probability_, recoveryRate_, discountCurve_, false,
-                static_cast<IsdaCdsEngine::NumericalFix>(isdaNumericalFix_),
-                static_cast<IsdaCdsEngine::AccrualBias>(isdaAccrualBias_),
-                static_cast<IsdaCdsEngine::ForwardsInCouponPeriod>(
-                    isdaForwardsInCouponPeriod_)));
+                IsdaCdsEngine::Taylor, IsdaCdsEngine::HalfDayBias,
+                IsdaCdsEngine::Piecewise));
             break;
           case CreditDefaultSwap::Midpoint:
             swap_->setPricingEngine(boost::make_shared<MidPointCdsEngine>(
@@ -282,10 +274,8 @@ namespace QuantLib {
           case CreditDefaultSwap::ISDA:
             swap_->setPricingEngine(boost::make_shared<IsdaCdsEngine>(
                 probability_, recoveryRate_, discountCurve_, false,
-                static_cast<IsdaCdsEngine::NumericalFix>(isdaNumericalFix_),
-                static_cast<IsdaCdsEngine::AccrualBias>(isdaAccrualBias_),
-                static_cast<IsdaCdsEngine::ForwardsInCouponPeriod>(
-                    isdaForwardsInCouponPeriod_)));
+                IsdaCdsEngine::Taylor, IsdaCdsEngine::HalfDayBias,
+                IsdaCdsEngine::Piecewise));
             break;
           case CreditDefaultSwap::Midpoint:
             swap_->setPricingEngine(boost::make_shared<MidPointCdsEngine>(

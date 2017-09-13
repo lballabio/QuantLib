@@ -100,7 +100,7 @@ namespace QuantLib {
             const Handle<YieldTermStructure> &discountCurve,
             boost::optional<bool> includeSettlementDateFlows = boost::none,
             const NumericalFix numericalFix = Taylor,
-            const AccrualBias accrualBias = NoBias,
+            const AccrualBias accrualBias = HalfDayBias,
             const ForwardsInCouponPeriod forwardsInCouponPeriod = Piecewise);
 
         const Handle<YieldTermStructure> isdaRateCurve() const {
