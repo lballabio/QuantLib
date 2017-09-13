@@ -173,7 +173,7 @@ void TermStructureTest::testImplied() {
     if (std::fabs(discount - baseDiscount*impliedDiscount) > tolerance)
         BOOST_ERROR(
             "unable to reproduce discount from implied curve\n"
-            << QL_FIXED << std::setprecision(10)
+            << std::fixed << std::setprecision(10)
             << "    calculated: " << baseDiscount*impliedDiscount << "\n"
             << "    expected:   " << discount);
 }

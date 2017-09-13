@@ -1078,7 +1078,7 @@ void BasketOptionTest::test2DPDEGreeks() {
     const Real tol = 0.0005;
     if (std::fabs(expectedDelta - calculatedDelta) > tol) {
         BOOST_FAIL("failed to reproduce delta with 2dim PDE"
-                   << QL_FIXED << std::setprecision(8)
+                   << std::fixed << std::setprecision(8)
                    << "\n    calculated: " << calculatedDelta
                    << "\n    expected:   " << expectedDelta
                    << "\n    tolerance:  " << tol);
@@ -1086,7 +1086,7 @@ void BasketOptionTest::test2DPDEGreeks() {
 
     if (std::fabs(expectedGamma - calculatedGamma) > tol) {
         BOOST_FAIL("failed to reproduce delta with 2dim PDE"
-                   << QL_FIXED << std::setprecision(8)
+                   << std::fixed << std::setprecision(8)
                    << "\n    calculated: " << calculatedGamma
                    << "\n    expected:   " << expectedGamma
                    << "\n    tolerance:  " << tol);
