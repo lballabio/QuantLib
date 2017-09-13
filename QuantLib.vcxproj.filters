@@ -783,6 +783,9 @@
     <ClInclude Include="ql\instruments\makecapfloor.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
+    <ClInclude Include="ql\instruments\makecds.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
     <ClInclude Include="ql\instruments\makecms.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
@@ -2530,6 +2533,9 @@
       <Filter>pricingengines\credit</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\credit\integralcdsengine.hpp">
+      <Filter>pricingengines\credit</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\credit\isdacdsengine.hpp">
       <Filter>pricingengines\credit</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\credit\midpointcdsengine.hpp">
@@ -4401,6 +4407,9 @@
     <ClCompile Include="ql\instruments\makecapfloor.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
+    <ClCompile Include="ql\instruments\makecds.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
     <ClCompile Include="ql\instruments\makecms.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
@@ -5506,6 +5515,9 @@
       <Filter>pricingengines\swap</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\credit\integralcdsengine.cpp">
+      <Filter>pricingengines\credit</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\credit\isdacdsengine.cpp">
       <Filter>pricingengines\credit</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\credit\midpointcdsengine.cpp">
