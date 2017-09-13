@@ -350,7 +350,7 @@ void HestonModelTest::testAnalyticVsBlack() {
         BOOST_FAIL("failed to reproduce Black price with AnalyticHestonEngine"
                    << "\n    calculated: " << calculated
                    << "\n    expected:   " << expected
-                   << "\n    error:      " << QL_SCIENTIFIC << error);
+                   << "\n    error:      " << std::scientific << error);
     }
 
     engine = 
@@ -366,7 +366,7 @@ void HestonModelTest::testAnalyticVsBlack() {
         BOOST_FAIL("failed to reproduce Black price with FdHestonVanillaEngine"
                    << "\n    calculated: " << calculated
                    << "\n    expected:   " << expected
-                   << "\n    error:      " << QL_SCIENTIFIC << error);
+                   << "\n    error:      " << std::scientific << error);
     }
 
 }
@@ -567,7 +567,7 @@ void HestonModelTest::testFdBarrierVsCached() {
         BOOST_FAIL("failed to reproduce cached price with FD Barrier engine"
                    << "\n    calculated: " << calculated
                    << "\n    expected:   " << expected
-                   << "\n    error:      " << QL_SCIENTIFIC << error);
+                   << "\n    error:      " << std::scientific << error);
     }
 
     option = BarrierOption(Barrier::DownIn, 95.0, 3.0, payoff, exercise);
@@ -580,7 +580,7 @@ void HestonModelTest::testFdBarrierVsCached() {
         BOOST_FAIL("failed to reproduce cached price with FD Barrier engine"
                    << "\n    calculated: " << calculated
                    << "\n    expected:   " << expected
-                   << "\n    error:      " << QL_SCIENTIFIC << error);
+                   << "\n    error:      " << std::scientific << error);
     }
 }
 
@@ -626,7 +626,7 @@ void HestonModelTest::testFdVanillaVsCached() {
         BOOST_FAIL("failed to reproduce cached price with FD engine"
                    << "\n    calculated: " << calculated
                    << "\n    expected:   " << expected
-                   << "\n    error:      " << QL_SCIENTIFIC << error);
+                   << "\n    error:      " << std::scientific << error);
     }
 
     BOOST_TEST_MESSAGE("Testing FD vanilla Heston engine for discrete dividends...");
@@ -668,7 +668,7 @@ void HestonModelTest::testFdVanillaVsCached() {
         BOOST_FAIL("failed to reproduce discrete dividend price with FD engine"
                    << "\n    calculated: " << calculated
                    << "\n    expected:   " << expected
-                   << "\n    error:      " << QL_SCIENTIFIC << error);
+                   << "\n    error:      " << std::scientific << error);
     }
 
     BOOST_TEST_MESSAGE("Testing FD vanilla Heston engine for american exercise...");
@@ -702,7 +702,7 @@ void HestonModelTest::testFdVanillaVsCached() {
         BOOST_FAIL("failed to reproduce american option price with FD engine"
                    << "\n    calculated: " << calculated
                    << "\n    expected:   " << expected
-                   << "\n    error:      " << QL_SCIENTIFIC << error);
+                   << "\n    error:      " << std::scientific << error);
     }
 }
 
@@ -828,7 +828,7 @@ void HestonModelTest::testKahlJaeckelCase() {
         BOOST_FAIL("failed to reproduce cached price with FD engine"
                    << "\n    calculated: " << calculated
                    << "\n    expected:   " << expected
-                   << "\n    error:      " << QL_SCIENTIFIC << error);
+                   << "\n    error:      " << std::scientific << error);
     }
 
     option.setPricingEngine(
@@ -842,7 +842,7 @@ void HestonModelTest::testKahlJaeckelCase() {
                    "GaussLobatto engine"
                    << "\n    calculated: " << calculated
                    << "\n    expected:   " << expected
-                   << "\n    error:      " << QL_SCIENTIFIC << error);
+                   << "\n    error:      " << std::scientific << error);
     }
 
     option.setPricingEngine(
@@ -855,7 +855,7 @@ void HestonModelTest::testKahlJaeckelCase() {
                    "Cosine engine"
                    << "\n    calculated: " << calculated
                    << "\n    expected:   " << expected
-                   << "\n    error:      " << QL_SCIENTIFIC << error);
+                   << "\n    error:      " << std::scientific << error);
     }
 }
 
@@ -1049,25 +1049,25 @@ void HestonModelTest::testMultipleStrikesEngine() {
             BOOST_FAIL("failed to reproduce price with FD multi strike engine"
                        << "\n    calculated: " << npvCalculated
                        << "\n    expected:   " << npvExpected
-                       << "\n    error:      " << QL_SCIENTIFIC << relTol);
+                       << "\n    error:      " << std::scientific << relTol);
         }
         if (std::fabs(deltaCalculated-deltaExpected)/deltaExpected > relTol) {
             BOOST_FAIL("failed to reproduce delta with FD multi strike engine"
                        << "\n    calculated: " << deltaCalculated
                        << "\n    expected:   " << deltaExpected
-                       << "\n    error:      " << QL_SCIENTIFIC << relTol);
+                       << "\n    error:      " << std::scientific << relTol);
         }
         if (std::fabs(gammaCalculated-gammaExpected)/gammaExpected > relTol) {
             BOOST_FAIL("failed to reproduce gamma with FD multi strike engine"
                        << "\n    calculated: " << gammaCalculated
                        << "\n    expected:   " << gammaExpected
-                       << "\n    error:      " << QL_SCIENTIFIC << relTol);
+                       << "\n    error:      " << std::scientific << relTol);
         }
         if (std::fabs(thetaCalculated-thetaExpected)/thetaExpected > relTol) {
             BOOST_FAIL("failed to reproduce theta with FD multi strike engine"
                        << "\n    calculated: " << thetaCalculated
                        << "\n    expected:   " << thetaExpected
-                       << "\n    error:      " << QL_SCIENTIFIC << relTol);
+                       << "\n    error:      " << std::scientific << relTol);
         }
     }
 }

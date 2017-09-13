@@ -316,7 +316,7 @@ void SwapTest::testCachedValue() {
 
     if (std::fabs(swap->NPV()-cachedNPV) > 1.0e-11)
         BOOST_ERROR("failed to reproduce cached swap value:\n"
-                    << QL_FIXED << std::setprecision(12)
+                    << std::fixed << std::setprecision(12)
                     << "    calculated: " << swap->NPV() << "\n"
                     << "    expected:   " << cachedNPV);
 }

@@ -88,10 +88,10 @@ void CovarianceTest::testRankReduction() {
     Real error = norm(goodCov-badCov);
     if (error > 4.0e-4)
         BOOST_ERROR(
-            QL_SCIENTIFIC << error
+            std::scientific << error
             << " error while salvaging covariance matrix with spectral alg "
             "through rankReducedSqrt\n"
-            << QL_FIXED
+            << std::fixed
             << "input matrix:\n" << badCov
             << "salvaged matrix:\n" << goodCov);
 }
@@ -144,9 +144,9 @@ void CovarianceTest::testSalvagingMatrix() {
     Real error = norm(goodCov-badCov);
     if (error > 4.0e-4)
         BOOST_ERROR(
-            QL_SCIENTIFIC << error
+            std::scientific << error
             << " error while salvaging covariance matrix with spectral alg\n"
-            << QL_FIXED
+            << std::fixed
             << "input matrix:\n" << badCov
             << "salvaged matrix:\n" << goodCov);
 }
@@ -243,7 +243,7 @@ void CovarianceTest::testCovariance() {
         if (std::fabs(calculated-expected) > 1.0e-16) {
             BOOST_ERROR("CovarianceDecomposition "
                         << "standardDev[" << i << "]:\n"
-                        << std::setprecision(16) << QL_SCIENTIFIC
+                        << std::setprecision(16) << std::scientific
                         << "    calculated: " << calculated << "\n"
                         << "    expected:   " << expected);
         }
@@ -253,7 +253,7 @@ void CovarianceTest::testCovariance() {
             if (std::fabs(calculated-expected) > 1.0e-14) {
                 BOOST_ERROR("\nCovarianceDecomposition "
                             << "corr[" << i << "][" << j << "]:\n"
-                            << std::setprecision(14) << QL_SCIENTIFIC
+                            << std::setprecision(14) << std::scientific
                             << "    calculated: " << calculated << "\n"
                             << "    expected:   " << expected);
             }
