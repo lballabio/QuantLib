@@ -423,7 +423,7 @@ namespace QuantLib {
         QL_REQUIRE(notional != 0.0, "null notional set");
         QL_REQUIRE(spread != Null<Rate>(), "spread not set");
         QL_REQUIRE(!leg.empty(), "coupons not set");
-        // could be empty to indicate theres no flow:
+        QL_REQUIRE(upfrontPayment, "upfront payment not set");
         QL_REQUIRE(claim, "claim not set");
         QL_REQUIRE(protectionStart != Null<Date>(),
                    "protection start date not set");
