@@ -173,8 +173,7 @@ void BlackFormulaTest::testRadoicicStefanicaImpliedVol() {
 
 void BlackFormulaTest::testRadoicicStefanicaLowerBound() {
 
-    BOOST_TEST_MESSAGE(
-        "Testing Radoicic-Stefanica is lower bound...");
+    BOOST_TEST_MESSAGE("Testing Radoicic-Stefanica lower bound...");
 
     // testing lower bound plot figure 3.1 from
     // "Tighter Bounds for Implied Volatility",

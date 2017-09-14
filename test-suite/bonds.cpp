@@ -1378,8 +1378,9 @@ void BondTest::testBondFromScheduleWithDateVector()
     }
 }
 
-void BondTest::testThiry360BondWithSettlementOn31st(){
-    BOOST_TEST_MESSAGE("Testing Thiry360Bond With Settlement On 31st of the month");
+void BondTest::testThirty360BondWithSettlementOn31st(){
+    BOOST_TEST_MESSAGE(
+        "Testing Thirty/360 bond with settlement on 31st of the month...");
 
     // cusip 3130A0X70, data is from Bloomberg
     SavedSettings backup;
@@ -1437,7 +1438,7 @@ test_suite* BondTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testExCouponGilt));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testExCouponAustralianBond));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testBondFromScheduleWithDateVector));
-    suite->add(QUANTLIB_TEST_CASE(&BondTest::testThiry360BondWithSettlementOn31st));
+    suite->add(QUANTLIB_TEST_CASE(&BondTest::testThirty360BondWithSettlementOn31st));
     return suite;
 }
 

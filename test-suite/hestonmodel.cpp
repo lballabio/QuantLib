@@ -2025,7 +2025,7 @@ void HestonModelTest::testCosHestonEngine() {
 }
 
 void HestonModelTest::testCharacteristicFct() {
-    BOOST_TEST_MESSAGE("Testing Heston characteristic function ...");
+    BOOST_TEST_MESSAGE("Testing Heston characteristic function...");
 
     SavedSettings backup;
 
@@ -2075,7 +2075,7 @@ void HestonModelTest::testCharacteristicFct() {
 
 void HestonModelTest::testAndersenPiterbargPricing() {
     BOOST_TEST_MESSAGE("Testing Andersen-Piterbarg method to "
-                       "price under the Heston model ...");
+                       "price under the Heston model...");
 
     SavedSettings backup;
 
@@ -2205,7 +2205,7 @@ void HestonModelTest::testAndersenPiterbargPricing() {
 
 void HestonModelTest::testAndersenPiterbargControlVariateIntegrand() {
     BOOST_TEST_MESSAGE("Testing Andersen-Piterbarg Integrand "
-                        "with control variate ...");
+                        "with control variate...");
 
     SavedSettings backup;
 
@@ -2282,7 +2282,7 @@ void HestonModelTest::testAndersenPiterbargControlVariateIntegrand() {
 }
 
 void HestonModelTest::testAndersenPiterbargConvergence() {
-    BOOST_TEST_MESSAGE("Testing Andersen-Piterbarg pricing convergence ...");
+    BOOST_TEST_MESSAGE("Testing Andersen-Piterbarg pricing convergence...");
 
     SavedSettings backup;
 

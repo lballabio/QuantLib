@@ -568,7 +568,7 @@ void CreditDefaultSwapTest::testFairUpfront() {
 void CreditDefaultSwapTest::testIsdaEngine() {
 
     BOOST_TEST_MESSAGE(
-        "Testing Isda Engine calculations for credit-default swaps...");
+        "Testing ISDA engine calculations for credit-default swaps...");
 
     SavedSettings backup;
 

@@ -458,13 +458,13 @@ void testBootstrap(bool telescopicValueDates) {
 } // anonymous namespace
 
 void OvernightIndexedSwapTest::testBootstrap() {
-    BOOST_TEST_MESSAGE("Testing Eonia-swap curve building ...");
+    BOOST_TEST_MESSAGE("Testing Eonia-swap curve building...");
     ::testBootstrap(false);
 }
 
 void OvernightIndexedSwapTest::testBootstrapWithTelescopicDates() {
     BOOST_TEST_MESSAGE(
-        "Testing Eonia-swap curve building with telescopic value dates ...");
+        "Testing Eonia-swap curve building with telescopic value dates...");
     ::testBootstrap(true);
 }
 
