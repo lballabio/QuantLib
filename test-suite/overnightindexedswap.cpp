@@ -336,13 +336,13 @@ void OvernightIndexedSwapTest::testCachedValue() {
     Real tolerance = 1.0e-11;
     if (std::fabs(swap->NPV()-cachedNPV) > tolerance)
         BOOST_ERROR("\nfailed to reproduce cached swap value (non telescopic value dates):" <<
-                    QL_FIXED << std::setprecision(12) <<
+                    std::fixed << std::setprecision(12) <<
                     "\ncalculated: " << swap->NPV() <<
                     "\n  expected: " << cachedNPV <<
                     "\n tolerance:" << tolerance);
     if (std::fabs(swap2->NPV()-cachedNPV) > tolerance)
         BOOST_ERROR("\nfailed to reproduce cached swap value (telescopic value dates):" <<
-                    QL_FIXED << std::setprecision(12) <<
+                    std::fixed << std::setprecision(12) <<
                     "\ncalculated: " << swap->NPV() <<
                     "\n  expected: " << cachedNPV <<
                     "\n tolerance:" << tolerance);

@@ -5,10 +5,12 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     integralcdsengine.hpp \
+    isdacdsengine.hpp \
     midpointcdsengine.hpp
 
 cpp_files = \
     integralcdsengine.cpp \
+    isdacdsengine.cpp \
     midpointcdsengine.cpp
 
 if UNITY_BUILD

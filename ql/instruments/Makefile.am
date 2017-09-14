@@ -37,6 +37,7 @@ this_include_HEADERS = \
     inflationcapfloor.hpp \
     lookbackoption.hpp \
     makecapfloor.hpp \
+    makecds.hpp \
     makecms.hpp \
     makeois.hpp \
     makeswaption.hpp \
@@ -93,6 +94,7 @@ cpp_files = \
     inflationcapfloor.cpp \
     lookbackoption.cpp \
     makecapfloor.cpp \
+    makecds.cpp \
     makecms.cpp \
     makeois.cpp \
     makeswaption.cpp \

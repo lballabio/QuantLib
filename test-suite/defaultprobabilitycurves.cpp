@@ -230,7 +230,7 @@ namespace {
 
         Date today = Settings::instance().evaluationDate();
 
-        Integer settlementDays = 0;
+        Integer settlementDays = 1;
 
         std::vector<Real> quote;
         quote.push_back(0.01);
@@ -246,10 +246,11 @@ namespace {
 
         Rate fixedRate = 0.05;
         Frequency frequency = Quarterly;
-        BusinessDayConvention convention = Following;
-        DateGeneration::Rule rule = DateGeneration::TwentiethIMM;
-        DayCounter dayCounter = Thirty360();
+        BusinessDayConvention convention = ModifiedFollowing;
+        DateGeneration::Rule rule = DateGeneration::CDS;
+        DayCounter dayCounter = Actual360();
         Real recoveryRate = 0.4;
+        Integer upfrontSettlementDays = 3;
 
         RelinkableHandle<YieldTermStructure> discountCurve;
         discountCurve.linkTo(boost::shared_ptr<YieldTermStructure>(
@@ -265,7 +266,9 @@ namespace {
                                          settlementDays, calendar,
                                          frequency, convention, rule,
                                          dayCounter, recoveryRate,
-                                         discountCurve)));
+                                         discountCurve,
+                                         upfrontSettlementDays, 
+                                         true, true, Date(), Actual360(true))));
 
         RelinkableHandle<DefaultProbabilityTermStructure> piecewiseCurve;
         piecewiseCurve.linkTo(
@@ -284,6 +287,10 @@ namespace {
             Date protectionStart = today + settlementDays;
             Date startDate = calendar.adjust(protectionStart, convention);
             Date endDate = today + n[i]*Years;
+            Date upfrontDate = calendar.advance(today,
+                                         upfrontSettlementDays,
+                                         Days,
+                                         convention);
 
             Schedule schedule(startDate, endDate, Period(frequency), calendar,
                               convention, Unadjusted, rule, false);
@@ -291,7 +298,11 @@ namespace {
             CreditDefaultSwap cds(Protection::Buyer, notional,
                                   quote[i], fixedRate,
                                   schedule, convention, dayCounter,
-                                  true, true, protectionStart);
+                                  true, true, protectionStart,
+                                  upfrontDate,
+                                  boost::shared_ptr<Claim>(),
+                                  Actual360(true),
+                                  true);
             cds.setPricingEngine(boost::shared_ptr<PricingEngine>(
                            new MidPointCdsEngine(piecewiseCurve, recoveryRate,
                                                  discountCurve, true)));

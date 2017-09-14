@@ -136,6 +136,12 @@ namespace QuantLib {
         return *this;
     }
 
+    FixedRateLeg& FixedRateLeg::withLastPeriodDayCounter(
+                                               const DayCounter& dayCounter) {
+        lastPeriodDC_ = dayCounter;
+        return *this;
+    }
+
     FixedRateLeg& FixedRateLeg::withPaymentCalendar(const Calendar& cal) {
         paymentCalendar_ = cal;
         return *this;
@@ -237,10 +243,12 @@ namespace QuantLib {
                 nominal = notionals_[N-2];
             else
                 nominal = notionals_.back();
-            if ((schedule_.hasIsRegular() && schedule_.isRegular(N - 1)) ||
-                !schedule_.hasTenor()) {
+            InterestRate r( rate.rate(), lastPeriodDC_.empty() ?
+                rate.dayCounter() :
+                lastPeriodDC_ , rate.compounding(), rate.frequency() );
+            if ((schedule_.hasIsRegular() && schedule_.isRegular(N - 1)) {
                 leg.push_back(shared_ptr<CashFlow>(new
-                    FixedRateCoupon(paymentDate, nominal, rate,
+                    FixedRateCoupon(paymentDate, nominal, r,
                                     start, end, start, end, exCouponDate)));
             } else {
                 Date ref = schedule_.calendar().advance(
@@ -249,7 +257,7 @@ namespace QuantLib {
                                             schedule_.businessDayConvention(),
                                             schedule_.endOfMonth());
                 leg.push_back(shared_ptr<CashFlow>(new
-                    FixedRateCoupon(paymentDate, nominal, rate,
+                    FixedRateCoupon(paymentDate, nominal, r,
                                     start, end, start, ref, exCouponDate)));
             }
         }
