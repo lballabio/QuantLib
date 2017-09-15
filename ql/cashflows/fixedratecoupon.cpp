@@ -246,7 +246,8 @@ namespace QuantLib {
             InterestRate r( rate.rate(), lastPeriodDC_.empty() ?
                 rate.dayCounter() :
                 lastPeriodDC_ , rate.compounding(), rate.frequency() );
-            if ((schedule_.hasIsRegular() && schedule_.isRegular(N - 1)) {
+            if ((schedule_.hasIsRegular() && schedule_.isRegular(N - 1)) ||
+                !schedule_.hasTenor()) {
                 leg.push_back(shared_ptr<CashFlow>(new
                     FixedRateCoupon(paymentDate, nominal, r,
                                     start, end, start, end, exCouponDate)));
