@@ -202,7 +202,7 @@ void HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation() {
 			boost::make_shared<FdmBlackScholesMesher>(xGrid, process, maturity, s0)));
 
     const boost::shared_ptr<FdmLinearOpComposite> uniformBSFwdOp(
-		boost::make_shared<FdmBlackScholesFwdOp>(uniformMesher, process, s0, 0));
+		boost::make_shared<FdmBlackScholesFwdOp>(uniformMesher, process, s0, false));
 
     const boost::shared_ptr<FdmMesher> concentratedMesher(
 		boost::make_shared<FdmMesherComposite>(
@@ -211,7 +211,7 @@ void HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation() {
                                       std::pair<Real, Real>(s0, 0.1))));
 
     const boost::shared_ptr<FdmLinearOpComposite> concentratedBSFwdOp(
-		boost::make_shared<FdmBlackScholesFwdOp>(concentratedMesher, process, s0, 0));
+		boost::make_shared<FdmBlackScholesFwdOp>(concentratedMesher, process, s0, false));
 
     const boost::shared_ptr<FdmMesher> shiftedMesher(
 		boost::make_shared<FdmMesherComposite>(
@@ -220,7 +220,7 @@ void HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation() {
                                       std::pair<Real, Real>(s0*1.1, 0.2))));
 
     const boost::shared_ptr<FdmLinearOpComposite> shiftedBSFwdOp(
-		boost::make_shared<FdmBlackScholesFwdOp>(shiftedMesher, process, s0, 0));
+		boost::make_shared<FdmBlackScholesFwdOp>(shiftedMesher, process, s0, false));
 
     const boost::shared_ptr<Exercise> exercise(
 		boost::make_shared<EuropeanExercise>(maturityDate));
