@@ -387,10 +387,10 @@ void ShortRateModelTest::testSwaps() {
                 Real error = std::fabs((expected-calculated)/expected);
                 if (error > tolerance) {
                     BOOST_ERROR("Failed to reproduce swap NPV:"
-                                << QL_FIXED << std::setprecision(9)
+                                << std::fixed << std::setprecision(9)
                                 << "\n    calculated: " << calculated
                                 << "\n    expected:   " << expected
-                                << QL_SCIENTIFIC
+                                << std::scientific
                                 << "\n    rel. error: " << error);
                 }
             }
@@ -421,7 +421,7 @@ void ShortRateModelTest::testFuturesConvexityBias() {
         BOOST_ERROR("Failed to reproduce convexity bias:"
                     << "\ncalculated: " << calculatedForward
                     << "\n  expected: " << expectedForward
-                    << QL_SCIENTIFIC
+                    << std::scientific
                     << "\n     error: " << error
                     << "\n tolerance: " << tolerance);
     }

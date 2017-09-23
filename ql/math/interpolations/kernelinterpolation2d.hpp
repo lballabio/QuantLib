@@ -110,11 +110,7 @@ namespace QuantLib {
 
             // returns K(||X-Y||) where X,Y are vectors
             Real kernelAbs(const Array& X, const Array& Y)const{
-                return kernel_(vecNorm(X-Y));
-            }
-
-            Real vecNorm(const Array& X)const{
-                return std::sqrt(DotProduct(X,X));
+                return kernel_(Norm2(X-Y));
             }
 
             Real gammaFunc(const Array& X)const{

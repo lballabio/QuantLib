@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2013 Gary Kennedy
  Copyright (C) 2015 Peter Caspers
+ Copyright (C) 2017 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,6 +23,9 @@
 #include "blackformula.hpp"
 #include "utilities.hpp"
 #include <ql/pricingengines/blackformula.hpp>
+
+#include <boost/make_shared.hpp>
+#include <boost/math/special_functions/fpclassify.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -117,6 +121,164 @@ void BlackFormulaTest::testChambersImpliedVol() {
     }
 }
 
+void BlackFormulaTest::testRadoicicStefanicaImpliedVol() {
+
+    BOOST_TEST_MESSAGE(
+        "Testing Radoicic-Stefanica implied vol approximation...");
+
+    const Time T = 1.7;
+    const Rate r = 0.1;
+    const DiscountFactor df = std::exp(-r*T);
+
+    const Real forward = 100;
+
+    const Volatility vol = 0.3;
+    const Real stdDev = vol * std::sqrt(T);
+
+    const Option::Type types[] = { Option::Call, Option::Put };
+    const Real strikes[] = {
+        50, 60, 70, 80, 90, 100, 110, 125, 150, 200, 300 };
+
+    const Real tol = 0.02;
+
+    for (Size i=0; i < LENGTH(strikes); ++i) {
+        const Real strike = strikes[i];
+        for (Size j=0; j < LENGTH(types); ++j) {
+            const Option::Type type = types[j];
+
+            const boost::shared_ptr<PlainVanillaPayoff> payoff(
+                boost::make_shared<PlainVanillaPayoff>(type, strike));
+
+            const Real marketValue = blackFormula(payoff, forward, stdDev, df);
+
+            const Real estVol = blackFormulaImpliedStdDevApproximationRS(
+                payoff, forward, marketValue, df) / std::sqrt(T);
+
+            const Real error = std::fabs(estVol - vol);
+            if (error > tol) {
+                BOOST_ERROR("Failed to verify Radoicic-Stefanica"
+                    "approximation for "
+                    << type
+                    << "\n forward     :" << forward
+                    << "\n strike      :" << strike
+                    << "\n discount    :" << df
+                    << "\n implied vol :" << vol
+                    << "\n result      :" << estVol
+                    << "\n error       :" << error
+                    << "\n tolerance   :" << tol);
+            }
+        }
+    }
+}
+
+void BlackFormulaTest::testRadoicicStefanicaLowerBound() {
+
+    BOOST_TEST_MESSAGE("Testing Radoicic-Stefanica lower bound...");
+
+    // testing lower bound plot figure 3.1 from
+    // "Tighter Bounds for Implied Volatility",
+    // J. Gatheral, I. Matic, R. Radoicic, D. Stefanica
+    // https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2922742
+
+    const Real forward = 1.0;
+    const Real k = 1.2;
+
+    for (Real s=0.17; s < 2.9; s+=0.01) {
+        const Real strike = std::exp(k)*forward;
+        const Real c = blackFormula(Option::Call, strike, forward, s);
+        const Real estimate = blackFormulaImpliedStdDevApproximationRS(
+            Option::Call, strike, forward, c);
+
+        const Real error = s - estimate;
+        if (boost::math::isnan(estimate) || std::fabs(error) > 0.05) {
+            BOOST_ERROR("Failed to lower bound Radoicic-Stefanica"
+                "approximation for "
+                << "\n forward     :" << forward
+                << "\n strike      :" << k
+                << "\n stdDev      :" << s
+                << "\n result      :" << estimate
+                << "\n error       :" << error);
+
+        }
+
+        if (c > 1e-6 && error < 0.0) {
+            BOOST_ERROR("Failed to verify Radoicic-Stefanica is lower bound"
+                    << "\n forward     :" << forward
+                    << "\n strike      :" << k
+                    << "\n stdDev      :" << s
+                    << "\n result      :" << estimate
+                    << "\n error       :" << error);
+        }
+    }
+}
+
+void BlackFormulaTest::testImpliedVolAdaptiveSuccessiveOverRelaxation() {
+    BOOST_TEST_MESSAGE("Testing implied volatility calculation via "
+        "adaptive successive over-relaxation...");
+
+    SavedSettings backup;
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(12, July, 2017);
+    Settings::instance().evaluationDate() = today;
+
+    const Date exerciseDate = today + Period(15, Months);
+    const Time exerciseTime = dc.yearFraction(today, exerciseDate);
+
+    const boost::shared_ptr<YieldTermStructure> rTS = flatRate(0.10, dc);
+    const boost::shared_ptr<YieldTermStructure> qTS = flatRate(0.06, dc);
+
+    const DiscountFactor df = rTS->discount(exerciseDate);
+
+    const Volatility vol = 0.20;
+    const Real stdDev = vol * std::sqrt(exerciseTime);
+
+    const Real s0     = 100;
+    const Real forward= s0 * qTS->discount(exerciseDate)/df;
+
+    const Option::Type types[] = { Option::Call, Option::Put };
+    const Real strikes[] = { 50, 60, 70, 80, 90, 100, 110, 125, 150, 200 };
+    const Real displacements[] = { 0, 25, 50, 100};
+
+    const Real tol = 1e-8;
+
+    for (Size i=0; i < LENGTH(strikes); ++i) {
+        const Real strike = strikes[i];
+
+        for (Size j=0; j < LENGTH(types); ++j) {
+            const Option::Type type = types[j];
+
+            const boost::shared_ptr<PlainVanillaPayoff> payoff(
+                boost::make_shared<PlainVanillaPayoff>(type, strike));
+
+            for (Size k=0; k < LENGTH(displacements); ++k) {
+
+                const Real displacement = displacements[k];
+                const Real marketValue = blackFormula(
+                    payoff, forward, stdDev, df, displacement);
+
+                const Real impliedStdDev = blackFormulaImpliedStdDevLiRS(
+                    payoff, forward, marketValue, df, displacement,
+                    Null<Real>(), 1.0, tol, 100);
+
+                const Real error = std::fabs(impliedStdDev - stdDev);
+                if (error > 10*tol) {
+                    BOOST_ERROR("Failed to calculated implied volatility"
+                                " with adaptive successive over-relaxation"
+                            << "\n forward     :" << forward
+                            << "\n strike      :" << strike
+                            << "\n stdDev      :" << stdDev
+                            << "\n displacement:" << displacement
+                            << "\n result      :" << impliedStdDev
+                            << "\n error       :" << error
+                            << "\n tolerance   :" << tol);
+                }
+            }
+        }
+    }
+}
+
+
 test_suite* BlackFormulaTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Black formula tests");
 
@@ -124,6 +286,12 @@ test_suite* BlackFormulaTest::suite() {
         &BlackFormulaTest::testBachelierImpliedVol));
     suite->add(QUANTLIB_TEST_CASE(
         &BlackFormulaTest::testChambersImpliedVol));
+    suite->add(QUANTLIB_TEST_CASE(
+        &BlackFormulaTest::testRadoicicStefanicaImpliedVol));
+    suite->add(QUANTLIB_TEST_CASE(
+        &BlackFormulaTest::testRadoicicStefanicaLowerBound));
+    suite->add(QUANTLIB_TEST_CASE(
+        &BlackFormulaTest::testImpliedVolAdaptiveSuccessiveOverRelaxation));
 
     return suite;
 }

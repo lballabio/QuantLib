@@ -783,6 +783,9 @@
     <ClInclude Include="ql\instruments\makecapfloor.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
+    <ClInclude Include="ql\instruments\makecds.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
     <ClInclude Include="ql\instruments\makecms.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
@@ -2532,6 +2535,9 @@
     <ClInclude Include="ql\pricingengines\credit\integralcdsengine.hpp">
       <Filter>pricingengines\credit</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\credit\isdacdsengine.hpp">
+      <Filter>pricingengines\credit</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\credit\midpointcdsengine.hpp">
       <Filter>pricingengines\credit</Filter>
     </ClInclude>
@@ -4150,6 +4156,9 @@
     <ClInclude Include="ql\indexes\ibor\nzocr.hpp">
       <Filter>indexes\ibor</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\matrixutilities\gmres.hpp">
+      <Filter>math\matrixutilities</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\finitedifferences\gbsmrndcalculator.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
@@ -4396,6 +4405,9 @@
       <Filter>instruments</Filter>
     </ClCompile>
     <ClCompile Include="ql\instruments\makecapfloor.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\instruments\makecds.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
     <ClCompile Include="ql\instruments\makecms.cpp">
@@ -5503,6 +5515,9 @@
       <Filter>pricingengines\swap</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\credit\integralcdsengine.cpp">
+      <Filter>pricingengines\credit</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\credit\isdacdsengine.cpp">
       <Filter>pricingengines\credit</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\credit\midpointcdsengine.cpp">
@@ -6692,6 +6707,9 @@
     <ClCompile Include="ql\experimental\math\particleswarmoptimization.cpp">
       <Filter>experimental\math</Filter>
     </ClCompile>
+    <ClCompile Include="ql\math\matrixutilities\gmres.cpp">
+      <Filter>math\matrixutilities</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\models\normalclvmodel.cpp">
       <Filter>experimental\models</Filter>
     </ClCompile>
@@ -6706,6 +6724,9 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\math\gaussiannoncentralchisquaredpolynomial.cpp">
       <Filter>experimental\math</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\time\daycounters\actual365fixed.cpp">
+      <Filter>time\daycounters</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

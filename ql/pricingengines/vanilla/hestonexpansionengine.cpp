@@ -58,10 +58,6 @@ namespace QuantLib {
                          formula_(formula) {
     }
 
-    Size HestonExpansionEngine::numberOfEvaluations() const {
-        return evaluations_;
-    }
-
     void HestonExpansionEngine::calculate() const
     {
         // this is a european option pricer

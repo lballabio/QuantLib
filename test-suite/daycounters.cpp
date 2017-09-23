@@ -548,7 +548,10 @@ test_suite* DayCounterTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testBusiness252));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testThirty360_BondBasis));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testThirty360_EurobondBasis));
+
+#ifdef QL_HIGH_RESOLUTION_DATE
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testIntraday));
+#endif
 
     return suite;
 }

@@ -180,7 +180,7 @@ void CapFloorTest::testVega() {
                                 "\n   lengths:     " << lengths[j]*Years <<
                                 "\n   strike:      " << io::rate(strikes[k]) <<
                                 //"\n   types:       " << types[h] <<
-                                QL_FIXED << std::setprecision(12) <<
+                                std::fixed << std::setprecision(12) <<
                                 "\n   calculated:  " << analyticalVega <<
                                 "\n   expected:    " << numericalVega <<
                                 "\n   discrepancy: " << io::rate(discrepancy) <<
