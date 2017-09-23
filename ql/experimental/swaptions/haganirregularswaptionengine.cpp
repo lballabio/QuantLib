@@ -25,7 +25,6 @@
 #include <ql/instruments/swaption.hpp>
 #include <ql/math/matrixutilities/svd.hpp>
 #include <ql/math/solvers1d/bisection.hpp>
-#include <ql/time/daycounters/all.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>

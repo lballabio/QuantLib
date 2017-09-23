@@ -101,7 +101,7 @@ namespace QuantLib {
         Real result = 0;
         for (Size i = 0; i < vertices_.size(); ++i) {
             Array temp = vertices_[i] - center;
-            result += std::sqrt(DotProduct(temp, temp));
+            result += Norm2(temp);
         }
         return result / Real(vertices_.size());
     }

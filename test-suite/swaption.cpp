@@ -409,7 +409,7 @@ void SwaptionTest::testCachedValue() {
     // FLOATING_POINT_EXCEPTION
     if (std::fabs(swaption->NPV()-cachedNPV) > 1.0e-12)
         BOOST_ERROR("failed to reproduce cached swaption value:\n" <<
-                    QL_FIXED << std::setprecision(12) <<
+                    std::fixed << std::setprecision(12) <<
                     "\ncalculated: " << swaption->NPV() <<
                     "\nexpected:   " << cachedNPV);
 }

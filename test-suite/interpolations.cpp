@@ -88,7 +88,7 @@ namespace {
             Real interpolated = cubic(*xBegin);
             if (std::fabs(interpolated-*yBegin) > tolerance) {
                 BOOST_ERROR(type << " interpolation failed at x = " << *xBegin
-                            << QL_SCIENTIFIC
+                            << std::scientific
                             << "\n    interpolated value: " << interpolated
                             << "\n    expected value:     " << *yBegin
                             << "\n    error:              "
@@ -110,7 +110,7 @@ namespace {
                         << "at x = " << x
                         << "\n    interpolated value: " << interpolated
                         << "\n    expected value:     " << value
-                        << QL_SCIENTIFIC
+                        << std::scientific
                         << "\n    error:              " << error);
         }
     }
@@ -127,7 +127,7 @@ namespace {
                         << "at x = " << x
                         << "\n    interpolated value: " << interpolated
                         << "\n    expected value:     " << value
-                        << QL_SCIENTIFIC
+                        << std::scientific
                         << "\n    error:              " << error);
         }
     }
@@ -934,10 +934,10 @@ void InterpolationTest::testAsFunctor() {
         if (std::fabs(y2[i]-expected) > tolerance)
             BOOST_ERROR(
                 "failed to reproduce " << io::ordinal(i+1) << " expected datum"
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << y2[i]
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(y2[i]-expected));
     }
 }
@@ -965,10 +965,10 @@ void InterpolationTest::testBackwardFlat() {
         if (std::fabs(expected-calculated) > tolerance)
             BOOST_ERROR(
                 "failed to reproduce " << io::ordinal(i+1) << " datum"
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << calculated
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(calculated-expected));
     }
 
@@ -980,10 +980,10 @@ void InterpolationTest::testBackwardFlat() {
         if (std::fabs(expected-calculated) > tolerance)
             BOOST_ERROR(
                 "failed to interpolate correctly at " << p
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << calculated
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(calculated-expected));
     }
 
@@ -996,10 +996,10 @@ void InterpolationTest::testBackwardFlat() {
     if (std::fabs(expected-calculated) > tolerance)
         BOOST_ERROR(
             "failed to extrapolate correctly at " << p
-            << QL_FIXED
+            << std::fixed
             << "\n    expected:   " << expected
             << "\n    calculated: " << calculated
-            << QL_SCIENTIFIC
+            << std::scientific
             << "\n    error:      " << std::fabs(calculated-expected));
 
     p = x[N-1] + 0.5;
@@ -1008,10 +1008,10 @@ void InterpolationTest::testBackwardFlat() {
     if (std::fabs(expected-calculated) > tolerance)
         BOOST_ERROR(
             "failed to extrapolate correctly at " << p
-            << QL_FIXED
+            << std::fixed
             << "\n    expected:   " << expected
             << "\n    calculated: " << calculated
-            << QL_SCIENTIFIC
+            << std::scientific
             << "\n    error:      " << std::fabs(calculated-expected));
 
     // primitive at original points
@@ -1020,10 +1020,10 @@ void InterpolationTest::testBackwardFlat() {
     if (std::fabs(expected-calculated) > tolerance)
         BOOST_ERROR(
             "failed to calculate primitive at " << x[0]
-            << QL_FIXED
+            << std::fixed
             << "\n    expected:   " << expected
             << "\n    calculated: " << calculated
-            << QL_SCIENTIFIC
+            << std::scientific
             << "\n    error:      " << std::fabs(calculated-expected));
 
     Real sum = 0.0;
@@ -1034,10 +1034,10 @@ void InterpolationTest::testBackwardFlat() {
         if (std::fabs(expected-calculated) > tolerance)
             BOOST_ERROR(
                 "failed to calculate primitive at " << x[i]
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << calculated
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(calculated-expected));
     }
 
@@ -1052,10 +1052,10 @@ void InterpolationTest::testBackwardFlat() {
         if (std::fabs(expected-calculated) > tolerance)
             BOOST_ERROR(
                 "failed to calculate primitive at " << x[i]
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << calculated
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(calculated-expected));
     }
 
@@ -1083,10 +1083,10 @@ void InterpolationTest::testForwardFlat() {
         if (std::fabs(expected-calculated) > tolerance)
             BOOST_ERROR(
                 "failed to reproduce " << io::ordinal(i+1) << " datum"
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << calculated
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(calculated-expected));
     }
 
@@ -1098,10 +1098,10 @@ void InterpolationTest::testForwardFlat() {
         if (std::fabs(expected-calculated) > tolerance)
             BOOST_ERROR(
                 "failed to interpolate correctly at " << p
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << calculated
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(calculated-expected));
     }
 
@@ -1114,10 +1114,10 @@ void InterpolationTest::testForwardFlat() {
     if (std::fabs(expected-calculated) > tolerance)
         BOOST_ERROR(
             "failed to extrapolate correctly at " << p
-            << QL_FIXED
+            << std::fixed
             << "\n    expected:   " << expected
             << "\n    calculated: " << calculated
-            << QL_SCIENTIFIC
+            << std::scientific
             << "\n    error:      " << std::fabs(calculated-expected));
 
     p = x[N-1] + 0.5;
@@ -1126,10 +1126,10 @@ void InterpolationTest::testForwardFlat() {
     if (std::fabs(expected-calculated) > tolerance)
         BOOST_ERROR(
             "failed to extrapolate correctly at " << p
-            << QL_FIXED
+            << std::fixed
             << "\n    expected:   " << expected
             << "\n    calculated: " << calculated
-            << QL_SCIENTIFIC
+            << std::scientific
             << "\n    error:      " << std::fabs(calculated-expected));
 
     // primitive at original points
@@ -1138,10 +1138,10 @@ void InterpolationTest::testForwardFlat() {
     if (std::fabs(expected-calculated) > tolerance)
         BOOST_ERROR(
             "failed to calculate primitive at " << x[0]
-            << QL_FIXED
+            << std::fixed
             << "\n    expected:   " << expected
             << "\n    calculated: " << calculated
-            << QL_SCIENTIFIC
+            << std::scientific
             << "\n    error:      " << std::fabs(calculated-expected));
 
     Real sum = 0.0;
@@ -1152,10 +1152,10 @@ void InterpolationTest::testForwardFlat() {
         if (std::fabs(expected-calculated) > tolerance)
             BOOST_ERROR(
                 "failed to calculate primitive at " << x[i]
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << calculated
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(calculated-expected));
     }
 
@@ -1170,10 +1170,10 @@ void InterpolationTest::testForwardFlat() {
         if (std::fabs(expected-calculated) > tolerance)
             BOOST_ERROR(
                 "failed to calculate primitive at " << p
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << calculated
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(calculated-expected));
     }
 }
@@ -1395,7 +1395,7 @@ void InterpolationTest::testKernelInterpolation() {
 
                     BOOST_ERROR("Kernel interpolation failed at x = "
                                 << deltaGrid[dIt]
-                                << QL_SCIENTIFIC
+                                << std::scientific
                                 << "\n    interpolated value: " << calcVal
                                 << "\n    expected value:     " << expectedVal
                                 << "\n    error:              "
@@ -1452,7 +1452,7 @@ void InterpolationTest::testKernelInterpolation() {
 
                 BOOST_ERROR("Kernel interpolation failed at x = "
                             << deltaGrid[dIt]
-                            << QL_SCIENTIFIC
+                            << std::scientific
                             << "\n    interpolated value: " << calcVal
                             << "\n    expected value:     " << expectedVal
                             << "\n    error:              "

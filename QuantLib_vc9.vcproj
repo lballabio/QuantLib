@@ -2283,6 +2283,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\instruments\makecds.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\makecds.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\instruments\makecms.cpp"
 				>
 			</File>
@@ -3063,6 +3071,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\math\matrixutilities\getcovariance.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\matrixutilities\gmres.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\matrixutilities\gmres.hpp"
 					>
 				</File>
 				<File
@@ -6750,6 +6766,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\credit\isdacdsengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\credit\isdacdsengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\pricingengines\credit\midpointcdsengine.cpp"
 					>
 				</File>
@@ -7279,6 +7303,10 @@
 				>
 				<File
 					RelativePath=".\ql\time\daycounters\actual360.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\time\daycounters\actual365fixed.cpp"
 					>
 				</File>
 				<File

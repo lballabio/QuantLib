@@ -20,18 +20,26 @@
 #include "creditdefaultswap.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/creditdefaultswap.hpp>
+#include <ql/instruments/makecds.hpp>
 #include <ql/pricingengines/credit/midpointcdsengine.hpp>
 #include <ql/pricingengines/credit/integralcdsengine.hpp>
+#include <ql/pricingengines/credit/isdacdsengine.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
 #include <ql/termstructures/credit/interpolatedhazardratecurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/discountcurve.hpp>
+#include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
+#include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/math/interpolations/backwardflatinterpolation.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
+#include <ql/time/calendars/weekendsonly.hpp>
+#include <ql/currencies/america.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
+#include <boost/make_shared.hpp>
+
 #include <iomanip>
 #include <iostream>
 
@@ -557,6 +565,153 @@ void CreditDefaultSwapTest::testFairUpfront() {
             << "    calculated NPV:     " << fairNPV);
 }
 
+void CreditDefaultSwapTest::testIsdaEngine() {
+
+    BOOST_TEST_MESSAGE(
+        "Testing ISDA engine calculations for credit-default swaps...");
+
+    SavedSettings backup;
+
+    Date tradeDate(21, May, 2009);
+    Settings::instance().evaluationDate() = tradeDate;
+
+
+    //build an ISDA compliant yield curve
+    //data comes from Markit published rates
+    std::vector<boost::shared_ptr<RateHelper> > isdaRateHelpers;
+    int dep_tenors[] = {1, 2, 3, 6, 9, 12};
+    double dep_quotes[] = {0.003081,
+                           0.005525,
+                           0.007163,
+                           0.012413,
+                           0.014,
+                           0.015488};
+
+    for(size_t i = 0; i < sizeof(dep_tenors) / sizeof(int); i++) {
+        isdaRateHelpers.push_back(boost::make_shared<DepositRateHelper>(
+                                     dep_quotes[i], dep_tenors[i] * Months, 2,
+                                     WeekendsOnly(), ModifiedFollowing,
+                                     false, Actual360()
+                                     )
+            );
+    }
+    int swap_tenors[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20, 25, 30};
+    double swap_quotes[] = {0.011907,
+                            0.01699,
+                            0.021198,
+                            0.02444,
+                            0.026937,
+                            0.028967,
+                            0.030504,
+                            0.031719,
+                            0.03279,
+                            0.034535,
+                            0.036217,
+                            0.036981,
+                            0.037246,
+                            0.037605};
+
+    boost::shared_ptr<IborIndex> isda_ibor = boost::make_shared<IborIndex>(
+        "IsdaIbor", 3 * Months, 2, USDCurrency(), WeekendsOnly(),
+        ModifiedFollowing, false, Actual360());
+    for(size_t i = 0; i < sizeof(swap_tenors) / sizeof(int); i++) {
+        isdaRateHelpers.push_back(boost::make_shared<SwapRateHelper>(
+                                      swap_quotes[i], swap_tenors[i] * Years,
+                                      WeekendsOnly(),
+                                      Semiannual,
+                                      ModifiedFollowing, Thirty360(), isda_ibor
+                                      )
+            );
+    }
+
+    RelinkableHandle<YieldTermStructure> discountCurve;
+    discountCurve.linkTo(
+            boost::make_shared<PiecewiseYieldCurve<Discount, LogLinear> >(
+                0, WeekendsOnly(), isdaRateHelpers, Actual365Fixed())
+        );
+
+
+    RelinkableHandle<DefaultProbabilityTermStructure> probabilityCurve;
+    Date termDates[] = {Date(20, June, 2010),
+                        Date(20, June, 2011),
+                        Date(20, June, 2012),
+                        Date(20, June, 2016),
+                        Date(20, June, 2019)};
+    Rate spreads[] = {0.001, 0.1};
+    Rate recoveries[] = {0.2, 0.4};
+
+    double markitValues[] = {97798.29358, //0.001
+                             97776.11889, //0.001
+                             -914971.5977, //0.1
+                             -894985.6298, //0.1
+                             186921.3594, //0.001
+                             186839.8148, //0.001
+                             -1646623.672, //0.1
+                             -1579803.626, //0.1
+                             274298.9203,
+                             274122.4725,
+                             -2279730.93,
+                             -2147972.527,
+                             592420.2297,
+                             591571.2294,
+                             -3993550.206,
+                             -3545843.418,
+                             797501.1422,
+                             795915.9787,
+                             -4702034.688,
+                             -4042340.999};
+    #ifndef QL_USE_INDEXED_COUPON
+    Real tolerance = 1.0e-6;
+    #else
+    /* The risk-free curve is a bit off. We might skip the tests
+       altogether and rely on running them with indexed coupons
+       disabled, but leaving them can be useful anyway. */
+    Real tolerance = 1.0e-3;
+    #endif
+
+    size_t l = 0;
+
+    for(size_t i = 0; i < sizeof(termDates) / sizeof(Date); i++) {
+        for(size_t j = 0; j < 2; j++) {
+            for(size_t k = 0; k < 2; k++) {
+
+            boost::shared_ptr<CreditDefaultSwap> quotedTrade =
+                MakeCreditDefaultSwap(termDates[i], spreads[j])
+                .withNominal(10000000.);
+
+            Rate h = quotedTrade->impliedHazardRate(0.,
+                                                    discountCurve,
+                                                    Actual365Fixed(),
+                                                    recoveries[k],
+                                                    1e-10,
+                                                    CreditDefaultSwap::ISDA);
+
+            probabilityCurve.linkTo(
+                boost::make_shared<FlatHazardRate>(
+                    0, WeekendsOnly(), h, Actual365Fixed())
+                );
+
+            boost::shared_ptr<IsdaCdsEngine> engine = boost::make_shared<IsdaCdsEngine>(
+                probabilityCurve, recoveries[k], discountCurve,
+                boost::none, IsdaCdsEngine::Taylor, IsdaCdsEngine::HalfDayBias,
+                IsdaCdsEngine::Piecewise);
+
+            boost::shared_ptr<CreditDefaultSwap> conventionalTrade =
+                MakeCreditDefaultSwap(termDates[i], 0.01)
+                .withNominal(10000000.)
+                .withPricingEngine(engine);
+
+            BOOST_CHECK_CLOSE(conventionalTrade->notional() * conventionalTrade->fairUpfront(),
+                              markitValues[l],
+                              tolerance);
+
+            l++;
+
+            }
+        }
+    }
+
+}
 
 test_suite* CreditDefaultSwapTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Credit-default swap tests");
@@ -567,6 +722,6 @@ test_suite* CreditDefaultSwapTest::suite() {
                               &CreditDefaultSwapTest::testImpliedHazardRate));
     suite->add(QUANTLIB_TEST_CASE(&CreditDefaultSwapTest::testFairSpread));
     suite->add(QUANTLIB_TEST_CASE(&CreditDefaultSwapTest::testFairUpfront));
+    suite->add(QUANTLIB_TEST_CASE(&CreditDefaultSwapTest::testIsdaEngine));
     return suite;
 }
-

@@ -48,8 +48,8 @@ namespace QuantLib {
             center *=1/Real(vertices.size());
             Real result = 0;
             for (Size i=0; i<vertices.size(); ++i) {
-                Array temp =  vertices[i] - center;
-                result += std::sqrt(DotProduct(temp,temp));
+                Array temp = vertices[i] - center;
+                result += Norm2(temp);
             }
             return result/Real(vertices.size());
         }

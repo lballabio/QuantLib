@@ -25,6 +25,7 @@
 #ifndef quantlib_analytic_heston_engine_hpp
 #define quantlib_analytic_heston_engine_hpp
 
+#include <ql/utilities/null.hpp>
 #include <ql/math/integrals/integral.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/pricingengines/genericmodelengine.hpp>
@@ -69,6 +70,15 @@ namespace QuantLib {
         J. Gatheral, The Volatility Surface: A Practitioner's Guide,
         Wiley Finance
 
+        F. Le Floc'h, Fourier Integration and Stochastic Volatility
+        Calibration,
+        https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2362968
+
+        L. Andersen, and V. Piterbarg, 2010,
+        Interest Rate Modeling, Volume I: Foundations and Vanilla Models,
+        Atlantic Financial Press London.
+
+
         \ingroup vanillaengines
 
         \test the correctness of the returned value is tested by
@@ -81,7 +91,7 @@ namespace QuantLib {
                                     VanillaOption::results> {
       public:
         class Integration;
-        enum ComplexLogFormula { Gatheral, BranchCorrection };
+        enum ComplexLogFormula { Gatheral, BranchCorrection, AndersenPiterbarg };
 
         // Simple to use constructor: Using adaptive
         // Gauss-Lobatto integration and Gatheral's version of complex log.
@@ -99,8 +109,12 @@ namespace QuantLib {
         // Constructor giving full control
         // over the Fourier integration algorithm
         AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
-                             ComplexLogFormula cpxLog, const Integration& itg);
+                             ComplexLogFormula cpxLog, const Integration& itg,
+                             Real andersenPiterbargEpsilon = 1e-8);
 
+        // normalized characteristic function
+        std::complex<Real> chF(const std::complex<Real>& z, Time t) const;
+        std::complex<Real> lnChF(const std::complex<Real>& z, Time t) const;
 
         void calculate() const;
         Size numberOfEvaluations() const;
@@ -127,10 +141,12 @@ namespace QuantLib {
 
       private:
         class Fj_Helper;
+        class AP_Helper;
 
         mutable Size evaluations_;
         const ComplexLogFormula cpxLog_;
         const boost::shared_ptr<Integration> integration_;
+        const Real andersenPiterbargEpsilon_;
     };
 
 
@@ -159,8 +175,12 @@ namespace QuantLib {
         static Integration discreteSimpson(Size evaluation = 1000);
         static Integration discreteTrapezoid(Size evaluation = 1000);
 
+        static Real andersenPiterbargIntegrationLimit(
+            Real c_inf, Real epsilon, Real v0, Real t);
+
         Real calculate(Real c_inf,
-                       const boost::function1<Real, Real>& f) const;
+                       const boost::function1<Real, Real>& f,
+                       Real maxBound = Null<Real>()) const;
 
         Size numberOfEvaluations() const;
         bool isAdaptiveIntegration() const;
