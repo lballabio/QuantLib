@@ -26,8 +26,9 @@ namespace QuantLib {
 
     ExponentialSplinesFitting::ExponentialSplinesFitting(bool constrainAtZero,
                                                          const Array& weights,
+		                                                 const Array& l2,
                                                          boost::shared_ptr<OptimizationMethod> optimizationMethod)
-    : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, optimizationMethod) {}
+    : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, l2, optimizationMethod) {}
 
     std::auto_ptr<FittedBondDiscountCurve::FittingMethod>
     ExponentialSplinesFitting::clone() const {
@@ -67,8 +68,9 @@ namespace QuantLib {
 
 
     NelsonSiegelFitting::NelsonSiegelFitting(const Array& weights,
+		                                     const Array& l2,
                                              boost::shared_ptr<OptimizationMethod> optimizationMethod)
-    : FittedBondDiscountCurve::FittingMethod(true, weights, optimizationMethod) {}
+    : FittedBondDiscountCurve::FittingMethod(true, weights, l2, optimizationMethod) {}
 
     std::auto_ptr<FittedBondDiscountCurve::FittingMethod>
     NelsonSiegelFitting::clone() const {
@@ -93,8 +95,9 @@ namespace QuantLib {
 
 
     SvenssonFitting::SvenssonFitting(const Array& weights,
+		                             const Array& l2,
                                      boost::shared_ptr<OptimizationMethod> optimizationMethod)
-    : FittedBondDiscountCurve::FittingMethod(true, weights, optimizationMethod) {}
+    : FittedBondDiscountCurve::FittingMethod(true, weights, l2, optimizationMethod) {}
 
     std::auto_ptr<FittedBondDiscountCurve::FittingMethod>
     SvenssonFitting::clone() const {
@@ -125,8 +128,9 @@ namespace QuantLib {
     CubicBSplinesFitting::CubicBSplinesFitting(const std::vector<Time>& knots,
                                                bool constrainAtZero,
                                                const Array& weights,
+		                                       const Array& l2,
                                                boost::shared_ptr<OptimizationMethod> optimizationMethod)
-    : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, optimizationMethod),
+    : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, l2, optimizationMethod),
       splines_(3, knots.size()-5, knots) {
 
         QL_REQUIRE(knots.size() >= 8,
@@ -194,8 +198,9 @@ namespace QuantLib {
     SimplePolynomialFitting::SimplePolynomialFitting(Natural degree,
                                                      bool constrainAtZero,
                                                      const Array& weights,
+		                                             const Array& l2,
                                                      boost::shared_ptr<OptimizationMethod> optimizationMethod)
-    : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, optimizationMethod),
+    : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, l2, optimizationMethod),
       size_(constrainAtZero ? degree : degree+1) {}
 
     std::auto_ptr<FittedBondDiscountCurve::FittingMethod>
@@ -226,6 +231,7 @@ namespace QuantLib {
 	SpreadFittingMethod::SpreadFittingMethod(boost::shared_ptr<FittingMethod> method,
                         Handle<YieldTermStructure> discountCurve)
     : FittedBondDiscountCurve::FittingMethod(method ? method->constrainAtZero() : true, method ? method->weights() : Array(), 
+		                                     method ? method->l2() : Array(),
 											 method ? method->optimizationMethod() : boost::shared_ptr<OptimizationMethod>()),
       method_(method), discountingCurve_(discountCurve) {
 		QL_REQUIRE(method, "Fitting method is empty");

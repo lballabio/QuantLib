@@ -130,8 +130,9 @@ namespace QuantLib {
     FittedBondDiscountCurve::FittingMethod::FittingMethod(
                      bool constrainAtZero,
                      const Array& weights,
+		             const Array& l2,
                      boost::shared_ptr<OptimizationMethod> optimizationMethod)
-    : constrainAtZero_(constrainAtZero), weights_(weights),
+    : constrainAtZero_(constrainAtZero), weights_(weights), l2_(l2),
       calculateWeights_(weights.empty()), optimizationMethod_(optimizationMethod) {}
 
 
@@ -184,6 +185,11 @@ namespace QuantLib {
 
         QL_REQUIRE(weights_.size() == n,
                    "Given weights do not cover all boostrapping helpers");
+
+		if (!l2_.empty()) {
+			QL_REQUIRE(l2_.size() == size(),
+				"Given penalty factors do not cover all parameters");
+		}
     }
 
     void FittedBondDiscountCurve::FittingMethod::calculate() {
@@ -256,7 +262,9 @@ namespace QuantLib {
         Date refDate  = fittingMethod_->curve_->referenceDate();
         const DayCounter& dc = fittingMethod_->curve_->dayCounter();
         Size n = fittingMethod_->curve_->bondHelpers_.size();
-        Array values(n);
+		Size N = fittingMethod_->l2_.size();
+
+        Array values(n + N);
         for (Size i=0; i<n; ++i) {
             shared_ptr<BondHelper> helper =
                 fittingMethod_->curve_->bondHelpers_[i];
@@ -285,6 +293,13 @@ namespace QuantLib {
             Real weightedError = fittingMethod_->weights_[i] * error;
             values[i] = weightedError * weightedError;
         }
+
+		if (N != 0) {
+			for (Size i = 0; i < N; ++i) {
+				Real error = x[i] - fittingMethod_->curve_->guessSolution_[i];
+				values[i + n] = fittingMethod_->l2_[i] * error * error;
+			}
+		}
         return values;
     }
 
