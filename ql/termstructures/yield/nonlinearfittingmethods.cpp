@@ -26,7 +26,7 @@ namespace QuantLib {
 
     ExponentialSplinesFitting::ExponentialSplinesFitting(bool constrainAtZero,
                                                          const Array& weights,
-		                                                 const Array& l2,
+                                                         const Array& l2,
                                                          boost::shared_ptr<OptimizationMethod> optimizationMethod)
     : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, l2, optimizationMethod) {}
 
@@ -68,7 +68,7 @@ namespace QuantLib {
 
 
     NelsonSiegelFitting::NelsonSiegelFitting(const Array& weights,
-		                                     const Array& l2,
+                                             const Array& l2,
                                              boost::shared_ptr<OptimizationMethod> optimizationMethod)
     : FittedBondDiscountCurve::FittingMethod(true, weights, l2, optimizationMethod) {}
 
@@ -95,7 +95,7 @@ namespace QuantLib {
 
 
     SvenssonFitting::SvenssonFitting(const Array& weights,
-		                             const Array& l2,
+                                     const Array& l2,
                                      boost::shared_ptr<OptimizationMethod> optimizationMethod)
     : FittedBondDiscountCurve::FittingMethod(true, weights, l2, optimizationMethod) {}
 
@@ -128,7 +128,7 @@ namespace QuantLib {
     CubicBSplinesFitting::CubicBSplinesFitting(const std::vector<Time>& knots,
                                                bool constrainAtZero,
                                                const Array& weights,
-		                                       const Array& l2,
+                                               const Array& l2,
                                                boost::shared_ptr<OptimizationMethod> optimizationMethod)
     : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, l2, optimizationMethod),
       splines_(3, knots.size()-5, knots) {
@@ -198,7 +198,7 @@ namespace QuantLib {
     SimplePolynomialFitting::SimplePolynomialFitting(Natural degree,
                                                      bool constrainAtZero,
                                                      const Array& weights,
-		                                             const Array& l2,
+                                                     const Array& l2,
                                                      boost::shared_ptr<OptimizationMethod> optimizationMethod)
     : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, l2, optimizationMethod),
       size_(constrainAtZero ? degree : degree+1) {}
@@ -227,16 +227,16 @@ namespace QuantLib {
         }
         return d;
     }
-	
-	SpreadFittingMethod::SpreadFittingMethod(boost::shared_ptr<FittingMethod> method,
+    
+    SpreadFittingMethod::SpreadFittingMethod(boost::shared_ptr<FittingMethod> method,
                         Handle<YieldTermStructure> discountCurve)
     : FittedBondDiscountCurve::FittingMethod(method ? method->constrainAtZero() : true, method ? method->weights() : Array(), 
-		                                     method ? method->l2() : Array(),
-											 method ? method->optimizationMethod() : boost::shared_ptr<OptimizationMethod>()),
+                                             method ? method->l2() : Array(),
+                                             method ? method->optimizationMethod() : boost::shared_ptr<OptimizationMethod>()),
       method_(method), discountingCurve_(discountCurve) {
-		QL_REQUIRE(method, "Fitting method is empty");
-		QL_REQUIRE(!discountingCurve_.empty(), "Discounting curve cannot be empty");
-	}
+        QL_REQUIRE(method, "Fitting method is empty");
+        QL_REQUIRE(!discountingCurve_.empty(), "Discounting curve cannot be empty");
+    }
 
     std::auto_ptr<FittedBondDiscountCurve::FittingMethod>
     SpreadFittingMethod::clone() const {
@@ -248,21 +248,21 @@ namespace QuantLib {
         return method_->size();
     }
 
-	DiscountFactor SpreadFittingMethod::discountFunction(const Array& x, Time t) const{
+    DiscountFactor SpreadFittingMethod::discountFunction(const Array& x, Time t) const{
         return method_->discount(x, t)*discountingCurve_->discount(t, true)/rebase_;
     }
 
-	void SpreadFittingMethod::init(){
-		//In case discount curve has a different reference date,
-		//discount to this curve's reference date
-		if (curve_->referenceDate() != discountingCurve_->referenceDate()){
-			rebase_ = discountingCurve_->discount(curve_->referenceDate());
-		}
-		else{
-			rebase_ = 1.0;
-		}
-		//Call regular init
-		FittedBondDiscountCurve::FittingMethod::init();
-	}
+    void SpreadFittingMethod::init(){
+        //In case discount curve has a different reference date,
+        //discount to this curve's reference date
+        if (curve_->referenceDate() != discountingCurve_->referenceDate()){
+            rebase_ = discountingCurve_->discount(curve_->referenceDate());
+        }
+        else{
+            rebase_ = 1.0;
+        }
+        //Call regular init
+        FittedBondDiscountCurve::FittingMethod::init();
+    }
 }
 

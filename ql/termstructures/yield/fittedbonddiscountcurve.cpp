@@ -130,7 +130,7 @@ namespace QuantLib {
     FittedBondDiscountCurve::FittingMethod::FittingMethod(
                      bool constrainAtZero,
                      const Array& weights,
-		             const Array& l2,
+                     const Array& l2,
                      boost::shared_ptr<OptimizationMethod> optimizationMethod)
     : constrainAtZero_(constrainAtZero), weights_(weights), l2_(l2),
       calculateWeights_(weights.empty()), optimizationMethod_(optimizationMethod) {}
@@ -186,10 +186,10 @@ namespace QuantLib {
         QL_REQUIRE(weights_.size() == n,
                    "Given weights do not cover all boostrapping helpers");
 
-		if (!l2_.empty()) {
-			QL_REQUIRE(l2_.size() == size(),
-				"Given penalty factors do not cover all parameters");
-		}
+        if (!l2_.empty()) {
+            QL_REQUIRE(l2_.size() == size(),
+                       "Given penalty factors do not cover all parameters");
+        }
     }
 
     void FittedBondDiscountCurve::FittingMethod::calculate() {
@@ -203,24 +203,24 @@ namespace QuantLib {
             x = curve_->guessSolution_;
         }
 
-		if(curve_->maxEvaluations_ == 0)
-		{
-			//Don't calculate, simply use given parameters to provide a fitted curve.
-			//This turns the fittedbonddiscountcurve into an evaluator of the parametric
-			//curve, for example allowing to use the parameters for a credit spread curve
-			//calculated with bonds in one currency to be coupled to a discount curve in 
-			//another currency. 
-			return;
-		}
-		
+        if(curve_->maxEvaluations_ == 0)
+        {
+            //Don't calculate, simply use given parameters to provide a fitted curve.
+            //This turns the fittedbonddiscountcurve into an evaluator of the parametric
+            //curve, for example allowing to use the parameters for a credit spread curve
+            //calculated with bonds in one currency to be coupled to a discount curve in 
+            //another currency. 
+            return;
+        }
+        
         //workaround for backwards compatibility
         boost::shared_ptr<OptimizationMethod> optimization = optimizationMethod_;
         if(!optimization){
-		    optimization = boost::make_shared<Simplex>(curve_->simplexLambda_);
-		}
-		Problem problem(costFunction, constraint, x);
+            optimization = boost::make_shared<Simplex>(curve_->simplexLambda_);
+        }
+        Problem problem(costFunction, constraint, x);
 
-		Real rootEpsilon = curve_->accuracy_;
+        Real rootEpsilon = curve_->accuracy_;
         Real functionEpsilon =  curve_->accuracy_;
         Real gradientNormEpsilon = curve_->accuracy_;
 
@@ -249,8 +249,8 @@ namespace QuantLib {
     Real FittedBondDiscountCurve::FittingMethod::FittingCost::value(
                                                        const Array& x) const {
         Real squaredError = 0.0;
-		Array vals = values(x);
-		for (Size i = 0; i<vals.size(); ++i) {
+        Array vals = values(x);
+        for (Size i = 0; i<vals.size(); ++i) {
             squaredError += vals[i];
         }
         return squaredError;
@@ -262,7 +262,7 @@ namespace QuantLib {
         Date refDate  = fittingMethod_->curve_->referenceDate();
         const DayCounter& dc = fittingMethod_->curve_->dayCounter();
         Size n = fittingMethod_->curve_->bondHelpers_.size();
-		Size N = fittingMethod_->l2_.size();
+        Size N = fittingMethod_->l2_.size();
 
         Array values(n + N);
         for (Size i=0; i<n; ++i) {
@@ -294,12 +294,12 @@ namespace QuantLib {
             values[i] = weightedError * weightedError;
         }
 
-		if (N != 0) {
-			for (Size i = 0; i < N; ++i) {
-				Real error = x[i] - fittingMethod_->curve_->guessSolution_[i];
-				values[i + n] = fittingMethod_->l2_[i] * error * error;
-			}
-		}
+        if (N != 0) {
+            for (Size i = 0; i < N; ++i) {
+                Real error = x[i] - fittingMethod_->curve_->guessSolution_[i];
+                values[i + n] = fittingMethod_->l2_[i] * error * error;
+            }
+        }
         return values;
     }
 

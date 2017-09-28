@@ -164,9 +164,9 @@ namespace QuantLib {
         weights, which will be used as weights to each bond. If not given
         or empty, then the bonds will be weighted by inverse duration
 
-		An optional Array may be provided as an L2 regularizor in this case
-		a L2 (gaussian) penalty is applied to each parameter starting from the 
-		initial guess. This is the same as giving a Gaussian prior on the parameters
+        An optional Array may be provided as an L2 regularizor in this case
+        a L2 (gaussian) penalty is applied to each parameter starting from the 
+        initial guess. This is the same as giving a Gaussian prior on the parameters
 
         \todo derive the special-case class LinearFittingMethods from
               FittingMethod. A linear fitting to a set of basis
@@ -201,20 +201,20 @@ namespace QuantLib {
         Real minimumCostValue() const;
         //! clone of the current object
         virtual std::auto_ptr<FittingMethod> clone() const = 0;
-		//! return whether there is a constraint at zero
-		bool constrainAtZero() const;
-		//! return weights being used
-		Array weights() const;
-		//! return l2 penalties being used
-		Array l2() const;
-		//! return optimization method being used
-		boost::shared_ptr<OptimizationMethod> optimizationMethod() const;
-		//! open discountFunction to public
-		DiscountFactor discount(const Array& x, Time t) const;
+        //! return whether there is a constraint at zero
+        bool constrainAtZero() const;
+        //! return weights being used
+        Array weights() const;
+        //! return l2 penalties being used
+        Array l2() const;
+        //! return optimization method being used
+        boost::shared_ptr<OptimizationMethod> optimizationMethod() const;
+        //! open discountFunction to public
+        DiscountFactor discount(const Array& x, Time t) const;
       protected:
         //! constructor
         FittingMethod(bool constrainAtZero = true, const Array& weights = Array(),
-			          const Array& l2 = Array(),
+                      const Array& l2 = Array(),
                       boost::shared_ptr<OptimizationMethod> optimizationMethod
                                           = boost::shared_ptr<OptimizationMethod>());
         //! rerun every time instruments/referenceDate changes
@@ -241,8 +241,8 @@ namespace QuantLib {
         void calculate();
         // array of normalized (duration) weights, one for each bond helper
         Array weights_;
-		// array of l2 penalties one for each parameter
-		Array l2_;
+        // array of l2 penalties one for each parameter
+        Array l2_;
         // whether or not the weights should be calculated internally
         bool calculateWeights_;
         // total number of iterations used in the optimization routine
@@ -299,28 +299,28 @@ namespace QuantLib {
     inline Array FittedBondDiscountCurve::FittingMethod::solution() const {
         return solution_;
     }
-	
-	inline bool FittedBondDiscountCurve::FittingMethod::constrainAtZero() const {
-		return constrainAtZero_;
-	}
-	
-	inline Array FittedBondDiscountCurve::FittingMethod::weights() const {
-		return weights_;
-	}
+    
+    inline bool FittedBondDiscountCurve::FittingMethod::constrainAtZero() const {
+        return constrainAtZero_;
+    }
+    
+    inline Array FittedBondDiscountCurve::FittingMethod::weights() const {
+        return weights_;
+    }
 
-	inline Array FittedBondDiscountCurve::FittingMethod::l2() const {
-		return l2_;
-	}
+    inline Array FittedBondDiscountCurve::FittingMethod::l2() const {
+        return l2_;
+    }
 
-	inline boost::shared_ptr<OptimizationMethod> 
-	FittedBondDiscountCurve::FittingMethod::optimizationMethod() const {
-		return optimizationMethod_;
-	}
+    inline boost::shared_ptr<OptimizationMethod> 
+    FittedBondDiscountCurve::FittingMethod::optimizationMethod() const {
+        return optimizationMethod_;
+    }
 
-	inline DiscountFactor 
-	FittedBondDiscountCurve::FittingMethod::discount(const Array& x, Time t) const {
-		return discountFunction(x, t);
-	}
+    inline DiscountFactor 
+    FittedBondDiscountCurve::FittingMethod::discount(const Array& x, Time t) const {
+        return discountFunction(x, t);
+    }
 
 }
 
