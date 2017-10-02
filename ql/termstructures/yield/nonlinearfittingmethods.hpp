@@ -55,6 +55,7 @@ namespace QuantLib {
       private:
         Size size() const;
         DiscountFactor discountFunction(const Array& x, Time t) const;
+        Array gradientFunction(const Array& x, Time t) const;
     };
 
 
@@ -79,6 +80,7 @@ namespace QuantLib {
       private:
         Size size() const;
         DiscountFactor discountFunction(const Array& x, Time t) const;
+        Array gradientFunction(const Array& x, Time t) const;
     };
 
 
@@ -105,6 +107,7 @@ namespace QuantLib {
       private:
         Size size() const;
         DiscountFactor discountFunction(const Array& x, Time t) const;
+        Array gradientFunction(const Array& x, Time t) const;
     };
 
 
@@ -142,6 +145,7 @@ namespace QuantLib {
       private:
         Size size() const;
         DiscountFactor discountFunction(const Array& x, Time t) const;
+        Array gradientFunction(const Array& x, Time t) const;
         BSpline splines_;
         Size size_;
         //! N_th basis function coefficient to solve for when d(0)=1
@@ -172,6 +176,7 @@ namespace QuantLib {
       private:
         Size size() const;
         DiscountFactor discountFunction(const Array& x, Time t) const;
+        Array gradientFunction(const Array& x, Time t) const;
         Size size_;
     };
 
@@ -190,6 +195,7 @@ namespace QuantLib {
       private:
         Size size() const;
         DiscountFactor discountFunction(const Array& x, Time t) const;
+        Array gradientFunction(const Array& x, Time t) const;
         // underlying parametric method
         boost::shared_ptr<FittingMethod> method_;
         // adjustment in case underlying discount curve has different reference date

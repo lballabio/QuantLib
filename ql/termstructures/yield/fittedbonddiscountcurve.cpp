@@ -41,6 +41,8 @@ namespace QuantLib {
                        FittedBondDiscountCurve::FittingMethod* fittingMethod);
         Real value(const Array& x) const;
         Disposable<Array> values(const Array& x) const;
+        Disposable<Array> gradients(const Array& x) const;
+        void jacobian(Matrix& jacobian, const Array& x) const;
       private:
         FittedBondDiscountCurve::FittingMethod* fittingMethod_;
         mutable vector<Size> firstCashFlow_;
@@ -301,6 +303,73 @@ namespace QuantLib {
             }
         }
         return values;
+    }
+
+    void
+        FittedBondDiscountCurve::FittingMethod::FittingCost::jacobian(Matrix &jacobian,
+            const Array &x) const {
+        Date refDate = fittingMethod_->curve_->referenceDate();
+        const DayCounter& dc = fittingMethod_->curve_->dayCounter();
+        Size n = fittingMethod_->curve_->bondHelpers_.size();
+        Size N = fittingMethod_->l2_.size();
+        Size m = x.size();
+
+      /*  Array values(n + N);*/
+        for (Size i = 0; i<n; ++i) {
+            shared_ptr<BondHelper> helper =
+                fittingMethod_->curve_->bondHelpers_[i];
+
+            shared_ptr<Bond> bond = helper->bond();
+            Date bondSettlement = bond->settlementDate();
+
+            // CleanPrice_i = sum( cf_k * d(t_k) ) - accruedAmount
+            Real modelPrice = 0.0;
+            for (Size l = 0; l < m; l++) {
+                jacobian[i][l] = 0.0;
+            }
+            const Leg& cf = bond->cashflows();
+            for (Size k = firstCashFlow_[i]; k<cf.size(); ++k) {
+                Time tenor = dc.yearFraction(refDate, cf[k]->date());
+                modelPrice += cf[k]->amount() *
+                    fittingMethod_->discountFunction(x, tenor);
+                Array grads = fittingMethod_->gradientFunction(x, tenor);
+                for (Size l = 0; l < m; l++) {
+                    jacobian[i][l] += cf[k]->amount() * grads[l];
+                }
+            }
+            if (helper->useCleanPrice())
+                modelPrice -= bond->accruedAmount(bondSettlement);
+
+            // adjust price (NPV) for forward settlement
+            if (bondSettlement != refDate) {
+                Time tenor = dc.yearFraction(refDate, bondSettlement);
+                Array grads = fittingMethod_->gradientFunction(x, tenor);
+                DiscountFactor df = fittingMethod_->discountFunction(x, tenor);
+                for (Size l = 0; l<m; l++)
+                {
+                    jacobian[i][l] /= df;
+                    jacobian[i][l] -= modelPrice * grads[l] / df / df;
+                }
+                modelPrice /= df;
+            }
+            Real marketPrice = helper->quote()->value();
+            Real error = modelPrice - marketPrice;
+            Real weight = fittingMethod_->weights_[i];
+            for (Size l = 0; l < m; l++)
+            {
+                jacobian[i][l] *= 2.0 * weight * weight * error;
+            }
+        }
+
+        if (N != 0) {
+            for (Size i = 0; i < N; ++i) {
+                for (Size l = 0; l < m; l++) {
+                    jacobian[i+n][l] = 0.0;
+                }
+                Real error = x[i] - fittingMethod_->curve_->guessSolution_[i];
+                jacobian[i + n][i] = 2.0 * fittingMethod_->l2_[i] * error;
+            }
+        }
     }
 
 }

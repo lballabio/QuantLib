@@ -65,6 +65,35 @@ namespace QuantLib {
         return d;
     }
 
+    Array ExponentialSplinesFitting::gradientFunction(const Array& x,
+        Time t) const {
+
+        DiscountFactor dKappa = 0.0;
+        Size N = size();
+        Array gradients(N);
+        Real kappa = x[N - 1];
+
+        if (!constrainAtZero_) {
+            for (Size i = 0; i<N - 1; ++i) {
+                gradients[i] = std::exp(-kappa * (i + 1) * t);
+                dKappa -= (i + 1) * t * x[i] * gradients[i];
+            }
+        }
+        else {
+            //  notation:
+            //  d(t) = coeff* exp(-kappa*1*t) + x[0]* exp(-kappa*2*t) +
+            //  x[1]* exp(-kappa*3*t) + ..+ x[7]* exp(-kappa*9*t)
+            for (Size i = 0; i<N - 1; i++) {
+                gradients[i] = std::exp(-kappa * (i + 2) * t);
+                dKappa -= (i + 2) * t * x[i] * gradients[i];
+                gradients[i] -= std::exp(-kappa * t);
+                dKappa += t * x[i] * std::exp(-kappa * t);
+            }
+        }
+        gradients[N - 1] = dKappa;
+        return gradients;
+    }
+
 
 
     NelsonSiegelFitting::NelsonSiegelFitting(const Array& weights,
@@ -91,6 +120,25 @@ namespace QuantLib {
                         (x[2])*std::exp(-kappa*t);
         DiscountFactor d = std::exp(-zeroRate * t) ;
         return d;
+    }
+
+    Array NelsonSiegelFitting::gradientFunction(const Array& x, Time t) const {
+        Array gradients(size());
+        Real kappa = x[size() - 1];
+        Real exp = std::exp(-kappa*t);
+        Real Z = (1.0 - exp) / ((kappa + QL_EPSILON)*(t + QL_EPSILON));
+        Real zeroRate = x[0] + (x[1] + x[2]) * Z - x[2] * exp;
+        Real dDdR = -t * std::exp(-zeroRate * t);
+
+        gradients[0] = dDdR;
+        gradients[1] = dDdR * Z;
+        gradients[2] = dDdR * (Z - exp);
+        gradients[3] = (x[1] + x[2]) / t / kappa;
+        gradients[3] *= t * exp - (1 - exp) / kappa / kappa;
+        gradients[3] += x[2] * t * exp;
+        gradients[3] *= dDdR;
+
+        return gradients;
     }
 
 
@@ -121,6 +169,33 @@ namespace QuantLib {
                         x[3]* (((1.0 - std::exp(-kappa_1*t))/((kappa_1+QL_EPSILON)*(t+QL_EPSILON)))- std::exp(-kappa_1*t));
         DiscountFactor d = std::exp(-zeroRate * t) ;
         return d;
+    }
+
+    Array SvenssonFitting::gradientFunction(const Array& x, Time t) const {
+        Array gradients(size());
+        Real kappa = x[size() - 2];
+        Real kappa_1 = x[size() - 1];
+        Real exp = std::exp(-kappa*t);
+        Real exp_1 = std::exp(-kappa_1*t);
+        Real Z = (1.0 - exp) / ((kappa + QL_EPSILON)*(t + QL_EPSILON));
+        Real Z_1 = (1.0 - exp_1) / ((kappa_1 + QL_EPSILON)*(t + QL_EPSILON));
+        Real zeroRate = x[0] + (x[1] + x[2]) * Z - x[2] * exp + x[3] * (Z_1 - exp_1);
+        Real dDdR = -t * std::exp(-zeroRate * t);
+
+        gradients[0] = dDdR;
+        gradients[1] = dDdR * Z;
+        gradients[2] = dDdR * (Z - exp);
+        gradients[3] = dDdR * (Z_1 - exp_1);
+        gradients[4] = (x[1] + x[2]) / t / kappa;
+        gradients[4] *= t * exp - (1 - exp) / kappa;
+        gradients[4] += x[2] * t * exp;
+        gradients[4] *= dDdR;
+        gradients[5] = - (1 - exp_1) / t / kappa_1 / kappa_1;
+        gradients[5] += exp_1 / kappa_1;
+        gradients[5] += t * exp_1;
+        gradients[5] *= x[3] * dDdR;
+
+        return gradients;
     }
 
 
@@ -194,6 +269,32 @@ namespace QuantLib {
         return d;
     }
 
+    Array CubicBSplinesFitting::gradientFunction(const Array& x,
+        Time t) const {
+
+        Array gradients(size());
+
+        if (!constrainAtZero_) {
+            for (Size i = 0; i<size_; ++i) {
+                gradients[i] = splines_(i, t);
+            }
+        }
+        else {
+            const Real T = 0.0;
+            Real sum = 0.0;
+            for (Size i = 0; i<size_; ++i) {
+                if (i < N_) {
+                    gradients[i] = splines_(i, t) - splines_(i, T) / splines_(N_, T);
+                }
+                else {
+                    gradients[i] = splines_(i + 1, t) - splines_(i + 1, T) / splines_(N_, T);
+                }
+            }
+        }
+
+        return gradients;
+    }
+
 
     SimplePolynomialFitting::SimplePolynomialFitting(Natural degree,
                                                      bool constrainAtZero,
@@ -227,6 +328,21 @@ namespace QuantLib {
         }
         return d;
     }
+
+    Array SimplePolynomialFitting::gradientFunction(const Array& x,
+        Time t) const {
+        Array gradients(size());
+
+        if (!constrainAtZero_) {
+            for (Size i = 0; i<size_; ++i)
+                gradients[i] = BernsteinPolynomial::get(i, i, t);
+        }
+        else {
+            for (Size i = 0; i<size_; ++i)
+                gradients[i] = BernsteinPolynomial::get(i + 1, i + 1, t);
+        }
+        return gradients;
+    }
     
     SpreadFittingMethod::SpreadFittingMethod(boost::shared_ptr<FittingMethod> method,
                         Handle<YieldTermStructure> discountCurve)
@@ -250,6 +366,18 @@ namespace QuantLib {
 
     DiscountFactor SpreadFittingMethod::discountFunction(const Array& x, Time t) const{
         return method_->discount(x, t)*discountingCurve_->discount(t, true)/rebase_;
+    }
+
+    Array SpreadFittingMethod::gradientFunction(const Array& x, Time t) const {
+        Array gradients = method_->gradients(x, t);
+        Real crv_df = discountingCurve_->discount(t, true) / rebase_;
+        Size n = size();
+
+        for(Size i=0; i<n; i++)
+        {
+            gradients[i] *= crv_df;
+        }
+        return gradients;
     }
 
     void SpreadFittingMethod::init(){

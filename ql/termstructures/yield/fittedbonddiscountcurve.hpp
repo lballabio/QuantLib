@@ -211,6 +211,8 @@ namespace QuantLib {
         boost::shared_ptr<OptimizationMethod> optimizationMethod() const;
         //! open discountFunction to public
         DiscountFactor discount(const Array& x, Time t) const;
+        //! open discountFunction to public
+        Array gradients(const Array& x, Time t) const;
       protected:
         //! constructor
         FittingMethod(bool constrainAtZero = true, const Array& weights = Array(),
@@ -222,6 +224,9 @@ namespace QuantLib {
         //! discount function called by FittedBondDiscountCurve
         virtual DiscountFactor discountFunction(const Array& x,
                                                 Time t) const = 0;
+        //! gradient function called by FittedBondDiscountCurve
+        virtual Array gradientFunction(const Array& x,
+            Time t) const = 0;
 
         //! constrains discount function to unity at \f$ T=0 \f$, if true
         bool constrainAtZero_;
@@ -320,6 +325,11 @@ namespace QuantLib {
     inline DiscountFactor 
     FittedBondDiscountCurve::FittingMethod::discount(const Array& x, Time t) const {
         return discountFunction(x, t);
+    }
+
+    inline Array
+        FittedBondDiscountCurve::FittingMethod::gradients(const Array& x, Time t) const {
+        return gradientFunction(x, t);
     }
 
 }
