@@ -16,7 +16,6 @@ pkgconfigdir = $(libdir)/pkgconfig
 nodist_pkgconfig_DATA = quantlib.pc
 
 EXTRA_DIST = \
-	Announce.txt \
 	Authors.txt \
 	Bugs.txt \
 	ChangeLog.txt \
