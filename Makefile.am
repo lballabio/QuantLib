@@ -23,7 +23,6 @@ EXTRA_DIST = \
 	Contributors.txt \
 	LICENSE.TXT \
 	News.txt \
-	QuantLib.dev \
 	QuantLib.props \
 	QuantLib.spec \
 	QuantLib_vc9.sln \
