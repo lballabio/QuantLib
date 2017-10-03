@@ -212,11 +212,11 @@ namespace QuantLib {
         //! open discountFunction to public
         DiscountFactor discount(const Array& x, Time t) const;
       protected:
-        //! constructor
+        //! constructors
         FittingMethod(bool constrainAtZero = true, const Array& weights = Array(),
-                      const Array& l2 = Array(),
                       boost::shared_ptr<OptimizationMethod> optimizationMethod
-                                          = boost::shared_ptr<OptimizationMethod>());
+                                          = boost::shared_ptr<OptimizationMethod>(),
+                      const Array& l2 = Array());
         //! rerun every time instruments/referenceDate changes
         virtual void init();
         //! discount function called by FittedBondDiscountCurve

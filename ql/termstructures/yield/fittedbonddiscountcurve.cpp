@@ -130,11 +130,10 @@ namespace QuantLib {
     FittedBondDiscountCurve::FittingMethod::FittingMethod(
                      bool constrainAtZero,
                      const Array& weights,
-                     const Array& l2,
-                     boost::shared_ptr<OptimizationMethod> optimizationMethod)
+                     boost::shared_ptr<OptimizationMethod> optimizationMethod,
+                     const Array& l2)
     : constrainAtZero_(constrainAtZero), weights_(weights), l2_(l2),
       calculateWeights_(weights.empty()), optimizationMethod_(optimizationMethod) {}
-
 
     void FittedBondDiscountCurve::FittingMethod::init() {
         // yield conventions

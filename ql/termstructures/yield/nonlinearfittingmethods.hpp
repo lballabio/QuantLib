@@ -48,9 +48,12 @@ namespace QuantLib {
       public:
         ExponentialSplinesFitting(bool constrainAtZero = true,
                                   const Array& weights = Array(),
-                                  const Array& l2 = Array(),
                                   boost::shared_ptr<OptimizationMethod> optimizationMethod
-                                          = boost::shared_ptr<OptimizationMethod>());
+                                          = boost::shared_ptr<OptimizationMethod>(),
+                                  const Array& l2 = Array());
+        ExponentialSplinesFitting(bool constrainAtZero,
+                                  const Array& weights,
+                                  const Array& l2);
         std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
       private:
         Size size() const;
@@ -72,9 +75,10 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         NelsonSiegelFitting(const Array& weights = Array(),
-                            const Array& l2 = Array(),
                             boost::shared_ptr<OptimizationMethod> optimizationMethod
-                                          = boost::shared_ptr<OptimizationMethod>());
+                                          = boost::shared_ptr<OptimizationMethod>(),
+                            const Array& l2 = Array());
+        NelsonSiegelFitting(const Array& weights, const Array& l2);
         std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
       private:
         Size size() const;
@@ -98,9 +102,10 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         SvenssonFitting(const Array& weights = Array(),
-                        const Array& l2 = Array(),
                         boost::shared_ptr<OptimizationMethod> optimizationMethod
-                               = boost::shared_ptr<OptimizationMethod>());
+                               = boost::shared_ptr<OptimizationMethod>(),
+                        const Array& l2 = Array());
+        SvenssonFitting(const Array& weights, const Array& l2);
         std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
       private:
         Size size() const;
@@ -133,9 +138,13 @@ namespace QuantLib {
         CubicBSplinesFitting(const std::vector<Time>& knotVector,
                              bool constrainAtZero = true,
                              const Array& weights = Array(),
-                             const Array& l2 = Array(),
                              boost::shared_ptr<OptimizationMethod> optimizationMethod
-                                     = boost::shared_ptr<OptimizationMethod>());
+                                     = boost::shared_ptr<OptimizationMethod>(),
+                             const Array& l2 = Array());
+        CubicBSplinesFitting(const std::vector<Time>& knotVector,
+                             bool constrainAtZero,
+                             const Array& weights,
+                             const Array& l2);
         //! cubic B-spline basis functions
         Real basisFunction(Integer i, Time t) const;
         std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
@@ -165,9 +174,13 @@ namespace QuantLib {
         SimplePolynomialFitting(Natural degree,
                                 bool constrainAtZero = true,
                                 const Array& weights = Array(),
-                                const Array& l2 = Array(),
                                 boost::shared_ptr<OptimizationMethod> optimizationMethod
-                                       = boost::shared_ptr<OptimizationMethod>());
+                                       = boost::shared_ptr<OptimizationMethod>(),
+                                const Array& l2 = Array());
+        SimplePolynomialFitting(Natural degree,
+                                bool constrainAtZero,
+                                const Array& weights,
+                                const Array& l2);
         std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
       private:
         Size size() const;
