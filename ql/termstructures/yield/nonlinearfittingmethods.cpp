@@ -321,7 +321,6 @@ namespace QuantLib {
         }
         else {
             const Real T = 0.0;
-            Real sum = 0.0;
             for (Size i = 0; i<size_; ++i) {
                 if (i < N_) {
                     gradients[i] = splines_(i, t) - splines_(N_, t) * 
