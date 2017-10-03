@@ -73,7 +73,7 @@ namespace QuantLib {
     Array ExponentialSplinesFitting::gradientFunction(const Array& x,
         Time t) const {
 
-        DiscountFactor dKappa = 0.0;
+        Real dKappa = 0.0;
         Size N = size();
         Array gradients(N);
         Real kappa = x[N - 1];
@@ -324,10 +324,12 @@ namespace QuantLib {
             Real sum = 0.0;
             for (Size i = 0; i<size_; ++i) {
                 if (i < N_) {
-                    gradients[i] = splines_(i, t) - splines_(i, T) / splines_(N_, T);
+                    gradients[i] = splines_(i, t) - splines_(N_, t) * 
+                                   splines_(i, T) / splines_(N_, T);
                 }
                 else {
-                    gradients[i] = splines_(i + 1, t) - splines_(i + 1, T) / splines_(N_, T);
+                    gradients[i] = splines_(i + 1, t) - splines_(N_, t) * 
+                                   splines_(i + 1, T) / splines_(N_, T);
                 }
             }
         }

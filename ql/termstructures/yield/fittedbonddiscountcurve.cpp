@@ -41,7 +41,7 @@ namespace QuantLib {
                        FittedBondDiscountCurve::FittingMethod* fittingMethod);
         Real value(const Array& x) const;
         Disposable<Array> values(const Array& x) const;
-        Disposable<Array> gradients(const Array& x) const;
+        void gradient(Array &grad_f, const Array& x) const;
         void jacobian(Matrix& jacobian, const Array& x) const;
       private:
         FittedBondDiscountCurve::FittingMethod* fittingMethod_;
@@ -302,6 +302,30 @@ namespace QuantLib {
             }
         }
         return values;
+    }
+
+    void
+        FittedBondDiscountCurve::FittingMethod::FittingCost::gradient(Array &grad_f,
+             const Array &x) const {
+        Size n = fittingMethod_->curve_->bondHelpers_.size();
+        Size N = fittingMethod_->l2_.size();
+        Size m = x.size();
+        Matrix jacobianMatrix(n + N, m);
+
+        for (Size j = 0; j<m; j++)
+        {
+            grad_f[j] += 0;
+        }
+
+        jacobian(jacobianMatrix, x);
+        for(Size i=0; i<(n+N); i++)
+        {
+            for(Size j=0; j<m; j++)
+            {
+                grad_f[j] += jacobianMatrix[i][j];
+            }
+        }
+        
     }
 
     void

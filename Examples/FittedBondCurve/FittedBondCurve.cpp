@@ -73,14 +73,25 @@ Rate parRate(const YieldTermStructure& yts,
 
 void printOutput(const std::string& tag,
                  const boost::shared_ptr<FittedBondDiscountCurve>& curve) {
+    Array soln = curve->fitResults().solution();
+    Size n = soln.size();
     cout << tag << endl;
     cout << "reference date : "
          << curve->referenceDate()
          << endl;
     cout << "number of iterations : "
          << curve->fitResults().numberOfIterations()
-         << endl
          << endl;
+    cout << "minimum cost value : "
+         << curve->fitResults().minimumCostValue()
+         << endl;
+    cout << "obtained solution : "
+         << endl;
+    for(Size i=0; i<n; i++)
+    {
+        cout << "parameter " << i << " : " << soln[i] << endl;
+    }
+    cout << endl;
 }
 
 
@@ -175,6 +186,7 @@ int main(int, char* []) {
         bool constrainAtZero = true;
         Real tolerance = 1.0e-10;
         Size max = 5000;
+        boost::shared_ptr<OptimizationMethod> optimizor = boost::make_shared<LevenbergMarquardt>(tolerance, tolerance, tolerance, true);
 
         boost::shared_ptr<YieldTermStructure> ts0 (
               new PiecewiseYieldCurve<Discount,LogLinear>(curveSettlementDays,
@@ -182,7 +194,10 @@ int main(int, char* []) {
                                                           instrumentsB,
                                                           dc));
 
-        ExponentialSplinesFitting exponentialSplines(constrainAtZero);
+        ExponentialSplinesFitting exponentialSplines(constrainAtZero, Array(), optimizor);
+
+        Array exp_guess(9, 0.0);
+        exp_guess[8] = 1.0;
 
         boost::shared_ptr<FittedBondDiscountCurve> ts1 (
                   new FittedBondDiscountCurve(curveSettlementDays,
@@ -191,12 +206,13 @@ int main(int, char* []) {
                                               dc,
                                               exponentialSplines,
                                               tolerance,
-                                              max));
+                                              max,
+                                              exp_guess));
 
         printOutput("(a) exponential splines", ts1);
 
 
-        SimplePolynomialFitting simplePolynomial(3, constrainAtZero);
+        SimplePolynomialFitting simplePolynomial(3, constrainAtZero, Array(), optimizor);
 
         boost::shared_ptr<FittedBondDiscountCurve> ts2 (
                     new FittedBondDiscountCurve(curveSettlementDays,
@@ -210,7 +226,10 @@ int main(int, char* []) {
         printOutput("(b) simple polynomial", ts2);
 
 
-        NelsonSiegelFitting nelsonSiegel;
+        NelsonSiegelFitting nelsonSiegel(Array(), optimizor);
+        Array ns_guess(4, 0.0);
+        ns_guess[1] = .03;
+        ns_guess[3] = 7.0;
 
         boost::shared_ptr<FittedBondDiscountCurve> ts3 (
                         new FittedBondDiscountCurve(curveSettlementDays,
@@ -219,7 +238,8 @@ int main(int, char* []) {
                                                     dc,
                                                     nelsonSiegel,
                                                     tolerance,
-                                                    max));
+                                                    max,
+                                                    ns_guess));
 
         printOutput("(c) Nelson-Siegel", ts3);
 
@@ -235,7 +255,7 @@ int main(int, char* []) {
             knotVector.push_back(knots[i]);
         }
 
-        CubicBSplinesFitting cubicBSplines(knotVector, constrainAtZero);
+        CubicBSplinesFitting cubicBSplines(knotVector, constrainAtZero, Array(), optimizor);
 
         boost::shared_ptr<FittedBondDiscountCurve> ts4 (
                        new FittedBondDiscountCurve(curveSettlementDays,
@@ -248,7 +268,11 @@ int main(int, char* []) {
 
         printOutput("(d) cubic B-splines", ts4);
 
-        SvenssonFitting svensson;
+        SvenssonFitting svensson(Array(), optimizor);
+        Array nss_guess(6, 0.0);
+        nss_guess[1] = .03;
+        nss_guess[4] = 3.0;
+        nss_guess[5] = 10.0;
 
         boost::shared_ptr<FittedBondDiscountCurve> ts5 (
                         new FittedBondDiscountCurve(curveSettlementDays,
@@ -257,7 +281,8 @@ int main(int, char* []) {
                                                     dc,
                                                     svensson,
                                                     tolerance,
-                                                    max));
+                                                    max,
+                                                    nss_guess));
 
         printOutput("(e) Svensson", ts5);
 
@@ -265,7 +290,7 @@ int main(int, char* []) {
             boost::make_shared<FlatForward>(
                                     curveSettlementDays, calendar, 0.01, dc));
         SpreadFittingMethod nelsonSiegelSpread(
-                                    boost::make_shared<NelsonSiegelFitting>(),
+                                    boost::make_shared<NelsonSiegelFitting>(Array(), optimizor),
                                     discountCurve);
 
         boost::shared_ptr<FittedBondDiscountCurve> ts6 (
@@ -275,7 +300,8 @@ int main(int, char* []) {
                                                     dc,
                                                     nelsonSiegelSpread,
                                                     tolerance,
-                                                    max));
+                                                    max,
+                                                    ns_guess));
 
         printOutput("(f) Nelson-Siegel spreaded", ts6);
 
@@ -454,7 +480,8 @@ int main(int, char* []) {
                                               dc,
                                               exponentialSplines,
                                               tolerance,
-                                              max));
+                                              max,
+                                              exp_guess));
 
         printOutput("(a) exponential splines", ts11);
 
@@ -478,7 +505,8 @@ int main(int, char* []) {
                                                     dc,
                                                     nelsonSiegel,
                                                     tolerance,
-                                                    max));
+                                                    max,
+                                                    ns_guess));
 
         printOutput("(c) Nelson-Siegel", ts33);
 
@@ -501,7 +529,8 @@ int main(int, char* []) {
                                                    dc,
                                                    svensson,
                                                    tolerance,
-                                                   max));
+                                                   max,
+                                                   nss_guess));
 
         printOutput("(e) Svensson", ts55);
 
@@ -512,7 +541,8 @@ int main(int, char* []) {
                                                     dc,
                                                     nelsonSiegelSpread,
                                                     tolerance,
-                                                    max));
+                                                    max,
+                                                    ns_guess));
 
         printOutput("(f) Nelson-Siegel spreaded", ts66);
 
