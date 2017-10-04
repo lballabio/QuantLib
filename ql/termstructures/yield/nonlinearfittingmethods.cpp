@@ -60,7 +60,7 @@ namespace QuantLib {
             //  notation:
             //  d(t) = coeff* exp(-kappa*1*t) + x[0]* exp(-kappa*2*t) +
             //  x[1]* exp(-kappa*3*t) + ..+ x[7]* exp(-kappa*9*t)
-            for (Size i=0; i<N-1; i++) {
+            for (Size i=0; i<N-1; ++i) {
                 d += x[i]* std::exp(-kappa * (i+2) * t);
                 coeff += x[i];
             }
@@ -88,7 +88,7 @@ namespace QuantLib {
             //  notation:
             //  d(t) = coeff* exp(-kappa*1*t) + x[0]* exp(-kappa*2*t) +
             //  x[1]* exp(-kappa*3*t) + ..+ x[7]* exp(-kappa*9*t)
-            for (Size i = 0; i<N - 1; i++) {
+            for (Size i = 0; i<N - 1; ++i) {
                 gradients[i] = std::exp(-kappa * (i + 2) * t);
                 dKappa -= (i + 2) * t * x[i] * gradients[i];
                 gradients[i] -= std::exp(-kappa * t);
@@ -331,6 +331,129 @@ namespace QuantLib {
                                    splines_(i + 1, T) / splines_(N_, T);
                 }
             }
+        }
+
+        return gradients;
+    }
+
+
+
+    QuadraticYieldSplinesFitting::QuadraticYieldSplinesFitting(const std::vector<Time>& knots,
+        const Array& weights,
+        boost::shared_ptr<OptimizationMethod> optimizationMethod,
+        const Array& l2)
+        : FittedBondDiscountCurve::FittingMethod(false, weights, optimizationMethod, l2) {
+
+        QL_REQUIRE(knots.size() >= 2,
+            "At least 2 knots are required");
+        knots_ = knots;
+        size_ = knots.size();
+    }
+
+    QuadraticYieldSplinesFitting::QuadraticYieldSplinesFitting(const std::vector<Time>& knots,
+        const Array& weights,
+        const Array& l2)
+        : FittedBondDiscountCurve::FittingMethod(false, weights, boost::shared_ptr<OptimizationMethod>(), l2) {
+
+        QL_REQUIRE(knots.size() >= 2,
+            "At least 2 knots are required");
+        knots_ = knots;
+        size_ = knots.size();
+    }
+
+    std::auto_ptr<FittedBondDiscountCurve::FittingMethod>
+        QuadraticYieldSplinesFitting::clone() const {
+        return std::auto_ptr<FittedBondDiscountCurve::FittingMethod>(
+            new QuadraticYieldSplinesFitting(*this));
+    }
+
+    Size QuadraticYieldSplinesFitting::size() const {
+        return size_;
+    }
+
+    DiscountFactor QuadraticYieldSplinesFitting::discountFunction(const Array& x,
+        Time t) const {
+
+        Array p(size_ + 1, 0.0);
+        Real pHat = 0.0;
+
+        for(Size i=0; i<(size_-1); i++)
+        {
+            p[i] = x[i];
+        }
+
+        for(Size i=0; i<(size_-2); i++)
+        {
+            p[size_] -= p[i + 1] * knots_[i];
+        }
+        p[size_] /= knots_[size_ - 1];
+
+        for(Size i=0; i<(size_-1); i++)
+        {
+            pHat += p[i + 1];
+        }
+
+        Real zeroRate = p[0] - pHat * t * t / size_;
+
+        for(Size i=0; i<(size_-1); i++)
+        {
+            if(t > knots_[i])
+            {
+                zeroRate += p[i + 1] * std::pow((t - knots_[i]), 3) / size_ / t;
+            }
+        }
+        DiscountFactor d = std::exp(-zeroRate * t);
+
+        return d;
+    }
+
+    Array QuadraticYieldSplinesFitting::gradientFunction(const Array& x,
+        Time t) const {
+
+        Array gradients(size());
+        Array p(size_ + 1, 0.0);
+        Real pHat = 0.0;
+
+        for (Size i = 0; i<(size_ - 1); i++)
+        {
+            p[i] = x[i];
+        }
+
+        for (Size i = 0; i<(size_ - 2); i++)
+        {
+            p[size_] -= p[i + 1] * knots_[i];
+        }
+        p[size_] /= knots_[size_ - 1];
+
+        for (Size i = 0; i<(size_ - 1); i++)
+        {
+            pHat += p[i + 1];
+        }
+
+        Real zeroRate = p[0] - pHat * t * t / size_;
+
+        for (Size i = 0; i<(size_ - 1); i++)
+        {
+            if (t > knots_[i])
+            {
+                zeroRate += p[i + 1] * std::pow((t - knots_[i]), 3) / size_ / t;
+            }
+        }
+        Real dDdR = -t * std::exp(-zeroRate * t);
+
+        gradients[0] = dDdR;
+        for(Size i=0; i<(size_-2); i++)
+        {
+            gradients[i + 1] = 2.0 * t * (1 - knots_[i] / knots_[size_]);
+            if(t > knots_[i])
+            {
+                gradients[i + 1] += std::pow((t - knots_[i]), 3) / size_ / t;
+            }
+            if(t > knots_[size_-1])
+            {
+                gradients[i + 1] -= std::pow((t - knots_[size_-1]), 3) * knots_[i] / knots_[size_] / size_ / t;
+            }
+            gradients[i + 1] *= dDdR;
         }
 
         return gradients;

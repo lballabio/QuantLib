@@ -162,6 +162,34 @@ namespace QuantLib {
     };
 
 
+    //! QuadraticYieldSpline fitting method
+    /*! Fits a zeroRate yield function to a set of quadratic splines
+    
+    */
+    class QuadraticYieldSplinesFitting
+        : public FittedBondDiscountCurve::FittingMethod {
+    public:
+        QuadraticYieldSplinesFitting(const std::vector<Time>& knotVector,
+            const Array& weights = Array(),
+            boost::shared_ptr<OptimizationMethod> optimizationMethod
+            = boost::shared_ptr<OptimizationMethod>(),
+            const Array& l2 = Array());
+        QuadraticYieldSplinesFitting(const std::vector<Time>& knotVector,
+            const Array& weights,
+            const Array& l2);
+        //! cubic B-spline basis functions
+        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
+    private:
+        Size size() const;
+        DiscountFactor discountFunction(const Array& x, Time t) const;
+        Array gradientFunction(const Array& x, Time t) const;
+        std::vector<Time> knots_;
+        Size size_;
+        //! N_th basis function coefficient to solve for when d(0)=1
+        Natural N_;
+    };
+
+
     //! Simple polynomial fitting method
     /*  Fits a discount function to the simple polynomial form:
         \f[

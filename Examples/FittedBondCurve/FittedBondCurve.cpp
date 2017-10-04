@@ -305,6 +305,26 @@ int main(int, char* []) {
 
         printOutput("(f) Nelson-Siegel spreaded", ts6);
 
+        Time knots_q[] = { 0.5, 1.0, 1.5, 3., 6., 9., 18., 27.};
+
+        std::vector<Time> knotVector_q;
+        for (Size i = 0; i< LENGTH(knots_q); i++) {
+            knotVector_q.push_back(knots_q[i]);
+        }
+
+        QuadraticYieldSplinesFitting quadraticYieldSplines(knotVector_q, Array(), optimizor);
+
+        boost::shared_ptr<FittedBondDiscountCurve> ts7(
+            new FittedBondDiscountCurve(curveSettlementDays,
+                calendar,
+                instrumentsA,
+                dc,
+                quadraticYieldSplines,
+                tolerance,
+                max));
+
+        printOutput("(g) quadratic yield splines", ts7);
+
 
         cout << "Output par rates for each curve. In this case, "
              << endl
@@ -320,7 +340,8 @@ int main(int, char* []) {
              << setw(6) << "(c)" << " | "
              << setw(6) << "(d)" << " | "
              << setw(6) << "(e)" << " | "
-             << setw(6) << "(f)" << endl;
+             << setw(6) << "(f)" << " | "
+             << setw(6) << "(g)" << endl;
 
         for (Size i=0; i<instrumentsA.size(); i++) {
 
@@ -363,7 +384,10 @@ int main(int, char* []) {
                  << 100.*parRate(*ts5,keyDates,dc)  << " | "
                  // Nelson-Siegel Spreaded
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*parRate(*ts6,keyDates,dc) << endl;
+                 << 100.*parRate(*ts6,keyDates,dc) << " | "
+                 // Quadratic Yield Spline
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*parRate(*ts7, keyDates, dc) << endl;
         }
 
         cout << endl << endl << endl;
