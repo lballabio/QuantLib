@@ -93,8 +93,9 @@ namespace QuantLib {
           case Settlement:
             impl_ = settlementImpl;
             break;
-        case LiborImpact:
+          case LiborImpact:
             impl_ = liborImpactImpl;
+            break;
           case NYSE:
             impl_ = nyseImpl;
             break;
