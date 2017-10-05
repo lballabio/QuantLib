@@ -94,6 +94,7 @@ namespace QuantLib {
                 gradients[i] -= std::exp(-kappa * t);
                 dKappa += t * x[i] * std::exp(-kappa * t);
             }
+            dKappa -= t * std::exp(-kappa * t);
         }
         gradients[N - 1] = dKappa;
         return gradients;
@@ -138,14 +139,13 @@ namespace QuantLib {
         Real Z = (1.0 - exp) / ((kappa + QL_EPSILON)*(t + QL_EPSILON));
         Real zeroRate = x[0] + (x[1] + x[2]) * Z - x[2] * exp;
         Real dDdR = -t * std::exp(-zeroRate * t);
+        Real dExpDk = -t * exp;
+        Real dZdk = (exp - dExpDk * (kappa + QL_EPSILON) -1.0) / (t + QL_EPSILON) / (kappa + QL_EPSILON) / (kappa + QL_EPSILON);
 
         gradients[0] = dDdR;
         gradients[1] = dDdR * Z;
         gradients[2] = dDdR * (Z - exp);
-        gradients[3] = (x[1] + x[2]) / t / kappa;
-        gradients[3] *= t * exp - (1 - exp) / kappa / kappa;
-        gradients[3] += x[2] * t * exp;
-        gradients[3] *= dDdR;
+        gradients[3] = dDdR * ((x[1] + x[2]) * dZdk - x[2] * dExpDk);
 
         return gradients;
     }
@@ -194,19 +194,17 @@ namespace QuantLib {
         Real Z_1 = (1.0 - exp_1) / ((kappa_1 + QL_EPSILON)*(t + QL_EPSILON));
         Real zeroRate = x[0] + (x[1] + x[2]) * Z - x[2] * exp + x[3] * (Z_1 - exp_1);
         Real dDdR = -t * std::exp(-zeroRate * t);
+        Real dExpDk = -t * exp;
+        Real dZdk = (exp - dExpDk * (kappa + QL_EPSILON) - 1.0) / (t + QL_EPSILON) / (kappa + QL_EPSILON) / (kappa + QL_EPSILON);
+        Real dExp_1Dk = -t * exp_1;
+        Real dZ_1dk = (exp_1 - dExp_1Dk * (kappa_1 + QL_EPSILON) - 1.0) / (t + QL_EPSILON) / (kappa_1 + QL_EPSILON) / (kappa_1 + QL_EPSILON);
 
         gradients[0] = dDdR;
         gradients[1] = dDdR * Z;
         gradients[2] = dDdR * (Z - exp);
         gradients[3] = dDdR * (Z_1 - exp_1);
-        gradients[4] = (x[1] + x[2]) / t / kappa;
-        gradients[4] *= t * exp - (1 - exp) / kappa;
-        gradients[4] += x[2] * t * exp;
-        gradients[4] *= dDdR;
-        gradients[5] = - (1 - exp_1) / t / kappa_1 / kappa_1;
-        gradients[5] += exp_1 / kappa_1;
-        gradients[5] += t * exp_1;
-        gradients[5] *= x[3] * dDdR;
+        gradients[4] = dDdR * ((x[1] + x[2]) * dZdk - x[2] * dExpDk);
+        gradients[5] = dDdR * x[3] * (dZ_1dk - dExp_1Dk);
 
         return gradients;
     }
@@ -342,23 +340,19 @@ namespace QuantLib {
         const Array& weights,
         boost::shared_ptr<OptimizationMethod> optimizationMethod,
         const Array& l2)
-        : FittedBondDiscountCurve::FittingMethod(false, weights, optimizationMethod, l2) {
-
-        QL_REQUIRE(knots.size() >= 2,
+        : FittedBondDiscountCurve::FittingMethod(false, weights, optimizationMethod, l2),
+          knots_(knots), size_(knots.size()) {
+          QL_REQUIRE(knots.size() >= 2,
             "At least 2 knots are required");
-        knots_ = knots;
-        size_ = knots.size();
     }
 
     QuadraticYieldSplinesFitting::QuadraticYieldSplinesFitting(const std::vector<Time>& knots,
         const Array& weights,
         const Array& l2)
-        : FittedBondDiscountCurve::FittingMethod(false, weights, boost::shared_ptr<OptimizationMethod>(), l2) {
-
+        : FittedBondDiscountCurve::FittingMethod(false, weights, boost::shared_ptr<OptimizationMethod>(), l2),
+        knots_(knots), size_(knots.size()) {
         QL_REQUIRE(knots.size() >= 2,
             "At least 2 knots are required");
-        knots_ = knots;
-        size_ = knots.size();
     }
 
     std::auto_ptr<FittedBondDiscountCurve::FittingMethod>
@@ -374,32 +368,16 @@ namespace QuantLib {
     DiscountFactor QuadraticYieldSplinesFitting::discountFunction(const Array& x,
         Time t) const {
 
-        Array p(size_ + 1, 0.0);
-        Real pHat = 0.0;
+        Size n = size();
+        Real zeroRate = x[0];
 
-        for(Size i=0; i<(size_-1); i++)
-        {
-            p[i] = x[i];
-        }
-
-        for(Size i=0; i<(size_-2); i++)
-        {
-            p[size_] -= p[i + 1] * knots_[i];
-        }
-        p[size_] /= knots_[size_ - 1];
-
-        for(Size i=0; i<(size_-1); i++)
-        {
-            pHat += p[i + 1];
-        }
-
-        Real zeroRate = p[0] - pHat * t * t / size_;
-
-        for(Size i=0; i<(size_-1); i++)
-        {
-            if(t > knots_[i])
-            {
-                zeroRate += p[i + 1] * std::pow((t - knots_[i]), 3) / size_ / t;
+        for(Size i=0; i<(n-1); ++i) {
+            zeroRate += x[i+1] *(knots_[i] / knots_[n-1] - 1) * t * t / n;
+            if (t > knots_[i]) {
+                zeroRate += x[i+1] * std::pow(t - knots_[i], 3) / n / t;
+            }
+            if (t > knots_[n-1]) {
+                zeroRate -= x[i+1] * std::pow(t - knots_[n-1], 3) * knots_[i] / knots_[n-1] / n / t;
             }
         }
         DiscountFactor d = std::exp(-zeroRate * t);
@@ -410,50 +388,27 @@ namespace QuantLib {
     Array QuadraticYieldSplinesFitting::gradientFunction(const Array& x,
         Time t) const {
 
-        Array gradients(size());
-        Array p(size_ + 1, 0.0);
-        Real pHat = 0.0;
 
-        for (Size i = 0; i<(size_ - 1); i++)
-        {
-            p[i] = x[i];
-        }
+        Size n = size();
+        Array gradients(n);
+        Real zeroRate = x[0];
+        gradients[0] = 1.0;
 
-        for (Size i = 0; i<(size_ - 2); i++)
-        {
-            p[size_] -= p[i + 1] * knots_[i];
-        }
-        p[size_] /= knots_[size_ - 1];
-
-        for (Size i = 0; i<(size_ - 1); i++)
-        {
-            pHat += p[i + 1];
-        }
-
-        Real zeroRate = p[0] - pHat * t * t / size_;
-
-        for (Size i = 0; i<(size_ - 1); i++)
-        {
-            if (t > knots_[i])
-            {
-                zeroRate += p[i + 1] * std::pow((t - knots_[i]), 3) / size_ / t;
+        for(Size i = 0; i<(n - 1); ++i) {
+            gradients[i+1] = (knots_[i] / knots_[n-1] - 1) * t * t / n;
+            if (t > knots_[i]) {
+                gradients[i+1] += std::pow(t - knots_[i], 3) / n / t;
             }
+            if (t > knots_[n-1]) {
+                gradients[i+1] -= std::pow(t - knots_[n-1], 3) * knots_[i] / knots_[n-1] / n / t;
+                
+            }
+            zeroRate += x[i+1] * gradients[i+1];
         }
         Real dDdR = -t * std::exp(-zeroRate * t);
 
-        gradients[0] = dDdR;
-        for(Size i=0; i<(size_-2); i++)
-        {
-            gradients[i + 1] = 2.0 * t * (1 - knots_[i] / knots_[size_]);
-            if(t > knots_[i])
-            {
-                gradients[i + 1] += std::pow((t - knots_[i]), 3) / size_ / t;
-            }
-            if(t > knots_[size_-1])
-            {
-                gradients[i + 1] -= std::pow((t - knots_[size_-1]), 3) * knots_[i] / knots_[size_] / size_ / t;
-            }
-            gradients[i + 1] *= dDdR;
+        for(Size i=0; i<n; i++) {
+            gradients[i] *= dDdR;
         }
 
         return gradients;

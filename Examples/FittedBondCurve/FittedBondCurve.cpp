@@ -138,8 +138,8 @@ int main(int, char* []) {
 
         // changing bondSettlementDays=3 increases calculation
         // time of exponentialsplines fitting method
-        Natural bondSettlementDays = 0;
-        Natural curveSettlementDays = 0;
+        Natural bondSettlementDays = 3;
+        Natural curveSettlementDays = 3;
 
         Date bondSettlementDate = calendar.advance(today, bondSettlementDays*Days);
 
@@ -271,7 +271,7 @@ int main(int, char* []) {
         SvenssonFitting svensson(Array(), optimizor);
         Array nss_guess(6, 0.0);
         nss_guess[1] = .03;
-        nss_guess[4] = 3.0;
+        nss_guess[4] = 7.0;
         nss_guess[5] = 10.0;
 
         boost::shared_ptr<FittedBondDiscountCurve> ts5 (
@@ -305,7 +305,7 @@ int main(int, char* []) {
 
         printOutput("(f) Nelson-Siegel spreaded", ts6);
 
-        Time knots_q[] = { 0.5, 1.0, 1.5, 3., 6., 9., 18., 27.};
+        Time knots_q[] = {0.75, 1.5, 3., 6., 9., 18., 27.};
 
         std::vector<Time> knotVector_q;
         for (Size i = 0; i< LENGTH(knots_q); i++) {
@@ -416,6 +416,8 @@ int main(int, char* []) {
 
         printOutput("(f) Nelson-Siegel spreaded", ts6);
 
+        printOutput("(g) Quadratic Yield Spline", ts7);
+
         cout << endl
              << endl;
 
@@ -428,7 +430,8 @@ int main(int, char* []) {
              << setw(6) << "(c)" << " | "
              << setw(6) << "(d)" << " | "
              << setw(6) << "(e)" << " | "
-             << setw(6) << "(f)" << endl;
+             << setw(6) << "(f)" << " | "
+             << setw(6) << "(g)" << endl;
 
         for (Size i=0; i<instrumentsA.size(); i++) {
 
@@ -471,7 +474,10 @@ int main(int, char* []) {
                  << 100.*parRate(*ts5,keyDates,dc) << " | "
                  // Nelson-Siegel Spreaded
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*parRate(*ts6,keyDates,dc) << endl;
+                 << 100.*parRate(*ts6,keyDates,dc) << " | "
+                 // Quadratic Yield Spline
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*parRate(*ts7, keyDates, dc) << endl;
         }
 
         cout << endl << endl << endl;
@@ -570,6 +576,17 @@ int main(int, char* []) {
 
         printOutput("(f) Nelson-Siegel spreaded", ts66);
 
+        boost::shared_ptr<FittedBondDiscountCurve> ts77(
+            new FittedBondDiscountCurve(curveSettlementDays,
+                calendar,
+                instrumentsA,
+                dc,
+                quadraticYieldSplines,
+                tolerance,
+                max));
+
+        printOutput("(g) quadratic yield splines", ts77);
+
         cout << setw(6) << "tenor" << " | "
              << setw(6) << "coupon" << " | "
              << setw(6) << "bstrap" << " | "
@@ -578,7 +595,8 @@ int main(int, char* []) {
              << setw(6) << "(c)" << " | "
              << setw(6) << "(d)" << " | "
              << setw(6) << "(e)" << " | "
-             << setw(6) << "(f)" << endl;
+             << setw(6) << "(f)" << " | "
+             << setw(6) << "(g)" << endl;
 
         for (Size i=0; i<instrumentsA.size(); i++) {
 
@@ -621,7 +639,10 @@ int main(int, char* []) {
                  << 100.*parRate(*ts55,keyDates,dc) << " | "
                  // Nelson-Siegel Spreaded
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*parRate(*ts66,keyDates,dc) << endl;
+                 << 100.*parRate(*ts66,keyDates,dc) << " | "
+                 // Quadratic Yield Spline
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*parRate(*ts77, keyDates, dc) << endl;
         }
 
 
@@ -660,7 +681,8 @@ int main(int, char* []) {
              << setw(6) << "(c)" << " | "
              << setw(6) << "(d)" << " | "
              << setw(6) << "(e)" << " | "
-             << setw(6) << "(f)" << endl;
+             << setw(6) << "(f)" << " | "
+             << setw(6) << "(g)" << endl;
 
         for (Size i=0; i<instrumentsA.size(); i++) {
 
@@ -703,7 +725,10 @@ int main(int, char* []) {
                  << 100.*parRate(*ts55,keyDates,dc) << " | "
                  // Nelson-Siegel Spreaded
                  << setw(6) << fixed << setprecision(3)
-                 << 100.*parRate(*ts66,keyDates,dc) << endl;
+                 << 100.*parRate(*ts66,keyDates,dc) << " | "
+                 // Quadratic Yield Spline
+                 << setw(6) << fixed << setprecision(3)
+                 << 100.*parRate(*ts77, keyDates, dc) << endl;
         }
 
 

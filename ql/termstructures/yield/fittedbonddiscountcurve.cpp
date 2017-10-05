@@ -281,14 +281,16 @@ namespace QuantLib {
                 modelPrice += cf[k]->amount() *
                                     fittingMethod_->discountFunction(x, tenor);
             }
-            if (helper->useCleanPrice())
-                modelPrice -= bond->accruedAmount(bondSettlement);
 
             // adjust price (NPV) for forward settlement
             if (bondSettlement != refDate ) {
                 Time tenor = dc.yearFraction(refDate, bondSettlement);
                 modelPrice /= fittingMethod_->discountFunction(x, tenor);
             }
+
+            if (helper->useCleanPrice())
+                modelPrice -= bond->accruedAmount(bondSettlement);
+
             Real marketPrice = helper->quote()->value();
             Real error = modelPrice - marketPrice;
             Real weightedError = fittingMethod_->weights_[i] * error;
@@ -360,8 +362,6 @@ namespace QuantLib {
                     jacobian[i][l] += cf[k]->amount() * grads[l];
                 }
             }
-            if (helper->useCleanPrice())
-                modelPrice -= bond->accruedAmount(bondSettlement);
 
             // adjust price (NPV) for forward settlement
             if (bondSettlement != refDate) {
@@ -375,6 +375,8 @@ namespace QuantLib {
                 }
                 modelPrice /= df;
             }
+            if (helper->useCleanPrice())
+                modelPrice -= bond->accruedAmount(bondSettlement);
             Real marketPrice = helper->quote()->value();
             Real error = modelPrice - marketPrice;
             Real weight = fittingMethod_->weights_[i];
