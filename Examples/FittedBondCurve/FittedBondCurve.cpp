@@ -193,8 +193,8 @@ int main(int, char* []) {
                                                           calendar,
                                                           instrumentsB,
                                                           dc));
-
-        ExponentialSplinesFitting exponentialSplines(constrainAtZero, Array(), optimizor);
+        Array exp_l2(9, 0.0001);
+        ExponentialSplinesFitting exponentialSplines(constrainAtZero, Array(), optimizor, exp_l2);
 
         Array exp_guess(9, 0.0);
         exp_guess[8] = 1.0;
@@ -211,8 +211,8 @@ int main(int, char* []) {
 
         printOutput("(a) exponential splines", ts1);
 
-
-        SimplePolynomialFitting simplePolynomial(3, constrainAtZero, Array(), optimizor);
+        Array sp_l2(3, 0.0001);
+        SimplePolynomialFitting simplePolynomial(3, constrainAtZero, Array(), optimizor, sp_l2);
 
         boost::shared_ptr<FittedBondDiscountCurve> ts2 (
                     new FittedBondDiscountCurve(curveSettlementDays,
@@ -225,8 +225,9 @@ int main(int, char* []) {
 
         printOutput("(b) simple polynomial", ts2);
 
-
-        NelsonSiegelFitting nelsonSiegel(Array(), optimizor);
+        Array ns_l2(4, .0001);
+        ns_l2[0] = 0.0;
+        NelsonSiegelFitting nelsonSiegel(Array(), optimizor, ns_l2);
         Array ns_guess(4, 0.0);
         ns_guess[1] = .03;
         ns_guess[3] = 7.0;
@@ -255,7 +256,8 @@ int main(int, char* []) {
             knotVector.push_back(knots[i]);
         }
 
-        CubicBSplinesFitting cubicBSplines(knotVector, constrainAtZero, Array(), optimizor);
+        Array cub_l2(LENGTH(knots) - 5, .0001);
+        CubicBSplinesFitting cubicBSplines(knotVector, constrainAtZero, Array(), optimizor, cub_l2);
 
         boost::shared_ptr<FittedBondDiscountCurve> ts4 (
                        new FittedBondDiscountCurve(curveSettlementDays,
@@ -268,7 +270,9 @@ int main(int, char* []) {
 
         printOutput("(d) cubic B-splines", ts4);
 
-        SvenssonFitting svensson(Array(), optimizor);
+        Array nss_l2(6, .0001);
+        nss_l2[0] = 0.0;
+        SvenssonFitting svensson(Array(), optimizor, nss_l2);
         Array nss_guess(6, 0.0);
         nss_guess[1] = .03;
         nss_guess[4] = 7.0;
@@ -290,7 +294,7 @@ int main(int, char* []) {
             boost::make_shared<FlatForward>(
                                     curveSettlementDays, calendar, 0.01, dc));
         SpreadFittingMethod nelsonSiegelSpread(
-                                    boost::make_shared<NelsonSiegelFitting>(Array(), optimizor),
+                                    boost::make_shared<NelsonSiegelFitting>(Array(), optimizor, ns_l2),
                                     discountCurve);
 
         boost::shared_ptr<FittedBondDiscountCurve> ts6 (
@@ -312,7 +316,10 @@ int main(int, char* []) {
             knotVector_q.push_back(knots_q[i]);
         }
 
-        QuadraticYieldSplinesFitting quadraticYieldSplines(knotVector_q, Array(), optimizor);
+        Array quad_l2(LENGTH(knots_q), .0001);
+        quad_l2[0] = 0.0;
+
+        QuadraticYieldSplinesFitting quadraticYieldSplines(knotVector_q, Array(), optimizor, quad_l2);
 
         boost::shared_ptr<FittedBondDiscountCurve> ts7(
             new FittedBondDiscountCurve(curveSettlementDays,

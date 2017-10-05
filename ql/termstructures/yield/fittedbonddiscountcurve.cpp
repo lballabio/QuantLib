@@ -297,9 +297,15 @@ namespace QuantLib {
             values[i] = weightedError * weightedError;
         }
 
+        Array guess(x.size(), 0.0);
+        if(!fittingMethod_->curve_->guessSolution_.empty())
+        {
+            guess = fittingMethod_->curve_->guessSolution_;
+        }
+
         if (N != 0) {
             for (Size i = 0; i < N; ++i) {
-                Real error = x[i] - fittingMethod_->curve_->guessSolution_[i];
+                Real error = x[i] - guess[i];
                 values[i + n] = fittingMethod_->l2_[i] * error * error;
             }
         }
@@ -385,13 +391,19 @@ namespace QuantLib {
                 jacobian[i][l] *= 2.0 * weight * weight * error;
             }
         }
+        
+        Array guess(x.size(), 0.0);
+        if (!fittingMethod_->curve_->guessSolution_.empty())
+        {
+            guess = fittingMethod_->curve_->guessSolution_;
+        }
 
         if (N != 0) {
             for (Size i = 0; i < N; ++i) {
                 for (Size l = 0; l < m; l++) {
                     jacobian[i+n][l] = 0.0;
                 }
-                Real error = x[i] - fittingMethod_->curve_->guessSolution_[i];
+                Real error = x[i] - guess[i];
                 jacobian[i + n][i] = 2.0 * fittingMethod_->l2_[i] * error;
             }
         }
