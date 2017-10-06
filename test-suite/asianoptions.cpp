@@ -1193,13 +1193,13 @@ void AsianOptionTest::testAllFixingsInThePast() {
         MakeMCDiscreteGeometricAPEngine<LowDiscrepancy>(stochProcess)
         .withSamples(2047));
 
-    // Check that NPV raises an exception instead of crashing.
+    // Check that NPV raises a specific exception instead of crashing.
     // (It used to do that.)
 
     bool raised = false;
     try {
         option1.NPV();
-    } catch (Error&) {
+    } catch (detail::PastFixingsOnly&) {
         raised = true;
     }
     if (!raised) {
@@ -1209,7 +1209,7 @@ void AsianOptionTest::testAllFixingsInThePast() {
     raised = false;
     try {
         option1.NPV();
-    } catch (Error&) {
+    } catch (detail::PastFixingsOnly&) {
         raised = true;
     }
     if (!raised) {
@@ -1219,7 +1219,7 @@ void AsianOptionTest::testAllFixingsInThePast() {
     raised = false;
     try {
         option2.NPV();
-    } catch (Error&) {
+    } catch (detail::PastFixingsOnly&) {
         raised = true;
     }
     if (!raised) {
@@ -1235,7 +1235,7 @@ void AsianOptionTest::testAllFixingsInThePast() {
     raised = false;
     try {
         option1.NPV();
-    } catch (Error&) {
+    } catch (detail::PastFixingsOnly&) {
         raised = true;
     }
     if (!raised) {
@@ -1245,7 +1245,7 @@ void AsianOptionTest::testAllFixingsInThePast() {
     raised = false;
     try {
         option1.NPV();
-    } catch (Error&) {
+    } catch (detail::PastFixingsOnly&) {
         raised = true;
     }
     if (!raised) {
@@ -1255,7 +1255,7 @@ void AsianOptionTest::testAllFixingsInThePast() {
     raised = false;
     try {
         option2.NPV();
-    } catch (Error&) {
+    } catch (detail::PastFixingsOnly&) {
         raised = true;
     }
     if (!raised) {
