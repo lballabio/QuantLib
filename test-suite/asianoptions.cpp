@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003, 2004 Ferdinando Ametrano
- Copyright (C) 2005, 2007, 2008 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2017 Ferdinando Ametrano
+ Copyright (C) 2005, 2007, 2008, 2017 StatPro Italia srl
  Copyright (C) 2009, 2011 Master IMAFA - Polytech'Nice Sophia - Université de Nice Sophia Antipolis
  Copyright (C) 2014 Bernd Lewerenz
 
@@ -1128,6 +1128,141 @@ void AsianOptionTest::testPastFixings() {
 
 }
 
+
+void AsianOptionTest::testAllFixingsInThePast() {
+
+    BOOST_TEST_MESSAGE(
+        "Testing Asian options with all fixing dates in the past...");
+
+    DayCounter dc = Actual360();
+    Date today = Settings::instance().evaluationDate();
+
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.005));
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.01));
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(vol, dc);
+
+    boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
+        new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                      Handle<YieldTermStructure>(qTS),
+                                      Handle<YieldTermStructure>(rTS),
+                                      Handle<BlackVolTermStructure>(volTS)));
+
+    Date exerciseDate = today + 2*Weeks;
+    Date startDate = exerciseDate - 1*Years;
+    std::vector<Date> fixingDates;
+    for (Integer i=0; i<12; ++i)
+        fixingDates.push_back(startDate + i*Months);
+    Size pastFixings = 12;
+
+    boost::shared_ptr<StrikedTypePayoff> payoff(
+                                  new PlainVanillaPayoff(Option::Put, 100.0));
+    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+
+    // MC arithmetic average-price
+
+    Real runningSum = pastFixings * spot->value();
+
+    DiscreteAveragingAsianOption option1(Average::Arithmetic, runningSum,
+                                         pastFixings, fixingDates,
+                                         payoff, exercise);
+    option1.setPricingEngine(
+        MakeMCDiscreteArithmeticAPEngine<LowDiscrepancy>(stochProcess)
+        .withSamples(2047));
+
+    // MC arithmetic average-strike
+
+    DiscreteAveragingAsianOption option2(Average::Arithmetic, runningSum,
+                                         pastFixings, fixingDates,
+                                         payoff, exercise);
+    option2.setPricingEngine(
+        MakeMCDiscreteArithmeticASEngine<LowDiscrepancy>(stochProcess)
+        .withSamples(2047));
+
+    // MC geometric average-price
+
+    Real runningProduct = std::pow(spot->value(), pastFixings);
+
+    DiscreteAveragingAsianOption option3(Average::Geometric, runningProduct,
+                                         pastFixings, fixingDates,
+                                         payoff, exercise);
+    option3.setPricingEngine(
+        MakeMCDiscreteGeometricAPEngine<LowDiscrepancy>(stochProcess)
+        .withSamples(2047));
+
+    // Check that NPV raises an exception instead of crashing.
+    // (It used to do that.)
+
+    bool raised = false;
+    try {
+        option1.NPV();
+    } catch (Error&) {
+        raised = true;
+    }
+    if (!raised) {
+        BOOST_FAIL("exception expected");
+    }
+
+    raised = false;
+    try {
+        option1.NPV();
+    } catch (Error&) {
+        raised = true;
+    }
+    if (!raised) {
+        BOOST_FAIL("exception expected");
+    }
+
+    raised = false;
+    try {
+        option2.NPV();
+    } catch (Error&) {
+        raised = true;
+    }
+    if (!raised) {
+        BOOST_FAIL("exception expected");
+    }
+
+    // also check with the evaluation date on last fixing
+
+    SavedSettings backup;
+
+    Settings::instance().evaluationDate() = fixingDates.back();
+
+    raised = false;
+    try {
+        option1.NPV();
+    } catch (Error&) {
+        raised = true;
+    }
+    if (!raised) {
+        BOOST_FAIL("exception expected");
+    }
+
+    raised = false;
+    try {
+        option1.NPV();
+    } catch (Error&) {
+        raised = true;
+    }
+    if (!raised) {
+        BOOST_FAIL("exception expected");
+    }
+
+    raised = false;
+    try {
+        option2.NPV();
+    } catch (Error&) {
+        raised = true;
+    }
+    if (!raised) {
+        BOOST_FAIL("exception expected");
+    }
+}
+
 namespace {
 
     struct ContinuousAverageData {
@@ -1328,6 +1463,8 @@ test_suite* AsianOptionTest::suite() {
         &AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks));
     suite->add(QUANTLIB_TEST_CASE(
         &AsianOptionTest::testPastFixings));
+    suite->add(QUANTLIB_TEST_CASE(
+        &AsianOptionTest::testAllFixingsInThePast));
 
     return suite;
 }
