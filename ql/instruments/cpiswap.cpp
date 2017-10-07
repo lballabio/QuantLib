@@ -31,8 +31,6 @@
 #include <ql/instruments/cpiswap.hpp>
 #include <ql/cashflows/cpicoupon.hpp>
 
-#include<iostream>
-
 namespace QuantLib {
 
     // accrual adjustment is already in the schedules, as are calendars

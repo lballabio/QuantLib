@@ -238,7 +238,7 @@ namespace QuantLib {
              // NOT IMPLEMENTED YET:
     //positions_[std::distance(names_.begin(), match)]->expectedExposure(d);
                 notionals_[std::distance(pool_->names().begin(), match)];
-            match++;
+            ++match;
             match = std::find(match, pool_->names().end(), name);
         }while(match != pool_->names().end());
 

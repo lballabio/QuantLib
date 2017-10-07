@@ -33,10 +33,12 @@ namespace QuantLib {
                     const Period& tenor, // swap maturity
                     const Handle<Quote>& fixedRate,
                     const boost::shared_ptr<OvernightIndex>& overnightIndex,
-                    const Handle<YieldTermStructure>& discount)
+                    const Handle<YieldTermStructure>& discount,
+                    bool telescopicValueDates)
     : RelativeDateRateHelper(fixedRate),
       settlementDays_(settlementDays), tenor_(tenor),
-      overnightIndex_(overnightIndex), discountHandle_(discount) {
+      overnightIndex_(overnightIndex), discountHandle_(discount),
+      telescopicValueDates_(telescopicValueDates)  {
         registerWith(overnightIndex_);
         registerWith(discountHandle_);
         initializeDates();
@@ -55,7 +57,8 @@ namespace QuantLib {
         //    be assigned a curve later; use a RelinkableHandle here
         swap_ = MakeOIS(tenor_, clonedOvernightIndex, 0.0)
             .withDiscountingTermStructure(discountRelinkableHandle_)
-            .withSettlementDays(settlementDays_);
+            .withSettlementDays(settlementDays_)
+            .withTelescopicValueDates(telescopicValueDates_);
 
         earliestDate_ = swap_->startDate();
         latestDate_ = swap_->maturityDate();
@@ -98,8 +101,10 @@ namespace QuantLib {
                     const Date& endDate,
                     const Handle<Quote>& fixedRate,
                     const boost::shared_ptr<OvernightIndex>& overnightIndex,
-                    const Handle<YieldTermStructure>& discount)
-    : RateHelper(fixedRate), discountHandle_(discount) {
+                    const Handle<YieldTermStructure>& discount,
+                    bool telescopicValueDates)
+        : RateHelper(fixedRate), discountHandle_(discount),
+          telescopicValueDates_(telescopicValueDates) {
 
         registerWith(overnightIndex);
         registerWith(discountHandle_);
@@ -116,7 +121,8 @@ namespace QuantLib {
         swap_ = MakeOIS(Period(), clonedOvernightIndex, 0.0)
             .withDiscountingTermStructure(discountRelinkableHandle_)
             .withEffectiveDate(startDate)
-            .withTerminationDate(endDate);
+            .withTerminationDate(endDate)
+            .withTelescopicValueDates(telescopicValueDates_);
 
         earliestDate_ = swap_->startDate();
         latestDate_ = swap_->maturityDate();

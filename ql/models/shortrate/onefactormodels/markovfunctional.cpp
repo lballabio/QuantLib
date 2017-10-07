@@ -660,7 +660,7 @@ namespace QuantLib {
                         marketRawPut.push_back(rawSec->optionPrice(
                             strikes[j], Option::Put, i->second.annuity_));
                     }
-                    catch (QuantLib::Error) {
+                    catch (Error&) {
                         // the smile section might not be able to output an
                         // option price because it has no atm level
                         marketRawCall.push_back(0.0);
@@ -859,40 +859,43 @@ namespace QuantLib {
         out << "Digital gap          : " << m.settings_.digitalGap_
             << std::endl;
         out << "Adjustments          : "
-            << (m.settings_.adjustments_ &
-                        MarkovFunctional::ModelSettings::AdjustDigitals
+            << ((m.settings_.adjustments_ &
+                        MarkovFunctional::ModelSettings::AdjustDigitals)
                     ? "Digitals "
-                    : "") << (m.settings_.adjustments_ &
-                                      MarkovFunctional::ModelSettings::AdjustYts
+                    : "")
+            << ((m.settings_.adjustments_ &
+                        MarkovFunctional::ModelSettings::AdjustYts)
                                   ? "Yts "
                                   : "")
-            << (m.settings_.adjustments_ &
-                        MarkovFunctional::ModelSettings::ExtrapolatePayoffFlat
+            << ((m.settings_.adjustments_ &
+                        MarkovFunctional::ModelSettings::ExtrapolatePayoffFlat)
                     ? "FlatPayoffExt "
                     : "")
-            << (m.settings_.adjustments_ &
-                        MarkovFunctional::ModelSettings::NoPayoffExtrapolation
+            << ((m.settings_.adjustments_ &
+                        MarkovFunctional::ModelSettings::NoPayoffExtrapolation)
                     ? "NoPayoffExt "
                     : "")
-            << (m.settings_.adjustments_ &
-                        MarkovFunctional::ModelSettings::KahaleSmile
+            << ((m.settings_.adjustments_ &
+                        MarkovFunctional::ModelSettings::KahaleSmile)
                     ? "Kahale "
                     : "")
-            << (m.settings_.adjustments_ & MarkovFunctional::ModelSettings::
-                                               SmileExponentialExtrapolation
+            << ((m.settings_.adjustments_ & MarkovFunctional::ModelSettings::
+                                                SmileExponentialExtrapolation)
                     ? "SmileExp "
                     : "")
-            << (m.settings_.adjustments_ &
-                        MarkovFunctional::ModelSettings::KahaleInterpolation
+            << ((m.settings_.adjustments_ &
+                        MarkovFunctional::ModelSettings::KahaleInterpolation)
                     ? "KahaleInt "
                     : "")
-            << (m.settings_.adjustments_ & MarkovFunctional::ModelSettings::
-                                               SmileDeleteArbitragePoints
+            << ((m.settings_.adjustments_ & MarkovFunctional::ModelSettings::
+                                                   SmileDeleteArbitragePoints)
                     ? "SmileDelArb "
-                    : "") << (m.settings_.adjustments_ &
-                                      MarkovFunctional::ModelSettings::SabrSmile
-                                  ? "Sabr"
-                                  : "") << std::endl;
+                    : "")
+            << ((m.settings_.adjustments_ &
+                        MarkovFunctional::ModelSettings::SabrSmile)
+                    ? "Sabr"
+                    : "")
+            << std::endl;
         out << "Smile moneyness checkpoints: ";
         for (Size i = 0; i < m.settings_.smileMoneynessCheckpoints_.size(); i++)
             out << m.settings_.smileMoneynessCheckpoints_[i]

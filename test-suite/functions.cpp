@@ -44,7 +44,7 @@ void FunctionsTest::testFactorial() {
         calculated = Factorial::get(i);
         if (std::fabs(calculated-expected)/expected > 1.0e-9)
             BOOST_FAIL("Factorial(" << i << ")" <<
-                       std::setprecision(16) << QL_SCIENTIFIC <<
+                       std::setprecision(16) << std::scientific <<
                        "\n calculated: " << calculated <<
                        "\n   expected: " << expected <<
                        "\n rel. error: " <<
@@ -60,7 +60,7 @@ void FunctionsTest::testGammaFunction() {
     Real calculated = GammaFunction().logValue(1);
     if (std::fabs(calculated) > 1.0e-15)
         BOOST_ERROR("GammaFunction(1)\n"
-                    << std::setprecision(16) << QL_SCIENTIFIC
+                    << std::setprecision(16) << std::scientific
                     << "    calculated: " << calculated << "\n"
                     << "    expected:   " << expected);
 
@@ -69,7 +69,7 @@ void FunctionsTest::testGammaFunction() {
         calculated = GammaFunction().logValue(static_cast<Real>(i+1));
         if (std::fabs(calculated-expected)/expected > 1.0e-9)
             BOOST_ERROR("GammaFunction(" << i << ")\n"
-                        << std::setprecision(16) << QL_SCIENTIFIC
+                        << std::setprecision(16) << std::scientific
                         << "    calculated: " << calculated << "\n"
                         << "    expected:   " << expected << "\n"
                         << "    rel. error: "
@@ -103,7 +103,7 @@ void FunctionsTest::testGammaValues() {
 
         if (std::fabs(calculated - expected) > tol) {
             BOOST_ERROR("GammaFunction(" << x << ")\n"
-                        << std::setprecision(16) << QL_SCIENTIFIC
+                        << std::setprecision(16) << std::scientific
                         << "    calculated: " << calculated << "\n"
                         << "    expected:   " << expected << "\n"
                         << "    rel. error: "

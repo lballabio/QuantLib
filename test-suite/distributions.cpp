@@ -5,6 +5,8 @@
  Copyright (C) 2003 StatPro Italia srl
  Copyright (C) 2005 Gary Kennedy
  Copyright (C) 2013 Fabien Le Floc'h
+ Copyright (C) 2016 Klaus Spanderen
+
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,9 +27,13 @@
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/math/distributions/bivariatestudenttdistribution.hpp>
+#include <ql/math/distributions/chisquaredistribution.hpp>
 #include <ql/math/distributions/poissondistribution.hpp>
+#include <ql/math/randomnumbers/stochasticcollocationinvcdf.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/math/functional.hpp>
+
+#include <boost/math/distributions/non_central_chi_squared.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -126,11 +132,11 @@ namespace {
             if (std::fabs(value-values[i].result) >= tolerance) {
                 BOOST_ERROR(tag << " bivariate cumulative distribution\n"
                             << "    case: " << i+1 << "\n"
-                            << QL_FIXED
+                            << std::fixed
                             << "    a:    " << values[i].a << "\n"
                             << "    b:    " << values[i].b << "\n"
                             << "    rho:  " << values[i].rho <<"\n"
-                            << QL_SCIENTIFIC
+                            << std::scientific
                             << "    tabulated value:  "
                             << values[i].result << "\n"
                             << "    result:           " << value);
@@ -159,7 +165,7 @@ namespace {
 
                 if (std::fabs(realised-expected)>=tolerance) {
                     BOOST_ERROR(tag << " bivariate cumulative distribution\n"
-                                << QL_SCIENTIFIC
+                                << std::scientific
                                 << "    rho: " << sgn*rho[i] << "\n"
                                 << "    expected:  " << expected << "\n"
                                 << "    realised:  " << realised << "\n"
@@ -185,7 +191,7 @@ namespace {
             Real cdf1 = bvn(x,y);
             if (cdf0 > cdf1) {
                 BOOST_ERROR(tag << " cdf must be decreasing in the tails\n"
-                            << QL_SCIENTIFIC
+                            << std::scientific
                             << "    cdf0: " << cdf0 << "\n"
                             << "    cdf1: " << cdf1 << "\n"
                             << "    x: " << x << "\n"
@@ -213,7 +219,7 @@ void DistributionTest::testNormal() {
     Real check = invCumStandardNormal(0.5);
     if (check != 0.0e0) {
         BOOST_ERROR("C++ inverse cumulative of the standard normal at 0.5 is "
-                    << QL_SCIENTIFIC << check
+                    << std::scientific << check
                     << "\n instead of zero: something is wrong!");
     }
 
@@ -243,7 +249,7 @@ void DistributionTest::testNormal() {
     Real e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-16) {
         BOOST_ERROR("norm of C++ NormalDistribution minus analytic Gaussian: "
-                    << QL_SCIENTIFIC << e << "\n"
+                    << std::scientific << e << "\n"
                     << "tolerance exceeded");
     }
 
@@ -255,7 +261,7 @@ void DistributionTest::testNormal() {
     e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-7) {
         BOOST_ERROR("norm of invCum . cum minus identity: "
-                    << QL_SCIENTIFIC << e << "\n"
+                    << std::scientific << e << "\n"
                     << "tolerance exceeded");
     }
 
@@ -267,7 +273,7 @@ void DistributionTest::testNormal() {
     e = norm(diff.begin(), diff.end(), h);
     if (e > 1.0e-7) {
         BOOST_ERROR("norm of MaddokInvCum . cum minus identity: "
-                    << QL_SCIENTIFIC << e << "\n"
+                    << std::scientific << e << "\n"
                     << "tolerance exceeded");
     }
 
@@ -280,7 +286,7 @@ void DistributionTest::testNormal() {
     if (e > 1.0e-16) {
         BOOST_ERROR(
             "norm of C++ Cumulative.derivative minus analytic Gaussian: "
-            << QL_SCIENTIFIC << e << "\n"
+            << std::scientific << e << "\n"
             << "tolerance exceeded");
     }
 
@@ -292,7 +298,7 @@ void DistributionTest::testNormal() {
     e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-16) {
         BOOST_ERROR("norm of C++ Normal.derivative minus analytic derivative: "
-                    << QL_SCIENTIFIC << e << "\n"
+                    << std::scientific << e << "\n"
                     << "tolerance exceeded");
     }
 }
@@ -624,8 +630,89 @@ void DistributionTest::testBivariateCumulativeStudentVsBivariate() {
     }
 }
     
-test_suite* DistributionTest::suite() {
+
+namespace {
+    class InverseNonCentralChiSquared : public std::unary_function<Real,Real> {
+      public:
+        InverseNonCentralChiSquared(Real df, Real ncp)
+        : dist_(df, ncp) {}
+
+        Real operator()(Real x) const {
+            return boost::math::quantile(dist_, x);
+        }
+      private:
+        const boost::math::non_central_chi_squared_distribution<Real> dist_;
+    };
+}
+
+void DistributionTest::testInvCDFviaStochasticCollocation() {
+    BOOST_TEST_MESSAGE(
+        "Testing inverse CDF based on stochastic collocation...");
+
+    const Real k = 3.0;
+    const Real lambda = 1.0;
+
+    const InverseCumulativeNormal invNormalCDF;
+    const CumulativeNormalDistribution normalCDF;
+    const InverseNonCentralChiSquared invCDF(k, lambda);
+
+    const StochasticCollocationInvCDF scInvCDF10(invCDF, 10);
+
+    // low precision
+    for (Real x=-3.0; x < 3.0; x+=0.1) {
+        const Real u = normalCDF(x);
+
+        const Real calculated1 = scInvCDF10(u);
+        const Real calculated2 = scInvCDF10.value(x);
+        const Real expected = invCDF(u);
+
+        if (std::fabs(calculated1 - calculated2) > 1e-6) {
+            BOOST_FAIL("Failed to reproduce equal stochastic collocation "
+                       "inverse CDF" <<
+                       "\n    x: " << x <<
+                       "\n    calculated via normal distribution : "
+                           << calculated2 <<
+                       "\n    calculated via uniform distribution: "
+                           << calculated1 <<
+                       "\n    diff: " << calculated1 - calculated2);
+        }
+
+        const Real tol = 1e-2;
+        if (std::fabs(calculated2 - expected) > tol) {
+            BOOST_FAIL("Failed to reproduce invCDF with "
+                       "stochastic collocation method" <<
+                       "\n    x: " << x <<
+                       "\n    invCDF  :" << expected <<
+                       "\n    scInvCDF: " << calculated2 <<
+                       "\n    diff    : " << std::fabs(expected-calculated2) <<
+                       "\n    tol     : " << tol);
+        }
+    }
+
+    // high precision
+    const StochasticCollocationInvCDF scInvCDF30(invCDF, 30, 0.9999999);
+    for (Real x=-4.0; x < 4.0; x+=0.1) {
+        const Real u = normalCDF(x);
+
+        const Real expected = invCDF(u);
+        const Real calculated = scInvCDF30(u);
+
+        const Real tol = 1e-6;
+        if (std::fabs(calculated - expected) > tol) {
+            BOOST_FAIL("Failed to reproduce invCDF with "
+                       "stochastic collocation method" <<
+                       "\n    x: " << x <<
+                       "\n    invCDF  :" << expected <<
+                       "\n    scInvCDF: " << calculated <<
+                       "\n    diff    : " << std::fabs(expected-calculated) <<
+                       "\n    tol     : " << tol);
+        }
+    }
+}
+
+test_suite* DistributionTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Distribution tests");
+
     suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testNormal));
     suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testBivariate));
     suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testPoisson));
@@ -635,7 +722,13 @@ test_suite* DistributionTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
                           &DistributionTest::testBivariateCumulativeStudent));
     suite->add(QUANTLIB_TEST_CASE(
-               &DistributionTest::testBivariateCumulativeStudentVsBivariate));
+                   &DistributionTest::testInvCDFviaStochasticCollocation));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &DistributionTest::testBivariateCumulativeStudentVsBivariate));
+    }
+
     return suite;
 }
 

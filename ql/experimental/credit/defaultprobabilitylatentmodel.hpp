@@ -62,6 +62,7 @@ namespace QuantLib {
         /*!
         @param factorWeights Latent model independent factors weights for each 
             variable.
+        @param integralType Integration type.
         @param ini Copula initialization if any.
 
         \warning Baskets with realized defaults not tested/WIP.

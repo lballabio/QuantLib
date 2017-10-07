@@ -18,6 +18,7 @@
 */
 
 #include <ql/utilities/dataformatters.hpp>
+#include <ostream>
 
 namespace QuantLib {
 

@@ -20,6 +20,15 @@
 #ifndef quantlib_math_multidimquadrature_hpp
 #define quantlib_math_multidimquadrature_hpp
 
+#include <ql/qldefines.hpp>
+
+/* Currently, this doesn't compile under Sun C++ (see
+   https://github.com/lballabio/QuantLib/issues/223).  Until that's
+   fixed, we disable it so that the rest of the library can be built.
+*/
+
+#ifndef QL_PATCH_SOLARIS
+
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
@@ -76,7 +85,7 @@ namespace QuantLib {
         /*!
             @param dimension The number of dimensions of the argument of the 
             function we want to integrate.
-            @param dimension Integration variable dimension.
+            @param quadOrder Quadrature order.
             @param mu Parameter in the Gauss Hermite weight (i.e. points load).
         */
         GaussianQuadMultidimIntegrator(Size dimension, Size quadOrder, 
@@ -270,5 +279,7 @@ namespace QuantLib {
     }
 
 }
+
+#endif
 
 #endif

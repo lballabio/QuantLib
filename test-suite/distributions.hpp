@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2016 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,6 +23,7 @@
 #define quantlib_test_distributions_hpp
 
 #include <boost/test/unit_test.hpp>
+#include "speedlevel.hpp"
 
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
@@ -35,7 +37,8 @@ class DistributionTest {
     static void testInverseCumulativePoisson();
     static void testBivariateCumulativeStudent();
     static void testBivariateCumulativeStudentVsBivariate();
-    static boost::unit_test_framework::test_suite* suite();
+    static void testInvCDFviaStochasticCollocation();
+    static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
 
 

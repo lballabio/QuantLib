@@ -121,8 +121,6 @@ class NoArbSabrModel {
 
     Real absorptionProbability() const { return absProb_; }
 
-    static void checkAbsorptionMatrix();
-
     private:
     Real p(const Real f) const;
     Real forwardError(const Real forward) const;

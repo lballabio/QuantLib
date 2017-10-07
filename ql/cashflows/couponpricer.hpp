@@ -163,6 +163,7 @@ namespace QuantLib {
     public:
         virtual Real meanReversion() const = 0;
         virtual void setMeanReversion(const Handle<Quote>&) = 0;
+        virtual ~MeanRevertingPricer() {}
     };
 
     void setCouponPricer(const Leg& leg,
@@ -171,6 +172,25 @@ namespace QuantLib {
     void setCouponPricers(
             const Leg& leg,
             const std::vector<boost::shared_ptr<FloatingRateCouponPricer> >&);
+
+    /*! set the first matching pricer (if any) to each coupon of the leg */
+    void setCouponPricers(
+            const Leg& leg,
+            const boost::shared_ptr<FloatingRateCouponPricer>&,
+            const boost::shared_ptr<FloatingRateCouponPricer>&);
+
+    void setCouponPricers(
+            const Leg& leg,
+            const boost::shared_ptr<FloatingRateCouponPricer>&,
+            const boost::shared_ptr<FloatingRateCouponPricer>&,
+            const boost::shared_ptr<FloatingRateCouponPricer>&);
+
+    void setCouponPricers(
+            const Leg& leg,
+            const boost::shared_ptr<FloatingRateCouponPricer>&,
+            const boost::shared_ptr<FloatingRateCouponPricer>&,
+            const boost::shared_ptr<FloatingRateCouponPricer>&,
+            const boost::shared_ptr<FloatingRateCouponPricer>&);
 
     // inline
 

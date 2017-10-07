@@ -26,18 +26,18 @@
     results generated from the bootstrap fitting method.
 */
 
-#include <ql/quantlib.hpp>
-
+#include <ql/qldefines.hpp>
 #ifdef BOOST_MSVC
-/* Uncomment the following lines to unmask floating-point
-   exceptions. Warning: unpredictable results can arise...
-
-   See http://www.wilmott.com/messageview.cfm?catid=10&threadid=9481
-   Is there anyone with a definitive word about this?
-*/
-// #include <float.h>
-// namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
+#  include <ql/auto_link.hpp>
 #endif
+#include <ql/termstructures/yield/fittedbonddiscountcurve.hpp>
+#include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/yield/bondhelpers.hpp>
+#include <ql/termstructures/yield/nonlinearfittingmethods.hpp>
+#include <ql/pricingengines/bond/bondfunctions.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/simpledaycounter.hpp>
 
 #include <boost/timer.hpp>
 #include <iostream>
@@ -48,19 +48,6 @@
 
 using namespace std;
 using namespace QuantLib;
-
-#ifdef BOOST_MSVC
-#  ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
-#    include <ql/auto_link.hpp>
-#    define BOOST_LIB_NAME boost_system
-#    include <boost/config/auto_link.hpp>
-#    undef BOOST_LIB_NAME
-#    define BOOST_LIB_NAME boost_thread
-#    include <boost/config/auto_link.hpp>
-#    undef BOOST_LIB_NAME
-#  endif
-#endif
-
 
 #if defined(QL_ENABLE_SESSIONS)
 namespace QuantLib {

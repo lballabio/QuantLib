@@ -56,13 +56,11 @@ namespace QuantLib {
 
     const HaltonRsg::sample_type& HaltonRsg::nextSequence() const {
         ++sequenceCounter_;
-        unsigned long b, k;
-        double f, h;
         for (Size i=0; i<dimensionality_; ++i) {
-            h = 0.0;
-            b = PrimeNumbers::get(i);
-            f = 1.0;
-            k = sequenceCounter_+randomStart_[i];
+            double h = 0.0;
+            unsigned long b = PrimeNumbers::get(i);
+            double f = 1.0;
+            unsigned long k = sequenceCounter_+randomStart_[i];
             while (k) {
                 f /= b;
                 h += (k%b)*f;

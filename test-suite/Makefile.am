@@ -1,6 +1,7 @@
 
 QL_TESTS = \
 	quantlibtestsuite.cpp \
+	speedlevel.hpp \
 	americanoption.hpp americanoption.cpp \
 	amortizingbond.hpp amortizingbond.cpp \
 	array.hpp array.cpp \
@@ -73,6 +74,7 @@ QL_TESTS = \
 	interestrates.hpp interestrates.cpp \
 	interpolations.hpp interpolations.cpp \
 	jumpdiffusion.hpp jumpdiffusion.cpp \
+	lazyobject.hpp lazyobject.cpp \
 	libormarketmodel.hpp libormarketmodel.cpp \
 	libormarketmodelprocess.hpp libormarketmodelprocess.cpp \
 	linearleastsquaresregression.hpp linearleastsquaresregression.cpp \
@@ -91,6 +93,7 @@ QL_TESTS = \
 	mersennetwister.hpp mersennetwister.cpp \
 	money.hpp money.cpp \
 	noarbsabr.hpp noarbsabr.cpp \
+	normalclvmodel.hpp normalclvmodel.cpp \
 	nthtodefault.hpp nthtodefault.cpp \
 	numericaldifferentiation.hpp numericaldifferentiation.cpp \
 	observable.hpp observable.cpp \
@@ -117,6 +120,7 @@ QL_TESTS = \
 	shortratemodels.hpp shortratemodels.cpp \
 	solvers.hpp solvers.cpp \
 	spreadoption.hpp spreadoption.cpp \
+	squarerootclvmodel.hpp squarerootclvmodel.cpp \
 	stats.hpp stats.cpp \
 	swap.hpp swap.cpp \
 	swapforwardmappings.hpp swapforwardmappings.cpp \
@@ -171,7 +175,7 @@ dist-hook:
 
 if BOOST_UNIT_TEST_FOUND
 
-AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir} ${BOOST_UNIT_TEST_DEFINE}
+AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 noinst_LTLIBRARIES = libUnitMain.la
 libUnitMain_la_SOURCES = main.cpp

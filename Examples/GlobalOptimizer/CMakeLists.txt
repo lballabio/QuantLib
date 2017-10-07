@@ -1,0 +1,2 @@
+add_executable(GlobalOptimizer GlobalOptimizer.cpp)
+target_link_libraries(GlobalOptimizer QuantLib)

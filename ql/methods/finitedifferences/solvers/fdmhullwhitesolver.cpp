@@ -25,6 +25,7 @@
 #include <ql/methods/finitedifferences/solvers/fdmhullwhitesolver.hpp>
 #include <ql/methods/finitedifferences/operators/fdmhullwhiteop.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmsnapshotcondition.hpp>
+#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -41,10 +42,9 @@ namespace QuantLib {
 
     void FdmHullWhiteSolver::performCalculations() const {
         const boost::shared_ptr<FdmHullWhiteOp> op(
-            new FdmHullWhiteOp(solverDesc_.mesher, model_.currentLink(), 0));
+			boost::make_shared<FdmHullWhiteOp>(solverDesc_.mesher, model_.currentLink(), 0));
 
-        solver_ = boost::shared_ptr<Fdm1DimSolver>(
-            new Fdm1DimSolver(solverDesc_, schemeDesc_, op));
+        solver_ = boost::make_shared<Fdm1DimSolver>(solverDesc_, schemeDesc_, op);
     }
 
     Real FdmHullWhiteSolver::valueAt(Real r) const {

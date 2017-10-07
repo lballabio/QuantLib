@@ -28,6 +28,8 @@ class CashFlowsTest {
     static void testAccessViolation();
     static void testDefaultSettlementDate();
     static void testNullFixingDays();
+    static void testIrregularFirstCouponReferenceDatesAtEndOfMonth();
+    static void testIrregularLastCouponReferenceDatesAtEndOfMonth();
     static boost::unit_test_framework::test_suite* suite();
 };
 

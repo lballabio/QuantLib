@@ -42,8 +42,6 @@
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 
-using namespace boost::lambda;
-
 using std::exp;
 using std::pow;
 using std::log;
@@ -58,10 +56,6 @@ namespace QuantLib {
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
                          formula_(formula) {
-    }
-
-    Size HestonExpansionEngine::numberOfEvaluations() const {
-        return evaluations_;
     }
 
     void HestonExpansionEngine::calculate() const

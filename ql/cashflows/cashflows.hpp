@@ -42,6 +42,31 @@ namespace QuantLib {
       private:
         CashFlows();
         CashFlows(const CashFlows&);
+
+        class IrrFinder : public std::unary_function<Rate, Real> {
+          public:
+            IrrFinder(const Leg& leg,
+                      Real npv,
+                      const DayCounter& dayCounter,
+                      Compounding comp,
+                      Frequency freq,
+                      bool includeSettlementDateFlows,
+                      Date settlementDate,
+                      Date npvDate);
+
+            Real operator()(Rate y) const;
+            Real derivative(Rate y) const;
+          private:
+            void checkSign() const;
+
+            const Leg& leg_;
+            Real npv_;
+            DayCounter dayCounter_;
+            Compounding compounding_;
+            Frequency frequency_;
+            bool includeSettlementDateFlows_;
+            Date settlementDate_, npvDate_;
+        };
       public:
         //! \name Date functions
         //@{
@@ -246,6 +271,24 @@ namespace QuantLib {
                           Real accuracy = 1.0e-10,
                           Size maxIterations = 100,
                           Rate guess = 0.05);
+
+        template <typename Solver>
+        static Rate yield(Solver solver,
+                          const Leg& leg,
+                          Real npv,
+                          const DayCounter& dayCounter,
+                          Compounding compounding,
+                          Frequency frequency,
+                          bool includeSettlementDateFlows,
+                          Date settlementDate = Date(),
+                          Date npvDate = Date(),
+                          Real accuracy = 1.0e-10,
+                          Rate guess = 0.05) {
+            IrrFinder objFunction(leg, npv, dayCounter, compounding,
+                                  frequency, includeSettlementDateFlows,
+                                  settlementDate, npvDate);
+            return solver.solve(objFunction, accuracy, guess, guess/10.0);
+        }
 
         //! Cash-flow duration.
         /*! The simple duration of a string of cash flows is defined as

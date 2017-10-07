@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006, 2014 Ferdinando Ametrano
- Copyright (C) 2006 François du Vignaud
+ Copyright (C) 2006 FranÃ§ois du Vignaud
  Copyright (C) 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -94,16 +94,6 @@ namespace QuantLib {
                                  Volatility maxVol = 4.0,
                                  VolatilityType type = ShiftedLognormal,
                                  Real displacement = 0.0) const;
-        QL_DEPRECATED
-        Volatility impliedVolatility(
-                                 Real price,
-                                 const Handle<YieldTermStructure>& disc,
-                                 Volatility guess,
-                                 Real accuracy,
-                                 Natural maxEvaluations,
-                                 Volatility minVol,
-                                 Volatility maxVol,
-                                 Real displacement) const;
       private:
         Type type_;
         Leg floatingLeg_;

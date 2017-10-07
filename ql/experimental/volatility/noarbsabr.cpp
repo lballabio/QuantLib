@@ -100,7 +100,7 @@ NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
                     detail::NoArbSabrModel::forward_accuracy, start,
                     std::min(detail::NoArbSabrModel::forward_search_step, start / 2.0));
         forward_ = tmp * tmp + detail::NoArbSabrModel::strike_min;
-    } catch (QuantLib::Error e) {
+    } catch (Error&) {
         // fall back to unadjusted forward
         forward_ = externalForward_;
     }
@@ -324,16 +324,5 @@ Real D0Interpolator::d0(const Real phi) const {
 }
 
 } // namespace detail
-
-void NoArbSabrModel::checkAbsorptionMatrix() {
-    std::size_t seed = 0;
-    for (Size i = 0; i < 1209600; ++i)
-        boost::hash_combine(seed, detail::sabrabsprob[i]);
-    std::size_t expected =
-        sizeof(std::size_t) == 8 ?
-        8940976986331216656L :
-        1225169178L;
-    QL_REQUIRE(seed == expected, "absorption matrix is invalid");
-}
 
 } // namespace QuantLib

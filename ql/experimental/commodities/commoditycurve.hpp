@@ -30,6 +30,7 @@
 #include <ql/experimental/commodities/exchangecontract.hpp>
 #include <ql/currency.hpp>
 #include <ql/math/interpolations/forwardflatinterpolation.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 
 namespace QuantLib {
 
@@ -179,9 +180,8 @@ namespace QuantLib {
         ExchangeContracts::const_iterator ic =
             exchangeContracts->lower_bound(date);
         if (ic != exchangeContracts->end()) {
-            int i;
-            for (i = 0; i < nearbyOffset-1 && ic!=exchangeContracts->end(); i++)
-                ic++;
+            for (int i = 0; i < nearbyOffset-1 && ic!=exchangeContracts->end(); ++i)
+                ++ic;
             QL_REQUIRE(ic != exchangeContracts->end(),
                        "not enough nearby contracts available for curve ["
                        << name() << "] for date [" << date << "].");

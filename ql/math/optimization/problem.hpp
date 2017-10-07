@@ -2,8 +2,8 @@
 
 /*
  Copyright (C) 2007 Ferdinando Ametrano
- Copyright (C) 2007 François du Vignaud
- Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
+ Copyright (C) 2007 FranÃ§ois du Vignaud
+ Copyright (C) 2001, 2002, 2003 Nicolas Di CÃ©sarÃ©
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,11 +27,10 @@
 #define quantlib_optimization_problem_h
 
 #include <ql/math/optimization/method.hpp>
+#include <ql/math/optimization/constraint.hpp>
 #include <ql/math/optimization/costfunction.hpp>
 
 namespace QuantLib {
-
-    class Constraint;
 
     //! Constrained optimization problem
     /*! \warning The passed CostFunction and Constraint instances are
@@ -46,7 +45,9 @@ namespace QuantLib {
                 Constraint& constraint,
                 const Array& initialValue = Array())
         : costFunction_(costFunction), constraint_(constraint),
-          currentValue_(initialValue) {}
+          currentValue_(initialValue) {
+            QL_REQUIRE(!constraint.empty(), "empty constraint given");
+        }
 
         /*! \warning it does not reset the current minumum to any initial value
         */

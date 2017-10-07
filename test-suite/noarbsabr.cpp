@@ -72,16 +72,6 @@ void NoArbSabrTest::testAbsorptionMatrix() {
     checkD0(0.05,0.90,-0.75,0.8,2.0,17);
     checkD0(0.05,0.90,-0.75,0.8,30.0,42100); // lower right corner
 
-    // check the entire matrix against a hash value produced on the original
-    // quantlib file noarbsabrabsprobs.cpp to make sure that this has
-    // not been changed
-
-    try {
-        NoArbSabrModel::checkAbsorptionMatrix();
-    } catch(QuantLib::Error) {
-        BOOST_ERROR("failed to verify the hash value of the absorption matrix");
-    }
-
 }
 
 void NoArbSabrTest::testConsistencyWithHagan() {

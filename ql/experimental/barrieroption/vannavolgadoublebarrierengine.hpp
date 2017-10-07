@@ -34,7 +34,7 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/time/calendars/all.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 
 namespace QuantLib {
 
@@ -93,8 +93,8 @@ namespace QuantLib {
                const Real spotShift_delta = 0.0001 * spotFX_->value();
                const Real sigmaShift_vanna = 0.0001;
 
-               QL_REQUIRE(arguments_.barrierType==DoubleBarrier::KnockIn || 
-                          arguments_.barrierType==DoubleBarrier::KnockOut, 
+               QL_REQUIRE(arguments_.barrierType==DoubleBarrier::KnockIn ||
+                          arguments_.barrierType==DoubleBarrier::KnockOut,
                           "Only same type barrier supported");
 
                Handle<Quote> x0Quote(  //used for shift
@@ -151,7 +151,7 @@ namespace QuantLib {
                const boost::shared_ptr<StrikedTypePayoff> payoff =
                   boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
                Real strikeVol = interpolation(payoff->strike());
-               //vannila option price
+               //vanilla option price
                Real vanillaOption = blackFormula(payoff->optionType(), payoff->strike(),
                                             x0Quote->value()* foreignTS_->discount(T_)/ domesticTS_->discount(T_),
                                             strikeVol * sqrt(T_),
@@ -180,7 +180,7 @@ namespace QuantLib {
                        // in barrier price = vanilla - out barrier
                        boost::shared_ptr<StrikedTypePayoff> payoff
                            = boost::static_pointer_cast<StrikedTypePayoff> (arguments_.payoff);
-                       DoubleBarrierOption doubleBarrierOption(arguments_.barrierType,
+                       DoubleBarrierOption doubleBarrierOption(DoubleBarrier::KnockOut,
                                                    arguments_.barrier_lo,
                                                    arguments_.barrier_hi,
                                                    arguments_.rebate,
@@ -219,7 +219,7 @@ namespace QuantLib {
                                                     put25Vol * sqrt(T_),
                                                     domesticTS_->discount(T_));
 
-                        //Analytical Black Scholes formula
+                       //Analytical Black Scholes formula
                        NormalDistribution norm;
                        Real d1atm = (std::log(x0Quote->value()* foreignTS_->discount(T_)/ domesticTS_->discount(T_)/atmStrike) 
                                  + 0.5*std::pow(atmVolQuote->value(),2.0) * T_)/(atmVolQuote->value() * sqrt(T_));
@@ -346,7 +346,7 @@ namespace QuantLib {
                        }
                        else{
                            //capfloored by (0, vanilla)
-                           outPrice = std::max(0.0, std::min(vanillaOption , outPrice));
+                           outPrice = std::max(0.0, std::min(vanillaOption, outPrice));
                            inPrice = vanillaOption - outPrice;
                        }
 

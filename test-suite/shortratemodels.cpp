@@ -387,10 +387,10 @@ void ShortRateModelTest::testSwaps() {
                 Real error = std::fabs((expected-calculated)/expected);
                 if (error > tolerance) {
                     BOOST_ERROR("Failed to reproduce swap NPV:"
-                                << QL_FIXED << std::setprecision(9)
+                                << std::fixed << std::setprecision(9)
                                 << "\n    calculated: " << calculated
                                 << "\n    expected:   " << expected
-                                << QL_SCIENTIFIC
+                                << std::scientific
                                 << "\n    rel. error: " << error);
                 }
             }
@@ -421,19 +421,24 @@ void ShortRateModelTest::testFuturesConvexityBias() {
         BOOST_ERROR("Failed to reproduce convexity bias:"
                     << "\ncalculated: " << calculatedForward
                     << "\n  expected: " << expectedForward
-                    << QL_SCIENTIFIC
+                    << std::scientific
                     << "\n     error: " << error
                     << "\n tolerance: " << tolerance);
     }
 }
 
-test_suite* ShortRateModelTest::suite() {
+test_suite* ShortRateModelTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Short-rate model tests");
+
     suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testCachedHullWhite));
     suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testCachedHullWhiteFixedReversion));
     suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testCachedHullWhite2));
-    suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testSwaps));
     suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testFuturesConvexityBias));
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testSwaps));
+    }
+
     return suite;
 }
 

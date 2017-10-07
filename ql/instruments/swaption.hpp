@@ -97,16 +97,6 @@ namespace QuantLib {
                               Volatility maxVol = 4.0,
                               VolatilityType type = ShiftedLognormal,
                               Real displacement = 0.0) const;
-        QL_DEPRECATED
-        Volatility impliedVolatility(
-                              Real price,
-                              const Handle<YieldTermStructure>& discountCurve,
-                              Volatility guess,
-                              Real accuracy,
-                              Natural maxEvaluations,
-                              Volatility minVol,
-                              Volatility maxVol,
-                              Real displacement) const;
       private:
         // arguments
         boost::shared_ptr<VanillaSwap> swap_;

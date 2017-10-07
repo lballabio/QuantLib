@@ -1144,6 +1144,10 @@
 				>
 			</File>
 			<File
+				RelativePath="lazyobject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\libormarketmodel.cpp"
 				>
 			</File>
@@ -1213,6 +1217,10 @@
 			</File>
 			<File
 				RelativePath=".\noarbsabr.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\normalclvmodel.cpp"
 				>
 			</File>
 			<File
@@ -1317,6 +1325,10 @@
 			</File>
 			<File
 				RelativePath="spreadoption.cpp"
+				>
+			</File>
+			<File
+				RelativePath="squarerootclvmodel.cpp"
 				>
 			</File>
 			<File
@@ -1697,6 +1709,10 @@
 				>
 			</File>
 			<File
+				RelativePath="lazyobject.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\libormarketmodel.hpp"
 				>
 			</File>
@@ -1766,6 +1782,10 @@
 			</File>
 			<File
 				RelativePath=".\noarbsabr.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\normalclvmodel.hpp"
 				>
 			</File>
 			<File
@@ -1873,7 +1893,15 @@
 				>
 			</File>
 			<File
+				RelativePath="speedlevel.hpp"
+				>
+			</File>
+			<File
 				RelativePath="spreadoption.hpp"
+				>
+			</File>
+			<File
+				RelativePath="squarerootclvmodel.hpp"
 				>
 			</File>
 			<File
