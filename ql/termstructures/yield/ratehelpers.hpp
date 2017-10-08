@@ -35,6 +35,7 @@
 #include <ql/instruments/futures.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/daycounter.hpp>
+#include <ql/time/calendars/unitedstates.hpp>
 
 namespace QuantLib {
 
@@ -365,6 +366,17 @@ namespace QuantLib {
         sufficient to pass JointCalendar with UnitedStates included, as with
         regard the earliest date, this calendar is only used in case the spot 
         date of the two currencies is not a US business day.
+        The ON fx swaps can be achieved by setting fixingDays to 0 on using 
+        tenor of '1d'. Similar way should be applied for TN swaps, with fixingDays
+        set to 1. 
+        Handling ON and TN swaps for cross rates without USD is not trivial 
+        and should be treated with caution. If today is a US holiday, ON trade 
+        is not possible. If tomorrow is a US Holiday, the ON trade will be at least 
+        two business days long in the other countries and the TN trade will 
+        not exist. In such cases, if this helper is used for curve construction,
+        probably it is safer to set requireUSCalendar to false for the ON and TN
+        FxSwapRateHelpers and provide fwdPoints that will yield proper level 
+        of discount factors.
     */
     class FxSwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -393,7 +405,8 @@ namespace QuantLib {
         bool endOfMonth() const { return eom_; }
         bool isFxBaseCurrencyCollateralCurrency() const {
                                 return isFxBaseCurrencyCollateralCurrency_; }
-        bool requireUSCalendar() const { return usCal_; }
+        bool requireUSCalendar() const { return requireUSCalendar_; }
+        Calendar usIncludedCalendar() const { return usIncludedCalendar_; }
         //@}
         //! \name Visitability
         //@{
@@ -414,10 +427,9 @@ namespace QuantLib {
         Handle<YieldTermStructure> collHandle_;
         RelinkableHandle<YieldTermStructure> collRelinkableHandle_;
 
-        bool usCal_;
+        bool requireUSCalendar_;
+        Calendar usIncludedCalendar_;
     };
-
-
 
     // inline
 

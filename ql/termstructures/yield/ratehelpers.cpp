@@ -961,12 +961,12 @@ namespace QuantLib {
                                        bool endOfMonth,
                                        bool isFxBaseCurrencyCollateralCurrency,
                                        const Handle<YieldTermStructure>& coll,
-                                       bool requireUSCalendar)
+                                       const bool requireUSCalendar)
                                        : RelativeDateRateHelper(fwdPoint), spot_(spotFx), tenor_(tenor),
       fixingDays_(fixingDays), cal_(calendar), conv_(convention),
       eom_(endOfMonth),
       isFxBaseCurrencyCollateralCurrency_(isFxBaseCurrencyCollateralCurrency),
-      collHandle_(coll), usCal_(requireUSCalendar) {
+      collHandle_(coll), requireUSCalendar_(requireUSCalendar) {
         registerWith(spot_);
         registerWith(collHandle_);
         initializeDates();
@@ -976,22 +976,18 @@ namespace QuantLib {
         // if the evaluation date is not a business day
         // then move to the next business day
         Date refDate = cal_.adjust(evaluationDate_);
-        const Calendar usCalendar = UnitedStates();
-        const Calendar fullCalendar = JointCalendar(usCalendar, cal_);
-        // BusinessDayConvention follBusDayConv = Following;
-
-        // so far joint calendar provided to the class was used
-        // now if required, add the US calendar
+        usIncludedCalendar_ = JointCalendar(UnitedStates(UnitedStates::Settlement), 
+                                            cal_, 
+                                            JoinHolidays);
 
         earliestDate_ = cal_.advance(refDate, fixingDays_*Days);
 
-        if (usCal_ == true) {
-            if (usCalendar.isBusinessDay(earliestDate_) == false){
-                earliestDate_ = fullCalendar.adjust(earliestDate_);
-            }    
+        if (requireUSCalendar_ == true) {
+            // check if fx trade can be settled in US, if not, adjust it
+            earliestDate_ = usIncludedCalendar_.adjust(earliestDate_);    
         }
-        if (usCal_ == true) {
-            latestDate_ = fullCalendar.advance(earliestDate_, tenor_, conv_, eom_);
+        if (requireUSCalendar_ == true) {
+            latestDate_ = usIncludedCalendar_.advance(earliestDate_, tenor_, conv_, eom_);
         } else {
             latestDate_ = cal_.advance(earliestDate_, tenor_, conv_, eom_);
         }
