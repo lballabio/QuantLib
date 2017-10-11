@@ -389,7 +389,7 @@ namespace QuantLib {
                          bool endOfMonth,
                          bool isFxBaseCurrencyCollateralCurrency,
                          const Handle<YieldTermStructure>& collateralCurve,
-                         bool requireUSCalendar);
+                         bool requireUSCalendar = true);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
