@@ -209,8 +209,7 @@ EXTRA_DIST = \
 	README.txt \
 	testsuite_vc9.vcproj \
 	testsuite.vcxproj \
-	testsuite.vcxproj.filters \
-	testsuite.dev
+	testsuite.vcxproj.filters
 
 else
 
@@ -222,7 +221,6 @@ EXTRA_DIST = \
 	README.txt \
 	testsuite_vc9.vcproj \
 	testsuite.vcxproj \
-	testsuite.vcxproj.filters \
-	testsuite.dev
+	testsuite.vcxproj.filters
 
 endif
