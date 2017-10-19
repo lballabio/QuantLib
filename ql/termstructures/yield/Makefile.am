@@ -6,6 +6,7 @@ this_include_HEADERS = \
     all.hpp \
     bondhelpers.hpp \
     bootstraptraits.hpp \
+    compositediscountcurve.hpp \
     discountcurve.hpp \
     drifttermstructure.hpp \
     fittedbonddiscountcurve.hpp \
@@ -26,6 +27,7 @@ this_include_HEADERS = \
 
 cpp_files = \
     bondhelpers.cpp \
+    compositediscountcurve.cpp \
     fittedbonddiscountcurve.cpp \
     flatforward.cpp \
     forwardstructure.cpp \

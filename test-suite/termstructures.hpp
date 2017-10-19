@@ -30,6 +30,8 @@ class TermStructureTest {
     static void testReferenceChange();
     static void testImplied();
     static void testImpliedObs();
+    static void testComposite();
+    static void testCompositeObs();
     static void testFSpreaded();
     static void testFSpreadedObs();
     static void testZSpreaded();

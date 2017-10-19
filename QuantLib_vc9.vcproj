@@ -5378,6 +5378,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\yield\compositediscountcurve.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yield\compositediscountcurve.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\yield\discountcurve.hpp"
 					>
 				</File>
