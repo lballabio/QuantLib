@@ -118,6 +118,25 @@ namespace QuantLib {
             IborCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
                        index, gearing, spread, refPeriodStart, refPeriodEnd,
                        dayCounter, isInArrears)), cap, floor) {}
+        CappedFlooredIborCoupon(
+                  const Date& paymentDate,
+                  Real nominal,
+                  const Date& startDate,
+                  const Date& endDate,
+                  const Date& fixingDate,
+                  const boost::shared_ptr<IborIndex>& index,
+                  Real gearing = 1.0,
+                  Spread spread = 0.0,
+                  Rate cap = Null<Rate>(),
+                  Rate floor = Null<Rate>(),
+                  const Date& refPeriodStart = Date(),
+                  const Date& refPeriodEnd = Date(),
+                  const DayCounter& dayCounter = DayCounter(),
+                  bool isInArrears = false)
+        : CappedFlooredCoupon(boost::shared_ptr<FloatingRateCoupon>(new
+            IborCoupon(paymentDate, nominal, startDate, endDate, fixingDate,
+                       index, gearing, spread, refPeriodStart, refPeriodEnd,
+                       dayCounter)), cap, floor) {}
 
         virtual void accept(AcyclicVisitor& v) {
             Visitor<CappedFlooredIborCoupon>* v1 =
@@ -150,6 +169,24 @@ namespace QuantLib {
             CmsCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
                       index, gearing, spread, refPeriodStart, refPeriodEnd,
                       dayCounter, isInArrears)), cap, floor) {}
+        CappedFlooredCmsCoupon(
+                  const Date& paymentDate,
+                  Real nominal,
+                  const Date& startDate,
+                  const Date& endDate,
+                  const Date& fixingDate,
+                  const boost::shared_ptr<SwapIndex>& index,
+                  Real gearing = 1.0,
+                  Spread spread= 0.0,
+                  const Rate cap = Null<Rate>(),
+                  const Rate floor = Null<Rate>(),
+                  const Date& refPeriodStart = Date(),
+                  const Date& refPeriodEnd = Date(),
+                  const DayCounter& dayCounter = DayCounter())
+        : CappedFlooredCoupon(boost::shared_ptr<FloatingRateCoupon>(new
+            CmsCoupon(paymentDate, nominal, startDate, endDate, fixingDate,
+                      index, gearing, spread, refPeriodStart, refPeriodEnd,
+                      dayCounter)), cap, floor) {}
 
         virtual void accept(AcyclicVisitor& v) {
             Visitor<CappedFlooredCmsCoupon>* v1 =

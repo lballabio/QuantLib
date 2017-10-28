@@ -49,9 +49,29 @@ namespace QuantLib {
                          refPeriodStart, refPeriodEnd,
                          dayCounter, isInArrears),
       iborIndex_(iborIndex) {
+        init();
+    }
 
-        fixingDate_ = fixingDate();
+    IborCoupon::IborCoupon(const Date& paymentDate,
+                           Real nominal,
+                           const Date& startDate,
+                           const Date& endDate,
+                           const Date& fixingDate,
+                           const shared_ptr<IborIndex>& iborIndex,
+                           Real gearing,
+                           Spread spread,
+                           const Date& refPeriodStart,
+                           const Date& refPeriodEnd,
+                           const DayCounter& dayCounter)
+    : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
+                         fixingDate, iborIndex, gearing, spread,
+                         refPeriodStart, refPeriodEnd,
+                         dayCounter),
+      iborIndex_(iborIndex) {
+        init();
+    }
 
+    void IborCoupon::init() {
         const Calendar& fixingCalendar = index_->fixingCalendar();
         Natural indexFixingDays = index_->fixingDays();
 
@@ -65,7 +85,7 @@ namespace QuantLib {
             fixingEndDate_ = index_->maturityDate(fixingValueDate_);
         else { // par coupon approximation
             Date nextFixingDate = fixingCalendar.advance(
-                accrualEndDate_, -static_cast<Integer>(fixingDays_), Days);
+                accrualEndDate_, -static_cast<Integer>(fixingDays()), Days);
             fixingEndDate_ = fixingCalendar.advance(
                 nextFixingDate, indexFixingDays, Days);
         }

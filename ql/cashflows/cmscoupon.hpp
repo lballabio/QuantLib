@@ -50,6 +50,18 @@ namespace QuantLib {
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
                   bool isInArrears = false);
+        CmsCoupon(const Date& paymentDate,
+                  Real nominal,
+                  const Date& startDate,
+                  const Date& endDate,
+                  const Date& fixingDate,
+                  const boost::shared_ptr<SwapIndex>& index,
+                  Real gearing = 1.0,
+                  Spread spread = 0.0,
+                  const Date& refPeriodStart = Date(),
+                  const Date& refPeriodEnd = Date(),
+                  const DayCounter& dayCounter = DayCounter(),
+                  bool isInArrears = false);
         //! \name Inspectors
         //@{
         const boost::shared_ptr<SwapIndex>& swapIndex() const {

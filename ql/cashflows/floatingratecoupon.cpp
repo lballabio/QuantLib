@@ -49,7 +49,42 @@ namespace QuantLib {
       gearing_(gearing), spread_(spread),
       isInArrears_(isInArrears)
     {
-        QL_REQUIRE(gearing_!=0, "Null gearing not allowed");
+        init();
+        // if isInArrears_ fix at the end of period
+        Date refDate = isInArrears_ ? accrualEndDate_ : accrualStartDate_;
+        fixingDate_ = index_->fixingCalendar().advance(
+            refDate, -static_cast<Integer>(fixingDays_), Days, Preceding);
+    }
+
+    FloatingRateCoupon::FloatingRateCoupon(const Date& paymentDate,
+                           Real nominal,
+                           const Date& startDate,
+                           const Date& endDate,
+                           const Date& fixingDate,
+                           const boost::shared_ptr<InterestRateIndex>& index,
+                           Real gearing,
+                           Spread spread,
+                           const Date& refPeriodStart,
+                           const Date& refPeriodEnd,
+                           const DayCounter& dayCounter)
+    : Coupon(paymentDate, nominal, startDate, endDate, refPeriodStart, refPeriodEnd),
+      index_(index), dayCounter_(dayCounter), fixingDays_(Null<Size>()),
+      fixingDate_(fixingDate), gearing_(gearing), spread_(spread)
+    {
+        QL_REQUIRE(fixingDate <= paymentDate,
+                   "FloatingRateCoupon::FloatingRateCoupon(): fixing date ("
+                       << fixingDate << ") can not be after payment date ("
+                       << paymentDate << ")");
+        init();
+        // we might just throw if asked whether the coupon is fixed
+        // in arrears but since computations like the in arrears adjustment
+        // relies on this flag we prefer to give a "reasonable" answer
+        isInArrears_ = index_->fixingCalendar().businessDaysBetween(
+                           fixingDate_, accrualEndDate_) < 5;
+    }
+
+    void FloatingRateCoupon::init() {
+        QL_REQUIRE(!close_enough(gearing_, 0.0), "Null gearing not allowed");
 
         if (dayCounter_.empty())
             dayCounter_ = index_->dayCounter();
@@ -80,11 +115,15 @@ namespace QuantLib {
         }
     }
 
+    Natural FloatingRateCoupon::fixingDays() const {
+        QL_REQUIRE(
+            fixingDays_ != Null<Size>(),
+            "FloatingRateCoupon::fixingDays(): fixing days not provided");
+        return fixingDays_;
+    }
+
     Date FloatingRateCoupon::fixingDate() const {
-        // if isInArrears_ fix at the end of period
-        Date refDate = isInArrears_ ? accrualEndDate_ : accrualStartDate_;
-        return index_->fixingCalendar().advance(refDate,
-            -static_cast<Integer>(fixingDays_), Days, Preceding);
+        return fixingDate_;
     }
 
     Rate FloatingRateCoupon::rate() const {

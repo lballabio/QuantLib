@@ -56,6 +56,17 @@ namespace QuantLib {
                            const Date& refPeriodEnd = Date(),
                            const DayCounter& dayCounter = DayCounter(),
                            bool isInArrears = false);
+        FloatingRateCoupon(const Date& paymentDate,
+                           Real nominal,
+                           const Date& startDate,
+                           const Date& endDate,
+                           const Date& fixingDate,
+                           const boost::shared_ptr<InterestRateIndex>& index,
+                           Real gearing = 1.0,
+                           Spread spread = 0.0,
+                           const Date& refPeriodStart = Date(),
+                           const Date& refPeriodEnd = Date(),
+                           const DayCounter& dayCounter = DayCounter());
 
         //! \name CashFlow interface
         //@{
@@ -75,7 +86,7 @@ namespace QuantLib {
         //! floating index
         const boost::shared_ptr<InterestRateIndex>& index() const;
         //! fixing days
-        Natural fixingDays() const { return fixingDays_; }
+        Natural fixingDays() const;
         //! fixing date
         virtual Date fixingDate() const;
         //! index gearing, i.e. multiplicative coefficient for the index
@@ -110,10 +121,13 @@ namespace QuantLib {
         boost::shared_ptr<InterestRateIndex> index_;
         DayCounter dayCounter_;
         Natural fixingDays_;
+        Date fixingDate_;
         Real gearing_;
         Spread spread_;
         bool isInArrears_;
         boost::shared_ptr<FloatingRateCouponPricer> pricer_;
+    private:
+        void init();
     };
 
     // inline definitions

@@ -51,6 +51,17 @@ namespace QuantLib {
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
                   bool isInArrears = false);
+        CmsSpreadCoupon(const Date& paymentDate,
+                  Real nominal,
+                  const Date& startDate,
+                  const Date& endDate,
+                  const Date& fixingDate,
+                  const boost::shared_ptr<SwapSpreadIndex>& index,
+                  Real gearing = 1.0,
+                  Spread spread = 0.0,
+                  const Date& refPeriodStart = Date(),
+                  const Date& refPeriodEnd = Date(),
+                  const DayCounter& dayCounter = DayCounter());
         //! \name Inspectors
         //@{
         const boost::shared_ptr<SwapSpreadIndex>& swapSpreadIndex() const {
@@ -86,6 +97,24 @@ namespace QuantLib {
             CmsSpreadCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
                       index, gearing, spread, refPeriodStart, refPeriodEnd,
                       dayCounter, isInArrears)), cap, floor) {}
+        CappedFlooredCmsSpreadCoupon(
+                  const Date& paymentDate,
+                  Real nominal,
+                  const Date& startDate,
+                  const Date& endDate,
+                  const Date& fixingDate,
+                  const boost::shared_ptr<SwapSpreadIndex>& index,
+                  Real gearing = 1.0,
+                  Spread spread= 0.0,
+                  const Rate cap = Null<Rate>(),
+                  const Rate floor = Null<Rate>(),
+                  const Date& refPeriodStart = Date(),
+                  const Date& refPeriodEnd = Date(),
+                  const DayCounter& dayCounter = DayCounter())
+        : CappedFlooredCoupon(boost::shared_ptr<FloatingRateCoupon>(new
+            CmsSpreadCoupon(paymentDate, nominal, startDate, endDate, fixingDate,
+                      index, gearing, spread, refPeriodStart, refPeriodEnd,
+                      dayCounter)), cap, floor) {}
 
         virtual void accept(AcyclicVisitor& v) {
             Visitor<CappedFlooredCmsSpreadCoupon>* v1 =
