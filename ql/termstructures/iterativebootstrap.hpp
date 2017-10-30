@@ -226,11 +226,16 @@ namespace QuantLib {
                     else
                         firstSolver_.solve(*errors_[i], accuracy,guess,min,max);
                 } catch (std::exception &e) {
-                    // the previous curve state could have been a bad guess
-                    // let's restart without using it
                     if (validCurve_) {
-                        validCurve_ = validData = false;
-                        continue;
+                        // the previous curve state might have been a
+                        // bad guess, so we retry without using it.
+                        // This would be tricky to do here (we're
+                        // inside multiple nested for loops, we need
+                        // to re-initialize...), so we invalidate the
+                        // curve, make a recursive call and then exit.
+                        validCurve_ = initialized_ = false;
+                        calculate();
+                        return;
                     }
                     QL_FAIL(io::ordinal(iteration+1) << " iteration: failed "
                             "at " << io::ordinal(i) << " alive instrument, "
