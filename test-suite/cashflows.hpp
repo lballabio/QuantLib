@@ -30,6 +30,7 @@ class CashFlowsTest {
     static void testNullFixingDays();
     static void testIrregularFirstCouponReferenceDatesAtEndOfMonth();
     static void testIrregularLastCouponReferenceDatesAtEndOfMonth();
+    static void testFreeFixingDates();
     static boost::unit_test_framework::test_suite* suite();
 };
 

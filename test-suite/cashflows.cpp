@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2009, 2012 StatPro Italia srl
+ Copyright (C) 2017 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,7 +31,10 @@
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
 #include <ql/settings.hpp>
+
+#include <boost/make_shared.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -310,6 +314,81 @@ void CashFlowsTest::testIrregularLastCouponReferenceDatesAtEndOfMonth() {
                             "got " << lastCoupon->referencePeriodEnd());
 }
 
+void CashFlowsTest::testFreeFixingDates() {
+    BOOST_TEST_MESSAGE("Testing Ibor coupons with free fixing date...");
+
+    // preparations
+    SavedSettings backup;
+    Date today(15, October, 2017);
+    Settings::instance().evaluationDate() = today;
+    Handle<YieldTermStructure> curve(flatRate(today, 0.02, Actual365Fixed()));
+    Handle<OptionletVolatilityStructure> vol(
+        boost::make_shared<ConstantOptionletVolatility>(
+            0, TARGET(), ModifiedFollowing, 0.20, Actual365Fixed()));
+    boost::shared_ptr<IborIndex> index(new Euribor(3 * Months, curve));
+    boost::shared_ptr<IborCouponPricer> pricer(new BlackIborCouponPricer(vol));
+    boost::shared_ptr<IborCouponPricer> pricer2(new BlackIborCouponPricer(
+        vol, BlackIborCouponPricer::BivariateLognormal));
+
+    // check free fixing date against standard deduction
+    boost::shared_ptr<IborCoupon> c1 = boost::make_shared<IborCoupon>(
+        Date(13, October, 2028), 100.0, Date(13, July, 2028),
+        Date(13, October, 2028), 2, index);
+    boost::shared_ptr<IborCoupon> c1f = boost::make_shared<IborCoupon>(
+        Date(13, October, 2028), 100.0, Date(13, July, 2028),
+        Date(13, October, 2028), c1->fixingDate(), index);
+    c1->setPricer(pricer);
+    c1f->setPricer(pricer);
+    BOOST_CHECK_CLOSE(c1->amount(), c1f->amount(), 1E-10);
+
+    // check forbidden free fixing date
+    BOOST_CHECK_THROW(boost::make_shared<IborCoupon>(
+                          Date(13, October, 2028), 100.0, Date(13, July, 2028),
+                          Date(13, October, 2028), Date(2, November, 2028),
+                          index),
+                      QuantLib::Error);
+
+    // check standard in arrears adjustment
+    boost::shared_ptr<FloatingRateCoupon> c2 =
+        boost::shared_ptr<FloatingRateCoupon>(
+            new IborCoupon(Date(13, October, 2028), 100.0, Date(13, July, 2028),
+                           Date(13, October, 2028), 2, index, 1.0, 0.0, Date(),
+                           Date(), DayCounter(), true));
+    boost::shared_ptr<FloatingRateCoupon> c2f = boost::make_shared<IborCoupon>(
+        Date(13, October, 2028), 100.0, Date(13, July, 2028),
+        Date(13, October, 2028), c2->fixingDate(), index);
+    c2->setPricer(pricer);
+    c2f->setPricer(pricer);
+    BOOST_CHECK_CLOSE(c2->convexityAdjustment(), c2f->convexityAdjustment(),
+                      1E-10);
+
+    // check qualitative behaviour of bivariate adjustment
+    // standard fixing => close to zero adjustment
+    boost::shared_ptr<FloatingRateCoupon> c3a = boost::make_shared<IborCoupon>(
+        Date(13, October, 2028), 100.0, Date(13, July, 2028),
+        Date(13, October, 2028), index->fixingDate(Date(13, July, 2028)),
+        index);
+    // early fixing (delayed payment) => negative adjustment
+    boost::shared_ptr<FloatingRateCoupon> c3b = boost::make_shared<IborCoupon>(
+        Date(13, October, 2028), 100.0, Date(13, July, 2028),
+        Date(13, October, 2028), index->fixingDate(Date(13, March, 2028)),
+        index);
+    // late fixing (early payment) => positive adjustment
+    boost::shared_ptr<FloatingRateCoupon> c3c = boost::make_shared<IborCoupon>(
+        Date(13, October, 2028), 100.0, Date(13, July, 2028),
+        Date(13, October, 2028), index->fixingDate(Date(13, September, 2028)),
+        index);
+    c3a->setPricer(pricer2);
+    c3b->setPricer(pricer2);
+    c3c->setPricer(pricer2);
+    BOOST_CHECK_SMALL(c3a->convexityAdjustment(), 1E-12);
+    // check for correct sign, but also for plausible absolute size
+    BOOST_CHECK(c3b->convexityAdjustment() < 0.0 &&
+                c3b->convexityAdjustment() > -10E-4);
+    BOOST_CHECK(c3c->convexityAdjustment() > 0.0 &&
+                c3c->convexityAdjustment() < 10E-4);
+}
+
 test_suite* CashFlowsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Cash flows tests");
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testSettings));
@@ -322,6 +401,7 @@ test_suite* CashFlowsTest::suite() {
                              &CashFlowsTest::testIrregularFirstCouponReferenceDatesAtEndOfMonth));
     suite->add(QUANTLIB_TEST_CASE(
                              &CashFlowsTest::testIrregularLastCouponReferenceDatesAtEndOfMonth));
+    suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testFreeFixingDates));
     return suite;
 }
 
