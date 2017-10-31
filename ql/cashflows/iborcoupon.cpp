@@ -81,7 +81,8 @@ namespace QuantLib {
         #ifdef QL_USE_INDEXED_COUPON
         fixingEndDate_ = index_->maturityDate(fixingValueDate_);
         #else
-        if (isInArrears_)
+        // with a free fixing date we always use the indexed coupon mode
+        if (isInArrears_ || fixingDays_ == Null<Size>())
             fixingEndDate_ = index_->maturityDate(fixingValueDate_);
         else { // par coupon approximation
             Date nextFixingDate = fixingCalendar.advance(
