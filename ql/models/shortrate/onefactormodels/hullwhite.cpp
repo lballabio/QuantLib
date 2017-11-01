@@ -40,14 +40,14 @@ namespace QuantLib {
         registerWith(termStructure);
     }
 
-    boost::shared_ptr<Lattice> HullWhite::tree(const TimeGrid& grid) const {
+    std::auto_ptr<Lattice> HullWhite::tree(const TimeGrid& grid) const {
 
         TermStructureFittingParameter phi(termStructure());
         boost::shared_ptr<ShortRateDynamics> numericDynamics(
                                              new Dynamics(phi, a(), sigma()));
         boost::shared_ptr<TrinomialTree> trinomial(
                          new TrinomialTree(numericDynamics->process(), grid));
-        boost::shared_ptr<ShortRateTree> numericTree(
+        std::auto_ptr<ShortRateTree> numericTree(
                          new ShortRateTree(trinomial, numericDynamics, grid));
 
         typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
@@ -69,7 +69,7 @@ namespace QuantLib {
             value = std::log(value/discountBond)/dt;
             impl->set(grid[i], value);
         }
-        return numericTree;
+        return std::auto_ptr<Lattice> (numericTree);
     }
 
     Real HullWhite::A(Time t, Time T) const {

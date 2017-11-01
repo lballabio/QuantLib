@@ -48,7 +48,7 @@ namespace QuantLib {
             QL_FAIL("no defined process for Black-Karasinski");
         }
 
-        boost::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
+        std::auto_ptr<Lattice> tree(const TimeGrid& grid) const;
 
       private:
         class Dynamics;

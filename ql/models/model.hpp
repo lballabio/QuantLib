@@ -26,6 +26,8 @@
 #ifndef quantlib_interest_rate_model_hpp
 #define quantlib_interest_rate_model_hpp
 
+#include <memory>
+
 #include <ql/option.hpp>
 #include <ql/methods/lattices/lattice.hpp>
 #include <ql/models/parameter.hpp>
@@ -142,7 +144,7 @@ namespace QuantLib {
     class ShortRateModel : public CalibratedModel {
       public:
         ShortRateModel(Size nArguments);
-        virtual boost::shared_ptr<Lattice> tree(const TimeGrid&) const = 0;
+        virtual std::auto_ptr<Lattice> tree(const TimeGrid&) const = 0;
     };
 
 

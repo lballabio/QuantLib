@@ -92,11 +92,11 @@ namespace QuantLib {
     OneFactorModel::OneFactorModel(Size nArguments)
     : ShortRateModel(nArguments) {}
 
-    boost::shared_ptr<Lattice>
+    std::auto_ptr<Lattice>
     OneFactorModel::tree(const TimeGrid& grid) const {
         boost::shared_ptr<TrinomialTree> trinomial(
                               new TrinomialTree(dynamics()->process(), grid));
-        return boost::shared_ptr<Lattice>(
+        return std::auto_ptr<Lattice>(
                               new ShortRateTree(trinomial, dynamics(), grid));
     }
 
