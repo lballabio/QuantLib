@@ -1,2 +1,2 @@
 add_executable(MultidimIntegral MultidimIntegral.cpp)
-target_link_libraries(MultidimIntegral QuantLib)
+target_link_libraries(MultidimIntegral ${QL_OUTPUT_NAME_SHARED})

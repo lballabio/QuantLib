@@ -65,7 +65,7 @@
 #  endif
 #else
 #  if defined(_DEBUG)
-#    define QL_LIB_RT_OPT "-sgd"
+#    define QL_LIB_RT_OPT "-s-gd"
 #  else
 #    define QL_LIB_RT_OPT "-s"
 #  endif

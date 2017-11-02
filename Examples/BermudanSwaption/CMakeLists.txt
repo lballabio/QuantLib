@@ -1,2 +1,2 @@
 add_executable(BermudanSwaption BermudanSwaption.cpp)
-target_link_libraries(BermudanSwaption QuantLib)
+target_link_libraries(BermudanSwaption ${QL_OUTPUT_NAME_SHARED})
