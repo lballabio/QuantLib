@@ -1,2 +1,2 @@
 add_executable(Gaussian1dModels Gaussian1dModels.cpp)
-target_link_libraries(Gaussian1dModels ${QL_OUTPUT_NAME_SHARED})
+target_link_libraries(Gaussian1dModels ${QL_LINK_LIBRARY})

@@ -1,2 +1,2 @@
 add_executable(CallableBonds CallableBonds.cpp)
-target_link_libraries(CallableBonds ${QL_OUTPUT_NAME_SHARED})
+target_link_libraries(CallableBonds ${QL_LINK_LIBRARY})

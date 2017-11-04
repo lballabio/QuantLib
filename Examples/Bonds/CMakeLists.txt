@@ -1,2 +1,2 @@
 add_executable(Bonds Bonds.cpp)
-target_link_libraries(Bonds ${QL_OUTPUT_NAME_SHARED})
+target_link_libraries(Bonds ${QL_LINK_LIBRARY})
