@@ -14,12 +14,16 @@ endif (USE_BOOST_DYNAMIC_LIBRARIES)
 
 set(Boost_USE_STATIC_LIBS   ON)
 find_package (Boost COMPONENTS unit_test_framework REQUIRED)
-include_directories(${Boost_INCLUDE_DIRS})
+
 set (TEST quantlib-test-suite)
-set (BENCHMARK quantlib-benchmark)
 add_executable (${TEST} ${TEST_SUITE_FILES})
 target_link_libraries (${TEST} ${QL_LINK_LIBRARY} ${Boost_LIBRARIES})
+set_property(TARGET ${TEST} PROPERTY PROJECT_LABEL "testsuite")
+
+set (BENCHMARK quantlib-benchmark)
 add_executable (${BENCHMARK} ${BENCHMARK_FILES})
 target_link_libraries (${BENCHMARK} ${QL_LINK_LIBRARY} ${Boost_LIBRARIES})
+set_property(TARGET ${BENCHMARK} PROPERTY PROJECT_LABEL "benchmark")
+
 enable_testing ()
 add_test (${TEST} ${TEST})
