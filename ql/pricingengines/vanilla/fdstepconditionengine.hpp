@@ -131,6 +131,12 @@ namespace QuantLib {
             - controlPrices_.secondDerivativeAtCenter()
             + black.gamma(spot);
         results->additionalResults["priceCurve"] = prices_;
+        if (model.prevDt() > 0.0) {
+            SampledCurve thetaCurve = prices_;
+            thetaCurve.values() = 
+                (prices_.values() - model.prevValue()[0]) / model.prevDt();
+            results->additionalResults["thetaCurve"] = thetaCurve;
+        }
     }
 
 }

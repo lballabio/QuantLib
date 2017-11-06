@@ -45,7 +45,8 @@ namespace QuantLib {
                               const bc_set& bcs,
                               const std::vector<Time>& stoppingTimes =
                                                           std::vector<Time>())
-        : evolver_(L,bcs), stoppingTimes_(stoppingTimes) {
+            : evolver_(L,bcs), stoppingTimes_(stoppingTimes),
+              last_dt_(0.0) {
             std::sort(stoppingTimes_.begin(), stoppingTimes_.end());
             std::vector<Time>::iterator last =
                 std::unique(stoppingTimes_.begin(), stoppingTimes_.end());
@@ -54,7 +55,8 @@ namespace QuantLib {
         FiniteDifferenceModel(const Evolver& evolver,
                               const std::vector<Time>& stoppingTimes =
                                                           std::vector<Time>())
-        : evolver_(evolver), stoppingTimes_(stoppingTimes) {
+            : evolver_(evolver), stoppingTimes_(stoppingTimes),
+              last_dt_(0.0) {
             std::sort(stoppingTimes_.begin(), stoppingTimes_.end());
             std::vector<Time>::iterator last =
                 std::unique(stoppingTimes_.begin(), stoppingTimes_.end());
@@ -85,7 +87,18 @@ namespace QuantLib {
                       const condition_type& condition) {
             rollbackImpl(a,from,to,steps,&condition);
         }
+
+        array_type prevValue() const {
+            return last_array_;
+        }
+        Time prevDt() const {
+            return last_dt_;
+        }
       private:
+        /*! Save to calculate theta */
+        array_type last_array_;
+        Time last_dt_;
+
         void rollbackImpl(array_type& a,
                           Time from,
                           Time to,
@@ -110,6 +123,9 @@ namespace QuantLib {
                     if (next <= stoppingTimes_[j] && stoppingTimes_[j] < now) {
                         // a stopping time was hit
                         hit = true;
+                        // save last array
+                        last_array_ = a;
+                        last_dt_ = now-stoppingTimes_[j];
 
                         // perform a small step to stoppingTimes_[j]...
                         evolver_.setStep(now-stoppingTimes_[j]);

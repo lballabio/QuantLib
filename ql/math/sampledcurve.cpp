@@ -30,6 +30,18 @@ namespace QuantLib {
             return (values_[jmid]+values_[jmid-1])/2.0;
     }
 
+    SampledCurve SampledCurve::derivative() const {
+        QL_REQUIRE(size()>=3,
+                   "the size of the curve must be at least 3");
+        SampledCurve retval(size()-2);
+        for (Size i=0; i < size()-2; i++) {
+            retval.gridValue(i) = grid_[i+1];
+            retval.value(i) = 
+                (values_[i+2] - values_[i]) / (grid_[i+2] - grid_[i]);
+        }
+        return retval;
+    }
+
     Real SampledCurve::firstDerivativeAtCenter() const {
         QL_REQUIRE(size()>=3,
                    "the size of the curve must be at least 3");

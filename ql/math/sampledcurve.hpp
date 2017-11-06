@@ -79,6 +79,7 @@ namespace QuantLib {
                   secondDerivativeAt(spot)
         */
         Real secondDerivativeAtCenter() const;
+        SampledCurve derivative() const;
         //@}
 
         //! \name utilities
