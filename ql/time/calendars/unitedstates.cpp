@@ -98,7 +98,7 @@ namespace QuantLib {
                                         new UnitedStates::GovernmentBondImpl);
         static boost::shared_ptr<Calendar::Impl> nercImpl(
                                         new UnitedStates::NercImpl);
-        static boost::shared_ptr<Calendar::Impl> FederalReserveImpl(
+        static boost::shared_ptr<Calendar::Impl> federalreserveImpl(
                                         new UnitedStates::FederalReserveImpl);
         switch (market) {
           case Settlement:
@@ -117,7 +117,7 @@ namespace QuantLib {
             impl_ = nercImpl;
             break;
           case FederalReserve:
-            impl_ = FederalReserveImpl;
+            impl_ = federalreserveImpl;
             break;
           default:
             QL_FAIL("unknown market");
@@ -256,8 +256,7 @@ namespace QuantLib {
     }
 
 
-    bool UnitedStates::GovernmentBondImpl::isBusinessDay(const Date& date)
-                                                                      const {
+    bool UnitedStates::GovernmentBondImpl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth(), dd = date.dayOfYear();
         Month m = date.month();
@@ -315,6 +314,7 @@ namespace QuantLib {
             return false;
         return true;
     }
+ 
  
     bool UnitedStates::FederalReserveImpl::isBusinessDay(const Date& date) const {
         // see https://www.frbservices.org/holidayschedules/ for details
