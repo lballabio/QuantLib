@@ -333,7 +333,7 @@ namespace QuantLib {
             // Memorial Day (last Monday in May)
             || isMemorialDay(d, m, y, w)
             // Independence Day (Monday if Sunday)
-            || ((d == 4 || (d == 5 && w == Monday)
+            || ((d == 4 || (d == 5 && w == Monday)) && m == July)
             // Labor Day (first Monday in September)
             || isLaborDay(d, m, y, w)
             // Columbus Day (second Monday in October)
