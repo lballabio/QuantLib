@@ -152,16 +152,12 @@ namespace QuantLib {
         };
         class NercImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const {
-                return "North American Energy Reliability Council";
-            }
+            std::string name() const { return "North American Energy Reliability Council"; }
             bool isBusinessDay(const Date&) const;
         };
         class FederalReserveImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const {
-                return "Federal Reserve Bankwire System";
-            }
+            std::string name() const { return "Federal Reserve Bankwire System"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
