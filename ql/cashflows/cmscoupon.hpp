@@ -61,7 +61,7 @@ namespace QuantLib {
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
-                  bool isInArrears = false);
+                  const boost::optional<bool> isInArrears = boost::none);
         //! \name Inspectors
         //@{
         const boost::shared_ptr<SwapIndex>& swapIndex() const {

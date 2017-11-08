@@ -39,7 +39,7 @@ namespace QuantLib {
                          underlying->nominal(),
                          underlying->accrualStartDate(),
                          underlying->accrualEndDate(),
-                         underlying->fixingDays(),
+                         underlying->fixingDate(),
                          underlying->index(),
                          underlying->gearing(),
                          underlying->spread(),

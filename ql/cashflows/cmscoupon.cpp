@@ -54,11 +54,11 @@ namespace QuantLib {
                          const Date& refPeriodStart,
                          const Date& refPeriodEnd,
                          const DayCounter& dayCounter,
-                         bool isInArrears)
+                         const boost::optional<bool> isInArrears)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          fixingDate, swapIndex, gearing, spread,
                          refPeriodStart, refPeriodEnd,
-                         dayCounter),
+                         dayCounter, isInArrears),
       swapIndex_(swapIndex) {}
 
     void CmsCoupon::accept(AcyclicVisitor& v) {

@@ -40,10 +40,11 @@ namespace QuantLib {
         const Date& endDate, const Date& fixingDate,
         const boost::shared_ptr<SwapSpreadIndex>& index, Real gearing,
         Spread spread, const Date& refPeriodStart, const Date& refPeriodEnd,
-        const DayCounter& dayCounter)
+        const DayCounter& dayCounter,
+        const boost::optional<bool> isInArrears)
         : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                              fixingDate, index, gearing, spread, refPeriodStart,
-                             refPeriodEnd, dayCounter),
+                             refPeriodEnd, dayCounter, isInArrears),
           index_(index) {}
 
     void CmsSpreadCoupon::accept(AcyclicVisitor &v) {

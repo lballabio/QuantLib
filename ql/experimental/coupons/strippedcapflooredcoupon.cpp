@@ -28,7 +28,7 @@ namespace QuantLib {
         : FloatingRateCoupon(
               underlying->date(), underlying->nominal(),
               underlying->accrualStartDate(), underlying->accrualEndDate(),
-              underlying->fixingDays(), underlying->index(),
+              underlying->fixingDate(), underlying->index(),
               underlying->gearing(), underlying->spread(),
               underlying->referencePeriodStart(),
               underlying->referencePeriodEnd(), underlying->dayCounter(),

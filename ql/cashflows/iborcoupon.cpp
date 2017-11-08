@@ -62,11 +62,12 @@ namespace QuantLib {
                            Spread spread,
                            const Date& refPeriodStart,
                            const Date& refPeriodEnd,
-                           const DayCounter& dayCounter)
+                           const DayCounter& dayCounter,
+                           const boost::optional<bool> isInArrears)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          fixingDate, iborIndex, gearing, spread,
                          refPeriodStart, refPeriodEnd,
-                         dayCounter),
+                         dayCounter, isInArrears),
       iborIndex_(iborIndex) {
         init();
     }

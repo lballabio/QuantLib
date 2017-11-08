@@ -60,7 +60,8 @@ namespace QuantLib {
                    Spread spread = 0.0,
                    const Date& refPeriodStart = Date(),
                    const Date& refPeriodEnd = Date(),
-                   const DayCounter& dayCounter = DayCounter());
+                   const DayCounter& dayCounter = DayCounter(),
+                   const boost::optional<bool> isInArrears = boost::none);
         //! \name Inspectors
         //@{
         const boost::shared_ptr<IborIndex>& iborIndex() const {
