@@ -42,6 +42,8 @@ namespace QuantLib {
             return out << "OldCDS";
           case DateGeneration::CDS:
             return out << "CDS";
+          case DateGeneration::CDS2015:
+            return out << "CDS2015";
           default:
             QL_FAIL("unknown DateGeneration::Rule (" << Integer(r) << ")");
         }

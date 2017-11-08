@@ -21,18 +21,17 @@
    engine and compares to Bloomberg's Hull White price/yield calculations.
 */
 
+#include <ql/qldefines.hpp>
 #ifdef BOOST_MSVC
-/* Uncomment the following lines to unmask floating-point
-   exceptions. Warning: unpredictable results can arise...
-
-   See http://www.wilmott.com/messageview.cfm?catid=10&threadid=9481
-   Is there anyone with a definitive word about this?
-*/
-// #include <float.h>
-// namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
+#  include <ql/auto_link.hpp>
 #endif
+#include <ql/experimental/callablebonds/callablebond.hpp>
+#include <ql/experimental/callablebonds/treecallablebondengine.hpp>
+#include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/time/calendars/unitedstates.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
 
-#include <ql/quantlib.hpp>
 #include <vector>
 #include <cmath>
 #include <iomanip>

@@ -100,7 +100,7 @@ NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
                     detail::NoArbSabrModel::forward_accuracy, start,
                     std::min(detail::NoArbSabrModel::forward_search_step, start / 2.0));
         forward_ = tmp * tmp + detail::NoArbSabrModel::strike_min;
-    } catch (QuantLib::Error e) {
+    } catch (Error&) {
         // fall back to unadjusted forward
         forward_ = externalForward_;
     }
@@ -324,11 +324,5 @@ Real D0Interpolator::d0(const Real phi) const {
 }
 
 } // namespace detail
-
-void NoArbSabrModel::checkAbsorptionMatrix() {
-    // The check was dependent on the Boost version and was removed.
-    // The method itself is deprecated and will be removed in the
-    // next QuantLib version.
-}
 
 } // namespace QuantLib

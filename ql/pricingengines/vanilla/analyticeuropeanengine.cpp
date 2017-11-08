@@ -25,12 +25,27 @@
 namespace QuantLib {
 
     AnalyticEuropeanEngine::AnalyticEuropeanEngine(
-              const boost::shared_ptr<GeneralizedBlackScholesProcess>&process)
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
     : process_(process) {
         registerWith(process_);
     }
 
+    AnalyticEuropeanEngine::AnalyticEuropeanEngine(
+             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const Handle<YieldTermStructure>& discountCurve)
+    : process_(process), discountCurve_(discountCurve) {
+        registerWith(process_);
+        registerWith(discountCurve_);
+    }
+
     void AnalyticEuropeanEngine::calculate() const {
+
+        // if the discount curve is not specified, we default to the
+        // risk free rate curve embedded within the GBM process
+        boost::shared_ptr<YieldTermStructure> discountPtr = 
+            discountCurve_.empty() ? 
+            process_->riskFreeRate().currentLink() :
+            discountCurve_.currentLink();
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European option");
@@ -46,14 +61,14 @@ namespace QuantLib {
         DiscountFactor dividendDiscount =
             process_->dividendYield()->discount(
                                              arguments_.exercise->lastDate());
-        DiscountFactor riskFreeDiscount =
+        DiscountFactor df = discountPtr->discount(arguments_.exercise->lastDate());
+        DiscountFactor riskFreeDiscountForFwdEstimation =
             process_->riskFreeRate()->discount(arguments_.exercise->lastDate());
         Real spot = process_->stateVariable()->value();
         QL_REQUIRE(spot > 0.0, "negative or null underlying given");
-        Real forwardPrice = spot * dividendDiscount / riskFreeDiscount;
+        Real forwardPrice = spot * dividendDiscount / riskFreeDiscountForFwdEstimation;
 
-        BlackCalculator black(payoff, forwardPrice, std::sqrt(variance),
-                              riskFreeDiscount);
+        BlackCalculator black(payoff, forwardPrice, std::sqrt(variance),df);
 
 
         results_.value = black.value();
@@ -62,7 +77,7 @@ namespace QuantLib {
         results_.elasticity = black.elasticity(spot);
         results_.gamma = black.gamma(spot);
 
-        DayCounter rfdc  = process_->riskFreeRate()->dayCounter();
+        DayCounter rfdc  = discountPtr->dayCounter();
         DayCounter divdc = process_->dividendYield()->dayCounter();
         DayCounter voldc = process_->blackVolatility()->dayCounter();
         Time t = rfdc.yearFraction(process_->riskFreeRate()->referenceDate(),

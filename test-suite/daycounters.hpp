@@ -28,6 +28,7 @@
 class DayCounterTest {
    public:
     static void testActualActual();
+    static void testActualActualWithSchedule();
     static void testSimple();
     static void testOne();
     static void testBusiness252();

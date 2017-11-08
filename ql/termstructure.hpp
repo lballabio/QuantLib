@@ -25,7 +25,7 @@
 #define quantlib_term_structure_hpp
 
 #include <ql/time/calendar.hpp>
-#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/time/daycounter.hpp>
 #include <ql/settings.hpp>
 #include <ql/handle.hpp>
 #include <ql/math/interpolations/extrapolation.hpp>

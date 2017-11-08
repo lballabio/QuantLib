@@ -107,10 +107,10 @@ void BatesModelTest::testAnalyticVsBlack() {
     Real error = std::fabs(calculated - expected);
     if (error > tolerance) {
         BOOST_ERROR("failed to reproduce Black price with BatesEngine"
-                    << QL_FIXED
+                    << std::fixed
                     << "\n    calculated: " << calculated
                     << "\n    expected:   " << expected
-                    << QL_SCIENTIFIC
+                    << std::scientific
                     << "\n    error:      " << error);
     }
 
@@ -125,10 +125,10 @@ void BatesModelTest::testAnalyticVsBlack() {
     if (error > tolerance) {
         BOOST_ERROR("failed to reproduce Black price with " \
                     "BatesDetJumpEngine"
-                    << QL_FIXED
+                    << std::fixed
                     << "\n    calculated: " << calculated
                     << "\n    expected:   " << expected
-                    << QL_SCIENTIFIC
+                    << std::scientific
                     << "\n    error:      " << error);
     }
 
@@ -142,10 +142,10 @@ void BatesModelTest::testAnalyticVsBlack() {
     error = std::fabs(calculated - expected);
     if (error > tolerance) {
         BOOST_ERROR("failed to reproduce Black price with BatesDoubleExpEngine"
-                    << QL_FIXED
+                    << std::fixed
                     << "\n    calculated: " << calculated
                     << "\n    expected:   " << expected
-                    << QL_SCIENTIFIC
+                    << std::scientific
                     << "\n    error:      " << error);
     }
 
@@ -161,10 +161,10 @@ void BatesModelTest::testAnalyticVsBlack() {
     if (error > tolerance) {
         BOOST_ERROR("failed to reproduce Black price with " \
                     "BatesDoubleExpDetJumpEngine"
-                    << QL_FIXED
+                    << std::fixed
                     << "\n    calculated: " << calculated
                     << "\n    expected:   " << expected
-                    << QL_SCIENTIFIC
+                    << std::scientific
                     << "\n    error:      " << error);
     }
 }
@@ -250,7 +250,7 @@ void BatesModelTest::testAnalyticAndMcVsJumpDiffusion() {
         if (relError > tolerance) {
             BOOST_FAIL("failed to reproduce Merton76 price with semi "
                        "analytic BatesEngine"
-                       << QL_FIXED << std::setprecision(8)
+                       << std::fixed << std::setprecision(8)
                        << "\n    calculated: " << calculated
                        << "\n    expected:   " << expected
                        << "\n    rel. error: " << relError
@@ -261,7 +261,7 @@ void BatesModelTest::testAnalyticAndMcVsJumpDiffusion() {
         if (mcError > 3*mcTol) {
             BOOST_FAIL("failed to reproduce Merton76 price with Monte-Carlo "
                        "BatesEngine"
-                       << QL_FIXED << std::setprecision(8)
+                       << std::fixed << std::setprecision(8)
                        << "\n    calculated: " << mcCalculated
                        << "\n    expected:   " << expected
                        << "\n    error: "      << mcError
@@ -359,7 +359,8 @@ void BatesModelTest::testAnalyticVsMCPricing() {
         const Real mcError = std::fabs(calculated - expected);
         if (mcError > 3*mcTolerance) {
             BOOST_FAIL("failed to reproduce Monte-Carlo price for BatesEngine"
-                       << QL_FIXED << std::setprecision(8)
+                       << "\n    parameter:  " << hestonModels[i].name
+                       << std::fixed << std::setprecision(8)
                        << "\n    calculated: " << calculated
                        << "\n    expected:   " << expected
                        << "\n    error: "      << mcError
@@ -369,7 +370,8 @@ void BatesModelTest::testAnalyticVsMCPricing() {
         const Real fdError = std::fabs(fdCalculated - expected);
         if (fdError > fdTolerance) {
             BOOST_FAIL("failed to reproduce PIDE price for BatesEngine"
-                       << QL_FIXED << std::setprecision(8)
+                       << "\n    parameter:  " << hestonModels[i].name
+                       << std::fixed << std::setprecision(8)
                        << "\n    calculated: " << fdCalculated
                        << "\n    expected:   " << expected
                        << "\n    error: "      << fdError

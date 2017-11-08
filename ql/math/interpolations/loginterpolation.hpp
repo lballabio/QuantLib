@@ -162,6 +162,19 @@ namespace QuantLib {
                                 CubicInterpolation::SecondDerivative, 0.0) {}
     };
 
+    class HarmonicLogCubic : public LogCubicInterpolation {
+      public:
+        /*! \pre the \f$ x \f$ values must be sorted. */
+        template <class I1, class I2>
+        HarmonicLogCubic(const I1& xBegin,
+                         const I1& xEnd,
+                         const I2& yBegin)
+        : LogCubicInterpolation(xBegin, xEnd, yBegin,
+                                CubicInterpolation::Harmonic, false,
+                                CubicInterpolation::SecondDerivative, 0.0,
+                                CubicInterpolation::SecondDerivative, 0.0) {}
+    };
+
     class FritschButlandLogCubic : public LogCubicInterpolation {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */

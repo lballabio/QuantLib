@@ -45,19 +45,18 @@
     We examine the range of possibilities, computing the replication error.
 */
 
-// the only header you need to use QuantLib
-#include <ql/quantlib.hpp>
-
+#include <ql/qldefines.hpp>
 #ifdef BOOST_MSVC
-/* Uncomment the following lines to unmask floating-point
-   exceptions. Warning: unpredictable results can arise...
-
-   See http://www.wilmott.com/messageview.cfm?catid=10&threadid=9481
-   Is there anyone with a definitive word about this?
-*/
-// #include <float.h>
-// namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
+#  include <ql/auto_link.hpp>
 #endif
+#include <ql/methods/montecarlo/montecarlomodel.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/pricingengines/blackcalculator.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 
 #include <boost/timer.hpp>
 #include <iostream>

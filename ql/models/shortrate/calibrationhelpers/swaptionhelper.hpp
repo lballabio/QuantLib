@@ -80,57 +80,6 @@ namespace QuantLib {
                        const VolatilityType type = ShiftedLognormal,
                        const Real shift = 0.0);
 
-        /*! \deprecated
-            Use the constructor taking an explicit volatility type
-        */
-        QL_DEPRECATED
-        SwaptionHelper(const Period& maturity,
-                       const Period& length,
-                       const Handle<Quote>& volatility,
-                       const boost::shared_ptr<IborIndex>& index,
-                       const Period& fixedLegTenor,
-                       const DayCounter& fixedLegDayCounter,
-                       const DayCounter& floatingLegDayCounter,
-                       const Handle<YieldTermStructure>& termStructure,
-                       CalibrationHelper::CalibrationErrorType errorType,
-                       const Real strike,
-                       const Real nominal,
-                       const Real shift);
-
-        /*! \deprecated
-            Use the constructor taking an explicit volatility type
-        */
-        QL_DEPRECATED
-        SwaptionHelper(const Date& exerciseDate,
-                       const Period& length,
-                       const Handle<Quote>& volatility,
-                       const boost::shared_ptr<IborIndex>& index,
-                       const Period& fixedLegTenor,
-                       const DayCounter& fixedLegDayCounter,
-                       const DayCounter& floatingLegDayCounter,
-                       const Handle<YieldTermStructure>& termStructure,
-                       CalibrationHelper::CalibrationErrorType errorType,
-                       const Real strike,
-                       const Real nominal,
-                       const Real shift);
-
-        /*! \deprecated
-            Use the constructor taking an explicit volatility type
-        */
-        QL_DEPRECATED
-        SwaptionHelper(const Date& exerciseDate,
-                       const Date& endDate,
-                       const Handle<Quote>& volatility,
-                       const boost::shared_ptr<IborIndex>& index,
-                       const Period& fixedLegTenor,
-                       const DayCounter& fixedLegDayCounter,
-                       const DayCounter& floatingLegDayCounter,
-                       const Handle<YieldTermStructure>& termStructure,
-                       CalibrationHelper::CalibrationErrorType errorType,
-                       const Real strike,
-                       const Real nominal,
-                       const Real shift);
-
         virtual void addTimesTo(std::list<Time>& times) const;
         virtual Real modelValue() const;
         virtual Real blackPrice(Volatility volatility) const;

@@ -100,7 +100,8 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCEverestEngine {
       public:
-        MakeMCEverestEngine(const boost::shared_ptr<StochasticProcessArray>&);
+        explicit MakeMCEverestEngine(
+                            const boost::shared_ptr<StochasticProcessArray>&);
         // named parameters
         MakeMCEverestEngine& withSteps(Size steps);
         MakeMCEverestEngine& withStepsPerYear(Size steps);

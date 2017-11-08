@@ -46,6 +46,10 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
 
+#if BOOST_VERSION > 106300
+#include <boost/serialization/array_wrapper.hpp>
+#endif
+
 #include <boost/numeric/ublas/matrix_sparse.hpp>
 
 #if defined(QL_PATCH_MSVC)

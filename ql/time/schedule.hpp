@@ -74,6 +74,7 @@ namespace QuantLib {
         Date previousDate(const Date& refDate) const;
         Date nextDate(const Date& refDate) const;
         const std::vector<Date>& dates() const { return dates_; }
+        bool hasIsRegular() const;
         bool isRegular(Size i) const;
         const std::vector<bool>& isRegular() const;
         //@}
@@ -83,10 +84,14 @@ namespace QuantLib {
         const Calendar& calendar() const;
         const Date& startDate() const;
         const Date& endDate() const;
+        bool hasTenor() const;
         const Period& tenor() const;
         BusinessDayConvention businessDayConvention() const;
+        bool hasTerminationDateBusinessDayConvention() const;
         BusinessDayConvention terminationDateBusinessDayConvention() const;
+        bool hasRule() const;
         DateGeneration::Rule rule() const;
+        bool hasEndOfMonth() const;
         bool endOfMonth() const;
         //@}
         //! \name Iterators
@@ -176,8 +181,12 @@ namespace QuantLib {
 
     inline const Date &Schedule::endDate() const { return dates_.back(); }
 
+    inline bool Schedule::hasTenor() const {
+        return tenor_ != boost::none;
+    }
+
     inline const Period& Schedule::tenor() const {
-        QL_REQUIRE(tenor_ != boost::none,
+        QL_REQUIRE(hasTenor(),
                    "full interface (tenor) not available");
         return *tenor_;
     }
@@ -186,20 +195,33 @@ namespace QuantLib {
         return convention_;
     }
 
+    inline bool
+    Schedule::hasTerminationDateBusinessDayConvention() const {
+        return terminationDateConvention_ != boost::none;
+    }
+
     inline BusinessDayConvention
     Schedule::terminationDateBusinessDayConvention() const {
-        QL_REQUIRE(terminationDateConvention_ != boost::none,
+        QL_REQUIRE(hasTerminationDateBusinessDayConvention(),
                    "full interface (termination date bdc) not available");
         return *terminationDateConvention_;
     }
 
+    inline bool Schedule::hasRule() const {
+        return rule_ != boost::none;
+    }
+
     inline DateGeneration::Rule Schedule::rule() const {
-        QL_REQUIRE(rule_ != boost::none, "full interface (rule) not available");
+        QL_REQUIRE(hasRule(), "full interface (rule) not available");
         return *rule_;
     }
 
+    inline bool Schedule::hasEndOfMonth() const {
+        return endOfMonth_ != boost::none;
+    }
+
     inline bool Schedule::endOfMonth() const {
-        QL_REQUIRE(endOfMonth_ != boost::none,
+        QL_REQUIRE(hasEndOfMonth(),
                    "full interface (end of month) not available");
         return *endOfMonth_;
     }

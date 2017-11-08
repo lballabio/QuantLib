@@ -58,9 +58,6 @@
 // prevent auto-link of Boost libs such as serialization
 #define BOOST_ALL_NO_LIB
 
-// This holds for all supported versions
-#define QL_WORKING_BOOST_STREAMS
-
 #if (_MSC_VER == 1500)
 // warning management for VC++ 9
 #  ifndef _SCL_SECURE_NO_DEPRECATE

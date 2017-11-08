@@ -23,9 +23,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/math/solvers1d/newtonsafe.hpp>
 #include <ql/pricingengines/bond/bondfunctions.hpp>
-#include <ql/instruments/bond.hpp>
-#include <ql/cashflows/cashflows.hpp>
 
 using boost::shared_ptr;
 
@@ -286,7 +285,8 @@ namespace QuantLib {
         Real dirtyPrice = cleanPrice==Null<Real>() ? Null<Real>() :
                           cleanPrice + bond.accruedAmount(settlement);
         Real currentNotional = bond.notional(settlement);
-        Real npv = dirtyPrice/100.0 * currentNotional;
+        Real npv = dirtyPrice==Null<Real>() ? Null<Real>() :
+                                              dirtyPrice/100.0 * currentNotional;
 
         return CashFlows::atmRate(bond.cashflows(), discountCurve,
                                   false, settlement, settlement,
@@ -369,20 +369,11 @@ namespace QuantLib {
                               Real accuracy,
                               Size maxIterations,
                               Rate guess) {
-        if (settlement == Date())
-            settlement = bond.settlementDate();
-
-        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
-                   "non tradable at " << settlement <<
-                   " (maturity being " << bond.maturityDate() << ")");
-
-        Real dirtyPrice = cleanPrice + bond.accruedAmount(settlement);
-        dirtyPrice /= 100.0 / bond.notional(settlement);
-
-        return CashFlows::yield(bond.cashflows(), dirtyPrice,
-                                dayCounter, compounding, frequency,
-                                false, settlement, settlement,
-                                accuracy, maxIterations, guess);
+        NewtonSafe solver;
+        solver.setMaxEvaluations(maxIterations);
+        return yield<NewtonSafe>(solver, bond, cleanPrice, dayCounter,
+                                 compounding, frequency, settlement,
+                                 accuracy, guess);
     }
 
     Time BondFunctions::duration(const Bond& bond,

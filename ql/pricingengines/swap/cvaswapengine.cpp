@@ -124,7 +124,7 @@ namespace QuantLib {
     std::vector<Date>::const_iterator nextFD = 
       arguments_.fixedPayDates.begin();
     Date swapletStart = priceDate;
-    while(*nextFD < priceDate) nextFD++;
+    while (*nextFD < priceDate) ++nextFD;
 
     // Compute fair spread for strike value:
     // copy args into the non risky engine
@@ -202,7 +202,7 @@ namespace QuantLib {
 	      swapletStart, *nextFD);
 
       swapletStart = *nextFD;
-      nextFD++;
+      ++nextFD;
     }
   
     results_.value = baseSwapNPV - (1.-ctptyRecoveryRate_) * cumOptVal

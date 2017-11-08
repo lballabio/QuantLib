@@ -29,6 +29,7 @@
 #include <ql/math/interpolations/interpolation2d.hpp>
 #include <ql/quote.hpp>
 #include <ql/patterns/lazyobject.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <vector>
 
 namespace QuantLib {

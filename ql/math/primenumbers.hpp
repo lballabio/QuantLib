@@ -20,7 +20,7 @@
 // ===========================================================================
 // NOTE: The following copyright notice applies to the original code,
 //
-// Copyright (C) 2002 Peter Jäckel "Monte Carlo Methods in Finance".
+// Copyright (C) 2002 Peter JÃ¤ckel "Monte Carlo Methods in Finance".
 // All rights reserved.
 //
 // Permission to use, copy, modify, and distribute this software is freely
@@ -40,7 +40,7 @@
 namespace QuantLib {
 
     //! Prime numbers calculator
-    /*! Taken from "Monte Carlo Methods in Finance", by Peter Jäckel
+    /*! Taken from "Monte Carlo Methods in Finance", by Peter JÃ¤ckel
      */
     class PrimeNumbers {
       public:

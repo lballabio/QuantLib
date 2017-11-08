@@ -12,7 +12,6 @@ EquityOption_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     CMakeLists.txt \
-    EquityOption.dev \
     EquityOption_vc9.vcproj \
     EquityOption.vcxproj \
     EquityOption.vcxproj.filters \

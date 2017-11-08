@@ -30,7 +30,8 @@
 #include <ql/time/daycounters/business252.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/calendars/brazil.hpp>
-#include <ql/time/period.hpp>
+#include <ql/time/calendars/canada.hpp>
+#include <ql/time/schedule.hpp>
 
 #include <iomanip>
 
@@ -173,6 +174,86 @@ void DayCounterTest::testActualActual() {
     }
 }
 
+void DayCounterTest::testActualActualWithSchedule() {
+
+    BOOST_TEST_MESSAGE("Testing actual/actual day counter with schedule...");
+
+    // long first coupon
+    Schedule schedule =
+        MakeSchedule()
+        .from(Date(17, January, 2017))
+        .withFirstDate(Date(31, August, 2017))
+        .to(Date(28, February, 2026))
+        .withFrequency(Semiannual)
+        .withCalendar(Canada())
+        .withConvention(Unadjusted)
+        .backwards()
+        .endOfMonth();
+
+    Date issueDate = schedule.date(0);
+    Date firstCouponDate = schedule.date(1);
+
+    Date quasiCouponDate1 = Date(31, August, 2016);
+    Date quasiCouponDate2 = Date(28, February, 2017);
+
+    ActualActual dayCounter(ActualActual::ISMA, schedule);
+
+    // full coupon
+    Time T = dayCounter.yearFraction(issueDate,
+                                     firstCouponDate,
+                                     quasiCouponDate2,
+                                     firstCouponDate);
+    Time expected = 0.6160220994;
+
+    if (std::fabs(T-expected) > 1.0e-10) {
+        BOOST_FAIL("Failed to reproduce expected time:\n"
+                   << std::setprecision(10)
+                   << "    calculated: " << T << "\n"
+                   << "    expected:   " << expected);
+    }
+
+    // settlement date in the first quasi-period
+    Date settlementDate(29, January, 2017);
+
+    T = dayCounter.yearFraction(issueDate,
+                                settlementDate,
+                                quasiCouponDate2,
+                                firstCouponDate);
+    Time t1 = dayCounter.yearFraction(issueDate,
+                                      settlementDate,
+                                      quasiCouponDate1,
+                                      quasiCouponDate2);
+
+    if (std::fabs(T-t1) > 1.0e-10) {
+        BOOST_FAIL("Failed to reproduce expected time:\n"
+                   << std::setprecision(10)
+                   << "    calculated: " << T << "\n"
+                   << "    expected:   " << t1);
+    }
+
+    // settlement date in the second quasi-period
+    settlementDate = Date(29, July, 2017);
+
+    T = dayCounter.yearFraction(issueDate,
+                                settlementDate,
+                                quasiCouponDate2,
+                                firstCouponDate);
+    t1 = dayCounter.yearFraction(issueDate,
+                                 quasiCouponDate2,
+                                 quasiCouponDate1,
+                                 quasiCouponDate2);
+    Time t2 = dayCounter.yearFraction(quasiCouponDate2,
+                                      settlementDate,
+                                      quasiCouponDate2,
+                                      firstCouponDate);
+
+    if (std::fabs(T-(t1+t2)) > 1.0e-10) {
+        BOOST_FAIL("Failed to reproduce expected time:\n"
+                   << std::setprecision(10)
+                   << "    calculated: " << T << "\n"
+                   << "    expected:   " << t1+t2);
+    }
+}
 
 void DayCounterTest::testSimple() {
 
@@ -461,12 +542,16 @@ void DayCounterTest::testIntraday() {
 test_suite* DayCounterTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Day counter tests");
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActual));
+    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActualWithSchedule));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testSimple));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testOne));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testBusiness252));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testThirty360_BondBasis));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testThirty360_EurobondBasis));
+
+#ifdef QL_HIGH_RESOLUTION_DATE
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testIntraday));
+#endif
 
     return suite;
 }

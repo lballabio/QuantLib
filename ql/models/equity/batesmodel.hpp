@@ -42,7 +42,7 @@ namespace QuantLib {
     */
     class BatesModel : public HestonModel {
       public:
-        BatesModel(const boost::shared_ptr<BatesProcess> & process);
+        explicit BatesModel(const boost::shared_ptr<BatesProcess> & process);
 
         Real nu()     const { return arguments_[5](0.0); }
         Real delta()  const { return arguments_[6](0.0); }

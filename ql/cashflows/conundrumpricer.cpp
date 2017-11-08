@@ -60,6 +60,9 @@ namespace QuantLib {
     forwardValue_(forwardValue), expiryDate_(expiryDate), swapTenor_(swapTenor),
         volatilityStructure_(volatilityStructure),
         smile_(volatilityStructure_->smileSection(expiryDate_, swapTenor_)) {
+        QL_REQUIRE(volatilityStructure->volatilityType() == ShiftedLognormal &&
+                   close_enough(volatilityStructure->shift(expiryDate,swapTenor),0.0),
+                   "BlackVanillaOptionPricer: zero-shift lognormal volatility required");
         }
 
     Real BlackVanillaOptionPricer::operator()(Real strike,
@@ -233,7 +236,7 @@ namespace QuantLib {
 
         class Spy {
           public:
-            Spy(boost::function<Real (Real)> f) : f_(f) {}
+            explicit Spy(boost::function<Real (Real)> f) : f_(f) {}
             Real value(Real x){
                 abscissas.push_back(x);
                 Real value = f_(x);

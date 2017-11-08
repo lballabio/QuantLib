@@ -21,6 +21,7 @@
 #define quantlib_test_basket_option_hpp
 
 #include <boost/test/unit_test.hpp>
+#include "speedlevel.hpp"
 
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
@@ -32,7 +33,9 @@ class BasketOptionTest {
     static void testTavellaValues();
     static void testOneDAmericanValues(unsigned from, unsigned to);
     static void testOddSamples();
-    static boost::unit_test_framework::test_suite* suite();
+    static void testLocalVolatilitySpreadOption();
+    static void test2DPDEGreeks();
+    static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
 
 

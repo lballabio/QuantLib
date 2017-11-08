@@ -9,6 +9,7 @@
  Copyright (C) 2007 Chiara Fornarola
  Copyright (C) 2013 Gary Kennedy
  Copyright (C) 2015 Peter Caspers
+ Copyright (C) 2017 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,6 +26,7 @@
 */
 
 #include <ql/pricingengines/blackformula.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/math/solvers1d/newtonsafe.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
@@ -35,6 +37,8 @@
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
+
+#include <boost/math/special_functions/sign.hpp>
 
 namespace {
     void checkParameters(QuantLib::Real strike,
@@ -218,6 +222,74 @@ namespace QuantLib {
             blackAtmPrice, discount, displacement);
     }
 
+    namespace {
+        Real Af(Real x) {
+            return 0.5*(1.0+boost::math::sign(x)
+                *std::sqrt(1.0-std::exp(-M_2_PI*x*x)));
+        }
+    }
+
+    Real blackFormulaImpliedStdDevApproximationRS(
+        Option::Type type, Real K, Real F,
+        Real marketValue, Real df, Real displacement) {
+
+        checkParameters(K, F, displacement);
+        QL_REQUIRE(marketValue >= 0.0,
+                   "blackPrice (" << marketValue << ") must be non-negative");
+        QL_REQUIRE(df > 0.0, "discount (" << df << ") must be positive");
+
+        F = F + displacement;
+        K = K + displacement;
+
+        const Real ey = F/K;
+        const Real ey2 = ey*ey;
+        const Real y = std::log(ey);
+        const Real alpha = marketValue/(K*df);
+        const Real R = 2*alpha + ((type == Option::Call) ? -ey+1.0 : ey-1.0);
+        const Real R2 = R*R;
+
+        const Real a = std::exp((1.0-M_2_PI)*y);
+        const Real A = square<Real>()(a - 1.0/a);
+        const Real b = std::exp(M_2_PI*y);
+        const Real B = 4.0*(b + 1/b)
+            - 2*K/F*(a + 1.0/a)*(ey2 + 1 - R2);
+        const Real C = (R2-square<Real>()(ey-1))*(square<Real>()(ey+1)-R2)/ey2;
+
+        const Real beta = 2*C/(B+std::sqrt(B*B+4*A*C));
+        const Real gamma = -M_PI_2*std::log(beta);
+
+        if (y >= 0.0) {
+            const Real M0 = K*df*(
+                (type == Option::Call) ? ey*Af(std::sqrt(2*y)) - 0.5
+                                       : 0.5-ey*Af(-std::sqrt(2*y)));
+
+            if (marketValue <= M0)
+                return std::sqrt(gamma+y)-std::sqrt(gamma-y);
+            else
+                return std::sqrt(gamma+y)+std::sqrt(gamma-y);
+        }
+        else {
+            const Real M0 = K*df*(
+                (type == Option::Call) ? 0.5*ey - Af(-std::sqrt(-2*y))
+                                       : Af(std::sqrt(-2*y)) - 0.5*ey);
+
+            if (marketValue <= M0)
+                return std::sqrt(gamma-y)-std::sqrt(gamma+y);
+            else
+                return std::sqrt(gamma+y)+std::sqrt(gamma-y);
+        }
+    }
+
+    Real blackFormulaImpliedStdDevApproximationRS(
+        const boost::shared_ptr<PlainVanillaPayoff> &payoff,
+        Real F, Real marketValue,
+        Real df, Real displacement) {
+
+        return blackFormulaImpliedStdDevApproximationRS(
+            payoff->optionType(), payoff->strike(),
+            F, marketValue, df, displacement);
+    }
+
     class BlackImpliedStdDevHelper {
       public:
         BlackImpliedStdDevHelper(Option::Type optionType,
@@ -340,6 +412,114 @@ namespace QuantLib {
         return blackFormulaImpliedStdDev(payoff->optionType(), payoff->strike(),
             forward, blackPrice, discount, displacement, guess, accuracy, maxIterations);
     }
+
+
+    namespace {
+        Real Np(Real x, Real v) {
+            return CumulativeNormalDistribution()(x/v + 0.5*v);
+        }
+        Real Nm(Real x, Real v) {
+            return std::exp(-x)*CumulativeNormalDistribution()(x/v - 0.5*v);
+        }
+        Real phi(Real x, Real v) {
+            const Real ax = 2*std::fabs(x);
+            const Real v2 = v*v;
+            return (v2-ax)/(v2+ax);
+        }
+        Real F(Real v, Real x, Real cs, Real w) {
+            return cs+Nm(x,v)+w*Np(x,v);
+        }
+        Real G(Real v, Real x, Real cs, Real w) {
+            const Real q = F(v,x,cs,w)/(1+w);
+
+            // Acklam's inverse w/o Halley's refinement step
+            // does not provide enough accuracy. But both together are
+            // slower than the boost replacement.
+            const Real k = MaddockInverseCumulativeNormal()(q);
+
+            return k + std::sqrt(k*k + 2*std::fabs(x));
+        }
+    }
+
+    Real blackFormulaImpliedStdDevLiRS(
+        Option::Type optionType,
+        Real strike,
+        Real forward,
+        Real blackPrice,
+        Real discount,
+        Real displacement,
+        Real guess,
+        Real w,
+        Real accuracy,
+        Natural maxIterations) {
+
+        QL_REQUIRE(discount>0.0,
+                   "discount (" << discount << ") must be positive");
+
+        QL_REQUIRE(blackPrice>=0.0,
+                   "option price (" << blackPrice << ") must be non-negative");
+
+        strike = strike + displacement;
+        forward = forward + displacement;
+
+        if (guess == Null<Real>()) {
+            guess = blackFormulaImpliedStdDevApproximationRS(
+                optionType, strike, forward,
+                blackPrice, discount, displacement);
+        }
+        else {
+            QL_REQUIRE(guess>=0.0,
+                "stdDev guess (" << guess << ") must be non-negative");
+        }
+
+        Real x = std::log(forward/strike);
+        Real cs = (optionType == Option::Call)
+            ? blackPrice / (forward*discount)
+            : (blackPrice/ (forward*discount) + 1.0 - strike/forward);
+
+        QL_REQUIRE(cs >= 0.0, "normalized call price (" << cs
+                   << ") must be positive");
+
+        if (x > 0) {
+            // use in-out duality
+            cs = forward/strike*cs + 1.0 - forward/strike;
+            QL_REQUIRE(cs >= 0.0, "negative option price from in-out duality");
+            x = -x;
+        }
+
+        Size nIter = 0;
+        Real dv, vk, vkp1 = guess;
+
+        do {
+            vk = vkp1;
+            const Real alphaK = (1+w)/(1+phi(x,vk));
+            vkp1 = alphaK*G(vk,x,cs,w) + (1-alphaK)*vk;
+            dv = std::fabs(vkp1 - vk);
+        } while (dv > accuracy && ++nIter < maxIterations);
+
+        QL_REQUIRE(dv <= accuracy, "max iterations exceeded");
+        QL_REQUIRE(vk >= 0.0, "stdDev (" << vk << ") must be non-negative");
+
+        return vk;
+    }
+
+    Real blackFormulaImpliedStdDevLiRS(
+        const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+        Real forward,
+        Real blackPrice,
+        Real discount,
+        Real displacement,
+        Real guess,
+        Real omega,
+        Real accuracy,
+        Natural maxIterations) {
+
+        return blackFormulaImpliedStdDevLiRS(
+            payoff->optionType(), payoff->strike(),
+            forward, blackPrice, discount, displacement,
+            guess, omega, accuracy, maxIterations);
+    }
+
 
     Real blackFormulaCashItmProbability(Option::Type optionType,
                                         Real strike,
@@ -539,9 +719,9 @@ namespace QuantLib {
         }
 
         Real nu = (forward - strike) / straddlePremium;
-        QL_REQUIRE(nu<=1.0,
+        QL_REQUIRE(nu<1.0 || close_enough(nu,1.0),
                    "nu (" << nu << ") must be <= 1.0");
-        QL_REQUIRE(nu>=-1.0,
+        QL_REQUIRE(nu>-1.0 || close_enough(nu,-1.0),
                      "nu (" << nu << ") must be >= -1.0");
 
         nu = std::max(-1.0 + QL_EPSILON, std::min(nu,1.0 - QL_EPSILON));

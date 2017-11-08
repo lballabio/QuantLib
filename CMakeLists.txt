@@ -15,5 +15,5 @@ add_subdirectory(ql)
 # Building the test suite might require using shared libraries
 # for Boost.Test
 option(USE_BOOST_DYNAMIC_LIBRARIES
-       "Use the shared version of Boost.Test" OFF)
+       "Use the shared version of Boost.Test" ON)
 add_subdirectory(test-suite)

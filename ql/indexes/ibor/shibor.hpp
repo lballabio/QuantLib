@@ -33,6 +33,9 @@ namespace QuantLib {
         Shibor(
             const Period& tenor,
             const Handle<YieldTermStructure>& h = Handle<YieldTermStructure>());
+
+        boost::shared_ptr<IborIndex> clone(
+                        const Handle<YieldTermStructure>& forwarding) const;
     };
 
 }

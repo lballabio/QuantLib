@@ -51,6 +51,10 @@ namespace QuantLib {
         Real drift(Time t, Real x) const;
         Real diffusion(Time t, Real x) const;
         //@}
+
+        Real a() const { return speed_;  }
+        Real b() const { return mean_; }
+        Real sigma() const { return volatility_; }
       private:
         Real x0_, mean_, speed_;
         Volatility volatility_;

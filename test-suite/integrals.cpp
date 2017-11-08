@@ -267,6 +267,13 @@ void IntegralTest::testDiscreteIntegrals() {
     }
 }
 
+void IntegralTest::testDiscreteIntegrator() {
+    BOOST_TEST_MESSAGE("Testing discrete integrator formulae...");
+
+    testSeveral(DiscreteSimpsonIntegrator(300));
+    testSeveral(DiscreteTrapezoidIntegrator(3000));
+}
+
 namespace {
 
 std::vector<Real> x, y;
@@ -321,6 +328,7 @@ test_suite* IntegralTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testTwoDimensionalIntegration));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testFolinIntegration));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testDiscreteIntegrals));
+    suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testDiscreteIntegrator));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testPiecewiseIntegral));
     return suite;
 }
