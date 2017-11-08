@@ -136,7 +136,7 @@ namespace QuantLib {
                     payoff->optionType(),
                     payoff->strike(),
                     this->process_->riskFreeRate()->discount(
-                                                     this->timeGrid().back()),
+                                                        exercise->lastDate()),
                     this->arguments_.runningAccumulator,
                     this->arguments_.pastFixings));
     }

@@ -31,6 +31,7 @@ class CashFlowsTest {
     static void testIrregularFirstCouponReferenceDatesAtEndOfMonth();
     static void testIrregularLastCouponReferenceDatesAtEndOfMonth();
     static void testFreeFixingDates();
+    static void testPartialScheduleLegConstruction();
     static boost::unit_test_framework::test_suite* suite();
 };
 

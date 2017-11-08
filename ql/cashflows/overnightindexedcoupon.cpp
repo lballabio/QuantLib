@@ -294,10 +294,10 @@ namespace QuantLib {
             refEnd   =   end = schedule_.date(i+1);
             paymentDate = paymentCalendar_.advance(end, paymentLag_, Days, paymentAdjustment_);
 
-            if (i == 0 && !schedule_.isRegular(i+1))
+            if (i == 0 && schedule_.hasIsRegular() && !schedule_.isRegular(i+1))
                 refStart = calendar.adjust(end - schedule_.tenor(),
                                            paymentAdjustment_);
-            if (i == n-1 && !schedule_.isRegular(i+1))
+            if (i == n-1 && schedule_.hasIsRegular() && !schedule_.isRegular(i+1))
                 refEnd = calendar.adjust(start + schedule_.tenor(),
                                          paymentAdjustment_);
 

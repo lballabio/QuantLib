@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2006, 2008, 2009 StatPro Italia srl
+ Copyright (C) 2005, 2006, 2008, 2009, 2017 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -52,6 +52,8 @@ class PiecewiseYieldCurveTest {
     static void testZeroCopy();
 
     static void testSwapRateHelperLastRelevantDate();
+
+    static void testBadPreviousCurve();
 
     static boost::unit_test_framework::test_suite* suite();
 };
