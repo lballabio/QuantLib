@@ -510,8 +510,12 @@ namespace QuantLib {
             return Date();
     }
 
+    bool Schedule::hasIsRegular() const {
+        return isRegular_.size() > 0;
+    }
+
     bool Schedule::isRegular(Size i) const {
-        QL_REQUIRE(isRegular_.size() > 0,
+        QL_REQUIRE(hasIsRegular(),
                    "full interface (isRegular) not available");
         QL_REQUIRE(i<=isRegular_.size() && i>0,
                    "index (" << i << ") must be in [1, " <<
