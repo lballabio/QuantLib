@@ -1,4 +1,5 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+
 /*
   Copyright (C) 2014, 2015 Peter Caspers
 
@@ -161,14 +162,14 @@ namespace QuantLib {
 
         c1_ = boost::shared_ptr<CmsCoupon>(new CmsCoupon(
             coupon_->date(), coupon_->nominal(), coupon_->accrualStartDate(),
-            coupon_->accrualEndDate(), coupon_->fixingDays(),
+            coupon_->accrualEndDate(), coupon_->fixingDate(),
             index_->swapIndex1(), 1.0, 0.0, coupon_->referencePeriodStart(),
             coupon_->referencePeriodEnd(), coupon_->dayCounter(),
             coupon_->isInArrears()));
 
         c2_ = boost::shared_ptr<CmsCoupon>(new CmsCoupon(
             coupon_->date(), coupon_->nominal(), coupon_->accrualStartDate(),
-            coupon_->accrualEndDate(), coupon_->fixingDays(),
+            coupon_->accrualEndDate(), coupon_->fixingDate(),
             index_->swapIndex2(), 1.0, 0.0, coupon_->referencePeriodStart(),
             coupon_->referencePeriodEnd(), coupon_->dayCounter(),
             coupon_->isInArrears()));
