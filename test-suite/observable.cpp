@@ -294,6 +294,8 @@ void ObservableTest::testDeepUpdate() {
     BOOST_CHECK_CLOSE(v2, 0.2, 1E-10);
     BOOST_CHECK_CLOSE(v3, 0.2, 1E-10);
     BOOST_CHECK_CLOSE(v4, 0.21, 1E-10);
+
+    ObservableSettings::instance().enableUpdates();
 }
 
 test_suite* ObservableTest::suite() {
