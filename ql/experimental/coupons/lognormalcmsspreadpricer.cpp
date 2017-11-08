@@ -240,12 +240,16 @@ namespace QuantLib {
 
             rho_ = std::max(std::min(correlation()->value(), 0.9999),
                             -0.9999); // avoid division by zero in integrand
+        } else {
+            // fixing is in the past
+            adjustedRate1_ = c1_->indexFixing();
+            adjustedRate2_ = c2_->indexFixing();
         }
     }
 
     Real LognormalCmsSpreadPricer::optionletPrice(Option::Type optionType,
                                                   Real strike) const {
-
+        // this method is only called for future fixings
         phi_ = optionType == Option::Call ? 1.0 : -1.0;
         Real res = 0.0;
         if (volType_ == ShiftedLognormal) {
