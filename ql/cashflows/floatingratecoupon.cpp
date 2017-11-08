@@ -66,7 +66,8 @@ namespace QuantLib {
                            Spread spread,
                            const Date& refPeriodStart,
                            const Date& refPeriodEnd,
-                           const DayCounter& dayCounter)
+                           const DayCounter& dayCounter,
+                           const boost::optional<bool> isInArrears)
     : Coupon(paymentDate, nominal, startDate, endDate, refPeriodStart, refPeriodEnd),
       index_(index), dayCounter_(dayCounter), fixingDays_(Null<Size>()),
       fixingDate_(fixingDate), gearing_(gearing), spread_(spread)
@@ -76,11 +77,13 @@ namespace QuantLib {
                        << fixingDate << ") can not be after payment date ("
                        << paymentDate << ")");
         init();
-        // we might just throw if asked whether the coupon is fixed
-        // in arrears but since computations like the in arrears adjustment
-        // relies on this flag we prefer to give a "reasonable" answer
-        isInArrears_ = index_->fixingCalendar().businessDaysBetween(
-                           fixingDate_, accrualEndDate_) < 5;
+        // if the in arrears flag is explicitly given, we take that,
+        // otherwise we deduce whether the fixing is in arrears from
+        // the gap between the fixing date and the accrual end date
+        isInArrears_ = isInArrears
+                           ? *isInArrears
+                           : index_->fixingCalendar().businessDaysBetween(
+                                 fixingDate_, accrualEndDate_) < 5;
     }
 
     void FloatingRateCoupon::init() {
