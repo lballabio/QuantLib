@@ -46,7 +46,7 @@ namespace QuantLib {
                               const Date& d2,
                               const Date&,
                               const Date&) const;
-            Impl(Calendar c) { calendar_ = c; }
+            explicit Impl(Calendar c) { calendar_ = c; }
         };
       public:
         Business252(Calendar c = Brazil())

@@ -226,7 +226,7 @@ namespace QuantLib {
             const std::vector<Parameter>& arguments_;
         };
       public:
-        PrivateConstraint(const std::vector<Parameter>& arguments)
+        explicit PrivateConstraint(const std::vector<Parameter>& arguments)
         : Constraint(boost::shared_ptr<Constraint::Impl>(
                                    new PrivateConstraint::Impl(arguments))) {}
     };
