@@ -69,9 +69,14 @@ namespace QuantLib {
 
     inline Rate SwapSpreadIndex::pastFixing(const Date& fixingDate) const {
 
-        return gearing1_ * swapIndex1_->pastFixing(fixingDate) +
-            gearing2_ * swapIndex2_->pastFixing(fixingDate);
-
+        Real f1 = swapIndex1_->pastFixing(fixingDate);
+        Real f2 = swapIndex2_->pastFixing(fixingDate);
+        // if one of the fixings is missing we return null, indicating
+        // a missing fixing for the spread index
+        if(f1 == Null<Real>() || f2 == Null<Real>())
+            return Null<Real>();
+        else
+            return gearing1_ * f1 + gearing2_ * f2;
     }
 
 }
