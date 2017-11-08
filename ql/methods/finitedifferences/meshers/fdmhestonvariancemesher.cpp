@@ -68,7 +68,7 @@ namespace QuantLib {
                         df, ncp, 1000, 1e-8)(p);
 
                     const Real vx = std::max(vTmp+minVStep, tmp);
-                    p = NonCentralChiSquareDistribution(df, ncp)(vx/k);
+                    p = NonCentralCumulativeChiSquareDistribution(df, ncp)(vx/k);
                     vTmp=vx;
                     grid.insert(std::pair<Real, Real>(vx, p));
                 }

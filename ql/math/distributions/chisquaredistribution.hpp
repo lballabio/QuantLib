@@ -30,23 +30,30 @@
 
 namespace QuantLib {
 
-    class ChiSquareDistribution : public std::unary_function<Real,Real> {
+    class CumulativeChiSquareDistribution
+	: public std::unary_function<Real,Real> {
       public:
-        ChiSquareDistribution(Real df) : df_(df) {}
+        CumulativeChiSquareDistribution(Real df) : df_(df) {}
         Real operator()(Real x) const;
       private:
         Real df_;
     };
 
-    class NonCentralChiSquareDistribution
+	QL_DEPRECATED
+	typedef CumulativeChiSquareDistribution ChiSquareDistribution;
+
+    class NonCentralCumulativeChiSquareDistribution
     : public std::unary_function<Real,Real> {
       public:
-        NonCentralChiSquareDistribution(Real df, Real ncp)
+        NonCentralCumulativeChiSquareDistribution(Real df, Real ncp)
         : df_(df), ncp_(ncp) {}
         Real operator()(Real x) const;
       private:
         Real df_, ncp_;
     };
+
+	QL_DEPRECATED
+	typedef NonCentralCumulativeChiSquareDistribution NonCentralChiSquareDistribution;
 
     class InverseNonCentralChiSquareDistribution
         : public std::unary_function<Real,Real> {
@@ -57,7 +64,7 @@ namespace QuantLib {
         Real operator()(Real x) const;
 
     private:
-        NonCentralChiSquareDistribution nonCentralDist_;
+        NonCentralCumulativeChiSquareDistribution nonCentralDist_;
         const Real guess_;
         const Size maxEvaluations_;
         const Real accuracy_;

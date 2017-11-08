@@ -30,16 +30,19 @@
 
 namespace QuantLib {
 
-    class GammaDistribution
+    class CumulativeGammaDistribution
         : public std::unary_function<Real,Real> {
       public:
-        GammaDistribution(Real a) : a_(a) {
+        CumulativeGammaDistribution(Real a) : a_(a) {
             QL_REQUIRE(a>0.0, "invalid parameter for gamma distribution");
         }
         Real operator()(Real x) const;
       private:
         Real a_;
     };
+
+	QL_DEPRECATED
+	typedef CumulativeGammaDistribution GammaDistribution;
 
     //! Gamma function class
     /*! This is a function defined by
