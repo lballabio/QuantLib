@@ -388,6 +388,7 @@ void CashFlowsTest::testFreeFixingDates() {
                 c3b->convexityAdjustment() > -10E-4);
     BOOST_CHECK(c3c->convexityAdjustment() > 0.0 &&
                 c3c->convexityAdjustment() < 10E-4);
+}
     
 void CashFlowsTest::testPartialScheduleLegConstruction() {
     BOOST_TEST_MESSAGE("Testing partial schedule leg construction");
