@@ -57,6 +57,10 @@ namespace QuantLib {
         //! shorts an instrument from the composite
         void subtract(const boost::shared_ptr<Instrument>& instrument,
                       Real multiplier = 1.0);
+        //! \name Observer interface
+        //@{
+        void deepUpdate();
+        //@}
         //! \name Instrument interface
         //@{
         bool isExpired() const;
