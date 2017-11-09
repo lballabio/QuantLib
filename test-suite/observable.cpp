@@ -33,6 +33,7 @@ using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 namespace {
+
     class UpdateCounter : public Observer {
       public:
         UpdateCounter() : counter_(0) {}
@@ -43,6 +44,14 @@ namespace {
       private:
         Size counter_;
     };
+
+    class RestoreUpdates {
+      public:
+        ~RestoreUpdates() {
+            ObservableSettings::instance().enableUpdates();
+        }
+    };
+
 }
 
 void ObservableTest::testObservableSettings() {
@@ -259,6 +268,7 @@ void ObservableTest::testMultiThreadingGlobalSettings() {
 void ObservableTest::testDeepUpdate() {
 
     SavedSettings backup;
+    RestoreUpdates guard;
 
     Date refDate = Settings::instance().evaluationDate();
 
@@ -294,8 +304,6 @@ void ObservableTest::testDeepUpdate() {
     BOOST_CHECK_CLOSE(v2, 0.2, 1E-10);
     BOOST_CHECK_CLOSE(v3, 0.2, 1E-10);
     BOOST_CHECK_CLOSE(v4, 0.21, 1E-10);
-
-    ObservableSettings::instance().enableUpdates();
 }
 
 test_suite* ObservableTest::suite() {
