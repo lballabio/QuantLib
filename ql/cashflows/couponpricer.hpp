@@ -63,9 +63,12 @@ namespace QuantLib {
     //! base pricer for capped/floored Ibor coupons
     class IborCouponPricer : public FloatingRateCouponPricer {
       public:
-        IborCouponPricer(const Handle<OptionletVolatilityStructure>& v =
-                                          Handle<OptionletVolatilityStructure>())
-        : capletVol_(v) { registerWith(capletVol_); }
+        explicit IborCouponPricer(
+            const Handle<OptionletVolatilityStructure>& v =
+                                       Handle<OptionletVolatilityStructure>())
+        : capletVol_(v) {
+            registerWith(capletVol_);
+        }
 
         Handle<OptionletVolatilityStructure> capletVolatility() const{
             return capletVol_;
@@ -138,9 +141,12 @@ namespace QuantLib {
     //! base pricer for vanilla CMS coupons
     class CmsCouponPricer : public FloatingRateCouponPricer {
       public:
-        CmsCouponPricer(const Handle<SwaptionVolatilityStructure>& v =
-                                        Handle<SwaptionVolatilityStructure>())
-        : swaptionVol_(v) { registerWith(swaptionVol_); }
+        explicit CmsCouponPricer(
+            const Handle<SwaptionVolatilityStructure>& v =
+                                       Handle<SwaptionVolatilityStructure>())
+        : swaptionVol_(v) {
+            registerWith(swaptionVol_);
+        }
 
         Handle<SwaptionVolatilityStructure> swaptionVolatility() const{
             return swaptionVol_;
