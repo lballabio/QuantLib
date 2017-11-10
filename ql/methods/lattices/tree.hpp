@@ -50,7 +50,7 @@ namespace QuantLib {
     template <class T>
     class Tree : public CuriouslyRecurringTemplate<T> {
       public:
-        Tree(Size columns) : columns_(columns) {}
+        explicit Tree(Size columns) : columns_(columns) {}
         Size columns() const { return columns_; }
       private:
         Size columns_;
