@@ -77,6 +77,9 @@ namespace QuantLib {
             yIterator yBegin, yIterator yEnd,
             vIterator vBegin);
 
+        /*! \deprecated Use the overload taking 5 parameters.
+                        Deprecated in version 1.10.
+        */
         template <class xIterator, class yIterator, class vIterator>
         QL_DEPRECATED
         void calculate(

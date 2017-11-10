@@ -37,6 +37,9 @@ namespace QuantLib {
     class CapFloor;
     class PricingEngine;
 
+    /*! \deprecated No longer used.
+                    Deprecated in version 1.10.
+    */
     QL_DEPRECATED
     typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapFloorMatrix;
 

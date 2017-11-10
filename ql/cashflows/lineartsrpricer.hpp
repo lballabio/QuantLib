@@ -93,6 +93,9 @@ namespace QuantLib {
                 return *this;
             }
 
+            /*! \deprecated Use the overload taking 3 parameters.
+                            Deprecated in version 1.10.
+            */
             QL_DEPRECATED
             Settings &withVegaRatio(const Real vegaRatio,
                                     const Real lowerRateBound) {
@@ -124,6 +127,9 @@ namespace QuantLib {
                 return *this;
             }
 
+            /*! \deprecated Use the overload taking 3 parameters.
+                            Deprecated in version 1.10.
+            */
             QL_DEPRECATED
             Settings &withPriceThreshold(const Real priceThreshold,
                                          const Real lowerRateBound) {
@@ -155,6 +161,9 @@ namespace QuantLib {
                 return *this;
             }
 
+            /*! \deprecated Use the overload taking 3 parameters.
+                            Deprecated in version 1.10.
+            */
             QL_DEPRECATED
             Settings &withBSStdDevs(const Real stdDevs,
                                     const Real lowerRateBound) {
