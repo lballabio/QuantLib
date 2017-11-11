@@ -46,7 +46,7 @@ namespace QuantLib {
                          underlying->referencePeriodStart(),
                          underlying->referencePeriodEnd(),
                          underlying->dayCounter(),
-                         underlying->isInArrears()),
+                         underlying->isInArrearsAsOptional()),
       underlying_(underlying), callCsi_(0.), putCsi_(0.),
       isCallATMIncluded_(isCallATMIncluded), isPutATMIncluded_(isPutATMIncluded),
       isCallCashOrNothing_(false), isPutCashOrNothing_(false),

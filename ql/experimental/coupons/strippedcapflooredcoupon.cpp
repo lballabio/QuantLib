@@ -28,11 +28,11 @@ namespace QuantLib {
         : FloatingRateCoupon(
               underlying->date(), underlying->nominal(),
               underlying->accrualStartDate(), underlying->accrualEndDate(),
-              underlying->fixingDate(), underlying->index(),
+              underlying->fixingDelay(), underlying->index(),
               underlying->gearing(), underlying->spread(),
               underlying->referencePeriodStart(),
               underlying->referencePeriodEnd(), underlying->dayCounter(),
-              underlying->isInArrears()),
+              underlying->isInArrearsAsOptional()),
           underlying_(underlying) {}
 
     Rate StrippedCappedFlooredCoupon::rate() const {

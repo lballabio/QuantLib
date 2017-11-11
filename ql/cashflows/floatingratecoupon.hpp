@@ -101,6 +101,10 @@ namespace QuantLib {
         bool isInArrears() const;
         //! whether coupon was set up with in arrears information
         bool hasInArrears() const { return isInArrears_;}
+        //! in arrears as optional inspector
+        boost::optional<bool> isInArrearsAsOptional() const {
+            return isInArrears_;
+        }
         //@}
 
         //! \name Observer interface
