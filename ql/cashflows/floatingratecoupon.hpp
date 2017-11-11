@@ -79,6 +79,8 @@ namespace QuantLib {
         const boost::shared_ptr<InterestRateIndex>& index() const;
         //! fixing days
         Natural fixingDays() const;
+        //! whether coupon was set up with fixing days
+        bool hasFixingDays() const { return fixingDelay_.which() == 0; }
         //! fixing date
         virtual Date fixingDate() const;
         //! fixing days or date, whatever was used to set up the coupon
@@ -97,6 +99,8 @@ namespace QuantLib {
         virtual Rate adjustedFixing() const;
         //! whether or not the coupon fixes in arrears
         bool isInArrears() const;
+        //! whether coupon was set up with in arrears information
+        bool hasInArrears() const { return isInArrears_;}
         //@}
 
         //! \name Observer interface

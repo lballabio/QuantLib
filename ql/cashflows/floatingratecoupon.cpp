@@ -100,13 +100,13 @@ namespace QuantLib {
 
     Natural FloatingRateCoupon::fixingDays() const {
         QL_REQUIRE(
-            fixingDelay_.which() == 0,
+            hasFixingDays(),
             "FloatingRateCoupon::fixingDays(): fixing days not provided");
         return boost::get<Natural>(fixingDelay_);
     }
     
    bool FloatingRateCoupon::isInArrears() const {
-       QL_REQUIRE(isInArrears_,
+       QL_REQUIRE(hasInArrears(),
                   "FloatingRateCoupon::isInArrears(): in arrears not provided");
        return *isInArrears_;
     }
