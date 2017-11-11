@@ -97,10 +97,10 @@ namespace QuantLib {
                             coupon->referencePeriodStart(),
                             coupon->referencePeriodEnd(),
                             coupon->dayCounter(),
-                            coupon->isInArrears())); 
+                            coupon->isInArrearsAsOptional()));
 
 
-                        if (!newCpn->isInArrears())
+                        if (!newCpn->hasInArrears() || !newCpn->isInArrears())
                             newCpn->setPricer(
                                          boost::shared_ptr<FloatingRateCouponPricer>(
                                                   new BlackIborCouponPricer()));
@@ -284,17 +284,17 @@ namespace QuantLib {
                 coupon->nominal(),
                 coupon->accrualStartDate(),
                 coupon->accrualEndDate(),
-                coupon->fixingDate(),
+                coupon->fixingDelay(),
                 coupon->iborIndex(),
                 coupon->gearing(),
                 0.0,
                 coupon->referencePeriodStart(),
                 coupon->referencePeriodEnd(),
                 coupon->dayCounter(),
-                coupon->isInArrears())); 
+                coupon->isInArrearsAsOptional()));
 
 
-            if (!newCpn->isInArrears())
+            if (!newCpn->hasInArrears() || !newCpn->isInArrears())
                 newCpn->setPricer(
                              boost::shared_ptr<FloatingRateCouponPricer>(
                                       new BlackIborCouponPricer()));
