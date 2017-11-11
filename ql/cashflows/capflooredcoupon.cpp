@@ -31,7 +31,7 @@ namespace QuantLib {
                          underlying->nominal(),
                          underlying->accrualStartDate(),
                          underlying->accrualEndDate(),
-                         underlying->fixingDate(),
+                         underlying->fixingDelay(),
                          underlying->index(),
                          underlying->gearing(),
                          underlying->spread(),

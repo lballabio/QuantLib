@@ -35,6 +35,8 @@
 #include <ql/time/daycounter.hpp>
 #include <ql/handle.hpp>
 
+#include <boost/variant.hpp>
+
 namespace QuantLib {
 
     class InterestRateIndex;
@@ -49,19 +51,7 @@ namespace QuantLib {
                            Real nominal,
                            const Date& startDate,
                            const Date& endDate,
-                           Natural fixingDays,
-                           const boost::shared_ptr<InterestRateIndex>& index,
-                           Real gearing = 1.0,
-                           Spread spread = 0.0,
-                           const Date& refPeriodStart = Date(),
-                           const Date& refPeriodEnd = Date(),
-                           const DayCounter& dayCounter = DayCounter(),
-                           bool isInArrears = false);
-        FloatingRateCoupon(const Date& paymentDate,
-                           Real nominal,
-                           const Date& startDate,
-                           const Date& endDate,
-                           const Date& fixingDate,
+                           boost::variant<Natural, Date> fixingDelay,
                            const boost::shared_ptr<InterestRateIndex>& index,
                            Real gearing = 1.0,
                            Spread spread = 0.0,
@@ -91,6 +81,10 @@ namespace QuantLib {
         Natural fixingDays() const;
         //! fixing date
         virtual Date fixingDate() const;
+        //! fixing days or date, whatever was used to set up the coupon
+        boost::variant<Natural, Date> fixingDelay() const {
+              return fixingDelay_;
+        }
         //! index gearing, i.e. multiplicative coefficient for the index
         Real gearing() const { return gearing_; }
         //! spread paid over the fixing of the underlying index
@@ -102,7 +96,7 @@ namespace QuantLib {
         //! convexity-adjusted fixing
         virtual Rate adjustedFixing() const;
         //! whether or not the coupon fixes in arrears
-        bool isInArrears() const { return isInArrears_; }
+        bool isInArrears() const;
         //@}
 
         //! \name Observer interface
@@ -121,15 +115,13 @@ namespace QuantLib {
         //! convexity adjustment for the given index fixing
         Rate convexityAdjustmentImpl(Rate fixing) const;
         boost::shared_ptr<InterestRateIndex> index_;
+        boost::variant<Natural, Date> fixingDelay_;
         DayCounter dayCounter_;
-        Natural fixingDays_;
         Date fixingDate_;
         Real gearing_;
         Spread spread_;
-        bool isInArrears_;
+        boost::optional<bool> isInArrears_;
         boost::shared_ptr<FloatingRateCouponPricer> pricer_;
-    private:
-        void init();
     };
 
     // inline definitions

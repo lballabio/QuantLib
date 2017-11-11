@@ -36,36 +36,16 @@ namespace QuantLib {
                            Real nominal,
                            const Date& startDate,
                            const Date& endDate,
-                           Natural fixingDays,
+                           const boost::variant<Natural, Date> fixingDelay,
                            const shared_ptr<IborIndex>& iborIndex,
                            Real gearing,
                            Spread spread,
                            const Date& refPeriodStart,
                            const Date& refPeriodEnd,
                            const DayCounter& dayCounter,
-                           bool isInArrears)
+                           boost::optional<bool> isInArrears)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
-                         fixingDays, iborIndex, gearing, spread,
-                         refPeriodStart, refPeriodEnd,
-                         dayCounter, isInArrears),
-      iborIndex_(iborIndex) {
-        init();
-    }
-
-    IborCoupon::IborCoupon(const Date& paymentDate,
-                           Real nominal,
-                           const Date& startDate,
-                           const Date& endDate,
-                           const Date& fixingDate,
-                           const shared_ptr<IborIndex>& iborIndex,
-                           Real gearing,
-                           Spread spread,
-                           const Date& refPeriodStart,
-                           const Date& refPeriodEnd,
-                           const DayCounter& dayCounter,
-                           const boost::optional<bool> isInArrears)
-    : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
-                         fixingDate, iborIndex, gearing, spread,
+                         fixingDelay, iborIndex, gearing, spread,
                          refPeriodStart, refPeriodEnd,
                          dayCounter, isInArrears),
       iborIndex_(iborIndex) {
@@ -83,7 +63,7 @@ namespace QuantLib {
         fixingEndDate_ = index_->maturityDate(fixingValueDate_);
         #else
         // with a free fixing date we always use the indexed coupon mode
-        if (isInArrears_ || fixingDays_ == Null<Size>())
+        if (!isInArrears_ || *isInArrears_)
             fixingEndDate_ = index_->maturityDate(fixingValueDate_);
         else { // par coupon approximation
             Date nextFixingDate = fixingCalendar.advance(

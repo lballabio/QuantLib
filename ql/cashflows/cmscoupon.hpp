@@ -42,26 +42,14 @@ namespace QuantLib {
                   Real nominal,
                   const Date& startDate,
                   const Date& endDate,
-                  Natural fixingDays,
+                  boost::variant<Natural, Date> fixingDelay,
                   const boost::shared_ptr<SwapIndex>& index,
                   Real gearing = 1.0,
                   Spread spread = 0.0,
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
-                  bool isInArrears = false);
-        CmsCoupon(const Date& paymentDate,
-                  Real nominal,
-                  const Date& startDate,
-                  const Date& endDate,
-                  const Date& fixingDate,
-                  const boost::shared_ptr<SwapIndex>& index,
-                  Real gearing = 1.0,
-                  Spread spread = 0.0,
-                  const Date& refPeriodStart = Date(),
-                  const Date& refPeriodEnd = Date(),
-                  const DayCounter& dayCounter = DayCounter(),
-                  const boost::optional<bool> isInArrears = boost::none);
+                  boost::optional<bool> isInArrears = boost::none);
         //! \name Inspectors
         //@{
         const boost::shared_ptr<SwapIndex>& swapIndex() const {
@@ -75,7 +63,6 @@ namespace QuantLib {
       private:
         boost::shared_ptr<SwapIndex> swapIndex_;
     };
-
 
     //! helper class building a sequence of capped/floored cms-rate coupons
     class CmsLeg {

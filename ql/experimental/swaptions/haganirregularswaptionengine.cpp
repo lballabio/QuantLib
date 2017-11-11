@@ -90,7 +90,7 @@ namespace QuantLib {
                             1.0,
                             coupon->accrualStartDate(),
                             coupon->accrualEndDate(),
-                            coupon->fixingDate(),
+                            coupon->fixingDelay(),
                             coupon->iborIndex(),
                             1.0,
                             coupon->spread(),
