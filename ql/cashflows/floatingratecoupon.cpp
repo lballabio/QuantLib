@@ -43,7 +43,7 @@ namespace QuantLib {
                             const DayCounter& dayCounter,
                             boost::optional<bool> isInArrears)
     : Coupon(paymentDate, nominal,
-             startDate, endDate, refPeriodStart, refPeriodEnd),      
+             startDate, endDate, refPeriodStart, refPeriodEnd),
       index_(index), fixingDelay_(fixingDelay), dayCounter_(dayCounter),
       gearing_(gearing), spread_(spread),
       isInArrears_(isInArrears)
@@ -52,13 +52,13 @@ namespace QuantLib {
         if (fixingDelay_.which() == 0 &&
             boost::get<Natural>(fixingDelay_) == Null<Natural>())
             fixingDelay_ = index->fixingDays();
-        
+
         if (dayCounter_.empty())
             dayCounter_ = index_->dayCounter();
-        
+
         registerWith(index_);
         registerWith(Settings::instance().evaluationDate());
-        
+
         if (fixingDelay_.which() == 0) {
             if (!isInArrears_)
                 isInArrears_ = false;
@@ -109,7 +109,7 @@ namespace QuantLib {
             "FloatingRateCoupon::fixingDays(): fixing days not provided");
         return boost::get<Natural>(fixingDelay_);
     }
-    
+
    bool FloatingRateCoupon::isInArrears() const {
        QL_REQUIRE(hasInArrears(),
                   "FloatingRateCoupon::isInArrears(): in arrears not provided");

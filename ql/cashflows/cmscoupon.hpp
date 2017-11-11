@@ -64,6 +64,7 @@ namespace QuantLib {
         boost::shared_ptr<SwapIndex> swapIndex_;
     };
 
+
     //! helper class building a sequence of capped/floored cms-rate coupons
     class CmsLeg {
       public:

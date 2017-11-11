@@ -160,7 +160,7 @@ namespace QuantLib {
                 CappedFlooredCoupon::accept(v);
         }
     };
-        
+
 }
 
 #endif
