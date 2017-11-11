@@ -128,9 +128,10 @@ namespace QuantLib {
                 return fixing;
             // if the coupon was not set up with the in arrears flag
             // we apply the classic in arrears adjustment only if
-            // the index maturity date is sufficiently close to the
-            // payment date
-            if(std::abs(d3 - coupon_->date()) > 10)
+            // the index value date is sufficiently close to the
+            // accrual end date
+            if (!coupon_->hasInArrears() &&
+                std::abs(d2 - coupon_->accrualEndDate()) > 10)
                 return fixing;
         }
 
