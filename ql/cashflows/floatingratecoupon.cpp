@@ -60,7 +60,7 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
 
         if (fixingDelay_.which() == 0) {
-            if (!isInArrears_)
+            if (isInArrears_ == boost::none)
                 isInArrears_ = false;
             // if isInArrears_ fix at the end of period
             Date refDate = *isInArrears_ ? accrualEndDate_ : accrualStartDate_;
