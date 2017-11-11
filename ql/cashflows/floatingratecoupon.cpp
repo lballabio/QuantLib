@@ -73,6 +73,11 @@ namespace QuantLib {
             QL_REQUIRE(fixingDate_ != Null<Date>(),
                        "FloatingRateCoupon::FloatingRateCoupon(): null fixing "
                        "date not allowed");
+            QL_REQUIRE(fixingDate_ <= date(),
+                       "FloatingRateCoupon::FloatingRateCouon(): fixing date ("
+                           << fixingDate_
+                           << ") can not be later than payment date (" << date()
+                           << ")");
         }
     }
 
