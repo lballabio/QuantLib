@@ -34,14 +34,14 @@ namespace QuantLib {
                             Real nominal,
                             const Date& startDate,
                             const Date& endDate,
-                            boost::variant<Natural, Date> fixingDelay,
+                            const boost::variant<Natural, Date>& fixingDelay,
                             const boost::shared_ptr<InterestRateIndex>& index,
                             Real gearing,
                             Spread spread,
                             const Date& refPeriodStart,
                             const Date& refPeriodEnd,
                             const DayCounter& dayCounter,
-                            boost::optional<bool> isInArrears)
+                            const boost::optional<bool>& isInArrears)
     : Coupon(paymentDate, nominal,
              startDate, endDate, refPeriodStart, refPeriodEnd),
       index_(index), fixingDelay_(fixingDelay), dayCounter_(dayCounter),

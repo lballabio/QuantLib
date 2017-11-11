@@ -51,14 +51,14 @@ namespace QuantLib {
                            Real nominal,
                            const Date& startDate,
                            const Date& endDate,
-                           boost::variant<Natural, Date> fixingDelay,
+                           const boost::variant<Natural, Date>& fixingDelay,
                            const boost::shared_ptr<InterestRateIndex>& index,
                            Real gearing = 1.0,
                            Spread spread = 0.0,
                            const Date& refPeriodStart = Date(),
                            const Date& refPeriodEnd = Date(),
                            const DayCounter& dayCounter = DayCounter(),
-                           const boost::optional<bool> isInArrears = boost::none);
+                           const boost::optional<bool>& isInArrears = boost::none);
 
         //! \name CashFlow interface
         //@{
@@ -84,7 +84,7 @@ namespace QuantLib {
         //! fixing date
         virtual Date fixingDate() const;
         //! fixing days or date, whatever was used to set up the coupon
-        boost::variant<Natural, Date> fixingDelay() const {
+        const boost::variant<Natural, Date>& fixingDelay() const {
               return fixingDelay_;
         }
         //! index gearing, i.e. multiplicative coefficient for the index
@@ -102,7 +102,7 @@ namespace QuantLib {
         //! whether coupon was set up with in arrears information
         bool hasInArrears() const { return isInArrears_ != boost::none; }
         //! in arrears as optional inspector
-        boost::optional<bool> isInArrearsAsOptional() const {
+        const boost::optional<bool>& isInArrearsAsOptional() const {
             return isInArrears_;
         }
         //@}
@@ -123,7 +123,7 @@ namespace QuantLib {
         //! convexity adjustment for the given index fixing
         Rate convexityAdjustmentImpl(Rate fixing) const;
         boost::shared_ptr<InterestRateIndex> index_;
-        boost::variant<Natural, Date> fixingDelay_;
+        const boost::variant<Natural, Date> fixingDelay_;
         DayCounter dayCounter_;
         Date fixingDate_;
         Real gearing_;

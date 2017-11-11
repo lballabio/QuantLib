@@ -104,7 +104,7 @@ namespace QuantLib {
                   Real nominal,
                   const Date& startDate,
                   const Date& endDate,
-                  boost::variant<Natural, Date> fixingDelay,
+                  const boost::variant<Natural, Date>& fixingDelay,
                   const boost::shared_ptr<IborIndex>& index,
                   Real gearing = 1.0,
                   Spread spread = 0.0,
@@ -113,7 +113,7 @@ namespace QuantLib {
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
-                  boost::optional<bool> isInArrears = boost::none)
+                  const boost::optional<bool>& isInArrears = boost::none)
         : CappedFlooredCoupon(boost::shared_ptr<FloatingRateCoupon>(new
             IborCoupon(paymentDate, nominal, startDate, endDate, fixingDelay,
                        index, gearing, spread, refPeriodStart, refPeriodEnd,
@@ -136,7 +136,7 @@ namespace QuantLib {
                   Real nominal,
                   const Date& startDate,
                   const Date& endDate,
-                  boost::variant<Natural, Date> fixingDelay,
+                  const boost::variant<Natural, Date>& fixingDelay,
                   const boost::shared_ptr<SwapIndex>& index,
                   Real gearing = 1.0,
                   Spread spread= 0.0,
@@ -145,7 +145,7 @@ namespace QuantLib {
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
-                  boost::optional<bool> isInArrears = false)
+                  const boost::optional<bool>& isInArrears = false)
         : CappedFlooredCoupon(boost::shared_ptr<FloatingRateCoupon>(new
             CmsCoupon(paymentDate, nominal, startDate, endDate, fixingDelay,
                       index, gearing, spread, refPeriodStart, refPeriodEnd,
