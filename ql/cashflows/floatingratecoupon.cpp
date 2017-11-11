@@ -63,7 +63,7 @@ namespace QuantLib {
             if (!isInArrears_)
                 isInArrears_ = false;
             // if isInArrears_ fix at the end of period
-            Date refDate = isInArrears_ ? accrualEndDate_ : accrualStartDate_;
+            Date refDate = *isInArrears_ ? accrualEndDate_ : accrualStartDate_;
             fixingDate_ = index_->fixingCalendar().advance(
                 refDate,
                 -static_cast<Integer>(boost::get<Natural>(fixingDelay_)), Days,
