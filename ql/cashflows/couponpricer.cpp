@@ -116,9 +116,23 @@ namespace QuantLib {
         Date d1 = coupon_->fixingDate();
         Date d2 = index_->valueDate(d1);
         Date d3 = index_->maturityDate(d2);
-        if ((!coupon_->isInArrears() && timingAdjustment_ == Black76) ||
-            coupon_->date() == d3)
+        // if payment date = index maturity date, no timimg adjustment
+        // is required
+        if(coupon_->date() == d3)
             return fixing;
+        // for Black76 timing adjustment decide whether to apply it
+        if(timingAdjustment_ == Black76) {
+            // was the coupon set up with an in arrears flag and
+            // does this indicate in advance fixing?
+            if (coupon_->hasInArrears() && !coupon_->isInArrears())
+                return fixing;
+            // if the coupon was not set up with the in arrears flag
+            // we apply the classic in arrears adjustment only if
+            // the index maturity date is sufficiently close to the
+            // payment date
+            if(std::abs(d3 - coupon_->date()) > 10)
+                return fixing;
+        }
 
         QL_REQUIRE(!capletVolatility().empty(),
                    "missing optionlet volatility");
