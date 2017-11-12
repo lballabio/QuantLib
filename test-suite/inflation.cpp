@@ -84,6 +84,26 @@ namespace {
 
         return instruments;
     }
+    
+    void printTestPeriodErrorMsg(const Date& d,
+                                 const std::pair<Date,Date>& res,
+                                 const std::string& periodName){
+        BOOST_ERROR("wrong " << periodName << " inflation period for Date (1 "
+                    << d.month() << " "
+                    << d.year() << "), Start Date ( "
+                    << res.first.dayOfMonth() << " "
+                    << res.first.month() << " "
+                    << res.first.year() << "), End Date ("
+                    << res.second.dayOfMonth() << " "
+                    << res.second.month() << " "
+                    << res.second.year() << ")");
+    }
+    
+    bool isLeapYear(int year) {
+        if ((year%400==0 || year%100!=0) &&(year%4==0))
+            return true;
+        return false;
+    }
 
 }
 
@@ -971,23 +991,103 @@ void InflationTest::testPeriod() {
 
     Date d;
     Frequency f;
-    /* std::pair<Date,Date> res; */
+    std::pair<Date,Date> res;
 
-    // fails by crashing out
+    // random year between 1950 and 2050
+    srand (time(NULL));
+    int year = rand() %100 + 1950;
+    
+    int days[13] = {0,31,28,31,30,31,30,31,31,30,31,30,31};
+    if (isLeapYear(year))
+        days[2] = 29;
+
     for (Size i=1; i<=12; i++){
-        d = Date(1,Month(i),2009);
+        d = Date(1,Month(i),year);
 
         f = Monthly;
-        /* res = */ inflationPeriod (d,f);
+        res = inflationPeriod (d,f);
+        if (res.first.dayOfMonth() != 1
+            || res.first.month() != i
+            || res.first.year() != year
+            || res.second.dayOfMonth() != days[i]
+            || res.second.month() != i
+            || res.second.year() != year) {
+            printTestPeriodErrorMsg(d, res, "Monthly");
+        }
 
         f = Quarterly;
-        /* res = */ inflationPeriod (d,f);
+        res = inflationPeriod (d,f);
+        
+        if ( (i==1 || i==2 || i==3) && (
+            res.first.dayOfMonth() != 1
+            || res.first.month() != 1
+            || res.first.year() != year
+            || res.second.dayOfMonth() != 31
+            || res.second.month() != 3
+            || res.second.year() != year)) {
+            printTestPeriodErrorMsg(d, res, "Quarterly");
+        }
+        if ( (i==4 || i==5 || i==6) and (
+            res.first.dayOfMonth() != 1
+            || res.first.month() != 4
+            || res.first.year() != year
+            || res.second.dayOfMonth() != 30
+            || res.second.month() != 6
+            || res.second.year() != year)) {
+            printTestPeriodErrorMsg(d, res, "Quarterly");
+        }
+        if ( (i==7 || i==8 || i==9) and (
+            res.first.dayOfMonth() != 1
+            || res.first.month() != 7
+            || res.first.year() != year
+            || res.second.dayOfMonth() != 30
+            || res.second.month() != 9
+            || res.second.year() != year)) {
+            printTestPeriodErrorMsg(d, res, "Quarterly");
+        }
+        if ( (i==10 || i==11 || i==12) and (
+            res.first.dayOfMonth() != 1
+            || res.first.month() != 10
+            || res.first.year() != year
+            || res.second.dayOfMonth() != 31
+            || res.second.month() != 12
+            || res.second.year() != year)) {
+            printTestPeriodErrorMsg(d, res, "Quarterly");
+        }
 
         f = Semiannual;
-        /* res = */ inflationPeriod (d,f);
+        res = inflationPeriod (d,f);
+        
+        if ( (i>0 and i<7) and (
+            res.first.dayOfMonth() != 1
+            || res.first.month() != 1
+            || res.first.year() != year
+            || res.second.dayOfMonth() != 30
+            || res.second.month() != 6
+            || res.second.year() != year)) {
+            printTestPeriodErrorMsg(d, res, "Semiannual");
+        }
+        if ( (i>6 and i<12) and (
+            res.first.dayOfMonth() != 1
+            || res.first.month() != 7
+            || res.first.year() != year
+            || res.second.dayOfMonth() != 31
+            || res.second.month() != 12
+            || res.second.year() != year)) {
+            printTestPeriodErrorMsg(d, res, "Semiannual");
+        }
 
         f = Annual;
-        /* res = */ inflationPeriod (d,f);
+        res = inflationPeriod (d,f);
+        
+        if (res.first.dayOfMonth() != 1
+            || res.first.month() != 1
+            || res.first.year() != year
+            || res.second.dayOfMonth() != 31
+            || res.second.month() != 12
+            || res.second.year() != year) {
+            printTestPeriodErrorMsg(d, res, "Annual");
+        }
     }
 }
 
