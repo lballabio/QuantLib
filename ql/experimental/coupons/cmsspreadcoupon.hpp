@@ -43,14 +43,14 @@ namespace QuantLib {
                   Real nominal,
                   const Date& startDate,
                   const Date& endDate,
-                  boost::variant<Natural, Date> fixingDelay,
+                  const boost::variant<Natural, Date>& fixingDelay,
                   const boost::shared_ptr<SwapSpreadIndex>& index,
                   Real gearing = 1.0,
                   Spread spread = 0.0,
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
-                  boost::optional<bool> isInArrears = boost::none);
+                  const boost::optional<bool>& isInArrears = boost::none);
         //! \name Inspectors
         //@{
         const boost::shared_ptr<SwapSpreadIndex>& swapSpreadIndex() const {
@@ -72,7 +72,7 @@ namespace QuantLib {
                   Real nominal,
                   const Date& startDate,
                   const Date& endDate,
-                  boost::variant<Natural, Date> fixingDelay,
+                  const boost::variant<Natural, Date>& fixingDelay,
                   const boost::shared_ptr<SwapSpreadIndex>& index,
                   Real gearing = 1.0,
                   Spread spread= 0.0,
@@ -81,7 +81,7 @@ namespace QuantLib {
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
-                  boost::optional<bool> isInArrears = boost::none)
+                  const boost::optional<bool>& isInArrears = boost::none)
         : CappedFlooredCoupon(boost::shared_ptr<FloatingRateCoupon>(new
             CmsSpreadCoupon(paymentDate, nominal, startDate, endDate, fixingDelay,
                       index, gearing, spread, refPeriodStart, refPeriodEnd,

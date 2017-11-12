@@ -36,14 +36,14 @@ namespace QuantLib {
                            Real nominal,
                            const Date& startDate,
                            const Date& endDate,
-                           const boost::variant<Natural, Date> fixingDelay,
+                           const boost::variant<Natural, Date>& fixingDelay,
                            const shared_ptr<IborIndex>& iborIndex,
                            Real gearing,
                            Spread spread,
                            const Date& refPeriodStart,
                            const Date& refPeriodEnd,
                            const DayCounter& dayCounter,
-                           boost::optional<bool> isInArrears)
+                           const boost::optional<bool>& isInArrears)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          fixingDelay, iborIndex, gearing, spread,
                          refPeriodStart, refPeriodEnd,

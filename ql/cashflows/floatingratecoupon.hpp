@@ -123,7 +123,7 @@ namespace QuantLib {
         //! convexity adjustment for the given index fixing
         Rate convexityAdjustmentImpl(Rate fixing) const;
         boost::shared_ptr<InterestRateIndex> index_;
-        const boost::variant<Natural, Date> fixingDelay_;
+        boost::variant<Natural, Date> fixingDelay_;
         DayCounter dayCounter_;
         Date fixingDate_;
         Real gearing_;
