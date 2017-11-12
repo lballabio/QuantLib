@@ -162,17 +162,17 @@ namespace QuantLib {
 
         c1_ = boost::shared_ptr<CmsCoupon>(new CmsCoupon(
             coupon_->date(), coupon_->nominal(), coupon_->accrualStartDate(),
-            coupon_->accrualEndDate(), coupon_->fixingDate(),
+            coupon_->accrualEndDate(), coupon_->fixingDelay(),
             index_->swapIndex1(), 1.0, 0.0, coupon_->referencePeriodStart(),
             coupon_->referencePeriodEnd(), coupon_->dayCounter(),
-            coupon_->isInArrears()));
+            coupon_->isInArrearsAsOptional()));
 
         c2_ = boost::shared_ptr<CmsCoupon>(new CmsCoupon(
             coupon_->date(), coupon_->nominal(), coupon_->accrualStartDate(),
-            coupon_->accrualEndDate(), coupon_->fixingDate(),
+            coupon_->accrualEndDate(), coupon_->fixingDelay(),
             index_->swapIndex2(), 1.0, 0.0, coupon_->referencePeriodStart(),
             coupon_->referencePeriodEnd(), coupon_->dayCounter(),
-            coupon_->isInArrears()));
+            coupon_->isInArrearsAsOptional()));
 
         c1_->setPricer(cmsPricer_);
         c2_->setPricer(cmsPricer_);
