@@ -2,6 +2,9 @@ cmake_minimum_required()
 
 project(QuantLib)
 
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/quantlib.cmake)
+configure_msvc_runtime()
+
 # to reference headers via <ql/foo.hpp>, we need to add the root
 # directory of the project to includes
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})

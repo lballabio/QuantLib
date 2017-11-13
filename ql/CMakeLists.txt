@@ -1,7 +1,4 @@
 
-include(${CMAKE_CURRENT_LIST_DIR}/../cmake/quantlib.cmake)
-
-configure_msvc_runtime()
 get_quantlib_library_name(QL_OUTPUT_NAME)
 
 
