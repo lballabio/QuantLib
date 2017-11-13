@@ -20,14 +20,8 @@ macro(get_quantlib_library_name QL_OUTPUT_NAME)
             set(QL_LIB_TOOLSET "-vc100")
         elseif(NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 15)
             set(QL_LIB_TOOLSET "-vc90")
-        elseif(NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 14)
-            set(QL_LIB_TOOLSET "-vc80")
-        elseif(NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 13.10)
-            set(QL_LIB_TOOLSET "-vc71")
-        elseif(NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 13) # Good luck!
-            set(QL_LIB_TOOLSET "-vc7") # yes, this is correct
-        else() # MSVC60 Good luck!
-            set(QL_LIB_TOOLSET "-vc6") # yes, this is correct
+        else()
+            message(FATAL_ERROR "Compiler below vc90 is not supported")
         endif()
         message(STATUS " - Toolset: ${QL_LIB_TOOLSET}")
         
