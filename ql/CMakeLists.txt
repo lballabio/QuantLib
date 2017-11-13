@@ -1,21 +1,19 @@
 
 include(${CMAKE_CURRENT_LIST_DIR}/../cmake/quantlib.cmake)
-get_quantlib_library_name(QL_OUTPUT_NAME_SHARED)
-set(QL_OUTPUT_NAME_STATIC "${QL_OUTPUT_NAME_SHARED}-s")
+
+configure_msvc_runtime()
+get_quantlib_library_name(QL_OUTPUT_NAME)
+
 
 file(GLOB_RECURSE QUANTLIB_FILES "*.hpp" "*.cpp")
-add_library(${QL_OUTPUT_NAME_SHARED} SHARED ${QUANTLIB_FILES})
-add_library(${QL_OUTPUT_NAME_STATIC} STATIC ${QUANTLIB_FILES})
-
-set_property(TARGET ${QL_OUTPUT_NAME_SHARED} PROPERTY PROJECT_LABEL "QuantLib")
-set_property(TARGET ${QL_OUTPUT_NAME_STATIC} PROPERTY PROJECT_LABEL "QuantLib_Static")
-
-# Windows needs to link static library (nothing is declared to export in QuantLib)
 if(WIN32)
-    set(QL_LINK_LIBRARY ${QL_OUTPUT_NAME_STATIC} PARENT_SCOPE)
+    # Windows needs to link static library (nothing is declared to export in QuantLib)
+    add_library(${QL_OUTPUT_NAME} STATIC ${QUANTLIB_FILES})
+    set_property(TARGET ${QL_OUTPUT_NAME} PROPERTY PROJECT_LABEL "QuantLib")
 else()
-    set(QL_LINK_LIBRARY ${QL_OUTPUT_NAME_SHARED} PARENT_SCOPE)
+    add_library(${QL_OUTPUT_NAME} SHARED ${QUANTLIB_FILES})
 endif()
+set(QL_LINK_LIBRARY ${QL_OUTPUT_NAME} PARENT_SCOPE)
 
 
 install(DIRECTORY . DESTINATION include/ql

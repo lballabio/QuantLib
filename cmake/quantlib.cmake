@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)  # Required for CMAKE_VS_PLATFORM_TOOLSET
 
 macro(get_quantlib_library_name QL_OUTPUT_NAME)
     message(STATUS "QuantLib library name tokens:")
-    
+
     # MSVC: Give QuantLib built library different names following code in 'ql/autolink.hpp'
     if(MSVC)
         
@@ -33,14 +33,58 @@ macro(get_quantlib_library_name QL_OUTPUT_NAME)
 
         # - thread linkage
         set(QL_LIB_THREAD_OPT "-mt")  # _MT is defined for /MD and /MT runtimes (https://docs.microsoft.com/es-es/cpp/build/reference/md-mt-ld-use-run-time-library)
-        message(STATUS " - Thread linkage: ${QL_LIB_THREAD_OPT}")
+        message(STATUS " - Thread opt: ${QL_LIB_THREAD_OPT}")
+        
+        # - static/dynamic linkage
+        if(${MSVC_RUNTIME} STREQUAL "static")
+            set(QL_LIB_RT_OPT "-s")
+        endif()
+        message(STATUS " - Linkage opt: ${QL_LIB_RT_OPT}")
         
         # - release/debug is selected during build, so it cannot be part of the generated name
         set(CMAKE_DEBUG_POSTFIX "-gd")
 
-        set(${QL_OUTPUT_NAME} "QuantLib${QL_LIB_TOOLSET}${QL_LIB_PLATFORM}${QL_LIB_THREAD_OPT}")
+        set(${QL_OUTPUT_NAME} "QuantLib${QL_LIB_TOOLSET}${QL_LIB_PLATFORM}${QL_LIB_THREAD_OPT}${QL_LIB_RT_OPT}")
     else()
         set(${QL_OUTPUT_NAME} "QuantLib")
     endif()
     message(STATUS "QuantLib library name: ${${QL_OUTPUT_NAME}}")
 endmacro(get_quantlib_library_name)
+
+macro(configure_msvc_runtime)
+    # Credit: https://stackoverflow.com/questions/10113017/setting-the-msvc-runtime-in-cmake
+    if(MSVC)
+        # Default to statically-linked runtime.
+        if("${MSVC_RUNTIME}" STREQUAL "")
+            set(MSVC_RUNTIME "static")
+        endif()
+
+        # Set compiler options.
+        set(variables
+            CMAKE_C_FLAGS_DEBUG
+            CMAKE_C_FLAGS_MINSIZEREL
+            CMAKE_C_FLAGS_RELEASE
+            CMAKE_C_FLAGS_RELWITHDEBINFO
+            CMAKE_CXX_FLAGS_DEBUG
+            CMAKE_CXX_FLAGS_MINSIZEREL
+            CMAKE_CXX_FLAGS_RELEASE
+            CMAKE_CXX_FLAGS_RELWITHDEBINFO
+            )
+
+        if(${MSVC_RUNTIME} STREQUAL "static")
+            message(STATUS "MSVC -> forcing use of statically-linked runtime.")
+            foreach(variable ${variables})
+                if(${variable} MATCHES "/MD")
+                    string(REGEX REPLACE "/MD" "/MT" ${variable} "${${variable}}")
+                endif()
+            endforeach()
+        else()
+            message(STATUS "MSVC -> forcing use of dynamically-linked runtime." )
+            foreach(variable ${variables})
+                if(${variable} MATCHES "/MT")
+                    string(REGEX REPLACE "/MT" "/MD" ${variable} "${${variable}}")
+                endif()
+            endforeach()
+        endif()
+    endif()
+endmacro()

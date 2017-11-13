@@ -56,11 +56,19 @@
 #  define QL_LIB_THREAD_OPT
 #endif
 
-// select linkage opt: (always static, nothing is exported)
-#if defined(_DEBUG)
-#  define QL_LIB_RT_OPT "-s-gd"
+// select linkage opt:
+#ifdef _DLL
+#  if defined(_DEBUG)
+#    define QL_LIB_RT_OPT "-gd"
+#  else
+#    define QL_LIB_RT_OPT
+#  endif
 #else
-#  define QL_LIB_RT_OPT "-s"
+#  if defined(_DEBUG)
+#    define QL_LIB_RT_OPT "-s-gd"
+#  else
+#    define QL_LIB_RT_OPT "-s"
+#  endif
 #endif
 
 #define QL_LIB_NAME "QuantLib-" QL_LIB_TOOLSET QL_LIB_PLATFORM QL_LIB_THREAD_OPT QL_LIB_RT_OPT ".lib"
