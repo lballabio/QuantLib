@@ -456,7 +456,7 @@ void TermStructureTest::testCompositeZeroYieldStructures() {
 
         if (std::fabs(actual - expected) > tolerance)
             BOOST_ERROR(
-                "unable to reproduce discount from implied curve\n"
+                "unable to reproduce zero yield rate from composite input curve\n"
                 << std::fixed << std::setprecision(10)
                 << "    calculated: " << actual << "\n"
                 << "    expected:   " << expected);
