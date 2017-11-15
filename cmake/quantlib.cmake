@@ -38,17 +38,17 @@ macro(get_quantlib_library_name QL_OUTPUT_NAME)
         # - static/dynamic linkage
         if(${MSVC_RUNTIME} STREQUAL "static")
             set(QL_LIB_RT_OPT "-s")
+            set(CMAKE_DEBUG_POSTFIX "gd")
+        else()
+            set(CMAKE_DEBUG_POSTFIX "-gd")
         endif()
         message(STATUS " - Linkage opt: ${QL_LIB_RT_OPT}")
         
-        # - release/debug is selected during build, so it cannot be part of the generated name
-        set(CMAKE_DEBUG_POSTFIX "-gd")
-
         set(${QL_OUTPUT_NAME} "QuantLib${QL_LIB_TOOLSET}${QL_LIB_PLATFORM}${QL_LIB_THREAD_OPT}${QL_LIB_RT_OPT}")
     else()
         set(${QL_OUTPUT_NAME} "QuantLib")
     endif()
-    message(STATUS "QuantLib library name: ${${QL_OUTPUT_NAME}}")
+    message(STATUS "QuantLib library name: ${${QL_OUTPUT_NAME}}[${CMAKE_DEBUG_POSTFIX}]")
 endmacro(get_quantlib_library_name)
 
 macro(configure_msvc_runtime)
