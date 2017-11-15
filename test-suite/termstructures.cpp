@@ -337,7 +337,10 @@ void TermStructureTest::testLinkToNullUnderlying() {
 
 void TermStructureTest::testCompositeZeroYieldStructures() {
     BOOST_TEST_MESSAGE(
-        "Testing composite zero yield structure...");
+        "Testing composite zero yield structures...");
+
+    SavedSettings backup;
+    Settings::instance().evaluationDate() = Date(10, Nov, 2017);
 
     std::vector<Date> dates;
     std::vector<Rate> rates;
@@ -437,16 +440,16 @@ void TermStructureTest::testCompositeZeroYieldStructures() {
     dates.push_back(Date(15, Dec, 2141));
 
     rates.push_back(0.00892551511527986);
-    rates.push_back(0.0412773974133423);
-    rates.push_back(0.0567251712638837);
-    rates.push_back(0.0878295160422323);
-    rates.push_back(0.0904423159037861);
-    rates.push_back(0.0998714928415959);
-    rates.push_back(0.0400900444382439);
+    rates.push_back(0.0278755322562788);
+    rates.push_back(0.0512001768603456);
+    rates.push_back(0.0729941474263546);
+    rates.push_back(0.0778333309498459);
+    rates.push_back(0.0828451659139004);
+    rates.push_back(0.0503573807521742);
 
     Real tolerance = 1.0e-10;
     for (Size i = 0; i < dates.size(); ++i) {
-        Rate actual = compoundCurve->forwardRate(dates[i], dates[i], Actual365Fixed(), Continuous).rate();
+        Rate actual = compoundCurve->zeroRate(dates[i], Actual365Fixed(), Continuous).rate();
         Rate expected = rates[i];
 
         if (std::fabs(actual - expected) > tolerance)

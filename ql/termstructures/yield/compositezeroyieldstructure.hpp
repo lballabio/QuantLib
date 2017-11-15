@@ -37,8 +37,7 @@ namespace QuantLib {
                                       const Handle<YieldTermStructure>& h2,
                                       const BinaryFunction& f,
                                       Compounding comp = Continuous,
-                                      Frequency freq = NoFrequency,
-                                      const DayCounter& dc = DayCounter());
+                                      Frequency freq = NoFrequency);
 
           //! \name YieldTermStructure interface
           //@{
@@ -54,18 +53,14 @@ namespace QuantLib {
           void update();
           //@}
       protected:
-        //! returns the spreaded zero yield rate
+        //! returns the composite zero yield rate
         Rate zeroYieldImpl(Time) const;
-        //! returns the spreaded forward rate
-        /* This method must disappear should the spread become a curve */
-        Rate forwardImpl(Time) const;
       private:
         Handle<YieldTermStructure> curve1_;
         Handle<YieldTermStructure> curve2_;
         BinaryFunction f_;
         Compounding comp_;
         Frequency freq_;
-        DayCounter dc_;
     };
 
     // inline definitions
@@ -76,9 +71,8 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& h2, 
         const BinaryFunction& f,
         Compounding comp, 
-        Frequency freq, 
-        const DayCounter& dc)
-    : curve1_(h1), curve2_(h2), f_(f), comp_(comp), freq_(freq), dc_(dc) {
+        Frequency freq)
+    : curve1_(h1), curve2_(h2), f_(f), comp_(comp), freq_(freq) {
         if (!curve1_.empty() && !curve2_.empty())
             enableExtrapolation(curve1_->allowsExtrapolation() && curve2_->allowsExtrapolation());
 
@@ -139,19 +133,8 @@ namespace QuantLib {
         InterestRate zeroRate2 =
             curve2_->zeroRate(t, comp_, freq_, true);
 
-        InterestRate compositeRate(f_(zeroRate1, zeroRate2), dc_, comp_, freq_);
+        InterestRate compositeRate(f_(zeroRate1, zeroRate2), dayCounter(), comp_, freq_);
         return compositeRate.equivalentRate(Continuous, NoFrequency, t);
-    }
-
-    template <class BinaryFunction>
-    inline Rate CompositeZeroYieldStructure<BinaryFunction>::forwardImpl(Time t) const {
-        InterestRate forwardRate1 =
-            curve1_->forwardRate(t, t, comp_, freq_, true);
-
-        InterestRate forwardRate2 =
-            curve2_->forwardRate(t, t, comp_, freq_, true);
-
-        return f_(forwardRate1, forwardRate2);
     }
 }
 #endif
