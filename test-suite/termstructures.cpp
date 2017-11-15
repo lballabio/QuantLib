@@ -115,10 +115,7 @@ namespace {
         }
     };
 
-    Real add(Real x, Real y) { return x + y; }
-    Real mul(Real x, Real y) { return x*y; }
     Real sub(Real x, Real y) { return x - y; }
-
 }
 
 void TermStructureTest::testReferenceChange() {
@@ -344,8 +341,6 @@ void TermStructureTest::testCompositeZeroYieldStructures() {
 
     std::vector<Date> dates;
     std::vector<Rate> rates;
-
-    Date referenceDate(10, Nov, 2017);
 
     // First curve
     dates.push_back(Date(10, Nov, 2017));
