@@ -8,17 +8,6 @@ set(BENCHMARK_FILES "main.cpp" "quantlibbenchmark.cpp" "americanoption.cpp" "asi
 # these do not appear in vcproj
 list(REMOVE_ITEM TEST_SUITE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/quantlibbenchmark.cpp)
 
-if (USE_BOOST_DYNAMIC_LIBRARIES)
-   add_definitions(-DBOOST_TEST_DYN_LINK)
-endif (USE_BOOST_DYNAMIC_LIBRARIES)
-
-if(MSVC)
-    set(Boost_USE_STATIC_LIBS ON)
-    if(${MSVC_RUNTIME} STREQUAL "static")
-        set(Boost_USE_STATIC_RUNTIME ON)
-    endif()
-endif()
-
 find_package (Boost COMPONENTS unit_test_framework REQUIRED)
 
 set (TEST quantlib-test-suite)
