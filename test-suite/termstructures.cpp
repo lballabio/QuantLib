@@ -445,7 +445,7 @@ void TermStructureTest::testCompositeZeroYieldStructures() {
     rates.push_back(0.0400900444382439);
 
     Real tolerance = 1.0e-10;
-    for (int i = 0; i < dates.size(); ++i) {
+    for (Size i = 0; i < dates.size(); ++i) {
         Rate actual = compoundCurve->forwardRate(dates[i], dates[i], Actual365Fixed(), Continuous).rate();
         Rate expected = rates[i];
 
