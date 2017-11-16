@@ -33,7 +33,6 @@
 #include <ql/currency.hpp>
 #include <ql/indexes/swapindex.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
-
 #include <ql/utilities/null_deleter.hpp>
 
 using boost::shared_ptr;
@@ -961,14 +960,20 @@ namespace QuantLib {
                                        bool endOfMonth,
                                        bool isFxBaseCurrencyCollateralCurrency,
                                        const Handle<YieldTermStructure>& coll,
-                                       const bool requireUSCalendar)
-                                       : RelativeDateRateHelper(fwdPoint), spot_(spotFx), tenor_(tenor),
+                                       const Calendar& tradingCalendar)
+    : RelativeDateRateHelper(fwdPoint), spot_(spotFx), tenor_(tenor),
       fixingDays_(fixingDays), cal_(calendar), conv_(convention),
       eom_(endOfMonth),
       isFxBaseCurrencyCollateralCurrency_(isFxBaseCurrencyCollateralCurrency),
-      collHandle_(coll), requireUSCalendar_(requireUSCalendar) {
+      collHandle_(coll), tradingCalendar_(tradingCalendar) {
         registerWith(spot_);
         registerWith(collHandle_);
+
+        if (tradingCalendar_.empty())
+            jointCalendar_ = cal_;
+        else
+            jointCalendar_ = JointCalendar(tradingCalendar_, cal_,
+                                           JoinHolidays);
         initializeDates();
     }
 
@@ -976,22 +981,16 @@ namespace QuantLib {
         // if the evaluation date is not a business day
         // then move to the next business day
         Date refDate = cal_.adjust(evaluationDate_);
-        usIncludedCalendar_ = JointCalendar(UnitedStates(UnitedStates::Settlement), 
-                                            cal_, 
-                                            JoinHolidays);
-
         earliestDate_ = cal_.advance(refDate, fixingDays_*Days);
 
-        if (requireUSCalendar_ == true) {
+        if (!tradingCalendar_.empty()) {
             // check if fx trade can be settled in US, if not, adjust it
-            earliestDate_ = usIncludedCalendar_.adjust(earliestDate_);    
-        }
-        if (requireUSCalendar_ == true) {
-            latestDate_ = usIncludedCalendar_.advance(earliestDate_, tenor_, conv_, eom_);
+            earliestDate_ = jointCalendar_.adjust(earliestDate_);
+            latestDate_ = jointCalendar_.advance(earliestDate_, tenor_,
+                                                 conv_, eom_);
         } else {
             latestDate_ = cal_.advance(earliestDate_, tenor_, conv_, eom_);
         }
-
     }
 
     Real FxSwapRateHelper::impliedQuote() const {
