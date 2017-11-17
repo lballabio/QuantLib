@@ -31,7 +31,6 @@
 #include <ql/termstructures/credit/interpolatedsurvivalprobabilitycurve.hpp>
 #include <ql/termstructures/credit/interpolatedhazardratecurve.hpp>
 #include <ql/termstructures/credit/interpolateddefaultdensitycurve.hpp>
-#include <ql/experimental/credit/interpolatedaffinehazardratecurve.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
 
 namespace QuantLib {
@@ -39,8 +38,6 @@ namespace QuantLib {
     namespace detail {
         const Real avgHazardRate = 0.01;
         const Real maxHazardRate = 1.0;
-        // hazard rate compensation TS for affine models
-        const Real minHazardRateComp = -1.0;
     }
 
     //! Survival-Probability-curve traits
@@ -262,96 +259,6 @@ namespace QuantLib {
             data[i] = density;
             if (i==1)
                 data[0] = density; // first point is updated as well
-        }
-        // upper bound for convergence loop
-        static Size maxIterations() { return 30; }
-    };
-
-
-
-
-    /*! Piecewise (deterministic) plus affine (stochastic) terms composed
-     hazard rate
-     */
-    struct AffineHazardRate {
-        // interpolated curve type
-        template <class Interpolator>
-        struct curve {
-            typedef InterpolatedAffineHazardRateCurve<Interpolator> type;
-        };
-        // helper class
-        typedef BootstrapHelper<DefaultProbabilityTermStructure> helper;
-
-        // start of curve data
-        static Date initialDate(const DefaultProbabilityTermStructure* c) {
-            return c->referenceDate();
-        }
-        // dummy value at reference date
-        static Real initialValue(const DefaultProbabilityTermStructure*) {
-            return detail::avgHazardRate;
-        }
-
-        // guesses
-        template <class C>
-        static Real guess(Size i,
-                          const C* c,
-                          bool validData,
-                          Size) // firstAliveHelper
-        {
-            if (validData) // previous iteration value
-                return c->data()[i];
-
-            if (i==1) // first pillar
-                return 0.0001;
-               // return detail::avgHazardRate;
-
-            // extrapolate
-            Date d = c->dates()[i];
-            /* Uneasy about the naming: Here we are bootstrapping only the
-             deterministic part of the intensity it might be a better idea to
-             have a different naming when having these two components.
-             What is meant here is the deterministic part of a ++model type
-            */
-            return c->hazardRate(d, true);
-        }
-
-        // constraints
-        template <class C>
-        static Real minValueAfter(Size i,
-                                  const C* c,
-                                  bool validData,
-                                  Size) // firstAliveHelper
-        {
-            if (validData) {
-                Real r = *(std::min_element(c->data().begin(),
-                                            c->data().end()));
-                return r/2.0;
-            }
-            return detail::minHazardRateComp;
-            ///return QL_EPSILON;
-        }
-        template <class C>
-        static Real maxValueAfter(Size i,
-                                  const C* c,
-                                  bool validData,
-                                  Size) // firstAliveHelper
-        {
-            if (validData) {
-                Real r = *(std::max_element(c->data().begin(),
-                                            c->data().end()));
-                return r*2.0;
-            }
-            // no constraints.
-            // We choose as max a value very unlikely to be exceeded.
-            return detail::maxHazardRate;
-        }
-        // update with new guess
-        static void updateGuess(std::vector<Real>& data,
-                                Real rate,
-                                Size i) {
-            data[i] = rate;
-            if (i==1)
-                data[0] = rate; // first point is updated as well
         }
         // upper bound for convergence loop
         static Size maxIterations() { return 30; }

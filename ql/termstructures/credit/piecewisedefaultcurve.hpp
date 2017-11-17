@@ -29,6 +29,7 @@
 
 #include <ql/termstructures/iterativebootstrap.hpp>
 #include <ql/termstructures/credit/probabilitytraits.hpp>
+#include <ql/models/shortrate/onefactormodel.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/quote.hpp>
 
@@ -150,7 +151,7 @@ namespace QuantLib {
             const Date& referenceDate,
             const std::vector<boost::shared_ptr<typename Traits::helper> >&
                                                               instruments,
-               const DayCounter& dayCounter,
+            const DayCounter& dayCounter,
             Real accuracy,
             const boost::shared_ptr<OneFactorAffineModel> model,
             const Interpolator& i = Interpolator())
