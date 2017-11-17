@@ -1,2 +1,1 @@
 add_executable(MultidimIntegral MultidimIntegral.cpp)
-target_link_libraries(MultidimIntegral QuantLib)
