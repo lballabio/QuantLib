@@ -34,7 +34,8 @@ namespace QuantLib {
 
         \ingroup daycounters
 
-        \deprecated Use Actual365Fixed(Actual365Fixed::NoLeap)
+        \deprecated Use Actual365Fixed(Actual365Fixed::NoLeap).
+                    Deprecated in version 1.11.
     */
     class QL_DEPRECATED Actual365NoLeap : public DayCounter {
     private:

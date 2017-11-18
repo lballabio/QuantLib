@@ -137,6 +137,12 @@ namespace QuantLib {
         */
         virtual void update() = 0;
 
+        /*! This method allows to explicitly update the instance itself
+          and nested observers. If notifications are disabled a call to
+          this method ensures an update of such nested observers. It
+          should be implemented in derived classes whenever applicable */
+        virtual void deepUpdate();
+
       private:
         set_type observables_;
     };
@@ -240,6 +246,10 @@ namespace QuantLib {
         for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
             (*i)->unregisterObserver(this);
         observables_.clear();
+    }
+
+    inline void Observer::deepUpdate() {
+        update();
     }
 
 }

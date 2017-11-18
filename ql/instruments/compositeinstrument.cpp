@@ -57,5 +57,12 @@ namespace QuantLib {
         }
     }
 
+    void CompositeInstrument::deepUpdate() {
+        for (const_iterator i=components_.begin(); i!=components_.end(); ++i) {
+            i->first->deepUpdate();
+        }
+        update();
+    }
+
 }
 

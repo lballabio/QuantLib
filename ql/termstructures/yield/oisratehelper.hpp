@@ -40,7 +40,13 @@ namespace QuantLib {
                       // exogenous discounting curve
                       const Handle<YieldTermStructure>& discountingCurve
                                                = Handle<YieldTermStructure>(),
-                      bool telescopicValueDates = false);
+                      bool telescopicValueDates = false,
+                      Natural paymentLag = 0,
+                      BusinessDayConvention paymentConvention = Following,
+                      Frequency paymentFrequency = Annual,
+                      const Calendar& paymentCalendar = Calendar(),
+                      const Period& forwardStart = 0 * Days, 
+                      const Spread overnightSpread = 0.0);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -67,6 +73,13 @@ namespace QuantLib {
         Handle<YieldTermStructure> discountHandle_;
         bool telescopicValueDates_;
         RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
+
+        Natural paymentLag_;
+        BusinessDayConvention paymentConvention_;
+        Frequency paymentFrequency_;
+        Calendar paymentCalendar_;
+        Period forwardStart_;
+        Spread overnightSpread_;
     };
 
     //! Rate helper for bootstrapping over Overnight Indexed Swap rates

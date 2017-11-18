@@ -109,11 +109,11 @@ namespace QuantLib {
             refEnd   =   end = schedule.date(i+1);
             Date paymentDate =
                 isZero ? lastPaymentDate : paymentCalendar.advance(end, paymentLag, Days, paymentAdj);
-            if (i==0   && !schedule.isRegular(i+1)) {
+            if (i==0   && (schedule.hasIsRegular() && schedule.hasTenor() && !schedule.isRegular(i+1))) {
                 BusinessDayConvention bdc = schedule.businessDayConvention();
                 refStart = calendar.adjust(end - schedule.tenor(), bdc);
             }
-            if (i==n-1 && !schedule.isRegular(i+1)) {
+            if (i==n-1 && (schedule.hasIsRegular() && schedule.hasTenor() && !schedule.isRegular(i+1))) {
                 BusinessDayConvention bdc = schedule.businessDayConvention();
                 refEnd = calendar.adjust(start + schedule.tenor(), bdc);
             }
@@ -213,11 +213,11 @@ namespace QuantLib {
             refStart = start = schedule.date(i);
             refEnd   =   end = schedule.date(i+1);
             paymentDate = calendar.adjust(end, paymentAdj);
-            if (i==0   && !schedule.isRegular(i+1)) {
+            if (i==0 && (schedule.hasIsRegular() && schedule.hasTenor() && !schedule.isRegular(i+1))) {
                 BusinessDayConvention bdc = schedule.businessDayConvention();
                 refStart = calendar.adjust(end - schedule.tenor(), bdc);
             }
-            if (i==n-1 && !schedule.isRegular(i+1)) {
+            if (i==n-1 && (schedule.hasIsRegular() && schedule.hasTenor() && !schedule.isRegular(i+1))) {
                 BusinessDayConvention bdc = schedule.businessDayConvention();
                 refEnd = calendar.adjust(start + schedule.tenor(), bdc);
             }
