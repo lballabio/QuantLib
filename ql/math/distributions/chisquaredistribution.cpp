@@ -26,11 +26,11 @@
 
 namespace QuantLib {
 
-    Real ChiSquareDistribution::operator()(Real x) const {
-        return GammaDistribution(0.5*df_)(0.5*x);
+    Real CumulativeChiSquareDistribution::operator()(Real x) const {
+        return CumulativeGammaDistribution(0.5*df_)(0.5*x);
     }
 
-    Real NonCentralChiSquareDistribution::operator()(Real x) const {
+    Real NonCentralCumulativeChiSquareDistribution::operator()(Real x) const {
         if (x <= 0.0)
             return 0.0;
 
