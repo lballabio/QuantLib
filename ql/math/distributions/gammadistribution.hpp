@@ -41,8 +41,11 @@ namespace QuantLib {
         Real a_;
     };
 
-	QL_DEPRECATED
-	typedef CumulativeGammaDistribution GammaDistribution;
+    /*! \deprecated Use CumulativeGammaDistribution instead.
+                    Deprecated in version 1.12.
+    */
+    QL_DEPRECATED
+    typedef CumulativeGammaDistribution GammaDistribution;
 
     //! Gamma function class
     /*! This is a function defined by
