@@ -2,6 +2,10 @@
 QuantLib: the free/open-source library for quantitative finance
 ===============================================================
 
+[![Build Status](https://travis-ci.org/lballabio/QuantLib.svg?branch=master)](https://travis-ci.org/lballabio/QuantLib)
+
+---
+
 The QuantLib project (<http://quantlib.org>) is aimed at providing a
 comprehensive software framework for quantitative finance. QuantLib is
 a free/open-source library for modeling, trading, and risk management
