@@ -41,7 +41,7 @@ namespace QuantLib {
     example of this is the CIR++ model as employed in credit.
 
     (Although this is not usually the preferred way one can instead match the
-    model to price the market. For this use MatchedAffineHazardRateTS.)
+    model to price the market.)
 
     Notice that here, hazardRateImpl(Time) returns the deterministic part of
     the hazard rate and not E[\lambda] This is what the bootstrapping
