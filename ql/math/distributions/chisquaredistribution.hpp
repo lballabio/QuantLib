@@ -61,10 +61,10 @@ namespace QuantLib {
     QL_DEPRECATED
     typedef NonCentralCumulativeChiSquareDistribution NonCentralChiSquareDistribution;
 
-    class InverseNonCentralChiSquareDistribution
+    class InverseNonCentralCumulativeChiSquareDistribution
         : public std::unary_function<Real,Real> {
       public:
-        InverseNonCentralChiSquareDistribution(Real df, Real ncp,
+        InverseNonCentralCumulativeChiSquareDistribution(Real df, Real ncp,
                                                Size maxEvaluations=10,
                                                Real accuracy = 1e-8);
         Real operator()(Real x) const;
@@ -75,6 +75,12 @@ namespace QuantLib {
         const Size maxEvaluations_;
         const Real accuracy_;
     };
+
+    /*! \deprecated Use InverseNonCentralCumulativeChiSquareDistribution instead.
+	            Deprecated in version 1.12.
+    */
+    QL_DEPRECATED
+    typedef InverseNonCentralCumulativeChiSquareDistribution InverseNonCentralChiSquareDistribution;
 
 }
 

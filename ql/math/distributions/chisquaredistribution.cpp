@@ -90,8 +90,8 @@ namespace QuantLib {
 
     }
 
-    InverseNonCentralChiSquareDistribution::
-      InverseNonCentralChiSquareDistribution(Real df, Real ncp, 
+    InverseNonCentralCumulativeChiSquareDistribution::
+      InverseNonCentralCumulativeChiSquareDistribution(Real df, Real ncp, 
                                              Size maxEvaluations, 
                                              Real accuracy)
     : nonCentralDist_(df, ncp),
@@ -100,7 +100,7 @@ namespace QuantLib {
       accuracy_(accuracy) {
     }
 
-    Real InverseNonCentralChiSquareDistribution::operator()(Real x) const {
+    Real InverseNonCentralCumulativeChiSquareDistribution::operator()(Real x) const {
 
         // first find the right side of the interval
         Real upper = guess_;
