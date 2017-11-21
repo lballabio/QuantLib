@@ -3120,6 +3120,9 @@
     <ClInclude Include="ql\experimental\credit\integralntdengine.hpp">
       <Filter>experimental\credit</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\credit\interpolatedaffinehazardratecurve.hpp">
+      <Filter>experimental\credit</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\credit\issuer.hpp">
       <Filter>experimental\credit</Filter>
     </ClInclude>
@@ -3133,6 +3136,9 @@
       <Filter>experimental\credit</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\credit\nthtodefault.hpp">
+      <Filter>experimental\credit</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\credit\onefactoraffinesurvival.hpp">
       <Filter>experimental\credit</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\credit\onefactorcopula.hpp">

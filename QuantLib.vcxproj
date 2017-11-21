@@ -1585,11 +1585,13 @@
     <ClInclude Include="ql\experimental\credit\inhomogeneouspooldef.hpp" />
     <ClInclude Include="ql\experimental\credit\integralcdoengine.hpp" />
     <ClInclude Include="ql\experimental\credit\integralntdengine.hpp" />
+    <ClInclude Include="ql\experimental\credit\interpolatedaffinehazardratecurve.hpp" />
     <ClInclude Include="ql\experimental\credit\issuer.hpp" />
     <ClInclude Include="ql\experimental\credit\loss.hpp" />
     <ClInclude Include="ql\experimental\credit\lossdistribution.hpp" />
     <ClInclude Include="ql\experimental\credit\midpointcdoengine.hpp" />
     <ClInclude Include="ql\experimental\credit\nthtodefault.hpp" />
+    <ClInclude Include="ql\experimental\credit\onefactoraffinesurvival.hpp" />
     <ClInclude Include="ql\experimental\credit\onefactorcopula.hpp" />
     <ClInclude Include="ql\experimental\credit\onefactorgaussiancopula.hpp" />
     <ClInclude Include="ql\experimental\credit\onefactorstudentcopula.hpp" />

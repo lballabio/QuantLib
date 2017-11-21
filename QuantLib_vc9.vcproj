@@ -8274,6 +8274,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\interpolatedaffinehazardratecurve.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\issuer.cpp"
 					>
 				</File>
@@ -8307,6 +8311,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\nthtodefault.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\onefactoraffinesurvival.hpp"
 					>
 				</File>
 				<File

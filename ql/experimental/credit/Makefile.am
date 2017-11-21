@@ -25,11 +25,13 @@ this_include_HEADERS = \
     inhomogeneouspooldef.hpp \
     integralcdoengine.hpp \
     integralntdengine.hpp \
+    interpolatedaffinehazardratecurve.hpp \
     issuer.hpp \
     loss.hpp \
     lossdistribution.hpp \
     midpointcdoengine.hpp \
     nthtodefault.hpp \
+    onefactoraffinesurvival.hpp \
     onefactorcopula.hpp \
     onefactorgaussiancopula.hpp \
     onefactorstudentcopula.hpp \
