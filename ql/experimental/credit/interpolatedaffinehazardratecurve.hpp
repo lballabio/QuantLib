@@ -22,6 +22,7 @@
 
 #include <ql/stochasticprocess.hpp>
 #include <ql/experimental/credit/onefactoraffinesurvival.hpp>
+#include <ql/termstructures/credit/probabilitytraits.hpp>
 #include <ql/termstructures/interpolatedcurve.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
 #include <utility>
