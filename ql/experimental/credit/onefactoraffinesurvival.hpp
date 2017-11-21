@@ -68,22 +68,23 @@ namespace QuantLib {
             return Date::maxDate();
         }
 
-        // \todo turn into a protected method to be called by \
-        //    defaults and survivals
         /* Notice this is not calling hazard rate methods, these are 
-        stochastic now.
+           stochastic now.
         */
         /*!
-          \brief Returns the probability at a future time dTgt, conditional to
+          Returns the probability at a future time dTgt, conditional to
           survival at a prior time dFwd and to the realization of a particular
           hazard rate value at dFwd.
           \param dFwd Time of the forward survival calculation and HR
-          realization.
+                      realization.
           \param dTgt Target time of survival probability.
-          \param yVal Realizaed value of the HR at time dFwd.
+          \param yVal Realized value of the HR at time dFwd.
           \param extrapolate Allow curve extrapolation.
           \return Survival probability.
-         */
+
+          \todo turn into a protected method to be called by
+                defaults and survivals
+        */
         /*
           Note: curve extrapolation has a different meaning on different curve
             types; for matched to market structures the credit market curves

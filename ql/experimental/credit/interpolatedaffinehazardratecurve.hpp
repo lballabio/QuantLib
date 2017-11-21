@@ -133,7 +133,7 @@ namespace QuantLib {
         /*! Probability of default conditional to the realization of a given
         value of the stochastic part of the hazard rate at a prior time (and
         thus to survival at that time).
-        \$ P_{surv}(\tau>tTarget|F_{tFwd})\$
+        \f$ P_{surv}(\tau>tTarget|F_{tFwd}) \f$
         */
         Probability conditionalSurvivalProbabilityImpl(Time tFwd, Time tTarget, 
             Real yVal) const;
