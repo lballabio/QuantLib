@@ -89,19 +89,16 @@ namespace QuantLib {
         References for timing adjustments
         Black76             Hull, Options, Futures and other
                             derivatives, 4th ed., page 550
-        BivariateLognormal  http://ssrn.com/abstract=2170721
-        The bivariate lognormal adjustment implementation is
-        still considered experimental */
+        BivariateLognormal  http://ssrn.com/abstract=2170721 */
     class BlackIborCouponPricer : public IborCouponPricer {
       public:
         enum TimingAdjustment { Black76, BivariateLognormal };
         BlackIborCouponPricer(
-            const Handle< OptionletVolatilityStructure > &v =
-                Handle< OptionletVolatilityStructure >(),
+            const Handle<OptionletVolatilityStructure>& v =
+                Handle<OptionletVolatilityStructure>(),
             const TimingAdjustment timingAdjustment = Black76,
-            const Handle< Quote > correlation =
-                Handle< Quote >(boost::shared_ptr<Quote>(
-                                                   new SimpleQuote(1.0))))
+            const Handle<Quote> correlation =
+                Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(1.0))))
             : IborCouponPricer(v), timingAdjustment_(timingAdjustment),
               correlation_(correlation) {
             QL_REQUIRE(timingAdjustment_ == Black76 ||
@@ -135,7 +132,7 @@ namespace QuantLib {
 
       private:
         const TimingAdjustment timingAdjustment_;
-        const Handle< Quote > correlation_;
+        const Handle<Quote> correlation_;
     };
 
     //! base pricer for vanilla CMS coupons
