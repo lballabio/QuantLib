@@ -144,8 +144,8 @@ void RiskStatisticsTest::testResults() {
 
             // mean
             expected = averages[i];
-            tolerance = (expected == 0.0 ? 1.0e-13 :
-                                           std::fabs(expected)*1.0e-13);
+            tolerance = (expected == 0.0 ? 2.0e-13 :
+                                           std::fabs(expected)*2.0e-13);
             calculated = igs.mean();
             if (std::fabs(calculated-expected) > tolerance)
                 BOOST_FAIL("IncrementalGaussianStatistics: "

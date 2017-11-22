@@ -26,8 +26,8 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 namespace QuantLib {
 
-    namespace {
-
+    namespace detail {
+      namespace VarianceGammaEngine {
         class Integrand : std::unary_function<Real,Real> {
         public:
             Integrand(const boost::shared_ptr<StrikedTypePayoff>& payoff,
@@ -70,6 +70,7 @@ namespace QuantLib {
             Real omega_;
             Real gammaDenom_;
         };
+      }
     }
 
     VarianceGammaEngine::VarianceGammaEngine(
@@ -96,8 +97,8 @@ namespace QuantLib {
         DayCounter rfdc  = process_->riskFreeRate()->dayCounter();
         Time t = rfdc.yearFraction(process_->riskFreeRate()->referenceDate(),
             arguments_.exercise->lastDate());
-    
-        Integrand f(payoff,
+
+        detail::VarianceGammaEngine::Integrand f(payoff,
             process_->x0(),
             t, riskFreeDiscount, dividendDiscount,
             process_->sigma(), process_->nu(), process_->theta());
@@ -109,4 +110,3 @@ namespace QuantLib {
     }
 
 }
-
