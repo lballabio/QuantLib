@@ -46,10 +46,10 @@ namespace QuantLib {
                 return constraint_.test(projection_.include(params));
             }
             Array upperBound(const Array &params) const {
-                return constraint_.upperBound(projection_.include(params));
+				return projection_.project(constraint_.upperBound(projection_.include(params)));
             }
             Array lowerBound(const Array &params) const {
-                return constraint_.lowerBound(projection_.include(params));
+				return projection_.project(constraint_.lowerBound(projection_.include(params)));
             }
 
           private:
