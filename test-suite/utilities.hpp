@@ -38,17 +38,6 @@
 // This makes it easier to use array literals (alas, no std::vector literals)
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
-/* the following works around a problem with Boost 1.32 where std::fixed
-   and similar manipulators could not be sent to the Boost streams */
-#if defined(QL_WORKING_BOOST_STREAMS)
-#define QL_FIXED std::fixed
-#define QL_SCIENTIFIC std::scientific
-#else
-#define QL_FIXED ""
-#define QL_SCIENTIFIC ""
-#endif
-
-
 /* the following displays the elapsed time for the test if
    QL_DISPLAY_TEST_TIME is defined. */
 #if defined(QL_DISPLAY_TEST_TIME)

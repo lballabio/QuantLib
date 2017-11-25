@@ -68,6 +68,9 @@ namespace QuantLib {
 
         MakeOIS& withDiscountingTermStructure(
                   const Handle<YieldTermStructure>& discountingTermStructure);
+
+        MakeOIS &withTelescopicValueDates(bool telescopicValueDates);
+
         MakeOIS& withPricingEngine(
                               const boost::shared_ptr<PricingEngine>& engine);
       private:
@@ -95,6 +98,8 @@ namespace QuantLib {
         DayCounter fixedDayCount_;
 
         boost::shared_ptr<PricingEngine> engine_;
+
+        bool telescopicValueDates_;
     };
 
 }

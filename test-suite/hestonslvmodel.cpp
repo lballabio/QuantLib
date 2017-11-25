@@ -202,7 +202,7 @@ void HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation() {
 			boost::make_shared<FdmBlackScholesMesher>(xGrid, process, maturity, s0)));
 
     const boost::shared_ptr<FdmLinearOpComposite> uniformBSFwdOp(
-		boost::make_shared<FdmBlackScholesFwdOp>(uniformMesher, process, s0, 0));
+		boost::make_shared<FdmBlackScholesFwdOp>(uniformMesher, process, s0, false));
 
     const boost::shared_ptr<FdmMesher> concentratedMesher(
 		boost::make_shared<FdmMesherComposite>(
@@ -211,7 +211,7 @@ void HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation() {
                                       std::pair<Real, Real>(s0, 0.1))));
 
     const boost::shared_ptr<FdmLinearOpComposite> concentratedBSFwdOp(
-		boost::make_shared<FdmBlackScholesFwdOp>(concentratedMesher, process, s0, 0));
+		boost::make_shared<FdmBlackScholesFwdOp>(concentratedMesher, process, s0, false));
 
     const boost::shared_ptr<FdmMesher> shiftedMesher(
 		boost::make_shared<FdmMesherComposite>(
@@ -220,7 +220,7 @@ void HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation() {
                                       std::pair<Real, Real>(s0*1.1, 0.2))));
 
     const boost::shared_ptr<FdmLinearOpComposite> shiftedBSFwdOp(
-		boost::make_shared<FdmBlackScholesFwdOp>(shiftedMesher, process, s0, 0));
+		boost::make_shared<FdmBlackScholesFwdOp>(shiftedMesher, process, s0, false));
 
     const boost::shared_ptr<Exercise> exercise(
 		boost::make_shared<EuropeanExercise>(maturityDate));
@@ -249,7 +249,7 @@ void HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation() {
             BOOST_FAIL("failed to reproduce european option price "
                        << "with an uniform mesher"
                        << "\n   strike:     " << strikes[i]
-                       << QL_FIXED << std::setprecision(8)
+                       << std::fixed << std::setprecision(8)
                        << "\n   calculated: " << calcUniform
                        << "\n   expected:   " << expected
                        << "\n   tolerance:  " << tol);
@@ -258,7 +258,7 @@ void HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation() {
             BOOST_FAIL("failed to reproduce european option price "
                        << "with a concentrated mesher"
                        << "\n   strike:     " << strikes[i]
-                       << QL_FIXED << std::setprecision(8)
+                       << std::fixed << std::setprecision(8)
                        << "\n   calculated: " << calcConcentrated
                        << "\n   expected:   " << expected
                        << "\n   tolerance:  " << tol);
@@ -267,7 +267,7 @@ void HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation() {
             BOOST_FAIL("failed to reproduce european option price "
                        << "with a shifted mesher"
                        << "\n   strike:     " << strikes[i]
-                       << QL_FIXED << std::setprecision(8)
+                       << std::fixed << std::setprecision(8)
                        << "\n   calculated: " << calcShifted
                        << "\n   expected:   " << expected
                        << "\n   tolerance:  " << tol);
@@ -644,7 +644,7 @@ void HestonSLVModelTest::testSquareRootFokkerPlanckFwdEquation() {
         const Real calculated = p[i];
         if (std::fabs(expected - calculated) > tol) {
             BOOST_FAIL("failed to reproduce pdf at"
-                       << QL_FIXED << std::setprecision(5)
+                       << std::fixed << std::setprecision(5)
                        << "\n   x:          " << x[i]
                        << "\n   calculated: " << calculated
                        << "\n   expected:   " << expected
@@ -893,7 +893,7 @@ namespace {
                               << "\n   sigma       " << sigma
                               << "\n   v0          " << v0
                               << "\n   transform   " << transformationType
-                              << QL_FIXED << std::setprecision(5)
+                              << std::fixed << std::setprecision(5)
                               << "\n   calculated: " << calculated
                               << "\n   expected:   " << expected
                               << "\n   tolerance:  " << testCase.eps);
@@ -911,7 +911,7 @@ namespace {
                         << "\n   sigma       " << sigma
                         << "\n   v0          " << v0
                         << "\n   transform   " << transformationType
-                        << QL_FIXED << std::setprecision(5)
+                        << std::fixed << std::setprecision(5)
                         << "\n   average diff: " << avg
                         << "\n   tolerance:  " << testCase.avgEps);
             }
@@ -1229,7 +1229,7 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
         if (std::fabs(expected - calculated ) > tol) {
             BOOST_FAIL("failed to reproduce Heston prices at"
                        << "\n   strike      " << strike
-                       << QL_FIXED << std::setprecision(5)
+                       << std::fixed << std::setprecision(5)
                        << "\n   calculated: " << calculated
                        << "\n   expected:   " << expected
                        << "\n   tolerance:  " << tol);
@@ -1345,16 +1345,31 @@ void HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol() {
             const Real tol = 0.05;
 
             if (std::fabs(expected - calcUniform) > tol) {
-                BOOST_FAIL(
-                        "failed to reproduce european option price " << "with an uniform mesher" << "\n   strike:     " << strikes[i] << QL_FIXED << std::setprecision(8) << "\n   calculated: " << calcUniform << "\n   expected:   " << expected << "\n   tolerance:  " << tol);
+                BOOST_FAIL("failed to reproduce european option price "
+                           << "with an uniform mesher"
+                           << "\n   strike:     " << strikes[i]
+                           << std::fixed << std::setprecision(8)
+                           << "\n   calculated: " << calcUniform
+                           << "\n   expected:   " << expected
+                           << "\n   tolerance:  " << tol);
             }
             if (std::fabs(expected - calcConcentrated) > tol) {
-                BOOST_FAIL(
-                        "failed to reproduce european option price " << "with a concentrated mesher" << "\n   strike:     " << strikes[i] << QL_FIXED << std::setprecision(8) << "\n   calculated: " << calcConcentrated << "\n   expected:   " << expected << "\n   tolerance:  " << tol);
+                BOOST_FAIL("failed to reproduce european option price "
+                           << "with a concentrated mesher"
+                           << "\n   strike:     " << strikes[i]
+                           << std::fixed << std::setprecision(8)
+                           << "\n   calculated: " << calcConcentrated
+                           << "\n   expected:   " << expected
+                           << "\n   tolerance:  " << tol);
             }
             if (std::fabs(expected - calcShifted) > tol) {
-                BOOST_FAIL(
-                        "failed to reproduce european option price " << "with a shifted mesher" << "\n   strike:     " << strikes[i] << QL_FIXED << std::setprecision(8) << "\n   calculated: " << calcShifted << "\n   expected:   " << expected << "\n   tolerance:  " << tol);
+                BOOST_FAIL("failed to reproduce european option price "
+                           << "with a shifted mesher"
+                           << "\n   strike:     " << strikes[i]
+                           << std::fixed << std::setprecision(8)
+                           << "\n   calculated: " << calcShifted
+                           << "\n   expected:   " << expected
+                           << "\n   tolerance:  " << tol);
             }
         }
     }
@@ -1466,7 +1481,7 @@ namespace {
                               << "\n   expected NPV   " << expected
                               << "\n   calculated NPV " << calculated
                               << "\n   vega           " << vega
-                              << QL_FIXED << std::setprecision(5)
+                              << std::fixed << std::setprecision(5)
                               << "\n   calculated:    " << lv + (calculated-expected)/vega
                               << "\n   expected:      " << lv
                               << "\n   diff  (in bp)  " << (calculated-expected)/vega*1e4

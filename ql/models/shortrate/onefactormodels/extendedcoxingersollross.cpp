@@ -89,8 +89,8 @@ namespace QuantLib {
         Real ncps = 2.0*rho*rho*(r0-phi_(0.0))*std::exp(h*t)/(rho+psi+b);
         Real ncpt = 2.0*rho*rho*(r0-phi_(0.0))*std::exp(h*t)/(rho+psi);
 
-        NonCentralChiSquareDistribution chis(df, ncps);
-        NonCentralChiSquareDistribution chit(df, ncpt);
+        NonCentralCumulativeChiSquareDistribution chis(df, ncps);
+        NonCentralCumulativeChiSquareDistribution chit(df, ncpt);
 
         Real z = std::log(CoxIngersollRoss::A(t,s)/strike)/b;
         Real call = discountS*chis(2.0*z*(rho+psi+b)) -

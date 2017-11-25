@@ -1281,8 +1281,8 @@ namespace {
 
 void FdmLinearOpTest::testBiCGstab() {
 #if !defined(QL_NO_UBLAS_SUPPORT)
-    BOOST_TEST_MESSAGE("Testing bi-conjugated gradient stabilized algorithm "
-                       "...");
+    BOOST_TEST_MESSAGE(
+        "Testing bi-conjugated gradient stabilized algorithm...");
 
     const Size n=41, m=21;
     const Real theta = 1.0;
@@ -1320,7 +1320,7 @@ void FdmLinearOpTest::testBiCGstab() {
 
 void FdmLinearOpTest::testGMRES() {
 #if !defined(QL_NO_UBLAS_SUPPORT)
-    BOOST_TEST_MESSAGE("Testing GMRES algorithm ...");
+    BOOST_TEST_MESSAGE("Testing GMRES algorithm...");
 
     const Size n=41, m=21;
     const Real theta = 1.0;

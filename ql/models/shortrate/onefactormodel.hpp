@@ -36,7 +36,7 @@ namespace QuantLib {
     /*! \ingroup shortrate */
     class OneFactorModel : public ShortRateModel {
       public:
-        OneFactorModel(Size nArguments);
+        explicit OneFactorModel(Size nArguments);
         virtual ~OneFactorModel() {}
 
         class ShortRateDynamics;
@@ -52,7 +52,7 @@ namespace QuantLib {
     //! Base class describing the short-rate dynamics
     class OneFactorModel::ShortRateDynamics {
       public:
-        ShortRateDynamics(
+        explicit ShortRateDynamics(
                         const boost::shared_ptr<StochasticProcess1D>& process)
         : process_(process) {}
         virtual ~ShortRateDynamics() {}
@@ -122,7 +122,7 @@ namespace QuantLib {
     class OneFactorAffineModel : public OneFactorModel,
                                  public AffineModel {
       public:
-        OneFactorAffineModel(Size nArguments)
+        explicit OneFactorAffineModel(Size nArguments)
         : OneFactorModel(nArguments) {}
 
         virtual Real discountBond(Time now,

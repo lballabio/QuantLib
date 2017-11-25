@@ -48,10 +48,10 @@ using namespace boost::unit_test_framework;
                << "    reference date:   " << today << "\n" \
                << "    maturity:         " << exercise->lastDate() << "\n" \
                << "    volatility:       " << io::volatility(v) << "\n\n" \
-               << QL_FIXED << std::setprecision(4) \
+               << std::fixed << std::setprecision(4) \
                << "    expected   " << greekName << ": " << expected << "\n" \
                << "    calculated " << greekName << ": " << calculated << "\n"\
-               << QL_SCIENTIFIC \
+               << std::scientific \
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 

@@ -32,6 +32,18 @@
 
 namespace QuantLib {
 
+
+    namespace detail {
+
+        class PastFixingsOnly : public Error {
+          public:
+            PastFixingsOnly()
+            : Error("n/a", 0, "n/a",
+                    "all fixings are in the past") {}
+        };
+
+    }
+
     //! Pricing engine for discrete average Asians using Monte Carlo simulation
     /*! \warning control-variate calculation is disabled under VC++6.
 
@@ -60,9 +72,19 @@ namespace QuantLib {
              Size maxSamples,
              BigNatural seed);
         void calculate() const {
-            McSimulation<SingleVariate,RNG,S>::calculate(requiredTolerance_,
+            try {
+                McSimulation<SingleVariate,RNG,S>::calculate(
+                                                         requiredTolerance_,
                                                          requiredSamples_,
                                                          maxSamples_);
+            } catch (detail::PastFixingsOnly&) {
+                // Ideally, here we could calculate the payoff (which
+                // is fully determine) and write it into the results.
+                // This would probably need a new virtual method that
+                // derived engines should implement.
+                throw;
+            }
+
             results_.value = this->mcModel_->sampleAccumulator().mean();
             
             if (this->controlVariate_) {
@@ -131,6 +153,10 @@ namespace QuantLib {
                 fixingTimes.push_back(t);
             }
         }
+
+        if (fixingTimes.empty() ||
+            (fixingTimes.size() == 1 && fixingTimes.front() == 0.0))
+            throw detail::PastFixingsOnly();
 
         return TimeGrid(fixingTimes.begin(), fixingTimes.end());
     }

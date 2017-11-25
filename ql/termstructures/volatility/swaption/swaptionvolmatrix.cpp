@@ -320,10 +320,9 @@ namespace QuantLib {
                                                Time swapLength) const {
         // dummy strike
         Volatility atmVol = volatilityImpl(optionTime, swapLength, 0.05);
-        Real shift = interpolationShifts_(optionTime, swapLength,true);
-        return boost::shared_ptr<SmileSection>(
-            new FlatSmileSection(optionTime, atmVol, dayCounter(), Null<Real>(),
-                                 volatilityType(), shift));
+        return boost::shared_ptr<SmileSection>(new FlatSmileSection(
+            optionTime, atmVol, dayCounter(), Null<Real>(), volatilityType(),
+            shift(optionTime, swapLength, true)));
     }
 
 }

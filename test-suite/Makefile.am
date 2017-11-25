@@ -176,7 +176,7 @@ dist-hook:
 
 if BOOST_UNIT_TEST_FOUND
 
-AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir} ${BOOST_UNIT_TEST_DEFINE}
+AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 noinst_LTLIBRARIES = libUnitMain.la
 libUnitMain_la_SOURCES = main.cpp
@@ -210,8 +210,7 @@ EXTRA_DIST = \
 	README.txt \
 	testsuite_vc9.vcproj \
 	testsuite.vcxproj \
-	testsuite.vcxproj.filters \
-	testsuite.dev
+	testsuite.vcxproj.filters
 
 else
 
@@ -223,7 +222,6 @@ EXTRA_DIST = \
 	README.txt \
 	testsuite_vc9.vcproj \
 	testsuite.vcxproj \
-	testsuite.vcxproj.filters \
-	testsuite.dev
+	testsuite.vcxproj.filters
 
 endif

@@ -44,7 +44,7 @@ namespace QuantLib {
         Real yearFraction_;
         virtual Real calculatePoint(const IntervalPrice &p) = 0;
     public:
-        GarmanKlassAbstract(Real y) :
+        explicit GarmanKlassAbstract(Real y) :
         yearFraction_(y) {}
         TimeSeries<Volatility>
         calculate(const TimeSeries<IntervalPrice> &quoteSeries) {

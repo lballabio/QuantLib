@@ -43,7 +43,7 @@ namespace QuantLib {
     */
     class Actual365Fixed : public DayCounter {
       public:
-        enum Convention { Standard, Canadian };
+        enum Convention { Standard, Canadian, NoLeap };
         explicit Actual365Fixed(Convention c = Actual365Fixed::Standard)
         : DayCounter(implementation(c)) {}
 
@@ -60,13 +60,27 @@ namespace QuantLib {
         };
         class CA_Impl : public DayCounter::Impl {
           public:
-            std::string name() const { return std::string("Actual/365 (Fixed) Canadian Bond"); }
+            std::string name() const {
+                return std::string("Actual/365 (Fixed) Canadian Bond");
+            }
             Time yearFraction(const Date& d1,
                               const Date& d2,
                               const Date& refPeriodStart,
-                              const Date& refPeriodEnd) const ;
+                              const Date& refPeriodEnd) const;
         };
-        static boost::shared_ptr<DayCounter::Impl> implementation(Convention c);
+        class NL_Impl : public DayCounter::Impl {
+          public:
+            std::string name() const {
+                return std::string("Actual/365 (No Leap)");
+            }
+            Date::serial_type dayCount(const Date& d1,
+                                       const Date& d2) const;
+            Time yearFraction(const Date& d1,
+                              const Date& d2,
+                              const Date& refPeriodStart,
+                              const Date& refPeriodEnd) const;
+        };
+        static boost::shared_ptr<DayCounter::Impl> implementation(Convention);
     };
 
 }

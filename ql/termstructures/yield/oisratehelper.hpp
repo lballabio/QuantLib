@@ -39,7 +39,14 @@ namespace QuantLib {
                       const boost::shared_ptr<OvernightIndex>& overnightIndex,
                       // exogenous discounting curve
                       const Handle<YieldTermStructure>& discountingCurve
-                                            = Handle<YieldTermStructure>());
+                                               = Handle<YieldTermStructure>(),
+                      bool telescopicValueDates = false,
+                      Natural paymentLag = 0,
+                      BusinessDayConvention paymentConvention = Following,
+                      Frequency paymentFrequency = Annual,
+                      const Calendar& paymentCalendar = Calendar(),
+                      const Period& forwardStart = 0 * Days, 
+                      const Spread overnightSpread = 0.0);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -64,7 +71,15 @@ namespace QuantLib {
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
 
         Handle<YieldTermStructure> discountHandle_;
+        bool telescopicValueDates_;
         RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
+
+        Natural paymentLag_;
+        BusinessDayConvention paymentConvention_;
+        Frequency paymentFrequency_;
+        Calendar paymentCalendar_;
+        Period forwardStart_;
+        Spread overnightSpread_;
     };
 
     //! Rate helper for bootstrapping over Overnight Indexed Swap rates
@@ -76,8 +91,9 @@ namespace QuantLib {
                     const Handle<Quote>& fixedRate,
                     const boost::shared_ptr<OvernightIndex>& overnightIndex,
                       // exogenous discounting curve
-                      const Handle<YieldTermStructure>& discountingCurve
-                                            = Handle<YieldTermStructure>());
+                    const Handle<YieldTermStructure>& discountingCurve
+                                              = Handle<YieldTermStructure>(),
+                    bool telescopicValueDates = false);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -92,6 +108,7 @@ namespace QuantLib {
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
 
         Handle<YieldTermStructure> discountHandle_;
+        bool telescopicValueDates_;
         RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
     };
 

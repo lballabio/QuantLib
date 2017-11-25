@@ -92,6 +92,7 @@ Charles Chongseok Hyun
 Simon Ibbotson
 Norbert Irmer
 Mike Jake
+Joseph Jeisman
 Rahul Kanchi
 Andrey Karpov
 Michal Kaut
@@ -104,9 +105,11 @@ Silakhdar Krikeb
 Nathan Kruck
 Yan Kuang
 Werner Kuerzinger
+Oleg Kulkov
 Allen Kuo
 Paul Laderoute
 Yasmine Lahlou
+Alix Lassauzet
 Fabien Le Floc'h
 Fabrice Lecuyer
 James Lee
@@ -196,6 +199,7 @@ Stephen Wong
 Krzysztof Wos
 Bernd Johannes Wuebben
 Sun Xiuxin
+Frank Xue
 Jeff Yu
 Maddalena Zanzi
 Francesco Zirilli

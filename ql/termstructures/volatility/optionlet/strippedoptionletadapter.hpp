@@ -58,6 +58,11 @@ namespace QuantLib {
         void performCalculations() const;
         boost::shared_ptr< OptionletStripper > optionletStripper() const;
         //@}
+        //! \name Observer interface
+        //@{
+        void deepUpdate();
+        //@}
+
         VolatilityType volatilityType() const;
         Real displacement() const;
 
@@ -78,6 +83,11 @@ namespace QuantLib {
     inline void StrippedOptionletAdapter::update() {
         TermStructure::update();
         LazyObject::update();
+    }
+
+    inline void StrippedOptionletAdapter::deepUpdate() {
+        optionletStripper_->update();
+        update();
     }
 
     inline boost::shared_ptr< OptionletStripper >
