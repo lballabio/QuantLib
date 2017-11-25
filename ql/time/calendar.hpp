@@ -196,11 +196,19 @@ namespace QuantLib {
 
     inline bool Calendar::isBusinessDay(const Date& d) const {
         QL_REQUIRE(impl_, "no implementation provided");
-        if (impl_->addedHolidays.find(d) != impl_->addedHolidays.end())
+
+#ifdef QL_HIGH_RESOLUTION_DATE
+        const Date _d(d.dayOfMonth(), d.month(), d.year());
+#else
+        const Date& _d = d;
+#endif
+
+        if (impl_->addedHolidays.find(_d) != impl_->addedHolidays.end())
             return false;
-        if (impl_->removedHolidays.find(d) != impl_->removedHolidays.end())
+        if (impl_->removedHolidays.find(_d) != impl_->removedHolidays.end())
             return true;
-        return impl_->isBusinessDay(d);
+
+        return impl_->isBusinessDay(_d);
     }
 
     inline bool Calendar::isEndOfMonth(const Date& d) const {
