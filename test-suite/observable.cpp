@@ -243,7 +243,7 @@ void ObservableTest::testMultiThreadingGlobalSettings() {
     gc.terminate();
     workerThread.join();
 
-    if (localList.size() != MTUpdateCounter::instanceCounter()) {
+    if (localList.size() != Size(MTUpdateCounter::instanceCounter())) {
         BOOST_FAIL("garbage collection does not work.");
     }
 
