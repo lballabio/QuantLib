@@ -65,12 +65,12 @@ namespace QuantLib {
 
                 if (illegalLocalVolOverwrite_ < 0.0) {
                     v[i] = square<Real>()(
-                                localVol_->localVol(0.5*(t1+t2), x_[i], true));
+                        localVol_->localVol(0.5*(t1+t2), x_[i], true));
                 }
                 else {
                     try {
                         v[i] = square<Real>()(
-                                localVol_->localVol(0.5*(t1+t2), x_[i], true));
+                            localVol_->localVol(0.5*(t1+t2), x_[i], true));
                     } catch (Error&) {
                         v[i] = square<Real>()(illegalLocalVolOverwrite_);
                     }

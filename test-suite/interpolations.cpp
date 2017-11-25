@@ -6,6 +6,7 @@
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2009 Dimitri Reiswich
  Copyright (C) 2014 Peter Caspers
+ Copyright (C) 2018 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -35,6 +36,7 @@
 #include <ql/math/interpolations/kernelinterpolation.hpp>
 #include <ql/math/interpolations/kernelinterpolation2d.hpp>
 #include <ql/math/interpolations/lagrangeinterpolation.hpp>
+#include <ql/math/interpolations/piecewiseconstantinterpolation.hpp>
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/bspline.hpp>
 #include <ql/math/kernelfunctions.hpp>
@@ -2202,6 +2204,111 @@ void InterpolationTest::testBSplines() {
     }
 }
 
+void InterpolationTest::testPiecewiseConstantInterpolation() {
+    BOOST_TEST_MESSAGE("Testing piecewise constant interpolation ...");
+
+    using namespace boost::assign;
+
+    std::vector<Real> knots, values;
+    knots  +=-1.0, 0.5, 0.75, 1.2;
+    values += 2.0, 4.2, 3.21,-2.2;
+
+    const Interpolation impl(PiecewiseConstant().interpolate(
+        knots.begin(), knots.end(), values.begin()));
+
+    std::vector<boost::tuple<Real, Real, Real, Real> > refValues;
+    refValues +=
+        boost::tuple<Real, Real, Real, Real>(-2.0, 2.0, 0.0, -2.0),
+        boost::tuple<Real, Real, Real, Real>(
+            -1.0, 4.2, std::numeric_limits<Real>::quiet_NaN(), 0.0),
+        boost::tuple<Real, Real, Real, Real>(-0.5, 4.2, 0.0, 0.5*4.2),
+        boost::tuple<Real, Real, Real, Real>( 0.7, 3.21, 0.0, 6.942),
+        boost::tuple<Real, Real, Real, Real>( 0.8,-2.2, 0.0, 6.9925),
+        boost::tuple<Real, Real, Real, Real>( 1.3,-2.2, 0.0, 5.8925),
+        boost::tuple<Real, Real, Real, Real>(
+            1.2,-2.2, std::numeric_limits<Real>::quiet_NaN(), 6.1125);
+
+    const Real tol = 10*QL_EPSILON;
+    for (Size i=0; i < refValues.size(); ++i) {
+
+        const Real x = refValues[i].get<0>();
+        const Real expected = refValues[i].get<1>();
+        const Real calculated = impl(x, true);
+
+        if (std::fabs(expected - calculated) > tol) {
+            BOOST_FAIL("failed to reproduce the "
+                       "piecewise constant interpolation value"
+                    << "\n    x         : " << x
+                    << "\n    calculated: " << calculated
+                    << "\n    expected  : " << expected
+                    << "\n    difference: " << std::fabs(calculated-expected)
+                    << "\n    tolerance : " << tol);
+        }
+
+        const Real expectedDerivative = refValues[i].get<2>();
+        const Real calculatedDerivative = impl.derivative(x, true);
+
+        if (boost::math::isnan(expectedDerivative)
+            ^ boost::math::isnan(calculatedDerivative)) {
+            BOOST_FAIL("derivative of piecewise constant interpolation "
+                    "should be NaN on knot points"
+                    << "\n    x         : " << x
+                    << "\n    calculated: " << calculatedDerivative
+                    << "\n    expected  : " << expectedDerivative);
+        }
+
+        const Real expectedPrimitive = refValues[i].get<3>();
+        const Real calculatedPrimitive = impl.primitive(x, true);
+
+        if (std::fabs(expected - calculated) > tol) {
+            BOOST_FAIL("failed to reproduce the "
+                       "piecewise constant interpolation primitive value"
+                    << "\n    x         : " << x
+                    << "\n    calculated: " << calculatedPrimitive
+                    << "\n    expected  : " << expectedPrimitive
+                    << "\n    difference: "
+                    << std::fabs(calculatedPrimitive-expectedPrimitive)
+                    << "\n    tolerance : " << tol);
+        }
+    }
+}
+
+void InterpolationTest::testPiecewiseConstantOnSinglePoint() {
+    BOOST_TEST_MESSAGE("Testing piecewise constant interpolation on a "
+                       "single point...");
+    const std::vector<Real> knots(1, 1.0), values(1, 2.5);
+
+    const Interpolation impl(PiecewiseConstant().interpolate(
+        knots.begin(), knots.end(), values.begin()));
+
+    const Real x[] = { -1.0, 1.0, 2.0, 3.0 };
+
+    for (Size i=0; i < LENGTH(x); ++i) {
+        const Real calculated = impl(x[i], true);
+        const Real expected = values[0];
+
+        if (!close_enough(calculated, expected)) {
+            BOOST_FAIL("failed to reproduce a piecewise constant "
+                    "interpolation on a single point "
+                    << "\n   x         : " << x[i]
+                    << "\n   expected  : " << expected
+                    << "\n   calculated: " << calculated);
+        }
+
+        const Real expectedPrimitive = values[0]*(x[i] - knots[0]);
+        const Real calculatedPrimitive = impl.primitive(x[i], true);
+
+        if (!close_enough(calculatedPrimitive, expectedPrimitive)) {
+            BOOST_FAIL("failed to reproduce primitive on a piecewise constant "
+                    "interpolation for a single point "
+                    << "\n   x         : " << x[i]
+                    << "\n   expected  : " << expectedPrimitive
+                    << "\n   calculated: " << calculatedPrimitive);
+
+        }
+    }
+}
+
 test_suite* InterpolationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
 
@@ -2243,6 +2350,10 @@ test_suite* InterpolationTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
         &InterpolationTest::testLagrangeInterpolationOnChebyshevPoints));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBSplines));
+    suite->add(QUANTLIB_TEST_CASE(
+        &InterpolationTest::testPiecewiseConstantInterpolation));
+    suite->add(QUANTLIB_TEST_CASE(
+        &InterpolationTest::testPiecewiseConstantOnSinglePoint));
 
     return suite;
 }

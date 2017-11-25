@@ -60,7 +60,9 @@ namespace QuantLib {
             const Handle<BlackVolTermStructure>& blackVolTS,
             const boost::shared_ptr<discretization>& d =
                   boost::shared_ptr<discretization>(new EulerDiscretization),
-            bool forceDiscretization = false);
+            bool forceDiscretization = false,
+            const Handle<LocalVolTermStructure>& externalLocalVolTS =
+                  Handle<LocalVolTermStructure>()  );
         //! \name StochasticProcess1D interface
         //@{
         Real x0() const;
@@ -95,6 +97,7 @@ namespace QuantLib {
         Handle<Quote> x0_;
         Handle<YieldTermStructure> riskFreeRate_, dividendYield_;
         Handle<BlackVolTermStructure> blackVolatility_;
+        Handle<LocalVolTermStructure> externalLocalVolTS_;
         bool forceDiscretization_;
         mutable RelinkableHandle<LocalVolTermStructure> localVolatility_;
         mutable bool updated_, isStrikeIndependent_;
