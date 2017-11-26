@@ -438,6 +438,7 @@ int main( int argc, char* argv[] )
                         framework::impl::s_frk_state().m_observers )
                         to->test_finish();
                 #else
+                    // works for BOOST_VERSION > 106100, needed for >106500
                     framework::run(id.id, false);
                 #endif
 
