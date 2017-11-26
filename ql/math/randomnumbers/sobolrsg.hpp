@@ -115,13 +115,14 @@ namespace QuantLib {
             Kuo, Kuo2, Kuo3 };
         /*! \pre dimensionality must be <= PPMT_MAX_DIM */
         SobolRsg(Size dimensionality,
-                 unsigned long seed = 0,
+                 uint32_t seed = 0,
                  DirectionIntegers directionIntegers = Jaeckel);
         /*! skip to the n-th sample in the low-discrepancy sequence */
-        void skipTo(unsigned long n);
-        const std::vector<unsigned long>& nextInt32Sequence() const;
+        void skipTo(uint32_t n);
+        const std::vector<uint32_t>& nextInt32Sequence() const;
+
         const SobolRsg::sample_type& nextSequence() const {
-            const std::vector<unsigned long>& v = nextInt32Sequence();
+            const std::vector<uint32_t>& v = nextInt32Sequence();
             // normalize to get a double in (0,1)
             for (Size k=0; k<dimensionality_; ++k)
                 sequence_.value[k] = v[k] * normalizationFactor_;
@@ -133,11 +134,11 @@ namespace QuantLib {
         static const int bits_;
         static const double normalizationFactor_;
         Size dimensionality_;
-        mutable unsigned long sequenceCounter_;
+        mutable uint32_t sequenceCounter_;
         mutable bool firstDraw_;
         mutable sample_type sequence_;
-        mutable std::vector<unsigned long> integerSequence_;
-        std::vector<std::vector<unsigned long> > directionIntegers_;
+        mutable std::vector<uint32_t> integerSequence_;
+        std::vector<std::vector<uint32_t> > directionIntegers_;
     };
 
 }
