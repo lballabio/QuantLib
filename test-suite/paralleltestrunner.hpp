@@ -57,7 +57,6 @@
 #include <sstream>
 #include <utility>
 #include <fstream>
-#include <iostream>
 
 #include <string>
 #include <cstring>
@@ -427,16 +426,20 @@ int main( int argc, char* argv[] )
             while (!id.terminate) {
                 boost::timer t;
 
-                BOOST_TEST_FOREACH( test_observer*, to,
-                    framework::impl::s_frk_state().m_observers )
-                    framework::impl::s_frk_state().m_aux_em.vexecute(
-                        boost::bind( &test_observer::test_start, to, 1 ) );
+                #if BOOST_VERSION < 106200
+                    BOOST_TEST_FOREACH( test_observer*, to,
+                        framework::impl::s_frk_state().m_observers )
+                        framework::impl::s_frk_state().m_aux_em.vexecute(
+                            boost::bind( &test_observer::test_start, to, 1 ) );
 
-                framework::impl::s_frk_state().execute_test_tree( id.id );
+                    framework::impl::s_frk_state().execute_test_tree( id.id );
 
-                BOOST_TEST_REVERSE_FOREACH( test_observer*, to,
-                    framework::impl::s_frk_state().m_observers )
-                    to->test_finish();
+                    BOOST_TEST_REVERSE_FOREACH( test_observer*, to,
+                        framework::impl::s_frk_state().m_observers )
+                        to->test_finish();
+                #else
+                    framework::run(id.id, false);
+                #endif
 
                 runTimeLogs.push_back(std::make_pair(
                     framework::get(id.id, TUT_ANY).p_name, t.elapsed()));
@@ -446,6 +449,7 @@ int main( int argc, char* argv[] )
                 QualifiedTestResults results
                     = { id.id,
                         boost::unit_test::results_collector.results(id.id) };
+
                 rq.send(&results, sizeof(QualifiedTestResults), 0);
 
                 mq.receive(&id, sizeof(TestCaseId), recvd_size, priority);
