@@ -28,6 +28,7 @@
 
 #include <ql/methods/montecarlo/sample.hpp>
 #include <vector>
+#include <stdint.h>
 
 namespace QuantLib {
 
@@ -115,7 +116,7 @@ namespace QuantLib {
             Kuo, Kuo2, Kuo3 };
         /*! \pre dimensionality must be <= PPMT_MAX_DIM */
         SobolRsg(Size dimensionality,
-                 uint32_t seed = 0,
+                 unsigned long seed = 0,
                  DirectionIntegers directionIntegers = Jaeckel);
         /*! skip to the n-th sample in the low-discrepancy sequence */
         void skipTo(uint32_t n);
