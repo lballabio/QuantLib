@@ -1075,8 +1075,8 @@ void LowDiscrepancyTest::testSobolSkipping() {
 
             // compare next 100 samples
             for (Size m=0; m<100; m++) {
-                std::vector<unsigned long> s1 = rsg1.nextInt32Sequence();
-                std::vector<unsigned long> s2 = rsg2.nextInt32Sequence();
+                std::vector<boost::uint_least32_t> s1 = rsg1.nextInt32Sequence();
+                std::vector<boost::uint_least32_t> s2 = rsg2.nextInt32Sequence();
                 for (Size n=0; n<s1.size(); n++) {
                     if (s1[n] != s2[n]) {
                         BOOST_ERROR("Mismatch after skipping:"
