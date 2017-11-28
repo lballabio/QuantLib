@@ -33,6 +33,10 @@ env:
     - DOCKER_IMAGE=lballabio/quantlib-devenv:xenial
       CONFIGURE_FLAGS="--disable-static --enable-intraday"
       CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Werror -std=c++03"
+    # Indexed coupons enabled
+    - DOCKER_IMAGE=lballabio/quantlib-devenv:xenial
+      CONFIGURE_FLAGS="--disable-static --enable-indexed-coupons"
+      CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Werror -std=c++03"
 
 before_install:
   - docker pull ${DOCKER_IMAGE}
