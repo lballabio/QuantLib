@@ -1168,8 +1168,13 @@ test_suite* PiecewiseYieldCurveTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(
                &PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate));
+
+    #if defined(QL_NEGATIVE_RATES) && !defined(QL_USE_INDEXED_COUPON)
+    // This regression test didn't work with indexed coupons or
+    // without negative rates anyway.
     suite->add(QUANTLIB_TEST_CASE(
                              &PiecewiseYieldCurveTest::testBadPreviousCurve));
+    #endif
 
     return suite;
 }
