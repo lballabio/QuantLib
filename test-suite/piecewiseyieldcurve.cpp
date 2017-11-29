@@ -1131,14 +1131,11 @@ test_suite* PiecewiseYieldCurveTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
                  &PiecewiseYieldCurveTest::testLinearDiscountConsistency));
 
-// why?
-#if !defined(QL_USE_INDEXED_COUPON)
-  // if rates can be negative it makes no sense to interpolate loglinearly
-  #if !defined(QL_NEGATIVE_RATES)
+    #if !defined(QL_NEGATIVE_RATES)
+    // if rates can be negative, we can't interpolate loglinearly
     suite->add(QUANTLIB_TEST_CASE(
                      &PiecewiseYieldCurveTest::testLogLinearZeroConsistency));
-  #endif
-#endif
+    #endif
     suite->add(QUANTLIB_TEST_CASE(
                  &PiecewiseYieldCurveTest::testLinearZeroConsistency));
     suite->add(QUANTLIB_TEST_CASE(
