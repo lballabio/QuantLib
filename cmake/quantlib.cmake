@@ -54,9 +54,9 @@ endmacro(get_quantlib_library_name)
 macro(configure_msvc_runtime)
     # Credit: https://stackoverflow.com/questions/10113017/setting-the-msvc-runtime-in-cmake
     if(MSVC)
-        # Default to statically-linked runtime.
+        # Default to dynamically-linked runtime.
         if("${MSVC_RUNTIME}" STREQUAL "")
-            set(MSVC_RUNTIME "static")
+            set(MSVC_RUNTIME "dynamic")
         endif()
 
         # Set compiler options.
