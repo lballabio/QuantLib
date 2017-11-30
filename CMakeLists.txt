@@ -22,6 +22,9 @@ if (MSVC)
         endif()
         set(Boost_USE_STATIC_RUNTIME ON)
     endif()
+
+    # Remove warnings
+    add_definitions(-D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS)
 endif()
 
 # to reference headers via <ql/foo.hpp>, we need to add the root
