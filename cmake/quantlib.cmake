@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)  # Required for CMAKE_VS_PLATFORM_TOOLSET
+cmake_minimum_required(VERSION 2.8)
 
 macro(get_quantlib_library_name QL_OUTPUT_NAME)
     message(STATUS "QuantLib library name tokens:")
