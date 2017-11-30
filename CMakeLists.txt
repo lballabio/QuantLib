@@ -6,7 +6,7 @@ include(${CMAKE_CURRENT_LIST_DIR}/cmake/quantlib.cmake)
 
 option(USE_BOOST_DYNAMIC_LIBRARIES "Use the shared version of Boost libraries" ${UNIX})
 if (USE_BOOST_DYNAMIC_LIBRARIES)
-    add_definitions(-DBOOST_DYN_LINK)
+    add_definitions(-DBOOST_ALL_DYN_LINK)
 else()
     set(Boost_USE_STATIC_LIBS ON)
 endif()
