@@ -12,7 +12,7 @@ else()
 endif()
 
 if (MSVC)
-    set(MSVC_RUNTIME "static" CACHE STRING "MSVC runtime to link")
+    set(MSVC_RUNTIME "dynamic" CACHE STRING "MSVC runtime to link")
     set_property(CACHE MSVC_RUNTIME PROPERTY STRINGS static dynamic)
     configure_msvc_runtime()
 
