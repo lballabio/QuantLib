@@ -1249,6 +1249,7 @@
     <ClInclude Include="ql\currencies\all.hpp" />
     <ClInclude Include="ql\currencies\america.hpp" />
     <ClInclude Include="ql\currencies\asia.hpp" />
+    <ClInclude Include="ql\currencies\crypto.hpp" />
     <ClInclude Include="ql\currencies\europe.hpp" />
     <ClInclude Include="ql\currencies\exchangeratemanager.hpp" />
     <ClInclude Include="ql\currencies\oceania.hpp" />
@@ -2257,6 +2258,7 @@
     <ClCompile Include="ql\currencies\africa.cpp" />
     <ClCompile Include="ql\currencies\america.cpp" />
     <ClCompile Include="ql\currencies\asia.cpp" />
+    <ClCompile Include="ql\currencies\crypto.cpp" />
     <ClCompile Include="ql\currencies\europe.cpp" />
     <ClCompile Include="ql\currencies\exchangeratemanager.cpp" />
     <ClCompile Include="ql\currencies\oceania.cpp" />

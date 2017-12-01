@@ -5623,6 +5623,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\currencies\crypto.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\currencies\crypto.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\currencies\europe.cpp"
 				>
 			</File>

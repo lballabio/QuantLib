@@ -2145,6 +2145,9 @@
     <ClInclude Include="ql\currencies\asia.hpp">
       <Filter>currencies</Filter>
     </ClInclude>
+    <ClInclude Include="ql\currencies\crypto.hpp">
+      <Filter>currencies</Filter>
+    </ClInclude>
     <ClInclude Include="ql\currencies\europe.hpp">
       <Filter>currencies</Filter>
     </ClInclude>
@@ -5182,6 +5185,9 @@
       <Filter>currencies</Filter>
     </ClCompile>
     <ClCompile Include="ql\currencies\asia.cpp">
+      <Filter>currencies</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\currencies\crypto.cpp">
       <Filter>currencies</Filter>
     </ClCompile>
     <ClCompile Include="ql\currencies\europe.cpp">
