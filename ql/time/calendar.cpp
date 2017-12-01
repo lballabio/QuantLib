@@ -27,22 +27,36 @@ namespace QuantLib {
 
     void Calendar::addHoliday(const Date& d) {
         QL_REQUIRE(impl_, "no implementation provided");
+
+#ifdef QL_HIGH_RESOLUTION_DATE
+        const Date _d(d.dayOfMonth(), d.month(), d.year());
+#else
+        const Date& _d = d;
+#endif
+
         // if d was a genuine holiday previously removed, revert the change
-        impl_->removedHolidays.erase(d);
+        impl_->removedHolidays.erase(_d);
         // if it's already a holiday, leave the calendar alone.
         // Otherwise, add it.
-        if (impl_->isBusinessDay(d))
-            impl_->addedHolidays.insert(d);
+        if (impl_->isBusinessDay(_d))
+            impl_->addedHolidays.insert(_d);
     }
 
     void Calendar::removeHoliday(const Date& d) {
         QL_REQUIRE(impl_, "no implementation provided");
+
+#ifdef QL_HIGH_RESOLUTION_DATE
+        const Date _d(d.dayOfMonth(), d.month(), d.year());
+#else
+        const Date& _d = d;
+#endif
+
         // if d was an artificially-added holiday, revert the change
-        impl_->addedHolidays.erase(d);
+        impl_->addedHolidays.erase(_d);
         // if it's already a business day, leave the calendar alone.
         // Otherwise, add it.
-        if (!impl_->isBusinessDay(d))
-            impl_->removedHolidays.insert(d);
+        if (!impl_->isBusinessDay(_d))
+            impl_->removedHolidays.insert(_d);
     }
 
     Date Calendar::adjust(const Date& d,

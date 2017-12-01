@@ -1897,6 +1897,96 @@ void CalendarTest::testBespokeCalendars() {
 
 }
 
+void CalendarTest::testIntradayAddHolidays() {
+#ifdef QL_HIGH_RESOLUTION_DATE
+    BOOST_TEST_MESSAGE("Testing addHolidays with enable-intraday...");
+
+    // test cases taken from testModifiedCalendars
+
+    Calendar c1 = TARGET();
+    Calendar c2 = UnitedStates(UnitedStates::NYSE);
+    Date d1(1,May,2004);      // holiday for both calendars
+    Date d2(26,April,2004, 0, 0, 1, 1);   // business day
+
+    Date d1Mock(1,May,2004, 1, 1, 0, 0);      // holiday for both calendars
+    Date d2Mock(26,April,2004);   // business day
+
+    // this works anyhow because implementation uses day() month() etc
+    QL_REQUIRE(c1.isHoliday(d1), "wrong assumption---correct the test");
+    QL_REQUIRE(c1.isBusinessDay(d2), "wrong assumption---correct the test");
+
+    QL_REQUIRE(c2.isHoliday(d1), "wrong assumption---correct the test");
+    QL_REQUIRE(c2.isBusinessDay(d2), "wrong assumption---correct the test");
+
+    // now with different hourly/min/sec
+    QL_REQUIRE(c1.isHoliday(d1Mock), "wrong assumption---correct the test");
+    QL_REQUIRE(c1.isBusinessDay(d2Mock), "wrong assumption---correct the test");
+
+    QL_REQUIRE(c2.isHoliday(d1Mock), "wrong assumption---correct the test");
+    QL_REQUIRE(c2.isBusinessDay(d2Mock), "wrong assumption---correct the test");
+
+
+    // modify the TARGET calendar
+    c1.removeHoliday(d1);
+    c1.addHoliday(d2);
+
+    // test
+    if (c1.isHoliday(d1))
+        BOOST_FAIL(d1 << " still a holiday for original TARGET instance");
+    if (c1.isBusinessDay(d2))
+        BOOST_FAIL(d2 << " still a business day for original TARGET instance");
+
+    if (c1.isHoliday(d1Mock))
+        BOOST_FAIL(d1Mock << " still a holiday for original TARGET instance" <<
+                    " and different hours/min/secs");
+    if (c1.isBusinessDay(d2Mock))
+        BOOST_FAIL(d2Mock << " still a business day for generic TARGET instance" <<
+                    " and different hours/min/secs");
+
+    // any instance of TARGET should be modified...
+    Calendar c3 = TARGET();
+    if (c3.isHoliday(d1))
+        BOOST_FAIL(d1 << " still a holiday for generic TARGET instance");
+    if (c3.isBusinessDay(d2))
+        BOOST_FAIL(d2 << " still a business day for generic TARGET instance");
+
+    if (c3.isHoliday(d1Mock))
+        BOOST_FAIL(d1Mock << " still a holiday for original TARGET instance" <<
+                    " and different hours/min/secs");
+    if (c3.isBusinessDay(d2Mock))
+        BOOST_FAIL(d2Mock << " still a business day for generic TARGET instance" <<
+                    " and different hours/min/secs");
+
+    // ...but not other calendars
+    if (c2.isBusinessDay(d1))
+        BOOST_FAIL(d1 << " business day for New York");
+    if (c2.isHoliday(d2))
+        BOOST_FAIL(d2 << " holiday for New York");
+
+    if (c2.isBusinessDay(d1Mock))
+        BOOST_FAIL(d1Mock << " business day for New York" <<
+                    " and different hours/min/secs");
+    if (c2.isHoliday(d2Mock))
+        BOOST_FAIL(d2Mock << " holiday for New York" <<
+                    " and different hours/min/secs");
+
+    // restore original holiday set---test the other way around
+    c3.addHoliday(d1Mock);
+    c3.removeHoliday(d2Mock);
+
+    if (c1.isBusinessDay(d1))
+        BOOST_FAIL(d1 << " still a business day");
+    if (c1.isHoliday(d2))
+        BOOST_FAIL(d2 << " still a holiday");
+
+    if (c1.isBusinessDay(d1Mock))
+        BOOST_FAIL(d1Mock << " still a business day" <<
+                    " and different hours/min/secs");
+    if (c1.isHoliday(d2Mock))
+        BOOST_FAIL(d2Mock << " still a holiday and different hours/min/secs");
+
+#endif
+}
 
 test_suite* CalendarTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Calendar tests");
@@ -1934,6 +2024,8 @@ test_suite* CalendarTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testEndOfMonth));
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testBusinessDaysBetween));
+
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testIntradayAddHolidays));
 
     return suite;
 }
