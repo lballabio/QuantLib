@@ -102,7 +102,7 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
 
-        void setPricer(const boost::shared_ptr<FloatingRateCouponPricer>&);
+        virtual void setPricer(const boost::shared_ptr<FloatingRateCouponPricer>&);
         boost::shared_ptr<FloatingRateCouponPricer> pricer() const;
       protected:
         //! convexity adjustment for the given index fixing
