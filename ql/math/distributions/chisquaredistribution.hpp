@@ -30,38 +30,58 @@
 
 namespace QuantLib {
 
-    class ChiSquareDistribution : public std::unary_function<Real,Real> {
+    class CumulativeChiSquareDistribution
+        : public std::unary_function<Real,Real> {
       public:
-        ChiSquareDistribution(Real df) : df_(df) {}
+        CumulativeChiSquareDistribution(Real df) : df_(df) {}
         Real operator()(Real x) const;
       private:
         Real df_;
     };
 
-    class NonCentralChiSquareDistribution
-    : public std::unary_function<Real,Real> {
+    /*! \deprecated Use CumulativeChiSquareDistribution instead.
+                    Deprecated in version 1.12.
+    */
+    QL_DEPRECATED
+    typedef CumulativeChiSquareDistribution ChiSquareDistribution;
+
+    class NonCentralCumulativeChiSquareDistribution
+        : public std::unary_function<Real,Real> {
       public:
-        NonCentralChiSquareDistribution(Real df, Real ncp)
+        NonCentralCumulativeChiSquareDistribution(Real df, Real ncp)
         : df_(df), ncp_(ncp) {}
         Real operator()(Real x) const;
       private:
         Real df_, ncp_;
     };
 
-    class InverseNonCentralChiSquareDistribution
+    /*! \deprecated Use NonCentralCumulativeChiSquareDistribution instead.
+                    Deprecated in version 1.12.
+    */
+    QL_DEPRECATED
+    typedef NonCentralCumulativeChiSquareDistribution NonCentralChiSquareDistribution;
+
+    class InverseNonCentralCumulativeChiSquareDistribution
         : public std::unary_function<Real,Real> {
       public:
-        InverseNonCentralChiSquareDistribution(Real df, Real ncp,
+        InverseNonCentralCumulativeChiSquareDistribution(Real df, Real ncp,
                                                Size maxEvaluations=10,
                                                Real accuracy = 1e-8);
         Real operator()(Real x) const;
 
     private:
-        NonCentralChiSquareDistribution nonCentralDist_;
+        NonCentralCumulativeChiSquareDistribution nonCentralDist_;
         const Real guess_;
         const Size maxEvaluations_;
         const Real accuracy_;
     };
+
+    /*! \deprecated Use InverseNonCentralCumulativeChiSquareDistribution instead.
+	            Deprecated in version 1.12.
+    */
+    QL_DEPRECATED
+    typedef InverseNonCentralCumulativeChiSquareDistribution InverseNonCentralChiSquareDistribution;
+
 }
 
 

@@ -1265,6 +1265,7 @@
     <ClInclude Include="ql\currencies\all.hpp" />
     <ClInclude Include="ql\currencies\america.hpp" />
     <ClInclude Include="ql\currencies\asia.hpp" />
+    <ClInclude Include="ql\currencies\crypto.hpp" />
     <ClInclude Include="ql\currencies\europe.hpp" />
     <ClInclude Include="ql\currencies\exchangeratemanager.hpp" />
     <ClInclude Include="ql\currencies\oceania.hpp" />
@@ -1423,6 +1424,7 @@
     <ClInclude Include="ql\time\calendars\argentina.hpp" />
     <ClInclude Include="ql\time\calendars\australia.hpp" />
     <ClInclude Include="ql\time\calendars\bespokecalendar.hpp" />
+    <ClInclude Include="ql\time\calendars\botswana.hpp" />
     <ClInclude Include="ql\time\calendars\brazil.hpp" />
     <ClInclude Include="ql\time\calendars\canada.hpp" />
     <ClInclude Include="ql\time\calendars\china.hpp" />
@@ -1585,11 +1587,13 @@
     <ClInclude Include="ql\experimental\credit\inhomogeneouspooldef.hpp" />
     <ClInclude Include="ql\experimental\credit\integralcdoengine.hpp" />
     <ClInclude Include="ql\experimental\credit\integralntdengine.hpp" />
+    <ClInclude Include="ql\experimental\credit\interpolatedaffinehazardratecurve.hpp" />
     <ClInclude Include="ql\experimental\credit\issuer.hpp" />
     <ClInclude Include="ql\experimental\credit\loss.hpp" />
     <ClInclude Include="ql\experimental\credit\lossdistribution.hpp" />
     <ClInclude Include="ql\experimental\credit\midpointcdoengine.hpp" />
     <ClInclude Include="ql\experimental\credit\nthtodefault.hpp" />
+    <ClInclude Include="ql\experimental\credit\onefactoraffinesurvival.hpp" />
     <ClInclude Include="ql\experimental\credit\onefactorcopula.hpp" />
     <ClInclude Include="ql\experimental\credit\onefactorgaussiancopula.hpp" />
     <ClInclude Include="ql\experimental\credit\onefactorstudentcopula.hpp" />
@@ -2292,6 +2296,7 @@
     <ClCompile Include="ql\currencies\africa.cpp" />
     <ClCompile Include="ql\currencies\america.cpp" />
     <ClCompile Include="ql\currencies\asia.cpp" />
+    <ClCompile Include="ql\currencies\crypto.cpp" />
     <ClCompile Include="ql\currencies\europe.cpp" />
     <ClCompile Include="ql\currencies\exchangeratemanager.cpp" />
     <ClCompile Include="ql\currencies\oceania.cpp" />
@@ -2342,7 +2347,7 @@
     <ClCompile Include="ql\pricingengines\vanilla\baroneadesiwhaleyengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\batesengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\bjerksundstenslandengine.cpp" />
-    <ClCompile Include="ql\pricingengines\vanilla\coshestonengine.cpp" />    
+    <ClCompile Include="ql\pricingengines\vanilla\coshestonengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\discretizedvanillaoption.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\hestonexpansionengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\fdvanillaengine.cpp" />
@@ -2399,6 +2404,7 @@
     <ClCompile Include="ql\time\calendars\argentina.cpp" />
     <ClCompile Include="ql\time\calendars\australia.cpp" />
     <ClCompile Include="ql\time\calendars\bespokecalendar.cpp" />
+    <ClCompile Include="ql\time\calendars\botswana.cpp" />
     <ClCompile Include="ql\time\calendars\brazil.cpp" />
     <ClCompile Include="ql\time\calendars\canada.cpp" />
     <ClCompile Include="ql\time\calendars\china.cpp" />

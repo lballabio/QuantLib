@@ -5679,6 +5679,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\currencies\crypto.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\currencies\crypto.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\currencies\europe.cpp"
 				>
 			</File>
@@ -7006,6 +7014,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\time\calendars\botswana.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\botswana.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\time\calendars\brazil.cpp"
 					>
 				</File>
@@ -8274,6 +8290,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\interpolatedaffinehazardratecurve.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\issuer.cpp"
 					>
 				</File>
@@ -8307,6 +8327,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\nthtodefault.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\onefactoraffinesurvival.hpp"
 					>
 				</File>
 				<File

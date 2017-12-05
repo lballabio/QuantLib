@@ -52,7 +52,7 @@ namespace QuantLib {
 
                 const Real qMin = 0.0; // v_min = 0.0;
                 const Real qMax = std::max(process->v0(),
-                    k*InverseNonCentralChiSquareDistribution(
+                    k*InverseNonCentralCumulativeChiSquareDistribution(
                                             df, ncp, 1000,  1e-8)(1-epsilon));
 
                 const Real minVStep=(qMax-qMin)/(50*size);
@@ -64,11 +64,11 @@ namespace QuantLib {
                 for (Size i=1; i < size; ++i) {
                     ps = (1 - epsilon - p)/(size-i);
                     p += ps;
-                    const Real tmp = k*InverseNonCentralChiSquareDistribution(
+                    const Real tmp = k*InverseNonCentralCumulativeChiSquareDistribution(
                         df, ncp, 1000, 1e-8)(p);
 
                     const Real vx = std::max(vTmp+minVStep, tmp);
-                    p = NonCentralChiSquareDistribution(df, ncp)(vx/k);
+                    p = NonCentralCumulativeChiSquareDistribution(df, ncp)(vx/k);
                     vTmp=vx;
                     grid.insert(std::pair<Real, Real>(vx, p));
                 }
