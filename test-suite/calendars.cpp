@@ -1638,9 +1638,28 @@ void CalendarTest::testChinaSSE() {
     expectedHol.push_back(Date(5, Oct, 2017));
     expectedHol.push_back(Date(6, Oct, 2017));
 
+    // China Shanghai Securities Exchange holiday list in the year 2018
+    expectedHol.push_back(Date(1, Jan, 2018));
+    expectedHol.push_back(Date(15, Feb, 2018));
+    expectedHol.push_back(Date(16, Feb, 2018));
+    expectedHol.push_back(Date(19, Feb, 2018));
+    expectedHol.push_back(Date(20, Feb, 2018));
+    expectedHol.push_back(Date(21, Feb, 2018));
+    expectedHol.push_back(Date(5, April, 2018));
+    expectedHol.push_back(Date(6, April, 2018));
+    expectedHol.push_back(Date(30, April, 2018));
+    expectedHol.push_back(Date(1, May, 2018));
+    expectedHol.push_back(Date(18, June, 2018));
+    expectedHol.push_back(Date(24, September, 2018));
+    expectedHol.push_back(Date(1, Oct, 2018));
+    expectedHol.push_back(Date(2, Oct, 2018));
+    expectedHol.push_back(Date(3, Oct, 2018));
+    expectedHol.push_back(Date(4, Oct, 2018));
+    expectedHol.push_back(Date(5, Oct, 2018));
+
     Calendar c = China(China::SSE);
     std::vector<Date> hol = Calendar::holidayList(c, Date(1, January, 2014),
-        Date(31, December, 2017));
+        Date(31, December, 2018));
 
     for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i] != expectedHol[i])
@@ -1687,9 +1706,17 @@ void CalendarTest::testChinaIB() {
     expectedWorkingWeekEnds.push_back(Date(27, May, 2017));
     expectedWorkingWeekEnds.push_back(Date(30, Sep, 2017));
 
+    // China Inter Bank working weekends list in the year 2018
+    expectedWorkingWeekEnds.push_back(Date(11, Feb, 2018));
+    expectedWorkingWeekEnds.push_back(Date(24, Feb, 2018));
+    expectedWorkingWeekEnds.push_back(Date(8, April, 2018));
+    expectedWorkingWeekEnds.push_back(Date(28, April, 2018));
+    expectedWorkingWeekEnds.push_back(Date(29, Sep, 2018));
+    expectedWorkingWeekEnds.push_back(Date(30, Sep, 2018));
+
     Calendar c = China(China::IB);
     Date start(1, Jan, 2014);
-    Date end(31, Dec, 2017);
+    Date end(31, Dec, 2018);
 
     Size k = 0;
 
