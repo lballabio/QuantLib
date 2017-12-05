@@ -28,6 +28,12 @@ if (MSVC)
     add_definitions(-D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS)
 endif()
 
+# On single-configuration builds, select a default build type that
+# gives the same compilation flags as a default autotools build.
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    set(CMAKE_BUILD_TYPE "RelWithDebInfo")
+endif()
+
 # to reference headers via <ql/foo.hpp>, we need to add the root
 # directory of the project to includes
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
