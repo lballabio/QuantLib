@@ -35,7 +35,7 @@ namespace QuantLib {
     /*! \ingroup shortrate */
     class TwoFactorModel : public ShortRateModel {
       public:
-        TwoFactorModel(Size nParams);
+        explicit TwoFactorModel(Size nParams);
 
         class ShortRateDynamics;
         class ShortRateTree;

@@ -22,11 +22,13 @@
 #include <ql/experimental/credit/inhomogeneouspooldef.hpp>
 #include <ql/experimental/credit/integralcdoengine.hpp>
 #include <ql/experimental/credit/integralntdengine.hpp>
+#include <ql/experimental/credit/interpolatedaffinehazardratecurve.hpp>
 #include <ql/experimental/credit/issuer.hpp>
 #include <ql/experimental/credit/loss.hpp>
 #include <ql/experimental/credit/lossdistribution.hpp>
 #include <ql/experimental/credit/midpointcdoengine.hpp>
 #include <ql/experimental/credit/nthtodefault.hpp>
+#include <ql/experimental/credit/onefactoraffinesurvival.hpp>
 #include <ql/experimental/credit/onefactorcopula.hpp>
 #include <ql/experimental/credit/onefactorgaussiancopula.hpp>
 #include <ql/experimental/credit/onefactorstudentcopula.hpp>

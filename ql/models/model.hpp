@@ -141,7 +141,7 @@ namespace QuantLib {
     /*! \ingroup shortrate */
     class ShortRateModel : public CalibratedModel {
       public:
-        ShortRateModel(Size nArguments);
+        explicit ShortRateModel(Size nArguments);
         virtual boost::shared_ptr<Lattice> tree(const TimeGrid&) const = 0;
     };
 
@@ -166,7 +166,7 @@ namespace QuantLib {
       private:
         class Impl :  public Constraint::Impl {
           public:
-            Impl(const std::vector<Parameter>& arguments)
+            explicit Impl(const std::vector<Parameter>& arguments)
             : arguments_(arguments) {}
 
             bool test(const Array& params) const {
@@ -226,7 +226,7 @@ namespace QuantLib {
             const std::vector<Parameter>& arguments_;
         };
       public:
-        PrivateConstraint(const std::vector<Parameter>& arguments)
+        explicit PrivateConstraint(const std::vector<Parameter>& arguments)
         : Constraint(boost::shared_ptr<Constraint::Impl>(
                                    new PrivateConstraint::Impl(arguments))) {}
     };

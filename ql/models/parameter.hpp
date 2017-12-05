@@ -125,7 +125,7 @@ namespace QuantLib {
       private:
         class Impl : public Parameter::Impl {
           public:
-            Impl(const std::vector<Time>& times)
+            explicit Impl(const std::vector<Time>& times)
             : times_(times) {}
 
             Real value(const Array& params, Time t) const {
