@@ -1,2 +1,2 @@
 add_executable(BasketLosses BasketLosses.cpp)
-target_link_libraries(BasketLosses QuantLib)
+target_link_libraries(BasketLosses ${QL_LINK_LIBRARY})
