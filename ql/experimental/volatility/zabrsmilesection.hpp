@@ -206,7 +206,7 @@ void ZabrSmileSection<Evaluation>::init2(ZabrLocalVolatility) {
 template <typename Evaluation>
 void ZabrSmileSection<Evaluation>::init2(ZabrFullFd) {
     callPrices_.resize(strikes_.size());
-#pragma omp parallel for
+//#pragma omp parallel for
     for (Size i = 0; i < strikes_.size(); i++) {
         callPrices_[i] = model_->fullFdPrice(strikes_[i]);
     }
