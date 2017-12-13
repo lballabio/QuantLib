@@ -6,6 +6,7 @@ this_include_HEADERS = \
     all.hpp \
     bondhelpers.hpp \
     bootstraptraits.hpp \
+    compositezeroyieldstructure.hpp \
     discountcurve.hpp \
     drifttermstructure.hpp \
     fittedbonddiscountcurve.hpp \
