@@ -5378,6 +5378,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\yield\compositezeroyieldstructure.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\yield\discountcurve.hpp"
 					>
 				</File>
