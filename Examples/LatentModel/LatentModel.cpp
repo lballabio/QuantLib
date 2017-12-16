@@ -129,11 +129,11 @@ int main(int, char* []) {
         // Sobol, many cores
         boost::shared_ptr<DefaultLossModel> rdlmG(
             boost::make_shared<RandomDefaultLM<GaussianCopulaPolicy> >(lmG, 
-                std::vector<Real>(), numSimulations, 1.e-6, 2863311530));
+                std::vector<Real>(), numSimulations, 1.e-6, 2863311530UL));
         // StudentT random joint default model:
         boost::shared_ptr<DefaultLossModel> rdlmT(
             boost::make_shared<RandomDefaultLM<TCopulaPolicy> >(lmT, 
-            std::vector<Real>(), numSimulations, 1.e-6, 2863311530));
+            std::vector<Real>(), numSimulations, 1.e-6, 2863311530UL));
 
         /* --------------------------------------------------------------
                         DUMP SOME RESULTS
