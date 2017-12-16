@@ -167,10 +167,10 @@ namespace QuantLib {
         techniques to improve it (not implemented here) see:
         Joshi, M., D. Kainth. 2004. Rapid and accurate development of prices
         and Greeks for nth to default credit swaps in the Li model. Quantitative
-        Finance, Vol. 4. Institute of Physics Publishing, London, UK, 266–275
+        Finance, Vol. 4. Institute of Physics Publishing, London, UK, 266â€“275
         and:
         Chen, Z., Glasserman, P. 'Fast pricing of basket default swaps' in
-        Operations Research Vol. 56, No. 2, March–April 2008, pp. 286–303
+        Operations Research Vol. 56, No. 2, Marchâ€“April 2008, pp. 286â€“303
         */
         virtual Disposable<std::vector<Probability> > probsBeingNthEvent(Size n,
             const Date& d) const;
@@ -821,7 +821,7 @@ namespace QuantLib {
             const std::vector<Real>& recoveries = std::vector<Real>(),
             Size nSims = 0,// stats will crash on div by zero, FIX ME.
             Real accuracy = 1.e-6,
-            BigNatural seed = 2863311530)
+            BigNatural seed = 2863311530UL)
         : RandomLM< ::QuantLib::RandomDefaultLM, copulaPolicy, USNG>
             (copula->numFactors(), copula->size(), copula->copula(),
                 nSims, seed ),
@@ -839,7 +839,7 @@ namespace QuantLib {
                 copula,
             Size nSims = 0,// stats will crash on div by zero, FIX ME.
             Real accuracy = 1.e-6,
-            BigNatural seed = 2863311530)
+            BigNatural seed = 2863311530UL)
         : RandomLM< ::QuantLib::RandomDefaultLM, copulaPolicy, USNG>
             (copula->numFactors(), copula->size(), copula->copula(),
                 nSims, seed ),
