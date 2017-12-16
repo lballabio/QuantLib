@@ -169,7 +169,7 @@ int main(int, char* []) {
             boost::make_shared<RandomDefaultLM<GaussianCopulaPolicy, 
             RandomSequenceGenerator<
                 BoxMullerGaussianRng<MersenneTwisterUniformRng> > > >(gLM, 
-                    recoveries, numSimulations, 1.e-6, 2863311530));
+                    recoveries, numSimulations, 1.e-6, 2863311530UL));
         //boost::shared_ptr<DefaultLossModel> rdlmG(
         //    boost::make_shared<RandomDefaultLM<GaussianCopulaPolicy> >(gLM, 
         //        recoveries, numSimulations, 1.e-6, 2863311530));
@@ -184,7 +184,7 @@ int main(int, char* []) {
             boost::make_shared<RandomDefaultLM<TCopulaPolicy, 
             RandomSequenceGenerator<
                 PolarStudentTRng<MersenneTwisterUniformRng> > > >(ktTLossLM, 
-                    recoveries, numSimulations, 1.e-6, 2863311530));
+                    recoveries, numSimulations, 1.e-6, 2863311530UL));
         //boost::shared_ptr<DefaultLossModel> rdlmT(
         //    boost::make_shared<RandomDefaultLM<TCopulaPolicy> >(ktTLossLM, 
         //        recoveries, numSimulations, 1.e-6, 2863311530));
@@ -212,7 +212,7 @@ int main(int, char* []) {
         // Sobol, many cores
         boost::shared_ptr<DefaultLossModel> rdLlmG(
             boost::make_shared<RandomLossLM<GaussianCopulaPolicy> >(sptLG, 
-                numSimulations, 1.e-6, 2863311530));
+                numSimulations, 1.e-6, 2863311530UL));
         theBskt->setLossModel(rdLlmG);
 
         std::cout << "Random Loss G Expected 10-Yr Losses: "  << std::endl;
@@ -223,7 +223,7 @@ int main(int, char* []) {
         // Sobol, many cores
         boost::shared_ptr<DefaultLossModel> rdLlmT(
             boost::make_shared<RandomLossLM<TCopulaPolicy> >(sptLT, 
-                numSimulations, 1.e-6, 2863311530));
+                numSimulations, 1.e-6, 2863311530UL));
         theBskt->setLossModel(rdLlmT);
 
         std::cout << "Random Loss T Expected 10-Yr Losses: "  << std::endl;
