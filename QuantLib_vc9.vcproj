@@ -5378,6 +5378,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\yield\compositezeroyieldstructure.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\yield\discountcurve.hpp"
 					>
 				</File>
@@ -5676,6 +5680,14 @@
 			</File>
 			<File
 				RelativePath=".\ql\currencies\asia.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\currencies\crypto.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\currencies\crypto.hpp"
 				>
 			</File>
 			<File

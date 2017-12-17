@@ -2010,6 +2010,9 @@
     <ClInclude Include="ql\termstructures\yield\bootstraptraits.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
+    <ClInclude Include="ql\termstructures\yield\compositezeroyieldstructure.hpp">
+      <Filter>termstructures\yield</Filter>
+    </ClInclude>
     <ClInclude Include="ql\termstructures\yield\discountcurve.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
@@ -2161,6 +2164,9 @@
       <Filter>currencies</Filter>
     </ClInclude>
     <ClInclude Include="ql\currencies\asia.hpp">
+      <Filter>currencies</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\currencies\crypto.hpp">
       <Filter>currencies</Filter>
     </ClInclude>
     <ClInclude Include="ql\currencies\europe.hpp">
@@ -5278,6 +5284,9 @@
       <Filter>currencies</Filter>
     </ClCompile>
     <ClCompile Include="ql\currencies\asia.cpp">
+      <Filter>currencies</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\currencies\crypto.cpp">
       <Filter>currencies</Filter>
     </ClCompile>
     <ClCompile Include="ql\currencies\europe.cpp">

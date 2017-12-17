@@ -1,2 +1,2 @@
 add_executable(ConvertibleBonds ConvertibleBonds.cpp)
-target_link_libraries(ConvertibleBonds QuantLib)
+target_link_libraries(ConvertibleBonds ${QL_LINK_LIBRARY})
