@@ -65,6 +65,9 @@ class SimpleQuote;
 
         // define finite difference scheme
         const FdmSchemeDesc schemeDesc;
+
+        // Rannacher smoothing steps at the beginning
+        const Size nRannacherTimeSteps;
     };
 
     class HestonSLVFDMModel : public LazyObject {

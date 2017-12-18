@@ -1503,7 +1503,8 @@ void HestonSLVModelTest::testFDMCalibration() {
           1e-8, 1e-8, 0.0, 1.0, 1.0, 1.0, 1e-6,
           FdmHestonGreensFct::Gaussian,
           FdmSquareRootFwdOp::Plain,
-          FdmSchemeDesc::ModifiedCraigSneyd()
+          FdmSchemeDesc::ModifiedCraigSneyd(),
+          0
         };
 
     const HestonSLVFokkerPlanckFdmParams logParams =
@@ -1512,7 +1513,8 @@ void HestonSLVModelTest::testFDMCalibration() {
           1e-5, 1e-5, 0.0000025, 1.0, 0.1, 0.9, 1e-5,
           FdmHestonGreensFct::Gaussian,
           FdmSquareRootFwdOp::Log,
-          FdmSchemeDesc::ModifiedCraigSneyd()
+          FdmSchemeDesc::ModifiedCraigSneyd(),
+          0
         };
 
     const HestonSLVFokkerPlanckFdmParams powerParams =
@@ -1521,7 +1523,8 @@ void HestonSLVModelTest::testFDMCalibration() {
           1e-6, 1e-6, 0.001, 1.0, 0.001, 1.0, 1e-5,
           FdmHestonGreensFct::Gaussian,
           FdmSquareRootFwdOp::Power,
-          FdmSchemeDesc::ModifiedCraigSneyd()
+          FdmSchemeDesc::ModifiedCraigSneyd(),
+          0
         };
 
 
@@ -1582,17 +1585,18 @@ void HestonSLVModelTest::testLocalVolsvSLVPropDensity() {
         boost::make_shared<NoExceptLocalVolSurface>(vTS, rTS, qTS, spot, 0.3));
     localVol->enableExtrapolation(true);
 
-    const Size vGrid = 1001;
-    const Size xGrid = 301;
+    const Size vGrid = 151;
+    const Size xGrid = 51;
 
     const HestonSLVFokkerPlanckFdmParams fdmParams = {
-        xGrid, vGrid, 2000, 101, 3.0, 2,
+        xGrid, vGrid, 500, 50, 100.0, 2,
         0.1, 1e-4, 10000,
         1e-5, 1e-5, 0.0000025,
         1.0, 0.1, 0.9, 1e-5,
-        FdmHestonGreensFct::Gaussian,
+        FdmHestonGreensFct::ZeroCorrelation,
         FdmSquareRootFwdOp::Log,
-        FdmSchemeDesc::ModifiedCraigSneyd()
+        FdmSchemeDesc::ModifiedCraigSneyd(),
+        5
     };
 
     const HestonSLVFDMModel slvModel(
@@ -1825,7 +1829,8 @@ void HestonSLVModelTest::testBarrierPricingMixedModels() {
           1e-8, 1e-8, 0.0, 1.0, 1.0, 1.0, 1e-6,
           FdmHestonGreensFct::Gaussian,
           FdmSquareRootFwdOp::Plain,
-          FdmSchemeDesc::ModifiedCraigSneyd()
+          FdmSchemeDesc::ModifiedCraigSneyd(),
+          0
         };
 
     const Real eta[] = { 0.1, 0.2, 0.3, 0.4,
@@ -2150,7 +2155,8 @@ void HestonSLVModelTest::testForwardSkewSLV() {
         1e-5, 1e-5, 0.0000025, 1.0, 0.1, 0.9, 1e-5,
         FdmHestonGreensFct::Gaussian,
         FdmSquareRootFwdOp::Log,
-        FdmSchemeDesc::ModifiedCraigSneyd()
+        FdmSchemeDesc::ModifiedCraigSneyd(),
+        0
     };
 
     const boost::shared_ptr<LocalVolTermStructure> leverageFctFDM =
@@ -2504,6 +2510,8 @@ test_suite* HestonSLVModelTest::experimental(SpeedLevel speed) {
         &HestonSLVModelTest::testBarrierPricingViaHestonLocalVol));
     suite->add(QUANTLIB_TEST_CASE(
         &HestonSLVModelTest::testMonteCarloVsFdmPricing));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testLocalVolsvSLVPropDensity));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(
@@ -2523,8 +2531,6 @@ test_suite* HestonSLVModelTest::experimental(SpeedLevel speed) {
 //    suite->add(QUANTLIB_TEST_CASE(
 //        &HestonSLVModelTest::testForwardSkewSLV));
 //    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testFDMCalibration));
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testLocalVolsvSLVPropDensity));
 //    suite->add(QUANTLIB_TEST_CASE(
 //        &HestonSLVModelTest::testBarrierPricingMixedModels));
 
