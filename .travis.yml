@@ -29,6 +29,10 @@ env:
     - DOCKER_IMAGE=lballabio/quantlib-devenv:artful
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror -std=c++14"
+    # Latest Boost, clang 4.0
+    - DOCKER_IMAGE=lballabio/quantlib-devenv:artful
+      CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
+      CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
 
 before_install:
   - docker pull ${DOCKER_IMAGE}
