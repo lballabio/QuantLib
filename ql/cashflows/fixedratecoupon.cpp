@@ -5,6 +5,8 @@
  Copyright (C) 2003, 2004, 2007 StatPro Italia srl
  Copyright (C) 2007 Piter Dias
  Copyright (C) 2010 Ferdinando Ametrano
+ Copyright (C) 2017 Joseph Jeisman
+ Copyright (C) 2017 Fabrice Lecuyer
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -78,8 +80,8 @@ namespace QuantLib {
 
 
     FixedRateLeg::FixedRateLeg(const Schedule& schedule)
-    : schedule_(schedule), calendar_(schedule.calendar()),
-      paymentAdjustment_(Following) {}
+    : schedule_(schedule), paymentCalendar_(schedule.calendar()),
+      paymentAdjustment_(Following), paymentLag_(0) {}
 
     FixedRateLeg& FixedRateLeg::withNotionals(Real notional) {
         notionals_ = vector<Real>(1,notional);
@@ -129,13 +131,24 @@ namespace QuantLib {
     }
 
     FixedRateLeg& FixedRateLeg::withFirstPeriodDayCounter(
-                                               const DayCounter& dayCounter) {
+                                            const DayCounter& dayCounter) {
         firstPeriodDC_ = dayCounter;
         return *this;
     }
 
+    FixedRateLeg& FixedRateLeg::withLastPeriodDayCounter(
+                                               const DayCounter& dayCounter) {
+        lastPeriodDC_ = dayCounter;
+        return *this;
+    }
+
     FixedRateLeg& FixedRateLeg::withPaymentCalendar(const Calendar& cal) {
-        calendar_ = cal;
+        paymentCalendar_ = cal;
+        return *this;
+    }
+
+    FixedRateLeg& FixedRateLeg::withPaymentLag(Natural lag) {
+        paymentLag_ = lag;
         return *this;
     }
 
@@ -159,11 +172,9 @@ namespace QuantLib {
         Leg leg;
         leg.reserve(schedule_.size()-1);
 
-        Calendar schCalendar = schedule_.calendar();
-
         // first period might be short or long
         Date start = schedule_.date(0), end = schedule_.date(1);
-        Date paymentDate = calendar_.adjust(end, paymentAdjustment_);
+        Date paymentDate = paymentCalendar_.advance(end, paymentLag_, Days, paymentAdjustment_);
         Date exCouponDate;
         InterestRate rate = couponRates_[0];
         Real nominal = notionals_[0];
@@ -175,31 +186,24 @@ namespace QuantLib {
                                                      exCouponAdjustment_,
                                                      exCouponEndOfMonth_);
         }
-
-        if (schedule_.isRegular(1)) {
-            QL_REQUIRE(firstPeriodDC_.empty() ||
-                       firstPeriodDC_ == rate.dayCounter(),
-                       "regular first coupon "
-                       "does not allow a first-period day count");
-            shared_ptr<CashFlow> temp(new
-                FixedRateCoupon(paymentDate, nominal, rate,
-                                start, end, start, end, exCouponDate));
-            leg.push_back(temp);
-        } else {
-            Date ref = end - schedule_.tenor();
-            ref = schCalendar.adjust(ref, schedule_.businessDayConvention());
-            InterestRate r(rate.rate(),
-                           firstPeriodDC_.empty() ? rate.dayCounter()
-                                                  : firstPeriodDC_,
-                           rate.compounding(), rate.frequency());
-            leg.push_back(shared_ptr<CashFlow>(new
-                FixedRateCoupon(paymentDate, nominal, r,
-                                start, end, ref, end, exCouponDate)));
-        }
+        Date ref = schedule_.hasTenor() &&
+            schedule_.hasIsRegular() && !schedule_.isRegular(1) ?
+            schedule_.calendar().advance(end,
+                                         -schedule_.tenor(),
+                                         schedule_.businessDayConvention(),
+                                         schedule_.endOfMonth())
+            : start;
+        InterestRate r(rate.rate(),
+                       firstPeriodDC_.empty() ? rate.dayCounter()
+                       : firstPeriodDC_,
+                       rate.compounding(), rate.frequency());
+        leg.push_back(shared_ptr<CashFlow>(new
+            FixedRateCoupon(paymentDate, nominal, r,
+                            start, end, ref, end, exCouponDate)));
         // regular periods
         for (Size i=2; i<schedule_.size()-1; ++i) {
             start = end; end = schedule_.date(i);
-            paymentDate = calendar_.adjust(end, paymentAdjustment_);
+            Date paymentDate = paymentCalendar_.advance(end, paymentLag_, Days, paymentAdjustment_);
             if (exCouponPeriod_ != Period())
             {
                 exCouponDate = exCouponCalendar_.advance(paymentDate,
@@ -223,7 +227,7 @@ namespace QuantLib {
             // last period might be short or long
             Size N = schedule_.size();
             start = end; end = schedule_.date(N-1);
-            paymentDate = calendar_.adjust(end, paymentAdjustment_);
+            Date paymentDate = paymentCalendar_.advance(end, paymentLag_, Days, paymentAdjustment_);
             if (exCouponPeriod_ != Period())
             {
                 exCouponDate = exCouponCalendar_.advance(paymentDate,
@@ -239,15 +243,22 @@ namespace QuantLib {
                 nominal = notionals_[N-2];
             else
                 nominal = notionals_.back();
-            if (schedule_.isRegular(N-1)) {
+            InterestRate r( rate.rate(), lastPeriodDC_.empty() ?
+                rate.dayCounter() :
+                lastPeriodDC_ , rate.compounding(), rate.frequency() );
+            if ((schedule_.hasIsRegular() && schedule_.isRegular(N - 1)) ||
+                !schedule_.hasTenor()) {
                 leg.push_back(shared_ptr<CashFlow>(new
-                    FixedRateCoupon(paymentDate, nominal, rate,
+                    FixedRateCoupon(paymentDate, nominal, r,
                                     start, end, start, end, exCouponDate)));
             } else {
-                Date ref = start + schedule_.tenor();
-                ref = schCalendar.adjust(ref, schedule_.businessDayConvention());
+                Date ref = schedule_.calendar().advance(
+                                            start,
+                                            schedule_.tenor(),
+                                            schedule_.businessDayConvention(),
+                                            schedule_.endOfMonth());
                 leg.push_back(shared_ptr<CashFlow>(new
-                    FixedRateCoupon(paymentDate, nominal, rate,
+                    FixedRateCoupon(paymentDate, nominal, r,
                                     start, end, start, ref, exCouponDate)));
             }
         }

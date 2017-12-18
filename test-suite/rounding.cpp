@@ -74,7 +74,7 @@ void RoundingTest::testClosest() {
         Real calculated = closest(testData[i].x);
         Real expected = testData[i].closest;
         if (!close(calculated,expected,1))
-            BOOST_ERROR(QL_FIXED << std::setprecision(8)
+            BOOST_ERROR(std::fixed << std::setprecision(8)
                         << "Original number: " << testData[i].x << "\n"
                         << std::setprecision(digits)
                         << "Expected:        " << expected << "\n"
@@ -92,7 +92,7 @@ void RoundingTest::testUp() {
         Real calculated = up(testData[i].x);
         Real expected = testData[i].up;
         if (!close(calculated,expected,1))
-            BOOST_ERROR(QL_FIXED << std::setprecision(8)
+            BOOST_ERROR(std::fixed << std::setprecision(8)
                         << "Original number: " << testData[i].x << "\n"
                         << std::setprecision(digits)
                         << "Expected:        " << expected << "\n"
@@ -110,7 +110,7 @@ void RoundingTest::testDown() {
         Real calculated = down(testData[i].x);
         Real expected = testData[i].down;
         if (!close(calculated,expected,1))
-            BOOST_ERROR(QL_FIXED << std::setprecision(8)
+            BOOST_ERROR(std::fixed << std::setprecision(8)
                         << "Original number: " << testData[i].x << "\n"
                         << std::setprecision(digits)
                         << "Expected:        " << expected << "\n"
@@ -128,7 +128,7 @@ void RoundingTest::testFloor() {
         Real calculated = floor(testData[i].x);
         Real expected = testData[i].floor;
         if (!close(calculated,expected,1))
-            BOOST_ERROR(QL_FIXED << std::setprecision(8)
+            BOOST_ERROR(std::fixed << std::setprecision(8)
                         << "Original number: " << testData[i].x << "\n"
                         << std::setprecision(digits)
                         << "Expected:        " << expected << "\n"
@@ -146,7 +146,7 @@ void RoundingTest::testCeiling() {
         Real calculated = ceiling(testData[i].x);
         Real expected = testData[i].ceiling;
         if (!close(calculated,expected,1))
-            BOOST_ERROR(QL_FIXED << std::setprecision(8)
+            BOOST_ERROR(std::fixed << std::setprecision(8)
                         << "Original number: " << testData[i].x << "\n"
                         << std::setprecision(digits)
                         << "Expected:        " << expected << "\n"

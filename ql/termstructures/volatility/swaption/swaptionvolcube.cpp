@@ -73,9 +73,9 @@ namespace QuantLib {
         registerWith(swapIndexBase_);
         registerWith(shortSwapIndexBase_);
 
-        QL_REQUIRE(shortSwapIndexBase_->tenor()<swapIndexBase_->tenor(),
+        QL_REQUIRE(shortSwapIndexBase_->tenor()<=swapIndexBase_->tenor(),
                    "short index tenor (" << shortSwapIndexBase_->tenor() <<
-                   ") is not less than index tenor (" <<
+                   ") is not less or equal than index tenor (" <<
                    swapIndexBase_->tenor() << ")");
 
         registerWithVolatilitySpread();

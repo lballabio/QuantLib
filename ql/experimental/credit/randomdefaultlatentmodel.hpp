@@ -167,10 +167,10 @@ namespace QuantLib {
         techniques to improve it (not implemented here) see:
         Joshi, M., D. Kainth. 2004. Rapid and accurate development of prices
         and Greeks for nth to default credit swaps in the Li model. Quantitative
-        Finance, Vol. 4. Institute of Physics Publishing, London, UK, 266–275
+        Finance, Vol. 4. Institute of Physics Publishing, London, UK, 266-275
         and:
         Chen, Z., Glasserman, P. 'Fast pricing of basket default swaps' in
-        Operations Research Vol. 56, No. 2, March–April 2008, pp. 286–303
+        Operations Research Vol. 56, No. 2, March/April 2008, pp. 286-303
         */
         virtual Disposable<std::vector<Probability> > probsBeingNthEvent(Size n,
             const Date& d) const;
@@ -190,14 +190,17 @@ namespace QuantLib {
         virtual boost::tuples::tuple<Real, Real, Real> percentileAndInterval(
             const Date& d, Real percentile) const;
         /*! Distributes the total VaR amount along the portfolio counterparties.
-        @param loss Loss amount (in loss units).
+            The passed loss amount is in loss units.
         */
         virtual Disposable<std::vector<Real> > splitVaRLevel(const Date& date,
             Real loss) const;
-        /*! Distributes the total VaR amount along the portfolio counterparties.
-        Provides confidence interval for split so that portfolio optimization
-        can be performed outside those limits.
-        @param loss Loss amount (in loss units).
+        /*! Distributes the total VaR amount along the portfolio
+            counterparties.
+
+            Provides confidence interval for split so that portfolio
+            optimization can be performed outside those limits.
+
+            The passed loss amount is in loss units.
         */
         virtual Disposable<std::vector<std::vector<Real> > > splitVaRAndError(
             const Date& date, Real loss, Probability confInterval) const;
@@ -247,7 +250,7 @@ namespace QuantLib {
             for(Size iEvt=0; iEvt < events.size(); iEvt++)
                 // duck type on the members:
                 if(val > events[iEvt].dayFromRef) simCount++;
-                if(simCount >= n) counts++;
+            if(simCount >= n) counts++;
         }
         return counts/nSims_;
         // \todo Provide confidence interval
@@ -290,7 +293,7 @@ namespace QuantLib {
             }
         }
         std::transform(hitsByDate.begin(), hitsByDate.end(),
-            hitsByDate.begin(), std::bind2nd(std::divides<Real>(), nSims_));
+            hitsByDate.begin(), std::bind2nd(std::divides<Real>(), Real(nSims_)));
         return hitsByDate;
         // \todo Provide confidence interval
     }
@@ -363,7 +366,8 @@ namespace QuantLib {
             Real portfSimLoss=0.;
             for(Size iEvt=0; iEvt < events.size(); iEvt++) {
                 // if event is within time horizon...
-                if(val > static_cast<Date::serial_type>(events[iEvt].dayFromRef)) {
+                if(val > static_cast<Date::serial_type>(
+					   events[iEvt].dayFromRef)) {
                     Size iName = events[iEvt].nameIdx;
                     // ...and is contained in the basket.
                         portfSimLoss +=
@@ -420,7 +424,8 @@ namespace QuantLib {
 
             Real portfSimLoss=0.;
             for(Size iEvt=0; iEvt < events.size(); iEvt++) {
-                if(val > static_cast<Date::serial_type>(events[iEvt].dayFromRef)) {
+                if(val > static_cast<Date::serial_type>(
+					 events[iEvt].dayFromRef)) {
                     Size iName = events[iEvt].nameIdx;
           // test needed (here and the others) to reuse simulations:
           //          if(basket_->pool()->has(copula_->pool()->names()[iName]))
@@ -462,7 +467,8 @@ namespace QuantLib {
             const std::vector<simEvent<D<C, URNG> > >& events = getSim(iSim);
             Real portfSimLoss=0.;
             for(Size iEvt=0; iEvt < events.size(); iEvt++) {
-                if(val > static_cast<Date::serial_type>(events[iEvt].dayFromRef)) {
+                if(val > static_cast<Date::serial_type>(
+					  events[iEvt].dayFromRef)) {
                     Size iName = events[iEvt].nameIdx;
                     // ...and is contained in the basket.
                     //if(basket_->pool()->has(copula_->pool()->names()[iName]))
@@ -490,7 +496,8 @@ namespace QuantLib {
                 losses.end())) / static_cast<Real>(nSims_);
 
         return ( perctlInf * (1.-percent-probOverQ) +//<-correction term
-            std::accumulate(losses.begin() + position, losses.end(), Real(0.))/nSims_
+            std::accumulate(losses.begin() + position, losses.end(), 
+			    Real(0.))/nSims_
                 )/(1.-percent);
 
         /* Alternative ESF definition; find the first loss larger than the
@@ -553,7 +560,8 @@ namespace QuantLib {
             const std::vector<simEvent<D<C, URNG> > >& events = getSim(iSim);
             Real portfSimLoss=0.;
             for(Size iEvt=0; iEvt < events.size(); iEvt++) {
-                if(val > static_cast<Date::serial_type>(events[iEvt].dayFromRef)) {
+                if(val > static_cast<Date::serial_type>(
+					 events[iEvt].dayFromRef)) {
                     Size iName = events[iEvt].nameIdx;
                  //   if(basket_->pool()->has(copula_->pool()->names()[iName]))
                         portfSimLoss +=
@@ -659,7 +667,8 @@ namespace QuantLib {
             std::vector<simEvent<D<C, URNG> > > splitEventsBuffer;
 
             for(Size iEvt=0; iEvt < events.size(); iEvt++) {
-                if(val > static_cast<Date::serial_type>(events[iEvt].dayFromRef)) {
+                if(val > static_cast<Date::serial_type>(
+					 events[iEvt].dayFromRef)) {
                     Size iName = events[iEvt].nameIdx;
                 // if(basket_->pool()->has(copula_->pool()->names()[iName])) {
                         portfSimLoss +=
@@ -735,7 +744,7 @@ namespace QuantLib {
 
     // --------- Time inversion solver target function: -----------------------
 
-    /* It could be argued that this concept is part of the copula (more generic).
+    /* It could be argued that this concept is part of the copula (more generic)
     In general when the modelled magnitude is parametric one can solve for
     inversion to get the parameter value for a given magnitude value (provided
     the modelled variable dependence in invertible). In this particular problem
@@ -810,46 +819,46 @@ namespace QuantLib {
         typedef simEvent<RandomDefaultLM> defaultSimEvent;
 
         // \todo Consider this to be only a ConstantLossLM instead
-        const boost::shared_ptr<DefaultLatentModel<copulaPolicy> > copula_;
+        const boost::shared_ptr<DefaultLatentModel<copulaPolicy> > model_;
         const std::vector<Real> recoveries_;
         // for time inversion:
         Real accuracy_;
     public:
         // \todo: Allow a constructor building its own default latent model.
         RandomDefaultLM(
-            const boost::shared_ptr<DefaultLatentModel<copulaPolicy> >& copula,
+            const boost::shared_ptr<DefaultLatentModel<copulaPolicy> >& model,
             const std::vector<Real>& recoveries = std::vector<Real>(),
             Size nSims = 0,// stats will crash on div by zero, FIX ME.
             Real accuracy = 1.e-6,
             BigNatural seed = 2863311530UL)
         : RandomLM< ::QuantLib::RandomDefaultLM, copulaPolicy, USNG>
-            (copula->numFactors(), copula->size(), copula->copula(),
+            (model->numFactors(), model->size(), model->copula(),
                 nSims, seed ),
-          copula_(copula), //<- renmae to latentModel_ or defautlLM_;
-          recoveries_(recoveries.size()==0 ? std::vector<Real>(copula->size(),
+          model_(model),
+          recoveries_(recoveries.size()==0 ? std::vector<Real>(model->size(),
             0.) : recoveries),
           accuracy_(accuracy)
         {
             // redundant through basket?
             this->registerWith(Settings::instance().evaluationDate());
-            this->registerWith(copula_);
+            this->registerWith(model_);
         }
         RandomDefaultLM(
             const boost::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >&
-                copula,
+                model,
             Size nSims = 0,// stats will crash on div by zero, FIX ME.
             Real accuracy = 1.e-6,
             BigNatural seed = 2863311530UL)
         : RandomLM< ::QuantLib::RandomDefaultLM, copulaPolicy, USNG>
-            (copula->numFactors(), copula->size(), copula->copula(),
+            (model->numFactors(), model->size(), model->copula(),
                 nSims, seed ),
-          copula_(copula),
-          recoveries_(copula->recoveries()),
+          model_(model),
+          recoveries_(model->recoveries()),
           accuracy_(accuracy)
         {
             // redundant through basket?
             this->registerWith(Settings::instance().evaluationDate());
-            this->registerWith(copula_);
+            this->registerWith(model_);
         }
 
         // grant access to static polymorphism:
@@ -891,20 +900,20 @@ namespace QuantLib {
     protected:
         Real latentVarValue(const std::vector<Real>& factorsSample,
             Size iVar) const {
-            return copula_->latentVarValue(factorsSample, iVar);
+            return model_->latentVarValue(factorsSample, iVar);
         }
         //allows statistics to know the portfolio size (could be moved to parent
         //invoking duck typing on the variable name or a handle to the basket)
-        Size basketSize() const { return copula_->size(); }
+        Size basketSize() const { return model_->size(); }
     private:
         void resetModel() /*const*/ {
             /* Explore: might save recalculation if the basket is the same
             (some situations, like BC or control variates) in that case do not
-            update, only reset the copula's basket.
+            update, only reset the model's basket.
             */
-            copula_->resetBasket(this->basket_.currentLink());
+            model_->resetBasket(this->basket_.currentLink());
 
-            QL_REQUIRE(this->basket_->size() == copula_->size(),
+            QL_REQUIRE(this->basket_->size() == model_->size(),
                 "Incompatible basket and model sizes.");
             QL_REQUIRE(recoveries_.size() == this->basket_->size(),
                 "Incompatible basket and recovery sizes.");
@@ -930,11 +939,11 @@ namespace QuantLib {
         // starts with no events
         this->simsBuffer_.push_back(std::vector<defaultSimEvent> ());
 
-        for(Size iName=0; iName<copula_->size(); iName++) {
+        for(Size iName=0; iName<model_->size(); iName++) {
             Real latentVarSample =
-                copula_->latentVarValue(values, iName);
+                model_->latentVarValue(values, iName);
             Probability simDefaultProb =
-               copula_->cumulativeY(latentVarSample, iName);
+               model_->cumulativeY(latentVarSample, iName);
             // If the default simulated lies before the max date:
             if (horizonDefaultPs_[iName] >= simDefaultProb) {
                 const Handle<DefaultProbabilityTermStructure>& dfts =

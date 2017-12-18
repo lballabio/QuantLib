@@ -72,7 +72,7 @@ namespace QuantLib {
         // the guesses for sabr parameters are assumed to be piecewise constant
         if (d<=optionDates_[0]) return sabrGuesses_[0];
         Size i=0;
-        while( d<optionDates_[i] && i<optionDates_.size()-1)
+        while (i<optionDates_.size()-1 && d<optionDates_[i])
             ++i;
         return sabrGuesses_[i];
     }
@@ -80,7 +80,7 @@ namespace QuantLib {
     void SabrVolSurface::updateSabrGuesses(const Date& d, boost::array<Real, 4> newGuesses) const {
 
         Size i=0;
-        while( d<=optionDates_[i] && i<optionDates_.size())
+        while (i<optionDates_.size() && d<=optionDates_[i])
             ++i;
         sabrGuesses_[i][0] = newGuesses[0];
         sabrGuesses_[i][1] = newGuesses[1];

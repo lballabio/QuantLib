@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2009 Andreas Gaida
  Copyright (C) 2009 Ralph Schreyer
- Copyright (C) 2009 Klaus Spanderen
+ Copyright (C) 2009, 2017 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -34,6 +34,8 @@ namespace QuantLib {
 
     class ImplicitEulerScheme {
       public:
+        enum SolverType { BiCGstab, GMRES };
+
         // typedefs
         typedef OperatorTraits<FdmLinearOp> traits;
         typedef traits::operator_type operator_type;
@@ -45,18 +47,23 @@ namespace QuantLib {
         ImplicitEulerScheme(
             const boost::shared_ptr<FdmLinearOpComposite>& map,
             const bc_set& bcSet = bc_set(),
-            Real relTol = 1e-8);
+            Real relTol = 1e-8,
+            SolverType solverType = BiCGstab);
 
         void step(array_type& a, Time t);
         void setStep(Time dt);
 
+        Size numberOfIterations() const;
       protected:
         Disposable<Array> apply(const Array& r) const;   
           
         Time dt_;
+        boost::shared_ptr<Size> iterations_;
+
         const Real relTol_;
         const boost::shared_ptr<FdmLinearOpComposite> map_;
         const BoundaryConditionSchemeHelper bcSet_;
+        const SolverType solverType_;
     };
 }
 

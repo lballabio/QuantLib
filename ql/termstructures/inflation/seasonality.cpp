@@ -48,6 +48,7 @@ namespace QuantLib {
             case Biweekly:          // etc.
             case Weekly:
             case Daily:
+                QL_REQUIRE(!this->seasonalityFactors().empty(), "no seasonality factors given");
                 QL_REQUIRE( (this->seasonalityFactors().size() %
                              this->frequency()) == 0,
                            "For frequency " << this->frequency()
@@ -90,13 +91,13 @@ namespace QuantLib {
 
 
     MultiplicativePriceSeasonality::MultiplicativePriceSeasonality(const Date& seasonalityBaseDate, const Frequency frequency,
-                                                                   const std::vector<Rate> seasonalityFactors)
+                                                                   const std::vector<Rate>& seasonalityFactors)
     {
         set(seasonalityBaseDate, frequency, seasonalityFactors);
     }
 
     void MultiplicativePriceSeasonality::set(const Date& seasonalityBaseDate, const Frequency frequency,
-                                             const std::vector<Rate> seasonalityFactors)
+                                             const std::vector<Rate>& seasonalityFactors)
     {
         frequency_ = frequency;
         seasonalityFactors_ = std::vector<Rate>(seasonalityFactors.size());

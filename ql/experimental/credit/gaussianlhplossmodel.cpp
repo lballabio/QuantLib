@@ -20,6 +20,8 @@
 
 #include <ql/experimental/credit/gaussianlhplossmodel.hpp>
 
+#ifndef QL_PATCH_SOLARIS
+
 #include <boost/make_shared.hpp>
 
 using std::sqrt;
@@ -202,3 +204,5 @@ namespace QuantLib {
         }
 
 }
+
+#endif

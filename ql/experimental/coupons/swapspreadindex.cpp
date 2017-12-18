@@ -44,7 +44,7 @@ namespace QuantLib {
 
         std::ostringstream name;
         name << std::setprecision(4) << std::fixed << swapIndex1_->name() << "("
-             << gearing1 << ") + " << swapIndex2_->name() << "(" << gearing1
+             << gearing1 << ") + " << swapIndex2_->name() << "(" << gearing2
              << ")";
         name_ = name.str();
 

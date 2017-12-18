@@ -19,6 +19,7 @@
 
 #include "termstructures.hpp"
 #include "utilities.hpp"
+#include <ql/termstructures/yield/compositezeroyieldstructure.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
@@ -114,8 +115,8 @@ namespace {
         }
     };
 
+    Real sub(Real x, Real y) { return x - y; }
 }
-
 
 void TermStructureTest::testReferenceChange() {
 
@@ -173,7 +174,7 @@ void TermStructureTest::testImplied() {
     if (std::fabs(discount - baseDiscount*impliedDiscount) > tolerance)
         BOOST_ERROR(
             "unable to reproduce discount from implied curve\n"
-            << QL_FIXED << std::setprecision(10)
+            << std::fixed << std::setprecision(10)
             << "    calculated: " << baseDiscount*impliedDiscount << "\n"
             << "    expected:   " << discount);
 }
@@ -334,6 +335,132 @@ void TermStructureTest::testLinkToNullUnderlying() {
     underlying.linkTo(boost::shared_ptr<YieldTermStructure>());
 }
 
+void TermStructureTest::testCompositeZeroYieldStructures() {
+    BOOST_TEST_MESSAGE(
+        "Testing composite zero yield structures...");
+
+    SavedSettings backup;
+    Settings::instance().evaluationDate() = Date(10, Nov, 2017);
+
+    std::vector<Date> dates;
+    std::vector<Rate> rates;
+
+    // First curve
+    dates.push_back(Date(10, Nov, 2017));
+    dates.push_back(Date(13, Nov, 2017));
+    dates.push_back(Date(12, Feb, 2018));
+    dates.push_back(Date(10, May, 2018));
+    dates.push_back(Date(10, Aug, 2018));
+    dates.push_back(Date(12, Nov, 2018));
+    dates.push_back(Date(21, Dec, 2018));
+    dates.push_back(Date(15, Jan, 2020));
+    dates.push_back(Date(31, Mar, 2021));
+    dates.push_back(Date(28, Feb, 2023));
+    dates.push_back(Date(21, Dec, 2026));
+    dates.push_back(Date(31, Jan, 2030));
+    dates.push_back(Date(28, Feb, 2031));
+    dates.push_back(Date(31, Mar, 2036));
+    dates.push_back(Date(28, Feb, 2041));
+    dates.push_back(Date(28, Feb, 2048));
+    dates.push_back(Date(31, Dec, 2141));
+
+    rates.push_back(0.0655823213132524);
+    rates.push_back(0.0655823213132524);
+    rates.push_back(0.0699455024156877);
+    rates.push_back(0.0799107139233497);
+    rates.push_back(0.0813931951022577);
+    rates.push_back(0.0841615820666691);
+    rates.push_back(0.0501297919004145);
+    rates.push_back(0.0823483583439658);
+    rates.push_back(0.0860720030924466);
+    rates.push_back(0.0922887604375688);
+    rates.push_back(0.10588902278996);
+    rates.push_back(0.117021968693922);
+    rates.push_back(0.109824660896137);
+    rates.push_back(0.109231572878364);
+    rates.push_back(0.119218123236241);
+    rates.push_back(0.128647300167664);
+    rates.push_back(0.0506086995288751);
+
+    boost::shared_ptr<YieldTermStructure> termStructure1 = boost::shared_ptr<YieldTermStructure>(
+        new ForwardCurve(dates, rates, Actual365Fixed(), NullCalendar()));
+
+    // Second curve
+    dates.clear();
+    rates.clear();
+
+    dates.push_back(Date(10, Nov, 2017));
+    dates.push_back(Date(13, Nov, 2017));
+    dates.push_back(Date(11, Dec, 2017));
+    dates.push_back(Date(12, Feb, 2018));
+    dates.push_back(Date(10, May, 2018));
+    dates.push_back(Date(31, Jan, 2022));
+    dates.push_back(Date(7, Dec, 2023));
+    dates.push_back(Date(31, Jan, 2025));
+    dates.push_back(Date(31, Mar, 2028));
+    dates.push_back(Date(7, Dec, 2033));
+    dates.push_back(Date(1, Feb, 2038));
+    dates.push_back(Date(2, Apr, 2046));
+    dates.push_back(Date(2, Jan, 2051));
+    dates.push_back(Date(31, Dec, 2141));
+
+    rates.push_back(0.056656806197189);
+    rates.push_back(0.056656806197189);
+    rates.push_back(0.0419541633454473);
+    rates.push_back(0.0286681050019797);
+    rates.push_back(0.0148840226959593);
+    rates.push_back(0.0246680238374363);
+    rates.push_back(0.0255349067810599);
+    rates.push_back(0.0298907184711927);
+    rates.push_back(0.0263943927922053);
+    rates.push_back(0.0291924526539802);
+    rates.push_back(0.0270049276163556);
+    rates.push_back(0.028775807327614);
+    rates.push_back(0.0293567711641792);
+    rates.push_back(0.010518655099659);
+
+    boost::shared_ptr<YieldTermStructure> termStructure2 = boost::shared_ptr<YieldTermStructure>(
+        new ForwardCurve(dates, rates, Actual365Fixed(), NullCalendar()));
+
+    typedef Real(*binary_f)(Real, Real);
+
+    boost::shared_ptr<YieldTermStructure> compoundCurve = boost::shared_ptr<YieldTermStructure>(
+        new CompositeZeroYieldStructure<binary_f>(Handle<YieldTermStructure>(termStructure1), Handle<YieldTermStructure>(termStructure2), sub));
+
+    // Expected values
+    dates.clear();
+    rates.clear();
+
+    dates.push_back(Date(10, Nov, 2017));
+    dates.push_back(Date(15, Dec, 2017));
+    dates.push_back(Date(15, Jun, 2018));
+    dates.push_back(Date(15, Sep, 2029));
+    dates.push_back(Date(15, Sep, 2038));
+    dates.push_back(Date(15, Mar, 2046));
+    dates.push_back(Date(15, Dec, 2141));
+
+    rates.push_back(0.00892551511527986);
+    rates.push_back(0.0278755322562788);
+    rates.push_back(0.0512001768603456);
+    rates.push_back(0.0729941474263546);
+    rates.push_back(0.0778333309498459);
+    rates.push_back(0.0828451659139004);
+    rates.push_back(0.0503573807521742);
+
+    Real tolerance = 1.0e-10;
+    for (Size i = 0; i < dates.size(); ++i) {
+        Rate actual = compoundCurve->zeroRate(dates[i], Actual365Fixed(), Continuous).rate();
+        Rate expected = rates[i];
+
+        if (std::fabs(actual - expected) > tolerance)
+            BOOST_ERROR(
+                "unable to reproduce zero yield rate from composite input curve\n"
+                << std::fixed << std::setprecision(10)
+                << "    calculated: " << actual << "\n"
+                << "    expected:   " << expected);
+    }
+}
+
 test_suite* TermStructureTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Term structure tests");
     suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testReferenceChange));
@@ -347,6 +474,8 @@ test_suite* TermStructureTest::suite() {
                          &TermStructureTest::testCreateWithNullUnderlying));
     suite->add(QUANTLIB_TEST_CASE(
                              &TermStructureTest::testLinkToNullUnderlying));
+    suite->add(QUANTLIB_TEST_CASE(
+                    &TermStructureTest::testCompositeZeroYieldStructures));
     return suite;
 }
 

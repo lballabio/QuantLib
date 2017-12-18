@@ -1,91 +1,92 @@
 
-Changes for QuantLib 1.9:
-========================
+Changes for QuantLib 1.11:
+==========================
 
-QuantLib 1.9 includes 27 pull requests from several contributors.
+QuantLib 1.11 includes 47 pull requests and fixed issues from several
+contributors.
 
 The most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib/milestone/3?closed=1>.
-
+<https://github.com/lballabio/QuantLib/milestone/6?closed=1>.
 
 PORTABILITY
 
-- Dropped support for Visual C++ 8 (2005).  As of April 2016, the
-  compiler is no longer supported by Microsoft.
+- This is the last version of QuantLib to support the now obsolete
+  Dev-C++ IDE with a maintained project file.  The project will be
+  removed in next release.
 
-- Allow the parallel test runner to work with Boost 1.62 (thanks to
-  Klaus Spanderen for the fix and to Andrei Borodaenko for the
-  heads-up).
+INSTRUMENTS AND PRICING ENGINES
 
-INTEREST RATES
+- Added ISDA pricing engine for credit default swaps (thanks to
+  Guillaume Horel, Jose Aparicio and Peter Caspers).
 
-- Allow negative jumps in interest-rate curves. Previously, trying to
-  pass one would result in an exception (thanks to Leanpub reader Jeff
-  for the heads-up).
+- Added Andersen-Piterbarg engine for the Heston model (thanks to
+  Klaus Spanderen).
 
-- Added BBSW and Aonia indexes from Australia and BKBM and NZOCR
-  indexes from New Zealand (thanks to Fabrice Lecuyer).
+- Improved experimental vanna-volga engine for double-barrier knock-in
+  options (thanks to Giorgio Pazmandi).
 
-VOLATILITY
+- Added theta calculation to experimental Kirk spread-option engine
+  (thanks to Krzysztof Wos).
 
-- Added normal implied-volatility calculation to caps/floors (thanks
-  to Paolo Mazzocchi).
+CASH FLOWS
 
-INSTRUMENTS
+- Added optional payment lag to fixed, floating and OIS legs (thanks
+  to Fabrice Lecuyer and Joseph Jeisman).
 
-- Fix a scenario in which a `CompositeInstrument` instance would stop
-  receiving notifications (thanks to Peter Caspers for the heads-up).
+- Fixed yield calculation with 30/360 US day count convention and
+  settlement on the 31st of the month (thanks to Frank Xue).
 
-- Added a few safety checks to the CVA swap engine (thanks to Andrea
-  Maggiulli).
+MODELS
 
-- Auto-deactivate Boyle-Lau optimization for barrier options when not
-  using a CRR tree (thanks to Riccardo Ghetta).
+- Added adaptive successive over-relaxation method for implied
+  volatility calculation (thanks to Klaus Spanderen).
+
+INDEXES
+
+- Fixed day-count convention and spot lag for CAD LIBOR (thanks to
+  Oleg Kulkov).
+
+TERM STRUCTURES
+
+- Optionally optimize setting up OIS helpers (thanks to Peter
+  Caspers).
 
 DATE/TIME
 
-- Changed data type for `Date` serial numbers to `int_fast_32t` to
-  improve performance of date calculations (thanks to Peter Caspers).
+- Added Actual/365 Canadian day count convention (thanks to Andrea
+  Maggiulli).
 
-- Added ECB maintenance period dates for 2017 (thanks to Paolo
-  Mazzocchi).
+MATH
 
-- Fixed rule for the Japanese Mountain Day holiday (thanks to Eisuke
-  Tani).
+- Added GMRES iterative solver for large linear systems (thanks to
+  Klaus Spanderen).
 
-- Fixed United States holidays before 1971 (thanks to Nick Glass for
-  the heads-up).
+- Updated Hong Kong calendar up to 2020 (thanks to Nicholas Bertocchi
+  and Alix Lassauzet).
 
-- Added a missing Chinese holiday (thanks to Cheng Li).
+BUILD
 
-- Ensure correct formatting when outputting dates (thanks to Peter
-  Caspers).
+- Added configure switch to enable unity build.
 
-NEW OPT-IN FEATURES
+TEST SUITE
 
-These features are disabled by default and can be enabled by defining
-a macro or passing a flag to `./configure`.  Feedback is appreciated.
+- Added --fast and --faster flags to the test-suite executable.  When
+  passed, slower tests are discarded so that the test suite runs in
+  just a few minutes.
 
-- Enable thread-safe singleton initialization (thanks to GitHub user
-  sdgit). The feature can be enabled by uncommenting the
-  `QL_ENABLE_SINGLETON_THREAD_SAFE_INIT` macro in `ql/userconfig.hpp`
-  on Visual C++ or by passing the
-  `--enable-thread-safe-singleton-init` to `./configure` on other
-  systems.
+DEPRECATED FEATURES
 
-EXPERIMENTAL FOLDER
+- Remove the HestonExpansionEngine::numberOfEvaluations method
+  (deprecated in version 1.9).
 
-The `ql/experimental` folder contains code whose interface is not
-fully stable, but is released in order to get user
-feedback. Experimental classes make no guarantees of backward
-compatibility; their interfaces might change in future releases.
+- Remove the MixedLinearCubicInterpolation and MixedLinearCubic
+  constructors not specifying the behavior of the mixed interpolation
+  (deprecated in version 1.8).
 
-Changes and new contributions for this release were:
+- Remove deprecated overloads of the Swaption::impliedVolatility and
+  CapFloor::impliedVolatility methods (deprecated in version 1.9).
 
-- OIS with arithmetic average (thanks to Stefano Fondi). A
-  corresponding bootstrap helpers is also available.
-
-- a function to calculate multi-curve sensitivities (thanks to Michael
-  von den Driesch).
+- Remove NoArbSabrModel::checkAbsorptionMatrix method (deprecated in
+  version 1.8.1).
 

@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2006 François du Vignaud
+ Copyright (C) 2006 FranÃ§ois du Vignaud
  Copyright (C) 2006, 2008 Ferdinando Ametrano
  Copyright (C) 2015 Peter Caspers
 
@@ -109,77 +109,6 @@ namespace QuantLib {
                                  const bool flatExtrapolation = false,
                                  const VolatilityType type = ShiftedLognormal,
                                  const Matrix& shifts = Matrix());
-
-        //! floating reference date, floating market data
-        /*! \deprecated
-            Use the constructor taking an explicit volatility type
-        */
-        QL_DEPRECATED
-        SwaptionVolatilityMatrix(
-                    const Calendar& calendar,
-                    BusinessDayConvention bdc,
-                    const std::vector<Period>& optionTenors,
-                    const std::vector<Period>& swapTenors,
-                    const std::vector<std::vector<Handle<Quote> > >& vols,
-                    const DayCounter& dayCounter,
-                    const bool flatExtrapolation,
-                    const std::vector<std::vector<Real> >& shifts);
-        //! fixed reference date, floating market data
-        /*! \deprecated
-            Use the constructor taking an explicit volatility type
-        */
-        QL_DEPRECATED
-        SwaptionVolatilityMatrix(
-                    const Date& referenceDate,
-                    const Calendar& calendar,
-                    BusinessDayConvention bdc,
-                    const std::vector<Period>& optionTenors,
-                    const std::vector<Period>& swapTenors,
-                    const std::vector<std::vector<Handle<Quote> > >& vols,
-                    const DayCounter& dayCounter,
-                    const bool flatExtrapolation,
-                    const std::vector<std::vector<Real> >& shifts);
-        //! floating reference date, fixed market data
-        /*! \deprecated
-            Use the constructor taking an explicit volatility type
-        */
-        QL_DEPRECATED
-        SwaptionVolatilityMatrix(
-                    const Calendar& calendar,
-                    BusinessDayConvention bdc,
-                    const std::vector<Period>& optionTenors,
-                    const std::vector<Period>& swapTenors,
-                    const Matrix& volatilities,
-                    const DayCounter& dayCounter,
-                    const bool flatExtrapolation,
-                    const Matrix& shifts);
-        //! fixed reference date, fixed market data
-        /*! \deprecated
-            Use the constructor taking an explicit volatility type
-        */
-        QL_DEPRECATED
-        SwaptionVolatilityMatrix(
-                    const Date& referenceDate,
-                    const Calendar& calendar,
-                    BusinessDayConvention bdc,
-                    const std::vector<Period>& optionTenors,
-                    const std::vector<Period>& swapTenors,
-                    const Matrix& volatilities,
-                    const DayCounter& dayCounter,
-                    const bool flatExtrapolation,
-                    const Matrix& shifts);
-        // fixed reference date and fixed market data, option dates
-        /*! \deprecated
-            Use the constructor taking an explicit volatility type
-        */
-        QL_DEPRECATED
-        SwaptionVolatilityMatrix(const Date& referenceDate,
-                                 const std::vector<Date>& optionDates,
-                                 const std::vector<Period>& swapTenors,
-                                 const Matrix& volatilities,
-                                 const DayCounter& dayCounter,
-                                 const bool flatExtrapolation,
-                                 const Matrix& shifts);
 
         //! \name LazyObject interface
         //@{

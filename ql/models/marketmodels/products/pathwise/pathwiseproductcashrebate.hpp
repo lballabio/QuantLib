@@ -18,8 +18,8 @@
 */
 
 
-#ifndef quantlib_market_model_pathwise_swaption_hpp
-#define quantlib_market_model_pathwise_swaption_hpp
+#ifndef quantlib_market_model_pathwise_cash_rebate_hpp
+#define quantlib_market_model_pathwise_cash_rebate_hpp
 
 #include <ql/types.hpp>
 #include <ql/models/marketmodels/pathwisemultiproduct.hpp>

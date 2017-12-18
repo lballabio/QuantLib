@@ -135,14 +135,6 @@ namespace QuantLib {
 
             u = u_initial;
 
-            // Save Solution in Collapsed Vector
-            std::vector<Real> u_surface((timeSteps_+1) * (assetSteps_ + 1));
-
-            // Save solution
-            for (Natural i=0; i<=assetSteps_; i++) {
-                u_surface[i] = u[i];
-            }
-
             // Start Time Loop
 
             for (Natural j = 1; j<=timeSteps_;j++) {
@@ -188,11 +180,6 @@ namespace QuantLib {
                     rhs[assetSteps_] = h; // Upper BC (Neumann) Delta=1
                     u = implicit_part.solveFor(rhs);
                 } // End implicit Part
-
-                // Save solution
-                for (Natural i=0; i<=assetSteps_; i++) {
-                    u_surface[j*(assetSteps_+1) + i] = u[i];
-                }
             } // End Time Loop
 
             DownRounding Rounding(0);

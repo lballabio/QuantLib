@@ -1,2 +1,2 @@
 add_executable(FittedBondCurve FittedBondCurve.cpp)
-target_link_libraries(FittedBondCurve QuantLib)
+target_link_libraries(FittedBondCurve ${QL_LINK_LIBRARY})

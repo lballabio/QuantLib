@@ -42,11 +42,7 @@ docs-html-dist: docs-html
 	    | GZIP=--best gzip -c > QuantLib-docs-$(VERSION)-html.tar.gz
 	rm QuantLib-docs-$(VERSION)-html
 
-docs-man: .time-stamp-man
-.time-stamp-man: .time-stamp
-	$(SED) -e "s/index/QuantLib/" man/man3/index.3 > man/man3/QuantLib.3
-	rm man/man3/index.3
-	touch .time-stamp-man
+docs-man: .time-stamp
 
 docs-man-dist: docs-man
 	ln -s man QuantLib-docs-$(VERSION)-man

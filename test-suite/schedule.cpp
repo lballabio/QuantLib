@@ -23,6 +23,7 @@
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/japan.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
+#include <ql/time/calendars/weekendsonly.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -242,6 +243,45 @@ void ScheduleTest::testDoubleFirstDateWithEomAdjustment() {
     check_dates(s, expected);
 }
 
+void ScheduleTest::testCDS2015Convention() {
+    BOOST_TEST_MESSAGE("Testing CDS2015 semi-annual rolling convention...");
+    //From September 20th 2016 to March 19th 2017 of the next Year,
+    //end date is December 20th 2021 for a 5 year Swap
+    Schedule s1 =
+        MakeSchedule().from(Date(12, December, 2016))
+                      .to(Date(12, December, 2016) + Period(5, Years))
+                      .withCalendar(WeekendsOnly())
+                      .withTenor(3*Months)
+                      .withConvention(ModifiedFollowing)
+                      .withTerminationDateConvention(Unadjusted)
+                      .withRule(DateGeneration::CDS2015);
+    BOOST_CHECK(s1.startDate() == Date(20, September, 2016));
+    BOOST_CHECK(s1.endDate() == Date(20, December, 2021));
+    Schedule s2 =
+        MakeSchedule().from(Date(1, March, 2017))
+                      .to(Date(1, March, 2017) + Period(5, Years))
+                      .withCalendar(WeekendsOnly())
+                      .withTenor(3*Months)
+                      .withConvention(ModifiedFollowing)
+                      .withTerminationDateConvention(Unadjusted)
+                      .withRule(DateGeneration::CDS2015);
+    BOOST_CHECK(s2.startDate() == Date(20, December, 2016));
+    BOOST_CHECK(s2.endDate() == Date(20, December, 2021));
+    //From March 20th 2017 to September 19th 2017
+    //end date is June 20th 2022 for a 5 year Swap
+    Schedule s3 =
+        MakeSchedule().from(Date(20, March, 2017))
+                      .to(Date(20, March, 2017) + Period(5, Years))
+                      .withCalendar(WeekendsOnly())
+                      .withTenor(3*Months)
+                      .withConvention(ModifiedFollowing)
+                      .withTerminationDateConvention(Unadjusted)
+                      .withRule(DateGeneration::CDS2015);
+    BOOST_CHECK(s3.startDate() == Date(20, March, 2017));
+    BOOST_CHECK(s3.endDate() == Date(20, June, 2022));
+
+}
+
 void ScheduleTest::testDateConstructor() {
     BOOST_TEST_MESSAGE("Testing the constructor taking a vector of dates and "
                        "possibly additional meta information...");
@@ -335,8 +375,8 @@ test_suite* ScheduleTest::suite() {
         &ScheduleTest::testBackwardDatesWithEomAdjustment));
     suite->add(QUANTLIB_TEST_CASE(
         &ScheduleTest::testDoubleFirstDateWithEomAdjustment));
+    suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testCDS2015Convention));
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testDateConstructor));
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testFourWeeksTenor));
     return suite;
 }
-

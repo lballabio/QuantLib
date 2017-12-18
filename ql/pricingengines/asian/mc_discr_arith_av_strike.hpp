@@ -114,7 +114,7 @@ namespace QuantLib {
                 new ArithmeticASOPathPricer(
                     payoff->optionType(),
                     this->process_->riskFreeRate()->discount(
-                                                     this->timeGrid().back()),
+                                                        exercise->lastDate()),
                     this->arguments_.runningAccumulator,
                     this->arguments_.pastFixings));
     }

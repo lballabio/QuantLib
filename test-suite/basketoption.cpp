@@ -21,6 +21,7 @@
 
 #include "basketoption.hpp"
 #include "utilities.hpp"
+#include <ql/quotes/simplequote.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/basketoption.hpp>
 #include <ql/pricingengines/basket/stulzengine.hpp>
@@ -29,12 +30,17 @@
 #include <ql/pricingengines/basket/mcamericanbasketengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
+#include <ql/models/equity/hestonmodel.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/pricingengines/basket/fd2dblackscholesvanillaengine.hpp>
 #include <ql/utilities/dataformatters.hpp>
+
 #include <boost/progress.hpp>
+#include <boost/make_shared.hpp>
 #include <boost/bind.hpp>
+#include <boost/make_shared.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -942,26 +948,176 @@ void BasketOptionTest::testOddSamples() {
             BOOST_FAIL("expected value: " << values[i].result << "\n"
                        << "calculated:     " << calculated);
         }
-
     }
 }
 
-test_suite* BasketOptionTest::suite() {
+void BasketOptionTest::testLocalVolatilitySpreadOption() {
+
+    BOOST_TEST_MESSAGE("Testing 2D local-volatility spread-option pricing...");
+
+    const DayCounter dc = Actual360();
+    const Date today = Date(21, September, 2017);
+    const Date maturity = today + Period(3, Months);
+
+    const Handle<YieldTermStructure> riskFreeRate(flatRate(today, 0.07, dc));
+    const Handle<YieldTermStructure> dividendYield(flatRate(today, 0.03, dc));
+
+    const Handle<Quote> s1(boost::make_shared<SimpleQuote>(100));
+    const Handle<Quote> s2(boost::make_shared<SimpleQuote>(110));
+
+    const boost::shared_ptr<HestonModel> hm1(
+        boost::make_shared<HestonModel>(
+            boost::make_shared<HestonProcess>(
+                riskFreeRate, dividendYield,
+                s1, 0.09, 1.0, 0.06, 0.6, -0.75)));
+
+    const boost::shared_ptr<HestonModel> hm2(
+        boost::make_shared<HestonModel>(
+            boost::make_shared<HestonProcess>(
+                riskFreeRate, dividendYield,
+                s2, 0.1, 2.0, 0.07, 0.8, 0.85)));
+
+    const Handle<BlackVolTermStructure> vol1(
+        boost::make_shared<HestonBlackVolSurface>(Handle<HestonModel>(hm1)));
+
+    const Handle<BlackVolTermStructure> vol2(
+        boost::make_shared<HestonBlackVolSurface>(Handle<HestonModel>(hm2)));
+
+    BasketOption basketOption(
+        basketTypeToPayoff(
+            SpreadBasket,
+            boost::make_shared<PlainVanillaPayoff>(
+                    Option::Call, s2->value() - s1->value())),
+        boost::make_shared<EuropeanExercise>(maturity));
+
+    const Real rho = -0.6;
+
+    const boost::shared_ptr<GeneralizedBlackScholesProcess> bs2(
+        boost::make_shared<GeneralizedBlackScholesProcess>(
+            s2, dividendYield, riskFreeRate, vol2));
+
+    const boost::shared_ptr<GeneralizedBlackScholesProcess> bs1(
+        boost::make_shared<GeneralizedBlackScholesProcess>(
+            s1, dividendYield, riskFreeRate, vol1));
+
+    basketOption.setPricingEngine(
+        boost::shared_ptr<Fd2dBlackScholesVanillaEngine>(
+            new Fd2dBlackScholesVanillaEngine(
+                bs1, bs2, rho, 11, 11, 6, 0,
+                FdmSchemeDesc::Hundsdorfer(), true, 0.25)));
+
+    const Real tolerance = 0.01;
+    const Real expected = 2.561;
+    const Real calculated = basketOption.NPV();
+
+    if (std::fabs(expected - calculated) > tolerance) {
+        BOOST_ERROR("Failed to reproduce expected local volatility price"
+                    << "\n    calculated: " << calculated
+                    << "\n    expected:   " << expected
+                    << "\n    tolerance:  " << tolerance);
+    }
+}
+
+void BasketOptionTest::test2DPDEGreeks() {
+
+    BOOST_TEST_MESSAGE("Testing Greeks of two-dimensional PDE engine...");
+
+    const Real s1 = 100;
+    const Real s2 = 100;
+    const Real r = 0.013;
+    const Volatility v = 0.2;
+    const Real rho = 0.5;
+    const Real strike = s1-s2;
+    const Size maturityInDays = 1095;
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date::todaysDate();
+    const Date maturity = today + maturityInDays;
+
+    const boost::shared_ptr<SimpleQuote> spot1(
+        boost::make_shared<SimpleQuote>(s1));
+    const boost::shared_ptr<SimpleQuote> spot2(
+        boost::make_shared<SimpleQuote>(s2));
+
+    const Handle<YieldTermStructure> rTS(flatRate(today, r, dc));
+    const Handle<BlackVolTermStructure> vTS(flatVol(today, v, dc));
+
+    const boost::shared_ptr<BlackProcess> p1(
+        boost::make_shared<BlackProcess>(Handle<Quote>(spot1), rTS, vTS));
+
+    const boost::shared_ptr<BlackProcess> p2(
+        boost::make_shared<BlackProcess>(Handle<Quote>(spot2), rTS, vTS));
+
+    BasketOption option(
+        boost::make_shared<SpreadBasketPayoff>(
+            boost::make_shared<PlainVanillaPayoff>(Option::Call, strike)),
+        boost::make_shared<EuropeanExercise>(maturity));
+
+    option.setPricingEngine(
+        boost::make_shared<Fd2dBlackScholesVanillaEngine>(p1, p2, rho));
+
+    const Real calculatedDelta = option.delta();
+    const Real calculatedGamma = option.gamma();
+
+    option.setPricingEngine(boost::make_shared<KirkEngine>(p1, p2, rho));
+
+    const Real eps = 1.0;
+    const Real npv = option.NPV();
+
+    spot1->setValue(s1 + eps);
+    spot2->setValue(s2 + eps);
+    const Real npvUp = option.NPV();
+
+    spot1->setValue(s1 - eps);
+    spot2->setValue(s2 - eps);
+    const Real npvDown = option.NPV();
+
+    const Real expectedDelta = (npvUp - npvDown)/(2*eps);
+    const Real expectedGamma = (npvUp + npvDown - 2*npv)/(eps*eps);
+
+    const Real tol = 0.0005;
+    if (std::fabs(expectedDelta - calculatedDelta) > tol) {
+        BOOST_FAIL("failed to reproduce delta with 2dim PDE"
+                   << std::fixed << std::setprecision(8)
+                   << "\n    calculated: " << calculatedDelta
+                   << "\n    expected:   " << expectedDelta
+                   << "\n    tolerance:  " << tol);
+    }
+
+    if (std::fabs(expectedGamma - calculatedGamma) > tol) {
+        BOOST_FAIL("failed to reproduce delta with 2dim PDE"
+                   << std::fixed << std::setprecision(8)
+                   << "\n    calculated: " << calculatedGamma
+                   << "\n    expected:   " << expectedGamma
+                   << "\n    tolerance:  " << tol);
+    }
+}
+
+test_suite* BasketOptionTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Basket option tests");
+
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testEuroTwoValues));
-    // FLOATING_POINT_EXCEPTION
-    suite->add(QUANTLIB_TEST_CASE(
-                               &BasketOptionTest::testBarraquandThreeValues));
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testTavellaValues));
 
-    const Size nTestCases = std::min(Size(5), LENGTH(oneDataValues));
-    for (Size i=0; i < nTestCases; ++i) {
-        suite->add(QUANTLIB_TEST_CASE(
-            boost::bind(&BasketOptionTest::testOneDAmericanValues,
-                (i    *LENGTH(oneDataValues))/nTestCases,
-                ((i+1)*LENGTH(oneDataValues))/nTestCases)));
-    }
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testOddSamples));
+    suite->add(QUANTLIB_TEST_CASE(
+        &BasketOptionTest::testLocalVolatilitySpreadOption));
+    suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::test2DPDEGreeks));
+
+    if (speed <= Fast) {
+        const Size nTestCases = std::min(Size(5), LENGTH(oneDataValues));
+        for (Size i=0; i < nTestCases; ++i) {
+            suite->add(QUANTLIB_TEST_CASE(
+                boost::bind(&BasketOptionTest::testOneDAmericanValues,
+                    (i    *LENGTH(oneDataValues))/nTestCases,
+                    ((i+1)*LENGTH(oneDataValues))/nTestCases)));
+        }
+    }
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &BasketOptionTest::testBarraquandThreeValues));
+    }
 
     return suite;
 }

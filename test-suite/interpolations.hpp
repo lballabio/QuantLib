@@ -52,6 +52,11 @@ class InterpolationTest {
     static void testNoArbSabrInterpolation();
     static void testSabrSingleCases();
     static void testTransformations();
+    static void testLagrangeInterpolation();
+    static void testLagrangeInterpolationAtSupportPoint();
+    static void testLagrangeInterpolationDerivative();
+    static void testLagrangeInterpolationOnChebyshevPoints();
+    static void testBSplines();
 
     static boost::unit_test_framework::test_suite* suite();
 };

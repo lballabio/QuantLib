@@ -1093,6 +1093,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\fdmornsteinuhlenbeckop.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\fdmornsteinuhlenbeckop.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\methods\finitedifferences\operators\firstderivativeop.cpp"
 						>
 					</File>
@@ -2275,6 +2283,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\instruments\makecds.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\makecds.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\instruments\makecms.cpp"
 				>
 			</File>
@@ -2774,6 +2790,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\math\interpolations\lagrangeinterpolation.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\interpolations\linearinterpolation.hpp"
 					>
 				</File>
@@ -3054,6 +3074,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\math\matrixutilities\gmres.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\matrixutilities\gmres.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\matrixutilities\pseudosqrt.cpp"
 					>
 				</File>
@@ -3239,6 +3267,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\math\randomnumbers\sobolrsg.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\randomnumbers\stochasticcollocationinvcdf.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\randomnumbers\stochasticcollocationinvcdf.hpp"
 					>
 				</File>
 			</Filter>
@@ -5342,6 +5378,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\yield\compositezeroyieldstructure.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\yield\discountcurve.hpp"
 					>
 				</File>
@@ -5640,6 +5680,14 @@
 			</File>
 			<File
 				RelativePath=".\ql\currencies\asia.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\currencies\crypto.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\currencies\crypto.hpp"
 				>
 			</File>
 			<File
@@ -6234,6 +6282,14 @@
 					>
 				</File>
 				<File
+					RelativePath="ql\pricingengines\vanilla\coshestonengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\pricingengines\vanilla\coshestonengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath="ql\pricingengines\vanilla\discretizedvanillaoption.cpp"
 					>
 				</File>
@@ -6722,6 +6778,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\credit\isdacdsengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\credit\isdacdsengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\pricingengines\credit\midpointcdsengine.cpp"
 					>
 				</File>
@@ -6951,6 +7015,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\time\calendars\bespokecalendar.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\botswana.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\botswana.hpp"
 					>
 				</File>
 				<File
@@ -7251,6 +7323,10 @@
 				>
 				<File
 					RelativePath=".\ql\time\daycounters\actual360.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\time\daycounters\actual365fixed.cpp"
 					>
 				</File>
 				<File
@@ -7579,6 +7655,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\volatility\sabrvolsurface.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\volatility\sabrvoltermstructure.hpp"
 					>
 				</File>
 				<File
@@ -8214,6 +8294,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\interpolatedaffinehazardratecurve.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\issuer.cpp"
 					>
 				</File>
@@ -8247,6 +8331,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\nthtodefault.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\onefactoraffinesurvival.hpp"
 					>
 				</File>
 				<File
@@ -8546,6 +8634,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdornsteinuhlenbeckvanillaengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\fdornsteinuhlenbeckvanillaengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdsimpleextoujumpswingengine.cpp"
 					>
 				</File>
@@ -8567,6 +8663,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\finitedifferences\fdsimpleklugeextouvppengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\gbsmrndcalculator.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\finitedifferences\gbsmrndcalculator.hpp"
 					>
 				</File>
 				<File
@@ -8695,6 +8799,22 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\models\hestonslvmcmodel.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\normalclvmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\normalclvmodel.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\squarerootclvmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\models\squarerootclvmodel.hpp"
 					>
 				</File>
 			</Filter>
@@ -9395,6 +9515,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\math\gaussiancopulapolicy.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\gaussiannoncentralchisquaredpolynomial.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\math\gaussiannoncentralchisquaredpolynomial.hpp"
 					>
 				</File>
 				<File

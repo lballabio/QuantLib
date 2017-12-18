@@ -91,7 +91,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCHimalayaEngine {
       public:
-        MakeMCHimalayaEngine(
+        explicit MakeMCHimalayaEngine(
                     const boost::shared_ptr<StochasticProcessArray>&);
         // named parameters
         MakeMCHimalayaEngine& withBrownianBridge(bool b = true);

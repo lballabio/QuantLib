@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2006, 2007, 2008, 2009 StatPro Italia srl
+ Copyright (C) 2005, 2006, 2007, 2008, 2009, 2017 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -48,6 +48,7 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <boost/make_shared.hpp>
 #include <iomanip>
 
 using namespace QuantLib;
@@ -237,7 +238,7 @@ namespace {
                 std::vector<boost::shared_ptr<RateHelper> >(deposits+swaps);
             fraHelpers = std::vector<boost::shared_ptr<RateHelper> >(fras);
             immFutHelpers = std::vector<boost::shared_ptr<RateHelper> >(immFuts);
-            asxFutHelpers = std::vector<boost::shared_ptr<RateHelper> >(asxFuts);
+            asxFutHelpers = std::vector<boost::shared_ptr<RateHelper> >();
             bondHelpers = std::vector<boost::shared_ptr<RateHelper> >(bonds);
             schedules = std::vector<Schedule>(bonds);
             bmaHelpers = std::vector<boost::shared_ptr<RateHelper> >(bmas);
@@ -294,9 +295,10 @@ namespace {
                 if (euribor3m->fixingDate(asxDate) <
                     Settings::instance().evaluationDate())
                     asxDate = ASX::nextDate(asxDate, false);
-                asxFutHelpers[i] = boost::shared_ptr<RateHelper>(new
-                    FuturesRateHelper(r, asxDate, euribor3m, Handle<Quote>(),
-                                      Futures::ASX));
+                if (euribor3m->fixingCalendar().isBusinessDay(asxDate))
+                    asxFutHelpers.push_back(boost::shared_ptr<RateHelper>(new
+                        FuturesRateHelper(r, asxDate, euribor3m,
+                                          Handle<Quote>(), Futures::ASX)));
             }
 
             for (Size i=0; i<bonds; i++) {
@@ -494,6 +496,8 @@ namespace {
             if (euribor3m->fixingDate(asxStart) <
                 Settings::instance().evaluationDate())
                 asxStart = ASX::nextDate(asxStart, false);
+            if (euribor3m->fixingCalendar().isHoliday(asxStart))
+                continue;
             Date end = vars.calendar.advance(asxStart, 3, Months,
                 euribor3m->businessDayConvention(),
                 euribor3m->endOfMonth());
@@ -1026,7 +1030,93 @@ void PiecewiseYieldCurveTest::testZeroCopy() {
     testCurveCopy<ZeroYield,Linear>(vars);
 }
 
+void PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate() {
+    BOOST_TEST_MESSAGE("Testing SwapRateHelper last relevant date...");
 
+    SavedSettings backup;
+    Settings::instance().evaluationDate() = Date(22, Dec, 2016);
+    Date today = Settings::instance().evaluationDate();
+
+    Handle<YieldTermStructure> flat3m(
+        boost::make_shared<FlatForward>(today, Handle<Quote>(boost::make_shared<SimpleQuote>(0.02)), Actual365Fixed()));
+    boost::shared_ptr<IborIndex> usdLibor3m = boost::make_shared<USDLibor>(3 * Months, flat3m);
+
+    // note that the calendar should be US+UK here actually, but technically it should also work with
+    // the US calendar only
+    boost::shared_ptr<RateHelper> helper = boost::make_shared<SwapRateHelper>(
+        0.02, 50 * Years, UnitedStates(), Semiannual, ModifiedFollowing, Thirty360(), usdLibor3m);
+
+    PiecewiseYieldCurve<Discount, LogLinear> curve(today, std::vector<boost::shared_ptr<RateHelper> >(1, helper),
+                                                   Actual365Fixed());
+    BOOST_CHECK_NO_THROW(curve.discount(1.0));
+}
+
+void PiecewiseYieldCurveTest::testBadPreviousCurve() {
+    BOOST_TEST_MESSAGE("Testing bootstrap starting from bad guess...");
+
+    SavedSettings backup;
+
+    Datum data[] = {
+        {  1, Weeks,  -0.003488 },
+        {  2, Weeks,  -0.0033 },
+        {  6, Months, -0.00339 },
+        {  2, Years,  -0.00336 },
+        {  8, Years,   0.00302 },
+        { 50, Years,   0.01185 }
+    };
+
+    std::vector<boost::shared_ptr<RateHelper> > helpers;
+    boost::shared_ptr<Euribor> euribor1m(new Euribor1M);
+    for (Size i=0; i<LENGTH(data); ++i) {
+        helpers.push_back(
+           boost::make_shared<SwapRateHelper>(data[i].rate,
+                                              Period(data[i].n, data[i].units),
+                                              TARGET(), Monthly, Unadjusted,
+                                              Thirty360(), euribor1m));
+    }
+
+    Date today = Date(12, October, 2017);
+    Date test_date = Date(16, December, 2016);
+
+    Settings::instance().evaluationDate() = today;
+
+    boost::shared_ptr<YieldTermStructure> curve =
+        boost::make_shared<PiecewiseYieldCurve<ForwardRate, BackwardFlat> >(
+                                            test_date, helpers, Actual360());
+
+    // force bootstrap on today's date, so we have a previous curve...
+    curve->discount(1.0);
+
+    // ...then move to a date where the previous curve is a bad guess.
+    Settings::instance().evaluationDate() = test_date;
+
+    RelinkableHandle<YieldTermStructure> h;
+    h.linkTo(curve);
+
+    boost::shared_ptr<Euribor1M> index = boost::make_shared<Euribor1M>(h);
+    for (Size i=0; i<LENGTH(data); i++) {
+        Period tenor = data[i].n*data[i].units;
+
+        VanillaSwap swap = MakeVanillaSwap(tenor, index, 0.0)
+            .withFixedLegDayCount(Thirty360())
+            .withFixedLegTenor(Period(1, Months))
+            .withFixedLegConvention(Unadjusted);
+        swap.setPricingEngine(boost::make_shared<DiscountingSwapEngine>(h));
+
+        Rate expectedRate = data[i].rate,
+             estimatedRate = swap.fairRate();
+        Spread error = std::fabs(expectedRate-estimatedRate);
+        Real tolerance = 1.0e-9;
+        if (error > tolerance) {
+            BOOST_ERROR(tenor << " swap:\n"
+                        << std::setprecision(8)
+                        << "\n estimated rate: " << io::rate(estimatedRate)
+                        << "\n expected rate:  " << io::rate(expectedRate)
+                        << "\n error:          " << io::rate(error)
+                        << "\n tolerance:      " << io::rate(tolerance));
+        }
+    }
+}
 
 
 test_suite* PiecewiseYieldCurveTest::suite() {
@@ -1041,14 +1131,11 @@ test_suite* PiecewiseYieldCurveTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
                  &PiecewiseYieldCurveTest::testLinearDiscountConsistency));
 
-// why?
-#if !defined(QL_USE_INDEXED_COUPON)
-  // if rates can be negative it makes no sense to interpolate loglinearly
-  #if !defined(QL_NEGATIVE_RATES)
+    #if !defined(QL_NEGATIVE_RATES)
+    // if rates can be negative, we can't interpolate loglinearly
     suite->add(QUANTLIB_TEST_CASE(
                      &PiecewiseYieldCurveTest::testLogLinearZeroConsistency));
-  #endif
-#endif
+    #endif
     suite->add(QUANTLIB_TEST_CASE(
                  &PiecewiseYieldCurveTest::testLinearZeroConsistency));
     suite->add(QUANTLIB_TEST_CASE(
@@ -1075,6 +1162,16 @@ test_suite* PiecewiseYieldCurveTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testDiscountCopy));
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testForwardCopy));
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testZeroCopy));
+
+    suite->add(QUANTLIB_TEST_CASE(
+               &PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate));
+
+    #if defined(QL_NEGATIVE_RATES) && !defined(QL_USE_INDEXED_COUPON)
+    // This regression test didn't work with indexed coupons or
+    // without negative rates anyway.
+    suite->add(QUANTLIB_TEST_CASE(
+                             &PiecewiseYieldCurveTest::testBadPreviousCurve));
+    #endif
 
     return suite;
 }

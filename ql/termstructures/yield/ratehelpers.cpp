@@ -25,16 +25,14 @@
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/time/imm.hpp>
 #include <ql/time/asx.hpp>
+#include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/quote.hpp>
 #include <ql/currency.hpp>
 #include <ql/indexes/swapindex.hpp>
-#ifdef QL_USE_INDEXED_COUPON
-    #include <ql/cashflows/floatingratecoupon.hpp>
-#endif
-
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/utilities/null_deleter.hpp>
 
 using boost::shared_ptr;
@@ -780,20 +778,11 @@ namespace QuantLib {
             .withFloatingLegCalendar(calendar_);
 
         earliestDate_ = swap_->startDate();
+        maturityDate_ = swap_->maturityDate();
 
-        // Usually...
-        maturityDate_ = latestRelevantDate_ = swap_->maturityDate();
-
-        // ...but due to adjustments, the last floating coupon might
-        // need a later date for fixing
-        #ifdef QL_USE_INDEXED_COUPON
-        shared_ptr<FloatingRateCoupon> lastCoupon =
-            boost::dynamic_pointer_cast<FloatingRateCoupon>(
-                                                 swap_->floatingLeg().back());
-        Date fixingValueDate = iborIndex_->valueDate(lastCoupon->fixingDate());
-        Date endValueDate = iborIndex_->maturityDate(fixingValueDate);
-        latestRelevantDate_ = std::max(latestRelevantDate_, endValueDate);
-        #endif
+        shared_ptr<IborCoupon> lastCoupon =
+            boost::dynamic_pointer_cast<IborCoupon>(swap_->floatingLeg().back());
+        latestRelevantDate_ = std::max(maturityDate_, lastCoupon->fixingEndDate());
 
         switch (pillarChoice_) {
           case Pillar::MaturityDate:
@@ -970,14 +959,21 @@ namespace QuantLib {
                                        BusinessDayConvention convention,
                                        bool endOfMonth,
                                        bool isFxBaseCurrencyCollateralCurrency,
-                                       const Handle<YieldTermStructure>& coll)
-                                       : RelativeDateRateHelper(fwdPoint), spot_(spotFx), tenor_(tenor),
+                                       const Handle<YieldTermStructure>& coll,
+                                       const Calendar& tradingCalendar)
+    : RelativeDateRateHelper(fwdPoint), spot_(spotFx), tenor_(tenor),
       fixingDays_(fixingDays), cal_(calendar), conv_(convention),
       eom_(endOfMonth),
       isFxBaseCurrencyCollateralCurrency_(isFxBaseCurrencyCollateralCurrency),
-      collHandle_(coll) {
+      collHandle_(coll), tradingCalendar_(tradingCalendar) {
         registerWith(spot_);
         registerWith(collHandle_);
+
+        if (tradingCalendar_.empty())
+            jointCalendar_ = cal_;
+        else
+            jointCalendar_ = JointCalendar(tradingCalendar_, cal_,
+                                           JoinHolidays);
         initializeDates();
     }
 
@@ -986,14 +982,22 @@ namespace QuantLib {
         // then move to the next business day
         Date refDate = cal_.adjust(evaluationDate_);
         earliestDate_ = cal_.advance(refDate, fixingDays_*Days);
-        latestDate_ = cal_.advance(earliestDate_, tenor_, conv_, eom_);
+
+        if (!tradingCalendar_.empty()) {
+            // check if fx trade can be settled in US, if not, adjust it
+            earliestDate_ = jointCalendar_.adjust(earliestDate_);
+            latestDate_ = jointCalendar_.advance(earliestDate_, tenor_,
+                                                 conv_, eom_);
+        } else {
+            latestDate_ = cal_.advance(earliestDate_, tenor_, conv_, eom_);
+        }
     }
 
     Real FxSwapRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
 
         QL_REQUIRE(!collHandle_.empty(), "collateral term structure not set");
-        
+
         DiscountFactor d1 = collHandle_->discount(earliestDate_);
         DiscountFactor d2 = collHandle_->discount(latestDate_);
         Real collRatio = d1 / d2;

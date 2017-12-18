@@ -304,10 +304,17 @@ void GJRGARCHModelTest::testDAXCalibration() {
     }
 }
 
-test_suite* GJRGARCHModelTest::suite() {
+test_suite* GJRGARCHModelTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("GJR-GARCH model tests");
-    suite->add(QUANTLIB_TEST_CASE(&GJRGARCHModelTest::testEngines));
-    suite->add(QUANTLIB_TEST_CASE(&GJRGARCHModelTest::testDAXCalibration));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&GJRGARCHModelTest::testDAXCalibration));
+    }
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(&GJRGARCHModelTest::testEngines));
+    }
+
     return suite;
 }
 

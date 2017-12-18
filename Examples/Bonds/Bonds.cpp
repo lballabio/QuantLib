@@ -22,8 +22,24 @@
     computations such as "Yield to Price" or "Price to Yield"
  */
 
-// the only header you need to use QuantLib
-#include <ql/quantlib.hpp>
+#include <ql/qldefines.hpp>
+#ifdef BOOST_MSVC
+#  include <ql/auto_link.hpp>
+#endif
+#include <ql/instruments/bonds/zerocouponbond.hpp>
+#include <ql/instruments/bonds/floatingratebond.hpp>
+#include <ql/pricingengines/bond/discountingbondengine.hpp>
+#include <ql/cashflows/couponpricer.hpp>
+#include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
+#include <ql/termstructures/yield/bondhelpers.hpp>
+#include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
+#include <ql/indexes/ibor/usdlibor.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/calendars/unitedstates.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
 
 #include <boost/timer.hpp>
 #include <iostream>
@@ -485,13 +501,8 @@ int main(int, char* []) {
          << std::setw(widths[3]) << "Floating"
          << std::endl;
 
-         std::string separator = " | ";
-         Size width = widths[0]
-                             + widths[1]
-                                      + widths[2]
-                                               + widths[3];
-         std::string rule(width, '-'), dblrule(width, '=');
-         std::string tab(8, ' ');
+         Size width = widths[0] + widths[1] + widths[2] + widths[3];
+         std::string rule(width, '-');
 
          std::cout << rule << std::endl;
 

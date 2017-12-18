@@ -4,6 +4,8 @@
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2007 Cristina Duminuco
  Copyright (C) 2010, 2011 Ferdinando Ametrano
+ Copyright (C) 2017 Joseph Jeisman
+ Copyright (C) 2017 Fabrice Lecuyer
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -132,6 +134,7 @@ namespace QuantLib {
                      const shared_ptr<IborIndex>& index)
     : schedule_(schedule), index_(index),
       paymentAdjustment_(Following),
+      paymentLag_(0), paymentCalendar_(Calendar()),
       inArrears_(false), zeroPayments_(false) {}
 
     IborLeg& IborLeg::withNotionals(Real notional) {
@@ -151,6 +154,16 @@ namespace QuantLib {
 
     IborLeg& IborLeg::withPaymentAdjustment(BusinessDayConvention convention) {
         paymentAdjustment_ = convention;
+        return *this;
+    }
+
+    IborLeg& IborLeg::withPaymentLag(Natural lag) {
+        paymentLag_ = lag;
+        return *this;
+    }
+
+    IborLeg& IborLeg::withPaymentCalendar(const Calendar& cal) {
+        paymentCalendar_ = cal;
         return *this;
     }
 
@@ -219,7 +232,7 @@ namespace QuantLib {
         Leg leg = FloatingLeg<IborIndex, IborCoupon, CappedFlooredIborCoupon>(
                          schedule_, notionals_, index_, paymentDayCounter_,
                          paymentAdjustment_, fixingDays_, gearings_, spreads_,
-                         caps_, floors_, inArrears_, zeroPayments_);
+                         caps_, floors_, inArrears_, zeroPayments_, paymentLag_, paymentCalendar_);
 
         if (caps_.empty() && floors_.empty() && !inArrears_) {
             shared_ptr<IborCouponPricer> pricer(new BlackIborCouponPricer);

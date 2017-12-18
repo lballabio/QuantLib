@@ -108,17 +108,24 @@ namespace QuantLib {
         if (fixing == Null<Rate>())
             fixing = coupon_->indexFixing();
 
-        if (!coupon_->isInArrears() && timingAdjustment_ == Black76)
+        // if the pay date is equal to the index estimation end date
+        // there is no convexity; in all other cases in principle an
+        // adjustment has to be applied, but the Black76 method only
+        // applies the standard in arrears adjustment; the bivariate
+        // lognormal method is more accurate in this regard.
+        Date d1 = coupon_->fixingDate();
+        Date d2 = index_->valueDate(d1);
+        Date d3 = index_->maturityDate(d2);
+        if ((!coupon_->isInArrears() && timingAdjustment_ == Black76) ||
+            coupon_->date() == d3)
             return fixing;
 
         QL_REQUIRE(!capletVolatility().empty(),
                    "missing optionlet volatility");
-        Date d1 = coupon_->fixingDate();
         Date referenceDate = capletVolatility()->referenceDate();
+        // no variance has accumulated, so the convexity is zero
         if (d1 <= referenceDate)
             return fixing;
-        Date d2 = index_->valueDate(d1);
-        Date d3 = index_->maturityDate(d2);
         Time tau = index_->dayCounter().yearFraction(d2, d3);
         Real variance = capletVolatility()->blackVariance(d1, fixing);
 
@@ -180,9 +187,9 @@ namespace QuantLib {
                              public Visitor<RangeAccrualFloatersCoupon>,
                              public Visitor<SubPeriodsCoupon> {
           private:
-            const boost::shared_ptr<FloatingRateCouponPricer> pricer_;
+            boost::shared_ptr<FloatingRateCouponPricer> pricer_;
           public:
-            PricerSetter(
+            explicit PricerSetter(
                     const boost::shared_ptr<FloatingRateCouponPricer>& pricer)
             : pricer_(pricer) {}
 
@@ -216,6 +223,19 @@ namespace QuantLib {
         }
 
         void PricerSetter::visit(CappedFlooredCoupon& c) {
+            // we might end up here because a CappedFlooredCoupon
+            // was directly constructed; we should then check
+            // the underlying for consistency with the pricer
+            if (boost::dynamic_pointer_cast<IborCoupon>(c.underlying())) {
+                QL_REQUIRE(boost::dynamic_pointer_cast<IborCouponPricer>(pricer_),
+                           "pricer not compatible with Ibor Coupon");
+            } else if (boost::dynamic_pointer_cast<CmsCoupon>(c.underlying())) {
+                QL_REQUIRE(boost::dynamic_pointer_cast<CmsCouponPricer>(pricer_),
+                           "pricer not compatible with CMS Coupon");
+            } else if (boost::dynamic_pointer_cast<CmsSpreadCoupon>(c.underlying())) {
+                QL_REQUIRE(boost::dynamic_pointer_cast<CmsSpreadCouponPricer>(pricer_),
+                           "pricer not compatible with CMS spread Coupon");
+            }
             c.setPricer(pricer_);
         }
 
@@ -307,15 +327,32 @@ namespace QuantLib {
             c.setPricer(subPeriodsPricer);
         }
 
-    }
-
-    void setCouponPricer(
-                  const Leg& leg,
-                  const boost::shared_ptr<FloatingRateCouponPricer>& pricer) {
-        PricerSetter setter(pricer);
-        for (Size i=0; i<leg.size(); ++i) {
-            leg[i]->accept(setter);
+        void setCouponPricersFirstMatching(const Leg& leg,
+                                           const std::vector<boost::shared_ptr<FloatingRateCouponPricer> >& p) {
+            std::vector<PricerSetter> setter;
+            for (Size i = 0; i < p.size(); ++i) {
+                setter.push_back(PricerSetter(p[i]));
+            }
+            for (Size i = 0; i < leg.size(); ++i) {
+                Size j = 0;
+                do {
+                    try {
+                        leg[i]->accept(setter[j]);
+                        j = p.size();
+                    } catch (...) {
+                        ++j;
+                    }
+                } while (j < p.size());
+            }
         }
+
+    } // anonymous namespace
+
+    void setCouponPricer(const Leg& leg, const boost::shared_ptr<FloatingRateCouponPricer>& pricer) {
+            PricerSetter setter(pricer);
+            for (Size i = 0; i < leg.size(); ++i) {
+                leg[i]->accept(setter);
+            }
     }
 
     void setCouponPricers(
@@ -335,5 +372,42 @@ namespace QuantLib {
             leg[i]->accept(setter);
         }
     }
+
+    void setCouponPricers(
+            const Leg& leg,
+            const boost::shared_ptr<FloatingRateCouponPricer>& p1,
+            const boost::shared_ptr<FloatingRateCouponPricer>& p2) {
+        std::vector<boost::shared_ptr<FloatingRateCouponPricer> > p;
+        p.push_back(p1);
+        p.push_back(p2);
+        setCouponPricersFirstMatching(leg, p);
+    }
+
+    void setCouponPricers(
+            const Leg& leg,
+            const boost::shared_ptr<FloatingRateCouponPricer>& p1,
+            const boost::shared_ptr<FloatingRateCouponPricer>& p2,
+            const boost::shared_ptr<FloatingRateCouponPricer>& p3) {
+        std::vector<boost::shared_ptr<FloatingRateCouponPricer> > p;
+        p.push_back(p1);
+        p.push_back(p2);
+        p.push_back(p3);
+        setCouponPricersFirstMatching(leg, p);
+    }
+
+    void setCouponPricers(
+            const Leg& leg,
+            const boost::shared_ptr<FloatingRateCouponPricer>& p1,
+            const boost::shared_ptr<FloatingRateCouponPricer>& p2,
+            const boost::shared_ptr<FloatingRateCouponPricer>& p3,
+            const boost::shared_ptr<FloatingRateCouponPricer>& p4) {
+        std::vector<boost::shared_ptr<FloatingRateCouponPricer> > p;
+        p.push_back(p1);
+        p.push_back(p2);
+        p.push_back(p3);
+        p.push_back(p4);
+        setCouponPricersFirstMatching(leg, p);
+    }
+
 
 }

@@ -64,7 +64,7 @@ namespace QuantLib {
     //! Overnight %GBP %Libor index
     class GBPLiborON : public DailyTenorGBPLibor {
       public:
-        GBPLiborON(const Handle<YieldTermStructure>& h =
+        explicit GBPLiborON(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : DailyTenorGBPLibor(0, h) {}
     };

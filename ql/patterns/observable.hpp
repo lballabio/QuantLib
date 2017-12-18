@@ -137,6 +137,12 @@ namespace QuantLib {
         */
         virtual void update() = 0;
 
+        /*! This method allows to explicitly update the instance itself
+          and nested observers. If notifications are disabled a call to
+          this method ensures an update of such nested observers. It
+          should be implemented in derived classes whenever applicable */
+        virtual void deepUpdate();
+
       private:
         set_type observables_;
     };
@@ -242,6 +248,10 @@ namespace QuantLib {
         observables_.clear();
     }
 
+    inline void Observer::deepUpdate() {
+        update();
+    }
+
 }
 
 #else
@@ -282,17 +292,25 @@ namespace QuantLib {
         void registerWithObservables(const boost::shared_ptr<Observer>&);
         Size unregisterWith(const boost::shared_ptr<Observable>&);
         void unregisterWithAll();
+
         /*! This method must be implemented in derived classes. An
             instance of %Observer does not call this method directly:
             instead, it will be called by the observables the instance
             registered with when they need to notify any changes.
         */
         virtual void update() = 0;
+
+        /*! This method allows to explicitly update the instance itself
+          and nested observers. If notifications are disabled a call to
+          this method ensures an update of such nested observers. It
+          should be implemented in derived classes whenever applicable */
+        virtual void deepUpdate();
+
       private:
 
         class Proxy {
           public:
-            Proxy(Observer* const observer)
+            explicit Proxy(Observer* const observer)
              : active_  (true),
                observer_(observer) {
             }
@@ -543,6 +561,10 @@ namespace QuantLib {
             (*i)->unregisterObserver(proxy_);
 
         observables_.clear();
+    }
+
+    inline void Observer::deepUpdate() {
+        update();
     }
 }
 #endif

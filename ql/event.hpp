@@ -68,7 +68,7 @@ namespace QuantLib {
         // to be replaced with specific events as soon as we find out which.
         class simple_event : public Event {
           public:
-            simple_event(const Date& date) : date_(date) {}
+            explicit simple_event(const Date& date) : date_(date) {}
             Date date() const { return date_; }
           private:
             Date date_;

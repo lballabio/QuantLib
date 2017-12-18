@@ -65,7 +65,7 @@ public:
   /*! @param curves std::map of string (curve name) and handle to piecewiseyieldcurve
   */
 
-  MultiCurveSensitivities(curvespec curves) : curves_(curves) {
+  explicit MultiCurveSensitivities(const curvespec& curves) : curves_(curves) {
     for (curvespec::const_iterator it = curves_.begin(); it != curves_.end(); ++it)
       registerWith((*it).second);
     for (curvespec::const_iterator it = curves_.begin(); it != curves_.end(); ++it) {
@@ -103,7 +103,7 @@ private:
   std::vector< std::string > headers_;
 };
 
-void MultiCurveSensitivities::performCalculations() const {
+inline void MultiCurveSensitivities::performCalculations() const {
   std::vector< Rate > sensiVector;
   origZeros_ = allZeros();
   for (std::vector< Handle< Quote > >::const_iterator it = allQuotes_.begin(); it != allQuotes_.end(); ++it) {
@@ -126,17 +126,17 @@ void MultiCurveSensitivities::performCalculations() const {
   invSensi_ = inverse(sensi_);
 }
 
-Matrix MultiCurveSensitivities::sensitivities() const {
+inline Matrix MultiCurveSensitivities::sensitivities() const {
   calculate();
   return sensi_;
 }
 
-Matrix MultiCurveSensitivities::inverseSensitivities() const {
+inline Matrix MultiCurveSensitivities::inverseSensitivities() const {
   calculate();
   return invSensi_;
 }
 
-std::vector< std::pair< Date, Real > > MultiCurveSensitivities::allNodes() const {
+inline std::vector< std::pair< Date, Real > > MultiCurveSensitivities::allNodes() const {
   std::vector< std::pair< Date, Real > > result;
   for (curvespec::const_iterator it = curves_.begin(); it != curves_.end(); ++it) {
     boost::shared_ptr< PiecewiseYieldCurve< ZeroYield, Linear > > curve =
@@ -148,7 +148,7 @@ std::vector< std::pair< Date, Real > > MultiCurveSensitivities::allNodes() const
   return result;
 }
 
-std::vector< Real > MultiCurveSensitivities::allZeros() const {
+inline std::vector< Real > MultiCurveSensitivities::allZeros() const {
   std::vector< std::pair< Date, Real > > result = allNodes();
   std::vector< Real > zeros;
   std::transform(result.begin(), result.end(), std::back_inserter(zeros), secondElement);

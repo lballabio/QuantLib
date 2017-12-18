@@ -144,7 +144,7 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
         notifyObservers();
     }
 
-    void update() { LazyObject::update(); }
+    void update();
 
     void performCalculations() const {
         Gaussian1dModel::performCalculations();
@@ -170,12 +170,12 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
                                       // volsteptimes_)
 
     struct VolatilityObserver : public Observer {
-        VolatilityObserver(Gsr *p) : p_(p) {}
+        explicit VolatilityObserver(Gsr *p) : p_(p) {}
         void update() { p_->updateVolatility(); }
         Gsr *p_;
     };
     struct ReversionObserver : public Observer {
-        ReversionObserver(Gsr *p) : p_(p) {}
+        explicit ReversionObserver(Gsr *p) : p_(p) {}
         void update() { p_->updateReversion(); }
         Gsr *p_;
     };

@@ -26,6 +26,7 @@
 #include <ql/termstructures/inflation/piecewisezeroinflationcurve.hpp>
 #include <ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/time/date.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/calendars/unitedkingdom.hpp>
@@ -49,6 +50,12 @@ using namespace QuantLib;
 
 using std::fabs;
 using std::pow;
+
+#define REPORT_FAILURE(d, res, periodName) \
+    BOOST_ERROR("wrong " << periodName << " inflation period for Date (1 " \
+        << d << "), Start Date ( " \
+        << res.first << "), End Date (" \
+        << res.second << ")"); \
 
 namespace {
 
@@ -84,9 +91,7 @@ namespace {
 
         return instruments;
     }
-
 }
-
 
 //===========================================================================================
 // zero inflation tests, index, termstructure, and swaps
@@ -972,22 +977,72 @@ void InflationTest::testPeriod() {
     Date d;
     Frequency f;
     std::pair<Date,Date> res;
+    int days[13] = {0,31,28,31,30,31,30,31,31,30,31,30,31};
 
-    // fails by crashing out
-    for (Size i=1; i<=12; i++){
-        d = Date(1,Month(i),2009);
+    for (int year = 1950; year < 2051; ++year) {
 
-        f = Monthly;
-        res = inflationPeriod (d,f);
+        if (Date::isLeap(year))
+            days[2] = 29;
+        else
+            days[2] = 28;
 
-        f = Quarterly;
-        res = inflationPeriod (d,f);
+        for (Size i=1; i<=12; ++i){
 
-        f = Semiannual;
-        res = inflationPeriod (d,f);
+            d = Date(1,Month(i),year);
+            
+            f = Monthly;
+            res = inflationPeriod (d,f);
+            if (res.first != Date(1,Month(i),year)
+                || res.second != Date(days[i],Month(i),year)) {
+                REPORT_FAILURE(d, res, "Monthly");
+            }
 
-        f = Annual;
-        res = inflationPeriod (d,f);
+            f = Quarterly;
+            res = inflationPeriod (d,f);
+            
+            if ( (i==1 || i==2 || i==3) &&
+                (res.first != Date(1,Month(1),year)
+                 || res.second != Date(31,Month(3),year))) {
+                REPORT_FAILURE(d, res, "Quarterly");
+            }
+            else if ( (i==4 || i==5 || i==6) &&
+                (res.first != Date(1,Month(4),year)
+                 || res.second != Date(30,Month(6),year))) {
+                REPORT_FAILURE(d, res, "Quarterly");
+            }
+            else if ( (i==7 || i==8 || i==9) &&
+                (res.first != Date(1,Month(7),year)
+                 || res.second != Date(30,Month(9),year))) {
+                REPORT_FAILURE(d, res, "Quarterly");
+            }
+            else if ( (i==10 || i==11 || i==12) &&
+                (res.first != Date(1,Month(10),year)
+                 || res.second != Date(31,Month(12),year))) {
+                REPORT_FAILURE(d, res, "Quarterly");
+            }
+
+            f = Semiannual;
+            res = inflationPeriod (d,f);
+            
+            if ( (i>0 && i<7) && (
+                res.first != Date(1,Month(1),year)
+                || res.second != Date(30,Month(6),year))) {
+                REPORT_FAILURE(d, res, "Semiannual");
+            }
+            else if ( (i>6 && i<13) && (
+                res.first != Date(1,Month(7),year)
+                || res.second != Date(31,Month(12),year))) {
+                REPORT_FAILURE(d, res, "Semiannual");
+            }
+
+            f = Annual;
+            res = inflationPeriod (d,f);
+            
+            if (res.first != Date(1,Month(1),year)
+                || res.second != Date(31,Month(12),year)) {
+                REPORT_FAILURE(d, res, "Annual");
+            }
+        }
     }
 }
 

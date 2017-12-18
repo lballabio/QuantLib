@@ -61,7 +61,7 @@ namespace QuantLib {
     //! 1-week %Euribor index
     class EuriborSW : public Euribor {
       public:
-        EuriborSW(const Handle<YieldTermStructure>& h =
+        explicit EuriborSW(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor(Period(1, Weeks), h) {}
     };
@@ -69,7 +69,7 @@ namespace QuantLib {
     //! 2-weeks %Euribor index
     class Euribor2W : public Euribor {
       public:
-        Euribor2W(const Handle<YieldTermStructure>& h =
+        explicit Euribor2W(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor(Period(2, Weeks), h) {}
     };
@@ -77,7 +77,7 @@ namespace QuantLib {
     //! 3-weeks %Euribor index
     class Euribor3W : public Euribor {
       public:
-        Euribor3W(const Handle<YieldTermStructure>& h =
+        explicit Euribor3W(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor(Period(3, Weeks), h) {}
     };
@@ -85,7 +85,7 @@ namespace QuantLib {
     //! 1-month %Euribor index
     class Euribor1M : public Euribor {
       public:
-        Euribor1M(const Handle<YieldTermStructure>& h =
+        explicit Euribor1M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor(Period(1, Months), h) {}
     };
@@ -93,7 +93,7 @@ namespace QuantLib {
     //! 2-months %Euribor index
     class Euribor2M : public Euribor {
       public:
-        Euribor2M(const Handle<YieldTermStructure>& h =
+        explicit Euribor2M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor(Period(2, Months), h) {}
     };
@@ -101,7 +101,7 @@ namespace QuantLib {
     //! 3-months %Euribor index
     class Euribor3M : public Euribor {
       public:
-        Euribor3M(const Handle<YieldTermStructure>& h =
+        explicit Euribor3M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor(Period(3, Months), h) {}
     };
@@ -109,7 +109,7 @@ namespace QuantLib {
     //! 4-months %Euribor index
     class Euribor4M : public Euribor {
       public:
-        Euribor4M(const Handle<YieldTermStructure>& h =
+        explicit Euribor4M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor(Period(4, Months), h) {}
     };
@@ -117,7 +117,7 @@ namespace QuantLib {
     //! 5-months %Euribor index
     class Euribor5M : public Euribor {
       public:
-        Euribor5M(const Handle<YieldTermStructure>& h =
+        explicit Euribor5M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor(Period(5, Months), h) {}
     };
@@ -125,7 +125,7 @@ namespace QuantLib {
     //! 6-months %Euribor index
     class Euribor6M : public Euribor {
       public:
-        Euribor6M(const Handle<YieldTermStructure>& h =
+        explicit Euribor6M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor(Period(6, Months), h) {}
     };
@@ -133,7 +133,7 @@ namespace QuantLib {
     //! 7-months %Euribor index
     class Euribor7M : public Euribor {
       public:
-        Euribor7M(const Handle<YieldTermStructure>& h =
+        explicit Euribor7M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor(Period(7, Months), h) {}
     };
@@ -141,7 +141,7 @@ namespace QuantLib {
     //! 8-months %Euribor index
     class Euribor8M : public Euribor {
       public:
-        Euribor8M(const Handle<YieldTermStructure>& h =
+        explicit Euribor8M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor(Period(8, Months), h) {}
     };
@@ -149,7 +149,7 @@ namespace QuantLib {
     //! 9-months %Euribor index
     class Euribor9M : public Euribor {
       public:
-        Euribor9M(const Handle<YieldTermStructure>& h =
+        explicit Euribor9M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor(Period(9, Months), h) {}
     };
@@ -157,7 +157,7 @@ namespace QuantLib {
     //! 10-months %Euribor index
     class Euribor10M : public Euribor {
       public:
-        Euribor10M(const Handle<YieldTermStructure>& h =
+        explicit Euribor10M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor(Period(10, Months), h) {}
     };
@@ -165,7 +165,7 @@ namespace QuantLib {
     //! 11-months %Euribor index
     class Euribor11M : public Euribor {
       public:
-        Euribor11M(const Handle<YieldTermStructure>& h =
+        explicit Euribor11M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor(Period(11, Months), h) {}
     };
@@ -173,7 +173,7 @@ namespace QuantLib {
     //! 1-year %Euribor index
     class Euribor1Y : public Euribor {
       public:
-        Euribor1Y(const Handle<YieldTermStructure>& h =
+        explicit Euribor1Y(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor(Period(1, Years), h) {}
     };
@@ -182,7 +182,7 @@ namespace QuantLib {
     //! 1-week %Euribor365 index
     class Euribor365_SW : public Euribor365 {
       public:
-        Euribor365_SW(const Handle<YieldTermStructure>& h =
+        explicit Euribor365_SW(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor365(Period(1, Weeks), h) {}
     };
@@ -190,7 +190,7 @@ namespace QuantLib {
     //! 2-weeks %Euribor365 index
     class Euribor365_2W : public Euribor365 {
       public:
-        Euribor365_2W(const Handle<YieldTermStructure>& h =
+        explicit Euribor365_2W(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor365(Period(2, Weeks), h) {}
     };
@@ -198,7 +198,7 @@ namespace QuantLib {
     //! 3-weeks %Euribor365 index
     class Euribor365_3W : public Euribor365 {
       public:
-        Euribor365_3W(const Handle<YieldTermStructure>& h =
+        explicit Euribor365_3W(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor365(Period(3, Weeks), h) {}
     };
@@ -206,7 +206,7 @@ namespace QuantLib {
     //! 1-month %Euribor365 index
     class Euribor365_1M : public Euribor365 {
       public:
-        Euribor365_1M(const Handle<YieldTermStructure>& h =
+        explicit Euribor365_1M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor365(Period(1, Months), h) {}
     };
@@ -214,7 +214,7 @@ namespace QuantLib {
     //! 2-months %Euribor365 index
     class Euribor365_2M : public Euribor365 {
       public:
-        Euribor365_2M(const Handle<YieldTermStructure>& h =
+        explicit Euribor365_2M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor365(Period(2, Months), h) {}
     };
@@ -222,7 +222,7 @@ namespace QuantLib {
     //! 3-months %Euribor365 index
     class Euribor365_3M : public Euribor365 {
       public:
-        Euribor365_3M(const Handle<YieldTermStructure>& h =
+        explicit Euribor365_3M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor365(Period(3, Months), h) {}
     };
@@ -230,7 +230,7 @@ namespace QuantLib {
     //! 4-months %Euribor365 index
     class Euribor365_4M : public Euribor365 {
       public:
-        Euribor365_4M(const Handle<YieldTermStructure>& h =
+        explicit Euribor365_4M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor365(Period(4, Months), h) {}
     };
@@ -238,7 +238,7 @@ namespace QuantLib {
     //! 5-months %Euribor365 index
     class Euribor365_5M : public Euribor365 {
       public:
-        Euribor365_5M(const Handle<YieldTermStructure>& h =
+        explicit Euribor365_5M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor365(Period(5, Months), h) {}
     };
@@ -246,7 +246,7 @@ namespace QuantLib {
     //! 6-months %Euribor365 index
     class Euribor365_6M : public Euribor365 {
       public:
-        Euribor365_6M(const Handle<YieldTermStructure>& h =
+        explicit Euribor365_6M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor365(Period(6, Months), h) {}
     };
@@ -254,7 +254,7 @@ namespace QuantLib {
     //! 7-months %Euribor365 index
     class Euribor365_7M : public Euribor365 {
       public:
-        Euribor365_7M(const Handle<YieldTermStructure>& h =
+        explicit Euribor365_7M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor365(Period(7, Months), h) {}
     };
@@ -262,7 +262,7 @@ namespace QuantLib {
     //! 8-months %Euribor365 index
     class Euribor365_8M : public Euribor365 {
       public:
-        Euribor365_8M(const Handle<YieldTermStructure>& h =
+        explicit Euribor365_8M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor365(Period(8, Months), h) {}
     };
@@ -270,7 +270,7 @@ namespace QuantLib {
     //! 9-months %Euribor365 index
     class Euribor365_9M : public Euribor365 {
       public:
-        Euribor365_9M(const Handle<YieldTermStructure>& h =
+        explicit Euribor365_9M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor365(Period(9, Months), h) {}
     };
@@ -278,7 +278,7 @@ namespace QuantLib {
     //! 10-months %Euribor365 index
     class Euribor365_10M : public Euribor365 {
       public:
-        Euribor365_10M(const Handle<YieldTermStructure>& h =
+        explicit Euribor365_10M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor365(Period(10, Months), h) {}
     };
@@ -286,7 +286,7 @@ namespace QuantLib {
     //! 11-months %Euribor365 index
     class Euribor365_11M : public Euribor365 {
       public:
-        Euribor365_11M(const Handle<YieldTermStructure>& h =
+        explicit Euribor365_11M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor365(Period(11, Months), h) {}
     };
@@ -294,7 +294,7 @@ namespace QuantLib {
     //! 1-year %Euribor365 index
     class Euribor365_1Y : public Euribor365 {
       public:
-        Euribor365_1Y(const Handle<YieldTermStructure>& h =
+        explicit Euribor365_1Y(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Euribor365(Period(1, Years), h) {}
     };

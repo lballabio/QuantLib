@@ -27,6 +27,10 @@
    do not modify the following definitions.
  *******************************************/
 
+#ifndef QL_PATCH_SOLARIS
+#define QL_PATCH_SOLARIS
+#endif
+
 // to be compatible with gcc and VC++, make math functions
 // available in the global namespace as well.
 #include <cmath>

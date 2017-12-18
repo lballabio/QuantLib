@@ -67,8 +67,8 @@ namespace QuantLib
     class SamplerLogNormal
     {
     public:
-        SamplerLogNormal(unsigned long seed = 0) :
-            generator_(seed != 0 ? seed : SeedGenerator::instance().get()),
+        explicit SamplerLogNormal(unsigned long seed = SeedGenerator::instance().get()) :
+            generator_(seed),
             distribution_(0.0, 1.0), gaussian_(generator_, distribution_) {};
         SamplerLogNormal(const SamplerLogNormal& sampler) : generator_(sampler.gaussian_.engine()),
             distribution_(sampler.gaussian_.distribution()),
@@ -93,8 +93,8 @@ namespace QuantLib
     class SamplerGaussian
     {
     public:
-        SamplerGaussian(unsigned long seed = 0) :
-            generator_(seed != 0 ? seed : SeedGenerator::instance().get()),
+        explicit SamplerGaussian(unsigned long seed = SeedGenerator::instance().get()) :
+            generator_(seed),
             distribution_(0.0, 1.0), gaussian_(generator_, distribution_) {};
         SamplerGaussian(const SamplerGaussian& sampler) : generator_(sampler.gaussian_.engine()),
             distribution_(sampler.gaussian_.distribution()),
@@ -111,6 +111,86 @@ namespace QuantLib
         normal_random distribution_;
         mutable normal_variate gaussian_;
     };
+    
+    //! Gaussian Ring Sampler
+    /*! Sample from normal distribution, but constrained to lie within
+     * .boundaries. If the value ends up beyond the boundary, the value
+     * is circled back from the other side.
+    */
+    class SamplerRingGaussian
+    {
+    public:
+        SamplerRingGaussian(const Array& lower, const Array& upper, 
+				unsigned long seed = SeedGenerator::instance().get()) :
+            generator_(seed), distribution_(0.0, 1.0), 
+            gaussian_(generator_, distribution_),
+            lower_(lower), upper_(upper) {};
+        SamplerRingGaussian(const SamplerRingGaussian& sampler) : 
+			generator_(sampler.gaussian_.engine()),
+            distribution_(sampler.gaussian_.distribution()),
+            gaussian_(generator_, distribution_),
+            lower_(sampler.lower_), upper_(sampler.upper_) {};
+
+        inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) const {
+            QL_REQUIRE(newPoint.size() == currentPoint.size(), "Incompatible input");
+            QL_REQUIRE(newPoint.size() == temp.size(), "Incompatible input");
+            for (Size i = 0; i < currentPoint.size(); i++){
+                newPoint[i] = currentPoint[i] + std::sqrt(temp[i])*gaussian_();
+                while(newPoint[i] < lower_[i] || newPoint[i] > upper_[i]){
+					if(newPoint[i] < lower_[i]){
+						newPoint[i] = upper_[i] + newPoint[i] - lower_[i];
+					} else {
+						newPoint[i] = lower_[i] + newPoint[i] - upper_[i];
+					}
+				} 
+            }
+        };
+    private:
+        base_generator_type generator_;
+        normal_random distribution_;
+        mutable normal_variate gaussian_;
+        Array lower_, upper_;
+    };
+    
+    //! Gaussian Mirror Sampler
+    /*! Sample from normal distribution, but constrained to lie within
+     * .boundaries. If the value ends up beyond the boundary, the value
+     * is reflected back.
+    */
+    class SamplerMirrorGaussian
+    {
+    public:
+        SamplerMirrorGaussian(const Array& lower, const Array& upper, 
+				unsigned long seed = SeedGenerator::instance().get()) :
+            generator_(seed), distribution_(0.0, 1.0), 
+            gaussian_(generator_, distribution_),
+            lower_(lower), upper_(upper) {};
+        SamplerMirrorGaussian(const SamplerMirrorGaussian& sampler) : 
+			generator_(sampler.gaussian_.engine()),
+            distribution_(sampler.gaussian_.distribution()),
+            gaussian_(generator_, distribution_),
+            lower_(sampler.lower_), upper_(sampler.upper_) {};
+
+        inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) const {
+            QL_REQUIRE(newPoint.size() == currentPoint.size(), "Incompatible input");
+            QL_REQUIRE(newPoint.size() == temp.size(), "Incompatible input");
+            for (Size i = 0; i < currentPoint.size(); i++){
+                newPoint[i] = currentPoint[i] + std::sqrt(temp[i])*gaussian_();
+                while(newPoint[i] < lower_[i] || newPoint[i] > upper_[i]){
+					if(newPoint[i] < lower_[i]){
+						newPoint[i] = lower_[i] + lower_[i] - newPoint[i];
+					} else {
+						newPoint[i] = upper_[i] + upper_[i] - newPoint[i];
+					}
+				}
+            }
+        };
+    private:
+        base_generator_type generator_;
+        normal_random distribution_;
+        mutable normal_variate gaussian_;
+        Array lower_, upper_;
+    };
 
     //! Cauchy Sampler
     /*!    Sample from cauchy distribution. This means that the parameter space
@@ -121,8 +201,8 @@ namespace QuantLib
     class SamplerCauchy
     {
     public:
-        SamplerCauchy(unsigned long seed) :
-            generator_(seed != 0 ? seed : SeedGenerator::instance().get()),
+        explicit SamplerCauchy(unsigned long seed = SeedGenerator::instance().get()) :
+            generator_(seed),
             distribution_(0.0, 1.0), cauchy_(generator_, distribution_) {};
         SamplerCauchy(const SamplerCauchy& sampler) : generator_(sampler.cauchy_.engine()),
             distribution_(sampler.cauchy_.distribution()),
@@ -147,9 +227,9 @@ namespace QuantLib
     class SamplerVeryFastAnnealing
     {
     public:
-        SamplerVeryFastAnnealing(unsigned long seed, const Array &lower, const Array &upper) :
+        SamplerVeryFastAnnealing(const Array &lower, const Array &upper, unsigned long seed = SeedGenerator::instance().get()) :
             lower_(lower), upper_(upper),
-            generator_(seed != 0 ? seed : SeedGenerator::instance().get()),
+            generator_(seed),
             uniform_(generator_, distribution_) {
             QL_REQUIRE(lower_.size() == upper_.size(), "Incompatible input");
         };
@@ -200,8 +280,8 @@ namespace QuantLib
     */
     class ProbabilityBoltzmann {
     public:
-        ProbabilityBoltzmann(unsigned long seed) :
-            generator_(seed != 0 ? seed : SeedGenerator::instance().get()),
+        explicit ProbabilityBoltzmann(unsigned long seed = SeedGenerator::instance().get()) :
+            generator_(seed),
             uniform_(generator_, distribution_) {};
         ProbabilityBoltzmann(const ProbabilityBoltzmann &probability) :
             generator_(probability.uniform_.engine()), distribution_(probability.uniform_.distribution()),
@@ -222,8 +302,8 @@ namespace QuantLib
     class ProbabilityBoltzmannDownhill
     {
     public:
-        ProbabilityBoltzmannDownhill(unsigned long seed = 0) :
-            generator_(seed != 0 ? seed : SeedGenerator::instance().get()),
+        explicit ProbabilityBoltzmannDownhill(unsigned long seed = SeedGenerator::instance().get()) :
+            generator_(seed),
             uniform_(generator_, distribution_) {};
         ProbabilityBoltzmannDownhill(const ProbabilityBoltzmannDownhill& probability) :
             generator_(probability.uniform_.engine()), distribution_(probability.uniform_.distribution()),
@@ -290,16 +370,17 @@ namespace QuantLib
 
     class TemperatureExponential {
     public:
-        TemperatureExponential(Real initialTemp, Size dimension)
-            : initialTemp_(dimension, initialTemp) {}
+        TemperatureExponential(Real initialTemp, Size dimension, Real power = 0.95)
+            : initialTemp_(dimension, initialTemp), power_(power) {}
         inline void operator()(Array &newTemp, const Array &currTemp, const Array &steps) const {
             QL_REQUIRE(currTemp.size() == initialTemp_.size(), "Incompatible input");
             QL_REQUIRE(currTemp.size() == newTemp.size(), "Incompatible input");
             for (Size i = 0; i < initialTemp_.size(); i++)
-                newTemp[i] = initialTemp_[i] * std::pow(0.95, steps[i]);
+                newTemp[i] = initialTemp_[i] * std::pow(power_, steps[i]);
         }
     private:
         Array initialTemp_;
+        Real power_;
     };
     //! Temperature Very Fast Annealing
     /*!    For use with the Very Fast Annealing sampler

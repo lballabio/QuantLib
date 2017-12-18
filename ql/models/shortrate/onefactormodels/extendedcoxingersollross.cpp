@@ -25,8 +25,9 @@ namespace QuantLib {
 
     ExtendedCoxIngersollRoss::ExtendedCoxIngersollRoss(
                               const Handle<YieldTermStructure>& termStructure,
-                              Real theta, Real k, Real sigma, Real x0)
-    : CoxIngersollRoss(x0, theta, k, sigma),
+                              Real theta, Real k, Real sigma, Real x0,
+                              bool withFellerConstraint)
+    : CoxIngersollRoss(x0, theta, k, sigma, withFellerConstraint),
       TermStructureConsistentModel(termStructure) {
         generateArguments();
     }
@@ -88,8 +89,8 @@ namespace QuantLib {
         Real ncps = 2.0*rho*rho*(r0-phi_(0.0))*std::exp(h*t)/(rho+psi+b);
         Real ncpt = 2.0*rho*rho*(r0-phi_(0.0))*std::exp(h*t)/(rho+psi);
 
-        NonCentralChiSquareDistribution chis(df, ncps);
-        NonCentralChiSquareDistribution chit(df, ncpt);
+        NonCentralCumulativeChiSquareDistribution chis(df, ncps);
+        NonCentralCumulativeChiSquareDistribution chit(df, ncpt);
 
         Real z = std::log(CoxIngersollRoss::A(t,s)/strike)/b;
         Real call = discountS*chis(2.0*z*(rho+psi+b)) -

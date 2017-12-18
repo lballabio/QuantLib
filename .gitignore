@@ -32,6 +32,7 @@ lib/
 test-suite/bin/QuantLib-test-suite-*.manifest
 test-suite/build/
 test-suite/*.trs
+.vs/
 
 # Build outputs
 **/x64/Debug
@@ -41,9 +42,17 @@ test-suite/*.trs
 **/bin/*.xml
 **/bin/*.manifest
 
+# CLion
+.idea
+cmake-build-debug
+
+# Visual Studio Code
+.vscode
+
 # Artifacts created in multiple directories
 Makefile
 Makefile.in
+unity.cpp
 testCaseCollection.xml
 .deps
 .libs
@@ -79,18 +88,19 @@ TAGS
 Examples/BasketLosses/BasketLosses
 Examples/BermudanSwaption/BermudanSwaption
 Examples/Bonds/Bonds
-Examples/CDS/CDS
 Examples/CallableBonds/CallableBonds
+Examples/CDS/CDS
 Examples/ConvertibleBonds/ConvertibleBonds
 Examples/CVAIRS/CVAIRS
 Examples/DiscreteHedging/DiscreteHedging
 Examples/EquityOption/EquityOption
-Examples/FRA/FRA
 Examples/FittedBondCurve/FittedBondCurve
+Examples/FRA/FRA
+Examples/Gaussian1dModels/Gaussian1dModels
+Examples/GlobalOptimizer/GlobalOptimizer
 Examples/LatentModel/LatentModel
 Examples/MarketModels/MarketModels
 Examples/MultidimIntegral/MultidimIntegral
-Examples/Gaussian1dModels/Gaussian1dModels
 Examples/Replication/Replication
 Examples/Repo/Repo
 Examples/Swap/SwapValuation

@@ -5,6 +5,8 @@
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2007 Cristina Duminuco
  Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2017 Joseph Jeisman
+ Copyright (C) 2017 Fabrice Lecuyer
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -53,6 +55,8 @@ namespace QuantLib {
         const boost::shared_ptr<IborIndex>& iborIndex() const {
             return iborIndex_;
         }
+        //! this is dependent on QL_USE_INDEXED_COUPON
+        const Date& fixingEndDate() const { return fixingEndDate_; }
         //@}
         //! \name FloatingRateCoupon interface
         //@{
@@ -79,6 +83,8 @@ namespace QuantLib {
         IborLeg& withNotionals(const std::vector<Real>& notionals);
         IborLeg& withPaymentDayCounter(const DayCounter&);
         IborLeg& withPaymentAdjustment(BusinessDayConvention);
+        IborLeg& withPaymentLag(Natural lag);
+        IborLeg& withPaymentCalendar(const Calendar&);
         IborLeg& withFixingDays(Natural fixingDays);
         IborLeg& withFixingDays(const std::vector<Natural>& fixingDays);
         IborLeg& withGearings(Real gearing);
@@ -98,6 +104,8 @@ namespace QuantLib {
         std::vector<Real> notionals_;
         DayCounter paymentDayCounter_;
         BusinessDayConvention paymentAdjustment_;
+        Natural paymentLag_;
+        Calendar paymentCalendar_;
         std::vector<Natural> fixingDays_;
         std::vector<Real> gearings_;
         std::vector<Spread> spreads_;
