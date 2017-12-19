@@ -1498,33 +1498,30 @@ void HestonSLVModelTest::testFDMCalibration() {
     SavedSettings backup;
 
     const HestonSLVFokkerPlanckFdmParams plainParams =
-        { 201, 301, 1000, 25, 3.0, 2,
+        { 201, 301, 1000, 25, 3.0, 0, 2,
           0.1, 1e-4, 10000,
           1e-8, 1e-8, 0.0, 1.0, 1.0, 1.0, 1e-6,
           FdmHestonGreensFct::Gaussian,
           FdmSquareRootFwdOp::Plain,
-          FdmSchemeDesc::ModifiedCraigSneyd(),
-          0
+          FdmSchemeDesc::ModifiedCraigSneyd()
         };
 
     const HestonSLVFokkerPlanckFdmParams logParams =
-        { 301, 601, 2000, 30, 2.0, 2,
+        { 301, 601, 2000, 30, 2.0, 0, 2,
           0.1, 1e-4, 10000,
           1e-5, 1e-5, 0.0000025, 1.0, 0.1, 0.9, 1e-5,
           FdmHestonGreensFct::Gaussian,
           FdmSquareRootFwdOp::Log,
-          FdmSchemeDesc::ModifiedCraigSneyd(),
-          0
+          FdmSchemeDesc::ModifiedCraigSneyd()
         };
 
     const HestonSLVFokkerPlanckFdmParams powerParams =
-        { 401, 801, 2000, 30, 2.0, 2,
+        { 401, 801, 2000, 30, 2.0, 0, 2,
           0.1, 1e-3, 10000,
           1e-6, 1e-6, 0.001, 1.0, 0.001, 1.0, 1e-5,
           FdmHestonGreensFct::Gaussian,
           FdmSquareRootFwdOp::Power,
-          FdmSchemeDesc::ModifiedCraigSneyd(),
-          0
+          FdmSchemeDesc::ModifiedCraigSneyd()
         };
 
 
@@ -1589,14 +1586,13 @@ void HestonSLVModelTest::testLocalVolsvSLVPropDensity() {
     const Size xGrid = 51;
 
     const HestonSLVFokkerPlanckFdmParams fdmParams = {
-        xGrid, vGrid, 500, 50, 100.0, 2,
+        xGrid, vGrid, 500, 50, 100.0, 5, 2,
         0.1, 1e-4, 10000,
         1e-5, 1e-5, 0.0000025,
         1.0, 0.1, 0.9, 1e-5,
         FdmHestonGreensFct::ZeroCorrelation,
         FdmSquareRootFwdOp::Log,
-        FdmSchemeDesc::ModifiedCraigSneyd(),
-        5
+        FdmSchemeDesc::ModifiedCraigSneyd()
     };
 
     const HestonSLVFDMModel slvModel(
@@ -1824,13 +1820,12 @@ void HestonSLVModelTest::testBarrierPricingMixedModels() {
     }
 
     const HestonSLVFokkerPlanckFdmParams params =
-        { 51, 201, 1000, 100, 3.0, 2,
+        { 51, 201, 1000, 100, 3.0, 0, 2,
           0.1, 1e-4, 10000,
           1e-8, 1e-8, 0.0, 1.0, 1.0, 1.0, 1e-6,
           FdmHestonGreensFct::Gaussian,
           FdmSquareRootFwdOp::Plain,
-          FdmSchemeDesc::ModifiedCraigSneyd(),
-          0
+          FdmSchemeDesc::ModifiedCraigSneyd()
         };
 
     const Real eta[] = { 0.1, 0.2, 0.3, 0.4,
@@ -2150,13 +2145,12 @@ void HestonSLVModelTest::testForwardSkewSLV() {
 
     // finite difference calibration
     const HestonSLVFokkerPlanckFdmParams logParams = {
-        201, 401, 1000, 30, 2.0, 2,
+        201, 401, 1000, 30, 2.0, 0, 2,
         0.1, 1e-4, 10000,
         1e-5, 1e-5, 0.0000025, 1.0, 0.1, 0.9, 1e-5,
         FdmHestonGreensFct::Gaussian,
         FdmSquareRootFwdOp::Log,
-        FdmSchemeDesc::ModifiedCraigSneyd(),
-        0
+        FdmSchemeDesc::ModifiedCraigSneyd()
     };
 
     const boost::shared_ptr<LocalVolTermStructure> leverageFctFDM =

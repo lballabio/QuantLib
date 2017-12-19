@@ -45,6 +45,9 @@ class SimpleQuote;
         const Size tMaxStepsPerYear, tMinStepsPerYear;
         const Real tStepNumberDecay;
 
+        // Rannacher smoothing steps at the beginning
+        const Size nRannacherTimeSteps;
+
         const Size predictionCorretionSteps;
 
         // local volatility forward equation
@@ -65,9 +68,6 @@ class SimpleQuote;
 
         // define finite difference scheme
         const FdmSchemeDesc schemeDesc;
-
-        // Rannacher smoothing steps at the beginning
-        const Size nRannacherTimeSteps;
     };
 
     class HestonSLVFDMModel : public LazyObject {
