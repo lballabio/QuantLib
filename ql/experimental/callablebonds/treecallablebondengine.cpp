@@ -44,10 +44,10 @@ namespace QuantLib {
     }
 
     void TreeCallableFixedRateBondEngine::calculate() const {
-        return calculateSpread(arguments_.spread);
+        return calculateWithSpread(arguments_.spread);
     }
 
-    void TreeCallableFixedRateBondEngine::calculateSpread(double s) const {
+    void TreeCallableFixedRateBondEngine::calculateWithSpread(Spread s) const {
         QL_REQUIRE(!model_.empty(), "no model specified");
 
         Date referenceDate;
@@ -76,13 +76,13 @@ namespace QuantLib {
             lattice = model_->tree(timeGrid);
         }
 
-        OneFactorModel::ShortRateTree *sr=
-            dynamic_cast<OneFactorModel::ShortRateTree*>(&(*lattice));
-        if (sr)
+        if (s != 0.0) {
+            OneFactorModel::ShortRateTree *sr=
+                dynamic_cast<OneFactorModel::ShortRateTree*>(&(*lattice));
+            QL_REQUIRE(sr,
+                       "Spread is not supported for trees other than OneFactorModel");
             sr->setSpread(s);
-        else
-            QL_REQUIRE( s==0.0,
-                        "Spread is not supported for trees other than OneFactorModel");
+        }
 
         Time redemptionTime =
             dayCounter.yearFraction(referenceDate,
@@ -90,8 +90,6 @@ namespace QuantLib {
         callableBond.initialize(lattice, redemptionTime);
         callableBond.rollback(0.0);
         results_.value = results_.settlementValue = callableBond.presentValue();
-        if (sr)
-            sr->setSpread(0.0);
     }
 
 }

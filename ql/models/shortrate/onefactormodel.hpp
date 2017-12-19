@@ -103,7 +103,7 @@ namespace QuantLib {
         Real probability(Size i, Size index, Size branch) const {
             return tree_->probability(i, index, branch);
         }
-        void setSpread(double spread)
+        void setSpread(Spread spread)
         {
             spread_=spread;
         }
@@ -111,7 +111,7 @@ namespace QuantLib {
         boost::shared_ptr<TrinomialTree> tree_;
         boost::shared_ptr<ShortRateDynamics> dynamics_;
         class Helper;
-        double spread_;
+        Spread spread_;
     };
 
     //! Single-factor affine base class

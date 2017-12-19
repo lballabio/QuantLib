@@ -84,7 +84,7 @@ namespace QuantLib {
 
          */
         Spread OAS(Real cleanPrice,
-                   RelinkableHandle<YieldTermStructure>& engineTS,
+                   const Handle<YieldTermStructure>& engineTS,
                    const DayCounter& dayCounter,
                    Compounding compounding,
                    Frequency frequency,
@@ -97,7 +97,7 @@ namespace QuantLib {
         //! option-adjust-spread (oas) over the given yield term
         //! structure (engineTS)
         Real cleanPriceOAS(Real oas,
-                           RelinkableHandle<YieldTermStructure>& engineTS,
+                           const Handle<YieldTermStructure>& engineTS,
                            const DayCounter& dayCounter,
                            Compounding compounding,
                            Frequency frequency,
@@ -107,7 +107,7 @@ namespace QuantLib {
         //! differential of the dirty price w.r.t. a parallel shift of
         //! the yield term structure divided by current dirty price
         Real effectiveDuration(Real oas,
-                               RelinkableHandle<YieldTermStructure>& engineTS,
+                               const Handle<YieldTermStructure>& engineTS,
                                const DayCounter& dayCounter,
                                Compounding compounding,
                                Frequency frequency,
@@ -117,7 +117,7 @@ namespace QuantLib {
         //! differential of the dirty price w.r.t. a parallel shift of
         //! the yield term structure divided by current dirty price
         Real effectiveConvexity(Real oas,
-                                RelinkableHandle<YieldTermStructure>& engineTS,
+                                const Handle<YieldTermStructure>& engineTS,
                                 const DayCounter& dayCounter,
                                 Compounding compounding,
                                 Frequency frequency,
@@ -156,8 +156,19 @@ namespace QuantLib {
             boost::shared_ptr<SimpleQuote> vol_;
             const Instrument::results* results_;
         };
-
-
+        //! Helper class for option adjusted spread calculations
+        class NPVSpreadHelper;
+        friend class NPVSpreadHelper;
+        class NPVSpreadHelper :
+            public std::unary_function<Real, Real>
+        {
+        public:
+            NPVSpreadHelper(CallableBond& bond);
+            Real operator()(Spread x) const;
+        private:
+            CallableBond& bond_;
+            const Instrument::results* results_;
+        };
     };
 
     class CallableBond::arguments : public Bond::arguments {

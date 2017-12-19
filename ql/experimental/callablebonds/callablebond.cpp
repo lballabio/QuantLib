@@ -108,50 +108,19 @@ namespace QuantLib {
         return solver.solve(f, accuracy, guess, minVol, maxVol);
     }
 
+    namespace {
 
-    /* Expose a mechanism to add spread the engine parameters and
-       clean clean up when the object is destroyed
-     */
-    class EngSpreadHelper {
-        CallableBond::arguments*  args;
-        double ospread;
+    template<class T>
+    class RestoreVal {
+        T orig_;
+        T &ref_;
     public:
-        explicit EngSpreadHelper(CallableBond::arguments* args):
-            args(args),
-            ospread(args->spread)
+        explicit RestoreVal(T &ref):
+            orig_(ref),
+            ref_(ref)  { }
+        ~RestoreVal()
         {
-        }
-
-        void setSpread(double s)
-        {
-            args->spread=s;
-        }
-
-        ~EngSpreadHelper()
-        {
-            setSpread(ospread);
-        }
-    };
-
-    /* Functional interface to take a spread and return NPV of
-       spreaded callable bond */
-    class NPVSpreadHelper :
-        public std::unary_function<Real, Real>
-    {
-        CallableBond& bond_;
-        EngSpreadHelper &e;
-    public:
-        NPVSpreadHelper(CallableBond& bond,
-                        EngSpreadHelper& e):
-            bond_(bond),
-            e(e)
-        {
-        }
-        Real operator()(Real x) const
-        {
-            e.setSpread(x);
-            bond_.recalculate();
-            return bond_.NPV();
+            ref_=orig_;
         }
     };
 
@@ -173,12 +142,13 @@ namespace QuantLib {
         Real targetValue_;
     };
 
+
     /* Convert a continuous spread to a conventional spread to a
        reference yield curve
     */
     Real continuousToConv(Real oas,
                           const Bond &b,
-                          RelinkableHandle<YieldTermStructure>& yts,
+                          const Handle<YieldTermStructure>& yts,
                           const DayCounter& dayCounter,
                           Compounding compounding,
                           Frequency frequency)
@@ -214,7 +184,7 @@ namespace QuantLib {
     */
     Real convToContinuous(Real oas,
                           const Bond &b,
-                          RelinkableHandle<YieldTermStructure>& yts,
+                          const Handle<YieldTermStructure>& yts,
                           const DayCounter& dayCounter,
                           Compounding compounding,
                           Frequency frequency)
@@ -246,8 +216,29 @@ namespace QuantLib {
         return sr-br;
     }
 
+    }
+
+
+    CallableBond::NPVSpreadHelper::NPVSpreadHelper(CallableBond& bond):
+        bond_(bond),
+        results_(dynamic_cast<const Instrument::results*>(bond.engine_->getResults()))
+    {
+        bond.setupArguments(bond.engine_->getArguments());
+    }
+
+   Real CallableBond::NPVSpreadHelper::operator()(Real x) const
+   {
+       CallableBond::arguments* args=
+           dynamic_cast<CallableBond::arguments*>(bond_.engine_->getArguments());
+       // Pops the original value when function finishes
+       RestoreVal<Spread> restorer(args->spread);
+       args->spread=x;
+       bond_.engine_->calculate();
+       return results_->value;
+   }
+
     Spread CallableBond::OAS(Real cleanPrice,
-                             RelinkableHandle<YieldTermStructure>& engineTS,
+                             const Handle<YieldTermStructure>& engineTS,
                              const DayCounter& dayCounter,
                              Compounding compounding,
                              Frequency frequency,
@@ -261,8 +252,7 @@ namespace QuantLib {
 
         Real dirtyPrice = cleanPrice + accruedAmount(settlement);
 
-        EngSpreadHelper s(dynamic_cast<CallableBond::arguments*>(engine_->getArguments()));
-        boost::function<Real(Real)> f = NPVSpreadHelper(*this, s);
+        boost::function<Real(Real)> f = NPVSpreadHelper(*this);
         OASHelper obj(f, dirtyPrice);
 
         Brent solver;
@@ -282,7 +272,7 @@ namespace QuantLib {
 
 
     Real CallableBond::cleanPriceOAS(Real oas,
-                                     RelinkableHandle<YieldTermStructure>& engineTS,
+                                     const Handle<YieldTermStructure>& engineTS,
                                      const DayCounter& dayCounter,
                                      Compounding compounding,
                                      Frequency frequency,
@@ -298,9 +288,7 @@ namespace QuantLib {
                              compounding,
                              frequency);
 
-        EngSpreadHelper s(dynamic_cast<CallableBond::arguments*>(engine_->getArguments()));
-
-        boost::function<Real(Real)> f = NPVSpreadHelper(*this, s);
+        boost::function<Real(Real)> f = NPVSpreadHelper(*this);
 
         Real P = f(oas) - accruedAmount(settlement);
 
@@ -308,7 +296,7 @@ namespace QuantLib {
     }
 
     Real CallableBond::effectiveDuration(Real oas,
-                                         RelinkableHandle<YieldTermStructure>& engineTS,
+                                         const Handle<YieldTermStructure>& engineTS,
                                          const DayCounter& dayCounter,
                                          Compounding compounding,
                                          Frequency frequency,
@@ -340,7 +328,7 @@ namespace QuantLib {
     }
 
     Real CallableBond::effectiveConvexity(Real oas,
-                                          RelinkableHandle<YieldTermStructure>& engineTS,
+                                          const Handle<YieldTermStructure>& engineTS,
                                           const DayCounter& dayCounter,
                                           Compounding compounding,
                                           Frequency frequency,
