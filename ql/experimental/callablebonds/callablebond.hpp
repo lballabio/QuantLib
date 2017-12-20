@@ -163,7 +163,7 @@ namespace QuantLib {
             public std::unary_function<Real, Real>
         {
         public:
-            NPVSpreadHelper(CallableBond& bond);
+            explicit NPVSpreadHelper(CallableBond& bond);
             Real operator()(Spread x) const;
         private:
             CallableBond& bond_;
