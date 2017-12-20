@@ -609,7 +609,7 @@ void SquareRootCLVModelTest::testForwardSkew() {
         boost::make_shared<HestonModel>(hestonProcess4slv));
 
     const HestonSLVFokkerPlanckFdmParams logParams = {
-        301, 601, 1000, 30, 2.0, 2,
+        301, 601, 1000, 30, 2.0, 0, 2,
         0.1, 1e-4, 10000,
         1e-5, 1e-5, 0.0000025, 1.0, 0.1, 0.9, 1e-5,
         FdmHestonGreensFct::Gaussian,

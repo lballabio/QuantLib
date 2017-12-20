@@ -467,8 +467,13 @@ namespace QuantLib {
 
             // predictor corrector steps
             for (Size r=0; r < params_.predictionCorretionSteps; ++r) {
+                const FdmSchemeDesc fdmSchemeDesc
+                    = (i < params_.nRannacherTimeSteps + 2)
+                        ? FdmSchemeDesc::ImplicitEuler()
+                        : params_.schemeDesc;
+
                 const boost::shared_ptr<FdmScheme> fdmScheme(
-                    fdmSchemeFactory(params_.schemeDesc, hestonFwdOp));
+                    fdmSchemeFactory(fdmSchemeDesc, hestonFwdOp));
 
                 for (Size j=0; j < x.size(); ++j) {
                     Array pSlice(vGrid);
