@@ -15,15 +15,19 @@ env:
   matrix:
     # Regression test with old Boost version, gcc 4.8
     - DOCKER_IMAGE=lballabio/quantlib-devenv:1.54.0-trusty
+      CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Werror -std=c++03"
     # Latest Boost, gcc 5.4, strict C++03 mode
     - DOCKER_IMAGE=lballabio/quantlib-devenv:xenial
+      CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Werror -std=c++03"
     # Latest Boost, gcc 6.3, C++14 mode
     - DOCKER_IMAGE=lballabio/quantlib-devenv:zesty
+      CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror -std=c++14"
     # Latest Boost, gcc 7.2, C++14 mode
     - DOCKER_IMAGE=lballabio/quantlib-devenv:artful
+      CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror -std=c++14"
 
 before_install:
@@ -31,7 +35,7 @@ before_install:
 
 script:
   - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} ./autogen.sh
-  - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} ./configure --disable-static CXXFLAGS="${CXXFLAGS}"
+  - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} ./configure --disable-static CC="${CACHEDCC}" CXX="${CACHEDCXX}" CXXFLAGS="${CXXFLAGS}"
   - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} ccache --zero-stats
   - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} ccache --max-size=2.5G
   - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} ccache --show-stats
