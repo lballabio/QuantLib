@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2008 Allen Kuo
+ Copyright (C) 2017 BN Algorithms Ltd
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -75,6 +76,52 @@ namespace QuantLib {
                               Size maxEvaluations,
                               Volatility minVol,
                               Volatility maxVol) const;
+
+        //! Calculate the Option Adjusted Spread (OAS)
+        /*! Calculates the spread that needs to be added to the the
+            reference curve so that the theoretical model value
+            matches the marketPrice.
+
+         */
+        Spread OAS(Real cleanPrice,
+                   const Handle<YieldTermStructure>& engineTS,
+                   const DayCounter& dayCounter,
+                   Compounding compounding,
+                   Frequency frequency,
+                   Date settlementDate = Date(),
+                   Real accuracy = 1.0e-10,
+                   Size maxIterations = 100,
+                   Rate guess = 0.0);
+
+        //! Calculate the clean price based on the given
+        //! option-adjust-spread (oas) over the given yield term
+        //! structure (engineTS)
+        Real cleanPriceOAS(Real oas,
+                           const Handle<YieldTermStructure>& engineTS,
+                           const DayCounter& dayCounter,
+                           Compounding compounding,
+                           Frequency frequency,
+                           Date settlementDate = Date());
+
+        //! Calculate the effective duration, i.e., the first
+        //! differential of the dirty price w.r.t. a parallel shift of
+        //! the yield term structure divided by current dirty price
+        Real effectiveDuration(Real oas,
+                               const Handle<YieldTermStructure>& engineTS,
+                               const DayCounter& dayCounter,
+                               Compounding compounding,
+                               Frequency frequency,
+                               Real bump=2e-4);
+
+        //! Calculate the effective convexity, i.e., the second
+        //! differential of the dirty price w.r.t. a parallel shift of
+        //! the yield term structure divided by current dirty price
+        Real effectiveConvexity(Real oas,
+                                const Handle<YieldTermStructure>& engineTS,
+                                const DayCounter& dayCounter,
+                                Compounding compounding,
+                                Frequency frequency,
+                                Real bump=2e-4);
         //@}
         virtual void setupArguments(PricingEngine::arguments*) const {}
 
@@ -109,6 +156,19 @@ namespace QuantLib {
             boost::shared_ptr<SimpleQuote> vol_;
             const Instrument::results* results_;
         };
+        //! Helper class for option adjusted spread calculations
+        class NPVSpreadHelper;
+        friend class NPVSpreadHelper;
+        class NPVSpreadHelper :
+            public std::unary_function<Real, Real>
+        {
+        public:
+            explicit NPVSpreadHelper(CallableBond& bond);
+            Real operator()(Spread x) const;
+        private:
+            CallableBond& bond_;
+            const Instrument::results* results_;
+        };
     };
 
     class CallableBond::arguments : public Bond::arguments {
@@ -125,6 +185,10 @@ namespace QuantLib {
         //! bond full/dirty/cash prices
         std::vector<Real> callabilityPrices;
         std::vector<Date> callabilityDates;
+        //! Spread to apply to the valuation. This is a continuously
+        //! componded rate added to the model. Currently only applied
+        //! by the TreeCallableFixedRateBondEngine
+        Real spread;
         void validate() const;
     };
 
