@@ -46,7 +46,6 @@ namespace QuantLib {
     : IborIndex("Shibor", tenor, (tenor == 1*Days? 0 : 1), CNYCurrency(),
                 China(China::IB), shiborConvention(tenor), false,
                 Actual360(), h) {}
-    
     boost::shared_ptr<IborIndex> Shibor::clone(
                                   const Handle<YieldTermStructure>& h) const {
         return boost::shared_ptr<IborIndex>(new Shibor(tenor(), h));

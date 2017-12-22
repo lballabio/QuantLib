@@ -26,3 +26,4 @@ set_property(TARGET ${BENCHMARK} PROPERTY PROJECT_LABEL "benchmark")
 
 enable_testing ()
 add_test (${TEST} ${TEST})
+
