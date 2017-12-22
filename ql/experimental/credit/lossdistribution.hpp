@@ -70,7 +70,7 @@ namespace QuantLib {
     //! Probability of N events 
     class ProbabilityOfNEvents {
     public:
-        ProbabilityOfNEvents (int n) : n_(n) {}
+        explicit ProbabilityOfNEvents (int n) : n_(n) {}
         Real operator()(std::vector<Real> p) const;
     private:
         Size n_;
@@ -79,7 +79,7 @@ namespace QuantLib {
     //! Probability of at least N events 
     class ProbabilityOfAtLeastNEvents {
     public:
-        ProbabilityOfAtLeastNEvents (int n) : n_(n) {}
+        explicit ProbabilityOfAtLeastNEvents (int n) : n_(n) {}
         Real operator()(std::vector<Real> p) const;
     private:
         Size n_;
@@ -88,7 +88,7 @@ namespace QuantLib {
     //! Probability of at least N events 
     class BinomialProbabilityOfAtLeastNEvents {
     public:
-        BinomialProbabilityOfAtLeastNEvents(int n) : n_(n) {}
+        explicit BinomialProbabilityOfAtLeastNEvents(int n) : n_(n) {}
         Real operator()(std::vector<Real> p);
     private:
         int n_;

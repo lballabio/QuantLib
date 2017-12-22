@@ -218,10 +218,10 @@ namespace QuantLib {
         TripleBandLinearOp retVal(direction_, mesher_);
 
         #pragma omp parallel for
-        for (Size i=0; i < size; ++i) {
+        for (long i=0; i < (long)size; ++i) {
             const Real sm1 = i > 0? u[i-1] : 1.0;
             const Real s0 = u[i];
-            const Real sp1 = i < size-1? u[i+1] : 1.0;
+            const Real sp1 = i < (long)size-1? u[i+1] : 1.0;
             retVal.lower_[i]= lower_[i]*sm1;
             retVal.diag_[i] = diag_[i]*s0;
             retVal.upper_[i]= upper_[i]*sp1;

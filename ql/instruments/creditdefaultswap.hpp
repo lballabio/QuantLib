@@ -47,14 +47,20 @@ namespace QuantLib {
                  NPV and therefore affect the fair-spread
                  calculation. This might not be what you want.
 
-         \ingroup instruments
+        \warning conventionalSpread (and impliedHazardRate) by default
+                 use the mid-point engine, which is not ISDA conform.
+
+        \ingroup instruments
     */
     class CreditDefaultSwap : public Instrument {
       public:
         class arguments;
         class results;
         class engine;
-
+        enum PricingModel {
+            Midpoint,
+            ISDA
+        };
         //! \name Constructors
         //@{
         //! CDS quoted as running-spread only
@@ -73,7 +79,17 @@ namespace QuantLib {
                                       false, they are due at the end of
                                       the accrual period.
             @param protectionStart  The first date where a default
-                                    event will trigger the contract.
+                                    event will trigger the contract. 
+                                    Typically T+1 Notice there is no default
+                                    lookback period and protection start here. 
+                                    In the way it determines the dirty amount it
+                                    is more like the trade execution date.
+            @param lastPeriodDayCounter Day-count convention for accrual in last period
+            @param rebatesAccrual  The protection seller pays the accrued 
+                                    scheduled current coupon at the start 
+                                    of the contract. The rebate date is not
+                                    provided but computed to be two days after
+                                    protection start.
         */
         CreditDefaultSwap(Protection::Side side,
                           Real notional,
@@ -85,7 +101,9 @@ namespace QuantLib {
                           bool paysAtDefaultTime = true,
                           const Date& protectionStart = Date(),
                           const boost::shared_ptr<Claim>& =
-                                                  boost::shared_ptr<Claim>());
+                                                  boost::shared_ptr<Claim>(),
+                          const DayCounter& lastPeriodDayCounter = DayCounter(),
+                          const bool rebatesAccrual = true);
         //! CDS quoted as upfront and running spread
         /*! @param side  Whether the protection is bought or sold.
             @param notional  Notional value
@@ -102,9 +120,22 @@ namespace QuantLib {
                                      due at default time. If set to
                                      false, they are due at the end of
                                      the accrual period.
-            @param protectionStart The first date where a default
-                                   event will trigger the contract.
-            @param upfrontDate Settlement date for the upfront payment.
+            @param protectionStart  The first date where a default
+                                    event will trigger the contract. 
+                                    Typically T+1 Notice there is no default
+                                    lookback period and protection start here. 
+                                    In the way it determines the dirty amount it
+                                    is more like the trade execution date.
+            @param upfrontDate Settlement date for the upfront and accrual 
+                                    rebate (if any) payments.
+                                    Typically T+3, this is also the default 
+                                    value.
+            @param lastPeriodDayCounter Day-count convention for accrual in last period
+            @param rebatesAccrual  The protection seller pays the accrued 
+                                    scheduled current coupon at the start 
+                                    of the contract. The rebate date is not
+                                    provided but computed to be two days after
+                                    protection start.
         */
         CreditDefaultSwap(Protection::Side side,
                           Real notional,
@@ -118,7 +149,9 @@ namespace QuantLib {
                           const Date& protectionStart = Date(),
                           const Date& upfrontDate = Date(),
                           const boost::shared_ptr<Claim>& =
-                                                  boost::shared_ptr<Claim>());
+                                                  boost::shared_ptr<Claim>(),
+                          const DayCounter& lastPeriodDayCounter = DayCounter(),
+                          const bool rebatesAccrual = true);
         //@}
         //! \name Instrument interface
         //@{
@@ -139,6 +172,7 @@ namespace QuantLib {
         const Date& protectionStartDate() const;
         //! The last date for which defaults will trigger the contract
         const Date& protectionEndDate() const;
+        bool rebatesAccrual() const {return accrualRebate_ != NULL;}
         //@}
         //! \name Results
         //@{
@@ -162,6 +196,7 @@ namespace QuantLib {
         Real couponLegNPV() const;
         Real defaultLegNPV() const;
         Real upfrontNPV() const;
+        Real accrualRebateNPV() const;
 
         //! Implied hazard rate calculation
         /*! \note This method performs the calculation with the
@@ -184,7 +219,8 @@ namespace QuantLib {
                                const Handle<YieldTermStructure>& discountCurve,
                                const DayCounter& dayCounter,
                                Real recoveryRate = 0.4,
-                               Real accuracy = 1.0e-6) const;
+                               Real accuracy = 1.0e-8,
+                               PricingModel model = Midpoint) const;
 
         //! Conventional/standard upfront-to-spread conversion
         /*! Under a standard ISDA model and a set of standardised
@@ -219,7 +255,8 @@ namespace QuantLib {
         */
         Rate conventionalSpread(Real conventionalRecovery,
                                 const Handle<YieldTermStructure>& discountCurve,
-                                const DayCounter& dayCounter) const;
+                                const DayCounter& dayCounter,
+                                PricingModel model = Midpoint) const;
         //@}
       protected:
         //! \name Instrument interface
@@ -235,13 +272,16 @@ namespace QuantLib {
         boost::shared_ptr<Claim> claim_;
         Leg leg_;
         boost::shared_ptr<CashFlow> upfrontPayment_;
+        boost::shared_ptr<CashFlow> accrualRebate_;
         Date protectionStart_;
+        Date maturity_;
         // results
         mutable Rate fairUpfront_;
         mutable Rate fairSpread_;
         mutable Real couponLegBPS_, couponLegNPV_;
         mutable Real upfrontBPS_, upfrontNPV_;
         mutable Real defaultLegNPV_;
+        mutable Real accrualRebateNPV_;
     };
 
 
@@ -254,11 +294,14 @@ namespace QuantLib {
         boost::optional<Rate> upfront;
         Rate spread;
         Leg leg;
+        // if not initialized by constructors means theres no flows.
         boost::shared_ptr<CashFlow> upfrontPayment;
+        boost::shared_ptr<CashFlow> accrualRebate;
         bool settlesAccrual;
         bool paysAtDefaultTime;
         boost::shared_ptr<Claim> claim;
         Date protectionStart;
+        Date maturity;
         void validate() const;
     };
 
@@ -271,6 +314,7 @@ namespace QuantLib {
         Real defaultLegNPV;
         Real upfrontBPS;
         Real upfrontNPV;
+        Real accrualRebateNPV;
         void reset();
     };
 

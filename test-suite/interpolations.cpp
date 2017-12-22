@@ -36,6 +36,7 @@
 #include <ql/math/interpolations/kernelinterpolation2d.hpp>
 #include <ql/math/interpolations/lagrangeinterpolation.hpp>
 #include <ql/math/integrals/simpsonintegral.hpp>
+#include <ql/math/bspline.hpp>
 #include <ql/math/kernelfunctions.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/richardsonextrapolation.hpp>
@@ -43,6 +44,7 @@
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/experimental/volatility/noarbsabrinterpolation.hpp>
 #include <boost/foreach.hpp>
+#include <boost/tuple/tuple.hpp>
 #include <boost/assign/std/vector.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
 
@@ -86,7 +88,7 @@ namespace {
             Real interpolated = cubic(*xBegin);
             if (std::fabs(interpolated-*yBegin) > tolerance) {
                 BOOST_ERROR(type << " interpolation failed at x = " << *xBegin
-                            << QL_SCIENTIFIC
+                            << std::scientific
                             << "\n    interpolated value: " << interpolated
                             << "\n    expected value:     " << *yBegin
                             << "\n    error:              "
@@ -108,7 +110,7 @@ namespace {
                         << "at x = " << x
                         << "\n    interpolated value: " << interpolated
                         << "\n    expected value:     " << value
-                        << QL_SCIENTIFIC
+                        << std::scientific
                         << "\n    error:              " << error);
         }
     }
@@ -125,7 +127,7 @@ namespace {
                         << "at x = " << x
                         << "\n    interpolated value: " << interpolated
                         << "\n    expected value:     " << value
-                        << QL_SCIENTIFIC
+                        << std::scientific
                         << "\n    error:              " << error);
         }
     }
@@ -932,10 +934,10 @@ void InterpolationTest::testAsFunctor() {
         if (std::fabs(y2[i]-expected) > tolerance)
             BOOST_ERROR(
                 "failed to reproduce " << io::ordinal(i+1) << " expected datum"
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << y2[i]
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(y2[i]-expected));
     }
 }
@@ -963,10 +965,10 @@ void InterpolationTest::testBackwardFlat() {
         if (std::fabs(expected-calculated) > tolerance)
             BOOST_ERROR(
                 "failed to reproduce " << io::ordinal(i+1) << " datum"
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << calculated
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(calculated-expected));
     }
 
@@ -978,10 +980,10 @@ void InterpolationTest::testBackwardFlat() {
         if (std::fabs(expected-calculated) > tolerance)
             BOOST_ERROR(
                 "failed to interpolate correctly at " << p
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << calculated
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(calculated-expected));
     }
 
@@ -994,10 +996,10 @@ void InterpolationTest::testBackwardFlat() {
     if (std::fabs(expected-calculated) > tolerance)
         BOOST_ERROR(
             "failed to extrapolate correctly at " << p
-            << QL_FIXED
+            << std::fixed
             << "\n    expected:   " << expected
             << "\n    calculated: " << calculated
-            << QL_SCIENTIFIC
+            << std::scientific
             << "\n    error:      " << std::fabs(calculated-expected));
 
     p = x[N-1] + 0.5;
@@ -1006,10 +1008,10 @@ void InterpolationTest::testBackwardFlat() {
     if (std::fabs(expected-calculated) > tolerance)
         BOOST_ERROR(
             "failed to extrapolate correctly at " << p
-            << QL_FIXED
+            << std::fixed
             << "\n    expected:   " << expected
             << "\n    calculated: " << calculated
-            << QL_SCIENTIFIC
+            << std::scientific
             << "\n    error:      " << std::fabs(calculated-expected));
 
     // primitive at original points
@@ -1018,10 +1020,10 @@ void InterpolationTest::testBackwardFlat() {
     if (std::fabs(expected-calculated) > tolerance)
         BOOST_ERROR(
             "failed to calculate primitive at " << x[0]
-            << QL_FIXED
+            << std::fixed
             << "\n    expected:   " << expected
             << "\n    calculated: " << calculated
-            << QL_SCIENTIFIC
+            << std::scientific
             << "\n    error:      " << std::fabs(calculated-expected));
 
     Real sum = 0.0;
@@ -1032,10 +1034,10 @@ void InterpolationTest::testBackwardFlat() {
         if (std::fabs(expected-calculated) > tolerance)
             BOOST_ERROR(
                 "failed to calculate primitive at " << x[i]
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << calculated
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(calculated-expected));
     }
 
@@ -1050,10 +1052,10 @@ void InterpolationTest::testBackwardFlat() {
         if (std::fabs(expected-calculated) > tolerance)
             BOOST_ERROR(
                 "failed to calculate primitive at " << x[i]
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << calculated
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(calculated-expected));
     }
 
@@ -1081,10 +1083,10 @@ void InterpolationTest::testForwardFlat() {
         if (std::fabs(expected-calculated) > tolerance)
             BOOST_ERROR(
                 "failed to reproduce " << io::ordinal(i+1) << " datum"
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << calculated
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(calculated-expected));
     }
 
@@ -1096,10 +1098,10 @@ void InterpolationTest::testForwardFlat() {
         if (std::fabs(expected-calculated) > tolerance)
             BOOST_ERROR(
                 "failed to interpolate correctly at " << p
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << calculated
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(calculated-expected));
     }
 
@@ -1112,10 +1114,10 @@ void InterpolationTest::testForwardFlat() {
     if (std::fabs(expected-calculated) > tolerance)
         BOOST_ERROR(
             "failed to extrapolate correctly at " << p
-            << QL_FIXED
+            << std::fixed
             << "\n    expected:   " << expected
             << "\n    calculated: " << calculated
-            << QL_SCIENTIFIC
+            << std::scientific
             << "\n    error:      " << std::fabs(calculated-expected));
 
     p = x[N-1] + 0.5;
@@ -1124,10 +1126,10 @@ void InterpolationTest::testForwardFlat() {
     if (std::fabs(expected-calculated) > tolerance)
         BOOST_ERROR(
             "failed to extrapolate correctly at " << p
-            << QL_FIXED
+            << std::fixed
             << "\n    expected:   " << expected
             << "\n    calculated: " << calculated
-            << QL_SCIENTIFIC
+            << std::scientific
             << "\n    error:      " << std::fabs(calculated-expected));
 
     // primitive at original points
@@ -1136,10 +1138,10 @@ void InterpolationTest::testForwardFlat() {
     if (std::fabs(expected-calculated) > tolerance)
         BOOST_ERROR(
             "failed to calculate primitive at " << x[0]
-            << QL_FIXED
+            << std::fixed
             << "\n    expected:   " << expected
             << "\n    calculated: " << calculated
-            << QL_SCIENTIFIC
+            << std::scientific
             << "\n    error:      " << std::fabs(calculated-expected));
 
     Real sum = 0.0;
@@ -1150,10 +1152,10 @@ void InterpolationTest::testForwardFlat() {
         if (std::fabs(expected-calculated) > tolerance)
             BOOST_ERROR(
                 "failed to calculate primitive at " << x[i]
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << calculated
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(calculated-expected));
     }
 
@@ -1168,10 +1170,10 @@ void InterpolationTest::testForwardFlat() {
         if (std::fabs(expected-calculated) > tolerance)
             BOOST_ERROR(
                 "failed to calculate primitive at " << p
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << calculated
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(calculated-expected));
     }
 }
@@ -1393,7 +1395,7 @@ void InterpolationTest::testKernelInterpolation() {
 
                     BOOST_ERROR("Kernel interpolation failed at x = "
                                 << deltaGrid[dIt]
-                                << QL_SCIENTIFIC
+                                << std::scientific
                                 << "\n    interpolated value: " << calcVal
                                 << "\n    expected value:     " << expectedVal
                                 << "\n    error:              "
@@ -1450,7 +1452,7 @@ void InterpolationTest::testKernelInterpolation() {
 
                 BOOST_ERROR("Kernel interpolation failed at x = "
                             << deltaGrid[dIt]
-                            << QL_SCIENTIFIC
+                            << std::scientific
                             << "\n    interpolated value: " << calcVal
                             << "\n    expected value:     " << expectedVal
                             << "\n    error:              "
@@ -2152,6 +2154,53 @@ void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
     }
 }
 
+void InterpolationTest::testBSplines() {
+    BOOST_TEST_MESSAGE("Testing B-Splines...");
+
+    // reference values have been generate with the R package splines2
+    // https://cran.r-project.org/web/packages/splines2/splines2.pdf
+
+    using namespace boost::assign;
+
+    std::vector<Real> knots;
+    knots += -1.0, 0.5, 0.75, 1.2, 3.0, 4.0, 5.0;
+
+    const Natural p = 2;
+    const BSpline bspline(p, knots.size()-p-2, knots);
+
+    std::vector<boost::tuple<Natural, Real, Real> > referenceValues;
+    referenceValues += boost::make_tuple(0, -0.95, 9.5238095238e-04),
+        boost::make_tuple(0, -0.01, 0.37337142857),
+        boost::make_tuple(0, 0.49, 0.84575238095),
+        boost::make_tuple(0, 1.21, 0.0),
+        boost::make_tuple(1, 1.49, 0.562987654321),
+        boost::make_tuple(1, 1.59, 0.490888888889),
+        boost::make_tuple(2, 1.99, 0.62429409171),
+        boost::make_tuple(3, 1.19, 0.0),
+        boost::make_tuple(3, 1.99, 0.12382936508),
+        boost::make_tuple(3, 3.59, 0.765914285714);
+
+
+    const Real tol = 1e-10;
+    for (Size i=0; i < referenceValues.size(); ++i) {
+        const Natural idx = referenceValues[i].get<0>();
+        const Real x = referenceValues[i].get<1>();
+        const Real expected = referenceValues[i].get<2>();
+
+        const Real calculated = bspline(idx, x);
+
+        if (   boost::math::isnan(calculated)
+            || std::fabs(calculated - expected) > tol) {
+            BOOST_FAIL("failed to reproduce the B-Spline value"
+                    << "\n    i         : " << idx
+                    << "\n    x         : " << x
+                    << "\n    calculated: " << calculated
+                    << "\n    expected  : " << expected
+                    << "\n    difference: " << std::fabs(calculated-expected)
+                    << "\n    tolerance : " << tol);
+        }
+    }
+}
 
 test_suite* InterpolationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
@@ -2191,9 +2240,9 @@ test_suite* InterpolationTest::suite() {
         &InterpolationTest::testLagrangeInterpolationAtSupportPoint));
     suite->add(QUANTLIB_TEST_CASE(
         &InterpolationTest::testLagrangeInterpolationDerivative));
-
     suite->add(QUANTLIB_TEST_CASE(
         &InterpolationTest::testLagrangeInterpolationOnChebyshevPoints));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBSplines));
 
     return suite;
 }

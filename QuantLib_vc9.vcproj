@@ -2283,6 +2283,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\instruments\makecds.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\instruments\makecds.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\instruments\makecms.cpp"
 				>
 			</File>
@@ -3063,6 +3071,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\math\matrixutilities\getcovariance.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\matrixutilities\gmres.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\matrixutilities\gmres.hpp"
 					>
 				</File>
 				<File
@@ -5362,6 +5378,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\yield\compositezeroyieldstructure.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\yield\discountcurve.hpp"
 					>
 				</File>
@@ -5660,6 +5680,14 @@
 			</File>
 			<File
 				RelativePath=".\ql\currencies\asia.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\currencies\crypto.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\currencies\crypto.hpp"
 				>
 			</File>
 			<File
@@ -6750,6 +6778,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\credit\isdacdsengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\credit\isdacdsengine.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\pricingengines\credit\midpointcdsengine.cpp"
 					>
 				</File>
@@ -6979,6 +7015,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\time\calendars\bespokecalendar.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\botswana.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\botswana.hpp"
 					>
 				</File>
 				<File
@@ -7279,6 +7323,10 @@
 				>
 				<File
 					RelativePath=".\ql\time\daycounters\actual360.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\time\daycounters\actual365fixed.cpp"
 					>
 				</File>
 				<File
@@ -8246,6 +8294,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\experimental\credit\interpolatedaffinehazardratecurve.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\experimental\credit\issuer.cpp"
 					>
 				</File>
@@ -8279,6 +8331,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\credit\nthtodefault.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\experimental\credit\onefactoraffinesurvival.hpp"
 					>
 				</File>
 				<File

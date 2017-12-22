@@ -56,6 +56,7 @@ class InterpolationTest {
     static void testLagrangeInterpolationAtSupportPoint();
     static void testLagrangeInterpolationDerivative();
     static void testLagrangeInterpolationOnChebyshevPoints();
+    static void testBSplines();
 
     static boost::unit_test_framework::test_suite* suite();
 };

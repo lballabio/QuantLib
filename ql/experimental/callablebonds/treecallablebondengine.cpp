@@ -17,6 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/models/shortrate/onefactormodel.hpp>
 #include <ql/experimental/callablebonds/treecallablebondengine.hpp>
 #include <ql/experimental/callablebonds/discretizedcallablefixedratebond.hpp>
 
@@ -43,6 +44,10 @@ namespace QuantLib {
     }
 
     void TreeCallableFixedRateBondEngine::calculate() const {
+        return calculateWithSpread(arguments_.spread);
+    }
+
+    void TreeCallableFixedRateBondEngine::calculateWithSpread(Spread s) const {
         QL_REQUIRE(!model_.empty(), "no model specified");
 
         Date referenceDate;
@@ -69,6 +74,14 @@ namespace QuantLib {
             std::vector<Time> times = callableBond.mandatoryTimes();
             TimeGrid timeGrid(times.begin(), times.end(), timeSteps_);
             lattice = model_->tree(timeGrid);
+        }
+
+        if (s != 0.0) {
+            OneFactorModel::ShortRateTree *sr=
+                dynamic_cast<OneFactorModel::ShortRateTree*>(&(*lattice));
+            QL_REQUIRE(sr,
+                       "Spread is not supported for trees other than OneFactorModel");
+            sr->setSpread(s);
         }
 
         Time redemptionTime =

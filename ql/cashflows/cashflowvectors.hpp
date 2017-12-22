@@ -7,6 +7,8 @@
  Copyright (C) 2006, 2007 Giorgio Facchinetti
  Copyright (C) 2006 Mario Pucci
  Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2017 Joseph Jeisman
+ Copyright (C) 2017 Fabrice Lecuyer
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -67,7 +69,9 @@ namespace QuantLib {
                     const std::vector<Rate>& caps,
                     const std::vector<Rate>& floors,
                     bool isInArrears,
-                    bool isZero) {
+                    bool isZero,
+                    Natural paymentLag = 0,
+                    Calendar paymentCalendar = Calendar()) {
 
         Size n = schedule.size()-1;
         QL_REQUIRE(!nominals.empty(), "no notional given");
@@ -93,20 +97,23 @@ namespace QuantLib {
 
         // the following is not always correct
         Calendar calendar = schedule.calendar();
-
+        
+        if (paymentCalendar.empty()) {
+            paymentCalendar = calendar;
+        }
         Date refStart, start, refEnd, end;
-        Date lastPaymentDate = calendar.adjust(schedule.date(n), paymentAdj);
+        Date lastPaymentDate = paymentCalendar.advance(schedule.date(n), paymentLag, Days, paymentAdj);
 
         for (Size i=0; i<n; ++i) {
             refStart = start = schedule.date(i);
             refEnd   =   end = schedule.date(i+1);
             Date paymentDate =
-                isZero ? lastPaymentDate : calendar.adjust(end, paymentAdj);
-            if (i==0   && !schedule.isRegular(i+1)) {
+                isZero ? lastPaymentDate : paymentCalendar.advance(end, paymentLag, Days, paymentAdj);
+            if (i==0   && (schedule.hasIsRegular() && schedule.hasTenor() && !schedule.isRegular(i+1))) {
                 BusinessDayConvention bdc = schedule.businessDayConvention();
                 refStart = calendar.adjust(end - schedule.tenor(), bdc);
             }
-            if (i==n-1 && !schedule.isRegular(i+1)) {
+            if (i==n-1 && (schedule.hasIsRegular() && schedule.hasTenor() && !schedule.isRegular(i+1))) {
                 BusinessDayConvention bdc = schedule.businessDayConvention();
                 refEnd = calendar.adjust(start + schedule.tenor(), bdc);
             }
@@ -206,11 +213,11 @@ namespace QuantLib {
             refStart = start = schedule.date(i);
             refEnd   =   end = schedule.date(i+1);
             paymentDate = calendar.adjust(end, paymentAdj);
-            if (i==0   && !schedule.isRegular(i+1)) {
+            if (i==0 && (schedule.hasIsRegular() && schedule.hasTenor() && !schedule.isRegular(i+1))) {
                 BusinessDayConvention bdc = schedule.businessDayConvention();
                 refStart = calendar.adjust(end - schedule.tenor(), bdc);
             }
-            if (i==n-1 && !schedule.isRegular(i+1)) {
+            if (i==n-1 && (schedule.hasIsRegular() && schedule.hasTenor() && !schedule.isRegular(i+1))) {
                 BusinessDayConvention bdc = schedule.businessDayConvention();
                 refEnd = calendar.adjust(start + schedule.tenor(), bdc);
             }

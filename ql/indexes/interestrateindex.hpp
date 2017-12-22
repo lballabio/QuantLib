@@ -80,7 +80,7 @@ namespace QuantLib {
         //@{
         //! It can be overridden to implement particular conventions
         virtual Rate forecastFixing(const Date& fixingDate) const = 0;
-        Rate pastFixing(const Date& fixingDate) const;
+        virtual Rate pastFixing(const Date& fixingDate) const;
         // @}
       protected:
         std::string familyName_;

@@ -55,12 +55,8 @@ namespace QuantLib {
                               HestonExpansionFormula formula);
 
         void calculate() const;
-        /*! This method doesn't return a sensible value. */
-        QL_DEPRECATED
-        Size numberOfEvaluations() const;
 
       private:
-        mutable Size evaluations_;
         const HestonExpansionFormula formula_;
     };
 

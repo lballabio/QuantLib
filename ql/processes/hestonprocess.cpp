@@ -593,6 +593,6 @@ namespace QuantLib {
             std::max(0.0, CumulativeNormalDistribution()(dw)));
 
         return sigma_*sigma_*(1-std::exp(-kappa_*dt))/(4*kappa_)
-            *InverseNonCentralChiSquareDistribution(df, ncp, 100)(p);
+            *InverseNonCentralCumulativeChiSquareDistribution(df, ncp, 100)(p);
     }
 }

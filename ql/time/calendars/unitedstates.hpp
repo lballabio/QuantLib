@@ -152,9 +152,12 @@ namespace QuantLib {
         };
         class NercImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const {
-                return "North American Energy Reliability Council";
-            }
+            std::string name() const { return "North American Energy Reliability Council"; }
+            bool isBusinessDay(const Date&) const;
+        };
+        class FederalReserveImpl : public Calendar::WesternImpl {
+          public:
+            std::string name() const { return "Federal Reserve Bankwire System"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
@@ -163,7 +166,8 @@ namespace QuantLib {
                       NYSE,           //!< New York stock exchange calendar
                       GovernmentBond, //!< government-bond calendar
                       NERC,           //!< off-peak days for NERC
-                      LiborImpact     //!< Libor impact calendar
+                      LiborImpact,    //!< Libor impact calendar
+                      FederalReserve  //!< Federal Reserve Bankwire System
         };
         UnitedStates(Market market = Settlement);
     };

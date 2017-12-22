@@ -24,6 +24,7 @@
 #include <ql/methods/finitedifferences/operators/fdmblackscholesop.hpp>
 #include <ql/methods/finitedifferences/solvers/fdm2dimsolver.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmsimple2dbssolver.hpp>
+#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -41,11 +42,10 @@ namespace QuantLib {
     }
 
     void FdmSimple2dBSSolver::performCalculations() const {
-        boost::shared_ptr<FdmBlackScholesOp> op(new FdmBlackScholesOp(
+        boost::shared_ptr<FdmBlackScholesOp> op(boost::make_shared<FdmBlackScholesOp>(
                 solverDesc_.mesher, process_.currentLink(), strike_));
 
-        solver_ = boost::shared_ptr<Fdm2DimSolver>(
-                            new Fdm2DimSolver(solverDesc_, schemeDesc_, op));
+        solver_ = boost::make_shared<Fdm2DimSolver>(solverDesc_, schemeDesc_, op);
     }
 
     Real FdmSimple2dBSSolver::valueAt(Real s, Real a) const {

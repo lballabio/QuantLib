@@ -44,7 +44,7 @@ namespace QuantLib {
     */
     class MidPointCDOEngine : public SyntheticCDO::engine {
     public:
-        MidPointCDOEngine(
+        explicit MidPointCDOEngine(
             const Handle<YieldTermStructure>& discountCurve)
         : discountCurve_(discountCurve) {}
         void calculate() const;

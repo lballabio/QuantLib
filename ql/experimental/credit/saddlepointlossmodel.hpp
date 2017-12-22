@@ -99,7 +99,7 @@ namespace QuantLib {
     template<class CP> 
     class SaddlePointLossModel : public DefaultLossModel {
     public:
-        SaddlePointLossModel(
+        explicit SaddlePointLossModel(
             const boost::shared_ptr<ConstantLossLatentmodel<CP> >& m)
             : copula_(m) { }
     protected:

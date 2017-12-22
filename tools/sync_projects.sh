@@ -23,7 +23,7 @@ grep -o -E 'RelativePath=".*"' test-suite/testsuite_vc9.vcproj \
 | awk -F'"' '{ print $2 }' | sed -e 's|\\|/|g' | sed -e 's|^./||' \
 | sed -e 's|^|test-suite/|' | sort > test-suite.vc9.files
 
-# ...VC10 and above...
+# Same for VC10 and above.
 
 grep -o -E 'Include=".*\.[hc]p*"' QuantLib.vcxproj \
 | awk -F'"' '{ print $2 }' | sed -e 's|\\|/|g' | sed -e 's|^./||' \
@@ -41,18 +41,6 @@ grep -o -E 'Include=".*\.[hc]p*"' test-suite/testsuite.vcxproj.filters \
 | awk -F'"' '{ print $2 }' | sed -e 's|\\|/|g' | sed -e 's|^./||' \
 | sed -e 's|^|test-suite/|' | sort > test-suite.vcx.filters
 
-# ...and Dev-C++.
-
-grep -o -E 'FileName=.*' QuantLib.dev \
-| grep -v 'QuantLib\.dev' \
-| awk -F'=' '{ print $2 }' | sed -e 's|\\|/|g' | sed -e 's|^./||' \
-| sort > ql.devcpp.files
-
-grep -o -E 'FileName=.*' test-suite/testsuite.dev \
-| grep -v 'testsuite\.dev' \
-| awk -F'=' '{ print $2 }' | sed -e 's|\\|/|g' | sed -e 's|^./||' \
-| sed -e 's|^|test-suite/|' | sort > test-suite.devcpp.files
-
 # write out differences...
 
 echo 'Visual Studio 9:'
@@ -69,16 +57,9 @@ echo 'filters:'
 diff -b ql.vcx.filters ql.ref.files
 diff -b test-suite.vcx.filters test-suite.ref.files
 
-echo ''
-echo ''
-echo 'Dev-C++:'
-diff -b ql.devcpp.files ql.ref.files
-diff -b test-suite.devcpp.files test-suite.ref.files
-
 # ...and cleanup
 rm -f ql.ref.files test-suite.ref.files
 rm -f ql.vc9.files test-suite.vc9.files
 rm -f ql.vcx.files test-suite.vcx.files
 rm -f ql.vcx.filters test-suite.vcx.filters
-rm -f ql.devcpp.files test-suite.devcpp.files
 

@@ -32,6 +32,7 @@
 #include <ql/instruments/inflationcapfloor.hpp>
 #include <ql/instruments/lookbackoption.hpp>
 #include <ql/instruments/makecapfloor.hpp>
+#include <ql/instruments/makecds.hpp>
 #include <ql/instruments/makecms.hpp>
 #include <ql/instruments/makeois.hpp>
 #include <ql/instruments/makeswaption.hpp>

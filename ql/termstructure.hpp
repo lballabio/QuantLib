@@ -25,7 +25,7 @@
 #define quantlib_term_structure_hpp
 
 #include <ql/time/calendar.hpp>
-#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/time/daycounter.hpp>
 #include <ql/settings.hpp>
 #include <ql/handle.hpp>
 #include <ql/math/interpolations/extrapolation.hpp>
@@ -64,11 +64,11 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        TermStructure(const DayCounter& dc = DayCounter());
+        explicit TermStructure(const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
-        TermStructure(const Date& referenceDate,
-                      const Calendar& calendar = Calendar(),
-                      const DayCounter& dc = DayCounter());
+        explicit TermStructure(const Date& referenceDate,
+                               const Calendar& calendar = Calendar(),
+                               const DayCounter& dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
         TermStructure(Natural settlementDays,
                       const Calendar&,

@@ -112,7 +112,8 @@ namespace QuantLib {
                   const Period& tenor,
                   Natural settlementDays,
                   Currency currency,
-                  const boost::shared_ptr<OvernightIndex>& overnightIndex);
+                  const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                  bool telescopicValueDates = false);
         //! \name Inspectors
         //@{
         boost::shared_ptr<OvernightIndex> overnightIndex() const;
@@ -124,6 +125,7 @@ namespace QuantLib {
         //@}
       protected:
         boost::shared_ptr<OvernightIndex> overnightIndex_;
+        bool telescopicValueDates_;
         // cache data to avoid swap recreation when the same fixing date
         // is used multiple time to forecast changing fixing
         mutable boost::shared_ptr<OvernightIndexedSwap> lastSwap_;

@@ -31,6 +31,7 @@
 #include <ql/math/interpolation.hpp>
 #include <ql/quote.hpp>
 #include <ql/patterns/lazyobject.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <boost/noncopyable.hpp>
 #include <vector>
 

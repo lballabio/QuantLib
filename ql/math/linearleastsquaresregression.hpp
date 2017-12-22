@@ -36,7 +36,7 @@ namespace QuantLib {
         template <class Container>
         class LinearFct : public std::unary_function<Real, Container > {
           public:
-            LinearFct(Size i) : i_(i) {}
+            explicit LinearFct(Size i) : i_(i) {}
 
             inline Real operator()(const Container& x) const {
                 return x[i_];

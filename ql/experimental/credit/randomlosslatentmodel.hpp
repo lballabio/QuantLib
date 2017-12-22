@@ -83,7 +83,7 @@ namespace QuantLib {
                 copula,
             Size nSims = 0,
             Real accuracy = 1.e-6, 
-            BigNatural seed = 2863311530)
+            BigNatural seed = 2863311530UL)
         : RandomLM< ::QuantLib::RandomLossLM, copulaPolicy, USNG>
             (copula->numFactors(), copula->size(), copula->copula(), 
                 nSims, seed),

@@ -213,7 +213,7 @@ void InflationCPIBondTest::testCleanPrice() {
     Real tolerance = 1.0e-8;
     if (std::fabs(calculated-storedPrice) > tolerance) {
         BOOST_FAIL("failed to reproduce expected CPI-bond clean price"
-                   << QL_FIXED << std::setprecision(12)
+                   << std::fixed << std::setprecision(12)
                    << "\n  expected:   " << storedPrice
                    << "\n  calculated: " << calculated);
     }

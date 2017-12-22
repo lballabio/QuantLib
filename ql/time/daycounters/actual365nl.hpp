@@ -33,8 +33,11 @@ namespace QuantLib {
         "Act/365 (NL)", "NL/365", or "Actual/365 (JGB)".
 
         \ingroup daycounters
+
+        \deprecated Use Actual365Fixed(Actual365Fixed::NoLeap).
+                    Deprecated in version 1.11.
     */
-    class Actual365NoLeap : public DayCounter {
+    class QL_DEPRECATED Actual365NoLeap : public DayCounter {
     private:
         class Impl : public DayCounter::Impl {
         public:
@@ -66,10 +69,10 @@ namespace QuantLib {
                 return s2 - s1;
             }
 
-            QuantLib::Time yearFraction(const Date& d1,
-                                        const Date& d2,
-                                        const Date& d3,
-                                        const Date& d4) const {
+            Time yearFraction(const Date& d1,
+                              const Date& d2,
+                              const Date& d3,
+                              const Date& d4) const {
                 return dayCount(d1, d2)/365.0;
             }
         };

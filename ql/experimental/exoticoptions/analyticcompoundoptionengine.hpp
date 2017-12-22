@@ -41,7 +41,7 @@ namespace QuantLib {
     */
     class AnalyticCompoundOptionEngine : public CompoundOption::engine {
       public:
-        AnalyticCompoundOptionEngine(
+        explicit AnalyticCompoundOptionEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
         void calculate() const;
 

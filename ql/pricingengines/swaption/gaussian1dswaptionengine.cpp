@@ -115,7 +115,7 @@ namespace QuantLib {
 #endif
 
 #pragma omp parallel for default(shared) firstprivate(p) if(expiry0>settlement)
-            for (Size k = 0; k < (expiry0 > settlement ? npv0.size() : 1);
+            for (long k = 0; k < (expiry0 > settlement ? (long)npv0.size() : 1);
                  k++) {
 
                 Real price = 0.0;

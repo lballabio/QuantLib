@@ -385,7 +385,7 @@ namespace QuantLib {
             "RangeAccrualPricerByBgm::digitalPriceWithoutSmile: result/deflator > 1. Ratio: "
             << result/deflator << " result: " << result<< " deflator: " << deflator);
 
-        return result;
+       return result;
     }
 
     Real RangeAccrualPricerByBgm::digitalPriceWithSmile(Real strike,
@@ -661,11 +661,11 @@ namespace QuantLib {
             refStart = start = schedule_.date(i);
             refEnd   =   end = schedule_.date(i+1);
             paymentDate = calendar.adjust(end, paymentAdjustment_);
-            if (i==0   && !schedule_.isRegular(i+1)) {
+            if (i==0 && schedule_.hasIsRegular() && !schedule_.isRegular(i+1)) {
                 BusinessDayConvention bdc = schedule_.businessDayConvention();
                 refStart = calendar.adjust(end - schedule_.tenor(), bdc);
             }
-            if (i==n-1 && !schedule_.isRegular(i+1)) {
+            if (i==n-1 && schedule_.hasIsRegular() && !schedule_.isRegular(i+1)) {
                 BusinessDayConvention bdc = schedule_.businessDayConvention();
                 refEnd = calendar.adjust(start + schedule_.tenor(), bdc);
             }

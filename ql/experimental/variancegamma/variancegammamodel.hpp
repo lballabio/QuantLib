@@ -40,7 +40,8 @@ namespace QuantLib {
     */
     class VarianceGammaModel : public CalibratedModel {
       public:
-        VarianceGammaModel(const boost::shared_ptr<VarianceGammaProcess>& process);
+        explicit VarianceGammaModel(
+                      const boost::shared_ptr<VarianceGammaProcess>& process);
 
         // sigma
         Real sigma() const { return arguments_[0](0.0); }

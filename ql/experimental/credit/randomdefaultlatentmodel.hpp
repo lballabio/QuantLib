@@ -250,7 +250,7 @@ namespace QuantLib {
             for(Size iEvt=0; iEvt < events.size(); iEvt++)
                 // duck type on the members:
                 if(val > events[iEvt].dayFromRef) simCount++;
-                if(simCount >= n) counts++;
+            if(simCount >= n) counts++;
         }
         return counts/nSims_;
         // \todo Provide confidence interval
@@ -830,7 +830,7 @@ namespace QuantLib {
             const std::vector<Real>& recoveries = std::vector<Real>(),
             Size nSims = 0,// stats will crash on div by zero, FIX ME.
             Real accuracy = 1.e-6,
-            BigNatural seed = 2863311530)
+            BigNatural seed = 2863311530UL)
         : RandomLM< ::QuantLib::RandomDefaultLM, copulaPolicy, USNG>
             (model->numFactors(), model->size(), model->copula(),
                 nSims, seed ),
@@ -848,7 +848,7 @@ namespace QuantLib {
                 model,
             Size nSims = 0,// stats will crash on div by zero, FIX ME.
             Real accuracy = 1.e-6,
-            BigNatural seed = 2863311530)
+            BigNatural seed = 2863311530UL)
         : RandomLM< ::QuantLib::RandomDefaultLM, copulaPolicy, USNG>
             (model->numFactors(), model->size(), model->copula(),
                 nSims, seed ),

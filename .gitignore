@@ -46,6 +46,9 @@ test-suite/*.trs
 .idea
 cmake-build-debug
 
+# Visual Studio Code
+.vscode
+
 # Artifacts created in multiple directories
 Makefile
 Makefile.in

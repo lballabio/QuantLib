@@ -33,7 +33,7 @@ namespace QuantLib {
     class AnalyticHolderExtensibleOptionEngine
         : public HolderExtensibleOption::engine {
       public:
-        AnalyticHolderExtensibleOptionEngine(
+        explicit AnalyticHolderExtensibleOptionEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
         void calculate() const;
 

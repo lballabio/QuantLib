@@ -37,7 +37,7 @@ namespace QuantLib {
     /*! References:
 
         F. Fang, C.W. Oosterlee: A Novel Pricing Method for European Ooptions
-        based oN Fourier-Cosine Series Expansions,
+        based on Fourier-Cosine Series Expansions,
         http://ta.twi.tudelft.nl/mf/users/oosterle/oosterlee/COS.pdf
 
         Fabien Le Floc'h: Fourier Integration and Stochastic Volatility
@@ -61,7 +61,8 @@ namespace QuantLib {
         void update();
         void calculate() const;
 
-        std::complex<Real> characteristicFct(Real u, Real t) const;
+        // normalized characteristic function
+        std::complex<Real> chF(Real u, Real t) const;
 
         Real c1(Time t) const;
         Real c2(Time t) const;

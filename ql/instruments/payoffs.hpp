@@ -54,7 +54,7 @@ namespace QuantLib {
         std::string description() const;
         //@}
       protected:
-        TypePayoff(Option::Type type) : type_(type) {}
+        explicit TypePayoff(Option::Type type) : type_(type) {}
         Option::Type type_;
     };
 
