@@ -256,7 +256,7 @@ namespace {
             fixedLegFrequency = Annual;
             fixedLegConvention = Unadjusted;
             fixedLegDayCounter = Thirty360();
-            boost::shared_ptr<SwapIndex> swapIndexBase_(new
+            boost::shared_ptr<SwapIndex> swapIndexBase(new
                 EuriborSwapIsdaFixA(2*Years, termStructure));
 
             boost::shared_ptr<SwapIndex> shortSwapIndexBase(new

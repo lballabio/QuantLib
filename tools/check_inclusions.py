@@ -43,6 +43,11 @@ if 'ql/experimental' not in filename:
             print "./%s:%d: error: experimental header '%s' included" % (filename, n, f)
         sys.exit(1)
 
+for f,n in ql_headers:
+    if f.endswith('/all.hpp'):
+        print "./%s:%d: error: generated header '%s' included" % (filename, n, f)
+        sys.exit(1)
+
 # All Boost headers must be included after QuantLib ones
 last_ql_header = max([ n for _,n in ql_headers])
 
@@ -50,6 +55,7 @@ for _,n in boost_headers:
     if n < last_ql_header:
         print "./%s:%d: error: Boost header included before last QuantLib header" % (filename, n)
         sys.exit(1)
+
 
 # All standard headers must be included after QuantLib and Boost ones
 if boost_headers:

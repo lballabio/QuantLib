@@ -325,10 +325,4 @@ Real D0Interpolator::d0(const Real phi) const {
 
 } // namespace detail
 
-void NoArbSabrModel::checkAbsorptionMatrix() {
-    // The check was dependent on the Boost version and was removed.
-    // The method itself is deprecated and will be removed in the
-    // next QuantLib version.
-}
-
 } // namespace QuantLib

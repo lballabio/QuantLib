@@ -234,7 +234,8 @@ namespace {
             const boost::shared_ptr<Quote>& spot,
             const boost::shared_ptr<YieldTermStructure>& rTS,
             const boost::shared_ptr<YieldTermStructure>& qTS)
-        : BlackVolatilityTermStructure(Following, rTS->dayCounter()),
+        : BlackVolatilityTermStructure(
+              0, NullCalendar(), Following, rTS->dayCounter()),
           b1_(b1), b2_(b2), b3_(b3), b4_(b4), b5_(b5),
           spot_(spot), rTS_(rTS), qTS_(qTS) {}
 
@@ -581,8 +582,9 @@ void RiskNeutralDensityCalculatorTest::testSquareRootProcessRND() {
 }
 
 void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
-    BOOST_TEST_MESSAGE("Testing probability density for a BSM process "
-            "with strike dependent volatility vs Local volatility...");
+    BOOST_TEST_MESSAGE(
+        "Testing probability density for a BSM process "
+        "with strike dependent volatility vs local volatility...");
 
     SavedSettings backup;
 
@@ -701,7 +703,7 @@ void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
         }
     }
 
-    const Real quantiles[] = { 1e-3, 0.05, 0.25, 0.5, 0.75, 0.95, 0.999};
+    const Real quantiles[] = { 0.05, 0.25, 0.5, 0.75, 0.95 };
     for (Size i=0; i < LENGTH(quantiles); ++i) {
         const Real quantile = quantiles[i];
 
@@ -736,7 +738,7 @@ void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
     }
 }
 
-test_suite* RiskNeutralDensityCalculatorTest::experimental() {
+test_suite* RiskNeutralDensityCalculatorTest::experimental(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Risk neutral density calculator tests");
 
     suite->add(QUANTLIB_TEST_CASE(
@@ -747,7 +749,11 @@ test_suite* RiskNeutralDensityCalculatorTest::experimental() {
         &RiskNeutralDensityCalculatorTest::testLocalVolatilityRND));
     suite->add(QUANTLIB_TEST_CASE(
         &RiskNeutralDensityCalculatorTest::testSquareRootProcessRND));
-    suite->add(QUANTLIB_TEST_CASE(
-        &RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew));
+    }
+
     return suite;
 }

@@ -32,6 +32,7 @@ lib/
 test-suite/bin/QuantLib-test-suite-*.manifest
 test-suite/build/
 test-suite/*.trs
+.vs/
 
 # Build outputs
 **/x64/Debug
@@ -41,9 +42,17 @@ test-suite/*.trs
 **/bin/*.xml
 **/bin/*.manifest
 
+# CLion
+.idea
+cmake-build-debug
+
+# Visual Studio Code
+.vscode
+
 # Artifacts created in multiple directories
 Makefile
 Makefile.in
+unity.cpp
 testCaseCollection.xml
 .deps
 .libs

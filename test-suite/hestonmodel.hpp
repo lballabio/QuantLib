@@ -21,6 +21,7 @@
 #define quantlib_test_heston_model_hpp
 
 #include <boost/test/unit_test.hpp>
+#include "speedlevel.hpp"
 
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
@@ -44,7 +45,17 @@ class HestonModelTest {
     static void testExpansionOnAlanLewisReference();
     static void testExpansionOnFordeReference();
     static void testAllIntegrationMethods();
-    static boost::unit_test_framework::test_suite* suite();
+    static void testCosHestonCumulants();
+    static void testCosHestonEngine();
+    static void testCharacteristicFct();
+    static void testAndersenPiterbargPricing();
+    static void testAndersenPiterbargControlVariateIntegrand();
+    static void testAndersenPiterbargConvergence();
+    static void testPiecewiseTimeDependentChFvsHestonChF();
+    static void testPiecewiseTimeDependentComparison();
+    static void testPiecewiseTimeDependentChFAsymtotic();
+
+    static boost::unit_test_framework::test_suite* suite(SpeedLevel);
     static boost::unit_test_framework::test_suite* experimental();
 };
 

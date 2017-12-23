@@ -22,6 +22,7 @@
 #define quantlib_test_market_cms_model_hpp
 
 #include <boost/test/unit_test.hpp>
+#include "speedlevel.hpp"
 
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
@@ -30,7 +31,7 @@ class MarketModelCmsTest {
   public:
     static void testMultiStepCmSwapsAndSwaptions();
    
-    static boost::unit_test_framework::test_suite* suite();
+    static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
 
 #endif

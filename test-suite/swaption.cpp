@@ -68,15 +68,14 @@ namespace {
         SavedSettings backup;
 
         // utilities
-        boost::shared_ptr<Swaption> makeSwaption(
-                    const boost::shared_ptr<VanillaSwap>& swap,
-                    const Date& exercise,
-                    Volatility volatility,
-                    Settlement::Type settlementType = Settlement::Physical) {
+        boost::shared_ptr<Swaption>
+        makeSwaption(const boost::shared_ptr<VanillaSwap>& swap, const Date& exercise,
+                     Volatility volatility, Settlement::Type settlementType = Settlement::Physical,
+                     BlackSwaptionEngine::CashAnnuityModel model = BlackSwaptionEngine::SwapRate) {
             Handle<Quote> vol(boost::shared_ptr<Quote>(
                                                 new SimpleQuote(volatility)));
-            boost::shared_ptr<PricingEngine> engine(
-                                new BlackSwaptionEngine(termStructure, vol));
+            boost::shared_ptr<PricingEngine> engine(new BlackSwaptionEngine(
+                termStructure, vol, Actual365Fixed(), 0.0, model));
 
             boost::shared_ptr<Swaption> result(new
                 Swaption(swap,
@@ -87,11 +86,12 @@ namespace {
             return result;
         }
 
-        boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
-            Handle<Quote> h(boost::shared_ptr<Quote>(
-                                                new SimpleQuote(volatility)));
+        boost::shared_ptr<PricingEngine>
+        makeEngine(Volatility volatility,
+                   BlackSwaptionEngine::CashAnnuityModel model = BlackSwaptionEngine::SwapRate) {
+            Handle<Quote> h(boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
             return boost::shared_ptr<PricingEngine>(
-                                  new BlackSwaptionEngine(termStructure, h));
+                new BlackSwaptionEngine(termStructure, h, Actual365Fixed(), 0.0, model));
         }
 
         CommonVars() {
@@ -409,7 +409,7 @@ void SwaptionTest::testCachedValue() {
     // FLOATING_POINT_EXCEPTION
     if (std::fabs(swaption->NPV()-cachedNPV) > 1.0e-12)
         BOOST_ERROR("failed to reproduce cached swaption value:\n" <<
-                    QL_FIXED << std::setprecision(12) <<
+                    std::fixed << std::setprecision(12) <<
                     "\ncalculated: " << swaption->NPV() <<
                     "\nexpected:   " << cachedNPV);
 }
@@ -859,7 +859,7 @@ void SwaptionTest::testImpliedVolatility() {
                         for (Size u=0; u<LENGTH(vols); u++) {
                             boost::shared_ptr<Swaption> swaption =
                                 vars.makeSwaption(swap, exerciseDate,
-                                                  vols[u], types[h]);
+                                                  vols[u], types[h], BlackSwaptionEngine::DiscountCurve);
                             // Black price
                             Real value = swaption->NPV();
                             Volatility implVol = 0.0;
@@ -876,7 +876,7 @@ void SwaptionTest::testImpliedVolatility() {
                                                               0.0);
                             } catch (std::exception& e) {
                                 // couldn't bracket?
-                                swaption->setPricingEngine(vars.makeEngine(0.0));
+                                swaption->setPricingEngine(vars.makeEngine(0.0, BlackSwaptionEngine::DiscountCurve));
                                 Real value2 = swaption->NPV();
                                 if (std::fabs(value-value2) < tolerance) {
                                     // ok, just skip:
@@ -894,7 +894,7 @@ void SwaptionTest::testImpliedVolatility() {
                             }
                             if (std::fabs(implVol-vols[u]) > tolerance) {
                                 // the difference might not matter
-                                swaption->setPricingEngine(vars.makeEngine(implVol));
+                                swaption->setPricingEngine(vars.makeEngine(implVol, BlackSwaptionEngine::DiscountCurve));
                                 Real value2 = swaption->NPV();
                                 if (std::fabs(value-value2) > tolerance) {
                                     BOOST_ERROR("implied vol failure: " <<

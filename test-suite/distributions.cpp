@@ -33,7 +33,14 @@
 #include <ql/math/comparison.hpp>
 #include <ql/math/functional.hpp>
 
+#if defined(__GNUC__) && !defined(__clang__) && BOOST_VERSION > 106300
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
 #include <boost/math/distributions/non_central_chi_squared.hpp>
+#if defined(__GNUC__) && !defined(__clang__) && BOOST_VERSION > 106300
+#pragma GCC diagnostic pop
+#endif
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -132,11 +139,11 @@ namespace {
             if (std::fabs(value-values[i].result) >= tolerance) {
                 BOOST_ERROR(tag << " bivariate cumulative distribution\n"
                             << "    case: " << i+1 << "\n"
-                            << QL_FIXED
+                            << std::fixed
                             << "    a:    " << values[i].a << "\n"
                             << "    b:    " << values[i].b << "\n"
                             << "    rho:  " << values[i].rho <<"\n"
-                            << QL_SCIENTIFIC
+                            << std::scientific
                             << "    tabulated value:  "
                             << values[i].result << "\n"
                             << "    result:           " << value);
@@ -165,7 +172,7 @@ namespace {
 
                 if (std::fabs(realised-expected)>=tolerance) {
                     BOOST_ERROR(tag << " bivariate cumulative distribution\n"
-                                << QL_SCIENTIFIC
+                                << std::scientific
                                 << "    rho: " << sgn*rho[i] << "\n"
                                 << "    expected:  " << expected << "\n"
                                 << "    realised:  " << realised << "\n"
@@ -191,7 +198,7 @@ namespace {
             Real cdf1 = bvn(x,y);
             if (cdf0 > cdf1) {
                 BOOST_ERROR(tag << " cdf must be decreasing in the tails\n"
-                            << QL_SCIENTIFIC
+                            << std::scientific
                             << "    cdf0: " << cdf0 << "\n"
                             << "    cdf1: " << cdf1 << "\n"
                             << "    x: " << x << "\n"
@@ -219,7 +226,7 @@ void DistributionTest::testNormal() {
     Real check = invCumStandardNormal(0.5);
     if (check != 0.0e0) {
         BOOST_ERROR("C++ inverse cumulative of the standard normal at 0.5 is "
-                    << QL_SCIENTIFIC << check
+                    << std::scientific << check
                     << "\n instead of zero: something is wrong!");
     }
 
@@ -249,7 +256,7 @@ void DistributionTest::testNormal() {
     Real e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-16) {
         BOOST_ERROR("norm of C++ NormalDistribution minus analytic Gaussian: "
-                    << QL_SCIENTIFIC << e << "\n"
+                    << std::scientific << e << "\n"
                     << "tolerance exceeded");
     }
 
@@ -261,7 +268,7 @@ void DistributionTest::testNormal() {
     e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-7) {
         BOOST_ERROR("norm of invCum . cum minus identity: "
-                    << QL_SCIENTIFIC << e << "\n"
+                    << std::scientific << e << "\n"
                     << "tolerance exceeded");
     }
 
@@ -273,7 +280,7 @@ void DistributionTest::testNormal() {
     e = norm(diff.begin(), diff.end(), h);
     if (e > 1.0e-7) {
         BOOST_ERROR("norm of MaddokInvCum . cum minus identity: "
-                    << QL_SCIENTIFIC << e << "\n"
+                    << std::scientific << e << "\n"
                     << "tolerance exceeded");
     }
 
@@ -286,7 +293,7 @@ void DistributionTest::testNormal() {
     if (e > 1.0e-16) {
         BOOST_ERROR(
             "norm of C++ Cumulative.derivative minus analytic Gaussian: "
-            << QL_SCIENTIFIC << e << "\n"
+            << std::scientific << e << "\n"
             << "tolerance exceeded");
     }
 
@@ -298,7 +305,7 @@ void DistributionTest::testNormal() {
     e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-16) {
         BOOST_ERROR("norm of C++ Normal.derivative minus analytic derivative: "
-                    << QL_SCIENTIFIC << e << "\n"
+                    << std::scientific << e << "\n"
                     << "tolerance exceeded");
     }
 }
@@ -647,7 +654,7 @@ namespace {
 
 void DistributionTest::testInvCDFviaStochasticCollocation() {
     BOOST_TEST_MESSAGE(
-        "Testing inverse CDF based on testInvCDFviaStochasticCollocation...");
+        "Testing inverse CDF based on stochastic collocation...");
 
     const Real k = 3.0;
     const Real lambda = 1.0;
@@ -710,8 +717,9 @@ void DistributionTest::testInvCDFviaStochasticCollocation() {
     }
 }
 
-test_suite* DistributionTest::suite() {
+test_suite* DistributionTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Distribution tests");
+
     suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testNormal));
     suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testBivariate));
     suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testPoisson));
@@ -721,9 +729,12 @@ test_suite* DistributionTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
                           &DistributionTest::testBivariateCumulativeStudent));
     suite->add(QUANTLIB_TEST_CASE(
-               &DistributionTest::testBivariateCumulativeStudentVsBivariate));
-    suite->add(QUANTLIB_TEST_CASE(
                    &DistributionTest::testInvCDFviaStochasticCollocation));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &DistributionTest::testBivariateCumulativeStudentVsBivariate));
+    }
 
     return suite;
 }

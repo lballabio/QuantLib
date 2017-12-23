@@ -641,8 +641,8 @@ void FdHestonTest::testFdmHestonIntradayPricing() {
     option.setPricingEngine(fdm);
 
     const Real gammaExpected[] = {
-        1.46702, 1.54638, 1.64018, 1.75343, 1.89393,
-        2.0747, 2.31959, 2.67844, 3.28041, 4.63922  };
+        1.46757, 1.54696, 1.6408, 1.75409, 1.89464,
+        2.07548, 2.32046, 2.67944, 3.28164, 4.64096  };
 
     for (Size i = 0; i < 10; ++i) {
         const Date now(17, May, 2014, 15, i*15, 0);
@@ -654,30 +654,40 @@ void FdHestonTest::testFdmHestonIntradayPricing() {
             new FlatForward(now, dividendYield, dayCounter)));
 
         const Real gammaCalculated = option.gamma();
-        if (std::fabs(gammaCalculated - gammaExpected[i]) > 1e-5) {
-            BOOST_FAIL("unable to reproduce intraday gamma values at time "
-                    << "\n   timestamp : " << io::iso_datetime(now)
-                    << "\n   expiry    : " << io::iso_datetime(maturity)
-                    << "\n   expected  : " << gammaExpected[i]
-                    << "\n   calculated: "<<  gammaCalculated);
+        if (std::fabs(gammaCalculated - gammaExpected[i]) > 1e-4) {
+            BOOST_ERROR("unable to reproduce intraday gamma values at time "
+                        << "\n   timestamp : " << io::iso_datetime(now)
+                        << "\n   expiry    : " << io::iso_datetime(maturity)
+                        << "\n   expected  : " << gammaExpected[i]
+                        << "\n   calculated: "<<  gammaCalculated);
         }
     }
 #endif
 }
 
-test_suite* FdHestonTest::suite() {
+test_suite* FdHestonTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Finite Difference Heston tests");
+
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBarrier));
-    suite->add(QUANTLIB_TEST_CASE(
-                         &FdHestonTest::testFdmHestonBarrierVsBlackScholes));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonAmerican));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonIkonenToivanen));
-    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBlackScholes));
     suite->add(QUANTLIB_TEST_CASE(
                     &FdHestonTest::testFdmHestonEuropeanWithDividends));
-    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonConvergence));
     suite->add(QUANTLIB_TEST_CASE(
         &FdHestonTest::testFdmHestonIntradayPricing));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &FdHestonTest::testFdmHestonBlackScholes));
+    }
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &FdHestonTest::testFdmHestonBarrierVsBlackScholes));
+        suite->add(QUANTLIB_TEST_CASE(
+            &FdHestonTest::testFdmHestonConvergence));
+    }
+
     return suite;
 }
 

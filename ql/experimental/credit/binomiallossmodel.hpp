@@ -63,7 +63,7 @@ namespace QuantLib {
     class BinomialLossModel : public DefaultLossModel {
     public:
         typedef typename LLM::copulaType copulaType;
-        BinomialLossModel(
+        explicit BinomialLossModel(
             const boost::shared_ptr<LLM>& copula)
         : copula_(copula) { }
     private:
@@ -383,10 +383,10 @@ namespace QuantLib {
         if(perc == 1.) return dist.rbegin()->first;
         if(perc == 0.) return dist.begin()->first;
         std::map<Real, Probability>::const_iterator itdist = dist.begin();
-        while(itdist->second <= perc) itdist++;
+        while (itdist->second <= perc) ++itdist;
         Real valPlus = itdist->second;
         Real xPlus   = itdist->first;
-        itdist--;//we r never 1st or last, because of tests above
+        --itdist; //we're never 1st or last, because of tests above
         Real valMin  = itdist->second;
         Real xMin    = itdist->first;
 
@@ -407,9 +407,10 @@ namespace QuantLib {
 
             std::map<Real, Probability>::iterator 
                 itNxt, itDist = distrib.begin();
-            for(; itDist != distrib.end(); itDist++) 
+            for(; itDist != distrib.end(); ++itDist)
                 if(itDist->second >= perctl) break;
-            itNxt = itDist; itDist--;
+            itNxt = itDist;
+            --itDist;
 
             // \todo: I could linearly triangulate the exact point and get 
             //    extra precission on the first(broken) period.
@@ -422,7 +423,7 @@ namespace QuantLib {
                 Real val =  lossNxt - (itNxt->second - perctl) * 
                     (lossNxt - lossHere) / (itNxt->second - itDist->second); 
                 Real suma = (itNxt->second - perctl) * (lossNxt + val) * .5;
-                itDist++;itNxt++;
+                ++itDist; ++itNxt;
                 do{
                     lossNxt = std::min(std::max(itNxt->first - attachAmount_, 
                         0.), detachAmount_ - attachAmount_);
@@ -430,7 +431,7 @@ namespace QuantLib {
                         0.), detachAmount_ - attachAmount_);
                     suma += .5 * (lossHere + lossNxt) 
                         * (itNxt->second - itDist->second);
-                    itDist++;itNxt++;
+                    ++itDist; ++itNxt;
                 }while(itNxt != distrib.end());
                 return suma / (1.-perctl);
             }

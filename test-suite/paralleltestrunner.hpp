@@ -57,7 +57,6 @@
 #include <sstream>
 #include <utility>
 #include <fstream>
-#include <iostream>
 
 #include <string>
 #include <cstring>
@@ -196,10 +195,10 @@ int main( int argc, char* argv[] )
     const std::string clientModeStr = "--client_mode=true";
     const bool clientMode = (std::string(argv[argc-1]) == clientModeStr);
 
-    unsigned int priority;
     message_queue::size_type recvd_size;
 
     try {
+        unsigned int priority;
         if (!clientMode) {
             std::map<std::string, Time> runTimeLog;
 
@@ -298,7 +297,7 @@ int main( int argc, char* argv[] )
             } mutex_remover;
 
             struct queue_remove {
-                queue_remove(const char* name) : name_(name) { }
+                explicit queue_remove(const char* name) : name_(name) { }
                 ~queue_remove() { message_queue::remove(name_); }
 
             private:
@@ -427,16 +426,21 @@ int main( int argc, char* argv[] )
             while (!id.terminate) {
                 boost::timer t;
 
-                BOOST_TEST_FOREACH( test_observer*, to,
-                    framework::impl::s_frk_state().m_observers )
-                    framework::impl::s_frk_state().m_aux_em.vexecute(
-                        boost::bind( &test_observer::test_start, to, 1 ) );
+                #if BOOST_VERSION < 106200
+                    BOOST_TEST_FOREACH( test_observer*, to,
+                        framework::impl::s_frk_state().m_observers )
+                        framework::impl::s_frk_state().m_aux_em.vexecute(
+                            boost::bind( &test_observer::test_start, to, 1 ) );
 
-                framework::impl::s_frk_state().execute_test_tree( id.id );
+                    framework::impl::s_frk_state().execute_test_tree( id.id );
 
-                BOOST_TEST_REVERSE_FOREACH( test_observer*, to,
-                    framework::impl::s_frk_state().m_observers )
-                    to->test_finish();
+                    BOOST_TEST_REVERSE_FOREACH( test_observer*, to,
+                        framework::impl::s_frk_state().m_observers )
+                        to->test_finish();
+                #else
+                    // works for BOOST_VERSION > 106100, needed for >106500
+                    framework::run(id.id, false);
+                #endif
 
                 runTimeLogs.push_back(std::make_pair(
                     framework::get(id.id, TUT_ANY).p_name, t.elapsed()));
@@ -446,6 +450,7 @@ int main( int argc, char* argv[] )
                 QualifiedTestResults results
                     = { id.id,
                         boost::unit_test::results_collector.results(id.id) };
+
                 rq.send(&results, sizeof(QualifiedTestResults), 0);
 
                 mq.receive(&id, sizeof(TestCaseId), recvd_size, priority);
@@ -506,9 +511,12 @@ int main( int argc, char* argv[] )
 
     #if BOOST_VERSION < 106000
     return runtime_config::no_result_code()
-    #else
+    #elif BOOST_VERSION < 106400
     // changed in Boost 1.60
     return !runtime_config::get<bool>( runtime_config::RESULT_CODE )
+    #else
+    // changed again in Boost 1.64
+    return !runtime_config::get<bool>( runtime_config::btrt_result_code )
     #endif
         ? boost::exit_success
         : results_collector.results(

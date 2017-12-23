@@ -27,6 +27,8 @@
 #include <ql/experimental/finitedifferences/bsmrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/hestonrndcalculator.hpp>
 
+#include <boost/make_shared.hpp>
+
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
@@ -138,7 +140,7 @@ namespace {
             CpxPv_Helper(getHestonParams(hestonProcess_), x_t(x, t), t),
             0.0, 1.0)/M_TWOPI;
     }
-
+	
     Real HestonRNDCalculator::cdf(Real x, Time t) const {
         return GaussLobattoIntegral(
             maxIntegrationIterations_, 0.1*integrationEps_)(
@@ -156,17 +158,16 @@ namespace {
             = std::sqrt(theta + (v0-theta)*(1-std::exp(-kappa*t))/(t*kappa));
 
         const boost::shared_ptr<BlackScholesMertonProcess> bsmProcess(
-            new BlackScholesMertonProcess(
+            boost::make_shared<BlackScholesMertonProcess>(
                 hestonProcess_->s0(),
                 hestonProcess_->dividendYield(),
                 hestonProcess_->riskFreeRate(),
                 Handle<BlackVolTermStructure>(
-                    boost::shared_ptr<BlackVolTermStructure>(
-                        new BlackConstantVol(
+                    boost::make_shared<BlackConstantVol>(
                             hestonProcess_->riskFreeRate()->referenceDate(),
                             NullCalendar(),
                             expVol,
-                            hestonProcess_->riskFreeRate()->dayCounter())))));
+                            hestonProcess_->riskFreeRate()->dayCounter()))));
 
         const Real guess = BSMRNDCalculator(bsmProcess).invcdf(p, t);
 

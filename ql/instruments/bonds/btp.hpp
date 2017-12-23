@@ -117,7 +117,7 @@ namespace QuantLib {
         std::vector<Real> weights_;
     };
 
-    class RendistatoCalculator : LazyObject {
+    class RendistatoCalculator : public LazyObject {
       public:
         RendistatoCalculator(const boost::shared_ptr<RendistatoBasket>& basket,
                              const boost::shared_ptr<Euribor>& euriborIndex,

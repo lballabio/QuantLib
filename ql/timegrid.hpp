@@ -51,6 +51,7 @@ namespace QuantLib {
         template <class Iterator>
         TimeGrid(Iterator begin, Iterator end)
         : mandatoryTimes_(begin, end) {
+            QL_REQUIRE(begin != end, "empty time sequence");
             std::sort(mandatoryTimes_.begin(),mandatoryTimes_.end());
             // We seem to assume that the grid begins at 0.
             // Let's enforce the assumption for the time being
@@ -81,6 +82,7 @@ namespace QuantLib {
         template <class Iterator>
         TimeGrid(Iterator begin, Iterator end, Size steps)
         : mandatoryTimes_(begin, end) {
+            QL_REQUIRE(begin != end, "empty time sequence");
             std::sort(mandatoryTimes_.begin(),mandatoryTimes_.end());
             // We seem to assume that the grid begins at 0.
             // Let's enforce the assumption for the time being
@@ -113,7 +115,7 @@ namespace QuantLib {
             times_.push_back(periodBegin);
             for (std::vector<Time>::const_iterator t=mandatoryTimes_.begin();
                                                    t<mandatoryTimes_.end();
-                                                   t++) {
+                                                   ++t) {
                 Time periodEnd = *t;
                 if (periodEnd != 0.0) {
                     // the nearest integer

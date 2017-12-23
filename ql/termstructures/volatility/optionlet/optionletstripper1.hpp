@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2007, 2008 Ferdinando Ametrano
- Copyright (C) 2007 François du Vignaud
+ Copyright (C) 2007 FranÃ§ois du Vignaud
  Copyright (C) 2007 Katiuscia Manzoni
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2015 Peter Caspers
@@ -37,6 +37,10 @@ namespace QuantLib {
     class CapFloor;
     class PricingEngine;
 
+    /*! \deprecated No longer used.
+                    Deprecated in version 1.10.
+    */
+    QL_DEPRECATED
     typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapFloorMatrix;
 
     /*! Helper class to strip optionlet (i.e. caplet/floorlet) volatilities
@@ -70,11 +74,8 @@ namespace QuantLib {
         mutable Matrix capFloorVols_;
         mutable Matrix optionletStDevs_, capletVols_;
 
-        mutable CapFloorMatrix capFloors_;
-        mutable std::vector<std::vector<boost::shared_ptr<SimpleQuote> > > volQuotes_;
-        mutable std::vector<std::vector<boost::shared_ptr<PricingEngine> > > capFloorEngines_;
         bool floatingSwitchStrike_;
-        mutable bool capFlooMatrixNotInitialized_;
+
         mutable Rate switchStrike_;
         Real accuracy_;
         Natural maxIter_;

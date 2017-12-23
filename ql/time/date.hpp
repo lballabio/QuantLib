@@ -41,6 +41,7 @@
 
 #include <utility>
 #include <functional>
+#include <string>
 
 
 namespace QuantLib {
@@ -234,7 +235,7 @@ namespace QuantLib {
         static Date universalDateTime();
 
         //! underlying resolution of the  posix date time object
-        static Size ticksPerSecond();
+        static boost::posix_time::time_duration::tick_type ticksPerSecond();
 #endif
 
         //@}
@@ -283,19 +284,19 @@ namespace QuantLib {
     namespace detail {
 
         struct short_date_holder {
-            short_date_holder(const Date d) : d(d) {}
+            explicit short_date_holder(const Date d) : d(d) {}
             Date d;
         };
         std::ostream& operator<<(std::ostream&, const short_date_holder&);
 
         struct long_date_holder {
-            long_date_holder(const Date& d) : d(d) {}
+            explicit long_date_holder(const Date& d) : d(d) {}
             Date d;
         };
         std::ostream& operator<<(std::ostream&, const long_date_holder&);
 
         struct iso_date_holder {
-            iso_date_holder(const Date& d) : d(d) {}
+            explicit iso_date_holder(const Date& d) : d(d) {}
             Date d;
         };
         std::ostream& operator<<(std::ostream&, const iso_date_holder&);
@@ -311,7 +312,7 @@ namespace QuantLib {
 
 #ifdef QL_HIGH_RESOLUTION_DATE
         struct iso_datetime_holder {
-            iso_datetime_holder(const Date& d) : d(d) {}
+            explicit iso_datetime_holder(const Date& d) : d(d) {}
             Date d;
         };
         std::ostream& operator<<(std::ostream&, const iso_datetime_holder&);

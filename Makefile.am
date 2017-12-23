@@ -1,5 +1,5 @@
 
-SUBDIRS = config ql m4 man Docs Examples test-suite
+SUBDIRS = ql m4 man Docs Examples test-suite
 
 ACLOCAL_AMFLAGS = -I m4
 
@@ -16,7 +16,6 @@ pkgconfigdir = $(libdir)/pkgconfig
 nodist_pkgconfig_DATA = quantlib.pc
 
 EXTRA_DIST = \
-	Announce.txt \
 	Authors.txt \
 	Bugs.txt \
 	ChangeLog.txt \
@@ -24,7 +23,6 @@ EXTRA_DIST = \
 	Contributors.txt \
 	LICENSE.TXT \
 	News.txt \
-	QuantLib.dev \
 	QuantLib.props \
 	QuantLib.spec \
 	QuantLib_vc9.sln \
@@ -59,3 +57,6 @@ docs-clean:
 
 dist-hook:
 	mkdir -p $(distdir)/build
+	mkdir -p $(distdir)/cmake
+	cp -p $(srcdir)/cmake/quantlib.cmake $(distdir)/cmake
+

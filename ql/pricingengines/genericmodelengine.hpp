@@ -38,11 +38,12 @@ namespace QuantLib {
     class GenericModelEngine
         : public GenericEngine<ArgumentsType, ResultsType> {
       public:
-        GenericModelEngine(const Handle<ModelType>& model = Handle<ModelType>())
+        explicit GenericModelEngine(
+                         const Handle<ModelType>& model = Handle<ModelType>())
         : model_(model) {
             this->registerWith(model_);
         }
-        GenericModelEngine(const boost::shared_ptr<ModelType>& model)
+        explicit GenericModelEngine(const boost::shared_ptr<ModelType>& model)
         : model_(model) {
             this->registerWith(model_);
         }

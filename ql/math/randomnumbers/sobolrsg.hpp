@@ -28,6 +28,7 @@
 
 #include <ql/methods/montecarlo/sample.hpp>
 #include <vector>
+#include <boost/cstdint.hpp>
 
 namespace QuantLib {
 
@@ -37,10 +38,10 @@ namespace QuantLib {
 
         The implementation relies on primitive polynomials modulo two
         from the book "Monte Carlo Methods in Finance" by Peter
-        Jäckel.
+        JÃ¤ckel.
 
         21 200 primitive polynomials modulo two are provided in QuantLib.
-        Jäckel has calculated 8 129 334 polynomials: if you need that many
+        JÃ¤ckel has calculated 8 129 334 polynomials: if you need that many
         dimensions you can replace the primitivepolynomials.cpp file included
         in QuantLib with the one provided in the CD of the "Monte Carlo
         Methods in Finance" book.
@@ -62,7 +63,7 @@ namespace QuantLib {
         14:88-100. These values satisfy Property A for d<=20 and d =
         23, 31, 33, 34, 37; Property A' holds for d<=6.
 
-        Jäckel provides in his book (section 8.3) initialization
+        JÃ¤ckel provides in his book (section 8.3) initialization
         numbers up to dimension 32. Coefficients for d<=8 are the same
         as in Bradley-Fox, so Property A' holds for d<=6 but Property
         A holds for d<=32.
@@ -118,10 +119,11 @@ namespace QuantLib {
                  unsigned long seed = 0,
                  DirectionIntegers directionIntegers = Jaeckel);
         /*! skip to the n-th sample in the low-discrepancy sequence */
-        void skipTo(unsigned long n);
-        const std::vector<unsigned long>& nextInt32Sequence() const;
+        void skipTo(boost::uint_least32_t n);
+        const std::vector<boost::uint_least32_t>& nextInt32Sequence() const;
+
         const SobolRsg::sample_type& nextSequence() const {
-            const std::vector<unsigned long>& v = nextInt32Sequence();
+            const std::vector<boost::uint_least32_t>& v = nextInt32Sequence();
             // normalize to get a double in (0,1)
             for (Size k=0; k<dimensionality_; ++k)
                 sequence_.value[k] = v[k] * normalizationFactor_;
@@ -133,11 +135,11 @@ namespace QuantLib {
         static const int bits_;
         static const double normalizationFactor_;
         Size dimensionality_;
-        mutable unsigned long sequenceCounter_;
+        mutable boost::uint_least32_t sequenceCounter_;
         mutable bool firstDraw_;
         mutable sample_type sequence_;
-        mutable std::vector<unsigned long> integerSequence_;
-        std::vector<std::vector<unsigned long> > directionIntegers_;
+        mutable std::vector<boost::uint_least32_t> integerSequence_;
+        std::vector<std::vector<boost::uint_least32_t> > directionIntegers_;
     };
 
 }

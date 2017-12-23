@@ -59,10 +59,12 @@ namespace QuantLib {
             static const Real rrGranular;// = 1./256.;// 2^8
     };
 
+#ifndef __DOXYGEN__
 
     template <class C, class G> const Real 
         simEvent<RandomLossLM<C, G> >::rrGranular = 1./256.;// 2^8
 
+#endif
 
     /*! Random spot recovery rate loss model simulation for an arbitrary copula.
     */
@@ -81,7 +83,7 @@ namespace QuantLib {
                 copula,
             Size nSims = 0,
             Real accuracy = 1.e-6, 
-            BigNatural seed = 2863311530)
+            BigNatural seed = 2863311530UL)
         : RandomLM< ::QuantLib::RandomLossLM, copulaPolicy, USNG>
             (copula->numFactors(), copula->size(), copula->copula(), 
                 nSims, seed),

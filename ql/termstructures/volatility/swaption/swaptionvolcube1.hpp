@@ -197,7 +197,7 @@ namespace QuantLib {
 
         class PrivateObserver : public Observer {
           public:
-            PrivateObserver(SwaptionVolCube1x<Model> *v)
+            explicit PrivateObserver(SwaptionVolCube1x<Model> *v)
                 : v_(v) {}
             void update() {
                 v_->setParameterGuess();

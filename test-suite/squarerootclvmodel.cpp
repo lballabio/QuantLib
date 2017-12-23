@@ -62,7 +62,15 @@
 
 #include <boost/make_shared.hpp>
 #include <boost/assign/std/vector.hpp>
+
+#if defined(__GNUC__) && !defined(__clang__) && BOOST_VERSION > 106300
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
 #include <boost/math/distributions/non_central_chi_squared.hpp>
+#if defined(__GNUC__) && !defined(__clang__) && BOOST_VERSION > 106300
+#pragma GCC diagnostic pop
+#endif
 
 #include <set>
 
@@ -609,7 +617,7 @@ void SquareRootCLVModelTest::testForwardSkew() {
         boost::make_shared<HestonModel>(hestonProcess4slv));
 
     const HestonSLVFokkerPlanckFdmParams logParams = {
-        301, 601, 1000, 30, 2.0, 2,
+        301, 601, 1000, 30, 2.0, 0, 2,
         0.1, 1e-4, 10000,
         1e-5, 1e-5, 0.0000025, 1.0, 0.1, 0.9, 1e-5,
         FdmHestonGreensFct::Gaussian,

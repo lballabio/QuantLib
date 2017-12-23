@@ -108,17 +108,24 @@ namespace QuantLib {
         if (fixing == Null<Rate>())
             fixing = coupon_->indexFixing();
 
-        if (!coupon_->isInArrears() && timingAdjustment_ == Black76)
+        // if the pay date is equal to the index estimation end date
+        // there is no convexity; in all other cases in principle an
+        // adjustment has to be applied, but the Black76 method only
+        // applies the standard in arrears adjustment; the bivariate
+        // lognormal method is more accurate in this regard.
+        Date d1 = coupon_->fixingDate();
+        Date d2 = index_->valueDate(d1);
+        Date d3 = index_->maturityDate(d2);
+        if ((!coupon_->isInArrears() && timingAdjustment_ == Black76) ||
+            coupon_->date() == d3)
             return fixing;
 
         QL_REQUIRE(!capletVolatility().empty(),
                    "missing optionlet volatility");
-        Date d1 = coupon_->fixingDate();
         Date referenceDate = capletVolatility()->referenceDate();
+        // no variance has accumulated, so the convexity is zero
         if (d1 <= referenceDate)
             return fixing;
-        Date d2 = index_->valueDate(d1);
-        Date d3 = index_->maturityDate(d2);
         Time tau = index_->dayCounter().yearFraction(d2, d3);
         Real variance = capletVolatility()->blackVariance(d1, fixing);
 
@@ -182,7 +189,7 @@ namespace QuantLib {
           private:
             boost::shared_ptr<FloatingRateCouponPricer> pricer_;
           public:
-            PricerSetter(
+            explicit PricerSetter(
                     const boost::shared_ptr<FloatingRateCouponPricer>& pricer)
             : pricer_(pricer) {}
 

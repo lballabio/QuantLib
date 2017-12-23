@@ -1893,6 +1893,10 @@
 				>
 			</File>
 			<File
+				RelativePath="speedlevel.hpp"
+				>
+			</File>
+			<File
 				RelativePath="spreadoption.hpp"
 				>
 			</File>

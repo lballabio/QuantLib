@@ -5,7 +5,9 @@
  Copyright (C) 2006 Cristina Duminuco
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006, 2007 StatPro Italia srl
- Copyright (C) 2015, 2016 Peter Caspers
+ Copyright (C) 2015, 2016, 2017 Peter Caspers
+ Copyright (C) 2017 Paul Giltinan
+ Copyright (C) 2017 Werner Kuerzinger
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,56 +30,48 @@ namespace QuantLib {
     BlackSwaptionEngine::BlackSwaptionEngine(
                         const Handle<YieldTermStructure> &discountCurve,
                         Volatility vol, const DayCounter &dc,
-                        Real displacement)
+                        Real displacement, CashAnnuityModel model)
     : detail::BlackStyleSwaptionEngine<detail::Black76Spec>(discountCurve, vol, dc,
-                                                            displacement) {}
+                                                            displacement, model) {}
 
     BlackSwaptionEngine::BlackSwaptionEngine(
                         const Handle<YieldTermStructure> &discountCurve,
                         const Handle<Quote> &vol,
                         const DayCounter &dc,
-                        Real displacement)
+                        Real displacement,
+                        CashAnnuityModel model)
     : detail::BlackStyleSwaptionEngine<detail::Black76Spec>(discountCurve, vol, dc,
-                                                            displacement) {}
-
-    BlackSwaptionEngine::BlackSwaptionEngine(
-                        const Handle<YieldTermStructure> &discountCurve,
-                        const Handle<SwaptionVolatilityStructure> &vol)
-    : detail::BlackStyleSwaptionEngine<detail::Black76Spec>(discountCurve, vol,
-                                                            Null<Real>()) {
-        QL_REQUIRE(vol->volatilityType() == ShiftedLognormal,
-                   "BlackSwaptionEngine requires (shifted) lognormal input "
-                   "volatility");
-    }
+                                                            displacement, model) {}
 
     BlackSwaptionEngine::BlackSwaptionEngine(
                         const Handle<YieldTermStructure> &discountCurve,
                         const Handle<SwaptionVolatilityStructure> &vol,
-                        Real displacement)
+                        CashAnnuityModel model)
     : detail::BlackStyleSwaptionEngine<detail::Black76Spec>(discountCurve, vol,
-                                                            displacement) {
+                                                            model) {
         QL_REQUIRE(vol->volatilityType() == ShiftedLognormal,
                    "BlackSwaptionEngine requires (shifted) lognormal input "
                    "volatility");
     }
 
+
     BachelierSwaptionEngine::BachelierSwaptionEngine(
         const Handle<YieldTermStructure> &discountCurve, Volatility vol,
-        const DayCounter &dc)
+        const DayCounter &dc, CashAnnuityModel model)
     : detail::BlackStyleSwaptionEngine<detail::BachelierSpec>(discountCurve, vol,
-                                                              dc, 0.0) {}
+                                                              dc, model) {}
 
     BachelierSwaptionEngine::BachelierSwaptionEngine(
         const Handle<YieldTermStructure> &discountCurve,
-        const Handle<Quote> &vol, const DayCounter &dc)
+        const Handle<Quote> &vol, const DayCounter &dc, CashAnnuityModel model)
     : detail::BlackStyleSwaptionEngine<detail::BachelierSpec>(discountCurve, vol,
-                                                              dc, 0.0) {}
+                                                              dc, model) {}
 
     BachelierSwaptionEngine::BachelierSwaptionEngine(
         const Handle<YieldTermStructure> &discountCurve,
-        const Handle<SwaptionVolatilityStructure> &vol)
+        const Handle<SwaptionVolatilityStructure> &vol, CashAnnuityModel model)
     : detail::BlackStyleSwaptionEngine<detail::BachelierSpec>(discountCurve, vol,
-                                                              0.0) {
+                                                              model) {
         QL_REQUIRE(vol->volatilityType() == Normal,
                    "BachelierSwaptionEngine requires normal input volatility");
     }

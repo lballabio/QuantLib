@@ -31,6 +31,10 @@
 #include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
 #include <ql/experimental/finitedifferences/modtriplebandlinearop.hpp>
 #include <boost/unordered/unordered_map.hpp>
+#include <boost/make_shared.hpp>
+#include <cmath>
+
+using std::exp;
 
 namespace QuantLib {
 
@@ -48,16 +52,16 @@ namespace QuantLib {
       rTS_  (process->riskFreeRate().currentLink()),
       qTS_  (process->dividendYield().currentLink()),
       varianceValues_(0.5*mesher->locations(1)),
-      dxMap_ (new FirstDerivativeOp(0, mesher)),
-      dxxMap_(new ModTripleBandLinearOp(TripleBandLinearOp(
+      dxMap_ (boost::make_shared<FirstDerivativeOp>(0, mesher)),
+      dxxMap_(boost::make_shared<ModTripleBandLinearOp>(TripleBandLinearOp(
           type == FdmSquareRootFwdOp::Log ?
             SecondDerivativeOp(0, mesher).mult(0.5*Exp(mesher->locations(1)))
           : SecondDerivativeOp(0, mesher).mult(0.5*mesher->locations(1))
           ))),
-      boundary_(new ModTripleBandLinearOp(TripleBandLinearOp(SecondDerivativeOp(0, mesher).mult(Array(mesher->locations(0).size(), 0.0))))),
-      mapX_  (new TripleBandLinearOp(0, mesher)),
-      mapY_  (new FdmSquareRootFwdOp(mesher,kappa_,theta_,sigma_, 1, type)),
-      correlation_(new NinePointLinearOp(
+      boundary_(boost::make_shared<ModTripleBandLinearOp>(TripleBandLinearOp(SecondDerivativeOp(0, mesher).mult(Array(mesher->locations(0).size(), 0.0))))),
+      mapX_  (boost::make_shared<TripleBandLinearOp>(0, mesher)),
+      mapY_  (boost::make_shared<FdmSquareRootFwdOp>(mesher,kappa_,theta_,sigma_, 1, type)),
+      correlation_(boost::make_shared<NinePointLinearOp>(
           type == FdmSquareRootFwdOp::Log ?
               SecondOrderMixedDerivativeOp(0, 1, mesher)
               .mult(Array(mesher->layout()->size(), rho_*sigma_))
@@ -199,7 +203,7 @@ namespace QuantLib {
 
     Disposable<Array> FdmHestonFwdOp::preconditioner(
         const Array& u, Real dt) const{
-        return solve_splitting(0, u, dt);
+        return solve_splitting(1, u, dt);
     }
 
     Disposable<Array> FdmHestonFwdOp::getLeverageFctSlice(Time t1, Time t2)

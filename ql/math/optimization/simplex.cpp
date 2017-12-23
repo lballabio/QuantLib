@@ -48,8 +48,8 @@ namespace QuantLib {
             center *=1/Real(vertices.size());
             Real result = 0;
             for (Size i=0; i<vertices.size(); ++i) {
-                Array temp =  vertices[i] - center;
-                result += std::sqrt(DotProduct(temp,temp));
+                Array temp = vertices[i] - center;
+                result += Norm2(temp);
             }
             return result/Real(vertices.size());
         }
@@ -106,7 +106,6 @@ namespace QuantLib {
         Integer iterationNumber_=0;
 
         // Initialize vertices of the simplex
-        bool end = false;
         Size n = x_.size(), i;
         vertices_ = std::vector<Array>(n+1, x_);
         for (i=0; i<n; i++) {
@@ -204,7 +203,7 @@ namespace QuantLib {
                 P.setCurrentValue(x_);
                 return EndCriteria::StationaryFunctionValue;
             }
-        } while (end == false);
+        } while (true);
         QL_FAIL("optimization failed: unexpected behaviour");
     }
 }

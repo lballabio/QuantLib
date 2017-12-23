@@ -4,7 +4,8 @@
  Copyright (C) 2004, 2005 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
- Copyright (C) 2017 Oleg Kulkov, Peter Caspers
+ Copyright (C) 2017 Peter Caspers
+ Copyright (C) 2017 Oleg Kulkov
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -72,7 +73,16 @@ namespace QuantLib {
                 return (d >= 22 && d <= 28) && w == Monday && m == October;
             }
         }
-
+     
+        bool isVeteransDayNoSaturday(Day d, Month m, Year y, Weekday w) {
+            if (y <= 1970 || y >= 1978) {
+                // November 11th, adjusted, but no Saturday to Friday
+                return (d == 11 || (d == 12 && w == Monday)) && m == November;
+            } else {
+                // fourth Monday in October
+                return (d >= 22 && d <= 28) && w == Monday && m == October;
+            }
+        }
     }
     
     UnitedStates::UnitedStates(UnitedStates::Market market) {
@@ -88,12 +98,15 @@ namespace QuantLib {
                                         new UnitedStates::GovernmentBondImpl);
         static boost::shared_ptr<Calendar::Impl> nercImpl(
                                         new UnitedStates::NercImpl);
+        static boost::shared_ptr<Calendar::Impl> federalreserveImpl(
+                                        new UnitedStates::FederalReserveImpl);
         switch (market) {
           case Settlement:
             impl_ = settlementImpl;
             break;
-        case LiborImpact:
+          case LiborImpact:
             impl_ = liborImpactImpl;
+            break;
           case NYSE:
             impl_ = nyseImpl;
             break;
@@ -102,6 +115,9 @@ namespace QuantLib {
             break;
           case NERC:
             impl_ = nercImpl;
+            break;
+          case FederalReserve:
+            impl_ = federalreserveImpl;
             break;
           default:
             QL_FAIL("unknown market");
@@ -240,8 +256,7 @@ namespace QuantLib {
     }
 
 
-    bool UnitedStates::GovernmentBondImpl::isBusinessDay(const Date& date)
-                                                                      const {
+    bool UnitedStates::GovernmentBondImpl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth(), dd = date.dayOfYear();
         Month m = date.month();
@@ -266,8 +281,8 @@ namespace QuantLib {
             || isLaborDay(d, m, y, w)
             // Columbus Day (second Monday in October)
             || isColumbusDay(d, m, y, w)
-            // Veteran's Day (Monday if Sunday or Friday if Saturday)
-            || isVeteransDay(d, m, y, w)
+            // Veteran's Day (Monday if Sunday)
+            || isVeteransDayNoSaturday(d, m, y, w)
             // Thanksgiving Day (fourth Thursday in November)
             || ((d >= 22 && d <= 28) && w == Thursday && m == November)
             // Christmas (Monday if Sunday or Friday if Saturday)
@@ -292,6 +307,39 @@ namespace QuantLib {
             || ((d == 4 || (d == 5 && w == Monday)) && m == July)
             // Labor Day (first Monday in September)
             || isLaborDay(d, m, y, w)
+            // Thanksgiving Day (fourth Thursday in November)
+            || ((d >= 22 && d <= 28) && w == Thursday && m == November)
+            // Christmas (Monday if Sunday)
+            || ((d == 25 || (d == 26 && w == Monday)) && m == December))
+            return false;
+        return true;
+    }
+ 
+ 
+    bool UnitedStates::FederalReserveImpl::isBusinessDay(const Date& date) const {
+        // see https://www.frbservices.org/holidayschedules/ for details
+        Weekday w = date.weekday();
+        Day d = date.dayOfMonth();
+        Month m = date.month();
+        Year y = date.year();
+        if (isWeekend(w)
+            // New Year's Day (possibly moved to Monday if on Sunday)
+            || ((d == 1 || (d == 2 && w == Monday)) && m == January)
+            // Martin Luther King's birthday (third Monday in January)
+            || ((d >= 15 && d <= 21) && w == Monday && m == January
+                && y >= 1983)
+            // Washington's birthday (third Monday in February)
+            || isWashingtonBirthday(d, m, y, w)
+            // Memorial Day (last Monday in May)
+            || isMemorialDay(d, m, y, w)
+            // Independence Day (Monday if Sunday)
+            || ((d == 4 || (d == 5 && w == Monday)) && m == July)
+            // Labor Day (first Monday in September)
+            || isLaborDay(d, m, y, w)
+            // Columbus Day (second Monday in October)
+            || isColumbusDay(d, m, y, w)
+            // Veteran's Day (Monday if Sunday)
+            || isVeteransDayNoSaturday(d, m, y, w)
             // Thanksgiving Day (fourth Thursday in November)
             || ((d >= 22 && d <= 28) && w == Thursday && m == November)
             // Christmas (Monday if Sunday)

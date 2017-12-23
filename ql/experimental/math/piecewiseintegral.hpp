@@ -89,7 +89,7 @@ inline Real PiecewiseIntegral::integrate(const boost::function<Real(Real)> &f,
     }
 
     if (b0 == criticalPoints_.end()) {
-        b0--;
+        --b0;
         if (!close_enough(*b0, b)) {
             res += integrate_h(f, (*b0) * eps_, b);
         }

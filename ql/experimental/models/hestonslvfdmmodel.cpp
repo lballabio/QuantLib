@@ -27,7 +27,12 @@
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 #include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
-#include <ql/methods/finitedifferences/schemes/all.hpp>
+#include <ql/methods/finitedifferences/schemes/impliciteulerscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/expliciteulerscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/craigsneydscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/modifiedcraigsneydscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/douglasscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/hundsdorferscheme.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/meshers/predefined1dmesher.hpp>
@@ -427,12 +432,6 @@ namespace QuantLib {
         Array p = FdmHestonGreensFct(mesher, hestonProcess, trafoType, lv0)
             .get(timeGrid->at(1), params_.greensAlgorithm);
 
-        mesher = boost::make_shared<FdmMesherComposite>(
-            xMesher.at(1), vMesher.at(1));
-
-        p = FdmHestonGreensFct(mesher, hestonProcess, trafoType, lv0)
-            .get(timeGrid->at(1), params_.greensAlgorithm);
-
         if (logging_) {
             const LogEntry entry = { timeGrid->at(1),
                 boost::shared_ptr<Array>(new Array(p)), mesher };
@@ -468,8 +467,13 @@ namespace QuantLib {
 
             // predictor corrector steps
             for (Size r=0; r < params_.predictionCorretionSteps; ++r) {
+                const FdmSchemeDesc fdmSchemeDesc
+                    = (i < params_.nRannacherTimeSteps + 2)
+                        ? FdmSchemeDesc::ImplicitEuler()
+                        : params_.schemeDesc;
+
                 const boost::shared_ptr<FdmScheme> fdmScheme(
-                    fdmSchemeFactory(params_.schemeDesc, hestonFwdOp));
+                    fdmSchemeFactory(fdmSchemeDesc, hestonFwdOp));
 
                 for (Size j=0; j < x.size(); ++j) {
                     Array pSlice(vGrid);

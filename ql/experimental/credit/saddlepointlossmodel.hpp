@@ -99,7 +99,7 @@ namespace QuantLib {
     template<class CP> 
     class SaddlePointLossModel : public DefaultLossModel {
     public:
-        SaddlePointLossModel(
+        explicit SaddlePointLossModel(
             const boost::shared_ptr<ConstantLossLatentmodel<CP> >& m)
             : copula_(m) { }
     protected:
@@ -181,7 +181,7 @@ namespace QuantLib {
             const std::vector<Real>& mktFactor_;
             const std::vector<Real>& invUncondProbs_;
         public:
-            //! @param target in fractional loss units
+            //! The passed target is in fractional loss units
             SaddleObjectiveFunction(const SaddlePointLossModel& me,
                                     const Real target,
                                     const std::vector<Real>& invUncondProbs,
@@ -210,7 +210,8 @@ namespace QuantLib {
             probabilities over and over. While this works fine here some models
             of the recovery rate might require the date.
 
-            @param lossLevel in total portfolio loss fractional unit
+            The passed lossLevel is in total portfolio loss fractional units.
+
             \todo Improve convergence speed (which is bad at the moment).See 
             discussion in several places; references above and The Oxford 
             Handbook of CD, sect 2.9
@@ -233,9 +234,7 @@ namespace QuantLib {
                 const Real target,
                 const Date& date)
             : me_(me), targetValue_(1.-target), date_(date) {}
-            /*!
-                @param x Is the _tranche_ loss fraction
-            */
+            /*! The passed x is the _tranche_ loss fraction */
             Real operator()(const Real x) const {
                 return me_.probOverLoss(date_, x) - targetValue_;
             }
@@ -247,10 +246,11 @@ namespace QuantLib {
         */
         Real percentile(const Date& d, Probability percentile) const;
     protected:
-        /*! Conditional (on the mkt factor) prob of a loss fraction of the the 
-                tranched portfolio.
+        /*! Conditional (on the mkt factor) prob of a loss fraction of
+            the the tranched portfolio.
 
-            @param trancheLossFract Fraction over the tranche notional. In [0,1]
+            The trancheLossFract parameter is the fraction over the
+            tranche notional and must be in [0,1].
         */
         Probability probOverLossCond( 
             const std::vector<Real>& invUncondProbs,
@@ -275,11 +275,10 @@ namespace QuantLib {
             equation 8 in R.Martin, K.Thompson, and C. Browne 's 
             'Taking to the Saddle', Risk Magazine, June 2001, page 91
 
-            @param loss loss in absolute value
+            The passed loss is in absolute value.
         */
         Probability probOverLossPortfCond(
-                        const std::vector<Real>& invUncondProbs,
-
+            const std::vector<Real>& invUncondProbs,
             Real loss, 
             const std::vector<Real>& mktFactor) const;
     public:
@@ -321,8 +320,8 @@ namespace QuantLib {
             see equation 8 in <b>VAR: who contributes and how much?</b> by 
             R.Martin, K.Thompson, and C. Browne in Risk Magazine, August 2001
 
-        @param loss Loss amount level at which we want to request the 
-                        sensitivity. Equivalent to a percentile.
+            The passed loss is the loss amount level at which we want
+            to request the sensitivity. Equivalent to a percentile.
         */
         Disposable<std::vector<Real> > 
             splitVaRLevel(const Date& date, Real loss) const;
@@ -524,10 +523,7 @@ namespace QuantLib {
     inline Probability SaddlePointLossModel<CP>::probOverPortfLoss(
         const Date& d, Real loss) const 
     {
-        const std::vector<Probability> uncondProbs = 
-            basket_->remainingProbabilities(d);
-
-        std::vector<Real> invUncondProbs = 
+        std::vector<Probability> invUncondProbs = 
             basket_->remainingProbabilities(d);
         for(Size i=0; i<invUncondProbs.size(); i++)
             invUncondProbs[i] = 
@@ -981,7 +977,7 @@ namespace QuantLib {
         equation 8 in R.Martin, K.Thompson, and C. Browne 's 
         'Taking to the Saddle', Risk Magazine, June 2001, page 91
 
-        @param loss loss in absolute value
+        The loss is passed in absolute value.
     */
     template<class CP>
     Probability SaddlePointLossModel<CP>::probOverLossPortfCond(
@@ -1187,8 +1183,9 @@ namespace QuantLib {
 
     see equation 8 in 'VAR: who contributes and how much?' by R.Martin, 
     K.Thompson, and C. Browne in Risk Magazine, August 2001
-    @param loss Loss amount level at which we want to request the sensitivity. 
-    Equivalent to a percentile.
+
+    The passed loss is the loss amount level at which we want to
+    request the sensitivity.  Equivalent to a percentile.
     */
     template<class CP>
     Disposable<std::vector<Real> > SaddlePointLossModel<CP>::splitLossCond(

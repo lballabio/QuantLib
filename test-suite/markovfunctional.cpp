@@ -1390,11 +1390,7 @@ void MarkovFunctionalTest::testVanillaEngines() {
     for (Size i = 0; i < c4.size(); i++) {
         c4[i].setPricingEngine(blackCapFloorEngine4);
         Real blackPrice = c4[i].NPV();
-        std::vector<Real> blackOptionlets =
-            c4[i].result<std::vector<Real> >("optionletsPrice");
         c4[i].setPricingEngine(mfCapFloorEngine4);
-        std::vector<Real> mfOptionlets =
-            c4[i].result<std::vector<Real> >("optionletsPrice");
         Real mfPrice = c4[i].NPV();
         if (fabs(blackPrice - mfPrice) > tol1)
             BOOST_ERROR(
@@ -1752,16 +1748,26 @@ void MarkovFunctionalTest::testBermudanSwaption() {
     Settings::instance().evaluationDate() = savedEvalDate;
 }
 
-test_suite *MarkovFunctionalTest::suite() {
+test_suite *MarkovFunctionalTest::suite(SpeedLevel speed) {
     test_suite *suite = BOOST_TEST_SUITE("Markov functional model tests");
+
     suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testMfStateProcess));
-    suite->add(
-        QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testKahaleSmileSection));
     suite->add(QUANTLIB_TEST_CASE(
-        &MarkovFunctionalTest::testCalibrationOneInstrumentSet));
-    suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testVanillaEngines));
+        &MarkovFunctionalTest::testKahaleSmileSection));
     suite->add(QUANTLIB_TEST_CASE(
-        &MarkovFunctionalTest::testCalibrationTwoInstrumentSets));
-    suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testBermudanSwaption));
+        &MarkovFunctionalTest::testBermudanSwaption));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &MarkovFunctionalTest::testCalibrationOneInstrumentSet));
+        suite->add(QUANTLIB_TEST_CASE(
+            &MarkovFunctionalTest::testCalibrationTwoInstrumentSets));
+    }
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &MarkovFunctionalTest::testVanillaEngines));
+    }
+
     return suite;
 }
