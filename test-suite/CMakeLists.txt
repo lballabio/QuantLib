@@ -24,11 +24,6 @@ install(TARGETS ${TEST}
         PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
         )
 
-set (BENCHMARK quantlib-benchmark)
-add_executable (${BENCHMARK} ${BENCHMARK_FILES})
-target_link_libraries (${BENCHMARK} ${QL_LINK_LIBRARY} ${Boost_LIBRARIES})
-set_property(TARGET ${BENCHMARK} PROPERTY PROJECT_LABEL "benchmark")
-
 enable_testing ()
 add_test (${TEST} ${TEST})
 
