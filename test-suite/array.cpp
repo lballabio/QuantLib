@@ -175,6 +175,84 @@ void ArrayTest::testConstruction() {
     }
 }
 
+void ArrayTest::testArrayOperators() {
+    BOOST_TEST_MESSAGE("Testing array operators...");
+
+    Real tol = 1.0E-14 * 100.0;
+
+    Array a(2), b(2);
+    a[0] = 1.0;
+    a[1] = 2.0;
+    b[0] = 3.0;
+    b[1] = 4.0;
+
+    b += a;
+    BOOST_CHECK_CLOSE(b[0], 4.0, tol);
+    BOOST_CHECK_CLOSE(b[1], 6.0, tol);
+
+    b += 1.0;
+    BOOST_CHECK_CLOSE(b[0], 5.0, tol);
+    BOOST_CHECK_CLOSE(b[1], 7.0, tol);
+
+    b -= a;
+    BOOST_CHECK_CLOSE(b[0], 4.0, tol);
+    BOOST_CHECK_CLOSE(b[1], 5.0, tol);
+
+    b -= 1.0;
+    BOOST_CHECK_CLOSE(b[0], 3.0, tol);
+    BOOST_CHECK_CLOSE(b[1], 4.0, tol);
+
+    b *= a;
+    BOOST_CHECK_CLOSE(b[0], 3.0, tol);
+    BOOST_CHECK_CLOSE(b[1], 8.0, tol);
+
+    b *= 2.0;
+    BOOST_CHECK_CLOSE(b[0], 6.0, tol);
+    BOOST_CHECK_CLOSE(b[1], 16.0, tol);
+
+    b /= a;
+    BOOST_CHECK_CLOSE(b[0], 6.0, tol);
+    BOOST_CHECK_CLOSE(b[1], 8.0, tol);
+
+    b /= 2.0;
+    BOOST_CHECK_CLOSE(b[0], 3.0, tol);
+    BOOST_CHECK_CLOSE(b[1], 4.0, tol);
+
+    Array c(2);
+
+    c = a + b;
+    BOOST_CHECK_CLOSE(c[0], 4.0, tol);
+    BOOST_CHECK_CLOSE(c[1], 6.0, tol);
+
+    c = a * b;
+    BOOST_CHECK_CLOSE(c[0], 3.0, tol);
+    BOOST_CHECK_CLOSE(c[1], 8.0, tol);
+
+    c = a - b;
+    BOOST_CHECK_CLOSE(c[0], -2.0, tol);
+    BOOST_CHECK_CLOSE(c[1], -2.0, tol);
+
+    c = a / b;
+    BOOST_CHECK_CLOSE(c[0], 1.0 / 3.0, tol);
+    BOOST_CHECK_CLOSE(c[1], 2.0 / 4.0, tol);
+
+    c = a + 1.0;
+    BOOST_CHECK_CLOSE(c[0], 2.0, tol);
+    BOOST_CHECK_CLOSE(c[1], 3.0, tol);
+
+    c = a * 2.0;
+    BOOST_CHECK_CLOSE(c[0], 2.0, tol);
+    BOOST_CHECK_CLOSE(c[1], 4.0, tol);
+
+    c = a - 1.0;
+    BOOST_CHECK_CLOSE(c[0], 0.0, tol);
+    BOOST_CHECK_CLOSE(c[1], 1.0, tol);
+
+    c = a / 2.0;
+    BOOST_CHECK_CLOSE(c[0], 1.0 / 2.0, tol);
+    BOOST_CHECK_CLOSE(c[1], 2.0 / 2.0, tol);
+}
+
 void ArrayTest::testArrayFunctions() {
 
     BOOST_TEST_MESSAGE("Testing array functions...");
@@ -212,6 +290,7 @@ test_suite* ArrayTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("array tests");
     suite->add(QUANTLIB_TEST_CASE(&ArrayTest::testConstruction));
     suite->add(QUANTLIB_TEST_CASE(&ArrayTest::testArrayFunctions));
+    suite->add(QUANTLIB_TEST_CASE(&ArrayTest::testArrayOperators));
     return suite;
 }
 

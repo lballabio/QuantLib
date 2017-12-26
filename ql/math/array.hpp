@@ -83,14 +83,14 @@ namespace QuantLib {
             the same size.
         */
         //@{
-        const Array& operator+=(const Array&);
-        const Array& operator+=(Real);
-        const Array& operator-=(const Array&);
-        const Array& operator-=(Real);
-        const Array& operator*=(const Array&);
-        const Array& operator*=(Real);
-        const Array& operator/=(const Array&);
-        const Array& operator/=(Real);
+        Array& operator+=(const Array&);
+        Array& operator+=(Real);
+        Array& operator-=(const Array&);
+        Array& operator-=(Real);
+        Array& operator*=(const Array&);
+        Array& operator*=(Real);
+        Array& operator/=(const Array&);
+        Array& operator/=(Real);
         //@}
         //! \name Element access
         //@{
@@ -157,47 +157,47 @@ namespace QuantLib {
 
     // unary operators
     /*! \relates Array */
-    const Disposable<Array> operator+(const Array& v);
+    Disposable<Array> operator+(const Array& v);
     /*! \relates Array */
-    const Disposable<Array> operator-(const Array& v);
+    Disposable<Array> operator-(const Array& v);
 
     // binary operators
     /*! \relates Array */
-    const Disposable<Array> operator+(const Array&, const Array&);
+    Disposable<Array> operator+(Array, const Array&);
     /*! \relates Array */
-    const Disposable<Array> operator+(const Array&, Real);
+    Disposable<Array> operator+(Array, Real);
     /*! \relates Array */
-    const Disposable<Array> operator+(Real, const Array&);
+    Disposable<Array> operator+(Real, Array);
     /*! \relates Array */
-    const Disposable<Array> operator-(const Array&, const Array&);
+    Disposable<Array> operator-(Array, const Array&);
     /*! \relates Array */
-    const Disposable<Array> operator-(const Array&, Real);
+    Disposable<Array> operator-(Array, Real);
     /*! \relates Array */
-    const Disposable<Array> operator-(Real, const Array&);
+    Disposable<Array> operator-(Real, Array);
     /*! \relates Array */
-    const Disposable<Array> operator*(const Array&, const Array&);
+    Disposable<Array> operator*(Array, const Array&);
     /*! \relates Array */
-    const Disposable<Array> operator*(const Array&, Real);
+    Disposable<Array> operator*(Array, Real);
     /*! \relates Array */
-    const Disposable<Array> operator*(Real, const Array&);
+    Disposable<Array> operator*(Real, Array);
     /*! \relates Array */
-    const Disposable<Array> operator/(const Array&, const Array&);
+    Disposable<Array> operator/(Array, const Array&);
     /*! \relates Array */
-    const Disposable<Array> operator/(const Array&, Real);
+    Disposable<Array> operator/(Array, Real);
     /*! \relates Array */
-    const Disposable<Array> operator/(Real, const Array&);
+    Disposable<Array> operator/(Real, Array);
 
     // math functions
     /*! \relates Array */
-    const Disposable<Array> Abs(const Array&);
+    Disposable<Array> Abs(const Array&);
     /*! \relates Array */
-    const Disposable<Array> Sqrt(const Array&);
+    Disposable<Array> Sqrt(const Array&);
     /*! \relates Array */
-    const Disposable<Array> Log(const Array&);
+    Disposable<Array> Log(const Array&);
     /*! \relates Array */
-    const Disposable<Array> Exp(const Array&);
+    Disposable<Array> Exp(const Array&);
     /*! \relates Array */
-    const Disposable<Array> Pow(const Array&, Real);
+    Disposable<Array> Pow(const Array&, Real);
 
     // utilities
     /*! \relates Array */
@@ -302,7 +302,7 @@ namespace QuantLib {
         return *this;
     }
 
-    inline const Array& Array::operator+=(const Array& v) {
+    inline Array& Array::operator+=(const Array& v) {
         QL_REQUIRE(n_ == v.n_,
                    "arrays with different sizes (" << n_ << ", "
                    << v.n_ << ") cannot be added");
@@ -312,13 +312,13 @@ namespace QuantLib {
     }
 
 
-    inline const Array& Array::operator+=(Real x) {
+    inline Array& Array::operator+=(Real x) {
         std::transform(begin(),end(),begin(),
                        std::bind2nd(std::plus<Real>(),x));
         return *this;
     }
 
-    inline const Array& Array::operator-=(const Array& v) {
+    inline Array& Array::operator-=(const Array& v) {
         QL_REQUIRE(n_ == v.n_,
                    "arrays with different sizes (" << n_ << ", "
                    << v.n_ << ") cannot be subtracted");
@@ -327,13 +327,13 @@ namespace QuantLib {
         return *this;
     }
 
-    inline const Array& Array::operator-=(Real x) {
+    inline Array& Array::operator-=(Real x) {
         std::transform(begin(),end(),begin(),
                        std::bind2nd(std::minus<Real>(),x));
         return *this;
     }
 
-    inline const Array& Array::operator*=(const Array& v) {
+    inline Array& Array::operator*=(const Array& v) {
         QL_REQUIRE(n_ == v.n_,
                    "arrays with different sizes (" << n_ << ", "
                    << v.n_ << ") cannot be multiplied");
@@ -342,13 +342,13 @@ namespace QuantLib {
         return *this;
     }
 
-    inline const Array& Array::operator*=(Real x) {
+    inline Array& Array::operator*=(Real x) {
         std::transform(begin(),end(),begin(),
                        std::bind2nd(std::multiplies<Real>(),x));
         return *this;
     }
 
-    inline const Array& Array::operator/=(const Array& v) {
+    inline Array& Array::operator/=(const Array& v) {
         QL_REQUIRE(n_ == v.n_,
                    "arrays with different sizes (" << n_ << ", "
                    << v.n_ << ") cannot be divided");
@@ -357,7 +357,7 @@ namespace QuantLib {
         return *this;
     }
 
-    inline const Array& Array::operator/=(Real x) {
+    inline Array& Array::operator/=(Real x) {
         std::transform(begin(),end(),begin(),
                        std::bind2nd(std::divides<Real>(),x));
         return *this;
@@ -486,12 +486,12 @@ namespace QuantLib {
 
     // unary
 
-    inline const Disposable<Array> operator+(const Array& v) {
+    inline Disposable<Array> operator+(const Array& v) {
         Array result = v;
         return result;
     }
 
-    inline const Disposable<Array> operator-(const Array& v) {
+    inline Disposable<Array> operator-(const Array& v) {
         Array result(v.size());
         std::transform(v.begin(),v.end(),result.begin(),
                        std::negate<Real>());
@@ -501,137 +501,93 @@ namespace QuantLib {
 
     // binary operators
 
-    inline const Disposable<Array> operator+(const Array& v1,
-                                             const Array& v2) {
-        QL_REQUIRE(v1.size() == v2.size(),
-                   "arrays with different sizes (" << v1.size() << ", "
-                   << v2.size() << ") cannot be added");
-        Array result(v1.size());
-        std::transform(v1.begin(),v1.end(),v2.begin(),result.begin(),
-                       std::plus<Real>());
-        return result;
+    inline Disposable<Array> operator+(Array v1, const Array& v2) {
+        return v1 += v2;
     }
 
-    inline const Disposable<Array> operator+(const Array& v1, Real a) {
-        Array result(v1.size());
-        std::transform(v1.begin(),v1.end(),result.begin(),
-                       std::bind2nd(std::plus<Real>(),a));
-        return result;
+    inline Disposable<Array> operator+(Array v1, Real a) {
+        return v1 += a;
     }
 
-    inline const Disposable<Array> operator+(Real a, const Array& v2) {
-        Array result(v2.size());
-        std::transform(v2.begin(),v2.end(),result.begin(),
+    inline Disposable<Array> operator+(Real a, Array v2) {
+        std::transform(v2.begin(),v2.end(),v2.begin(),
                        std::bind1st(std::plus<Real>(),a));
-        return result;
+        return v2;
     }
 
-    inline const Disposable<Array> operator-(const Array& v1,
-                                             const Array& v2) {
-        QL_REQUIRE(v1.size() == v2.size(),
-                   "arrays with different sizes (" << v1.size() << ", "
-                   << v2.size() << ") cannot be subtracted");
-        Array result(v1.size());
-        std::transform(v1.begin(),v1.end(),v2.begin(),result.begin(),
-                       std::minus<Real>());
-        return result;
+    inline Disposable<Array> operator-(Array v1, const Array& v2) {
+        return v1 -= v2;
     }
 
-    inline const Disposable<Array> operator-(const Array& v1, Real a) {
-        Array result(v1.size());
-        std::transform(v1.begin(),v1.end(),result.begin(),
-                       std::bind2nd(std::minus<Real>(),a));
-        return result;
+    inline Disposable<Array> operator-(Array v1, Real a) {
+        return v1 -= a;
     }
 
-    inline const Disposable<Array> operator-(Real a, const Array& v2) {
-        Array result(v2.size());
-        std::transform(v2.begin(),v2.end(),result.begin(),
-                       std::bind1st(std::minus<Real>(),a));
-        return result;
+    inline Disposable<Array> operator-(Real a, Array v2) {
+        std::transform(v2.begin(), v2.end(), v2.begin(),
+                       std::bind1st(std::minus<Real>(), a));
+        return v2;
     }
 
-    inline const Disposable<Array> operator*(const Array& v1,
-                                             const Array& v2) {
-        QL_REQUIRE(v1.size() == v2.size(),
-                   "arrays with different sizes (" << v1.size() << ", "
-                   << v2.size() << ") cannot be multiplied");
-        Array result(v1.size());
-        std::transform(v1.begin(),v1.end(),v2.begin(),result.begin(),
-                       std::multiplies<Real>());
-        return result;
+    inline Disposable<Array> operator*(Array v1, const Array& v2) {
+        return v1 *= v2;
     }
 
-    inline const Disposable<Array> operator*(const Array& v1, Real a) {
-        Array result(v1.size());
-        std::transform(v1.begin(),v1.end(),result.begin(),
-                       std::bind2nd(std::multiplies<Real>(),a));
-        return result;
+    inline Disposable<Array> operator*(Array v1, Real a) {
+        return v1 *= a;
     }
 
-    inline const Disposable<Array> operator*(Real a, const Array& v2) {
-        Array result(v2.size());
-        std::transform(v2.begin(),v2.end(),result.begin(),
+    inline Disposable<Array> operator*(Real a, Array v2) {
+        std::transform(v2.begin(),v2.end(),v2.begin(),
                        std::bind1st(std::multiplies<Real>(),a));
-        return result;
+        return v2;
     }
 
-    inline const Disposable<Array> operator/(const Array& v1,
-                                             const Array& v2) {
-        QL_REQUIRE(v1.size() == v2.size(),
-                   "arrays with different sizes (" << v1.size() << ", "
-                   << v2.size() << ") cannot be divided");
-        Array result(v1.size());
-        std::transform(v1.begin(),v1.end(),v2.begin(),result.begin(),
-                       std::divides<Real>());
-        return result;
+    inline Disposable<Array> operator/(Array v1, const Array& v2) {
+        return v1 /= v2;
     }
 
-    inline const Disposable<Array> operator/(const Array& v1, Real a) {
-        Array result(v1.size());
-        std::transform(v1.begin(),v1.end(),result.begin(),
-                       std::bind2nd(std::divides<Real>(),a));
-        return result;
+    inline Disposable<Array> operator/(Array v1, Real a) {
+        return v1 /= a;
     }
 
-    inline const Disposable<Array> operator/(Real a, const Array& v2) {
-        Array result(v2.size());
-        std::transform(v2.begin(),v2.end(),result.begin(),
-                       std::bind1st(std::divides<Real>(),a));
-        return result;
+    inline Disposable<Array> operator/(Real a, Array v2) {
+        std::transform(v2.begin(), v2.end(), v2.begin(),
+                       std::bind1st(std::divides<Real>(), a));
+        return v2;
     }
 
     // functions
 
-    inline const Disposable<Array> Abs(const Array& v) {
+    inline Disposable<Array> Abs(const Array& v) {
         Array result(v.size());
         std::transform(v.begin(),v.end(),result.begin(),
                        std::ptr_fun<Real,Real>(std::fabs));
         return result;
     }
 
-    inline const Disposable<Array> Sqrt(const Array& v) {
+    inline Disposable<Array> Sqrt(const Array& v) {
         Array result(v.size());
         std::transform(v.begin(),v.end(),result.begin(),
                        std::ptr_fun<Real,Real>(std::sqrt));
         return result;
     }
 
-    inline const Disposable<Array> Log(const Array& v) {
+    inline Disposable<Array> Log(const Array& v) {
         Array result(v.size());
         std::transform(v.begin(),v.end(),result.begin(),
                        std::ptr_fun<Real,Real>(std::log));
         return result;
     }
 
-    inline const Disposable<Array> Exp(const Array& v) {
+    inline Disposable<Array> Exp(const Array& v) {
         Array result(v.size());
         std::transform(v.begin(),v.end(),result.begin(),
                        std::ptr_fun<Real,Real>(std::exp));
         return result;
     }
 
-    inline const Disposable<Array> Pow(const Array& v, Real alpha) {
+    inline Disposable<Array> Pow(const Array& v, Real alpha) {
         Array result(v.size());
         std::transform(v.begin(), v.end(), result.begin(),
             std::bind2nd(std::ptr_fun<Real, Real, Real>(std::pow), alpha));
