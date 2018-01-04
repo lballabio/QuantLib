@@ -96,8 +96,8 @@ namespace QuantLib {
             weekend for the given market.
         */
         bool isWeekend(Weekday w) const;
-        /*! Returns <tt>true</tt> iff the date is last business day for the
-            month in given market.
+        /*! Returns <tt>true</tt> iff in the given market, the date is on
+            or after the last business day for that month.
         */
         bool isEndOfMonth(const Date& d) const;
         //! last business day of the month to which the given date belongs
