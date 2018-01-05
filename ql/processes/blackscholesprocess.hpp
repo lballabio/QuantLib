@@ -60,9 +60,15 @@ namespace QuantLib {
             const Handle<BlackVolTermStructure>& blackVolTS,
             const boost::shared_ptr<discretization>& d =
                   boost::shared_ptr<discretization>(new EulerDiscretization),
-            bool forceDiscretization = false,
-            const Handle<LocalVolTermStructure>& externalLocalVolTS =
-                  Handle<LocalVolTermStructure>()  );
+            bool forceDiscretization = false);
+
+        GeneralizedBlackScholesProcess(
+            const Handle<Quote>& x0,
+            const Handle<YieldTermStructure>& dividendTS,
+            const Handle<YieldTermStructure>& riskFreeTS,
+            const Handle<BlackVolTermStructure>& blackVolTS,
+            const Handle<LocalVolTermStructure>& localVolTS);
+
         //! \name StochasticProcess1D interface
         //@{
         Real x0() const;

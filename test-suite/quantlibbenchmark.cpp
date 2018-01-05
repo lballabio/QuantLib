@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006, 2008, 2010 Klaus Spanderen
+ Copyright (C) 2006, 2008, 2010, 2018 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -43,8 +43,9 @@
                  12. Pentium4@3.0Ghz        :  266.3 mflops
                  13. PentiumIII@1.1Ghz      :  146.2 mflops
                  14. Alpha 2xEV68@833Mhz    :  184.6 mflops
-                 15. Raspberry Pi ARM@700Mhz:   28.3 mflops
-                 16. Strong ARM@206Mhz      :    1.4 mflops
+                 15. Wii PowerPC 750@729MHz :   46.1 mflops
+                 16. Raspberry Pi ARM@700Mhz:   28.3 mflops
+                 17. Strong ARM@206Mhz      :    1.4 mflops
 
  Remarks: OS: Linux, static libs
   2. g++-6.3.0 -O3 -ffast-math -march=core-avx2
@@ -73,8 +74,9 @@
  13. gcc-4.1.1, -O3 -march=pentium3 -ffast-math
                 -mfpmath=sse,387 -msse -funroll-all-loops
  14. gcc-3.3.5, -O3 -mcpu=e67 -funroll-all-loops, Remark: two processes
- 15. gcc-4.6.3, -O3
- 16. gcc-3.4.3, -O2 -g on a Zaurus PDA
+ 15. gcc-4.9.2, -O2 -g on a Nintendo Wii
+ 16. gcc-4.6.3, -O3
+ 17. gcc-3.4.3, -O2 -g on a Zaurus PDA
 
   This benchmark is derived from quantlibtestsuite.cpp. Please see the
   copyrights therein.

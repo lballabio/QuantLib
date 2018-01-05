@@ -33,16 +33,32 @@
 namespace QuantLib {
 
     GeneralizedBlackScholesProcess::GeneralizedBlackScholesProcess(
+        const Handle<Quote>& x0,
+        const Handle<YieldTermStructure>& dividendTS,
+        const Handle<YieldTermStructure>& riskFreeTS,
+        const Handle<BlackVolTermStructure>& blackVolTS,
+        const Handle<LocalVolTermStructure>& localVolTS)
+    : StochasticProcess1D(boost::make_shared<EulerDiscretization>()),
+      x0_(x0), riskFreeRate_(riskFreeTS),
+      dividendYield_(dividendTS), blackVolatility_(blackVolTS),
+      externalLocalVolTS_(localVolTS),
+      forceDiscretization_(false), updated_(false) {
+        registerWith(x0_);
+        registerWith(riskFreeRate_);
+        registerWith(dividendYield_);
+        registerWith(blackVolatility_);
+        registerWith(externalLocalVolTS_);
+    }
+
+    GeneralizedBlackScholesProcess::GeneralizedBlackScholesProcess(
              const Handle<Quote>& x0,
              const Handle<YieldTermStructure>& dividendTS,
              const Handle<YieldTermStructure>& riskFreeTS,
              const Handle<BlackVolTermStructure>& blackVolTS,
              const boost::shared_ptr<discretization>& disc,
-             bool forceDiscretization,
-             const Handle<LocalVolTermStructure>& externalLocalVolTS)
+             bool forceDiscretization)
     : StochasticProcess1D(disc), x0_(x0), riskFreeRate_(riskFreeTS),
       dividendYield_(dividendTS), blackVolatility_(blackVolTS),
-      externalLocalVolTS_(externalLocalVolTS),
       forceDiscretization_(forceDiscretization), updated_(false) {
         registerWith(x0_);
         registerWith(riskFreeRate_);
