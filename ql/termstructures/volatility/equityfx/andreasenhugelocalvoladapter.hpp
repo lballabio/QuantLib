@@ -33,7 +33,7 @@ namespace QuantLib {
 
     class AndreasenHugeLocalVolAdapter : public LocalVolTermStructure {
       public:
-        AndreasenHugeLocalVolAdapter(
+        explicit AndreasenHugeLocalVolAdapter(
             const boost::shared_ptr<AndreasenHugeVolatilityInterpl>& localVol);
 
         void update();
