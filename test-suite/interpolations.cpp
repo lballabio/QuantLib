@@ -36,7 +36,6 @@
 #include <ql/math/interpolations/kernelinterpolation.hpp>
 #include <ql/math/interpolations/kernelinterpolation2d.hpp>
 #include <ql/math/interpolations/lagrangeinterpolation.hpp>
-#include <ql/math/interpolations/piecewiseconstantinterpolation.hpp>
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/bspline.hpp>
 #include <ql/math/kernelfunctions.hpp>
