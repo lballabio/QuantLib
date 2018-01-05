@@ -17,6 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/volatility/equityfx/andreasenhugelocalvoladapter.hpp>
 #include <ql/termstructures/volatility/equityfx/andreasenhugevolatilityinterpl.hpp>
 
@@ -26,10 +27,6 @@ namespace QuantLib {
     AndreasenHugeLocalVolAdapter::AndreasenHugeLocalVolAdapter(
         const boost::shared_ptr<AndreasenHugeVolatilityInterpl>& localVol)
     : localVol_(localVol) {}
-
-    void AndreasenHugeLocalVolAdapter::update() {
-        LocalVolTermStructure::update();
-    }
 
     Date AndreasenHugeLocalVolAdapter::maxDate() const {
         return localVol_->maxDate();
@@ -46,5 +43,18 @@ namespace QuantLib {
     Volatility
     AndreasenHugeLocalVolAdapter::localVolImpl(Time t, Real strike) const {
         return localVol_->localVol(t, strike);
+    }
+
+    Calendar AndreasenHugeLocalVolAdapter::calendar() const {
+        return localVol_->riskFreeRate()->calendar();
+    }
+    DayCounter AndreasenHugeLocalVolAdapter::dayCounter() const {
+        return localVol_->riskFreeRate()->dayCounter();
+    }
+    const Date& AndreasenHugeLocalVolAdapter::referenceDate() const {
+        return localVol_->riskFreeRate()->referenceDate();
+    }
+    Natural AndreasenHugeLocalVolAdapter::settlementDays() const {
+        return localVol_->riskFreeRate()->settlementDays();
     }
 }

@@ -57,8 +57,7 @@ class InterpolationTest {
     static void testLagrangeInterpolationDerivative();
     static void testLagrangeInterpolationOnChebyshevPoints();
     static void testBSplines();
-    static void testPiecewiseConstantInterpolation();
-    static void testPiecewiseConstantOnSinglePoint();
+    static void testBackwardFlatOnSinglePoint();
 
     static boost::unit_test_framework::test_suite* suite();
 };

@@ -42,7 +42,7 @@ namespace QuantLib {
       x0_(x0), riskFreeRate_(riskFreeTS),
       dividendYield_(dividendTS), blackVolatility_(blackVolTS),
       externalLocalVolTS_(localVolTS),
-      forceDiscretization_(false), updated_(false) {
+      forceDiscretization_(false), hasExternalLocalVol_(true), updated_(false) {
         registerWith(x0_);
         registerWith(riskFreeRate_);
         registerWith(dividendYield_);
@@ -59,12 +59,12 @@ namespace QuantLib {
              bool forceDiscretization)
     : StochasticProcess1D(disc), x0_(x0), riskFreeRate_(riskFreeTS),
       dividendYield_(dividendTS), blackVolatility_(blackVolTS),
-      forceDiscretization_(forceDiscretization), updated_(false) {
+      forceDiscretization_(forceDiscretization),
+      hasExternalLocalVol_(false), updated_(false) {
         registerWith(x0_);
         registerWith(riskFreeRate_);
         registerWith(dividendYield_);
         registerWith(blackVolatility_);
-        registerWith(externalLocalVolTS_);
     }
 
     Real GeneralizedBlackScholesProcess::x0() const {
@@ -178,7 +178,7 @@ namespace QuantLib {
 
     const Handle<LocalVolTermStructure>&
     GeneralizedBlackScholesProcess::localVolatility() const {
-        if (!externalLocalVolTS_.empty())
+        if (hasExternalLocalVol_)
             return externalLocalVolTS_;
 
         if (!updated_) {

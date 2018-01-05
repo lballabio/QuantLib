@@ -19,7 +19,6 @@
 #include <ql/math/interpolations/loginterpolation.hpp>
 #include <ql/math/interpolations/mixedinterpolation.hpp>
 #include <ql/math/interpolations/multicubicspline.hpp>
-#include <ql/math/interpolations/piecewiseconstantinterpolation.hpp>
 #include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/math/interpolations/xabrinterpolation.hpp>
 

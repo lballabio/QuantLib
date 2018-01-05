@@ -105,6 +105,7 @@ namespace QuantLib {
         Handle<BlackVolTermStructure> blackVolatility_;
         Handle<LocalVolTermStructure> externalLocalVolTS_;
         bool forceDiscretization_;
+        bool hasExternalLocalVol_;
         mutable RelinkableHandle<LocalVolTermStructure> localVolatility_;
         mutable bool updated_, isStrikeIndependent_;
     };

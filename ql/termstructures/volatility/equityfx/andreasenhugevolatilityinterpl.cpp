@@ -27,7 +27,7 @@
 #include <ql/math/functional.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
-#include <ql/math/interpolations/piecewiseconstantinterpolation.hpp>
+#include <ql/math/interpolations/backwardflatinterpolation.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/methods/finitedifferences/tridiagonaloperator.hpp>
@@ -99,7 +99,7 @@ namespace QuantLib {
                     x[i] = 0.5*(lnMarketStrikes_[i] + lnMarketStrikes_[i+1]);
                 x.back() = lnMarketStrikes_.back();
 
-                sigInterpl = PiecewiseConstantInterpolation(
+                sigInterpl = BackwardFlatInterpolation(
                     x.begin(), x.end(), sig.begin());
                 break;
               default:
@@ -279,13 +279,6 @@ namespace QuantLib {
         dT_.resize(expiries_.size());
         expiryTimes_.resize(expiries_.size());
 
-        const DayCounter dc = rTS_->dayCounter();
-        for (Size i=0; i < expiryTimes_.size(); ++i) {
-            expiryTimes_[i] =
-                dc.yearFraction(rTS_->referenceDate(), expiries_[i]);
-            dT_[i] = expiryTimes_[i] - ( (i==0)? 0.0 : expiryTimes_[i-1]);
-        }
-
         calibrationMatrix_ = std::vector< std::vector<Size> >(
             expiries.size(), std::vector<Size>(strikes.size(), Null<Size>()));
 
@@ -316,6 +309,13 @@ namespace QuantLib {
 
     void AndreasenHugeVolatilityInterpl::update() {
         LazyObject::update();
+
+        const DayCounter dc = rTS_->dayCounter();
+        for (Size i=0; i < expiryTimes_.size(); ++i) {
+            expiryTimes_[i] =
+                dc.yearFraction(rTS_->referenceDate(), expiries_[i]);
+            dT_[i] = expiryTimes_[i] - ( (i==0)? 0.0 : expiryTimes_[i-1]);
+        }
 
         mesher_ =
             boost::make_shared<FdmMesherComposite>(

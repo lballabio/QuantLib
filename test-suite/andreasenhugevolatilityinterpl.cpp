@@ -916,6 +916,80 @@ void AndreasenHugeVolatilityInterplTest::testDifferentOptimizers() {
     }
 }
 
+void AndreasenHugeVolatilityInterplTest::testMovingReferenceDate() {
+    BOOST_TEST_MESSAGE(
+        "Testing reference date of adapter surface moves along with "
+        "evaluation date");
+
+    SavedSettings backup;
+
+    const Date today = Date(4, January, 2018);
+    Settings::instance().evaluationDate() = today;
+
+    const DayCounter dc = Actual365Fixed();
+    const Date maturity = today + Period(1, Months);
+
+    Handle<YieldTermStructure> ts(flatRate(0.04, dc));
+
+    const Real s0 = 100.0;
+    const Volatility impliedVol = 0.2;
+    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(s0));
+
+    AndreasenHugeVolatilityInterpl::CalibrationSet calibrationSet(
+        1,
+        std::make_pair(
+            boost::make_shared<VanillaOption>(
+                boost::make_shared<PlainVanillaPayoff>(Option::Call, s0),
+                boost::make_shared<EuropeanExercise>(maturity)),
+            boost::make_shared<SimpleQuote>(impliedVol))
+    );
+
+    const boost::shared_ptr<AndreasenHugeVolatilityInterpl>
+        andreasenHugeVolInterplation(
+            boost::make_shared<AndreasenHugeVolatilityInterpl>(
+                calibrationSet, spot, ts, ts));
+
+    const boost::shared_ptr<AndreasenHugeVolatilityAdapter> volatilityAdapter(
+        boost::make_shared<AndreasenHugeVolatilityAdapter>(
+            andreasenHugeVolInterplation));
+
+    const boost::shared_ptr<AndreasenHugeLocalVolAdapter> localVolAdapter(
+        boost::make_shared<AndreasenHugeLocalVolAdapter>(
+            andreasenHugeVolInterplation));
+
+    const Date volRefDate = volatilityAdapter->referenceDate();
+    const Date localRefDate = localVolAdapter->referenceDate();
+
+    if (volRefDate != today || localRefDate != today)
+        BOOST_FAIL("reference dates should match today's date"
+               << "\n    today                     : " << today
+               << "\n    local vol reference date  : " << localRefDate
+               << "\n    implied vol reference date: " << volRefDate);
+
+    const Date modToday = Date(15, January, 2018);
+    Settings::instance().evaluationDate() = modToday;
+
+    const Date modVolRefDate = volatilityAdapter->referenceDate();
+    const Date modLocalRefDate = localVolAdapter->referenceDate();
+
+    if (modVolRefDate != modToday || modLocalRefDate != modToday)
+        BOOST_FAIL("reference dates should match modified today's date"
+               << "\n    today                     : " << modToday
+               << "\n    local vol reference date  : " << modLocalRefDate
+               << "\n    implied vol reference date: " << modVolRefDate);
+
+    // test update method
+    const Volatility modImpliedVol =
+        volatilityAdapter->blackVol(maturity, s0, true);
+
+    const Real tol = 1000*QL_EPSILON;
+    if (std::fabs(modImpliedVol - impliedVol) > tol)
+        BOOST_FAIL("modified implied vol should match direct calculation"
+                << "\n    implied vol         : " << impliedVol
+                << "\n    modified implied vol: " << modImpliedVol
+                << "\n    tolerance           : " << tol);
+}
+
 test_suite* AndreasenHugeVolatilityInterplTest::suite(SpeedLevel speed) {
     test_suite* suite =
         BOOST_TEST_SUITE("local volatility tests");
@@ -930,6 +1004,8 @@ test_suite* AndreasenHugeVolatilityInterplTest::suite(SpeedLevel speed) {
         &AndreasenHugeVolatilityInterplTest::testPeterAndFabiensExample));
     suite->add(QUANTLIB_TEST_CASE(
         &AndreasenHugeVolatilityInterplTest::testDifferentOptimizers));
+    suite->add(QUANTLIB_TEST_CASE(
+        &AndreasenHugeVolatilityInterplTest::testMovingReferenceDate));
 
     if (speed == Slow) {
         suite->add(QUANTLIB_TEST_CASE(

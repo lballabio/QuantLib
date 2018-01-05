@@ -28,12 +28,7 @@ namespace QuantLib {
     AndreasenHugeVolatilityAdapter::AndreasenHugeVolatilityAdapter(
         const boost::shared_ptr<AndreasenHugeVolatilityInterpl>& volInterpl,
         Real eps)
-    : BlackVarianceTermStructure(
-          volInterpl->riskFreeRate()->referenceDate(),
-          volInterpl->riskFreeRate()->calendar(),
-          Following,
-          volInterpl->riskFreeRate()->dayCounter()),
-      eps_(eps),
+    : eps_(eps),
       volInterpl_(volInterpl) { }
 
     Real AndreasenHugeVolatilityAdapter::blackVarianceImpl(Time t, Real strike)
@@ -51,8 +46,6 @@ namespace QuantLib {
     }
 
 
-    void AndreasenHugeVolatilityAdapter::update() { }
-
     Date AndreasenHugeVolatilityAdapter::maxDate() const {
         return volInterpl_->maxDate();
     }
@@ -61,5 +54,17 @@ namespace QuantLib {
     }
     Real AndreasenHugeVolatilityAdapter::maxStrike() const {
         return volInterpl_->maxStrike();
+    }
+    Calendar AndreasenHugeVolatilityAdapter::calendar() const {
+        return volInterpl_->riskFreeRate()->calendar();
+    }
+    DayCounter AndreasenHugeVolatilityAdapter::dayCounter() const {
+        return volInterpl_->riskFreeRate()->dayCounter();
+    }
+    const Date& AndreasenHugeVolatilityAdapter::referenceDate() const {
+        return volInterpl_->riskFreeRate()->referenceDate();
+    }
+    Natural AndreasenHugeVolatilityAdapter::settlementDays() const {
+        return volInterpl_->riskFreeRate()->settlementDays();
     }
 }

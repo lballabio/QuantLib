@@ -36,11 +36,14 @@ namespace QuantLib {
             const boost::shared_ptr<AndreasenHugeVolatilityInterpl>& volInterpl,
             Real eps = 1e-10);
 
-        void update();
-
         Date maxDate() const;
         Real minStrike() const;
         Real maxStrike() const;
+
+        Calendar calendar() const;
+        DayCounter dayCounter() const;
+        Natural settlementDays() const;
+        const Date& referenceDate() const;
 
       protected:
         Real blackVarianceImpl(Time t, Real strike) const;

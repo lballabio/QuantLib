@@ -39,6 +39,7 @@ class AndreasenHugeVolatilityInterplTest {
     static void testBarrierOptionPricing();
     static void testPeterAndFabiensExample();
     static void testDifferentOptimizers();
+    static void testMovingReferenceDate();
 
     static boost::unit_test_framework::test_suite* suite(SpeedLevel speed);
 };
