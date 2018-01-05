@@ -4,8 +4,6 @@ project(QuantLib)
 
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/quantlib.cmake)
 
-ADD_DEFINITIONS(-DQL_ENABLE_PARALLEL_UNIT_TEST_RUNNER)
-
 option(BUILD_SHARED_LIBS "Build shared libraries" ${UNIX})
 option(USE_BOOST_DYNAMIC_LIBRARIES "Use the shared version of Boost libraries" ${UNIX})
 if (USE_BOOST_DYNAMIC_LIBRARIES)
