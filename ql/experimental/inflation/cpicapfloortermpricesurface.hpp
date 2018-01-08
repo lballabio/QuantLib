@@ -233,6 +233,14 @@ namespace QuantLib {
 
     #endif
 
+    namespace {
+    struct CloseEnoughComparator {
+        explicit CloseEnoughComparator(const Real v) : v_(v) {}
+        bool operator()(const Real w) const { return close_enough(v_, w); }
+        Real v_;
+    };
+    } // namespace
+
     //! set up the interpolations for capPrice_ and floorPrice_
     //! since we know ATM, and we have single flows,
     //! we can use put/call parity to extend the surfaces
@@ -251,12 +259,6 @@ namespace QuantLib {
         QL_REQUIRE(!zts.empty(), "Zts is empty!!!");
         QL_REQUIRE(!yts.empty(), "Yts is empty!!!");
 
-        struct closeComp {
-            closeComp(const Real v) : v_(v) {}
-            bool operator()(const Real w) const { return close_enough(v_, w); }
-            Real v_;
-        };
-
         for (Size j = 0; j < cfMaturities_.size(); ++j) {
             Period mat = cfMaturities_[j];
             Real df = yts->discount(cpiOptionDateFromTenor(mat));
@@ -267,10 +269,10 @@ namespace QuantLib {
                 Real K_quote = cfStrikes_[i] / 100.0;
                 Real K = std::pow(1.0 + K_quote, mat.length());
                 Size indF = std::find_if(fStrikes_.begin(), fStrikes_.end(),
-                                         closeComp(cfStrikes_[i])) -
+                                         CloseEnoughComparator(cfStrikes_[i])) -
                             fStrikes_.begin();
                 Size indC = std::find_if(cStrikes_.begin(), cStrikes_.end(),
-                                         closeComp(cfStrikes_[i])) -
+                                         CloseEnoughComparator(cfStrikes_[i])) -
                             cStrikes_.begin();
                 bool isFloorStrike = indF < fStrikes_.size();
                 bool isCapStrike = indC < cStrikes_.size();
