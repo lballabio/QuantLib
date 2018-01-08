@@ -17,6 +17,9 @@
     <ClCompile Include="amortizingbond.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="andreasenhugevolatilityinterpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="array.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -438,6 +441,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="amortizingbond.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="andreasenhugevolatilityinterpl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="array.hpp">
