@@ -33,16 +33,18 @@ namespace QuantLib {
     }
 
     Real AndreasenHugeLocalVolAdapter::minStrike() const {
-        return localVol_->minStrike();
+        return 0.0;
     }
 
     Real AndreasenHugeLocalVolAdapter::maxStrike() const {
-        return localVol_->maxStrike();
+        return QL_MAX_REAL;
     }
 
     Volatility
     AndreasenHugeLocalVolAdapter::localVolImpl(Time t, Real strike) const {
-        return localVol_->localVol(t, strike);
+        return localVol_->localVol(t,
+            std::min(localVol_->maxStrike(),
+                std::max(localVol_->minStrike(), strike)));
     }
 
     Calendar AndreasenHugeLocalVolAdapter::calendar() const {

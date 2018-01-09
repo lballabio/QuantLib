@@ -303,39 +303,7 @@ namespace QuantLib {
         registerWith(spot_);
         registerWith(rTS_);
         registerWith(qTS_);
-
-        update();
     }
-
-    void AndreasenHugeVolatilityInterpl::update() {
-        LazyObject::update();
-
-        const DayCounter dc = rTS_->dayCounter();
-        for (Size i=0; i < expiryTimes_.size(); ++i) {
-            expiryTimes_[i] =
-                dc.yearFraction(rTS_->referenceDate(), expiries_[i]);
-            dT_[i] = expiryTimes_[i] - ( (i==0)? 0.0 : expiryTimes_[i-1]);
-        }
-
-        mesher_ =
-            boost::make_shared<FdmMesherComposite>(
-                boost::make_shared<Concentrating1dMesher>(
-                    std::log(minStrike()/spot_->value()),
-                    std::log(maxStrike()/spot_->value()),
-                    nGridPoints_,
-                    std::pair<Real, Real>(0.0, 0.025)));
-
-        gridPoints_ = mesher_->locations(0);
-        gridInFwd_ = Exp(gridPoints_)*spot_->value();
-
-        localVolCache_.clear();
-        calibrationResults_.clear();
-
-        avgError_ = 0.0;
-        minError_ = std::numeric_limits<Real>::max();
-        maxError_ = 0.0;
-    }
-
 
     boost::shared_ptr<AndreasenHugeCostFunction>
         AndreasenHugeVolatilityInterpl::buildCostFunction(
@@ -395,6 +363,31 @@ namespace QuantLib {
     void AndreasenHugeVolatilityInterpl::performCalculations() const {
         QL_REQUIRE(maxStrike() > minStrike(),
             "max strike must be greater than min strike");
+
+        const DayCounter dc = rTS_->dayCounter();
+        for (Size i=0; i < expiryTimes_.size(); ++i) {
+            expiryTimes_[i] =
+                dc.yearFraction(rTS_->referenceDate(), expiries_[i]);
+            dT_[i] = expiryTimes_[i] - ( (i==0)? 0.0 : expiryTimes_[i-1]);
+        }
+
+        mesher_ =
+            boost::make_shared<FdmMesherComposite>(
+                boost::make_shared<Concentrating1dMesher>(
+                    std::log(minStrike()/spot_->value()),
+                    std::log(maxStrike()/spot_->value()),
+                    nGridPoints_,
+                    std::pair<Real, Real>(0.0, 0.025)));
+
+        gridPoints_ = mesher_->locations(0);
+        gridInFwd_ = Exp(gridPoints_)*spot_->value();
+
+        localVolCache_.clear();
+        calibrationResults_.clear();
+
+        avgError_ = 0.0;
+        minError_ = std::numeric_limits<Real>::max();
+        maxError_ = 0.0;
 
         calibrationResults_.reserve(expiries_.size());
 

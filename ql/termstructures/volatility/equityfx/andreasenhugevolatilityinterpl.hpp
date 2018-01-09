@@ -78,8 +78,6 @@ namespace QuantLib {
             const EndCriteria& endCriteria =
                 EndCriteria(500, 100, 1e-12, 1e-10, 1e-10));
 
-        void update();
-
         Date maxDate() const;
         Real minStrike() const;
         Real maxStrike() const;
@@ -142,13 +140,13 @@ namespace QuantLib {
 
         std::vector<Real> strikes_;
         std::vector<Date> expiries_;
-        std::vector<Time> expiryTimes_, dT_;
+        mutable std::vector<Time> expiryTimes_, dT_;
 
         std::vector<std::vector<Size> > calibrationMatrix_;
         mutable Real avgError_, minError_, maxError_;
 
-        boost::shared_ptr<FdmMesherComposite> mesher_;
-        Array gridPoints_, gridInFwd_;
+        mutable boost::shared_ptr<FdmMesherComposite> mesher_;
+        mutable Array gridPoints_, gridInFwd_;
 
         mutable std::vector<SingleStepCalibrationResult> calibrationResults_;
 
