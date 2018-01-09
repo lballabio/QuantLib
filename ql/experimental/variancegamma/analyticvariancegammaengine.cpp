@@ -22,7 +22,8 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/math/distributions/gammadistribution.hpp>
 #include <ql/pricingengines/blackscholescalculator.hpp>
 #include <ql/math/integrals/segmentintegral.hpp>
-#include <ql/math/integrals/simpsonintegral.hpp>
+#include <ql/math/integrals/gausslobattointegral.hpp>
+#include <ql/math/integrals/kronrodintegral.hpp>
 
 namespace QuantLib {
 
@@ -72,9 +73,12 @@ namespace QuantLib {
         };
     }
 
+
     VarianceGammaEngine::VarianceGammaEngine(
-        const boost::shared_ptr<VarianceGammaProcess>& process)
-        : process_(process) {
+        const boost::shared_ptr<VarianceGammaProcess>& process,
+        Real absoluteError)
+        : process_(process), absErr_(absoluteError) {
+            QL_REQUIRE(absErr_>0, "absolute error must be positive")
             registerWith(process_);
     }
 
@@ -96,17 +100,26 @@ namespace QuantLib {
         DayCounter rfdc  = process_->riskFreeRate()->dayCounter();
         Time t = rfdc.yearFraction(process_->riskFreeRate()->referenceDate(),
             arguments_.exercise->lastDate());
-    
+
         Integrand f(payoff,
             process_->x0(),
             t, riskFreeDiscount, dividendDiscount,
             process_->sigma(), process_->nu(), process_->theta());
 
-        SimpsonIntegral integrator(1e-4, 5000);
-
         Real infinity = 15.0 * std::sqrt(process_->nu() * t);
-        results_.value = integrator(f, 0, infinity);
+        Real target = absErr_*1e-4;
+        Real val = f(infinity);
+        while (std::abs(val)>target){
+          infinity*=1.5;
+          val = f(infinity);
+        }
+        // the integration is split due to occasional singularities at 0
+        Real split = 0.1;
+        GaussKronrodNonAdaptive integrator1(absErr_, 1000, 0);
+        Real pvA = integrator1(f, 0, split);
+        GaussLobattoIntegral integrator2(2000, absErr_);
+        Real pvB = integrator2(f, split, infinity);
+        results_.value = pvA + pvB;
     }
 
 }
-
