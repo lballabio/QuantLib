@@ -2,6 +2,7 @@
 
 /*
 Copyright (C) 2010 Adrian O' Neill
+Copyright (C) 2018 Roy Zywina
 
 This file is part of QuantLib, a free-software/open-source library
 for financial quantitative analysts and developers - http://quantlib.org/
@@ -20,12 +21,14 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include "variancegamma.hpp"
 #include "utilities.hpp"
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
 #include <ql/instruments/europeanoption.hpp>
 #include <ql/experimental/variancegamma/analyticvariancegammaengine.hpp>
 #include <ql/experimental/variancegamma/fftvariancegammaengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <boost/make_shared.hpp>
 #include <map>
 
 using namespace QuantLib;
@@ -205,9 +208,52 @@ void VarianceGammaTest::testVarianceGamma() {
     }
 }
 
+void VarianceGammaTest::testSingularityAtZero() {
+
+    BOOST_TEST_MESSAGE(
+        "Testing variance-gamma model integration around zero...");
+
+    SavedSettings backup;
+
+    Real stock = 100;
+    Real strike = 98;
+    Volatility sigma = 0.12;
+    Real mu = -0.14;
+    Real kappa = 0.2;
+
+    Date valuation(1,Jan,2017);
+    Date maturity(10,Jan,2017);
+    DayCounter discountCounter = Thirty360();
+
+    Settings::instance().evaluationDate() = valuation;
+
+    boost::shared_ptr<Exercise> exercise =
+        boost::make_shared<EuropeanExercise>(maturity);
+    boost::shared_ptr<StrikedTypePayoff> payoff =
+        boost::make_shared<PlainVanillaPayoff>(Option::Call, strike);
+    VanillaOption option(payoff, exercise);
+
+    Handle<YieldTermStructure> dividend(
+             boost::make_shared<FlatForward>(valuation,0.0,discountCounter));
+    Handle<YieldTermStructure> disc(
+             boost::make_shared<FlatForward>(valuation,0.05,discountCounter));
+    Handle<Quote> S0(boost::make_shared<SimpleQuote>(stock));
+    boost::shared_ptr<QuantLib::VarianceGammaProcess> process =
+        boost::make_shared<VarianceGammaProcess>(S0, dividend, disc,
+                                                 sigma, kappa, mu);
+
+    option.setPricingEngine(boost::make_shared<VarianceGammaEngine>(process));
+    // without the fix, the call below goes into an infinite loop,
+    // which is hard to test for.  We're just happy to see the test
+    // case finish, hence the lack of an assertion.
+    option.NPV();
+}
+
+
 test_suite* VarianceGammaTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Variance Gamma tests");
 
     suite->add(QUANTLIB_TEST_CASE(&VarianceGammaTest::testVarianceGamma));
+    suite->add(QUANTLIB_TEST_CASE(&VarianceGammaTest::testSingularityAtZero));
     return suite;
 }
