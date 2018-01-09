@@ -233,13 +233,13 @@ namespace QuantLib {
 
     #endif
 
-    namespace {
+    namespace detail {
     struct CloseEnoughComparator {
         explicit CloseEnoughComparator(const Real v) : v_(v) {}
         bool operator()(const Real w) const { return close_enough(v_, w); }
         Real v_;
     };
-    } // namespace
+    } // namespace detail
 
     //! set up the interpolations for capPrice_ and floorPrice_
     //! since we know ATM, and we have single flows,
@@ -269,10 +269,10 @@ namespace QuantLib {
                 Real K_quote = cfStrikes_[i] / 100.0;
                 Real K = std::pow(1.0 + K_quote, mat.length());
                 Size indF = std::find_if(fStrikes_.begin(), fStrikes_.end(),
-                                         CloseEnoughComparator(cfStrikes_[i])) -
+                                         detail::CloseEnoughComparator(cfStrikes_[i])) -
                             fStrikes_.begin();
                 Size indC = std::find_if(cStrikes_.begin(), cStrikes_.end(),
-                                         CloseEnoughComparator(cfStrikes_[i])) -
+                                         detail::CloseEnoughComparator(cfStrikes_[i])) -
                             cStrikes_.begin();
                 bool isFloorStrike = indF < fStrikes_.size();
                 bool isCapStrike = indC < cStrikes_.size();
