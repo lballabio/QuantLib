@@ -156,7 +156,7 @@ void InflationTest::checkSeasonality(const Handle<ZeroInflationTermStructure>& h
     }
 
     // Check that the unit seasonality fixings agree with the no seasonality fixings
-    for (int i = 0; i < fixingDates.size(); i++) {
+    for (Size i = 0; i < fixingDates.size(); i++) {
         if (fabs(noSeasonalityFixings[i] - unitSeasonalityFixings[i]) > tolerance) {
             BOOST_ERROR("Seasonality doesn't work correctly when seasonality factors are set = 1"
                 << "No seasonality fixing is: " << noSeasonalityFixings[i] 
@@ -186,7 +186,7 @@ void InflationTest::checkSeasonality(const Handle<ZeroInflationTermStructure>& h
     }
 
     // Check that the calculated fixings agree with the expected fixings
-    for (int i = 0; i < fixingDates.size(); i++) {
+    for (Size i = 0; i < fixingDates.size(); i++) {
         if (fabs(expectedSeasonalityFixings[i] - nonUnitSeasonalityFixings[i]) > tolerance) {
             BOOST_ERROR("Seasonality doesn't work correctly for non-unit seasonality factors."
                 << " Expected fixing is: " << expectedSeasonalityFixings[i]
@@ -203,7 +203,7 @@ void InflationTest::checkSeasonality(const Handle<ZeroInflationTermStructure>& h
     }
 
     // Check that seasonality has been unset by comparing with the no seasonality fixings
-    for (int i = 0; i < fixingDates.size(); i++) {
+    for (Size i = 0; i < fixingDates.size(); i++) {
         if (fabs(noSeasonalityFixings[i] - unsetSeasonalityFixings[i]) > tolerance) {
             BOOST_ERROR("Unsetting seasonality doesn't work correctly."
                 << " No seasonality fixing is: " << noSeasonalityFixings[i]
