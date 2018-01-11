@@ -161,8 +161,11 @@ namespace QuantLib {
 
         protected:
             virtual void validate() const;
+            // Added zeroPeriodEnd to allow for overriding the zero period end date in 
+            // some cases where using d leads to inconsistent results
             virtual Rate seasonalityCorrection(Rate r, const Date &d, const DayCounter &dc,
-                                               const Date &curveBaseDate, bool isZeroRate) const;
+                                               const Date &curveBaseDate, bool isZeroRate,
+                                               const Date& zeroPeriodEnd = Null<Date>()) const;
     };
 
 

@@ -20,6 +20,9 @@
 #ifndef quantlib_test_inflation_hpp
 #define quantlib_test_inflation_hpp
 
+#include <ql/termstructures/inflation/piecewisezeroinflationcurve.hpp>
+#include <ql/indexes/inflationindex.hpp>
+
 #include <boost/test/unit_test.hpp>
 
 /* remember to document new and/or updated tests in the Doxygen
@@ -34,6 +37,9 @@ public:
     static void testYYIndex();
     static void testYYTermStructure();
     static boost::unit_test_framework::test_suite* suite();
+private:
+    static void checkSeasonality(const QuantLib::Handle<QuantLib::ZeroInflationTermStructure>& hz, 
+        const boost::shared_ptr<QuantLib::ZeroInflationIndex>& ii);
 };
 
 

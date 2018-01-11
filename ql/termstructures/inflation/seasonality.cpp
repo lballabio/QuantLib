@@ -124,9 +124,14 @@ namespace QuantLib {
     Rate MultiplicativePriceSeasonality::correctZeroRate(const Date &d,
                                                          const Rate r,
                                                          const InflationTermStructure& iTS) const {
-        std::pair<Date,Date> lim = inflationPeriod(iTS.baseDate(), iTS.frequency());
-        Date curveBaseDate = lim.second;
-        return seasonalityCorrection(r, d, iTS.dayCounter(), curveBaseDate, true);
+        // Mimic the logic in ZeroInflationIndex::forecastFixing for choosing the
+        // curveBaseDate and effective fixing date. This means that we should retrieve
+        // the input seasonality adjustments when we look at I_{SA}(t) / I_{NSA}(t).
+        Date curveBaseDate = iTS.baseDate();
+        Date effectiveFixingDate = iTS.indexIsInterpolated() ? d : 
+            inflationPeriod(d, iTS.frequency()).first;
+        
+        return seasonalityCorrection(r, d, iTS.dayCounter(), curveBaseDate, true, effectiveFixingDate);
     }
 
 
@@ -189,7 +194,8 @@ namespace QuantLib {
                                                                const Date& atDate,
                                                                const DayCounter& dc,
                                                                const Date& curveBaseDate,
-                                                               const bool isZeroRate) const {
+                                                               const bool isZeroRate,
+                                                               const Date& zeroPeriodEnd) const {
         // need _two_ corrections in order to get: seasonality = factor[atDate-seasonalityBase] / factor[reference-seasonalityBase]
         // i.e. for ZERO inflation rates you have the true fixing at the curve base so this factor must be normalized to one
         //      for YoY inflation rates your reference point is the year before
@@ -201,10 +207,16 @@ namespace QuantLib {
         if (isZeroRate) {
             Rate factorBase = this->seasonalityFactor(curveBaseDate);
             Real seasonalityAt = factorAt / factorBase;
-            Time timeFromCurveBase = dc.yearFraction(curveBaseDate, atDate);
+
+            Time timeFromCurveBase;
+            if (zeroPeriodEnd == Null<Date>()) {
+                timeFromCurveBase = dc.yearFraction(curveBaseDate, atDate);
+            } else {
+                timeFromCurveBase = dc.yearFraction(curveBaseDate, zeroPeriodEnd);
+            }
+
             f = std::pow(seasonalityAt, 1/timeFromCurveBase);
-        }
-        else {
+        } else {
             Rate factor1Ybefore = this->seasonalityFactor(atDate - Period(1,Years));
             f = factorAt / factor1Ybefore;
         }
