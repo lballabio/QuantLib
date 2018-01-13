@@ -575,7 +575,7 @@ namespace QuantLib {
                                 for (Size i=1; i<n_-1; ++i) {
                                     Real Smin = std::min(S_[i-1], S_[i]);
                                     Real Smax = std::max(S_[i-1], S_[i]);
-                                    tmp_[i] = 3.0*Smin*Smax/(Smax+2.0*Smin);
+                                    tmp_[i] = Smin == 0 || Smax == 0 ? 0 : 3.0*Smin*Smax/(Smax+2.0*Smin);
                                 }
                                 // end points
                                 tmp_[0]    = ((2.0*dx_[   0]+dx_[   1])*S_[   0] - dx_[   0]*S_[   1]) / (dx_[   0]+dx_[   1]);
