@@ -266,7 +266,7 @@ namespace QuantLib {
             Real atm = std::pow(1.0 + atm_quote, mat.length());
             Real S = atm * df;
             for (Size i = 0; i < cfStrikes_.size(); ++i) {
-                Real K_quote = cfStrikes_[i] / 100.0;
+                Real K_quote = cfStrikes_[i];
                 Real K = std::pow(1.0 + K_quote, mat.length());
                 Size indF = std::find_if(fStrikes_.begin(), fStrikes_.end(),
                                          detail::CloseEnoughComparator(cfStrikes_[i])) -
