@@ -376,6 +376,18 @@ void InflationCPICapFloorTest::cpicapfloorpricesurface() {
         }
     }
 
+    // Test the price method also i.e. does it pick out the correct premium?
+    // Look up premium from surface at 3 years and strike of 1%
+    // Expect, as 1% < ATM, to get back floor premium at 1% i.e. 53.61 bps
+    // Instead we get back cap premium at 1% because price method compares
+    // 1 with atm of 0.03059
+    Real premium = cpiSurf.price(3 * Years, 1.0);
+    Real expPremium = (*common.fPriceUK)[2][0];
+    if (fabs(premium - expPremium) > 1e-12) {
+        BOOST_ERROR("The requested premium, " << premium
+            << ", does not equal the expected premium, " << expPremium << ".");
+    }
+
     // remove circular refernce
     common.hcpi.linkTo(boost::shared_ptr<ZeroInflationTermStructure>());
 }
