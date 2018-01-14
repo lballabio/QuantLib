@@ -441,8 +441,6 @@ void InflationCPICapFloorTest::cpicapfloorpricer() {
 
     aCap.setPricingEngine(engine);
 
-    Date d = common.cpiCFsurfUK->cpiOptionDateFromTenor(Period(3,Years));
-
     // We should get back the cap premium at strike 0.03 i.e. 227.6 bps
     Real cached = (*common.cPriceUK)[0][0];
 
