@@ -433,8 +433,14 @@ void InflationCPICapFloorTest::cpicapfloorpricer() {
 
     Date d = common.cpiCFsurfUK->cpiOptionDateFromTenor(Period(3,Years));
 
+    // Error is just being masked with following line of commented code
+    // You should really get back the cap premium at strike 0.03 i.e. 227.6 bps
+    // Instead the units of strike for the CPI surface are in percent and to find 
+    // premium for the 0.03 strike cap, an interpolation is done between 0 and 1 i.e. 
+    // the 0 and 0.01 strikes to obtain an incorrect NPV of 913.6 bps
+    // Real cached = cpiCFsurfUKh->capPrice(d, strike);
+    Real cached = (*common.cPriceUK)[0][0];
 
-    Real cached = cpiCFsurfUKh->capPrice(d, strike);
     QL_REQUIRE(fabs(cached - aCap.NPV())<1e-10,"InterpolatingCPICapFloorEngine does not reproduce cached price: "
                << cached << " vs " << aCap.NPV());
 
