@@ -20,6 +20,7 @@
 
 #include "inflation.hpp"
 #include "utilities.hpp"
+
 #include <ql/cashflows/indexedcashflow.hpp>
 #include <ql/indexes/inflation/ukrpi.hpp>
 #include <ql/indexes/inflation/euhicp.hpp>
@@ -42,14 +43,15 @@
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/instruments/yearonyearinflationswap.hpp>
 
+#include <boost/make_shared.hpp>
 
 using boost::unit_test_framework::test_suite;
-
 
 using namespace QuantLib;
 
 using std::fabs;
 using std::pow;
+using std::vector;
 
 #define REPORT_FAILURE(d, res, periodName) \
     BOOST_ERROR("wrong " << periodName << " inflation period for Date (1 " \
@@ -97,6 +99,123 @@ namespace {
 // zero inflation tests, index, termstructure, and swaps
 //===========================================================================================
 
+namespace {
+
+void checkSeasonality(const Handle<ZeroInflationTermStructure>& hz, 
+    const boost::shared_ptr<ZeroInflationIndex>& ii) {
+    
+    QL_REQUIRE(!hz->hasSeasonality(), "We require that the initially passed in term structure "
+        << "does not have seasonality");
+
+    // Tolerance that we will use below when comparing projected index fixings
+    Rate tolerance = 1e-12;
+
+    Date trueBaseDate = inflationPeriod(hz->baseDate(), ii->frequency()).second;
+    Date seasonalityBaseDate(31, January, trueBaseDate.year());
+    
+    // Create two different seasonality objects
+    
+    // 1) Monthly seasonality with all elements equal to 1 <=> no seasonality
+    vector<Rate> seasonalityFactors(12, 1.0);
+    boost::shared_ptr<MultiplicativePriceSeasonality> unitSeasonality = 
+        boost::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
+
+    // 2) Seasonality with factors != 1.0
+    seasonalityFactors[0] = 1.003245;
+    seasonalityFactors[1] = 1.000000;
+    seasonalityFactors[2] = 0.999715;
+    seasonalityFactors[3] = 1.000495;
+    seasonalityFactors[4] = 1.000929;
+    seasonalityFactors[5] = 0.998687;
+    seasonalityFactors[6] = 0.995949;
+    seasonalityFactors[7] = 0.994682;
+    seasonalityFactors[8] = 0.995949;
+    seasonalityFactors[9] = 1.000519;
+    seasonalityFactors[10] = 1.003705;
+    seasonalityFactors[11] = 1.004186;
+
+    boost::shared_ptr<MultiplicativePriceSeasonality> nonUnitSeasonality =
+        boost::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
+    
+    // Create dates on which we will check fixings
+    vector<Date> fixingDates(12);
+    Date anchorDate(14, January, 2013);
+    for (Size i = 0; i < fixingDates.size(); ++i) {
+        fixingDates[i] = anchorDate + i * Months;
+    }
+
+    // Projected inflation index fixings when there is no seasonality
+    vector<Rate> noSeasonalityFixings(12, 1.0);
+    for (Size i = 0; i < fixingDates.size(); ++i) {
+        noSeasonalityFixings[i] = ii->fixing(fixingDates[i], true);
+    }
+
+    // Set seasonality of all 1's and get the projected index fixings
+    hz->setSeasonality(unitSeasonality);
+    vector<Rate> unitSeasonalityFixings(12, 1.0);
+    for (Size i = 0; i < fixingDates.size(); ++i) {
+        unitSeasonalityFixings[i] = ii->fixing(fixingDates[i], true);
+    }
+
+    // Check that the unit seasonality fixings agree with the no seasonality fixings
+    for (Size i = 0; i < fixingDates.size(); i++) {
+        if (fabs(noSeasonalityFixings[i] - unitSeasonalityFixings[i]) > tolerance) {
+            BOOST_ERROR("Seasonality doesn't work correctly when seasonality factors are set = 1"
+                << "No seasonality fixing is: " << noSeasonalityFixings[i] 
+                << " but unit seasonality fixing is: " << unitSeasonalityFixings[i]
+                << " for fixing date " << io::iso_date(fixingDates[i]));
+        }
+    }
+
+    // Testing seasonality correction when seasonality factors are different from 1
+    // We expect to see that I_{SA}(t) = I_{NSA}(t) * S(t) / S(t_b)
+    Month baseCpiMonth = hz->baseDate().month();
+    Size baseCpiIndex = static_cast<Size>(baseCpiMonth) - 1;
+    Rate baseSeasonality = seasonalityFactors[baseCpiIndex];
+
+    // These are the expected fixings
+    vector<Rate> expectedSeasonalityFixings(12, 1.0);
+    for (Size i = 0; i < expectedSeasonalityFixings.size(); ++i) {
+        expectedSeasonalityFixings[i] = ii->fixing(fixingDates[i], true) * 
+            seasonalityFactors[i] / baseSeasonality;
+    }
+
+    // Set the seasonality and calculate the actual seasonally adjusted fixings
+    hz->setSeasonality(nonUnitSeasonality);
+    vector<Rate> nonUnitSeasonalityFixings(12, 1.0);
+    for (Size i = 0; i < fixingDates.size(); ++i) {
+        nonUnitSeasonalityFixings[i] = ii->fixing(fixingDates[i], true);
+    }
+
+    // Check that the calculated fixings agree with the expected fixings
+    for (Size i = 0; i < fixingDates.size(); i++) {
+        if (fabs(expectedSeasonalityFixings[i] - nonUnitSeasonalityFixings[i]) > tolerance) {
+            BOOST_ERROR("Seasonality doesn't work correctly for non-unit seasonality factors."
+                << " Expected fixing is: " << expectedSeasonalityFixings[i]
+                << " but calculated fixing is: " << nonUnitSeasonalityFixings[i]
+                << " for fixing date " << io::iso_date(fixingDates[i]));
+        }
+    }
+
+    // Testing that unsetting seasonality works also
+    hz->setSeasonality();
+    vector<Rate> unsetSeasonalityFixings(12, 1.0);
+    for (Size i = 0; i < fixingDates.size(); ++i) {
+        unsetSeasonalityFixings[i] = ii->fixing(fixingDates[i], true);
+    }
+
+    // Check that seasonality has been unset by comparing with the no seasonality fixings
+    for (Size i = 0; i < fixingDates.size(); i++) {
+        if (fabs(noSeasonalityFixings[i] - unsetSeasonalityFixings[i]) > tolerance) {
+            BOOST_ERROR("Unsetting seasonality doesn't work correctly."
+                << " No seasonality fixing is: " << noSeasonalityFixings[i]
+                << " but after unsetting seasonality fixing is: " << unitSeasonalityFixings[i]
+                << " for fixing date " << io::iso_date(fixingDates[i]));
+        }
+    }
+}
+
+}
 
 void InflationTest::testZeroIndex() {
     BOOST_TEST_MESSAGE("Testing zero inflation indices...");
@@ -359,151 +478,8 @@ void InflationTest::testZeroTermStructure() {
                         << " discount " << nominalTS->discount(nzcis.maturityDate())
                         );
 
-
-    //===========================================================================================
-    // Test multiplicative seasonality in price
-    //
-
-    //Seasonality factors NOT normalized
-    //and UKRPI is not interpolated
-    Date trueBaseDate = inflationPeriod(hz->baseDate(), ii->frequency()).second;
-    Date seasonallityBaseDate(31,January,trueBaseDate.year());
-    std::vector<Rate> seasonalityFactors(12);
-    seasonalityFactors[0] = 1.003245;
-    seasonalityFactors[1] = 1.000000;
-    seasonalityFactors[2] = 0.999715;
-    seasonalityFactors[3] = 1.000495;
-    seasonalityFactors[4] = 1.000929;
-    seasonalityFactors[5] = 0.998687;
-    seasonalityFactors[6] = 0.995949;
-    seasonalityFactors[7] = 0.994682;
-    seasonalityFactors[8] = 0.995949;
-    seasonalityFactors[9] = 1.000519;
-    seasonalityFactors[10] = 1.003705;
-    seasonalityFactors[11] = 1.004186;
-
-    //Creating two different seasonality objects
-    //
-    boost::shared_ptr<MultiplicativePriceSeasonality> seasonality_1(new MultiplicativePriceSeasonality());
-    std::vector<Rate> seasonalityFactors_1(12, 1.0);
-    seasonality_1->set(seasonallityBaseDate,Monthly,seasonalityFactors_1);
-
-    boost::shared_ptr<MultiplicativePriceSeasonality> seasonality_real(
-        new MultiplicativePriceSeasonality(seasonallityBaseDate,Monthly,seasonalityFactors));
-    //Testing seasonality correction when seasonality factors are = 1
-    //
-    Rate fixing[] = {
-        ii->fixing(Date(14,January  ,2013),true),
-        ii->fixing(Date(14,February ,2013),true),
-        ii->fixing(Date(14,March    ,2013),true),
-        ii->fixing(Date(14,April    ,2013),true),
-        ii->fixing(Date(14,May      ,2013),true),
-        ii->fixing(Date(14,June     ,2013),true),
-        ii->fixing(Date(14,July     ,2013),true),
-        ii->fixing(Date(14,August   ,2013),true),
-        ii->fixing(Date(14,September,2013),true),
-        ii->fixing(Date(14,October  ,2013),true),
-        ii->fixing(Date(14,November ,2013),true),
-        ii->fixing(Date(14,December ,2013),true)
-    };
-
-    hz->setSeasonality(seasonality_1);
-    QL_REQUIRE(hz->hasSeasonality(),"[44] incorrectly believes NO seasonality correction");
-
-    Rate seasonalityFixing_1[] = {
-        ii->fixing(Date(14,January  ,2013),true),
-        ii->fixing(Date(14,February ,2013),true),
-        ii->fixing(Date(14,March    ,2013),true),
-        ii->fixing(Date(14,April    ,2013),true),
-        ii->fixing(Date(14,May      ,2013),true),
-        ii->fixing(Date(14,June     ,2013),true),
-        ii->fixing(Date(14,July     ,2013),true),
-        ii->fixing(Date(14,August   ,2013),true),
-        ii->fixing(Date(14,September,2013),true),
-        ii->fixing(Date(14,October  ,2013),true),
-        ii->fixing(Date(14,November ,2013),true),
-        ii->fixing(Date(14,December ,2013),true)
-
-    };
-
-    for(int i=0;i<12;i++){
-        if(std::fabs(fixing[i] - seasonalityFixing_1[i]) > eps) {
-            BOOST_ERROR("Seasonality doesn't work correctly when seasonality factors are set = 1");
-        }
-    }
-
-    //Testing seasonality correction when seasonality factors are different from 1
-    //
-    //0.998687 is the seasonality factor corresponding to June (the base CPI curve month)
-    //
-    Rate expectedFixing[] = {
-        ii->fixing(Date(14,January  ,2013),true) * 1.003245/0.998687,
-        ii->fixing(Date(14,February ,2013),true) * 1.000000/0.998687,
-        ii->fixing(Date(14,March    ,2013),true) * 0.999715/0.998687,
-        ii->fixing(Date(14,April    ,2013),true) * 1.000495/0.998687,
-        ii->fixing(Date(14,May      ,2013),true) * 1.000929/0.998687,
-        ii->fixing(Date(14,June     ,2013),true) * 0.998687/0.998687,
-        ii->fixing(Date(14,July     ,2013),true) * 0.995949/0.998687,
-        ii->fixing(Date(14,August   ,2013),true) * 0.994682/0.998687,
-        ii->fixing(Date(14,September,2013),true) * 0.995949/0.998687,
-        ii->fixing(Date(14,October  ,2013),true) * 1.000519/0.998687,
-        ii->fixing(Date(14,November ,2013),true) * 1.003705/0.998687,
-        ii->fixing(Date(14,December ,2013),true) * 1.004186/0.998687
-    };
-
-    hz->setSeasonality(seasonality_real);
-
-    Rate seasonalityFixing_real[] = {
-        ii->fixing(Date(14,January  ,2013),true),
-        ii->fixing(Date(14,February ,2013),true),
-        ii->fixing(Date(14,March    ,2013),true),
-        ii->fixing(Date(14,April    ,2013),true),
-        ii->fixing(Date(14,May      ,2013),true),
-        ii->fixing(Date(14,June     ,2013),true),
-        ii->fixing(Date(14,July     ,2013),true),
-        ii->fixing(Date(14,August   ,2013),true),
-        ii->fixing(Date(14,September,2013),true),
-        ii->fixing(Date(14,October  ,2013),true),
-        ii->fixing(Date(14,November ,2013),true),
-        ii->fixing(Date(14,December ,2013),true)
-    };
-
-    for(int i=0;i<12;i++){
-        if(std::fabs(expectedFixing[i] - seasonalityFixing_real[i]) > 0.01) {
-            BOOST_ERROR("Seasonality doesn't work correctly when considering seasonality factors != 1 "
-                        << expectedFixing[i] << " vs " << seasonalityFixing_real[i]);
-        }
-    }
-
-    //Testing Unset function
-    //
-    QL_REQUIRE(hz->hasSeasonality(),"[4] incorrectly believes NO seasonality correction");
-    hz->setSeasonality();
-    QL_REQUIRE(!hz->hasSeasonality(),"[5] incorrectly believes HAS seasonality correction");
-
-    Rate seasonalityFixing_unset[] = {
-        ii->fixing(Date(14,January  ,2013),true),
-        ii->fixing(Date(14,February ,2013),true),
-        ii->fixing(Date(14,March    ,2013),true),
-        ii->fixing(Date(14,April    ,2013),true),
-        ii->fixing(Date(14,May      ,2013),true),
-        ii->fixing(Date(14,June     ,2013),true),
-        ii->fixing(Date(14,July     ,2013),true),
-        ii->fixing(Date(14,August   ,2013),true),
-        ii->fixing(Date(14,September,2013),true),
-        ii->fixing(Date(14,October  ,2013),true),
-        ii->fixing(Date(14,November ,2013),true),
-        ii->fixing(Date(14,December ,2013),true)
-    };
-
-    for(int i=0;i<12;i++){
-        if(std::fabs(seasonalityFixing_unset[i] - seasonalityFixing_1[i]) > eps) {
-            BOOST_ERROR("UnsetSeasonality doesn't work correctly "
-                        << seasonalityFixing_unset[i] << " vs " << seasonalityFixing_1[i]);
-        }
-    }
-
-
+    // Perform checks on the seasonality for this non-interpolated index
+    checkSeasonality(hz, ii);
 
     //==============================================================================
     // now do an INTERPOLATED index, i.e. repeat everything on a fake version of
@@ -610,6 +586,9 @@ void InflationTest::testZeroTermStructure() {
                         << " indexed-predicted inflated leg " << nzcisyes.legNPV(1)
                         << " discount " << nominalTS->discount(nzcisyes.maturityDate())
                         );
+
+    // Perform checks on the seasonality for this interpolated index
+    checkSeasonality(hz, iiyes);
 
     // remove circular refernce
     hz.linkTo(boost::shared_ptr<ZeroInflationTermStructure>());
