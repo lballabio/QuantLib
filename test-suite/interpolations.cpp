@@ -943,6 +943,52 @@ void InterpolationTest::testAsFunctor() {
 }
 
 
+namespace {
+
+    Integer sign(Real y1, Real y2) {
+        return y1 == y2 ? 0 :
+               y1 < y2 ?  1 :
+                         -1 ;
+    }
+
+}
+
+void InterpolationTest::testFritschButland() {
+
+    BOOST_TEST_MESSAGE("Testing Fritsch-Butland interpolation...");
+
+    const Real x[5] = { 0.0, 1.0, 2.0, 3.0, 4.0 };
+    const Real y[][5] = {{ 1.0, 2.0, 1.0, 1.0, 2.0 },
+                         { 1.0, 2.0, 1.0, 1.0, 1.0 },
+                         { 2.0, 1.0, 0.0, 2.0, 3.0 }};
+
+    for (Size i=0; i<3; ++i) {
+
+        Interpolation f = FritschButlandCubic(BEGIN(x), END(x), BEGIN(y[i]));
+        f.update();
+
+        for (Size j=0; j<4; ++j) {
+            Real left_knot = x[j];
+            Integer expected_sign = sign(y[i][j], y[i][j+1]);
+            for (Size k=0; k<10; ++k) {
+                Real x1 = left_knot + k*0.1, x2 = left_knot + (k+1)*0.1;
+                Real y1 = f(x1), y2 = f(x2);
+                if (boost::math::isnan(y1))
+                    BOOST_ERROR("NaN detected in case " << i << ":"
+                                << std::fixed
+                                << "\n    f(" << x1 << ") = " << y1);
+                else if (sign(y1, y2) != expected_sign)
+                    BOOST_ERROR("interpolation is not monotonic "
+                                "in case " << i << ":"
+                                << std::fixed
+                                << "\n    f(" << x1 << ") = " << y1
+                                << "\n    f(" << x2 << ") = " << y2);
+            }
+        }
+    }
+}
+
+
 void InterpolationTest::testBackwardFlat() {
 
     BOOST_TEST_MESSAGE("Testing backward-flat interpolation...");
@@ -2221,6 +2267,7 @@ test_suite* InterpolationTest::suite() {
                         &InterpolationTest::testSplineErrorOnGaussianValues));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testMultiSpline));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testAsFunctor));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testFritschButland));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBackwardFlat));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testForwardFlat));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSabrInterpolation));
