@@ -112,7 +112,6 @@ namespace QuantLib {
         NinePointLinearOp correlationMap_;
         FdmHestonVariancePart dyMap_;
         FdmHestonEquityPart dxMap_;
-        const boost::shared_ptr<LocalVolTermStructure> leverageFct_;
     };
 }
 

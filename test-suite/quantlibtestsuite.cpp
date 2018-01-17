@@ -54,6 +54,7 @@
 #include "speedlevel.hpp"
 
 #include "americanoption.hpp"
+#include "andreasenhugevolatilityinterpl.hpp"
 #include "amortizingbond.hpp"
 #include "array.hpp"
 #include "asianoptions.hpp"
@@ -350,7 +351,9 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     test->add(QUANTLIB_TEST_CASE(startTimer));
 
+
     test->add(AmericanOptionTest::suite());
+    test->add(AndreasenHugeVolatilityInterplTest::suite(speed));
     test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite());
     test->add(AssetSwapTest::suite()); // fails with QL_USE_INDEXED_COUPON

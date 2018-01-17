@@ -4,6 +4,7 @@ QL_TESTS = \
 	speedlevel.hpp \
 	americanoption.hpp americanoption.cpp \
 	amortizingbond.hpp amortizingbond.cpp \
+	andreasenhugevolatilityinterpl.hpp andreasenhugevolatilityinterpl.cpp \
 	array.hpp array.cpp \
 	asianoptions.hpp asianoptions.cpp \
 	assetswap.hpp assetswap.cpp \

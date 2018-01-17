@@ -864,6 +864,10 @@
 				>
 			</File>
 			<File
+				RelativePath="andreasenhugevolatilityinterpl.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\array.cpp"
 				>
 			</File>
@@ -1426,6 +1430,10 @@
 			</File>
 			<File
 				RelativePath="amortizingbond.hpp"
+				>
+			</File>
+			<File
+				RelativePath="andreasenhugevolatilityinterpl.hpp"
 				>
 			</File>
 			<File

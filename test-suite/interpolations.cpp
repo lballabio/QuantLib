@@ -6,6 +6,7 @@
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2009 Dimitri Reiswich
  Copyright (C) 2014 Peter Caspers
+ Copyright (C) 2018 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -2248,6 +2249,42 @@ void InterpolationTest::testBSplines() {
     }
 }
 
+
+void InterpolationTest::testBackwardFlatOnSinglePoint() {
+    BOOST_TEST_MESSAGE("Testing piecewise constant interpolation on a "
+                       "single point...");
+    const std::vector<Real> knots(1, 1.0), values(1, 2.5);
+
+    const Interpolation impl(BackwardFlat().interpolate(
+        knots.begin(), knots.end(), values.begin()));
+
+    const Real x[] = { -1.0, 1.0, 2.0, 3.0 };
+
+    for (Size i=0; i < LENGTH(x); ++i) {
+        const Real calculated = impl(x[i], true);
+        const Real expected = values[0];
+
+        if (!close_enough(calculated, expected)) {
+            BOOST_FAIL("failed to reproduce a piecewise constant "
+                    "interpolation on a single point "
+                    << "\n   x         : " << x[i]
+                    << "\n   expected  : " << expected
+                    << "\n   calculated: " << calculated);
+        }
+
+        const Real expectedPrimitive = values[0]*(x[i] - knots[0]);
+        const Real calculatedPrimitive = impl.primitive(x[i], true);
+
+        if (!close_enough(calculatedPrimitive, expectedPrimitive)) {
+            BOOST_FAIL("failed to reproduce primitive on a piecewise constant "
+                    "interpolation for a single point "
+                    << "\n   x         : " << x[i]
+                    << "\n   expected  : " << expectedPrimitive
+                    << "\n   calculated: " << calculatedPrimitive);
+        }
+    }
+}
+
 test_suite* InterpolationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
 
@@ -2290,6 +2327,9 @@ test_suite* InterpolationTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
         &InterpolationTest::testLagrangeInterpolationOnChebyshevPoints));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBSplines));
+
+    suite->add(QUANTLIB_TEST_CASE(
+        &InterpolationTest::testBackwardFlatOnSinglePoint));
 
     return suite;
 }

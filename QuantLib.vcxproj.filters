@@ -1896,6 +1896,15 @@
     <ClInclude Include="ql\termstructures\volatility\equityfx\all.hpp">
       <Filter>termstructures\volatility\equityfx</Filter>
     </ClInclude>
+    <ClInclude Include="ql\termstructures\volatility\equityfx\andreasenhugelocalvoladapter.hpp">
+      <Filter>termstructures\volatility\equityfx</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\termstructures\volatility\equityfx\andreasenhugevolatilityadapter.hpp">
+      <Filter>termstructures\volatility\equityfx</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\termstructures\volatility\equityfx\andreasenhugevolatilityinterpl.hpp">
+      <Filter>termstructures\volatility\equityfx</Filter>
+    </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\equityfx\blackconstantvol.hpp">
       <Filter>termstructures\volatility\equityfx</Filter>
     </ClInclude>
@@ -5147,6 +5156,15 @@
     </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\capfloor\constantcapfloortermvol.cpp">
       <Filter>termstructures\volatility\capfloor</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\termstructures\volatility\equityfx\andreasenhugelocalvoladapter.cpp">
+      <Filter>termstructures\volatility\equityfx</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\termstructures\volatility\equityfx\andreasenhugevolatilityadapter.cpp">
+      <Filter>termstructures\volatility\equityfx</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\termstructures\volatility\equityfx\andreasenhugevolatilityinterpl.cpp">
+      <Filter>termstructures\volatility\equityfx</Filter>
     </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\equityfx\blackvariancecurve.cpp">
       <Filter>termstructures\volatility\equityfx</Filter>
