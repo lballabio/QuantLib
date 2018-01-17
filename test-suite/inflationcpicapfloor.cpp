@@ -277,8 +277,8 @@ namespace {
 
             // cpi CF price surf data
             Period cfMat[] = {3*Years, 5*Years, 7*Years, 10*Years, 15*Years, 20*Years, 30*Years};
-            Real cStrike[] = {3, 4, 5, 6};
-            Real fStrike[] = {-1, 0, 1, 2};
+            Real cStrike[] = {0.03, 0.04, 0.05, 0.06};
+            Real fStrike[] = {-0.01, 0, 0.01, 0.02};
             Size ncStrikes = 4, nfStrikes = 4, ncfMaturities = 7;
 
             Real cPrice[7][4] = {
@@ -376,6 +376,16 @@ void InflationCPICapFloorTest::cpicapfloorpricesurface() {
         }
     }
 
+    // Test the price method also i.e. does it pick out the correct premium?
+    // Look up premium from surface at 3 years and strike of 1%
+    // Expect, as 1% < ATM, to get back floor premium at 1% i.e. 53.61 bps
+    Real premium = cpiSurf.price(3 * Years, 0.01);
+    Real expPremium = (*common.fPriceUK)[2][0];
+    if (fabs(premium - expPremium) > 1e-12) {
+        BOOST_ERROR("The requested premium, " << premium
+            << ", does not equal the expected premium, " << expPremium << ".");
+    }
+
     // remove circular refernce
     common.hcpi.linkTo(boost::shared_ptr<ZeroInflationTermStructure>());
 }
@@ -431,10 +441,9 @@ void InflationCPICapFloorTest::cpicapfloorpricer() {
 
     aCap.setPricingEngine(engine);
 
-    Date d = common.cpiCFsurfUK->cpiOptionDateFromTenor(Period(3,Years));
+    // We should get back the cap premium at strike 0.03 i.e. 227.6 bps
+    Real cached = (*common.cPriceUK)[0][0];
 
-
-    Real cached = cpiCFsurfUKh->capPrice(d, strike);
     QL_REQUIRE(fabs(cached - aCap.NPV())<1e-10,"InterpolatingCPICapFloorEngine does not reproduce cached price: "
                << cached << " vs " << aCap.NPV());
 
