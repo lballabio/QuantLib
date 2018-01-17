@@ -618,9 +618,9 @@ void AndreasenHugeVolatilityInterplTest::testArbitrageFree() {
             boost::make_shared<AndreasenHugeVolatilityAdapter>(
                 andreasenHugeVolInterplation));
 
-        for (Real m = -0.7; m < 0.7; m+=0.025) {
+        for (Real m = -0.7; m < 0.7; m+=0.05) {
 
-            for (Size weeks=4; weeks < 104; ++weeks) {
+            for (Size weeks=6; weeks < 52; ++weeks) {
                 const Date maturityDate = today + Period(weeks, Weeks);
 
                 const Time t = dc.yearFraction(today, maturityDate);
@@ -629,7 +629,7 @@ void AndreasenHugeVolatilityInterplTest::testArbitrageFree() {
 
                 // J. Gatheral, Arbitrage-free SVI volatility surfaces
                 // http://mfe.baruch.cuny.edu/wp-content/uploads/2013/01/OsakaSVI2012.pdf
-                const Real eps = 1e-4;
+                const Real eps = 0.025;
                 const Real k  = fwd*std::exp(m);
                 const Real km = fwd*std::exp(m - eps);
                 const Real kp = fwd*std::exp(m + eps);
@@ -652,7 +652,7 @@ void AndreasenHugeVolatilityInterplTest::testArbitrageFree() {
                                << "\n    strike:  " << k
                                << "\n    forward: " << fwd
                                << "\n    time:    " << t
-                               << "\n    C_kk:    " << g_k);
+                               << "\n    g_k:    " << g_k);
                 }
 
                 const Real deltaT = 1.0/365.;
@@ -949,9 +949,11 @@ void AndreasenHugeVolatilityInterplTest::testMovingReferenceDate() {
             boost::make_shared<AndreasenHugeVolatilityInterpl>(
                 calibrationSet, spot, ts, ts));
 
+
+    const Real tol = 1e-8;
     const boost::shared_ptr<AndreasenHugeVolatilityAdapter> volatilityAdapter(
         boost::make_shared<AndreasenHugeVolatilityAdapter>(
-            andreasenHugeVolInterplation));
+            andreasenHugeVolInterplation, tol));
 
     const boost::shared_ptr<AndreasenHugeLocalVolAdapter> localVolAdapter(
         boost::make_shared<AndreasenHugeLocalVolAdapter>(
@@ -982,20 +984,19 @@ void AndreasenHugeVolatilityInterplTest::testMovingReferenceDate() {
     const Volatility modImpliedVol =
         volatilityAdapter->blackVol(maturity, s0, true);
 
-    const Real tol = 1000*QL_EPSILON;
-    if (std::fabs(modImpliedVol - impliedVol) > tol)
+    const Real diff = std::fabs(modImpliedVol - impliedVol);
+    if (diff > 10*tol)
         BOOST_FAIL("modified implied vol should match direct calculation"
                 << "\n    implied vol         : " << impliedVol
                 << "\n    modified implied vol: " << modImpliedVol
+                << "\n    difference          : " << diff
                 << "\n    tolerance           : " << tol);
 }
 
 test_suite* AndreasenHugeVolatilityInterplTest::suite(SpeedLevel speed) {
     test_suite* suite =
-        BOOST_TEST_SUITE("local volatility tests");
+        BOOST_TEST_SUITE("Andreasen-Huge volatility interpolation tests");
 
-    suite->add(QUANTLIB_TEST_CASE(
-        &AndreasenHugeVolatilityInterplTest::testAndreasenHugePut));
     suite->add(QUANTLIB_TEST_CASE(
         &AndreasenHugeVolatilityInterplTest::testSingleOptionCalibration));
     suite->add(QUANTLIB_TEST_CASE(
@@ -1008,6 +1009,8 @@ test_suite* AndreasenHugeVolatilityInterplTest::suite(SpeedLevel speed) {
         &AndreasenHugeVolatilityInterplTest::testMovingReferenceDate));
 
     if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(
+            &AndreasenHugeVolatilityInterplTest::testAndreasenHugePut));
         suite->add(QUANTLIB_TEST_CASE(
             &AndreasenHugeVolatilityInterplTest::testAndreasenHugeCall));
         suite->add(QUANTLIB_TEST_CASE(

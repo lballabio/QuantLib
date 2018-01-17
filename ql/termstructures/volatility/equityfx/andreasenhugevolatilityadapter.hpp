@@ -34,7 +34,7 @@ namespace QuantLib {
       public:
         AndreasenHugeVolatilityAdapter(
             const boost::shared_ptr<AndreasenHugeVolatilityInterpl>& volInterpl,
-            Real eps = 1e-10);
+            Real eps = 1e-6);
 
         Date maxDate() const;
         Real minStrike() const;
