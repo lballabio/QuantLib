@@ -27,8 +27,8 @@
 #define quantlib_sobol_ld_rsg_hpp
 
 #include <ql/methods/montecarlo/sample.hpp>
-#include <vector>
 #include <boost/cstdint.hpp>
+#include <vector>
 
 namespace QuantLib {
 

@@ -22,6 +22,7 @@
 
 #include <ql/termstructures/credit/hazardratestructure.hpp>
 #include <ql/models/shortrate/onefactormodel.hpp>
+#include <ql/stochasticprocess.hpp>
 
 namespace QuantLib {
     
