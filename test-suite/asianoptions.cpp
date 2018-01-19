@@ -1184,7 +1184,7 @@ void AsianOptionTest::testAllFixingsInThePast() {
 
     // MC geometric average-price
 
-    Real runningProduct = std::pow(spot->value(), pastFixings);
+    Real runningProduct = std::pow(spot->value(), int(pastFixings));
 
     DiscreteAveragingAsianOption option3(Average::Geometric, runningProduct,
                                          pastFixings, fixingDates,
