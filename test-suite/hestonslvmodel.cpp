@@ -1541,7 +1541,7 @@ void HestonSLVModelTest::testFDMCalibration() {
 }
 
 void HestonSLVModelTest::testLocalVolsvSLVPropDensity() {
-    BOOST_TEST_MESSAGE("Testing local volatility vs SLV model");
+    BOOST_TEST_MESSAGE("Testing local volatility vs SLV model...");
 
     SavedSettings backup;
     const DayCounter dc = ActualActual();

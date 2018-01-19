@@ -314,7 +314,7 @@ void CashFlowsTest::testIrregularLastCouponReferenceDatesAtEndOfMonth() {
 }
 
 void CashFlowsTest::testPartialScheduleLegConstruction() {
-    BOOST_TEST_MESSAGE("Testing partial schedule leg construction");
+    BOOST_TEST_MESSAGE("Testing leg construction with partial schedule...");
     // schedule with irregular first and last period
     Schedule schedule = MakeSchedule()
                             .from(Date(15, September, 2017))
@@ -326,10 +326,10 @@ void CashFlowsTest::testPartialScheduleLegConstruction() {
     Schedule schedule2(schedule.dates(), NullCalendar(), Unadjusted, Unadjusted,
                        6 * Months, boost::none, schedule.endOfMonth(),
                        schedule.isRegular());
-    // same scehdule, data based, without metadata
+    // same schedule, date based, without metadata
     Schedule schedule3(schedule.dates());
 
-    // fixed rate legs based on the three scehdule
+    // fixed rate legs based on the three schedule
     Leg leg = FixedRateLeg(schedule).withNotionals(100.0).withCouponRates(
         0.01, ActualActual(ActualActual::ISMA));
     Leg leg2 = FixedRateLeg(schedule2).withNotionals(100.0).withCouponRates(
