@@ -74,7 +74,7 @@ namespace QuantLib {
             Real minStrike = Null<Real>(),
             Real maxStrike = Null<Real>(),
             const boost::shared_ptr<OptimizationMethod>& optimizationMethod =
-                boost::make_shared<LevenbergMarquardt>(),
+                boost::shared_ptr<OptimizationMethod>(new LevenbergMarquardt),
             const EndCriteria& endCriteria =
                 EndCriteria(500, 100, 1e-12, 1e-10, 1e-10));
 
