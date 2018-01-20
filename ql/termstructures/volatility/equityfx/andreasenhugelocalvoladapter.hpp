@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file andreasenhugelocalvolatilityadapter.hpp
+/*! \file andreasenhugelocalvoladapter.hpp
     \brief Implements the LocalVolTermStructure interface based on a
            Andreasen-Huge volatility interpolation
 */

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file andreasenhugelocalvolatility.hpp
+/*! \file andreasenhugevolatilityinterpl.hpp
     \brief Andreasen-Huge local volatility calibration and interpolation
 */
 
