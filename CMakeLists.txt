@@ -46,3 +46,11 @@ endif (Boost_FOUND)
 add_subdirectory(ql)
 add_subdirectory(Examples)
 add_subdirectory(test-suite)
+
+#
+# Copy across the ANSI config file into the build directory. Users
+# need to change userconfig.hpp if they require different settings.
+#
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ql/config.ansi.hpp
+  ${PROJECT_BINARY_DIR}/config.hpp COPYONLY)
+install(FILES ${PROJECT_BINARY_DIR}/config.hpp DESTINATION include/ql)
