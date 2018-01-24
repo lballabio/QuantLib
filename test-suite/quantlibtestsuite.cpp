@@ -105,6 +105,7 @@
 #include "fdheston.hpp"
 #include "fdmlinearop.hpp"
 #include "forwardoption.hpp"
+#include "forwardrateagreement.hpp"
 #include "functions.hpp"
 #include "gaussianquadratures.hpp"
 #include "garch.hpp"
@@ -269,7 +270,7 @@ QuantLib::Date evaluation_date(int argc, char** argv) {
     return knownGoodDefault;
 }
 
-    
+
 SpeedLevel speed_level(int argc, char** argv) {
     /*! Again, dead simple parser:
         - passing --slow causes all tests to be run;
@@ -390,6 +391,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(FdHestonTest::suite(speed));
     test->add(FdmLinearOpTest::suite());
     test->add(ForwardOptionTest::suite());
+    test->add(ForwardRateAgreementTest::suite());
     test->add(FunctionsTest::suite());
     test->add(GARCHTest::suite());
     test->add(GaussianQuadraturesTest::suite());

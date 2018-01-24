@@ -39,13 +39,6 @@ namespace QuantLib {
 
         QL_REQUIRE(notionalAmount > 0.0, "notionalAmount must be positive");
 
-        // do I adjust this ?
-        // valueDate_ = calendar_.adjust(valueDate_,businessDayConvention_);
-        Date fixingDate = calendar_.advance(valueDate_,
-            -static_cast<Integer>(settlementDays_), Days);
-        forwardRate_ = InterestRate(index->fixing(fixingDate),
-                                    index->dayCounter(),
-                                    Simple, Once);
         strikeForwardRate_ = InterestRate(strikeForwardRate,
                                           index->dayCounter(),
                                           Simple, Once);
