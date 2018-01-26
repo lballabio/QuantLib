@@ -38,21 +38,19 @@ void ForwardRateAgreementTest::testConstructionWithoutACurve() {
 
         // set up the index
         RelinkableHandle<YieldTermStructure> curveHandle;
-        boost::shared_ptr<IborIndex> index = boost::make_shared<USDLibor>(Period(3, TimeUnit::Months), curveHandle);
+        boost::shared_ptr<IborIndex> index = boost::make_shared<USDLibor>(Period(3, Months), curveHandle);
 
         // set up quotes with no values
-        std::vector<boost::shared_ptr<SimpleQuote> > quotes = {
-                boost::make_shared<SimpleQuote>(),
-                boost::make_shared<SimpleQuote>(),
-                boost::make_shared<SimpleQuote>()
-        };
+        std::vector<boost::shared_ptr<SimpleQuote> > quotes;
+        quotes.push_back(boost::make_shared<SimpleQuote>());
+        quotes.push_back(boost::make_shared<SimpleQuote>());
+        quotes.push_back(boost::make_shared<SimpleQuote>());
 
         // set up the curve (this bit is a very rough sketch - i'm actually using swaps !)
-        std::vector<boost::shared_ptr<RateHelper> > helpers = {
-                boost::make_shared<FraRateHelper>(Handle<Quote>(quotes[0]), Period(1, TimeUnit::Years), index),
-                boost::make_shared<FraRateHelper>(Handle<Quote>(quotes[1]), Period(2, TimeUnit::Years), index),
-                boost::make_shared<FraRateHelper>(Handle<Quote>(quotes[2]), Period(3, TimeUnit::Years), index)
-        };
+        std::vector<boost::shared_ptr<RateHelper> > helpers;
+        helpers.push_back(boost::make_shared<FraRateHelper>(Handle<Quote>(quotes[0]), Period(1, Years), index));
+        helpers.push_back(boost::make_shared<FraRateHelper>(Handle<Quote>(quotes[1]), Period(2, Years), index));
+        helpers.push_back(boost::make_shared<FraRateHelper>(Handle<Quote>(quotes[2]), Period(3, Years), index));
 
         boost::shared_ptr<PiecewiseYieldCurve<ForwardRate, QuantLib::Cubic> > curve = boost::make_shared<PiecewiseYieldCurve<ForwardRate, QuantLib::Cubic> >(spotDate,
                                                                                                                                                              helpers,
@@ -61,9 +59,9 @@ void ForwardRateAgreementTest::testConstructionWithoutACurve() {
         curveHandle.linkTo(curve);
 
         // set up the instrument to price
-        ForwardRateAgreement fra(spotDate + Period(6, TimeUnit::Months),
-                                 spotDate + Period(18, TimeUnit::Months),
-                                 Position::Type::Long,
+        ForwardRateAgreement fra(spotDate + Period(6, Months),
+                                 spotDate + Period(18, Months),
+                                 Position::Long,
                                  0,
                                  1,
                                  index,
