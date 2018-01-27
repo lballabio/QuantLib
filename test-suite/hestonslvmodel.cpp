@@ -1961,7 +1961,7 @@ void HestonSLVModelTest::testMonteCarloCalibration() {
 
     const DayCounter dc = ActualActual();
     const Date todaysDate(5, Jan, 2016);
-    const Date maturityDate = todaysDate + Period(2, Years);
+    const Date maturityDate = todaysDate + Period(1, Years);
     Settings::instance().evaluationDate() = todaysDate;
 
     const Real s0 = 100;
@@ -1990,7 +1990,7 @@ void HestonSLVModelTest::testMonteCarloCalibration() {
         = boost::make_shared<HestonModel>(hestonProcess);
 
     const Size xGrid = 400;
-    const Size nSims[]  = { 40000 };
+    const Size nSims[] = { 40000 };
 
     for (Size m=0; m < LENGTH(nSims); ++m) {
         const Size nSim = nSims[m];
@@ -2007,7 +2007,7 @@ void HestonSLVModelTest::testMonteCarloCalibration() {
                                 1234ul, SobolRsg::JoeKuoD7))
                       : boost::shared_ptr<BrownianGeneratorFactory>(
                               new MTBrownianGeneratorFactory(1234ul)),
-                maturityDate, 182, xGrid, nSim).leverageFunction();
+                maturityDate, 91, xGrid, nSim).leverageFunction();
 
         const boost::shared_ptr<PricingEngine> bsEngine(
             boost::make_shared<AnalyticEuropeanEngine>(
@@ -2015,12 +2015,10 @@ void HestonSLVModelTest::testMonteCarloCalibration() {
                     spot, qTS, rTS,
                     Handle<BlackVolTermStructure>(flatVol(0.3, dc)))));
 
-        const Real strikes[] = { 50, 80, 90, 100, 110, 120, 150, 200 };
+        const Real strikes[] = { 50, 80, 100, 120, 150, 200 };
         const Date maturities[] = {
-            todaysDate + Period(1, Months),  todaysDate + Period(2, Months),
             todaysDate + Period(3, Months),  todaysDate + Period(6, Months),
-            todaysDate + Period(12, Months), todaysDate + Period(18, Months),
-            todaysDate + Period(24, Months)
+            todaysDate + Period(12, Months)
         };
 
         Real qualityFactor = 0.0;
@@ -2034,7 +2032,7 @@ void HestonSLVModelTest::testMonteCarloCalibration() {
             const boost::shared_ptr<PricingEngine> fdEngine
                 = boost::make_shared<FdHestonVanillaEngine>(
                     hestonModel, std::max(Size(26), Size(maturityTime*51)),
-                    401, 101, 0,
+                    201, 51, 0,
                     FdmSchemeDesc::ModifiedCraigSneyd(), leverageFct);
 
             const boost::shared_ptr<Exercise> exercise
@@ -2065,7 +2063,7 @@ void HestonSLVModelTest::testMonteCarloCalibration() {
             }
         }
 
-        if (qualityFactor/nValues > 5.0) {
+        if (qualityFactor/nValues > 7.5) {
             BOOST_ERROR(
                 "Failed to reproduce average calibration quality"
                 << "\n average calibration quality : "
