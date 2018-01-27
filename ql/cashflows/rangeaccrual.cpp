@@ -335,7 +335,7 @@ namespace QuantLib {
             const Real lowerPrice = digitalPrice(lowerTrigger, initialValue, expiry, deflator);
             const Real upperPrice = digitalPrice(upperTrigger, initialValue, expiry, deflator);
             const Real result =  lowerPrice - upperPrice;
-            QL_REQUIRE(result >0.,
+            QL_REQUIRE(result >=0.,
                 "RangeAccrualPricerByBgm::digitalRangePrice:\n digitalPrice("<<upperTrigger<<
                 "): "<<upperPrice<<" >  digitalPrice("<<lowerTrigger<<"): "<<lowerPrice);
             return result;

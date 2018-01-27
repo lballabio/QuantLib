@@ -558,6 +558,9 @@ void MatricesTest::testCholeskyDecomposition() {
 }
 
 void MatricesTest::testMoorePenroseInverse() {
+
+    BOOST_TEST_MESSAGE("Testing Moore-Penrose Inverse...");
+
     // this is taken from
     // http://de.mathworks.com/help/matlab/ref/pinv.html
     Real tmp[8][6] = {{64, 2, 3, 61, 60, 6},    {9, 55, 54, 12, 13, 51},
@@ -590,7 +593,7 @@ void MatricesTest::testMoorePenroseInverse() {
     }
 
     Array y = A*x;
-    Real tol2 = 1000.0 * QL_EPSILON;
+    Real tol2 = 2000.0 * QL_EPSILON;
     for (Size i = 0; i < 6; ++i) {
         if (std::abs(y[i] - 260.0) > tol2) {
             BOOST_FAIL(
