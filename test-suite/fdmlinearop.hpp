@@ -46,6 +46,7 @@ public:
     static void testSpareMatrixReference();
     static void testSparseMatrixZeroAssignment();
     static void testFdmMesherIntegral();
+    static void testLowVolatilityHighDividendBlackScholesMesher();
 
     static boost::unit_test_framework::test_suite* suite();
 };

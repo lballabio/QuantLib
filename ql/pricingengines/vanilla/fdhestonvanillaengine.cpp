@@ -74,7 +74,8 @@ namespace QuantLib {
                       process->riskFreeRate(), varianceMesher->volaEstimate()),
                       maturity, payoff->strike(),
                       Null<Real>(), Null<Real>(), 0.0001, 2.0,
-                      std::pair<Real, Real>(payoff->strike(), 0.1)));
+                      std::pair<Real, Real>(payoff->strike(), 0.1),
+                      arguments_.cashFlow));
         }
         else {
             QL_REQUIRE(arguments_.cashFlow.empty(),"multiple strikes engine "

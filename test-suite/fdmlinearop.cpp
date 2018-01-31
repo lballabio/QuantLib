@@ -82,6 +82,9 @@
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
+
+#include <boost/make_shared.hpp>
+
 #include <numeric>
 
 using namespace QuantLib;
@@ -1604,6 +1607,80 @@ void FdmLinearOpTest::testFdmMesherIntegral() {
     }
 }
 
+void FdmLinearOpTest::testLowVolatilityHighDividendBlackScholesMesher() {
+    BOOST_TEST_MESSAGE("Testing Black-Scholes mesher in a low volatility and "
+            "high dividend scenario...");
+
+    SavedSettings backup;
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(28, January, 2018);
+
+    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(100.0));
+    const Handle<YieldTermStructure> qTS(flatRate(today, 0.07, dc));
+    const Handle<YieldTermStructure> rTS(flatRate(today, 0.16, dc));
+    const Handle<BlackVolTermStructure> volTS(flatVol(today, 0.0, dc));
+
+    const boost::shared_ptr<GeneralizedBlackScholesProcess> process =
+        boost::make_shared<GeneralizedBlackScholesProcess>(
+            spot, qTS, rTS, volTS);
+
+    const Date firstDivDate = today + Period(7, Months);
+    const Real firstDivAmount = 10.0;
+    const Date secondDivDate = today + Period(11, Months);
+    const Real secondDivAmount = 5.0;
+
+    DividendSchedule divSchedule;
+    divSchedule.push_back(
+        boost::make_shared<FixedDividend>(firstDivAmount, firstDivDate));
+    divSchedule.push_back(
+        boost::make_shared<FixedDividend>(secondDivAmount, secondDivDate));
+
+    const Size size = 100;
+    const Time maturity = 1.0;
+    const Real strike = 100;
+    const Real eps = 0.0001;
+    const Real scaleFactor = 1.5;
+
+    const std::vector<Real> loc = FdmBlackScholesMesher(
+        size,
+        process,
+        maturity, strike,
+        Null<Real>(), Null<Real>(),
+        eps, scaleFactor,
+        std::make_pair(Null<Real>(), Null<Real>()),
+        divSchedule).locations();
+
+    const Real maximum = spot->value() *
+        qTS->discount(firstDivDate)/rTS->discount(firstDivDate);
+
+    const Real minimum = (1 - firstDivAmount
+        /(spot->value()*qTS->discount(firstDivDate)/rTS->discount(firstDivDate)))
+        * spot->value()*qTS->discount(secondDivDate)/rTS->discount(secondDivDate)
+         - secondDivAmount;
+
+    const Real calculatedMax = std::exp(loc.back());
+    const Real calculatedMin = std::exp(loc.front());
+
+
+    const Real tol = 1e5*QL_EPSILON;
+
+    if (std::fabs(calculatedMax - maximum) > tol*maximum) {
+        BOOST_FAIL("Upper bound for Black-Scholes mesher failed: "
+            << "\n    calculated: " << calculatedMax
+            << "\n    expected:   " << maximum
+            << "\n    difference: " << std::fabs(calculatedMax - maximum)
+            << "\n    tolerance:  " << tol);
+    }
+
+    if (std::fabs(calculatedMin - minimum) > tol*minimum) {
+        BOOST_FAIL("Lower bound for Black-Scholes mesher failed: "
+            << "\n    calculated: " << calculatedMin
+            << "\n    expected:   " << minimum
+            << "\n    difference: " << std::fabs(calculatedMin - minimum)
+            << "\n    tolerance:  " << tol);
+    }
+}
 
 test_suite* FdmLinearOpTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("linear operator tests");
@@ -1635,7 +1712,8 @@ test_suite* FdmLinearOpTest::suite() {
     suite->add(
         QUANTLIB_TEST_CASE(&FdmLinearOpTest::testSparseMatrixZeroAssignment));
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmMesherIntegral));
+    suite->add(QUANTLIB_TEST_CASE(
+        &FdmLinearOpTest::testLowVolatilityHighDividendBlackScholesMesher));
 
     return suite;
-    
 }

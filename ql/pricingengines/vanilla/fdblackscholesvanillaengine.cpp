@@ -56,7 +56,8 @@ namespace QuantLib {
             new FdmBlackScholesMesher(
                     xGrid_, process_, maturity, payoff->strike(), 
                     Null<Real>(), Null<Real>(), 0.0001, 1.5, 
-                    std::pair<Real, Real>(payoff->strike(), 0.1)));
+                    std::pair<Real, Real>(payoff->strike(), 0.1),
+                    arguments_.cashFlow));
         
         const boost::shared_ptr<FdmMesher> mesher (
             new FdmMesherComposite(equityMesher));
