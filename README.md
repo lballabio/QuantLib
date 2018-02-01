@@ -6,6 +6,7 @@ QuantLib: the free/open-source library for quantitative finance
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b4bc1058db994f24aa931b119a885eea)](https://www.codacy.com/app/lballabio/QuantLib)
 [![codecov](https://codecov.io/gh/lballabio/QuantLib/branch/master/graph/badge.svg)](https://codecov.io/gh/lballabio/QuantLib)
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/lballabio/QuantLib.svg)](http://isitmaintained.com/project/lballabio/QuantLib)
+[![Downloads per month](https://img.shields.io/sourceforge/dm/quantlib.svg)](https://sourceforge.net/projects/quantlib/files/)
 
 ---
 
