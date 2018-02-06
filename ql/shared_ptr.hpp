@@ -35,13 +35,19 @@
 
 namespace QuantLib {
 
-    #if defined(QL_USE_STD_SHARED_PTR)
-    using std::shared_ptr;
-    using std::make_shared;
-    #else
-    using boost::shared_ptr;
-    using boost::make_shared;
-    #endif
+    namespace ext {
+
+        #if defined(QL_USE_STD_SHARED_PTR)
+        using std::shared_ptr;
+        using std::make_shared;
+        using std::dynamic_pointer_cast;
+        #else
+        using boost::shared_ptr;
+        using boost::make_shared;
+        using boost::dynamic_pointer_cast;
+        #endif
+
+    }
 
 }
 
