@@ -447,7 +447,7 @@ void ShortRateModelTest::testExtendedCoxIngersollRossDiscountFactor() {
     const Real calculated = cirModel.discountBond(now, maturity, rate);
 
     const Real tol = 1e-6;
-    const Real diff = std::fabs(expected - calculated);
+    const Real diff = std::fabs(expected-calculated);
 
     if (diff > tol) {
         BOOST_ERROR("Failed to reproduce zero bound price:"
