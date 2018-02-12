@@ -76,10 +76,13 @@ namespace QuantLib {
             new FdmBlackScholesMesher(
                 xGrid_,
                 FdmBlackScholesMesher::processHelper(
-                    process->s0(), process->dividendYield(), 
+                    process->s0(), process->dividendYield(),
                     process->riskFreeRate(), varianceMesher->volaEstimate()),
-                maturity, payoff->strike(), xMin, xMax));
-        
+                maturity, payoff->strike(),
+                xMin, xMax, 0.0001, 1.5,
+                std::make_pair(Null<Real>(), Null<Real>()),
+                arguments_.cashFlow));
+
         const boost::shared_ptr<FdmMesher> mesher (
             new FdmMesherComposite(equityMesher, varianceMesher));
 
