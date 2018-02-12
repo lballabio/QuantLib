@@ -124,9 +124,14 @@ namespace QuantLib {
     Rate MultiplicativePriceSeasonality::correctZeroRate(const Date &d,
                                                          const Rate r,
                                                          const InflationTermStructure& iTS) const {
-        std::pair<Date,Date> lim = inflationPeriod(iTS.baseDate(), iTS.frequency());
-        Date curveBaseDate = lim.second;
-        return seasonalityCorrection(r, d, iTS.dayCounter(), curveBaseDate, true);
+        // Mimic the logic in ZeroInflationIndex::forecastFixing for choosing the
+        // curveBaseDate and effective fixing date. This means that we should retrieve
+        // the input seasonality adjustments when we look at I_{SA}(t) / I_{NSA}(t).
+        Date curveBaseDate = iTS.baseDate();
+        Date effectiveFixingDate = iTS.indexIsInterpolated() ? d : 
+            inflationPeriod(d, iTS.frequency()).first;
+        
+        return seasonalityCorrection(r, effectiveFixingDate, iTS.dayCounter(), curveBaseDate, true);
     }
 
 

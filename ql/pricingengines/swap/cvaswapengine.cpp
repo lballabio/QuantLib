@@ -26,6 +26,7 @@
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 #include <boost/make_shared.hpp>
 
 namespace QuantLib {
@@ -44,7 +45,7 @@ namespace QuantLib {
     defaultTS_(ctptyDTS), 
     ctptyRecoveryRate_(ctptyRecoveryRate),
     invstDTS_(invstDTS.empty() ? Handle<DefaultProbabilityTermStructure>(
-        boost::make_shared<FlatHazardRate>(0, ctptyDTS->calendar(), 1.e-12, 
+        boost::make_shared<FlatHazardRate>(0, NullCalendar(), 1.e-12, 
         ctptyDTS->dayCounter()) ) : invstDTS ),
     invstRecoveryRate_(invstRecoveryRate)
   {
@@ -70,7 +71,7 @@ namespace QuantLib {
     defaultTS_(ctptyDTS), 
     ctptyRecoveryRate_(ctptyRecoveryRate),
     invstDTS_(invstDTS.empty() ? Handle<DefaultProbabilityTermStructure>(
-        boost::make_shared<FlatHazardRate>(0, ctptyDTS->calendar(), 1.e-12, 
+        boost::make_shared<FlatHazardRate>(0, NullCalendar(), 1.e-12, 
         ctptyDTS->dayCounter()) ) : invstDTS ),
     invstRecoveryRate_(invstRecoveryRate)
   {
@@ -95,7 +96,7 @@ namespace QuantLib {
     defaultTS_(ctptyDTS), 
     ctptyRecoveryRate_(ctptyRecoveryRate),
     invstDTS_(invstDTS.empty() ? Handle<DefaultProbabilityTermStructure>(
-        boost::make_shared<FlatHazardRate>(0, ctptyDTS->calendar(), 1.e-12, 
+        boost::make_shared<FlatHazardRate>(0, NullCalendar(), 1.e-12, 
         ctptyDTS->dayCounter()) ) : invstDTS ),
     invstRecoveryRate_(invstRecoveryRate)
   {

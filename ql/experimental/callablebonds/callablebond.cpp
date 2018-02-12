@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2008 Allen Kuo
+ Copyright (C) 2017 BN Algorithms Ltd
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -20,8 +21,9 @@
 #include <ql/experimental/callablebonds/callablebond.hpp>
 #include <ql/experimental/callablebonds/blackcallablebondengine.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/math/solvers1d/brent.hpp>
-
+#include <ql/experimental/math/numericaldifferentiation.hpp>
 namespace QuantLib {
 
     CallableBond::CallableBond(Natural settlementDays,
@@ -89,7 +91,6 @@ namespace QuantLib {
         return results_->value-targetValue_;
     }
 
-
     Volatility CallableBond::impliedVolatility(
                               Real targetValue,
                               const Handle<YieldTermStructure>& discountCurve,
@@ -105,6 +106,258 @@ namespace QuantLib {
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
         return solver.solve(f, accuracy, guess, minVol, maxVol);
+    }
+
+    namespace {
+
+    template<class T>
+    class RestoreVal {
+        T orig_;
+        T &ref_;
+    public:
+        explicit RestoreVal(T &ref):
+            orig_(ref),
+            ref_(ref)  { }
+        ~RestoreVal()
+        {
+            ref_=orig_;
+        }
+    };
+
+    class OASHelper {
+    public:
+        OASHelper(const boost::function<Real(Real)>& npvhelper,
+                  Real targetValue):
+            npvhelper_(npvhelper),
+            targetValue_(targetValue)
+        {
+        }
+
+        Real operator()(Spread x) const
+        {
+            return targetValue_ - npvhelper_(x);
+        }
+    private:
+        const boost::function<Real(Real)>& npvhelper_;
+        Real targetValue_;
+    };
+
+
+    /* Convert a continuous spread to a conventional spread to a
+       reference yield curve
+    */
+    Real continuousToConv(Real oas,
+                          const Bond &b,
+                          const Handle<YieldTermStructure>& yts,
+                          const DayCounter& dayCounter,
+                          Compounding compounding,
+                          Frequency frequency)
+    {
+        double zz=yts->zeroRate(b.maturityDate(),
+                                dayCounter,
+                                Continuous,
+                                NoFrequency);
+        InterestRate baseRate(zz,
+                              dayCounter,
+                              Continuous,
+                              NoFrequency);
+        InterestRate spreadedRate(oas+zz,
+                                  dayCounter,
+                                  Continuous,
+                                  NoFrequency);
+        double br=baseRate.equivalentRate(dayCounter,
+                                          compounding,
+                                          frequency,
+                                          yts->referenceDate(),
+                                          b.maturityDate()).rate();
+        double sr=spreadedRate.equivalentRate(dayCounter,
+                                              compounding,
+                                              frequency,
+                                              yts->referenceDate(),
+                                              b.maturityDate()).rate();
+        // Return the spread
+        return sr-br;
+    }
+
+    /* Convert a conventional spread to a reference yield curve to a
+       continuous spread
+    */
+    Real convToContinuous(Real oas,
+                          const Bond &b,
+                          const Handle<YieldTermStructure>& yts,
+                          const DayCounter& dayCounter,
+                          Compounding compounding,
+                          Frequency frequency)
+    {
+        double zz=yts->zeroRate(b.maturityDate(),
+                                dayCounter,
+                                compounding,
+                                frequency);
+        InterestRate baseRate(zz,
+                              dayCounter,
+                              compounding,
+                              frequency);
+
+        InterestRate spreadedRate(oas+zz,
+                                  dayCounter,
+                                  compounding,
+                                  frequency);
+        double br=baseRate.equivalentRate(dayCounter,
+                                          Continuous,
+                                          NoFrequency,
+                                          yts->referenceDate(),
+                                          b.maturityDate()).rate();
+        double sr=spreadedRate.equivalentRate(dayCounter,
+                                              Continuous,
+                                              NoFrequency,
+                                              yts->referenceDate(),
+                                              b.maturityDate()).rate();
+        // Return the spread
+        return sr-br;
+    }
+
+    }
+
+
+    CallableBond::NPVSpreadHelper::NPVSpreadHelper(CallableBond& bond):
+        bond_(bond),
+        results_(dynamic_cast<const Instrument::results*>(bond.engine_->getResults()))
+    {
+        bond.setupArguments(bond.engine_->getArguments());
+    }
+
+   Real CallableBond::NPVSpreadHelper::operator()(Real x) const
+   {
+       CallableBond::arguments* args=
+           dynamic_cast<CallableBond::arguments*>(bond_.engine_->getArguments());
+       // Pops the original value when function finishes
+       RestoreVal<Spread> restorer(args->spread);
+       args->spread=x;
+       bond_.engine_->calculate();
+       return results_->value;
+   }
+
+    Spread CallableBond::OAS(Real cleanPrice,
+                             const Handle<YieldTermStructure>& engineTS,
+                             const DayCounter& dayCounter,
+                             Compounding compounding,
+                             Frequency frequency,
+                             Date settlement,
+                             Real accuracy,
+                             Size maxIterations,
+                             Spread guess)
+    {
+        if (settlement == Date())
+            settlement = settlementDate();
+
+        Real dirtyPrice = cleanPrice + accruedAmount(settlement);
+
+        boost::function<Real(Real)> f = NPVSpreadHelper(*this);
+        OASHelper obj(f, dirtyPrice);
+
+        Brent solver;
+        solver.setMaxEvaluations(maxIterations);
+
+        Real step = 0.001;
+        Spread oas=solver.solve(obj, accuracy, guess, step);
+
+        return continuousToConv(oas,
+                                *this,
+                                engineTS,
+                                dayCounter,
+                                compounding,
+                                frequency);
+    }
+
+
+
+    Real CallableBond::cleanPriceOAS(Real oas,
+                                     const Handle<YieldTermStructure>& engineTS,
+                                     const DayCounter& dayCounter,
+                                     Compounding compounding,
+                                     Frequency frequency,
+                                     Date settlement)
+    {
+        if (settlement == Date())
+            settlement = settlementDate();
+
+        oas=convToContinuous(oas,
+                             *this,
+                             engineTS,
+                             dayCounter,
+                             compounding,
+                             frequency);
+
+        boost::function<Real(Real)> f = NPVSpreadHelper(*this);
+
+        Real P = f(oas) - accruedAmount(settlement);
+
+        return P;
+    }
+
+    Real CallableBond::effectiveDuration(Real oas,
+                                         const Handle<YieldTermStructure>& engineTS,
+                                         const DayCounter& dayCounter,
+                                         Compounding compounding,
+                                         Frequency frequency,
+                                         Real bump)
+    {
+        Real P = cleanPriceOAS(oas,
+                               engineTS,
+                               dayCounter,
+                               compounding,
+                               frequency);
+
+        Real Ppp = cleanPriceOAS(oas+bump,
+                                 engineTS,
+                                 dayCounter,
+                                 compounding,
+                                 frequency);
+        Real Pmm = cleanPriceOAS(oas-bump,
+                                 engineTS,
+                                 dayCounter,
+                                 compounding,
+                                 frequency);
+            
+        if ( P == 0.0 )
+            return 0;
+        else
+            {
+                return (Pmm-Ppp)/(2*P*bump);
+            }
+    }
+
+    Real CallableBond::effectiveConvexity(Real oas,
+                                          const Handle<YieldTermStructure>& engineTS,
+                                          const DayCounter& dayCounter,
+                                          Compounding compounding,
+                                          Frequency frequency,
+                                          Real bump)
+    {
+        Real P = cleanPriceOAS(oas,
+                               engineTS,
+                               dayCounter,
+                               compounding,
+                               frequency);
+
+        Real Ppp = cleanPriceOAS(oas+bump,
+                                 engineTS,
+                                 dayCounter,
+                                 compounding,
+                                 frequency);
+        Real Pmm = cleanPriceOAS(oas-bump,
+                                 engineTS,
+                                 dayCounter,
+                                 compounding,
+                                 frequency);
+            
+        if ( P == 0.0 )
+            return 0;
+        else
+            {
+                return (Ppp + Pmm - 2*P) / ( std::pow(bump,2) * P);
+            }        
+
     }
 
 
@@ -226,6 +479,8 @@ namespace QuantLib {
                 }
             }
         }
+
+        arguments->spread = 0.0;
     }
 
 

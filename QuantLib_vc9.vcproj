@@ -5069,6 +5069,30 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\andreasenhugelocalvoladapter.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\andreasenhugelocalvoladapter.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\andreasenhugevolatilityadapter.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\andreasenhugevolatilityadapter.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\andreasenhugevolatilityinterpl.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\andreasenhugevolatilityinterpl.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\termstructures\volatility\equityfx\blackconstantvol.hpp"
 						>
 					</File>

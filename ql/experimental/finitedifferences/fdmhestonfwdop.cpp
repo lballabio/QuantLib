@@ -203,7 +203,7 @@ namespace QuantLib {
 
     Disposable<Array> FdmHestonFwdOp::preconditioner(
         const Array& u, Real dt) const{
-        return solve_splitting(0, u, dt);
+        return solve_splitting(1, u, dt);
     }
 
     Disposable<Array> FdmHestonFwdOp::getLeverageFctSlice(Time t1, Time t2)

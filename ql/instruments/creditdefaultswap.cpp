@@ -106,7 +106,8 @@ namespace QuantLib {
       protectionStart_(protectionStart == Null<Date>() ? schedule[0] :
                                                          protectionStart) {
         QL_REQUIRE((protectionStart_ <= schedule[0])
-            || (schedule.rule() == DateGeneration::CDS),
+            || (schedule.rule() == DateGeneration::CDS)
+            || (schedule.rule() == DateGeneration::CDS2015),
                    "protection can not start after accrual");
 
         leg_ = FixedRateLeg(schedule)

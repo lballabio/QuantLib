@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003, 2004, 2017 Ferdinando Ametrano
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2005, 2007, 2008, 2017 StatPro Italia srl
  Copyright (C) 2009, 2011 Master IMAFA - Polytech'Nice Sophia - Université de Nice Sophia Antipolis
  Copyright (C) 2014 Bernd Lewerenz
@@ -1184,7 +1184,7 @@ void AsianOptionTest::testAllFixingsInThePast() {
 
     // MC geometric average-price
 
-    Real runningProduct = std::pow(spot->value(), pastFixings);
+    Real runningProduct = std::pow(spot->value(), int(pastFixings));
 
     DiscreteAveragingAsianOption option3(Average::Geometric, runningProduct,
                                          pastFixings, fixingDates,

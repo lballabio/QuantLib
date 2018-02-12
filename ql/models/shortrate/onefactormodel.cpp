@@ -64,7 +64,7 @@ namespace QuantLib {
                 <TermStructureFittingParameter::NumericalImpl>& theta,
             const TimeGrid& timeGrid)
     : TreeLattice1D<OneFactorModel::ShortRateTree>(timeGrid, tree->size(1)),
-      tree_(tree), dynamics_(dynamics) {
+      tree_(tree), dynamics_(dynamics), spread_(0.0) {
 
         theta->reset();
         Real value = 1.0;
@@ -87,7 +87,7 @@ namespace QuantLib {
                          const boost::shared_ptr<ShortRateDynamics>& dynamics,
                          const TimeGrid& timeGrid)
     : TreeLattice1D<OneFactorModel::ShortRateTree>(timeGrid, tree->size(1)),
-      tree_(tree), dynamics_(dynamics) {}
+      tree_(tree), dynamics_(dynamics), spread_(0.0) {}
 
     OneFactorModel::OneFactorModel(Size nArguments)
     : ShortRateModel(nArguments) {}

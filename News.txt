@@ -1,92 +1,111 @@
 
-Changes for QuantLib 1.11:
+Changes for QuantLib 1.12:
 ==========================
 
-QuantLib 1.11 includes 47 pull requests and fixed issues from several
-contributors.
+QuantLib 1.12 includes 54 pull requests from several contributors.
 
 The most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib/milestone/6?closed=1>.
+<https://github.com/lballabio/QuantLib/milestone/7?closed=1>.
 
 PORTABILITY
 
-- This is the last version of QuantLib to support the now obsolete
-  Dev-C++ IDE with a maintained project file.  The project will be
-  removed in next release.
+- As announced in the previous release, support for the Dev-C++ IDE
+  was removed.
+
+- In April 2018, Microsoft will end its support for Microsoft Visual
+  C++ 2008.  Therefore, this is the last version of QuantLib to
+  support it with maintained project files.  The next release will
+  only contain project files for Visual C++ 2010 and later.
+
+- It is now possible to build a usable library with CMake on Windows
+  (thanks to Javier G. Sogo).
+
+- Fix autotools build outside the source tree (thanks to Joshua
+  Ulrich).
 
 INSTRUMENTS AND PRICING ENGINES
 
-- Added ISDA pricing engine for credit default swaps (thanks to
-  Guillaume Horel, Jose Aparicio and Peter Caspers).
+- Added OAS calculation to experimental callable bonds (thanks to
+  Bojan Nikolic).
 
-- Added Andersen-Piterbarg engine for the Heston model (thanks to
-  Klaus Spanderen).
-
-- Improved experimental vanna-volga engine for double-barrier knock-in
-  options (thanks to Giorgio Pazmandi).
-
-- Added theta calculation to experimental Kirk spread-option engine
-  (thanks to Krzysztof Wos).
+- Avoided infinite loop for some sets of parameters in experimental
+  variance-gamma engine (thanks to Roy Zywina).
 
 CASH FLOWS
 
-- Added optional payment lag to fixed, floating and OIS legs (thanks
-  to Fabrice Lecuyer and Joseph Jeisman).
-
-- Fixed yield calculation with 30/360 US day count convention and
-  settlement on the 31st of the month (thanks to Frank Xue).
+- It is now possible to build a cash-flow leg from a schedule created
+  from a precalculated vector of dates (thanks to Peter Caspers).
 
 MODELS
 
-- Added adaptive successive over-relaxation method for implied
-  volatility calculation (thanks to Klaus Spanderen).
+- Affine models can now be used to bootstrap a default-probability
+  curve (thanks to Jose Aparicio).
 
-INDEXES
+- Added Andreasen-Huge volatility interpolation and local volatility
+  calibration (thanks to Klaus Spanderen).
 
-- Fixed day-count convention and spot lag for CAD LIBOR (thanks to
-  Oleg Kulkov).
+- Added Rannacher smoothing steps for Heston stochastic local
+  volatility calibration (thanks to Klaus Spanderen).
 
 TERM STRUCTURES
 
-- Optionally optimize setting up OIS helpers (thanks to Peter
-  Caspers).
+- Added L2 penalty to fitted parameters of fitted bond discount curve
+  (thanks to Robin Northcott).
+
+- Added an optional trading calendar to the FX-swap rate helper and
+  and optional payment lag to the OIS rate helper (thanks to Wojciech
+  Slusarski).
+
+- Fixed inconsistent treatment of strike in experimental CPI cap/floor
+  term price surface (thanks to Francis Duffy).
+
+- Correctly handled the case of overlapping strike regions for caps
+  and floors in experimental CPI cap/floor term price surface (thanks
+  to Peter Caspers).
+
+- Fixed calculation of seasonality correction for interpolated
+  inflation indexes (thanks to Francis Duffy).
+
+- Implemented composite zero-yield curve as combination of two
+  existing curves via a given binary function (thanks to Francois
+  Botha).
+
+- Fixed interpolation of shift in swaption volatility matrix (thanks
+  to Peter Caspers).
 
 DATE/TIME
 
-- Added Actual/365 Canadian day count convention (thanks to Andrea
-  Maggiulli).
+- Updated Chinese calendar for 2018 (thanks to Cheng Li).
+
+- Added Botswana calendar (thanks to Francois Botha).
+
+- Fixed a few problems with US calendars (thanks to Mike DelMedico and
+  to GitHub user ittegrat).
+
+- User-added holidays now work correctly when intraday calculations
+  are enabled (thanks to Klaus Spanderen for the fix and to GitHub
+  user volchemist for the report).
 
 MATH
 
-- Added GMRES iterative solver for large linear systems (thanks to
-  Klaus Spanderen).
-
-- Updated Hong Kong calendar up to 2020 (thanks to Nicholas Bertocchi
-  and Alix Lassauzet).
-
-BUILD
-
-- Added configure switch to enable unity build.
-
-TEST SUITE
-
-- Added --fast and --faster flags to the test-suite executable.  When
-  passed, slower tests are discarded so that the test suite runs in
-  just a few minutes.
+- Fixed monotonicity of Fritsch-Butland and prevented NaNs in some
+  cases (thanks to GitHub user Grant6899 for the fix and to Tom
+  Anderson for the report).
 
 DEPRECATED FEATURES
 
-- Remove the HestonExpansionEngine::numberOfEvaluations method
-  (deprecated in version 1.9).
+- The ChiSquareDistribution, NonCentralChiSquareDistribution,
+  InverseNonCentralChiSquareDistribution and GammaDistribution were
+  renamed to CumulativeChiSquareDistribution,
+  NonCentralCumulativeChiSquareDistribution,
+  InverseNonCentralCumulativeChiSquareDistribution and
+  CumulativeGammaDistribution, respectively (thanks to GitHub user
+  IGonza).  The old names are still available as typedefs and will be
+  removed in a future release.
 
-- Remove the MixedLinearCubicInterpolation and MixedLinearCubic
-  constructors not specifying the behavior of the mixed interpolation
-  (deprecated in version 1.8).
 
-- Remove deprecated overloads of the Swaption::impliedVolatility and
-  CapFloor::impliedVolatility methods (deprecated in version 1.9).
-
-- Remove NoArbSabrModel::checkAbsorptionMatrix method (deprecated in
-  version 1.8.1).
+Thanks go also to Marco Craveiro, Dirk Eddelbuettel, Lakshay Garg,
+Guillaume Horel, Alix Lassauzet, Patrick Lewis, and GitHub users
+bmmay, bingoko and tournierjc for smaller fixes and enhancements.
 

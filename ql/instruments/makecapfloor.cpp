@@ -38,7 +38,7 @@ namespace QuantLib {
       // because of an unknown fixed leg default tenor for a currency,
       // notice that only the floating leg of the swap is used anyway
       makeVanillaSwap_(MakeVanillaSwap(tenor, iborIndex, 0.0, forwardStart)
-                       .withFixedLegTenor(1*Years)) {}
+                       .withFixedLegTenor(1*Years).withFixedLegDayCount(Actual365Fixed())) {}
 
     MakeCapFloor::operator CapFloor() const {
         shared_ptr<CapFloor> capfloor = *this;

@@ -918,8 +918,8 @@ void AndreasenHugeVolatilityInterplTest::testDifferentOptimizers() {
 
 void AndreasenHugeVolatilityInterplTest::testMovingReferenceDate() {
     BOOST_TEST_MESSAGE(
-        "Testing reference date of adapter surface moves along with "
-        "evaluation date");
+        "Testing that reference date of adapter surface moves along with "
+        "evaluation date...");
 
     SavedSettings backup;
 
