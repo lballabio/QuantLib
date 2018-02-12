@@ -1607,9 +1607,74 @@ void FdmLinearOpTest::testFdmMesherIntegral() {
     }
 }
 
-void FdmLinearOpTest::testLowVolatilityHighDividendBlackScholesMesher() {
+void FdmLinearOpTest::testHighInterestRateBlackScholesMesher() {
+    BOOST_TEST_MESSAGE("Testing Black-Scholes mesher in a "
+            "high interest rate scenario...");
+
+    SavedSettings backup;
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(11, February, 2018);
+
+    const Real spot = 100;
+    const Rate r = 0.21;
+    const Rate q = 0.02;
+    const Volatility v = 0.25;
+
+    const boost::shared_ptr<GeneralizedBlackScholesProcess> process =
+        boost::make_shared<GeneralizedBlackScholesProcess>(
+            Handle<Quote>(boost::make_shared<SimpleQuote>(spot)),
+            Handle<YieldTermStructure>(flatRate(today, q, dc)),
+            Handle<YieldTermStructure>(flatRate(today, r, dc)),
+            Handle<BlackVolTermStructure>(flatVol(today, v, dc)));
+
+    const Size size = 5;
+    const Time maturity = 2.0;
+    const Real strike = 100;
+    const Real eps = 0.05;
+    const Real normInvEps = 1.64485363;
+    const Real scaleFactor = 2.5;
+
+    const std::vector<Real> loc = FdmBlackScholesMesher(
+        10, process, maturity, strike,
+        Null<Real>(), Null<Real>(), eps, scaleFactor).locations();
+
+    const Real calculatedMin = std::exp(loc.front());
+    const Real calculatedMax = std::exp(loc.back());
+
+    const Real minimum = spot
+        * std::exp(-normInvEps*scaleFactor*v*std::sqrt(maturity));
+    const Real maximum = spot
+        / process->riskFreeRate()->discount(maturity)
+        * process->dividendYield()->discount(maturity)
+        * std::exp( normInvEps*scaleFactor*v*std::sqrt(maturity));
+
+    const Real relTol = 1e-7;
+
+    const Real maxDiff = std::fabs(calculatedMax - maximum);
+    if (maxDiff > relTol*maximum) {
+        BOOST_FAIL("Upper bound for Black-Scholes mesher failed: "
+            << "\n    calculated: " << calculatedMax
+            << "\n    expected:   " << maximum
+            << std::scientific
+            << "\n    difference: " << maxDiff
+            << "\n    tolerance:  " << relTol*maximum);
+    }
+
+    const Real minDiff = std::fabs(calculatedMin - minimum);
+    if (minDiff > relTol*minimum) {
+        BOOST_FAIL("Lower bound for Black-Scholes mesher failed: "
+            << "\n    calculated: " << calculatedMin
+            << "\n    expected:   " << minimum
+            << std::scientific
+            << "\n    difference: " << minDiff
+            << "\n    tolerance:  " << relTol*minimum);
+    }
+}
+
+void FdmLinearOpTest::testLowVolatilityHighDiscreteDividendBlackScholesMesher() {
     BOOST_TEST_MESSAGE("Testing Black-Scholes mesher in a low volatility and "
-            "high dividend scenario...");
+            "high discrete dividend scenario...");
 
     SavedSettings backup;
 
@@ -1636,7 +1701,7 @@ void FdmLinearOpTest::testLowVolatilityHighDividendBlackScholesMesher() {
     divSchedule.push_back(
         boost::make_shared<FixedDividend>(secondDivAmount, secondDivDate));
 
-    const Size size = 100;
+    const Size size = 5;
     const Time maturity = 1.0;
     const Real strike = 100;
     const Real eps = 0.0001;
@@ -1663,22 +1728,24 @@ void FdmLinearOpTest::testLowVolatilityHighDividendBlackScholesMesher() {
     const Real calculatedMin = std::exp(loc.front());
 
 
-    const Real tol = 1e5*QL_EPSILON;
+    const Real relTol = 1e5*QL_EPSILON;
 
-    if (std::fabs(calculatedMax - maximum) > tol*maximum) {
+    const Real maxDiff = std::fabs(calculatedMax - maximum);
+    if (maxDiff > relTol*maximum) {
         BOOST_FAIL("Upper bound for Black-Scholes mesher failed: "
             << "\n    calculated: " << calculatedMax
             << "\n    expected:   " << maximum
-            << "\n    difference: " << std::fabs(calculatedMax - maximum)
-            << "\n    tolerance:  " << tol);
+            << "\n    difference: " << maxDiff
+            << "\n    tolerance:  " << relTol*maximum);
     }
 
-    if (std::fabs(calculatedMin - minimum) > tol*minimum) {
+    const Real minDiff = std::fabs(calculatedMin - minimum);
+    if (minDiff > relTol*minimum) {
         BOOST_FAIL("Lower bound for Black-Scholes mesher failed: "
             << "\n    calculated: " << calculatedMin
             << "\n    expected:   " << minimum
-            << "\n    difference: " << std::fabs(calculatedMin - minimum)
-            << "\n    tolerance:  " << tol);
+            << "\n    difference: " << minDiff
+            << "\n    tolerance:  " << relTol*minimum);
     }
 }
 
@@ -1713,7 +1780,9 @@ test_suite* FdmLinearOpTest::suite() {
         QUANTLIB_TEST_CASE(&FdmLinearOpTest::testSparseMatrixZeroAssignment));
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmMesherIntegral));
     suite->add(QUANTLIB_TEST_CASE(
-        &FdmLinearOpTest::testLowVolatilityHighDividendBlackScholesMesher));
+        &FdmLinearOpTest::testHighInterestRateBlackScholesMesher));
+    suite->add(QUANTLIB_TEST_CASE(
+        &FdmLinearOpTest::testLowVolatilityHighDiscreteDividendBlackScholesMesher));
 
     return suite;
 }

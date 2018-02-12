@@ -53,7 +53,7 @@ namespace QuantLib {
                     dividendSchedule[i]->amount()
                 ) );
 
-        const Size intermediateTimeSteps = std::max<Size>(1, 24.0*maturity);
+        const Size intermediateTimeSteps = std::max<Size>(2, 24.0*maturity);
         for (Size i=0; i < intermediateTimeSteps; ++i)
             intermediateSteps.push_back(
                 std::make_pair((i+1)*(maturity/intermediateTimeSteps), 0.0));
@@ -66,9 +66,9 @@ namespace QuantLib {
         Time lastDivTime = 0.0;
         Real fwd = S, mi = S, ma = S;
 
-        for (Size i=0; i < dividendSchedule.size(); ++i) {
-            const Real divAmount = dividendSchedule[i]->amount();
-            const Time divTime = process->time(dividendSchedule[i]->date());
+        for (Size i=0; i < intermediateSteps.size(); ++i) {
+            const Time divTime = intermediateSteps[i].first;
+            const Real divAmount = intermediateSteps[i].second;
 
             fwd = fwd / rTS->discount(divTime) * rTS->discount(lastDivTime)
                       * qTS->discount(divTime) / qTS->discount(lastDivTime);
