@@ -131,6 +131,7 @@ namespace QuantLib {
         //@}
         //! \name Utilities
         //@{
+        void resize(Size n);
         void swap(Array&);  // never throws
         //@}
 
@@ -461,6 +462,14 @@ namespace QuantLib {
 
     inline Array::reverse_iterator Array::rend() {
         return reverse_iterator(begin());
+    }
+
+    inline void Array::resize(Size n) {
+        if (n != n_) {
+            Array swp(n);
+            std::copy(begin(), begin()+std::min(n, n_), swp.begin());
+            swap(swp);
+        }
     }
 
     inline void Array::swap(Array& from) {
