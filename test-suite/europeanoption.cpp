@@ -1561,6 +1561,58 @@ void EuropeanOptionTest::testAnalyticEngineDiscountCurve() {
     BOOST_CHECK_NE(npvSingleCurve, npvMultiCurve);
 }
 
+
+void EuropeanOptionTest::testMethodOfLines() {
+    BOOST_TEST_MESSAGE("Testing method of lines to solve Black-Scholes PDEs...");
+
+    SavedSettings backup;
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(18, February, 2018);
+
+    Settings::instance().evaluationDate() = today;
+
+    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(100.0));
+    const Handle<YieldTermStructure> qTS(flatRate(today, 0.06, dc));
+    const Handle<YieldTermStructure> rTS(flatRate(today, 0.10, dc));
+    const Handle<BlackVolTermStructure> volTS(flatVol(today, 0.35, dc));
+
+    const Date maturity = today + Period(12, Months);
+
+    const boost::shared_ptr<BlackScholesMertonProcess> process =
+        boost::make_shared<BlackScholesMertonProcess>(
+            spot, qTS, rTS, volTS);
+
+    const boost::shared_ptr<PricingEngine> analytic =
+        boost::make_shared<AnalyticEuropeanEngine>(process);
+
+    const boost::shared_ptr<PricingEngine> pde =
+        boost::make_shared<FdBlackScholesVanillaEngine>(
+            process, 1, 100, 0, FdmSchemeDesc::MethodOfLines());
+
+    VanillaOption option(
+        boost::make_shared<PlainVanillaPayoff>(Option::Put, spot->value()),
+        boost::make_shared<EuropeanExercise>(maturity));
+
+    option.setPricingEngine(analytic);
+    const Real expected = option.NPV();
+
+    option.setPricingEngine(pde);
+    const Real calculated = option.NPV();
+
+    const Real tol = 0.01;
+    const Real diff = std::fabs(expected - calculated);
+
+    if (diff > tol) {
+        BOOST_FAIL("Failed to reproduce european option values with MOL"
+                   << "\n    calculated: " << calculated
+                   << "\n    expected:   " << expected
+                   << "\n    difference: " << diff
+                   << "\n    tolerance:  " << tol);
+    }
+}
+
+
 test_suite* EuropeanOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("European option tests");
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testValues));
@@ -1591,6 +1643,8 @@ test_suite* EuropeanOptionTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(
                        &EuropeanOptionTest::testAnalyticEngineDiscountCurve));
+
+    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testMethodOfLines));
 
     return suite;
 }
