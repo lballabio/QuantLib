@@ -32,13 +32,13 @@
 namespace QuantLib {
 
     FdmBlackScholesMesher::FdmBlackScholesMesher(
-            Size size,
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            Time maturity, Real strike,
-            Real xMinConstraint, Real xMaxConstraint, 
-            Real eps, Real scaleFactor,
-            const std::pair<Real, Real>& cPoint,
-            const DividendSchedule& dividendSchedule)
+        Size size,
+        const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+        Time maturity, Real strike,
+        Real xMinConstraint, Real xMaxConstraint,
+        Real eps, Real scaleFactor,
+        const std::pair<Real, Real>& cPoint,
+        const DividendSchedule& dividendSchedule)
     : Fdm1dMesher(size) {
 
         const Real S = process->x0();
