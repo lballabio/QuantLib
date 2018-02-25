@@ -49,7 +49,7 @@ namespace QuantLib {
         map_->setTime(t, t + 0.0001);
         bcSet_.applyBeforeApplying(*map_);
 
-        Array dxdt = -map_->apply(Array(u.begin(), u.end()));
+        const Array dxdt = -map_->apply(Array(u.begin(), u.end()));
 
         std::vector<Real> retVal(dxdt.begin(), dxdt.end());
         return retVal;
