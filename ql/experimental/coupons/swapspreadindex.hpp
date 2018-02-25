@@ -61,7 +61,8 @@ namespace QuantLib {
 
 
     inline Rate SwapSpreadIndex::forecastFixing(const Date& fixingDate) const {
-
+        // this also handles the case when one of indices has
+        // a historic fixing on the evaluation date
         return gearing1_ * swapIndex1_->fixing(fixingDate,false) +
             gearing2_ * swapIndex2_->fixing(fixingDate,false);
 
