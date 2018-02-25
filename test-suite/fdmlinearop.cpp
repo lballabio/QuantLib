@@ -1628,7 +1628,7 @@ void FdmLinearOpTest::testHighInterestRateBlackScholesMesher() {
             Handle<YieldTermStructure>(flatRate(today, r, dc)),
             Handle<BlackVolTermStructure>(flatVol(today, v, dc)));
 
-    const Size size = 5;
+    const Size size = 10;
     const Time maturity = 2.0;
     const Real strike = 100;
     const Real eps = 0.05;
@@ -1636,7 +1636,7 @@ void FdmLinearOpTest::testHighInterestRateBlackScholesMesher() {
     const Real scaleFactor = 2.5;
 
     const std::vector<Real> loc = FdmBlackScholesMesher(
-        10, process, maturity, strike,
+        size, process, maturity, strike,
         Null<Real>(), Null<Real>(), eps, scaleFactor).locations();
 
     const Real calculatedMin = std::exp(loc.front());
