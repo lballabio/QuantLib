@@ -40,6 +40,7 @@
 #include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <boost/progress.hpp>
+#include <boost/make_shared.hpp>
 #include <map>
 
 using namespace QuantLib;
