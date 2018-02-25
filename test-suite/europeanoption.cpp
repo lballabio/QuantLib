@@ -1562,8 +1562,9 @@ void EuropeanOptionTest::testAnalyticEngineDiscountCurve() {
 }
 
 
-void EuropeanOptionTest::testMethodOfLines() {
-    BOOST_TEST_MESSAGE("Testing method of lines to solve Black-Scholes PDEs...");
+void EuropeanOptionTest::testPDESchemes() {
+    BOOST_TEST_MESSAGE("Testing different PDE schemes "
+            "to solve Black-Scholes PDEs...");
 
     SavedSettings backup;
 
@@ -1577,7 +1578,7 @@ void EuropeanOptionTest::testMethodOfLines() {
     const Handle<YieldTermStructure> rTS(flatRate(today, 0.10, dc));
     const Handle<BlackVolTermStructure> volTS(flatVol(today, 0.35, dc));
 
-    const Date maturity = today + Period(12, Months);
+    const Date maturity = today + Period(6, Months);
 
     const boost::shared_ptr<BlackScholesMertonProcess> process =
         boost::make_shared<BlackScholesMertonProcess>(
@@ -1586,9 +1587,44 @@ void EuropeanOptionTest::testMethodOfLines() {
     const boost::shared_ptr<PricingEngine> analytic =
         boost::make_shared<AnalyticEuropeanEngine>(process);
 
-    const boost::shared_ptr<PricingEngine> pde =
+    // Crank-Nicolson and Douglas scheme are the same in one dimension
+    const boost::shared_ptr<PricingEngine> crankNicolson =
+        boost::make_shared<FdBlackScholesVanillaEngine>(
+            process, 10, 100, 0, FdmSchemeDesc::Douglas());
+
+    const boost::shared_ptr<PricingEngine> implicitEuler =
+        boost::make_shared<FdBlackScholesVanillaEngine>(
+            process, 200, 100, 0, FdmSchemeDesc::ImplicitEuler());
+
+    const boost::shared_ptr<PricingEngine> explicitEuler =
+        boost::make_shared<FdBlackScholesVanillaEngine>(
+            process, 1000, 100, 0, FdmSchemeDesc::ExplicitEuler());
+
+    const boost::shared_ptr<PricingEngine> methodOfLines =
         boost::make_shared<FdBlackScholesVanillaEngine>(
             process, 1, 100, 0, FdmSchemeDesc::MethodOfLines());
+
+    const boost::shared_ptr<PricingEngine> hundsdorfer =
+        boost::make_shared<FdBlackScholesVanillaEngine>(
+            process, 10, 100, 0, FdmSchemeDesc::Hundsdorfer());
+
+    const boost::shared_ptr<PricingEngine> craigSneyd =
+        boost::make_shared<FdBlackScholesVanillaEngine>(
+            process, 10, 100, 0, FdmSchemeDesc::CraigSneyd());
+
+    const boost::shared_ptr<PricingEngine> modCraigSneyd =
+        boost::make_shared<FdBlackScholesVanillaEngine>(
+            process, 15, 100, 0, FdmSchemeDesc::ModifiedCraigSneyd());
+
+    const std::pair<boost::shared_ptr<PricingEngine>, std::string> engines[]= {
+        std::make_pair(crankNicolson, "Crank-Nicolson"),
+        std::make_pair(implicitEuler, "Implicit-Euler"),
+        std::make_pair(explicitEuler, "Explicit-Euler"),
+        std::make_pair(methodOfLines, "Method-of-Lines"),
+        std::make_pair(hundsdorfer, "Hundsdorfer"),
+        std::make_pair(craigSneyd, "Craig-Sneyd"),
+        std::make_pair(modCraigSneyd, "Modified Craig-Sneyd")
+    };
 
     VanillaOption option(
         boost::make_shared<PlainVanillaPayoff>(Option::Put, spot->value()),
@@ -1597,18 +1633,21 @@ void EuropeanOptionTest::testMethodOfLines() {
     option.setPricingEngine(analytic);
     const Real expected = option.NPV();
 
-    option.setPricingEngine(pde);
-    const Real calculated = option.NPV();
+    for (Size i=0; i < LENGTH(engines); ++i) {
+        option.setPricingEngine(engines[i].first);
+        const Real calculated = option.NPV();
 
-    const Real tol = 0.01;
-    const Real diff = std::fabs(expected - calculated);
+        const Real tol = 0.005;
+        const Real diff = std::fabs(expected - calculated);
 
-    if (diff > tol) {
-        BOOST_FAIL("Failed to reproduce european option values with MOL"
-                   << "\n    calculated: " << calculated
-                   << "\n    expected:   " << expected
-                   << "\n    difference: " << diff
-                   << "\n    tolerance:  " << tol);
+        if (diff > tol) {
+            BOOST_FAIL("Failed to reproduce european option values with the "
+                    << engines[i].second << " PDE scheme"
+                       << "\n    calculated: " << calculated
+                       << "\n    expected:   " << expected
+                       << "\n    difference: " << diff
+                       << "\n    tolerance:  " << tol);
+        }
     }
 }
 
@@ -1643,8 +1682,7 @@ test_suite* EuropeanOptionTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(
                        &EuropeanOptionTest::testAnalyticEngineDiscountCurve));
-
-    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testMethodOfLines));
+    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testPDESchemes));
 
     return suite;
 }

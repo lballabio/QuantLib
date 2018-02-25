@@ -59,7 +59,10 @@ namespace QuantLib {
 
         bcSet_.applyBeforeSolving(*map_, a);
 
-        if (solverType_ == BiCGstab) {
+        if (map_->size() == 1) {
+            a = map_->solve_splitting(0, a, -dt_);
+        }
+        else if (solverType_ == BiCGstab) {
             const BiCGStabResult result =
                 QuantLib::BiCGstab(
                     boost::function<Disposable<Array>(const Array&)>(
