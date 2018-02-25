@@ -20,26 +20,17 @@
 #include "cmsspread.hpp"
 #include "utilities.hpp"
 
-#include <ql/cashflows/capflooredcoupon.hpp>
 #include <ql/cashflows/cmscoupon.hpp>
-#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/lineartsrpricer.hpp>
 #include <ql/experimental/coupons/cmsspreadcoupon.hpp>
 #include <ql/experimental/coupons/lognormalcmsspreadpricer.hpp>
-#include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/swap/euriborswap.hpp>
-#include <ql/instruments/swap.hpp>
-#include <ql/instruments/swaption.hpp>
-#include <ql/instruments/vanillaswap.hpp>
 #include <ql/math/array.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
-#include <ql/pricingengines/swap/discountingswapengine.hpp>
-#include <ql/pricingengines/swaption/gaussian1dswaptionengine.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionconstantvol.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/target.hpp>
