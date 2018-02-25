@@ -1689,34 +1689,34 @@ void EuropeanOptionTest::testPDESchemes() {
 
 test_suite* EuropeanOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("European option tests");
-//    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testValues));
-//    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testGreekValues));
-//    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testGreeks));
-//    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testImpliedVol));
-//    suite->add(QUANTLIB_TEST_CASE(
-//                           &EuropeanOptionTest::testImpliedVolContainment));
-//    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testJRBinomialEngines));
-//    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testCRRBinomialEngines));
-//    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testEQPBinomialEngines));
-//    suite->add(QUANTLIB_TEST_CASE(
-//                               &EuropeanOptionTest::testTGEOBinomialEngines));
-//    suite->add(QUANTLIB_TEST_CASE(
-//                               &EuropeanOptionTest::testTIANBinomialEngines));
-//    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testLRBinomialEngines));
-//    suite->add(QUANTLIB_TEST_CASE(
-//                              &EuropeanOptionTest::testJOSHIBinomialEngines));
-//    // FLOATING_POINT_EXCEPTION
-//    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testFdEngines));
-//    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testIntegralEngines));
-//    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testMcEngines));
-//    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testQmcEngines));
-//
-//    // FLOATING_POINT_EXCEPTION
-//    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testPriceCurve));
-//    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testLocalVolatility));
-//
-//    suite->add(QUANTLIB_TEST_CASE(
-//                       &EuropeanOptionTest::testAnalyticEngineDiscountCurve));
+    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testValues));
+    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testGreekValues));
+    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testGreeks));
+    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testImpliedVol));
+    suite->add(QUANTLIB_TEST_CASE(
+                           &EuropeanOptionTest::testImpliedVolContainment));
+    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testJRBinomialEngines));
+    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testCRRBinomialEngines));
+    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testEQPBinomialEngines));
+    suite->add(QUANTLIB_TEST_CASE(
+                               &EuropeanOptionTest::testTGEOBinomialEngines));
+    suite->add(QUANTLIB_TEST_CASE(
+                               &EuropeanOptionTest::testTIANBinomialEngines));
+    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testLRBinomialEngines));
+    suite->add(QUANTLIB_TEST_CASE(
+                              &EuropeanOptionTest::testJOSHIBinomialEngines));
+    // FLOATING_POINT_EXCEPTION
+    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testFdEngines));
+    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testIntegralEngines));
+    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testMcEngines));
+    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testQmcEngines));
+
+    // FLOATING_POINT_EXCEPTION
+    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testPriceCurve));
+    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testLocalVolatility));
+
+    suite->add(QUANTLIB_TEST_CASE(
+                       &EuropeanOptionTest::testAnalyticEngineDiscountCurve));
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testPDESchemes));
 
     return suite;
