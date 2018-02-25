@@ -73,11 +73,9 @@ namespace QuantLib {
             fwd = fwd / rTS->discount(divTime) * rTS->discount(lastDivTime)
                       * qTS->discount(divTime) / qTS->discount(lastDivTime);
 
-            mi = std::min(mi, fwd); ma = std::max(ma, fwd);
-
-            fwd -= divAmount;
-
-            mi = std::min(mi, fwd); ma = std::max(ma, fwd);
+            mi  = std::min(mi, fwd); ma = std::max(ma, fwd);
+            fwd-= divAmount;
+            mi  = std::min(mi, fwd); ma = std::max(ma, fwd);
 
             lastDivTime = divTime;
         }
