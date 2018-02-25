@@ -212,16 +212,17 @@ void CmsSpreadTest::testCouponPricing() {
 
     Date valueDate = cms10y2y->valueDate(d.refDate);
     Date payDate = valueDate + 1 * Years;
-    boost::shared_ptr<CmsCoupon> cpn1a = boost::make_shared<CmsCoupon>(
-        payDate, 10000.0, valueDate, payDate, cms10y->fixingDays(), cms10y, 1.0,
-        0.0, Date(), Date(), Actual360(), false);
-    boost::shared_ptr<CmsCoupon> cpn1b = boost::make_shared<CmsCoupon>(
-        payDate, 10000.0, valueDate, payDate, cms2y->fixingDays(), cms2y, 1.0,
-        0.0, Date(), Date(), Actual360(), false);
+    boost::shared_ptr<CmsCoupon> cpn1a =
+        boost::shared_ptr<CmsCoupon>(new CmsCoupon(
+            payDate, 10000.0, valueDate, payDate, cms10y->fixingDays(), cms10y,
+            1.0, 0.0, Date(), Date(), Actual360(), false));
+    boost::shared_ptr<CmsCoupon> cpn1b = boost::shared_ptr<CmsCoupon>(
+        new CmsCoupon(payDate, 10000.0, valueDate, payDate, cms2y->fixingDays(),
+                      cms2y, 1.0, 0.0, Date(), Date(), Actual360(), false));
     boost::shared_ptr<CmsSpreadCoupon> cpn1 =
-        boost::make_shared<CmsSpreadCoupon>(
+        boost::shared_ptr<CmsSpreadCoupon>(new CmsSpreadCoupon(
             payDate, 10000.0, valueDate, payDate, cms10y2y->fixingDays(),
-            cms10y2y, 1.0, 0.0, Date(), Date(), Actual360(), false);
+            cms10y2y, 1.0, 0.0, Date(), Date(), Actual360(), false));
     BOOST_CHECK(cpn1->fixingDate() == d.refDate);
     cpn1a->setPricer(d.cmsPricerLn);
     cpn1b->setPricer(d.cmsPricerLn);
@@ -233,35 +234,39 @@ void CmsSpreadTest::testCouponPricing() {
     BOOST_CHECK_EQUAL(cpn1->rate(), cpn1a->rate() - cpn1b->rate());
     IndexManager::instance().clearHistories();
 
-    boost::shared_ptr<CmsCoupon> cpn2a = boost::make_shared<CmsCoupon>(
-        Date(23, February, 2029), 10000.0, Date(23, February, 2028),
-        Date(23, February, 2029), 2, cms10y, 1.0, 0.0, Date(), Date(),
-        Actual360(), false);
-    boost::shared_ptr<CmsCoupon> cpn2b = boost::make_shared<CmsCoupon>(
-        Date(23, February, 2029), 10000.0, Date(23, February, 2028),
-        Date(23, February, 2029), 2, cms2y, 1.0, 0.0, Date(), Date(),
-        Actual360(), false);
+    boost::shared_ptr<CmsCoupon> cpn2a = boost::shared_ptr<CmsCoupon>(
+        new CmsCoupon(Date(23, February, 2029), 10000.0,
+                      Date(23, February, 2028), Date(23, February, 2029), 2,
+                      cms10y, 1.0, 0.0, Date(), Date(), Actual360(), false));
+    boost::shared_ptr<CmsCoupon> cpn2b = boost::shared_ptr<CmsCoupon>(
+        new CmsCoupon(Date(23, February, 2029), 10000.0,
+                      Date(23, February, 2028), Date(23, February, 2029), 2,
+                      cms2y, 1.0, 0.0, Date(), Date(), Actual360(), false));
 
     boost::shared_ptr<CappedFlooredCmsSpreadCoupon> plainCpn =
-        boost::make_shared<CappedFlooredCmsSpreadCoupon>(
-            Date(23, February, 2029), 10000.0, Date(23, February, 2028),
-            Date(23, February, 2029), 2, cms10y2y, 1.0, 0.0, Null<Rate>(),
-            Null<Rate>(), Date(), Date(), Actual360(), false);
+        boost::shared_ptr<CappedFlooredCmsSpreadCoupon>(
+            new CappedFlooredCmsSpreadCoupon(
+                Date(23, February, 2029), 10000.0, Date(23, February, 2028),
+                Date(23, February, 2029), 2, cms10y2y, 1.0, 0.0, Null<Rate>(),
+                Null<Rate>(), Date(), Date(), Actual360(), false));
     boost::shared_ptr<CappedFlooredCmsSpreadCoupon> cappedCpn =
-        boost::make_shared<CappedFlooredCmsSpreadCoupon>(
-            Date(23, February, 2029), 10000.0, Date(23, February, 2028),
-            Date(23, February, 2029), 2, cms10y2y, 1.0, 0.0, 0.03, Null<Rate>(),
-            Date(), Date(), Actual360(), false);
+        boost::shared_ptr<CappedFlooredCmsSpreadCoupon>(
+            new CappedFlooredCmsSpreadCoupon(
+                Date(23, February, 2029), 10000.0, Date(23, February, 2028),
+                Date(23, February, 2029), 2, cms10y2y, 1.0, 0.0, 0.03,
+                Null<Rate>(), Date(), Date(), Actual360(), false));
     boost::shared_ptr<CappedFlooredCmsSpreadCoupon> flooredCpn =
-        boost::make_shared<CappedFlooredCmsSpreadCoupon>(
-            Date(23, February, 2029), 10000.0, Date(23, February, 2028),
-            Date(23, February, 2029), 2, cms10y2y, 1.0, 0.0, Null<Rate>(), 0.01,
-            Date(), Date(), Actual360(), false);
+        boost::shared_ptr<CappedFlooredCmsSpreadCoupon>(
+            new CappedFlooredCmsSpreadCoupon(
+                Date(23, February, 2029), 10000.0, Date(23, February, 2028),
+                Date(23, February, 2029), 2, cms10y2y, 1.0, 0.0, Null<Rate>(),
+                0.01, Date(), Date(), Actual360(), false));
     boost::shared_ptr<CappedFlooredCmsSpreadCoupon> collaredCpn =
-        boost::make_shared<CappedFlooredCmsSpreadCoupon>(
-            Date(23, February, 2029), 10000.0, Date(23, February, 2028),
-            Date(23, February, 2029), 2, cms10y2y, 1.0, 0.0, 0.03, 0.01, Date(),
-            Date(), Actual360(), false);
+        boost::shared_ptr<CappedFlooredCmsSpreadCoupon>(
+            new CappedFlooredCmsSpreadCoupon(
+                Date(23, February, 2029), 10000.0, Date(23, February, 2028),
+                Date(23, February, 2029), 2, cms10y2y, 1.0, 0.0, 0.03, 0.01,
+                Date(), Date(), Actual360(), false));
 
     cpn2a->setPricer(d.cmsPricerLn);
     cpn2b->setPricer(d.cmsPricerLn);
