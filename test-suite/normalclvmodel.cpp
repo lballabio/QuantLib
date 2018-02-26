@@ -509,7 +509,7 @@ void NormalCLVModelTest::testMoustacheGraph() {
         boost::make_shared<PathGenerator<rsg_type> >(
             ouProcess, grid, rsg_type(factors, tSteps), false);
 
-    const Size nSims = 400000;
+    const Size nSims = 100000;
     std::vector<GeneralStatistics> stats(n);
     const DiscountFactor df = rTS->discount(maturityDate);
 
@@ -540,10 +540,10 @@ void NormalCLVModelTest::testMoustacheGraph() {
     }
 
     const Real expected[] = {
-        0.00907689,  0.0892242,  0.139655,   0.111603,   0.059872,
-        0.016652,   -0.0094134, -0.0207528, -0.0230873, -0.0201951,
-        -0.0160556, -0.0116482, -0.00741535,-0.00355287,-0.000165914,
-        0.00493464,  0.00342315, 0.0023405 };
+            0.00931214, 0.0901481, 0.138982, 0.112059, 0.0595901,
+            0.0167549, -0.00906787, -0.0206768, -0.0225628, -0.0203593,
+            -0.016036, -0.0116629, -0.00728792, -0.00328821,
+            -0.000158562, 0.00502041, 0.00347706, 0.00238216, };
 
     const Real tol = 1e-5;
     for (Size u=0; u < n; ++u) {

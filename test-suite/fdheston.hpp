@@ -29,6 +29,7 @@
 
 class FdHestonTest {
 public:
+    static void testFdmHestonVarianceMesher();
     static void testFdmHestonBarrier();
     static void testFdmHestonBarrierVsBlackScholes();
     static void testFdmHestonAmerican();
