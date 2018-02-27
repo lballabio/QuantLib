@@ -150,6 +150,10 @@ namespace QuantLib {
                     ? index_->swapIndex1()->discountingTermStructure()
                     : index_->swapIndex1()->forwardingTermStructure();
 
+        discount_ = paymentDate_ > couponDiscountCurve_->referenceDate()
+                        ? couponDiscountCurve_->discount(paymentDate_)
+                        : 1.0;
+
         spreadLegValue_ = spread_ * coupon_->accrualPeriod() *
                           couponDiscountCurve_->discount(paymentDate_);
 
@@ -296,13 +300,11 @@ namespace QuantLib {
             res =
                 bachelierBlackFormula(optionType_, strike, forward, stddev, 1.0);
         }
-        return res * couponDiscountCurve_->discount(paymentDate_) *
-               coupon_->accrualPeriod();
+        return res * discount_ * coupon_->accrualPeriod();
     }
 
     Rate LognormalCmsSpreadPricer::swapletRate() const {
-        return swapletPrice() / (coupon_->accrualPeriod() *
-                                 couponDiscountCurve_->discount(paymentDate_));
+        return swapletPrice() / (coupon_->accrualPeriod() * discount_);
     }
 
     Real LognormalCmsSpreadPricer::capletPrice(Rate effectiveCap) const {
@@ -311,9 +313,7 @@ namespace QuantLib {
             // the fixing is determined
             const Rate Rs = std::max(
                 coupon_->index()->fixing(fixingDate_) - effectiveCap, 0.);
-            Rate price = (gearing_ * Rs) *
-                         (coupon_->accrualPeriod() *
-                          couponDiscountCurve_->discount(paymentDate_));
+            Rate price = gearing_ * Rs * coupon_->accrualPeriod() * discount_;
             return price;
         } else {
             Real capletPrice = optionletPrice(Option::Call, effectiveCap);
@@ -323,8 +323,7 @@ namespace QuantLib {
 
     Rate LognormalCmsSpreadPricer::capletRate(Rate effectiveCap) const {
         return capletPrice(effectiveCap) /
-               (coupon_->accrualPeriod() *
-                couponDiscountCurve_->discount(paymentDate_));
+               (coupon_->accrualPeriod() * discount_);
     }
 
     Real LognormalCmsSpreadPricer::floorletPrice(Rate effectiveFloor) const {
@@ -333,9 +332,7 @@ namespace QuantLib {
             // the fixing is determined
             const Rate Rs = std::max(
                 effectiveFloor - coupon_->index()->fixing(fixingDate_), 0.);
-            Rate price = (gearing_ * Rs) *
-                         (coupon_->accrualPeriod() *
-                          couponDiscountCurve_->discount(paymentDate_));
+            Rate price = gearing_ * Rs * coupon_->accrualPeriod() * discount_;
             return price;
         } else {
             Real floorletPrice = optionletPrice(Option::Put, effectiveFloor);
@@ -345,13 +342,11 @@ namespace QuantLib {
 
     Rate LognormalCmsSpreadPricer::floorletRate(Rate effectiveFloor) const {
         return floorletPrice(effectiveFloor) /
-               (coupon_->accrualPeriod() *
-                couponDiscountCurve_->discount(paymentDate_));
+               (coupon_->accrualPeriod() * couponDiscountCurve_->discount_);
     }
 
     Real LognormalCmsSpreadPricer::swapletPrice() const {
-        return gearing_ * coupon_->accrualPeriod() *
-                   couponDiscountCurve_->discount(paymentDate_) *
+        return gearing_ * coupon_->accrualPeriod() * discount_ *
                    (gearing1_ * adjustedRate1_ + gearing2_ * adjustedRate2_) +
                spreadLegValue_;
     }

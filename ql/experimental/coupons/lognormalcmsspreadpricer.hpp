@@ -111,6 +111,7 @@ namespace QuantLib {
 
         Real gearing_, spread_;
         Real spreadLegValue_;
+        Real discount_;
 
         boost::shared_ptr<SwapSpreadIndex> index_;
 
