@@ -154,8 +154,7 @@ namespace QuantLib {
                         ? couponDiscountCurve_->discount(paymentDate_)
                         : 1.0;
 
-        spreadLegValue_ = spread_ * coupon_->accrualPeriod() *
-                          couponDiscountCurve_->discount(paymentDate_);
+        spreadLegValue_ = spread_ * coupon_->accrualPeriod() * discount_;
 
         gearing1_ = index_->gearing1();
         gearing2_ = index_->gearing2();
@@ -342,7 +341,7 @@ namespace QuantLib {
 
     Rate LognormalCmsSpreadPricer::floorletRate(Rate effectiveFloor) const {
         return floorletPrice(effectiveFloor) /
-               (coupon_->accrualPeriod() * couponDiscountCurve_->discount_);
+               (coupon_->accrualPeriod() * discount_);
     }
 
     Real LognormalCmsSpreadPricer::swapletPrice() const {
