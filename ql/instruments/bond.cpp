@@ -59,6 +59,9 @@ namespace QuantLib {
         }
 
         registerWith(Settings::instance().evaluationDate());
+        for (Leg::const_iterator c = cashflows_.begin(); c != cashflows_.end();
+             ++c)
+            registerWith(*c);
     }
 
     Bond::Bond(Natural settlementDays,
@@ -99,6 +102,9 @@ namespace QuantLib {
         }
 
         registerWith(Settings::instance().evaluationDate());
+        for (Leg::const_iterator c = cashflows_.begin(); c != cashflows_.end();
+             ++c)
+            registerWith(*c);
     }
 
     bool Bond::isExpired() const {
