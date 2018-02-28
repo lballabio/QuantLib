@@ -95,7 +95,7 @@ namespace QuantLib {
         boost::shared_ptr<FloatingRateCoupon> underlying_;
         bool isCapped_, isFloored_;
         Rate cap_, floor_;
-        mutable capletRate_, floorletRate_;
+        mutable Real capletRate_, floorletRate_;
     };
 
     class CappedFlooredIborCoupon : public CappedFlooredCoupon {
