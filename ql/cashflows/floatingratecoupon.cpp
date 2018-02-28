@@ -87,10 +87,15 @@ namespace QuantLib {
             -static_cast<Integer>(fixingDays_), Days, Preceding);
     }
 
-    Rate FloatingRateCoupon::rate() const {
+    void FloatingRateCoupon::performCalculations() const {
         QL_REQUIRE(pricer_, "pricer not set");
         pricer_->initialize(*this);
-        return pricer_->swapletRate();
+        swapletRate_ = pricer_->swapletRate();
+    }
+
+    Rate FloatingRateCoupon::rate() const {
+        calculate();
+        return swapletRate_;
     }
 
     Real FloatingRateCoupon::price(const Handle<YieldTermStructure>& discountingCurve) const {

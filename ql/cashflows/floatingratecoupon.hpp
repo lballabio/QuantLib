@@ -42,7 +42,8 @@ namespace QuantLib {
 
     //! base floating-rate coupon class
     class FloatingRateCoupon : public Coupon,
-                               public Observer {
+                               public Observer,
+                               public LazyObject {
       public:
         FloatingRateCoupon(const Date& paymentDate,
                            Real nominal,
@@ -92,9 +93,9 @@ namespace QuantLib {
         bool isInArrears() const { return isInArrears_; }
         //@}
 
-        //! \name Observer interface
+        //! \name LazyObject interface
         //@{
-        void update() { notifyObservers(); }
+        void performCalculations() const;
         //@}
 
         //! \name Visitability
@@ -114,6 +115,7 @@ namespace QuantLib {
         Spread spread_;
         bool isInArrears_;
         boost::shared_ptr<FloatingRateCouponPricer> pricer_;
+        mutable Real swapletRate_;
     };
 
     // inline definitions
