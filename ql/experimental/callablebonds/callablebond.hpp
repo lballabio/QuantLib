@@ -208,10 +208,6 @@ namespace QuantLib {
     /*! Callable fixed rate bond class.
 
         \ingroup instruments
-
-        <b> Example: </b>
-        \link CallableBonds.cpp
-        \endlink
     */
     class CallableFixedRateBond : public CallableBond {
       public:

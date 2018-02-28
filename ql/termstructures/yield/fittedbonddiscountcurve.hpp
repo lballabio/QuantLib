@@ -48,11 +48,6 @@ namespace QuantLib {
         implementation details. Developers thus need only derive new
         fitting methods from the latter.
 
-        <b> Example: </b>
-        \link FittedBondCurve.cpp
-        compares various bond discount curve fitting methodologies
-        \endlink
-
         \warning The method can be slow if there are many bonds to
                  fit. Speed also depends on the particular choice of
                  fitting method chosen and its convergence properties

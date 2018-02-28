@@ -24,9 +24,8 @@ BASEPATH = @abs_top_srcdir@
 .PHONY: docs-dist docs-html-dist docs-man-dist
 
 dist-hook:
-	mkdir -p $(distdir)/pages $(distdir)/Examples $(distdir)/images
+	mkdir -p $(distdir)/pages $(distdir)/images
 	cp -p $(srcdir)/pages/*.docs $(distdir)/pages
-	cp -p $(srcdir)/Examples/*.cpp $(distdir)/Examples
 	cp -p $(srcdir)/images/*.jpg \
 	      $(srcdir)/images/*.ico \
 	      $(distdir)/images

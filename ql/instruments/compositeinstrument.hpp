@@ -35,11 +35,6 @@ namespace QuantLib {
         is the sum of the NPVs of its components, each possibly
         multiplied by a given factor.
 
-        <b>Example: </b>
-        \link Replication.cpp
-        static replication of a down-and-out barrier option
-        \endlink
-
         \warning Methods that drive the calculation directly (such as
                  recalculate(), freeze() and others) might not work
                  correctly.
