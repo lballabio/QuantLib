@@ -27,7 +27,7 @@
 namespace QuantLib {
 
     //! class for swap-rate spread indexes
-    class SwapSpreadIndex : public virtual InterestRateIndex {
+    class SwapSpreadIndex : public InterestRateIndex {
       public:
         SwapSpreadIndex(const std::string& familyName,
                         const boost::shared_ptr<SwapIndex>& swapIndex1,
