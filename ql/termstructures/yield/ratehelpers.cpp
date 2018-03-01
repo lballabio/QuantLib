@@ -830,6 +830,10 @@ namespace QuantLib {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         // we didn't register as observers - force calculation
         swap_->recalculate();
+        for (Leg::const_iterator c = swap_->floatingLeg().begin();
+             c != swap_->floatingLeg().end(); ++c) {
+            boost::static_pointer_cast<FloatingRateCoupon>(*c)->update();
+        }
         // weak implementation... to be improved
         static const Spread basisPoint = 1.0e-4;
         Real floatingLegNPV = swap_->floatingLegNPV();
@@ -939,6 +943,14 @@ namespace QuantLib {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         // we didn't register as observers - force calculation
         swap_->recalculate();
+        for (Leg::const_iterator c = swap_->bmaLeg().begin();
+             c != swap_->bmaLeg().end(); ++c) {
+            boost::static_pointer_cast<FloatingRateCoupon>(*c)->update();
+        }
+        for (Leg::const_iterator c = swap_->liborLeg().begin();
+             c != swap_->liborLeg().end(); ++c) {
+            boost::static_pointer_cast<FloatingRateCoupon>(*c)->update();
+        }
         return swap_->fairLiborFraction();
     }
 
