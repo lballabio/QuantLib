@@ -402,6 +402,7 @@ namespace QuantLib {
                                     const T& interpolator)
     : OneFactorAffineSurvivalStructure(model, dates.at(0), calendar, 
         dayCounter, jumps, jumpDates),
+      InterpolatedCurve<T>(std::vector<Time>(), hazardRates, interpolator),
       dates_(dates)
     {
         initialize();
