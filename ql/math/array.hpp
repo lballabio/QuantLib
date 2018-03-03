@@ -465,10 +465,13 @@ namespace QuantLib {
     }
 
     inline void Array::resize(Size n) {
-        if (n != n_) {
+        if (n > n_) {
             Array swp(n);
-            std::copy(begin(), begin()+std::min(n, n_), swp.begin());
+            std::copy(begin(), end(), swp.begin());
             swap(swp);
+        }
+        else if (n < n_) {
+            n_ = n;
         }
     }
 

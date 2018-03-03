@@ -230,6 +230,10 @@ void ArrayTest::testArrayResize() {
     const Array::const_iterator iter = a.begin();
     a.resize(a.size());
     BOOST_CHECK(iter == a.begin());
+
+    a.resize(10);
+    BOOST_CHECK(a.size() == 10);
+    BOOST_CHECK(iter == a.begin());
 }
 
 
