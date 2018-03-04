@@ -124,7 +124,7 @@ namespace QuantLib {
         Disposable<Array>
             getLocalVolSlice(Time t, Option::Type optionType) const;
 
-        const CalibrationSet calibrationSet_;
+        CalibrationSet calibrationSet_;
         const Handle<Quote> spot_;
         const Handle<YieldTermStructure> rTS_;
         const Handle<YieldTermStructure> qTS_;
@@ -137,7 +137,6 @@ namespace QuantLib {
         const boost::shared_ptr<OptimizationMethod> optimizationMethod_;
         const EndCriteria endCriteria_;
 
-
         std::vector<Real> strikes_;
         std::vector<Date> expiries_;
         mutable std::vector<Time> expiryTimes_, dT_;
@@ -149,7 +148,6 @@ namespace QuantLib {
         mutable Array gridPoints_, gridInFwd_;
 
         mutable std::vector<SingleStepCalibrationResult> calibrationResults_;
-
 
         mutable TimeValueCacheType localVolCache_, priceCache_;
     };
