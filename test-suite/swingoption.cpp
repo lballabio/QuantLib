@@ -321,8 +321,6 @@ void SwingOptionTest::testFdBSSwingOption() {
             lowerBound += europeanOption.NPV();
         }
 
-        std::cout << i << " " << lowerBound - swingOptionPrice << std::endl;
-
         if (lowerBound - swingOptionPrice > 4e-2) {
             BOOST_ERROR("Failed to reproduce lower bounds"
                         << "\n    lower Bound: " << lowerBound
