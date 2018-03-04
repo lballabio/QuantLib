@@ -33,7 +33,7 @@
 namespace QuantLib {
     class HestonBlackVolSurface : public BlackVolTermStructure {
       public:
-        HestonBlackVolSurface(
+        explicit HestonBlackVolSurface(
             const Handle<HestonModel>& hestonModel,
             const AnalyticHestonEngine::ComplexLogFormula cpxLogFormula
                 = AnalyticHestonEngine::Gatheral,
