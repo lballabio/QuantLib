@@ -321,7 +321,9 @@ void SwingOptionTest::testFdBSSwingOption() {
             lowerBound += europeanOption.NPV();
         }
 
-        if (lowerBound - swingOptionPrice > 0.1) {
+        std::cout << i << " " << lowerBound - swingOptionPrice << std::endl;
+
+        if (lowerBound - swingOptionPrice > 4e-2) {
             BOOST_ERROR("Failed to reproduce lower bounds"
                         << "\n    lower Bound: " << lowerBound
                         << "\n    Price:       " << swingOptionPrice
@@ -458,18 +460,18 @@ void SwingOptionTest::testExtOUJumpSwingOption() {
 test_suite* SwingOptionTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Swing-Option Test");
 
-    suite->add(QUANTLIB_TEST_CASE(
-        &SwingOptionTest::testExtendedOrnsteinUhlenbeckProcess));
+//    suite->add(QUANTLIB_TEST_CASE(
+//        &SwingOptionTest::testExtendedOrnsteinUhlenbeckProcess));
     suite->add(QUANTLIB_TEST_CASE(&SwingOptionTest::testFdBSSwingOption));
-    suite->add(QUANTLIB_TEST_CASE(
-                          &SwingOptionTest::testFdmExponentialJump1dMesher));
-
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &SwingOptionTest::testExtOUJumpVanillaEngine));
-        suite->add(QUANTLIB_TEST_CASE(
-            &SwingOptionTest::testExtOUJumpSwingOption));
-    }
+//    suite->add(QUANTLIB_TEST_CASE(
+//                          &SwingOptionTest::testFdmExponentialJump1dMesher));
+//
+//    if (speed <= Fast) {
+//        suite->add(QUANTLIB_TEST_CASE(
+//            &SwingOptionTest::testExtOUJumpVanillaEngine));
+//        suite->add(QUANTLIB_TEST_CASE(
+//            &SwingOptionTest::testExtOUJumpSwingOption));
+//    }
 
     return suite;
 }
