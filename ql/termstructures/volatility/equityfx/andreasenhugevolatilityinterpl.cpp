@@ -272,7 +272,8 @@ namespace QuantLib {
             calibrationSet_.push_back(
                 std::make_pair(
                     boost::make_shared<VanillaOption>(payoff, exercise),
-                    calibrationSet[i].second));
+                    calibrationSet[i].second)
+            );
 
             registerWith(calibrationSet[i].second);
         }
