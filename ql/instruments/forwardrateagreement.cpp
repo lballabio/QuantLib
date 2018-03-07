@@ -59,6 +59,11 @@ namespace QuantLib {
                                  settlementDays_, Days);
     }
 
+    Date ForwardRateAgreement::fixingDate() const {
+        return calendar_.advance(valueDate_,
+                                 -static_cast<Integer>(settlementDays_), Days);
+    }
+
     bool ForwardRateAgreement::isExpired() const {
         return detail::simple_event(valueDate_).hasOccurred(settlementDate());
     }
@@ -86,10 +91,15 @@ namespace QuantLib {
         return forwardRate_;
     }
 
+    void ForwardRateAgreement::setupExpired() const {
+        Forward::setupExpired();
+        forwardRate_ = InterestRate(index_->fixing(fixingDate()),
+                                    index_->dayCounter(),
+                                    Simple, Once);
+    }
+
     void ForwardRateAgreement::performCalculations() const {
-        Date fixingDate = calendar_.advance(valueDate_,
-            -static_cast<Integer>(settlementDays_), Days);
-        forwardRate_ = InterestRate(index_->fixing(fixingDate),
+        forwardRate_ = InterestRate(index_->fixing(fixingDate()),
                                     index_->dayCounter(),
                                     Simple, Once);
         underlyingSpotValue_ = spotValue();
