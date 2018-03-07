@@ -54,11 +54,13 @@ namespace QuantLib {
         Calendar calendar() const;
         Natural settlementDays() const;
         Date maxDate() const;
+        void update();
       protected:
         DiscountFactor discountImpl(Time) const;
         //@}
       private:
         Handle<YieldTermStructure> originalCurve_;
+        mutable DiscountFactor df_;
     };
 
 
@@ -68,7 +70,16 @@ namespace QuantLib {
                                           const Handle<YieldTermStructure>& h,
                                           const Date& referenceDate)
     : YieldTermStructure(referenceDate), originalCurve_(h) {
+        update();
         registerWith(originalCurve_);
+    }
+
+    inline void ImpliedTermStructure::update() {
+        if(!originalCurve_.empty()) {
+            Date ref = referenceDate();
+            df_ = originalCurve_->discount(ref, true);
+        }
+        YieldTermStructure::update();
     }
 
     inline DayCounter ImpliedTermStructure::dayCounter() const {
@@ -94,11 +105,7 @@ namespace QuantLib {
         Date ref = referenceDate();
         Time originalTime = t + dayCounter().yearFraction(
                                         originalCurve_->referenceDate(), ref);
-        /* discount at evaluation date cannot be cached
-           since the original curve could change between
-           invocations of this method */
-        return originalCurve_->discount(originalTime, true) /
-               originalCurve_->discount(ref, true);
+        return originalCurve_->discount(originalTime, true) / df_;
     }
 
 }
