@@ -91,6 +91,7 @@ namespace QuantLib {
             valueDate).
         */
         Date settlementDate() const;
+        Date fixingDate() const;
         /*!  Income is zero for a FRA */
         Real spotIncome(const Handle<YieldTermStructure>& incomeDiscountCurve)
             const;
@@ -102,6 +103,7 @@ namespace QuantLib {
         //@}
 
       protected:
+        void setupExpired() const;
         void performCalculations() const;
         Position::Type fraType_;
         //! aka FRA rate (the market forward rate)
