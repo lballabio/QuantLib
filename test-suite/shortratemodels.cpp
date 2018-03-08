@@ -24,6 +24,7 @@
 #include "shortratemodels.hpp"
 #include "utilities.hpp"
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
+#include <ql/models/shortrate/onefactormodels/extendedcoxingersollross.hpp>
 #include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
 #include <ql/pricingengines/swaption/jamshidianswaptionengine.hpp>
 #include <ql/pricingengines/swap/treeswapengine.hpp>
@@ -427,6 +428,37 @@ void ShortRateModelTest::testFuturesConvexityBias() {
     }
 }
 
+void ShortRateModelTest::testExtendedCoxIngersollRossDiscountFactor() {
+    BOOST_TEST_MESSAGE("Testing zero bond pricing for extended CIR model ...");
+
+    SavedSettings backup;
+    const Date today = Settings::instance().evaluationDate();
+
+    const Rate rate = 0.1;
+    const Handle<YieldTermStructure> rTS(
+        flatRate(today, rate, Actual365Fixed()));
+
+    const Time now = 1.5;
+    const Time maturity = 2.5;
+
+    const ExtendedCoxIngersollRoss cirModel(rTS, rate, 1.0, 1e-4, rate);
+
+    const Real expected = rTS->discount(maturity)/rTS->discount(now);
+    const Real calculated = cirModel.discountBond(now, maturity, rate);
+
+    const Real tol = 1e-6;
+    const Real diff = std::fabs(expected-calculated);
+
+    if (diff > tol) {
+        BOOST_ERROR("Failed to reproduce zero bound price:"
+                    << "\n  calculated: " << calculated
+                    << "\n  expected  : " << expected
+                    << std::scientific
+                    << "\n  difference: " << diff
+                    << "\n  tolerance : " << tol);
+    }
+}
+
 test_suite* ShortRateModelTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Short-rate model tests");
 
@@ -434,6 +466,8 @@ test_suite* ShortRateModelTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testCachedHullWhiteFixedReversion));
     suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testCachedHullWhite2));
     suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testFuturesConvexityBias));
+    suite->add(QUANTLIB_TEST_CASE(
+        &ShortRateModelTest::testExtendedCoxIngersollRossDiscountFactor));
 
     if (speed == Slow) {
         suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testSwaps));
