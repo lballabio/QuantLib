@@ -2275,7 +2275,9 @@ namespace {
 
         const Handle<BlackVolTermStructure> trueImpliedVolSurf(
             boost::make_shared<HestonBlackVolSurface>(
-                Handle<HestonModel>(hestonModel)));
+                Handle<HestonModel>(hestonModel),
+                AnalyticHestonEngine::AndersenPiterbarg,
+                AnalyticHestonEngine::Integration::gaussLaguerre(32)));
 
         const boost::shared_ptr<HestonProcess> hestonProcess
             = hestonModel->process();
@@ -2421,7 +2423,7 @@ void HestonSLVModelTest::testMoustacheGraph() {
             1234ul, SobolRsg::JoeKuoD7));
 
     const Size xGrid = 100;
-    const Size nSim  = 40000;
+    const Size nSim  = 20000;
 
     const Real eta = 0.90;
 
@@ -2437,7 +2439,7 @@ void HestonSLVModelTest::testMoustacheGraph() {
 
     const boost::shared_ptr<PricingEngine> fdEngine(
         boost::make_shared<FdHestonDoubleBarrierEngine>(
-            modHestonModel.currentLink(), 51, 201, 51, 1,
+            modHestonModel.currentLink(), 51, 101, 31, 0,
             FdmSchemeDesc::Hundsdorfer(), leverageFct));
 
     const Real expected[] = {
@@ -2445,7 +2447,7 @@ void HestonSLVModelTest::testMoustacheGraph() {
         -0.0293,-0.0297,-0.0251,-0.0192,-0.0134,-0.0084,-0.0045,
         -0.0015, 0.0005, 0.0017, 0.0020
     };
-    const Real tol = 7.5e-3;
+    const Real tol = 8e-3;
 
     for (Size i=0; i < 18; ++i) {
         const Real dist = 10.0+5.0*i;

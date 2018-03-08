@@ -53,7 +53,7 @@ namespace QuantLib {
                 const Real qMin = 0.0; // v_min = 0.0;
                 const Real qMax = std::max(process->v0(),
                     k*InverseNonCentralCumulativeChiSquareDistribution(
-                                            df, ncp, 1000,  1e-8)(1-epsilon));
+                                            df, ncp, 100, 1e-8)(1-epsilon));
 
                 const Real minVStep=(qMax-qMin)/(50*size);
                 Real ps,p = 0.0;
@@ -65,7 +65,7 @@ namespace QuantLib {
                     ps = (1 - epsilon - p)/(size-i);
                     p += ps;
                     const Real tmp = k*InverseNonCentralCumulativeChiSquareDistribution(
-                        df, ncp, 1000, 1e-8)(p);
+                        df, ncp, 100, 1e-8)(p);
 
                     const Real vx = std::max(vTmp+minVStep, tmp);
                     p = NonCentralCumulativeChiSquareDistribution(df, ncp)(vx/k);

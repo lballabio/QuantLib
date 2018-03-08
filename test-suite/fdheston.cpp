@@ -31,6 +31,7 @@
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmhestonvariancemesher.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
@@ -40,10 +41,12 @@
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 
 #include <boost/assign/std/vector.hpp>
+#include <boost/make_shared.hpp>
 
 using namespace QuantLib;
 using namespace boost::assign;
 using boost::unit_test_framework::test_suite;
+
 
 namespace {
     struct NewBarrierOptionData {
@@ -58,6 +61,44 @@ namespace {
         Time t;        // time to maturity
         Volatility v;  // volatility
     };
+}
+
+void FdHestonTest::testFdmHestonVarianceMesher() {
+    BOOST_TEST_MESSAGE("Testing FDM Heston variance mesher ...");
+
+    SavedSettings backup;
+
+    const Date today = Date(22, February, 2018);
+    const DayCounter dc = Actual365Fixed();
+    Settings::instance().evaluationDate() = today;
+
+    const boost::shared_ptr<HestonProcess> process(
+        boost::make_shared<HestonProcess>(
+            Handle<YieldTermStructure>(flatRate(0.02, dc)),
+            Handle<YieldTermStructure>(flatRate(0.02, dc)),
+            Handle<Quote>(boost::make_shared<SimpleQuote>(100.0)),
+            0.09, 1.0, 0.09, 0.2, -0.5));
+
+    const std::vector<Real> locations =
+        FdmHestonVarianceMesher(5, process, 1.0).locations();
+
+    const Real expected[] = {
+        0.0, 6.652314e-02, 9.000000e-02, 1.095781e-01, 2.563610e-01
+    };
+
+    const Real tol = 1e-6;
+    for (Size i=0; i < locations.size(); ++i) {
+        const Real diff = std::fabs(expected[i] - locations[i]);
+
+        if (diff > tol) {
+            BOOST_ERROR("Failed to reproduce Heston variance mesh"
+                        << "\n    calculated: " << locations[i]
+                        << "\n    expected:   " << expected[i]
+                        << std::scientific
+                        << "\n    difference  " << diff
+                        << "\n    tolerance:  " << tol);
+        }
+    }
 }
 
 void FdHestonTest::testFdmHestonBarrierVsBlackScholes() {
@@ -190,23 +231,23 @@ void FdHestonTest::testFdmHestonBarrierVsBlackScholes() {
 
         const Real v0 = vol->value()*vol->value();
         boost::shared_ptr<HestonProcess> hestonProcess(
-             new HestonProcess(rTS, qTS, spot, v0, 1.0, v0, 0.00001, 0.0));
+             new HestonProcess(rTS, qTS, spot, v0, 1.0, v0, 0.005, 0.0));
 
         barrierOption.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new FdHestonBarrierEngine(boost::shared_ptr<HestonModel>(
-                              new HestonModel(hestonProcess)), 200, 400, 3)));
+                              new HestonModel(hestonProcess)), 200, 101, 3)));
 
         const Real calculatedHE = barrierOption.NPV();
     
         barrierOption.setPricingEngine(analyticEngine);
         const Real expected = barrierOption.NPV();
     
-        const Real tol = 0.002;
+        const Real tol = 0.0025;
         if (std::fabs(calculatedHE - expected)/expected > tol) {
             BOOST_ERROR("Failed to reproduce expected Heston npv"
                         << "\n    calculated: " << calculatedHE
                         << "\n    expected:   " << expected
-                        << "\n    tolerance:  " << tol); 
+                        << "\n    tolerance:  " << tol);
         }
     }
 }
@@ -411,7 +452,7 @@ void FdHestonTest::testFdmHestonBlackScholes() {
         option.setPricingEngine(boost::shared_ptr<PricingEngine>(
              new FdHestonVanillaEngine(boost::shared_ptr<HestonModel>(
                                            new HestonModel(hestonProcess)), 
-                                       100, 400)));
+                                       100, 400, 3)));
         
         Real calculated = option.NPV();
         if (std::fabs(calculated - expected) > tol) {
@@ -425,17 +466,17 @@ void FdHestonTest::testFdmHestonBlackScholes() {
         // Explicit scheme
         option.setPricingEngine(boost::shared_ptr<PricingEngine>(
              new FdHestonVanillaEngine(boost::shared_ptr<HestonModel>(
-                                           new HestonModel(hestonProcess)), 
-                                       10000, 400, 5, 0, 
+                                           new HestonModel(hestonProcess)),
+                                       500, 400, 3, 0,
                                        FdmSchemeDesc::ExplicitEuler())));
-        
+
         calculated = option.NPV();
         if (std::fabs(calculated - expected) > tol) {
             BOOST_ERROR("Failed to reproduce expected npv"
                         << "\n    strike:     " << strikes[i]
                         << "\n    calculated: " << calculated
                         << "\n    expected:   " << expected
-                        << "\n    tolerance:  " << tol); 
+                        << "\n    tolerance:  " << tol);
         }
     }
 }
@@ -574,7 +615,7 @@ void FdHestonTest::testFdmHestonConvergence() {
                          new FdHestonVanillaEngine(
                              boost::shared_ptr<HestonModel>(
                                  new HestonModel(hestonProcess)), 
-                             tn[j], 400, 100, 0, 
+                             tn[j], 101, 51, 0,
                              schemes[l]));
                     option.setPricingEngine(engine);
                     
@@ -665,9 +706,11 @@ void FdHestonTest::testFdmHestonIntradayPricing() {
 #endif
 }
 
+
 test_suite* FdHestonTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Finite Difference Heston tests");
 
+    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonVarianceMesher));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBarrier));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonAmerican));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonIkonenToivanen));
@@ -679,13 +722,13 @@ test_suite* FdHestonTest::suite(SpeedLevel speed) {
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(
             &FdHestonTest::testFdmHestonBlackScholes));
+        suite->add(QUANTLIB_TEST_CASE(
+            &FdHestonTest::testFdmHestonConvergence));
     }
 
     if (speed == Slow) {
         suite->add(QUANTLIB_TEST_CASE(
             &FdHestonTest::testFdmHestonBarrierVsBlackScholes));
-        suite->add(QUANTLIB_TEST_CASE(
-            &FdHestonTest::testFdmHestonConvergence));
     }
 
     return suite;
