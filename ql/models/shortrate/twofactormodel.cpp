@@ -52,7 +52,7 @@ namespace QuantLib {
         Matrix correlation(2,2);
         correlation[0][0] = correlation[1][1] = 1.0;
         correlation[0][1] = correlation[1][0] = correlation_;
-        std::vector<boost::shared_ptr<StochasticProcess1D> > processes;
+        std::vector<boost::shared_ptr<StochasticProcess1D> > processes(2);
         processes[0] = xProcess_;
         processes[1] = yProcess_;
         return boost::shared_ptr<StochasticProcess>(
