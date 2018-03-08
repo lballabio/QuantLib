@@ -2172,31 +2172,36 @@ void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
     LagrangeInterpolation interpl(x.begin(), x.end(), y.begin());
 
     const Real tol = 1e-13;
+    const Real tolDeriv = 1e-11;
 
-    for (Real x=-1.0; x <= 1.0; x+=0.01) {
+    for (Real x=-1.0; x <= 1.0; x+=0.03) {
         const Real calculated = interpl(x, true);
         const Real expected = std::exp(x)/std::cos(x);
 
-        if (   boost::math::isnan(calculated)
-            || std::fabs(expected - calculated) > tol) {
+        const Real diff = std::fabs(expected - calculated);
+        if (   boost::math::isnan(calculated) || diff > tol) {
             BOOST_FAIL("failed to reproduce the Lagrange"
-                    " interplation on Chebyshev points"
+                    " interpolation on Chebyshev points"
                     << "\n    x         : " << x
                     << "\n    calculated: " << calculated
-                    << "\n    expected  : " << expected);
+                    << "\n    expected  : " << expected
+                    << std::scientific
+                    << "\n    difference: " << diff);
         }
 
         const Real calculatedDeriv = interpl.derivative(x, true);
         const Real expectedDeriv = std::exp(x)*(std::cos(x) + std::sin(x))
                 / square<Real>()(std::cos(x));
 
-        if (   boost::math::isnan(calculated)
-            || std::fabs(expected - calculated) > tol) {
+        const Real diffDeriv = std::fabs(expectedDeriv - calculatedDeriv);
+        if (   boost::math::isnan(calculated) || diffDeriv > tolDeriv) {
             BOOST_FAIL("failed to reproduce the Lagrange"
-                    " interplation derivative on Chebyshev points"
+                    " interpolation derivative on Chebyshev points"
                     << "\n    x         : " << x
                     << "\n    calculated: " << calculatedDeriv
-                    << "\n    expected  : " << expectedDeriv);
+                    << "\n    expected  : " << expectedDeriv
+                    << std::scientific
+                    << "\n    difference: " << diffDeriv);
         }
     }
 }
@@ -2248,7 +2253,6 @@ void InterpolationTest::testBSplines() {
         }
     }
 }
-
 
 void InterpolationTest::testBackwardFlatOnSinglePoint() {
     BOOST_TEST_MESSAGE("Testing piecewise constant interpolation on a "
