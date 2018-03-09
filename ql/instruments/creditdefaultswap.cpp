@@ -68,12 +68,15 @@ namespace QuantLib {
         // protection start is assumed to be T+1 (independent of the calendar)
 
         if(rebatesAccrual) {
-            boost::shared_ptr<FixedRateCoupon> firstCoupon =
-                boost::dynamic_pointer_cast<FixedRateCoupon>(leg_[0]);
-
+            Size i = 0;
+            while (leg_[i]->hasOccurred(protectionStart_, false)) ++i;
+            boost::shared_ptr<FixedRateCoupon> coupon =
+                boost::dynamic_pointer_cast<FixedRateCoupon>(leg_[i]);
+            QL_REQUIRE(coupon->accrualStartDate() <= protectionStart_,
+                       "contract cannot start before accrual");
             const Date& rebateDate = effectiveUpfrontDate;
             accrualRebate_ = boost::make_shared<SimpleCashFlow>(
-                firstCoupon->accruedAmount(protectionStart_),
+                coupon->accruedAmount(protectionStart_),
                 rebateDate);
         }
 
@@ -129,15 +132,15 @@ namespace QuantLib {
                    "upfront can not be due before contract start");
 
         if(rebatesAccrual) {
-            boost::shared_ptr<FixedRateCoupon> firstCoupon =
-                boost::dynamic_pointer_cast<FixedRateCoupon>(leg_[0]);
-            // adjust to T+3 standard settlement, alternatively add
-            //  an arbitrary date to the constructor
-
+            Size i = 0;
+            while (leg_[i]->hasOccurred(protectionStart_, false)) ++i;
+            boost::shared_ptr<FixedRateCoupon> coupon =
+                boost::dynamic_pointer_cast<FixedRateCoupon>(leg_[i]);
+            QL_REQUIRE(coupon->accrualStartDate() <= protectionStart_,
+                       "contract cannot start before accrual");
             const Date& rebateDate = effectiveUpfrontDate;
-
             accrualRebate_ = boost::make_shared<SimpleCashFlow>(
-                firstCoupon->accruedAmount(protectionStart_),
+                coupon->accruedAmount(protectionStart_),
                 rebateDate);
         }
 

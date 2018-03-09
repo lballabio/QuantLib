@@ -204,8 +204,7 @@ namespace QuantLib {
                            << "or Act/360 (" << coupon->dayCounter() << ")");
 
             // premium coupons
-
-            if (!arguments_.leg[i]->hasOccurred(evalDate,
+            if (!arguments_.leg[i]->hasOccurred(effectiveProtectionStart,
                                                 includeSettlementDateFlows_)) {
                 premiumNpv +=
                     coupon->amount() *
