@@ -40,6 +40,7 @@
 #include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 
+#include <boost/make_shared.hpp>
 #include <boost/assign/std/vector.hpp>
 #include <boost/make_shared.hpp>
 
@@ -706,6 +707,93 @@ void FdHestonTest::testFdmHestonIntradayPricing() {
 #endif
 }
 
+void FdHestonTest::testMethodOfLines() {
+    BOOST_TEST_MESSAGE("Testing method of lines to solve Heston PDEs...");
+
+    SavedSettings backup;
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(21, February, 2018);
+
+    Settings::instance().evaluationDate() = today;
+
+    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(100.0));
+    const Handle<YieldTermStructure> qTS(flatRate(today, 0.0, dc));
+    const Handle<YieldTermStructure> rTS(flatRate(today, 0.0, dc));
+
+    const Real v0    = 0.09;
+    const Real kappa = 1.0;
+    const Real theta = v0;
+    const Real sigma = 0.4;
+    const Real rho   = -0.75;
+
+    const Date maturity = today + Period(3, Months);
+
+    const boost::shared_ptr<HestonModel> model(
+        boost::make_shared<HestonModel>(
+            boost::make_shared<HestonProcess>(
+                rTS, qTS, spot, v0, kappa, theta, sigma, rho)));
+
+    const Size xGrid = 21;
+    const Size vGrid = 7;
+
+    const boost::shared_ptr<PricingEngine> fdmDefault(
+        boost::make_shared<FdHestonVanillaEngine>(model, 10, xGrid, vGrid, 0));
+
+    const boost::shared_ptr<PricingEngine> fdmMol(
+        boost::make_shared<FdHestonVanillaEngine>(
+            model, 10, xGrid, vGrid, 0, FdmSchemeDesc::MethodOfLines()));
+
+    const boost::shared_ptr<PlainVanillaPayoff> payoff =
+        boost::make_shared<PlainVanillaPayoff>(Option::Put, spot->value());
+
+    VanillaOption option(
+        payoff, boost::make_shared<AmericanExercise>(maturity));
+
+    option.setPricingEngine(fdmMol);
+    const Real calculated = option.NPV();
+
+    option.setPricingEngine(fdmDefault);
+    const Real expected = option.NPV();
+
+    const Real tol = 0.005;
+    const Real diff = std::fabs(expected - calculated);
+
+    if (diff > tol) {
+        BOOST_FAIL("Failed to reproduce european option values with MOL"
+                   << "\n    calculated: " << calculated
+                   << "\n    expected:   " << expected
+                   << "\n    difference: " << diff
+                   << "\n    tolerance:  " << tol);
+    }
+
+    BarrierOption barrierOption(
+        Barrier::DownOut, 85.0, 10.0,
+        payoff, boost::make_shared<EuropeanExercise>(maturity));
+
+    barrierOption.setPricingEngine(
+        boost::make_shared<FdHestonBarrierEngine>(model, 100, 31, 11));
+
+    const Real expectedBarrier = barrierOption.NPV();
+
+    barrierOption.setPricingEngine(
+        boost::make_shared<FdHestonBarrierEngine>(model, 100, 31, 11, 0,
+            FdmSchemeDesc::MethodOfLines()));
+
+    const Real calculatedBarrier = barrierOption.NPV();
+
+    const Real barrierTol = 0.01;
+    const Real barrierDiff = std::fabs(expectedBarrier - calculatedBarrier);
+
+    if (barrierDiff > barrierTol) {
+        BOOST_FAIL("Failed to reproduce barrier option values with MOL"
+                   << "\n    calculated: " << calculatedBarrier
+                   << "\n    expected:   " << expectedBarrier
+                   << "\n    difference: " << barrierDiff
+                   << "\n    tolerance:  " << barrierTol);
+    }
+}
+
 
 test_suite* FdHestonTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Finite Difference Heston tests");
@@ -715,9 +803,11 @@ test_suite* FdHestonTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonAmerican));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonIkonenToivanen));
     suite->add(QUANTLIB_TEST_CASE(
-                    &FdHestonTest::testFdmHestonEuropeanWithDividends));
+        &FdHestonTest::testFdmHestonEuropeanWithDividends));
     suite->add(QUANTLIB_TEST_CASE(
         &FdHestonTest::testFdmHestonIntradayPricing));
+    suite->add(QUANTLIB_TEST_CASE(
+        &FdHestonTest::testMethodOfLines));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(

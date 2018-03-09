@@ -7,5 +7,6 @@
 #include <ql/methods/finitedifferences/schemes/expliciteulerscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/hundsdorferscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/impliciteulerscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/methodoflinesscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/modifiedcraigsneydscheme.hpp>
 

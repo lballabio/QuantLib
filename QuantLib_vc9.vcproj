@@ -1193,6 +1193,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\methods\finitedifferences\schemes\methodoflinesscheme.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\schemes\methodoflinesscheme.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\methods\finitedifferences\schemes\modifiedcraigsneydscheme.cpp"
 						>
 					</File>
