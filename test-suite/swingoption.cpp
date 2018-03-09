@@ -304,10 +304,11 @@ void SwingOptionTest::testFdBSSwingOption() {
 
         const Real upperBound = exerciseRights*bermudanOptionPrices;
 
-        if (swingOptionPrice - upperBound > 2e-2) {
+        if (swingOptionPrice - upperBound > 0.01) {
             BOOST_ERROR("Failed to reproduce upper bounds"
                         << "\n    upper Bound: " << upperBound
-                        << "\n    Price:       " << swingOptionPrice);
+                        << "\n    Price:       " << swingOptionPrice
+                        << "\n    diff:        " << swingOptionPrice - upperBound);
         }
         
         Real lowerBound = 0.0;
@@ -320,10 +321,11 @@ void SwingOptionTest::testFdBSSwingOption() {
             lowerBound += europeanOption.NPV();
         }
 
-        if (lowerBound - swingOptionPrice > 2e-2) {
+        if (lowerBound - swingOptionPrice > 4e-2) {
             BOOST_ERROR("Failed to reproduce lower bounds"
                         << "\n    lower Bound: " << lowerBound
-                        << "\n    Price:       " << swingOptionPrice);
+                        << "\n    Price:       " << swingOptionPrice
+                        << "\n    diff:        " << lowerBound - swingOptionPrice);
         }
     }
 }

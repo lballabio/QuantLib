@@ -32,16 +32,55 @@
 namespace QuantLib {
 
     FdmBlackScholesMesher::FdmBlackScholesMesher(
-            Size size,
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            Time maturity, Real strike,
-            Real xMinConstraint, Real xMaxConstraint, 
-            Real eps, Real scaleFactor,
-            const std::pair<Real, Real>& cPoint)
+        Size size,
+        const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+        Time maturity, Real strike,
+        Real xMinConstraint, Real xMaxConstraint,
+        Real eps, Real scaleFactor,
+        const std::pair<Real, Real>& cPoint,
+        const DividendSchedule& dividendSchedule)
     : Fdm1dMesher(size) {
 
         const Real S = process->x0();
         QL_REQUIRE(S > 0.0, "negative or null underlying given");
+
+        std::vector<std::pair<Time, Real> > intermediateSteps;
+        for (Size i=0; i < dividendSchedule.size()
+            && process->time(dividendSchedule[i]->date()) <= maturity; ++i)
+            intermediateSteps.push_back(
+                std::make_pair(
+                    process->time(dividendSchedule[i]->date()),
+                    dividendSchedule[i]->amount()
+                ) );
+
+        const Size intermediateTimeSteps = std::max<Size>(2, 24.0*maturity);
+        for (Size i=0; i < intermediateTimeSteps; ++i)
+            intermediateSteps.push_back(
+                std::make_pair((i+1)*(maturity/intermediateTimeSteps), 0.0));
+
+        std::sort(intermediateSteps.begin(), intermediateSteps.end());
+
+        const Handle<YieldTermStructure> rTS = process->riskFreeRate();
+        const Handle<YieldTermStructure> qTS = process->dividendYield();
+
+        Time lastDivTime = 0.0;
+        Real fwd = S, mi = S, ma = S;
+
+        for (Size i=0; i < intermediateSteps.size(); ++i) {
+            const Time divTime = intermediateSteps[i].first;
+            const Real divAmount = intermediateSteps[i].second;
+
+            fwd = fwd / rTS->discount(divTime) * rTS->discount(lastDivTime)
+                      * qTS->discount(divTime) / qTS->discount(lastDivTime);
+
+            mi  = std::min(mi, fwd); ma = std::max(ma, fwd);
+
+            fwd-= divAmount;
+
+            mi  = std::min(mi, fwd); ma = std::max(ma, fwd);
+
+            lastDivTime = divTime;
+        }
 
         // Set the grid boundaries
         const Real normInvEps = InverseCumulativeNormal()(1-eps);
@@ -49,9 +88,9 @@ namespace QuantLib {
             = process->blackVolatility()->blackVol(maturity, strike)
                                                         *std::sqrt(maturity);
         
-        Real xMin = std::log(S) - sigmaSqrtT*normInvEps*scaleFactor;
-        Real xMax = std::log(S) + sigmaSqrtT*normInvEps*scaleFactor;
-                
+        Real xMin = std::log(mi) - sigmaSqrtT*normInvEps*scaleFactor;
+        Real xMax = std::log(ma) + sigmaSqrtT*normInvEps*scaleFactor;
+
         if (xMinConstraint != Null<Real>()) {
             xMin = xMinConstraint;
         }
