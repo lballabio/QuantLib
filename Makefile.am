@@ -43,13 +43,11 @@ check-examples:
 benchmark:
 	$(MAKE) -C test-suite benchmark
 
-.PHONY: docs docs-man docs-online docs-dist docs-clean
+.PHONY: docs docs-online docs-dist docs-clean
 docs:
 	$(MAKE) -C Docs docs-all
 html-local:
 	$(MAKE) -C Docs docs-html
-docs-man:
-	$(MAKE) -C Docs docs-man
 docs-dist:
 	$(MAKE) -C Docs docs-dist
 docs-clean:
