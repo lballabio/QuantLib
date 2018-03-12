@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+
 /*
-  Copyright (C) 2014, 2015 Peter Caspers
+  Copyright (C) 2014, 2015, 2018 Peter Caspers
 
   This file is part of QuantLib, a free-software/open-source library
   for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,9 +18,9 @@
   or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details. */
 
 /*! \file lognormalcmsspreadpricer.hpp
-    \brief cms spread coupon pricer as in Brigo, Mercurio, 13.34 with
-           extensions for shifted lognormal and normal dynamics as in
-           (... add reference ...)
+    \brief cms spread coupon pricer as in Brigo, Mercurio, 13.6.2, with
+           extensions for shifted lognormal and normal dynamics as
+           described in http://ssrn.com/abstract=2686998
 */
 
 #ifndef quantlib_lognormal_cmsspread_pricer_hpp
@@ -110,6 +111,7 @@ namespace QuantLib {
 
         Real gearing_, spread_;
         Real spreadLegValue_;
+        Real discount_;
 
         boost::shared_ptr<SwapSpreadIndex> index_;
 
@@ -128,6 +130,7 @@ namespace QuantLib {
 
         mutable Real phi_, a_, b_, s1_, s2_, m1_, m2_, v1_, v2_, k_;
         mutable Real alpha_, psi_;
+        mutable Option::Type optionType_;
 
         boost::shared_ptr<CmsCoupon> c1_, c2_;
 

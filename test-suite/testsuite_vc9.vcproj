@@ -964,6 +964,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\cmsspread.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\commodityunitofmeasure.cpp"
 				>
 			</File>
@@ -1534,6 +1538,10 @@
 			</File>
 			<File
 				RelativePath=".\cms.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\cmsspread.hpp"
 				>
 			</File>
 			<File
