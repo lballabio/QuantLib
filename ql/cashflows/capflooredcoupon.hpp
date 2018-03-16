@@ -74,9 +74,9 @@ namespace QuantLib {
         //! effective floor of fixing
         Rate effectiveFloor() const;
         //@}
-        //! \name Observer interface
+        //! \name LazyObject interface
         //@{
-        void update();
+        void performCalculations() const;
         //@}
         //! \name Visitability
         //@{
@@ -95,6 +95,7 @@ namespace QuantLib {
         boost::shared_ptr<FloatingRateCoupon> underlying_;
         bool isCapped_, isFloored_;
         Rate cap_, floor_;
+        mutable Real capletRate_, floorletRate_;
     };
 
     class CappedFlooredIborCoupon : public CappedFlooredCoupon {
