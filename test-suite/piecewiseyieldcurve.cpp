@@ -247,11 +247,9 @@ namespace {
             for (Size i=0; i<deposits; i++) {
                 Handle<Quote> r(rates[i]);
                 instruments[i] = boost::shared_ptr<RateHelper>(new
-                    DepositRateHelper(r, depositData[i].n*depositData[i].units,
-                                      euribor6m->fixingDays(), calendar,
-                                      euribor6m->businessDayConvention(),
-                                      euribor6m->endOfMonth(),
-                                      euribor6m->dayCounter()));
+                    DepositRateHelper(r,
+                                      boost::make_shared<Euribor>(
+                                          depositData[i].n*depositData[i].units)));
             }
             for (Size i=0; i<swaps; i++) {
                 Handle<Quote> r(rates[i+deposits]);
