@@ -36,10 +36,10 @@
 
 namespace QuantLib {
 
-    Real CumulativeNormalDistribution::operator()(Real z) const {
+    Real CumulativeNormalDistribution::operator()(Real zs) const {
         //QL_REQUIRE(!(z >= average_ && 2.0*average_-z > average_),
         //           "not a real number. ");
-        z = (z - average_) / sigma_;
+        zs = (zs - average_) / sigma_;
      
         // Symmetry allows calculation at the lower half
         Real z = -std::abs(zs);
