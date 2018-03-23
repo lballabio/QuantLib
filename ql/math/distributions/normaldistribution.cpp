@@ -40,7 +40,10 @@ namespace QuantLib {
         //QL_REQUIRE(!(z >= average_ && 2.0*average_-z > average_),
         //           "not a real number. ");
         z = (z - average_) / sigma_;
-
+     
+        // Symmetry allows calculation at the lower half
+        Real z = -std::abs(zs);
+     
         Real result = 0.5 * ( 1.0 + errorFunction_( z*M_SQRT_2 ) );
         if (result<=1e-8) { //todo: investigate the threshold level
             // Asymptotic expansion for very negative z following (26.2.12)
@@ -60,6 +63,9 @@ namespace QuantLib {
             } while (lasta>a && a>=std::fabs(sum*QL_EPSILON));
             result = -gaussian_(z)/z*sum;
         }
+     
+        // return according to the original side
+        if(zs>0.) result = 1.-result;
         return result;
     }
 
