@@ -28,8 +28,55 @@
 #include <ql/models/shortrate/onefactormodel.hpp>
 #include <ql/experimental/shortrate/generalizedornsteinuhlenbeckprocess.hpp>
 #include <ql/processes/ornsteinuhlenbeckprocess.hpp>
+#include <ql/math/interpolation.hpp>
 
 namespace QuantLib {
+
+  //! Parameter that can be used with an interpolation object
+  class InterpolationParameter : public Parameter {
+  private:
+    class InterpolationImpl : public Parameter::Impl{
+    public:
+      virtual void update(const Array &)=0;
+    };
+    template <class InterpolationTraits>
+    class Impl : public InterpolationImpl {
+    public:
+      explicit Impl(const std::vector<Time>& times)
+      : times_(times) {}
+      virtual Real value(const Array&, Time t) const {
+          return interpolator_(t);
+      }
+      virtual void update(const Array &x) {
+        interpolator_ = InterpolationTraits().interpolate(
+          times_.begin(),times_.end(),x.begin());
+        interpolator_.enableExtrapolation();
+      }
+    private:
+      std::vector<Time> times_;
+      Interpolation interpolator_;
+    };
+  public:
+    template <class InterpolationTraits>
+    InterpolationParameter(const std::vector<Time>& times,
+      const InterpolationTraits &traits,
+      const Constraint& constraint = NoConstraint())
+    : Parameter(times.size(),
+        boost::shared_ptr<Parameter::Impl>(
+          new InterpolationParameter::Impl<InterpolationTraits>(times)),
+        constraint)
+    {
+      update(*this);
+    }
+    /*! if the given Parameter contains an interpolation object,
+    rebuild it with new params */
+    static void update(Parameter &p){
+      InterpolationParameter::InterpolationImpl *impl =
+        dynamic_cast<InterpolationParameter::InterpolationImpl*>(
+          p.implementation().get());
+      if (impl) impl->update(p.params());
+    }
+  };
 
     //! Generalized Hull-White model class.
     /*! This class implements the standard Black-Karasinski model defined by
@@ -63,6 +110,28 @@ namespace QuantLib {
                                             boost::function<Real(Real)>(),
             const boost::function<Real(Real)>& fInverse =
                                             boost::function<Real(Real)>());
+
+        template <class SpeedInterpolationTraits,class VolInterpolationTraits>
+        GeneralizedHullWhite(
+            const Handle<YieldTermStructure>& yieldtermStructure,
+            const std::vector<Date>& speedstructure,
+            const std::vector<Date>& volstructure,
+            const std::vector<Real>& speed,
+            const std::vector<Real>& vol,
+            const SpeedInterpolationTraits &speedtraits,
+            const VolInterpolationTraits &voltraits,
+            const boost::function<Real(Real)>& f =
+                                            boost::function<Real(Real)>(),
+            const boost::function<Real(Real)>& fInverse =
+                                            boost::function<Real(Real)>()) :
+            OneFactorAffineModel(2), TermStructureConsistentModel(yieldtermStructure),
+            speedstructure_(speedstructure), volstructure_(volstructure),
+            a_(arguments_[0]), sigma_(arguments_[1]),
+            f_(f), fInverse_(fInverse)
+        {
+          initialize(yieldtermStructure,speedstructure,volstructure,
+            speed,vol,speedtraits,voltraits,f,fInverse);
+        }
 
         boost::shared_ptr<ShortRateDynamics> dynamics() const {
             QL_FAIL("no defined process for generalized Hull-White model, "
@@ -119,6 +188,51 @@ namespace QuantLib {
 
         boost::function<Real(Real)> f_;
         boost::function<Real(Real)> fInverse_;
+
+        static Real identity(Real x) {
+            return x;
+        }
+
+        template <class SpeedInterpolationTraits,class VolInterpolationTraits>
+        void initialize(const Handle<YieldTermStructure>& yieldtermStructure,
+          const std::vector<Date>& speedstructure,
+          const std::vector<Date>& volstructure,
+          const std::vector<Real>& speed,
+          const std::vector<Real>& vol,
+          const SpeedInterpolationTraits &speedtraits,
+          const VolInterpolationTraits &voltraits,
+          const boost::function<Real(Real)>& f,
+          const boost::function<Real(Real)>& fInverse)
+        {
+          QL_REQUIRE(speedstructure.size()==speed.size(),
+            "mean reversion inputs inconsistent");
+          QL_REQUIRE(volstructure.size()==vol.size(),
+            "volatility inputs inconsistent");
+          if (f_.empty())
+              f_ = identity;
+          if (fInverse_.empty())
+              fInverse_ = identity;
+
+          DayCounter dc = yieldtermStructure->dayCounter();
+          Date ref = yieldtermStructure->referenceDate();
+          for (Size i=0;i<speedstructure.size();i++)
+              speedperiods_.push_back(dc.yearFraction(ref,speedstructure[i]));
+          for (Size i=0;i<volstructure.size();i++)
+              volperiods_.push_back(dc.yearFraction(ref,volstructure[i]));
+
+          a_ = InterpolationParameter(
+            speedperiods_, speedtraits, NoConstraint());
+          for (Size i=0; i<speedperiods_.size(); i++)
+            a_.setParam(i, speed[i]);
+
+          sigma_ = InterpolationParameter(
+            volperiods_, voltraits, PositiveConstraint());
+          for (Size i=0; i<volperiods_.size(); i++)
+            sigma_.setParam(i, vol[i]);
+
+          generateArguments();
+          registerWith(yieldtermStructure);
+        }
     };
 
     //! Short-rate dynamics in the generalized Hull-White model

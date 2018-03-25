@@ -24,6 +24,8 @@
 #include <ql/methods/lattices/trinomialtree.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/pricingengines/blackformula.hpp>
+#include <ql/math/interpolations/backwardflatinterpolation.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
 
 namespace QuantLib {
 
@@ -177,6 +179,22 @@ namespace QuantLib {
       a_(arguments_[0]), sigma_(arguments_[1]),
       f_(f), fInverse_(fInverse) {
 
+        Linear linearTraits;
+        BackwardFlat pwcTraits;
+
+        if (speed.size()==1 && vol.size()==1){
+          initialize(yieldtermStructure,speedstructure,volstructure,
+            speed,vol, pwcTraits, pwcTraits, f, fInverse);
+        }
+        else if (speed.size()==1 && vol.size()>1){
+          initialize(yieldtermStructure,speedstructure,volstructure,
+            speed,vol, pwcTraits, linearTraits, f, fInverse);
+        }
+        else if (speed.size()==1 && vol.size()>1){
+          initialize(yieldtermStructure,speedstructure,volstructure,
+            speed,vol, pwcTraits, linearTraits, f, fInverse);
+        }
+        /*
         if (f_.empty())
             f_ = identity;
         if (fInverse_.empty())
@@ -205,6 +223,7 @@ namespace QuantLib {
         }
 
         registerWith(yieldtermStructure);
+        */
     }
 
     //classical HW
@@ -245,6 +264,8 @@ namespace QuantLib {
     }
 
     void GeneralizedHullWhite::generateArguments() {
+        InterpolationParameter::update(a_);
+        InterpolationParameter::update(sigma_);
         phi_ = FittingParameter(termStructure(), a(), sigma());
     }
 
@@ -311,6 +332,7 @@ namespace QuantLib {
     }
 
     boost::function<Real (Time)> GeneralizedHullWhite::speed() const {
+        return a_;
 
         std::vector<Real> speedvals;
         speedvals.push_back(a_(0.001));
@@ -334,6 +356,7 @@ namespace QuantLib {
     }
 
     boost::function<Real (Time)> GeneralizedHullWhite::vol() const {
+        return sigma_;
 
         std::vector<Real> volvals;
         volvals.push_back(sigma_(0.001));
