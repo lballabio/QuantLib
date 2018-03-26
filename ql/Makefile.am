@@ -50,6 +50,7 @@ this_include_HEADERS = \
 	quote.hpp \
 	rebatedexercise.hpp \
 	settings.hpp \
+	shared_ptr.hpp \
 	stochasticprocess.hpp \
 	termstructure.hpp \
 	timegrid.hpp \
