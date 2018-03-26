@@ -551,7 +551,7 @@ void InflationCapFloorTest::testCachedValue() {
 
 
 test_suite* InflationCapFloorTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Inflation (year-on-year) Cap/floor tests");
+    test_suite* suite = BOOST_TEST_SUITE("Inflation (year-on-year) Cap and floor tests");
     suite->add(QUANTLIB_TEST_CASE(&InflationCapFloorTest::testConsistency));
     suite->add(QUANTLIB_TEST_CASE(&InflationCapFloorTest::testParity));
     suite->add(QUANTLIB_TEST_CASE(&InflationCapFloorTest::testCachedValue));

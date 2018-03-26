@@ -801,7 +801,7 @@ void InflationCapFlooredCouponTest::testInstrumentEquality() {
 
 
 test_suite* InflationCapFlooredCouponTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("YoY inflation capped/floored coupon tests");
+    test_suite* suite = BOOST_TEST_SUITE("YoY inflation capped and floored coupon tests");
     suite->add(QUANTLIB_TEST_CASE(&InflationCapFlooredCouponTest::testDecomposition));
     suite->add(QUANTLIB_TEST_CASE(&InflationCapFlooredCouponTest::testInstrumentEquality));
     return suite;
