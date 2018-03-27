@@ -32,49 +32,31 @@
 
 namespace QuantLib {
 
-  //! Parameter that can be used with an interpolation object
+  //! Parameter that holds an interpolation object
   class InterpolationParameter : public Parameter {
   private:
-    class InterpolationImpl : public Parameter::Impl{
+    class Impl : public Parameter::Impl {
     public:
-      virtual void update(const Array &)=0;
-    };
-    template <class InterpolationTraits>
-    class Impl : public InterpolationImpl {
-    public:
-      explicit Impl(const std::vector<Time>& times)
-      : times_(times) {}
       virtual Real value(const Array&, Time t) const {
           return interpolator_(t);
       }
-      virtual void update(const Array &x) {
-        interpolator_ = InterpolationTraits().interpolate(
-          times_.begin(),times_.end(),x.begin());
-        interpolator_.enableExtrapolation();
+      void reset(const Interpolation &interp){
+        interpolator_ = interp;
       }
     private:
-      std::vector<Time> times_;
       Interpolation interpolator_;
     };
   public:
-    template <class InterpolationTraits>
-    InterpolationParameter(const std::vector<Time>& times,
-      const InterpolationTraits &traits,
+    InterpolationParameter(Size count,
       const Constraint& constraint = NoConstraint())
-    : Parameter(times.size(),
+    : Parameter(count,
         boost::shared_ptr<Parameter::Impl>(
-          new InterpolationParameter::Impl<InterpolationTraits>(times)),
+          new InterpolationParameter::Impl()),
         constraint)
-    {
-      update(*this);
-    }
-    /*! if the given Parameter contains an interpolation object,
-    rebuild it with new params */
-    static void update(Parameter &p){
-      InterpolationParameter::InterpolationImpl *impl =
-        dynamic_cast<InterpolationParameter::InterpolationImpl*>(
-          p.implementation().get());
-      if (impl) impl->update(p.params());
+    { }
+    void reset(const Interpolation &interp){
+      boost::dynamic_pointer_cast<InterpolationParameter::Impl>(
+        impl_)->reset(interp);
     }
   };
 
@@ -90,15 +72,6 @@ namespace QuantLib {
     class GeneralizedHullWhite : public OneFactorAffineModel,
                                  public TermStructureConsistentModel {
       public:
-
-        GeneralizedHullWhite(
-            const Handle<YieldTermStructure>& yieldtermStructure,
-            const std::vector<Date>& speedstructure,
-            const std::vector<Date>& volstructure,
-            const boost::function<Real(Real)>& f =
-                                            boost::function<Real(Real)>(),
-            const boost::function<Real(Real)>& fInverse =
-                                            boost::function<Real(Real)>());
 
         GeneralizedHullWhite(
             const Handle<YieldTermStructure>& yieldtermStructure,
@@ -149,24 +122,20 @@ namespace QuantLib {
 
         boost::shared_ptr<ShortRateDynamics> HWdynamics() const;
 
+        //! Only valid under Hull-White model
         Real discountBondOption(Option::Type type,
                                 Real strike,
                                 Time maturity,
                                 Time bondMaturity) const;
-
-        static Rate convexityBias(Real futurePrice,
-                                  Time t,
-                                  Time T,
-                                  Real sigma,
-                                  Real a);
 
       protected:
         //Analytical calibration of HW
         Real a() const { return a_(0.0); }
         Real sigma() const { return sigma_(0.0); }
         void generateArguments();
-        Real A(Time t, Time T) const;
-        Real B(Time t, Time T) const;
+        virtual Real A(Time t, Time T) const;
+        virtual Real B(Time t, Time T) const;
+        Real V(Time t, Time T) const;
 
       private:
 
@@ -178,6 +147,8 @@ namespace QuantLib {
         std::vector<Date> volstructure_;
         std::vector<Time> speedperiods_;
         std::vector<Time> volperiods_;
+        Interpolation speed_;
+        Interpolation vol_;
 
         boost::function<Real (Time)> speed() const;
         boost::function<Real (Time)> vol() const;
@@ -209,26 +180,34 @@ namespace QuantLib {
           QL_REQUIRE(volstructure.size()==vol.size(),
             "volatility inputs inconsistent");
           if (f_.empty())
-              f_ = identity;
+            f_ = identity;
           if (fInverse_.empty())
-              fInverse_ = identity;
+            fInverse_ = identity;
 
           DayCounter dc = yieldtermStructure->dayCounter();
           Date ref = yieldtermStructure->referenceDate();
           for (Size i=0;i<speedstructure.size();i++)
-              speedperiods_.push_back(dc.yearFraction(ref,speedstructure[i]));
+            speedperiods_.push_back(dc.yearFraction(ref,speedstructure[i]));
           for (Size i=0;i<volstructure.size();i++)
-              volperiods_.push_back(dc.yearFraction(ref,volstructure[i]));
+            volperiods_.push_back(dc.yearFraction(ref,volstructure[i]));
 
-          a_ = InterpolationParameter(
-            speedperiods_, speedtraits, NoConstraint());
+          InterpolationParameter atemp(speedperiods_.size(), NoConstraint());
+          a_ = atemp;
           for (Size i=0; i<speedperiods_.size(); i++)
             a_.setParam(i, speed[i]);
+          speed_ = speedtraits.interpolate(speedperiods_.begin(),
+            speedperiods_.end(),a_.params().begin());
+          speed_.enableExtrapolation();
+          atemp.reset(speed_);
 
-          sigma_ = InterpolationParameter(
-            volperiods_, voltraits, PositiveConstraint());
+          InterpolationParameter sigmatemp(volperiods_.size(), PositiveConstraint());
+          sigma_ = sigmatemp;
           for (Size i=0; i<volperiods_.size(); i++)
             sigma_.setParam(i, vol[i]);
+          vol_ = voltraits.interpolate(volperiods_.begin(),
+            volperiods_.end(),sigma_.params().begin());
+          vol_.enableExtrapolation();
+          sigmatemp.reset(vol_);
 
           generateArguments();
           registerWith(yieldtermStructure);
@@ -332,6 +311,91 @@ namespace QuantLib {
     GeneralizedHullWhite::HWdynamics() const {
         return boost::shared_ptr<ShortRateDynamics>(
                                             new Dynamics(phi_, a(), sigma()));
+    }
+
+    // todo: move to interpolations
+    namespace detail {
+        template <class I1, class I2>
+        class LinearFlatInterpolationImpl;
+    }
+
+    //! %Linear interpolation between discrete points with flat extapolation
+    /*! \ingroup interpolations */
+    class LinearFlatInterpolation : public Interpolation {
+      public:
+        /*! \pre the \f$ x \f$ values must be sorted. */
+        template <class I1, class I2>
+        LinearFlatInterpolation(const I1& xBegin, const I1& xEnd,
+                            const I2& yBegin) {
+            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+                detail::LinearFlatInterpolationImpl<I1,I2>(xBegin, xEnd,
+                                                       yBegin));
+            impl_->update();
+        }
+    };
+
+    //! %Linear-interpolation with flat-extrapolation factory and traits
+    /*! \ingroup interpolations */
+    class LinearFlat {
+      public:
+        template <class I1, class I2>
+        Interpolation interpolate(const I1& xBegin, const I1& xEnd,
+                                  const I2& yBegin) const {
+            return LinearFlatInterpolation(xBegin, xEnd, yBegin);
+        }
+        static const bool global = false;
+        static const Size requiredPoints = 1;
+    };
+
+    namespace detail {
+        template <class I1, class I2>
+        class LinearFlatInterpolationImpl
+                : public Interpolation::templateImpl<I1,I2> {
+            public:
+                LinearFlatInterpolationImpl(const I1& xBegin, const I1& xEnd,
+                                        const I2& yBegin)
+                : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin,
+                                        LinearFlat::requiredPoints),
+                  primitiveConst_(xEnd-xBegin), s_(xEnd-xBegin) {}
+                void update() {
+                    primitiveConst_[0] = 0.0;
+                    for (Size i=1; i<Size(this->xEnd_-this->xBegin_); ++i) {
+                        Real dx = this->xBegin_[i]-this->xBegin_[i-1];
+                        s_[i-1] = (this->yBegin_[i]-this->yBegin_[i-1])/dx;
+                        primitiveConst_[i] = primitiveConst_[i-1]
+                            + dx*(this->yBegin_[i-1] +0.5*dx*s_[i-1]);
+                    }
+                }
+                Real value(Real x) const {
+                    if (x <= this->xMin())
+                      return this->yBegin_[0];
+                    if (x >= this->xMax())
+                      return *(this->yBegin_+(this->xEnd_-this->xBegin_)-1);
+                    Size i = this->locate(x);
+                    return this->yBegin_[i] + (x-this->xBegin_[i])*s_[i];
+                }
+                Real primitive(Real x) const {
+                    if (x <= this->xMin())
+                        return this->yBegin_[0];
+                    if (x >= this->xMax())
+                        return *(this->yBegin_+(this->xEnd_-this->xBegin_)-1);
+                    Size i = this->locate(x);
+                    Real dx = x-this->xBegin_[i];
+                    return primitiveConst_[i] +
+                        dx*(this->yBegin_[i] + 0.5*dx*s_[i]);
+                }
+                Real derivative(Real x) const {
+                    if (!this->isInRange(x))
+                        return 0;
+                    Size i = this->locate(x);
+                    return s_[i];
+                }
+                Real secondDerivative(Real) const {
+                    return 0.0;
+                }
+            private:
+                std::vector<Real> primitiveConst_, s_;
+        };
     }
 
 }
