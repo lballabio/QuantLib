@@ -55,8 +55,7 @@ namespace QuantLib {
         constraint)
     { }
     void reset(const Interpolation &interp){
-      boost::dynamic_pointer_cast<InterpolationParameter::Impl>(
-        impl_)->reset(interp);
+      boost::dynamic_pointer_cast<InterpolationParameter::Impl>(impl_)->reset(interp);
     }
   };
 
@@ -128,6 +127,9 @@ namespace QuantLib {
                                 Time maturity,
                                 Time bondMaturity) const;
 
+        //! vector to pass to 'calibrate' to fit only volatility
+        std::vector<bool> fixedReversion() const;
+
       protected:
         //Analytical calibration of HW
         Real a() const { return a_(0.0); }
@@ -191,6 +193,8 @@ namespace QuantLib {
           for (Size i=0;i<volstructure.size();i++)
             volperiods_.push_back(dc.yearFraction(ref,volstructure[i]));
 
+          // interpolator x points to *periods_ vector, y points to
+          // the internal Array in the parameter
           InterpolationParameter atemp(speedperiods_.size(), NoConstraint());
           a_ = atemp;
           for (Size i=0; i<speedperiods_.size(); i++)
@@ -254,7 +258,7 @@ namespace QuantLib {
             _fInverse_=identity();
         }
 
-        Real variable(Time t, Rate r=0.01) const {
+        Real variable(Time t, Rate r) const {
             return _f_(r) - fitting_(t);
         }
 
@@ -310,7 +314,7 @@ namespace QuantLib {
     inline boost::shared_ptr<OneFactorModel::ShortRateDynamics>
     GeneralizedHullWhite::HWdynamics() const {
         return boost::shared_ptr<ShortRateDynamics>(
-                                            new Dynamics(phi_, a(), sigma()));
+          new Dynamics(phi_, a(), sigma()));
     }
 
     // todo: move to interpolations

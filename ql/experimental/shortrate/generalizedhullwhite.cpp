@@ -298,4 +298,13 @@ namespace QuantLib {
         return vol_;
     }
 
+    //! vector to pass to 'calibrate' to fit only volatility
+    std::vector<bool> GeneralizedHullWhite::fixedReversion() const{
+      Size na = a_.params().size();
+      Size nsigma = sigma_.params().size();
+      std::vector<bool> fixr(na+nsigma,false);
+      std::fill(fixr.begin(),fixr.begin()+na,true);
+      return fixr;
+    }
+
 }
