@@ -158,7 +158,9 @@ namespace QuantLib {
         OneFactorAffineSurvivalStructure::survivalProbabilityImpl(
         Time t) const
     {
-        Real initValHR = std::pow(model_->dynamics()->process()->x0(), 2);
+        Real initValHR =
+            model_->dynamics()->shortRate(0., 
+                model_->dynamics()->process()->x0());
 
         return model_->discountBond(0., t, initValHR);
     }
@@ -171,7 +173,9 @@ namespace QuantLib {
 
     inline Real 
         OneFactorAffineSurvivalStructure::defaultDensityImpl(Time t) const {
-        Real initValHR = std::pow(model_->dynamics()->process()->x0(), 2);
+        Real initValHR = 
+            model_->dynamics()->shortRate(0., 
+                model_->dynamics()->process()->x0());;
 
         return hazardRateImpl(t)*survivalProbabilityImpl(t) /
             model_->discountBond(0., t, initValHR);
