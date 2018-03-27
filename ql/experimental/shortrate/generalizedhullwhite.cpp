@@ -232,10 +232,6 @@ namespace QuantLib {
       Based on Gurrieri, Nakabayashi & Wong (2009) "Calibration Methods of
       Hull-White Model", https://ssrn.com/abstract=1514192
       */
-      DiscountFactor discount1 = termStructure()->discount(maturity);
-      DiscountFactor discount2 = termStructure()->discount(bondMaturity);
-      Rate forward = termStructure()->forwardRate(maturity, maturity,
-        Continuous, NoFrequency);
       Real BtT = B(maturity,bondMaturity);
       Real Vr = V(0,maturity);
       Real Vp = Vr*BtT*BtT;
