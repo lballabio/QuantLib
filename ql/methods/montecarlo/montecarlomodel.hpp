@@ -79,7 +79,7 @@ namespace QuantLib {
                 isControlVariate_ = true;
         }
         void addSamples(Size samples);
-        const stats_type& sampleAccumulator(void) const;
+        const stats_type& sampleAccumulator() const;
       private:
         boost::shared_ptr<path_generator_type> pathGenerator_;
         boost::shared_ptr<path_pricer_type> pathPricer_;
