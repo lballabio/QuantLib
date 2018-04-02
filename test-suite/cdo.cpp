@@ -37,6 +37,8 @@
 #include <ql/currencies/europe.hpp>
 
 #include <boost/bind.hpp>
+#include <boost/preprocessor/iteration/local.hpp>
+
 #include <iomanip>
 #include <iostream>
 
@@ -373,9 +375,11 @@ test_suite* CdoTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("CDO tests");
     #ifndef QL_PATCH_SOLARIS
     if (speed == Slow) {
-        for (unsigned i=0; i < LENGTH(hwData7); ++i)
-            suite->add(QUANTLIB_TEST_CASE(
-                boost::bind(&CdoTest::testHW, i)));
+        #define BOOST_PP_LOCAL_MACRO(n) \
+            suite->add(QUANTLIB_TEST_CASE(boost::bind(&CdoTest::testHW, n)));
+
+        #define BOOST_PP_LOCAL_LIMITS (0, 4)
+        #include BOOST_PP_LOCAL_ITERATE()
     }
     #endif
     return suite;

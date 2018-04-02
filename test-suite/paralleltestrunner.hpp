@@ -150,7 +150,7 @@ namespace {
     void output_logstream(
         std::ostream& out, std::streambuf* outBuf, std::stringstream& s) {
 
-        static named_mutex mutex(open_or_create, "namesLogMutexName");
+        static named_mutex mutex(open_or_create, namesLogMutexName);
         scoped_lock<named_mutex> lock(mutex);
 
         out.flush();
@@ -163,7 +163,7 @@ namespace {
         for (std::vector<std::string>::const_iterator iter = tok.begin();
             iter != tok.end(); ++iter) {
             if (iter->length() && iter->compare("Running 1 test case...")) {
-                out << *iter << std::endl;
+                out << *iter  << std::endl;
             }
         }
 
@@ -273,19 +273,6 @@ int main( int argc, char* argv[] )
                     ? tcc.map().find(tcc.testSuiteId())->second
                     : std::list<test_unit_id>();
 
-            std::stringstream logBuf;
-            std::streambuf* const oldBuf = log_stream().rdbuf();
-            log_stream().rdbuf(logBuf.rdbuf());
-
-            for (std::list<test_unit_id>::const_iterator iter = qlRoot.begin();
-                std::distance(qlRoot.begin(), iter) < int(qlRoot.size())-1;
-                ++iter) {
-
-                framework::impl::s_frk_state().execute_test_tree(*iter);
-            }
-            output_logstream(log_stream(), oldBuf, logBuf);
-            log_stream().rdbuf(oldBuf);
-
             // fork worker processes
             boost::thread_group threadGroup;
             for (unsigned i=0; i < nProc; ++i) {
@@ -364,17 +351,6 @@ int main( int argc, char* argv[] )
 
                 boost::unit_test::s_rc_impl().m_results_store[remoteResults.id]
                     = remoteResults.results;
-            }
-
-            if (!qlRoot.empty()) {
-                std::streambuf* const oldBuf = log_stream().rdbuf();
-                log_stream().rdbuf(logBuf.rdbuf());
-
-                const test_unit_id id = qlRoot.back();
-                framework::impl::s_frk_state().execute_test_tree(id);
-
-                output_logstream(log_stream(), oldBuf, logBuf);
-                log_stream().rdbuf(oldBuf);
             }
 
             TestCaseReportAggregator tca;
