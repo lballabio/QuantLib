@@ -41,6 +41,7 @@
 #include <boost/make_shared.hpp>
 #include <boost/bind.hpp>
 #include <boost/make_shared.hpp>
+#include <boost/preprocessor/iteration/local.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -1105,13 +1106,15 @@ test_suite* BasketOptionTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::test2DPDEGreeks));
 
     if (speed <= Fast) {
-        const Size nTestCases = std::min(Size(5), LENGTH(oneDataValues));
-        for (Size i=0; i < nTestCases; ++i) {
-            suite->add(QUANTLIB_TEST_CASE(
-                boost::bind(&BasketOptionTest::testOneDAmericanValues,
-                    (i    *LENGTH(oneDataValues))/nTestCases,
-                    ((i+1)*LENGTH(oneDataValues))/nTestCases)));
-        }
+        #define N_TEST_CASES 5
+        #define BOOST_PP_LOCAL_MACRO(n)                                \
+            suite->add(QUANTLIB_TEST_CASE(                             \
+                boost::bind(&BasketOptionTest::testOneDAmericanValues, \
+                    (n    *LENGTH(oneDataValues))/N_TEST_CASES,        \
+                    ((n+1)*LENGTH(oneDataValues))/N_TEST_CASES)));
+
+        #define BOOST_PP_LOCAL_LIMITS (0, N_TEST_CASES-1)
+        #include BOOST_PP_LOCAL_ITERATE()
     }
 
     if (speed == Slow) {
