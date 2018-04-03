@@ -1364,7 +1364,7 @@ L30:
 *    calculate the jacobian matrix.
 */
 iflag = 2;
-if(jacFcn != 0) // use user supplied jacobian calculation
+if(!jacFcn.empty()) // use user supplied jacobian calculation
     jacFcn(m,n,x,fjac,&iflag);
 else
     fdjac2(m,n,x,fvec,fjac,ldfjac,&iflag,epsfcn,wa4, fcn);
