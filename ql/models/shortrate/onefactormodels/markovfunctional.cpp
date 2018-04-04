@@ -471,12 +471,12 @@ namespace QuantLib {
                  i = calibrationPoints_.rbegin();
              i != calibrationPoints_.rend(); ++i, --idx) {
 
-            boost::shared_ptr<MFSmileSection> mfSec;
+            boost::shared_ptr<CustomSmileSection> mfSec;
             if (modelSettings_.adjustments_ & ModelSettings::CustomSmile) {
-                mfSec = boost::dynamic_pointer_cast<MFSmileSection>(
+                mfSec = boost::dynamic_pointer_cast<CustomSmileSection>(
                     i->second.smileSection_);
                 QL_REQUIRE(mfSec,
-                           "no MFSmileSection given, this is unexpected...");
+                           "no CustomSmileSection given, this is unexpected...");
             }
 
             Array discreteDeflatedAnnuities(y_.size(), 0.0);
