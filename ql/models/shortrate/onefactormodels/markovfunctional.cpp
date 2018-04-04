@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2013, 2018 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -423,24 +423,36 @@ namespace QuantLib {
                         boost::dynamic_pointer_cast<KahaleSmileSection>(
                             i->second.smileSection_)->coreIndices());
 
+                } else if (modelSettings_.adjustments_ & ModelSettings::CustomSmile) {
+
+                    // Custom smile section is af by assumption
+                    i->second.smileSection_ =
+                        modelSettings_.customSmileFactory_->smileSection(
+                            i->second.rawSmileSection_, i->second.atm_);
+                    arbitrageIndices_.push_back(
+                        std::make_pair(Null<Size>(), Null<Size>()));
                 } else { // no smile pretreatment
 
                     i->second.smileSection_ = i->second.rawSmileSection_;
                 }
             }
 
-            i->second.minRateDigital_ =
-                i->second.smileSection_->digitalOptionPrice(
-                    modelSettings_.lowerRateBound_ -
-                        i->second.smileSection_->shift(),
-                    Option::Call, i->second.annuity_,
-                    modelSettings_.digitalGap_);
-            i->second.maxRateDigital_ =
-                i->second.smileSection_->digitalOptionPrice(
-                    modelSettings_.upperRateBound_ -
-                        i->second.smileSection_->shift(),
-                    Option::Call, i->second.annuity_,
-                    modelSettings_.digitalGap_);
+            // custom smile will take care of this itself
+            if ((modelSettings_.adjustments_ & ModelSettings::CustomSmile) == 0) {
+                i->second.minRateDigital_ =
+                    i->second.smileSection_->digitalOptionPrice(
+                        modelSettings_.lowerRateBound_ -
+                            i->second.smileSection_->shift(),
+                        Option::Call, i->second.annuity_,
+                        modelSettings_.digitalGap_);
+                i->second.maxRateDigital_ =
+                    i->second.smileSection_->digitalOptionPrice(
+                        modelSettings_.upperRateBound_ -
+                            i->second.smileSection_->shift(),
+                        Option::Call, i->second.annuity_,
+                        modelSettings_.digitalGap_);
+            }
+
             ++pointIndex;
         }
     }
@@ -458,6 +470,14 @@ namespace QuantLib {
         for (std::map<Date, CalibrationPoint>::reverse_iterator
                  i = calibrationPoints_.rbegin();
              i != calibrationPoints_.rend(); ++i, --idx) {
+
+            boost::shared_ptr<MFSmileSection> mfSec;
+            if (modelSettings_.adjustments_ & ModelSettings::CustomSmile) {
+                mfSec = boost::dynamic_pointer_cast<MFSmileSection>(
+                    i->second.smileSection_);
+                QL_REQUIRE(mfSec,
+                           "no MFSmileSection given, this is unexpected...");
+            }
 
             Array discreteDeflatedAnnuities(y_.size(), 0.0);
             Array deflatedFinalPayments;
@@ -548,22 +568,26 @@ namespace QuantLib {
 
                     digital += integral * numeraire0 * digitalsCorrectionFactor;
 
-                    if (digital >= i->second.minRateDigital_)
-                        swapRate = modelSettings_.lowerRateBound_ -
-                                   i->second.rawSmileSection_->shift();
-                    else {
-                        if (digital <= i->second.maxRateDigital_)
-                            swapRate = modelSettings_.upperRateBound_;
+                    if(modelSettings_.adjustments_ & ModelSettings::CustomSmile) {
+                        swapRate = mfSec->inverseDigitalCall(
+                            digital, i->second.annuity_);
+                    } else {
+                        if (digital >= i->second.minRateDigital_)
+                            swapRate = modelSettings_.lowerRateBound_ -
+                                i->second.rawSmileSection_->shift();
                         else {
-                            swapRate = marketSwapRate(
-                                i->first, i->second, digital, swapRate0,
-                                i->second.rawSmileSection_->shift());
-                            if (j < (int)y_.size() - 1 &&
-                                swapRate > swapRate0) {
-                                QL_MFMESSAGE(
-                                    modelOutputs_,
-                                    "WARNING: swap rate is decreasing in y for "
-                                    "t="
+                            if (digital <= i->second.maxRateDigital_)
+                                swapRate = modelSettings_.upperRateBound_;
+                            else {
+                                swapRate = marketSwapRate(
+                                    i->first, i->second, digital, swapRate0,
+                                    i->second.rawSmileSection_->shift());
+                                if (j < (int)y_.size() - 1 &&
+                                    swapRate > swapRate0) {
+                                    QL_MFMESSAGE(
+                                        modelOutputs_,
+                                        "WARNING: swap rate is decreasing in y for "
+                                        "t="
                                         << times_[idx] << ", j=" << j
                                         << " (y, swap rate) is (" << y_[j]
                                         << "," << swapRate
@@ -571,7 +595,8 @@ namespace QuantLib {
                                         << y_[j + 1] << "," << swapRate0
                                         << ") --- reset rate to " << swapRate0
                                         << " in node j=" << j);
-                                swapRate = swapRate0;
+                                    swapRate = swapRate0;
+                                }
                             }
                         }
                     }
@@ -652,8 +677,10 @@ namespace QuantLib {
                 std::vector<Real> strikes, marketCall, marketPut, modelCall,
                     modelPut, marketVega, marketRawCall, marketRawPut;
                 for (Size j = 0; j < money.size(); j++) {
-                    strikes.push_back(money[j] * (i->second.atm_ + shift) -
-                                      shift);
+                    strikes.push_back(
+                        sec->volatilityType() == Normal
+                            ? i->second.atm_ + money[j]
+                            : money[j] * (i->second.atm_ + shift) - shift);
                     try {
                         marketRawCall.push_back(rawSec->optionPrice(
                             strikes[j], Option::Call, i->second.annuity_));
