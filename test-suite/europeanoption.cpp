@@ -1724,7 +1724,7 @@ test_suite* EuropeanOptionTest::suite() {
 }
 
 test_suite* EuropeanOptionTest::experimental() {
-    test_suite* suite = BOOST_TEST_SUITE("European option tests");
+    test_suite* suite = BOOST_TEST_SUITE("European option experimental tests");
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testFFTEngines));
     return suite;
 }

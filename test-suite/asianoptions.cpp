@@ -1470,7 +1470,7 @@ test_suite* AsianOptionTest::suite() {
 }
 
 test_suite* AsianOptionTest::experimental() {
-    test_suite* suite = BOOST_TEST_SUITE("Asian option tests");
+    test_suite* suite = BOOST_TEST_SUITE("Asian option experimental tests");
     suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testLevyEngine));
     suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testVecerEngine));
     return suite;
