@@ -106,7 +106,9 @@ namespace QuantLib {
 
         class CustomSmileSection : public SmileSection {
         public:
-            virtual Real inverseDigitalCall(Real price, Real discount = 1.0) const = 0;
+            virtual Real
+            inverseDigitalCall(const Real price,
+                               const Real discount = 1.0) const = 0;
         };
 
         class CustomSmileFactory {
@@ -114,7 +116,7 @@ namespace QuantLib {
             virtual ~CustomSmileFactory() {}
             virtual boost::shared_ptr<CustomSmileSection>
             smileSection(const boost::shared_ptr<SmileSection>& source,
-                         const Real atm) = 0;
+                         const Real atm) const = 0;
         };
 
         struct ModelSettings {
