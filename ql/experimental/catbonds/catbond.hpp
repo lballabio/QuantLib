@@ -47,7 +47,7 @@ namespace QuantLib {
                 : Bond(settlementDays, calendar, issueDate), 
                   notionalRisk_(notionalRisk)
         {}
-        virtual ~CatBond(void) {}
+        virtual ~CatBond() {}
 
         virtual void setupArguments(PricingEngine::arguments*) const;
         virtual void fetchResults(const PricingEngine::results*) const;

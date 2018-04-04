@@ -119,7 +119,7 @@ namespace QuantLib {
         const_row_iterator at(Size) const;
         row_iterator operator[](Size);
         row_iterator at(Size);
-        Disposable<Array> diagonal(void) const;
+        Disposable<Array> diagonal() const;
         Real& operator()(Size i, Size j) const;
         //@}
 
@@ -444,7 +444,7 @@ namespace QuantLib {
         return row_begin(i);
     }
 
-    inline Disposable<Array> Matrix::diagonal(void) const {
+    inline Disposable<Array> Matrix::diagonal() const {
         Size arraySize = std::min<Size>(rows(), columns());
         Array tmp(arraySize);
         for(Size i = 0; i < arraySize; i++)

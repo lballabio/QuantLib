@@ -60,7 +60,7 @@ namespace QuantLib {
         //! error estimated using the samples simulated so far
         result_type errorEstimate() const;
         //! access to the sample accumulator for richer statistics
-        const stats_type& sampleAccumulator(void) const;
+        const stats_type& sampleAccumulator() const;
         //! basic calculate method provided to inherited pricing engines
         void calculate(Real requiredTolerance,
                        Size requiredSamples,
