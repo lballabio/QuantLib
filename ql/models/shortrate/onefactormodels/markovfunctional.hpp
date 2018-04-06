@@ -49,9 +49,9 @@ namespace QuantLib {
       to provide an appropriate input smile.
 
       If you use the Kahale or SABR method for smile pretreatment then this
-      implies zero density for underlying rates below the displacement parameter.
-      This means that in this case the market yield term structure must imply
-      underlying atm forward rates greater than minus displacement.
+      implies zero density for underlying rates below minus the displacement
+      parameter. This means that in this case the market yield term structure
+      must imply underlying atm forward rates greater than minus displacement.
 
       If you do not use a smile pretreatment you should ensure that the input
       smileSection is arbitrage free and  that the input smileSection covers the
