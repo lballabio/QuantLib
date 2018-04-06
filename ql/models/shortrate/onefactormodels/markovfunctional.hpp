@@ -49,14 +49,9 @@ namespace QuantLib {
       to provide an appropriate input smile.
 
       If you use the Kahale or SABR method for smile pretreatment then this
-      implies zero density for negative  underlying rates. This means that
-      in this case the market yield term structure must imply positive
-      underlying atm forward rates. In principle the mf model is able to produce
-      negative rates. To make this work the smileSection provided as input must
-      have an digitalOptionPrice (or an optionPrice) implementation that is
-      consistent with such a yield term structure and the model setting
-      lowerRateBound must be set appropriately as a lower limit for the
-      underlying rates.
+      implies zero density for underlying rates below the displacement parameter.
+      This means that in this case the market yield term structure must imply
+      underlying atm forward rates greater than minus displacement.
 
       If you do not use a smile pretreatment you should ensure that the input
       smileSection is arbitrage free and  that the input smileSection covers the
@@ -98,7 +93,7 @@ namespace QuantLib {
       digital prices to market rates, so digitalGap, marketRateAccuracy,
       lowerRateBound, upperRateBound are irrelavant and the smile moneyness
       checkpoints are only used for the debug model output in this setup.
-*/
+    */
 
     class MarkovFunctional : public Gaussian1dModel, public CalibratedModel {
 
