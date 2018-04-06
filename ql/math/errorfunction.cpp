@@ -25,7 +25,7 @@
 
 
 #include <ql/math/errorfunction.hpp>
-#include <float.h>
+#include <cfloat>
 
 namespace QuantLib {
 
