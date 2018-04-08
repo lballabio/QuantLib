@@ -19,8 +19,6 @@
 */
 
 #include <ql/experimental/shortrate/generalizedhullwhite.hpp>
-//#include <ql/termstructures/interpolatedcurve.hpp>
-//#include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/interpolations/backwardflatinterpolation.hpp>
 #include <ql/methods/lattices/trinomialtree.hpp>
 #include <ql/math/solvers1d/brent.hpp>
@@ -29,59 +27,15 @@
 
 namespace QuantLib {
 
-  namespace {
-      /*
-        class PiecewiseLinearCurve : public InterpolatedCurve<Linear> {
-          public:
-            PiecewiseLinearCurve(const std::vector<Time>& times,
-                                 const std::vector<Real>& data)
-            : InterpolatedCurve<Linear>(times, data) {
-                setupInterpolation();
-            }
-
-            Real operator()(Time t) {
-                return interpolation_(t,true);
-            }
-        };
-
-        class PiecewiseConstantParameter2 : public Parameter {
-          private:
-            class Impl : public Parameter::Impl {
-              public:
-                explicit Impl(const std::vector<Time>& times)
-                : times_(times) {}
-
-                Real value(const Array& params, Time t) const {
-                    Size size = times_.size();
-                    for (Size i=0; i<size; i++) {
-                        if (t<times_[i])
-                            return params[i];
-                    }
-                    return params[size-1];
-                }
-              private:
-                std::vector<Time> times_;
-            };
-          public:
-            PiecewiseConstantParameter2(const std::vector<Time>& times,
-                                        const Constraint& constraint =
-                                                             NoConstraint())
-            : Parameter(times.size(),
-                        boost::shared_ptr<Parameter::Impl>(
-                                new PiecewiseConstantParameter2::Impl(times)),
-                        constraint)
-            {}
-        };
-        */
-
+    namespace {
 
         // integral of mean reversion
-        Real integrateMeanReversion(const Interpolation &a,Real t,Real T){
-          if ((T-t) < QL_EPSILON)
-            return 0.0;
-          SimpsonIntegral integrator(1e-5, 1000);
-          Real mr = integrator(a,t,T);
-          return mr;
+        Real integrateMeanReversion(const Interpolation &a,Real t,Real T) {
+            if ((T-t) < QL_EPSILON)
+                return 0.0;
+            SimpsonIntegral integrator(1e-5, 1000);
+            Real mr = integrator(a,t,T);
+            return mr;
         }
 
     }
@@ -150,8 +104,8 @@ namespace QuantLib {
     : OneFactorAffineModel(2),
       TermStructureConsistentModel(yieldtermStructure),
       a_(arguments_[0]),
-      sigma_(arguments_[1]) {
-
+      sigma_(arguments_[1])
+    {
         Date ref = yieldtermStructure->referenceDate();
         std::vector<Date> speedstructure,volstructure;
         std::vector<Real> _a, _sigma;
@@ -161,7 +115,7 @@ namespace QuantLib {
         volstructure.push_back(ref);
         BackwardFlat traits;
         initialize(yieldtermStructure,speedstructure,volstructure,
-          _a, _sigma, traits, traits, identity, identity);
+            _a, _sigma, traits, traits, identity, identity);
     }
 
     void GeneralizedHullWhite::generateArguments() {
@@ -171,74 +125,74 @@ namespace QuantLib {
     }
 
     Real GeneralizedHullWhite::B(Time t, Time T) const {
-      // Gurrieri et al, equations (30) and (31)
-      Real lnEt = integrateMeanReversion(speed_,0,t);
-      Real Et = exp(lnEt);
-      Real B = 0;
-      Size N = std::min<Size>((T-t)*365, 2000);
-      if (N==0) N=1;
-      Real dt = 0.5*(T-t)/N;
-      Real a,b,c,_t,total=0;
-      _t = t;
-      c = speed_(_t);
-      _t += dt;
-      for (Size i=0; i<N; i++){
-        a = c;
-        b = speed_(_t);
-        c = speed_(_t+dt);
-        total += (dt*(2.0/6.0))*(a+4*b+c);
-        B += (2*dt) / exp(lnEt+total);
-        _t += 2*dt;
-      }
-      B *= Et;
-      return B;
+        // Gurrieri et al, equations (30) and (31)
+        Real lnEt = integrateMeanReversion(speed_,0,t);
+        Real Et = exp(lnEt);
+        Real B = 0;
+        Size N = std::min<Size>((T-t)*365, 2000);
+        if (N==0) N=1;
+        Real dt = 0.5*(T-t)/N;
+        Real a,b,c,_t,total=0;
+        _t = t;
+        c = speed_(_t);
+        _t += dt;
+        for (Size i=0; i<N; i++) {
+            a = c;
+            b = speed_(_t);
+            c = speed_(_t+dt);
+            total += (dt*(2.0/6.0))*(a+4*b+c);
+            B += (2*dt) / exp(lnEt+total);
+            _t += 2*dt;
+        }
+        B *= Et;
+        return B;
     }
 
-    Real GeneralizedHullWhite::V(Time t, Time T) const{
-      // Gurrieri et al, equation (37)
-      Real lnEt = integrateMeanReversion(speed_,0,t);
-      Real V = 0,Eu;
-      Size N = std::min<Size>((T-t)*365, 2000);
-      if (N==0) N=1;
-      Real dt = 0.5*(T-t)/N;
-      Real a,b,c,_t,lnE=lnEt;
-      _t = t;
-      Real vol = vol_(_t);
-      Eu = exp(lnE);
-      c = Eu*Eu*vol*vol;
-      _t += dt;
-      for (Size i=0; i<N; i++){
-        a = c;
-        vol = vol_(_t);
-        lnE += speed_(_t)*dt;
-        Eu = exp(lnE);
-        b = Eu*Eu*vol*vol;
-        vol = vol_(_t+dt);
-        lnE += speed_(_t+dt)*dt;
+    Real GeneralizedHullWhite::V(Time t, Time T) const {
+        // Gurrieri et al, equation (37)
+        Real lnEt = integrateMeanReversion(speed_,0,t);
+        Real V = 0,Eu;
+        Size N = std::min<Size>((T-t)*365, 2000);
+        if (N==0) N=1;
+        Real dt = 0.5*(T-t)/N;
+        Real a,b,c,_t,lnE=lnEt;
+        _t = t;
+        Real vol = vol_(_t);
         Eu = exp(lnE);
         c = Eu*Eu*vol*vol;
-        V += (dt*(2.0/6.0))*(a+4*b+c);
-        _t += 2*dt;
-      }
-      return V / (Eu*Eu);
+        _t += dt;
+        for (Size i=0; i<N; i++) {
+            a = c;
+            vol = vol_(_t);
+            lnE += speed_(_t)*dt;
+            Eu = exp(lnE);
+            b = Eu*Eu*vol*vol;
+            vol = vol_(_t+dt);
+            lnE += speed_(_t+dt)*dt;
+            Eu = exp(lnE);
+            c = Eu*Eu*vol*vol;
+            V += (dt*(2.0/6.0))*(a+4*b+c);
+            _t += 2*dt;
+        }
+        return V / (Eu*Eu);
     }
 
     Real GeneralizedHullWhite::discountBondOption(Option::Type type, Real strike,
                                                   Time maturity,
                                                   Time bondMaturity) const
     {
-      /*
-      Hull-White bond option pricing with time varying sigma and mean reversion.
-      Based on Gurrieri, Nakabayashi & Wong (2009) "Calibration Methods of
-      Hull-White Model", https://ssrn.com/abstract=1514192
-      */
-      Real BtT = B(maturity,bondMaturity);
-      Real Vr = V(0,maturity);
-      Real Vp = Vr*BtT*BtT;
-      Real vol = sqrt(Vp);
-      Real f = termStructure()->discount(bondMaturity);
-      Real k = termStructure()->discount(maturity)*strike;
-      return blackFormula(type, k, f, vol);
+        /*
+        Hull-White bond option pricing with time varying sigma and mean reversion.
+        Based on Gurrieri, Nakabayashi & Wong (2009) "Calibration Methods of
+        Hull-White Model", https://ssrn.com/abstract=1514192
+        */
+        Real BtT = B(maturity,bondMaturity);
+        Real Vr = V(0,maturity);
+        Real Vp = Vr*BtT*BtT;
+        Real vol = sqrt(Vp);
+        Real f = termStructure()->discount(bondMaturity);
+        Real k = termStructure()->discount(maturity)*strike;
+        return blackFormula(type, k, f, vol);
     }
 
     Real GeneralizedHullWhite::A(Time t, Time T) const {
@@ -295,12 +249,12 @@ namespace QuantLib {
     }
 
     //! vector to pass to 'calibrate' to fit only volatility
-    std::vector<bool> GeneralizedHullWhite::fixedReversion() const{
-      Size na = a_.params().size();
-      Size nsigma = sigma_.params().size();
-      std::vector<bool> fixr(na+nsigma,false);
-      std::fill(fixr.begin(),fixr.begin()+na,true);
-      return fixr;
+    std::vector<bool> GeneralizedHullWhite::fixedReversion() const {
+        Size na = a_.params().size();
+        Size nsigma = sigma_.params().size();
+        std::vector<bool> fixr(na+nsigma,false);
+        std::fill(fixr.begin(),fixr.begin()+na,true);
+        return fixr;
     }
 
 }

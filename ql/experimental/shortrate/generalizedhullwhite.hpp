@@ -18,8 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file generalizedornsteinuhlenbeckprocess.hpp
-    \brief Ornstein-Uhlenbeck process with piecewise linear coefficients
+/*! \file generalizedhullwhite.hpp
+    \brief generalized Hull-White model
 */
 
 #ifndef quantlib_generalized_hull_white_hpp
@@ -32,32 +32,34 @@
 
 namespace QuantLib {
 
-  //! Parameter that holds an interpolation object
-  class InterpolationParameter : public Parameter {
-  private:
-    class Impl : public Parameter::Impl {
-    public:
-      virtual Real value(const Array&, Time t) const {
-          return interpolator_(t);
-      }
-      void reset(const Interpolation &interp){
-        interpolator_ = interp;
-      }
+    //! Parameter that holds an interpolation object
+    class InterpolationParameter : public Parameter {
     private:
-      Interpolation interpolator_;
+        class Impl : public Parameter::Impl {
+        public:
+            virtual Real value(const Array&, Time t) const {
+                return interpolator_(t);
+            }
+            void reset(const Interpolation &interp) {
+                interpolator_ = interp;
+            }
+        private:
+            Interpolation interpolator_;
+        };
+    public:
+        InterpolationParameter(Size count,
+            const Constraint& constraint = NoConstraint())
+        : Parameter(count,
+            boost::shared_ptr<Parameter::Impl>(
+                new InterpolationParameter::Impl()),
+                constraint)
+        { }
+        void reset(const Interpolation &interp) {
+            boost::shared_ptr<InterpolationParameter::Impl> impl =
+                boost::dynamic_pointer_cast<InterpolationParameter::Impl>(impl_);
+            if (impl) impl->reset(interp);
+        }
     };
-  public:
-    InterpolationParameter(Size count,
-      const Constraint& constraint = NoConstraint())
-    : Parameter(count,
-        boost::shared_ptr<Parameter::Impl>(
-          new InterpolationParameter::Impl()),
-        constraint)
-    { }
-    void reset(const Interpolation &interp){
-      boost::dynamic_pointer_cast<InterpolationParameter::Impl>(impl_)->reset(interp);
-    }
-  };
 
     //! Generalized Hull-White model class.
     /*! This class implements the standard Black-Karasinski model defined by
@@ -101,8 +103,8 @@ namespace QuantLib {
             a_(arguments_[0]), sigma_(arguments_[1]),
             f_(f), fInverse_(fInverse)
         {
-          initialize(yieldtermStructure,speedstructure,volstructure,
-            speed,vol,speedtraits,voltraits,f,fInverse);
+            initialize(yieldtermStructure,speedstructure,volstructure,
+                speed,vol,speedtraits,voltraits,f,fInverse);
         }
 
         boost::shared_ptr<ShortRateDynamics> dynamics() const {
@@ -168,53 +170,53 @@ namespace QuantLib {
 
         template <class SpeedInterpolationTraits,class VolInterpolationTraits>
         void initialize(const Handle<YieldTermStructure>& yieldtermStructure,
-          const std::vector<Date>& speedstructure,
-          const std::vector<Date>& volstructure,
-          const std::vector<Real>& speed,
-          const std::vector<Real>& vol,
-          const SpeedInterpolationTraits &speedtraits,
-          const VolInterpolationTraits &voltraits,
-          const boost::function<Real(Real)>& f,
-          const boost::function<Real(Real)>& fInverse)
+            const std::vector<Date>& speedstructure,
+            const std::vector<Date>& volstructure,
+            const std::vector<Real>& speed,
+            const std::vector<Real>& vol,
+            const SpeedInterpolationTraits &speedtraits,
+            const VolInterpolationTraits &voltraits,
+            const boost::function<Real(Real)>& f,
+            const boost::function<Real(Real)>& fInverse)
         {
-          QL_REQUIRE(speedstructure.size()==speed.size(),
-            "mean reversion inputs inconsistent");
-          QL_REQUIRE(volstructure.size()==vol.size(),
-            "volatility inputs inconsistent");
-          if (f_.empty())
-            f_ = identity;
-          if (fInverse_.empty())
-            fInverse_ = identity;
+            QL_REQUIRE(speedstructure.size()==speed.size(),
+                "mean reversion inputs inconsistent");
+            QL_REQUIRE(volstructure.size()==vol.size(),
+                "volatility inputs inconsistent");
+            if (f_.empty())
+                f_ = identity;
+            if (fInverse_.empty())
+                fInverse_ = identity;
 
-          DayCounter dc = yieldtermStructure->dayCounter();
-          Date ref = yieldtermStructure->referenceDate();
-          for (Size i=0;i<speedstructure.size();i++)
-            speedperiods_.push_back(dc.yearFraction(ref,speedstructure[i]));
-          for (Size i=0;i<volstructure.size();i++)
-            volperiods_.push_back(dc.yearFraction(ref,volstructure[i]));
+            DayCounter dc = yieldtermStructure->dayCounter();
+            Date ref = yieldtermStructure->referenceDate();
+            for (Size i=0;i<speedstructure.size();i++)
+                speedperiods_.push_back(dc.yearFraction(ref,speedstructure[i]));
+            for (Size i=0;i<volstructure.size();i++)
+                volperiods_.push_back(dc.yearFraction(ref,volstructure[i]));
 
-          // interpolator x points to *periods_ vector, y points to
-          // the internal Array in the parameter
-          InterpolationParameter atemp(speedperiods_.size(), NoConstraint());
-          a_ = atemp;
-          for (Size i=0; i<speedperiods_.size(); i++)
-            a_.setParam(i, speed[i]);
-          speed_ = speedtraits.interpolate(speedperiods_.begin(),
-            speedperiods_.end(),a_.params().begin());
-          speed_.enableExtrapolation();
-          atemp.reset(speed_);
+            // interpolator x points to *periods_ vector, y points to
+            // the internal Array in the parameter
+            InterpolationParameter atemp(speedperiods_.size(), NoConstraint());
+            a_ = atemp;
+            for (Size i=0; i<speedperiods_.size(); i++)
+                a_.setParam(i, speed[i]);
+            speed_ = speedtraits.interpolate(speedperiods_.begin(),
+                speedperiods_.end(),a_.params().begin());
+            speed_.enableExtrapolation();
+            atemp.reset(speed_);
 
-          InterpolationParameter sigmatemp(volperiods_.size(), PositiveConstraint());
-          sigma_ = sigmatemp;
-          for (Size i=0; i<volperiods_.size(); i++)
-            sigma_.setParam(i, vol[i]);
-          vol_ = voltraits.interpolate(volperiods_.begin(),
-            volperiods_.end(),sigma_.params().begin());
-          vol_.enableExtrapolation();
-          sigmatemp.reset(vol_);
+            InterpolationParameter sigmatemp(volperiods_.size(), PositiveConstraint());
+            sigma_ = sigmatemp;
+            for (Size i=0; i<volperiods_.size(); i++)
+                sigma_.setParam(i, vol[i]);
+            vol_ = voltraits.interpolate(volperiods_.begin(),
+                volperiods_.end(),sigma_.params().begin());
+            vol_.enableExtrapolation();
+            sigmatemp.reset(vol_);
 
-          generateArguments();
-          registerWith(yieldtermStructure);
+            generateArguments();
+            registerWith(yieldtermStructure);
         }
     };
 
@@ -317,7 +319,6 @@ namespace QuantLib {
           new Dynamics(phi_, a(), sigma()));
     }
 
-    // todo: move to interpolations
     namespace detail {
         template <class I1, class I2>
         class LinearFlatInterpolationImpl;
@@ -354,51 +355,47 @@ namespace QuantLib {
     namespace detail {
         template <class I1, class I2>
         class LinearFlatInterpolationImpl
-                : public Interpolation::templateImpl<I1,I2> {
-            public:
-                LinearFlatInterpolationImpl(const I1& xBegin, const I1& xEnd,
-                                        const I2& yBegin)
-                : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin,
-                                        LinearFlat::requiredPoints),
-                  primitiveConst_(xEnd-xBegin), s_(xEnd-xBegin) {}
-                void update() {
-                    primitiveConst_[0] = 0.0;
-                    for (Size i=1; i<Size(this->xEnd_-this->xBegin_); ++i) {
-                        Real dx = this->xBegin_[i]-this->xBegin_[i-1];
-                        s_[i-1] = (this->yBegin_[i]-this->yBegin_[i-1])/dx;
-                        primitiveConst_[i] = primitiveConst_[i-1]
-                            + dx*(this->yBegin_[i-1] +0.5*dx*s_[i-1]);
-                    }
+            : public Interpolation::templateImpl<I1,I2> {
+          public:
+            LinearFlatInterpolationImpl(const I1& xBegin, const I1& xEnd,
+                                    const I2& yBegin)
+            : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin,
+                                    LinearFlat::requiredPoints),
+              primitiveConst_(xEnd-xBegin), s_(xEnd-xBegin) {}
+            void update() {
+                primitiveConst_[0] = 0.0;
+                for (Size i=1; i<Size(this->xEnd_-this->xBegin_); ++i) {
+                    Real dx = this->xBegin_[i]-this->xBegin_[i-1];
+                    s_[i-1] = (this->yBegin_[i]-this->yBegin_[i-1])/dx;
+                    primitiveConst_[i] = primitiveConst_[i-1]
+                        + dx*(this->yBegin_[i-1] +0.5*dx*s_[i-1]);
                 }
-                Real value(Real x) const {
-                    if (x <= this->xMin())
-                      return this->yBegin_[0];
-                    if (x >= this->xMax())
-                      return *(this->yBegin_+(this->xEnd_-this->xBegin_)-1);
-                    Size i = this->locate(x);
-                    return this->yBegin_[i] + (x-this->xBegin_[i])*s_[i];
-                }
-                Real primitive(Real x) const {
-                    if (x <= this->xMin())
-                        return this->yBegin_[0];
-                    if (x >= this->xMax())
-                        return *(this->yBegin_+(this->xEnd_-this->xBegin_)-1);
-                    Size i = this->locate(x);
-                    Real dx = x-this->xBegin_[i];
-                    return primitiveConst_[i] +
-                        dx*(this->yBegin_[i] + 0.5*dx*s_[i]);
-                }
-                Real derivative(Real x) const {
-                    if (!this->isInRange(x))
-                        return 0;
-                    Size i = this->locate(x);
-                    return s_[i];
-                }
-                Real secondDerivative(Real) const {
-                    return 0.0;
-                }
-            private:
-                std::vector<Real> primitiveConst_, s_;
+            }
+            Real value(Real x) const {
+                if (x <= this->xMin())
+                    return this->yBegin_[0];
+                if (x >= this->xMax())
+                    return *(this->yBegin_+(this->xEnd_-this->xBegin_)-1);
+                Size i = this->locate(x);
+                return this->yBegin_[i] + (x-this->xBegin_[i])*s_[i];
+            }
+            Real primitive(Real x) const {
+                Size i = this->locate(x);
+                Real dx = x-this->xBegin_[i];
+                return primitiveConst_[i] +
+                    dx*(this->yBegin_[i] + 0.5*dx*s_[i]);
+            }
+            Real derivative(Real x) const {
+                if (!this->isInRange(x))
+                    return 0;
+                Size i = this->locate(x);
+                return s_[i];
+            }
+            Real secondDerivative(Real) const {
+                return 0.0;
+            }
+          private:
+            std::vector<Real> primitiveConst_, s_;
         };
     }
 
