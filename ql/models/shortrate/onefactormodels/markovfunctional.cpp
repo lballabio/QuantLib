@@ -386,6 +386,10 @@ namespace QuantLib {
                     std::vector<Real> k = ssutils.strikeGrid();
                     k.erase(k.begin()); // the first strike is zero which we do
                                         // not want in the sabr calibration
+                    QL_REQUIRE(i->second.rawSmileSection_->volatilityType() ==
+                                   ShiftedLognormal,
+                               "MarkovFunctional: SABR calibration to normal "
+                               "input volatilities is not supported");
                     QL_REQUIRE(
                         k.size() >= 4,
                         "for sabr calibration at least 4 points are needed (is "
