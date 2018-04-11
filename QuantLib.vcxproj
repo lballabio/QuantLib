@@ -825,6 +825,7 @@
     <ClInclude Include="ql\math\functional.hpp" />
     <ClInclude Include="ql\math\generallinearleastsquares.hpp" />
     <ClInclude Include="ql\math\incompletegamma.hpp" />
+    <ClInclude Include="ql\math\initializers.hpp" />
     <ClInclude Include="ql\math\interpolation.hpp" />
     <ClInclude Include="ql\math\kernelfunctions.hpp" />
     <ClInclude Include="ql\math\lexicographicalview.hpp" />

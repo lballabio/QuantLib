@@ -912,6 +912,9 @@
     <ClInclude Include="ql\math\incompletegamma.hpp">
       <Filter>math</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\initializers.hpp">
+      <Filter>math</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\interpolation.hpp">
       <Filter>math</Filter>
     </ClInclude>
