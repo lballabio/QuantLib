@@ -23,6 +23,7 @@ this_include_HEADERS = \
 	generallinearleastsquares.hpp \
 	kernelfunctions.hpp \
 	incompletegamma.hpp \
+	initializers.hpp \
 	interpolation.hpp \
 	lexicographicalview.hpp \
 	linearleastsquaresregression.hpp \
