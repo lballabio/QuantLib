@@ -2643,6 +2643,10 @@
 				>
 			</File>
 			<File
+				RelativePath="ql\math\initializers.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\math\interpolation.hpp"
 				>
 			</File>
