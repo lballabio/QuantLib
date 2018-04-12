@@ -16,7 +16,6 @@ pkgconfigdir = $(libdir)/pkgconfig
 nodist_pkgconfig_DATA = quantlib.pc
 
 EXTRA_DIST = \
-	Bugs.txt \
 	ChangeLog.txt \
 	CMakeLists.txt \
 	Contributors.txt \
