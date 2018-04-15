@@ -33,6 +33,7 @@ int main() {
     QL_TRACE_ENABLE;
     QL_TRACE_ENTER_FUNCTION;
     int i = foo(21);
+    i++;
     QL_TRACE_EXIT_FUNCTION;
     return ((i == 42) ? 0 : 1);
 }
