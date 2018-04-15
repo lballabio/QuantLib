@@ -1,5 +1,7 @@
 #include <ql/quantlib.hpp>
+
 using namespace QuantLib;
+
 namespace Foo {
     int bar(int i) {
         QL_TRACE_ENTER_FUNCTION;
@@ -17,6 +19,7 @@ namespace Foo {
         return i;
     }
 }
+
 int foo(int i) {
     using namespace Foo;
     QL_TRACE_ENTER_FUNCTION;
@@ -25,10 +28,12 @@ int foo(int i) {
     QL_TRACE_EXIT_FUNCTION;
     return k;
 }
+
 int main() {
     QL_TRACE_ENABLE;
     QL_TRACE_ENTER_FUNCTION;
     int i = foo(21);
+    i++;
     QL_TRACE_EXIT_FUNCTION;
     return 0;
 }
