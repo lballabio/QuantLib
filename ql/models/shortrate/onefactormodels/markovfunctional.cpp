@@ -640,9 +640,10 @@ namespace QuantLib {
                                        deflatedFinalPayments[j], 1E-6);
                     (*discreteNumeraire_)[idx][j] = numeraire * normalization;
                     // debug
-                    // std::cout << i->second.smileSection_->exerciseTime() << ","
-                    //           << y_[j] << "," << numeraire * normalization
-                    //           << "," << swapRate << std::endl;
+                    // if(c==1)
+                    //     std::cout << i->second.smileSection_->exerciseTime() << ","
+                    //               << y_[j] << "," << numeraire * normalization
+                    //               << "," << swapRate << std::endl;
                     // debug
                 }
                 // debug
