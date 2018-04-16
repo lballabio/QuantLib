@@ -1,3 +1,49 @@
+commit fd7b582cb722be1210113f0d0ae50fecd4a6c262
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Mon, 2 Apr 2018 23:00:55 +0200
+
+    Boost 1.67 does not allow to register the same test case name
+    multiple times.
+    
+    Backported from #446.
+
+ test-suite/asianoptions.cpp       |  2 +-
+ test-suite/barrieroption.cpp      |  2 +-
+ test-suite/basketoption.cpp       | 17 ++++++++++-------
+ test-suite/cdo.cpp                | 10 +++++++---
+ test-suite/europeanoption.cpp     |  2 +-
+ test-suite/extendedtrees.cpp      |  2 +-
+ test-suite/hestonmodel.cpp        |  2 +-
+ test-suite/marketmodel.cpp        | 24 ++++++++++++++----------
+ test-suite/optionletstripper.cpp  |  5 ++---
+ test-suite/paralleltestrunner.hpp | 28 ++--------------------------
+ test-suite/zabr.cpp               |  2 +-
+ 11 files changed, 41 insertions(+), 55 deletions(-)
+
+commit 47919930c4ac485b8c0e17b50b9485a0f4d99bb6
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 4 Apr 2018 17:46:43 +0200
+
+    Bump version number to 1.12.1.
+
+ configure.ac   | 2 +-
+ ql/version.hpp | 8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+commit db932cb5ab401140c743fc6232522c336cc60a6b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 30 Jan 2018 13:26:56 +0100
+
+    Update history and changelog.
+
+ ChangeLog.txt           | 4275 +++++++++++++++++++++--------------------------
+ Contributors.txt        |    7 +-
+ Docs/pages/authors.docs |    6 +
+ Docs/pages/history.docs |   86 +-
+ Docs/pages/license.docs |    9 +-
+ News.txt                |  123 +-
+ 6 files changed, 2050 insertions(+), 2456 deletions(-)
+
 commit c2670bd433289eaf98410e911d87156595ca6d67
 Merge: a00d43fab 6039f2ab0
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
