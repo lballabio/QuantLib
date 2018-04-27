@@ -35,12 +35,13 @@ namespace QuantLib {
     LognormalCmsSpreadPricer::LognormalCmsSpreadPricer(
         const boost::shared_ptr<CmsCouponPricer> cmsPricer,
         const Handle<Quote> &correlation,
+        const SmileModel smileModel,
         const Handle<YieldTermStructure> &couponDiscountCurve,
         const Size integrationPoints,
         const boost::optional<VolatilityType> volatilityType,
         const Real shift1, const Real shift2)
         : CmsSpreadCouponPricer(correlation), cmsPricer_(cmsPricer),
-          couponDiscountCurve_(couponDiscountCurve) {
+          smileModel_(smileModel), couponDiscountCurve_(couponDiscountCurve) {
 
         registerWith(correlation);
         if (!couponDiscountCurve_.empty())
@@ -203,35 +204,13 @@ namespace QuantLib {
                     key, std::make_pair(adjustedRate1_, adjustedRate2_)));
             }
 
-            boost::shared_ptr<SwaptionVolatilityStructure> swvol =
-                *cmsPricer_->swaptionVolatility();
-            boost::shared_ptr<SwaptionVolatilityCube> swcub =
-                boost::dynamic_pointer_cast<SwaptionVolatilityCube>(swvol);
-
             if(inheritedVolatilityType_ && volType_ == ShiftedLognormal) {
                 shift1_ =
-                    swvol->shift(fixingDate_, index_->swapIndex1()->tenor());
+                    cmsPricer_->swaptionVolatility()->
+                       shift(fixingDate_, index_->swapIndex1()->tenor());
                 shift2_ =
-                    swvol->shift(fixingDate_, index_->swapIndex1()->tenor());
-            }
-
-            if (swcub == NULL) {
-                // not a cube, just an atm surface given, so we can
-                // not easily convert volatilities and just forbid it
-                QL_REQUIRE(inheritedVolatilityType_,
-                           "if only an atm surface is given, the volatility "
-                           "type must be inherited");
-                vol1_ = swvol->volatility(
-                    fixingDate_, index_->swapIndex1()->tenor(), swapRate1_);
-                vol2_ = swvol->volatility(
-                    fixingDate_, index_->swapIndex1()->tenor(), swapRate2_);
-            } else {
-                vol1_ = swcub->smileSection(fixingDate_,
-                                            index_->swapIndex1()->tenor())
-                            ->volatility(swapRate1_, volType_, shift1_);
-                vol2_ = swcub->smileSection(fixingDate_,
-                                            index_->swapIndex2()->tenor())
-                            ->volatility(swapRate2_, volType_, shift2_);
+                    cmsPricer_->swaptionVolatility()->
+                       shift(fixingDate_, index_->swapIndex2()->tenor());
             }
 
             if(volType_ == ShiftedLognormal) {
@@ -242,7 +221,6 @@ namespace QuantLib {
             }
             // for the normal volatility case we do not need the drifts
             // but rather use adjusted rates directly in the integrand
-
             rho_ = std::max(std::min(correlation()->value(), 0.9999),
                             -0.9999); // avoid division by zero in integrand
         } else {
@@ -255,9 +233,34 @@ namespace QuantLib {
     Real LognormalCmsSpreadPricer::optionletPrice(Option::Type optionType,
                                                   Real strike) const {
         // this method is only called for future fixings
-        optionType_ = optionType;
         phi_ = optionType == Option::Call ? 1.0 : -1.0;
         Real res = 0.0;
+        //
+        boost::shared_ptr<SwaptionVolatilityStructure> swvol =
+            *cmsPricer_->swaptionVolatility();
+        boost::shared_ptr<SwaptionVolatilityCube> swcub =
+            boost::dynamic_pointer_cast<SwaptionVolatilityCube>(swvol);
+        Real k1 = smileModel_ == ATM ? swapRate1_ : swapRate2_ + strike;
+        Real k2 = smileModel_ == ATM ? swapRate2_ : swapRate1_ - strike;
+        if (swcub == NULL) {
+            // not a cube, just an atm surface given, so we can
+            // not easily convert volatilities and just forbid it
+            QL_REQUIRE(inheritedVolatilityType_,
+                       "if only an atm surface is given, the volatility "
+                       "type must be inherited");
+            vol1_ = swvol->volatility(
+                fixingDate_, index_->swapIndex1()->tenor(), k1);
+            vol2_ = swvol->volatility(
+                fixingDate_, index_->swapIndex2()->tenor(), k2);
+        } else {
+            vol1_ = swcub->smileSection(fixingDate_,
+                                        index_->swapIndex1()->tenor())
+                ->volatility(k1, volType_, shift1_);
+            vol2_ = swcub->smileSection(fixingDate_,
+                                        index_->swapIndex2()->tenor())
+                ->volatility(k2, volType_, shift2_);
+        }
+        //
         if (volType_ == ShiftedLognormal) {
             // (shifted) lognormal volatility
             if (strike >= 0.0) {
@@ -297,7 +300,7 @@ namespace QuantLib {
                            gearing2_ * gearing2_ * vol2_ * vol2_ +
                            2.0 * gearing1_ * gearing2_ * rho_ * vol1_ * vol2_));
             res =
-                bachelierBlackFormula(optionType_, strike, forward, stddev, 1.0);
+                bachelierBlackFormula(optionType, strike, forward, stddev, 1.0);
         }
         return res * discount_ * coupon_->accrualPeriod();
     }

@@ -54,14 +54,19 @@ namespace QuantLib {
         2nd Edition, Springer, 2006, chapter 13.6.2
 
         http://ssrn.com/abstract=2686998
+
+        Berrahoui: Pricing CMS spread options and digital CMS spread
+        options with smile, Wilmott 2004(3):63-69
     */
 
     class LognormalCmsSpreadPricer : public CmsSpreadCouponPricer {
-
       public:
+        enum SmileModel { ATM, PartialSmile };
+
         LognormalCmsSpreadPricer(
             const boost::shared_ptr<CmsCouponPricer> cmsPricer,
             const Handle<Quote> &correlation,
+            const SmileModel smileModel = ATM,
             const Handle<YieldTermStructure> &couponDiscountCurve =
                 Handle<YieldTermStructure>(),
             const Size IntegrationPoints = 16,
@@ -99,7 +104,9 @@ namespace QuantLib {
         Real integrand(const Real) const;
         Real integrand_normal(const Real) const;
 
-        boost::shared_ptr<CmsCouponPricer> cmsPricer_;
+        const boost::shared_ptr<CmsCouponPricer> cmsPricer_;
+
+        const SmileModel smileModel_;
 
         Handle<YieldTermStructure> couponDiscountCurve_;
 
@@ -120,7 +127,6 @@ namespace QuantLib {
 
         Real swapRate1_, swapRate2_, gearing1_, gearing2_;
         Real adjustedRate1_, adjustedRate2_;
-        Real vol1_, vol2_;
         Real mu1_, mu2_;
         Real rho_;
 
@@ -129,8 +135,7 @@ namespace QuantLib {
         Real shift1_, shift2_;
 
         mutable Real phi_, a_, b_, s1_, s2_, m1_, m2_, v1_, v2_, k_;
-        mutable Real alpha_, psi_;
-        mutable Option::Type optionType_;
+        mutable Real alpha_, psi_, vol1_, vol2_;
 
         boost::shared_ptr<CmsCoupon> c1_, c2_;
 

@@ -76,11 +76,11 @@ struct TestData {
 
         correlation = Handle<Quote>(boost::make_shared<SimpleQuote>(0.6));
         cmsspPricerLn = boost::make_shared<LognormalCmsSpreadPricer>(
-            cmsPricerLn, correlation, yts2, 32);
+            cmsPricerLn, correlation, LognormalCmsSpreadPricer::ATM, yts2, 32);
         cmsspPricerSln = boost::make_shared<LognormalCmsSpreadPricer>(
-            cmsPricerSln, correlation, yts2, 32);
+            cmsPricerSln, correlation, LognormalCmsSpreadPricer::ATM, yts2, 32);
         cmsspPricerN = boost::make_shared<LognormalCmsSpreadPricer>(
-            cmsPricerN, correlation, yts2, 32);
+            cmsPricerN, correlation, LognormalCmsSpreadPricer::ATM, yts2, 32);
     }
 
     SavedSettings backup;
