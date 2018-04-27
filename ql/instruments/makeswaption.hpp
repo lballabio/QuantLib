@@ -54,6 +54,7 @@ namespace QuantLib {
         operator Swaption() const;
         operator boost::shared_ptr<Swaption>() const ;
 
+        MakeSwaption& withNominal(Real n);
         MakeSwaption& withSettlementType(Settlement::Type delivery);
         MakeSwaption& withOptionConvention(BusinessDayConvention bdc);
         MakeSwaption& withExerciseDate(const Date&);
@@ -74,6 +75,7 @@ namespace QuantLib {
 
         Rate strike_;
         VanillaSwap::Type underlyingType_;
+        Real nominal_;
 
         boost::shared_ptr<PricingEngine> engine_;
     };
