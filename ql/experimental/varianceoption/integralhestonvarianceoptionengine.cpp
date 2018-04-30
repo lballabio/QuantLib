@@ -218,8 +218,8 @@ namespace QuantLib {
 
         boost::scoped_array<Complex> ff(new Complex[2048*2048]);
         Complex xi;
-        Complex ui,beta,zita,gamma,csum,vero;
-        Complex contrib, caux, caux1,caux2,caux3;
+        Complex ui,beta,zita,gamma,csum;
+        Complex caux,caux1,caux2,caux3;
 
         ui=Complex(0.0,1.0);
 
