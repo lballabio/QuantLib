@@ -37,7 +37,7 @@ namespace QuantLib {
       accruals_(accruals), paymentTimes_(paymentTimes),
       gearingOfFloor_(gearingOfFloor), gearingOfFixing_(gearingOfFixing),
       spreadOfFloor_(spreadOfFloor), spreadOfFixing_(spreadOfFixing),
-      payer_(payer), multiplier_(payer ? 1.0 : -1.0),
+      multiplier_(payer ? 1.0 : -1.0),
       lastIndex_(rateTimes.size()-1),
       initialFloor_(initialFloor) {
         checkIncreasingTimes(paymentTimes);

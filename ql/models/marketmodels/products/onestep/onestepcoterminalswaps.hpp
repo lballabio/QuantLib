@@ -49,9 +49,6 @@ namespace QuantLib {
         std::vector<Time> paymentTimes_;
         double fixedRate_;
         Size lastIndex_;
-        // things that vary in a path
-        Size currentIndex_;
-
     };
 
     // inline definitions
