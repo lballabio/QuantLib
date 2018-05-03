@@ -212,7 +212,7 @@ namespace QuantLib {
                 shift1_ =
                     swvol->shift(fixingDate_, index_->swapIndex1()->tenor());
                 shift2_ =
-                    swvol->shift(fixingDate_, index_->swapIndex1()->tenor());
+                    swvol->shift(fixingDate_, index_->swapIndex2()->tenor());
             }
 
             if (swcub == NULL) {
@@ -224,7 +224,7 @@ namespace QuantLib {
                 vol1_ = swvol->volatility(
                     fixingDate_, index_->swapIndex1()->tenor(), swapRate1_);
                 vol2_ = swvol->volatility(
-                    fixingDate_, index_->swapIndex1()->tenor(), swapRate2_);
+                    fixingDate_, index_->swapIndex2()->tenor(), swapRate2_);
             } else {
                 vol1_ = swcub->smileSection(fixingDate_,
                                             index_->swapIndex1()->tenor())
