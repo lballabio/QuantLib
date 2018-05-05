@@ -273,6 +273,17 @@ namespace QuantLib {
         }
     }
 
+    void CapFloor::deepUpdate() {
+        for (Size i = 0; i < floatingLeg_.size(); ++i) {
+            boost::shared_ptr<FloatingRateCoupon> f =
+                boost::dynamic_pointer_cast<FloatingRateCoupon>(
+                    floatingLeg_[i]);
+            if (f)
+                f->update();
+        }
+        update();
+    }
+
     void CapFloor::arguments::validate() const {
         QL_REQUIRE(endDates.size() == startDates.size(),
                    "number of start dates (" << startDates.size()

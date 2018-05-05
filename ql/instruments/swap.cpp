@@ -21,7 +21,7 @@
 
 #include <ql/instruments/swap.hpp>
 #include <ql/cashflows/cashflows.hpp>
-#include <ql/cashflows/coupon.hpp>
+#include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
@@ -156,6 +156,18 @@ namespace QuantLib {
         return d;
     }
 
+    void Swap::deepUpdate() {
+        for (Size j = 0; j < legs_.size(); ++j) {
+            for (Size k = 0; k < legs_[j].size(); ++k) {
+                boost::shared_ptr<FloatingRateCoupon> f =
+                    boost::dynamic_pointer_cast<FloatingRateCoupon>(
+                        legs_[j][k]);
+                if (f)
+                    f->update();
+            }
+        }
+        update();
+    }
 
     void Swap::arguments::validate() const {
         QL_REQUIRE(legs.size() == payer.size(),

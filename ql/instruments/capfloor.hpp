@@ -64,6 +64,10 @@ namespace QuantLib {
         CapFloor(Type type,
                  const Leg& floatingLeg,
                  const std::vector<Rate>& strikes);
+        //! \name Observable interface
+        //@{
+        void deepUpdate();
+        //@}
         //! \name Instrument interface
         //@{
         bool isExpired() const;
