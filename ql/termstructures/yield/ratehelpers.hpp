@@ -7,6 +7,7 @@
  Copyright (C) 2007, 2009 Roland Lichters
  Copyright (C) 2015 Maddalena Zanzi
  Copyright (C) 2015 Paolo Mazzocchi
+ Copyright (C) 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -239,7 +240,8 @@ namespace QuantLib {
                        const Handle<YieldTermStructure>& discountingCurve
                                                = Handle<YieldTermStructure>(),
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
-                       Date customPillarDate = Date());
+                       Date customPillarDate = Date(),
+					   boost::optional<bool> endOfMonth = boost::none);
         SwapRateHelper(const Handle<Quote>& rate,
                        const Period& tenor,
                        const Calendar& calendar,
@@ -256,7 +258,8 @@ namespace QuantLib {
                                             = Handle<YieldTermStructure>(),
                        Natural settlementDays = Null<Natural>(),
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
-                       Date customPillarDate = Date());
+                       Date customPillarDate = Date(),
+			           boost::optional<bool> endOfMonth = boost::none);
         SwapRateHelper(Rate rate,
                        const boost::shared_ptr<SwapIndex>& swapIndex,
                        const Handle<Quote>& spread = Handle<Quote>(),
@@ -265,7 +268,8 @@ namespace QuantLib {
                        const Handle<YieldTermStructure>& discountingCurve
                                             = Handle<YieldTermStructure>(),
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
-                       Date customPillarDate = Date());
+                       Date customPillarDate = Date(),
+					   boost::optional<bool> endOfMonth = boost::none);
         SwapRateHelper(Rate rate,
                        const Period& tenor,
                        const Calendar& calendar,
@@ -282,7 +286,8 @@ namespace QuantLib {
                                             = Handle<YieldTermStructure>(),
                        Natural settlementDays = Null<Natural>(),
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
-                       Date customPillarDate = Date());
+                       Date customPillarDate = Date(),
+					   boost::optional<bool> endOfMonth = boost::none);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -314,6 +319,7 @@ namespace QuantLib {
         Period fwdStart_;
         Handle<YieldTermStructure> discountHandle_;
         RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
+		bool endOfMonth_;
     };
 
 
