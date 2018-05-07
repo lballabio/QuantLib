@@ -53,8 +53,8 @@
 #include <ql/math/optimization/differentialevolution.hpp>
 #include <ql/time/period.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/experimental/math/numericaldifferentiation.hpp>
 #include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
+#include <ql/methods/finitedifferences/operators/numericaldifferentiation.hpp>
 
 #include <boost/make_shared.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
