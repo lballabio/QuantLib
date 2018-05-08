@@ -24,7 +24,7 @@
 
 #include <ql/instruments/bond.hpp>
 #include <ql/cashflows/cashflows.hpp>
-#include <ql/cashflows/coupon.hpp>
+#include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
@@ -353,6 +353,16 @@ namespace QuantLib {
 
         cashflows_.push_back(redemption);
         redemptions_.push_back(redemption);
+    }
+
+    void Bond::deepUpdate() {
+        for (Size k = 0; k < cashflows_.size(); ++k) {
+            boost::shared_ptr<FloatingRateCoupon> f =
+                boost::dynamic_pointer_cast<FloatingRateCoupon>(cashflows_[k]);
+            if (f)
+                f->update();
+        }
+        update();
     }
 
     void Bond::calculateNotionalsFromCashflows() {
