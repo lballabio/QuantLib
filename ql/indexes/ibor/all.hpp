@@ -17,13 +17,17 @@
 #include <ql/indexes/ibor/jibar.hpp>
 #include <ql/indexes/ibor/jpylibor.hpp>
 #include <ql/indexes/ibor/libor.hpp>
+#include <ql/indexes/ibor/mosprime.hpp>
 #include <ql/indexes/ibor/nzdlibor.hpp>
 #include <ql/indexes/ibor/nzocr.hpp>
+#include <ql/indexes/ibor/pribor.hpp>
+#include <ql/indexes/ibor/robor.hpp>
 #include <ql/indexes/ibor/seklibor.hpp>
 #include <ql/indexes/ibor/shibor.hpp>
 #include <ql/indexes/ibor/sonia.hpp>
 #include <ql/indexes/ibor/tibor.hpp>
 #include <ql/indexes/ibor/trlibor.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
+#include <ql/indexes/ibor/wibor.hpp>
 #include <ql/indexes/ibor/zibor.hpp>
 

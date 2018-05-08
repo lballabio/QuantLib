@@ -1910,11 +1910,23 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\indexes\ibor\mosprime.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\indexes\ibor\nzdlibor.hpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\indexes\ibor\nzocr.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\indexes\ibor\pribor.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\indexes\ibor\robor.hpp"
 					>
 				</File>
 				<File
@@ -1947,6 +1959,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\indexes\ibor\usdlibor.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\indexes\ibor\wibor.hpp"
 					>
 				</File>
 				<File
