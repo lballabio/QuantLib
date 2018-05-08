@@ -205,7 +205,7 @@ namespace QuantLib {
     }
 
     inline Rate BlackIborCouponPricer::swapletRate() const {
-        return swapletPrice()/(accrualPeriod_*discount_);
+        return gearing_ * adjustedFixing() + spread_;
     }
 
     inline Real BlackIborCouponPricer::capletPrice(Rate effectiveCap) const {
