@@ -28,6 +28,8 @@
 
 namespace QuantLib {
 
+    class IborIndex;
+
     //! %Forward rate agreement (FRA) class
     /*! 1. Unlike the forward contract conventions on carryable
            financial assets (stocks, bonds, commodities), the
@@ -72,7 +74,6 @@ namespace QuantLib {
 
         \ingroup instruments
     */
-    class IborIndex;
     class ForwardRateAgreement: public Forward {
       public:
         ForwardRateAgreement(const Date& valueDate,
