@@ -560,7 +560,7 @@ void MatricesTest::testCholeskyDecomposition() {
 
 void MatricesTest::testMoorePenroseInverse() {
 
-    BOOST_TEST_MESSAGE("Testing Moore-Penrose Inverse...");
+    BOOST_TEST_MESSAGE("Testing Moore-Penrose inverse...");
 
     // this is taken from
     // http://de.mathworks.com/help/matlab/ref/pinv.html

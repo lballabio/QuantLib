@@ -65,7 +65,7 @@ namespace {
 }
 
 void FdHestonTest::testFdmHestonVarianceMesher() {
-    BOOST_TEST_MESSAGE("Testing FDM Heston variance mesher ...");
+    BOOST_TEST_MESSAGE("Testing FDM Heston variance mesher...");
 
     SavedSettings backup;
 

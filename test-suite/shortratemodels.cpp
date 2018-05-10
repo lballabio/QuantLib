@@ -429,7 +429,7 @@ void ShortRateModelTest::testFuturesConvexityBias() {
 }
 
 void ShortRateModelTest::testExtendedCoxIngersollRossDiscountFactor() {
-    BOOST_TEST_MESSAGE("Testing zero bond pricing for extended CIR model ...");
+    BOOST_TEST_MESSAGE("Testing zero-bond pricing for extended CIR model...");
 
     SavedSettings backup;
     const Date today = Settings::instance().evaluationDate();
