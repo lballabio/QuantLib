@@ -128,6 +128,10 @@ namespace QuantLib {
             return Null<Rate>();
     }
 
+    void CappedFlooredCoupon::update() {
+        notifyObservers();
+    }
+
     void CappedFlooredCoupon::accept(AcyclicVisitor& v) {
         typedef FloatingRateCoupon super;
         Visitor<CappedFlooredCoupon>* v1 =

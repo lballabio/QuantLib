@@ -31,7 +31,6 @@
 
 #include <ql/cashflows/coupon.hpp>
 #include <ql/patterns/visitor.hpp>
-#include <ql/patterns/lazyobject.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/handle.hpp>
 
@@ -43,6 +42,7 @@ namespace QuantLib {
 
     //! base floating-rate coupon class
     class FloatingRateCoupon : public Coupon,
+                               public Observer,
                                public LazyObject {
       public:
         FloatingRateCoupon(const Date& paymentDate,
