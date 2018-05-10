@@ -150,7 +150,7 @@ namespace {
     class TimedCase {
       public:
         typedef void (*fct_ptr)();
-        TimedCase(fct_ptr f) : f_(f) {}
+        explicit TimedCase(fct_ptr f) : f_(f) {}
 
         void startTimer() const {
             t.restart();
