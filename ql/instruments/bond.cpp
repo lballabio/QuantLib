@@ -357,8 +357,8 @@ namespace QuantLib {
 
     void Bond::deepUpdate() {
         for (Size k = 0; k < cashflows_.size(); ++k) {
-            boost::shared_ptr<FloatingRateCoupon> f =
-                boost::dynamic_pointer_cast<FloatingRateCoupon>(cashflows_[k]);
+            boost::shared_ptr<LazyObject> f =
+                boost::dynamic_pointer_cast<LazyObject>(cashflows_[k]);
             if (f)
                 f->update();
         }

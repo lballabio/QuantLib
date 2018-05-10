@@ -275,8 +275,8 @@ namespace QuantLib {
 
     void CapFloor::deepUpdate() {
         for (Size i = 0; i < floatingLeg_.size(); ++i) {
-            boost::shared_ptr<FloatingRateCoupon> f =
-                boost::dynamic_pointer_cast<FloatingRateCoupon>(
+            boost::shared_ptr<LazyObject> f =
+                boost::dynamic_pointer_cast<LazyObject>(
                     floatingLeg_[i]);
             if (f)
                 f->update();
