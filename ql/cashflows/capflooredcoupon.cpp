@@ -77,21 +77,16 @@ namespace QuantLib {
         underlying_->setPricer(pricer);
     }
 
-    void CappedFlooredCoupon::performCalculations() const {
-        QL_REQUIRE(underlying_->pricer(), "pricer not set");
-        floorletRate_ = 0.;
-        if(isFloored_)
-            floorletRate_ = underlying_->pricer()->floorletRate(effectiveFloor());
-        capletRate_ = 0.;
-        if(isCapped_)
-            capletRate_ = underlying_->pricer()->capletRate(effectiveCap());
-    }
-
     Rate CappedFlooredCoupon::rate() const {
         QL_REQUIRE(underlying_->pricer(), "pricer not set");
         Rate swapletRate = underlying_->rate();
-        calculate();
-        return swapletRate + floorletRate_ - capletRate_;
+        Rate floorletRate = 0.;
+        if(isFloored_)
+            floorletRate = underlying_->pricer()->floorletRate(effectiveFloor());
+        Rate capletRate = 0.;
+        if(isCapped_)
+            capletRate = underlying_->pricer()->capletRate(effectiveCap());
+        return swapletRate + floorletRate - capletRate;
     }
 
     Rate CappedFlooredCoupon::convexityAdjustment() const {
