@@ -463,9 +463,10 @@ namespace QuantLib {
                    result.dates_[0]);
         if (truncationDate<result.dates_.back()) {
             // remove later dates
-            while (!result.isRegular_.empty() && result.dates_.back()>truncationDate) {
+            while (result.dates_.back()>truncationDate) {
                 result.dates_.pop_back();
-                result.isRegular_.pop_back();
+                if(!result.isRegular_.empty())
+                    result.isRegular_.pop_back();
             }
 
             // add truncationDate if missing
