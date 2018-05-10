@@ -189,8 +189,13 @@ namespace {
         }
 
         test_case* getTestCase() const {
+            #if BOOST_VERSION >= 105900
             return boost::unit_test::make_test_case(f_, name_,
                                                     __FILE__, __LINE__);
+            #else
+            return boost::unit_test::make_test_case(
+                       boost::unit_test::callback0<>(f_), name_);
+            #endif
         }
         double getMflop() const {
             return mflop_;
