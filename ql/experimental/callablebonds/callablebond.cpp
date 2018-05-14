@@ -479,6 +479,8 @@ namespace QuantLib {
                 }
             }
         }
+
+        arguments->spread = 0.0;
     }
 
 

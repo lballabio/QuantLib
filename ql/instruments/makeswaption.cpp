@@ -37,7 +37,8 @@ namespace QuantLib {
       optionConvention_(ModifiedFollowing),
       fixingDate_(Null<Date>()),
       strike_(strike),
-      underlyingType_(VanillaSwap::Payer) {}
+      underlyingType_(VanillaSwap::Payer),
+      nominal_(1.0) {}
 
     MakeSwaption::MakeSwaption(const boost::shared_ptr<SwapIndex>& swapIndex,
                                const Date& fixingDate,
@@ -102,7 +103,8 @@ namespace QuantLib {
             .withFixedLegTenor(swapIndex_->fixedLegTenor())
             .withFixedLegConvention(bdc)
             .withFixedLegTerminationDateConvention(bdc)
-            .withType(underlyingType_);
+            .withType(underlyingType_)
+            .withNominal(nominal_);
 
         boost::shared_ptr<Swaption> swaption(new
             Swaption(underlyingSwap_, exercise_, delivery_));
@@ -134,6 +136,11 @@ namespace QuantLib {
     MakeSwaption& MakeSwaption::withPricingEngine(
                              const boost::shared_ptr<PricingEngine>& engine) {
         engine_ = engine;
+        return *this;
+    }
+
+    MakeSwaption& MakeSwaption::withNominal(Real n) {
+        nominal_ = n;
         return *this;
     }
 

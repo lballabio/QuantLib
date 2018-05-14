@@ -29,6 +29,7 @@
 
 class FdHestonTest {
 public:
+    static void testFdmHestonVarianceMesher();
     static void testFdmHestonBarrier();
     static void testFdmHestonBarrierVsBlackScholes();
     static void testFdmHestonAmerican();
@@ -37,6 +38,7 @@ public:
     static void testFdmHestonConvergence();
     static void testFdmHestonBlackScholes();
     static void testFdmHestonIntradayPricing();
+    static void testMethodOfLines();
 
     static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };

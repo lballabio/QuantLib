@@ -52,11 +52,6 @@ namespace QuantLib {
               between the settlementDate and the deliveryDate. (Note
               the two different discount curves used in b. and c.)
 
-        <b>Example: </b>
-        \link Repo.cpp
-        valuation of a repo on a fixed-rate bond
-        \endlink
-
         \todo Add preconditions and tests
 
         \todo Create switch- if coupon goes to seller is toggled on,

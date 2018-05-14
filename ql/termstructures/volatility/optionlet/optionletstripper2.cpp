@@ -95,6 +95,7 @@ namespace QuantLib {
         spreadsVolImplied_ = spreadsVolImplied();
 
         StrippedOptionletAdapter adapter(stripper1_);
+        adapter.enableExtrapolation();
 
         Volatility unadjustedVol, adjustedVol;
         for (Size j=0; j<nOptionExpiries_; ++j) {
@@ -165,6 +166,7 @@ namespace QuantLib {
     {
         boost::shared_ptr<OptionletVolatilityStructure> adapter(new
             StrippedOptionletAdapter(optionletStripper1));
+        adapter->enableExtrapolation();
 
         // set an implausible value, so that calculation is forced
         // at first operator()(Volatility x) call

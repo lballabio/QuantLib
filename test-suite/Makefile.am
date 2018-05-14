@@ -4,6 +4,7 @@ QL_TESTS = \
 	speedlevel.hpp \
 	americanoption.hpp americanoption.cpp \
 	amortizingbond.hpp amortizingbond.cpp \
+	andreasenhugevolatilityinterpl.hpp andreasenhugevolatilityinterpl.cpp \
 	array.hpp array.cpp \
 	asianoptions.hpp asianoptions.cpp \
 	assetswap.hpp assetswap.cpp \
@@ -28,6 +29,7 @@ QL_TESTS = \
 	chooseroption.hpp chooseroption.cpp \
 	cliquetoption.hpp cliquetoption.cpp \
 	cms.hpp cms.cpp \
+	cmsspread.hpp cmsspread.cpp \
 	commodityunitofmeasure.hpp commodityunitofmeasure.cpp \
 	compoundoption.hpp compoundoption.cpp \
 	convertiblebonds.hpp convertiblebonds.cpp \
@@ -53,6 +55,7 @@ QL_TESTS = \
 	fdheston.hpp fdheston.cpp \
 	fdmlinearop.hpp fdmlinearop.cpp \
 	forwardoption.hpp forwardoption.cpp \
+	forwardrateagreement.hpp forwardrateagreement.cpp \
 	functions.hpp functions.cpp \
 	garch.hpp garch.cpp \
 	gaussianquadratures.hpp gaussianquadratures.cpp \
@@ -175,7 +178,7 @@ dist-hook:
 
 if BOOST_UNIT_TEST_FOUND
 
-AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
+AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 
 noinst_LTLIBRARIES = libUnitMain.la
 libUnitMain_la_SOURCES = main.cpp

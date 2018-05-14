@@ -113,11 +113,12 @@ namespace QuantLib {
         // adjustment has to be applied, but the Black76 method only
         // applies the standard in arrears adjustment; the bivariate
         // lognormal method is more accurate in this regard.
+        if ((!coupon_->isInArrears() && timingAdjustment_ == Black76))
+            return fixing;
         Date d1 = coupon_->fixingDate();
         Date d2 = index_->valueDate(d1);
         Date d3 = index_->maturityDate(d2);
-        if ((!coupon_->isInArrears() && timingAdjustment_ == Black76) ||
-            coupon_->date() == d3)
+        if (coupon_->date() == d3)
             return fixing;
 
         QL_REQUIRE(!capletVolatility().empty(),

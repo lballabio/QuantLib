@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000-2017 StatPro Italia srl
+ Copyright (C) 2000-2018 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,7 +18,99 @@
 
 /*! \page history Version history
 
-    <strong>Release 1.11 - October 2017</strong>
+    <strong>Release 1.12.1 - April 16th, 2018</strong>
+
+    QuantLib 1.12.1 is a bug-fix release for version 1.12.
+
+    It fixes an error that would occur during initialization of the
+    test suite when using the newly released Boost 1.67.0.
+    Thanks to Klaus Spanderen for the prompt fix.
+
+    The library code is unchanged from version 1.12.
+
+    <strong>Release 1.12 - February 1st, 2018</strong>
+
+    PORTABILITY
+    - As announced in the previous release, support for the Dev-C++
+      IDE was removed.
+    - In April 2018, Microsoft will end its support for Microsoft
+      Visual C++ 2008.  Therefore, this is the last version of
+      QuantLib to support it with maintained project files.  The next
+      release will only contain project files for Visual C++ 2010 and
+      later.
+    - It is now possible to build a usable library with CMake on
+      Windows (thanks to Javier G. Sogo).
+    - Fix autotools build outside the source tree (thanks to Joshua
+      Ulrich).
+
+    INSTRUMENTS AND PRICING ENGINES
+    - Added OAS calculation to experimental callable bonds (thanks to
+      Bojan Nikolic).
+    - Avoided infinite loop for some sets of parameters in
+      experimental variance-gamma engine (thanks to Roy Zywina).
+
+    CASH FLOWS
+    - It is now possible to build a cash-flow leg from a schedule
+      created from a precalculated vector of dates (thanks to Peter
+      Caspers).
+
+    MODELS
+    - Affine models can now be used to bootstrap a default-probability
+      curve (thanks to Jose Aparicio).
+    - Added Andreasen-Huge volatility interpolation and local
+      volatility calibration (thanks to Klaus Spanderen).
+    - Added Rannacher smoothing steps for Heston stochastic local
+      volatility calibration (thanks to Klaus Spanderen).
+
+    TERM STRUCTURES
+    - Added L2 penalty to fitted parameters of fitted bond discount
+      curve (thanks to Robin Northcott).
+    - Added an optional trading calendar to the FX-swap rate helper
+      and and optional payment lag to the OIS rate helper (thanks to
+      Wojciech Slusarski).
+    - Fixed inconsistent treatment of strike in experimental CPI
+      cap/floor term price surface (thanks to Francis Duffy).
+    - Correctly handled the case of overlapping strike regions for
+      caps and floors in experimental CPI cap/floor term price surface
+      (thanks to Peter Caspers).
+    - Fixed calculation of seasonality correction for interpolated
+      inflation indexes (thanks to Francis Duffy).
+    - Implemented composite zero-yield curve as combination of two
+      existing curves via a given binary function (thanks to Francois
+      Botha).
+    - Fixed interpolation of shift in swaption volatility matrix
+      (thanks to Peter Caspers).
+
+    DATE/TIME
+    - Updated Chinese calendar for 2018 (thanks to Cheng Li).
+    - Added Botswana calendar (thanks to Francois Botha).
+    - Fixed a few problems with US calendars (thanks to Mike DelMedico
+      and to GitHub user ittegrat).
+    - User-added holidays now work correctly when intraday
+      calculations are enabled (thanks to Klaus Spanderen for the fix
+      and to GitHub user volchemist for the report).
+
+    MATH
+    - Fixed monotonicity of Fritsch-Butland and prevented NaNs in some
+      cases (thanks to GitHub user Grant6899 for the fix and to Tom
+      Anderson for the report).
+
+    DEPRECATED FEATURES
+    - The ChiSquareDistribution, NonCentralChiSquareDistribution,
+      InverseNonCentralChiSquareDistribution and GammaDistribution
+      were renamed to CumulativeChiSquareDistribution,
+      NonCentralCumulativeChiSquareDistribution,
+      InverseNonCentralCumulativeChiSquareDistribution and
+      CumulativeGammaDistribution, respectively (thanks to GitHub user
+      IGonza).  The old names are still available as typedefs and will
+      be removed in a future release.
+
+    Thanks go also to Marco Craveiro, Dirk Eddelbuettel, Lakshay Garg,
+    Guillaume Horel, Alix Lassauzet, Patrick Lewis, and GitHub users
+    bmmay, bingoko and tournierjc for smaller fixes and enhancements.
+
+
+    <strong>Release 1.11 - October 2nd, 2017</strong>
 
     PORTABILITY
     - This is the last version of QuantLib to support the now obsolete

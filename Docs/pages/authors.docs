@@ -17,29 +17,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \page group The QuantLib Group
+/*! \page group Contributors
 
-    \section authors Authors
-
-    The %QuantLib Group members are:
-
-    - Ferdinando Ametrano, Banca IMI SpA, administrator
-    - Luigi Ballabio, StatPro Italia srl, administrator
-    - Marco Bianchetti, Banca IMI SpA
-    - Peter Caspers, Quaternion
-    - Nicolas Di C&eacute;sar&eacute;
-    - Dirk Eddelbuettel
-    - Neil Firth, Mathematical Institute, University of Oxford
-    - Nicola Jean, StatPro Italia srl
-    - Chris Kenyon
-    - Roland Lichters
-    - Marco Marchioro, StatPro Italia srl
-    - Klaus Spanderen
-    - Joseph Wang
-    
-    \section contributors Contributors
-
-    We gratefully acknowledge contributions from
+    We gratefully acknowledge contributions from (in alphabetical order)
     Nathan Abbott,
     Samad Abdessadki,
     Kakhkhor Abdijalilov,
@@ -47,6 +27,7 @@
     Toyin Akin,
     Marius Akre,
     Mario Aleppo,
+    Ferdinando Ametrano,
     Grzegorz Andruszkiewicz,
     Driss Aouad,
     Jose Aparicio,
@@ -54,6 +35,7 @@
     Ahmed Ayadi,
     Lluis Pujol Bajador,
     Gerardo Ballabio,
+    Luigi Ballabio,
     Nabila Barkati,
     Riccardo Barone,
     Cl&eacute;ment Barret,
@@ -66,6 +48,7 @@
     Nicholas Bertocchi,
     Sylvain Bertrand,
     Manas Bhatt,
+    Marco Bianchetti,
     David Binderman,
     Theo Boafo,
     Francois Botha,
@@ -74,6 +57,7 @@
     Joe Byers,
     Xavier Caron,
     Marine Casanova,
+    Peter Caspers,
     Antoine Cellerier,
     Yee Man Chan,
     Aurelien Chanudet,
@@ -82,10 +66,13 @@
     Meryem Chibo,
     Warren Chou,
     Scott Condit,
+    Marco Craveiro,
     Jon Davidson,
     Daniele De Francesco,
     Fr&eacute;d&eacute;ric Degraeve,
     Piero Del Boca,
+    Mike DelMedico,
+    Nicolas Di C&eacute;sar&eacute;,
     Piter Dias,
     Michael von den Driesch,
     Francis Duffy,
@@ -98,11 +85,13 @@
     Paul Farrington,
     Lorella Fatone,
     Luca Ferraro,
+    Neil Firth,
     Stefano Fondi,
     Chiara Fornarola,
     Silvia Frasson,
     Andreas Gaida,
     Matteo Gallivanoni,
+    Lakshay Garg,
     Riccardo Ghetta,
     Paul Giltinan,
     Roman Gitlin,
@@ -131,12 +120,14 @@
     Simon Ibbotson,
     Norbert Irmer,
     Mike Jake,
+    Nicola Jean,
     Joseph Jeisman,
     Rahul Kanchi,
     Andrey Karpov,
     Michal Kaut,
     Tomoya Kawanishi,
     Gary Kennedy,
+    Chris Kenyon,
     Oleksandr Khomenko,
     Matt Knox,
     Andrew Kolesnikov,
@@ -154,8 +145,10 @@
     James Lee,
     Samuel Lerouge,
     Bernd Lewerenz.
+    Patrick Lewis,
     Cheng Li,
     Gang Liang,
+    Roland Lichters,
     Robert Lopez,
     Andr&eacute; Louw,
     Matthias Lungwitz,
@@ -165,6 +158,7 @@
     Andrea Maggiulli,
     John Maiden,
     Katiuscia Manzoni,
+    Marco Marchioro,
     Francesca Mariani,
     Slava Mazur,
     Paolo Mazzocchi,
@@ -178,6 +172,7 @@
     Billy Ng,
     Bojan Nikolic,
     Jean Nkeng,
+    Robin Northcott,
     Nikolai Nowaczyk,
     Adrian O'Neill,
     Andrea Odetti,
@@ -219,10 +214,12 @@
     Eugene Shevkoplyas,
     Enrico Sirola,
     Leon Sit,
+    Wojciech Slusarski,
     Dale Smith,
     Tim Smith,
     Maxim Sokolov,
     Niels Elken S&oslash;nderby,
+    Klaus Spanderen,
     Andreas Spengler,
     Roland Stamm,
     Edouard Tallent,
@@ -232,6 +229,7 @@
     Yue Tian,
     Jayanth R. Varma,
     Fran&ccedil;ois du Vignaud,
+    Joseph Wang,
     Qingxiao Wang,
     Charles Whitmore,
     Stephen Wong,

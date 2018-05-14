@@ -52,7 +52,6 @@ namespace QuantLib {
         std::vector<Time> paymentTimes_;
         Real gearingOfFloor_, gearingOfFixing_;
         Rate spreadOfFloor_, spreadOfFixing_;
-        bool payer_;
         Real multiplier_;
         Size lastIndex_;
         Real initialFloor_;

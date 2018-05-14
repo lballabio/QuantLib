@@ -26,6 +26,7 @@
 
 #include <ql/instruments/dividendschedule.hpp>
 #include <ql/methods/finitedifferences/meshers/fdm1dmesher.hpp>
+
 #include <ql/handle.hpp>
 #include <ql/quote.hpp>
 
@@ -45,7 +46,8 @@ namespace QuantLib {
             Real eps = 0.0001,
             Real scaleFactor = 1.5,
             const std::pair<Real, Real>& cPoint
-                        = (std::pair<Real, Real>(Null<Real>(), Null<Real>())));
+                        = (std::pair<Real, Real>(Null<Real>(), Null<Real>())),
+            const DividendSchedule& dividendSchedule = DividendSchedule());
 
         static boost::shared_ptr<GeneralizedBlackScholesProcess> processHelper(
              const Handle<Quote>& s0,

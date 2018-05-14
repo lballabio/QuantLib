@@ -109,6 +109,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/models/marketmodels/products/multistep/multisteppathwisewrapper.hpp>
 
 #include <boost/math/special_functions/fpclassify.hpp>
+#include <boost/preprocessor/iteration/local.hpp>
 #include <boost/bind.hpp>
 #include <sstream>
 
@@ -4891,19 +4892,22 @@ test_suite* MarketModelTest::suite(SpeedLevel speed) {
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testPathwiseVegas));
 
+        setup();
+
         MarketModelType marketModels[] = {
             ExponentialCorrelationFlatVolatility,
-            ExponentialCorrelationAbcdVolatility };
+            ExponentialCorrelationAbcdVolatility
+        };
 
-        setup();
-        for (Size j=0; j<LENGTH(marketModels); j++) {
-            Size testedFactors[] = { 4, 8, todaysForwards.size()};
-            for (Size m=0; m<LENGTH(testedFactors); ++m) {
-                suite->add(QUANTLIB_TEST_CASE(
-                    boost::bind(&MarketModelTest::testCallableSwapAnderson,
-                        marketModels[j],testedFactors[m])));
-            }
-        }
+        Size testedFactors[] = { 4, 8, todaysForwards.size() };
+        #define BOOST_PP_LOCAL_MACRO(n)                                 \
+            suite->add(QUANTLIB_TEST_CASE(                              \
+                boost::bind(&MarketModelTest::testCallableSwapAnderson, \
+                    marketModels[n/LENGTH(testedFactors)],              \
+                    testedFactors[n%LENGTH(testedFactors)])));
+
+        #define BOOST_PP_LOCAL_LIMITS (0, 5)
+        #include BOOST_PP_LOCAL_ITERATE()
     }
 
     if (speed == Slow) {

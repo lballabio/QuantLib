@@ -28,6 +28,7 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/instruments/barrieroption.hpp>
+#include <ql/instruments/dividendbarrieroption.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/pricingengines/barrier/binomialbarrierengine.hpp>
@@ -1091,6 +1092,96 @@ void BarrierOptionTest::testVannaVolgaSimpleBarrierValues() {
     }
 }
 
+void BarrierOptionTest::testDividendBarrierOption() {
+    BOOST_TEST_MESSAGE("Testing barrier option pricing with "
+            "discrete dividends...");
+
+    SavedSettings backup;
+
+    const DayCounter dc = Actual365Fixed();
+
+    const Date today(11, February, 2018);
+    const Date maturity = today + Period(1, Years);
+    Settings::instance().evaluationDate() = today;
+
+    const Real spot = 100.0;
+    const Real strike = 105.0;
+    const Real rebate = 5.0;
+
+    const Real barriers[] = { 80.0, 120.0 };
+    const Barrier::Type barrierTypes[] = { Barrier::DownOut, Barrier::UpOut };
+
+    const Rate r = 0.05;
+    const Rate q = 0.0;
+    const Volatility v = 0.02;
+
+    const Handle<Quote> s0(boost::make_shared<SimpleQuote>(spot));
+    const Handle<YieldTermStructure> qTS(flatRate(today, q, dc));
+    const Handle<YieldTermStructure> rTS(flatRate(today, r, dc));
+    const Handle<BlackVolTermStructure> volTS(flatVol(today, v, dc));
+
+    const boost::shared_ptr<PricingEngine> bsEngine =
+        boost::make_shared<FdBlackScholesBarrierEngine>(
+            boost::make_shared<BlackScholesMertonProcess>(s0, qTS, rTS, volTS));
+
+    const boost::shared_ptr<PricingEngine> hestonEngine =
+        boost::make_shared<FdHestonBarrierEngine>(
+            boost::make_shared<HestonModel>(
+                boost::make_shared<HestonProcess>(
+                    rTS, qTS, s0, v*v, 1.0, v*v, 0.005, 0.0)), 50, 101, 3);
+
+    const boost::shared_ptr<PricingEngine> engines[] = {
+        bsEngine,
+        hestonEngine
+    };
+
+    const boost::shared_ptr<StrikedTypePayoff> payoff =
+        boost::make_shared<PlainVanillaPayoff>(Option::Put, strike);
+
+    const boost::shared_ptr<Exercise> exercise =
+        boost::make_shared<EuropeanExercise>(maturity);
+
+    const Real divAmount = 30;
+    const Date divDate = today + Period(6, Months);
+
+    const Real expected[] = {
+        rTS->discount(divDate)*rebate,
+        payoff->operator()(
+            (spot - divAmount*rTS->discount(divDate))/rTS->discount(maturity))
+            *rTS->discount(maturity)
+    };
+
+    const Real relTol = 1e-4;
+    for (Size i=0; i < LENGTH(barriers); ++i) {
+        for (Size j=0; j < LENGTH(engines); ++j) {
+            const Real barrier = barriers[i];
+            const Barrier::Type barrierType = barrierTypes[i];
+
+            DividendBarrierOption barrierOption(
+                barrierType, barrier, rebate, payoff, exercise,
+                std::vector<Date>(1, divDate),
+                std::vector<Real>(1, divAmount));
+
+            barrierOption.setPricingEngine(engines[j]);
+
+            const Real calculated = barrierOption.NPV();
+
+            const Real diff = std::fabs(calculated - expected[i]);
+            if (diff > relTol*expected[i]) {
+                BOOST_FAIL("Failed to reproduce barrier price with "
+                        "discrete dividends for "
+                           << "\n    strike:     " << strike
+                           << "\n    barrier:    " << barrier
+                           << "\n    maturity:   " << maturity
+                           << "\n    calculated: " << calculated
+                           << "\n    expected:   " << expected[i]
+                           << std::scientific
+                           << "\n    difference  " << diff
+                           << "\n    tolerance   " << relTol * expected[i]);
+            }
+        }
+    }
+}
 
 test_suite* BarrierOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Barrier option tests");
@@ -1098,12 +1189,14 @@ test_suite* BarrierOptionTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testBabsiriValues));
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testBeagleholeValues));
     suite->add(QUANTLIB_TEST_CASE(
-                        &BarrierOptionTest::testLocalVolAndHestonComparison));
+        &BarrierOptionTest::testLocalVolAndHestonComparison));
+    suite->add(QUANTLIB_TEST_CASE(
+        &BarrierOptionTest::testDividendBarrierOption));
     return suite;
 }
 
 test_suite* BarrierOptionTest::experimental() {
-    test_suite* suite = BOOST_TEST_SUITE("Barrier option tests");
+    test_suite* suite = BOOST_TEST_SUITE("Barrier option experimental tests");
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testPerturbative));
     suite->add(QUANTLIB_TEST_CASE(
                       &BarrierOptionTest::testVannaVolgaSimpleBarrierValues));

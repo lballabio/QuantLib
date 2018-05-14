@@ -759,7 +759,7 @@ void HestonModelTest::testKahlJaeckelCase() {
           "QuadraticExponentialMartingale" },
     };
 
-    const Real tolerance = 0.1;
+    const Real tolerance = 0.2;
     const Real expected = 4.95212;
 
     for (Size i=0; i < LENGTH(descriptions); ++i) {
@@ -804,7 +804,7 @@ void HestonModelTest::testKahlJaeckelCase() {
         .withSamples(1023));
 
     Real calculated = option.NPV();
-    if (std::fabs(calculated - expected) > tolerance) {
+    if (std::fabs(calculated - expected) > 0.5*tolerance) {
         BOOST_ERROR("Failed to reproduce cached price with MC engine"
                     << "\n    discretization: BroadieKayaExactSchemeLobatto"
                     << "\n    calculated:     " << calculated
@@ -820,7 +820,7 @@ void HestonModelTest::testKahlJaeckelCase() {
                 kappa, theta, sigma, rho)));
 
     option.setPricingEngine(
-		boost::make_shared<FdHestonVanillaEngine>(hestonModel, 200, 400, 100));
+		boost::make_shared<FdHestonVanillaEngine>(hestonModel, 200, 401, 101));
 
     calculated = option.NPV();
     Real error = std::fabs(calculated - expected);
@@ -2723,7 +2723,7 @@ test_suite* HestonModelTest::suite(SpeedLevel speed) {
 }
 
 test_suite* HestonModelTest::experimental() {
-    test_suite* suite = BOOST_TEST_SUITE("Heston model tests");
+    test_suite* suite = BOOST_TEST_SUITE("Heston model experimental tests");
     suite->add(QUANTLIB_TEST_CASE(
         &HestonModelTest::testAnalyticPDFHestonEngine));
     return suite;

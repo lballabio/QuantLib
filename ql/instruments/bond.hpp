@@ -88,6 +88,10 @@ namespace QuantLib {
         //@{
         bool isExpired() const;
         //@}
+        //! \name Observable interface
+        //@{
+        void deepUpdate();
+        //@}
         //! \name Inspectors
         //@{
         Natural settlementDays() const;

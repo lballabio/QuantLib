@@ -129,7 +129,7 @@ namespace QuantLib {
     */
     class GaussHyperbolicIntegration : public GaussianQuadrature {
       public:
-        GaussHyperbolicIntegration(Size n)
+        explicit GaussHyperbolicIntegration(Size n)
         : GaussianQuadrature(n, GaussHyperbolicPolynomial()) {}
     };
 
@@ -145,7 +145,7 @@ namespace QuantLib {
     */
     class GaussLegendreIntegration : public GaussianQuadrature {
       public:
-        GaussLegendreIntegration(Size n)
+        explicit GaussLegendreIntegration(Size n)
         : GaussianQuadrature(n, GaussJacobiPolynomial(0.0, 0.0)) {}
     };
 
@@ -161,7 +161,7 @@ namespace QuantLib {
     */
     class GaussChebyshevIntegration : public GaussianQuadrature {
       public:
-        GaussChebyshevIntegration(Size n)
+        explicit GaussChebyshevIntegration(Size n)
         : GaussianQuadrature(n, GaussJacobiPolynomial(-0.5, -0.5)) {}
     };
 
@@ -177,7 +177,7 @@ namespace QuantLib {
     */
     class GaussChebyshev2ndIntegration : public GaussianQuadrature {
       public:
-        GaussChebyshev2ndIntegration(Size n)
+        explicit GaussChebyshev2ndIntegration(Size n)
       : GaussianQuadrature(n, GaussJacobiPolynomial(0.5, 0.5)) {}
     };
 
@@ -202,7 +202,7 @@ namespace QuantLib {
     //! tabulated Gauss-Legendre quadratures
     class TabulatedGaussLegendre {
       public:
-        TabulatedGaussLegendre(Size n = 20) { order(n); }
+        explicit TabulatedGaussLegendre(Size n = 20) { order(n); }
         template <class F>
         Real operator() (const F& f) const {
             QL_ASSERT(w_!=0, "Null weights" );

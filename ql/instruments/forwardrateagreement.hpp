@@ -28,6 +28,8 @@
 
 namespace QuantLib {
 
+    class IborIndex;
+
     //! %Forward rate agreement (FRA) class
     /*! 1. Unlike the forward contract conventions on carryable
            financial assets (stocks, bonds, commodities), the
@@ -72,7 +74,6 @@ namespace QuantLib {
 
         \ingroup instruments
     */
-    class IborIndex;
     class ForwardRateAgreement: public Forward {
       public:
         ForwardRateAgreement(const Date& valueDate,
@@ -91,6 +92,7 @@ namespace QuantLib {
             valueDate).
         */
         Date settlementDate() const;
+        Date fixingDate() const;
         /*!  Income is zero for a FRA */
         Real spotIncome(const Handle<YieldTermStructure>& incomeDiscountCurve)
             const;
@@ -102,6 +104,7 @@ namespace QuantLib {
         //@}
 
       protected:
+        void setupExpired() const;
         void performCalculations() const;
         Position::Type fraType_;
         //! aka FRA rate (the market forward rate)

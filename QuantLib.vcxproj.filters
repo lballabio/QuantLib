@@ -912,6 +912,9 @@
     <ClInclude Include="ql\math\incompletegamma.hpp">
       <Filter>math</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\initializers.hpp">
+      <Filter>math</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\interpolation.hpp">
       <Filter>math</Filter>
     </ClInclude>
@@ -1894,6 +1897,15 @@
       <Filter>termstructures\volatility\capfloor</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\equityfx\all.hpp">
+      <Filter>termstructures\volatility\equityfx</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\termstructures\volatility\equityfx\andreasenhugelocalvoladapter.hpp">
+      <Filter>termstructures\volatility\equityfx</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\termstructures\volatility\equityfx\andreasenhugevolatilityadapter.hpp">
+      <Filter>termstructures\volatility\equityfx</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\termstructures\volatility\equityfx\andreasenhugevolatilityinterpl.hpp">
       <Filter>termstructures\volatility\equityfx</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\equityfx\blackconstantvol.hpp">
@@ -4186,6 +4198,21 @@
     <ClInclude Include="ql\experimental\math\gaussiannoncentralchisquaredpolynomial.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\schemes\methodoflinesscheme.hpp">
+      <Filter>methods\finitedifferences\schemes</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\indexes\ibor\pribor.hpp">
+      <Filter>indexes\ibor</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\indexes\ibor\mosprime.hpp">
+      <Filter>indexes\ibor</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\indexes\ibor\robor.hpp">
+      <Filter>indexes\ibor</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\indexes\ibor\wibor.hpp">
+      <Filter>indexes\ibor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -5147,6 +5174,15 @@
     </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\capfloor\constantcapfloortermvol.cpp">
       <Filter>termstructures\volatility\capfloor</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\termstructures\volatility\equityfx\andreasenhugelocalvoladapter.cpp">
+      <Filter>termstructures\volatility\equityfx</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\termstructures\volatility\equityfx\andreasenhugevolatilityadapter.cpp">
+      <Filter>termstructures\volatility\equityfx</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\termstructures\volatility\equityfx\andreasenhugevolatilityinterpl.cpp">
+      <Filter>termstructures\volatility\equityfx</Filter>
     </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\equityfx\blackvariancecurve.cpp">
       <Filter>termstructures\volatility\equityfx</Filter>
@@ -6748,6 +6784,9 @@
     </ClCompile>
     <ClCompile Include="ql\time\daycounters\actual365fixed.cpp">
       <Filter>time\daycounters</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\methods\finitedifferences\schemes\methodoflinesscheme.cpp">
+      <Filter>methods\finitedifferences\schemes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

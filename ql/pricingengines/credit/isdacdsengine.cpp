@@ -29,7 +29,6 @@
 #include <ql/time/calendars/weekendsonly.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <boost/make_shared.hpp>
-#include <iostream>
 
 namespace QuantLib {
 
@@ -205,8 +204,7 @@ namespace QuantLib {
                            << "or Act/360 (" << coupon->dayCounter() << ")");
 
             // premium coupons
-
-            if (!arguments_.leg[i]->hasOccurred(evalDate,
+            if (!arguments_.leg[i]->hasOccurred(effectiveProtectionStart,
                                                 includeSettlementDateFlows_)) {
                 premiumNpv +=
                     coupon->amount() *

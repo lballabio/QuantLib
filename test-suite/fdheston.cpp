@@ -31,6 +31,7 @@
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmhestonvariancemesher.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
@@ -39,11 +40,14 @@
 #include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 
+#include <boost/make_shared.hpp>
 #include <boost/assign/std/vector.hpp>
+#include <boost/make_shared.hpp>
 
 using namespace QuantLib;
 using namespace boost::assign;
 using boost::unit_test_framework::test_suite;
+
 
 namespace {
     struct NewBarrierOptionData {
@@ -58,6 +62,44 @@ namespace {
         Time t;        // time to maturity
         Volatility v;  // volatility
     };
+}
+
+void FdHestonTest::testFdmHestonVarianceMesher() {
+    BOOST_TEST_MESSAGE("Testing FDM Heston variance mesher...");
+
+    SavedSettings backup;
+
+    const Date today = Date(22, February, 2018);
+    const DayCounter dc = Actual365Fixed();
+    Settings::instance().evaluationDate() = today;
+
+    const boost::shared_ptr<HestonProcess> process(
+        boost::make_shared<HestonProcess>(
+            Handle<YieldTermStructure>(flatRate(0.02, dc)),
+            Handle<YieldTermStructure>(flatRate(0.02, dc)),
+            Handle<Quote>(boost::make_shared<SimpleQuote>(100.0)),
+            0.09, 1.0, 0.09, 0.2, -0.5));
+
+    const std::vector<Real> locations =
+        FdmHestonVarianceMesher(5, process, 1.0).locations();
+
+    const Real expected[] = {
+        0.0, 6.652314e-02, 9.000000e-02, 1.095781e-01, 2.563610e-01
+    };
+
+    const Real tol = 1e-6;
+    for (Size i=0; i < locations.size(); ++i) {
+        const Real diff = std::fabs(expected[i] - locations[i]);
+
+        if (diff > tol) {
+            BOOST_ERROR("Failed to reproduce Heston variance mesh"
+                        << "\n    calculated: " << locations[i]
+                        << "\n    expected:   " << expected[i]
+                        << std::scientific
+                        << "\n    difference  " << diff
+                        << "\n    tolerance:  " << tol);
+        }
+    }
 }
 
 void FdHestonTest::testFdmHestonBarrierVsBlackScholes() {
@@ -190,23 +232,23 @@ void FdHestonTest::testFdmHestonBarrierVsBlackScholes() {
 
         const Real v0 = vol->value()*vol->value();
         boost::shared_ptr<HestonProcess> hestonProcess(
-             new HestonProcess(rTS, qTS, spot, v0, 1.0, v0, 0.00001, 0.0));
+             new HestonProcess(rTS, qTS, spot, v0, 1.0, v0, 0.005, 0.0));
 
         barrierOption.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new FdHestonBarrierEngine(boost::shared_ptr<HestonModel>(
-                              new HestonModel(hestonProcess)), 200, 400, 3)));
+                              new HestonModel(hestonProcess)), 200, 101, 3)));
 
         const Real calculatedHE = barrierOption.NPV();
     
         barrierOption.setPricingEngine(analyticEngine);
         const Real expected = barrierOption.NPV();
     
-        const Real tol = 0.002;
+        const Real tol = 0.0025;
         if (std::fabs(calculatedHE - expected)/expected > tol) {
             BOOST_ERROR("Failed to reproduce expected Heston npv"
                         << "\n    calculated: " << calculatedHE
                         << "\n    expected:   " << expected
-                        << "\n    tolerance:  " << tol); 
+                        << "\n    tolerance:  " << tol);
         }
     }
 }
@@ -411,7 +453,7 @@ void FdHestonTest::testFdmHestonBlackScholes() {
         option.setPricingEngine(boost::shared_ptr<PricingEngine>(
              new FdHestonVanillaEngine(boost::shared_ptr<HestonModel>(
                                            new HestonModel(hestonProcess)), 
-                                       100, 400)));
+                                       100, 400, 3)));
         
         Real calculated = option.NPV();
         if (std::fabs(calculated - expected) > tol) {
@@ -425,17 +467,17 @@ void FdHestonTest::testFdmHestonBlackScholes() {
         // Explicit scheme
         option.setPricingEngine(boost::shared_ptr<PricingEngine>(
              new FdHestonVanillaEngine(boost::shared_ptr<HestonModel>(
-                                           new HestonModel(hestonProcess)), 
-                                       10000, 400, 5, 0, 
+                                           new HestonModel(hestonProcess)),
+                                       500, 400, 3, 0,
                                        FdmSchemeDesc::ExplicitEuler())));
-        
+
         calculated = option.NPV();
         if (std::fabs(calculated - expected) > tol) {
             BOOST_ERROR("Failed to reproduce expected npv"
                         << "\n    strike:     " << strikes[i]
                         << "\n    calculated: " << calculated
                         << "\n    expected:   " << expected
-                        << "\n    tolerance:  " << tol); 
+                        << "\n    tolerance:  " << tol);
         }
     }
 }
@@ -574,7 +616,7 @@ void FdHestonTest::testFdmHestonConvergence() {
                          new FdHestonVanillaEngine(
                              boost::shared_ptr<HestonModel>(
                                  new HestonModel(hestonProcess)), 
-                             tn[j], 400, 100, 0, 
+                             tn[j], 101, 51, 0,
                              schemes[l]));
                     option.setPricingEngine(engine);
                     
@@ -665,27 +707,118 @@ void FdHestonTest::testFdmHestonIntradayPricing() {
 #endif
 }
 
+void FdHestonTest::testMethodOfLines() {
+    BOOST_TEST_MESSAGE("Testing method of lines to solve Heston PDEs...");
+
+    SavedSettings backup;
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(21, February, 2018);
+
+    Settings::instance().evaluationDate() = today;
+
+    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(100.0));
+    const Handle<YieldTermStructure> qTS(flatRate(today, 0.0, dc));
+    const Handle<YieldTermStructure> rTS(flatRate(today, 0.0, dc));
+
+    const Real v0    = 0.09;
+    const Real kappa = 1.0;
+    const Real theta = v0;
+    const Real sigma = 0.4;
+    const Real rho   = -0.75;
+
+    const Date maturity = today + Period(3, Months);
+
+    const boost::shared_ptr<HestonModel> model(
+        boost::make_shared<HestonModel>(
+            boost::make_shared<HestonProcess>(
+                rTS, qTS, spot, v0, kappa, theta, sigma, rho)));
+
+    const Size xGrid = 21;
+    const Size vGrid = 7;
+
+    const boost::shared_ptr<PricingEngine> fdmDefault(
+        boost::make_shared<FdHestonVanillaEngine>(model, 10, xGrid, vGrid, 0));
+
+    const boost::shared_ptr<PricingEngine> fdmMol(
+        boost::make_shared<FdHestonVanillaEngine>(
+            model, 10, xGrid, vGrid, 0, FdmSchemeDesc::MethodOfLines()));
+
+    const boost::shared_ptr<PlainVanillaPayoff> payoff =
+        boost::make_shared<PlainVanillaPayoff>(Option::Put, spot->value());
+
+    VanillaOption option(
+        payoff, boost::make_shared<AmericanExercise>(maturity));
+
+    option.setPricingEngine(fdmMol);
+    const Real calculated = option.NPV();
+
+    option.setPricingEngine(fdmDefault);
+    const Real expected = option.NPV();
+
+    const Real tol = 0.005;
+    const Real diff = std::fabs(expected - calculated);
+
+    if (diff > tol) {
+        BOOST_FAIL("Failed to reproduce european option values with MOL"
+                   << "\n    calculated: " << calculated
+                   << "\n    expected:   " << expected
+                   << "\n    difference: " << diff
+                   << "\n    tolerance:  " << tol);
+    }
+
+    BarrierOption barrierOption(
+        Barrier::DownOut, 85.0, 10.0,
+        payoff, boost::make_shared<EuropeanExercise>(maturity));
+
+    barrierOption.setPricingEngine(
+        boost::make_shared<FdHestonBarrierEngine>(model, 100, 31, 11));
+
+    const Real expectedBarrier = barrierOption.NPV();
+
+    barrierOption.setPricingEngine(
+        boost::make_shared<FdHestonBarrierEngine>(model, 100, 31, 11, 0,
+            FdmSchemeDesc::MethodOfLines()));
+
+    const Real calculatedBarrier = barrierOption.NPV();
+
+    const Real barrierTol = 0.01;
+    const Real barrierDiff = std::fabs(expectedBarrier - calculatedBarrier);
+
+    if (barrierDiff > barrierTol) {
+        BOOST_FAIL("Failed to reproduce barrier option values with MOL"
+                   << "\n    calculated: " << calculatedBarrier
+                   << "\n    expected:   " << expectedBarrier
+                   << "\n    difference: " << barrierDiff
+                   << "\n    tolerance:  " << barrierTol);
+    }
+}
+
+
 test_suite* FdHestonTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Finite Difference Heston tests");
 
+    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonVarianceMesher));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBarrier));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonAmerican));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonIkonenToivanen));
     suite->add(QUANTLIB_TEST_CASE(
-                    &FdHestonTest::testFdmHestonEuropeanWithDividends));
+        &FdHestonTest::testFdmHestonEuropeanWithDividends));
     suite->add(QUANTLIB_TEST_CASE(
         &FdHestonTest::testFdmHestonIntradayPricing));
+    suite->add(QUANTLIB_TEST_CASE(
+        &FdHestonTest::testMethodOfLines));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(
             &FdHestonTest::testFdmHestonBlackScholes));
+        suite->add(QUANTLIB_TEST_CASE(
+            &FdHestonTest::testFdmHestonConvergence));
     }
 
     if (speed == Slow) {
         suite->add(QUANTLIB_TEST_CASE(
             &FdHestonTest::testFdmHestonBarrierVsBlackScholes));
-        suite->add(QUANTLIB_TEST_CASE(
-            &FdHestonTest::testFdmHestonConvergence));
     }
 
     return suite;

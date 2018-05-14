@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (static runtime)|Win32">
@@ -630,6 +630,7 @@
   <ItemGroup>
     <ClCompile Include="americanoption.cpp" />
     <ClCompile Include="amortizingbond.cpp" />
+    <ClCompile Include="andreasenhugevolatilityinterpl.cpp" />
     <ClCompile Include="array.cpp" />
     <ClCompile Include="asianoptions.cpp" />
     <ClCompile Include="assetswap.cpp" />
@@ -654,6 +655,7 @@
     <ClCompile Include="chooseroption.cpp" />
     <ClCompile Include="cliquetoption.cpp" />
     <ClCompile Include="cms.cpp" />
+    <ClCompile Include="cmsspread.cpp" />
     <ClCompile Include="commodityunitofmeasure.cpp" />
     <ClCompile Include="compoundoption.cpp" />
     <ClCompile Include="convertiblebonds.cpp" />
@@ -680,6 +682,7 @@
     <ClCompile Include="fdheston.cpp" />
     <ClCompile Include="fdmlinearop.cpp" />
     <ClCompile Include="forwardoption.cpp" />
+    <ClCompile Include="forwardrateagreement.cpp" />
     <ClCompile Include="garch.cpp" />
     <ClCompile Include="gaussianquadratures.cpp" />
     <ClCompile Include="gjrgarchmodel.cpp" />
@@ -773,6 +776,7 @@
   <ItemGroup>
     <ClInclude Include="americanoption.hpp" />
     <ClInclude Include="amortizingbond.hpp" />
+    <ClInclude Include="andreasenhugevolatilityinterpl.hpp" />
     <ClInclude Include="array.hpp" />
     <ClInclude Include="asianoptions.hpp" />
     <ClInclude Include="assetswap.hpp" />
@@ -797,6 +801,7 @@
     <ClInclude Include="chooseroption.hpp" />
     <ClInclude Include="cliquetoption.hpp" />
     <ClInclude Include="cms.hpp" />
+    <ClInclude Include="cmsspread.hpp" />
     <ClInclude Include="commodityunitofmeasure.hpp" />
     <ClInclude Include="compoundoption.hpp" />
     <ClInclude Include="convertiblebonds.hpp" />
@@ -823,6 +828,7 @@
     <ClInclude Include="fdheston.hpp" />
     <ClInclude Include="fdmlinearop.hpp" />
     <ClInclude Include="forwardoption.hpp" />
+    <ClInclude Include="forwardrateagreement.hpp" />
     <ClInclude Include="garch.hpp" />
     <ClInclude Include="gaussianquadratures.hpp" />
     <ClInclude Include="gjrgarchmodel.hpp" />

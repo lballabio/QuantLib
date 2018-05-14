@@ -864,6 +864,10 @@
 				>
 			</File>
 			<File
+				RelativePath="andreasenhugevolatilityinterpl.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\array.cpp"
 				>
 			</File>
@@ -957,6 +961,10 @@
 			</File>
 			<File
 				RelativePath=".\cms.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\cmsspread.cpp"
 				>
 			</File>
 			<File
@@ -1061,6 +1069,10 @@
 			</File>
 			<File
 				RelativePath=".\forwardoption.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\forwardrateagreement.cpp"
 				>
 			</File>
 			<File
@@ -1429,6 +1441,10 @@
 				>
 			</File>
 			<File
+				RelativePath="andreasenhugevolatilityinterpl.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\array.hpp"
 				>
 			</File>
@@ -1522,6 +1538,10 @@
 			</File>
 			<File
 				RelativePath=".\cms.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\cmsspread.hpp"
 				>
 			</File>
 			<File
@@ -1626,6 +1646,10 @@
 			</File>
 			<File
 				RelativePath=".\forwardoption.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\forwardrateagreement.hpp"
 				>
 			</File>
 			<File

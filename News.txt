@@ -1,92 +1,12 @@
 
-Changes for QuantLib 1.11:
-==========================
+Changes for QuantLib 1.12.1:
+============================
 
-QuantLib 1.11 includes 47 pull requests and fixed issues from several
-contributors.
+QuantLib 1.12.1 is a bug-fix release for version 1.12.
 
-The most notable changes are included below.
-A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib/milestone/6?closed=1>.
+It fixes an error that would occur during initialization of the
+test suite when using the newly released Boost 1.67.0 (see
+<https://github.com/lballabio/QuantLib/pull/446> for details).
+Thanks to Klaus Spanderen for the prompt fix.
 
-PORTABILITY
-
-- This is the last version of QuantLib to support the now obsolete
-  Dev-C++ IDE with a maintained project file.  The project will be
-  removed in next release.
-
-INSTRUMENTS AND PRICING ENGINES
-
-- Added ISDA pricing engine for credit default swaps (thanks to
-  Guillaume Horel, Jose Aparicio and Peter Caspers).
-
-- Added Andersen-Piterbarg engine for the Heston model (thanks to
-  Klaus Spanderen).
-
-- Improved experimental vanna-volga engine for double-barrier knock-in
-  options (thanks to Giorgio Pazmandi).
-
-- Added theta calculation to experimental Kirk spread-option engine
-  (thanks to Krzysztof Wos).
-
-CASH FLOWS
-
-- Added optional payment lag to fixed, floating and OIS legs (thanks
-  to Fabrice Lecuyer and Joseph Jeisman).
-
-- Fixed yield calculation with 30/360 US day count convention and
-  settlement on the 31st of the month (thanks to Frank Xue).
-
-MODELS
-
-- Added adaptive successive over-relaxation method for implied
-  volatility calculation (thanks to Klaus Spanderen).
-
-INDEXES
-
-- Fixed day-count convention and spot lag for CAD LIBOR (thanks to
-  Oleg Kulkov).
-
-TERM STRUCTURES
-
-- Optionally optimize setting up OIS helpers (thanks to Peter
-  Caspers).
-
-DATE/TIME
-
-- Added Actual/365 Canadian day count convention (thanks to Andrea
-  Maggiulli).
-
-MATH
-
-- Added GMRES iterative solver for large linear systems (thanks to
-  Klaus Spanderen).
-
-- Updated Hong Kong calendar up to 2020 (thanks to Nicholas Bertocchi
-  and Alix Lassauzet).
-
-BUILD
-
-- Added configure switch to enable unity build.
-
-TEST SUITE
-
-- Added --fast and --faster flags to the test-suite executable.  When
-  passed, slower tests are discarded so that the test suite runs in
-  just a few minutes.
-
-DEPRECATED FEATURES
-
-- Remove the HestonExpansionEngine::numberOfEvaluations method
-  (deprecated in version 1.9).
-
-- Remove the MixedLinearCubicInterpolation and MixedLinearCubic
-  constructors not specifying the behavior of the mixed interpolation
-  (deprecated in version 1.8).
-
-- Remove deprecated overloads of the Swaption::impliedVolatility and
-  CapFloor::impliedVolatility methods (deprecated in version 1.9).
-
-- Remove NoArbSabrModel::checkAbsorptionMatrix method (deprecated in
-  version 1.8.1).
-
+The library code is unchanged from version 1.12.

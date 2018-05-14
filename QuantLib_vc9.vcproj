@@ -1193,6 +1193,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\methods\finitedifferences\schemes\methodoflinesscheme.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\schemes\methodoflinesscheme.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\methods\finitedifferences\schemes\modifiedcraigsneydscheme.cpp"
 						>
 					</File>
@@ -1902,11 +1910,23 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\indexes\ibor\mosprime.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\indexes\ibor\nzdlibor.hpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\indexes\ibor\nzocr.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\indexes\ibor\pribor.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\indexes\ibor\robor.hpp"
 					>
 				</File>
 				<File
@@ -1939,6 +1959,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\indexes\ibor\usdlibor.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\indexes\ibor\wibor.hpp"
 					>
 				</File>
 				<File
@@ -2632,6 +2656,10 @@
 			</File>
 			<File
 				RelativePath="ql\math\incompletegamma.hpp"
+				>
+			</File>
+			<File
+				RelativePath="ql\math\initializers.hpp"
 				>
 			</File>
 			<File
@@ -5066,6 +5094,30 @@
 					>
 					<File
 						RelativePath=".\ql\termstructures\volatility\equityfx\all.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\andreasenhugelocalvoladapter.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\andreasenhugelocalvoladapter.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\andreasenhugevolatilityadapter.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\andreasenhugevolatilityadapter.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\andreasenhugevolatilityinterpl.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatility\equityfx\andreasenhugevolatilityinterpl.hpp"
 						>
 					</File>
 					<File

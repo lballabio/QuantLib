@@ -1341,11 +1341,11 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
     fdmHestonModel->setParams(analyticHestonModel->params());
 
     for (Size i=0; i < LENGTH(maturities); ++i) {
-        const Size tGrid = static_cast<Size>(std::max(10.0, maturities[i]*10.0));
+        const Size tGrid = static_cast<Size>(std::max(5.0, maturities[i]*5.0));
         boost::shared_ptr<FdHestonHullWhiteVanillaEngine> engine(
             new FdHestonHullWhiteVanillaEngine(fdmHestonModel, hwProcess, 
                                                equityShortRateCorr, 
-                                               tGrid, 61, 13, 9, 0, true));
+                                               tGrid, 45, 11, 5, 0, true));
         
         engine->enableMultipleStrikesCaching(
                      std::vector<Real>(strikes, strikes + LENGTH(strikes)));

@@ -1,5 +1,5 @@
 
-AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
+AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
@@ -20,14 +20,18 @@ this_include_HEADERS = \
     jibar.hpp \
     jpylibor.hpp \
     libor.hpp \
+    mosprime.hpp \
     nzdlibor.hpp \
     nzocr.hpp \
+    pribor.hpp \
+    robor.hpp \
     seklibor.hpp \
     shibor.hpp \
     sonia.hpp \
     tibor.hpp \
     trlibor.hpp \
     usdlibor.hpp \
+    wibor.hpp \
     zibor.hpp
 
 cpp_files = \

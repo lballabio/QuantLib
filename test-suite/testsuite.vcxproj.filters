@@ -17,6 +17,9 @@
     <ClCompile Include="amortizingbond.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="andreasenhugevolatilityinterpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="array.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -81,6 +84,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cms.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cmsspread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="commodityunitofmeasure.cpp">
@@ -159,6 +165,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="forwardoption.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="forwardrateagreement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="garch.cpp">
@@ -440,6 +449,9 @@
     <ClInclude Include="amortizingbond.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="andreasenhugevolatilityinterpl.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="array.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -504,6 +516,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cms.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cmsspread.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="commodityunitofmeasure.hpp">
@@ -582,6 +597,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="forwardoption.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="forwardrateagreement.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="garch.hpp">

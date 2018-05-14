@@ -55,7 +55,6 @@ namespace QuantLib {
         std::vector<Real> fixedAccruals_, floatingAccruals_,fixedStrikes_, fixedMultipliers_, floatingSpreads_;
         std::vector<Time> paymentTimes_;
     
-        bool payer_;
         Real multiplier_;
         Size lastIndex_;
         // things that vary in a path

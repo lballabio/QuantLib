@@ -58,7 +58,7 @@ namespace QuantLib {
             return BackwardFlatInterpolation(xBegin, xEnd, yBegin);
         }
         static const bool global = false;
-        static const Size requiredPoints = 2;
+        static const Size requiredPoints = 1;
     };
 
     namespace detail {
@@ -81,8 +81,10 @@ namespace QuantLib {
                 }
             }
             Real value(Real x) const {
-                if (x <= this->xBegin_[0])
+                if (x <= this->xBegin_[0]
+                    || std::distance(this->xBegin_, this->xEnd_) == 1)
                     return this->yBegin_[0];
+
                 Size i = this->locate(x);
                 if (x == this->xBegin_[i])
                     return this->yBegin_[i];
@@ -90,6 +92,9 @@ namespace QuantLib {
                     return this->yBegin_[i+1];
             }
             Real primitive(Real x) const {
+                if (std::distance(this->xBegin_, this->xEnd_) == 1)
+                    return (x - this->xBegin_[0]) * this->yBegin_[0];
+
                 Size i = this->locate(x);
                 Real dx = x-this->xBegin_[i];
                 return primitive_[i] + dx*this->yBegin_[i+1];
