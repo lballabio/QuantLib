@@ -560,7 +560,7 @@ void MatricesTest::testCholeskyDecomposition() {
 
 void MatricesTest::testMoorePenroseInverse() {
 
-    BOOST_TEST_MESSAGE("Testing Moore-Penrose Inverse...");
+    BOOST_TEST_MESSAGE("Testing Moore-Penrose inverse...");
 
     // this is taken from
     // http://de.mathworks.com/help/matlab/ref/pinv.html
@@ -693,7 +693,11 @@ void MatricesTest::testInitializers() {
 
     Array a2(1);
     BOOST_CHECK_NO_THROW({ a2 << 1.0; });
-    BOOST_CHECK_THROW(({ a2 << 1.0, 2.0; }), QuantLib::Error);
+    // the macro doesn't work on VC++ when the code contains commas
+    try {
+        a2 << 1.0, 2.0;
+        QL_FAIL("failed to throw the expected exception");
+    } catch(QuantLib::Error&) {}
 
     Array a3(1);
     a3 << 1.0;
@@ -713,11 +717,14 @@ void MatricesTest::testInitializers() {
     BOOST_CHECK_THROW({ m1 << 1.0; }, QuantLib::Error);
 
     Matrix m2(2, 2);
-    BOOST_CHECK_NO_THROW(({ m2 << 1.0, 2.0,
-                                  3.0, 4.0; }));
-    BOOST_CHECK_THROW(({ m2 << 1.0, 2.0, 3.0,
-                               4.0, 5.0, 6.0,
-                               7.0, 8.0, 9.0; }), QuantLib::Error);
+    m2 << 1.0, 2.0,
+          3.0, 4.0;
+    // see above
+    try {
+        m2 << 1.0, 2.0, 3.0,
+              4.0, 5.0, 6.0,
+              7.0, 8.0, 9.0;
+    } catch (QuantLib::Error&) {}
 
     Matrix m3(2,2);
     m3 << 1.0, 2.0,

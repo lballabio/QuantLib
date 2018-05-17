@@ -101,7 +101,7 @@
     Copyright (C) 2011, 2013, 2014 Fabien Le Floc'h
 
     Copyright (C) 2012, 2013 Grzegorz Andruszkiewicz
-    Copyright (C) 2012, 2013, 2014, 2015, 2016, 2017 Peter Caspers
+    Copyright (C) 2012, 2013, 2014, 2015, 2016, 2017, 2018 Peter Caspers
     Copyright (C) 2012 Mateusz Kapturski
     Copyright (C) 2012 Simon Shakeshaft
     Copyright (C) 2012 Édouard Tallent
@@ -137,6 +137,8 @@
     Copyright (C) 2017 Oleg Kulkov
     Copyright (C) 2017 Joseph Jeisman
 
+    Copyright (C) 2018 Tom Anderson
+    Copyright (C) 2018 Matthias Lungwitz
     Copyright (C) 2018 Roy Zywina
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo

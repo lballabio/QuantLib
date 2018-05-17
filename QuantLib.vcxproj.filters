@@ -4201,6 +4201,18 @@
     <ClInclude Include="ql\methods\finitedifferences\schemes\methodoflinesscheme.hpp">
       <Filter>methods\finitedifferences\schemes</Filter>
     </ClInclude>
+    <ClInclude Include="ql\indexes\ibor\pribor.hpp">
+      <Filter>indexes\ibor</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\indexes\ibor\mosprime.hpp">
+      <Filter>indexes\ibor</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\indexes\ibor\robor.hpp">
+      <Filter>indexes\ibor</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\indexes\ibor\wibor.hpp">
+      <Filter>indexes\ibor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">

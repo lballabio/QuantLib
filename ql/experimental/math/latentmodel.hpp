@@ -765,18 +765,19 @@ namespace QuantLib {
     class LatentModel<TC>
         ::FactorSampler <RandomSequenceGenerator<BoxMullerGaussianRng<URNG> > ,
             dummy> {
+        typedef URNG urng_type;
     public:
         //Size below must be == to the numb of factors idiosy + systemi
         typedef Sample<std::vector<Real> > sample_type;
         explicit FactorSampler(const GaussianCopulaPolicy& copula,
                                BigNatural seed = 0) 
         : boxMullRng_(copula.numFactors(), 
-            BoxMullerGaussianRng<URNG>(URNG(seed))){ }
+            BoxMullerGaussianRng<urng_type>(urng_type(seed))){ }
         const sample_type& nextSequence() const {
                 return boxMullRng_.nextSequence();
         }
     private:
-        RandomSequenceGenerator<BoxMullerGaussianRng<URNG> > boxMullRng_;
+        RandomSequenceGenerator<BoxMullerGaussianRng<urng_type> > boxMullRng_;
     };
 
     /*! \brief Specialization for direct T samples generation.\par
@@ -790,6 +791,7 @@ namespace QuantLib {
     class LatentModel<TC>
         ::FactorSampler<RandomSequenceGenerator<PolarStudentTRng<URNG> > , 
             dummy> {
+        typedef URNG urng_type;
     public:
         typedef Sample<std::vector<Real> > sample_type;
         explicit FactorSampler(const TCopulaPolicy& copula, BigNatural seed = 0)
@@ -799,7 +801,7 @@ namespace QuantLib {
             const std::vector<Real>& varF = copula.varianceFactors();
             for(Size i=0; i<varF.size(); i++)// ...use back inserter lambda
                 trng_.push_back(
-                    PolarStudentTRng<URNG>(2./(1.-varF[i]*varF[i]), urng_));
+                    PolarStudentTRng<urng_type>(2./(1.-varF[i]*varF[i]), urng_));
         }
         const sample_type& nextSequence() const {
             Size i=0;
@@ -811,8 +813,8 @@ namespace QuantLib {
         }
     private:
         mutable sample_type sequence_;
-        URNG urng_;
-        mutable std::vector<PolarStudentTRng<URNG> > trng_;
+        urng_type urng_;
+        mutable std::vector<PolarStudentTRng<urng_type> > trng_;
     };
 
 #endif

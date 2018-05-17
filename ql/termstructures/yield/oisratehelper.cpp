@@ -21,7 +21,6 @@
 #include <ql/termstructures/yield/oisratehelper.hpp>
 #include <ql/instruments/makeois.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
-#include <ql/cashflows/floatingratecoupon.hpp>
 
 #include <ql/utilities/null_deleter.hpp>
 
@@ -100,10 +99,6 @@ namespace QuantLib {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         // we didn't register as observers - force calculation
         swap_->recalculate();
-        for (Leg::const_iterator c = swap_->overnightLeg().begin();
-             c != swap_->overnightLeg().end(); ++c) {
-            boost::static_pointer_cast<FloatingRateCoupon>(*c)->update();
-        }
         return swap_->fairRate();
     }
 
@@ -167,7 +162,7 @@ namespace QuantLib {
     Real DatedOISRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         // we didn't register as observers - force calculation
-        swap_->recalculate();
+        swap_->deepUpdate();
         return swap_->fairRate();
     }
 
