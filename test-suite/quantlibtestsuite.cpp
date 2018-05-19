@@ -80,6 +80,7 @@
 #include "chooseroption.hpp"
 #include "cliquetoption.hpp"
 #include "cms.hpp"
+#include "cmsspread.hpp"
 #include "commodityunitofmeasure.hpp"
 #include "compoundoption.hpp"
 #include "convertiblebonds.hpp"
@@ -105,6 +106,7 @@
 #include "fdheston.hpp"
 #include "fdmlinearop.hpp"
 #include "forwardoption.hpp"
+#include "forwardrateagreement.hpp"
 #include "functions.hpp"
 #include "gaussianquadratures.hpp"
 #include "garch.hpp"
@@ -269,7 +271,7 @@ QuantLib::Date evaluation_date(int argc, char** argv) {
     return knownGoodDefault;
 }
 
-    
+
 SpeedLevel speed_level(int argc, char** argv) {
     /*! Again, dead simple parser:
         - passing --slow causes all tests to be run;
@@ -390,6 +392,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(FdHestonTest::suite(speed));
     test->add(FdmLinearOpTest::suite());
     test->add(ForwardOptionTest::suite());
+    test->add(ForwardRateAgreementTest::suite());
     test->add(FunctionsTest::suite());
     test->add(GARCHTest::suite());
     test->add(GaussianQuadraturesTest::suite());
@@ -465,6 +468,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CdoTest::suite(speed));
     test->add(CdsOptionTest::suite());
     test->add(ChooserOptionTest::suite());
+    test->add(CmsSpreadTest::suite());
     test->add(CommodityUnitOfMeasureTest::suite());
     test->add(CompoundOptionTest::suite());
     test->add(ConvertibleBondTest::suite());

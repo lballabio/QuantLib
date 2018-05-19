@@ -506,10 +506,15 @@
     <ClInclude Include="ql\indexes\ibor\aonia.hpp" />
     <ClInclude Include="ql\indexes\ibor\bbsw.hpp" />
     <ClInclude Include="ql\indexes\ibor\bkbm.hpp" />
+    <ClInclude Include="ql\indexes\ibor\mosprime.hpp" />
     <ClInclude Include="ql\indexes\ibor\nzocr.hpp" />
+    <ClInclude Include="ql\indexes\ibor\pribor.hpp" />
+    <ClInclude Include="ql\indexes\ibor\robor.hpp" />
+    <ClInclude Include="ql\indexes\ibor\wibor.hpp" />
     <ClInclude Include="ql\math\polynomialmathfunction.hpp" />
     <ClInclude Include="ql\math\pascaltriangle.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmornsteinuhlenbeckop.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\schemes\methodoflinesscheme.hpp" />
     <ClInclude Include="ql\rebatedexercise.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\dynprogvppintrinsicvalueengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdextoujumpvanillaengine.hpp" />
@@ -825,6 +830,7 @@
     <ClInclude Include="ql\math\functional.hpp" />
     <ClInclude Include="ql\math\generallinearleastsquares.hpp" />
     <ClInclude Include="ql\math\incompletegamma.hpp" />
+    <ClInclude Include="ql\math\initializers.hpp" />
     <ClInclude Include="ql\math\interpolation.hpp" />
     <ClInclude Include="ql\math\kernelfunctions.hpp" />
     <ClInclude Include="ql\math\lexicographicalview.hpp" />
@@ -1813,6 +1819,7 @@
     <ClCompile Include="ql\math\polynomialmathfunction.cpp" />
     <ClCompile Include="ql\math\pascaltriangle.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\fdmornsteinuhlenbeckop.cpp" />
+    <ClCompile Include="ql\methods\finitedifferences\schemes\methodoflinesscheme.cpp" />
     <ClCompile Include="ql\patterns\observable.cpp" />
     <ClCompile Include="ql\rebatedexercise.cpp" />
     <ClInclude Include="ql\experimental\finitedifferences\all.hpp" />

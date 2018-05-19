@@ -38,7 +38,6 @@ namespace QuantLib {
         fixedMultipliers_(fixedMultipliers),
         floatingSpreads_(floatingSpreads),
         paymentTimes_(paymentTimes),
-        payer_(payer),
         multiplier_(payer ? -1.0 : 1.0), 
         lastIndex_(rateTimes.size()-1)
     {

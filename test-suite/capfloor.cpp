@@ -612,7 +612,7 @@ void CapFloorTest::testCachedValue() {
 
 
 test_suite* CapFloorTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Cap/floor tests");
+    test_suite* suite = BOOST_TEST_SUITE("Cap and floor tests");
     suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testStrikeDependency));
     suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testConsistency));
     // FLOATING_POINT_EXCEPTION

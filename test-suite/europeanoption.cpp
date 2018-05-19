@@ -40,6 +40,7 @@
 #include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <boost/progress.hpp>
+#include <boost/make_shared.hpp>
 #include <map>
 
 using namespace QuantLib;
@@ -1561,6 +1562,132 @@ void EuropeanOptionTest::testAnalyticEngineDiscountCurve() {
     BOOST_CHECK_NE(npvSingleCurve, npvMultiCurve);
 }
 
+
+void EuropeanOptionTest::testPDESchemes() {
+    BOOST_TEST_MESSAGE("Testing different PDE schemes "
+            "to solve Black-Scholes PDEs...");
+
+    SavedSettings backup;
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(18, February, 2018);
+
+    Settings::instance().evaluationDate() = today;
+
+    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(100.0));
+    const Handle<YieldTermStructure> qTS(flatRate(today, 0.06, dc));
+    const Handle<YieldTermStructure> rTS(flatRate(today, 0.10, dc));
+    const Handle<BlackVolTermStructure> volTS(flatVol(today, 0.35, dc));
+
+    const Date maturity = today + Period(6, Months);
+
+    const boost::shared_ptr<BlackScholesMertonProcess> process =
+        boost::make_shared<BlackScholesMertonProcess>(
+            spot, qTS, rTS, volTS);
+
+    const boost::shared_ptr<PricingEngine> analytic =
+        boost::make_shared<AnalyticEuropeanEngine>(process);
+
+    // Crank-Nicolson and Douglas scheme are the same in one dimension
+    const boost::shared_ptr<PricingEngine> crankNicolson =
+        boost::make_shared<FdBlackScholesVanillaEngine>(
+            process, 15, 100, 0, FdmSchemeDesc::Douglas());
+
+    const boost::shared_ptr<PricingEngine> implicitEuler =
+        boost::make_shared<FdBlackScholesVanillaEngine>(
+            process, 500, 100, 0, FdmSchemeDesc::ImplicitEuler());
+
+    const boost::shared_ptr<PricingEngine> explicitEuler =
+        boost::make_shared<FdBlackScholesVanillaEngine>(
+            process, 1000, 100, 0, FdmSchemeDesc::ExplicitEuler());
+
+    const boost::shared_ptr<PricingEngine> methodOfLines =
+        boost::make_shared<FdBlackScholesVanillaEngine>(
+            process, 1, 100, 0, FdmSchemeDesc::MethodOfLines());
+
+    const boost::shared_ptr<PricingEngine> hundsdorfer =
+        boost::make_shared<FdBlackScholesVanillaEngine>(
+            process, 10, 100, 0, FdmSchemeDesc::Hundsdorfer());
+
+    const boost::shared_ptr<PricingEngine> craigSneyd =
+        boost::make_shared<FdBlackScholesVanillaEngine>(
+            process, 10, 100, 0, FdmSchemeDesc::CraigSneyd());
+
+    const boost::shared_ptr<PricingEngine> modCraigSneyd =
+        boost::make_shared<FdBlackScholesVanillaEngine>(
+            process, 15, 100, 0, FdmSchemeDesc::ModifiedCraigSneyd());
+
+    const std::pair<boost::shared_ptr<PricingEngine>, std::string> engines[]= {
+        std::make_pair(crankNicolson, "Crank-Nicolson"),
+        std::make_pair(implicitEuler, "Implicit-Euler"),
+        std::make_pair(explicitEuler, "Explicit-Euler"),
+        std::make_pair(methodOfLines, "Method-of-Lines"),
+        std::make_pair(hundsdorfer, "Hundsdorfer"),
+        std::make_pair(craigSneyd, "Craig-Sneyd"),
+        std::make_pair(modCraigSneyd, "Modified Craig-Sneyd")
+    };
+
+    const Size nEngines = LENGTH(engines);
+
+    const boost::shared_ptr<PlainVanillaPayoff> payoff(
+        boost::make_shared<PlainVanillaPayoff>(Option::Put, spot->value()));
+
+    const boost::shared_ptr<Exercise> exercise(
+        boost::make_shared<EuropeanExercise>(maturity));
+
+    VanillaOption option(payoff, exercise);
+
+    option.setPricingEngine(analytic);
+    const Real expected = option.NPV();
+
+    const Real tol = 0.006;
+    for (Size i=0; i < nEngines; ++i) {
+        option.setPricingEngine(engines[i].first);
+        const Real calculated = option.NPV();
+
+        const Real diff = std::fabs(expected - calculated);
+
+        if (diff > tol) {
+            BOOST_FAIL("Failed to reproduce European option values with the "
+                    << engines[i].second << " PDE scheme"
+                       << "\n    calculated: " << calculated
+                       << "\n    expected:   " << expected
+                       << "\n    difference: " << diff
+                       << "\n    tolerance:  " << tol);
+        }
+    }
+
+    DividendVanillaOption dividendOption(
+        payoff, exercise,
+        std::vector<Date>(1, today + Period(3, Months)),
+        std::vector<Real>(1, 5.0));
+
+    Array dividendPrices(nEngines);
+    for (Size i=0; i < nEngines; ++i) {
+        dividendOption.setPricingEngine(engines[i].first);
+        dividendPrices[i] = dividendOption.NPV();
+    }
+
+    const Real expectedDiv = std::accumulate(
+        dividendPrices.begin(), dividendPrices.end(), 0.0)/nEngines;
+
+    for (Size i=0; i < nEngines; ++i) {
+        const Real calculated = dividendPrices[i];
+        const Real diff = std::fabs(expectedDiv - calculated);
+
+        if (diff > tol) {
+            BOOST_FAIL("Failed to reproduce European option values "
+                    "with dividend and the "
+                    << engines[i].second << " PDE scheme"
+                       << "\n    calculated: " << calculated
+                       << "\n    expected:   " << expectedDiv
+                       << "\n    difference: " << diff
+                       << "\n    tolerance:  " << tol);
+        }
+    }
+}
+
+
 test_suite* EuropeanOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("European option tests");
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testValues));
@@ -1591,12 +1718,13 @@ test_suite* EuropeanOptionTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(
                        &EuropeanOptionTest::testAnalyticEngineDiscountCurve));
+    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testPDESchemes));
 
     return suite;
 }
 
 test_suite* EuropeanOptionTest::experimental() {
-    test_suite* suite = BOOST_TEST_SUITE("European option tests");
+    test_suite* suite = BOOST_TEST_SUITE("European option experimental tests");
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testFFTEngines));
     return suite;
 }

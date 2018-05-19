@@ -402,6 +402,7 @@ namespace QuantLib {
                                     const T& interpolator)
     : OneFactorAffineSurvivalStructure(model, dates.at(0), calendar, 
         dayCounter, jumps, jumpDates),
+      InterpolatedCurve<T>(std::vector<Time>(), hazardRates, interpolator),
       dates_(dates)
     {
         initialize();
@@ -456,7 +457,6 @@ namespace QuantLib {
             QL_REQUIRE(!close(this->times_[i], this->times_[i-1]),
                        "two dates correspond to the same time "
                        "under this curve's day count convention");
-            QL_REQUIRE(this->data_[i] >= 0.0, "negative hazard rate");
         }
 
         this->interpolation_ =

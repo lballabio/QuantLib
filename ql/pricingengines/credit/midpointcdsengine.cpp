@@ -23,7 +23,6 @@
 #include <ql/instruments/claim.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
-#include <iostream>
 
 namespace QuantLib {
 

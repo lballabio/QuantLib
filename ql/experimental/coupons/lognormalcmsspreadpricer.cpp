@@ -1,6 +1,6 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 /*
-  Copyright (C) 2014, 2015 Peter Caspers
+  Copyright (C) 2014, 2015, 2018 Peter Caspers
 
   This file is part of QuantLib, a free-software/open-source library
   for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,6 +24,8 @@
 #include <ql/experimental/coupons/cmsspreadcoupon.hpp>
 #include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolcube.hpp>
+#include <ql/pricingengines/blackformula.hpp>
+
 #include <boost/make_shared.hpp>
 
 using std::sqrt;
@@ -148,8 +150,11 @@ namespace QuantLib {
                     ? index_->swapIndex1()->discountingTermStructure()
                     : index_->swapIndex1()->forwardingTermStructure();
 
-        spreadLegValue_ = spread_ * coupon_->accrualPeriod() *
-                          couponDiscountCurve_->discount(paymentDate_);
+        discount_ = paymentDate_ > couponDiscountCurve_->referenceDate()
+                        ? couponDiscountCurve_->discount(paymentDate_)
+                        : 1.0;
+
+        spreadLegValue_ = spread_ * coupon_->accrualPeriod() * discount_;
 
         gearing1_ = index_->gearing1();
         gearing2_ = index_->gearing2();
@@ -207,7 +212,7 @@ namespace QuantLib {
                 shift1_ =
                     swvol->shift(fixingDate_, index_->swapIndex1()->tenor());
                 shift2_ =
-                    swvol->shift(fixingDate_, index_->swapIndex1()->tenor());
+                    swvol->shift(fixingDate_, index_->swapIndex2()->tenor());
             }
 
             if (swcub == NULL) {
@@ -219,7 +224,7 @@ namespace QuantLib {
                 vol1_ = swvol->volatility(
                     fixingDate_, index_->swapIndex1()->tenor(), swapRate1_);
                 vol2_ = swvol->volatility(
-                    fixingDate_, index_->swapIndex1()->tenor(), swapRate2_);
+                    fixingDate_, index_->swapIndex2()->tenor(), swapRate2_);
             } else {
                 vol1_ = swcub->smileSection(fixingDate_,
                                             index_->swapIndex1()->tenor())
@@ -250,9 +255,11 @@ namespace QuantLib {
     Real LognormalCmsSpreadPricer::optionletPrice(Option::Type optionType,
                                                   Real strike) const {
         // this method is only called for future fixings
+        optionType_ = optionType;
         phi_ = optionType == Option::Call ? 1.0 : -1.0;
         Real res = 0.0;
         if (volType_ == ShiftedLognormal) {
+            // (shifted) lognormal volatility
             if (strike >= 0.0) {
                 a_ = gearing1_;
                 b_ = gearing2_;
@@ -282,23 +289,21 @@ namespace QuantLib {
                     std::mem_fun(&LognormalCmsSpreadPricer::integrand), this));
         } else {
             // normal volatility
-            k_ = strike;
-            alpha_ = phi_ * gearing1_ * vol1_ *
-                     std::sqrt(fixingTime_ * (1.0 - rho_ * rho_));
-            psi_ = alpha_ >= 0.0 ? 1.0 : -1.0;
-            res +=
-                1.0 / M_SQRTPI *
-                integrator_->operator()(std::bind1st(
-                    std::mem_fun(&LognormalCmsSpreadPricer::integrand_normal),
-                    this));
+            Real forward = gearing1_ * adjustedRate1_ +
+                gearing2_ * adjustedRate2_;
+            Real stddev =
+                std::sqrt(fixingTime_ *
+                          (gearing1_ * gearing1_ * vol1_ * vol1_ +
+                           gearing2_ * gearing2_ * vol2_ * vol2_ +
+                           2.0 * gearing1_ * gearing2_ * rho_ * vol1_ * vol2_));
+            res =
+                bachelierBlackFormula(optionType_, strike, forward, stddev, 1.0);
         }
-        return res * couponDiscountCurve_->discount(paymentDate_) *
-               coupon_->accrualPeriod();
+        return res * discount_ * coupon_->accrualPeriod();
     }
 
     Rate LognormalCmsSpreadPricer::swapletRate() const {
-        return swapletPrice() / (coupon_->accrualPeriod() *
-                                 couponDiscountCurve_->discount(paymentDate_));
+        return swapletPrice() / (coupon_->accrualPeriod() * discount_);
     }
 
     Real LognormalCmsSpreadPricer::capletPrice(Rate effectiveCap) const {
@@ -307,9 +312,7 @@ namespace QuantLib {
             // the fixing is determined
             const Rate Rs = std::max(
                 coupon_->index()->fixing(fixingDate_) - effectiveCap, 0.);
-            Rate price = (gearing_ * Rs) *
-                         (coupon_->accrualPeriod() *
-                          couponDiscountCurve_->discount(paymentDate_));
+            Rate price = gearing_ * Rs * coupon_->accrualPeriod() * discount_;
             return price;
         } else {
             Real capletPrice = optionletPrice(Option::Call, effectiveCap);
@@ -319,8 +322,7 @@ namespace QuantLib {
 
     Rate LognormalCmsSpreadPricer::capletRate(Rate effectiveCap) const {
         return capletPrice(effectiveCap) /
-               (coupon_->accrualPeriod() *
-                couponDiscountCurve_->discount(paymentDate_));
+               (coupon_->accrualPeriod() * discount_);
     }
 
     Real LognormalCmsSpreadPricer::floorletPrice(Rate effectiveFloor) const {
@@ -329,9 +331,7 @@ namespace QuantLib {
             // the fixing is determined
             const Rate Rs = std::max(
                 effectiveFloor - coupon_->index()->fixing(fixingDate_), 0.);
-            Rate price = (gearing_ * Rs) *
-                         (coupon_->accrualPeriod() *
-                          couponDiscountCurve_->discount(paymentDate_));
+            Rate price = gearing_ * Rs * coupon_->accrualPeriod() * discount_;
             return price;
         } else {
             Real floorletPrice = optionletPrice(Option::Put, effectiveFloor);
@@ -341,13 +341,11 @@ namespace QuantLib {
 
     Rate LognormalCmsSpreadPricer::floorletRate(Rate effectiveFloor) const {
         return floorletPrice(effectiveFloor) /
-               (coupon_->accrualPeriod() *
-                couponDiscountCurve_->discount(paymentDate_));
+               (coupon_->accrualPeriod() * discount_);
     }
 
     Real LognormalCmsSpreadPricer::swapletPrice() const {
-        return gearing_ * coupon_->accrualPeriod() *
-                   couponDiscountCurve_->discount(paymentDate_) *
+        return gearing_ * coupon_->accrualPeriod() * discount_ *
                    (gearing1_ * adjustedRate1_ + gearing2_ * adjustedRate2_) +
                spreadLegValue_;
     }

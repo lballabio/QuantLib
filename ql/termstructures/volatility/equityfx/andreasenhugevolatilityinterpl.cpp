@@ -232,8 +232,7 @@ namespace QuantLib {
         Real _maxStrike,
         const boost::shared_ptr<OptimizationMethod>& optimizationMethod,
         const EndCriteria& endCriteria)
-    : calibrationSet_(calibrationSet),
-      spot_(spot),
+    : spot_(spot),
       rTS_(rTS),
       qTS_(qTS),
       interpolationType_(interplationType),
@@ -243,13 +242,13 @@ namespace QuantLib {
       maxStrike_(_maxStrike),
       optimizationMethod_(optimizationMethod),
       endCriteria_(endCriteria) {
-
         QL_REQUIRE(nGridPoints > 2 && calibrationSet.size() > 0,
                 "undefined grid or calibration set");
 
         std::set<Real> strikes;
         std::set<Date> expiries;
 
+        calibrationSet_.reserve(calibrationSet.size());
         for (Size i=0; i < calibrationSet.size(); ++i) {
 
             const boost::shared_ptr<Exercise> exercise =
@@ -269,6 +268,12 @@ namespace QuantLib {
 
             const Real strike = payoff->strike();
             strikes.insert(strike);
+
+            calibrationSet_.push_back(
+                std::make_pair(
+                    boost::make_shared<VanillaOption>(payoff, exercise),
+                    calibrationSet[i].second)
+            );
 
             registerWith(calibrationSet[i].second);
         }
@@ -623,7 +628,7 @@ namespace QuantLib {
         calculate();
 
         const boost::shared_ptr<Array> localVol(
-            boost::make_shared<Array>(gridPoints_));
+            boost::make_shared<Array>(gridPoints_.size()));
 
         switch (calibrationType_) {
           case CallPut: {

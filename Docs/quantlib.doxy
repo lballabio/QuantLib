@@ -110,15 +110,11 @@ FILE_PATTERNS          = *.docs \
                          *.h
 RECURSIVE              = YES
 EXCLUDE                = ../ql/config.hpp \
-                         ../ql/config.bcc.hpp \
-                         ../ql/config.decc.hpp \
-                         ../ql/config.msvc.hpp \
-                         ../ql/config.mwcw.hpp
+                         ../ql/config.msvc.hpp
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = */all.hpp
 EXCLUDE_SYMBOLS        =
-EXAMPLE_PATH           = Examples \
-                         ../Examples
+EXAMPLE_PATH           = ../Examples
 EXAMPLE_PATTERNS       = *.cpp
 EXAMPLE_RECURSIVE      = YES
 IMAGE_PATH             =
@@ -197,7 +193,7 @@ MATHJAX_RELPATH        = http://cdn.mathjax.org/mathjax/latest
 MATHJAX_EXTENSIONS     =
 MATHJAX_CODEFILE       =
 SEARCHENGINE           = YES
-SERVER_BASED_SEARCH    = YES
+SERVER_BASED_SEARCH    = NO
 EXTERNAL_SEARCH        = NO
 SEARCHENGINE_URL       =
 SEARCHDATA_FILE        = searchdata.xml
@@ -236,7 +232,7 @@ RTF_SOURCE_CODE        = NO
 #---------------------------------------------------------------------------
 # Configuration options related to the man page output
 #---------------------------------------------------------------------------
-GENERATE_MAN           = YES
+GENERATE_MAN           = NO
 MAN_OUTPUT             = man
 MAN_EXTENSION          = .3
 MAN_SUBDIR             =

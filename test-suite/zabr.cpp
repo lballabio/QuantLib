@@ -89,7 +89,7 @@ void ZabrTest::testConsistency() {
 }
 
 test_suite *ZabrTest::suite(SpeedLevel speed) {
-    test_suite *suite = BOOST_TEST_SUITE("NoArbSabrModel tests");
+    test_suite *suite = BOOST_TEST_SUITE("Zabr model tests");
 
     if (speed == Slow) {
         suite->add(QUANTLIB_TEST_CASE(&ZabrTest::testConsistency));

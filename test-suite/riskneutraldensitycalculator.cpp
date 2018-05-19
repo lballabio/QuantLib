@@ -615,8 +615,9 @@ void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
 
     const Handle<BlackVolTermStructure> hestonSurface(
         boost::make_shared<HestonBlackVolSurface>(
-            Handle<HestonModel>(
-                boost::make_shared<HestonModel>(hestonProcess))));
+            Handle<HestonModel>(boost::make_shared<HestonModel>(hestonProcess)),
+            AnalyticHestonEngine::AndersenPiterbarg,
+            AnalyticHestonEngine::Integration::discreteTrapezoid(32)));
 
     const boost::shared_ptr<TimeGrid> timeGrid(new TimeGrid(maturity, 51));
 

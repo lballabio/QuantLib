@@ -35,7 +35,8 @@ namespace QuantLib {
     struct FdmSchemeDesc {
         enum FdmSchemeType { HundsdorferType, DouglasType, 
                              CraigSneydType, ModifiedCraigSneydType, 
-                             ImplicitEulerType, ExplicitEulerType };
+                             ImplicitEulerType, ExplicitEulerType,
+                             MethodOfLinesType };
 
         FdmSchemeDesc(FdmSchemeType type, Real theta, Real mu);
 
@@ -50,6 +51,8 @@ namespace QuantLib {
         static FdmSchemeDesc ModifiedCraigSneyd(); 
         static FdmSchemeDesc Hundsdorfer();
         static FdmSchemeDesc ModifiedHundsdorfer();
+        static FdmSchemeDesc MethodOfLines(
+            Real eps=0.001, Real relInitStepSize=0.01);
     };
         
     class FdmBackwardSolver {

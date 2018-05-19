@@ -39,13 +39,6 @@ namespace QuantLib {
 
         QL_REQUIRE(notionalAmount > 0.0, "notionalAmount must be positive");
 
-        // do I adjust this ?
-        // valueDate_ = calendar_.adjust(valueDate_,businessDayConvention_);
-        Date fixingDate = calendar_.advance(valueDate_,
-            -static_cast<Integer>(settlementDays_), Days);
-        forwardRate_ = InterestRate(index->fixing(fixingDate),
-                                    index->dayCounter(),
-                                    Simple, Once);
         strikeForwardRate_ = InterestRate(strikeForwardRate,
                                           index->dayCounter(),
                                           Simple, Once);
@@ -64,6 +57,11 @@ namespace QuantLib {
     Date ForwardRateAgreement::settlementDate() const {
         return calendar_.advance(Settings::instance().evaluationDate(),
                                  settlementDays_, Days);
+    }
+
+    Date ForwardRateAgreement::fixingDate() const {
+        return calendar_.advance(valueDate_,
+                                 -static_cast<Integer>(settlementDays_), Days);
     }
 
     bool ForwardRateAgreement::isExpired() const {
@@ -93,10 +91,15 @@ namespace QuantLib {
         return forwardRate_;
     }
 
+    void ForwardRateAgreement::setupExpired() const {
+        Forward::setupExpired();
+        forwardRate_ = InterestRate(index_->fixing(fixingDate()),
+                                    index_->dayCounter(),
+                                    Simple, Once);
+    }
+
     void ForwardRateAgreement::performCalculations() const {
-        Date fixingDate = calendar_.advance(valueDate_,
-            -static_cast<Integer>(settlementDays_), Days);
-        forwardRate_ = InterestRate(index_->fixing(fixingDate),
+        forwardRate_ = InterestRate(index_->fixing(fixingDate()),
                                     index_->dayCounter(),
                                     Simple, Once);
         underlyingSpotValue_ = spotValue();

@@ -545,7 +545,7 @@ void CapFlooredCouponTest::testDecomposition() {
 }
 
 test_suite* CapFlooredCouponTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Capped/floored coupon tests");
+    test_suite* suite = BOOST_TEST_SUITE("Capped and floored coupon tests");
     suite->add(QUANTLIB_TEST_CASE(&CapFlooredCouponTest::testLargeRates));
     suite->add(QUANTLIB_TEST_CASE(&CapFlooredCouponTest::testDecomposition));
     return suite;

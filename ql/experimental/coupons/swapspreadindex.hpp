@@ -27,7 +27,7 @@
 namespace QuantLib {
 
     //! class for swap-rate spread indexes
-    class SwapSpreadIndex : public virtual InterestRateIndex {
+    class SwapSpreadIndex : public InterestRateIndex {
       public:
         SwapSpreadIndex(const std::string& familyName,
                         const boost::shared_ptr<SwapIndex>& swapIndex1,
@@ -61,7 +61,8 @@ namespace QuantLib {
 
 
     inline Rate SwapSpreadIndex::forecastFixing(const Date& fixingDate) const {
-
+        // this also handles the case when one of indices has
+        // a historic fixing on the evaluation date
         return gearing1_ * swapIndex1_->fixing(fixingDate,false) +
             gearing2_ * swapIndex2_->fixing(fixingDate,false);
 

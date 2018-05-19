@@ -40,6 +40,7 @@ namespace QuantLib {
           settlementType_(delivery) {
 
         registerWith(swap_);
+        registerWithObservables(swap_);
     }
 
     bool NonstandardSwaption::isExpired() const {

@@ -33,6 +33,7 @@ namespace QuantLib {
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
+        <li>Good Friday (since 2017)</li>
         <li>Easter Monday</li>
         <li>Whit(Pentecost) Monday </li>
         <li>New Year's Day, January 1st</li>

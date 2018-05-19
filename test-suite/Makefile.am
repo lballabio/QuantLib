@@ -29,6 +29,7 @@ QL_TESTS = \
 	chooseroption.hpp chooseroption.cpp \
 	cliquetoption.hpp cliquetoption.cpp \
 	cms.hpp cms.cpp \
+	cmsspread.hpp cmsspread.cpp \
 	commodityunitofmeasure.hpp commodityunitofmeasure.cpp \
 	compoundoption.hpp compoundoption.cpp \
 	convertiblebonds.hpp convertiblebonds.cpp \
@@ -54,6 +55,7 @@ QL_TESTS = \
 	fdheston.hpp fdheston.cpp \
 	fdmlinearop.hpp fdmlinearop.cpp \
 	forwardoption.hpp forwardoption.cpp \
+	forwardrateagreement.hpp forwardrateagreement.cpp \
 	functions.hpp functions.cpp \
 	garch.hpp garch.cpp \
 	gaussianquadratures.hpp gaussianquadratures.cpp \

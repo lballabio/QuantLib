@@ -82,7 +82,6 @@ class MarketModelPathwiseInverseFloater : public MarketModelPathwiseMultiProduct
         std::vector<Real> rateTimes_,fixedAccruals_, floatingAccruals_,fixedStrikes_, fixedMultipliers_, floatingSpreads_;
         std::vector<Time> paymentTimes_;
     
-        bool payer_;
         Real multiplier_;
         Size lastIndex_;
         
