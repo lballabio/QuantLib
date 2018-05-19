@@ -107,11 +107,14 @@ namespace QuantLib {
     Real SyntheticCDO::protectionLegNPV() const {
         calculate();
         if(side_ == Protection::Buyer) return -protectionValue_;
-        return premiumValue_;
+        return protectionValue_;
     }
 
     Rate SyntheticCDO::fairPremium () const {
         calculate();
+        if(premiumValue_ == 0) {
+            throw "Attempted divide by zero in SyntheticCDO::fairPremium.";
+        }
         return runningRate_
             * (protectionValue_ - upfrontPremiumValue_) / premiumValue_;
     }
