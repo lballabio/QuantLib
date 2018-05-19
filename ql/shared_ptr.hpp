@@ -39,11 +39,13 @@ namespace QuantLib {
 
         #if defined(QL_USE_STD_SHARED_PTR)
         using std::shared_ptr;
+        using std::weak_ptr;
         using std::make_shared;
         using std::static_pointer_cast;
         using std::dynamic_pointer_cast;
         #else
         using boost::shared_ptr;
+        using boost::weak_ptr;
         using boost::make_shared;
         using boost::static_pointer_cast;
         using boost::dynamic_pointer_cast;
