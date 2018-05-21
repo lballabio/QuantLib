@@ -21,6 +21,8 @@
     \brief n-th order derivative linear operator
 */
 
+#ifndef QL_NO_UBLAS_SUPPORT
+
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/operators/numericaldifferentiation.hpp>
 #include <ql/methods/finitedifferences/operators/nthorderderivativeop.hpp>
@@ -91,3 +93,5 @@ namespace QuantLib {
     }
 
 }
+
+#endif

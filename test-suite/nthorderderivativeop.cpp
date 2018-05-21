@@ -17,6 +17,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+
+#ifndef QL_NO_UBLAS_SUPPORT
+
 #include "utilities.hpp"
 #include "nthorderderivativeop.hpp"
 #include <ql/math/comparison.hpp>
@@ -577,7 +580,7 @@ namespace {
             try {
                 return priceReport(g, strikes_);
             }
-            catch (std::exception const& e) {
+            catch (std::exception const&) {
                 Array q(2, 1000);
                 return q;
             }
@@ -699,3 +702,4 @@ test_suite* NthOrderDerivativeOpTest::suite() {
     return suite;
 }
 
+#endif

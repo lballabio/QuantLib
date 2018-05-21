@@ -20,6 +20,8 @@
 #ifndef quantlib_test_nth_order_derivative_op_hpp
 #define quantlib_test_nth_order_derivative_op_hpp
 
+#ifndef QL_NO_UBLAS_SUPPORT
+
 #include <boost/test/unit_test.hpp>
 
 class NthOrderDerivativeOpTest {
@@ -38,5 +40,5 @@ class NthOrderDerivativeOpTest {
     static boost::unit_test_framework::test_suite* suite();
 };
 
-
+#endif
 #endif

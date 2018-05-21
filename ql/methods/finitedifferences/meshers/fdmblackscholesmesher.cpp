@@ -53,7 +53,7 @@ namespace QuantLib {
                     dividendSchedule[i]->amount()
                 ) );
 
-        const Size intermediateTimeSteps = std::max<Size>(2, 24.0*maturity);
+        const Size intermediateTimeSteps = std::max<Size>(2, Size(24.0*maturity));
         for (Size i=0; i < intermediateTimeSteps; ++i)
             intermediateSteps.push_back(
                 std::make_pair((i+1)*(maturity/intermediateTimeSteps), 0.0));

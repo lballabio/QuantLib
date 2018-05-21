@@ -46,7 +46,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
 
-#if BOOST_VERSION > 106300
+#if BOOST_VERSION == 106400
 #include <boost/serialization/array_wrapper.hpp>
 #endif
 
